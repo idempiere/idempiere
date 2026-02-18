@@ -28,6 +28,7 @@ import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.PeriodClosedException;
+import org.compiere.acct.Doc;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.CLogger;
@@ -676,6 +677,9 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 			return false;
 		
 		boolean retValue = reverseIt(false);
+		
+		// delete the fact line of the Allocation after reverse Correct
+		Doc.deleteReverseCorrectPosting(getCtx(),getAD_Client_ID(), MAllocationHdr.Table_ID , getC_AllocationHdr_ID() ,get_TrxName());
 
 		// After reverseCorrect
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT);

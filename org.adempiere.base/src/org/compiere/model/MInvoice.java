@@ -42,6 +42,7 @@ import org.adempiere.exceptions.BackDateTrxNotAllowedException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.exceptions.PeriodClosedException;
 import org.adempiere.model.ITaxProvider;
+import org.compiere.acct.Doc;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.DocAction;
@@ -2607,6 +2608,9 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		MInvoice reversal = reverse(false);
 		if (reversal == null)
 			return false;
+		
+		// delete the fact line of the Invoice after reverse Correct
+		Doc.deleteReverseCorrectPosting(getCtx(),getAD_Client_ID(), MInvoice.Table_ID , getC_Invoice_ID() ,get_TrxName());
 
 		// After reverseCorrect
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT);
@@ -2628,7 +2632,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		if (reversalDate == null) {
 			reversalDate = new Timestamp(System.currentTimeMillis());
 		}
-		Timestamp reversalDateInvoiced = accrual ? reversalDate : getDateInvoiced();
+		Timestamp reversalDateInvoiced = accrual ? reversalDate : getDateAcct();
 		
 		MPeriod.testPeriodOpen(getCtx(), reversalDate, getC_DocType_ID(), getAD_Org_ID());
 		MAcctSchema.testBackDateTrxAllowed(getCtx(), reversalDate, get_TrxName());

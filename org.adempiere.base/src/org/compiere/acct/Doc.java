@@ -797,9 +797,30 @@ public abstract class Doc
 			.append(" AND C_AcctSchema_ID=?");
 		no = DB.executeUpdate(sql.toString(), new Object[] {get_Table_ID(), p_po.get_ID(), m_as.getC_AcctSchema_ID()}, false, getTrxName());
 		if (no != 0)
-			if (log.isLoggable(Level.INFO)) log.info("deleted=" + no);
+			if (log.isLoggable(Level.INFO))	log.info("deleted=" + no);
 		return no;
 	}	//	deleteAcct
+	
+	/**
+	 * Delete fact records based on table, record and accounting schema
+	 * 
+	 * @param  AD_Table_ID
+	 * @param  Record_ID
+	 * @param  AcctSchema_ID
+	 * @param  trx
+	 * @return               number of records deleted
+	 */
+	public static int deleteAcct(int AD_Table_ID, int Record_ID, int AcctSchema_ID, String trx)
+	{
+        StringBuilder sql = new StringBuilder ("DELETE FROM Fact_Acct WHERE AD_Table_ID=")
+        				.append(AD_Table_ID)
+						.append(" AND Record_ID=")
+						.append(Record_ID)
+						.append(" AND C_AcctSchema_ID=")
+						.append(AcctSchema_ID);
+
+		return DB.executeUpdate(sql.toString(), trx);
+	} // deleteAcct
 
 	/**
 	 *  Posting logic for Accounting Schema
@@ -2575,6 +2596,28 @@ public abstract class Doc
 	public boolean isDeferPosting() {
 		return false;
 	}
+
+	/**
+	 * Delete the posting based on the table and record for the client accounting schema with
+	 * isDeleteReverseCorrectPosting true
+	 * 
+	 * @param ctx
+	 * @param client_ID
+	 * @param tableId
+	 * @param record_ID
+	 * @param trxName
+	 */
+	public static void deleteReverseCorrectPosting(Properties ctx, int client_ID, int tableId, int record_ID, String trxName)
+	{
+		MAcctSchema[] acctSchemas = MAcctSchema.getClientAcctSchema(ctx, client_ID);
+		for (MAcctSchema as : acctSchemas)
+		{
+			if (as.isDeleteReverseCorrectPosting())
+			{
+				Doc.deleteAcct(tableId, record_ID, as.getC_AcctSchema_ID(), trxName);
+			}
+		}
+	} // deleteAcctForClientSchema
 	
 	/** In a Back-Date Posting Process **/
 	private boolean isInBackDatePostingProcess;
