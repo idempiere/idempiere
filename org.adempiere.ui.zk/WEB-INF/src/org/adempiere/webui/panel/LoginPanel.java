@@ -66,6 +66,7 @@ import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
+import org.compiere.model.SystemProperties;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -99,6 +100,7 @@ import org.zkoss.zul.A;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Image;
+import org.zkoss.zul.theme.Themes;
 
 /**
  * Login panel of {@link LoginWindow}
@@ -137,6 +139,8 @@ public class LoginPanel extends Window implements EventListener<Event>
     protected ConfirmPanel pnlButtons; 
     protected boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
     protected String validLstLanguage = null;
+    protected Label lblTheme;
+    protected Combobox lstTheme;
 
 	/* Number of failures to calculate an incremental delay on every trial */
 	private int failures = 0;
@@ -343,7 +347,19 @@ public class LoginPanel extends Window implements EventListener<Event>
     	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
     	tr.appendChild(td);
     	td.appendChild(lstLanguage);
-    	
+
+    	tr = new Tr();
+    	tr.setId("rowTheme");
+    	table.appendChild(tr);
+    	td = new Td();
+    	tr.appendChild(td);
+    	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
+    	td.appendChild(lblTheme.rightAlign());
+    	td = new Td();
+    	td.setSclass(ITheme.LOGIN_FIELD_CLASS);
+    	tr.appendChild(td);
+    	td.appendChild(lstTheme);
+
     	tr = new Tr();
         tr.setId("rowSelectRole");
         table.appendChild(tr);
@@ -479,6 +495,10 @@ public class LoginPanel extends Window implements EventListener<Event>
         lblLanguage.setId("lblLanguage");
         lblLanguage.setValue("Language");
 
+        lblTheme = new Label();
+        lblTheme.setId("lblTheme");
+        lblTheme.setValue("Theme");
+
         txtUserId = new Textbox();
         txtUserId.setId("txtUserId");
         txtUserId.setCols(25);
@@ -528,6 +548,42 @@ public class LoginPanel extends Window implements EventListener<Event>
         if (lstLanguage.getItems().size() > 0){
         	validLstLanguage = (String)lstLanguage.getItems().get(0).getLabel();
         }                 
+
+        lstTheme = new Combobox();
+        lstTheme.setAutocomplete(true);
+        lstTheme.setAutodrop(true);
+        lstTheme.setId("lstTheme");
+
+        // Update Themes List
+        lstTheme.getItems().clear();
+        String[] themes = MSysConfig.getValue(MSysConfig.ZK_THEME, ITheme.ZK_THEME_DEFAULT).split(",");
+        for (String themeName : themes) {
+            // NOTE: The theme "default" is displayed in the list as "breeze"
+        	if ("default".equals(themeName))
+            	lstTheme.appendItem("breeze", themeName);
+        	else
+            	lstTheme.appendItem(themeName, themeName);
+        }
+        if (themes.length > 1) {
+            // load theme preference from cookie
+            String initTheme = AEnv.getCookie("zktheme");
+            if (!Util.isEmpty(initTheme)) {
+            	if ("default".equals(initTheme))
+            		lstTheme.setValue("breeze");
+            	else
+            		lstTheme.setValue(initTheme);
+                // NOTE: The zktheme cookie saves the default theme as breeze in preference.zul
+            	if ("breeze".equals(initTheme))
+            		SystemProperties.setZkTheme("default");
+            	else
+            		SystemProperties.setZkTheme(initTheme);
+            }
+            lstTheme.addEventListener(Events.ON_SELECT, this);
+        } else {
+        	lblTheme.setVisible(false);
+        	lstTheme.setVisible(false);
+        }
+
     }
 
     @Override
@@ -554,6 +610,18 @@ public class LoginPanel extends Window implements EventListener<Event>
             	           	
             	languageChanged(validLstLanguage);
             }
+			else if (eventComp.getId().equals(lstTheme.getId()))
+			{
+				String theme = lstTheme.getSelectedItem().getValue();
+				SystemProperties.setZkTheme(theme);
+				// NOTE: The cookie zktheme is saved in preference.zul of each theme
+				if ("default".equals(theme))
+					Themes.setTheme(Executions.getCurrent(), "breeze");
+				else
+					Themes.setTheme(Executions.getCurrent(), theme);
+				Executions.sendRedirect("");
+			}
+
         }
         else if (event.getTarget() == btnResetPassword)
         {
@@ -651,6 +719,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 			lblUserId.setValue(Msg.getMsg(language, "User"));
     	lblPassword.setValue(Msg.getMsg(language, "Password"));
     	lblLanguage.setValue(Msg.getMsg(language, "Language"));
+		lblTheme.setValue(Msg.getElement(Env.getCtx(), "Theme"));
     	chkRememberMe.setLabel(Msg.getMsg(language, "RememberMe"));
     	chkSelectRole.setLabel(Msg.getMsg(language, "SelectRole"));
     	btnResetPassword.setLabel(Msg.getMsg(language, "ForgotMyPassword"));
