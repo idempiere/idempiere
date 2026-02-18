@@ -1,4 +1,4 @@
--- IDEMPIERE-6849
+-- IDEMPIERE-6849 - Division by Zero Error in BOMQTY Functions Caused by BOM Line with Zero Quantity
 SELECT register_migration_script('202602181112_IDEMPIERE-6849.sql') FROM dual;
 
 SET SQLBLANKLINES ON
