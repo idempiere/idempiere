@@ -37,6 +37,7 @@ import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.panel.InfoGeneralPanel;
 import org.adempiere.webui.session.SessionManager;
+import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 
@@ -239,5 +240,35 @@ public class InfoGeneralPanelTest extends AbstractTestCase {
 		int rowCount = infoPanel.getRowCount();
 		assertTrue(rowCount > 0, "Query should return more than zero rows");
 
+	}
+	
+	@Test
+	public void testInfoGeneralPanelRole() {
+		// Verify AD_User table exists with expected ID
+		MTable table = MTable.get(Env.getCtx(), MRole.Table_Name);
+		assertNotNull(table, "AD_Role table should exist");
+		assertEquals(MRole.Table_ID, table.getAD_Table_ID(), "AD_Role table ID should be of expected value");
+
+		// Create InfoGeneralPanel without query
+		InfoGeneralPanel infoPanel = new InfoGeneralPanel(
+				"Garden",						// queryValue
+				0,							// windowNo
+				MRole.Table_Name,			// tableName
+				MRole.COLUMNNAME_AD_Role_ID,	// keyColumn
+				false,						// multipleSelection
+				"AD_Role.AD_Client_ID=@#AD_Client_ID@ AND AD_Role.IsMasterRole='N'"						// whereClause
+		) {
+			@Override
+			protected void autoHideEmptyColumns() {		
+			}
+			
+		};
+		
+		assertNotNull(infoPanel, "InfoGeneralPanel should be created successfully");
+		assertTrue(infoPanel.loadedOK(), "Panel should load successfully");
+
+		// Execute query should find at least one result
+		int rowCount = infoPanel.getRowCount();
+		assertTrue(rowCount > 0, "Query should return more than zero rows");
 	}
 }
