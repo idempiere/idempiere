@@ -29,6 +29,9 @@
  **********************************************************************/
 package org.adempiere.webui.apps.form;
 
+import static org.compiere.model.MSysConfig.FACT_RECONCILE_MAXIMUM_DIFFERENCE_AMOUNT;
+
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -37,12 +40,14 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 
+import org.adempiere.util.Callback;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.ConfirmPanel;
+import org.adempiere.webui.component.DocumentLink;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Label;
@@ -54,8 +59,11 @@ import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.WListbox;
+import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WDateEditor;
+import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WSearchEditor;
+import org.adempiere.webui.editor.WStringEditor;
 import org.adempiere.webui.editor.WTableDirEditor;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
@@ -69,28 +77,49 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.DateRangeButton;
+import org.adempiere.webui.window.Dialog;
 import org.compiere.apps.form.FactReconcile;
+import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClient;
+import org.compiere.model.MClientInfo;
 import org.compiere.model.MColumn;
+import org.compiere.model.MConversionRate;
+import org.compiere.model.MConversionType;
+import org.compiere.model.MDocType;
+import org.compiere.model.MElementValue;
 import org.compiere.model.MFactAcct;
 import org.compiere.model.MFactReconciliation;
+import org.compiere.model.MJournal;
+import org.compiere.model.MJournalLine;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
+import org.compiere.model.MPeriod;
+import org.compiere.model.MSysConfig;
+import org.compiere.model.Query;
 import org.compiere.model.X_C_ElementValue;
+import org.compiere.process.DocumentEngine;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
+import org.compiere.util.TimeUtil;
+import org.compiere.util.Trx;
+import org.compiere.util.Util;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.WrongValuesException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
+import org.zkoss.zul.Span;
+import org.zkoss.zul.Vlayout;
 
 @org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VFactReconcile")
 /**
@@ -119,6 +148,8 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		{			
 			dynInit();
 			zkInit();
+			m_maxAmtToCreateJournal = getMaxAmtInBaseCurrency();
+			cbCreateJournal.setVisible(false);
 		}
 		catch(Exception e)
 		{
@@ -176,9 +207,10 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 	private Textbox differenceField = new Textbox();
 	private ToolBarButton bSelect = new ToolBarButton("SelectAll");
 	private boolean checkAllSelected = true;
-	
+	private Checkbox cbCreateJournal = new Checkbox();
+	private BigDecimal m_maxAmtToCreateJournal;
 	private boolean loading = false;
-	
+	private Hlayout statusBar = new Hlayout();
 	/**
 	 *  Layout {@link #form}
 	 *  @throws Exception
@@ -222,6 +254,11 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 
 		differenceLabel.setText(Msg.getMsg(Env.getCtx(), "Difference"));
 		differenceField.setText("0");
+		differenceField.setReadonly(true);
+
+		cbCreateJournal.setText(Msg.getMsg(Env.getCtx(), "FactReconcileCreateJournalCheckboxLabel", true));
+		cbCreateJournal.setTooltiptext(Msg.getMsg(Env.getCtx(), "FactReconcileCreateJournalCheckboxLabel", false));
+		cbCreateJournal.addEventListener(Events.ON_CHECK, this);
 		//
 		bGenerate.addActionListener(this);
 		bCancel.addActionListener(this);
@@ -307,6 +344,9 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		ZKUpdateUtil.setHflex(differenceLabel, "true");
 		row.appendCellChild(differenceField, 2);
 		ZKUpdateUtil.setHflex(differenceField, "true");
+		row.appendCellChild(cbCreateJournal, 1);
+		row.appendCellChild(statusBar, 1);
+		ZKUpdateUtil.setVflex(statusBar, "min");
 		row.appendCellChild(bGenerate, 1);
 		ZKUpdateUtil.setHflex(bGenerate, "true");
 		row.appendCellChild(bReset, 1);
@@ -436,6 +476,8 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		miniTable.setData(modelI, columnNames);
 		setColumnClass(miniTable);
 		miniTable.setColorColumn(amtColIndex);
+		cbCreateJournal.setChecked(false);
+		cbCreateJournal.setVisible(false);
 	}
 	
 	/**
@@ -454,7 +496,17 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		dataStatus.setText(info.toString());
 		//
 		bGenerate.setEnabled(m_noSelected != 0 && Env.ZERO.compareTo(m_selectedAmt) == 0 && !isReconciled.isSelected());
-		bReset.setEnabled(m_noSelected > 0 && Env.ZERO.compareTo(m_selectedAmt) == 0 && isReconciled.isSelected());
+		bReset.setEnabled(m_noSelected > 0 && isReconciled.isSelected());
+
+		if (m_selectedAmt.signum() != 0) {
+			cbCreateJournal.setVisible(m_maxAmtToCreateJournal.signum() == 0 || m_selectedAmt.abs().compareTo(m_maxAmtToCreateJournal.abs()) <= 0);
+			cbCreateJournal.setChecked(false);
+		}
+		else {
+			cbCreateJournal.setVisible(false);
+			cbCreateJournal.setChecked(false);
+		}
+		
 	}   //  calculateSelection
 	
 	@Override
@@ -470,6 +522,12 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 			m_C_AcctSchema_ID = ((Integer)value).intValue();
 			Env.setContext(Env.getCtx(), form.getWindowNo(), "C_AcctSchema_ID", m_C_AcctSchema_ID);
 			Env.setContext(Env.getCtx(), form.getWindowNo(), "AD_Client_ID", Env.getAD_Client_ID(Env.getCtx()));
+
+			int baseCurrencyID = MClientInfo.get(Env.getCtx()).getC_Currency_ID();
+			int acCurrencyID = MAcctSchema.get(m_C_AcctSchema_ID).getC_Currency_ID();
+			BigDecimal amtInSchemaCurrency = MConversionRate.convert(Env.getCtx(), getMaxAmtInBaseCurrency(), baseCurrencyID, acCurrencyID, Env.getAD_Client_ID(Env.getCtx()), 0);
+			m_maxAmtToCreateJournal = amtInSchemaCurrency != null ? amtInSchemaCurrency : Env.ZERO;
+
 			fieldAccount.actionRefresh();
 		}
 	}
@@ -503,9 +561,56 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 
 	@Override
 	public void onEvent(Event event) throws Exception {
-		if (event.getTarget().equals(bGenerate))
-			generateReconciliation();
-		
+		if (event.getTarget().equals(bGenerate)) {
+
+			if (cbCreateJournal.isVisible() && cbCreateJournal.isChecked()) {
+
+				MElementValue account = new MElementValue(Env.getCtx(), m_Account_ID, null);
+				if (account.isDocControlled())
+					Dialog.warn(form.getWindowNo(), "Warning", Msg.getMsg(Env.getCtx(), "FactReconcileCantCreateJournalAccountDocControlled", new Object[] {account.getValue(), account.getName()}), "");
+				else {
+					Callback<MJournal> callback = new Callback<MJournal>() {
+
+						@Override
+						public void onCallback(MJournal journal) {
+
+							if (journal != null && journal.getDocStatus().equals(MJournal.DOCSTATUS_Completed)) {
+
+								if (!MClient.isClientAccountingImmediate()) {
+									String error = DocumentEngine.postImmediate(Env.getCtx(), journal.getAD_Client_ID(), MJournal.Table_ID, journal.getGL_Journal_ID(), false, null);
+									if (!Util.isEmpty(error)) {
+										Dialog.error(form.getWindowNo(), "SavePostError", journal.getDocumentInfo());
+										return;
+									}
+								}
+
+								int balanceFactAcctID = new Query(Env.getCtx(), MFactAcct.Table_Name, "AD_Table_ID = ? AND Record_ID = ? AND Account_ID = ?", null)
+										.setParameters(MJournal.Table_ID, journal.getGL_Journal_ID(), m_Account_ID)
+										.firstIdOnly();
+
+								generateReconciliation(balanceFactAcctID);
+
+								if (statusBar.getChildren() != null && statusBar.getChildren().size() > 0)
+									statusBar.getChildren().clear();
+								statusBar.appendChild(new DocumentLink(journal.getDocumentInfo(), journal.get_Table_ID(), journal.get_ID()));
+							}
+							else {
+								if (journal == null)
+									Dialog.error(form.getWindowNo(), "Error", "Can't create journal");
+								else {
+									Dialog.error(form.getWindowNo(), "Error", journal.getDocumentInfo() + " is not completed, thus is not possible to reconcile posting"
+											+ (!Util.isEmpty(journal.getProcessMsg()) ? " (" + journal.getProcessMsg() + ")" : ""));
+								}
+							}
+						}
+					};
+					new CreateJournalParams(callback);
+				}
+			}
+			else
+				generateReconciliation(-1);
+		}
+
 		else if (event.getTarget().equals(bReset))
 			resetReconciliation();
 
@@ -517,27 +622,36 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		else if (event.getTarget().equals(bCancel))
 			SessionManager.getAppDesktop().closeActiveWindow();
 		
-		else if (event.getTarget().equals(bRefresh))
+		else if (event.getTarget().equals(bRefresh)) {
 			loadData();
+
+			if (statusBar.getChildren() != null && statusBar.getChildren().size() > 0)
+				statusBar.getChildren().clear();
+		}
 		
 		else if (event.getTarget().equals(bSelect))
 			onbSelect();
 		
+		else if (event.getTarget().equals(cbCreateJournal))
+			bGenerate.setEnabled(cbCreateJournal.isChecked());
 	}
 	
 	/**
 	 * Call {@link #generate(org.compiere.minigrid.IMiniTable, List)} 
 	 * to generate {@link MFactReconciliation} record from selected row in miniTable.
 	 */
-	private void generateReconciliation() {
-		if (miniTable.getRowCount() == 0)
-			return;
-		calculateSelection();
-		if (m_noSelected == 0)
-			return;
+	private void generateReconciliation(int balanceFactAcctID) {
+		
+		if (balanceFactAcctID > 0) {
+			if (miniTable.getRowCount() == 0)
+				return;
+			calculateSelection();
+			if (m_noSelected == 0)
+				return;	
+		}
 		
 		List<Integer> generated =  new ArrayList<>();
-		generate(miniTable, generated);
+		generate(miniTable, generated, balanceFactAcctID);
 		if (generated.size() > 0) {
 			Collections.reverse(generated);
 			for(int i : generated) {
@@ -546,6 +660,8 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		}
 
 		bSelect.setPressed(false);
+		cbCreateJournal.setChecked(false);
+		cbCreateJournal.setVisible(false);
 	}
 	
 	/**
@@ -593,6 +709,8 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		}
 		
 		bSelect.setPressed(false);
+		cbCreateJournal.setChecked(false);
+		cbCreateJournal.setVisible(false);
 	}
 
 	@Override
@@ -616,5 +734,197 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		miniTable.setModel(model);
 		calculateSelection();
 	}	
-}
 
+	private BigDecimal getMaxAmtInBaseCurrency() {
+		return MSysConfig.getBigDecimalValue(FACT_RECONCILE_MAXIMUM_DIFFERENCE_AMOUNT, Env.ZERO, Env.getAD_Client_ID(Env.getCtx()));
+	}
+
+	private class CreateJournalParams extends Window implements EventListener<Event> {
+
+		private static final long serialVersionUID = -6485565911294862992L;
+		private Callback<MJournal>  m_CreateJournalCallback;
+		private WTableDirEditor fCreateJournalOrg, fCreateJournalDocType, fCreateJournalAccount;
+		private WDateEditor fCreateJournalDate;
+		private WStringEditor fCreateJournalDescription;
+		private ConfirmPanel createJournalConfirmPanel;
+
+		private CreateJournalParams(Callback<MJournal> callback) {
+			super();
+			m_CreateJournalCallback = callback;
+			setTitle(Msg.getMsg(Env.getCtx(), "FactReconcileCreateJournalWindowTitle"));
+			init();
+
+			setSclass("popup-dialog");
+			setClosable(false);
+			setMaximizable(true);
+			setSizable(true);
+			setShadow(true);
+			setBorder(true);
+			setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
+			setStyle("position: absolute; width: 500px; height: 250px;");
+			AEnv.showWindow(this);
+		}
+
+		private void init() {
+
+			MLookup lookup = MLookupFactory.get(Env.getCtx(), form.getWindowNo(), 0, MColumn.getColumn_ID(MJournal.Table_Name, MJournal.COLUMNNAME_AD_Org_ID), DisplayType.TableDir);
+			fCreateJournalOrg = new WTableDirEditor("AD_Org_ID", true, false, true, lookup);
+			fCreateJournalOrg.getComponent().addEventListener(Events.ON_SELECT, this);
+			fCreateJournalOrg.getLabel().setValue(Msg.getElement(Env.getCtx(), "AD_Org_ID"));
+			if (!fieldOrg.isNullOrEmpty() && (Integer) fieldOrg.getValue() > 0)
+				fCreateJournalOrg.setValue((Integer) fieldOrg.getValue());
+
+			lookup = MLookupFactory.get(Env.getCtx(), form.getWindowNo(), 0, MColumn.getColumn_ID(MJournal.Table_Name, MJournal.COLUMNNAME_C_DocType_ID), DisplayType.TableDir);
+			fCreateJournalDocType = new WTableDirEditor("C_DocType_ID", true, false, true, lookup);
+			fCreateJournalDocType.getComponent().addEventListener(Events.ON_SELECT, this);
+			fCreateJournalDocType.getLabel().setValue(Msg.getElement(Env.getCtx(), "C_DocType_ID"));
+			if (fCreateJournalDocType.getComponent().getItemCount() == 1)
+				fCreateJournalDocType.getComponent().setSelectedIndex(0);
+
+			try {
+				lookup = MLookupFactory.get (Env.getCtx(), form.getWindowNo(), MColumn.getColumn_ID(MElementValue.Table_Name, MElementValue.COLUMNNAME_C_ElementValue_ID), DisplayType.TableDir, Env.getLanguage(Env.getCtx()), "Account_ID", 0, false,
+						"IsSummary = 'N' AND IsDocControlled = 'N' AND EXISTS (SELECT * FROM C_AcctSchema_Element ae WHERE C_ElementValue.C_Element_ID=ae.C_Element_ID AND ae.ElementType='AC' AND ae.C_AcctSchema_ID=" + m_C_AcctSchema_ID 
+						+ ") AND C_ElementValue_ID != " + fieldAccount.getValue());
+			} catch (Exception e) {
+				log.log(Level.SEVERE, "Can't init Account editor :", e);
+			}
+
+			fCreateJournalAccount = new WTableDirEditor("Account_ID", true, false, true, lookup);
+			fCreateJournalAccount.getComponent().addEventListener(Events.ON_SELECT, this);
+			fCreateJournalAccount.getLabel().setValue(Msg.getElement(Env.getCtx(), "Account_ID"));
+
+			fCreateJournalDate = new WDateEditor();
+			fCreateJournalDate.getLabel().setValue(Msg.getElement(Env.getCtx(), "DateAcct"));
+
+			int rows = miniTable.getRowCount();
+			for (int i = 0; i < rows; i++) {
+				boolean isSelected = (Boolean)miniTable.getValueAt(i, selectedColIndex);
+				if (isSelected) {
+					Timestamp dateAcct = (Timestamp) miniTable.getValueAt(i, dateAcctColIndex);
+					if (fCreateJournalDate.isNullOrEmpty() || TimeUtil.max(dateAcct, fCreateJournalDate.getValue()) == dateAcct)
+						fCreateJournalDate.setValue(dateAcct);
+				}
+			}
+
+			fCreateJournalDescription = new WStringEditor();
+			fCreateJournalDescription.getLabel().setValue(Msg.getElement(Env.getCtx(), "Description"));
+
+			Borderlayout mainLayout = new Borderlayout();
+			appendChild(mainLayout);
+
+			Center center = new Center();
+			mainLayout.appendChild(center);
+			center.setStyle("padding: 4px;");
+
+			Vlayout vl = new Vlayout();
+
+			center.appendChild(vl);
+			center.setAutoscroll(true);
+
+			vl.appendChild(createLine(fCreateJournalOrg));
+			vl.appendChild(createLine(fCreateJournalDate));
+			vl.appendChild(createLine(fCreateJournalDocType));
+			vl.appendChild(createLine(fCreateJournalAccount));
+			vl.appendChild(createLine(fCreateJournalDescription));
+
+			createJournalConfirmPanel = new ConfirmPanel(true);
+			createJournalConfirmPanel.addActionListener(this);
+
+			South south = new South();
+			south.setStyle("text-align: right");
+			south.setSclass("dialog-footer");
+			mainLayout.appendChild(south);
+			south.appendChild(createJournalConfirmPanel);
+		}
+
+		public static Hlayout createLine (WEditor editor) {
+			Hlayout layout = new Hlayout();
+			layout.setValign("middle");
+			ZKUpdateUtil.setHflex(layout, "12");
+
+			Span span = new Span();
+			ZKUpdateUtil.setHflex(span, "3");
+			layout.appendChild(span);
+
+			span.appendChild(editor.getLabel());
+
+			layout.appendChild(editor.getComponent());
+			ZKUpdateUtil.setHflex(((HtmlBasedComponent) editor.getComponent()), "7");
+
+			return layout;
+		}	//	createLine
+
+		public void onEvent(Event event) throws Exception {
+
+			if (event.getTarget() == createJournalConfirmPanel.getOKButton()) {
+
+				ArrayList<WrongValueException> list = new ArrayList<WrongValueException>();
+
+				if (fCreateJournalOrg.isNullOrEmpty())
+					list.add(new WrongValueException(fCreateJournalOrg.getComponent(), Msg.getMsg(Env.getCtx(), "FillMandatory")));
+				if (fCreateJournalDocType.isNullOrEmpty())
+					list.add(new WrongValueException(fCreateJournalDocType.getComponent(), Msg.getMsg(Env.getCtx(), "FillMandatory")));
+				if (fCreateJournalAccount.isNullOrEmpty())
+					list.add(new WrongValueException(fCreateJournalAccount.getComponent(), Msg.getMsg(Env.getCtx(), "FillMandatory")));
+				if (fCreateJournalDate.isNullOrEmpty())
+					list.add(new WrongValueException(fCreateJournalDate.getComponent(), Msg.getMsg(Env.getCtx(), "FillMandatory")));
+				if (fCreateJournalDescription.isNullOrEmpty())
+					list.add(new WrongValueException(fCreateJournalDescription.getComponent(), Msg.getMsg(Env.getCtx(), "FillMandatory")));
+
+				if (list.size() > 0)
+					throw new WrongValuesException(list.toArray(new WrongValueException[list.size()]));
+
+				if (!MPeriod.isOpen(Env.getCtx(), fCreateJournalDate.getValue(), MDocType.DOCBASETYPE_GLJournal, (Integer) fCreateJournalOrg.getValue(), true))
+					throw new WrongValueException(fCreateJournalDate.getComponent(), Msg.getMsg(Env.getCtx(), "PeriodClosed"));
+
+				String trxName = Trx.createTrxName("FactReconcileCreateJournal");
+				Trx trx = Trx.get(trxName, true);
+				MJournal journal = null;
+				try {
+					journal = new MJournal(Env.getCtx(), 0, trxName);
+					journal.setAD_Org_ID((Integer) fCreateJournalOrg.getValue());
+					journal.setC_DocType_ID((Integer) fCreateJournalDocType.getValue());
+					journal.setPostingType(MJournal.POSTINGTYPE_Actual);
+					journal.setDateDoc(fCreateJournalDate.getValue());
+					journal.setDateAcct(fCreateJournalDate.getValue());
+					journal.setC_AcctSchema_ID(m_C_AcctSchema_ID);
+					journal.setDescription (fCreateJournalDescription.getComponent().getValue());
+					journal.setC_Currency_ID(MAcctSchema.get(Env.getCtx(), journal.getC_AcctSchema_ID()).getC_Currency_ID());
+					journal.setC_ConversionType_ID(MConversionType.getDefault(journal.getAD_Client_ID()));
+					journal.saveEx();
+
+					MJournalLine jl = new MJournalLine(journal);
+					jl.setAccount_ID(m_Account_ID);
+					if (m_selectedAmt.compareTo(Env.ZERO) > 0)
+						jl.setAmtSourceCr(m_selectedAmt);
+					else
+						jl.setAmtSourceDr(m_selectedAmt);
+					jl.saveEx();
+
+					jl = new MJournalLine(journal);
+					jl.setAccount_ID((Integer) fCreateJournalAccount.getValue());
+					if (m_selectedAmt.compareTo(Env.ZERO) < 0)
+						jl.setAmtSourceCr(m_selectedAmt);
+					else
+						jl.setAmtSourceDr(m_selectedAmt);
+					jl.saveEx();
+
+					if (journal.processIt(MJournal.DOCACTION_Complete))
+						journal.saveEx();
+				}
+				catch (Exception e) {
+					trx.rollback();
+				} finally {
+					trx.close();
+				}
+
+				onClose();
+				m_CreateJournalCallback.onCallback(journal);
+
+			}
+			else if (event.getTarget() == createJournalConfirmPanel.getButton(ConfirmPanel.A_CANCEL)) {
+				onClose();
+			}
+		}
+	}
+}
