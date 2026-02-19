@@ -244,19 +244,19 @@ public class InfoGeneralPanelTest extends AbstractTestCase {
 	
 	@Test
 	public void testInfoGeneralPanelRole() {
-		// Verify AD_User table exists with expected ID
+		// Verify AD_Role table exists with expected ID
 		MTable table = MTable.get(Env.getCtx(), MRole.Table_Name);
 		assertNotNull(table, "AD_Role table should exist");
 		assertEquals(MRole.Table_ID, table.getAD_Table_ID(), "AD_Role table ID should be of expected value");
 
-		// Create InfoGeneralPanel without query
+		// Create InfoGeneralPanel with query value and context related where clause
 		InfoGeneralPanel infoPanel = new InfoGeneralPanel(
-				"Garden",						// queryValue
-				0,							// windowNo
-				MRole.Table_Name,			// tableName
-				MRole.COLUMNNAME_AD_Role_ID,	// keyColumn
-				false,						// multipleSelection
-				"AD_Role.AD_Client_ID=@#AD_Client_ID@ AND AD_Role.IsMasterRole='N'"						// whereClause
+				"Garden",					 // queryValue
+				0,							 // windowNo
+				MRole.Table_Name,			 // tableName
+				MRole.COLUMNNAME_AD_Role_ID, // keyColumn
+				false,						 // multipleSelection
+				"AD_Role.AD_Client_ID=@#AD_Client_ID@ AND AD_Role.IsMasterRole='N'" // whereClause
 		) {
 			@Override
 			protected void autoHideEmptyColumns() {		
