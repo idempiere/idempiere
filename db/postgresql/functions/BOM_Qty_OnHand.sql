@@ -69,6 +69,10 @@ BEGIN
 			FROM 	M_Storageonhand s
 			  JOIN M_Locator l ON (s.M_Locator_ID=l.M_Locator_ID)
 			WHERE s.M_Product_ID=bom.M_ProductBOM_ID AND l.M_Warehouse_ID=myWarehouse_ID;
+			-- Prevent division by zero
+			IF bom.BOMQty = 0 THEN
+				RETURN 0;
+			END IF;
 			--	How much can we make with this product
 			v_ProductQty := v_ProductQty/bom.BOMQty;
 			--	How much can we make overall
