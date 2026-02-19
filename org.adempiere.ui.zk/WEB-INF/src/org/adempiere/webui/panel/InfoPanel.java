@@ -1676,8 +1676,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		
 		long start = System.currentTimeMillis();
 		String dynWhere = getSQLWhere();   //  includes first AND
-		StringBuilder sql = new StringBuilder (m_sqlCount);
-
+		StringBuilder sql = new StringBuilder (m_sqlFragmentCount.sqlClause());
 		if (dynWhere.length() > 0) {
 			if(sql.toString().trim().endsWith("WHERE")) {
 				dynWhere = dynWhere.replaceFirst("AND", " ");
