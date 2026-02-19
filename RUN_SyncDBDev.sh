@@ -62,6 +62,7 @@ if [ -z "$CONN" ]; then
 fi
 
 ADEMPIERE_DB_NAME="$(expr "$CONN" : ".*DBname.=\(.*\),BQ.=")"
+# when the server has a protocol defined (like tcps://) the : is prefixed by \ in the properties file, we need to remove the backslash
 ADEMPIERE_DB_SERVER="$(expr "$CONN" : ".*DBhost.=\(.*\),DBport.=" | sed 's/\\//g')"
 ADEMPIERE_DB_PORT="$(expr "$CONN" : ".*DBport.=\(.*\),DBname.=")"
 ADEMPIERE_DB_USER="$(expr "$CONN" : ".*UID.=\(.*\),PWD.=")"

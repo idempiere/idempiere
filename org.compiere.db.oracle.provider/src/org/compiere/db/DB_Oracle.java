@@ -262,7 +262,8 @@ public class DB_Oracle implements AdempiereDatabase
         String userName)
     {
         m_userName = userName;
-        m_connectionURL = "jdbc:oracle:thin:@//"
+        m_connectionURL = "jdbc:oracle:thin:@"
+        	+ (dbHost.contains("://") ? "" : "//")
             + dbHost + ":" + dbPort + "/" + dbName;
         return m_connectionURL;
     }   //  getConnectionURL
