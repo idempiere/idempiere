@@ -45,6 +45,8 @@ import org.compiere.model.MFactReconciliation;
 import org.compiere.model.MRole;
 import org.compiere.model.Query;
 import static org.compiere.model.SystemIDs.*;
+
+import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -327,11 +329,16 @@ public class FactReconcile {
 
 				if (generatedIndexes != null)
 					generatedIndexes.add(r);
+				if (balanceFactAcctID > 0) {
+					try {
+						generate(balanceFactAcctID, time);
+					}
+					catch(Exception e) {
+						throw new AdempiereUserError("Can't generate reconciliation for the newly created journal line " + e);
+					}
+				}
 			}
 		}
-
-		if (balanceFactAcctID > 0)
-			generate(balanceFactAcctID, time);
 	}
 	
 	/**

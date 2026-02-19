@@ -47,6 +47,7 @@ import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.ConfirmPanel;
+import org.adempiere.webui.component.DocumentLink;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Label;
@@ -209,7 +210,7 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 	private Checkbox cbCreateJournal = new Checkbox();
 	private BigDecimal m_maxAmtToCreateJournal;
 	private boolean loading = false;
-	
+	private Hlayout statusBar = new Hlayout();
 	/**
 	 *  Layout {@link #form}
 	 *  @throws Exception
@@ -344,6 +345,8 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		row.appendCellChild(differenceField, 2);
 		ZKUpdateUtil.setHflex(differenceField, "true");
 		row.appendCellChild(cbCreateJournal, 1);
+		row.appendCellChild(statusBar, 1);
+		ZKUpdateUtil.setVflex(statusBar, "min");
 		row.appendCellChild(bGenerate, 1);
 		ZKUpdateUtil.setHflex(bGenerate, "true");
 		row.appendCellChild(bReset, 1);
@@ -493,10 +496,14 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		dataStatus.setText(info.toString());
 		//
 		bGenerate.setEnabled(m_noSelected != 0 && Env.ZERO.compareTo(m_selectedAmt) == 0 && !isReconciled.isSelected());
-		bReset.setEnabled(m_noSelected > 0 && Env.ZERO.compareTo(m_selectedAmt) == 0 && isReconciled.isSelected());
+		bReset.setEnabled(m_noSelected > 0 && isReconciled.isSelected());
 
 		if (m_selectedAmt.signum() != 0) {
 			cbCreateJournal.setVisible(m_maxAmtToCreateJournal.signum() == 0 || m_selectedAmt.abs().compareTo(m_maxAmtToCreateJournal.abs()) <= 0);
+			cbCreateJournal.setChecked(false);
+		}
+		else {
+			cbCreateJournal.setVisible(false);
 			cbCreateJournal.setChecked(false);
 		}
 		
@@ -518,7 +525,8 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 
 			int baseCurrencyID = MClientInfo.get(Env.getCtx()).getC_Currency_ID();
 			int acCurrencyID = MAcctSchema.get(m_C_AcctSchema_ID).getC_Currency_ID();
-			m_maxAmtToCreateJournal = MConversionRate.convert(Env.getCtx(), getMaxAmtInBaseCurrency(), baseCurrencyID, acCurrencyID, Env.getAD_Client_ID(Env.getCtx()), 0);
+			BigDecimal amtInSchemaCurrency = MConversionRate.convert(Env.getCtx(), getMaxAmtInBaseCurrency(), baseCurrencyID, acCurrencyID, Env.getAD_Client_ID(Env.getCtx()), 0);
+			m_maxAmtToCreateJournal = amtInSchemaCurrency != null ? amtInSchemaCurrency : Env.ZERO;
 
 			fieldAccount.actionRefresh();
 		}
@@ -581,13 +589,17 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 										.firstIdOnly();
 
 								generateReconciliation(balanceFactAcctID);
+
+								if (statusBar.getChildren() != null && statusBar.getChildren().size() > 0)
+									statusBar.getChildren().clear();
+								statusBar.appendChild(new DocumentLink(journal.getDocumentInfo(), journal.get_Table_ID(), journal.get_ID()));
 							}
 							else {
 								if (journal == null)
 									Dialog.error(form.getWindowNo(), "Error", "Can't create journal");
 								else {
 									Dialog.error(form.getWindowNo(), "Error", journal.getDocumentInfo() + " is not completed, thus is not possible to reconcile posting"
-											+ (Util.isEmpty(journal.getProcessMsg()) ? " (" + journal.getProcessMsg() + ")" : ""));
+											+ (!Util.isEmpty(journal.getProcessMsg()) ? " (" + journal.getProcessMsg() + ")" : ""));
 								}
 							}
 						}
@@ -610,8 +622,12 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		else if (event.getTarget().equals(bCancel))
 			SessionManager.getAppDesktop().closeActiveWindow();
 		
-		else if (event.getTarget().equals(bRefresh))
+		else if (event.getTarget().equals(bRefresh)) {
 			loadData();
+
+			if (statusBar.getChildren() != null && statusBar.getChildren().size() > 0)
+				statusBar.getChildren().clear();
+		}
 		
 		else if (event.getTarget().equals(bSelect))
 			onbSelect();
@@ -735,7 +751,7 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		private CreateJournalParams(Callback<MJournal> callback) {
 			super();
 			m_CreateJournalCallback = callback;
-			setTitle(Msg.getMsg(Env.getCtx(), "Create Journal to balance posting"));
+			setTitle(Msg.getMsg(Env.getCtx(), "FactReconcileCreateJournalWindowTitle"));
 			init();
 
 			setSclass("popup-dialog");
@@ -858,7 +874,7 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 				if (list.size() > 0)
 					throw new WrongValuesException(list.toArray(new WrongValueException[list.size()]));
 
-				if (!MPeriod.isOpen(Env.getCtx(), m_DateAcct, MDocType.DOCBASETYPE_GLJournal, (Integer) fCreateJournalOrg.getValue(), true))
+				if (!MPeriod.isOpen(Env.getCtx(), fCreateJournalDate.getValue(), MDocType.DOCBASETYPE_GLJournal, (Integer) fCreateJournalOrg.getValue(), true))
 					throw new WrongValueException(fCreateJournalDate.getComponent(), Msg.getMsg(Env.getCtx(), "PeriodClosed"));
 
 				String trxName = Trx.createTrxName("FactReconcileCreateJournal");
@@ -880,17 +896,17 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 					MJournalLine jl = new MJournalLine(journal);
 					jl.setAccount_ID(m_Account_ID);
 					if (m_selectedAmt.compareTo(Env.ZERO) > 0)
-						jl.setAmtSourceDr(m_selectedAmt);
-					else
 						jl.setAmtSourceCr(m_selectedAmt);
+					else
+						jl.setAmtSourceDr(m_selectedAmt);
 					jl.saveEx();
 
 					jl = new MJournalLine(journal);
 					jl.setAccount_ID((Integer) fCreateJournalAccount.getValue());
 					if (m_selectedAmt.compareTo(Env.ZERO) < 0)
-						jl.setAmtSourceDr(m_selectedAmt);
-					else
 						jl.setAmtSourceCr(m_selectedAmt);
+					else
+						jl.setAmtSourceDr(m_selectedAmt);
 					jl.saveEx();
 
 					if (journal.processIt(MJournal.DOCACTION_Complete))
