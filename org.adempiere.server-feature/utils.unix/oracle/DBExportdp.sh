@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 echo	iDempiere Database Export 	"$Revision": 1.5 $
 
@@ -37,7 +37,13 @@ if [ -n "$ORACLE_DOCKER_CONTAINER" ]; then
 fi
 
 # Cleanup
-$DOCKER_EXEC sqlplus -S "$1"/"$2"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" @"$DAILY_SCRIPT"
+if [ "${ADEMPIERE_DB_NAME:0:1}" = "@" ]
+  then
+    DB_CONNECTION="${ADEMPIERE_DB_NAME:1}"
+  else
+    DB_CONNECTION="$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME"
+fi
+$DOCKER_EXEC sqlplus -S "$1"/"$2"@"$DB_CONNECTION" @"$DAILY_SCRIPT"
 
 DATAPUMP_HOME="$IDEMPIERE_HOME"
 if [ -n "$ORACLE_DOCKER_CONTAINER" ]; then
@@ -47,7 +53,7 @@ fi
 echo -------------------------------------
 echo Re-Create DataPump directory
 echo -------------------------------------
-$DOCKER_EXEC sqlplus -S "$3"/"$4"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" @"$CREATE_DATAPUMP_DIR_SCRIPT" "$DATAPUMP_HOME"/data
+$DOCKER_EXEC sqlplus -S "$3"/"$4"@"$DB_CONNECTION" @"$CREATE_DATAPUMP_DIR_SCRIPT" "$DATA_ENDPOINT" "$DATAPUMP_HOME"/data
 
 if [ -z "$ORACLE_DOCKER_CONTAINER" ]; then
   chgrp dba "$IDEMPIERE_HOME"/data
@@ -55,7 +61,7 @@ if [ -z "$ORACLE_DOCKER_CONTAINER" ]; then
 fi
 
 # Export
-$DOCKER_EXEC expdp "$1"/"$2"@"$ADEMPIERE_DB_SERVER":"$ADEMPIERE_DB_PORT"/"$ADEMPIERE_DB_NAME" DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE=ExpDat_"$DATE".dmp LOGFILE=ExpDat_"$DATE".log EXCLUDE=STATISTICS SCHEMAS="$1"
+$DOCKER_EXEC expdp "$1"/"$2"@"$DB_CONNECTION" DIRECTORY=ADEMPIERE_DATA_PUMP_DIR DUMPFILE="$DATA_ENDPOINT"ExpDat_"$DATE".dmp LOGFILE="$DATA_ENDPOINT"ExpDat_"$DATE".log EXCLUDE=STATISTICS SCHEMAS="$1"
 
 if [ -n "$ORACLE_DOCKER_CONTAINER" ]; then
   docker cp "$ORACLE_DOCKER_CONTAINER:$DATAPUMP_HOME"/data/ExpDat_"$DATE".dmp "$IDEMPIERE_HOME"/data
