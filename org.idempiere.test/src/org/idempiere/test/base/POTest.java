@@ -52,14 +52,17 @@ import org.compiere.model.MProduct;
 import org.compiere.model.MProductCategory;
 import org.compiere.model.MProductCategoryAcct;
 import org.compiere.model.MProductionLine;
+import org.compiere.model.MRole;
 import org.compiere.model.MSession;
 import org.compiere.model.MTest;
+import org.compiere.model.MUserRoles;
 import org.compiere.model.POInfo;
 import org.compiere.model.Query;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
@@ -626,6 +629,32 @@ public class POTest extends AbstractTestCase
 			product.setDescription(description);
 			product.saveEx();
 		}
+	}
+	
+	@Test
+	public void testChangeLogDeleteUserRoles() {
+		MSession.create(Env.getCtx());
+		MRole role = new MRole(Env.getCtx(), 0, null);
+		try {
+			role.setName("TestRole_"+System.currentTimeMillis());
+			role.saveEx();
+			
+			MUserRoles userRoles = new MUserRoles(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()), role.get_ID(), null);
+			assertTrue(userRoles.is_new(), "User role should be new");
+			userRoles.saveEx();
+			String uuid = userRoles.getAD_User_Roles_UU();
+			assertTrue(!Util.isEmpty(uuid, true), "UUID should not be empty");
+			userRoles.deleteEx(true);
+			Query query = new Query(Env.getCtx(), MChangeLog.Table_Name, 
+					MChangeLog.COLUMNNAME_AD_Table_ID + "=? AND " + MChangeLog.COLUMNNAME_Record_UU + "=?", getTrxName());
+				MChangeLog changeLog = query.setParameters(MUserRoles.Table_ID, uuid).first();
+				assertNotNull(changeLog, "Change log not found for deleted record");
+		} finally {
+			rollback();
+			if (role.get_ID() > 0)
+				role.deleteEx(true);
+		}
+		
 	}
 	
 	@Test

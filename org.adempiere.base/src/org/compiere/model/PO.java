@@ -4496,7 +4496,7 @@ public abstract class PO
 						MSession session = MSession.get (p_ctx);
 						if (session == null)
 							log.fine("No Session found");
-						else if (m_IDs.length == 1)
+						else if (m_IDs.length == 1 || !Util.isEmpty(Record_UU, true))
 						{
 							int AD_ChangeLog_ID = 0;
 							int size = get_ColumnCount();
