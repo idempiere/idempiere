@@ -47,9 +47,15 @@
     	  me.active = true;
     	  me.socket.send("__ping__");
       };
-	  this.socket.sendAjaxRequest = function(ajaxReqInf) {
-		  let ajaxMsg = "zkau;"+JSON.stringify(ajaxReqInf);
+	  this.socket.sendAjaxRequest = function(reqInf) {
+		  zAu.sentTime = jq.now(); //used by server-push (cpsp)
+          zk.ausending = true;
+		  zAu.ajaxReq = true; // processing flag
+          zAu.ajaxReqInf = reqInf;
+		  let ajaxMsg = "zkau;"+JSON.stringify(reqInf);
 		  me.socket.send(ajaxMsg);
+		  if (!reqInf.implicit)
+				zk.startProcessing(zk.procDelay, reqInf.sid); //wait a moment to avoid annoying
 	  }
       this.socket.onmessage = function (event) {
 		  if (event.data=="echo") {
@@ -80,6 +86,11 @@
 				//using undocumented, ZK internal api
 				//need verification after every ZK upgrade
 	            zAu._onResponseReady(responseJson);
+				let dt = zk.Desktop.$(me.dtid);
+				if (dt) {
+					var es = zAu.getAuRequests(dt);
+                	if (es.length > 0) zAu.sendNow(dt);
+				}
 	          }
 	      }
       }
@@ -229,9 +240,7 @@
 				implicit: implicit,
 				ignorable: ignorable, tmout: 0, rtags: rtags, forceAjax: forceAjax
 			}
-			dt._serverpush.socket.sendAjaxRequest(reqInf);
-			if (!reqInf.implicit)
-				zk.startProcessing(zk.procDelay, reqInf.sid); //wait a moment to avoid annoying
+			dt._serverpush.socket.sendAjaxRequest(reqInf);			
 		}
 		return true;
 	  } else {
