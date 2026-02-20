@@ -88,8 +88,8 @@
 	            zAu._onResponseReady(responseJson);
 				let dt = zk.Desktop.$(me.dtid);
 				if (dt) {
-					var es = zAu.getAuRequests(dt);
-                	if (es.length > 0) zAu.sendNow(dt);
+					let es = zAu.getAuRequests(dt);
+                	if (es.length > 0) setTimeout(() => zAu.sendNow(dt), 0);
 				}
 	          }
 	      }
