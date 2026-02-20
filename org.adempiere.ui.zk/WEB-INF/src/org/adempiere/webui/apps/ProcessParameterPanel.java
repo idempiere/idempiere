@@ -220,7 +220,7 @@ public class ProcessParameterPanel extends Panel implements
 	 * 
 	 * @return true if loaded OK
 	 */
-	public boolean init() {
+	public boolean init(String showHelp) {
 		if (log.isLoggable(Level.CONFIG)) log.config("");
 
 		// ASP
@@ -408,7 +408,7 @@ public class ProcessParameterPanel extends Panel implements
 			log.log(Level.SEVERE, "View & Model vector size is different");
 
 		// clean up
-		if (hasFields) {
+		if (hasFields || (!Util.isEmpty(showHelp) && showHelp.equals(MProcess.SHOWHELP_ShowHelp))) {
 			centerPanel.appendChild(rows);
 			dynamicDisplay();
 
