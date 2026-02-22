@@ -818,8 +818,11 @@ public class MoveClient extends SvrProcess {
 			String selectGetIds = DB.getDatabase().convertStatement(selectGetIdsSB.toString());
 			PreparedStatement stmtGI = null;
 			ResultSet rsGI = null;
+			PreparedStatement stmtInsertConv = null;
 			try {
 				stmtGI = externalConn.prepareStatement(selectGetIds, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+				if (p_IsCopyClient)
+					stmtInsertConv = DB.prepareStatement(insertConversionId, get_TrxName());
 				rsGI = stmtGI.executeQuery();
 				while (rsGI.next()) {
 					Object source_Key = rsGI.getObject(1);
@@ -855,11 +858,23 @@ public class MoveClient extends SvrProcess {
 						}
 					}
 					if (target_Key != null || (target_Key instanceof Number && ((Number)target_Key).intValue() >= 0)) {
-						DB.executeUpdateEx(insertConversionId,
-								new Object[] {getAD_PInstance_ID(), tableName.toUpperCase(), source_Key.toString(), target_Key.toString(), null},
-								get_TrxName());
+						if (p_IsCopyClient) {
+							stmtInsertConv.setInt(1, getAD_PInstance_ID());
+							stmtInsertConv.setString(2, tableName.toUpperCase());
+							stmtInsertConv.setString(3, source_Key.toString());
+							stmtInsertConv.setString(4, target_Key.toString());
+							stmtInsertConv.setString(5, null);
+							stmtInsertConv.addBatch();
+							stmtInsertConv.clearParameters();
+						} else {
+							DB.executeUpdateEx(insertConversionId,
+									new Object[] {getAD_PInstance_ID(), tableName.toUpperCase(), source_Key.toString(), target_Key.toString(), null},
+									get_TrxName());
+						}
 					}
 				}
+				if (p_IsCopyClient)
+					stmtInsertConv.executeBatch();
 			} catch (SQLException e) {
 				throw new AdempiereException("Could not execute external query: " + selectGetIds + "\nCause = " + e.getLocalizedMessage());
 			} finally {
@@ -938,8 +953,11 @@ public class MoveClient extends SvrProcess {
 			PreparedStatement stmtGD = null;
 			ResultSet rsGD = null;
 			Object[] parameters = new Object[ncols];
+			PreparedStatement stmtIns = null;
 			try {
 				stmtGD = externalConn.prepareStatement(selectGetData, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+				if (p_IsCopyClient)
+					stmtIns = DB.prepareStatement(insertSB.toString(), get_TrxName());
 				rsGD = stmtGD.executeQuery();
 				while (rsGD.next()) {
 					boolean insertRecord = true;
@@ -1163,12 +1181,22 @@ public class MoveClient extends SvrProcess {
 					}
 					if (insertRecord) {
 						try {
-							DB.executeUpdateEx(insertSB.toString(), parameters, get_TrxName());
+							if (p_IsCopyClient) {
+								int paramIndex = 1;
+								for (Object param : parameters)
+									stmtIns.setObject(paramIndex++, param);
+								stmtIns.addBatch();
+								stmtIns.clearParameters();
+							} else {
+								DB.executeUpdateEx(insertSB.toString(), parameters, get_TrxName());
+							}
 						} catch (Exception e) {
 							throw new AdempiereException("Could not execute: " + insertSB + "\nCause = " + e.getLocalizedMessage());
 						}
 					}
 				}
+				if (p_IsCopyClient)
+					stmtIns.executeBatch();
 			} catch (SQLException e) {
 				throw new AdempiereException("Could not execute external query: " + selectGetData + "\nCause = " + e.getLocalizedMessage());
 			} finally {
