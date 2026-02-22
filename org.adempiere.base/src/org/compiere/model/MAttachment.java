@@ -512,7 +512,7 @@ public class MAttachment extends X_AD_Attachment implements AutoCloseable
 			if (prov != null)
 			{
 				if (prov.deleteEntry(this, provider, index)) {
-					if (!getTitle().equals(MAttachment.TITLE_ListInAttachmentFile))
+					if (!is_new() && getTitle() != null && !getTitle().equals(MAttachment.TITLE_ListInAttachmentFile))
 						set_ValueNoCheck("Updated", new Timestamp(System.currentTimeMillis()));
 					return true;
 				}
