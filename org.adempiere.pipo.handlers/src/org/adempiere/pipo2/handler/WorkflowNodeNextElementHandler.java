@@ -42,10 +42,6 @@ public class WorkflowNodeNextElementHandler extends AbstractElementHandler {
 
 		String entitytype = getStringValue(element, "EntityType");
 		if (isProcessElement(ctx.ctx, entitytype)) {
-			/*if (isParentSkip(element, null)) {
-				element.skip = true;
-				return;
-			}*/
 
 			MWFNodeNext mWFNodeNext = findPO(ctx, element);
 			if (mWFNodeNext == null) {
@@ -70,7 +66,7 @@ public class WorkflowNodeNextElementHandler extends AbstractElementHandler {
 				} else{
 					action = "New";
 				}
-				if (mWFNodeNext.save(getTrxName(ctx)) == true){
+				if (mWFNodeNext.save(getTrxName(ctx))){
 					log.info("m_WFNodeNext save success");
 					logImportDetail (ctx, impDetail, 1, String.valueOf(mWFNodeNext.get_ID()),mWFNodeNext.get_ID(), action);
 				} else{

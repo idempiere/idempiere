@@ -51,17 +51,13 @@ public class WorkflowNodeParaElementHandler extends AbstractElementHandler {
 
 		String entitytype = getStringValue(element, "EntityType");
 		if (isProcessElement(ctx.ctx, entitytype)) {
-			/*if (isParentSkip(element, null)) {
-				element.skip = true;
-				return;
-			}*/
 
-			MWFNodePara MWFNodePara = findPO(ctx, element);
-			if (MWFNodePara == null) {
-				MWFNodePara = new MWFNodePara(ctx.ctx, 0, getTrxName(ctx));
+			MWFNodePara mWFNodePara = findPO(ctx, element);
+			if (mWFNodePara == null) {
+				mWFNodePara = new MWFNodePara(ctx.ctx, 0, getTrxName(ctx));
 			}
 
-			PoFiller filler = new PoFiller(ctx, MWFNodePara, element, this);
+			PoFiller filler = new PoFiller(ctx, mWFNodePara, element, this);
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
 				element.defer = true;
@@ -69,22 +65,22 @@ public class WorkflowNodeParaElementHandler extends AbstractElementHandler {
 				return;
 			}
 
-			if (MWFNodePara.is_new() || MWFNodePara.is_Changed()) {
+			if (mWFNodePara.is_new() || mWFNodePara.is_Changed()) {
 				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_WF_Node_Para.Table_Name,
 						X_AD_WF_Node_Para.Table_ID);
 				String action = null;
-				if (!MWFNodePara.is_new()){
-					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_WF_Node_Para.Table_Name,MWFNodePara);
+				if (!mWFNodePara.is_new()){
+					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_WF_Node_Para.Table_Name,mWFNodePara);
 					action = "Update";
 				} else{
 					action = "New";
 				}
-				if (MWFNodePara.save(getTrxName(ctx)) == true){
+				if (mWFNodePara.save(getTrxName(ctx))){
 					log.info("m_WFNodePara save success");
-					logImportDetail (ctx, impDetail, 1, String.valueOf(MWFNodePara.get_ID()),MWFNodePara.get_ID(), action);
+					logImportDetail (ctx, impDetail, 1, String.valueOf(mWFNodePara.get_ID()),mWFNodePara.get_ID(), action);
 				} else{
 					log.info("m_WFNodePara save failure");
-					logImportDetail (ctx, impDetail, 0, String.valueOf(MWFNodePara.get_ID()), MWFNodePara.get_ID(), action);
+					logImportDetail (ctx, impDetail, 0, String.valueOf(mWFNodePara.get_ID()), mWFNodePara.get_ID(), action);
 					throw new POSaveFailedException("Failed to save WorkflowNodePara");
 				}
 			}
