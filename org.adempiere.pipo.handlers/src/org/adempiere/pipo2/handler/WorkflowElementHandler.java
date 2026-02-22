@@ -37,11 +37,13 @@ import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_WF_NextCondition;
 import org.compiere.model.X_AD_WF_Node;
 import org.compiere.model.X_AD_WF_NodeNext;
+import org.compiere.model.X_AD_WF_Node_Para;
 import org.compiere.model.X_AD_Workflow;
 import org.compiere.util.Env;
 import org.compiere.wf.MWFNextCondition;
 import org.compiere.wf.MWFNode;
 import org.compiere.wf.MWFNodeNext;
+import org.compiere.wf.MWFNodePara;
 import org.compiere.wf.MWorkflow;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -49,6 +51,7 @@ import org.xml.sax.helpers.AttributesImpl;
 public class WorkflowElementHandler extends AbstractElementHandler {
 
 	private WorkflowNodeElementHandler nodeHandler = new WorkflowNodeElementHandler();
+	private WorkflowNodeParaElementHandler nodeParaHandler = new WorkflowNodeParaElementHandler();
 	private WorkflowNodeNextElementHandler nodeNextHandler = new WorkflowNodeNextElementHandler();
 	private WorkflowNodeNextConditionElementHandler nextConditionHandler = new WorkflowNodeNextConditionElementHandler();
 
@@ -177,6 +180,14 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 				int nodeId = wn.getAD_WF_Node_ID();
 				createNode(ctx, document, nodeId);
 
+				List<MWFNodePara> wnps = new Query(ctx.ctx, MWFNodePara.Table_Name, "AD_WF_Node_ID=? AND AD_Client_ID=?", getTrxName(ctx))
+						.setParameters(nodeId, Env.getAD_Client_ID(ctx.ctx))
+						.list();
+				for (MWFNodePara wnp : wnps) {
+					int ad_wf_node_para_id = wnp.getAD_WF_Node_Para_ID();
+					createNodePara(ctx, document, ad_wf_node_para_id);
+				}
+
 				List<MWFNodeNext> wnns = new Query(ctx.ctx, MWFNodeNext.Table_Name, "AD_WF_Node_ID=? AND AD_Client_ID=?", getTrxName(ctx))
 						.setParameters(nodeId, Env.getAD_Client_ID(ctx.ctx))
 						.list();
@@ -213,6 +224,14 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 				ad_wf_nodenextcondition_id);
 		nextConditionHandler.create(ctx, document);
 		ctx.ctx.remove(X_AD_WF_NextCondition.COLUMNNAME_AD_WF_NextCondition_ID);
+	}
+
+	private void createNodePara(PIPOContext ctx, TransformerHandler document,
+			int ad_wf_node_para_id) throws SAXException {
+		Env.setContext(ctx.ctx, X_AD_WF_Node_Para.COLUMNNAME_AD_WF_Node_Para_ID,
+				ad_wf_node_para_id);
+		nodeParaHandler.create(ctx, document);
+		ctx.ctx.remove(X_AD_WF_Node_Para.COLUMNNAME_AD_WF_Node_Para_ID);
 	}
 
 	private void createNodeNext(PIPOContext ctx, TransformerHandler document,
