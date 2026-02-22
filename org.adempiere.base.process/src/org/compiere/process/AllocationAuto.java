@@ -586,8 +586,7 @@ public class AllocationAuto extends SvrProcess
 			if (log.isLoggable(Level.INFO)) log.info(payment + ", Allocated=" + allocatedAmt);
 			BigDecimal availableAmt = payment.getPayAmt()
 				.add(payment.getDiscountAmt())
-				.add(payment.getWriteOffAmt())
-				.add(payment.getOverUnderAmt());
+				.add(payment.getWriteOffAmt());
 			availableAmt = availableAmt.subtract(allocatedAmt);
 			if (!payment.isReceipt())
 				availableAmt = availableAmt.negate();
@@ -647,8 +646,7 @@ public class AllocationAuto extends SvrProcess
 				allocatedAmt = Env.ZERO;
 			BigDecimal availableAmt = payment.getPayAmt()
 				.add(payment.getDiscountAmt())
-				.add(payment.getWriteOffAmt())
-				.add(payment.getOverUnderAmt());
+				.add(payment.getWriteOffAmt());
 			availableAmt = availableAmt.subtract(allocatedAmt);
 			if (!payment.isReceipt())
 				availableAmt = availableAmt.negate();
