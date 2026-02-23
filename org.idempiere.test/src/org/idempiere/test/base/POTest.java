@@ -83,6 +83,7 @@ import org.compiere.model.MProduct;
 import org.compiere.model.MProductCategory;
 import org.compiere.model.MProductCategoryAcct;
 import org.compiere.model.MProductionLine;
+import org.compiere.model.MRole;
 import org.compiere.model.MSession;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
@@ -94,6 +95,7 @@ import org.compiere.model.MTreeNode;
 import org.compiere.model.MTree_Base;
 import org.compiere.model.MTree_NodeBP;
 import org.compiere.model.MUOM;
+import org.compiere.model.MUserRoles;
 import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.ModelValidator;
 import org.compiere.model.PO;
@@ -760,6 +762,32 @@ public class POTest extends AbstractTestCase
 	}
 	
 	@Test
+	public void testChangeLogDeleteUserRoles() {
+		MSession.create(Env.getCtx());
+		MRole role = new MRole(Env.getCtx(), 0, null);
+		try {
+			role.setName("TestRole_"+System.currentTimeMillis());
+			role.saveEx();
+			
+			MUserRoles userRoles = new MUserRoles(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()), role.get_ID(), null);
+			assertTrue(userRoles.is_new(), "User role should be new");
+			userRoles.saveEx();
+			String uuid = userRoles.getAD_User_Roles_UU();
+			assertTrue(!Util.isEmpty(uuid, true), "UUID should not be empty");
+			userRoles.deleteEx(true);
+			Query query = new Query(Env.getCtx(), MChangeLog.Table_Name, 
+					MChangeLog.COLUMNNAME_AD_Table_ID + "=? AND " + MChangeLog.COLUMNNAME_Record_UU + "=?", getTrxName());
+				MChangeLog changeLog = query.setParameters(MUserRoles.Table_ID, uuid).first();
+				assertNotNull(changeLog, "Change log not found for deleted record");
+		} finally {
+			rollback();
+			if (role.get_ID() > 0)
+				role.deleteEx(true);
+		}
+		
+	}
+	
+	@Test
 	public void test_New() 
 	{
 		MTest testPO = new MTest(Env.getCtx(), 0, getTrxName());
@@ -1346,7 +1374,7 @@ public class POTest extends AbstractTestCase
 		
 		//test pdf attachment
 		MAttachment attachment = new MAttachment(Env.getCtx(), test.get_Table_ID(), test.get_ID(), test.get_UUID(), getTrxName());
-		attachment.setTitle("test pdf");
+		attachment.setTextMsg("test pdf");
 		
 		File pdfFile = File.createTempFile("test", ".pdf");
 		pdfFile.deleteOnExit();
@@ -1375,7 +1403,7 @@ public class POTest extends AbstractTestCase
 		test1.setName("testNonPdfAttachment1");
 		test1.saveEx();
 		MAttachment attachment1 = new MAttachment(Env.getCtx(), test1.get_Table_ID(), test1.get_ID(), test1.get_UUID(), getTrxName());
-		attachment1.setTitle("test non pdf");
+		attachment1.setTextMsg("test non pdf");
 		try (attachment1) {
 			MAttachmentEntry entry2 = new MAttachmentEntry(txtFile.getName(), "dummy txt content".getBytes(), 0);
 			attachment1.addEntry(entry2);

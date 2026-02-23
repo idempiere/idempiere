@@ -48,9 +48,9 @@ public class MSearchDefinition extends X_AD_SearchDefinition {
 	 */
 	private static final long serialVersionUID = -5366274782950561962L;
 	/** Constant for the searchtype table */
-	public static final String SEARCHTYPE_TABLE = "T";
+	public static final String SEARCHTYPE_TABLE = SEARCHTYPE_Table;
 	/** Constant for the searchtype query */
-	public static final String SEARCHTYPE_QUERY = "Q";
+	public static final String SEARCHTYPE_QUERY = SEARCHTYPE_Query;
 	/** Constant for the datatype String */
 	public static final String DATATYPE_STRING = "S";
 	/** Constant for the datatype Integer */

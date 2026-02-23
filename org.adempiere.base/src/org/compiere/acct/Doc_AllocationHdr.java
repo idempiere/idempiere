@@ -65,7 +65,7 @@ import org.compiere.util.Util;
  *
  */
 public class Doc_AllocationHdr extends Doc
-{	
+{
 	/**
 	 *  Constructor
 	 * 	@param as accounting schema
@@ -1498,8 +1498,8 @@ public class Doc_AllocationHdr extends Doc
 					fl.getFactAcctInfo().getRecord().setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
 					if (!fact.isAcctBalanced())
 					{
-						if (as.isCurrencyBalancing() && as.getRecord().getC_Currency_ID() != invoice.getC_Currency_ID())
-							fl = fact.createLine (null, as.getCurrencyBalancing_AcctInfo(), as.getRecord().getC_Currency_ID(), acctDifference);
+						if (as.isCurrencyBalancing() && as.getC_Currency_ID() != invoice.getC_Currency_ID())
+							fl = fact.createLine (null, as.getCurrencyBalancing_Acct(), as.getC_Currency_ID(), acctDifference);
 						else
 							fl = fact.createLine (null, gain, loss, as.getRecord().getC_Currency_ID(), acctDifference);
 						fl.getFactAcctInfo().getRecord().setDescription(description.toString());

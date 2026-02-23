@@ -340,7 +340,9 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 					payment.setDiscountAmt (psl.getDiscountAmt());
 					payment.setWriteOffAmt (psl.getWriteOffAmt());
 					BigDecimal overUnder = psl.getOpenAmt().subtract(psl.getPayAmt())
-						.subtract(psl.getDiscountAmt()).subtract(psl.getWriteOffAmt()).subtract(psl.getDifferenceAmt());
+						.subtract(psl.getDiscountAmt()).subtract(psl.getWriteOffAmt());
+					if (overUnder.signum() != 0)
+						payment.setIsOverUnderPayment(true);
 					payment.setOverUnderAmt(overUnder);
 				}
 				else

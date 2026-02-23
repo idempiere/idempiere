@@ -29,6 +29,9 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.TimeUnit;
 
 import org.compiere.Adempiere;
+import org.compiere.util.CLogger;
+import org.idempiere.ui.zk.DelegatingServerPush;
+import org.idempiere.ui.zk.websocket.WebSocketServerPush;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.WebApp;
@@ -44,6 +47,9 @@ import fi.jawsy.jawwa.zk.atmosphere.AtmosphereServerPush;
  * @author hengsin
  */
 public class DesktopWatchDog {
+
+	/** Logger */
+	protected static CLogger log = CLogger.getCLogger(DesktopWatchDog.class);
 
 	/** singleton instance **/
 	private final static DesktopWatchDog INSTANCE = new DesktopWatchDog();
@@ -74,19 +80,35 @@ public class DesktopWatchDog {
 				continue;
 			}
 			if (entry.desktop.isServerPushEnabled() == false) {
-				entry.noAtmosphereResourceCount++;
+				entry.noMessageCount++;
+			} else {
+				ServerPush spush = ((DesktopCtrl)entry.desktop).getServerPush();
+				if (spush == null) {
+					entry.noMessageCount++;
+				} else {
+					if (spush instanceof DelegatingServerPush)
+						spush = ((DelegatingServerPush) spush).getDelegate();
+					if (spush instanceof WebSocketServerPush) {
+						var endPoint = WebSocketServerPush.getEndPoint(entry.desktop.getId());
+						if (endPoint == null || !endPoint.getAndResetMessageIndicator())
+							entry.noMessageCount++;
+						else
+							entry.noMessageCount=0;
+					} else if (spush instanceof AtmosphereServerPush) {
+						AtmosphereServerPush asp = (AtmosphereServerPush) spush;
+						if (!asp.hasAtmosphereResource())
+							entry.noMessageCount++;
+						else
+							entry.noMessageCount=0;
+					} else {
+						// Unknown implementation - log warning and increment counter for eventual cleanup
+						if (entry.noMessageCount == 0 || (entry.noMessageCount == 1 && entry.desktop.isServerPushEnabled()))
+							log.warning("Unknown ServerPush implementation: " + spush.getClass().getName());
+						entry.noMessageCount++;
+					}
+				}
 			}
-			ServerPush spush = ((DesktopCtrl)entry.desktop).getServerPush();
-			if (spush == null) {
-				entry.noAtmosphereResourceCount++;
-			} else if (spush instanceof AtmosphereServerPush) {
-				AtmosphereServerPush asp = (AtmosphereServerPush) spush;
-				if (!asp.hasAtmosphereResource())
-					entry.noAtmosphereResourceCount++;
-				else
-					entry.noAtmosphereResourceCount=0;
-			}			 
-			if (entry.noAtmosphereResourceCount >= 5) {
+			if (entry.noMessageCount >= 5) {
 				//no message from desktop for 5 consecutive run of doMonitoring.
 				//remove desktop from DesktopCache.
 				iterator.remove();
@@ -104,7 +126,7 @@ public class DesktopWatchDog {
 
 	private final static class DesktopEntry {		
 		Desktop desktop;
-		int noAtmosphereResourceCount = 0;
+		int noMessageCount = 0;
 		
 		private DesktopEntry(Desktop desktop) {
 			this.desktop = desktop;

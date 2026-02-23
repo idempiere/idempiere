@@ -54,6 +54,7 @@ public class SystemProperties {
 	private static final String org_idempiere_FullExceptionTraceInLog = "org.idempiere.FullExceptionTraceInLog";
 	private static final String org_idempiere_postgresql_URLParameters = "org.idempiere.postgresql.URLParameters";
 	private static final String org_idempiere_po_useOptimisticLocking = "org.idempiere.po.useOptimisticLocking";
+	private static final String org_idempiere_ui_zk_serverpush = "org.idempiere.ui.zk.serverpush";
 	private static final String PostgreSQLNative = "PostgreSQLNative";
 	private static final String PropertyFile = "PropertyFile";
 	private static final String PropertyHomeFile = "PropertyHomeFile";
@@ -235,6 +236,14 @@ public class SystemProperties {
 	 */
 	public static boolean isOptimisticLocking() {
 		return "true".equalsIgnoreCase(System.getProperty(org_idempiere_po_useOptimisticLocking, "false"));
+	}
+
+	/**
+	 * org.idempiere.ui.zk.serverpush = atmosphere|websocket to define the server push implementation to use
+	 * @return
+	 */
+	public static String getZKServerPush() {
+		return System.getProperty(org_idempiere_ui_zk_serverpush);
 	}
 
 	/**

@@ -254,7 +254,7 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		m_pi.setAD_Process_UU(m_AD_Process_UU);
 		
 		parameterPanel = new ProcessParameterPanel(m_WindowNo, m_TabNo, m_pi);
-		if ( !parameterPanel.init() ) {
+		if ( !parameterPanel.init(m_ShowHelp) ) {
 			//auto start if no parameters and DonTShowHelp.
 			if (m_ShowHelp != null && MProcess.SHOWHELP_DonTShowHelp.equals(m_ShowHelp))
 				autoStart = true;

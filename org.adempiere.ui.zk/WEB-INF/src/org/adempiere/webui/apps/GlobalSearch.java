@@ -13,8 +13,8 @@
  *****************************************************************************/
 package org.adempiere.webui.apps;
 
+import org.adempiere.base.search.SearchResult;
 import org.adempiere.webui.ClientInfo;
-import org.adempiere.webui.apps.DocumentSearchController.SearchResult;
 import org.adempiere.webui.component.Bandbox;
 import org.adempiere.webui.component.Tab;
 import org.adempiere.webui.component.Tabbox;

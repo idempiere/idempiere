@@ -774,7 +774,10 @@ public class AdempiereMonitor extends HttpServlet
 		link = new a ("idempiereMonitor?Action=Reload", "Reload");
 		para.addElement(link);
 		para.addElement(" - ");
-		link = new a ("idempiereMonitor", "Refresh");
+		link = new a ("idempiereMonitor", "Refresh");		
+		para.addElement(link);
+		para.addElement(" - ");
+		link = new a ("idempiereMonitor/logout", "Logout");
 		para.addElement(link);
 		bb.addElement(para);
 		

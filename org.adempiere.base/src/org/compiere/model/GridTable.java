@@ -419,7 +419,7 @@ public class GridTable extends AbstractTableModel
 			else    //  replace variables
 			{
 				List<Object> tempParams = new ArrayList<>();
-				String context = Env.parseContextForSql(m_ctx, m_WindowNo, whereClause, false, tempParams);
+				String context = Env.parseContextForSql(m_ctx, m_WindowNo, whereClause, false, false, tempParams);
 				if(context != null && context.trim().length() > 0)
 				{
 					where.append(context);

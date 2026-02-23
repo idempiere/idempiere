@@ -313,10 +313,15 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
         Session currSess = Executions.getCurrent().getDesktop().getSession();
         HttpSession httpSess = (HttpSession) currSess.getNativeSession();
         String x_Forward_IP = Executions.getCurrent().getHeader("X-Forwarded-For");
-        
+
+        String sessionId;
+        if (MSysConfig.getBooleanValue(MSysConfig.ZK_SESSION_SAVE_JSESSIONID, false))
+        	sessionId = httpSess.getId();
+        else
+        	sessionId = "zkwebui";
 		MSession mSession = MSession.get (ctx, x_Forward_IP!=null ? x_Forward_IP : Executions.getCurrent().getRemoteAddr(),
-			Executions.getCurrent().getRemoteHost(), httpSess.getId());
-		if (clientInfo.userAgent != null) {
+			Executions.getCurrent().getRemoteHost(), sessionId);
+		if (clientInfo.userAgent != null && MSysConfig.getBooleanValue(MSysConfig.ZK_SESSION_SAVE_USER_AGENT, false)) {
 			mSession.setDescription(mSession.getDescription() + "\n" + clientInfo.toString());
 			mSession.saveEx();
 		}
@@ -556,11 +561,6 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
      * @param session
      */
 	private void afterLogout(final Session session) {
-		try {
-    		((SessionCtrl)session).onDestroyed();
-    	} catch (Throwable t) {
-    		t.printStackTrace();
-    	}
     	((SessionCtrl)session).invalidateNow();
 	}
     
@@ -816,7 +816,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	 */	
 	public static String getUploadSetting() {
 		StringBuilder uploadSetting = new StringBuilder("true,native");
-		int size = MSysConfig.getIntValue(MSysConfig.ZK_MAX_UPLOAD_SIZE, 0);
+		int size = MSysConfig.getIntValue(MSysConfig.ZK_MAX_UPLOAD_SIZE, 0, Env.getAD_Client_ID(Env.getCtx()));
 		if (size > 0) {
 			uploadSetting.append(",maxsize=").append(size);
 		}

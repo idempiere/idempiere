@@ -856,4 +856,19 @@ public class Util
 		return new UUID(msb, lsb);
 	}
 
+	public static final String CSV_ESCAPE_FORMULA_CHARACTERS = "=+-@";
+	/**
+	 * Sanitize a single value to prevent CSV Injection attacks (OWASP).
+	 * Prefixes values starting with =+-@ with a space
+	 * @param value the value to sanitize
+	 * @return sanitized value
+	 */
+	public static String sanitizeCsvValue(String value) {
+		if (value == null || value.isEmpty()) 
+			return value;
+		if (CSV_ESCAPE_FORMULA_CHARACTERS.indexOf(value.charAt(0)) >= 0)
+			value = " " + value;
+		return value;
+	}
+
 }   //  Util
