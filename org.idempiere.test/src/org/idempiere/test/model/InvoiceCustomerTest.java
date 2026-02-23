@@ -35,6 +35,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.logging.LogRecord;
 
+import org.compiere.model.MBPRelation;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MDocType;
 import org.compiere.model.MInOut;
@@ -56,7 +57,6 @@ import org.compiere.model.MTax;
 import org.compiere.model.MWarehouse;
 import org.compiere.model.PO;
 import org.compiere.model.SystemIDs;
-import org.compiere.model.X_C_BP_Relation;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ServerProcessCtl;
@@ -493,7 +493,7 @@ public class InvoiceCustomerTest extends AbstractTestCase {
 
 	@Test
 	public void testGenerateInvoiceRelatedBP() { // IDEMPIERE-5433
-		X_C_BP_Relation bpr = new X_C_BP_Relation(Env.getCtx(), 0, getTrxName());
+		MBPRelation bpr = new MBPRelation(Env.getCtx(), 0, getTrxName());
 		bpr.setName("C&W may pay invoices for Seed");
 		bpr.setC_BPartner_ID(DictionaryIDs.C_BPartner.SEED_FARM.id);
 		bpr.setC_BPartnerRelation_ID(DictionaryIDs.C_BPartner.C_AND_W.id);

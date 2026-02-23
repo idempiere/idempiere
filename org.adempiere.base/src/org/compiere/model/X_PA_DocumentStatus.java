@@ -30,7 +30,7 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250805L;
+	private static final long serialVersionUID = 20260207L;
 
     /** Standard Constructor */
     public X_PA_DocumentStatus (Properties ctx, int PA_DocumentStatus_ID, String trxName)
@@ -41,6 +41,8 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 			setAD_Table_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsHideWhenZero (false);
+// N
 			setName (null);
 			setPA_DocumentStatus_ID (0);
 			setSeqNo (0);
@@ -56,6 +58,8 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 			setAD_Table_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsHideWhenZero (false);
+// N
 			setName (null);
 			setPA_DocumentStatus_ID (0);
 			setSeqNo (0);
@@ -71,6 +75,8 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 			setAD_Table_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsHideWhenZero (false);
+// N
 			setName (null);
 			setPA_DocumentStatus_ID (0);
 			setSeqNo (0);
@@ -86,6 +92,8 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 			setAD_Table_ID (0);
 			setEntityType (null);
 // @SQL=SELECT CASE WHEN '@P|AdempiereSys:N@'='Y' THEN 'D' ELSE get_sysconfig('DEFAULT_ENTITYTYPE','U',0,0) END FROM Dual
+			setIsHideWhenZero (false);
+// N
 			setName (null);
 			setPA_DocumentStatus_ID (0);
 			setSeqNo (0);
@@ -121,6 +129,35 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
     }
 
 	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_FieldGroup)MTable.get(getCtx(), org.compiere.model.I_AD_FieldGroup.Table_ID)
+			.getPO(getAD_FieldGroup_ID(), get_TrxName());
+	}
+
+	/** Set Field Group.
+		@param AD_FieldGroup_ID Logical grouping of fields
+	*/
+	public void setAD_FieldGroup_ID (int AD_FieldGroup_ID)
+	{
+		if (AD_FieldGroup_ID < 1)
+			set_Value (COLUMNNAME_AD_FieldGroup_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_FieldGroup_ID, Integer.valueOf(AD_FieldGroup_ID));
+	}
+
+	/** Get Field Group.
+		@return Logical grouping of fields
+	  */
+	public int getAD_FieldGroup_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_FieldGroup_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_Form)MTable.get(getCtx(), org.compiere.model.I_AD_Form.Table_ID)
@@ -144,6 +181,64 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 	public int getAD_Form_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Form_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_InfoWindow)MTable.get(getCtx(), org.compiere.model.I_AD_InfoWindow.Table_ID)
+			.getPO(getAD_InfoWindow_ID(), get_TrxName());
+	}
+
+	/** Set Info Window.
+		@param AD_InfoWindow_ID Info and search/select Window
+	*/
+	public void setAD_InfoWindow_ID (int AD_InfoWindow_ID)
+	{
+		if (AD_InfoWindow_ID < 1)
+			set_Value (COLUMNNAME_AD_InfoWindow_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_InfoWindow_ID, Integer.valueOf(AD_InfoWindow_ID));
+	}
+
+	/** Get Info Window.
+		@return Info and search/select Window
+	  */
+	public int getAD_InfoWindow_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_InfoWindow_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_Process)MTable.get(getCtx(), org.compiere.model.I_AD_Process.Table_ID)
+			.getPO(getAD_Process_ID(), get_TrxName());
+	}
+
+	/** Set Process.
+		@param AD_Process_ID Process or Report
+	*/
+	public void setAD_Process_ID (int AD_Process_ID)
+	{
+		if (AD_Process_ID < 1)
+			set_Value (COLUMNNAME_AD_Process_ID, null);
+		else
+			set_Value (COLUMNNAME_AD_Process_ID, Integer.valueOf(AD_Process_ID));
+	}
+
+	/** Get Process.
+		@return Process or Report
+	  */
+	public int getAD_Process_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_Process_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -329,6 +424,45 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 		return (String)get_Value(COLUMNNAME_EntityType);
 	}
 
+	/** Set Comment/Help.
+		@param Help Comment or Hint
+	*/
+	public void setHelp (String Help)
+	{
+		set_Value (COLUMNNAME_Help, Help);
+	}
+
+	/** Get Comment/Help.
+		@return Comment or Hint
+	  */
+	public String getHelp()
+	{
+		return (String)get_Value(COLUMNNAME_Help);
+	}
+
+	/** Set Hide when Zero.
+		@param IsHideWhenZero Hide when the Value is Zero
+	*/
+	public void setIsHideWhenZero (boolean IsHideWhenZero)
+	{
+		set_Value (COLUMNNAME_IsHideWhenZero, Boolean.valueOf(IsHideWhenZero));
+	}
+
+	/** Get Hide when Zero.
+		@return Hide when the Value is Zero
+	  */
+	public boolean isHideWhenZero()
+	{
+		Object oo = get_Value(COLUMNNAME_IsHideWhenZero);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set Name.
 		@param Name Alphanumeric identifier of the entity
 	*/
@@ -343,6 +477,34 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 	public String getName()
 	{
 		return (String)get_Value(COLUMNNAME_Name);
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_PrintColor getName_PrintColorZero() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_PrintColor)MTable.get(getCtx(), org.compiere.model.I_AD_PrintColor.Table_ID)
+			.getPO(getName_PrintColorZero_ID(), get_TrxName());
+	}
+
+	/** Set Print Color for Name when Zero.
+		@param Name_PrintColorZero_ID Print Color for Name when Zero
+	*/
+	public void setName_PrintColorZero_ID (int Name_PrintColorZero_ID)
+	{
+		if (Name_PrintColorZero_ID < 1)
+			set_Value (COLUMNNAME_Name_PrintColorZero_ID, null);
+		else
+			set_Value (COLUMNNAME_Name_PrintColorZero_ID, Integer.valueOf(Name_PrintColorZero_ID));
+	}
+
+	/** Get Print Color for Name when Zero.
+		@return Print Color for Name when Zero	  */
+	public int getName_PrintColorZero_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Name_PrintColorZero_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	@Deprecated(since="13") // use better methods with cache

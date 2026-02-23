@@ -1,0 +1,7 @@
+-- IDEMPIERE-6819
+SELECT register_migration_script('202601190920_IDEMPIERE-6819.sql') FROM dual;
+
+-- Jan 19, 2026, 9:20:46 AM CET
+UPDATE AD_Table SET AccessLevel='6',Updated=TO_TIMESTAMP('2026-01-19 09:20:46','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Table_ID=200240
+;
+

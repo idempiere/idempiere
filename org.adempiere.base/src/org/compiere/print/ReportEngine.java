@@ -1686,10 +1686,10 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 
 		//	Get Record_ID of Invoice/Receipt
 		if (what[0] == INVOICE)
-			sql = new StringBuilder("SELECT C_Invoice_ID REC FROM C_Invoice WHERE C_Order_ID=?")	//	1
+			sql = new StringBuilder("SELECT C_Invoice_ID REC FROM C_Invoice WHERE C_Order_ID=? AND DocStatus IN ('CO','CL')")	//	1
 				.append(" ORDER BY C_Invoice_ID DESC");
 		else
-			sql = new StringBuilder("SELECT M_InOut_ID REC FROM M_InOut WHERE C_Order_ID=?") 	//	1
+			sql = new StringBuilder("SELECT M_InOut_ID REC FROM M_InOut WHERE C_Order_ID=? AND DocStatus IN ('CO','CL')") 	//	1
 				.append(" ORDER BY M_InOut_ID DESC");
 		try
 		{

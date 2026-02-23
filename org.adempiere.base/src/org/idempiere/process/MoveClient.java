@@ -422,6 +422,22 @@ public class MoveClient extends SvrProcess {
 			}
 		}
 
+		// validate if there are images using external storage provider - inform not implemented yet (blocking)
+		if (! p_excludeTablesWhere.toString().contains("'AD_IMAGE'")) {
+			statusUpdate("Checking storage for images");
+			StringBuilder sqlExternalImage = new StringBuilder()
+					.append("SELECT COUNT(*) FROM AD_Image")
+					.append(" JOIN AD_Client ON (AD_Image.AD_Client_ID=AD_Client.AD_Client_ID)")
+					.append(" JOIN AD_ClientInfo ON (AD_Image.AD_Client_ID=AD_ClientInfo.AD_Client_ID)")
+					.append(" LEFT JOIN AD_StorageProvider ON (AD_StorageProvider.AD_StorageProvider_ID=AD_ClientInfo.StorageImage_ID)")
+					.append(" WHERE AD_StorageProvider.Method IS NOT NULL AND AD_StorageProvider.Method!='DB'")
+					.append(" AND ").append(p_whereClient);
+			int cntEI = countInExternal(sqlExternalImage.toString());
+			if (cntEI > 0) {
+				throw new AdempiereUserError("There are images using external storage provider - that's not implemented yet");
+			}
+		}
+
 		// create list of tables to ignore
 		// validate tables
 		// for each source table not excluded

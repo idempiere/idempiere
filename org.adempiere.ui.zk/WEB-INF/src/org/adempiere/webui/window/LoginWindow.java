@@ -28,6 +28,7 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.adempiere.base.sso.ISSOPrincipalService;
@@ -44,6 +45,7 @@ import org.adempiere.webui.panel.RolePanel;
 import org.adempiere.webui.panel.ValidateMFAPanel;
 import org.adempiere.webui.session.SessionContextListener;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.session.fingerprint.SessionFingerprintManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.UserPreference;
 import org.adempiere.webui.util.ZkSSOUtils;
@@ -391,6 +393,11 @@ public class LoginWindow extends Window implements EventListener<Event>
 		}
 
         app.loginCompleted();
+
+		// Create session fingerprint for protection against session fixation attacks
+		HttpServletRequest servletRequest = (HttpServletRequest) Executions.getCurrent().getNativeRequest();
+		int sessionId = Env.getContextAsInt(Env.getCtx(), Env.AD_SESSION_ID);
+		SessionFingerprintManager.create(servletRequest, httpSess, sessionId);
     }
 
 	/**

@@ -1674,7 +1674,7 @@ public class GridTabTest extends AbstractTestCase {
 			assertEquals(recordId, gt.getRecord_ID(), "Failed to navigate to test record");
 			
 			// test attachment
-			attachment.setTitle("Test Attachment");
+			attachment.setTextMsg("Test Attachment");
 			attachment.addEntry("test.txt", "test data".getBytes());
 			attachment.saveEx();
 			int attachmentId = attachment.get_ID();		

@@ -31,7 +31,7 @@ public class X_AD_PrintHeaderFooter extends PO implements I_AD_PrintHeaderFooter
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250805L;
+	private static final long serialVersionUID = 20260119L;
 
     /** Standard Constructor */
     public X_AD_PrintHeaderFooter (Properties ctx, int AD_PrintHeaderFooter_ID, String trxName)
@@ -88,7 +88,7 @@ public class X_AD_PrintHeaderFooter extends PO implements I_AD_PrintHeaderFooter
     }
 
     /** AccessLevel
-      * @return 4 - System
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
