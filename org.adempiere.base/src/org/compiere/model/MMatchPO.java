@@ -32,6 +32,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.base.Core;
+import org.adempiere.base.acct.AcctInfoServices;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.IReservationTracer;
 import org.adempiere.util.IReservationTracerFactory;
@@ -1272,7 +1273,7 @@ public class MMatchPO extends X_M_MatchPO
 		{
 			MPeriod.testPeriodOpen(getCtx(), getDateTrx(), MDocType.DOCBASETYPE_MatchPO, getAD_Org_ID());
 			setPosted(false);
-			MFactAcct.deleteEx (Table_ID, get_ID(), get_TrxName());
+			AcctInfoServices.getFactAcctInfoService().deleteEx (Table_ID, get_ID(), get_TrxName());
 		}
 		return true;
 	}	//	beforeDelete

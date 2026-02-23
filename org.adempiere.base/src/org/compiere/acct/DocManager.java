@@ -30,9 +30,10 @@ import org.adempiere.base.IDocFactory;
 import org.adempiere.base.IServiceReferenceHolder;
 import org.adempiere.base.Service;
 import org.adempiere.base.ServiceQuery;
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
-import org.compiere.model.MAcctSchema;
 import org.compiere.model.MCostDetail;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInvoice;
@@ -138,7 +139,7 @@ public class DocManager {
 	 *  @param trxName transaction name
 	 *  @return Document or null
 	 */
-	public static Doc getDocument(MAcctSchema as, int AD_Table_ID, int Record_ID, String trxName)
+	public static Doc getDocument(IAcctSchemaInfo as, int AD_Table_ID, int Record_ID, String trxName)
 	{
 		String TableName = null;
 		for (int i = 0; i < DocManager.getDocumentsTableID().length; i++)
@@ -155,7 +156,7 @@ public class DocManager {
 			return null;
 		}
 
-		String cacheKey = as.getC_AcctSchema_ID() + "|" + AD_Table_ID;
+		String cacheKey = as.getRecord().getC_AcctSchema_ID() + "|" + AD_Table_ID;
 		IServiceReferenceHolder<IDocFactory> cache = s_DocFactoryCache.get(cacheKey);
 		if (cache != null)
 		{
@@ -170,7 +171,7 @@ public class DocManager {
 		}
 		
 		ServiceQuery query = new ServiceQuery();
-		query.put("gaap", as.getGAAP());
+		query.put("gaap", as.getRecord().getGAAP());
 		List<IServiceReferenceHolder<IDocFactory>> factoryList = Service.locator().list(IDocFactory.class, query).getServiceReferences();
 		if (factoryList != null)
 		{
@@ -221,9 +222,9 @@ public class DocManager {
 	 *  @return Document or null
 	 *  @throws AdempiereUserError
 	 */
-	public static Doc getDocument(MAcctSchema as, int AD_Table_ID, ResultSet rs, String trxName)
+	public static Doc getDocument(IAcctSchemaInfo as, int AD_Table_ID, ResultSet rs, String trxName)
 	{
-		String cacheKey = as.getC_AcctSchema_ID() + "|" + AD_Table_ID;
+		String cacheKey = as.getRecord().getC_AcctSchema_ID() + "|" + AD_Table_ID;
 		IServiceReferenceHolder<IDocFactory> cache = s_DocFactoryCache.get(cacheKey);
 		if (cache != null)
 		{
@@ -238,7 +239,7 @@ public class DocManager {
 		}
 		
 		ServiceQuery query = new ServiceQuery();
-		query.put("gaap", as.getGAAP());
+		query.put("gaap", as.getRecord().getGAAP());
 		List<IServiceReferenceHolder<IDocFactory>> factoryList = Service.locator().list(IDocFactory.class,query).getServiceReferences();
 		if (factoryList != null)
 		{
@@ -290,7 +291,7 @@ public class DocManager {
 	 *  @param trxName		Transaction name
 	 *  @return null if the document was posted or error message
 	 */
-	public static String postDocument(MAcctSchema[] ass,
+	public static String postDocument(IAcctSchemaInfo[] ass,
 			int AD_Table_ID, int Record_ID, boolean force, boolean repost, String trxName) {
 		return postDocument(ass, AD_Table_ID, Record_ID, force, repost, false, trxName);
 	} 
@@ -306,7 +307,7 @@ public class DocManager {
 	 * @param trxName						Transaction name
 	 * @return null if the document was posted or error message
 	 */
-	protected static String postDocument(MAcctSchema[] ass,
+	protected static String postDocument(IAcctSchemaInfo[] ass,
 		int AD_Table_ID, int Record_ID, boolean force, boolean repost, boolean isInBackDatePostingProcess, String trxName) {
 
 		String tableName = null;
@@ -370,7 +371,7 @@ public class DocManager {
 	 *  @param trxName		Transaction name
 	 *  @return null if the document was posted or error message
 	 */
-	public static String postDocument(MAcctSchema[] ass,
+	public static String postDocument(IAcctSchemaInfo[] ass,
 		int AD_Table_ID, ResultSet rs, boolean force, boolean repost, String trxName) {
 		return postDocument(ass, AD_Table_ID, rs, force, repost, false, trxName);
 	}
@@ -386,7 +387,7 @@ public class DocManager {
 	 * @param trxName						Transaction name
 	 * @return null if the document was posted or error message
 	 */
-	private static String postDocument(MAcctSchema[] ass,
+	private static String postDocument(IAcctSchemaInfo[] ass,
 			int AD_Table_ID, ResultSet rs, boolean force, boolean repost, boolean isInBackDatePostingProcess, String trxName) {
 		String localTrxName = null;
 		if (trxName == null)
@@ -404,7 +405,7 @@ public class DocManager {
 		{
 			savepoint = localTrxName == null ? trx.setSavepoint(null) : null;
 			String status = "";
-			for(MAcctSchema as : ass)
+			for(IAcctSchemaInfo as : ass)
 			{
 				Doc doc = Doc.get (as, AD_Table_ID, rs, trxName);
 				if (doc != null)
@@ -531,7 +532,7 @@ public class DocManager {
 	 * @param trxName		Transaction name
 	 * @return null if the back-date process was processed or error message
 	 */
-	private static String startBackDateProcess(MAcctSchema[] ass, int AD_Table_ID, int Record_ID, String trxName) {
+	private static String startBackDateProcess(IAcctSchemaInfo[] ass, int AD_Table_ID, int Record_ID, String trxName) {
 		if (ass.length == 0)
 			return null;
 		
@@ -645,7 +646,7 @@ public class DocManager {
 		whereClause.append("AND IsBackDate='Y' ");
 		whereClause.append("AND C_AcctSchema_ID IN (");
 		for (int x = 0; x < ass.length; x++)
-			whereClause.append((x > 0) ? "," : "").append(ass[x].getC_AcctSchema_ID());	
+			whereClause.append((x > 0) ? "," : "").append(ass[x].getRecord().getC_AcctSchema_ID());	
 		whereClause.append(") ");
 		whereClause.append("AND (").append(conditionClause).append(") ");
 		whereClause.append("AND TRUNC(DateAcct)=? ");
@@ -662,8 +663,8 @@ public class DocManager {
 		Timestamp today = TimeUtil.trunc(new Timestamp(System.currentTimeMillis()), TimeUtil.TRUNC_DAY);
 		for (int x = bdcds.size() - 1; x >= 0; x--) {
 			MCostDetail bdcd = bdcds.get(x);
-			MAcctSchema as = new MAcctSchema(Env.getCtx(), bdcd.getC_AcctSchema_ID(), trxName);
-			Timestamp allowedBackDate = TimeUtil.addDays(today, - as.getBackDateDay());
+			IAcctSchemaInfo as = AcctInfoServices.getAcctSchemaInfoService().create(Env.getCtx(), bdcd.getC_AcctSchema_ID(), trxName);
+			Timestamp allowedBackDate = TimeUtil.addDays(today, - as.getRecord().getBackDateDay());
 			if (bdcd.getDateAcct().before(allowedBackDate))
 				bdcds.remove(x);
 		}
@@ -773,7 +774,7 @@ public class DocManager {
 		selectSql.append("WHERE cd.AD_Client_ID=? ");
 		selectSql.append("AND cd.C_AcctSchema_ID IN (");
 		for (int x = 0; x < ass.length; x++)
-			selectSql.append((x > 0) ? "," : "").append(ass[x].getC_AcctSchema_ID());	
+			selectSql.append((x > 0) ? "," : "").append(ass[x].getRecord().getC_AcctSchema_ID());	
 		selectSql.append(") ");
 		selectSql.append("AND cd.M_Product_ID IN (");
 		for (int x = 0; x < bdcds.size(); x++)

@@ -24,7 +24,7 @@ package org.idempiere.test;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import org.compiere.model.MAccount;
+import org.adempiere.base.acct.info.IAccountInfo;
 
 /**
  * @param account
@@ -35,7 +35,7 @@ import org.compiere.model.MAccount;
  * @param lineId
  * @param qty
  */
-public record FactAcct(MAccount account, BigDecimal accountedAmount, BigDecimal sourceAmount, int rounding, boolean debit, int lineId, BigDecimal qty) {
+public record FactAcct(IAccountInfo account, BigDecimal accountedAmount, BigDecimal sourceAmount, int rounding, boolean debit, int lineId, BigDecimal qty) {
 	/**
 	 * @param account
 	 * @param accountedAmount
@@ -44,7 +44,7 @@ public record FactAcct(MAccount account, BigDecimal accountedAmount, BigDecimal 
 	 * @param debit
 	 * @param lineId
 	 */
-	public FactAcct(MAccount account, BigDecimal accountedAmount, BigDecimal sourceAmount, int rounding, boolean debit, int lineId) {
+	public FactAcct(IAccountInfo account, BigDecimal accountedAmount, BigDecimal sourceAmount, int rounding, boolean debit, int lineId) {
 		this(account, accountedAmount, sourceAmount, rounding, debit, lineId, (BigDecimal)null);
 	}
 	
@@ -56,7 +56,7 @@ public record FactAcct(MAccount account, BigDecimal accountedAmount, BigDecimal 
 	 * @param debit
 	 * @param qty
 	 */
-	public FactAcct(MAccount account, BigDecimal accountedAmount, BigDecimal sourceAmount, int rounding, boolean debit, BigDecimal qty) {
+	public FactAcct(IAccountInfo account, BigDecimal accountedAmount, BigDecimal sourceAmount, int rounding, boolean debit, BigDecimal qty) {
 		this(account, accountedAmount, sourceAmount, rounding, debit, 0, qty);
 	}
 	
@@ -67,7 +67,7 @@ public record FactAcct(MAccount account, BigDecimal accountedAmount, BigDecimal 
 	 * @param debit
 	 * @param qty
 	 */
-	public FactAcct(MAccount account, BigDecimal accountedAmount, int rounding, boolean debit, BigDecimal qty) {
+	public FactAcct(IAccountInfo account, BigDecimal accountedAmount, int rounding, boolean debit, BigDecimal qty) {
 		this(account, accountedAmount, null, rounding, debit, 0, qty);
 	}
 	
@@ -77,7 +77,7 @@ public record FactAcct(MAccount account, BigDecimal accountedAmount, BigDecimal 
 	 * @param rounding
 	 * @param debit
 	 */
-	public FactAcct(MAccount account, BigDecimal accountedAmount, int rounding, boolean debit) {
+	public FactAcct(IAccountInfo account, BigDecimal accountedAmount, int rounding, boolean debit) {
 		this(account, accountedAmount, null, rounding, debit, 0);
 	}
 	
@@ -88,14 +88,14 @@ public record FactAcct(MAccount account, BigDecimal accountedAmount, BigDecimal 
 	 * @param rounding
 	 * @param debit
 	 */
-	public FactAcct(MAccount account, BigDecimal accountedAmount, BigDecimal sourceAmount, int rounding, boolean debit) {
+	public FactAcct(IAccountInfo account, BigDecimal accountedAmount, BigDecimal sourceAmount, int rounding, boolean debit) {
 		this(account, accountedAmount, sourceAmount, rounding, debit, 0);
 	}
 	
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder("Account=").append(account.getAccount_ID()).append(" | ")
-				.append(account.getAccount());
+		StringBuilder builder = new StringBuilder("Account=").append(account.getRecord().getAccount_ID()).append(" | ")
+				.append(account.getAccountInfo());
 		builder.append(", ").append(debit ? "Dr" : "Cr").append("[");
 		if (accountedAmount != null)
 			builder.append("Accounted=").append(accountedAmount.setScale(rounding, RoundingMode.HALF_UP).toPlainString());

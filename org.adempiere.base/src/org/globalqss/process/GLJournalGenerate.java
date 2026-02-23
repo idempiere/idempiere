@@ -35,14 +35,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.constants.IAcctSchemaElementConstants;
+import org.adempiere.base.acct.info.IAccountInfo;
+import org.adempiere.base.acct.info.IAcctSchemaElementInfo;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.info.IElementValueInfo;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
-import org.compiere.model.MAccount;
-import org.compiere.model.MAcctSchema;
-import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MConversionType;
-import org.compiere.model.MElementValue;
 import org.compiere.model.MJournal;
 import org.compiere.model.MJournalGenerator;
 import org.compiere.model.MJournalGeneratorLine;
@@ -139,7 +141,7 @@ public class GLJournalGenerate extends SvrProcess
 				);
 
 		MJournalGenerator journalGenerator = new MJournalGenerator(getCtx(), p_QSS_JournalGenerator_ID, get_TrxName());
-		MAcctSchema as = MAcctSchema.get(journalGenerator.getC_AcctSchema_ID());
+		IAcctSchemaInfo as = AcctInfoServices.getAcctSchemaInfoService().get(journalGenerator.getC_AcctSchema_ID());
 
 		BigDecimal totalAmount = Env.ZERO;
 		List<List<Integer>> listDimOut = new ArrayList<List<Integer>>();
@@ -155,8 +157,8 @@ public class GLJournalGenerate extends SvrProcess
 			List<String> groupColumns = new ArrayList<String>();
 			groupColumns.add("AD_Client_ID");
 			if (line.isCopyAllDimensions()) {
-				for (MAcctSchemaElement element : as.getAcctSchemaElements()) {
-					String columnName = MAcctSchemaElement.getColumnName(element.getElementType());
+				for (IAcctSchemaElementInfo element : as.getAcctSchemaElementsInfo()) {
+					String columnName = AcctInfoServices.getAcctSchemaElementInfoService().getColumnName(element.getRecord().getElementType());
 					if (! groupColumns.contains(columnName))
 						groupColumns.add(columnName);
 				}
@@ -208,7 +210,7 @@ public class GLJournalGenerate extends SvrProcess
 					sql += "   AND GL_Category_ID=" + source.getGL_Category_ID();
 				sql += "   AND (";
 				/* TODO: Get all accounts below tree of source */
-				sql += MReportTree.getWhereClause(getCtx(), 0, MAcctSchemaElement.ELEMENTTYPE_Account, source.getC_ElementValue_ID());
+				sql += MReportTree.getWhereClause(getCtx(), 0, IAcctSchemaElementConstants.ELEMENTTYPE_Account, source.getC_ElementValue_ID());
 				sql += ")";
 				sql += " GROUP BY " + groupBy;
 
@@ -384,8 +386,8 @@ public class GLJournalGenerate extends SvrProcess
 			MJournalGeneratorLine line = listLinesOut.get(i);
 
 			if (p_IsSimulation) {
-				MElementValue ev = new MElementValue(getCtx(), accountId, get_TrxName());
-				String msg = "Account=" + ev.getValue()
+				IElementValueInfo ev = AcctInfoServices.getElementValueInfoService().create(getCtx(), accountId, get_TrxName());
+				String msg = "Account=" + ev.getRecord().getValue()
 						+ ", DR=" + dr
 						+ ", CR=" + cr;
 				int idxcol = 0;
@@ -421,7 +423,7 @@ public class GLJournalGenerate extends SvrProcess
 					if (j.getAD_Org_ID() == 0) {
 						throw new AdempiereException(Msg.getMsg(Language.getBaseAD_Language(), "Org0NotAllowed"));
 					}
-			        j.setC_Currency_ID(as.getC_Currency_ID());
+			        j.setC_Currency_ID(as.getRecord().getC_Currency_ID());
 			        j.setC_DocType_ID(journalGenerator.getC_DocType_ID());
 			        j.setControlAmt(Env.ZERO);
 			        j.setDateAcct(p_DateAcct);
@@ -433,15 +435,15 @@ public class GLJournalGenerate extends SvrProcess
 			        j.setDocumentNo(p_DocumentNo);
 			        j.set_ValueOfColumn("GL_Category_ID", journalGenerator.getGL_Category_ID()); // can be zero
 					j.setPostingType(journalGenerator.getPostingType());
-			        j.setC_AcctSchema_ID(as.getC_AcctSchema_ID());
-			        j.setC_ConversionType_ID(MConversionType.getDefault(as.getAD_Client_ID()));
+			        j.setC_AcctSchema_ID(as.getRecord().getC_AcctSchema_ID());
+			        j.setC_ConversionType_ID(MConversionType.getDefault(as.getRecord().getAD_Client_ID()));
 			        j.saveEx();
 				}
 		        // Create the journal lines
 				MJournalLine jl = new MJournalLine(j);
 				jl.setLine(lineNo);
 				lineNo += 10;
-		        MAccount combination;
+				IAccountInfo combination;
 		        {
 		        	int AD_Client_ID = getAD_Client_ID();
 		        	int AD_Org_ID = 0;
@@ -502,7 +504,7 @@ public class GLJournalGenerate extends SvrProcess
 							idxcol++;
 						}
 					}
-					combination = MAccount.get(getCtx(), AD_Client_ID,
+					combination = AcctInfoServices.getAccountInfoService().get(getCtx(), AD_Client_ID,
 							AD_Org_ID, C_AcctSchema_ID, Account_ID,
 							C_SubAcct_ID, M_Product_ID, C_BPartner_ID,
 							AD_OrgTrx_ID, C_LocFrom_ID, C_LocTo_ID,

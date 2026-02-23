@@ -24,6 +24,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.constants.IAcctSchemaElementConstants;
+import org.adempiere.base.acct.info.IAccountInfo;
+import org.adempiere.base.acct.info.IAcctSchemaElementInfo;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
@@ -52,10 +57,7 @@ import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.GridWindow;
 import org.compiere.model.GridWindowVO;
-import org.compiere.model.MAccount;
 import org.compiere.model.MAccountLookup;
-import org.compiere.model.MAcctSchema;
-import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MQuery;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
@@ -148,7 +150,7 @@ public final class WAccountDialog extends Window
 	protected boolean			m_changed = false;
 
 	/** Accounting Schema           */
-	private MAcctSchema	m_AcctSchema = null;
+	private IAcctSchemaInfo	m_AcctSchema = null;
 	/** MWindow for AccountCombination  */
 	private GridWindow             m_mWindow = null;
 	/** MTab for AccountCombination     */
@@ -317,7 +319,7 @@ public final class WAccountDialog extends Window
 	{
 		m_AD_Client_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, "AD_Client_ID");
 		//	Get AcctSchema Info
-		m_AcctSchema = new MAcctSchema (Env.getCtx(), m_C_AcctSchema_ID, null);
+		m_AcctSchema = AcctInfoServices.getAcctSchemaInfoService().create(Env.getCtx(), m_C_AcctSchema_ID, null);
 		Env.setContext(Env.getCtx(), m_WindowNo, "C_AcctSchema_ID", m_C_AcctSchema_ID);
 
 		//  Model
@@ -413,7 +415,7 @@ public final class WAccountDialog extends Window
 			LayoutUtils.addSclass("form-label-above-input", parameterLayout);
 
 		//	Alias
-		if (m_AcctSchema.isHasAlias())
+		if (m_AcctSchema.getRecord().isHasAlias())
 		{
 			GridField alias = m_mTab.getField("Alias");
 			if (f_Alias == null)
@@ -432,23 +434,23 @@ public final class WAccountDialog extends Window
 		/**
 		 *	Create Fields in Element Order
 		 */
-		MAcctSchemaElement[] elements = m_AcctSchema.getAcctSchemaElements();
+		IAcctSchemaElementInfo[] elements = m_AcctSchema.getAcctSchemaElementsInfo();
 		for (int i = 0; i < elements.length; i++)
 		{
 			if (isLabelAboveInputForSmallWidth())
 				m_newRow = true;
-			MAcctSchemaElement ase = elements[i];
-			String type = ase.getElementType();
-			boolean isMandatory = ase.isMandatory();
+			IAcctSchemaElementInfo ase = elements[i];
+			String type = ase.getRecord().getElementType();
+			boolean isMandatory = ase.getRecord().isMandatory();
 			//
-			if (type.equals(MAcctSchemaElement.ELEMENTTYPE_Organization))
+			if (type.equals(IAcctSchemaElementConstants.ELEMENTTYPE_Organization))
 			{
 				GridField field = m_mTab.getField("AD_Org_ID");
 				if (f_AD_Org_ID == null)
 					f_AD_Org_ID = WebEditorFactory.getEditor(field, false);
 				addLine(field, f_AD_Org_ID, isMandatory);
 			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_Account))
+			else if (type.equals(IAcctSchemaElementConstants.ELEMENTTYPE_Account))
 			{
 				GridField field = m_mTab.getField("Account_ID");
 				if (f_Account_ID == null)
@@ -458,70 +460,70 @@ public final class WAccountDialog extends Window
 				}
 				addLine(field, f_Account_ID, isMandatory);				
 			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_SubAccount))
+			else if (type.equals(IAcctSchemaElementConstants.ELEMENTTYPE_SubAccount))
 			{
 				GridField field = m_mTab.getField("C_SubAcct_ID");
 				if (f_SubAcct_ID == null)
 					f_SubAcct_ID = WebEditorFactory.getEditor(field, false);
 				addLine(field, f_SubAcct_ID, isMandatory);
 			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_Product))
+			else if (type.equals(IAcctSchemaElementConstants.ELEMENTTYPE_Product))
 			{
 				GridField field = m_mTab.getField("M_Product_ID");
 				if (f_M_Product_ID == null)
 					f_M_Product_ID = WebEditorFactory.getEditor(field, false);
 				addLine(field, f_M_Product_ID, isMandatory);
 			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_BPartner))
+			else if (type.equals(IAcctSchemaElementConstants.ELEMENTTYPE_BPartner))
 			{
 				GridField field = m_mTab.getField("C_BPartner_ID");
 				if (f_C_BPartner_ID == null)
 					f_C_BPartner_ID = WebEditorFactory.getEditor(field, false);
 				addLine(field, f_C_BPartner_ID, isMandatory);
 			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_Campaign))
+			else if (type.equals(IAcctSchemaElementConstants.ELEMENTTYPE_Campaign))
 			{
 				GridField field = m_mTab.getField("C_Campaign_ID");
 				if (f_C_Campaign_ID == null)
 					f_C_Campaign_ID = WebEditorFactory.getEditor(field, false);
 				addLine(field, f_C_Campaign_ID, isMandatory);
 			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_LocationFrom))
+			else if (type.equals(IAcctSchemaElementConstants.ELEMENTTYPE_LocationFrom))
 			{
 				GridField field = m_mTab.getField("C_LocFrom_ID");
 				if (f_C_LocFrom_ID == null)
 					f_C_LocFrom_ID = WebEditorFactory.getEditor(field, false);
 				addLine(field, f_C_LocFrom_ID, isMandatory);
 			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_LocationTo))
+			else if (type.equals(IAcctSchemaElementConstants.ELEMENTTYPE_LocationTo))
 			{
 				GridField field = m_mTab.getField("C_LocTo_ID");
 				if (f_C_LocTo_ID == null)
 					f_C_LocTo_ID = WebEditorFactory.getEditor(field, false);
 				addLine(field, f_C_LocTo_ID, isMandatory);
 			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_Project))
+			else if (type.equals(IAcctSchemaElementConstants.ELEMENTTYPE_Project))
 			{
 				GridField field = m_mTab.getField("C_Project_ID");
 				if (f_C_Project_ID == null)
 					f_C_Project_ID = WebEditorFactory.getEditor(field, false);
 				addLine(field, f_C_Project_ID, isMandatory);
 			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_SalesRegion))
+			else if (type.equals(IAcctSchemaElementConstants.ELEMENTTYPE_SalesRegion))
 			{
 				GridField field = m_mTab.getField("C_SalesRegion_ID");
 				if (f_C_SalesRegion_ID == null)
 					f_C_SalesRegion_ID = WebEditorFactory.getEditor(field, false);
 				addLine(field, f_C_SalesRegion_ID, isMandatory);
 			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_OrgTrx))
+			else if (type.equals(IAcctSchemaElementConstants.ELEMENTTYPE_OrgTrx))
 			{
 				GridField field = m_mTab.getField("AD_OrgTrx_ID");
 				if (f_AD_OrgTrx_ID == null)
 					f_AD_OrgTrx_ID = WebEditorFactory.getEditor(field, false);
 				addLine(field, f_AD_OrgTrx_ID, isMandatory);
 			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_Activity))
+			else if (type.equals(IAcctSchemaElementConstants.ELEMENTTYPE_Activity))
 			{
 				GridField field = m_mTab.getField("C_Activity_ID");
 				if (f_C_Activity_ID == null)
@@ -529,14 +531,14 @@ public final class WAccountDialog extends Window
 				addLine(field, f_C_Activity_ID, isMandatory);
 			}
 			//	User1
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_UserElementList1))
+			else if (type.equals(IAcctSchemaElementConstants.ELEMENTTYPE_UserElementList1))
 			{
 				GridField field = m_mTab.getField("User1_ID");
 				if (f_User1_ID == null)
 					f_User1_ID = WebEditorFactory.getEditor(field, false);
 				addLine(field, f_User1_ID, isMandatory);
 			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_UserElementList2))
+			else if (type.equals(IAcctSchemaElementConstants.ELEMENTTYPE_UserElementList2))
 			{
 				GridField field = m_mTab.getField("User2_ID");
 				if (f_User2_ID == null)
@@ -730,7 +732,7 @@ public final class WAccountDialog extends Window
 		if (event.getTarget().getId().equals("Ok"))
 		{
 			// Compare all data to propose creation/update of combination
-			MAccount combiOrg = new MAccount(Env.getCtx(), IDvalue > 0 ? IDvalue : m_mAccount.C_ValidCombination_ID, null);
+			IAccountInfo combiOrg = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), IDvalue > 0 ? IDvalue : m_mAccount.C_ValidCombination_ID, null);
 			boolean needconfirm = false;
 			if (needConfirm(f_AD_Org_ID, combiOrg))
 				needconfirm = true;
@@ -809,11 +811,11 @@ public final class WAccountDialog extends Window
 	 * @param combiOrg
 	 * @return true if value has change
 	 */
-	protected boolean needConfirm(WEditor editor, MAccount combiOrg)
+	protected boolean needConfirm(WEditor editor, IAccountInfo combiOrg)
 	{
 		if (editor != null ) {
 			String columnName = editor.getColumnName();
-			String oldValue = combiOrg.get_ValueAsString(columnName);
+			String oldValue = combiOrg.getPO().get_ValueAsString(columnName);
 			String newValue = "";
 			if (editor.getValue() != null)
 				newValue = editor.getValue().toString();
@@ -941,19 +943,19 @@ public final class WAccountDialog extends Window
 		StringBuilder sb = new StringBuilder();
 		StringBuilder sql = new StringBuilder ("SELECT C_ValidCombination_ID, Alias FROM C_ValidCombination WHERE ");
 		Object value = null;
-		if (m_AcctSchema.isHasAlias())
+		if (m_AcctSchema.getRecord().isHasAlias())
 		{
 			value = f_Alias.getValue().toString();
 			if (isEmpty(value) && f_Alias.isMandatory())
 				sb.append(Msg.translate(Env.getCtx(), "Alias")).append(", ");
 		}
-		MAcctSchemaElement[] elements = m_AcctSchema.getAcctSchemaElements();
+		IAcctSchemaElementInfo[] elements = m_AcctSchema.getAcctSchemaElementsInfo();
 		for (int i = 0; i < elements.length; i++)
 		{
-			MAcctSchemaElement ase = elements[i];
-			String type = ase.getElementType();
+			IAcctSchemaElementInfo ase = elements[i];
+			String type = ase.getRecord().getElementType();
 			//
-			if (type.equals(MAcctSchemaElement.ELEMENTTYPE_Organization))
+			if (type.equals(IAcctSchemaElementConstants.ELEMENTTYPE_Organization))
 			{
 				value = f_AD_Org_ID.getValue();
 				sql.append("AD_Org_ID");
@@ -962,7 +964,7 @@ public final class WAccountDialog extends Window
 				else
 					sql.append("=").append(value).append(" AND ");
 			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_Account))
+			else if (type.equals(IAcctSchemaElementConstants.ELEMENTTYPE_Account))
 			{
 				value = f_Account_ID.getValue();
 				sql.append("Account_ID");
@@ -971,7 +973,7 @@ public final class WAccountDialog extends Window
 				else
 					sql.append("=").append(value).append(" AND ");
 			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_SubAccount))
+			else if (type.equals(IAcctSchemaElementConstants.ELEMENTTYPE_SubAccount))
 			{
 				value = f_SubAcct_ID.getValue();
 				sql.append("C_SubAcct_ID");
@@ -980,7 +982,7 @@ public final class WAccountDialog extends Window
 				else
 					sql.append("=").append(value).append(" AND ");
 			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_Product))
+			else if (type.equals(IAcctSchemaElementConstants.ELEMENTTYPE_Product))
 			{
 				value = f_M_Product_ID.getValue();
 				sql.append("M_Product_ID");
@@ -989,7 +991,7 @@ public final class WAccountDialog extends Window
 				else
 					sql.append("=").append(value).append(" AND ");
 			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_BPartner))
+			else if (type.equals(IAcctSchemaElementConstants.ELEMENTTYPE_BPartner))
 			{
 				value = f_C_BPartner_ID.getValue();
 				sql.append("C_BPartner_ID");
@@ -998,7 +1000,7 @@ public final class WAccountDialog extends Window
 				else
 					sql.append("=").append(value).append(" AND ");
 			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_Campaign))
+			else if (type.equals(IAcctSchemaElementConstants.ELEMENTTYPE_Campaign))
 			{
 				value = f_C_Campaign_ID.getValue();
 				sql.append("C_Campaign_ID");
@@ -1007,7 +1009,7 @@ public final class WAccountDialog extends Window
 				else
 					sql.append("=").append(value).append(" AND ");
 			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_LocationFrom))
+			else if (type.equals(IAcctSchemaElementConstants.ELEMENTTYPE_LocationFrom))
 			{
 				value = f_C_LocFrom_ID.getValue();
 				sql.append("C_LocFrom_ID");
@@ -1016,7 +1018,7 @@ public final class WAccountDialog extends Window
 				else
 					sql.append("=").append(value).append(" AND ");
 			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_LocationTo))
+			else if (type.equals(IAcctSchemaElementConstants.ELEMENTTYPE_LocationTo))
 			{
 				value = f_C_LocTo_ID.getValue();
 				sql.append("C_LocTo_ID");
@@ -1025,7 +1027,7 @@ public final class WAccountDialog extends Window
 				else
 					sql.append("=").append(value).append(" AND ");
 			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_Project))
+			else if (type.equals(IAcctSchemaElementConstants.ELEMENTTYPE_Project))
 			{
 				value = f_C_Project_ID.getValue();
 				sql.append("C_Project_ID");
@@ -1034,7 +1036,7 @@ public final class WAccountDialog extends Window
 				else
 					sql.append("=").append(value).append(" AND ");
 			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_SalesRegion))
+			else if (type.equals(IAcctSchemaElementConstants.ELEMENTTYPE_SalesRegion))
 			{
 				value = f_C_SalesRegion_ID.getValue();
 				sql.append("C_SalesRegion_ID");
@@ -1043,7 +1045,7 @@ public final class WAccountDialog extends Window
 				else
 					sql.append("=").append(value).append(" AND ");
 			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_OrgTrx))
+			else if (type.equals(IAcctSchemaElementConstants.ELEMENTTYPE_OrgTrx))
 			{
 				value = f_AD_OrgTrx_ID.getValue();
 				sql.append("AD_OrgTrx_ID");
@@ -1052,7 +1054,7 @@ public final class WAccountDialog extends Window
 				else
 					sql.append("=").append(value).append(" AND ");
 			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_Activity))
+			else if (type.equals(IAcctSchemaElementConstants.ELEMENTTYPE_Activity))
 			{
 				value = f_C_Activity_ID.getValue();
 				sql.append("C_Activity_ID");
@@ -1061,7 +1063,7 @@ public final class WAccountDialog extends Window
 				else
 					sql.append("=").append(value).append(" AND ");
 			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_UserElementList1))
+			else if (type.equals(IAcctSchemaElementConstants.ELEMENTTYPE_UserElementList1))
 			{
 				value = f_User1_ID.getValue();
 				sql.append("User1_ID");
@@ -1070,7 +1072,7 @@ public final class WAccountDialog extends Window
 				else
 					sql.append("=").append(value).append(" AND ");
 			}
-			else if (type.equals(MAcctSchemaElement.ELEMENTTYPE_UserElementList2))
+			else if (type.equals(IAcctSchemaElementConstants.ELEMENTTYPE_UserElementList2))
 			{
 				value = f_User2_ID.getValue();
 				sql.append("User2_ID");
@@ -1080,8 +1082,8 @@ public final class WAccountDialog extends Window
 					sql.append("=").append(value).append(" AND ");
 			}
 			//
-			if (ase.isMandatory() && isEmpty(value))
-				sb.append(ase.getName()).append(", ");
+			if (ase.getRecord().isMandatory() && isEmpty(value))
+				sb.append(ase.getRecord().getName()).append(", ");
 		}	//	Fields in Element Order
 
 		if (sb.length() != 0)
@@ -1112,7 +1114,7 @@ public final class WAccountDialog extends Window
 		{
 			pstmt = DB.prepareStatement(sql.toString(), null);
 			pstmt.setInt(1, m_AD_Client_ID);
-			pstmt.setInt(2, m_AcctSchema.getC_AcctSchema_ID());
+			pstmt.setInt(2, m_AcctSchema.getRecord().getC_AcctSchema_ID());
 			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
@@ -1137,7 +1139,7 @@ public final class WAccountDialog extends Window
 			Alias = "";
 
 		//	We have an account like this already - check alias
-		if (IDvalue != 0 && m_AcctSchema.isHasAlias()
+		if (IDvalue != 0 && m_AcctSchema.getRecord().isHasAlias()
 			&& !f_Alias.getValue().toString().equals(Alias))
 		{
 			sql = new StringBuilder("UPDATE C_ValidCombination SET Alias=");
@@ -1170,7 +1172,7 @@ public final class WAccountDialog extends Window
 		//	load and display
 		if (IDvalue != 0)
 		{
-			loadInfo (IDvalue, m_AcctSchema.getC_AcctSchema_ID());
+			loadInfo (IDvalue, m_AcctSchema.getRecord().getC_AcctSchema_ID());
 			action_Find (false);
 			return true;
 		}
@@ -1217,31 +1219,31 @@ public final class WAccountDialog extends Window
 		if (f_User2_ID != null && !isEmpty(f_User2_ID.getValue()))
 			User2_ID = ((Integer)f_User2_ID.getValue()).intValue();
 
-		MAccount acct = MAccount.get (Env.getCtx(), m_AD_Client_ID,
+		IAccountInfo acct = AcctInfoServices.getAccountInfoService().get (Env.getCtx(), m_AD_Client_ID,
 			((Integer)f_AD_Org_ID.getValue()).intValue(),
-			m_AcctSchema.getC_AcctSchema_ID(),
+			m_AcctSchema.getRecord().getC_AcctSchema_ID(),
 			((Integer)f_Account_ID.getValue()).intValue(), C_SubAcct_ID,
 			M_Product_ID, C_BPartner_ID, AD_OrgTrx_ID,
 			C_LocFrom_ID, C_LocTo_ID, C_SRegion_ID,
 			C_Project_ID, C_Campaign_ID, C_Activity_ID,
 			User1_ID, User2_ID, 0, 0, null);
-		if (acct != null && acct.get_ID() == 0)
-			acct.saveEx();
+		if (acct != null && acct.getPO().get_ID() == 0)
+			acct.getPO().saveEx();
 
 		//  Show Info
-		if (acct == null || acct.get_ID() == 0)
+		if (acct == null || acct.getPO().get_ID() == 0)
 			loadInfo (0, 0);
 		else
 		{
 			//	Update Account with optional Alias
 			if (Alias != null && Alias.length() > 0)
 			{
-				acct.setAlias(Alias);
-				acct.saveEx();
+				acct.getRecord().setAlias(Alias);
+				acct.getPO().saveEx();
 			}
-			loadInfo (acct.get_ID(), m_AcctSchema.getC_AcctSchema_ID());
+			loadInfo (acct.getPO().get_ID(), m_AcctSchema.getRecord().getC_AcctSchema_ID());
 		}
-		IDvalue = acct.get_ID();
+		IDvalue = acct.getPO().get_ID();
 		action_Find (false);
 		return true;
 	}	//	action_Save

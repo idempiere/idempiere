@@ -20,11 +20,12 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.info.IElementValueInfo;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.process.UUIDGenerator;
+import org.compiere.model.I_Fact_Reconciliation;
 import org.compiere.model.MColumn;
-import org.compiere.model.MElementValue;
-import org.compiere.model.MFactReconciliation;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MRule;
 import org.compiere.model.MSequence;
@@ -38,7 +39,7 @@ import org.compiere.util.DB;
 @org.adempiere.base.annotation.Process
 public class FactReconcile extends SvrProcess
 {
-	private MElementValue account;
+	private IElementValueInfo account;
 	private int ruleID;
 	
 	/**
@@ -62,7 +63,7 @@ public class FactReconcile extends SvrProcess
 				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 			
 			if ( accountID > 0 )
-				account = new MElementValue(getCtx(), accountID, get_TrxName());
+				account = AcctInfoServices.getElementValueInfoService().create(getCtx(), accountID, get_TrxName());
 		}
 	}	//	prepare
 
@@ -75,7 +76,7 @@ public class FactReconcile extends SvrProcess
 	protected String doIt() throws Exception
 	{
 
-		if (log.isLoggable(Level.INFO)) log.info("Reconcile Account: " + account.getName());
+		if (log.isLoggable(Level.INFO)) log.info("Reconcile Account: " + account.getRecord().getName());
 		
 		String subselect = "null";
 		
@@ -127,7 +128,7 @@ public class FactReconcile extends SvrProcess
 		int count;
 		int unmatched;
 		
-		MSequence seq = MSequence.get(getCtx(), MFactReconciliation.Table_Name);
+		MSequence seq = MSequence.get(getCtx(), I_Fact_Reconciliation.Table_Name);
 		if (seq == null)
 			throw new AdempiereException("No sequence for Fact_Reconciliation table");
 		
@@ -147,14 +148,14 @@ public class FactReconcile extends SvrProcess
 					
 			pstmt = DB.prepareStatement(sql, get_TrxName());
 			pstmt.setInt(1, seq.getAD_Sequence_ID());
-			pstmt.setInt(2, account.get_ID());
+			pstmt.setInt(2, account.getRecord().getC_ElementValue_ID());
 			count = pstmt.executeUpdate();
 			DB.close(pstmt); pstmt = null;
 			if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Inserted " + count + " new facts into Fact_Reconciliation");
 			if (DB.isGenerateUUIDSupported())
 				DB.executeUpdateEx("UPDATE Fact_Reconciliation SET Fact_Reconciliation_UU=generate_uuid() WHERE Fact_Reconciliation_UU IS NULL", get_TrxName());
 			else
-				UUIDGenerator.updateUUID(MColumn.get(getCtx(), MFactReconciliation.Table_Name, PO.getUUIDColumnName(MFactReconciliation.Table_Name)), get_TrxName());
+				UUIDGenerator.updateUUID(MColumn.get(getCtx(), I_Fact_Reconciliation.Table_Name, PO.getUUIDColumnName(I_Fact_Reconciliation.Table_Name)), get_TrxName());
 			
 			// set the matchcode based on the rule found in AD_Rule
 			// which is a sql fragment that returns a string based on the accounting fact
@@ -168,7 +169,7 @@ public class FactReconcile extends SvrProcess
 					" ) IS NOT NULL " ;
 					
 			pstmt = DB.prepareStatement(sql, get_TrxName());
-			pstmt.setInt(1, account.get_ID());
+			pstmt.setInt(1, account.getRecord().getC_ElementValue_ID());
 			count = pstmt.executeUpdate();
 			DB.close(pstmt); pstmt = null;
 			
@@ -186,8 +187,8 @@ public class FactReconcile extends SvrProcess
 			" AND MatchCode IS NOT NULL";
 				
 		    pstmt = DB.prepareStatement(sql, get_TrxName());
-		    pstmt.setInt(1, account.get_ID());
-		    pstmt.setInt(2, account.get_ID());
+		    pstmt.setInt(1, account.getRecord().getC_ElementValue_ID());
+		    pstmt.setInt(2, account.getRecord().getC_ElementValue_ID());
 		    unmatched = pstmt.executeUpdate();
 		
 		    if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Cleared match codes from " + unmatched + " unreconciled facts.");

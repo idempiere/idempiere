@@ -20,12 +20,14 @@ import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
 
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
-import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.ImmutablePOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  * 	Product Category Account Model
@@ -208,11 +210,11 @@ public class MProductCategoryAcct extends X_M_Product_Category_Acct implements I
 		if (!newRecord && is_ValueChanged(COLUMNNAME_CostingLevel)) {
 			String newCostingLevel = getCostingLevel();
 			String oldCostingLevel = (String) get_ValueOld(COLUMNNAME_CostingLevel);
-			MAcctSchema schema = MAcctSchema.get(getC_AcctSchema_ID());
+			IAcctSchemaInfo schema = AcctInfoServices.getAcctSchemaInfoService().get(getC_AcctSchema_ID());
 			if (newCostingLevel == null)
-				newCostingLevel = schema.getCostingLevel();
+				newCostingLevel = schema.getRecord().getCostingLevel();
 			if (oldCostingLevel == null)
-				oldCostingLevel = schema.getCostingLevel();
+				oldCostingLevel = schema.getRecord().getCostingLevel();
 			// Disallow costing level change if there are existing cost detail records
 			if (!newCostingLevel.equals(oldCostingLevel)) {
 				String products = getProductsWithCost();

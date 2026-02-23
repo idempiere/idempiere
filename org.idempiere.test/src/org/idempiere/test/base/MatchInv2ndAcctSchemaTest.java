@@ -41,16 +41,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.info.IAccountInfo;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.info.IFactAcctInfo;
 import org.compiere.acct.Doc;
 import org.compiere.acct.DocManager;
 import org.compiere.model.I_C_Currency;
-import org.compiere.model.MAccount;
-import org.compiere.model.MAcctSchema;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MCurrency;
 import org.compiere.model.MDocType;
-import org.compiere.model.MFactAcct;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
 import org.compiere.model.MInvoice;
@@ -65,7 +66,6 @@ import org.compiere.model.MProductPrice;
 import org.compiere.model.MWarehouse;
 import org.compiere.model.PO;
 import org.compiere.model.ProductCost;
-import org.compiere.model.Query;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
@@ -136,7 +136,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 			completeDocument(creditMemo);
 			postDocument(creditMemo);
 			
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MMatchInv[] miList = MMatchInv.getInvoiceLine(Env.getCtx(), creditMemoLine1.get_ID(), getTrxName());
 			ArrayList<PostingLine> notInvoicedReceiptsLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> inventoryClearingLineList = new ArrayList<PostingLine>();
@@ -216,7 +216,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 			completeDocument(invoice1);
 			postDocument(invoice1);
 			
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MMatchInv[] miList = MMatchInv.getInOutLine(Env.getCtx(), receiptLine1.get_ID(), getTrxName());
 			ArrayList<PostingLine> notInvoicedReceiptsLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> inventoryClearingLineList = new ArrayList<PostingLine>();
@@ -365,7 +365,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 			completeDocument(receipt);
 			postDocument(receipt);
 			
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MMatchInv[] miList = MMatchInv.getInOutLine(Env.getCtx(), receiptLine.get_ID(), getTrxName());
 			ArrayList<PostingLine> notInvoicedReceiptsLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> inventoryClearingLineList = new ArrayList<PostingLine>();
@@ -479,7 +479,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 			completeDocument(receipt);
 			postDocument(receipt);
 			
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MMatchInv[] miList = MMatchInv.getInOutLine(Env.getCtx(), receiptLine1.get_ID(), getTrxName());
 			ArrayList<PostingLine> notInvoicedReceiptsLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> inventoryClearingLineList = new ArrayList<PostingLine>();
@@ -616,7 +616,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 			completeDocument(receipt);
 			postDocument(receipt);
 			
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MMatchInv[] miList = MMatchInv.getInOutLine(Env.getCtx(), receiptLine.get_ID(), getTrxName());
 			ArrayList<PostingLine> notInvoicedReceiptsLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> inventoryClearingLineList = new ArrayList<PostingLine>();
@@ -702,7 +702,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 			completeDocument(receipt);
 			postDocument(receipt);
 			
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MMatchInv[] miList = MMatchInv.getInOutLine(Env.getCtx(), receiptLine.get_ID(), getTrxName());
 			ArrayList<PostingLine> notInvoicedReceiptsLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> inventoryClearingLineList = new ArrayList<PostingLine>();
@@ -788,7 +788,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 			completeDocument(receipt);
 			postDocument(receipt);
 			
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MMatchInv[] miList = MMatchInv.getInOutLine(Env.getCtx(), receiptLine.get_ID(), getTrxName());
 			ArrayList<PostingLine> notInvoicedReceiptsLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> inventoryClearingLineList = new ArrayList<PostingLine>();
@@ -874,7 +874,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 			completeDocument(receipt1);
 			postDocument(receipt1);
 			
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MMatchInv[] miList = MMatchInv.getInOutLine(Env.getCtx(), receiptLine.get_ID(), getTrxName());
 			ArrayList<PostingLine> notInvoicedReceiptsLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> inventoryClearingLineList = new ArrayList<PostingLine>();
@@ -1009,7 +1009,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 			completeDocument(receipt);
 			postDocument(receipt);
 			
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MMatchInv[] miList = MMatchInv.getInvoiceLine(Env.getCtx(), invoiceLine1.get_ID(), getTrxName());
 			ArrayList<PostingLine> notInvoicedReceiptsLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> inventoryClearingLineList = new ArrayList<PostingLine>();
@@ -1096,7 +1096,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 			completeDocument(receipt1);
 			postDocument(receipt1);
 			
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MMatchInv[] miList = MMatchInv.getInOutLine(Env.getCtx(), receiptLine1.get_ID(), getTrxName());
 			ArrayList<PostingLine> notInvoicedReceiptsLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> inventoryClearingLineList = new ArrayList<PostingLine>();
@@ -1182,7 +1182,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 			completeDocument(receipt1);
 			postDocument(receipt1);
 			
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MMatchInv[] miList = MMatchInv.getInOutLine(Env.getCtx(), receiptLine1.get_ID(), getTrxName());
 			ArrayList<PostingLine> notInvoicedReceiptsLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> inventoryClearingLineList = new ArrayList<PostingLine>();
@@ -1322,7 +1322,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 			completeDocument(receipt1);
 			postDocument(receipt1);
 			
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MMatchInv[] miList = MMatchInv.getInOutLine(Env.getCtx(), receiptLine1.get_ID(), getTrxName());
 			ArrayList<PostingLine> notInvoicedReceiptsLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> inventoryClearingLineList = new ArrayList<PostingLine>();
@@ -1472,7 +1472,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 			completeDocument(invoice1);
 			postDocument(invoice1);
 			
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MMatchInv[] miList = MMatchInv.getInvoiceLine(Env.getCtx(), invoiceLine1.get_ID(), getTrxName());
 			ArrayList<PostingLine> notInvoicedReceiptsLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> inventoryClearingLineList = new ArrayList<PostingLine>();
@@ -1581,7 +1581,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 			completeDocument(receipt1);
 			postDocument(receipt1);
 			
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MMatchInv[] miList = MMatchInv.getInOutLine(Env.getCtx(), receiptLine1.get_ID(), getTrxName());
 			ArrayList<PostingLine> notInvoicedReceiptsLineList = new ArrayList<PostingLine>();
 			ArrayList<PostingLine> inventoryClearingLineList = new ArrayList<PostingLine>();
@@ -1748,7 +1748,7 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 		return receiptLine;
 	}
 	
-	private void testMatchInvoicePosting(MAcctSchema[] ass, MMatchInv[] miList, ArrayList<PostingLine> notInvoicedReceiptsLineList, ArrayList<PostingLine> inventoryClearingLineList) {
+	private void testMatchInvoicePosting(IAcctSchemaInfo[] ass, MMatchInv[] miList, ArrayList<PostingLine> notInvoicedReceiptsLineList, ArrayList<PostingLine> inventoryClearingLineList) {
 		assertTrue(miList.length > 0);
 		
 		if (notInvoicedReceiptsLineList == null)
@@ -1777,32 +1777,31 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 		for (MMatchInv mi : miList) {
 			postDocument(mi);
 			
-			for (MAcctSchema as : ass) {
+			for (IAcctSchemaInfo as : ass) {
 				Doc doc = DocManager.getDocument(as, MMatchInv.Table_ID, mi.get_ID(), getTrxName());
 				MInvoiceLine invLine = new MInvoiceLine(Env.getCtx(), mi.getC_InvoiceLine_ID(), getTrxName());
 				doc.setC_BPartner_ID(invLine.getParent().getC_BPartner_ID());
-				MAccount acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+				IAccountInfo acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
 				
 				ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
-				MAccount acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+				IAccountInfo acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
 				
 				BigDecimal totalNIRAmtAcct = Env.ZERO;
 				BigDecimal totalInvClrAmtAcct = Env.ZERO;
-				Query query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, mi.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
-				List<MFactAcct> factAccts = query.list();
-				for (MFactAcct fa : factAccts) {
-					if (acctNIR.getAccount_ID() == fa.getAccount_ID())
-						totalNIRAmtAcct = totalNIRAmtAcct.add(fa.getAmtAcctDr()).subtract(fa.getAmtAcctCr());
-					else if (acctInvClr.getAccount_ID() == fa.getAccount_ID())
-						totalInvClrAmtAcct = totalInvClrAmtAcct.add(fa.getAmtAcctDr()).subtract(fa.getAmtAcctCr());
+				List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
+				for (IFactAcctInfo fa : factAccts) {
+					if (acctNIR.getRecord().getAccount_ID() == fa.getRecord().getAccount_ID())
+						totalNIRAmtAcct = totalNIRAmtAcct.add(fa.getRecord().getAmtAcctDr()).subtract(fa.getRecord().getAmtAcctCr());
+					else if (acctInvClr.getRecord().getAccount_ID() == fa.getRecord().getAccount_ID())
+						totalInvClrAmtAcct = totalInvClrAmtAcct.add(fa.getRecord().getAmtAcctDr()).subtract(fa.getRecord().getAmtAcctCr());
 				}
 				
-				BigDecimal totalAmtExpected = totalNIRAmtByCurrencyId.get(as.getC_Currency_ID());
+				BigDecimal totalAmtExpected = totalNIRAmtByCurrencyId.get(as.getRecord().getC_Currency_ID());
 				if (totalAmtExpected != null && totalAmtExpected.compareTo(totalNIRAmtAcct) == 0)
-					totalNIRAmtByCurrencyId.remove(as.getC_Currency_ID());
-				totalAmtExpected = totalInvClrAmtByCurrencyId.get(as.getC_Currency_ID());
+					totalNIRAmtByCurrencyId.remove(as.getRecord().getC_Currency_ID());
+				totalAmtExpected = totalInvClrAmtByCurrencyId.get(as.getRecord().getC_Currency_ID());
 				if (totalAmtExpected != null && totalAmtExpected.compareTo(totalInvClrAmtAcct) == 0)
-					totalInvClrAmtByCurrencyId.remove(as.getC_Currency_ID());
+					totalInvClrAmtByCurrencyId.remove(as.getRecord().getC_Currency_ID());
 			}
 		}
 		

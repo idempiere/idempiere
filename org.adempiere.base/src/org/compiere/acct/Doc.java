@@ -30,6 +30,9 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.info.IAccountInfo;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.compiere.model.I_C_AllocationHdr;
@@ -37,8 +40,6 @@ import org.compiere.model.I_C_Cash;
 import org.compiere.model.I_C_ProjectIssue;
 import org.compiere.model.I_M_MatchInv;
 import org.compiere.model.I_M_MatchPO;
-import org.compiere.model.MAccount;
-import org.compiere.model.MAcctSchema;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MDocType;
 import org.compiere.model.MInOut;
@@ -206,7 +207,6 @@ public abstract class Doc
 	/** Document Status			*/
 	public static final String	STATUS_Deferred			= "d";
 
-
 	/**
 	 *  Create Posting document
 	 *	@param as accounting schema
@@ -215,7 +215,7 @@ public abstract class Doc
 	 *  @param trxName transaction name
 	 *  @return new Posting Document instance or null
 	 */
-	public static Doc get (MAcctSchema as, int AD_Table_ID, int Record_ID, String trxName)
+	public static Doc get (IAcctSchemaInfo as, int AD_Table_ID, int Record_ID, String trxName)
 	{
 		return DocManager.getDocument(as, AD_Table_ID, Record_ID, trxName);
 	}	//	get
@@ -229,7 +229,7 @@ public abstract class Doc
 	 *  @return new Posting Document instance or null
 	 *  @throws AdempiereUserError
 	 */
-	public static Doc get (MAcctSchema as, int AD_Table_ID, ResultSet rs, String trxName)
+	public static Doc get (IAcctSchemaInfo as, int AD_Table_ID, ResultSet rs, String trxName)
 	{
 		return DocManager.getDocument(as, AD_Table_ID, rs, trxName);
 	}   //  get
@@ -243,7 +243,7 @@ public abstract class Doc
 	 *  @param trxName	    transaction
 	 *  @return null if the document was posted or error message
 	 */
-	public static String postImmediate (MAcctSchema[] ass,
+	public static String postImmediate (IAcctSchemaInfo[] ass,
 		int AD_Table_ID, int Record_ID, boolean force, String trxName)
 	{
 		return DocManager.postDocument(ass, AD_Table_ID, Record_ID, force, true, false, trxName);
@@ -262,7 +262,7 @@ public abstract class Doc
 			int AD_Table_ID, int Record_ID, boolean force)
 	{
 		String error = null;
-		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), AD_Client_ID);
+		IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), AD_Client_ID);
 		Trx trx = Trx.get(Trx.createTrxName("ManulPosting"), true);
 		trx.setDisplayName(Doc.class.getName()+"_manualPosting");
 		try
@@ -346,12 +346,12 @@ public abstract class Doc
 	 * 	@param defaultDocumentType default document type or null
 	 * 	@param trxName trx
 	 */
-	public Doc (MAcctSchema as, Class<?> clazz, ResultSet rs, String defaultDocumentType, String trxName)
+	public Doc (IAcctSchemaInfo as, Class<?> clazz, ResultSet rs, String defaultDocumentType, String trxName)
 	{
 		p_Status = STATUS_Error;
 		m_as = as;
-		m_ctx = new Properties(m_as.getCtx());
-		m_ctx.setProperty(Env.AD_CLIENT_ID, String.valueOf(m_as.getAD_Client_ID()));
+		m_ctx = new Properties(m_as.getPO().getCtx());
+		m_ctx.setProperty(Env.AD_CLIENT_ID, String.valueOf(m_as.getRecord().getAD_Client_ID()));
 
 		String className = clazz.getName();
 		className = className.substring(className.lastIndexOf('.')+1);
@@ -392,7 +392,7 @@ public abstract class Doc
 	}   //  Doc
 
 	/** Accounting Schema */
-	private MAcctSchema    		m_as = null;
+	private IAcctSchemaInfo    		m_as = null;
 	/** Properties					*/
 	private Properties			m_ctx = null;
 	/** Transaction Name			*/
@@ -576,10 +576,10 @@ public abstract class Doc
 			return msgreturn.toString();
 		}	
 		//
-		if (p_po.getAD_Client_ID() != m_as.getAD_Client_ID())
+		if (p_po.getAD_Client_ID() != m_as.getRecord().getAD_Client_ID())
 		{
 			StringBuilder error = new StringBuilder("AD_Client_ID Conflict - Document=").append(p_po.getAD_Client_ID())
-				.append(", AcctSchema=").append(m_as.getAD_Client_ID());
+				.append(", AcctSchema=").append(m_as.getRecord().getAD_Client_ID());
 			log.severe(error.toString());
 			return error.toString();
 		}
@@ -650,7 +650,7 @@ public abstract class Doc
 		{
 			//	if acct schema has "only" org, skip
 			boolean skip = false;
-			if (m_as.getAD_OrgOnly_ID() != 0)
+			if (m_as.getRecord().getAD_OrgOnly_ID() != 0)
 			{
 				//	Header Level Org
 				skip = m_as.isSkipOrg(getAD_Org_ID());
@@ -733,7 +733,7 @@ public abstract class Doc
 			.append(" - " + Msg.getElement(Env.getCtx(),"DocStatus") + "=").append(MRefList.getListName(getCtx(), 131, m_DocStatus))
 			.append(" - " + Msg.getMsg(Env.getCtx(),"PeriodOpen") + "=").append(Msg.getMsg(Env.getCtx(), String.valueOf(isPeriodOpen())))
 			.append(" - " + Msg.getElement(Env.getCtx(),"IsBalanced") + "=").append( Msg.getMsg(Env.getCtx(), String.valueOf(isBalanced())))
-			.append(" - " + Msg.getElement(Env.getCtx(),"C_AcctSchema_ID") + "=").append(m_as.getName());
+			.append(" - " + Msg.getElement(Env.getCtx(),"C_AcctSchema_ID") + "=").append(m_as.getRecord().getName());
 			note.setTextMsg(Text.toString());
 			try {
 				note.saveEx();
@@ -773,7 +773,7 @@ public abstract class Doc
 				.append("WHERE AD_Table_ID=?")
 				.append(" AND Record_ID=?")
 				.append(" AND C_AcctSchema_ID=?");
-		int no = DB.executeUpdate(sql.toString(), new Object[] {get_Table_ID(), p_po.get_ID(), m_as.getC_AcctSchema_ID()}, false, getTrxName());
+		int no = DB.executeUpdate(sql.toString(), new Object[] {get_Table_ID(), p_po.get_ID(), m_as.getRecord().getC_AcctSchema_ID()}, false, getTrxName());
 		if (no != 0)
 			if (log.isLoggable(Level.INFO)) log.info("inserted=" + no);
 		
@@ -785,7 +785,7 @@ public abstract class Doc
 				.append(" AND Record_ID=?")
 				.append(" AND C_AcctSchema_ID=?");
 		no = DB.executeUpdate(sql.toString(), 
-				new Object[] {new Timestamp(System.currentTimeMillis()), get_Table_ID(), p_po.get_ID(), m_as.getC_AcctSchema_ID()}, 
+				new Object[] {new Timestamp(System.currentTimeMillis()), get_Table_ID(), p_po.get_ID(), m_as.getRecord().getC_AcctSchema_ID()}, 
 				false, getTrxName());
 		if (no != 0)
 			if (log.isLoggable(Level.INFO)) log.info("updated=" + no);
@@ -795,7 +795,7 @@ public abstract class Doc
 			.append("WHERE AD_Table_ID=?")
 			.append(" AND Record_ID=?")
 			.append(" AND C_AcctSchema_ID=?");
-		no = DB.executeUpdate(sql.toString(), new Object[] {get_Table_ID(), p_po.get_ID(), m_as.getC_AcctSchema_ID()}, false, getTrxName());
+		no = DB.executeUpdate(sql.toString(), new Object[] {get_Table_ID(), p_po.get_ID(), m_as.getRecord().getC_AcctSchema_ID()}, false, getTrxName());
 		if (no != 0)
 			if (log.isLoggable(Level.INFO)) log.info("deleted=" + no);
 		return no;
@@ -1114,7 +1114,7 @@ public abstract class Doc
 	 *  @param acctSchema accounting schema
 	 *  @return true, if convertible to accounting currency
 	 */
-	public boolean isConvertible (MAcctSchema acctSchema)
+	public boolean isConvertible (IAcctSchemaInfo acctSchema)
 	{
 		//  No Currency in document
 		if (getC_Currency_ID() == NO_CURRENCY)
@@ -1125,7 +1125,7 @@ public abstract class Doc
 		// Journal from a different acct schema
 		if (this instanceof Doc_GLJournal) {
 			int glj_as = ((Integer) p_po.get_Value("C_AcctSchema_ID")).intValue();
-			if (acctSchema.getC_AcctSchema_ID() != glj_as)
+			if (acctSchema.getRecord().getC_AcctSchema_ID() != glj_as)
 				return true;
 		}
 		//  Get All Currencies
@@ -1139,7 +1139,7 @@ public abstract class Doc
 		}
 
 		//  just one and the same
-		if (set.size() == 1 && acctSchema.getC_Currency_ID() == getC_Currency_ID())
+		if (set.size() == 1 && acctSchema.getRecord().getC_Currency_ID() == getC_Currency_ID())
 		{
 			if (log.isLoggable(Level.FINE)) log.fine("(same) Cur=" + getC_Currency_ID() + " - " + toString());
 			return true;
@@ -1150,15 +1150,15 @@ public abstract class Doc
 		while (it.hasNext() && convertible)
 		{
 			int C_Currency_ID = it.next().intValue();
-			if (C_Currency_ID != acctSchema.getC_Currency_ID())
+			if (C_Currency_ID != acctSchema.getRecord().getC_Currency_ID())
 			{
-				BigDecimal amt = MConversionRate.getRate (C_Currency_ID, acctSchema.getC_Currency_ID(),
+				BigDecimal amt = MConversionRate.getRate (C_Currency_ID, acctSchema.getRecord().getC_Currency_ID(),
 					getDateAcct(), getC_ConversionType_ID(), getAD_Client_ID(), getAD_Org_ID());
 				if (amt == null)
 				{
 					convertible = false;
 					log.warning ("NOT from C_Currency_ID=" + C_Currency_ID
-						+ " to " + acctSchema.getC_Currency_ID()
+						+ " to " + acctSchema.getRecord().getC_Currency_ID()
 						+ " - " + toString());
 				}
 				else
@@ -1166,7 +1166,7 @@ public abstract class Doc
 			}
 		}
 
-		if (log.isLoggable(Level.FINE)) log.fine("Convertible=" + convertible + ", AcctSchema C_Currency_ID=" + acctSchema.getC_Currency_ID() + " - " + toString());
+		if (log.isLoggable(Level.FINE)) log.fine("Convertible=" + convertible + ", AcctSchema C_Currency_ID=" + acctSchema.getRecord().getC_Currency_ID() + " - " + toString());
 		return convertible;
 	}	//	isConvertible
 
@@ -1373,7 +1373,7 @@ public abstract class Doc
 	 *  @param as accounting schema
 	 *  @return C_ValidCombination_ID
 	 */
-	public int getValidCombination_ID (int AcctType, MAcctSchema as)
+	public int getValidCombination_ID (int AcctType, IAcctSchemaInfo as)
 	{
 		int para_1 = 0;     //  first parameter (second is always AcctSchema)
 		String sql = null;
@@ -1564,11 +1564,11 @@ public abstract class Doc
 		{
 			pstmt = DB.prepareStatement(sql, getTrxName());
 			if (para_1 == -1)   //  GL Accounts
-				pstmt.setInt (1, as.getC_AcctSchema_ID());
+				pstmt.setInt (1, as.getRecord().getC_AcctSchema_ID());
 			else
 			{
 				pstmt.setInt (1, para_1);
-				pstmt.setInt (2, as.getC_AcctSchema_ID());
+				pstmt.setInt (2, as.getRecord().getC_AcctSchema_ID());
 			}
 			rs = pstmt.executeQuery();
 			if (rs.next())
@@ -1599,13 +1599,13 @@ public abstract class Doc
 	 *  @param as accounting schema
 	 *  @return MAccount
 	 */
-	public final MAccount getAccount (int AcctType, MAcctSchema as)
+	public final IAccountInfo getAccount (int AcctType, IAcctSchemaInfo as)
 	{
 		int C_ValidCombination_ID = getValidCombination_ID(AcctType, as);
 		if (C_ValidCombination_ID == 0)
 			return null;
 		//	Return Account
-		MAccount acct = MAccount.get (as.getCtx(), C_ValidCombination_ID);
+		IAccountInfo acct = AcctInfoServices.getAccountInfoService().get(as.getPO().getCtx(), C_ValidCombination_ID);
 		return acct;
 	}	//	getAccount
 
@@ -2550,7 +2550,7 @@ public abstract class Doc
 	 *  @param as accounting schema
 	 *  @return Facts
 	 */
-	public abstract ArrayList<Fact> createFacts (MAcctSchema as);
+	public abstract ArrayList<Fact> createFacts (IAcctSchemaInfo as);
 
 	/**
 	 *  Get Facts (the accounting logic)
@@ -2564,7 +2564,7 @@ public abstract class Doc
 	 * Get accounting schema
 	 * @return MAcctSchema
 	 */
-	protected MAcctSchema getAcctSchema() {
+	protected IAcctSchemaInfo getAcctSchema() {
 		return m_as;
 	}
 	

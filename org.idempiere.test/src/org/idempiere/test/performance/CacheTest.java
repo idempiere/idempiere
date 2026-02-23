@@ -57,6 +57,8 @@ import org.adempiere.base.IReplenishFactory;
 import org.adempiere.base.IResourceFinder;
 import org.adempiere.base.LookupFactoryHelper;
 import org.adempiere.base.ServiceQuery;
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.adempiere.model.IAddressValidation;
 import org.adempiere.model.IShipmentProcessor;
 import org.adempiere.model.ITaxProvider;
@@ -79,7 +81,6 @@ import org.compiere.model.IImageStore;
 import org.compiere.model.I_AD_Table;
 import org.compiere.model.I_M_InventoryLine;
 import org.compiere.model.Lookup;
-import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAddressValidation;
 import org.compiere.model.MAddressValidationCfg;
 import org.compiere.model.MBPartner;
@@ -587,7 +588,7 @@ public class CacheTest extends AbstractTestCase {
 			String error = DocumentEngine.postImmediate(Env.getCtx(), invoice.getAD_Client_ID(), MInvoice.Table_ID, invoice.get_ID(), true, getTrxName());
 			assertNull(error, "Error posting invoice: " + error);
 		}
-		MAcctSchema as = MAcctSchema.get(C_AcctSchema_ID);
+		IAcctSchemaInfo as = AcctInfoServices.getAcctSchemaInfoService().get(C_AcctSchema_ID);
 		Doc doc = DocManager.getDocument(as, MInvoice.Table_ID, invoice.get_ID(), getTrxName());
 		assertNotNull(doc, "Failed load acct doc for invoice");
 		cache = findByNameAndKey(cacheName, cacheKey);

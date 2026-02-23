@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -54,7 +55,7 @@ public class MCostQueue extends X_M_CostQueue
 	 *	@return cost queue or null
 	 */
 	public static MCostQueue get (MProduct product, int M_AttributeSetInstance_ID,
-		MAcctSchema as, int AD_Org_ID, int M_CostElement_ID, String trxName)
+			IAcctSchemaInfo as, int AD_Org_ID, int M_CostElement_ID, String trxName)
 	{
 		MCostQueue costQ = null;
 		String sql = "SELECT * FROM M_CostQueue "
@@ -72,8 +73,8 @@ public class MCostQueue extends X_M_CostQueue
 			pstmt.setInt (2, AD_Org_ID);
 			pstmt.setInt (3, product.getM_Product_ID());
 			pstmt.setInt (4, M_AttributeSetInstance_ID);
-			pstmt.setInt (5, as.getM_CostType_ID());
-			pstmt.setInt (6, as.getC_AcctSchema_ID());
+			pstmt.setInt (5, as.getRecord().getM_CostType_ID());
+			pstmt.setInt (6, as.getRecord().getC_AcctSchema_ID());
 			pstmt.setInt (7, M_CostElement_ID);
 			rs = pstmt.executeQuery ();
 			if (rs.next ())
@@ -107,7 +108,7 @@ public class MCostQueue extends X_M_CostQueue
 	 *	@return cost queue or null
 	 */
 	public static MCostQueue[] getQueue (MProduct product, int M_ASI_ID,
-		MAcctSchema as, int Org_ID, MCostElement ce, String trxName)
+			IAcctSchemaInfo as, int Org_ID, MCostElement ce, String trxName)
 	{
 		ArrayList<MCostQueue> list = new ArrayList<MCostQueue>();
 		StringBuilder sql = new StringBuilder("SELECT * FROM M_CostQueue ")
@@ -129,8 +130,8 @@ public class MCostQueue extends X_M_CostQueue
 			pstmt.setInt (1, product.getAD_Client_ID());
 			pstmt.setInt (2, Org_ID);
 			pstmt.setInt (3, product.getM_Product_ID());
-			pstmt.setInt (4, as.getM_CostType_ID());
-			pstmt.setInt (5, as.getC_AcctSchema_ID());
+			pstmt.setInt (4, as.getRecord().getM_CostType_ID());
+			pstmt.setInt (5, as.getRecord().getC_AcctSchema_ID());
 			pstmt.setInt (6, ce.getM_CostElement_ID());
 			if (M_ASI_ID != 0)
 				pstmt.setInt (7, M_ASI_ID);
@@ -165,7 +166,7 @@ public class MCostQueue extends X_M_CostQueue
 	 *	@return cost price reduced or null if error
 	 */
 	public static BigDecimal adjustQty (MProduct product, int M_ASI_ID,
-		MAcctSchema as, int Org_ID, MCostElement ce, BigDecimal Qty, 
+			IAcctSchemaInfo as, int Org_ID, MCostElement ce, BigDecimal Qty, 
 		String trxName)
 	{
 		if (Qty.signum() == 0)
@@ -235,7 +236,7 @@ public class MCostQueue extends X_M_CostQueue
 	 *	@return cost for qty or null of error
 	 */
 	public static BigDecimal getCosts (MProduct product, int M_ASI_ID,
-		MAcctSchema as, int Org_ID, MCostElement ce, BigDecimal Qty, 
+			org.adempiere.base.acct.info.IAcctSchemaInfo as, int Org_ID, MCostElement ce, BigDecimal Qty, 
 		String trxName)
 	{
 		if (Qty.signum() == 0)
@@ -366,12 +367,12 @@ public class MCostQueue extends X_M_CostQueue
 	 *	@param trxName transaction
 	 */
 	public MCostQueue (MProduct product, int M_AttributeSetInstance_ID, 
-		MAcctSchema as, int AD_Org_ID, int M_CostElement_ID, String trxName)
+			IAcctSchemaInfo as, int AD_Org_ID, int M_CostElement_ID, String trxName)
 	{
 		this (product.getCtx(), 0, trxName);
 		setClientOrg(product.getAD_Client_ID(), AD_Org_ID);
-		setC_AcctSchema_ID(as.getC_AcctSchema_ID());
-		setM_CostType_ID(as.getM_CostType_ID());
+		setC_AcctSchema_ID(as.getRecord().getC_AcctSchema_ID());
+		setM_CostType_ID(as.getRecord().getM_CostType_ID());
 		setM_Product_ID(product.getM_Product_ID());
 		setM_AttributeSetInstance_ID(M_AttributeSetInstance_ID);
 		setM_CostElement_ID(M_CostElement_ID);

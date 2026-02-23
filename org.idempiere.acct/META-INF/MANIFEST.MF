@@ -9,6 +9,7 @@ Require-Bundle: org.adempiere.base;bundle-version="0.0.0"
 Eclipse-RegisterBuddy: org.adempiere.base
 Service-Component: OSGI-INF/*.xml
 Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.idempiere.acct.AcctActivator
 Bundle-ClassPath: .
 Automatic-Module-Name: org.idempiere.acct
 Bundle-Vendor: iDempiere Community

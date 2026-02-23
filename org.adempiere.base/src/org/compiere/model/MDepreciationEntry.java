@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
@@ -82,9 +83,9 @@ implements DocAction
 	 * Set the initial defaults for a new record
 	 */
 	private void setInitialDefaults() {
-		MAcctSchema acctSchema = MClient.get(getCtx()).getAcctSchema();
-		setC_AcctSchema_ID(acctSchema.get_ID());
-		setC_Currency_ID(acctSchema.getC_Currency_ID());
+		IAcctSchemaInfo acctSchema = MClient.get(getCtx()).getAcctSchema();
+		setC_AcctSchema_ID(acctSchema.getPO().get_ID());
+		setC_Currency_ID(acctSchema.getRecord().getC_Currency_ID());
 		setA_Entry_Type (A_ENTRY_TYPE_Depreciation); // TODO: workaround
 		setPostingType (POSTINGTYPE_Actual);	// A
 		setProcessed (false);

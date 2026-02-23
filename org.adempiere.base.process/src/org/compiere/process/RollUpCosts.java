@@ -265,7 +265,7 @@ public class RollUpCosts extends SvrProcess {
 			StringBuilder productCostSql = new StringBuilder("SELECT * FROM M_Cost ")
 					.append(" WHERE M_Product_ID = ").append(productId).append(" AND AD_Client_ID = ").append(getAD_Client_ID())
 					.append(" AND M_CostElement_ID = ").append(costelement_id)
-					.append(" AND C_AcctSchema_ID = ").append(MClient.get(getAD_Client_ID()).getAcctSchema().getC_AcctSchema_ID())
+					.append(" AND C_AcctSchema_ID = ").append(MClient.get(getAD_Client_ID()).getAcctSchema().getRecord().getC_AcctSchema_ID())
 					.append(" AND M_PRODUCT_ID IN (SELECT b.M_PRODUCT_ID FROM PP_PRODUCT_BOM b ")
 					.append(" JOIN PP_PRODUCT_BOMLINE bl ON b.PP_PRODUCT_BOM_ID = bl.PP_PRODUCT_BOM_ID")
 					.append(" WHERE b.BOMType='A' AND b.BOMUse='A' AND b.IsActive='Y' ") 

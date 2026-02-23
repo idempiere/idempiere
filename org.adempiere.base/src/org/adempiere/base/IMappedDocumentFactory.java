@@ -27,8 +27,8 @@ package org.adempiere.base;
 import java.sql.ResultSet;
 import java.util.function.Function;
 
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.compiere.acct.Doc;
-import org.compiere.model.MAcctSchema;
 
 /**
  * Factory interface for mapping between tableName+gaap to {@link Doc} implementation.
@@ -56,11 +56,11 @@ public interface IMappedDocumentFactory {
 	 * Parameter class for doc supplier
 	 */
 	public final static class Parameter {
-		public MAcctSchema as;
+		public IAcctSchemaInfo as;
 		public ResultSet rs;
 		public String trxName;
 		
-		public Parameter(MAcctSchema as, ResultSet rs, String trxName) {
+		public Parameter(IAcctSchemaInfo as, ResultSet rs, String trxName) {
 			this.as = as;
 			this.rs = rs;
 			this.trxName = trxName;

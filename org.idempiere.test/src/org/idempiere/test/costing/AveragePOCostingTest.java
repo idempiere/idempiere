@@ -45,10 +45,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.constants.IAcctSchemaConstants;
+import org.adempiere.base.acct.info.IAccountInfo;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.info.IFactAcctInfo;
 import org.compiere.acct.Doc;
 import org.compiere.acct.DocManager;
-import org.compiere.model.MAccount;
-import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAllocationHdr;
 import org.compiere.model.MAttributeSet;
 import org.compiere.model.MAttributeSetExclude;
@@ -61,7 +64,6 @@ import org.compiere.model.MCostDetail;
 import org.compiere.model.MCostElement;
 import org.compiere.model.MCurrency;
 import org.compiere.model.MDocType;
-import org.compiere.model.MFactAcct;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
 import org.compiere.model.MInOutLineMA;
@@ -88,7 +90,6 @@ import org.compiere.model.MProject;
 import org.compiere.model.MProjectIssue;
 import org.compiere.model.MStorageOnHand;
 import org.compiere.model.ProductCost;
-import org.compiere.model.Query;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
@@ -117,8 +118,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	@Test
 	public void testMaterialReceipt() {
 		MClient client = MClient.get(Env.getCtx());
-		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+		IAcctSchemaInfo as = client.getAcctSchema();
+		assertEquals(as.getRecord().getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 		
 		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class)) {
 			MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
@@ -146,11 +147,11 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			MInOutLine receiptLine = createPOAndMRForProduct(product.get_ID(), null, null);
 			
 			product.set_TrxName(getTrxName());
-			MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertNotNull(cost, "No MCost record found");			
 			assertEquals(new BigDecimal("2.00"), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
 			
-			MCostDetail cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			MCostDetail cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine.getC_OrderLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for material receipt line");
 			assertEquals(1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 			assertEquals(new BigDecimal("2.00"), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
@@ -159,7 +160,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			cost.load(getTrxName());
 			//(2+3)/2
 			assertEquals(new BigDecimal("2.50"), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
-			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine.getC_OrderLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for material receipt line");
 			assertEquals(1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 			assertEquals(new BigDecimal("3.00"), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
@@ -179,7 +180,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			//back to cost=2 after reversal
 			cost.load(getTrxName());
 			assertEquals(new BigDecimal("2.00"), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
-			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine.getC_OrderLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 			assertEquals(0, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 			assertEquals(new BigDecimal("0.00"), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
 		}
@@ -189,12 +190,12 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	public void testShipment() {
 		MProduct product = new MProduct(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id, getTrxName());
 		MClient client = MClient.get(Env.getCtx());
-		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
-		MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+		IAcctSchemaInfo as = client.getAcctSchema();
+		assertEquals(as.getRecord().getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+		MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 		if (cost == null || cost.getCurrentCostPrice().signum() == 0) {
 			createPOAndMRForProduct(DictionaryIDs.M_Product.AZALEA_BUSH.id, null, new BigDecimal("5.00"));
-			cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 		}
 		BigDecimal currentCost = cost.getCurrentCostPrice();
 		
@@ -239,7 +240,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		cost.load(getTrxName());
 		assertEquals(currentCost.setScale(2, RoundingMode.HALF_UP), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
 		
-		MCostDetail cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine.get_ID(), 0, as.get_ID(), getTrxName());
+		MCostDetail cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine.get_ID(), 0, as.getPO().get_ID(), getTrxName());
 		assertNotNull(cd, "MCostDetail not found for shipment line");
 		assertEquals(-1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 		assertEquals(currentCost.negate().setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");		
@@ -254,7 +255,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		
 		MInOut reversal = new MInOut(Env.getCtx(), shipment.getReversal_ID(), getTrxName());
 		MInOutLine[] reversalLines = reversal.getLines();
-		cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", reversalLines[0].get_ID(), 0, as.get_ID(), getTrxName());
+		cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", reversalLines[0].get_ID(), 0, as.getPO().get_ID(), getTrxName());
 		assertEquals(1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 		assertEquals(currentCost.setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
 	}
@@ -262,13 +263,13 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	@Test
 	public void testInternalUse() {
 		MClient client = MClient.get(Env.getCtx());
-		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+		IAcctSchemaInfo as = client.getAcctSchema();
+		assertEquals(as.getRecord().getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 		MProduct product = new MProduct(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id, getTrxName());
-		MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+		MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 		if (cost == null || cost.getCurrentCostPrice().signum() == 0 || cost.getCurrentQty().signum() == 0) {
 			createPOAndMRForProduct(DictionaryIDs.M_Product.MULCH.id, null, null);
-			cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 		}
 		assertNotNull(cost, "No MCost Record");
 		BigDecimal currentCost = cost.getCurrentCostPrice();
@@ -290,7 +291,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, inventory.getDocStatus(), "Unexpected Document Status");
 		
-		MCostDetail cd = MCostDetail.get(Env.getCtx(), "M_InventoryLine_ID=?", line.getM_InventoryLine_ID(), 0, as.get_ID(), getTrxName());
+		MCostDetail cd = MCostDetail.get(Env.getCtx(), "M_InventoryLine_ID=?", line.getM_InventoryLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 		assertNotNull(cd, "MCostDetail not found for internal use line");
 		assertEquals(-1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 		assertEquals(currentCost.negate().setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
@@ -304,7 +305,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		assertEquals(DocAction.STATUS_Reversed, inventory.getDocStatus(), "Unexpected Document Status");
 		
 		MInventory reversal = new MInventory(Env.getCtx(), inventory.getReversal_ID(), getTrxName());
-		cd = MCostDetail.get(Env.getCtx(), "M_InventoryLine_ID=?", reversal.getLines(false)[0].getM_InventoryLine_ID(), 0, as.get_ID(), getTrxName());
+		cd = MCostDetail.get(Env.getCtx(), "M_InventoryLine_ID=?", reversal.getLines(false)[0].getM_InventoryLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 		assertNotNull(cd, "MCostDetail not found for internal use line");
 		assertEquals(1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 		assertEquals(currentCost.setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
@@ -315,13 +316,13 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	@Test
 	public void testProjectIssue() {
 		MClient client = MClient.get(Env.getCtx());
-		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+		IAcctSchemaInfo as = client.getAcctSchema();
+		assertEquals(as.getRecord().getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 		MProduct product = new MProduct(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id, getTrxName());
-		MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+		MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 		if (cost == null || cost.getCurrentCostPrice().signum() == 0 || cost.getCurrentQty().signum() == 0) {
 			createPOAndMRForProduct(DictionaryIDs.M_Product.MULCH.id, null, null);
-			cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 		}
 		assertNotNull(cost, "No MCost Record");
 		BigDecimal currentCost = cost.getCurrentCostPrice();
@@ -347,7 +348,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertNull(error, error);
 		}
 		
-		MCostDetail cd = MCostDetail.get(Env.getCtx(), "C_ProjectIssue_ID=?", issue.getC_ProjectIssue_ID(), 0, as.get_ID(), getTrxName());
+		MCostDetail cd = MCostDetail.get(Env.getCtx(), "C_ProjectIssue_ID=?", issue.getC_ProjectIssue_ID(), 0, as.getPO().get_ID(), getTrxName());
 		assertNotNull(cd, "MCostDetail not found for project issue line");
 		assertEquals(-1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 		assertEquals(currentCost.negate().setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
@@ -360,7 +361,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Reversed, issue.getDocStatus(), "Unexpected Document Status");
 		
-		cd = MCostDetail.get(Env.getCtx(), "C_ProjectIssue_ID=?", issue.getReversal_ID(), 0, as.get_ID(), getTrxName());
+		cd = MCostDetail.get(Env.getCtx(), "C_ProjectIssue_ID=?", issue.getReversal_ID(), 0, as.getPO().get_ID(), getTrxName());
 		assertNotNull(cd, "MCostDetail not found for project issue line");
 		assertEquals(1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 		assertEquals(currentCost.setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
@@ -392,18 +393,18 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			mockProductGet(mockedProduct, mulchX);
 			
 			MClient client = MClient.get(Env.getCtx());
-			MAcctSchema as = client.getAcctSchema();
-			assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
-			MCost cost = mulch.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			IAcctSchemaInfo as = client.getAcctSchema();
+			assertEquals(as.getRecord().getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+			MCost cost = mulch.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			if (cost == null || cost.getCurrentCostPrice().signum() == 0 || cost.getCurrentQty().signum() == 0) {
 				createPOAndMRForProduct(DictionaryIDs.M_Product.MULCH.id, null, null);
-				cost = mulch.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+				cost = mulch.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			}
 			BigDecimal mulchCost = cost.getCurrentCostPrice();
-			cost = azb.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			cost = azb.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			if (cost == null || cost.getCurrentCostPrice().signum() == 0 || cost.getCurrentQty().signum() == 0) {
 				createPOAndMRForProduct(DictionaryIDs.M_Product.AZALEA_BUSH.id, null, null);
-				cost = azb.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+				cost = azb.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			}
 			BigDecimal azbCost = cost.getCurrentCostPrice();
 			
@@ -462,26 +463,26 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertEquals(DocAction.STATUS_Completed, production.getDocStatus(), "Production Status="+production.getDocStatus());
 			
 			BigDecimal rollup = mulchCost.add(azbCost); 
-			MCostDetail cd = MCostDetail.get(Env.getCtx(), "M_ProductionLine_ID=?", plines[0].getM_ProductionLine_ID(), 0, as.get_ID(), getTrxName());
+			MCostDetail cd = MCostDetail.get(Env.getCtx(), "M_ProductionLine_ID=?", plines[0].getM_ProductionLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for project issue line");
 			assertEquals(1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 			assertEquals(rollup.setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
 			mulchX.set_TrxName(getTrxName());
-			cost = mulchX.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			cost = mulchX.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertEquals(rollup.setScale(2, RoundingMode.HALF_UP), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost");
 			
-			cd = MCostDetail.get(Env.getCtx(), "M_ProductionLine_ID=?", plines[1].getM_ProductionLine_ID(), 0, as.get_ID(), getTrxName());
+			cd = MCostDetail.get(Env.getCtx(), "M_ProductionLine_ID=?", plines[1].getM_ProductionLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for project issue line");
 			assertEquals(-1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 			assertEquals(mulchCost.negate().setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
-			cost = mulch.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			cost = mulch.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertEquals(mulchCost.setScale(2, RoundingMode.HALF_UP), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost");
 			
-			cd = MCostDetail.get(Env.getCtx(), "M_ProductionLine_ID=?", plines[2].getM_ProductionLine_ID(), 0, as.get_ID(), getTrxName());
+			cd = MCostDetail.get(Env.getCtx(), "M_ProductionLine_ID=?", plines[2].getM_ProductionLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for project issue line");
 			assertEquals(-1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 			assertEquals(azbCost.negate().setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
-			cost = azb.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			cost = azb.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertEquals(azbCost.setScale(2, RoundingMode.HALF_UP), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost");
 			
 			//reverse production
@@ -493,30 +494,30 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			MProduction reversal = new MProduction(Env.getCtx(), production.getReversal_ID(), getTrxName());
 			MProductionLine[] reversalLines = reversal.getLines();
 			
-			cd = MCostDetail.get(Env.getCtx(), "M_ProductionLine_ID=?", reversalLines[0].getM_ProductionLine_ID(), 0, as.get_ID(), getTrxName());
+			cd = MCostDetail.get(Env.getCtx(), "M_ProductionLine_ID=?", reversalLines[0].getM_ProductionLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for project issue line");
 			assertEquals(-1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 			assertEquals(rollup.negate().setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
 			
-			cd = MCostDetail.get(Env.getCtx(), "M_ProductionLine_ID=?", reversalLines[1].getM_ProductionLine_ID(), 0, as.get_ID(), getTrxName());
+			cd = MCostDetail.get(Env.getCtx(), "M_ProductionLine_ID=?", reversalLines[1].getM_ProductionLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for project issue line");
 			assertEquals(1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 			assertEquals(mulchCost.setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
-			cost = mulch.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			cost = mulch.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertEquals(mulchCost.setScale(2, RoundingMode.HALF_UP), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost");
 			
-			cd = MCostDetail.get(Env.getCtx(), "M_ProductionLine_ID=?", reversalLines[2].getM_ProductionLine_ID(), 0, as.get_ID(), getTrxName());
+			cd = MCostDetail.get(Env.getCtx(), "M_ProductionLine_ID=?", reversalLines[2].getM_ProductionLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for project issue line");
 			assertEquals(1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 			assertEquals(azbCost.setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
-			cost = azb.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			cost = azb.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 		}
 	}
 	
 	@Test
 	public void testMRAndShipmentByLot() {
 		MClient client = MClient.get(Env.getCtx());
-		MAcctSchema as = client.getAcctSchema();
+		IAcctSchemaInfo as = client.getAcctSchema();
 
 		MAttributeSet mas = new MAttributeSet(Env.getCtx(), DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id, getTrxName());
 		mas.setMandatoryType(MAttributeSet.MANDATORYTYPE_NotMandatory);
@@ -544,12 +545,12 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			mockedCategory.when(() -> MProductCategory.get(any(Properties.class), anyInt())).thenCallRealMethod();
 			mockedCategory.when(() -> MProductCategory.get(any(Properties.class), eq(lotLevel.get_ID()))).thenReturn(lotLevel);
 						
-			MProductCategoryAcct lotLevelAcct = MProductCategoryAcct.get(lotLevel.get_ID(), as.get_ID(), getTrxName());
+			MProductCategoryAcct lotLevelAcct = MProductCategoryAcct.get(lotLevel.get_ID(), as.getPO().get_ID(), getTrxName());
 			lotLevelAcct = new MProductCategoryAcct(Env.getCtx(), lotLevelAcct, getTrxName());
-			lotLevelAcct.setCostingLevel(MAcctSchema.COSTINGLEVEL_BatchLot);
+			lotLevelAcct.setCostingLevel(IAcctSchemaConstants.COSTINGLEVEL_BatchLot);
 			lotLevelAcct.saveEx();
 			CacheMgt.get().reset(MProductCategoryAcct.Table_Name);
-			MProductCategoryAcct.get(lotLevel.get_ID(), as.get_ID(), getTrxName());
+			MProductCategoryAcct.get(lotLevel.get_ID(), as.getPO().get_ID(), getTrxName());
 			
 			MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
 			product.setM_Product_Category_ID(lotLevel.get_ID());
@@ -589,47 +590,46 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			asi2.saveEx();			
 			MInOutLine line2 = createPOAndMRForProduct(product.get_ID(), asi2, new BigDecimal("3.00"));
 			
-			MCostDetail cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", line1.getC_OrderLine_ID(), asi1.get_ID(), as.get_ID(), getTrxName());
+			MCostDetail cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", line1.getC_OrderLine_ID(), asi1.get_ID(), as.getPO().get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for order line1");
 			assertEquals(1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 			assertEquals(new BigDecimal("2").setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
 			
-			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", line2.getC_OrderLine_ID(), asi2.get_ID(), as.get_ID(), getTrxName());
+			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", line2.getC_OrderLine_ID(), asi2.get_ID(), as.getPO().get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for order line1");
 			assertEquals(1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 			assertEquals(new BigDecimal("3").setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
 			
 			product.set_TrxName(getTrxName());
-			MCost cost1 = product.getCostingRecord(as, getAD_Org_ID(), asi1.get_ID(), as.getCostingMethod());
+			MCost cost1 = product.getCostingRecord(as, getAD_Org_ID(), asi1.get_ID(), as.getRecord().getCostingMethod());
 			assertNotNull(cost1, "MCost record not found");
 			assertEquals(new BigDecimal("2.00"), cost1.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP));
 			
-			MCost cost2 = product.getCostingRecord(as, getAD_Org_ID(), asi2.get_ID(), as.getCostingMethod());
+			MCost cost2 = product.getCostingRecord(as, getAD_Org_ID(), asi2.get_ID(), as.getRecord().getCostingMethod());
 			assertNotNull(cost2, "MCost record not found");
 			assertEquals(new BigDecimal("3.00"), cost2.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP));
 			
 			//check posting
 			ProductCost pc = new ProductCost(Env.getCtx(), line1.getM_Product_ID(), line1.getM_AttributeSetInstance_ID(), getTrxName());
-			MAccount asset = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			IAccountInfo asset = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
 			Doc doc = DocManager.getDocument(as, MInOut.Table_ID, line1.getM_InOut_ID(), getTrxName());
 			doc.setC_BPartner_ID(line1.getParent().getC_BPartner_ID());
-			MAccount acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
-			Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, line1.getM_InOut_ID(), as.getC_AcctSchema_ID(), getTrxName());
-			List<MFactAcct> fas = query.list();					
+			IAccountInfo acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+			List<IFactAcctInfo> fas = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, line1.getM_InOut_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
 			assertTrue(fas.size() > 0, "Failed to retrieve fact posting entries for shipment document");
 			boolean nirFound = false;
 			boolean assetFound = false;
-			for (MFactAcct fa : fas) {
-				if (asset.getAccount_ID() == fa.getAccount_ID()) {
-					if (line1.get_ID() == fa.getLine_ID()) {
-						assertEquals(fa.getAmtSourceDr().abs().toPlainString(), fa.getAmtSourceDr().toPlainString(), "Not DR Asset");
-						assertTrue(fa.getAmtSourceDr().signum() > 0, "Not DR Asset");
+			for (IFactAcctInfo fa : fas) {
+				if (asset.getRecord().getAccount_ID() == fa.getRecord().getAccount_ID()) {
+					if (line1.get_ID() == fa.getRecord().getLine_ID()) {
+						assertEquals(fa.getRecord().getAmtSourceDr().abs().toPlainString(), fa.getRecord().getAmtSourceDr().toPlainString(), "Not DR Asset");
+						assertTrue(fa.getRecord().getAmtSourceDr().signum() > 0, "Not DR Asset");
 					}
 					assetFound = true;
-				} else if (acctNIR.getAccount_ID() == fa.getAccount_ID()) {
-					if (line1.get_ID() == fa.getLine_ID()) {
-						assertEquals(fa.getAmtSourceCr().abs().toPlainString(), fa.getAmtSourceCr().toPlainString(), "Not CR Not Invoiced Receipt");
-						assertTrue(fa.getAmtSourceCr().signum() > 0, "Not CR Not Invoiced Receipt");
+				} else if (acctNIR.getRecord().getAccount_ID() == fa.getRecord().getAccount_ID()) {
+					if (line1.get_ID() == fa.getRecord().getLine_ID()) {
+						assertEquals(fa.getRecord().getAmtSourceCr().abs().toPlainString(), fa.getRecord().getAmtSourceCr().toPlainString(), "Not CR Not Invoiced Receipt");
+						assertTrue(fa.getRecord().getAmtSourceCr().signum() > 0, "Not CR Not Invoiced Receipt");
 					}
 					nirFound = true;
 				}
@@ -689,24 +689,23 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				assertTrue(error == null, error);			
 			}
 			pc = new ProductCost(Env.getCtx(), shipmentLine.getM_Product_ID(), shipmentLine.getM_AttributeSetInstance_ID(), getTrxName());
-			MAccount cogs = pc.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
+			IAccountInfo cogs = pc.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
 			asset = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
-			query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, shipment.getM_InOut_ID(), as.getC_AcctSchema_ID(), getTrxName());
-			fas = query.list();
+			fas = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, shipment.getM_InOut_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
 			assertTrue(fas.size() > 0, "Failed to retrieve fact posting entries for shipment document");
 			boolean cogsFound = false;
 			assetFound = false;
-			for (MFactAcct fa : fas) {
-				if (cogs.getAccount_ID() == fa.getAccount_ID()) {
-					if (shipmentLine.get_ID() == fa.getLine_ID()) {
-						assertEquals(fa.getAmtSourceDr().abs().toPlainString(), fa.getAmtSourceDr().toPlainString(), "Not DR COGS");
-						assertTrue(fa.getAmtSourceDr().signum() > 0, "Not DR COGS");
+			for (IFactAcctInfo fa : fas) {
+				if (cogs.getRecord().getAccount_ID() == fa.getRecord().getAccount_ID()) {
+					if (shipmentLine.get_ID() == fa.getRecord().getLine_ID()) {
+						assertEquals(fa.getRecord().getAmtSourceDr().abs().toPlainString(), fa.getRecord().getAmtSourceDr().toPlainString(), "Not DR COGS");
+						assertTrue(fa.getRecord().getAmtSourceDr().signum() > 0, "Not DR COGS");
 					}
 					cogsFound = true;
-				} else if (asset.getAccount_ID() == fa.getAccount_ID()) {
-					if (shipmentLine.get_ID() == fa.getLine_ID()) {
-						assertEquals(fa.getAmtSourceCr().abs().toPlainString(), fa.getAmtSourceCr().toPlainString(), "Not CR Product Asset");
-						assertTrue(fa.getAmtSourceCr().signum() > 0, "Not CR Product Asset");
+				} else if (asset.getRecord().getAccount_ID() == fa.getRecord().getAccount_ID()) {
+					if (shipmentLine.get_ID() == fa.getRecord().getLine_ID()) {
+						assertEquals(fa.getRecord().getAmtSourceCr().abs().toPlainString(), fa.getRecord().getAmtSourceCr().toPlainString(), "Not CR Product Asset");
+						assertTrue(fa.getRecord().getAmtSourceCr().signum() > 0, "Not CR Product Asset");
 					}
 					assetFound = true;
 				}
@@ -714,12 +713,12 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertTrue(cogsFound, "No COGS posting found");
 			assertTrue(assetFound, "No Product Asset posting found");
 			
-			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine.getM_InOutLine_ID(), linema[0].getM_AttributeSetInstance_ID(), as.get_ID(), getTrxName());
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine.getM_InOutLine_ID(), linema[0].getM_AttributeSetInstance_ID(), as.getPO().get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for order line1");
 			assertEquals(-1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 			assertEquals(new BigDecimal("2").negate().setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
 			
-			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine.getM_InOutLine_ID(), linema[1].getM_AttributeSetInstance_ID(), as.get_ID(), getTrxName());
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine.getM_InOutLine_ID(), linema[1].getM_AttributeSetInstance_ID(), as.getPO().get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for order line1");
 			assertEquals(-1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 			assertEquals(new BigDecimal("3").negate().setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
@@ -733,21 +732,21 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			MInOut reversal = new MInOut(Env.getCtx(), shipment.getReversal_ID(), getTrxName());
 			MInOutLine[] reversalLines = reversal.getLines();
 			
-			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", reversalLines[0].getM_InOutLine_ID(), asi1.getM_AttributeSetInstance_ID(), as.get_ID(), getTrxName());
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", reversalLines[0].getM_InOutLine_ID(), asi1.getM_AttributeSetInstance_ID(), as.getPO().get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for order line1");
 			assertEquals(1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 			assertEquals(new BigDecimal("2").setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
 			
-			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", reversalLines[0].getM_InOutLine_ID(), asi2.getM_AttributeSetInstance_ID(), as.get_ID(), getTrxName());
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", reversalLines[0].getM_InOutLine_ID(), asi2.getM_AttributeSetInstance_ID(), as.getPO().get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for order line1");
 			assertEquals(1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 			assertEquals(new BigDecimal("3").setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
 			
-			cost1 = product.getCostingRecord(as, getAD_Org_ID(), asi1.get_ID(), as.getCostingMethod());
+			cost1 = product.getCostingRecord(as, getAD_Org_ID(), asi1.get_ID(), as.getRecord().getCostingMethod());
 			assertNotNull(cost1, "MCost record not found");
 			assertEquals(new BigDecimal("2.00"), cost1.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP));
 			
-			cost2 = product.getCostingRecord(as, getAD_Org_ID(), asi2.get_ID(), as.getCostingMethod());
+			cost2 = product.getCostingRecord(as, getAD_Org_ID(), asi2.get_ID(), as.getRecord().getCostingMethod());
 			assertNotNull(cost2, "MCost record not found");
 			assertEquals(new BigDecimal("3.00"), cost2.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP));
 			
@@ -758,7 +757,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			mr2.load(getTrxName());
 			assertEquals(DocAction.STATUS_Reversed, mr2.getDocStatus(), "Unexpected document status");
 			
-			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", line2.getC_OrderLine_ID(), asi2.getM_AttributeSetInstance_ID(), as.get_ID(), getTrxName());
+			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", line2.getC_OrderLine_ID(), asi2.getM_AttributeSetInstance_ID(), as.getPO().get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for order line2");
 			assertEquals(0, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 			assertEquals(new BigDecimal("0").setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
@@ -781,8 +780,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	@Test
 	public void testMRAndInternalUse() {
 		MClient client = MClient.get(Env.getCtx());
-		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+		IAcctSchemaInfo as = client.getAcctSchema();
+		assertEquals(as.getRecord().getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 
 		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		Calendar cal = Calendar.getInstance();
@@ -1040,8 +1039,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			// Matched Invoice
 			// If it is a reverse-accrual, perform a stock coverage check using the current stock quantity to prevent any leftover amount in the inventory GL
 			ProductCost p2ProductCost = new ProductCost(Env.getCtx(), product2.get_ID(), 0, getTrxName());
-			MAccount assetAccount = p2ProductCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
-			MAccount varianceAccount = p2ProductCost.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
+			IAccountInfo assetAccount = p2ProductCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			IAccountInfo varianceAccount = p2ProductCost.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
 			MMatchInv[] miList = MMatchInv.getInvoiceLine(Env.getCtx(), invoiceLine2.get_ID(), getTrxName());
 			assertEquals(2, miList.length);
 			for (MMatchInv mi : miList) {
@@ -1055,12 +1054,11 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				Doc doc = DocManager.getDocument(as, MMatchInv.Table_ID, mi.get_ID(), getTrxName());
 				MInvoiceLine invLine = new MInvoiceLine(Env.getCtx(), mi.getC_InvoiceLine_ID(), getTrxName());
 				doc.setC_BPartner_ID(invLine.getParent().getC_BPartner_ID());
-				MAccount acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+				IAccountInfo acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
 				
 				ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
-				MAccount acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
-				Query query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, mi.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
-				List<MFactAcct> factAccts = query.list();
+				IAccountInfo acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+				List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
 				List<FactAcct> expected = new ArrayList<FactAcct>();
 				expected.add(new FactAcct(acctNIR, new BigDecimal("547.89"), 2, !mi.isReversal(), mi.getQty()));
 				expected.add(new FactAcct(acctInvClr, new BigDecimal("528.56"), 2, mi.isReversal(), mi.getQty().negate()));
@@ -1069,7 +1067,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				} else {
 					expected.add(new FactAcct(varianceAccount, new BigDecimal("9.67"), 2, mi.isReversal()));
 					expected.add(new FactAcct(assetAccount, new BigDecimal("9.67"), 2, mi.isReversal()));
-					expected.add(new FactAcct(as.getCurrencyBalancing_Acct(), new BigDecimal("-0.01"), 2, mi.isReversal()));
+					expected.add(new FactAcct(as.getCurrencyBalancing_AcctInfo(), new BigDecimal("-0.01"), 2, mi.isReversal()));
 				}
 				assertFactAcctEntries(factAccts, expected);
 			}
@@ -1085,9 +1083,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertTrue(allocationHdrs[0].isPosted());
 			Doc doc = DocManager.getDocument(as, MAllocationHdr.Table_ID, allocationHdrs[0].get_ID(), getTrxName());
 			doc.setC_BPartner_ID(invoice.getC_BPartner_ID());
-			MAccount acctLiability = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
-			Query query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, allocationHdrs[0].get_ID(), as.get_ID(), getTrxName());
-			List<MFactAcct> factAccts = query.list();
+			IAccountInfo acctLiability = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+			List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MAllocationHdr.Table_ID, allocationHdrs[0].get_ID(), as.getPO().get_ID(), getTrxName());
 			List<FactAcct> expected = Arrays.asList(
 					new FactAcct(acctLiability, new BigDecimal("836.74"), 2, true), 
 					new FactAcct(acctLiability, new BigDecimal("9.55"), 2, true), 
@@ -1108,8 +1105,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	@Test
 	public void testReverseCorrectMultipleMR() {
 		MClient client = MClient.get(Env.getCtx());
-		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+		IAcctSchemaInfo as = client.getAcctSchema();
+		assertEquals(as.getRecord().getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 
 		Timestamp currentDate = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
 		Calendar cal = Calendar.getInstance();
@@ -1299,12 +1296,11 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				assertTrue(mi.isPosted());
 				
 				ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
-				MAccount acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
-				Query query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, mi.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
-				List<MFactAcct> factAccts = query.list();
+				IAccountInfo acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+				List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
 				boolean found = false;
-				for (MFactAcct factAcct : factAccts) {
-					if (factAcct.getAccount_ID() == acctInvClr.getAccount_ID()) {
+				for (IFactAcctInfo factAcct : factAccts) {
+					if (factAcct.getRecord().getAccount_ID() == acctInvClr.getRecord().getAccount_ID()) {
 						found = true;
 						break;
 					}
@@ -1313,12 +1309,12 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			}
 			
 			product1.set_TrxName(getTrxName());
-			MCost cost1 = product1.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			MCost cost1 = product1.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertNotNull(cost1, "No MCost record found");			
 			assertEquals(new BigDecimal("85").setScale(2, RoundingMode.HALF_UP), cost1.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
 			
 			product2.set_TrxName(getTrxName());
-			MCost cost2 = product2.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			MCost cost2 = product2.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertNotNull(cost2, "No MCost record found");			
 			assertEquals(new BigDecimal("100").setScale(2, RoundingMode.HALF_UP), cost2.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
 			
@@ -1346,12 +1342,11 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				assertTrue(mi.isPosted());
 				
 				ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
-				MAccount acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
-				Query query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, mi.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
-				List<MFactAcct> factAccts = query.list();
+				IAccountInfo acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+				List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
 				boolean found = false;
-				for (MFactAcct factAcct : factAccts) {
-					if (factAcct.getAccount_ID() == acctInvClr.getAccount_ID()) {
+				for (IFactAcctInfo factAcct : factAccts) {
+					if (factAcct.getRecord().getAccount_ID() == acctInvClr.getRecord().getAccount_ID()) {
 						found = true;
 						break;
 					}
@@ -1360,12 +1355,12 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			}
 			
 			product1.set_TrxName(getTrxName());
-			cost1 = product1.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			cost1 = product1.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertNotNull(cost1, "No MCost record found");			
 			assertEquals(BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP), cost1.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
 			
 			product2.set_TrxName(getTrxName());
-			cost2 = product2.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			cost2 = product2.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertNotNull(cost2, "No MCost record found");			
 			assertEquals(BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP), cost2.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
 			
@@ -1470,12 +1465,11 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				assertTrue(mi.isPosted());
 				
 				ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
-				MAccount acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
-				Query query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, mi.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
-				List<MFactAcct> factAccts = query.list();
+				IAccountInfo acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+				List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
 				boolean found = false;
-				for (MFactAcct factAcct : factAccts) {
-					if (factAcct.getAccount_ID() == acctInvClr.getAccount_ID()) {
+				for (IFactAcctInfo factAcct : factAccts) {
+					if (factAcct.getRecord().getAccount_ID() == acctInvClr.getRecord().getAccount_ID()) {
 						found = true;
 						break;
 					}
@@ -1484,12 +1478,12 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			} 
 			
 			product1.set_TrxName(getTrxName());
-			cost1 = product1.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			cost1 = product1.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertNotNull(cost1, "No MCost record found");			
 			assertEquals(new BigDecimal("85").setScale(2, RoundingMode.HALF_UP), cost1.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
 			
 			product2.set_TrxName(getTrxName());
-			cost2 = product2.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			cost2 = product2.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertNotNull(cost2, "No MCost record found");			
 			assertEquals(new BigDecimal("100").setScale(2, RoundingMode.HALF_UP), cost2.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
 			
@@ -1517,12 +1511,11 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				assertTrue(mi.isPosted());
 				
 				ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
-				MAccount acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
-				Query query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, mi.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
-				List<MFactAcct> factAccts = query.list();
+				IAccountInfo acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+				List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
 				boolean found = false;
-				for (MFactAcct factAcct : factAccts) {
-					if (factAcct.getAccount_ID() == acctInvClr.getAccount_ID()) {
+				for (IFactAcctInfo factAcct : factAccts) {
+					if (factAcct.getRecord().getAccount_ID() == acctInvClr.getRecord().getAccount_ID()) {
 						found = true;
 						break;
 					}
@@ -1531,12 +1524,12 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			}
 			
 			product1.set_TrxName(getTrxName());
-			cost1 = product1.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			cost1 = product1.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertNotNull(cost1, "No MCost record found");			
 			assertEquals(BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP), cost1.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
 			
 			product2.set_TrxName(getTrxName());
-			cost2 = product2.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			cost2 = product2.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertNotNull(cost2, "No MCost record found");			
 			assertEquals(BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP), cost2.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
 		}
@@ -1545,13 +1538,13 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	@Test
 	public void testCostAdjustment() {
 		MClient client = MClient.get(Env.getCtx());
-		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+		IAcctSchemaInfo as = client.getAcctSchema();
+		assertEquals(as.getRecord().getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 		MProduct product = new MProduct(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id, getTrxName());
-		MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+		MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 		if (cost == null || cost.getCurrentCostPrice().signum() == 0 || cost.getCurrentQty().signum() == 0) {
 			createPOAndMRForProduct(DictionaryIDs.M_Product.MULCH.id, null, null);
-			cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 		}
 		assertNotNull(cost, "No MCost Record");
 		BigDecimal currentCost = cost.getCurrentCostPrice();
@@ -1559,8 +1552,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		
 		MInventory inventory = new MInventory(Env.getCtx(), 0, getTrxName());
 		inventory.setC_DocType_ID(DictionaryIDs.C_DocType.COST_ADJUSTMENT.id);
-		inventory.setC_Currency_ID(as.getC_Currency_ID());
-		inventory.setCostingMethod(as.getCostingMethod());
+		inventory.setC_Currency_ID(as.getRecord().getC_Currency_ID());
+		inventory.setCostingMethod(as.getRecord().getCostingMethod());
 		inventory.saveEx();
 		
 		MInventoryLine line = new MInventoryLine(Env.getCtx(), 0, getTrxName());
@@ -1576,7 +1569,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, inventory.getDocStatus(), "Unexpected Document Status");
 		
-		MCostDetail cd = MCostDetail.get(Env.getCtx(), "M_InventoryLine_ID=?", line.getM_InventoryLine_ID(), 0, as.get_ID(), getTrxName());
+		MCostDetail cd = MCostDetail.get(Env.getCtx(), "M_InventoryLine_ID=?", line.getM_InventoryLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 		assertNotNull(cd, "MCostDetail not found for internal use line");
 		assertEquals(0, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 		assertEquals(adjustment.setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
@@ -1591,7 +1584,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		
 		MInventory reversal = new MInventory(Env.getCtx(), inventory.getReversal_ID(), getTrxName());
 		MInventoryLine[] reversalLines = reversal.getLines(true);
-		cd = MCostDetail.get(Env.getCtx(), "M_InventoryLine_ID=?", reversalLines[0].getM_InventoryLine_ID(), 0, as.get_ID(), getTrxName());
+		cd = MCostDetail.get(Env.getCtx(), "M_InventoryLine_ID=?", reversalLines[0].getM_InventoryLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 		assertNotNull(cd, "MCostDetail not found for internal use line");
 		assertEquals(0, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 		assertEquals(adjustment.negate().setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
@@ -1602,11 +1595,11 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	@Test
 	public void testPhysicalInventory() {
 		MClient client = MClient.get(Env.getCtx());
-		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+		IAcctSchemaInfo as = client.getAcctSchema();
+		assertEquals(as.getRecord().getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 		MProduct product = new MProduct(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id, getTrxName());
 		createPOAndMRForProduct(DictionaryIDs.M_Product.MULCH.id, null, null);
-		MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+		MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 		assertNotNull(cost, "No MCost Record");
 		BigDecimal currentCost = cost.getCurrentCostPrice();
 		
@@ -1628,7 +1621,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, inventory.getDocStatus(), "Unexpected Document Status");
 		
-		MCostDetail cd = MCostDetail.get(Env.getCtx(), "M_InventoryLine_ID=?", line.getM_InventoryLine_ID(), 0, as.get_ID(), getTrxName());
+		MCostDetail cd = MCostDetail.get(Env.getCtx(), "M_InventoryLine_ID=?", line.getM_InventoryLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 		assertNotNull(cd, "MCostDetail not found for internal use line");
 		assertEquals(1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 		assertEquals(currentCost.setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
@@ -1643,7 +1636,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		
 		MInventory reversal = new MInventory(Env.getCtx(), inventory.getReversal_ID(), getTrxName());
 		MInventoryLine[] reversalLines = reversal.getLines(true);
-		cd = MCostDetail.get(Env.getCtx(), "M_InventoryLine_ID=?", reversalLines[0].getM_InventoryLine_ID(), 0, as.get_ID(), getTrxName());
+		cd = MCostDetail.get(Env.getCtx(), "M_InventoryLine_ID=?", reversalLines[0].getM_InventoryLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 		assertNotNull(cd, "MCostDetail not found for internal use line");
 		assertEquals(-1, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 		assertEquals(currentCost.negate().setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
@@ -1655,8 +1648,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	@Test
 	public void testLandedCostForPO() {
 		MClient client = MClient.get(Env.getCtx());
-		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+		IAcctSchemaInfo as = client.getAcctSchema();
+		assertEquals(as.getRecord().getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 		
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
 			MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
@@ -1732,7 +1725,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				assertNull(error, error);
 			}
 			
-			List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", line1.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", line1.getC_OrderLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 			assertTrue(cds.size() == 2, "MCostDetail not found for order line1");
 			for(MCostDetail cd : cds) {
 				if (cd.getM_CostElement_ID() == 0) {
@@ -1745,18 +1738,17 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			}
 			
 			product.set_TrxName(getTrxName());
-			MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertNotNull(cost, "No MCost record found");			
 			assertEquals(new BigDecimal("2.30"), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
 			
 			//check posting
 			ProductCost productCost = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
-			MAccount assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			IAccountInfo assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
 			Doc doc = DocManager.getDocument(as, MInOut.Table_ID, receipt1.get_ID(), getTrxName());
-			MAccount nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
-			MAccount landedCostAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_LandedCostClearing, as);
-			Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt1.get_ID(), as.get_ID(), getTrxName());
-			List<MFactAcct> list = query.list();
+			IAccountInfo nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+			IAccountInfo landedCostAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_LandedCostClearing, as);
+			List<IFactAcctInfo> list = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, receipt1.get_ID(), as.getPO().get_ID(), getTrxName());
 			List<FactAcct> expected = Arrays.asList(new FactAcct(assetAccount, new BigDecimal("2.30"), 2, true),
 					new FactAcct(nivReceiptAccount, new BigDecimal("2.00"), 2, false), new FactAcct(landedCostAccount, new BigDecimal("0.30"), 2, false));
 			assertFactAcctEntries(list, expected);
@@ -1767,7 +1759,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			receipt1.load(getTrxName());
 			assertEquals(DocAction.STATUS_Reversed, receipt1.getDocStatus());
 			
-			cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", line1.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", line1.getC_OrderLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 			assertTrue(cds.size() == 2, "MCostDetail not found for order line1");
 			for(MCostDetail cd : cds) {
 				if (cd.getM_CostElement_ID() == 0) {
@@ -1780,8 +1772,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			}
 			
 			//check posting for reversal document
-			query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt1.getReversal_ID(), as.get_ID(), getTrxName());
-			list = query.list();
+			list = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, receipt1.getReversal_ID(), as.getPO().get_ID(), getTrxName());
 			expected = Arrays.asList(new FactAcct(assetAccount, new BigDecimal("2.30"), 2, false),
 					new FactAcct(nivReceiptAccount, new BigDecimal("2.00"), 2, true), new FactAcct(landedCostAccount, new BigDecimal("0.30"), 2, true));
 			assertFactAcctEntries(list, expected);
@@ -1791,8 +1782,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	@Test
 	public void testLandedCostForPOAndInvoice() {
 		MClient client = MClient.get(Env.getCtx());
-		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+		IAcctSchemaInfo as = client.getAcctSchema();
+		assertEquals(as.getRecord().getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 		
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
 			MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
@@ -1868,7 +1859,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				assertNull(error, error);
 			}
 			
-			List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", line1.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", line1.getC_OrderLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 			assertTrue(cds.size() == 2, "MCostDetail not found for order line1");
 			for(MCostDetail cd : cds) {
 				if (cd.getM_CostElement_ID() == 0) {
@@ -1881,17 +1872,16 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			}
 			
 			product.set_TrxName(getTrxName());
-			MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertNotNull(cost, "No MCost record found");			
 			assertEquals(new BigDecimal("2.30"), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
 			
 			ProductCost productCost = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
-			MAccount assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			IAccountInfo assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
 			Doc doc = DocManager.getDocument(as, MInOut.Table_ID, receipt1.get_ID(), getTrxName());
-			MAccount nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
-			MAccount landedCostAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_LandedCostClearing, as);
-			Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt1.get_ID(), as.get_ID(), getTrxName());
-			List<MFactAcct> list = query.list();
+			IAccountInfo nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+			IAccountInfo landedCostAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_LandedCostClearing, as);
+			List<IFactAcctInfo> list = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, receipt1.get_ID(), as.getPO().get_ID(), getTrxName());
 			List<FactAcct> expected = Arrays.asList(new FactAcct(assetAccount, new BigDecimal("2.30"), 2, true),
 					new FactAcct(nivReceiptAccount, new BigDecimal("2.00"), 2, false), new FactAcct(landedCostAccount, new BigDecimal("0.30"), 2, false));
 			assertFactAcctEntries(list, expected);
@@ -1923,10 +1913,9 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertTrue(invoice.isPosted());
 			
 			Doc invoiceDoc = DocManager.getDocument(as, MInvoice.Table_ID, invoice.get_ID(), getTrxName());
-			MAccount liabilityAccount = invoiceDoc.getAccount(Doc.ACCTTYPE_V_Liability, as);
-			MAccount inventoryClearingAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, invoice.get_ID(), as.get_ID(), getTrxName());
-			list = query.list();
+			IAccountInfo liabilityAccount = invoiceDoc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+			IAccountInfo inventoryClearingAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+			list = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, invoice.get_ID(), as.getPO().get_ID(), getTrxName());
 			expected = Arrays.asList(new FactAcct(inventoryClearingAccount, new BigDecimal("2.00"), 2, true),
 					new FactAcct(liabilityAccount, new BigDecimal("2.00"), 2, false));
 			assertFactAcctEntries(list, expected);
@@ -1971,15 +1960,14 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertTrue(invoice.isPosted());
 			
 			doc = DocManager.getDocument(as, MInvoice.Table_ID, invoice.get_ID(), getTrxName());
-			MAccount apAccount = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
-			MAccount landedCostClearingAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_LandedCostClearing, as);
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, invoice.get_ID(), as.get_ID(), getTrxName());
-			list = query.list();
+			IAccountInfo apAccount = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+			IAccountInfo landedCostClearingAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_LandedCostClearing, as);
+			list = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, invoice.get_ID(), as.getPO().get_ID(), getTrxName());
 			expected = Arrays.asList(new FactAcct(assetAccount, new BigDecimal("0.10"), 2, true),
 					new FactAcct(landedCostClearingAccount, new BigDecimal("0.30"), 2, true),
 					new FactAcct(apAccount, new BigDecimal("0.40"), 2, false));
 			assertFactAcctEntries(list, expected);
-			cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertEquals(new BigDecimal("2.40"), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
 		}
 	}
@@ -1991,8 +1979,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	}
 	public void testLandedCostWithNoEstimateForPOAndInvoice(boolean forProduct) {
 		MClient client = MClient.get(Env.getCtx());
-		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+		IAcctSchemaInfo as = client.getAcctSchema();
+		assertEquals(as.getRecord().getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 		
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
 			MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
@@ -2061,7 +2049,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				assertNull(error, error);
 			}
 			
-			List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", line1.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", line1.getC_OrderLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 			assertTrue(cds.size() == 1, "MCostDetail not found for order line1");
 			for(MCostDetail cd : cds) {
 				if (cd.getM_CostElement_ID() == 0) {
@@ -2071,16 +2059,15 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			}
 			
 			product.set_TrxName(getTrxName());
-			MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertNotNull(cost, "No MCost record found");			
 			assertEquals(new BigDecimal("2.00"), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
 			
 			ProductCost productCost = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
-			MAccount assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			IAccountInfo assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
 			Doc doc = DocManager.getDocument(as, MInOut.Table_ID, receipt1.get_ID(), getTrxName());
-			MAccount nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
-			Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt1.get_ID(), as.get_ID(), getTrxName());
-			List<MFactAcct> list = query.list();
+			IAccountInfo nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+			List<IFactAcctInfo> list = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, receipt1.get_ID(), as.getPO().get_ID(), getTrxName());
 			List<FactAcct> expected = Arrays.asList(new FactAcct(assetAccount, new BigDecimal("2.00"), 2, true),
 					new FactAcct(nivReceiptAccount, new BigDecimal("2.00"), 2, false));
 			assertFactAcctEntries(list, expected);
@@ -2111,10 +2098,9 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertTrue(invoice.isPosted());
 			
 			Doc invoiceDoc = DocManager.getDocument(as, MInvoice.Table_ID, invoice.get_ID(), getTrxName());
-			MAccount liabilityAccount = invoiceDoc.getAccount(Doc.ACCTTYPE_V_Liability, as);
-			MAccount inventoryClearingAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, invoice.get_ID(), as.get_ID(), getTrxName());
-			list = query.list();
+			IAccountInfo liabilityAccount = invoiceDoc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+			IAccountInfo inventoryClearingAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+			list = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, invoice.get_ID(), as.getPO().get_ID(), getTrxName());
 			expected = Arrays.asList(new FactAcct(inventoryClearingAccount, new BigDecimal("2.00"), 2, true),
 					new FactAcct(liabilityAccount, new BigDecimal("2.00"), 2, false));
 			assertFactAcctEntries(list, expected);
@@ -2163,14 +2149,13 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertTrue(invoice.isPosted());
 			
 			doc = DocManager.getDocument(as, MInvoice.Table_ID, invoice.get_ID(), getTrxName());
-			MAccount apAccount = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, invoice.get_ID(), as.get_ID(), getTrxName());
-			list = query.list();
+			IAccountInfo apAccount = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+			list = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, invoice.get_ID(), as.getPO().get_ID(), getTrxName());
 			expected = Arrays.asList(new FactAcct(assetAccount, new BigDecimal("0.30"), 2, true),
 					new FactAcct(apAccount, new BigDecimal("0.30"), 2, false));
 			assertFactAcctEntries(list, expected);
 			
-			cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertEquals(new BigDecimal("2.30"), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
 			
 			info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Reverse_Correct);
@@ -2185,13 +2170,12 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				assertTrue(error == null, error);
 				reversal.load(getTrxName());
 			}
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, reversal.get_ID(), as.get_ID(), getTrxName());
-			list = query.list();
+			list = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, reversal.get_ID(), as.getPO().get_ID(), getTrxName());
 			expected = Arrays.asList(new FactAcct(assetAccount, new BigDecimal("0.30"), 2, false),
 					new FactAcct(apAccount, new BigDecimal("0.30"), 2, true));
 			assertFactAcctEntries(list, expected);
 			
-			cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertEquals(new BigDecimal("2.00"), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
 		}
 	}
@@ -2205,8 +2189,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	@Test
 	public void testUnplannedLandedCostWtihMultipleMRAndShipment() {
 		MClient client = MClient.get(Env.getCtx());
-		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+		IAcctSchemaInfo as = client.getAcctSchema();
+		assertEquals(as.getRecord().getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 		
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
 			MProduct p1 = new MProduct(Env.getCtx(), 0, getTrxName());
@@ -2314,7 +2298,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			}
 			
 			//assert p1 cost and posting
-			List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", poLine1.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", poLine1.getC_OrderLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 			assertTrue(cds.size() == 1, "MCostDetail not found for order line1");
 			for(MCostDetail cd : cds) {
 				if (cd.getM_CostElement_ID() == 0) {
@@ -2324,22 +2308,21 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			}
 			
 			p1.set_TrxName(getTrxName());
-			MCost p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			MCost p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertNotNull(p1mcost, "No MCost record found");			
 			assertEquals(p1price, p1mcost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
 			
 			ProductCost p1ProductCost = new ProductCost(Env.getCtx(), p1.get_ID(), 0, getTrxName());
-			MAccount assetAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			IAccountInfo assetAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
 			Doc doc = DocManager.getDocument(as, MInOut.Table_ID, receipt1.get_ID(), getTrxName());
-			MAccount nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
-			Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt1.get_ID(), as.get_ID(), getTrxName());
-			List<MFactAcct> factAccts = query.list();
+			IAccountInfo nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+			List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, receipt1.get_ID(), as.getPO().get_ID(), getTrxName());
 			List<FactAcct> expected = Arrays.asList(new FactAcct(assetAccount, p1price.multiply(mr1Qty), 2, true),
 					new FactAcct(nivReceiptAccount, p1price.multiply(mr1Qty), 2, false));
 			assertFactAcctEntries(factAccts, expected);
 			
 			//assert p2 cost and posting
-			cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", poLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", poLine2.getC_OrderLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 			assertTrue(cds.size() == 1, "MCostDetail not found for order line2");
 			for(MCostDetail cd : cds) {
 				if (cd.getM_CostElement_ID() == 0) {
@@ -2349,7 +2332,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			}
 			
 			p2.set_TrxName(getTrxName());
-			MCost p2mcost = p2.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			MCost p2mcost = p2.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertNotNull(p2mcost, "No MCost record found");			
 			assertEquals(p2price, p2mcost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
 			
@@ -2418,10 +2401,9 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertTrue(purchaseInvoice.isPosted());
 			
 			Doc invoiceDoc = DocManager.getDocument(as, MInvoice.Table_ID, purchaseInvoice.get_ID(), getTrxName());
-			MAccount liabilityAccount = invoiceDoc.getAccount(Doc.ACCTTYPE_V_Liability, as);
-			MAccount inventoryClearingAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, purchaseInvoice.get_ID(), as.get_ID(), getTrxName());
-			factAccts = query.list();
+			IAccountInfo liabilityAccount = invoiceDoc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+			IAccountInfo inventoryClearingAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+			factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, purchaseInvoice.get_ID(), as.getPO().get_ID(), getTrxName());
 			expected = Arrays.asList(new FactAcct(inventoryClearingAccount, p1price.multiply(orderQty), 2, true),
 					new FactAcct(inventoryClearingAccount, p2price.multiply(orderQty), 2, true),
 					new FactAcct(liabilityAccount, p1price.multiply(orderQty).add(p2price.multiply(orderQty)), 2, false));
@@ -2570,16 +2552,15 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			
 			//assert freight invoice posting
 			doc = DocManager.getDocument(as, MInvoice.Table_ID, freightInvoice.get_ID(), getTrxName());
-			MAccount apAccount = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, freightInvoice.get_ID(), as.get_ID(), getTrxName());
-			factAccts = query.list();
+			IAccountInfo apAccount = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+			factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, freightInvoice.get_ID(), as.getPO().get_ID(), getTrxName());
 			BigDecimal p1QtyOnHand = orderQty.subtract(p1ShipQty);
 			BigDecimal p2QtyOnHand = orderQty.subtract(p2ShipQty);
 			BigDecimal p1a1Qty = mr1Qty;
 			BigDecimal p1a2Qty = p1QtyOnHand.subtract(p1a1Qty);
 			BigDecimal p2a1Qty = mr1Qty;
 			BigDecimal p2a2Qty = p2QtyOnHand.subtract(p2a1Qty);
-			MAccount varianceAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
+			IAccountInfo varianceAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
 			BigDecimal p1a2Asset = p1a2.divide(mr2Qty, RoundingMode.HALF_UP).multiply(p1a2Qty);
 			BigDecimal p2a2Asset = p2a2.divide(mr2Qty, RoundingMode.HALF_UP).multiply(p2a2Qty);
 			expected = Arrays.asList(new FactAcct(assetAccount, p1a1, 2, true),
@@ -2591,12 +2572,12 @@ public class AveragePOCostingTest extends AbstractTestCase {
 					new FactAcct(apAccount, freightInvoice.getGrandTotal(), 2, false));
 			assertFactAcctEntries(factAccts, expected);
 			
-			p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertEquals(p1price.add(p1a1.divide(p1QtyOnHand, 2, RoundingMode.HALF_UP))
 					.add(p1a2Asset.divide(p1QtyOnHand, 2, RoundingMode.HALF_UP))
 					.setScale(1, RoundingMode.HALF_UP), p1mcost.getCurrentCostPrice().setScale(1, RoundingMode.HALF_UP), "Unexpected current cost price");			
 			
-			p1mcost = p2.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			p1mcost = p2.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertEquals(p2price.add(p2a1.divide(p2QtyOnHand, 2, RoundingMode.HALF_UP))
 					.add(p2a2Asset.divide(p2QtyOnHand, 2, RoundingMode.HALF_UP))
 					.setScale(1, RoundingMode.HALF_UP), p1mcost.getCurrentCostPrice().setScale(1, RoundingMode.HALF_UP), "Unexpected current cost price");
@@ -2606,8 +2587,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	@Test
 	public void testUnplannedLandedCostReversal() {
 		MClient client = MClient.get(Env.getCtx());
-		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+		IAcctSchemaInfo as = client.getAcctSchema();
+		assertEquals(as.getRecord().getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 		
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
 			MProduct p1 = new MProduct(Env.getCtx(), 0, getTrxName());
@@ -2715,7 +2696,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			}
 			
 			//assert p1 cost and posting
-			List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", poLine1.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", poLine1.getC_OrderLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 			assertTrue(cds.size() == 1, "MCostDetail not found for order line1");
 			for(MCostDetail cd : cds) {
 				if (cd.getM_CostElement_ID() == 0) {
@@ -2725,22 +2706,21 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			}
 			
 			p1.set_TrxName(getTrxName());
-			MCost p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			MCost p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertNotNull(p1mcost, "No MCost record found");			
 			assertEquals(p1price, p1mcost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
 			
 			ProductCost p1ProductCost = new ProductCost(Env.getCtx(), p1.get_ID(), 0, getTrxName());
-			MAccount assetAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			IAccountInfo assetAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
 			Doc doc = DocManager.getDocument(as, MInOut.Table_ID, receipt1.get_ID(), getTrxName());
-			MAccount nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
-			Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt1.get_ID(), as.get_ID(), getTrxName());
-			List<MFactAcct> factAccts = query.list();
+			IAccountInfo nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+			List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, receipt1.get_ID(), as.getPO().get_ID(), getTrxName());
 			List<FactAcct> expected = Arrays.asList(new FactAcct(assetAccount, p1price.multiply(mr1Qty), 2, true),
 					new FactAcct(nivReceiptAccount, p1price.multiply(mr1Qty), 2, false));
 			assertFactAcctEntries(factAccts, expected);
 			
 			//assert p2 cost and posting
-			cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", poLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", poLine2.getC_OrderLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 			assertTrue(cds.size() == 1, "MCostDetail not found for order line2");
 			for(MCostDetail cd : cds) {
 				if (cd.getM_CostElement_ID() == 0) {
@@ -2750,7 +2730,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			}
 			
 			p2.set_TrxName(getTrxName());
-			MCost p2mcost = p2.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			MCost p2mcost = p2.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertNotNull(p2mcost, "No MCost record found");			
 			assertEquals(p2price, p2mcost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
 			
@@ -2793,10 +2773,9 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertTrue(purchaseInvoice.isPosted());
 			
 			Doc invoiceDoc = DocManager.getDocument(as, MInvoice.Table_ID, purchaseInvoice.get_ID(), getTrxName());
-			MAccount liabilityAccount = invoiceDoc.getAccount(Doc.ACCTTYPE_V_Liability, as);
-			MAccount inventoryClearingAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, purchaseInvoice.get_ID(), as.get_ID(), getTrxName());
-			factAccts = query.list();
+			IAccountInfo liabilityAccount = invoiceDoc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+			IAccountInfo inventoryClearingAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+			factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, purchaseInvoice.get_ID(), as.getPO().get_ID(), getTrxName());
 			expected = Arrays.asList(new FactAcct(inventoryClearingAccount, p1price.multiply(orderQty), 2, true),
 					new FactAcct(inventoryClearingAccount, p2price.multiply(orderQty), 2, true),
 					new FactAcct(liabilityAccount, p1price.multiply(orderQty).add(p2price.multiply(orderQty)), 2, false));
@@ -2869,9 +2848,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			
 			//assert freight invoice posting
 			doc = DocManager.getDocument(as, MInvoice.Table_ID, freightInvoice.get_ID(), getTrxName());
-			MAccount apAccount = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, freightInvoice.get_ID(), as.get_ID(), getTrxName());
-			factAccts = query.list();
+			IAccountInfo apAccount = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+			factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, freightInvoice.get_ID(), as.getPO().get_ID(), getTrxName());
 			BigDecimal p1QtyOnHand = mr1Qty;
 			BigDecimal p2QtyOnHand = mr1Qty;					
 			expected = Arrays.asList(new FactAcct(assetAccount, p1a1, 2, true),
@@ -2879,11 +2857,11 @@ public class AveragePOCostingTest extends AbstractTestCase {
 					new FactAcct(apAccount, freightInvoice.getGrandTotal(), 2, false));
 			assertFactAcctEntries(factAccts, expected);
 			
-			p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertEquals(p1price.add(p1a1.divide(p1QtyOnHand, 2, RoundingMode.HALF_UP))
 					.setScale(1, RoundingMode.HALF_UP), p1mcost.getCurrentCostPrice().setScale(1, RoundingMode.HALF_UP), "Unexpected current cost price");			
 			
-			p1mcost = p2.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			p1mcost = p2.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertEquals(p2price.add(p2a1.divide(p2QtyOnHand, 2, RoundingMode.HALF_UP))
 					.setScale(1, RoundingMode.HALF_UP), p1mcost.getCurrentCostPrice().setScale(1, RoundingMode.HALF_UP), "Unexpected current cost price");
 			
@@ -2895,36 +2873,32 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertTrue(freightInvoice.getReversal_ID() > 0, "Unexpected reversal id");
 			MInvoice reversal = new MInvoice(Env.getCtx(), freightInvoice.getReversal_ID(), getTrxName());
 			assertEquals(freightInvoice.getReversal_ID(), reversal.get_ID());
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, freightInvoice.get_ID(), as.get_ID(), getTrxName());
-			factAccts = query.list();
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, reversal.get_ID(), as.get_ID(), getTrxName());
-			List<MFactAcct> rFactAccts = query.list();
+			factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, freightInvoice.get_ID(), as.getPO().get_ID(), getTrxName());
+			List<IFactAcctInfo> rFactAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, reversal.get_ID(), as.getPO().get_ID(), getTrxName());
 			expected = new ArrayList<FactAcct>();
-			for(MFactAcct factAcct : factAccts) {
-				MAccount acct = MAccount.get(factAcct, getTrxName());
-				if (factAcct.getAmtAcctDr().signum() != 0) {
-					expected.add(new FactAcct(acct, factAcct.getAmtAcctDr(), 2, false));
-				} else if (factAcct.getAmtAcctCr().signum() != 0) {
-					expected.add(new FactAcct(acct, factAcct.getAmtAcctCr(), 2, true));
+			for(IFactAcctInfo factAcct : factAccts) {
+				IAccountInfo acct = AcctInfoServices.getAccountInfoService().get(factAcct, getTrxName());
+				if (factAcct.getRecord().getAmtAcctDr().signum() != 0) {
+					expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctDr(), 2, false));
+				} else if (factAcct.getRecord().getAmtAcctCr().signum() != 0) {
+					expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctCr(), 2, true));
 				}
 			}
 			assertFactAcctEntries(rFactAccts, expected);
 
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
-			Optional<MAcctSchema> optional = Arrays.stream(ass).filter(e -> e.getC_AcctSchema_ID() != as.get_ID()).findFirst();
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			Optional<IAcctSchemaInfo> optional = Arrays.stream(ass).filter(e -> e.getRecord().getC_AcctSchema_ID() != as.getPO().get_ID()).findFirst();
 			if (optional.isPresent()) {
-				MAcctSchema as2 = optional.get();
-				query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, freightInvoice.get_ID(), as2.get_ID(), getTrxName());
-				factAccts = query.list();
-				query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, reversal.get_ID(), as2.get_ID(), getTrxName());
-				rFactAccts = query.list();
+				IAcctSchemaInfo as2 = optional.get();
+				factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, freightInvoice.get_ID(), as2.getPO().get_ID(), getTrxName());
+				rFactAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, reversal.get_ID(), as2.getPO().get_ID(), getTrxName());
 				expected = new ArrayList<FactAcct>();
-				for(MFactAcct factAcct : factAccts) {
-					MAccount acct = MAccount.get(factAcct, getTrxName());
-					if (factAcct.getAmtAcctDr().signum() != 0) {
-						expected.add(new FactAcct(acct, factAcct.getAmtAcctDr(), 2, false));
-					} else if (factAcct.getAmtAcctCr().signum() != 0) {
-						expected.add(new FactAcct(acct, factAcct.getAmtAcctCr(), 2, true));
+				for(IFactAcctInfo factAcct : factAccts) {
+					IAccountInfo acct = AcctInfoServices.getAccountInfoService().get(factAcct, getTrxName());
+					if (factAcct.getRecord().getAmtAcctDr().signum() != 0) {
+						expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctDr(), 2, false));
+					} else if (factAcct.getRecord().getAmtAcctCr().signum() != 0) {
+						expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctCr(), 2, true));
 					}
 				}
 				assertFactAcctEntries(rFactAccts, expected);
@@ -2935,8 +2909,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	@Test
 	public void testUnplannedLandedCostAPCreditMemo() {
 		MClient client = MClient.get(Env.getCtx());
-		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+		IAcctSchemaInfo as = client.getAcctSchema();
+		assertEquals(as.getRecord().getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 		
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
 			MProduct p1 = new MProduct(Env.getCtx(), 0, getTrxName());
@@ -3010,7 +2984,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			}
 			
 			//assert p1 cost and posting
-			List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", poLine1.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", poLine1.getC_OrderLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 			assertTrue(cds.size() == 1, "MCostDetail not found for order line1");
 			for(MCostDetail cd : cds) {
 				if (cd.getM_CostElement_ID() == 0) {
@@ -3020,16 +2994,15 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			}
 			
 			p1.set_TrxName(getTrxName());
-			MCost p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			MCost p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertNotNull(p1mcost, "No MCost record found");			
 			assertEquals(p1price, p1mcost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
 			
 			ProductCost p1ProductCost = new ProductCost(Env.getCtx(), p1.get_ID(), 0, getTrxName());
-			MAccount assetAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			IAccountInfo assetAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
 			Doc doc = DocManager.getDocument(as, MInOut.Table_ID, receipt1.get_ID(), getTrxName());
-			MAccount nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
-			Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt1.get_ID(), as.get_ID(), getTrxName());
-			List<MFactAcct> factAccts = query.list();
+			IAccountInfo nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+			List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, receipt1.get_ID(), as.getPO().get_ID(), getTrxName());
 			List<FactAcct> expected = Arrays.asList(new FactAcct(assetAccount, p1price.multiply(mr1Qty), 2, true),
 					new FactAcct(nivReceiptAccount, p1price.multiply(mr1Qty), 2, false));
 			assertFactAcctEntries(factAccts, expected);
@@ -3089,15 +3062,14 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			
 			//assert freight invoice posting
 			doc = DocManager.getDocument(as, MInvoice.Table_ID, freightInvoice.get_ID(), getTrxName());
-			MAccount apAccount = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, freightInvoice.get_ID(), as.get_ID(), getTrxName());
-			factAccts = query.list();
+			IAccountInfo apAccount = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+			factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, freightInvoice.get_ID(), as.getPO().get_ID(), getTrxName());
 			BigDecimal p1QtyOnHand = mr1Qty;
 			expected = Arrays.asList(new FactAcct(assetAccount, p1a1, 2, true),
 					new FactAcct(apAccount, freightInvoice.getGrandTotal(), 2, false));
 			assertFactAcctEntries(factAccts, expected);
 			
-			p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertEquals(p1price.add(p1a1.divide(p1QtyOnHand, 2, RoundingMode.HALF_UP))
 					.setScale(1, RoundingMode.HALF_UP), p1mcost.getCurrentCostPrice().setScale(1, RoundingMode.HALF_UP), "Unexpected current cost price");			
 			
@@ -3152,13 +3124,12 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			
 			//assert freight invoice posting
 			doc = DocManager.getDocument(as, MInvoice.Table_ID, freightCreditMemo.get_ID(), getTrxName());
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, freightCreditMemo.get_ID(), as.get_ID(), getTrxName());
-			factAccts = query.list();
+			factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, freightCreditMemo.get_ID(), as.getPO().get_ID(), getTrxName());
 			expected = Arrays.asList(new FactAcct(assetAccount, p1a1, 2, false),
 					new FactAcct(apAccount, freightInvoice.getGrandTotal(), 2, true));
 			assertFactAcctEntries(factAccts, expected);
 			
-			p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertEquals(p1price.setScale(1, RoundingMode.HALF_UP), p1mcost.getCurrentCostPrice().setScale(1, RoundingMode.HALF_UP), "Unexpected current cost price");
 		}
 	}
@@ -3166,8 +3137,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	@Test
 	public void testUnplannedLandedCostReversalAfterShipment1() {
 		MClient client = MClient.get(Env.getCtx());
-		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+		IAcctSchemaInfo as = client.getAcctSchema();
+		assertEquals(as.getRecord().getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 		
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
 			MProduct p1 = new MProduct(Env.getCtx(), 0, getTrxName());
@@ -3275,7 +3246,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			}
 			
 			//assert p1 cost and posting
-			List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", poLine1.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", poLine1.getC_OrderLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 			assertTrue(cds.size() == 1, "MCostDetail not found for order line1");
 			for(MCostDetail cd : cds) {
 				if (cd.getM_CostElement_ID() == 0) {
@@ -3285,22 +3256,21 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			}
 			
 			p1.set_TrxName(getTrxName());
-			MCost p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			MCost p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertNotNull(p1mcost, "No MCost record found");			
 			assertEquals(p1price, p1mcost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
 			
 			ProductCost p1ProductCost = new ProductCost(Env.getCtx(), p1.get_ID(), 0, getTrxName());
-			MAccount assetAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			IAccountInfo assetAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
 			Doc doc = DocManager.getDocument(as, MInOut.Table_ID, receipt1.get_ID(), getTrxName());
-			MAccount nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
-			Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt1.get_ID(), as.get_ID(), getTrxName());
-			List<MFactAcct> factAccts = query.list();
+			IAccountInfo nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+			List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, receipt1.get_ID(), as.getPO().get_ID(), getTrxName());
 			List<FactAcct> expected = Arrays.asList(new FactAcct(assetAccount, p1price.multiply(mr1Qty), 2, true),
 					new FactAcct(nivReceiptAccount, p1price.multiply(mr1Qty), 2, false));
 			assertFactAcctEntries(factAccts, expected);
 			
 			//assert p2 cost and posting
-			cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", poLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", poLine2.getC_OrderLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 			assertTrue(cds.size() == 1, "MCostDetail not found for order line2");
 			for(MCostDetail cd : cds) {
 				if (cd.getM_CostElement_ID() == 0) {
@@ -3310,7 +3280,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			}
 			
 			p2.set_TrxName(getTrxName());
-			MCost p2mcost = p2.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			MCost p2mcost = p2.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertNotNull(p2mcost, "No MCost record found");			
 			assertEquals(p2price, p2mcost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
 			
@@ -3353,10 +3323,9 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertTrue(purchaseInvoice.isPosted());
 			
 			Doc invoiceDoc = DocManager.getDocument(as, MInvoice.Table_ID, purchaseInvoice.get_ID(), getTrxName());
-			MAccount liabilityAccount = invoiceDoc.getAccount(Doc.ACCTTYPE_V_Liability, as);
-			MAccount inventoryClearingAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, purchaseInvoice.get_ID(), as.get_ID(), getTrxName());
-			factAccts = query.list();
+			IAccountInfo liabilityAccount = invoiceDoc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+			IAccountInfo inventoryClearingAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+			factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, purchaseInvoice.get_ID(), as.getPO().get_ID(), getTrxName());
 			expected = Arrays.asList(new FactAcct(inventoryClearingAccount, p1price.multiply(orderQty), 2, true),
 					new FactAcct(inventoryClearingAccount, p2price.multiply(orderQty), 2, true),
 					new FactAcct(liabilityAccount, p1price.multiply(orderQty).add(p2price.multiply(orderQty)), 2, false));
@@ -3429,9 +3398,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			
 			//assert freight invoice posting
 			doc = DocManager.getDocument(as, MInvoice.Table_ID, freightInvoice.get_ID(), getTrxName());
-			MAccount apAccount = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, freightInvoice.get_ID(), as.get_ID(), getTrxName());
-			factAccts = query.list();
+			IAccountInfo apAccount = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+			factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, freightInvoice.get_ID(), as.getPO().get_ID(), getTrxName());
 			BigDecimal p1QtyOnHand = mr1Qty;
 			BigDecimal p2QtyOnHand = mr1Qty;					
 			expected = Arrays.asList(new FactAcct(assetAccount, p1a1, 2, true),
@@ -3439,11 +3407,11 @@ public class AveragePOCostingTest extends AbstractTestCase {
 					new FactAcct(apAccount, freightInvoice.getGrandTotal(), 2, false));
 			assertFactAcctEntries(factAccts, expected);
 			
-			p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertEquals(p1price.add(p1a1.divide(p1QtyOnHand, 2, RoundingMode.HALF_UP))
 					.setScale(1, RoundingMode.HALF_UP), p1mcost.getCurrentCostPrice().setScale(1, RoundingMode.HALF_UP), "Unexpected current cost price");			
 			
-			p2mcost = p2.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			p2mcost = p2.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertEquals(p2price.add(p2a1.divide(p2QtyOnHand, 2, RoundingMode.HALF_UP))
 					.setScale(1, RoundingMode.HALF_UP), p2mcost.getCurrentCostPrice().setScale(1, RoundingMode.HALF_UP), "Unexpected current cost price");
 			
@@ -3514,25 +3482,23 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				assertNull(msg, msg);
 			}
 			
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, reversal.get_ID(), as.get_ID(), getTrxName());
-			List<MFactAcct> rFactAccts = query.list();
+			List<IFactAcctInfo> rFactAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, reversal.get_ID(), as.getPO().get_ID(), getTrxName());
 			expected = Arrays.asList(new FactAcct(assetAccount, p1a1, 2, false),
 					new FactAcct(assetAccount, p2a1, 2, false),
 					new FactAcct(apAccount, freightInvoice.getGrandTotal(), 2, true));
 			assertFactAcctEntries(rFactAccts, expected);
 			
-			p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
-			p2mcost = p2.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
+			p2mcost = p2.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			
 			BigDecimal p1cogs = p1mcost.getCurrentCostPrice().multiply(p1ShipQty);
 			BigDecimal p2cogs = p2mcost.getCurrentCostPrice().multiply(p2ShipQty);
 			
 			ProductCost pc1 = new ProductCost(Env.getCtx(), p1.get_ID(), 0, getTrxName());
-			MAccount cogsAccount1 = pc1.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
+			IAccountInfo cogsAccount1 = pc1.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
 			ProductCost pc2 = new ProductCost(Env.getCtx(), p2.get_ID(), 0, getTrxName());
-			MAccount cogsAccount2 = pc2.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
-			query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, shipment.get_ID(), as.get_ID(), getTrxName());
-			factAccts = query.list();
+			IAccountInfo cogsAccount2 = pc2.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
+			factAccts = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, shipment.get_ID(), as.getPO().get_ID(), getTrxName());
 			expected = Arrays.asList(new FactAcct(cogsAccount1, p1cogs, 2, true),
 					new FactAcct(cogsAccount2, p2cogs, 2, true),
 					new FactAcct(assetAccount, p1cogs, 2, false),
@@ -3548,8 +3514,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	}
 	public void testUnplannedLandedCostReversalAfterShipment3(boolean forProduct) {
 		MClient client = MClient.get(Env.getCtx());
-		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+		IAcctSchemaInfo as = client.getAcctSchema();
+		assertEquals(as.getRecord().getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 		
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); 
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); 
@@ -3633,7 +3599,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			}
 			
 			//assert p1 cost and posting
-			List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", poLine1.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", poLine1.getC_OrderLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 			assertTrue(cds.size() == 1, "MCostDetail not found for order line1");
 			for(MCostDetail cd : cds) {
 				if (cd.getM_CostElement_ID() == 0) {
@@ -3643,17 +3609,16 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			}
 			
 			p1.set_TrxName(getTrxName());
-			MCost p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			MCost p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertNotNull(p1mcost, "No MCost record found");			
 			assertEquals(p1price.multiply(crate1).setScale(2, RoundingMode.HALF_UP), p1mcost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
 			
 			ProductCost p1ProductCost = new ProductCost(Env.getCtx(), p1.get_ID(), 0, getTrxName());
-			MAccount assetAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
-			MAccount varianceAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
+			IAccountInfo assetAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			IAccountInfo varianceAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
 			Doc doc = DocManager.getDocument(as, MInOut.Table_ID, receipt1.get_ID(), getTrxName());
-			MAccount nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
-			Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt1.get_ID(), as.get_ID(), getTrxName());
-			List<MFactAcct> factAccts = query.list();
+			IAccountInfo nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+			List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, receipt1.get_ID(), as.getPO().get_ID(), getTrxName());
 			List<FactAcct> expected = Arrays.asList(new FactAcct(assetAccount, p1price.multiply(mr1Qty).multiply(crate1).setScale(2, RoundingMode.HALF_UP), p1price.multiply(mr1Qty), 2, true),
 					new FactAcct(nivReceiptAccount, p1price.multiply(mr1Qty).multiply(crate1).setScale(2, RoundingMode.HALF_UP), p1price.multiply(mr1Qty), 2, false));
 			assertFactAcctEntries(factAccts, expected);
@@ -3684,10 +3649,9 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertTrue(purchaseInvoice.isPosted());
 			
 			Doc invoiceDoc = DocManager.getDocument(as, MInvoice.Table_ID, purchaseInvoice.get_ID(), getTrxName());
-			MAccount liabilityAccount = invoiceDoc.getAccount(Doc.ACCTTYPE_V_Liability, as);
-			MAccount inventoryClearingAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, purchaseInvoice.get_ID(), as.get_ID(), getTrxName());
-			factAccts = query.list();
+			IAccountInfo liabilityAccount = invoiceDoc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+			IAccountInfo inventoryClearingAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+			factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, purchaseInvoice.get_ID(), as.getPO().get_ID(), getTrxName());
 			expected = Arrays.asList(new FactAcct(inventoryClearingAccount, p1price.multiply(orderQty).multiply(crate1), p1price.multiply(orderQty), 2, true),
 					new FactAcct(liabilityAccount, p1price.multiply(orderQty).multiply(crate1), p1price.multiply(orderQty), 2, false));
 			assertFactAcctEntries(factAccts, expected);
@@ -3803,9 +3767,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			
 			//assert freight invoice posting
 			doc = DocManager.getDocument(as, MInvoice.Table_ID, freightInvoice.get_ID(), getTrxName());
-			MAccount apAccount = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, freightInvoice.get_ID(), as.get_ID(), getTrxName());
-			factAccts = query.list();
+			IAccountInfo apAccount = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+			factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, freightInvoice.get_ID(), as.getPO().get_ID(), getTrxName());
 			BigDecimal assetAmt = p1a1.divide(orderQty, RoundingMode.HALF_UP).multiply(orderQty.subtract(p1ShipQty));
 			BigDecimal varianceAmt = p1a1.subtract(assetAmt);
 			expected = Arrays.asList(new FactAcct(varianceAccount, varianceAmt.multiply(crate1), varianceAmt, 2, true),
@@ -3813,7 +3776,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 					new FactAcct(apAccount, freightInvoice.getGrandTotal().multiply(crate1), freightInvoice.getGrandTotal(), 2, false));
 			assertFactAcctEntries(factAccts, expected);
 			
-			p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertEquals(p1price.multiply(crate1).add(assetAmt.multiply(crate1).divide(orderQty.subtract(p1ShipQty), RoundingMode.HALF_UP)).setScale(2, RoundingMode.HALF_UP), 
 					p1mcost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");			
 			
@@ -3831,36 +3794,32 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				assertNull(msg, msg);
 			}
 			
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, freightInvoice.get_ID(), as.get_ID(), getTrxName());
-			factAccts = query.list();
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, reversal.get_ID(), as.get_ID(), getTrxName());
-			List<MFactAcct> rFactAccts = query.list();
+			factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, freightInvoice.get_ID(), as.getPO().get_ID(), getTrxName());
+			List<IFactAcctInfo> rFactAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, reversal.get_ID(), as.getPO().get_ID(), getTrxName());
 			expected = new ArrayList<FactAcct>();
-			for(MFactAcct factAcct : factAccts) {
-				MAccount acct = MAccount.get(factAcct, getTrxName());
-				if (factAcct.getAmtAcctDr().signum() != 0) {
-					expected.add(new FactAcct(acct, factAcct.getAmtAcctDr(), 1, false));
-				} else if (factAcct.getAmtAcctCr().signum() != 0) {
-					expected.add(new FactAcct(acct, factAcct.getAmtAcctCr(), 1, true));
+			for(IFactAcctInfo factAcct : factAccts) {
+				IAccountInfo acct = AcctInfoServices.getAccountInfoService().get(factAcct, getTrxName());
+				if (factAcct.getRecord().getAmtAcctDr().signum() != 0) {
+					expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctDr(), 1, false));
+				} else if (factAcct.getRecord().getAmtAcctCr().signum() != 0) {
+					expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctCr(), 1, true));
 				}
 			}
 			assertFactAcctEntries(rFactAccts, expected);
 
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
-			Optional<MAcctSchema> optional = Arrays.stream(ass).filter(e -> e.getC_AcctSchema_ID() != as.get_ID()).findFirst();
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			Optional<IAcctSchemaInfo> optional = Arrays.stream(ass).filter(e -> e.getRecord().getC_AcctSchema_ID() != as.getPO().get_ID()).findFirst();
 			if (optional.isPresent()) {
-				MAcctSchema as2 = optional.get();
-				query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, freightInvoice.get_ID(), as2.get_ID(), getTrxName());
-				factAccts = query.list();
-				query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, freightInvoice.getReversal_ID(), as2.get_ID(), getTrxName());
-				rFactAccts = query.list();
+				IAcctSchemaInfo as2 = optional.get();
+				factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, freightInvoice.get_ID(), as2.getPO().get_ID(), getTrxName());
+				rFactAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, freightInvoice.getReversal_ID(), as2.getPO().get_ID(), getTrxName());
 				expected = new ArrayList<FactAcct>();
-				for(MFactAcct factAcct : factAccts) {
-					MAccount acct = MAccount.get(factAcct, getTrxName());
-					if (factAcct.getAmtAcctDr().signum() != 0) {
-						expected.add(new FactAcct(acct, factAcct.getAmtAcctDr(), 1, false));
-					} else if (factAcct.getAmtAcctCr().signum() != 0) {
-						expected.add(new FactAcct(acct, factAcct.getAmtAcctCr(), 1, true));
+				for(IFactAcctInfo factAcct : factAccts) {
+					IAccountInfo acct = AcctInfoServices.getAccountInfoService().get(factAcct, getTrxName());
+					if (factAcct.getRecord().getAmtAcctDr().signum() != 0) {
+						expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctDr(), 1, false));
+					} else if (factAcct.getRecord().getAmtAcctCr().signum() != 0) {
+						expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctCr(), 1, true));
 					}
 				}
 				assertFactAcctEntries(rFactAccts, expected);
@@ -3871,8 +3830,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	@Test
 	public void testUnplannedLandedCostReversalAfterShipment2() {
 		MClient client = MClient.get(Env.getCtx());
-		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+		IAcctSchemaInfo as = client.getAcctSchema();
+		assertEquals(as.getRecord().getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 		
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); 
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); 
@@ -3987,7 +3946,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			}
 			
 			//assert p1 cost and posting
-			List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", poLine1.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", poLine1.getC_OrderLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 			assertTrue(cds.size() == 1, "MCostDetail not found for order line1");
 			for(MCostDetail cd : cds) {
 				if (cd.getM_CostElement_ID() == 0) {
@@ -3997,23 +3956,22 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			}
 			
 			p1.set_TrxName(getTrxName());
-			MCost p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			MCost p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertNotNull(p1mcost, "No MCost record found");			
 			assertEquals(p1price, p1mcost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
 			
 			ProductCost p1ProductCost = new ProductCost(Env.getCtx(), p1.get_ID(), 0, getTrxName());
-			MAccount assetAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
-			MAccount varianceAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
+			IAccountInfo assetAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			IAccountInfo varianceAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
 			Doc doc = DocManager.getDocument(as, MInOut.Table_ID, receipt1.get_ID(), getTrxName());
-			MAccount nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
-			Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt1.get_ID(), as.get_ID(), getTrxName());
-			List<MFactAcct> factAccts = query.list();
+			IAccountInfo nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+			List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, receipt1.get_ID(), as.getPO().get_ID(), getTrxName());
 			List<FactAcct> expected = Arrays.asList(new FactAcct(assetAccount, p1price.multiply(mr1Qty), 2, true),
 					new FactAcct(nivReceiptAccount, p1price.multiply(mr1Qty), 2, false));
 			assertFactAcctEntries(factAccts, expected);
 			
 			//assert p2 cost and posting
-			cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", poLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", poLine2.getC_OrderLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 			assertTrue(cds.size() == 1, "MCostDetail not found for order line2");
 			for(MCostDetail cd : cds) {
 				if (cd.getM_CostElement_ID() == 0) {
@@ -4023,7 +3981,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			}
 			
 			p2.set_TrxName(getTrxName());
-			MCost p2mcost = p2.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			MCost p2mcost = p2.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertNotNull(p2mcost, "No MCost record found");			
 			assertEquals(p2price, p2mcost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
 			
@@ -4066,10 +4024,9 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertTrue(purchaseInvoice.isPosted());
 			
 			Doc invoiceDoc = DocManager.getDocument(as, MInvoice.Table_ID, purchaseInvoice.get_ID(), getTrxName());
-			MAccount liabilityAccount = invoiceDoc.getAccount(Doc.ACCTTYPE_V_Liability, as);
-			MAccount inventoryClearingAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, purchaseInvoice.get_ID(), as.get_ID(), getTrxName());
-			factAccts = query.list();
+			IAccountInfo liabilityAccount = invoiceDoc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+			IAccountInfo inventoryClearingAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+			factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, purchaseInvoice.get_ID(), as.getPO().get_ID(), getTrxName());
 			expected = Arrays.asList(new FactAcct(inventoryClearingAccount, p1price.multiply(orderQty), 2, true),
 					new FactAcct(inventoryClearingAccount, p2price.multiply(orderQty), 2, true),
 					new FactAcct(liabilityAccount, p1price.multiply(orderQty).add(p2price.multiply(orderQty)), 2, false));
@@ -4196,19 +4153,18 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			
 			//assert freight invoice posting
 			doc = DocManager.getDocument(as, MInvoice.Table_ID, freightInvoice.get_ID(), getTrxName());
-			MAccount apAccount = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, freightInvoice.get_ID(), as.get_ID(), getTrxName());
-			factAccts = query.list();
+			IAccountInfo apAccount = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+			factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, freightInvoice.get_ID(), as.getPO().get_ID(), getTrxName());
 			expected = Arrays.asList(new FactAcct(varianceAccount, p1a1, 2, true),
 					new FactAcct(assetAccount, p2a1.divide(new BigDecimal("2"), RoundingMode.HALF_UP), 2, true),
 					new FactAcct(apAccount, freightInvoice.getGrandTotal(), 2, false));
 			assertFactAcctEntries(factAccts, expected);
 			
-			p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertEquals(p1price.setScale(1, RoundingMode.HALF_UP), 
 					p1mcost.getCurrentCostPrice().setScale(1, RoundingMode.HALF_UP), "Unexpected current cost price");			
 			
-			p1mcost = p2.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			p1mcost = p2.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertEquals(p2price.add(p2a1.divide(new BigDecimal("2"), 2, RoundingMode.HALF_UP).divide(new BigDecimal("5"), RoundingMode.HALF_UP))
 					.setScale(1, RoundingMode.HALF_UP), p1mcost.getCurrentCostPrice().setScale(1, RoundingMode.HALF_UP), "Unexpected current cost price");
 			
@@ -4226,28 +4182,25 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				assertNull(msg, msg);
 			}
 			
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, reversal.get_ID(), as.get_ID(), getTrxName());
-			List<MFactAcct> rFactAccts = query.list();
+			List<IFactAcctInfo> rFactAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, reversal.get_ID(), as.getPO().get_ID(), getTrxName());
 			expected = Arrays.asList(new FactAcct(varianceAccount, p1a1, 2, false),
 					new FactAcct(assetAccount, p2a1.divide(new BigDecimal(2), RoundingMode.HALF_UP), 2, false),
 					new FactAcct(apAccount, freightInvoice.getGrandTotal(), 2, true));
 			assertFactAcctEntries(rFactAccts, expected);
 
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
-			Optional<MAcctSchema> optional = Arrays.stream(ass).filter(e -> e.getC_AcctSchema_ID() != as.get_ID()).findFirst();
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			Optional<IAcctSchemaInfo> optional = Arrays.stream(ass).filter(e -> e.getRecord().getC_AcctSchema_ID() != as.getPO().get_ID()).findFirst();
 			if (optional.isPresent()) {
-				MAcctSchema as2 = optional.get();
-				query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, freightInvoice.get_ID(), as2.get_ID(), getTrxName());
-				factAccts = query.list();
-				query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, freightInvoice.getReversal_ID(), as2.get_ID(), getTrxName());
-				rFactAccts = query.list();
+				IAcctSchemaInfo as2 = optional.get();
+				factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, freightInvoice.get_ID(), as2.getPO().get_ID(), getTrxName());
+				rFactAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, freightInvoice.getReversal_ID(), as2.getPO().get_ID(), getTrxName());
 				expected = new ArrayList<FactAcct>();
-				for(MFactAcct factAcct : factAccts) {
-					MAccount acct = MAccount.get(factAcct, getTrxName());
-					if (factAcct.getAmtAcctDr().signum() != 0) {
-						expected.add(new FactAcct(acct, factAcct.getAmtAcctDr(), 1, false));
-					} else if (factAcct.getAmtAcctCr().signum() != 0) {
-						expected.add(new FactAcct(acct, factAcct.getAmtAcctCr(), 1, true));
+				for(IFactAcctInfo factAcct : factAccts) {
+					IAccountInfo acct = AcctInfoServices.getAccountInfoService().get(factAcct, getTrxName());
+					if (factAcct.getRecord().getAmtAcctDr().signum() != 0) {
+						expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctDr(), 1, false));
+					} else if (factAcct.getRecord().getAmtAcctCr().signum() != 0) {
+						expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctCr(), 1, true));
 					}
 				}
 				assertFactAcctEntries(rFactAccts, expected);
@@ -4259,8 +4212,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	public void testUnplannedLandedCostReversalAfterInventoryUseASI() {
 
 		MClient client = MClient.get(Env.getCtx());
-		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+		IAcctSchemaInfo as = client.getAcctSchema();
+		assertEquals(as.getRecord().getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 		
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); 
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); 
@@ -4420,7 +4373,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			}
 			
 			//assert p1 cost and posting
-			List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", poLine1.getC_OrderLine_ID(), mr1l1asi.get_ID(), as.get_ID(), getTrxName());
+			List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", poLine1.getC_OrderLine_ID(), mr1l1asi.get_ID(), as.getPO().get_ID(), getTrxName());
 			assertEquals(1, cds.size(), "Unexpected number of MCostDetail records for order line1");
 			for(MCostDetail cd : cds) {
 				if (cd.getM_CostElement_ID() == 0) {
@@ -4431,17 +4384,16 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			
 			//assert p1 mcost
 			p1.set_TrxName(getTrxName());
-			MCost p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			MCost p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertNotNull(p1mcost, "No MCost record found");			
 			assertEquals(p1price.multiply(crate1).setScale(2, RoundingMode.HALF_UP), p1mcost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
 			
 			ProductCost p1ProductCost = new ProductCost(Env.getCtx(), p1.get_ID(), 0, getTrxName());
-			MAccount assetAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
-			MAccount varianceAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
+			IAccountInfo assetAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			IAccountInfo varianceAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
 			Doc doc = DocManager.getDocument(as, MInOut.Table_ID, receipt1.get_ID(), getTrxName());
-			MAccount nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
-			Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt1.get_ID(), as.get_ID(), getTrxName());
-			List<MFactAcct> factAccts = query.list();
+			IAccountInfo nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+			List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, receipt1.get_ID(), as.getPO().get_ID(), getTrxName());
 			List<FactAcct> expected = Arrays.asList(new FactAcct(assetAccount, p1price.multiply(mr1l1Qty).multiply(crate1).setScale(2, RoundingMode.HALF_UP), p1price.multiply(mr1l1Qty), 2, true),
 					new FactAcct(nivReceiptAccount, p1price.multiply(mr1l1Qty).multiply(crate1).setScale(2, RoundingMode.HALF_UP), p1price.multiply(mr1l1Qty), 2, false));
 			assertFactAcctEntries(factAccts, expected);
@@ -4479,10 +4431,9 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertTrue(purchaseInvoice.isPosted());
 			
 			Doc invoiceDoc = DocManager.getDocument(as, MInvoice.Table_ID, purchaseInvoice.get_ID(), getTrxName());
-			MAccount liabilityAccount = invoiceDoc.getAccount(Doc.ACCTTYPE_V_Liability, as);
-			MAccount inventoryClearingAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, purchaseInvoice.get_ID(), as.get_ID(), getTrxName());
-			factAccts = query.list();
+			IAccountInfo liabilityAccount = invoiceDoc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+			IAccountInfo inventoryClearingAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+			factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, purchaseInvoice.get_ID(), as.getPO().get_ID(), getTrxName());
 			expected = Arrays.asList(new FactAcct(inventoryClearingAccount, p1price.multiply(orderQty).multiply(crate1), p1price.multiply(orderQty), 2, true),
 					new FactAcct(liabilityAccount, p1price.multiply(orderQty).multiply(crate1).add(p2price.multiply(orderQty).multiply(crate1)), 
 							p1price.multiply(orderQty).add(p2price.multiply(orderQty)), 2, false));
@@ -4592,9 +4543,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			
 			//assert freight invoice posting
 			doc = DocManager.getDocument(as, MInvoice.Table_ID, freightInvoice.get_ID(), getTrxName());
-			MAccount apAccount = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, freightInvoice.get_ID(), as.get_ID(), getTrxName());
-			factAccts = query.list();
+			IAccountInfo apAccount = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+			factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, freightInvoice.get_ID(), as.getPO().get_ID(), getTrxName());
 			BigDecimal p1OnHand = orderQty.add(inventoryLine1.getMovementQty());
 			BigDecimal p1a1assetAmt = p1a1;
 			BigDecimal p1a2assetAmt = p1a2.divide(mr2l1Qty, RoundingMode.HALF_UP).multiply(p1OnHand.subtract(mr1l1Qty));
@@ -4609,7 +4559,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertFactAcctEntries(factAccts, expected);
 			
 			BigDecimal p1assetAmt = p1a1assetAmt.add(p1a2assetAmt);
-			p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertEquals(p1price.multiply(crate1).add(p1assetAmt.divide(p1OnHand, RoundingMode.HALF_UP)).setScale(2, RoundingMode.HALF_UP), 
 					p1mcost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");			
 			
@@ -4627,43 +4577,41 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				assertNull(msg, msg);
 			}
 			
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, freightInvoice.get_ID(), as.get_ID(), getTrxName());
-			factAccts = query.list();
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, reversal.get_ID(), as.get_ID(), getTrxName());
-			List<MFactAcct> rFactAccts = query.list();
+			factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, freightInvoice.get_ID(), as.getPO().get_ID(), getTrxName());
+			List<IFactAcctInfo> rFactAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, reversal.get_ID(), as.getPO().get_ID(), getTrxName());
 			expected = new ArrayList<FactAcct>();
-			for(MFactAcct factAcct : factAccts) {
-				MAccount acct = MAccount.get(factAcct, getTrxName());
-				if (factAcct.getAmtAcctDr().signum() != 0) {
+			for(IFactAcctInfo factAcct : factAccts) {
+				IAccountInfo acct = AcctInfoServices.getAccountInfoService().get(factAcct, getTrxName());
+				if (factAcct.getRecord().getAmtAcctDr().signum() != 0) {
 					FactAcct fa = null;
 					for (FactAcct t : expected) {
-						if (t.account().getAccount_ID() == acct.getAccount_ID() &&
-							t.account().getM_Product_ID() == acct.getM_Product_ID() &&
+						if (t.account().getRecord().getAccount_ID() == acct.getRecord().getAccount_ID() &&
+							t.account().getRecord().getM_Product_ID() == acct.getRecord().getM_Product_ID() &&
 							t.debit() == false) {
 							fa = t;
 							break;
 						}
 					}
 					if (fa == null) { 
-						expected.add(new FactAcct(acct, factAcct.getAmtAcctDr(), 1, false));
+						expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctDr(), 1, false));
 					} else {
-						expected.add(new FactAcct(acct, factAcct.getAmtAcctDr().add(fa.accountedAmount()), 1, false));
+						expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctDr().add(fa.accountedAmount()), 1, false));
 						expected.remove(fa);
 					}
-				} else if (factAcct.getAmtAcctCr().signum() != 0) {
+				} else if (factAcct.getRecord().getAmtAcctCr().signum() != 0) {
 					FactAcct fa = null;
 					for (FactAcct t : expected) {
-						if (t.account().getAccount_ID() == acct.getAccount_ID() &&
-							t.account().getM_Product_ID() == acct.getM_Product_ID() &&
+						if (t.account().getRecord().getAccount_ID() == acct.getRecord().getAccount_ID() &&
+							t.account().getRecord().getM_Product_ID() == acct.getRecord().getM_Product_ID() &&
 							t.debit() == true) {
 							fa = t;
 							break;
 						}
 					}
 					if (fa == null) {
-						expected.add(new FactAcct(acct, factAcct.getAmtAcctCr(), 1, true));
+						expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctCr(), 1, true));
 					} else {
-						expected.add(new FactAcct(acct, factAcct.getAmtAcctCr().add(fa.accountedAmount()), 1, true));
+						expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctCr().add(fa.accountedAmount()), 1, true));
 						expected.remove(fa);
 					}
 				}
@@ -4676,53 +4624,50 @@ public class AveragePOCostingTest extends AbstractTestCase {
 					assertNull(msg, msg);
 				}
 				assertTrue(allocationHdrs[0].isPosted(), "Allocation of freight invoice not posted");
-				query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, allocationHdrs[0].get_ID(), as.get_ID(), getTrxName());
-				factAccts = query.list();
+				factAccts = AcctInfoServices.getFactAcctInfoService().list(MAllocationHdr.Table_ID, allocationHdrs[0].get_ID(), as.getPO().get_ID(), getTrxName());
 				assertEquals(0, factAccts.size(), "Unexpected number of fact entries generated by invoice reversal allocation");
 			}
 			assertFactAcctEntries(rFactAccts, expected);
 
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
-			Optional<MAcctSchema> optional = Arrays.stream(ass).filter(e -> e.getC_AcctSchema_ID() != as.get_ID()).findFirst();
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			Optional<IAcctSchemaInfo> optional = Arrays.stream(ass).filter(e -> e.getRecord().getC_AcctSchema_ID() != as.getPO().get_ID()).findFirst();
 			if (optional.isPresent()) {
-				MAcctSchema as2 = optional.get();
-				query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, freightInvoice.get_ID(), as2.get_ID(), getTrxName());
-				factAccts = query.list();
-				query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, freightInvoice.getReversal_ID(), as2.get_ID(), getTrxName());
-				rFactAccts = query.list();
+				IAcctSchemaInfo as2 = optional.get();
+				factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, freightInvoice.get_ID(), as2.getPO().get_ID(), getTrxName());
+				rFactAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, freightInvoice.getReversal_ID(), as2.getPO().get_ID(), getTrxName());
 				expected = new ArrayList<FactAcct>();
-				for(MFactAcct factAcct : factAccts) {
-					MAccount acct = MAccount.get(factAcct, getTrxName());
-					if (factAcct.getAmtAcctDr().signum() != 0) {
+				for(IFactAcctInfo factAcct : factAccts) {
+					IAccountInfo acct = AcctInfoServices.getAccountInfoService().get(factAcct, getTrxName());
+					if (factAcct.getRecord().getAmtAcctDr().signum() != 0) {
 						FactAcct fa = null;
 						for (FactAcct t : expected) {
-							if (t.account().getAccount_ID() == acct.getAccount_ID() &&
-								t.account().getM_Product_ID() == acct.getM_Product_ID() &&
+							if (t.account().getRecord().getAccount_ID() == acct.getRecord().getAccount_ID() &&
+								t.account().getRecord().getM_Product_ID() == acct.getRecord().getM_Product_ID() &&
 								t.debit() == false) {
 								fa = t;
 								break;
 							}
 						}
 						if (fa == null) { 
-							expected.add(new FactAcct(acct, factAcct.getAmtAcctDr(), 1, false));
+							expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctDr(), 1, false));
 						} else {
-							expected.add(new FactAcct(acct, factAcct.getAmtAcctDr().add(fa.accountedAmount()), 1, false));
+							expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctDr().add(fa.accountedAmount()), 1, false));
 							expected.remove(fa);
 						}
-					} else if (factAcct.getAmtAcctCr().signum() != 0) {
+					} else if (factAcct.getRecord().getAmtAcctCr().signum() != 0) {
 						FactAcct fa = null;
 						for (FactAcct t : expected) {
-							if (t.account().getAccount_ID() == acct.getAccount_ID() &&
-								t.account().getM_Product_ID() == acct.getM_Product_ID() &&
+							if (t.account().getRecord().getAccount_ID() == acct.getRecord().getAccount_ID() &&
+								t.account().getRecord().getM_Product_ID() == acct.getRecord().getM_Product_ID() &&
 								t.debit() == true) {
 								fa = t;
 								break;
 							}
 						}
 						if (fa == null) {
-							expected.add(new FactAcct(acct, factAcct.getAmtAcctCr(), 1, true));
+							expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctCr(), 1, true));
 						} else {
-							expected.add(new FactAcct(acct, factAcct.getAmtAcctCr().add(fa.accountedAmount()), 1, true));
+							expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctCr().add(fa.accountedAmount()), 1, true));
 							expected.remove(fa);
 						}
 					}				
@@ -4735,8 +4680,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	@Test
 	public void testUnplannedLandedCostReversalAfterInventoryUse() {
 		MClient client = MClient.get(Env.getCtx());
-		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+		IAcctSchemaInfo as = client.getAcctSchema();
+		assertEquals(as.getRecord().getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 		
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); 
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); 
@@ -4876,7 +4821,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			}
 			
 			//assert p1 cost and posting
-			List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", poLine1.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", poLine1.getC_OrderLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 			assertTrue(cds.size() == 1, "MCostDetail not found for order line1");
 			for(MCostDetail cd : cds) {
 				if (cd.getM_CostElement_ID() == 0) {
@@ -4887,17 +4832,16 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			
 			//assert p1 mcost
 			p1.set_TrxName(getTrxName());
-			MCost p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			MCost p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertNotNull(p1mcost, "No MCost record found");			
 			assertEquals(p1price.multiply(crate1).setScale(2, RoundingMode.HALF_UP), p1mcost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
 			
 			ProductCost p1ProductCost = new ProductCost(Env.getCtx(), p1.get_ID(), 0, getTrxName());
-			MAccount assetAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
-			MAccount varianceAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
+			IAccountInfo assetAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			IAccountInfo varianceAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
 			Doc doc = DocManager.getDocument(as, MInOut.Table_ID, receipt1.get_ID(), getTrxName());
-			MAccount nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
-			Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt1.get_ID(), as.get_ID(), getTrxName());
-			List<MFactAcct> factAccts = query.list();
+			IAccountInfo nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+			List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, receipt1.get_ID(), as.getPO().get_ID(), getTrxName());
 			List<FactAcct> expected = Arrays.asList(new FactAcct(assetAccount, p1price.multiply(mr1l1Qty).multiply(crate1).setScale(2, RoundingMode.HALF_UP), p1price.multiply(mr1l1Qty), 2, true),
 					new FactAcct(nivReceiptAccount, p1price.multiply(mr1l1Qty).multiply(crate1).setScale(2, RoundingMode.HALF_UP), p1price.multiply(mr1l1Qty), 2, false));
 			assertFactAcctEntries(factAccts, expected);
@@ -4935,10 +4879,9 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertTrue(purchaseInvoice.isPosted());
 			
 			Doc invoiceDoc = DocManager.getDocument(as, MInvoice.Table_ID, purchaseInvoice.get_ID(), getTrxName());
-			MAccount liabilityAccount = invoiceDoc.getAccount(Doc.ACCTTYPE_V_Liability, as);
-			MAccount inventoryClearingAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, purchaseInvoice.get_ID(), as.get_ID(), getTrxName());
-			factAccts = query.list();
+			IAccountInfo liabilityAccount = invoiceDoc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+			IAccountInfo inventoryClearingAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+			factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, purchaseInvoice.get_ID(), as.getPO().get_ID(), getTrxName());
 			expected = Arrays.asList(new FactAcct(inventoryClearingAccount, p1price.multiply(orderQty).multiply(crate1), p1price.multiply(orderQty), 2, true),
 					new FactAcct(liabilityAccount, p1price.multiply(orderQty).multiply(crate1).add(p2price.multiply(orderQty).multiply(crate1)), 
 							p1price.multiply(orderQty).add(p2price.multiply(orderQty)), 2, false));
@@ -5046,9 +4989,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			
 			//assert freight invoice posting
 			doc = DocManager.getDocument(as, MInvoice.Table_ID, freightInvoice.get_ID(), getTrxName());
-			MAccount apAccount = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, freightInvoice.get_ID(), as.get_ID(), getTrxName());
-			factAccts = query.list();
+			IAccountInfo apAccount = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+			factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, freightInvoice.get_ID(), as.getPO().get_ID(), getTrxName());
 			BigDecimal p1OnHand = orderQty.add(inventoryLine1.getMovementQty());
 			BigDecimal p1a1assetAmt = p1a1;
 			BigDecimal p1a2assetAmt = p1a2.divide(mr2l1Qty, RoundingMode.HALF_UP).multiply(p1OnHand.subtract(mr1l1Qty));
@@ -5063,7 +5005,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertFactAcctEntries(factAccts, expected);
 			
 			BigDecimal p1assetAmt = p1a1assetAmt.add(p1a2assetAmt);
-			p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertEquals(p1price.multiply(crate1).add(p1assetAmt.divide(p1OnHand, RoundingMode.HALF_UP)).setScale(2, RoundingMode.HALF_UP), 
 					p1mcost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");			
 			
@@ -5081,43 +5023,41 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				assertNull(msg, msg);
 			}
 			
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, freightInvoice.get_ID(), as.get_ID(), getTrxName());
-			factAccts = query.list();
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, reversal.get_ID(), as.get_ID(), getTrxName());
-			List<MFactAcct> rFactAccts = query.list();
+			factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, freightInvoice.get_ID(), as.getPO().get_ID(), getTrxName());
+			List<IFactAcctInfo> rFactAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, reversal.get_ID(), as.getPO().get_ID(), getTrxName());
 			expected = new ArrayList<FactAcct>();
-			for(MFactAcct factAcct : factAccts) {
-				MAccount acct = MAccount.get(factAcct, getTrxName());
-				if (factAcct.getAmtAcctDr().signum() != 0) {
+			for(IFactAcctInfo factAcct : factAccts) {
+				IAccountInfo acct = AcctInfoServices.getAccountInfoService().get(factAcct, getTrxName());
+				if (factAcct.getRecord().getAmtAcctDr().signum() != 0) {
 					FactAcct fa = null;
 					for (FactAcct t : expected) {
-						if (t.account().getAccount_ID() == acct.getAccount_ID() &&
-							t.account().getM_Product_ID() == acct.getM_Product_ID() &&
+						if (t.account().getRecord().getAccount_ID() == acct.getRecord().getAccount_ID() &&
+							t.account().getRecord().getM_Product_ID() == acct.getRecord().getM_Product_ID() &&
 							t.debit() == false) {
 							fa = t;
 							break;
 						}
 					}
 					if (fa == null) { 
-						expected.add(new FactAcct(acct, factAcct.getAmtAcctDr(), 1, false));
+						expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctDr(), 1, false));
 					} else {
-						expected.add(new FactAcct(acct, factAcct.getAmtAcctDr().add(fa.accountedAmount()), 1, false));
+						expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctDr().add(fa.accountedAmount()), 1, false));
 						expected.remove(fa);
 					}
-				} else if (factAcct.getAmtAcctCr().signum() != 0) {
+				} else if (factAcct.getRecord().getAmtAcctCr().signum() != 0) {
 					FactAcct fa = null;
 					for (FactAcct t : expected) {
-						if (t.account().getAccount_ID() == acct.getAccount_ID() &&
-							t.account().getM_Product_ID() == acct.getM_Product_ID() &&
+						if (t.account().getRecord().getAccount_ID() == acct.getRecord().getAccount_ID() &&
+							t.account().getRecord().getM_Product_ID() == acct.getRecord().getM_Product_ID() &&
 							t.debit() == true) {
 							fa = t;
 							break;
 						}
 					}
 					if (fa == null) {
-						expected.add(new FactAcct(acct, factAcct.getAmtAcctCr(), 1, true));
+						expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctCr(), 1, true));
 					} else {
-						expected.add(new FactAcct(acct, factAcct.getAmtAcctCr().add(fa.accountedAmount()), 1, true));
+						expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctCr().add(fa.accountedAmount()), 1, true));
 						expected.remove(fa);
 					}
 				}
@@ -5130,53 +5070,50 @@ public class AveragePOCostingTest extends AbstractTestCase {
 					assertNull(msg, msg);
 				}
 				assertTrue(allocationHdrs[0].isPosted(), "Allocation of freight invoice not posted");
-				query = MFactAcct.createRecordIdQuery(MAllocationHdr.Table_ID, allocationHdrs[0].get_ID(), as.get_ID(), getTrxName());
-				factAccts = query.list();
+				factAccts = AcctInfoServices.getFactAcctInfoService().list(MAllocationHdr.Table_ID, allocationHdrs[0].get_ID(), as.getPO().get_ID(), getTrxName());
 				assertEquals(0, factAccts.size(), "Unexpected number of fact entries generated by invoice reversal allocation");
 			}
 			assertFactAcctEntries(rFactAccts, expected);
 
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
-			Optional<MAcctSchema> optional = Arrays.stream(ass).filter(e -> e.getC_AcctSchema_ID() != as.get_ID()).findFirst();
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			Optional<IAcctSchemaInfo> optional = Arrays.stream(ass).filter(e -> e.getRecord().getC_AcctSchema_ID() != as.getPO().get_ID()).findFirst();
 			if (optional.isPresent()) {
-				MAcctSchema as2 = optional.get();
-				query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, freightInvoice.get_ID(), as2.get_ID(), getTrxName());
-				factAccts = query.list();
-				query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, freightInvoice.getReversal_ID(), as2.get_ID(), getTrxName());
-				rFactAccts = query.list();
+				IAcctSchemaInfo as2 = optional.get();
+				factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, freightInvoice.get_ID(), as2.getPO().get_ID(), getTrxName());
+				rFactAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, freightInvoice.getReversal_ID(), as2.getPO().get_ID(), getTrxName());
 				expected = new ArrayList<FactAcct>();
-				for(MFactAcct factAcct : factAccts) {
-					MAccount acct = MAccount.get(factAcct, getTrxName());
-					if (factAcct.getAmtAcctDr().signum() != 0) {
+				for(IFactAcctInfo factAcct : factAccts) {
+					IAccountInfo acct = AcctInfoServices.getAccountInfoService().get(factAcct, getTrxName());
+					if (factAcct.getRecord().getAmtAcctDr().signum() != 0) {
 						FactAcct fa = null;
 						for (FactAcct t : expected) {
-							if (t.account().getAccount_ID() == acct.getAccount_ID() &&
-								t.account().getM_Product_ID() == acct.getM_Product_ID() &&
+							if (t.account().getRecord().getAccount_ID() == acct.getRecord().getAccount_ID() &&
+								t.account().getRecord().getM_Product_ID() == acct.getRecord().getM_Product_ID() &&
 								t.debit() == false) {
 								fa = t;
 								break;
 							}
 						}
 						if (fa == null) { 
-							expected.add(new FactAcct(acct, factAcct.getAmtAcctDr(), 1, false));
+							expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctDr(), 1, false));
 						} else {
-							expected.add(new FactAcct(acct, factAcct.getAmtAcctDr().add(fa.accountedAmount()), 1, false));
+							expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctDr().add(fa.accountedAmount()), 1, false));
 							expected.remove(fa);
 						}
-					} else if (factAcct.getAmtAcctCr().signum() != 0) {
+					} else if (factAcct.getRecord().getAmtAcctCr().signum() != 0) {
 						FactAcct fa = null;
 						for (FactAcct t : expected) {
-							if (t.account().getAccount_ID() == acct.getAccount_ID() &&
-								t.account().getM_Product_ID() == acct.getM_Product_ID() &&
+							if (t.account().getRecord().getAccount_ID() == acct.getRecord().getAccount_ID() &&
+								t.account().getRecord().getM_Product_ID() == acct.getRecord().getM_Product_ID() &&
 								t.debit() == true) {
 								fa = t;
 								break;
 							}
 						}
 						if (fa == null) {
-							expected.add(new FactAcct(acct, factAcct.getAmtAcctCr(), 1, true));
+							expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctCr(), 1, true));
 						} else {
-							expected.add(new FactAcct(acct, factAcct.getAmtAcctCr().add(fa.accountedAmount()), 1, true));
+							expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctCr().add(fa.accountedAmount()), 1, true));
 							expected.remove(fa);
 						}
 					}				
@@ -5193,8 +5130,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	}
 	public void testUnplannedLandedCostReversalWithZeroOnHand(boolean forProduct) {
 		MClient client = MClient.get(Env.getCtx());
-		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+		IAcctSchemaInfo as = client.getAcctSchema();
+		assertEquals(as.getRecord().getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 		
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
 			MProduct p1 = new MProduct(Env.getCtx(), 0, getTrxName());
@@ -5268,7 +5205,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			}
 			
 			//assert p1 cost and posting
-			List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", poLine1.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", poLine1.getC_OrderLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 			assertTrue(cds.size() == 1, "MCostDetail not found for order line1");
 			for(MCostDetail cd : cds) {
 				if (cd.getM_CostElement_ID() == 0) {
@@ -5278,17 +5215,16 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			}
 			
 			p1.set_TrxName(getTrxName());
-			MCost p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			MCost p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertNotNull(p1mcost, "No MCost record found");			
 			assertEquals(p1price, p1mcost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
 			
 			ProductCost p1ProductCost = new ProductCost(Env.getCtx(), p1.get_ID(), 0, getTrxName());
-			MAccount assetAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
-			MAccount varianceAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
+			IAccountInfo assetAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			IAccountInfo varianceAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
 			Doc doc = DocManager.getDocument(as, MInOut.Table_ID, receipt1.get_ID(), getTrxName());
-			MAccount nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
-			Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt1.get_ID(), as.get_ID(), getTrxName());
-			List<MFactAcct> factAccts = query.list();
+			IAccountInfo nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+			List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, receipt1.get_ID(), as.getPO().get_ID(), getTrxName());
 			List<FactAcct> expected = Arrays.asList(new FactAcct(assetAccount, p1price.multiply(mr1Qty), 2, true),
 					new FactAcct(nivReceiptAccount, p1price.multiply(mr1Qty), 2, false));
 			assertFactAcctEntries(factAccts, expected);
@@ -5319,10 +5255,9 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertTrue(purchaseInvoice.isPosted());
 			
 			Doc invoiceDoc = DocManager.getDocument(as, MInvoice.Table_ID, purchaseInvoice.get_ID(), getTrxName());
-			MAccount liabilityAccount = invoiceDoc.getAccount(Doc.ACCTTYPE_V_Liability, as);
-			MAccount inventoryClearingAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, purchaseInvoice.get_ID(), as.get_ID(), getTrxName());
-			factAccts = query.list();
+			IAccountInfo liabilityAccount = invoiceDoc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+			IAccountInfo inventoryClearingAccount = p1ProductCost.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+			factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, purchaseInvoice.get_ID(), as.getPO().get_ID(), getTrxName());
 			expected = Arrays.asList(new FactAcct(inventoryClearingAccount, p1price.multiply(orderQty), 2, true),
 					new FactAcct(liabilityAccount, p1price.multiply(orderQty), 2, false));
 			assertFactAcctEntries(factAccts, expected);
@@ -5428,9 +5363,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			
 			//assert freight invoice posting
 			doc = DocManager.getDocument(as, MInvoice.Table_ID, freightInvoice.get_ID(), getTrxName());
-			MAccount apAccount = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, freightInvoice.get_ID(), as.get_ID(), getTrxName());
-			factAccts = query.list();
+			IAccountInfo apAccount = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
+			factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, freightInvoice.get_ID(), as.getPO().get_ID(), getTrxName());
 			expected = Arrays.asList(new FactAcct(varianceAccount, p1a1, 2, true),
 					new FactAcct(apAccount, freightInvoice.getGrandTotal(), 2, false));
 			assertFactAcctEntries(factAccts, expected);
@@ -5449,36 +5383,32 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			}
 			
 			//assert reversal invoice posting
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, freightInvoice.get_ID(), as.get_ID(), getTrxName());
-			factAccts = query.list();
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, freightInvoice.getReversal_ID(), as.get_ID(), getTrxName());
-			List<MFactAcct> rFactAccts = query.list();
+			factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, freightInvoice.get_ID(), as.getPO().get_ID(), getTrxName());
+			List<IFactAcctInfo> rFactAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, freightInvoice.getReversal_ID(), as.getPO().get_ID(), getTrxName());
 			expected = new ArrayList<FactAcct>();
-			for(MFactAcct factAcct : factAccts) {
-				MAccount acct = MAccount.get(factAcct, getTrxName());
-				if (factAcct.getAmtAcctDr().signum() != 0) {
-					expected.add(new FactAcct(acct, factAcct.getAmtAcctDr(), 2, false));
-				} else if (factAcct.getAmtAcctCr().signum() != 0) {
-					expected.add(new FactAcct(acct, factAcct.getAmtAcctCr(), 2, true));
+			for(IFactAcctInfo factAcct : factAccts) {
+				IAccountInfo acct = AcctInfoServices.getAccountInfoService().get(factAcct, getTrxName());
+				if (factAcct.getRecord().getAmtAcctDr().signum() != 0) {
+					expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctDr(), 2, false));
+				} else if (factAcct.getRecord().getAmtAcctCr().signum() != 0) {
+					expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctCr(), 2, true));
 				}
 			}
 			assertFactAcctEntries(rFactAccts, expected);
 
-			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
-			Optional<MAcctSchema> optional = Arrays.stream(ass).filter(e -> e.getC_AcctSchema_ID() != as.get_ID()).findFirst();
+			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			Optional<IAcctSchemaInfo> optional = Arrays.stream(ass).filter(e -> e.getRecord().getC_AcctSchema_ID() != as.getPO().get_ID()).findFirst();
 			if (optional.isPresent()) {
-				MAcctSchema as2 = optional.get();
-				query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, freightInvoice.get_ID(), as2.get_ID(), getTrxName());
-				factAccts = query.list();
-				query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, freightInvoice.getReversal_ID(), as2.get_ID(), getTrxName());
-				rFactAccts = query.list();
+				IAcctSchemaInfo as2 = optional.get();
+				factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, freightInvoice.get_ID(), as2.getPO().get_ID(), getTrxName());
+				rFactAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, freightInvoice.getReversal_ID(), as2.getPO().get_ID(), getTrxName());
 				expected = new ArrayList<FactAcct>();
-				for(MFactAcct factAcct : factAccts) {
-					MAccount acct = MAccount.get(factAcct, getTrxName());
-					if (factAcct.getAmtAcctDr().signum() != 0) {
-						expected.add(new FactAcct(acct, factAcct.getAmtAcctDr(), 2, false));
-					} else if (factAcct.getAmtAcctCr().signum() != 0) {
-						expected.add(new FactAcct(acct, factAcct.getAmtAcctCr(), 2, true));
+				for(IFactAcctInfo factAcct : factAccts) {
+					IAccountInfo acct = AcctInfoServices.getAccountInfoService().get(factAcct, getTrxName());
+					if (factAcct.getRecord().getAmtAcctDr().signum() != 0) {
+						expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctDr(), 2, false));
+					} else if (factAcct.getRecord().getAmtAcctCr().signum() != 0) {
+						expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctCr(), 2, true));
 					}
 				}
 				assertFactAcctEntries(rFactAccts, expected);
@@ -5499,8 +5429,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	@Test
 	public void testLandedCostForPOWithMultiMRAndReversal() {
 		MClient client = MClient.get(Env.getCtx());
-		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+		IAcctSchemaInfo as = client.getAcctSchema();
+		assertEquals(as.getRecord().getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 		
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
 			MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
@@ -5579,7 +5509,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 					assertNull(error, error);
 				}
 				
-				List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", line.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+				List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", line.getC_OrderLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 				assertTrue(cds.size() == 2, "MCostDetail not found for order line");
 				for (MCostDetail cd : cds) {
 					if (cd.getM_CostElement_ID() == 0) {
@@ -5606,12 +5536,11 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				
 				// check posting
 				ProductCost productCost = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
-				MAccount assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+				IAccountInfo assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
 				Doc doc = DocManager.getDocument(as, MInOut.Table_ID, receipt.get_ID(), getTrxName());
-				MAccount nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
-				MAccount landedCostAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_LandedCostClearing, as);
-				Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt.get_ID(), as.get_ID(), getTrxName());
-				List<MFactAcct> list = query.list();
+				IAccountInfo nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+				IAccountInfo landedCostAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_LandedCostClearing, as);
+				List<IFactAcctInfo> list = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, receipt.get_ID(), as.getPO().get_ID(), getTrxName());
 				List<FactAcct> expected = Arrays.asList(new FactAcct(assetAccount, new BigDecimal("30.00"), 2, true),
 						new FactAcct(nivReceiptAccount, new BigDecimal("20.00"), 2, false), new FactAcct(landedCostAccount, new BigDecimal("10.00"), 2, false));
 				assertFactAcctEntries(list, expected);
@@ -5626,7 +5555,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				receipt.load(getTrxName());
 				assertEquals(DocAction.STATUS_Reversed, receipt.getDocStatus());
 				
-				List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", line.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+				List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", line.getC_OrderLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 				assertTrue(cds.size() == 2, "MCostDetail not found for order line");
 				for (MCostDetail cd : cds) {
 					if (cd.getM_CostElement_ID() == 0) {
@@ -5653,12 +5582,11 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				
 				// check posting for reversal document
 				ProductCost productCost = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
-				MAccount assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+				IAccountInfo assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
 				Doc doc = DocManager.getDocument(as, MInOut.Table_ID, receipt.get_ID(), getTrxName());
-				MAccount nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
-				MAccount landedCostAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_LandedCostClearing, as);
-				Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt.getReversal_ID(), as.get_ID(), getTrxName());
-				List<MFactAcct> list = query.list();
+				IAccountInfo nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+				IAccountInfo landedCostAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_LandedCostClearing, as);
+				List<IFactAcctInfo> list = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, receipt.getReversal_ID(), as.getPO().get_ID(), getTrxName());
 				List<FactAcct> expected = Arrays.asList(new FactAcct(assetAccount, new BigDecimal("30.00"), 2, false),
 						new FactAcct(nivReceiptAccount, new BigDecimal("20.00"), 2, true), new FactAcct(landedCostAccount, new BigDecimal("10.00"), 2, true));
 				assertFactAcctEntries(list, expected);
@@ -5678,8 +5606,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	@Test
 	public void testLandedCostForPOWithMultiMRAndReversal2() {
 		MClient client = MClient.get(Env.getCtx());
-		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+		IAcctSchemaInfo as = client.getAcctSchema();
+		assertEquals(as.getRecord().getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 		
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
 			MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
@@ -5755,7 +5683,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				assertNull(error, error);
 			}
 			
-			List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", line.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", line.getC_OrderLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 			assertTrue(cds.size() == 2, "MCostDetail not found for order line");
 			for (MCostDetail cd : cds) {
 				if (cd.getM_CostElement_ID() == 0) {
@@ -5800,7 +5728,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 					assertNull(error, error);
 				}
 				
-				cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", line.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+				cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", line.getC_OrderLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 				assertTrue(cds.size() == 2, "MCostDetail not found for order line");
 				for (MCostDetail cd : cds) {
 					if (cd.getM_CostElement_ID() == 0) {
@@ -5827,12 +5755,11 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				
 				// check posting
 				ProductCost productCost = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
-				MAccount assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+				IAccountInfo assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
 				Doc doc = DocManager.getDocument(as, MInOut.Table_ID, receipt.get_ID(), getTrxName());
-				MAccount nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
-				MAccount landedCostAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_LandedCostClearing, as);
-				Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt.get_ID(), as.get_ID(), getTrxName());
-				List<MFactAcct> list = query.list();
+				IAccountInfo nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+				IAccountInfo landedCostAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_LandedCostClearing, as);
+				List<IFactAcctInfo> list = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, receipt.get_ID(), as.getPO().get_ID(), getTrxName());
 				List<FactAcct> expected = Arrays.asList(new FactAcct(assetAccount, new BigDecimal("30.00"), 2, true),
 						new FactAcct(nivReceiptAccount, new BigDecimal("20.00"), 2, false), new FactAcct(landedCostAccount, new BigDecimal("10.00"), 2, false));
 				assertFactAcctEntries(list, expected);
@@ -5843,7 +5770,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				receipt.load(getTrxName());
 				assertEquals(DocAction.STATUS_Reversed, receipt.getDocStatus());
 				
-				cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", line.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+				cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", line.getC_OrderLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 				assertTrue(cds.size() == 2, "MCostDetail not found for order line");
 				for (MCostDetail cd : cds) {
 					if (cd.getM_CostElement_ID() == 0) {
@@ -5869,8 +5796,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				assertEquals(new BigDecimal("2.00"), cost2.getCumulatedQty().setScale(2, RoundingMode.HALF_UP), "Unexpected cumulated quantity");				
 				
 				// check posting for reversal document
-				query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt.getReversal_ID(), as.get_ID(), getTrxName());
-				list = query.list();
+				list = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, receipt.getReversal_ID(), as.getPO().get_ID(), getTrxName());
 				expected = Arrays.asList(new FactAcct(assetAccount, new BigDecimal("30.00"), 2, false),
 						new FactAcct(nivReceiptAccount, new BigDecimal("20.00"), 2, true), new FactAcct(landedCostAccount, new BigDecimal("10.00"), 2, true));
 				assertFactAcctEntries(list, expected);
@@ -5886,8 +5812,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	@Test
 	public void testMultiLandedCostForPO() {
 		MClient client = MClient.get(Env.getCtx());
-		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+		IAcctSchemaInfo as = client.getAcctSchema();
+		assertEquals(as.getRecord().getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 		
 		MCostElement costElement = new MCostElement(Env.getCtx(), 0, null);
 		costElement.setName("Tax");
@@ -5974,7 +5900,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				assertNull(error, error);
 			}
 			
-			List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", line.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", line.getC_OrderLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 			assertTrue(cds.size() == 3, "MCostDetail not found for order line");
 			for (MCostDetail cd : cds) {
 				if (cd.getM_CostElement_ID() == 0) {
@@ -6004,12 +5930,11 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			
 			// check posting
 			ProductCost productCost = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
-			MAccount assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			IAccountInfo assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
 			Doc doc = DocManager.getDocument(as, MInOut.Table_ID, receipt.get_ID(), getTrxName());
-			MAccount nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
-			MAccount landedCostAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_LandedCostClearing, as);
-			Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt.get_ID(), as.get_ID(), getTrxName());
-			List<MFactAcct> list = query.list();
+			IAccountInfo nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+			IAccountInfo landedCostAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_LandedCostClearing, as);
+			List<IFactAcctInfo> list = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, receipt.get_ID(), as.getPO().get_ID(), getTrxName());
 			List<FactAcct> expected = Arrays.asList(new FactAcct(assetAccount, new BigDecimal("50.00"), 2, true),
 					new FactAcct(nivReceiptAccount, new BigDecimal("20.00"), 2, false), 
 					new FactAcct(landedCostAccount, new BigDecimal("30.00"), 2, false));
@@ -6033,8 +5958,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	@Test
 	public void testMultiLandedCostForPOWithMultiMRAndReversal() {
 		MClient client = MClient.get(Env.getCtx());
-		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+		IAcctSchemaInfo as = client.getAcctSchema();
+		assertEquals(as.getRecord().getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 		
 		MCostElement costElement = new MCostElement(Env.getCtx(), 0, null);
 		costElement.setName("Tax");
@@ -6124,7 +6049,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 					assertNull(error, error);
 				}
 				
-				List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", line.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+				List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", line.getC_OrderLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 				assertTrue(cds.size() == 3, "MCostDetail not found for order line");
 				for (MCostDetail cd : cds) {
 					if (cd.getM_CostElement_ID() == 0) {
@@ -6154,12 +6079,11 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				
 				// check posting
 				ProductCost productCost = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
-				MAccount assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+				IAccountInfo assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
 				Doc doc = DocManager.getDocument(as, MInOut.Table_ID, receipt.get_ID(), getTrxName());
-				MAccount nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
-				MAccount landedCostAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_LandedCostClearing, as);
-				Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt.get_ID(), as.get_ID(), getTrxName());
-				List<MFactAcct> list = query.list();
+				IAccountInfo nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+				IAccountInfo landedCostAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_LandedCostClearing, as);
+				List<IFactAcctInfo> list = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, receipt.get_ID(), as.getPO().get_ID(), getTrxName());
 				List<FactAcct> expected = Arrays.asList(new FactAcct(assetAccount, new BigDecimal("50.00"), 2, true),
 						new FactAcct(nivReceiptAccount, new BigDecimal("20.00"), 2, false), 
 						new FactAcct(landedCostAccount, new BigDecimal("30.00"), 2, false));
@@ -6175,7 +6099,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				receipt.load(getTrxName());
 				assertEquals(DocAction.STATUS_Reversed, receipt.getDocStatus());
 				
-				List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", line.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+				List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", line.getC_OrderLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 				assertTrue(cds.size() == 3, "MCostDetail not found for order line");
 				for (MCostDetail cd : cds) {
 					if (cd.getM_CostElement_ID() == 0) {
@@ -6206,12 +6130,11 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				
 				// check posting for reversal document
 				ProductCost productCost = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
-				MAccount assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+				IAccountInfo assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
 				Doc doc = DocManager.getDocument(as, MInOut.Table_ID, receipt.get_ID(), getTrxName());
-				MAccount nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
-				MAccount landedCostAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_LandedCostClearing, as);
-				Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt.getReversal_ID(), as.get_ID(), getTrxName());
-				List<MFactAcct> list = query.list();
+				IAccountInfo nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+				IAccountInfo landedCostAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_LandedCostClearing, as);
+				List<IFactAcctInfo> list = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, receipt.getReversal_ID(), as.getPO().get_ID(), getTrxName());
 				List<FactAcct> expected = Arrays.asList(new FactAcct(assetAccount, new BigDecimal("50.00"), 2, false),
 						new FactAcct(nivReceiptAccount, new BigDecimal("20.00"), 2, true), 
 						new FactAcct(landedCostAccount, new BigDecimal("30.00"), 2, true));
@@ -6235,8 +6158,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	@Test
 	public void testMultiLandedCostForPOWithMultiMRAndReversal2() {
 		MClient client = MClient.get(Env.getCtx());
-		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+		IAcctSchemaInfo as = client.getAcctSchema();
+		assertEquals(as.getRecord().getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 		
 		MCostElement costElement = new MCostElement(Env.getCtx(), 0, null);
 		costElement.setName("Tax");
@@ -6323,7 +6246,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				assertNull(error, error);
 			}
 			
-			List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", line.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", line.getC_OrderLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 			assertTrue(cds.size() == 3, "MCostDetail not found for order line");
 			for (MCostDetail cd : cds) {
 				if (cd.getM_CostElement_ID() == 0) {
@@ -6371,7 +6294,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 					assertNull(error, error);
 				}
 				
-				cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", line.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+				cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", line.getC_OrderLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 				assertTrue(cds.size() == 3, "MCostDetail not found for order line");
 				for (MCostDetail cd : cds) {
 					if (cd.getM_CostElement_ID() == 0) {
@@ -6401,12 +6324,11 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				
 				// check posting
 				ProductCost productCost = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
-				MAccount assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+				IAccountInfo assetAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
 				Doc doc = DocManager.getDocument(as, MInOut.Table_ID, receipt.get_ID(), getTrxName());
-				MAccount nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
-				MAccount landedCostAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_LandedCostClearing, as);
-				Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt.get_ID(), as.get_ID(), getTrxName());
-				List<MFactAcct> list = query.list();
+				IAccountInfo nivReceiptAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+				IAccountInfo landedCostAccount = productCost.getAccount(ProductCost.ACCTTYPE_P_LandedCostClearing, as);
+				List<IFactAcctInfo> list = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, receipt.get_ID(), as.getPO().get_ID(), getTrxName());
 				List<FactAcct> expected = Arrays.asList(new FactAcct(assetAccount, new BigDecimal("50.00"), 2, true),
 						new FactAcct(nivReceiptAccount, new BigDecimal("20.00"), 2, false), 
 						new FactAcct(landedCostAccount, new BigDecimal("30.00"), 2, false));
@@ -6418,7 +6340,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				receipt.load(getTrxName());
 				assertEquals(DocAction.STATUS_Reversed, receipt.getDocStatus());
 				
-				cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", line.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+				cds = MCostDetail.list(Env.getCtx(), "C_OrderLine_ID=?", line.getC_OrderLine_ID(), 0, as.getPO().get_ID(), getTrxName());
 				assertTrue(cds.size() == 3, "MCostDetail not found for order line");
 				for (MCostDetail cd : cds) {
 					if (cd.getM_CostElement_ID() == 0) {
@@ -6447,8 +6369,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				assertEquals(new BigDecimal("2.00"), cost2.getCumulatedQty().setScale(2, RoundingMode.HALF_UP), "Unexpected cumulated quantity");				
 				
 				// check posting for reversal document
-				query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt.getReversal_ID(), as.get_ID(), getTrxName());
-				list = query.list();
+				list = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, receipt.getReversal_ID(), as.getPO().get_ID(), getTrxName());
 				expected = Arrays.asList(new FactAcct(assetAccount, new BigDecimal("50.00"), 2, false),
 						new FactAcct(nivReceiptAccount, new BigDecimal("20.00"), 2, true), 
 						new FactAcct(landedCostAccount, new BigDecimal("30.00"), 2, true));

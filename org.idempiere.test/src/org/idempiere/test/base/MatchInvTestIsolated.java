@@ -43,10 +43,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.constants.IAcctSchemaConstants;
+import org.adempiere.base.acct.info.IAccountInfo;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.info.IFactAcctInfo;
 import org.compiere.acct.Doc;
 import org.compiere.acct.DocManager;
-import org.compiere.model.MAccount;
-import org.compiere.model.MAcctSchema;
+import org.compiere.model.I_C_AcctSchema;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MClient;
 import org.compiere.model.MConversionRate;
@@ -54,7 +58,6 @@ import org.compiere.model.MCost;
 import org.compiere.model.MCostElement;
 import org.compiere.model.MCurrency;
 import org.compiere.model.MDocType;
-import org.compiere.model.MFactAcct;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
 import org.compiere.model.MInventory;
@@ -112,7 +115,7 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 									.setParameters(category.get_ID())
 									.list();
 		for (MProductCategoryAcct categoryAcct : categoryAccts) {
-			categoryAcct.setCostingMethod(MAcctSchema.COSTINGMETHOD_StandardCosting);
+			categoryAcct.setCostingMethod(IAcctSchemaConstants.COSTINGMETHOD_StandardCosting);
 			categoryAcct.saveEx();
 		}
 		
@@ -125,14 +128,14 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 			
 			int purchaseId = DictionaryIDs.M_PriceList.PURCHASE.id; // Purchase Price List
 			MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.SEED_FARM.id); // Seed Farm Inc.
-			MAcctSchema as = MClient.get(getAD_Client_ID()).getAcctSchema();
+			IAcctSchemaInfo as = MClient.get(getAD_Client_ID()).getAcctSchema();
 			BigDecimal mulchCost = MCost.getCurrentCost(mulch, 0, getTrxName()).setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
 			
 			// Change standard cost of mulch product to 2.1234
 			int hqLocator = DictionaryIDs.M_Locator.HQ.id;
 			int costAdjustmentDocTypeId = DictionaryIDs.C_DocType.COST_ADJUSTMENT.id;
 			MInventory inventory = new MInventory(Env.getCtx(), 0, getTrxName());
-			inventory.setCostingMethod(MAcctSchema.COSTINGMETHOD_StandardCosting);
+			inventory.setCostingMethod(IAcctSchemaConstants.COSTINGMETHOD_StandardCosting);
 			inventory.setC_DocType_ID(costAdjustmentDocTypeId);
 			inventory.setM_Warehouse_ID(getM_Warehouse_ID());
 			inventory.setMovementDate(getLoginDate());
@@ -161,12 +164,12 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 			assertEquals(endProductCost, mulchCost, "Cost not adjusted: " + mulchCost.toPlainString());
 			
 			//test converted cost for all schemas
-			MAcctSchema[] schemas = MAcctSchema.getClientAcctSchema(Env.getCtx(), getAD_Client_ID());
+			IAcctSchemaInfo[] schemas = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), getAD_Client_ID());
 			for (int i = 0; i < schemas.length; i++) {
 				BigDecimal expected = MConversionRate.convert (Env.getCtx(),
-						mulchCost, as.getC_Currency_ID(), schemas[i].getC_Currency_ID(),
+						mulchCost, as.getRecord().getC_Currency_ID(), schemas[i].getRecord().getC_Currency_ID(),
 						inventory.getMovementDate(), 0, getAD_Client_ID(), getAD_Org_ID(), true);
-				BigDecimal mulchCostConv = MCost.getCurrentCost(mulch, 0, schemas[i], schemas[i].getAD_Org_ID(), MAcctSchema.COSTINGMETHOD_StandardCosting,
+				BigDecimal mulchCostConv = MCost.getCurrentCost(mulch, 0, schemas[i], schemas[i].getRecord().getAD_Org_ID(), IAcctSchemaConstants.COSTINGMETHOD_StandardCosting,
 						BigDecimal.ONE, 0, true, getTrxName()).setScale(schemas[i].getCostingPrecision(), RoundingMode.HALF_UP);
 				assertEquals(expected, mulchCostConv, "Converted Cost for schema incorrect: " + schemas[i].toString()+ " - " + mulchCostConv.toPlainString());
 			}
@@ -253,15 +256,14 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 				Doc doc = DocManager.getDocument(as, MMatchInv.Table_ID, mi.get_ID(), getTrxName());
 				MInvoiceLine invLine = new MInvoiceLine(Env.getCtx(), mi.getC_InvoiceLine_ID(), getTrxName());
 				doc.setC_BPartner_ID(invLine.getParent().getC_BPartner_ID());
-				MAccount acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+				IAccountInfo acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
 				
 				ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
-				MAccount acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
-				MAccount acctIPV = pc.getAccount(ProductCost.ACCTTYPE_P_IPV, as);
-				int C_AcctSchema_ID = as.getC_AcctSchema_ID();
+				IAccountInfo acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+				IAccountInfo acctIPV = pc.getAccount(ProductCost.ACCTTYPE_P_IPV, as);
+				int C_AcctSchema_ID = as.getRecord().getC_AcctSchema_ID();
 				
-				Query query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, mi.get_ID(), C_AcctSchema_ID, getTrxName());
-				List<MFactAcct> factAccts = query.list();
+				List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.get_ID(), C_AcctSchema_ID, getTrxName());
 				BigDecimal invMatchAmt = invoiceLine.getMatchedQty().multiply(invoiceLine.getPriceActual()).setScale(as.getStdPrecision(), RoundingMode.HALF_UP);
 				mulchCost = mulchCost.setScale(as.getStdPrecision(), RoundingMode.HALF_UP);
 				List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, mulchCost, 2, true), new FactAcct(acctInvClr, invMatchAmt, 2, false),
@@ -282,8 +284,8 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 	@Test
 	public void testAverageCostingIPV() {
 		MClient client = MClient.get(Env.getCtx());
-		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+		IAcctSchemaInfo as = client.getAcctSchema();
+		assertEquals(as.getRecord().getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 		
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {						
 			MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
@@ -357,7 +359,7 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 			assertTrue(receipt.isPosted());
 			
 			product.set_TrxName(getTrxName());
-			MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertNotNull(cost, "No MCost record found");			
 			assertEquals(orderPrice, cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
 			
@@ -397,19 +399,18 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 				mi.load(getTrxName());
 				assertTrue(mi.isPosted());
 				
-				cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+				cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 				assertNotNull(cost, "No MCost record found");			
 				assertEquals(invoicePrice, cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
 								
 				ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
-				MAccount acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
-				MAccount acctAsset = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+				IAccountInfo acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+				IAccountInfo acctAsset = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
 				Doc doc = DocManager.getDocument(as, MInvoice.Table_ID, invoice.get_ID(), getTrxName());
-				MAccount  nirAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
-				int C_AcctSchema_ID = as.getC_AcctSchema_ID();
+				IAccountInfo  nirAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+				int C_AcctSchema_ID = as.getRecord().getC_AcctSchema_ID();
 				
-				Query query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, mi.get_ID(), C_AcctSchema_ID, getTrxName());
-				List<MFactAcct> factAccts = query.list();
+				List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.get_ID(), C_AcctSchema_ID, getTrxName());
 				BigDecimal ipvAmt = invoicePrice.subtract(orderPrice).multiply(BigDecimal.TEN);
 				List<FactAcct> expected = Arrays.asList(new FactAcct(acctAsset, ipvAmt, 2, true), 
 						new FactAcct(nirAccount, orderPrice.multiply(BigDecimal.TEN), 2, true),
@@ -425,22 +426,22 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 	@Test
 	public void testAverageCostingIPVAfterShipment() {
 		MClient client = MClient.get(Env.getCtx());
-		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
-		List<MAcctSchema> allowNegatives = new ArrayList<MAcctSchema>();
+		IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+		List<IAcctSchemaInfo> allowNegatives = new ArrayList<IAcctSchemaInfo>();
 		Arrays.stream(ass).forEach(e -> {
-			MAcctSchema copy = MAcctSchema.getCopy(Env.getCtx(), e.getC_AcctSchema_ID(), null);
-			if (copy.isAllowNegativePosting())
+			IAcctSchemaInfo copy = AcctInfoServices.getAcctSchemaInfoService().getCopy(Env.getCtx(), e.getRecord().getC_AcctSchema_ID(), null);
+			if (copy.getRecord().isAllowNegativePosting())
 			{
-				copy.setIsAllowNegativePosting(false);
-				copy.saveEx();
+				copy.getRecord().setIsAllowNegativePosting(false);
+				copy.getPO().saveEx();
 				allowNegatives.add(copy);
 			}
 		});
 		if (allowNegatives.size() > 0)
-			CacheMgt.get().reset(MAcctSchema.Table_Name);
-		ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
-		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+			CacheMgt.get().reset(I_C_AcctSchema.Table_Name);
+		ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+		IAcctSchemaInfo as = client.getAcctSchema();
+		assertEquals(as.getRecord().getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 					
 		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id); 
 		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id); 
@@ -522,7 +523,7 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 			assertTrue(receipt.isPosted());
 			
 			product.set_TrxName(getTrxName());
-			MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertNotNull(cost, "No MCost record found");			
 			assertEquals(orderPrice, cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
 			
@@ -601,20 +602,19 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 				mi.load(getTrxName());
 				assertTrue(mi.isPosted());
 				
-				cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+				cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 				assertNotNull(cost, "No MCost record found");			
 				assertEquals(invoicePrice, cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
 								
 				ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
-				MAccount acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
-				MAccount acctAsset = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
-				MAccount varianceAccount = pc.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
+				IAccountInfo acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+				IAccountInfo acctAsset = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+				IAccountInfo varianceAccount = pc.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
 				Doc doc = DocManager.getDocument(as, MInvoice.Table_ID, invoice.get_ID(), getTrxName());
-				MAccount  nirAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
-				int C_AcctSchema_ID = as.getC_AcctSchema_ID();
+				IAccountInfo  nirAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+				int C_AcctSchema_ID = as.getRecord().getC_AcctSchema_ID();
 				
-				Query query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, mi.get_ID(), C_AcctSchema_ID, getTrxName());
-				List<MFactAcct> factAccts = query.list();
+				List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.get_ID(), C_AcctSchema_ID, getTrxName());
 				BigDecimal stockBalance = BigDecimal.TEN.subtract(salesQty);
 				BigDecimal assetAmt = invoicePrice.subtract(orderPrice).multiply(stockBalance);
 				List<FactAcct> expected = Arrays.asList(new FactAcct(acctAsset, assetAmt, 2, true), 
@@ -643,35 +643,31 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 			
 			for (MMatchInv mi : miList) {
 				mi.load(getTrxName());
-				Query query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, mi.get_ID(), as.get_ID(), getTrxName());
-				List<MFactAcct> factAccts = query.list();
-				query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, mi.getReversal_ID(), as.get_ID(), getTrxName());
-				List<MFactAcct> rFactAccts = query.list();
+				List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.get_ID(), as.getPO().get_ID(), getTrxName());
+				List<IFactAcctInfo> rFactAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.getReversal_ID(), as.getPO().get_ID(), getTrxName());
 				ArrayList<FactAcct> expected = new ArrayList<FactAcct>();
-				for(MFactAcct factAcct : factAccts) {
-					MAccount acct = MAccount.get(factAcct, getTrxName());
-					if (factAcct.getAmtAcctDr().signum() != 0) {
-						expected.add(new FactAcct(acct, factAcct.getAmtAcctDr(), 2, false));
-					} else if (factAcct.getAmtAcctCr().signum() != 0) {
-						expected.add(new FactAcct(acct, factAcct.getAmtAcctCr(), 2, true));
+				for(IFactAcctInfo factAcct : factAccts) {
+					IAccountInfo acct = AcctInfoServices.getAccountInfoService().get(factAcct, getTrxName());
+					if (factAcct.getRecord().getAmtAcctDr().signum() != 0) {
+						expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctDr(), 2, false));
+					} else if (factAcct.getRecord().getAmtAcctCr().signum() != 0) {
+						expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctCr(), 2, true));
 					}
 				}
 				assertFactAcctEntries(rFactAccts, expected);
 
-				Optional<MAcctSchema> optional = Arrays.stream(ass).filter(e -> e.getC_AcctSchema_ID() != as.get_ID()).findFirst();
+				Optional<IAcctSchemaInfo> optional = Arrays.stream(ass).filter(e -> e.getRecord().getC_AcctSchema_ID() != as.getPO().get_ID()).findFirst();
 				if (optional.isPresent()) {
-					MAcctSchema as2 = optional.get();
-					query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, mi.get_ID(), as2.get_ID(), getTrxName());
-					factAccts = query.list();
-					query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, mi.getReversal_ID(), as2.get_ID(), getTrxName());
-					rFactAccts = query.list();
+					IAcctSchemaInfo as2 = optional.get();
+					factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.get_ID(), as2.getPO().get_ID(), getTrxName());
+					rFactAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.getReversal_ID(), as2.getPO().get_ID(), getTrxName());
 					expected = new ArrayList<FactAcct>();
-					for(MFactAcct factAcct : factAccts) {
-						MAccount acct = MAccount.get(factAcct, getTrxName());
-						if (factAcct.getAmtAcctDr().signum() != 0) {
-							expected.add(new FactAcct(acct, factAcct.getAmtAcctDr(), 2, false));
-						} else if (factAcct.getAmtAcctCr().signum() != 0) {
-							expected.add(new FactAcct(acct, factAcct.getAmtAcctCr(), 2, true));
+					for(IFactAcctInfo factAcct : factAccts) {
+						IAccountInfo acct = AcctInfoServices.getAccountInfoService().get(factAcct, getTrxName());
+						if (factAcct.getRecord().getAmtAcctDr().signum() != 0) {
+							expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctDr(), 2, false));
+						} else if (factAcct.getRecord().getAmtAcctCr().signum() != 0) {
+							expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctCr(), 2, true));
 						}
 					}
 					assertFactAcctEntries(rFactAccts, expected);
@@ -679,35 +675,31 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 			}
 			
 			//assert reversal invoice posting
-			Query query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, invoice.get_ID(), as.get_ID(), getTrxName());
-			List<MFactAcct> factAccts = query.list();
-			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, invoice.getReversal_ID(), as.get_ID(), getTrxName());
-			List<MFactAcct> rFactAccts = query.list();
+			List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, invoice.get_ID(), as.getPO().get_ID(), getTrxName());
+			List<IFactAcctInfo> rFactAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, invoice.getReversal_ID(), as.getPO().get_ID(), getTrxName());
 			ArrayList<FactAcct> expected = new ArrayList<FactAcct>();
-			for(MFactAcct factAcct : factAccts) {
-				MAccount acct = MAccount.get(factAcct, getTrxName());
-				if (factAcct.getAmtAcctDr().signum() != 0) {
-					expected.add(new FactAcct(acct, factAcct.getAmtAcctDr(), 2, false));
-				} else if (factAcct.getAmtAcctCr().signum() != 0) {
-					expected.add(new FactAcct(acct, factAcct.getAmtAcctCr(), 2, true));
+			for(IFactAcctInfo factAcct : factAccts) {
+				IAccountInfo acct = AcctInfoServices.getAccountInfoService().get(factAcct, getTrxName());
+				if (factAcct.getRecord().getAmtAcctDr().signum() != 0) {
+					expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctDr(), 2, false));
+				} else if (factAcct.getRecord().getAmtAcctCr().signum() != 0) {
+					expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctCr(), 2, true));
 				}
 			}
 			assertFactAcctEntries(rFactAccts, expected);
 
-			Optional<MAcctSchema> optional = Arrays.stream(ass).filter(e -> e.getC_AcctSchema_ID() != as.get_ID()).findFirst();
+			Optional<IAcctSchemaInfo> optional = Arrays.stream(ass).filter(e -> e.getRecord().getC_AcctSchema_ID() != as.getPO().get_ID()).findFirst();
 			if (optional.isPresent()) {
-				MAcctSchema as2 = optional.get();
-				query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, invoice.get_ID(), as2.get_ID(), getTrxName());
-				factAccts = query.list();
-				query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, invoice.getReversal_ID(), as2.get_ID(), getTrxName());
-				rFactAccts = query.list();
+				IAcctSchemaInfo as2 = optional.get();
+				factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, invoice.get_ID(), as2.getPO().get_ID(), getTrxName());
+				rFactAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, invoice.getReversal_ID(), as2.getPO().get_ID(), getTrxName());
 				expected = new ArrayList<FactAcct>();
-				for(MFactAcct factAcct : factAccts) {
-					MAccount acct = MAccount.get(factAcct, getTrxName());
-					if (factAcct.getAmtAcctDr().signum() != 0) {
-						expected.add(new FactAcct(acct, factAcct.getAmtAcctDr(), 2, false));
-					} else if (factAcct.getAmtAcctCr().signum() != 0) {
-						expected.add(new FactAcct(acct, factAcct.getAmtAcctCr(), 2, true));
+				for(IFactAcctInfo factAcct : factAccts) {
+					IAccountInfo acct = AcctInfoServices.getAccountInfoService().get(factAcct, getTrxName());
+					if (factAcct.getRecord().getAmtAcctDr().signum() != 0) {
+						expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctDr(), 2, false));
+					} else if (factAcct.getRecord().getAmtAcctCr().signum() != 0) {
+						expected.add(new FactAcct(acct, factAcct.getRecord().getAmtAcctCr(), 2, true));
 					}
 				}
 				assertFactAcctEntries(rFactAccts, expected);
@@ -717,8 +709,8 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 			
 			if (allowNegatives.size() > 0) {
 				allowNegatives.forEach(e -> {
-					e.setIsAllowNegativePosting(true);
-					e.saveEx();
+					e.getRecord().setIsAllowNegativePosting(true);
+					e.getPO().saveEx();
 				});
 			}
 				
@@ -731,8 +723,8 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 	@Test
 	public void testAverageCostingIPVPartialMR() {
 		MClient client = MClient.get(Env.getCtx());
-		MAcctSchema as = client.getAcctSchema();
-		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+		IAcctSchemaInfo as = client.getAcctSchema();
+		assertEquals(as.getRecord().getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
 		
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {						
 			MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
@@ -808,7 +800,7 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 			assertTrue(receipt.isPosted());
 			
 			product.set_TrxName(getTrxName());
-			MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 			assertNotNull(cost, "No MCost record found");			
 			assertEquals(orderPrice, cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
 			
@@ -849,19 +841,18 @@ public class MatchInvTestIsolated extends AbstractTestCase {
 				mi.load(getTrxName());
 				assertTrue(mi.isPosted());
 				
-				cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+				cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
 				assertNotNull(cost, "No MCost record found");			
 				assertEquals(invoicePrice, cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
 								
 				ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
-				MAccount acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
-				MAccount acctAsset = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+				IAccountInfo acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+				IAccountInfo acctAsset = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
 				Doc doc = DocManager.getDocument(as, MInvoice.Table_ID, invoice.get_ID(), getTrxName());
-				MAccount  nirAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
-				int C_AcctSchema_ID = as.getC_AcctSchema_ID();
+				IAccountInfo  nirAccount = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+				int C_AcctSchema_ID = as.getRecord().getC_AcctSchema_ID();
 				
-				Query query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, mi.get_ID(), C_AcctSchema_ID, getTrxName());
-				List<MFactAcct> factAccts = query.list();
+				List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.get_ID(), C_AcctSchema_ID, getTrxName());
 				BigDecimal assetAmt = invoicePrice.subtract(orderPrice).multiply(mrQty);
 				List<FactAcct> expected = Arrays.asList(new FactAcct(acctAsset, assetAmt, 2, true), 
 						new FactAcct(nirAccount, orderPrice.multiply(mrQty), 2, true),

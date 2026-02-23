@@ -15,8 +15,8 @@ package org.idempiere.process;
 
 import java.math.BigDecimal;
 
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.compiere.model.ICostInfo;
-import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClient;
 import org.compiere.model.MInventoryLine;
 import org.compiere.model.MProduct;
@@ -50,7 +50,7 @@ public class CostAdjustmentLineRefreshCost extends SvrProcess {
 		MInventoryLine line = new MInventoryLine(getCtx(), getRecord_ID(), null);
 		MProduct product = line.getProduct();
 		MClient client = MClient.get(getCtx(), line.getAD_Client_ID());
-		MAcctSchema as = client.getAcctSchema();
+		IAcctSchemaInfo as = client.getAcctSchema();
 		ICostInfo cost = product.getCostInfo(as, line.getAD_Org_ID(), line.getM_AttributeSetInstance_ID(), line.getParent().getCostingMethod(), line.getParent().getMovementDate());
 		if (cost != null) {
 			line.setCurrentCostPrice(cost.getCurrentCostPrice());

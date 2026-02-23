@@ -29,6 +29,11 @@
  **********************************************************************/
 package org.compiere.apps.form;
 
+import static org.compiere.model.SystemIDs.COLUMN_C_INVOICE_C_BPARTNER_ID;
+import static org.compiere.model.SystemIDs.COLUMN_C_PERIOD_AD_ORG_ID;
+import static org.compiere.model.SystemIDs.COLUMN_FACT_ACCT_C_ACCTSCHEMA_ID;
+import static org.compiere.model.SystemIDs.COLUMN_FACT_ACCT_M_PRODUCT_ID;
+
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -40,11 +45,10 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.info.IFactReconciliationInfo;
 import org.compiere.minigrid.IMiniTable;
-import org.compiere.model.MFactReconciliation;
 import org.compiere.model.MRole;
-import org.compiere.model.Query;
-import static org.compiere.model.SystemIDs.*;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -330,17 +334,17 @@ public class FactReconcile {
 	{
 		String matchcode = "Manual: " + Env.getContext(Env.getCtx(), Env.AD_USER_NAME) + " " + time;
 		
-		MFactReconciliation rec = new Query(Env.getCtx(), MFactReconciliation.Table_Name, "Fact_Acct_ID = ?", m_trxName)
-		.setParameters(new Object[] {factId}).first();
+		String whereClause = "Fact_Acct_ID = ?";
+		IFactReconciliationInfo rec = AcctInfoServices.getFactReconciliationInfoService().first(Env.getCtx(), whereClause, new Object[] {factId}, m_trxName);
 
 		if ( rec == null )
 		{
-			rec = new MFactReconciliation(Env.getCtx(), 0, m_trxName);
-			rec.setFact_Acct_ID(factId);
+			rec = AcctInfoServices.getFactReconciliationInfoService().create(Env.getCtx(), 0, m_trxName);
+			rec.getRecord().setFact_Acct_ID(factId);
 		}
 
-		rec.setMatchCode(matchcode);
-		return rec.save();
+		rec.getRecord().setMatchCode(matchcode);
+		return rec.getPO().save();
 	}
 	
 	/**
@@ -376,15 +380,15 @@ public class FactReconcile {
 	 */
 	public boolean reset(int factId)
 	{
-		MFactReconciliation rec = new Query(Env.getCtx(), MFactReconciliation.Table_Name, "Fact_Acct_ID = ?", m_trxName)
-		.setParameters(new Object[] {factId}).first();
+		String whereClause = "Fact_Acct_ID = ?";
+		IFactReconciliationInfo rec = AcctInfoServices.getFactReconciliationInfoService().first(Env.getCtx(), whereClause, new Object[] {factId}, m_trxName);
 
 		if ( rec == null )
 		{
 			return false;
 		}
 
-		return rec.delete(false);
+		return rec.getPO().delete(false);
 	}
 	
 	/**

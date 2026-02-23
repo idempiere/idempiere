@@ -26,6 +26,8 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.info.IElementValueInfo;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.Ini;
@@ -79,7 +81,7 @@ public final class NaturalAccountMap<K,V> extends CCache<K,V>
 	/** Transaction		*/
 	private String		m_trxName = null;
 	/** Map of Values and Element	*/
-	private HashMap<String,MElementValue> 	m_valueMap = new HashMap<String,MElementValue>();
+	private HashMap<String,IElementValueInfo> 	m_valueMap = new HashMap<String,IElementValueInfo>();
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(NaturalAccountMap.class);
 
@@ -240,11 +242,11 @@ public final class NaturalAccountMap<K,V> extends CCache<K,V>
 		try
 		{
 			//	Try to find - allows to use same natural account for multiple default accounts 
-			MElementValue na = (MElementValue)m_valueMap.get(Value);
+			IElementValueInfo na = (IElementValueInfo)m_valueMap.get(Value);
 			if (na == null)
 			{
 				//  Create Account - save later
-				na = new MElementValue(m_ctx, Value, Name, Description,
+				na = AcctInfoServices.getElementValueInfoService().create(m_ctx, Value, Name, Description,
 					AccountType, AccountSign,
 					IsDocControlled.toUpperCase().startsWith("Y"), 
 					IsSummary.toUpperCase().startsWith("Y"), m_trxName);
@@ -277,12 +279,12 @@ public final class NaturalAccountMap<K,V> extends CCache<K,V>
 		Iterator<?> iterator = this.values().iterator();
 		while (iterator.hasNext())
 		{
-			MElementValue na = (MElementValue)iterator.next();
-			na.setAD_Client_ID(AD_Client_ID);
-			na.setAD_Org_ID(AD_Org_ID);
-			na.setC_Element_ID(C_Element_ID);
-			na.setIsActive(isActive);
-			if (!na.save())
+			IElementValueInfo na = (IElementValueInfo)iterator.next();
+			na.getPO().set_ValueNoCheck("AD_Client_ID", Integer.valueOf(AD_Client_ID));
+			na.getRecord().setAD_Org_ID(AD_Org_ID);
+			na.getRecord().setC_Element_ID(C_Element_ID);
+			na.getRecord().setIsActive(isActive);
+			if (!na.getPO().save())
 				return false;
 		}
 		return true;
@@ -295,10 +297,10 @@ public final class NaturalAccountMap<K,V> extends CCache<K,V>
 	 */
 	public int getC_ElementValue_ID (String key)
 	{
-		MElementValue na = (MElementValue)this.get(key);
+		IElementValueInfo na = (IElementValueInfo)this.get(key);
 		if (na == null)
 			return 0;
-		return na.getC_ElementValue_ID();
+		return na.getRecord().getC_ElementValue_ID();
 	}   //  getC_ElementValue_ID
 
 }   //  NaturalAccountMap

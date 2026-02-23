@@ -37,6 +37,8 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.info.IFactAcctInfo;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
@@ -70,13 +72,12 @@ import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.DateRangeButton;
 import org.compiere.apps.form.FactReconcile;
+import org.compiere.model.I_C_ElementValue;
+import org.compiere.model.I_Fact_Acct;
 import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
-import org.compiere.model.MFactAcct;
-import org.compiere.model.MFactReconciliation;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
-import org.compiere.model.X_C_ElementValue;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -346,7 +347,7 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		int AD_Column_ID = FactReconcile.col_C_AcctSchema_ID;        //  Fact_Acct.C_AcctSchema_ID
 		MLookup lookupAS = MLookupFactory.get (Env.getCtx(), form.getWindowNo(), 0, AD_Column_ID, DisplayType.TableDir);
 		fieldAcctSchema = new WTableDirEditor("C_AcctSchema_ID", true, false, true, lookupAS);
-		fieldAcctSchema.setValue(MClient.get(Env.getCtx()).getAcctSchema().getC_AcctSchema_ID());
+		fieldAcctSchema.setValue(MClient.get(Env.getCtx()).getAcctSchema().getRecord().getC_AcctSchema_ID());
 		fieldAcctSchema.addValueChangeListener(this);
 		m_C_AcctSchema_ID = (Integer)fieldAcctSchema.getValue();
 		Env.setContext(Env.getCtx(), form.getWindowNo(), "C_AcctSchema_ID", m_C_AcctSchema_ID);
@@ -371,9 +372,9 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		fieldProduct = new WSearchEditor("M_Product_ID", false, false, true, lookupProduct);
 		
 		//  Account
-		AD_Column_ID = MColumn.getColumn_ID(X_C_ElementValue.Table_Name, X_C_ElementValue.COLUMNNAME_C_ElementValue_ID);
+		AD_Column_ID = MColumn.getColumn_ID(I_C_ElementValue.Table_Name, I_C_ElementValue.COLUMNNAME_C_ElementValue_ID);
 		MLookup lookupAccount = MLookupFactory.get(Env.getCtx(), form.getWindowNo(), AD_Column_ID, DisplayType.TableDir, Env.getLanguage(Env.getCtx()), 
-				X_C_ElementValue.COLUMNNAME_C_ElementValue_ID, 0, true, 
+				I_C_ElementValue.COLUMNNAME_C_ElementValue_ID, 0, true, 
 				" C_ElementValue.IsActive='Y' AND C_ElementValue.IsSummary='N' " 
 				+ "AND EXISTS (SELECT 1 FROM C_AcctSchema_Element ase "
 				+ "WHERE ase.C_Element_ID=C_ElementValue.C_Element_ID AND ase.ElementType='AC' "
@@ -510,7 +511,7 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 			resetReconciliation();
 
 		else if (event.getTarget().equals(bZoom))
-			zoom(MFactAcct.Table_ID);
+			zoom(I_Fact_Acct.Table_ID);
 		else if (event.getTarget().equals(bZoomDoc))
 			zoom(-1);
 
@@ -564,11 +565,11 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		
 		int factId = pp.getKey();
 
-		if (tableID == MFactAcct.Table_ID)
+		if (tableID == I_Fact_Acct.Table_ID)
 			AEnv.zoom(tableID, factId);
 		else {
-			MFactAcct fa = new MFactAcct(Env.getCtx(), factId, null);
-			AEnv.zoom(fa.getAD_Table_ID(), fa.getRecord_ID());
+			IFactAcctInfo fa = AcctInfoServices.getFactAcctInfoService().create(Env.getCtx(), factId, null);
+			AEnv.zoom(fa.getRecord().getAD_Table_ID(), fa.getRecord().getRecord_ID());
 		}
 	}	//	zoom
 	

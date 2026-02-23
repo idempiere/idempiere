@@ -60,7 +60,7 @@ public final class MConversionRateUtil
 		int AD_Client_ID = SetGetUtil.get_AttrValueAsInt(model, "AD_Client_ID");
 
 		// Currency To
-		int C_Currency_ID_To = MClient.get(model.getCtx(), AD_Client_ID).getAcctSchema().getC_Currency_ID();
+		int C_Currency_ID_To = MClient.get(model.getCtx(), AD_Client_ID).getAcctSchema().getRecord().getC_Currency_ID();
 		
 		// Get Rate
 		BigDecimal rate = SetGetUtil.get_AttrValueAsBigDecimal(model, "CurrencyRate");

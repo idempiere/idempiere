@@ -48,7 +48,7 @@ import java.util.Properties;
 
 import javax.mail.internet.InternetAddress;
 
-import org.compiere.model.MAcctSchema;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.compiere.model.MClient;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MSysConfig;
@@ -437,7 +437,7 @@ public class MClientTest extends AbstractTestCase {
     public void testGetAcctSchema() {
         // Case 1: m_info is null and client has NO accounting schema
         MClient client = new MClient(Env.getCtx(), 0, getTrxName());
-        MAcctSchema acctSchema = client.getAcctSchema();
+        IAcctSchemaInfo acctSchema = client.getAcctSchema();
         assertNull(acctSchema, "Should return null when no accounting schema is defined");
 
         // Case 2: m_info exists but C_AcctSchema1_ID == 0
@@ -451,7 +451,7 @@ public class MClientTest extends AbstractTestCase {
         int validAcctSchemaId = info.getC_AcctSchema1_ID();
         acctSchema = client.getAcctSchema();
         assertNotNull(acctSchema, "Should return accounting schema when ID is valid");
-        assertEquals(validAcctSchemaId, acctSchema.getC_AcctSchema_ID(), "Returned schema ID should match client accounting schema ID");
+        assertEquals(validAcctSchemaId, acctSchema.getRecord().getC_AcctSchema_ID(), "Returned schema ID should match client accounting schema ID");
     }
 	
 	/**

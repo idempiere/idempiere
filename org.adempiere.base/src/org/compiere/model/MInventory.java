@@ -25,6 +25,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.constants.IAcctSchemaConstants;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.adempiere.exceptions.BackDateTrxNotAllowedException;
 import org.adempiere.exceptions.NegativeInventoryDisallowedException;
 import org.adempiere.exceptions.PeriodClosedException;
@@ -316,7 +319,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 		if (MDocType.DOCSUBTYPEINV_CostAdjustment.equals(docSubTypeInv))
 		{
 			if (getC_Currency_ID() == 0)
-				setC_Currency_ID(MClient.get(getCtx()).getAcctSchema().getC_Currency_ID()); 
+				setC_Currency_ID(MClient.get(getCtx()).getAcctSchema().getRecord().getC_Currency_ID()); 
 		}
 		
 		return true;
@@ -396,7 +399,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 
 		//	Std Period open?
 		MPeriod.testPeriodOpen(getCtx(), getMovementDate(), MDocType.DOCBASETYPE_MaterialPhysicalInventory, getAD_Org_ID());
-		MAcctSchema.testBackDateTrxAllowed(getCtx(), getMovementDate(), get_TrxName());
+		AcctInfoServices.getAcctSchemaInfoService().testBackDateTrxAllowed(getCtx(), getMovementDate(), get_TrxName());
 		
 		MInventoryLine[] lines = getLines(false);
 		if (lines.length == 0)
@@ -539,11 +542,11 @@ public class MInventory extends X_M_Inventory implements DocAction
 					{
 						BigDecimal currentCost = line.getCurrentCostPrice();
 						MClient client = MClient.get(getCtx(), getAD_Client_ID());
-						MAcctSchema as = client.getAcctSchema();
-						MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(getCtx(), client.get_ID());
-						if (as.getC_Currency_ID() != getC_Currency_ID()) {
-							for (MAcctSchema a : ass) {
-								if (a.getC_Currency_ID() == getC_Currency_ID()) 
+						IAcctSchemaInfo as = client.getAcctSchema();
+						IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(getCtx(), client.get_ID());
+						if (as.getRecord().getC_Currency_ID() != getC_Currency_ID()) {
+							for (IAcctSchemaInfo a : ass) {
+								if (a.getRecord().getC_Currency_ID() == getC_Currency_ID()) 
 									as = a ; 
 							}
 						}
@@ -747,7 +750,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 		if (dt.isOverwriteDateOnComplete()) {
 			setMovementDate(TimeUtil.getDay(0));
 			MPeriod.testPeriodOpen(getCtx(), getMovementDate(), MDocType.DOCBASETYPE_MaterialPhysicalInventory, getAD_Org_ID());
-			MAcctSchema.testBackDateTrxAllowed(getCtx(), getMovementDate(), get_TrxName());
+			AcctInfoServices.getAcctSchemaInfoService().testBackDateTrxAllowed(getCtx(), getMovementDate(), get_TrxName());
 		}
 		if (dt.isOverwriteSeqOnComplete()) {
 			String value = DB.getDocumentNo(getC_DocType_ID(), get_TrxName(), true, this);
@@ -842,8 +845,8 @@ public class MInventory extends X_M_Inventory implements DocAction
 					if(qtyDiff.compareTo(Env.ZERO)>0)
 					{
 						MClientInfo m_clientInfo = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName());
-						MAcctSchema acctSchema = new MAcctSchema(getCtx(), m_clientInfo.getC_AcctSchema1_ID(), get_TrxName());
-						if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(acctSchema)) )
+						IAcctSchemaInfo acctSchema = AcctInfoServices.getAcctSchemaInfoService().create(getCtx(), m_clientInfo.getC_AcctSchema1_ID(), get_TrxName());
+						if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(acctSchema)) )
 						{
 							String sqlWhere = "M_Product_ID=? AND M_Locator_ID=? AND QtyOnHand = 0 AND M_AttributeSetInstance_ID > 0 ";
 							MStorageOnHand storage = new Query(getCtx(), MStorageOnHand.Table_Name, sqlWhere, get_TrxName())
@@ -864,7 +867,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 										.append(" AND ce.CostingMethod = ? ")
 										.append(" AND CurrentCostPrice <> 0 ");
 								MCost cost = new Query(getCtx(),I_M_Cost.Table_Name,localWhereClause.toString(),get_TrxName())
-									.setParameters(line.getM_Product_ID(), acctSchema.get_ID(), costingMethod)
+									.setParameters(line.getM_Product_ID(), acctSchema.getPO().get_ID(), costingMethod)
 									.addJoinClause(" INNER JOIN M_CostElement ce ON (M_Cost.M_CostElement_ID =ce.M_CostElement_ID ) ")
 									.setOrderBy("Updated DESC")
 									.first();
@@ -998,7 +1001,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 			
 			try
 			{
-				MAcctSchema.testBackDateTrxAllowed(getCtx(), getMovementDate(), get_TrxName());
+				AcctInfoServices.getAcctSchemaInfoService().testBackDateTrxAllowed(getCtx(), getMovementDate(), get_TrxName());
 			}
 			catch (BackDateTrxNotAllowedException e)
 			{
@@ -1081,7 +1084,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 		
 		MDocType dt = MDocType.get(getC_DocType_ID());
 		MPeriod.testPeriodOpen(getCtx(), reversalDate, dt.getDocBaseType(), getAD_Org_ID());
-		MAcctSchema.testBackDateTrxAllowed(getCtx(), reversalDate, get_TrxName());
+		AcctInfoServices.getAcctSchemaInfoService().testBackDateTrxAllowed(getCtx(), reversalDate, get_TrxName());
 		
 		try {
 			periodClosedCheckForBackDateTrx(reversalDate);
@@ -1292,12 +1295,12 @@ public class MInventory extends X_M_Inventory implements DocAction
 	private boolean periodClosedCheckForBackDateTrx(Timestamp reversalDate)
 	{
 		MClientInfo info = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName()); 
-		MAcctSchema as = info.getMAcctSchema1();
-		if (!MAcctSchema.COSTINGMETHOD_AveragePO.equals(as.getCostingMethod()) 
-				&& !MAcctSchema.COSTINGMETHOD_AverageInvoice.equals(as.getCostingMethod()))
+		IAcctSchemaInfo as = info.getMAcctSchema1();
+		if (!IAcctSchemaConstants.COSTINGMETHOD_AveragePO.equals(as.getRecord().getCostingMethod()) 
+				&& !IAcctSchemaConstants.COSTINGMETHOD_AverageInvoice.equals(as.getRecord().getCostingMethod()))
 			return true;
 		
-		if (as.getBackDateDay() == 0)
+		if (as.getRecord().getBackDateDay() == 0)
 			return true;
 		
 		Timestamp dateAcct = reversalDate != null ? reversalDate : getMovementDate();
@@ -1316,17 +1319,17 @@ public class MInventory extends X_M_Inventory implements DocAction
 			int AD_Org_ID = iLine.getAD_Org_ID();
 			int M_AttributeSetInstance_ID = iLine.getM_AttributeSetInstance_ID();
 
-			if (MAcctSchema.COSTINGLEVEL_Client.equals(as.getCostingLevel()))
+			if (IAcctSchemaConstants.COSTINGLEVEL_Client.equals(as.getRecord().getCostingLevel()))
 			{
 				AD_Org_ID = 0;
 				M_AttributeSetInstance_ID = 0;
 			}
-			else if (MAcctSchema.COSTINGLEVEL_Organization.equals(as.getCostingLevel()))
+			else if (IAcctSchemaConstants.COSTINGLEVEL_Organization.equals(as.getRecord().getCostingLevel()))
 				M_AttributeSetInstance_ID = 0;
-			else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(as.getCostingLevel()))
+			else if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(as.getRecord().getCostingLevel()))
 				AD_Org_ID = 0;
 			
-			MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), as.getCostingMethod(), AD_Org_ID);
+			MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), as.getRecord().getCostingMethod(), AD_Org_ID);
 			
 			int M_CostDetail_ID = 0;
 			int M_InventoryLine_ID = iLine.getM_InventoryLine_ID();
@@ -1338,14 +1341,14 @@ public class MInventory extends X_M_Inventory implements DocAction
 				M_CostDetail_ID = cd.getM_CostDetail_ID();
 			else {
 				MCostHistory history = MCostHistory.get(getCtx(), getAD_Client_ID(), AD_Org_ID, iLine.getM_Product_ID(), 
-						as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(),
+						as.getRecord().getM_CostType_ID(), as.getRecord().getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(),
 						M_AttributeSetInstance_ID, dateAcct, get_TrxName());
 				if (history != null)
 					M_CostDetail_ID = history.getM_CostDetail_ID();
 			}
 			
 			if (M_CostDetail_ID > 0) {
-				MCostDetail.periodClosedCheckForDocsAfterBackDateTrx(getAD_Client_ID(), as.getC_AcctSchema_ID(), 
+				MCostDetail.periodClosedCheckForDocsAfterBackDateTrx(getAD_Client_ID(), as.getRecord().getC_AcctSchema_ID(), 
 						iLine.getM_Product_ID(), M_CostDetail_ID, dateAcct, get_TrxName());
 			}
 		}

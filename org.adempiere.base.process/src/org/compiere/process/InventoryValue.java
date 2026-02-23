@@ -20,7 +20,7 @@ import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.logging.Level;
 
-import org.compiere.model.MAcctSchema;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.compiere.model.MClient;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MWarehouse;
@@ -101,7 +101,7 @@ public class InventoryValue extends SvrProcess
 	  int no = DB.executeUpdateEx(sql0, new Object[] {getAD_PInstance_ID()}, get_TrxName());
 
 	  MClient c = MClient.get(getCtx(), getAD_Client_ID());
-	  MAcctSchema as = c.getAcctSchema();
+	  IAcctSchemaInfo as = c.getAcctSchema();
 	  String msg = "";
 
 	  if (p_M_Warehouse_IDs == null) // process all warehouses
@@ -268,7 +268,7 @@ public class InventoryValue extends SvrProcess
 			msg = msg + " / No Prices in warehouse " + wh.getName();
 
 		//	Convert if different Currency
-		if (as.getC_Currency_ID() != p_C_Currency_ID)
+		if (as.getRecord().getC_Currency_ID() != p_C_Currency_ID)
 		{
 			final String sql11 = "UPDATE T_InventoryValue iv "
 				+ "SET CostStandard= "
@@ -278,7 +278,7 @@ public class InventoryValue extends SvrProcess
 					+ "(SELECT currencyConvert(iv.Cost,acs.C_Currency_ID,iv.C_Currency_ID,iv.DateValue,null, iv.AD_Client_ID,iv.AD_Org_ID) "
 					+ "FROM C_AcctSchema acs WHERE acs.C_AcctSchema_ID=?) "
 				+ "WHERE iv.M_Warehouse_ID=? AND iv.AD_PInstance_ID=?";
-			no = DB.executeUpdateEx (sql11, new Object[] {as.getC_AcctSchema_ID(), as.getC_AcctSchema_ID(), l_M_Warehouse_ID, getAD_PInstance_ID()}, get_TrxName());
+			no = DB.executeUpdateEx (sql11, new Object[] {as.getRecord().getC_AcctSchema_ID(), as.getRecord().getC_AcctSchema_ID(), l_M_Warehouse_ID, getAD_PInstance_ID()}, get_TrxName());
 			if (log.isLoggable(Level.FINE)) log.fine("Converted=" + no);
 		}
 		

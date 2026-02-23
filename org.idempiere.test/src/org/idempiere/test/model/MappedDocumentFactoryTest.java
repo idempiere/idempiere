@@ -30,10 +30,11 @@ import java.sql.ResultSet;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.IMappedDocumentFactory;
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.compiere.acct.Doc;
 import org.compiere.acct.DocManager;
 import org.compiere.acct.Doc_InOut;
-import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MInOut;
 import org.compiere.util.CacheMgt;
@@ -60,14 +61,14 @@ public class MappedDocumentFactoryTest extends AbstractTestCase {
 		CacheMgt.get().reset(DocManager.IDOC_FACTORY_CACHE_TABLE_NAME);
 		
 		int C_AcctSchema_ID = MClientInfo.get().getC_AcctSchema1_ID();
-		MAcctSchema as = new MAcctSchema(Env.getCtx(), C_AcctSchema_ID, getTrxName());
+		IAcctSchemaInfo as = AcctInfoServices.getAcctSchemaInfoService().create(Env.getCtx(), C_AcctSchema_ID, getTrxName());
 		Doc doc = DocManager.getDocument(as, MInOut.Table_ID, 100, getTrxName());
 		assertTrue(doc != null && doc instanceof MyDocInOut, "Doc not instanceof MyDocInOut. " + (doc == null ? "Doc is Null" : "Doc="+doc.getClass().getName()));
 	}
 	
 	private final static class MyDocInOut extends Doc_InOut {
 
-		public MyDocInOut(MAcctSchema as, ResultSet rs, String trxName) {
+		public MyDocInOut(IAcctSchemaInfo as, ResultSet rs, String trxName) {
 			super(as, rs, trxName);
 		}		
 	}

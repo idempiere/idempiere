@@ -15,9 +15,9 @@
  *****************************************************************************/
 package org.eevolution.process;
 
+import org.adempiere.base.acct.AcctInfoServices;
 import org.adempiere.exceptions.FillMandatoryException;
 import org.compiere.model.MBPartner;
-import org.compiere.model.MFactAcct;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MPeriod;
 import org.compiere.model.MProcessPara;
@@ -80,7 +80,7 @@ public class InvoiceCalculateTax extends SvrProcess
 		//
 		// Delete accounting /UnPost
 		MPeriod.testPeriodOpen(invoice.getCtx(), invoice.getDateAcct(), invoice.getC_DocType_ID(), invoice.getAD_Org_ID());
-		MFactAcct.deleteEx(MInvoice.Table_ID, invoice.get_ID(), invoice.get_TrxName());
+		AcctInfoServices.getFactAcctInfoService().deleteEx(MInvoice.Table_ID, invoice.get_ID(), invoice.get_TrxName());
 		//
 		// Update Invoice
 		invoice.calculateTaxTotal();

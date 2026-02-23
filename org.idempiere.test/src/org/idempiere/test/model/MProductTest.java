@@ -34,8 +34,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.adempiere.exceptions.AdempiereException;
-import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAttributeInstance;
 import org.compiere.model.MAttributeSet;
 import org.compiere.model.MBPartner;
@@ -127,11 +127,11 @@ public class MProductTest extends AbstractTestCase {
 		assertEquals(DictionaryIDs.M_Attribute.COLOR.id, attributeInstance.getM_Attribute_ID());
 		assertEquals("Green", attributeInstance.getValue());
 		
-		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
+		IAcctSchemaInfo as = MClient.get(Env.getCtx()).getAcctSchema();
 		String costingLevel = product.getCostingLevel(as);
-		assertEquals(as.getCostingLevel(), costingLevel);
+		assertEquals(as.getRecord().getCostingLevel(), costingLevel);
 		String costingMethod = product.getCostingMethod(as);
-		assertEquals(as.getCostingMethod(), costingMethod);
+		assertEquals(as.getRecord().getCostingMethod(), costingMethod);
 		
 		createPOAndMRForProduct(DictionaryIDs.M_Product.MULCH.id);
 		product = new MProduct(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id, getTrxName());

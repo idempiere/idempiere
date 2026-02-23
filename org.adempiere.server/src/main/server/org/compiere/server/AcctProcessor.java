@@ -26,10 +26,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.compiere.acct.DocManager;
 import org.compiere.model.MAcctProcessor;
 import org.compiere.model.MAcctProcessorLog;
-import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClient;
 import org.compiere.model.MCost;
 import org.compiere.model.MOrgInfo;
@@ -68,7 +69,7 @@ public class AcctProcessor extends AdempiereServer
 	/** Client onfo					*/
 	protected MClient 			m_client = null;
 	/**	Accounting Schemata			*/
-	protected MAcctSchema[] 		m_ass = null;
+	protected IAcctSchemaInfo[] 		m_ass = null;
 
 	/**
 	 * 	Work
@@ -98,9 +99,9 @@ public class AcctProcessor extends AdempiereServer
 				
 		//	Get Schemata
 		if (m_model.getC_AcctSchema_ID() == 0)
-			m_ass = MAcctSchema.getClientAcctSchema(getCtx(), m_model.getAD_Client_ID());
+			m_ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(getCtx(), m_model.getAD_Client_ID());
 		else	//	only specific accounting schema
-			m_ass = new MAcctSchema[] {new MAcctSchema (getCtx(), m_model.getC_AcctSchema_ID(), null)};
+			m_ass = new IAcctSchemaInfo[] {AcctInfoServices.getAcctSchemaInfoService().create(getCtx(), m_model.getC_AcctSchema_ID(), null)};
 		//
 		postSession();
 		MCost.create(m_client);

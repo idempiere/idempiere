@@ -23,12 +23,13 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 
-import org.compiere.model.MAccount;
-import org.compiere.model.MAcctSchema;
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.info.IAccountInfo;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.info.IElementValueInfo;
+import org.adempiere.base.acct.info.IImportElementValueInfo;
 import org.compiere.model.MColumn;
-import org.compiere.model.MElementValue;
 import org.compiere.model.MProcessPara;
-import org.compiere.model.X_I_ElementValue;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 
@@ -276,20 +277,20 @@ public class ImportAccount extends SvrProcess
 			rs = pstmt.executeQuery();
 			while (rs.next())
 			{
-				X_I_ElementValue impEV = new X_I_ElementValue(getCtx(), rs, get_TrxName());
-				int C_ElementValue_ID = impEV.getC_ElementValue_ID();
-				int I_ElementValue_ID = impEV.getI_ElementValue_ID();
+				IImportElementValueInfo impEV = AcctInfoServices.getImportElementValueInfoService().create(getCtx(), rs, get_TrxName());
+				int C_ElementValue_ID = impEV.getRecord().getC_ElementValue_ID();
+				int I_ElementValue_ID = impEV.getRecord().getI_ElementValue_ID();
 
 				//	****	Create/Update ElementValue
 				if (C_ElementValue_ID == 0)		//	New
 				{
-					MElementValue ev = new MElementValue(impEV);
-					if (ev.save())
+					IElementValueInfo ev = AcctInfoServices.getElementValueInfoService().create(impEV);
+					if (ev.getPO().save())
 					{
 						noInsert++;
-						impEV.setC_ElementValue_ID(ev.getC_ElementValue_ID());
-						impEV.setI_IsImported(true);
-						impEV.saveEx();
+						impEV.getRecord().setC_ElementValue_ID(ev.getRecord().getC_ElementValue_ID());
+						impEV.getRecord().setI_IsImported(true);
+						impEV.getPO().saveEx();
 					}
 					else
 					{
@@ -301,17 +302,17 @@ public class ImportAccount extends SvrProcess
 				}
 				else							//	Update existing
 				{
-					MElementValue ev = new MElementValue (getCtx(), C_ElementValue_ID, get_TrxName());
-					if (ev.get_ID() != C_ElementValue_ID)
+					IElementValueInfo ev = AcctInfoServices.getElementValueInfoService().create(getCtx(), C_ElementValue_ID, get_TrxName());
+					if (ev.getPO().get_ID() != C_ElementValue_ID)
 					{
 						
 					}
 					ev.set(impEV);
-					if (ev.save())
+					if (ev.getPO().save())
 					{
 						noUpdate++;
-						impEV.setI_IsImported(true);
-						impEV.saveEx();
+						impEV.getRecord().setI_IsImported(true);
+						impEV.getPO().saveEx();
 					}
 					else
 					{
@@ -503,8 +504,8 @@ public class ImportAccount extends SvrProcess
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config("C_AcctSchema_ID=" + C_AcctSchema_ID);
 
-		MAcctSchema as = new MAcctSchema (getCtx(), C_AcctSchema_ID, get_TrxName());
-		if (as.getAcctSchemaElement("AC").getC_Element_ID() != m_C_Element_ID)
+		IAcctSchemaInfo as = AcctInfoServices.getAcctSchemaInfoService().create(getCtx(), C_AcctSchema_ID, get_TrxName());
+		if (as.getAcctSchemaElementInfo("AC").getRecord().getC_Element_ID() != m_C_Element_ID)
 		{
 			StringBuilder msglog = new StringBuilder("C_Element_ID=").append(m_C_Element_ID).append(" not in AcctSchema=").append(as);
 			log.log(Level.SEVERE, msglog.toString());
@@ -610,12 +611,12 @@ public class ImportAccount extends SvrProcess
 				{
 					if (m_createNewCombination)
 					{
-						MAccount acct = new MAccount(Env.getCtx(), C_ValidCombination_ID, (String)null);
-						acct.setAccount_ID(C_ElementValue_ID);
-						if (acct.save())
+						IAccountInfo acct = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), C_ValidCombination_ID, (String)null);
+						acct.getRecord().setAccount_ID(C_ElementValue_ID);
+						if (acct.getPO().save())
 						{
 							retValue = UPDATE_YES;
-							int newC_ValidCombination_ID = acct.getC_ValidCombination_ID();
+							int newC_ValidCombination_ID = acct.getRecord().getC_ValidCombination_ID();
 							if (C_ValidCombination_ID != newC_ValidCombination_ID)
 							{
 								sql = new StringBuilder ("UPDATE ").append(TableName)

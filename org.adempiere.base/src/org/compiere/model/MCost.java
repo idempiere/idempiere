@@ -29,6 +29,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.constants.IAcctSchemaConstants;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.adempiere.exceptions.AverageCostingNegativeQtyException;
 import org.adempiere.exceptions.AverageCostingZeroQtyException;
 import org.adempiere.exceptions.DBException;
@@ -71,7 +74,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 	public static BigDecimal getCurrentCost(MProduct product, int M_AttributeSetInstance_ID, String trxName)
 	{
 		int AD_Org_ID = Env.getAD_Org_ID(Env.getCtx());
-		MAcctSchema as = MClient.get(Env.getAD_Client_ID(Env.getCtx())).getAcctSchema();
+		IAcctSchemaInfo as = MClient.get(Env.getAD_Client_ID(Env.getCtx())).getAcctSchema();
 		String costingMethod = product.getCostingMethod(as);
 		return getCurrentCost(product, M_AttributeSetInstance_ID, as, AD_Org_ID, costingMethod, new BigDecimal("1"), 0, true, trxName); 
 	}
@@ -91,7 +94,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 	 */
 	public static BigDecimal getCurrentCost (MProduct product,
 		int M_AttributeSetInstance_ID,
-		MAcctSchema as, int AD_Org_ID, String costingMethod,
+		IAcctSchemaInfo as, int AD_Org_ID, String costingMethod,
 		BigDecimal qty, int C_OrderLine_ID,
 		boolean zeroCostsOK, String trxName)
 	{
@@ -116,21 +119,21 @@ public class MCost extends X_M_Cost implements ICostInfo
 	 */
 	protected static BigDecimal getCost (MProduct product,
 			int M_AttributeSetInstance_ID,
-			MAcctSchema as, int AD_Org_ID, String costingMethod,
+			IAcctSchemaInfo as, int AD_Org_ID, String costingMethod,
 			BigDecimal qty, int C_OrderLine_ID,
 			boolean zeroCostsOK, 
 			Timestamp dateAcct, MCostDetail costDetail, boolean isInBackDatePostingProcess,
 			String trxName)
 	{
 		String CostingLevel = product.getCostingLevel(as);
-		if (MAcctSchema.COSTINGLEVEL_Client.equals(CostingLevel))
+		if (IAcctSchemaConstants.COSTINGLEVEL_Client.equals(CostingLevel))
 		{
 			AD_Org_ID = 0;
 			M_AttributeSetInstance_ID = 0;
 		}
-		else if (MAcctSchema.COSTINGLEVEL_Organization.equals(CostingLevel))
+		else if (IAcctSchemaConstants.COSTINGLEVEL_Organization.equals(CostingLevel))
 			M_AttributeSetInstance_ID = 0;
-		else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel))
+		else if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(CostingLevel))
 			AD_Org_ID = 0;
 		//	Costing Method
 		if (costingMethod == null)
@@ -149,15 +152,15 @@ public class MCost extends X_M_Cost implements ICostInfo
 		MCostHistory history = null;
 		if (costDetail != null) // get the latest cost history record of the cost detail
 			history = MCostHistory.get(product.getCtx(), AD_Org_ID, 
-					as.getM_CostType_ID(), as.getC_AcctSchema_ID(), costingMethod, 0, M_AttributeSetInstance_ID, costDetail, trxName);
+					as.getRecord().getM_CostType_ID(), as.getRecord().getC_AcctSchema_ID(), costingMethod, 0, M_AttributeSetInstance_ID, costDetail, trxName);
 		if (history == null && dateAcct != null) {	// get cost history record based on the account date
 			history = MCostHistory.get(product.getCtx(), product.getAD_Client_ID(), AD_Org_ID, product.getM_Product_ID(),
-					as.getM_CostType_ID(), as.getC_AcctSchema_ID(), costingMethod, 0, M_AttributeSetInstance_ID, dateAcct, trxName);
+					as.getRecord().getM_CostType_ID(), as.getRecord().getC_AcctSchema_ID(), costingMethod, 0, M_AttributeSetInstance_ID, dateAcct, trxName);
 		}
 
 		return getCost (
 			product, M_AttributeSetInstance_ID,
-			as, AD_Org_ID, as.getM_CostType_ID(), costingMethod, qty,
+			as, AD_Org_ID, as.getRecord().getM_CostType_ID(), costingMethod, qty,
 			C_OrderLine_ID, zeroCostsOK, 
 			history == null ? null : history.getNewCostPrice(), trxName);
 	}	//	getCurrentCost
@@ -177,7 +180,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 	 *	@return cost price or null
 	 */
 	protected static BigDecimal getCurrentCost (MProduct product, int M_ASI_ID,
-		MAcctSchema as, int Org_ID, int M_CostType_ID,
+			IAcctSchemaInfo as, int Org_ID, int M_CostType_ID,
 		String costingMethod, BigDecimal qty, int C_OrderLine_ID,
 		boolean zeroCostsOK, String trxName)
 	{
@@ -201,7 +204,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 	 * @return cost price or null
 	 */
 	private static BigDecimal getCost (MProduct product, int M_ASI_ID,
-			MAcctSchema as, int Org_ID, int M_CostType_ID,
+			IAcctSchemaInfo as, int Org_ID, int M_CostType_ID,
 			String costingMethod, BigDecimal qty, int C_OrderLine_ID,
 			boolean zeroCostsOK, BigDecimal historyCostPrice, String trxName)
 	{
@@ -236,7 +239,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 			pstmt.setInt (3, product.getM_Product_ID());
 			pstmt.setInt (4, M_ASI_ID);
 			pstmt.setInt (5, M_CostType_ID);
-			pstmt.setInt (6, as.getC_AcctSchema_ID());
+			pstmt.setInt (6, as.getRecord().getC_AcctSchema_ID());
 			pstmt.setString (7, costingMethod);
 			rs = pstmt.executeQuery ();
 			while (rs.next ())
@@ -304,7 +307,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 		if (MCostElement.COSTINGMETHOD_Fifo.equals(costingMethod)
 			|| MCostElement.COSTINGMETHOD_Lifo.equals(costingMethod))
 		{
-			MCostElement ce = MCostElement.getMaterialCostElement(as, costingMethod);
+			MCostElement ce = MCostElement.getMaterialCostElement(as.getPO(), costingMethod);
 			materialCost = MCostQueue.getCosts(product, M_ASI_ID,
 				as, Org_ID, ce, qty, trxName);
 		}
@@ -346,7 +349,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 	 *	@return seed cost or null
 	 */
 	public static BigDecimal getSeedCosts (MProduct product, int M_ASI_ID,
-		MAcctSchema as, int Org_ID, String costingMethod, int C_OrderLine_ID)
+			IAcctSchemaInfo as, int Org_ID, String costingMethod, int C_OrderLine_ID)
 	{
 		BigDecimal retValue = null;
 		//	Direct Data
@@ -359,13 +362,13 @@ public class MCost extends X_M_Cost implements ICostInfo
 		else if (MCostElement.COSTINGMETHOD_Lifo.equals(costingMethod))
 			return null;
 		else if (MCostElement.COSTINGMETHOD_LastInvoice.equals(costingMethod))
-			retValue = getLastInvoicePrice(product, M_ASI_ID, Org_ID, as.getC_Currency_ID());
+			retValue = getLastInvoicePrice(product, M_ASI_ID, Org_ID, as.getRecord().getC_Currency_ID());
 		else if (MCostElement.COSTINGMETHOD_LastPOPrice.equals(costingMethod))
 		{
 			if (C_OrderLine_ID != 0)
-				retValue = getPOPrice(product, C_OrderLine_ID, as.getC_Currency_ID());
+				retValue = getPOPrice(product, C_OrderLine_ID, as.getRecord().getC_Currency_ID());
 			if (retValue == null || retValue.signum() == 0)
-				retValue = getLastPOPrice(product, M_ASI_ID, Org_ID, as.getC_Currency_ID());
+				retValue = getLastPOPrice(product, M_ASI_ID, Org_ID, as.getRecord().getC_Currency_ID());
 		}
 		else if (MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod))
 			;
@@ -382,7 +385,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 		//	Look for exact Order Line
 		if (C_OrderLine_ID != 0)
 		{
-			retValue = getPOPrice(product, C_OrderLine_ID, as.getC_Currency_ID());
+			retValue = getPOPrice(product, C_OrderLine_ID, as.getRecord().getC_Currency_ID());
 			if (retValue != null && retValue.signum() > 0)
 			{
 				if (s_log.isLoggable(Level.FINE)) s_log.fine(product.getName() + ", PO - " + retValue);
@@ -393,7 +396,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 		//	Look for Standard Costs first
 		if (!MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod))
 		{
-			MCostElement ce = MCostElement.getMaterialCostElement(as, MCostElement.COSTINGMETHOD_StandardCosting);
+			MCostElement ce = MCostElement.getMaterialCostElement(as.getPO(), MCostElement.COSTINGMETHOD_StandardCosting);
 			MCost cost = get(product, M_ASI_ID, as, Org_ID, ce.getM_CostElement_ID(), product.get_TrxName());
 			if (cost != null && cost.getCurrentCostPrice().signum() > 0)
 			{
@@ -408,9 +411,9 @@ public class MCost extends X_M_Cost implements ICostInfo
 			|| MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod))
 		{
 			//	try Last PO
-			retValue = getLastPOPrice(product, M_ASI_ID, Org_ID, as.getC_Currency_ID());
+			retValue = getLastPOPrice(product, M_ASI_ID, Org_ID, as.getRecord().getC_Currency_ID());
 			if (Org_ID != 0 && (retValue == null || retValue.signum() == 0))
-				retValue = getLastPOPrice(product, M_ASI_ID, 0, as.getC_Currency_ID());
+				retValue = getLastPOPrice(product, M_ASI_ID, 0, as.getRecord().getC_Currency_ID());
 			if (retValue != null && retValue.signum() > 0)
 			{
 				if (s_log.isLoggable(Level.FINE)) s_log.fine(product.getName() + ", LastPO = " + retValue);
@@ -420,9 +423,9 @@ public class MCost extends X_M_Cost implements ICostInfo
 		else	//	Inv first
 		{
 			//	try last Inv
-			retValue = getLastInvoicePrice(product, M_ASI_ID, Org_ID, as.getC_Currency_ID());
+			retValue = getLastInvoicePrice(product, M_ASI_ID, Org_ID, as.getRecord().getC_Currency_ID());
 			if (Org_ID != 0 && (retValue == null || retValue.signum() == 0))
-				retValue = getLastInvoicePrice(product, M_ASI_ID, 0, as.getC_Currency_ID());
+				retValue = getLastInvoicePrice(product, M_ASI_ID, 0, as.getRecord().getC_Currency_ID());
 			if (retValue != null && retValue.signum() != 0)
 			{
 				if (s_log.isLoggable(Level.FINE)) s_log.fine(product.getName() + ", LastInv = " + retValue);
@@ -436,9 +439,9 @@ public class MCost extends X_M_Cost implements ICostInfo
 			|| MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod))
 		{
 			//	try last Inv
-			retValue = getLastInvoicePrice(product, M_ASI_ID, Org_ID, as.getC_Currency_ID());
+			retValue = getLastInvoicePrice(product, M_ASI_ID, Org_ID, as.getRecord().getC_Currency_ID());
 			if (Org_ID != 0 && (retValue == null || retValue.signum() == 0))
-				retValue = getLastInvoicePrice(product, M_ASI_ID, 0, as.getC_Currency_ID());
+				retValue = getLastInvoicePrice(product, M_ASI_ID, 0, as.getRecord().getC_Currency_ID());
 			if (retValue != null && retValue.signum() > 0)
 			{
 				if (s_log.isLoggable(Level.FINE)) s_log.fine(product.getName() + ", LastInv = " + retValue);
@@ -448,9 +451,9 @@ public class MCost extends X_M_Cost implements ICostInfo
 		else	//	PO second
 		{
 			//	try Last PO
-			retValue = getLastPOPrice(product, M_ASI_ID, Org_ID, as.getC_Currency_ID());
+			retValue = getLastPOPrice(product, M_ASI_ID, Org_ID, as.getRecord().getC_Currency_ID());
 			if (Org_ID != 0 && (retValue == null || retValue.signum() == 0))
-				retValue = getLastPOPrice(product, M_ASI_ID, 0, as.getC_Currency_ID());
+				retValue = getLastPOPrice(product, M_ASI_ID, 0, as.getRecord().getC_Currency_ID());
 			if (retValue != null && retValue.signum() > 0)
 			{
 				if (s_log.isLoggable(Level.FINE)) s_log.fine(product.getName() + ", LastPO = " + retValue);
@@ -468,8 +471,8 @@ public class MCost extends X_M_Cost implements ICostInfo
 			if (price != null && price.signum() != 0)
 			{
 				price = MConversionRate.convert(product.getCtx(), price,
-					pos[i].getC_Currency_ID(), as.getC_Currency_ID(),
-					as.getAD_Client_ID(), Org_ID);
+					pos[i].getC_Currency_ID(), as.getRecord().getC_Currency_ID(),
+					as.getRecord().getAD_Client_ID(), Org_ID);
 				if (price != null && price.signum() != 0)
 				{
 					if (pos[i].getC_UOM_ID() != product.getC_UOM_ID())
@@ -506,7 +509,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 	 * @return seed cost or null
 	 */
 	protected static BigDecimal getSeedCostFromPriceList(MProduct product,
-			MAcctSchema as, int orgID) {
+			IAcctSchemaInfo as, int orgID) {
 		String sql = "SELECT pp.PriceList, pp.PriceStd FROM M_ProductPrice pp" +
 				" INNER JOIN M_PriceList_Version plv ON (pp.M_PriceList_Version_ID = plv.M_PriceList_Version_ID AND plv.ValidFrom <= trunc(getDate()))" +
 				" INNER JOIN M_PriceList pl ON (plv.M_PriceList_ID = pl.M_PriceList_ID AND pl.IsSOPriceList = 'N')" +
@@ -516,7 +519,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 		ResultSet rs = null;
 		try {
 			st = DB.prepareStatement(sql, product.get_TrxName());
-			st.setInt(1, as.getAD_Client_ID());
+			st.setInt(1, as.getRecord().getAD_Client_ID());
 			st.setInt(2, orgID);
 			st.setInt(3, product.getM_Product_ID());
 			rs = st.executeQuery();
@@ -712,7 +715,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 	 */
 	public static void create (MClient client)
 	{
-		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(client.getCtx(), client.getAD_Client_ID());
+		IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(client.getCtx(), client.getAD_Client_ID());
 		String trxName = client.get_TrxName();
 		String trxNameUsed = trxName;
 		Trx trx = null;
@@ -792,22 +795,22 @@ public class MCost extends X_M_Cost implements ICostInfo
 			return;
 		}
 
-		MAcctSchema[] mass = MAcctSchema.getClientAcctSchema(product.getCtx(),
+		IAcctSchemaInfo[] mass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(product.getCtx(),
 			product.getAD_Client_ID(), product.get_TrxName());
 		MOrg[] orgs = null;
 
 		int M_ASI_ID = 0;		//	No Attribute
-		for (MAcctSchema as : mass)
+		for (IAcctSchemaInfo as : mass)
 		{
 			String cl = product.getCostingLevel(as);
 			//	Create Std Costing
-			if (MAcctSchema.COSTINGLEVEL_Client.equals(cl))
+			if (IAcctSchemaConstants.COSTINGLEVEL_Client.equals(cl))
 			{
 				createCostingRecord(product, M_ASI_ID, as, 0,ce.getM_CostElement_ID() );
 			}
-			else if (MAcctSchema.COSTINGLEVEL_Organization.equals(cl))
+			else if (IAcctSchemaConstants.COSTINGLEVEL_Organization.equals(cl))
 			{
-				if (as.getAD_OrgOnly_ID() > 0 && MOrg.get(product.getCtx(), as.getAD_OrgOnly_ID()).isSummary())
+				if (as.getRecord().getAD_OrgOnly_ID() > 0 && MOrg.get(product.getCtx(), as.getRecord().getAD_OrgOnly_ID()).isSummary())
 				{
 					MClient client = MClient.get(product.getCtx(), product.getAD_Client_ID());
 					MClientInfo ci = client.getInfo();
@@ -825,7 +828,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 					{
 						if (o.isSummary())
 							continue;
-						if (as.getAD_OrgOnly_ID() == o.getAD_Org_ID() || as.getAD_OrgOnly_ID() == 0) 
+						if (as.getRecord().getAD_OrgOnly_ID() == o.getAD_Org_ID() || as.getRecord().getAD_OrgOnly_ID() == 0) 
 						{
 							createCostingRecord(product, M_ASI_ID, as, o.getAD_Org_ID(), ce.getM_CostElement_ID() );
 
@@ -851,11 +854,11 @@ public class MCost extends X_M_Cost implements ICostInfo
 	 * @param ce
 	 * @param found
 	 */
-	private static void createForChildOrg(MTreeNode root, MProduct product, MAcctSchema as, int M_ASI_ID, MCostElement ce, boolean found) 
+	private static void createForChildOrg(MTreeNode root, MProduct product, IAcctSchemaInfo as, int M_ASI_ID, MCostElement ce, boolean found) 
 	{
 		int parentId = root.getNode_ID();
 		if (!found)
-			found = (parentId == as.getAD_OrgOnly_ID());
+			found = (parentId == as.getRecord().getAD_OrgOnly_ID());
 		Enumeration<?> nodeEnum = root.children();
 		MTreeNode child = null;
 		while(nodeEnum.hasMoreElements()) 
@@ -883,17 +886,17 @@ public class MCost extends X_M_Cost implements ICostInfo
 	 * @param AD_Org_ID
 	 * @param M_CostElement_ID
 	 */
-	private static void createCostingRecord(MProduct product,int M_ASI_ID, MAcctSchema as, int AD_Org_ID, int M_CostElement_ID) {
+	private static void createCostingRecord(MProduct product,int M_ASI_ID, IAcctSchemaInfo as, int AD_Org_ID, int M_CostElement_ID) {
 		MCost cost = MCost.get (product, M_ASI_ID,
 				as, AD_Org_ID, M_CostElement_ID, product.get_TrxName());
 		if (cost.is_new())
 		{
 			if (cost.save()) {
 				if (s_log.isLoggable(Level.CONFIG)) s_log.config("Std.Cost for " + product.getName()
-					+ " - " + as.getName());
+					+ " - " + as.getRecord().getName());
 			} else {
 				s_log.warning("Not created: Std.Cost for " + product.getName()
-						+ " - " + as.getName());
+						+ " - " + as.getRecord().getName());
 			}
 		}
 	}
@@ -908,16 +911,16 @@ public class MCost extends X_M_Cost implements ICostInfo
 		//	Cost Elements
 		List <MCostElement> ces = MCostElement.getCostElementsWithCostingMethods(product);
 
-		MAcctSchema[] mass = MAcctSchema.getClientAcctSchema(product.getCtx(),
+		IAcctSchemaInfo[] mass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(product.getCtx(),
 			product.getAD_Client_ID(), product.get_TrxName());
 		MOrg[] orgs = null;
 
 		int M_ASI_ID = 0;		//	No Attribute
-		for (MAcctSchema as : mass)
+		for (IAcctSchemaInfo as : mass)
 		{
 			String cl = product.getCostingLevel(as);
 			//	Create Std Costing
-			if (MAcctSchema.COSTINGLEVEL_Client.equals(cl))
+			if (IAcctSchemaConstants.COSTINGLEVEL_Client.equals(cl))
 			{
 				for(MCostElement ce : ces)
 				{
@@ -927,7 +930,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 						cost.deleteEx(true);
 				}
 			}
-			else if (MAcctSchema.COSTINGLEVEL_Organization.equals(cl))
+			else if (IAcctSchemaConstants.COSTINGLEVEL_Organization.equals(cl))
 			{
 				if (orgs == null)
 					orgs = MOrg.getOfClient(product);
@@ -959,7 +962,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 	 *	@return average invoice costs or null
 	 */
 	public static BigDecimal calculateAverageInv (MProduct product, int M_AttributeSetInstance_ID,
-		MAcctSchema as, int AD_Org_ID)
+			IAcctSchemaInfo as, int AD_Org_ID)
 	{
 		StringBuilder sql = new StringBuilder("SELECT t.MovementQty, mi.Qty, il.QtyInvoiced, il.PriceActual,")
 			.append(" i.C_Currency_ID, i.DateAcct, i.C_ConversionType_ID, i.AD_Client_ID, i.AD_Org_ID, t.M_Transaction_ID ")
@@ -1012,7 +1015,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 				int Client_ID = rs.getInt(8);
 				int Org_ID = rs.getInt(9);
 				BigDecimal cost = MConversionRate.convert(product.getCtx(), price,
-					C_Currency_ID, as.getC_Currency_ID(),
+					C_Currency_ID, as.getRecord().getC_Currency_ID(),
 					DateAcct, C_ConversionType_ID, Client_ID, Org_ID);
 				//
 				BigDecimal oldAverageAmt = newAverageAmt;
@@ -1052,7 +1055,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 	 *	@return average PO cost or null
 	 */
 	public static BigDecimal calculateAveragePO (MProduct product, int M_AttributeSetInstance_ID,
-		MAcctSchema as, int AD_Org_ID)
+			IAcctSchemaInfo as, int AD_Org_ID)
 	{
 		StringBuilder sql = new StringBuilder("SELECT t.MovementQty, mp.Qty, ol.QtyOrdered, ol.PriceCost, ol.PriceActual,")	//	1..5
 			.append(" o.C_Currency_ID, o.DateAcct, o.C_ConversionType_ID,")	//	6..8
@@ -1108,7 +1111,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 				int Client_ID = rs.getInt(9);
 				int Org_ID = rs.getInt(10);
 				BigDecimal cost = MConversionRate.convert(product.getCtx(), price,
-					C_Currency_ID, as.getC_Currency_ID(),
+					C_Currency_ID, as.getRecord().getC_Currency_ID(),
 					DateAcct, C_ConversionType_ID, Client_ID, Org_ID);
 				//
 				BigDecimal oldAverageAmt = newAverageAmt;
@@ -1148,7 +1151,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 	 *	@return FIFO costs or null
 	 */
 	public static BigDecimal calculateFiFo (MProduct product, int M_AttributeSetInstance_ID,
-		MAcctSchema as, int AD_Org_ID)
+			IAcctSchemaInfo as, int AD_Org_ID)
 	{
 		StringBuilder sql = new StringBuilder("SELECT t.MovementQty, mi.Qty, il.QtyInvoiced, il.PriceActual,")
 			.append(" i.C_Currency_ID, i.DateAcct, i.C_ConversionType_ID, i.AD_Client_ID, i.AD_Org_ID, t.M_Transaction_ID ")
@@ -1230,7 +1233,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 				int Client_ID = rs.getInt(8);
 				int Org_ID = rs.getInt(9);
 				BigDecimal cost = MConversionRate.convert(product.getCtx(), price,
-					C_Currency_ID, as.getC_Currency_ID(),
+					C_Currency_ID, as.getRecord().getC_Currency_ID(),
 					DateAcct, C_ConversionType_ID, Client_ID, Org_ID);
 
 				//	Add Stock
@@ -1285,7 +1288,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 	 *	@return LIFO costs or null
 	 */
 	public static BigDecimal calculateLiFo (MProduct product, int M_AttributeSetInstance_ID,
-		MAcctSchema as, int AD_Org_ID)
+			IAcctSchemaInfo as, int AD_Org_ID)
 	{
 		StringBuilder sql = new StringBuilder("SELECT t.MovementQty, mi.Qty, il.QtyInvoiced, il.PriceActual,")
 			.append(" i.C_Currency_ID, i.DateAcct, i.C_ConversionType_ID, i.AD_Client_ID, i.AD_Org_ID, t.M_Transaction_ID ")
@@ -1368,7 +1371,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 				int Client_ID = rs.getInt(8);
 				int Org_ID = rs.getInt(9);
 				BigDecimal cost = MConversionRate.convert(product.getCtx(), price,
-					C_Currency_ID, as.getC_Currency_ID(),
+					C_Currency_ID, as.getRecord().getC_Currency_ID(),
 					DateAcct, C_ConversionType_ID, Client_ID, Org_ID);
 				//
 				QtyCost pp = new QtyCost (movementQty, cost);
@@ -1440,10 +1443,10 @@ public class MCost extends X_M_Cost implements ICostInfo
 	 *	@return cost price or null
 	 */
 	public static MCost get (MProduct product, int M_AttributeSetInstance_ID,
-		MAcctSchema as, int AD_Org_ID, int M_CostElement_ID, String trxName)
+			IAcctSchemaInfo as, int AD_Org_ID, int M_CostElement_ID, String trxName)
 	{
 		MCost cost = get (product.getCtx(), product.getAD_Client_ID(), AD_Org_ID, product.getM_Product_ID(), 
-				as.getM_CostType_ID(), as.getC_AcctSchema_ID(), M_CostElement_ID, M_AttributeSetInstance_ID, trxName);
+				as.getRecord().getM_CostType_ID(), as.getRecord().getC_AcctSchema_ID(), M_CostElement_ID, M_AttributeSetInstance_ID, trxName);
 		//	New
 		if (cost == null)
 		{
@@ -1468,10 +1471,10 @@ public class MCost extends X_M_Cost implements ICostInfo
 	 * @return ICostInfo or null
 	 */
 	public static ICostInfo getCostInfo (MProduct product, int M_AttributeSetInstance_ID,
-		MAcctSchema as, int AD_Org_ID, int M_CostElement_ID, Timestamp dateAcct, MCostDetail costDetail, String trxName)
+			IAcctSchemaInfo as, int AD_Org_ID, int M_CostElement_ID, Timestamp dateAcct, MCostDetail costDetail, String trxName)
 	{
 		ICostInfo costInfo = getCostInfo (product.getCtx(), product.getAD_Client_ID(), AD_Org_ID, product.getM_Product_ID(), 
-				as.getM_CostType_ID(), as.getC_AcctSchema_ID(), M_CostElement_ID, M_AttributeSetInstance_ID, dateAcct, costDetail, trxName);
+				as.getRecord().getM_CostType_ID(), as.getRecord().getC_AcctSchema_ID(), M_CostElement_ID, M_AttributeSetInstance_ID, dateAcct, costDetail, trxName);
 		//	New
 		if (costInfo == null)
 		{
@@ -1485,7 +1488,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 
 	@Deprecated (since="13", forRemoval=true)
 	public static MCost get (MProduct product, int M_AttributeSetInstance_ID,
-			MAcctSchema as, int AD_Org_ID, int M_CostElement_ID)
+			IAcctSchemaInfo as, int AD_Org_ID, int M_CostElement_ID)
 	{
 		return get(product, M_AttributeSetInstance_ID, as, AD_Org_ID, M_CostElement_ID, product.get_TrxName());
 	}
@@ -1647,12 +1650,12 @@ public class MCost extends X_M_Cost implements ICostInfo
 	 *	@param M_CostElement_ID cost element
 	 */
 	public MCost (MProduct product, int M_AttributeSetInstance_ID,
-		MAcctSchema as, int AD_Org_ID, int M_CostElement_ID)
+			IAcctSchemaInfo as, int AD_Org_ID, int M_CostElement_ID)
 	{
 		this (product.getCtx(), 0, product.get_TrxName());
 		setClientOrg(product.getAD_Client_ID(), AD_Org_ID);
-		setC_AcctSchema_ID(as.getC_AcctSchema_ID());
-		setM_CostType_ID(as.getM_CostType_ID());
+		setC_AcctSchema_ID(as.getRecord().getC_AcctSchema_ID());
+		setM_CostType_ID(as.getRecord().getM_CostType_ID());
 		setM_Product_ID(product.getM_Product_ID());
 		setM_AttributeSetInstance_ID(M_AttributeSetInstance_ID);
 		setM_CostElement_ID(M_CostElement_ID);
@@ -1676,9 +1679,9 @@ public class MCost extends X_M_Cost implements ICostInfo
 			{
 				if (getCurrentQty().add(qty).signum() < 0)
 				{
-					MAcctSchema as = MAcctSchema.get(getC_AcctSchema_ID());
+					IAcctSchemaInfo as = AcctInfoServices.getAcctSchemaInfoService().get(getC_AcctSchema_ID());
 					throw new AverageCostingNegativeQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()+", Trx Qty="+qty
-							+ ", CostElement="+costElement.getName()+", Schema="+as.getName());
+							+ ", CostElement="+costElement.getName()+", Schema="+as.getRecord().getName());
 				}
 			}
 		}
@@ -1708,17 +1711,17 @@ public class MCost extends X_M_Cost implements ICostInfo
 		//can't do cost adjustment if there's no stock left
 		if (qty.signum() == 0 && getCurrentQty().signum() <= 0)
 		{
-			MAcctSchema as = MAcctSchema.get(getC_AcctSchema_ID());
+			IAcctSchemaInfo as = AcctInfoServices.getAcctSchemaInfoService().get(getC_AcctSchema_ID());
 			throw new AverageCostingZeroQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()+", Trx Qty="+qty
-					+", CostElement="+MCostElement.get(getM_CostElement_ID()).getName()+", Schema="+as.getName());
+					+", CostElement="+MCostElement.get(getM_CostElement_ID()).getName()+", Schema="+as.getRecord().getName());
 		}
 		
 		if (!isSkipAverageCostingQtyCheck) {
 			if (getCurrentQty().add(qty).signum() < 0)
 			{
-				MAcctSchema as = MAcctSchema.get(getC_AcctSchema_ID());
+				IAcctSchemaInfo as = AcctInfoServices.getAcctSchemaInfoService().get(getC_AcctSchema_ID());
 				throw new AverageCostingNegativeQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()+", Trx Qty="+qty
-						+", CostElement="+MCostElement.get(getM_CostElement_ID()).getName()+", Schema="+as.getName());
+						+", CostElement="+MCostElement.get(getM_CostElement_ID()).getName()+", Schema="+as.getRecord().getName());
 			}
 		}
 				
@@ -1760,7 +1763,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 	 */
 	protected int getPrecision()
 	{
-		MAcctSchema as = MAcctSchema.get(getCtx(), getC_AcctSchema_ID());
+		IAcctSchemaInfo as = AcctInfoServices.getAcctSchemaInfoService().get(getCtx(), getC_AcctSchema_ID());
 		if (as != null)
 			return as.getCostingPrecision();
 		return 6;
@@ -1841,10 +1844,10 @@ public class MCost extends X_M_Cost implements ICostInfo
 		//	Check if data entry makes sense
 		if (m_manual)
 		{
-			MAcctSchema as = new MAcctSchema (getCtx(), getC_AcctSchema_ID(), null);
+			IAcctSchemaInfo as = AcctInfoServices.getAcctSchemaInfoService().create(getCtx(), getC_AcctSchema_ID(), null);
 			MProduct product = MProduct.get(getCtx(), getM_Product_ID());
 			String CostingLevel = product.getCostingLevel(as);
-			if (MAcctSchema.COSTINGLEVEL_Client.equals(CostingLevel))
+			if (IAcctSchemaConstants.COSTINGLEVEL_Client.equals(CostingLevel))
 			{
 				// AD_Org_ID and M_AttributeSetInstance_ID must be 0 for client costing level
 				if (getAD_Org_ID() != 0 || getM_AttributeSetInstance_ID() != 0)
@@ -1853,7 +1856,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 					return false;
 				}
 			}
-			else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel))
+			else if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(CostingLevel))
 			{
 				// M_AttributeSetInstance_ID must > 0 if costing level is batch lot
 				if (getM_AttributeSetInstance_ID() == 0
@@ -1901,9 +1904,9 @@ public class MCost extends X_M_Cost implements ICostInfo
 			{
 				if (getCurrentQty().signum() < 0)
 				{
-					MAcctSchema as = MAcctSchema.get(getC_AcctSchema_ID());
+					IAcctSchemaInfo as = AcctInfoServices.getAcctSchemaInfoService().get(getC_AcctSchema_ID());
 					throw new AverageCostingNegativeQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()
-							+", CostElement="+ce.getName()+", Schema="+as.getName());
+							+", CostElement="+ce.getName()+", Schema="+as.getRecord().getName());
 				}
 			}
 		}
@@ -1923,9 +1926,9 @@ public class MCost extends X_M_Cost implements ICostInfo
 			{
 				if (CurrentQty.signum() < 0)
 				{
-					MAcctSchema as = MAcctSchema.get(getC_AcctSchema_ID());
+					IAcctSchemaInfo as = AcctInfoServices.getAcctSchemaInfoService().get(getC_AcctSchema_ID());
 					throw new AverageCostingNegativeQtyException("Product="+MProduct.get(getM_Product_ID()).getName()+", Current Qty="+getCurrentQty()+", New Current Qty="+CurrentQty
-							+", CostElement="+ce.getName()+", Schema="+as.getName());
+							+", CostElement="+ce.getName()+", Schema="+as.getRecord().getName());
 				}
 			}
 		}

@@ -21,7 +21,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
-import org.compiere.model.MAcctSchema;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.compiere.model.MCostDetail;
 import org.compiere.model.MInOutLine;
 import org.compiere.model.MProduct;
@@ -48,7 +48,7 @@ public class Doc_ProjectIssue extends Doc
 	 * 	@param rs record
 	 * 	@param trxName trx
 	 */
-	public Doc_ProjectIssue (MAcctSchema as, ResultSet rs, String trxName)
+	public Doc_ProjectIssue (IAcctSchemaInfo as, ResultSet rs, String trxName)
 	{
 		super (as, MProjectIssue.class, rs, DOCTYPE_ProjectIssue, trxName);
 	}   //  Doc_ProjectIssue
@@ -122,11 +122,11 @@ public class Doc_ProjectIssue extends Doc
 	 *  @return Fact
 	 */
 	@Override
-	public ArrayList<Fact> createFacts (MAcctSchema as)
+	public ArrayList<Fact> createFacts (IAcctSchemaInfo as)
 	{
 		//  create Fact Header
 		Fact fact = new Fact(this, as, Fact.POST_Actual);
-		setC_Currency_ID (as.getC_Currency_ID());
+		setC_Currency_ID (as.getRecord().getC_Currency_ID());
 
 		MProject project = new MProject (getCtx(), m_issue.getC_Project_ID(), getTrxName());
 		String ProjectCategory = project.getProjectCategory();
@@ -156,8 +156,8 @@ public class Doc_ProjectIssue extends Doc
 		if (MProject.PROJECTCATEGORY_AssetProject.equals(ProjectCategory))
 			acctType = ACCTTYPE_ProjectAsset;
 		dr = fact.createLine(m_line,
-			getAccount(acctType, as), as.getC_Currency_ID(), cost, null);
-		dr.setQty(m_line.getQty().negate());
+			getAccount(acctType, as), as.getRecord().getC_Currency_ID(), cost, null);
+		dr.getFactAcctInfo().getRecord().setQty(m_line.getQty().negate());
 
 		//  Inventory               CR
 		acctType = ProductCost.ACCTTYPE_P_Asset;
@@ -165,7 +165,7 @@ public class Doc_ProjectIssue extends Doc
 			acctType = ProductCost.ACCTTYPE_P_Expense;
 		cr = fact.createLine(m_line,
 			m_line.getAccount(acctType, as),
-			as.getC_Currency_ID(), null, cost);
+			as.getRecord().getC_Currency_ID(), null, cost);
 		cr.setM_Locator_ID(m_line.getM_Locator_ID());
 		cr.setLocationFromLocator(m_line.getM_Locator_ID(), true);	// from Loc
 		//

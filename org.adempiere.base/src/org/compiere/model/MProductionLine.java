@@ -31,6 +31,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.constants.IAcctSchemaConstants;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -268,8 +271,8 @@ public class MProductionLine extends X_M_ProductionLine {
 		{
 		
 			MClientInfo m_clientInfo = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName());
-			MAcctSchema acctSchema = new MAcctSchema(getCtx(), m_clientInfo.getC_AcctSchema1_ID(), get_TrxName());				
-			if (asi.get_ID() == 0 && MAcctSchema.COSTINGLEVEL_BatchLot.equals(prod.getCostingLevel(acctSchema)) )
+			IAcctSchemaInfo acctSchema = AcctInfoServices.getAcctSchemaInfoService().create(getCtx(), m_clientInfo.getC_AcctSchema1_ID(), get_TrxName());				
+			if (asi.get_ID() == 0 && IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(prod.getCostingLevel(acctSchema)) )
 			{
 				//add quantity to last attributesetinstance
 				String sqlWhere = "M_Product_ID=? AND M_Locator_ID=? AND M_AttributeSetInstance_ID > 0 ";
@@ -292,7 +295,7 @@ public class MProductionLine extends X_M_ProductionLine {
 							.append(" AND ce.CostingMethod = ? ")
 							.append(" AND CurrentCostPrice <> 0 ");
 						MCost cost = new Query(getCtx(),I_M_Cost.Table_Name,localWhereClause.toString(),get_TrxName())
-						.setParameters(getM_Product_ID(), acctSchema.get_ID(), costingMethod)
+						.setParameters(getM_Product_ID(), acctSchema.getPO().get_ID(), costingMethod)
 						.addJoinClause(" INNER JOIN M_CostElement ce ON (M_Cost.M_CostElement_ID =ce.M_CostElement_ID ) ")
 						.setOrderBy("Updated DESC")
 						.first();

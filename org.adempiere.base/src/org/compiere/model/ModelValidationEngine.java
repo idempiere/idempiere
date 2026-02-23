@@ -31,6 +31,7 @@ import javax.script.CompiledScript;
 import javax.script.ScriptEngine;
 
 import org.adempiere.base.Core;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.adempiere.base.event.EventManager;
 import org.adempiere.base.event.EventProperty;
 import org.adempiere.base.event.FactsEventData;
@@ -784,14 +785,14 @@ public class ModelValidationEngine
 
 	/**
 	 * Fire Accounting Facts Validation event of a table.<br/>
-	 * - Call {@link FactsValidator#factsValidate(MAcctSchema, List, PO)} on register validators.<br/>
+	 * - Call {@link FactsValidator#factsValidate(IAcctSchemaInfo, List, PO)} on register validators.<br/>
 	 * - Fire {@link IEventTopics#ACCT_FACTS_VALIDATE} OSGi event.
 	 * @param schema
 	 * @param facts
 	 * @param po PO instance of event
 	 * @return error message or null
 	 */
-	public String fireFactsValidate (MAcctSchema schema, List<Fact> facts, PO po)
+	public String fireFactsValidate (IAcctSchemaInfo schema, List<Fact> facts, PO po)
 	{
 		if (schema == null || facts == null || po == null)
 			return null;
@@ -837,14 +838,14 @@ public class ModelValidationEngine
 
 	/**
 	 * Fire Accounting Facts Validation event of a table.<br/>
-	 * - Call {@link FactsValidator#factsValidate(MAcctSchema, List, PO)} on register validators.
+	 * - Call {@link FactsValidator#factsValidate(IAcctSchemaInfo, List, PO)} on register validators.
 	 * @param schema
 	 * @param facts
 	 * @param po PO instance of event
 	 * @param list register validators
 	 * @return error message or null
 	 */
-	private String fireFactsValidate(MAcctSchema schema, List<Fact> facts, PO po,  ArrayList<FactsValidator> list)
+	private String fireFactsValidate(IAcctSchemaInfo schema, List<Fact> facts, PO po,  ArrayList<FactsValidator> list)
 	{
 		for (int i = 0; i < list.size(); i++)
 		{

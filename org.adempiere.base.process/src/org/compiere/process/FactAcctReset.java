@@ -22,7 +22,7 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 
-import org.compiere.model.MAcctSchema;
+import org.adempiere.base.acct.info.IAcctSchemaInfo;
 import org.compiere.model.MAllocationHdr;
 import org.compiere.model.MAssetAddition;
 import org.compiere.model.MAssetDisposed;
@@ -182,16 +182,16 @@ public class FactAcctReset extends SvrProcess
 	{
 		Timestamp today = TimeUtil.trunc(new Timestamp (System.currentTimeMillis()), TimeUtil.TRUNC_DAY);
 
-		MAcctSchema as = MClient.get(getCtx(), getAD_Client_ID()).getAcctSchema();
-		boolean autoPeriod = as != null && as.isAutoPeriodControl();
+		IAcctSchemaInfo as = MClient.get(getCtx(), getAD_Client_ID()).getAcctSchema();
+		boolean autoPeriod = as != null && as.getRecord().isAutoPeriodControl();
 		if (autoPeriod)
 		{
-			Timestamp temp = TimeUtil.addDays(today, - as.getPeriod_OpenHistory());
+			Timestamp temp = TimeUtil.addDays(today, - as.getRecord().getPeriod_OpenHistory());
 			if ( p_DateAcct_From == null || p_DateAcct_From.before(temp) ) {
 				p_DateAcct_From = temp;
 				if (log.isLoggable(Level.INFO)) log.info("DateAcct From set to: " + p_DateAcct_From);
 			}
-			temp = TimeUtil.addDays(today, as.getPeriod_OpenFuture());
+			temp = TimeUtil.addDays(today, as.getRecord().getPeriod_OpenFuture());
 			if ( p_DateAcct_To == null || p_DateAcct_To.after(temp) ) {
 				p_DateAcct_To = temp;
 				if (log.isLoggable(Level.INFO)) log.info("DateAcct To set to: " + p_DateAcct_To);
