@@ -26,6 +26,7 @@ import org.compiere.model.I_C_AcctSchema_Element;
 import org.compiere.model.I_C_ValidCombination;
 import org.compiere.model.I_Fact_Acct;
 import org.compiere.model.MColumn;
+import org.compiere.model.MTable;
 import org.compiere.model.Query;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
