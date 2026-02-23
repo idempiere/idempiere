@@ -273,7 +273,7 @@ public class WProcessParameterForm extends ADForm
 		processInfo.setTitle(m_Name);
 		parameterPanel = new ProcessParameterPanel(m_WindowNo, processInfo);
 		centerPanel.getChildren().clear();
-		if ( parameterPanel.init(null) ) {
+		if ( parameterPanel.init() ) {
 			centerPanel.appendChild(parameterPanel);
 		} else {
 			return false;
