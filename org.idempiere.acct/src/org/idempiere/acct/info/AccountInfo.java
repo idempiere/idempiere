@@ -26,19 +26,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.adempiere.base.acct.info.IAccountInfo;
-import org.adempiere.base.acct.info.IElementValueInfo;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IElementValueModel;
 import org.compiere.model.I_C_ValidCombination;
 import org.compiere.model.PO;
 import org.idempiere.acct.model.MAccount;
 import org.idempiere.acct.model.MElementValue;
 
 /**
- * Wrapper for {@link MAccount} to provide {@link IAccountInfo} access.
+ * Wrapper for {@link MAccount} to provide {@link IAccountModel} access.
  * 
  * @author etantg
  */
-public class AccountInfo implements IAccountInfo {
+public class AccountInfo implements IAccountModel {
 	
 	private final MAccount account;
 	
@@ -53,7 +53,7 @@ public class AccountInfo implements IAccountInfo {
 	}
 	
 	@Override
-	public I_C_ValidCombination getRecord() {
+	public I_C_ValidCombination getCombination() {
 		return account;
 	}
 
@@ -73,20 +73,20 @@ public class AccountInfo implements IAccountInfo {
 	}
 	
 	@Override
-	public IElementValueInfo getAccountInfo() {
+	public IElementValueModel getAccountModel() {
 		MElementValue value = account.getAccount();
 		return ElementValueInfo.wrap(value);
 	}
 
-	public static IAccountInfo wrap(MAccount account) {
+	public static IAccountModel wrap(MAccount account) {
         if (account == null)
             return null;
-        if (account instanceof IAccountInfo)
-            return (IAccountInfo) account;
+        if (account instanceof IAccountModel)
+            return (IAccountModel) account;
         return new AccountInfo(account);
     }
 	
-	public static List<IAccountInfo> wrapList(List<MAccount> accountList) {
+	public static List<IAccountModel> wrapList(List<MAccount> accountList) {
 	    return accountList == null
 	    		? new ArrayList<>()
 	            : accountList.stream()

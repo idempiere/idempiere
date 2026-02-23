@@ -25,8 +25,8 @@ package org.adempiere.base.acct.service;
 import java.util.Properties;
 
 import org.adempiere.base.acct.IAcctInfoService;
-import org.adempiere.base.acct.info.IAcctSchemaElementInfo;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaElementModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 
 /**
  * Service interface for accounting schema element info.
@@ -34,9 +34,9 @@ import org.adempiere.base.acct.info.IAcctSchemaInfo;
  * @author etantg
  */
 public interface IAcctSchemaElementInfoService extends IAcctInfoService {
-	public IAcctSchemaElementInfo[] getAcctSchemaElements(IAcctSchemaInfo as);
+	public IAcctSchemaElementModel[] getAcctSchemaElements(IAcctSchemaModel as);
 	public String getColumnName(String elementType);
 	public String getValueQuery (String elementType);
 	
-	public IAcctSchemaElementInfo create(Properties ctx, int C_AcctSchema_Element_ID, String trxName);
+	public IAcctSchemaElementModel create(Properties ctx, int C_AcctSchema_Element_ID, String trxName);
 }

@@ -25,8 +25,8 @@ package org.idempiere.acct.service;
 import java.util.Properties;
 
 import org.adempiere.base.acct.AcctInfoService;
-import org.adempiere.base.acct.info.IAcctSchemaElementInfo;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaElementModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.base.acct.service.IAcctSchemaElementInfoService;
 import org.idempiere.acct.info.AcctSchemaElementInfo;
 import org.idempiere.acct.info.AcctSchemaInfo;
@@ -41,7 +41,7 @@ import org.idempiere.acct.model.MAcctSchemaElement;
 public class AcctSchemaElementInfoService implements IAcctSchemaElementInfoService {
 
 	@Override
-	public IAcctSchemaElementInfo[] getAcctSchemaElements(IAcctSchemaInfo as) {
+	public IAcctSchemaElementModel[] getAcctSchemaElements(IAcctSchemaModel as) {
 		if (as instanceof AcctSchemaInfo) {
 			MAcctSchemaElement[] elements = MAcctSchemaElement.getAcctSchemaElements(((AcctSchemaInfo) as).getModel());
 			return AcctSchemaElementInfo.wrapStream(elements);
@@ -60,7 +60,7 @@ public class AcctSchemaElementInfoService implements IAcctSchemaElementInfoServi
 	}
 
 	@Override
-	public IAcctSchemaElementInfo create(Properties ctx, int C_AcctSchema_Element_ID, String trxName) {
+	public IAcctSchemaElementModel create(Properties ctx, int C_AcctSchema_Element_ID, String trxName) {
 		MAcctSchemaElement element = new MAcctSchemaElement(ctx, C_AcctSchema_Element_ID, trxName);
 		return AcctSchemaElementInfo.wrap(element);
 	}

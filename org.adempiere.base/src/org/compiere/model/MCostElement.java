@@ -22,7 +22,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.base.acct.AcctInfoServices;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -374,13 +374,13 @@ public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 			return true;
 		
 		// Disallow delete if costing method is use by accounting schema
-		IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(getCtx(), getAD_Client_ID());
+		IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(getCtx(), getAD_Client_ID());
 		for (int i = 0; i < ass.length; i++)
 		{
-			if (ass[i].getRecord().getCostingMethod().equals(getCostingMethod()))
+			if (ass[i].getAcctSchema().getCostingMethod().equals(getCostingMethod()))
 			{
 				log.saveError("CannotDeleteUsed", Msg.getElement(getCtx(), "C_AcctSchema_ID") 
-					+ " - " + ass[i].getRecord().getName());
+					+ " - " + ass[i].getAcctSchema().getName());
 				return false;
 			}
 		}

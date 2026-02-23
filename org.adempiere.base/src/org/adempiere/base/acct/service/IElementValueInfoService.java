@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.Properties;
 
 import org.adempiere.base.acct.IAcctInfoService;
-import org.adempiere.base.acct.info.IElementValueInfo;
-import org.adempiere.base.acct.info.IImportElementValueInfo;
+import org.adempiere.base.acct.model.IElementValueModel;
+import org.adempiere.base.acct.model.IImportElementValueModel;
 
 /**
  * Service interface for accounting element value info.
@@ -36,11 +36,11 @@ import org.adempiere.base.acct.info.IImportElementValueInfo;
  * @author etantg
  */
 public interface IElementValueInfoService extends IAcctInfoService {
-	public IElementValueInfo create(IImportElementValueInfo imp);
-	public IElementValueInfo create(Properties ctx, int C_ElementValue_ID, String trxName);
-	public IElementValueInfo create(Properties ctx, String Value, String Name, String Description,
+	public IElementValueModel create(IImportElementValueModel imp);
+	public IElementValueModel create(Properties ctx, int C_ElementValue_ID, String trxName);
+	public IElementValueModel create(Properties ctx, String Value, String Name, String Description,
 			String AccountType, String AccountSign, boolean IsDocControlled, boolean IsSummary, 
 			String trxName);
-	public IElementValueInfo create(Properties ctx, IElementValueInfo copy, String trxName);
-	public List<IElementValueInfo> list(Properties ctx, String whereClause, ArrayList<Object> params, String trxName);
+	public IElementValueModel create(Properties ctx, IElementValueModel copy, String trxName);
+	public List<IElementValueModel> list(Properties ctx, String whereClause, ArrayList<Object> params, String trxName);
 }

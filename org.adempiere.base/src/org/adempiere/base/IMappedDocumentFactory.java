@@ -27,7 +27,7 @@ package org.adempiere.base;
 import java.sql.ResultSet;
 import java.util.function.Function;
 
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.acct.Doc;
 
 /**
@@ -56,11 +56,11 @@ public interface IMappedDocumentFactory {
 	 * Parameter class for doc supplier
 	 */
 	public final static class Parameter {
-		public IAcctSchemaInfo as;
+		public IAcctSchemaModel as;
 		public ResultSet rs;
 		public String trxName;
 		
-		public Parameter(IAcctSchemaInfo as, ResultSet rs, String trxName) {
+		public Parameter(IAcctSchemaModel as, ResultSet rs, String trxName) {
 			this.as = as;
 			this.rs = rs;
 			this.trxName = trxName;

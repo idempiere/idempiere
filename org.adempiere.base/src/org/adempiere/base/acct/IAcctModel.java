@@ -20,20 +20,15 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  **********************************************************************/
-package org.adempiere.base.acct.info;
+package org.adempiere.base.acct;
 
-import org.adempiere.base.acct.IAcctInfo;
-import org.compiere.model.I_Fact_Acct;
 import org.compiere.model.PO;
 
 /**
- * Interface for accounting fact info objects.
+ * Base interface for all accounting info objects.
  * 
  * @author etantg
  */
-public interface IFactAcctInfo extends IAcctInfo {
-	public I_Fact_Acct getRecord();
-	
-	public IAccountInfo getAccountInfo();
-	public void setClientOrg(PO po);
+public interface IAcctModel {
+	public PO getPO();
 }

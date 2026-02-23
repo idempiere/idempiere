@@ -40,9 +40,9 @@ import java.util.List;
 import java.util.Properties;
 
 import org.adempiere.base.acct.AcctInfoServices;
-import org.adempiere.base.acct.info.IAccountInfo;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
-import org.adempiere.base.acct.info.IFactAcctInfo;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
+import org.adempiere.base.acct.model.IFactAcctModel;
 import org.compiere.acct.Doc;
 import org.compiere.acct.DocManager;
 import org.compiere.model.MBPartner;
@@ -216,7 +216,7 @@ public class MatchInvTest extends AbstractTestCase {
 		creditMemo.load(getTrxName());
 		assertTrue(creditMemo.isPosted());
 		
-		IAcctSchemaInfo as = MClient.get(getAD_Client_ID()).getAcctSchema();
+		IAcctSchemaModel as = MClient.get(getAD_Client_ID()).getAcctSchema();
 		BigDecimal credMatchAmt = creditMemoLine.getMatchedQty().negate().multiply(creditMemoLine.getPriceActual()).setScale(as.getStdPrecision(), RoundingMode.HALF_UP);
 		MMatchInv[] miList = MMatchInv.getInvoiceLine(Env.getCtx(), creditMemoLine.get_ID(), getTrxName());
 		for (MMatchInv mi : miList) {
@@ -230,12 +230,12 @@ public class MatchInvTest extends AbstractTestCase {
 			Doc doc = DocManager.getDocument(as, MMatchInv.Table_ID, mi.get_ID(), getTrxName());
 			MInvoiceLine invLine = new MInvoiceLine(Env.getCtx(), mi.getC_InvoiceLine_ID(), getTrxName());
 			doc.setC_BPartner_ID(invLine.getParent().getC_BPartner_ID());
-			IAccountInfo acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+			IAccountModel acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
 			
 			ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
-			IAccountInfo acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+			IAccountModel acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
 
-			List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
+			List<IFactAcctModel> factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 			List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, credMatchAmt, 2, false), new FactAcct(acctInvClr, credMatchAmt, 2, true));
 			assertFactAcctEntries(factAccts, expected);
 		}
@@ -320,7 +320,7 @@ public class MatchInvTest extends AbstractTestCase {
 		invoice.load(getTrxName());
 		assertTrue(invoice.isPosted());
 		
-		IAcctSchemaInfo as = MClient.get(getAD_Client_ID()).getAcctSchema();
+		IAcctSchemaModel as = MClient.get(getAD_Client_ID()).getAcctSchema();
 		BigDecimal invMatchAmt = invoiceLine.getMatchedQty().multiply(invoiceLine.getPriceActual()).setScale(as.getStdPrecision(), RoundingMode.HALF_UP);
 		MMatchInv[] miList = MMatchInv.getInvoiceLine(Env.getCtx(), invoiceLine.get_ID(), getTrxName());
 		for (MMatchInv mi : miList) {
@@ -334,12 +334,12 @@ public class MatchInvTest extends AbstractTestCase {
 			Doc doc = DocManager.getDocument(as, MMatchInv.Table_ID, mi.get_ID(), getTrxName());
 			MInvoiceLine invLine = new MInvoiceLine(Env.getCtx(), mi.getC_InvoiceLine_ID(), getTrxName());
 			doc.setC_BPartner_ID(invLine.getParent().getC_BPartner_ID());
-			IAccountInfo acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+			IAccountModel acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
 			
 			ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
-			IAccountInfo acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+			IAccountModel acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
 
-			List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
+			List<IFactAcctModel> factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 			List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, invMatchAmt, 2, true), new FactAcct(acctInvClr, invMatchAmt, 2, false));
 			assertFactAcctEntries(factAccts, expected);
 		}
@@ -431,7 +431,7 @@ public class MatchInvTest extends AbstractTestCase {
 		receipt.load(getTrxName());
 		assertTrue(receipt.isPosted());
 		
-		IAcctSchemaInfo as = MClient.get(getAD_Client_ID()).getAcctSchema();
+		IAcctSchemaModel as = MClient.get(getAD_Client_ID()).getAcctSchema();
 		BigDecimal invMatchAmt = invoiceLine.getMatchedQty().multiply(invoiceLine.getPriceActual()).setScale(as.getStdPrecision(), RoundingMode.HALF_UP);
 		MMatchInv[] miList = MMatchInv.getInvoiceLine(Env.getCtx(), invoiceLine.get_ID(), getTrxName());
 		for (MMatchInv mi : miList) {
@@ -445,12 +445,12 @@ public class MatchInvTest extends AbstractTestCase {
 			Doc doc = DocManager.getDocument(as, MMatchInv.Table_ID, mi.get_ID(), getTrxName());
 			MInvoiceLine invLine = new MInvoiceLine(Env.getCtx(), mi.getC_InvoiceLine_ID(), getTrxName());
 			doc.setC_BPartner_ID(invLine.getParent().getC_BPartner_ID());
-			IAccountInfo acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+			IAccountModel acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
 			
 			ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
-			IAccountInfo acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+			IAccountModel acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
 
-			List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
+			List<IFactAcctModel> factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 			List<FactAcct> expected = Arrays.asList(new FactAcct(acctInvClr, invMatchAmt, 2, false, mi.getQty().negate()), 
 					new FactAcct(acctNIR, invMatchAmt, 2, true, mi.getQty()));
 			assertFactAcctEntries(factAccts, expected);
@@ -498,9 +498,9 @@ public class MatchInvTest extends AbstractTestCase {
 			assertTrue(mi.isPosted());
 			
 			ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
-			IAccountInfo acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+			IAccountModel acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
 
-			List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
+			List<IFactAcctModel> factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 			List<FactAcct> expected = Arrays.asList(new FactAcct(acctInvClr, credMatchAmt, 2, false, mi.getQty()),
 					new FactAcct(acctInvClr, credMatchAmt, 2, true, mi.getQty().negate()));
 			assertFactAcctEntries(factAccts, expected);
@@ -624,7 +624,7 @@ public class MatchInvTest extends AbstractTestCase {
 			invoice.load(getTrxName());
 			assertTrue(invoice.isPosted());
 			
-			IAcctSchemaInfo as = MClient.get(getAD_Client_ID()).getAcctSchema();
+			IAcctSchemaModel as = MClient.get(getAD_Client_ID()).getAcctSchema();
 			BigDecimal acctAmount = priceInYen.multiply(yenToUsd).multiply(qtyInvoiced).setScale(as.getStdPrecision(), RoundingMode.HALF_UP); 
 			BigDecimal acctSource = priceInYen.multiply(qtyInvoiced).setScale(japaneseYen.getStdPrecision(), RoundingMode.HALF_UP);
 			MMatchInv[] miList = MMatchInv.getInvoiceLine(Env.getCtx(), invoiceLine.get_ID(), getTrxName());
@@ -639,18 +639,18 @@ public class MatchInvTest extends AbstractTestCase {
 				Doc doc = DocManager.getDocument(as, MMatchInv.Table_ID, mi.get_ID(), getTrxName());
 				MInvoiceLine invLine = new MInvoiceLine(Env.getCtx(), mi.getC_InvoiceLine_ID(), getTrxName());
 				doc.setC_BPartner_ID(invLine.getParent().getC_BPartner_ID());
-				IAccountInfo acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+				IAccountModel acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
 				
 				ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
-				IAccountInfo acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+				IAccountModel acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
 	
-				List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
+				List<IFactAcctModel> factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 				List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, acctAmount, acctSource, 2, true), 
 						new FactAcct(acctInvClr, acctAmount, acctSource, 2, false));
 				assertFactAcctEntries(factAccts, expected);
 				assertTrue(acctAmount.compareTo(Env.ZERO) >= 0);
-				for (IFactAcctInfo fa : factAccts) {
-					assertTrue(fa.getRecord().getC_Currency_ID() == japaneseYen.getC_Currency_ID());
+				for (IFactAcctModel fa : factAccts) {
+					assertTrue(fa.getFactAcct().getC_Currency_ID() == japaneseYen.getC_Currency_ID());
 				}
 			}
 		}
@@ -940,7 +940,7 @@ public class MatchInvTest extends AbstractTestCase {
 			String error = DocumentEngine.postImmediate(Env.getCtx(), invoice.getAD_Client_ID(), MInvoice.Table_ID, invoice.get_ID(), false, getTrxName());
 			assertTrue(error == null);
 		}
-		IAcctSchemaInfo as = MClient.get(getAD_Client_ID()).getAcctSchema();
+		IAcctSchemaModel as = MClient.get(getAD_Client_ID()).getAcctSchema();
 		BigDecimal invMatchAmt = invoiceLine.getMatchedQty().multiply(invoiceLine.getPriceActual()).setScale(as.getStdPrecision(), RoundingMode.HALF_UP);
 		
 		invoice.load(getTrxName());
@@ -963,11 +963,11 @@ public class MatchInvTest extends AbstractTestCase {
 			Doc doc = DocManager.getDocument(as, MMatchInv.Table_ID, mi.get_ID(), getTrxName());
 			MInvoiceLine invLine = new MInvoiceLine(Env.getCtx(), mi.getC_InvoiceLine_ID(), getTrxName());
 			doc.setC_BPartner_ID(invLine.getParent().getC_BPartner_ID());
-			IAccountInfo acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+			IAccountModel acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
 			
 			ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
-			IAccountInfo acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
-			List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
+			IAccountModel acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+			List<IFactAcctModel> factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 			List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, invMatchAmt, 2, !mi.isReversal(), mi.getQty()),
 					new FactAcct(acctInvClr, invMatchAmt, 2, mi.isReversal(), mi.getQty().negate()));
 			assertFactAcctEntries(factAccts, expected);
@@ -980,7 +980,7 @@ public class MatchInvTest extends AbstractTestCase {
 		
 		MProduct product = null;
 		MClient client = MClient.get(Env.getCtx());
-		IAcctSchemaInfo as = client.getAcctSchema();
+		IAcctSchemaModel as = client.getAcctSchema();
 		Timestamp today = TimeUtil.getDay(null);
 		try {			
 			product = new MProduct(Env.getCtx(), 0, null);
@@ -1148,12 +1148,12 @@ public class MatchInvTest extends AbstractTestCase {
 				Doc doc = DocManager.getDocument(as, MMatchInv.Table_ID, mi.get_ID(), getTrxName());
 				MInvoiceLine invLine = new MInvoiceLine(Env.getCtx(), mi.getC_InvoiceLine_ID(), getTrxName());
 				doc.setC_BPartner_ID(invLine.getParent().getC_BPartner_ID());
-				IAccountInfo acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+				IAccountModel acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
 				
 				ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
-				IAccountInfo acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
-				IAccountInfo acctIPV = pc.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
-				List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
+				IAccountModel acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
+				IAccountModel acctIPV = pc.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
+				List<IFactAcctModel> factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 				List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, poMatchAmt, 2, !mi.isReversal(), mi.getQty()),
 						new FactAcct(acctInvClr, invMatchAmt, 2, mi.isReversal(), mi.getQty().negate()),
 						new FactAcct(acctIPV, invMatchAmt.subtract(poMatchAmt), 2, !mi.isReversal()));

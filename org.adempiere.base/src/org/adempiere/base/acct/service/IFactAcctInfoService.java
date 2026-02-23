@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.adempiere.base.acct.IAcctInfoService;
-import org.adempiere.base.acct.info.IFactAcctInfo;
+import org.adempiere.base.acct.model.IFactAcctModel;
 import org.adempiere.exceptions.DBException;
 
 /**
@@ -39,10 +39,10 @@ import org.adempiere.exceptions.DBException;
 public interface IFactAcctInfoService extends IAcctInfoService {
 	public int deleteEx(int AD_Table_ID, int Record_ID, String trxName) throws DBException;
 	
-	public IFactAcctInfo create(Properties ctx, int Fact_Acct_ID, String trxName);
-	public IFactAcctInfo create(Properties ctx, ResultSet rs, String trxName);
+	public IFactAcctModel create(Properties ctx, int Fact_Acct_ID, String trxName);
+	public IFactAcctModel create(Properties ctx, ResultSet rs, String trxName);
 
-	public List<IFactAcctInfo> list(Properties ctx, String whereClause, ArrayList<Object> params, String trxName);
-	public List<IFactAcctInfo> list(int AD_Table_ID, int Record_ID, int C_AcctSchema_ID, String trxName);
-	public IFactAcctInfo first(int AD_Table_ID, int Record_ID, int Account_ID, int C_AcctSchema_ID, String trxName);
+	public List<IFactAcctModel> list(Properties ctx, String whereClause, ArrayList<Object> params, String trxName);
+	public List<IFactAcctModel> list(int AD_Table_ID, int Record_ID, int C_AcctSchema_ID, String trxName);
+	public IFactAcctModel first(int AD_Table_ID, int Record_ID, int Account_ID, int C_AcctSchema_ID, String trxName);
 }

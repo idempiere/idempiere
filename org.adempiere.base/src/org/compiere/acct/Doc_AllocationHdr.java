@@ -28,10 +28,10 @@ import java.util.logging.Level;
 
 import org.adempiere.base.acct.AcctInfoServices;
 import org.adempiere.base.acct.constants.IAcctSchemaElementConstants;
-import org.adempiere.base.acct.info.IAccountInfo;
-import org.adempiere.base.acct.info.IAcctSchemaElementInfo;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
-import org.adempiere.base.acct.info.IFactAcctInfo;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IAcctSchemaElementModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
+import org.adempiere.base.acct.model.IFactAcctModel;
 import org.compiere.model.MAllocationHdr;
 import org.compiere.model.MAllocationLine;
 import org.compiere.model.MCashLine;
@@ -72,7 +72,7 @@ public class Doc_AllocationHdr extends Doc
 	 * 	@param rs record
 	 * 	@param trxName trx
 	 */
-	public Doc_AllocationHdr (IAcctSchemaInfo as, ResultSet rs, String trxName)
+	public Doc_AllocationHdr (IAcctSchemaModel as, ResultSet rs, String trxName)
 	{
 		super (as, MAllocationHdr.class, rs, DOCTYPE_Allocation, trxName);
 	}   //  Doc_Allocation
@@ -192,7 +192,7 @@ public class Doc_AllocationHdr extends Doc
 	 *  @param as accounting schema
 	 *  @return Fact
 	 */
-	public ArrayList<Fact> createFacts (IAcctSchemaInfo as)
+	public ArrayList<Fact> createFacts (IAcctSchemaModel as)
 	{
 		m_facts = new ArrayList<Fact>();
 		invGainLossFactLines = new ArrayList<FactLine>();
@@ -220,9 +220,9 @@ public class Doc_AllocationHdr extends Doc
 		Fact fact = new Fact(this, as, Fact.POST_Actual);
 		Fact factForRGL = new Fact(this, as, Fact.POST_Actual); // dummy fact (not posted) to calculate Realized Gain & Loss
 		boolean isInterOrg = isInterOrg(as);
-		IAccountInfo bpAcct = null;		//	Liability/Receivables
-		IAccountInfo bpAcctAr = null;
-		IAccountInfo bpAcctAp = null;
+		IAccountModel bpAcct = null;		//	Liability/Receivables
+		IAccountModel bpAcctAr = null;
+		IAccountModel bpAcctAp = null;
 
 		for (int i = 0; i < p_lines.length; i++)
 		{
@@ -275,7 +275,7 @@ public class Doc_AllocationHdr extends Doc
 					fl = fact.createLine (line, getPaymentAcct(as, line.getC_Payment_ID()),
 						getC_Currency_ID(), line.getAmtSource(), null);
 					if (fl != null && payment != null) {
-						fl.getFactAcctInfo().getRecord().setAD_Org_ID(payment.getAD_Org_ID());
+						fl.getFactAcctInfo().getFactAcct().setAD_Org_ID(payment.getAD_Org_ID());
 						allocPayAccounted = allocPayAccounted.add(fl.getAcctBalance());
 					}
 				}
@@ -294,14 +294,14 @@ public class Doc_AllocationHdr extends Doc
 				// If both accounts Unallocated Cash and Receivable are equal
 				// then don't post
 
-				IAccountInfo acct_unallocated_cash = null;
+				IAccountModel acct_unallocated_cash = null;
 				if (line.getC_Payment_ID() != 0)
 					acct_unallocated_cash =  getPaymentAcct(as, line.getC_Payment_ID());
 				else if (line.getC_CashLine_ID() != 0)
 					acct_unallocated_cash =  getCashAcct(as, line.getC_CashLine_ID());
-				IAccountInfo acct_receivable = getAccount(Doc.ACCTTYPE_C_Receivable, as);
+				IAccountModel acct_receivable = getAccount(Doc.ACCTTYPE_C_Receivable, as);
 
-				if ((!as.getRecord().isPostIfClearingEqual()) && acct_unallocated_cash != null && acct_unallocated_cash.equals(acct_receivable) && (!isInterOrg)) {
+				if ((!as.getAcctSchema().isPostIfClearingEqual()) && acct_unallocated_cash != null && acct_unallocated_cash.equals(acct_receivable) && (!isInterOrg)) {
 
 					// if not using clearing accounts, then don't post amtsource
 					// change the allocationsource to be writeoff + discount
@@ -318,7 +318,7 @@ public class Doc_AllocationHdr extends Doc
 						fl = fact.createLine (line, getPaymentAcct(as, line.getC_Payment_ID()),
 							getC_Currency_ID(), line.getAmtSource(), null);
 						if (fl != null && payment != null) {
-							fl.getFactAcctInfo().getRecord().setAD_Org_ID(payment.getAD_Org_ID());
+							fl.getFactAcctInfo().getFactAcct().setAD_Org_ID(payment.getAD_Org_ID());
 							if (payment.getReversal_ID() > 0 )
 								allocPayAccounted = allocPayAccounted.add(fl.getAcctBalance().negate());
 							else
@@ -331,7 +331,7 @@ public class Doc_AllocationHdr extends Doc
 							getC_Currency_ID(), line.getAmtSource(), null);
 						MCashLine cashLine = new MCashLine (getCtx(), line.getC_CashLine_ID(), getTrxName());
 						if (fl != null && cashLine.get_ID() != 0)
-							fl.getFactAcctInfo().getRecord().setAD_Org_ID(cashLine.getAD_Org_ID());
+							fl.getFactAcctInfo().getFactAcct().setAD_Org_ID(cashLine.getAD_Org_ID());
 					}
 
 				}
@@ -343,7 +343,7 @@ public class Doc_AllocationHdr extends Doc
 					fl = fact.createLine (line, getAccount(Doc.ACCTTYPE_DiscountExp, as),
 						getC_Currency_ID(), line.getDiscountAmt(), null);
 					if (fl != null && payment != null)
-						fl.getFactAcctInfo().getRecord().setAD_Org_ID(payment.getAD_Org_ID());
+						fl.getFactAcctInfo().getFactAcct().setAD_Org_ID(payment.getAD_Org_ID());
 				}
 				//	Write off		DR
 				if (Env.ZERO.compareTo(line.getWriteOffAmt()) != 0)
@@ -351,11 +351,11 @@ public class Doc_AllocationHdr extends Doc
 					fl = fact.createLine (line, getAccount(Doc.ACCTTYPE_WriteOff, as),
 						getC_Currency_ID(), line.getWriteOffAmt(), null);
 					if (fl != null && payment != null)
-						fl.getFactAcctInfo().getRecord().setAD_Org_ID(payment.getAD_Org_ID());
+						fl.getFactAcctInfo().getFactAcct().setAD_Org_ID(payment.getAD_Org_ID());
 				}
 
 				//	AR Invoice Amount	CR
-				if (as.getRecord().isAccrual())
+				if (as.getAcctSchema().isAccrual())
 				{
 					if (bpAcctAr == null)
 						bpAcctAr = getAccount(Doc.ACCTTYPE_C_Receivable, as);
@@ -365,7 +365,7 @@ public class Doc_AllocationHdr extends Doc
 					if (fl != null)
 						allocationAccounted = fl.getAcctBalance().negate();
 					if (fl != null && invoice != null)
-						fl.getFactAcctInfo().getRecord().setAD_Org_ID(invoice.getAD_Org_ID());
+						fl.getFactAcctInfo().getFactAcct().setAD_Org_ID(invoice.getAD_Org_ID());
 
 					// for Realized Gain & Loss
 					flForRGL = factForRGL.createLine (line, bpAcct,
@@ -387,18 +387,18 @@ public class Doc_AllocationHdr extends Doc
 				// If both accounts Payment Select and Liability are equal
 				// then don't post
 
-				IAccountInfo acct_payment_select = null;
+				IAccountModel acct_payment_select = null;
 				if (line.getC_Payment_ID() != 0)
 					acct_payment_select = getPaymentAcct(as, line.getC_Payment_ID());
 				else if (line.getC_CashLine_ID() != 0)
 					acct_payment_select = getCashAcct(as, line.getC_CashLine_ID());
-				IAccountInfo acct_liability = getAccount(Doc.ACCTTYPE_V_Liability, as);
+				IAccountModel acct_liability = getAccount(Doc.ACCTTYPE_V_Liability, as);
 				boolean isUsingClearing = true;
 
 				// Save original allocation source for realized gain & loss purposes
 				allocationSourceForRGL = allocationSourceForRGL.negate();
 
-				if ((!as.getRecord().isPostIfClearingEqual()) && acct_payment_select != null && acct_payment_select.equals(acct_liability) && (!isInterOrg)) {
+				if ((!as.getAcctSchema().isPostIfClearingEqual()) && acct_payment_select != null && acct_payment_select.equals(acct_liability) && (!isInterOrg)) {
 
 					// if not using clearing accounts, then don't post amtsource
 					// change the allocationsource to be writeoff + discount
@@ -410,7 +410,7 @@ public class Doc_AllocationHdr extends Doc
 
 				allocationSource = allocationSource.negate();	//	allocation is negative
 				//	AP Invoice Amount	DR
-				if (as.getRecord().isAccrual())
+				if (as.getAcctSchema().isAccrual())
 				{
 					if (bpAcctAp == null)
 						bpAcctAp = getAccount(Doc.ACCTTYPE_V_Liability, as);
@@ -420,7 +420,7 @@ public class Doc_AllocationHdr extends Doc
 					if (fl != null)
 						allocationAccounted = fl.getAcctBalance();
 					if (fl != null && invoice != null)
-						fl.getFactAcctInfo().getRecord().setAD_Org_ID(invoice.getAD_Org_ID());
+						fl.getFactAcctInfo().getFactAcct().setAD_Org_ID(invoice.getAD_Org_ID());
 
 					// for Realized Gain & Loss
 					flForRGL = factForRGL.createLine (line, bpAcct,
@@ -441,7 +441,7 @@ public class Doc_AllocationHdr extends Doc
 					fl = fact.createLine (line, getAccount(Doc.ACCTTYPE_DiscountRev, as),
 						getC_Currency_ID(), null, line.getDiscountAmt().negate());
 					if (fl != null && payment != null)
-						fl.getFactAcctInfo().getRecord().setAD_Org_ID(payment.getAD_Org_ID());
+						fl.getFactAcctInfo().getFactAcct().setAD_Org_ID(payment.getAD_Org_ID());
 				}
 				//	Write off		CR
 				if (Env.ZERO.compareTo(line.getWriteOffAmt()) != 0)
@@ -449,7 +449,7 @@ public class Doc_AllocationHdr extends Doc
 					fl = fact.createLine (line, getAccount(Doc.ACCTTYPE_WriteOff, as),
 						getC_Currency_ID(), null, line.getWriteOffAmt().negate());
 					if (fl != null && payment != null)
-						fl.getFactAcctInfo().getRecord().setAD_Org_ID(payment.getAD_Org_ID());
+						fl.getFactAcctInfo().getFactAcct().setAD_Org_ID(payment.getAD_Org_ID());
 				}
 				//	Payment/Cash	CR
 				if (isUsingClearing && line.getC_Payment_ID() != 0) // Avoid usage of clearing accounts
@@ -457,7 +457,7 @@ public class Doc_AllocationHdr extends Doc
 					fl = fact.createLine (line, getPaymentAcct(as, line.getC_Payment_ID()),
 						getC_Currency_ID(), null, line.getAmtSource().negate());
 					if (fl != null && payment != null)
-						fl.getFactAcctInfo().getRecord().setAD_Org_ID(payment.getAD_Org_ID());
+						fl.getFactAcctInfo().getFactAcct().setAD_Org_ID(payment.getAD_Org_ID());
 					if (fl != null)
 						allocPayAccounted = allocPayAccounted.add(fl.getAcctBalance().negate());
 				}
@@ -467,7 +467,7 @@ public class Doc_AllocationHdr extends Doc
 						getC_Currency_ID(), null, line.getAmtSource().negate());
 					MCashLine cashLine = new MCashLine (getCtx(), line.getC_CashLine_ID(), getTrxName());
 					if (fl != null && cashLine.get_ID() != 0)
-						fl.getFactAcctInfo().getRecord().setAD_Org_ID(cashLine.getAD_Org_ID());
+						fl.getFactAcctInfo().getFactAcct().setAD_Org_ID(cashLine.getAD_Org_ID());
 				}
 			}
 
@@ -493,8 +493,8 @@ public class Doc_AllocationHdr extends Doc
 			}
 
 			//	Realized Gain & Loss
-			if (invoice != null && as.getRecord().isAccrual()
-				&& (getC_Currency_ID() != as.getRecord().getC_Currency_ID()			//	payment allocation in foreign currency
+			if (invoice != null && as.getAcctSchema().isAccrual()
+				&& (getC_Currency_ID() != as.getAcctSchema().getC_Currency_ID()			//	payment allocation in foreign currency
 					|| getC_Currency_ID() != line.getInvoiceC_Currency_ID()))	//	allocation <> invoice currency
 			{
 				p_Error = createInvoiceGainLoss (line, as, fact, bpAcct, invoice,
@@ -504,7 +504,7 @@ public class Doc_AllocationHdr extends Doc
 			}
 			
 			allocPaySource = allocPaySource.add(line.getAmtSource());
-			if (payment != null && getC_Currency_ID() != as.getRecord().getC_Currency_ID())
+			if (payment != null && getC_Currency_ID() != as.getAcctSchema().getC_Currency_ID())
 			{
 				p_Error = createPaymentGainLoss (line, as, fact,  getPaymentAcct(as, payment.get_ID()), payment,
 						allocPaySource, allocPayAccounted);
@@ -514,7 +514,7 @@ public class Doc_AllocationHdr extends Doc
 		}	//	for all lines
 		
 		//	rounding adjustment
-		if (getC_Currency_ID() != as.getRecord().getC_Currency_ID())
+		if (getC_Currency_ID() != as.getAcctSchema().getC_Currency_ID())
 		{
 			p_Error = createInvoiceRoundingCorrection (as, fact,  bpAcctAr, bpAcctAp);
 			if (p_Error != null)
@@ -525,7 +525,7 @@ public class Doc_AllocationHdr extends Doc
 		}
 		
 		// FR [ 1840016 ] Avoid usage of clearing accounts - subject to C_AcctSchema.IsPostIfClearingEqual
-		if ( (!as.getRecord().isPostIfClearingEqual()) && p_lines.length > 0 && (!isInterOrg)) {
+		if ( (!as.getAcctSchema().isPostIfClearingEqual()) && p_lines.length > 0 && (!isInterOrg)) {
 			boolean allEquals = true;
 			// more than one line (i.e. crossing one payment+ with a payment-, or an invoice against a credit memo)
 			// verify if the sum of all facts is zero net
@@ -533,7 +533,7 @@ public class Doc_AllocationHdr extends Doc
 			BigDecimal netBalance = Env.ZERO;
 			FactLine prevFactLine = null;
 			for (FactLine factLine : factlines) {
-				netBalance = netBalance.add(factLine.getFactAcctInfo().getRecord().getAmtSourceDr()).subtract(factLine.getFactAcctInfo().getRecord().getAmtSourceCr());
+				netBalance = netBalance.add(factLine.getFactAcctInfo().getFactAcct().getAmtSourceDr()).subtract(factLine.getFactAcctInfo().getFactAcct().getAmtSourceCr());
 				if (prevFactLine != null) {
 					if (! equalFactLineIDs(prevFactLine, factLine)) {
 						allEquals = false;
@@ -549,7 +549,7 @@ public class Doc_AllocationHdr extends Doc
 			}
 		}
 		
-		if (getC_Currency_ID() != as.getRecord().getC_Currency_ID())
+		if (getC_Currency_ID() != as.getAcctSchema().getC_Currency_ID())
 			balanceAccounting(as, fact);
 
 		//	reset line info
@@ -563,9 +563,9 @@ public class Doc_AllocationHdr extends Doc
 	 * Verify if the posting involves two or more organizations
 	 * @return true if there are more than one org involved on the posting
 	 */
-	private boolean isInterOrg(IAcctSchemaInfo as) {
-		IAcctSchemaElementInfo elementorg = as.getAcctSchemaElementInfo(IAcctSchemaElementConstants.ELEMENTTYPE_Organization);
-		if (elementorg == null || !elementorg.getRecord().isBalanced()) {
+	private boolean isInterOrg(IAcctSchemaModel as) {
+		IAcctSchemaElementModel elementorg = as.getAcctSchemaElementModel(IAcctSchemaElementConstants.ELEMENTTYPE_Organization);
+		if (elementorg == null || !elementorg.getAcctSchemaElement().isBalanced()) {
 			// no org element or not need to be balanced
 			return false;
 		}
@@ -623,45 +623,45 @@ public class Doc_AllocationHdr extends Doc
 	 * @return boolean indicating if both dimension ID's are equal
 	 */
 	private boolean equalFactLineIDs(FactLine prevFactLine, FactLine factLine) {
-		return (factLine.getFactAcctInfo().getRecord().getA_Asset_ID() == prevFactLine.getFactAcctInfo().getRecord().getA_Asset_ID()
-				&& factLine.getFactAcctInfo().getRecord().getAccount_ID() == prevFactLine.getFactAcctInfo().getRecord().getAccount_ID()
-				&& factLine.getFactAcctInfo().getRecord().getAD_Client_ID() == prevFactLine.getFactAcctInfo().getRecord().getAD_Client_ID()
+		return (factLine.getFactAcctInfo().getFactAcct().getA_Asset_ID() == prevFactLine.getFactAcctInfo().getFactAcct().getA_Asset_ID()
+				&& factLine.getFactAcctInfo().getFactAcct().getAccount_ID() == prevFactLine.getFactAcctInfo().getFactAcct().getAccount_ID()
+				&& factLine.getFactAcctInfo().getFactAcct().getAD_Client_ID() == prevFactLine.getFactAcctInfo().getFactAcct().getAD_Client_ID()
 				&& factLine.getAD_Org_ID() == prevFactLine.getAD_Org_ID()
-				&& factLine.getFactAcctInfo().getRecord().getAD_OrgTrx_ID() == prevFactLine.getFactAcctInfo().getRecord().getAD_OrgTrx_ID()
-				&& factLine.getFactAcctInfo().getRecord().getC_AcctSchema_ID() == prevFactLine.getFactAcctInfo().getRecord().getC_AcctSchema_ID()
-				&& factLine.getFactAcctInfo().getRecord().getC_Activity_ID() == prevFactLine.getFactAcctInfo().getRecord().getC_Activity_ID()
-				&& factLine.getFactAcctInfo().getRecord().getC_BPartner_ID() == prevFactLine.getFactAcctInfo().getRecord().getC_BPartner_ID()
-				&& factLine.getFactAcctInfo().getRecord().getC_Campaign_ID() == prevFactLine.getFactAcctInfo().getRecord().getC_Campaign_ID()
-				&& factLine.getFactAcctInfo().getRecord().getC_Currency_ID() == prevFactLine.getFactAcctInfo().getRecord().getC_Currency_ID()
-				&& factLine.getFactAcctInfo().getRecord().getC_LocFrom_ID() == prevFactLine.getFactAcctInfo().getRecord().getC_LocFrom_ID()
-				&& factLine.getFactAcctInfo().getRecord().getC_LocTo_ID() == prevFactLine.getFactAcctInfo().getRecord().getC_LocTo_ID()
-				&& factLine.getFactAcctInfo().getRecord().getC_Period_ID() == prevFactLine.getFactAcctInfo().getRecord().getC_Period_ID()
-				&& factLine.getFactAcctInfo().getRecord().getC_Project_ID() == prevFactLine.getFactAcctInfo().getRecord().getC_Project_ID()
-				&& factLine.getFactAcctInfo().getRecord().getC_ProjectPhase_ID() == prevFactLine.getFactAcctInfo().getRecord().getC_ProjectPhase_ID()
-				&& factLine.getFactAcctInfo().getRecord().getC_ProjectTask_ID() == prevFactLine.getFactAcctInfo().getRecord().getC_ProjectTask_ID()
+				&& factLine.getFactAcctInfo().getFactAcct().getAD_OrgTrx_ID() == prevFactLine.getFactAcctInfo().getFactAcct().getAD_OrgTrx_ID()
+				&& factLine.getFactAcctInfo().getFactAcct().getC_AcctSchema_ID() == prevFactLine.getFactAcctInfo().getFactAcct().getC_AcctSchema_ID()
+				&& factLine.getFactAcctInfo().getFactAcct().getC_Activity_ID() == prevFactLine.getFactAcctInfo().getFactAcct().getC_Activity_ID()
+				&& factLine.getFactAcctInfo().getFactAcct().getC_BPartner_ID() == prevFactLine.getFactAcctInfo().getFactAcct().getC_BPartner_ID()
+				&& factLine.getFactAcctInfo().getFactAcct().getC_Campaign_ID() == prevFactLine.getFactAcctInfo().getFactAcct().getC_Campaign_ID()
+				&& factLine.getFactAcctInfo().getFactAcct().getC_Currency_ID() == prevFactLine.getFactAcctInfo().getFactAcct().getC_Currency_ID()
+				&& factLine.getFactAcctInfo().getFactAcct().getC_LocFrom_ID() == prevFactLine.getFactAcctInfo().getFactAcct().getC_LocFrom_ID()
+				&& factLine.getFactAcctInfo().getFactAcct().getC_LocTo_ID() == prevFactLine.getFactAcctInfo().getFactAcct().getC_LocTo_ID()
+				&& factLine.getFactAcctInfo().getFactAcct().getC_Period_ID() == prevFactLine.getFactAcctInfo().getFactAcct().getC_Period_ID()
+				&& factLine.getFactAcctInfo().getFactAcct().getC_Project_ID() == prevFactLine.getFactAcctInfo().getFactAcct().getC_Project_ID()
+				&& factLine.getFactAcctInfo().getFactAcct().getC_ProjectPhase_ID() == prevFactLine.getFactAcctInfo().getFactAcct().getC_ProjectPhase_ID()
+				&& factLine.getFactAcctInfo().getFactAcct().getC_ProjectTask_ID() == prevFactLine.getFactAcctInfo().getFactAcct().getC_ProjectTask_ID()
 				&& factLine.getC_SalesRegion_ID() == prevFactLine.getC_SalesRegion_ID()
-				&& factLine.getFactAcctInfo().getRecord().getC_SubAcct_ID() == prevFactLine.getFactAcctInfo().getRecord().getC_SubAcct_ID()
-				&& factLine.getFactAcctInfo().getRecord().getC_Tax_ID() == prevFactLine.getFactAcctInfo().getRecord().getC_Tax_ID()
-				&& factLine.getFactAcctInfo().getRecord().getC_UOM_ID() == prevFactLine.getFactAcctInfo().getRecord().getC_UOM_ID()
-				&& factLine.getFactAcctInfo().getRecord().getGL_Budget_ID() == prevFactLine.getFactAcctInfo().getRecord().getGL_Budget_ID()
-				&& factLine.getFactAcctInfo().getRecord().getGL_Category_ID() == prevFactLine.getFactAcctInfo().getRecord().getGL_Category_ID()
-				&& factLine.getFactAcctInfo().getRecord().getM_Locator_ID() == prevFactLine.getFactAcctInfo().getRecord().getM_Locator_ID()
-				&& factLine.getFactAcctInfo().getRecord().getM_Product_ID() == prevFactLine.getFactAcctInfo().getRecord().getM_Product_ID()
-				&& factLine.getFactAcctInfo().getRecord().getUserElement1_ID() == prevFactLine.getFactAcctInfo().getRecord().getUserElement1_ID()
-				&& factLine.getFactAcctInfo().getRecord().getUserElement2_ID() == prevFactLine.getFactAcctInfo().getRecord().getUserElement2_ID()
-				&& factLine.getFactAcctInfo().getRecord().getUser1_ID() == prevFactLine.getFactAcctInfo().getRecord().getUser1_ID()
-				&& factLine.getFactAcctInfo().getRecord().getUser2_ID() == prevFactLine.getFactAcctInfo().getRecord().getUser2_ID()
-				&& factLine.getFactAcctInfo().getRecord().getA_Asset_ID() == prevFactLine.getFactAcctInfo().getRecord().getA_Asset_ID()
-				&& factLine.getFactAcctInfo().getRecord().getC_Employee_ID() == prevFactLine.getFactAcctInfo().getRecord().getC_Employee_ID()
-				&& factLine.getFactAcctInfo().getRecord().getC_Charge_ID() == prevFactLine.getFactAcctInfo().getRecord().getC_Charge_ID()
-				&& factLine.getFactAcctInfo().getRecord().getC_CostCenter_ID() == prevFactLine.getFactAcctInfo().getRecord().getC_CostCenter_ID()
-				&& factLine.getFactAcctInfo().getRecord().getC_Department_ID() == prevFactLine.getFactAcctInfo().getRecord().getC_Department_ID()
-				&& factLine.getFactAcctInfo().getRecord().getM_Warehouse_ID() == prevFactLine.getFactAcctInfo().getRecord().getM_Warehouse_ID()
-				&& factLine.getFactAcctInfo().getRecord().getM_AttributeSetInstance_ID() == prevFactLine.getFactAcctInfo().getRecord().getM_AttributeSetInstance_ID())
-				&& areCustomFieldsEqual(factLine.getFactAcctInfo().getRecord().getCustomFieldText1(), prevFactLine.getFactAcctInfo().getRecord().getCustomFieldText1())
-				&& areCustomFieldsEqual(factLine.getFactAcctInfo().getRecord().getCustomFieldText2(), prevFactLine.getFactAcctInfo().getRecord().getCustomFieldText2())
-				&& areCustomFieldsEqual(factLine.getFactAcctInfo().getRecord().getCustomFieldText3(), prevFactLine.getFactAcctInfo().getRecord().getCustomFieldText3())
-				&& areCustomFieldsEqual(factLine.getFactAcctInfo().getRecord().getCustomFieldText4(), prevFactLine.getFactAcctInfo().getRecord().getCustomFieldText4());
+				&& factLine.getFactAcctInfo().getFactAcct().getC_SubAcct_ID() == prevFactLine.getFactAcctInfo().getFactAcct().getC_SubAcct_ID()
+				&& factLine.getFactAcctInfo().getFactAcct().getC_Tax_ID() == prevFactLine.getFactAcctInfo().getFactAcct().getC_Tax_ID()
+				&& factLine.getFactAcctInfo().getFactAcct().getC_UOM_ID() == prevFactLine.getFactAcctInfo().getFactAcct().getC_UOM_ID()
+				&& factLine.getFactAcctInfo().getFactAcct().getGL_Budget_ID() == prevFactLine.getFactAcctInfo().getFactAcct().getGL_Budget_ID()
+				&& factLine.getFactAcctInfo().getFactAcct().getGL_Category_ID() == prevFactLine.getFactAcctInfo().getFactAcct().getGL_Category_ID()
+				&& factLine.getFactAcctInfo().getFactAcct().getM_Locator_ID() == prevFactLine.getFactAcctInfo().getFactAcct().getM_Locator_ID()
+				&& factLine.getFactAcctInfo().getFactAcct().getM_Product_ID() == prevFactLine.getFactAcctInfo().getFactAcct().getM_Product_ID()
+				&& factLine.getFactAcctInfo().getFactAcct().getUserElement1_ID() == prevFactLine.getFactAcctInfo().getFactAcct().getUserElement1_ID()
+				&& factLine.getFactAcctInfo().getFactAcct().getUserElement2_ID() == prevFactLine.getFactAcctInfo().getFactAcct().getUserElement2_ID()
+				&& factLine.getFactAcctInfo().getFactAcct().getUser1_ID() == prevFactLine.getFactAcctInfo().getFactAcct().getUser1_ID()
+				&& factLine.getFactAcctInfo().getFactAcct().getUser2_ID() == prevFactLine.getFactAcctInfo().getFactAcct().getUser2_ID()
+				&& factLine.getFactAcctInfo().getFactAcct().getA_Asset_ID() == prevFactLine.getFactAcctInfo().getFactAcct().getA_Asset_ID()
+				&& factLine.getFactAcctInfo().getFactAcct().getC_Employee_ID() == prevFactLine.getFactAcctInfo().getFactAcct().getC_Employee_ID()
+				&& factLine.getFactAcctInfo().getFactAcct().getC_Charge_ID() == prevFactLine.getFactAcctInfo().getFactAcct().getC_Charge_ID()
+				&& factLine.getFactAcctInfo().getFactAcct().getC_CostCenter_ID() == prevFactLine.getFactAcctInfo().getFactAcct().getC_CostCenter_ID()
+				&& factLine.getFactAcctInfo().getFactAcct().getC_Department_ID() == prevFactLine.getFactAcctInfo().getFactAcct().getC_Department_ID()
+				&& factLine.getFactAcctInfo().getFactAcct().getM_Warehouse_ID() == prevFactLine.getFactAcctInfo().getFactAcct().getM_Warehouse_ID()
+				&& factLine.getFactAcctInfo().getFactAcct().getM_AttributeSetInstance_ID() == prevFactLine.getFactAcctInfo().getFactAcct().getM_AttributeSetInstance_ID())
+				&& areCustomFieldsEqual(factLine.getFactAcctInfo().getFactAcct().getCustomFieldText1(), prevFactLine.getFactAcctInfo().getFactAcct().getCustomFieldText1())
+				&& areCustomFieldsEqual(factLine.getFactAcctInfo().getFactAcct().getCustomFieldText2(), prevFactLine.getFactAcctInfo().getFactAcct().getCustomFieldText2())
+				&& areCustomFieldsEqual(factLine.getFactAcctInfo().getFactAcct().getCustomFieldText3(), prevFactLine.getFactAcctInfo().getFactAcct().getCustomFieldText3())
+				&& areCustomFieldsEqual(factLine.getFactAcctInfo().getFactAcct().getCustomFieldText4(), prevFactLine.getFactAcctInfo().getFactAcct().getCustomFieldText4());
 	}
 
 	/**
@@ -685,7 +685,7 @@ public class Doc_AllocationHdr extends Doc
 	 *	@param allocationSource allocation amount (incl discount, writeoff)
 	 *	@return Accounted Amt
 	 */
-	private BigDecimal createCashBasedAcct (IAcctSchemaInfo as, Fact fact, MInvoice invoice,
+	private BigDecimal createCashBasedAcct (IAcctSchemaModel as, Fact fact, MInvoice invoice,
 		BigDecimal allocationSource)
 	{
 		BigDecimal allocationAccounted = Env.ZERO;
@@ -727,7 +727,7 @@ public class Doc_AllocationHdr extends Doc
 	 *	@param C_Payment_ID payment
 	 *	@return acct
 	 */
-	private IAccountInfo getPaymentAcct (IAcctSchemaInfo as, int C_Payment_ID)
+	private IAccountModel getPaymentAcct (IAcctSchemaModel as, int C_Payment_ID)
 	{
 		setC_BankAccount_ID(0);
 		//	Doc.ACCTTYPE_UnallocatedCash (AR) or C_Prepayment
@@ -790,7 +790,7 @@ public class Doc_AllocationHdr extends Doc
 	 *	@param C_CashLine_ID
 	 *	@return acct
 	 */
-	private IAccountInfo getCashAcct (IAcctSchemaInfo as, int C_CashLine_ID)
+	private IAccountModel getCashAcct (IAcctSchemaModel as, int C_CashLine_ID)
 	{
 		String sql = "SELECT c.C_CashBook_ID "
 				+ "FROM C_Cash c, C_CashLine cl "
@@ -824,9 +824,9 @@ public class Doc_AllocationHdr extends Doc
 	 *	@param WriteOffAccoint write off acct
 	 *	@return true if created
 	 */
-	private boolean createTaxCorrection (IAcctSchemaInfo as, Fact fact,
+	private boolean createTaxCorrection (IAcctSchemaModel as, Fact fact,
 		DocLine_Allocation line,
-		IAccountInfo DiscountAccount, IAccountInfo WriteOffAccoint, boolean isSOTrx)
+		IAccountModel DiscountAccount, IAccountModel WriteOffAccoint, boolean isSOTrx)
 	{
 		if (log.isLoggable(Level.INFO)) log.info (line.toString());
 		BigDecimal discount = Env.ZERO;
@@ -852,7 +852,7 @@ public class Doc_AllocationHdr extends Doc
 			pstmt = DB.prepareStatement(sql, getTrxName());
 			pstmt.setInt(1, MInvoice.Table_ID);
 			pstmt.setInt(2, line.getC_Invoice_ID());
-			pstmt.setInt(3, as.getRecord().getC_AcctSchema_ID());
+			pstmt.setInt(3, as.getAcctSchema().getC_AcctSchema_ID());
 			rs = pstmt.executeQuery();
 			while (rs.next())
 				tax.addInvoiceFact (AcctInfoServices.getFactAcctInfoService().create(getCtx(), rs, fact.get_TrxName()));
@@ -891,7 +891,7 @@ public class Doc_AllocationHdr extends Doc
 	 *	@param allocationAccounted acct amt
 	 *	@return Error Message or null if OK
 	 */
-	private String createInvoiceGainLoss (DocLine line, IAcctSchemaInfo as, Fact fact, IAccountInfo acct,
+	private String createInvoiceGainLoss (DocLine line, IAcctSchemaModel as, Fact fact, IAccountModel acct,
 		MInvoice invoice, BigDecimal allocationSource, BigDecimal allocationAccounted)
 	{
 		BigDecimal invoiceSource = null;
@@ -907,7 +907,7 @@ public class Doc_AllocationHdr extends Doc
 
 		// For Invoice
 		List<Object> valuesInv = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
-				MInvoice.Table_ID, invoice.getC_Invoice_ID(), as.getRecord().getC_AcctSchema_ID(), acct.getRecord().getAccount_ID());
+				MInvoice.Table_ID, invoice.getC_Invoice_ID(), as.getAcctSchema().getC_AcctSchema_ID(), acct.getCombination().getAccount_ID());
 		if (valuesInv != null && valuesInv.size() >= 4) {
 			if (invoice.getReversal_ID() == 0 || invoice.get_ID() < invoice.getReversal_ID())
 			{
@@ -953,7 +953,7 @@ public class Doc_AllocationHdr extends Doc
 		{
 			BigDecimal allocationAccounted0 = MConversionRate.convert(getCtx(),
 					allocationSource, getC_Currency_ID(),
-					as.getRecord().getC_Currency_ID(), invoice.getDateAcct(),
+					as.getAcctSchema().getC_Currency_ID(), invoice.getDateAcct(),
 					invoice.getC_ConversionType_ID(), invoice.getAD_Client_ID(), invoice.getAD_Org_ID());
 			acctDifference = allocationAccounted0.abs().subtract(allocationAccounted.abs());
 			//	ignore Tolerance
@@ -974,8 +974,8 @@ public class Doc_AllocationHdr extends Doc
 			return null;
 		}
 
-		IAccountInfo gain = AcctInfoServices.getAccountInfoService().get (as.getPO().getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getRealizedGain_Acct());
-		IAccountInfo loss = AcctInfoServices.getAccountInfoService().get (as.getPO().getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getRealizedLoss_Acct());
+		IAccountModel gain = AcctInfoServices.getAccountInfoService().get (as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedGain_Acct());
+		IAccountModel loss = AcctInfoServices.getAccountInfoService().get (as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedLoss_Acct());
 		//
 		// If the allocation is created as a result of the invoice reversal, 
 		// do not use RLG/RLL, as this will cause the AP balance to not be zero
@@ -990,19 +990,19 @@ public class Doc_AllocationHdr extends Doc
 		{
 			if (hasDebitTradeAmt(invoice))
 			{
-				FactLine fl = fact.createLine (line, loss, gain, as.getRecord().getC_Currency_ID(), acctDifference);
-				fl.getFactAcctInfo().getRecord().setDescription(description.toString());
+				FactLine fl = fact.createLine (line, loss, gain, as.getAcctSchema().getC_Currency_ID(), acctDifference);
+				fl.getFactAcctInfo().getFactAcct().setDescription(description.toString());
 				if (!isReversedInvoice)
 					invGainLossFactLines.add(fl);
-				fl = fact.createLine (line, acct, as.getRecord().getC_Currency_ID(), acctDifference.negate());
-				fl.getFactAcctInfo().getRecord().setDescription(description.toString());
+				fl = fact.createLine (line, acct, as.getAcctSchema().getC_Currency_ID(), acctDifference.negate());
+				fl.getFactAcctInfo().getFactAcct().setDescription(description.toString());
 			}
 			else
 			{
-				FactLine fl = fact.createLine (line, acct, as.getRecord().getC_Currency_ID(), acctDifference);
-				fl.getFactAcctInfo().getRecord().setDescription(description.toString());
-				fl = fact.createLine (line, loss, gain, as.getRecord().getC_Currency_ID(), acctDifference.negate());
-				fl.getFactAcctInfo().getRecord().setDescription(description.toString());
+				FactLine fl = fact.createLine (line, acct, as.getAcctSchema().getC_Currency_ID(), acctDifference);
+				fl.getFactAcctInfo().getFactAcct().setDescription(description.toString());
+				fl = fact.createLine (line, loss, gain, as.getAcctSchema().getC_Currency_ID(), acctDifference.negate());
+				fl.getFactAcctInfo().getFactAcct().setDescription(description.toString());
 				if (!isReversedInvoice)
 					invGainLossFactLines.add(fl);
 			}
@@ -1011,21 +1011,21 @@ public class Doc_AllocationHdr extends Doc
 		{
 			if (hasDebitTradeAmt(invoice))
 			{
-				FactLine fl = fact.createLine (line, acct, as.getRecord().getC_Currency_ID(), acctDifference);
-				fl.getFactAcctInfo().getRecord().setDescription(description.toString());
-				fl = fact.createLine (line, gain, loss, as.getRecord().getC_Currency_ID(), acctDifference.negate());
-				fl.getFactAcctInfo().getRecord().setDescription(description.toString());
+				FactLine fl = fact.createLine (line, acct, as.getAcctSchema().getC_Currency_ID(), acctDifference);
+				fl.getFactAcctInfo().getFactAcct().setDescription(description.toString());
+				fl = fact.createLine (line, gain, loss, as.getAcctSchema().getC_Currency_ID(), acctDifference.negate());
+				fl.getFactAcctInfo().getFactAcct().setDescription(description.toString());
 				if (!isReversedInvoice)
 					invGainLossFactLines.add(fl);
 			}
 			else
 			{
-				FactLine fl = fact.createLine (line, gain, loss, as.getRecord().getC_Currency_ID(), acctDifference);
-				fl.getFactAcctInfo().getRecord().setDescription(description.toString());
+				FactLine fl = fact.createLine (line, gain, loss, as.getAcctSchema().getC_Currency_ID(), acctDifference);
+				fl.getFactAcctInfo().getFactAcct().setDescription(description.toString());
 				if (!isReversedInvoice)
 					invGainLossFactLines.add(fl);
-				fl = fact.createLine (line, acct, as.getRecord().getC_Currency_ID(), acctDifference.negate());
-				fl.getFactAcctInfo().getRecord().setDescription(description.toString());
+				fl = fact.createLine (line, acct, as.getAcctSchema().getC_Currency_ID(), acctDifference.negate());
+				fl.getFactAcctInfo().getFactAcct().setDescription(description.toString());
 			}
 		}
 		return null;
@@ -1044,7 +1044,7 @@ public class Doc_AllocationHdr extends Doc
 	 *	@param allocationAccounted acct amt
 	 *	@return Error Message or null if OK
 	 */
-	private String createPaymentGainLoss (DocLine line, IAcctSchemaInfo as, Fact fact, IAccountInfo acct,
+	private String createPaymentGainLoss (DocLine line, IAcctSchemaModel as, Fact fact, IAccountModel acct,
 		MPayment payment, BigDecimal allocationSource, BigDecimal allocationAccounted)
 	{
 		BigDecimal paymentSource = null;
@@ -1060,7 +1060,7 @@ public class Doc_AllocationHdr extends Doc
 
 		// For Payment
 		List<Object> valuesPay = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
-				MPayment.Table_ID, payment.getC_Payment_ID(), as.getRecord().getC_AcctSchema_ID(), acct.getRecord().getAccount_ID());
+				MPayment.Table_ID, payment.getC_Payment_ID(), as.getAcctSchema().getC_AcctSchema_ID(), acct.getCombination().getAccount_ID());
 		if (valuesPay != null && valuesPay.size() >= 4) {
 			paymentSource = (BigDecimal) valuesPay.get(0); // AmtSourceDr
 			paymentAccounted = (BigDecimal) valuesPay.get(1); // AmtAcctDr
@@ -1093,7 +1093,7 @@ public class Doc_AllocationHdr extends Doc
 		{
 			BigDecimal allocationAccounted0 = MConversionRate.convert(getCtx(),
 					allocationSource, getC_Currency_ID(),
-					as.getRecord().getC_Currency_ID(), payment.getDateAcct(),
+					as.getAcctSchema().getC_Currency_ID(), payment.getDateAcct(),
 					payment.getC_ConversionType_ID(), payment.getAD_Client_ID(), payment.getAD_Org_ID());
 			acctDifference = allocationAccounted.abs().subtract(allocationAccounted0.abs());
 			//	ignore Tolerance
@@ -1115,23 +1115,23 @@ public class Doc_AllocationHdr extends Doc
 			return null;
 		}
 
-		IAccountInfo gain = AcctInfoServices.getAccountInfoService().get (as.getPO().getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getRealizedGain_Acct());
-		IAccountInfo loss = AcctInfoServices.getAccountInfoService().get (as.getPO().getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getRealizedLoss_Acct());
+		IAccountModel gain = AcctInfoServices.getAccountInfoService().get (as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedGain_Acct());
+		IAccountModel loss = AcctInfoServices.getAccountInfoService().get (as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedLoss_Acct());
 		//
 		if ((payment.isReceipt() && payment.getPayAmt().signum() >= 0) || (!payment.isReceipt() && payment.getPayAmt().signum() < 0))
 		{
-			FactLine fl = fact.createLine (line, acct, as.getRecord().getC_Currency_ID(), acctDifference.negate());
-			fl.getFactAcctInfo().getRecord().setDescription(description.toString());
-			fl = fact.createLine (line, loss, gain, as.getRecord().getC_Currency_ID(), acctDifference);
-			fl.getFactAcctInfo().getRecord().setDescription(description.toString());
+			FactLine fl = fact.createLine (line, acct, as.getAcctSchema().getC_Currency_ID(), acctDifference.negate());
+			fl.getFactAcctInfo().getFactAcct().setDescription(description.toString());
+			fl = fact.createLine (line, loss, gain, as.getAcctSchema().getC_Currency_ID(), acctDifference);
+			fl.getFactAcctInfo().getFactAcct().setDescription(description.toString());
 			payGainLossFactLines.add(fl);
 		}
 		else
 		{
-			FactLine fl = fact.createLine (line, acct, as.getRecord().getC_Currency_ID(), acctDifference);
-			fl.getFactAcctInfo().getRecord().setDescription(description.toString());
-			fl = fact.createLine (line, loss, gain, as.getRecord().getC_Currency_ID(), acctDifference.negate());
-			fl.getFactAcctInfo().getRecord().setDescription(description.toString());
+			FactLine fl = fact.createLine (line, acct, as.getAcctSchema().getC_Currency_ID(), acctDifference);
+			fl.getFactAcctInfo().getFactAcct().setDescription(description.toString());
+			fl = fact.createLine (line, loss, gain, as.getAcctSchema().getC_Currency_ID(), acctDifference.negate());
+			fl.getFactAcctInfo().getFactAcct().setDescription(description.toString());
 			payGainLossFactLines.add(fl);
 		}
 		return null;
@@ -1146,7 +1146,7 @@ public class Doc_AllocationHdr extends Doc
 	 *	@param acct account
 	 *	@return Error Message or null if OK
 	 */
-	private String createInvoiceRoundingCorrection (IAcctSchemaInfo as, Fact fact, IAccountInfo acctAr, IAccountInfo acctAp) 
+	private String createInvoiceRoundingCorrection (IAcctSchemaModel as, Fact fact, IAccountModel acctAr, IAccountModel acctAp) 
 	{
 		if (isReversedInvoice())
 			return null;
@@ -1181,10 +1181,10 @@ public class Doc_AllocationHdr extends Doc
 				.append(" AND C_AcctSchema_ID=?")
 				.append(" AND Account_ID=?")
 				.append(" AND PostingType='A'");
-			IAccountInfo acct = invoice.isSOTrx() ? acctAr : acctAp;
+			IAccountModel acct = invoice.isSOTrx() ? acctAr : acctAp;
 			// For Invoice
 			List<Object> valuesInv = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
-					MInvoice.Table_ID, invoice.getC_Invoice_ID(), as.getRecord().getC_AcctSchema_ID(), acct.getRecord().getAccount_ID());
+					MInvoice.Table_ID, invoice.getC_Invoice_ID(), as.getAcctSchema().getC_AcctSchema_ID(), acct.getCombination().getAccount_ID());
 			if (valuesInv != null && valuesInv.size() >= 4) {
 				BigDecimal invoiceSource = null;
 				BigDecimal invoiceAccounted = null;
@@ -1213,8 +1213,8 @@ public class Doc_AllocationHdr extends Doc
 			}
 		}
 		
-		IAccountInfo gain = AcctInfoServices.getAccountInfoService().get (as.getPO().getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getRealizedGain_Acct());
-		IAccountInfo loss = AcctInfoServices.getAccountInfoService().get (as.getPO().getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getRealizedLoss_Acct());
+		IAccountModel gain = AcctInfoServices.getAccountInfoService().get (as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedGain_Acct());
+		IAccountModel loss = AcctInfoServices.getAccountInfoService().get (as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedLoss_Acct());
 		
 		Map<Integer, BigDecimal> htTotalAmtSourceDr = new HashMap<>();
 		Map<Integer, BigDecimal> htTotalAmtAcctDr = new HashMap<>();
@@ -1223,14 +1223,14 @@ public class Doc_AllocationHdr extends Doc
 		FactLine[] factlines = fact.getLines();
 		for (FactLine factLine : factlines)
 		{
-			if (factLine.getFactAcctInfo().getRecord().getLine_ID() > 0)
+			if (factLine.getFactAcctInfo().getFactAcct().getLine_ID() > 0)
 			{
-				MAllocationLine allocationLine = new MAllocationLine(getCtx(), factLine.getFactAcctInfo().getRecord().getLine_ID(), getTrxName());
+				MAllocationLine allocationLine = new MAllocationLine(getCtx(), factLine.getFactAcctInfo().getFactAcct().getLine_ID(), getTrxName());
 				if (allocationLine.getC_Invoice_ID() > 0)
 				{
 					MInvoice invoice = invList.get(allocationLine.getC_Invoice_ID());
-					IAccountInfo acct = invoice.isSOTrx() ? acctAr : acctAp;
-					if (factLine.getFactAcctInfo().getRecord().getAccount_ID() == acct.getRecord().getAccount_ID())
+					IAccountModel acct = invoice.isSOTrx() ? acctAr : acctAp;
+					if (factLine.getFactAcctInfo().getFactAcct().getAccount_ID() == acct.getCombination().getAccount_ID())
 					{
 						BigDecimal totalAmtSourceDr = htTotalAmtSourceDr.get(allocationLine.getC_Invoice_ID());
 						if (totalAmtSourceDr == null)
@@ -1245,17 +1245,17 @@ public class Doc_AllocationHdr extends Doc
 						if (totalAmtAcctCr == null)
 							totalAmtAcctCr = Env.ZERO;
 						
-						totalAmtSourceDr = totalAmtSourceDr.add(factLine.getFactAcctInfo().getRecord().getAmtSourceDr());
-						totalAmtAcctDr = totalAmtAcctDr.add(factLine.getFactAcctInfo().getRecord().getAmtAcctDr());
-						totalAmtSourceCr = totalAmtSourceCr.add(factLine.getFactAcctInfo().getRecord().getAmtSourceCr());
-						totalAmtAcctCr = totalAmtAcctCr.add(factLine.getFactAcctInfo().getRecord().getAmtAcctCr());
+						totalAmtSourceDr = totalAmtSourceDr.add(factLine.getFactAcctInfo().getFactAcct().getAmtSourceDr());
+						totalAmtAcctDr = totalAmtAcctDr.add(factLine.getFactAcctInfo().getFactAcct().getAmtAcctDr());
+						totalAmtSourceCr = totalAmtSourceCr.add(factLine.getFactAcctInfo().getFactAcct().getAmtSourceCr());
+						totalAmtAcctCr = totalAmtAcctCr.add(factLine.getFactAcctInfo().getFactAcct().getAmtAcctCr());
 						
 						htTotalAmtSourceDr.put(allocationLine.getC_Invoice_ID(), totalAmtSourceDr);
 						htTotalAmtAcctDr.put(allocationLine.getC_Invoice_ID(), totalAmtAcctDr);
 						htTotalAmtSourceCr.put(allocationLine.getC_Invoice_ID(), totalAmtSourceCr);
 						htTotalAmtAcctCr.put(allocationLine.getC_Invoice_ID(), totalAmtAcctCr);
 					}
-					else if (factLine.getFactAcctInfo().getRecord().getAccount_ID() == gain.getRecord().getAccount_ID() || factLine.getFactAcctInfo().getRecord().getAccount_ID() == loss.getRecord().getAccount_ID())
+					else if (factLine.getFactAcctInfo().getFactAcct().getAccount_ID() == gain.getCombination().getAccount_ID() || factLine.getFactAcctInfo().getFactAcct().getAccount_ID() == loss.getCombination().getAccount_ID())
 					{
 						if (!invGainLossFactLines.contains(factLine))
 							continue;
@@ -1267,8 +1267,8 @@ public class Doc_AllocationHdr extends Doc
 						if (totalAmtSourceCr == null)
 							totalAmtSourceCr = Env.ZERO;
 						
-						totalAmtSourceDr = totalAmtSourceDr.subtract(factLine.getFactAcctInfo().getRecord().getAmtSourceCr());
-						totalAmtSourceCr = totalAmtSourceCr.subtract(factLine.getFactAcctInfo().getRecord().getAmtSourceDr());
+						totalAmtSourceDr = totalAmtSourceDr.subtract(factLine.getFactAcctInfo().getFactAcct().getAmtSourceCr());
+						totalAmtSourceCr = totalAmtSourceCr.subtract(factLine.getFactAcctInfo().getFactAcct().getAmtSourceDr());
 						
 						htTotalAmtSourceDr.put(allocationLine.getC_Invoice_ID(), totalAmtSourceDr);
 						htTotalAmtSourceCr.put(allocationLine.getC_Invoice_ID(), totalAmtSourceCr);
@@ -1337,10 +1337,10 @@ public class Doc_AllocationHdr extends Doc
 					.append(" AND Account_ID=?")
 					.append(" AND Line_ID IN (SELECT C_AllocationLine_ID FROM C_AllocationLine WHERE C_AllocationHdr_ID=? AND C_Invoice_ID=?)");
 				
-				IAccountInfo acct = invoice.isSOTrx() ? acctAr : acctAp;
+				IAccountModel acct = invoice.isSOTrx() ? acctAr : acctAp;
 				// For Allocation
 				List<Object> valuesAlloc = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
-						MAllocationHdr.Table_ID, alloc.get_ID(), as.getRecord().getC_AcctSchema_ID(), acct.getRecord().getAccount_ID(), alloc.get_ID(), invoice.getC_Invoice_ID());
+						MAllocationHdr.Table_ID, alloc.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), acct.getCombination().getAccount_ID(), alloc.get_ID(), invoice.getC_Invoice_ID());
 				if (valuesAlloc != null && valuesAlloc.size() >= 4) {
 					totalAmtSourceDr = (BigDecimal) valuesAlloc.get(0);
 					if (totalAmtSourceDr == null)
@@ -1394,8 +1394,8 @@ public class Doc_AllocationHdr extends Doc
 				
 				// For Allocation
 				valuesAlloc = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
-						MAllocationHdr.Table_ID, alloc.get_ID(), as.getRecord().getC_AcctSchema_ID(), 
-						gain.getRecord().getAccount_ID(), loss.getRecord().getAccount_ID(), as.getCurrencyBalancing_AcctInfo().getRecord().getAccount_ID(),
+						MAllocationHdr.Table_ID, alloc.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), 
+						gain.getCombination().getAccount_ID(), loss.getCombination().getAccount_ID(), as.getCurrencyBalancing_AcctModel().getCombination().getAccount_ID(),
 						alloc.get_ID(), invoice.getC_Invoice_ID());
 				if (valuesAlloc != null && valuesAlloc.size() >= 4) {
 					totalAmtSourceDr = (BigDecimal) valuesAlloc.get(0);
@@ -1421,7 +1421,7 @@ public class Doc_AllocationHdr extends Doc
 		
 		for (MInvoice invoice : invList.values())
 		{
-			IAccountInfo acct = invoice.isSOTrx() ? acctAr : acctAp;
+			IAccountModel acct = invoice.isSOTrx() ? acctAr : acctAp;
 			BigDecimal invSource = htInvSource.get(invoice.getC_Invoice_ID());
 			if (invSource == null)
 				invSource = Env.ZERO;
@@ -1460,32 +1460,32 @@ public class Doc_AllocationHdr extends Doc
 			{
 				if (hasDebitTradeAmt(invoice))
 				{
-					FactLine fl = fact.createLine (null, acct, as.getRecord().getC_Currency_ID(), acctDifference);
-					fl.getFactAcctInfo().getRecord().setDescription(description.toString());
-					fl.getFactAcctInfo().getRecord().setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
+					FactLine fl = fact.createLine (null, acct, as.getAcctSchema().getC_Currency_ID(), acctDifference);
+					fl.getFactAcctInfo().getFactAcct().setDescription(description.toString());
+					fl.getFactAcctInfo().getFactAcct().setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
 					if (!fact.isAcctBalanced())
 					{
-						if (as.isCurrencyBalancing() && as.getRecord().getC_Currency_ID() != invoice.getC_Currency_ID())
-							fl = fact.createLine (null, as.getCurrencyBalancing_AcctInfo(), as.getRecord().getC_Currency_ID(), acctDifference.negate());
+						if (as.isCurrencyBalancing() && as.getAcctSchema().getC_Currency_ID() != invoice.getC_Currency_ID())
+							fl = fact.createLine (null, as.getCurrencyBalancing_AcctModel(), as.getAcctSchema().getC_Currency_ID(), acctDifference.negate());
 						else 
-							fl = fact.createLine (null, loss, gain, as.getRecord().getC_Currency_ID(), acctDifference.negate());	
-						fl.getFactAcctInfo().getRecord().setDescription(description.toString());
-						fl.getFactAcctInfo().getRecord().setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
+							fl = fact.createLine (null, loss, gain, as.getAcctSchema().getC_Currency_ID(), acctDifference.negate());	
+						fl.getFactAcctInfo().getFactAcct().setDescription(description.toString());
+						fl.getFactAcctInfo().getFactAcct().setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
 					}				
 				}
 				else
 				{
-					FactLine fl = fact.createLine (null, acct, as.getRecord().getC_Currency_ID(), acctDifference.negate());
-					fl.getFactAcctInfo().getRecord().setDescription(description.toString());
-					fl.getFactAcctInfo().getRecord().setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
+					FactLine fl = fact.createLine (null, acct, as.getAcctSchema().getC_Currency_ID(), acctDifference.negate());
+					fl.getFactAcctInfo().getFactAcct().setDescription(description.toString());
+					fl.getFactAcctInfo().getFactAcct().setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
 					if (!fact.isAcctBalanced())
 					{
-						if (as.isCurrencyBalancing() && as.getRecord().getC_Currency_ID() != invoice.getC_Currency_ID())
-							fl = fact.createLine (null, as.getCurrencyBalancing_AcctInfo(), as.getRecord().getC_Currency_ID(), acctDifference);
+						if (as.isCurrencyBalancing() && as.getAcctSchema().getC_Currency_ID() != invoice.getC_Currency_ID())
+							fl = fact.createLine (null, as.getCurrencyBalancing_AcctModel(), as.getAcctSchema().getC_Currency_ID(), acctDifference);
 						else
-							fl = fact.createLine (null, loss, gain, as.getRecord().getC_Currency_ID(), acctDifference);
-						fl.getFactAcctInfo().getRecord().setDescription(description.toString());
-						fl.getFactAcctInfo().getRecord().setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
+							fl = fact.createLine (null, loss, gain, as.getAcctSchema().getC_Currency_ID(), acctDifference);
+						fl.getFactAcctInfo().getFactAcct().setDescription(description.toString());
+						fl.getFactAcctInfo().getFactAcct().setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
 					}
 				}
 			}
@@ -1493,32 +1493,32 @@ public class Doc_AllocationHdr extends Doc
 			{
 				if (hasDebitTradeAmt(invoice))
 				{
-					FactLine fl = fact.createLine (null, acct, as.getRecord().getC_Currency_ID(), acctDifference.negate());
-					fl.getFactAcctInfo().getRecord().setDescription(description.toString());
-					fl.getFactAcctInfo().getRecord().setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
+					FactLine fl = fact.createLine (null, acct, as.getAcctSchema().getC_Currency_ID(), acctDifference.negate());
+					fl.getFactAcctInfo().getFactAcct().setDescription(description.toString());
+					fl.getFactAcctInfo().getFactAcct().setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
 					if (!fact.isAcctBalanced())
 					{
-						if (as.isCurrencyBalancing() && as.getRecord().getC_Currency_ID() != invoice.getC_Currency_ID())
-							fl = fact.createLine (null, as.getCurrencyBalancing_AcctInfo(), as.getRecord().getC_Currency_ID(), acctDifference);
+						if (as.isCurrencyBalancing() && as.getAcctSchema().getC_Currency_ID() != invoice.getC_Currency_ID())
+							fl = fact.createLine (null, as.getCurrencyBalancing_AcctModel(), as.getAcctSchema().getC_Currency_ID(), acctDifference);
 						else
-							fl = fact.createLine (null, gain, loss, as.getRecord().getC_Currency_ID(), acctDifference);
-						fl.getFactAcctInfo().getRecord().setDescription(description.toString());
-						fl.getFactAcctInfo().getRecord().setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
+							fl = fact.createLine (null, gain, loss, as.getAcctSchema().getC_Currency_ID(), acctDifference);
+						fl.getFactAcctInfo().getFactAcct().setDescription(description.toString());
+						fl.getFactAcctInfo().getFactAcct().setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
 					}
 				}
 				else
 				{
-					FactLine fl = fact.createLine (null, acct, as.getRecord().getC_Currency_ID(), acctDifference);
-					fl.getFactAcctInfo().getRecord().setDescription(description.toString());
-					fl.getFactAcctInfo().getRecord().setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
+					FactLine fl = fact.createLine (null, acct, as.getAcctSchema().getC_Currency_ID(), acctDifference);
+					fl.getFactAcctInfo().getFactAcct().setDescription(description.toString());
+					fl.getFactAcctInfo().getFactAcct().setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
 					if (!fact.isAcctBalanced())
 					{
-						if (as.isCurrencyBalancing() && as.getRecord().getC_Currency_ID() != invoice.getC_Currency_ID())
-							fl = fact.createLine (null, as.getCurrencyBalancing_AcctInfo(), as.getRecord().getC_Currency_ID(), acctDifference.negate());
+						if (as.isCurrencyBalancing() && as.getAcctSchema().getC_Currency_ID() != invoice.getC_Currency_ID())
+							fl = fact.createLine (null, as.getCurrencyBalancing_AcctModel(), as.getAcctSchema().getC_Currency_ID(), acctDifference.negate());
 						else 
-							fl = fact.createLine (null, gain, loss, as.getRecord().getC_Currency_ID(), acctDifference.negate());	
-						fl.getFactAcctInfo().getRecord().setDescription(description.toString());
-						fl.getFactAcctInfo().getRecord().setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
+							fl = fact.createLine (null, gain, loss, as.getAcctSchema().getC_Currency_ID(), acctDifference.negate());	
+						fl.getFactAcctInfo().getFactAcct().setDescription(description.toString());
+						fl.getFactAcctInfo().getFactAcct().setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
 					}
 				}
 			}
@@ -1534,7 +1534,7 @@ public class Doc_AllocationHdr extends Doc
 	 *	@param fact fact
 	 *	@return Error Message or null if OK
 	 */
-	private String createPaymentRoundingCorrection (IAcctSchemaInfo as, Fact fact)
+	private String createPaymentRoundingCorrection (IAcctSchemaModel as, Fact fact)
 	{	
 		List<MPayment> payList = new ArrayList<MPayment>();
 		Map<Integer, Integer> htPayAllocLine = new HashMap<>();
@@ -1551,7 +1551,7 @@ public class Doc_AllocationHdr extends Doc
 			}
 		}
 		
-		Map<Integer, IAccountInfo> htPayAcct = new HashMap<>();
+		Map<Integer, IAccountModel> htPayAcct = new HashMap<>();
 		Map<Integer, BigDecimal> htPaySource = new HashMap<>();
 		Map<Integer, BigDecimal> htPayAccounted = new HashMap<>();
 		for (MPayment payment : payList)
@@ -1568,7 +1568,7 @@ public class Doc_AllocationHdr extends Doc
 
 			// For Payment
 			List<Object> valuesPay = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
-					MPayment.Table_ID, payment.getC_Payment_ID(), as.getRecord().getC_AcctSchema_ID(), htPayAcct.get(payment.getC_Payment_ID()).getRecord().getAccount_ID());
+					MPayment.Table_ID, payment.getC_Payment_ID(), as.getAcctSchema().getC_AcctSchema_ID(), htPayAcct.get(payment.getC_Payment_ID()).getCombination().getAccount_ID());
 			if (valuesPay != null && valuesPay.size() >= 4) {
 				BigDecimal paymentSource = (BigDecimal) valuesPay.get(0); // AmtSourceDr
 				BigDecimal paymentAccounted = (BigDecimal) valuesPay.get(1); // AmtAcctDr
@@ -1583,8 +1583,8 @@ public class Doc_AllocationHdr extends Doc
 			}
 		}
 		
-		IAccountInfo gain = AcctInfoServices.getAccountInfoService().get (as.getPO().getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getRealizedGain_Acct());
-		IAccountInfo loss = AcctInfoServices.getAccountInfoService().get (as.getPO().getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getRealizedLoss_Acct());
+		IAccountModel gain = AcctInfoServices.getAccountInfoService().get (as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedGain_Acct());
+		IAccountModel loss = AcctInfoServices.getAccountInfoService().get (as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedLoss_Acct());
 		
 		Map<Integer, BigDecimal> htTotalAmtSourceDr = new HashMap<>();
 		Map<Integer, BigDecimal> htTotalAmtAcctDr = new HashMap<>();
@@ -1593,12 +1593,12 @@ public class Doc_AllocationHdr extends Doc
 		FactLine[] factlines = fact.getLines();
 		for (FactLine factLine : factlines)
 		{
-			if (factLine.getFactAcctInfo().getRecord().getLine_ID() > 0)
+			if (factLine.getFactAcctInfo().getFactAcct().getLine_ID() > 0)
 			{
-				MAllocationLine allocationLine = new MAllocationLine(getCtx(), factLine.getFactAcctInfo().getRecord().getLine_ID(), getTrxName());
+				MAllocationLine allocationLine = new MAllocationLine(getCtx(), factLine.getFactAcctInfo().getFactAcct().getLine_ID(), getTrxName());
 				if (allocationLine.getC_Payment_ID() > 0)
 				{
-					if (factLine.getFactAcctInfo().getRecord().getAccount_ID() == htPayAcct.get(allocationLine.getC_Payment_ID()).getRecord().getAccount_ID())
+					if (factLine.getFactAcctInfo().getFactAcct().getAccount_ID() == htPayAcct.get(allocationLine.getC_Payment_ID()).getCombination().getAccount_ID())
 					{
 						BigDecimal totalAmtSourceDr = htTotalAmtSourceDr.get(allocationLine.getC_Payment_ID());
 						if (totalAmtSourceDr == null)
@@ -1613,17 +1613,17 @@ public class Doc_AllocationHdr extends Doc
 						if (totalAmtAcctCr == null)
 							totalAmtAcctCr = Env.ZERO;
 						
-						totalAmtSourceDr = totalAmtSourceDr.add(factLine.getFactAcctInfo().getRecord().getAmtSourceDr());
-						totalAmtAcctDr = totalAmtAcctDr.add(factLine.getFactAcctInfo().getRecord().getAmtAcctDr());
-						totalAmtSourceCr = totalAmtSourceCr.add(factLine.getFactAcctInfo().getRecord().getAmtSourceCr());
-						totalAmtAcctCr = totalAmtAcctCr.add(factLine.getFactAcctInfo().getRecord().getAmtAcctCr());
+						totalAmtSourceDr = totalAmtSourceDr.add(factLine.getFactAcctInfo().getFactAcct().getAmtSourceDr());
+						totalAmtAcctDr = totalAmtAcctDr.add(factLine.getFactAcctInfo().getFactAcct().getAmtAcctDr());
+						totalAmtSourceCr = totalAmtSourceCr.add(factLine.getFactAcctInfo().getFactAcct().getAmtSourceCr());
+						totalAmtAcctCr = totalAmtAcctCr.add(factLine.getFactAcctInfo().getFactAcct().getAmtAcctCr());
 						
 						htTotalAmtSourceDr.put(allocationLine.getC_Payment_ID(), totalAmtSourceDr);
 						htTotalAmtAcctDr.put(allocationLine.getC_Payment_ID(), totalAmtAcctDr);
 						htTotalAmtSourceCr.put(allocationLine.getC_Payment_ID(), totalAmtSourceCr);
 						htTotalAmtAcctCr.put(allocationLine.getC_Payment_ID(), totalAmtAcctCr);
 					}
-					else if (factLine.getFactAcctInfo().getRecord().getAccount_ID() == gain.getRecord().getAccount_ID() || factLine.getFactAcctInfo().getRecord().getAccount_ID() == loss.getRecord().getAccount_ID())
+					else if (factLine.getFactAcctInfo().getFactAcct().getAccount_ID() == gain.getCombination().getAccount_ID() || factLine.getFactAcctInfo().getFactAcct().getAccount_ID() == loss.getCombination().getAccount_ID())
 					{
 						if (!payGainLossFactLines.contains(factLine))
 							continue;
@@ -1635,8 +1635,8 @@ public class Doc_AllocationHdr extends Doc
 						if (totalAmtSourceCr == null)
 							totalAmtSourceCr = Env.ZERO;
 						
-						totalAmtSourceDr = totalAmtSourceDr.subtract(factLine.getFactAcctInfo().getRecord().getAmtSourceCr());
-						totalAmtSourceCr = totalAmtSourceCr.subtract(factLine.getFactAcctInfo().getRecord().getAmtSourceDr());
+						totalAmtSourceDr = totalAmtSourceDr.subtract(factLine.getFactAcctInfo().getFactAcct().getAmtSourceCr());
+						totalAmtSourceCr = totalAmtSourceCr.subtract(factLine.getFactAcctInfo().getFactAcct().getAmtSourceDr());
 						
 						htTotalAmtSourceDr.put(allocationLine.getC_Payment_ID(), totalAmtSourceDr);
 						htTotalAmtSourceCr.put(allocationLine.getC_Payment_ID(), totalAmtSourceCr);
@@ -1707,7 +1707,7 @@ public class Doc_AllocationHdr extends Doc
 				
 				// For Allocation
 				List<Object> valuesAlloc = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
-						MAllocationHdr.Table_ID, alloc.get_ID(), as.getRecord().getC_AcctSchema_ID(), htPayAcct.get(payment.getC_Payment_ID()).getRecord().getAccount_ID(), alloc.get_ID(), payment.getC_Payment_ID());
+						MAllocationHdr.Table_ID, alloc.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), htPayAcct.get(payment.getC_Payment_ID()).getCombination().getAccount_ID(), alloc.get_ID(), payment.getC_Payment_ID());
 				if (valuesAlloc != null && valuesAlloc.size() >= 4) {
 					totalAmtSourceDr = (BigDecimal) valuesAlloc.get(0);
 					if (totalAmtSourceDr == null)
@@ -1761,8 +1761,8 @@ public class Doc_AllocationHdr extends Doc
 				
 				// For Allocation
 				valuesAlloc = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
-						MAllocationHdr.Table_ID, alloc.get_ID(), as.getRecord().getC_AcctSchema_ID(), 
-						gain.getRecord().getAccount_ID(), loss.getRecord().getAccount_ID(), as.getCurrencyBalancing_AcctInfo().getRecord().getAccount_ID(),
+						MAllocationHdr.Table_ID, alloc.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), 
+						gain.getCombination().getAccount_ID(), loss.getCombination().getAccount_ID(), as.getCurrencyBalancing_AcctModel().getCombination().getAccount_ID(),
 						alloc.get_ID(), payment.getC_Payment_ID());
 				if (valuesAlloc != null && valuesAlloc.size() >= 4) {
 					totalAmtSourceDr = (BigDecimal) valuesAlloc.get(0);
@@ -1779,7 +1779,7 @@ public class Doc_AllocationHdr extends Doc
 						totalAmtAcctCr = Env.ZERO;
 					
 					allocateSource = allocateSource.subtract(totalAmtSourceDr).subtract(totalAmtSourceCr).add(currencyAdjustment);
-					if (as.isCurrencyBalancing() && as.getRecord().getC_Currency_ID() != payment.getC_Currency_ID())
+					if (as.isCurrencyBalancing() && as.getAcctSchema().getC_Currency_ID() != payment.getC_Currency_ID())
 						;
 					else
 						allocateAccounted = allocateAccounted.add(currencyAdjustment);
@@ -1827,32 +1827,32 @@ public class Doc_AllocationHdr extends Doc
 			Integer C_AllocationLine_ID = htPayAllocLine.get(payment.getC_Payment_ID());
 			if ((payment.isReceipt() && payment.getPayAmt().signum() >= 0) || (!payment.isReceipt() && payment.getPayAmt().signum() < 0))
 			{
-				FactLine fl = fact.createLine (null, htPayAcct.get(payment.getC_Payment_ID()), as.getRecord().getC_Currency_ID(), acctDifference.negate());
-				fl.getFactAcctInfo().getRecord().setDescription(description.toString());
-				fl.getFactAcctInfo().getRecord().setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
+				FactLine fl = fact.createLine (null, htPayAcct.get(payment.getC_Payment_ID()), as.getAcctSchema().getC_Currency_ID(), acctDifference.negate());
+				fl.getFactAcctInfo().getFactAcct().setDescription(description.toString());
+				fl.getFactAcctInfo().getFactAcct().setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
 				if (!fact.isAcctBalanced())
 				{
-					if (as.isCurrencyBalancing() && as.getRecord().getC_Currency_ID() != payment.getC_Currency_ID())
-						fl = fact.createLine (null, as.getCurrencyBalancing_AcctInfo(), as.getRecord().getC_Currency_ID(), acctDifference);
+					if (as.isCurrencyBalancing() && as.getAcctSchema().getC_Currency_ID() != payment.getC_Currency_ID())
+						fl = fact.createLine (null, as.getCurrencyBalancing_AcctModel(), as.getAcctSchema().getC_Currency_ID(), acctDifference);
 					else
-						fl = fact.createLine (null, loss, gain,as.getRecord().getC_Currency_ID(), acctDifference);
-					fl.getFactAcctInfo().getRecord().setDescription(description.toString());
-					fl.getFactAcctInfo().getRecord().setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
+						fl = fact.createLine (null, loss, gain,as.getAcctSchema().getC_Currency_ID(), acctDifference);
+					fl.getFactAcctInfo().getFactAcct().setDescription(description.toString());
+					fl.getFactAcctInfo().getFactAcct().setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
 				}
 			}
 			else
 			{
-				FactLine fl = fact.createLine (null, htPayAcct.get(payment.getC_Payment_ID()), as.getRecord().getC_Currency_ID(), acctDifference);
-				fl.getFactAcctInfo().getRecord().setDescription(description.toString());
-				fl.getFactAcctInfo().getRecord().setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
+				FactLine fl = fact.createLine (null, htPayAcct.get(payment.getC_Payment_ID()), as.getAcctSchema().getC_Currency_ID(), acctDifference);
+				fl.getFactAcctInfo().getFactAcct().setDescription(description.toString());
+				fl.getFactAcctInfo().getFactAcct().setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
 				if (!fact.isAcctBalanced())
 				{
-					if (as.isCurrencyBalancing() && as.getRecord().getC_Currency_ID() != payment.getC_Currency_ID())
-						fl = fact.createLine (null, as.getCurrencyBalancing_AcctInfo(), as.getRecord().getC_Currency_ID(), acctDifference.negate());
+					if (as.isCurrencyBalancing() && as.getAcctSchema().getC_Currency_ID() != payment.getC_Currency_ID())
+						fl = fact.createLine (null, as.getCurrencyBalancing_AcctModel(), as.getAcctSchema().getC_Currency_ID(), acctDifference.negate());
 					else 
-						fl = fact.createLine (null, loss, gain, as.getRecord().getC_Currency_ID(), acctDifference.negate());	
-					fl.getFactAcctInfo().getRecord().setDescription(description.toString());
-					fl.getFactAcctInfo().getRecord().setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
+						fl = fact.createLine (null, loss, gain, as.getAcctSchema().getC_Currency_ID(), acctDifference.negate());	
+					fl.getFactAcctInfo().getFactAcct().setDescription(description.toString());
+					fl.getFactAcctInfo().getFactAcct().setLine_ID(C_AllocationLine_ID == null ? 0 : C_AllocationLine_ID);
 				}
 			}
 		}
@@ -1865,27 +1865,27 @@ public class Doc_AllocationHdr extends Doc
 	 * @param fact
 	 * @return fact line
 	 */
-	private FactLine balanceAccounting(IAcctSchemaInfo as, Fact fact)
+	private FactLine balanceAccounting(IAcctSchemaModel as, Fact fact)
 	{
 		FactLine line = null;
 		if (!fact.isAcctBalanced())
 		{
-			IAccountInfo gain = AcctInfoServices.getAccountInfoService().get(as.getPO().getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getRealizedGain_Acct());
-			IAccountInfo loss = AcctInfoServices.getAccountInfoService().get(as.getPO().getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getRealizedLoss_Acct());
+			IAccountModel gain = AcctInfoServices.getAccountInfoService().get(as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedGain_Acct());
+			IAccountModel loss = AcctInfoServices.getAccountInfoService().get(as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedLoss_Acct());
 
 			BigDecimal totalAmtAcctDr = Env.ZERO;
 			BigDecimal totalAmtAcctCr = Env.ZERO;
 			for (FactLine factLine : fact.getLines())
 			{
-				totalAmtAcctDr = totalAmtAcctDr.add(factLine.getFactAcctInfo().getRecord().getAmtAcctDr());
-				totalAmtAcctCr = totalAmtAcctCr.add(factLine.getFactAcctInfo().getRecord().getAmtAcctCr());
+				totalAmtAcctDr = totalAmtAcctDr.add(factLine.getFactAcctInfo().getFactAcct().getAmtAcctDr());
+				totalAmtAcctCr = totalAmtAcctCr.add(factLine.getFactAcctInfo().getFactAcct().getAmtAcctCr());
 			}
 			
 			BigDecimal acctDifference = totalAmtAcctDr.subtract(totalAmtAcctCr);
 			if (as.isCurrencyBalancing() && acctDifference.abs().compareTo(TOLERANCE) < 0)
-				line = fact.createLine (null, as.getCurrencyBalancing_AcctInfo(), as.getRecord().getC_Currency_ID(), acctDifference.negate());
+				line = fact.createLine (null, as.getCurrencyBalancing_AcctModel(), as.getAcctSchema().getC_Currency_ID(), acctDifference.negate());
 			else
-				line = fact.createLine(null, loss, gain, as.getRecord().getC_Currency_ID(), acctDifference.negate());
+				line = fact.createLine(null, loss, gain, as.getAcctSchema().getC_Currency_ID(), acctDifference.negate());
 		}
 		return line;
 	}
@@ -1944,8 +1944,8 @@ class Doc_AllocationTax
 	 *	@param WriteOffAccount write off acct
 	 *	@param WriteOffAmt write off amt
 	 */
-	public Doc_AllocationTax (IAccountInfo DiscountAccount, BigDecimal DiscountAmt,
-			IAccountInfo WriteOffAccount, BigDecimal WriteOffAmt, boolean isSOTrx)
+	public Doc_AllocationTax (IAccountModel DiscountAccount, BigDecimal DiscountAmt,
+			IAccountModel WriteOffAccount, BigDecimal WriteOffAmt, boolean isSOTrx)
 	{
 		m_DiscountAccount = DiscountAccount;
 		m_DiscountAmt = DiscountAmt;
@@ -1956,20 +1956,20 @@ class Doc_AllocationTax
 
 	private static final CLogger	log = CLogger.getCLogger(Doc_AllocationTax.class);
 
-	private IAccountInfo			m_DiscountAccount;
+	private IAccountModel			m_DiscountAccount;
 	private BigDecimal 			m_DiscountAmt;
-	private IAccountInfo			m_WriteOffAccount;
+	private IAccountModel			m_WriteOffAccount;
 	private BigDecimal 			m_WriteOffAmt;
 	private boolean 			m_IsSOTrx;
 
-	private ArrayList<IFactAcctInfo>	m_facts  = new ArrayList<IFactAcctInfo>();
+	private ArrayList<IFactAcctModel>	m_facts  = new ArrayList<IFactAcctModel>();
 	private int					m_totalIndex = 0;
 
 	/**
 	 * 	Add Invoice Fact Line
 	 *	@param fact fact line
 	 */
-	public void addInvoiceFact (IFactAcctInfo fact)
+	public void addInvoiceFact (IFactAcctModel fact)
 	{
 		m_facts.add(fact);
 	}	//	addInvoiceLine
@@ -1990,28 +1990,28 @@ class Doc_AllocationTax
 	 *	@param line line
 	 *	@return true if created
 	 */
-	public boolean createEntries (IAcctSchemaInfo as, Fact fact, DocLine line)
+	public boolean createEntries (IAcctSchemaModel as, Fact fact, DocLine line)
 	{
 		//	get total index (the Receivables/Liabilities line)
 		BigDecimal total = Env.ZERO;
 		for (int i = 0; i < m_facts.size(); i++)
 		{
-			IFactAcctInfo factAcct = (IFactAcctInfo)m_facts.get(i);
-			if (   (factAcct.getRecord().getAmtSourceDr().signum() > 0 && factAcct.getRecord().getAmtSourceDr().compareTo(total) > 0)
-				|| (factAcct.getRecord().getAmtSourceDr().signum() < 0 && factAcct.getRecord().getAmtSourceDr().compareTo(total) < 0))
+			IFactAcctModel factAcct = (IFactAcctModel)m_facts.get(i);
+			if (   (factAcct.getFactAcct().getAmtSourceDr().signum() > 0 && factAcct.getFactAcct().getAmtSourceDr().compareTo(total) > 0)
+				|| (factAcct.getFactAcct().getAmtSourceDr().signum() < 0 && factAcct.getFactAcct().getAmtSourceDr().compareTo(total) < 0))
 			{
-				total = factAcct.getRecord().getAmtSourceDr();
+				total = factAcct.getFactAcct().getAmtSourceDr();
 				m_totalIndex = i;
 			}
-			if (   (factAcct.getRecord().getAmtSourceCr().signum() > 0 && factAcct.getRecord().getAmtSourceCr().compareTo(total) > 0)
-				|| (factAcct.getRecord().getAmtSourceCr().signum() < 0 && factAcct.getRecord().getAmtSourceCr().compareTo(total) < 0))
+			if (   (factAcct.getFactAcct().getAmtSourceCr().signum() > 0 && factAcct.getFactAcct().getAmtSourceCr().compareTo(total) > 0)
+				|| (factAcct.getFactAcct().getAmtSourceCr().signum() < 0 && factAcct.getFactAcct().getAmtSourceCr().compareTo(total) < 0))
 			{
-				total = factAcct.getRecord().getAmtSourceCr();
+				total = factAcct.getFactAcct().getAmtSourceCr();
 				m_totalIndex = i;
 			}
 		}
 
-		IFactAcctInfo factAcct = (IFactAcctInfo)m_facts.get(m_totalIndex);
+		IFactAcctModel factAcct = (IFactAcctModel)m_facts.get(m_totalIndex);
 		if (log.isLoggable(Level.INFO)) log.info ("Total Invoice = " + total + " - " +  factAcct);
 		int precision = as.getStdPrecision();
 		for (int i = 0; i < m_facts.size(); i++)
@@ -2020,18 +2020,18 @@ class Doc_AllocationTax
 			if (i == m_totalIndex)
 				continue;
 
-			factAcct = (IFactAcctInfo)m_facts.get(i);
+			factAcct = (IFactAcctModel)m_facts.get(i);
 			if (log.isLoggable(Level.INFO)) log.info (i + ": " + factAcct);
 
 			//	Create Tax Account
-			IAccountInfo taxAcct = factAcct.getAccountInfo();
-			if (taxAcct == null || taxAcct.getRecord().getC_ValidCombination_ID() == 0)
+			IAccountModel taxAcct = factAcct.getAccountModel();
+			if (taxAcct == null || taxAcct.getCombination().getC_ValidCombination_ID() == 0)
 			{
 				log.severe ("Tax Account not found/created");
 				return false;
 			}
 
-			Doc doc = DocManager.getDocument(as, MInvoice.Table_ID, factAcct.getRecord().getRecord_ID(), line.getPO().get_TrxName());
+			Doc doc = DocManager.getDocument(as, MInvoice.Table_ID, factAcct.getFactAcct().getRecord_ID(), line.getPO().get_TrxName());
 			MDocType dt = new MDocType(Env.getCtx(), (doc!=null)?doc.getC_DocType_ID():-1, line.getPO().get_TrxName());
 			String docBaseType=(dt.getC_DocType_ID()>0)?dt.getDocBaseType():"";
 
@@ -2039,9 +2039,9 @@ class Doc_AllocationTax
 			if (m_DiscountAmt.signum() != 0)
 			{
 				//	Original Tax is DR - need to correct it CR
-				if (Env.ZERO.compareTo(factAcct.getRecord().getAmtSourceDr()) != 0)
+				if (Env.ZERO.compareTo(factAcct.getFactAcct().getAmtSourceDr()) != 0)
 				{
-					BigDecimal amount = calcAmount(factAcct.getRecord().getAmtSourceDr(),
+					BigDecimal amount = calcAmount(factAcct.getFactAcct().getAmtSourceDr(),
 						total, m_DiscountAmt, precision);
 
 					if (amount.signum() != 0)
@@ -2050,28 +2050,28 @@ class Doc_AllocationTax
 						if (m_IsSOTrx) {
 							if(docBaseType.equals(MDocType.DOCBASETYPE_ARCreditMemo)) {
 								fact.createLine (line, m_DiscountAccount,
-										as.getRecord().getC_Currency_ID(), amount.negate(), null);
+										as.getAcctSchema().getC_Currency_ID(), amount.negate(), null);
 								fact.createLine (line, taxAcct,
-										as.getRecord().getC_Currency_ID(), null, amount.negate());
+										as.getAcctSchema().getC_Currency_ID(), null, amount.negate());
 							}else {
 
 								fact.createLine (line, m_DiscountAccount,
-										as.getRecord().getC_Currency_ID(), amount, null);
+										as.getAcctSchema().getC_Currency_ID(), amount, null);
 								fact.createLine (line, taxAcct,
-										as.getRecord().getC_Currency_ID(), null, amount);
+										as.getAcctSchema().getC_Currency_ID(), null, amount);
 							}
 						} else {
 						//for purchase actions
 							if(docBaseType.equals(MDocType.DOCBASETYPE_APCreditMemo)) {
 								fact.createLine (line, m_DiscountAccount,
-										as.getRecord().getC_Currency_ID(), amount, null);
+										as.getAcctSchema().getC_Currency_ID(), amount, null);
 								fact.createLine (line, taxAcct,
-										as.getRecord().getC_Currency_ID(), null, amount);
+										as.getAcctSchema().getC_Currency_ID(), null, amount);
 							} else {
 								fact.createLine (line, m_DiscountAccount,
-										as.getRecord().getC_Currency_ID(), amount.negate(), null);
+										as.getAcctSchema().getC_Currency_ID(), amount.negate(), null);
 								fact.createLine (line, taxAcct,
-										as.getRecord().getC_Currency_ID(), null, amount.negate());
+										as.getAcctSchema().getC_Currency_ID(), null, amount.negate());
 							}
 						}
 					}
@@ -2079,7 +2079,7 @@ class Doc_AllocationTax
 				//	Original Tax is CR - need to correct it DR
 				else
 				{
-					BigDecimal amount = calcAmount(factAcct.getRecord().getAmtSourceCr(),
+					BigDecimal amount = calcAmount(factAcct.getFactAcct().getAmtSourceCr(),
 						total, m_DiscountAmt, precision);
 					if (amount.signum() != 0)
 					{
@@ -2087,29 +2087,29 @@ class Doc_AllocationTax
 						if (m_IsSOTrx) {
 							if(docBaseType.equals(MDocType.DOCBASETYPE_ARCreditMemo)) {
 								fact.createLine (line, taxAcct,
-										as.getRecord().getC_Currency_ID(), amount.negate(), null);
+										as.getAcctSchema().getC_Currency_ID(), amount.negate(), null);
 								fact.createLine (line, m_DiscountAccount,
-									as.getRecord().getC_Currency_ID(), null, amount.negate());
+									as.getAcctSchema().getC_Currency_ID(), null, amount.negate());
 							}else {
 
 								fact.createLine (line, taxAcct,
-									as.getRecord().getC_Currency_ID(), amount, null);
+									as.getAcctSchema().getC_Currency_ID(), amount, null);
 								fact.createLine (line, m_DiscountAccount,
-									as.getRecord().getC_Currency_ID(), null, amount);
+									as.getAcctSchema().getC_Currency_ID(), null, amount);
 							}
 
 						} else {
 							if(docBaseType.equals(MDocType.DOCBASETYPE_APCreditMemo)) {
 								fact.createLine (line, taxAcct,
-									as.getRecord().getC_Currency_ID(), amount, null);
+									as.getAcctSchema().getC_Currency_ID(), amount, null);
 								fact.createLine (line, m_DiscountAccount,
-									as.getRecord().getC_Currency_ID(), null, amount);
+									as.getAcctSchema().getC_Currency_ID(), null, amount);
 							}else {
 
 								fact.createLine (line, taxAcct,
-									as.getRecord().getC_Currency_ID(), amount.negate(), null);
+									as.getAcctSchema().getC_Currency_ID(), amount.negate(), null);
 								fact.createLine (line, m_DiscountAccount,
-									as.getRecord().getC_Currency_ID(), null, amount.negate());
+									as.getAcctSchema().getC_Currency_ID(), null, amount.negate());
 							}
 
 						}
@@ -2121,35 +2121,35 @@ class Doc_AllocationTax
 			if (m_WriteOffAmt.signum() != 0)
 			{
 				//	Original Tax is DR - need to correct it CR
-				if (Env.ZERO.compareTo(factAcct.getRecord().getAmtSourceDr()) != 0)
+				if (Env.ZERO.compareTo(factAcct.getFactAcct().getAmtSourceDr()) != 0)
 				{
-					BigDecimal amount = calcAmount(factAcct.getRecord().getAmtSourceDr(),
+					BigDecimal amount = calcAmount(factAcct.getFactAcct().getAmtSourceDr(),
 						total, m_WriteOffAmt, precision);
 					if (amount.signum() != 0)
 					{
 						if (m_IsSOTrx) {
 							if(docBaseType.equals(MDocType.DOCBASETYPE_ARCreditMemo)) {
 								fact.createLine (line, m_WriteOffAccount,
-									as.getRecord().getC_Currency_ID(), amount.negate(), null);
+									as.getAcctSchema().getC_Currency_ID(), amount.negate(), null);
 								fact.createLine (line, taxAcct,
-									as.getRecord().getC_Currency_ID(), null, amount.negate());
+									as.getAcctSchema().getC_Currency_ID(), null, amount.negate());
 							} else {
 								fact.createLine (line, m_WriteOffAccount,
-									as.getRecord().getC_Currency_ID(), amount, null);
+									as.getAcctSchema().getC_Currency_ID(), amount, null);
 								fact.createLine (line, taxAcct,
-									as.getRecord().getC_Currency_ID(), null, amount);
+									as.getAcctSchema().getC_Currency_ID(), null, amount);
 							}
 						} else {
 							if(docBaseType.equals(MDocType.DOCBASETYPE_APCreditMemo)) {
 								fact.createLine (line, m_WriteOffAccount,
-									as.getRecord().getC_Currency_ID(), amount, null);
+									as.getAcctSchema().getC_Currency_ID(), amount, null);
 								fact.createLine (line, taxAcct,
-									as.getRecord().getC_Currency_ID(), null, amount);
+									as.getAcctSchema().getC_Currency_ID(), null, amount);
 							} else {
 								fact.createLine (line, m_WriteOffAccount,
-									as.getRecord().getC_Currency_ID(), amount.negate(), null);
+									as.getAcctSchema().getC_Currency_ID(), amount.negate(), null);
 								fact.createLine (line, taxAcct,
-									as.getRecord().getC_Currency_ID(), null, amount.negate());
+									as.getAcctSchema().getC_Currency_ID(), null, amount.negate());
 							}
 						}
 					}
@@ -2157,33 +2157,33 @@ class Doc_AllocationTax
 				//	Original Tax is CR - need to correct it DR
 				else
 				{
-					BigDecimal amount = calcAmount(factAcct.getRecord().getAmtSourceCr(),
+					BigDecimal amount = calcAmount(factAcct.getFactAcct().getAmtSourceCr(),
 						total, m_WriteOffAmt, precision);
 					if (amount.signum() != 0)
 					{
 						if(m_IsSOTrx) {
 							if(docBaseType.equals(MDocType.DOCBASETYPE_ARCreditMemo)) {
 								fact.createLine (line, taxAcct,
-									as.getRecord().getC_Currency_ID(), amount.negate(), null);
+									as.getAcctSchema().getC_Currency_ID(), amount.negate(), null);
 								fact.createLine (line, m_WriteOffAccount,
-									as.getRecord().getC_Currency_ID(), null, amount.negate());
+									as.getAcctSchema().getC_Currency_ID(), null, amount.negate());
 							} else {
 								fact.createLine (line, taxAcct,
-									as.getRecord().getC_Currency_ID(), amount, null);
+									as.getAcctSchema().getC_Currency_ID(), amount, null);
 								fact.createLine (line, m_WriteOffAccount,
-									as.getRecord().getC_Currency_ID(), null, amount);
+									as.getAcctSchema().getC_Currency_ID(), null, amount);
 							}
 						} else {
 							if(docBaseType.equals(MDocType.DOCBASETYPE_APCreditMemo)) {
 								fact.createLine (line, taxAcct,
-									as.getRecord().getC_Currency_ID(), amount, null);
+									as.getAcctSchema().getC_Currency_ID(), amount, null);
 								fact.createLine (line, m_WriteOffAccount,
-									as.getRecord().getC_Currency_ID(), null, amount);
+									as.getAcctSchema().getC_Currency_ID(), null, amount);
 							} else {
 								fact.createLine (line, taxAcct,
-									as.getRecord().getC_Currency_ID(), amount.negate(), null);
+									as.getAcctSchema().getC_Currency_ID(), amount.negate(), null);
 								fact.createLine (line, m_WriteOffAccount,
-									as.getRecord().getC_Currency_ID(), null, amount.negate());
+									as.getAcctSchema().getC_Currency_ID(), null, amount.negate());
 							}
 						}
 					}

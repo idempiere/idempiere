@@ -26,18 +26,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.adempiere.base.acct.info.IElementValueInfo;
-import org.adempiere.base.acct.info.IImportElementValueInfo;
+import org.adempiere.base.acct.model.IElementValueModel;
+import org.adempiere.base.acct.model.IImportElementValueModel;
 import org.compiere.model.I_C_ElementValue;
 import org.compiere.model.PO;
 import org.idempiere.acct.model.MElementValue;
 
 /**
- * Wrapper for {@link MElementValue} to provide {@link IElementValueInfo} access.
+ * Wrapper for {@link MElementValue} to provide {@link IElementValueModel} access.
  * 
  * @author etantg
  */
-public class ElementValueInfo implements IElementValueInfo {
+public class ElementValueInfo implements IElementValueModel {
 	
 	private final MElementValue elementValue;
 	
@@ -52,7 +52,7 @@ public class ElementValueInfo implements IElementValueInfo {
 	}
 	
 	@Override
-	public I_C_ElementValue getRecord() {
+	public I_C_ElementValue getElementValue() {
 		return elementValue;
 	}
 
@@ -67,7 +67,7 @@ public class ElementValueInfo implements IElementValueInfo {
 	}
 
 	@Override
-	public void set(IImportElementValueInfo imp) {
+	public void set(IImportElementValueModel imp) {
 		if (imp instanceof ImportElementValueInfo) {
 			elementValue.set(((ImportElementValueInfo) imp).getModel());
 			return;
@@ -75,15 +75,15 @@ public class ElementValueInfo implements IElementValueInfo {
 		throw new IllegalArgumentException("Unsupported IImportElementValueInfo implementation");
 	}
 	
-	public static IElementValueInfo wrap(MElementValue elementValue) {
+	public static IElementValueModel wrap(MElementValue elementValue) {
         if (elementValue == null)
             return null;
-        if (elementValue instanceof IElementValueInfo)
-            return (IElementValueInfo) elementValue;
+        if (elementValue instanceof IElementValueModel)
+            return (IElementValueModel) elementValue;
         return new ElementValueInfo(elementValue);
     }
 	
-	public static List<IElementValueInfo> wrapList(List<MElementValue> list) {
+	public static List<IElementValueModel> wrapList(List<MElementValue> list) {
 	    return list == null
 	    		? new ArrayList<>()
 	            : list.stream()

@@ -26,7 +26,7 @@ import java.sql.Timestamp;
 import java.util.Properties;
 
 import org.adempiere.base.acct.AcctInfoService;
-import org.adempiere.base.acct.info.IDistributionInfo;
+import org.adempiere.base.acct.model.IDistributionModel;
 import org.adempiere.base.acct.service.IDistributionInfoService;
 import org.idempiere.acct.info.DistributionInfo;
 import org.idempiere.acct.model.MDistribution;
@@ -40,7 +40,7 @@ import org.idempiere.acct.model.MDistribution;
 public class DistributionInfoService implements IDistributionInfoService {
 
 	@Override
-	public IDistributionInfo[] get(Properties ctx, int C_AcctSchema_ID, String PostingType, int C_DocType_ID,
+	public IDistributionModel[] get(Properties ctx, int C_AcctSchema_ID, String PostingType, int C_DocType_ID,
 			Timestamp dateAcct, int AD_Org_ID, int Account_ID, int M_Product_ID, int C_BPartner_ID, int C_Project_ID,
 			int C_Campaign_ID, int C_Activity_ID, int AD_OrgTrx_ID, int C_SalesRegion_ID, int C_LocTo_ID,
 			int C_LocFrom_ID, int User1_ID, int User2_ID, int C_CostCenter_ID, int C_Department_ID, int C_Employee_ID,
@@ -54,7 +54,7 @@ public class DistributionInfoService implements IDistributionInfoService {
 	}
 
 	@Override
-	public IDistributionInfo create(Properties ctx, int GL_Distribution_ID, String trxName) {
+	public IDistributionModel create(Properties ctx, int GL_Distribution_ID, String trxName) {
 		MDistribution distribution = new MDistribution(ctx, GL_Distribution_ID, trxName);
 		return DistributionInfo.wrap(distribution);
 	}

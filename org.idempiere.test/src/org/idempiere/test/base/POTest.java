@@ -60,7 +60,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.adempiere.base.acct.constants.IAcctSchemaConstants;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.compiere.dbPort.Convert;
@@ -584,7 +584,7 @@ public class POTest extends AbstractTestCase
 	public void testLogMigrationScript() throws IOException {
 		MSession.create(Env.getCtx());
 		MClient client = MClient.get(Env.getCtx());
-		IAcctSchemaInfo as = client.getAcctSchema();
+		IAcctSchemaModel as = client.getAcctSchema();
 		
 		assertFalse(Env.isLogMigrationScript(MProduct.Table_Name), "Unexpected Log Migration Script default for MProduct");
 		Env.getCtx().setProperty(Ini.P_LOGMIGRATIONSCRIPT, "Y");

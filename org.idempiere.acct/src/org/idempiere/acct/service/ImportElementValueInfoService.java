@@ -26,7 +26,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.adempiere.base.acct.AcctInfoService;
-import org.adempiere.base.acct.info.IImportElementValueInfo;
+import org.adempiere.base.acct.model.IImportElementValueModel;
 import org.adempiere.base.acct.service.IImportElementValueInfoService;
 import org.idempiere.acct.info.ImportElementValueInfo;
 import org.idempiere.acct.model.X_I_ElementValue;
@@ -40,7 +40,7 @@ import org.idempiere.acct.model.X_I_ElementValue;
 public class ImportElementValueInfoService implements IImportElementValueInfoService {
 	
 	@Override
-	public IImportElementValueInfo create(Properties ctx, ResultSet rs, String trxName) {
+	public IImportElementValueModel create(Properties ctx, ResultSet rs, String trxName) {
 		X_I_ElementValue elementValue = new X_I_ElementValue(ctx, rs, trxName);
 		return ImportElementValueInfo.wrap(elementValue);
 	}

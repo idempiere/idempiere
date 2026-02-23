@@ -33,7 +33,7 @@ import java.util.logging.Level;
 
 import org.adempiere.base.acct.AcctInfoServices;
 import org.adempiere.base.acct.constants.IAcctSchemaConstants;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -271,7 +271,7 @@ public class MProductionLine extends X_M_ProductionLine {
 		{
 		
 			MClientInfo m_clientInfo = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName());
-			IAcctSchemaInfo acctSchema = AcctInfoServices.getAcctSchemaInfoService().create(getCtx(), m_clientInfo.getC_AcctSchema1_ID(), get_TrxName());				
+			IAcctSchemaModel acctSchema = AcctInfoServices.getAcctSchemaInfoService().create(getCtx(), m_clientInfo.getC_AcctSchema1_ID(), get_TrxName());				
 			if (asi.get_ID() == 0 && IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(prod.getCostingLevel(acctSchema)) )
 			{
 				//add quantity to last attributesetinstance

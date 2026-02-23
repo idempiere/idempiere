@@ -22,17 +22,17 @@
  **********************************************************************/
 package org.idempiere.acct.info;
 
-import org.adempiere.base.acct.info.IFactReconciliationInfo;
+import org.adempiere.base.acct.model.IFactReconciliationModel;
 import org.compiere.model.I_Fact_Reconciliation;
 import org.compiere.model.PO;
 import org.idempiere.acct.model.MFactReconciliation;
 
 /**
- * Wrapper for {@link MFactReconciliation} to provide {@link IFactReconciliationInfo} access.
+ * Wrapper for {@link MFactReconciliation} to provide {@link IFactReconciliationModel} access.
  * 
  * @author etantg
  */
-public class FactReconciliationInfo implements IFactReconciliationInfo {
+public class FactReconciliationInfo implements IFactReconciliationModel {
 	
 	private final MFactReconciliation reconciliation;
 	
@@ -47,7 +47,7 @@ public class FactReconciliationInfo implements IFactReconciliationInfo {
 	}
 
 	@Override
-    public I_Fact_Reconciliation getRecord() {
+    public I_Fact_Reconciliation getFactReconciliation() {
         return reconciliation;
     }
 
@@ -56,11 +56,11 @@ public class FactReconciliationInfo implements IFactReconciliationInfo {
 		return reconciliation;
 	}
 	
-	public static IFactReconciliationInfo wrap(MFactReconciliation reconciliation) {
+	public static IFactReconciliationModel wrap(MFactReconciliation reconciliation) {
         if (reconciliation == null)
             return null;
-        if (reconciliation instanceof IFactReconciliationInfo)
-            return (IFactReconciliationInfo) reconciliation;
+        if (reconciliation instanceof IFactReconciliationModel)
+            return (IFactReconciliationModel) reconciliation;
         return new FactReconciliationInfo(reconciliation);
     }
 }

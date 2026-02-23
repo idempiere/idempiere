@@ -27,10 +27,10 @@ import java.util.logging.Level;
 
 import org.adempiere.base.acct.AcctInfoServices;
 import org.adempiere.base.acct.constants.IAcctSchemaElementConstants;
-import org.adempiere.base.acct.info.IAccountInfo;
-import org.adempiere.base.acct.info.IAcctSchemaElementInfo;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
-import org.adempiere.base.acct.info.IFactAcctInfo;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IAcctSchemaElementModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
+import org.adempiere.base.acct.model.IFactAcctModel;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MCurrency;
 import org.compiere.model.MMovement;
@@ -64,13 +64,13 @@ public final class FactLine
 {
 	private static final CLogger log = CLogger.getCLogger(FactLine.class);
 	
-	private final IFactAcctInfo factAcctInfo;
+	private final IFactAcctModel factAcctInfo;
 
-    public FactLine(IFactAcctInfo factAcctInfo) {
+    public FactLine(IFactAcctModel factAcctInfo) {
         this.factAcctInfo = factAcctInfo;
     }
     
-    public IFactAcctInfo getFactAcctInfo() {
+    public IFactAcctModel getFactAcctInfo() {
         return factAcctInfo;
     }
 
@@ -88,21 +88,21 @@ public final class FactLine
 
         // Initialize base fields through the interface
         factAcctInfo.getPO().set_ValueNoCheck ("AD_Client_ID", Integer.valueOf(0));   // do not derive
-        factAcctInfo.getRecord().setAD_Org_ID(0);      // do not derive
+        factAcctInfo.getFactAcct().setAD_Org_ID(0);      // do not derive
 
-        factAcctInfo.getRecord().setAmtAcctCr(Env.ZERO);
-        factAcctInfo.getRecord().setAmtAcctDr(Env.ZERO);
-        factAcctInfo.getRecord().setAmtSourceCr(Env.ZERO);
-        factAcctInfo.getRecord().setAmtSourceDr(Env.ZERO);
-        factAcctInfo.getRecord().setAD_Table_ID(AD_Table_ID);
-        factAcctInfo.getRecord().setRecord_ID(Record_ID);
-        factAcctInfo.getRecord().setLine_ID(Line_ID);
+        factAcctInfo.getFactAcct().setAmtAcctCr(Env.ZERO);
+        factAcctInfo.getFactAcct().setAmtAcctDr(Env.ZERO);
+        factAcctInfo.getFactAcct().setAmtSourceCr(Env.ZERO);
+        factAcctInfo.getFactAcct().setAmtSourceDr(Env.ZERO);
+        factAcctInfo.getFactAcct().setAD_Table_ID(AD_Table_ID);
+        factAcctInfo.getFactAcct().setRecord_ID(Record_ID);
+        factAcctInfo.getFactAcct().setLine_ID(Line_ID);
 	}   //  FactLine
 
 	/**	Account					*/
-	private IAccountInfo	m_acct = null;
+	private IAccountModel	m_acct = null;
 	/** Accounting Schema		*/
-	private IAcctSchemaInfo	m_acctSchema = null;
+	private IAcctSchemaModel	m_acctSchema = null;
 	/** Document Header			*/
 	private Doc			m_doc = null;
 	/** Document Line 			*/
@@ -115,43 +115,43 @@ public final class FactLine
 	 */
 	public FactLine reverse (String description)
 	{
-		FactLine reversal = new FactLine (factAcctInfo.getPO().getCtx(), factAcctInfo.getRecord().getAD_Table_ID(), factAcctInfo.getRecord().getRecord_ID(), factAcctInfo.getRecord().getLine_ID(), factAcctInfo.getPO().get_TrxName());
+		FactLine reversal = new FactLine (factAcctInfo.getPO().getCtx(), factAcctInfo.getFactAcct().getAD_Table_ID(), factAcctInfo.getFactAcct().getRecord_ID(), factAcctInfo.getFactAcct().getLine_ID(), factAcctInfo.getPO().get_TrxName());
 		reversal.factAcctInfo.setClientOrg(factAcctInfo.getPO());	//	needs to be set explicitly
 		reversal.setDocumentInfo(m_doc, m_docLine);
 		reversal.setDocumentTextInfo(m_acctSchema);
 		reversal.setAccount(m_acctSchema, m_acct);
-		reversal.factAcctInfo.getRecord().setPostingType(factAcctInfo.getRecord().getPostingType());
+		reversal.factAcctInfo.getFactAcct().setPostingType(factAcctInfo.getFactAcct().getPostingType());
 		//
-		reversal.setAmtSource(factAcctInfo.getRecord().getC_Currency_ID(), factAcctInfo.getRecord().getAmtSourceDr().negate(), factAcctInfo.getRecord().getAmtSourceCr().negate());
-		reversal.factAcctInfo.getRecord().setQty(factAcctInfo.getRecord().getQty().negate());
+		reversal.setAmtSource(factAcctInfo.getFactAcct().getC_Currency_ID(), factAcctInfo.getFactAcct().getAmtSourceDr().negate(), factAcctInfo.getFactAcct().getAmtSourceCr().negate());
+		reversal.factAcctInfo.getFactAcct().setQty(factAcctInfo.getFactAcct().getQty().negate());
 		reversal.convert();
-		reversal.factAcctInfo.getRecord().setDescription(description);
+		reversal.factAcctInfo.getFactAcct().setDescription(description);
 		
-		reversal.factAcctInfo.getRecord().setC_BPartner_ID(factAcctInfo.getRecord().getC_BPartner_ID());
-		reversal.factAcctInfo.getRecord().setM_Product_ID(factAcctInfo.getRecord().getM_Product_ID());
-		reversal.factAcctInfo.getRecord().setC_Project_ID(factAcctInfo.getRecord().getC_Project_ID());
-		reversal.factAcctInfo.getRecord().setC_Campaign_ID(factAcctInfo.getRecord().getC_Campaign_ID());
-		reversal.factAcctInfo.getRecord().setC_Activity_ID(factAcctInfo.getRecord().getC_Activity_ID());
-		reversal.factAcctInfo.getRecord().setA_Asset_ID(factAcctInfo.getRecord().getA_Asset_ID());
-		reversal.factAcctInfo.getRecord().setC_Employee_ID(factAcctInfo.getRecord().getC_Employee_ID());
-		reversal.factAcctInfo.getRecord().setC_Charge_ID(factAcctInfo.getRecord().getC_Charge_ID());
-		reversal.factAcctInfo.getRecord().setC_CostCenter_ID(factAcctInfo.getRecord().getC_CostCenter_ID());
-		reversal.factAcctInfo.getRecord().setC_Department_ID(factAcctInfo.getRecord().getC_Department_ID());
-		reversal.factAcctInfo.getRecord().setM_Warehouse_ID(factAcctInfo.getRecord().getM_Warehouse_ID());
-		reversal.factAcctInfo.getRecord().setAD_OrgTrx_ID(factAcctInfo.getRecord().getAD_OrgTrx_ID());
-		reversal.factAcctInfo.getRecord().setC_SalesRegion_ID(factAcctInfo.getRecord().getC_SalesRegion_ID());
-		reversal.factAcctInfo.getRecord().setC_LocTo_ID(factAcctInfo.getRecord().getC_LocTo_ID());
-		reversal.factAcctInfo.getRecord().setC_LocFrom_ID(factAcctInfo.getRecord().getC_LocFrom_ID());
-		reversal.factAcctInfo.getRecord().setUser1_ID(factAcctInfo.getRecord().getUser1_ID());
-		reversal.factAcctInfo.getRecord().setUser2_ID(factAcctInfo.getRecord().getUser2_ID());
-		reversal.factAcctInfo.getRecord().setUserElement1_ID(factAcctInfo.getRecord().getUserElement1_ID());
-		reversal.factAcctInfo.getRecord().setUserElement2_ID(factAcctInfo.getRecord().getUserElement2_ID());
-		reversal.factAcctInfo.getRecord().setM_AttributeSetInstance_ID(factAcctInfo.getRecord().getM_AttributeSetInstance_ID());
-		reversal.factAcctInfo.getRecord().setCustomFieldText1(factAcctInfo.getRecord().getCustomFieldText1());
-		reversal.factAcctInfo.getRecord().setCustomFieldText2(factAcctInfo.getRecord().getCustomFieldText2());
-		reversal.factAcctInfo.getRecord().setCustomFieldText3(factAcctInfo.getRecord().getCustomFieldText3());
-		reversal.factAcctInfo.getRecord().setCustomFieldText4(factAcctInfo.getRecord().getCustomFieldText4());
-		reversal.factAcctInfo.getRecord().setC_Tax_ID(factAcctInfo.getRecord().getC_Tax_ID());
+		reversal.factAcctInfo.getFactAcct().setC_BPartner_ID(factAcctInfo.getFactAcct().getC_BPartner_ID());
+		reversal.factAcctInfo.getFactAcct().setM_Product_ID(factAcctInfo.getFactAcct().getM_Product_ID());
+		reversal.factAcctInfo.getFactAcct().setC_Project_ID(factAcctInfo.getFactAcct().getC_Project_ID());
+		reversal.factAcctInfo.getFactAcct().setC_Campaign_ID(factAcctInfo.getFactAcct().getC_Campaign_ID());
+		reversal.factAcctInfo.getFactAcct().setC_Activity_ID(factAcctInfo.getFactAcct().getC_Activity_ID());
+		reversal.factAcctInfo.getFactAcct().setA_Asset_ID(factAcctInfo.getFactAcct().getA_Asset_ID());
+		reversal.factAcctInfo.getFactAcct().setC_Employee_ID(factAcctInfo.getFactAcct().getC_Employee_ID());
+		reversal.factAcctInfo.getFactAcct().setC_Charge_ID(factAcctInfo.getFactAcct().getC_Charge_ID());
+		reversal.factAcctInfo.getFactAcct().setC_CostCenter_ID(factAcctInfo.getFactAcct().getC_CostCenter_ID());
+		reversal.factAcctInfo.getFactAcct().setC_Department_ID(factAcctInfo.getFactAcct().getC_Department_ID());
+		reversal.factAcctInfo.getFactAcct().setM_Warehouse_ID(factAcctInfo.getFactAcct().getM_Warehouse_ID());
+		reversal.factAcctInfo.getFactAcct().setAD_OrgTrx_ID(factAcctInfo.getFactAcct().getAD_OrgTrx_ID());
+		reversal.factAcctInfo.getFactAcct().setC_SalesRegion_ID(factAcctInfo.getFactAcct().getC_SalesRegion_ID());
+		reversal.factAcctInfo.getFactAcct().setC_LocTo_ID(factAcctInfo.getFactAcct().getC_LocTo_ID());
+		reversal.factAcctInfo.getFactAcct().setC_LocFrom_ID(factAcctInfo.getFactAcct().getC_LocFrom_ID());
+		reversal.factAcctInfo.getFactAcct().setUser1_ID(factAcctInfo.getFactAcct().getUser1_ID());
+		reversal.factAcctInfo.getFactAcct().setUser2_ID(factAcctInfo.getFactAcct().getUser2_ID());
+		reversal.factAcctInfo.getFactAcct().setUserElement1_ID(factAcctInfo.getFactAcct().getUserElement1_ID());
+		reversal.factAcctInfo.getFactAcct().setUserElement2_ID(factAcctInfo.getFactAcct().getUserElement2_ID());
+		reversal.factAcctInfo.getFactAcct().setM_AttributeSetInstance_ID(factAcctInfo.getFactAcct().getM_AttributeSetInstance_ID());
+		reversal.factAcctInfo.getFactAcct().setCustomFieldText1(factAcctInfo.getFactAcct().getCustomFieldText1());
+		reversal.factAcctInfo.getFactAcct().setCustomFieldText2(factAcctInfo.getFactAcct().getCustomFieldText2());
+		reversal.factAcctInfo.getFactAcct().setCustomFieldText3(factAcctInfo.getFactAcct().getCustomFieldText3());
+		reversal.factAcctInfo.getFactAcct().setCustomFieldText4(factAcctInfo.getFactAcct().getCustomFieldText4());
+		reversal.factAcctInfo.getFactAcct().setC_Tax_ID(factAcctInfo.getFactAcct().getC_Tax_ID());
 		
 		return reversal;
 	}	//	reverse
@@ -163,16 +163,16 @@ public final class FactLine
 	 */
 	public FactLine accrue (String description)
 	{
-		FactLine accrual = new FactLine (factAcctInfo.getPO().getCtx(), factAcctInfo.getRecord().getAD_Table_ID(), factAcctInfo.getRecord().getRecord_ID(), factAcctInfo.getRecord().getLine_ID(), factAcctInfo.getPO().get_TrxName());
+		FactLine accrual = new FactLine (factAcctInfo.getPO().getCtx(), factAcctInfo.getFactAcct().getAD_Table_ID(), factAcctInfo.getFactAcct().getRecord_ID(), factAcctInfo.getFactAcct().getLine_ID(), factAcctInfo.getPO().get_TrxName());
 		accrual.factAcctInfo.setClientOrg(factAcctInfo.getPO());	//	needs to be set explicitly
 		accrual.setDocumentInfo(m_doc, m_docLine);
 		accrual.setDocumentTextInfo(m_acctSchema);
 		accrual.setAccount(m_acctSchema, m_acct);
-		accrual.factAcctInfo.getRecord().setPostingType(factAcctInfo.getRecord().getPostingType());
+		accrual.factAcctInfo.getFactAcct().setPostingType(factAcctInfo.getFactAcct().getPostingType());
 		//
-		accrual.setAmtSource(factAcctInfo.getRecord().getC_Currency_ID(), factAcctInfo.getRecord().getAmtSourceCr(), factAcctInfo.getRecord().getAmtSourceDr());
+		accrual.setAmtSource(factAcctInfo.getFactAcct().getC_Currency_ID(), factAcctInfo.getFactAcct().getAmtSourceCr(), factAcctInfo.getFactAcct().getAmtSourceDr());
 		accrual.convert();
-		accrual.factAcctInfo.getRecord().setDescription(description);
+		accrual.factAcctInfo.getFactAcct().setDescription(description);
 		return accrual;
 	}	//	reverse
 
@@ -181,19 +181,19 @@ public final class FactLine
 	 *  @param acctSchema account schema
 	 *  @param acct account
 	 */
-	public void setAccount (IAcctSchemaInfo acctSchema, IAccountInfo acct)
+	public void setAccount (IAcctSchemaModel acctSchema, IAccountModel acct)
 	{
 		m_acctSchema = acctSchema;
-		factAcctInfo.getRecord().setC_AcctSchema_ID (acctSchema.getRecord().getC_AcctSchema_ID());
+		factAcctInfo.getFactAcct().setC_AcctSchema_ID (acctSchema.getAcctSchema().getC_AcctSchema_ID());
 		//
 		m_acct = acct;
-		if (factAcctInfo.getRecord().getAD_Client_ID() == 0)
-			factAcctInfo.getPO().set_ValueNoCheck ("AD_Client_ID", m_acct.getRecord().getAD_Client_ID());
-		factAcctInfo.getRecord().setAccount_ID (m_acct.getRecord().getAccount_ID());
-		factAcctInfo.getRecord().setC_SubAcct_ID(m_acct.getRecord().getC_SubAcct_ID());
+		if (factAcctInfo.getFactAcct().getAD_Client_ID() == 0)
+			factAcctInfo.getPO().set_ValueNoCheck ("AD_Client_ID", m_acct.getCombination().getAD_Client_ID());
+		factAcctInfo.getFactAcct().setAccount_ID (m_acct.getCombination().getAccount_ID());
+		factAcctInfo.getFactAcct().setC_SubAcct_ID(m_acct.getCombination().getC_SubAcct_ID());
 
 		//	User Defined References
-		IAcctSchemaElementInfo ud1 = m_acctSchema.getAcctSchemaElementInfo(
+		IAcctSchemaElementModel ud1 = m_acctSchema.getAcctSchemaElementModel(
 				IAcctSchemaElementConstants.ELEMENTTYPE_UserColumn1);
 		if (ud1 != null)
 		{
@@ -210,10 +210,10 @@ public final class FactLine
 					ID1 = m_doc.getValue(ColumnName1);
 				}
 				if (ID1 != 0)
-					factAcctInfo.getRecord().setUserElement1_ID(ID1);
+					factAcctInfo.getFactAcct().setUserElement1_ID(ID1);
 			}
 		}
-		IAcctSchemaElementInfo ud2 = m_acctSchema.getAcctSchemaElementInfo(
+		IAcctSchemaElementModel ud2 = m_acctSchema.getAcctSchemaElementModel(
 				IAcctSchemaElementConstants.ELEMENTTYPE_UserColumn2);
 		if (ud2 != null)
 		{
@@ -230,7 +230,7 @@ public final class FactLine
 					ID2 = m_doc.getValue(ColumnName2);
 				}
 				if (ID2 != 0)
-					factAcctInfo.getRecord().setUserElement2_ID(ID2);
+					factAcctInfo.getFactAcct().setUserElement2_ID(ID2);
 			}
 		}
 	}   //  setAccount
@@ -244,7 +244,7 @@ public final class FactLine
 	 */
 	public boolean setAmtSource (int C_Currency_ID, BigDecimal AmtSourceDr, BigDecimal AmtSourceCr)
 	{
-		if (! m_acctSchema.getRecord().isAllowNegativePosting()) {
+		if (! m_acctSchema.getAcctSchema().isAllowNegativePosting()) {
 	        // begin Victor Perez e-evolution 30.08.2005
 			// fix Debit & Credit 
 			if (AmtSourceDr != null)
@@ -266,13 +266,13 @@ public final class FactLine
 			// end Victor Perez e-evolution 30.08.2005
 		}
 		
-		factAcctInfo.getRecord().setC_Currency_ID (C_Currency_ID);
+		factAcctInfo.getFactAcct().setC_Currency_ID (C_Currency_ID);
 		if (AmtSourceDr != null)
-			factAcctInfo.getRecord().setAmtSourceDr (AmtSourceDr);
+			factAcctInfo.getFactAcct().setAmtSourceDr (AmtSourceDr);
 		if (AmtSourceCr != null)
-			factAcctInfo.getRecord().setAmtSourceCr (AmtSourceCr);
+			factAcctInfo.getFactAcct().setAmtSourceCr (AmtSourceCr);
 		//  one needs to be non zero
-		if (factAcctInfo.getRecord().getAmtSourceDr().compareTo(Env.ZERO)==0 && factAcctInfo.getRecord().getAmtSourceCr().compareTo(Env.ZERO)==0)
+		if (factAcctInfo.getFactAcct().getAmtSourceDr().compareTo(Env.ZERO)==0 && factAcctInfo.getFactAcct().getAmtSourceCr().compareTo(Env.ZERO)==0)
 			return false;
 		//	Currency Precision
 		int precision = MCurrency.getStdPrecision(factAcctInfo.getPO().getCtx(), C_Currency_ID);
@@ -281,14 +281,14 @@ public final class FactLine
 			BigDecimal AmtSourceDr1 = AmtSourceDr.setScale(precision, RoundingMode.HALF_UP);
 			if (AmtSourceDr1.compareTo(AmtSourceDr) != 0)
 				log.warning("Source DR Precision " + AmtSourceDr + " -> " + AmtSourceDr1);
-			factAcctInfo.getRecord().setAmtSourceDr(AmtSourceDr1);
+			factAcctInfo.getFactAcct().setAmtSourceDr(AmtSourceDr1);
 		}
 		if (AmtSourceCr != null && AmtSourceCr.scale() > precision)
 		{
 			BigDecimal AmtSourceCr1 = AmtSourceCr.setScale(precision, RoundingMode.HALF_UP);
 			if (AmtSourceCr1.compareTo(AmtSourceCr) != 0)
 				log.warning("Source CR Precision " + AmtSourceCr + " -> " + AmtSourceCr1);
-			factAcctInfo.getRecord().setAmtSourceCr(AmtSourceCr1);
+			factAcctInfo.getFactAcct().setAmtSourceCr(AmtSourceCr1);
 		}
 		return true;
 	}   //  setAmtSource
@@ -300,7 +300,7 @@ public final class FactLine
 	 */
 	public void setAmtAcct(BigDecimal AmtAcctDr, BigDecimal AmtAcctCr)
 	{
-		if (! m_acctSchema.getRecord().isAllowNegativePosting()) {
+		if (! m_acctSchema.getAcctSchema().isAllowNegativePosting()) {
 	        // begin Victor Perez e-evolution 30.08.2005
 			// fix Debit & Credit 
 			if (AmtAcctDr.compareTo(Env.ZERO) == -1)
@@ -315,8 +315,8 @@ public final class FactLine
 			}
 			// end Victor Perez e-evolution 30.08.2005
 		}
-		factAcctInfo.getRecord().setAmtAcctDr (AmtAcctDr);
-		factAcctInfo.getRecord().setAmtAcctCr (AmtAcctCr);
+		factAcctInfo.getFactAcct().setAmtAcctDr (AmtAcctDr);
+		factAcctInfo.getFactAcct().setAmtAcctCr (AmtAcctCr);
 	}   //  setAmtAcct
 
 	/**
@@ -327,7 +327,7 @@ public final class FactLine
 	 */
 	public void setAmtAcct(int C_Currency_ID, BigDecimal AmtAcctDr, BigDecimal AmtAcctCr)
 	{
-		if (! m_acctSchema.getRecord().isAllowNegativePosting()) {
+		if (! m_acctSchema.getAcctSchema().isAllowNegativePosting()) {
 	        // fix Debit & Credit 
 			if (AmtAcctDr != null)
 			{	
@@ -346,8 +346,8 @@ public final class FactLine
 				}
 			}
 		}
-		factAcctInfo.getRecord().setAmtAcctDr (AmtAcctDr);
-		factAcctInfo.getRecord().setAmtAcctCr (AmtAcctCr);
+		factAcctInfo.getFactAcct().setAmtAcctDr (AmtAcctDr);
+		factAcctInfo.getFactAcct().setAmtAcctCr (AmtAcctCr);
 		//	Currency Precision
 		int precision = MCurrency.getStdPrecision(factAcctInfo.getPO().getCtx(), C_Currency_ID);
 		if (AmtAcctDr != null && AmtAcctDr.scale() > precision)
@@ -355,14 +355,14 @@ public final class FactLine
 			BigDecimal AmtAcctDr1 = AmtAcctDr.setScale(precision, RoundingMode.HALF_UP);
 			if (AmtAcctDr1.compareTo(AmtAcctDr) != 0)
 				log.warning("Accounted DR Precision " + AmtAcctDr + " -> " + AmtAcctDr1);
-			factAcctInfo.getRecord().setAmtAcctDr(AmtAcctDr1);
+			factAcctInfo.getFactAcct().setAmtAcctDr(AmtAcctDr1);
 		}
 		if (AmtAcctCr != null && AmtAcctCr.scale() > precision)
 		{
 			BigDecimal AmtAcctCr1 = AmtAcctCr.setScale(precision, RoundingMode.HALF_UP);
 			if (AmtAcctCr1.compareTo(AmtAcctCr) != 0)
 				log.warning("Accounted CR Precision " + AmtAcctCr + " -> " + AmtAcctCr1);
-			factAcctInfo.getRecord().setAmtAcctCr(AmtAcctCr1);
+			factAcctInfo.getFactAcct().setAmtAcctCr(AmtAcctCr1);
 		}
 	}   //  setAmtAcct
 
@@ -376,26 +376,26 @@ public final class FactLine
 		m_doc = doc;
 		m_docLine = docLine;
 		//	reset
-		factAcctInfo.getRecord().setAD_Org_ID(0);
-		factAcctInfo.getRecord().setC_SalesRegion_ID(0);
+		factAcctInfo.getFactAcct().setAD_Org_ID(0);
+		factAcctInfo.getFactAcct().setC_SalesRegion_ID(0);
 		//	Client
-		if (factAcctInfo.getRecord().getAD_Client_ID() == 0)
+		if (factAcctInfo.getFactAcct().getAD_Client_ID() == 0)
 			factAcctInfo.getPO().set_ValueNoCheck ("AD_Client_ID", m_doc.getAD_Client_ID());
 		//	Date Trx
-		factAcctInfo.getRecord().setDateTrx (m_doc.getDateDoc());
+		factAcctInfo.getFactAcct().setDateTrx (m_doc.getDateDoc());
 		if (m_docLine != null && m_docLine.getDateDoc() != null)
-			factAcctInfo.getRecord().setDateTrx (m_docLine.getDateDoc());
+			factAcctInfo.getFactAcct().setDateTrx (m_docLine.getDateDoc());
 		//	Date Acct
-		factAcctInfo.getRecord().setDateAcct (m_doc.getDateAcct());
+		factAcctInfo.getFactAcct().setDateAcct (m_doc.getDateAcct());
 		if (m_docLine != null && m_docLine.getDateAcct() != null)
-			factAcctInfo.getRecord().setDateAcct (m_docLine.getDateAcct());
+			factAcctInfo.getFactAcct().setDateAcct (m_docLine.getDateAcct());
 		//	Period, Tax
 		if (m_docLine != null &&  m_docLine.getC_Period_ID() != 0)
-			factAcctInfo.getRecord().setC_Period_ID(m_docLine.getC_Period_ID());
+			factAcctInfo.getFactAcct().setC_Period_ID(m_docLine.getC_Period_ID());
 		else
-			factAcctInfo.getRecord().setC_Period_ID (m_doc.getC_Period_ID());
+			factAcctInfo.getFactAcct().setC_Period_ID (m_doc.getC_Period_ID());
 		if (m_docLine != null)
-			factAcctInfo.getRecord().setC_Tax_ID (m_docLine.getC_Tax_ID());
+			factAcctInfo.getFactAcct().setC_Tax_ID (m_docLine.getC_Tax_ID());
 		//	Description
 		StringBuilder description = new StringBuilder().append(m_doc.getDocumentNo());
 		if (m_docLine != null)
@@ -408,121 +408,121 @@ public final class FactLine
 		}
 		else if (m_doc.getDescription() != null && m_doc.getDescription().length() > 0)
 			description.append(" (").append(m_doc.getDescription()).append(")");
-		factAcctInfo.getRecord().setDescription(description.toString());
+		factAcctInfo.getFactAcct().setDescription(description.toString());
 		//	Journal Info
-		factAcctInfo.getRecord().setGL_Budget_ID (m_doc.getGL_Budget_ID());
-		factAcctInfo.getRecord().setGL_Category_ID (m_doc.getGL_Category_ID());
+		factAcctInfo.getFactAcct().setGL_Budget_ID (m_doc.getGL_Budget_ID());
+		factAcctInfo.getFactAcct().setGL_Category_ID (m_doc.getGL_Category_ID());
 
 		//	Product
 		if (m_docLine != null)
-			factAcctInfo.getRecord().setM_Product_ID (m_docLine.getM_Product_ID());
-		if (factAcctInfo.getRecord().getM_Product_ID() == 0)
-			factAcctInfo.getRecord().setM_Product_ID (m_doc.getM_Product_ID());
+			factAcctInfo.getFactAcct().setM_Product_ID (m_docLine.getM_Product_ID());
+		if (factAcctInfo.getFactAcct().getM_Product_ID() == 0)
+			factAcctInfo.getFactAcct().setM_Product_ID (m_doc.getM_Product_ID());
 		//	UOM
 		if (m_docLine != null)
-			factAcctInfo.getRecord().setC_UOM_ID (m_docLine.getC_UOM_ID());
+			factAcctInfo.getFactAcct().setC_UOM_ID (m_docLine.getC_UOM_ID());
 		//	Qty
 		if (factAcctInfo.getPO().get_Value("Qty") == null)	// not previously set
 		{
-			factAcctInfo.getRecord().setQty (m_doc.getQty());	//	neg = outgoing
+			factAcctInfo.getFactAcct().setQty (m_doc.getQty());	//	neg = outgoing
 			if (m_docLine != null)
-				factAcctInfo.getRecord().setQty (m_docLine.getQty());
+				factAcctInfo.getFactAcct().setQty (m_docLine.getQty());
 		}
 		
 		//	Loc From (maybe set earlier)
-		if (factAcctInfo.getRecord().getC_LocFrom_ID() == 0 && m_docLine != null)
-			factAcctInfo.getRecord().setC_LocFrom_ID (m_docLine.getC_LocFrom_ID());
-		if (factAcctInfo.getRecord().getC_LocFrom_ID() == 0)
-			factAcctInfo.getRecord().setC_LocFrom_ID (m_doc.getC_LocFrom_ID());
+		if (factAcctInfo.getFactAcct().getC_LocFrom_ID() == 0 && m_docLine != null)
+			factAcctInfo.getFactAcct().setC_LocFrom_ID (m_docLine.getC_LocFrom_ID());
+		if (factAcctInfo.getFactAcct().getC_LocFrom_ID() == 0)
+			factAcctInfo.getFactAcct().setC_LocFrom_ID (m_doc.getC_LocFrom_ID());
 		//	Loc To (maybe set earlier)
-		if (factAcctInfo.getRecord().getC_LocTo_ID() == 0 && m_docLine != null)
-			factAcctInfo.getRecord().setC_LocTo_ID (m_docLine.getC_LocTo_ID());
-		if (factAcctInfo.getRecord().getC_LocTo_ID() == 0)
-			factAcctInfo.getRecord().setC_LocTo_ID (m_doc.getC_LocTo_ID());
+		if (factAcctInfo.getFactAcct().getC_LocTo_ID() == 0 && m_docLine != null)
+			factAcctInfo.getFactAcct().setC_LocTo_ID (m_docLine.getC_LocTo_ID());
+		if (factAcctInfo.getFactAcct().getC_LocTo_ID() == 0)
+			factAcctInfo.getFactAcct().setC_LocTo_ID (m_doc.getC_LocTo_ID());
 		//	BPartner
 		if (m_docLine != null)
-			factAcctInfo.getRecord().setC_BPartner_ID (m_docLine.getC_BPartner_ID());
-		if (factAcctInfo.getRecord().getC_BPartner_ID() == 0)
-			factAcctInfo.getRecord().setC_BPartner_ID (m_doc.getC_BPartner_ID());
+			factAcctInfo.getFactAcct().setC_BPartner_ID (m_docLine.getC_BPartner_ID());
+		if (factAcctInfo.getFactAcct().getC_BPartner_ID() == 0)
+			factAcctInfo.getFactAcct().setC_BPartner_ID (m_doc.getC_BPartner_ID());
 		//	Sales Region from BPLocation/Sales Rep
 		//	Trx Org
 		if (m_docLine != null)
-			factAcctInfo.getRecord().setAD_OrgTrx_ID (m_docLine.getAD_OrgTrx_ID());
-		if (factAcctInfo.getRecord().getAD_OrgTrx_ID() == 0)
-			factAcctInfo.getRecord().setAD_OrgTrx_ID (m_doc.getAD_OrgTrx_ID());
+			factAcctInfo.getFactAcct().setAD_OrgTrx_ID (m_docLine.getAD_OrgTrx_ID());
+		if (factAcctInfo.getFactAcct().getAD_OrgTrx_ID() == 0)
+			factAcctInfo.getFactAcct().setAD_OrgTrx_ID (m_doc.getAD_OrgTrx_ID());
 		//	Project
 		if (m_docLine != null)
-			factAcctInfo.getRecord().setC_Project_ID (m_docLine.getC_Project_ID());
-		if (factAcctInfo.getRecord().getC_Project_ID() == 0)
-			factAcctInfo.getRecord().setC_Project_ID (m_doc.getC_Project_ID());
+			factAcctInfo.getFactAcct().setC_Project_ID (m_docLine.getC_Project_ID());
+		if (factAcctInfo.getFactAcct().getC_Project_ID() == 0)
+			factAcctInfo.getFactAcct().setC_Project_ID (m_doc.getC_Project_ID());
 		if (m_docLine != null)
-			factAcctInfo.getRecord().setC_ProjectPhase_ID(m_docLine.getC_ProjectPhase_ID());
-		if (factAcctInfo.getRecord().getC_ProjectPhase_ID() == 0)
-			factAcctInfo.getRecord().setC_ProjectPhase_ID (m_doc.getC_ProjectPhase_ID());
+			factAcctInfo.getFactAcct().setC_ProjectPhase_ID(m_docLine.getC_ProjectPhase_ID());
+		if (factAcctInfo.getFactAcct().getC_ProjectPhase_ID() == 0)
+			factAcctInfo.getFactAcct().setC_ProjectPhase_ID (m_doc.getC_ProjectPhase_ID());
 		if (m_docLine != null)
-			factAcctInfo.getRecord().setC_ProjectTask_ID(m_docLine.getC_ProjectTask_ID());
-		if (factAcctInfo.getRecord().getC_ProjectTask_ID() == 0)
-			factAcctInfo.getRecord().setC_ProjectTask_ID (m_doc.getC_ProjectTask_ID());
+			factAcctInfo.getFactAcct().setC_ProjectTask_ID(m_docLine.getC_ProjectTask_ID());
+		if (factAcctInfo.getFactAcct().getC_ProjectTask_ID() == 0)
+			factAcctInfo.getFactAcct().setC_ProjectTask_ID (m_doc.getC_ProjectTask_ID());
 		//	Campaign
 		if (m_docLine != null)
-			factAcctInfo.getRecord().setC_Campaign_ID (m_docLine.getC_Campaign_ID());
-		if (factAcctInfo.getRecord().getC_Campaign_ID() == 0)
-			factAcctInfo.getRecord().setC_Campaign_ID (m_doc.getC_Campaign_ID());
+			factAcctInfo.getFactAcct().setC_Campaign_ID (m_docLine.getC_Campaign_ID());
+		if (factAcctInfo.getFactAcct().getC_Campaign_ID() == 0)
+			factAcctInfo.getFactAcct().setC_Campaign_ID (m_doc.getC_Campaign_ID());
 		//	Activity
 		if (m_docLine != null)
-			factAcctInfo.getRecord().setC_Activity_ID (m_docLine.getC_Activity_ID());
-		if (factAcctInfo.getRecord().getC_Activity_ID() == 0)
-			factAcctInfo.getRecord().setC_Activity_ID (m_doc.getC_Activity_ID());
+			factAcctInfo.getFactAcct().setC_Activity_ID (m_docLine.getC_Activity_ID());
+		if (factAcctInfo.getFactAcct().getC_Activity_ID() == 0)
+			factAcctInfo.getFactAcct().setC_Activity_ID (m_doc.getC_Activity_ID());
 		//	BPartner Employee
 		if (m_docLine != null)
-			factAcctInfo.getRecord().setC_Employee_ID(m_docLine.getC_Employee_ID());
-		if (factAcctInfo.getRecord().getC_Employee_ID() == 0)
-			factAcctInfo.getRecord().setC_Employee_ID(m_doc.getC_Employee_ID());
+			factAcctInfo.getFactAcct().setC_Employee_ID(m_docLine.getC_Employee_ID());
+		if (factAcctInfo.getFactAcct().getC_Employee_ID() == 0)
+			factAcctInfo.getFactAcct().setC_Employee_ID(m_doc.getC_Employee_ID());
 
 		if (m_docLine != null)
-			factAcctInfo.getRecord().setA_Asset_ID(m_docLine.getA_Asset_ID());
-		if (factAcctInfo.getRecord().getA_Asset_ID() == 0)
-			factAcctInfo.getRecord().setA_Asset_ID(m_doc.getA_Asset_ID());
+			factAcctInfo.getFactAcct().setA_Asset_ID(m_docLine.getA_Asset_ID());
+		if (factAcctInfo.getFactAcct().getA_Asset_ID() == 0)
+			factAcctInfo.getFactAcct().setA_Asset_ID(m_doc.getA_Asset_ID());
 
 		if (m_docLine != null)
-			factAcctInfo.getRecord().setC_Charge_ID(m_docLine.getC_Charge_ID());
-		if (factAcctInfo.getRecord().getC_Charge_ID() == 0)
-			factAcctInfo.getRecord().setC_Charge_ID(m_doc.getC_Charge_ID());
+			factAcctInfo.getFactAcct().setC_Charge_ID(m_docLine.getC_Charge_ID());
+		if (factAcctInfo.getFactAcct().getC_Charge_ID() == 0)
+			factAcctInfo.getFactAcct().setC_Charge_ID(m_doc.getC_Charge_ID());
 
 		if (m_docLine != null)
-			factAcctInfo.getRecord().setM_Warehouse_ID(m_docLine.getM_Warehouse_ID());
-		if (factAcctInfo.getRecord().getM_Warehouse_ID() == 0)
-			factAcctInfo.getRecord().setM_Warehouse_ID(m_doc.getM_Warehouse_ID());
+			factAcctInfo.getFactAcct().setM_Warehouse_ID(m_docLine.getM_Warehouse_ID());
+		if (factAcctInfo.getFactAcct().getM_Warehouse_ID() == 0)
+			factAcctInfo.getFactAcct().setM_Warehouse_ID(m_doc.getM_Warehouse_ID());
 
 		if (m_docLine != null)
-			factAcctInfo.getRecord().setC_CostCenter_ID(m_docLine.getC_CostCenter_ID());
-		if (factAcctInfo.getRecord().getC_CostCenter_ID() == 0)
-			factAcctInfo.getRecord().setC_CostCenter_ID(m_doc.getC_CostCenter_ID());
+			factAcctInfo.getFactAcct().setC_CostCenter_ID(m_docLine.getC_CostCenter_ID());
+		if (factAcctInfo.getFactAcct().getC_CostCenter_ID() == 0)
+			factAcctInfo.getFactAcct().setC_CostCenter_ID(m_doc.getC_CostCenter_ID());
 
 		if (m_docLine != null)
-			factAcctInfo.getRecord().setC_Department_ID(m_docLine.getC_Department_ID());
-		if (factAcctInfo.getRecord().getC_Department_ID() == 0)
-			factAcctInfo.getRecord().setC_Department_ID(m_doc.getC_Department_ID());
+			factAcctInfo.getFactAcct().setC_Department_ID(m_docLine.getC_Department_ID());
+		if (factAcctInfo.getFactAcct().getC_Department_ID() == 0)
+			factAcctInfo.getFactAcct().setC_Department_ID(m_doc.getC_Department_ID());
 
 		if (m_docLine != null)
-			factAcctInfo.getRecord().setM_AttributeSetInstance_ID(m_docLine.getM_AttributeSetInstance_ID());
-		if (factAcctInfo.getRecord().getM_AttributeSetInstance_ID() == 0)
-			factAcctInfo.getRecord().setM_AttributeSetInstance_ID(m_doc.getM_AttributeSetInstance_ID());
+			factAcctInfo.getFactAcct().setM_AttributeSetInstance_ID(m_docLine.getM_AttributeSetInstance_ID());
+		if (factAcctInfo.getFactAcct().getM_AttributeSetInstance_ID() == 0)
+			factAcctInfo.getFactAcct().setM_AttributeSetInstance_ID(m_doc.getM_AttributeSetInstance_ID());
 		
 		//	User List 1
 		if (m_docLine != null)
-			factAcctInfo.getRecord().setUser1_ID (m_docLine.getUser1_ID());
-		if (factAcctInfo.getRecord().getUser1_ID() == 0)
-			factAcctInfo.getRecord().setUser1_ID (m_doc.getUser1_ID());
+			factAcctInfo.getFactAcct().setUser1_ID (m_docLine.getUser1_ID());
+		if (factAcctInfo.getFactAcct().getUser1_ID() == 0)
+			factAcctInfo.getFactAcct().setUser1_ID (m_doc.getUser1_ID());
 		//	User List 2
 		if (m_docLine != null)
-			factAcctInfo.getRecord().setUser2_ID (m_docLine.getUser2_ID());
-		if (factAcctInfo.getRecord().getUser2_ID() == 0)
-			factAcctInfo.getRecord().setUser2_ID (m_doc.getUser2_ID());
+			factAcctInfo.getFactAcct().setUser2_ID (m_docLine.getUser2_ID());
+		if (factAcctInfo.getFactAcct().getUser2_ID() == 0)
+			factAcctInfo.getFactAcct().setUser2_ID (m_doc.getUser2_ID());
 		//	References in setAccount
 	}   //  setDocumentInfo
 
-	public void  setDocumentTextInfo(IAcctSchemaInfo acctSchema){
+	public void  setDocumentTextInfo(IAcctSchemaModel acctSchema){
 		
 		if (m_acctSchema == null)
 			m_acctSchema = acctSchema;
@@ -530,7 +530,7 @@ public final class FactLine
 		if (m_acctSchema == null)
 			return;
 
-		IAcctSchemaElementInfo cf1 = m_acctSchema.getAcctSchemaElementInfo(IAcctSchemaElementConstants.ELEMENTTYPE_CustomField1);
+		IAcctSchemaElementModel cf1 = m_acctSchema.getAcctSchemaElementModel(IAcctSchemaElementConstants.ELEMENTTYPE_CustomField1);
 		if (cf1 != null)
 		{
 			String columnName1 = cf1.getDisplayColumnName();
@@ -538,11 +538,11 @@ public final class FactLine
 			{
 				String value = getDocValueAsString(columnName1);
 				if (!Util.isEmpty(value))
-					factAcctInfo.getRecord().setCustomFieldText1(value);
+					factAcctInfo.getFactAcct().setCustomFieldText1(value);
 			}
 		}
 		
-		IAcctSchemaElementInfo cf2 = m_acctSchema.getAcctSchemaElementInfo(IAcctSchemaElementConstants.ELEMENTTYPE_CustomField2);
+		IAcctSchemaElementModel cf2 = m_acctSchema.getAcctSchemaElementModel(IAcctSchemaElementConstants.ELEMENTTYPE_CustomField2);
 		if (cf2 != null)
 		{
 			String columnName2 = cf2.getDisplayColumnName();
@@ -550,11 +550,11 @@ public final class FactLine
 			{
 				String value = getDocValueAsString(columnName2);
 				if (!Util.isEmpty(value))
-					factAcctInfo.getRecord().setCustomFieldText2(value);
+					factAcctInfo.getFactAcct().setCustomFieldText2(value);
 			}
 		}
 		
-		IAcctSchemaElementInfo cf3 = m_acctSchema.getAcctSchemaElementInfo(IAcctSchemaElementConstants.ELEMENTTYPE_CustomField3);
+		IAcctSchemaElementModel cf3 = m_acctSchema.getAcctSchemaElementModel(IAcctSchemaElementConstants.ELEMENTTYPE_CustomField3);
 		if (cf3 != null)
 		{
 			String columnName3 = cf3.getDisplayColumnName();
@@ -562,11 +562,11 @@ public final class FactLine
 			{
 				String value = getDocValueAsString(columnName3);
 				if (!Util.isEmpty(value))
-					factAcctInfo.getRecord().setCustomFieldText3(value);
+					factAcctInfo.getFactAcct().setCustomFieldText3(value);
 			}
 		}
 		
-		IAcctSchemaElementInfo cf4 = m_acctSchema.getAcctSchemaElementInfo(IAcctSchemaElementConstants.ELEMENTTYPE_CustomField4);
+		IAcctSchemaElementModel cf4 = m_acctSchema.getAcctSchemaElementModel(IAcctSchemaElementConstants.ELEMENTTYPE_CustomField4);
 		if (cf4 != null)
 		{
 			String columnName4 = cf4.getDisplayColumnName();
@@ -574,7 +574,7 @@ public final class FactLine
 			{
 				String value = getDocValueAsString(columnName4);
 				if (!Util.isEmpty(value))
-					factAcctInfo.getRecord().setCustomFieldText4(value);
+					factAcctInfo.getFactAcct().setCustomFieldText4(value);
 			}
 		}
 	}
@@ -608,12 +608,12 @@ public final class FactLine
 	 */
 	public void addDescription (String description)
 	{
-		String original = factAcctInfo.getRecord().getDescription();
+		String original = factAcctInfo.getFactAcct().getDescription();
 		if (original == null || original.trim().length() == 0)
-			factAcctInfo.getRecord().setDescription(description);
+			factAcctInfo.getFactAcct().setDescription(description);
 		else{
 			StringBuilder msgd = new StringBuilder(original).append(" - ").append(description);
-			factAcctInfo.getRecord().setDescription(msgd.toString());
+			factAcctInfo.getFactAcct().setDescription(msgd.toString());
 		}	
 	}	//	addDescription
 	
@@ -624,8 +624,8 @@ public final class FactLine
 	 */
 	public void setM_Locator_ID (int M_Locator_ID)
 	{
-		factAcctInfo.getRecord().setM_Locator_ID (M_Locator_ID);
-		factAcctInfo.getRecord().setAD_Org_ID(0);	//	reset
+		factAcctInfo.getFactAcct().setM_Locator_ID (M_Locator_ID);
+		factAcctInfo.getFactAcct().setAD_Org_ID(0);	//	reset
 	}   //  setM_Locator_ID
 	
 	/**
@@ -636,9 +636,9 @@ public final class FactLine
 	public void setLocation (int C_Location_ID, boolean isFrom)
 	{
 		if (isFrom)
-			factAcctInfo.getRecord().setC_LocFrom_ID (C_Location_ID);
+			factAcctInfo.getFactAcct().setC_LocFrom_ID (C_Location_ID);
 		else
-			factAcctInfo.getRecord().setC_LocTo_ID (C_Location_ID);
+			factAcctInfo.getFactAcct().setC_LocTo_ID (C_Location_ID);
 	}   //  setLocator
 
 	/**
@@ -751,12 +751,12 @@ public final class FactLine
 	 */
 	public BigDecimal getSourceBalance()
 	{
-		if (factAcctInfo.getRecord().getAmtSourceDr() == null)
-			factAcctInfo.getRecord().setAmtSourceDr (Env.ZERO);
-		if (factAcctInfo.getRecord().getAmtSourceCr() == null)
-			factAcctInfo.getRecord().setAmtSourceCr (Env.ZERO);
+		if (factAcctInfo.getFactAcct().getAmtSourceDr() == null)
+			factAcctInfo.getFactAcct().setAmtSourceDr (Env.ZERO);
+		if (factAcctInfo.getFactAcct().getAmtSourceCr() == null)
+			factAcctInfo.getFactAcct().setAmtSourceCr (Env.ZERO);
 		//
-		return factAcctInfo.getRecord().getAmtSourceDr().subtract(factAcctInfo.getRecord().getAmtSourceCr());
+		return factAcctInfo.getFactAcct().getAmtSourceDr().subtract(factAcctInfo.getFactAcct().getAmtSourceCr());
 	}   //  getSourceBalance
 
 	/**
@@ -774,11 +774,11 @@ public final class FactLine
 	 */
 	public BigDecimal getAcctBalance()
 	{
-		if (factAcctInfo.getRecord().getAmtAcctDr() == null)
-			factAcctInfo.getRecord().setAmtAcctDr (Env.ZERO);
-		if (factAcctInfo.getRecord().getAmtAcctCr() == null)
-			factAcctInfo.getRecord().setAmtAcctCr (Env.ZERO);
-		return factAcctInfo.getRecord().getAmtAcctDr().subtract(factAcctInfo.getRecord().getAmtAcctCr());
+		if (factAcctInfo.getFactAcct().getAmtAcctDr() == null)
+			factAcctInfo.getFactAcct().setAmtAcctDr (Env.ZERO);
+		if (factAcctInfo.getFactAcct().getAmtAcctCr() == null)
+			factAcctInfo.getFactAcct().setAmtAcctCr (Env.ZERO);
+		return factAcctInfo.getFactAcct().getAmtAcctDr().subtract(factAcctInfo.getFactAcct().getAmtAcctCr());
 	}   //  getAcctBalance
 
 	/**
@@ -802,24 +802,24 @@ public final class FactLine
 	public void currencyCorrect (BigDecimal deltaAmount)
 	{
 		boolean negative = deltaAmount.compareTo(Env.ZERO) < 0;
-		boolean adjustDr = factAcctInfo.getRecord().getAmtAcctDr().abs().compareTo(factAcctInfo.getRecord().getAmtAcctCr().abs()) > 0;
+		boolean adjustDr = factAcctInfo.getFactAcct().getAmtAcctDr().abs().compareTo(factAcctInfo.getFactAcct().getAmtAcctCr().abs()) > 0;
 
 		if (log.isLoggable(Level.FINE)) log.fine(deltaAmount.toString()
-			+ "; Old-AcctDr=" + factAcctInfo.getRecord().getAmtAcctDr() + ",AcctCr=" + factAcctInfo.getRecord().getAmtAcctCr()
+			+ "; Old-AcctDr=" + factAcctInfo.getFactAcct().getAmtAcctDr() + ",AcctCr=" + factAcctInfo.getFactAcct().getAmtAcctCr()
 			+ "; Negative=" + negative + "; AdjustDr=" + adjustDr);
 
 		if (adjustDr)
 			if (negative)
-				factAcctInfo.getRecord().setAmtAcctDr (factAcctInfo.getRecord().getAmtAcctDr().subtract(deltaAmount));
+				factAcctInfo.getFactAcct().setAmtAcctDr (factAcctInfo.getFactAcct().getAmtAcctDr().subtract(deltaAmount));
 			else
-				factAcctInfo.getRecord().setAmtAcctDr (factAcctInfo.getRecord().getAmtAcctDr().subtract(deltaAmount));
+				factAcctInfo.getFactAcct().setAmtAcctDr (factAcctInfo.getFactAcct().getAmtAcctDr().subtract(deltaAmount));
 		else
 			if (negative)
-				factAcctInfo.getRecord().setAmtAcctCr (factAcctInfo.getRecord().getAmtAcctCr().add(deltaAmount));
+				factAcctInfo.getFactAcct().setAmtAcctCr (factAcctInfo.getFactAcct().getAmtAcctCr().add(deltaAmount));
 			else
-				factAcctInfo.getRecord().setAmtAcctCr (factAcctInfo.getRecord().getAmtAcctCr().add(deltaAmount));
+				factAcctInfo.getFactAcct().setAmtAcctCr (factAcctInfo.getFactAcct().getAmtAcctCr().add(deltaAmount));
 
-		if (log.isLoggable(Level.FINE)) log.fine("New-AcctDr=" + factAcctInfo.getRecord().getAmtAcctDr() + ",AcctCr=" + factAcctInfo.getRecord().getAmtAcctCr());
+		if (log.isLoggable(Level.FINE)) log.fine("New-AcctDr=" + factAcctInfo.getFactAcct().getAmtAcctDr() + ",AcctCr=" + factAcctInfo.getFactAcct().getAmtAcctCr());
 	}	//	currencyCorrect
 
 	/**
@@ -829,13 +829,13 @@ public final class FactLine
 	public boolean convert ()
 	{
 		//  Document has no currency
-		if (factAcctInfo.getRecord().getC_Currency_ID() == Doc.NO_CURRENCY)
-			factAcctInfo.getRecord().setC_Currency_ID (m_acctSchema.getRecord().getC_Currency_ID());
+		if (factAcctInfo.getFactAcct().getC_Currency_ID() == Doc.NO_CURRENCY)
+			factAcctInfo.getFactAcct().setC_Currency_ID (m_acctSchema.getAcctSchema().getC_Currency_ID());
 
-		if (m_acctSchema.getRecord().getC_Currency_ID() == factAcctInfo.getRecord().getC_Currency_ID())
+		if (m_acctSchema.getAcctSchema().getC_Currency_ID() == factAcctInfo.getFactAcct().getC_Currency_ID())
 		{
-			factAcctInfo.getRecord().setAmtAcctDr (factAcctInfo.getRecord().getAmtSourceDr());
-			factAcctInfo.getRecord().setAmtAcctCr (factAcctInfo.getRecord().getAmtSourceCr());
+			factAcctInfo.getFactAcct().setAmtAcctDr (factAcctInfo.getFactAcct().getAmtSourceDr());
+			factAcctInfo.getFactAcct().setAmtAcctCr (factAcctInfo.getFactAcct().getAmtSourceCr());
 			return true;
 		}
 		//	Get Conversion Type from Line or Header
@@ -858,7 +858,7 @@ public final class FactLine
 				AD_Org_ID = m_doc.getAD_Org_ID();
 		}
 
-		Timestamp convDate = factAcctInfo.getRecord().getDateAcct();
+		Timestamp convDate = factAcctInfo.getFactAcct().getDateAcct();
 
 		if (( m_doc instanceof Doc_BankStatement || m_doc instanceof Doc_AllocationHdr ) && m_docLine != null)
 			convDate = m_docLine.getDateConv();
@@ -875,44 +875,44 @@ public final class FactLine
 
 		if (currencyRate != null && currencyRate.signum() > 0)
 		{
-			BigDecimal amtAcctDr = factAcctInfo.getRecord().getAmtSourceDr().multiply(currencyRate);
-			int stdPrecision = MCurrency.getStdPrecision(factAcctInfo.getPO().getCtx(), m_acctSchema.getRecord().getC_Currency_ID());
+			BigDecimal amtAcctDr = factAcctInfo.getFactAcct().getAmtSourceDr().multiply(currencyRate);
+			int stdPrecision = MCurrency.getStdPrecision(factAcctInfo.getPO().getCtx(), m_acctSchema.getAcctSchema().getC_Currency_ID());
 			if (amtAcctDr.scale() > stdPrecision)
 				amtAcctDr = amtAcctDr.setScale(stdPrecision, RoundingMode.HALF_UP);
-			factAcctInfo.getRecord().setAmtAcctDr(amtAcctDr);
-			BigDecimal amtAcctCr = factAcctInfo.getRecord().getAmtSourceCr().multiply(currencyRate);
+			factAcctInfo.getFactAcct().setAmtAcctDr(amtAcctDr);
+			BigDecimal amtAcctCr = factAcctInfo.getFactAcct().getAmtSourceCr().multiply(currencyRate);
 			if (amtAcctCr.scale() > stdPrecision)
 				amtAcctCr = amtAcctCr.setScale(stdPrecision, RoundingMode.HALF_UP);
-			factAcctInfo.getRecord().setAmtAcctCr(amtAcctCr);
+			factAcctInfo.getFactAcct().setAmtAcctCr(amtAcctCr);
 		} 	
 		else 
 		{
-			BigDecimal amtSourceDr = factAcctInfo.getRecord().getAmtSourceDr();
+			BigDecimal amtSourceDr = factAcctInfo.getFactAcct().getAmtSourceDr();
 			BigDecimal amtAcctDr = MConversionRate.convert (factAcctInfo.getPO().getCtx(),
-					factAcctInfo.getRecord().getAmtSourceDr(), factAcctInfo.getRecord().getC_Currency_ID(), m_acctSchema.getRecord().getC_Currency_ID(),
+					factAcctInfo.getFactAcct().getAmtSourceDr(), factAcctInfo.getFactAcct().getC_Currency_ID(), m_acctSchema.getAcctSchema().getC_Currency_ID(),
 					convDate, C_ConversionType_ID, m_doc.getAD_Client_ID(), AD_Org_ID);
 			if (amtSourceDr.signum() != 0) {
 				if (amtAcctDr == null || amtAcctDr.signum() == 0) {
-					log.warning("No conversion from " + factAcctInfo.getRecord().getC_Currency_ID() + " to " + m_acctSchema.getRecord().getC_Currency_ID() +
+					log.warning("No conversion from " + factAcctInfo.getFactAcct().getC_Currency_ID() + " to " + m_acctSchema.getAcctSchema().getC_Currency_ID() +
 							" ConverstionType="+C_ConversionType_ID + " ConversionDate="+convDate.toString());
 					return false;
 				}
 			}
-			factAcctInfo.getRecord().setAmtAcctDr (amtAcctDr);
-			if (factAcctInfo.getRecord().getAmtAcctDr() == null)
+			factAcctInfo.getFactAcct().setAmtAcctDr (amtAcctDr);
+			if (factAcctInfo.getFactAcct().getAmtAcctDr() == null)
 				return false;
-			BigDecimal amtSourceCr = factAcctInfo.getRecord().getAmtSourceCr();
+			BigDecimal amtSourceCr = factAcctInfo.getFactAcct().getAmtSourceCr();
 			BigDecimal amtAcctCr = MConversionRate.convert (factAcctInfo.getPO().getCtx(),
-					factAcctInfo.getRecord().getAmtSourceCr(), factAcctInfo.getRecord().getC_Currency_ID(), m_acctSchema.getRecord().getC_Currency_ID(),
+					factAcctInfo.getFactAcct().getAmtSourceCr(), factAcctInfo.getFactAcct().getC_Currency_ID(), m_acctSchema.getAcctSchema().getC_Currency_ID(),
 					convDate, C_ConversionType_ID, m_doc.getAD_Client_ID(), AD_Org_ID);
 			if (amtSourceCr.signum() != 0) {
 				if (amtAcctCr == null || amtAcctCr.signum() == 0) {
-					log.warning("No conversion from " + factAcctInfo.getRecord().getC_Currency_ID() + " to " + m_acctSchema.getRecord().getC_Currency_ID() +
+					log.warning("No conversion from " + factAcctInfo.getFactAcct().getC_Currency_ID() + " to " + m_acctSchema.getAcctSchema().getC_Currency_ID() +
 							" ConverstionType="+C_ConversionType_ID + " ConversionDate="+convDate.toString());
 					return false;
 				}
 			}
-			factAcctInfo.getRecord().setAmtAcctCr (amtAcctCr);
+			factAcctInfo.getFactAcct().setAmtAcctCr (amtAcctCr);
 		}
 		return true;
 	}	//	convert
@@ -921,7 +921,7 @@ public final class FactLine
 	 * 	Get Account
 	 *	@return account
 	 */
-	public IAccountInfo getAccount()
+	public IAccountModel getAccount()
 	{
 		return m_acct;
 	}	//	getAccount
@@ -933,11 +933,11 @@ public final class FactLine
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder("FactLine=[");
-		sb.append(factAcctInfo.getRecord().getAD_Table_ID()).append(":").append(factAcctInfo.getRecord().getRecord_ID())
+		sb.append(factAcctInfo.getFactAcct().getAD_Table_ID()).append(":").append(factAcctInfo.getFactAcct().getRecord_ID())
 			.append(",").append(m_acct)
-			.append(",Cur=").append(factAcctInfo.getRecord().getC_Currency_ID())
-			.append(", DR=").append(factAcctInfo.getRecord().getAmtSourceDr()).append("|").append(factAcctInfo.getRecord().getAmtAcctDr())
-			.append(", CR=").append(factAcctInfo.getRecord().getAmtSourceCr()).append("|").append(factAcctInfo.getRecord().getAmtAcctCr())
+			.append(",Cur=").append(factAcctInfo.getFactAcct().getC_Currency_ID())
+			.append(", DR=").append(factAcctInfo.getFactAcct().getAmtSourceDr()).append("|").append(factAcctInfo.getFactAcct().getAmtAcctDr())
+			.append(", CR=").append(factAcctInfo.getFactAcct().getAmtSourceCr()).append("|").append(factAcctInfo.getFactAcct().getAmtAcctCr())
 			.append("]");
 		return sb.toString();
 	}	//	toString
@@ -953,10 +953,10 @@ public final class FactLine
 	 */
 	public int getAD_Org_ID()
 	{
-		if (factAcctInfo.getRecord().getAD_Org_ID() != 0)      //  set earlier
-			return factAcctInfo.getRecord().getAD_Org_ID();
+		if (factAcctInfo.getFactAcct().getAD_Org_ID() != 0)      //  set earlier
+			return factAcctInfo.getFactAcct().getAD_Org_ID();
 		//	Prio 1 - get from locator - if exist
-		if (factAcctInfo.getRecord().getM_Locator_ID() != 0)
+		if (factAcctInfo.getFactAcct().getM_Locator_ID() != 0)
 		{
 			String sql = "SELECT AD_Org_ID FROM M_Locator WHERE M_Locator_ID=? AND AD_Client_ID=?";
 			PreparedStatement pstmt = null;
@@ -964,16 +964,16 @@ public final class FactLine
 			try
 			{
 				pstmt = DB.prepareStatement(sql, factAcctInfo.getPO().get_TrxName());
-				pstmt.setInt(1, factAcctInfo.getRecord().getM_Locator_ID());
-				pstmt.setInt(2, factAcctInfo.getRecord().getAD_Client_ID());
+				pstmt.setInt(1, factAcctInfo.getFactAcct().getM_Locator_ID());
+				pstmt.setInt(2, factAcctInfo.getFactAcct().getAD_Client_ID());
 				rs = pstmt.executeQuery();
 				if (rs.next())
 				{
-					factAcctInfo.getRecord().setAD_Org_ID (rs.getInt(1));
-					if (log.isLoggable(Level.FINER)) log.finer("AD_Org_ID=" + factAcctInfo.getRecord().getAD_Org_ID() + " (1 from M_Locator_ID=" + factAcctInfo.getRecord().getM_Locator_ID() + ")");
+					factAcctInfo.getFactAcct().setAD_Org_ID (rs.getInt(1));
+					if (log.isLoggable(Level.FINER)) log.finer("AD_Org_ID=" + factAcctInfo.getFactAcct().getAD_Org_ID() + " (1 from M_Locator_ID=" + factAcctInfo.getFactAcct().getM_Locator_ID() + ")");
 				}
 				else
-					log.log(Level.SEVERE, "AD_Org_ID - Did not find M_Locator_ID=" + factAcctInfo.getRecord().getM_Locator_ID());
+					log.log(Level.SEVERE, "AD_Org_ID - Did not find M_Locator_ID=" + factAcctInfo.getFactAcct().getM_Locator_ID());
 			}
 			catch (SQLException e)
 			{
@@ -986,40 +986,40 @@ public final class FactLine
 		}   //  M_Locator_ID != 0
 
 		//	Prio 2 - get from doc line - if exists (document context overwrites)
-		if (m_docLine != null && factAcctInfo.getRecord().getAD_Org_ID() == 0)
+		if (m_docLine != null && factAcctInfo.getFactAcct().getAD_Org_ID() == 0)
 		{
-			factAcctInfo.getRecord().setAD_Org_ID (m_docLine.getAD_Org_ID());
-			if (log.isLoggable(Level.FINER)) log.finer("AD_Org_ID=" + factAcctInfo.getRecord().getAD_Org_ID() + " (2 from DocumentLine)");
+			factAcctInfo.getFactAcct().setAD_Org_ID (m_docLine.getAD_Org_ID());
+			if (log.isLoggable(Level.FINER)) log.finer("AD_Org_ID=" + factAcctInfo.getFactAcct().getAD_Org_ID() + " (2 from DocumentLine)");
 		}
 		//	Prio 3 - get from doc - if not GL
-		if (m_doc != null && factAcctInfo.getRecord().getAD_Org_ID() == 0)
+		if (m_doc != null && factAcctInfo.getFactAcct().getAD_Org_ID() == 0)
 		{
 			if (Doc.DOCTYPE_GLJournal.equals (m_doc.getDocumentType()))
 			{
-				factAcctInfo.getRecord().setAD_Org_ID (m_acct.getRecord().getAD_Org_ID()); //	inter-company GL
-				if (log.isLoggable(Level.FINER)) log.finer("AD_Org_ID=" + factAcctInfo.getRecord().getAD_Org_ID() + " (3 from Acct)");
+				factAcctInfo.getFactAcct().setAD_Org_ID (m_acct.getCombination().getAD_Org_ID()); //	inter-company GL
+				if (log.isLoggable(Level.FINER)) log.finer("AD_Org_ID=" + factAcctInfo.getFactAcct().getAD_Org_ID() + " (3 from Acct)");
 			}
 			else
 			{
-				factAcctInfo.getRecord().setAD_Org_ID (m_doc.getAD_Org_ID());
-				if (log.isLoggable(Level.FINER)) log.finer("AD_Org_ID=" + factAcctInfo.getRecord().getAD_Org_ID() + " (3 from Document)");
+				factAcctInfo.getFactAcct().setAD_Org_ID (m_doc.getAD_Org_ID());
+				if (log.isLoggable(Level.FINER)) log.finer("AD_Org_ID=" + factAcctInfo.getFactAcct().getAD_Org_ID() + " (3 from Document)");
 			}
 		}
 		//	Prio 4 - get from account - if not GL
-		if (m_doc != null && factAcctInfo.getRecord().getAD_Org_ID() == 0)
+		if (m_doc != null && factAcctInfo.getFactAcct().getAD_Org_ID() == 0)
 		{
 			if (Doc.DOCTYPE_GLJournal.equals (m_doc.getDocumentType()))
 			{
-				factAcctInfo.getRecord().setAD_Org_ID (m_doc.getAD_Org_ID());
-				if (log.isLoggable(Level.FINER)) log.finer("AD_Org_ID=" + factAcctInfo.getRecord().getAD_Org_ID() + " (4 from Document)");
+				factAcctInfo.getFactAcct().setAD_Org_ID (m_doc.getAD_Org_ID());
+				if (log.isLoggable(Level.FINER)) log.finer("AD_Org_ID=" + factAcctInfo.getFactAcct().getAD_Org_ID() + " (4 from Document)");
 			}
 			else
 			{
-				factAcctInfo.getRecord().setAD_Org_ID (m_acct.getRecord().getAD_Org_ID());
-				if (log.isLoggable(Level.FINER)) log.finer("AD_Org_ID=" + factAcctInfo.getRecord().getAD_Org_ID() + " (4 from Acct)");
+				factAcctInfo.getFactAcct().setAD_Org_ID (m_acct.getCombination().getAD_Org_ID());
+				if (log.isLoggable(Level.FINER)) log.finer("AD_Org_ID=" + factAcctInfo.getFactAcct().getAD_Org_ID() + " (4 from Acct)");
 			}
 		}
-		return factAcctInfo.getRecord().getAD_Org_ID();
+		return factAcctInfo.getFactAcct().getAD_Org_ID();
 	}   //  setAD_Org_ID
 
 	/**
@@ -1028,43 +1028,43 @@ public final class FactLine
 	 */
 	public int getC_SalesRegion_ID ()
 	{
-		if (factAcctInfo.getRecord().getC_SalesRegion_ID() != 0)
-			return factAcctInfo.getRecord().getC_SalesRegion_ID();
+		if (factAcctInfo.getFactAcct().getC_SalesRegion_ID() != 0)
+			return factAcctInfo.getFactAcct().getC_SalesRegion_ID();
 		// Get from DocLine
 		if (m_docLine != null)
-			factAcctInfo.getRecord().setC_SalesRegion_ID (m_docLine.getC_SalesRegion_ID());
+			factAcctInfo.getFactAcct().setC_SalesRegion_ID (m_docLine.getC_SalesRegion_ID());
 		
 		// If No DocLine or DocLine.C_SalesRegion_ID is 0, get from parent Doc
 		if (m_doc != null)
 		{
-			if (factAcctInfo.getRecord().getC_SalesRegion_ID() == 0)
-				factAcctInfo.getRecord().setC_SalesRegion_ID (m_doc.getC_SalesRegion_ID());
-			if (factAcctInfo.getRecord().getC_SalesRegion_ID() == 0 && m_doc.getBP_C_SalesRegion_ID() > 0)
-				factAcctInfo.getRecord().setC_SalesRegion_ID (m_doc.getBP_C_SalesRegion_ID());
+			if (factAcctInfo.getFactAcct().getC_SalesRegion_ID() == 0)
+				factAcctInfo.getFactAcct().setC_SalesRegion_ID (m_doc.getC_SalesRegion_ID());
+			if (factAcctInfo.getFactAcct().getC_SalesRegion_ID() == 0 && m_doc.getBP_C_SalesRegion_ID() > 0)
+				factAcctInfo.getFactAcct().setC_SalesRegion_ID (m_doc.getBP_C_SalesRegion_ID());
 			//	derive SalesRegion from AcctSegment
-			if (factAcctInfo.getRecord().getC_SalesRegion_ID() == 0
+			if (factAcctInfo.getFactAcct().getC_SalesRegion_ID() == 0
 				&& m_doc.getC_BPartner_Location_ID() != 0
 				&& m_doc.getBP_C_SalesRegion_ID() == -1)	//	never tried
 			{
 				// fist, from C_BPartner_Location 
 				String sql = "SELECT COALESCE(C_SalesRegion_ID,0) FROM C_BPartner_Location WHERE C_BPartner_Location_ID=?";
-				factAcctInfo.getRecord().setC_SalesRegion_ID (DB.getSQLValue(null,
+				factAcctInfo.getFactAcct().setC_SalesRegion_ID (DB.getSQLValue(null,
 					sql, m_doc.getC_BPartner_Location_ID()));
-				if (factAcctInfo.getRecord().getC_SalesRegion_ID() != 0)		//	update parent Doc.BP_C_SalesRegion_ID
+				if (factAcctInfo.getFactAcct().getC_SalesRegion_ID() != 0)		//	update parent Doc.BP_C_SalesRegion_ID
 				{
-					m_doc.setBP_C_SalesRegion_ID(factAcctInfo.getRecord().getC_SalesRegion_ID());
-					if (log.isLoggable(Level.FINE)) log.fine("C_SalesRegion_ID=" + factAcctInfo.getRecord().getC_SalesRegion_ID() + " (from BPL)" );
+					m_doc.setBP_C_SalesRegion_ID(factAcctInfo.getFactAcct().getC_SalesRegion_ID());
+					if (log.isLoggable(Level.FINE)) log.fine("C_SalesRegion_ID=" + factAcctInfo.getFactAcct().getC_SalesRegion_ID() + " (from BPL)" );
 				}
 				else	
 				{
 					// second, from Sales Rep of Document -> Sales Region
 					sql = "SELECT COALESCE(MAX(C_SalesRegion_ID),0) FROM C_SalesRegion WHERE SalesRep_ID=?";
-					factAcctInfo.getRecord().setC_SalesRegion_ID (DB.getSQLValue(null,
+					factAcctInfo.getFactAcct().setC_SalesRegion_ID (DB.getSQLValue(null,
 						sql, m_doc.getSalesRep_ID()));
-					if (factAcctInfo.getRecord().getC_SalesRegion_ID() != 0)		//	update parent Doc.BP_C_SalesRegion_ID
+					if (factAcctInfo.getFactAcct().getC_SalesRegion_ID() != 0)		//	update parent Doc.BP_C_SalesRegion_ID
 					{
-						m_doc.setBP_C_SalesRegion_ID(factAcctInfo.getRecord().getC_SalesRegion_ID());
-						if (log.isLoggable(Level.FINE)) log.fine("C_SalesRegion_ID=" + factAcctInfo.getRecord().getC_SalesRegion_ID() + " (from SR)" );
+						m_doc.setBP_C_SalesRegion_ID(factAcctInfo.getFactAcct().getC_SalesRegion_ID());
+						if (log.isLoggable(Level.FINE)) log.fine("C_SalesRegion_ID=" + factAcctInfo.getFactAcct().getC_SalesRegion_ID() + " (from SR)" );
 					}
 					else
 						m_doc.setBP_C_SalesRegion_ID(-2);	//	don't try again
@@ -1072,10 +1072,10 @@ public final class FactLine
 			}
 			
 			// still 0, try account combination
-			if (m_acct != null && factAcctInfo.getRecord().getC_SalesRegion_ID() == 0)
-				factAcctInfo.getRecord().setC_SalesRegion_ID (m_acct.getRecord().getC_SalesRegion_ID());
+			if (m_acct != null && factAcctInfo.getFactAcct().getC_SalesRegion_ID() == 0)
+				factAcctInfo.getFactAcct().setC_SalesRegion_ID (m_acct.getCombination().getC_SalesRegion_ID());
 		}
-		return factAcctInfo.getRecord().getC_SalesRegion_ID();
+		return factAcctInfo.getFactAcct().getC_SalesRegion_ID();
 	}	//	getC_SalesRegion_ID
 
 	protected boolean beforeSave (boolean newRecord)
@@ -1088,26 +1088,26 @@ public final class FactLine
 			getC_SalesRegion_ID();
 			
 			//  Set Default from Account Combination
-			if (factAcctInfo.getRecord().getM_Product_ID() == 0)
-				factAcctInfo.getRecord().setM_Product_ID (m_acct.getRecord().getM_Product_ID());
-			if (factAcctInfo.getRecord().getC_LocFrom_ID() == 0)
-				factAcctInfo.getRecord().setC_LocFrom_ID (m_acct.getRecord().getC_LocFrom_ID());
-			if (factAcctInfo.getRecord().getC_LocTo_ID() == 0)
-				factAcctInfo.getRecord().setC_LocTo_ID (m_acct.getRecord().getC_LocTo_ID());
-			if (factAcctInfo.getRecord().getC_BPartner_ID() == 0)
-				factAcctInfo.getRecord().setC_BPartner_ID (m_acct.getRecord().getC_BPartner_ID());
-			if (factAcctInfo.getRecord().getAD_OrgTrx_ID() == 0)
-				factAcctInfo.getRecord().setAD_OrgTrx_ID (m_acct.getRecord().getAD_OrgTrx_ID());
-			if (factAcctInfo.getRecord().getC_Project_ID() == 0)
-				factAcctInfo.getRecord().setC_Project_ID (m_acct.getRecord().getC_Project_ID());
-			if (factAcctInfo.getRecord().getC_Campaign_ID() == 0)
-				factAcctInfo.getRecord().setC_Campaign_ID (m_acct.getRecord().getC_Campaign_ID());
-			if (factAcctInfo.getRecord().getC_Activity_ID() == 0)
-				factAcctInfo.getRecord().setC_Activity_ID (m_acct.getRecord().getC_Activity_ID());
-			if (factAcctInfo.getRecord().getUser1_ID() == 0)
-				factAcctInfo.getRecord().setUser1_ID (m_acct.getRecord().getUser1_ID());
-			if (factAcctInfo.getRecord().getUser2_ID() == 0)
-				factAcctInfo.getRecord().setUser2_ID (m_acct.getRecord().getUser2_ID());
+			if (factAcctInfo.getFactAcct().getM_Product_ID() == 0)
+				factAcctInfo.getFactAcct().setM_Product_ID (m_acct.getCombination().getM_Product_ID());
+			if (factAcctInfo.getFactAcct().getC_LocFrom_ID() == 0)
+				factAcctInfo.getFactAcct().setC_LocFrom_ID (m_acct.getCombination().getC_LocFrom_ID());
+			if (factAcctInfo.getFactAcct().getC_LocTo_ID() == 0)
+				factAcctInfo.getFactAcct().setC_LocTo_ID (m_acct.getCombination().getC_LocTo_ID());
+			if (factAcctInfo.getFactAcct().getC_BPartner_ID() == 0)
+				factAcctInfo.getFactAcct().setC_BPartner_ID (m_acct.getCombination().getC_BPartner_ID());
+			if (factAcctInfo.getFactAcct().getAD_OrgTrx_ID() == 0)
+				factAcctInfo.getFactAcct().setAD_OrgTrx_ID (m_acct.getCombination().getAD_OrgTrx_ID());
+			if (factAcctInfo.getFactAcct().getC_Project_ID() == 0)
+				factAcctInfo.getFactAcct().setC_Project_ID (m_acct.getCombination().getC_Project_ID());
+			if (factAcctInfo.getFactAcct().getC_Campaign_ID() == 0)
+				factAcctInfo.getFactAcct().setC_Campaign_ID (m_acct.getCombination().getC_Campaign_ID());
+			if (factAcctInfo.getFactAcct().getC_Activity_ID() == 0)
+				factAcctInfo.getFactAcct().setC_Activity_ID (m_acct.getCombination().getC_Activity_ID());
+			if (factAcctInfo.getFactAcct().getUser1_ID() == 0)
+				factAcctInfo.getFactAcct().setUser1_ID (m_acct.getCombination().getUser1_ID());
+			if (factAcctInfo.getFactAcct().getUser2_ID() == 0)
+				factAcctInfo.getFactAcct().setUser2_ID (m_acct.getCombination().getUser2_ID());
 			
 			//  Create Revenue Recognition for AR/AP Invoices
 			if ((m_doc.getDocumentType().equals(Doc.DOCTYPE_ARInvoice) || m_doc.getDocumentType().equals(Doc.DOCTYPE_APInvoice)) 
@@ -1115,21 +1115,21 @@ public final class FactLine
 				&& m_docLine.getC_RevenueRecognition_ID() != 0)
 			{
 				int AD_User_ID = 0;
-				factAcctInfo.getRecord().setAccount_ID (
+				factAcctInfo.getFactAcct().setAccount_ID (
 					createRevenueRecognition (
 						m_docLine.getC_RevenueRecognition_ID(), m_docLine.get_ID(),
-						factAcctInfo.getRecord().getAD_Client_ID(), getAD_Org_ID(), AD_User_ID, 
-						factAcctInfo.getRecord().getAccount_ID(), factAcctInfo.getRecord().getC_SubAcct_ID(),
-						factAcctInfo.getRecord().getM_Product_ID(), factAcctInfo.getRecord().getC_BPartner_ID(), factAcctInfo.getRecord().getAD_OrgTrx_ID(),
-						factAcctInfo.getRecord().getC_LocFrom_ID(), factAcctInfo.getRecord().getC_LocTo_ID(), 
-						getC_SalesRegion_ID(), factAcctInfo.getRecord().getC_Project_ID(),
-						factAcctInfo.getRecord().getC_Campaign_ID(), factAcctInfo.getRecord().getC_Activity_ID(), 
-						factAcctInfo.getRecord().getUser1_ID(), factAcctInfo.getRecord().getUser2_ID(), 
-						factAcctInfo.getRecord().getUserElement1_ID(), factAcctInfo.getRecord().getUserElement2_ID(),
-						factAcctInfo.getRecord().getA_Asset_ID(), factAcctInfo.getRecord().getC_Employee_ID(), factAcctInfo.getRecord().getM_Warehouse_ID(), factAcctInfo.getRecord().getC_Charge_ID(),
-						factAcctInfo.getRecord().getC_CostCenter_ID(), factAcctInfo.getRecord().getC_Department_ID(), factAcctInfo.getRecord().getM_AttributeSetInstance_ID(), factAcctInfo.getRecord().getCustomFieldText1(), 
-						factAcctInfo.getRecord().getCustomFieldText2(), factAcctInfo.getRecord().getCustomFieldText3(), factAcctInfo.getRecord().getCustomFieldText4(), 
-						factAcctInfo.getRecord().getC_Tax_ID())
+						factAcctInfo.getFactAcct().getAD_Client_ID(), getAD_Org_ID(), AD_User_ID, 
+						factAcctInfo.getFactAcct().getAccount_ID(), factAcctInfo.getFactAcct().getC_SubAcct_ID(),
+						factAcctInfo.getFactAcct().getM_Product_ID(), factAcctInfo.getFactAcct().getC_BPartner_ID(), factAcctInfo.getFactAcct().getAD_OrgTrx_ID(),
+						factAcctInfo.getFactAcct().getC_LocFrom_ID(), factAcctInfo.getFactAcct().getC_LocTo_ID(), 
+						getC_SalesRegion_ID(), factAcctInfo.getFactAcct().getC_Project_ID(),
+						factAcctInfo.getFactAcct().getC_Campaign_ID(), factAcctInfo.getFactAcct().getC_Activity_ID(), 
+						factAcctInfo.getFactAcct().getUser1_ID(), factAcctInfo.getFactAcct().getUser2_ID(), 
+						factAcctInfo.getFactAcct().getUserElement1_ID(), factAcctInfo.getFactAcct().getUserElement2_ID(),
+						factAcctInfo.getFactAcct().getA_Asset_ID(), factAcctInfo.getFactAcct().getC_Employee_ID(), factAcctInfo.getFactAcct().getM_Warehouse_ID(), factAcctInfo.getFactAcct().getC_Charge_ID(),
+						factAcctInfo.getFactAcct().getC_CostCenter_ID(), factAcctInfo.getFactAcct().getC_Department_ID(), factAcctInfo.getFactAcct().getM_AttributeSetInstance_ID(), factAcctInfo.getFactAcct().getCustomFieldText1(), 
+						factAcctInfo.getFactAcct().getCustomFieldText2(), factAcctInfo.getFactAcct().getCustomFieldText3(), factAcctInfo.getFactAcct().getCustomFieldText4(), 
+						factAcctInfo.getFactAcct().getC_Tax_ID())
 					);
 			}
 		}
@@ -1191,8 +1191,8 @@ public final class FactLine
 	{
 		if (log.isLoggable(Level.FINE)) log.fine("From Account_ID=" + Account_ID);
 		//  get VC for P_Revenue (from Product)
-		IAccountInfo revenue = AcctInfoServices.getAccountInfoService().get(factAcctInfo.getPO().getCtx(),
-			AD_Client_ID, AD_Org_ID, factAcctInfo.getRecord().getC_AcctSchema_ID(), Account_ID, C_SubAcct_ID,
+		IAccountModel revenue = AcctInfoServices.getAccountInfoService().get(factAcctInfo.getPO().getCtx(),
+			AD_Client_ID, AD_Org_ID, factAcctInfo.getFactAcct().getC_AcctSchema_ID(), Account_ID, C_SubAcct_ID,
 			M_Product_ID, C_BPartner_ID, AD_OrgTrx_ID, C_LocFrom_ID, C_LocTo_ID, C_SRegion_ID, 
 			C_Project_ID, C_Campaign_ID, C_Activity_ID, 
 			User1_ID, User2_ID, UserElement1_ID, UserElement2_ID,
@@ -1208,7 +1208,7 @@ public final class FactLine
 		int existing = DB.getSQLValue(factAcctInfo.getPO().get_TrxName(), "SELECT vc.Account_ID FROM C_RevenueRecognition_Plan rp" +
 				" JOIN C_ValidCombination vc ON rp.UnearnedRevenue_Acct=vc.C_ValidCombination_ID" + 
 				" WHERE rp.C_InvoiceLine_ID = ? AND rp.C_AcctSchema_ID=?"
-				, C_InvoiceLine_ID, factAcctInfo.getRecord().getC_AcctSchema_ID());
+				, C_InvoiceLine_ID, factAcctInfo.getFactAcct().getC_AcctSchema_ID());
 		if ( existing > 0 )
 			return existing;
 		
@@ -1228,7 +1228,7 @@ public final class FactLine
 		try
 		{
 			pstmt = DB.prepareStatement(sql, factAcctInfo.getPO().get_TrxName());
-			pstmt.setInt(1, factAcctInfo.getRecord().getC_AcctSchema_ID());
+			pstmt.setInt(1, factAcctInfo.getFactAcct().getC_AcctSchema_ID());
 			pstmt.setInt(2, C_BPartner_ID);
 			rs = pstmt.executeQuery();
 			if (rs.next())
@@ -1251,8 +1251,8 @@ public final class FactLine
 			return Account_ID;
 		}
 		
-		IAccountInfo unearned = AcctInfoServices.getAccountInfoService().get(factAcctInfo.getPO().getCtx(),
-				AD_Client_ID, AD_Org_ID, factAcctInfo.getRecord().getC_AcctSchema_ID(), new_Account_ID, C_SubAcct_ID,
+		IAccountModel unearned = AcctInfoServices.getAccountInfoService().get(factAcctInfo.getPO().getCtx(),
+				AD_Client_ID, AD_Org_ID, factAcctInfo.getFactAcct().getC_AcctSchema_ID(), new_Account_ID, C_SubAcct_ID,
 				M_Product_ID, C_BPartner_ID, AD_OrgTrx_ID, C_LocFrom_ID, C_LocTo_ID, C_SRegion_ID, 
 				C_Project_ID, C_Campaign_ID, C_Activity_ID, 
 				User1_ID, User2_ID, UserElement1_ID, UserElement2_ID, factAcctInfo.getPO().get_TrxName());
@@ -1260,11 +1260,11 @@ public final class FactLine
 		MRevenueRecognitionPlan plan = new MRevenueRecognitionPlan(factAcctInfo.getPO().getCtx(), 0, factAcctInfo.getPO().get_TrxName());
 		plan.setAD_Org_ID(AD_Org_ID);
 		plan.setC_RevenueRecognition_ID (C_RevenueRecognition_ID);
-		plan.setC_AcctSchema_ID (factAcctInfo.getRecord().getC_AcctSchema_ID());
+		plan.setC_AcctSchema_ID (factAcctInfo.getFactAcct().getC_AcctSchema_ID());
 		plan.setC_InvoiceLine_ID (C_InvoiceLine_ID);
-		plan.setUnEarnedRevenue_Acct (unearned.getRecord().getC_ValidCombination_ID());
+		plan.setUnEarnedRevenue_Acct (unearned.getCombination().getC_ValidCombination_ID());
 		plan.setP_Revenue_Acct (P_Revenue_Acct);
-		plan.setC_Currency_ID (factAcctInfo.getRecord().getC_Currency_ID());
+		plan.setC_Currency_ID (factAcctInfo.getFactAcct().getC_Currency_ID());
 		plan.setTotalAmt (getAcctBalance());
 		if (!plan.save(factAcctInfo.getPO().get_TrxName()))
 		{
@@ -1330,9 +1330,9 @@ public final class FactLine
 		// end MZ
 		if (otherLine != null) 
 		{
-			if (otherLine.factAcctInfo.getRecord().getAmtAcctDr().signum() == 0 && otherLine.factAcctInfo.getRecord().getAmtAcctCr().signum() != 0)
+			if (otherLine.factAcctInfo.getFactAcct().getAmtAcctDr().signum() == 0 && otherLine.factAcctInfo.getFactAcct().getAmtAcctCr().signum() != 0)
 				sql.append(" AND AmtAcctDr = 0 AND AmtAcctCr != 0 ");
-			else if (otherLine.factAcctInfo.getRecord().getAmtAcctDr().signum() != 0 && otherLine.factAcctInfo.getRecord().getAmtAcctCr().signum() == 0)
+			else if (otherLine.factAcctInfo.getFactAcct().getAmtAcctDr().signum() != 0 && otherLine.factAcctInfo.getFactAcct().getAmtAcctCr().signum() == 0)
 				sql.append(" AND AmtAcctCr = 0 AND AmtAcctDr != 0 ");
 		}
 		
@@ -1344,10 +1344,10 @@ public final class FactLine
 		{
 			int pindex=1;
 			pstmt = DB.prepareStatement(sql.toString(), factAcctInfo.getPO().get_TrxName());
-			pstmt.setInt(pindex++, factAcctInfo.getRecord().getC_AcctSchema_ID());
+			pstmt.setInt(pindex++, factAcctInfo.getFactAcct().getC_AcctSchema_ID());
 			pstmt.setInt(pindex++, AD_Table_ID);
 			pstmt.setInt(pindex++, Record_ID);			
-			pstmt.setInt(pindex++, m_acct.getRecord().getAccount_ID());
+			pstmt.setInt(pindex++, m_acct.getCombination().getAccount_ID());
 			if (Line_ID > 0)
 			{
 				pstmt.setInt(pindex++, Line_ID);
@@ -1355,22 +1355,22 @@ public final class FactLine
 			// MZ Goodwill
 			// for Inventory Move
 			if (MMovement.Table_ID == AD_Table_ID)
-				pstmt.setInt(pindex++, factAcctInfo.getRecord().getM_Locator_ID());
+				pstmt.setInt(pindex++, factAcctInfo.getFactAcct().getM_Locator_ID());
 			// end MZ
 			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
-				IFactAcctInfo fact = AcctInfoServices.getFactAcctInfoService().create(factAcctInfo.getPO().getCtx(), rs, factAcctInfo.getPO().get_TrxName());
+				IFactAcctModel fact = AcctInfoServices.getFactAcctInfoService().create(factAcctInfo.getPO().getCtx(), rs, factAcctInfo.getPO().get_TrxName());
 				//  Accounted Amounts - reverse
-				BigDecimal dr = fact.getRecord().getAmtAcctDr();
-				BigDecimal cr = fact.getRecord().getAmtAcctCr();
-				setAmtAcct(factAcctInfo.getRecord().getC_Currency_ID(), cr.multiply(multiplier), dr.multiply(multiplier));
+				BigDecimal dr = fact.getFactAcct().getAmtAcctDr();
+				BigDecimal cr = fact.getFactAcct().getAmtAcctCr();
+				setAmtAcct(factAcctInfo.getFactAcct().getC_Currency_ID(), cr.multiply(multiplier), dr.multiply(multiplier));
 				//  
 				//  Bayu Sistematika - Source Amounts
 				//  Fixing source amounts
-				BigDecimal drSourceAmt = fact.getRecord().getAmtSourceDr();
-				BigDecimal crSourceAmt = fact.getRecord().getAmtSourceCr();
-				setAmtSource(fact.getRecord().getC_Currency_ID(), crSourceAmt.multiply(multiplier), drSourceAmt.multiply(multiplier));
+				BigDecimal drSourceAmt = fact.getFactAcct().getAmtSourceDr();
+				BigDecimal crSourceAmt = fact.getFactAcct().getAmtSourceCr();
+				setAmtSource(fact.getFactAcct().getC_Currency_ID(), crSourceAmt.multiply(multiplier), drSourceAmt.multiply(multiplier));
 				//  end Bayu Sistematika
 				//
 				success = true;
@@ -1379,55 +1379,55 @@ public final class FactLine
 					.append(",Line=").append(Record_ID)
 					.append(", Account=").append(m_acct)
 					.append(",dr=").append(dr).append(",cr=").append(cr)
-					.append(") - DR=").append(factAcctInfo.getRecord().getAmtSourceDr()).append("|").append(factAcctInfo.getRecord().getAmtAcctDr())
-					.append(", CR=").append(factAcctInfo.getRecord().getAmtSourceCr()).append("|").append(factAcctInfo.getRecord().getAmtAcctCr())
+					.append(") - DR=").append(factAcctInfo.getFactAcct().getAmtSourceDr()).append("|").append(factAcctInfo.getFactAcct().getAmtAcctDr())
+					.append(", CR=").append(factAcctInfo.getFactAcct().getAmtSourceCr()).append("|").append(factAcctInfo.getFactAcct().getAmtAcctCr())
 					.toString());
 				//	Dimensions
-				factAcctInfo.getRecord().setAD_OrgTrx_ID(fact.getRecord().getAD_OrgTrx_ID());
-				factAcctInfo.getRecord().setC_Project_ID (fact.getRecord().getC_Project_ID());
-				factAcctInfo.getRecord().setC_ProjectPhase_ID(fact.getRecord().getC_ProjectPhase_ID());
-				factAcctInfo.getRecord().setC_ProjectTask_ID(fact.getRecord().getC_ProjectTask_ID());
-				factAcctInfo.getRecord().setC_Activity_ID(fact.getRecord().getC_Activity_ID());
-				factAcctInfo.getRecord().setC_Campaign_ID(fact.getRecord().getC_Campaign_ID());
-				factAcctInfo.getRecord().setC_SalesRegion_ID(fact.getRecord().getC_SalesRegion_ID());
-				factAcctInfo.getRecord().setC_LocFrom_ID(fact.getRecord().getC_LocFrom_ID());
-				factAcctInfo.getRecord().setC_LocTo_ID(fact.getRecord().getC_LocTo_ID());
-				factAcctInfo.getRecord().setM_Product_ID(fact.getRecord().getM_Product_ID());
-				setM_Locator_ID(fact.getRecord().getM_Locator_ID());
-				factAcctInfo.getRecord().setA_Asset_ID(fact.getRecord().getA_Asset_ID());
-				factAcctInfo.getRecord().setM_Warehouse_ID(fact.getRecord().getM_Warehouse_ID());
-				factAcctInfo.getRecord().setC_Tax_ID(fact.getRecord().getC_Tax_ID());
-				factAcctInfo.getRecord().setC_Charge_ID(fact.getRecord().getC_Charge_ID());
-				factAcctInfo.getRecord().setC_CostCenter_ID(fact.getRecord().getC_CostCenter_ID());
-				factAcctInfo.getRecord().setC_Department_ID(fact.getRecord().getC_Department_ID());	
-				factAcctInfo.getRecord().setC_Employee_ID(fact.getRecord().getC_Employee_ID());		
-				factAcctInfo.getRecord().setUser1_ID(fact.getRecord().getUser1_ID());
-				factAcctInfo.getRecord().setUser2_ID(fact.getRecord().getUser2_ID());
-				factAcctInfo.getRecord().setC_UOM_ID(fact.getRecord().getC_UOM_ID());
-				factAcctInfo.getRecord().setC_Tax_ID(fact.getRecord().getC_Tax_ID());
-				factAcctInfo.getRecord().setM_AttributeSetInstance_ID(fact.getRecord().getM_AttributeSetInstance_ID());	
-				factAcctInfo.getRecord().setCustomFieldText1(fact.getRecord().getCustomFieldText1());
-				factAcctInfo.getRecord().setCustomFieldText2(fact.getRecord().getCustomFieldText2());
-				factAcctInfo.getRecord().setCustomFieldText3(fact.getRecord().getCustomFieldText3());
-				factAcctInfo.getRecord().setCustomFieldText4(fact.getRecord().getCustomFieldText4());
+				factAcctInfo.getFactAcct().setAD_OrgTrx_ID(fact.getFactAcct().getAD_OrgTrx_ID());
+				factAcctInfo.getFactAcct().setC_Project_ID (fact.getFactAcct().getC_Project_ID());
+				factAcctInfo.getFactAcct().setC_ProjectPhase_ID(fact.getFactAcct().getC_ProjectPhase_ID());
+				factAcctInfo.getFactAcct().setC_ProjectTask_ID(fact.getFactAcct().getC_ProjectTask_ID());
+				factAcctInfo.getFactAcct().setC_Activity_ID(fact.getFactAcct().getC_Activity_ID());
+				factAcctInfo.getFactAcct().setC_Campaign_ID(fact.getFactAcct().getC_Campaign_ID());
+				factAcctInfo.getFactAcct().setC_SalesRegion_ID(fact.getFactAcct().getC_SalesRegion_ID());
+				factAcctInfo.getFactAcct().setC_LocFrom_ID(fact.getFactAcct().getC_LocFrom_ID());
+				factAcctInfo.getFactAcct().setC_LocTo_ID(fact.getFactAcct().getC_LocTo_ID());
+				factAcctInfo.getFactAcct().setM_Product_ID(fact.getFactAcct().getM_Product_ID());
+				setM_Locator_ID(fact.getFactAcct().getM_Locator_ID());
+				factAcctInfo.getFactAcct().setA_Asset_ID(fact.getFactAcct().getA_Asset_ID());
+				factAcctInfo.getFactAcct().setM_Warehouse_ID(fact.getFactAcct().getM_Warehouse_ID());
+				factAcctInfo.getFactAcct().setC_Tax_ID(fact.getFactAcct().getC_Tax_ID());
+				factAcctInfo.getFactAcct().setC_Charge_ID(fact.getFactAcct().getC_Charge_ID());
+				factAcctInfo.getFactAcct().setC_CostCenter_ID(fact.getFactAcct().getC_CostCenter_ID());
+				factAcctInfo.getFactAcct().setC_Department_ID(fact.getFactAcct().getC_Department_ID());	
+				factAcctInfo.getFactAcct().setC_Employee_ID(fact.getFactAcct().getC_Employee_ID());		
+				factAcctInfo.getFactAcct().setUser1_ID(fact.getFactAcct().getUser1_ID());
+				factAcctInfo.getFactAcct().setUser2_ID(fact.getFactAcct().getUser2_ID());
+				factAcctInfo.getFactAcct().setC_UOM_ID(fact.getFactAcct().getC_UOM_ID());
+				factAcctInfo.getFactAcct().setC_Tax_ID(fact.getFactAcct().getC_Tax_ID());
+				factAcctInfo.getFactAcct().setM_AttributeSetInstance_ID(fact.getFactAcct().getM_AttributeSetInstance_ID());	
+				factAcctInfo.getFactAcct().setCustomFieldText1(fact.getFactAcct().getCustomFieldText1());
+				factAcctInfo.getFactAcct().setCustomFieldText2(fact.getFactAcct().getCustomFieldText2());
+				factAcctInfo.getFactAcct().setCustomFieldText3(fact.getFactAcct().getCustomFieldText3());
+				factAcctInfo.getFactAcct().setCustomFieldText4(fact.getFactAcct().getCustomFieldText4());
 				//	Org for cross charge
-				factAcctInfo.getRecord().setAD_Org_ID (fact.getRecord().getAD_Org_ID());
-				if (fact.getRecord().getQty() != null) {
-					if (factAcctInfo.getRecord().getC_UOM_ID() != 0)
+				factAcctInfo.getFactAcct().setAD_Org_ID (fact.getFactAcct().getAD_Org_ID());
+				if (fact.getFactAcct().getQty() != null) {
+					if (factAcctInfo.getFactAcct().getC_UOM_ID() != 0)
 					{
-						int precision = MUOM.getPrecision(factAcctInfo.getPO().getCtx(), factAcctInfo.getRecord().getC_UOM_ID());
-						factAcctInfo.getRecord().setQty(fact.getRecord().getQty().multiply(multiplier).negate().setScale(precision, RoundingMode.HALF_UP));
+						int precision = MUOM.getPrecision(factAcctInfo.getPO().getCtx(), factAcctInfo.getFactAcct().getC_UOM_ID());
+						factAcctInfo.getFactAcct().setQty(fact.getFactAcct().getQty().multiply(multiplier).negate().setScale(precision, RoundingMode.HALF_UP));
 					} else
-						factAcctInfo.getRecord().setQty(fact.getRecord().getQty().multiply(multiplier).negate().stripTrailingZeros());
+						factAcctInfo.getFactAcct().setQty(fact.getFactAcct().getQty().multiply(multiplier).negate().stripTrailingZeros());
 				}
 			}
 			else
 				log.warning(new StringBuilder("Not Found (try later) ")
-					.append(",C_AcctSchema_ID=").append(factAcctInfo.getRecord().getC_AcctSchema_ID())
+					.append(",C_AcctSchema_ID=").append(factAcctInfo.getFactAcct().getC_AcctSchema_ID())
 					.append(", AD_Table_ID=").append(AD_Table_ID)
 					.append(",Record_ID=").append(Record_ID)
 					.append(",Line_ID=").append(Line_ID)
-					.append(", Account_ID=").append(m_acct.getRecord().getAccount_ID()).toString());
+					.append(", Account_ID=").append(m_acct.getCombination().getAccount_ID()).toString());
 		}
 		catch (SQLException e)
 		{

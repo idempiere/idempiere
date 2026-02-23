@@ -33,7 +33,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.base.acct.AcctInfoServices;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.DB;
@@ -244,7 +244,7 @@ public class MBankTransfer extends X_C_BankTransfer implements DocAction {
 			return DocAction.STATUS_Invalid;
 		
 		MClientInfo info = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName()); 
-		IAcctSchemaInfo as = AcctInfoServices.getAcctSchemaInfoService().get (getCtx(), info.getC_AcctSchema1_ID(), get_TrxName());
+		IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get (getCtx(), info.getC_AcctSchema1_ID(), get_TrxName());
 		
 		MPayment paymentBankFrom = new MPayment(getCtx(), 0, get_TrxName());
 		paymentBankFrom.setC_BankTransfer_ID(getC_BankTransfer_ID());
@@ -261,7 +261,7 @@ public class MBankTransfer extends X_C_BankTransfer implements DocAction {
 		paymentBankFrom.setOverUnderAmt(Env.ZERO);
 		paymentBankFrom.setC_DocType_ID(false);
 		paymentBankFrom.setC_Charge_ID(getFrom_C_Charge_ID());
-		if (as.getRecord().getC_Currency_ID() != getFrom_C_Currency_ID()) {
+		if (as.getAcctSchema().getC_Currency_ID() != getFrom_C_Currency_ID()) {
 			paymentBankFrom.setC_ConversionType_ID(getC_ConversionType_ID());
 			paymentBankFrom.setIsOverrideCurrencyRate(isOverrideCurrencyRate());
 			if (isOverrideCurrencyRate()) {
@@ -291,7 +291,7 @@ public class MBankTransfer extends X_C_BankTransfer implements DocAction {
 		paymentBankTo.setOverUnderAmt(Env.ZERO);
 		paymentBankTo.setC_DocType_ID(true);
 		paymentBankTo.setC_Charge_ID(getTo_C_Charge_ID());
-		if (as.getRecord().getC_Currency_ID() != getTo_C_Currency_ID()) {
+		if (as.getAcctSchema().getC_Currency_ID() != getTo_C_Currency_ID()) {
 			paymentBankTo.setC_ConversionType_ID(getC_ConversionType_ID());
 			paymentBankTo.setIsOverrideCurrencyRate(isOverrideCurrencyRate());
 			if (isOverrideCurrencyRate()) {

@@ -25,7 +25,7 @@ package org.idempiere.acct.service;
 import java.util.Properties;
 
 import org.adempiere.base.acct.AcctInfoService;
-import org.adempiere.base.acct.info.IAcctSchemaDefaultInfo;
+import org.adempiere.base.acct.model.IAcctSchemaDefaultModel;
 import org.adempiere.base.acct.service.IAcctSchemaDefaultInfoService;
 import org.idempiere.acct.info.AcctSchemaDefaultInfo;
 import org.idempiere.acct.model.MAcctSchemaDefault;
@@ -39,13 +39,13 @@ import org.idempiere.acct.model.MAcctSchemaDefault;
 public class AcctSchemaDefaultInfoService implements IAcctSchemaDefaultInfoService {
 
 	@Override
-	public IAcctSchemaDefaultInfo get(Properties ctx, int C_AcctSchema_ID) {
+	public IAcctSchemaDefaultModel get(Properties ctx, int C_AcctSchema_ID) {
 		MAcctSchemaDefault schemaDefault = MAcctSchemaDefault.get(ctx, C_AcctSchema_ID);
 		return AcctSchemaDefaultInfo.wrap(schemaDefault);
 	}
 
 	@Override
-	public IAcctSchemaDefaultInfo create(Properties ctx, int C_AcctSchema_ID, String trxName) {
+	public IAcctSchemaDefaultModel create(Properties ctx, int C_AcctSchema_ID, String trxName) {
 		MAcctSchemaDefault schemaDefault = new MAcctSchemaDefault(ctx, C_AcctSchema_ID, trxName);
 		return AcctSchemaDefaultInfo.wrap(schemaDefault);
 	}

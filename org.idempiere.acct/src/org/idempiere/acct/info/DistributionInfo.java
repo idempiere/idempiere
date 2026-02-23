@@ -25,20 +25,20 @@ package org.idempiere.acct.info;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
-import org.adempiere.base.acct.info.IAccountInfo;
-import org.adempiere.base.acct.info.IDistributionInfo;
-import org.adempiere.base.acct.info.IDistributionLineInfo;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IDistributionModel;
+import org.adempiere.base.acct.model.IDistributionLineModel;
 import org.compiere.model.I_GL_Distribution;
 import org.compiere.model.PO;
 import org.idempiere.acct.model.MDistribution;
 import org.idempiere.acct.model.MDistributionLine;
 
 /**
- * Wrapper for {@link MDistribution} to provide {@link IDistributionInfo} access.
+ * Wrapper for {@link MDistribution} to provide {@link IDistributionModel} access.
  * 
  * @author etantg
  */
-public class DistributionInfo implements IDistributionInfo {
+public class DistributionInfo implements IDistributionModel {
 	
 	private final MDistribution distribution;
 	
@@ -53,7 +53,7 @@ public class DistributionInfo implements IDistributionInfo {
 	}
 	
 	@Override
-	public I_GL_Distribution getRecord() {
+	public I_GL_Distribution getGLDistribution() {
 		return distribution;
 	}
 
@@ -63,13 +63,13 @@ public class DistributionInfo implements IDistributionInfo {
 	}
 
 	@Override
-	public IDistributionLineInfo[] getLinesInfo(boolean reload) {
+	public IDistributionLineModel[] getDistributionLines(boolean reload) {
 		MDistributionLine[] lines = distribution.getLines(reload);
 		return DistributionLineInfo.wrapStream(lines);
 	}
 
 	@Override
-	public void distribute(IAccountInfo acct, BigDecimal Amt, BigDecimal Qty, int C_Currency_ID) {
+	public void distribute(IAccountModel acct, BigDecimal Amt, BigDecimal Qty, int C_Currency_ID) {
 		if (acct instanceof AccountInfo) {
 			distribution.distribute(((AccountInfo) acct).getModel(), Amt, Qty, C_Currency_ID);
 		}
@@ -81,19 +81,19 @@ public class DistributionInfo implements IDistributionInfo {
 		return distribution.validate();
 	}
 	
-	public static IDistributionInfo wrap(MDistribution distribution) {
+	public static IDistributionModel wrap(MDistribution distribution) {
         if (distribution == null)
             return null;
-        if (distribution instanceof IDistributionInfo)
-            return (IDistributionInfo) distribution;
+        if (distribution instanceof IDistributionModel)
+            return (IDistributionModel) distribution;
         return new DistributionInfo(distribution);
     }
 	
-	public static IDistributionInfo[] wrapStream(MDistribution[] distributions) {
-		return distributions == null ? new IDistributionInfo[0] :
+	public static IDistributionModel[] wrapStream(MDistribution[] distributions) {
+		return distributions == null ? new IDistributionModel[0] :
 			Arrays.stream(distributions)
 				.map(DistributionInfo::wrap)  // wrap each element
-				.toArray(IDistributionInfo[]::new);
+				.toArray(IDistributionModel[]::new);
 	}
 	
 }

@@ -5,8 +5,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 
 import org.adempiere.base.acct.AcctInfoServices;
-import org.adempiere.base.acct.info.IAccountInfo;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.model.I_C_Project;
 import org.compiere.model.I_C_Project_Acct;
 import org.compiere.model.MAssetAcct;
@@ -32,7 +32,7 @@ public class Doc_AssetAddition extends Doc
 	 * @param rs
 	 * @param trxName
 	 */
-	public Doc_AssetAddition (IAcctSchemaInfo as, ResultSet rs, String trxName)
+	public Doc_AssetAddition (IAcctSchemaModel as, ResultSet rs, String trxName)
 	{
 		super(as, MAssetAddition.class, rs, MDocType.DOCBASETYPE_GLDocument, trxName);
 	}
@@ -58,7 +58,7 @@ public class Doc_AssetAddition extends Doc
 	 * @return facts
 	 */
 	@Override
-	public ArrayList<Fact> createFacts(IAcctSchemaInfo as)
+	public ArrayList<Fact> createFacts(IAcctSchemaModel as)
 	{
 		MAssetAddition assetAdd = getAssetAddition();
 		ArrayList<Fact> facts = new ArrayList<Fact>();
@@ -83,11 +83,11 @@ public class Doc_AssetAddition extends Doc
 		final int invoiceProject_ID = getInvoiceProject_ID();
 		if (invoiceBP_ID > 0)
 		{
-			fls[1].getFactAcctInfo().getRecord().setC_BPartner_ID(invoiceBP_ID);
+			fls[1].getFactAcctInfo().getFactAcct().setC_BPartner_ID(invoiceBP_ID);
 		}
 		if (invoiceProject_ID >0)
 		{
-			 fls[1].getFactAcctInfo().getRecord().setC_Project_ID(invoiceProject_ID);
+			 fls[1].getFactAcctInfo().getFactAcct().setC_Project_ID(invoiceProject_ID);
 		}
 		//
 		return facts;
@@ -105,11 +105,11 @@ public class Doc_AssetAddition extends Doc
 	 * @param as
 	 * @return account for credit side (project, charge or expense)
 	 */
-	private IAccountInfo getP_Asset_Acct(IAcctSchemaInfo as)
+	private IAccountModel getP_Asset_Acct(IAcctSchemaModel as)
 	{
 		MAssetAddition assetAdd = getAssetAddition();
 		// Source Account
-		IAccountInfo pAssetAcct = null;
+		IAccountModel pAssetAcct = null;
 		if (MAssetAddition.A_SOURCETYPE_Project.equals(assetAdd.getA_SourceType()))
 		{
 			MProject prj = new MProject(getCtx(), assetAdd.getC_Project_ID(), getTrxName());
@@ -141,7 +141,7 @@ public class Doc_AssetAddition extends Doc
 	 * @param as
 	 * @return expense account
 	 */
-	public IAccountInfo getP_Expense_Acct(int M_Product_ID, IAcctSchemaInfo as)
+	public IAccountModel getP_Expense_Acct(int M_Product_ID, IAcctSchemaModel as)
 	{
 		ProductCost pc = new ProductCost(getCtx(), M_Product_ID, 0, null);
 		return pc.getAccount(ProductCost.ACCTTYPE_P_Expense, as);
@@ -152,7 +152,7 @@ public class Doc_AssetAddition extends Doc
 	 * @param as
 	 * @return project wip or asset account
 	 */
-	private IAccountInfo getProjectAcct(I_C_Project prj, IAcctSchemaInfo as)
+	private IAccountModel getProjectAcct(I_C_Project prj, IAcctSchemaModel as)
 	{
 		// TODO: keep in sync with org.compiere.acct.Doc_ProjectIssue.createFacts(MAcctSchema) logic
 		String projectCategory = prj.getProjectCategory();
@@ -173,7 +173,7 @@ public class Doc_AssetAddition extends Doc
 	 * @param as
 	 * @return asset account
 	 */
-	private IAccountInfo getA_Asset_Acct(IAcctSchemaInfo as)
+	private IAccountModel getA_Asset_Acct(IAcctSchemaModel as)
 	{
 		MAssetAddition assetAdd = getAssetAddition();
 		int acct_id = MAssetAcct

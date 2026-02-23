@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.base.acct.AcctInfoServices;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.acct.DocManager;
 import org.compiere.model.MClient;
 import org.compiere.model.MCost;
@@ -70,7 +70,7 @@ public class ClientAcctProcessor extends SvrProcess
 	/** Client info					*/
 	private MClient 			m_client = null;
 	/**	Accounting Schema			*/
-	private IAcctSchemaInfo[] 		m_ass = null;
+	private IAcctSchemaModel[] 		m_ass = null;
 
 	/**
 	 * 	Prepare
@@ -110,7 +110,7 @@ public class ClientAcctProcessor extends SvrProcess
 		if (p_C_AcctSchema_ID == 0)
 			m_ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(getCtx(), getAD_Client_ID());
 		else	//	only specific accounting schema
-			m_ass = new IAcctSchemaInfo[] { AcctInfoServices.getAcctSchemaInfoService().create(getCtx(), p_C_AcctSchema_ID, get_TrxName())};
+			m_ass = new IAcctSchemaModel[] { AcctInfoServices.getAcctSchemaInfoService().create(getCtx(), p_C_AcctSchema_ID, get_TrxName())};
 
 		postSession();
 		MCost.create(m_client);

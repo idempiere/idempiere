@@ -20,16 +20,22 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  **********************************************************************/
-package org.adempiere.base.acct.info;
+package org.adempiere.base.acct.model;
 
-import org.adempiere.base.acct.IAcctInfo;
-import org.compiere.model.I_I_ElementValue;
+import java.util.ArrayList;
+
+import org.adempiere.base.acct.IAcctModel;
+import org.compiere.model.I_C_AcctSchema_GL;
+import org.compiere.util.KeyNamePair;
 
 /**
- * Interface for import accounting element value info objects.
+ * Interface for accounting schema GL info objects.
  * 
  * @author etantg
  */
-public interface IImportElementValueInfo extends IAcctInfo {
-	public I_I_ElementValue getRecord();
+public interface IAcctSchemaGLModel extends IAcctModel {
+	public I_C_AcctSchema_GL getAcctSchemaGL();
+	
+	public ArrayList<KeyNamePair> getAcctModel();
+	public boolean setValue(String columnName, Integer value);
 }

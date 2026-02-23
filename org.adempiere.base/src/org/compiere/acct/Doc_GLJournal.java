@@ -21,8 +21,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.info.IAccountInfo;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.model.MJournal;
 import org.compiere.model.MJournalLine;
 import org.compiere.util.Env;
@@ -44,7 +44,7 @@ public class Doc_GLJournal extends Doc
 	 * 	@param rs record
 	 * 	@param trxName trx
 	 */
-	public Doc_GLJournal (IAcctSchemaInfo as, ResultSet rs, String trxName)
+	public Doc_GLJournal (IAcctSchemaModel as, ResultSet rs, String trxName)
 	{
 		super(as, MJournal.class, rs, null, trxName);
 	}	//	Doc_GL_Journal
@@ -91,7 +91,7 @@ public class Doc_GLJournal extends Doc
 			//  --  Converted Amounts
 			docLine.setConvertedAmt (m_C_AcctSchema_ID, line.getAmtAcctDr(), line.getAmtAcctCr());
 			//  --  Account
-			IAccountInfo account = line.getAccount_Combi();
+			IAccountModel account = line.getAccount_Combi();
 			docLine.setAccount (account);
 			//	--	Organization of Line was set to Org of Account
 			list.add(docLine);
@@ -138,11 +138,11 @@ public class Doc_GLJournal extends Doc
 	 *  @return Fact
 	 */
 	@Override
-	public ArrayList<Fact> createFacts (IAcctSchemaInfo as)
+	public ArrayList<Fact> createFacts (IAcctSchemaModel as)
 	{
 		ArrayList<Fact> facts = new ArrayList<Fact>();
 		//	Other Acct Schema
-		if (as.getRecord().getC_AcctSchema_ID() != m_C_AcctSchema_ID)
+		if (as.getAcctSchema().getC_AcctSchema_ID() != m_C_AcctSchema_ID)
 			return facts;
 
 		//  create Fact Header
@@ -154,7 +154,7 @@ public class Doc_GLJournal extends Doc
 			//  account     DR      CR
 			for (int i = 0; i < p_lines.length; i++)
 			{
-				if (p_lines[i].getC_AcctSchema_ID () == as.getRecord().getC_AcctSchema_ID ())
+				if (p_lines[i].getC_AcctSchema_ID () == as.getAcctSchema().getC_AcctSchema_ID ())
 				{
 					@SuppressWarnings("unused")
 					FactLine line = fact.createLine (p_lines[i],

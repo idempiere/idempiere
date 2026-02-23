@@ -24,17 +24,17 @@ package org.idempiere.acct.info;
 
 import java.util.Arrays;
 
-import org.adempiere.base.acct.info.IAcctSchemaElementInfo;
+import org.adempiere.base.acct.model.IAcctSchemaElementModel;
 import org.compiere.model.I_C_AcctSchema_Element;
 import org.compiere.model.PO;
 import org.idempiere.acct.model.MAcctSchemaElement;
 
 /**
- * Wrapper for {@link MAcctSchemaElement} to provide {@link IAcctSchemaElementInfo} access.
+ * Wrapper for {@link MAcctSchemaElement} to provide {@link IAcctSchemaElementModel} access.
  * 
  * @author etantg
  */
-public class AcctSchemaElementInfo implements IAcctSchemaElementInfo {
+public class AcctSchemaElementInfo implements IAcctSchemaElementModel {
 	
 	private final MAcctSchemaElement schemaElement;
 	
@@ -49,7 +49,7 @@ public class AcctSchemaElementInfo implements IAcctSchemaElementInfo {
 	}
 
 	@Override
-	public I_C_AcctSchema_Element getRecord() {
+	public I_C_AcctSchema_Element getAcctSchemaElement() {
 		return schemaElement;
 	}
 
@@ -73,19 +73,19 @@ public class AcctSchemaElementInfo implements IAcctSchemaElementInfo {
 		return schemaElement.isElementType(elementType);
 	}
 	
-	public static IAcctSchemaElementInfo wrap(MAcctSchemaElement schemaElement) {
+	public static IAcctSchemaElementModel wrap(MAcctSchemaElement schemaElement) {
         if (schemaElement == null)
             return null;
-        if (schemaElement instanceof IAcctSchemaElementInfo)
-            return (IAcctSchemaElementInfo) schemaElement;
+        if (schemaElement instanceof IAcctSchemaElementModel)
+            return (IAcctSchemaElementModel) schemaElement;
         return new AcctSchemaElementInfo(schemaElement);
     }
 	
-	public static IAcctSchemaElementInfo[] wrapStream(MAcctSchemaElement[] schemaElements) {
-		return schemaElements == null ? new IAcctSchemaElementInfo[0] :
+	public static IAcctSchemaElementModel[] wrapStream(MAcctSchemaElement[] schemaElements) {
+		return schemaElements == null ? new IAcctSchemaElementModel[0] :
 		       Arrays.stream(schemaElements)
 		             .map(AcctSchemaElementInfo::wrap)  // wrap each element
-		             .toArray(IAcctSchemaElementInfo[]::new);
+		             .toArray(IAcctSchemaElementModel[]::new);
     }
 	
 }

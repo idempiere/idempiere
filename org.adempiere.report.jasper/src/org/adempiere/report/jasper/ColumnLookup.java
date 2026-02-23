@@ -29,7 +29,7 @@ import java.util.Date;
 import java.util.function.BiFunction;
 
 import org.adempiere.base.acct.AcctInfoServices;
-import org.adempiere.base.acct.info.IAccountInfo;
+import org.adempiere.base.acct.model.IAccountModel;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MAttributeSetInstance;
 import org.compiere.model.MChart;
@@ -189,8 +189,8 @@ public class ColumnLookup implements BiFunction<String, Object, Object> {
 	 * @return account combination
 	 */
 	private Object getAccountCombination(Number key) {
-		IAccountInfo account = AcctInfoServices.getAccountInfoService().get(key.intValue());
-		return account != null ? account.getRecord().getCombination() : "";
+		IAccountModel account = AcctInfoServices.getAccountInfoService().get(key.intValue());
+		return account != null ? account.getCombination().getCombination() : "";
 	}
 
 	/**

@@ -30,9 +30,9 @@ import java.util.Properties;
 
 import org.adempiere.base.acct.AcctInfoServices;
 import org.adempiere.base.acct.constants.IAcctSchemaConstants;
-import org.adempiere.base.acct.info.IAccountInfo;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
-import org.adempiere.base.acct.info.IFactAcctInfo;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
+import org.adempiere.base.acct.model.IFactAcctModel;
 import org.compiere.acct.Doc;
 import org.compiere.acct.DocManager;
 import org.compiere.model.MBPartner;
@@ -106,7 +106,7 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 		{
 			mockProductGet(productMock, product);
 			
-			IAcctSchemaInfo as = getAccountingSchema();
+			IAcctSchemaModel as = getAccountingSchema();
 			MCost cost = getCost(as, product);
 
 			// Create Material Receipt
@@ -136,13 +136,13 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 			// Testing Accounting For MR
 			Doc doc = DocManager.getDocument(as, MInOut.Table_ID, rLine.getM_InOut_ID(), getTrxName());
 			doc.setC_BPartner_ID(rLine.getParent().getC_BPartner_ID());
-			IAccountInfo acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+			IAccountModel acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
 
 			// get ProductExpense Of the created MR
 			ProductCost pc = new ProductCost(Env.getCtx(), rLine.getM_Product_ID(), 0, getTrxName());
-			IAccountInfo productExpense = pc.getAccount(ProductCost.ACCTTYPE_P_Expense, as);
+			IAccountModel productExpense = pc.getAccount(ProductCost.ACCTTYPE_P_Expense, as);
 
-			List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, rLine.getM_InOut_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
+			List<IFactAcctModel> factAccts = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, rLine.getM_InOut_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 			List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, BD_20, 2, false, new BigDecimal("-10.00")),
 					new FactAcct(productExpense, BD_20, 2, true, BigDecimal.TEN));
 			assertFactAcctEntries(factAccts, expected);
@@ -161,7 +161,7 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 			mockProductGet(productMock, product);
 			mockCategoryGet(categoryMock, category);
 			
-			IAcctSchemaInfo as = getAccountingSchema();
+			IAcctSchemaModel as = getAccountingSchema();
 			MCost cost = getCost(as, product);
 
 			createPOAndMRForProduct(product);
@@ -193,7 +193,7 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 			mockProductGet(productMock, product);
 			mockCategoryGet(categoryMock, category);
 			
-			IAcctSchemaInfo as = getAccountingSchema();
+			IAcctSchemaModel as = getAccountingSchema();
 			MCost cost = getCost(as, product);
 
 			createPOAndMRForProduct(product);
@@ -305,7 +305,7 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 			mockProductGet(productMock, product);
 			mockCategoryGet(categoryMock, category);
 			
-			IAcctSchemaInfo as = getAccountingSchema();
+			IAcctSchemaModel as = getAccountingSchema();
 			MCost cost = getCost(as, product);
 
 			// Create PO And MR
@@ -342,12 +342,12 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 			// Testing Accounting for Invoice
 			// get ProductExpense Of the Invoice
 			ProductCost pc = new ProductCost(Env.getCtx(), iLine.getM_Product_ID(), 0, getTrxName());
-			IAccountInfo productExpense = pc.getAccount(ProductCost.ACCTTYPE_P_Expense, as);
+			IAccountModel productExpense = pc.getAccount(ProductCost.ACCTTYPE_P_Expense, as);
 
 			// get AccPayable of the Invoice
-			IAccountInfo acctPT = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultInfo().getRecord().getV_Liability_Acct(), getTrxName());
+			IAccountModel acctPT = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getV_Liability_Acct(), getTrxName());
 
-			List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, iLine.getC_Invoice_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
+			List<IFactAcctModel> factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, iLine.getC_Invoice_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 			List<FactAcct> expected = Arrays.asList(new FactAcct(acctPT, BD_20, 2, false, BigDecimal.ZERO), 
 					new FactAcct(productExpense, BD_20, 2, true, BigDecimal.TEN));
 			assertFactAcctEntries(factAccts, expected);
@@ -363,12 +363,12 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 			Doc doc = DocManager.getDocument(as, MMatchInv.Table_ID, matchInvoices[0].get_ID(), getTrxName());
 			MInvoiceLine invLine = new MInvoiceLine(Env.getCtx(), matchInvoices[0].getC_InvoiceLine_ID(), getTrxName());
 			doc.setC_BPartner_ID(invLine.getParent().getC_BPartner_ID());
-			IAccountInfo acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+			IAccountModel acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
 
 			// get Product Expense for the MatchInv
 			pc = new ProductCost(Env.getCtx(), matchInvoices[0].getM_Product_ID(), 0, getTrxName());
 			productExpense = pc.getAccount(ProductCost.ACCTTYPE_P_Expense, as);
-			factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, matchInvoices[0].get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
+			factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, matchInvoices[0].get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 			expected = Arrays.asList(new FactAcct(acctNIR, BD_20, 2, true, BigDecimal.TEN), 
 					new FactAcct(productExpense, BD_20, 2, false, BigDecimal.TEN.negate()));
 			assertFactAcctEntries(factAccts, expected);
@@ -385,7 +385,7 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 		{
 			mockProductGet(productMock, product);
 			
-			IAcctSchemaInfo as = getAccountingSchema();
+			IAcctSchemaModel as = getAccountingSchema();
 			MCost cost = getCost(as, product);
 
 			// create PO And MR for the expense type product
@@ -639,14 +639,14 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 	 * 
 	 * @return
 	 */
-	private IAcctSchemaInfo getAccountingSchema()
+	private IAcctSchemaModel getAccountingSchema()
 	{
 		MClient client = MClient.get(Env.getCtx());
-		IAcctSchemaInfo as = client.getAcctSchema();
+		IAcctSchemaModel as = client.getAcctSchema();
 		return as;
 	}
 
-	private MCost getCost(IAcctSchemaInfo as, MProduct product)
+	private MCost getCost(IAcctSchemaModel as, MProduct product)
 	{
 		return MCost.get(product, 0, as, 0, DictionaryIDs.M_CostElement.MATERIAL.id, getTrxName());
 	}

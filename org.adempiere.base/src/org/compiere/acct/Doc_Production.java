@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import org.adempiere.base.acct.constants.IAcctSchemaConstants;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.model.MCostDetail;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProduction;
@@ -55,7 +55,7 @@ public class Doc_Production extends Doc
 	 * 	@param rs record
 	 * 	@param trxName trx
 	 */
-	public Doc_Production (IAcctSchemaInfo as, ResultSet rs, String trxName)
+	public Doc_Production (IAcctSchemaModel as, ResultSet rs, String trxName)
 	{
 		super (as, X_M_Production.class, rs, null, trxName);
 	}   //  Doc_Production
@@ -202,11 +202,11 @@ public class Doc_Production extends Doc
 	 *  @return Fact
 	 */
 	@Override
-	public ArrayList<Fact> createFacts (IAcctSchemaInfo as)
+	public ArrayList<Fact> createFacts (IAcctSchemaModel as)
 	{
 		//  create Fact Header
 		Fact fact = new Fact(this, as, Fact.POST_Actual);
-		setC_Currency_ID (as.getRecord().getC_Currency_ID());
+		setC_Currency_ID (as.getAcctSchema().getC_Currency_ID());
 
 		//  Line pointer
 		FactLine fl = null;
@@ -386,13 +386,13 @@ public class Doc_Production extends Doc
 					//post roll-up  
 					fl = fact.createLine(line, 
 							line.getAccount(ProductCost.ACCTTYPE_P_Asset, as),
-							as.getRecord().getC_Currency_ID(), bomCost.negate().setScale(stdPrecision, RoundingMode.HALF_UP));
+							as.getAcctSchema().getC_Currency_ID(), bomCost.negate().setScale(stdPrecision, RoundingMode.HALF_UP));
 					if (fl == null) 
 					{ 
 						p_Error = "Couldn't post roll-up " + line.getLine() + " - " + line; 
 						return null; 
 					}
-					fl.getFactAcctInfo().getRecord().setQty(qtyProduced);				
+					fl.getFactAcctInfo().getFactAcct().setQty(qtyProduced);				
 				} 
 				else if (IAcctSchemaConstants.COSTINGMETHOD_StandardCosting.equals(costingMethod))
 				{					
@@ -403,13 +403,13 @@ public class Doc_Production extends Doc
 						//post variance 
 						fl = fact.createLine(line, 
 								line.getAccount(ProductCost.ACCTTYPE_P_RateVariance, as),
-								as.getRecord().getC_Currency_ID(), variance.negate()); 
+								as.getAcctSchema().getC_Currency_ID(), variance.negate()); 
 						if (fl == null) 
 						{ 
 							p_Error = "Couldn't post variance " + line.getLine() + " - " + line; 
 							return null; 
 						}
-						fl.getFactAcctInfo().getRecord().setQty(Env.ZERO);
+						fl.getFactAcctInfo().getFactAcct().setQty(Env.ZERO);
 					}
 				}
 			}
@@ -425,14 +425,14 @@ public class Doc_Production extends Doc
 				}
 				fl = fact.createLine(line,
 					line.getAccount(ProductCost.ACCTTYPE_P_Asset, as),
-					as.getRecord().getC_Currency_ID(), factLineAmt.setScale(stdPrecision, RoundingMode.HALF_UP));
+					as.getAcctSchema().getC_Currency_ID(), factLineAmt.setScale(stdPrecision, RoundingMode.HALF_UP));
 				if (fl == null)
 				{
 					p_Error = "No Costs for Line " + line.getLine() + " - " + line;
 					return null;
 				}
 				fl.setM_Locator_ID(line.getM_Locator_ID());
-				fl.getFactAcctInfo().getRecord().setQty(line.getQty());
+				fl.getFactAcctInfo().getFactAcct().setQty(line.getQty());
 			}
 
 			//	Cost Detail

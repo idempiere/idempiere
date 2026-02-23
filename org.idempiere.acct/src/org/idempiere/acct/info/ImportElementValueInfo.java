@@ -22,17 +22,17 @@
  **********************************************************************/
 package org.idempiere.acct.info;
 
-import org.adempiere.base.acct.info.IImportElementValueInfo;
+import org.adempiere.base.acct.model.IImportElementValueModel;
 import org.compiere.model.I_I_ElementValue;
 import org.compiere.model.PO;
 import org.idempiere.acct.model.X_I_ElementValue;
 
 /**
- * Wrapper for {@link X_I_ElementValue} to provide {@link IImportElementValueInfo} access.
+ * Wrapper for {@link X_I_ElementValue} to provide {@link IImportElementValueModel} access.
  * 
  * @author etantg
  */
-public class ImportElementValueInfo implements IImportElementValueInfo {
+public class ImportElementValueInfo implements IImportElementValueModel {
 	
 	private final X_I_ElementValue elementValue;
 	
@@ -47,7 +47,7 @@ public class ImportElementValueInfo implements IImportElementValueInfo {
 	}
 
 	@Override
-	public I_I_ElementValue getRecord() {
+	public I_I_ElementValue getElementValue() {
 		return elementValue;
 	}
 
@@ -56,11 +56,11 @@ public class ImportElementValueInfo implements IImportElementValueInfo {
 		return elementValue;
 	}
 	
-	public static IImportElementValueInfo wrap(X_I_ElementValue elementValue) {
+	public static IImportElementValueModel wrap(X_I_ElementValue elementValue) {
         if (elementValue == null)
             return null;
-        if (elementValue instanceof IImportElementValueInfo)
-            return (IImportElementValueInfo) elementValue;
+        if (elementValue instanceof IImportElementValueModel)
+            return (IImportElementValueModel) elementValue;
         return new ImportElementValueInfo(elementValue);
     }
 	

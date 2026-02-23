@@ -26,7 +26,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.adempiere.base.acct.IAcctInfoService;
-import org.adempiere.base.acct.info.IImportElementValueInfo;
+import org.adempiere.base.acct.model.IImportElementValueModel;
 
 /**
  * Service interface for import accounting element value info.
@@ -34,5 +34,5 @@ import org.adempiere.base.acct.info.IImportElementValueInfo;
  * @author etantg
  */
 public interface IImportElementValueInfoService extends IAcctInfoService {
-	public IImportElementValueInfo create(Properties ctx, ResultSet rs, String trxName);
+	public IImportElementValueModel create(Properties ctx, ResultSet rs, String trxName);
 }

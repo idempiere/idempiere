@@ -20,22 +20,49 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  **********************************************************************/
-package org.adempiere.base.acct.info;
+package org.adempiere.base.acct.model;
 
-import java.util.ArrayList;
+import java.sql.Timestamp;
 
-import org.adempiere.base.acct.IAcctInfo;
-import org.compiere.model.I_C_AcctSchema_GL;
-import org.compiere.util.KeyNamePair;
+import org.adempiere.base.acct.IAcctModel;
+import org.compiere.model.I_C_AcctSchema;
+import org.compiere.model.MCurrency;
 
 /**
- * Interface for accounting schema GL info objects.
+ * Interface for accounting schema info objects.
  * 
  * @author etantg
  */
-public interface IAcctSchemaGLInfo extends IAcctInfo {
-	public I_C_AcctSchema_GL getRecord();
+public interface IAcctSchemaModel extends IAcctModel {
+	public I_C_AcctSchema getAcctSchema();
 	
-	public ArrayList<KeyNamePair> getAcctInfo();
-	public boolean setValue(String columnName, Integer value);
+	public boolean isAcctSchemaElement(String segmentType);
+	public boolean isSuspenseBalancing();
+	public boolean isCurrencyBalancing();
+	public boolean isSkipOrg(int AD_Org_ID);
+	public int getStdPrecision();
+	public int getCostingPrecision();
+	public void checkCosting();
+	public boolean isCostingLevelClient();
+	public boolean isCostingLevelOrg();
+	public boolean isCostingLevelBatch();
+	public boolean isCreatePOCommitment();
+	public boolean isCreateSOCommitment();
+	public boolean isCreateReservation();
+	public String getTaxCorrectionType();
+	public boolean isTaxCorrection();
+	public boolean isTaxCorrectionDiscount();
+	public boolean isTaxCorrectionWriteOff();
+	public boolean isAcctDateInRange(Timestamp dateAcct);
+	public boolean isBackDateTrxAllowed(Timestamp dateAcct);
+	public MCurrency getCurrency();
+	
+	public IAcctSchemaElementModel[] getAcctSchemaElementsModels();
+	public IAcctSchemaElementModel getAcctSchemaElementModel(String elementType);
+	public IAcctSchemaGLModel getAcctSchemaGLModel();
+	public IAcctSchemaDefaultModel getAcctSchemaDefaultModel();
+	public IAccountModel getSuspenseBalancing_AcctModel();
+	public IAccountModel getCurrencyBalancing_AcctModel();
+	public IAccountModel getDueTo_AcctModel(String segment);
+	public IAccountModel getDueFrom_AcctModel(String segment);
 }

@@ -40,9 +40,9 @@ import java.util.List;
 import java.util.Properties;
 
 import org.adempiere.base.acct.AcctInfoServices;
-import org.adempiere.base.acct.info.IAccountInfo;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
-import org.adempiere.base.acct.info.IFactAcctInfo;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
+import org.adempiere.base.acct.model.IFactAcctModel;
 import org.compiere.acct.Doc;
 import org.compiere.acct.DocManager;
 import org.compiere.model.MBPartner;
@@ -145,23 +145,23 @@ public class InOutTest extends AbstractTestCase {
 			completeDocument(receipt);
 			postDocument(receipt);
 			
-			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
-			for (IAcctSchemaInfo as : ass) {
+			IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			for (IAcctSchemaModel as : ass) {
 				BigDecimal rate = Env.ZERO;
-				if (as.getRecord().getC_Currency_ID() == usd.getC_Currency_ID())
+				if (as.getAcctSchema().getC_Currency_ID() == usd.getC_Currency_ID())
 					rate = audToUsdCompany;
-				else if (as.getRecord().getC_Currency_ID() == euro.getC_Currency_ID())
+				else if (as.getAcctSchema().getC_Currency_ID() == euro.getC_Currency_ID())
 					rate = audToEuroCompany;
 					
 				Doc doc = DocManager.getDocument(as, MInOut.Table_ID, receipt.get_ID(), getTrxName());
 				doc.setC_BPartner_ID(receipt.getC_BPartner_ID());
-				IAccountInfo acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+				IAccountModel acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
 				
 				BigDecimal acctSource = orderLine.getPriceActual().multiply(receiptLine.getMovementQty())
 						.setScale(as.getCurrency().getStdPrecision(), RoundingMode.HALF_UP);
 				BigDecimal acctAmount = acctSource.multiply(rate)
 						.setScale(as.getCurrency().getStdPrecision(), RoundingMode.HALF_UP);
-				List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, receipt.get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
+				List<IFactAcctModel> factAccts = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, receipt.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 				List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, acctAmount, acctSource, as.getCurrency().getStdPrecision(), false, receiptLine.get_ID()));
 				assertFactAcctEntries(factAccts, expected);
 			}
@@ -175,22 +175,22 @@ public class InOutTest extends AbstractTestCase {
 			completeDocument(receipt);
 			postDocument(receipt);
 			
-			for (IAcctSchemaInfo as : ass) {
+			for (IAcctSchemaModel as : ass) {
 				BigDecimal rate = Env.ZERO;
-				if (as.getRecord().getC_Currency_ID() == usd.getC_Currency_ID())
+				if (as.getAcctSchema().getC_Currency_ID() == usd.getC_Currency_ID())
 					rate = audToUsdSpot;
-				else if (as.getRecord().getC_Currency_ID() == euro.getC_Currency_ID())
+				else if (as.getAcctSchema().getC_Currency_ID() == euro.getC_Currency_ID())
 					rate = audToEuroSpot;
 					
 				Doc doc = DocManager.getDocument(as, MInOut.Table_ID, receipt.get_ID(), getTrxName());
 				doc.setC_BPartner_ID(receipt.getC_BPartner_ID());
-				IAccountInfo acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+				IAccountModel acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
 				
 				BigDecimal acctSource = orderLine.getPriceActual().multiply(receiptLine.getMovementQty())
 									.setScale(as.getCurrency().getStdPrecision(), RoundingMode.HALF_UP);
 				BigDecimal acctAmount = acctSource.multiply(rate)
 						.setScale(as.getCurrency().getStdPrecision(), RoundingMode.HALF_UP);
-				List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, receipt.get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
+				List<IFactAcctModel> factAccts = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, receipt.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 				List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, acctAmount, acctSource, as.getCurrency().getStdPrecision(), false, receiptLine.get_ID()));
 				assertFactAcctEntries(factAccts, expected);
 			}
@@ -248,23 +248,23 @@ public class InOutTest extends AbstractTestCase {
 			completeDocument(receipt);
 			postDocument(receipt);
 			
-			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
-			for (IAcctSchemaInfo as : ass) {
+			IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			for (IAcctSchemaModel as : ass) {
 				BigDecimal rate = Env.ZERO;
-				if (as.getRecord().getC_Currency_ID() == usd.getC_Currency_ID())
+				if (as.getAcctSchema().getC_Currency_ID() == usd.getC_Currency_ID())
 					rate = audToUsdCompany;
-				else if (as.getRecord().getC_Currency_ID() == euro.getC_Currency_ID())
+				else if (as.getAcctSchema().getC_Currency_ID() == euro.getC_Currency_ID())
 					rate = audToEuroCompany;
 					
 				Doc doc = DocManager.getDocument(as, MInOut.Table_ID, receipt.get_ID(), getTrxName());
 				doc.setC_BPartner_ID(receipt.getC_BPartner_ID());
-				IAccountInfo acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+				IAccountModel acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
 				
 				BigDecimal acctSource = orderLine.getPriceActual().multiply(receiptLine.getMovementQty())
 						.setScale(as.getCurrency().getStdPrecision(), RoundingMode.HALF_UP);
 				BigDecimal acctAmount = acctSource.multiply(rate)
 						.setScale(as.getCurrency().getStdPrecision(), RoundingMode.HALF_UP);
-				List<IFactAcctInfo> fas = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, receipt.get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
+				List<IFactAcctModel> fas = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, receipt.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 				List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, acctAmount, acctSource, 2, false, receiptLine.get_ID()));
 				assertFactAcctEntries(fas, expected);
 			}
@@ -309,22 +309,22 @@ public class InOutTest extends AbstractTestCase {
 			completeDocument(delivery);
 			postDocument(delivery);
 			
-			for (IAcctSchemaInfo as : ass) {
+			for (IAcctSchemaModel as : ass) {
 				BigDecimal rate = Env.ZERO;
-				if (as.getRecord().getC_Currency_ID() == usd.getC_Currency_ID())
+				if (as.getAcctSchema().getC_Currency_ID() == usd.getC_Currency_ID())
 					rate = audToUsdCompany;
-				else if (as.getRecord().getC_Currency_ID() == euro.getC_Currency_ID())
+				else if (as.getAcctSchema().getC_Currency_ID() == euro.getC_Currency_ID())
 					rate = audToEuroCompany;
 					
 				Doc doc = DocManager.getDocument(as, MInOut.Table_ID, delivery.get_ID(), getTrxName());
 				doc.setC_BPartner_ID(delivery.getC_BPartner_ID());
-				IAccountInfo acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
+				IAccountModel acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
 				
 				BigDecimal acctSource = orderLine.getPriceActual().multiply(deliveryLine.getMovementQty())
 						.setScale(as.getCurrency().getStdPrecision(), RoundingMode.HALF_UP);
 				BigDecimal acctAmount = acctSource.multiply(rate)
 						.setScale(as.getCurrency().getStdPrecision(), RoundingMode.HALF_UP);
-				List<IFactAcctInfo> fas = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, delivery.get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
+				List<IFactAcctModel> fas = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, delivery.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 				List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, acctAmount, null, 2, true, deliveryLine.get_ID()));
 				assertFactAcctEntries(fas, expected);
 			}
@@ -553,25 +553,25 @@ public class InOutTest extends AbstractTestCase {
 		postDocument(delivery);
 		
 		ProductCost pc = new ProductCost(Env.getCtx(), deliveryLine.getM_Product_ID(), deliveryLine.getM_AttributeSetInstance_ID(), getTrxName());
-		IAcctSchemaInfo as = MClient.get(Env.getCtx()).getAcctSchema();
-		IAccountInfo cogs = pc.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
-		IAccountInfo asset = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+		IAcctSchemaModel as = MClient.get(Env.getCtx()).getAcctSchema();
+		IAccountModel cogs = pc.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
+		IAccountModel asset = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
 			
-		List<IFactAcctInfo> fas = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, delivery.get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
+		List<IFactAcctModel> fas = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, delivery.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 		assertTrue(fas.size() > 0, "Failed to retrieve fact posting entries for shipment document");
 		boolean cogsFound = false;
 		boolean assetFound = false;
-		for (IFactAcctInfo fa : fas) {
-			if (cogs.getRecord().getAccount_ID() == fa.getRecord().getAccount_ID()) {
-				if (deliveryLine.get_ID() == fa.getRecord().getLine_ID()) {
-					assertEquals(fa.getRecord().getAmtSourceDr().abs().toPlainString(), fa.getRecord().getAmtSourceDr().toPlainString(), "Not DR COGS");
-					assertTrue(fa.getRecord().getAmtSourceDr().signum() > 0, "Not DR COGS");
+		for (IFactAcctModel fa : fas) {
+			if (cogs.getCombination().getAccount_ID() == fa.getFactAcct().getAccount_ID()) {
+				if (deliveryLine.get_ID() == fa.getFactAcct().getLine_ID()) {
+					assertEquals(fa.getFactAcct().getAmtSourceDr().abs().toPlainString(), fa.getFactAcct().getAmtSourceDr().toPlainString(), "Not DR COGS");
+					assertTrue(fa.getFactAcct().getAmtSourceDr().signum() > 0, "Not DR COGS");
 				}
 				cogsFound = true;
-			} else if (asset.getRecord().getAccount_ID() == fa.getRecord().getAccount_ID()) {
-				if (deliveryLine.get_ID() == fa.getRecord().getLine_ID()) {
-					assertEquals(fa.getRecord().getAmtSourceCr().abs().toPlainString(), fa.getRecord().getAmtSourceCr().toPlainString(), "Not CR Product Asset");
-					assertTrue(fa.getRecord().getAmtSourceCr().signum() > 0, "Not CR Product Asset");
+			} else if (asset.getCombination().getAccount_ID() == fa.getFactAcct().getAccount_ID()) {
+				if (deliveryLine.get_ID() == fa.getFactAcct().getLine_ID()) {
+					assertEquals(fa.getFactAcct().getAmtSourceCr().abs().toPlainString(), fa.getFactAcct().getAmtSourceCr().toPlainString(), "Not CR Product Asset");
+					assertTrue(fa.getFactAcct().getAmtSourceCr().signum() > 0, "Not CR Product Asset");
 				}
 				assetFound = true;
 			}
@@ -581,20 +581,20 @@ public class InOutTest extends AbstractTestCase {
 		
 		//re-post
 		repostDocument(delivery);
-		fas = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, delivery.get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
+		fas = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, delivery.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 		cogsFound = false;
 		assetFound = false;
-		for (IFactAcctInfo fa : fas) {
-			if (cogs.getRecord().getAccount_ID() == fa.getRecord().getAccount_ID()) {
-				if (deliveryLine.get_ID() == fa.getRecord().getLine_ID()) {
-					assertEquals(fa.getRecord().getAmtSourceDr().abs().toPlainString(), fa.getRecord().getAmtSourceDr().toPlainString(), "Not DR COGS");
-					assertTrue(fa.getRecord().getAmtSourceDr().signum() > 0, "Not DR COGS");
+		for (IFactAcctModel fa : fas) {
+			if (cogs.getCombination().getAccount_ID() == fa.getFactAcct().getAccount_ID()) {
+				if (deliveryLine.get_ID() == fa.getFactAcct().getLine_ID()) {
+					assertEquals(fa.getFactAcct().getAmtSourceDr().abs().toPlainString(), fa.getFactAcct().getAmtSourceDr().toPlainString(), "Not DR COGS");
+					assertTrue(fa.getFactAcct().getAmtSourceDr().signum() > 0, "Not DR COGS");
 				}
 				cogsFound = true;
-			} else if (asset.getRecord().getAccount_ID() == fa.getRecord().getAccount_ID()) {
-				if (deliveryLine.get_ID() == fa.getRecord().getLine_ID()) {
-					assertEquals(fa.getRecord().getAmtSourceCr().abs().toPlainString(), fa.getRecord().getAmtSourceCr().toPlainString(), "Not CR Product Asset");
-					assertTrue(fa.getRecord().getAmtSourceCr().signum() > 0, "Not CR Product Asset");
+			} else if (asset.getCombination().getAccount_ID() == fa.getFactAcct().getAccount_ID()) {
+				if (deliveryLine.get_ID() == fa.getFactAcct().getLine_ID()) {
+					assertEquals(fa.getFactAcct().getAmtSourceCr().abs().toPlainString(), fa.getFactAcct().getAmtSourceCr().toPlainString(), "Not CR Product Asset");
+					assertTrue(fa.getFactAcct().getAmtSourceCr().signum() > 0, "Not CR Product Asset");
 				}
 				assetFound = true;
 			}

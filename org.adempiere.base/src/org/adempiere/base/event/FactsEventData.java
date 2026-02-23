@@ -15,7 +15,7 @@ package org.adempiere.base.event;
 
 import java.util.List;
 
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.base.event.annotations.doc.FactsValidateDelegate;
 import org.compiere.acct.Fact;
 import org.compiere.model.PO;
@@ -25,7 +25,7 @@ import org.compiere.model.PO;
  * @author hengsin
  */
 public class FactsEventData implements POEventData {
-	private IAcctSchemaInfo acctSchema;
+	private IAcctSchemaModel acctSchema;
 	private List<Fact> facts;
 	private PO po;
 
@@ -34,7 +34,7 @@ public class FactsEventData implements POEventData {
 	 * @param facts
 	 * @param po
 	 */
-	public FactsEventData(IAcctSchemaInfo acctSchema, List<Fact> facts, PO po) {
+	public FactsEventData(IAcctSchemaModel acctSchema, List<Fact> facts, PO po) {
 		super();
 		this.acctSchema = acctSchema;
 		this.facts = facts;
@@ -44,7 +44,7 @@ public class FactsEventData implements POEventData {
 	/**
 	 * @return the acctSchema
 	 */
-	public IAcctSchemaInfo getAcctSchema() {
+	public IAcctSchemaModel getAcctSchema() {
 		return acctSchema;
 	}
 

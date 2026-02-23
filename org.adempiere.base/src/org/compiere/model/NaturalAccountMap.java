@@ -27,7 +27,7 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 
 import org.adempiere.base.acct.AcctInfoServices;
-import org.adempiere.base.acct.info.IElementValueInfo;
+import org.adempiere.base.acct.model.IElementValueModel;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.Ini;
@@ -81,7 +81,7 @@ public final class NaturalAccountMap<K,V> extends CCache<K,V>
 	/** Transaction		*/
 	private String		m_trxName = null;
 	/** Map of Values and Element	*/
-	private HashMap<String,IElementValueInfo> 	m_valueMap = new HashMap<String,IElementValueInfo>();
+	private HashMap<String,IElementValueModel> 	m_valueMap = new HashMap<String,IElementValueModel>();
 	/**	Logger			*/
 	private static CLogger log = CLogger.getCLogger(NaturalAccountMap.class);
 
@@ -242,7 +242,7 @@ public final class NaturalAccountMap<K,V> extends CCache<K,V>
 		try
 		{
 			//	Try to find - allows to use same natural account for multiple default accounts 
-			IElementValueInfo na = (IElementValueInfo)m_valueMap.get(Value);
+			IElementValueModel na = (IElementValueModel)m_valueMap.get(Value);
 			if (na == null)
 			{
 				//  Create Account - save later
@@ -279,11 +279,11 @@ public final class NaturalAccountMap<K,V> extends CCache<K,V>
 		Iterator<?> iterator = this.values().iterator();
 		while (iterator.hasNext())
 		{
-			IElementValueInfo na = (IElementValueInfo)iterator.next();
+			IElementValueModel na = (IElementValueModel)iterator.next();
 			na.getPO().set_ValueNoCheck("AD_Client_ID", Integer.valueOf(AD_Client_ID));
-			na.getRecord().setAD_Org_ID(AD_Org_ID);
-			na.getRecord().setC_Element_ID(C_Element_ID);
-			na.getRecord().setIsActive(isActive);
+			na.getElementValue().setAD_Org_ID(AD_Org_ID);
+			na.getElementValue().setC_Element_ID(C_Element_ID);
+			na.getElementValue().setIsActive(isActive);
 			if (!na.getPO().save())
 				return false;
 		}
@@ -297,10 +297,10 @@ public final class NaturalAccountMap<K,V> extends CCache<K,V>
 	 */
 	public int getC_ElementValue_ID (String key)
 	{
-		IElementValueInfo na = (IElementValueInfo)this.get(key);
+		IElementValueModel na = (IElementValueModel)this.get(key);
 		if (na == null)
 			return 0;
-		return na.getRecord().getC_ElementValue_ID();
+		return na.getElementValue().getC_ElementValue_ID();
 	}   //  getC_ElementValue_ID
 
 }   //  NaturalAccountMap

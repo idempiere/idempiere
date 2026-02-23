@@ -26,7 +26,7 @@ import java.util.logging.Level;
 
 import org.adempiere.base.acct.AcctInfoServices;
 import org.adempiere.base.acct.constants.IAcctSchemaConstants;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.BackDateTrxNotAllowedException;
 import org.adempiere.exceptions.NegativeInventoryDisallowedException;
 import org.adempiere.exceptions.PeriodClosedException;
@@ -1176,12 +1176,12 @@ public class MMovement extends X_M_Movement implements DocAction
 	private boolean periodClosedCheckForBackDateTrx(Timestamp reversalDate)
 	{
 		MClientInfo info = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName()); 
-		IAcctSchemaInfo as = info.getMAcctSchema1();
-		if (!IAcctSchemaConstants.COSTINGMETHOD_AveragePO.equals(as.getRecord().getCostingMethod()) 
-				&& !IAcctSchemaConstants.COSTINGMETHOD_AverageInvoice.equals(as.getRecord().getCostingMethod()))
+		IAcctSchemaModel as = info.getMAcctSchema1();
+		if (!IAcctSchemaConstants.COSTINGMETHOD_AveragePO.equals(as.getAcctSchema().getCostingMethod()) 
+				&& !IAcctSchemaConstants.COSTINGMETHOD_AverageInvoice.equals(as.getAcctSchema().getCostingMethod()))
 			return true;
 		
-		if (as.getRecord().getBackDateDay() == 0)
+		if (as.getAcctSchema().getBackDateDay() == 0)
 			return true;
 		
 		Timestamp dateAcct = reversalDate != null ? reversalDate : getMovementDate();
@@ -1204,7 +1204,7 @@ public class MMovement extends X_M_Movement implements DocAction
 			int AD_Org_ID = mLine.getAD_Org_ID();
 			int M_AttributeSetInstance_ID = mLine.getM_AttributeSetInstance_ID();
 			
-			MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), as.getRecord().getCostingMethod(), AD_Org_ID);
+			MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), as.getAcctSchema().getCostingMethod(), AD_Org_ID);
 			
 			int M_CostDetail_ID = 0;
 			int M_MovementLine_ID = mLine.getM_MovementLine_ID();
@@ -1216,14 +1216,14 @@ public class MMovement extends X_M_Movement implements DocAction
 				M_CostDetail_ID = cd.getM_CostDetail_ID();
 			else {
 				MCostHistory history = MCostHistory.get(getCtx(), getAD_Client_ID(), AD_Org_ID, mLine.getM_Product_ID(), 
-						as.getRecord().getM_CostType_ID(), as.getRecord().getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(),
+						as.getAcctSchema().getM_CostType_ID(), as.getAcctSchema().getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(),
 						M_AttributeSetInstance_ID, dateAcct, get_TrxName());
 				if (history != null)
 					M_CostDetail_ID = history.getM_CostDetail_ID();
 			} 
 			
 			if (M_CostDetail_ID > 0) {
-				MCostDetail.periodClosedCheckForDocsAfterBackDateTrx(getAD_Client_ID(), as.getRecord().getC_AcctSchema_ID(), 
+				MCostDetail.periodClosedCheckForDocsAfterBackDateTrx(getAD_Client_ID(), as.getAcctSchema().getC_AcctSchema_ID(), 
 						mLine.getM_Product_ID(), M_CostDetail_ID, dateAcct, get_TrxName());
 			}
 		}

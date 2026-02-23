@@ -38,7 +38,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 
 import org.adempiere.base.acct.AcctInfoServices;
-import org.adempiere.base.acct.info.IFactAcctInfo;
+import org.adempiere.base.acct.model.IFactAcctModel;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
@@ -347,7 +347,7 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		int AD_Column_ID = FactReconcile.col_C_AcctSchema_ID;        //  Fact_Acct.C_AcctSchema_ID
 		MLookup lookupAS = MLookupFactory.get (Env.getCtx(), form.getWindowNo(), 0, AD_Column_ID, DisplayType.TableDir);
 		fieldAcctSchema = new WTableDirEditor("C_AcctSchema_ID", true, false, true, lookupAS);
-		fieldAcctSchema.setValue(MClient.get(Env.getCtx()).getAcctSchema().getRecord().getC_AcctSchema_ID());
+		fieldAcctSchema.setValue(MClient.get(Env.getCtx()).getAcctSchema().getAcctSchema().getC_AcctSchema_ID());
 		fieldAcctSchema.addValueChangeListener(this);
 		m_C_AcctSchema_ID = (Integer)fieldAcctSchema.getValue();
 		Env.setContext(Env.getCtx(), form.getWindowNo(), "C_AcctSchema_ID", m_C_AcctSchema_ID);
@@ -568,8 +568,8 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		if (tableID == I_Fact_Acct.Table_ID)
 			AEnv.zoom(tableID, factId);
 		else {
-			IFactAcctInfo fa = AcctInfoServices.getFactAcctInfoService().create(Env.getCtx(), factId, null);
-			AEnv.zoom(fa.getRecord().getAD_Table_ID(), fa.getRecord().getRecord_ID());
+			IFactAcctModel fa = AcctInfoServices.getFactAcctInfoService().create(Env.getCtx(), factId, null);
+			AEnv.zoom(fa.getFactAcct().getAD_Table_ID(), fa.getFactAcct().getRecord_ID());
 		}
 	}	//	zoom
 	

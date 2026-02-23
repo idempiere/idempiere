@@ -25,7 +25,7 @@ package org.idempiere.acct.service;
 import java.util.Properties;
 
 import org.adempiere.base.acct.AcctInfoService;
-import org.adempiere.base.acct.info.IFactReconciliationInfo;
+import org.adempiere.base.acct.model.IFactReconciliationModel;
 import org.adempiere.base.acct.service.IFactReconciliationInfoService;
 import org.compiere.model.Query;
 import org.idempiere.acct.info.FactReconciliationInfo;
@@ -40,13 +40,13 @@ import org.idempiere.acct.model.MFactReconciliation;
 public class FactReconciliationInfoService implements IFactReconciliationInfoService {
 	
 	@Override
-	public IFactReconciliationInfo create(Properties ctx, int Fact_Reconciliation_ID, String trxName) {
+	public IFactReconciliationModel create(Properties ctx, int Fact_Reconciliation_ID, String trxName) {
 		MFactReconciliation reconciliation = new MFactReconciliation(ctx, Fact_Reconciliation_ID, trxName);
 		return FactReconciliationInfo.wrap(reconciliation);
 	}
 
 	@Override
-	public IFactReconciliationInfo first(Properties ctx, String whereClause, Object[] params, String trxName) {
+	public IFactReconciliationModel first(Properties ctx, String whereClause, Object[] params, String trxName) {
 		MFactReconciliation reconciliation = new Query(ctx, MFactReconciliation.Table_Name, whereClause, trxName)
 				.setParameters(params)
 				.first();

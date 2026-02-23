@@ -24,7 +24,7 @@ import java.util.logging.Level;
 
 import org.adempiere.base.acct.AcctInfoServices;
 import org.adempiere.base.acct.constants.IAcctSchemaConstants;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.model.ImportValidator;
 import org.adempiere.process.ImportProcess;
@@ -78,7 +78,7 @@ public class ImportInventory extends SvrProcess implements ImportProcess
 	private boolean			p_UpdateCosting = false;
 	/**	Accounting Schema in which costing to be updated	*/
 	private int				p_C_AcctSchema_ID = 0;
-	IAcctSchemaInfo acctSchema 	= null;
+	IAcctSchemaModel acctSchema 	= null;
 	/**	Cost Type for which costing to be updated		*/
 	private int				p_M_CostType_ID = 0;
 	/**	Cost Element for which costing to be updated	*/
@@ -530,7 +530,7 @@ public class ImportInventory extends SvrProcess implements ImportProcess
 			MProductCategoryAcct pca = MProductCategoryAcct.get(getCtx(), product.getM_Product_Category_ID(), p_C_AcctSchema_ID, get_TrxName());
 			costingLevel = pca.getCostingLevel();
 			if (costingLevel == null) {
-				costingLevel = acctSchema.getRecord().getCostingLevel();
+				costingLevel = acctSchema.getAcctSchema().getCostingLevel();
 			}
 
 		}

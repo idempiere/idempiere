@@ -27,7 +27,7 @@ import java.util.logging.Level;
 
 import org.adempiere.base.acct.AcctInfoServices;
 import org.adempiere.base.acct.constants.IAcctSchemaElementConstants;
-import org.adempiere.base.acct.info.IAcctSchemaElementInfo;
+import org.adempiere.base.acct.model.IAcctSchemaElementModel;
 import org.adempiere.base.upload.IUploadService;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.ClientInfo;
@@ -890,11 +890,11 @@ public class WAcctViewer extends ADForm implements EventListener<Event>
 
 		int selectionIndex = 0;
 
-		IAcctSchemaElementInfo[] elements = m_data.ASchema.getAcctSchemaElementsInfo();
+		IAcctSchemaElementModel[] elements = m_data.ASchema.getAcctSchemaElementsModels();
 
 		for (int i = 0; i < elements.length && selectionIndex < labels.length; i++)
 		{
-			IAcctSchemaElementInfo ase = elements[i];
+			IAcctSchemaElementModel ase = elements[i];
 			String columnName = ase.getColumnName();
 			String displayColumnName = ase.getDisplayColumnName();
 
@@ -1250,29 +1250,29 @@ public class WAcctViewer extends ADForm implements EventListener<Event>
 		if ("Account_ID".equals(keyColumn))
 		{
 			lookupColumn = "C_ElementValue_ID";
-			IAcctSchemaElementInfo ase = m_data.ASchema
-				.getAcctSchemaElementInfo(IAcctSchemaElementConstants.ELEMENTTYPE_Account);
+			IAcctSchemaElementModel ase = m_data.ASchema
+				.getAcctSchemaElementModel(IAcctSchemaElementConstants.ELEMENTTYPE_Account);
 
 			if (ase != null)
-				whereClause += " AND C_Element_ID=" + ase.getRecord().getC_Element_ID();
+				whereClause += " AND C_Element_ID=" + ase.getAcctSchemaElement().getC_Element_ID();
 		}
 		else if ("User1_ID".equals(keyColumn))
 		{
 			lookupColumn = "C_ElementValue_ID";
-			IAcctSchemaElementInfo ase = m_data.ASchema
-				.getAcctSchemaElementInfo(IAcctSchemaElementConstants.ELEMENTTYPE_UserElementList1);
+			IAcctSchemaElementModel ase = m_data.ASchema
+				.getAcctSchemaElementModel(IAcctSchemaElementConstants.ELEMENTTYPE_UserElementList1);
 
 			if (ase != null)
-				whereClause += " AND C_Element_ID=" + ase.getRecord().getC_Element_ID();
+				whereClause += " AND C_Element_ID=" + ase.getAcctSchemaElement().getC_Element_ID();
 		}
 		else if ("User2_ID".equals(keyColumn))
 		{
 			lookupColumn = "C_ElementValue_ID";
-			IAcctSchemaElementInfo ase = m_data.ASchema
-				.getAcctSchemaElementInfo(IAcctSchemaElementConstants.ELEMENTTYPE_UserElementList2);
+			IAcctSchemaElementModel ase = m_data.ASchema
+				.getAcctSchemaElementModel(IAcctSchemaElementConstants.ELEMENTTYPE_UserElementList2);
 
 			if (ase != null)
-				whereClause += " AND C_Element_ID=" + ase.getRecord().getC_Element_ID();
+				whereClause += " AND C_Element_ID=" + ase.getAcctSchemaElement().getC_Element_ID();
 		}
 		else if (keyColumn.equals("AD_OrgTrx_ID"))
 		{
@@ -1280,14 +1280,14 @@ public class WAcctViewer extends ADForm implements EventListener<Event>
 		}
 		else if (keyColumn.equals("UserElement1_ID")) // KTU
 		{	
-			IAcctSchemaElementInfo ase = m_data.ASchema.getAcctSchemaElementInfo(IAcctSchemaElementConstants.ELEMENTTYPE_UserColumn1);
-			lookupColumn = MColumn.getColumnName(Env.getCtx(), ase.getRecord().getAD_Column_ID());
+			IAcctSchemaElementModel ase = m_data.ASchema.getAcctSchemaElementModel(IAcctSchemaElementConstants.ELEMENTTYPE_UserColumn1);
+			lookupColumn = MColumn.getColumnName(Env.getCtx(), ase.getAcctSchemaElement().getAD_Column_ID());
 			whereClause = "";
 		}
 		else if (keyColumn.equals("UserElement2_ID")) // KTU
 		{
-			IAcctSchemaElementInfo ase = m_data.ASchema.getAcctSchemaElementInfo(IAcctSchemaElementConstants.ELEMENTTYPE_UserColumn2);
-			lookupColumn = MColumn.getColumnName(Env.getCtx(), ase.getRecord().getAD_Column_ID());
+			IAcctSchemaElementModel ase = m_data.ASchema.getAcctSchemaElementModel(IAcctSchemaElementConstants.ELEMENTTYPE_UserColumn2);
+			lookupColumn = MColumn.getColumnName(Env.getCtx(), ase.getAcctSchemaElement().getAD_Column_ID());
 			whereClause = "";
 		}
 		else if (keyColumn.equals(I_C_AcctSchema_Element.COLUMNNAME_C_Employee_ID))

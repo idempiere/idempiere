@@ -20,20 +20,20 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  **********************************************************************/
-package org.adempiere.base.acct.info;
+package org.adempiere.base.acct.model;
 
-import org.adempiere.base.acct.IAcctInfo;
-import org.compiere.model.I_C_AcctSchema_Element;
+import org.adempiere.base.acct.IAcctModel;
+import org.compiere.model.I_Fact_Acct;
+import org.compiere.model.PO;
 
 /**
- * Interface for accounting schema element info objects.
+ * Interface for accounting fact info objects.
  * 
  * @author etantg
  */
-public interface IAcctSchemaElementInfo extends IAcctInfo {
-	public I_C_AcctSchema_Element getRecord();
+public interface IFactAcctModel extends IAcctModel {
+	public I_Fact_Acct getFactAcct();
 	
-	public String getDisplayColumnName();
-	public String getColumnName();
-	public boolean isElementType(String elementType);
+	public IAccountModel getAccountModel();
+	public void setClientOrg(PO po);
 }

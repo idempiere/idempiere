@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.adempiere.base.acct.AcctInfoServices;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.acct.Fact;
 import org.compiere.model.FactsValidator;
 import org.compiere.model.MClient;
@@ -144,7 +144,7 @@ public class ModelValidationEngineTest extends AbstractTestCase {
 	@Test
 	public void testFactsValidate() {
 		MOrg org = MOrg.get(Env.getCtx(), getAD_Org_ID());
-		IAcctSchemaInfo as = AcctInfoServices.getAcctSchemaInfoService().get(Env.getCtx(), Env.getContextAsInt(Env.getCtx(), "$C_AcctSchema_ID"));
+		IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get(Env.getCtx(), Env.getContextAsInt(Env.getCtx(), "$C_AcctSchema_ID"));
 		List<Fact> facts = new ArrayList<>();
 		
 		engine.addFactsValidate(MOrg.Table_Name, globalValidator);
@@ -206,7 +206,7 @@ public class ModelValidationEngineTest extends AbstractTestCase {
 		}
 
 		@Override
-		public String factsValidate(IAcctSchemaInfo schema, List<Fact> facts, PO po) {
+		public String factsValidate(IAcctSchemaModel schema, List<Fact> facts, PO po) {
 			factsValidateCount++;
 			return null;
 		}

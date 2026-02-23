@@ -36,8 +36,8 @@ import java.util.logging.Level;
 
 import org.adempiere.base.acct.AcctInfoServices;
 import org.adempiere.base.acct.constants.IFactAcctConstants;
-import org.adempiere.base.acct.info.IAcctSchemaElementInfo;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaElementModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.webui.component.Listbox;
 import org.compiere.model.MJournal;
 import org.compiere.model.MLookupFactory;
@@ -69,10 +69,10 @@ public class WAcctViewerData
 	public int AD_Client_ID;
 	
 	/** All Accounting Schemas for client		*/
-	public IAcctSchemaInfo[] ASchemas = null;
+	public IAcctSchemaModel[] ASchemas = null;
 	
 	/** Selected Accounting Schema	*/
-	public IAcctSchemaInfo ASchema = null;
+	public IAcctSchemaModel ASchema = null;
 
 	//  Selection Info
 	
@@ -204,7 +204,7 @@ public class WAcctViewerData
 			MJournal journal = new MJournal(Env.getCtx(), Record_ID, null);
 			
 			if (journal.getGL_Journal_ID() == Record_ID) {
-				ASchemas = new IAcctSchemaInfo[1];
+				ASchemas = new IAcctSchemaModel[1];
 				ASchemas[0] = AcctInfoServices.getAcctSchemaInfoService().get(Env.getCtx(), journal.getC_AcctSchema_ID());
 				ASchema = ASchemas[0];
 			}
@@ -219,7 +219,7 @@ public class WAcctViewerData
 	{
 		for (int i = 0; i < ASchemas.length; i++)
 		{
-			KeyNamePair key = new KeyNamePair(ASchemas[i].getRecord().getC_AcctSchema_ID(), ASchemas[i].getRecord().getName());
+			KeyNamePair key = new KeyNamePair(ASchemas[i].getAcctSchema().getC_AcctSchema_ID(), ASchemas[i].getAcctSchema().getName());
 			cb.appendItem(key.getName(), key);
 		}
 	} // fillAcctSchema
@@ -632,14 +632,14 @@ public class WAcctViewerData
 
 		//  Add Account Segments
 		
-		IAcctSchemaElementInfo[] elements = ASchema.getAcctSchemaElementsInfo();
+		IAcctSchemaElementModel[] elements = ASchema.getAcctSchemaElementsModels();
 		
 		for (int i = 0; i < elements.length; i++)
 		{
 			if (m_leadingColumns == 0 && columns.contains("AD_Org_ID") && columns.contains("Account_ID"))
 				m_leadingColumns = columns.size();
 
-			IAcctSchemaElementInfo ase = elements[i];
+			IAcctSchemaElementModel ase = elements[i];
 			String columnName = ase.getColumnName();
 			
 			if (columnName.startsWith("UserElement"))

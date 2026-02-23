@@ -23,7 +23,7 @@ import java.util.Properties;
 
 import org.adempiere.base.acct.AcctInfoServices;
 import org.adempiere.base.acct.constants.IAcctSchemaConstants;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.process.DocAction;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -401,7 +401,7 @@ public class MInventoryLine extends X_M_InventoryLine
 			int M_ASI_ID = getM_AttributeSetInstance_ID();
 			MProduct product = new MProduct(getCtx(), getM_Product_ID(), get_TrxName());
 			MClient client = MClient.get(getCtx());
-			IAcctSchemaInfo as = client.getAcctSchema();
+			IAcctSchemaModel as = client.getAcctSchema();
 			String costingLevel = product.getCostingLevel(as);
 			// M_AttributeSetInstance_ID is mandatory for COSTINGLEVEL_BatchLot 
 			if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(costingLevel)) {				
@@ -413,13 +413,13 @@ public class MInventoryLine extends X_M_InventoryLine
 			
 			// Find accounting schema via currency
 			int C_Currency_ID = getParent().getC_Currency_ID();
-			if (as.getRecord().getC_Currency_ID() != C_Currency_ID) 
+			if (as.getAcctSchema().getC_Currency_ID() != C_Currency_ID) 
 			{
-				IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(getCtx(), client.get_ID());
+				IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(getCtx(), client.get_ID());
 				for (int i = 0; i < ass.length ; i ++)
 				{
-					IAcctSchemaInfo a =  ass[i];
-					if (a.getRecord().getC_Currency_ID() ==  C_Currency_ID) 
+					IAcctSchemaModel a =  ass[i];
+					if (a.getAcctSchema().getC_Currency_ID() ==  C_Currency_ID) 
 						as = a ; 
 				}
 			}
@@ -487,24 +487,24 @@ public class MInventoryLine extends X_M_InventoryLine
 	public BigDecimal getCurrentCostPriceForCostAdjustment() {
 		MInventory inventory = getParent();
 		MClient client = MClient.get(inventory.getCtx(), inventory.getAD_Client_ID());
-		IAcctSchemaInfo as = client.getAcctSchema();
-		IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(inventory.getCtx(), client.get_ID());
-		if (as.getRecord().getC_Currency_ID() != inventory.getC_Currency_ID()) {
-			for (IAcctSchemaInfo a : ass) {
-				if (a.getRecord().getC_Currency_ID() == inventory.getC_Currency_ID()) 
+		IAcctSchemaModel as = client.getAcctSchema();
+		IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(inventory.getCtx(), client.get_ID());
+		if (as.getAcctSchema().getC_Currency_ID() != inventory.getC_Currency_ID()) {
+			for (IAcctSchemaModel a : ass) {
+				if (a.getAcctSchema().getC_Currency_ID() == inventory.getC_Currency_ID()) 
 					as = a ; 
 			}
 		}
 		int AD_Org_ID = getAD_Org_ID();
 		int M_AttributeSetInstance_ID = getM_AttributeSetInstance_ID();
-		if (IAcctSchemaConstants.COSTINGLEVEL_Client.equals(as.getRecord().getCostingLevel()))
+		if (IAcctSchemaConstants.COSTINGLEVEL_Client.equals(as.getAcctSchema().getCostingLevel()))
 		{
 			AD_Org_ID = 0;
 			M_AttributeSetInstance_ID = 0;
 		}
-		else if (IAcctSchemaConstants.COSTINGLEVEL_Organization.equals(as.getRecord().getCostingLevel()))
+		else if (IAcctSchemaConstants.COSTINGLEVEL_Organization.equals(as.getAcctSchema().getCostingLevel()))
 			M_AttributeSetInstance_ID = 0;
-		else if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(as.getRecord().getCostingLevel()))
+		else if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(as.getAcctSchema().getCostingLevel()))
 			AD_Org_ID = 0;
 		MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), inventory.getCostingMethod(), AD_Org_ID);
 		
@@ -516,17 +516,17 @@ public class MInventoryLine extends X_M_InventoryLine
 				M_InventoryLine_ID, 0, get_TrxName());
 		if (cd != null)
  			history = MCostHistory.get(getCtx(), AD_Org_ID, 
- 					as.getRecord().getM_CostType_ID(), as.getRecord().getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(), 
+ 					as.getAcctSchema().getM_CostType_ID(), as.getAcctSchema().getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(), 
  					M_AttributeSetInstance_ID, cd, get_TrxName());
 		if (history == null)
 			history = MCostHistory.get(getCtx(), getAD_Client_ID(), AD_Org_ID, getM_Product_ID(), 
-					as.getRecord().getM_CostType_ID(), as.getRecord().getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(),
+					as.getAcctSchema().getM_CostType_ID(), as.getAcctSchema().getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(),
 					M_AttributeSetInstance_ID, inventory.getMovementDate(), get_TrxName());
 		if (history != null)
 			return history.getCurrentCostPrice();
 		
 		MCost cost = MCost.get(getCtx(), getAD_Client_ID(), AD_Org_ID, getM_Product_ID(), 
-				as.getRecord().getM_CostType_ID(), as.getRecord().getC_AcctSchema_ID(), ce.getM_CostElement_ID(), 
+				as.getAcctSchema().getM_CostType_ID(), as.getAcctSchema().getC_AcctSchema_ID(), ce.getM_CostElement_ID(), 
 				M_AttributeSetInstance_ID, get_TrxName());
 		if (cost != null)
 			return cost.getCurrentCostPrice();

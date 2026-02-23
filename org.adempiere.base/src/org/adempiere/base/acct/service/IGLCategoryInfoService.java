@@ -25,7 +25,7 @@ package org.adempiere.base.acct.service;
 import java.util.Properties;
 
 import org.adempiere.base.acct.IAcctInfoService;
-import org.adempiere.base.acct.info.IGLCategoryInfo;
+import org.adempiere.base.acct.model.IGLCategoryModel;
 
 /**
  * Service interface for GL category info.
@@ -33,8 +33,8 @@ import org.adempiere.base.acct.info.IGLCategoryInfo;
  * @author etantg
  */
 public interface IGLCategoryInfoService extends IAcctInfoService {
-	public IGLCategoryInfo get(Properties ctx, int GL_Category_ID);
-	public IGLCategoryInfo getDefaultSystem (Properties ctx);
+	public IGLCategoryModel get(Properties ctx, int GL_Category_ID);
+	public IGLCategoryModel getDefaultSystem (Properties ctx);
 	
-	public IGLCategoryInfo create(Properties ctx, int GL_Category_ID, String trxName);
+	public IGLCategoryModel create(Properties ctx, int GL_Category_ID, String trxName);
 }

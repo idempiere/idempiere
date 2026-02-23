@@ -5,8 +5,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 
 import org.adempiere.base.acct.AcctInfoServices;
-import org.adempiere.base.acct.info.IAccountInfo;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.model.MAssetTransfer;
 import org.compiere.model.MDepreciationWorkfile;
 import org.compiere.model.MDocType;
@@ -18,7 +18,7 @@ import org.compiere.util.Env;
  */
 public class Doc_AssetTransfer extends Doc 
 {
-	public Doc_AssetTransfer (IAcctSchemaInfo as, ResultSet rs, String trxName)
+	public Doc_AssetTransfer (IAcctSchemaModel as, ResultSet rs, String trxName)
 	{
 		super(as, MAssetTransfer.class, rs, MDocType.DOCBASETYPE_GLJournal, trxName);
 	}
@@ -41,7 +41,7 @@ public class Doc_AssetTransfer extends Doc
 	 * </pre>
 	 */
 	@Override
-	public ArrayList<Fact> createFacts(IAcctSchemaInfo as)
+	public ArrayList<Fact> createFacts(IAcctSchemaModel as)
 	{
 		MAssetTransfer assetTr = getAssetTransfer();
 		MDepreciationWorkfile wk = getAssetWorkfile();	
@@ -53,18 +53,18 @@ public class Doc_AssetTransfer extends Doc
 		// Change Asset Account
 		if (assetTr.getA_Asset_New_Acct() != assetTr.getA_Asset_Acct())
 		{
-			IAccountInfo dr = AcctInfoServices.getAccountInfoService().get(getCtx(), assetTr.getA_Asset_New_Acct());  
-			IAccountInfo cr = AcctInfoServices.getAccountInfoService().get(getCtx(), assetTr.getA_Asset_Acct());
-			FactUtil.createSimpleOperation(fact, null, dr, cr, as.getRecord().getC_Currency_ID(),
+			IAccountModel dr = AcctInfoServices.getAccountInfoService().get(getCtx(), assetTr.getA_Asset_New_Acct());  
+			IAccountModel cr = AcctInfoServices.getAccountInfoService().get(getCtx(), assetTr.getA_Asset_Acct());
+			FactUtil.createSimpleOperation(fact, null, dr, cr, as.getAcctSchema().getC_Currency_ID(),
 					wk.getA_Asset_Cost(), false);
 		}
 		//
 		// Change Asset Accum. Depr. Account
 		if (assetTr.getA_Accumdepreciation_New_Acct() != assetTr.getA_Accumdepreciation_Acct())
 		{
-			IAccountInfo cr = AcctInfoServices.getAccountInfoService().get(getCtx(), assetTr.getA_Accumdepreciation_New_Acct());  
-			IAccountInfo dr = AcctInfoServices.getAccountInfoService().get(getCtx(), assetTr.getA_Accumdepreciation_Acct());
-			FactUtil.createSimpleOperation(fact, null, dr, cr, as.getRecord().getC_Currency_ID(),
+			IAccountModel cr = AcctInfoServices.getAccountInfoService().get(getCtx(), assetTr.getA_Accumdepreciation_New_Acct());  
+			IAccountModel dr = AcctInfoServices.getAccountInfoService().get(getCtx(), assetTr.getA_Accumdepreciation_Acct());
+			FactUtil.createSimpleOperation(fact, null, dr, cr, as.getAcctSchema().getC_Currency_ID(),
 					wk.getA_Accumulated_Depr(), false);
 		}
 		//

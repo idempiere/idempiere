@@ -25,7 +25,7 @@ package org.adempiere.base.acct.service;
 import java.util.Properties;
 
 import org.adempiere.base.acct.IAcctInfoService;
-import org.adempiere.base.acct.info.IElementInfo;
+import org.adempiere.base.acct.model.IElementModel;
 import org.compiere.model.MClient;
 
 /**
@@ -34,6 +34,6 @@ import org.compiere.model.MClient;
  * @author etantg
  */
 public interface IElementInfoService extends IAcctInfoService {
-	public IElementInfo create(Properties ctx, int C_Element_ID, String trxName);
-	public IElementInfo create(MClient client, String Name, String ElementType, int AD_Tree_ID);
+	public IElementModel create(Properties ctx, int C_Element_ID, String trxName);
+	public IElementModel create(MClient client, String Name, String ElementType, int AD_Tree_ID);
 }

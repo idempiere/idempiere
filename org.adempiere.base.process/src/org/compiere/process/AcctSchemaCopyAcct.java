@@ -21,11 +21,11 @@ import java.util.logging.Level;
 
 import org.adempiere.base.acct.AcctInfoServices;
 import org.adempiere.base.acct.constants.IAcctSchemaElementConstants;
-import org.adempiere.base.acct.info.IAccountInfo;
-import org.adempiere.base.acct.info.IAcctSchemaDefaultInfo;
-import org.adempiere.base.acct.info.IAcctSchemaElementInfo;
-import org.adempiere.base.acct.info.IAcctSchemaGLInfo;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IAcctSchemaDefaultModel;
+import org.adempiere.base.acct.model.IAcctSchemaElementModel;
+import org.adempiere.base.acct.model.IAcctSchemaGLModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.model.MProcessPara;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.AdempiereUserError;
@@ -78,26 +78,26 @@ public class AcctSchemaCopyAcct extends SvrProcess
 		if (p_SourceAcctSchema_ID == p_TargetAcctSchema_ID)
 			throw new AdempiereUserError("Must be different");
 		
-		IAcctSchemaInfo source = AcctInfoServices.getAcctSchemaInfoService().get(getCtx(), p_SourceAcctSchema_ID, null);
+		IAcctSchemaModel source = AcctInfoServices.getAcctSchemaInfoService().get(getCtx(), p_SourceAcctSchema_ID, null);
 		if (source.getPO().get_ID() == 0)
 			throw new AdempiereSystemError("NotFound Source C_AcctSchema_ID=" + p_SourceAcctSchema_ID);
-		IAcctSchemaInfo target = AcctInfoServices.getAcctSchemaInfoService().create(getCtx(), p_TargetAcctSchema_ID, get_TrxName());
+		IAcctSchemaModel target = AcctInfoServices.getAcctSchemaInfoService().create(getCtx(), p_TargetAcctSchema_ID, get_TrxName());
 		if (target.getPO().get_ID() == 0)
 			throw new AdempiereSystemError("NotFound Target C_AcctSchema_ID=" + p_TargetAcctSchema_ID);
 		
 		//
-		IAcctSchemaElementInfo[] targetElements = target.getAcctSchemaElementsInfo();
+		IAcctSchemaElementModel[] targetElements = target.getAcctSchemaElementsModels();
 		if (targetElements.length == 0)
 			throw new AdempiereUserError("NotFound Target C_AcctSchema_Element");
 		
 		//	Accounting Element must be the same
-		IAcctSchemaElementInfo sourceAcctElement = source.getAcctSchemaElementInfo(IAcctSchemaElementConstants.ELEMENTTYPE_Account);
+		IAcctSchemaElementModel sourceAcctElement = source.getAcctSchemaElementModel(IAcctSchemaElementConstants.ELEMENTTYPE_Account);
 		if (sourceAcctElement == null)
 			throw new AdempiereUserError("NotFound Source AC C_AcctSchema_Element");
-		IAcctSchemaElementInfo targetAcctElement = target.getAcctSchemaElementInfo(IAcctSchemaElementConstants.ELEMENTTYPE_Account);
+		IAcctSchemaElementModel targetAcctElement = target.getAcctSchemaElementModel(IAcctSchemaElementConstants.ELEMENTTYPE_Account);
 		if (targetAcctElement == null)
 			throw new AdempiereUserError("NotFound Target AC C_AcctSchema_Element");
-		if (sourceAcctElement.getRecord().getC_Element_ID() != targetAcctElement.getRecord().getC_Element_ID())
+		if (sourceAcctElement.getAcctSchemaElement().getC_Element_ID() != targetAcctElement.getAcctSchemaElement().getC_Element_ID())
 			throw new AdempiereUserError("@C_Element_ID@ different");
 		
 		if (AcctInfoServices.getAcctSchemaGLInfoService().get(getCtx(), p_TargetAcctSchema_ID) == null)
@@ -113,20 +113,20 @@ public class AcctSchemaCopyAcct extends SvrProcess
 	 *	@param targetAS target
 	 *	@throws Exception
 	 */
-	private void copyGL (IAcctSchemaInfo targetAS) throws Exception
+	private void copyGL (IAcctSchemaModel targetAS) throws Exception
 	{
-		IAcctSchemaGLInfo source = AcctInfoServices.getAcctSchemaGLInfoService().get(getCtx(), p_SourceAcctSchema_ID);
-		IAcctSchemaGLInfo target = AcctInfoServices.getAcctSchemaGLInfoService().create(getCtx(), 0, get_TrxName());
-		target.getRecord().setC_AcctSchema_ID(p_TargetAcctSchema_ID);
-		ArrayList<KeyNamePair> list = source.getAcctInfo();
+		IAcctSchemaGLModel source = AcctInfoServices.getAcctSchemaGLInfoService().get(getCtx(), p_SourceAcctSchema_ID);
+		IAcctSchemaGLModel target = AcctInfoServices.getAcctSchemaGLInfoService().create(getCtx(), 0, get_TrxName());
+		target.getAcctSchemaGL().setC_AcctSchema_ID(p_TargetAcctSchema_ID);
+		ArrayList<KeyNamePair> list = source.getAcctModel();
 		for (int i = 0; i < list.size(); i++)
 		{
 			KeyNamePair pp = list.get(i);
 			int sourceC_ValidCombination_ID = pp.getKey();
 			String columnName = pp.getName();
-			IAccountInfo sourceAccount = AcctInfoServices.getAccountInfoService().get(getCtx(), sourceC_ValidCombination_ID);
-			IAccountInfo targetAccount = createAccount(targetAS, sourceAccount);
-			target.setValue(columnName, Integer.valueOf(targetAccount.getRecord().getC_ValidCombination_ID()));
+			IAccountModel sourceAccount = AcctInfoServices.getAccountInfoService().get(getCtx(), sourceC_ValidCombination_ID);
+			IAccountModel targetAccount = createAccount(targetAS, sourceAccount);
+			target.setValue(columnName, Integer.valueOf(targetAccount.getCombination().getC_ValidCombination_ID()));
 		}
 		if (!target.getPO().save())
 			throw new AdempiereSystemError("Could not Save GL");
@@ -137,21 +137,21 @@ public class AcctSchemaCopyAcct extends SvrProcess
 	 *	@param targetAS target
 	 *	@throws Exception
 	 */
-	private void copyDefault(IAcctSchemaInfo targetAS) throws Exception
+	private void copyDefault(IAcctSchemaModel targetAS) throws Exception
 	{
-		IAcctSchemaDefaultInfo source = AcctInfoServices.getAcctSchemaDefaultInfoService().get(getCtx(), p_SourceAcctSchema_ID);
-		IAcctSchemaDefaultInfo target = AcctInfoServices.getAcctSchemaDefaultInfoService().create(getCtx(), 0, get_TrxName());
-		target.getRecord().setC_AcctSchema_ID(p_TargetAcctSchema_ID);
-		target.getRecord().setC_AcctSchema_ID(p_TargetAcctSchema_ID);
-		ArrayList<KeyNamePair> list = source.getAcctInfo();
+		IAcctSchemaDefaultModel source = AcctInfoServices.getAcctSchemaDefaultInfoService().get(getCtx(), p_SourceAcctSchema_ID);
+		IAcctSchemaDefaultModel target = AcctInfoServices.getAcctSchemaDefaultInfoService().create(getCtx(), 0, get_TrxName());
+		target.getAcctSchemaDefault().setC_AcctSchema_ID(p_TargetAcctSchema_ID);
+		target.getAcctSchemaDefault().setC_AcctSchema_ID(p_TargetAcctSchema_ID);
+		ArrayList<KeyNamePair> list = source.getAcctModel();
 		for (int i = 0; i < list.size(); i++)
 		{
 			KeyNamePair pp = list.get(i);
 			int sourceC_ValidCombination_ID = pp.getKey();
 			String columnName = pp.getName();
-			IAccountInfo sourceAccount = AcctInfoServices.getAccountInfoService().get(getCtx(), sourceC_ValidCombination_ID);
-			IAccountInfo targetAccount = createAccount(targetAS, sourceAccount);
-			target.setValue(columnName, Integer.valueOf(targetAccount.getRecord().getC_ValidCombination_ID()));
+			IAccountModel sourceAccount = AcctInfoServices.getAccountInfoService().get(getCtx(), sourceC_ValidCombination_ID);
+			IAccountModel targetAccount = createAccount(targetAS, sourceAccount);
+			target.setValue(columnName, Integer.valueOf(targetAccount.getCombination().getC_ValidCombination_ID()));
 		}
 		if (!target.getPO().save())
 			throw new AdempiereSystemError("Could not Save Default");
@@ -163,10 +163,10 @@ public class AcctSchemaCopyAcct extends SvrProcess
 	 *	@param sourceAcct source account
 	 *	@return target account
 	 */
-	private IAccountInfo createAccount(IAcctSchemaInfo targetAS, IAccountInfo sourceAcct)
+	private IAccountModel createAccount(IAcctSchemaModel targetAS, IAccountModel sourceAcct)
 	{
-		int AD_Client_ID = targetAS.getRecord().getAD_Client_ID(); 
-		int C_AcctSchema_ID = targetAS.getRecord().getC_AcctSchema_ID();
+		int AD_Client_ID = targetAS.getAcctSchema().getAD_Client_ID(); 
+		int C_AcctSchema_ID = targetAS.getAcctSchema().getC_AcctSchema_ID();
 		//
 		int AD_Org_ID = 0;
 		int Account_ID = 0;
@@ -186,44 +186,44 @@ public class AcctSchemaCopyAcct extends SvrProcess
 		int UserElement2_ID = 0;
 		//
 		//  Active Elements
-		IAcctSchemaElementInfo[] elements = targetAS.getAcctSchemaElementsInfo();
+		IAcctSchemaElementModel[] elements = targetAS.getAcctSchemaElementsModels();
 		for (int i = 0; i < elements.length; i++)
 		{
-			IAcctSchemaElementInfo ase = elements[i];
-			String elementType = ase.getRecord().getElementType();
+			IAcctSchemaElementModel ase = elements[i];
+			String elementType = ase.getAcctSchemaElement().getElementType();
 			//
 			if (elementType.equals(IAcctSchemaElementConstants.ELEMENTTYPE_Organization))
-				AD_Org_ID = sourceAcct.getRecord().getAD_Org_ID();
+				AD_Org_ID = sourceAcct.getCombination().getAD_Org_ID();
 			else if (elementType.equals(IAcctSchemaElementConstants.ELEMENTTYPE_Account))
-				Account_ID = sourceAcct.getRecord().getAccount_ID();
+				Account_ID = sourceAcct.getCombination().getAccount_ID();
 			else if (elementType.equals(IAcctSchemaElementConstants.ELEMENTTYPE_SubAccount))
-				C_SubAcct_ID = sourceAcct.getRecord().getC_SubAcct_ID();
+				C_SubAcct_ID = sourceAcct.getCombination().getC_SubAcct_ID();
 			else if (elementType.equals(IAcctSchemaElementConstants.ELEMENTTYPE_BPartner))
-				C_BPartner_ID = sourceAcct.getRecord().getC_BPartner_ID();
+				C_BPartner_ID = sourceAcct.getCombination().getC_BPartner_ID();
 			else if (elementType.equals(IAcctSchemaElementConstants.ELEMENTTYPE_Product))
-				M_Product_ID = sourceAcct.getRecord().getM_Product_ID();
+				M_Product_ID = sourceAcct.getCombination().getM_Product_ID();
 			else if (elementType.equals(IAcctSchemaElementConstants.ELEMENTTYPE_Activity))
-				C_Activity_ID = sourceAcct.getRecord().getC_Activity_ID();
+				C_Activity_ID = sourceAcct.getCombination().getC_Activity_ID();
 			else if (elementType.equals(IAcctSchemaElementConstants.ELEMENTTYPE_LocationFrom))
-				C_LocFrom_ID = sourceAcct.getRecord().getC_LocFrom_ID();
+				C_LocFrom_ID = sourceAcct.getCombination().getC_LocFrom_ID();
 			else if (elementType.equals(IAcctSchemaElementConstants.ELEMENTTYPE_LocationTo))
-				C_LocTo_ID = sourceAcct.getRecord().getC_LocTo_ID();
+				C_LocTo_ID = sourceAcct.getCombination().getC_LocTo_ID();
 			else if (elementType.equals(IAcctSchemaElementConstants.ELEMENTTYPE_Campaign))
-				C_Campaign_ID = sourceAcct.getRecord().getC_Campaign_ID();
+				C_Campaign_ID = sourceAcct.getCombination().getC_Campaign_ID();
 			else if (elementType.equals(IAcctSchemaElementConstants.ELEMENTTYPE_OrgTrx))
-				AD_OrgTrx_ID = sourceAcct.getRecord().getAD_OrgTrx_ID();
+				AD_OrgTrx_ID = sourceAcct.getCombination().getAD_OrgTrx_ID();
 			else if (elementType.equals(IAcctSchemaElementConstants.ELEMENTTYPE_Project))
-				C_Project_ID = sourceAcct.getRecord().getC_Project_ID();
+				C_Project_ID = sourceAcct.getCombination().getC_Project_ID();
 			else if (elementType.equals(IAcctSchemaElementConstants.ELEMENTTYPE_SalesRegion))
-				C_SalesRegion_ID = sourceAcct.getRecord().getC_SalesRegion_ID();
+				C_SalesRegion_ID = sourceAcct.getCombination().getC_SalesRegion_ID();
 			else if (elementType.equals(IAcctSchemaElementConstants.ELEMENTTYPE_UserElementList1))
-				User1_ID = sourceAcct.getRecord().getUser1_ID();
+				User1_ID = sourceAcct.getCombination().getUser1_ID();
 			else if (elementType.equals(IAcctSchemaElementConstants.ELEMENTTYPE_UserElementList2))
-				User2_ID = sourceAcct.getRecord().getUser2_ID();
+				User2_ID = sourceAcct.getCombination().getUser2_ID();
 			else if (elementType.equals(IAcctSchemaElementConstants.ELEMENTTYPE_UserColumn1))
-				UserElement1_ID = sourceAcct.getRecord().getUserElement1_ID();
+				UserElement1_ID = sourceAcct.getCombination().getUserElement1_ID();
 			else if (elementType.equals(IAcctSchemaElementConstants.ELEMENTTYPE_UserColumn2))
-				UserElement2_ID = sourceAcct.getRecord().getUserElement2_ID();
+				UserElement2_ID = sourceAcct.getCombination().getUserElement2_ID();
 			//	No UserElement
 		}
 		//

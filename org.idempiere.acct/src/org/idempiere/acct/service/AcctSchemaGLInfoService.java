@@ -25,7 +25,7 @@ package org.idempiere.acct.service;
 import java.util.Properties;
 
 import org.adempiere.base.acct.AcctInfoService;
-import org.adempiere.base.acct.info.IAcctSchemaGLInfo;
+import org.adempiere.base.acct.model.IAcctSchemaGLModel;
 import org.adempiere.base.acct.service.IAcctSchemaGLInfoService;
 import org.idempiere.acct.info.AcctSchemaGLInfo;
 import org.idempiere.acct.model.MAcctSchemaGL;
@@ -39,13 +39,13 @@ import org.idempiere.acct.model.MAcctSchemaGL;
 public class AcctSchemaGLInfoService implements IAcctSchemaGLInfoService {
 
 	@Override
-	public IAcctSchemaGLInfo get(Properties ctx, int C_AcctSchema_ID) {
+	public IAcctSchemaGLModel get(Properties ctx, int C_AcctSchema_ID) {
 		MAcctSchemaGL schemaGL = MAcctSchemaGL.get(ctx, C_AcctSchema_ID);
 		return AcctSchemaGLInfo.wrap(schemaGL);
 	}
 
 	@Override
-	public IAcctSchemaGLInfo create(Properties ctx, int C_AcctSchema_ID, String trxName) {
+	public IAcctSchemaGLModel create(Properties ctx, int C_AcctSchema_ID, String trxName) {
 		MAcctSchemaGL schemaGL = new MAcctSchemaGL(ctx, C_AcctSchema_ID, trxName);
 		return AcctSchemaGLInfo.wrap(schemaGL);
 	}

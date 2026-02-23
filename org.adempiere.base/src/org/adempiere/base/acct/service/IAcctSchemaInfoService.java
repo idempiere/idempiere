@@ -26,7 +26,7 @@ import java.sql.Timestamp;
 import java.util.Properties;
 
 import org.adempiere.base.acct.IAcctInfoService;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.BackDateTrxNotAllowedException;
 import org.compiere.model.MClient;
 import org.compiere.util.KeyNamePair;
@@ -37,18 +37,18 @@ import org.compiere.util.KeyNamePair;
  * @author etantg
  */
 public interface IAcctSchemaInfoService extends IAcctInfoService {
-	public IAcctSchemaInfo get(int C_AcctSchema_ID);
-	public IAcctSchemaInfo get(Properties ctx, int C_AcctSchema_ID);
-	public IAcctSchemaInfo get(Properties ctx, int C_AcctSchema_ID, String trxName);
-	public IAcctSchemaInfo getCopy(Properties ctx, int C_AcctSchema_ID, String trxName);
-	public IAcctSchemaInfo[] getClientAcctSchema(Properties ctx, int AD_Client_ID);
-	public IAcctSchemaInfo[] getClientAcctSchema(Properties ctx, int AD_Client_ID, String trxName);
+	public IAcctSchemaModel get(int C_AcctSchema_ID);
+	public IAcctSchemaModel get(Properties ctx, int C_AcctSchema_ID);
+	public IAcctSchemaModel get(Properties ctx, int C_AcctSchema_ID, String trxName);
+	public IAcctSchemaModel getCopy(Properties ctx, int C_AcctSchema_ID, String trxName);
+	public IAcctSchemaModel[] getClientAcctSchema(Properties ctx, int AD_Client_ID);
+	public IAcctSchemaModel[] getClientAcctSchema(Properties ctx, int AD_Client_ID, String trxName);
 	public void testBackDateTrxAllowed(Properties ctx, Timestamp dateAcct, String trxName) throws BackDateTrxNotAllowedException;
 	public boolean isBackDateTrxAllowed(Properties ctx, int tableID, int recordID, String trxName);
 	public boolean isBackDateTrxAllowed(Properties ctx, Timestamp dateAcct, String trxName);
 	
-	public IAcctSchemaInfo create(Properties ctx, int C_AcctSchema_ID, String trxName);
-	public IAcctSchemaInfo create(Properties ctx, IAcctSchemaInfo copy, String trxName);
-	public IAcctSchemaInfo create(MClient client, KeyNamePair currency);
-	public IAcctSchemaInfo markImmutable(IAcctSchemaInfo as);
+	public IAcctSchemaModel create(Properties ctx, int C_AcctSchema_ID, String trxName);
+	public IAcctSchemaModel create(Properties ctx, IAcctSchemaModel copy, String trxName);
+	public IAcctSchemaModel create(MClient client, KeyNamePair currency);
+	public IAcctSchemaModel markImmutable(IAcctSchemaModel as);
 }

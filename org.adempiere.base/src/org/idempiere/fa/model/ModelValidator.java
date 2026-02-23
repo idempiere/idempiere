@@ -24,7 +24,7 @@ package org.idempiere.fa.model;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.FillMandatoryException;
 import org.compiere.acct.Fact;
 import org.compiere.model.MAssetAddition;
@@ -208,7 +208,7 @@ implements org.compiere.model.ModelValidator, org.compiere.model.FactsValidator
 	}
 
 	@Override
-	public String factsValidate(IAcctSchemaInfo schema, List<Fact> facts, PO po) {
+	public String factsValidate(IAcctSchemaModel schema, List<Fact> facts, PO po) {
 		return null;
 	}
 }

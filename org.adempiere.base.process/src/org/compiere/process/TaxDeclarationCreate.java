@@ -21,7 +21,7 @@ import java.sql.ResultSet;
 import java.util.logging.Level;
 
 import org.adempiere.base.acct.AcctInfoServices;
-import org.adempiere.base.acct.info.IFactAcctInfo;
+import org.adempiere.base.acct.model.IFactAcctModel;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceTax;
 import org.compiere.model.MProcessPara;
@@ -179,7 +179,7 @@ public class TaxDeclarationCreate extends SvrProcess
 			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
-				IFactAcctInfo fact = AcctInfoServices.getFactAcctInfoService().create(getCtx(), rs, null);	//	no lock
+				IFactAcctModel fact = AcctInfoServices.getFactAcctInfoService().create(getCtx(), rs, null);	//	no lock
 				MTaxDeclarationAcct tda = new MTaxDeclarationAcct (m_td, fact);
 				tda.setLine((m_noAccts+1) * 10);
 				if (tda.save())

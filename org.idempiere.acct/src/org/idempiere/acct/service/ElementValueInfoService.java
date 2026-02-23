@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.Properties;
 
 import org.adempiere.base.acct.AcctInfoService;
-import org.adempiere.base.acct.info.IElementValueInfo;
-import org.adempiere.base.acct.info.IImportElementValueInfo;
+import org.adempiere.base.acct.model.IElementValueModel;
+import org.adempiere.base.acct.model.IImportElementValueModel;
 import org.adempiere.base.acct.service.IElementValueInfoService;
 import org.compiere.model.I_C_ElementValue;
 import org.compiere.model.Query;
@@ -45,13 +45,13 @@ import org.idempiere.acct.model.MElementValue;
 public class ElementValueInfoService implements IElementValueInfoService {
 
 	@Override
-	public IElementValueInfo create(Properties ctx, int C_ElementValue_ID, String trxName) {
+	public IElementValueModel create(Properties ctx, int C_ElementValue_ID, String trxName) {
 		MElementValue elementValue = new MElementValue(ctx, C_ElementValue_ID, trxName);
 		return ElementValueInfo.wrap(elementValue);
 	}
 
 	@Override
-	public IElementValueInfo create(Properties ctx, String Value, String Name, String Description, String AccountType,
+	public IElementValueModel create(Properties ctx, String Value, String Name, String Description, String AccountType,
 			String AccountSign, boolean IsDocControlled, boolean IsSummary, String trxName) {
 		MElementValue elementValue = new MElementValue(ctx, Value, Name, Description, AccountType, 
 				AccountSign, IsDocControlled, IsSummary, trxName);
@@ -59,7 +59,7 @@ public class ElementValueInfoService implements IElementValueInfoService {
 	}
 
 	@Override
-	public IElementValueInfo create(Properties ctx, IElementValueInfo copy, String trxName) {
+	public IElementValueModel create(Properties ctx, IElementValueModel copy, String trxName) {
 		if (copy instanceof ElementValueInfo) {
 			MElementValue elementValue = new MElementValue(ctx, ((ElementValueInfo) copy).getModel(), trxName);
 			return ElementValueInfo.wrap(elementValue);
@@ -68,7 +68,7 @@ public class ElementValueInfoService implements IElementValueInfoService {
 	}
 	
 	@Override
-	public IElementValueInfo create(IImportElementValueInfo imp) {
+	public IElementValueModel create(IImportElementValueModel imp) {
 		if (imp instanceof ImportElementValueInfo) {
 			MElementValue elementValue = new MElementValue(((ImportElementValueInfo) imp).getModel());
 			return ElementValueInfo.wrap(elementValue);
@@ -77,7 +77,7 @@ public class ElementValueInfoService implements IElementValueInfoService {
 	}
 
 	@Override
-	public List<IElementValueInfo> list(Properties ctx, String whereClause, ArrayList<Object> params, String trxName) {
+	public List<IElementValueModel> list(Properties ctx, String whereClause, ArrayList<Object> params, String trxName) {
 		List<MElementValue> values = new Query(ctx, I_C_ElementValue.Table_Name, whereClause, trxName)
 				.setParameters(params)
 				.list();

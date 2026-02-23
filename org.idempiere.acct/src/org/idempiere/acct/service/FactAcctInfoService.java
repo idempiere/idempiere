@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.adempiere.base.acct.AcctInfoService;
-import org.adempiere.base.acct.info.IFactAcctInfo;
+import org.adempiere.base.acct.model.IFactAcctModel;
 import org.adempiere.base.acct.service.IFactAcctInfoService;
 import org.adempiere.exceptions.DBException;
 import org.compiere.model.Query;
@@ -50,19 +50,19 @@ public class FactAcctInfoService implements IFactAcctInfoService {
 	}
 
 	@Override
-	public IFactAcctInfo create(Properties ctx, int Fact_Acct_ID, String trxName) {
+	public IFactAcctModel create(Properties ctx, int Fact_Acct_ID, String trxName) {
 		MFactAcct fact = new MFactAcct(ctx, Fact_Acct_ID, trxName);
 		return FactAcctInfo.wrap(fact);
 	}
 
 	@Override
-	public IFactAcctInfo create(Properties ctx, ResultSet rs, String trxName) {
+	public IFactAcctModel create(Properties ctx, ResultSet rs, String trxName) {
 		MFactAcct fact = new MFactAcct(ctx, rs, trxName);
 		return FactAcctInfo.wrap(fact);
 	}
 
 	@Override
-	public List<IFactAcctInfo> list(Properties ctx, String whereClause, ArrayList<Object> params, String trxName) {
+	public List<IFactAcctModel> list(Properties ctx, String whereClause, ArrayList<Object> params, String trxName) {
 		List<MFactAcct> list = new Query(ctx, MFactAcct.Table_Name, whereClause, trxName)
 				.setParameters(params)
 				.setOrderBy(MFactAcct.COLUMNNAME_Fact_Acct_ID)
@@ -71,14 +71,14 @@ public class FactAcctInfoService implements IFactAcctInfoService {
 	}
 
 	@Override
-	public List<IFactAcctInfo> list(int AD_Table_ID, int Record_ID, int C_AcctSchema_ID, String trxName) {
+	public List<IFactAcctModel> list(int AD_Table_ID, int Record_ID, int C_AcctSchema_ID, String trxName) {
 		Query query = MFactAcct.createRecordIdQuery(AD_Table_ID, Record_ID, C_AcctSchema_ID, trxName);
 		List<MFactAcct> list = query.list();
 		return FactAcctInfo.wrapList(list);
 	}
 	
 	@Override
-	public IFactAcctInfo first(int AD_Table_ID, int Record_ID, int Account_ID, int C_AcctSchema_ID, String trxName) {
+	public IFactAcctModel first(int AD_Table_ID, int Record_ID, int Account_ID, int C_AcctSchema_ID, String trxName) {
 		Query query = new Query(Env.getCtx(), MFactAcct.Table_Name, "AD_Table_ID=? AND Record_ID=? AND Account_ID=? AND C_AcctSchema_ID=?", trxName);
 		MFactAcct fa = query.setParameters(AD_Table_ID, Record_ID, Account_ID, C_AcctSchema_ID).first();
 		return FactAcctInfo.wrap(fa);

@@ -30,7 +30,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.base.acct.AcctInfoServices;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.FillMandatoryException;
 import org.compiere.process.DocAction;
@@ -120,7 +120,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 		}
 		if (getC_Currency_ID() <= 0)
 		{
-			setC_Currency_ID(MClient.get(getCtx()).getAcctSchema().getRecord().getC_Currency_ID());
+			setC_Currency_ID(MClient.get(getCtx()).getAcctSchema().getAcctSchema().getC_Currency_ID());
 		}
 		if (getC_ConversionType_ID() <= 0)
 		{
@@ -731,11 +731,11 @@ public class MAssetAddition extends X_A_Asset_Addition
 			if (A_SOURCETYPE_Imported.equals(getA_SourceType())) {
 				assetworkFile.adjustCost(ifixedAsset.getA_Asset_Cost(), getA_QTY_Current(), isA_CreateAsset());
 			} else {
-				org.adempiere.base.acct.info.IAcctSchemaInfo acctSchema = AcctInfoServices.getAcctSchemaInfoService().get(assetworkFile.getC_AcctSchema_ID());
-				if (acctSchema.getRecord().getC_Currency_ID() != getC_Currency_ID()) 
+				org.adempiere.base.acct.model.IAcctSchemaModel acctSchema = AcctInfoServices.getAcctSchemaInfoService().get(assetworkFile.getC_AcctSchema_ID());
+				if (acctSchema.getAcctSchema().getC_Currency_ID() != getC_Currency_ID()) 
 				{				
 					BigDecimal convertedAssetCost  =  MConversionRate.convert(getCtx(), getAssetSourceAmt(),
-							getC_Currency_ID(), acctSchema.getRecord().getC_Currency_ID() ,
+							getC_Currency_ID(), acctSchema.getAcctSchema().getC_Currency_ID() ,
 							getDateAcct(), getC_ConversionType_ID(),
 							getAD_Client_ID(), getAD_Org_ID());
 					assetworkFile.adjustCost(convertedAssetCost, getA_QTY_Current(), isA_CreateAsset()); // reset if isA_CreateAsset
@@ -752,11 +752,11 @@ public class MAssetAddition extends X_A_Asset_Addition
 				if (A_SOURCETYPE_Imported.equals(getA_SourceType())) {
 					assetworkFile.setA_Salvage_Value(this.getA_Salvage_Value());
 				} else {
-					IAcctSchemaInfo acctSchema = AcctInfoServices.getAcctSchemaInfoService().get(assetworkFile.getC_AcctSchema_ID());
-					if (acctSchema.getRecord().getC_Currency_ID() != getC_Currency_ID()) 
+					IAcctSchemaModel acctSchema = AcctInfoServices.getAcctSchemaInfoService().get(assetworkFile.getC_AcctSchema_ID());
+					if (acctSchema.getAcctSchema().getC_Currency_ID() != getC_Currency_ID()) 
 					{
 						BigDecimal salvageValue = MConversionRate.convert(getCtx(), this.getA_Salvage_Value(),
-								getC_Currency_ID(), acctSchema.getRecord().getC_Currency_ID() ,
+								getC_Currency_ID(), acctSchema.getAcctSchema().getC_Currency_ID() ,
 								getDateAcct(), getC_ConversionType_ID(),
 								getAD_Client_ID(), getAD_Org_ID());
 						assetworkFile.setA_Salvage_Value(salvageValue);

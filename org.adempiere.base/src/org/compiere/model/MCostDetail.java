@@ -30,7 +30,7 @@ import java.util.logging.Level;
 
 import org.adempiere.base.acct.AcctInfoServices;
 import org.adempiere.base.acct.constants.IAcctSchemaConstants;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.exceptions.PeriodClosedException;
 import org.compiere.acct.Doc;
@@ -84,7 +84,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@deprecated
 	 */
 	@Deprecated (since="13", forRemoval=true)
-	public static boolean createOrder (IAcctSchemaInfo as, int AD_Org_ID, 
+	public static boolean createOrder (IAcctSchemaModel as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int C_OrderLine_ID, int M_CostElement_ID, 
 		BigDecimal Amt, BigDecimal Qty,
@@ -111,7 +111,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param trxName transaction
 	 *	@return true if created
 	 */
-	public static boolean createOrder (IAcctSchemaInfo as, int AD_Org_ID, 
+	public static boolean createOrder (IAcctSchemaModel as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int C_OrderLine_ID, int M_CostElement_ID, 
 		BigDecimal Amt, BigDecimal Qty,
@@ -179,7 +179,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@deprecated
 	 */
 	@Deprecated (since="13", forRemoval=true)
-	public static boolean createInvoice (IAcctSchemaInfo as, int AD_Org_ID, 
+	public static boolean createInvoice (IAcctSchemaModel as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int C_InvoiceLine_ID, int M_CostElement_ID, 
 		BigDecimal Amt, BigDecimal Qty,
@@ -206,7 +206,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param trxName transaction
 	 *	@return true if created
 	 */
-	public static boolean createInvoice (IAcctSchemaInfo as, int AD_Org_ID, 
+	public static boolean createInvoice (IAcctSchemaModel as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int C_InvoiceLine_ID, int M_CostElement_ID, 
 		BigDecimal Amt, BigDecimal Qty,
@@ -275,7 +275,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@deprecated
 	 */
 	@Deprecated (since="13", forRemoval=true)
-	public static boolean createShipment (IAcctSchemaInfo as, int AD_Org_ID, 
+	public static boolean createShipment (IAcctSchemaModel as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int M_InOutLine_ID, int M_CostElement_ID, 
 		BigDecimal Amt, BigDecimal Qty,
@@ -303,7 +303,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param trxName transaction
 	 *	@return true if no error
 	 */
-	public static boolean createShipment (IAcctSchemaInfo as, int AD_Org_ID, 
+	public static boolean createShipment (IAcctSchemaModel as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int M_InOutLine_ID, int M_CostElement_ID, 
 		BigDecimal Amt, BigDecimal Qty,
@@ -370,7 +370,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@deprecated
 	 */
 	@Deprecated (since="13", forRemoval=true)
-	public static boolean createInventory (IAcctSchemaInfo as, int AD_Org_ID, 
+	public static boolean createInventory (IAcctSchemaModel as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int M_InventoryLine_ID, int M_CostElement_ID, 
 		BigDecimal Amt, BigDecimal Qty,
@@ -397,7 +397,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param trxName transaction
 	 *	@return true if no error
 	 */
-	public static boolean createInventory (IAcctSchemaInfo as, int AD_Org_ID, 
+	public static boolean createInventory (IAcctSchemaModel as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int M_InventoryLine_ID, int M_CostElement_ID, 
 		BigDecimal Amt, BigDecimal Qty,
@@ -464,7 +464,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@deprecated
 	 */
 	@Deprecated (since="13", forRemoval=true)
-	public static boolean createMovement (IAcctSchemaInfo as, int AD_Org_ID, 
+	public static boolean createMovement (IAcctSchemaModel as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int M_MovementLine_ID, int M_CostElement_ID, 
 		BigDecimal Amt, BigDecimal Qty, boolean from,
@@ -492,7 +492,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param trxName transaction
 	 *	@return true if no error
 	 */
-	public static boolean createMovement (IAcctSchemaInfo as, int AD_Org_ID, 
+	public static boolean createMovement (IAcctSchemaModel as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int M_MovementLine_ID, int M_CostElement_ID, 
 		BigDecimal Amt, BigDecimal Qty, boolean from,
@@ -560,7 +560,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@deprecated
 	 */
 	@Deprecated (since="13", forRemoval=true)
-	public static boolean createProduction (IAcctSchemaInfo as, int AD_Org_ID, 
+	public static boolean createProduction (IAcctSchemaModel as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int M_ProductionLine_ID, int M_CostElement_ID, 
 		BigDecimal Amt, BigDecimal Qty,
@@ -587,7 +587,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param trxName transaction
 	 *	@return true if no error
 	 */
-	public static boolean createProduction (IAcctSchemaInfo as, int AD_Org_ID, 
+	public static boolean createProduction (IAcctSchemaModel as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int M_ProductionLine_ID, int M_CostElement_ID, 
 		BigDecimal Amt, BigDecimal Qty,
@@ -652,7 +652,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@deprecated
 	 */
 	@Deprecated (since="13", forRemoval=true)
-	public static boolean createMatchInvoice (IAcctSchemaInfo as, int AD_Org_ID, 
+	public static boolean createMatchInvoice (IAcctSchemaModel as, int AD_Org_ID, 
 			int M_Product_ID, int M_AttributeSetInstance_ID,
 			int M_MatchInv_ID, int M_CostElement_ID, 
 			BigDecimal Amt, BigDecimal Qty,
@@ -678,7 +678,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param trxName
 	 *	@return true if no error
 	 */
-	public static boolean createMatchInvoice (IAcctSchemaInfo as, int AD_Org_ID, 
+	public static boolean createMatchInvoice (IAcctSchemaModel as, int AD_Org_ID, 
 			int M_Product_ID, int M_AttributeSetInstance_ID,
 			int M_MatchInv_ID, int M_CostElement_ID, 
 			BigDecimal Amt, BigDecimal Qty,
@@ -744,7 +744,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@deprecated
 	 */
 	@Deprecated (since="13", forRemoval=true)
-	public static boolean createProjectIssue (IAcctSchemaInfo as, int AD_Org_ID, 
+	public static boolean createProjectIssue (IAcctSchemaModel as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int C_ProjectIssue_ID, int M_CostElement_ID, 
 		BigDecimal Amt, BigDecimal Qty,
@@ -771,7 +771,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param trxName transaction
 	 *	@return true if no error
 	 */
-	public static boolean createProjectIssue (IAcctSchemaInfo as, int AD_Org_ID, 
+	public static boolean createProjectIssue (IAcctSchemaModel as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int C_ProjectIssue_ID, int M_CostElement_ID, 
 		BigDecimal Amt, BigDecimal Qty,
@@ -819,76 +819,76 @@ public class MCostDetail extends X_M_CostDetail
 		return ok;
 	}	//	createProjectIssue
 	
-	public static MCostDetail getOrder (IAcctSchemaInfo as, int M_Product_ID, int M_AttributeSetInstance_ID,
+	public static MCostDetail getOrder (IAcctSchemaModel as, int M_Product_ID, int M_AttributeSetInstance_ID,
 			int C_OrderLine_ID, int M_CostElement_ID, Timestamp DateAcct, String trxName) {
 		MCostDetail cd = get (as.getPO().getCtx(), "C_OrderLine_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID
 				+" AND TRUNC(DateAcct)="+DB.TO_DATE(DateAcct, true), 
-			C_OrderLine_ID, M_AttributeSetInstance_ID, as.getRecord().getC_AcctSchema_ID(), trxName);
+			C_OrderLine_ID, M_AttributeSetInstance_ID, as.getAcctSchema().getC_AcctSchema_ID(), trxName);
 		if (cd == null) {
 			cd = get (as.getPO().getCtx(), "C_OrderLine_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID,
-					C_OrderLine_ID, M_AttributeSetInstance_ID, as.getRecord().getC_AcctSchema_ID(), trxName);
+					C_OrderLine_ID, M_AttributeSetInstance_ID, as.getAcctSchema().getC_AcctSchema_ID(), trxName);
 			if (cd != null && !cd.isDelta())
 				cd = null;
 		}
 		return cd;
 	}
 	
-	public static MCostDetail getInvoice (IAcctSchemaInfo as, int M_Product_ID, int M_AttributeSetInstance_ID,
+	public static MCostDetail getInvoice (IAcctSchemaModel as, int M_Product_ID, int M_AttributeSetInstance_ID,
 			int C_InvoiceLine_ID, int M_CostElement_ID, Timestamp DateAcct, String trxName) {
 		MCostDetail cd = get (as.getPO().getCtx(), "C_InvoiceLine_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID+" AND M_Product_ID="+M_Product_ID
 				+" AND TRUNC(DateAcct)="+DB.TO_DATE(DateAcct, true), 
-				C_InvoiceLine_ID, M_AttributeSetInstance_ID, as.getRecord().getC_AcctSchema_ID(), trxName);
+				C_InvoiceLine_ID, M_AttributeSetInstance_ID, as.getAcctSchema().getC_AcctSchema_ID(), trxName);
 		if (cd == null) {
 			cd = get (as.getPO().getCtx(), "C_InvoiceLine_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID+" AND M_Product_ID="+M_Product_ID, 
-					C_InvoiceLine_ID, M_AttributeSetInstance_ID, as.getRecord().getC_AcctSchema_ID(), trxName);
+					C_InvoiceLine_ID, M_AttributeSetInstance_ID, as.getAcctSchema().getC_AcctSchema_ID(), trxName);
 			if (cd != null && !cd.isDelta())
 				cd = null;
 		}
 		return cd;
 	}
 	
-	public static MCostDetail getShipment (IAcctSchemaInfo as, int M_Product_ID, int M_AttributeSetInstance_ID,
+	public static MCostDetail getShipment (IAcctSchemaModel as, int M_Product_ID, int M_AttributeSetInstance_ID,
 			int M_InOutLine_ID, int M_CostElement_ID, String trxName) {
 		return get (as.getPO().getCtx(), "M_InOutLine_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID, 
-				M_InOutLine_ID, M_AttributeSetInstance_ID, as.getRecord().getC_AcctSchema_ID(), trxName);
+				M_InOutLine_ID, M_AttributeSetInstance_ID, as.getAcctSchema().getC_AcctSchema_ID(), trxName);
 	}
 	
-	public static MCostDetail getInventory (IAcctSchemaInfo as, int M_Product_ID, int M_AttributeSetInstance_ID,
+	public static MCostDetail getInventory (IAcctSchemaModel as, int M_Product_ID, int M_AttributeSetInstance_ID,
 			int M_InventoryLine_ID, int M_CostElement_ID, String trxName) {
 		return get (as.getPO().getCtx(), "M_InventoryLine_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID+" AND M_Product_ID="+M_Product_ID, 
-				M_InventoryLine_ID, M_AttributeSetInstance_ID, as.getRecord().getC_AcctSchema_ID(), trxName);
+				M_InventoryLine_ID, M_AttributeSetInstance_ID, as.getAcctSchema().getC_AcctSchema_ID(), trxName);
 	}
 	
-	public static MCostDetail getMovement (IAcctSchemaInfo as, int M_Product_ID, int M_AttributeSetInstance_ID,
+	public static MCostDetail getMovement (IAcctSchemaModel as, int M_Product_ID, int M_AttributeSetInstance_ID,
 			int M_MovementLine_ID, int M_CostElement_ID, boolean from, String trxName) {
 		StringBuilder msget = new StringBuilder( "M_MovementLine_ID=? AND IsSOTrx=") 
 				.append((from ? "'Y'" : "'N'")).append(" AND Coalesce(M_CostElement_ID,0)=").append(M_CostElement_ID);
 		return get (as.getPO().getCtx(),msget.toString(), 
-			M_MovementLine_ID, M_AttributeSetInstance_ID, as.getRecord().getC_AcctSchema_ID(), trxName);
+			M_MovementLine_ID, M_AttributeSetInstance_ID, as.getAcctSchema().getC_AcctSchema_ID(), trxName);
 	}
 	
-	public static MCostDetail getProduction (IAcctSchemaInfo as, int M_Product_ID, int M_AttributeSetInstance_ID,
+	public static MCostDetail getProduction (IAcctSchemaModel as, int M_Product_ID, int M_AttributeSetInstance_ID,
 			int M_ProductionLine_ID, String trxName) {
 		return get (as.getPO().getCtx(), "M_ProductionLine_ID=?", 
-				M_ProductionLine_ID, M_AttributeSetInstance_ID, as.getRecord().getC_AcctSchema_ID(), trxName);
+				M_ProductionLine_ID, M_AttributeSetInstance_ID, as.getAcctSchema().getC_AcctSchema_ID(), trxName);
 	}
 	
-	public static MCostDetail getProduction (IAcctSchemaInfo as, int M_Product_ID, int M_AttributeSetInstance_ID,
+	public static MCostDetail getProduction (IAcctSchemaModel as, int M_Product_ID, int M_AttributeSetInstance_ID,
 			int M_ProductionLine_ID, int M_CostElement_ID, String trxName) {
 		return get (as.getPO().getCtx(), "M_ProductionLine_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID, 
-				M_ProductionLine_ID, M_AttributeSetInstance_ID, as.getRecord().getC_AcctSchema_ID(), trxName);
+				M_ProductionLine_ID, M_AttributeSetInstance_ID, as.getAcctSchema().getC_AcctSchema_ID(), trxName);
 	}
 	
-	public static MCostDetail getMatchInvoice (IAcctSchemaInfo as, int M_Product_ID, int M_AttributeSetInstance_ID,
+	public static MCostDetail getMatchInvoice (IAcctSchemaModel as, int M_Product_ID, int M_AttributeSetInstance_ID,
 			int M_MatchInv_ID, int M_CostElement_ID, String trxName) {
 		return get (as.getPO().getCtx(), "M_MatchInv_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID, 
-				M_MatchInv_ID, M_AttributeSetInstance_ID, as.getRecord().getC_AcctSchema_ID(), trxName);
+				M_MatchInv_ID, M_AttributeSetInstance_ID, as.getAcctSchema().getC_AcctSchema_ID(), trxName);
 	}
 	
-	public static MCostDetail getProjectIssue (IAcctSchemaInfo as, int M_Product_ID, int M_AttributeSetInstance_ID,
+	public static MCostDetail getProjectIssue (IAcctSchemaModel as, int M_Product_ID, int M_AttributeSetInstance_ID,
 			int C_ProjectIssue_ID, int M_CostElement_ID, String trxName) {
 		return get (as.getPO().getCtx(), "C_ProjectIssue_ID=? AND Coalesce(M_CostElement_ID,0)="+M_CostElement_ID, 
-				C_ProjectIssue_ID, M_AttributeSetInstance_ID, as.getRecord().getC_AcctSchema_ID(), trxName);
+				C_ProjectIssue_ID, M_AttributeSetInstance_ID, as.getAcctSchema().getC_AcctSchema_ID(), trxName);
 	}
 	
 	
@@ -909,8 +909,8 @@ public class MCostDetail extends X_M_CostDetail
 		StringBuilder sql = new StringBuilder("SELECT * FROM M_CostDetail WHERE ").append(whereClause);
 
 		MClientInfo clientInfo = MClientInfo.get(ctx);
-		IAcctSchemaInfo primary = clientInfo.getMAcctSchema1();
-		int C_AcctSchema_ID = primary != null ? primary.getRecord().getC_AcctSchema_ID() : 0;
+		IAcctSchemaModel primary = clientInfo.getMAcctSchema1();
+		int C_AcctSchema_ID = primary != null ? primary.getAcctSchema().getC_AcctSchema_ID() : 0;
 		if (C_AcctSchema_ID > 0)
 		{
 			sql.append(" AND C_AcctSchema_ID=?");
@@ -1023,7 +1023,7 @@ public class MCostDetail extends X_M_CostDetail
 	 * @param trxName transaction
 	 * @return true if no error
 	 */
-	public static boolean processProduct(IAcctSchemaInfo as, MProduct product, Timestamp dateAcct, String trxName)
+	public static boolean processProduct(IAcctSchemaModel as, MProduct product, Timestamp dateAcct, String trxName)
 	{
 		if (dateAcct == null)
 			dateAcct = TimeUtil.getDay(System.currentTimeMillis());
@@ -1036,7 +1036,7 @@ public class MCostDetail extends X_M_CostDetail
 		int counterError = 0;
 		List<MCostDetail> list = new Query(product.getCtx(),I_M_CostDetail.Table_Name,whereClause,trxName)
 		.addJoinClause(" LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=M_CostDetail.Ref_CostDetail_ID) ")
-		.setParameters(as.getRecord().getC_AcctSchema_ID(), product.getM_Product_ID(), dateAcct, false)
+		.setParameters(as.getAcctSchema().getC_AcctSchema_ID(), product.getM_Product_ID(), dateAcct, false)
 		.setOrderBy("M_CostDetail.AD_Org_ID, M_CostDetail.M_AttributeSetInstance_ID, M_CostDetail.DateAcct, "
 				+ "CASE WHEN COALESCE(refcd.DateAcct,M_CostDetail.DateAcct) = M_CostDetail.DateAcct THEN COALESCE(M_CostDetail.Ref_CostDetail_ID,M_CostDetail.M_CostDetail_ID) ELSE M_CostDetail.M_CostDetail_ID END, "
 				+ "M_CostDetail.M_CostDetail_ID")
@@ -1117,7 +1117,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@deprecated
 	 */
 	@Deprecated (since="13", forRemoval=true)
-	public MCostDetail (IAcctSchemaInfo as, int AD_Org_ID, 
+	public MCostDetail (IAcctSchemaModel as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int M_CostElement_ID, BigDecimal amt, BigDecimal qty,
 		String description, String trxName)
@@ -1139,14 +1139,14 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param Ref_CostDetail_ID referenced cost detail
 	 *	@param trxName transaction
 	 */
-	public MCostDetail (IAcctSchemaInfo as, int AD_Org_ID, 
+	public MCostDetail (IAcctSchemaModel as, int AD_Org_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		int M_CostElement_ID, BigDecimal amt, BigDecimal qty,
 		String description, Timestamp dateAcct, int Ref_CostDetail_ID, String trxName)
 	{
 		this (as.getPO().getCtx(), 0, trxName);
-		setClientOrg(as.getRecord().getAD_Client_ID(), AD_Org_ID);
-		setC_AcctSchema_ID (as.getRecord().getC_AcctSchema_ID());
+		setClientOrg(as.getAcctSchema().getAD_Client_ID(), AD_Org_ID);
+		setC_AcctSchema_ID (as.getAcctSchema().getC_AcctSchema_ID());
 		setM_Product_ID (M_Product_ID);
 		setM_AttributeSetInstance_ID (M_AttributeSetInstance_ID);
 		//
@@ -1337,7 +1337,7 @@ public class MCostDetail extends X_M_CostDetail
 		boolean ok = false;
 
 		//	get costing level for product
-		IAcctSchemaInfo as = AcctInfoServices.getAcctSchemaInfoService().get(getCtx(), getC_AcctSchema_ID());
+		IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get(getCtx(), getC_AcctSchema_ID());
 		MProduct product = new MProduct(getCtx(), getM_Product_ID(), get_TrxName());
 		String CostingLevel = product.getCostingLevel(as);
 		//	Org Element
@@ -1423,7 +1423,7 @@ public class MCostDetail extends X_M_CostDetail
 	 *	@param M_ASI_ID - asi corrected for costing level
 	 *	@return true if cost ok
 	 */
-	protected boolean process (IAcctSchemaInfo as, MProduct product, MCostElement ce, 
+	protected boolean process (IAcctSchemaModel as, MProduct product, MCostElement ce, 
 		int Org_ID, int M_ASI_ID)
 	{
 		//handle compatibility issue between average invoice and average po
@@ -1510,7 +1510,7 @@ public class MCostDetail extends X_M_CostDetail
 		}
 		
 		ICostInfo costInfo = MCost.getCostInfo(product.getCtx(), product.getAD_Client_ID(), Org_ID, product.getM_Product_ID(), 
-					as.getRecord().getM_CostType_ID(), as.getRecord().getC_AcctSchema_ID(), ce.getM_CostElement_ID(), M_ASI_ID, getDateAcct(), 
+					as.getAcctSchema().getM_CostType_ID(), as.getAcctSchema().getC_AcctSchema_ID(), ce.getM_CostElement_ID(), M_ASI_ID, getDateAcct(), 
 					cd != null ? cd : this, get_TrxName());
 		if (costInfo != null)
 		{
@@ -1892,7 +1892,7 @@ public class MCostDetail extends X_M_CostDetail
 		}
 		
 		//Should only update cost detail with value from as costing method
-		if(as.getRecord().getCostingMethod().equals(ce.getCostingMethod())) {
+		if(as.getAcctSchema().getCostingMethod().equals(ce.getCostingMethod())) {
 			setCurrentCostPrice(cost.getCurrentCostPrice());
 			setCurrentQty(cost.getCurrentQty());
 			setCumulatedAmt(cost.getCumulatedAmt());

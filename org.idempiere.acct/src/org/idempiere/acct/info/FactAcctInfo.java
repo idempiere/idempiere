@@ -26,19 +26,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.adempiere.base.acct.info.IAccountInfo;
-import org.adempiere.base.acct.info.IFactAcctInfo;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IFactAcctModel;
 import org.compiere.model.I_Fact_Acct;
 import org.compiere.model.PO;
 import org.idempiere.acct.model.MAccount;
 import org.idempiere.acct.model.MFactAcct;
 
 /**
- * Wrapper for {@link MFactAcct} to provide {@link IFactAcctInfo} access.
+ * Wrapper for {@link MFactAcct} to provide {@link IFactAcctModel} access.
  * 
  * @author etantg
  */
-public class FactAcctInfo implements IFactAcctInfo {
+public class FactAcctInfo implements IFactAcctModel {
 
 	private final MFactAcct fact;
 	
@@ -53,7 +53,7 @@ public class FactAcctInfo implements IFactAcctInfo {
 	}
 	
 	@Override
-	public I_Fact_Acct getRecord() {
+	public I_Fact_Acct getFactAcct() {
 		return fact;
 	}
 
@@ -71,20 +71,20 @@ public class FactAcctInfo implements IFactAcctInfo {
 	}
 
 	@Override
-	public IAccountInfo getAccountInfo() {
+	public IAccountModel getAccountModel() {
 		MAccount account = fact.getMAccount();
 		return AccountInfo.wrap(account);
 	}
 	
-	public static IFactAcctInfo wrap(MFactAcct fact) {
+	public static IFactAcctModel wrap(MFactAcct fact) {
         if (fact == null)
             return null;
-        if (fact instanceof IFactAcctInfo)
-            return (IFactAcctInfo) fact;
+        if (fact instanceof IFactAcctModel)
+            return (IFactAcctModel) fact;
         return new FactAcctInfo(fact);
     }
 	
-	public static List<IFactAcctInfo> wrapList(List<MFactAcct> list) {
+	public static List<IFactAcctModel> wrapList(List<MFactAcct> list) {
 	    return list == null
 	    		? new ArrayList<>()
 	            : list.stream()

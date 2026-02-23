@@ -23,7 +23,7 @@ import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -322,7 +322,7 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 	 * @param  as Account Schema
 	 * @return    Unit Labor Cost
 	 */
-	public BigDecimal getLaborCost(IAcctSchemaInfo as)
+	public BigDecimal getLaborCost(IAcctSchemaModel as)
 	{
 		// Todor Lulov 30.01.2008
 		BigDecimal retValue = Env.ZERO;

@@ -25,7 +25,7 @@ package org.idempiere.acct.service;
 import java.util.Properties;
 
 import org.adempiere.base.acct.AcctInfoService;
-import org.adempiere.base.acct.info.IGLCategoryInfo;
+import org.adempiere.base.acct.model.IGLCategoryModel;
 import org.adempiere.base.acct.service.IGLCategoryInfoService;
 import org.idempiere.acct.info.GLCategoryInfo;
 import org.idempiere.acct.model.MGLCategory;
@@ -39,19 +39,19 @@ import org.idempiere.acct.model.MGLCategory;
 public class GLCategoryInfoService implements IGLCategoryInfoService {
 	
 	@Override
-	public IGLCategoryInfo get(Properties ctx, int GL_Category_ID) {
+	public IGLCategoryModel get(Properties ctx, int GL_Category_ID) {
 		MGLCategory category = MGLCategory.get(ctx, GL_Category_ID);
 		return GLCategoryInfo.wrap(category);
 	}
 
 	@Override
-	public IGLCategoryInfo getDefaultSystem(Properties ctx) {
+	public IGLCategoryModel getDefaultSystem(Properties ctx) {
 		MGLCategory category = MGLCategory.getDefaultSystem(ctx);
 		return GLCategoryInfo.wrap(category);
 	}
 	
 	@Override
-	public IGLCategoryInfo create(Properties ctx, int GL_Category_ID, String trxName) {
+	public IGLCategoryModel create(Properties ctx, int GL_Category_ID, String trxName) {
 		MGLCategory category = new MGLCategory(ctx, GL_Category_ID, trxName);
 		return GLCategoryInfo.wrap(category);
 	}

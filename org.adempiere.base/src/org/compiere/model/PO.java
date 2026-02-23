@@ -54,7 +54,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.adempiere.base.IPOAccountingService;
 import org.adempiere.base.acct.AcctInfoServices;
-import org.adempiere.base.acct.info.IElementInfo;
+import org.adempiere.base.acct.model.IElementModel;
 import org.adempiere.base.event.EventManager;
 import org.adempiere.base.event.IEventTopics;
 import org.adempiere.exceptions.AdempiereException;
@@ -5048,7 +5048,7 @@ public abstract class PO
 		if (C_Element_ID != 0)
 			sb.append(" AND EXISTS (SELECT * FROM C_Element ae WHERE ae.C_Element_ID=")
 			  .append(C_Element_ID > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName())
-					  ? PO.buildUUIDSubquery("C_Element", AcctInfoServices.getElementInfoService().create(getCtx(), C_Element_ID, get_TrxName()).getRecord().getC_Element_UU())
+					  ? PO.buildUUIDSubquery("C_Element", AcctInfoServices.getElementInfoService().create(getCtx(), C_Element_ID, get_TrxName()).getElement().getC_Element_UU())
 					  : C_Element_ID)
 			  .append(" AND t.AD_Tree_ID=ae.AD_Tree_ID)");
 		else	//	std trees
@@ -5106,8 +5106,8 @@ public abstract class PO
 			sourceTableName = MTree_Base.getSourceTableName(treeType);
 			if (MTree_Base.TREETYPE_ElementValue.equals(treeType) && this instanceof I_C_ElementValue ev) {
 				whereTree = "TreeType=? AND AD_Tree_ID=?";
-				IElementInfo element = AcctInfoServices.getElementInfoService().create(getCtx(), ev.getC_Element_ID(), get_TrxName());
-				parameters = new Object[]{treeType, element.getRecord().getAD_Tree_ID()};
+				IElementModel element = AcctInfoServices.getElementInfoService().create(getCtx(), ev.getC_Element_ID(), get_TrxName());
+				parameters = new Object[]{treeType, element.getElement().getAD_Tree_ID()};
 			} else {
 				whereTree = "TreeType=?";
 				parameters = new Object[]{treeType};

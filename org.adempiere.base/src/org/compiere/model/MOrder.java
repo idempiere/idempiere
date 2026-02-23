@@ -33,7 +33,7 @@ import org.adempiere.base.Core;
 import org.adempiere.base.CreditStatus;
 import org.adempiere.base.ICreditManager;
 import org.adempiere.base.acct.AcctInfoServices;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.BPartnerNoBillToAddressException;
 import org.adempiere.exceptions.BPartnerNoShipToAddressException;
@@ -3151,10 +3151,10 @@ public class MOrder extends X_C_Order implements DocAction
 	protected String deleteMatchPOCostDetail(MOrderLine line)
 	{
 		// Get Account Schemas to delete MCostDetail
-		IAcctSchemaInfo[] acctschemas = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(getCtx(), getAD_Client_ID());
+		IAcctSchemaModel[] acctschemas = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(getCtx(), getAD_Client_ID());
 		for(int asn = 0; asn < acctschemas.length; asn++)
 		{
-			IAcctSchemaInfo as = acctschemas[asn];
+			IAcctSchemaModel as = acctschemas[asn];
 			
 			if (as.isSkipOrg(getAD_Org_ID()))
 			{

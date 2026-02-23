@@ -22,9 +22,9 @@ import java.util.logging.Level;
 
 import org.adempiere.base.acct.AcctInfoServices;
 import org.adempiere.base.acct.constants.IElementValueConstants;
-import org.adempiere.base.acct.info.IAccountInfo;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
-import org.adempiere.base.acct.info.IElementValueInfo;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
+import org.adempiere.base.acct.model.IElementValueModel;
 import org.compiere.minigrid.IMiniTable;
 import org.compiere.model.MCharge;
 import org.compiere.util.CLogger;
@@ -51,7 +51,7 @@ public class Charge
 	private int         m_C_TaxCategory_ID = 0;
 	private int         m_AD_Client_ID = 0;
 	private int         m_AD_Org_ID = 0;
-	private IAcctSchemaInfo  m_acctSchema = null;
+	private IAcctSchemaModel  m_acctSchema = null;
 	/**	Logger			*/
 	protected static final CLogger log = CLogger.getCLogger(Charge.class);
 
@@ -235,19 +235,19 @@ public class Charge
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config(name);
 		//
-		IElementValueInfo ev = AcctInfoServices.getElementValueInfoService().create(Env.getCtx(), value, name, null,
+		IElementValueModel ev = AcctInfoServices.getElementValueInfoService().create(Env.getCtx(), value, name, null,
 			isExpenseType ? IElementValueConstants.ACCOUNTTYPE_Expense : IElementValueConstants.ACCOUNTTYPE_Revenue, 
 					IElementValueConstants.ACCOUNTSIGN_Natural,
 				false, false, m_trxName);
-		ev.getRecord().setAD_Org_ID(m_AD_Org_ID);
-		ev.getRecord().setC_Element_ID(m_C_Element_ID);
+		ev.getElementValue().setAD_Org_ID(m_AD_Org_ID);
+		ev.getElementValue().setC_Element_ID(m_C_Element_ID);
 		try {
 			ev.getPO().saveEx();
 		} catch (Exception e) {
 			log.log(Level.WARNING, "C_ElementValue_ID not created", e);
 			return 0;
 		}
-		return ev.getRecord().getC_ElementValue_ID();
+		return ev.getElementValue().getC_ElementValue_ID();
 	}   //  createElementValue
 
 	/**
@@ -260,7 +260,7 @@ public class Charge
     public int createCharge(String name, int elementValueId)
     {
         MCharge charge;
-        IAccountInfo account;
+        IAccountModel account;
 
         refreshAccountSchema();
         if (!isAccountSchemaValid())
@@ -279,7 +279,7 @@ public class Charge
         // Charge
         charge = new MCharge(Env.getCtx(), 0, m_trxName);
         // IDEMPIERE-1099 - Key must be included in name to avoid name crashes in account schema.
-        charge.setName(account.getAccountInfo().getRecord().getValue() + " " + name);
+        charge.setName(account.getAccountModel().getElementValue().getValue() + " " + name);
         charge.setC_TaxCategory_ID(m_C_TaxCategory_ID);
         try 
         {
@@ -301,7 +301,7 @@ public class Charge
      * @param charge    the charge
      * @param account   the account
      */
-    private void updateAccount(MCharge charge, IAccountInfo account)
+    private void updateAccount(MCharge charge, IAccountModel account)
     {
         StringBuffer sql = createUpdateAccountSql(charge, account);
         //
@@ -325,7 +325,7 @@ public class Charge
         {
             return false;
         }
-        else if (m_acctSchema.getRecord().getC_AcctSchema_ID() == 0)
+        else if (m_acctSchema.getAcctSchema().getC_AcctSchema_ID() == 0)
         {
             return false;
         }
@@ -340,10 +340,10 @@ public class Charge
      * @param account      account
      * @return the SQL DML statement for updating the specified account and charge.
      */
-    private StringBuffer createUpdateAccountSql(MCharge charge, IAccountInfo account)
+    private StringBuffer createUpdateAccountSql(MCharge charge, IAccountModel account)
     {
         StringBuffer sql = new StringBuffer("UPDATE C_Charge_Acct ");
-        sql.append("SET CH_Expense_Acct=").append(account.getRecord().getC_ValidCombination_ID());
+        sql.append("SET CH_Expense_Acct=").append(account.getCombination().getC_ValidCombination_ID());
         sql.append(" WHERE C_Charge_ID=").append(charge.getC_Charge_ID());
         sql.append(" AND C_AcctSchema_ID=").append(m_C_AcctSchema_ID);
 
@@ -370,29 +370,29 @@ public class Charge
      * @param elementValueId identifier for the element value
      * @return the account record
      */
-    private IAccountInfo getAccount(int elementValueId)
+    private IAccountModel getAccount(int elementValueId)
     {
     	Properties ctx = Env.getCtx();
-    	IAccountInfo defaultAccount = AcctInfoServices.getAccountInfoService().getDefault(m_acctSchema, true); //  optional null
-    	IAccountInfo account = AcctInfoServices.getAccountInfoService().get(ctx,
+    	IAccountModel defaultAccount = AcctInfoServices.getAccountInfoService().getDefault(m_acctSchema, true); //  optional null
+    	IAccountModel account = AcctInfoServices.getAccountInfoService().get(ctx,
             Env.getAD_Client_ID(ctx),
             Env.getAD_Org_ID(ctx),
-            m_acctSchema.getRecord().getC_AcctSchema_ID(),
+            m_acctSchema.getAcctSchema().getC_AcctSchema_ID(),
             elementValueId,
-            defaultAccount.getRecord().getC_SubAcct_ID(),
-            defaultAccount.getRecord().getM_Product_ID(),
-            defaultAccount.getRecord().getC_BPartner_ID(),
-            defaultAccount.getRecord().getAD_OrgTrx_ID(),
-            defaultAccount.getRecord().getC_LocFrom_ID(),
-            defaultAccount.getRecord().getC_LocTo_ID(),
-            defaultAccount.getRecord().getC_SalesRegion_ID(),
-            defaultAccount.getRecord().getC_Project_ID(),
-            defaultAccount.getRecord().getC_Campaign_ID(),
-            defaultAccount.getRecord().getC_Activity_ID(),
-            defaultAccount.getRecord().getUser1_ID(),
-            defaultAccount.getRecord().getUser2_ID(),
-            defaultAccount.getRecord().getUserElement1_ID(),
-            defaultAccount.getRecord().getUserElement2_ID(),
+            defaultAccount.getCombination().getC_SubAcct_ID(),
+            defaultAccount.getCombination().getM_Product_ID(),
+            defaultAccount.getCombination().getC_BPartner_ID(),
+            defaultAccount.getCombination().getAD_OrgTrx_ID(),
+            defaultAccount.getCombination().getC_LocFrom_ID(),
+            defaultAccount.getCombination().getC_LocTo_ID(),
+            defaultAccount.getCombination().getC_SalesRegion_ID(),
+            defaultAccount.getCombination().getC_Project_ID(),
+            defaultAccount.getCombination().getC_Campaign_ID(),
+            defaultAccount.getCombination().getC_Activity_ID(),
+            defaultAccount.getCombination().getUser1_ID(),
+            defaultAccount.getCombination().getUser2_ID(),
+            defaultAccount.getCombination().getUserElement1_ID(),
+            defaultAccount.getCombination().getUserElement2_ID(),
             m_trxName);
 
         return account;

@@ -26,9 +26,9 @@ import java.util.logging.Level;
 
 import org.adempiere.base.acct.AcctInfoServices;
 import org.adempiere.base.acct.constants.IAcctSchemaElementConstants;
-import org.adempiere.base.acct.info.IAccountInfo;
-import org.adempiere.base.acct.info.IAcctSchemaElementInfo;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IAcctSchemaElementModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
@@ -150,7 +150,7 @@ public final class WAccountDialog extends Window
 	protected boolean			m_changed = false;
 
 	/** Accounting Schema           */
-	private IAcctSchemaInfo	m_AcctSchema = null;
+	private IAcctSchemaModel	m_AcctSchema = null;
 	/** MWindow for AccountCombination  */
 	private GridWindow             m_mWindow = null;
 	/** MTab for AccountCombination     */
@@ -415,7 +415,7 @@ public final class WAccountDialog extends Window
 			LayoutUtils.addSclass("form-label-above-input", parameterLayout);
 
 		//	Alias
-		if (m_AcctSchema.getRecord().isHasAlias())
+		if (m_AcctSchema.getAcctSchema().isHasAlias())
 		{
 			GridField alias = m_mTab.getField("Alias");
 			if (f_Alias == null)
@@ -434,14 +434,14 @@ public final class WAccountDialog extends Window
 		/**
 		 *	Create Fields in Element Order
 		 */
-		IAcctSchemaElementInfo[] elements = m_AcctSchema.getAcctSchemaElementsInfo();
+		IAcctSchemaElementModel[] elements = m_AcctSchema.getAcctSchemaElementsModels();
 		for (int i = 0; i < elements.length; i++)
 		{
 			if (isLabelAboveInputForSmallWidth())
 				m_newRow = true;
-			IAcctSchemaElementInfo ase = elements[i];
-			String type = ase.getRecord().getElementType();
-			boolean isMandatory = ase.getRecord().isMandatory();
+			IAcctSchemaElementModel ase = elements[i];
+			String type = ase.getAcctSchemaElement().getElementType();
+			boolean isMandatory = ase.getAcctSchemaElement().isMandatory();
 			//
 			if (type.equals(IAcctSchemaElementConstants.ELEMENTTYPE_Organization))
 			{
@@ -732,7 +732,7 @@ public final class WAccountDialog extends Window
 		if (event.getTarget().getId().equals("Ok"))
 		{
 			// Compare all data to propose creation/update of combination
-			IAccountInfo combiOrg = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), IDvalue > 0 ? IDvalue : m_mAccount.C_ValidCombination_ID, null);
+			IAccountModel combiOrg = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), IDvalue > 0 ? IDvalue : m_mAccount.C_ValidCombination_ID, null);
 			boolean needconfirm = false;
 			if (needConfirm(f_AD_Org_ID, combiOrg))
 				needconfirm = true;
@@ -811,7 +811,7 @@ public final class WAccountDialog extends Window
 	 * @param combiOrg
 	 * @return true if value has change
 	 */
-	protected boolean needConfirm(WEditor editor, IAccountInfo combiOrg)
+	protected boolean needConfirm(WEditor editor, IAccountModel combiOrg)
 	{
 		if (editor != null ) {
 			String columnName = editor.getColumnName();
@@ -943,17 +943,17 @@ public final class WAccountDialog extends Window
 		StringBuilder sb = new StringBuilder();
 		StringBuilder sql = new StringBuilder ("SELECT C_ValidCombination_ID, Alias FROM C_ValidCombination WHERE ");
 		Object value = null;
-		if (m_AcctSchema.getRecord().isHasAlias())
+		if (m_AcctSchema.getAcctSchema().isHasAlias())
 		{
 			value = f_Alias.getValue().toString();
 			if (isEmpty(value) && f_Alias.isMandatory())
 				sb.append(Msg.translate(Env.getCtx(), "Alias")).append(", ");
 		}
-		IAcctSchemaElementInfo[] elements = m_AcctSchema.getAcctSchemaElementsInfo();
+		IAcctSchemaElementModel[] elements = m_AcctSchema.getAcctSchemaElementsModels();
 		for (int i = 0; i < elements.length; i++)
 		{
-			IAcctSchemaElementInfo ase = elements[i];
-			String type = ase.getRecord().getElementType();
+			IAcctSchemaElementModel ase = elements[i];
+			String type = ase.getAcctSchemaElement().getElementType();
 			//
 			if (type.equals(IAcctSchemaElementConstants.ELEMENTTYPE_Organization))
 			{
@@ -1082,8 +1082,8 @@ public final class WAccountDialog extends Window
 					sql.append("=").append(value).append(" AND ");
 			}
 			//
-			if (ase.getRecord().isMandatory() && isEmpty(value))
-				sb.append(ase.getRecord().getName()).append(", ");
+			if (ase.getAcctSchemaElement().isMandatory() && isEmpty(value))
+				sb.append(ase.getAcctSchemaElement().getName()).append(", ");
 		}	//	Fields in Element Order
 
 		if (sb.length() != 0)
@@ -1114,7 +1114,7 @@ public final class WAccountDialog extends Window
 		{
 			pstmt = DB.prepareStatement(sql.toString(), null);
 			pstmt.setInt(1, m_AD_Client_ID);
-			pstmt.setInt(2, m_AcctSchema.getRecord().getC_AcctSchema_ID());
+			pstmt.setInt(2, m_AcctSchema.getAcctSchema().getC_AcctSchema_ID());
 			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
@@ -1139,7 +1139,7 @@ public final class WAccountDialog extends Window
 			Alias = "";
 
 		//	We have an account like this already - check alias
-		if (IDvalue != 0 && m_AcctSchema.getRecord().isHasAlias()
+		if (IDvalue != 0 && m_AcctSchema.getAcctSchema().isHasAlias()
 			&& !f_Alias.getValue().toString().equals(Alias))
 		{
 			sql = new StringBuilder("UPDATE C_ValidCombination SET Alias=");
@@ -1172,7 +1172,7 @@ public final class WAccountDialog extends Window
 		//	load and display
 		if (IDvalue != 0)
 		{
-			loadInfo (IDvalue, m_AcctSchema.getRecord().getC_AcctSchema_ID());
+			loadInfo (IDvalue, m_AcctSchema.getAcctSchema().getC_AcctSchema_ID());
 			action_Find (false);
 			return true;
 		}
@@ -1219,9 +1219,9 @@ public final class WAccountDialog extends Window
 		if (f_User2_ID != null && !isEmpty(f_User2_ID.getValue()))
 			User2_ID = ((Integer)f_User2_ID.getValue()).intValue();
 
-		IAccountInfo acct = AcctInfoServices.getAccountInfoService().get (Env.getCtx(), m_AD_Client_ID,
+		IAccountModel acct = AcctInfoServices.getAccountInfoService().get (Env.getCtx(), m_AD_Client_ID,
 			((Integer)f_AD_Org_ID.getValue()).intValue(),
-			m_AcctSchema.getRecord().getC_AcctSchema_ID(),
+			m_AcctSchema.getAcctSchema().getC_AcctSchema_ID(),
 			((Integer)f_Account_ID.getValue()).intValue(), C_SubAcct_ID,
 			M_Product_ID, C_BPartner_ID, AD_OrgTrx_ID,
 			C_LocFrom_ID, C_LocTo_ID, C_SRegion_ID,
@@ -1238,10 +1238,10 @@ public final class WAccountDialog extends Window
 			//	Update Account with optional Alias
 			if (Alias != null && Alias.length() > 0)
 			{
-				acct.getRecord().setAlias(Alias);
+				acct.getCombination().setAlias(Alias);
 				acct.getPO().saveEx();
 			}
-			loadInfo (acct.getPO().get_ID(), m_AcctSchema.getRecord().getC_AcctSchema_ID());
+			loadInfo (acct.getPO().get_ID(), m_AcctSchema.getAcctSchema().getC_AcctSchema_ID());
 		}
 		IDvalue = acct.getPO().get_ID();
 		action_Find (false);

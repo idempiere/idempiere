@@ -23,8 +23,8 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 
 import org.adempiere.base.acct.AcctInfoServices;
-import org.adempiere.base.acct.info.IAccountInfo;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -88,7 +88,7 @@ public final class DocTax
 	 *  @param as account schema
 	 *  @return Account
 	 */
-	public IAccountInfo getAccount (int AcctType, IAcctSchemaInfo as)
+	public IAccountModel getAccount (int AcctType, IAcctSchemaModel as)
 	{
 		if (AcctType < ACCTTYPE_TaxDue || AcctType > ACCTTYPE_TaxExpense)
 			return null;
@@ -102,7 +102,7 @@ public final class DocTax
 		{
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, m_C_Tax_ID);
-			pstmt.setInt(2, as.getRecord().getC_AcctSchema_ID());
+			pstmt.setInt(2, as.getAcctSchema().getC_AcctSchema_ID());
 			rs = pstmt.executeQuery();
 			if (rs.next())
 				validCombination_ID = rs.getInt(AcctType+1);    //  1..3

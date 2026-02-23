@@ -26,7 +26,7 @@ import java.util.logging.Level;
 
 import org.adempiere.base.acct.AcctInfoServices;
 import org.adempiere.base.acct.constants.IAcctSchemaConstants;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -1030,8 +1030,8 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	 */
 	public boolean isASIMandatoryFor(String mandatoryType, boolean isSOTrx) {
 		//	If CostingLevel is BatchLot ASI is always mandatory - check all client acct schemas
-		IAcctSchemaInfo[] mass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(getCtx(), getAD_Client_ID(), get_TrxName());
-		for (IAcctSchemaInfo as : mass)
+		IAcctSchemaModel[] mass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(getCtx(), getAD_Client_ID(), get_TrxName());
+		for (IAcctSchemaModel as : mass)
 		{
 			String cl = getCostingLevel(as);
 			if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(cl)) {
@@ -1064,13 +1064,13 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	 * @param as accounting schema
 	 * @return product costing level (X_C_AcctSchema.COSTINGLEVEL_*)
 	 */
-	public String getCostingLevel(IAcctSchemaInfo as)
+	public String getCostingLevel(IAcctSchemaModel as)
 	{
 		MProductCategoryAcct pca = MProductCategoryAcct.get(getCtx(), getM_Product_Category_ID(), as.getPO().get_ID(), get_TrxName());
 		String costingLevel = pca.getCostingLevel();
 		if (costingLevel == null)
 		{
-			costingLevel = as.getRecord().getCostingLevel();
+			costingLevel = as.getAcctSchema().getCostingLevel();
 		}
 		return costingLevel;
 	}
@@ -1080,13 +1080,13 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	 * @param as accounting schema
 	 * @return product costing method (X_C_AcctSchema.COSTINGMETHOD_*)
 	 */
-	public String getCostingMethod(IAcctSchemaInfo as)
+	public String getCostingMethod(IAcctSchemaModel as)
 	{
 		MProductCategoryAcct pca = MProductCategoryAcct.get(getCtx(), getM_Product_Category_ID(), as.getPO().get_ID(), get_TrxName());
 		String costingMethod = pca.getCostingMethod();
 		if (costingMethod == null)
 		{
-			costingMethod = as.getRecord().getCostingMethod();
+			costingMethod = as.getAcctSchema().getCostingMethod();
 		}
 		return costingMethod;
 	}
@@ -1097,7 +1097,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	 * @param M_ASI_ID
 	 * @return MCost or null
 	 */
-	public MCost getCostingRecord(IAcctSchemaInfo as, int AD_Org_ID, int M_ASI_ID)
+	public MCost getCostingRecord(IAcctSchemaModel as, int AD_Org_ID, int M_ASI_ID)
 	{
 		return getCostingRecord(as, AD_Org_ID, M_ASI_ID, getCostingMethod(as));
 	}
@@ -1109,7 +1109,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	 * @param costingMethod
 	 * @return MCost or null
 	 */
-	public MCost getCostingRecord(IAcctSchemaInfo as, int AD_Org_ID, int M_ASI_ID, String costingMethod)
+	public MCost getCostingRecord(IAcctSchemaModel as, int AD_Org_ID, int M_ASI_ID, String costingMethod)
 	{
 		String costingLevel = getCostingLevel(as);
 		if (IAcctSchemaConstants.COSTINGLEVEL_Client.equals(costingLevel))
@@ -1141,7 +1141,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	 * @param dateAcct
 	 * @return ICostInfo or null
 	 */
-	public ICostInfo getCostInfo(IAcctSchemaInfo as, int AD_Org_ID, int M_ASI_ID, String costingMethod, Timestamp dateAcct)
+	public ICostInfo getCostInfo(IAcctSchemaModel as, int AD_Org_ID, int M_ASI_ID, String costingMethod, Timestamp dateAcct)
 	{		
 		String costingLevel = getCostingLevel(as);
 		if (IAcctSchemaConstants.COSTINGLEVEL_Client.equals(costingLevel))
@@ -1162,7 +1162,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 			return null;
 		}
 		return MCost.getCostInfo(getCtx(), getAD_Client_ID(), AD_Org_ID, getM_Product_ID(), 
-				as.getRecord().getM_CostType_ID(), as.getRecord().getC_AcctSchema_ID(), ce.getM_CostElement_ID(), M_ASI_ID, dateAcct, null, get_TrxName());
+				as.getAcctSchema().getM_CostType_ID(), as.getAcctSchema().getC_AcctSchema_ID(), ce.getM_CostElement_ID(), M_ASI_ID, dateAcct, null, get_TrxName());
 	}
 	
 	@Override

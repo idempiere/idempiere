@@ -20,20 +20,19 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  **********************************************************************/
-package org.adempiere.base.acct.info;
+package org.adempiere.base.acct.model;
 
-import org.adempiere.base.acct.IAcctInfo;
-import org.compiere.model.I_C_ValidCombination;
+import org.adempiere.base.acct.IAcctModel;
+import org.compiere.model.I_C_ElementValue;
 
 /**
- * Interface for account info objects.
+ * Interface for accounting element value info objects.
  * 
  * @author etantg
  */
-public interface IAccountInfo extends IAcctInfo {
-	public I_C_ValidCombination getRecord();
+public interface IElementValueModel extends IAcctModel {
+	public I_C_ElementValue getElementValue();
 	
-	public boolean isActiva();
 	public boolean isBalanceSheet();
-	public IElementValueInfo getAccountInfo();
+	public void set(IImportElementValueModel imp);
 }

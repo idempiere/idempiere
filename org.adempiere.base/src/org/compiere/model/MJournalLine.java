@@ -24,10 +24,10 @@ import java.util.Properties;
 
 import org.adempiere.base.acct.AcctInfoServices;
 import org.adempiere.base.acct.constants.IAcctSchemaElementConstants;
-import org.adempiere.base.acct.info.IAccountInfo;
-import org.adempiere.base.acct.info.IAcctSchemaElementInfo;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
-import org.adempiere.base.acct.info.IElementValueInfo;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IAcctSchemaElementModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
+import org.adempiere.base.acct.model.IElementValueModel;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -131,9 +131,9 @@ public class MJournalLine extends X_GL_JournalLine
 	/**	Currency Precision		*/
 	protected int				m_precision = 2;
 	/**	Account Combination		*/
-	protected IAccountInfo		 	m_account = null;
+	protected IAccountModel		 	m_account = null;
 	/** Account Element			*/
-	protected IElementValueInfo		m_accountElement = null;
+	protected IElementValueModel		m_accountElement = null;
 	
 	/**
 	 * 	Set Currency Info
@@ -251,11 +251,11 @@ public class MJournalLine extends X_GL_JournalLine
 	 * 	Set C_ValidCombination_ID
 	 *	@param acct account
 	 */
-	public void setC_ValidCombination_ID (IAccountInfo acct)
+	public void setC_ValidCombination_ID (IAccountModel acct)
 	{
 		if (acct == null)
 			throw new IllegalArgumentException("Account is null");
-		super.setC_ValidCombination_ID (acct.getRecord().getC_ValidCombination_ID());
+		super.setC_ValidCombination_ID (acct.getCombination().getC_ValidCombination_ID());
 		m_account = acct;
 		m_accountElement = null;
 	}	//	setC_ValidCombination_ID
@@ -264,7 +264,7 @@ public class MJournalLine extends X_GL_JournalLine
 	 * 	Get Account (Valid Combination)
 	 *	@return combination or null
 	 */
-	public IAccountInfo getAccount_Combi()
+	public IAccountModel getAccount_Combi()
 	{
 		if (m_account == null && getC_ValidCombination_ID() != 0)
 			m_account = AcctInfoServices.getAccountInfoService().create(getCtx(), getC_ValidCombination_ID(), get_TrxName());
@@ -275,13 +275,13 @@ public class MJournalLine extends X_GL_JournalLine
 	 * 	Get Natural Account Element Value
 	 *	@return account
 	 */
-	public IElementValueInfo getAccountElementValue()
+	public IElementValueModel getAccountElementValue()
 	{
 		if (m_accountElement == null)
 		{
-			IAccountInfo vc = getAccount_Combi();
-			if (vc != null && vc.getRecord().getAccount_ID() != 0)
-				m_accountElement = AcctInfoServices.getElementValueInfoService().create(getCtx(), vc.getRecord().getAccount_ID(), get_TrxName()); 
+			IAccountModel vc = getAccount_Combi();
+			if (vc != null && vc.getCombination().getAccount_ID() != 0)
+				m_accountElement = AcctInfoServices.getElementValueInfoService().create(getCtx(), vc.getCombination().getAccount_ID(), get_TrxName()); 
 		}
 		return m_accountElement;
 	}	//	getAccountElement
@@ -292,13 +292,13 @@ public class MJournalLine extends X_GL_JournalLine
 	 */
 	public boolean isDocControlled()
 	{
-		IElementValueInfo acct = getAccountElementValue();
+		IElementValueModel acct = getAccountElementValue();
 		if (acct == null)
 		{
 			log.warning ("Account not found for C_ValidCombination_ID=" + getC_ValidCombination_ID());
 			return false;
 		}
-		return acct.getRecord().isDocControlled();
+		return acct.getElementValue().isDocControlled();
 	}	//	isDocControlled
 		
 	@Override
@@ -415,12 +415,12 @@ public class MJournalLine extends X_GL_JournalLine
 			MJournal gl = new MJournal(getCtx(), getGL_Journal_ID(), get_TrxName());
 
 			// Validate all mandatory combinations are set
-			IAcctSchemaInfo as = AcctInfoServices.getAcctSchemaInfoService().get(getParent().getC_AcctSchema_ID());
+			IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get(getParent().getC_AcctSchema_ID());
 			String errorFields = "";
-			for (IAcctSchemaElementInfo elem : AcctInfoServices.getAcctSchemaElementInfoService().getAcctSchemaElements(as)) {
-				if (! elem.getRecord().isMandatory())
+			for (IAcctSchemaElementModel elem : AcctInfoServices.getAcctSchemaElementInfoService().getAcctSchemaElements(as)) {
+				if (! elem.getAcctSchemaElement().isMandatory())
 					continue;
-				String et = elem.getRecord().getElementType();
+				String et = elem.getAcctSchemaElement().getElementType();
 				if (IAcctSchemaElementConstants.ELEMENTTYPE_Account.equals(et) && getAccount_ID() == 0)
 					errorFields += "@" + COLUMNNAME_Account_ID + "@, ";
 				if (IAcctSchemaElementConstants.ELEMENTTYPE_Activity.equals(et) && getC_Activity_ID() == 0)
@@ -462,7 +462,7 @@ public class MJournalLine extends X_GL_JournalLine
 				return false;
 			}
 			
-			IAccountInfo acct = AcctInfoServices.getAccountInfoService().get(getCtx(), getAD_Client_ID(), getAD_Org_ID(), gl.getC_AcctSchema_ID(), getAccount_ID(),
+			IAccountModel acct = AcctInfoServices.getAccountInfoService().get(getCtx(), getAD_Client_ID(), getAD_Org_ID(), gl.getC_AcctSchema_ID(), getAccount_ID(),
 					getC_SubAcct_ID(), getM_Product_ID(), getC_BPartner_ID(), getAD_OrgTrx_ID(), getC_LocFrom_ID(),
 					getC_LocTo_ID(), getC_SalesRegion_ID(), getC_Project_ID(), getC_Campaign_ID(), 
 					getC_Activity_ID(), getUser1_ID(), getUser2_ID(), 0, 0,
@@ -472,7 +472,7 @@ public class MJournalLine extends X_GL_JournalLine
 			{
 				acct.getPO().saveEx(get_TrxName());	// get ID from transaction
 				setC_ValidCombination_ID(acct.getPO().get_ID());
-				if (acct.getRecord().getAlias() != null && acct.getRecord().getAlias().length() > 0)
+				if (acct.getCombination().getAlias() != null && acct.getCombination().getAlias().length() > 0)
 					setAlias_ValidCombination_ID(acct.getPO().get_ID());
 				else
 					setAlias_ValidCombination_ID(0);
@@ -488,22 +488,22 @@ public class MJournalLine extends X_GL_JournalLine
 	{
 		if (getC_ValidCombination_ID() > 0)
 		{
-			IAccountInfo combi = AcctInfoServices.getAccountInfoService().create(getCtx(), getC_ValidCombination_ID(), get_TrxName());
-			setAccount_ID(combi.getRecord().getAccount_ID() > 0 ? combi.getRecord().getAccount_ID() : 0);
-			setC_SubAcct_ID(combi.getRecord().getC_SubAcct_ID() > 0 ? combi.getRecord().getC_SubAcct_ID() : 0);
-			setM_Product_ID(combi.getRecord().getM_Product_ID() > 0 ? combi.getRecord().getM_Product_ID() : 0);
-			setC_BPartner_ID(combi.getRecord().getC_BPartner_ID() > 0 ? combi.getRecord().getC_BPartner_ID() : 0);
-			setAD_OrgTrx_ID(combi.getRecord().getAD_OrgTrx_ID() > 0 ? combi.getRecord().getAD_OrgTrx_ID() : 0);
-			if (combi.getRecord().getAD_Org_ID() > 0)
-				setAD_Org_ID(combi.getRecord().getAD_Org_ID());
-			setC_LocFrom_ID(combi.getRecord().getC_LocFrom_ID() > 0 ? combi.getRecord().getC_LocFrom_ID() : 0);
-			setC_LocTo_ID(combi.getRecord().getC_LocTo_ID() > 0 ? combi.getRecord().getC_LocTo_ID() : 0);
-			setC_SalesRegion_ID(combi.getRecord().getC_SalesRegion_ID() > 0 ? combi.getRecord().getC_SalesRegion_ID() : 0);
-			setC_Project_ID(combi.getRecord().getC_Project_ID() > 0 ? combi.getRecord().getC_Project_ID() : 0);
-			setC_Campaign_ID(combi.getRecord().getC_Campaign_ID() > 0 ? combi.getRecord().getC_Campaign_ID() : 0);
-			setC_Activity_ID(combi.getRecord().getC_Activity_ID() > 0 ? combi.getRecord().getC_Activity_ID() : 0);
-			setUser1_ID(combi.getRecord().getUser1_ID() > 0 ? combi.getRecord().getUser1_ID() : 0);
-			setUser2_ID(combi.getRecord().getUser2_ID() > 0 ? combi.getRecord().getUser2_ID() : 0);
+			IAccountModel combi = AcctInfoServices.getAccountInfoService().create(getCtx(), getC_ValidCombination_ID(), get_TrxName());
+			setAccount_ID(combi.getCombination().getAccount_ID() > 0 ? combi.getCombination().getAccount_ID() : 0);
+			setC_SubAcct_ID(combi.getCombination().getC_SubAcct_ID() > 0 ? combi.getCombination().getC_SubAcct_ID() : 0);
+			setM_Product_ID(combi.getCombination().getM_Product_ID() > 0 ? combi.getCombination().getM_Product_ID() : 0);
+			setC_BPartner_ID(combi.getCombination().getC_BPartner_ID() > 0 ? combi.getCombination().getC_BPartner_ID() : 0);
+			setAD_OrgTrx_ID(combi.getCombination().getAD_OrgTrx_ID() > 0 ? combi.getCombination().getAD_OrgTrx_ID() : 0);
+			if (combi.getCombination().getAD_Org_ID() > 0)
+				setAD_Org_ID(combi.getCombination().getAD_Org_ID());
+			setC_LocFrom_ID(combi.getCombination().getC_LocFrom_ID() > 0 ? combi.getCombination().getC_LocFrom_ID() : 0);
+			setC_LocTo_ID(combi.getCombination().getC_LocTo_ID() > 0 ? combi.getCombination().getC_LocTo_ID() : 0);
+			setC_SalesRegion_ID(combi.getCombination().getC_SalesRegion_ID() > 0 ? combi.getCombination().getC_SalesRegion_ID() : 0);
+			setC_Project_ID(combi.getCombination().getC_Project_ID() > 0 ? combi.getCombination().getC_Project_ID() : 0);
+			setC_Campaign_ID(combi.getCombination().getC_Campaign_ID() > 0 ? combi.getCombination().getC_Campaign_ID() : 0);
+			setC_Activity_ID(combi.getCombination().getC_Activity_ID() > 0 ? combi.getCombination().getC_Activity_ID() : 0);
+			setUser1_ID(combi.getCombination().getUser1_ID() > 0 ? combi.getCombination().getUser1_ID() : 0);
+			setUser2_ID(combi.getCombination().getUser2_ID() > 0 ? combi.getCombination().getUser2_ID() : 0);
 		}		
 	}	// fillDimensionsFromCombination
 	

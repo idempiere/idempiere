@@ -25,8 +25,8 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.base.acct.AcctInfoServices;
-import org.adempiere.base.acct.info.IAccountInfo;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -190,7 +190,7 @@ public class ProductCost
 	 *  @param as Accounting Schema
 	 *  @return Requested Product Account
 	 */
-	public IAccountInfo getAccount(int AcctType, IAcctSchemaInfo as)
+	public IAccountModel getAccount(int AcctType, IAcctSchemaModel as)
 	{
 		if (AcctType < ACCTTYPE_P_Revenue || AcctType > ACCTTYPE_P_LandedCostClearing)
 			return null;
@@ -199,7 +199,7 @@ public class ProductCost
 		if (m_M_Product_ID == 0)
 			return getAccountDefault(AcctType, as);
 		
-		String key = m_M_Product_ID + "_" + as.getRecord().getC_AcctSchema_ID() + "_" + AcctType;
+		String key = m_M_Product_ID + "_" + as.getAcctSchema().getC_AcctSchema_ID() + "_" + AcctType;
 		Integer validCombination_ID = s_valid_comb_cache.get(key);
 		
 		if(validCombination_ID == null || validCombination_ID == 0) {
@@ -222,7 +222,7 @@ public class ProductCost
 			{
 				pstmt = DB.prepareStatement(sql, m_trxName);
 				pstmt.setInt(1, m_M_Product_ID);
-				pstmt.setInt(2, as.getRecord().getC_AcctSchema_ID());
+				pstmt.setInt(2, as.getAcctSchema().getC_AcctSchema_ID());
 				rs = pstmt.executeQuery();
 				if (rs.next())
 					validCombination_ID = rs.getInt(AcctType);
@@ -250,12 +250,12 @@ public class ProductCost
 	 *  @param as accounting schema
 	 *  @return Requested Product Account
 	 */
-	public IAccountInfo getAccountDefault (int AcctType, IAcctSchemaInfo as)
+	public IAccountModel getAccountDefault (int AcctType, IAcctSchemaModel as)
 	{
 		if (AcctType < ACCTTYPE_P_Revenue || AcctType > ACCTTYPE_P_LandedCostClearing)
 			return null;
 		
-		String key = as.getRecord().getC_AcctSchema_ID()+ "_" + AcctType;
+		String key = as.getAcctSchema().getC_AcctSchema_ID()+ "_" + AcctType;
 		Integer validCombination_ID = s_default_valid_comb_cache.get(key);
 		
 		if(validCombination_ID == null || validCombination_ID == 0) {
@@ -279,7 +279,7 @@ public class ProductCost
 			try
 			{
 				pstmt = DB.prepareStatement(sql, m_trxName);
-				pstmt.setInt(1, as.getRecord().getC_AcctSchema_ID());
+				pstmt.setInt(1, as.getAcctSchema().getC_AcctSchema_ID());
 				rs = pstmt.executeQuery();
 				if (rs.next())
 					validCombination_ID = rs.getInt(AcctType);
@@ -309,7 +309,7 @@ public class ProductCost
 	 *	@param zeroCostsOK zero/no costs are OK
 	 *  @return cost or null, if qty or costs cannot be determined
 	 */
-	public BigDecimal getProductCosts (IAcctSchemaInfo as, int AD_Org_ID, 
+	public BigDecimal getProductCosts (IAcctSchemaModel as, int AD_Org_ID, 
 		String costingMethod, int C_OrderLine_ID, boolean zeroCostsOK)
 	{
 		return getProductCosts(as, AD_Org_ID, costingMethod, C_OrderLine_ID, zeroCostsOK, null, null, false);
@@ -327,7 +327,7 @@ public class ProductCost
 	 * @param isInBackDatePostingProcess in a back-date posting process
 	 * @return cost or null, if qty or costs cannot be determined
 	 */
-	public BigDecimal getProductCosts (IAcctSchemaInfo as, int AD_Org_ID, 
+	public BigDecimal getProductCosts (IAcctSchemaModel as, int AD_Org_ID, 
 		String costingMethod, int C_OrderLine_ID, boolean zeroCostsOK, 
 		Timestamp dateAcct, MCostDetail costDetail, boolean isInBackDatePostingProcess)
 	{

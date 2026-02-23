@@ -26,7 +26,7 @@ import java.util.logging.Level;
 
 import org.adempiere.base.acct.AcctInfoServices;
 import org.adempiere.base.acct.constants.IAcctSchemaConstants;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.model.I_C_DocType;
 import org.compiere.model.I_M_Inventory;
 import org.compiere.model.MClient;
@@ -80,7 +80,7 @@ public class CostUpdate extends SvrProcess
 	/** Standard Cost Element		*/
 	private MCostElement 	m_ce = null;
 	/** Client Accounting SChema	*/
-	private IAcctSchemaInfo[]	m_ass = null;
+	private IAcctSchemaModel[]	m_ass = null;
 	/** Map of Cost Elements		*/
 	private HashMap<String,MCostElement>	m_ces = new HashMap<String,MCostElement>();
 	private MDocType m_docType = null;
@@ -200,11 +200,11 @@ public class CostUpdate extends SvrProcess
 	 * 	Create New Standard Costs
 	 * 	@param as accounting schema
 	 */
-	private void createNew (IAcctSchemaInfo as)
+	private void createNew (IAcctSchemaModel as)
 	{
-		if (!as.getRecord().getCostingLevel().equals(IAcctSchemaConstants.COSTINGLEVEL_Client))
+		if (!as.getAcctSchema().getCostingLevel().equals(IAcctSchemaConstants.COSTINGLEVEL_Client))
 		{
-			String txt = "Costing Level prevents creating new Costing records for " + as.getRecord().getName();
+			String txt = "Costing Level prevents creating new Costing records for " + as.getAcctSchema().getName();
 			log.warning(txt);
 			addLog(0, null, null, txt);
 			return;
@@ -222,10 +222,10 @@ public class CostUpdate extends SvrProcess
 		try
 		{
 			pstmt = DB.prepareStatement (sql, null);
-			pstmt.setInt (1, as.getRecord().getM_CostType_ID());
-			pstmt.setInt (2, as.getRecord().getC_AcctSchema_ID());
+			pstmt.setInt (1, as.getAcctSchema().getM_CostType_ID());
+			pstmt.setInt (2, as.getAcctSchema().getC_AcctSchema_ID());
 			pstmt.setInt (3, m_ce.getM_CostElement_ID());
-			pstmt.setInt (4, as.getRecord().getAD_Client_ID());
+			pstmt.setInt (4, as.getAcctSchema().getAD_Client_ID());
 			if (p_M_Product_Category_ID != 0)
 				pstmt.setInt (5, p_M_Product_Category_ID);
 			rs = pstmt.executeQuery ();
@@ -246,7 +246,7 @@ public class CostUpdate extends SvrProcess
 			pstmt = null;
 		}
 		if (log.isLoggable(Level.INFO)) log.info("#" + counter);
-		addLog(0, null, new BigDecimal(counter), "Created for " + as.getRecord().getName());
+		addLog(0, null, new BigDecimal(counter), "Created for " + as.getAcctSchema().getName());
 	}	//	createNew
 	
 	/**
@@ -255,7 +255,7 @@ public class CostUpdate extends SvrProcess
 	 *	@param as acct schema
 	 *	@return true if created
 	 */
-	private boolean createNew (MProduct product, IAcctSchemaInfo as)
+	private boolean createNew (MProduct product, IAcctSchemaModel as)
 	{
 		MCost cost = MCost.get(product, 0, as, 0, m_ce.getM_CostElement_ID(), get_TrxName());
 		if (cost.is_new())
@@ -280,7 +280,7 @@ public class CostUpdate extends SvrProcess
 		{
 			List<MInventoryLine> lines = new ArrayList<MInventoryLine>();
 			MClient client = MClient.get(getCtx());
-			IAcctSchemaInfo primarySchema = client.getAcctSchema();
+			IAcctSchemaModel primarySchema = client.getAcctSchema();
 			MInventory inventoryDoc = null;
 			pstmt = DB.prepareStatement (sql, get_TrxName());
 			pstmt.setInt (1, m_ce.getM_CostElement_ID());
@@ -293,10 +293,10 @@ public class CostUpdate extends SvrProcess
 				for (int i = 0; i < m_ass.length; i++)
 				{
 					//	Update Costs only for default Cost Type
-					if (m_ass[i].getRecord().getC_AcctSchema_ID() == cost.getC_AcctSchema_ID() 
-						&& m_ass[i].getRecord().getM_CostType_ID() == cost.getM_CostType_ID())
+					if (m_ass[i].getAcctSchema().getC_AcctSchema_ID() == cost.getC_AcctSchema_ID() 
+						&& m_ass[i].getAcctSchema().getM_CostType_ID() == cost.getM_CostType_ID())
 					{
-						if (m_ass[i].getRecord().getC_AcctSchema_ID() == primarySchema.getRecord().getC_AcctSchema_ID()) 
+						if (m_ass[i].getAcctSchema().getC_AcctSchema_ID() == primarySchema.getAcctSchema().getC_AcctSchema_ID()) 
 						{
 							if (update (cost, lines))
 								counter++;
@@ -517,9 +517,9 @@ public class CostUpdate extends SvrProcess
 			if (retValue == null)
 			{
 				MProduct product = new MProduct(getCtx(), cost.getM_Product_ID(), get_TrxName());
-				IAcctSchemaInfo as = AcctInfoServices.getAcctSchemaInfoService().get(getCtx(), cost.getC_AcctSchema_ID());
+				IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get(getCtx(), cost.getC_AcctSchema_ID());
 				retValue = MCost.getLastInvoicePrice(product, 
-					cost.getM_AttributeSetInstance_ID(), cost.getAD_Org_ID(), as.getRecord().getC_Currency_ID());				
+					cost.getM_AttributeSetInstance_ID(), cost.getAD_Org_ID(), as.getAcctSchema().getC_Currency_ID());				
 			}
 		}
 		
@@ -536,9 +536,9 @@ public class CostUpdate extends SvrProcess
 			if (retValue == null)
 			{
 				MProduct product = new MProduct(getCtx(), cost.getM_Product_ID(), get_TrxName());
-				IAcctSchemaInfo as = AcctInfoServices.getAcctSchemaInfoService().get(getCtx(), cost.getC_AcctSchema_ID());
+				IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get(getCtx(), cost.getC_AcctSchema_ID());
 				retValue = MCost.getLastPOPrice(product, 
-					cost.getM_AttributeSetInstance_ID(), cost.getAD_Org_ID(), as.getRecord().getC_Currency_ID());				
+					cost.getM_AttributeSetInstance_ID(), cost.getAD_Org_ID(), as.getAcctSchema().getC_Currency_ID());				
 			}
 		}
 	

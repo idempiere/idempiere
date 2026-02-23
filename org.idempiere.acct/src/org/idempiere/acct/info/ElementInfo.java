@@ -22,17 +22,17 @@
  **********************************************************************/
 package org.idempiere.acct.info;
 
-import org.adempiere.base.acct.info.IElementInfo;
+import org.adempiere.base.acct.model.IElementModel;
 import org.compiere.model.I_C_Element;
 import org.compiere.model.PO;
 import org.idempiere.acct.model.MElement;
 
 /**
- * Wrapper for {@link MElement} to provide {@link IElementInfo} access.
+ * Wrapper for {@link MElement} to provide {@link IElementModel} access.
  * 
  * @author etantg
  */
-public class ElementInfo implements IElementInfo {
+public class ElementInfo implements IElementModel {
 	
 	private final MElement element;
 	
@@ -47,7 +47,7 @@ public class ElementInfo implements IElementInfo {
 	}
 	
 	@Override
-	public I_C_Element getRecord() {
+	public I_C_Element getElement() {
 		return element;
 	}
 
@@ -56,11 +56,11 @@ public class ElementInfo implements IElementInfo {
 		return element;
 	}
 	
-	public static IElementInfo wrap(MElement element) {
+	public static IElementModel wrap(MElement element) {
         if (element == null)
             return null;
-        if (element instanceof IElementInfo)
-            return (IElementInfo) element;
+        if (element instanceof IElementModel)
+            return (IElementModel) element;
         return new ElementInfo(element);
     }
 	

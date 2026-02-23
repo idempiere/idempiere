@@ -30,7 +30,7 @@ import java.util.Properties;
 import org.adempiere.base.IColumnCallout;
 import org.adempiere.base.acct.AcctInfoServices;
 import org.adempiere.base.acct.constants.IAcctSchemaConstants;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.base.annotation.Callout;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
@@ -75,7 +75,7 @@ public class CostAdjustmentLineProduct implements IColumnCallout {
 			} else {
 				MProduct product = MProduct.get(ctx, (Integer) value);					
 				MClient client = MClient.get(ctx);
-				IAcctSchemaInfo as = client.getAcctSchema();
+				IAcctSchemaModel as = client.getAcctSchema();
 
 				String costingLevel = product.getCostingLevel(as);
 				if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(costingLevel)) {
@@ -87,13 +87,13 @@ public class CostAdjustmentLineProduct implements IColumnCallout {
 					int AD_Org_ID = inventory.getAD_Org_ID();
 					int C_Currency_ID = inventory.getC_Currency_ID();
 
-					if (as.getRecord().getC_Currency_ID() != C_Currency_ID) 
+					if (as.getAcctSchema().getC_Currency_ID() != C_Currency_ID) 
 					{
-						IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(ctx, client.get_ID());
+						IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(ctx, client.get_ID());
 						for (int i = 0; i < ass.length ; i ++)
 						{
-							IAcctSchemaInfo a =  ass[i];
-							if (a.getRecord().getC_Currency_ID() ==  C_Currency_ID) 
+							IAcctSchemaModel a =  ass[i];
+							if (a.getAcctSchema().getC_Currency_ID() ==  C_Currency_ID) 
 								as = a ; 
 						}
 					}

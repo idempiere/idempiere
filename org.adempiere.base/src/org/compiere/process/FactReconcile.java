@@ -21,7 +21,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 
 import org.adempiere.base.acct.AcctInfoServices;
-import org.adempiere.base.acct.info.IElementValueInfo;
+import org.adempiere.base.acct.model.IElementValueModel;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.process.UUIDGenerator;
 import org.compiere.model.I_Fact_Reconciliation;
@@ -39,7 +39,7 @@ import org.compiere.util.DB;
 @org.adempiere.base.annotation.Process
 public class FactReconcile extends SvrProcess
 {
-	private IElementValueInfo account;
+	private IElementValueModel account;
 	private int ruleID;
 	
 	/**
@@ -76,7 +76,7 @@ public class FactReconcile extends SvrProcess
 	protected String doIt() throws Exception
 	{
 
-		if (log.isLoggable(Level.INFO)) log.info("Reconcile Account: " + account.getRecord().getName());
+		if (log.isLoggable(Level.INFO)) log.info("Reconcile Account: " + account.getElementValue().getName());
 		
 		String subselect = "null";
 		
@@ -148,7 +148,7 @@ public class FactReconcile extends SvrProcess
 					
 			pstmt = DB.prepareStatement(sql, get_TrxName());
 			pstmt.setInt(1, seq.getAD_Sequence_ID());
-			pstmt.setInt(2, account.getRecord().getC_ElementValue_ID());
+			pstmt.setInt(2, account.getElementValue().getC_ElementValue_ID());
 			count = pstmt.executeUpdate();
 			DB.close(pstmt); pstmt = null;
 			if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Inserted " + count + " new facts into Fact_Reconciliation");
@@ -169,7 +169,7 @@ public class FactReconcile extends SvrProcess
 					" ) IS NOT NULL " ;
 					
 			pstmt = DB.prepareStatement(sql, get_TrxName());
-			pstmt.setInt(1, account.getRecord().getC_ElementValue_ID());
+			pstmt.setInt(1, account.getElementValue().getC_ElementValue_ID());
 			count = pstmt.executeUpdate();
 			DB.close(pstmt); pstmt = null;
 			
@@ -187,8 +187,8 @@ public class FactReconcile extends SvrProcess
 			" AND MatchCode IS NOT NULL";
 				
 		    pstmt = DB.prepareStatement(sql, get_TrxName());
-		    pstmt.setInt(1, account.getRecord().getC_ElementValue_ID());
-		    pstmt.setInt(2, account.getRecord().getC_ElementValue_ID());
+		    pstmt.setInt(1, account.getElementValue().getC_ElementValue_ID());
+		    pstmt.setInt(2, account.getElementValue().getC_ElementValue_ID());
 		    unmatched = pstmt.executeUpdate();
 		
 		    if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Cleared match codes from " + unmatched + " unreconciled facts.");

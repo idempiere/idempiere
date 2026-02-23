@@ -28,7 +28,7 @@ import java.util.logging.Level;
 
 import org.adempiere.base.acct.AcctInfoServices;
 import org.adempiere.base.acct.constants.IAcctSchemaElementConstants;
-import org.adempiere.base.acct.info.IElementValueInfo;
+import org.adempiere.base.acct.model.IElementValueModel;
 import org.compiere.model.MPeriod;
 import org.compiere.model.MProcessPara;
 import org.compiere.print.MPrintFormat;
@@ -113,7 +113,7 @@ public class FinStatement extends SvrProcess
 	/**	Parameter Where Clause			*/
 	private StringBuffer		m_parameterWhere = new StringBuffer();
 	/**	Account							*/ 
-	private IElementValueInfo 		m_acct = null;
+	private IElementValueModel 		m_acct = null;
 	
 	/**	Start Time						*/
 	private long 				m_start = System.currentTimeMillis();

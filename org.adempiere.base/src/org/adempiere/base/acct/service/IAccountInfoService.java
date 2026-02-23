@@ -27,9 +27,9 @@ import java.util.List;
 import java.util.Properties;
 
 import org.adempiere.base.acct.IAcctInfoService;
-import org.adempiere.base.acct.info.IAccountInfo;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
-import org.adempiere.base.acct.info.IFactAcctInfo;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
+import org.adempiere.base.acct.model.IFactAcctModel;
 
 /**
  * Service interface for account info.
@@ -37,21 +37,21 @@ import org.adempiere.base.acct.info.IFactAcctInfo;
  * @author etantg
  */
 public interface IAccountInfoService extends IAcctInfoService {
-	public IAccountInfo get(Properties ctx, int AD_Client_ID, int AD_Org_ID, int C_AcctSchema_ID, 
+	public IAccountModel get(Properties ctx, int AD_Client_ID, int AD_Org_ID, int C_AcctSchema_ID, 
 			int Account_ID, int C_SubAcct_ID, int M_Product_ID, int C_BPartner_ID, int AD_OrgTrx_ID, 
 			int C_LocFrom_ID, int C_LocTo_ID, int C_SalesRegion_ID, 
 			int C_Project_ID, int C_Campaign_ID, int C_Activity_ID,
 			int User1_ID, int User2_ID, int UserElement1_ID, int UserElement2_ID,
 			String trxName);
-	public IAccountInfo get(IFactAcctInfo fa);
-	public IAccountInfo get(IFactAcctInfo fa, String trxName);
-	public IAccountInfo getDefault (Properties ctx, int C_AcctSchema_ID, boolean optionalNull, String trxName);
-	public IAccountInfo getDefault(IAcctSchemaInfo acctSchema, boolean optionalNull);
-	public IAccountInfo get(int C_ValidCombination_ID);
-	public IAccountInfo get(Properties ctx, int C_ValidCombination_ID);
+	public IAccountModel get(IFactAcctModel fa);
+	public IAccountModel get(IFactAcctModel fa, String trxName);
+	public IAccountModel getDefault (Properties ctx, int C_AcctSchema_ID, boolean optionalNull, String trxName);
+	public IAccountModel getDefault(IAcctSchemaModel acctSchema, boolean optionalNull);
+	public IAccountModel get(int C_ValidCombination_ID);
+	public IAccountModel get(Properties ctx, int C_ValidCombination_ID);
 	public void updateValueDescription(Properties ctx, final String where, String trxName);
 	
-	public IAccountInfo create(Properties ctx, int C_ValidCombination_ID, String trxName);
-	public List<IAccountInfo> list(String whereClause, ArrayList<Object> params, boolean onlyActive);
-	public List<IAccountInfo> list(Properties ctx, String whereClause, ArrayList<Object> params, String trxName);
+	public IAccountModel create(Properties ctx, int C_ValidCombination_ID, String trxName);
+	public List<IAccountModel> list(String whereClause, ArrayList<Object> params, boolean onlyActive);
+	public List<IAccountModel> list(Properties ctx, String whereClause, ArrayList<Object> params, String trxName);
 }

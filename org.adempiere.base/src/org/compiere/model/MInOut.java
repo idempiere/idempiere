@@ -33,7 +33,7 @@ import org.adempiere.base.CreditStatus;
 import org.adempiere.base.ICreditManager;
 import org.adempiere.base.acct.AcctInfoServices;
 import org.adempiere.base.acct.constants.IAcctSchemaConstants;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.BackDateTrxNotAllowedException;
 import org.adempiere.exceptions.DBException;
@@ -3387,12 +3387,12 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	private boolean stockCoverageCheckForBackDateTrx(Timestamp reversalDate)
 	{
 		MClientInfo info = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName()); 
-		IAcctSchemaInfo as = info.getMAcctSchema1();
-		if (!IAcctSchemaConstants.COSTINGMETHOD_AveragePO.equals(as.getRecord().getCostingMethod()) 
-				&& !IAcctSchemaConstants.COSTINGMETHOD_AverageInvoice.equals(as.getRecord().getCostingMethod()))
+		IAcctSchemaModel as = info.getMAcctSchema1();
+		if (!IAcctSchemaConstants.COSTINGMETHOD_AveragePO.equals(as.getAcctSchema().getCostingMethod()) 
+				&& !IAcctSchemaConstants.COSTINGMETHOD_AverageInvoice.equals(as.getAcctSchema().getCostingMethod()))
 			return true;
 		as.getPO().load(get_TrxName());
-		if (as.getRecord().getBackDateDay() == 0)
+		if (as.getAcctSchema().getBackDateDay() == 0)
 			return true;
 		
 		String MovementType = getMovementType();
@@ -3452,7 +3452,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 					pstmt = DB.prepareStatement(selectSql.toString(), get_TrxName());
 					pstmt.setInt(1, cd.getM_CostDetail_ID());
 					pstmt.setInt(2, getAD_Client_ID());
-					pstmt.setInt(3, as.getRecord().getC_AcctSchema_ID());
+					pstmt.setInt(3, as.getAcctSchema().getC_AcctSchema_ID());
 					pstmt.setInt(4, cd.getM_Product_ID());
 					pstmt.setTimestamp(5, cd.getDateAcct());
 					rs = pstmt.executeQuery();
@@ -3504,24 +3504,24 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 				int AD_Org_ID = sLine.getAD_Org_ID();
 				int M_AttributeSetInstance_ID = sLine.getM_AttributeSetInstance_ID();
 
-				if (IAcctSchemaConstants.COSTINGLEVEL_Client.equals(as.getRecord().getCostingLevel()))
+				if (IAcctSchemaConstants.COSTINGLEVEL_Client.equals(as.getAcctSchema().getCostingLevel()))
 				{
 					AD_Org_ID = 0;
 					M_AttributeSetInstance_ID = 0;
 				}
-				else if (IAcctSchemaConstants.COSTINGLEVEL_Organization.equals(as.getRecord().getCostingLevel()))
+				else if (IAcctSchemaConstants.COSTINGLEVEL_Organization.equals(as.getAcctSchema().getCostingLevel()))
 					M_AttributeSetInstance_ID = 0;
-				else if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(as.getRecord().getCostingLevel()))
+				else if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(as.getAcctSchema().getCostingLevel()))
 					AD_Org_ID = 0;
 				
-				MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), as.getRecord().getCostingMethod(), AD_Org_ID);
+				MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), as.getAcctSchema().getCostingMethod(), AD_Org_ID);
 				
 				BigDecimal qty = sLine.getMovementQty();
 				if (MovementType.charAt(1) == '-')	//	C- Customer Shipment - V- Vendor Return
 					qty = qty.negate();
 				
 				ICostInfo costInfo = MCost.getCostInfo(getCtx(), getAD_Client_ID(), AD_Org_ID, sLine.getM_Product_ID(),
-						as.getRecord().getM_CostType_ID(), as.getRecord().getC_AcctSchema_ID(), ce.getM_CostElement_ID(),
+						as.getAcctSchema().getM_CostType_ID(), as.getAcctSchema().getC_AcctSchema_ID(), ce.getM_CostElement_ID(),
 						M_AttributeSetInstance_ID, 
 						getDateAcct(), null, get_TrxName());
 				if (costInfo != null && costInfo.getCurrentQty().add(qty).signum() < 0) {
@@ -3541,12 +3541,12 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	private boolean periodClosedCheckForBackDateTrx(Timestamp reversalDate)
 	{
 		MClientInfo info = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName()); 
-		IAcctSchemaInfo as = info.getMAcctSchema1();
-		if (!IAcctSchemaConstants.COSTINGMETHOD_AveragePO.equals(as.getRecord().getCostingMethod()) 
-				&& !IAcctSchemaConstants.COSTINGMETHOD_AverageInvoice.equals(as.getRecord().getCostingMethod()))
+		IAcctSchemaModel as = info.getMAcctSchema1();
+		if (!IAcctSchemaConstants.COSTINGMETHOD_AveragePO.equals(as.getAcctSchema().getCostingMethod()) 
+				&& !IAcctSchemaConstants.COSTINGMETHOD_AverageInvoice.equals(as.getAcctSchema().getCostingMethod()))
 			return true;
 		
-		if (as.getRecord().getBackDateDay() == 0)
+		if (as.getAcctSchema().getBackDateDay() == 0)
 			return true;
 		
 		Timestamp dateAcct = reversalDate != null ? reversalDate : getDateAcct();
@@ -3565,17 +3565,17 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			int AD_Org_ID = sLine.getAD_Org_ID();
 			int M_AttributeSetInstance_ID = sLine.getM_AttributeSetInstance_ID();
 
-			if (IAcctSchemaConstants.COSTINGLEVEL_Client.equals(as.getRecord().getCostingLevel()))
+			if (IAcctSchemaConstants.COSTINGLEVEL_Client.equals(as.getAcctSchema().getCostingLevel()))
 			{
 				AD_Org_ID = 0;
 				M_AttributeSetInstance_ID = 0;
 			}
-			else if (IAcctSchemaConstants.COSTINGLEVEL_Organization.equals(as.getRecord().getCostingLevel()))
+			else if (IAcctSchemaConstants.COSTINGLEVEL_Organization.equals(as.getAcctSchema().getCostingLevel()))
 				M_AttributeSetInstance_ID = 0;
-			else if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(as.getRecord().getCostingLevel()))
+			else if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(as.getAcctSchema().getCostingLevel()))
 				AD_Org_ID = 0;
 			
-			MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), as.getRecord().getCostingMethod(), AD_Org_ID);
+			MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), as.getAcctSchema().getCostingMethod(), AD_Org_ID);
 			
 			int M_CostDetail_ID = 0;
 			if (!isSOTrx()) {
@@ -3598,14 +3598,14 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 				if (M_CostDetail_ID == 0) 
 				{
 					MCostHistory history = MCostHistory.get(getCtx(), getAD_Client_ID(), AD_Org_ID, sLine.getM_Product_ID(), 
-							as.getRecord().getM_CostType_ID(), as.getRecord().getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(),
+							as.getAcctSchema().getM_CostType_ID(), as.getAcctSchema().getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(),
 							M_AttributeSetInstance_ID, dateAcct, get_TrxName());
 					if (history != null)
 						M_CostDetail_ID = history.getM_CostDetail_ID();
 				}
 				
 				if (M_CostDetail_ID > 0) {
-					MCostDetail.periodClosedCheckForDocsAfterBackDateTrx(getAD_Client_ID(), as.getRecord().getC_AcctSchema_ID(), 
+					MCostDetail.periodClosedCheckForDocsAfterBackDateTrx(getAD_Client_ID(), as.getAcctSchema().getC_AcctSchema_ID(), 
 							sLine.getM_Product_ID(), M_CostDetail_ID, dateAcct, get_TrxName());
 				}
 			} else {
@@ -3618,14 +3618,14 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 					M_CostDetail_ID = cd.getM_CostDetail_ID();
 				else {
 					MCostHistory history = MCostHistory.get(getCtx(), getAD_Client_ID(), AD_Org_ID, sLine.getM_Product_ID(), 
-							as.getRecord().getM_CostType_ID(), as.getRecord().getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(),
+							as.getAcctSchema().getM_CostType_ID(), as.getAcctSchema().getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(),
 							M_AttributeSetInstance_ID, dateAcct, get_TrxName());
 					if (history != null)
 						M_CostDetail_ID = history.getM_CostDetail_ID();
 				}
 				
 				if (M_CostDetail_ID > 0) {
-					MCostDetail.periodClosedCheckForDocsAfterBackDateTrx(getAD_Client_ID(), as.getRecord().getC_AcctSchema_ID(), 
+					MCostDetail.periodClosedCheckForDocsAfterBackDateTrx(getAD_Client_ID(), as.getAcctSchema().getC_AcctSchema_ID(), 
 							sLine.getM_Product_ID(), M_CostDetail_ID, dateAcct, get_TrxName());
 				}
 			}

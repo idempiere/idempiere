@@ -40,9 +40,9 @@ import java.util.Properties;
 
 import org.adempiere.base.acct.AcctInfoServices;
 import org.adempiere.base.acct.constants.IAcctSchemaConstants;
-import org.adempiere.base.acct.info.IAccountInfo;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
-import org.adempiere.base.acct.info.IFactAcctInfo;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
+import org.adempiere.base.acct.model.IFactAcctModel;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MClient;
 import org.compiere.model.MCost;
@@ -177,7 +177,7 @@ public class ProductionTestIsolated extends AbstractTestCase {
 		}
 		
 		BigDecimal endProductCost = MCost.getCurrentCost(mulchX, 0, getTrxName());
-		IAcctSchemaInfo as = MClient.get(getAD_Client_ID()).getAcctSchema();
+		IAcctSchemaModel as = MClient.get(getAD_Client_ID()).getAcctSchema();
 		componentCost = componentCost.setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
 		endProductCost = endProductCost.setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
 		assertEquals(componentCost, endProductCost, "Cost not roll up correctly");
@@ -232,7 +232,7 @@ public class ProductionTestIsolated extends AbstractTestCase {
 			inventory.setDocAction(DocAction.ACTION_Complete);
 			inventory.saveEx();
 			
-			IAcctSchemaInfo as = MClient.get(getAD_Client_ID()).getAcctSchema();
+			IAcctSchemaModel as = MClient.get(getAD_Client_ID()).getAcctSchema();
 			BigDecimal endProductCost = new BigDecimal("2.50").setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
 			MInventoryLine il = new MInventoryLine(Env.getCtx(), 0, getTrxName());
 			il.setM_Inventory_ID(inventory.get_ID());
@@ -318,13 +318,13 @@ public class ProductionTestIsolated extends AbstractTestCase {
 			assertEquals(endProductCost, endProductCost1, "Standard Cost Changed");
 			
 			ProductCost pc = new ProductCost (Env.getCtx(), mulchX.getM_Product_ID(), 0, getTrxName());
-			IAccountInfo acctVariance = pc.getAccount(ProductCost.ACCTTYPE_P_RateVariance, as);
+			IAccountModel acctVariance = pc.getAccount(ProductCost.ACCTTYPE_P_RateVariance, as);
 			
-			List<IFactAcctInfo> factAccts = AcctInfoServices.getFactAcctInfoService().list(MProduction.Table_ID, production.get_ID(), as.getRecord().getC_AcctSchema_ID(), getTrxName());
+			List<IFactAcctModel> factAccts = AcctInfoServices.getFactAcctInfoService().list(MProduction.Table_ID, production.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 			BigDecimal variance = BigDecimal.ZERO;
-			Optional<IFactAcctInfo> optional = factAccts.stream().filter(e -> e.getRecord().getAccount_ID() == acctVariance.getRecord().getAccount_ID()).findFirst();
+			Optional<IFactAcctModel> optional = factAccts.stream().filter(e -> e.getFactAcct().getAccount_ID() == acctVariance.getCombination().getAccount_ID()).findFirst();
 			if (optional.isPresent())
-				variance = optional.get().getRecord().getAmtAcctDr().subtract(optional.get().getRecord().getAmtAcctCr());
+				variance = optional.get().getFactAcct().getAmtAcctDr().subtract(optional.get().getFactAcct().getAmtAcctCr());
 			BigDecimal varianceExpected = componentCost.subtract(endProductCost).setScale(as.getStdPrecision(), RoundingMode.HALF_UP);
 			assertEquals(varianceExpected.setScale(2, RoundingMode.HALF_UP), variance.setScale(2, RoundingMode.HALF_UP), "Variance not posted correctly.");
 		} finally {
@@ -359,7 +359,7 @@ public class ProductionTestIsolated extends AbstractTestCase {
 			mulch.setM_Product_Category_ID(category.get_ID());
 			mulch.saveEx();
 			
-			IAcctSchemaInfo as = MClient.get(getAD_Client_ID()).getAcctSchema();
+			IAcctSchemaModel as = MClient.get(getAD_Client_ID()).getAcctSchema();
 			BigDecimal componentCost = MCost.getCurrentCost(mulch, 0, getTrxName()).setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
 									
 			MProduct mulchX = new MProduct(Env.getCtx(), 0, getTrxName());

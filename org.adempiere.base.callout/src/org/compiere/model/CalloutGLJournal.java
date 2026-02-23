@@ -26,8 +26,8 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.base.acct.AcctInfoServices;
-import org.adempiere.base.acct.info.IAccountInfo;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 
@@ -175,11 +175,11 @@ public class CalloutGLJournal extends CalloutEngine
 			DateAcct = new Timestamp(System.currentTimeMillis());
 		//
 		int C_AcctSchema_ID = Env.getContextAsInt(ctx, WindowNo, "C_AcctSchema_ID");
-		IAcctSchemaInfo as = AcctInfoServices.getAcctSchemaInfoService().get (ctx, C_AcctSchema_ID);
+		IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get (ctx, C_AcctSchema_ID);
 		int AD_Client_ID = Env.getContextAsInt(ctx, WindowNo, "AD_Client_ID");
 		int AD_Org_ID = Env.getContextAsInt(ctx, WindowNo, "AD_Org_ID");
 
-		BigDecimal CurrencyRate = MConversionRate.getRate(C_Currency_ID, as.getRecord().getC_Currency_ID(), 
+		BigDecimal CurrencyRate = MConversionRate.getRate(C_Currency_ID, as.getAcctSchema().getC_Currency_ID(), 
 			DateAcct, C_ConversionType_ID, AD_Client_ID, AD_Org_ID);
 		if (log.isLoggable(Level.FINE)) log.fine("rate = " + CurrencyRate);
 		if (CurrencyRate == null)
@@ -207,7 +207,7 @@ public class CalloutGLJournal extends CalloutEngine
 
 		//  Get Target Currency & Precision from C_AcctSchema.C_Currency_ID
 		int C_AcctSchema_ID = Env.getContextAsInt(ctx, WindowNo, "C_AcctSchema_ID");
-		IAcctSchemaInfo as = AcctInfoServices.getAcctSchemaInfoService().get(ctx, C_AcctSchema_ID);
+		IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get(ctx, C_AcctSchema_ID);
 		int Precision = as.getStdPrecision();
 
 		BigDecimal CurrencyRate = (BigDecimal)mTab.getValue("CurrencyRate");
@@ -281,23 +281,23 @@ public class CalloutGLJournal extends CalloutEngine
 		
 		if (colName.equals("C_ValidCombination_ID") || colName.equals("Alias_ValidCombination_ID"))
 		{
-			IAccountInfo combi = AcctInfoServices.getAccountInfoService().create(ctx, Combi_ID, null);
-			mTab.setValue("Account_ID", combi.getRecord().getAccount_ID() != 0 ? combi.getRecord().getAccount_ID() : null);
-			mTab.setValue("C_SubAcct_ID", combi.getRecord().getC_SubAcct_ID() != 0 ? combi.getRecord().getC_SubAcct_ID() : null);
-			mTab.setValue("M_Product_ID", combi.getRecord().getM_Product_ID() != 0 ? combi.getRecord().getM_Product_ID() : null);
-			mTab.setValue("C_BPartner_ID", combi.getRecord().getC_BPartner_ID() != 0 ? combi.getRecord().getC_BPartner_ID() : null);
-			mTab.setValue("AD_OrgTrx_ID", combi.getRecord().getAD_OrgTrx_ID() != 0 ? combi.getRecord().getAD_OrgTrx_ID() : null);
-			mTab.setValue("AD_Org_ID", combi.getRecord().getAD_Org_ID() != 0 ? combi.getRecord().getAD_Org_ID() : null);
-			mTab.setValue("C_LocFrom_ID", combi.getRecord().getC_LocFrom_ID() != 0 ? combi.getRecord().getC_LocFrom_ID() : null);
-			mTab.setValue("C_LocTo_ID", combi.getRecord().getC_LocTo_ID() != 0 ? combi.getRecord().getC_LocTo_ID() : null);
-			mTab.setValue("C_SalesRegion_ID", combi.getRecord().getC_SalesRegion_ID() != 0 ? combi.getRecord().getC_SalesRegion_ID() : null);
-			mTab.setValue("C_Project_ID", combi.getRecord().getC_Project_ID() != 0 ? combi.getRecord().getC_Project_ID() : null);
-			mTab.setValue("C_Campaign_ID", combi.getRecord().getC_Campaign_ID() != 0 ? combi.getRecord().getC_Campaign_ID() : null);
-			mTab.setValue("C_Activity_ID", combi.getRecord().getC_Activity_ID() != 0 ? combi.getRecord().getC_Activity_ID() : null);
-			mTab.setValue("User1_ID", combi.getRecord().getUser1_ID() != 0 ? combi.getRecord().getUser1_ID() : null);
-			mTab.setValue("User2_ID", combi.getRecord().getUser2_ID()!= 0 ? combi.getRecord().getUser2_ID() : null);
-			mTab.setValue("UserElement1_ID", combi.getRecord().getUserElement1_ID() != 0 ? combi.getRecord().getUserElement1_ID() : null);
-			mTab.setValue("UserElement2_ID", combi.getRecord().getUserElement2_ID() != 0 ? combi.getRecord().getUserElement2_ID() : null);
+			IAccountModel combi = AcctInfoServices.getAccountInfoService().create(ctx, Combi_ID, null);
+			mTab.setValue("Account_ID", combi.getCombination().getAccount_ID() != 0 ? combi.getCombination().getAccount_ID() : null);
+			mTab.setValue("C_SubAcct_ID", combi.getCombination().getC_SubAcct_ID() != 0 ? combi.getCombination().getC_SubAcct_ID() : null);
+			mTab.setValue("M_Product_ID", combi.getCombination().getM_Product_ID() != 0 ? combi.getCombination().getM_Product_ID() : null);
+			mTab.setValue("C_BPartner_ID", combi.getCombination().getC_BPartner_ID() != 0 ? combi.getCombination().getC_BPartner_ID() : null);
+			mTab.setValue("AD_OrgTrx_ID", combi.getCombination().getAD_OrgTrx_ID() != 0 ? combi.getCombination().getAD_OrgTrx_ID() : null);
+			mTab.setValue("AD_Org_ID", combi.getCombination().getAD_Org_ID() != 0 ? combi.getCombination().getAD_Org_ID() : null);
+			mTab.setValue("C_LocFrom_ID", combi.getCombination().getC_LocFrom_ID() != 0 ? combi.getCombination().getC_LocFrom_ID() : null);
+			mTab.setValue("C_LocTo_ID", combi.getCombination().getC_LocTo_ID() != 0 ? combi.getCombination().getC_LocTo_ID() : null);
+			mTab.setValue("C_SalesRegion_ID", combi.getCombination().getC_SalesRegion_ID() != 0 ? combi.getCombination().getC_SalesRegion_ID() : null);
+			mTab.setValue("C_Project_ID", combi.getCombination().getC_Project_ID() != 0 ? combi.getCombination().getC_Project_ID() : null);
+			mTab.setValue("C_Campaign_ID", combi.getCombination().getC_Campaign_ID() != 0 ? combi.getCombination().getC_Campaign_ID() : null);
+			mTab.setValue("C_Activity_ID", combi.getCombination().getC_Activity_ID() != 0 ? combi.getCombination().getC_Activity_ID() : null);
+			mTab.setValue("User1_ID", combi.getCombination().getUser1_ID() != 0 ? combi.getCombination().getUser1_ID() : null);
+			mTab.setValue("User2_ID", combi.getCombination().getUser2_ID()!= 0 ? combi.getCombination().getUser2_ID() : null);
+			mTab.setValue("UserElement1_ID", combi.getCombination().getUserElement1_ID() != 0 ? combi.getCombination().getUserElement1_ID() : null);
+			mTab.setValue("UserElement2_ID", combi.getCombination().getUserElement2_ID() != 0 ? combi.getCombination().getUserElement2_ID() : null);
 		}
 		return "";
 	}
@@ -318,8 +318,8 @@ public class CalloutGLJournal extends CalloutEngine
 			return "";
 		
 		int C_AcctSchema_ID = Env.getContextAsInt(ctx, WindowNo, "C_AcctSchema_ID");
-		IAcctSchemaInfo as = AcctInfoServices.getAcctSchemaInfoService().get (ctx, C_AcctSchema_ID);
-		mTab.setValue("C_Currency_ID", as.getRecord().getC_Currency_ID());
+		IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get (ctx, C_AcctSchema_ID);
+		mTab.setValue("C_Currency_ID", as.getAcctSchema().getC_Currency_ID());
 		
 		return "";
 	}

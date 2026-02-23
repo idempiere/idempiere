@@ -20,22 +20,22 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  **********************************************************************/
-package org.adempiere.base.acct.info;
+package org.adempiere.base.acct.model;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
 
-import org.adempiere.base.acct.IAcctInfo;
-import org.compiere.model.I_GL_DistributionLine;
+import org.adempiere.base.acct.IAcctModel;
+import org.compiere.model.I_C_AcctSchema_Default;
+import org.compiere.util.KeyNamePair;
 
 /**
- * Interface for GL distribution line info objects.
+ * Interface for accounting schema default info objects.
  * 
  * @author etantg
  */
-public interface IDistributionLineInfo extends IAcctInfo {
-	public I_GL_DistributionLine getRecord();
+public interface IAcctSchemaDefaultModel extends IAcctModel {
+	public I_C_AcctSchema_Default getAcctSchemaDefault();
 	
-	public IAccountInfo getAccountInfo();
-	public BigDecimal getAmt();
-	public BigDecimal getQty();
+	public ArrayList<KeyNamePair> getAcctModel();
+	public boolean setValue(String columnName, Integer value);
 }

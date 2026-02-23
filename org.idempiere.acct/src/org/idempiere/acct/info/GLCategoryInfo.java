@@ -22,17 +22,17 @@
  **********************************************************************/
 package org.idempiere.acct.info;
 
-import org.adempiere.base.acct.info.IGLCategoryInfo;
+import org.adempiere.base.acct.model.IGLCategoryModel;
 import org.compiere.model.I_GL_Category;
 import org.compiere.model.PO;
 import org.idempiere.acct.model.MGLCategory;
 
 /**
- * Wrapper for {@link MGLCategory} to provide {@link IGLCategoryInfo} access.
+ * Wrapper for {@link MGLCategory} to provide {@link IGLCategoryModel} access.
  * 
  * @author etantg
  */
-public class GLCategoryInfo implements IGLCategoryInfo {
+public class GLCategoryInfo implements IGLCategoryModel {
 	
 	private final MGLCategory category;
 	
@@ -47,7 +47,7 @@ public class GLCategoryInfo implements IGLCategoryInfo {
 	}
 
 	@Override
-	public I_GL_Category getRecord() {
+	public I_GL_Category getGLCategory() {
 		return category;
 	}
 
@@ -56,11 +56,11 @@ public class GLCategoryInfo implements IGLCategoryInfo {
 		return category;
 	}
 
-	public static IGLCategoryInfo wrap(MGLCategory category) {
+	public static IGLCategoryModel wrap(MGLCategory category) {
         if (category == null)
             return null;
-        if (category instanceof IGLCategoryInfo)
-            return (IGLCategoryInfo) category;
+        if (category instanceof IGLCategoryModel)
+            return (IGLCategoryModel) category;
         return new GLCategoryInfo(category);
     }
 }

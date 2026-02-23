@@ -37,8 +37,8 @@ import java.util.Optional;
 import java.util.Properties;
 
 import org.adempiere.base.acct.AcctInfoServices;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
-import org.adempiere.base.acct.info.IFactAcctInfo;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
+import org.adempiere.base.acct.model.IFactAcctModel;
 import org.adempiere.util.ServerContext;
 import org.compiere.Adempiere;
 import org.compiere.model.MClientInfo;
@@ -131,22 +131,22 @@ public abstract class AbstractTestCase {
 		/** Define AcctSchema , Currency, HasAlias **/
 		if (loginDetails.getClientId() > 0) {
 			if (MClientInfo.get(Env.getCtx(), loginDetails.getClientId()).getC_AcctSchema1_ID() > 0) {
-				IAcctSchemaInfo primary = AcctInfoServices.getAcctSchemaInfoService().get(Env.getCtx(), MClientInfo.get(Env.getCtx(), loginDetails.getClientId()).getC_AcctSchema1_ID());
-				Env.setContext(Env.getCtx(), "$C_AcctSchema_ID", primary.getRecord().getC_AcctSchema_ID());
-				Env.setContext(Env.getCtx(), "$C_Currency_ID", primary.getRecord().getC_Currency_ID());
-				Env.setContext(Env.getCtx(), "$HasAlias", primary.getRecord().isHasAlias());
+				IAcctSchemaModel primary = AcctInfoServices.getAcctSchemaInfoService().get(Env.getCtx(), MClientInfo.get(Env.getCtx(), loginDetails.getClientId()).getC_AcctSchema1_ID());
+				Env.setContext(Env.getCtx(), "$C_AcctSchema_ID", primary.getAcctSchema().getC_AcctSchema_ID());
+				Env.setContext(Env.getCtx(), "$C_Currency_ID", primary.getAcctSchema().getC_Currency_ID());
+				Env.setContext(Env.getCtx(), "$HasAlias", primary.getAcctSchema().isHasAlias());
 			}
 			
-			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), loginDetails.getClientId());
+			IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), loginDetails.getClientId());
 			if(ass != null && ass.length > 1) {
-				for(IAcctSchemaInfo as : ass) {
-					if (as.getRecord().getAD_OrgOnly_ID() != 0) {
+				for(IAcctSchemaModel as : ass) {
+					if (as.getAcctSchema().getAD_OrgOnly_ID() != 0) {
 						if (as.isSkipOrg(loginDetails.getOrganizationId())) {
 							continue;
 						} else  {
-							Env.setContext(Env.getCtx(), "$C_AcctSchema_ID", as.getRecord().getC_AcctSchema_ID());
-							Env.setContext(Env.getCtx(), "$C_Currency_ID", as.getRecord().getC_Currency_ID());
-							Env.setContext(Env.getCtx(), "$HasAlias", as.getRecord().isHasAlias());
+							Env.setContext(Env.getCtx(), "$C_AcctSchema_ID", as.getAcctSchema().getC_AcctSchema_ID());
+							Env.setContext(Env.getCtx(), "$C_Currency_ID", as.getAcctSchema().getC_Currency_ID());
+							Env.setContext(Env.getCtx(), "$HasAlias", as.getAcctSchema().isHasAlias());
 							break;
 						}
 					}
@@ -253,32 +253,32 @@ public abstract class AbstractTestCase {
 	 * @param factAccts
 	 * @param expectedList
 	 */
-	protected void assertFactAcctEntries(List<IFactAcctInfo> factAccts, List<FactAcct> expectedList) {
+	protected void assertFactAcctEntries(List<IFactAcctModel> factAccts, List<FactAcct> expectedList) {
 		List<FactAcct> found = new ArrayList<FactAcct>();
-		List<IFactAcctInfo> matches = new ArrayList<IFactAcctInfo>();
+		List<IFactAcctModel> matches = new ArrayList<IFactAcctModel>();
 		expectedList.forEach(fa -> {
 			//LineId and account id match
-			List<IFactAcctInfo> accountMatches = new ArrayList<IFactAcctInfo>();
+			List<IFactAcctModel> accountMatches = new ArrayList<IFactAcctModel>();
 			//find exact match
-			for(IFactAcctInfo mfa : factAccts) {
-				if (fa.account().getAccountInfo().getPO().get_ID() == mfa.getRecord().getAccount_ID()) {					
-					if (fa.lineId() > 0 && fa.lineId() != mfa.getRecord().getLine_ID())
+			for(IFactAcctModel mfa : factAccts) {
+				if (fa.account().getAccountModel().getPO().get_ID() == mfa.getFactAcct().getAccount_ID()) {					
+					if (fa.lineId() > 0 && fa.lineId() != mfa.getFactAcct().getLine_ID())
 						continue;
 					accountMatches.add(mfa);
-					if (fa.qty() != null && (mfa.getRecord().getQty() == null || !mfa.getRecord().getQty().setScale(fa.rounding(), RoundingMode.HALF_UP).equals(fa.qty().setScale(fa.rounding(), RoundingMode.HALF_UP))))
+					if (fa.qty() != null && (mfa.getFactAcct().getQty() == null || !mfa.getFactAcct().getQty().setScale(fa.rounding(), RoundingMode.HALF_UP).equals(fa.qty().setScale(fa.rounding(), RoundingMode.HALF_UP))))
 						continue;
 					if (fa.debit()) {
-						if (fa.accountedAmount() != null && !fa.accountedAmount().setScale(fa.rounding(), RoundingMode.HALF_UP).equals(mfa.getRecord().getAmtAcctDr().setScale(fa.rounding(), RoundingMode.HALF_UP)))
+						if (fa.accountedAmount() != null && !fa.accountedAmount().setScale(fa.rounding(), RoundingMode.HALF_UP).equals(mfa.getFactAcct().getAmtAcctDr().setScale(fa.rounding(), RoundingMode.HALF_UP)))
 							continue;
-						if (fa.sourceAmount() != null && !fa.sourceAmount().setScale(fa.rounding(), RoundingMode.HALF_UP).equals(mfa.getRecord().getAmtSourceDr().setScale(fa.rounding(), RoundingMode.HALF_UP)))
+						if (fa.sourceAmount() != null && !fa.sourceAmount().setScale(fa.rounding(), RoundingMode.HALF_UP).equals(mfa.getFactAcct().getAmtSourceDr().setScale(fa.rounding(), RoundingMode.HALF_UP)))
 							continue;
 						found.add(fa);
 						matches.add(mfa);
 						break;
 					} else {
-						if (fa.accountedAmount() != null && !fa.accountedAmount().setScale(fa.rounding(), RoundingMode.HALF_UP).equals(mfa.getRecord().getAmtAcctCr().setScale(fa.rounding(), RoundingMode.HALF_UP)))
+						if (fa.accountedAmount() != null && !fa.accountedAmount().setScale(fa.rounding(), RoundingMode.HALF_UP).equals(mfa.getFactAcct().getAmtAcctCr().setScale(fa.rounding(), RoundingMode.HALF_UP)))
 							continue;
-						if (fa.sourceAmount() != null && !fa.sourceAmount().setScale(fa.rounding(), RoundingMode.HALF_UP).equals(mfa.getRecord().getAmtSourceCr().setScale(fa.rounding(), RoundingMode.HALF_UP)))
+						if (fa.sourceAmount() != null && !fa.sourceAmount().setScale(fa.rounding(), RoundingMode.HALF_UP).equals(mfa.getFactAcct().getAmtSourceCr().setScale(fa.rounding(), RoundingMode.HALF_UP)))
 							continue;
 						found.add(fa);
 						matches.add(mfa);
@@ -288,19 +288,19 @@ public abstract class AbstractTestCase {
 			}
 			//assert qty mismatch
 			if (!found.contains(fa) && !accountMatches.isEmpty()) {
-				for(IFactAcctInfo mfa : accountMatches) {
+				for(IFactAcctModel mfa : accountMatches) {
 					if (fa.debit()) {
-						if (fa.accountedAmount() != null && !fa.accountedAmount().setScale(fa.rounding(), RoundingMode.HALF_UP).equals(mfa.getRecord().getAmtAcctDr().setScale(fa.rounding(), RoundingMode.HALF_UP)))
+						if (fa.accountedAmount() != null && !fa.accountedAmount().setScale(fa.rounding(), RoundingMode.HALF_UP).equals(mfa.getFactAcct().getAmtAcctDr().setScale(fa.rounding(), RoundingMode.HALF_UP)))
 							continue;
-						if (fa.sourceAmount() != null && !fa.sourceAmount().setScale(fa.rounding(), RoundingMode.HALF_UP).equals(mfa.getRecord().getAmtSourceDr().setScale(fa.rounding(), RoundingMode.HALF_UP)))
+						if (fa.sourceAmount() != null && !fa.sourceAmount().setScale(fa.rounding(), RoundingMode.HALF_UP).equals(mfa.getFactAcct().getAmtSourceDr().setScale(fa.rounding(), RoundingMode.HALF_UP)))
 							continue;
 					} else {
-						if (fa.accountedAmount() != null && !fa.accountedAmount().setScale(fa.rounding(), RoundingMode.HALF_UP).equals(mfa.getRecord().getAmtAcctCr().setScale(fa.rounding(), RoundingMode.HALF_UP)))
+						if (fa.accountedAmount() != null && !fa.accountedAmount().setScale(fa.rounding(), RoundingMode.HALF_UP).equals(mfa.getFactAcct().getAmtAcctCr().setScale(fa.rounding(), RoundingMode.HALF_UP)))
 							continue;
-						if (fa.sourceAmount() != null && !fa.sourceAmount().setScale(fa.rounding(), RoundingMode.HALF_UP).equals(mfa.getRecord().getAmtSourceCr().setScale(fa.rounding(), RoundingMode.HALF_UP)))
+						if (fa.sourceAmount() != null && !fa.sourceAmount().setScale(fa.rounding(), RoundingMode.HALF_UP).equals(mfa.getFactAcct().getAmtSourceCr().setScale(fa.rounding(), RoundingMode.HALF_UP)))
 							continue;
 					}
-					assertEquals(fa.qty().setScale(fa.rounding(), RoundingMode.HALF_UP), mfa.getRecord().getQty().setScale(fa.rounding(), RoundingMode.HALF_UP), "Unexpected Qty for " + fa);
+					assertEquals(fa.qty().setScale(fa.rounding(), RoundingMode.HALF_UP), mfa.getFactAcct().getQty().setScale(fa.rounding(), RoundingMode.HALF_UP), "Unexpected Qty for " + fa);
 					found.add(fa);
 				}
 			}			
@@ -309,34 +309,34 @@ public abstract class AbstractTestCase {
 		//assert amount mismatch
 		expectedList.forEach(fa -> {
 			if (!found.contains(fa)) {
-				for(IFactAcctInfo mfa : factAccts) {
+				for(IFactAcctModel mfa : factAccts) {
 					if (matches.contains(mfa))
 						continue;
-					if (fa.account().getAccountInfo().getPO().get_ID() != mfa.getRecord().getAccount_ID())
+					if (fa.account().getAccountModel().getPO().get_ID() != mfa.getFactAcct().getAccount_ID())
 						continue;
-					if (fa.lineId() > 0 && fa.lineId() != mfa.getRecord().getLine_ID())
+					if (fa.lineId() > 0 && fa.lineId() != mfa.getFactAcct().getLine_ID())
 						continue;
 					if (fa.debit()) {
-						if (fa.accountedAmount() != null && fa.accountedAmount().signum() == mfa.getRecord().getAmtAcctDr().signum())
-							assertEquals(fa.accountedAmount().setScale(fa.rounding(), RoundingMode.HALF_UP), mfa.getRecord().getAmtAcctDr().setScale(fa.rounding(), RoundingMode.HALF_UP), "Unexpected Accounted Dr amount for " + fa);
+						if (fa.accountedAmount() != null && fa.accountedAmount().signum() == mfa.getFactAcct().getAmtAcctDr().signum())
+							assertEquals(fa.accountedAmount().setScale(fa.rounding(), RoundingMode.HALF_UP), mfa.getFactAcct().getAmtAcctDr().setScale(fa.rounding(), RoundingMode.HALF_UP), "Unexpected Accounted Dr amount for " + fa);
 						else if (fa.accountedAmount() != null)
 							continue;
-						if (fa.sourceAmount() != null && fa.sourceAmount().signum() == mfa.getRecord().getAmtSourceDr().signum())
-							assertEquals(fa.accountedAmount().setScale(fa.rounding(), RoundingMode.HALF_UP), mfa.getRecord().getAmtSourceDr().setScale(fa.rounding(), RoundingMode.HALF_UP), "Unexpected Source Dr amount for " + fa);
+						if (fa.sourceAmount() != null && fa.sourceAmount().signum() == mfa.getFactAcct().getAmtSourceDr().signum())
+							assertEquals(fa.accountedAmount().setScale(fa.rounding(), RoundingMode.HALF_UP), mfa.getFactAcct().getAmtSourceDr().setScale(fa.rounding(), RoundingMode.HALF_UP), "Unexpected Source Dr amount for " + fa);
 						else if (fa.sourceAmount() != null)
 							continue;
 					} else {
-						if (fa.accountedAmount() != null && fa.accountedAmount().signum() == mfa.getRecord().getAmtAcctCr().signum())
-							assertEquals(fa.accountedAmount().setScale(fa.rounding(), RoundingMode.HALF_UP), mfa.getRecord().getAmtAcctCr().setScale(fa.rounding(), RoundingMode.HALF_UP), "Unexpected Accounted Cr amount for " + fa);
+						if (fa.accountedAmount() != null && fa.accountedAmount().signum() == mfa.getFactAcct().getAmtAcctCr().signum())
+							assertEquals(fa.accountedAmount().setScale(fa.rounding(), RoundingMode.HALF_UP), mfa.getFactAcct().getAmtAcctCr().setScale(fa.rounding(), RoundingMode.HALF_UP), "Unexpected Accounted Cr amount for " + fa);
 						else if (fa.accountedAmount() != null)
 							continue;
-						if (fa.sourceAmount() != null && fa.sourceAmount().signum() == mfa.getRecord().getAmtSourceCr().signum())
-							assertEquals(fa.accountedAmount().setScale(fa.rounding(), RoundingMode.HALF_UP), mfa.getRecord().getAmtSourceCr().setScale(fa.rounding(), RoundingMode.HALF_UP), "Unexpected Source Cr amount for " + fa);
+						if (fa.sourceAmount() != null && fa.sourceAmount().signum() == mfa.getFactAcct().getAmtSourceCr().signum())
+							assertEquals(fa.accountedAmount().setScale(fa.rounding(), RoundingMode.HALF_UP), mfa.getFactAcct().getAmtSourceCr().setScale(fa.rounding(), RoundingMode.HALF_UP), "Unexpected Source Cr amount for " + fa);
 						else if (fa.sourceAmount() != null)
 							continue;
 					}
-					if (fa.qty() != null && mfa.getRecord().getQty() != null)
-						assertEquals(fa.qty().setScale(fa.rounding(), RoundingMode.HALF_UP), mfa.getRecord().getQty().setScale(fa.rounding(), RoundingMode.HALF_UP), "Unexpected Qty for " + fa);
+					if (fa.qty() != null && mfa.getFactAcct().getQty() != null)
+						assertEquals(fa.qty().setScale(fa.rounding(), RoundingMode.HALF_UP), mfa.getFactAcct().getQty().setScale(fa.rounding(), RoundingMode.HALF_UP), "Unexpected Qty for " + fa);
 					found.add(fa);
 				}
 			}

@@ -37,10 +37,10 @@ import java.util.logging.Level;
 
 import org.adempiere.base.acct.AcctInfoServices;
 import org.adempiere.base.acct.constants.IAcctSchemaElementConstants;
-import org.adempiere.base.acct.info.IAccountInfo;
-import org.adempiere.base.acct.info.IAcctSchemaElementInfo;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
-import org.adempiere.base.acct.info.IElementValueInfo;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IAcctSchemaElementModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
+import org.adempiere.base.acct.model.IElementValueModel;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.compiere.model.MBPartner;
@@ -141,7 +141,7 @@ public class GLJournalGenerate extends SvrProcess
 				);
 
 		MJournalGenerator journalGenerator = new MJournalGenerator(getCtx(), p_QSS_JournalGenerator_ID, get_TrxName());
-		IAcctSchemaInfo as = AcctInfoServices.getAcctSchemaInfoService().get(journalGenerator.getC_AcctSchema_ID());
+		IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get(journalGenerator.getC_AcctSchema_ID());
 
 		BigDecimal totalAmount = Env.ZERO;
 		List<List<Integer>> listDimOut = new ArrayList<List<Integer>>();
@@ -157,8 +157,8 @@ public class GLJournalGenerate extends SvrProcess
 			List<String> groupColumns = new ArrayList<String>();
 			groupColumns.add("AD_Client_ID");
 			if (line.isCopyAllDimensions()) {
-				for (IAcctSchemaElementInfo element : as.getAcctSchemaElementsInfo()) {
-					String columnName = AcctInfoServices.getAcctSchemaElementInfoService().getColumnName(element.getRecord().getElementType());
+				for (IAcctSchemaElementModel element : as.getAcctSchemaElementsModels()) {
+					String columnName = AcctInfoServices.getAcctSchemaElementInfoService().getColumnName(element.getAcctSchemaElement().getElementType());
 					if (! groupColumns.contains(columnName))
 						groupColumns.add(columnName);
 				}
@@ -386,8 +386,8 @@ public class GLJournalGenerate extends SvrProcess
 			MJournalGeneratorLine line = listLinesOut.get(i);
 
 			if (p_IsSimulation) {
-				IElementValueInfo ev = AcctInfoServices.getElementValueInfoService().create(getCtx(), accountId, get_TrxName());
-				String msg = "Account=" + ev.getRecord().getValue()
+				IElementValueModel ev = AcctInfoServices.getElementValueInfoService().create(getCtx(), accountId, get_TrxName());
+				String msg = "Account=" + ev.getElementValue().getValue()
 						+ ", DR=" + dr
 						+ ", CR=" + cr;
 				int idxcol = 0;
@@ -423,7 +423,7 @@ public class GLJournalGenerate extends SvrProcess
 					if (j.getAD_Org_ID() == 0) {
 						throw new AdempiereException(Msg.getMsg(Language.getBaseAD_Language(), "Org0NotAllowed"));
 					}
-			        j.setC_Currency_ID(as.getRecord().getC_Currency_ID());
+			        j.setC_Currency_ID(as.getAcctSchema().getC_Currency_ID());
 			        j.setC_DocType_ID(journalGenerator.getC_DocType_ID());
 			        j.setControlAmt(Env.ZERO);
 			        j.setDateAcct(p_DateAcct);
@@ -435,15 +435,15 @@ public class GLJournalGenerate extends SvrProcess
 			        j.setDocumentNo(p_DocumentNo);
 			        j.set_ValueOfColumn("GL_Category_ID", journalGenerator.getGL_Category_ID()); // can be zero
 					j.setPostingType(journalGenerator.getPostingType());
-			        j.setC_AcctSchema_ID(as.getRecord().getC_AcctSchema_ID());
-			        j.setC_ConversionType_ID(MConversionType.getDefault(as.getRecord().getAD_Client_ID()));
+			        j.setC_AcctSchema_ID(as.getAcctSchema().getC_AcctSchema_ID());
+			        j.setC_ConversionType_ID(MConversionType.getDefault(as.getAcctSchema().getAD_Client_ID()));
 			        j.saveEx();
 				}
 		        // Create the journal lines
 				MJournalLine jl = new MJournalLine(j);
 				jl.setLine(lineNo);
 				lineNo += 10;
-				IAccountInfo combination;
+				IAccountModel combination;
 		        {
 		        	int AD_Client_ID = getAD_Client_ID();
 		        	int AD_Org_ID = 0;

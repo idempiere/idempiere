@@ -21,8 +21,8 @@ import java.sql.Timestamp;
 import java.util.logging.Level;
 
 import org.adempiere.base.acct.constants.IAcctSchemaConstants;
-import org.adempiere.base.acct.info.IAccountInfo;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.model.MCharge;
 import org.compiere.model.MCostDetail;
 import org.compiere.model.MProduct;
@@ -94,7 +94,7 @@ public class DocLine
 	/** Outside Processing	*/
 	private int 				m_PP_Cost_Collector_ID = 0;
 	/** Account used only for GL Journal    */
-	private IAccountInfo 			m_account = null;
+	private IAccountModel 			m_account = null;
 
 	/** Accounting Date				*/
 	private Timestamp			m_DateAcct = null;
@@ -424,7 +424,7 @@ public class DocLine
 	 *  Set GL Journal Account
 	 *  @param acct account
 	 */
-	public void setAccount (IAccountInfo acct)
+	public void setAccount (IAccountModel acct)
 	{
 		m_account = acct;
 	}   //  setAccount
@@ -433,7 +433,7 @@ public class DocLine
 	 *  Get GL Journal Account
 	 *  @return account
 	 */
-	public IAccountInfo getAccount()
+	public IAccountModel getAccount()
 	{
 		return m_account;
 	}   //  getAccount
@@ -445,7 +445,7 @@ public class DocLine
 	 *  @param as Accounting schema
 	 *  @return Requested Product Account
 	 */
-	public IAccountInfo getAccount (int AcctType, IAcctSchemaInfo as)
+	public IAccountModel getAccount (int AcctType, IAcctSchemaModel as)
 	{
 		//	Charge Account
 		if (getM_Product_ID() == 0 && getC_Charge_ID() != 0)
@@ -453,7 +453,7 @@ public class DocLine
 			BigDecimal amt = new BigDecimal (-1);		//	Revenue (-)
 			if (!m_doc.isSOTrx())
 				amt = new BigDecimal (+1);				//	Expense (+)
-			IAccountInfo acct = getChargeAccount(as, amt);
+			IAccountModel acct = getChargeAccount(as, amt);
 			if (acct != null)
 				return acct;
 		}
@@ -483,7 +483,7 @@ public class DocLine
 	 *  @param amount amount for expense(+)/revenue(-)
 	 *  @return Charge Account or null
 	 */
-	public IAccountInfo getChargeAccount (IAcctSchemaInfo as, BigDecimal amount)
+	public IAccountModel getChargeAccount (IAcctSchemaModel as, BigDecimal amount)
 	{
 		int C_Charge_ID = getC_Charge_ID();
 		if (C_Charge_ID == 0)
@@ -789,12 +789,12 @@ public class DocLine
 	 *	@param whereClause null are OK
 	 *  @return costs
 	 */
-	public BigDecimal getProductCosts (IAcctSchemaInfo as, int AD_Org_ID, boolean zeroCostsOK, String whereClause)
+	public BigDecimal getProductCosts (IAcctSchemaModel as, int AD_Org_ID, boolean zeroCostsOK, String whereClause)
 	{
-		if (whereClause != null && !as.getRecord().getCostingMethod().equals(IAcctSchemaConstants.COSTINGMETHOD_StandardCosting))
+		if (whereClause != null && !as.getAcctSchema().getCostingMethod().equals(IAcctSchemaConstants.COSTINGMETHOD_StandardCosting))
 		{
 			MCostDetail cd = MCostDetail.get (Env.getCtx(), whereClause, 
-					get_ID(), getM_AttributeSetInstance_ID(), as.getRecord().getC_AcctSchema_ID(), p_po.get_TrxName());
+					get_ID(), getM_AttributeSetInstance_ID(), as.getAcctSchema().getC_AcctSchema_ID(), p_po.get_TrxName());
 			if (cd != null)
 			{
 				BigDecimal amt = cd.getAmt();
@@ -816,7 +816,7 @@ public class DocLine
 	 *	@param zeroCostsOK zero/no costs are OK
 	 *  @return costs
 	 */
-	public BigDecimal getProductCosts (IAcctSchemaInfo as, int AD_Org_ID, boolean zeroCostsOK)
+	public BigDecimal getProductCosts (IAcctSchemaModel as, int AD_Org_ID, boolean zeroCostsOK)
 	{
 		return getProductCosts(as, AD_Org_ID, zeroCostsOK, (MCostDetail) null);
 	}
@@ -829,7 +829,7 @@ public class DocLine
 	 * @param costDetail optional cost detail - use to retrieve the cost history
 	 * @return costs
 	 */
-	public BigDecimal getProductCosts (IAcctSchemaInfo as, int AD_Org_ID, boolean zeroCostsOK, MCostDetail costDetail)
+	public BigDecimal getProductCosts (IAcctSchemaModel as, int AD_Org_ID, boolean zeroCostsOK, MCostDetail costDetail)
 	{
 		ProductCost pc = getProductCost();
 		int C_OrderLine_ID = getC_OrderLine_ID();

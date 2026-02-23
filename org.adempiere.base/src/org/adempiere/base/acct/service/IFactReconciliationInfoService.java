@@ -25,7 +25,7 @@ package org.adempiere.base.acct.service;
 import java.util.Properties;
 
 import org.adempiere.base.acct.IAcctInfoService;
-import org.adempiere.base.acct.info.IFactReconciliationInfo;
+import org.adempiere.base.acct.model.IFactReconciliationModel;
 
 /**
  * Service interface for accounting fact reconciliation info.
@@ -33,6 +33,6 @@ import org.adempiere.base.acct.info.IFactReconciliationInfo;
  * @author etantg
  */
 public interface IFactReconciliationInfoService extends IAcctInfoService {
-	public IFactReconciliationInfo create(Properties ctx, int Fact_Reconciliation_ID, String trxName);
-	public IFactReconciliationInfo first(Properties ctx, String whereClause, Object[] params, String trxName);
+	public IFactReconciliationModel create(Properties ctx, int Fact_Reconciliation_ID, String trxName);
+	public IFactReconciliationModel first(Properties ctx, String whereClause, Object[] params, String trxName);
 }

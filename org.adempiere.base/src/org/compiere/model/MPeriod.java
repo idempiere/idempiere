@@ -28,7 +28,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.base.acct.AcctInfoServices;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.exceptions.PeriodClosedException;
 import org.compiere.util.CLogger;
@@ -733,12 +733,12 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 			return false;
 		}
 
-		IAcctSchemaInfo as = MClient.get(getCtx(), getAD_Client_ID()).getAcctSchema();
-		if (as != null && as.getRecord().isAutoPeriodControl())
+		IAcctSchemaModel as = MClient.get(getCtx(), getAD_Client_ID()).getAcctSchema();
+		if (as != null && as.getAcctSchema().isAutoPeriodControl())
 		{
 			Timestamp today = TimeUtil.trunc(new Timestamp (System.currentTimeMillis()), TimeUtil.TRUNC_DAY);
-			Timestamp first = TimeUtil.addDays(today, - as.getRecord().getPeriod_OpenHistory()); 
-			Timestamp last = TimeUtil.addDays(today, as.getRecord().getPeriod_OpenFuture());
+			Timestamp first = TimeUtil.addDays(today, - as.getAcctSchema().getPeriod_OpenHistory()); 
+			Timestamp last = TimeUtil.addDays(today, as.getAcctSchema().getPeriod_OpenFuture());
 			Timestamp date1, date2;
 			if (dateAcct != null) {
 				date1 = TimeUtil.trunc(dateAcct, TimeUtil.TRUNC_DAY);
@@ -760,12 +760,12 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 				return false;
 			}
 			//	We are OK
-			if (isInPeriod(today) && as.getRecord().getC_Period_ID() != getC_Period_ID())
+			if (isInPeriod(today) && as.getAcctSchema().getC_Period_ID() != getC_Period_ID())
 			{
-				as = AcctInfoServices.getAcctSchemaInfoService().create(Env.getCtx(), as.getRecord().getC_AcctSchema_ID(), null);
-				if (as.getRecord().getC_Period_ID() != getC_Period_ID())
+				as = AcctInfoServices.getAcctSchemaInfoService().create(Env.getCtx(), as.getAcctSchema().getC_AcctSchema_ID(), null);
+				if (as.getAcctSchema().getC_Period_ID() != getC_Period_ID())
 				{
-					as.getRecord().setC_Period_ID(getC_Period_ID());
+					as.getAcctSchema().setC_Period_ID(getC_Period_ID());
 					as.getPO().saveEx();
 				}
 			}

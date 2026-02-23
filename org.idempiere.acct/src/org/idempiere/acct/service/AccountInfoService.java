@@ -27,9 +27,9 @@ import java.util.List;
 import java.util.Properties;
 
 import org.adempiere.base.acct.AcctInfoService;
-import org.adempiere.base.acct.info.IAccountInfo;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
-import org.adempiere.base.acct.info.IFactAcctInfo;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
+import org.adempiere.base.acct.model.IFactAcctModel;
 import org.adempiere.base.acct.service.IAccountInfoService;
 import org.compiere.model.I_C_ValidCombination;
 import org.compiere.model.Query;
@@ -48,7 +48,7 @@ import org.idempiere.acct.model.MAccount;
 public class AccountInfoService implements IAccountInfoService {
 	
 	@Override
-	public IAccountInfo get(Properties ctx, int AD_Client_ID, int AD_Org_ID, int C_AcctSchema_ID, int Account_ID,
+	public IAccountModel get(Properties ctx, int AD_Client_ID, int AD_Org_ID, int C_AcctSchema_ID, int Account_ID,
 			int C_SubAcct_ID, int M_Product_ID, int C_BPartner_ID, int AD_OrgTrx_ID, int C_LocFrom_ID, int C_LocTo_ID,
 			int C_SalesRegion_ID, int C_Project_ID, int C_Campaign_ID, int C_Activity_ID, int User1_ID, int User2_ID,
 			int UserElement1_ID, int UserElement2_ID, String trxName) {
@@ -60,7 +60,7 @@ public class AccountInfoService implements IAccountInfoService {
 	}
 
 	@Override
-	public IAccountInfo get(IFactAcctInfo fa) {
+	public IAccountModel get(IFactAcctModel fa) {
 		if (fa instanceof FactAcctInfo) {
 			MAccount account = MAccount.get(((FactAcctInfo) fa).getModel());
 			return AccountInfo.wrap(account);
@@ -69,7 +69,7 @@ public class AccountInfoService implements IAccountInfoService {
 	}
 
 	@Override
-	public IAccountInfo get(IFactAcctInfo fa, String trxName) {
+	public IAccountModel get(IFactAcctModel fa, String trxName) {
 		if (fa instanceof FactAcctInfo) {
 			MAccount account = MAccount.get(((FactAcctInfo) fa).getModel(), trxName);
 			return AccountInfo.wrap(account);
@@ -78,13 +78,13 @@ public class AccountInfoService implements IAccountInfoService {
 	}
 
 	@Override
-	public IAccountInfo getDefault(Properties ctx, int C_AcctSchema_ID, boolean optionalNull, String trxName) {
+	public IAccountModel getDefault(Properties ctx, int C_AcctSchema_ID, boolean optionalNull, String trxName) {
 		MAccount account = MAccount.getDefault(ctx, C_AcctSchema_ID, optionalNull, trxName);
 		return AccountInfo.wrap(account);
 	}
 
 	@Override
-	public IAccountInfo getDefault(IAcctSchemaInfo acctSchema, boolean optionalNull) {
+	public IAccountModel getDefault(IAcctSchemaModel acctSchema, boolean optionalNull) {
 		if (acctSchema instanceof AcctSchemaInfo) {
 			MAccount account = MAccount.getDefault(((AcctSchemaInfo) acctSchema).getModel(), optionalNull);
 			return AccountInfo.wrap(account);
@@ -93,13 +93,13 @@ public class AccountInfoService implements IAccountInfoService {
 	}
 
 	@Override
-	public IAccountInfo get(int C_ValidCombination_ID) {
+	public IAccountModel get(int C_ValidCombination_ID) {
 		MAccount account = MAccount.get(C_ValidCombination_ID);
 		return AccountInfo.wrap(account);
 	}
 
 	@Override
-	public IAccountInfo get(Properties ctx, int C_ValidCombination_ID) {
+	public IAccountModel get(Properties ctx, int C_ValidCombination_ID) {
 		MAccount account = MAccount.get(ctx, C_ValidCombination_ID);
 		return AccountInfo.wrap(account);
 	}
@@ -110,13 +110,13 @@ public class AccountInfoService implements IAccountInfoService {
 	}
 	
 	@Override
-	public IAccountInfo create(Properties ctx, int C_ValidCombination_ID, String trxName) {
+	public IAccountModel create(Properties ctx, int C_ValidCombination_ID, String trxName) {
 		MAccount account = new MAccount(ctx, C_ValidCombination_ID, trxName);
 		return AccountInfo.wrap(account);
 	}
 
 	@Override
-	public List<IAccountInfo> list(String whereClause, ArrayList<Object> params, boolean onlyActive) {
+	public List<IAccountModel> list(String whereClause, ArrayList<Object> params, boolean onlyActive) {
 		List<MAccount> accounts = new Query(Env.getCtx(),I_C_ValidCombination.Table_Name,whereClause,null)
 				.setParameters(params)
 				.setOrderBy(I_C_ValidCombination.COLUMNNAME_Combination)
@@ -126,7 +126,7 @@ public class AccountInfoService implements IAccountInfoService {
 	}
 	
 	@Override
-	public List<IAccountInfo> list(Properties ctx, String whereClause, ArrayList<Object> params, String trxName) {
+	public List<IAccountModel> list(Properties ctx, String whereClause, ArrayList<Object> params, String trxName) {
 		List<MAccount> accounts = new Query(ctx,I_C_ValidCombination.Table_Name,whereClause,trxName)
 				.setParameters(params)
 				.list();

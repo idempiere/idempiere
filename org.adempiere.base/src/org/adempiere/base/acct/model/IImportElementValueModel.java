@@ -20,16 +20,16 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  **********************************************************************/
-package org.adempiere.base.acct.info;
+package org.adempiere.base.acct.model;
 
-import org.adempiere.base.acct.IAcctInfo;
-import org.compiere.model.I_Fact_Reconciliation;
+import org.adempiere.base.acct.IAcctModel;
+import org.compiere.model.I_I_ElementValue;
 
 /**
- * Interface for accounting fact reconciliation info objects.
+ * Interface for import accounting element value info objects.
  * 
  * @author etantg
  */
-public interface IFactReconciliationInfo extends IAcctInfo {
-	public I_Fact_Reconciliation getRecord();
+public interface IImportElementValueModel extends IAcctModel {
+	public I_I_ElementValue getElementValue();
 }

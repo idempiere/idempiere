@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 import java.util.logging.Level;
 
 import org.adempiere.base.acct.AcctInfoServices;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.FillMandatoryException;
 import org.compiere.model.MCost;
 import org.compiere.model.MProcessPara;
@@ -49,7 +49,7 @@ public class IndentedBOM extends SvrProcess
 	//
 	private int m_LevelNo = 0;
 	private int m_SeqNo = 0;
-	private IAcctSchemaInfo m_as = null;
+	private IAcctSchemaModel m_as = null;
 
 	protected void prepare()
 	{

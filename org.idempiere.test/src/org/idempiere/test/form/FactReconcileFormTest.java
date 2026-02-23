@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Vector;
 
 import org.adempiere.base.acct.AcctInfoServices;
-import org.adempiere.base.acct.info.IFactAcctInfo;
+import org.adempiere.base.acct.model.IFactAcctModel;
 import org.compiere.apps.form.FactReconcile;
 import org.compiere.minigrid.MiniTableImpl;
 import org.compiere.model.I_Fact_Reconciliation;
@@ -85,7 +85,7 @@ public class FactReconcileFormTest extends AbstractTestCase {
 			assertTrue(Util.isEmpty(error, true), error);
 		}
 		
-		IFactAcctInfo paymentFact = AcctInfoServices.getFactAcctInfoService().first(
+		IFactAcctModel paymentFact = AcctInfoServices.getFactAcctInfoService().first(
 				MPayment.Table_ID, payment.get_ID(), DictionaryIDs.C_ElementValue.CHECKING_IN_TRANSFER.id, 
 				MClientInfo.get(getAD_Client_ID()).getC_AcctSchema1_ID(), getTrxName());
 		assertNotNull(paymentFact, "Faild to retrieve MFactAcct checking in transfer record for payment");
@@ -111,7 +111,7 @@ public class FactReconcileFormTest extends AbstractTestCase {
 			String error = DocumentEngine.postImmediate(Env.getCtx(), stmt.getAD_Client_ID(), MBankStatement.Table_ID, stmt.get_ID(), true, getTrxName());
 			assertTrue(Util.isEmpty(error, true), error);
 		}
-		IFactAcctInfo statementFact = AcctInfoServices.getFactAcctInfoService().first(
+		IFactAcctModel statementFact = AcctInfoServices.getFactAcctInfoService().first(
 				MBankStatement.Table_ID, stmt.get_ID(), DictionaryIDs.C_ElementValue.CHECKING_IN_TRANSFER.id, 
 				MClientInfo.get(getAD_Client_ID()).getC_AcctSchema1_ID(), getTrxName());
 		assertNotNull(statementFact, "Faild to retrieve MFactAcct checking in transfer record for bank statement");

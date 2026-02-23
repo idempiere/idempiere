@@ -26,7 +26,7 @@ import java.sql.Timestamp;
 import java.util.Properties;
 
 import org.adempiere.base.acct.IAcctInfoService;
-import org.adempiere.base.acct.info.IDistributionInfo;
+import org.adempiere.base.acct.model.IDistributionModel;
 
 /**
  * Service interface for GL distribution info.
@@ -34,7 +34,7 @@ import org.adempiere.base.acct.info.IDistributionInfo;
  * @author etantg
  */
 public interface IDistributionInfoService extends IAcctInfoService {
-	public IDistributionInfo[] get(Properties ctx, int C_AcctSchema_ID, 
+	public IDistributionModel[] get(Properties ctx, int C_AcctSchema_ID, 
 			String PostingType, int C_DocType_ID, Timestamp dateAcct,
 			int AD_Org_ID, int Account_ID,
 			int M_Product_ID, int C_BPartner_ID, int C_Project_ID,
@@ -42,5 +42,5 @@ public interface IDistributionInfoService extends IAcctInfoService {
 			int C_SalesRegion_ID, int C_LocTo_ID, int C_LocFrom_ID,
 			int User1_ID, int User2_ID, int C_CostCenter_ID, int C_Department_ID,
 			int C_Employee_ID, int C_Charge_ID, int A_Asset_ID, int M_Warehouse_ID, int M_AttributeSetInstance_ID);
-	public IDistributionInfo create(Properties ctx, int GL_Distribution_ID, String trxName);
+	public IDistributionModel create(Properties ctx, int GL_Distribution_ID, String trxName);
 }

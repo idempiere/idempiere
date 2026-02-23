@@ -20,16 +20,22 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  **********************************************************************/
-package org.adempiere.base.acct.info;
+package org.adempiere.base.acct.model;
 
-import org.adempiere.base.acct.IAcctInfo;
-import org.compiere.model.I_GL_Category;
+import java.math.BigDecimal;
+
+import org.adempiere.base.acct.IAcctModel;
+import org.compiere.model.I_GL_DistributionLine;
 
 /**
- * Interface for GL category info objects.
+ * Interface for GL distribution line info objects.
  * 
  * @author etantg
  */
-public interface IGLCategoryInfo extends IAcctInfo {
-	public I_GL_Category getRecord();
+public interface IDistributionLineModel extends IAcctModel {
+	public I_GL_DistributionLine getGLDistributionLine();
+	
+	public IAccountModel getAccountModel();
+	public BigDecimal getAmt();
+	public BigDecimal getQty();
 }

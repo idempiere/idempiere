@@ -34,7 +34,7 @@ import org.adempiere.base.Core;
 import org.adempiere.base.CreditStatus;
 import org.adempiere.base.ICreditManager;
 import org.adempiere.base.acct.AcctInfoServices;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.PeriodClosedException;
 import org.adempiere.util.IProcessUI;
@@ -839,8 +839,8 @@ public class MPayment extends X_C_Payment
 		if (!isProcessed())
 		{
 			MClientInfo info = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName()); 
-			IAcctSchemaInfo as = AcctInfoServices.getAcctSchemaInfoService().get (getCtx(), info.getC_AcctSchema1_ID(), get_TrxName());
-			if (as.getRecord().getC_Currency_ID() != getC_Currency_ID())
+			IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get (getCtx(), info.getC_AcctSchema1_ID(), get_TrxName());
+			if (as.getAcctSchema().getC_Currency_ID() != getC_Currency_ID())
 			{
 				if (isOverrideCurrencyRate())
 				{
@@ -855,7 +855,7 @@ public class MPayment extends X_C_Payment
 						return false;
 					}
 					BigDecimal converted = getPayAmt().multiply(getCurrencyRate());
-					int stdPrecision = MCurrency.getStdPrecision(getCtx(), as.getRecord().getC_Currency_ID());
+					int stdPrecision = MCurrency.getStdPrecision(getCtx(), as.getAcctSchema().getC_Currency_ID());
 					if (converted.scale() > stdPrecision)
 						converted = converted.setScale(stdPrecision, RoundingMode.HALF_UP);
 					setConvertedAmt(converted);

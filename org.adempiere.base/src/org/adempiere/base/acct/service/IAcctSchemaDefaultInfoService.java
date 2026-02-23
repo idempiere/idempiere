@@ -25,7 +25,7 @@ package org.adempiere.base.acct.service;
 import java.util.Properties;
 
 import org.adempiere.base.acct.IAcctInfoService;
-import org.adempiere.base.acct.info.IAcctSchemaDefaultInfo;
+import org.adempiere.base.acct.model.IAcctSchemaDefaultModel;
 
 /**
  * Service interface for accounting schema default info.
@@ -33,6 +33,6 @@ import org.adempiere.base.acct.info.IAcctSchemaDefaultInfo;
  * @author etantg
  */
 public interface IAcctSchemaDefaultInfoService extends IAcctInfoService {
-	public IAcctSchemaDefaultInfo get(Properties ctx, int C_AcctSchema_ID);
-	public IAcctSchemaDefaultInfo create(Properties ctx, int C_AcctSchema_ID, String trxName);
+	public IAcctSchemaDefaultModel get(Properties ctx, int C_AcctSchema_ID);
+	public IAcctSchemaDefaultModel create(Properties ctx, int C_AcctSchema_ID, String trxName);
 }

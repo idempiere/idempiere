@@ -20,15 +20,16 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  **********************************************************************/
-package org.adempiere.base.acct;
+package org.adempiere.base.acct.model;
 
-import org.compiere.model.PO;
+import org.adempiere.base.acct.IAcctModel;
+import org.compiere.model.I_GL_Category;
 
 /**
- * Base interface for all accounting info objects.
+ * Interface for GL category info objects.
  * 
  * @author etantg
  */
-public interface IAcctInfo {
-	public PO getPO();
+public interface IGLCategoryModel extends IAcctModel {
+	public I_GL_Category getGLCategory();
 }

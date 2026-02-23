@@ -20,8 +20,8 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.adempiere.base.acct.AcctInfoServices;
-import org.adempiere.base.acct.info.IAccountInfo;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -51,7 +51,7 @@ public class MCharge extends X_C_Charge implements ImmutablePOSupport
 	 *  @param as account schema
 	 *  @return Charge Account or null
 	 */
-	public static IAccountInfo getAccount (int C_Charge_ID, IAcctSchemaInfo as)
+	public static IAccountModel getAccount (int C_Charge_ID, IAcctSchemaModel as)
 	{
 		if (C_Charge_ID == 0 || as == null)
 			return null;
@@ -66,7 +66,7 @@ public class MCharge extends X_C_Charge implements ImmutablePOSupport
 		}
 
 		//	Return Account
-		IAccountInfo acct = AcctInfoServices.getAccountInfoService().get (as.getPO().getCtx(), Account_ID);
+		IAccountModel acct = AcctInfoServices.getAccountInfoService().get (as.getPO().getCtx(), Account_ID);
 		return acct;
 	}   //  getAccount
 

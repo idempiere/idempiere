@@ -25,7 +25,7 @@ package org.adempiere.base.acct.service;
 import java.util.Properties;
 
 import org.adempiere.base.acct.IAcctInfoService;
-import org.adempiere.base.acct.info.IAcctSchemaGLInfo;
+import org.adempiere.base.acct.model.IAcctSchemaGLModel;
 
 /**
  * Service interface for accounting schema GL info.
@@ -33,6 +33,6 @@ import org.adempiere.base.acct.info.IAcctSchemaGLInfo;
  * @author etantg
  */
 public interface IAcctSchemaGLInfoService extends IAcctInfoService {
-	public IAcctSchemaGLInfo get(Properties ctx, int C_AcctSchema_ID);
-	public IAcctSchemaGLInfo create(Properties ctx, int C_AcctSchema_ID, String trxName);
+	public IAcctSchemaGLModel get(Properties ctx, int C_AcctSchema_ID);
+	public IAcctSchemaGLModel create(Properties ctx, int C_AcctSchema_ID, String trxName);
 }

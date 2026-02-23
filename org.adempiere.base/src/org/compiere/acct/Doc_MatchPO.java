@@ -29,9 +29,9 @@ import java.util.logging.Level;
 
 import org.adempiere.base.acct.constants.IAcctSchemaConstants;
 import org.adempiere.base.acct.constants.IAcctSchemaElementConstants;
-import org.adempiere.base.acct.info.IAccountInfo;
-import org.adempiere.base.acct.info.IAcctSchemaElementInfo;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IAcctSchemaElementModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MCostDetail;
 import org.compiere.model.MCurrency;
@@ -71,7 +71,7 @@ public class Doc_MatchPO extends Doc
 	 * 	@param rs record
 	 * 	@param trxName trx
 	 */	
-	public Doc_MatchPO (IAcctSchemaInfo as, ResultSet rs, String trxName)
+	public Doc_MatchPO (IAcctSchemaModel as, ResultSet rs, String trxName)
 	{
 		super(as, MMatchPO.class, rs, DOCTYPE_MatMatchPO, trxName);
 	}   //  Doc_MatchPO
@@ -243,7 +243,7 @@ public class Doc_MatchPO extends Doc
 	 *  @return Fact
 	 */
 	@Override
-	public ArrayList<Fact> createFacts (IAcctSchemaInfo as)
+	public ArrayList<Fact> createFacts (IAcctSchemaModel as)
 	{
 		ArrayList<Fact> facts = new ArrayList<Fact>();
 		//
@@ -285,7 +285,7 @@ public class Doc_MatchPO extends Doc
 
 		//  create Fact Header
 		Fact fact = new Fact(this, as, Fact.POST_Actual);
-		setC_Currency_ID(as.getRecord().getC_Currency_ID());
+		setC_Currency_ID(as.getAcctSchema().getC_Currency_ID());
 		boolean isInterOrg = isInterOrg(as);
 
 		//	Purchase Order Line
@@ -357,17 +357,17 @@ public class Doc_MatchPO extends Doc
 			BigDecimal totalAmt = allocation.getAmt();
 			BigDecimal totalQty = allocation.getQty();
 			BigDecimal amt = totalAmt.multiply(m_ioLine.getMovementQty()).divide(totalQty, 12, RoundingMode.HALF_UP);			
-			if (m_oLine.getC_Currency_ID() != as.getRecord().getC_Currency_ID())
+			if (m_oLine.getC_Currency_ID() != as.getAcctSchema().getC_Currency_ID())
 			{
 				MOrder order = m_oLine.getParent();
 				Timestamp dateAcct = inOut.getDateAcct();
 				BigDecimal rate = MConversionRate.getRate(
-					order.getC_Currency_ID(), as.getRecord().getC_Currency_ID(),
+					order.getC_Currency_ID(), as.getAcctSchema().getC_Currency_ID(),
 					dateAcct, order.getC_ConversionType_ID(),
 					m_oLine.getAD_Client_ID(), m_oLine.getAD_Org_ID());
 				if (rate == null)
 				{
-					p_Error = Msg.getMsg(Env.getCtx(), "PurchaseOrderNotConvertible", new String[] {as.getRecord().getName()}); 							
+					p_Error = Msg.getMsg(Env.getCtx(), "PurchaseOrderNotConvertible", new String[] {as.getAcctSchema().getName()}); 							
 					return null;
 				}
 				amt = amt.multiply(rate);
@@ -391,17 +391,17 @@ public class Doc_MatchPO extends Doc
 		}		
 			
 		//	Different currency
-		if (m_oLine.getC_Currency_ID() != as.getRecord().getC_Currency_ID())
+		if (m_oLine.getC_Currency_ID() != as.getAcctSchema().getC_Currency_ID())
 		{
 			MOrder order = m_oLine.getParent();
 			Timestamp dateAcct = inOut.getDateAcct();
 			BigDecimal rate = MConversionRate.getRate(
-				order.getC_Currency_ID(), as.getRecord().getC_Currency_ID(),
+				order.getC_Currency_ID(), as.getAcctSchema().getC_Currency_ID(),
 				dateAcct, order.getC_ConversionType_ID(),
 				m_oLine.getAD_Client_ID(), m_oLine.getAD_Org_ID());
 			if (rate == null)
 			{
-				p_Error = Msg.getMsg(Env.getCtx(), "PurchaseOrderNotConvertible", new String[] {as.getRecord().getName()});
+				p_Error = Msg.getMsg(Env.getCtx(), "PurchaseOrderNotConvertible", new String[] {as.getAcctSchema().getName()});
 				return null;
 			}
 			poCost = poCost.multiply(rate);
@@ -435,7 +435,7 @@ public class Doc_MatchPO extends Doc
 				//  Product PPV
 				FactLine cr = fact.createLine(null,
 					m_pc.getAccount(ProductCost.ACCTTYPE_P_PPV, as),
-					as.getRecord().getC_Currency_ID(), Env.ONE);
+					as.getAcctSchema().getC_Currency_ID(), Env.ONE);
 				if (!cr.updateReverseLine(MMatchPO.Table_ID, m_matchPO.getM_MatchPO_ID(), 0, Env.ONE)) 
 				{
 					fact.remove(cr);
@@ -445,7 +445,7 @@ public class Doc_MatchPO extends Doc
 				{
 					//  PPV Offset
 					FactLine dr = fact.createLine(null,
-						getAccount(Doc.ACCTTYPE_PPVOffset, as), as.getRecord().getC_Currency_ID(), Env.ONE);
+						getAccount(Doc.ACCTTYPE_PPVOffset, as), as.getAcctSchema().getC_Currency_ID(), Env.ONE);
 					if (!dr.updateReverseLine(MMatchPO.Table_ID, m_matchPO.getM_MatchPO_ID(), 0, Env.ONE, cr)) 
 					{						
 						p_Error = Msg.getMsg(Env.getCtx(), "FailedToCreateReversalEntryForACCTTYPE_PPVOffset");
@@ -483,48 +483,48 @@ public class Doc_MatchPO extends Doc
 				//  Product PPV
 				FactLine cr = fact.createLine(null,
 					m_pc.getAccount(ProductCost.ACCTTYPE_P_PPV, as),
-					as.getRecord().getC_Currency_ID(), isReturnTrx ? difference.negate() : difference);
-				IAccountInfo acct_cr = null;
+					as.getAcctSchema().getC_Currency_ID(), isReturnTrx ? difference.negate() : difference);
+				IAccountModel acct_cr = null;
 				if (cr != null)
 				{
-					cr.getFactAcctInfo().getRecord().setQty(isReturnTrx ? getQty().negate() : getQty());
-					cr.getFactAcctInfo().getRecord().setC_BPartner_ID(m_oLine.getC_BPartner_ID());
-					cr.getFactAcctInfo().getRecord().setC_Activity_ID(m_oLine.getC_Activity_ID());
-					cr.getFactAcctInfo().getRecord().setC_Campaign_ID(m_oLine.getC_Campaign_ID());
-					cr.getFactAcctInfo().getRecord().setC_Project_ID(m_oLine.getC_Project_ID());
-					cr.getFactAcctInfo().getRecord().setC_ProjectPhase_ID(m_oLine.getC_ProjectPhase_ID());
-					cr.getFactAcctInfo().getRecord().setC_ProjectTask_ID(m_oLine.getC_ProjectTask_ID());
-					cr.getFactAcctInfo().getRecord().setC_UOM_ID(m_oLine.getC_UOM_ID());
-					cr.getFactAcctInfo().getRecord().setUser1_ID(m_oLine.getUser1_ID());
-					cr.getFactAcctInfo().getRecord().setUser2_ID(m_oLine.getUser2_ID());
-					cr.getFactAcctInfo().getRecord().setC_Charge_ID(m_oLine.getC_Charge_ID());
-					cr.getFactAcctInfo().getRecord().setC_CostCenter_ID(m_oLine.getC_CostCenter_ID());
-					cr.getFactAcctInfo().getRecord().setC_Department_ID(m_oLine.getC_Department_ID());
-					cr.getFactAcctInfo().getRecord().setM_AttributeSetInstance_ID(m_oLine.getM_AttributeSetInstance_ID());
+					cr.getFactAcctInfo().getFactAcct().setQty(isReturnTrx ? getQty().negate() : getQty());
+					cr.getFactAcctInfo().getFactAcct().setC_BPartner_ID(m_oLine.getC_BPartner_ID());
+					cr.getFactAcctInfo().getFactAcct().setC_Activity_ID(m_oLine.getC_Activity_ID());
+					cr.getFactAcctInfo().getFactAcct().setC_Campaign_ID(m_oLine.getC_Campaign_ID());
+					cr.getFactAcctInfo().getFactAcct().setC_Project_ID(m_oLine.getC_Project_ID());
+					cr.getFactAcctInfo().getFactAcct().setC_ProjectPhase_ID(m_oLine.getC_ProjectPhase_ID());
+					cr.getFactAcctInfo().getFactAcct().setC_ProjectTask_ID(m_oLine.getC_ProjectTask_ID());
+					cr.getFactAcctInfo().getFactAcct().setC_UOM_ID(m_oLine.getC_UOM_ID());
+					cr.getFactAcctInfo().getFactAcct().setUser1_ID(m_oLine.getUser1_ID());
+					cr.getFactAcctInfo().getFactAcct().setUser2_ID(m_oLine.getUser2_ID());
+					cr.getFactAcctInfo().getFactAcct().setC_Charge_ID(m_oLine.getC_Charge_ID());
+					cr.getFactAcctInfo().getFactAcct().setC_CostCenter_ID(m_oLine.getC_CostCenter_ID());
+					cr.getFactAcctInfo().getFactAcct().setC_Department_ID(m_oLine.getC_Department_ID());
+					cr.getFactAcctInfo().getFactAcct().setM_AttributeSetInstance_ID(m_oLine.getM_AttributeSetInstance_ID());
 					acct_cr = cr.getAccount(); // PPV Offset
 				}
 	
 				//  PPV Offset
 				FactLine dr = fact.createLine(null,
 					getAccount(Doc.ACCTTYPE_PPVOffset, as),
-					as.getRecord().getC_Currency_ID(), isReturnTrx ? difference : difference.negate());
-				IAccountInfo acct_db = null;
+					as.getAcctSchema().getC_Currency_ID(), isReturnTrx ? difference : difference.negate());
+				IAccountModel acct_db = null;
 				if (dr != null)
 				{
-					dr.getFactAcctInfo().getRecord().setQty(isReturnTrx ? getQty() : getQty().negate());
-					dr.getFactAcctInfo().getRecord().setC_BPartner_ID(m_oLine.getC_BPartner_ID());
-					dr.getFactAcctInfo().getRecord().setC_Activity_ID(m_oLine.getC_Activity_ID());
-					dr.getFactAcctInfo().getRecord().setC_Campaign_ID(m_oLine.getC_Campaign_ID());
-					dr.getFactAcctInfo().getRecord().setC_Project_ID(m_oLine.getC_Project_ID());
-					dr.getFactAcctInfo().getRecord().setC_ProjectPhase_ID(m_oLine.getC_ProjectPhase_ID());
-					dr.getFactAcctInfo().getRecord().setC_ProjectTask_ID(m_oLine.getC_ProjectTask_ID());
-					dr.getFactAcctInfo().getRecord().setC_UOM_ID(m_oLine.getC_UOM_ID());
-					dr.getFactAcctInfo().getRecord().setUser1_ID(m_oLine.getUser1_ID());
-					dr.getFactAcctInfo().getRecord().setUser2_ID(m_oLine.getUser2_ID());
-					dr.getFactAcctInfo().getRecord().setC_Charge_ID(m_oLine.getC_Charge_ID());
-					dr.getFactAcctInfo().getRecord().setC_CostCenter_ID(m_oLine.getC_CostCenter_ID());
-					dr.getFactAcctInfo().getRecord().setC_Department_ID(m_oLine.getC_Department_ID());
-					dr.getFactAcctInfo().getRecord().setM_AttributeSetInstance_ID(m_oLine.getM_AttributeSetInstance_ID());
+					dr.getFactAcctInfo().getFactAcct().setQty(isReturnTrx ? getQty() : getQty().negate());
+					dr.getFactAcctInfo().getFactAcct().setC_BPartner_ID(m_oLine.getC_BPartner_ID());
+					dr.getFactAcctInfo().getFactAcct().setC_Activity_ID(m_oLine.getC_Activity_ID());
+					dr.getFactAcctInfo().getFactAcct().setC_Campaign_ID(m_oLine.getC_Campaign_ID());
+					dr.getFactAcctInfo().getFactAcct().setC_Project_ID(m_oLine.getC_Project_ID());
+					dr.getFactAcctInfo().getFactAcct().setC_ProjectPhase_ID(m_oLine.getC_ProjectPhase_ID());
+					dr.getFactAcctInfo().getFactAcct().setC_ProjectTask_ID(m_oLine.getC_ProjectTask_ID());
+					dr.getFactAcctInfo().getFactAcct().setC_UOM_ID(m_oLine.getC_UOM_ID());
+					dr.getFactAcctInfo().getFactAcct().setUser1_ID(m_oLine.getUser1_ID());
+					dr.getFactAcctInfo().getFactAcct().setUser2_ID(m_oLine.getUser2_ID());
+					dr.getFactAcctInfo().getFactAcct().setC_Charge_ID(m_oLine.getC_Charge_ID());
+					dr.getFactAcctInfo().getFactAcct().setC_CostCenter_ID(m_oLine.getC_CostCenter_ID());
+					dr.getFactAcctInfo().getFactAcct().setC_Department_ID(m_oLine.getC_Department_ID());
+					dr.getFactAcctInfo().getFactAcct().setM_AttributeSetInstance_ID(m_oLine.getM_AttributeSetInstance_ID());
 					acct_db =  dr.getAccount(); // PPV
 				}
 				
@@ -532,10 +532,10 @@ public class Doc_MatchPO extends Doc
 				// If both accounts Purchase Price Variance and Purchase Price Variance Offset are equal
 				// then remove the posting
 	
-				if ((!as.getRecord().isPostIfClearingEqual()) && acct_db!=null && acct_db.equals(acct_cr) && (!isInterOrg)) {
+				if ((!as.getAcctSchema().isPostIfClearingEqual()) && acct_db!=null && acct_db.equals(acct_cr) && (!isInterOrg)) {
 	
-					BigDecimal debit = dr.getFactAcctInfo().getRecord().getAmtSourceDr();
-					BigDecimal credit = cr.getFactAcctInfo().getRecord().getAmtSourceCr();
+					BigDecimal debit = dr.getFactAcctInfo().getFactAcct().getAmtSourceDr();
+					BigDecimal credit = cr.getFactAcctInfo().getFactAcct().getAmtSourceCr();
 	
 					if (debit.compareTo(credit) == 0) {
 						fact.remove(dr);
@@ -560,9 +560,9 @@ public class Doc_MatchPO extends Doc
 	 * Verify if the posting involves two or more organizations
 	 * @return true if there are more than one org involved on the posting
 	 */
-	private boolean isInterOrg(IAcctSchemaInfo as) {
-		IAcctSchemaElementInfo elementorg = as.getAcctSchemaElementInfo(IAcctSchemaElementConstants.ELEMENTTYPE_Organization);
-		if (elementorg == null || !elementorg.getRecord().isBalanced()) {
+	private boolean isInterOrg(IAcctSchemaModel as) {
+		IAcctSchemaElementModel elementorg = as.getAcctSchemaElementModel(IAcctSchemaElementConstants.ELEMENTTYPE_Organization);
+		if (elementorg == null || !elementorg.getAcctSchemaElement().isBalanced()) {
 			// no org element or not need to be balanced
 			return false;
 		}
@@ -583,7 +583,7 @@ public class Doc_MatchPO extends Doc
 	 * @param landedCostMap
 	 * @return error message or empty string
 	 */
-	private String createMatchPOCostDetail(IAcctSchemaInfo as, BigDecimal poCost, Map<Integer, BigDecimal> landedCostMap)
+	private String createMatchPOCostDetail(IAcctSchemaModel as, BigDecimal poCost, Map<Integer, BigDecimal> landedCostMap)
 	{
 		if (m_ioLine != null && m_ioLine.getM_InOutLine_ID() > 0 &&
 			m_oLine != null && m_oLine.getC_OrderLine_ID() > 0)
@@ -610,7 +610,7 @@ public class Doc_MatchPO extends Doc
 					{
 						tQty = tQty.add(qty);
 						//IDEMPIERE-3742  Wrong product cost for partial MR
-						if (m_oLine.getC_Currency_ID() != as.getRecord().getC_Currency_ID())
+						if (m_oLine.getC_Currency_ID() != as.getAcctSchema().getC_Currency_ID())
 						{
 							MOrder order = m_oLine.getParent();
 							MProduct product = new MProduct(getCtx(), m_oLine.getM_Product_ID(), getTrxName());
@@ -621,13 +621,13 @@ public class Doc_MatchPO extends Doc
 								orderCost = ol.getPriceActual();
 								Timestamp dateAcct = iol.getParent().getDateAcct();
 								BigDecimal rate = MConversionRate.getRate(
-									order.getC_Currency_ID(), as.getRecord().getC_Currency_ID(),
+									order.getC_Currency_ID(), as.getAcctSchema().getC_Currency_ID(),
 									dateAcct, order.getC_ConversionType_ID(),
 									m_oLine.getAD_Client_ID(), m_oLine.getAD_Org_ID());
 
 								if (rate == null)
 								{
-									p_Error = "Purchase Order not convertible - " + as.getRecord().getName();
+									p_Error = "Purchase Order not convertible - " + as.getAcctSchema().getName();
 									return null;
 								}
 									orderCost = orderCost.multiply(rate);
@@ -694,7 +694,7 @@ public class Doc_MatchPO extends Doc
 	 * @param tQty
 	 * @return error message or empty string
 	 */
-	private String createLandedCostAdjustments(IAcctSchemaInfo as,
+	private String createLandedCostAdjustments(IAcctSchemaModel as,
 			Map<Integer, BigDecimal> landedCostMap, MMatchPO mMatchPO,
 			BigDecimal tQty) {
 		for(Integer elementId : landedCostMap.keySet())

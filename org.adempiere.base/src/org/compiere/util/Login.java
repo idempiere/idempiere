@@ -31,7 +31,7 @@ import java.util.logging.Level;
 import javax.swing.JOptionPane;
 
 import org.adempiere.base.acct.AcctInfoServices;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.DBException;
 import org.compiere.model.I_M_Warehouse;
 import org.compiere.model.MClient;
@@ -574,13 +574,13 @@ public class Login
 			rs = null; pstmt = null;
 			
 			/**Define AcctSchema , Currency, HasAlias for Multi AcctSchema**/
-			IAcctSchemaInfo[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), AD_Client_ID);
+			IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), AD_Client_ID);
 			if(ass != null && ass.length > 1)
 			{
-				for(IAcctSchemaInfo as : ass)
+				for(IAcctSchemaModel as : ass)
 				{
 					C_AcctSchema_ID  = MClientInfo.get(Env.getCtx(), AD_Client_ID).getC_AcctSchema1_ID(); 			 
-					if (as.getRecord().getAD_OrgOnly_ID() != 0)
+					if (as.getAcctSchema().getAD_OrgOnly_ID() != 0)
 					{
 						if (as.isSkipOrg(AD_Org_ID))
 						{
@@ -588,10 +588,10 @@ public class Login
 						}
 						else 
 						{
-							C_AcctSchema_ID = as.getRecord().getC_AcctSchema_ID();
+							C_AcctSchema_ID = as.getAcctSchema().getC_AcctSchema_ID();
 							Env.setContext(m_ctx, Env.C_ACCTSCHEMA_ID, C_AcctSchema_ID);
-							Env.setContext(m_ctx, Env.C_CURRENCY_ID, as.getRecord().getC_Currency_ID());
-							Env.setContext(m_ctx, Env.HAS_ALIAS, as.getRecord().isHasAlias());
+							Env.setContext(m_ctx, Env.C_CURRENCY_ID, as.getAcctSchema().getC_Currency_ID());
+							Env.setContext(m_ctx, Env.HAS_ALIAS, as.getAcctSchema().isHasAlias());
 							break;
 						}
 					}

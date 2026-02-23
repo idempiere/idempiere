@@ -30,7 +30,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.base.acct.AcctInfoServices;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.Env;
@@ -378,7 +378,7 @@ implements DocAction
 	@Override
 	public int getC_Currency_ID()
 	{
-		return MClient.get(getCtx(), getAD_Client_ID()).getAcctSchema().getRecord().getC_Currency_ID();
+		return MClient.get(getCtx(), getAD_Client_ID()).getAcctSchema().getAcctSchema().getC_Currency_ID();
 	}
 	
 	@Override
@@ -482,8 +482,8 @@ implements DocAction
 		{
 			BigDecimal disposalAmt = Env.ZERO;
 			BigDecimal accumDeprAmt = Env.ZERO;
-			IAcctSchemaInfo acctSchema = AcctInfoServices.getAcctSchemaInfoService().get(assetwk.getC_AcctSchema_ID());
-			if (acctSchema.getRecord().getC_Currency_ID() != getC_Currency_ID()) 
+			IAcctSchemaModel acctSchema = AcctInfoServices.getAcctSchemaInfoService().get(assetwk.getC_AcctSchema_ID());
+			if (acctSchema.getAcctSchema().getC_Currency_ID() != getC_Currency_ID()) 
 			{
 				disposalAmt  =  assetwk.getA_Asset_Cost();
 				accumDeprAmt = assetwk.getA_Accumulated_Depr();

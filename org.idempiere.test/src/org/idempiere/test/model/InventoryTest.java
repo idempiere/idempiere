@@ -35,7 +35,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Properties;
 
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.model.MAttributeSet;
 import org.compiere.model.MAttributeSetInstance;
 import org.compiere.model.MBPartner;
@@ -113,18 +113,18 @@ public class InventoryTest extends AbstractTestCase {
 	@Test
 	public void testCostAdjustmentLineBeforeSave() {
 		MClient client = MClient.get(Env.getCtx());
-		IAcctSchemaInfo as = client.getAcctSchema();
+		IAcctSchemaModel as = client.getAcctSchema();
 		MProduct product = new MProduct(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id, getTrxName());
-		MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
+		MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getAcctSchema().getCostingMethod());
 		if (cost == null || cost.getCurrentCostPrice().signum() == 0) {
 			createPOAndMRForProduct(DictionaryIDs.M_Product.MULCH.id);
-			cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getRecord().getCostingMethod());
+			cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getAcctSchema().getCostingMethod());
 		}
 		assertNotNull(cost);
 		
 		MInventory inventory = new MInventory(Env.getCtx(), 0, getTrxName());
 		inventory.setC_DocType_ID(DictionaryIDs.C_DocType.COST_ADJUSTMENT.id);
-		inventory.setCostingMethod(as.getRecord().getCostingMethod());
+		inventory.setCostingMethod(as.getAcctSchema().getCostingMethod());
 		inventory.saveEx();
 		
 		MInventoryLine line = new MInventoryLine(Env.getCtx(), 0, getTrxName());
@@ -147,7 +147,7 @@ public class InventoryTest extends AbstractTestCase {
 		String trxName = getTrxName();
 		
 		MClient client = MClient.get(ctx);
-		IAcctSchemaInfo as = client.getAcctSchema();
+		IAcctSchemaModel as = client.getAcctSchema();
 		
 		// create purchase order
 		MOrder order = new MOrder(ctx, 0, trxName);
@@ -190,7 +190,7 @@ public class InventoryTest extends AbstractTestCase {
 		
 		MInventory inventory = new MInventory(ctx, 0, trxName);
 		inventory.setC_DocType_ID(DictionaryIDs.C_DocType.MATERIAL_PHYSICAL_INVENTORY.id);
-		inventory.setCostingMethod(as.getRecord().getCostingMethod());
+		inventory.setCostingMethod(as.getAcctSchema().getCostingMethod());
 		inventory.saveEx();
 
 		MInventoryLine iline = new MInventoryLine(inventory,

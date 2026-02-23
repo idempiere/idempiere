@@ -23,7 +23,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.base.acct.AcctInfoServices;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -246,7 +246,7 @@ public class MClientInfo extends X_AD_ClientInfo implements ImmutablePOSupport
 	}
 
 	/**	Account Schema				*/
-	private IAcctSchemaInfo 		m_acctSchema = null;
+	private IAcctSchemaModel 		m_acctSchema = null;
 	/** New Record					*/
 	private boolean				m_createNew = false;
 
@@ -254,7 +254,7 @@ public class MClientInfo extends X_AD_ClientInfo implements ImmutablePOSupport
 	 * 	Get primary Acct Schema
 	 *	@return acct schema
 	 */
-	public IAcctSchemaInfo getMAcctSchema1()
+	public IAcctSchemaModel getMAcctSchema1()
 	{
 		if (m_acctSchema == null && getC_AcctSchema1_ID() != 0)
 		{
@@ -274,7 +274,7 @@ public class MClientInfo extends X_AD_ClientInfo implements ImmutablePOSupport
 		if (m_acctSchema == null)
 			getMAcctSchema1();
 		if (m_acctSchema != null)
-			return m_acctSchema.getRecord().getC_Currency_ID();
+			return m_acctSchema.getAcctSchema().getC_Currency_ID();
 		return 0;
 	}	//	getC_Currency_ID
 

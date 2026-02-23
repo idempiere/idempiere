@@ -25,11 +25,11 @@ package org.idempiere.acct.info;
 import java.sql.Timestamp;
 import java.util.Arrays;
 
-import org.adempiere.base.acct.info.IAccountInfo;
-import org.adempiere.base.acct.info.IAcctSchemaDefaultInfo;
-import org.adempiere.base.acct.info.IAcctSchemaElementInfo;
-import org.adempiere.base.acct.info.IAcctSchemaGLInfo;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IAcctSchemaDefaultModel;
+import org.adempiere.base.acct.model.IAcctSchemaElementModel;
+import org.adempiere.base.acct.model.IAcctSchemaGLModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.model.I_C_AcctSchema;
 import org.compiere.model.MCurrency;
 import org.compiere.model.PO;
@@ -40,11 +40,11 @@ import org.idempiere.acct.model.MAcctSchemaElement;
 import org.idempiere.acct.model.MAcctSchemaGL;
 
 /**
- * Wrapper for {@link MAcctSchema} to provide {@link IAcctSchemaInfo} access.
+ * Wrapper for {@link MAcctSchema} to provide {@link IAcctSchemaModel} access.
  * 
  * @author etantg
  */
-public class AcctSchemaInfo implements IAcctSchemaInfo {
+public class AcctSchemaInfo implements IAcctSchemaModel {
 	
 	private final MAcctSchema schema;
 	
@@ -59,7 +59,7 @@ public class AcctSchemaInfo implements IAcctSchemaInfo {
 	}
 	
 	@Override
-	public I_C_AcctSchema getRecord() {
+	public I_C_AcctSchema getAcctSchema() {
 		return schema;
 	}
 
@@ -69,49 +69,49 @@ public class AcctSchemaInfo implements IAcctSchemaInfo {
 	}
 	
 	@Override
-	public IAcctSchemaElementInfo[] getAcctSchemaElementsInfo() {
+	public IAcctSchemaElementModel[] getAcctSchemaElementsModels() {
 		MAcctSchemaElement[] elements = schema.getAcctSchemaElements();
 		return AcctSchemaElementInfo.wrapStream(elements);
 	}
 
 	@Override
-	public IAcctSchemaElementInfo getAcctSchemaElementInfo(String elementType) {
+	public IAcctSchemaElementModel getAcctSchemaElementModel(String elementType) {
 		MAcctSchemaElement element = schema.getAcctSchemaElement(elementType);
 		return AcctSchemaElementInfo.wrap(element);
 	}
 
 	@Override
-	public IAcctSchemaGLInfo getAcctSchemaGLInfo() {
+	public IAcctSchemaGLModel getAcctSchemaGLModel() {
 		MAcctSchemaGL schemaGL = schema.getAcctSchemaGL();
 		return AcctSchemaGLInfo.wrap(schemaGL);
 	}
 
 	@Override
-	public IAcctSchemaDefaultInfo getAcctSchemaDefaultInfo() {
+	public IAcctSchemaDefaultModel getAcctSchemaDefaultModel() {
 		MAcctSchemaDefault schemaDefault = schema.getAcctSchemaDefault();
 		return AcctSchemaDefaultInfo.wrap(schemaDefault);
 	}
 
 	@Override
-	public IAccountInfo getSuspenseBalancing_AcctInfo() {
+	public IAccountModel getSuspenseBalancing_AcctModel() {
 		MAccount account = schema.getSuspenseBalancing_Acct();
 		return AccountInfo.wrap(account);
 	}
 
 	@Override
-	public IAccountInfo getCurrencyBalancing_AcctInfo() {
+	public IAccountModel getCurrencyBalancing_AcctModel() {
 		MAccount account = schema.getCurrencyBalancing_Acct();
 		return AccountInfo.wrap(account);
 	}
 
 	@Override
-	public IAccountInfo getDueTo_AcctInfo(String segment) {
+	public IAccountModel getDueTo_AcctModel(String segment) {
 		MAccount account = schema.getDueTo_Acct(segment);
 		return AccountInfo.wrap(account);
 	}
 
 	@Override
-	public IAccountInfo getDueFrom_AcctInfo(String segment) {
+	public IAccountModel getDueFrom_AcctModel(String segment) {
 		MAccount account = schema.getDueFrom_Acct(segment);
 		return AccountInfo.wrap(account);
 	}
@@ -216,19 +216,19 @@ public class AcctSchemaInfo implements IAcctSchemaInfo {
 		return schema.getCurrency();
 	}
 	
-	public static IAcctSchemaInfo wrap(MAcctSchema schema) {
+	public static IAcctSchemaModel wrap(MAcctSchema schema) {
         if (schema == null)
             return null;
-        if (schema instanceof IAcctSchemaInfo)
-            return (IAcctSchemaInfo) schema;
+        if (schema instanceof IAcctSchemaModel)
+            return (IAcctSchemaModel) schema;
         return new AcctSchemaInfo(schema);
     }
 	
-	public static IAcctSchemaInfo[] wrapStream(MAcctSchema[] schemas) {
-		return schemas == null ? new IAcctSchemaInfo[0] :
+	public static IAcctSchemaModel[] wrapStream(MAcctSchema[] schemas) {
+		return schemas == null ? new IAcctSchemaModel[0] :
 		       Arrays.stream(schemas)
 		             .map(AcctSchemaInfo::wrap)  // wrap each element
-		             .toArray(IAcctSchemaInfo[]::new);
+		             .toArray(IAcctSchemaModel[]::new);
     }
 
 }

@@ -24,18 +24,18 @@ package org.idempiere.acct.info;
 
 import java.util.ArrayList;
 
-import org.adempiere.base.acct.info.IAcctSchemaDefaultInfo;
+import org.adempiere.base.acct.model.IAcctSchemaDefaultModel;
 import org.compiere.model.I_C_AcctSchema_Default;
 import org.compiere.model.PO;
 import org.compiere.util.KeyNamePair;
 import org.idempiere.acct.model.MAcctSchemaDefault;
 
 /**
- * Wrapper for {@link MAcctSchemaDefault} to provide {@link IAcctSchemaDefaultInfo} access.
+ * Wrapper for {@link MAcctSchemaDefault} to provide {@link IAcctSchemaDefaultModel} access.
  * 
  * @author etantg
  */
-public class AcctSchemaDefaultInfo implements IAcctSchemaDefaultInfo {
+public class AcctSchemaDefaultInfo implements IAcctSchemaDefaultModel {
 	
 	private final MAcctSchemaDefault schemaDefault;
 	
@@ -50,7 +50,7 @@ public class AcctSchemaDefaultInfo implements IAcctSchemaDefaultInfo {
 	}
 	
 	@Override
-	public I_C_AcctSchema_Default getRecord() {
+	public I_C_AcctSchema_Default getAcctSchemaDefault() {
 		return schemaDefault;
 	}
 
@@ -60,7 +60,7 @@ public class AcctSchemaDefaultInfo implements IAcctSchemaDefaultInfo {
 	}
 
 	@Override
-	public ArrayList<KeyNamePair> getAcctInfo() {
+	public ArrayList<KeyNamePair> getAcctModel() {
 		return schemaDefault.getAcctInfo();
 	}
 
@@ -69,11 +69,11 @@ public class AcctSchemaDefaultInfo implements IAcctSchemaDefaultInfo {
 		return schemaDefault.setValue(columnName, value);
 	}
 	
-	public static IAcctSchemaDefaultInfo wrap(MAcctSchemaDefault schemaDefault) {
+	public static IAcctSchemaDefaultModel wrap(MAcctSchemaDefault schemaDefault) {
         if (schemaDefault == null)
             return null;
-        if (schemaDefault instanceof IAcctSchemaDefaultInfo)
-            return (IAcctSchemaDefaultInfo) schemaDefault;
+        if (schemaDefault instanceof IAcctSchemaDefaultModel)
+            return (IAcctSchemaDefaultModel) schemaDefault;
         return new AcctSchemaDefaultInfo(schemaDefault);
     }
 	

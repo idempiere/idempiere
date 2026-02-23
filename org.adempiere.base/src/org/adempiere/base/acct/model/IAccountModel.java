@@ -20,49 +20,20 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  **********************************************************************/
-package org.adempiere.base.acct.info;
+package org.adempiere.base.acct.model;
 
-import java.sql.Timestamp;
-
-import org.adempiere.base.acct.IAcctInfo;
-import org.compiere.model.I_C_AcctSchema;
-import org.compiere.model.MCurrency;
+import org.adempiere.base.acct.IAcctModel;
+import org.compiere.model.I_C_ValidCombination;
 
 /**
- * Interface for accounting schema info objects.
+ * Interface for account info objects.
  * 
  * @author etantg
  */
-public interface IAcctSchemaInfo extends IAcctInfo {
-	public I_C_AcctSchema getRecord();
+public interface IAccountModel extends IAcctModel {
+	public I_C_ValidCombination getCombination();
 	
-	public boolean isAcctSchemaElement(String segmentType);
-	public boolean isSuspenseBalancing();
-	public boolean isCurrencyBalancing();
-	public boolean isSkipOrg(int AD_Org_ID);
-	public int getStdPrecision();
-	public int getCostingPrecision();
-	public void checkCosting();
-	public boolean isCostingLevelClient();
-	public boolean isCostingLevelOrg();
-	public boolean isCostingLevelBatch();
-	public boolean isCreatePOCommitment();
-	public boolean isCreateSOCommitment();
-	public boolean isCreateReservation();
-	public String getTaxCorrectionType();
-	public boolean isTaxCorrection();
-	public boolean isTaxCorrectionDiscount();
-	public boolean isTaxCorrectionWriteOff();
-	public boolean isAcctDateInRange(Timestamp dateAcct);
-	public boolean isBackDateTrxAllowed(Timestamp dateAcct);
-	public MCurrency getCurrency();
-	
-	public IAcctSchemaElementInfo[] getAcctSchemaElementsInfo();
-	public IAcctSchemaElementInfo getAcctSchemaElementInfo(String elementType);
-	public IAcctSchemaGLInfo getAcctSchemaGLInfo();
-	public IAcctSchemaDefaultInfo getAcctSchemaDefaultInfo();
-	public IAccountInfo getSuspenseBalancing_AcctInfo();
-	public IAccountInfo getCurrencyBalancing_AcctInfo();
-	public IAccountInfo getDueTo_AcctInfo(String segment);
-	public IAccountInfo getDueFrom_AcctInfo(String segment);
+	public boolean isActiva();
+	public boolean isBalanceSheet();
+	public IElementValueModel getAccountModel();
 }

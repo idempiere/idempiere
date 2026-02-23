@@ -21,8 +21,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.info.IAccountInfo;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.model.MRequisition;
 import org.compiere.model.MRequisitionLine;
 import org.compiere.model.ProductCost;
@@ -47,7 +47,7 @@ public class Doc_Requisition extends Doc
 	 * 	@param rs record
 	 * 	@param trxName trx
 	 */
-	public Doc_Requisition (IAcctSchemaInfo as, ResultSet rs, String trxName)
+	public Doc_Requisition (IAcctSchemaModel as, ResultSet rs, String trxName)
 	{
 		super (as, MRequisition.class, rs, DOCTYPE_PurchaseRequisition, trxName);
 	}	//	Doc_Requisition
@@ -118,11 +118,11 @@ public class Doc_Requisition extends Doc
 	 * @return Fact
 	 */
 	@Override
-	public ArrayList<Fact> createFacts (IAcctSchemaInfo as)
+	public ArrayList<Fact> createFacts (IAcctSchemaModel as)
 	{
 		ArrayList<Fact> facts = new ArrayList<Fact>();
 		Fact fact = new Fact (this, as, Fact.POST_Reservation);
-		setC_Currency_ID(as.getRecord().getC_Currency_ID());
+		setC_Currency_ID(as.getAcctSchema().getC_Currency_ID());
 		//
 		@SuppressWarnings("unused")
 		BigDecimal grossAmt = getAmount (Doc.AMTTYPE_Gross);
@@ -136,12 +136,12 @@ public class Doc_Requisition extends Doc
 				BigDecimal cost = line.getAmtSource();
 				total = total.add (cost);
 				// Account
-				IAccountInfo expense = line.getAccount(ProductCost.ACCTTYPE_P_Expense, as);
+				IAccountModel expense = line.getAccount(ProductCost.ACCTTYPE_P_Expense, as);
 				//
-				fact.createLine (line, expense, as.getRecord().getC_Currency_ID(), cost, null);
+				fact.createLine (line, expense, as.getAcctSchema().getC_Currency_ID(), cost, null);
 			}
 			// Offset
-			IAccountInfo offset = getAccount (ACCTTYPE_CommitmentOffset, as);
+			IAccountModel offset = getAccount (ACCTTYPE_CommitmentOffset, as);
 			if (offset == null)
 			{
 				p_Error = "@NotFound@ @CommitmentOffset_Acct@";

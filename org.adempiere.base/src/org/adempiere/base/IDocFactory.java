@@ -17,7 +17,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.acct.Doc;
 import org.compiere.model.MTable;
 import org.compiere.util.CLogger;
@@ -38,7 +38,7 @@ public interface IDocFactory {
 	 *  @param trxName transaction name
 	 *  @return Document or null
 	 */
-	public default Doc getDocument(IAcctSchemaInfo as, int AD_Table_ID, int Record_ID, String trxName) {
+	public default Doc getDocument(IAcctSchemaModel as, int AD_Table_ID, int Record_ID, String trxName) {
 		String tableName = MTable.getTableName(Env.getCtx(), AD_Table_ID);
 		//
 		Doc doc = null;
@@ -68,5 +68,5 @@ public interface IDocFactory {
 	 *  @param trxName transaction name
 	 *  @return Document
 	 */
-	public Doc getDocument(IAcctSchemaInfo as, int AD_Table_ID, ResultSet rs, String trxName);
+	public Doc getDocument(IAcctSchemaModel as, int AD_Table_ID, ResultSet rs, String trxName);
 }

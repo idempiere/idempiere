@@ -25,7 +25,7 @@ package org.idempiere.acct.service;
 import java.util.Properties;
 
 import org.adempiere.base.acct.AcctInfoService;
-import org.adempiere.base.acct.info.IElementInfo;
+import org.adempiere.base.acct.model.IElementModel;
 import org.adempiere.base.acct.service.IElementInfoService;
 import org.compiere.model.MClient;
 import org.idempiere.acct.info.ElementInfo;
@@ -40,13 +40,13 @@ import org.idempiere.acct.model.MElement;
 public class ElementInfoService implements IElementInfoService {
 
 	@Override
-	public IElementInfo create(Properties ctx, int C_Element_ID, String trxName) {
+	public IElementModel create(Properties ctx, int C_Element_ID, String trxName) {
 		MElement element = new MElement(ctx, C_Element_ID, trxName);
 		return ElementInfo.wrap(element);
 	}
 
 	@Override
-	public IElementInfo create(MClient client, String Name, String ElementType, int AD_Tree_ID) {
+	public IElementModel create(MClient client, String Name, String ElementType, int AD_Tree_ID) {
 		MElement element = new MElement(client, Name, ElementType, AD_Tree_ID);
 		return ElementInfo.wrap(element);
 	}

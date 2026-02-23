@@ -36,8 +36,8 @@ import java.util.TreeMap;
 
 import org.adempiere.base.acct.AcctInfoServices;
 import org.adempiere.base.acct.constants.IElementValueConstants;
-import org.adempiere.base.acct.info.IAccountInfo;
-import org.adempiere.base.acct.info.IElementValueInfo;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IElementValueModel;
 import org.compiere.model.I_M_Product;
 import org.compiere.model.I_M_Product_Acct;
 import org.compiere.model.MPriceList;
@@ -137,16 +137,16 @@ public class ExpenseTypesFromAccounts extends SvrProcess {
         }
 
         // Read all existing valid combinations comparison
-        IAccountInfo validComb;
+        IAccountModel validComb;
         String whereClause = "C_AcctSchema_ID=? and AD_Client_ID=? and AD_Org_ID=0";
         ArrayList<Object> params = new ArrayList<Object>();
         params.add(m_acctSchemaId);
         params.add(m_clientId);
-        List<IAccountInfo> validCombs = AcctInfoServices.getAccountInfoService().list(getCtx(), whereClause, params, get_TrxName());
-        Map<Integer, IAccountInfo> validCombMap = new TreeMap<Integer, IAccountInfo>();
-        for (Iterator<IAccountInfo> it = validCombs.iterator(); it.hasNext();) {
+        List<IAccountModel> validCombs = AcctInfoServices.getAccountInfoService().list(getCtx(), whereClause, params, get_TrxName());
+        Map<Integer, IAccountModel> validCombMap = new TreeMap<Integer, IAccountModel>();
+        for (Iterator<IAccountModel> it = validCombs.iterator(); it.hasNext();) {
             validComb = it.next();
-            validCombMap.put(validComb.getRecord().getAccount_ID(), validComb);
+            validCombMap.put(validComb.getCombination().getAccount_ID(), validComb);
         }
 
         // Read all accounttypes that fit the given criteria.
@@ -156,8 +156,8 @@ public class ExpenseTypesFromAccounts extends SvrProcess {
         params.add(m_startElement);
         params.add(m_endElement);
         params.add(m_clientId);
-        List<IElementValueInfo> result = AcctInfoServices.getElementValueInfoService().list(getCtx(), whereClause, params, get_TrxName());
-        IElementValueInfo elem;
+        List<IElementValueModel> result = AcctInfoServices.getElementValueInfoService().list(getCtx(), whereClause, params, get_TrxName());
+        IElementValueModel elem;
         MProductPrice priceRec;
         X_M_Product_Acct productAcct;
         String expenseItemValue;
@@ -165,9 +165,9 @@ public class ExpenseTypesFromAccounts extends SvrProcess {
         int addCount = 0;
         int skipCount = 0;
 
-        for (Iterator<IElementValueInfo> it = result.iterator(); it.hasNext();) {
+        for (Iterator<IElementValueModel> it = result.iterator(); it.hasNext();) {
             elem = it.next();
-            expenseItemValue = m_productValuePrefix + elem.getRecord().getValue() + m_productValueSuffix;
+            expenseItemValue = m_productValuePrefix + elem.getElementValue().getValue() + m_productValueSuffix;
             // See if a product with this key already exists
             product = productMap.get(expenseItemValue);
             if (product==null) {
@@ -175,8 +175,8 @@ public class ExpenseTypesFromAccounts extends SvrProcess {
                 product = new MProduct(getCtx(), 0, get_TrxName());
                 product.set_ValueOfColumn("AD_Client_ID", Integer.valueOf(m_clientId));
                 product.setValue(expenseItemValue);
-                product.setName(elem.getRecord().getName());
-                product.setDescription(elem.getRecord().getDescription());
+                product.setName(elem.getElementValue().getName());
+                product.setDescription(elem.getElementValue().getDescription());
                 product.setIsActive(true);
                 product.setProductType(MProduct.PRODUCTTYPE_ExpenseType);
                 product.setM_Product_Category_ID(m_productCategoryId);
@@ -196,15 +196,15 @@ public class ExpenseTypesFromAccounts extends SvrProcess {
 
                 // Set the revenue and expense accounting of the product to the given account element
                 // Get the valid combination
-                validComb = validCombMap.get(elem.getRecord().getC_ElementValue_ID());
+                validComb = validCombMap.get(elem.getElementValue().getC_ElementValue_ID());
                 if (validComb==null) {
                     // Create new valid combination
                     validComb = AcctInfoServices.getAccountInfoService().create(getCtx(), 0, get_TrxName());
                     validComb.getPO().set_ValueOfColumn("AD_Client_ID", Integer.valueOf(m_clientId));
-                    validComb.getRecord().setAD_Org_ID(0);
-                    validComb.getRecord().setAlias(elem.getRecord().getValue());
-                    validComb.getRecord().setAccount_ID(elem.getPO().get_ID());
-                    validComb.getRecord().setC_AcctSchema_ID(m_acctSchemaId);
+                    validComb.getCombination().setAD_Org_ID(0);
+                    validComb.getCombination().setAlias(elem.getElementValue().getValue());
+                    validComb.getCombination().setAccount_ID(elem.getPO().get_ID());
+                    validComb.getCombination().setC_AcctSchema_ID(m_acctSchemaId);
                     validComb.getPO().saveEx(get_TrxName());
                 }
 

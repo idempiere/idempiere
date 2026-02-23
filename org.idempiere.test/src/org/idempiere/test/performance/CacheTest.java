@@ -58,7 +58,7 @@ import org.adempiere.base.IResourceFinder;
 import org.adempiere.base.LookupFactoryHelper;
 import org.adempiere.base.ServiceQuery;
 import org.adempiere.base.acct.AcctInfoServices;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.model.IAddressValidation;
 import org.adempiere.model.IShipmentProcessor;
 import org.adempiere.model.ITaxProvider;
@@ -588,7 +588,7 @@ public class CacheTest extends AbstractTestCase {
 			String error = DocumentEngine.postImmediate(Env.getCtx(), invoice.getAD_Client_ID(), MInvoice.Table_ID, invoice.get_ID(), true, getTrxName());
 			assertNull(error, "Error posting invoice: " + error);
 		}
-		IAcctSchemaInfo as = AcctInfoServices.getAcctSchemaInfoService().get(C_AcctSchema_ID);
+		IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get(C_AcctSchema_ID);
 		Doc doc = DocManager.getDocument(as, MInvoice.Table_ID, invoice.get_ID(), getTrxName());
 		assertNotNull(doc, "Failed load acct doc for invoice");
 		cache = findByNameAndKey(cacheName, cacheKey);

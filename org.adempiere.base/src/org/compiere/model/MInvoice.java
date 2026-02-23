@@ -38,7 +38,7 @@ import org.adempiere.base.CreditStatus;
 import org.adempiere.base.ICreditManager;
 import org.adempiere.base.acct.AcctInfoServices;
 import org.adempiere.base.acct.constants.IAcctSchemaConstants;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.BPartnerNoAddressException;
 import org.adempiere.exceptions.BackDateTrxNotAllowedException;
@@ -1258,8 +1258,8 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		if (!isProcessed())
 		{
 			MClientInfo info = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName()); 
-			IAcctSchemaInfo as = AcctInfoServices.getAcctSchemaInfoService().get (getCtx(), info.getC_AcctSchema1_ID(), get_TrxName());
-			if (as.getRecord().getC_Currency_ID() != getC_Currency_ID())
+			IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get (getCtx(), info.getC_AcctSchema1_ID(), get_TrxName());
+			if (as.getAcctSchema().getC_Currency_ID() != getC_Currency_ID())
 			{
 				if (isOverrideCurrencyRate())
 				{
@@ -3527,12 +3527,12 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 	private boolean periodClosedCheckForBackDateTrx(Timestamp reversalDate)
 	{
 		MClientInfo info = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName()); 
-		IAcctSchemaInfo as = info.getMAcctSchema1();
-		if (!IAcctSchemaConstants.COSTINGMETHOD_AveragePO.equals(as.getRecord().getCostingMethod()) 
-				&& !IAcctSchemaConstants.COSTINGMETHOD_AverageInvoice.equals(as.getRecord().getCostingMethod()))
+		IAcctSchemaModel as = info.getMAcctSchema1();
+		if (!IAcctSchemaConstants.COSTINGMETHOD_AveragePO.equals(as.getAcctSchema().getCostingMethod()) 
+				&& !IAcctSchemaConstants.COSTINGMETHOD_AverageInvoice.equals(as.getAcctSchema().getCostingMethod()))
 			return true;
 		
-		if (as.getRecord().getBackDateDay() == 0)
+		if (as.getAcctSchema().getBackDateDay() == 0)
 			return true;
 		
 		Timestamp dateAcct = reversalDate != null ? reversalDate : getDateAcct();
@@ -3563,17 +3563,17 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			int AD_Org_ID = iLine.getAD_Org_ID();
 			int M_AttributeSetInstance_ID = iLine.getM_AttributeSetInstance_ID();
 
-			if (IAcctSchemaConstants.COSTINGLEVEL_Client.equals(as.getRecord().getCostingLevel()))
+			if (IAcctSchemaConstants.COSTINGLEVEL_Client.equals(as.getAcctSchema().getCostingLevel()))
 			{
 				AD_Org_ID = 0;
 				M_AttributeSetInstance_ID = 0;
 			}
-			else if (IAcctSchemaConstants.COSTINGLEVEL_Organization.equals(as.getRecord().getCostingLevel()))
+			else if (IAcctSchemaConstants.COSTINGLEVEL_Organization.equals(as.getAcctSchema().getCostingLevel()))
 				M_AttributeSetInstance_ID = 0;
-			else if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(as.getRecord().getCostingLevel()))
+			else if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(as.getAcctSchema().getCostingLevel()))
 				AD_Org_ID = 0;
 			
-			MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), as.getRecord().getCostingMethod(), AD_Org_ID);
+			MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), as.getAcctSchema().getCostingMethod(), AD_Org_ID);
 			
 			int M_CostDetail_ID = 0;
 			
@@ -3595,13 +3595,13 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 						M_CostDetail_ID = cd.getM_CostDetail_ID();
 					else {
 						MCostHistory history = MCostHistory.get(getCtx(), getAD_Client_ID(), AD_Org_ID, lca.getM_Product_ID(), 
-								as.getRecord().getM_CostType_ID(), as.getRecord().getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(),
+								as.getAcctSchema().getM_CostType_ID(), as.getAcctSchema().getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(),
 								M_AttributeSetInstance_ID, dateAcct, get_TrxName());
 						if (history != null)
 							M_CostDetail_ID = history.getM_CostDetail_ID();
 					}
 					if (M_CostDetail_ID > 0) {
-						MCostDetail.periodClosedCheckForDocsAfterBackDateTrx(getAD_Client_ID(), as.getRecord().getC_AcctSchema_ID(), 
+						MCostDetail.periodClosedCheckForDocsAfterBackDateTrx(getAD_Client_ID(), as.getAcctSchema().getC_AcctSchema_ID(), 
 								lca.getM_Product_ID(), M_CostDetail_ID, dateAcct, get_TrxName());
 					}
 				}
@@ -3612,13 +3612,13 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 					M_CostDetail_ID = cd.getM_CostDetail_ID();
 				else {
 					MCostHistory history = MCostHistory.get(getCtx(), getAD_Client_ID(), AD_Org_ID, iLine.getM_Product_ID(), 
-							as.getRecord().getM_CostType_ID(), as.getRecord().getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(),
+							as.getAcctSchema().getM_CostType_ID(), as.getAcctSchema().getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(),
 							M_AttributeSetInstance_ID, dateAcct, get_TrxName());
 					if (history != null)
 						M_CostDetail_ID = history.getM_CostDetail_ID();
 				}
 				if (M_CostDetail_ID > 0) {
-					MCostDetail.periodClosedCheckForDocsAfterBackDateTrx(getAD_Client_ID(), as.getRecord().getC_AcctSchema_ID(), 
+					MCostDetail.periodClosedCheckForDocsAfterBackDateTrx(getAD_Client_ID(), as.getAcctSchema().getC_AcctSchema_ID(), 
 							iLine.getM_Product_ID(), M_CostDetail_ID, dateAcct, get_TrxName());
 				}
 			}			

@@ -19,7 +19,7 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.adempiere.base.acct.info.IFactAcctInfo;
+import org.adempiere.base.acct.model.IFactAcctModel;
 
 /**
  * 	Tax Declaration Accounting Model
@@ -71,15 +71,15 @@ public class MTaxDeclarationAcct extends X_C_TaxDeclarationAcct
 	 *	@param parent parent
 	 *	@param fact fact
 	 */
-	public MTaxDeclarationAcct (MTaxDeclaration parent, IFactAcctInfo fact)
+	public MTaxDeclarationAcct (MTaxDeclaration parent, IFactAcctModel fact)
 	{
 		super (parent.getCtx(), 0, parent.get_TrxName());
-		set_ValueNoCheck ("AD_Client_ID", Integer.valueOf(fact.getRecord().getAD_Client_ID()));
-		setAD_Org_ID(fact.getRecord().getAD_Org_ID());
+		set_ValueNoCheck ("AD_Client_ID", Integer.valueOf(fact.getFactAcct().getAD_Client_ID()));
+		setAD_Org_ID(fact.getFactAcct().getAD_Org_ID());
 		setC_TaxDeclaration_ID(parent.getC_TaxDeclaration_ID());
 		//
-		setFact_Acct_ID (fact.getRecord().getFact_Acct_ID());
-		setC_AcctSchema_ID (fact.getRecord().getC_AcctSchema_ID());
+		setFact_Acct_ID (fact.getFactAcct().getFact_Acct_ID());
+		setC_AcctSchema_ID (fact.getFactAcct().getC_AcctSchema_ID());
 	}	//	MTaxDeclarationAcct
 
 }	//	MTaxDeclarationAcct

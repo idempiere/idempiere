@@ -30,11 +30,11 @@ import java.util.logging.Level;
 import org.adempiere.base.acct.AcctInfoServices;
 import org.adempiere.base.acct.constants.IElementConstants;
 import org.adempiere.base.acct.constants.IGLCategoryConstants;
-import org.adempiere.base.acct.info.IAccountInfo;
-import org.adempiere.base.acct.info.IAcctSchemaInfo;
-import org.adempiere.base.acct.info.IElementInfo;
-import org.adempiere.base.acct.info.IElementValueInfo;
-import org.adempiere.base.acct.info.IGLCategoryInfo;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
+import org.adempiere.base.acct.model.IElementModel;
+import org.adempiere.base.acct.model.IElementValueModel;
+import org.adempiere.base.acct.model.IGLCategoryModel;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.ProcessUtil;
 import org.compiere.process.ProcessInfo;
@@ -104,11 +104,11 @@ public final class MSetup
 	private String          m_stdValues;
 	private String          m_stdValuesOrg;
 	//
-	private NaturalAccountMap<String,IElementValueInfo> m_nap = null;
+	private NaturalAccountMap<String,IElementValueModel> m_nap = null;
 	//
 	private MClient			m_client;
 	private MOrg			m_org;
-	private IAcctSchemaInfo		m_as;
+	private IAcctSchemaModel		m_as;
 	//
 	private int     		AD_User_ID;
 	private String  		AD_User_Name;
@@ -496,7 +496,7 @@ public final class MSetup
 
 		//	Create Account Elements
 		name = m_clientName + " " + Msg.translate(m_lang, "Account_ID");
-		IElementInfo element = AcctInfoServices.getElementInfoService().create(m_client, name, 
+		IElementModel element = AcctInfoServices.getElementInfoService().create(m_client, name, 
 				IElementConstants.ELEMENTTYPE_Account, m_AD_Tree_Account_ID);
 		if (!element.getPO().save())
 		{
@@ -507,11 +507,11 @@ public final class MSetup
 			m_trx.close();
 			return false;
 		}
-		int C_Element_ID = element.getRecord().getC_Element_ID();
+		int C_Element_ID = element.getElement().getC_Element_ID();
 		m_info.append(Msg.translate(m_lang, "C_Element_ID")).append("=").append(name).append("\n");
 
 		//	Create Account Values
-		m_nap = new NaturalAccountMap<String,IElementValueInfo>(m_ctx, m_trx.getTrxName());
+		m_nap = new NaturalAccountMap<String,IElementValueModel>(m_ctx, m_trx.getTrxName());
 		String errMsg = m_nap.parseFile(AccountingFile);
 		if (errMsg.length() != 0)
 		{
@@ -558,7 +558,7 @@ public final class MSetup
 			return false;
 		}
 		//  Info
-		m_info.append(Msg.translate(m_lang, "C_AcctSchema_ID")).append("=").append(m_as.getRecord().getName()).append("\n");
+		m_info.append(Msg.translate(m_lang, "C_AcctSchema_ID")).append("=").append(m_as.getAcctSchema().getName()).append("\n");
 
 		/**
 		 *  Create AccountingSchema Elements (Structure)
@@ -643,7 +643,7 @@ public final class MSetup
 					sqlCmd = new StringBuilder ("INSERT INTO C_AcctSchema_Element(");
 					sqlCmd.append(m_stdColumns).append(",C_AcctSchema_Element_ID,C_AcctSchema_ID,")
 						.append("ElementType,Name,SeqNo,IsMandatory,IsBalanced,C_AcctSchema_Element_UU) VALUES (");
-					sqlCmd.append(m_stdValues).append(",").append(C_AcctSchema_Element_ID).append(",").append(m_as.getRecord().getC_AcctSchema_ID()).append(",")
+					sqlCmd.append(m_stdValues).append(",").append(C_AcctSchema_Element_ID).append(",").append(m_as.getAcctSchema().getC_AcctSchema_ID()).append(",")
 						.append("'").append(ElementType).append("','").append(name).append("',").append(SeqNo).append(",'")
 						.append(IsMandatory).append("','").append(IsBalanced).append("',").append(DB.TO_STRING(Util.generateUUIDv7().toString())).append(")");
 					no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
@@ -843,7 +843,7 @@ public final class MSetup
 
 		//  Update ClientInfo
 		sqlCmd = new StringBuilder ("UPDATE AD_ClientInfo SET ");
-		sqlCmd.append("C_AcctSchema1_ID=").append(m_as.getRecord().getC_AcctSchema_ID())
+		sqlCmd.append("C_AcctSchema1_ID=").append(m_as.getAcctSchema().getC_AcctSchema_ID())
 			.append(", C_Calendar_ID=").append(m_calendar.getC_Calendar_ID())
 			.append(" WHERE AD_Client_ID=").append(m_client.getAD_Client_ID());
 		no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
@@ -904,7 +904,7 @@ public final class MSetup
 			}
 		}
 		acct.setAD_Client_ID(m_client.getAD_Client_ID());
-		acct.set_Value(I_C_AcctSchema.COLUMNNAME_C_AcctSchema_ID, m_as.getRecord().getC_AcctSchema_ID());
+		acct.set_Value(I_C_AcctSchema.COLUMNNAME_C_AcctSchema_ID, m_as.getAcctSchema().getC_AcctSchema_ID());
 		//
 		if (!acct.save()) {
 			throw new AdempiereUserError(CLogger.retrieveErrorString(table.getName() + " not created"));
@@ -927,14 +927,14 @@ public final class MSetup
 			throw new AdempiereUserError("Account not defined: " + key);
 		}
 
-		IAccountInfo vc = AcctInfoServices.getAccountInfoService().getDefault(m_as, true);	//	optional null
-		vc.getRecord().setAD_Org_ID(0);		//	will be overwritten
-		vc.getRecord().setAccount_ID(C_ElementValue_ID);
+		IAccountModel vc = AcctInfoServices.getAccountInfoService().getDefault(m_as, true);	//	optional null
+		vc.getCombination().setAD_Org_ID(0);		//	will be overwritten
+		vc.getCombination().setAccount_ID(C_ElementValue_ID);
 		if (!vc.getPO().save())
 		{
 			throw new AdempiereUserError("Not Saved - Key=" + key + ", C_ElementValue_ID=" + C_ElementValue_ID);
 		}
-		int C_ValidCombination_ID = vc.getRecord().getC_ValidCombination_ID();
+		int C_ValidCombination_ID = vc.getCombination().getC_ValidCombination_ID();
 		if (C_ValidCombination_ID == 0)
 		{
 			throw new AdempiereUserError("No account - Key=" + key + ", C_ElementValue_ID=" + C_ElementValue_ID);
@@ -951,18 +951,18 @@ public final class MSetup
 	 */
 	private int createGLCategory (String Name, String CategoryType, boolean isDefault)
 	{
-		IGLCategoryInfo cat = AcctInfoServices.getGlCategoryInfoService().create(m_ctx, 0, m_trx.getTrxName());
-		cat.getRecord().setAD_Org_ID(0);
-		cat.getRecord().setName(Name);
-		cat.getRecord().setCategoryType(CategoryType);
-		cat.getRecord().setIsDefault(isDefault);
+		IGLCategoryModel cat = AcctInfoServices.getGlCategoryInfoService().create(m_ctx, 0, m_trx.getTrxName());
+		cat.getGLCategory().setAD_Org_ID(0);
+		cat.getGLCategory().setName(Name);
+		cat.getGLCategory().setCategoryType(CategoryType);
+		cat.getGLCategory().setIsDefault(isDefault);
 		if (!cat.getPO().save())
 		{
 			log.log(Level.SEVERE, "GL Category NOT created - " + Name);
 			return 0;
 		}
 		//
-		return cat.getRecord().getGL_Category_ID();
+		return cat.getGLCategory().getGL_Category_ID();
 	}   //  createGLCategory
 
 	/**
@@ -1094,7 +1094,7 @@ public final class MSetup
 			//  Default
 			sqlCmd = new StringBuilder ("UPDATE C_AcctSchema_Element SET ");
 			sqlCmd.append("C_Campaign_ID=").append(C_Campaign_ID);
-			sqlCmd.append(" WHERE C_AcctSchema_ID=").append(m_as.getRecord().getC_AcctSchema_ID());
+			sqlCmd.append(" WHERE C_AcctSchema_ID=").append(m_as.getAcctSchema().getC_AcctSchema_ID());
 			sqlCmd.append(" AND ElementType='MC'");
 			no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 			if (no != 1)
@@ -1126,7 +1126,7 @@ public final class MSetup
 			//  Default
 			sqlCmd = new StringBuilder ("UPDATE C_AcctSchema_Element SET ");
 			sqlCmd.append("C_SalesRegion_ID=").append(C_SalesRegion_ID);
-			sqlCmd.append(" WHERE C_AcctSchema_ID=").append(m_as.getRecord().getC_AcctSchema_ID());
+			sqlCmd.append(" WHERE C_AcctSchema_ID=").append(m_as.getAcctSchema().getC_AcctSchema_ID());
 			sqlCmd.append(" AND ElementType='SR'");
 			no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 			if (no != 1)
@@ -1158,7 +1158,7 @@ public final class MSetup
 			//  Default
 			sqlCmd = new StringBuilder ("UPDATE C_AcctSchema_Element SET ");
 			sqlCmd.append("C_Activity_ID=").append(C_Activity_ID);
-			sqlCmd.append(" WHERE C_AcctSchema_ID=").append(m_as.getRecord().getC_AcctSchema_ID());
+			sqlCmd.append(" WHERE C_AcctSchema_ID=").append(m_as.getAcctSchema().getC_AcctSchema_ID());
 			sqlCmd.append(" AND ElementType='AY'");
 			no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 			if (no != 1)
@@ -1208,7 +1208,7 @@ public final class MSetup
 		//  Default
 		sqlCmd = new StringBuilder ("UPDATE C_AcctSchema_Element SET ");
 		sqlCmd.append("C_BPartner_ID=").append(bp.getC_BPartner_ID());
-		sqlCmd.append(" WHERE C_AcctSchema_ID=").append(m_as.getRecord().getC_AcctSchema_ID());
+		sqlCmd.append(" WHERE C_AcctSchema_ID=").append(m_as.getAcctSchema().getC_AcctSchema_ID());
 		sqlCmd.append(" AND ElementType='BP'");
 		no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 		if (no != 1)
@@ -1281,7 +1281,7 @@ public final class MSetup
 		//  Default
 		sqlCmd = new StringBuilder ("UPDATE C_AcctSchema_Element SET ");
 		sqlCmd.append("M_Product_ID=").append(product.getM_Product_ID());
-		sqlCmd.append(" WHERE C_AcctSchema_ID=").append(m_as.getRecord().getC_AcctSchema_ID());
+		sqlCmd.append(" WHERE C_AcctSchema_ID=").append(m_as.getAcctSchema().getC_AcctSchema_ID());
 		sqlCmd.append(" AND ElementType='PR'");
 		no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 		if (no != 1)
@@ -1473,7 +1473,7 @@ public final class MSetup
 		{
 			sqlCmd = new StringBuilder ("UPDATE C_AcctSchema_Element SET ");
 			sqlCmd.append("C_Project_ID=").append(C_Project_ID);
-			sqlCmd.append(" WHERE C_AcctSchema_ID=").append(m_as.getRecord().getC_AcctSchema_ID());
+			sqlCmd.append(" WHERE C_AcctSchema_ID=").append(m_as.getAcctSchema().getC_AcctSchema_ID());
 			sqlCmd.append(" AND ElementType='PJ'");
 			no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
 			if (no != 1)

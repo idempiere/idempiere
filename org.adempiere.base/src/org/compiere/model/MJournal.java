@@ -26,7 +26,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.base.acct.AcctInfoServices;
-import org.adempiere.base.acct.info.IAcctSchemaGLInfo;
+import org.adempiere.base.acct.model.IAcctSchemaGLModel;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.CLogger;
@@ -497,7 +497,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 			}
 			
 			// bcahya, BF [2789319] No check of Actual, Budget, Statistical attribute
-			if (!line.getAccountElementValue().getRecord().isActive())
+			if (!line.getAccountElementValue().getElementValue().isActive())
 			{
 				m_processMsg = "@InActiveAccount@ - @Line@=" + line.getLine()
 				+ " - " + line.getAccountElementValue();
@@ -519,21 +519,21 @@ public class MJournal extends X_GL_Journal implements DocAction
 			//
 			
 			// bcahya, BF [2789319] No check of Actual, Budget, Statistical attribute
-			if (getPostingType().equals(POSTINGTYPE_Actual) && !line.getAccountElementValue().getRecord().isPostActual())
+			if (getPostingType().equals(POSTINGTYPE_Actual) && !line.getAccountElementValue().getElementValue().isPostActual())
 			{
 				m_processMsg = "@PostingTypeActualError@ - @Line@=" + line.getLine()
 				+ " - " + line.getAccountElementValue();
 				return DocAction.STATUS_Invalid;
 			}
 			
-			if (getPostingType().equals(POSTINGTYPE_Budget) && !line.getAccountElementValue().getRecord().isPostBudget())
+			if (getPostingType().equals(POSTINGTYPE_Budget) && !line.getAccountElementValue().getElementValue().isPostBudget())
 			{
 				m_processMsg = "@PostingTypeBudgetError@ - @Line@=" + line.getLine()
 				+ " - " + line.getAccountElementValue();
 				return DocAction.STATUS_Invalid;
 			}
 			
-			if (getPostingType().equals(POSTINGTYPE_Statistical) && !line.getAccountElementValue().getRecord().isPostStatistical())
+			if (getPostingType().equals(POSTINGTYPE_Statistical) && !line.getAccountElementValue().getElementValue().isPostStatistical())
 			{
 				m_processMsg = "@PostingTypeStatisticalError@ - @Line@=" + line.getLine()
 				+ " - " + line.getAccountElementValue();
@@ -558,8 +558,8 @@ public class MJournal extends X_GL_Journal implements DocAction
 		//	Unbalanced Jornal & Not Suspense
 		if (AmtSourceDr.compareTo(AmtSourceCr) != 0)
 		{
-			IAcctSchemaGLInfo gl = AcctInfoServices.getAcctSchemaGLInfoService().get(getCtx(), getC_AcctSchema_ID());
-			if (gl == null || !gl.getRecord().isUseSuspenseBalancing())
+			IAcctSchemaGLModel gl = AcctInfoServices.getAcctSchemaGLInfoService().get(getCtx(), getC_AcctSchema_ID());
+			if (gl == null || !gl.getAcctSchemaGL().isUseSuspenseBalancing())
 			{
 				m_processMsg = "@UnbalancedJornal@";
 				return DocAction.STATUS_Invalid;

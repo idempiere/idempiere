@@ -24,18 +24,18 @@ package org.idempiere.acct.info;
 
 import java.util.ArrayList;
 
-import org.adempiere.base.acct.info.IAcctSchemaGLInfo;
+import org.adempiere.base.acct.model.IAcctSchemaGLModel;
 import org.compiere.model.I_C_AcctSchema_GL;
 import org.compiere.model.PO;
 import org.compiere.util.KeyNamePair;
 import org.idempiere.acct.model.MAcctSchemaGL;
 
 /**
- * Wrapper for {@link MAcctSchemaGL} to provide {@link IAcctSchemaGLInfo} access.
+ * Wrapper for {@link MAcctSchemaGL} to provide {@link IAcctSchemaGLModel} access.
  * 
  * @author etantg
  */
-public class AcctSchemaGLInfo implements IAcctSchemaGLInfo {
+public class AcctSchemaGLInfo implements IAcctSchemaGLModel {
 	
 	private final MAcctSchemaGL schemaGL;
 	
@@ -50,7 +50,7 @@ public class AcctSchemaGLInfo implements IAcctSchemaGLInfo {
 	}
 	
 	@Override
-	public I_C_AcctSchema_GL getRecord() {
+	public I_C_AcctSchema_GL getAcctSchemaGL() {
 		return schemaGL;
 	}
 
@@ -60,7 +60,7 @@ public class AcctSchemaGLInfo implements IAcctSchemaGLInfo {
 	}
 
 	@Override
-	public ArrayList<KeyNamePair> getAcctInfo() {
+	public ArrayList<KeyNamePair> getAcctModel() {
 		return schemaGL.getAcctInfo();
 	}
 
@@ -69,11 +69,11 @@ public class AcctSchemaGLInfo implements IAcctSchemaGLInfo {
 		return schemaGL.setValue(columnName, value);
 	}
 	
-	public static IAcctSchemaGLInfo wrap(MAcctSchemaGL schemaGL) {
+	public static IAcctSchemaGLModel wrap(MAcctSchemaGL schemaGL) {
         if (schemaGL == null)
             return null;
-        if (schemaGL instanceof IAcctSchemaGLInfo)
-            return (IAcctSchemaGLInfo) schemaGL;
+        if (schemaGL instanceof IAcctSchemaGLModel)
+            return (IAcctSchemaGLModel) schemaGL;
         return new AcctSchemaGLInfo(schemaGL);
     }
 	
