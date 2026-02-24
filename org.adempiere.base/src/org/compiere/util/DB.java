@@ -2701,13 +2701,30 @@ public final class DB
 	@Deprecated(since="13", forRemoval=true)
 	public static String inClauseForCSV(String columnName, String csv, boolean isNotClause) 
 	{
+		
+	    boolean showNullOnNot = MSysConfig.getBooleanValue(
+		        MSysConfig.INCLUDE_NULL_ON_NEGATED_MULTISELECTION, 
+		        false, 
+		        Env.getAD_Client_ID(Env.getCtx())
+		    );
+	    
 		StringBuilder builder = new StringBuilder();
 		builder.append(columnName);
 		
-		if(isNotClause)
-			builder.append(" NOT ");
-		
-		builder.append(" IN (");
+	    if (isNotClause && showNullOnNot) {
+	        // (columnName NOT IN (
+	        builder.append("(")
+	               .append(columnName)
+	               .append(" NOT IN (");
+	    } else {
+	        // columnName [NOT] IN (
+	        builder.append(columnName);
+	        if (isNotClause) {
+	            builder.append(" NOT");
+	        }
+	        builder.append(" IN (");
+	    }
+	    
 		String[] values = csv.split("[,]");
 		for(int i = 0; i < values.length; i++)
 		{
@@ -2728,6 +2745,13 @@ public final class DB
 			}
 		}
 		builder.append(")");
+		
+	    if (isNotClause && showNullOnNot) {
+	        builder.append(" OR ")
+	               .append(columnName)
+	               .append(" IS NULL)");
+	    }
+	    
 		return builder.toString();
 	}
 	
@@ -2740,46 +2764,70 @@ public final class DB
 	 */
 	public static SQLFragment inFilterForCSV(String columnName, String csv, boolean isNotClause) 
 	{
-		StringBuilder builder = new StringBuilder();
-		builder.append(columnName);
-		List<Object> params = new ArrayList<>();
-		
-		if(isNotClause)
-			builder.append(" NOT");
-		
-		builder.append(" IN (");
-		String[] values = csv.split("[,]");
-		for(int i = 0; i < values.length; i++)
-		{
-			String key = values[i];
-			if (i > 0)
-				builder.append(",");
-			if ("null".equalsIgnoreCase(key.trim())) {
-				builder.append("NULL");
-				continue;
-			}						
-			if (columnName.endsWith("_ID")) 
-			{
-				params.add(Integer.valueOf(key.trim()));
-			}
-			else
-			{
-				if (key.startsWith("\"") && key.endsWith("\"")) 
-				{
-					key = key.substring(1, key.length()-1);
-				}
-				//empty string means NULL in this context
-				if (Util.isEmpty(key)) {
-					builder.append("NULL");
-					continue;
-				} else {
-					params.add(key);
-				}
-			}
-			builder.append("?");
-		}
-		builder.append(")");
-		return new SQLFragment(builder.toString(), params);
+	    StringBuilder builder = new StringBuilder();
+	    List<Object> params = new ArrayList<>();
+
+	    boolean showNullOnNot = MSysConfig.getBooleanValue(
+	        MSysConfig.INCLUDE_NULL_ON_NEGATED_MULTISELECTION, 
+	        false, 
+	        Env.getAD_Client_ID(Env.getCtx())
+	    );
+
+	    if (isNotClause && showNullOnNot) {
+	        // (columnName NOT IN (
+	        builder.append("(")
+	               .append(columnName)
+	               .append(" NOT IN (");
+	    } else {
+	        // columnName [NOT] IN (
+	        builder.append(columnName);
+	        if (isNotClause) {
+	            builder.append(" NOT");
+	        }
+	        builder.append(" IN (");
+	    }
+
+	    String[] values = csv.split("[,]");
+	    for (int i = 0; i < values.length; i++)
+	    {
+	        String key = values[i];
+	        if (i > 0)
+	            builder.append(",");
+
+	        if ("null".equalsIgnoreCase(key.trim())) {
+	            builder.append("NULL");
+	            continue;
+	        }
+
+	        if (columnName.endsWith("_ID")) 
+	        {
+	            params.add(Integer.valueOf(key.trim()));
+	        }
+	        else
+	        {
+	            if (key.startsWith("\"") && key.endsWith("\"")) 
+	            {
+	                key = key.substring(1, key.length()-1);
+	            }
+	            // empty string means NULL in this context
+	            if (Util.isEmpty(key)) {
+	                builder.append("NULL");
+	                continue;
+	            } else {
+	                params.add(key);
+	            }
+	        }
+	        builder.append("?");
+	    }
+	    builder.append(")");
+
+	    if (isNotClause && showNullOnNot) {
+	        builder.append(" OR ")
+	               .append(columnName)
+	               .append(" IS NULL)");
+	    }
+
+	    return new SQLFragment(builder.toString(), params);
 	}
 	
 	
