@@ -27,7 +27,7 @@ import java.util.Properties;
 
 import org.adempiere.base.acct.AcctInfoService;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
-import org.adempiere.base.acct.service.IAcctSchemaInfoService;
+import org.adempiere.base.acct.service.IAcctSchemaModelService;
 import org.adempiere.exceptions.BackDateTrxNotAllowedException;
 import org.compiere.model.MClient;
 import org.compiere.util.KeyNamePair;
@@ -35,12 +35,12 @@ import org.idempiere.acct.info.AcctSchemaInfo;
 import org.idempiere.acct.model.MAcctSchema;
 
 /**
- * Implementation of {@link IAcctSchemaInfoService}.
+ * Implementation of {@link IAcctSchemaModelService}.
  * 
  * @author etantg
  */
-@AcctInfoService(IAcctSchemaInfoService.class)
-public class AcctSchemaInfoService implements IAcctSchemaInfoService {
+@AcctInfoService(IAcctSchemaModelService.class)
+public class AcctSchemaInfoService implements IAcctSchemaModelService {
 
 	@Override
 	public IAcctSchemaModel get(int C_AcctSchema_ID) {

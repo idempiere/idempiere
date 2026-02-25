@@ -27,17 +27,17 @@ import java.util.Properties;
 
 import org.adempiere.base.acct.AcctInfoService;
 import org.adempiere.base.acct.model.IImportElementValueModel;
-import org.adempiere.base.acct.service.IImportElementValueInfoService;
+import org.adempiere.base.acct.service.IImportElementValueModelService;
 import org.idempiere.acct.info.ImportElementValueInfo;
 import org.idempiere.acct.model.X_I_ElementValue;
 
 /**
- * Implementation of {@link IImportElementValueInfoService}.
+ * Implementation of {@link IImportElementValueModelService}.
  * 
  * @author etantg
  */
-@AcctInfoService(IImportElementValueInfoService.class)
-public class ImportElementValueInfoService implements IImportElementValueInfoService {
+@AcctInfoService(IImportElementValueModelService.class)
+public class ImportElementValueInfoService implements IImportElementValueModelService {
 	
 	@Override
 	public IImportElementValueModel create(Properties ctx, ResultSet rs, String trxName) {

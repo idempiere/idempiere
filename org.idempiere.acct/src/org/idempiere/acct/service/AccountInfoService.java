@@ -30,7 +30,7 @@ import org.adempiere.base.acct.AcctInfoService;
 import org.adempiere.base.acct.model.IAccountModel;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.base.acct.model.IFactAcctModel;
-import org.adempiere.base.acct.service.IAccountInfoService;
+import org.adempiere.base.acct.service.IAccountModelService;
 import org.compiere.model.I_C_ValidCombination;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
@@ -40,12 +40,12 @@ import org.idempiere.acct.info.FactAcctInfo;
 import org.idempiere.acct.model.MAccount;
 
 /**
- * Implementation of {@link IAccountInfoService}.
+ * Implementation of {@link IAccountModelService}.
  * 
  * @author etantg
  */
-@AcctInfoService(IAccountInfoService.class)
-public class AccountInfoService implements IAccountInfoService {
+@AcctInfoService(IAccountModelService.class)
+public class AccountInfoService implements IAccountModelService {
 	
 	@Override
 	public IAccountModel get(Properties ctx, int AD_Client_ID, int AD_Org_ID, int C_AcctSchema_ID, int Account_ID,

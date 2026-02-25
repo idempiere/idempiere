@@ -26,18 +26,18 @@ import java.util.Properties;
 
 import org.adempiere.base.acct.AcctInfoService;
 import org.adempiere.base.acct.model.IFactReconciliationModel;
-import org.adempiere.base.acct.service.IFactReconciliationInfoService;
+import org.adempiere.base.acct.service.IFactReconciliationModelService;
 import org.compiere.model.Query;
 import org.idempiere.acct.info.FactReconciliationInfo;
 import org.idempiere.acct.model.MFactReconciliation;
 
 /**
- * Implementation of {@link IFactReconciliationInfoService}.
+ * Implementation of {@link IFactReconciliationModelService}.
  * 
  * @author etantg
  */
-@AcctInfoService(IFactReconciliationInfoService.class)
-public class FactReconciliationInfoService implements IFactReconciliationInfoService {
+@AcctInfoService(IFactReconciliationModelService.class)
+public class FactReconciliationInfoService implements IFactReconciliationModelService {
 	
 	@Override
 	public IFactReconciliationModel create(Properties ctx, int Fact_Reconciliation_ID, String trxName) {

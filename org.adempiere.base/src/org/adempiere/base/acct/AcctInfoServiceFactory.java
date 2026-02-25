@@ -46,7 +46,7 @@ public final class AcctInfoServiceFactory extends AnnotationBasedFactory {
 		
 	private static final AcctInfoServiceFactory INSTANCE = new AcctInfoServiceFactory();
 	
-	private final Map<Class<? extends IAcctInfoService>, IAcctInfoService> serviceMap = new ConcurrentHashMap<>();
+	private final Map<Class<? extends IAcctModelService>, IAcctModelService> serviceMap = new ConcurrentHashMap<>();
 	
 	private AcctInfoServiceFactory() {}
 
@@ -68,8 +68,8 @@ public final class AcctInfoServiceFactory extends AnnotationBasedFactory {
 		    for (ClassInfo classInfo : scanResult.getClassesWithAnnotation(AcctInfoService.class.getName())) {
 		    	final Class<?> clazz = classLoader.loadClass(classInfo.getName());
 		    	AcctInfoService ann = clazz.getAnnotation(AcctInfoService.class);
-	            Class<? extends IAcctInfoService> iface = ann.value();
-	            IAcctInfoService service = (IAcctInfoService) clazz.getDeclaredConstructor().newInstance();
+	            Class<? extends IAcctModelService> iface = ann.value();
+	            IAcctModelService service = (IAcctModelService) clazz.getDeclaredConstructor().newInstance();
 	            serviceMap.put(iface, service);
 		    }	    
 		    signalScanCompletion(true);
@@ -80,7 +80,7 @@ public final class AcctInfoServiceFactory extends AnnotationBasedFactory {
     }
     
     @SuppressWarnings("unchecked")
-	public <T extends IAcctInfoService> T getService(Class<T> iface) {
+	public <T extends IAcctModelService> T getService(Class<T> iface) {
         blockWhileScanning();
         return (T) serviceMap.get(iface);
     }

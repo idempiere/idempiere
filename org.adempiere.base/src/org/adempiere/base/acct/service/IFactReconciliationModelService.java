@@ -24,17 +24,15 @@ package org.adempiere.base.acct.service;
 
 import java.util.Properties;
 
-import org.adempiere.base.acct.IAcctInfoService;
-import org.adempiere.base.acct.model.IGLCategoryModel;
+import org.adempiere.base.acct.IAcctModelService;
+import org.adempiere.base.acct.model.IFactReconciliationModel;
 
 /**
- * Service interface for GL category info.
+ * Service interface for accounting fact reconciliation model.
  * 
  * @author etantg
  */
-public interface IGLCategoryInfoService extends IAcctInfoService {
-	public IGLCategoryModel get(Properties ctx, int GL_Category_ID);
-	public IGLCategoryModel getDefaultSystem (Properties ctx);
-	
-	public IGLCategoryModel create(Properties ctx, int GL_Category_ID, String trxName);
+public interface IFactReconciliationModelService extends IAcctModelService {
+	public IFactReconciliationModel create(Properties ctx, int Fact_Reconciliation_ID, String trxName);
+	public IFactReconciliationModel first(Properties ctx, String whereClause, Object[] params, String trxName);
 }

@@ -29,7 +29,7 @@ import java.util.Properties;
 import org.adempiere.base.acct.AcctInfoService;
 import org.adempiere.base.acct.model.IElementValueModel;
 import org.adempiere.base.acct.model.IImportElementValueModel;
-import org.adempiere.base.acct.service.IElementValueInfoService;
+import org.adempiere.base.acct.service.IElementValueModelService;
 import org.compiere.model.I_C_ElementValue;
 import org.compiere.model.Query;
 import org.idempiere.acct.info.ElementValueInfo;
@@ -37,12 +37,12 @@ import org.idempiere.acct.info.ImportElementValueInfo;
 import org.idempiere.acct.model.MElementValue;
 
 /**
- * Implementation of {@link IElementValueInfoService}.
+ * Implementation of {@link IElementValueModelService}.
  * 
  * @author etantg
  */
-@AcctInfoService(IElementValueInfoService.class)
-public class ElementValueInfoService implements IElementValueInfoService {
+@AcctInfoService(IElementValueModelService.class)
+public class ElementValueInfoService implements IElementValueModelService {
 
 	@Override
 	public IElementValueModel create(Properties ctx, int C_ElementValue_ID, String trxName) {

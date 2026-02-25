@@ -27,18 +27,18 @@ import java.util.List;
 import org.adempiere.base.IPOAccountingService;
 import org.adempiere.base.IServiceReferenceHolder;
 import org.adempiere.base.Service;
-import org.adempiere.base.acct.service.IAccountInfoService;
-import org.adempiere.base.acct.service.IAcctSchemaDefaultInfoService;
-import org.adempiere.base.acct.service.IAcctSchemaElementInfoService;
-import org.adempiere.base.acct.service.IAcctSchemaGLInfoService;
-import org.adempiere.base.acct.service.IAcctSchemaInfoService;
-import org.adempiere.base.acct.service.IDistributionInfoService;
-import org.adempiere.base.acct.service.IElementInfoService;
-import org.adempiere.base.acct.service.IElementValueInfoService;
-import org.adempiere.base.acct.service.IFactAcctInfoService;
-import org.adempiere.base.acct.service.IFactReconciliationInfoService;
-import org.adempiere.base.acct.service.IGLCategoryInfoService;
-import org.adempiere.base.acct.service.IImportElementValueInfoService;
+import org.adempiere.base.acct.service.IAccountModelService;
+import org.adempiere.base.acct.service.IAcctSchemaDefaultModelService;
+import org.adempiere.base.acct.service.IAcctSchemaElementModelService;
+import org.adempiere.base.acct.service.IAcctSchemaGLModelService;
+import org.adempiere.base.acct.service.IAcctSchemaModelService;
+import org.adempiere.base.acct.service.IDistributionModelService;
+import org.adempiere.base.acct.service.IElementModelService;
+import org.adempiere.base.acct.service.IElementValueModelService;
+import org.adempiere.base.acct.service.IFactAcctModelService;
+import org.adempiere.base.acct.service.IFactReconciliationModelService;
+import org.adempiere.base.acct.service.IGLCategoryModelService;
+import org.adempiere.base.acct.service.IImportElementValueModelService;
 
 /**
  * Static utility access to Accounting Info Services.
@@ -67,97 +67,97 @@ public final class AcctInfoServices {
 		return getService(IPOAccountingService.class);
 	}
 
-	public static IAccountInfoService getAccountInfoService() {
-		IAccountInfoService service = AcctInfoServiceFactory.getInstance()
-				.getService(IAccountInfoService.class);
+	public static IAccountModelService getAccountInfoService() {
+		IAccountModelService service = AcctInfoServiceFactory.getInstance()
+				.getService(IAccountModelService.class);
         if (service == null)
             throw new IllegalStateException("IAccountInfoService not available");
         return service;
 	}
 
-	public static IAcctSchemaDefaultInfoService getAcctSchemaDefaultInfoService() {
-		IAcctSchemaDefaultInfoService service = AcctInfoServiceFactory.getInstance()
-				.getService(IAcctSchemaDefaultInfoService.class);
+	public static IAcctSchemaDefaultModelService getAcctSchemaDefaultInfoService() {
+		IAcctSchemaDefaultModelService service = AcctInfoServiceFactory.getInstance()
+				.getService(IAcctSchemaDefaultModelService.class);
         if (service == null)
             throw new IllegalStateException("IAcctSchemaDefaultInfoService not available");
         return service;
 	}
 
-	public static IAcctSchemaElementInfoService getAcctSchemaElementInfoService() {
-		IAcctSchemaElementInfoService service = AcctInfoServiceFactory.getInstance()
-				.getService(IAcctSchemaElementInfoService.class);
+	public static IAcctSchemaElementModelService getAcctSchemaElementInfoService() {
+		IAcctSchemaElementModelService service = AcctInfoServiceFactory.getInstance()
+				.getService(IAcctSchemaElementModelService.class);
         if (service == null)
             throw new IllegalStateException("IAcctSchemaElementInfoService not available");
         return service;
 	}
 
-	public static IAcctSchemaGLInfoService getAcctSchemaGLInfoService() {
-		IAcctSchemaGLInfoService service = AcctInfoServiceFactory.getInstance()
-				.getService(IAcctSchemaGLInfoService.class);
+	public static IAcctSchemaGLModelService getAcctSchemaGLInfoService() {
+		IAcctSchemaGLModelService service = AcctInfoServiceFactory.getInstance()
+				.getService(IAcctSchemaGLModelService.class);
         if (service == null)
             throw new IllegalStateException("IAcctSchemaGLInfoService not available");
         return service;
 	}
 
-	public static IAcctSchemaInfoService getAcctSchemaInfoService() {
-		IAcctSchemaInfoService service = AcctInfoServiceFactory.getInstance()
-				.getService(IAcctSchemaInfoService.class);
+	public static IAcctSchemaModelService getAcctSchemaInfoService() {
+		IAcctSchemaModelService service = AcctInfoServiceFactory.getInstance()
+				.getService(IAcctSchemaModelService.class);
         if (service == null)
             throw new IllegalStateException("IAcctSchemaInfoService not available");
         return service;
 	}
 
-	public static IDistributionInfoService getDistributionInfoService() {
-		IDistributionInfoService service = AcctInfoServiceFactory.getInstance()
-				.getService(IDistributionInfoService.class);
+	public static IDistributionModelService getDistributionInfoService() {
+		IDistributionModelService service = AcctInfoServiceFactory.getInstance()
+				.getService(IDistributionModelService.class);
         if (service == null)
             throw new IllegalStateException("IDistributionInfoService not available");
         return service;
 	}
 
-	public static IElementInfoService getElementInfoService() {
-		IElementInfoService service = AcctInfoServiceFactory.getInstance()
-				.getService(IElementInfoService.class);
+	public static IElementModelService getElementInfoService() {
+		IElementModelService service = AcctInfoServiceFactory.getInstance()
+				.getService(IElementModelService.class);
         if (service == null)
             throw new IllegalStateException("IElementInfoService not available");
         return service;
 	}
 
-	public static IElementValueInfoService getElementValueInfoService() {
-		IElementValueInfoService service = AcctInfoServiceFactory.getInstance()
-				.getService(IElementValueInfoService.class);
+	public static IElementValueModelService getElementValueInfoService() {
+		IElementValueModelService service = AcctInfoServiceFactory.getInstance()
+				.getService(IElementValueModelService.class);
         if (service == null)
             throw new IllegalStateException("IElementValueInfoService not available");
         return service;
 	}
 
-	public static IFactAcctInfoService getFactAcctInfoService() {
-		IFactAcctInfoService service = AcctInfoServiceFactory.getInstance()
-				.getService(IFactAcctInfoService.class);
+	public static IFactAcctModelService getFactAcctInfoService() {
+		IFactAcctModelService service = AcctInfoServiceFactory.getInstance()
+				.getService(IFactAcctModelService.class);
         if (service == null)
             throw new IllegalStateException("IFactAcctInfoService not available");
         return service;
 	}
 
-	public static IFactReconciliationInfoService getFactReconciliationInfoService() {
-		IFactReconciliationInfoService service = AcctInfoServiceFactory.getInstance()
-				.getService(IFactReconciliationInfoService.class);
+	public static IFactReconciliationModelService getFactReconciliationInfoService() {
+		IFactReconciliationModelService service = AcctInfoServiceFactory.getInstance()
+				.getService(IFactReconciliationModelService.class);
         if (service == null)
             throw new IllegalStateException("IFactReconciliationInfoService not available");
         return service;
 	}
 
-	public static IGLCategoryInfoService getGlCategoryInfoService() {
-		IGLCategoryInfoService service = AcctInfoServiceFactory.getInstance()
-				.getService(IGLCategoryInfoService.class);
+	public static IGLCategoryModelService getGlCategoryInfoService() {
+		IGLCategoryModelService service = AcctInfoServiceFactory.getInstance()
+				.getService(IGLCategoryModelService.class);
         if (service == null)
             throw new IllegalStateException("IGLCategoryInfoService not available");
         return service;
 	}
 
-	public static IImportElementValueInfoService getImportElementValueInfoService() {
-		IImportElementValueInfoService service = AcctInfoServiceFactory.getInstance()
-				.getService(IImportElementValueInfoService.class);
+	public static IImportElementValueModelService getImportElementValueInfoService() {
+		IImportElementValueModelService service = AcctInfoServiceFactory.getInstance()
+				.getService(IImportElementValueModelService.class);
         if (service == null)
             throw new IllegalStateException("IImportElementValueInfoService not available");
         return service;

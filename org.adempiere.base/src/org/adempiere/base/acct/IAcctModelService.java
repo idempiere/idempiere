@@ -20,19 +20,12 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  **********************************************************************/
-package org.adempiere.base.acct.service;
-
-import java.util.Properties;
-
-import org.adempiere.base.acct.IAcctInfoService;
-import org.adempiere.base.acct.model.IAcctSchemaDefaultModel;
+package org.adempiere.base.acct;
 
 /**
- * Service interface for accounting schema default info.
+ * Base interface for all accounting model services.
  * 
  * @author etantg
  */
-public interface IAcctSchemaDefaultInfoService extends IAcctInfoService {
-	public IAcctSchemaDefaultModel get(Properties ctx, int C_AcctSchema_ID);
-	public IAcctSchemaDefaultModel create(Properties ctx, int C_AcctSchema_ID, String trxName);
+public interface IAcctModelService {
 }

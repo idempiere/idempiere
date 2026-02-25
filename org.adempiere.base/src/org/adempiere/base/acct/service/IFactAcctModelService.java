@@ -27,16 +27,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.adempiere.base.acct.IAcctInfoService;
+import org.adempiere.base.acct.IAcctModelService;
 import org.adempiere.base.acct.model.IFactAcctModel;
 import org.adempiere.exceptions.DBException;
 
 /**
- * Service interface for accounting fact info.
+ * Service interface for accounting fact model.
  * 
  * @author etantg
  */
-public interface IFactAcctInfoService extends IAcctInfoService {
+public interface IFactAcctModelService extends IAcctModelService {
 	public int deleteEx(int AD_Table_ID, int Record_ID, String trxName) throws DBException;
 	
 	public IFactAcctModel create(Properties ctx, int Fact_Acct_ID, String trxName);

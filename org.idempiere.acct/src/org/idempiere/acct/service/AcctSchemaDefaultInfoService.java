@@ -26,17 +26,17 @@ import java.util.Properties;
 
 import org.adempiere.base.acct.AcctInfoService;
 import org.adempiere.base.acct.model.IAcctSchemaDefaultModel;
-import org.adempiere.base.acct.service.IAcctSchemaDefaultInfoService;
+import org.adempiere.base.acct.service.IAcctSchemaDefaultModelService;
 import org.idempiere.acct.info.AcctSchemaDefaultInfo;
 import org.idempiere.acct.model.MAcctSchemaDefault;
 
 /**
- * Implementation of {@link IAcctSchemaDefaultInfoService}.
+ * Implementation of {@link IAcctSchemaDefaultModelService}.
  * 
  * @author etantg
  */
-@AcctInfoService(IAcctSchemaDefaultInfoService.class)
-public class AcctSchemaDefaultInfoService implements IAcctSchemaDefaultInfoService {
+@AcctInfoService(IAcctSchemaDefaultModelService.class)
+public class AcctSchemaDefaultInfoService implements IAcctSchemaDefaultModelService {
 
 	@Override
 	public IAcctSchemaDefaultModel get(Properties ctx, int C_AcctSchema_ID) {

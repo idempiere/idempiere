@@ -26,17 +26,17 @@ import java.util.Properties;
 
 import org.adempiere.base.acct.AcctInfoService;
 import org.adempiere.base.acct.model.IGLCategoryModel;
-import org.adempiere.base.acct.service.IGLCategoryInfoService;
+import org.adempiere.base.acct.service.IGLCategoryModelService;
 import org.idempiere.acct.info.GLCategoryInfo;
 import org.idempiere.acct.model.MGLCategory;
 
 /**
- * Implementation of {@link IGLCategoryInfoService}.
+ * Implementation of {@link IGLCategoryModelService}.
  * 
  * @author etantg
  */
-@AcctInfoService(IGLCategoryInfoService.class)
-public class GLCategoryInfoService implements IGLCategoryInfoService {
+@AcctInfoService(IGLCategoryModelService.class)
+public class GLCategoryInfoService implements IGLCategoryModelService {
 	
 	@Override
 	public IGLCategoryModel get(Properties ctx, int GL_Category_ID) {

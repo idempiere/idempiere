@@ -36,5 +36,5 @@ public @interface AcctInfoService {
     /**
      * The service interface this class implements.
      */
-    public Class<? extends IAcctInfoService> value();
+    public Class<? extends IAcctModelService> value();
 }

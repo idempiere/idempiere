@@ -27,17 +27,17 @@ import java.util.Properties;
 
 import org.adempiere.base.acct.AcctInfoService;
 import org.adempiere.base.acct.model.IDistributionModel;
-import org.adempiere.base.acct.service.IDistributionInfoService;
+import org.adempiere.base.acct.service.IDistributionModelService;
 import org.idempiere.acct.info.DistributionInfo;
 import org.idempiere.acct.model.MDistribution;
 
 /**
- * Implementation of {@link IDistributionInfoService}.
+ * Implementation of {@link IDistributionModelService}.
  * 
  * @author etantg
  */
-@AcctInfoService(IDistributionInfoService.class)
-public class DistributionInfoService implements IDistributionInfoService {
+@AcctInfoService(IDistributionModelService.class)
+public class DistributionInfoService implements IDistributionModelService {
 
 	@Override
 	public IDistributionModel[] get(Properties ctx, int C_AcctSchema_ID, String PostingType, int C_DocType_ID,

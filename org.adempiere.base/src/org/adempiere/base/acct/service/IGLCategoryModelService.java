@@ -22,17 +22,19 @@
  **********************************************************************/
 package org.adempiere.base.acct.service;
 
-import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.adempiere.base.acct.IAcctInfoService;
-import org.adempiere.base.acct.model.IImportElementValueModel;
+import org.adempiere.base.acct.IAcctModelService;
+import org.adempiere.base.acct.model.IGLCategoryModel;
 
 /**
- * Service interface for import accounting element value info.
+ * Service interface for GL category model.
  * 
  * @author etantg
  */
-public interface IImportElementValueInfoService extends IAcctInfoService {
-	public IImportElementValueModel create(Properties ctx, ResultSet rs, String trxName);
+public interface IGLCategoryModelService extends IAcctModelService {
+	public IGLCategoryModel get(Properties ctx, int GL_Category_ID);
+	public IGLCategoryModel getDefaultSystem (Properties ctx);
+	
+	public IGLCategoryModel create(Properties ctx, int GL_Category_ID, String trxName);
 }

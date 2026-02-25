@@ -24,15 +24,19 @@ package org.adempiere.base.acct.service;
 
 import java.util.Properties;
 
-import org.adempiere.base.acct.IAcctInfoService;
-import org.adempiere.base.acct.model.IFactReconciliationModel;
+import org.adempiere.base.acct.IAcctModelService;
+import org.adempiere.base.acct.model.IAcctSchemaElementModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 
 /**
- * Service interface for accounting fact reconciliation info.
+ * Service interface for accounting schema element info.
  * 
  * @author etantg
  */
-public interface IFactReconciliationInfoService extends IAcctInfoService {
-	public IFactReconciliationModel create(Properties ctx, int Fact_Reconciliation_ID, String trxName);
-	public IFactReconciliationModel first(Properties ctx, String whereClause, Object[] params, String trxName);
+public interface IAcctSchemaElementModelService extends IAcctModelService {
+	public IAcctSchemaElementModel[] getAcctSchemaElements(IAcctSchemaModel as);
+	public String getColumnName(String elementType);
+	public String getValueQuery (String elementType);
+	
+	public IAcctSchemaElementModel create(Properties ctx, int C_AcctSchema_Element_ID, String trxName);
 }

@@ -26,18 +26,18 @@ import java.util.Properties;
 
 import org.adempiere.base.acct.AcctInfoService;
 import org.adempiere.base.acct.model.IElementModel;
-import org.adempiere.base.acct.service.IElementInfoService;
+import org.adempiere.base.acct.service.IElementModelService;
 import org.compiere.model.MClient;
 import org.idempiere.acct.info.ElementInfo;
 import org.idempiere.acct.model.MElement;
 
 /**
- * Implementation of {@link IElementInfoService}.
+ * Implementation of {@link IElementModelService}.
  * 
  * @author etantg
  */
-@AcctInfoService(IElementInfoService.class)
-public class ElementInfoService implements IElementInfoService {
+@AcctInfoService(IElementModelService.class)
+public class ElementInfoService implements IElementModelService {
 
 	@Override
 	public IElementModel create(Properties ctx, int C_Element_ID, String trxName) {

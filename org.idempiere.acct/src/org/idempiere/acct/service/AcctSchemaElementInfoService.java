@@ -27,18 +27,18 @@ import java.util.Properties;
 import org.adempiere.base.acct.AcctInfoService;
 import org.adempiere.base.acct.model.IAcctSchemaElementModel;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
-import org.adempiere.base.acct.service.IAcctSchemaElementInfoService;
+import org.adempiere.base.acct.service.IAcctSchemaElementModelService;
 import org.idempiere.acct.info.AcctSchemaElementInfo;
 import org.idempiere.acct.info.AcctSchemaInfo;
 import org.idempiere.acct.model.MAcctSchemaElement;
 
 /**
- * Implementation of {@link IAcctSchemaElementInfoService}.
+ * Implementation of {@link IAcctSchemaElementModelService}.
  * 
  * @author etantg
  */
-@AcctInfoService(IAcctSchemaElementInfoService.class)
-public class AcctSchemaElementInfoService implements IAcctSchemaElementInfoService {
+@AcctInfoService(IAcctSchemaElementModelService.class)
+public class AcctSchemaElementInfoService implements IAcctSchemaElementModelService {
 
 	@Override
 	public IAcctSchemaElementModel[] getAcctSchemaElements(IAcctSchemaModel as) {

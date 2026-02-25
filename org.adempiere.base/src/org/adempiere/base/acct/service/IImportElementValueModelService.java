@@ -20,12 +20,19 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  **********************************************************************/
-package org.adempiere.base.acct;
+package org.adempiere.base.acct.service;
+
+import java.sql.ResultSet;
+import java.util.Properties;
+
+import org.adempiere.base.acct.IAcctModelService;
+import org.adempiere.base.acct.model.IImportElementValueModel;
 
 /**
- * Base interface for all accounting info services.
+ * Service interface for import accounting element value model.
  * 
  * @author etantg
  */
-public interface IAcctInfoService {
+public interface IImportElementValueModelService extends IAcctModelService {
+	public IImportElementValueModel create(Properties ctx, ResultSet rs, String trxName);
 }

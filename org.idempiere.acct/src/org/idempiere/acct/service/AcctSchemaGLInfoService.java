@@ -26,17 +26,17 @@ import java.util.Properties;
 
 import org.adempiere.base.acct.AcctInfoService;
 import org.adempiere.base.acct.model.IAcctSchemaGLModel;
-import org.adempiere.base.acct.service.IAcctSchemaGLInfoService;
+import org.adempiere.base.acct.service.IAcctSchemaGLModelService;
 import org.idempiere.acct.info.AcctSchemaGLInfo;
 import org.idempiere.acct.model.MAcctSchemaGL;
 
 /**
- * Implementation of {@link IAcctSchemaGLInfoService}.
+ * Implementation of {@link IAcctSchemaGLModelService}.
  * 
  * @author etantg
  */
-@AcctInfoService(IAcctSchemaGLInfoService.class)
-public class AcctSchemaGLInfoService implements IAcctSchemaGLInfoService {
+@AcctInfoService(IAcctSchemaGLModelService.class)
+public class AcctSchemaGLInfoService implements IAcctSchemaGLModelService {
 
 	@Override
 	public IAcctSchemaGLModel get(Properties ctx, int C_AcctSchema_ID) {

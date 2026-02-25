@@ -29,7 +29,7 @@ import java.util.Properties;
 
 import org.adempiere.base.acct.AcctInfoService;
 import org.adempiere.base.acct.model.IFactAcctModel;
-import org.adempiere.base.acct.service.IFactAcctInfoService;
+import org.adempiere.base.acct.service.IFactAcctModelService;
 import org.adempiere.exceptions.DBException;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
@@ -37,12 +37,12 @@ import org.idempiere.acct.info.FactAcctInfo;
 import org.idempiere.acct.model.MFactAcct;
 
 /**
- * Implementation of {@link IFactAcctInfoService}.
+ * Implementation of {@link IFactAcctModelService}.
  * 
  * @author etantg
  */
-@AcctInfoService(IFactAcctInfoService.class)
-public class FactAcctInfoService implements IFactAcctInfoService {
+@AcctInfoService(IFactAcctModelService.class)
+public class FactAcctInfoService implements IFactAcctModelService {
 
 	@Override
 	public int deleteEx(int AD_Table_ID, int Record_ID, String trxName) throws DBException {

@@ -22,25 +22,18 @@
  **********************************************************************/
 package org.adempiere.base.acct.service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
-import org.adempiere.base.acct.IAcctInfoService;
-import org.adempiere.base.acct.model.IElementValueModel;
-import org.adempiere.base.acct.model.IImportElementValueModel;
+import org.adempiere.base.acct.IAcctModelService;
+import org.adempiere.base.acct.model.IElementModel;
+import org.compiere.model.MClient;
 
 /**
- * Service interface for accounting element value info.
+ * Service interface for accounting element info.
  * 
  * @author etantg
  */
-public interface IElementValueInfoService extends IAcctInfoService {
-	public IElementValueModel create(IImportElementValueModel imp);
-	public IElementValueModel create(Properties ctx, int C_ElementValue_ID, String trxName);
-	public IElementValueModel create(Properties ctx, String Value, String Name, String Description,
-			String AccountType, String AccountSign, boolean IsDocControlled, boolean IsSummary, 
-			String trxName);
-	public IElementValueModel create(Properties ctx, IElementValueModel copy, String trxName);
-	public List<IElementValueModel> list(Properties ctx, String whereClause, ArrayList<Object> params, String trxName);
+public interface IElementModelService extends IAcctModelService {
+	public IElementModel create(Properties ctx, int C_Element_ID, String trxName);
+	public IElementModel create(MClient client, String Name, String ElementType, int AD_Tree_ID);
 }

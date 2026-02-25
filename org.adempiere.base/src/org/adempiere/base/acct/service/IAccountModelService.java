@@ -22,18 +22,36 @@
  **********************************************************************/
 package org.adempiere.base.acct.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
-import org.adempiere.base.acct.IAcctInfoService;
-import org.adempiere.base.acct.model.IElementModel;
-import org.compiere.model.MClient;
+import org.adempiere.base.acct.IAcctModelService;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
+import org.adempiere.base.acct.model.IFactAcctModel;
 
 /**
- * Service interface for accounting element info.
+ * Service interface for account model.
  * 
  * @author etantg
  */
-public interface IElementInfoService extends IAcctInfoService {
-	public IElementModel create(Properties ctx, int C_Element_ID, String trxName);
-	public IElementModel create(MClient client, String Name, String ElementType, int AD_Tree_ID);
+public interface IAccountModelService extends IAcctModelService {
+	public IAccountModel get(Properties ctx, int AD_Client_ID, int AD_Org_ID, int C_AcctSchema_ID, 
+			int Account_ID, int C_SubAcct_ID, int M_Product_ID, int C_BPartner_ID, int AD_OrgTrx_ID, 
+			int C_LocFrom_ID, int C_LocTo_ID, int C_SalesRegion_ID, 
+			int C_Project_ID, int C_Campaign_ID, int C_Activity_ID,
+			int User1_ID, int User2_ID, int UserElement1_ID, int UserElement2_ID,
+			String trxName);
+	public IAccountModel get(IFactAcctModel fa);
+	public IAccountModel get(IFactAcctModel fa, String trxName);
+	public IAccountModel getDefault (Properties ctx, int C_AcctSchema_ID, boolean optionalNull, String trxName);
+	public IAccountModel getDefault(IAcctSchemaModel acctSchema, boolean optionalNull);
+	public IAccountModel get(int C_ValidCombination_ID);
+	public IAccountModel get(Properties ctx, int C_ValidCombination_ID);
+	public void updateValueDescription(Properties ctx, final String where, String trxName);
+	
+	public IAccountModel create(Properties ctx, int C_ValidCombination_ID, String trxName);
+	public List<IAccountModel> list(String whereClause, ArrayList<Object> params, boolean onlyActive);
+	public List<IAccountModel> list(Properties ctx, String whereClause, ArrayList<Object> params, String trxName);
 }
