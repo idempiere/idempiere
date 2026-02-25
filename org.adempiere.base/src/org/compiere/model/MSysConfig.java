@@ -47,7 +47,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7296983461359423314L;
+	private static final long serialVersionUID = -2345815648281241687L;
 
 	/** Constant for Predefine System Configuration Names (in alphabetical order) */
 	
@@ -95,6 +95,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String CHECK_CREDIT_ON_CASH_POS_ORDER = "CHECK_CREDIT_ON_CASH_POS_ORDER";
     public static final String CHECK_CREDIT_ON_PREPAY_ORDER = "CHECK_CREDIT_ON_PREPAY_ORDER";
     public static final String CLIENT_ACCOUNTING = "CLIENT_ACCOUNTING";
+	public static final String COPY_TENANT_BATCH_FLUSH_SIZE = "COPY_TENANT_BATCH_FLUSH_SIZE";
     public static final String CSV_EXPORT_SANITIZATION = "CSV_EXPORT_SANITIZATION";
     public static final String DASHBOARD_LAYOUT_ORIENTATION = "DASHBOARD_LAYOUT_ORIENTATION";
     public static final String DB_READ_REPLICA_NORMAL_MAX_ITERATIONS = "DB_READ_REPLICA_NORMAL_MAX_ITERATIONS";
