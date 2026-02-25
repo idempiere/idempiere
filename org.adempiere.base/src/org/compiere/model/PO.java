@@ -79,6 +79,7 @@ import org.compiere.util.Trx;
 import org.compiere.util.TrxEventListener;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
+import org.idempiere.db.util.SQLFragment;
 import org.osgi.service.event.Event;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -397,15 +398,15 @@ public abstract class PO
 	private boolean				m_setErrorsFilled = false;  // to optimize not traveling the array if no errors
 
 	/** Record_IDs          		*/
-	private Object[]       		m_IDs = new Object[] {I_ZERO};
+	protected Object[]       		m_IDs = new Object[] {I_ZERO};
 	/** Key Columns					*/
-	private String[]         	m_KeyColumns = null;
+	protected String[]         	m_KeyColumns = null;
 	/** Create New for Multi Key 	*/
 	private boolean				m_createNew = false;
 	/**	Attachment with entries	*/
-	private MAttachment			m_attachment = null;
+	protected MAttachment			m_attachment = null;
 	/**	Deleted ID					*/
-	private int					m_idOld = 0;
+	protected int					m_idOld = 0;
 	/** Custom Columns 				*/
 	private HashMap<String,String>	m_custom = null;
 	/** Attributes	 				*/
@@ -422,7 +423,7 @@ public abstract class PO
 	/** Immutable flag **/
 	private boolean m_isImmutable = false;
 	
-	private String[] m_optimisticLockingColumns = new String[] {"Updated"};
+	protected String[] m_optimisticLockingColumns = new String[] {"Updated"};
 	private Boolean m_useOptimisticLocking = null;
 
 	/** Indices of virtual columns that were already resolved */
@@ -2463,6 +2464,65 @@ public abstract class PO
 	}	//	is_new
 
 	/**
+	 * Perform standard verification before saving of PO
+	 * @return true if pass verification, false otherwise
+	 */
+	protected boolean doVerificationForSave() {
+		if (!checkReadOnlySession())
+			return false;
+		checkImmutable();
+		checkValidContext();
+		checkCrossTenant(true);
+		checkRecordIDCrossTenant();
+		checkRecordUUCrossTenant();
+
+		if (m_setErrorsFilled) {
+			for (int i = 0; i < m_setErrors.length; i++) {
+				ValueNamePair setError = m_setErrors[i];
+				if (setError != null) {
+					log.saveError(setError.getValue(), Msg.getElement(getCtx(), p_info.getColumnName(i)) + " - " + setError.getName());
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Perform organization verification
+	 * @return true if pass checking, false otherwise
+	 */
+	protected boolean doOrganizationCheckForSave() {
+		//	Organization Check
+		if (getAD_Org_ID() == 0
+			&& (get_AccessLevel() == ACCESSLEVEL_ORG
+				|| (get_AccessLevel() == ACCESSLEVEL_CLIENTORG
+					&& MClientShare.isOrgLevelOnly(getAD_Client_ID(), get_Table_ID()))))
+		{
+			log.saveError("FillMandatory", Msg.getElement(getCtx(), "AD_Org_ID"));
+			return false;
+		}
+		//	Should be Org 0
+		if (getAD_Org_ID() != 0)
+		{
+			boolean reset = get_AccessLevel() == ACCESSLEVEL_SYSTEM;
+			if (!reset && MClientShare.isClientLevelOnly(getAD_Client_ID(), get_Table_ID()))
+			{
+				reset = get_AccessLevel() == ACCESSLEVEL_CLIENT
+					|| get_AccessLevel() == ACCESSLEVEL_SYSTEMCLIENT
+					|| get_AccessLevel() == ACCESSLEVEL_ALL
+					|| get_AccessLevel() == ACCESSLEVEL_CLIENTORG;
+			}
+			if (reset)
+			{
+				log.warning("Set Org to 0");
+				setAD_Org_ID(0);
+			}
+		}
+		return true;
+	}
+
+	/**
 	 * Classes which override save() method:
 	 * org.compiere.process.DocActionTemplate
 	 * org.compiere.model.MClient
@@ -2483,24 +2543,9 @@ public abstract class PO
 			if (log.isLoggable(Level.FINE)) log.fine("Nothing changed - " + p_info.getTableName());
 			return true;
 		}
-
-		if (!checkReadOnlySession())
+		
+		if (!doVerificationForSave())
 			return false;
-		checkImmutable();
-		checkValidContext();
-		checkCrossTenant(true);
-		checkRecordIDCrossTenant();
-		checkRecordUUCrossTenant();
-
-		if (m_setErrorsFilled) {
-			for (int i = 0; i < m_setErrors.length; i++) {
-				ValueNamePair setError = m_setErrors[i];
-				if (setError != null) {
-					log.saveError(setError.getValue(), Msg.getElement(getCtx(), p_info.getColumnName(i)) + " - " + setError.getName());
-					return false;
-				}
-			}
-		}
 
 		Trx localTrx = null;
 		Trx trx = null;
@@ -2599,32 +2644,8 @@ public abstract class PO
 				return false;
 			}
 
-		//	Organization Check
-		if (getAD_Org_ID() == 0
-			&& (get_AccessLevel() == ACCESSLEVEL_ORG
-				|| (get_AccessLevel() == ACCESSLEVEL_CLIENTORG
-					&& MClientShare.isOrgLevelOnly(getAD_Client_ID(), get_Table_ID()))))
-		{
-			log.saveError("FillMandatory", Msg.getElement(getCtx(), "AD_Org_ID"));
-			return false;
-		}
-		//	Should be Org 0
-		if (getAD_Org_ID() != 0)
-		{
-			boolean reset = get_AccessLevel() == ACCESSLEVEL_SYSTEM;
-			if (!reset && MClientShare.isClientLevelOnly(getAD_Client_ID(), get_Table_ID()))
-			{
-				reset = get_AccessLevel() == ACCESSLEVEL_CLIENT
-					|| get_AccessLevel() == ACCESSLEVEL_SYSTEMCLIENT
-					|| get_AccessLevel() == ACCESSLEVEL_ALL
-					|| get_AccessLevel() == ACCESSLEVEL_CLIENTORG;
-			}
-			if (reset)
-			{
-				log.warning("Set Org to 0");
-				setAD_Org_ID(0);
-			}
-		}
+			if (!doOrganizationCheckForSave())
+				return false;
 
 			//	Save
 			if (newRecord)
@@ -2804,7 +2825,7 @@ public abstract class PO
 	 *	@param success current save state
 	 *	@return true if saved
 	 */
-	private boolean saveFinish (boolean newRecord, boolean success)
+	protected boolean saveFinish (boolean newRecord, boolean success)
 	{
 		//	Translations
 		if (success)
@@ -3114,7 +3135,7 @@ public abstract class PO
 	 * Is log SQL migration script.
 	 * @return true if sql migration script should be logged for changes to this PO instance
 	 */
-	private boolean isLogSQLScript() {
+	protected boolean isLogSQLScript() {
 		return Env.isLogMigrationScript(p_info.getTableName());
 	}
 
@@ -3124,6 +3145,61 @@ public abstract class PO
 	 * @return true if success
 	 */
 	private boolean doUpdate(boolean withValues) {
+		BatchInsert<MChangeLog> changeLogBatch = new BatchInsert<>();
+		StringBuilder whereClauseHolder = new StringBuilder();
+		SQLFragment sqlFragment = buildUpdateSQL(withValues, whereClauseHolder, changeLogBatch);
+		if (sqlFragment != null && !Util.isEmpty(sqlFragment.sqlClause())) {
+			if (!changeLogBatch.isEmpty()) {
+				if (!changeLogBatch.executeBatch(m_trxName))
+					return false;
+			}
+			var sql = sqlFragment.sqlClause();
+			var params = sqlFragment.parameters();			
+			// Execute update 		
+			int no = 0;
+			if (isUseTimeoutForUpdate())
+				no = withValues ? DB.executeUpdateEx(sql.toString(), m_trxName, get_QueryTimeout())
+								: DB.executeUpdateEx(sql.toString(), params.toArray(), m_trxName, get_QueryTimeout());
+			else
+				no = withValues ? DB.executeUpdate(sql.toString(), m_trxName)
+								: DB.executeUpdate(sql.toString(), params.toArray(), false, m_trxName);
+			boolean ok = no == 1;
+			if (ok)
+				ok = lobSave();
+			else
+			{
+				if (CLogger.peekError() == null) {
+					if (m_trxName == null)
+						log.saveError("SaveError", "Update return " + no + " instead of 1"
+							+ " - " + p_info.getTableName() + "." + whereClauseHolder.toString());
+					else
+						log.saveError("SaveError", "Update return " + no + " instead of 1"
+							+ " - [" + m_trxName + "] - " + p_info.getTableName() + "." + whereClauseHolder.toString());
+				} else {
+					String msg = "Not updated - ";
+					if (CLogMgt.isLevelFiner())
+						msg += sql.toString();
+					else
+						msg += get_TableName();
+					if (m_trxName == null)
+						log.log(Level.WARNING, msg);
+					else
+						log.log(Level.WARNING, "[" + m_trxName + "]" + msg);
+				}
+			}
+			if (!ok) return false;			
+		}
+		return true;
+	}
+
+	/**
+	 * Build the update record SQL statement
+	 * @param withValues true to create statement with column values, false to use parameter binding (i.e with ?)
+	 * @param whereClauseHolder buffer to return the where clause use to update the PO record
+	 * @param changeLogBatch batch insert for change log
+	 * @return SQL fragment if successful (or with empty sql clause if no changes), null if error
+	 */
+	protected SQLFragment buildUpdateSQL(boolean withValues, StringBuilder whereClauseHolder, BatchInsert<MChangeLog> changeLogBatch) {
 		//params for insert statement
 		List<Object> params = new ArrayList<Object>();
 
@@ -3136,6 +3212,8 @@ public abstract class PO
 			addOptimisticLockingClause(optimisticLockingParams, builder);
 			where = builder.toString();
 		}
+		if (whereClauseHolder != null)
+			whereClauseHolder.append(where);
 		//
 		boolean changes = false;
 		StringBuilder sql = new StringBuilder ("UPDATE ");
@@ -3360,9 +3438,13 @@ public abstract class PO
 				MChangeLog cLog = session.changeLog (
 					m_trxName, AD_ChangeLog_ID,
 					p_info.getAD_Table_ID(), p_info.getColumn(i).AD_Column_ID,
-					(m_IDs.length == 1 ? get_ID() : 0), get_UUID(), getAD_Client_ID(), getAD_Org_ID(), oldV, newV, MChangeLog.EVENTCHANGELOG_Update);
+					(m_IDs.length == 1 ? get_ID() : 0), get_UUID(), getAD_Client_ID(), getAD_Org_ID(), oldV, newV, MChangeLog.EVENTCHANGELOG_Update, changeLogBatch == null);
 				if (cLog != null)
+				{
 					AD_ChangeLog_ID = cLog.getAD_ChangeLog_ID();
+					if (changeLogBatch != null)
+						changeLogBatch.add(cLog);
+				}
 			}
 		}	//   for all fields
 
@@ -3386,7 +3468,7 @@ public abstract class PO
 
 		//	Something changed
 		if (changes)
-		{
+		{			
 			if (m_trxName == null) {
 				if (log.isLoggable(Level.FINE)) log.fine(p_info.getTableName() + "." + where);
 			} else {
@@ -3426,44 +3508,13 @@ public abstract class PO
 			
 			if (is_UseOptimisticLocking() && optimisticLockingParams.size() > 0)
 				params.addAll(optimisticLockingParams);
-			
-			int no = 0;
-			if (isUseTimeoutForUpdate())
-				no = withValues ? DB.executeUpdateEx(sql.toString(), m_trxName, get_QueryTimeout())
-								: DB.executeUpdateEx(sql.toString(), params.toArray(), m_trxName, get_QueryTimeout());
-			else
-				no = withValues ? DB.executeUpdate(sql.toString(), m_trxName)
-						 		: DB.executeUpdate(sql.toString(), params.toArray(), false, m_trxName);
-			boolean ok = no == 1;
-			if (ok)
-				ok = lobSave();
-			else
-			{
-				if (CLogger.peekError() == null) {
-					if (m_trxName == null)
-						log.saveError("SaveError", "Update return " + no + " instead of 1"
-							+ " - " + p_info.getTableName() + "." + where);
-					else
-						log.saveError("SaveError", "Update return " + no + " instead of 1"
-							+ " - [" + m_trxName + "] - " + p_info.getTableName() + "." + where);
-				} else {
-					String msg = "Not updated - ";
-					if (CLogMgt.isLevelFiner())
-						msg += sql.toString();
-					else
-						msg += get_TableName();
-					if (m_trxName == null)
-						log.log(Level.WARNING, msg);
-					else
-						log.log(Level.WARNING, "[" + m_trxName + "]" + msg);
-				}
-			}
-			return ok;
+
+			return new SQLFragment(sql.toString(), params);
 		}
 		else
 		{
-			// nothing changed, so OK
-			return true;
+			// nothing changed, return empty sql fragment
+			return new SQLFragment("", null);
 		}
 	}
 	
@@ -3570,10 +3621,11 @@ public abstract class PO
 	}
 
 	/**
-	 *  Insert New Record
-	 *  @return true if new record inserted
+	 * Set ID for new record
+	 * @param trxName transaction
+	 * @return true if success
 	 */
-	private boolean saveNew()
+	protected boolean set_IDForNewRecord(String trxName)
 	{
 		//  Set ID for single key - Multi-Key values need explicitly be set previously
 		if (m_IDs.length == 1 && p_info.hasKeyColumn()
@@ -3581,7 +3633,7 @@ public abstract class PO
 		{
 			int no = saveNew_getID();
 			if (no <= 0)
-				no = DB.getNextID(getAD_Client_ID(), p_info.getTableName(), m_trxName);
+				no = DB.getNextID(getAD_Client_ID(), p_info.getTableName(), trxName);
 			// the primary key is not overwrite with the local sequence
 			if (isReplication())
 			{
@@ -3593,13 +3645,20 @@ public abstract class PO
 			if (no <= 0)
 			{
 				log.severe("No NextID (" + no + ")");
-				return saveFinish (true, false);
+				return false;
 			}
 			m_IDs[0] = Integer.valueOf(no);
 			set_ValueNoCheck(m_KeyColumns[0], m_IDs[0]);
 			saveNew_afterSetID();
 		}
-		//uuid secondary key
+		return true;
+	}
+
+	/**
+	 * Set UUID for new record
+	 */
+	protected void set_UUIDForNewRecord()
+	{
 		int uuidIndex = p_info.getColumnIndex(getUUIDColumnName());
 		if (uuidIndex >= 0)
 		{
@@ -3610,12 +3669,12 @@ public abstract class PO
 				set_ValueNoCheck(p_info.getColumnName(uuidIndex), uuid.toString());
 			}
 		}
-		if (m_trxName == null) {
-			if (log.isLoggable(Level.FINE)) log.fine(p_info.getTableName() + " - " + get_WhereClause(true));
-		} else {
-			if (log.isLoggable(Level.FINE)) log.fine("[" + m_trxName + "] - " + p_info.getTableName() + " - " + get_WhereClause(true));
-		}
+	}
 
+	/**
+	 * Set DocumentNo for new record
+	 */
+	protected void set_DocumentNoForNewRecord() {
 		//	Set new DocumentNo
 		String columnName = "DocumentNo";
 
@@ -3638,8 +3697,13 @@ public abstract class PO
 					set_ValueNoCheck(columnName, value);
 				}
 			}	
-		}
+		}	
+	}
 
+	/**
+	 * Set Value (Search Key) for new record
+	 */
+	protected void set_ValueForNewRecord() {
 		// ticket 1007459 - exclude M_AttributeInstance from filling Value column
 		// IDEMPIERE-4224 - exclude AD_TableAttribute from filling Value column
 		if (!MAttributeInstance.Table_Name.equals(get_TableName())
@@ -3647,7 +3711,7 @@ public abstract class PO
 			&& !MSysConfig.Table_Name.equals(get_TableName())
 			&& !get_TableName().startsWith("T_")) {
 			//	Set empty Value
-			columnName = "Value";
+			String columnName = "Value";
 			int index = p_info.getColumnIndex(columnName);
 			if (index != -1)
 			{
@@ -3662,6 +3726,25 @@ public abstract class PO
 				}
 			}
 		}
+	}
+
+	/**
+	 *  Insert New Record
+	 *  @return true if new record inserted
+	 */
+	private boolean saveNew()
+	{
+		if (!set_IDForNewRecord(m_trxName))
+			return saveFinish (true, false);
+		set_UUIDForNewRecord();
+		if (m_trxName == null) {
+			if (log.isLoggable(Level.FINE)) log.fine(p_info.getTableName() + " - " + get_WhereClause(true));
+		} else {
+			if (log.isLoggable(Level.FINE)) log.fine("[" + m_trxName + "] - " + p_info.getTableName() + " - " + get_WhereClause(true));
+		}
+
+		set_DocumentNoForNewRecord();
+		set_ValueForNewRecord();
 
 		boolean ok = doInsert(isLogSQLScript());
 		return saveFinish (true, ok);
@@ -3684,9 +3767,14 @@ public abstract class PO
 		//params for insert statement
 		List<Object> params = new ArrayList<Object>();
 				
+		BatchInsert<MChangeLog> changeLogBatch = new BatchInsert<>();
 		//	SQL
 		StringBuilder sqlInsert = new StringBuilder();
-		AD_ChangeLog_ID = buildInsertSQL(sqlInsert, withValues, params, session, AD_ChangeLog_ID, false, null);
+		AD_ChangeLog_ID = buildInsertSQL(sqlInsert, withValues, params, session, AD_ChangeLog_ID, false, null, changeLogBatch);
+		if (!changeLogBatch.isEmpty()) {
+			if (!changeLogBatch.executeBatch(m_trxName))
+				return false;
+		}
 		//
 		int no = withValues ? DB.executeUpdate(sqlInsert.toString(), m_trxName) 
 							: DB.executeUpdate(sqlInsert.toString(), params.toArray(), false, m_trxName);
@@ -3773,10 +3861,28 @@ public abstract class PO
 	 * @param session to capture change log. null when call from toInsertSQL (i.e to build sql only, not for real insert to DB)
 	 * @param AD_ChangeLog_ID initial change log id
 	 * @param generateScriptOnly true if it is to generate sql script only, false for real DB insert
+	 * @param database database type
 	 * @return last AD_ChangeLog_ID
 	 */
 	protected int buildInsertSQL(StringBuilder sqlInsert, boolean withValues, List<Object> params, MSession session,
 			int AD_ChangeLog_ID, boolean generateScriptOnly, String database) {
+		return buildInsertSQL(sqlInsert, withValues, params, session, AD_ChangeLog_ID, generateScriptOnly, database, null);
+	}
+
+	/**
+	 * Build insert SQL statement and capture change log
+	 * @param sqlInsert
+	 * @param withValues true to create statement with column values, false to use parameter binding (i.e with ?)
+	 * @param params statement parameters when withValues is false
+	 * @param session to capture change log. null when call from toInsertSQL (i.e to build sql only, not for real insert to DB)
+	 * @param AD_ChangeLog_ID initial change log id
+	 * @param generateScriptOnly true if it is to generate sql script only, false for real DB insert
+	 * @param changeLogBatch batch insert for change log
+	 * @param database database type
+	 * @return last AD_ChangeLog_ID
+	 */
+	protected int buildInsertSQL(StringBuilder sqlInsert, boolean withValues, List<Object> params, MSession session,
+			int AD_ChangeLog_ID, boolean generateScriptOnly, String database, BatchInsert<MChangeLog> changeLogBatch) {
 		String tableName = p_info.getTableName();
 		sqlInsert.append("INSERT INTO ");
 		sqlInsert.append(tableName).append(" (");
@@ -4041,9 +4147,13 @@ public abstract class PO
 					MChangeLog cLog = session.changeLog (
 							m_trxName, AD_ChangeLog_ID,
 							p_info.getAD_Table_ID(), p_info.getColumn(i).AD_Column_ID,
-							(m_IDs.length == 1 ? get_ID() : 0), get_UUID(), getAD_Client_ID(), getAD_Org_ID(), null, value, MChangeLog.EVENTCHANGELOG_Insert);
-					if (cLog != null)
+							(m_IDs.length == 1 ? get_ID() : 0), get_UUID(), getAD_Client_ID(), getAD_Org_ID(), null, value, MChangeLog.EVENTCHANGELOG_Insert, changeLogBatch == null);
+					if (cLog != null) 
+					{
 						AD_ChangeLog_ID = cLog.getAD_ChangeLog_ID();
+						if (changeLogBatch != null)
+							changeLogBatch.add(cLog);
+					}
 				}
 			}
 		}
@@ -4216,25 +4326,16 @@ public abstract class PO
 	}	//	decrypt
 
 	/**
-	 * 	Delete Current Record
-	 * 	@param force delete also processed records
-	 * 	@return true if deleted
+	 * Perform standard verification before delete of a PO record
+	 * @param force
+	 * @return true if pass verification, false otherwise
 	 */
-	public boolean delete (boolean force)
-	{
-		CLogger.resetLast();
-		if (is_new())
-			return true;
-
+	protected boolean doVerificationForDelete(boolean force) {
 		if (!checkReadOnlySession())
 			return false;
 		checkImmutable();
 		checkValidContext();
 		checkCrossTenant(true);
-
-		int AD_Table_ID = p_info.getAD_Table_ID();
-		int Record_ID = get_ID();
-		String Record_UU = get_UUID();
 
 		if (!force)
 		{
@@ -4261,6 +4362,61 @@ public abstract class PO
 			return false;
 		}
 
+		return true;
+	}
+
+	/**
+	 * Get delete SQL statement for this PO record
+	 * @return delete SQL statement
+	 */
+	protected SQLFragment get_deleteStatement() {
+		//	The Delete Statement
+		String where = isLogSQLScript() ? get_WhereClause(true, get_ValueAsString(getUUIDColumnName())) : get_WhereClause(true);
+		List<Object> optimisticLockingParams = new ArrayList<Object>();
+		if (is_UseOptimisticLocking() && m_optimisticLockingColumns != null && m_optimisticLockingColumns.length > 0)
+		{
+			StringBuilder builder = new StringBuilder(where);
+			addOptimisticLockingClause(optimisticLockingParams, builder);
+			where = builder.toString();
+		}
+		StringBuilder sql = new StringBuilder ("DELETE FROM ") //jz why no FROM??
+			.append(p_info.getTableName())
+			.append(" WHERE ")
+			.append(where);
+		return new SQLFragment(sql.toString(), optimisticLockingParams);
+	}
+
+	/**
+	 * Get is table has custom tree
+	 * @return true if table has custom tree, false otherwise
+	 */
+	protected boolean is_hasCustomTree() {
+		return (get_ColumnIndex("IsSummary") >= 0 && getTable().hasCustomTree());
+	}
+
+	/**
+	 * Delete custom tree records
+	 */
+	private void deleteCustomTree() {
+		if (is_hasCustomTree()) {
+			delete_Tree(MTree_Base.TREETYPE_CustomTable);
+		}
+	}
+
+	/**
+	 * 	Delete Current Record
+	 * 	@param force delete also processed records
+	 * 	@return true if deleted
+	 */
+	public boolean delete (boolean force)
+	{
+		CLogger.resetLast();
+		if (is_new())
+			return true;
+
+		if (!doVerificationForDelete(force))
+			return false;
+		
 		Trx localTrx = null;
 		Trx trx = null;
 		Savepoint savepoint = null;
@@ -4331,6 +4487,10 @@ public abstract class PO
 				}
 				return false;
 			}
+
+			int AD_Table_ID = p_info.getAD_Table_ID();
+			int Record_ID = get_ID();
+			String Record_UU = get_UUID();
 			//	Delete Restrict AD_Table_ID/Record_ID (Requests, ..)
 			String errorMsg = PO_Record.exists(AD_Table_ID, Record_ID, m_trxName);
 			if (errorMsg == null && Record_UU != null)
@@ -4376,9 +4536,7 @@ public abstract class PO
 			{
 				//
 				deleteTranslations(localTrxName);
-				if (get_ColumnIndex("IsSummary") >= 0 && getTable().hasCustomTree()) {
-					delete_Tree(MTree_Base.TREETYPE_CustomTable);
-				}
+				deleteCustomTree();
 
 				if (m_KeyColumns != null && m_KeyColumns.length == 1 && !getTable().isUUIDKeyTable()) {
 					//delete cascade only for single key column record
@@ -4395,27 +4553,16 @@ public abstract class PO
 				}
 		
 				//	The Delete Statement
-				String where = isLogSQLScript() ? get_WhereClause(true, get_ValueAsString(getUUIDColumnName())) : get_WhereClause(true);
-				List<Object> optimisticLockingParams = new ArrayList<Object>();
-				if (is_UseOptimisticLocking() && m_optimisticLockingColumns != null && m_optimisticLockingColumns.length > 0)
-				{
-					StringBuilder builder = new StringBuilder(where);
-					addOptimisticLockingClause(optimisticLockingParams, builder);
-					where = builder.toString();
-				}
-				StringBuilder sql = new StringBuilder ("DELETE FROM ") //jz why no FROM??
-					.append(p_info.getTableName())
-					.append(" WHERE ")
-					.append(where);
+				SQLFragment sqlFragment = get_deleteStatement();
 				int no = 0;
 				if (isUseTimeoutForUpdate())
-					no = optimisticLockingParams.isEmpty() 
-						 ? DB.executeUpdateEx(sql.toString(), localTrxName, get_QueryTimeout())
-						 : DB.executeUpdateEx(sql.toString(), optimisticLockingParams.toArray(), localTrxName, get_QueryTimeout());
+					no = sqlFragment.parameters().isEmpty()
+						 ? DB.executeUpdateEx(sqlFragment.sqlClause(), localTrxName, get_QueryTimeout())
+						 : DB.executeUpdateEx(sqlFragment.sqlClause(), sqlFragment.parameters().toArray(), localTrxName, get_QueryTimeout());
 				else
-					no = optimisticLockingParams.isEmpty() 
-						 ? DB.executeUpdate(sql.toString(), localTrxName)
-						 : DB.executeUpdate(sql.toString(), optimisticLockingParams.toArray(), false, localTrxName);
+					no = sqlFragment.parameters().isEmpty() 
+						 ? DB.executeUpdate(sqlFragment.sqlClause(), localTrxName)
+						 : DB.executeUpdate(sqlFragment.sqlClause(), sqlFragment.parameters().toArray(), false, localTrxName);
 				success = no == 1;
 			}
 			catch (Exception e)
@@ -4455,8 +4602,9 @@ public abstract class PO
 							log.fine("No Session found");
 						else if (m_IDs.length == 1 || !Util.isEmpty(Record_UU, true))
 						{
-							int AD_ChangeLog_ID = 0;
+							int	AD_ChangeLog_ID = 0;
 							int size = get_ColumnCount();
+							BatchInsert<MChangeLog> changeLogBatch = new BatchInsert<>();
 							for (int i = 0; i < size; i++)
 							{
 								Object value = m_oldValues[i];
@@ -4471,11 +4619,18 @@ public abstract class PO
 									MChangeLog cLog = session.changeLog (
 										m_trxName != null ? m_trxName : localTrxName, AD_ChangeLog_ID,
 										AD_Table_ID, p_info.getColumn(i).AD_Column_ID,
-										(m_IDs.length == 1 ? Record_ID : 0), Record_UU, getAD_Client_ID(), getAD_Org_ID(), value, null, MChangeLog.EVENTCHANGELOG_Delete);
+										(m_IDs.length == 1 ? Record_ID : 0), Record_UU, getAD_Client_ID(), getAD_Org_ID(), value, null, MChangeLog.EVENTCHANGELOG_Delete, false);
 									if (cLog != null)
+									{
+										changeLogBatch.add(cLog);
 										AD_ChangeLog_ID = cLog.getAD_ChangeLog_ID();
+									}
 								}
 							}	//   for all fields
+							
+							if (!changeLogBatch.isEmpty()) {
+								success = changeLogBatch.executeBatch(m_trxName != null ? m_trxName : localTrxName);
+							}
 						}
 	
 						//	Housekeeping
@@ -4531,49 +4686,7 @@ public abstract class PO
 			}
 			else
 			{
-				Trx trxdel = Trx.get(get_TrxName(), false);
-				if (trxdel != null) {
-					// Schedule the reset cache for after committed the delete
-					if (CacheMgt.get().hasCache(p_info.getTableName())) {
-						trxdel.addTrxEventListener(new TrxEventListener() {
-							@Override
-							public void afterRollback(Trx trxdel, boolean success) {
-								trxdel.removeTrxEventListener(this);
-							}
-							@Override
-							public void afterCommit(Trx trxdel, boolean success) {
-								if (success)
-									Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(p_info.getTableName(), Record_ID));
-								trxdel.removeTrxEventListener(this);
-							}
-							@Override
-							public void afterClose(Trx trxdel) {
-							}
-						});
-					}
-					// trigger the deletion of attachments and archives for after committed the delete
-					trxdel.addTrxEventListener(new TrxEventListener() {
-						@Override
-						public void afterRollback(Trx trxdel, boolean success) {
-							trxdel.removeTrxEventListener(this);
-						}
-						@Override
-						public void afterCommit(Trx trxdel, boolean success) {
-							if (success) {
-								if (m_KeyColumns != null && m_KeyColumns.length == 1 && !getTable().isUUIDKeyTable())
-									// Delete Cascade AD_Table_ID/Record_ID on Attachments/Archive
-									// after commit because operations on external storage providers don't have rollback
-									PO_Record.deleteRecordCascade(AD_Table_ID, Record_ID, "AD_Table.TableName IN ('AD_Attachment','AD_Archive')", null);
-								if (Record_UU != null)
-									PO_Record.deleteRecordCascade(AD_Table_ID, Record_UU, "AD_Table.TableName IN ('AD_Attachment','AD_Archive')", null);
-							}
-							trxdel.removeTrxEventListener(this);
-						}
-						@Override
-						public void afterClose(Trx trxdel) {
-						}
-					});
-				}
+				setupDeleteActionsForTransactionEvent();
 				if (localTrx != null)
 				{
 					try {
@@ -4596,14 +4709,7 @@ public abstract class PO
 					log.warning("postDelete failed");
 				}
 
-				//osgi event handler
-				Event event = EventManager.newEvent(IEventTopics.PO_POST_DELETE, this, true);
-				EventManager.getInstance().postEvent(event);
-	
-				m_idOld = 0;
-				int size = p_info.getColumnCount();
-				m_oldValues = new Object[size];
-				m_newValues = new Object[size];
+				afterPostDelete();
 			}
 		}
 		finally
@@ -4629,6 +4735,72 @@ public abstract class PO
 		}
 		return success;
 	}	//	delete
+
+	/**
+	 * Setup one-off delete actions for transaction event (commit or rollback)
+	 */
+	protected void setupDeleteActionsForTransactionEvent() {
+		int AD_Table_ID = p_info.getAD_Table_ID();
+		int Record_ID = get_ID();
+		String Record_UU = get_UUID();
+		Trx trxdel = Trx.get(get_TrxName(), false);
+		if (trxdel != null) {
+			// Schedule the reset cache for after committed the delete
+			if (CacheMgt.get().hasCache(p_info.getTableName())) {
+				trxdel.addTrxEventListener(new TrxEventListener() {
+					@Override
+					public void afterRollback(Trx trxdel, boolean success) {
+						trxdel.removeTrxEventListener(this);
+					}
+					@Override
+					public void afterCommit(Trx trxdel, boolean success) {
+						if (success)
+							Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(p_info.getTableName(), Record_ID));
+						trxdel.removeTrxEventListener(this);
+					}
+					@Override
+					public void afterClose(Trx trxdel) {
+					}
+				});
+			}
+			// trigger the deletion of attachments and archives for after committed the delete
+			trxdel.addTrxEventListener(new TrxEventListener() {
+				@Override
+				public void afterRollback(Trx trxdel, boolean success) {
+					trxdel.removeTrxEventListener(this);
+				}
+				@Override
+				public void afterCommit(Trx trxdel, boolean success) {
+					if (success) {
+						if (m_KeyColumns != null && m_KeyColumns.length == 1 && !getTable().isUUIDKeyTable())
+							// Delete Cascade AD_Table_ID/Record_ID on Attachments/Archive
+							// after commit because operations on external storage providers don't have rollback
+							PO_Record.deleteRecordCascade(AD_Table_ID, Record_ID, "AD_Table.TableName IN ('AD_Attachment','AD_Archive')", null);
+						if (Record_UU != null)
+							PO_Record.deleteRecordCascade(AD_Table_ID, Record_UU, "AD_Table.TableName IN ('AD_Attachment','AD_Archive')", null);
+					}
+					trxdel.removeTrxEventListener(this);
+				}
+				@Override
+				public void afterClose(Trx trxdel) {
+				}
+			});
+		}
+	}
+
+	/**
+	 * After commit and after calling {@link #postDelete()}
+	 */
+	protected void afterPostDelete() {
+		//osgi event handler
+		Event event = EventManager.newEvent(IEventTopics.PO_POST_DELETE, this, true);
+		EventManager.getInstance().postEvent(event);
+
+		m_idOld = 0;
+		int size = p_info.getColumnCount();
+		m_oldValues = new Object[size];
+		m_newValues = new Object[size];
+	}
 
 	/**
 	 * Delete Current Record
@@ -4931,12 +5103,26 @@ public abstract class PO
 	 */
 	private boolean deleteTranslations(String trxName)
 	{
+		String sql = get_deleteTranslationsSQL();
+		if (sql == null)
+			return true;
+		int no = DB.executeUpdate(sql, trxName);
+		if (log.isLoggable(Level.FINE)) log.fine("#" + no);
+		return no >= 0;
+	}
+
+	/**
+	 * 	Get SQL statement for delete of translation records
+	 * 	@return SQL to delete translation records
+	 */
+	protected String get_deleteTranslationsSQL()
+	{
 		//	Not a translation table
 		if (m_IDs.length > 1
 			|| m_IDs[0].equals(I_ZERO)
 			|| !(m_IDs[0] instanceof Integer || m_IDs[0] instanceof String)
 			|| !p_info.isTranslated())
-			return true;
+			return null;
 		//
 		String tableName = p_info.getTableName();
 		MTable table = MTable.get(getCtx(), tableName);
@@ -4948,10 +5134,8 @@ public abstract class PO
 			sql.append(DB.TO_STRING(get_UUID()));
 		else
 			sql.append(get_ID());
-		int no = DB.executeUpdate(sql.toString(), trxName);
-		if (log.isLoggable(Level.FINE)) log.fine("#" + no);
-		return no >= 0;
-	}	//	deleteTranslations
+		return sql.toString();
+	}	
 
 	/**
 	 * 	Insert Accounting Records
@@ -5286,26 +5470,28 @@ public abstract class PO
 	}
 
 	/**
-	 * 	Delete ID Tree Nodes
-	 *	@param treeType MTree TREETYPE_*
-	 *	@return true if deleted
+	 * Get SQL statement to delete tree records
+	 * @param treeType
+	 * @param doChildNodesValidation true to validate whether child nodes exists and throw exception if child nodes exists
+	 * @return SQL statement to delete tree records
 	 */
-	protected boolean delete_Tree (String treeType)
-	{
+	protected String get_deleteTreeSQL(String treeType, boolean doChildNodesValidation) {
 		int id = get_ID();
 		if (id == 0)
 			id = get_IDOld();
 		
 		// IDEMPIERE-2453
-		StringBuilder countSql = new StringBuilder("SELECT COUNT(*) FROM ")
-			.append(MTree_Base.getNodeTableName(treeType))
-			.append(" n JOIN AD_Tree t ON n.AD_Tree_ID=t.AD_Tree_ID")
-			.append(" WHERE Parent_ID=? AND t.TreeType=?");
-		if (MTree_Base.TREETYPE_CustomTable.equals(treeType))
-			countSql.append(" AND t.AD_Table_ID=").append(get_Table_ID());
-		int cnt = DB.getSQLValueEx( get_TrxName(), countSql.toString(), id, treeType);
-		if (cnt > 0)
-			throw new AdempiereException(Msg.getMsg(Env.getCtx(),"NoParentDelete", new Object[] {cnt}));
+		if (doChildNodesValidation) {
+			StringBuilder countSql = new StringBuilder("SELECT COUNT(*) FROM ")
+				.append(MTree_Base.getNodeTableName(treeType))
+				.append(" n JOIN AD_Tree t ON n.AD_Tree_ID=t.AD_Tree_ID")
+				.append(" WHERE Parent_ID=? AND t.TreeType=?");
+			if (MTree_Base.TREETYPE_CustomTable.equals(treeType))
+				countSql.append(" AND t.AD_Table_ID=").append(get_Table_ID());
+			int cnt = DB.getSQLValueEx( get_TrxName(), countSql.toString(), id, treeType);
+			if (cnt > 0)
+				throw new AdempiereException(Msg.getMsg(Env.getCtx(),"NoParentDelete", new Object[] {cnt}));
+		}
 		
 		StringBuilder sb = new StringBuilder ("DELETE FROM ")
 			.append(MTree_Base.getNodeTableName(treeType))
@@ -5315,8 +5501,19 @@ public abstract class PO
 			.append(treeType).append("'");
 		if (MTree_Base.TREETYPE_CustomTable.equals(treeType))
 			sb.append(" AND t.AD_Table_ID=").append(get_Table_ID());
-		sb.append(")");
-		int no = DB.executeUpdate(sb.toString(), get_TrxName());
+		sb.append(")");	
+		return sb.toString();
+	}
+
+	/**
+	 * 	Delete ID Tree Nodes
+	 *	@param treeType MTree TREETYPE_*
+	 *	@return true if deleted
+	 */
+	protected boolean delete_Tree (String treeType)
+	{
+		String sql = get_deleteTreeSQL(treeType, true);
+		int no = DB.executeUpdate(sql, get_TrxName());
 		if (no > 0) {
 			if (log.isLoggable(Level.FINE)) log.fine("#" + no + " - TreeType=" + treeType);
 		} else {
@@ -5688,7 +5885,7 @@ public abstract class PO
 	 * 	Save LOB
 	 * 	@return true if saved ok
 	 */
-	private boolean lobSave ()
+	protected boolean lobSave ()
 	{
 		if (m_lobInfo == null)
 			return true;
