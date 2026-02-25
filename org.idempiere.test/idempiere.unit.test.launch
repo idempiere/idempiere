@@ -416,6 +416,7 @@
         <setEntry value="org.apache.ecs@default:default"/>
         <setEntry value="org.compiere.db.oracle.provider@default:default"/>
         <setEntry value="org.compiere.db.postgresql.provider@default:default"/>
+        <setEntry value="org.idempiere.acct@5:true"/>
         <setEntry value="org.idempiere.hazelcast.service@default:default"/>
         <setEntry value="org.idempiere.tablepartition@default:default"/>
         <setEntry value="org.idempiere.test@default:default"/>

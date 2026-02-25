@@ -19,6 +19,8 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.adempiere.base.acct.AcctInfoServices;
+
 /**
  *	Campaign model
  *	
@@ -77,7 +79,7 @@ public class MCampaign extends X_C_Campaign
 			update_Tree(MTree_Base.TREETYPE_Campaign);
 		//	Value/Name change, update Combination and Description of C_ValidCombination
 		if (!newRecord && (is_ValueChanged("Value") || is_ValueChanged("Name")))
-			MAccount.updateValueDescription(getCtx(), "C_Campaign_ID=" + getC_Campaign_ID(), get_TrxName());
+			AcctInfoServices.getAccountInfoService().updateValueDescription(getCtx(), "C_Campaign_ID=" + getC_Campaign_ID(), get_TrxName());
 
 		return true;
 	}	//	afterSave

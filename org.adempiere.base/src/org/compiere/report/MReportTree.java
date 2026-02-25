@@ -26,7 +26,8 @@ import java.util.logging.Level;
 
 import javax.swing.tree.TreeNode;
 
-import org.compiere.model.MAcctSchemaElement;
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.constants.IAcctSchemaElementConstants;
 import org.compiere.model.MHierarchy;
 import org.compiere.model.MRole;
 import org.compiere.model.MTree;
@@ -123,11 +124,11 @@ public class MReportTree
 	{
 		m_ElementType = ElementType;
 		m_TreeType = m_ElementType;
-		if (MAcctSchemaElement.ELEMENTTYPE_Account.equals(m_ElementType)
-			|| MAcctSchemaElement.ELEMENTTYPE_UserElementList1.equals(m_ElementType)
-			|| MAcctSchemaElement.ELEMENTTYPE_UserElementList2.equals(m_ElementType) )
+		if (IAcctSchemaElementConstants.ELEMENTTYPE_Account.equals(m_ElementType)
+			|| IAcctSchemaElementConstants.ELEMENTTYPE_UserElementList1.equals(m_ElementType)
+			|| IAcctSchemaElementConstants.ELEMENTTYPE_UserElementList2.equals(m_ElementType) )
 			m_TreeType = MTree.TREETYPE_ElementValue;
-		if (MAcctSchemaElement.ELEMENTTYPE_OrgTrx.equals(m_ElementType))
+		if (IAcctSchemaElementConstants.ELEMENTTYPE_OrgTrx.equals(m_ElementType))
 				m_TreeType = MTree.TREETYPE_Organization;
 		m_PA_Hierarchy_ID = PA_Hierarchy_ID;
 		m_ctx = ctx;
@@ -248,7 +249,7 @@ public class MReportTree
 	public String getWhereClause (int ID)
 	{
 		if (log.isLoggable(Level.FINE)) log.fine("(" + m_ElementType + ") ID=" + ID);
-		String ColumnName = MAcctSchemaElement.getColumnName(m_ElementType);
+		String ColumnName = AcctInfoServices.getAcctSchemaElementInfoService().getColumnName(m_ElementType);
 		//
 		MTreeNode node = m_tree.getRoot().findNode(ID);
 		if (log.isLoggable(Level.FINEST)) log.finest("Root=" + node);

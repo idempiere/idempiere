@@ -23,13 +23,15 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 
-import org.compiere.model.MAccount;
-import org.compiere.model.MAcctSchema;
-import org.compiere.model.MAcctSchemaElement;
-import org.compiere.model.MDistribution;
-import org.compiere.model.MDistributionLine;
-import org.compiere.model.MElementValue;
-import org.compiere.model.MFactAcct;
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.constants.IAcctSchemaElementConstants;
+import org.adempiere.base.acct.constants.IFactAcctConstants;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IAcctSchemaElementModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
+import org.adempiere.base.acct.model.IDistributionModel;
+import org.adempiere.base.acct.model.IDistributionLineModel;
+import org.adempiere.base.acct.model.IElementValueModel;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 
@@ -43,14 +45,14 @@ import org.compiere.util.Env;
  *  BF [ 2789949 ] Multicurrency in matching posting
  */
 public final class Fact
-{
+{	
 	/**
 	 *	Constructor
 	 *  @param  document    pointer to document
 	 *  @param  acctSchema  Account Schema to create accounts
 	 *  @param  defaultPostingType  the default Posting type (actual,..) for this posting
 	 */
-	public Fact (Doc document, MAcctSchema acctSchema, String defaultPostingType)
+	public Fact (Doc document, IAcctSchemaModel acctSchema, String defaultPostingType)
 	{
 		m_doc = document;
 		m_acctSchema = acctSchema;
@@ -67,7 +69,7 @@ public final class Fact
 	/** Document            */
 	private Doc             m_doc = null;
 	/** Accounting Schema   */
-	private MAcctSchema	    m_acctSchema = null;
+	private IAcctSchemaModel	    m_acctSchema = null;
 	/** Transaction			*/
 	private String m_trxName;
 
@@ -75,13 +77,13 @@ public final class Fact
 	private String		    m_postingType = null;
 
 	/** Actual Balance Type */
-	public static final String	POST_Actual = MFactAcct.POSTINGTYPE_Actual;
+	public static final String	POST_Actual = IFactAcctConstants.POSTINGTYPE_Actual;
 	/** Budget Balance Type */
-	public static final String	POST_Budget = MFactAcct.POSTINGTYPE_Budget;
+	public static final String	POST_Budget = IFactAcctConstants.POSTINGTYPE_Budget;
 	/** Encumbrance Posting */
-	public static final String	POST_Commitment = MFactAcct.POSTINGTYPE_Commitment;
+	public static final String	POST_Commitment = IFactAcctConstants.POSTINGTYPE_Commitment;
 	/** Encumbrance Posting */
-	public static final String	POST_Reservation = MFactAcct.POSTINGTYPE_Reservation;
+	public static final String	POST_Reservation = IFactAcctConstants.POSTINGTYPE_Reservation;
 
 	/** Is Converted        */
 	private boolean		    m_converted = false;
@@ -109,7 +111,7 @@ public final class Fact
 	 *  @param  creditAmt  credit amount, can be null
 	 *  @return Fact Line
 	 */
-	public FactLine createLine (DocLine docLine, MAccount account,
+	public FactLine createLine (DocLine docLine, IAccountModel account,
 		int C_Currency_ID, BigDecimal debitAmt, BigDecimal creditAmt)
 	{
 		//  Data Check
@@ -127,7 +129,7 @@ public final class Fact
 		//  Set Info & Account
 		line.setDocumentInfo(m_doc, docLine);
 		line.setDocumentTextInfo(m_acctSchema);
-		line.setPostingType(m_postingType);
+		line.getFactAcctInfo().getFactAcct().setPostingType(m_postingType);
 		line.setAccount(m_acctSchema, account);
 
 		//  Amounts - one needs to not zero
@@ -183,7 +185,7 @@ public final class Fact
 	 *  @param  Amt if negative Cr else Dr
 	 *  @return FactLine
 	 */
-	public FactLine createLine (DocLine docLine, MAccount accountDr, MAccount accountCr,
+	public FactLine createLine (DocLine docLine, IAccountModel accountDr, IAccountModel accountCr,
 		int C_Currency_ID, BigDecimal Amt)
 	{
 		if (Amt.signum() < 0)
@@ -202,7 +204,7 @@ public final class Fact
 	 *  @param  Amt if negative Cr else Dr
 	 *  @return FactLine
 	 */
-	public FactLine createLine (DocLine docLine, MAccount account,
+	public FactLine createLine (DocLine docLine, IAccountModel account,
 		int C_Currency_ID, BigDecimal Amt)
 	{
 		if (Amt.signum() < 0)
@@ -234,7 +236,7 @@ public final class Fact
 	 *	Get AcctSchema
 	 *  @return AcctSchema
 	 */
-	public MAcctSchema getAcctSchema()
+	public IAcctSchemaModel getAcctSchema()
 	{
 		return m_acctSchema;
 	}	//	getAcctSchema
@@ -255,8 +257,8 @@ public final class Fact
 		ArrayList<Integer> list = new ArrayList<Integer>();
 		for (int i = 0; i < m_lines.size(); i++){
 			FactLine line = (FactLine)m_lines.get(i);
-			if (line.getC_Currency_ID() > 0 && !list.contains(line.getC_Currency_ID()))
-				list.add(line.getC_Currency_ID());
+			if (line.getFactAcctInfo().getFactAcct().getC_Currency_ID() > 0 && !list.contains(line.getFactAcctInfo().getFactAcct().getC_Currency_ID()))
+				list.add(line.getFactAcctInfo().getFactAcct().getC_Currency_ID());
 	
 		}
 		if (list.size() > 1 )
@@ -307,11 +309,11 @@ public final class Fact
 			m_doc.get_ID(), 0, m_trxName);
 		line.setDocumentInfo(m_doc, null);
 		line.setDocumentTextInfo(m_acctSchema);
-		line.setAD_Org_ID(m_doc.getAD_Org_ID());
-		line.setPostingType(m_postingType);
+		line.getFactAcctInfo().getFactAcct().setAD_Org_ID(m_doc.getAD_Org_ID());
+		line.getFactAcctInfo().getFactAcct().setPostingType(m_postingType);
 
 		//	Account
-		line.setAccount(m_acctSchema, m_acctSchema.getSuspenseBalancing_Acct());
+		line.setAccount(m_acctSchema, m_acctSchema.getSuspenseBalancing_AcctModel());
 
 		//  Amount
 		if (diff.signum() < 0)   //  negative balance => DR
@@ -337,12 +339,12 @@ public final class Fact
 		if (m_lines.size() == 0)
 			return true;
 		
-		MAcctSchemaElement[] elements = m_acctSchema.getAcctSchemaElements();
+		IAcctSchemaElementModel[] elements = m_acctSchema.getAcctSchemaElementsModels();
 		//  check all balancing segments
 		for (int i = 0; i < elements.length; i++)
 		{
-			MAcctSchemaElement ase = elements[i];
-			if (ase.isBalanced() && !isSegmentBalanced (ase.getElementType()))
+			IAcctSchemaElementModel ase = elements[i];
+			if (ase.getAcctSchemaElement().isBalanced() && !isSegmentBalanced (ase.getAcctSchemaElement().getElementType()))
 				return false;
 		}
 		return true;
@@ -357,7 +359,7 @@ public final class Fact
 	 */
 	public boolean isSegmentBalanced (String segmentType)
 	{
-		if (segmentType.equals(MAcctSchemaElement.ELEMENTTYPE_Organization))
+		if (segmentType.equals(IAcctSchemaElementConstants.ELEMENTTYPE_Organization))
 		{
 			HashMap<Integer,BigDecimal> map = new HashMap<Integer,BigDecimal>();
 			//  Add up values by organization
@@ -404,13 +406,13 @@ public final class Fact
 	 */
 	public void balanceSegments()
 	{
-		MAcctSchemaElement[] elements = m_acctSchema.getAcctSchemaElements();
+		IAcctSchemaElementModel[] elements = m_acctSchema.getAcctSchemaElementsModels();
 		//  check all balancing segments
 		for (int i = 0; i < elements.length; i++)
 		{
-			MAcctSchemaElement ase = elements[i];
-			if (ase.isBalanced())
-				balanceSegment (ase.getElementType());
+			IAcctSchemaElementModel ase = elements[i];
+			if (ase.getAcctSchemaElement().isBalanced())
+				balanceSegment (ase.getAcctSchemaElement().getElementType());
 		}
 	}   //  balanceSegments
 
@@ -427,7 +429,7 @@ public final class Fact
 		if (log.isLoggable(Level.FINE)) log.fine ("(" + elementType + ") - " + toString());
 
 		//  Org
-		if (elementType.equals(MAcctSchemaElement.ELEMENTTYPE_Organization))
+		if (elementType.equals(IAcctSchemaElementConstants.ELEMENTTYPE_Organization))
 		{
 			HashMap<Integer,Balance> map = new HashMap<Integer,Balance>();
 			//  Add up values by key
@@ -438,11 +440,11 @@ public final class Fact
 				Balance oldBalance = (Balance)map.get(key);
 				if (oldBalance == null)
 				{
-					oldBalance = new Balance (line.getAmtSourceDr(), line.getAmtSourceCr());
+					oldBalance = new Balance (line.getFactAcctInfo().getFactAcct().getAmtSourceDr(), line.getFactAcctInfo().getFactAcct().getAmtSourceCr());
 					map.put(key, oldBalance);
 				}
 				else
-					oldBalance.add(line.getAmtSourceDr(), line.getAmtSourceCr());
+					oldBalance.add(line.getFactAcctInfo().getFactAcct().getAmtSourceDr(), line.getFactAcctInfo().getFactAcct().getAmtSourceCr());
 			}
 
 			//  Create entry for non-zero element
@@ -460,18 +462,18 @@ public final class Fact
 						m_doc.get_ID(), 0, m_trxName);
 					line.setDocumentInfo(m_doc, null);
 					line.setDocumentTextInfo(m_acctSchema);
-					line.setPostingType(m_postingType);
+					line.getFactAcctInfo().getFactAcct().setPostingType(m_postingType);
 					//  Amount & Account
 					if (difference.getBalance().signum() < 0)
 					{
 						if (difference.isReversal())
 						{
-							line.setAccount(m_acctSchema, m_acctSchema.getDueTo_Acct(elementType));
+							line.setAccount(m_acctSchema, m_acctSchema.getDueTo_AcctModel(elementType));
 							line.setAmtSource(m_doc.getC_Currency_ID(), Env.ZERO, difference.getPostBalance());
 						}
 						else
 						{
-							line.setAccount(m_acctSchema, m_acctSchema.getDueFrom_Acct(elementType));
+							line.setAccount(m_acctSchema, m_acctSchema.getDueFrom_AcctModel(elementType));
 							line.setAmtSource(m_doc.getC_Currency_ID(), difference.getPostBalance(), Env.ZERO);
 						}
 					}
@@ -479,17 +481,17 @@ public final class Fact
 					{
 						if (difference.isReversal())
 						{
-							line.setAccount(m_acctSchema, m_acctSchema.getDueFrom_Acct(elementType));
+							line.setAccount(m_acctSchema, m_acctSchema.getDueFrom_AcctModel(elementType));
 							line.setAmtSource(m_doc.getC_Currency_ID(), difference.getPostBalance(), Env.ZERO);
 						}
 						else
 						{
-							line.setAccount(m_acctSchema, m_acctSchema.getDueTo_Acct(elementType));
+							line.setAccount(m_acctSchema, m_acctSchema.getDueTo_AcctModel(elementType));
 							line.setAmtSource(m_doc.getC_Currency_ID(), Env.ZERO, difference.getPostBalance());
 						}
 					}
 					line.convert();
-					line.setAD_Org_ID(key.intValue());
+					line.getFactAcctInfo().getFactAcct().setAD_Org_ID(key.intValue());
 					//
 					m_lines.add(line);
 					if (log.isLoggable(Level.FINE)) log.fine("(" + elementType + ") - " + line);
@@ -582,9 +584,9 @@ public final class Fact
 				m_doc.get_ID(), 0, m_trxName);
 			line.setDocumentInfo (m_doc, null);
 			line.setDocumentTextInfo(m_acctSchema);
-			line.setPostingType (m_postingType);
-			line.setAD_Org_ID(m_doc.getAD_Org_ID());
-			line.setAccount (m_acctSchema, m_acctSchema.getCurrencyBalancing_Acct());
+			line.getFactAcctInfo().getFactAcct().setPostingType (m_postingType);
+			line.getFactAcctInfo().getFactAcct().setAD_Org_ID(m_doc.getAD_Org_ID());
+			line.setAccount (m_acctSchema, m_acctSchema.getCurrencyBalancing_AcctModel());
 			
 			//  Amount
 			line.setAmtSource(m_doc.getC_Currency_ID(), Env.ZERO, Env.ZERO);
@@ -648,13 +650,13 @@ public final class Fact
 		for (int i = 0; i < m_lines.size(); i++)
 		{
 			FactLine line = (FactLine)m_lines.get(i);
-			MAccount account = line.getAccount();
+			IAccountModel account = line.getAccount();
 			if (account == null)
 			{
 				log.warning("No Account for " + line);
 				return false;
 			}
-			MElementValue ev = account.getAccount();
+			IElementValueModel ev = account.getAccountModel();
 			if (ev == null)
 			{
 				log.warning("No Element Value for " + account 
@@ -662,14 +664,14 @@ public final class Fact
 				m_doc.p_Error = account.toString();
 				return false;
 			}
-			if (ev.isSummary())
+			if (ev.getElementValue().isSummary())
 			{
 				log.warning("Cannot post to Summary Account " + ev 
 					+ ": " + line);
 				m_doc.p_Error = ev.toString();
 				return false;
 			}
-			if (!ev.isActive())
+			if (!ev.getElementValue().isActive())
 			{
 				log.warning("Cannot post to Inactive Account " + ev 
 					+ ": " + line);
@@ -697,15 +699,15 @@ public final class Fact
 		for (int i = 0; i < m_lines.size(); i++)
 		{
 			FactLine dLine = (FactLine)m_lines.get(i);
-			MDistribution[] distributions = MDistribution.get (dLine.getCtx(), dLine.getC_AcctSchema_ID(),
-					m_postingType, m_doc.getC_DocType_ID(), dLine.getDateAcct(),
-					dLine.getAD_Org_ID(), dLine.getAccount_ID(),
-					dLine.getM_Product_ID(), dLine.getC_BPartner_ID(), dLine.getC_Project_ID(),
-					dLine.getC_Campaign_ID(), dLine.getC_Activity_ID(), dLine.getAD_OrgTrx_ID(),
-					dLine.getC_SalesRegion_ID(), dLine.getC_LocTo_ID(), dLine.getC_LocFrom_ID(),
-					dLine.getUser1_ID(), dLine.getUser2_ID(), dLine.getC_CostCenter_ID(),
-					dLine.getC_Department_ID(), dLine.getC_Employee_ID(), dLine.getC_Charge_ID(),
-					dLine.getA_Asset_ID(), dLine.getM_Warehouse_ID(), dLine.getM_AttributeSetInstance_ID());
+			IDistributionModel[] distributions = AcctInfoServices.getDistributionInfoService().get (dLine.getFactAcctInfo().getPO().getCtx(), dLine.getFactAcctInfo().getFactAcct().getC_AcctSchema_ID(),
+					m_postingType, m_doc.getC_DocType_ID(), dLine.getFactAcctInfo().getFactAcct().getDateAcct(),
+					dLine.getAD_Org_ID(), dLine.getFactAcctInfo().getFactAcct().getAccount_ID(),
+					dLine.getFactAcctInfo().getFactAcct().getM_Product_ID(), dLine.getFactAcctInfo().getFactAcct().getC_BPartner_ID(), dLine.getFactAcctInfo().getFactAcct().getC_Project_ID(),
+					dLine.getFactAcctInfo().getFactAcct().getC_Campaign_ID(), dLine.getFactAcctInfo().getFactAcct().getC_Activity_ID(), dLine.getFactAcctInfo().getFactAcct().getAD_OrgTrx_ID(),
+					dLine.getC_SalesRegion_ID(), dLine.getFactAcctInfo().getFactAcct().getC_LocTo_ID(), dLine.getFactAcctInfo().getFactAcct().getC_LocFrom_ID(),
+					dLine.getFactAcctInfo().getFactAcct().getUser1_ID(), dLine.getFactAcctInfo().getFactAcct().getUser2_ID(), dLine.getFactAcctInfo().getFactAcct().getC_CostCenter_ID(),
+					dLine.getFactAcctInfo().getFactAcct().getC_Department_ID(), dLine.getFactAcctInfo().getFactAcct().getC_Employee_ID(), dLine.getFactAcctInfo().getFactAcct().getC_Charge_ID(),
+					dLine.getFactAcctInfo().getFactAcct().getA_Asset_ID(), dLine.getFactAcctInfo().getFactAcct().getM_Warehouse_ID(), dLine.getFactAcctInfo().getFactAcct().getM_AttributeSetInstance_ID());
 			
 			if (distributions == null || distributions.length == 0)
 			{
@@ -715,12 +717,12 @@ public final class Fact
 			//	Just the first
 			if (distributions.length > 1)
 				log.warning("More than one Distribution for " + dLine.getAccount());
-			MDistribution distribution = distributions[0];
+			IDistributionModel distribution = distributions[0];
 
 			// FR 2685367 - GL Distribution delete line instead reverse
-			if (distribution.isCreateReversal()) {
+			if (distribution.getGLDistribution().isCreateReversal()) {
 				//	Add Reversal
-				FactLine reversal = dLine.reverse(distribution.getName());
+				FactLine reversal = dLine.reverse(distribution.getGLDistribution().getName());
 				if (log.isLoggable(Level.INFO)) log.info("Reversal=" + reversal);
 				newLines.add(reversal);		//	saved in postCommit
 			} else {
@@ -730,119 +732,119 @@ public final class Fact
 			}
 
 			//	Prepare
-			distribution.distribute(dLine.getAccount(), dLine.getSourceBalance(), dLine.getQty(), dLine.getC_Currency_ID());
-			MDistributionLine[] lines = distribution.getLines(false);
+			distribution.distribute(dLine.getAccount(), dLine.getSourceBalance(), dLine.getFactAcctInfo().getFactAcct().getQty(), dLine.getFactAcctInfo().getFactAcct().getC_Currency_ID());
+			IDistributionLineModel[] lines = distribution.getDistributionLines(false);
 			for (int j = 0; j < lines.length; j++)
 			{
-				MDistributionLine dl = lines[j];
-				if (!dl.isActive() || dl.getAmt().signum() == 0)
+				IDistributionLineModel dl = lines[j];
+				if (!dl.getGLDistributionLine().isActive() || dl.getAmt().signum() == 0)
 					continue;
 				FactLine factLine = new FactLine (m_doc.getCtx(), m_doc.get_Table_ID(),
-					m_doc.get_ID(), dLine.getLine_ID(), m_trxName);
+					m_doc.get_ID(), dLine.getFactAcctInfo().getFactAcct().getLine_ID(), m_trxName);
 				//  Set Info & Account
 				factLine.setDocumentInfo(m_doc, dLine.getDocLine());
 				factLine.setDocumentTextInfo(m_acctSchema);
-				factLine.setDescription(dLine.getDescription());
-				factLine.setAccount(m_acctSchema, dl.getAccount());
-				factLine.setPostingType(m_postingType);
-				if (dl.isOverwriteOrg())	//	set Org explicitly
-					factLine.setAD_Org_ID(dl.getOrg_ID());
+				factLine.getFactAcctInfo().getFactAcct().setDescription(dLine.getFactAcctInfo().getFactAcct().getDescription());
+				factLine.setAccount(m_acctSchema, dl.getAccountModel());
+				factLine.getFactAcctInfo().getFactAcct().setPostingType(m_postingType);
+				if (dl.getGLDistributionLine().isOverwriteOrg())	//	set Org explicitly
+					factLine.getFactAcctInfo().getFactAcct().setAD_Org_ID(dl.getGLDistributionLine().getOrg_ID());
 				else
-					factLine.setAD_Org_ID(dLine.getAD_Org_ID());
+					factLine.getFactAcctInfo().getFactAcct().setAD_Org_ID(dLine.getAD_Org_ID());
 				// Silvano - freepath - F3P - Bug#2904994 Fact distribtution only overwriting Org
-				if(dl.isOverwriteAcct())
-					factLine.setAccount_ID(dl.getAccount_ID());
+				if(dl.getGLDistributionLine().isOverwriteAcct())
+					factLine.getFactAcctInfo().getFactAcct().setAccount_ID(dl.getGLDistributionLine().getAccount_ID());
 				else
-					factLine.setAccount_ID(dLine.getAccount_ID());
-				if(dl.isOverwriteActivity())
-					factLine.setC_Activity_ID(dl.getC_Activity_ID());
+					factLine.getFactAcctInfo().getFactAcct().setAccount_ID(dLine.getFactAcctInfo().getFactAcct().getAccount_ID());
+				if(dl.getGLDistributionLine().isOverwriteActivity())
+					factLine.getFactAcctInfo().getFactAcct().setC_Activity_ID(dl.getGLDistributionLine().getC_Activity_ID());
 				else
-					factLine.setC_Activity_ID(dLine.getC_Activity_ID());
-				if(dl.isOverwriteBPartner())
-					factLine.setC_BPartner_ID(dl.getC_BPartner_ID());
+					factLine.getFactAcctInfo().getFactAcct().setC_Activity_ID(dLine.getFactAcctInfo().getFactAcct().getC_Activity_ID());
+				if(dl.getGLDistributionLine().isOverwriteBPartner())
+					factLine.getFactAcctInfo().getFactAcct().setC_BPartner_ID(dl.getGLDistributionLine().getC_BPartner_ID());
 				else
-					factLine.setC_BPartner_ID(dLine.getC_BPartner_ID());
-				if(dl.isOverwriteCampaign())
-					factLine.setC_Campaign_ID(dl.getC_Campaign_ID());
+					factLine.getFactAcctInfo().getFactAcct().setC_BPartner_ID(dLine.getFactAcctInfo().getFactAcct().getC_BPartner_ID());
+				if(dl.getGLDistributionLine().isOverwriteCampaign())
+					factLine.getFactAcctInfo().getFactAcct().setC_Campaign_ID(dl.getGLDistributionLine().getC_Campaign_ID());
 				else
-					factLine.setC_Campaign_ID(dLine.getC_Campaign_ID());
-				if(dl.isOverwriteLocFrom())
-					factLine.setC_LocFrom_ID(dl.getC_LocFrom_ID());
+					factLine.getFactAcctInfo().getFactAcct().setC_Campaign_ID(dLine.getFactAcctInfo().getFactAcct().getC_Campaign_ID());
+				if(dl.getGLDistributionLine().isOverwriteLocFrom())
+					factLine.getFactAcctInfo().getFactAcct().setC_LocFrom_ID(dl.getGLDistributionLine().getC_LocFrom_ID());
 				else
-					factLine.setC_LocFrom_ID(dLine.getC_LocFrom_ID());
-				if(dl.isOverwriteLocTo())
-					factLine.setC_LocTo_ID(dl.getC_LocTo_ID());
+					factLine.getFactAcctInfo().getFactAcct().setC_LocFrom_ID(dLine.getFactAcctInfo().getFactAcct().getC_LocFrom_ID());
+				if(dl.getGLDistributionLine().isOverwriteLocTo())
+					factLine.getFactAcctInfo().getFactAcct().setC_LocTo_ID(dl.getGLDistributionLine().getC_LocTo_ID());
 				else
-					factLine.setC_LocTo_ID(dLine.getC_LocTo_ID());
-				if(dl.isOverwriteOrgTrx())
-					factLine.setAD_OrgTrx_ID(dl.getAD_OrgTrx_ID());
+					factLine.getFactAcctInfo().getFactAcct().setC_LocTo_ID(dLine.getFactAcctInfo().getFactAcct().getC_LocTo_ID());
+				if(dl.getGLDistributionLine().isOverwriteOrgTrx())
+					factLine.getFactAcctInfo().getFactAcct().setAD_OrgTrx_ID(dl.getGLDistributionLine().getAD_OrgTrx_ID());
 				else
-					factLine.setAD_OrgTrx_ID(dLine.getAD_OrgTrx_ID());
-				if(dl.isOverwriteProduct())
-					factLine.setM_Product_ID(dl.getM_Product_ID());
+					factLine.getFactAcctInfo().getFactAcct().setAD_OrgTrx_ID(dLine.getFactAcctInfo().getFactAcct().getAD_OrgTrx_ID());
+				if(dl.getGLDistributionLine().isOverwriteProduct())
+					factLine.getFactAcctInfo().getFactAcct().setM_Product_ID(dl.getGLDistributionLine().getM_Product_ID());
 				else
-					factLine.setM_Product_ID(dLine.getM_Product_ID());
-				if(dl.isOverwriteProject())
-					factLine.setC_Project_ID(dl.getC_Project_ID());
+					factLine.getFactAcctInfo().getFactAcct().setM_Product_ID(dLine.getFactAcctInfo().getFactAcct().getM_Product_ID());
+				if(dl.getGLDistributionLine().isOverwriteProject())
+					factLine.getFactAcctInfo().getFactAcct().setC_Project_ID(dl.getGLDistributionLine().getC_Project_ID());
 				else
-					factLine.setC_Project_ID(dLine.getC_Project_ID());
-				if(dl.isOverwriteSalesRegion())
-					factLine.setC_SalesRegion_ID(dl.getC_SalesRegion_ID());
+					factLine.getFactAcctInfo().getFactAcct().setC_Project_ID(dLine.getFactAcctInfo().getFactAcct().getC_Project_ID());
+				if(dl.getGLDistributionLine().isOverwriteSalesRegion())
+					factLine.getFactAcctInfo().getFactAcct().setC_SalesRegion_ID(dl.getGLDistributionLine().getC_SalesRegion_ID());
 				else
-					factLine.setC_SalesRegion_ID(dLine.getC_SalesRegion_ID());
-				if(dl.isOverwriteUser1())				
-					factLine.setUser1_ID(dl.getUser1_ID());
+					factLine.getFactAcctInfo().getFactAcct().setC_SalesRegion_ID(dLine.getC_SalesRegion_ID());
+				if(dl.getGLDistributionLine().isOverwriteUser1())				
+					factLine.getFactAcctInfo().getFactAcct().setUser1_ID(dl.getGLDistributionLine().getUser1_ID());
 				else
-					factLine.setUser1_ID(dLine.getUser1_ID());
-				if(dl.isOverwriteUser2())				
-					factLine.setUser2_ID(dl.getUser2_ID());					
+					factLine.getFactAcctInfo().getFactAcct().setUser1_ID(dLine.getFactAcctInfo().getFactAcct().getUser1_ID());
+				if(dl.getGLDistributionLine().isOverwriteUser2())				
+					factLine.getFactAcctInfo().getFactAcct().setUser2_ID(dl.getGLDistributionLine().getUser2_ID());					
 				else
-					factLine.setUser2_ID(dLine.getUser2_ID());
+					factLine.getFactAcctInfo().getFactAcct().setUser2_ID(dLine.getFactAcctInfo().getFactAcct().getUser2_ID());
 				
-				if (dl.isOverwriteAsset())
-					factLine.setA_Asset_ID(dl.getA_Asset_ID());
+				if (dl.getGLDistributionLine().isOverwriteAsset())
+					factLine.getFactAcctInfo().getFactAcct().setA_Asset_ID(dl.getGLDistributionLine().getA_Asset_ID());
 				else
-					factLine.setA_Asset_ID(dLine.getA_Asset_ID());
+					factLine.getFactAcctInfo().getFactAcct().setA_Asset_ID(dLine.getFactAcctInfo().getFactAcct().getA_Asset_ID());
 				
-				if (dl.isOverwriteCharge())
-					factLine.setC_Charge_ID(dl.getC_Charge_ID());
+				if (dl.getGLDistributionLine().isOverwriteCharge())
+					factLine.getFactAcctInfo().getFactAcct().setC_Charge_ID(dl.getGLDistributionLine().getC_Charge_ID());
 				else
-					factLine.setC_Charge_ID(dLine.getC_Charge_ID());
+					factLine.getFactAcctInfo().getFactAcct().setC_Charge_ID(dLine.getFactAcctInfo().getFactAcct().getC_Charge_ID());
 				
-				if (dl.isOverwriteCostCenter())
-					factLine.setC_CostCenter_ID(dl.getC_CostCenter_ID());
+				if (dl.getGLDistributionLine().isOverwriteCostCenter())
+					factLine.getFactAcctInfo().getFactAcct().setC_CostCenter_ID(dl.getGLDistributionLine().getC_CostCenter_ID());
 				else
-					factLine.setC_CostCenter_ID(dLine.getC_CostCenter_ID());
+					factLine.getFactAcctInfo().getFactAcct().setC_CostCenter_ID(dLine.getFactAcctInfo().getFactAcct().getC_CostCenter_ID());
 				
-				if (dl.isOverwriteDepartment())
-					factLine.setC_Department_ID(dl.getC_Department_ID());
+				if (dl.getGLDistributionLine().isOverwriteDepartment())
+					factLine.getFactAcctInfo().getFactAcct().setC_Department_ID(dl.getGLDistributionLine().getC_Department_ID());
 				else
-					factLine.setC_Department_ID(dLine.getC_Department_ID());
+					factLine.getFactAcctInfo().getFactAcct().setC_Department_ID(dLine.getFactAcctInfo().getFactAcct().getC_Department_ID());
 
-				if (dl.isOverwriteEmployee())
-					factLine.setC_Employee_ID(dl.getC_Employee_ID());
+				if (dl.getGLDistributionLine().isOverwriteEmployee())
+					factLine.getFactAcctInfo().getFactAcct().setC_Employee_ID(dl.getGLDistributionLine().getC_Employee_ID());
 				else
-					factLine.setC_Employee_ID(dLine.getC_Employee_ID());
+					factLine.getFactAcctInfo().getFactAcct().setC_Employee_ID(dLine.getFactAcctInfo().getFactAcct().getC_Employee_ID());
 				
-				if (dl.isOverwriteWarehouse())
-					factLine.setM_Warehouse_ID(dl.getM_Warehouse_ID());
+				if (dl.getGLDistributionLine().isOverwriteWarehouse())
+					factLine.getFactAcctInfo().getFactAcct().setM_Warehouse_ID(dl.getGLDistributionLine().getM_Warehouse_ID());
 				else
-					factLine.setM_Warehouse_ID(dLine.getM_Warehouse_ID());
-				factLine.setUserElement1_ID(dLine.getUserElement1_ID());
-				factLine.setUserElement2_ID(dLine.getUserElement2_ID());
+					factLine.getFactAcctInfo().getFactAcct().setM_Warehouse_ID(dLine.getFactAcctInfo().getFactAcct().getM_Warehouse_ID());
+				factLine.getFactAcctInfo().getFactAcct().setUserElement1_ID(dLine.getFactAcctInfo().getFactAcct().getUserElement1_ID());
+				factLine.getFactAcctInfo().getFactAcct().setUserElement2_ID(dLine.getFactAcctInfo().getFactAcct().getUserElement2_ID());
 				// F3P end
 				//
-				if (dLine.getAmtAcctCr().signum() != 0) // isCredit
-					factLine.setAmtSource(dLine.getC_Currency_ID(), null, dl.getAmt().negate());
+				if (dLine.getFactAcctInfo().getFactAcct().getAmtAcctCr().signum() != 0) // isCredit
+					factLine.setAmtSource(dLine.getFactAcctInfo().getFactAcct().getC_Currency_ID(), null, dl.getAmt().negate());
 				else
-					factLine.setAmtSource(dLine.getC_Currency_ID(), dl.getAmt(), null);
-				factLine.setQty(dl.getQty());
+					factLine.setAmtSource(dLine.getFactAcctInfo().getFactAcct().getC_Currency_ID(), dl.getAmt(), null);
+				factLine.getFactAcctInfo().getFactAcct().setQty(dl.getQty());
 				//  Convert
 				factLine.convert();
 				//
-				String description = distribution.getName() + " #" + dl.getLine();
-				if (dl.getDescription() != null)
-					description += " - " + dl.getDescription();
+				String description = distribution.getGLDistribution().getName() + " #" + dl.getGLDistributionLine().getLine();
+				if (dl.getGLDistributionLine().getDescription() != null)
+					description += " - " + dl.getGLDistributionLine().getDescription();
 				factLine.addDescription(description);
 				//
 				if (log.isLoggable(Level.INFO)) log.info(factLine.toString());

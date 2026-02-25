@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.acct.AcctInfoServices;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
@@ -531,7 +532,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 		else
 		{
 			MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
-			MFactAcct.deleteEx(Table_ID, getC_BankStatement_ID(), get_TrxName());
+			AcctInfoServices.getFactAcctInfoService().deleteEx(Table_ID, getC_BankStatement_ID(), get_TrxName());
 		}
 
 		if (isProcessed()) {
@@ -682,7 +683,7 @@ public class MBankStatement extends X_C_BankStatement implements DocAction
 			return false;
 		}
 
-		MFactAcct.deleteEx(Table_ID, getC_BankStatement_ID(), get_TrxName());
+		AcctInfoServices.getFactAcctInfoService().deleteEx(Table_ID, getC_BankStatement_ID(), get_TrxName());
 		setPosted(false);
 
 		MBankStatementLine[] lines = getLines(true);

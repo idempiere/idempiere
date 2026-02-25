@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.model.MAcctSchemaElement;
+import org.adempiere.base.acct.AcctInfoServices;
 import org.compiere.model.X_PA_ReportLine;
 import org.compiere.util.DB;
 import org.compiere.util.Util;
@@ -165,7 +165,7 @@ public class MReportLine extends X_PA_ReportLine
 		String ColumnName = null;
 		for (int i = 0; i < m_sources.length; i++)
 		{
-			String col = MAcctSchemaElement.getColumnName (m_sources[i].getElementType());
+			String col = AcctInfoServices.getAcctSchemaElementInfoService().getColumnName (m_sources[i].getElementType());
 			if (ColumnName == null || ColumnName.length() == 0)
 				ColumnName = col;
 			else if (!ColumnName.equals(col))
@@ -184,7 +184,7 @@ public class MReportLine extends X_PA_ReportLine
 	public String getSourceValueQuery()
 	{
 		if (m_sources != null && m_sources.length > 0)
-			return MAcctSchemaElement.getValueQuery(m_sources[0].getElementType());
+			return AcctInfoServices.getAcctSchemaElementInfoService().getValueQuery(m_sources[0].getElementType());
 		return null;
 	}	//
 

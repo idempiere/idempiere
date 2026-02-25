@@ -450,7 +450,6 @@
         <setEntry value="zweb@default:default"/>
     </setAttribute>
     <setAttribute key="selected_workspace_bundles">
-        <setEntry value="javax.websocket-api.fragment@default:false"/>
         <setEntry value="org.adempiere.base.callout@default:default"/>
         <setEntry value="org.adempiere.base.process@default:default"/>
         <setEntry value="org.adempiere.base@default:default"/>
@@ -470,6 +469,7 @@
         <setEntry value="org.apache.ecs@default:default"/>
         <setEntry value="org.compiere.db.oracle.provider@default:default"/>
         <setEntry value="org.compiere.db.postgresql.provider@default:default"/>
+        <setEntry value="org.idempiere.acct@5:default"/>
         <setEntry value="org.idempiere.felix.webconsole@default:true"/>
         <setEntry value="org.idempiere.hazelcast.service@default:default"/>
         <setEntry value="org.idempiere.jetty.osgi.boot.fragment@default:false"/>

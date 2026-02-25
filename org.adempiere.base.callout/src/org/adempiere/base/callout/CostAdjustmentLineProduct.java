@@ -28,13 +28,15 @@ import java.math.BigDecimal;
 import java.util.Properties;
 
 import org.adempiere.base.IColumnCallout;
+import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.constants.IAcctSchemaConstants;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.base.annotation.Callout;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.GridTable;
 import org.compiere.model.ICostInfo;
 import org.compiere.model.I_M_InventoryLine;
-import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClient;
 import org.compiere.model.MCostElement;
 import org.compiere.model.MDocType;
@@ -73,10 +75,10 @@ public class CostAdjustmentLineProduct implements IColumnCallout {
 			} else {
 				MProduct product = MProduct.get(ctx, (Integer) value);					
 				MClient client = MClient.get(ctx);
-				MAcctSchema as = client.getAcctSchema();
+				IAcctSchemaModel as = client.getAcctSchema();
 
 				String costingLevel = product.getCostingLevel(as);
-				if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel)) {
+				if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(costingLevel)) {
 					mTab.setValue(I_M_InventoryLine.COLUMNNAME_CurrentCostPrice, BigDecimal.ZERO);
 					mTab.setValue(I_M_InventoryLine.COLUMNNAME_NewCostPrice, BigDecimal.ZERO);
 				}else {
@@ -85,13 +87,13 @@ public class CostAdjustmentLineProduct implements IColumnCallout {
 					int AD_Org_ID = inventory.getAD_Org_ID();
 					int C_Currency_ID = inventory.getC_Currency_ID();
 
-					if (as.getC_Currency_ID() != C_Currency_ID) 
+					if (as.getAcctSchema().getC_Currency_ID() != C_Currency_ID) 
 					{
-						MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(ctx, client.get_ID());
+						IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(ctx, client.get_ID());
 						for (int i = 0; i < ass.length ; i ++)
 						{
-							MAcctSchema a =  ass[i];
-							if (a.getC_Currency_ID() ==  C_Currency_ID) 
+							IAcctSchemaModel a =  ass[i];
+							if (a.getAcctSchema().getC_Currency_ID() ==  C_Currency_ID) 
 								as = a ; 
 						}
 					}
@@ -101,12 +103,10 @@ public class CostAdjustmentLineProduct implements IColumnCallout {
 							mTab.setValue(mField, null);
 							return Msg.getMsg(Env.getCtx(), "NoCostingRecord");
 						}
-						mTab.setValue(I_M_InventoryLine.COLUMNNAME_CurrentCostPrice, BigDecimal.ZERO);
-						mTab.setValue(I_M_InventoryLine.COLUMNNAME_NewCostPrice, BigDecimal.ZERO);
-					}else {
-						mTab.setValue(I_M_InventoryLine.COLUMNNAME_CurrentCostPrice, cost.getCurrentCostPrice());
-						mTab.setValue(I_M_InventoryLine.COLUMNNAME_NewCostPrice, cost.getCurrentCostPrice());	
 					}
+
+					mTab.setValue(I_M_InventoryLine.COLUMNNAME_CurrentCostPrice, cost.getCurrentCostPrice());
+					mTab.setValue(I_M_InventoryLine.COLUMNNAME_NewCostPrice, cost.getCurrentCostPrice());	
 				}
 			}
 		}

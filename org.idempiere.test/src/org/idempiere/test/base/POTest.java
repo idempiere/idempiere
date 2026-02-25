@@ -59,11 +59,12 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.adempiere.base.acct.constants.IAcctSchemaConstants;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.compiere.dbPort.Convert;
 import org.compiere.model.I_AD_UserPreference;
-import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MAttachmentEntry;
 import org.compiere.model.MBPGroup;
@@ -583,7 +584,7 @@ public class POTest extends AbstractTestCase
 	public void testLogMigrationScript() throws IOException {
 		MSession.create(Env.getCtx());
 		MClient client = MClient.get(Env.getCtx());
-		MAcctSchema as = client.getAcctSchema();
+		IAcctSchemaModel as = client.getAcctSchema();
 		
 		assertFalse(Env.isLogMigrationScript(MProduct.Table_Name), "Unexpected Log Migration Script default for MProduct");
 		Env.getCtx().setProperty(Ini.P_LOGMIGRATIONSCRIPT, "Y");
@@ -595,9 +596,9 @@ public class POTest extends AbstractTestCase
 		lotLevel.saveEx();
 		MProduct product = null;
 		try {
-			MProductCategoryAcct lotLevelAcct = MProductCategoryAcct.get(lotLevel.get_ID(), as.get_ID());
+			MProductCategoryAcct lotLevelAcct = MProductCategoryAcct.get(lotLevel.get_ID(), as.getPO().get_ID());
 			lotLevelAcct = new MProductCategoryAcct(Env.getCtx(), lotLevelAcct);
-			lotLevelAcct.setCostingLevel(MAcctSchema.COSTINGLEVEL_BatchLot);
+			lotLevelAcct.setCostingLevel(IAcctSchemaConstants.COSTINGLEVEL_BatchLot);
 			lotLevelAcct.saveEx();
 			
 			product = new MProduct(Env.getCtx(), 0, null);

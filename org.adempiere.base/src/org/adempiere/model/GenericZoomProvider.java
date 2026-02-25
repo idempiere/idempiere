@@ -24,7 +24,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.compiere.model.MAccount;
+import org.compiere.model.I_C_ValidCombination;
 import org.compiere.model.MAttributeSetInstance;
 import org.compiere.model.MChart;
 import org.compiere.model.MColumn;
@@ -112,7 +112,7 @@ public class GenericZoomProvider implements IZoomProvider {
 					  " AND (    ( c.ColumnName=? AND c.AD_Reference_ID IN (?,?)) "); // TableDir/TableDirUU
 			if (MLocation.COLUMNNAME_C_Location_ID.equals(po.get_KeyColumns()[0]))
 				sqlb.append(" OR c.AD_Reference_ID=").append(DisplayType.Location);
-			else if (MAccount.COLUMNNAME_C_ValidCombination_ID.equals(po.get_KeyColumns()[0]))
+			else if (I_C_ValidCombination.COLUMNNAME_C_ValidCombination_ID.equals(po.get_KeyColumns()[0]))
 				sqlb.append(" OR c.AD_Reference_ID=").append(DisplayType.Account);
 			else if (MLocator.COLUMNNAME_M_Locator_ID.equals(po.get_KeyColumns()[0]))
 				sqlb.append(" OR c.AD_Reference_ID=").append(DisplayType.Locator);

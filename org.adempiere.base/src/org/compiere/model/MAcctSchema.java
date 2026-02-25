@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.BackDateTrxNotAllowedException;
 import org.compiere.report.MReportTree;
 import org.compiere.util.CCache;
@@ -833,7 +834,7 @@ public class MAcctSchema extends X_C_AcctSchema implements ImmutablePOSupport
 		if (dateAcct == null)
 			return true;
 		MClientInfo info = MClientInfo.get(ctx, Env.getAD_Client_ID(ctx), trxName); 
-		MAcctSchema as = info.getMAcctSchema1();
+		IAcctSchemaModel as = info.getMAcctSchema1();
 		return as.isBackDateTrxAllowed(dateAcct);
 	}
 

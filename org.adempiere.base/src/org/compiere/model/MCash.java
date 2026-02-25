@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.acct.AcctInfoServices;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.CLogger;
@@ -676,7 +677,7 @@ public class MCash extends X_C_Cash implements DocAction
 		saveEx();
 			
 		//	Delete Posting
-		MFactAcct.deleteEx(Table_ID, getC_Cash_ID(), get_TrxName());
+		AcctInfoServices.getFactAcctInfoService().deleteEx(Table_ID, getC_Cash_ID(), get_TrxName());
 		
 		return true;
 	}	//	reverse
