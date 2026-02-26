@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.FillMandatoryException;
@@ -731,7 +731,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 			if (A_SOURCETYPE_Imported.equals(getA_SourceType())) {
 				assetworkFile.adjustCost(ifixedAsset.getA_Asset_Cost(), getA_QTY_Current(), isA_CreateAsset());
 			} else {
-				org.adempiere.base.acct.model.IAcctSchemaModel acctSchema = AcctInfoServices.getAcctSchemaInfoService().get(assetworkFile.getC_AcctSchema_ID());
+				org.adempiere.base.acct.model.IAcctSchemaModel acctSchema = AcctModelServices.getAcctSchemaModelService().get(assetworkFile.getC_AcctSchema_ID());
 				if (acctSchema.getAcctSchema().getC_Currency_ID() != getC_Currency_ID()) 
 				{				
 					BigDecimal convertedAssetCost  =  MConversionRate.convert(getCtx(), getAssetSourceAmt(),
@@ -752,7 +752,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 				if (A_SOURCETYPE_Imported.equals(getA_SourceType())) {
 					assetworkFile.setA_Salvage_Value(this.getA_Salvage_Value());
 				} else {
-					IAcctSchemaModel acctSchema = AcctInfoServices.getAcctSchemaInfoService().get(assetworkFile.getC_AcctSchema_ID());
+					IAcctSchemaModel acctSchema = AcctModelServices.getAcctSchemaModelService().get(assetworkFile.getC_AcctSchema_ID());
 					if (acctSchema.getAcctSchema().getC_Currency_ID() != getC_Currency_ID()) 
 					{
 						BigDecimal salvageValue = MConversionRate.convert(getCtx(), this.getA_Salvage_Value(),
@@ -907,7 +907,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 			}
 		}
 		
-		AcctInfoServices.getFactAcctInfoService().deleteEx(get_Table_ID(), get_ID(), get_TrxName());
+		AcctModelServices.getFactAcctModelService().deleteEx(get_Table_ID(), get_ID(), get_TrxName());
     
 		updateSourceDocument(true);
 	}

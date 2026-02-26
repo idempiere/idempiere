@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IFactAcctModel;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
@@ -568,7 +568,7 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		if (tableID == I_Fact_Acct.Table_ID)
 			AEnv.zoom(tableID, factId);
 		else {
-			IFactAcctModel fa = AcctInfoServices.getFactAcctInfoService().create(Env.getCtx(), factId, null);
+			IFactAcctModel fa = AcctModelServices.getFactAcctModelService().create(Env.getCtx(), factId, null);
 			AEnv.zoom(fa.getFactAcct().getAD_Table_ID(), fa.getFactAcct().getRecord_ID());
 		}
 	}	//	zoom

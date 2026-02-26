@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.PeriodClosedException;
 import org.compiere.process.DocAction;
@@ -327,7 +327,7 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 		{
 			MPeriod.testPeriodOpen(getCtx(), getDateTrx(), MDocType.DOCBASETYPE_PaymentAllocation, getAD_Org_ID());
 			setPosted(false);
-			AcctInfoServices.getFactAcctInfoService().deleteEx (Table_ID, get_ID(), trxName);
+			AcctModelServices.getFactAcctModelService().deleteEx (Table_ID, get_ID(), trxName);
 		}
 		//	Mark as Inactive
 		setIsActive(false);		//	updated DB for line delete/process
@@ -920,7 +920,7 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 				throw new IllegalStateException("Cannot de-activate allocation");
 				
 			//	Delete Posting
-			AcctInfoServices.getFactAcctInfoService().deleteEx(MAllocationHdr.Table_ID, getC_AllocationHdr_ID(), get_TrxName());
+			AcctModelServices.getFactAcctModelService().deleteEx(MAllocationHdr.Table_ID, getC_AllocationHdr_ID(), get_TrxName());
 			
 			//	Unlink Invoices
 			getLines(true);

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAccountModel;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.model.I_C_Project;
@@ -166,7 +166,7 @@ public class Doc_AssetAddition extends Doc
 						+" AND "+I_C_Project_Acct.COLUMNNAME_C_AcctSchema_ID+"=?"
 						;
 		int acct_id = DB.getSQLValueEx(getTrxName(), sql, prj.getC_Project_ID(), as.getPO().get_ID());	
-		return AcctInfoServices.getAccountInfoService().get(getCtx(), acct_id);
+		return AcctModelServices.getAccountModelService().get(getCtx(), acct_id);
 	}
 
 	/**
@@ -179,7 +179,7 @@ public class Doc_AssetAddition extends Doc
 		int acct_id = MAssetAcct
 				.forA_Asset_ID(getCtx(), as.getPO().get_ID(), assetAdd.getA_Asset_ID(), assetAdd.getPostingType(), assetAdd.getDateAcct(), assetAdd.get_TrxName())
 				.getA_Asset_Acct();
-		return AcctInfoServices.getAccountInfoService().get(getCtx(), acct_id);
+		return AcctModelServices.getAccountModelService().get(getCtx(), acct_id);
 	}
 
 	/**

@@ -36,21 +36,21 @@ import io.github.classgraph.ClassInfo;
 import io.github.classgraph.ScanResult;
 
 /**
- * Factory that discovers and provides IAcctInfoService implementations.
+ * Factory that discovers and provides IAcctModelService implementations.
  * 
  * @author etantg
  */
-public final class AcctInfoServiceFactory extends AnnotationBasedFactory {
+public final class AcctModelServiceFactory extends AnnotationBasedFactory {
 	
-	private static final CLogger log = CLogger.getCLogger(AcctInfoServiceFactory.class);
+	private static final CLogger log = CLogger.getCLogger(AcctModelServiceFactory.class);
 		
-	private static final AcctInfoServiceFactory INSTANCE = new AcctInfoServiceFactory();
+	private static final AcctModelServiceFactory INSTANCE = new AcctModelServiceFactory();
 	
 	private final Map<Class<? extends IAcctModelService>, IAcctModelService> serviceMap = new ConcurrentHashMap<>();
 	
-	private AcctInfoServiceFactory() {}
+	private AcctModelServiceFactory() {}
 
-    public static AcctInfoServiceFactory getInstance() {
+    public static AcctModelServiceFactory getInstance() {
         return INSTANCE;
     }
     
@@ -65,9 +65,9 @@ public final class AcctInfoServiceFactory extends AnnotationBasedFactory {
 				.acceptPackagesNonRecursive(packageName);
 		try (ScanResult scanResult = graph.scan())
 		{
-		    for (ClassInfo classInfo : scanResult.getClassesWithAnnotation(AcctInfoService.class.getName())) {
+		    for (ClassInfo classInfo : scanResult.getClassesWithAnnotation(AcctModelService.class.getName())) {
 		    	final Class<?> clazz = classLoader.loadClass(classInfo.getName());
-		    	AcctInfoService ann = clazz.getAnnotation(AcctInfoService.class);
+		    	AcctModelService ann = clazz.getAnnotation(AcctModelService.class);
 	            Class<? extends IAcctModelService> iface = ann.value();
 	            IAcctModelService service = (IAcctModelService) clazz.getDeclaredConstructor().newInstance();
 	            serviceMap.put(iface, service);

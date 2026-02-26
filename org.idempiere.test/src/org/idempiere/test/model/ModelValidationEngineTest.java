@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.acct.Fact;
 import org.compiere.model.FactsValidator;
@@ -144,7 +144,7 @@ public class ModelValidationEngineTest extends AbstractTestCase {
 	@Test
 	public void testFactsValidate() {
 		MOrg org = MOrg.get(Env.getCtx(), getAD_Org_ID());
-		IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get(Env.getCtx(), Env.getContextAsInt(Env.getCtx(), "$C_AcctSchema_ID"));
+		IAcctSchemaModel as = AcctModelServices.getAcctSchemaModelService().get(Env.getCtx(), Env.getContextAsInt(Env.getCtx(), "$C_AcctSchema_ID"));
 		List<Fact> facts = new ArrayList<>();
 		
 		engine.addFactsValidate(MOrg.Table_Name, globalValidator);

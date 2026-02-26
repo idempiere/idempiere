@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.constants.IAcctSchemaElementConstants;
 import org.adempiere.base.acct.model.IAccountModel;
 import org.adempiere.base.acct.model.IAcctSchemaElementModel;
@@ -141,7 +141,7 @@ public class GLJournalGenerate extends SvrProcess
 				);
 
 		MJournalGenerator journalGenerator = new MJournalGenerator(getCtx(), p_QSS_JournalGenerator_ID, get_TrxName());
-		IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get(journalGenerator.getC_AcctSchema_ID());
+		IAcctSchemaModel as = AcctModelServices.getAcctSchemaModelService().get(journalGenerator.getC_AcctSchema_ID());
 
 		BigDecimal totalAmount = Env.ZERO;
 		List<List<Integer>> listDimOut = new ArrayList<List<Integer>>();
@@ -158,7 +158,7 @@ public class GLJournalGenerate extends SvrProcess
 			groupColumns.add("AD_Client_ID");
 			if (line.isCopyAllDimensions()) {
 				for (IAcctSchemaElementModel element : as.getAcctSchemaElementsModels()) {
-					String columnName = AcctInfoServices.getAcctSchemaElementInfoService().getColumnName(element.getAcctSchemaElement().getElementType());
+					String columnName = AcctModelServices.getAcctSchemaElementModelService().getColumnName(element.getAcctSchemaElement().getElementType());
 					if (! groupColumns.contains(columnName))
 						groupColumns.add(columnName);
 				}
@@ -386,7 +386,7 @@ public class GLJournalGenerate extends SvrProcess
 			MJournalGeneratorLine line = listLinesOut.get(i);
 
 			if (p_IsSimulation) {
-				IElementValueModel ev = AcctInfoServices.getElementValueInfoService().create(getCtx(), accountId, get_TrxName());
+				IElementValueModel ev = AcctModelServices.getElementValueModelService().create(getCtx(), accountId, get_TrxName());
 				String msg = "Account=" + ev.getElementValue().getValue()
 						+ ", DR=" + dr
 						+ ", CR=" + cr;
@@ -504,7 +504,7 @@ public class GLJournalGenerate extends SvrProcess
 							idxcol++;
 						}
 					}
-					combination = AcctInfoServices.getAccountInfoService().get(getCtx(), AD_Client_ID,
+					combination = AcctModelServices.getAccountModelService().get(getCtx(), AD_Client_ID,
 							AD_Org_ID, C_AcctSchema_ID, Account_ID,
 							C_SubAcct_ID, M_Product_ID, C_BPartner_ID,
 							AD_OrgTrx_ID, C_LocFrom_ID, C_LocTo_ID,

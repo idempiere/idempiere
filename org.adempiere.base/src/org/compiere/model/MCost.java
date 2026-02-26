@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.constants.IAcctSchemaConstants;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.AverageCostingNegativeQtyException;
@@ -715,7 +715,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 	 */
 	public static void create (MClient client)
 	{
-		IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(client.getCtx(), client.getAD_Client_ID());
+		IAcctSchemaModel[] ass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(client.getCtx(), client.getAD_Client_ID());
 		String trxName = client.get_TrxName();
 		String trxNameUsed = trxName;
 		Trx trx = null;
@@ -795,7 +795,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 			return;
 		}
 
-		IAcctSchemaModel[] mass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(product.getCtx(),
+		IAcctSchemaModel[] mass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(product.getCtx(),
 			product.getAD_Client_ID(), product.get_TrxName());
 		MOrg[] orgs = null;
 
@@ -911,7 +911,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 		//	Cost Elements
 		List <MCostElement> ces = MCostElement.getCostElementsWithCostingMethods(product);
 
-		IAcctSchemaModel[] mass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(product.getCtx(),
+		IAcctSchemaModel[] mass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(product.getCtx(),
 			product.getAD_Client_ID(), product.get_TrxName());
 		MOrg[] orgs = null;
 
@@ -1679,7 +1679,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 			{
 				if (getCurrentQty().add(qty).signum() < 0)
 				{
-					IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get(getC_AcctSchema_ID());
+					IAcctSchemaModel as = AcctModelServices.getAcctSchemaModelService().get(getC_AcctSchema_ID());
 					throw new AverageCostingNegativeQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()+", Trx Qty="+qty
 							+ ", CostElement="+costElement.getName()+", Schema="+as.getAcctSchema().getName());
 				}
@@ -1711,7 +1711,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 		//can't do cost adjustment if there's no stock left
 		if (qty.signum() == 0 && getCurrentQty().signum() <= 0)
 		{
-			IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get(getC_AcctSchema_ID());
+			IAcctSchemaModel as = AcctModelServices.getAcctSchemaModelService().get(getC_AcctSchema_ID());
 			throw new AverageCostingZeroQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()+", Trx Qty="+qty
 					+", CostElement="+MCostElement.get(getM_CostElement_ID()).getName()+", Schema="+as.getAcctSchema().getName());
 		}
@@ -1719,7 +1719,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 		if (!isSkipAverageCostingQtyCheck) {
 			if (getCurrentQty().add(qty).signum() < 0)
 			{
-				IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get(getC_AcctSchema_ID());
+				IAcctSchemaModel as = AcctModelServices.getAcctSchemaModelService().get(getC_AcctSchema_ID());
 				throw new AverageCostingNegativeQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()+", Trx Qty="+qty
 						+", CostElement="+MCostElement.get(getM_CostElement_ID()).getName()+", Schema="+as.getAcctSchema().getName());
 			}
@@ -1763,7 +1763,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 	 */
 	protected int getPrecision()
 	{
-		IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get(getCtx(), getC_AcctSchema_ID());
+		IAcctSchemaModel as = AcctModelServices.getAcctSchemaModelService().get(getCtx(), getC_AcctSchema_ID());
 		if (as != null)
 			return as.getCostingPrecision();
 		return 6;
@@ -1844,7 +1844,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 		//	Check if data entry makes sense
 		if (m_manual)
 		{
-			IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().create(getCtx(), getC_AcctSchema_ID(), null);
+			IAcctSchemaModel as = AcctModelServices.getAcctSchemaModelService().create(getCtx(), getC_AcctSchema_ID(), null);
 			MProduct product = MProduct.get(getCtx(), getM_Product_ID());
 			String CostingLevel = product.getCostingLevel(as);
 			if (IAcctSchemaConstants.COSTINGLEVEL_Client.equals(CostingLevel))
@@ -1904,7 +1904,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 			{
 				if (getCurrentQty().signum() < 0)
 				{
-					IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get(getC_AcctSchema_ID());
+					IAcctSchemaModel as = AcctModelServices.getAcctSchemaModelService().get(getC_AcctSchema_ID());
 					throw new AverageCostingNegativeQtyException("Product(ID)="+getM_Product_ID()+", Current Qty="+getCurrentQty()
 							+", CostElement="+ce.getName()+", Schema="+as.getAcctSchema().getName());
 				}
@@ -1926,7 +1926,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 			{
 				if (CurrentQty.signum() < 0)
 				{
-					IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get(getC_AcctSchema_ID());
+					IAcctSchemaModel as = AcctModelServices.getAcctSchemaModelService().get(getC_AcctSchema_ID());
 					throw new AverageCostingNegativeQtyException("Product="+MProduct.get(getM_Product_ID()).getName()+", Current Qty="+getCurrentQty()+", New Current Qty="+CurrentQty
 							+", CostElement="+ce.getName()+", Schema="+as.getAcctSchema().getName());
 				}

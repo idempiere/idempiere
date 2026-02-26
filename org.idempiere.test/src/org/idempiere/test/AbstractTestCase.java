@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.base.acct.model.IFactAcctModel;
 import org.adempiere.util.ServerContext;
@@ -131,13 +131,13 @@ public abstract class AbstractTestCase {
 		/** Define AcctSchema , Currency, HasAlias **/
 		if (loginDetails.getClientId() > 0) {
 			if (MClientInfo.get(Env.getCtx(), loginDetails.getClientId()).getC_AcctSchema1_ID() > 0) {
-				IAcctSchemaModel primary = AcctInfoServices.getAcctSchemaInfoService().get(Env.getCtx(), MClientInfo.get(Env.getCtx(), loginDetails.getClientId()).getC_AcctSchema1_ID());
+				IAcctSchemaModel primary = AcctModelServices.getAcctSchemaModelService().get(Env.getCtx(), MClientInfo.get(Env.getCtx(), loginDetails.getClientId()).getC_AcctSchema1_ID());
 				Env.setContext(Env.getCtx(), "$C_AcctSchema_ID", primary.getAcctSchema().getC_AcctSchema_ID());
 				Env.setContext(Env.getCtx(), "$C_Currency_ID", primary.getAcctSchema().getC_Currency_ID());
 				Env.setContext(Env.getCtx(), "$HasAlias", primary.getAcctSchema().isHasAlias());
 			}
 			
-			IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), loginDetails.getClientId());
+			IAcctSchemaModel[] ass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(Env.getCtx(), loginDetails.getClientId());
 			if(ass != null && ass.length > 1) {
 				for(IAcctSchemaModel as : ass) {
 					if (as.getAcctSchema().getAD_OrgOnly_ID() != 0) {

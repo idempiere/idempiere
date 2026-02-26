@@ -20,7 +20,7 @@ import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.constants.IElementValueConstants;
 import org.adempiere.base.acct.model.IAccountModel;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
@@ -235,7 +235,7 @@ public class Charge
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config(name);
 		//
-		IElementValueModel ev = AcctInfoServices.getElementValueInfoService().create(Env.getCtx(), value, name, null,
+		IElementValueModel ev = AcctModelServices.getElementValueModelService().create(Env.getCtx(), value, name, null,
 			isExpenseType ? IElementValueConstants.ACCOUNTTYPE_Expense : IElementValueConstants.ACCOUNTTYPE_Revenue, 
 					IElementValueConstants.ACCOUNTSIGN_Natural,
 				false, false, m_trxName);
@@ -358,7 +358,7 @@ public class Charge
         //  Get AcctSchama
         if (m_acctSchema == null)
         {
-            m_acctSchema = AcctInfoServices.getAcctSchemaInfoService().create(Env.getCtx(), m_C_AcctSchema_ID, m_trxName);
+            m_acctSchema = AcctModelServices.getAcctSchemaModelService().create(Env.getCtx(), m_C_AcctSchema_ID, m_trxName);
         }
 
         return;
@@ -373,8 +373,8 @@ public class Charge
     private IAccountModel getAccount(int elementValueId)
     {
     	Properties ctx = Env.getCtx();
-    	IAccountModel defaultAccount = AcctInfoServices.getAccountInfoService().getDefault(m_acctSchema, true); //  optional null
-    	IAccountModel account = AcctInfoServices.getAccountInfoService().get(ctx,
+    	IAccountModel defaultAccount = AcctModelServices.getAccountModelService().getDefault(m_acctSchema, true); //  optional null
+    	IAccountModel account = AcctModelServices.getAccountModelService().get(ctx,
             Env.getAD_Client_ID(ctx),
             Env.getAD_Org_ID(ctx),
             m_acctSchema.getAcctSchema().getC_AcctSchema_ID(),

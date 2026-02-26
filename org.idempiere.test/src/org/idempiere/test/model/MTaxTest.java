@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.adempiere.base.Core;
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAccountModel;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.base.acct.model.IFactAcctModel;
@@ -330,7 +330,7 @@ public class MTaxTest extends AbstractTestCase {
 			assertEquals(expectedCost, averageCost, "Un-expected average cost");
 			
 			IAccountModel acctAsset = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, schema);
-			List<IFactAcctModel> factAccts = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, receipt.get_ID(), schema.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
+			List<IFactAcctModel> factAccts = AcctModelServices.getFactAcctModelService().list(MInOut.Table_ID, receipt.get_ID(), schema.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 			BigDecimal totalDebit = new BigDecimal("0.00");
 			for(IFactAcctModel fa : factAccts) {
 				if (fa.getFactAcct().getAccount_ID() == acctAsset.getCombination().getAccount_ID()) {
@@ -468,7 +468,7 @@ public class MTaxTest extends AbstractTestCase {
 			assertEquals(expectedCost, averageCost, "Un-expected average cost");
 			
 			IAccountModel acctAsset = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, schema);
-			List<IFactAcctModel> factAccts = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, receipt.get_ID(), schema.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
+			List<IFactAcctModel> factAccts = AcctModelServices.getFactAcctModelService().list(MInOut.Table_ID, receipt.get_ID(), schema.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 			BigDecimal totalDebit = new BigDecimal("0.00");
 			for(IFactAcctModel fa : factAccts) {
 				if (fa.getFactAcct().getAccount_ID() == acctAsset.getCombination().getAccount_ID()) {

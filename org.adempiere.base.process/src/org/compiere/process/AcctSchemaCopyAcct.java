@@ -19,7 +19,7 @@ package org.compiere.process;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.constants.IAcctSchemaElementConstants;
 import org.adempiere.base.acct.model.IAccountModel;
 import org.adempiere.base.acct.model.IAcctSchemaDefaultModel;
@@ -78,10 +78,10 @@ public class AcctSchemaCopyAcct extends SvrProcess
 		if (p_SourceAcctSchema_ID == p_TargetAcctSchema_ID)
 			throw new AdempiereUserError("Must be different");
 		
-		IAcctSchemaModel source = AcctInfoServices.getAcctSchemaInfoService().get(getCtx(), p_SourceAcctSchema_ID, null);
+		IAcctSchemaModel source = AcctModelServices.getAcctSchemaModelService().get(getCtx(), p_SourceAcctSchema_ID, null);
 		if (source.getPO().get_ID() == 0)
 			throw new AdempiereSystemError("NotFound Source C_AcctSchema_ID=" + p_SourceAcctSchema_ID);
-		IAcctSchemaModel target = AcctInfoServices.getAcctSchemaInfoService().create(getCtx(), p_TargetAcctSchema_ID, get_TrxName());
+		IAcctSchemaModel target = AcctModelServices.getAcctSchemaModelService().create(getCtx(), p_TargetAcctSchema_ID, get_TrxName());
 		if (target.getPO().get_ID() == 0)
 			throw new AdempiereSystemError("NotFound Target C_AcctSchema_ID=" + p_TargetAcctSchema_ID);
 		
@@ -100,9 +100,9 @@ public class AcctSchemaCopyAcct extends SvrProcess
 		if (sourceAcctElement.getAcctSchemaElement().getC_Element_ID() != targetAcctElement.getAcctSchemaElement().getC_Element_ID())
 			throw new AdempiereUserError("@C_Element_ID@ different");
 		
-		if (AcctInfoServices.getAcctSchemaGLInfoService().get(getCtx(), p_TargetAcctSchema_ID) == null)
+		if (AcctModelServices.getAcctSchemaGLModelService().get(getCtx(), p_TargetAcctSchema_ID) == null)
 			copyGL(target);
-		if (AcctInfoServices.getAcctSchemaDefaultInfoService().get(getCtx(), p_TargetAcctSchema_ID) == null)
+		if (AcctModelServices.getAcctSchemaDefaultModelService().get(getCtx(), p_TargetAcctSchema_ID) == null)
 			copyDefault(target);
 		
 		return "@OK@";
@@ -115,8 +115,8 @@ public class AcctSchemaCopyAcct extends SvrProcess
 	 */
 	private void copyGL (IAcctSchemaModel targetAS) throws Exception
 	{
-		IAcctSchemaGLModel source = AcctInfoServices.getAcctSchemaGLInfoService().get(getCtx(), p_SourceAcctSchema_ID);
-		IAcctSchemaGLModel target = AcctInfoServices.getAcctSchemaGLInfoService().create(getCtx(), 0, get_TrxName());
+		IAcctSchemaGLModel source = AcctModelServices.getAcctSchemaGLModelService().get(getCtx(), p_SourceAcctSchema_ID);
+		IAcctSchemaGLModel target = AcctModelServices.getAcctSchemaGLModelService().create(getCtx(), 0, get_TrxName());
 		target.getAcctSchemaGL().setC_AcctSchema_ID(p_TargetAcctSchema_ID);
 		ArrayList<KeyNamePair> list = source.getAcctModel();
 		for (int i = 0; i < list.size(); i++)
@@ -124,7 +124,7 @@ public class AcctSchemaCopyAcct extends SvrProcess
 			KeyNamePair pp = list.get(i);
 			int sourceC_ValidCombination_ID = pp.getKey();
 			String columnName = pp.getName();
-			IAccountModel sourceAccount = AcctInfoServices.getAccountInfoService().get(getCtx(), sourceC_ValidCombination_ID);
+			IAccountModel sourceAccount = AcctModelServices.getAccountModelService().get(getCtx(), sourceC_ValidCombination_ID);
 			IAccountModel targetAccount = createAccount(targetAS, sourceAccount);
 			target.setValue(columnName, Integer.valueOf(targetAccount.getCombination().getC_ValidCombination_ID()));
 		}
@@ -139,8 +139,8 @@ public class AcctSchemaCopyAcct extends SvrProcess
 	 */
 	private void copyDefault(IAcctSchemaModel targetAS) throws Exception
 	{
-		IAcctSchemaDefaultModel source = AcctInfoServices.getAcctSchemaDefaultInfoService().get(getCtx(), p_SourceAcctSchema_ID);
-		IAcctSchemaDefaultModel target = AcctInfoServices.getAcctSchemaDefaultInfoService().create(getCtx(), 0, get_TrxName());
+		IAcctSchemaDefaultModel source = AcctModelServices.getAcctSchemaDefaultModelService().get(getCtx(), p_SourceAcctSchema_ID);
+		IAcctSchemaDefaultModel target = AcctModelServices.getAcctSchemaDefaultModelService().create(getCtx(), 0, get_TrxName());
 		target.getAcctSchemaDefault().setC_AcctSchema_ID(p_TargetAcctSchema_ID);
 		target.getAcctSchemaDefault().setC_AcctSchema_ID(p_TargetAcctSchema_ID);
 		ArrayList<KeyNamePair> list = source.getAcctModel();
@@ -149,7 +149,7 @@ public class AcctSchemaCopyAcct extends SvrProcess
 			KeyNamePair pp = list.get(i);
 			int sourceC_ValidCombination_ID = pp.getKey();
 			String columnName = pp.getName();
-			IAccountModel sourceAccount = AcctInfoServices.getAccountInfoService().get(getCtx(), sourceC_ValidCombination_ID);
+			IAccountModel sourceAccount = AcctModelServices.getAccountModelService().get(getCtx(), sourceC_ValidCombination_ID);
 			IAccountModel targetAccount = createAccount(targetAS, sourceAccount);
 			target.setValue(columnName, Integer.valueOf(targetAccount.getCombination().getC_ValidCombination_ID()));
 		}
@@ -227,7 +227,7 @@ public class AcctSchemaCopyAcct extends SvrProcess
 			//	No UserElement
 		}
 		//
-		return AcctInfoServices.getAccountInfoService().get(getCtx(), AD_Client_ID, AD_Org_ID,
+		return AcctModelServices.getAccountModelService().get(getCtx(), AD_Client_ID, AD_Org_ID,
 			C_AcctSchema_ID, Account_ID, C_SubAcct_ID,
 			M_Product_ID, C_BPartner_ID, AD_OrgTrx_ID,
 			C_LocFrom_ID, C_LocTo_ID, C_SalesRegion_ID, 

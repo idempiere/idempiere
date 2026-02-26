@@ -27,22 +27,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.adempiere.base.acct.AcctInfoService;
+import org.adempiere.base.acct.AcctModelService;
 import org.adempiere.base.acct.model.IFactAcctModel;
 import org.adempiere.base.acct.service.IFactAcctModelService;
 import org.adempiere.exceptions.DBException;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
-import org.idempiere.acct.info.FactAcctInfo;
 import org.idempiere.acct.model.MFactAcct;
+import org.idempiere.base.acct.FactAcctModel;
 
 /**
  * Implementation of {@link IFactAcctModelService}.
  * 
  * @author etantg
  */
-@AcctInfoService(IFactAcctModelService.class)
-public class FactAcctInfoService implements IFactAcctModelService {
+@AcctModelService(IFactAcctModelService.class)
+public class FactAcctModelService implements IFactAcctModelService {
 
 	@Override
 	public int deleteEx(int AD_Table_ID, int Record_ID, String trxName) throws DBException {
@@ -52,13 +52,13 @@ public class FactAcctInfoService implements IFactAcctModelService {
 	@Override
 	public IFactAcctModel create(Properties ctx, int Fact_Acct_ID, String trxName) {
 		MFactAcct fact = new MFactAcct(ctx, Fact_Acct_ID, trxName);
-		return FactAcctInfo.wrap(fact);
+		return FactAcctModel.wrap(fact);
 	}
 
 	@Override
 	public IFactAcctModel create(Properties ctx, ResultSet rs, String trxName) {
 		MFactAcct fact = new MFactAcct(ctx, rs, trxName);
-		return FactAcctInfo.wrap(fact);
+		return FactAcctModel.wrap(fact);
 	}
 
 	@Override
@@ -67,21 +67,21 @@ public class FactAcctInfoService implements IFactAcctModelService {
 				.setParameters(params)
 				.setOrderBy(MFactAcct.COLUMNNAME_Fact_Acct_ID)
 				.list();
-		return FactAcctInfo.wrapList(list);
+		return FactAcctModel.wrapList(list);
 	}
 
 	@Override
 	public List<IFactAcctModel> list(int AD_Table_ID, int Record_ID, int C_AcctSchema_ID, String trxName) {
 		Query query = MFactAcct.createRecordIdQuery(AD_Table_ID, Record_ID, C_AcctSchema_ID, trxName);
 		List<MFactAcct> list = query.list();
-		return FactAcctInfo.wrapList(list);
+		return FactAcctModel.wrapList(list);
 	}
 	
 	@Override
 	public IFactAcctModel first(int AD_Table_ID, int Record_ID, int Account_ID, int C_AcctSchema_ID, String trxName) {
 		Query query = new Query(Env.getCtx(), MFactAcct.Table_Name, "AD_Table_ID=? AND Record_ID=? AND Account_ID=? AND C_AcctSchema_ID=?", trxName);
 		MFactAcct fa = query.setParameters(AD_Table_ID, Record_ID, Account_ID, C_AcctSchema_ID).first();
-		return FactAcctInfo.wrap(fa);
+		return FactAcctModel.wrap(fa);
 	}
 	
 }

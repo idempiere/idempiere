@@ -20,7 +20,7 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  **********************************************************************/
-package org.idempiere.acct.info;
+package org.idempiere.base.acct;
 
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -44,11 +44,11 @@ import org.idempiere.acct.model.MAcctSchemaGL;
  * 
  * @author etantg
  */
-public class AcctSchemaInfo implements IAcctSchemaModel {
+public class AcctSchemaModel implements IAcctSchemaModel {
 	
 	private final MAcctSchema schema;
 	
-	public AcctSchemaInfo(MAcctSchema schema) {
+	public AcctSchemaModel(MAcctSchema schema) {
         if (schema == null)
             throw new IllegalArgumentException("MAcctSchema cannot be null");
         this.schema = schema;
@@ -71,49 +71,49 @@ public class AcctSchemaInfo implements IAcctSchemaModel {
 	@Override
 	public IAcctSchemaElementModel[] getAcctSchemaElementsModels() {
 		MAcctSchemaElement[] elements = schema.getAcctSchemaElements();
-		return AcctSchemaElementInfo.wrapStream(elements);
+		return AcctSchemaElementModel.wrapStream(elements);
 	}
 
 	@Override
 	public IAcctSchemaElementModel getAcctSchemaElementModel(String elementType) {
 		MAcctSchemaElement element = schema.getAcctSchemaElement(elementType);
-		return AcctSchemaElementInfo.wrap(element);
+		return AcctSchemaElementModel.wrap(element);
 	}
 
 	@Override
 	public IAcctSchemaGLModel getAcctSchemaGLModel() {
 		MAcctSchemaGL schemaGL = schema.getAcctSchemaGL();
-		return AcctSchemaGLInfo.wrap(schemaGL);
+		return AcctSchemaGLModel.wrap(schemaGL);
 	}
 
 	@Override
 	public IAcctSchemaDefaultModel getAcctSchemaDefaultModel() {
 		MAcctSchemaDefault schemaDefault = schema.getAcctSchemaDefault();
-		return AcctSchemaDefaultInfo.wrap(schemaDefault);
+		return AcctSchemaDefaultModel.wrap(schemaDefault);
 	}
 
 	@Override
 	public IAccountModel getSuspenseBalancing_AcctModel() {
 		MAccount account = schema.getSuspenseBalancing_Acct();
-		return AccountInfo.wrap(account);
+		return AccountModel.wrap(account);
 	}
 
 	@Override
 	public IAccountModel getCurrencyBalancing_AcctModel() {
 		MAccount account = schema.getCurrencyBalancing_Acct();
-		return AccountInfo.wrap(account);
+		return AccountModel.wrap(account);
 	}
 
 	@Override
 	public IAccountModel getDueTo_AcctModel(String segment) {
 		MAccount account = schema.getDueTo_Acct(segment);
-		return AccountInfo.wrap(account);
+		return AccountModel.wrap(account);
 	}
 
 	@Override
 	public IAccountModel getDueFrom_AcctModel(String segment) {
 		MAccount account = schema.getDueFrom_Acct(segment);
-		return AccountInfo.wrap(account);
+		return AccountModel.wrap(account);
 	}
 
 	@Override
@@ -221,13 +221,13 @@ public class AcctSchemaInfo implements IAcctSchemaModel {
             return null;
         if (schema instanceof IAcctSchemaModel)
             return (IAcctSchemaModel) schema;
-        return new AcctSchemaInfo(schema);
+        return new AcctSchemaModel(schema);
     }
 	
 	public static IAcctSchemaModel[] wrapStream(MAcctSchema[] schemas) {
 		return schemas == null ? new IAcctSchemaModel[0] :
 		       Arrays.stream(schemas)
-		             .map(AcctSchemaInfo::wrap)  // wrap each element
+		             .map(AcctSchemaModel::wrap)  // wrap each element
 		             .toArray(IAcctSchemaModel[]::new);
     }
 

@@ -20,35 +20,61 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  **********************************************************************/
-package org.idempiere.acct.service;
+package org.idempiere.base.acct;
 
-import java.util.Properties;
+import java.util.ArrayList;
 
-import org.adempiere.base.acct.AcctInfoService;
-import org.adempiere.base.acct.model.IElementModel;
-import org.adempiere.base.acct.service.IElementModelService;
-import org.compiere.model.MClient;
-import org.idempiere.acct.info.ElementInfo;
-import org.idempiere.acct.model.MElement;
+import org.adempiere.base.acct.model.IAcctSchemaGLModel;
+import org.compiere.model.I_C_AcctSchema_GL;
+import org.compiere.model.PO;
+import org.compiere.util.KeyNamePair;
+import org.idempiere.acct.model.MAcctSchemaGL;
 
 /**
- * Implementation of {@link IElementModelService}.
+ * Wrapper for {@link MAcctSchemaGL} to provide {@link IAcctSchemaGLModel} access.
  * 
  * @author etantg
  */
-@AcctInfoService(IElementModelService.class)
-public class ElementInfoService implements IElementModelService {
-
+public class AcctSchemaGLModel implements IAcctSchemaGLModel {
+	
+	private final MAcctSchemaGL schemaGL;
+	
+	public AcctSchemaGLModel(MAcctSchemaGL schemaGL) {
+        if (schemaGL == null)
+            throw new IllegalArgumentException("MAcctSchemaGL cannot be null");
+        this.schemaGL = schemaGL;
+    }
+	
+	public MAcctSchemaGL getModel() {
+		return schemaGL;
+	}
+	
 	@Override
-	public IElementModel create(Properties ctx, int C_Element_ID, String trxName) {
-		MElement element = new MElement(ctx, C_Element_ID, trxName);
-		return ElementInfo.wrap(element);
+	public I_C_AcctSchema_GL getAcctSchemaGL() {
+		return schemaGL;
 	}
 
 	@Override
-	public IElementModel create(MClient client, String Name, String ElementType, int AD_Tree_ID) {
-		MElement element = new MElement(client, Name, ElementType, AD_Tree_ID);
-		return ElementInfo.wrap(element);
+	public PO getPO() {
+		return schemaGL;
 	}
 
+	@Override
+	public ArrayList<KeyNamePair> getAcctModel() {
+		return schemaGL.getAcctModel();
+	}
+
+	@Override
+	public boolean setValue(String columnName, Integer value) {
+		return schemaGL.setValue(columnName, value);
+	}
+	
+	public static IAcctSchemaGLModel wrap(MAcctSchemaGL schemaGL) {
+        if (schemaGL == null)
+            return null;
+        if (schemaGL instanceof IAcctSchemaGLModel)
+            return (IAcctSchemaGLModel) schemaGL;
+        return new AcctSchemaGLModel(schemaGL);
+    }
+	
 }

@@ -22,47 +22,27 @@
  **********************************************************************/
 package org.idempiere.acct.service;
 
+import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.adempiere.base.acct.AcctInfoService;
-import org.adempiere.base.acct.model.IAcctSchemaElementModel;
-import org.adempiere.base.acct.model.IAcctSchemaModel;
-import org.adempiere.base.acct.service.IAcctSchemaElementModelService;
-import org.idempiere.acct.info.AcctSchemaElementInfo;
-import org.idempiere.acct.info.AcctSchemaInfo;
-import org.idempiere.acct.model.MAcctSchemaElement;
+import org.adempiere.base.acct.AcctModelService;
+import org.adempiere.base.acct.model.IImportElementValueModel;
+import org.adempiere.base.acct.service.IImportElementValueModelService;
+import org.idempiere.acct.model.X_I_ElementValue;
+import org.idempiere.base.acct.ImportElementValueModel;
 
 /**
- * Implementation of {@link IAcctSchemaElementModelService}.
+ * Implementation of {@link IImportElementValueModelService}.
  * 
  * @author etantg
  */
-@AcctInfoService(IAcctSchemaElementModelService.class)
-public class AcctSchemaElementInfoService implements IAcctSchemaElementModelService {
-
+@AcctModelService(IImportElementValueModelService.class)
+public class ImportElementValueModelService implements IImportElementValueModelService {
+	
 	@Override
-	public IAcctSchemaElementModel[] getAcctSchemaElements(IAcctSchemaModel as) {
-		if (as instanceof AcctSchemaInfo) {
-			MAcctSchemaElement[] elements = MAcctSchemaElement.getAcctSchemaElements(((AcctSchemaInfo) as).getModel());
-			return AcctSchemaElementInfo.wrapStream(elements);
-		}
-		throw new IllegalArgumentException("Unsupported IAcctSchemaInfo implementation");
+	public IImportElementValueModel create(Properties ctx, ResultSet rs, String trxName) {
+		X_I_ElementValue elementValue = new X_I_ElementValue(ctx, rs, trxName);
+		return ImportElementValueModel.wrap(elementValue);
 	}
-
-	@Override
-	public String getColumnName(String elementType) {
-		return MAcctSchemaElement.getColumnName(elementType);
-	}
-
-	@Override
-	public String getValueQuery(String elementType) {
-		return MAcctSchemaElement.getValueQuery(elementType);
-	}
-
-	@Override
-	public IAcctSchemaElementModel create(Properties ctx, int C_AcctSchema_Element_ID, String trxName) {
-		MAcctSchemaElement element = new MAcctSchemaElement(ctx, C_AcctSchema_Element_ID, trxName);
-		return AcctSchemaElementInfo.wrap(element);
-	}
-
+	
 }

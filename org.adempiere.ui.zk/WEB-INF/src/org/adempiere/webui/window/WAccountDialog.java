@@ -24,7 +24,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.constants.IAcctSchemaElementConstants;
 import org.adempiere.base.acct.model.IAccountModel;
 import org.adempiere.base.acct.model.IAcctSchemaElementModel;
@@ -319,7 +319,7 @@ public final class WAccountDialog extends Window
 	{
 		m_AD_Client_ID = Env.getContextAsInt(Env.getCtx(), m_WindowNo, "AD_Client_ID");
 		//	Get AcctSchema Info
-		m_AcctSchema = AcctInfoServices.getAcctSchemaInfoService().create(Env.getCtx(), m_C_AcctSchema_ID, null);
+		m_AcctSchema = AcctModelServices.getAcctSchemaModelService().create(Env.getCtx(), m_C_AcctSchema_ID, null);
 		Env.setContext(Env.getCtx(), m_WindowNo, "C_AcctSchema_ID", m_C_AcctSchema_ID);
 
 		//  Model
@@ -732,7 +732,7 @@ public final class WAccountDialog extends Window
 		if (event.getTarget().getId().equals("Ok"))
 		{
 			// Compare all data to propose creation/update of combination
-			IAccountModel combiOrg = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), IDvalue > 0 ? IDvalue : m_mAccount.C_ValidCombination_ID, null);
+			IAccountModel combiOrg = AcctModelServices.getAccountModelService().create(Env.getCtx(), IDvalue > 0 ? IDvalue : m_mAccount.C_ValidCombination_ID, null);
 			boolean needconfirm = false;
 			if (needConfirm(f_AD_Org_ID, combiOrg))
 				needconfirm = true;
@@ -1219,7 +1219,7 @@ public final class WAccountDialog extends Window
 		if (f_User2_ID != null && !isEmpty(f_User2_ID.getValue()))
 			User2_ID = ((Integer)f_User2_ID.getValue()).intValue();
 
-		IAccountModel acct = AcctInfoServices.getAccountInfoService().get (Env.getCtx(), m_AD_Client_ID,
+		IAccountModel acct = AcctModelServices.getAccountModelService().get (Env.getCtx(), m_AD_Client_ID,
 			((Integer)f_AD_Org_ID.getValue()).intValue(),
 			m_AcctSchema.getAcctSchema().getC_AcctSchema_ID(),
 			((Integer)f_Account_ID.getValue()).intValue(), C_SubAcct_ID,

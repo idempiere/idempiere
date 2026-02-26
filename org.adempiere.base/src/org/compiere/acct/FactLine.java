@@ -25,7 +25,7 @@ import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.constants.IAcctSchemaElementConstants;
 import org.adempiere.base.acct.model.IAccountModel;
 import org.adempiere.base.acct.model.IAcctSchemaElementModel;
@@ -84,7 +84,7 @@ public final class FactLine
 	 */
 	public FactLine (Properties ctx, int AD_Table_ID, int Record_ID, int Line_ID, String trxName)
 	{
-		this.factAcctInfo = AcctInfoServices.getFactAcctInfoService().create(ctx, 0, trxName);
+		this.factAcctInfo = AcctModelServices.getFactAcctModelService().create(ctx, 0, trxName);
 
         // Initialize base fields through the interface
         factAcctInfo.getPO().set_ValueNoCheck ("AD_Client_ID", Integer.valueOf(0));   // do not derive
@@ -1191,7 +1191,7 @@ public final class FactLine
 	{
 		if (log.isLoggable(Level.FINE)) log.fine("From Account_ID=" + Account_ID);
 		//  get VC for P_Revenue (from Product)
-		IAccountModel revenue = AcctInfoServices.getAccountInfoService().get(factAcctInfo.getPO().getCtx(),
+		IAccountModel revenue = AcctModelServices.getAccountModelService().get(factAcctInfo.getPO().getCtx(),
 			AD_Client_ID, AD_Org_ID, factAcctInfo.getFactAcct().getC_AcctSchema_ID(), Account_ID, C_SubAcct_ID,
 			M_Product_ID, C_BPartner_ID, AD_OrgTrx_ID, C_LocFrom_ID, C_LocTo_ID, C_SRegion_ID, 
 			C_Project_ID, C_Campaign_ID, C_Activity_ID, 
@@ -1251,7 +1251,7 @@ public final class FactLine
 			return Account_ID;
 		}
 		
-		IAccountModel unearned = AcctInfoServices.getAccountInfoService().get(factAcctInfo.getPO().getCtx(),
+		IAccountModel unearned = AcctModelServices.getAccountModelService().get(factAcctInfo.getPO().getCtx(),
 				AD_Client_ID, AD_Org_ID, factAcctInfo.getFactAcct().getC_AcctSchema_ID(), new_Account_ID, C_SubAcct_ID,
 				M_Product_ID, C_BPartner_ID, AD_OrgTrx_ID, C_LocFrom_ID, C_LocTo_ID, C_SRegion_ID, 
 				C_Project_ID, C_Campaign_ID, C_Activity_ID, 
@@ -1360,7 +1360,7 @@ public final class FactLine
 			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
-				IFactAcctModel fact = AcctInfoServices.getFactAcctInfoService().create(factAcctInfo.getPO().getCtx(), rs, factAcctInfo.getPO().get_TrxName());
+				IFactAcctModel fact = AcctModelServices.getFactAcctModelService().create(factAcctInfo.getPO().getCtx(), rs, factAcctInfo.getPO().get_TrxName());
 				//  Accounted Amounts - reverse
 				BigDecimal dr = fact.getFactAcct().getAmtAcctDr();
 				BigDecimal cr = fact.getFactAcct().getAmtAcctCr();

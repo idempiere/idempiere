@@ -36,7 +36,7 @@ import java.util.logging.Level;
 import org.adempiere.base.Core;
 import org.adempiere.base.CreditStatus;
 import org.adempiere.base.ICreditManager;
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.constants.IAcctSchemaConstants;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.AdempiereException;
@@ -1258,7 +1258,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		if (!isProcessed())
 		{
 			MClientInfo info = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName()); 
-			IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get (getCtx(), info.getC_AcctSchema1_ID(), get_TrxName());
+			IAcctSchemaModel as = AcctModelServices.getAcctSchemaModelService().get (getCtx(), info.getC_AcctSchema1_ID(), get_TrxName());
 			if (as.getAcctSchema().getC_Currency_ID() != getC_Currency_ID())
 			{
 				if (isOverrideCurrencyRate())
@@ -1724,7 +1724,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			return DocAction.STATUS_Invalid;
 
 		MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocTypeTarget_ID(), getAD_Org_ID());
-		AcctInfoServices.getAcctSchemaInfoService().testBackDateTrxAllowed(getCtx(), getDateAcct(), get_TrxName());
+		AcctModelServices.getAcctSchemaModelService().testBackDateTrxAllowed(getCtx(), getDateAcct(), get_TrxName());
 
 		//	Lines
 		MInvoiceLine[] lines = getLines(true);
@@ -2382,7 +2382,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			if (getDateAcct().before(getDateInvoiced())) {
 				setDateAcct(getDateInvoiced());
 				MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
-				AcctInfoServices.getAcctSchemaInfoService().testBackDateTrxAllowed(getCtx(), getDateAcct(), get_TrxName());
+				AcctModelServices.getAcctSchemaModelService().testBackDateTrxAllowed(getCtx(), getDateAcct(), get_TrxName());
 			}
 		}
 		if (dt.isOverwriteSeqOnComplete()) {
@@ -2548,7 +2548,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			
 			try
 			{
-				AcctInfoServices.getAcctSchemaInfoService().testBackDateTrxAllowed(getCtx(), getDateAcct(), get_TrxName());
+				AcctModelServices.getAcctSchemaModelService().testBackDateTrxAllowed(getCtx(), getDateAcct(), get_TrxName());
 			}
 			catch (BackDateTrxNotAllowedException e)
 			{
@@ -2634,7 +2634,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		Timestamp reversalDateInvoiced = accrual ? reversalDate : getDateInvoiced();
 		
 		MPeriod.testPeriodOpen(getCtx(), reversalDate, getC_DocType_ID(), getAD_Org_ID());
-		AcctInfoServices.getAcctSchemaInfoService().testBackDateTrxAllowed(getCtx(), reversalDate, get_TrxName());
+		AcctModelServices.getAcctSchemaModelService().testBackDateTrxAllowed(getCtx(), reversalDate, get_TrxName());
 		
 		try {
 			periodClosedCheckForBackDateTrx(reversalDate);
@@ -2899,7 +2899,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			return false;
 		}
 
-		AcctInfoServices.getFactAcctInfoService().deleteEx(MInvoice.Table_ID, getC_Invoice_ID(), get_TrxName());
+		AcctModelServices.getFactAcctModelService().deleteEx(MInvoice.Table_ID, getC_Invoice_ID(), get_TrxName());
 		setPosted(false);
 		setDocAction(DOCACTION_Complete);
 		setProcessed(false);

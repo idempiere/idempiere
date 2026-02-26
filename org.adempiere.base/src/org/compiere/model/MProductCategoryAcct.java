@@ -20,7 +20,7 @@ import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -210,7 +210,7 @@ public class MProductCategoryAcct extends X_M_Product_Category_Acct implements I
 		if (!newRecord && is_ValueChanged(COLUMNNAME_CostingLevel)) {
 			String newCostingLevel = getCostingLevel();
 			String oldCostingLevel = (String) get_ValueOld(COLUMNNAME_CostingLevel);
-			IAcctSchemaModel schema = AcctInfoServices.getAcctSchemaInfoService().get(getC_AcctSchema_ID());
+			IAcctSchemaModel schema = AcctModelServices.getAcctSchemaModelService().get(getC_AcctSchema_ID());
 			if (newCostingLevel == null)
 				newCostingLevel = schema.getAcctSchema().getCostingLevel();
 			if (oldCostingLevel == null)

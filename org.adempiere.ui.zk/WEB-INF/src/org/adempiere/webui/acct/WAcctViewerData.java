@@ -34,7 +34,7 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.constants.IFactAcctConstants;
 import org.adempiere.base.acct.model.IAcctSchemaElementModel;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
@@ -175,7 +175,7 @@ public class WAcctViewerData
 		
 		AD_Table_ID = ad_Table_ID;
 
-		ASchemas = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(ctx, AD_Client_ID);
+		ASchemas = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(ctx, AD_Client_ID);
 		ASchema = ASchemas[0];
 	} // AcctViewerData
 	
@@ -205,7 +205,7 @@ public class WAcctViewerData
 			
 			if (journal.getGL_Journal_ID() == Record_ID) {
 				ASchemas = new IAcctSchemaModel[1];
-				ASchemas[0] = AcctInfoServices.getAcctSchemaInfoService().get(Env.getCtx(), journal.getC_AcctSchema_ID());
+				ASchemas[0] = AcctModelServices.getAcctSchemaModelService().get(Env.getCtx(), journal.getC_AcctSchema_ID());
 				ASchema = ASchemas[0];
 			}
 		}

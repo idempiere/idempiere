@@ -41,7 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAccountModel;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.base.acct.model.IFactAcctModel;
@@ -147,7 +147,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			completeDocument(alloc1);
 			postDocument(alloc1);
 			
-			IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaModel[] ass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MAllocationHdr[] allocList = MAllocationHdr.getOfInvoice(Env.getCtx(), invoice1.getC_Invoice_ID(), getTrxName());
 			
 			ArrayList<PostingLine> paymentLineList = new ArrayList<PostingLine>();
@@ -236,7 +236,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			completeDocument(alloc1);
 			postDocument(alloc1);
 			
-			IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaModel[] ass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MAllocationHdr[] allocList = MAllocationHdr.getOfInvoice(Env.getCtx(), invoice1.getC_Invoice_ID(), getTrxName());
 			
 			ArrayList<PostingLine> paymentLineList = new ArrayList<PostingLine>();
@@ -327,7 +327,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			completeDocument(alloc);
 			postDocument(alloc);
 			
-			IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaModel[] ass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MAllocationHdr[] allocList = MAllocationHdr.getOfInvoice(Env.getCtx(), invoice.getC_Invoice_ID(), getTrxName());
 			
 			ArrayList<PostingLine> paymentLineList = new ArrayList<PostingLine>();
@@ -389,7 +389,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			completeDocument(alloc);
 			postDocument(alloc);
 			
-			IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaModel[] ass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MAllocationHdr[] allocList = MAllocationHdr.getOfInvoice(Env.getCtx(), invoice.getC_Invoice_ID(), getTrxName());
 			
 			ArrayList<PostingLine> paymentLineList = new ArrayList<PostingLine>();
@@ -509,7 +509,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			completeDocument(alloc);
 			postDocument(alloc);
 			
-			IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaModel[] ass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MAllocationHdr[] allocList = MAllocationHdr.getOfPayment(Env.getCtx(), payment.getC_Payment_ID(), getTrxName());
 			
 			ArrayList<PostingLine> paymentLineList = new ArrayList<PostingLine>();
@@ -648,7 +648,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			completeDocument(alloc);
 			postDocument(alloc);
 			
-			IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaModel[] ass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MAllocationHdr[] allocList = MAllocationHdr.getOfPayment(Env.getCtx(), payment.getC_Payment_ID(), getTrxName());
 			
 			ArrayList<PostingLine> paymentLineList = new ArrayList<PostingLine>();
@@ -742,7 +742,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			completeDocument(alloc1);
 			postDocument(alloc1);
 			
-			IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaModel[] ass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MAllocationHdr[] allocList = MAllocationHdr.getOfInvoice(Env.getCtx(), invoice1.getC_Invoice_ID(), getTrxName());
 			
 			ArrayList<PostingLine> paymentLineList = new ArrayList<PostingLine>();
@@ -834,7 +834,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			completeDocument(alloc1);
 			postDocument(alloc1);
 			
-			IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaModel[] ass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MAllocationHdr[] allocList = MAllocationHdr.getOfInvoice(Env.getCtx(), invoice1.getC_Invoice_ID(), getTrxName());
 			
 			ArrayList<PostingLine> paymentLineList = new ArrayList<PostingLine>();
@@ -933,7 +933,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			completeDocument(alloc1);
 			postDocument(alloc1);
 			
-			IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaModel[] ass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MAllocationHdr[] allocList = MAllocationHdr.getOfPayment(Env.getCtx(), payment1.getC_Payment_ID(), getTrxName());
 			
 			ArrayList<PostingLine> paymentLineList = new ArrayList<PostingLine>();
@@ -1023,7 +1023,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			completeDocument(alloc1);
 			postDocument(alloc1);
 			
-			IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaModel[] ass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MAllocationHdr[] allocList = MAllocationHdr.getOfPayment(Env.getCtx(), payment1.getC_Payment_ID(), getTrxName());
 			
 			ArrayList<PostingLine> paymentLineList = new ArrayList<PostingLine>();
@@ -1144,7 +1144,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			completeDocument(alloc);
 			postDocument(alloc);
 			
-			IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaModel[] ass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MAllocationHdr[] allocList = MAllocationHdr.getOfPayment(Env.getCtx(), payment.getC_Payment_ID(), getTrxName());
 			
 			ArrayList<PostingLine> paymentLineList = new ArrayList<PostingLine>();
@@ -1300,7 +1300,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			completeDocument(alloc);
 			postDocument(alloc);
 			
-			IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaModel[] ass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MAllocationHdr[] allocList = MAllocationHdr.getOfPayment(Env.getCtx(), payment.getC_Payment_ID(), getTrxName());
 			
 			ArrayList<PostingLine> paymentLineList = new ArrayList<PostingLine>();
@@ -1418,7 +1418,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			MInvoice reversalInvoice = new MInvoice(Env.getCtx(), invoice.getReversal_ID(), getTrxName());
 			postDocument(reversalInvoice);
 			
-			IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaModel[] ass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MAllocationHdr[] allocList = MAllocationHdr.getOfInvoice(Env.getCtx(), invoice.getC_Invoice_ID(), getTrxName());
 			
 			BigDecimal allocAmount = new BigDecimal(1000);
@@ -1469,7 +1469,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			MInvoice reversalInvoice = new MInvoice(Env.getCtx(), invoice.getReversal_ID(), getTrxName());
 			postDocument(reversalInvoice);
 			
-			IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaModel[] ass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MAllocationHdr[] allocList = MAllocationHdr.getOfInvoice(Env.getCtx(), invoice.getC_Invoice_ID(), getTrxName());
 			
 			BigDecimal allocAmount = new BigDecimal(1000);
@@ -1536,7 +1536,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			completeDocument(alloc);
 			postDocument(alloc);
 			
-			IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaModel[] ass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MAllocationHdr[] allocList = MAllocationHdr.getOfInvoice(Env.getCtx(), invoice.getC_Invoice_ID(), getTrxName());
 			
 			ArrayList<PostingLine> tradeLineList = new ArrayList<PostingLine>();
@@ -1596,7 +1596,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			completeDocument(alloc);
 			postDocument(alloc);
 			
-			IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaModel[] ass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MAllocationHdr[] allocList = MAllocationHdr.getOfInvoice(Env.getCtx(), invoice.getC_Invoice_ID(), getTrxName());
 			
 			ArrayList<PostingLine> tradeLineList = new ArrayList<PostingLine>();
@@ -1647,7 +1647,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			MPayment reversalPayment = new MPayment(Env.getCtx(), payment.getReversal_ID(), getTrxName());
 			postDocument(reversalPayment);
 			
-			IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaModel[] ass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MAllocationHdr[] allocList = MAllocationHdr.getOfPayment(Env.getCtx(), payment.getC_Payment_ID(), getTrxName());
 			
 			BigDecimal allocAmount = payAmt;
@@ -1694,7 +1694,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			MPayment reversalPayment = new MPayment(Env.getCtx(), payment.getReversal_ID(), getTrxName());
 			postDocument(reversalPayment);
 			
-			IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaModel[] ass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MAllocationHdr[] allocList = MAllocationHdr.getOfPayment(Env.getCtx(), payment.getC_Payment_ID(), getTrxName());
 			
 			BigDecimal allocAmount = payAmt;
@@ -1752,7 +1752,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			completeDocument(alloc);
 			postDocument(alloc);
 			
-			IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaModel[] ass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MAllocationHdr[] allocList = MAllocationHdr.getOfPayment(Env.getCtx(), payment1.getC_Payment_ID(), getTrxName());
 			
 			ArrayList<PostingLine> paymentLineList = new ArrayList<PostingLine>();
@@ -1805,7 +1805,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			completeDocument(alloc);
 			postDocument(alloc);
 			
-			IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaModel[] ass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MAllocationHdr[] allocList = MAllocationHdr.getOfPayment(Env.getCtx(), payment1.getC_Payment_ID(), getTrxName());
 			
 			ArrayList<PostingLine> paymentLineList = new ArrayList<PostingLine>();
@@ -1858,7 +1858,7 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			MPayment reversalPayment = new MPayment(Env.getCtx(), payment.getReversal_ID(), getTrxName());
 			postDocument(reversalPayment);
 			
-			IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaModel[] ass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			MAllocationHdr[] allocList = MAllocationHdr.getOfPayment(Env.getCtx(), payment.getC_Payment_ID(), getTrxName());
 			
 			BigDecimal allocAmount = payAmt;
@@ -2091,15 +2091,15 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 				IAccountModel acctReceivable = doc.getAccount(Doc.ACCTTYPE_C_Receivable, as);
 				IAccountModel acctLiability = doc.getAccount(Doc.ACCTTYPE_V_Liability, as);
 				
-				IAccountModel acctGain = AcctInfoServices.getAccountInfoService().get(as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedGain_Acct());
-				IAccountModel acctLoss = AcctInfoServices.getAccountInfoService().get(as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedLoss_Acct());
+				IAccountModel acctGain = AcctModelServices.getAccountModelService().get(as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedGain_Acct());
+				IAccountModel acctLoss = AcctModelServices.getAccountModelService().get(as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedLoss_Acct());
 				IAccountModel acctCurrBal = as.getCurrencyBalancing_AcctModel();
 				
 				BigDecimal totalPaymentAmtAcct = Env.ZERO;
 				BigDecimal totalTradeAmtAcct = Env.ZERO;
 				BigDecimal totalGainLossAmtAcct = Env.ZERO;
 				BigDecimal totalCurrBalAmtAcct = Env.ZERO;
-				List<IFactAcctModel> factAccts = AcctInfoServices.getFactAcctInfoService().list(MAllocationHdr.Table_ID, alloc.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
+				List<IFactAcctModel> factAccts = AcctModelServices.getFactAcctModelService().list(MAllocationHdr.Table_ID, alloc.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 				for (IFactAcctModel fa : factAccts) {
 					if (C_Charge_ID != 0 && acctCharge != null && acctCharge.getCombination().getAccount_ID() == fa.getFactAcct().getAccount_ID())
 						totalPaymentAmtAcct = totalPaymentAmtAcct.add(fa.getFactAcct().getAmtAcctDr()).subtract(fa.getFactAcct().getAmtAcctCr());

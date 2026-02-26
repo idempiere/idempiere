@@ -26,7 +26,7 @@ import java.util.logging.Level;
 
 import javax.swing.tree.TreeNode;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.constants.IAcctSchemaElementConstants;
 import org.compiere.model.MHierarchy;
 import org.compiere.model.MRole;
@@ -249,7 +249,7 @@ public class MReportTree
 	public String getWhereClause (int ID)
 	{
 		if (log.isLoggable(Level.FINE)) log.fine("(" + m_ElementType + ") ID=" + ID);
-		String ColumnName = AcctInfoServices.getAcctSchemaElementInfoService().getColumnName(m_ElementType);
+		String ColumnName = AcctModelServices.getAcctSchemaElementModelService().getColumnName(m_ElementType);
 		//
 		MTreeNode node = m_tree.getRoot().findNode(ID);
 		if (log.isLoggable(Level.FINEST)) log.finest("Root=" + node);

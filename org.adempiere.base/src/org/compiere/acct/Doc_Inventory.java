@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.constants.IAcctSchemaConstants;
 import org.adempiere.base.acct.model.IAccountModel;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
@@ -116,7 +116,7 @@ public class Doc_Inventory extends Doc
 		if (MDocType.DOCSUBTYPEINV_CostAdjustment.equals(dt.getDocSubTypeInv())) {
 			MClient client = MClient.get(inventory.getCtx(), inventory.getAD_Client_ID());
 			IAcctSchemaModel as = client.getAcctSchema();
-			IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(inventory.getCtx(), client.get_ID());
+			IAcctSchemaModel[] ass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(inventory.getCtx(), client.get_ID());
 			if (as.getAcctSchema().getC_Currency_ID() != inventory.getC_Currency_ID()) {
 				for (IAcctSchemaModel a : ass) {
 					if (a.getAcctSchema().getC_Currency_ID() == inventory.getC_Currency_ID()) 

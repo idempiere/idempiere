@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.constants.IAcctSchemaConstants;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.DBException;
@@ -1337,7 +1337,7 @@ public class MCostDetail extends X_M_CostDetail
 		boolean ok = false;
 
 		//	get costing level for product
-		IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get(getCtx(), getC_AcctSchema_ID());
+		IAcctSchemaModel as = AcctModelServices.getAcctSchemaModelService().get(getCtx(), getC_AcctSchema_ID());
 		MProduct product = new MProduct(getCtx(), getM_Product_ID(), get_TrxName());
 		String CostingLevel = product.getCostingLevel(as);
 		//	Org Element

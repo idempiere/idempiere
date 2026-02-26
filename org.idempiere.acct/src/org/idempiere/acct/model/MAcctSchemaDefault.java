@@ -128,7 +128,7 @@ public class MAcctSchemaDefault extends X_C_AcctSchema_Default implements Immuta
 	 * 	Get value of all columns that ends with Acct 
 	 *	@return KeyNamePair(id, column name) list
 	 */
-	public ArrayList<KeyNamePair> getAcctInfo()
+	public ArrayList<KeyNamePair> getAcctModel()
 	{
 		ArrayList<KeyNamePair> list = new ArrayList<KeyNamePair>();
 		for (int i = 0; i < get_ColumnCount(); i++)

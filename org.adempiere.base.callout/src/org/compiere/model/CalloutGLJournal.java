@@ -25,7 +25,7 @@ import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAccountModel;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.util.DB;
@@ -175,7 +175,7 @@ public class CalloutGLJournal extends CalloutEngine
 			DateAcct = new Timestamp(System.currentTimeMillis());
 		//
 		int C_AcctSchema_ID = Env.getContextAsInt(ctx, WindowNo, "C_AcctSchema_ID");
-		IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get (ctx, C_AcctSchema_ID);
+		IAcctSchemaModel as = AcctModelServices.getAcctSchemaModelService().get (ctx, C_AcctSchema_ID);
 		int AD_Client_ID = Env.getContextAsInt(ctx, WindowNo, "AD_Client_ID");
 		int AD_Org_ID = Env.getContextAsInt(ctx, WindowNo, "AD_Org_ID");
 
@@ -207,7 +207,7 @@ public class CalloutGLJournal extends CalloutEngine
 
 		//  Get Target Currency & Precision from C_AcctSchema.C_Currency_ID
 		int C_AcctSchema_ID = Env.getContextAsInt(ctx, WindowNo, "C_AcctSchema_ID");
-		IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get(ctx, C_AcctSchema_ID);
+		IAcctSchemaModel as = AcctModelServices.getAcctSchemaModelService().get(ctx, C_AcctSchema_ID);
 		int Precision = as.getStdPrecision();
 
 		BigDecimal CurrencyRate = (BigDecimal)mTab.getValue("CurrencyRate");
@@ -281,7 +281,7 @@ public class CalloutGLJournal extends CalloutEngine
 		
 		if (colName.equals("C_ValidCombination_ID") || colName.equals("Alias_ValidCombination_ID"))
 		{
-			IAccountModel combi = AcctInfoServices.getAccountInfoService().create(ctx, Combi_ID, null);
+			IAccountModel combi = AcctModelServices.getAccountModelService().create(ctx, Combi_ID, null);
 			mTab.setValue("Account_ID", combi.getCombination().getAccount_ID() != 0 ? combi.getCombination().getAccount_ID() : null);
 			mTab.setValue("C_SubAcct_ID", combi.getCombination().getC_SubAcct_ID() != 0 ? combi.getCombination().getC_SubAcct_ID() : null);
 			mTab.setValue("M_Product_ID", combi.getCombination().getM_Product_ID() != 0 ? combi.getCombination().getM_Product_ID() : null);
@@ -318,7 +318,7 @@ public class CalloutGLJournal extends CalloutEngine
 			return "";
 		
 		int C_AcctSchema_ID = Env.getContextAsInt(ctx, WindowNo, "C_AcctSchema_ID");
-		IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get (ctx, C_AcctSchema_ID);
+		IAcctSchemaModel as = AcctModelServices.getAcctSchemaModelService().get (ctx, C_AcctSchema_ID);
 		mTab.setValue("C_Currency_ID", as.getAcctSchema().getC_Currency_ID());
 		
 		return "";

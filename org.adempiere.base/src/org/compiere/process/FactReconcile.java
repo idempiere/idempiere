@@ -20,7 +20,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IElementValueModel;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.process.UUIDGenerator;
@@ -63,7 +63,7 @@ public class FactReconcile extends SvrProcess
 				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 			
 			if ( accountID > 0 )
-				account = AcctInfoServices.getElementValueInfoService().create(getCtx(), accountID, get_TrxName());
+				account = AcctModelServices.getElementValueModelService().create(getCtx(), accountID, get_TrxName());
 		}
 	}	//	prepare
 

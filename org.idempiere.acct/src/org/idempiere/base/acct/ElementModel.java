@@ -20,76 +20,48 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  **********************************************************************/
-package org.idempiere.acct.info;
+package org.idempiere.base.acct;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
-
-import org.adempiere.base.acct.model.IAccountModel;
-import org.adempiere.base.acct.model.IDistributionLineModel;
-import org.compiere.model.I_GL_DistributionLine;
+import org.adempiere.base.acct.model.IElementModel;
+import org.compiere.model.I_C_Element;
 import org.compiere.model.PO;
-import org.idempiere.acct.model.MAccount;
-import org.idempiere.acct.model.MDistributionLine;
+import org.idempiere.acct.model.MElement;
 
 /**
- * Wrapper for {@link MDistributionLine} to provide {@link IDistributionLineModel} access.
+ * Wrapper for {@link MElement} to provide {@link IElementModel} access.
  * 
  * @author etantg
  */
-public class DistributionLineInfo implements IDistributionLineModel {
+public class ElementModel implements IElementModel {
 	
-	private final MDistributionLine line;
+	private final MElement element;
 	
-	public DistributionLineInfo(MDistributionLine line) {
-        if (line == null)
-            throw new IllegalArgumentException("MDistributionLine cannot be null");
-        this.line = line;
+	public ElementModel(MElement element) {
+        if (element == null)
+            throw new IllegalArgumentException("MElement cannot be null");
+        this.element = element;
     }
 	
-	public MDistributionLine getModel() {
-		return line;
+	public MElement getModel() {
+		return element;
 	}
 	
 	@Override
-	public I_GL_DistributionLine getGLDistributionLine() {
-		return line;
+	public I_C_Element getElement() {
+		return element;
 	}
 
 	@Override
 	public PO getPO() {
-		return line;
-	}
-
-	@Override
-	public IAccountModel getAccountModel() {
-		MAccount account = line.getAccount();
-		return AccountInfo.wrap(account);
+		return element;
 	}
 	
-	@Override
-	public BigDecimal getAmt() {
-		return line.getAmt();
-	}
-
-	@Override
-	public BigDecimal getQty() {
-		return line.getQty();
-	}
-
-	public static IDistributionLineModel wrap(MDistributionLine line) {
-        if (line == null)
+	public static IElementModel wrap(MElement element) {
+        if (element == null)
             return null;
-        if (line instanceof IDistributionLineModel)
-            return (IDistributionLineModel) line;
-        return new DistributionLineInfo(line);
-    }
-	
-	public static IDistributionLineModel[] wrapStream(MDistributionLine[] lines) {
-		return lines == null ? new IDistributionLineModel[0] :
-		       Arrays.stream(lines)
-		             .map(DistributionLineInfo::wrap)  // wrap each element
-		             .toArray(IDistributionLineModel[]::new);
+        if (element instanceof IElementModel)
+            return (IElementModel) element;
+        return new ElementModel(element);
     }
 	
 }

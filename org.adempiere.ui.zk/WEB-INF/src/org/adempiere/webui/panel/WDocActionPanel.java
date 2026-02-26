@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.LayoutUtils;
@@ -181,7 +181,7 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 		boolean isBackDateTrxAllowed = true;
 		if (po instanceof DocAction) {
 			periodOpen = MPeriod.isOpen(Env.getCtx(), m_AD_Table_ID, gridTab.getRecord_ID(), null);
-			isBackDateTrxAllowed = AcctInfoServices.getAcctSchemaInfoService().isBackDateTrxAllowed(Env.getCtx(), m_AD_Table_ID, gridTab.getRecord_ID(), null);
+			isBackDateTrxAllowed = AcctModelServices.getAcctSchemaModelService().isBackDateTrxAllowed(Env.getCtx(), m_AD_Table_ID, gridTab.getRecord_ID(), null);
 		}
 
 		String[] docActionHolder = new String[]{DocAction};

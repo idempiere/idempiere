@@ -24,7 +24,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAccountModel;
 import org.compiere.model.MJournal;
 import org.compiere.model.MJournalBatch;
@@ -773,7 +773,7 @@ public class ImportGLJournal extends SvrProcess
 				//	Set/Get Account Combination
 				if (imp.getC_ValidCombination_ID() == 0)
 				{
-					IAccountModel acct = AcctInfoServices.getAccountInfoService().get(getCtx(), imp.getAD_Client_ID(), imp.getAD_Org_ID(), 
+					IAccountModel acct = AcctModelServices.getAccountModelService().get(getCtx(), imp.getAD_Client_ID(), imp.getAD_Org_ID(), 
 						imp.getC_AcctSchema_ID(), imp.getAccount_ID(), 0,
 						imp.getM_Product_ID(), imp.getC_BPartner_ID(), imp.getAD_OrgTrx_ID(),
 						imp.getC_LocFrom_ID(), imp.getC_LocTo_ID(), imp.getC_SalesRegion_ID(),

@@ -24,7 +24,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.constants.IAcctSchemaElementConstants;
 import org.adempiere.base.acct.model.IElementValueModel;
 import org.compiere.model.MPeriod;
@@ -404,7 +404,7 @@ public class TrialBalance extends SvrProcess
 		//	Start Beginning of Year
 		if (p_Account_ID > 0)
 		{
-			m_acct = AcctInfoServices.getElementValueInfoService().create(getCtx(), p_Account_ID, get_TrxName());
+			m_acct = AcctModelServices.getElementValueModelService().create(getCtx(), p_Account_ID, get_TrxName());
 			if (!m_acct.isBalanceSheet())
 			{
 				MPeriod first = MPeriod.getFirstInYear (getCtx(), p_DateAcct_From, p_AD_Org_ID);

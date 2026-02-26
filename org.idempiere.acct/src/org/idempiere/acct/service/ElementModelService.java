@@ -22,27 +22,33 @@
  **********************************************************************/
 package org.idempiere.acct.service;
 
-import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.adempiere.base.acct.AcctInfoService;
-import org.adempiere.base.acct.model.IImportElementValueModel;
-import org.adempiere.base.acct.service.IImportElementValueModelService;
-import org.idempiere.acct.info.ImportElementValueInfo;
-import org.idempiere.acct.model.X_I_ElementValue;
+import org.adempiere.base.acct.AcctModelService;
+import org.adempiere.base.acct.model.IElementModel;
+import org.adempiere.base.acct.service.IElementModelService;
+import org.compiere.model.MClient;
+import org.idempiere.acct.model.MElement;
+import org.idempiere.base.acct.ElementModel;
 
 /**
- * Implementation of {@link IImportElementValueModelService}.
+ * Implementation of {@link IElementModelService}.
  * 
  * @author etantg
  */
-@AcctInfoService(IImportElementValueModelService.class)
-public class ImportElementValueInfoService implements IImportElementValueModelService {
-	
+@AcctModelService(IElementModelService.class)
+public class ElementModelService implements IElementModelService {
+
 	@Override
-	public IImportElementValueModel create(Properties ctx, ResultSet rs, String trxName) {
-		X_I_ElementValue elementValue = new X_I_ElementValue(ctx, rs, trxName);
-		return ImportElementValueInfo.wrap(elementValue);
+	public IElementModel create(Properties ctx, int C_Element_ID, String trxName) {
+		MElement element = new MElement(ctx, C_Element_ID, trxName);
+		return ElementModel.wrap(element);
 	}
-	
+
+	@Override
+	public IElementModel create(MClient client, String Name, String ElementType, int AD_Tree_ID) {
+		MElement element = new MElement(client, Name, ElementType, AD_Tree_ID);
+		return ElementModel.wrap(element);
+	}
+
 }

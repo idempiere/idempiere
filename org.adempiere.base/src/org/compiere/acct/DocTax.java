@@ -22,7 +22,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAccountModel;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.util.CLogger;
@@ -117,7 +117,7 @@ public final class DocTax
 		}
 		if (validCombination_ID == 0)
 			return null;
-		return AcctInfoServices.getAccountInfoService().get(as.getPO().getCtx(), validCombination_ID);
+		return AcctModelServices.getAccountModelService().get(as.getPO().getCtx(), validCombination_ID);
 	}   //  getAccount
 
 	/**

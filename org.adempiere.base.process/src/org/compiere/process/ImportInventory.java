@@ -22,7 +22,7 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.constants.IAcctSchemaConstants;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.AdempiereException;
@@ -157,7 +157,7 @@ public class ImportInventory extends SvrProcess implements ImportProcess
 			if (p_C_DocType_ID <= 0 ) {
 				throw new IllegalArgumentException("Cost Adjustment Document Type required!");
 			}
-			 acctSchema = AcctInfoServices.getAcctSchemaInfoService().get(getCtx(), p_C_AcctSchema_ID, get_TrxName());
+			 acctSchema = AcctModelServices.getAcctSchemaModelService().get(getCtx(), p_C_AcctSchema_ID, get_TrxName());
 		}
 		
 		StringBuilder sql = null;

@@ -45,7 +45,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IFactReconciliationModel;
 import org.compiere.minigrid.IMiniTable;
 import org.compiere.model.MRole;
@@ -335,11 +335,11 @@ public class FactReconcile {
 		String matchcode = "Manual: " + Env.getContext(Env.getCtx(), Env.AD_USER_NAME) + " " + time;
 		
 		String whereClause = "Fact_Acct_ID = ?";
-		IFactReconciliationModel rec = AcctInfoServices.getFactReconciliationInfoService().first(Env.getCtx(), whereClause, new Object[] {factId}, m_trxName);
+		IFactReconciliationModel rec = AcctModelServices.getFactReconciliationModelService().first(Env.getCtx(), whereClause, new Object[] {factId}, m_trxName);
 
 		if ( rec == null )
 		{
-			rec = AcctInfoServices.getFactReconciliationInfoService().create(Env.getCtx(), 0, m_trxName);
+			rec = AcctModelServices.getFactReconciliationModelService().create(Env.getCtx(), 0, m_trxName);
 			rec.getFactReconciliation().setFact_Acct_ID(factId);
 		}
 
@@ -381,7 +381,7 @@ public class FactReconcile {
 	public boolean reset(int factId)
 	{
 		String whereClause = "Fact_Acct_ID = ?";
-		IFactReconciliationModel rec = AcctInfoServices.getFactReconciliationInfoService().first(Env.getCtx(), whereClause, new Object[] {factId}, m_trxName);
+		IFactReconciliationModel rec = AcctModelServices.getFactReconciliationModelService().first(Env.getCtx(), whereClause, new Object[] {factId}, m_trxName);
 
 		if ( rec == null )
 		{

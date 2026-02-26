@@ -21,7 +21,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAccountModel;
 import org.adempiere.base.acct.model.IAcctSchemaDefaultModel;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
@@ -233,13 +233,13 @@ public class InvoiceNGL extends SvrProcess
 			return " - No Records found";
 		
 		//
-		IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get(getCtx(), p_C_AcctSchema_ID);
-		IAcctSchemaDefaultModel asDefaultAccts = AcctInfoServices.getAcctSchemaDefaultInfoService().get(getCtx(), p_C_AcctSchema_ID);
-		IGLCategoryModel cat = AcctInfoServices.getGlCategoryInfoService().getDefaultSystem(getCtx());
+		IAcctSchemaModel as = AcctModelServices.getAcctSchemaModelService().get(getCtx(), p_C_AcctSchema_ID);
+		IAcctSchemaDefaultModel asDefaultAccts = AcctModelServices.getAcctSchemaDefaultModelService().get(getCtx(), p_C_AcctSchema_ID);
+		IGLCategoryModel cat = AcctModelServices.getGlCategoryModelService().getDefaultSystem(getCtx());
 		if (cat == null)
 		{
 			MDocType docType = MDocType.get(getCtx(), p_C_DocTypeReval_ID);
-			cat = AcctInfoServices.getGlCategoryInfoService().get(getCtx(), docType.getGL_Category_ID());
+			cat = AcctModelServices.getGlCategoryModelService().get(getCtx(), docType.getGL_Category_ID());
 		}
 		//
 		MJournal journal = new MJournal (getCtx(), 0, get_TrxName());
@@ -292,8 +292,8 @@ public class InvoiceNGL extends SvrProcess
 			line.setLine((i+1) * 10);
 			line.setDescription(invoice.getSummary());
 			//
-			IFactAcctModel fa = AcctInfoServices.getFactAcctInfoService().create(getCtx(), gl.getFact_Acct_ID(), null);
-			IAccountModel acct = AcctInfoServices.getAccountInfoService().get(fa);
+			IFactAcctModel fa = AcctModelServices.getFactAcctModelService().create(getCtx(), gl.getFact_Acct_ID(), null);
+			IAccountModel acct = AcctModelServices.getAccountModelService().get(fa);
 			line.setC_ValidCombination_ID(acct);
 			BigDecimal dr = gl.getAmtRevalDrDiff();
 			BigDecimal cr = gl.getAmtRevalCrDiff();
@@ -362,8 +362,8 @@ public class InvoiceNGL extends SvrProcess
 		{
 			MJournalLine line = new MJournalLine(journal);
 			line.setLine(lineNo+1);
-			IAccountModel base = AcctInfoServices.getAccountInfoService().get(getCtx(), asDefaultAccts.getAcctSchemaDefault().getUnrealizedGain_Acct());
-			IAccountModel acct = AcctInfoServices.getAccountInfoService().get(getCtx(), asDefaultAccts.getAcctSchemaDefault().getAD_Client_ID(), AD_Org_ID, 
+			IAccountModel base = AcctModelServices.getAccountModelService().get(getCtx(), asDefaultAccts.getAcctSchemaDefault().getUnrealizedGain_Acct());
+			IAccountModel acct = AcctModelServices.getAccountModelService().get(getCtx(), asDefaultAccts.getAcctSchemaDefault().getAD_Client_ID(), AD_Org_ID, 
 				asDefaultAccts.getAcctSchemaDefault().getC_AcctSchema_ID(), base.getCombination().getAccount_ID(), base.getCombination().getC_SubAcct_ID(),
 				base.getCombination().getM_Product_ID(), base.getCombination().getC_BPartner_ID(), base.getCombination().getAD_OrgTrx_ID(), 
 				base.getCombination().getC_LocFrom_ID(), base.getCombination().getC_LocTo_ID(), base.getCombination().getC_SalesRegion_ID(), 
@@ -381,8 +381,8 @@ public class InvoiceNGL extends SvrProcess
 		{
 			MJournalLine line = new MJournalLine(journal);
 			line.setLine(lineNo+2);
-			IAccountModel base = AcctInfoServices.getAccountInfoService().get(getCtx(), asDefaultAccts.getAcctSchemaDefault().getUnrealizedLoss_Acct());
-			IAccountModel acct = AcctInfoServices.getAccountInfoService().get(getCtx(), asDefaultAccts.getAcctSchemaDefault().getAD_Client_ID(), AD_Org_ID, 
+			IAccountModel base = AcctModelServices.getAccountModelService().get(getCtx(), asDefaultAccts.getAcctSchemaDefault().getUnrealizedLoss_Acct());
+			IAccountModel acct = AcctModelServices.getAccountModelService().get(getCtx(), asDefaultAccts.getAcctSchemaDefault().getAD_Client_ID(), AD_Org_ID, 
 				asDefaultAccts.getAcctSchemaDefault().getC_AcctSchema_ID(), base.getCombination().getAccount_ID(), base.getCombination().getC_SubAcct_ID(),
 				base.getCombination().getM_Product_ID(), base.getCombination().getC_BPartner_ID(), base.getCombination().getAD_OrgTrx_ID(), 
 				base.getCombination().getC_LocFrom_ID(), base.getCombination().getC_LocTo_ID(), base.getCombination().getC_SalesRegion_ID(), 

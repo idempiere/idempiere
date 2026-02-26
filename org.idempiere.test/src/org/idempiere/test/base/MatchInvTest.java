@@ -39,7 +39,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAccountModel;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.base.acct.model.IFactAcctModel;
@@ -235,7 +235,7 @@ public class MatchInvTest extends AbstractTestCase {
 			ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
 			IAccountModel acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
 
-			List<IFactAcctModel> factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
+			List<IFactAcctModel> factAccts = AcctModelServices.getFactAcctModelService().list(MMatchInv.Table_ID, mi.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 			List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, credMatchAmt, 2, false), new FactAcct(acctInvClr, credMatchAmt, 2, true));
 			assertFactAcctEntries(factAccts, expected);
 		}
@@ -339,7 +339,7 @@ public class MatchInvTest extends AbstractTestCase {
 			ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
 			IAccountModel acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
 
-			List<IFactAcctModel> factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
+			List<IFactAcctModel> factAccts = AcctModelServices.getFactAcctModelService().list(MMatchInv.Table_ID, mi.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 			List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, invMatchAmt, 2, true), new FactAcct(acctInvClr, invMatchAmt, 2, false));
 			assertFactAcctEntries(factAccts, expected);
 		}
@@ -450,7 +450,7 @@ public class MatchInvTest extends AbstractTestCase {
 			ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
 			IAccountModel acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
 
-			List<IFactAcctModel> factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
+			List<IFactAcctModel> factAccts = AcctModelServices.getFactAcctModelService().list(MMatchInv.Table_ID, mi.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 			List<FactAcct> expected = Arrays.asList(new FactAcct(acctInvClr, invMatchAmt, 2, false, mi.getQty().negate()), 
 					new FactAcct(acctNIR, invMatchAmt, 2, true, mi.getQty()));
 			assertFactAcctEntries(factAccts, expected);
@@ -500,7 +500,7 @@ public class MatchInvTest extends AbstractTestCase {
 			ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
 			IAccountModel acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
 
-			List<IFactAcctModel> factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
+			List<IFactAcctModel> factAccts = AcctModelServices.getFactAcctModelService().list(MMatchInv.Table_ID, mi.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 			List<FactAcct> expected = Arrays.asList(new FactAcct(acctInvClr, credMatchAmt, 2, false, mi.getQty()),
 					new FactAcct(acctInvClr, credMatchAmt, 2, true, mi.getQty().negate()));
 			assertFactAcctEntries(factAccts, expected);
@@ -644,7 +644,7 @@ public class MatchInvTest extends AbstractTestCase {
 				ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
 				IAccountModel acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
 	
-				List<IFactAcctModel> factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
+				List<IFactAcctModel> factAccts = AcctModelServices.getFactAcctModelService().list(MMatchInv.Table_ID, mi.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 				List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, acctAmount, acctSource, 2, true), 
 						new FactAcct(acctInvClr, acctAmount, acctSource, 2, false));
 				assertFactAcctEntries(factAccts, expected);
@@ -967,7 +967,7 @@ public class MatchInvTest extends AbstractTestCase {
 			
 			ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
 			IAccountModel acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
-			List<IFactAcctModel> factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
+			List<IFactAcctModel> factAccts = AcctModelServices.getFactAcctModelService().list(MMatchInv.Table_ID, mi.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 			List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, invMatchAmt, 2, !mi.isReversal(), mi.getQty()),
 					new FactAcct(acctInvClr, invMatchAmt, 2, mi.isReversal(), mi.getQty().negate()));
 			assertFactAcctEntries(factAccts, expected);
@@ -1153,7 +1153,7 @@ public class MatchInvTest extends AbstractTestCase {
 				ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
 				IAccountModel acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as);
 				IAccountModel acctIPV = pc.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as);
-				List<IFactAcctModel> factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, mi.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
+				List<IFactAcctModel> factAccts = AcctModelServices.getFactAcctModelService().list(MMatchInv.Table_ID, mi.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 				List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, poMatchAmt, 2, !mi.isReversal(), mi.getQty()),
 						new FactAcct(acctInvClr, invMatchAmt, 2, mi.isReversal(), mi.getQty().negate()),
 						new FactAcct(acctIPV, invMatchAmt.subtract(poMatchAmt), 2, !mi.isReversal()));

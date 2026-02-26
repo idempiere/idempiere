@@ -24,36 +24,30 @@ package org.idempiere.acct.service;
 
 import java.util.Properties;
 
-import org.adempiere.base.acct.AcctInfoService;
-import org.adempiere.base.acct.model.IGLCategoryModel;
-import org.adempiere.base.acct.service.IGLCategoryModelService;
-import org.idempiere.acct.info.GLCategoryInfo;
-import org.idempiere.acct.model.MGLCategory;
+import org.adempiere.base.acct.AcctModelService;
+import org.adempiere.base.acct.model.IAcctSchemaGLModel;
+import org.adempiere.base.acct.service.IAcctSchemaGLModelService;
+import org.idempiere.acct.model.MAcctSchemaGL;
+import org.idempiere.base.acct.AcctSchemaGLModel;
 
 /**
- * Implementation of {@link IGLCategoryModelService}.
+ * Implementation of {@link IAcctSchemaGLModelService}.
  * 
  * @author etantg
  */
-@AcctInfoService(IGLCategoryModelService.class)
-public class GLCategoryInfoService implements IGLCategoryModelService {
-	
+@AcctModelService(IAcctSchemaGLModelService.class)
+public class AcctSchemaGLModelService implements IAcctSchemaGLModelService {
+
 	@Override
-	public IGLCategoryModel get(Properties ctx, int GL_Category_ID) {
-		MGLCategory category = MGLCategory.get(ctx, GL_Category_ID);
-		return GLCategoryInfo.wrap(category);
+	public IAcctSchemaGLModel get(Properties ctx, int C_AcctSchema_ID) {
+		MAcctSchemaGL schemaGL = MAcctSchemaGL.get(ctx, C_AcctSchema_ID);
+		return AcctSchemaGLModel.wrap(schemaGL);
 	}
 
 	@Override
-	public IGLCategoryModel getDefaultSystem(Properties ctx) {
-		MGLCategory category = MGLCategory.getDefaultSystem(ctx);
-		return GLCategoryInfo.wrap(category);
-	}
-	
-	@Override
-	public IGLCategoryModel create(Properties ctx, int GL_Category_ID, String trxName) {
-		MGLCategory category = new MGLCategory(ctx, GL_Category_ID, trxName);
-		return GLCategoryInfo.wrap(category);
+	public IAcctSchemaGLModel create(Properties ctx, int C_AcctSchema_ID, String trxName) {
+		MAcctSchemaGL schemaGL = new MAcctSchemaGL(ctx, C_AcctSchema_ID, trxName);
+		return AcctSchemaGLModel.wrap(schemaGL);
 	}
 
 }

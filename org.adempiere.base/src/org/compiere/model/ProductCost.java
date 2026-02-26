@@ -24,7 +24,7 @@ import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAccountModel;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.util.CCache;
@@ -240,7 +240,7 @@ public class ProductCost
 		}
 		if (validCombination_ID == 0)
 			return null;
-		return AcctInfoServices.getAccountInfoService().get(as.getPO().getCtx(), validCombination_ID);
+		return AcctModelServices.getAccountModelService().get(as.getPO().getCtx(), validCombination_ID);
 	}   //  getAccount
 
 	/**
@@ -297,7 +297,7 @@ public class ProductCost
 		}
 		if (validCombination_ID == 0)
 			return null;
-		return AcctInfoServices.getAccountInfoService().get(as.getPO().getCtx(), validCombination_ID);
+		return AcctModelServices.getAccountModelService().get(as.getPO().getCtx(), validCombination_ID);
 	}   //  getAccountDefault
 		
 	/**

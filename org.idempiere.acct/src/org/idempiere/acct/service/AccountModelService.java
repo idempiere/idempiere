@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.adempiere.base.acct.AcctInfoService;
+import org.adempiere.base.acct.AcctModelService;
 import org.adempiere.base.acct.model.IAccountModel;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.base.acct.model.IFactAcctModel;
@@ -34,18 +34,18 @@ import org.adempiere.base.acct.service.IAccountModelService;
 import org.compiere.model.I_C_ValidCombination;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
-import org.idempiere.acct.info.AccountInfo;
-import org.idempiere.acct.info.AcctSchemaInfo;
-import org.idempiere.acct.info.FactAcctInfo;
 import org.idempiere.acct.model.MAccount;
+import org.idempiere.base.acct.AccountModel;
+import org.idempiere.base.acct.AcctSchemaModel;
+import org.idempiere.base.acct.FactAcctModel;
 
 /**
  * Implementation of {@link IAccountModelService}.
  * 
  * @author etantg
  */
-@AcctInfoService(IAccountModelService.class)
-public class AccountInfoService implements IAccountModelService {
+@AcctModelService(IAccountModelService.class)
+public class AccountModelService implements IAccountModelService {
 	
 	@Override
 	public IAccountModel get(Properties ctx, int AD_Client_ID, int AD_Org_ID, int C_AcctSchema_ID, int Account_ID,
@@ -56,52 +56,52 @@ public class AccountInfoService implements IAccountModelService {
 				C_SubAcct_ID, M_Product_ID, C_BPartner_ID, AD_OrgTrx_ID, C_LocFrom_ID, C_LocTo_ID, 
 				C_SalesRegion_ID, C_Project_ID, C_Campaign_ID, C_Activity_ID, User1_ID, User2_ID, 
 				UserElement1_ID, UserElement2_ID, trxName);
-		return AccountInfo.wrap(account);
+		return AccountModel.wrap(account);
 	}
 
 	@Override
 	public IAccountModel get(IFactAcctModel fa) {
-		if (fa instanceof FactAcctInfo) {
-			MAccount account = MAccount.get(((FactAcctInfo) fa).getModel());
-			return AccountInfo.wrap(account);
+		if (fa instanceof FactAcctModel) {
+			MAccount account = MAccount.get(((FactAcctModel) fa).getModel());
+			return AccountModel.wrap(account);
 		}
-		throw new IllegalArgumentException("Unsupported IFactAcctInfo implementation");
+		throw new IllegalArgumentException("Unsupported IFactAcctModel implementation");
 	}
 
 	@Override
 	public IAccountModel get(IFactAcctModel fa, String trxName) {
-		if (fa instanceof FactAcctInfo) {
-			MAccount account = MAccount.get(((FactAcctInfo) fa).getModel(), trxName);
-			return AccountInfo.wrap(account);
+		if (fa instanceof FactAcctModel) {
+			MAccount account = MAccount.get(((FactAcctModel) fa).getModel(), trxName);
+			return AccountModel.wrap(account);
 		}
-		throw new IllegalArgumentException("Unsupported IFactAcctInfo implementation");
+		throw new IllegalArgumentException("Unsupported IFactAcctModel implementation");
 	}
 
 	@Override
 	public IAccountModel getDefault(Properties ctx, int C_AcctSchema_ID, boolean optionalNull, String trxName) {
 		MAccount account = MAccount.getDefault(ctx, C_AcctSchema_ID, optionalNull, trxName);
-		return AccountInfo.wrap(account);
+		return AccountModel.wrap(account);
 	}
 
 	@Override
 	public IAccountModel getDefault(IAcctSchemaModel acctSchema, boolean optionalNull) {
-		if (acctSchema instanceof AcctSchemaInfo) {
-			MAccount account = MAccount.getDefault(((AcctSchemaInfo) acctSchema).getModel(), optionalNull);
-			return AccountInfo.wrap(account);
+		if (acctSchema instanceof AcctSchemaModel) {
+			MAccount account = MAccount.getDefault(((AcctSchemaModel) acctSchema).getModel(), optionalNull);
+			return AccountModel.wrap(account);
 		}
-		throw new IllegalArgumentException("Unsupported IAcctSchemaInfo implementation");
+		throw new IllegalArgumentException("Unsupported IAcctSchemaModel implementation");
 	}
 
 	@Override
 	public IAccountModel get(int C_ValidCombination_ID) {
 		MAccount account = MAccount.get(C_ValidCombination_ID);
-		return AccountInfo.wrap(account);
+		return AccountModel.wrap(account);
 	}
 
 	@Override
 	public IAccountModel get(Properties ctx, int C_ValidCombination_ID) {
 		MAccount account = MAccount.get(ctx, C_ValidCombination_ID);
-		return AccountInfo.wrap(account);
+		return AccountModel.wrap(account);
 	}
 
 	@Override
@@ -112,7 +112,7 @@ public class AccountInfoService implements IAccountModelService {
 	@Override
 	public IAccountModel create(Properties ctx, int C_ValidCombination_ID, String trxName) {
 		MAccount account = new MAccount(ctx, C_ValidCombination_ID, trxName);
-		return AccountInfo.wrap(account);
+		return AccountModel.wrap(account);
 	}
 
 	@Override
@@ -122,7 +122,7 @@ public class AccountInfoService implements IAccountModelService {
 				.setOrderBy(I_C_ValidCombination.COLUMNNAME_Combination)
 				.setOnlyActiveRecords(onlyActive)
 				.list();
-		return AccountInfo.wrapList(accounts);
+		return AccountModel.wrapList(accounts);
 	}
 	
 	@Override
@@ -130,7 +130,7 @@ public class AccountInfoService implements IAccountModelService {
 		List<MAccount> accounts = new Query(ctx,I_C_ValidCombination.Table_Name,whereClause,trxName)
 				.setParameters(params)
 				.list();
-		return AccountInfo.wrapList(accounts);
+		return AccountModel.wrapList(accounts);
 	}
 
 }

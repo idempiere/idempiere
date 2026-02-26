@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.constants.IAcctSchemaElementConstants;
 import org.adempiere.base.acct.model.IAcctSchemaDefaultModel;
 import org.adempiere.base.acct.model.IAcctSchemaElementModel;
@@ -77,7 +77,7 @@ public class AccountingSchemaValidRangeTest extends AbstractTestCase
 		docType.saveEx();
 
 		// Step 1: Create Accounting Schema with Valid Date Range
-		IAcctSchemaModel acctSchema = AcctInfoServices.getAcctSchemaInfoService().create(Env.getCtx(), 0, getTrxName());
+		IAcctSchemaModel acctSchema = AcctModelServices.getAcctSchemaModelService().create(Env.getCtx(), 0, getTrxName());
 		acctSchema.getAcctSchema().setName("Test Schema");
 		acctSchema.getAcctSchema().setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
 		acctSchema.getAcctSchema().setStartDate(startDate);
@@ -85,7 +85,7 @@ public class AccountingSchemaValidRangeTest extends AbstractTestCase
 		acctSchema.getPO().saveEx();
 
 		// Account Dimension
-		IAcctSchemaElementModel acctSchemaElement = AcctInfoServices.getAcctSchemaElementInfoService().create(Env.getCtx(), 0, getTrxName());
+		IAcctSchemaElementModel acctSchemaElement = AcctModelServices.getAcctSchemaElementModelService().create(Env.getCtx(), 0, getTrxName());
 		acctSchemaElement.getAcctSchemaElement().setC_AcctSchema_ID(acctSchema.getPO().get_ID());
 		acctSchemaElement.getAcctSchemaElement().setName("Account");
 		acctSchemaElement.getAcctSchemaElement().setElementType(IAcctSchemaElementConstants.ELEMENTTYPE_Account);
@@ -220,9 +220,9 @@ public class AccountingSchemaValidRangeTest extends AbstractTestCase
 			rollback();
 			int M_CostType_ID = acctSchema.getAcctSchema().getM_CostType_ID();
 			//
-			IAcctSchemaDefaultModel def = AcctInfoServices.getAcctSchemaDefaultInfoService().get(Env.getCtx(), acctSchema.getPO().get_ID());
+			IAcctSchemaDefaultModel def = AcctModelServices.getAcctSchemaDefaultModelService().get(Env.getCtx(), acctSchema.getPO().get_ID());
 			def.getPO().deleteEx(true, null);
-			IAcctSchemaGLModel gl = AcctInfoServices.getAcctSchemaGLInfoService().get(Env.getCtx(), acctSchema.getPO().get_ID());
+			IAcctSchemaGLModel gl = AcctModelServices.getAcctSchemaGLModelService().get(Env.getCtx(), acctSchema.getPO().get_ID());
 			gl.getPO().deleteEx(true, null);
 			//
 			acctSchemaElement.getPO().deleteEx(true, null);
@@ -272,7 +272,7 @@ public class AccountingSchemaValidRangeTest extends AbstractTestCase
 		assertTrue(payment.isPosted());
 
 		//
-		return AcctInfoServices.getFactAcctInfoService().list(MPayment.Table_ID, payment.get_ID(), acctSchema.getPO().get_ID(), getTrxName());
+		return AcctModelServices.getFactAcctModelService().list(MPayment.Table_ID, payment.get_ID(), acctSchema.getPO().get_ID(), getTrxName());
 	}
 	
 	@Test
@@ -282,7 +282,7 @@ public class AccountingSchemaValidRangeTest extends AbstractTestCase
 		Timestamp startDate = Timestamp.valueOf("2024-12-31 23:59:59");
 		Timestamp endDate = Timestamp.valueOf("2024-01-01 00:00:00");
 		
-		IAcctSchemaModel acctSchema1 = AcctInfoServices.getAcctSchemaInfoService().create(Env.getCtx(), 0, getTrxName());
+		IAcctSchemaModel acctSchema1 = AcctModelServices.getAcctSchemaModelService().create(Env.getCtx(), 0, getTrxName());
 		acctSchema1.getAcctSchema().setName("Invalid Date Range Schema");
 		acctSchema1.getAcctSchema().setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
 		acctSchema1.getAcctSchema().setStartDate(startDate);
@@ -303,7 +303,7 @@ public class AccountingSchemaValidRangeTest extends AbstractTestCase
 		
 		// Test Case 2: StartDate == EndDate should succeed
 		Timestamp sameDate = Timestamp.valueOf("2024-06-15 12:00:00");
-		IAcctSchemaModel acctSchema2 = AcctInfoServices.getAcctSchemaInfoService().create(Env.getCtx(), 0, getTrxName());
+		IAcctSchemaModel acctSchema2 = AcctModelServices.getAcctSchemaModelService().create(Env.getCtx(), 0, getTrxName());
 		acctSchema2.getAcctSchema().setName("Same Date Range Schema");
 		acctSchema2.getAcctSchema().setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
 		acctSchema2.getAcctSchema().setStartDate(sameDate);
@@ -315,7 +315,7 @@ public class AccountingSchemaValidRangeTest extends AbstractTestCase
 		// Test Case 3: StartDate < EndDate should succeed (valid range)
 		startDate = Timestamp.valueOf("2024-01-01 00:00:00");
 		endDate = Timestamp.valueOf("2024-12-31 23:59:59");
-		IAcctSchemaModel acctSchema3 = AcctInfoServices.getAcctSchemaInfoService().create(Env.getCtx(), 0, getTrxName());
+		IAcctSchemaModel acctSchema3 = AcctModelServices.getAcctSchemaModelService().create(Env.getCtx(), 0, getTrxName());
 		acctSchema3.getAcctSchema().setName("Valid Date Range Schema");
 		acctSchema3.getAcctSchema().setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
 		acctSchema3.getAcctSchema().setStartDate(startDate);
@@ -325,7 +325,7 @@ public class AccountingSchemaValidRangeTest extends AbstractTestCase
 		rollback();
 		
 		// Test Case 4: Only StartDate set (no EndDate) should succeed
-		IAcctSchemaModel acctSchema4 = AcctInfoServices.getAcctSchemaInfoService().create(Env.getCtx(), 0, getTrxName());
+		IAcctSchemaModel acctSchema4 = AcctModelServices.getAcctSchemaModelService().create(Env.getCtx(), 0, getTrxName());
 		acctSchema4.getAcctSchema().setName("Only Start Date Schema");
 		acctSchema4.getAcctSchema().setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
 		acctSchema4.getAcctSchema().setStartDate(startDate);
@@ -334,7 +334,7 @@ public class AccountingSchemaValidRangeTest extends AbstractTestCase
 		rollback();
 		
 		// Test Case 5: Only EndDate set (no StartDate) should succeed
-		IAcctSchemaModel acctSchema5 = AcctInfoServices.getAcctSchemaInfoService().create(Env.getCtx(), 0, getTrxName());
+		IAcctSchemaModel acctSchema5 = AcctModelServices.getAcctSchemaModelService().create(Env.getCtx(), 0, getTrxName());
 		acctSchema5.getAcctSchema().setName("Only End Date Schema");
 		acctSchema5.getAcctSchema().setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
 		acctSchema5.getAcctSchema().setEndDate(endDate);
@@ -343,7 +343,7 @@ public class AccountingSchemaValidRangeTest extends AbstractTestCase
 		rollback();
 		
 		// Test Case 6: No date range set should succeed
-		IAcctSchemaModel acctSchema6 = AcctInfoServices.getAcctSchemaInfoService().create(Env.getCtx(), 0, getTrxName());
+		IAcctSchemaModel acctSchema6 = AcctModelServices.getAcctSchemaModelService().create(Env.getCtx(), 0, getTrxName());
 		acctSchema6.getAcctSchema().setName("No Date Range Schema");
 		acctSchema6.getAcctSchema().setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
 		acctSchema6.getPO().saveEx();

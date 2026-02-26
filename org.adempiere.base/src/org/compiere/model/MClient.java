@@ -31,7 +31,7 @@ import java.util.logging.Level;
 
 import javax.mail.internet.InternetAddress;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.CLogger;
@@ -534,7 +534,7 @@ public class MClient extends X_AD_Client implements ImmutablePOSupport
 		{
 			int C_AcctSchema_ID = m_info.getC_AcctSchema1_ID();
 			if (C_AcctSchema_ID != 0)
-				return AcctInfoServices.getAcctSchemaInfoService().getCopy(getCtx(), C_AcctSchema_ID, get_TrxName());
+				return AcctModelServices.getAcctSchemaModelService().getCopy(getCtx(), C_AcctSchema_ID, get_TrxName());
 		}
 		return null;
 	}	//	getMClientInfo

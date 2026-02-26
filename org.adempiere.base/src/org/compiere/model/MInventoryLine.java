@@ -21,7 +21,7 @@ import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.constants.IAcctSchemaConstants;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.process.DocAction;
@@ -415,7 +415,7 @@ public class MInventoryLine extends X_M_InventoryLine
 			int C_Currency_ID = getParent().getC_Currency_ID();
 			if (as.getAcctSchema().getC_Currency_ID() != C_Currency_ID) 
 			{
-				IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(getCtx(), client.get_ID());
+				IAcctSchemaModel[] ass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(getCtx(), client.get_ID());
 				for (int i = 0; i < ass.length ; i ++)
 				{
 					IAcctSchemaModel a =  ass[i];
@@ -488,7 +488,7 @@ public class MInventoryLine extends X_M_InventoryLine
 		MInventory inventory = getParent();
 		MClient client = MClient.get(inventory.getCtx(), inventory.getAD_Client_ID());
 		IAcctSchemaModel as = client.getAcctSchema();
-		IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(inventory.getCtx(), client.get_ID());
+		IAcctSchemaModel[] ass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(inventory.getCtx(), client.get_ID());
 		if (as.getAcctSchema().getC_Currency_ID() != inventory.getC_Currency_ID()) {
 			for (IAcctSchemaModel a : ass) {
 				if (a.getAcctSchema().getC_Currency_ID() == inventory.getC_Currency_ID()) 

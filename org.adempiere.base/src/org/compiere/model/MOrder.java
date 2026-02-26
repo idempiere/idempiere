@@ -32,7 +32,7 @@ import java.util.logging.Level;
 import org.adempiere.base.Core;
 import org.adempiere.base.CreditStatus;
 import org.adempiere.base.ICreditManager;
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.BPartnerNoBillToAddressException;
@@ -2744,7 +2744,7 @@ public class MOrder extends X_C_Order implements DocAction
 		MRequisitionLine.unlinkC_Order_ID(getCtx(), get_ID(), get_TrxName());
 		
 		/* globalqss - 2317928 - Reactivating/Voiding order must reset posted */
-		AcctInfoServices.getFactAcctInfoService().deleteEx(MOrder.Table_ID, getC_Order_ID(), get_TrxName());
+		AcctModelServices.getFactAcctModelService().deleteEx(MOrder.Table_ID, getC_Order_ID(), get_TrxName());
 		setPosted(false);
 		
 		// After Void
@@ -3080,7 +3080,7 @@ public class MOrder extends X_C_Order implements DocAction
 		}
 
 		/* globalqss - 2317928 - Reactivating/Voiding order must reset posted */
-		AcctInfoServices.getFactAcctInfoService().deleteEx(MOrder.Table_ID, getC_Order_ID(), get_TrxName());
+		AcctModelServices.getFactAcctModelService().deleteEx(MOrder.Table_ID, getC_Order_ID(), get_TrxName());
 		setPosted(false);
 		
 		// After reActivate
@@ -3151,7 +3151,7 @@ public class MOrder extends X_C_Order implements DocAction
 	protected String deleteMatchPOCostDetail(MOrderLine line)
 	{
 		// Get Account Schemas to delete MCostDetail
-		IAcctSchemaModel[] acctschemas = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(getCtx(), getAD_Client_ID());
+		IAcctSchemaModel[] acctschemas = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(getCtx(), getAD_Client_ID());
 		for(int asn = 0; asn < acctschemas.length; asn++)
 		{
 			IAcctSchemaModel as = acctschemas[asn];

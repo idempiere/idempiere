@@ -33,7 +33,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.DefaultAnnotationBasedEventManager;
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.base.event.annotations.BaseEventHandler;
 import org.compiere.acct.Doc;
@@ -246,7 +246,7 @@ public class EventDelegateAnnotationTest extends AbstractTestCase {
 		assertEquals(DocAction.STATUS_Completed, status, "Invoice should be completed");
 
 		MInvoiceEventDelegate.eventLog.clear();
-		IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get(Env.getCtx(), Env.getContextAsInt(Env.getCtx(), "$C_AcctSchema_ID"));
+		IAcctSchemaModel as = AcctModelServices.getAcctSchemaModelService().get(Env.getCtx(), Env.getContextAsInt(Env.getCtx(), "$C_AcctSchema_ID"));
 		String error = Doc.postImmediate(new IAcctSchemaModel[] {as}, MInvoice.Table_ID, invoice2.get_ID(), true, getTrxName());
 		assertEquals(null, error, "Invoice should be posted: " + error);
 		assertTrue(MInvoiceEventDelegate.eventLog.contains("FactsValidate"));

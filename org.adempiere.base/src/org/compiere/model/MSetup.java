@@ -27,7 +27,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.constants.IElementConstants;
 import org.adempiere.base.acct.constants.IGLCategoryConstants;
 import org.adempiere.base.acct.model.IAccountModel;
@@ -496,7 +496,7 @@ public final class MSetup
 
 		//	Create Account Elements
 		name = m_clientName + " " + Msg.translate(m_lang, "Account_ID");
-		IElementModel element = AcctInfoServices.getElementInfoService().create(m_client, name, 
+		IElementModel element = AcctModelServices.getElementModelService().create(m_client, name, 
 				IElementConstants.ELEMENTTYPE_Account, m_AD_Tree_Account_ID);
 		if (!element.getPO().save())
 		{
@@ -547,7 +547,7 @@ public final class MSetup
 		/**
 		 *  Create AccountingSchema
 		 */
-		m_as = AcctInfoServices.getAcctSchemaInfoService().create(m_client, currency);
+		m_as = AcctModelServices.getAcctSchemaModelService().create(m_client, currency);
 		if (!m_as.getPO().save())
 		{
 			String err = "AcctSchema NOT inserted";
@@ -927,7 +927,7 @@ public final class MSetup
 			throw new AdempiereUserError("Account not defined: " + key);
 		}
 
-		IAccountModel vc = AcctInfoServices.getAccountInfoService().getDefault(m_as, true);	//	optional null
+		IAccountModel vc = AcctModelServices.getAccountModelService().getDefault(m_as, true);	//	optional null
 		vc.getCombination().setAD_Org_ID(0);		//	will be overwritten
 		vc.getCombination().setAccount_ID(C_ElementValue_ID);
 		if (!vc.getPO().save())
@@ -951,7 +951,7 @@ public final class MSetup
 	 */
 	private int createGLCategory (String Name, String CategoryType, boolean isDefault)
 	{
-		IGLCategoryModel cat = AcctInfoServices.getGlCategoryInfoService().create(m_ctx, 0, m_trx.getTrxName());
+		IGLCategoryModel cat = AcctModelServices.getGlCategoryModelService().create(m_ctx, 0, m_trx.getTrxName());
 		cat.getGLCategory().setAD_Org_ID(0);
 		cat.getGLCategory().setName(Name);
 		cat.getGLCategory().setCategoryType(CategoryType);

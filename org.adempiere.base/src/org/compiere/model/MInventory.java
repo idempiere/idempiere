@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.constants.IAcctSchemaConstants;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.BackDateTrxNotAllowedException;
@@ -399,7 +399,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 
 		//	Std Period open?
 		MPeriod.testPeriodOpen(getCtx(), getMovementDate(), MDocType.DOCBASETYPE_MaterialPhysicalInventory, getAD_Org_ID());
-		AcctInfoServices.getAcctSchemaInfoService().testBackDateTrxAllowed(getCtx(), getMovementDate(), get_TrxName());
+		AcctModelServices.getAcctSchemaModelService().testBackDateTrxAllowed(getCtx(), getMovementDate(), get_TrxName());
 		
 		MInventoryLine[] lines = getLines(false);
 		if (lines.length == 0)
@@ -543,7 +543,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 						BigDecimal currentCost = line.getCurrentCostPrice();
 						MClient client = MClient.get(getCtx(), getAD_Client_ID());
 						IAcctSchemaModel as = client.getAcctSchema();
-						IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(getCtx(), client.get_ID());
+						IAcctSchemaModel[] ass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(getCtx(), client.get_ID());
 						if (as.getAcctSchema().getC_Currency_ID() != getC_Currency_ID()) {
 							for (IAcctSchemaModel a : ass) {
 								if (a.getAcctSchema().getC_Currency_ID() == getC_Currency_ID()) 
@@ -750,7 +750,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 		if (dt.isOverwriteDateOnComplete()) {
 			setMovementDate(TimeUtil.getDay(0));
 			MPeriod.testPeriodOpen(getCtx(), getMovementDate(), MDocType.DOCBASETYPE_MaterialPhysicalInventory, getAD_Org_ID());
-			AcctInfoServices.getAcctSchemaInfoService().testBackDateTrxAllowed(getCtx(), getMovementDate(), get_TrxName());
+			AcctModelServices.getAcctSchemaModelService().testBackDateTrxAllowed(getCtx(), getMovementDate(), get_TrxName());
 		}
 		if (dt.isOverwriteSeqOnComplete()) {
 			String value = DB.getDocumentNo(getC_DocType_ID(), get_TrxName(), true, this);
@@ -845,7 +845,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 					if(qtyDiff.compareTo(Env.ZERO)>0)
 					{
 						MClientInfo m_clientInfo = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName());
-						IAcctSchemaModel acctSchema = AcctInfoServices.getAcctSchemaInfoService().create(getCtx(), m_clientInfo.getC_AcctSchema1_ID(), get_TrxName());
+						IAcctSchemaModel acctSchema = AcctModelServices.getAcctSchemaModelService().create(getCtx(), m_clientInfo.getC_AcctSchema1_ID(), get_TrxName());
 						if (IAcctSchemaConstants.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(acctSchema)) )
 						{
 							String sqlWhere = "M_Product_ID=? AND M_Locator_ID=? AND QtyOnHand = 0 AND M_AttributeSetInstance_ID > 0 ";
@@ -1001,7 +1001,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 			
 			try
 			{
-				AcctInfoServices.getAcctSchemaInfoService().testBackDateTrxAllowed(getCtx(), getMovementDate(), get_TrxName());
+				AcctModelServices.getAcctSchemaModelService().testBackDateTrxAllowed(getCtx(), getMovementDate(), get_TrxName());
 			}
 			catch (BackDateTrxNotAllowedException e)
 			{
@@ -1084,7 +1084,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 		
 		MDocType dt = MDocType.get(getC_DocType_ID());
 		MPeriod.testPeriodOpen(getCtx(), reversalDate, dt.getDocBaseType(), getAD_Org_ID());
-		AcctInfoServices.getAcctSchemaInfoService().testBackDateTrxAllowed(getCtx(), reversalDate, get_TrxName());
+		AcctModelServices.getAcctSchemaModelService().testBackDateTrxAllowed(getCtx(), reversalDate, get_TrxName());
 		
 		try {
 			periodClosedCheckForBackDateTrx(reversalDate);

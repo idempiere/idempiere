@@ -31,7 +31,7 @@ import java.util.logging.Level;
 import org.adempiere.base.Core;
 import org.adempiere.base.CreditStatus;
 import org.adempiere.base.ICreditManager;
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.constants.IAcctSchemaConstants;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.AdempiereException;
@@ -1459,7 +1459,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			return DocAction.STATUS_Invalid;
 		}
 		
-		if (!AcctInfoServices.getAcctSchemaInfoService().isBackDateTrxAllowed(getCtx(), getDateAcct(), get_TrxName()))
+		if (!AcctModelServices.getAcctSchemaModelService().isBackDateTrxAllowed(getCtx(), getDateAcct(), get_TrxName()))
 		{
 			m_processMsg = "@BackDateTrxNotAllowed@";
 			return DocAction.STATUS_Invalid;
@@ -2338,7 +2338,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			if (getDateAcct().before(getMovementDate())) {
 				setDateAcct(getMovementDate());
 				MPeriod.testPeriodOpen(getCtx(), getDateAcct(), getC_DocType_ID(), getAD_Org_ID());
-				AcctInfoServices.getAcctSchemaInfoService().testBackDateTrxAllowed(getCtx(), getDateAcct(), get_TrxName());
+				AcctModelServices.getAcctSchemaModelService().testBackDateTrxAllowed(getCtx(), getDateAcct(), get_TrxName());
 			}
 		}
 		if (dt.isOverwriteSeqOnComplete()) {
@@ -2663,7 +2663,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			
 			try
 			{
-				AcctInfoServices.getAcctSchemaInfoService().testBackDateTrxAllowed(getCtx(), getDateAcct(), get_TrxName());
+				AcctModelServices.getAcctSchemaModelService().testBackDateTrxAllowed(getCtx(), getDateAcct(), get_TrxName());
 			}
 			catch (BackDateTrxNotAllowedException e)
 			{
@@ -2755,7 +2755,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			m_processMsg = "@PeriodClosed@";
 			return null;
 		}
-		if (!AcctInfoServices.getAcctSchemaInfoService().isBackDateTrxAllowed(getCtx(), reversalDate, get_TrxName()))
+		if (!AcctModelServices.getAcctSchemaModelService().isBackDateTrxAllowed(getCtx(), reversalDate, get_TrxName()))
 		{
 			m_processMsg = "@BackDateTrxNotAllowed@";
 			return null;

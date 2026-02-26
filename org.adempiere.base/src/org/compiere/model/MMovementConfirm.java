@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
@@ -325,7 +325,7 @@ public class MMovementConfirm extends X_M_MovementConfirm implements DocAction
 			return DocAction.STATUS_Invalid;
 		}
 		
-		if (!AcctInfoServices.getAcctSchemaInfoService().isBackDateTrxAllowed(getCtx(), getUpdated(), get_TrxName()))
+		if (!AcctModelServices.getAcctSchemaModelService().isBackDateTrxAllowed(getCtx(), getUpdated(), get_TrxName()))
 		{
 			m_processMsg = "@BackDateTrxNotAllowed@";
 			return DocAction.STATUS_Invalid;

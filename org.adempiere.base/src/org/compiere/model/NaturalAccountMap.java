@@ -26,7 +26,7 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IElementValueModel;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
@@ -246,7 +246,7 @@ public final class NaturalAccountMap<K,V> extends CCache<K,V>
 			if (na == null)
 			{
 				//  Create Account - save later
-				na = AcctInfoServices.getElementValueInfoService().create(m_ctx, Value, Name, Description,
+				na = AcctModelServices.getElementValueModelService().create(m_ctx, Value, Name, Description,
 					AccountType, AccountSign,
 					IsDocControlled.toUpperCase().startsWith("Y"), 
 					IsSummary.toUpperCase().startsWith("Y"), m_trxName);

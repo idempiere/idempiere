@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAcctSchemaGLModel;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
@@ -558,7 +558,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 		//	Unbalanced Jornal & Not Suspense
 		if (AmtSourceDr.compareTo(AmtSourceCr) != 0)
 		{
-			IAcctSchemaGLModel gl = AcctInfoServices.getAcctSchemaGLInfoService().get(getCtx(), getC_AcctSchema_ID());
+			IAcctSchemaGLModel gl = AcctModelServices.getAcctSchemaGLModelService().get(getCtx(), getC_AcctSchema_ID());
 			if (gl == null || !gl.getAcctSchemaGL().isUseSuspenseBalancing())
 			{
 				m_processMsg = "@UnbalancedJornal@";
@@ -967,7 +967,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 			return false;
 		}
 
-		AcctInfoServices.getFactAcctInfoService().deleteEx(MJournal.Table_ID, get_ID(), get_TrxName());
+		AcctModelServices.getFactAcctModelService().deleteEx(MJournal.Table_ID, get_ID(), get_TrxName());
 		setPosted(false);
 		setProcessed(false);
 		setDocAction(DOCACTION_Complete);

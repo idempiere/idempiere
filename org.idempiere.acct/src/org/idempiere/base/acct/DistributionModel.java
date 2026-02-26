@@ -20,7 +20,7 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  **********************************************************************/
-package org.idempiere.acct.info;
+package org.idempiere.base.acct;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -38,11 +38,11 @@ import org.idempiere.acct.model.MDistributionLine;
  * 
  * @author etantg
  */
-public class DistributionInfo implements IDistributionModel {
+public class DistributionModel implements IDistributionModel {
 	
 	private final MDistribution distribution;
 	
-	public DistributionInfo(MDistribution distribution) {
+	public DistributionModel(MDistribution distribution) {
         if (distribution == null)
             throw new IllegalArgumentException("MDistribution cannot be null");
         this.distribution = distribution;
@@ -65,15 +65,15 @@ public class DistributionInfo implements IDistributionModel {
 	@Override
 	public IDistributionLineModel[] getDistributionLines(boolean reload) {
 		MDistributionLine[] lines = distribution.getLines(reload);
-		return DistributionLineInfo.wrapStream(lines);
+		return DistributionLineModel.wrapStream(lines);
 	}
 
 	@Override
 	public void distribute(IAccountModel acct, BigDecimal Amt, BigDecimal Qty, int C_Currency_ID) {
-		if (acct instanceof AccountInfo) {
-			distribution.distribute(((AccountInfo) acct).getModel(), Amt, Qty, C_Currency_ID);
+		if (acct instanceof AccountModel) {
+			distribution.distribute(((AccountModel) acct).getModel(), Amt, Qty, C_Currency_ID);
 		}
-		throw new IllegalArgumentException("Unsupported IAccountInfo implementation");
+		throw new IllegalArgumentException("Unsupported IAccountModel implementation");
 	}
 
 	@Override
@@ -86,13 +86,13 @@ public class DistributionInfo implements IDistributionModel {
             return null;
         if (distribution instanceof IDistributionModel)
             return (IDistributionModel) distribution;
-        return new DistributionInfo(distribution);
+        return new DistributionModel(distribution);
     }
 	
 	public static IDistributionModel[] wrapStream(MDistribution[] distributions) {
 		return distributions == null ? new IDistributionModel[0] :
 			Arrays.stream(distributions)
-				.map(DistributionInfo::wrap)  // wrap each element
+				.map(DistributionModel::wrap)  // wrap each element
 				.toArray(IDistributionModel[]::new);
 	}
 	

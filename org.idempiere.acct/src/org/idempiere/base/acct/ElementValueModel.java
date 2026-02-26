@@ -20,75 +20,74 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  **********************************************************************/
-package org.idempiere.acct.info;
+package org.idempiere.base.acct;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.adempiere.base.acct.model.IAccountModel;
-import org.adempiere.base.acct.model.IFactAcctModel;
-import org.compiere.model.I_Fact_Acct;
+import org.adempiere.base.acct.model.IElementValueModel;
+import org.adempiere.base.acct.model.IImportElementValueModel;
+import org.compiere.model.I_C_ElementValue;
 import org.compiere.model.PO;
-import org.idempiere.acct.model.MAccount;
-import org.idempiere.acct.model.MFactAcct;
+import org.idempiere.acct.model.MElementValue;
 
 /**
- * Wrapper for {@link MFactAcct} to provide {@link IFactAcctModel} access.
+ * Wrapper for {@link MElementValue} to provide {@link IElementValueModel} access.
  * 
  * @author etantg
  */
-public class FactAcctInfo implements IFactAcctModel {
-
-	private final MFactAcct fact;
+public class ElementValueModel implements IElementValueModel {
 	
-	public FactAcctInfo(MFactAcct fact) {
-        if (fact == null)
-            throw new IllegalArgumentException("MFactAcct cannot be null");
-        this.fact = fact;
+	private final MElementValue elementValue;
+	
+	public ElementValueModel(MElementValue elementValue) {
+        if (elementValue == null)
+            throw new IllegalArgumentException("MElementValue cannot be null");
+        this.elementValue = elementValue;
     }
 	
-	public MFactAcct getModel() {
-		return fact;
+	public MElementValue getModel() {
+		return elementValue;
 	}
 	
 	@Override
-	public I_Fact_Acct getFactAcct() {
-		return fact;
+	public I_C_ElementValue getElementValue() {
+		return elementValue;
 	}
 
 	@Override
 	public PO getPO() {
-		return fact;
-	}
-
-	@Override
-	public void setClientOrg(PO po) {
-		if (po.getAD_Client_ID() != fact.getAD_Client_ID())
-			fact.set_ValueNoCheck ("AD_Client_ID", Integer.valueOf(po.getAD_Client_ID()));
-		if (po.getAD_Org_ID() != fact.getAD_Org_ID())
-			fact.setAD_Org_ID(po.getAD_Org_ID());
-	}
-
-	@Override
-	public IAccountModel getAccountModel() {
-		MAccount account = fact.getMAccount();
-		return AccountInfo.wrap(account);
+		return elementValue;
 	}
 	
-	public static IFactAcctModel wrap(MFactAcct fact) {
-        if (fact == null)
+	@Override
+	public boolean isBalanceSheet() {
+		return elementValue.isBalanceSheet();
+	}
+
+	@Override
+	public void set(IImportElementValueModel imp) {
+		if (imp instanceof ImportElementValueModel) {
+			elementValue.set(((ImportElementValueModel) imp).getModel());
+			return;
+		}
+		throw new IllegalArgumentException("Unsupported IImportElementValueModel implementation");
+	}
+	
+	public static IElementValueModel wrap(MElementValue elementValue) {
+        if (elementValue == null)
             return null;
-        if (fact instanceof IFactAcctModel)
-            return (IFactAcctModel) fact;
-        return new FactAcctInfo(fact);
+        if (elementValue instanceof IElementValueModel)
+            return (IElementValueModel) elementValue;
+        return new ElementValueModel(elementValue);
     }
 	
-	public static List<IFactAcctModel> wrapList(List<MFactAcct> list) {
+	public static List<IElementValueModel> wrapList(List<MElementValue> list) {
 	    return list == null
 	    		? new ArrayList<>()
 	            : list.stream()
-	            	.map(FactAcctInfo::wrap)
+	            	.map(ElementValueModel::wrap)
 	            	.collect(Collectors.toList());
 	}
 	

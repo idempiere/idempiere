@@ -30,7 +30,7 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAccountModel;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.AdempiereException;
@@ -262,7 +262,7 @@ public abstract class Doc
 			int AD_Table_ID, int Record_ID, boolean force)
 	{
 		String error = null;
-		IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), AD_Client_ID);
+		IAcctSchemaModel[] ass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(Env.getCtx(), AD_Client_ID);
 		Trx trx = Trx.get(Trx.createTrxName("ManulPosting"), true);
 		trx.setDisplayName(Doc.class.getName()+"_manualPosting");
 		try
@@ -1605,7 +1605,7 @@ public abstract class Doc
 		if (C_ValidCombination_ID == 0)
 			return null;
 		//	Return Account
-		IAccountModel acct = AcctInfoServices.getAccountInfoService().get(as.getPO().getCtx(), C_ValidCombination_ID);
+		IAccountModel acct = AcctModelServices.getAccountModelService().get(as.getPO().getCtx(), C_ValidCombination_ID);
 		return acct;
 	}	//	getAccount
 

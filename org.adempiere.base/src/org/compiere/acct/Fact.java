@@ -23,7 +23,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.constants.IAcctSchemaElementConstants;
 import org.adempiere.base.acct.constants.IFactAcctConstants;
 import org.adempiere.base.acct.model.IAccountModel;
@@ -699,7 +699,7 @@ public final class Fact
 		for (int i = 0; i < m_lines.size(); i++)
 		{
 			FactLine dLine = (FactLine)m_lines.get(i);
-			IDistributionModel[] distributions = AcctInfoServices.getDistributionInfoService().get (dLine.getFactAcctInfo().getPO().getCtx(), dLine.getFactAcctInfo().getFactAcct().getC_AcctSchema_ID(),
+			IDistributionModel[] distributions = AcctModelServices.getDistributionModelService().get (dLine.getFactAcctInfo().getPO().getCtx(), dLine.getFactAcctInfo().getFactAcct().getC_AcctSchema_ID(),
 					m_postingType, m_doc.getC_DocType_ID(), dLine.getFactAcctInfo().getFactAcct().getDateAcct(),
 					dLine.getAD_Org_ID(), dLine.getFactAcctInfo().getFactAcct().getAccount_ID(),
 					dLine.getFactAcctInfo().getFactAcct().getM_Product_ID(), dLine.getFactAcctInfo().getFactAcct().getC_BPartner_ID(), dLine.getFactAcctInfo().getFactAcct().getC_Project_ID(),

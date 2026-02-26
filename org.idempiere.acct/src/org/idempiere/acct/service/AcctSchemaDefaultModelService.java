@@ -20,21 +20,34 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  **********************************************************************/
-package org.adempiere.base.acct;
+package org.idempiere.acct.service;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import java.util.Properties;
+
+import org.adempiere.base.acct.AcctModelService;
+import org.adempiere.base.acct.model.IAcctSchemaDefaultModel;
+import org.adempiere.base.acct.service.IAcctSchemaDefaultModelService;
+import org.idempiere.acct.model.MAcctSchemaDefault;
+import org.idempiere.base.acct.AcctSchemaDefaultModel;
 
 /**
- * Marks a class as an Accounting Info Service implementation to be discovered by {@link AcctInfoServiceFactory}.
+ * Implementation of {@link IAcctSchemaDefaultModelService}.
  * 
  * @author etantg
  */
-@Retention(RetentionPolicy.RUNTIME)
-public @interface AcctInfoService {
+@AcctModelService(IAcctSchemaDefaultModelService.class)
+public class AcctSchemaDefaultModelService implements IAcctSchemaDefaultModelService {
 
-    /**
-     * The service interface this class implements.
-     */
-    public Class<? extends IAcctModelService> value();
+	@Override
+	public IAcctSchemaDefaultModel get(Properties ctx, int C_AcctSchema_ID) {
+		MAcctSchemaDefault schemaDefault = MAcctSchemaDefault.get(ctx, C_AcctSchema_ID);
+		return AcctSchemaDefaultModel.wrap(schemaDefault);
+	}
+
+	@Override
+	public IAcctSchemaDefaultModel create(Properties ctx, int C_AcctSchema_ID, String trxName) {
+		MAcctSchemaDefault schemaDefault = new MAcctSchemaDefault(ctx, C_AcctSchema_ID, trxName);
+		return AcctSchemaDefaultModel.wrap(schemaDefault);
+	}
+
 }

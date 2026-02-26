@@ -20,48 +20,76 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  **********************************************************************/
-package org.idempiere.acct.info;
+package org.idempiere.base.acct;
 
-import org.adempiere.base.acct.model.IImportElementValueModel;
-import org.compiere.model.I_I_ElementValue;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IFactAcctModel;
+import org.compiere.model.I_Fact_Acct;
 import org.compiere.model.PO;
-import org.idempiere.acct.model.X_I_ElementValue;
+import org.idempiere.acct.model.MAccount;
+import org.idempiere.acct.model.MFactAcct;
 
 /**
- * Wrapper for {@link X_I_ElementValue} to provide {@link IImportElementValueModel} access.
+ * Wrapper for {@link MFactAcct} to provide {@link IFactAcctModel} access.
  * 
  * @author etantg
  */
-public class ImportElementValueInfo implements IImportElementValueModel {
+public class FactAcctModel implements IFactAcctModel {
+
+	private final MFactAcct fact;
 	
-	private final X_I_ElementValue elementValue;
-	
-	public ImportElementValueInfo(X_I_ElementValue elementValue) {
-        if (elementValue == null)
-            throw new IllegalArgumentException("X_I_ElementValue cannot be null");
-        this.elementValue = elementValue;
+	public FactAcctModel(MFactAcct fact) {
+        if (fact == null)
+            throw new IllegalArgumentException("MFactAcct cannot be null");
+        this.fact = fact;
     }
 	
-	public X_I_ElementValue getModel() {
-		return elementValue;
+	public MFactAcct getModel() {
+		return fact;
 	}
-
+	
 	@Override
-	public I_I_ElementValue getElementValue() {
-		return elementValue;
+	public I_Fact_Acct getFactAcct() {
+		return fact;
 	}
 
 	@Override
 	public PO getPO() {
-		return elementValue;
+		return fact;
+	}
+
+	@Override
+	public void setClientOrg(PO po) {
+		if (po.getAD_Client_ID() != fact.getAD_Client_ID())
+			fact.set_ValueNoCheck ("AD_Client_ID", Integer.valueOf(po.getAD_Client_ID()));
+		if (po.getAD_Org_ID() != fact.getAD_Org_ID())
+			fact.setAD_Org_ID(po.getAD_Org_ID());
+	}
+
+	@Override
+	public IAccountModel getAccountModel() {
+		MAccount account = fact.getMAccount();
+		return AccountModel.wrap(account);
 	}
 	
-	public static IImportElementValueModel wrap(X_I_ElementValue elementValue) {
-        if (elementValue == null)
+	public static IFactAcctModel wrap(MFactAcct fact) {
+        if (fact == null)
             return null;
-        if (elementValue instanceof IImportElementValueModel)
-            return (IImportElementValueModel) elementValue;
-        return new ImportElementValueInfo(elementValue);
+        if (fact instanceof IFactAcctModel)
+            return (IFactAcctModel) fact;
+        return new FactAcctModel(fact);
     }
+	
+	public static List<IFactAcctModel> wrapList(List<MFactAcct> list) {
+	    return list == null
+	    		? new ArrayList<>()
+	            : list.stream()
+	            	.map(FactAcctModel::wrap)
+	            	.collect(Collectors.toList());
+	}
 	
 }

@@ -20,48 +20,61 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  **********************************************************************/
-package org.idempiere.acct.info;
+package org.idempiere.base.acct;
 
-import org.adempiere.base.acct.model.IElementModel;
-import org.compiere.model.I_C_Element;
+import java.util.ArrayList;
+
+import org.adempiere.base.acct.model.IAcctSchemaDefaultModel;
+import org.compiere.model.I_C_AcctSchema_Default;
 import org.compiere.model.PO;
-import org.idempiere.acct.model.MElement;
+import org.compiere.util.KeyNamePair;
+import org.idempiere.acct.model.MAcctSchemaDefault;
 
 /**
- * Wrapper for {@link MElement} to provide {@link IElementModel} access.
+ * Wrapper for {@link MAcctSchemaDefault} to provide {@link IAcctSchemaDefaultModel} access.
  * 
  * @author etantg
  */
-public class ElementInfo implements IElementModel {
+public class AcctSchemaDefaultModel implements IAcctSchemaDefaultModel {
 	
-	private final MElement element;
+	private final MAcctSchemaDefault schemaDefault;
 	
-	public ElementInfo(MElement element) {
-        if (element == null)
-            throw new IllegalArgumentException("MElement cannot be null");
-        this.element = element;
+	public AcctSchemaDefaultModel(MAcctSchemaDefault schemaDefault) {
+        if (schemaDefault == null)
+            throw new IllegalArgumentException("MAcctSchemaDefault cannot be null");
+        this.schemaDefault = schemaDefault;
     }
 	
-	public MElement getModel() {
-		return element;
+	public MAcctSchemaDefault getModel() {
+		return schemaDefault;
 	}
 	
 	@Override
-	public I_C_Element getElement() {
-		return element;
+	public I_C_AcctSchema_Default getAcctSchemaDefault() {
+		return schemaDefault;
 	}
 
 	@Override
 	public PO getPO() {
-		return element;
+		return schemaDefault;
+	}
+
+	@Override
+	public ArrayList<KeyNamePair> getAcctModel() {
+		return schemaDefault.getAcctModel();
+	}
+
+	@Override
+	public boolean setValue(String columnName, Integer value) {
+		return schemaDefault.setValue(columnName, value);
 	}
 	
-	public static IElementModel wrap(MElement element) {
-        if (element == null)
+	public static IAcctSchemaDefaultModel wrap(MAcctSchemaDefault schemaDefault) {
+        if (schemaDefault == null)
             return null;
-        if (element instanceof IElementModel)
-            return (IElementModel) element;
-        return new ElementInfo(element);
+        if (schemaDefault instanceof IAcctSchemaDefaultModel)
+            return (IAcctSchemaDefaultModel) schemaDefault;
+        return new AcctSchemaDefaultModel(schemaDefault);
     }
 	
 }

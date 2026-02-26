@@ -20,72 +20,78 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  **********************************************************************/
-package org.idempiere.acct.info;
+package org.idempiere.base.acct;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import org.adempiere.base.acct.model.IAcctSchemaElementModel;
-import org.compiere.model.I_C_AcctSchema_Element;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IElementValueModel;
+import org.compiere.model.I_C_ValidCombination;
 import org.compiere.model.PO;
-import org.idempiere.acct.model.MAcctSchemaElement;
+import org.idempiere.acct.model.MAccount;
+import org.idempiere.acct.model.MElementValue;
 
 /**
- * Wrapper for {@link MAcctSchemaElement} to provide {@link IAcctSchemaElementModel} access.
+ * Wrapper for {@link MAccount} to provide {@link IAccountModel} access.
  * 
  * @author etantg
  */
-public class AcctSchemaElementInfo implements IAcctSchemaElementModel {
+public class AccountModel implements IAccountModel {
 	
-	private final MAcctSchemaElement schemaElement;
+	private final MAccount account;
 	
-	public AcctSchemaElementInfo(MAcctSchemaElement schemaElement) {
-        if (schemaElement == null)
-            throw new IllegalArgumentException("MAcctSchemaElement cannot be null");
-        this.schemaElement = schemaElement;
+	public AccountModel(MAccount account) {
+        if (account == null)
+            throw new IllegalArgumentException("MAccount cannot be null");
+        this.account = account;
     }
 	
-	public MAcctSchemaElement getModel() {
-		return schemaElement;
+	public MAccount getModel() {
+		return account;
 	}
-
+	
 	@Override
-	public I_C_AcctSchema_Element getAcctSchemaElement() {
-		return schemaElement;
+	public I_C_ValidCombination getCombination() {
+		return account;
 	}
 
 	@Override
 	public PO getPO() {
-		return schemaElement;
+		return account;
 	}
 
 	@Override
-	public String getDisplayColumnName() {
-		return schemaElement.getDisplayColumnName();
+	public boolean isActiva() {
+		return account.isActiva();
 	}
 
 	@Override
-	public String getColumnName() {
-		return schemaElement.getColumnName();
-	}
-
-	@Override
-	public boolean isElementType(String elementType) {
-		return schemaElement.isElementType(elementType);
+	public boolean isBalanceSheet() {
+		return account.isBalanceSheet();
 	}
 	
-	public static IAcctSchemaElementModel wrap(MAcctSchemaElement schemaElement) {
-        if (schemaElement == null)
+	@Override
+	public IElementValueModel getAccountModel() {
+		MElementValue value = account.getAccount();
+		return ElementValueModel.wrap(value);
+	}
+
+	public static IAccountModel wrap(MAccount account) {
+        if (account == null)
             return null;
-        if (schemaElement instanceof IAcctSchemaElementModel)
-            return (IAcctSchemaElementModel) schemaElement;
-        return new AcctSchemaElementInfo(schemaElement);
+        if (account instanceof IAccountModel)
+            return (IAccountModel) account;
+        return new AccountModel(account);
     }
 	
-	public static IAcctSchemaElementModel[] wrapStream(MAcctSchemaElement[] schemaElements) {
-		return schemaElements == null ? new IAcctSchemaElementModel[0] :
-		       Arrays.stream(schemaElements)
-		             .map(AcctSchemaElementInfo::wrap)  // wrap each element
-		             .toArray(IAcctSchemaElementModel[]::new);
-    }
-	
+	public static List<IAccountModel> wrapList(List<MAccount> accountList) {
+	    return accountList == null
+	    		? new ArrayList<>()
+	            : accountList.stream()
+	            	.map(AccountModel::wrap)
+	            	.collect(Collectors.toList());
+	}
+
 }

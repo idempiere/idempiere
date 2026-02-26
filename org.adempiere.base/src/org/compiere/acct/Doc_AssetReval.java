@@ -25,7 +25,7 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAccountModel;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.model.MAssetAcct;
@@ -62,14 +62,14 @@ public class Doc_AssetReval extends Doc
 		Fact fact = new Fact(this, as, assetAcct.getPostingType());
 		facts.add(fact);
 		
-		IAccountModel dr = AcctInfoServices.getAccountInfoService().get(getCtx(), assetAcct.getA_Asset_Acct());  
-		IAccountModel cr = AcctInfoServices.getAccountInfoService().get(getCtx(), assetAcct.getA_Reval_Cost_Offset_Acct());
+		IAccountModel dr = AcctModelServices.getAccountModelService().get(getCtx(), assetAcct.getA_Asset_Acct());  
+		IAccountModel cr = AcctModelServices.getAccountModelService().get(getCtx(), assetAcct.getA_Reval_Cost_Offset_Acct());
 		FactUtil.createSimpleOperation(fact, null, dr, cr, as.getAcctSchema().getC_Currency_ID(),
 				assetRe.getA_Asset_Cost_Change().subtract(assetRe.getA_Asset_Cost()), false);
 		
 			
-		IAccountModel drd = AcctInfoServices.getAccountInfoService().get(getCtx(), assetAcct.getA_Reval_Cost_Offset_Acct());  
-		IAccountModel crd = AcctInfoServices.getAccountInfoService().get(getCtx(), assetAcct.getA_Accumdepreciation_Acct());
+		IAccountModel drd = AcctModelServices.getAccountModelService().get(getCtx(), assetAcct.getA_Reval_Cost_Offset_Acct());  
+		IAccountModel crd = AcctModelServices.getAccountModelService().get(getCtx(), assetAcct.getA_Accumdepreciation_Acct());
 		FactUtil.createSimpleOperation(fact, null, drd, crd, as.getAcctSchema().getC_Currency_ID(),
 				assetRe.getA_Change_Acumulated_Depr().subtract(assetRe.getA_Accumulated_Depr()), false);
 		

@@ -20,61 +20,47 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  **********************************************************************/
-package org.idempiere.acct.info;
+package org.idempiere.base.acct;
 
-import java.util.ArrayList;
-
-import org.adempiere.base.acct.model.IAcctSchemaDefaultModel;
-import org.compiere.model.I_C_AcctSchema_Default;
+import org.adempiere.base.acct.model.IGLCategoryModel;
+import org.compiere.model.I_GL_Category;
 import org.compiere.model.PO;
-import org.compiere.util.KeyNamePair;
-import org.idempiere.acct.model.MAcctSchemaDefault;
+import org.idempiere.acct.model.MGLCategory;
 
 /**
- * Wrapper for {@link MAcctSchemaDefault} to provide {@link IAcctSchemaDefaultModel} access.
+ * Wrapper for {@link MGLCategory} to provide {@link IGLCategoryModel} access.
  * 
  * @author etantg
  */
-public class AcctSchemaDefaultInfo implements IAcctSchemaDefaultModel {
+public class GLCategoryModel implements IGLCategoryModel {
 	
-	private final MAcctSchemaDefault schemaDefault;
+	private final MGLCategory category;
 	
-	public AcctSchemaDefaultInfo(MAcctSchemaDefault schemaDefault) {
-        if (schemaDefault == null)
-            throw new IllegalArgumentException("MAcctSchemaDefault cannot be null");
-        this.schemaDefault = schemaDefault;
+	public GLCategoryModel(MGLCategory category) {
+        if (category == null)
+            throw new IllegalArgumentException("MGLCategory cannot be null");
+        this.category = category;
     }
 	
-	public MAcctSchemaDefault getModel() {
-		return schemaDefault;
+	public MGLCategory getModel() {
+		return category;
 	}
-	
+
 	@Override
-	public I_C_AcctSchema_Default getAcctSchemaDefault() {
-		return schemaDefault;
+	public I_GL_Category getGLCategory() {
+		return category;
 	}
 
 	@Override
 	public PO getPO() {
-		return schemaDefault;
+		return category;
 	}
 
-	@Override
-	public ArrayList<KeyNamePair> getAcctModel() {
-		return schemaDefault.getAcctInfo();
-	}
-
-	@Override
-	public boolean setValue(String columnName, Integer value) {
-		return schemaDefault.setValue(columnName, value);
-	}
-	
-	public static IAcctSchemaDefaultModel wrap(MAcctSchemaDefault schemaDefault) {
-        if (schemaDefault == null)
+	public static IGLCategoryModel wrap(MGLCategory category) {
+        if (category == null)
             return null;
-        if (schemaDefault instanceof IAcctSchemaDefaultModel)
-            return (IAcctSchemaDefaultModel) schemaDefault;
-        return new AcctSchemaDefaultInfo(schemaDefault);
+        if (category instanceof IGLCategoryModel)
+            return (IGLCategoryModel) category;
+        return new GLCategoryModel(category);
     }
-	
 }

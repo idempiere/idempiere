@@ -39,7 +39,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAccountModel;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.base.acct.model.IFactAcctModel;
@@ -145,7 +145,7 @@ public class InOutTest extends AbstractTestCase {
 			completeDocument(receipt);
 			postDocument(receipt);
 			
-			IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaModel[] ass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			for (IAcctSchemaModel as : ass) {
 				BigDecimal rate = Env.ZERO;
 				if (as.getAcctSchema().getC_Currency_ID() == usd.getC_Currency_ID())
@@ -161,7 +161,7 @@ public class InOutTest extends AbstractTestCase {
 						.setScale(as.getCurrency().getStdPrecision(), RoundingMode.HALF_UP);
 				BigDecimal acctAmount = acctSource.multiply(rate)
 						.setScale(as.getCurrency().getStdPrecision(), RoundingMode.HALF_UP);
-				List<IFactAcctModel> factAccts = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, receipt.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
+				List<IFactAcctModel> factAccts = AcctModelServices.getFactAcctModelService().list(MInOut.Table_ID, receipt.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 				List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, acctAmount, acctSource, as.getCurrency().getStdPrecision(), false, receiptLine.get_ID()));
 				assertFactAcctEntries(factAccts, expected);
 			}
@@ -190,7 +190,7 @@ public class InOutTest extends AbstractTestCase {
 									.setScale(as.getCurrency().getStdPrecision(), RoundingMode.HALF_UP);
 				BigDecimal acctAmount = acctSource.multiply(rate)
 						.setScale(as.getCurrency().getStdPrecision(), RoundingMode.HALF_UP);
-				List<IFactAcctModel> factAccts = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, receipt.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
+				List<IFactAcctModel> factAccts = AcctModelServices.getFactAcctModelService().list(MInOut.Table_ID, receipt.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 				List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, acctAmount, acctSource, as.getCurrency().getStdPrecision(), false, receiptLine.get_ID()));
 				assertFactAcctEntries(factAccts, expected);
 			}
@@ -248,7 +248,7 @@ public class InOutTest extends AbstractTestCase {
 			completeDocument(receipt);
 			postDocument(receipt);
 			
-			IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
+			IAcctSchemaModel[] ass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
 			for (IAcctSchemaModel as : ass) {
 				BigDecimal rate = Env.ZERO;
 				if (as.getAcctSchema().getC_Currency_ID() == usd.getC_Currency_ID())
@@ -264,7 +264,7 @@ public class InOutTest extends AbstractTestCase {
 						.setScale(as.getCurrency().getStdPrecision(), RoundingMode.HALF_UP);
 				BigDecimal acctAmount = acctSource.multiply(rate)
 						.setScale(as.getCurrency().getStdPrecision(), RoundingMode.HALF_UP);
-				List<IFactAcctModel> fas = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, receipt.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
+				List<IFactAcctModel> fas = AcctModelServices.getFactAcctModelService().list(MInOut.Table_ID, receipt.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 				List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, acctAmount, acctSource, 2, false, receiptLine.get_ID()));
 				assertFactAcctEntries(fas, expected);
 			}
@@ -324,7 +324,7 @@ public class InOutTest extends AbstractTestCase {
 						.setScale(as.getCurrency().getStdPrecision(), RoundingMode.HALF_UP);
 				BigDecimal acctAmount = acctSource.multiply(rate)
 						.setScale(as.getCurrency().getStdPrecision(), RoundingMode.HALF_UP);
-				List<IFactAcctModel> fas = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, delivery.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
+				List<IFactAcctModel> fas = AcctModelServices.getFactAcctModelService().list(MInOut.Table_ID, delivery.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 				List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, acctAmount, null, 2, true, deliveryLine.get_ID()));
 				assertFactAcctEntries(fas, expected);
 			}
@@ -557,7 +557,7 @@ public class InOutTest extends AbstractTestCase {
 		IAccountModel cogs = pc.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
 		IAccountModel asset = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
 			
-		List<IFactAcctModel> fas = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, delivery.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
+		List<IFactAcctModel> fas = AcctModelServices.getFactAcctModelService().list(MInOut.Table_ID, delivery.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 		assertTrue(fas.size() > 0, "Failed to retrieve fact posting entries for shipment document");
 		boolean cogsFound = false;
 		boolean assetFound = false;
@@ -581,7 +581,7 @@ public class InOutTest extends AbstractTestCase {
 		
 		//re-post
 		repostDocument(delivery);
-		fas = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, delivery.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
+		fas = AcctModelServices.getFactAcctModelService().list(MInOut.Table_ID, delivery.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 		cogsFound = false;
 		assetFound = false;
 		for (IFactAcctModel fa : fas) {

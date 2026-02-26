@@ -23,7 +23,7 @@
 package org.idempiere.acct;
 
 import org.adempiere.base.Core;
-import org.adempiere.base.acct.AcctInfoServiceFactory;
+import org.adempiere.base.acct.AcctModelServiceFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -41,7 +41,7 @@ public class AcctActivator implements BundleActivator {
 		AcctActivator.context = context;
 		
 		Core.getMappedModelFactory().scan(context, "org.idempiere.acct.model");
-		AcctInfoServiceFactory.getInstance().scan(context, "org.idempiere.acct.service");
+		AcctModelServiceFactory.getInstance().scan(context, "org.idempiere.acct.service");
 	}
 
 	@Override

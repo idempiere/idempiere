@@ -20,7 +20,7 @@ import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -241,9 +241,9 @@ public class MOrg extends X_AD_Org implements ImmutablePOSupport
 		//	Value/Name change, update Combination and Description of C_ValidCombination
 		if (!newRecord && (is_ValueChanged("Value") || is_ValueChanged("Name")))
 		{
-			AcctInfoServices.getAccountInfoService().updateValueDescription(getCtx(), "AD_Org_ID=" + getAD_Org_ID(), get_TrxName());
+			AcctModelServices.getAccountModelService().updateValueDescription(getCtx(), "AD_Org_ID=" + getAD_Org_ID(), get_TrxName());
 			if ("Y".equals(Env.getContext(getCtx(), "$Element_OT"))) 
-				AcctInfoServices.getAccountInfoService().updateValueDescription(getCtx(), "AD_OrgTrx_ID=" + getAD_Org_ID(), get_TrxName());
+				AcctModelServices.getAccountModelService().updateValueDescription(getCtx(), "AD_OrgTrx_ID=" + getAD_Org_ID(), get_TrxName());
 		}
 
 		// Reset role and system cache

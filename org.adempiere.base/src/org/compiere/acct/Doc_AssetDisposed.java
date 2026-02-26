@@ -25,7 +25,7 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAccountModel;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.model.MAssetAcct;
@@ -72,7 +72,7 @@ public class Doc_AssetDisposed extends Doc
 		facts.add(fact);
 		MAssetChange ac = MAssetChange.get(getCtx(), assetDisp.getA_Asset_ID(), MAssetChange.CHANGETYPE_Disposal,getTrxName(), as.getAcctSchema().getC_AcctSchema_ID());
 		//
-		IAcctSchemaModel acctSchema = AcctInfoServices.getAcctSchemaInfoService().get(ac.getC_AcctSchema_ID());
+		IAcctSchemaModel acctSchema = AcctModelServices.getAcctSchemaModelService().get(ac.getC_AcctSchema_ID());
 		fact.createLine(null, getAccount(MAssetAcct.COLUMNNAME_A_Asset_Acct, as)
 				, acctSchema.getAcctSchema().getC_Currency_ID()
 				, Env.ZERO, ac.getAssetValueAmt());
@@ -96,7 +96,7 @@ public class Doc_AssetDisposed extends Doc
 		MAssetDisposed assetDisp = (MAssetDisposed)getPO();
 		MAssetAcct assetAcct = MAssetAcct.forA_Asset_ID(getCtx(), as.getPO().get_ID(), assetDisp.getA_Asset_ID(), assetDisp.getPostingType(), assetDisp.getDateAcct(),null);
 		int account_id = (Integer)assetAcct.get_Value(accountName);
-		return AcctInfoServices.getAccountInfoService().get(getCtx(), account_id);
+		return AcctModelServices.getAccountModelService().get(getCtx(), account_id);
 	}
 
 }

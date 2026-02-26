@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAccountModel;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.model.MDepreciationEntry;
@@ -82,8 +82,8 @@ public class Doc_DepreciationEntry extends Doc
 			DocLine line = createLine(depexp);
 			BigDecimal expenseAmt = depexp.getExpense();
 			//
-			IAccountModel dr_acct = AcctInfoServices.getAccountInfoService().get(getCtx(), depexp.getDR_Account_ID());
-			IAccountModel cr_acct = AcctInfoServices.getAccountInfoService().get(getCtx(), depexp.getCR_Account_ID());
+			IAccountModel dr_acct = AcctModelServices.getAccountModelService().get(getCtx(), depexp.getDR_Account_ID());
+			IAccountModel cr_acct = AcctModelServices.getAccountModelService().get(getCtx(), depexp.getCR_Account_ID());
 			FactUtil.createSimpleOperation(fact, line, dr_acct, cr_acct, as.getAcctSchema().getC_Currency_ID(), expenseAmt, false);
 		}
 		//

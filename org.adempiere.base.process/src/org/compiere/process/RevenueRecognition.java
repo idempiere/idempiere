@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.base.acct.model.IGLCategoryModel;
 import org.adempiere.exceptions.AdempiereException;
@@ -86,7 +86,7 @@ public class RevenueRecognition extends SvrProcess
 	 */
 	protected String doIt() throws Exception
 	{
-		IAcctSchemaModel[] schemas = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(getCtx(), getAD_Client_ID());
+		IAcctSchemaModel[] schemas = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(getCtx(), getAD_Client_ID());
 		
 		for (IAcctSchemaModel schema : schemas)
 		{
@@ -106,7 +106,7 @@ public class RevenueRecognition extends SvrProcess
 	{
 		//
 		MDocType docType = MDocType.get(getCtx(), p_C_DocType_ID);
-		IGLCategoryModel cat = AcctInfoServices.getGlCategoryInfoService().get(getCtx(), docType.getGL_Category_ID());
+		IGLCategoryModel cat = AcctModelServices.getGlCategoryModelService().get(getCtx(), docType.getGL_Category_ID());
 		//
 		
 		MJournal journal = null;

@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.constants.IAcctSchemaConstants;
 import org.adempiere.base.acct.model.IAccountModel;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
@@ -320,7 +320,7 @@ public class ProductionTestIsolated extends AbstractTestCase {
 			ProductCost pc = new ProductCost (Env.getCtx(), mulchX.getM_Product_ID(), 0, getTrxName());
 			IAccountModel acctVariance = pc.getAccount(ProductCost.ACCTTYPE_P_RateVariance, as);
 			
-			List<IFactAcctModel> factAccts = AcctInfoServices.getFactAcctInfoService().list(MProduction.Table_ID, production.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
+			List<IFactAcctModel> factAccts = AcctModelServices.getFactAcctModelService().list(MProduction.Table_ID, production.get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 			BigDecimal variance = BigDecimal.ZERO;
 			Optional<IFactAcctModel> optional = factAccts.stream().filter(e -> e.getFactAcct().getAccount_ID() == acctVariance.getCombination().getAccount_ID()).findFirst();
 			if (optional.isPresent())

@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.exceptions.PeriodClosedException;
@@ -762,7 +762,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 			//	We are OK
 			if (isInPeriod(today) && as.getAcctSchema().getC_Period_ID() != getC_Period_ID())
 			{
-				as = AcctInfoServices.getAcctSchemaInfoService().create(Env.getCtx(), as.getAcctSchema().getC_AcctSchema_ID(), null);
+				as = AcctModelServices.getAcctSchemaModelService().create(Env.getCtx(), as.getAcctSchema().getC_AcctSchema_ID(), null);
 				if (as.getAcctSchema().getC_Period_ID() != getC_Period_ID())
 				{
 					as.getAcctSchema().setC_Period_ID(getC_Period_ID());

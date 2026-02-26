@@ -19,7 +19,7 @@ package org.compiere.process;
 import java.math.BigDecimal;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.FillMandatoryException;
 import org.compiere.model.MCost;
@@ -61,7 +61,7 @@ public class IndentedBOM extends SvrProcess
 			else if (name.equals(MCost.COLUMNNAME_C_AcctSchema_ID))
 			{
 				p_C_AcctSchema_ID= para.getParameterAsInt();
-				m_as = AcctInfoServices.getAcctSchemaInfoService().get(getCtx(), p_C_AcctSchema_ID);
+				m_as = AcctModelServices.getAcctSchemaModelService().get(getCtx(), p_C_AcctSchema_ID);
 			}
 			else if (name.equals(MCost.COLUMNNAME_M_CostElement_ID))
 			{

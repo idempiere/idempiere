@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
@@ -440,7 +440,7 @@ public class MProject extends X_C_Project
 		//	Value/Name change, update Combination and Description of C_ValidCombination
 		if (!newRecord 
 			&& (is_ValueChanged("Value") || is_ValueChanged("Name")))
-			AcctInfoServices.getAccountInfoService().updateValueDescription(getCtx(), "C_Project_ID=" + getC_Project_ID(), get_TrxName());
+			AcctModelServices.getAccountModelService().updateValueDescription(getCtx(), "C_Project_ID=" + getC_Project_ID(), get_TrxName());
 
 		return success;
 	}	//	afterSave

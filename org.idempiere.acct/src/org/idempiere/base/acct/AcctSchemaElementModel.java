@@ -20,75 +20,72 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  **********************************************************************/
-package org.idempiere.acct.info;
+package org.idempiere.base.acct;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Arrays;
 
-import org.adempiere.base.acct.model.IElementValueModel;
-import org.adempiere.base.acct.model.IImportElementValueModel;
-import org.compiere.model.I_C_ElementValue;
+import org.adempiere.base.acct.model.IAcctSchemaElementModel;
+import org.compiere.model.I_C_AcctSchema_Element;
 import org.compiere.model.PO;
-import org.idempiere.acct.model.MElementValue;
+import org.idempiere.acct.model.MAcctSchemaElement;
 
 /**
- * Wrapper for {@link MElementValue} to provide {@link IElementValueModel} access.
+ * Wrapper for {@link MAcctSchemaElement} to provide {@link IAcctSchemaElementModel} access.
  * 
  * @author etantg
  */
-public class ElementValueInfo implements IElementValueModel {
+public class AcctSchemaElementModel implements IAcctSchemaElementModel {
 	
-	private final MElementValue elementValue;
+	private final MAcctSchemaElement schemaElement;
 	
-	public ElementValueInfo(MElementValue elementValue) {
-        if (elementValue == null)
-            throw new IllegalArgumentException("MElementValue cannot be null");
-        this.elementValue = elementValue;
+	public AcctSchemaElementModel(MAcctSchemaElement schemaElement) {
+        if (schemaElement == null)
+            throw new IllegalArgumentException("MAcctSchemaElement cannot be null");
+        this.schemaElement = schemaElement;
     }
 	
-	public MElementValue getModel() {
-		return elementValue;
+	public MAcctSchemaElement getModel() {
+		return schemaElement;
 	}
-	
+
 	@Override
-	public I_C_ElementValue getElementValue() {
-		return elementValue;
+	public I_C_AcctSchema_Element getAcctSchemaElement() {
+		return schemaElement;
 	}
 
 	@Override
 	public PO getPO() {
-		return elementValue;
-	}
-	
-	@Override
-	public boolean isBalanceSheet() {
-		return elementValue.isBalanceSheet();
+		return schemaElement;
 	}
 
 	@Override
-	public void set(IImportElementValueModel imp) {
-		if (imp instanceof ImportElementValueInfo) {
-			elementValue.set(((ImportElementValueInfo) imp).getModel());
-			return;
-		}
-		throw new IllegalArgumentException("Unsupported IImportElementValueInfo implementation");
+	public String getDisplayColumnName() {
+		return schemaElement.getDisplayColumnName();
+	}
+
+	@Override
+	public String getColumnName() {
+		return schemaElement.getColumnName();
+	}
+
+	@Override
+	public boolean isElementType(String elementType) {
+		return schemaElement.isElementType(elementType);
 	}
 	
-	public static IElementValueModel wrap(MElementValue elementValue) {
-        if (elementValue == null)
+	public static IAcctSchemaElementModel wrap(MAcctSchemaElement schemaElement) {
+        if (schemaElement == null)
             return null;
-        if (elementValue instanceof IElementValueModel)
-            return (IElementValueModel) elementValue;
-        return new ElementValueInfo(elementValue);
+        if (schemaElement instanceof IAcctSchemaElementModel)
+            return (IAcctSchemaElementModel) schemaElement;
+        return new AcctSchemaElementModel(schemaElement);
     }
 	
-	public static List<IElementValueModel> wrapList(List<MElementValue> list) {
-	    return list == null
-	    		? new ArrayList<>()
-	            : list.stream()
-	            	.map(ElementValueInfo::wrap)
-	            	.collect(Collectors.toList());
-	}
+	public static IAcctSchemaElementModel[] wrapStream(MAcctSchemaElement[] schemaElements) {
+		return schemaElements == null ? new IAcctSchemaElementModel[0] :
+		       Arrays.stream(schemaElements)
+		             .map(AcctSchemaElementModel::wrap)  // wrap each element
+		             .toArray(IAcctSchemaElementModel[]::new);
+    }
 	
 }

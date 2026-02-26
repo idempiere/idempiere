@@ -19,7 +19,7 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAccountModel;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.util.CLogger;
@@ -66,7 +66,7 @@ public class MCharge extends X_C_Charge implements ImmutablePOSupport
 		}
 
 		//	Return Account
-		IAccountModel acct = AcctInfoServices.getAccountInfoService().get (as.getPO().getCtx(), Account_ID);
+		IAccountModel acct = AcctModelServices.getAccountModelService().get (as.getPO().getCtx(), Account_ID);
 		return acct;
 	}   //  getAccount
 

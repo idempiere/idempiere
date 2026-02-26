@@ -25,7 +25,7 @@ package org.adempiere.base.acct;
 import org.compiere.model.PO;
 
 /**
- * Base interface for all accounting info objects.
+ * Base interface for all accounting model objects.
  * 
  * @author etantg
  */

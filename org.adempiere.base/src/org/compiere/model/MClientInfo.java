@@ -22,7 +22,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -242,7 +242,7 @@ public class MClientInfo extends X_AD_ClientInfo implements ImmutablePOSupport
 	{
 		this(ctx, 0, trxName);
 		copyPO(copy);
-		this.m_acctSchema = copy.m_acctSchema != null ? AcctInfoServices.getAcctSchemaInfoService().create(ctx, copy.m_acctSchema, trxName) : null;
+		this.m_acctSchema = copy.m_acctSchema != null ? AcctModelServices.getAcctSchemaModelService().create(ctx, copy.m_acctSchema, trxName) : null;
 	}
 
 	/**	Account Schema				*/
@@ -258,9 +258,9 @@ public class MClientInfo extends X_AD_ClientInfo implements ImmutablePOSupport
 	{
 		if (m_acctSchema == null && getC_AcctSchema1_ID() != 0)
 		{
-			m_acctSchema = AcctInfoServices.getAcctSchemaInfoService().create(getCtx(), getC_AcctSchema1_ID(), get_TrxName());
+			m_acctSchema = AcctModelServices.getAcctSchemaModelService().create(getCtx(), getC_AcctSchema1_ID(), get_TrxName());
 			if (is_Immutable())
-				AcctInfoServices.getAcctSchemaInfoService().markImmutable(m_acctSchema);
+				AcctModelServices.getAcctSchemaModelService().markImmutable(m_acctSchema);
 		}
 		return m_acctSchema;
 	}	//	getMAcctSchema1
@@ -301,7 +301,7 @@ public class MClientInfo extends X_AD_ClientInfo implements ImmutablePOSupport
 
 		makeImmutable();
 		if (m_acctSchema != null)
-			AcctInfoServices.getAcctSchemaInfoService().markImmutable(m_acctSchema);
+			AcctModelServices.getAcctSchemaModelService().markImmutable(m_acctSchema);
 		return this;
 	}
 

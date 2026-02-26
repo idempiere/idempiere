@@ -19,7 +19,7 @@ package org.compiere.process;
 import java.math.BigDecimal;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAcctSchemaDefaultModel;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.process.UUIDGenerator;
@@ -86,10 +86,10 @@ public class AcctSchemaDefaultCopy extends SvrProcess
 			+ ", CopyOverwriteAcct=" + p_CopyOverwriteAcct);
 		if (p_C_AcctSchema_ID == 0)
 			throw new AdempiereSystemError("C_AcctSchema_ID=0");
-		IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get(getCtx(), p_C_AcctSchema_ID);
+		IAcctSchemaModel as = AcctModelServices.getAcctSchemaModelService().get(getCtx(), p_C_AcctSchema_ID);
 		if (as.getPO().get_ID() == 0)
 			throw new AdempiereSystemError("Not Found - C_AcctSchema_ID=" + p_C_AcctSchema_ID);
-		IAcctSchemaDefaultModel acct = AcctInfoServices.getAcctSchemaDefaultInfoService().get (getCtx(), p_C_AcctSchema_ID);
+		IAcctSchemaDefaultModel acct = AcctModelServices.getAcctSchemaDefaultModelService().get (getCtx(), p_C_AcctSchema_ID);
 		if (acct == null || acct.getPO().get_ID() == 0)
 			throw new AdempiereSystemError("Default Not Found - C_AcctSchema_ID=" + p_C_AcctSchema_ID);
 		

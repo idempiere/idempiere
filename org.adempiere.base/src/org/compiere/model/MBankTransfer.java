@@ -32,7 +32,7 @@ import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
@@ -244,7 +244,7 @@ public class MBankTransfer extends X_C_BankTransfer implements DocAction {
 			return DocAction.STATUS_Invalid;
 		
 		MClientInfo info = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName()); 
-		IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get (getCtx(), info.getC_AcctSchema1_ID(), get_TrxName());
+		IAcctSchemaModel as = AcctModelServices.getAcctSchemaModelService().get (getCtx(), info.getC_AcctSchema1_ID(), get_TrxName());
 		
 		MPayment paymentBankFrom = new MPayment(getCtx(), 0, get_TrxName());
 		paymentBankFrom.setC_BankTransfer_ID(getC_BankTransfer_ID());

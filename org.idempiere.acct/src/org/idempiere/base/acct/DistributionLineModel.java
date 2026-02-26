@@ -20,47 +20,76 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  **********************************************************************/
-package org.idempiere.acct.info;
+package org.idempiere.base.acct;
 
-import org.adempiere.base.acct.model.IGLCategoryModel;
-import org.compiere.model.I_GL_Category;
+import java.math.BigDecimal;
+import java.util.Arrays;
+
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IDistributionLineModel;
+import org.compiere.model.I_GL_DistributionLine;
 import org.compiere.model.PO;
-import org.idempiere.acct.model.MGLCategory;
+import org.idempiere.acct.model.MAccount;
+import org.idempiere.acct.model.MDistributionLine;
 
 /**
- * Wrapper for {@link MGLCategory} to provide {@link IGLCategoryModel} access.
+ * Wrapper for {@link MDistributionLine} to provide {@link IDistributionLineModel} access.
  * 
  * @author etantg
  */
-public class GLCategoryInfo implements IGLCategoryModel {
+public class DistributionLineModel implements IDistributionLineModel {
 	
-	private final MGLCategory category;
+	private final MDistributionLine line;
 	
-	public GLCategoryInfo(MGLCategory category) {
-        if (category == null)
-            throw new IllegalArgumentException("MGLCategory cannot be null");
-        this.category = category;
+	public DistributionLineModel(MDistributionLine line) {
+        if (line == null)
+            throw new IllegalArgumentException("MDistributionLine cannot be null");
+        this.line = line;
     }
 	
-	public MGLCategory getModel() {
-		return category;
+	public MDistributionLine getModel() {
+		return line;
 	}
-
+	
 	@Override
-	public I_GL_Category getGLCategory() {
-		return category;
+	public I_GL_DistributionLine getGLDistributionLine() {
+		return line;
 	}
 
 	@Override
 	public PO getPO() {
-		return category;
+		return line;
 	}
 
-	public static IGLCategoryModel wrap(MGLCategory category) {
-        if (category == null)
+	@Override
+	public IAccountModel getAccountModel() {
+		MAccount account = line.getAccount();
+		return AccountModel.wrap(account);
+	}
+	
+	@Override
+	public BigDecimal getAmt() {
+		return line.getAmt();
+	}
+
+	@Override
+	public BigDecimal getQty() {
+		return line.getQty();
+	}
+
+	public static IDistributionLineModel wrap(MDistributionLine line) {
+        if (line == null)
             return null;
-        if (category instanceof IGLCategoryModel)
-            return (IGLCategoryModel) category;
-        return new GLCategoryInfo(category);
+        if (line instanceof IDistributionLineModel)
+            return (IDistributionLineModel) line;
+        return new DistributionLineModel(line);
     }
+	
+	public static IDistributionLineModel[] wrapStream(MDistributionLine[] lines) {
+		return lines == null ? new IDistributionLineModel[0] :
+		       Arrays.stream(lines)
+		             .map(DistributionLineModel::wrap)  // wrap each element
+		             .toArray(IDistributionLineModel[]::new);
+    }
+	
 }

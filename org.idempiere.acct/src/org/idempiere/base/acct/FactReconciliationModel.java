@@ -20,78 +20,47 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  **********************************************************************/
-package org.idempiere.acct.info;
+package org.idempiere.base.acct;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.adempiere.base.acct.model.IAccountModel;
-import org.adempiere.base.acct.model.IElementValueModel;
-import org.compiere.model.I_C_ValidCombination;
+import org.adempiere.base.acct.model.IFactReconciliationModel;
+import org.compiere.model.I_Fact_Reconciliation;
 import org.compiere.model.PO;
-import org.idempiere.acct.model.MAccount;
-import org.idempiere.acct.model.MElementValue;
+import org.idempiere.acct.model.MFactReconciliation;
 
 /**
- * Wrapper for {@link MAccount} to provide {@link IAccountModel} access.
+ * Wrapper for {@link MFactReconciliation} to provide {@link IFactReconciliationModel} access.
  * 
  * @author etantg
  */
-public class AccountInfo implements IAccountModel {
+public class FactReconciliationModel implements IFactReconciliationModel {
 	
-	private final MAccount account;
+	private final MFactReconciliation reconciliation;
 	
-	public AccountInfo(MAccount account) {
-        if (account == null)
-            throw new IllegalArgumentException("MAccount cannot be null");
-        this.account = account;
+	public FactReconciliationModel(MFactReconciliation reconciliation) {
+        if (reconciliation == null)
+            throw new IllegalArgumentException("MFactReconciliation cannot be null");
+        this.reconciliation = reconciliation;
     }
 	
-	public MAccount getModel() {
-		return account;
+	public MFactReconciliation getModel() {
+		return reconciliation;
 	}
-	
+
 	@Override
-	public I_C_ValidCombination getCombination() {
-		return account;
-	}
+    public I_Fact_Reconciliation getFactReconciliation() {
+        return reconciliation;
+    }
 
 	@Override
 	public PO getPO() {
-		return account;
-	}
-
-	@Override
-	public boolean isActiva() {
-		return account.isActiva();
-	}
-
-	@Override
-	public boolean isBalanceSheet() {
-		return account.isBalanceSheet();
+		return reconciliation;
 	}
 	
-	@Override
-	public IElementValueModel getAccountModel() {
-		MElementValue value = account.getAccount();
-		return ElementValueInfo.wrap(value);
-	}
-
-	public static IAccountModel wrap(MAccount account) {
-        if (account == null)
+	public static IFactReconciliationModel wrap(MFactReconciliation reconciliation) {
+        if (reconciliation == null)
             return null;
-        if (account instanceof IAccountModel)
-            return (IAccountModel) account;
-        return new AccountInfo(account);
+        if (reconciliation instanceof IFactReconciliationModel)
+            return (IFactReconciliationModel) reconciliation;
+        return new FactReconciliationModel(reconciliation);
     }
-	
-	public static List<IAccountModel> wrapList(List<MAccount> accountList) {
-	    return accountList == null
-	    		? new ArrayList<>()
-	            : accountList.stream()
-	            	.map(AccountInfo::wrap)
-	            	.collect(Collectors.toList());
-	}
-
 }

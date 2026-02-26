@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.constants.IAcctSchemaElementConstants;
 import org.adempiere.base.acct.model.IAcctSchemaElementModel;
 import org.adempiere.base.upload.IUploadService;
@@ -868,7 +868,7 @@ public class WAcctViewer extends ADForm implements EventListener<Event>
 			return;
 
 		m_data.C_AcctSchema_ID = kp.getKey();
-		m_data.ASchema = AcctInfoServices.getAcctSchemaInfoService().get(Env.getCtx(), m_data.C_AcctSchema_ID);
+		m_data.ASchema = AcctModelServices.getAcctSchemaModelService().get(Env.getCtx(), m_data.C_AcctSchema_ID);
 
 		if (log.isLoggable(Level.INFO))
 			log.info(m_data.ASchema.toString());

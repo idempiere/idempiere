@@ -22,7 +22,7 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.constants.IAcctSchemaElementConstants;
 import org.adempiere.base.acct.model.IAccountModel;
 import org.adempiere.base.acct.model.IAcctSchemaElementModel;
@@ -267,7 +267,7 @@ public class MJournalLine extends X_GL_JournalLine
 	public IAccountModel getAccount_Combi()
 	{
 		if (m_account == null && getC_ValidCombination_ID() != 0)
-			m_account = AcctInfoServices.getAccountInfoService().create(getCtx(), getC_ValidCombination_ID(), get_TrxName());
+			m_account = AcctModelServices.getAccountModelService().create(getCtx(), getC_ValidCombination_ID(), get_TrxName());
 		return m_account;
 	}	//	getValidCombination
 	
@@ -281,7 +281,7 @@ public class MJournalLine extends X_GL_JournalLine
 		{
 			IAccountModel vc = getAccount_Combi();
 			if (vc != null && vc.getCombination().getAccount_ID() != 0)
-				m_accountElement = AcctInfoServices.getElementValueInfoService().create(getCtx(), vc.getCombination().getAccount_ID(), get_TrxName()); 
+				m_accountElement = AcctModelServices.getElementValueModelService().create(getCtx(), vc.getCombination().getAccount_ID(), get_TrxName()); 
 		}
 		return m_accountElement;
 	}	//	getAccountElement
@@ -415,9 +415,9 @@ public class MJournalLine extends X_GL_JournalLine
 			MJournal gl = new MJournal(getCtx(), getGL_Journal_ID(), get_TrxName());
 
 			// Validate all mandatory combinations are set
-			IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get(getParent().getC_AcctSchema_ID());
+			IAcctSchemaModel as = AcctModelServices.getAcctSchemaModelService().get(getParent().getC_AcctSchema_ID());
 			String errorFields = "";
-			for (IAcctSchemaElementModel elem : AcctInfoServices.getAcctSchemaElementInfoService().getAcctSchemaElements(as)) {
+			for (IAcctSchemaElementModel elem : AcctModelServices.getAcctSchemaElementModelService().getAcctSchemaElements(as)) {
 				if (! elem.getAcctSchemaElement().isMandatory())
 					continue;
 				String et = elem.getAcctSchemaElement().getElementType();
@@ -462,7 +462,7 @@ public class MJournalLine extends X_GL_JournalLine
 				return false;
 			}
 			
-			IAccountModel acct = AcctInfoServices.getAccountInfoService().get(getCtx(), getAD_Client_ID(), getAD_Org_ID(), gl.getC_AcctSchema_ID(), getAccount_ID(),
+			IAccountModel acct = AcctModelServices.getAccountModelService().get(getCtx(), getAD_Client_ID(), getAD_Org_ID(), gl.getC_AcctSchema_ID(), getAccount_ID(),
 					getC_SubAcct_ID(), getM_Product_ID(), getC_BPartner_ID(), getAD_OrgTrx_ID(), getC_LocFrom_ID(),
 					getC_LocTo_ID(), getC_SalesRegion_ID(), getC_Project_ID(), getC_Campaign_ID(), 
 					getC_Activity_ID(), getUser1_ID(), getUser2_ID(), 0, 0,
@@ -488,7 +488,7 @@ public class MJournalLine extends X_GL_JournalLine
 	{
 		if (getC_ValidCombination_ID() > 0)
 		{
-			IAccountModel combi = AcctInfoServices.getAccountInfoService().create(getCtx(), getC_ValidCombination_ID(), get_TrxName());
+			IAccountModel combi = AcctModelServices.getAccountModelService().create(getCtx(), getC_ValidCombination_ID(), get_TrxName());
 			setAccount_ID(combi.getCombination().getAccount_ID() > 0 ? combi.getCombination().getAccount_ID() : 0);
 			setC_SubAcct_ID(combi.getCombination().getC_SubAcct_ID() > 0 ? combi.getCombination().getC_SubAcct_ID() : 0);
 			setM_Product_ID(combi.getCombination().getM_Product_ID() > 0 ? combi.getCombination().getM_Product_ID() : 0);

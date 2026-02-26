@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.constants.IAcctSchemaElementConstants;
 import org.adempiere.base.acct.model.IAccountModel;
 import org.adempiere.base.acct.model.IAcctSchemaElementModel;
@@ -855,7 +855,7 @@ public class Doc_AllocationHdr extends Doc
 			pstmt.setInt(3, as.getAcctSchema().getC_AcctSchema_ID());
 			rs = pstmt.executeQuery();
 			while (rs.next())
-				tax.addInvoiceFact (AcctInfoServices.getFactAcctInfoService().create(getCtx(), rs, fact.get_TrxName()));
+				tax.addInvoiceFact (AcctModelServices.getFactAcctModelService().create(getCtx(), rs, fact.get_TrxName()));
 		}
 		catch (Exception e)
 		{
@@ -974,8 +974,8 @@ public class Doc_AllocationHdr extends Doc
 			return null;
 		}
 
-		IAccountModel gain = AcctInfoServices.getAccountInfoService().get (as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedGain_Acct());
-		IAccountModel loss = AcctInfoServices.getAccountInfoService().get (as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedLoss_Acct());
+		IAccountModel gain = AcctModelServices.getAccountModelService().get (as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedGain_Acct());
+		IAccountModel loss = AcctModelServices.getAccountModelService().get (as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedLoss_Acct());
 		//
 		// If the allocation is created as a result of the invoice reversal, 
 		// do not use RLG/RLL, as this will cause the AP balance to not be zero
@@ -1115,8 +1115,8 @@ public class Doc_AllocationHdr extends Doc
 			return null;
 		}
 
-		IAccountModel gain = AcctInfoServices.getAccountInfoService().get (as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedGain_Acct());
-		IAccountModel loss = AcctInfoServices.getAccountInfoService().get (as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedLoss_Acct());
+		IAccountModel gain = AcctModelServices.getAccountModelService().get (as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedGain_Acct());
+		IAccountModel loss = AcctModelServices.getAccountModelService().get (as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedLoss_Acct());
 		//
 		if ((payment.isReceipt() && payment.getPayAmt().signum() >= 0) || (!payment.isReceipt() && payment.getPayAmt().signum() < 0))
 		{
@@ -1213,8 +1213,8 @@ public class Doc_AllocationHdr extends Doc
 			}
 		}
 		
-		IAccountModel gain = AcctInfoServices.getAccountInfoService().get (as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedGain_Acct());
-		IAccountModel loss = AcctInfoServices.getAccountInfoService().get (as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedLoss_Acct());
+		IAccountModel gain = AcctModelServices.getAccountModelService().get (as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedGain_Acct());
+		IAccountModel loss = AcctModelServices.getAccountModelService().get (as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedLoss_Acct());
 		
 		Map<Integer, BigDecimal> htTotalAmtSourceDr = new HashMap<>();
 		Map<Integer, BigDecimal> htTotalAmtAcctDr = new HashMap<>();
@@ -1583,8 +1583,8 @@ public class Doc_AllocationHdr extends Doc
 			}
 		}
 		
-		IAccountModel gain = AcctInfoServices.getAccountInfoService().get (as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedGain_Acct());
-		IAccountModel loss = AcctInfoServices.getAccountInfoService().get (as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedLoss_Acct());
+		IAccountModel gain = AcctModelServices.getAccountModelService().get (as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedGain_Acct());
+		IAccountModel loss = AcctModelServices.getAccountModelService().get (as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedLoss_Acct());
 		
 		Map<Integer, BigDecimal> htTotalAmtSourceDr = new HashMap<>();
 		Map<Integer, BigDecimal> htTotalAmtAcctDr = new HashMap<>();
@@ -1870,8 +1870,8 @@ public class Doc_AllocationHdr extends Doc
 		FactLine line = null;
 		if (!fact.isAcctBalanced())
 		{
-			IAccountModel gain = AcctInfoServices.getAccountInfoService().get(as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedGain_Acct());
-			IAccountModel loss = AcctInfoServices.getAccountInfoService().get(as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedLoss_Acct());
+			IAccountModel gain = AcctModelServices.getAccountModelService().get(as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedGain_Acct());
+			IAccountModel loss = AcctModelServices.getAccountModelService().get(as.getPO().getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getRealizedLoss_Acct());
 
 			BigDecimal totalAmtAcctDr = Env.ZERO;
 			BigDecimal totalAmtAcctCr = Env.ZERO;

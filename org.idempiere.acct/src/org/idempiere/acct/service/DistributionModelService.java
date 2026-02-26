@@ -22,35 +22,41 @@
  **********************************************************************/
 package org.idempiere.acct.service;
 
+import java.sql.Timestamp;
 import java.util.Properties;
 
-import org.adempiere.base.acct.AcctInfoService;
-import org.adempiere.base.acct.model.IFactReconciliationModel;
-import org.adempiere.base.acct.service.IFactReconciliationModelService;
-import org.compiere.model.Query;
-import org.idempiere.acct.info.FactReconciliationInfo;
-import org.idempiere.acct.model.MFactReconciliation;
+import org.adempiere.base.acct.AcctModelService;
+import org.adempiere.base.acct.model.IDistributionModel;
+import org.adempiere.base.acct.service.IDistributionModelService;
+import org.idempiere.acct.model.MDistribution;
+import org.idempiere.base.acct.DistributionModel;
 
 /**
- * Implementation of {@link IFactReconciliationModelService}.
+ * Implementation of {@link IDistributionModelService}.
  * 
  * @author etantg
  */
-@AcctInfoService(IFactReconciliationModelService.class)
-public class FactReconciliationInfoService implements IFactReconciliationModelService {
-	
+@AcctModelService(IDistributionModelService.class)
+public class DistributionModelService implements IDistributionModelService {
+
 	@Override
-	public IFactReconciliationModel create(Properties ctx, int Fact_Reconciliation_ID, String trxName) {
-		MFactReconciliation reconciliation = new MFactReconciliation(ctx, Fact_Reconciliation_ID, trxName);
-		return FactReconciliationInfo.wrap(reconciliation);
+	public IDistributionModel[] get(Properties ctx, int C_AcctSchema_ID, String PostingType, int C_DocType_ID,
+			Timestamp dateAcct, int AD_Org_ID, int Account_ID, int M_Product_ID, int C_BPartner_ID, int C_Project_ID,
+			int C_Campaign_ID, int C_Activity_ID, int AD_OrgTrx_ID, int C_SalesRegion_ID, int C_LocTo_ID,
+			int C_LocFrom_ID, int User1_ID, int User2_ID, int C_CostCenter_ID, int C_Department_ID, int C_Employee_ID,
+			int C_Charge_ID, int A_Asset_ID, int M_Warehouse_ID, int M_AttributeSetInstance_ID) {
+		MDistribution[] distributions = MDistribution.get(ctx, C_AcctSchema_ID, PostingType, C_DocType_ID, 
+				dateAcct, AD_Org_ID, Account_ID, M_Product_ID, C_BPartner_ID, C_Project_ID, 
+				C_Campaign_ID, C_Activity_ID, AD_OrgTrx_ID, C_SalesRegion_ID, C_LocTo_ID, 
+				C_LocFrom_ID, User1_ID, User2_ID, C_CostCenter_ID, C_Department_ID, C_Employee_ID, 
+				C_Charge_ID, A_Asset_ID, M_Warehouse_ID, M_AttributeSetInstance_ID);
+		return DistributionModel.wrapStream(distributions);
 	}
 
 	@Override
-	public IFactReconciliationModel first(Properties ctx, String whereClause, Object[] params, String trxName) {
-		MFactReconciliation reconciliation = new Query(ctx, MFactReconciliation.Table_Name, whereClause, trxName)
-				.setParameters(params)
-				.first();
-		return FactReconciliationInfo.wrap(reconciliation);
+	public IDistributionModel create(Properties ctx, int GL_Distribution_ID, String trxName) {
+		MDistribution distribution = new MDistribution(ctx, GL_Distribution_ID, trxName);
+		return DistributionModel.wrap(distribution);
 	}
 
 }

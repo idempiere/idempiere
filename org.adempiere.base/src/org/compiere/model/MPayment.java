@@ -33,7 +33,7 @@ import java.util.logging.Level;
 import org.adempiere.base.Core;
 import org.adempiere.base.CreditStatus;
 import org.adempiere.base.ICreditManager;
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.PeriodClosedException;
@@ -839,7 +839,7 @@ public class MPayment extends X_C_Payment
 		if (!isProcessed())
 		{
 			MClientInfo info = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName()); 
-			IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get (getCtx(), info.getC_AcctSchema1_ID(), get_TrxName());
+			IAcctSchemaModel as = AcctModelServices.getAcctSchemaModelService().get (getCtx(), info.getC_AcctSchema1_ID(), get_TrxName());
 			if (as.getAcctSchema().getC_Currency_ID() != getC_Currency_ID())
 			{
 				if (isOverrideCurrencyRate())
@@ -2970,7 +2970,7 @@ public class MPayment extends X_C_Payment
 			return false;			
 		}
 
-		AcctInfoServices.getFactAcctInfoService().deleteEx(Table_ID, getC_Payment_ID(), get_TrxName());
+		AcctModelServices.getFactAcctModelService().deleteEx(Table_ID, getC_Payment_ID(), get_TrxName());
 		setPosted(false);
 		setDocAction(DOCACTION_Complete);
 		setProcessed(false);

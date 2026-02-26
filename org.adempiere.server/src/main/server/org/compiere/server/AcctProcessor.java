@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.acct.DocManager;
 import org.compiere.model.MAcctProcessor;
@@ -99,9 +99,9 @@ public class AcctProcessor extends AdempiereServer
 				
 		//	Get Schemata
 		if (m_model.getC_AcctSchema_ID() == 0)
-			m_ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(getCtx(), m_model.getAD_Client_ID());
+			m_ass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(getCtx(), m_model.getAD_Client_ID());
 		else	//	only specific accounting schema
-			m_ass = new IAcctSchemaModel[] {AcctInfoServices.getAcctSchemaInfoService().create(getCtx(), m_model.getC_AcctSchema_ID(), null)};
+			m_ass = new IAcctSchemaModel[] {AcctModelServices.getAcctSchemaModelService().create(getCtx(), m_model.getC_AcctSchema_ID(), null)};
 		//
 		postSession();
 		MCost.create(m_client);

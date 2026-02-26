@@ -29,7 +29,7 @@ import org.compiere.util.Util;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
- *	Accounting Schema GL info
+ *	Accounting Schema GL model
  *	
  *  @author Jorg Janke
  *  @version $Id: MAcctSchemaGL.java,v 1.3 2006/07/30 00:58:18 jjanke Exp $
@@ -45,7 +45,7 @@ public class MAcctSchemaGL extends X_C_AcctSchema_GL implements ImmutablePOSuppo
 	private static final long serialVersionUID = -53120274583638950L;
 
 	/**
-	 * 	Get Accounting Schema GL Info
+	 * 	Get Accounting Schema GL model
 	 *	@param ctx context
 	 *	@param C_AcctSchema_ID id
 	 *	@return defaults
@@ -141,7 +141,7 @@ public class MAcctSchemaGL extends X_C_AcctSchema_GL implements ImmutablePOSuppo
 	 * Get value of all columns that ends with Acct 
 	 * @return KeyNamePair(id, column name) list
 	 */
-	public ArrayList<KeyNamePair> getAcctInfo()
+	public ArrayList<KeyNamePair> getAcctModel()
 	{
 		ArrayList<KeyNamePair> list = new ArrayList<KeyNamePair>();
 		for (int i = 0; i < get_ColumnCount(); i++)
@@ -154,7 +154,7 @@ public class MAcctSchemaGL extends X_C_AcctSchema_GL implements ImmutablePOSuppo
 			}
 		}
 		return list;
-	}	//	getAcctInfo
+	}	//	getAcctModel
 	
 	/**
 	 * 	Set Value (don't use)

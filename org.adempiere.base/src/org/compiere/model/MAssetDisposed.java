@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
@@ -482,7 +482,7 @@ implements DocAction
 		{
 			BigDecimal disposalAmt = Env.ZERO;
 			BigDecimal accumDeprAmt = Env.ZERO;
-			IAcctSchemaModel acctSchema = AcctInfoServices.getAcctSchemaInfoService().get(assetwk.getC_AcctSchema_ID());
+			IAcctSchemaModel acctSchema = AcctModelServices.getAcctSchemaModelService().get(assetwk.getC_AcctSchema_ID());
 			if (acctSchema.getAcctSchema().getC_Currency_ID() != getC_Currency_ID()) 
 			{
 				disposalAmt  =  assetwk.getA_Asset_Cost();

@@ -25,57 +25,57 @@ package org.idempiere.acct.service;
 import java.sql.Timestamp;
 import java.util.Properties;
 
-import org.adempiere.base.acct.AcctInfoService;
+import org.adempiere.base.acct.AcctModelService;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.base.acct.service.IAcctSchemaModelService;
 import org.adempiere.exceptions.BackDateTrxNotAllowedException;
 import org.compiere.model.MClient;
 import org.compiere.util.KeyNamePair;
-import org.idempiere.acct.info.AcctSchemaInfo;
 import org.idempiere.acct.model.MAcctSchema;
+import org.idempiere.base.acct.AcctSchemaModel;
 
 /**
  * Implementation of {@link IAcctSchemaModelService}.
  * 
  * @author etantg
  */
-@AcctInfoService(IAcctSchemaModelService.class)
-public class AcctSchemaInfoService implements IAcctSchemaModelService {
+@AcctModelService(IAcctSchemaModelService.class)
+public class AcctSchemaModelService implements IAcctSchemaModelService {
 
 	@Override
 	public IAcctSchemaModel get(int C_AcctSchema_ID) {
 		MAcctSchema as = MAcctSchema.get(C_AcctSchema_ID);
-		return AcctSchemaInfo.wrap(as);
+		return AcctSchemaModel.wrap(as);
 	}
 
 	@Override
 	public IAcctSchemaModel get(Properties ctx, int C_AcctSchema_ID) {
 		MAcctSchema as = MAcctSchema.get(ctx, C_AcctSchema_ID);
-		return AcctSchemaInfo.wrap(as);
+		return AcctSchemaModel.wrap(as);
 	}
 
 	@Override
 	public IAcctSchemaModel get(Properties ctx, int C_AcctSchema_ID, String trxName) {
 		MAcctSchema as = MAcctSchema.get(ctx, C_AcctSchema_ID, trxName);
-		return AcctSchemaInfo.wrap(as);
+		return AcctSchemaModel.wrap(as);
 	}
 
 	@Override
 	public IAcctSchemaModel getCopy(Properties ctx, int C_AcctSchema_ID, String trxName) {
 		MAcctSchema as = MAcctSchema.getCopy(ctx, C_AcctSchema_ID, trxName);
-		return AcctSchemaInfo.wrap(as);
+		return AcctSchemaModel.wrap(as);
 	}
 
 	@Override
 	public IAcctSchemaModel[] getClientAcctSchema(Properties ctx, int AD_Client_ID) {
 		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(ctx, AD_Client_ID);
-		return AcctSchemaInfo.wrapStream(ass);
+		return AcctSchemaModel.wrapStream(ass);
 	}
 
 	@Override
 	public IAcctSchemaModel[] getClientAcctSchema(Properties ctx, int AD_Client_ID, String trxName) {
 		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(ctx, AD_Client_ID, trxName);
-		return AcctSchemaInfo.wrapStream(ass);
+		return AcctSchemaModel.wrapStream(ass);
 	}
 
 	@Override
@@ -97,31 +97,31 @@ public class AcctSchemaInfoService implements IAcctSchemaModelService {
 	@Override
 	public IAcctSchemaModel create(Properties ctx, int C_AcctSchema_ID, String trxName) {
 		MAcctSchema schema = new MAcctSchema(ctx, C_AcctSchema_ID, trxName);
-		return AcctSchemaInfo.wrap(schema);
+		return AcctSchemaModel.wrap(schema);
 	}
 
 	@Override
 	public IAcctSchemaModel create(Properties ctx, IAcctSchemaModel copy, String trxName) {
-		if (copy instanceof AcctSchemaInfo) {
-			MAcctSchema schema = new MAcctSchema(ctx, ((AcctSchemaInfo) copy).getModel(), trxName);
-			return AcctSchemaInfo.wrap(schema);
+		if (copy instanceof AcctSchemaModel) {
+			MAcctSchema schema = new MAcctSchema(ctx, ((AcctSchemaModel) copy).getModel(), trxName);
+			return AcctSchemaModel.wrap(schema);
 		}
-		throw new IllegalArgumentException("Unsupported IAcctSchemaInfo implementation");
+		throw new IllegalArgumentException("Unsupported IAcctSchemaModel implementation");
 	}
 
 	@Override
 	public IAcctSchemaModel create(MClient client, KeyNamePair currency) {
 		MAcctSchema schema = new MAcctSchema(client, currency);
-		return AcctSchemaInfo.wrap(schema);
+		return AcctSchemaModel.wrap(schema);
 	}
 	
 	@Override
 	public IAcctSchemaModel markImmutable(IAcctSchemaModel as) {
-		if (as instanceof AcctSchemaInfo) {
-			MAcctSchema as0 = ((AcctSchemaInfo) as).getModel().markImmutable();
-			return AcctSchemaInfo.wrap(as0);
+		if (as instanceof AcctSchemaModel) {
+			MAcctSchema as0 = ((AcctSchemaModel) as).getModel().markImmutable();
+			return AcctSchemaModel.wrap(as0);
 		}
-		throw new IllegalArgumentException("Unsupported IAcctSchemaInfo implementation");
+		throw new IllegalArgumentException("Unsupported IAcctSchemaModel implementation");
 	}
 	
 }

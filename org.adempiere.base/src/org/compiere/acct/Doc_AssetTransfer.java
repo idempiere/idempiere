@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAccountModel;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.model.MAssetTransfer;
@@ -53,8 +53,8 @@ public class Doc_AssetTransfer extends Doc
 		// Change Asset Account
 		if (assetTr.getA_Asset_New_Acct() != assetTr.getA_Asset_Acct())
 		{
-			IAccountModel dr = AcctInfoServices.getAccountInfoService().get(getCtx(), assetTr.getA_Asset_New_Acct());  
-			IAccountModel cr = AcctInfoServices.getAccountInfoService().get(getCtx(), assetTr.getA_Asset_Acct());
+			IAccountModel dr = AcctModelServices.getAccountModelService().get(getCtx(), assetTr.getA_Asset_New_Acct());  
+			IAccountModel cr = AcctModelServices.getAccountModelService().get(getCtx(), assetTr.getA_Asset_Acct());
 			FactUtil.createSimpleOperation(fact, null, dr, cr, as.getAcctSchema().getC_Currency_ID(),
 					wk.getA_Asset_Cost(), false);
 		}
@@ -62,8 +62,8 @@ public class Doc_AssetTransfer extends Doc
 		// Change Asset Accum. Depr. Account
 		if (assetTr.getA_Accumdepreciation_New_Acct() != assetTr.getA_Accumdepreciation_Acct())
 		{
-			IAccountModel cr = AcctInfoServices.getAccountInfoService().get(getCtx(), assetTr.getA_Accumdepreciation_New_Acct());  
-			IAccountModel dr = AcctInfoServices.getAccountInfoService().get(getCtx(), assetTr.getA_Accumdepreciation_Acct());
+			IAccountModel cr = AcctModelServices.getAccountModelService().get(getCtx(), assetTr.getA_Accumdepreciation_New_Acct());  
+			IAccountModel dr = AcctModelServices.getAccountModelService().get(getCtx(), assetTr.getA_Accumdepreciation_Acct());
 			FactUtil.createSimpleOperation(fact, null, dr, cr, as.getAcctSchema().getC_Currency_ID(),
 					wk.getA_Accumulated_Depr(), false);
 		}

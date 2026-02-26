@@ -20,61 +20,40 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  **********************************************************************/
-package org.idempiere.acct.info;
+package org.idempiere.acct.service;
 
-import java.util.ArrayList;
+import java.util.Properties;
 
-import org.adempiere.base.acct.model.IAcctSchemaGLModel;
-import org.compiere.model.I_C_AcctSchema_GL;
-import org.compiere.model.PO;
-import org.compiere.util.KeyNamePair;
-import org.idempiere.acct.model.MAcctSchemaGL;
+import org.adempiere.base.acct.AcctModelService;
+import org.adempiere.base.acct.model.IGLCategoryModel;
+import org.adempiere.base.acct.service.IGLCategoryModelService;
+import org.idempiere.acct.model.MGLCategory;
+import org.idempiere.base.acct.GLCategoryModel;
 
 /**
- * Wrapper for {@link MAcctSchemaGL} to provide {@link IAcctSchemaGLModel} access.
+ * Implementation of {@link IGLCategoryModelService}.
  * 
  * @author etantg
  */
-public class AcctSchemaGLInfo implements IAcctSchemaGLModel {
-	
-	private final MAcctSchemaGL schemaGL;
-	
-	public AcctSchemaGLInfo(MAcctSchemaGL schemaGL) {
-        if (schemaGL == null)
-            throw new IllegalArgumentException("MAcctSchemaGL cannot be null");
-        this.schemaGL = schemaGL;
-    }
-	
-	public MAcctSchemaGL getModel() {
-		return schemaGL;
-	}
+@AcctModelService(IGLCategoryModelService.class)
+public class GLCategoryModelService implements IGLCategoryModelService {
 	
 	@Override
-	public I_C_AcctSchema_GL getAcctSchemaGL() {
-		return schemaGL;
+	public IGLCategoryModel get(Properties ctx, int GL_Category_ID) {
+		MGLCategory category = MGLCategory.get(ctx, GL_Category_ID);
+		return GLCategoryModel.wrap(category);
 	}
 
 	@Override
-	public PO getPO() {
-		return schemaGL;
-	}
-
-	@Override
-	public ArrayList<KeyNamePair> getAcctModel() {
-		return schemaGL.getAcctInfo();
-	}
-
-	@Override
-	public boolean setValue(String columnName, Integer value) {
-		return schemaGL.setValue(columnName, value);
+	public IGLCategoryModel getDefaultSystem(Properties ctx) {
+		MGLCategory category = MGLCategory.getDefaultSystem(ctx);
+		return GLCategoryModel.wrap(category);
 	}
 	
-	public static IAcctSchemaGLModel wrap(MAcctSchemaGL schemaGL) {
-        if (schemaGL == null)
-            return null;
-        if (schemaGL instanceof IAcctSchemaGLModel)
-            return (IAcctSchemaGLModel) schemaGL;
-        return new AcctSchemaGLInfo(schemaGL);
-    }
-	
+	@Override
+	public IGLCategoryModel create(Properties ctx, int GL_Category_ID, String trxName) {
+		MGLCategory category = new MGLCategory(ctx, GL_Category_ID, trxName);
+		return GLCategoryModel.wrap(category);
+	}
+
 }

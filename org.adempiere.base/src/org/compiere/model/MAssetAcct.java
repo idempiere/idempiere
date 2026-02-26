@@ -27,7 +27,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Properties;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAccountModel;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.AdempiereException;
@@ -225,7 +225,7 @@ public class MAssetAcct extends X_A_Asset_Acct implements ImmutablePOSupport
 	@Override
 	public I_C_AcctSchema getC_AcctSchema()
 	{
-		IAcctSchemaModel schemaInfo = AcctInfoServices.getAcctSchemaInfoService().getCopy(getCtx(), getC_AcctSchema_ID(), get_TrxName());
+		IAcctSchemaModel schemaInfo = AcctModelServices.getAcctSchemaModelService().getCopy(getCtx(), getC_AcctSchema_ID(), get_TrxName());
 		return schemaInfo.getAcctSchema();
 	}
 	
@@ -236,7 +236,7 @@ public class MAssetAcct extends X_A_Asset_Acct implements ImmutablePOSupport
 	 */
 	public IAccountModel getP_Asset_Acct(int M_Product_ID)
 	{
-		IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().getCopy(getCtx(), getC_AcctSchema_ID(), get_TrxName());
+		IAcctSchemaModel as = AcctModelServices.getAcctSchemaModelService().getCopy(getCtx(), getC_AcctSchema_ID(), get_TrxName());
 		ProductCost pc = new ProductCost(getCtx(), M_Product_ID, 0, null);
 		return pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
 	}

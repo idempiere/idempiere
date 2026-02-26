@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.constants.IElementValueConstants;
 import org.adempiere.base.acct.model.IAccountModel;
 import org.adempiere.base.acct.model.IElementValueModel;
@@ -142,7 +142,7 @@ public class ExpenseTypesFromAccounts extends SvrProcess {
         ArrayList<Object> params = new ArrayList<Object>();
         params.add(m_acctSchemaId);
         params.add(m_clientId);
-        List<IAccountModel> validCombs = AcctInfoServices.getAccountInfoService().list(getCtx(), whereClause, params, get_TrxName());
+        List<IAccountModel> validCombs = AcctModelServices.getAccountModelService().list(getCtx(), whereClause, params, get_TrxName());
         Map<Integer, IAccountModel> validCombMap = new TreeMap<Integer, IAccountModel>();
         for (Iterator<IAccountModel> it = validCombs.iterator(); it.hasNext();) {
             validComb = it.next();
@@ -156,7 +156,7 @@ public class ExpenseTypesFromAccounts extends SvrProcess {
         params.add(m_startElement);
         params.add(m_endElement);
         params.add(m_clientId);
-        List<IElementValueModel> result = AcctInfoServices.getElementValueInfoService().list(getCtx(), whereClause, params, get_TrxName());
+        List<IElementValueModel> result = AcctModelServices.getElementValueModelService().list(getCtx(), whereClause, params, get_TrxName());
         IElementValueModel elem;
         MProductPrice priceRec;
         X_M_Product_Acct productAcct;
@@ -199,7 +199,7 @@ public class ExpenseTypesFromAccounts extends SvrProcess {
                 validComb = validCombMap.get(elem.getElementValue().getC_ElementValue_ID());
                 if (validComb==null) {
                     // Create new valid combination
-                    validComb = AcctInfoServices.getAccountInfoService().create(getCtx(), 0, get_TrxName());
+                    validComb = AcctModelServices.getAccountModelService().create(getCtx(), 0, get_TrxName());
                     validComb.getPO().set_ValueOfColumn("AD_Client_ID", Integer.valueOf(m_clientId));
                     validComb.getCombination().setAD_Org_ID(0);
                     validComb.getCombination().setAlias(elem.getElementValue().getValue());

@@ -30,7 +30,7 @@ import org.adempiere.base.IDocFactory;
 import org.adempiere.base.IServiceReferenceHolder;
 import org.adempiere.base.Service;
 import org.adempiere.base.ServiceQuery;
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
@@ -663,7 +663,7 @@ public class DocManager {
 		Timestamp today = TimeUtil.trunc(new Timestamp(System.currentTimeMillis()), TimeUtil.TRUNC_DAY);
 		for (int x = bdcds.size() - 1; x >= 0; x--) {
 			MCostDetail bdcd = bdcds.get(x);
-			IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().create(Env.getCtx(), bdcd.getC_AcctSchema_ID(), trxName);
+			IAcctSchemaModel as = AcctModelServices.getAcctSchemaModelService().create(Env.getCtx(), bdcd.getC_AcctSchema_ID(), trxName);
 			Timestamp allowedBackDate = TimeUtil.addDays(today, - as.getAcctSchema().getBackDateDay());
 			if (bdcd.getDateAcct().before(allowedBackDate))
 				bdcds.remove(x);

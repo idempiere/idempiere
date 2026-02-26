@@ -20,47 +20,49 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  **********************************************************************/
-package org.idempiere.acct.info;
+package org.idempiere.acct.service;
 
-import org.adempiere.base.acct.model.IFactReconciliationModel;
-import org.compiere.model.I_Fact_Reconciliation;
-import org.compiere.model.PO;
-import org.idempiere.acct.model.MFactReconciliation;
+import java.util.Properties;
+
+import org.adempiere.base.acct.AcctModelService;
+import org.adempiere.base.acct.model.IAcctSchemaElementModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
+import org.adempiere.base.acct.service.IAcctSchemaElementModelService;
+import org.idempiere.acct.model.MAcctSchemaElement;
+import org.idempiere.base.acct.AcctSchemaElementModel;
+import org.idempiere.base.acct.AcctSchemaModel;
 
 /**
- * Wrapper for {@link MFactReconciliation} to provide {@link IFactReconciliationModel} access.
+ * Implementation of {@link IAcctSchemaElementModelService}.
  * 
  * @author etantg
  */
-public class FactReconciliationInfo implements IFactReconciliationModel {
-	
-	private final MFactReconciliation reconciliation;
-	
-	public FactReconciliationInfo(MFactReconciliation reconciliation) {
-        if (reconciliation == null)
-            throw new IllegalArgumentException("MFactReconciliation cannot be null");
-        this.reconciliation = reconciliation;
-    }
-	
-	public MFactReconciliation getModel() {
-		return reconciliation;
+@AcctModelService(IAcctSchemaElementModelService.class)
+public class AcctSchemaElementModelService implements IAcctSchemaElementModelService {
+
+	@Override
+	public IAcctSchemaElementModel[] getAcctSchemaElements(IAcctSchemaModel as) {
+		if (as instanceof AcctSchemaModel) {
+			MAcctSchemaElement[] elements = MAcctSchemaElement.getAcctSchemaElements(((AcctSchemaModel) as).getModel());
+			return AcctSchemaElementModel.wrapStream(elements);
+		}
+		throw new IllegalArgumentException("Unsupported IAcctSchemaModel implementation");
 	}
 
 	@Override
-    public I_Fact_Reconciliation getFactReconciliation() {
-        return reconciliation;
-    }
+	public String getColumnName(String elementType) {
+		return MAcctSchemaElement.getColumnName(elementType);
+	}
 
 	@Override
-	public PO getPO() {
-		return reconciliation;
+	public String getValueQuery(String elementType) {
+		return MAcctSchemaElement.getValueQuery(elementType);
 	}
-	
-	public static IFactReconciliationModel wrap(MFactReconciliation reconciliation) {
-        if (reconciliation == null)
-            return null;
-        if (reconciliation instanceof IFactReconciliationModel)
-            return (IFactReconciliationModel) reconciliation;
-        return new FactReconciliationInfo(reconciliation);
-    }
+
+	@Override
+	public IAcctSchemaElementModel create(Properties ctx, int C_AcctSchema_Element_ID, String trxName) {
+		MAcctSchemaElement element = new MAcctSchemaElement(ctx, C_AcctSchema_Element_ID, trxName);
+		return AcctSchemaElementModel.wrap(element);
+	}
+
 }

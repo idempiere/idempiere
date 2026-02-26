@@ -29,7 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.constants.IAcctSchemaConstants;
 import org.adempiere.base.acct.model.IAccountModel;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
@@ -141,7 +141,7 @@ public class NonStockedExpTypeStdCostingTest extends AbstractTestCase
 			ProductCost pc = new ProductCost(Env.getCtx(), rLine.getM_Product_ID(), 0, getTrxName());
 			IAccountModel productExpense = pc.getAccount(ProductCost.ACCTTYPE_P_Expense, as);
 
-			List<IFactAcctModel> factAccts = AcctInfoServices.getFactAcctInfoService().list(MInOut.Table_ID, rLine.getM_InOut_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
+			List<IFactAcctModel> factAccts = AcctModelServices.getFactAcctModelService().list(MInOut.Table_ID, rLine.getM_InOut_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 			List<FactAcct> expected = Arrays.asList(new FactAcct(acctNIR, BD_20, 2, false, BigDecimal.TEN.negate()),
 					new FactAcct(productExpense, BD_20, 2, true, BigDecimal.TEN));
 			assertFactAcctEntries(factAccts, expected);
@@ -342,9 +342,9 @@ public class NonStockedExpTypeStdCostingTest extends AbstractTestCase
 			IAccountModel productExpense = pc.getAccount(ProductCost.ACCTTYPE_P_Expense, as);
 
 			// get AccPayable of the Invoice
-			IAccountModel acctPT = AcctInfoServices.getAccountInfoService().create(Env.getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getV_Liability_Acct(), getTrxName());
+			IAccountModel acctPT = AcctModelServices.getAccountModelService().create(Env.getCtx(), as.getAcctSchemaDefaultModel().getAcctSchemaDefault().getV_Liability_Acct(), getTrxName());
 
-			List<IFactAcctModel> factAccts = AcctInfoServices.getFactAcctInfoService().list(MInvoice.Table_ID, iLine.getC_Invoice_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
+			List<IFactAcctModel> factAccts = AcctModelServices.getFactAcctModelService().list(MInvoice.Table_ID, iLine.getC_Invoice_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 			List<FactAcct> expected = Arrays.asList(new FactAcct(acctPT, BD_20, 2, false, BigDecimal.ZERO),
 					new FactAcct(productExpense, BD_20, 2, true, BigDecimal.TEN));
 			assertFactAcctEntries(factAccts, expected);
@@ -366,7 +366,7 @@ public class NonStockedExpTypeStdCostingTest extends AbstractTestCase
 			pc = new ProductCost(Env.getCtx(), matchInvoices[0].getM_Product_ID(), 0, getTrxName());
 			productExpense = pc.getAccount(ProductCost.ACCTTYPE_P_Expense, as);
 
-			factAccts = AcctInfoServices.getFactAcctInfoService().list(MMatchInv.Table_ID, matchInvoices[0].get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
+			factAccts = AcctModelServices.getFactAcctModelService().list(MMatchInv.Table_ID, matchInvoices[0].get_ID(), as.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 			expected = Arrays.asList(new FactAcct(acctNIR, BD_20, 2, true, BigDecimal.TEN),
 					new FactAcct(productExpense, BD_20, 2, false, BigDecimal.TEN.negate()));
 			assertFactAcctEntries(factAccts, expected);

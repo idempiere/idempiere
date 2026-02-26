@@ -20,34 +20,48 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  **********************************************************************/
-package org.idempiere.acct.service;
+package org.idempiere.base.acct;
 
-import java.util.Properties;
-
-import org.adempiere.base.acct.AcctInfoService;
-import org.adempiere.base.acct.model.IAcctSchemaGLModel;
-import org.adempiere.base.acct.service.IAcctSchemaGLModelService;
-import org.idempiere.acct.info.AcctSchemaGLInfo;
-import org.idempiere.acct.model.MAcctSchemaGL;
+import org.adempiere.base.acct.model.IImportElementValueModel;
+import org.compiere.model.I_I_ElementValue;
+import org.compiere.model.PO;
+import org.idempiere.acct.model.X_I_ElementValue;
 
 /**
- * Implementation of {@link IAcctSchemaGLModelService}.
+ * Wrapper for {@link X_I_ElementValue} to provide {@link IImportElementValueModel} access.
  * 
  * @author etantg
  */
-@AcctInfoService(IAcctSchemaGLModelService.class)
-public class AcctSchemaGLInfoService implements IAcctSchemaGLModelService {
-
-	@Override
-	public IAcctSchemaGLModel get(Properties ctx, int C_AcctSchema_ID) {
-		MAcctSchemaGL schemaGL = MAcctSchemaGL.get(ctx, C_AcctSchema_ID);
-		return AcctSchemaGLInfo.wrap(schemaGL);
+public class ImportElementValueModel implements IImportElementValueModel {
+	
+	private final X_I_ElementValue elementValue;
+	
+	public ImportElementValueModel(X_I_ElementValue elementValue) {
+        if (elementValue == null)
+            throw new IllegalArgumentException("X_I_ElementValue cannot be null");
+        this.elementValue = elementValue;
+    }
+	
+	public X_I_ElementValue getModel() {
+		return elementValue;
 	}
 
 	@Override
-	public IAcctSchemaGLModel create(Properties ctx, int C_AcctSchema_ID, String trxName) {
-		MAcctSchemaGL schemaGL = new MAcctSchemaGL(ctx, C_AcctSchema_ID, trxName);
-		return AcctSchemaGLInfo.wrap(schemaGL);
+	public I_I_ElementValue getElementValue() {
+		return elementValue;
 	}
 
+	@Override
+	public PO getPO() {
+		return elementValue;
+	}
+	
+	public static IImportElementValueModel wrap(X_I_ElementValue elementValue) {
+        if (elementValue == null)
+            return null;
+        if (elementValue instanceof IImportElementValueModel)
+            return (IImportElementValueModel) elementValue;
+        return new ImportElementValueModel(elementValue);
+    }
+	
 }

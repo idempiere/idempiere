@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.constants.IAcctSchemaConstants;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.model.I_C_DocType;
@@ -156,7 +156,7 @@ public class CostUpdate extends SvrProcess
 		if (m_ce.get_ID() == 0)
 			throw new AdempiereUserError ("@NotFound@ @M_CostElement_ID@ (StdCost)");
 		if (log.isLoggable(Level.CONFIG)) log.config(m_ce.toString());
-		m_ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(getCtx(), client.getAD_Client_ID());
+		m_ass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(getCtx(), client.getAD_Client_ID());
 		for (int i = 0; i < m_ass.length; i++)
 			createNew(m_ass[i]);
 		commitEx();
@@ -517,7 +517,7 @@ public class CostUpdate extends SvrProcess
 			if (retValue == null)
 			{
 				MProduct product = new MProduct(getCtx(), cost.getM_Product_ID(), get_TrxName());
-				IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get(getCtx(), cost.getC_AcctSchema_ID());
+				IAcctSchemaModel as = AcctModelServices.getAcctSchemaModelService().get(getCtx(), cost.getC_AcctSchema_ID());
 				retValue = MCost.getLastInvoicePrice(product, 
 					cost.getM_AttributeSetInstance_ID(), cost.getAD_Org_ID(), as.getAcctSchema().getC_Currency_ID());				
 			}
@@ -536,7 +536,7 @@ public class CostUpdate extends SvrProcess
 			if (retValue == null)
 			{
 				MProduct product = new MProduct(getCtx(), cost.getM_Product_ID(), get_TrxName());
-				IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().get(getCtx(), cost.getC_AcctSchema_ID());
+				IAcctSchemaModel as = AcctModelServices.getAcctSchemaModelService().get(getCtx(), cost.getC_AcctSchema_ID());
 				retValue = MCost.getLastPOPrice(product, 
 					cost.getM_AttributeSetInstance_ID(), cost.getAD_Org_ID(), as.getAcctSchema().getC_Currency_ID());				
 			}

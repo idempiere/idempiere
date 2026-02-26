@@ -26,28 +26,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.adempiere.base.acct.AcctInfoService;
+import org.adempiere.base.acct.AcctModelService;
 import org.adempiere.base.acct.model.IElementValueModel;
 import org.adempiere.base.acct.model.IImportElementValueModel;
 import org.adempiere.base.acct.service.IElementValueModelService;
 import org.compiere.model.I_C_ElementValue;
 import org.compiere.model.Query;
-import org.idempiere.acct.info.ElementValueInfo;
-import org.idempiere.acct.info.ImportElementValueInfo;
 import org.idempiere.acct.model.MElementValue;
+import org.idempiere.base.acct.ElementValueModel;
+import org.idempiere.base.acct.ImportElementValueModel;
 
 /**
  * Implementation of {@link IElementValueModelService}.
  * 
  * @author etantg
  */
-@AcctInfoService(IElementValueModelService.class)
-public class ElementValueInfoService implements IElementValueModelService {
+@AcctModelService(IElementValueModelService.class)
+public class ElementValueModelService implements IElementValueModelService {
 
 	@Override
 	public IElementValueModel create(Properties ctx, int C_ElementValue_ID, String trxName) {
 		MElementValue elementValue = new MElementValue(ctx, C_ElementValue_ID, trxName);
-		return ElementValueInfo.wrap(elementValue);
+		return ElementValueModel.wrap(elementValue);
 	}
 
 	@Override
@@ -55,25 +55,25 @@ public class ElementValueInfoService implements IElementValueModelService {
 			String AccountSign, boolean IsDocControlled, boolean IsSummary, String trxName) {
 		MElementValue elementValue = new MElementValue(ctx, Value, Name, Description, AccountType, 
 				AccountSign, IsDocControlled, IsSummary, trxName);
-		return ElementValueInfo.wrap(elementValue);
+		return ElementValueModel.wrap(elementValue);
 	}
 
 	@Override
 	public IElementValueModel create(Properties ctx, IElementValueModel copy, String trxName) {
-		if (copy instanceof ElementValueInfo) {
-			MElementValue elementValue = new MElementValue(ctx, ((ElementValueInfo) copy).getModel(), trxName);
-			return ElementValueInfo.wrap(elementValue);
+		if (copy instanceof ElementValueModel) {
+			MElementValue elementValue = new MElementValue(ctx, ((ElementValueModel) copy).getModel(), trxName);
+			return ElementValueModel.wrap(elementValue);
 		}
-		throw new IllegalArgumentException("Unsupported IElementValueInfo implementation");
+		throw new IllegalArgumentException("Unsupported IElementValueModel implementation");
 	}
 	
 	@Override
 	public IElementValueModel create(IImportElementValueModel imp) {
-		if (imp instanceof ImportElementValueInfo) {
-			MElementValue elementValue = new MElementValue(((ImportElementValueInfo) imp).getModel());
-			return ElementValueInfo.wrap(elementValue);
+		if (imp instanceof ImportElementValueModel) {
+			MElementValue elementValue = new MElementValue(((ImportElementValueModel) imp).getModel());
+			return ElementValueModel.wrap(elementValue);
 		}
-		throw new IllegalArgumentException("Unsupported IImportElementValueInfo implementation");
+		throw new IllegalArgumentException("Unsupported IImportElementValueModel implementation");
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public class ElementValueInfoService implements IElementValueModelService {
 		List<MElementValue> values = new Query(ctx, I_C_ElementValue.Table_Name, whereClause, trxName)
 				.setParameters(params)
 				.list();
-		return ElementValueInfo.wrapList(values);
+		return ElementValueModel.wrapList(values);
 	}
 
 }

@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAccountModel;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -154,7 +154,7 @@ public final class MAccountLookup extends Lookup implements Serializable
 		if (ID == C_ValidCombination_ID)	//	already loaded
 			return true;
 		
-		IAccountModel account = AcctInfoServices.getAccountInfoService().get(Env.getCtx(), ID);
+		IAccountModel account = AcctModelServices.getAccountModelService().get(Env.getCtx(), ID);
 		
 		if(account == null || account.getCombination().getC_ValidCombination_ID() != ID)
 			return false;
@@ -196,7 +196,7 @@ public final class MAccountLookup extends Lookup implements Serializable
 		final String whereClause = "AD_Client_ID=?";
 		params.add(Env.getAD_Client_ID(m_ctx));
 		
-		List<IAccountModel> accounts = AcctInfoServices.getAccountInfoService().list(whereClause, params, onlyActive);		
+		List<IAccountModel> accounts = AcctModelServices.getAccountModelService().list(whereClause, params, onlyActive);		
 		for(IAccountModel account :accounts)
 		{
 			StringBuilder msglist = new StringBuilder().append(account.getCombination().getCombination()).append(" - ") 

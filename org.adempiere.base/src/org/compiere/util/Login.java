@@ -30,7 +30,7 @@ import java.util.logging.Level;
 
 import javax.swing.JOptionPane;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.DBException;
 import org.compiere.model.I_M_Warehouse;
@@ -574,7 +574,7 @@ public class Login
 			rs = null; pstmt = null;
 			
 			/**Define AcctSchema , Currency, HasAlias for Multi AcctSchema**/
-			IAcctSchemaModel[] ass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(Env.getCtx(), AD_Client_ID);
+			IAcctSchemaModel[] ass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(Env.getCtx(), AD_Client_ID);
 			if(ass != null && ass.length > 1)
 			{
 				for(IAcctSchemaModel as : ass)

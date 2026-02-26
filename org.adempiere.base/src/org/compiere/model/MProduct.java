@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.constants.IAcctSchemaConstants;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.AdempiereException;
@@ -873,7 +873,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 		
 		//	Value/Name change, update Combination and Description of C_ValidCombination records
 		if (!newRecord && (is_ValueChanged("Value") || is_ValueChanged("Name")))
-			AcctInfoServices.getAccountInfoService().updateValueDescription(getCtx(), "M_Product_ID=" + getM_Product_ID(), get_TrxName());
+			AcctModelServices.getAccountModelService().updateValueDescription(getCtx(), "M_Product_ID=" + getM_Product_ID(), get_TrxName());
 		
 		//	Name/Description Change, update Asset
 		if (!newRecord && (is_ValueChanged("Name") || is_ValueChanged("Description")))
@@ -1030,7 +1030,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	 */
 	public boolean isASIMandatoryFor(String mandatoryType, boolean isSOTrx) {
 		//	If CostingLevel is BatchLot ASI is always mandatory - check all client acct schemas
-		IAcctSchemaModel[] mass = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(getCtx(), getAD_Client_ID(), get_TrxName());
+		IAcctSchemaModel[] mass = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(getCtx(), getAD_Client_ID(), get_TrxName());
 		for (IAcctSchemaModel as : mass)
 		{
 			String cl = getCostingLevel(as);

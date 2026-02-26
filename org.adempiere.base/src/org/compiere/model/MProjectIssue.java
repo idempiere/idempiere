@@ -23,7 +23,7 @@ import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.base.acct.AcctInfoServices;
+import org.adempiere.base.acct.AcctModelServices;
 import org.adempiere.base.acct.constants.IAcctSchemaConstants;
 import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.exceptions.AdempiereException;
@@ -479,7 +479,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		// Complete                    ..  CO
 		if (AD_Table_ID == get_Table_ID() && docStatus.equals(DocumentEngine.STATUS_Completed)) {
 			boolean periodOpen = MPeriod.isOpen(Env.getCtx(), getMovementDate(), MDocType.DOCBASETYPE_ProjectIssue, getAD_Org_ID());
-			boolean isBackDateTrxAllowed = AcctInfoServices.getAcctSchemaInfoService().isBackDateTrxAllowed(Env.getCtx(), getMovementDate(), get_TrxName());
+			boolean isBackDateTrxAllowed = AcctModelServices.getAcctSchemaModelService().isBackDateTrxAllowed(Env.getCtx(), getMovementDate(), get_TrxName());
 			if (periodOpen && isBackDateTrxAllowed) {
 				options[index++] = DocumentEngine.ACTION_Reverse_Correct;
 			}
@@ -563,7 +563,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 	private BigDecimal updateBalanceAmt()
 	{
 		BigDecimal cost = null;
-		IAcctSchemaModel as = AcctInfoServices.getAcctSchemaInfoService().getClientAcctSchema(getCtx(), getAD_Client_ID(), get_TrxName())[0];
+		IAcctSchemaModel as = AcctModelServices.getAcctSchemaModelService().getClientAcctSchema(getCtx(), getAD_Client_ID(), get_TrxName())[0];
 		MProduct product = new MProduct(getCtx(), getM_Product_ID(), get_TrxName());
 		if (getM_InOutLine_ID() > 0)
 		{
