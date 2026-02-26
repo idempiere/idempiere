@@ -487,10 +487,10 @@ public class MInventoryLine extends X_M_InventoryLine
 	 * @param trxName
 	 * @return I_Inventory_ID
 	 */
-	public static int getImportLine_ID(int M_InventoryLine_ID,String trxName) {
-		int importLine = DB.getSQLValue(trxName,"SELECT I_Inventory_ID from I_Inventory where M_InventoryLine_ID=?",M_InventoryLine_ID);
+	public static int getImportLine_ID(int M_InventoryLine_ID, String trxName) {
+		int importLine = DB.getSQLValue(trxName, "SELECT I_Inventory_ID from I_Inventory where M_InventoryLine_ID=?", M_InventoryLine_ID);
 		return importLine;
-  }
+	}
 
 	public BigDecimal getCurrentCostPriceForCostAdjustment() {
 		MInventory inventory = getParent();

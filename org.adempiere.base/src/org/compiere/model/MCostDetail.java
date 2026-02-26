@@ -1709,9 +1709,13 @@ public class MCostDetail extends X_M_CostDetail
 			
 			//If not import and it is due to inventory then don't mark as addition
 			if(addition && getM_InventoryLine_ID() != 0) {
-				int I_Inventory_ID = MInventoryLine.getImportLine_ID(getM_InventoryLine_ID(),get_TrxName());
-				if(I_Inventory_ID<=0)
-					addition = false;
+				MInventoryLine invLine = new MInventoryLine(getCtx(), getM_InventoryLine_ID(), get_TrxName());
+				// Only apply import-line check for Physical Inventory, not Internal Use
+				if (!invLine.isInternalUseInventory()) {
+					int I_Inventory_ID = MInventoryLine.getImportLine_ID(getM_InventoryLine_ID(), get_TrxName());
+					if (I_Inventory_ID <= 0)
+						addition = false;
+				}
 			}
 			
 			//
