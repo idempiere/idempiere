@@ -34,7 +34,7 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250805L;
+	private static final long serialVersionUID = 20260210L;
 
     /** Standard Constructor */
     public X_M_Product (Properties ctx, int M_Product_ID, String trxName)
@@ -47,6 +47,8 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 			setIsAutoProduce (false);
 // N
 			setIsBOM (false);
+// N
+			setIsBOMPriceOverride (false);
 // N
 			setIsDropShip (false);
 			setIsExcludeAutoDelivery (false);
@@ -97,6 +99,8 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 // N
 			setIsBOM (false);
 // N
+			setIsBOMPriceOverride (false);
+// N
 			setIsDropShip (false);
 			setIsExcludeAutoDelivery (false);
 // N
@@ -146,6 +150,8 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 // N
 			setIsBOM (false);
 // N
+			setIsBOMPriceOverride (false);
+// N
 			setIsDropShip (false);
 			setIsExcludeAutoDelivery (false);
 // N
@@ -194,6 +200,8 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 			setIsAutoProduce (false);
 // N
 			setIsBOM (false);
+// N
+			setIsBOMPriceOverride (false);
 // N
 			setIsDropShip (false);
 			setIsExcludeAutoDelivery (false);
@@ -648,6 +656,28 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	public boolean isBOM()
 	{
 		Object oo = get_Value(COLUMNNAME_IsBOM);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Calculate BOM price if Zero.
+		@param IsBOMPriceOverride Calculate BOM price if Zero
+	*/
+	public void setIsBOMPriceOverride (boolean IsBOMPriceOverride)
+	{
+		set_Value (COLUMNNAME_IsBOMPriceOverride, Boolean.valueOf(IsBOMPriceOverride));
+	}
+
+	/** Get Calculate BOM price if Zero.
+		@return Calculate BOM price if Zero	  */
+	public boolean isBOMPriceOverride()
+	{
+		Object oo = get_Value(COLUMNNAME_IsBOMPriceOverride);
 		if (oo != null)
 		{
 			 if (oo instanceof Boolean)

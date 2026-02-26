@@ -16,10 +16,10 @@ import java.math.BigDecimal;
 
 import org.adempiere.base.CreditStatus;
 import org.adempiere.base.ICreditManager;
-import org.compiere.model.I_C_Order;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MDocType;
 import org.compiere.model.MInOut;
+import org.compiere.model.MOrder;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
@@ -50,9 +50,9 @@ public class CreditManagerInOut implements ICreditManager
 		String errorMsg = null;
 		if (MInOut.DOCACTION_Prepare.equals(docAction) && mInOut.isSOTrx() && !mInOut.isReversal() && !mInOut.isCustomerReturn())
 		{
-			I_C_Order order = mInOut.getC_Order();
-			if (order != null
-				&& MDocType.DOCSUBTYPESO_PrepayOrder.equals(order.getC_DocType().getDocSubTypeSO())
+			MOrder order = new MOrder(mInOut.getCtx(), mInOut.getC_Order_ID(), mInOut.get_TrxName());
+			if (mInOut.getC_Order_ID() > 0
+				&& MDocType.DOCSUBTYPESO_PrepayOrder.equals(MDocType.get(order.getC_DocType_ID()).getDocSubTypeSO())
 				&& !MSysConfig.getBooleanValue(MSysConfig.CHECK_CREDIT_ON_PREPAY_ORDER, true, mInOut.getAD_Client_ID(), mInOut.getAD_Org_ID()))
 			{
 				// ignore -- don't validate Prepay Orders depending on sysconfig parameter

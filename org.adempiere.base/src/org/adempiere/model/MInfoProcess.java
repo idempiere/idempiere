@@ -122,7 +122,7 @@ public class MInfoProcess extends X_AD_InfoProcess implements IInfoColumn, Immut
 	 */
 	@Override
 	public MInfoColumn getAD_InfoColumn (){
-		return (MInfoColumn)super.getAD_InfoColumn();
+		return new MInfoColumn(getCtx(), getAD_InfoColumn_ID(), get_TrxName());
 	}
 
 	@Override

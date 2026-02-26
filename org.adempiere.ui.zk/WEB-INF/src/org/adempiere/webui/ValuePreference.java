@@ -17,7 +17,6 @@
 package org.adempiere.webui;
 
 import java.util.Properties;
-import java.util.UUID;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -50,6 +49,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Login;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
@@ -660,7 +660,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 		StringBuilder sql = new StringBuilder ("INSERT INTO AD_Preference ("
 			+ "AD_Preference_ID, AD_Preference_UU, AD_Client_ID, AD_Org_ID, IsActive, Created,CreatedBy,Updated,UpdatedBy,"
 			+ "AD_Window_ID, AD_Process_ID, AD_InfoWindow_ID, PreferenceFor, AD_User_ID, Attribute, Value) VALUES (");
-		sql.append(AD_Preference_ID).append(",").append(DB.TO_STRING(UUID.randomUUID().toString())).append(",").append(Client_ID).append(",").append(Org_ID)
+		sql.append(AD_Preference_ID).append(",").append(DB.TO_STRING(Util.generateUUIDv7().toString())).append(",").append(Client_ID).append(",").append(Org_ID)
 			.append(", 'Y',getDate(),").append(m_AD_User_ID).append(",getDate(),").append(m_AD_User_ID).append(", ");
 		
 		if (cbWindow.isChecked())

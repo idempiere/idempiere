@@ -33,7 +33,7 @@ public class ChosenSearchBox extends Div {
 	 * generated serial id
 	 */
 	private static final long serialVersionUID = -3152111756471436612L;
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	protected PropertyChangeSupport m_propertyChangeListeners = new PropertyChangeSupport(this);
 	protected Chosenbox<ValueNamePair> chosenbox;
 	protected Button btn;
@@ -134,7 +134,7 @@ public class ChosenSearchBox extends Div {
 	 * @param l PropertyChangeListener
 	 * @deprecated not implemented
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public synchronized void addPropertyChangeListener(PropertyChangeListener l) {
 		m_propertyChangeListeners.addPropertyChangeListener(l);
 	}

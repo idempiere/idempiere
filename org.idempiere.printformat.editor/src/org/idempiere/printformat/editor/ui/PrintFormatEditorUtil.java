@@ -24,6 +24,7 @@
  **********************************************************************/
 package org.idempiere.printformat.editor.ui;
 
+import org.compiere.model.MColumn;
 import org.compiere.print.MPrintFormatItem;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Util;
@@ -88,8 +89,7 @@ public class PrintFormatEditorUtil {
 				retValue = "center";
 		}
 		if (align == null || align.equalsIgnoreCase("D")) {
-			if (DisplayType.isNumeric(pfItem.getAD_Column()
-					.getAD_Reference_ID())) {
+			if (DisplayType.isNumeric(MColumn.get(pfItem.getAD_Column_ID()).getAD_Reference_ID())) {
 				retValue = "right";
 			} else {
 				retValue = "left";

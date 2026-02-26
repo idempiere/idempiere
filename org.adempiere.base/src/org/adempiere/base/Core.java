@@ -26,12 +26,16 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.crypto.SecretKey;
+import javax.script.Compilable;
+import javax.script.CompiledScript;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 
 import org.adempiere.base.event.IEventManager;
 import org.adempiere.base.markdown.IMarkdownRenderer;
+import org.adempiere.base.search.ISearchProvider;
 import org.adempiere.base.upload.IUploadService;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.model.IAddressValidation;
@@ -40,24 +44,32 @@ import org.adempiere.model.ITaxProvider;
 import org.adempiere.model.MShipperFacade;
 import org.adempiere.util.DefaultReservationTracerFactory;
 import org.adempiere.util.IReservationTracerFactory;
+import org.compiere.Adempiere;
 import org.compiere.impexp.BankStatementLoaderInterface;
 import org.compiere.impexp.BankStatementMatcherInterface;
 import org.compiere.model.Callout;
 import org.compiere.model.I_AD_PrintHeaderFooter;
 import org.compiere.model.MAddressValidation;
 import org.compiere.model.MAuthorizationAccount;
+import org.compiere.model.MAuthorizationCredential;
+import org.compiere.model.MAuthorizationProvider;
 import org.compiere.model.MBankAccountProcessor;
 import org.compiere.model.MPaymentProcessor;
+import org.compiere.model.MRule;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTaxProvider;
 import org.compiere.model.ModelValidator;
 import org.compiere.model.PO;
 import org.compiere.model.PaymentInterface;
 import org.compiere.model.PaymentProcessor;
+import org.compiere.model.ServerStateChangeEvent;
+import org.compiere.model.ServerStateChangeListener;
 import org.compiere.model.StandardTaxProvider;
+import org.compiere.model.SystemIDs;
 import org.compiere.process.ProcessCall;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
+import org.compiere.util.DB;
 import org.compiere.util.DefaultKeyStore;
 import org.compiere.util.Env;
 import org.compiere.util.PaymentExport;
@@ -275,6 +287,7 @@ public class Core {
 	}
 
 	private static IServiceReferenceHolder<IKeyStore> s_keystoreServiceReference = null;
+	private static volatile boolean s_legacyKeyWarningLogged = false;
 	
 	/**
 	 * 
@@ -297,8 +310,23 @@ public class Core {
 				//test key store service is working
 				SecretKey key = service.getKey(0);
 				if (key != null) {
-					if (key.getAlgorithm().equals(DefaultKeyStore.LEGACY_ALGORITHM))
-						s_log.warning("Encryption with legacy key algorithm DES detected - it is recommended to migrate to a stronger algorithm");
+					if (!s_legacyKeyWarningLogged) {
+						final boolean legacyKeyDetected = key.getAlgorithm().equals(DefaultKeyStore.LEGACY_ALGORITHM);
+						if (legacyKeyDetected)
+							s_log.warning("Encryption with legacy key algorithm DES detected - it is recommended to migrate to a stronger algorithm");
+						if (DB.isConnected()) {
+							updateLegacyKeyWarningSysConfig(legacyKeyDetected);
+						} else {
+							Adempiere.addServerStateChangeListener(new ServerStateChangeListener() {
+								@Override
+								public void stateChange(ServerStateChangeEvent event) {
+									if (event.getEventType() == ServerStateChangeEvent.SERVER_START) 
+										updateLegacyKeyWarningSysConfig(legacyKeyDetected);
+								}
+							});
+						}
+					}
+					s_legacyKeyWarningLogged = true;
 					keystoreService = service;
 					s_keystoreServiceReference = refHolder;
 					break;
@@ -314,6 +342,28 @@ public class Core {
 		return keystoreService;
 	}
 	
+	/**
+	 * Update SECURITY_DASHBOARD_LEGACY_KEY_WARNING SysConfig.
+	 * This method will be called asynchronously to avoid issues when DB is not yet connected.
+	 */
+	private static void updateLegacyKeyWarningSysConfig(boolean legacyKeyDetected) {
+		// Run in a separate thread to avoid blocking and to retry until DB is connected
+		String warn = MSysConfig.getValue(MSysConfig.SECURITY_DASHBOARD_LEGACY_KEY_WARNING, "Y");
+		if ("D".equals(warn))
+			return; // warning disabled by sysadmin, do not override
+		if ("Y".equals(warn) && legacyKeyDetected)
+			return; // warning already enabled and legacy key still detected, no update needed
+		if ("N".equals(warn) && !legacyKeyDetected)
+			return; // warning already negated and no legacy key detected, no update needed
+
+		MSysConfig conf = new MSysConfig(Env.getCtx(), SystemIDs.SYSCONFIG_SECURITY_DASHBOARD_LEGACY_KEY_WARNING, null);
+		conf.setValue(legacyKeyDetected ? "Y" : "N");
+		conf.saveEx();
+
+		if (s_log.isLoggable(Level.INFO))
+			s_log.info("Updated SECURITY_DASHBOARD_LEGACY_KEY_WARNING SysConfig");
+	}
+
 	private static final CCache<String, IServiceReferenceHolder<IPaymentProcessorFactory>> s_paymentProcessorFactoryCache = new CCache<>(IPAYMENT_PROCESSOR_FACTORY_CACHE_TABLE_NAME, "IPaymentProcessorFactory", 100, false);
 	
 	/**
@@ -1031,7 +1081,9 @@ public class Core {
 	 * @return {@link IUploadService}
 	 */
 	public static IUploadService getUploadService(MAuthorizationAccount account) {
-		String provider = account.getAD_AuthorizationCredential().getAD_AuthorizationProvider().getName();
+		MAuthorizationCredential credential = new MAuthorizationCredential(account.getCtx(), account.getAD_AuthorizationCredential_ID(), account.get_TrxName());
+		MAuthorizationProvider authProvider = new MAuthorizationProvider(account.getCtx(), credential.getAD_AuthorizationProvider_ID(), account.get_TrxName());
+		String provider = authProvider.getName();
 		ServiceQuery query = new ServiceQuery();
 		query.put("provider", provider);
 		IServiceHolder<IUploadService> holder = Service.locator().locate(IUploadService.class, query);
@@ -1166,11 +1218,94 @@ public class Core {
 		}
 		return null;
 	}
-	
+
+	/** Cache for compiled scripts, keyed by AD_Rule_ID */
+	private final static CCache<Integer, CompiledScript> s_compiledScriptCache = new CCache<>(MRule.Table_Name, "CompiledScript", 100, false);
+
+	/**
+	 * Get a compiled script for the given rule.
+	 * Uses JSR-223 Compilable interface for caching pre-compiled scripts.
+	 * This significantly improves performance for repeatedly executed scripts
+	 * (e.g., table validators, callouts) by avoiding re-parsing and re-compilation.
+	 *
+	 * @param  rule MRule containing the script
+	 * @return      CompiledScript if engine supports compilation, null otherwise
+	 */
+	public static CompiledScript getCompiledScript(MRule rule)
+	{
+		if (rule == null || rule.getAD_Rule_ID() <= 0 || Util.isEmpty(rule.getScript(), true))
+			return null;
+
+		// Cache only supported for Groovy script engine
+		if (!"groovy".equalsIgnoreCase(rule.getEngineName()))
+		{
+			if (s_log.isLoggable(Level.FINE))
+				s_log.fine("Script compilation caching is only supported for Groovy engine, skipping: " + rule.getEngineName());
+			return null;
+		}
+
+		Integer key = Integer.valueOf(rule.getAD_Rule_ID());
+
+		// Check cache first
+		CompiledScript compiled = s_compiledScriptCache.get(key);
+		if (compiled != null)
+			return compiled;
+
+		// Get script engine
+		ScriptEngine engine = getScriptEngine(rule.getEngineName());
+		if (engine == null)
+		{
+			s_log.log(Level.WARNING, "Script engine not found: " + rule.getEngineName());
+			return null;
+		}
+
+		// Check if engine supports compilation
+		if (!(engine instanceof Compilable))
+		{
+			if (s_log.isLoggable(Level.FINE))
+				s_log.fine("Script engine " + rule.getEngineName() + " does not support compilation");
+			return null;
+		}
+
+		// Compile and cache
+		try
+		{
+			compiled = ((Compilable) engine).compile(rule.getScript());
+			s_compiledScriptCache.put(key, compiled);
+			if (s_log.isLoggable(Level.FINE))
+				s_log.fine("Compiled and cached script: " + rule.getValue());
+			return compiled;
+		}
+		catch (ScriptException e)
+		{
+			s_log.log(Level.SEVERE, "Failed to compile script: " + rule.getValue() + ", Error: " + e.getLocalizedMessage(), e);
+			return null;
+		}
+	} // getCompiledScript
+
 	/**
 	 * Get markdown renderer service
 	 * @return markdown renderer service
 	 */
+
+	/**
+	 * @return list of search providers
+	 */
+	public static List<ISearchProvider> getSearchProviders() {
+		List<ISearchProvider> providers = new ArrayList<>();
+		List<IServiceReferenceHolder<ISearchProvider>> refs = Service.locator().list(ISearchProvider.class)
+				.getServiceReferences();
+		if (refs != null) {
+			for (IServiceReferenceHolder<ISearchProvider> ref : refs) {
+				ISearchProvider provider = ref.getService();
+				if (provider != null) {
+					providers.add(provider);
+				}
+			}
+		}
+		return providers;
+	}
+
 	public static IMarkdownRenderer getMarkdownRenderer() {
 		IServiceReferenceHolder<IMarkdownRenderer> holder = Service.locator().locate(IMarkdownRenderer.class).getServiceReference();
 		return holder != null ? holder.getService() : null; 

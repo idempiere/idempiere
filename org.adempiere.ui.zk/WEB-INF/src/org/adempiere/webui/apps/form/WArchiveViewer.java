@@ -26,7 +26,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 
 import javax.activation.FileDataSource;
@@ -78,6 +80,7 @@ import org.compiere.tools.FileUtil;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
+import org.compiere.util.MimeType;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.io.RepeatableInputStream;
@@ -108,12 +111,31 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 {
 	private static final String ONCLOSE_TIMESTAMP_ATTR = "onclose.timestamp";
 
+	private static List<String> autoPreviewList;
+
+	// same as in WAttachment and WImageDialog
+	static {
+		autoPreviewList = new ArrayList<String>();
+        autoPreviewList.add("application/json");
+        autoPreviewList.add("application/pdf");
+        autoPreviewList.add("image/bmp");
+        autoPreviewList.add("image/gif");
+        autoPreviewList.add("image/jpeg");
+        autoPreviewList.add("image/png");
+        autoPreviewList.add("image/tiff");
+        autoPreviewList.add("image/x-icon");
+        // autoPreviewList.add("text/html"); IDEMPIERE-3980
+        autoPreviewList.add("text/plain");
+        autoPreviewList.add("text/xml");
+	}
+
 	private class WArchiveViewerForm extends CustomForm
 	{
 		/**
 		 * generated serial id
 		 */
-		private static final long serialVersionUID = 4919349386488325L;
+		private static final long serialVersionUID = 6001246387640733031L;
+
 		//-- ComponentCtrl --//
 		public Object getExtraCtrl() {
 			return new ExtraCtrl();
@@ -136,12 +158,11 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 				try {
 					dynInit();
 					zkInit();
-					if (ClientInfo.isMobile() || MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false, Env.getAD_Client_ID(Env.getCtx()))) {
-						if (media != null && iframe.getSrc() == null) {
-							String url = Utils.getDynamicMediaURI(form, mediaVersion, media.getName(), media.getFormat());
-							String pdfJsUrl = AEnv.toPdfJsUrl(url);
-							iframe.setSrc(pdfJsUrl);
-						}
+					if (   media != null && iframe.getSrc() == null && media.getName().toLowerCase().endsWith(".pdf")
+						&& (ClientInfo.isMobile() || MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false, Env.getAD_Client_ID(Env.getCtx())))) {
+						String url = Utils.getDynamicMediaURI(form, mediaVersion, media.getName(), media.getFormat());
+						String pdfJsUrl = AEnv.toPdfJsUrl(url);
+						iframe.setSrc(pdfJsUrl);
 					}
 				}
 				catch(Exception e)
@@ -276,27 +297,42 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 	 * @param inputStream
 	 */
 	private void reportViewer(String name, InputStream inputStream)
-	{	
-		media = new AMedia(name + ".pdf", "pdf", "application/pdf", RepeatableInputStream.getInstance(inputStream));
-		if (ClientInfo.isMobile() || MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false, Env.getAD_Client_ID(Env.getCtx())))
-		{
-			mediaVersion ++;
-			if (form.getDesktop() == null)
+	{
+		String suffix = ".pdf";
+		String mimeType = "application/pdf";
+		String extension = "pdf";
+		if (!Util.isEmpty(name) && name.contains(".")) {
+			suffix = "";
+			extension = name.substring(name.lastIndexOf(".")+1);
+			mimeType = MimeType.getMimeType(name);
+			if (Util.isEmpty(mimeType))
+				mimeType = "application/octet-stream";
+		}
+		if (autoPreviewList.contains(mimeType)) {
+			media = new AMedia(name + suffix, extension, mimeType, RepeatableInputStream.getInstance(inputStream));
+			if (extension.equalsIgnoreCase("pdf") && (ClientInfo.isMobile() || MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false, Env.getAD_Client_ID(Env.getCtx()))))
 			{
-				iframe.setContent(null);
-				iframe.setSrc(null);
+				mediaVersion ++;
+				if (form.getDesktop() == null)
+				{
+					iframe.setContent(null);
+					iframe.setSrc(null);
+				}
+				else
+				{
+					String url = Utils.getDynamicMediaURI(form, mediaVersion, media.getName(), media.getFormat());
+					String pdfJsUrl = AEnv.toPdfJsUrl(url);
+					iframe.setContent(null);
+					iframe.setSrc(pdfJsUrl);
+				}
 			}
 			else
 			{
-				String url = Utils.getDynamicMediaURI(form, mediaVersion, media.getName(), media.getFormat());
-				String pdfJsUrl = AEnv.toPdfJsUrl(url);
-				iframe.setContent(null);
-				iframe.setSrc(pdfJsUrl);
+				iframe.setContent(media);
 			}
-		}
-		else
-		{			
-			iframe.setContent(media);
+		} else {
+			iframe.setContent(null);
+			iframe.setSrc(null);
 		}
 		iframe.invalidate();
 	}
@@ -738,7 +774,10 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		MArchive ar = m_archives[m_index];
 
 		MUser from = MUser.get(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()));
-		File attachment = new File(FileUtil.getTempMailName(ar.getName(), ".pdf"));
+		String suffix = ".pdf";
+		if (!Util.isEmpty(ar.getName()) && ar.getName().contains("."))
+			suffix = "";
+		File attachment = new File(FileUtil.getTempMailName(ar.getName(), suffix));
 		try {
 			Files.copy(ar.getInputStream(), attachment.toPath());
 		} catch (IOException e) {

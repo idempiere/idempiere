@@ -7,10 +7,28 @@
 	      <version>2.1.11</version>
 	      <type>jar</type>
 		</location>
-		<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
+		<location includeSource="true" missingManifest="generate" type="Maven">
 	      <groupId>org.bouncycastle</groupId>
 	      <artifactId>bcmail-fips</artifactId>
 	      <version>2.1.6</version>
+	      <type>jar</type>
+		</location>
+	    <location includeSource="true" missingManifest="generate" type="Maven">
+	      <groupId>org.bouncycastle</groupId>
+	      <artifactId>bcpkix-fips</artifactId>
+	      <version>2.1.9</version>
+	      <type>jar</type>
+		</location>
+	    <location includeSource="true" missingManifest="generate" type="Maven">
+	      <groupId>org.bouncycastle</groupId>
+	      <artifactId>bcutil-fips</artifactId>
+	      <version>2.1.4</version>
+	      <type>jar</type>
+		</location>
+	    <location includeSource="true" missingManifest="generate" type="Maven">
+	      <groupId>org.bouncycastle</groupId>
+	      <artifactId>bc-fips</artifactId>
+	      <version>2.1.1</version>
 	      <type>jar</type>
 		</location>
 	</locations>

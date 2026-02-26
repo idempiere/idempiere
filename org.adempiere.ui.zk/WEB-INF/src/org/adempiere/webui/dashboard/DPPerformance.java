@@ -118,6 +118,6 @@ public class DPPerformance extends DashboardPanel {
 	
 	@Override
 	public boolean isEmpty() {
-		return performanceData.length <= 0;
+		return performanceData == null || performanceData.length <= 0;
 	}
 }

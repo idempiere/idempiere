@@ -25,7 +25,7 @@ import org.zkoss.zul.Toolbar;
  * @date    Feb 25, 2007
  * @deprecated Replace by {@link ToolBar} 
  */
-@Deprecated
+@Deprecated (since="13", forRemoval=true)
 public class FToolbar extends Toolbar
 {
     /**

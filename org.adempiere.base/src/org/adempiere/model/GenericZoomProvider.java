@@ -43,6 +43,7 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
+import org.idempiere.db.util.SQLFragment;
 
 /**
  * Generic provider of zoom targets. Contains pieces of {@link org.adempiere.webui.WZoomAcross}
@@ -214,12 +215,13 @@ public class GenericZoomProvider implements IZoomProvider {
 			MTab tab = MTab.get(tabIDLoop);
 			String whereCtx = tab.getWhereClause();
 			if (!Util.isEmpty(whereCtx, true)) {
+				List<Object> params = new ArrayList<Object>();
 				if (whereCtx.indexOf("@") != -1)
-					whereCtx = Env.parseVariable(whereCtx, po, null, true);
+					whereCtx = Env.parseVariableForSql(whereCtx, po, null, true, params);
 				if (whereCtx.indexOf("@") != -1) // could not parse - probably window context variable in where tab
 					return null;
 				if (levelUp == 0) {
-					query.addRestriction("(" + whereCtx + ")");
+					query.addRestriction(new SQLFragment("(" + whereCtx + ")", params));
 				} else if (levelUp == 1) {
 					MTable parentTable = MTable.get(ctx, tab.getAD_Table_ID());
 					String parentTableName = parentTable.getTableName();
@@ -232,7 +234,7 @@ public class GenericZoomProvider implements IZoomProvider {
 						.append(" WHERE ")
 						.append(whereCtx)
 						.append(")");
-					query.addRestriction("(" + subquery + ")");
+					query.addRestriction(new SQLFragment("(" + subquery + ")", params));
 				} else {
 					// Cannot add where beyond the first parent - need to implement recursion
 					return null;
@@ -247,18 +249,19 @@ public class GenericZoomProvider implements IZoomProvider {
 		MColumn column = table.getColumn(targetColumnName);
 		String refTableName = column.getReferenceTableName();
 		MTable refTable = MTable.get(ctx, refTableName);
+		List<Object> params = new ArrayList<Object>();
 		StringBuilder restriction = new StringBuilder(targetTableName)
 				.append(".")
 				.append(targetColumnName)
-				.append("=");
+				.append("=?");
 		if (refTable.isUUIDKeyTable()) {
-			restriction.append(DB.TO_STRING(po.get_UUID()));
+			params.add(po.get_UUID());
 			query.setZoomValue(po.get_UUID());
 		} else {
-			restriction.append(po.get_ID());
+			params.add(po.get_ID());
 			query.setZoomValue(po.get_ID());
 		}
-		query.addRestriction(restriction.toString());
+		query.addRestriction(new SQLFragment(restriction.toString(), params));
 		query.setZoomTableName(targetTableName);
 		query.setZoomColumnName(targetColumnName);
 
@@ -270,23 +273,24 @@ public class GenericZoomProvider implements IZoomProvider {
 		if (   clientID != 0
 			&& ( MTable.ACCESSLEVEL_All.equals(accessLevel)
 			  || MTable.ACCESSLEVEL_SystemPlusClient.equals(accessLevel))) {
-			query.addRestriction(targetTableName+".AD_Client_ID IN (0, " + clientID + ")");
+			query.addRestriction(new SQLFragment(targetTableName+".AD_Client_ID IN (?,?)", List.of(0, clientID)));
 		} else {
-			query.addRestriction(targetTableName+".AD_Client_ID=" + clientID);
+			query.addRestriction(new SQLFragment(targetTableName+".AD_Client_ID=?", List.of(clientID)));
 		}
 
+		SQLFragment filter = query.getSQLFilter(true);
 		StringBuilder sqlb = new StringBuilder("SELECT COUNT(*) FROM ")
 				.append(targetTableName)
 				.append(" WHERE ")
-				.append(query.getWhereClause(true));
+				.append(filter.sqlClause());
 		String sql = sqlb.toString();
 		int count = -1;
-		if (queries.containsKey(sql)) {
-			count = queries.get(sql);
+		if (queries.containsKey(filter.toString())) {
+			count = queries.get(filter.toString());
 		} else {
 			int timeout = MSysConfig.getIntValue(MSysConfig.ZOOM_ACROSS_QUERY_TIMEOUT, 5, Env.getAD_Client_ID(Env.getCtx())); // default 5 seconds
-			count = getSQLValueTimeout(null, sql, timeout);
-			queries.put(sql, count);
+			count = getSQLValueTimeout(null, sql, timeout, filter.parameters());
+			queries.put(filter.toString(), count);
 		}
 		query.setRecordCount(count);
 		return query;
@@ -296,9 +300,10 @@ public class GenericZoomProvider implements IZoomProvider {
 	 * @param object
 	 * @param sql
 	 * @param timeOut
+	 * @param parameters 
 	 * @return sql value from DB
 	 */
-	private int getSQLValueTimeout(Object object, String sql, int timeOut) {
+	private int getSQLValueTimeout(Object object, String sql, int timeOut, List<Object> parameters) {
     	int retValue = -1;
     	PreparedStatement pstmt = null;
     	ResultSet rs = null;
@@ -306,6 +311,9 @@ public class GenericZoomProvider implements IZoomProvider {
     		pstmt = DB.prepareStatement(sql, null);
 			if (timeOut > 0)
 				pstmt.setQueryTimeout(timeOut);
+			if (parameters != null && !parameters.isEmpty()) {
+				DB.setParameters(pstmt, parameters);
+			}
     		rs = pstmt.executeQuery();
     		if (rs.next())
     			retValue = rs.getInt(1);

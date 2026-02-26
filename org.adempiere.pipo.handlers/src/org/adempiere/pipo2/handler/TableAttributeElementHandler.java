@@ -102,7 +102,7 @@ public class TableAttributeElementHandler extends GenericPOElementHandler
 					addTypeName(atts, "table");
 					document.startElement("", "", MTableAttribute.Table_Name, atts);
 					PoExporter filler = new PoExporter(ctx, document, mTableAttribute);
-					filler.export(excludes, true);
+					filler.export(excludes, ctx.packOut.isIncludeOrganizationId());
 					document.endElement("", "", MTableAttribute.Table_Name);
 				}
 			}

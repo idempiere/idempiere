@@ -29,6 +29,7 @@ import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
 import org.compiere.model.MLookup;
 import org.compiere.util.CCache;
+import org.idempiere.db.util.SQLFragment;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 
@@ -63,6 +64,37 @@ public class InfoManager
         return create(funcGetInfoFromService);
     }
 
+	/**
+	 * Create info panel or info window
+	 * @param lookup
+	 * @param field
+	 * @param tableName
+	 * @param keyColumn
+	 * @param queryValue
+	 * @param multiSelection
+	 * @param sqlFilter
+	 * @return {@link InfoPanel}
+	 */
+	public static InfoPanel create(Lookup lookup, GridField field, String tableName,
+			String keyColumn, String queryValue, boolean multiSelection,
+			SQLFragment sqlFilter)
+	{
+		Function<IInfoFactory, InfoPanel> funcGetInfoFromService = null;
+		
+		if (lookup instanceof MLookup){
+			final int AD_InfoWindow_ID  = ((MLookup)lookup).getAD_InfoWindow_ID();
+			funcGetInfoFromService = (service) -> {
+				return service.create(lookup, field, tableName, keyColumn, queryValue, multiSelection, AD_InfoWindow_ID, sqlFilter);
+			};
+		}else {
+			funcGetInfoFromService = (service) -> {
+				return service.create(lookup, field, tableName, keyColumn, queryValue, multiSelection, 0, sqlFilter);
+			};
+		}
+		
+		return create(funcGetInfoFromService);
+	}
+	
 	/**
 	 * Create info panel or info window
 	 * @param lookup

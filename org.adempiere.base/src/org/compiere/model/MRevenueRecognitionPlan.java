@@ -92,7 +92,7 @@ public class MRevenueRecognitionPlan extends X_C_RevenueRecognition_Plan
 			{
 				// Time base revenue recognition. 
 				// Create C_RevenueRecognition_Run records starting from C_InvoiceLine.RRStartDate or C_Invoice.DateInvoiced.
-				MInvoiceLine il = (MInvoiceLine) getC_InvoiceLine();
+				MInvoiceLine il = new MInvoiceLine(getCtx(), getC_InvoiceLine_ID(), get_TrxName());
 
 				Calendar cal = Calendar.getInstance();
 				Timestamp startDate = new Timestamp(cal.getTimeInMillis());

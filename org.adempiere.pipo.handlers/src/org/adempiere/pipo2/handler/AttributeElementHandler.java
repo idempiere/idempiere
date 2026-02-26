@@ -31,6 +31,7 @@ import org.compiere.model.MTable;
 import org.compiere.model.MTableAttribute;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -94,7 +95,7 @@ public class AttributeElementHandler extends GenericPOElementHandler
 					addTypeName(atts, "table");
 					document.startElement("", "", MAttribute.Table_Name, atts);
 					PoExporter filler = new PoExporter(ctx, document, attribute);
-					filler.export(excludes, true);
+					filler.export(excludes, ctx.packOut.isIncludeOrganizationId());
 					document.endElement("", "", MAttribute.Table_Name);
 				}
 			}
@@ -114,6 +115,8 @@ public class AttributeElementHandler extends GenericPOElementHandler
 	{
 		if(m_tableName == null)
 			m_tableName = Env.getContext(packout.getCtx().ctx, "Table_Name");
+		if (Util.isEmpty(m_tableName))
+			m_tableName = MAttribute.Table_Name;
 		int tableId = MTable.get(packout.getCtx().ctx, m_tableName).getAD_Table_ID();
 		String sql = "SELECT * FROM M_Attribute WHERE M_Attribute_ID=" + recordId;
 		packout.getCtx().ctx.put(DataElementParameters.AD_TABLE_ID, Integer.toString(tableId));
@@ -128,8 +131,12 @@ public class AttributeElementHandler extends GenericPOElementHandler
 	{
 		if(m_tableName == null)
 			m_tableName = Env.getContext(packout.getCtx().ctx, "Table_Name");
+		if (Util.isEmpty(m_tableName))
+			m_tableName = MAttribute.Table_Name;
 		int tableId = MTable.get(packout.getCtx().ctx, m_tableName).getAD_Table_ID();
-		String sql = "SELECT * FROM M_Attribute WHERE M_Attribute_UU = '" + uuid + "'";
+		String sql = !Util.isEmpty(uuid) 
+				? "SELECT * FROM M_Attribute WHERE M_Attribute_UU = '" + uuid + "'"
+				: "SELECT * FROM M_Attribute WHERE M_Attribute_ID=" + recordId;
 		packout.getCtx().ctx.put(DataElementParameters.AD_TABLE_ID, Integer.toString(tableId));
 		packout.getCtx().ctx.put(DataElementParameters.SQL_STATEMENT, sql);
 		this.create(packout.getCtx(), packoutHandler);

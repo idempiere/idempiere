@@ -102,11 +102,11 @@ public class MInfoRelated extends X_AD_InfoRelated implements IInfoColumn, Immut
 	}
 	
 	/**
-	 * Just forward call to {@link #getParentRelatedColumn()}
+	 *
 	 */
 	@Override
 	public MInfoColumn getAD_InfoColumn (){
-		return (MInfoColumn) getParentRelatedColumn();
+		return new MInfoColumn(getCtx(), getParentRelatedColumn_ID(), get_TrxName());
 	}
 
 	@Override

@@ -128,8 +128,8 @@ public class PackIn {
 		File in = new File(fileName);
 		if (!in.exists()) {
 			String msg = "File does not exist: " + fileName;
-			if (log.isLoggable(Level.INFO)) log.info("importXML:" + msg);
-			return msg;
+			if (log.isLoggable(Level.SEVERE)) log.info("importXML:" + msg);
+			throw new AdempiereException(msg);
 		}
 		try (FileInputStream input = new FileInputStream(in)) {
 			return importXML(input, ctx, trxName);

@@ -170,10 +170,7 @@ public class Archive {
 			if (m_AD_Table_ID == MBPartner.Table_ID && m_Record_ID > 0)
 				sql.append(" OR C_BPartner_ID=").append(m_Record_ID);
 			sql.append(")");
-			//	Reset for query
-			m_AD_Table_ID = 0;
-			m_Record_ID = 0;
-			m_Record_UU = null;
+
 		}
 		else
 		{

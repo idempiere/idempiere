@@ -26,7 +26,7 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-@Deprecated
+@Deprecated (since="13", forRemoval=true)
 public class MWebProperties extends X_U_Web_Properties
 {
 	/**

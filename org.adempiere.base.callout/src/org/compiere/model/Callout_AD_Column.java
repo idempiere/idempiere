@@ -38,7 +38,8 @@ public class Callout_AD_Column extends CalloutEngine
 			column.setIsSelectionColumn(true);
 
 		// IDEMPIERE-1011
-		if (PO.getUUIDColumnName(column.getAD_Table().getTableName()).equals(column.getColumnName())) {
+		MTable table = MTable.get(column.getAD_Table_ID());
+		if (PO.getUUIDColumnName(table.getTableName()).equals(column.getColumnName())) {
 			// UUID column
 			column.setAD_Reference_ID(DisplayType.UUID);
 			column.setAD_Val_Rule_ID(0);
@@ -51,7 +52,7 @@ public class Callout_AD_Column extends CalloutEngine
 			column.setIsUpdateable(false);
 			column.setIsAlwaysUpdateable(false);
 			column.setIsKey(false);
-		} else if (column.getAD_Table().getTableName().concat("_ID").equals(column.getColumnName())) {
+		} else if (table.getTableName().concat("_ID").equals(column.getColumnName())) {
 			// ID key column
 			column.setAD_Reference_ID(DisplayType.ID);
 			column.setAD_Val_Rule_ID(0);

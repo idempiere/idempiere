@@ -63,6 +63,7 @@ import org.compiere.util.Ini;
 import org.compiere.util.Language;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
+import org.idempiere.db.util.SQLFragment;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -207,11 +208,12 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	public String getConnectionURL (CConnection connection)
 	{
 		//  jdbc:postgresql://hostname:portnumber/databasename?encoding=UNICODE
+		// tcpKeepAlive=true recommended by HikariCP https://github.com/brettwooldridge/HikariCP
 		StringBuilder sb = new StringBuilder("jdbc:postgresql://")
 			.append(connection.getDbHost())
 			.append(":").append(connection.getDbPort())
 			.append("/").append(connection.getDbName())
-			.append("?encoding=UNICODE&ApplicationName=iDempiere");
+			.append("?encoding=UNICODE&ApplicationName=iDempiere&stringtype=unspecified&tcpKeepAlive=true");
 
 		String urlParameters = SystemProperties.getPostgresqlURLParameters();
 	    if (!Util.isEmpty(urlParameters)) {
@@ -1051,11 +1053,12 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	
 	/**
 	 * Get the name of the unique constraint name based on a postgresql message
-	 * This method works for English, Spanish and German
+	 * This method works for English, Spanish, German and French
 	 * The foreign key constraint name is expected to be found in the second quoted string
 	 *   English quotes -> "constraint"
 	 *   Spanish quotes -> «constraint»
 	 *   German  quotes -> »constraint«
+	 *   French  quotes -> « constraint »
 	 */
 	@Override
 	public String getNameOfUniqueConstraintError(Exception e) {
@@ -1077,17 +1080,18 @@ public class DB_PostgreSQL implements AdempiereDatabase
 			}
 		}
 		if (end != -1)
-			return info.substring(start+1, end);
+			return info.substring(start+1, end).trim();
 		return null;
 	}
 
 	/**
 	 * Get the foreign key constraint name based on a postgresql message
-	 * This method works for English, Spanish and German
+	 * This method works for English, Spanish, German and French
 	 * The foreign key constraint name is expected to be found in the second quoted string
 	 *   English quotes -> "constraint"
 	 *   Spanish quotes -> «constraint»
 	 *   German  quotes -> »constraint«
+	 *   French  quotes -> « constraint »
 	 */
 	@Override
 	public String getForeignKeyConstraint(Exception e) {
@@ -1115,7 +1119,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 			}
 		}
 		if (end != -1)
-			return info.substring(start+1, end);
+			return info.substring(start+1, end).trim();;
 		return null;
 	}
 
@@ -1133,6 +1137,18 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		return builder.toString();
 	}
 
+	@Override
+	public SQLFragment subsetFilterForCSV(String columnName, String csv) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("string_to_array(")
+			.append(columnName)
+			.append(",',')");
+		builder.append(" <@ "); //is contained by
+		builder.append("string_to_array(?,',')");
+
+		return new SQLFragment(builder.toString(), List.of(csv));
+	}
+	
 	@Override
 	public String quoteColumnName(String columnName) {
 		if (!isNativeMode()) {
@@ -1168,6 +1184,25 @@ public class DB_PostgreSQL implements AdempiereDatabase
 			.append(",','))");
 
 		return builder.toString();
+	}
+	
+	@Override
+	public SQLFragment intersectFilterForCSV(String columnName, String csv) {
+		return intersectFilterForCSV(columnName, csv, false);
+	}
+	
+	@Override
+	public SQLFragment intersectFilterForCSV(String columnName, String csv, boolean isNotClause) {
+		StringBuilder builder = new StringBuilder();
+		if(isNotClause)
+			builder.append("NOT");
+		builder.append("(string_to_array(")
+			.append(columnName)
+			.append(",',')");
+		builder.append(" && "); //intersect
+		builder.append("string_to_array(?,','))");
+
+		return new SQLFragment(builder.toString(), List.of(csv));
 	}
 	
 	@Override
@@ -1250,7 +1285,12 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	public String getTimestampWithTimezoneDataType() {
 		return "TIMESTAMP WITH TIME ZONE";
 	}
-	
+
+	@Override
+	public String getUUIDDataType() {
+		return "UUID";
+	}
+
 	@Override
 	public String getSQLDDL(MColumn column) {				
 		StringBuilder sql = new StringBuilder ().append(column.getColumnName())
@@ -1308,7 +1348,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		StringBuilder sql = new StringBuilder ("ALTER TABLE ")
 			.append(table.getTableName())
 			.append(" ADD COLUMN ").append(column.getSQLDDL());
-		String constraint = column.getConstraint(table.getTableName());
+		String constraint = column.getConstraint(table);
 		if (constraint != null && constraint.length() > 0) {
 			sql.append(DB.SQLSTATEMENT_SEPARATOR).append("ALTER TABLE ")
 			.append(table.getTableName())

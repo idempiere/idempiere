@@ -184,6 +184,7 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 						&& ! IHandlerRegistry.TABLE_GENERIC_SINGLE_HANDLER.equals(ctx.packOut.getCurrentPackoutItem().getType())) {
 						ElementHandler handler = ctx.packOut.getHandler(po.get_TableName());
 						if (handler != null && !handler.getClass().equals(this.getClass()) ) {
+							ctx.packOut.getCtx().ctx.put("Table_Name",tableName);
 							handler.packOut(ctx.packOut, document, ctx.logDocument, po.get_ID(), po.get_UUID());
 							createElement = false;
 						}
@@ -197,7 +198,7 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 							filler.addString("IsSyncDatabase", "Y", new AttributesImpl());
 							excludes.add("IsSyncDatabase");
 						}
-						filler.export(excludes, true);
+						filler.export(excludes, ctx.packOut.isIncludeOrganizationId());
 						ctx.packOut.getCtx().ctx.put("Table_Name",tableName);
 						try {
 							new CommonTranslationHandler().packOut(ctx.packOut, document, null, po.get_ID(), po.get_UUID());
@@ -285,7 +286,7 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 						addTypeName(atts, "table");
 						document.startElement("", "", mainTable, atts);
 						PoExporter filler = new PoExporter(ctx, document, po);
-						filler.export(excludes, true);
+						filler.export(excludes, ctx.packOut.isIncludeOrganizationId());
 						ctx.packOut.getCtx().ctx.put("Table_Name",mainTable);
 						try {
 							new CommonTranslationHandler().packOut(ctx.packOut, document, null, po.get_ID(), po.get_UUID());

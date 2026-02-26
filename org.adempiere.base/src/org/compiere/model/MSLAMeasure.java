@@ -21,6 +21,7 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
 
+import org.adempiere.base.GeneratedCodeCoverageExclusion;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 
@@ -31,7 +32,9 @@ import org.compiere.util.Util;
  *  @version $Id: MSLAMeasure.java,v 1.3 2006/07/30 00:51:03 jjanke Exp $
  *  @deprecated not fully implement, marked as inactive in application dictionary
  */
-@Deprecated
+@Deprecated (since="13", forRemoval=true)
+@SuppressWarnings("removal")
+@GeneratedCodeCoverageExclusion
 public class MSLAMeasure extends X_PA_SLA_Measure
 {
 

@@ -465,6 +465,7 @@ public class PackOut
 	}
 
 	private List<String> processedRecords = new ArrayList<String>();
+	private boolean includeOrganizationId;
 	public boolean isExported(String key) {
 		if (processedRecords.contains(key))
 			return true;
@@ -478,5 +479,13 @@ public class PackOut
 
 	public void setExportDictionaryEntity(boolean isExportDictionaryEntity) {
 		this.isExportDictionaryEntity = isExportDictionaryEntity;
+	}
+
+	public void setIncludeOrganizationId(boolean includeOrganizationId) {
+		this.includeOrganizationId = includeOrganizationId;		
+	}
+	
+	public boolean isIncludeOrganizationId() {
+		return includeOrganizationId;
 	}
 }	//	PackOut

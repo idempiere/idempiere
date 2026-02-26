@@ -71,14 +71,15 @@ public class Doc_AssetDisposed extends Doc
 		facts.add(fact);
 		MAssetChange ac = MAssetChange.get(getCtx(), assetDisp.getA_Asset_ID(), MAssetChange.CHANGETYPE_Disposal,getTrxName(), as.getC_AcctSchema_ID());
 		//
+		MAcctSchema acctSchema = MAcctSchema.get(ac.getC_AcctSchema_ID());
 		fact.createLine(null, getAccount(MAssetAcct.COLUMNNAME_A_Asset_Acct, as)
-				, ac.getC_AcctSchema().getC_Currency_ID()
+				, acctSchema.getC_Currency_ID()
 				, Env.ZERO, ac.getAssetValueAmt());
 		fact.createLine(null, getAccount(MAssetAcct.COLUMNNAME_A_Accumdepreciation_Acct, as)
-				, ac.getC_AcctSchema().getC_Currency_ID()
+				, acctSchema.getC_Currency_ID()
 				, ac.getAssetAccumDepreciationAmt(), Env.ZERO);
 		fact.createLine(null, getAccount(MAssetAcct.COLUMNNAME_A_Disposal_Loss_Acct, as)
-				, ac.getC_AcctSchema().getC_Currency_ID()
+				, acctSchema.getC_Currency_ID()
 				, ac.getAssetBookValueAmt(), Env.ZERO);
 		//
 		return facts;

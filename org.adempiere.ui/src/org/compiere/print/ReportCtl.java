@@ -59,17 +59,17 @@ public class ReportCtl
 	/**
 	 * @deprecated Please use {@link ServerReportCtl#PARAM_PRINTER_NAME}
 	 */
-	@Deprecated	
+	@Deprecated (since="13", forRemoval=true)	
 	public static final String PARAM_PRINTER_NAME = ServerReportCtl.PARAM_PRINTER_NAME;
 	/**
 	 * @deprecated Please use {@link ServerReportCtl#PARAM_PRINT_FORMAT}
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static final String PARAM_PRINT_FORMAT = ServerReportCtl.PARAM_PRINT_FORMAT;
 	/**
 	 * @deprecated Please use {@link ServerReportCtl#PARAM_PRINT_INFO}
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static final String PARAM_PRINT_INFO = ServerReportCtl.PARAM_PRINT_INFO;
 
 	/**

@@ -66,7 +66,7 @@ public class InfoRelatedVO implements Serializable, Cloneable, IInfoColumn {
 		
 		this.DisplayLogic = infoRelated.getDisplayLogic();
 		
-		MInfoWindow riw = (MInfoWindow) infoRelated.getRelatedInfo();
+		MInfoWindow riw = MInfoWindow.getInfoWindow(infoRelated.getRelatedInfo_ID());
 		if (riw != null)
 			this.Name = Util.cleanAmp(riw.get_Translation("Name"));
 		else
@@ -153,7 +153,7 @@ public class InfoRelatedVO implements Serializable, Cloneable, IInfoColumn {
 	 * @return related I_AD_InfoWindow
 	 */
 	public I_AD_InfoWindow getRelatedInfo() {
-		return infoRelated.getRelatedInfo();
+		return MInfoWindow.getInfoWindow(infoRelated.getRelatedInfo_ID());
 	}
 
 	/**
@@ -174,7 +174,7 @@ public class InfoRelatedVO implements Serializable, Cloneable, IInfoColumn {
 	 * @return parent related I_AD_InfoColumn
 	 */
 	public I_AD_InfoColumn getParentRelatedColumn() {
-		return infoRelated.getParentRelatedColumn();
+		return new MInfoColumn(ctx, getParentRelatedColumn_ID(), null);
 	}
 	
 	/**

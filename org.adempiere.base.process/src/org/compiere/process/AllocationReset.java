@@ -27,8 +27,10 @@ import org.compiere.model.MProcessPara;
 import org.compiere.model.POResultSet;
 import org.compiere.model.Query;
 import org.compiere.util.AdempiereUserError;
+import org.compiere.util.DB;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 
 /**
  *	Reset (delete) Allocations	
@@ -52,7 +54,7 @@ public class AllocationReset extends SvrProcess
 	/** All Allocations */
 	private boolean		p_AllAllocations = false;
 	/** Transaction				*/
-	private Trx			m_trx = null;
+	protected Trx		m_trx = null;
 	
 	/**
 	 *  Prepare - e.g., get Parameters.
@@ -113,6 +115,10 @@ public class AllocationReset extends SvrProcess
 		{
 			try {
 				MAllocationHdr hdr = new MAllocationHdr(getCtx(), p_C_AllocationHdr_ID, m_trx.getTrxName());
+				
+				String err = testIfDeleteable(hdr);
+				if (!Util.isEmpty(err))
+					return "@Error@ " + err;
 				if (delete(hdr))
 					count++;
 				else
@@ -151,25 +157,38 @@ public class AllocationReset extends SvrProcess
 			.append(" INNER JOIN C_PeriodControl pc ON (p.C_Period_ID=pc.C_Period_ID AND pc.DocBaseType='CMA') ")
 			.append("WHERE C_AllocationHdr.DateAcct BETWEEN p.StartDate AND p.EndDate)");
 
-		try (POResultSet<MAllocationHdr> pors = new Query(getCtx(), MAllocationHdr.Table_Name, where.toString(), get_TrxName())
+		try (POResultSet<MAllocationHdr> pors = new Query(getCtx(), MAllocationHdr.Table_Name, where.toString(), m_trx.getTrxName())
 				.setClient_ID()
 				.setParameters(params)
 				.scroll()) {
 			while (pors.hasNext()) {
 				MAllocationHdr hdr = pors.next();
+
+				String err = testIfDeleteable(hdr);
+				if (!Util.isEmpty(err))
+					return "@Error@ " + err;
+
 				if (delete(hdr))
 					count++;
 			}
+		} finally {
+			m_trx.close();
 		}
 
 		StringBuilder msgreturn = new StringBuilder("@Deleted@ #").append(count);
 		return msgreturn.toString();
 	}	//	doIt
 
-	
-	private boolean delete(MAllocationHdr hdr)
+	protected String testIfDeleteable(MAllocationHdr hdr) {
+
+		if (DB.getSQLValueEx(m_trx.getTrxName(), "SELECT 1 FROM Fact_Reconciliation WHERE Fact_Acct_ID IN (SELECT Fact_Acct_ID FROM Fact_Acct WHERE AD_Table_ID = ? AND Record_ID = ?)", MAllocationHdr.Table_ID, hdr.getC_AllocationHdr_ID()) == 1)
+			return Msg.getMsg(getCtx(), "AllocationDeletionFailedReconciliation", new Object[] {hdr.getDocumentNo()});
+
+		return "";
+	}
+
+	protected boolean delete(MAllocationHdr hdr)
 	{
-	//	m_trx.start();
 		boolean success = false;
 		if (hdr.delete(true, m_trx.getTrxName()))
 		{

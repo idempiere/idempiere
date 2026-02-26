@@ -57,8 +57,6 @@ import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
-import org.idempiere.webservices.model.X_WS_WebServiceFieldInput;
-import org.idempiere.webservices.model.X_WS_WebService_Para;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -93,6 +91,8 @@ import org.idempiere.webservices.AbstractService;
 import org.idempiere.webservices.IWSValidator;
 import org.idempiere.webservices.fault.IdempiereServiceFault;
 import org.idempiere.webservices.model.MWebServiceType;
+import org.idempiere.webservices.model.X_WS_WebServiceFieldInput;
+import org.idempiere.webservices.model.X_WS_WebService_Para;
 
 /*
  * ADEMPIERE/COMPIERE
@@ -1494,7 +1494,7 @@ public class ModelADServiceImpl extends AbstractService implements ModelADServic
 		    			
 		    			// Jan Thielemann Solution for query using the sentence like
 		    			X_WS_WebServiceFieldInput inputField = m_webservicetype.getFieldInput(field.getColumn());
-		    			I_AD_Column col = inputField.getAD_Column();		    			
+		    			I_AD_Column col = MColumn.get(inputField.getAD_Column_ID());		    			
 		    			String sqlType = DisplayType.getSQLDataType(col.getAD_Reference_ID(), col.getColumnName(), col.getFieldLength());		    					
 		    			if(sqlType.contains("CHAR"))
 		    				sqlBuilder.append(" AND ").append(field.getColumn()).append(" LIKE ?");

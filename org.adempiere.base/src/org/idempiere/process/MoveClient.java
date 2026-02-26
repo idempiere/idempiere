@@ -422,6 +422,22 @@ public class MoveClient extends SvrProcess {
 			}
 		}
 
+		// validate if there are images using external storage provider - inform not implemented yet (blocking)
+		if (! p_excludeTablesWhere.toString().contains("'AD_IMAGE'")) {
+			statusUpdate("Checking storage for images");
+			StringBuilder sqlExternalImage = new StringBuilder()
+					.append("SELECT COUNT(*) FROM AD_Image")
+					.append(" JOIN AD_Client ON (AD_Image.AD_Client_ID=AD_Client.AD_Client_ID)")
+					.append(" JOIN AD_ClientInfo ON (AD_Image.AD_Client_ID=AD_ClientInfo.AD_Client_ID)")
+					.append(" LEFT JOIN AD_StorageProvider ON (AD_StorageProvider.AD_StorageProvider_ID=AD_ClientInfo.StorageImage_ID)")
+					.append(" WHERE AD_StorageProvider.Method IS NOT NULL AND AD_StorageProvider.Method!='DB'")
+					.append(" AND ").append(p_whereClient);
+			int cntEI = countInExternal(sqlExternalImage.toString());
+			if (cntEI > 0) {
+				throw new AdempiereUserError("There are images using external storage provider - that's not implemented yet");
+			}
+		}
+
 		// create list of tables to ignore
 		// validate tables
 		// for each source table not excluded
@@ -575,7 +591,7 @@ public class MoveClient extends SvrProcess {
 		// when the column is a foreign key
 		String foreignTableName = localColumn.getReferenceTableName();
 		if (   foreignTableName != null 
-			&& (foreignTableName.equalsIgnoreCase(tableName) || "AD_PInstance_Log".equalsIgnoreCase(tableName))) {
+			&& (DisplayType.isMultiID(refID) || foreignTableName.equalsIgnoreCase(tableName) || "AD_PInstance_Log".equalsIgnoreCase(tableName))) {
 			foreignTableName = "";
 		}
 		if (! Util.isEmpty(foreignTableName)) {
@@ -766,6 +782,10 @@ public class MoveClient extends SvrProcess {
 		// validation construct the list of tables and columns to process
 		// NOTE that the whole process will be done in a single transaction, foreign keys will be validated on commit
 
+		int batchFlushSize = MSysConfig.getIntValue(MSysConfig.COPY_TENANT_BATCH_FLUSH_SIZE, 10000);
+		if (batchFlushSize <= 0)
+			batchFlushSize = 10000;
+
 		List<MTable> tables = new Query(getCtx(), MTable.Table_Name,
 				"IsView='N' AND " + p_excludeTablesWhere,
 				get_TrxName())
@@ -773,6 +793,11 @@ public class MoveClient extends SvrProcess {
 				.setOrderBy("TableName")
 				.list();
 
+	  PreparedStatement stmtInsertConv = null;
+	  if (p_IsCopyClient)
+		stmtInsertConv = DB.prepareStatement(insertConversionId, get_TrxName());
+	  try {
+		int batchCount = 0;
 		// create/verify the ID conversions
 		for (MTable table : tables) {
 			String tableName = table.getTableName();
@@ -829,7 +854,7 @@ public class MoveClient extends SvrProcess {
 							}
 						} else {
 							if (table.isUUIDKeyTable())
-								target_Key = UUID.randomUUID().toString();
+								target_Key = Util.generateUUIDv7().toString();
 							else {
 								if (source_Key instanceof Number && ((Number)source_Key).intValue() <= MTable.MAX_OFFICIAL_ID && !p_IsCopyClient)
 									target_Key = source_Key;
@@ -839,18 +864,43 @@ public class MoveClient extends SvrProcess {
 						}
 					}
 					if (target_Key != null || (target_Key instanceof Number && ((Number)target_Key).intValue() >= 0)) {
-						DB.executeUpdateEx(insertConversionId,
-								new Object[] {getAD_PInstance_ID(), tableName.toUpperCase(), source_Key, target_Key, null},
-								get_TrxName());
+						if (p_IsCopyClient) {
+							stmtInsertConv.setInt(1, getAD_PInstance_ID());
+							stmtInsertConv.setString(2, tableName.toUpperCase());
+							stmtInsertConv.setString(3, source_Key.toString());
+							stmtInsertConv.setString(4, target_Key.toString());
+							stmtInsertConv.setString(5, null);
+							stmtInsertConv.addBatch();
+							stmtInsertConv.clearParameters();
+							batchCount++;
+							if (batchCount % batchFlushSize == 0) {
+								if (log.isLoggable(Level.INFO)) log.info("Flushing batch of ID conversions with batch size " + batchFlushSize);
+								stmtInsertConv.executeBatch();
+								batchCount = 0;
+							}
+						} else {
+							DB.executeUpdateEx(insertConversionId,
+									new Object[] {getAD_PInstance_ID(), tableName.toUpperCase(), source_Key.toString(), target_Key.toString(), null},
+									get_TrxName());
+						}
 					}
 				}
 			} catch (SQLException e) {
-				throw new AdempiereException("Could not execute external query: " + selectGetIds + "\nCause = " + e.getLocalizedMessage());
+				throw new AdempiereException("Could not execute query: " + selectGetIds + "\nCause = " + e.getLocalizedMessage());
 			} finally {
 				DB.close(rsGI, stmtGI);
 			}
 
 		}
+		if (p_IsCopyClient && batchCount > 0) {
+			if (log.isLoggable(Level.INFO)) log.info("Flushing last batch of ID conversions with batch size " + batchCount);
+			stmtInsertConv.executeBatch();
+		}
+	  } catch (SQLException e) {
+		throw new AdempiereException("Could not execute insert: " + insertConversionId + "\nCause = " + e.getLocalizedMessage());
+	  } finally {
+		DB.close(null, stmtInsertConv);
+	  }
 
 		try {
 			commitEx(); // commit the T_MoveClient table to analyze potential problems
@@ -922,9 +972,13 @@ public class MoveClient extends SvrProcess {
 			PreparedStatement stmtGD = null;
 			ResultSet rsGD = null;
 			Object[] parameters = new Object[ncols];
+			PreparedStatement stmtIns = null;
 			try {
 				stmtGD = externalConn.prepareStatement(selectGetData, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+				if (p_IsCopyClient)
+					stmtIns = DB.prepareStatement(insertSB.toString(), get_TrxName());
 				rsGD = stmtGD.executeQuery();
+				int batchCount = 0;
 				while (rsGD.next()) {
 					boolean insertRecord = true;
 					for (int i = 0; i < ncols; i++) {
@@ -1029,7 +1083,10 @@ public class MoveClient extends SvrProcess {
 							if (rsGD.wasNull()) {
 								parameters[i] = null;
 							} else {
-								if (   ! (key instanceof Number && ((Number)key).intValue() == 0 && ("Parent_ID".equalsIgnoreCase(columnName) || "Node_ID".equalsIgnoreCase(columnName)))  // Parent_ID/Node_ID=0 is valid
+								if (   ! (key instanceof Number 
+										  && ((Number)key).intValue() == 0 
+										      && (   "Parent_ID".equalsIgnoreCase(columnName) || "Node_ID".equalsIgnoreCase(columnName)       // Parent_ID/Node_ID=0 is valid
+										    	  || ("Record_ID".equalsIgnoreCase(columnName) && "AD_Archive".equalsIgnoreCase(tableName)))) // AD_Archive.Record_ID=0 is valid
 									&& (key instanceof String || (key instanceof Number && ((Number)key).intValue() >= MTable.MAX_OFFICIAL_ID) || p_IsCopyClient)) {
 									Object convertedId = null;
 
@@ -1089,11 +1146,11 @@ public class MoveClient extends SvrProcess {
 							if (p_IsCopyClient) {
 								String uuidCol = PO.getUUIDColumnName(tableName);
 								if (columnName.equals(uuidCol)) {
-									String oldUUID = (String) parameters[i];
+									String oldUUID = parameters[i] == null ? null : parameters[i].toString();
 									// it is possible that the UUID has been resolved before because of a foreign key Record_UU, so search in T_MoveClient first
 									String newUUID = DB.getSQLValueStringEx(get_TrxName(), queryT_MoveClient, getAD_PInstance_ID(), tableName.toUpperCase(), oldUUID);
 									if (newUUID == null) {
-										newUUID = UUID.randomUUID().toString();
+										newUUID = Util.generateUUIDv7().toString();
 									}
 									parameters[i] = newUUID;
 									if (! Util.isEmpty(oldUUID)) {
@@ -1144,16 +1201,39 @@ public class MoveClient extends SvrProcess {
 					}
 					if (insertRecord) {
 						try {
-							DB.executeUpdateEx(insertSB.toString(), parameters, get_TrxName());
+							if (p_IsCopyClient) {
+								int paramIndex = 1;
+								for (Object param : parameters)
+									stmtIns.setObject(paramIndex++, param);
+								stmtIns.addBatch();
+								stmtIns.clearParameters();
+								batchCount++;
+								if (batchCount % batchFlushSize == 0) {
+									if (log.isLoggable(Level.INFO)) log.info("Flushing batch of inserts for table " + tableName + " with batch size " + batchFlushSize);
+									stmtIns.executeBatch();
+									batchCount = 0;
+								}
+							} else {
+								DB.executeUpdateEx(insertSB.toString(), parameters, get_TrxName());
+							}
 						} catch (Exception e) {
 							throw new AdempiereException("Could not execute: " + insertSB + "\nCause = " + e.getLocalizedMessage());
 						}
 					}
 				}
+				if (p_IsCopyClient && batchCount > 0) {
+					try {
+						if (log.isLoggable(Level.INFO)) log.info("Flushing last batch of inserts for table " + tableName + " with batch size " + batchCount);
+						stmtIns.executeBatch();
+					} catch (SQLException e) {
+						throw new AdempiereException("Could not execute batch insert: " + insertSB + "\nCause = " + e.getLocalizedMessage());
+					}
+				}
 			} catch (SQLException e) {
-				throw new AdempiereException("Could not execute external query: " + selectGetData + "\nCause = " + e.getLocalizedMessage());
+				throw new AdempiereException("Could not execute query: " + selectGetData + "\nCause = " + e.getLocalizedMessage());
 			} finally {
 				DB.close(rsGD, stmtGD);
+				DB.close(null, stmtIns);
 			}
 
 		}
@@ -1228,10 +1308,10 @@ public class MoveClient extends SvrProcess {
 			if (! p_IsCopyClient)
 				return key;
 			MTable cTable = MTable.get(getCtx(), convertTable);
-			if (key instanceof String && ! cTable.isUUIDKeyTable() && columnName.equals("Record_UU")) {
-				convertedId = UUID.randomUUID().toString();
+			if ((key instanceof String || key instanceof UUID) && ! cTable.isUUIDKeyTable() && columnName.equals("Record_UU")) {
+				convertedId = Util.generateUUIDv7().toString();
 				DB.executeUpdateEx(insertConversionId,
-						new Object[] {getAD_PInstance_ID(), convertTable.toUpperCase(), key, convertedId, null},
+						new Object[] {getAD_PInstance_ID(), convertTable.toUpperCase(), key.toString(), convertedId.toString(), null},
 						get_TrxName());
 			} else {
 				// not found in the T_MoveClient table - try to get it again - could be missed in first pass

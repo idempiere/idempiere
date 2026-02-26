@@ -64,6 +64,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.db.util.SQLFragment;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -122,6 +123,7 @@ public class InfoProductWindow extends InfoWindow {
 	 * @param whereClause
 	 * @param AD_InfoWindow_ID
 	 */
+	@Deprecated (since="13", forRemoval=true)
 	public InfoProductWindow(int WindowNo, String tableName, String keyColumn,
 			String queryValue, boolean multipleSelection, String whereClause,
 			int AD_InfoWindow_ID) {
@@ -134,10 +136,27 @@ public class InfoProductWindow extends InfoWindow {
 	 * @param keyColumn
 	 * @param queryValue
 	 * @param multipleSelection
+	 * @param AD_InfoWindow_ID
+	 * @param sqlFilter
+	 */
+	public InfoProductWindow(int WindowNo, String tableName, String keyColumn,
+			String queryValue, boolean multipleSelection, 
+			int AD_InfoWindow_ID, SQLFragment sqlFilter) {
+		this(WindowNo, tableName, keyColumn, queryValue, multipleSelection, AD_InfoWindow_ID, true, sqlFilter);
+	}
+	
+	/**
+	 * @param WindowNo
+	 * @param tableName
+	 * @param keyColumn
+	 * @param queryValue
+	 * @param multipleSelection
 	 * @param whereClause
 	 * @param AD_InfoWindow_ID
 	 * @param lookup
 	 */
+	@SuppressWarnings("removal")
+	@Deprecated (since="13", forRemoval=true)
 	public InfoProductWindow(int WindowNo, String tableName, String keyColumn,
 			String queryValue, boolean multipleSelection, String whereClause,
 			int AD_InfoWindow_ID, boolean lookup) {
@@ -151,16 +170,53 @@ public class InfoProductWindow extends InfoWindow {
 	 * @param keyColumn
 	 * @param queryValue
 	 * @param multipleSelection
+	 * @param AD_InfoWindow_ID
+	 * @param lookup
+	 * @param sqlFilter
+	 */
+	public InfoProductWindow(int WindowNo, String tableName, String keyColumn,
+			String queryValue, boolean multipleSelection, 
+			int AD_InfoWindow_ID, boolean lookup, SQLFragment sqlFilter) {
+		super(WindowNo, tableName, keyColumn, queryValue, multipleSelection,
+				AD_InfoWindow_ID, lookup, sqlFilter);
+	}
+	
+	/**
+	 * @param WindowNo
+	 * @param tableName
+	 * @param keyColumn
+	 * @param queryValue
+	 * @param multipleSelection
 	 * @param whereClause
 	 * @param AD_InfoWindow_ID
 	 * @param lookup
 	 * @param field
 	 */
+	@SuppressWarnings("removal")
+	@Deprecated (since="13", forRemoval=true)
 	public InfoProductWindow(int WindowNo, String tableName, String keyColumn,
 			String queryValue, boolean multipleSelection, String whereClause,
 			int AD_InfoWindow_ID, boolean lookup, GridField field) {
 		super(WindowNo, tableName, keyColumn, queryValue, multipleSelection,
 				whereClause, AD_InfoWindow_ID, lookup, field);
+	}
+	
+	/**
+	 * @param WindowNo
+	 * @param tableName
+	 * @param keyColumn
+	 * @param queryValue
+	 * @param multipleSelection
+	 * @param AD_InfoWindow_ID
+	 * @param lookup
+	 * @param field
+	 * @param sqlFilter
+	 */
+	public InfoProductWindow(int WindowNo, String tableName, String keyColumn,
+			String queryValue, boolean multipleSelection, 
+			int AD_InfoWindow_ID, boolean lookup, GridField field, SQLFragment sqlFilter) {
+		super(WindowNo, tableName, keyColumn, queryValue, multipleSelection,
+				AD_InfoWindow_ID, lookup, field, sqlFilter);
 	}
 	
 	/**
@@ -175,6 +231,8 @@ public class InfoProductWindow extends InfoWindow {
 	 * @param field
 	 * @param predefinedContextVariables
 	 */
+	@SuppressWarnings("removal")
+	@Deprecated (since="13", forRemoval=true)
 	public InfoProductWindow(int WindowNo, String tableName, String keyColumn,
 			String queryValue, boolean multipleSelection, String whereClause,
 			int AD_InfoWindow_ID, boolean lookup, GridField field, String predefinedContextVariables) {
@@ -182,31 +240,54 @@ public class InfoProductWindow extends InfoWindow {
 				whereClause, AD_InfoWindow_ID, lookup, field, predefinedContextVariables);
 	}
 
+	/**
+	 * @param WindowNo
+	 * @param tableName
+	 * @param keyColumn
+	 * @param queryValue
+	 * @param multipleSelection
+	 * @param AD_InfoWindow_ID
+	 * @param lookup
+	 * @param field
+	 * @param predefinedContextVariables
+	 * @param sqlFilter
+	 */
+	public InfoProductWindow(int WindowNo, String tableName, String keyColumn,
+			String queryValue, boolean multipleSelection, 
+			int AD_InfoWindow_ID, boolean lookup, GridField field, String predefinedContextVariables, SQLFragment sqlFilter) {
+		super(WindowNo, tableName, keyColumn, queryValue, multipleSelection,
+				AD_InfoWindow_ID, lookup, field, predefinedContextVariables, sqlFilter);
+	}
+	
+	@SuppressWarnings("removal")
 	@Override
-	protected String getSQLWhere() {
+	protected SQLFragment getSQLFilter() {
 		/**
 		 * when query not by click requery button, reuse prev where clause
 		 * IDEMPIERE-1979  
 		 */
-		if (!isQueryByUser && prevWhereClause != null){
-			return prevWhereClause;
+		if (!isQueryByUser && prevSQLFilter != null){
+			return prevSQLFilter;
 		}
-		
-		StringBuilder where = new StringBuilder(super.getSQLWhere());
+
+		SQLFragment filter = super.getSQLFilter();
+		StringBuilder where = new StringBuilder(filter.sqlClause());
 		if (getSelectedWarehouseId() > 0) {
 			if (where.length() > 0) {
 				where.append(" AND ");
 			}
 			where.append("p.IsSummary='N' ");
 		}
-		// IDEMPIERE-1979
-		prevWhereClause = where.toString();
+		// IDEMPIERE-1979		
+		String whereClause = where.toString();
 		if (MSysConfig.getBooleanValue(MSysConfig.INFO_PRODUCT_SHOW_PRODUCTS_WITHOUT_PRICE, false, Env.getAD_Client_ID(Env.getCtx()))) {
-			prevWhereClause = prevWhereClause.replaceAll(
+			whereClause = whereClause.replaceAll(
 					"AND pr.M_PriceList_Version_ID = \\?",
 					"AND (pr.M_PriceList_Version_ID=? OR pr.M_PriceList_Version_ID IS NULL)");
 		}
-		return prevWhereClause;
+		prevSQLFilter = new SQLFragment(whereClause, filter.parameters());
+		prevWhereClause = prevSQLFilter.toSQLWithParameters();
+		return prevSQLFilter;
 	}
 
 	@Override
@@ -1004,13 +1085,12 @@ public class InfoProductWindow extends InfoWindow {
 	}
 
 	@Override
-	protected void prepareTable(ColumnInfo[] layout, String from, String where,
-			String orderBy) {
+	protected void prepareTable(ColumnInfo[] layout, String from, String orderBy, SQLFragment sqlFilter) {
 		if (Util.isEmpty(orderBy) && getSelectedWarehouseId() > 0)
 		{
 			orderBy = "QtyAvailable DESC";
 		}
-		super.prepareTable(layout, from, where, orderBy);
+		super.prepareTable(layout, from, orderBy, sqlFilter);
 	}
 
 	@Override

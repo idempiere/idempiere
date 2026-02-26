@@ -6,6 +6,7 @@ package org.adempiere.base.process;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.compiere.model.MColumn;
 import org.compiere.model.MField;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.M_Element;
@@ -128,8 +129,9 @@ public class AcceptFieldSuggestion extends SvrProcess {
 
 	private String updateElement(X_AD_FieldSuggestion suggestion) {
 		boolean changed = false;
-		MField mField = new MField(getCtx(), suggestion.getAD_Field_ID(), get_TrxName());
-		M_Element element = new M_Element(getCtx(), mField.getAD_Column().getAD_Element_ID(), get_TrxName());
+		MField mField = MField.get(suggestion.getAD_Field_ID());
+		MColumn column = MColumn.get(mField.getAD_Column_ID());
+		M_Element element = new M_Element(getCtx(), column.getAD_Element_ID(), get_TrxName());
 		if (p_updateBaseLanguage) {			
 			if (!Util.isEmpty(suggestion.getName())) {
 				element.setName(suggestion.getName());

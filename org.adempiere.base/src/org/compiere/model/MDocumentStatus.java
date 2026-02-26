@@ -35,19 +35,21 @@ import java.util.Properties;
 
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.db.util.SQLFragment;
 
 /**
  * Named status of records in a table via SQL criteria
  */
 public class MDocumentStatus extends X_PA_DocumentStatus implements ImmutablePOSupport {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = 4028519324986534673L;
+	private static final long serialVersionUID = -8979702484417132292L;
 
-    /**
+	/**
      * UUID based Constructor
      * @param ctx  Context
      * @param PA_DocumentStatus_UU  UUID key
@@ -159,7 +161,7 @@ public class MDocumentStatus extends X_PA_DocumentStatus implements ImmutablePOS
 
 		List<MDocumentStatus> list = new Query(ctx, MDocumentStatus.Table_Name, whereClause, trxName)
 				.setOnlyActiveRecords(true)
-				.setOrderBy(MDocumentStatus.COLUMNNAME_SeqNo)
+				.setOrderBy("COALESCE(AD_FieldGroup_ID,0), SeqNo")
 				.setParameters(Env.getAD_Client_ID(ctx))
 				.list();
 
@@ -175,6 +177,16 @@ public class MDocumentStatus extends X_PA_DocumentStatus implements ImmutablePOS
 					Boolean access = MRole.getDefault().getFormAccess(ds.getAD_Form_ID());
 					if (access != null)
 						listWithAccess.add(ds);
+				} else if (ds.getAD_Process_ID() > 0) {
+					Boolean access = MRole.getDefault().getProcessAccess(ds.getAD_Process_ID());
+					if (access != null)
+						listWithAccess.add(ds);
+				} else if (ds.getAD_InfoWindow_ID() > 0) {
+					Boolean access = MRole.getDefault().getInfoAccess(ds.getAD_InfoWindow_ID());
+					if (access != null)
+						listWithAccess.add(ds);
+				} else if (!Util.isEmpty(ds.getHelp())) {
+					listWithAccess.add(ds);
 				}
 			}
 		}
@@ -192,17 +204,20 @@ public class MDocumentStatus extends X_PA_DocumentStatus implements ImmutablePOS
 		StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM ");
 		String tableName = MTable.getTableName(Env.getCtx(), documentStatus.getAD_Table_ID());
 		sql.append(tableName);
-		String where = getWhereClause(documentStatus);
+		SQLFragment sqlf = getSQLFilter(documentStatus);
+		String where = sqlf.sqlClause();
 		if (where != null && where.trim().length() > 0)
 			sql.append(" WHERE " ).append(where);
-		String sqlS = MRole.getDefault().addAccessSQL(sql.toString(), tableName, false, true);
-		return DB.getSQLValue(null, sqlS);
+		String sqlS = MRole.getDefault().addAccessSQL(sql.toString(), tableName, false, false);
+		return DB.getSQLValue(null, sqlS, sqlf.parameters());
 	}
 
 	/**
 	 * @param documentStatus
 	 * @return where clause to find matching records
+	 * @deprecated use getSQLFilter
 	 */
+	@Deprecated (since="13", forRemoval=true)
 	public static String getWhereClause(MDocumentStatus documentStatus) {
 		String tableName = MTable.getTableName(Env.getCtx(), documentStatus.getAD_Table_ID());
 		StringBuilder where = new StringBuilder(" ").append(tableName).append(".AD_Client_ID=" + Env.getAD_Client_ID(Env.getCtx()) );
@@ -222,6 +237,35 @@ public class MDocumentStatus extends X_PA_DocumentStatus implements ImmutablePOS
 		return Env.parseContext(Env.getCtx(), 0, where.toString(), false);
 	}
 
+	/**
+	 * Get where clause for document status with parameters
+	 * @param documentStatus
+	 * @return where clause and parameters
+	 */
+	public static SQLFragment getSQLFilter(MDocumentStatus documentStatus) {
+		List<Object> params = new ArrayList<>();
+		String tableName = MTable.getTableName(Env.getCtx(), documentStatus.getAD_Table_ID());
+		StringBuilder where = new StringBuilder(" ").append(tableName).append(".AD_Client_ID=?");
+		params.add(Env.getAD_Client_ID(Env.getCtx()));
+		if (documentStatus.getC_Project_ID() > 0) 
+		{
+			where.append(" AND ").append(tableName).append(".C_Project_ID=?");
+			params.add(documentStatus.getC_Project_ID());
+		}
+		if (documentStatus.getAD_Org_ID() > 0) 
+		{
+			where.append(" AND ").append(tableName).append(".AD_Org_ID=?");
+			params.add(documentStatus.getAD_Org_ID());
+		}
+		String extra = documentStatus.getWhereClause();
+		if (extra != null && extra.trim().length() > 0)
+		{
+			where.append(" AND ( ").append(extra).append(" ) ");
+		}
+		String whereClause = Env.parseContextForSql(Env.getCtx(), 0, where.toString(), false, params);
+		return new SQLFragment(whereClause, params);
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder("MDocumentStatus[");
@@ -266,4 +310,33 @@ public class MDocumentStatus extends X_PA_DocumentStatus implements ImmutablePOS
 		makeImmutable();
 		return this;
 	}
+
+	@Override
+	protected boolean beforeSave(boolean newRecord) {
+		if (newRecord) {
+			if (getSeqNo() <= 0) {
+				int seqNo = DB.getSQLValueEx(get_TrxName(), "SELECT COALESCE(MAX(SeqNo),0)+10 FROM PA_DocumentStatus WHERE AD_Client_ID IN (0,?)", getAD_Client_ID());
+				setSeqNo(seqNo);
+			}
+		}
+		if (getAD_Window_ID() > 0) {
+			setAD_Form_ID(0);
+			setAD_Process_ID(0);
+			setAD_InfoWindow_ID(0);
+		} else if (getAD_Form_ID() > 0) {
+			setAD_Window_ID(0);
+			setAD_Process_ID(0);
+			setAD_InfoWindow_ID(0);
+		} else if (getAD_Process_ID() > 0) {
+			setAD_Window_ID(0);
+			setAD_Form_ID(0);
+			setAD_InfoWindow_ID(0);
+		} else if (getAD_InfoWindow_ID() > 0) {
+			setAD_Window_ID(0);
+			setAD_Form_ID(0);
+			setAD_Process_ID(0);
+		}
+		return true;
+	}
+
 }

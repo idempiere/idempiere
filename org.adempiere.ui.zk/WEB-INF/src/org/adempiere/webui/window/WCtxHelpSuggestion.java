@@ -21,6 +21,7 @@ import org.compiere.model.MTab;
 import org.compiere.model.MTable;
 import org.compiere.model.MTask;
 import org.compiere.model.MUserDefInfo;
+import org.compiere.model.MWindow;
 import org.compiere.model.PO;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.DB;
@@ -120,7 +121,7 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 		cell = new Cell();
 		cell.setWidth("85%");
 		cell.setAlign("left");
-		cell.appendChild(new Label(ctxHelpMsg != null ? ctxHelpMsg.getAD_CtxHelp().getName() : getContextHelpName(po)));
+		cell.appendChild(new Label(ctxHelpMsg != null ? new MCtxHelp(ctxHelpMsg.getCtx(), ctxHelpMsg.getAD_CtxHelp_ID(), ctxHelpMsg.get_TrxName()).getName() : getContextHelpName(po)));
 		hlayout.appendChild(cell);
 		vlayout.appendChild(hlayout);
 				
@@ -332,31 +333,25 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 	private String getContextHelpName(PO po) {
 		if (po == null) {
 			return "Home";
-		} else if (po instanceof MTab) {
-			MTab tab = (MTab) po;
-			return tab.getAD_Window().getName() + " / " + tab.getName();
-		} else if (po instanceof MProcess) {
-			MProcess process = (MProcess) po;
+		} else if (po instanceof MTab tab) {
+			MWindow window = MWindow.get(tab.getCtx(), tab.getAD_Window_ID());
+			return window.getName() + " / " + tab.getName();
+		} else if (po instanceof MProcess process) {
 			String name = process.getName();
 			return "Report/Process " + name;
-		} else if (po instanceof MForm) {
-			MForm form = (MForm) po;
+		} else if (po instanceof MForm form) {
 			String name = form.getName();
 			return "Form " + name;
-		} else if (po instanceof MWorkflow) {
-			MWorkflow wf = (MWorkflow) po;
+		} else if (po instanceof MWorkflow wf) {
 			String name = wf.getName();
 			return "Workflow " + name;
-		} else if (po instanceof MInfoWindow) {
-			MInfoWindow info = (MInfoWindow) po;
+		} else if (po instanceof MInfoWindow info) {
 			String name = info.getName();
 			return "Info " + name;
-		} else if (po instanceof MWFNode) {
-			MWFNode node = (MWFNode) po;
+		} else if (po instanceof MWFNode node) {
 			String name = "node";
 			return node.getAD_Workflow().getName() + " / " + name;
-		} else if (po instanceof MTask) {
-			MTask task = (MTask) po;
+		} else if (po instanceof MTask task) {
 			String name = task.getName();
 			return "Task " + name;
 		} else {
@@ -372,10 +367,10 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 		if (po == null) {
 			ctxHelp.setName("Home");
 			ctxHelp.setCtxType(X_AD_CtxHelp.CTXTYPE_Home);
-		} else if (po instanceof MTab) {
-			MTab tab = (MTab) po;
+		} else if (po instanceof MTab tab) {
 			String name = tab.getName();
-			String fullName = tab.getAD_Window().getName() + " / " + name;
+			MWindow window = MWindow.get(tab.getCtx(), tab.getAD_Window_ID());
+			String fullName = window.getName() + " / " + name;
 			if (fullName.length() <= 60) {
 				ctxHelp.setName(fullName);
 			} else {
@@ -386,8 +381,7 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 				} 
 			}
 			ctxHelp.setCtxType(X_AD_CtxHelp.CTXTYPE_Tab);
-		} else if (po instanceof MProcess) {
-			MProcess process = (MProcess) po;
+		} else if (po instanceof MProcess process) {
 			String name = process.getName();
 			String fullName = "Report/Process " + name;
 			if (fullName.length() <= 60) {
@@ -397,8 +391,7 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 				ctxHelp.setName(name);
 			}
 			ctxHelp.setCtxType(X_AD_CtxHelp.CTXTYPE_Process);
-		} else if (po instanceof MForm) {
-			MForm form = (MForm) po;
+		} else if (po instanceof MForm form) {
 			String name = form.getName();
 			String fullName = "Form " + name;
 			if (fullName.length() <= 60) {
@@ -408,8 +401,7 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 				ctxHelp.setName(name);
 			}
 			ctxHelp.setCtxType(X_AD_CtxHelp.CTXTYPE_Form);
-		} else if (po instanceof MWorkflow) {
-			MWorkflow wf = (MWorkflow) po;
+		} else if (po instanceof MWorkflow wf) {
 			String name = wf.getName();
 			String fullName = "Workflow " + name;
 			if (fullName.length() <= 60) {
@@ -419,8 +411,7 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 				ctxHelp.setName(name);
 			}
 			ctxHelp.setCtxType(X_AD_CtxHelp.CTXTYPE_Workflow);
-		} else if (po instanceof MInfoWindow) {
-			MInfoWindow info = (MInfoWindow) po;
+		} else if (po instanceof MInfoWindow info) {
 			// Load User Def
 			String name = info.getName();
 			MUserDefInfo userDef = MUserDefInfo.getBestMatch(Env.getCtx(), info.getAD_InfoWindow_ID());
@@ -436,8 +427,7 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 				ctxHelp.setName(name);
 			}
 			ctxHelp.setCtxType(X_AD_CtxHelp.CTXTYPE_Info);
-		} else if (po instanceof MWFNode) {
-			MWFNode node = (MWFNode) po;
+		} else if (po instanceof MWFNode node) {
 			String name = "node";
 			String fullName = node.getAD_Workflow().getName() + " / " + name;
 			if (fullName.length() <= 60) {
@@ -447,8 +437,7 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 				ctxHelp.setName(name);
 			}
 			ctxHelp.setCtxType(X_AD_CtxHelp.CTXTYPE_Node);
-		} else if (po instanceof MTask) {
-			MTask task = (MTask) po;
+		} else if (po instanceof MTask task) {
 			String name = task.getName();
 			String fullName = "Task " + name;
 			if (fullName.length() <= 60) {

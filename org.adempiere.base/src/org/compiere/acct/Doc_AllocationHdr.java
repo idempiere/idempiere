@@ -362,8 +362,10 @@ public class Doc_AllocationHdr extends Doc
 						getC_Currency_ID(), null, allocationSource);		//	payment currency
 					if (fl != null)
 						allocationAccounted = fl.getAcctBalance().negate();
-					if (fl != null && invoice != null)
+					if (fl != null && invoice != null) {
 						fl.setAD_Org_ID(invoice.getAD_Org_ID());
+						fl.setC_BPartner_ID(invoice.getC_BPartner_ID());
+					}
 
 					// for Realized Gain & Loss
 					flForRGL = factForRGL.createLine (line, bpAcct,
@@ -417,8 +419,10 @@ public class Doc_AllocationHdr extends Doc
 						getC_Currency_ID(), allocationSource, null);		//	payment currency
 					if (fl != null)
 						allocationAccounted = fl.getAcctBalance();
-					if (fl != null && invoice != null)
+					if (fl != null && invoice != null) {
 						fl.setAD_Org_ID(invoice.getAD_Org_ID());
+						fl.setC_BPartner_ID(invoice.getC_BPartner_ID());
+					}
 
 					// for Realized Gain & Loss
 					flForRGL = factForRGL.createLine (line, bpAcct,

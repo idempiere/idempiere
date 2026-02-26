@@ -31,7 +31,7 @@ public class X_C_Country extends PO implements I_C_Country, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250805L;
+	private static final long serialVersionUID = 20251205L;
 
     /** Standard Constructor */
     public X_C_Country (Properties ctx, int C_Country_ID, String trxName)
@@ -506,93 +506,6 @@ public class X_C_Country extends PO implements I_C_Country, I_Persistent
 			return "Y".equals(oo);
 		}
 		return false;
-	}
-
-	/** Set Use Postcode Lookup.
-		@param IsPostcodeLookup Does this country have a post code web service
-	*/
-	public void setIsPostcodeLookup (boolean IsPostcodeLookup)
-	{
-		set_Value (COLUMNNAME_IsPostcodeLookup, Boolean.valueOf(IsPostcodeLookup));
-	}
-
-	/** Get Use Postcode Lookup.
-		@return Does this country have a post code web service
-	  */
-	public boolean isPostcodeLookup()
-	{
-		Object oo = get_Value(COLUMNNAME_IsPostcodeLookup);
-		if (oo != null)
-		{
-			 if (oo instanceof Boolean)
-				 return ((Boolean)oo).booleanValue();
-			return "Y".equals(oo);
-		}
-		return false;
-	}
-
-	/** Set Lookup ClassName.
-		@param LookupClassName The class name of the postcode lookup plugin
-	*/
-	public void setLookupClassName (String LookupClassName)
-	{
-		set_Value (COLUMNNAME_LookupClassName, LookupClassName);
-	}
-
-	/** Get Lookup ClassName.
-		@return The class name of the postcode lookup plugin
-	  */
-	public String getLookupClassName()
-	{
-		return (String)get_Value(COLUMNNAME_LookupClassName);
-	}
-
-	/** Set Lookup Tenant ID.
-		@param LookupClientID The Client ID or Login submitted to the Lookup URL
-	*/
-	public void setLookupClientID (String LookupClientID)
-	{
-		set_Value (COLUMNNAME_LookupClientID, LookupClientID);
-	}
-
-	/** Get Lookup Tenant ID.
-		@return The Client ID or Login submitted to the Lookup URL
-	  */
-	public String getLookupClientID()
-	{
-		return (String)get_Value(COLUMNNAME_LookupClientID);
-	}
-
-	/** Set Lookup Password.
-		@param LookupPassword The password submitted to the Lookup URL
-	*/
-	public void setLookupPassword (String LookupPassword)
-	{
-		set_Value (COLUMNNAME_LookupPassword, LookupPassword);
-	}
-
-	/** Get Lookup Password.
-		@return The password submitted to the Lookup URL
-	  */
-	public String getLookupPassword()
-	{
-		return (String)get_Value(COLUMNNAME_LookupPassword);
-	}
-
-	/** Set Lookup URL.
-		@param LookupUrl The URL of the web service that the plugin connects to in order to retrieve postcode data
-	*/
-	public void setLookupUrl (String LookupUrl)
-	{
-		set_Value (COLUMNNAME_LookupUrl, LookupUrl);
-	}
-
-	/** Get Lookup URL.
-		@return The URL of the web service that the plugin connects to in order to retrieve postcode data
-	  */
-	public String getLookupUrl()
-	{
-		return (String)get_Value(COLUMNNAME_LookupUrl);
 	}
 
 	/** Set M49 Code.

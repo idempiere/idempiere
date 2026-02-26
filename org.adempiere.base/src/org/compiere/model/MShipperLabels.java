@@ -70,7 +70,8 @@ public class MShipperLabels extends X_M_ShipperLabels
 	 */
 	public String getValue()
 	{
-		return getM_ShipperLabelsCfg().getValue();
+		MShipperLabelsCfg cfg = new MShipperLabelsCfg(getCtx(), getM_ShipperLabelsCfg_ID(), get_TrxName());
+		return cfg.getValue();
 	}
 	
 	/**
@@ -78,7 +79,8 @@ public class MShipperLabels extends X_M_ShipperLabels
 	 */
 	public BigDecimal getHeight()
 	{
-		return getM_ShipperLabelsCfg().getHeight();
+		MShipperLabelsCfg cfg = new MShipperLabelsCfg(getCtx(), getM_ShipperLabelsCfg_ID(), get_TrxName());
+		return cfg.getHeight();
 	}
 	
 	/**
@@ -86,7 +88,8 @@ public class MShipperLabels extends X_M_ShipperLabels
 	 */
 	public BigDecimal getWidth()
 	{
-		return getM_ShipperLabelsCfg().getWidth();
+		MShipperLabelsCfg cfg = new MShipperLabelsCfg(getCtx(), getM_ShipperLabelsCfg_ID(), get_TrxName());
+		return cfg.getWidth();
 	}
 	
 }

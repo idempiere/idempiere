@@ -17,8 +17,10 @@
 /** Generated Model - DO NOT CHANGE */
 package org.compiere.model;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PrintFormatItem
@@ -31,7 +33,7 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250805L;
+	private static final long serialVersionUID = 20251217L;
 
     /** Standard Constructor */
     public X_AD_PrintFormatItem (Properties ctx, int AD_PrintFormatItem_ID, String trxName)
@@ -1591,6 +1593,25 @@ public class X_AD_PrintFormatItem extends PO implements I_AD_PrintFormatItem, I_
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Scale Factor.
+		@param ScaleFactor Scale Factor
+	*/
+	public void setScaleFactor (BigDecimal ScaleFactor)
+	{
+		set_Value (COLUMNNAME_ScaleFactor, ScaleFactor);
+	}
+
+	/** Get Scale Factor.
+		@return Scale Factor
+	  */
+	public BigDecimal getScaleFactor()
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_ScaleFactor);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
 	}
 
 	/** Set Script.

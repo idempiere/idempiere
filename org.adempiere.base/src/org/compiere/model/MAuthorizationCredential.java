@@ -317,7 +317,7 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 	 */
 	@Override
 	public String getAuthorizationRedirectURL() {
-		return Env.parseContext(getCtx(), 0, super.getAuthorizationRedirectURL(), false, false);
+		return Env.parseContext(getCtx(), 0, super.getAuthorizationRedirectURL(), false, false, false, false);
 	}
 
 } // MAuthorizationCredential

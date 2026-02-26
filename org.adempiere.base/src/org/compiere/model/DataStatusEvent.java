@@ -92,6 +92,8 @@ public final class DataStatusEvent extends EventObject implements Serializable
 	public int 				AD_Table_ID = 0;
 	/** Record ID				*/
 	public Object			Record_ID = null;
+	/** Value					*/
+	private Object 			Value = null;
 
 	/**
 	 *	Set Loading Info
@@ -373,6 +375,14 @@ public final class DataStatusEvent extends EventObject implements Serializable
 	 */
 	public void setIsInitEdit(boolean isInitEdit) {
 		this.isInitEdit = isInitEdit;
+	}
+	
+	public Object getValue() {
+		return Value;
+	}
+
+	public void setValue(Object value) {
+		Value = value;
 	}
 	
 }	//	DataStatusEvent

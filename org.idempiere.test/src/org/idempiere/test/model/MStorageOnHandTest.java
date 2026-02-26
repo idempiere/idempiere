@@ -116,26 +116,31 @@ public class MStorageOnHandTest extends AbstractTestCase {
 			assertEquals(2, onhands.length);
 			assertEquals(DictionaryIDs.M_Locator.STORE.id, onhands[0].getM_Locator_ID());
 			assertEquals(2, onhands[0].getQtyOnHand().intValue());
-			
-			//test UseGuaranteeDateForMPolicy
+
+			//reload storages for the fifo case
 			onhands = MStorageOnHand.getAll(Env.getCtx(), product.get_ID(), 0, false, true, getTrxName(), false, 0);
 			assertEquals(DictionaryIDs.M_Locator.HQ.id, onhands[0].getM_Locator_ID());
 			assertEquals(1, onhands[0].getQtyOnHand().intValue());
 			MAttributeSet as = new MAttributeSet(Env.getCtx(), DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id, null);
 			try {
+				//test UseGuaranteeDateForMPolicy
 				as.setUseGuaranteeDateForMPolicy(true);
-				as.saveEx();			
+				as.saveEx();
+				// the Cache reset is called asynchronously in PO, so we need to call it here to make sure the MAttributeSet is reloaded
+				CacheMgt.get().reset(MAttributeSet.Table_Name, as.get_ID());
+				// create asi1 expiring tomorrow
 				MAttributeSetInstance asi1 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
 				asi1.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id);
 				asi1.setGuaranteeDate(tomorrow);
 				asi1.saveEx();
 				DB.executeUpdateEx("UPDATE M_StorageOnHand SET M_AttributeSetInstance_ID=? WHERE M_StorageOnHand_UU=?", new Object[] {asi1.get_ID(), onhands[0].getM_StorageOnHand_UU()}, getTrxName());
+				// create asi2 expiring today
 				MAttributeSetInstance asi2 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
 				asi2.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id);
 				asi2.setGuaranteeDate(today);
 				asi2.saveEx();
 				DB.executeUpdateEx("UPDATE M_StorageOnHand SET M_AttributeSetInstance_ID=? WHERE M_StorageOnHand_UU=?", new Object[] {asi2.get_ID(), onhands[1].getM_StorageOnHand_UU()}, getTrxName());
-				CacheMgt.get().reset(MProduct.Table_Name, product.get_ID());
+				// load fifo again but this time by guarantee date, must bring first the asi2 expiring today
 				onhands = MStorageOnHand.getAll(Env.getCtx(), product.get_ID(), 0, false, true, getTrxName(), false, 0);
 				assertEquals(asi2.get_ID(), onhands[0].getM_AttributeSetInstance_ID());
 				assertEquals(DictionaryIDs.M_Locator.STORE.id, onhands[0].getM_Locator_ID());

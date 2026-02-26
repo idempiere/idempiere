@@ -24,7 +24,7 @@ package org.adempiere.webui.component;
  * @date    Feb 25, 2007
  * @deprecated Use {@link Window} instead
  */
-@Deprecated
+@Deprecated (since="13", forRemoval=true)
 public class FWindow extends Window
 {
     /**

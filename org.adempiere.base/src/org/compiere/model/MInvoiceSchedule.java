@@ -156,7 +156,7 @@ public class MInvoiceSchedule extends X_C_InvoiceSchedule implements ImmutablePO
 	 * 	@param orderAmt order amount
 	 *	@return true if I can send Invoice
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	// Deprecation note: consider using just canInvoice(Timestamp)
 	// validating the order amount doesn't make sense as the total must be calculated based on shipments
 	public boolean canInvoice (Timestamp xDate, BigDecimal orderAmt)

@@ -138,7 +138,8 @@ public class MAddressValidation extends X_C_AddressValidation {
 	 */
 	public String getAddressValidationClass()
 	{
-		return getC_AddressValidationCfg().getAddressValidationClass();
+		MAddressValidationCfg cfg = new MAddressValidationCfg(getCtx(), getC_AddressValidationCfg_ID(), get_TrxName());
+		return cfg.getAddressValidationClass();
 	}
 	
 	/**
@@ -146,7 +147,8 @@ public class MAddressValidation extends X_C_AddressValidation {
 	 */
 	public String getHostAddress()
 	{
-		return getC_AddressValidationCfg().getHostAddress();
+		MAddressValidationCfg cfg = new MAddressValidationCfg(getCtx(), getC_AddressValidationCfg_ID(), get_TrxName());
+		return cfg.getHostAddress();
 	}
 	
 	/**
@@ -154,7 +156,8 @@ public class MAddressValidation extends X_C_AddressValidation {
 	 */
 	public int getHostPort()
 	{
-		return getC_AddressValidationCfg().getHostPort();
+		MAddressValidationCfg cfg = new MAddressValidationCfg(getCtx(), getC_AddressValidationCfg_ID(), get_TrxName());
+		return cfg.getHostPort();
 	}
 	
 	/**
@@ -162,7 +165,8 @@ public class MAddressValidation extends X_C_AddressValidation {
 	 */
 	public String getProxyAddress()
 	{
-		return getC_AddressValidationCfg().getProxyAddress();
+		MAddressValidationCfg cfg = new MAddressValidationCfg(getCtx(), getC_AddressValidationCfg_ID(), get_TrxName());
+		return cfg.getProxyAddress();
 	}
 	
 	/**
@@ -170,7 +174,8 @@ public class MAddressValidation extends X_C_AddressValidation {
 	 */
 	public int getProxyPort()
 	{
-		return getC_AddressValidationCfg().getProxyPort();
+		MAddressValidationCfg cfg = new MAddressValidationCfg(getCtx(), getC_AddressValidationCfg_ID(), get_TrxName());
+		return cfg.getProxyPort();
 	}
 	
 	/**
@@ -178,7 +183,8 @@ public class MAddressValidation extends X_C_AddressValidation {
 	 */
 	public String getProxyLogon()
 	{
-		return getC_AddressValidationCfg().getProxyLogon();
+		MAddressValidationCfg cfg = new MAddressValidationCfg(getCtx(), getC_AddressValidationCfg_ID(), get_TrxName());
+		return cfg.getProxyLogon();
 	}
 	
 	/**
@@ -186,7 +192,8 @@ public class MAddressValidation extends X_C_AddressValidation {
 	 */
 	public String getProxyPassword()
 	{
-		return getC_AddressValidationCfg().getProxyPassword();
+		MAddressValidationCfg cfg = new MAddressValidationCfg(getCtx(), getC_AddressValidationCfg_ID(), get_TrxName());
+		return cfg.getProxyPassword();
 	}
 	
 	/**
@@ -194,7 +201,8 @@ public class MAddressValidation extends X_C_AddressValidation {
 	 */
 	public String getServicePath()
 	{
-		return getC_AddressValidationCfg().getServicePath();
+		MAddressValidationCfg cfg = new MAddressValidationCfg(getCtx(), getC_AddressValidationCfg_ID(), get_TrxName());
+		return cfg.getServicePath();
 	}
 	
 	public String toString()

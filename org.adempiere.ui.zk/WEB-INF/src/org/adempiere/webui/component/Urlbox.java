@@ -33,7 +33,7 @@ public class Urlbox extends Div
 	 */
 	private static final long serialVersionUID = -5493978668402134644L;
 	
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	protected PropertyChangeSupport m_propertyChangeListeners = new PropertyChangeSupport(this);
 	protected Textbox txt;
 	protected A btn;
@@ -156,7 +156,7 @@ public class Urlbox extends Div
 	 * @param l PropertyChangeListener
 	 * @deprecated not implemented
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public synchronized void addPropertyChangeListener(PropertyChangeListener l) {
 		m_propertyChangeListeners.addPropertyChangeListener(l);
 	}

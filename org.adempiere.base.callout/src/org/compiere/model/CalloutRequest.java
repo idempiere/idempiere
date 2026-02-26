@@ -61,7 +61,7 @@ public class CalloutRequest extends CalloutEngine
 			mailtext.setBPartner(bpID.intValue());
 		
 		String txt = mailtext.getMailText(false, true, true);
-		txt = Env.parseContext(ctx, WindowNo, txt, false, true);
+		txt = Env.parseContext(ctx, WindowNo, txt, false, true, false, false);
 		mTab.setValue("Result", txt);
 
 		return "";
@@ -98,7 +98,7 @@ public class CalloutRequest extends CalloutEngine
 			if (rs.next())
 			{
 				String txt = rs.getString(2);
-				txt = Env.parseContext(ctx, WindowNo, txt, false, true);
+				txt = Env.parseContext(ctx, WindowNo, txt, false, true, false, false);
 				mTab.setValue("Result", txt);
 			}
 		}

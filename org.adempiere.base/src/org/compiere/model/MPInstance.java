@@ -113,7 +113,7 @@ public class MPInstance extends X_AD_PInstance
 	 *	@param Record_ID Record
 	 *  @deprecated Please use {@link #MPInstance(MProcess, int, int, String)}
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public MPInstance (MProcess process, int Record_ID)
 	{
 		this(process, -1, Record_ID, null);
@@ -154,7 +154,7 @@ public class MPInstance extends X_AD_PInstance
 	 *	@param Record_ID record
 	 *  @deprecated Please use {@link #MPInstance(Properties, int, int, int, String)}
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public MPInstance (Properties ctx, int AD_Process_ID, int Record_ID)
 	{
 		this(ctx, AD_Process_ID, -1, Record_ID, null);

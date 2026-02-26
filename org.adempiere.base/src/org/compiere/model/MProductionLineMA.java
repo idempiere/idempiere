@@ -87,7 +87,8 @@ public class MProductionLineMA extends X_M_ProductionLineMA {
 			}
 			if (dateMaterialPolicy == null)
 			{
-				dateMaterialPolicy = parent.getM_Production().getMovementDate();
+				MProduction prod = new MProduction(getCtx(), parent.getM_Production_ID(), get_TrxName());
+				dateMaterialPolicy = prod.getMovementDate();
 			}
 		}
 		setDateMaterialPolicy(dateMaterialPolicy);

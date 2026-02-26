@@ -213,7 +213,7 @@ public class PoExporter {
 	}
 
 	public void export(List<String> excludes) {
-		export(excludes, false);
+		export(excludes, ctx.packOut.isIncludeOrganizationId());
 	}
 
 	public void export(List<String> excludes, boolean preservedOrg) {

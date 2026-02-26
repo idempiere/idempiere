@@ -55,6 +55,7 @@ import org.compiere.model.MPaySelection;
 import org.compiere.model.MPaySelectionCheck;
 import org.compiere.model.MPaySelectionLine;
 import org.compiere.model.MPayment;
+import org.compiere.model.MPaymentBatch;
 import org.compiere.model.Query;
 import org.compiere.model.SystemIDs;
 import org.compiere.process.DocAction;
@@ -82,6 +83,7 @@ public class PaySelectFormTest extends AbstractTestCase {
 		MInvoice invoice = null;
 		MInvoiceLine line  = null;
 		MPaySelection paySelection = null;
+		MPaymentBatch paymentBatch = null;
 		Optional<ValueNamePair> optionalPR = null;
 		try {
 			//create vendor invoice
@@ -205,6 +207,9 @@ public class PaySelectFormTest extends AbstractTestCase {
 				//create payments
 				List<File> pdfs = payPrint.createCheckDocuments(payPrint.getNextDocumentNo(), optionalPR.get().getValue());
 				assertTrue(pdfs.size() > 0, "Failed to create check document");
+				// Created in getChecks method, saved in createCheckDocuments - added here for cleanup purpose
+				paymentBatch = payPrint.getMPaymentBatch(); 
+
 				for(MPaySelectionCheck psc : checks) {
 					psc.load(null);
 					assertTrue(psc.getC_Payment_ID() > 0, "Payment not created");
@@ -247,6 +252,12 @@ public class PaySelectFormTest extends AbstractTestCase {
 					}
 				}
 				paySelection.deleteEx(true);
+				
+				if (paymentBatch != null && paymentBatch.get_ID() > 0) {
+					// Need to create a new object to delete to avoid Transaction closed exception 
+					MPaymentBatch batch = new MPaymentBatch(Env.getCtx(), paymentBatch.get_ID(), null);
+					batch.deleteEx(true);
+				}
 			}
 			if (line != null && line.get_ID() > 0) {
 				line.deleteEx(true);
@@ -324,6 +335,10 @@ public class PaySelectFormTest extends AbstractTestCase {
 		
 		protected MPaySelectionCheck[] getSelectionChecks() {
 			return m_checks;
+		}
+		
+		protected MPaymentBatch getMPaymentBatch() {
+			return m_batch;
 		}
 
 		@Override

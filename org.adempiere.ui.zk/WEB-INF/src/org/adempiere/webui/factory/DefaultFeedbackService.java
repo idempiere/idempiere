@@ -103,7 +103,7 @@ public class DefaultFeedbackService implements IFeedbackService {
 		 */
 		protected String getFeedbackSubject() {
 			String feedBackHeader = Msg.getMsg(Env.getCtx(), "FeedBackHeader");
-			return Env.parseContext(Env.getCtx(), 0, feedBackHeader, false, false);
+			return Env.parseContext(Env.getCtx(), 0, feedBackHeader, false, false, false, false);
 		}
 		
 		/**

@@ -108,7 +108,7 @@ public class TableAttributeSetElementHandler extends GenericPOElementHandler {
 					addTypeName(atts, "table");
 					document.startElement("", "", tableName, atts);
 					PoExporter filler = new PoExporter(ctx, document, mTableAttributeSet);
-					filler.export(excludes, true);
+					filler.export(excludes, ctx.packOut.isIncludeOrganizationId());
 					document.endElement("", "", tableName);
 				}
 			}

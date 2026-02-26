@@ -49,6 +49,22 @@ public interface I_PA_DocumentStatus
 	  */
 	public int getAD_Client_ID();
 
+    /** Column name AD_FieldGroup_ID */
+    public static final String COLUMNNAME_AD_FieldGroup_ID = "AD_FieldGroup_ID";
+
+	/** Set Field Group.
+	  * Logical grouping of fields
+	  */
+	public void setAD_FieldGroup_ID (int AD_FieldGroup_ID);
+
+	/** Get Field Group.
+	  * Logical grouping of fields
+	  */
+	public int getAD_FieldGroup_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_FieldGroup getAD_FieldGroup() throws RuntimeException;
+
     /** Column name AD_Form_ID */
     public static final String COLUMNNAME_AD_Form_ID = "AD_Form_ID";
 
@@ -65,6 +81,22 @@ public interface I_PA_DocumentStatus
 	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Form getAD_Form() throws RuntimeException;
 
+    /** Column name AD_InfoWindow_ID */
+    public static final String COLUMNNAME_AD_InfoWindow_ID = "AD_InfoWindow_ID";
+
+	/** Set Info Window.
+	  * Info and search/select Window
+	  */
+	public void setAD_InfoWindow_ID (int AD_InfoWindow_ID);
+
+	/** Get Info Window.
+	  * Info and search/select Window
+	  */
+	public int getAD_InfoWindow_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_InfoWindow getAD_InfoWindow() throws RuntimeException;
+
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
 
@@ -77,6 +109,22 @@ public interface I_PA_DocumentStatus
 	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
+
+    /** Column name AD_Process_ID */
+    public static final String COLUMNNAME_AD_Process_ID = "AD_Process_ID";
+
+	/** Set Process.
+	  * Process or Report
+	  */
+	public void setAD_Process_ID (int AD_Process_ID);
+
+	/** Get Process.
+	  * Process or Report
+	  */
+	public int getAD_Process_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
 
     /** Column name AD_Role_ID */
     public static final String COLUMNNAME_AD_Role_ID = "AD_Role_ID";
@@ -202,6 +250,19 @@ public interface I_PA_DocumentStatus
 	  */
 	public String getEntityType();
 
+    /** Column name Help */
+    public static final String COLUMNNAME_Help = "Help";
+
+	/** Set Comment/Help.
+	  * Comment or Hint
+	  */
+	public void setHelp (String Help);
+
+	/** Get Comment/Help.
+	  * Comment or Hint
+	  */
+	public String getHelp();
+
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -215,6 +276,19 @@ public interface I_PA_DocumentStatus
 	  */
 	public boolean isActive();
 
+    /** Column name IsHideWhenZero */
+    public static final String COLUMNNAME_IsHideWhenZero = "IsHideWhenZero";
+
+	/** Set Hide when Zero.
+	  * Hide when the Value is Zero
+	  */
+	public void setIsHideWhenZero (boolean IsHideWhenZero);
+
+	/** Get Hide when Zero.
+	  * Hide when the Value is Zero
+	  */
+	public boolean isHideWhenZero();
+
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
 
@@ -227,6 +301,18 @@ public interface I_PA_DocumentStatus
 	  * Alphanumeric identifier of the entity
 	  */
 	public String getName();
+
+    /** Column name Name_PrintColorZero_ID */
+    public static final String COLUMNNAME_Name_PrintColorZero_ID = "Name_PrintColorZero_ID";
+
+	/** Set Print Color for Name when Zero	  */
+	public void setName_PrintColorZero_ID (int Name_PrintColorZero_ID);
+
+	/** Get Print Color for Name when Zero	  */
+	public int getName_PrintColorZero_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_PrintColor getName_PrintColorZero() throws RuntimeException;
 
     /** Column name Name_PrintColor_ID */
     public static final String COLUMNNAME_Name_PrintColor_ID = "Name_PrintColor_ID";

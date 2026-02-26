@@ -628,8 +628,8 @@ public class MatchPOTest extends AbstractTestCase {
 		matchPOs = MMatchPO.getOrderLine(Env.getCtx(), orderLine.get_ID(), getTrxName());
 		assertEquals(3, matchPOs.length, "Unexpected number of MatchPO for order line");
 		
-		fromTable.prepareTable(layout, null, null, false, null);
-		toTable.prepareTable(layout, null, null, false, null);
+		fromTable.prepareTable(layout, null, false, null, null);
+		toTable.prepareTable(layout, null, false, null, null);
 		match.cmd_search(fromTable, Match.MATCH_SHIPMENT, match.getMatchTypeText(Match.MATCH_ORDER), product.get_ID(), bpartner.get_ID(), null, null, false);
 		assertTrue(fromTable.getRowCount()>0, "Unexpected number of records for not matched Material Receipt: " + fromTable.getRowCount());
 		selectedRow = -1;
@@ -812,8 +812,8 @@ public class MatchPOTest extends AbstractTestCase {
 		orderLine.load(getTrxName());
 		assertEquals(invoiceLine.getQtyInvoiced().intValue(), orderLine.getQtyInvoiced().intValue(), "Unexpected order line qty invoiced");
 		
-		fromTable.prepareTable(layout, null, null, false, null);
-		toTable.prepareTable(layout, null, null, false, null);
+		fromTable.prepareTable(layout, null, false, null, null);
+		toTable.prepareTable(layout, null, false, null, null);
 		match.cmd_search(fromTable, Match.MATCH_SHIPMENT, match.getMatchTypeText(Match.MATCH_ORDER), product.get_ID(), bpartner.get_ID(), null, null, false);
 		assertTrue(fromTable.getRowCount()>0, "Unexpected number of records for not matched Material Receipt: " + fromTable.getRowCount());
 		selectedRow = -1;

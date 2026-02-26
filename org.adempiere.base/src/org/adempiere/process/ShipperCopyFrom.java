@@ -25,10 +25,10 @@ import java.math.BigDecimal;
 import java.util.logging.Level;
 
 import org.compiere.model.MProcessPara;
+import org.compiere.model.MShipperLabelsCfg;
+import org.compiere.model.MShipperPackagingCfg;
+import org.compiere.model.MShipperPickupTypesCfg;
 import org.compiere.model.X_M_ShipperCfg;
-import org.compiere.model.X_M_ShipperLabelsCfg;
-import org.compiere.model.X_M_ShipperPackagingCfg;
-import org.compiere.model.X_M_ShipperPickupTypesCfg;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 
@@ -87,11 +87,11 @@ public class ShipperCopyFrom extends SvrProcess
 		whereClause.append("FROM M_ShipperPackagingCfg ");
 		whereClause.append("WHERE M_ShipperCfg_ID=" + To_M_ShipperCfg_ID + ")");
 		
-		int[] xspIds = X_M_ShipperPackagingCfg.getAllIDs(X_M_ShipperPackagingCfg.Table_Name, whereClause.toString(), get_TrxName());		
+		int[] xspIds = MShipperPackagingCfg.getAllIDs(MShipperPackagingCfg.Table_Name, whereClause.toString(), get_TrxName());		
 		for (int xspId : xspIds)
 		{
-			X_M_ShipperPackagingCfg xsp = new X_M_ShipperPackagingCfg(getCtx(), xspId, get_TrxName());
-			X_M_ShipperPackagingCfg sp = new X_M_ShipperPackagingCfg(getCtx(), 0, null);
+			MShipperPackagingCfg xsp = new MShipperPackagingCfg(getCtx(), xspId, get_TrxName());
+			MShipperPackagingCfg sp = new MShipperPackagingCfg(getCtx(), 0, null);
 			sp.setDescription(xsp.getDescription());
 			sp.setIsActive(xsp.isActive());
 			sp.setIsDefault(xsp.isDefault());
@@ -117,11 +117,11 @@ public class ShipperCopyFrom extends SvrProcess
 		whereClause.append("FROM M_ShipperLabelsCfg ");
 		whereClause.append("WHERE M_ShipperCfg_ID=" + To_M_ShipperCfg_ID + ")");
 		
-		int[] xslIds = X_M_ShipperLabelsCfg.getAllIDs(X_M_ShipperLabelsCfg.Table_Name, whereClause.toString(), get_TrxName());		
+		int[] xslIds = MShipperLabelsCfg.getAllIDs(MShipperLabelsCfg.Table_Name, whereClause.toString(), get_TrxName());		
 		for (int xslId : xslIds)
 		{
-			X_M_ShipperLabelsCfg xsl = new X_M_ShipperLabelsCfg(getCtx(), xslId, get_TrxName());
-			X_M_ShipperLabelsCfg sl = new X_M_ShipperLabelsCfg(getCtx(), 0, null);
+			MShipperLabelsCfg xsl = new MShipperLabelsCfg(getCtx(), xslId, get_TrxName());
+			MShipperLabelsCfg sl = new MShipperLabelsCfg(getCtx(), 0, null);
 			sl.setDescription(xsl.getDescription());
 			sl.setHeight(xsl.getHeight());
 			sl.setIsActive(xsl.isActive());
@@ -149,11 +149,11 @@ public class ShipperCopyFrom extends SvrProcess
 		whereClause.append("FROM M_ShipperPickupTypesCfg ");
 		whereClause.append("WHERE M_ShipperCfg_ID=" + To_M_ShipperCfg_ID + ")");
 		
-		int[] xsptIds = X_M_ShipperPickupTypesCfg.getAllIDs(X_M_ShipperPickupTypesCfg.Table_Name, whereClause.toString(), get_TrxName());		
+		int[] xsptIds = MShipperPickupTypesCfg.getAllIDs(MShipperPickupTypesCfg.Table_Name, whereClause.toString(), get_TrxName());		
 		for (int xsptId : xsptIds)
 		{
-			X_M_ShipperPickupTypesCfg xspt = new X_M_ShipperPickupTypesCfg(getCtx(), xsptId, get_TrxName());
-			X_M_ShipperPickupTypesCfg spt = new X_M_ShipperPickupTypesCfg(getCtx(), 0, null);
+			MShipperPickupTypesCfg xspt = new MShipperPickupTypesCfg(getCtx(), xsptId, get_TrxName());
+			MShipperPickupTypesCfg spt = new MShipperPickupTypesCfg(getCtx(), 0, null);
 			spt.setDescription(xspt.getDescription());
 			spt.setIsActive(xspt.isActive());
 			spt.setIsDefault(xspt.isDefault());

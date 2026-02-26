@@ -1779,7 +1779,8 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 			
 			for (MAcctSchema as : ass) {
 				Doc doc = DocManager.getDocument(as, MMatchInv.Table_ID, mi.get_ID(), getTrxName());
-				doc.setC_BPartner_ID(mi.getC_InvoiceLine().getC_Invoice().getC_BPartner_ID());
+				MInvoiceLine invLine = new MInvoiceLine(Env.getCtx(), mi.getC_InvoiceLine_ID(), getTrxName());
+				doc.setC_BPartner_ID(invLine.getParent().getC_BPartner_ID());
 				MAccount acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
 				
 				ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
@@ -1814,14 +1815,20 @@ public class MatchInv2ndAcctSchemaTest extends AbstractTestCase {
 	}
 		
 	private BigDecimal getAccountedAmount(MCurrency currency, BigDecimal multiplyRate, BigDecimal miQty, MInOutLine iol) {
-		BigDecimal sourceAmt = getSourceAmount(iol.getParent().getC_Order().getC_Currency(), iol.getC_OrderLine().getPriceActual(), iol.getMovementQty());
+		MOrder order = new MOrder(Env.getCtx(), iol.getParent().getC_Order_ID(), iol.get_TrxName());
+		MCurrency currencyOrder = MCurrency.get(order.getC_Currency_ID());
+		MOrderLine orderLine = new MOrderLine(Env.getCtx(), iol.getC_OrderLine_ID(), iol.get_TrxName());
+		BigDecimal sourceAmt = getSourceAmount(currencyOrder, orderLine.getPriceActual(), iol.getMovementQty());
 		BigDecimal accountedAmt = sourceAmt.multiply(multiplyRate).setScale(currency.getStdPrecision(), RoundingMode.HALF_UP);
 		BigDecimal multiplier = miQty.divide(iol.getMovementQty(), 12, RoundingMode.HALF_UP);
 		return accountedAmt.multiply(multiplier).setScale(currency.getStdPrecision(), RoundingMode.HALF_UP);
 	}
 	
 	private BigDecimal getAccountedAmount(MCurrency currency, BigDecimal multiplyRate, BigDecimal miQty, MInvoiceLine il) {
-		BigDecimal sourceAmt = getSourceAmount(il.getParent().getC_Order().getC_Currency(), il.getC_OrderLine().getPriceActual(), il.getQtyInvoiced());
+		MOrder order = new MOrder(Env.getCtx(), il.getParent().getC_Order_ID(), il.get_TrxName());
+		MCurrency currencyOrder = MCurrency.get(order.getC_Currency_ID());
+		MOrderLine orderLine = new MOrderLine(Env.getCtx(), il.getC_OrderLine_ID(), il.get_TrxName());
+		BigDecimal sourceAmt = getSourceAmount(currencyOrder, orderLine.getPriceActual(), il.getQtyInvoiced());
 		BigDecimal accountedAmt = sourceAmt.multiply(multiplyRate).setScale(currency.getStdPrecision(), RoundingMode.HALF_UP);
 		BigDecimal multiplier = miQty.divide(il.getQtyInvoiced(), 12, RoundingMode.HALF_UP);
 		return accountedAmt.multiply(multiplier).setScale(currency.getStdPrecision(), RoundingMode.HALF_UP);

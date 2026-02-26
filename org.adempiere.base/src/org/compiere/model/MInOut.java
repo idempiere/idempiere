@@ -533,7 +533,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	 *	@return Shipment
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static MInOut copyFrom (MInOut from, Timestamp dateDoc,
 		int C_DocType_ID, boolean isSOTrx, boolean counter, String trxName, boolean setOrder)
 	{
@@ -2014,7 +2014,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 				if (product != null
 					&& isSOTrx()
 					&& product.isCreateAsset()
-					&& !product.getM_Product_Category().getA_Asset_Group().isFixedAsset()
+					&& (MProductCategory.get(product.getM_Product_Category_ID()).getA_Asset_Group_ID() <= 0
+						|| !MAssetGroup.get(MProductCategory.get(product.getM_Product_Category_ID()).getA_Asset_Group_ID()).isFixedAsset())
 					&& sLine.getMovementQty().signum() > 0
 					&& !isReversal())
 				{
@@ -2305,7 +2306,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		for (int i = 0; i < lines.length; i++)
 		{
 			MInOutLine dropLine = lines[i];
-			MOrderLine ol = new MOrderLine(getCtx(), dropLine.getC_OrderLine_ID(), null);
+			MOrderLine ol = new MOrderLine(getCtx(), dropLine.getC_OrderLine_ID(), get_TrxName());
 			if ( ol.getC_OrderLine_ID() != 0 ) {
 				dropLine.setC_OrderLine_ID(ol.getLink_OrderLine_ID());
 				dropLine.saveEx();
@@ -3463,10 +3464,19 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 				
 				for (MCostDetail costDetail : costDetailList) {
 					if (costDetail.getM_InOutLine_ID() > 0) {
-						if (costDetail.getM_InOutLine().getM_InOut().getReversal_ID() > 0)
+						MInOutLine inoutLine = new MInOutLine(getCtx(), costDetail.getM_InOutLine_ID(), get_TrxName());
+						MInOut inout = inoutLine.getParent();						
+						if (inout.getReversal_ID() > 0) // reversed shipment
 							continue;
+						MOrder sOrder = new MOrder(getCtx(), inout.getC_Order_ID(), get_TrxName());
+						if (sOrder.getLink_Order_ID() > 0) {
+							MOrder lOrder = new MOrder(getCtx(), sOrder.getLink_Order_ID(), get_TrxName());
+							if (lOrder.isDropShip()) // drop shipment
+								continue;
+						}
 					} else if (costDetail.getC_ProjectIssue_ID() > 0) {
-						if (costDetail.getC_ProjectIssue().getReversal_ID() > 0)
+						MProjectIssue projectIssue = new MProjectIssue(getCtx(), costDetail.getC_ProjectIssue_ID(), get_TrxName());
+						if (projectIssue.getReversal_ID() > 0) // reversed project issue
 							continue;
 					} else {
 						continue;
@@ -3478,6 +3488,14 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 				}
 			}
 		} else if (reversalDate == null && MovementType.equals(MOVEMENTTYPE_CustomerShipment)) {
+			if (getC_Order_ID() > 0) {
+				MOrder sOrder = new MOrder(getCtx(), getC_Order_ID(), get_TrxName());
+				if (sOrder.getLink_Order_ID() > 0) {
+					MOrder lOrder = new MOrder(getCtx(), sOrder.getLink_Order_ID(), get_TrxName());
+					if (lOrder.isDropShip()) // drop shipment
+						return true;
+				}
+			}
  			MInOutLine[] sLines = getLines(false);
 			for (MInOutLine sLine : sLines) {
 				int AD_Org_ID = sLine.getAD_Org_ID();
@@ -3564,8 +3582,9 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 					int C_OrderLine_ID = mMatchPO.getC_OrderLine_ID();
 					Timestamp dateAcct0 = mMatchPO.getDateAcct();
 					if (mMatchPO.getReversal_ID() > 0 && mMatchPO.get_ID() > mMatchPO.getReversal_ID()) {
-						C_OrderLine_ID = mMatchPO.getReversal().getC_OrderLine_ID();
-						dateAcct0 = mMatchPO.getReversal().getDateAcct();
+						MMatchPO mMatchPOReversal = new MMatchPO(getCtx(), mMatchPO.getReversal_ID(), get_TrxName());
+						C_OrderLine_ID = mMatchPOReversal.getC_OrderLine_ID();
+						dateAcct0 = mMatchPOReversal.getDateAcct();
 					}
 					MCostDetail cd = MCostDetail.getOrder(as, mMatchPO.getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
 							C_OrderLine_ID, 0, dateAcct0, get_TrxName());

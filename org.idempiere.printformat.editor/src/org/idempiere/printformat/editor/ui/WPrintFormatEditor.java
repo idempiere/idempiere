@@ -439,7 +439,7 @@ public class WPrintFormatEditor implements ValueChangeListener {
 				else
 					printString += displayData != null ? displayData : ("{"+pfItem.getName()+"}");
 				
-				if (pfItem.getAD_Column().getAD_Reference_ID() == DisplayType.Location) {
+				if (MColumn.get(pfItem.getAD_Column_ID()).getAD_Reference_ID() == DisplayType.Location) {
 					LocationElement element = new LocationElement(Env.getCtx(), 109, getFont(pfItem), Color.black, 
 							pfItem.isHeightOneLine(), "", "", Env.getAD_Language(Env.getCtx()));
 					width = pfItem.getMaxWidth() > 0 ? pfItem.getMaxWidth() : element.getWidth();
@@ -688,7 +688,7 @@ public class WPrintFormatEditor implements ValueChangeListener {
 						printString = displayData != null ? displayData : ("{"+pfItem.getName()+"}");
 				}
 				
-				if (pfItem.getAD_Column().getAD_Reference_ID() == DisplayType.Location) {
+				if (MColumn.get(pfItem.getAD_Column_ID()).getAD_Reference_ID() == DisplayType.Location) {
 					LocationElement element = new LocationElement(Env.getCtx(), 109, getFont(pfItem), Color.black, 
 							pfItem.isHeightOneLine(), "", "", Env.getAD_Language(Env.getCtx()));
 					width = pfItem.getMaxWidth() > 0 ? pfItem.getMaxWidth() : element.getWidth();

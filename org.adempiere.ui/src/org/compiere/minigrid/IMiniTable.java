@@ -30,6 +30,7 @@ import java.io.Serializable;
 import java.sql.ResultSet;
 
 import org.compiere.model.PO;
+import org.idempiere.db.util.SQLFragment;
 
 /**
  * UI Table interface
@@ -86,6 +87,31 @@ public interface IMiniTable
 	 * @return sql
 	 */
 	public String prepareTable(ColumnInfo[] layout, String from, String where, boolean multiSelection, String tableName);
+
+	/**
+	 * Prepare Table and return SQL to get resultset to populate table
+	 * @param layout
+	 * @param from
+	 * @param multiSelection
+	 * @param tableName
+	 * @param sqlFilter
+	 * @return sql
+	 */
+	default SQLFragment prepareTable(ColumnInfo[] layout, String from, boolean multiSelection, String tableName, SQLFragment sqlFilter) {
+		return prepareTable(layout, from, multiSelection, tableName, true, sqlFilter);
+	}
+
+	/**
+	 * Prepare Table and return SQL to get resultset to populate table
+	 * @param layout
+	 * @param from
+	 * @param multiSelection
+	 * @param tableName
+	 * @param addAccessSQL
+	 * @param sqlFilter
+	 * @return sql
+	 */
+	public SQLFragment prepareTable(ColumnInfo[] layout, String from, boolean multiSelection, String tableName, boolean addAccessSQL, SQLFragment sqlFilter);
 	
 	/**
 	 * add column with header

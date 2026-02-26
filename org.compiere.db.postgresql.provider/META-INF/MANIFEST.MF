@@ -8,8 +8,8 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=17))"
 Bundle-ClassPath: .
 Require-Bundle: org.adempiere.base;bundle-version="13.0.0",
  org.adempiere.install;bundle-version="13.0.0";resolution:=optional,
- com.zaxxer.HikariCP;bundle-version="5.1.0",
- org.postgresql.jdbc;bundle-version="42.7.3"
+ com.zaxxer.HikariCP;bundle-version="7.0.2",
+ org.postgresql.jdbc;bundle-version="42.7.8"
 Import-Package: org.osgi.framework;version="1.10.0",
  org.slf4j;version="2.0.12"
 Bundle-ActivationPolicy: lazy

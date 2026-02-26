@@ -47,7 +47,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4467301251742419106L;
+	private static final long serialVersionUID = -2345815648281241687L;
 
 	/** Constant for Predefine System Configuration Names (in alphabetical order) */
 	
@@ -59,8 +59,6 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ALLOW_OVER_APPLIED_PAYMENT = "ALLOW_OVER_APPLIED_PAYMENT";
     public static final String ALLOW_REVERSAL_OF_RECONCILED_PAYMENT = "ALLOW_REVERSAL_OF_RECONCILED_PAYMENT";
     public static final String ALogin_ShowDate = "ALogin_ShowDate";
-    @Deprecated(forRemoval = true, since = "11")
-    public static final String ALogin_ShowOneRole = "ALogin_ShowOneRole";
     public static final String APPLICATION_DATABASE_VERSION = "APPLICATION_DATABASE_VERSION";
     public static final String APPLICATION_DATABASE_VERSION_SHOWN = "APPLICATION_DATABASE_VERSION_SHOWN";
     public static final String APPLICATION_HOST_SHOWN = "APPLICATION_HOST_SHOWN";   
@@ -74,6 +72,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String APPLICATION_OS_INFO_SHOWN = "APPLICATION_OS_INFO_SHOWN";
     public static final String APPLICATION_URL = "APPLICATION_URL";
     public static final String ATTACH_EMBEDDED_2PACK = "ATTACH_EMBEDDED_2PACK";
+    public static final String ATTACHMENT_SAVE_LIST_IN_AD_ATTACHMENTFILE = "ATTACHMENT_SAVE_LIST_IN_AD_ATTACHMENTFILE";
     public static final String ATTACH_NOTIFY_2PACK = "ATTACH_NOTIFY_2PACK";
     public static final String AUTO_ASSIGN_ROLE_TO_CREATOR_USER = "AUTO_ASSIGN_ROLE_TO_CREATOR_USER";
     public static final String AUTOMATIC_PACKIN_FOLDERS = "AUTOMATIC_PACKIN_FOLDERS";
@@ -96,6 +95,8 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String CHECK_CREDIT_ON_CASH_POS_ORDER = "CHECK_CREDIT_ON_CASH_POS_ORDER";
     public static final String CHECK_CREDIT_ON_PREPAY_ORDER = "CHECK_CREDIT_ON_PREPAY_ORDER";
     public static final String CLIENT_ACCOUNTING = "CLIENT_ACCOUNTING";
+	public static final String COPY_TENANT_BATCH_FLUSH_SIZE = "COPY_TENANT_BATCH_FLUSH_SIZE";
+    public static final String CSV_EXPORT_SANITIZATION = "CSV_EXPORT_SANITIZATION";
     public static final String DASHBOARD_LAYOUT_ORIENTATION = "DASHBOARD_LAYOUT_ORIENTATION";
     public static final String DB_READ_REPLICA_NORMAL_MAX_ITERATIONS = "DB_READ_REPLICA_NORMAL_MAX_ITERATIONS";
     public static final String DB_READ_REPLICA_NORMAL_TIMEOUT_IN_MILLISECONDS = "DB_READ_REPLICA_NORMAL_TIMEOUT_IN_MILLISECONDS";
@@ -135,10 +136,6 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String IBAN_VALIDATION = "IBAN_VALIDATION";
     public static final String IDENTIFIER_SEPARATOR = "IDENTIFIER_SEPARATOR";
     public static final String IMAGE_DB_STORAGE_SAVE_AS_ZIP = "IMAGE_DB_STORAGE_SAVE_AS_ZIP";
-    @Deprecated(forRemoval = true, since = "11")
-    public static final String INFO_DEFAULTSELECTED = "INFO_DEFAULTSELECTED";
-    @Deprecated(forRemoval = true, since = "11")
-    public static final String INFO_DOUBLECLICKTOGGLESSELECTION = "INFO_DOUBLECLICKTOGGLESSELECTION";
     public static final String INFO_PRODUCT_SHOW_PRODUCTS_WITHOUT_PRICE = "INFO_PRODUCT_SHOW_PRODUCTS_WITHOUT_PRICE";
     public static final String Invoice_ReverseUseNewNumber = "Invoice_ReverseUseNewNumber";
     public static final String JASPER_SWAP_MAX_PAGES = "JASPER_SWAP_MAX_PAGES";
@@ -192,11 +189,13 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String PROJECT_ID_USER = "PROJECT_ID_USER";
     public static final String PROJECT_ID_WEBSITE = "PROJECT_ID_WEBSITE";
     public static final String QUICKFORM_PAGE_SIZE = "QUICKFORM_PAGE_SIZE";
+    public static final String READ_TABLES_NOT_IN_TABLE_ACCESS_INCLUDE_LIST = "READ_TABLES_NOT_IN_TABLE_ACCESS_INCLUDE_LIST";
     public static final String REAL_TIME_POS = "REAL_TIME_POS";
     public static final String RecentItems_MaxSaved = "RecentItems_MaxSaved";
     public static final String RecentItems_MaxShown = "RecentItems_MaxShown";
 	public static final String REPORT_LOAD_TIMEOUT_IN_SECONDS = "REPORT_LOAD_TIMEOUT_IN_SECONDS";
     public static final String REPORT_SWAP_MAX_ROWS = "REPORT_SWAP_MAX_ROWS";
+    public static final String SECURITY_DASHBOARD_LEGACY_KEY_WARNING = "SECURITY_DASHBOARD_LEGACY_KEY_WARNING";
     public static final String SHIPPING_DEFAULT_WEIGHT_PER_PACKAGE = "SHIPPING_DEFAULT_WEIGHT_PER_PACKAGE";
     public static final String STANDARD_REPORT_FOOTER_TRADEMARK_TEXT = "STANDARD_REPORT_FOOTER_TRADEMARK_TEXT";
     public static final String START_VALUE_BPLOCATION_NAME = "START_VALUE_BPLOCATION_NAME";
@@ -221,6 +220,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String USER_LOCKING_MAX_PASSWORD_AGE_DAY = "USER_LOCKING_MAX_PASSWORD_AGE_DAY";
     public static final String USER_LOCKING_PASSWORD_NOTIFY_DAY = "USER_LOCKING_PASSWORD_NOTIFY_DAY";
     public static final String USER_PASSWORD_HASH = "USER_PASSWORD_HASH";
+    public static final String USER_PASSWORD_HASH_ALGORITHM = "USER_PASSWORD_HASH_ALGORITHM";
     public static final String VALIDATE_MATCHING_PRODUCT_ON_SHIPMENT = "VALIDATE_MATCHING_PRODUCT_ON_SHIPMENT";
     public static final String VALIDATE_MATCHING_TO_ORDERED_QTY = "VALIDATE_MATCHING_TO_ORDERED_QTY";
     public static final String WEBUI_LOGOURL = "WEBUI_LOGOURL";
@@ -233,9 +233,6 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZK_BUTTON_STYLE = "ZK_BUTTON_STYLE";
     public static final String ZK_DASHBOARD_CALENDAR_REQUEST_DISPLAY_MODE = "ZK_DASHBOARD_CALENDAR_REQUEST_DISPLAY_MODE";
     public static final String ZK_DASHBOARD_PERFORMANCE_REFRESH_INTERVAL = "ZK_DASHBOARD_PERFORMANCE_REFRESH_INTERVAL";
-    /** @deprecated not use for the new billboard implementation */
-    @Deprecated(forRemoval = true, since = "11")
-    public static final String ZK_DASHBOARD_PERFORMANCE_TIMEOUT = "ZK_DASHBOARD_PERFORMANCE_TIMEOUT";
     public static final String ZK_DASHBOARD_REFRESH_INTERVAL = "ZK_DASHBOARD_REFRESH_INTERVAL";
     public static final String ZK_DECIMALBOX_PROCESS_DOTKEYPAD = "ZK_DECIMALBOX_PROCESS_DOTKEYPAD";
 	public static final String ZK_DESKTOP_HEADER_BACKGROUND_COLOR = "ZK_DESKTOP_HEADER_BACKGROUND_COLOR"; // used in desktop.css.dsp
@@ -285,6 +282,12 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZK_ROOT_FOLDER_BROWSER = "ZK_ROOT_FOLDER_BROWSER";
     public static final String ZK_SEARCH_AUTO_COMPLETE_MAX_ROWS = "ZK_SEARCH_AUTO_COMPLETE_MAX_ROWS";
     public static final String ZK_SEQ_DEFAULT_VALUE_PANEL = "ZK_SEQ_DEFAULT_VALUE_PANEL";
+	public static final String ZK_SESSION_FINGERPRINT_CHECK_ACCEPT_LANGUAGE = "ZK_SESSION_FINGERPRINT_CHECK_ACCEPT_LANGUAGE";
+	public static final String ZK_SESSION_FINGERPRINT_CHECK_IP = "ZK_SESSION_FINGERPRINT_CHECK_IP";
+	public static final String ZK_SESSION_FINGERPRINT_CHECK_USER_AGENT = "ZK_SESSION_FINGERPRINT_CHECK_USER_AGENT";
+	public static final String ZK_SESSION_FINGERPRINT_ENABLED = "ZK_SESSION_FINGERPRINT_ENABLED";
+	public static final String ZK_SESSION_SAVE_JSESSIONID = "ZK_SESSION_SAVE_JSESSIONID";
+	public static final String ZK_SESSION_SAVE_USER_AGENT = "ZK_SESSION_SAVE_USER_AGENT";
     public static final String ZK_SESSION_TIMEOUT_IN_SECONDS = "ZK_SESSION_TIMEOUT_IN_SECONDS";
     public static final String ZK_THEME = "ZK_THEME";
     public static final String ZK_THEME_USE_FONT_ICON_FOR_IMAGE = "ZK_THEME_USE_FONT_ICON_FOR_IMAGE";
@@ -383,7 +386,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * @return double
 	 * @deprecated replace by getBigDecimalValue
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static double getDoubleValue(String Name, double defaultValue)
 	{
 		String s = getValue(Name);
@@ -502,7 +505,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * @return double
 	 * @deprecated replace by getBigDecimalValue
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static double getDoubleValue(String Name, double defaultValue, int AD_Client_ID)
 	{
 		String s = getValue(Name, AD_Client_ID);
@@ -673,7 +676,7 @@ public class MSysConfig extends X_AD_SysConfig
 	 * @return double
 	 * @deprecated replace by getBigDecimalValue
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static double getDoubleValue(String Name, double defaultValue, int AD_Client_ID, int AD_Org_ID)
 	{
 		String s = getValue(Name, AD_Client_ID, AD_Org_ID);

@@ -2293,7 +2293,7 @@ public class MOrder extends X_C_Order implements DocAction
 		// Just for POS order with payment rule mixed
 		if (! this.isSOTrx())
 			return null;
-		if (! MOrder.DocSubTypeSO_POS.equals(this.getC_DocType().getDocSubTypeSO()))
+		if (! MOrder.DocSubTypeSO_POS.equals(MDocType.get(getC_DocType_ID()).getDocSubTypeSO()))
 			return null;
 		if (! MOrder.PAYMENTRULE_MixedPOSPayment.equals(this.getPaymentRule()))
 			return null;

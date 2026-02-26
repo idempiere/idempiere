@@ -40,6 +40,7 @@ import org.compiere.model.X_ASP_Field;
 import org.compiere.model.X_ASP_Process;
 import org.compiere.model.X_ASP_Process_Para;
 import org.compiere.model.X_ASP_Tab;
+import org.compiere.model.X_ASP_Window;
 import org.compiere.model.X_ASP_Workflow;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
@@ -95,7 +96,8 @@ public class ASPGenerateFields extends SvrProcess
 		if (log.isLoggable(Level.INFO)) log.info(msglog.toString());
 		
 		X_ASP_Tab asptab = new X_ASP_Tab(getCtx(), p_ASP_Tab_ID, get_TrxName());
-		p_ASP_Level_ID = asptab.getASP_Window().getASP_Level_ID();
+		X_ASP_Window aspwindow = new X_ASP_Window(getCtx(), asptab.getASP_Window_ID(), get_TrxName());
+		p_ASP_Level_ID = aspwindow.getASP_Level_ID();
 
 		// tabs
 		MTab tab = new MTab(getCtx(), asptab.getAD_Tab_ID(), get_TrxName());

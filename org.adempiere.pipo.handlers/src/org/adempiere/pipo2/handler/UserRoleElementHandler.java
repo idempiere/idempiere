@@ -87,7 +87,7 @@ public class UserRoleElementHandler extends AbstractElementHandler {
 		verifyPackOutRequirement(po);
 		List<String> excludes = defaultExcludeList(X_AD_User_Roles.Table_Name);
 
-		filler.export(excludes, true);
+		filler.export(excludes, ctx.packOut.isIncludeOrganizationId());
 	}
 
 	@Override

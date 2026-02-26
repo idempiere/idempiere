@@ -29,10 +29,10 @@ import org.idempiere.cache.ImmutablePOSupport;
  */
 public class MRefTable extends X_AD_Ref_Table implements ImmutablePOSupport
 {
-	/**
-	 * generated serial id
+    /**
+	 * 
 	 */
-	private static final long serialVersionUID = 5068032076487795624L;
+	private static final long serialVersionUID = -2630960071506651716L;
 
     /**
      * UUID based Constructor
@@ -169,6 +169,20 @@ public class MRefTable extends X_AD_Ref_Table implements ImmutablePOSupport
 
 		makeImmutable();
 		return this;
+	}
+
+	@Override
+	protected boolean beforeSave(boolean newRecord) {
+		if (isDisplayIdentifier()) {
+			MTable table = MTable.get(getCtx(), getAD_Table_ID());
+			String keyCol = table.getKeyColumns()[0];
+			MColumn col = table.getColumn(keyCol);
+			setAD_Display(col.getAD_Column_ID());
+			setDisplaySQL(null);
+		}
+		if (isValueDisplayed() && !Util.isEmpty(getDisplaySQL()))
+			setIsValueDisplayed(false);
+		return true;
 	}
 
 }	//	MRefTable

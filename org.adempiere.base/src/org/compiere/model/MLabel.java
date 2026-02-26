@@ -120,8 +120,9 @@ public class MLabel extends X_AD_Label {
 		}
 		
 		// Category style
-		if (getAD_LabelCategory() != null && getAD_LabelCategory().getAD_LabelStyle_ID() > 0)
-			result.append(buildStyle(getAD_LabelCategory().getAD_LabelStyle_ID()));
+		MLabelCategory category = new MLabelCategory(getCtx(), getAD_LabelCategory_ID(), get_TrxName());
+		if (category.getAD_LabelStyle_ID() > 0)
+			result.append(buildStyle(category.getAD_LabelStyle_ID()));
 
 		// Label style
 		if (getAD_LabelStyle_ID() > 0)

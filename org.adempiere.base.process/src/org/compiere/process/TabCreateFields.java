@@ -133,7 +133,8 @@ public class TabCreateFields extends SvrProcess
 			if(p_CreatedSince != null)
 				pstmt.setTimestamp(i++, p_CreatedSince);
 			rs = pstmt.executeQuery ();
-			String uuidcolname = PO.getUUIDColumnName(tab.getAD_Table().getTableName());
+			
+			String uuidcolname = PO.getUUIDColumnName(MTable.get(tab.getAD_Table_ID()).getTableName());
 			while (rs.next ())
 			{
 				MColumn column = new MColumn (getCtx(), rs, get_TrxName());
@@ -172,7 +173,7 @@ public class TabCreateFields extends SvrProcess
 				} else if (column.getAD_Reference_ID() == DisplayType.Memo) {
 					field.setNumLines(8);
 				}
-				String accessLevel = tab.getAD_Table().getAccessLevel();
+				String accessLevel = MTable.get(tab.getAD_Table_ID()).getAccessLevel();
 				if (column.getColumnName().equals("AD_Org_ID")) {
 					field.setXPosition(4);
 					if (   accessLevel.equals(MTable.ACCESSLEVEL_ClientOnly)

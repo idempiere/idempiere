@@ -34,7 +34,7 @@ import org.zkoss.zul.Imagemap;
  * @author hengsin
  * @deprecated replace by billboard based implementation
  */
-@Deprecated
+@Deprecated (since="13", forRemoval=true)
 /* package */ class ChartRenderer {
 
 	private static final CLogger log = CLogger.getCLogger(ChartRenderer.class);

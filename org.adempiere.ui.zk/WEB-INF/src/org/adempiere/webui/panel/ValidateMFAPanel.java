@@ -391,7 +391,8 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 			rd.setAD_User_ID(user.getAD_User_ID());
 			rd.setMFADeviceIdentifier(cookieValue);
 			rd.setExpiration(new Timestamp(System.currentTimeMillis() + (daysExpire * 86400000L)));
-			rd.setHelp(ClientInfo.get().userAgent);
+			if (MSysConfig.getBooleanValue(MSysConfig.ZK_SESSION_SAVE_USER_AGENT, false))
+				rd.setHelp(ClientInfo.get().userAgent);
 			rd.saveCrossTenantSafeEx();
 		}
 		Env.setContext(m_ctx, Env.MFA_Registration_ID, registrationId);

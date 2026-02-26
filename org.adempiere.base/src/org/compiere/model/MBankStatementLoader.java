@@ -312,10 +312,11 @@ import org.compiere.util.Util;
 		
 		// Lookup Bank Account
 		for (X_C_BankAccount bankAccount : bankAccountList) {
+			MBank bank = MBank.get(bankAccount.getC_Bank_ID());
 			if ((!Util.isEmpty(imp.getIBAN()) && imp.getIBAN().equalsIgnoreCase(bankAccount.getIBAN()))
 					|| (!Util.isEmpty(imp.getBankAccountNo()) && !Util.isEmpty(imp.getRoutingNo())
 							&& imp.getBankAccountNo().equalsIgnoreCase(bankAccount.getAccountNo())
-							&& imp.getRoutingNo().equalsIgnoreCase(bankAccount.getC_Bank().getRoutingNo()))) {
+							&& imp.getRoutingNo().equalsIgnoreCase(bank.getRoutingNo()))) {
 				imp.setC_BankAccount_ID(bankAccount.get_ID());
 				break;
 			}

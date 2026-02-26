@@ -355,6 +355,15 @@ public interface I_M_Product
 	  */
 	public boolean isBOM();
 
+    /** Column name IsBOMPriceOverride */
+    public static final String COLUMNNAME_IsBOMPriceOverride = "IsBOMPriceOverride";
+
+	/** Set Calculate BOM price if Zero	  */
+	public void setIsBOMPriceOverride (boolean IsBOMPriceOverride);
+
+	/** Get Calculate BOM price if Zero	  */
+	public boolean isBOMPriceOverride();
+
     /** Column name IsDropShip */
     public static final String COLUMNNAME_IsDropShip = "IsDropShip";
 

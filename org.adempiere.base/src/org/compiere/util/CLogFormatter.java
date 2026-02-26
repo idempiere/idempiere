@@ -324,7 +324,7 @@ public class CLogFormatter extends Formatter
 		{
 			prefix = SystemProperties.getFileLogPrefix();
 			if (!Util.isEmpty(prefix))
-				return Env.parseContext(Env.getCtx(), 0, prefix, false);
+				return Env.parseContext(Env.getCtx(), 0, prefix, false, false, false, false);
 		}
 		catch (Exception ex)
 		{

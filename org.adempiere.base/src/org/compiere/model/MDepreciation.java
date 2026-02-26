@@ -236,7 +236,8 @@ public class MDepreciation extends X_A_Depreciation implements ImmutablePOSuppor
 			depreciationDTO.useFullLifeUnit = Calendar.MONTH;
 			depreciationDTO.trxName = assetwk.get_TrxName();
 			depreciationDTO.depreciationId = assetwk.get_ID();
-			depreciationDTO.inServiceDate = assetwk.getA_Asset().getAssetServiceDate();
+			MAsset asset = new MAsset(assetwk.getCtx(), assetwk.getA_Asset_ID(), assetwk.get_TrxName());
+			depreciationDTO.inServiceDate = asset.getAssetServiceDate();
 			depreciationDTO.accountDate = assetwk.getDateAcct();
 			depreciationDTO.accumulatedCost = assetwk.getA_Accumulated_Depr();
 			depreciationDTO.startPeriodDepreciation = assetwk.getA_Current_Period();

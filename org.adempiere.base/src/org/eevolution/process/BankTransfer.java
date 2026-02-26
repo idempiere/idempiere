@@ -21,6 +21,7 @@ import java.sql.Timestamp;
 import java.util.logging.Level;
 
 import org.compiere.model.MBankTransfer;
+import org.compiere.model.MDocType;
 import org.compiere.model.MPayment;
 import org.compiere.model.MProcessPara;
 import org.compiere.process.ProcessInfoParameter;
@@ -178,7 +179,7 @@ public class BankTransfer extends SvrProcess
 		}
 		paymentBankFrom.saveEx();
 		addBufferLog(paymentBankFrom.getC_Payment_ID(), paymentBankFrom.getDateTrx(),
-				null, paymentBankFrom.getC_DocType().getName() + " " + paymentBankFrom.getDocumentNo(),
+				null, MDocType.get(paymentBankFrom.getC_DocType_ID()).getName() + " " + paymentBankFrom.getDocumentNo(),
 				MPayment.Table_ID, paymentBankFrom.getC_Payment_ID());
 		m_created++;
 
@@ -206,7 +207,7 @@ public class BankTransfer extends SvrProcess
 		}
 		paymentBankTo.saveEx();
 		addBufferLog(paymentBankTo.getC_Payment_ID(), paymentBankTo.getDateTrx(),
-				null, paymentBankTo.getC_DocType().getName() + " " + paymentBankTo.getDocumentNo(),
+				null, MDocType.get(paymentBankTo.getC_DocType_ID()).getName() + " " + paymentBankTo.getDocumentNo(),
 				MPayment.Table_ID, paymentBankTo.getC_Payment_ID());
 		m_created++;
 	}  //  generateBankTransfer
@@ -256,7 +257,7 @@ public class BankTransfer extends SvrProcess
 		MPayment[] payments = MPayment.getOfBankTransfer(getCtx(), bt.getC_BankTransfer_ID(), get_TrxName());
 		for (MPayment payment : payments) {
 			addBufferLog(payment.getC_Payment_ID(), payment.getDateTrx(),
-					null, payment.getC_DocType().getName() + " " + payment.getDocumentNo(),
+					null, MDocType.get(payment.getC_DocType_ID()).getName() + " " + payment.getDocumentNo(),
 					MPayment.Table_ID, payment.getC_Payment_ID());
 			m_created++;
 		}

@@ -16,7 +16,7 @@ com.google.zxing.core,3.4.1,file:${user.home}/.m2/repository/com/google/zxing/co
 com.sun.activation.jakarta.activation,1.2.2,file:${user.home}/.m2/repository/com/sun/activation/jakarta.activation/1.2.2/jakarta.activation-1.2.2.jar,4,false
 com.sun.mail.gimap,1.6.7,file:${user.home}/.m2/repository/com/sun/mail/gimap/1.6.7/gimap-1.6.7.jar,4,false
 com.sun.mail.jakarta.mail,1.6.7,file:${user.home}/.m2/repository/com/sun/mail/jakarta.mail/1.6.7/jakarta.mail-1.6.7.jar,4,false
-com.zaxxer.HikariCP,5.1.0,file:${user.home}/.m2/repository/com/zaxxer/HikariCP/5.1.0/HikariCP-5.1.0.jar,4,false
+com.zaxxer.HikariCP,7.0.2,file:${user.home}/.m2/repository/com/zaxxer/HikariCP/7.0.2/HikariCP-7.0.2.jar,4,false
 groovy,3.0.8,file:${user.home}/.m2/repository/org/codehaus/groovy/groovy/3.0.8/groovy-3.0.8.jar,4,false
 io.github.classgraph.classgraph,4.8.147,file:${user.home}/.m2/repository/io/github/classgraph/classgraph/4.8.147/classgraph-4.8.147.jar,4,false
 jakarta.annotation-api,1.3.5,file:${user.home}/.m2/repository/jakarta/annotation/jakarta.annotation-api/1.3.5/jakarta.annotation-api-1.3.5.jar,4,false
@@ -99,12 +99,12 @@ org.osgi.util.pushstream,1.1.0.202212101352,file:plugins/org.osgi.util.pushstrea
 org.osgi.util.tracker,1.5.4.202109301733,file:${user.home}/.m2/repository/org/osgi/org.osgi.util.tracker/1.5.4/org.osgi.util.tracker-1.5.4.jar,4,false
 org.osgi.util.xml,1.0.2.202109301733,file:plugins/org.osgi.util.xml_1.0.2.202109301733.jar,4,false
 org.passay,1.6.1,file:${user.home}/.m2/repository/org/passay/passay/1.6.1/passay-1.6.1.jar,4,false
-org.postgresql.jdbc,42.7.3,file:${user.home}/.m2/repository/org/postgresql/postgresql/42.7.3/postgresql-42.7.3.jar,4,false
+org.postgresql.jdbc,42.7.8,file:${user.home}/.m2/repository/org/postgresql/postgresql/42.7.8/postgresql-42.7.8.jar,4,false
 slf4j.api,2.0.12,file:${user.home}/.m2/repository/org/slf4j/slf4j-api/2.0.12/slf4j-api-2.0.12.jar,4,false
 slf4j.jdk14,2.0.12,file:${user.home}/.m2/repository/org/slf4j/slf4j-jdk14/2.0.12/slf4j-jdk14-2.0.12.jar,3,true
 wrapped.com.google.http-client.google-http-client-gson,1.39.2.sp1,file:${user.home}/.m2/repository/com/google/http-client/google-http-client-gson/1.39.2-sp.1/bnd-2aec70198dafbe64646870da9ce0bda1/google-http-client-gson-1.39.2-sp.1.jar,4,false
 wrapped.com.google.zxing.javase,3.4.1,file:${user.home}/.m2/repository/com/google/zxing/javase/3.4.1/bnd-fd0891a26b67203f2dde44003aef69db/javase-3.4.1.jar,4,false
-wrapped.com.oracle.database.jdbc.ojdbc10,19.21.0.0,file:${user.home}/.m2/repository/com/oracle/database/jdbc/ojdbc10/19.21.0.0/bnd-2aec70198dafbe64646870da9ce0bda1/ojdbc10-19.21.0.0.jar,4,false
+wrapped.com.oracle.database.jdbc.ojdbc17,23.26.0.0,file:${user.home}/.m2/repository/com/oracle/database/jdbc/ojdbc17/23.26.0.0/bnd-2aec70198dafbe64646870da9ce0bda1/ojdbc17-23.26.0.0.jar,4,false
 wrapped.dev.samstevens.totp.totp,1.7.1,file:${user.home}/.m2/repository/dev/samstevens/totp/totp/1.7.1/bnd-fd0891a26b67203f2dde44003aef69db/totp-1.7.1.jar,4,false
 wrapped.io.grpc.grpc-context,1.27.2,file:${user.home}/.m2/repository/io/grpc/grpc-context/1.27.2/bnd-2aec70198dafbe64646870da9ce0bda1/grpc-context-1.27.2.jar,4,false
 wrapped.io.opencensus.opencensus-api,0.28.0,file:${user.home}/.m2/repository/io/opencensus/opencensus-api/0.28.0/bnd-fd0891a26b67203f2dde44003aef69db/opencensus-api-0.28.0.jar,4,false

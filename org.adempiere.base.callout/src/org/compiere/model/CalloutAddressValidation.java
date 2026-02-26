@@ -28,7 +28,7 @@ public class CalloutAddressValidation extends CalloutEngine
 		if (C_AddressValidationCfg_ID == null || C_AddressValidationCfg_ID.intValue() == 0)
 			return "";
 		
-		X_C_AddressValidationCfg validation = new X_C_AddressValidationCfg(ctx, C_AddressValidationCfg_ID, null);
+		MAddressValidationCfg validation = new MAddressValidationCfg(ctx, C_AddressValidationCfg_ID, null);
 		mTab.setValue(MAddressValidation.COLUMNNAME_Name, validation.getName());
 		
 		return null;

@@ -7,8 +7,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=17))"
 Require-Bundle: org.adempiere.base;bundle-version="13.0.0",
  org.adempiere.install;bundle-version="13.0.0";resolution:=optional,
- com.zaxxer.HikariCP;bundle-version="5.1.0",
- wrapped.com.oracle.database.jdbc.ojdbc10;bundle-version="19.21.0"
+ com.zaxxer.HikariCP;bundle-version="7.0.2",
+ wrapped.com.oracle.database.jdbc.ojdbc17;bundle-version="23.26.0.0"
 Bundle-ClassPath: .
 Import-Package: org.osgi.framework;version="1.10.0",
  org.slf4j;version="2.0.12"

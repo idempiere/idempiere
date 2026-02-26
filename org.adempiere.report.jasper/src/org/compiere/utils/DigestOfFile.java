@@ -133,7 +133,7 @@ public class DigestOfFile
      * @param file2 second file to compare
      * @return true if files are identic false otherwise
      */
-    @Deprecated
+    @Deprecated (since="13", forRemoval=true)
     public static boolean md5HashCompare(File file1,File file2)
     {
     	//compute Hash of existing and downloaded
@@ -154,7 +154,7 @@ public class DigestOfFile
      * @param file
      * @return md5 hash null if file is not found or other error
      */
-    @Deprecated
+    @Deprecated (since="13", forRemoval=true)
     public static String getMD5Hash(File file)
     {
     	String hash;
@@ -174,7 +174,7 @@ public class DigestOfFile
      * @param inputStream
      * @return md5 hash
      */
-    @Deprecated
+    @Deprecated (since="13", forRemoval=true)
     public static String getMD5Hash(InputStream inputStream)
     {
         String hash;
@@ -195,7 +195,7 @@ public class DigestOfFile
      * @param input
      * @return mdg hash string
      */
-    @Deprecated
+    @Deprecated (since="13", forRemoval=true)
     public static String getMD5Hash(byte[] input)
     {
     	String hash;

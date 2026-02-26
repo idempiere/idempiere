@@ -28,7 +28,7 @@ public class CalloutTaxProvider extends CalloutEngine
 		if (C_TaxProviderCfg_ID == null || C_TaxProviderCfg_ID.intValue() == 0)
 			return "";
 		
-		X_C_TaxProviderCfg tp = new X_C_TaxProviderCfg(ctx, C_TaxProviderCfg_ID, null);
+		MTaxProviderCfg tp = new MTaxProviderCfg(ctx, C_TaxProviderCfg_ID, null);
 		mTab.setValue(MTaxProvider.COLUMNNAME_Name, tp.getName());
 		
 		return null;

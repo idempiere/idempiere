@@ -44,7 +44,6 @@ public class MMovementLineMA extends X_M_MovementLineMA
 	private static final long serialVersionUID = -155379485409000271L;
 
 	/**
-	 * 	Get Material Allocations for Line
 	 *	@param ctx context
 	 *	@param M_MovementLine_ID line
 	 *	@param trxName trx
@@ -266,17 +265,16 @@ public class MMovementLineMA extends X_M_MovementLineMA
 		}
 		// Set DateMaterialPolicy after edit of M_AttributeSetInstance_ID field
 		if(!newRecord && is_ValueChanged(COLUMNNAME_M_AttributeSetInstance_ID)){
-			I_M_MovementLine line = getM_MovementLine();
 			
 			Timestamp dateMPolicy = null;
 			if(getM_AttributeSetInstance_ID()>0)
 			{
-				dateMPolicy = MStorageOnHand.getDateMaterialPolicy(line.getM_Product_ID(), getM_AttributeSetInstance_ID(), get_TrxName());
+				dateMPolicy = MStorageOnHand.getDateMaterialPolicy(parentline.getM_Product_ID(), getM_AttributeSetInstance_ID(), get_TrxName());
 			}
 			
 			if(dateMPolicy == null)
 			{
-				I_M_Movement  movement = line.getM_Movement();
+				MMovement  movement = parentline.getParent();
 				dateMPolicy = movement.getMovementDate();
 			}
 			

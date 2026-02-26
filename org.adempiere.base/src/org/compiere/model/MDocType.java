@@ -401,47 +401,56 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
     public static int getShipmentReceiptDocType(int docTypeId)
     {
         int relatedDocTypeId = 0;
-        if (docTypeId != 0)
+        if (docTypeId > 0)
         {
             MDocType docType = MDocType.get(docTypeId);
-            // FIXME: Should refactor code and remove the hard coded name
-            // Should change document type to allow query the value
-            if ("Return Material".equals(docType.getName()) ||
-                    "Vendor Return".equals(docType.getName())|| !docType.isSOTrx())
-            {
-                String relatedDocTypeName = null;
-                if (("Purchase Order").equals(docType.getName()))
-                {
-                    relatedDocTypeName = "MM Receipt";
-                }
-                else if ("Return Material".equals(docType.getName()))
-                {
-                    relatedDocTypeName = "MM Returns";
-                }
-                else if ("Vendor Return".equals(docType.getName()))
-                {
-                    relatedDocTypeName = "MM Vendor Returns";
-                }
+            			
+			var docBaseType = docType.getDocBaseType();
+			var docSubTypeSO = docType.getDocSubTypeSO();
+			String relatedDocBaseType = null;
+			String isSOTrx = null;
+			if (DOCBASETYPE_PurchaseOrder.equals(docBaseType))
+			{
+			    if (DOCSUBTYPESO_ReturnMaterial.equals(docSubTypeSO)) {
+			        relatedDocBaseType = DOCBASETYPE_MaterialDelivery;
+			    } else if (docSubTypeSO == null) {
+			        relatedDocBaseType = DOCBASETYPE_MaterialReceipt;
+			    }
+			    isSOTrx = "N";
+			}
+			else if (DOCBASETYPE_SalesOrder.equals(docBaseType)) 
+			{ 
+				if (DOCSUBTYPESO_ReturnMaterial.equals(docSubTypeSO)) 
+				{ 
+					relatedDocBaseType = DOCBASETYPE_MaterialReceipt; 
+				} else { 
+					relatedDocBaseType = DOCBASETYPE_MaterialDelivery; 
+				} 
+				isSOTrx = "Y";
+			}
+            
+			// For non-return, if the document type has a specific shipment/receipt doctype defined, use it
+			if (!DOCSUBTYPESO_ReturnMaterial.equals(docSubTypeSO) && docType.getC_DocTypeShipment_ID() > 0)
+			{
+				return docType.getC_DocTypeShipment_ID();
+			}
 
-                if (relatedDocTypeName != null)
-                {
-                    StringBuilder whereClause = new StringBuilder(30);
-                    whereClause.append("Name='").append(relatedDocTypeName).append("' ");
-                    whereClause.append("and AD_Client_ID=").append(Env.getAD_Client_ID(Env.getCtx()));
-                    whereClause.append(" AND IsActive='Y'");
+			if (relatedDocBaseType != null)
+			{
+			    StringBuilder whereClause = new StringBuilder(30);
+			    whereClause.append("DocBaseType='").append(relatedDocBaseType).append("' ");
+			    whereClause.append("AND AD_Client_ID=").append(Env.getAD_Client_ID(Env.getCtx()));
+			    whereClause.append(" AND IsActive='Y'");
+			    whereClause.append(" AND IsSOTrx='").append(isSOTrx).append("'");
+			    whereClause.append(" Order By C_DocType_ID ASC ");
 
-                    int relDocTypeIds[] = MDocType.getAllIDs(MDocType.Table_Name, whereClause.toString(), null);
+			    int relDocTypeIds[] = MDocType.getAllIDs(MDocType.Table_Name, whereClause.toString(), null);
 
-                    if (relDocTypeIds.length > 0)
-                    {
-                        relatedDocTypeId = relDocTypeIds[0];
-                    }
-                }
-            }
-            else
-            {
-                relatedDocTypeId = docType.getC_DocTypeShipment_ID();
-            }
+			    if (relDocTypeIds.length > 0)
+			    {
+			        relatedDocTypeId = relDocTypeIds[0];
+			    }
+			}
         }
 
         return relatedDocTypeId;

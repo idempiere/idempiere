@@ -45,9 +45,9 @@ import org.compiere.util.Util;
 public class MTree extends MTree_Base
 {
 	/**
-	 * generated serial id 
+	 * 
 	 */
-	private static final long serialVersionUID = 8572653421094006917L;
+	private static final long serialVersionUID = -5471090207406467359L;
 
 	/**
 	 *  Default Constructor.
@@ -561,7 +561,7 @@ public class MTree extends MTree_Base
 			sql = MRole.getDefault(getCtx(), false).addAccessSQL(sql, 
 				sourceTable, MRole.SQL_FULLYQUALIFIED, m_editable);
 		log.fine(sql);
-		m_nodeRowSet = DB.getRowSet (sql);
+		m_nodeRowSet = DB.getRowSet (sql, get_TrxName());
 		m_nodeIdMap = new HashMap<Integer, ArrayList<Integer>>(50);
 		try 
 		{
@@ -782,5 +782,78 @@ public class MTree extends MTree_Base
 			.append(", Name=").append(getName());
 		sb.append("]");
 		return sb.toString();
+	}
+
+	/**
+	 * Return the table name of the table driving a tree 
+	 * @param treeId
+	 * @return
+	 */
+	public static String getRefTableFromTree(int treeId) {
+		final String sqlTableTree = ""
+				+ "SELECT CASE "
+				+ "         WHEN TreeType = 'AY' THEN 'C_Activity' "
+				+ "         WHEN TreeType = 'BB' THEN 'M_BOM' "
+				+ "         WHEN TreeType = 'BP' THEN 'C_BPartner' "
+				+ "         WHEN TreeType = 'CC' THEN 'CM_Container' "
+				+ "         WHEN TreeType = 'CM' THEN 'CM_Media' "
+				+ "         WHEN TreeType = 'CS' THEN 'CM_CStage' "
+				+ "         WHEN TreeType = 'CT' THEN 'CM_Template' "
+				+ "         WHEN TreeType = 'EV' THEN 'C_ElementValue' "
+				+ "         WHEN TreeType = 'MC' THEN 'C_Campaign' "
+				+ "         WHEN TreeType = 'MM' THEN 'AD_Menu' "
+				+ "         WHEN TreeType = 'OO' THEN 'AD_Org' "
+				+ "         WHEN TreeType = 'PC' THEN 'M_Product_Category' "
+				+ "         WHEN TreeType = 'PJ' THEN 'C_Project' "
+				+ "         WHEN TreeType = 'PR' THEN 'M_Product' "
+				+ "         WHEN TreeType = 'SR' THEN 'C_SalesRegion' "
+				+ "         WHEN TreeType = 'U1' THEN 'C_ElementValue' "
+				+ "         WHEN TreeType = 'U2' THEN 'C_ElementValue' "
+				+ "         WHEN TreeType = 'U3' THEN 'C_ElementValue' "
+				+ "         WHEN TreeType = 'U4' THEN 'C_ElementValue' "
+				+ "         WHEN TreeType = 'TL' THEN AD_Table.TableName "
+				+ "         ELSE NULL "
+				+ "       END "
+				+ "FROM   AD_Tree "
+				+ "       LEFT JOIN AD_Table ON ( AD_Table.AD_Table_ID = AD_Tree.AD_Table_ID ) "
+				+ "WHERE  AD_Tree_ID = ?";
+		return DB.getSQLValueStringEx(null, sqlTableTree, treeId);
+	}
+
+	/**
+	 * Return the reference table name from the given tree node table name
+	 * @param tableName tree node table name (AD_TreeBar, AD_TreeNodeBP, etc)
+	 * @param treeId AD_Tree_ID (for AD_TreeNode)
+	 * @return reference table name
+	 */
+	public static String getRefTableNameFromTableName(String tableName, int treeId) {
+		String refTableName = null;
+		if ("AD_Tree_Favorite_Node".equalsIgnoreCase(tableName))
+			refTableName = "AD_Tree_Favorite_Node";
+		else if ("AD_TreeBar".equalsIgnoreCase(tableName)
+				|| "AD_TreeNodeMM".equalsIgnoreCase(tableName))
+			refTableName = "AD_Menu";
+		else if ("AD_TreeNodeBP".equalsIgnoreCase(tableName))
+			refTableName = "C_BPartner";
+		else if ("AD_TreeNodeCMC".equalsIgnoreCase(tableName))
+			refTableName = "CM_Container";
+		else if ("AD_TreeNodeCMM".equalsIgnoreCase(tableName))
+			refTableName = "CM_Media";
+		else if ("AD_TreeNodeCMS".equalsIgnoreCase(tableName))
+			refTableName = "CM_CStage";
+		else if ("AD_TreeNodeCMT".equalsIgnoreCase(tableName))
+			refTableName = "CM_Template";
+		else if ("AD_TreeNodePR".equalsIgnoreCase(tableName))
+			refTableName = "M_Product";
+		else if ("AD_TreeNodeU1".equalsIgnoreCase(tableName)
+				|| "AD_TreeNodeU2".equalsIgnoreCase(tableName) 
+				|| "AD_TreeNodeU3".equalsIgnoreCase(tableName)
+				|| "AD_TreeNodeU4".equalsIgnoreCase(tableName))
+			refTableName = "C_ElementValue";
+		else if ("AD_TreeNode".equalsIgnoreCase(tableName))
+		{
+			refTableName = MTree.getRefTableFromTree(treeId);
+		}
+		return refTableName;
 	}
 }   //  MTree

@@ -80,8 +80,8 @@ public class MAttributeUse extends X_M_AttributeUse
 		// Not advanced roles cannot assign for use a reference attribute
 		if ((newRecord || is_ValueChanged(COLUMNNAME_M_Attribute_ID))
 				&& ! MRole.getDefault().isAccessAdvanced()) {			
-			MAttribute att = MAttribute.get(getCtx(), getM_Attribute_ID());
-			if (MAttribute.ATTRIBUTEVALUETYPE_Reference.equals(att.getAttributeValueType())) {
+			MAttribute attrib = new MAttribute(getCtx(), getM_Attribute_ID(), get_TrxName());
+			if (MAttribute.ATTRIBUTEVALUETYPE_Reference.equals(attrib.getAttributeValueType())) {
 				log.saveError("Error", Msg.getMsg(getCtx(), "ActionNotAllowedHere"));
 				return false;
 			}
@@ -95,14 +95,17 @@ public class MAttributeUse extends X_M_AttributeUse
 		}
 
 		if (getM_AttributeSet_ID() > 0
-			&& getM_Attribute_ID() > 0 && is_ValueChanged(COLUMNNAME_M_Attribute_ID)
-			&& MAttributeSet.M_ATTRIBUTESET_TYPE_TableAttribute.equals(getM_AttributeSet().getM_AttributeSet_Type()))
+			&& getM_Attribute_ID() > 0 && is_ValueChanged(COLUMNNAME_M_Attribute_ID))
 		{
-			String dupAttribSetName = DB.getSQLValueString(get_TrxName(), SQL_GET_TA_DUPLICATE_ATTRIBUTE, getAD_Client_ID(), getM_Attribute().getName());
-			if (!Util.isEmpty(dupAttribSetName, true))
-			{
-				log.saveError("Error", Msg.getMsg(getCtx(), "UniqueAttribute", new Object[] { getM_Attribute().getName(), dupAttribSetName }));
-				return false;
+			MAttributeSet attribSet = new MAttributeSet(getCtx(), getM_AttributeSet_ID(), get_TrxName());
+			if (MAttributeSet.M_ATTRIBUTESET_TYPE_TableAttribute.equals(attribSet.getM_AttributeSet_Type())) {
+				MAttribute attrib = new MAttribute(getCtx(), getM_Attribute_ID(), get_TrxName());
+				String dupAttribSetName = DB.getSQLValueString(get_TrxName(), SQL_GET_TA_DUPLICATE_ATTRIBUTE, getAD_Client_ID(), attrib.getName());
+				if (!Util.isEmpty(dupAttribSetName, true))
+				{
+					log.saveError("Error", Msg.getMsg(getCtx(), "UniqueAttribute", new Object[] { attrib.getName(), dupAttribSetName }));
+					return false;
+				}
 			}
 		}
 		return true;

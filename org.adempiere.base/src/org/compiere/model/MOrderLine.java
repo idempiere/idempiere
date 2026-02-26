@@ -829,7 +829,8 @@ public class MOrderLine extends X_C_OrderLine
 				getProductPricing(m_M_PriceList_ID);
 			// IDEMPIERE-1574 Sales Order Line lets Price under the Price Limit when updating
 			// Enforce PriceLimit
-			boolean enforce = m_IsSOTrx && getParent().getM_PriceList().isEnforcePriceLimit();
+			MPriceList priceList = MPriceList.get(getCtx(), getParent().getM_PriceList_ID(), get_TrxName());
+			boolean enforce = m_IsSOTrx && priceList.isEnforcePriceLimit();
 			if (enforce && MRole.getDefault().isOverwritePriceLimit())
 				enforce = false;
 			if (enforce && getPriceLimit() != Env.ZERO
@@ -880,7 +881,8 @@ public class MOrderLine extends X_C_OrderLine
 		/* Carlos Ruiz - globalqss
 		 * IDEMPIERE-178 Orders and Invoices must disallow amount lines without product/charge
 		 */
-		if (getParent().getC_DocTypeTarget().isChargeOrProductMandatory()) {
+		MDocType dt = MDocType.get(getParent().getC_DocTypeTarget_ID());
+		if (dt.isChargeOrProductMandatory()) {
 			if (getC_Charge_ID() == 0 && getM_Product_ID() == 0 && (getPriceEntered().signum() != 0 || getQtyEntered().signum() != 0)) {
 				log.saveError("FillMandatory", Msg.translate(getCtx(), "ChargeOrProductMandatory"));
 				return false;

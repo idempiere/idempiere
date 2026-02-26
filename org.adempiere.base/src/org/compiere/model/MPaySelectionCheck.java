@@ -340,7 +340,9 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 					payment.setDiscountAmt (psl.getDiscountAmt());
 					payment.setWriteOffAmt (psl.getWriteOffAmt());
 					BigDecimal overUnder = psl.getOpenAmt().subtract(psl.getPayAmt())
-						.subtract(psl.getDiscountAmt()).subtract(psl.getWriteOffAmt()).subtract(psl.getDifferenceAmt());
+						.subtract(psl.getDiscountAmt()).subtract(psl.getWriteOffAmt());
+					if (overUnder.signum() != 0)
+						payment.setIsOverUnderPayment(true);
 					payment.setOverUnderAmt(overUnder);
 				}
 				else
@@ -401,7 +403,8 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 		{
 			trxName = checks[0].get_TrxName();
 			Properties ctx = checks[0].getCtx();
-			int c_BankAccount_ID = checks[0].getC_PaySelection().getC_BankAccount_ID() ;
+			MPaySelection paySelection = new MPaySelection(ctx, checks[0].getC_PaySelection_ID(), trxName);
+			int c_BankAccount_ID = paySelection.getC_BankAccount_ID() ;
 			String paymentRule = checks[0].getPaymentRule() ;
 			Boolean isDebit ;
 			if (MInvoice.PAYMENTRULE_DirectDeposit.compareTo(paymentRule) == 0

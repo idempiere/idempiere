@@ -216,7 +216,6 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
     /**
      * Create desktop layout from "zul/desktop/desktop.zul".
      */
-    @SuppressWarnings("serial")
 	protected Component doCreatePart(Component parent)
     {
     	PageDefinition pagedef = Executions.getCurrent().getPageDefinition(ThemeManager.getThemeResource("zul/desktop/desktop.zul"));

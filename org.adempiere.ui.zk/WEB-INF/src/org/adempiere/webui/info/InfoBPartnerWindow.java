@@ -30,6 +30,7 @@ import org.adempiere.webui.panel.InvoiceHistory;
 import org.compiere.model.GridField;
 import org.compiere.model.MBPartner;
 import org.compiere.util.Env;
+import org.idempiere.db.util.SQLFragment;
 
 /**
  * Info window for C_BPartner
@@ -51,6 +52,8 @@ public class InfoBPartnerWindow extends InfoWindow {
 	 * @param whereClause
 	 * @param AD_InfoWindow_ID
 	 */
+	@SuppressWarnings("removal")
+	@Deprecated (since="13", forRemoval=true)
 	public InfoBPartnerWindow(int WindowNo, String tableName, String keyColumn,
 			String queryValue, boolean multipleSelection, String whereClause,
 			int AD_InfoWindow_ID) {
@@ -64,16 +67,51 @@ public class InfoBPartnerWindow extends InfoWindow {
 	 * @param keyColumn
 	 * @param queryValue
 	 * @param multipleSelection
+	 * @param AD_InfoWindow_ID
+	 * @param sqlFilter
+	 */
+	public InfoBPartnerWindow(int WindowNo, String tableName, String keyColumn,
+			String queryValue, boolean multipleSelection, int AD_InfoWindow_ID, SQLFragment sqlFilter) {
+		super(WindowNo, tableName, keyColumn, queryValue, multipleSelection,
+				AD_InfoWindow_ID, sqlFilter);
+	}
+	
+	/**
+	 * @param WindowNo
+	 * @param tableName
+	 * @param keyColumn
+	 * @param queryValue
+	 * @param multipleSelection
 	 * @param whereClause
 	 * @param AD_InfoWindow_ID
 	 * @param lookup
 	 * @param field
 	 */
+	@SuppressWarnings("removal")
+	@Deprecated (since="13", forRemoval=true)
 	public InfoBPartnerWindow(int WindowNo, String tableName, String keyColumn,
 			String queryValue, boolean multipleSelection, String whereClause,
 			int AD_InfoWindow_ID, boolean lookup, GridField field) {
 		super(WindowNo, tableName, keyColumn, queryValue, multipleSelection,
 				whereClause, AD_InfoWindow_ID, lookup, field);
+	}
+	
+	/**
+	 * @param WindowNo
+	 * @param tableName
+	 * @param keyColumn
+	 * @param queryValue
+	 * @param multipleSelection
+	 * @param AD_InfoWindow_ID
+	 * @param lookup
+	 * @param field
+	 * @param sqlFilter
+	 */
+	public InfoBPartnerWindow(int WindowNo, String tableName, String keyColumn,
+			String queryValue, boolean multipleSelection, 
+			int AD_InfoWindow_ID, boolean lookup, GridField field, SQLFragment sqlFilter) {
+		super(WindowNo, tableName, keyColumn, queryValue, multipleSelection,
+				AD_InfoWindow_ID, lookup, field, sqlFilter);
 	}
 	
 	/**
@@ -88,6 +126,8 @@ public class InfoBPartnerWindow extends InfoWindow {
 	 * @param field
 	 * @param predefinedContextVariables
 	 */
+	@SuppressWarnings("removal")
+	@Deprecated (since="13", forRemoval=true)
 	public InfoBPartnerWindow(int WindowNo, String tableName, String keyColumn,
 			String queryValue, boolean multipleSelection, String whereClause,
 			int AD_InfoWindow_ID, boolean lookup, GridField field, String predefinedContextVariables) {
@@ -95,6 +135,25 @@ public class InfoBPartnerWindow extends InfoWindow {
 				whereClause, AD_InfoWindow_ID, lookup, field, predefinedContextVariables);
 	}
 
+	/**
+	 * @param WindowNo
+	 * @param tableName
+	 * @param keyColumn
+	 * @param queryValue
+	 * @param multipleSelection
+	 * @param AD_InfoWindow_ID
+	 * @param lookup
+	 * @param field
+	 * @param predefinedContextVariables
+	 * @param sqlFilter
+	 */
+	public InfoBPartnerWindow(int WindowNo, String tableName, String keyColumn,
+			String queryValue, boolean multipleSelection, 
+			int AD_InfoWindow_ID, boolean lookup, GridField field, String predefinedContextVariables, SQLFragment sqlFilter) {
+		super(WindowNo, tableName, keyColumn, queryValue, multipleSelection,
+				AD_InfoWindow_ID, lookup, field, predefinedContextVariables, sqlFilter);
+	}
+	
 	/**
 	 *	Has History
 	 *  @return true
