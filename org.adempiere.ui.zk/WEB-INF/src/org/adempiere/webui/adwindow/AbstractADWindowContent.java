@@ -3465,10 +3465,10 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			{
 				if (link.endsWith("_ID"))
 					query.addRestriction(link, MQuery.EQUAL,
-						Integer.valueOf(Env.getContextAsInt(ctx, curWindowNo, link)));
+						Integer.valueOf(Env.getContextAsInt(ctx, curWindowNo, adTabbox.getSelectedGridTab().getTabNo(), link)));
 				else
 					query.addRestriction(link, MQuery.EQUAL,
-						Env.getContext(ctx, curWindowNo, link));
+						Env.getContext(ctx, curWindowNo, adTabbox.getSelectedGridTab().getTabNo(), link));
 			}
 			new WZoomAcross(toolbar.getToolbarItem("ZoomAcross"), adTabbox.getSelectedGridTab()
 					.getTableName(), adTabbox.getSelectedGridTab().getAD_Window_ID(), query);
