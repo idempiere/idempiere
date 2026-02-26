@@ -25,6 +25,8 @@
 package org.idempiere.db.util;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -39,7 +41,7 @@ import org.compiere.util.DB;
 public record SQLFragment(String sqlClause, List<Object> parameters) {
 	
 	public SQLFragment {
-		parameters = parameters != null ? List.copyOf(parameters) : List.of();
+		parameters = parameters != null ? Collections.unmodifiableList(new ArrayList<>(parameters)) : List.of();
 		sqlClause = sqlClause != null ? sqlClause : "";
 	}
 	
