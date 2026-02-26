@@ -223,7 +223,7 @@ public class ServerPushEndPoint {
 				        	}
 				        });
 				        httpPost.setConfig(org.apache.hc.client5.http.config.RequestConfig.custom()
-				            .setResponseTimeout(Timeout.ofSeconds(30))
+				            .setResponseTimeout(Timeout.ofSeconds(0))
 				            .build());
 		
 				        // Execute request asynchronously
@@ -254,7 +254,7 @@ public class ServerPushEndPoint {
 									}
 								} else {
 									try {
-										session.getBasicRemote().sendText("Error: No response from /zkau");
+										session.getBasicRemote().sendText(errorResponse("Error: No response from /zkau"));
 									} catch (IOException e) {
 										CLogger.getCLogger(getClass()).log(Level.WARNING, "Error sending response to client", e);
 									}
@@ -263,7 +263,7 @@ public class ServerPushEndPoint {
 					        	CLogger.getCLogger(getClass()).log(Level.WARNING, "Error processing /zkau request", e);
 					        	//notify client about the error
 								try {
-									session.getBasicRemote().sendText("Error: No response from /zkau");
+									session.getBasicRemote().sendText(errorResponse("Error processing /zkau request"));
 								} catch (Throwable e1) {
 									CLogger.getCLogger(getClass()).log(Level.WARNING, "Error sending response to client", e1);
 								}
@@ -275,6 +275,13 @@ public class ServerPushEndPoint {
 		        }
 			}
 		}
+	}
+
+	private String errorResponse(String text) {
+		JSONObject jsonResponse = new JSONObject();
+		jsonResponse.put("status", 500);
+		jsonResponse.put("statusText", text);
+		return jsonResponse.toString();
 	}
 
 	// Disable SSL verification and host name verification for internal request
