@@ -3877,8 +3877,8 @@ public abstract class PO
 	 * @param session to capture change log. null when call from toInsertSQL (i.e to build sql only, not for real insert to DB)
 	 * @param AD_ChangeLog_ID initial change log id
 	 * @param generateScriptOnly true if it is to generate sql script only, false for real DB insert
-	 * @param changeLogBatch batch insert for change log
 	 * @param database database type
+	 * @param changeLogBatch batch insert for change log
 	 * @return last AD_ChangeLog_ID
 	 */
 	protected int buildInsertSQL(StringBuilder sqlInsert, boolean withValues, List<Object> params, MSession session,
@@ -4572,6 +4572,8 @@ public abstract class PO
 				success = false;
 			}
 	
+			setupDeleteActionsForTransactionEvent();
+			
 			//	Save ID
 			m_idOld = get_ID();
 			//
@@ -4685,8 +4687,7 @@ public abstract class PO
 				}
 			}
 			else
-			{
-				setupDeleteActionsForTransactionEvent();
+			{				
 				if (localTrx != null)
 				{
 					try {

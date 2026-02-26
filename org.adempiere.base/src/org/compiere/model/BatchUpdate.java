@@ -27,7 +27,6 @@ import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +45,8 @@ import org.idempiere.db.util.SQLFragment;
 public class BatchUpdate<T extends PO> implements IBatchOperation<T> {
 	private static final CLogger s_log = CLogger.getCLogger(BatchUpdate.class);
 	private List<T> m_list = new ArrayList<>();
+
+	private record BatchElement<T extends PO>(T po, List<Object> parameters) {}
 
 	/**
 	 * Add PO to batch
@@ -79,8 +80,7 @@ public class BatchUpdate<T extends PO> implements IBatchOperation<T> {
 			internalTrx = true;
 		}
 
-		Map<String, List<T>> sqlMap = new LinkedHashMap<>();
-		Map<T, List<Object>> paramMap = new HashMap<>();
+		Map<String, List<BatchElement<T>>> sqlMap = new LinkedHashMap<>();
 		BatchInsert<MChangeLog> changeLogBatch = new BatchInsert<>();
 
 		Savepoint savepoint = null;
@@ -138,10 +138,7 @@ public class BatchUpdate<T extends PO> implements IBatchOperation<T> {
 				}
 
 				sql = sqlFragment.sqlClause();
-				sqlMap.computeIfAbsent(sql, k -> new ArrayList<>()).add(po);
-				if (sqlFragment.parameters().size() > 0) {
-					paramMap.put(po, sqlFragment.parameters());
-				}
+				sqlMap.computeIfAbsent(sql, k -> new ArrayList<>()).add(new BatchElement<>(po, sqlFragment.parameters()));
 			}
 
 			// insert change logs
@@ -153,16 +150,18 @@ public class BatchUpdate<T extends PO> implements IBatchOperation<T> {
 
 			List <T> allProcessed = new ArrayList<>();
 			if (allSuccess) {
-				for (Map.Entry<String, List<T>> entry : sqlMap.entrySet()) {
+				for (Map.Entry<String, List<BatchElement<T>>> entry : sqlMap.entrySet()) {
 					sql = entry.getKey();
 					pstmt = conn.prepareStatement(sql);
 					List<T> processed = new ArrayList<>();			
-					for (T po : entry.getValue()) {
-						List<Object> params = paramMap.get(po);
-						if (params != null) {
+					for (BatchElement<T> element : entry.getValue()) {
+						T po = element.po();
+						List<Object> params = element.parameters();
+						if (params != null && !params.isEmpty()) {
 							DB.setParameters(pstmt, params);
 						}
 						pstmt.addBatch();
+						pstmt.clearParameters();
 						processed.add(po);
 					}
 					int[] results = pstmt.executeBatch();

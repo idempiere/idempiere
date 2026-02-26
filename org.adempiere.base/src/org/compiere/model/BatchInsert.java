@@ -27,7 +27,6 @@ import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +44,8 @@ import org.compiere.util.Trx;
 public class BatchInsert<T extends PO> implements IBatchOperation<T> {
 	private static final CLogger s_log = CLogger.getCLogger(BatchInsert.class);
 	private List<T> m_list = new ArrayList<>();
+	
+	private record BatchElement<T extends PO>(T po, List<Object> parameters) {}
 
 	/**
 	 * Add PO to batch
@@ -78,8 +79,7 @@ public class BatchInsert<T extends PO> implements IBatchOperation<T> {
 			internalTrx = true;
 		}
 
-		Map<String, List<T>> sqlMap = new LinkedHashMap<>();
-		Map<T, List<Object>> paramMap = new HashMap<>();
+		Map<String, List<BatchElement<T>>> sqlMap = new LinkedHashMap<>();
 
 		Savepoint savepoint = null;
 		boolean allSuccess = true;
@@ -87,12 +87,14 @@ public class BatchInsert<T extends PO> implements IBatchOperation<T> {
 		PreparedStatement pstmt = null;
 
 		try {
+			if (m_list.get(0) instanceof MChangeLog) {
+				PO.setCrossTenantSafe();
+			}
 			conn = trx.getConnection(true);
 			if (!internalTrx) {
 				savepoint = trx.setSavepoint(null);
 			}
 
-			String sql = null;
 			MSession session = null;
 
 			BatchInsert<MChangeLog> changeLogBatch = new BatchInsert<>();
@@ -142,9 +144,7 @@ public class BatchInsert<T extends PO> implements IBatchOperation<T> {
 				List<Object> params = new ArrayList<>();
 				po.buildInsertSQL(sqlb, false, params, session, 0, false, null, changeLogBatch);
 
-				sql = sqlb.toString();
-				sqlMap.computeIfAbsent(sql, k -> new ArrayList<>()).add(po);
-				paramMap.put(po, params);
+				sqlMap.computeIfAbsent(sqlb.toString(), k -> new ArrayList<>()).add(new BatchElement<>(po, params));
 			}
 
 			// insert change logs
@@ -157,16 +157,18 @@ public class BatchInsert<T extends PO> implements IBatchOperation<T> {
 			// execute batch insert
 			List <T> allProcessed = new ArrayList<>();
 			if (allSuccess) {
-				for (Map.Entry<String, List<T>> entry : sqlMap.entrySet()) {
-					sql = entry.getKey();
+				for (Map.Entry<String, List<BatchElement<T>>> entry : sqlMap.entrySet()) {
+					String sql = entry.getKey();
 					pstmt = conn.prepareStatement(sql);
 					List<T> processed = new ArrayList<>();			
-					for (T po : entry.getValue()) {
-						List<Object> params = paramMap.get(po);
+					for (BatchElement<T> element : entry.getValue()) {
+						T po = element.po();
+						List<Object> params = element.parameters();
 						if (params != null) {
 							DB.setParameters(pstmt, params);
 						}
 						pstmt.addBatch();
+						pstmt.clearParameters();
 						processed.add(po);
 					}
 					int[] results = pstmt.executeBatch();
@@ -219,6 +221,9 @@ public class BatchInsert<T extends PO> implements IBatchOperation<T> {
 			DB.close(pstmt);
 			if (internalTrx) {
 				trx.close();
+			}
+			if (m_list.get(0) instanceof MChangeLog) {
+				PO.clearCrossTenantSafe();
 			}
 		}
 

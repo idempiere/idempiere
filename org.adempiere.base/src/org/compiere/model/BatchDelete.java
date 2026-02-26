@@ -27,7 +27,6 @@ import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +45,8 @@ import org.idempiere.db.util.SQLFragment;
 public class BatchDelete<T extends PO> implements IBatchOperation<T> {
 	private static final CLogger s_log = CLogger.getCLogger(BatchDelete.class);
 	private List<T> m_list = new ArrayList<>();
+
+	private record BatchElement<T extends PO>(T po, List<Object> parameters) {}
 
 	/**
 	 * Add PO to batch
@@ -90,8 +91,7 @@ public class BatchDelete<T extends PO> implements IBatchOperation<T> {
 			}
 
 			List<String> preDeleteStatements = new ArrayList<>();
-			Map<String, List<T>> sqlMap = new LinkedHashMap<>();
-			Map<T, List<Object>> paramMap = new HashMap<>();
+			Map<String, List<BatchElement<T>>> sqlMap = new LinkedHashMap<>();
 
 			List<T> deletes = new ArrayList<>(m_list);
 			List<PO> updates = new ArrayList<>();
@@ -158,10 +158,8 @@ public class BatchDelete<T extends PO> implements IBatchOperation<T> {
 
 				// Main Delete
 				SQLFragment sqlFragment = po.get_deleteStatement();
-				sqlMap.computeIfAbsent(sqlFragment.sqlClause(), k -> new ArrayList<>()).add(po);
-				if (!sqlFragment.parameters().isEmpty()) {
-					paramMap.put(po, sqlFragment.parameters());
-				}
+				sqlMap.computeIfAbsent(sqlFragment.sqlClause(), k -> new ArrayList<>()).add(new BatchElement<>(po, sqlFragment.parameters()));
+				
 			}
 
 			if (!allSuccess) {
@@ -222,22 +220,24 @@ public class BatchDelete<T extends PO> implements IBatchOperation<T> {
 			// 5. Execute delete
 			PreparedStatement pstmt = null;
 			try {
-				for (Map.Entry<String, List<T>> entry : sqlMap.entrySet()) {
+				for (Map.Entry<String, List<BatchElement<T>>> entry : sqlMap.entrySet()) {
 					String sql = entry.getKey();
 					pstmt = conn.prepareStatement(sql);
-					for (T po : entry.getValue()) {
-						List<Object> params = paramMap.get(po);
+					for (BatchElement<T> element : entry.getValue()) {
+						List<Object> params = element.parameters();
 						if (params != null && !params.isEmpty()) {
 							DB.setParameters(pstmt, params);
 						}
 						pstmt.addBatch();
+						pstmt.clearParameters();
 					}
 					int[] results = pstmt.executeBatch();
 					pstmt.close();
 					pstmt = null;
 
 					for (int i = 0; i < results.length; i++) {
-						T po = entry.getValue().get(i);
+						T po = entry.getValue().get(i).po();
+						po.setupDeleteActionsForTransactionEvent();
 						po.m_idOld = po.get_ID();
 						po.m_IDs[0] = PO.I_ZERO;
 						po.m_attachment = null;
@@ -260,8 +260,7 @@ public class BatchDelete<T extends PO> implements IBatchOperation<T> {
 				for(T po : deletes) {
 					allSuccess = po.afterDelete(true);
 					if (allSuccess) {
-						ModelValidationEngine.get().fireModelChange(po, ModelValidator.TYPE_AFTER_DELETE);
-						po.setupDeleteActionsForTransactionEvent();
+						ModelValidationEngine.get().fireModelChange(po, ModelValidator.TYPE_AFTER_DELETE);						
 					}
 					if (!allSuccess) {
 						break;
