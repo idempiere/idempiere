@@ -2701,28 +2701,16 @@ public final class DB
 	@Deprecated(since="13", forRemoval=true)
 	public static String inClauseForCSV(String columnName, String csv, boolean isNotClause) 
 	{
-		
-	    boolean showNullOnNot = MSysConfig.getBooleanValue(
-		        MSysConfig.INCLUDE_NULL_ON_NEGATED_MULTISELECTION, 
-		        false, 
-		        Env.getAD_Client_ID(Env.getCtx())
-		    );
 	    
 		StringBuilder builder = new StringBuilder();
-		builder.append(columnName);
 		
-	    if (isNotClause && showNullOnNot) {
+	    if (isNotClause) {
 	        // (columnName NOT IN (
 	        builder.append("(")
 	               .append(columnName)
-	               .append(" NOT IN (");
+	               .append(" NOT");
 	    } else {
-	        // columnName [NOT] IN (
-	        builder.append(columnName);
-	        if (isNotClause) {
-	            builder.append(" NOT");
-	        }
-	        builder.append(" IN (");
+	    	builder.append(columnName);
 	    }
 	    
 		String[] values = csv.split("[,]");
@@ -2746,7 +2734,7 @@ public final class DB
 		}
 		builder.append(")");
 		
-	    if (isNotClause && showNullOnNot) {
+	    if (isNotClause) {
 	        builder.append(" OR ")
 	               .append(columnName)
 	               .append(" IS NULL)");
@@ -2766,26 +2754,17 @@ public final class DB
 	{
 	    StringBuilder builder = new StringBuilder();
 	    List<Object> params = new ArrayList<>();
-
-	    boolean showNullOnNot = MSysConfig.getBooleanValue(
-	        MSysConfig.INCLUDE_NULL_ON_NEGATED_MULTISELECTION, 
-	        false, 
-	        Env.getAD_Client_ID(Env.getCtx())
-	    );
-
-	    if (isNotClause && showNullOnNot) {
+	    
+	    if (isNotClause) {
 	        // (columnName NOT IN (
 	        builder.append("(")
 	               .append(columnName)
-	               .append(" NOT IN (");
+	               .append(" NOT");
 	    } else {
-	        // columnName [NOT] IN (
-	        builder.append(columnName);
-	        if (isNotClause) {
-	            builder.append(" NOT");
-	        }
-	        builder.append(" IN (");
+	    	builder.append(columnName);
 	    }
+	    
+	    builder.append(" IN (");
 
 	    String[] values = csv.split("[,]");
 	    for (int i = 0; i < values.length; i++)
@@ -2821,7 +2800,7 @@ public final class DB
 	    }
 	    builder.append(")");
 
-	    if (isNotClause && showNullOnNot) {
+	    if (isNotClause) {
 	        builder.append(" OR ")
 	               .append(columnName)
 	               .append(" IS NULL)");

@@ -52,7 +52,6 @@ import org.compiere.db.partition.ITablePartitionService;
 import org.compiere.dbPort.Convert;
 import org.compiere.dbPort.Convert_PostgreSQL;
 import org.compiere.model.MColumn;
-import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.SystemProperties;
@@ -60,7 +59,6 @@ import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
-import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.Language;
 import org.compiere.util.Trx;
@@ -1195,20 +1193,11 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	
 	@Override
 	public SQLFragment intersectFilterForCSV(String columnName, String csv, boolean isNotClause) {
-	    boolean showNullOnNot = MSysConfig.getBooleanValue(
-	        MSysConfig.INCLUDE_NULL_ON_NEGATED_MULTISELECTION,
-	        false,
-	        Env.getAD_Client_ID(Env.getCtx())
-	    );
 
 	    StringBuilder builder = new StringBuilder();
 
-	    if (isNotClause && showNullOnNot) {
-	        builder.append("(");
-	    }
-
 	    if (isNotClause) {
-	        builder.append("NOT ");
+	        builder.append("(").append("NOT ");
 	    }
 
 	    builder.append("(string_to_array(")
@@ -1217,7 +1206,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	    builder.append(" && "); // intersect
 	    builder.append("string_to_array(?,','))");
 
-	    if (isNotClause && showNullOnNot) {
+	    if (isNotClause) {
 	        builder.append(" OR ")
 	               .append(columnName)
 	               .append(" IS NULL)");
