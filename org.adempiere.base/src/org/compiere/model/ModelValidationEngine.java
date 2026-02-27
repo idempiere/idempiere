@@ -46,6 +46,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Util;
+import org.compiere.wf.MWFActivity;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.launch.Framework;
@@ -584,6 +585,9 @@ public class ModelValidationEngine
 			return null;
 
 		String propertyName = po.get_TableName() + "*";
+		if(docTiming == ModelValidator.TIMING_BEFORE_WF_NODE_EXECUTION)
+			propertyName = ((MWFActivity)po).getPO().get_TableName() + "*";
+		
 		ArrayList<ModelValidator> list = m_docValidateListeners.get(propertyName);
 		if (list != null)
 		{
@@ -594,6 +598,8 @@ public class ModelValidationEngine
 		}
 
 		propertyName = po.get_TableName() + po.getAD_Client_ID();
+		if(docTiming == ModelValidator.TIMING_BEFORE_WF_NODE_EXECUTION)
+			propertyName = ((MWFActivity)po).getPO().get_TableName() + po.getAD_Client_ID();
 		list = m_docValidateListeners.get(propertyName);
 		if (list != null)
 		{
@@ -648,8 +654,6 @@ public class ModelValidationEngine
 						e.printStackTrace();
 						error = e.toString();
 					}
-					if (error != null && error.length() > 0)
-						return error;
 				}
 			}
 		}
