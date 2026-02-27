@@ -217,6 +217,10 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element implements Immuta
 				   || elementType.equals(ELEMENTTYPE_CustomField4)) {
 			return null;
 		}
+		else if (elementType.equals("CO")) {
+			return "SELECT Combination, Description FROM C_ValidCombination WHERE C_ValidCombination_ID=";
+		}
+
 		//
 		return "";
 	}   //  getValueQuery
@@ -598,11 +602,10 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element implements Immuta
 		
 		// Validate IsMandatory configuration
 		String et = getElementType();
-		if (isMandatory() &&
-			(ELEMENTTYPE_UserElementList1.equals(et) || ELEMENTTYPE_UserElementList2.equals(et)
-			|| ELEMENTTYPE_UserColumn1.equals(et) || ELEMENTTYPE_UserColumn2.equals(et) 
-			|| ELEMENTTYPE_CustomField1.equals(et) || ELEMENTTYPE_CustomField2.equals(et)
-			|| ELEMENTTYPE_CustomField3.equals(et) || ELEMENTTYPE_CustomField4.equals(et)))
+		if (isMandatory()	&&
+			(ELEMENTTYPE_UserColumn1.equals(et) || ELEMENTTYPE_UserColumn2.equals(et)
+				|| ELEMENTTYPE_CustomField1.equals(et) || ELEMENTTYPE_CustomField2.equals(et)
+				|| ELEMENTTYPE_CustomField3.equals(et) || ELEMENTTYPE_CustomField4.equals(et)))
 			setIsMandatory(false);
 		else if (isMandatory())
 		{
