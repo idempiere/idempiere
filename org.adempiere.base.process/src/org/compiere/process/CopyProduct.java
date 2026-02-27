@@ -77,6 +77,8 @@ public class CopyProduct extends SvrProcess {
 			throw new IllegalArgumentException("Target M_Product_ID == 0");
 		if (m_copyFromId == 0)
 			throw new IllegalArgumentException("Source M_Product_ID == 0");
+		if (m_copyFromId == toMProductID)
+			throw new IllegalArgumentException("Source and target M_Product_ID must be different");
 
 		int count = 0;
 		MProduct prodDst = new MProduct(getCtx(), toMProductID, get_TrxName());
