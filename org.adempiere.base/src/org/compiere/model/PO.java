@@ -4477,10 +4477,10 @@ public abstract class PO
 				if (trxdel != null) {
 
 					// Schedule the reset cache for after committed the delete
-					if (get_ID() == 0)
-						CacheMgt.scheduleCacheReset(p_info.getTableName(), get_UUID(), false, get_TrxName());
+					if (m_KeyColumns != null && m_KeyColumns.length == 1 && !getTable().isUUIDKeyTable())
+						CacheMgt.scheduleCacheReset(p_info.getTableName(), Record_ID, false, get_TrxName());
 					else
-						CacheMgt.scheduleCacheReset(p_info.getTableName(), get_ID(), false, get_TrxName());
+						CacheMgt.scheduleCacheReset(p_info.getTableName(), Record_UU, false, get_TrxName());
 
 					// trigger the deletion of attachments and archives for after committed the delete
 					trxdel.addTrxEventListener(new TrxEventListener() {
