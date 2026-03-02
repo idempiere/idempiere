@@ -455,8 +455,13 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 
 			final int tableId = refTable.getAD_Table_ID();
 			table = MTable.get(po.getCtx(), tableId);
-
-			if (Env.isSOTrx(po.getCtx())) {
+			if (po.get_ColumnIndex("IsSOTrx") >= 0) {
+				if (po.get_ValueAsBoolean("IsSOTrx")) {
+					windowId = table.getAD_Window_ID();
+				} else {
+					windowId = table.getPO_Window_ID();
+				}
+			} else if (Env.isSOTrx(po.getCtx())) {
 				windowId = table.getAD_Window_ID();
 			} else {
 				windowId = table.getPO_Window_ID();
@@ -465,7 +470,8 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 
 		if (windowId == 0) {
 			MReference refTarget = MReference.get(getAD_Reference_Target_ID());
-			PORelationException.throwMissingWindowId(po, refTarget.getName(), table.getName(), Env.isSOTrx(po.getCtx()));
+			PORelationException.throwMissingWindowId(po, refTarget.getName(), table.getName(),
+					Env.isSOTrx(po.getCtx()));
 		}
 		return windowId;
 
