@@ -769,7 +769,8 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			else
 			{
 				onSaveError = true;
-				Dialog.error(0, "CityNotFound", (String)null, new Callback<Integer>() {					
+				String errorMsg = CLogger.retrieveErrorString("Error saving Location - check the log");
+				Dialog.error(0, "Error", errorMsg, new Callback<Integer>() {
 					@Override
 					public void onCallback(Integer result) {
 						Events.echoEvent("onSaveError", WLocationDialog.this, null);

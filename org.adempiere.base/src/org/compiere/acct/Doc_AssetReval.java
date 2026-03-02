@@ -25,8 +25,9 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-import org.compiere.model.MAccount;
-import org.compiere.model.MAcctSchema;
+import org.adempiere.base.acct.AcctModelServices;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.model.MAssetAcct;
 import org.compiere.model.MAssetReval;
 import org.compiere.model.MDocType;
@@ -46,13 +47,13 @@ public class Doc_AssetReval extends Doc
 	 * @param rs
 	 * @param trxName
 	 */
-	public Doc_AssetReval (MAcctSchema as, ResultSet rs, String trxName)
+	public Doc_AssetReval (IAcctSchemaModel as, ResultSet rs, String trxName)
 	{
 		super(as, MAssetReval.class, rs, MDocType.DOCBASETYPE_GLJournal, trxName);
 	}
 
 	@Override
-	public ArrayList<Fact> createFacts(MAcctSchema as)
+	public ArrayList<Fact> createFacts(IAcctSchemaModel as)
 	{
 		MAssetAcct assetAcct = getAssetAcct(as);
 		MAssetReval assetRe = getAssetReval();
@@ -61,15 +62,15 @@ public class Doc_AssetReval extends Doc
 		Fact fact = new Fact(this, as, assetAcct.getPostingType());
 		facts.add(fact);
 		
-		MAccount dr = MAccount.get(getCtx(), assetAcct.getA_Asset_Acct());  
-		MAccount cr = MAccount.get(getCtx(), assetAcct.getA_Reval_Cost_Offset_Acct());
-		FactUtil.createSimpleOperation(fact, null, dr, cr, as.getC_Currency_ID(),
+		IAccountModel dr = AcctModelServices.getAccountModelService().get(getCtx(), assetAcct.getA_Asset_Acct());  
+		IAccountModel cr = AcctModelServices.getAccountModelService().get(getCtx(), assetAcct.getA_Reval_Cost_Offset_Acct());
+		FactUtil.createSimpleOperation(fact, null, dr, cr, as.getAcctSchema().getC_Currency_ID(),
 				assetRe.getA_Asset_Cost_Change().subtract(assetRe.getA_Asset_Cost()), false);
 		
 			
-		MAccount drd = MAccount.get(getCtx(), assetAcct.getA_Reval_Cost_Offset_Acct());  
-		MAccount crd = MAccount.get(getCtx(), assetAcct.getA_Accumdepreciation_Acct());
-		FactUtil.createSimpleOperation(fact, null, drd, crd, as.getC_Currency_ID(),
+		IAccountModel drd = AcctModelServices.getAccountModelService().get(getCtx(), assetAcct.getA_Reval_Cost_Offset_Acct());  
+		IAccountModel crd = AcctModelServices.getAccountModelService().get(getCtx(), assetAcct.getA_Accumdepreciation_Acct());
+		FactUtil.createSimpleOperation(fact, null, drd, crd, as.getAcctSchema().getC_Currency_ID(),
 				assetRe.getA_Change_Acumulated_Depr().subtract(assetRe.getA_Accumulated_Depr()), false);
 		
 		
@@ -100,9 +101,9 @@ public class Doc_AssetReval extends Doc
 	 * @param as
 	 * @return MAssetAcct
 	 */
-	private MAssetAcct getAssetAcct(MAcctSchema as)
+	private MAssetAcct getAssetAcct(IAcctSchemaModel as)
 	{
-		return MAssetAcct.forA_Asset_ID(getCtx(),as.get_ID(), getA_Asset_ID(), getPostingType() , getDateAcct(), null);
+		return MAssetAcct.forA_Asset_ID(getCtx(),as.getPO().get_ID(), getA_Asset_ID(), getPostingType() , getDateAcct(), null);
 	}
 	
 	/**

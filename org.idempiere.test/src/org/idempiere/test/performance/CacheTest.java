@@ -57,6 +57,8 @@ import org.adempiere.base.IReplenishFactory;
 import org.adempiere.base.IResourceFinder;
 import org.adempiere.base.LookupFactoryHelper;
 import org.adempiere.base.ServiceQuery;
+import org.adempiere.base.acct.AcctModelServices;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.model.IAddressValidation;
 import org.adempiere.model.IShipmentProcessor;
 import org.adempiere.model.ITaxProvider;
@@ -79,7 +81,6 @@ import org.compiere.model.IImageStore;
 import org.compiere.model.I_AD_Table;
 import org.compiere.model.I_M_InventoryLine;
 import org.compiere.model.Lookup;
-import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAddressValidation;
 import org.compiere.model.MAddressValidationCfg;
 import org.compiere.model.MBPartner;
@@ -198,8 +199,8 @@ public class CacheTest extends AbstractTestCase {
 	@SuppressWarnings({"unchecked"})
 	@Test
 	public void testPOCacheAfterUpdate() throws InterruptedException {
-		int mulch = 137;
-		int oak = 123;
+		int mulch = DictionaryIDs.M_Product.MULCH.id;
+		int oak = DictionaryIDs.M_Product.OAK.id;
 		//init cache
 		MProduct p1 = MProduct.get(Env.getCtx(), mulch);
 		CCache<Integer, MProduct> pc = (CCache<Integer, MProduct>) findByTableNameAndKey(MProduct.Table_Name, mulch);
@@ -253,10 +254,24 @@ public class CacheTest extends AbstractTestCase {
 		p3.setC_UOM_ID(p1.getC_UOM_ID());
 		p3.setC_TaxCategory_ID(p1.getC_TaxCategory_ID());
 		p3.saveEx();
+		commit();
+		int testProductId = p3.getM_Product_ID();
+
+		// get after p3 insert, miss should increase
+		miss = pc.getMiss();
+		MProduct p3a = MProduct.get(Env.getCtx(), testProductId, getTrxName());
+		assertEquals(p3a.getM_Product_ID(), testProductId);
+		assertTrue(pc.getMiss() > miss, "First get of just saved test product, cache miss should increase");
 		
 		p3.deleteEx(true);
 		commit();
-		
+
+		Thread.sleep(500);
+		miss = pc.getMiss();
+		p3a = MProduct.get(Env.getCtx(), testProductId);
+		assertNull(p3a);
+		assertTrue(pc.getMiss() > miss, "Get of just deleted test product, cache miss should increase");
+
 		//cache for p2 not effected by p3 delete, hit should increase
 		hit = pc.getHit();
 		p2 = MProduct.get(Env.getCtx(), oak);
@@ -587,7 +602,7 @@ public class CacheTest extends AbstractTestCase {
 			String error = DocumentEngine.postImmediate(Env.getCtx(), invoice.getAD_Client_ID(), MInvoice.Table_ID, invoice.get_ID(), true, getTrxName());
 			assertNull(error, "Error posting invoice: " + error);
 		}
-		MAcctSchema as = MAcctSchema.get(C_AcctSchema_ID);
+		IAcctSchemaModel as = AcctModelServices.getAcctSchemaModelService().get(C_AcctSchema_ID);
 		Doc doc = DocManager.getDocument(as, MInvoice.Table_ID, invoice.get_ID(), getTrxName());
 		assertNotNull(doc, "Failed load acct doc for invoice");
 		cache = findByNameAndKey(cacheName, cacheKey);

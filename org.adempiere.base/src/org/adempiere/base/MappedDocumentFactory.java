@@ -28,8 +28,8 @@ import java.sql.ResultSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.acct.Doc;
-import org.compiere.model.MAcctSchema;
 import org.compiere.model.MTable;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
@@ -56,9 +56,9 @@ public class MappedDocumentFactory implements IDocFactory, IMappedDocumentFactor
 	}
 
 	@Override
-	public Doc getDocument(MAcctSchema as, int AD_Table_ID, ResultSet rs, String trxName) {
+	public Doc getDocument(IAcctSchemaModel as, int AD_Table_ID, ResultSet rs, String trxName) {
 		String tableName = MTable.getTableName(Env.getCtx(), AD_Table_ID);
-		String key = tableName + "|" + as.getGAAP();
+		String key = tableName + "|" + as.getAcctSchema().getGAAP();
 		Function<Parameter, ? extends Doc> function = documentMap.get(key);
 		if (function != null) {
 			return function.apply(new Parameter(as, rs, trxName));

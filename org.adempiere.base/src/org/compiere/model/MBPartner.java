@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.acct.AcctModelServices;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -1005,7 +1006,7 @@ public class MBPartner extends X_C_BPartner implements ImmutablePOSupport
 		if (!newRecord 
 			&& (is_ValueChanged("Value") || is_ValueChanged("Name"))){
 			StringBuilder msgacc = new StringBuilder("C_BPartner_ID=").append(getC_BPartner_ID());
-			MAccount.updateValueDescription(getCtx(), msgacc.toString(), get_TrxName());
+			AcctModelServices.getAccountModelService().updateValueDescription(getCtx(), msgacc.toString(), get_TrxName());
 		}
 		return success;
 	}	//	afterSave

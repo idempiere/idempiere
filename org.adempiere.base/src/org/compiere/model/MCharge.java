@@ -19,6 +19,9 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.adempiere.base.acct.AcctModelServices;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -48,13 +51,13 @@ public class MCharge extends X_C_Charge implements ImmutablePOSupport
 	 *  @param as account schema
 	 *  @return Charge Account or null
 	 */
-	public static MAccount getAccount (int C_Charge_ID, MAcctSchema as)
+	public static IAccountModel getAccount (int C_Charge_ID, IAcctSchemaModel as)
 	{
 		if (C_Charge_ID == 0 || as == null)
 			return null;
 
 		String sql = "SELECT Ch_Expense_Acct FROM C_Charge_Acct WHERE C_Charge_ID=? AND C_AcctSchema_ID=?";
-		int Account_ID = DB.getSQLValueEx(null, sql, C_Charge_ID, as.get_ID());
+		int Account_ID = DB.getSQLValueEx(null, sql, C_Charge_ID, as.getPO().get_ID());
 		//	No account
 		if (Account_ID <= 0)
 		{
@@ -63,7 +66,7 @@ public class MCharge extends X_C_Charge implements ImmutablePOSupport
 		}
 
 		//	Return Account
-		MAccount acct = MAccount.get (as.getCtx(), Account_ID);
+		IAccountModel acct = AcctModelServices.getAccountModelService().get (as.getPO().getCtx(), Account_ID);
 		return acct;
 	}   //  getAccount
 

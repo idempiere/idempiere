@@ -31,16 +31,16 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.adempiere.base.acct.AcctModelServices;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
+import org.compiere.acct.Fact;
 import org.compiere.model.FactsValidator;
-import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClient;
 import org.compiere.model.MOrg;
 import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.ModelValidator;
 import org.compiere.model.PO;
 import org.compiere.util.Env;
-
-import org.compiere.acct.Fact;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -144,7 +144,7 @@ public class ModelValidationEngineTest extends AbstractTestCase {
 	@Test
 	public void testFactsValidate() {
 		MOrg org = MOrg.get(Env.getCtx(), getAD_Org_ID());
-		MAcctSchema as = MAcctSchema.get(Env.getCtx(), Env.getContextAsInt(Env.getCtx(), "$C_AcctSchema_ID"));
+		IAcctSchemaModel as = AcctModelServices.getAcctSchemaModelService().get(Env.getCtx(), Env.getContextAsInt(Env.getCtx(), "$C_AcctSchema_ID"));
 		List<Fact> facts = new ArrayList<>();
 		
 		engine.addFactsValidate(MOrg.Table_Name, globalValidator);
@@ -206,7 +206,7 @@ public class ModelValidationEngineTest extends AbstractTestCase {
 		}
 
 		@Override
-		public String factsValidate(MAcctSchema schema, List<Fact> facts, PO po) {
+		public String factsValidate(IAcctSchemaModel schema, List<Fact> facts, PO po) {
 			factsValidateCount++;
 			return null;
 		}

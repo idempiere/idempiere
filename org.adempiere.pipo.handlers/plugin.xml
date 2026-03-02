@@ -85,6 +85,10 @@
             id="AD_WF_Node">
       </handler>
       <handler
+            class="org.adempiere.pipo2.handler.WorkflowNodeParaElementHandler"
+            id="AD_WF_Node_Para">
+      </handler>
+      <handler
             class="org.adempiere.pipo2.handler.WorkflowNodeNextElementHandler"
             id="AD_WF_NodeNext">
       </handler>

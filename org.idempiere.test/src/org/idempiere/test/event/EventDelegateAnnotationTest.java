@@ -33,7 +33,8 @@ import java.util.concurrent.CompletableFuture;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.DefaultAnnotationBasedEventManager;
-import org.compiere.model.MAcctSchema;
+import org.adempiere.base.acct.AcctModelServices;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.adempiere.base.event.annotations.BaseEventHandler;
 import org.compiere.acct.Doc;
 import org.compiere.model.MInvoice;
@@ -42,9 +43,9 @@ import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MProcess;
 import org.compiere.model.MTest;
+import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ServerProcessCtl;
-import org.compiere.process.DocAction;
 import org.compiere.util.Env;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
@@ -245,8 +246,8 @@ public class EventDelegateAnnotationTest extends AbstractTestCase {
 		assertEquals(DocAction.STATUS_Completed, status, "Invoice should be completed");
 
 		MInvoiceEventDelegate.eventLog.clear();
-		MAcctSchema as = MAcctSchema.get(Env.getCtx(), Env.getContextAsInt(Env.getCtx(), "$C_AcctSchema_ID"));
-		String error = Doc.postImmediate(new MAcctSchema[] {as}, MInvoice.Table_ID, invoice2.get_ID(), true, getTrxName());
+		IAcctSchemaModel as = AcctModelServices.getAcctSchemaModelService().get(Env.getCtx(), Env.getContextAsInt(Env.getCtx(), "$C_AcctSchema_ID"));
+		String error = Doc.postImmediate(new IAcctSchemaModel[] {as}, MInvoice.Table_ID, invoice2.get_ID(), true, getTrxName());
 		assertEquals(null, error, "Invoice should be posted: " + error);
 		assertTrue(MInvoiceEventDelegate.eventLog.contains("FactsValidate"));
 

@@ -55,11 +55,24 @@ import org.adempiere.base.Core;
 import org.adempiere.exceptions.AdempiereException;
 import org.apache.ecs.MultiPartElement;
 import org.apache.ecs.XhtmlDocument;
-import org.apache.ecs.xhtml.*;
+import org.apache.ecs.xhtml.a;
+import org.apache.ecs.xhtml.div;
+import org.apache.ecs.xhtml.img;
+import org.apache.ecs.xhtml.input;
+import org.apache.ecs.xhtml.link;
+import org.apache.ecs.xhtml.script;
+import org.apache.ecs.xhtml.span;
+import org.apache.ecs.xhtml.style;
+import org.apache.ecs.xhtml.table;
+import org.apache.ecs.xhtml.tbody;
+import org.apache.ecs.xhtml.td;
+import org.apache.ecs.xhtml.th;
+import org.apache.ecs.xhtml.thead;
+import org.apache.ecs.xhtml.tr;
 import org.compiere.model.AttachmentData;
+import org.compiere.model.I_C_Element;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MColumn;
-import org.compiere.model.MElement;
 import org.compiere.model.MImage;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
@@ -618,7 +631,7 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 
 							if(item.getAD_Column_ID() > 0) {
 								MColumn column = MColumn.get(item.getAD_Column_ID());
-								String description = column.get_Translation(MElement.COLUMNNAME_Description,language.getAD_Language());
+								String description = column.get_Translation(I_C_Element.COLUMNNAME_Description,language.getAD_Language());
 								if(!Util.isEmpty(description)) {
 									th.addAttribute("title", description);
 								}

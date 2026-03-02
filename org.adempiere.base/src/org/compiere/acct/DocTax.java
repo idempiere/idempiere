@@ -22,8 +22,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
-import org.compiere.model.MAccount;
-import org.compiere.model.MAcctSchema;
+import org.adempiere.base.acct.AcctModelServices;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -87,7 +88,7 @@ public final class DocTax
 	 *  @param as account schema
 	 *  @return Account
 	 */
-	public MAccount getAccount (int AcctType, MAcctSchema as)
+	public IAccountModel getAccount (int AcctType, IAcctSchemaModel as)
 	{
 		if (AcctType < ACCTTYPE_TaxDue || AcctType > ACCTTYPE_TaxExpense)
 			return null;
@@ -101,7 +102,7 @@ public final class DocTax
 		{
 			pstmt = DB.prepareStatement(sql, null);
 			pstmt.setInt(1, m_C_Tax_ID);
-			pstmt.setInt(2, as.getC_AcctSchema_ID());
+			pstmt.setInt(2, as.getAcctSchema().getC_AcctSchema_ID());
 			rs = pstmt.executeQuery();
 			if (rs.next())
 				validCombination_ID = rs.getInt(AcctType+1);    //  1..3
@@ -116,7 +117,7 @@ public final class DocTax
 		}
 		if (validCombination_ID == 0)
 			return null;
-		return MAccount.get(as.getCtx(), validCombination_ID);
+		return AcctModelServices.getAccountModelService().get(as.getPO().getCtx(), validCombination_ID);
 	}   //  getAccount
 
 	/**

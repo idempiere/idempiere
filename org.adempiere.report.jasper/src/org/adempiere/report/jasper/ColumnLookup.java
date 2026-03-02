@@ -28,7 +28,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.function.BiFunction;
 
-import org.compiere.model.MAccount;
+import org.adempiere.base.acct.AcctModelServices;
+import org.adempiere.base.acct.model.IAccountModel;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MAttributeSetInstance;
 import org.compiere.model.MChart;
@@ -188,8 +189,8 @@ public class ColumnLookup implements BiFunction<String, Object, Object> {
 	 * @return account combination
 	 */
 	private Object getAccountCombination(Number key) {
-		MAccount account = MAccount.get(key.intValue());
-		return account != null ? account.getCombination() : "";
+		IAccountModel account = AcctModelServices.getAccountModelService().get(key.intValue());
+		return account != null ? account.getCombination().getCombination() : "";
 	}
 
 	/**

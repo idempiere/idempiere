@@ -89,6 +89,10 @@ BEGIN
 			  LEFT JOIN M_LocatorType lt ON (l.M_LocatorType_ID=lt.M_LocatorType_ID)
 			WHERE s.M_Product_ID=bom.M_ProductBOM_ID AND l.M_Warehouse_ID=myWarehouse_ID
                           AND COALESCE(lt.IsAvailableForReservation,'Y')='Y';
+			-- Prevent division by zero
+			IF bom.BOMQty = 0 THEN
+				RETURN 0;
+			END IF;
 			--	How much can we make with this product
 			ProductQty := ProductQty/bom.BOMQty;
 			--	How much can we make overall

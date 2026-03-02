@@ -5,8 +5,9 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.compiere.model.MAccount;
-import org.compiere.model.MAcctSchema;
+import org.adempiere.base.acct.AcctModelServices;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
 import org.compiere.model.MDepreciationEntry;
 import org.compiere.model.MDepreciationExp;
 import org.compiere.util.Env;
@@ -24,7 +25,7 @@ public class Doc_DepreciationEntry extends Doc
 	 * 	@param rs record
 	 * 	@parem trxName trx
 	 */
-	public Doc_DepreciationEntry (MAcctSchema as, ResultSet rs, String trxName)
+	public Doc_DepreciationEntry (IAcctSchemaModel as, ResultSet rs, String trxName)
 	{
 		super(as, MDepreciationEntry.class, rs, null, trxName);
 	}	//	Doc_A_Depreciation_Entry
@@ -63,11 +64,11 @@ public class Doc_DepreciationEntry extends Doc
 	}   //  getBalance
 
 	@Override
-	public ArrayList<Fact> createFacts (MAcctSchema as)
+	public ArrayList<Fact> createFacts (IAcctSchemaModel as)
 	{
 		ArrayList<Fact> facts = new ArrayList<Fact>();
 		//	Other Acct Schema
-		if (as.getC_AcctSchema_ID() != m_C_AcctSchema_ID)
+		if (as.getAcctSchema().getC_AcctSchema_ID() != m_C_AcctSchema_ID)
 			return facts;
 		
 		//  create Fact Header
@@ -81,9 +82,9 @@ public class Doc_DepreciationEntry extends Doc
 			DocLine line = createLine(depexp);
 			BigDecimal expenseAmt = depexp.getExpense();
 			//
-			MAccount dr_acct = MAccount.get(getCtx(), depexp.getDR_Account_ID());
-			MAccount cr_acct = MAccount.get(getCtx(), depexp.getCR_Account_ID());
-			FactUtil.createSimpleOperation(fact, line, dr_acct, cr_acct, as.getC_Currency_ID(), expenseAmt, false);
+			IAccountModel dr_acct = AcctModelServices.getAccountModelService().get(getCtx(), depexp.getDR_Account_ID());
+			IAccountModel cr_acct = AcctModelServices.getAccountModelService().get(getCtx(), depexp.getCR_Account_ID());
+			FactUtil.createSimpleOperation(fact, line, dr_acct, cr_acct, as.getAcctSchema().getC_Currency_ID(), expenseAmt, false);
 		}
 		//
 		facts.add(fact);

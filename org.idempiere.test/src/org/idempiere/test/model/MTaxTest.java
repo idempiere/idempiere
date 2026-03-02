@@ -38,13 +38,14 @@ import java.util.List;
 import java.util.Properties;
 
 import org.adempiere.base.Core;
-import org.compiere.model.MAccount;
-import org.compiere.model.MAcctSchema;
+import org.adempiere.base.acct.AcctModelServices;
+import org.adempiere.base.acct.model.IAccountModel;
+import org.adempiere.base.acct.model.IAcctSchemaModel;
+import org.adempiere.base.acct.model.IFactAcctModel;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MCost;
 import org.compiere.model.MDocType;
-import org.compiere.model.MFactAcct;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
 import org.compiere.model.MInvoice;
@@ -62,7 +63,6 @@ import org.compiere.model.MTax;
 import org.compiere.model.MTaxCategory;
 import org.compiere.model.MWarehouse;
 import org.compiere.model.ProductCost;
-import org.compiere.model.Query;
 import org.compiere.model.Tax;
 import org.compiere.model.X_C_Order;
 import org.compiere.process.DocAction;
@@ -322,20 +322,19 @@ public class MTaxTest extends AbstractTestCase {
 				DocumentEngine.postImmediate(Env.getCtx(), getAD_Client_ID(), MMatchPO.Table_ID, matchPOs[0].get_ID(), true, getTrxName());
 			ProductCost productCost = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
 			productCost.setQty(new BigDecimal("1"));
-			MAcctSchema schema = MClientInfo.get().getMAcctSchema1();
+			IAcctSchemaModel schema = MClientInfo.get().getMAcctSchema1();
 			BigDecimal averageCost = productCost.getProductCosts(schema, getAD_Org_ID(), MCost.COSTINGMETHOD_AveragePO, 0, true);	
 			if (averageCost == null)
 				averageCost = BigDecimal.ZERO;
 			averageCost = averageCost.setScale(2, RoundingMode.HALF_EVEN);
 			assertEquals(expectedCost, averageCost, "Un-expected average cost");
 			
-			MAccount acctAsset = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, schema);
-			Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt.get_ID(), schema.getC_AcctSchema_ID(), getTrxName());
-			List<MFactAcct> factAccts = query.list();
+			IAccountModel acctAsset = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, schema);
+			List<IFactAcctModel> factAccts = AcctModelServices.getFactAcctModelService().list(MInOut.Table_ID, receipt.get_ID(), schema.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 			BigDecimal totalDebit = new BigDecimal("0.00");
-			for(MFactAcct fa : factAccts) {
-				if (fa.getAccount_ID() == acctAsset.getAccount_ID()) {
-					totalDebit = totalDebit.add(fa.getAmtAcctDr());
+			for(IFactAcctModel fa : factAccts) {
+				if (fa.getFactAcct().getAccount_ID() == acctAsset.getCombination().getAccount_ID()) {
+					totalDebit = totalDebit.add(fa.getFactAcct().getAmtAcctDr());
 				}
 			}
 			assertEquals(expectedCost, totalDebit.setScale(2, RoundingMode.HALF_EVEN), "Un-expected product asset account posted amount");
@@ -461,20 +460,19 @@ public class MTaxTest extends AbstractTestCase {
 				DocumentEngine.postImmediate(Env.getCtx(), getAD_Client_ID(), MMatchPO.Table_ID, matchPOs[0].get_ID(), true, getTrxName());
 			ProductCost productCost = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
 			productCost.setQty(new BigDecimal("1"));
-			MAcctSchema schema = MClientInfo.get().getMAcctSchema1();
+			IAcctSchemaModel schema = MClientInfo.get().getMAcctSchema1();
 			BigDecimal averageCost = productCost.getProductCosts(schema, getAD_Org_ID(), MCost.COSTINGMETHOD_AveragePO, 0, true);	
 			if (averageCost == null)
 				averageCost = BigDecimal.ZERO;
 			averageCost = averageCost.setScale(2, RoundingMode.HALF_EVEN);
 			assertEquals(expectedCost, averageCost, "Un-expected average cost");
 			
-			MAccount acctAsset = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, schema);
-			Query query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, receipt.get_ID(), schema.getC_AcctSchema_ID(), getTrxName());
-			List<MFactAcct> factAccts = query.list();
+			IAccountModel acctAsset = productCost.getAccount(ProductCost.ACCTTYPE_P_Asset, schema);
+			List<IFactAcctModel> factAccts = AcctModelServices.getFactAcctModelService().list(MInOut.Table_ID, receipt.get_ID(), schema.getAcctSchema().getC_AcctSchema_ID(), getTrxName());
 			BigDecimal totalDebit = new BigDecimal("0.00");
-			for(MFactAcct fa : factAccts) {
-				if (fa.getAccount_ID() == acctAsset.getAccount_ID()) {
-					totalDebit = totalDebit.add(fa.getAmtAcctDr());
+			for(IFactAcctModel fa : factAccts) {
+				if (fa.getFactAcct().getAccount_ID() == acctAsset.getCombination().getAccount_ID()) {
+					totalDebit = totalDebit.add(fa.getFactAcct().getAmtAcctDr());
 				}
 			}
 			assertEquals(expectedCost, totalDebit.setScale(2, RoundingMode.HALF_EVEN), "Un-expected product asset account posted amount");

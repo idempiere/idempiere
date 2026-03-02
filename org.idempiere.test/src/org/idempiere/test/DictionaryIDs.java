@@ -644,6 +644,16 @@ public final class DictionaryIDs {
 		}
 	}
 
+	public enum M_Replenish {
+		P_CHAIR_IN_HQ("bd5db323-0341-4b29-9fbe-0887b98e7b3b");
+
+		public final String uuid;
+
+		private M_Replenish(String uuid) {
+			this.uuid = uuid;
+		}
+	}
+
 	public enum M_RMAType {
 		DAMAGE_ON_ARRIVAL(100);
 		
