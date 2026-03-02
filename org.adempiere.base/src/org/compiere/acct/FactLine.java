@@ -1302,12 +1302,30 @@ public final class FactLine
 	 * 	@param multiplier targetQty/documentQty
 	 *  @param otherLine reversal line created before this. if not null, this reversal should reverse the opposite sign.
 	 * 	@return true if success
+	 */
+	public boolean updateReverseLine (int AD_Table_ID, int Record_ID, int Line_ID,
+		BigDecimal multiplier, FactLine otherLine)
+	{
+		return updateReverseLine(AD_Table_ID, Record_ID, Line_ID, multiplier, otherLine, true);
+	}
+
+	/**
+	 * 	Update Line with reversed Original Amount in Accounting Currency.
+	 * 	Also copies original dimensions like Project, etc.
+	 * 	Called from Doc_MatchInv
+	 * 	@param AD_Table_ID table
+	 * 	@param Record_ID record
+	 * 	@param Line_ID line
+	 * 	@param multiplier targetQty/documentQty
+	 *  @param otherLine reversal line created before this. if not null, this reversal should reverse the opposite sign.
+	 *  @param updateTaxAndAmounts define if it must update tax and amounts, useful if they are already set in the origin
+	 * 	@return true if success
 	 * <p>
 	 * NOTE: otherLine is required in cases where the original DR/CR postings are done in the same account.
 	 * In this case looking just for the first posting is wrong and results in a non-balanced reversal posting
 	 */
 	public boolean updateReverseLine (int AD_Table_ID, int Record_ID, int Line_ID,
-		BigDecimal multiplier, FactLine otherLine)
+		BigDecimal multiplier, FactLine otherLine, boolean updateTaxAndAmounts)
 	{
 		boolean success = false;
 
@@ -1364,14 +1382,14 @@ public final class FactLine
 				//  Accounted Amounts - reverse
 				BigDecimal dr = fact.getFactAcct().getAmtAcctDr();
 				BigDecimal cr = fact.getFactAcct().getAmtAcctCr();
-				setAmtAcct(factAcctInfo.getFactAcct().getC_Currency_ID(), cr.multiply(multiplier), dr.multiply(multiplier));
-				//  
-				//  Bayu Sistematika - Source Amounts
-				//  Fixing source amounts
-				BigDecimal drSourceAmt = fact.getFactAcct().getAmtSourceDr();
-				BigDecimal crSourceAmt = fact.getFactAcct().getAmtSourceCr();
-				setAmtSource(fact.getFactAcct().getC_Currency_ID(), crSourceAmt.multiply(multiplier), drSourceAmt.multiply(multiplier));
-				//  end Bayu Sistematika
+				if (updateTaxAndAmounts) {
+					//  Accounted Amounts - reverse
+					setAmtAcct(fact.getFactAcct().getC_Currency_ID(), cr.multiply(multiplier), dr.multiply(multiplier));
+					//  Fixing source amounts
+					BigDecimal drSourceAmt = fact.getFactAcct().getAmtSourceDr();
+					BigDecimal crSourceAmt = fact.getFactAcct().getAmtSourceCr();
+					setAmtSource(fact.getFactAcct().getC_Currency_ID(), crSourceAmt.multiply(multiplier), drSourceAmt.multiply(multiplier));
+				}
 				//
 				success = true;
 				if (log.isLoggable(Level.FINE)) log.fine(new StringBuilder("(Table=").append(AD_Table_ID)
@@ -1396,7 +1414,8 @@ public final class FactLine
 				setM_Locator_ID(fact.getFactAcct().getM_Locator_ID());
 				factAcctInfo.getFactAcct().setA_Asset_ID(fact.getFactAcct().getA_Asset_ID());
 				factAcctInfo.getFactAcct().setM_Warehouse_ID(fact.getFactAcct().getM_Warehouse_ID());
-				factAcctInfo.getFactAcct().setC_Tax_ID(fact.getFactAcct().getC_Tax_ID());
+				if (updateTaxAndAmounts)
+					factAcctInfo.getFactAcct().setC_Tax_ID(fact.getFactAcct().getC_Tax_ID());
 				factAcctInfo.getFactAcct().setC_Charge_ID(fact.getFactAcct().getC_Charge_ID());
 				factAcctInfo.getFactAcct().setC_CostCenter_ID(fact.getFactAcct().getC_CostCenter_ID());
 				factAcctInfo.getFactAcct().setC_Department_ID(fact.getFactAcct().getC_Department_ID());	

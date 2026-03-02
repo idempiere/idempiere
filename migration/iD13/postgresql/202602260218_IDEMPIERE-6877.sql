@@ -1,3 +1,6 @@
+-- IDEMPIERE-6877 Fix null handling in productattribute function
+SELECT register_migration_script('202602260218_IDEMPIERE-6877.sql') FROM dual;
+
 set client_encoding='LATIN1';
 
 CREATE OR REPLACE FUNCTION      ProductAttribute 
@@ -93,4 +96,3 @@ END;
 $BODY$
 LANGUAGE 'plpgsql' STABLE
 ;
-

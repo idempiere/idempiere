@@ -174,7 +174,7 @@ public class ServerPushEndPoint {
 				String dtid = jsonRequest.get("dt").toString();
 				if (dtid == null || !dtid.equals(this.dtid)) {
 					try {
-						session.getBasicRemote().sendText("Error: Invalid desktop id");
+						session.getBasicRemote().sendText(errorResponse("Error: Invalid desktop id"));
 					} catch (IOException e) {
 						CLogger.getCLogger(getClass()).log(Level.WARNING, e.getMessage(), e);
 					}
@@ -193,7 +193,7 @@ public class ServerPushEndPoint {
 				} catch (IllegalStateException e) {
 					CLogger.getCLogger(getClass()).log(Level.WARNING, "HTTP Session already invalidated", e);
 					try {
-						session.getBasicRemote().sendText("Error: Session invalidated");
+						session.getBasicRemote().sendText(errorResponse("Error: Session invalidated"));
 					} catch (IOException ioe) {
 						CLogger.getCLogger(getClass()).log(Level.WARNING, "Error sending response to client", ioe);
 					}

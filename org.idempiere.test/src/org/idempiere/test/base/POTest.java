@@ -25,6 +25,7 @@
  **********************************************************************/
 package org.idempiere.test.base;
 
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -83,6 +84,7 @@ import org.compiere.model.MProduct;
 import org.compiere.model.MProductCategory;
 import org.compiere.model.MProductCategoryAcct;
 import org.compiere.model.MProductionLine;
+import org.compiere.model.MReplenish;
 import org.compiere.model.MRole;
 import org.compiere.model.MSession;
 import org.compiere.model.MSysConfig;
@@ -1151,8 +1153,28 @@ public class POTest extends AbstractTestCase
     	source.saveEx();
     	PO.copyValues(source, target2);	
     	assertEquals(source.getDescription(), target2.getDescription());
+
+    	// multi-key class
+    	MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
+    	product.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.STANDARD.id);
+    	product.setName("test Copy Values");
+    	product.setProductType(MProduct.PRODUCTTYPE_Item);
+    	product.setIsStocked(true);
+    	product.setIsSold(true);
+    	product.setIsPurchased(true);
+    	product.setC_UOM_ID(DictionaryIDs.C_UOM.EACH.id);
+    	product.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
+    	product.saveEx();
+    	MReplenish replenishSrc = new MReplenish(Env.getCtx(), DictionaryIDs.M_Replenish.P_CHAIR_IN_HQ.uuid, getTrxName());
+    	MReplenish replenishDst = new MReplenish(Env.getCtx(), PO.UUID_NEW_RECORD, getTrxName());
+    	PO.copyValues(replenishSrc, replenishDst);
+    	replenishDst.setM_Product_ID(product.get_ID());
+    	assertThatNoException().isThrownBy(() -> replenishDst.saveEx());
+    	assertNotNull(replenishDst.getM_Replenish_UU());
+    	assertEquals(DictionaryIDs.M_Warehouse.HQ.id, replenishDst.getM_Warehouse_ID());
+
     }
-    
+
     @Test
     void testLoadPOByUU() {
     	MTest test = new MTest(Env.getCtx(), 0, getTrxName());

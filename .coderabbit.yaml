@@ -153,7 +153,6 @@ reviews:
     ignore_title_keywords: [coderabbitskip]
     labels: []
     drafts: false
-    base_branches: ["master"]
   tools:
     github-checks:
       enabled: true

@@ -24,7 +24,6 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.Adempiere;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.CacheMgt;
@@ -934,10 +933,9 @@ public class MSysConfig extends X_AD_SysConfig
 		if (success && newRecord && ! getName().endsWith("_NOCACHE")) {
 			// Clear cache of AD_SysConfig
 			// This is to clear the cache of AD_SysConfig when creating a new record
-			// the reset cache is being called on PO when a record is changed or deleted, but not on new
-			// NOTE also that reset the specific ID doesn't work because the MSysConfig cache holds a
-			//   String type, and CCache.reset(int) just call reset when the key is not an Integer
-			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(Table_Name));
+			// NOTE also that reset the specific ID doesn't work because the MSysConfig cache is
+			//   based on a key containing the client and org, so we need to reset the whole cache
+			CacheMgt.scheduleCacheReset(Table_Name, -1, false, get_TrxName());
 		}
 		return success;
 	}
@@ -945,7 +943,7 @@ public class MSysConfig extends X_AD_SysConfig
 	@Override
 	protected boolean afterDelete(boolean success) {
 		if (success && ! getName().endsWith("_NOCACHE")) {
-			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(Table_Name));
+			CacheMgt.scheduleCacheReset(Table_Name, -1, false, get_TrxName());
 		}
 		return success;
 	}
