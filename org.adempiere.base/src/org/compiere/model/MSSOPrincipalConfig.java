@@ -193,7 +193,9 @@ public class MSSOPrincipalConfig extends X_SSO_PrincipalConfig
 		}
 
 		// Validate well-known configuration url for OIDC provider
-		if (newRecord || is_ValueChanged(COLUMNNAME_SSO_ApplicationDiscoveryURI))
+		if (newRecord 
+			|| is_ValueChanged(COLUMNNAME_SSO_ApplicationDiscoveryURI)
+			|| is_ValueChanged(COLUMNNAME_SSO_Provider))
 		{
 			if ("OIDC".equals(getSSO_Provider()))
 			{
