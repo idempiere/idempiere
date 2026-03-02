@@ -199,7 +199,7 @@ public class MSSOPrincipalConfig extends X_SSO_PrincipalConfig
 				String discoveryURI = getSSO_ApplicationDiscoveryURI();
 				if (discoveryURI == null || !discoveryURI.trim().endsWith(WELL_KNOWN_OPENID_CONFIGURATION_SUFFIX)) 
 				{
-					log.saveError("DiscoveryURIMustEndsWith", "");
+					log.saveError("DiscoveryURIMustEndWith", "");
 					return false;
 				}			
 			}

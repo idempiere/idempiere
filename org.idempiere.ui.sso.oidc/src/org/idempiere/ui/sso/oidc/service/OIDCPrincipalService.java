@@ -229,7 +229,7 @@ public class OIDCPrincipalService implements ISSOPrincipalService {
 			String discoveryURI = principalConfig.getSSO_ApplicationDiscoveryURI();
 			int endIndex = discoveryURI.indexOf(MSSOPrincipalConfig.WELL_KNOWN_OPENID_CONFIGURATION_SUFFIX);
 			if (endIndex < 0) {
-				throw new GeneralException(Msg.getMsg(Env.getCtx(), "DiscoveryURIMustEndsWith"));
+				throw new GeneralException(Msg.getMsg(Env.getCtx(), "DiscoveryURIMustEndWith"));
 			}
 			Issuer issuer = new Issuer(discoveryURI.substring(0, endIndex));			
 			metaData = OIDCProviderMetadata.resolve(issuer);
