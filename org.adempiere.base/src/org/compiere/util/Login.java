@@ -1001,7 +1001,7 @@ public class Login
 		MClient client = null;
 		// Check tenant login prefix
 		if (!Util.isEmpty(tenant, true)) {
-			client = MClient.getByLoginPrefix(tenant);
+			client = MClient.getByLoginPrefix(tenant.trim());
 			if (client == null) {
 				loginErrMsg = Msg.getMsg(m_ctx, "FailedLogin");
 				return null;

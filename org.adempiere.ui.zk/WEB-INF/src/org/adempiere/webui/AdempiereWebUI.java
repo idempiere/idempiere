@@ -17,6 +17,8 @@
 package org.adempiere.webui;
 
 import java.lang.ref.WeakReference;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Properties;
@@ -545,7 +547,12 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     		}
     		else
     		{
-    			Executions.sendRedirect("index.zul" + (Util.isEmpty(tenant) ? "" : "?tenant=" + tenant));
+				String redirect = "index.zul";
+				if (!Util.isEmpty(tenant, true)) 
+				{
+					redirect += "?tenant=" + URLEncoder.encode(tenant, StandardCharsets.UTF_8);
+				}
+    			Executions.sendRedirect(redirect);
     		}
     	}
         

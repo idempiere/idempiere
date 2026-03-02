@@ -406,15 +406,18 @@ public class LoginPanel extends Window implements EventListener<Event>
 			// else get system level SSO principal config
 			Session currSess = Executions.getCurrent().getDesktop().getSession();        
         	String tenant = (String) currSess.getAttribute("tenant");
-			int principalClientId = 0;
-			if (!Util.isEmpty(tenant))
+			List<MSSOPrincipalConfig> configs = new ArrayList<>();
+			if (!Util.isEmpty(tenant, true))
 			{
-				var client = MClient.getByLoginPrefix(tenant);
+				var client = MClient.getByLoginPrefix(tenant.trim());
 				if (client != null)
-					principalClientId = client.getAD_Client_ID();
+					configs = MSSOPrincipalConfig.getSSOPrincipalConfigByClient(client.getAD_Client_ID());
+			}
+			else
+			{
+				configs = MSSOPrincipalConfig.getSSOPrincipalConfigByClient(0);
 			}
 
-			List<MSSOPrincipalConfig> configs = MSSOPrincipalConfig.getSSOPrincipalConfigByClient(principalClientId);
 			if (configs != null && !configs.isEmpty())
 			{
 				tr = null;

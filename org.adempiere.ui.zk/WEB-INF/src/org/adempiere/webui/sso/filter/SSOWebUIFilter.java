@@ -67,9 +67,13 @@ public class SSOWebUIFilter implements Filter
 		if (request instanceof HttpServletRequest hsr)
 		{
 			String tenant = hsr.getParameter("tenant");
-			if (!Util.isEmpty(tenant))
+			if (tenant != null)
 			{
-				hsr.getSession().setAttribute("tenant", tenant);
+				tenant = tenant.trim();
+				if (tenant.isEmpty())
+					hsr.getSession().removeAttribute("tenant");
+				else
+					hsr.getSession().setAttribute("tenant", tenant);
 			}
 			httpRequest = hsr;
 

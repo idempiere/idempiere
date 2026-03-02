@@ -227,18 +227,18 @@ public class OIDCPrincipalService implements ISSOPrincipalService {
 	private OIDCProviderMetadata getMetaData() throws GeneralException, IOException {
 		if (metaData == null) {
 			String discoveryURI = principalConfig.getSSO_ApplicationDiscoveryURI();
-			int endIndex = discoveryURI.indexOf(MSSOPrincipalConfig.WELL_KNOWN_OPENID_CONFIGURATION_SUFFIX);
-			if (endIndex < 0) {
+			String suffix = MSSOPrincipalConfig.WELL_KNOWN_OPENID_CONFIGURATION_SUFFIX;
+			if (Util.isEmpty(discoveryURI, true) || !discoveryURI.endsWith(suffix)) {
 				throw new GeneralException(Msg.getMsg(Env.getCtx(), "DiscoveryURIMustEndWith"));
 			}
-			Issuer issuer = new Issuer(discoveryURI.substring(0, endIndex));			
+			Issuer issuer = new Issuer(discoveryURI.substring(0, discoveryURI.length() - suffix.length()));
 			metaData = OIDCProviderMetadata.resolve(issuer);
 		}
 		return metaData;
 	}
 
 	/**
-	 * Send Token request to oidc token endpoin
+	 * Send Token request to oidc token endpoint
 	 * @param authorizationGrant
 	 * @return TokenResponse
 	 * @throws URISyntaxException

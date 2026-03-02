@@ -19,6 +19,7 @@ import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.CCache;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 
@@ -205,5 +206,23 @@ public class MSSOPrincipalConfig extends X_SSO_PrincipalConfig
 			}
 		}
 		return super.beforeSave(newRecord);
+	}
+
+	@Override
+	protected boolean afterDelete(boolean success) {
+		if (success) {
+			CacheMgt.scheduleCacheReset(MSSOPrincipalConfig.Table_Name, getSSO_PrincipalConfig_UU(), false, get_TrxName());
+			CacheMgt.scheduleCacheReset(s_SSOPrincipalConfigCacheByClient.getName(), getAD_Client_ID(), false, get_TrxName());
+		}
+		return super.afterDelete(success);
+	}
+
+	@Override
+	protected boolean afterSave(boolean newRecord, boolean success) {
+		if (success) {
+			CacheMgt.scheduleCacheReset(MSSOPrincipalConfig.Table_Name, getSSO_PrincipalConfig_UU(), newRecord, get_TrxName());
+			CacheMgt.scheduleCacheReset(s_SSOPrincipalConfigCacheByClient.getName(), getAD_Client_ID(), false, get_TrxName());
+		}
+		return super.afterSave(newRecord, success);
 	}
 }
