@@ -36,8 +36,11 @@ import javax.servlet.http.HttpSession;
 import org.adempiere.base.sso.ISSOPrincipalService;
 import org.adempiere.base.sso.SSOUtils;
 import org.compiere.model.I_SSO_PrincipalConfig;
+import org.compiere.model.MSSOPrincipalConfig;
 import org.compiere.model.MSysConfig;
+import org.compiere.util.Env;
 import org.compiere.util.Language;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 import com.nimbusds.oauth2.sdk.AuthorizationCode;
@@ -77,7 +80,6 @@ import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
  * @author hengsin
  */
 public class OIDCPrincipalService implements ISSOPrincipalService {
-	
 	/** code parameter from OIDC */
 	private static final String AUTHENTICATION_CODE_PARAMETER = "code";
 	
@@ -225,14 +227,18 @@ public class OIDCPrincipalService implements ISSOPrincipalService {
 	private OIDCProviderMetadata getMetaData() throws GeneralException, IOException {
 		if (metaData == null) {
 			String discoveryURI = principalConfig.getSSO_ApplicationDiscoveryURI();
-			Issuer issuer = new Issuer(discoveryURI.substring(0, discoveryURI.indexOf("/.well-known/openid-configuration")));			
+			int endIndex = discoveryURI.indexOf(MSSOPrincipalConfig.WELL_KNOWN_OPENID_CONFIGURATION_SUFFIX);
+			if (endIndex < 0) {
+				throw new GeneralException(Msg.getMsg(Env.getCtx(), "DiscoveryURIMustEndsWith"));
+			}
+			Issuer issuer = new Issuer(discoveryURI.substring(0, endIndex));			
 			metaData = OIDCProviderMetadata.resolve(issuer);
 		}
 		return metaData;
 	}
 
 	/**
-	 * Send Token request to oidc token endpoint
+	 * Send Token request to oidc token endpoin
 	 * @param authorizationGrant
 	 * @return TokenResponse
 	 * @throws URISyntaxException

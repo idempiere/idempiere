@@ -56,12 +56,12 @@ public class SSOUtils
 	}
 
 	/**
-	 * Get single sign on service
-	 * @return single sign on service
+	 * Get system level default single sign on service
+	 * @return system level default single sign on service
 	 */
 	public static ISSOPrincipalService getSSOPrincipalService()
 	{
-		MSSOPrincipalConfig config = MSSOPrincipalConfig.getDefaultSSOPrincipalConfig();
+		MSSOPrincipalConfig config = MSSOPrincipalConfig.getDefaultSSOPrincipalConfig(0);
 		if (config == null)
 			return null;
 
@@ -144,11 +144,44 @@ public class SSOUtils
 			return urlpath != null && urlpath.length > 3 && ignoreResourceURL.contains(urlpath[3]);
 	}
 
+	/**
+	 * Get SSO Principal Service by UUID
+	 * @param uuID
+	 * @return
+	 */
 	public static ISSOPrincipalService getSSOPrincipalService(String uuID)
+	{
+		return getSSOPrincipalService(uuID, null);
+	}
+
+	/**
+	 * Get SSO Principal Service by UUID and tenant login prefix
+	 * @param uuID
+	 * @param tenant tenant login prefix
+	 * @return
+	 */
+	public static ISSOPrincipalService getSSOPrincipalService(String uuID, String tenant)
 	{
 		if (Util.isEmpty(uuID, true))
 		{
-			List<MSSOPrincipalConfig> configList = MSSOPrincipalConfig.getAllSSOPrincipalConfig();
+			List<MSSOPrincipalConfig> configList = null;
+			if (!Util.isEmpty(tenant, true))
+			{
+				org.compiere.model.MClient client = org.compiere.model.MClient.getByLoginPrefix(tenant);
+				if (client != null)
+				{
+					configList = MSSOPrincipalConfig.getSSOPrincipalConfigByClient(client.getAD_Client_ID());
+				}
+				else
+				{
+					return null;
+				}
+			}
+			else
+			{
+				configList = MSSOPrincipalConfig.getSSOPrincipalConfigByClient(0);
+			}
+
 			if (configList == null || configList.size() != 1  || MSysConfig.getBooleanValue(MSysConfig.SSO_SHOW_LOGINPAGE, false))
 				return null;
 			else

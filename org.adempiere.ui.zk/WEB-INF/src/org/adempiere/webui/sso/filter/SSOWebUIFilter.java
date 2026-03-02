@@ -62,12 +62,22 @@ public class SSOWebUIFilter implements Filter
 	 */
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException
 	{
-		boolean isSSOEnable = MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false);
-		if (isSSOEnable && request instanceof HttpServletRequest)
+		// process tenant login prefix parameter (if available)
+		HttpServletRequest httpRequest = null;
+		if (request instanceof HttpServletRequest hsr)
 		{
-			HttpServletRequest httpRequest = (HttpServletRequest) request;
-			HttpServletResponse httpResponse = (HttpServletResponse) response;
+			String tenant = hsr.getParameter("tenant");
+			if (!Util.isEmpty(tenant))
+			{
+				hsr.getSession().setAttribute("tenant", tenant);
+			}
+			httpRequest = hsr;
 
+		}
+
+		boolean isSSOEnable = MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false);
+		if (isSSOEnable && httpRequest != null && response instanceof HttpServletResponse httpResponse)
+		{
 			// handle ping request
 			String ping = httpRequest.getHeader("X-PING");
 			if (!Util.isEmpty(ping, true))
@@ -108,10 +118,11 @@ public class SSOWebUIFilter implements Filter
 				provider = (String) httpRequest.getSession().getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
 			}
 
+			String tenant = (String) httpRequest.getSession().getAttribute("tenant");
 			ISSOPrincipalService m_SSOPrincipal = null;
 			try
 			{
-				m_SSOPrincipal = SSOUtils.getSSOPrincipalService(provider);
+				m_SSOPrincipal = SSOUtils.getSSOPrincipalService(provider, tenant);
 
 				if (m_SSOPrincipal != null && !isAdminResRequest)
 				{

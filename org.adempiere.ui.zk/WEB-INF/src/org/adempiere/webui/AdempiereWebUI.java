@@ -524,6 +524,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 				ssoLogoutURL = service.getLogoutURL();
 		}
 	    
+		String tenant = (String) desktop.getSession().getAttribute("tenant");
 	    final Session session = logout0();
 	    
     	//clear context, invalidate session
@@ -544,7 +545,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     		}
     		else
     		{
-    			Executions.sendRedirect("index.zul");
+    			Executions.sendRedirect("index.zul" + (Util.isEmpty(tenant) ? "" : "?tenant=" + tenant));
     		}
     	}
         
