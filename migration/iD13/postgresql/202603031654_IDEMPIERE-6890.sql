@@ -1,4 +1,4 @@
--- IDEMPIERE-6890
+-- IDEMPIERE-6890 ZK Autocomplete Timeout System Configurador
 SELECT register_migration_script('202603031654_IDEMPIERE-6890.sql') FROM dual;
 
 -- Mar 3, 2026, 4:54:40 PM BRT
