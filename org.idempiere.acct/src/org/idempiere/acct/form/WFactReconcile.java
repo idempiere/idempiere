@@ -27,7 +27,7 @@
  * - druiz                                                             *
  * - nmicoud                                                           *
  **********************************************************************/
-package org.adempiere.webui.apps.form;
+package org.idempiere.acct.form;
 
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
@@ -69,11 +69,9 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.DateRangeButton;
-import org.compiere.apps.form.FactReconcile;
 import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
 import org.compiere.model.MFactAcct;
-import org.compiere.model.MFactReconciliation;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.X_C_ElementValue;
@@ -82,6 +80,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
+import org.idempiere.acct.base.model.MFactReconciliation;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;

@@ -24,23 +24,23 @@
  **********************************************************************/
 package org.idempiere.acct;
 
-import org.adempiere.base.Service;
-import org.idempiere.acct.AcctModelServices;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 
 /**
- * OSGi DS component that wires the IPOAccountingService into AcctModelServices.
+ * OSGi DS component that wires accounting services into AcctModelServices.
  */
 @Component(immediate = true)
 public class POAccountingServiceActivator {
+
     @Reference(cardinality = ReferenceCardinality.OPTIONAL)
     public void setAccountingService(IPOAccountingService service) {
         AcctModelServices.setAccountingService(service);
     }
-    
+
     public void unsetAccountingService(IPOAccountingService service) {
         AcctModelServices.unsetAccountingService(service);
     }
+
 }
