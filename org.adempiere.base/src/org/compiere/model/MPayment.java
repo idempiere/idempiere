@@ -2153,9 +2153,14 @@ public class MPayment extends X_C_Payment
 				ord.saveEx();
 			}
 			
-			ord.setDocAction(X_C_Order.DOCACTION_WaitComplete); 
-			if (!ord.processIt (X_C_Order.DOCACTION_WaitComplete))
-				throw new AdempiereException(Msg.getMsg(getCtx(), "FailedProcessingDocument") + " - " + ord.getProcessMsg());
+			if (MOrder.DOCSTATUS_WaitingPayment.equals(ord.getDocStatus())) {
+				ord.setDocAction(MOrder.DOCACTION_WaitComplete);
+				if (!ord.processIt(MOrder.DOCACTION_WaitComplete)) {
+					throw new AdempiereException(Msg.getMsg(getCtx(), "FailedProcessingDocument") + " - " + ord.getProcessMsg());
+				}
+				ord.saveEx();
+			}
+			
 		}
 		
 		//	User Validation
