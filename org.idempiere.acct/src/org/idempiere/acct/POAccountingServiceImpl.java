@@ -104,7 +104,7 @@ public class POAccountingServiceImpl implements IPOAccountingService {
 			throw new AdempiereException("Accounting table " + acctTableName + " does not exist");
 		}
 		if (baseTable == null) {
-			throw new AdempiereException("Accounting base table " + baseTable + " does not exist");
+			throw new AdempiereException("Accounting base table " + acctBaseTable + " does not exist");
 		}
 		
 		//	Create SQL Statement - INSERT
