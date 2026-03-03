@@ -97,7 +97,16 @@ public class POAccountingServiceImpl implements IPOAccountingService {
 				s_acctColumns.put(acctTableName, acctColumns);
 			}
 		}
-
+		
+		MTable acctTable = MTable.get(po.getCtx(), acctTableName, po.get_TrxName());
+		MTable baseTable = MTable.get(po.getCtx(), acctBaseTable, po.get_TrxName());
+		if (acctTable == null) {
+			throw new AdempiereException("Accounting table " + acctTableName + " does not exist");
+		}
+		if (baseTable == null) {
+			throw new AdempiereException("Accounting base table " + baseTable + " does not exist");
+		}
+		
 		//	Create SQL Statement - INSERT
 		StringBuilder sb = new StringBuilder("INSERT INTO ")
 				.append(acctTableName)
@@ -109,10 +118,6 @@ public class POAccountingServiceImpl implements IPOAccountingService {
 		//check whether db have working generate_uuid function.
 		boolean uuidFunction = DB.isGenerateUUIDSupported();
 
-		MTable acctTable = MTable.get(po.getCtx(), acctTableName, po.get_TrxName());
-		if (acctTable == null) {
-			throw new AdempiereException("Accounting table " + acctTableName + " does not exist");
-		}
 		MColumn uuidColumn = acctTable.getColumn(PO.getUUIDColumnName(acctTableName));
 		if (uuidColumn != null && uuidFunction)
 			sb.append(",").append(PO.getUUIDColumnName(acctTableName));

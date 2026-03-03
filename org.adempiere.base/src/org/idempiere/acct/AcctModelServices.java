@@ -48,7 +48,9 @@ public final class AcctModelServices {
 	 * @param service accounting service implementation (ignored)
 	 */
 	public static void unsetAccountingService(IPOAccountingService service) {
-		s_accountingService = null;
+		if (s_accountingService == service) {
+			s_accountingService = null;
+		}
 	}
 
 	/**
