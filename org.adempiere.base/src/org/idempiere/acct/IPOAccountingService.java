@@ -25,6 +25,7 @@
 package org.idempiere.acct;
 
 import org.compiere.model.PO;
+import org.idempiere.db.util.SQLFragment;
 
 /**
  * Service interface for PO accounting operations.
@@ -37,10 +38,10 @@ public interface IPOAccountingService {
      * @param po Persistent Object
      * @param acctTableName accounting table name
      * @param acctBaseTable base table
-     * @param whereClause optional where clause
+     * @param whereClause optional where clause with parameter binding support
      * @return true if successful
      */
     boolean insertAccounting(PO po, String acctTableName, 
-                            String acctBaseTable, String whereClause);
+                            String acctBaseTable, SQLFragment whereClause);
 
 }

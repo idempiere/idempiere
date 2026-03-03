@@ -27,8 +27,6 @@ package org.idempiere.acct;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -37,9 +35,12 @@ import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
+import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
+import org.idempiere.db.util.SQLFragment;
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -51,19 +52,16 @@ public class POAccountingServiceImpl implements IPOAccountingService {
 	private static CLogger log = CLogger.getCLogger(POAccountingServiceImpl.class);
 
 	/** Accounting Columns cache per table - Map of table name to column list */
-	private static ThreadLocal<Map<String, ArrayList<String>>> s_acctColumns = 
-			ThreadLocal.withInitial(() -> new HashMap<>());
+	private static final CCache<String, ArrayList<String>> s_acctColumns =
+			new CCache<>(null, "POAcctColumns", 20, 0, false);
 
 	@Override
-	public boolean insertAccounting(PO po, String acctTableName, String acctBaseTable, String whereClause) {
-		// Get the cache map for this thread
-		Map<String, ArrayList<String>> cache = s_acctColumns.get();
-
-		// Get cached columns for this specific table
-		ArrayList<String> acctColumns = cache.get(acctTableName);
-
+	public boolean insertAccounting(PO po, String acctTableName, String acctBaseTable, SQLFragment whereClause) {
 		// Cannot cache C_BP_*_Acct as there are 3 different tables
 		boolean canCache = !acctTableName.startsWith("C_BP_");
+
+		// Get cached columns for this specific table
+		ArrayList<String> acctColumns = canCache ? s_acctColumns.get(acctTableName) : null;
 
 		if (acctColumns == null || !canCache)
 		{
@@ -96,7 +94,7 @@ public class POAccountingServiceImpl implements IPOAccountingService {
 			}
 			// Store in cache only if this table can be cached
 			if (canCache) {
-				cache.put(acctTableName, acctColumns);
+				s_acctColumns.put(acctTableName, acctColumns);
 			}
 		}
 
@@ -134,8 +132,8 @@ public class POAccountingServiceImpl implements IPOAccountingService {
 		.append(po.getAD_Client_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(po.get_TableName()) 
 				? "toRecordId('AD_Client',"+DB.TO_STRING(MClient.get(po.getAD_Client_ID()).getAD_Client_UU())+")" 
 						: po.getAD_Client_ID());
-		if (whereClause != null && whereClause.length() > 0)
-			sb.append (" AND ").append(whereClause);
+		if (whereClause != null && !Util.isEmpty(whereClause.sqlClause()))
+			sb.append(" AND ").append(whereClause.sqlClause());
 		sb.append(" AND NOT EXISTS (SELECT * FROM ").append(acctTableName)
 		.append(" e WHERE e.C_AcctSchema_ID=p.C_AcctSchema_ID AND e.")
 		.append(po.get_TableName()).append("_ID=");
@@ -144,7 +142,8 @@ public class POAccountingServiceImpl implements IPOAccountingService {
 		else
 			sb.append(po.get_ID()).append(")");
 		//
-		int no = DB.executeUpdate(sb.toString(), po.get_TrxName());
+		Object[] params = whereClause != null ? whereClause.parameters().toArray() : null;
+		int no = DB.executeUpdate(sb.toString(), params, false, po.get_TrxName());
 		if (no > 0) {
 			if (log.isLoggable(Level.FINE)) log.fine("#" + no);
 		} else {

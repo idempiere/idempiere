@@ -80,7 +80,7 @@ import org.compiere.util.TrxEventListener;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 import org.idempiere.acct.AcctModelServices;
-import org.idempiere.acct.IPOAccountingService;
+import org.idempiere.db.util.SQLFragment;
 import org.osgi.service.event.Event;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -417,8 +417,6 @@ public abstract class PO
 	protected static final Integer I_ZERO = Integer.valueOf(0);
 	/** Accounting Columns			*/
 	private ArrayList <String>	s_acctColumns = null;
-	/** Optional accounting service - injected via OSGi */
-    private static volatile IPOAccountingService s_accountingService = null;
 
 	/** Trifon - Indicates that this record is created by replication functionality.*/
 	private boolean m_isReplication = false;
@@ -4899,14 +4897,17 @@ public abstract class PO
 	protected boolean insert_Accounting (String acctTableName,
 		String acctBaseTable, String whereClause)
 	{
-		if (isAccountingAvailable()) {
-	        return s_accountingService.insertAccounting(this, acctTableName, 
-	                acctBaseTable, whereClause);
-	    }
+		if (AcctModelServices.isAccountingAvailable()) {
+			SQLFragment whereSQL = !Util.isEmpty(whereClause) ? new SQLFragment(whereClause) : null;
+			
+			return AcctModelServices.getPOAccountingService().insertAccounting(this, acctTableName, 
+					acctBaseTable, whereSQL);
+		}
 	    
 	    if (log.isLoggable(Level.FINE))
 	        log.fine("Accounting service not available - skipping accounting");
 	    return true;
+
 	}	//	insert_Accounting
 
 	/**
@@ -6428,24 +6429,6 @@ public abstract class PO
 	{
 		return new Query(Env.getCtx(), MTableAttribute.Table_Name, "AD_Table_ID=? AND Record_ID=? ", get_TrxName()).setParameters(get_Table_ID(), get_ID()).list();
 	}
-	
-	/**
-     * Set accounting service (called by OSGi Declarative Services)
-     * @param service accounting service implementation
-     */
-    public static void setAccountingService(IPOAccountingService service) {
-        s_accountingService = service;
-    }
-    
-    /**
-     * Check if accounting service is available
-     * @return true if ERP accounting module is loaded
-     */
-    public static boolean isAccountingAvailable() {
-    	if (s_accountingService == null)
-    		s_accountingService = AcctModelServices.getPOAccountingService();
-        return s_accountingService != null;
-    }
 
 	/**
 	 * Create a subquery to get the record ID from a UUID value

@@ -22,35 +22,46 @@
  **********************************************************************/
 package org.idempiere.acct;
 
-import java.util.List;
-
-import org.adempiere.base.IServiceReferenceHolder;
-import org.adempiere.base.Service;
-
 /**
- * Static utility access to Accounting Model Services.
- * 
+ * Static portal to accounting model services.
+ * The volatile reference is populated by OSGi Declarative Services
+ * via {@link #setAccountingService(IPOAccountingService)}.
+ *
  * @author etantg
  */
 public final class AcctModelServices {
-	
+
 	private AcctModelServices() {}
-	
-	private static <T> T getService(Class<T> clazz) {
-        List<IServiceReferenceHolder<T>> services = Service.locator().list(clazz).getServiceReferences();
-        if (services == null || services.isEmpty())
-            return null;
-        for (IServiceReferenceHolder<T> holder : services) {
-            T service = holder.getService();
-            if (service != null && clazz.isInstance(service)) {
-                return (T) service;
-            }
-        }
-        return null;
-    }
-	
-	public static IPOAccountingService getPOAccountingService() {
-		return getService(IPOAccountingService.class);
+
+	private static volatile IPOAccountingService s_accountingService = null;
+
+	/**
+	 * Called by OSGi DS when the service becomes available.
+	 * @param service accounting service implementation
+	 */
+	public static void setAccountingService(IPOAccountingService service) {
+		s_accountingService = service;
 	}
-	
+
+	/**
+	 * Called by OSGi DS when the service is withdrawn.
+	 * @param service accounting service implementation (ignored)
+	 */
+	public static void unsetAccountingService(IPOAccountingService service) {
+		s_accountingService = null;
+	}
+
+	/**
+	 * @return the accounting service, or {@code null} if not yet available
+	 */
+	public static IPOAccountingService getPOAccountingService() {
+		return s_accountingService;
+	}
+
+	/**
+	 * @return true if the accounting service is available
+	 */
+	public static boolean isAccountingAvailable() {
+		return s_accountingService != null;
+	}
 }
