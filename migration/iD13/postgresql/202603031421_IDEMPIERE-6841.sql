@@ -1,4 +1,4 @@
--- IDEMPIERE-6841
+-- IDEMPIERE-6841 Add Fields to Select Document Types to improve the Bank Transfer Window
 SELECT register_migration_script('202603031421_IDEMPIERE-6841.sql') FROM dual;
 
 -- Mar 3, 2026, 2:21:50 PM BRT
