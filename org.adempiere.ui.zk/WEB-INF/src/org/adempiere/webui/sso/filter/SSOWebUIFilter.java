@@ -21,6 +21,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -116,10 +117,43 @@ public class SSOWebUIFilter implements Filter
 
 			boolean isProviderFromSession = false;
 			String provider = httpRequest.getParameter(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
-			if (Util.isEmpty(provider) && httpRequest.getSession().getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER) != null)
+			if (Util.isEmpty(provider))
 			{
-				isProviderFromSession = true;
-				provider = (String) httpRequest.getSession().getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
+				if (httpRequest.getSession().getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER) != null)
+				{
+					isProviderFromSession = true;
+					provider = (String) httpRequest.getSession().getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
+				}
+				else
+				{
+					Cookie[] cookies = httpRequest.getCookies();
+					if (cookies != null)
+					{
+						for (Cookie cookie : cookies)
+						{
+							if (ISSOPrincipalService.SSO_SELECTED_PROVIDER.equals(cookie.getName()))
+							{
+								provider = cookie.getValue();
+								if (!Util.isEmpty(provider))
+								{
+									httpRequest.getSession().setAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider);
+									isProviderFromSession = true;
+								}
+								break;
+							}
+						}
+					}
+				}
+			}
+			else
+			{
+				// Update cookie if provider is from request parameter
+				Cookie cookie = new Cookie(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider);
+				cookie.setSecure(true);
+				cookie.setHttpOnly(true);
+				cookie.setMaxAge(86400 * 30); // 30 days
+				cookie.setPath(httpRequest.getContextPath());
+				httpResponse.addCookie(cookie);
 			}
 
 			String tenant = (String) httpRequest.getSession().getAttribute("tenant");

@@ -28,7 +28,9 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.adempiere.base.sso.ISSOPrincipalService;
@@ -518,6 +520,11 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	    
 	    boolean isSSOLogin = "Y".equals(Env.getContext(Env.getCtx(), Env.IS_SSO_LOGIN));
 		String provider = (String) desktop.getSession().getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
+	    if (isSSOLogin && !Util.isEmpty(provider, true))
+	    {
+	    	setCookie(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider, 86400 * 30); // 30 days
+	    }
+	    
 	    String ssoLogoutURL = null;
 	    if (!isAdminLogin && isSSOLogin)
 		{
@@ -829,5 +836,20 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 			uploadSetting.append(",maxsize=").append(size);
 		}
 		return uploadSetting.toString();
-	}	
+	}
+
+	/**
+	 * Set a cookie
+	 * @param name
+	 * @param value
+	 * @param expiry
+	 */
+	private void setCookie(String name, String value, int expiry) {
+		Cookie cookie = new Cookie(name, value);
+		cookie.setSecure(true);
+		cookie.setHttpOnly(true);
+		cookie.setMaxAge(expiry);
+		cookie.setPath(Executions.getCurrent().getContextPath());
+		((HttpServletResponse) Executions.getCurrent().getNativeResponse()).addCookie(cookie);
+	}
 }
