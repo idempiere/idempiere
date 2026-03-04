@@ -25,7 +25,18 @@ package org.idempiere.acct;
 import org.adempiere.plugin.utils.Incremental2PackActivator;
 import org.adempiere.webui.factory.IMappedFormFactory;
 import org.idempiere.acct.form.WFactReconcile;
+import org.idempiere.acct.process.AcctSchemaCopyAcct;
+import org.idempiere.acct.process.AcctSchemaDefaultCopy;
+import org.idempiere.acct.process.BPGroupAcctCopy;
+import org.idempiere.acct.process.FactAcctReset;
+import org.idempiere.acct.process.FactAcctSummary;
 import org.idempiere.acct.process.FactReconcile;
+import org.idempiere.acct.process.ImportAccount;
+import org.idempiere.acct.process.ImportGLJournal;
+import org.idempiere.acct.process.ImportReportLine;
+import org.idempiere.acct.process.ProductCategoryAcctCopy;
+import org.idempiere.acct.process.ReportColumnSet_Copy;
+import org.idempiere.acct.process.ReportLineSet_Copy;
 import org.idempiere.model.IMappedModelFactory;
 import org.idempiere.process.IMappedProcessFactory;
 import org.osgi.framework.BundleContext;
@@ -58,12 +69,31 @@ public class AcctActivator extends Incremental2PackActivator {
 	
 	@Activate
 	public void activate(BundleContext context) {
-		mappedProcessFactory.addMapping("org.compiere.process.FactReconcile", () -> new FactReconcile());
-		mappedFormFactory.addMapping("org.compiere.apps.form.VFactReconcile", 
-                () -> new WFactReconcile().getForm());
+		mapProcesses();
+		mapForms();
 		
 		mappedModelFactory.scan(context, "org.idempiere.acct.model");
 		mappedModelFactory.scan(context, "org.idempiere.acct.base.model");
+	}
+	
+	private void mapProcesses() {
+		mappedProcessFactory.addMapping("org.compiere.process.FactReconcile", () -> new FactReconcile());
+		mappedProcessFactory.addMapping("org.compiere.process.AcctSchemaCopyAcct", () -> new AcctSchemaCopyAcct());
+		mappedProcessFactory.addMapping("org.compiere.process.AcctSchemaDefaultCopy", () -> new AcctSchemaDefaultCopy());
+		mappedProcessFactory.addMapping("org.compiere.process.BPGroupAcctCopy", () -> new BPGroupAcctCopy());
+		mappedProcessFactory.addMapping("org.compiere.process.FactAcctReset", () -> new FactAcctReset());
+		mappedProcessFactory.addMapping("org.compiere.process.FactAcctSummary", () -> new FactAcctSummary());
+		mappedProcessFactory.addMapping("org.compiere.process.ImportAccount", () -> new ImportAccount());
+		mappedProcessFactory.addMapping("org.compiere.process.ImportGLJournal", () -> new ImportGLJournal());
+		mappedProcessFactory.addMapping("org.compiere.process.ImportReportLine", () -> new ImportReportLine());
+		mappedProcessFactory.addMapping("org.compiere.process.ProductCategoryAcctCopy", () -> new ProductCategoryAcctCopy());
+		mappedProcessFactory.addMapping("org.compiere.process.ReportColumnSet_Copy", () -> new ReportColumnSet_Copy());
+		mappedProcessFactory.addMapping("org.compiere.process.ReportLineSet_Copy", () -> new ReportLineSet_Copy());
+	}
+	
+	private void mapForms() {
+		mappedFormFactory.addMapping("org.compiere.apps.form.VFactReconcile", 
+                () -> new WFactReconcile().getForm());
 	}
 	
 }

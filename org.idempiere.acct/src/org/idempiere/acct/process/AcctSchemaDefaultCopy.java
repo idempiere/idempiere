@@ -14,7 +14,7 @@
  * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
-package org.compiere.process;
+package org.idempiere.acct.process;
 
 import java.math.BigDecimal;
 import java.util.logging.Level;
@@ -36,6 +36,8 @@ import org.compiere.model.X_C_Project_Acct;
 import org.compiere.model.X_C_Tax_Acct;
 import org.compiere.model.X_M_Product_Acct;
 import org.compiere.model.X_M_Warehouse_Acct;
+import org.compiere.process.ProcessInfoParameter;
+import org.compiere.process.SvrProcess;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.DB;
 

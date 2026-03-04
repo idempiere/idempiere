@@ -15,13 +15,15 @@
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
 
-package org.compiere.process;
+package org.idempiere.acct.process;
 
 import java.util.List;
 
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MReportCube;
 import org.compiere.model.Query;
+import org.compiere.process.ProcessInfoParameter;
+import org.compiere.process.SvrProcess;
 
 /*
  * Populate Fact_Acct_Summary table with pre-calculated totals of 

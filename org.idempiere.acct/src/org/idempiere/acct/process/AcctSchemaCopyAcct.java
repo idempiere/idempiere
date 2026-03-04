@@ -14,7 +14,7 @@
  * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
-package org.compiere.process;
+package org.idempiere.acct.process;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -25,6 +25,8 @@ import org.compiere.model.MAcctSchemaDefault;
 import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MAcctSchemaGL;
 import org.compiere.model.MProcessPara;
+import org.compiere.process.ProcessInfoParameter;
+import org.compiere.process.SvrProcess;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.KeyNamePair;
