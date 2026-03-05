@@ -15,10 +15,15 @@
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
 /** Generated Model - DO NOT CHANGE */
-package org.compiere.model;
+package org.idempiere.acct.base.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+
+import org.compiere.model.I_Persistent;
+import org.compiere.model.MTable;
+import org.compiere.model.PO;
+import org.compiere.model.POInfo;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for GL_FundRestriction
@@ -196,9 +201,9 @@ public class X_GL_FundRestriction extends PO implements I_GL_FundRestriction, I_
 	}
 
 	@Deprecated(since="13") // use better methods with cache
-	public org.compiere.model.I_GL_Fund getGL_Fund() throws RuntimeException
+	public org.idempiere.acct.base.model.I_GL_Fund getGL_Fund() throws RuntimeException
 	{
-		return (org.compiere.model.I_GL_Fund)MTable.get(getCtx(), org.compiere.model.I_GL_Fund.Table_ID)
+		return (org.idempiere.acct.base.model.I_GL_Fund)MTable.get(getCtx(), org.idempiere.acct.base.model.I_GL_Fund.Table_ID)
 			.getPO(getGL_Fund_ID(), get_TrxName());
 	}
 

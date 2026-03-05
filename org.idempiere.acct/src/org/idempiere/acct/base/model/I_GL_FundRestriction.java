@@ -14,24 +14,25 @@
  * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
-package org.compiere.model;
+package org.idempiere.acct.base.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for GL_BudgetControl
+/** Generated Interface for GL_FundRestriction
  *  @author iDempiere (generated) 
  *  @version Release 13
  */
-public interface I_GL_BudgetControl 
+public interface I_GL_FundRestriction 
 {
 
-    /** TableName=GL_BudgetControl */
-    public static final String Table_Name = "GL_BudgetControl";
+    /** TableName=GL_FundRestriction */
+    public static final String Table_Name = "GL_FundRestriction";
 
-    /** AD_Table_ID=822 */
-    public static final int Table_ID = 822;
+    /** AD_Table_ID=824 */
+    public static final int Table_ID = 824;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -62,47 +63,21 @@ public interface I_GL_BudgetControl
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name BudgetControlScope */
-    public static final String COLUMNNAME_BudgetControlScope = "BudgetControlScope";
+    /** Column name C_ElementValue_ID */
+    public static final String COLUMNNAME_C_ElementValue_ID = "C_ElementValue_ID";
 
-	/** Set Control Scope.
-	  * Scope of the Budget Control
+	/** Set Account Element.
+	  * Account Element
 	  */
-	public void setBudgetControlScope (String BudgetControlScope);
+	public void setC_ElementValue_ID (int C_ElementValue_ID);
 
-	/** Get Control Scope.
-	  * Scope of the Budget Control
+	/** Get Account Element.
+	  * Account Element
 	  */
-	public String getBudgetControlScope();
-
-    /** Column name C_AcctSchema_ID */
-    public static final String COLUMNNAME_C_AcctSchema_ID = "C_AcctSchema_ID";
-
-	/** Set Accounting Schema.
-	  * Rules for accounting
-	  */
-	public void setC_AcctSchema_ID (int C_AcctSchema_ID);
-
-	/** Get Accounting Schema.
-	  * Rules for accounting
-	  */
-	public int getC_AcctSchema_ID();
+	public int getC_ElementValue_ID();
 
 	@Deprecated(since="13") // use better methods with cache
-	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
-
-    /** Column name CommitmentType */
-    public static final String COLUMNNAME_CommitmentType = "CommitmentType";
-
-	/** Set Commitment Type.
-	  * Create Commitment and/or Reservations for Budget Control
-	  */
-	public void setCommitmentType (String CommitmentType);
-
-	/** Get Commitment Type.
-	  * Create Commitment and/or Reservations for Budget Control
-	  */
-	public String getCommitmentType();
+	public org.compiere.model.I_C_ElementValue getC_ElementValue() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -133,56 +108,43 @@ public interface I_GL_BudgetControl
 	  */
 	public String getDescription();
 
-    /** Column name GL_BudgetControl_ID */
-    public static final String COLUMNNAME_GL_BudgetControl_ID = "GL_BudgetControl_ID";
+    /** Column name GL_FundRestriction_ID */
+    public static final String COLUMNNAME_GL_FundRestriction_ID = "GL_FundRestriction_ID";
 
-	/** Set Budget Control.
-	  * Budget Control
+	/** Set Fund Restriction.
+	  * Restriction of Funds
 	  */
-	public void setGL_BudgetControl_ID (int GL_BudgetControl_ID);
+	public void setGL_FundRestriction_ID (int GL_FundRestriction_ID);
 
-	/** Get Budget Control.
-	  * Budget Control
+	/** Get Fund Restriction.
+	  * Restriction of Funds
 	  */
-	public int getGL_BudgetControl_ID();
+	public int getGL_FundRestriction_ID();
 
-    /** Column name GL_BudgetControl_UU */
-    public static final String COLUMNNAME_GL_BudgetControl_UU = "GL_BudgetControl_UU";
+    /** Column name GL_FundRestriction_UU */
+    public static final String COLUMNNAME_GL_FundRestriction_UU = "GL_FundRestriction_UU";
 
-	/** Set GL_BudgetControl_UU	  */
-	public void setGL_BudgetControl_UU (String GL_BudgetControl_UU);
+	/** Set GL_FundRestriction_UU	  */
+	public void setGL_FundRestriction_UU (String GL_FundRestriction_UU);
 
-	/** Get GL_BudgetControl_UU	  */
-	public String getGL_BudgetControl_UU();
+	/** Get GL_FundRestriction_UU	  */
+	public String getGL_FundRestriction_UU();
 
-    /** Column name GL_Budget_ID */
-    public static final String COLUMNNAME_GL_Budget_ID = "GL_Budget_ID";
+    /** Column name GL_Fund_ID */
+    public static final String COLUMNNAME_GL_Fund_ID = "GL_Fund_ID";
 
-	/** Set Budget.
-	  * General Ledger Budget
+	/** Set GL Fund.
+	  * General Ledger Funds Control
 	  */
-	public void setGL_Budget_ID (int GL_Budget_ID);
+	public void setGL_Fund_ID (int GL_Fund_ID);
 
-	/** Get Budget.
-	  * General Ledger Budget
+	/** Get GL Fund.
+	  * General Ledger Funds Control
 	  */
-	public int getGL_Budget_ID();
+	public int getGL_Fund_ID();
 
 	@Deprecated(since="13") // use better methods with cache
-	public org.compiere.model.I_GL_Budget getGL_Budget() throws RuntimeException;
-
-    /** Column name Help */
-    public static final String COLUMNNAME_Help = "Help";
-
-	/** Set Comment/Help.
-	  * Comment or Hint
-	  */
-	public void setHelp (String Help);
-
-	/** Get Comment/Help.
-	  * Comment or Hint
-	  */
-	public String getHelp();
+	public org.idempiere.acct.base.model.I_GL_Fund getGL_Fund() throws RuntimeException;
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -196,19 +158,6 @@ public interface I_GL_BudgetControl
 	  * The record is active in the system
 	  */
 	public boolean isActive();
-
-    /** Column name IsBeforeApproval */
-    public static final String COLUMNNAME_IsBeforeApproval = "IsBeforeApproval";
-
-	/** Set Before Approval.
-	  * The Check is before the (manual) approval
-	  */
-	public void setIsBeforeApproval (boolean IsBeforeApproval);
-
-	/** Get Before Approval.
-	  * The Check is before the (manual) approval
-	  */
-	public boolean isBeforeApproval();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

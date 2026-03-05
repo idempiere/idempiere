@@ -14,24 +14,24 @@
  * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
-package org.compiere.model;
+package org.idempiere.acct.base.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for GL_FundRestriction
+/** Generated Interface for GL_Fund
  *  @author iDempiere (generated) 
  *  @version Release 13
  */
-public interface I_GL_FundRestriction 
+public interface I_GL_Fund 
 {
 
-    /** TableName=GL_FundRestriction */
-    public static final String Table_Name = "GL_FundRestriction";
+    /** TableName=GL_Fund */
+    public static final String Table_Name = "GL_Fund";
 
-    /** AD_Table_ID=824 */
-    public static final int Table_ID = 824;
+    /** AD_Table_ID=823 */
+    public static final int Table_ID = 823;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -62,21 +62,34 @@ public interface I_GL_FundRestriction
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name C_ElementValue_ID */
-    public static final String COLUMNNAME_C_ElementValue_ID = "C_ElementValue_ID";
+    /** Column name Amt */
+    public static final String COLUMNNAME_Amt = "Amt";
 
-	/** Set Account Element.
-	  * Account Element
+	/** Set Amount.
+	  * Amount
 	  */
-	public void setC_ElementValue_ID (int C_ElementValue_ID);
+	public void setAmt (BigDecimal Amt);
 
-	/** Get Account Element.
-	  * Account Element
+	/** Get Amount.
+	  * Amount
 	  */
-	public int getC_ElementValue_ID();
+	public BigDecimal getAmt();
+
+    /** Column name C_AcctSchema_ID */
+    public static final String COLUMNNAME_C_AcctSchema_ID = "C_AcctSchema_ID";
+
+	/** Set Accounting Schema.
+	  * Rules for accounting
+	  */
+	public void setC_AcctSchema_ID (int C_AcctSchema_ID);
+
+	/** Get Accounting Schema.
+	  * Rules for accounting
+	  */
+	public int getC_AcctSchema_ID();
 
 	@Deprecated(since="13") // use better methods with cache
-	public org.compiere.model.I_C_ElementValue getC_ElementValue() throws RuntimeException;
+	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -94,6 +107,32 @@ public interface I_GL_FundRestriction
 	  */
 	public int getCreatedBy();
 
+    /** Column name DateFrom */
+    public static final String COLUMNNAME_DateFrom = "DateFrom";
+
+	/** Set Date From.
+	  * Starting date for a range
+	  */
+	public void setDateFrom (Timestamp DateFrom);
+
+	/** Get Date From.
+	  * Starting date for a range
+	  */
+	public Timestamp getDateFrom();
+
+    /** Column name DateTo */
+    public static final String COLUMNNAME_DateTo = "DateTo";
+
+	/** Set Date To.
+	  * End date of a date range
+	  */
+	public void setDateTo (Timestamp DateTo);
+
+	/** Get Date To.
+	  * End date of a date range
+	  */
+	public Timestamp getDateTo();
+
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
 
@@ -106,28 +145,6 @@ public interface I_GL_FundRestriction
 	  * Optional short description of the record
 	  */
 	public String getDescription();
-
-    /** Column name GL_FundRestriction_ID */
-    public static final String COLUMNNAME_GL_FundRestriction_ID = "GL_FundRestriction_ID";
-
-	/** Set Fund Restriction.
-	  * Restriction of Funds
-	  */
-	public void setGL_FundRestriction_ID (int GL_FundRestriction_ID);
-
-	/** Get Fund Restriction.
-	  * Restriction of Funds
-	  */
-	public int getGL_FundRestriction_ID();
-
-    /** Column name GL_FundRestriction_UU */
-    public static final String COLUMNNAME_GL_FundRestriction_UU = "GL_FundRestriction_UU";
-
-	/** Set GL_FundRestriction_UU	  */
-	public void setGL_FundRestriction_UU (String GL_FundRestriction_UU);
-
-	/** Get GL_FundRestriction_UU	  */
-	public String getGL_FundRestriction_UU();
 
     /** Column name GL_Fund_ID */
     public static final String COLUMNNAME_GL_Fund_ID = "GL_Fund_ID";
@@ -142,8 +159,27 @@ public interface I_GL_FundRestriction
 	  */
 	public int getGL_Fund_ID();
 
-	@Deprecated(since="13") // use better methods with cache
-	public org.compiere.model.I_GL_Fund getGL_Fund() throws RuntimeException;
+    /** Column name GL_Fund_UU */
+    public static final String COLUMNNAME_GL_Fund_UU = "GL_Fund_UU";
+
+	/** Set GL_Fund_UU	  */
+	public void setGL_Fund_UU (String GL_Fund_UU);
+
+	/** Get GL_Fund_UU	  */
+	public String getGL_Fund_UU();
+
+    /** Column name Help */
+    public static final String COLUMNNAME_Help = "Help";
+
+	/** Set Comment/Help.
+	  * Comment or Hint
+	  */
+	public void setHelp (String Help);
+
+	/** Get Comment/Help.
+	  * Comment or Hint
+	  */
+	public String getHelp();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

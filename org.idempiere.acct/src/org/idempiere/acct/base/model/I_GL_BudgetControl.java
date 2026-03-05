@@ -14,24 +14,24 @@
  * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
-package org.compiere.model;
+package org.idempiere.acct.base.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for GL_Fund
+/** Generated Interface for GL_BudgetControl
  *  @author iDempiere (generated) 
  *  @version Release 13
  */
-public interface I_GL_Fund 
+public interface I_GL_BudgetControl 
 {
 
-    /** TableName=GL_Fund */
-    public static final String Table_Name = "GL_Fund";
+    /** TableName=GL_BudgetControl */
+    public static final String Table_Name = "GL_BudgetControl";
 
-    /** AD_Table_ID=823 */
-    public static final int Table_ID = 823;
+    /** AD_Table_ID=822 */
+    public static final int Table_ID = 822;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -62,18 +62,18 @@ public interface I_GL_Fund
 	  */
 	public int getAD_Org_ID();
 
-    /** Column name Amt */
-    public static final String COLUMNNAME_Amt = "Amt";
+    /** Column name BudgetControlScope */
+    public static final String COLUMNNAME_BudgetControlScope = "BudgetControlScope";
 
-	/** Set Amount.
-	  * Amount
+	/** Set Control Scope.
+	  * Scope of the Budget Control
 	  */
-	public void setAmt (BigDecimal Amt);
+	public void setBudgetControlScope (String BudgetControlScope);
 
-	/** Get Amount.
-	  * Amount
+	/** Get Control Scope.
+	  * Scope of the Budget Control
 	  */
-	public BigDecimal getAmt();
+	public String getBudgetControlScope();
 
     /** Column name C_AcctSchema_ID */
     public static final String COLUMNNAME_C_AcctSchema_ID = "C_AcctSchema_ID";
@@ -91,6 +91,19 @@ public interface I_GL_Fund
 	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
+    /** Column name CommitmentType */
+    public static final String COLUMNNAME_CommitmentType = "CommitmentType";
+
+	/** Set Commitment Type.
+	  * Create Commitment and/or Reservations for Budget Control
+	  */
+	public void setCommitmentType (String CommitmentType);
+
+	/** Get Commitment Type.
+	  * Create Commitment and/or Reservations for Budget Control
+	  */
+	public String getCommitmentType();
+
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -107,32 +120,6 @@ public interface I_GL_Fund
 	  */
 	public int getCreatedBy();
 
-    /** Column name DateFrom */
-    public static final String COLUMNNAME_DateFrom = "DateFrom";
-
-	/** Set Date From.
-	  * Starting date for a range
-	  */
-	public void setDateFrom (Timestamp DateFrom);
-
-	/** Get Date From.
-	  * Starting date for a range
-	  */
-	public Timestamp getDateFrom();
-
-    /** Column name DateTo */
-    public static final String COLUMNNAME_DateTo = "DateTo";
-
-	/** Set Date To.
-	  * End date of a date range
-	  */
-	public void setDateTo (Timestamp DateTo);
-
-	/** Get Date To.
-	  * End date of a date range
-	  */
-	public Timestamp getDateTo();
-
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
 
@@ -146,27 +133,43 @@ public interface I_GL_Fund
 	  */
 	public String getDescription();
 
-    /** Column name GL_Fund_ID */
-    public static final String COLUMNNAME_GL_Fund_ID = "GL_Fund_ID";
+    /** Column name GL_BudgetControl_ID */
+    public static final String COLUMNNAME_GL_BudgetControl_ID = "GL_BudgetControl_ID";
 
-	/** Set GL Fund.
-	  * General Ledger Funds Control
+	/** Set Budget Control.
+	  * Budget Control
 	  */
-	public void setGL_Fund_ID (int GL_Fund_ID);
+	public void setGL_BudgetControl_ID (int GL_BudgetControl_ID);
 
-	/** Get GL Fund.
-	  * General Ledger Funds Control
+	/** Get Budget Control.
+	  * Budget Control
 	  */
-	public int getGL_Fund_ID();
+	public int getGL_BudgetControl_ID();
 
-    /** Column name GL_Fund_UU */
-    public static final String COLUMNNAME_GL_Fund_UU = "GL_Fund_UU";
+    /** Column name GL_BudgetControl_UU */
+    public static final String COLUMNNAME_GL_BudgetControl_UU = "GL_BudgetControl_UU";
 
-	/** Set GL_Fund_UU	  */
-	public void setGL_Fund_UU (String GL_Fund_UU);
+	/** Set GL_BudgetControl_UU	  */
+	public void setGL_BudgetControl_UU (String GL_BudgetControl_UU);
 
-	/** Get GL_Fund_UU	  */
-	public String getGL_Fund_UU();
+	/** Get GL_BudgetControl_UU	  */
+	public String getGL_BudgetControl_UU();
+
+    /** Column name GL_Budget_ID */
+    public static final String COLUMNNAME_GL_Budget_ID = "GL_Budget_ID";
+
+	/** Set Budget.
+	  * General Ledger Budget
+	  */
+	public void setGL_Budget_ID (int GL_Budget_ID);
+
+	/** Get Budget.
+	  * General Ledger Budget
+	  */
+	public int getGL_Budget_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_GL_Budget getGL_Budget() throws RuntimeException;
 
     /** Column name Help */
     public static final String COLUMNNAME_Help = "Help";
@@ -193,6 +196,19 @@ public interface I_GL_Fund
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsBeforeApproval */
+    public static final String COLUMNNAME_IsBeforeApproval = "IsBeforeApproval";
+
+	/** Set Before Approval.
+	  * The Check is before the (manual) approval
+	  */
+	public void setIsBeforeApproval (boolean IsBeforeApproval);
+
+	/** Get Before Approval.
+	  * The Check is before the (manual) approval
+	  */
+	public boolean isBeforeApproval();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
