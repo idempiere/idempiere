@@ -12,13 +12,8 @@ Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.adempiere.ui;bundle-version="13.0.0",
  org.idempiere.zk.extra;bundle-version="13.0.0",
  zcommon;bundle-version="9.6.4",
- zel;bundle-version="9.6.4",
- zhtml;bundle-version="9.6.4",
  zk;bundle-version="9.6.4",
- zkbind;bundle-version="9.6.4",
- zkplus;bundle-version="9.6.4",
- zul;bundle-version="9.6.4",
- zweb;bundle-version="9.6.4"
+ zul;bundle-version="9.6.4"
 Eclipse-RegisterBuddy: org.adempiere.base
 Export-Package: org.idempiere.acct.base.model,
  org.idempiere.acct.form
