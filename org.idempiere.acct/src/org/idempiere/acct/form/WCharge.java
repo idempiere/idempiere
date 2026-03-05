@@ -19,7 +19,7 @@
  * 2007, Modified by Posterita Ltd.
  */
 
-package org.adempiere.webui.apps.form;
+package org.idempiere.acct.form;
 
 import java.io.Serializable;
 import java.util.logging.Level;
@@ -43,7 +43,6 @@ import org.adempiere.webui.panel.IFormController;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
-import org.compiere.apps.form.Charge;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
