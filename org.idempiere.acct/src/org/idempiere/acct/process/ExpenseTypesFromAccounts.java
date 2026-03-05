@@ -25,7 +25,7 @@
  * - Company (http://www.cyberphoto.se)                                *
  **********************************************************************/
 
-package org.adempiere.process;
+package org.idempiere.acct.process;
 
 import java.math.BigDecimal;
 import java.util.Iterator;

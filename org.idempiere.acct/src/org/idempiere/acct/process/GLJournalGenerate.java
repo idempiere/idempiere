@@ -22,7 +22,7 @@
 * Contributors:                                                       *
 * - Carlos Ruiz - globalqss                                           *
 **********************************************************************/
-package org.globalqss.process;
+package org.idempiere.acct.process;
 
 import java.math.BigDecimal;
 import java.math.MathContext;

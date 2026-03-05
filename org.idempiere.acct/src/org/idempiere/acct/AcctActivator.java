@@ -29,15 +29,19 @@ import org.idempiere.acct.form.WFactReconcile;
 import org.idempiere.acct.process.AcctSchemaCopyAcct;
 import org.idempiere.acct.process.AcctSchemaDefaultCopy;
 import org.idempiere.acct.process.BPGroupAcctCopy;
+import org.idempiere.acct.process.ClientAcctProcessor;
 import org.idempiere.acct.process.FactAcctReset;
 import org.idempiere.acct.process.FactAcctSummary;
 import org.idempiere.acct.process.FactReconcile;
+import org.idempiere.acct.process.GLJournalGenerate;
 import org.idempiere.acct.process.ImportAccount;
 import org.idempiere.acct.process.ImportGLJournal;
 import org.idempiere.acct.process.ImportReportLine;
+import org.idempiere.acct.process.InvoiceNGL;
 import org.idempiere.acct.process.ProductCategoryAcctCopy;
 import org.idempiere.acct.process.ReportColumnSet_Copy;
 import org.idempiere.acct.process.ReportLineSet_Copy;
+import org.idempiere.acct.process.TaxDeclarationCreate;
 import org.idempiere.model.IMappedModelFactory;
 import org.idempiere.process.IMappedProcessFactory;
 import org.osgi.framework.BundleContext;
@@ -78,6 +82,8 @@ public class AcctActivator extends Incremental2PackActivator {
 	}
 	
 	private void mapProcesses() {
+		mappedProcessFactory.addMapping("org.adempiere.process.ClientAcctProcessor", () -> new ClientAcctProcessor());
+		
 		mappedProcessFactory.addMapping("org.compiere.process.FactReconcile", () -> new FactReconcile());
 		mappedProcessFactory.addMapping("org.compiere.process.AcctSchemaCopyAcct", () -> new AcctSchemaCopyAcct());
 		mappedProcessFactory.addMapping("org.compiere.process.AcctSchemaDefaultCopy", () -> new AcctSchemaDefaultCopy());
@@ -90,6 +96,10 @@ public class AcctActivator extends Incremental2PackActivator {
 		mappedProcessFactory.addMapping("org.compiere.process.ProductCategoryAcctCopy", () -> new ProductCategoryAcctCopy());
 		mappedProcessFactory.addMapping("org.compiere.process.ReportColumnSet_Copy", () -> new ReportColumnSet_Copy());
 		mappedProcessFactory.addMapping("org.compiere.process.ReportLineSet_Copy", () -> new ReportLineSet_Copy());
+		mappedProcessFactory.addMapping("org.compiere.process.TaxDeclarationCreate", () -> new TaxDeclarationCreate());
+		mappedProcessFactory.addMapping("org.compiere.process.InvoiceNGL", () -> new InvoiceNGL());
+		
+		mappedProcessFactory.addMapping("org.globalqss.process.GLJournalGenerate", () -> new GLJournalGenerate());
 	}
 	
 	private void mapForms() {

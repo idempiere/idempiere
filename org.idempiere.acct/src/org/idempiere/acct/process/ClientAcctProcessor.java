@@ -27,7 +27,7 @@
 * - Company (http://www.globalqss.com)                                *
 **********************************************************************/
 
-package org.adempiere.process;
+package org.idempiere.acct.process;
 
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
