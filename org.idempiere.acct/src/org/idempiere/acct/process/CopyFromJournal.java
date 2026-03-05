@@ -14,7 +14,7 @@
  * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
-package org.compiere.process;
+package org.idempiere.acct.process;
 
 
 import java.math.BigDecimal;
@@ -22,6 +22,8 @@ import java.util.logging.Level;
 
 import org.compiere.model.MJournalBatch;
 import org.compiere.model.MProcessPara;
+import org.compiere.process.ProcessInfoParameter;
+import org.compiere.process.SvrProcess;
 
 /**
  *  Copy GL Batch Journal/Lines

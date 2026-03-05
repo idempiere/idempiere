@@ -11,7 +11,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-package org.compiere.process;
+package org.idempiere.acct.process;
 
 
 import java.math.BigDecimal;
@@ -19,6 +19,8 @@ import java.util.logging.Level;
 
 import org.compiere.model.MJournal;
 import org.compiere.model.MProcessPara;
+import org.compiere.process.ProcessInfoParameter;
+import org.compiere.process.SvrProcess;
 
 /**
  *  Copy GL Journal/Lines

@@ -30,6 +30,8 @@ import org.idempiere.acct.process.AcctSchemaCopyAcct;
 import org.idempiere.acct.process.AcctSchemaDefaultCopy;
 import org.idempiere.acct.process.BPGroupAcctCopy;
 import org.idempiere.acct.process.ClientAcctProcessor;
+import org.idempiere.acct.process.CopyFromJournal;
+import org.idempiere.acct.process.CopyFromJournalDoc;
 import org.idempiere.acct.process.FactAcctReset;
 import org.idempiere.acct.process.FactAcctSummary;
 import org.idempiere.acct.process.FactReconcile;
@@ -41,6 +43,7 @@ import org.idempiere.acct.process.InvoiceNGL;
 import org.idempiere.acct.process.ProductCategoryAcctCopy;
 import org.idempiere.acct.process.ReportColumnSet_Copy;
 import org.idempiere.acct.process.ReportLineSet_Copy;
+import org.idempiere.acct.process.RevenueRecognition;
 import org.idempiere.acct.process.TaxDeclarationCreate;
 import org.idempiere.process.IMappedProcessFactory;
 
@@ -67,6 +70,9 @@ public class AcctMappings {
 	private static final String PROC_TAX_DECLARATION_CREATE    = "org.compiere.process.TaxDeclarationCreate";
 	private static final String PROC_INVOICE_NGL               = "org.compiere.process.InvoiceNGL";
 	private static final String PROC_GL_JOURNAL_GENERATE       = "org.globalqss.process.GLJournalGenerate";
+	private static final String PROC_COPY_FROM_JOURNAL         = "org.compiere.process.CopyFromJournal";
+	private static final String PROC_COPY_FROM_JOURNAL_DOC     = "org.compiere.process.CopyFromJournalDoc";
+	private static final String PROC_REVENUE_RECOGNITION       = "org.compiere.process.RevenueRecognition";
 
 	// Form mapping keys
 	private static final String FORM_FACT_RECONCILE            = "org.compiere.apps.form.VFactReconcile";
@@ -118,6 +124,9 @@ public class AcctMappings {
 		mappedProcessFactory.addMapping(PROC_TAX_DECLARATION_CREATE,   () -> new TaxDeclarationCreate());
 		mappedProcessFactory.addMapping(PROC_INVOICE_NGL,              () -> new InvoiceNGL());
 		mappedProcessFactory.addMapping(PROC_GL_JOURNAL_GENERATE,      () -> new GLJournalGenerate());
+		mappedProcessFactory.addMapping(PROC_COPY_FROM_JOURNAL,        () -> new CopyFromJournal());
+		mappedProcessFactory.addMapping(PROC_COPY_FROM_JOURNAL_DOC,    () -> new CopyFromJournalDoc());
+		mappedProcessFactory.addMapping(PROC_REVENUE_RECOGNITION,      () -> new RevenueRecognition());
 	}
 
 	private void registerForms() {
@@ -143,6 +152,9 @@ public class AcctMappings {
 		mappedProcessFactory.removeMapping(PROC_TAX_DECLARATION_CREATE);
 		mappedProcessFactory.removeMapping(PROC_INVOICE_NGL);
 		mappedProcessFactory.removeMapping(PROC_GL_JOURNAL_GENERATE);
+		mappedProcessFactory.removeMapping(PROC_COPY_FROM_JOURNAL);
+		mappedProcessFactory.removeMapping(PROC_COPY_FROM_JOURNAL_DOC);
+		mappedProcessFactory.removeMapping(PROC_REVENUE_RECOGNITION);
 	}
 
 	private void deactivateForms() {
