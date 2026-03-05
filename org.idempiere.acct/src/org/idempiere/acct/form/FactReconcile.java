@@ -27,7 +27,12 @@
  * - druiz                                                             *
  * - nmicoud                                                           *
  **********************************************************************/
-package org.compiere.apps.form;
+package org.idempiere.acct.form;
+
+import static org.compiere.model.SystemIDs.COLUMN_C_INVOICE_C_BPARTNER_ID;
+import static org.compiere.model.SystemIDs.COLUMN_C_PERIOD_AD_ORG_ID;
+import static org.compiere.model.SystemIDs.COLUMN_FACT_ACCT_C_ACCTSCHEMA_ID;
+import static org.compiere.model.SystemIDs.COLUMN_FACT_ACCT_M_PRODUCT_ID;
 
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
@@ -41,15 +46,14 @@ import java.util.Vector;
 import java.util.logging.Level;
 
 import org.compiere.minigrid.IMiniTable;
-import org.compiere.model.MFactReconciliation;
 import org.compiere.model.MRole;
 import org.compiere.model.Query;
-import static org.compiere.model.SystemIDs.*;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
+import org.idempiere.acct.base.model.MFactReconciliation;
 
 /**
  * GL Reconciliation Form

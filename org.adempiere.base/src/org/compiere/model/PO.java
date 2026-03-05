@@ -79,6 +79,8 @@ import org.compiere.util.Trx;
 import org.compiere.util.TrxEventListener;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
+import org.idempiere.acct.AcctModelServices;
+import org.idempiere.db.util.SQLFragment;
 import org.osgi.service.event.Event;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -121,7 +123,7 @@ public abstract class PO
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = -2260670916752225495L;
+	private static final long serialVersionUID = 5748940837798913359L;
 
 	/** String key to create a new record based in UUID constructor */
 	public static final String UUID_NEW_RECORD = "";
@@ -4895,95 +4897,17 @@ public abstract class PO
 	protected boolean insert_Accounting (String acctTableName,
 		String acctBaseTable, String whereClause)
 	{
-		if (s_acctColumns == null	//	cannot cache C_BP_*_Acct as there are 3
-			|| acctTableName.startsWith("C_BP_"))
-		{
-			s_acctColumns = new ArrayList<String>();
-			String sql = "SELECT c.ColumnName "
-				+ "FROM AD_Column c INNER JOIN AD_Table t ON (c.AD_Table_ID=t.AD_Table_ID) "
-				+ "WHERE t.TableName=? AND c.IsActive='Y' AND c.AD_Reference_ID=25 ORDER BY c.ColumnName";
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
-			try
-			{
-				pstmt = DB.prepareStatement (sql, null);
-				pstmt.setString (1, acctTableName);
-				rs = pstmt.executeQuery ();
-				while (rs.next ())
-					s_acctColumns.add (rs.getString(1));
-			}
-			catch (Exception e)
-			{
-				log.log(Level.SEVERE, acctTableName, e);
-			}
-			finally {
-				DB.close(rs, pstmt);
-				rs = null; pstmt = null;
-			}
-			if (s_acctColumns.size() == 0)
-			{
-				log.severe ("No Columns for " + acctTableName);
-				return false;
-			}
+		if (AcctModelServices.isAccountingAvailable()) {
+			SQLFragment whereSQL = !Util.isEmpty(whereClause) ? new SQLFragment(whereClause) : null;
+			
+			return AcctModelServices.getPOAccountingService().insertAccounting(this, acctTableName, 
+					acctBaseTable, whereSQL);
 		}
+	    
+	    if (log.isLoggable(Level.FINE))
+	        log.fine("Accounting service not available - skipping accounting");
+	    return true;
 
-		//	Create SQL Statement - INSERT
-		StringBuilder sb = new StringBuilder("INSERT INTO ")
-			.append(acctTableName)
-			.append(" (").append(get_TableName())
-			.append("_ID, C_AcctSchema_ID, AD_Client_ID,AD_Org_ID,IsActive, Created,CreatedBy,Updated,UpdatedBy ");
-		for (int i = 0; i < s_acctColumns.size(); i++)
-			sb.append(",").append(s_acctColumns.get(i));
-
-		//check whether db have working generate_uuid function.
-		boolean uuidFunction = DB.isGenerateUUIDSupported();
-
-		MTable acctTable = MTable.get(getCtx(), acctTableName, get_TrxName());
-		if (acctTableName == null) {
-			throw new AdempiereException("Accounting table " + acctTableName + " does not exist");
-		}
-		MColumn uuidColumn = acctTable.getColumn(PO.getUUIDColumnName(acctTableName));
-		if (uuidColumn != null && uuidFunction)
-			sb.append(",").append(PO.getUUIDColumnName(acctTableName));
-		//	..	SELECT
-		sb.append(") SELECT ").append(get_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName())
-				 ? PO.buildUUIDSubquery(get_TableName(), get_UUID()) 
-				 : get_ID())
-			.append(", p.C_AcctSchema_ID, p.AD_Client_ID,0,'Y', getDate(),")
-			.append(getUpdatedBy()).append(",getDate(),").append(getUpdatedBy());
-		for (int i = 0; i < s_acctColumns.size(); i++)
-			sb.append(",p.").append(s_acctColumns.get(i));
-		if (uuidColumn != null && uuidFunction)
-			sb.append(",generate_uuid()");
-		//	.. 	FROM
-		sb.append(" FROM ").append(acctBaseTable)
-			.append(" p WHERE p.AD_Client_ID=")
-			.append(getAD_Client_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName()) 
-					? PO.buildUUIDSubquery("AD_Client", MClient.get(getAD_Client_ID()).getAD_Client_UU())
-					: getAD_Client_ID());
-		if (whereClause != null && whereClause.length() > 0)
-			sb.append (" AND ").append(whereClause);
-		sb.append(" AND NOT EXISTS (SELECT * FROM ").append(acctTableName)
-			.append(" e WHERE e.C_AcctSchema_ID=p.C_AcctSchema_ID AND e.")
-			.append(get_TableName()).append("_ID=");
-		if (get_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName()))
-			sb.append(PO.buildUUIDSubquery(get_TableName(),get_UUID())).append(")");
-		else
-			sb.append(get_ID()).append(")");
-		//
-		int no = DB.executeUpdate(sb.toString(), get_TrxName());
-		if (no > 0) {
-			if (log.isLoggable(Level.FINE)) log.fine("#" + no);
-		} else {
-			log.warning("#" + no
-					+ " - Table=" + acctTableName + " from " + acctBaseTable);
-		}
-
-		//fall back to the slow java client update code
-		if (uuidColumn != null && !uuidFunction) {
-			UUIDGenerator.updateUUID(uuidColumn, get_TrxName());
-		}
-		return no > 0;
 	}	//	insert_Accounting
 
 	/**

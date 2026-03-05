@@ -1,4 +1,4 @@
-package org.compiere.model;
+package org.idempiere.acct.base.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
@@ -6,6 +6,7 @@ import java.util.Properties;
 /**
  * Fact_Acct reconciliation model
  */
+@org.adempiere.base.Model(table="Fact_Reconciliation")
 public class MFactReconciliation extends X_Fact_Reconciliation {
 	/**
 	 * generated serial id

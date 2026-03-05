@@ -14,7 +14,7 @@
  * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
-package org.compiere.process;
+package org.idempiere.acct.process;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -24,12 +24,14 @@ import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.process.UUIDGenerator;
 import org.compiere.model.MColumn;
 import org.compiere.model.MElementValue;
-import org.compiere.model.MFactReconciliation;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MRule;
 import org.compiere.model.MSequence;
 import org.compiere.model.PO;
+import org.compiere.process.ProcessInfoParameter;
+import org.compiere.process.SvrProcess;
 import org.compiere.util.DB;
+import org.idempiere.acct.base.model.MFactReconciliation;
 
 /**
  *	Account reconciliation process

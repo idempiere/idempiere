@@ -14,34 +14,38 @@
  * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
-package org.compiere.process;
+package org.idempiere.acct.process;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.logging.Level;
 
 import org.compiere.model.MProcessPara;
-import org.compiere.report.MReportColumn;
-import org.compiere.report.MReportColumnSet;
+import org.compiere.process.ProcessInfoParameter;
+import org.compiere.process.SvrProcess;
+import org.compiere.report.MReportLine;
+import org.compiere.report.MReportLineSet;
+import org.compiere.report.MReportSource;
 
 /**
- *  Copy Column Set at the end of the Column Set
+ *	Copy Line Set at the end of the Line Set
  *
  *  @author Jorg Janke
- *  @version $Id: ReportColumnSet_Copy.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
+ *  @version $Id: ReportLineSet_Copy.java,v 1.2 2006/07/30 00:51:01 jjanke Exp $
  */
 @org.adempiere.base.annotation.Process
-public class ReportColumnSet_Copy extends SvrProcess
+public class ReportLineSet_Copy extends SvrProcess
 {
 	/**
 	 * 	Constructor
 	 */
-	public ReportColumnSet_Copy()
+	public ReportLineSet_Copy()
 	{
 		super();
-	}	//	ReportColumnSet_Copy
+	}	//	ReportLineSet_Copy
 
 	/**	Source Line Set					*/
-	private int		m_PA_ReportColumnSet_ID = 0;
+	private int		m_PA_ReportLineSet_ID = 0;
 
 	/**
 	 *  Prepare - e.g., get Parameters.
@@ -54,8 +58,8 @@ public class ReportColumnSet_Copy extends SvrProcess
 			String name = para[i].getParameterName();
 			if (para[i].getParameter() == null)
 				;
-			else if (name.equals("PA_ReportColumnSet_ID"))
-				m_PA_ReportColumnSet_ID = ((BigDecimal)para[i].getParameter()).intValue();
+			else if (name.equals("PA_ReportLineSet_ID"))
+				m_PA_ReportLineSet_ID = ((BigDecimal)para[i].getParameter()).intValue();
 			else
 				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
@@ -69,21 +73,51 @@ public class ReportColumnSet_Copy extends SvrProcess
 	protected String doIt() throws Exception
 	{
 		int to_ID = super.getRecord_ID();
-		if (log.isLoggable(Level.INFO)) log.info("From PA_ReportColumnSet_ID=" + m_PA_ReportColumnSet_ID + ", To=" + to_ID);
+		if (log.isLoggable(Level.INFO)) log.info("From PA_ReportLineSet_ID=" + m_PA_ReportLineSet_ID + ", To=" + to_ID);
 		if (to_ID < 1)
 			throw new Exception(MSG_SaveErrorRowNotFound);
 		//
-		MReportColumnSet to = new MReportColumnSet(getCtx(), to_ID, get_TrxName());
-		MReportColumnSet rcSet = new MReportColumnSet(getCtx(), m_PA_ReportColumnSet_ID, get_TrxName());
-		MReportColumn[] rcs = rcSet.getColumns();
-		for (int i = 0; i < rcs.length; i++)
+		MReportLineSet to = new MReportLineSet(getCtx(), to_ID, get_TrxName());
+		MReportLineSet rlSet = new MReportLineSet(getCtx(), m_PA_ReportLineSet_ID, get_TrxName());
+		MReportLine[] rls = rlSet.getLiness();
+		
+		HashMap<Integer, Integer> mapLines = new HashMap<Integer, Integer>();
+		
+		for (int i = 0; i < rls.length; i++)
 		{
-			MReportColumn rc = MReportColumn.copy (getCtx(), to.getAD_Client_ID(), to.getAD_Org_ID(), to_ID, rcs[i], get_TrxName());
-			rc.saveEx();
+			MReportLine rl = MReportLine.copy (getCtx(), to.getAD_Client_ID(), to.getAD_Org_ID(), to_ID, rls[i], get_TrxName());
+			rl.saveEx();
+			mapLines.put(rls[i].getPA_ReportLine_ID(), rl.getPA_ReportLine_ID());
+
+			MReportSource[] rss = rls[i].getSources();
+			if (rss != null)
+			{
+				for (int ii = 0; ii < rss.length; ii++)
+				{
+					MReportSource rs = MReportSource.copy (getCtx(), to.getAD_Client_ID(), to.getAD_Org_ID(), rl.get_ID(), rss[ii], get_TrxName());
+					rs.saveEx();
+				}
+			}
 		}
-		//	Oper 1/2 were set to Null !
-		StringBuilder msgreturn = new StringBuilder("@Copied@=").append(rcs.length);
+
+		for (int i = 0; i < rls.length; i++)
+		{
+			if (rls[i].getOper_1_ID() > 0 || rls[i].getOper_2_ID() > 0) {
+				
+				int toID = mapLines.get(rls[i].getPA_ReportLine_ID());
+				MReportLine rl = new MReportLine(getCtx(), toID, get_TrxName());
+				
+				if (rls[i].getOper_1_ID() > 0)
+					rl.setOper_1_ID(mapLines.get(rls[i].getOper_1_ID()));
+				if (rls[i].getOper_2_ID() > 0)
+					rl.setOper_2_ID(mapLines.get(rls[i].getOper_2_ID()));
+				
+				rl.saveEx();
+			}
+		}
+
+		StringBuilder msgreturn = new StringBuilder("@Copied@=").append(rls.length);
 		return msgreturn.toString();
 	}	//	doIt
 
-}	//	ReportColumnSet_Copy
+}	//	ReportLineSet_Copy
