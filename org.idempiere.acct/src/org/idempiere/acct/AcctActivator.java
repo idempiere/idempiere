@@ -23,6 +23,7 @@
 package org.idempiere.acct;
 
 import org.adempiere.plugin.utils.Incremental2PackActivator;
+import org.adempiere.webui.acct.WAcctViewer;
 import org.adempiere.webui.factory.IMappedFormFactory;
 import org.idempiere.acct.form.WFactReconcile;
 import org.idempiere.acct.process.AcctSchemaCopyAcct;
@@ -94,6 +95,8 @@ public class AcctActivator extends Incremental2PackActivator {
 	private void mapForms() {
 		mappedFormFactory.addMapping("org.compiere.apps.form.VFactReconcile", 
                 () -> new WFactReconcile().getForm());
+		mappedFormFactory.addMapping("org.adempiere.webui.acct.WAcctViewer", 
+                () -> new WAcctViewer());
 	}
 	
 }

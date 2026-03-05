@@ -47,7 +47,6 @@ import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.WArchive;
 import org.adempiere.webui.WRequest;
 import org.adempiere.webui.WZoomAcross;
-import org.adempiere.webui.acct.WAcctViewer;
 import org.adempiere.webui.adwindow.validator.WindowValidatorEvent;
 import org.adempiere.webui.adwindow.validator.WindowValidatorEventType;
 import org.adempiere.webui.adwindow.validator.WindowValidatorManager;
@@ -72,6 +71,7 @@ import org.adempiere.webui.event.ActionListener;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ToolbarListener;
 import org.adempiere.webui.exception.ApplicationException;
+import org.adempiere.webui.factory.IPostingService;
 import org.adempiere.webui.factory.InfoManager;
 import org.adempiere.webui.info.InfoWindow;
 import org.adempiere.webui.panel.ADForm;
@@ -106,7 +106,6 @@ import org.compiere.model.I_M_Product;
 import org.compiere.model.MImage;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MProcess;
-import org.compiere.model.MProjectIssue;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRecentItem;
 import org.compiere.model.MRole;
@@ -116,10 +115,8 @@ import org.compiere.model.MTableAttributeSet;
 import org.compiere.model.MWindow;
 import org.compiere.model.PO;
 import org.compiere.model.StateChangeEvent;
-import org.compiere.model.SystemIDs;
 import org.compiere.model.SystemProperties;
 import org.compiere.model.X_AD_CtxHelp;
-import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoLog;
 import org.compiere.process.ProcessInfoUtil;
@@ -3853,81 +3850,22 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		} // CreateFrom
 
 		// Posting -----
-		// Post record if not posted, show WAcctViewer if posted
+		// Post record if not posted, show acct viewer if posted - handled by optional IPostingService (org.idempiere.acct)
 		else if (col.equals("Posted") && MRole.getDefault().isShowAcct())
 		{
-			//  Check Doc Status
-
-			String processed = Env.getContext(ctx, curWindowNo, "Processed");
-
-			if (!processed.equals("Y"))
+			IPostingService postingService = Extensions.getPostingService();
+			if (postingService != null)
 			{
-				String docStatus = Env.getContext(ctx, curWindowNo, "DocStatus");
-
-				if (DocAction.STATUS_Completed.equals(docStatus)
-					|| DocAction.STATUS_Closed.equals(docStatus)
-					|| DocAction.STATUS_Reversed.equals(docStatus)
-					|| DocAction.STATUS_Voided.equals(docStatus)
-					|| table_ID == MProjectIssue.Table_ID) // document without status
-					;
-				else
+				// try to get table and record id from context data (eg for unposted view)
+				// otherwise use current table/record
+				int tableId = Env.getContextAsInt(ctx, curWindowNo, "AD_Table_ID", true);
+				int recordId = Env.getContextAsInt(ctx, curWindowNo, "Record_ID", true);
+				if (tableId == 0 || recordId == 0)
 				{
-					Dialog.error(curWindowNo, "PostDocNotComplete");
-					return;
+					tableId = adtabPanel.getGridTab().getAD_Table_ID();
+					recordId = adtabPanel.getGridTab().getRecord_ID();
 				}
-			}
-
-			// try to get table and record id from context data (eg for unposted view)
-			// otherwise use current table/record
-			int tableId = Env.getContextAsInt(ctx, curWindowNo, "AD_Table_ID", true);
-			int recordId = Env.getContextAsInt(ctx, curWindowNo, "Record_ID", true);
-			if ( tableId == 0 || recordId == 0 )
-			{
-				tableId = adtabPanel.getGridTab().getAD_Table_ID();
-				recordId = adtabPanel.getGridTab().getRecord_ID();
-			}
-
-			//  Check Post Status
-			final Object ps = adtabPanel.getGridTab().getValue("Posted");
-
-			if (ps != null && ps.equals("Y"))
-			{
-				ADForm form = ADForm.openForm(SystemIDs.FORM_ACCOUNT_INFO,
-						WAcctViewer.INITIAL_AD_TABLE_ID + "=" + tableId + "\n" + WAcctViewer.INITIAL_RECORD_ID + "=" + recordId);
-				AEnv.showWindow(form);
-			}
-			else
-			{
-				final int tableIdRef = tableId;
-				final int recordIdRef = recordId;
-				Dialog.ask(curWindowNo, "PostImmediate?", new Callback<Boolean>() {
-
-					@Override
-					public void onCallback(Boolean result)
-					{
-						if (result)
-						{
-							boolean force = ps != null && !ps.equals ("N");		//	force when problems
-
-							String error = AEnv.postImmediate (curWindowNo, Env.getAD_Client_ID(ctx),
-								tableIdRef, recordIdRef, force);
-
-							onRefresh(true, false);
-
-							if (error != null)
-							{
-								if (getActiveGridTab().isQuickForm)
-								{
-									statusBarQF.setStatusLine(error, true);
-								}
-								else
-								{
-									statusBar.setStatusLine(error, true);
-								}
-							}
-						}
-					}
-				});
+				postingService.handlePostedClick(this, curWindowNo, tableId, recordId);
 			}
 			return;
 		}   //  Posted
