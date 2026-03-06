@@ -30,6 +30,7 @@ import org.compiere.model.MAttachment;
 import org.compiere.model.MForm;
 import org.compiere.model.MImage;
 import org.compiere.model.MInfoWindow;
+import org.compiere.model.MUserDefForm;
 import org.compiere.model.MUserDefInfo;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
@@ -196,6 +197,13 @@ public class Tab extends org.zkoss.zul.Tab
 
 		public static DecorateInfo get(MForm form){
 			if (form != null){
+				
+				MUserDefForm userDef = MUserDefForm.getBestMatch(Env.getCtx(), form.getAD_Form_ID());
+				if (userDef != null) {
+					if (userDef.getImageURL() != null)
+						return new DecorateInfo(userDef.getImageURL());
+				}
+
 				return new DecorateInfo(!Util.isEmpty(form.getImageURL()) ? form.getImageURL() : Icon.FORM);
 			}
 			return null;
