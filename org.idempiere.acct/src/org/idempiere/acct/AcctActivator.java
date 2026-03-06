@@ -29,7 +29,6 @@ import org.idempiere.process.IMappedProcessFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 
@@ -50,8 +49,6 @@ public class AcctActivator extends Incremental2PackActivator {
 	@Reference(service = IMappedModelFactory.class, cardinality = ReferenceCardinality.MANDATORY)
 	private IMappedModelFactory mappedModelFactory;
 
-	private AcctMappings acctMappings;
-
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
@@ -59,16 +56,11 @@ public class AcctActivator extends Incremental2PackActivator {
 
 	@Activate
 	public void activate(BundleContext context) {
-		acctMappings = new AcctMappings(mappedProcessFactory, mappedFormFactory);
-		acctMappings.register();
+		mappedProcessFactory.scan(context, "org.idempiere.acct.process");
+
+		mappedFormFactory.scan(context, "org.idempiere.acct.form", "org.adempiere.webui.acct");
 
 		mappedModelFactory.scan(context, "org.idempiere.acct.model");
 		mappedModelFactory.scan(context, "org.idempiere.acct.base.model");
-	}
-
-	@Deactivate
-	public void deactivate() {
-		if (acctMappings != null)
-			acctMappings.deactivate();
 	}
 }

@@ -30,7 +30,7 @@ import org.compiere.process.SvrProcess;
  * accounting facts, grouped by the dimensions selected in active report cubes.
  * @author Paul Bowden
  */
-@org.adempiere.base.annotation.Process
+@org.adempiere.base.annotation.Process(name = "org.compiere.process.FactAcctSummary")
 public class FactAcctSummary extends SvrProcess {
 	
 

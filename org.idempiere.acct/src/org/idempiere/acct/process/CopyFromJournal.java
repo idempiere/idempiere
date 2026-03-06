@@ -31,7 +31,7 @@ import org.compiere.process.SvrProcess;
  *	@author Jorg Janke
  *	@version $Id: CopyFromJournal.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  */
-@org.adempiere.base.annotation.Process
+@org.adempiere.base.annotation.Process(name = "org.compiere.process.CopyFromJournal")
 public class CopyFromJournal extends SvrProcess
 {
 	private int		m_GL_JournalBatch_ID = 0;

@@ -31,7 +31,7 @@ import org.compiere.report.MReportColumnSet;
  *  @author Jorg Janke
  *  @version $Id: ReportColumnSet_Copy.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  */
-@org.adempiere.base.annotation.Process
+@org.adempiere.base.annotation.Process(name = "org.compiere.process.ReportColumnSet_Copy")
 public class ReportColumnSet_Copy extends SvrProcess
 {
 	/**

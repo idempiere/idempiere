@@ -56,7 +56,7 @@ import org.compiere.util.Trx;
  *
  *  @author Carlos Ruiz
  */
-@org.adempiere.base.annotation.Process
+@org.adempiere.base.annotation.Process(name = "org.adempiere.process.ClientAcctProcessor")
 public class ClientAcctProcessor extends SvrProcess
 {
 	/* The Accounting Schema */

@@ -27,7 +27,7 @@ import org.compiere.process.SvrProcess;
  *
  *	@author Carlos Ruiz
  */
-@org.adempiere.base.annotation.Process
+@org.adempiere.base.annotation.Process(name = "org.compiere.process.CopyFromJournalDoc")
 public class CopyFromJournalDoc extends SvrProcess
 {
 	private int		m_GL_Journal_ID = 0;
