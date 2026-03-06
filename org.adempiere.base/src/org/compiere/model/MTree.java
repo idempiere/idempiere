@@ -660,8 +660,17 @@ public class MTree extends MTree_Base
 								description = userDef.getDescription();
 						}
 					}
-					else if (X_AD_Menu.ACTION_Form.equals(actionColor))
+					else if (X_AD_Menu.ACTION_Form.equals(actionColor)) {
 						access = role.getFormAccess(AD_Form_ID);
+
+						MUserDefForm userDef = MUserDefForm.getBestMatch(getCtx(), AD_Form_ID);
+						if (userDef != null) {
+							if (userDef.getName() != null)
+								name = userDef.getName();
+							if (userDef.getDescription() != null)
+								description = userDef.getDescription();
+						}
+					}
 					else if (X_AD_Menu.ACTION_WorkFlow.equals(actionColor))
 						access = role.getWorkflowAccess(AD_Workflow_ID);
 					else if (X_AD_Menu.ACTION_Task.equals(actionColor))
