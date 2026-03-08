@@ -30,7 +30,7 @@ public class X_AD_Role_Included extends PO implements I_AD_Role_Included, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250805L;
+	private static final long serialVersionUID = 20260309L;
 
     /** Standard Constructor */
     public X_AD_Role_Included (Properties ctx, int AD_Role_Included_ID, String trxName)
@@ -163,8 +163,8 @@ public class X_AD_Role_Included extends PO implements I_AD_Role_Included, I_Pers
 			.getPO(getIncluded_Role_ID(), get_TrxName());
 	}
 
-	/** Set Included Role.
-		@param Included_Role_ID Included Role
+	/** Set Included Role Template.
+		@param Included_Role_ID Included Role Template
 	*/
 	public void setIncluded_Role_ID (int Included_Role_ID)
 	{
@@ -174,8 +174,8 @@ public class X_AD_Role_Included extends PO implements I_AD_Role_Included, I_Pers
 			set_ValueNoCheck (COLUMNNAME_Included_Role_ID, Integer.valueOf(Included_Role_ID));
 	}
 
-	/** Get Included Role.
-		@return Included Role	  */
+	/** Get Included Role Template.
+		@return Included Role Template	  */
 	public int getIncluded_Role_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Included_Role_ID);

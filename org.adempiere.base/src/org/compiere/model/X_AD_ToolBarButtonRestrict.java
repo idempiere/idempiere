@@ -30,7 +30,7 @@ public class X_AD_ToolBarButtonRestrict extends PO implements I_AD_ToolBarButton
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250805L;
+	private static final long serialVersionUID = 20260309L;
 
     /** Standard Constructor */
     public X_AD_ToolBarButtonRestrict (Properties ctx, int AD_ToolBarButtonRestrict_ID, String trxName)

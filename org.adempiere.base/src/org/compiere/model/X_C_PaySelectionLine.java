@@ -33,7 +33,7 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250805L;
+	private static final long serialVersionUID = 20260309L;
 
     /** Standard Constructor */
     public X_C_PaySelectionLine (Properties ctx, int C_PaySelectionLine_ID, String trxName)
@@ -320,7 +320,7 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	*/
 	public void setDifferenceAmt (BigDecimal DifferenceAmt)
 	{
-		set_ValueNoCheck (COLUMNNAME_DifferenceAmt, DifferenceAmt);
+		set_Value (COLUMNNAME_DifferenceAmt, DifferenceAmt);
 	}
 
 	/** Get Difference.
@@ -339,7 +339,7 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	*/
 	public void setDiscountAmt (BigDecimal DiscountAmt)
 	{
-		set_ValueNoCheck (COLUMNNAME_DiscountAmt, DiscountAmt);
+		set_Value (COLUMNNAME_DiscountAmt, DiscountAmt);
 	}
 
 	/** Get Discount Amount.
@@ -517,7 +517,7 @@ public class X_C_PaySelectionLine extends PO implements I_C_PaySelectionLine, I_
 	*/
 	public void setWriteOffAmt (BigDecimal WriteOffAmt)
 	{
-		set_ValueNoCheck (COLUMNNAME_WriteOffAmt, WriteOffAmt);
+		set_Value (COLUMNNAME_WriteOffAmt, WriteOffAmt);
 	}
 
 	/** Get Write-off Amount.

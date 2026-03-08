@@ -34,7 +34,7 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20260210L;
+	private static final long serialVersionUID = 20260309L;
 
     /** Standard Constructor */
     public X_M_Product (Properties ctx, int M_Product_ID, String trxName)
@@ -48,8 +48,8 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 // N
 			setIsBOM (false);
 // N
-			setIsBOMPriceOverride (false);
-// N
+			setIsBOMPriceOverride (true);
+// Y
 			setIsDropShip (false);
 			setIsExcludeAutoDelivery (false);
 // N
@@ -99,8 +99,8 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 // N
 			setIsBOM (false);
 // N
-			setIsBOMPriceOverride (false);
-// N
+			setIsBOMPriceOverride (true);
+// Y
 			setIsDropShip (false);
 			setIsExcludeAutoDelivery (false);
 // N
@@ -150,8 +150,8 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 // N
 			setIsBOM (false);
 // N
-			setIsBOMPriceOverride (false);
-// N
+			setIsBOMPriceOverride (true);
+// Y
 			setIsDropShip (false);
 			setIsExcludeAutoDelivery (false);
 // N
@@ -201,8 +201,8 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 // N
 			setIsBOM (false);
 // N
-			setIsBOMPriceOverride (false);
-// N
+			setIsBOMPriceOverride (true);
+// Y
 			setIsDropShip (false);
 			setIsExcludeAutoDelivery (false);
 // N

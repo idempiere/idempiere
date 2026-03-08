@@ -33,7 +33,7 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250805L;
+	private static final long serialVersionUID = 20260309L;
 
     /** Standard Constructor */
     public X_AD_Role (Properties ctx, int AD_Role_ID, String trxName)
@@ -98,7 +98,6 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 // N
 			setPreferenceType (null);
 // O
-			setUserLevel (null);
         } */
     }
 
@@ -165,7 +164,6 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 // N
 			setPreferenceType (null);
 // O
-			setUserLevel (null);
         } */
     }
 
@@ -232,7 +230,6 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 // N
 			setPreferenceType (null);
 // O
-			setUserLevel (null);
         } */
     }
 
@@ -299,7 +296,6 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 // N
 			setPreferenceType (null);
 // O
-			setUserLevel (null);
         } */
     }
 
@@ -994,16 +990,16 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 		return false;
 	}
 
-	/** Set Master Role.
-		@param IsMasterRole A master role cannot be assigned to users, it is intended to define access to menu option and documents and inherit to other roles
+	/** Set Role Template.
+		@param IsMasterRole A role template cannot be assigned to users, it is intended to define access to menu option and documents and inherit to other roles
 	*/
 	public void setIsMasterRole (boolean IsMasterRole)
 	{
 		set_Value (COLUMNNAME_IsMasterRole, Boolean.valueOf(IsMasterRole));
 	}
 
-	/** Get Master Role.
-		@return A master role cannot be assigned to users, it is intended to define access to menu option and documents and inherit to other roles
+	/** Get Role Template.
+		@return A role template cannot be assigned to users, it is intended to define access to menu option and documents and inherit to other roles
 	  */
 	public boolean isMasterRole()
 	{
