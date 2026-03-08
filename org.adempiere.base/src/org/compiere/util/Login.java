@@ -1276,15 +1276,29 @@ public class Login
 	}
 
 	/**
+	 * Validate Client Login. Sets Context with login info.
+	 * 
+	 * @param app_user  user id
+	 * @param app_pwd   password, ignore for SSO login
+	 * @param roleTypes comma separated list of the role types allowed to login (NULL can be added)
+	 * @param token token to validate SSO login user (app_user).
+	 * @return client array or null if in error.
+	 */
+	public KeyNamePair[] getClients(String app_user, String app_pwd, String roleTypes, Object token) {
+		return getClients(app_user, app_pwd, roleTypes, token, null);
+	}
+
+	/**
 	 *  Validate Client Login.<br/>
 	 *  Sets Context with login info.
 	 *  @param app_user user id
 	 *  @param app_pwd password, ignore for SSO login
 	 *  @param roleTypes comma separated list of the role types allowed to login (NULL can be added)
 	 *  @param token token to validate SSO login user (app_user).
+	 *  @param tenant the tenant query parameter value (tenant login prefix)
 	 *  @return client array or null if in error.
 	 */
-	public KeyNamePair[] getClients(String app_user, String app_pwd, String roleTypes, Object token) {
+	public KeyNamePair[] getClients(String app_user, String app_pwd, String roleTypes, Object token, String tenant) {
 		if (log.isLoggable(Level.INFO)) log.info("User=" + app_user);
 
 		if (Util.isEmpty(app_user))
@@ -1321,11 +1335,20 @@ public class Login
 		}
 
 		MClient client = null;
+		// Check tenant login prefix
+		if (!Util.isEmpty(tenant, true)) {
+			client = MClient.getByLoginPrefix(tenant.trim());
+			if (client == null) {
+				loginErrMsg = Msg.getMsg(m_ctx, "FailedLogin");
+				return null;
+			}
+		}
+
 		if (MSystem.isUseLoginPrefix()) {
 			String app_tenant = Login.getAppTenant(app_user);
 			app_user = Login.getAppUser(app_user);
 			boolean hasTenant = ! Util.isEmpty(app_tenant, true);
-			if (MSystem.isLoginPrefixMandatory() && ! hasTenant) {
+			if (MSystem.isLoginPrefixMandatory() && ! hasTenant && client == null) {
 				loginErrMsg = Msg.getMsg(m_ctx, "MissingLoginTenant");
 				return null;
 			}
@@ -1334,11 +1357,12 @@ public class Login
 				return null;
 			}
 			if (hasTenant) {
-				client = MClient.getByLoginPrefix(app_tenant);
-				if (client == null) {
+				MClient prefixClient = MClient.getByLoginPrefix(app_tenant);
+				if (prefixClient == null || (client != null && client.getAD_Client_ID() != prefixClient.getAD_Client_ID())) {
 					loginErrMsg = Msg.getMsg(m_ctx, "FailedLogin");
 					return null;
 				}
+				client = prefixClient;
 			}
 		}
 

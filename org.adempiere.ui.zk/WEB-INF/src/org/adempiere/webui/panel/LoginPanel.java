@@ -398,7 +398,22 @@ public class LoginPanel extends Window implements EventListener<Event>
 		boolean isSSOEnable = MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false);
 		if (isSSOEnable)
 		{
-			List<MSSOPrincipalConfig> configs = MSSOPrincipalConfig.getAllSSOPrincipalConfig();
+			// if has tenant login prefix, get SSO principal config by tenant login prefix
+			// else get system level SSO principal config
+			Session currSess = Executions.getCurrent().getDesktop().getSession();        
+        	String tenant = (String) currSess.getAttribute("tenant");
+			List<MSSOPrincipalConfig> configs = new ArrayList<>();
+			if (!Util.isEmpty(tenant, true))
+			{
+				var client = MClient.getByLoginPrefix(tenant.trim());
+				if (client != null)
+					configs = MSSOPrincipalConfig.getSSOPrincipalConfigByClient(client.getAD_Client_ID());
+			}
+			else
+			{
+				configs = MSSOPrincipalConfig.getSSOPrincipalConfigByClient(0);
+			}
+
 			if (configs != null && !configs.isEmpty())
 			{
 				tr = null;
@@ -701,7 +716,9 @@ public class LoginPanel extends Window implements EventListener<Event>
 
         Session currSess = Executions.getCurrent().getDesktop().getSession();
         
-        KeyNamePair clientsKNPairs[] = login.getClients(userId, userPassword, ROLE_TYPES_WEBUI);
+		// get tenant login prefix from session which is set by filter
+        String tenant = (String) currSess.getAttribute("tenant");
+        KeyNamePair clientsKNPairs[] = login.getClients(userId, userPassword, ROLE_TYPES_WEBUI, null, tenant);
         
         if (clientsKNPairs == null || clientsKNPairs.length == 0)
         {
@@ -884,11 +901,10 @@ public class LoginPanel extends Window implements EventListener<Event>
 		button.addEventListener("onClick", event -> {
 
 			String referrerUrl = null;
-			if (Executions.getCurrent().getNativeRequest() != null && Executions.getCurrent().getNativeRequest() instanceof HttpServletRequest)
+			if (Executions.getCurrent().getNativeRequest() != null && Executions.getCurrent().getNativeRequest() instanceof HttpServletRequest request)
 			{
 				// Pass the current request param along with the selected provider so it can passed
 				// in the redirected URL after login
-				HttpServletRequest request = (HttpServletRequest) Executions.getCurrent().getNativeRequest();
 				referrerUrl = request.getHeader("Referer");
 				if (!Util.isEmpty(referrerUrl) && referrerUrl.indexOf("?") > 0)
 					referrerUrl = referrerUrl.substring(referrerUrl.indexOf("?") + 1);

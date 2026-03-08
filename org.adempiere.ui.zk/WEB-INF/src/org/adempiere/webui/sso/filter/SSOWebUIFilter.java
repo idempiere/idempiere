@@ -21,6 +21,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -62,12 +63,26 @@ public class SSOWebUIFilter implements Filter
 	 */
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException
 	{
-		boolean isSSOEnable = MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false);
-		if (isSSOEnable && request instanceof HttpServletRequest)
+		// process tenant login prefix parameter (if available)
+		HttpServletRequest httpRequest = null;
+		if (request instanceof HttpServletRequest hsr)
 		{
-			HttpServletRequest httpRequest = (HttpServletRequest) request;
-			HttpServletResponse httpResponse = (HttpServletResponse) response;
+			String tenant = hsr.getParameter("tenant");
+			if (tenant != null)
+			{
+				tenant = tenant.trim();
+				if (tenant.isEmpty())
+					hsr.getSession().removeAttribute("tenant");
+				else
+					hsr.getSession().setAttribute("tenant", tenant);
+			}
+			httpRequest = hsr;
 
+		}
+
+		boolean isSSOEnable = MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false);
+		if (isSSOEnable && httpRequest != null && response instanceof HttpServletResponse httpResponse)
+		{
 			// handle ping request
 			String ping = httpRequest.getHeader("X-PING");
 			if (!Util.isEmpty(ping, true))
@@ -102,16 +117,50 @@ public class SSOWebUIFilter implements Filter
 
 			boolean isProviderFromSession = false;
 			String provider = httpRequest.getParameter(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
-			if (Util.isEmpty(provider) && httpRequest.getSession().getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER) != null)
+			if (Util.isEmpty(provider))
 			{
-				isProviderFromSession = true;
-				provider = (String) httpRequest.getSession().getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
+				if (httpRequest.getSession().getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER) != null)
+				{
+					isProviderFromSession = true;
+					provider = (String) httpRequest.getSession().getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
+				}
+				else
+				{
+					Cookie[] cookies = httpRequest.getCookies();
+					if (cookies != null)
+					{
+						for (Cookie cookie : cookies)
+						{
+							if (ISSOPrincipalService.SSO_SELECTED_PROVIDER.equals(cookie.getName()))
+							{
+								provider = cookie.getValue();
+								if (!Util.isEmpty(provider))
+								{
+									httpRequest.getSession().setAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider);
+									isProviderFromSession = true;
+								}
+								break;
+							}
+						}
+					}
+				}
+			}
+			else
+			{
+				// Update cookie if provider is from request parameter
+				Cookie cookie = new Cookie(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider);
+				cookie.setSecure(true);
+				cookie.setHttpOnly(true);
+				cookie.setMaxAge(86400 * 30); // 30 days
+				cookie.setPath(httpRequest.getContextPath());
+				httpResponse.addCookie(cookie);
 			}
 
+			String tenant = (String) httpRequest.getSession().getAttribute("tenant");
 			ISSOPrincipalService m_SSOPrincipal = null;
 			try
 			{
-				m_SSOPrincipal = SSOUtils.getSSOPrincipalService(provider);
+				m_SSOPrincipal = SSOUtils.getSSOPrincipalService(provider, tenant);
 
 				if (m_SSOPrincipal != null && !isAdminResRequest)
 				{

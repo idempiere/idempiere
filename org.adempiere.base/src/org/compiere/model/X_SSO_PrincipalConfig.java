@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for SSO_PrincipalConfig
  *  @author iDempiere (generated)
- *  @version Release 13 - $Id$ */
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="SSO_PrincipalConfig")
 public class X_SSO_PrincipalConfig extends PO implements I_SSO_PrincipalConfig, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_SSO_PrincipalConfig extends PO implements I_SSO_PrincipalConfig, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250605L;
+	private static final long serialVersionUID = 20260308L;
 
     /** Standard Constructor */
     public X_SSO_PrincipalConfig (Properties ctx, int SSO_PrincipalConfig_ID, String trxName)
@@ -83,7 +83,7 @@ public class X_SSO_PrincipalConfig extends PO implements I_SSO_PrincipalConfig, 
     }
 
     /** AccessLevel
-      * @return 4 - System
+      * @return 6 - System - Client
       */
     protected int get_AccessLevel()
     {
@@ -143,16 +143,16 @@ public class X_SSO_PrincipalConfig extends PO implements I_SSO_PrincipalConfig, 
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
-	/** Set Application Tenant ID.
-		@param SSO_ApplicationClientID SSO Application Tenant ID
+	/** Set Application Client ID.
+		@param SSO_ApplicationClientID SSO Application Client ID
 	*/
 	public void setSSO_ApplicationClientID (String SSO_ApplicationClientID)
 	{
 		set_Value (COLUMNNAME_SSO_ApplicationClientID, SSO_ApplicationClientID);
 	}
 
-	/** Get Application Tenant ID.
-		@return SSO Application Tenant ID
+	/** Get Application Client ID.
+		@return SSO Application Client ID
 	  */
 	public String getSSO_ApplicationClientID()
 	{

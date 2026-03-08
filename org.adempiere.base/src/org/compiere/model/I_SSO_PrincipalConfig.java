@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for SSO_PrincipalConfig
  *  @author iDempiere (generated) 
- *  @version Release 13
+ *  @version Release 12
  */
 public interface I_SSO_PrincipalConfig 
 {
@@ -35,9 +35,9 @@ public interface I_SSO_PrincipalConfig
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
-    /** AccessLevel = 4 - System 
+    /** AccessLevel = 6 - System - Client 
      */
-    BigDecimal accessLevel = BigDecimal.valueOf(4);
+    BigDecimal accessLevel = BigDecimal.valueOf(6);
 
     /** Load Meta Data */
 
@@ -120,13 +120,13 @@ public interface I_SSO_PrincipalConfig
     /** Column name SSO_ApplicationClientID */
     public static final String COLUMNNAME_SSO_ApplicationClientID = "SSO_ApplicationClientID";
 
-	/** Set Application Tenant ID.
-	  * SSO Application Tenant ID
+	/** Set Application Client ID.
+	  * SSO Application Client ID
 	  */
 	public void setSSO_ApplicationClientID (String SSO_ApplicationClientID);
 
-	/** Get Application Tenant ID.
-	  * SSO Application Tenant ID
+	/** Get Application Client ID.
+	  * SSO Application Client ID
 	  */
 	public String getSSO_ApplicationClientID();
 
