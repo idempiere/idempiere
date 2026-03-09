@@ -15,11 +15,17 @@
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
 /** Generated Model - DO NOT CHANGE */
-package org.compiere.model;
+package org.idempiere.acct.base.model;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+
+import org.compiere.model.I_C_Location;
+import org.compiere.model.I_Persistent;
+import org.compiere.model.MTable;
+import org.compiere.model.PO;
+import org.compiere.model.POInfo;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
@@ -1119,13 +1125,6 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
         return new KeyNamePair(get_ID(), getName());
     }
 
-	@Deprecated(since="13") // use better methods with cache
-	public org.compiere.model.I_PA_ReportColumn getOper_1() throws RuntimeException
-	{
-		return (org.compiere.model.I_PA_ReportColumn)MTable.get(getCtx(), org.compiere.model.I_PA_ReportColumn.Table_ID)
-			.getPO(getOper_1_ID(), get_TrxName());
-	}
-
 	/** Set Operand 1.
 		@param Oper_1_ID First operand for calculation
 	*/
@@ -1146,13 +1145,6 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	@Deprecated(since="13") // use better methods with cache
-	public org.compiere.model.I_PA_ReportColumn getOper_2() throws RuntimeException
-	{
-		return (org.compiere.model.I_PA_ReportColumn)MTable.get(getCtx(), org.compiere.model.I_PA_ReportColumn.Table_ID)
-			.getPO(getOper_2_ID(), get_TrxName());
 	}
 
 	/** Set Operand 2.
@@ -1271,13 +1263,6 @@ public class X_PA_ReportColumn extends PO implements I_PA_ReportColumn, I_Persis
 	public String getPAPeriodType()
 	{
 		return (String)get_Value(COLUMNNAME_PAPeriodType);
-	}
-
-	@Deprecated(since="13") // use better methods with cache
-	public org.compiere.model.I_PA_ReportColumnSet getPA_ReportColumnSet() throws RuntimeException
-	{
-		return (org.compiere.model.I_PA_ReportColumnSet)MTable.get(getCtx(), org.compiere.model.I_PA_ReportColumnSet.Table_ID)
-			.getPO(getPA_ReportColumnSet_ID(), get_TrxName());
 	}
 
 	/** Set Report Column Set.

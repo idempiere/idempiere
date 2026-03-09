@@ -14,7 +14,7 @@
  * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
-package org.compiere.model;
+package org.idempiere.acct.base.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -250,9 +250,6 @@ public interface I_PA_Report
 	  * Collection of Columns for Report
 	  */
 	public int getPA_ReportColumnSet_ID();
-
-	@Deprecated(since="13") // use better methods with cache
-	public org.compiere.model.I_PA_ReportColumnSet getPA_ReportColumnSet() throws RuntimeException;
 
     /** Column name PA_ReportCube_ID */
     public static final String COLUMNNAME_PA_ReportCube_ID = "PA_ReportCube_ID";

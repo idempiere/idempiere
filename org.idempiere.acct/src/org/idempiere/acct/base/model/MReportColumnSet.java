@@ -14,7 +14,7 @@
  * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
-package org.compiere.report;
+package org.idempiere.acct.base.model;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.model.X_PA_ReportColumnSet;
 import org.compiere.util.DB;
 import org.compiere.util.Util;
 

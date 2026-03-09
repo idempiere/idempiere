@@ -22,8 +22,8 @@ import java.util.logging.Level;
 import org.compiere.model.MProcessPara;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
-import org.compiere.report.MReportColumn;
-import org.compiere.report.MReportColumnSet;
+import org.idempiere.acct.base.model.MReportColumn;
+import org.idempiere.acct.base.model.MReportColumnSet;
 
 /**
  *  Copy Column Set at the end of the Column Set

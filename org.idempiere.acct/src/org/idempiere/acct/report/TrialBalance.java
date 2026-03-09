@@ -14,7 +14,7 @@
  * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
-package org.compiere.report;
+package org.idempiere.acct.report;
 
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
@@ -30,6 +30,7 @@ import org.compiere.model.MPeriod;
 import org.compiere.model.MProcessPara;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
+import org.compiere.report.MReportTree;
 import org.compiere.util.DB;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
@@ -44,7 +45,7 @@ import org.compiere.util.Msg;
  *			@see https://sourceforge.net/p/adempiere/feature-requests/631/ 
  *  @version $Id: TrialBalance.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
  */
-@org.adempiere.base.annotation.Process
+@org.adempiere.base.annotation.Process(name = "org.compiere.report.TrialBalance")
 public class TrialBalance extends SvrProcess
 {
 	/** AcctSchame Parameter			*/

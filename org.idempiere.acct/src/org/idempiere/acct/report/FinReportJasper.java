@@ -14,7 +14,7 @@
  * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
-package org.compiere.report;
+package org.idempiere.acct.report;
 
 import java.sql.CallableStatement;
 import java.util.ArrayList;
@@ -29,6 +29,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.idempiere.acct.base.model.MReport;
 
 /**
  *  Financial Report using Jasper Report for output
@@ -36,7 +37,7 @@ import org.compiere.util.Trx;
  *  @author Jorg Janke
  *  @version $Id: FinReport.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
  */
-@org.adempiere.base.annotation.Process
+@org.adempiere.base.annotation.Process(name = "org.compiere.report.FinReportJasper")
 public class FinReportJasper extends FinReport
 {
 	/**	Report Definition				*/

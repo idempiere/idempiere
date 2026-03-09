@@ -15,10 +15,15 @@
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
 /** Generated Model - DO NOT CHANGE */
-package org.compiere.model;
+package org.idempiere.acct.base.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
+
+import org.compiere.model.I_Persistent;
+import org.compiere.model.MTable;
+import org.compiere.model.PO;
+import org.compiere.model.POInfo;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for PA_Report
@@ -404,13 +409,6 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
     {
         return new KeyNamePair(get_ID(), getName());
     }
-
-	@Deprecated(since="13") // use better methods with cache
-	public org.compiere.model.I_PA_ReportColumnSet getPA_ReportColumnSet() throws RuntimeException
-	{
-		return (org.compiere.model.I_PA_ReportColumnSet)MTable.get(getCtx(), org.compiere.model.I_PA_ReportColumnSet.Table_ID)
-			.getPO(getPA_ReportColumnSet_ID(), get_TrxName());
-	}
 
 	/** Set Report Column Set.
 		@param PA_ReportColumnSet_ID Collection of Columns for Report

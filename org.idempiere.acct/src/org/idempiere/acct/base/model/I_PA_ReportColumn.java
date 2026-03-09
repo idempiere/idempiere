@@ -14,10 +14,12 @@
  * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
-package org.compiere.model;
+package org.idempiere.acct.base.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+
+import org.compiere.model.I_C_Location;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for PA_ReportColumn
@@ -577,9 +579,6 @@ public interface I_PA_ReportColumn
 	  */
 	public int getOper_1_ID();
 
-	@Deprecated(since="13") // use better methods with cache
-	public org.compiere.model.I_PA_ReportColumn getOper_1() throws RuntimeException;
-
     /** Column name Oper_2_ID */
     public static final String COLUMNNAME_Oper_2_ID = "Oper_2_ID";
 
@@ -592,9 +591,6 @@ public interface I_PA_ReportColumn
 	  * Second operand for calculation
 	  */
 	public int getOper_2_ID();
-
-	@Deprecated(since="13") // use better methods with cache
-	public org.compiere.model.I_PA_ReportColumn getOper_2() throws RuntimeException;
 
     /** Column name Oper_2_LineName */
     public static final String COLUMNNAME_Oper_2_LineName = "Oper_2_LineName";
@@ -660,9 +656,6 @@ public interface I_PA_ReportColumn
 	  * Collection of Columns for Report
 	  */
 	public int getPA_ReportColumnSet_ID();
-
-	@Deprecated(since="13") // use better methods with cache
-	public org.compiere.model.I_PA_ReportColumnSet getPA_ReportColumnSet() throws RuntimeException;
 
     /** Column name PA_ReportColumn_ID */
     public static final String COLUMNNAME_PA_ReportColumn_ID = "PA_ReportColumn_ID";

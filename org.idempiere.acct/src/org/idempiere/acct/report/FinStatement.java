@@ -14,7 +14,9 @@
  * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
-package org.compiere.report;
+package org.idempiere.acct.report;
+
+import static org.compiere.model.SystemIDs.PRINTFORMAT_STATEMENTOFACCOUNT;
 
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
@@ -28,11 +30,10 @@ import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MElementValue;
 import org.compiere.model.MPeriod;
 import org.compiere.model.MProcessPara;
-
-import static org.compiere.model.SystemIDs.*;
 import org.compiere.print.MPrintFormat;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
+import org.compiere.report.MReportTree;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
@@ -55,7 +56,7 @@ import org.compiere.util.Msg;
  *			<li>FR [2857076] User Element 1 and 2 completion - https://sourceforge.net/p/adempiere/feature-requests/817/
  *   
  */
-@org.adempiere.base.annotation.Process
+@org.adempiere.base.annotation.Process(name = "org.compiere.report.FinStatement")
 public class FinStatement extends SvrProcess
 {
 	/** AcctSchame Parameter			*/

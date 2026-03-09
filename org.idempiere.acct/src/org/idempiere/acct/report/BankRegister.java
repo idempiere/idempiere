@@ -14,7 +14,7 @@
  * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
-package org.compiere.report;
+package org.idempiere.acct.report;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -35,7 +35,7 @@ import org.compiere.util.Msg;
  * @author YvonneAw
  *
  */
-@org.adempiere.base.annotation.Process
+@org.adempiere.base.annotation.Process(name = "org.compiere.report.BankRegister")
 public class BankRegister extends SvrProcess
 {
 	/**	Bank Parameter				*/
