@@ -1193,16 +1193,26 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	
 	@Override
 	public SQLFragment intersectFilterForCSV(String columnName, String csv, boolean isNotClause) {
-		StringBuilder builder = new StringBuilder();
-		if(isNotClause)
-			builder.append("NOT");
-		builder.append("(string_to_array(")
-			.append(columnName)
-			.append(",',')");
-		builder.append(" && "); //intersect
-		builder.append("string_to_array(?,','))");
 
-		return new SQLFragment(builder.toString(), List.of(csv));
+	    StringBuilder builder = new StringBuilder();
+
+	    if (isNotClause) {
+	        builder.append("(").append("NOT ");
+	    }
+
+	    builder.append("(string_to_array(")
+	           .append(columnName)
+	           .append(",',')");
+	    builder.append(" && "); // intersect
+	    builder.append("string_to_array(?,','))");
+
+	    if (isNotClause) {
+	        builder.append(" OR ")
+	               .append(columnName)
+	               .append(" IS NULL)");
+	    }
+
+	    return new SQLFragment(builder.toString(), List.of(csv));
 	}
 	
 	@Override
