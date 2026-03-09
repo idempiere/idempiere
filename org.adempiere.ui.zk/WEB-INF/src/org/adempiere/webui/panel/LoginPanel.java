@@ -404,7 +404,11 @@ public class LoginPanel extends Window implements EventListener<Event>
 		{
 			// if has tenant login prefix, get SSO principal config by tenant login prefix
 			// else get system level SSO principal config
-			Session currSess = Executions.getCurrent().getDesktop().getSession();        
+			Session currSess = Executions.getCurrent().getDesktop().getSession();
+			// always show login page for admin login (admin.zul)
+			var adminLogin = currSess.getAttribute(ISSOPrincipalService.SSO_ADMIN_LOGIN);
+			if (adminLogin != null && adminLogin instanceof Boolean && (Boolean) adminLogin)
+				isShowLoginPage = true;
         	String tenant = (String) currSess.getAttribute("tenant");
 			List<MSSOPrincipalConfig> configs = new ArrayList<>();
 			if (!Util.isEmpty(tenant, true))

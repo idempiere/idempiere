@@ -522,7 +522,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		String provider = (String) desktop.getSession().getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
 	    if (isSSOLogin && !Util.isEmpty(provider, true))
 	    {
-	    	setCookie(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider, 86400 * 30); // 30 days
+	    	setCookie(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider, 3600); // 1 hour
 	    }
 	    
 	    String ssoLogoutURL = null;
