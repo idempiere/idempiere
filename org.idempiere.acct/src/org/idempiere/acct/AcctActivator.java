@@ -54,6 +54,7 @@ public class AcctActivator extends Incremental2PackActivator {
 		super.start(context);
 
 		mappedProcessFactory.scan(context, "org.idempiere.acct.process");
+		mappedProcessFactory.scan(context, "org.idempiere.acct.report");
 
 		if (mappedFormFactory != null)
 			mappedFormFactory.scan(context, "org.idempiere.acct.form", "org.adempiere.webui.acct");
