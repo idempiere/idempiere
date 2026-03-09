@@ -687,10 +687,22 @@ public class MRMA extends X_M_RMA implements DocAction
 			return false;
 
 		// IDEMPIERE-98 - Implement void for completed RMAs - Diego Ruiz - globalqss		
-		String validation = "SELECT COUNT(1) "
-							+"FROM M_InOut "
-							+"WHERE M_RMA_ID=? AND (DocStatus NOT IN ('VO','RE'))";
-		int count = DB.getSQLValueEx(get_TrxName(), validation, getM_RMA_ID()) ;
+		String validation =
+			      "SELECT COUNT(*) "
+			    + "FROM M_InOut io "
+			    + "WHERE io.DocStatus NOT IN ('VO','RE') "
+			    + "  AND ( "
+			    + "        io.M_RMA_ID = ? "
+			    + "        OR EXISTS ( "
+			    + "            SELECT 1 "
+			    + "            FROM M_InOutLine iol "
+			    + "            JOIN M_RMALine rmal "
+			    + "                  ON rmal.M_RMALine_ID = iol.M_RMALine_ID "
+			    + "            WHERE iol.M_InOut_ID = io.M_InOut_ID "
+			    + "              AND rmal.M_RMA_ID = ? "
+			    + "        ) "
+			    + "      )";
+		int count = DB.getSQLValueEx(get_TrxName(), validation, getM_RMA_ID(),getM_RMA_ID()) ;
 		
 		if (count == 0)
 		{
