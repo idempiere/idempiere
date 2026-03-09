@@ -14,7 +14,7 @@
  * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
-package org.compiere.process;
+package org.idempiere.acct.process;
 
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
@@ -35,6 +35,10 @@ import org.compiere.model.MInventory;
 import org.compiere.model.MInventoryLine;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MProduct;
+import org.compiere.process.DocAction;
+import org.compiere.process.DocumentEngine;
+import org.compiere.process.ProcessInfoParameter;
+import org.compiere.process.SvrProcess;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.DB;
@@ -48,7 +52,7 @@ import org.compiere.util.Util;
  *  @author Jorg Janke
  *  @version $Id: CostUpdate.java,v 1.3 2006/07/30 00:51:02 jjanke Exp $
  */
-@org.adempiere.base.annotation.Process
+@org.adempiere.base.annotation.Process(name = "org.compiere.process.CostUpdate")
 public class CostUpdate extends SvrProcess
 {
 	/**	Product Category		*/
