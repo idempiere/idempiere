@@ -43,22 +43,20 @@ public class AcctActivator extends Incremental2PackActivator {
 	@Reference(service = IMappedProcessFactory.class, cardinality = ReferenceCardinality.MANDATORY)
 	private IMappedProcessFactory mappedProcessFactory;
 
-	@Reference(service = IMappedFormFactory.class, cardinality = ReferenceCardinality.MANDATORY)
+	@Reference(service = IMappedFormFactory.class, cardinality = ReferenceCardinality.OPTIONAL)
 	private IMappedFormFactory mappedFormFactory;
 
 	@Reference(service = IMappedModelFactory.class, cardinality = ReferenceCardinality.MANDATORY)
 	private IMappedModelFactory mappedModelFactory;
 
-	@Override
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
-	}
-
 	@Activate
-	public void activate(BundleContext context) {
+	public void activate(BundleContext context) throws Exception {
+		super.start(context);
+
 		mappedProcessFactory.scan(context, "org.idempiere.acct.process");
 
-		mappedFormFactory.scan(context, "org.idempiere.acct.form", "org.adempiere.webui.acct");
+		if (mappedFormFactory != null)
+			mappedFormFactory.scan(context, "org.idempiere.acct.form", "org.adempiere.webui.acct");
 
 		mappedModelFactory.scan(context, "org.idempiere.acct.model");
 		mappedModelFactory.scan(context, "org.idempiere.acct.base.model");
