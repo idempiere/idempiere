@@ -19,6 +19,8 @@ package org.compiere.impexp;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.model.MColumn;
+import org.compiere.model.Query;
 import org.compiere.model.X_AD_ImpFormat_Row;
 import org.compiere.util.Util;
 
@@ -107,5 +109,35 @@ public class MImpFormatRow extends X_AD_ImpFormat_Row
 		setClientOrg(parent);
 		setAD_ImpFormat_ID(parent.getAD_ImpFormat_ID());
 	}	//	MImpFormatRow
+	
+	@Override
+	protected boolean beforeSave(boolean newRecord)
+	{
+		//IDEMPIERE-6224: Do not save duplicates we cannot concatenate
+		if (
+			!this.getDataType().equals(DATATYPE_Constant)
+			&& !this.getDataType().equals(DATATYPE_String)
+			&& new Query(getCtx(), Table_Name, "ad_impformat_id = ? AND ad_column_id = ? AND ad_impformat_row_id <> ?", get_TrxName())
+					.setClient_ID()
+					.setParameters(getAD_ImpFormat_ID(), getAD_Column_ID(), get_ID())
+					.match()
+		) {
+			log.saveError("Error", "Disallowed duplicate entry for -> " + MColumn.getColumnName(getCtx(), getAD_Column_ID()));
+			return false;
+		}
+		//IDEMPIERE-6224: fail also, if there is another non-constant entry of different type, to avoid concating strings to e.g. numbers
+		if (
+			!this.getDataType().equals(DATATYPE_Constant)
+			&& new Query(getCtx(), Table_Name, "ad_impformat_id = ? AND ad_column_id = ? AND datatype NOT IN ('C', ?)", get_TrxName())
+					.setClient_ID()
+					.setParameters(getAD_ImpFormat_ID(), getAD_Column_ID(), getDataType())
+					.match()
+		) {
+			log.saveError("Error", "Disallowed duplicate entry for -> " + MColumn.getColumnName(getCtx(), getAD_Column_ID()));
+			return false;
+		}
+		
+		return super.beforeSave(newRecord);
+	}
 	
 }	//	MImpFormatRow
