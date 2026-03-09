@@ -22,8 +22,8 @@ io.github.classgraph.classgraph,4.8.147,file:${user.home}/.m2/repository/io/gith
 jakarta.annotation-api,1.3.5,file:${user.home}/.m2/repository/jakarta/annotation/jakarta.annotation-api/1.3.5/jakarta.annotation-api-1.3.5.jar,4,false
 jakarta.xml.bind-api,2.3.3,file:${user.home}/.m2/repository/jakarta/xml/bind/jakarta.xml.bind-api/2.3.3/jakarta.xml.bind-api-2.3.3.jar,4,false
 net.sf.supercsv.super-csv,2.4.0,file:${user.home}/.m2/repository/net/sf/supercsv/super-csv/2.4.0/super-csv-2.4.0.jar,4,false
-org.adempiere.base,13.0.0.qualifier,file:../../../org.adempiere.base/,4,false
-org.adempiere.install,13.0.0.qualifier,file:../../../org.adempiere.install/,4,false
+org.adempiere.base,14.0.0.qualifier,file:../../../org.adempiere.base/,4,false
+org.adempiere.install,14.0.0.qualifier,file:../../../org.adempiere.install/,4,false
 org.antlr.antlr4-runtime,4.9.2,file:${user.home}/.m2/repository/org/antlr/antlr4-runtime/4.9.2/antlr4-runtime-4.9.2.jar,4,false
 org.apache.activemq.activemq-client,5.16.7,file:${user.home}/.m2/repository/org/apache/activemq/activemq-client/5.16.7/activemq-client-5.16.7.jar,4,false
 org.apache.ant,1.10.12.v20211102-1452,file:plugins/org.apache.ant_1.10.12.v20211102-1452.jar,4,false
@@ -35,7 +35,7 @@ org.apache.commons.commons-compress,1.21.0,file:${user.home}/.m2/repository/org/
 org.apache.commons.commons-io,2.15.1,file:${user.home}/.m2/repository/commons-io/commons-io/2.15.1/commons-io-2.15.1.jar,4,false
 org.apache.commons.commons-net,3.8.0,file:${user.home}/.m2/repository/commons-net/commons-net/3.8.0/commons-net-3.8.0.jar,4,false
 org.apache.commons.logging,1.2.0,file:${user.home}/.m2/repository/commons-logging/commons-logging/1.2/commons-logging-1.2.jar,4,false
-org.apache.ecs,13.0.0.qualifier,file:../../../org.apache.ecs/,4,false
+org.apache.ecs,14.0.0.qualifier,file:../../../org.apache.ecs/,4,false
 org.apache.felix.gogo.runtime,1.1.6,file:plugins/org.apache.felix.gogo.runtime_1.1.6.jar,4,false
 org.apache.felix.gogo.shell,1.1.4,file:plugins/org.apache.felix.gogo.shell_1.1.4.jar,4,false
 org.apache.felix.scr,2.2.6,file:plugins/org.apache.felix.scr_2.2.6.jar,1,true
@@ -46,8 +46,8 @@ org.apache.httpcomponents.httpcore,4.4.14,file:${user.home}/.m2/repository/org/a
 org.apache.logging.log4j.api,2.23.1,file:${user.home}/.m2/repository/org/apache/logging/log4j/log4j-api/2.23.1/log4j-api-2.23.1.jar,4,false
 org.apache.logging.log4j.to.slf4j,2.23.1,file:${user.home}/.m2/repository/org/apache/logging/log4j/log4j-to-slf4j/2.23.1/log4j-to-slf4j-2.23.1.jar,3,true
 org.apache.servicemix.bundles.cglib,3.3.0.1,file:${user.home}/.m2/repository/org/apache/servicemix/bundles/org.apache.servicemix.bundles.cglib/3.3.0_1/org.apache.servicemix.bundles.cglib-3.3.0_1.jar,4,false
-org.compiere.db.oracle.provider,13.0.0.qualifier,file:../../../org.compiere.db.oracle.provider/,4,false
-org.compiere.db.postgresql.provider,13.0.0.qualifier,file:../../../org.compiere.db.postgresql.provider/,4,false
+org.compiere.db.oracle.provider,14.0.0.qualifier,file:../../../org.compiere.db.oracle.provider/,4,false
+org.compiere.db.postgresql.provider,14.0.0.qualifier,file:../../../org.compiere.db.postgresql.provider/,4,false
 org.cryptacular,1.2.4,file:${user.home}/.m2/repository/org/cryptacular/cryptacular/1.2.4/cryptacular-1.2.4.jar,4,false
 org.eclipse.ant.core,3.7.100.v20230731-0828,file:plugins/org.eclipse.ant.core_3.7.100.v20230731-0828.jar,4,false
 org.eclipse.core.contenttype,3.9.100.v20230630-1232,file:plugins/org.eclipse.core.contenttype_3.9.100.v20230630-1232.jar,4,false
