@@ -36,7 +36,7 @@ public class X_GL_FundRestriction extends PO implements I_GL_FundRestriction, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250805L;
+	private static final long serialVersionUID = 20260309L;
 
     /** Standard Constructor */
     public X_GL_FundRestriction (Properties ctx, int GL_FundRestriction_ID, String trxName)
