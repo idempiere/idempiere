@@ -16,34 +16,26 @@
  *****************************************************************************/
 package org.idempiere.acct.process;
 
-import java.math.BigDecimal;
 import java.util.logging.Level;
 
+import org.compiere.model.MCostDetail;
 import org.compiere.model.MProcessPara;
+import org.compiere.model.MProduct;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
-import org.idempiere.acct.base.model.MReportColumn;
-import org.idempiere.acct.base.model.MReportColumnSet;
+import org.compiere.util.AdempiereUserError;
 
 /**
- *  Copy Column Set at the end of the Column Set
- *
+ * 	Create/Update Costing for Product
+ *	
  *  @author Jorg Janke
- *  @version $Id: ReportColumnSet_Copy.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
+ *  @version $Id: CostCreate.java,v 1.2 2006/07/30 00:51:01 jjanke Exp $
  */
-@org.adempiere.base.annotation.Process(name = "org.compiere.process.ReportColumnSet_Copy")
-public class ReportColumnSet_Copy extends SvrProcess
+@org.adempiere.base.annotation.Process(name = "org.compiere.process.CostCreate")
+public class CostCreate extends SvrProcess
 {
-	/**
-	 * 	Constructor
-	 */
-	public ReportColumnSet_Copy()
-	{
-		super();
-	}	//	ReportColumnSet_Copy
-
-	/**	Source Line Set					*/
-	private int		m_PA_ReportColumnSet_ID = 0;
+	/**	Product				*/
+	private int 	p_M_Product_ID = 0; 
 
 	/**
 	 *  Prepare - e.g., get Parameters.
@@ -54,10 +46,11 @@ public class ReportColumnSet_Copy extends SvrProcess
 		for (int i = 0; i < para.length; i++)
 		{
 			String name = para[i].getParameterName();
+		//	log.fine("prepare - " + para[i]);
 			if (para[i].getParameter() == null)
 				;
-			else if (name.equals("PA_ReportColumnSet_ID"))
-				m_PA_ReportColumnSet_ID = ((BigDecimal)para[i].getParameter()).intValue();
+			else if (name.equals("M_Product_ID"))
+				p_M_Product_ID = para[i].getParameterAsInt();
 			else
 				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
@@ -65,27 +58,21 @@ public class ReportColumnSet_Copy extends SvrProcess
 
 	/**
 	 *  Perform process.
-	 *  @return Message
-	 *  @throws Exception
+	 *  @return Message (text with variables)
+	 *  @throws Exception if not successful
 	 */
 	protected String doIt() throws Exception
 	{
-		int to_ID = super.getRecord_ID();
-		if (log.isLoggable(Level.INFO)) log.info("From PA_ReportColumnSet_ID=" + m_PA_ReportColumnSet_ID + ", To=" + to_ID);
-		if (to_ID < 1)
-			throw new Exception(MSG_SaveErrorRowNotFound);
+		if (log.isLoggable(Level.INFO)) log.info("M_Product_ID=" + p_M_Product_ID);
+		if (p_M_Product_ID == 0)
+			throw new AdempiereUserError("@NotFound@: @M_Product_ID@ = " + p_M_Product_ID);
+		MProduct product = MProduct.get(getCtx(), p_M_Product_ID);
+		if (product.get_ID() != p_M_Product_ID)
+			throw new AdempiereUserError("@NotFound@: @M_Product_ID@ = " + p_M_Product_ID);
 		//
-		MReportColumnSet to = new MReportColumnSet(getCtx(), to_ID, get_TrxName());
-		MReportColumnSet rcSet = new MReportColumnSet(getCtx(), m_PA_ReportColumnSet_ID, get_TrxName());
-		MReportColumn[] rcs = rcSet.getColumns();
-		for (int i = 0; i < rcs.length; i++)
-		{
-			MReportColumn rc = MReportColumn.copy (getCtx(), to.getAD_Client_ID(), to.getAD_Org_ID(), to_ID, rcs[i], get_TrxName());
-			rc.saveEx();
-		}
-		//	Oper 1/2 were set to Null !
-		StringBuilder msgreturn = new StringBuilder("@Copied@=").append(rcs.length);
-		return msgreturn.toString();
+		if (MCostDetail.processProduct(product, get_TrxName()))
+			return "@OK@";
+		return "@Error@";
 	}	//	doIt
-
-}	//	ReportColumnSet_Copy
+	
+}	//	CostCreate

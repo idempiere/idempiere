@@ -33,7 +33,7 @@ import org.compiere.util.DB;
  *  @author Jorg Janke
  *  @version $Id: BPGroupAcctCopy.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  */
-@org.adempiere.base.annotation.Process
+@org.adempiere.base.annotation.Process(name = "org.compiere.process.BPGroupAcctCopy")
 public class BPGroupAcctCopy extends SvrProcess
 {
 	/** BP Group					*/

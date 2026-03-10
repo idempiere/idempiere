@@ -16,34 +16,25 @@
  *****************************************************************************/
 package org.idempiere.acct.process;
 
+
 import java.math.BigDecimal;
 import java.util.logging.Level;
 
+import org.compiere.model.MJournalBatch;
 import org.compiere.model.MProcessPara;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
-import org.idempiere.acct.base.model.MReportColumn;
-import org.idempiere.acct.base.model.MReportColumnSet;
 
 /**
- *  Copy Column Set at the end of the Column Set
+ *  Copy GL Batch Journal/Lines
  *
- *  @author Jorg Janke
- *  @version $Id: ReportColumnSet_Copy.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
+ *	@author Jorg Janke
+ *	@version $Id: CopyFromJournal.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  */
-@org.adempiere.base.annotation.Process(name = "org.compiere.process.ReportColumnSet_Copy")
-public class ReportColumnSet_Copy extends SvrProcess
+@org.adempiere.base.annotation.Process(name = "org.compiere.process.CopyFromJournal")
+public class CopyFromJournal extends SvrProcess
 {
-	/**
-	 * 	Constructor
-	 */
-	public ReportColumnSet_Copy()
-	{
-		super();
-	}	//	ReportColumnSet_Copy
-
-	/**	Source Line Set					*/
-	private int		m_PA_ReportColumnSet_ID = 0;
+	private int		m_GL_JournalBatch_ID = 0;
 
 	/**
 	 *  Prepare - e.g., get Parameters.
@@ -56,8 +47,8 @@ public class ReportColumnSet_Copy extends SvrProcess
 			String name = para[i].getParameterName();
 			if (para[i].getParameter() == null)
 				;
-			else if (name.equals("PA_ReportColumnSet_ID"))
-				m_PA_ReportColumnSet_ID = ((BigDecimal)para[i].getParameter()).intValue();
+			else if (name.equals("GL_JournalBatch_ID"))
+				m_GL_JournalBatch_ID = ((BigDecimal)para[i].getParameter()).intValue();
 			else
 				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
@@ -65,27 +56,23 @@ public class ReportColumnSet_Copy extends SvrProcess
 
 	/**
 	 *  Perform process.
-	 *  @return Message
-	 *  @throws Exception
+	 *  @return Message (clear text)
+	 *  @throws Exception if not successful
 	 */
 	protected String doIt() throws Exception
 	{
-		int to_ID = super.getRecord_ID();
-		if (log.isLoggable(Level.INFO)) log.info("From PA_ReportColumnSet_ID=" + m_PA_ReportColumnSet_ID + ", To=" + to_ID);
-		if (to_ID < 1)
-			throw new Exception(MSG_SaveErrorRowNotFound);
+		int To_GL_JournalBatch_ID = getRecord_ID();
+		if (log.isLoggable(Level.INFO)) log.info("doIt - From GL_JournalBatch_ID=" + m_GL_JournalBatch_ID + " to " + To_GL_JournalBatch_ID);
+		if (To_GL_JournalBatch_ID == 0)
+			throw new IllegalArgumentException("Target GL_JournalBatch_ID == 0");
+		if (m_GL_JournalBatch_ID == 0)
+			throw new IllegalArgumentException("Source GL_JournalBatch_ID == 0");
+		MJournalBatch from = new MJournalBatch (getCtx(), m_GL_JournalBatch_ID, get_TrxName());
+		MJournalBatch to = new MJournalBatch (getCtx(), To_GL_JournalBatch_ID, get_TrxName());
 		//
-		MReportColumnSet to = new MReportColumnSet(getCtx(), to_ID, get_TrxName());
-		MReportColumnSet rcSet = new MReportColumnSet(getCtx(), m_PA_ReportColumnSet_ID, get_TrxName());
-		MReportColumn[] rcs = rcSet.getColumns();
-		for (int i = 0; i < rcs.length; i++)
-		{
-			MReportColumn rc = MReportColumn.copy (getCtx(), to.getAD_Client_ID(), to.getAD_Org_ID(), to_ID, rcs[i], get_TrxName());
-			rc.saveEx();
-		}
-		//	Oper 1/2 were set to Null !
-		StringBuilder msgreturn = new StringBuilder("@Copied@=").append(rcs.length);
-		return msgreturn.toString();
+		int no = to.copyDetailsFrom (from);
+		//
+		return "@Copied@=" + no;
 	}	//	doIt
 
-}	//	ReportColumnSet_Copy
+}

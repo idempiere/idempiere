@@ -111,6 +111,7 @@ import org.zkoss.zul.Space;
  *  @author Elaine Tan
  *  @author Low Heng Sin
  */
+@org.idempiere.ui.zk.annotation.Form(name = "org.adempiere.webui.acct.WAcctViewer")
 public class WAcctViewer extends ADForm implements EventListener<Event>
 {
     /**

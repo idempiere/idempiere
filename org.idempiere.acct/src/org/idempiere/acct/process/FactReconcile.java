@@ -37,7 +37,7 @@ import org.idempiere.acct.base.model.MFactReconciliation;
  *	Account reconciliation process
  *  @author Paul Bowden (phib)
  */
-@org.adempiere.base.annotation.Process
+@org.adempiere.base.annotation.Process(name = "org.compiere.process.FactReconcile")
 public class FactReconcile extends SvrProcess
 {
 	private MElementValue account;
