@@ -47,6 +47,7 @@ import org.adempiere.webui.panel.ValidateMFAPanel;
 import org.adempiere.webui.session.SessionContextListener;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.session.fingerprint.SessionFingerprintManager;
+import org.adempiere.webui.sso.filter.SSOWebUIFilter;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.UserPreference;
 import org.adempiere.webui.util.ZkSSOUtils;
@@ -167,7 +168,7 @@ public class LoginWindow extends Window implements EventListener<Event>
 			if(getDesktop().getSession().hasAttribute(SSOUtils.ISCHANGEROLE_REQUEST))
 				isShowRolePanel = isShowRolePanel || (boolean) getDesktop().getSession().getAttribute(SSOUtils.ISCHANGEROLE_REQUEST);
 			
-			String tenant = (String) getDesktop().getSession().getAttribute("tenant");
+			String tenant = (String) getDesktop().getSession().getAttribute(SSOWebUIFilter.TENANT_PREFIX_PARAMETER);
 			KeyNamePair[] clients = login.getClients(username, null, null, token, tenant);
 			if (clients != null)
 				loginOk(username, isShowRolePanel, clients, true);

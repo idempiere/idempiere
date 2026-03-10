@@ -46,6 +46,7 @@ import org.adempiere.webui.desktop.FavouriteController;
 import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.session.SessionContextListener;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.sso.filter.SSOWebUIFilter;
 import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.BrowserToken;
@@ -533,7 +534,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 				ssoLogoutURL = service.getLogoutURL();
 		}
 	    
-		String tenant = (String) desktop.getSession().getAttribute("tenant");
+		String tenant = (String) desktop.getSession().getAttribute(SSOWebUIFilter.TENANT_PREFIX_PARAMETER);
 	    final Session session = logout0();
 	    
     	//clear context, invalidate session
@@ -809,7 +810,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     		String attribute = attributes.nextElement();
     		
     		//need to keep zk and sso session attributes
-    		if (attribute.contains("zkoss.") || attribute.startsWith("sso.") || attribute.equals("tenant"))
+    		if (attribute.contains("zkoss.") || attribute.startsWith("sso.") || attribute.equals(SSOWebUIFilter.TENANT_PREFIX_PARAMETER))
     			continue;
     		
     		httpSession.removeAttribute(attribute);

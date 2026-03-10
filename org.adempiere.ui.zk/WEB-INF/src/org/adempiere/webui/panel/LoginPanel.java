@@ -48,6 +48,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.TokenEvent;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.sso.filter.SSOWebUIFilter;
 import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.BrowserToken;
@@ -409,7 +410,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 			var adminLogin = currSess.getAttribute(ISSOPrincipalService.SSO_ADMIN_LOGIN);
 			if (adminLogin != null && adminLogin instanceof Boolean && (Boolean) adminLogin)
 				isShowLoginPage = true;
-        	String tenant = (String) currSess.getAttribute("tenant");
+        	String tenant = (String) currSess.getAttribute(SSOWebUIFilter.TENANT_PREFIX_PARAMETER);
 			List<MSSOPrincipalConfig> configs = new ArrayList<>();
 			if (!Util.isEmpty(tenant, true))
 			{
@@ -732,7 +733,7 @@ public class LoginPanel extends Window implements EventListener<Event>
         Session currSess = Executions.getCurrent().getDesktop().getSession();
         
 		// get tenant login prefix from session which is set by filter
-        String tenant = (String) currSess.getAttribute("tenant");
+        String tenant = (String) currSess.getAttribute(SSOWebUIFilter.TENANT_PREFIX_PARAMETER);
         KeyNamePair clientsKNPairs[] = login.getClients(userId, userPassword, ROLE_TYPES_WEBUI, null, tenant);
         
         if (clientsKNPairs == null || clientsKNPairs.length == 0)

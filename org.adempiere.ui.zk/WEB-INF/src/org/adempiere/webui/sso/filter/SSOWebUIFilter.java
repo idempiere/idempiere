@@ -40,6 +40,7 @@ import org.compiere.util.Util;
  */
 public class SSOWebUIFilter implements Filter
 {
+	public static final String TENANT_PREFIX_PARAMETER = "tenant";
 	/** Logger */
 	protected static CLogger log = CLogger.getCLogger(SSOWebUIFilter.class);
 
@@ -69,14 +70,22 @@ public class SSOWebUIFilter implements Filter
 		HttpServletRequest httpRequest = null;
 		if (request instanceof HttpServletRequest hsr)
 		{
-			String tenant = hsr.getParameter("tenant");
-			if (tenant != null)
+			if (hsr.getRequestURI().endsWith("index.zul"))
 			{
-				tenant = tenant.trim();
-				if (tenant.isEmpty())
-					hsr.getSession().removeAttribute("tenant");
+				String tenant = hsr.getParameter(TENANT_PREFIX_PARAMETER);
+				if (tenant != null)
+				{
+					tenant = tenant.trim();
+					if (tenant.isEmpty())
+						hsr.getSession().removeAttribute(TENANT_PREFIX_PARAMETER);
+					else
+						hsr.getSession().setAttribute(TENANT_PREFIX_PARAMETER, tenant);
+				}
 				else
-					hsr.getSession().setAttribute("tenant", tenant);
+				{
+					if (hsr.getSession().getAttribute(TENANT_PREFIX_PARAMETER) != null)
+						hsr.getSession().removeAttribute(TENANT_PREFIX_PARAMETER);
+				}
 			}
 			httpRequest = hsr;
 
@@ -159,7 +168,7 @@ public class SSOWebUIFilter implements Filter
 				httpRequest.getSession().setAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider);
 			}
 
-			String tenant = (String) httpRequest.getSession().getAttribute("tenant");
+			String tenant = (String) httpRequest.getSession().getAttribute(TENANT_PREFIX_PARAMETER);
 			ISSOPrincipalService m_SSOPrincipal = null;
 			try
 			{
@@ -217,9 +226,9 @@ public class SSOWebUIFilter implements Filter
 							if (queryString != null && queryString instanceof String && !Util.isEmpty((String) queryString))
 								currentUri += "?" + (String) queryString;
 							httpRequest.getSession().removeAttribute(ISSOPrincipalService.SSO_QUERY_STRING);
-							if (request.getParameter("tenant") != null && (queryString == null || !queryString.toString().contains("tenant=")))
+							if (request.getParameter(TENANT_PREFIX_PARAMETER) != null && (queryString == null || !queryString.toString().contains(TENANT_PREFIX_PARAMETER+"=")))
 							{
-								currentUri += (currentUri.contains("?") ? "&" : "?") + "tenant=" + request.getParameter("tenant");
+								currentUri += (currentUri.contains("?") ? "&" : "?") + TENANT_PREFIX_PARAMETER + "=" + request.getParameter(TENANT_PREFIX_PARAMETER);
 							}
 							httpResponse.sendRedirect(currentUri);
 						}
