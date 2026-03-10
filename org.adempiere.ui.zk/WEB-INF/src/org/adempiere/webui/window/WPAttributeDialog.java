@@ -139,6 +139,7 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 		m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
 		m_M_AttributeSetInstance_ID = M_AttributeSetInstance_ID;
 		m_M_Product_ID = M_Product_ID;
+		Env.setContext(Env.getCtx(), m_WindowNo, "M_Product_ID", m_M_Product_ID);
 		m_C_BPartner_ID = C_BPartner_ID;
 		m_productWindow = productWindow;
 		m_AD_Column_ID = AD_Column_ID;
