@@ -93,7 +93,7 @@ public final class Prop implements Serializable {
 	public static final String	SOC_7				=	"Social7";
 	
 	/**Defaults*/
-	private static final String CREDITS				=	"Welcome to the iDempiere 13 Orion Page!";
+	private static final String CREDITS				=	"Welcome to the iDempiere 14 Development Build Page!";
 	private static String LOGO_URL 					= 	null;
 	
 	
@@ -157,7 +157,7 @@ public final class Prop implements Serializable {
 		if(s_prop.getProperty(CREDITS_TXT)==null||s_prop.getProperty(CREDITS_TXT).length()<=0)
 			s_prop.setProperty(CREDITS_TXT, CREDITS);
 		if(s_prop.getProperty(HOMEPAGE)==null||s_prop.getProperty(HOMEPAGE).length()<=0)
-			s_prop.setProperty(HOMEPAGE, "idempiere-13.jsp");
+			s_prop.setProperty(HOMEPAGE, "idempiere-12.jsp");
 		//LINKS
 		if(s_prop.getProperty(FELIX_LINK)==null||s_prop.getProperty(FELIX_LINK).length()<=0)
 			s_prop.setProperty(FELIX_LINK, DEF_FELIX_LINK);
