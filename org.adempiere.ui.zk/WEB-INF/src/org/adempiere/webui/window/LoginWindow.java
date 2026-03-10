@@ -26,6 +26,7 @@ package org.adempiere.webui.window;
 import java.sql.Timestamp;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
@@ -213,40 +214,46 @@ public class LoginWindow extends Window implements EventListener<Event>
 	/**
 	 * After verification of user name and password.
 	 * @param userName
-	 * @param show
+	 * @param showRolePanel
 	 * @param clientsKNPairs
 	 * @param isSSOLogin
 	 */
-    public void loginOk(String userName, boolean show, KeyNamePair[] clientsKNPairs, boolean isSSOLogin)
+    public void loginOk(String userName, boolean showRolePanel, KeyNamePair[] clientsKNPairs, boolean isSSOLogin)
 	{
 		boolean isClientDefined = (clientsKNPairs.length == 1 || !Util.isEmpty(Env.getContext(ctx, Env.AD_USER_ID)));
 		if (pnlRole == null)
-			pnlRole = new RolePanel(ctx, this, userName, show, clientsKNPairs, isClientDefined);
+			pnlRole = new RolePanel(ctx, this, userName, showRolePanel, clientsKNPairs, isClientDefined);
+		AtomicBoolean isChangeRoleRequest = new AtomicBoolean(false);
+		if(getDesktop().getSession().hasAttribute(SSOUtils.ISCHANGEROLE_REQUEST))
+			isChangeRoleRequest.set((boolean) getDesktop().getSession().getAttribute(SSOUtils.ISCHANGEROLE_REQUEST));
 		if (isSSOLogin)
 		{
-			Executions.schedule(getDesktop(), e -> validateMFPanel(userName, show, clientsKNPairs, isClientDefined), new Event(SSOUtils.EVENT_ON_AFTER_SSOLOGIN));
+			Executions.schedule(getDesktop(), e -> validateMFPanel(userName, showRolePanel, clientsKNPairs, isClientDefined, isChangeRoleRequest.get()), new Event(SSOUtils.EVENT_ON_AFTER_SSOLOGIN));
 		}
 		else
 		{
-			validateMFPanel(userName, show, clientsKNPairs, isClientDefined);
+			validateMFPanel(userName, showRolePanel, clientsKNPairs, isClientDefined, isChangeRoleRequest.get());
 		}
 	}
 
     /**
      * Move to role selection step or multi factor authentication step.
      * @param userName
-     * @param show
+     * @param showRolePanel
      * @param clientsKNPairs
      * @param isClientDefined
+     * @param isChangeRoleRequest
      */
-	private void validateMFPanel(String userName, boolean show, KeyNamePair[] clientsKNPairs, boolean isClientDefined)
-	{
-		if (isClientDefined) {
-    		createValidateMFAPanel(null, isClientDefined, userName, show, clientsKNPairs);
+	private void validateMFPanel(String userName, boolean showRolePanel, KeyNamePair[] clientsKNPairs, boolean isClientDefined, boolean isChangeRoleRequest)
+	{		
+		if (isChangeRoleRequest) {
+			showRolePanel(userName, true, clientsKNPairs, isClientDefined, false);
+		} else if (isClientDefined) {
+    		createValidateMFAPanel(null, isClientDefined, userName, showRolePanel, clientsKNPairs);
     	} else {
-            showRolePanel(userName, show, clientsKNPairs, isClientDefined, false);
+            showRolePanel(userName, showRolePanel, clientsKNPairs, isClientDefined, false);
 			if (!pnlRole.show())
-            	createValidateMFAPanel(null, isClientDefined, userName, show, clientsKNPairs);
+            	createValidateMFAPanel(null, isClientDefined, userName, showRolePanel, clientsKNPairs);
     	}
 	}
 
@@ -327,12 +334,12 @@ public class LoginWindow extends Window implements EventListener<Event>
 	 * @param orgKNPair
 	 * @param isClientDefined
 	 * @param userName
-	 * @param show
+	 * @param showRolePanel
 	 * @param clientsKNPairs
 	 */
-	public void validateMFA(KeyNamePair orgKNPair, boolean isClientDefined, String userName, boolean show, KeyNamePair[] clientsKNPairs) {
+	public void validateMFA(KeyNamePair orgKNPair, boolean isClientDefined, String userName, boolean showRolePanel, KeyNamePair[] clientsKNPairs) {
     	Clients.clearBusy();
-		createValidateMFAPanel(orgKNPair, isClientDefined, userName, show, clientsKNPairs);
+		createValidateMFAPanel(orgKNPair, isClientDefined, userName, showRolePanel, clientsKNPairs);
 	}
 
 	/**
@@ -340,12 +347,12 @@ public class LoginWindow extends Window implements EventListener<Event>
 	 * @param orgKNPair
 	 * @param isClientDefined
 	 * @param userName
-	 * @param show
+	 * @param showRolePanel
 	 * @param clientsKNPairs
 	 */
-	private void createValidateMFAPanel(KeyNamePair orgKNPair, boolean isClientDefined, String userName, boolean show, KeyNamePair[] clientsKNPairs) {
+	private void createValidateMFAPanel(KeyNamePair orgKNPair, boolean isClientDefined, String userName, boolean showRolePanel, KeyNamePair[] clientsKNPairs) {
 		if (pnlValidateMFA == null)
-			pnlValidateMFA = new ValidateMFAPanel(ctx, this, orgKNPair, isClientDefined, userName, show, clientsKNPairs);
+			pnlValidateMFA = new ValidateMFAPanel(ctx, this, orgKNPair, isClientDefined, userName, showRolePanel, clientsKNPairs);
 		if (pnlValidateMFA.show()) {
 	        this.getChildren().clear();
 	        this.appendChild(pnlValidateMFA);
@@ -486,7 +493,8 @@ public class LoginWindow extends Window implements EventListener<Event>
 			loginName = user.getEMail();
 		else
 			loginName = user.getLDAPUser() != null ? user.getLDAPUser() : user.getName();
-    	loginOk(loginName, true, login.getClients());
+		boolean isSSOLogin = "Y".equals(Env.getContext(Env.getCtx(), Env.IS_SSO_LOGIN));
+    	loginOk(loginName, true, login.getClients(), isSSOLogin);
     	getDesktop().getSession().setAttribute(AdempiereWebUI.CHECK_AD_USER_ID_ATTR, Env.getAD_User_ID(ctx));
     	pnlRole.setChangeRole(true);
     	pnlRole.changeRole(ctx);

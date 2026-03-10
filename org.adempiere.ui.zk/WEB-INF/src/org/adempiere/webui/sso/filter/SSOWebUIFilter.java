@@ -205,7 +205,7 @@ public class SSOWebUIFilter implements Filter
 				{
 					if (m_SSOPrincipal.hasAuthenticationCode(httpRequest, httpResponse))
 					{
-						// Use authentication code get get token
+						// Use authentication code to get token
 						String currentUri = httpRequest.getRequestURL().toString();
 						m_SSOPrincipal.getAuthenticationToken(httpRequest, httpResponse, SSOUtils.SSO_MODE_WEBUI);
 
@@ -217,6 +217,10 @@ public class SSOWebUIFilter implements Filter
 							if (queryString != null && queryString instanceof String && !Util.isEmpty((String) queryString))
 								currentUri += "?" + (String) queryString;
 							httpRequest.getSession().removeAttribute(ISSOPrincipalService.SSO_QUERY_STRING);
+							if (request.getParameter("tenant") != null && (queryString == null || !queryString.toString().contains("tenant=")))
+							{
+								currentUri += (currentUri.contains("?") ? "&" : "?") + "tenant=" + request.getParameter("tenant");
+							}
 							httpResponse.sendRedirect(currentUri);
 						}
 					}

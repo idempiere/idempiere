@@ -403,7 +403,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		//init favorite
 		FavouriteController.getInstance(currSess);
 		
-		processParameters();	
+		processParameters();			
     }
 
     /**
@@ -762,6 +762,10 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		Env.setContext(properties, Env.CLIENT_INFO_MOBILE, clientInfo.tablet);
 		Env.setContext(properties, Env.CLIENT_INFO_TIME_ZONE, clientInfo.timeZone.getID());
 		Env.setContext(properties, Env.MFA_Registration_ID, Env.getContext(Env.getCtx(), Env.MFA_Registration_ID));
+		boolean isSSOLogin = "Y".equals(Env.getContext(Env.getCtx(), Env.IS_SSO_LOGIN));
+		if (isSSOLogin) {
+			Env.setContext(properties, Env.IS_SSO_LOGIN, "Y");
+		}
 		
 		Desktop desktop = Executions.getCurrent().getDesktop();
 		Locale locale = (Locale) desktop.getSession().getAttribute(Attributes.PREFERRED_LOCALE);
@@ -804,8 +808,8 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     	while(attributes.hasMoreElements()) {
     		String attribute = attributes.nextElement();
     		
-    		//need to keep zk's session attributes
-    		if (attribute.contains("zkoss.") || attribute.startsWith("sso."))
+    		//need to keep zk and sso session attributes
+    		if (attribute.contains("zkoss.") || attribute.startsWith("sso.") || attribute.equals("tenant"))
     			continue;
     		
     		httpSession.removeAttribute(attribute);
@@ -817,8 +821,6 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		
     	//show change role window and set new context for env and session
 		onChangeRole(locale, properties);
-		
-		Executions.schedule(desktop, e -> DesktopWatchDog.removeOtherDesktopsInSession(desktop), new Event("onRemoveOtherDesktops"));
 	}
 	
 	@Override
