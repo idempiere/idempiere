@@ -137,7 +137,9 @@ public class DesktopWatchDog {
 	/**
 	 * Remove other desktops that share the same session with the pass in desktop parameter
 	 * @param desktop
+	 * @deprecated not safe
 	 */
+	@Deprecated(since = "13", forRemoval = true)
 	public static void removeOtherDesktopsInSession(Desktop desktop) {
 		Iterator<DesktopEntry> iterator = INSTANCE.desktops.iterator();
 		while (iterator.hasNext()) {

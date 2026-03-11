@@ -16,9 +16,11 @@ import java.sql.ResultSet;
 import java.util.Base64;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.CCache;
+import org.compiere.util.CLogger;
 import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
@@ -108,10 +110,15 @@ public class MSSOPrincipalConfig extends X_SSO_PrincipalConfig
 		if (cachedConfig != null)
 			return cachedConfig;
 
-		cachedConfig = new Query(Env.getCtx(), Table_Name, COLUMNNAME_SSO_PrincipalConfig_UU + " = ?", null)
-								.setOnlyActiveRecords(true)
-								.setParameters(uuID)
-								.firstOnly();
+		try {
+			cachedConfig = new Query(Env.getCtx(), Table_Name, COLUMNNAME_SSO_PrincipalConfig_UU + " = ?", null)
+									.setOnlyActiveRecords(true)
+									.setParameters(uuID)
+									.firstOnly();
+		} catch (Exception e) {
+			CLogger.getCLogger(MSSOPrincipalConfig.class).log(Level.WARNING, e.getLocalizedMessage(), e);
+			return null;
+		}
 
 		if (cachedConfig != null)
 			s_SSOPrincipalConfigCache.put(uuID, cachedConfig);
