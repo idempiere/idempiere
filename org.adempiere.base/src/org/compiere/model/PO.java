@@ -2857,10 +2857,30 @@ public abstract class PO
 		//	OK
 		if (success)
 		{
-			//post osgi event
-			String topic = newRecord ? IEventTopics.PO_POST_CREATE : IEventTopics.PO_POST_UPADTE;
-			Event event = EventManager.newEvent(topic, this, true);
-			EventManager.getInstance().postEvent(event);
+			Trx trx = Util.isEmpty(get_TrxName()) ? null : Trx.get(get_TrxName(), false);
+			if (trx == null || !trx.isActive())
+			{
+				firePostSaveEvent(newRecord);
+			}
+			else
+			{
+				trx.addTrxEventListener(new TrxEventListener() {
+					@Override
+					public void afterRollback(Trx trx, boolean success) {
+						trx.removeTrxEventListener(this);
+					}
+					@Override
+					public void afterCommit(Trx trx, boolean success) {
+						if (success) {
+							firePostSaveEvent(newRecord);
+						}
+						trx.removeTrxEventListener(this);
+					}
+					@Override
+					public void afterClose(Trx trx) {
+					}
+				});
+			}
 
 			if (s_docWFMgr == null)
 			{
@@ -2937,6 +2957,18 @@ public abstract class PO
 		
 		return success;
 	}	//	saveFinish
+
+	/**
+	 * Fire post save event to notify interested parties that a PO has been saved.<br/>
+	 * This method is called after the transaction has been committed successfully.
+	 * @param newRecord
+	 */
+	private void firePostSaveEvent(boolean newRecord) {
+		//post osgi event
+		String topic = newRecord ? IEventTopics.PO_POST_CREATE : IEventTopics.PO_POST_UPADTE;
+		Event event = EventManager.newEvent(topic, this, true);
+		EventManager.getInstance().postEvent(event);
+	}
 
 	/**
 	 * Get the MTable object associated to this PO
@@ -4524,13 +4556,37 @@ public abstract class PO
 			//	Reset
 			if (success)
 			{
-				if (!postDelete()) {
-					log.warning("postDelete failed");
+				if (localTrx != null) 
+				{
+					firePostDeleteEvent();
 				}
-
-				//osgi event handler
-				Event event = EventManager.newEvent(IEventTopics.PO_POST_DELETE, this, true);
-				EventManager.getInstance().postEvent(event);
+				else
+				{
+					Trx trxdel = Trx.get(get_TrxName(), false);
+					if (trxdel != null)
+					{
+						trxdel.addTrxEventListener(new TrxEventListener() {
+							@Override
+							public void afterRollback(Trx trxdel, boolean success) {
+								trxdel.removeTrxEventListener(this);
+							}
+							@Override
+							public void afterCommit(Trx trxdel, boolean success) {
+								if (success) {
+									firePostDeleteEvent();
+								}
+								trxdel.removeTrxEventListener(this);
+							}
+							@Override
+							public void afterClose(Trx trxdel) {
+							}
+						});
+					}
+					else
+					{
+						firePostDeleteEvent();
+					}
+				}
 	
 				m_idOld = 0;
 				int size = p_info.getColumnCount();
@@ -4561,6 +4617,20 @@ public abstract class PO
 		}
 		return success;
 	}	//	delete
+
+	/**
+	 * Fire post delete event to notify interested parties that a record has been deleted.<br
+	 * This method is called after the transaction has been committed successfully.
+	 */
+	private void firePostDeleteEvent() {
+		if (!postDelete()) {
+			log.warning("postDelete failed");
+		}
+
+		//osgi event handler
+		Event event = EventManager.newEvent(IEventTopics.PO_POST_DELETE, this, true);
+		EventManager.getInstance().postEvent(event);
+	}
 
 	/**
 	 * Delete Current Record
