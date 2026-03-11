@@ -20,50 +20,27 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  * Contributors:                                                       *
- * - hengsin                         								   *
+ * - Diego Ruiz - TrekGlobal           								   *
  **********************************************************************/
-package org.adempiere.base;
+package org.idempiere.acct;
 
-import java.sql.ResultSet;
-import java.util.function.Function;
-
-import org.compiere.model.MAcctSchema;
-import org.idempiere.acct.IDoc;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
 
 /**
- * Factory interface for mapping between tableName+gaap to {@link IDoc} implementation.
- * @author hengsin
- *
+ * OSGi DS component that wires posting services into AcctModelServices.
  */
-public interface IMappedDocumentFactory {
+@Component(immediate = true)
+public class DocPostingServiceActivator {
 
-	/**
-	 * add table name + gaap (optional) to Doc mapping
-	 * @param gaap map to c_acctschema.gaap (optional)
-	 * @param tableName
-	 * @param supplier
-	 */
-	public void addMapping(String gaap, String tableName, Function<Parameter, ? extends IDoc> supplier);
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL)
+    public void setDocPostingService(IDocPostingService service) {
+        AcctModelServices.setDocPostingService(service);
+    }
 
-	/**
-	 * Remove mapping
-	 * @param gaap
-	 * @param tableName
-	 */
-	public void removeMapping(String gaap, String tableName);
+    public void unsetDocPostingService(IDocPostingService service) {
+        AcctModelServices.unsetDocPostingService(service);
+    }
 
-	/**
-	 * Parameter class for doc supplier
-	 */
-	public final static class Parameter {
-		public MAcctSchema as;
-		public ResultSet rs;
-		public String trxName;
-		
-		public Parameter(MAcctSchema as, ResultSet rs, String trxName) {
-			this.as = as;
-			this.rs = rs;
-			this.trxName = trxName;
-		}				
-	}
 }

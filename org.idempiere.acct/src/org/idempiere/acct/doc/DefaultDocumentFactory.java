@@ -11,18 +11,20 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,    *
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.                     *
  *****************************************************************************/
-package org.adempiere.base;
+package org.idempiere.acct.doc;
 
 import java.lang.reflect.Constructor;
 import java.sql.ResultSet;
 import java.util.logging.Level;
 
+import org.adempiere.base.IDocFactory;
 import org.compiere.acct.Doc;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MTable;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * Default {@link IDocFactory} implementation from core.<br/>
@@ -30,6 +32,7 @@ import org.compiere.util.Env;
  * @author hengsin
  *
  */
+@Component(immediate = true, service = IDocFactory.class, property = "gaap=*")
 public class DefaultDocumentFactory implements IDocFactory {
 
 	private final static CLogger s_log = CLogger.getCLogger(DefaultDocumentFactory.class);

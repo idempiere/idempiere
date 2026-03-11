@@ -162,7 +162,7 @@ public class DocManager {
 			IDocFactory service = cache.getService();
 			if (service != null)
 			{
-				Doc doc = service.getDocument(as, AD_Table_ID, Record_ID, trxName);
+				Doc doc = (Doc) service.getDocument(as, AD_Table_ID, Record_ID, trxName);
 				if (doc != null)
 					return doc;
 			}
@@ -179,7 +179,7 @@ public class DocManager {
 				IDocFactory service = factory.getService();
 				if (service != null)
 				{
-					Doc doc = service.getDocument(as, AD_Table_ID, Record_ID, trxName);
+					Doc doc = (Doc) service.getDocument(as, AD_Table_ID, Record_ID, trxName);
 					if (doc != null)
 					{
 						s_DocFactoryCache.put(cacheKey, factory);
@@ -199,7 +199,7 @@ public class DocManager {
 				IDocFactory service = factory.getService();
 				if (service != null)
 				{
-					Doc doc = service.getDocument(as, AD_Table_ID, Record_ID, trxName);
+					Doc doc = (Doc) service.getDocument(as, AD_Table_ID, Record_ID, trxName);
 					if (doc != null)
 					{
 						s_DocFactoryCache.put(cacheKey, factory);
@@ -230,7 +230,7 @@ public class DocManager {
 			IDocFactory service = cache.getService();
 			if (service != null)
 			{
-				Doc doc = service.getDocument(as, AD_Table_ID, rs, trxName);
+				Doc doc = (Doc) service.getDocument(as, AD_Table_ID, rs, trxName);
 				if (doc != null)
 					return doc;
 			}
@@ -247,7 +247,7 @@ public class DocManager {
 				IDocFactory service = factory.getService();
 				if (service != null)
 				{
-					Doc doc = service.getDocument(as, AD_Table_ID, rs, trxName);
+					Doc doc = (Doc) service.getDocument(as, AD_Table_ID, rs, trxName);
 					if (doc != null)
 					{
 						s_DocFactoryCache.put(cacheKey, factory);
@@ -267,7 +267,7 @@ public class DocManager {
 				IDocFactory service = factory.getService();
 				if (service != null)
 				{
-					Doc doc = service.getDocument(as, AD_Table_ID, rs, trxName);
+					Doc doc = (Doc) service.getDocument(as, AD_Table_ID, rs, trxName);
 					if (doc != null)
 					{
 						s_DocFactoryCache.put(cacheKey, factory);

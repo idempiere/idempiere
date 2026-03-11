@@ -31,6 +31,7 @@ import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.Extensions;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
+import org.compiere.acct.Doc;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.Column;
@@ -1374,8 +1375,8 @@ public class WAcctViewer extends ADForm implements EventListener<Event>
 					{
 						//setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 						boolean force = forcePost.isChecked();
-						String error = AEnv.postImmediate (m_data.WindowNo, m_data.AD_Client_ID,
-							m_data.AD_Table_ID, m_data.Record_ID, force);
+						String error = Doc.manualPosting(m_data.WindowNo, m_data.AD_Client_ID,
+								m_data.AD_Table_ID, m_data.Record_ID, force);
 						//setCursor(Cursor.getDefaultCursor());
 						if (error != null)
 							Dialog.error(0, "PostingError-N", error);

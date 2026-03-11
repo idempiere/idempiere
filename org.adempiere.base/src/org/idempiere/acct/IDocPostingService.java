@@ -19,51 +19,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
- * Contributors:                                                       *
- * - hengsin                         								   *
  **********************************************************************/
-package org.adempiere.base;
-
-import java.sql.ResultSet;
-import java.util.function.Function;
+package org.idempiere.acct;
 
 import org.compiere.model.MAcctSchema;
-import org.idempiere.acct.IDoc;
 
-/**
- * Factory interface for mapping between tableName+gaap to {@link IDoc} implementation.
- * @author hengsin
- *
- */
-public interface IMappedDocumentFactory {
+public interface IDocPostingService {
 
-	/**
-	 * add table name + gaap (optional) to Doc mapping
-	 * @param gaap map to c_acctschema.gaap (optional)
-	 * @param tableName
-	 * @param supplier
-	 */
-	public void addMapping(String gaap, String tableName, Function<Parameter, ? extends IDoc> supplier);
+	String postImmediate(MAcctSchema[] ass, int AD_Table_ID, 
+			int Record_ID, boolean force, String trxName);
 
-	/**
-	 * Remove mapping
-	 * @param gaap
-	 * @param tableName
-	 */
-	public void removeMapping(String gaap, String tableName);
+	String manualPosting(int WindowNo, int AD_Client_ID, 
+			int AD_Table_ID, int Record_ID, boolean force);
 
-	/**
-	 * Parameter class for doc supplier
-	 */
-	public final static class Parameter {
-		public MAcctSchema as;
-		public ResultSet rs;
-		public String trxName;
-		
-		public Parameter(MAcctSchema as, ResultSet rs, String trxName) {
-			this.as = as;
-			this.rs = rs;
-			this.trxName = trxName;
-		}				
-	}
 }

@@ -48,6 +48,7 @@ import org.compiere.model.MMatchPO;
 import org.compiere.model.MNote;
 import org.compiere.model.MPeriod;
 import org.compiere.model.MRefList;
+import org.compiere.model.FactsValidationEngine;
 import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.ModelValidator;
 import org.compiere.model.PO;
@@ -60,6 +61,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
+import org.idempiere.acct.IDoc;
 
 /**
  *  Abstract base class for posting of accounting document.
@@ -120,92 +122,8 @@ import org.compiere.util.Util;
  *				@see https://sourceforge.net/p/adempiere/feature-requests/631/
  *  @version  $Id: Doc.java,v 1.6 2006/07/30 00:53:33 jjanke Exp $
  */
-public abstract class Doc
+public abstract class Doc implements IDoc
 {
-	/**************************************************************************
-	 * 	 Document Types
-	 *  --------------
-	 *  C_DocType.DocBaseType and AD_Reference_ID=183
-	 *  C_Invoice:          ARI, ARC, ARF, API, APC
-	 *  C_Payment:          ARP, APP
-	 *  C_Order:            SOO, POO
-	 *  M_Transaction:      MMI, MMM, MMS, MMR
-	 *  C_BankStatement:    CMB
-	 *  C_Cash:             CMC
-	 *  C_Allocation:       CMA
-	 *  GL_Journal:         GLJ
-	 *  C_ProjectIssue		PJI
-	 *  M_Requisition		POR
-	 **************************************************************************/
-
-	public static final String DOC_TYPE_BY_DOC_BASE_TYPE_SQL = "SELECT C_DocType_ID FROM C_DocType WHERE AD_Client_ID=? AND DocBaseType=? AND IsActive='Y' ORDER BY IsDefault DESC, C_DocType_ID";
-	
-	/**	AR Invoices - ARI       */
-	public static final String 	DOCTYPE_ARInvoice       = MDocType.DOCBASETYPE_ARInvoice;
-	/**	AR Credit Memo          */
-	public static final String 	DOCTYPE_ARCredit        = "ARC";
-	/**	AR Receipt              */
-	public static final String 	DOCTYPE_ARReceipt       = "ARR";
-	/**	AR ProForma             */
-	public static final String 	DOCTYPE_ARProForma      = "ARF";
-	/**	AP Invoices             */
-	public static final String 	DOCTYPE_APInvoice       = "API";
-	/**	AP Credit Memo          */
-	public static final String 	DOCTYPE_APCredit        = "APC";
-	/**	AP Payment              */
-	public static final String 	DOCTYPE_APPayment       = "APP";
-	/**	CashManagement Bank Statement   */
-	public static final String 	DOCTYPE_BankStatement   = "CMB";
-	/**	CashManagement Cash Journals    */
-	public static final String 	DOCTYPE_CashJournal     = "CMC";
-	/**	CashManagement Allocations      */
-	public static final String 	DOCTYPE_Allocation      = "CMA";
-	/** Material Shipment       */
-	public static final String 	DOCTYPE_MatShipment     = "MMS";
-	/** Material Receipt        */
-	public static final String 	DOCTYPE_MatReceipt      = "MMR";
-	/** Material Inventory      */
-	public static final String 	DOCTYPE_MatInventory    = "MMI";
-	/** Material Movement       */
-	public static final String 	DOCTYPE_MatMovement     = "MMM";
-	/** Material Production     */
-	public static final String 	DOCTYPE_MatProduction   = "MMP";
-	/** Match Invoice           */
-	public static final String 	DOCTYPE_MatMatchInv     = "MXI";
-	/** Match PO                */
-	public static final String 	DOCTYPE_MatMatchPO      = "MXP";
-	/** GL Journal              */
-	public static final String 	DOCTYPE_GLJournal       = "GLJ";
-	/** Purchase Order          */
-	public static final String 	DOCTYPE_POrder          = "POO";
-	/** Sales Order             */
-	public static final String 	DOCTYPE_SOrder          = "SOO";
-	/** Project Issue           */
-	public static final String	DOCTYPE_ProjectIssue	= "PJI";
-	/** Purchase Requisition    */
-	public static final String	DOCTYPE_PurchaseRequisition	= "POR";
-
-
-	//  Posting Status - AD_Reference_ID=234     //
-	/**	Document Status         */
-	public static final String 	STATUS_NotPosted        = "N";
-	/**	Document Status         */
-	public static final String 	STATUS_NotBalanced      = "b";
-	/**	Document Status         */
-	public static final String 	STATUS_NotConvertible   = "c";
-	/**	Document Status         */
-	public static final String 	STATUS_PeriodClosed     = "p";
-	/**	Document Status         */
-	public static final String 	STATUS_InvalidAccount   = "i";
-	/**	Document Status         */
-	public static final String 	STATUS_PostPrepared     = "y";
-	/**	Document Status         */
-	public static final String 	STATUS_Posted           = "Y";
-	/**	Document Status         */
-	public static final String 	STATUS_Error            = "E";
-	/** Document Status			*/
-	public static final String	STATUS_Deferred			= "d";
-
 
 	/**
 	 *  Create Posting document
@@ -824,8 +742,8 @@ public abstract class Doc
 		if (facts == null)
 			return STATUS_Error;
 
-		// call modelValidator
-		String validatorMsg = ModelValidationEngine.get().fireFactsValidate(m_as, facts, getPO());
+		// call factsValidator
+		String validatorMsg = FactsValidationEngine.get().fireFactsValidate(m_as, facts, getPO());
 		if (validatorMsg != null) {
 			p_Error = validatorMsg;
 			return STATUS_Error;
@@ -1310,8 +1228,10 @@ public abstract class Doc
 	/**	Account Type - Invoice - AP  */
 	public static final int 	ACCTTYPE_V_Liability    = 2;
 	/**	Account Type - Invoice - AP Service  */
+	@Deprecated(since="14", forRemoval=true)
 	public static final int 	ACCTTYPE_V_Liability_Services    = 3; // Deprecated IDEMPIERE-362
 	/**	Account Type - Invoice - AR Service  */
+	@Deprecated(since="14", forRemoval=true)
 	public static final int 	ACCTTYPE_C_Receivable_Services   = 4; // Deprecated IDEMPIERE-362
 
 	/** Account Type - Payment - Unallocated */

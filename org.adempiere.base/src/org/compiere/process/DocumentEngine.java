@@ -32,7 +32,6 @@ import org.adempiere.base.event.EventManager;
 import org.adempiere.base.event.EventProperty;
 import org.adempiere.base.event.IEventTopics;
 import org.adempiere.exceptions.AdempiereException;
-import org.compiere.acct.Doc;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAllocationHdr;
 import org.compiere.model.MBankStatement;
@@ -40,6 +39,8 @@ import org.compiere.model.MBankTransfer;
 import org.compiere.model.MCash;
 import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
+import org.compiere.model.MDepositBatch;
+import org.compiere.model.MDocType;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInventory;
 import org.compiere.model.MInvoice;
@@ -63,9 +64,8 @@ import org.eevolution.model.I_DD_Order;
 import org.eevolution.model.I_HR_Process;
 import org.eevolution.model.I_PP_Cost_Collector;
 import org.eevolution.model.I_PP_Order;
+import org.idempiere.acct.AcctModelServices;
 import org.osgi.service.event.Event;
-import org.compiere.model.MDepositBatch;
-import org.compiere.model.MDocType;
 
 /**
  *	Document Action Engine
@@ -1442,8 +1442,11 @@ public class DocumentEngine implements DocAction
 
 		String error = null;
 		if (log.isLoggable(Level.INFO)) log.info ("Table=" + AD_Table_ID + ", Record=" + Record_ID);
-		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(ctx, AD_Client_ID);
-		error = Doc.postImmediate(ass, AD_Table_ID, Record_ID, force, trxName);
+		if (AcctModelServices.isAccountingAvailable()) {
+			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(ctx, AD_Client_ID);
+			error = AcctModelServices.getDocPostingService()
+					.postImmediate(ass, AD_Table_ID, Record_ID, force, trxName);
+		}
 		return error;
 	}	//	postImmediate
 

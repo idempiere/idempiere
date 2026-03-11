@@ -20,50 +20,23 @@
  * MA 02110-1301, USA.                                                 *
  *                                                                     *
  * Contributors:                                                       *
- * - hengsin                         								   *
+ * - Diego Ruiz - TrekGlobal           								   *
  **********************************************************************/
-package org.adempiere.base;
+package org.idempiere.acct;
 
-import java.sql.ResultSet;
-import java.util.function.Function;
-
+import org.compiere.acct.Doc;
 import org.compiere.model.MAcctSchema;
-import org.idempiere.acct.IDoc;
 
-/**
- * Factory interface for mapping between tableName+gaap to {@link IDoc} implementation.
- * @author hengsin
- *
- */
-public interface IMappedDocumentFactory {
+public class DocPostingService implements IDocPostingService {
 
-	/**
-	 * add table name + gaap (optional) to Doc mapping
-	 * @param gaap map to c_acctschema.gaap (optional)
-	 * @param tableName
-	 * @param supplier
-	 */
-	public void addMapping(String gaap, String tableName, Function<Parameter, ? extends IDoc> supplier);
-
-	/**
-	 * Remove mapping
-	 * @param gaap
-	 * @param tableName
-	 */
-	public void removeMapping(String gaap, String tableName);
-
-	/**
-	 * Parameter class for doc supplier
-	 */
-	public final static class Parameter {
-		public MAcctSchema as;
-		public ResultSet rs;
-		public String trxName;
-		
-		public Parameter(MAcctSchema as, ResultSet rs, String trxName) {
-			this.as = as;
-			this.rs = rs;
-			this.trxName = trxName;
-		}				
+	@Override
+	public String postImmediate(MAcctSchema[] ass, int AD_Table_ID, int Record_ID, boolean force, String trxName) {
+		return Doc.postImmediate(ass, AD_Table_ID, Record_ID, force, trxName);
 	}
+
+	@Override
+	public String manualPosting(int WindowNo, int AD_Client_ID, int AD_Table_ID, int Record_ID, boolean force) {
+		return Doc.manualPosting(WindowNo, AD_Client_ID, AD_Table_ID, Record_ID, force);
+	}
+
 }

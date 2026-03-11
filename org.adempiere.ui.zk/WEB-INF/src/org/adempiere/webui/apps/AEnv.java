@@ -48,7 +48,6 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.IServerPushCallback;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.adempiere.webui.window.Dialog;
-import org.compiere.acct.Doc;
 import org.compiere.model.GridWindowVO;
 import org.compiere.model.I_AD_Window;
 import org.compiere.model.Lookup;
@@ -72,6 +71,8 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.compiere.util.Util;
+import org.idempiere.acct.AcctModelServices;
+import org.idempiere.acct.IDocPostingService;
 import org.zkoss.web.servlet.Servlets;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
@@ -356,15 +357,29 @@ public final class AEnv
 	}   //  getWindow
 
 	/**
-	 *  Post Immediate.<br/>
-	 *  Call {@link Doc#manualPosting(int, int, int, int, boolean)}.
-	 *  @param  WindowNo 		window
-	 *  @param  AD_Table_ID     Table ID of Document
-	 *  @param  AD_Client_ID    Client ID of Document
-	 *  @param  Record_ID       Record ID of Document
-	 *  @param  force           force posting. if false, only post if (Processing='N' OR Processing IS NULL)
-	 *  @return null if success, otherwise error
+	 * Post a document immediately.
+	 * <p>
+	 * This method is <b>deprecated</b>. Call
+	 * {@link AcctModelServices#getDocPostingService()} and then
+	 * {@link IDocPostingService#manualPosting(int, int, int, int, boolean)} directly instead:
+	 * <pre>
+	 * if (AcctModelServices.isAccountingAvailable()) {
+	 *     String error = AcctModelServices.getDocPostingService()
+	 *             .manualPosting(WindowNo, AD_Client_ID, AD_Table_ID, Record_ID, force);
+	 * }
+	 * </pre>
+	 *
+	 * @param  WindowNo      window number
+	 * @param  AD_Client_ID  Client ID of the document
+	 * @param  AD_Table_ID   Table ID of the document
+	 * @param  Record_ID     Record ID of the document
+	 * @param  force         force posting; if {@code false}, only posts when
+	 *                       {@code Processing='N'} or {@code Processing IS NULL}
+	 * @return {@code null} if posting succeeded, otherwise an error message
+	 * @deprecated since 14, use {@link AcctModelServices#getDocPostingService()}
+	 *             and {@link IDocPostingService#manualPosting(int, int, int, int, boolean)} directly
 	 */
+	@Deprecated (since="14", forRemoval=true)
 	public static String postImmediate (int WindowNo, int AD_Client_ID,
 		int AD_Table_ID, int Record_ID, boolean force)
 	{
@@ -372,8 +387,16 @@ public final class AEnv
 		log.info("Window=" + WindowNo
 			+ ", AD_Table_ID=" + AD_Table_ID + "/" + Record_ID
 			+ ", Force=" + force);
+		
+		if (AcctModelServices.isAccountingAvailable()) {
+			return AcctModelServices.getDocPostingService()
+					.manualPosting(WindowNo, AD_Client_ID, AD_Table_ID, Record_ID, force);
+		}
+		
+	    if (log.isLoggable(Level.FINE))
+	        log.fine("Accounting service not available - skipping accounting");
 
-		return Doc.manualPosting(WindowNo, AD_Client_ID, AD_Table_ID, Record_ID, force);
+		return null;
 	}   //  postImmediate
 
 	/**

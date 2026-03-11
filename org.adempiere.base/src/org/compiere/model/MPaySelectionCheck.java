@@ -27,7 +27,6 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.compiere.acct.Doc;
 import org.compiere.process.DocAction;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -35,6 +34,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
+import org.idempiere.acct.IDoc;
 
 /**
  *  Payment Print/Export model.
@@ -437,11 +437,11 @@ public class MPaySelectionCheck extends X_C_PaySelectionCheck
 					depositBatch.setC_BankAccount_ID(c_BankAccount_ID);
 					if (isDebit)
 					{
-						depositBatch.setC_DocType_ID(MDocType.getDocType(Doc.DOCTYPE_ARReceipt));
+						depositBatch.setC_DocType_ID(MDocType.getDocType(IDoc.DOCTYPE_ARReceipt));
 					}
 					else
 					{
-						depositBatch.setC_DocType_ID(MDocType.getDocType(Doc.DOCTYPE_APPayment));
+						depositBatch.setC_DocType_ID(MDocType.getDocType(IDoc.DOCTYPE_APPayment));
 					}
 					depositBatch.setDateDeposit(new Timestamp((new Date()).getTime()));
 					depositBatch.setDateDoc(new Timestamp((new Date()).getTime()));

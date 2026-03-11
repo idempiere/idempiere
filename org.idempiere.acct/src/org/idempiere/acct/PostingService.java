@@ -23,6 +23,7 @@ import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.factory.IPostingService;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.window.Dialog;
+import org.compiere.acct.Doc;
 import org.compiere.model.MProjectIssue;
 import org.compiere.model.SystemIDs;
 import org.compiere.process.DocAction;
@@ -77,7 +78,7 @@ public class PostingService implements IPostingService {
 				public void onCallback(Boolean result) {
 					if (result) {
 						boolean force = ps != null && !ps.equals("N"); // force when problems
-						String error = AEnv.postImmediate(windowNo,
+						String error = Doc.manualPosting(windowNo,
 								Env.getAD_Client_ID(Env.getCtx()), tableIdRef, recordIdRef, force);
 
 						windowContent.onRefresh(true, false);
