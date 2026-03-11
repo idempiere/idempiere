@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+    xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.idempiere</groupId>
+    <artifactId>org.idempiere.parent</artifactId>
+    <version>${revision}</version>
+    <relativePath>../../org.idempiere.parent/pom.xml</relativePath>
+  </parent>
+  <artifactId>org.idempiere.p2.erp</artifactId>
+  <packaging>eclipse-repository</packaging>
+  <name>org.idempiere.p2.erp</name>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>flatten-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-p2-repository-plugin</artifactId>
+        <configuration>
+          <repositoryName>iDempiere ERP Repository ${revision}</repositoryName>
+          <xzCompress>true</xzCompress>
+          <includeAllDependencies>true</includeAllDependencies>
+          <profileProperties>
+            <org.eclipse.update.install.features>true</org.eclipse.update.install.features>
+          </profileProperties>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-p2-director-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>materialize-erp</id>
+            <phase>package</phase>
+            <goals>
+              <goal>materialize-products</goal>
+              <goal>archive-products</goal>
+            </goals>
+            <configuration>
+              <products>
+                <product>
+                  <id>org.idempiere.erp.product</id>
+                  <rootFolder>idempiere-erp</rootFolder>
+                  <archiveFileName>iDempiere-ERP-${revision}</archiveFileName>
+                </product>
+              </products>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
