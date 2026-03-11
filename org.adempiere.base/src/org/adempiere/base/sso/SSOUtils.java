@@ -201,6 +201,10 @@ public class SSOUtils
 				return null;
 			
 		}
+		else if (config.getAD_Client_ID() != 0)
+		{
+			return null;
+		}
 		
 		return getSSOPrincipalService(config);
 	

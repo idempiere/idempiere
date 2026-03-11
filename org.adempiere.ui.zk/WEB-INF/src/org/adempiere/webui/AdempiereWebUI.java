@@ -526,15 +526,15 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	    	setCookie(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider, 3600); // 1 hour
 	    }
 	    
+	    String tenant = (String) desktop.getSession().getAttribute(SSOWebUIFilter.TENANT_PREFIX_PARAMETER);
 	    String ssoLogoutURL = null;
 	    if (!isAdminLogin && isSSOLogin)
 		{
-			ISSOPrincipalService service = SSOUtils.getSSOPrincipalService(provider);
+			ISSOPrincipalService service = SSOUtils.getSSOPrincipalService(provider, tenant);
 			if (service != null)
 				ssoLogoutURL = service.getLogoutURL();
 		}
-	    
-		String tenant = (String) desktop.getSession().getAttribute(SSOWebUIFilter.TENANT_PREFIX_PARAMETER);
+	    		
 	    final Session session = logout0();
 	    
     	//clear context, invalidate session

@@ -145,7 +145,8 @@ public class LoginWindow extends Window implements EventListener<Event>
 		try
 		{
 			String provider = (String) getDesktop().getSession().getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
-			ISSOPrincipalService ssoPrincipal = SSOUtils.getSSOPrincipalService(provider);
+			String tenant = (String) getDesktop().getSession().getAttribute(SSOWebUIFilter.TENANT_PREFIX_PARAMETER);
+			ISSOPrincipalService ssoPrincipal = SSOUtils.getSSOPrincipalService(provider, tenant);
 			if (ssoPrincipal == null)
 				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "SSOServiceNotFound"));
 			
@@ -168,7 +169,6 @@ public class LoginWindow extends Window implements EventListener<Event>
 			if(getDesktop().getSession().hasAttribute(SSOUtils.ISCHANGEROLE_REQUEST))
 				isShowRolePanel = isShowRolePanel || (boolean) getDesktop().getSession().getAttribute(SSOUtils.ISCHANGEROLE_REQUEST);
 			
-			String tenant = (String) getDesktop().getSession().getAttribute(SSOWebUIFilter.TENANT_PREFIX_PARAMETER);
 			KeyNamePair[] clients = login.getClients(username, null, null, token, tenant);
 			if (clients != null)
 				loginOk(username, isShowRolePanel, clients, true);
