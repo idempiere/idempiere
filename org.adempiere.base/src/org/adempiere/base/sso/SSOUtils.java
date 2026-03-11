@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.adempiere.base.Service;
 import org.compiere.model.I_SSO_PrincipalConfig;
+import org.compiere.model.MClient;
 import org.compiere.model.MSSOPrincipalConfig;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.CCache;
@@ -167,7 +168,7 @@ public class SSOUtils
 			List<MSSOPrincipalConfig> configList = null;
 			if (!Util.isEmpty(tenant, true))
 			{
-				org.compiere.model.MClient client = org.compiere.model.MClient.getByLoginPrefix(tenant);
+				MClient client = MClient.getByLoginPrefix(tenant);
 				if (client != null)
 				{
 					configList = MSSOPrincipalConfig.getSSOPrincipalConfigByClient(client.getAD_Client_ID());
@@ -191,6 +192,20 @@ public class SSOUtils
 		MSSOPrincipalConfig config = MSSOPrincipalConfig.getSSOPrincipalConfig(uuID);
 		if (config == null)
 			return null;
+		
+		// validate config is valid for tenant login prefix argument
+		if (!Util.isEmpty(tenant, true)) 
+		{
+			MClient client = MClient.getByLoginPrefix(tenant);
+			if (client == null || config.getAD_Client_ID() != client.getAD_Client_ID())
+				return null;
+			
+		}
+		else if (config.getAD_Client_ID() != 0)
+		{
+			return null;
+		}
+		
 		return getSSOPrincipalService(config);
 	
 	}
