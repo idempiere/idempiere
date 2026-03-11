@@ -21,10 +21,10 @@
  **********************************************************************/
 package org.compiere.model;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Hashtable;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 
 import org.adempiere.base.event.EventManager;
@@ -60,10 +60,18 @@ public class FactsValidationEngine {
 	}
 
 	/** Accounting Facts Validation Listeners keyed by tableName+clientId or tableName+"*" for global */
-	private Hashtable<String, ArrayList<FactsValidator>> m_factsValidateListeners = new Hashtable<>();
+	private ConcurrentHashMap<String, CopyOnWriteArrayList<FactsValidator>> m_factsValidateListeners = new ConcurrentHashMap<>();
 
 	/** Global (system-level) validators */
-	private ArrayList<FactsValidator> m_globalValidators = new ArrayList<>();
+	private CopyOnWriteArrayList<FactsValidator> m_globalValidators = new CopyOnWriteArrayList<>();
+
+	/**
+	 * Reverse lookup: maps each registered (tableName, listener) pair to the bucket key that was
+	 * used when the listener was added. This makes removal stable regardless of whether the
+	 * listener is later added to or removed from m_globalValidators.
+	 * Key: tableName + "@" + System.identityHashCode(listener)
+	 */
+	private ConcurrentHashMap<String, String> m_listenerKeyMap = new ConcurrentHashMap<>();
 
 	/**
 	 * Private constructor. Use {@link #get()} to obtain the singleton.
@@ -91,42 +99,47 @@ public class FactsValidationEngine {
 
 	/**
 	 * Add an Accounting Facts Validation Listener for a table.
+	 * The bucket (global vs tenant) is determined once at registration time and remembered,
+	 * so subsequent changes to the global-validator list do not affect which bucket is used
+	 * for removal. Adding the same listener to the same table twice is a no-op.
 	 * @param tableName table name
 	 * @param listener  listener (global or tenant specific)
 	 */
 	public void addFactsValidate(String tableName, FactsValidator listener) {
 		if (tableName == null || listener == null)
 			return;
+		// Capture the bucket key once, at registration time.
 		String propertyName = m_globalValidators.contains(listener)
 				? tableName + "*"
 				: tableName + listener.getAD_Client_ID();
-		ArrayList<FactsValidator> list = m_factsValidateListeners.get(propertyName);
-		if (list == null) {
-			list = new ArrayList<>();
-			list.add(listener);
-			m_factsValidateListeners.put(propertyName, list);
-		} else {
-			list.add(listener);
-		}
+		String reverseKey = tableName + "@" + System.identityHashCode(listener);
+		// Idempotent: only register if this (table, listener) pair is not already present.
+		if (m_listenerKeyMap.putIfAbsent(reverseKey, propertyName) != null)
+			return;
+		m_factsValidateListeners.computeIfAbsent(propertyName, k -> new CopyOnWriteArrayList<>()).addIfAbsent(listener);
 	}
 
 	/**
 	 * Remove an Accounting Facts Validation Listener for a table.
+	 * Uses the bucket key that was recorded at registration time, so removal is always
+	 * consistent with how the listener was added.
 	 * @param tableName table name
 	 * @param listener  listener
 	 */
 	public void removeFactsValidate(String tableName, FactsValidator listener) {
 		if (tableName == null || listener == null)
 			return;
-		String propertyName = m_globalValidators.contains(listener)
-				? tableName + "*"
-				: tableName + listener.getAD_Client_ID();
-		ArrayList<FactsValidator> list = m_factsValidateListeners.get(propertyName);
+		String reverseKey = tableName + "@" + System.identityHashCode(listener);
+		// Retrieve the exact key that was used when this listener was registered.
+		String propertyName = m_listenerKeyMap.remove(reverseKey);
+		if (propertyName == null)
+			return; // was never registered for this table
+		CopyOnWriteArrayList<FactsValidator> list = m_factsValidateListeners.get(propertyName);
 		if (list == null)
 			return;
 		list.remove(listener);
 		if (list.isEmpty())
-			m_factsValidateListeners.remove(propertyName);
+			m_factsValidateListeners.remove(propertyName, list);
 	}
 
 	/**
@@ -144,7 +157,7 @@ public class FactsValidationEngine {
 
 		// global listeners (registered with tableName + "*")
 		String propertyName = po.get_TableName() + "*";
-		ArrayList<FactsValidator> list = m_factsValidateListeners.get(propertyName);
+		CopyOnWriteArrayList<FactsValidator> list = m_factsValidateListeners.get(propertyName);
 		if (list != null) {
 			String error = fireFactsValidate(schema, facts, po, list);
 			if (error != null && error.length() > 0)
@@ -188,11 +201,9 @@ public class FactsValidationEngine {
 	 * @param list   registered validators to invoke
 	 * @return error message or null
 	 */
-	private String fireFactsValidate(MAcctSchema schema, List<Fact> facts, PO po, ArrayList<FactsValidator> list) {
-		for (int i = 0; i < list.size(); i++) {
-			FactsValidator validator = null;
+	private String fireFactsValidate(MAcctSchema schema, List<Fact> facts, PO po, CopyOnWriteArrayList<FactsValidator> list) {
+		for (FactsValidator validator : list) {
 			try {
-				validator = list.get(i);
 				if (validator.getAD_Client_ID() == po.getAD_Client_ID()
 						|| m_globalValidators.contains(validator)) {
 					String error = validator.factsValidate(schema, facts, po);

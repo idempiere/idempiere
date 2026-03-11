@@ -170,6 +170,50 @@ public class ModelValidationEngineTest extends AbstractTestCase {
 		assertEquals(1, clientValidator.factsValidateCount);
 	}
 
+	@Test
+	public void testFactsValidateIdempotentRegistration() {
+		MOrg org = MOrg.get(Env.getCtx(), getAD_Org_ID());
+		MAcctSchema as = MAcctSchema.get(Env.getCtx(), Env.getContextAsInt(Env.getCtx(), "$C_AcctSchema_ID"));
+		List<Fact> facts = new ArrayList<>();
+
+		// Register the same global listener twice for the same table.
+		factsEngine.addFactsValidate(MOrg.Table_Name, globalValidator);
+		factsEngine.addFactsValidate(MOrg.Table_Name, globalValidator);
+
+		factsEngine.fireFactsValidate(as, facts, org);
+
+		// Despite two add calls, the validator must fire exactly once.
+		assertEquals(1, globalValidator.factsValidateCount,
+				"Duplicate registration must not cause the validator to fire more than once");
+
+		factsEngine.removeFactsValidate(MOrg.Table_Name, globalValidator);
+	}
+
+	@Test
+	public void testFactsValidateScopeStableAfterGlobalRemoval() {
+		MOrg org = MOrg.get(Env.getCtx(), getAD_Org_ID());
+		MAcctSchema as = MAcctSchema.get(Env.getCtx(), Env.getContextAsInt(Env.getCtx(), "$C_AcctSchema_ID"));
+		List<Fact> facts = new ArrayList<>();
+
+		// Register while the validator IS in the global list → bucket key = tableName+"*"
+		factsEngine.addFactsValidate(MOrg.Table_Name, globalValidator);
+		factsEngine.fireFactsValidate(as, facts, org);
+		assertEquals(1, globalValidator.factsValidateCount, "Validator should fire once after registration");
+
+		// Now remove from the global list BEFORE calling removeFactsValidate.
+		// The removal must still find the listener in the original "*" bucket, not the
+		// client-id bucket that would be computed if the key were re-derived now.
+		factsEngine.removeGlobalValidator(globalValidator);
+		factsEngine.removeFactsValidate(MOrg.Table_Name, globalValidator);
+
+		factsEngine.fireFactsValidate(as, facts, org);
+		assertEquals(1, globalValidator.factsValidateCount,
+				"Validator must not fire after removal, even when the global list changed between add and remove");
+
+		// Restore so tearDown finds the validator in a consistent state.
+		factsEngine.addGlobalValidator(globalValidator);
+	}
+
 	static class TestValidator implements ModelValidator, FactsValidator {
 		
 		int modelChangeCount = 0;
