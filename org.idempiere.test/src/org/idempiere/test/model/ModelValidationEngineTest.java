@@ -31,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.compiere.model.FactsValidationEngine;
 import org.compiere.model.FactsValidator;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClient;
@@ -51,12 +52,14 @@ import org.junit.jupiter.api.parallel.Isolated;
 public class ModelValidationEngineTest extends AbstractTestCase {
 
 	private ModelValidationEngine engine;
+	private FactsValidationEngine factsEngine;
 	private TestValidator globalValidator;
 	private TestValidator clientValidator;
 
 	@BeforeEach
 	public void setUp() {
 		engine = ModelValidationEngine.get();
+		factsEngine = FactsValidationEngine.get();
 		globalValidator = new TestValidator();
 		clientValidator = new TestValidator();
 		clientValidator.setClientId(getAD_Client_ID());
@@ -70,6 +73,8 @@ public class ModelValidationEngineTest extends AbstractTestCase {
 		} catch (Exception e) {
 			fail(e.getMessage(), e);
 		}
+
+		factsEngine.addGlobalValidator(globalValidator);
 	}
 	
 	@AfterEach
@@ -79,8 +84,9 @@ public class ModelValidationEngineTest extends AbstractTestCase {
 		engine.removeModelChange("AD_Org", clientValidator);
 		engine.removeDocValidate("AD_Org", globalValidator);
 		engine.removeDocValidate("AD_Org", clientValidator);
-		engine.removeFactsValidate("AD_Org", globalValidator);
-		engine.removeFactsValidate("AD_Org", clientValidator);
+		factsEngine.removeFactsValidate("AD_Org", globalValidator);
+		factsEngine.removeFactsValidate("AD_Org", clientValidator);
+		factsEngine.removeGlobalValidator(globalValidator);
 		
 		try {
 			java.lang.reflect.Field f = ModelValidationEngine.class.getDeclaredField("m_globalValidators");
@@ -147,20 +153,20 @@ public class ModelValidationEngineTest extends AbstractTestCase {
 		MAcctSchema as = MAcctSchema.get(Env.getCtx(), Env.getContextAsInt(Env.getCtx(), "$C_AcctSchema_ID"));
 		List<Fact> facts = new ArrayList<>();
 		
-		engine.addFactsValidate(MOrg.Table_Name, globalValidator);
-		engine.fireFactsValidate(as, facts, org);
+		factsEngine.addFactsValidate(MOrg.Table_Name, globalValidator);
+		factsEngine.fireFactsValidate(as, facts, org);
 		assertEquals(1, globalValidator.factsValidateCount);
 		
-		engine.removeFactsValidate(MOrg.Table_Name, globalValidator);
-		engine.fireFactsValidate(as, facts, org);
+		factsEngine.removeFactsValidate(MOrg.Table_Name, globalValidator);
+		factsEngine.fireFactsValidate(as, facts, org);
 		assertEquals(1, globalValidator.factsValidateCount);
 		
-		engine.addFactsValidate(MOrg.Table_Name, clientValidator);
-		engine.fireFactsValidate(as, facts, org);
+		factsEngine.addFactsValidate(MOrg.Table_Name, clientValidator);
+		factsEngine.fireFactsValidate(as, facts, org);
 		assertEquals(1, clientValidator.factsValidateCount);
 		
-		engine.removeFactsValidate(MOrg.Table_Name, clientValidator);
-		engine.fireFactsValidate(as, facts, org);
+		factsEngine.removeFactsValidate(MOrg.Table_Name, clientValidator);
+		factsEngine.fireFactsValidate(as, facts, org);
 		assertEquals(1, clientValidator.factsValidateCount);
 	}
 
