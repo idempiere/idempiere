@@ -2,9 +2,9 @@
 <launchConfiguration type="org.eclipse.pde.ui.RuntimeWorkbench">
     <setAttribute key="additional_plugins">
         <setEntry value="com.fasterxml.woodstox.woodstox-core:6.7.0:default:true:default:true"/>
-        <setEntry value="org.adempiere.eclipse.equinox.http.servlet:13.0.0.qualifier:default:true:default:true"/>
-        <setEntry value="org.adempiere.server:13.0.0.qualifier:default:true:default:true"/>
-        <setEntry value="org.adempiere.ui.zk:13.0.0.qualifier:default:true:default:true"/>
+        <setEntry value="org.adempiere.eclipse.equinox.http.servlet:14.0.0.qualifier:default:true:default:true"/>
+        <setEntry value="org.adempiere.server:14.0.0.qualifier:default:true:default:true"/>
+        <setEntry value="org.adempiere.ui.zk:14.0.0.qualifier:default:true:default:true"/>
         <setEntry value="org.apache.aries.spifly.dynamic.bundle:1.3.7:default:true:2:true"/>
         <setEntry value="org.apache.felix.scr:2.2.6:default:true:2:true"/>
         <setEntry value="org.apache.felix.webconsole:4.6.4.v202109010034:default:true:default:true"/>
@@ -37,13 +37,12 @@
         <setEntry value="org.eclipse.jetty.server:12.0.11:default:true:default:true"/>
         <setEntry value="org.eclipse.jetty.websocket.core.common:12.0.11:default:true:default:true"/>
         <setEntry value="org.eclipse.osgi:3.18.500.v20230801-1826:default:true:1:true"/>
-        <setEntry value="org.idempiere.felix.webconsole:13.0.0.qualifier:default:true:default:true"/>
+        <setEntry value="org.idempiere.felix.webconsole:14.0.0.qualifier:default:true:default:true"/>
         <setEntry value="slf4j.api:2.0.12:default:true:3:true"/>
         <setEntry value="slf4j.jdk14:2.0.12:default:true:3:true"/>
     </setAttribute>
     <booleanAttribute key="append.args" value="true"/>
     <stringAttribute key="application" value="org.adempiere.server.application"/>
-    <stringAttribute key="eclipseApplicationId" value="org.adempiere.server.application"/>
     <booleanAttribute key="askclear" value="false"/>
     <booleanAttribute key="automaticAdd" value="false"/>
     <booleanAttribute key="automaticIncludeRequirements" value="false"/>
@@ -73,7 +72,7 @@
     <stringAttribute key="productFile" value="/org.idempiere.p2.profile/framework/framework.product"/>
     <stringAttribute key="productId" value="org.idempiere.framework.product"/>
     <stringAttribute key="productName" value="iDempiere Framework Server"/>
-    <stringAttribute key="productVersion" value="13.0.0.qualifier"/>
+    <stringAttribute key="productVersion" value="14.0.0.qualifier"/>
     <setAttribute key="root_features"/>
     <setAttribute key="selected_features">
         <setEntry value="org.idempiere.framework.feature:default"/>
@@ -462,7 +461,6 @@
         <setEntry value="org.adempiere.report.jasper@default:default"/>
         <setEntry value="org.adempiere.server@default:true"/>
         <setEntry value="org.adempiere.ui.zk@default:true"/>
-        <setEntry value="org.idempiere.zk.billboard@default:default"/>
         <setEntry value="org.adempiere.ui@default:default"/>
         <setEntry value="org.apache.ecs@default:default"/>
         <setEntry value="org.compiere.db.oracle.provider@default:default"/>
@@ -470,6 +468,7 @@
         <setEntry value="org.idempiere.felix.webconsole@default:true"/>
         <setEntry value="org.idempiere.hazelcast.service@default:default"/>
         <setEntry value="org.idempiere.jetty.osgi.boot.fragment@default:false"/>
+		<setEntry value="org.idempiere.zk.billboard@default:default"/>
         <setEntry value="org.idempiere.zk.breeze.theme@default:false"/>
         <setEntry value="org.idempiere.zk.extra@default:default"/>
         <setEntry value="org.idempiere.zk.iceblue_c.theme@default:false"/>

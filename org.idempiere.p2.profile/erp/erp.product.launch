@@ -2,9 +2,9 @@
 <launchConfiguration type="org.eclipse.pde.ui.RuntimeWorkbench">
     <setAttribute key="additional_plugins">
         <setEntry value="com.fasterxml.woodstox.woodstox-core:6.7.0:default:true:default:true"/>
-        <setEntry value="org.adempiere.eclipse.equinox.http.servlet:13.0.0.qualifier:default:true:default:true"/>
-        <setEntry value="org.adempiere.server:13.0.0.qualifier:default:true:default:true"/>
-        <setEntry value="org.adempiere.ui.zk:13.0.0.qualifier:default:true:default:true"/>
+        <setEntry value="org.adempiere.eclipse.equinox.http.servlet:14.0.0.qualifier:default:true:default:true"/>
+        <setEntry value="org.adempiere.server:14.0.0.qualifier:default:true:default:true"/>
+        <setEntry value="org.adempiere.ui.zk:14.0.0.qualifier:default:true:default:true"/>
         <setEntry value="org.apache.aries.spifly.dynamic.bundle:1.3.7:default:true:2:true"/>
         <setEntry value="org.apache.felix.scr:2.2.6:default:true:2:true"/>
         <setEntry value="org.apache.felix.webconsole:4.6.4.v202109010034:default:true:default:true"/>
@@ -37,7 +37,7 @@
         <setEntry value="org.eclipse.jetty.server:12.0.11:default:true:default:true"/>
         <setEntry value="org.eclipse.jetty.websocket.core.common:12.0.11:default:true:default:true"/>
         <setEntry value="org.eclipse.osgi:3.18.500.v20230801-1826:default:true:1:true"/>
-        <setEntry value="org.idempiere.felix.webconsole:13.0.0.qualifier:default:true:default:true"/>
+        <setEntry value="org.idempiere.felix.webconsole:14.0.0.qualifier:default:true:default:true"/>
         <setEntry value="slf4j.api:2.0.12:default:true:3:true"/>
         <setEntry value="slf4j.jdk14:2.0.12:default:true:3:true"/>
     </setAttribute>
@@ -55,7 +55,6 @@
     <stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/erp.product"/>
     <booleanAttribute key="default" value="false"/>
     <setAttribute key="deselected_workspace_bundles"/>
-    <stringAttribute key="eclipseApplicationId" value="org.adempiere.server.application"/>
     <stringAttribute key="featureDefaultLocation" value="workspace"/>
     <stringAttribute key="featurePluginResolution" value="workspace"/>
     <booleanAttribute key="includeOptional" value="false"/>
@@ -73,11 +72,11 @@
     <stringAttribute key="productFile" value="/org.idempiere.p2.profile/erp/erp.product"/>
     <stringAttribute key="productId" value="org.idempiere.erp.product"/>
     <stringAttribute key="productName" value="iDempiere ERP Server"/>
-    <stringAttribute key="productVersion" value="13.0.0.qualifier"/>
+    <stringAttribute key="productVersion" value="14.0.0.qualifier"/>
     <setAttribute key="root_features"/>
     <setAttribute key="selected_features">
-        <setEntry value="org.idempiere.eclipse.platform.feature:default"/>
         <setEntry value="org.idempiere.erp.feature:default"/>
+		<setEntry value="org.idempiere.eclipse.platform.feature:default"/>
     </setAttribute>
     <setAttribute key="selected_target_bundles">
         <setEntry value="bcmail@default:default"/>
@@ -359,11 +358,11 @@
         <setEntry value="org.krysalis.barcode4j@default:default"/>
         <setEntry value="org.mortbay.jasper.apache-el@default:default"/>
         <setEntry value="org.mortbay.jasper.apache-jsp@default:default"/>
-        <setEntry value="org.objectweb.asm*9.9.1@default:default"/>
         <setEntry value="org.objectweb.asm.commons@default:default"/>
-        <setEntry value="org.objectweb.asm.tree*9.9.1@default:default"/>
-        <setEntry value="org.objectweb.asm.tree.analysis*9.9.1@default:default"/>
-        <setEntry value="org.objectweb.asm.util*9.9.1@default:default"/>
+        <setEntry value="org.objectweb.asm.tree.analysis@default:default"/>
+        <setEntry value="org.objectweb.asm.tree@default:default"/>
+        <setEntry value="org.objectweb.asm.util@default:default"/>
+        <setEntry value="org.objectweb.asm@default:default"/>
         <setEntry value="org.osgi.annotation.bundle@default:default"/>
         <setEntry value="org.osgi.annotation.versioning@default:default"/>
         <setEntry value="org.osgi.service.cm@default:default"/>
