@@ -34,7 +34,6 @@ import static org.compiere.model.SystemIDs.REFERENCE_DOCUMENTSTATUS;
 import static org.compiere.model.SystemIDs.REFERENCE_POSTED;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.compiere.acct.Doc;
 import org.compiere.model.MColumn;
 import org.compiere.model.MIndexColumn;
 import org.compiere.model.MProcess;
@@ -55,6 +54,7 @@ import org.compiere.util.Util;
 import org.compiere.wf.MWFNode;
 import org.compiere.wf.MWFNodeNext;
 import org.compiere.wf.MWorkflow;
+import org.idempiere.acct.IDoc;
 
 /**
  *	IDEMPIERE-4858 - Create/Complete Table process
@@ -595,7 +595,7 @@ public class CreateTable extends SvrProcess {
 			column.setIsUpdateable(true);
 			column.setFieldLength(LENGTH_1);
 			column.setAD_Reference_Value_ID(REFERENCE_POSTED);
-			column.setDefaultValue(Doc.STATUS_NotPosted);
+			column.setDefaultValue(IDoc.STATUS_NotPosted);
 			column.setIsToolbarButton(MColumn.ISTOOLBARBUTTON_Window);
 		}
 		else if (columnName.equals("AD_User_ID") || columnName.equals("SalesRep_ID")) {

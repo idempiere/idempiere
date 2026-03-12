@@ -27,13 +27,14 @@ package org.idempiere.acct;
  * The volatile reference is populated by OSGi Declarative Services
  * via {@link #setAccountingService(IPOAccountingService)}.
  *
- * @author etantg
+ * @author etantg / d-ruiz
  */
 public final class AcctModelServices {
 
 	private AcctModelServices() {}
 
 	private static volatile IPOAccountingService s_accountingService = null;
+	private static volatile IDocPostingService s_postingService = null;
 
 	/**
 	 * Called by OSGi DS when the service becomes available.
@@ -66,4 +67,37 @@ public final class AcctModelServices {
 	public static boolean isAccountingAvailable() {
 		return s_accountingService != null;
 	}
+	
+	/**
+	 * Called by OSGi DS when the service becomes available.
+	 * @param service posting service implementation
+	 */
+	public static void setDocPostingService(IDocPostingService service) {
+		s_postingService = service;
+	}
+
+	/**
+	 * Called by OSGi DS when the service is withdrawn.
+	 * @param service posting service implementation (ignored)
+	 */
+	public static void unsetDocPostingService(IDocPostingService service) {
+		if (s_postingService == service) {
+			s_postingService = null;
+		}
+	}
+
+	/**
+	 * @return the posting service, or {@code null} if not yet available
+	 */
+	public static IDocPostingService getDocPostingService() {
+		return s_postingService;
+	}
+	
+	/**
+	 * @return true if the posting service is available
+	 */
+	public static boolean isDocPostingAvailable() {
+		return s_postingService != null;
+	}
+	
 }

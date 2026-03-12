@@ -44,9 +44,6 @@ import org.compiere.model.MBPartner;
 import org.compiere.model.MConversionType;
 import org.compiere.model.MElementValue;
 import org.compiere.model.MJournal;
-import org.compiere.model.MJournalGenerator;
-import org.compiere.model.MJournalGeneratorLine;
-import org.compiere.model.MJournalGeneratorSource;
 import org.compiere.model.MJournalLine;
 import org.compiere.model.MPeriod;
 import org.compiere.model.MProcessPara;
@@ -60,6 +57,9 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
+import org.idempiere.acct.base.model.MJournalGenerator;
+import org.idempiere.acct.base.model.MJournalGeneratorLine;
+import org.idempiere.acct.base.model.MJournalGeneratorSource;
 
 /**
  *	GL Journal Generator

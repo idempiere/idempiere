@@ -27,6 +27,7 @@ import org.compiere.model.MProjectIssue;
 import org.compiere.model.SystemIDs;
 import org.compiere.process.DocAction;
 import org.compiere.util.Env;
+import org.idempiere.acct.doc.Doc;
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -77,7 +78,7 @@ public class PostingService implements IPostingService {
 				public void onCallback(Boolean result) {
 					if (result) {
 						boolean force = ps != null && !ps.equals("N"); // force when problems
-						String error = AEnv.postImmediate(windowNo,
+						String error = Doc.manualPosting(windowNo,
 								Env.getAD_Client_ID(Env.getCtx()), tableIdRef, recordIdRef, force);
 
 						windowContent.onRefresh(true, false);

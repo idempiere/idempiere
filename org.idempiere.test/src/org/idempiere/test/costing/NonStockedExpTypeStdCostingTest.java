@@ -29,8 +29,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import org.compiere.acct.Doc;
-import org.compiere.acct.DocManager;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MBPartner;
@@ -71,6 +69,8 @@ import org.compiere.util.Util;
 import org.compiere.wf.MWorkflow;
 import org.eevolution.model.MPPProductBOM;
 import org.eevolution.model.MPPProductBOMLine;
+import org.idempiere.acct.doc.Doc;
+import org.idempiere.acct.doc.DocManager;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.idempiere.test.FactAcct;

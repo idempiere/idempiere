@@ -29,7 +29,6 @@ import org.compiere.model.I_T_Report;
 import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MPeriod;
 import org.compiere.model.MProcessPara;
-import org.compiere.model.MReportCube;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.MPrintFormatItem;
 import org.compiere.process.ProcessInfoParameter;
@@ -44,6 +43,7 @@ import org.compiere.util.Ini;
 import org.compiere.util.TimeUtil;
 import org.idempiere.acct.base.model.MReport;
 import org.idempiere.acct.base.model.MReportColumn;
+import org.idempiere.acct.base.model.MReportCube;
 
 /**
  *  Financial Report

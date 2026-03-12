@@ -79,6 +79,7 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
+import org.idempiere.acct.doc.Doc;
 import org.idempiere.ui.zk.media.IMediaView;
 import org.idempiere.ui.zk.media.Medias;
 import org.idempiere.ui.zk.media.WMediaOptions;
@@ -1374,8 +1375,8 @@ public class WAcctViewer extends ADForm implements EventListener<Event>
 					{
 						//setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 						boolean force = forcePost.isChecked();
-						String error = AEnv.postImmediate (m_data.WindowNo, m_data.AD_Client_ID,
-							m_data.AD_Table_ID, m_data.Record_ID, force);
+						String error = Doc.manualPosting(m_data.WindowNo, m_data.AD_Client_ID,
+								m_data.AD_Table_ID, m_data.Record_ID, force);
 						//setCursor(Cursor.getDefaultCursor());
 						if (error != null)
 							Dialog.error(0, "PostingError-N", error);

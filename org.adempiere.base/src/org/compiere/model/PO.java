@@ -59,7 +59,6 @@ import org.adempiere.exceptions.CrossTenantException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.process.UUIDGenerator;
 import org.compiere.Adempiere;
-import org.compiere.acct.Doc;
 import org.compiere.db.AdempiereDatabase;
 import org.compiere.db.Database;
 import org.compiere.util.AdempiereUserError;
@@ -80,6 +79,7 @@ import org.compiere.util.TrxEventListener;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 import org.idempiere.acct.AcctModelServices;
+import org.idempiere.acct.IDoc;
 import org.idempiere.db.util.SQLFragment;
 import org.osgi.service.event.Event;
 import org.w3c.dom.Document;
@@ -5705,7 +5705,7 @@ public abstract class PO
 	}	//	getDocument
 
 	/** Doc - To be used on ModelValidator to get the corresponding Doc from the PO */
-	private Doc m_doc;
+	private IDoc m_doc; // Generic - will be Doc if accounting loaded
 
 	/* Indicates if the PO was being loaded with partial data */
 	private boolean m_is_Partial;
@@ -5714,7 +5714,7 @@ public abstract class PO
 	 * Set the accounting document associated to the PO - for use in POST ModelValidator
 	 * @param doc Document
 	 */
-	public void setDoc(Doc doc) {
+	public void setDoc(IDoc doc) {
 		m_doc = doc;		
 	}
 
@@ -5740,7 +5740,7 @@ public abstract class PO
 	 * Get the accounting document associated to the PO - for use in POST ModelValidator
 	 * @return Doc Document
 	 */
-	public Doc getDoc() {
+	public IDoc getDoc() {
 		return m_doc;
 	}
 

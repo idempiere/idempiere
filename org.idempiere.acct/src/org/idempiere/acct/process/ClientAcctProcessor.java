@@ -38,7 +38,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.compiere.acct.DocManager;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClient;
 import org.compiere.model.MCost;
@@ -50,6 +49,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.idempiere.acct.doc.DocManager;
 
 /**
  * 	Client Accounting Processor

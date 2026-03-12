@@ -30,13 +30,13 @@ import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
 import org.adempiere.exceptions.PeriodClosedException;
-import org.compiere.acct.Doc;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
+import org.idempiere.acct.IDoc;
 
 /**
  * 	Cost Detail Model
@@ -1223,7 +1223,7 @@ public class MCostDetail extends X_M_CostDetail
 		{
 			String docBaseType = DB.getSQLValueString((String)null, 
 					INOUTLINE_DOCBASETYPE_SQL, getM_InOutLine_ID());
-			return Doc.DOCTYPE_MatShipment.equals(docBaseType);
+			return IDoc.DOCTYPE_MatShipment.equals(docBaseType);
 		}
 		return false;
 	}
