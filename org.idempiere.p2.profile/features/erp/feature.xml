@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+    id="org.idempiere.erp.feature"
+    label="org.idempiere.erp.feature"
+    version="14.0.0.qualifier"
+    provider-name="iDempiere Community">
+
+  <description url="https://www.idempiere.org">
+    Full iDempiere ERP installation. Extends the framework with
+    web services, payment processing, data replication, PIPO
+    migration, SSO/OIDC, table partitioning, and all optional
+    ZK UI components.
+  </description>
+
+  <copyright url="https://www.idempiere.org">
+    Copyright (C) 1999-2024 iDempiere Community
+  </copyright>
+
+  <license url="https://www.gnu.org/licenses/old-licenses/gpl-2.0.html">
+    GNU General Public License Version 2
+  </license>
+
+  <!-- Include entire framework tier -->
+  <includes id="org.idempiere.framework.feature" version="0.0.0"/>
+
+  <!-- Optional UI Widgets -->
+  <plugin id="org.idempiere.keikai"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+  <plugin id="org.idempiere.printformat.editor"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+  <plugin id="org.idempiere.zk.billboard.chart"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+  <plugin id="org.idempiere.zk.datatable"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+  <plugin id="org.idempiere.zk.pivot"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+
+  <!-- Web Services -->
+  <plugin id="org.idempiere.webservices"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+  <plugin id="org.idempiere.webservices.resources"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+
+  <!-- Payment Processing -->
+  <plugin id="org.adempiere.payment.processor"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+
+  <!-- Replication -->
+  <plugin id="org.adempiere.replication"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+  <plugin id="org.adempiere.replication.server"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+
+  <!-- Pack-In / Pack-Out -->
+  <plugin id="org.adempiere.pipo"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+  <plugin id="org.adempiere.pipo.handlers"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+
+  <!-- SSO / OIDC -->
+  <plugin id="org.idempiere.ui.sso.oidc"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+
+  <!-- Infrastructure -->
+  <plugin id="org.idempiere.tablepartition"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+
+</feature>

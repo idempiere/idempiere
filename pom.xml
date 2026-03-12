@@ -11,6 +11,14 @@
 		<version>${revision}</version>
 		<relativePath>org.idempiere.parent/pom.xml</relativePath>
 	</parent>
+	
+	<!-- ══════════════════════════════════════════════════════════
+	     DEFAULT BUILD (no profile specified)
+	     Behaves exactly like the original single build.
+	     Runs all modules and uses org.idempiere.p2 for packaging.
+
+	     Build: mvn clean verify
+	     ══════════════════════════════════════════════════════════ -->
 	<modules>
 		<module>org.adempiere.base</module>
 		<module>org.adempiere.base.callout</module>
@@ -25,7 +33,7 @@
 		<module>org.adempiere.replication.server</module>
 		<module>org.adempiere.report.jasper.library</module>
 		<module>org.adempiere.report.jasper</module>
-		<module>org.adempiere.server</module>		
+		<module>org.adempiere.server</module>
 		<module>org.adempiere.ui</module>
 		<module>org.adempiere.ui.zk</module>
 		<module>javax.websocket-api.fragment</module>
@@ -68,9 +76,299 @@
 		<module>org.idempiere.test</module>
 		<module>org.idempiere.zk.breeze.theme</module>
 		<module>org.idempiere.zk.iceblue_c.theme</module>
-		<module>org.idempiere.p2.targetplatform</module>		
-    <module>org.idempiere.bouncy.castle-feature</module>
-    <module>coverage-report</module>
+		<module>org.idempiere.p2.targetplatform</module>
+		<module>org.idempiere.bouncy.castle-feature</module>
+		<module>coverage-report</module>
 	</modules>
+
+	<profiles>
+
+		<!-- ══════════════════════════════════════════════════════════
+		     PROFILE: framework
+		     Core OSGi platform only (~32 modules).
+		     Excludes: webservices, payment, replication, pipo, SSO,
+		     tablepartition, optional UI widgets, and all dev/test.
+
+		     Build:     mvn clean package -P framework
+		     Installer: iDempiere-Framework-<version>-<os>.zip
+		     ══════════════════════════════════════════════════════════ -->
+		<profile>
+			<id>framework</id>
+			<modules>
+				<!-- Build infrastructure -->
+				<module>org.idempiere.p2.targetplatform</module>
+
+				<!-- Base Platform -->
+				<module>org.adempiere.base</module>
+				<module>org.adempiere.base.callout</module>
+				<module>org.adempiere.base.process</module>
+
+				<!-- Web UI -->
+				<module>org.adempiere.ui</module>
+				<module>org.adempiere.ui.zk</module>
+				<module>org.idempiere.zk.extra</module>
+				<module>org.idempiere.zk.breeze.theme</module>
+				<module>org.idempiere.zk.iceblue_c.theme</module>
+				<module>javax.websocket-api.fragment</module>
+
+				<!-- Application Server -->
+				<module>org.adempiere.server</module>
+				<module>org.adempiere.eclipse.equinox.http.servlet</module>
+				<module>org.idempiere.jetty.osgi.boot.fragment</module>
+
+				<!-- Reporting -->
+				<module>org.adempiere.report.jasper.library</module>
+				<module>org.adempiere.report.jasper</module>
+
+				<!-- Database Providers -->
+				<module>org.compiere.db.postgresql.provider</module>
+				<module>org.compiere.db.oracle.provider</module>
+
+				<!-- Infrastructure -->
+				<module>org.idempiere.hazelcast.service</module>
+				<module>org.idempiere.felix.webconsole</module>
+				<module>org.apache.ecs</module>
+				<module>org.idempiere.bouncy.castle-feature</module>
+				
+				<!-- Installation -->
+				<module>org.adempiere.install</module>
+				<module>org.adempiere.plugin.utils</module>
+
+				<!-- Features -->
+				<module>org.adempiere.base-feature</module>
+				<module>org.adempiere.ui.zk-feature</module>
+				<module>org.adempiere.server-feature</module>
+				<module>org.adempiere.report.jasper-feature</module>
+				<module>org.compiere.db.provider-feature</module>
+				<module>org.idempiere.hazelcast.service-feature</module>
+				<module>org.idempiere.felix.webconsole-feature</module>
+				<module>org.idempiere.zk-feature</module>
+				<module>org.idempiere.eclipse.platform-feature</module>
+				<module>org.idempiere.equinox.p2.director-feature</module>
+				
+				<!-- Profile features -->
+				<module>org.idempiere.p2.profile/features/framework</module>
+
+				<!-- P2 repository + installer -->
+				<module>org.idempiere.p2.profile/framework</module>
+			</modules>
+		</profile>
+
+		<!-- ══════════════════════════════════════════════════════════
+		     PROFILE: erp
+		     Full iDempiere installation (~53 modules).
+		     Framework + webservices, payment, replication, pipo,
+		     SSO, tablepartition, and all optional UI widgets.
+		     Excludes only dev/test tooling.
+
+		     Build:     mvn clean package -P erp
+		     Installer: iDempiere-ERP-<version>-<os>.zip
+		     ══════════════════════════════════════════════════════════ -->
+		<profile>
+			<id>erp</id>
+			<modules>
+				<!-- Build infrastructure -->
+				<module>org.idempiere.p2.targetplatform</module>
+
+				<!-- Base Platform -->
+				<module>org.adempiere.base</module>
+				<module>org.adempiere.base.callout</module>
+				<module>org.adempiere.base.process</module>
+
+				<!-- Web UI -->
+				<module>org.adempiere.ui</module>
+				<module>org.adempiere.ui.zk</module>
+				<module>org.idempiere.zk.extra</module>
+				<module>org.idempiere.zk.breeze.theme</module>
+				<module>org.idempiere.zk.iceblue_c.theme</module>
+				<module>javax.websocket-api.fragment</module>
+				<module>org.idempiere.keikai</module>
+				<module>org.idempiere.printformat.editor</module>
+				<module>org.idempiere.zk.billboard</module>
+				<module>org.idempiere.zk.billboard.chart</module>
+				<module>org.idempiere.zk.datatable</module>
+				<module>org.idempiere.zk.pivot</module>
+
+				<!-- Application Server -->
+				<module>org.adempiere.server</module>
+				<module>org.adempiere.eclipse.equinox.http.servlet</module>
+				<module>org.idempiere.jetty.osgi.boot.fragment</module>
+
+				<!-- Reporting -->
+				<module>org.adempiere.report.jasper.library</module>
+				<module>org.adempiere.report.jasper</module>
+
+				<!-- Database Providers -->
+				<module>org.compiere.db.postgresql.provider</module>
+				<module>org.compiere.db.oracle.provider</module>
+
+				<!-- Infrastructure -->
+				<module>org.idempiere.hazelcast.service</module>
+				<module>org.idempiere.felix.webconsole</module>
+				<module>org.apache.ecs</module>
+				<module>org.idempiere.bouncy.castle-feature</module>
+				<module>org.idempiere.tablepartition</module>
+
+				<!-- Installation -->
+				<module>org.adempiere.install</module>
+				<module>org.adempiere.plugin.utils</module>
+
+				<!-- Web Services -->
+				<module>org.idempiere.webservices</module>
+				<module>org.idempiere.webservices.resources</module>
+				<module>org.idempiere.webservices.client-feature</module>
+
+				<!-- Payment -->
+				<module>org.adempiere.payment.processor</module>
+
+				<!-- Replication -->
+				<module>org.adempiere.replication</module>
+				<module>org.adempiere.replication.server</module>
+
+				<!-- Pack-In / Pack-Out -->
+				<module>org.adempiere.pipo</module>
+				<module>org.adempiere.pipo.handlers</module>
+
+				<!-- SSO -->
+				<module>org.idempiere.ui.sso.oidc</module>
+
+				<!-- Features -->
+				<module>org.adempiere.base-feature</module>
+				<module>org.adempiere.ui.zk-feature</module>
+				<module>org.adempiere.server-feature</module>
+				<module>org.adempiere.report.jasper-feature</module>
+				<module>org.compiere.db.provider-feature</module>
+				<module>org.idempiere.hazelcast.service-feature</module>
+				<module>org.idempiere.felix.webconsole-feature</module>
+				<module>org.idempiere.zk-feature</module>
+				<module>org.idempiere.eclipse.platform-feature</module>
+				<module>org.idempiere.equinox.p2.director-feature</module>
+				<module>org.idempiere.webservices-feature</module>
+				<module>org.adempiere.payment.processor-feature</module>
+				<module>org.adempiere.replication-feature</module>
+				<module>org.adempiere.replication.server-feature</module>
+				<module>org.adempiere.pipo-feature</module>
+				
+				<!-- Profile features -->
+				<module>org.idempiere.p2.profile/features/framework</module>
+				<module>org.idempiere.p2.profile/features/erp</module>
+
+				<!-- P2 repository + installer -->
+				<module>org.idempiere.p2.profile/erp</module>
+			</modules>
+		</profile>
+
+		<!-- ══════════════════════════════════════════════════════════
+		     PROFILE: developer
+		     Everything (~57 modules).
+		     Full ERP + test bundle, test feature, javadoc, and
+		     coverage report. Used by CI and contributors.
+		     Does NOT produce a production installer.
+
+		     Build:      mvn clean package -P developer
+		     Build+test: mvn clean verify -P developer
+		     ══════════════════════════════════════════════════════════ -->
+		<profile>
+			<id>developer</id>
+			<modules>
+				<!-- Build infrastructure -->
+				<module>org.idempiere.p2.targetplatform</module>
+
+				<!-- Base Platform -->
+				<module>org.adempiere.base</module>
+				<module>org.adempiere.base.callout</module>
+				<module>org.adempiere.base.process</module>
+
+				<!-- Web UI -->
+				<module>org.adempiere.ui</module>
+				<module>org.adempiere.ui.zk</module>
+				<module>org.idempiere.zk.extra</module>
+				<module>org.idempiere.zk.breeze.theme</module>
+				<module>org.idempiere.zk.iceblue_c.theme</module>
+				<module>javax.websocket-api.fragment</module>
+				<module>org.idempiere.keikai</module>
+				<module>org.idempiere.printformat.editor</module>
+				<module>org.idempiere.zk.billboard</module>
+				<module>org.idempiere.zk.billboard.chart</module>
+				<module>org.idempiere.zk.datatable</module>
+				<module>org.idempiere.zk.pivot</module>
+
+				<!-- Application Server -->
+				<module>org.adempiere.server</module>
+				<module>org.adempiere.eclipse.equinox.http.servlet</module>
+				<module>org.idempiere.jetty.osgi.boot.fragment</module>
+
+				<!-- Reporting -->
+				<module>org.adempiere.report.jasper.library</module>
+				<module>org.adempiere.report.jasper</module>
+
+				<!-- Database Providers -->
+				<module>org.compiere.db.postgresql.provider</module>
+				<module>org.compiere.db.oracle.provider</module>
+
+				<!-- Infrastructure -->
+				<module>org.idempiere.hazelcast.service</module>
+				<module>org.idempiere.felix.webconsole</module>
+				<module>org.apache.ecs</module>
+				<module>org.idempiere.bouncy.castle-feature</module>
+				<module>org.idempiere.tablepartition</module>
+
+				<!-- Installation -->
+				<module>org.adempiere.install</module>
+				<module>org.adempiere.plugin.utils</module>
+
+				<!-- Web Services -->
+				<module>org.idempiere.webservices</module>
+				<module>org.idempiere.webservices.resources</module>
+				<module>org.idempiere.webservices.client-feature</module>
+
+				<!-- Payment -->
+				<module>org.adempiere.payment.processor</module>
+
+				<!-- Replication -->
+				<module>org.adempiere.replication</module>
+				<module>org.adempiere.replication.server</module>
+
+				<!-- Pack-In / Pack-Out -->
+				<module>org.adempiere.pipo</module>
+				<module>org.adempiere.pipo.handlers</module>
+
+				<!-- SSO -->
+				<module>org.idempiere.ui.sso.oidc</module>
+
+				<!-- Features -->
+				<module>org.adempiere.base-feature</module>
+				<module>org.adempiere.ui.zk-feature</module>
+				<module>org.adempiere.server-feature</module>
+				<module>org.adempiere.report.jasper-feature</module>
+				<module>org.compiere.db.provider-feature</module>
+				<module>org.idempiere.hazelcast.service-feature</module>
+				<module>org.idempiere.felix.webconsole-feature</module>
+				<module>org.idempiere.zk-feature</module>
+				<module>org.idempiere.eclipse.platform-feature</module>
+				<module>org.idempiere.equinox.p2.director-feature</module>
+				<module>org.idempiere.webservices-feature</module>
+				<module>org.adempiere.payment.processor-feature</module>
+				<module>org.adempiere.replication-feature</module>
+				<module>org.adempiere.replication.server-feature</module>
+				<module>org.adempiere.pipo-feature</module>
+
+				<!-- Test / Dev only -->
+				<module>org.idempiere.test</module>
+				<module>org.idempiere.test-feature</module>
+				<module>org.idempiere.javadoc</module>
+				<module>coverage-report</module>
+				
+				<!-- Profile features -->
+				<module>org.idempiere.p2.profile/features/framework</module>
+				<module>org.idempiere.p2.profile/features/erp</module>
+				<module>org.idempiere.p2.profile/features/developer</module>
+
+				<!-- P2 repository (no installer for developer) -->
+				<module>org.idempiere.p2.profile/developer</module>
+			</modules>
+		</profile>
+
+	</profiles>
 
 </project>

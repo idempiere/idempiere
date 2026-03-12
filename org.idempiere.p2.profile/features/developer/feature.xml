@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+    id="org.idempiere.developer.feature"
+    label="org.idempiere.developer.feature"
+    version="14.0.0.qualifier"
+    provider-name="iDempiere Community">
+
+  <description url="https://www.idempiere.org">
+    Full iDempiere developer build. Includes the complete ERP
+    feature plus the test bundle. Not for production use.
+  </description>
+
+  <copyright url="https://www.idempiere.org">
+    Copyright (C) 1999-2024 iDempiere Community
+  </copyright>
+
+  <license url="https://www.gnu.org/licenses/old-licenses/gpl-2.0.html">
+    GNU General Public License Version 2
+  </license>
+
+  <!-- Include entire ERP tier (which itself includes framework) -->
+  <includes id="org.idempiere.erp.feature" version="0.0.0"/>
+
+  <!-- Test bundle -->
+  <plugin id="org.idempiere.test"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+
+</feature>

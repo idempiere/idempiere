@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+    id="org.idempiere.framework.feature"
+    label="org.idempiere.framework.feature"
+    version="14.0.0.qualifier"
+    provider-name="iDempiere Community">
+
+  <description url="https://www.idempiere.org">
+    Core iDempiere platform. Provides OSGi runtime, ZK Web UI,
+    application server, JasperReports engine, database providers,
+    Hazelcast clustering, and Bouncy Castle cryptography.
+  </description>
+
+  <copyright url="https://www.idempiere.org">
+    Copyright (C) 1999-2024 iDempiere Community
+  </copyright>
+
+  <license url="https://www.gnu.org/licenses/old-licenses/gpl-2.0.html">
+    GNU General Public License Version 2
+  </license>
+
+  <!-- Base Platform -->
+  <plugin id="org.adempiere.base"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+  <plugin id="org.adempiere.base.callout"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+  <plugin id="org.adempiere.base.process"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+
+  <!-- Web UI -->
+  <plugin id="org.adempiere.ui"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+  <plugin id="org.adempiere.ui.zk"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+  <plugin id="org.idempiere.zk.billboard"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+  <plugin id="org.idempiere.zk.extra"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+  <plugin id="org.idempiere.zk.breeze.theme"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+  <plugin id="org.idempiere.zk.iceblue_c.theme"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+  <plugin id="javax.websocket-api.fragment"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+
+  <!-- Application Server -->
+  <plugin id="org.adempiere.server"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+  <plugin id="org.adempiere.eclipse.equinox.http.servlet"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+  <plugin id="org.idempiere.jetty.osgi.boot.fragment"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+
+  <!-- Reporting -->
+  <plugin id="org.adempiere.report.jasper.library"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+  <plugin id="org.adempiere.report.jasper"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+
+  <!-- Database Providers -->
+  <plugin id="org.compiere.db.postgresql.provider"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+  <plugin id="org.compiere.db.oracle.provider"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+
+  <!-- Infrastructure -->
+  <plugin id="org.idempiere.hazelcast.service"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+  <plugin id="org.idempiere.felix.webconsole"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+  <plugin id="org.apache.ecs"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+
+  <!-- Installation -->
+  <plugin id="org.adempiere.install"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+  <plugin id="org.adempiere.plugin.utils"
+          download-size="0" install-size="0" version="0.0.0" unpack="false"/>
+
+</feature>
