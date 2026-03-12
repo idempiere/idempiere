@@ -133,9 +133,11 @@ public class SSOWebUIFilter implements Filter
 				if (httpRequest.getSession().getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER) != null)
 				{
 					provider = (String) httpRequest.getSession().getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
+					removeProviderCookie(httpRequest, httpResponse, provider);
 				}
 				else
 				{
+					// after logout and redirect back from SSO authentication, get the provider uuid from cookie
 					Cookie[] cookies = httpRequest.getCookies();
 					if (cookies != null)
 					{
@@ -157,13 +159,7 @@ public class SSOWebUIFilter implements Filter
 			}
 			else
 			{
-				// Remove cookie if provider is from request parameter
-				Cookie cookie = new Cookie(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider);
-				cookie.setSecure(true);
-				cookie.setHttpOnly(true);
-				cookie.setMaxAge(0);
-				cookie.setPath(httpRequest.getContextPath());
-				httpResponse.addCookie(cookie);
+				removeProviderCookie(httpRequest, httpResponse, provider);
 				
 				httpRequest.getSession().setAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider);
 			}
@@ -262,6 +258,17 @@ public class SSOWebUIFilter implements Filter
 		chain.doFilter(request, response);
 		return;
 	} // doFilter
+
+	private void removeProviderCookie(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
+			String provider) {
+		// Remove cookie if provider is from request parameter
+		Cookie cookie = new Cookie(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider);
+		cookie.setSecure(true);
+		cookie.setHttpOnly(true);
+		cookie.setMaxAge(0);
+		cookie.setPath(httpRequest.getContextPath());
+		httpResponse.addCookie(cookie);
+	}
 
 	@Override
 	public void destroy( )

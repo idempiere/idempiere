@@ -25,6 +25,7 @@ package org.adempiere.webui.panel;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -410,7 +411,8 @@ public class LoginPanel extends Window implements EventListener<Event>
 			List<MSSOPrincipalConfig> configs = new ArrayList<>();
 			if (!Util.isEmpty(tenant, true))
 			{
-				var client = MClient.getByLoginPrefix(tenant.trim());
+				tenant = tenant.trim();
+				var client = MClient.getByLoginPrefix(tenant);
 				if (client != null)
 					configs = MSSOPrincipalConfig.getSSOPrincipalConfigByClient(client.getAD_Client_ID());
 			}
@@ -434,7 +436,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 					tr.appendChild(td);
 					// Apply styles and add button
 					td.setStyle("display: flex; align-items: center;");
-					Button loginButton = createSSOLoginButton(config);
+					Button loginButton = createSSOLoginButton(config, tenant);
 					td.appendChild(loginButton);
 
 					td = new Td();
@@ -893,9 +895,10 @@ public class LoginPanel extends Window implements EventListener<Event>
 	 *
 	 * @param  config the SSO principle configuration used to customize the button and generate the
 	 *                redirect URL
+	 * @param tenant  the tenant identifier used to retrieve tenant-specific SSO configurations, if applicable 
 	 * @return        a configured {@link Button} object for SSO login
 	 */
-	private Button createSSOLoginButton(MSSOPrincipalConfig config)
+	private Button createSSOLoginButton(MSSOPrincipalConfig config, String tenant)
 	{
 		String name = config.getName();
 		String shortName = (!Util.isEmpty(name) && name.length() > 25) ? name.substring(0, 22) + "..." : name;
@@ -917,9 +920,18 @@ public class LoginPanel extends Window implements EventListener<Event>
 					referrerUrl = null;
 			}
 
-			StringBuffer ssoURL = new StringBuffer("?").append(ISSOPrincipalService.SSO_SELECTED_PROVIDER).append("=").append(URLEncoder.encode(config.getSSO_PrincipalConfig_UU(), "UTF-8"));
+			
+			StringBuilder ssoURL = new StringBuilder("index.zul");
+			if (!Util.isEmpty(tenant, true))
+				ssoURL.append("?")
+					  .append(SSOWebUIFilter.TENANT_PREFIX_PARAMETER).append("=")
+					  .append(URLEncoder.encode(tenant, StandardCharsets.UTF_8));
+			
+			Executions.getCurrent().getSession().setAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER, 
+					config.getSSO_PrincipalConfig_UU());
+			
 			if (referrerUrl != null)
-				ssoURL.append("&").append(ISSOPrincipalService.SSO_QUERY_STRING).append("=").append(URLEncoder.encode(referrerUrl, "UTF-8"));
+				Executions.getCurrent().getSession().setAttribute(ISSOPrincipalService.SSO_QUERY_STRING, referrerUrl);
 			Executions.sendRedirect(ssoURL.toString());
 		});
 
