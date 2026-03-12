@@ -231,7 +231,12 @@ public class Doc_Inventory extends Doc
 			
 			boolean doPosting = true;
 			String costingLevel = null;
-			MProduct product = null;
+			MProduct product = line.getProduct();
+			//if product type expense and stocked, then no needs to do posting
+            if(product.isExpenseTypeStockedProduct()) {
+                continue;
+            }
+            
 			if (costAdjustment)
 			{				
 				product = line.getProduct();
@@ -278,9 +283,10 @@ public class Doc_Inventory extends Doc
 			}
 			else 
 			{
+				
+                
 				if (!isReversal(line))
 				{
-					product = line.getProduct();
 					if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as)) ) 
 					{
 						if (line.getM_AttributeSetInstance_ID() == 0 ) 

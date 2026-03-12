@@ -87,6 +87,8 @@ public class MCostDetail extends X_M_CostDetail
 		BigDecimal Amt, BigDecimal Qty,
 		String Description, String trxName)
 	{
+
+				
 		return createOrder (as, AD_Org_ID, M_Product_ID, M_AttributeSetInstance_ID, C_OrderLine_ID, M_CostElement_ID, 
 				Amt, Qty, Description, null, 0, trxName);
 	}
@@ -114,6 +116,11 @@ public class MCostDetail extends X_M_CostDetail
 		BigDecimal Amt, BigDecimal Qty,
 		String Description, Timestamp DateAcct, int Ref_CostDetail_ID, String trxName)
 	{
+  		//If Expense type product, then don't create cost detail record
+		  MProduct product = MProduct.get(as.getCtx(), M_Product_ID);
+		  if(product.isExpenseTypeProduct())
+			  return true;
+      
 		MCostDetail cd = getOrder (as, M_Product_ID, M_AttributeSetInstance_ID, C_OrderLine_ID, M_CostElement_ID, DateAcct, trxName);
 		if (cd != null && !cd.isDelta() && Ref_CostDetail_ID > 0)
 			cd.setIsBackDate(true);
@@ -181,7 +188,7 @@ public class MCostDetail extends X_M_CostDetail
 		int C_InvoiceLine_ID, int M_CostElement_ID, 
 		BigDecimal Amt, BigDecimal Qty,
 		String Description, String trxName)
-	{
+	{			
 		return createInvoice (as, AD_Org_ID, M_Product_ID, M_AttributeSetInstance_ID, C_InvoiceLine_ID, M_CostElement_ID, 
 				Amt, Qty, Description, null, 0, trxName);
 	}
@@ -209,6 +216,12 @@ public class MCostDetail extends X_M_CostDetail
 		BigDecimal Amt, BigDecimal Qty,
 		String Description, Timestamp DateAcct, int Ref_CostDetail_ID, String trxName)
 	{
+
+	  //If Expense type product, then don't create cost detail record
+		MProduct product = MProduct.get(as.getCtx(), M_Product_ID);
+		if(product.isExpenseTypeProduct())
+			return true;
+
 		MCostDetail cd = getInvoice (as, M_Product_ID, M_AttributeSetInstance_ID, C_InvoiceLine_ID, M_CostElement_ID, DateAcct, trxName);
 		if (cd != null && !cd.isDelta() && Ref_CostDetail_ID > 0)
 			cd.setIsBackDate(true);
@@ -306,7 +319,13 @@ public class MCostDetail extends X_M_CostDetail
 		BigDecimal Amt, BigDecimal Qty,
 		String Description, boolean IsSOTrx, Timestamp DateAcct, int Ref_CostDetail_ID, String trxName)
 	{
-		MCostDetail cd = getShipment (as, M_Product_ID, M_AttributeSetInstance_ID, M_InOutLine_ID, M_CostElement_ID, trxName);
+		
+		// If Expense type product, then don't create cost detail record
+		MProduct product = MProduct.get(as.getCtx(), M_Product_ID);
+		if (product.isExpenseTypeProduct())
+			return true;
+				
+     MCostDetail cd = getShipment (as, M_Product_ID, M_AttributeSetInstance_ID, M_InOutLine_ID, M_CostElement_ID, trxName);
 		//
 		if (cd == null)		//	createNew
 		{
@@ -590,7 +609,12 @@ public class MCostDetail extends X_M_CostDetail
 		BigDecimal Amt, BigDecimal Qty,
 		String Description, Timestamp DateAcct, int Ref_CostDetail_ID, String trxName)
 	{
-		MCostDetail cd = getProduction (as, M_Product_ID, M_AttributeSetInstance_ID, M_ProductionLine_ID, M_CostElement_ID, trxName);
+			// If Expense type product, then don't create cost detail record
+		MProduct product = MProduct.get(as.getCtx(), M_Product_ID);
+		if (product.isExpenseTypeProduct())
+			return true;
+	  
+    MCostDetail cd = getProduction (as, M_Product_ID, M_AttributeSetInstance_ID, M_ProductionLine_ID, M_CostElement_ID, trxName);
 		//
 		if (cd == null)		//	createNew
 		{

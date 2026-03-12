@@ -49,6 +49,7 @@ import org.compiere.model.MMatchInv;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLandedCost;
 import org.compiere.model.MOrderLandedCostAllocation;
+import org.compiere.model.MProduct;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MTax;
 import org.compiere.model.MUOM;
@@ -178,6 +179,12 @@ public class Doc_MatchInv extends Doc
 				+ ",Qty=" + getQty() + ",InOutQty=" + m_receiptLine.getMovementQty());
 			return facts;
 		}
+		
+		MProduct product = MProduct.get(getCtx(), getM_Product_ID());
+		//If expense type stocked product, no impact on inventory
+        if(product != null && product.isExpenseTypeStockedProduct()) {
+        	return createCommitmentFacts(as,facts);
+        }
 		
 		if (m_receiptLine.getM_InOutLine_ID() == 0)
 		{
@@ -414,10 +421,14 @@ public class Doc_MatchInv extends Doc
 		//
 		facts.add(fact);
 
-		/** Commitment release										****/
+		return createCommitmentFacts(as,facts);
+	}   //  createFact
+
+    private ArrayList<Fact> createCommitmentFacts (MAcctSchema as,ArrayList<Fact> facts){
+    	/** Commitment release										****/
 		if (as.isAccrual() && as.isCreatePOCommitment())
 		{
-			fact = Doc_Order.getCommitmentRelease(as, this,
+			Fact fact = Doc_Order.getCommitmentRelease(as, this,
 				getQty(), m_invoiceLine.getC_InvoiceLine_ID(), Env.ONE);
 			if (fact == null)
 				return null;
@@ -645,6 +656,11 @@ public class Doc_MatchInv extends Doc
 			&& m_receiptLine != null && m_receiptLine.get_ID() > 0)
 		{
 			MMatchInv matchInv = (MMatchInv)getPO();
+			//If expense type stocked product, don't create cost
+			MProduct product = MProduct.get(getCtx(), matchInv.getM_Product_ID());
+			if(product != null && product.isExpenseTypeStockedProduct()) {
+				 return "";
+			 }
 			
 			BigDecimal LineNetAmt = m_invoiceLine.getLineNetAmt();
 			BigDecimal multiplier = getQty()
@@ -1073,17 +1089,7 @@ public class Doc_MatchInv extends Doc
 		//
 		facts.add(fact);
 
-		/** Commitment release										****/
-		if (as.isAccrual() && as.isCreatePOCommitment())
-		{
-			fact = Doc_Order.getCommitmentRelease(as, this,
-				getQty(), m_invoiceLine.getC_InvoiceLine_ID(), Env.ONE);
-			if (fact == null)
-				return null;
-			facts.add(fact);
-		}	//	Commitment
-			
-		return facts;
+		return createCommitmentFacts(as, facts);
 	}
 	
 	/**
@@ -1393,17 +1399,7 @@ public class Doc_MatchInv extends Doc
 		//
 		facts.add(fact);
 
-		/** Commitment release										****/
-		if (as.isAccrual() && as.isCreatePOCommitment())
-		{
-			fact = Doc_Order.getCommitmentRelease(as, this,
-				getQty(), m_invoiceLine.getC_InvoiceLine_ID(), Env.ONE);
-			if (fact == null)
-				return null;
-			facts.add(fact);
-		}	//	Commitment
-		
-		return facts;
+		return createCommitmentFacts(as, facts);
 	}
 	
 	/**

@@ -224,6 +224,11 @@ public class MPPProductBOMLine extends X_PP_Product_BOMLine implements Immutable
 	@Override
 	protected boolean beforeSave(boolean newRecord)
 	{
+		MProduct product = MProduct.get(getM_Product_ID());
+        if(product.isExpenseTypeProduct()) {
+        	log.saveError("BOMExpenseTypeComponentNotAllowed", "");
+        	return false;
+        }
 		// For Co/By Products, Qty should be always negative:
 		if (isCoProduct() && getQty(false).signum() >= 0)
 		{
