@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="iDempiere Developer Server" uid="org.idempiere.developer.product" id="org.idempiere.developer.product" application="org.adempiere.server.application" version="13.0.0.qualifier" type="features" includeLaunchers="true" autoIncludeRequirements="false">
+<product name="iDempiere Developer Server" uid="org.idempiere.developer.product" id="org.idempiere.developer.product" application="org.adempiere.server.application" version="14.0.0.qualifier" type="features" includeLaunchers="true" autoIncludeRequirements="false">
 
    <configIni use="default">
    </configIni>
