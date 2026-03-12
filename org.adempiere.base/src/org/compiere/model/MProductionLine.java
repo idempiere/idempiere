@@ -412,7 +412,7 @@ public class MProductionLine extends X_M_ProductionLine {
 	protected boolean beforeSave(boolean newRecord) 
 	{
 		MProduct product = MProduct.get(getM_Product_ID());
-        if(MProduct.PRODUCTTYPE_ExpenseType.equals(product.getProductType())) {
+        if(product.isExpenseTypeProduct()) {
         	log.saveError("BOMExpenseTypeComponentNotAllowed", "");
         	return false;
         }

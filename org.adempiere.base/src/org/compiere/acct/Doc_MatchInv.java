@@ -182,8 +182,7 @@ public class Doc_MatchInv extends Doc
 		
 		MProduct product = MProduct.get(getCtx(), getM_Product_ID());
 		//If expense type stocked product, no impact on inventory
-        if(MProduct.PRODUCTTYPE_ExpenseType.equals(product.getProductType()) && product.isStocked()) {
-        	//reversing commitment
+        if(product != null && product.isExpenseTypeStockedProduct()) {
         	return createCommitmentFacts(as,facts);
         }
 		
@@ -435,8 +434,11 @@ public class Doc_MatchInv extends Doc
 				return null;
 			facts.add(fact);
 		}	//	Commitment
+
 		return facts;
-    }
+	}   //  createFact
+
+
 	/**
 	 * @param as
 	 * @param fact
@@ -656,7 +658,7 @@ public class Doc_MatchInv extends Doc
 			MMatchInv matchInv = (MMatchInv)getPO();
 			//If expense type stocked product, don't create cost
 			MProduct product = MProduct.get(getCtx(), matchInv.getM_Product_ID());
-			if(MProduct.PRODUCTTYPE_ExpenseType.equals(product.getProductType())) {
+			if(product != null && product.isExpenseTypeStockedProduct()) {
 				 return "";
 			 }
 			
@@ -1087,17 +1089,7 @@ public class Doc_MatchInv extends Doc
 		//
 		facts.add(fact);
 
-		/** Commitment release										****/
-		if (as.isAccrual() && as.isCreatePOCommitment())
-		{
-			fact = Doc_Order.getCommitmentRelease(as, this,
-				getQty(), m_invoiceLine.getC_InvoiceLine_ID(), Env.ONE);
-			if (fact == null)
-				return null;
-			facts.add(fact);
-		}	//	Commitment
-			
-		return facts;
+		return createCommitmentFacts(as, facts);
 	}
 	
 	/**
@@ -1407,17 +1399,7 @@ public class Doc_MatchInv extends Doc
 		//
 		facts.add(fact);
 
-		/** Commitment release										****/
-		if (as.isAccrual() && as.isCreatePOCommitment())
-		{
-			fact = Doc_Order.getCommitmentRelease(as, this,
-				getQty(), m_invoiceLine.getC_InvoiceLine_ID(), Env.ONE);
-			if (fact == null)
-				return null;
-			facts.add(fact);
-		}	//	Commitment
-		
-		return facts;
+		return createCommitmentFacts(as, facts);
 	}
 	
 	/**

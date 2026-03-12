@@ -13,5 +13,5 @@ UPDATE AD_Column SET Callout='org.compiere.model.CalloutProduct.productType',Upd
 ;
 
 -- May 20, 2024, 11:49:26 AM IST
-INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','Expensed type items are not allowed!!!',0,0,'Y',TO_TIMESTAMP('2024-05-20 11:49:25','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-05-20 11:49:25','YYYY-MM-DD HH24:MI:SS'),100,200898,'BOMExpenseTypeComponentNotAllowed','D','8ae3b346-18ee-45e0-a245-f9222a8e8db9')
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','Expense type items are not allowed.',0,0,'Y',TO_TIMESTAMP('2024-05-20 11:49:25','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2024-05-20 11:49:25','YYYY-MM-DD HH24:MI:SS'),100,200898,'BOMExpenseTypeComponentNotAllowed','D','8ae3b346-18ee-45e0-a245-f9222a8e8db9')
 ;

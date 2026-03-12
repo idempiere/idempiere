@@ -1203,4 +1203,21 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 		else
 			return false;
 	}
+	
+	/**
+	 * @return true if the product is an Expense Type and stocked, false otherwise
+	 */
+	public boolean isExpenseTypeStockedProduct( )
+	{
+		return isExpenseTypeProduct() && isStocked();
+	}
+
+	/**
+	 * @return true if the product type is Expense Type, false otherwise
+	 */
+	public boolean isExpenseTypeProduct( )
+	{
+		return MProduct.PRODUCTTYPE_ExpenseType.equals(getProductType());
+	}
+
 }	//	MProduct

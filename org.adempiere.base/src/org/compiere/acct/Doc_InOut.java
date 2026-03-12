@@ -203,7 +203,7 @@ public class Doc_InOut extends Doc
 				DocLine_InOut line = (DocLine_InOut) p_lines[i];				
 				MProduct product = line.getProduct();
 				//If expense type stocked product, no impact on COGS as it not deducting inventory
-	            if(MProduct.PRODUCTTYPE_ExpenseType.equals(product.getProductType()) && product.isStocked()) {
+	            if(product.isExpenseTypeStockedProduct()) {
 	                continue;
 	            }
 
@@ -461,7 +461,7 @@ public class Doc_InOut extends Doc
 				DocLine_InOut line = (DocLine_InOut) p_lines[i];
 				MProduct product = line.getProduct();
 				//If expense type stocked product, no impact on COGS as it not deducting inventory
-	            if(MProduct.PRODUCTTYPE_ExpenseType.equals(product.getProductType()) && product.isStocked()) {
+	            if(product.isExpenseTypeStockedProduct()) {
 	                continue;
 	            }
 				
@@ -694,7 +694,7 @@ public class Doc_InOut extends Doc
 				BigDecimal costs = null;
 				MProduct product = line.getProduct();
 				//If expense type stocked product, no impact on inventory
-	            if(MProduct.PRODUCTTYPE_ExpenseType.equals(product.getProductType()) && product.isStocked()) {
+	            if(product.isExpenseTypeStockedProduct()) {
 	                continue;
 	            }
 				MOrderLine orderLine = null;
@@ -943,7 +943,7 @@ public class Doc_InOut extends Doc
 				BigDecimal costs = null;
 				MProduct product = line.getProduct();
 				//If expense type stocked product, no impact on inventory
-	            if(MProduct.PRODUCTTYPE_ExpenseType.equals(product.getProductType()) && product.isStocked()) {
+	            if(product.isExpenseTypeStockedProduct()) {
 	                continue;
 	            }
 	            

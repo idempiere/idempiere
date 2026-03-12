@@ -118,7 +118,7 @@ public class MCostDetail extends X_M_CostDetail
 	{
   		//If Expense type product, then don't create cost detail record
 		  MProduct product = MProduct.get(as.getCtx(), M_Product_ID);
-		  if(MProduct.PRODUCTTYPE_ExpenseType.equals(product.getProductType()))
+		  if(product.isExpenseTypeProduct())
 			  return true;
       
 		MCostDetail cd = getOrder (as, M_Product_ID, M_AttributeSetInstance_ID, C_OrderLine_ID, M_CostElement_ID, DateAcct, trxName);
@@ -219,7 +219,7 @@ public class MCostDetail extends X_M_CostDetail
 
 	  //If Expense type product, then don't create cost detail record
 		MProduct product = MProduct.get(as.getCtx(), M_Product_ID);
-		if(MProduct.PRODUCTTYPE_ExpenseType.equals(product.getProductType()))
+		if(product.isExpenseTypeProduct())
 			return true;
 
 		MCostDetail cd = getInvoice (as, M_Product_ID, M_AttributeSetInstance_ID, C_InvoiceLine_ID, M_CostElement_ID, DateAcct, trxName);
@@ -322,7 +322,7 @@ public class MCostDetail extends X_M_CostDetail
 		
 		// If Expense type product, then don't create cost detail record
 		MProduct product = MProduct.get(as.getCtx(), M_Product_ID);
-		if (MProduct.PRODUCTTYPE_ExpenseType.equals(product.getProductType()))
+		if (product.isExpenseTypeProduct())
 			return true;
 				
      MCostDetail cd = getShipment (as, M_Product_ID, M_AttributeSetInstance_ID, M_InOutLine_ID, M_CostElement_ID, trxName);
@@ -611,7 +611,7 @@ public class MCostDetail extends X_M_CostDetail
 	{
 			// If Expense type product, then don't create cost detail record
 		MProduct product = MProduct.get(as.getCtx(), M_Product_ID);
-		if (MProduct.PRODUCTTYPE_ExpenseType.equals(product.getProductType()))
+		if (product.isExpenseTypeProduct())
 			return true;
 	  
     MCostDetail cd = getProduction (as, M_Product_ID, M_AttributeSetInstance_ID, M_ProductionLine_ID, M_CostElement_ID, trxName);

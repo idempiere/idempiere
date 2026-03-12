@@ -233,7 +233,7 @@ public class Doc_Inventory extends Doc
 			String costingLevel = null;
 			MProduct product = line.getProduct();
 			//if product type expense and stocked, then no needs to do posting
-            if(MProduct.PRODUCTTYPE_ExpenseType.equals(product.getProductType()) && product.isStocked()) {
+            if(product.isExpenseTypeStockedProduct()) {
                 continue;
             }
             

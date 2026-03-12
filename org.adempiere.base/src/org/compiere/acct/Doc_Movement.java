@@ -142,7 +142,7 @@ public class Doc_Movement extends Doc
 			MProduct product = (MProduct) line.getProduct();
 
             //If expense type stocked product, no accounting impacted
-            if(MProduct.PRODUCTTYPE_ExpenseType.equals(product.getProductType()) && product.isStocked()) {
+            if(product.isExpenseTypeStockedProduct()) {
                 continue;
             }
 
