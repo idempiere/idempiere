@@ -942,8 +942,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 					config.getSSO_PrincipalConfig_UU());
 			
 			if (referrerUrl != null)
-				Executions.getCurrent().getSession().setAttribute(ISSOPrincipalService.SSO_QUERY_STRING, 
-						URLEncoder.encode(referrerUrl, StandardCharsets.UTF_8));
+				Executions.getCurrent().getSession().setAttribute(ISSOPrincipalService.SSO_QUERY_STRING, referrerUrl);
 			Executions.sendRedirect(ssoURL.toString());
 		});
 
