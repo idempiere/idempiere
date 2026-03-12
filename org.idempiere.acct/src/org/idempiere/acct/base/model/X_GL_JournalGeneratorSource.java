@@ -15,11 +15,16 @@
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
 /** Generated Model - DO NOT CHANGE */
-package org.compiere.model;
+package org.idempiere.acct.base.model;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
+
+import org.compiere.model.I_Persistent;
+import org.compiere.model.MTable;
+import org.compiere.model.PO;
+import org.compiere.model.POInfo;
 import org.compiere.util.Env;
 
 /** Generated Model for GL_JournalGeneratorSource
@@ -196,9 +201,9 @@ public class X_GL_JournalGeneratorSource extends PO implements I_GL_JournalGener
 	}
 
 	@Deprecated(since="13") // use better methods with cache
-	public org.compiere.model.I_GL_JournalGeneratorLine getGL_JournalGeneratorLine() throws RuntimeException
+	public org.idempiere.acct.base.model.I_GL_JournalGeneratorLine getGL_JournalGeneratorLine() throws RuntimeException
 	{
-		return (org.compiere.model.I_GL_JournalGeneratorLine)MTable.get(getCtx(), org.compiere.model.I_GL_JournalGeneratorLine.Table_ID)
+		return (org.idempiere.acct.base.model.I_GL_JournalGeneratorLine)MTable.get(getCtx(), org.idempiere.acct.base.model.I_GL_JournalGeneratorLine.Table_ID)
 			.getPO(getGL_JournalGeneratorLine_ID(), get_TrxName());
 	}
 

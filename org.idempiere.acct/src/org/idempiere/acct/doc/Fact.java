@@ -26,12 +26,12 @@ import java.util.logging.Level;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAcctSchemaElement;
-import org.compiere.model.MDistribution;
-import org.compiere.model.MDistributionLine;
 import org.compiere.model.MElementValue;
 import org.compiere.model.MFactAcct;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.idempiere.acct.base.model.MDistribution;
+import org.idempiere.acct.base.model.MDistributionLine;
 
 /**
  *  Accounting Fact for {@link Doc}.<br/>

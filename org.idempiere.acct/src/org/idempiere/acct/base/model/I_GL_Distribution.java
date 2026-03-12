@@ -14,24 +14,24 @@
  * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
-package org.compiere.model;
+package org.idempiere.acct.base.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for GL_DistributionLine
+/** Generated Interface for GL_Distribution
  *  @author iDempiere (generated) 
  *  @version Release 13
  */
-public interface I_GL_DistributionLine 
+public interface I_GL_Distribution 
 {
 
-    /** TableName=GL_DistributionLine */
-    public static final String Table_Name = "GL_DistributionLine";
+    /** TableName=GL_Distribution */
+    public static final String Table_Name = "GL_Distribution";
 
-    /** AD_Table_ID=707 */
-    public static final int Table_ID = 707;
+    /** AD_Table_ID=708 */
+    public static final int Table_ID = 708;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -103,6 +103,285 @@ public interface I_GL_DistributionLine
 	  * Account used
 	  */
 	public int getAccount_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_ElementValue getAccount() throws RuntimeException;
+
+    /** Column name AnyAcct */
+    public static final String COLUMNNAME_AnyAcct = "AnyAcct";
+
+	/** Set Any Account.
+	  * Match any value of the Account segment
+	  */
+	public void setAnyAcct (boolean AnyAcct);
+
+	/** Get Any Account.
+	  * Match any value of the Account segment
+	  */
+	public boolean isAnyAcct();
+
+    /** Column name AnyActivity */
+    public static final String COLUMNNAME_AnyActivity = "AnyActivity";
+
+	/** Set Any Activity.
+	  * Match any value of the Activity segment
+	  */
+	public void setAnyActivity (boolean AnyActivity);
+
+	/** Get Any Activity.
+	  * Match any value of the Activity segment
+	  */
+	public boolean isAnyActivity();
+
+    /** Column name AnyAsset */
+    public static final String COLUMNNAME_AnyAsset = "AnyAsset";
+
+	/** Set Any Asset.
+	  * Match any value of the Asset segment
+	  */
+	public void setAnyAsset (boolean AnyAsset);
+
+	/** Get Any Asset.
+	  * Match any value of the Asset segment
+	  */
+	public boolean isAnyAsset();
+
+    /** Column name AnyAttributeSetInstance */
+    public static final String COLUMNNAME_AnyAttributeSetInstance = "AnyAttributeSetInstance";
+
+	/** Set Any Attribute Set Instance.
+	  * Match any value of the Employee segment
+	  */
+	public void setAnyAttributeSetInstance (boolean AnyAttributeSetInstance);
+
+	/** Get Any Attribute Set Instance.
+	  * Match any value of the Employee segment
+	  */
+	public boolean isAnyAttributeSetInstance();
+
+    /** Column name AnyBPartner */
+    public static final String COLUMNNAME_AnyBPartner = "AnyBPartner";
+
+	/** Set Any Bus.Partner.
+	  * Match any value of the Business Partner segment
+	  */
+	public void setAnyBPartner (boolean AnyBPartner);
+
+	/** Get Any Bus.Partner.
+	  * Match any value of the Business Partner segment
+	  */
+	public boolean isAnyBPartner();
+
+    /** Column name AnyCampaign */
+    public static final String COLUMNNAME_AnyCampaign = "AnyCampaign";
+
+	/** Set Any Campaign.
+	  * Match any value of the Campaign segment
+	  */
+	public void setAnyCampaign (boolean AnyCampaign);
+
+	/** Get Any Campaign.
+	  * Match any value of the Campaign segment
+	  */
+	public boolean isAnyCampaign();
+
+    /** Column name AnyCharge */
+    public static final String COLUMNNAME_AnyCharge = "AnyCharge";
+
+	/** Set Any Charge.
+	  * Match any value of the Charge segment
+	  */
+	public void setAnyCharge (boolean AnyCharge);
+
+	/** Get Any Charge.
+	  * Match any value of the Charge segment
+	  */
+	public boolean isAnyCharge();
+
+    /** Column name AnyCostCenter */
+    public static final String COLUMNNAME_AnyCostCenter = "AnyCostCenter";
+
+	/** Set Any Cost Center.
+	  * Match any value of the Cost Center segment
+	  */
+	public void setAnyCostCenter (boolean AnyCostCenter);
+
+	/** Get Any Cost Center.
+	  * Match any value of the Cost Center segment
+	  */
+	public boolean isAnyCostCenter();
+
+    /** Column name AnyDepartment */
+    public static final String COLUMNNAME_AnyDepartment = "AnyDepartment";
+
+	/** Set Any Department.
+	  * Match any value of the Department segment
+	  */
+	public void setAnyDepartment (boolean AnyDepartment);
+
+	/** Get Any Department.
+	  * Match any value of the Department segment
+	  */
+	public boolean isAnyDepartment();
+
+    /** Column name AnyEmployee */
+    public static final String COLUMNNAME_AnyEmployee = "AnyEmployee";
+
+	/** Set Any Employee.
+	  * Match any value of the Employee segment
+	  */
+	public void setAnyEmployee (boolean AnyEmployee);
+
+	/** Get Any Employee.
+	  * Match any value of the Employee segment
+	  */
+	public boolean isAnyEmployee();
+
+    /** Column name AnyLocFrom */
+    public static final String COLUMNNAME_AnyLocFrom = "AnyLocFrom";
+
+	/** Set Any Location From.
+	  * Match any value of the Location From segment
+	  */
+	public void setAnyLocFrom (boolean AnyLocFrom);
+
+	/** Get Any Location From.
+	  * Match any value of the Location From segment
+	  */
+	public boolean isAnyLocFrom();
+
+    /** Column name AnyLocTo */
+    public static final String COLUMNNAME_AnyLocTo = "AnyLocTo";
+
+	/** Set Any Location To.
+	  * Match any value of the Location To segment
+	  */
+	public void setAnyLocTo (boolean AnyLocTo);
+
+	/** Get Any Location To.
+	  * Match any value of the Location To segment
+	  */
+	public boolean isAnyLocTo();
+
+    /** Column name AnyOrg */
+    public static final String COLUMNNAME_AnyOrg = "AnyOrg";
+
+	/** Set Any Organization.
+	  * Match any value of the Organization segment
+	  */
+	public void setAnyOrg (boolean AnyOrg);
+
+	/** Get Any Organization.
+	  * Match any value of the Organization segment
+	  */
+	public boolean isAnyOrg();
+
+    /** Column name AnyOrgTrx */
+    public static final String COLUMNNAME_AnyOrgTrx = "AnyOrgTrx";
+
+	/** Set Any Trx Organization.
+	  * Match any value of the Transaction Organization segment
+	  */
+	public void setAnyOrgTrx (boolean AnyOrgTrx);
+
+	/** Get Any Trx Organization.
+	  * Match any value of the Transaction Organization segment
+	  */
+	public boolean isAnyOrgTrx();
+
+    /** Column name AnyProduct */
+    public static final String COLUMNNAME_AnyProduct = "AnyProduct";
+
+	/** Set Any Product.
+	  * Match any value of the Product segment
+	  */
+	public void setAnyProduct (boolean AnyProduct);
+
+	/** Get Any Product.
+	  * Match any value of the Product segment
+	  */
+	public boolean isAnyProduct();
+
+    /** Column name AnyProject */
+    public static final String COLUMNNAME_AnyProject = "AnyProject";
+
+	/** Set Any Project.
+	  * Match any value of the Project segment
+	  */
+	public void setAnyProject (boolean AnyProject);
+
+	/** Get Any Project.
+	  * Match any value of the Project segment
+	  */
+	public boolean isAnyProject();
+
+    /** Column name AnySalesRegion */
+    public static final String COLUMNNAME_AnySalesRegion = "AnySalesRegion";
+
+	/** Set Any Sales Region.
+	  * Match any value of the Sales Region segment
+	  */
+	public void setAnySalesRegion (boolean AnySalesRegion);
+
+	/** Get Any Sales Region.
+	  * Match any value of the Sales Region segment
+	  */
+	public boolean isAnySalesRegion();
+
+    /** Column name AnyUser1 */
+    public static final String COLUMNNAME_AnyUser1 = "AnyUser1";
+
+	/** Set Any User 1.
+	  * Match any value of the User 1 segment
+	  */
+	public void setAnyUser1 (boolean AnyUser1);
+
+	/** Get Any User 1.
+	  * Match any value of the User 1 segment
+	  */
+	public boolean isAnyUser1();
+
+    /** Column name AnyUser2 */
+    public static final String COLUMNNAME_AnyUser2 = "AnyUser2";
+
+	/** Set Any User 2.
+	  * Match any value of the User 2 segment
+	  */
+	public void setAnyUser2 (boolean AnyUser2);
+
+	/** Get Any User 2.
+	  * Match any value of the User 2 segment
+	  */
+	public boolean isAnyUser2();
+
+    /** Column name AnyWarehouse */
+    public static final String COLUMNNAME_AnyWarehouse = "AnyWarehouse";
+
+	/** Set Any Warehouse.
+	  * Match any value of the Warehouse segment
+	  */
+	public void setAnyWarehouse (boolean AnyWarehouse);
+
+	/** Get Any Warehouse.
+	  * Match any value of the Warehouse segment
+	  */
+	public boolean isAnyWarehouse();
+
+    /** Column name C_AcctSchema_ID */
+    public static final String COLUMNNAME_C_AcctSchema_ID = "C_AcctSchema_ID";
+
+	/** Set Accounting Schema.
+	  * Rules for accounting
+	  */
+	public void setC_AcctSchema_ID (int C_AcctSchema_ID);
+
+	/** Get Accounting Schema.
+	  * Rules for accounting
+	  */
+	public int getC_AcctSchema_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_AcctSchema getC_AcctSchema() throws RuntimeException;
 
     /** Column name C_Activity_ID */
     public static final String COLUMNNAME_C_Activity_ID = "C_Activity_ID";
@@ -191,6 +470,22 @@ public interface I_GL_DistributionLine
 
 	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Department getC_Department() throws RuntimeException;
+
+    /** Column name C_DocType_ID */
+    public static final String COLUMNNAME_C_DocType_ID = "C_DocType_ID";
+
+	/** Set Document Type.
+	  * Document type or rules
+	  */
+	public void setC_DocType_ID (int C_DocType_ID);
+
+	/** Get Document Type.
+	  * Document type or rules
+	  */
+	public int getC_DocType_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_DocType getC_DocType() throws RuntimeException;
 
     /** Column name C_Employee_ID */
     public static final String COLUMNNAME_C_Employee_ID = "C_Employee_ID";
@@ -301,28 +596,6 @@ public interface I_GL_DistributionLine
 	  */
 	public String getDescription();
 
-    /** Column name GL_DistributionLine_ID */
-    public static final String COLUMNNAME_GL_DistributionLine_ID = "GL_DistributionLine_ID";
-
-	/** Set GL Distribution Line.
-	  * General Ledger Distribution Line
-	  */
-	public void setGL_DistributionLine_ID (int GL_DistributionLine_ID);
-
-	/** Get GL Distribution Line.
-	  * General Ledger Distribution Line
-	  */
-	public int getGL_DistributionLine_ID();
-
-    /** Column name GL_DistributionLine_UU */
-    public static final String COLUMNNAME_GL_DistributionLine_UU = "GL_DistributionLine_UU";
-
-	/** Set GL_DistributionLine_UU	  */
-	public void setGL_DistributionLine_UU (String GL_DistributionLine_UU);
-
-	/** Get GL_DistributionLine_UU	  */
-	public String getGL_DistributionLine_UU();
-
     /** Column name GL_Distribution_ID */
     public static final String COLUMNNAME_GL_Distribution_ID = "GL_Distribution_ID";
 
@@ -336,8 +609,27 @@ public interface I_GL_DistributionLine
 	  */
 	public int getGL_Distribution_ID();
 
-	@Deprecated(since="13") // use better methods with cache
-	public org.compiere.model.I_GL_Distribution getGL_Distribution() throws RuntimeException;
+    /** Column name GL_Distribution_UU */
+    public static final String COLUMNNAME_GL_Distribution_UU = "GL_Distribution_UU";
+
+	/** Set GL_Distribution_UU	  */
+	public void setGL_Distribution_UU (String GL_Distribution_UU);
+
+	/** Get GL_Distribution_UU	  */
+	public String getGL_Distribution_UU();
+
+    /** Column name Help */
+    public static final String COLUMNNAME_Help = "Help";
+
+	/** Set Comment/Help.
+	  * Comment or Hint
+	  */
+	public void setHelp (String Help);
+
+	/** Get Comment/Help.
+	  * Comment or Hint
+	  */
+	public String getHelp();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -352,18 +644,31 @@ public interface I_GL_DistributionLine
 	  */
 	public boolean isActive();
 
-    /** Column name Line */
-    public static final String COLUMNNAME_Line = "Line";
+    /** Column name IsCreateReversal */
+    public static final String COLUMNNAME_IsCreateReversal = "IsCreateReversal";
 
-	/** Set Line No.
-	  * Unique line for this document
+	/** Set Create Reversal.
+	  * Indicates that reversal movement will be created, if disabled the original movement will be deleted.
 	  */
-	public void setLine (int Line);
+	public void setIsCreateReversal (boolean IsCreateReversal);
 
-	/** Get Line No.
-	  * Unique line for this document
+	/** Get Create Reversal.
+	  * Indicates that reversal movement will be created, if disabled the original movement will be deleted.
 	  */
-	public int getLine();
+	public boolean isCreateReversal();
+
+    /** Column name IsValid */
+    public static final String COLUMNNAME_IsValid = "IsValid";
+
+	/** Set Valid.
+	  * Element is valid
+	  */
+	public void setIsValid (boolean IsValid);
+
+	/** Get Valid.
+	  * Element is valid
+	  */
+	public boolean isValid();
 
     /** Column name M_AttributeSetInstance_ID */
     public static final String COLUMNNAME_M_AttributeSetInstance_ID = "M_AttributeSetInstance_ID";
@@ -413,6 +718,19 @@ public interface I_GL_DistributionLine
 	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_M_Warehouse getM_Warehouse() throws RuntimeException;
 
+    /** Column name Name */
+    public static final String COLUMNNAME_Name = "Name";
+
+	/** Set Name.
+	  * Alphanumeric identifier of the entity
+	  */
+	public void setName (String Name);
+
+	/** Get Name.
+	  * Alphanumeric identifier of the entity
+	  */
+	public String getName();
+
     /** Column name Org_ID */
     public static final String COLUMNNAME_Org_ID = "Org_ID";
 
@@ -426,278 +744,55 @@ public interface I_GL_DistributionLine
 	  */
 	public int getOrg_ID();
 
-    /** Column name OverwriteAcct */
-    public static final String COLUMNNAME_OverwriteAcct = "OverwriteAcct";
+    /** Column name PercentTotal */
+    public static final String COLUMNNAME_PercentTotal = "PercentTotal";
 
-	/** Set Overwrite Account.
-	  * Overwrite the account segment Account with the value specified
+	/** Set Total Percent.
+	  * Sum of the Percent details 
 	  */
-	public void setOverwriteAcct (boolean OverwriteAcct);
+	public void setPercentTotal (BigDecimal PercentTotal);
 
-	/** Get Overwrite Account.
-	  * Overwrite the account segment Account with the value specified
+	/** Get Total Percent.
+	  * Sum of the Percent details 
 	  */
-	public boolean isOverwriteAcct();
+	public BigDecimal getPercentTotal();
 
-    /** Column name OverwriteActivity */
-    public static final String COLUMNNAME_OverwriteActivity = "OverwriteActivity";
+    /** Column name PostingType */
+    public static final String COLUMNNAME_PostingType = "PostingType";
 
-	/** Set Overwrite Activity.
-	  * Overwrite the account segment Activity with the value specified
+	/** Set Posting Type.
+	  * The type of posted amount for the transaction
 	  */
-	public void setOverwriteActivity (boolean OverwriteActivity);
+	public void setPostingType (String PostingType);
 
-	/** Get Overwrite Activity.
-	  * Overwrite the account segment Activity with the value specified
+	/** Get Posting Type.
+	  * The type of posted amount for the transaction
 	  */
-	public boolean isOverwriteActivity();
+	public String getPostingType();
 
-    /** Column name OverwriteAsset */
-    public static final String COLUMNNAME_OverwriteAsset = "OverwriteAsset";
+    /** Column name Processing */
+    public static final String COLUMNNAME_Processing = "Processing";
 
-	/** Set Overwrite Asset.
-	  * Overwrite the account segment Asset with the value specified
+	/** Set Process Now	  */
+	public void setProcessing (boolean Processing);
+
+	/** Get Process Now	  */
+	public boolean isProcessing();
+
+    /** Column name SeqNo */
+    public static final String COLUMNNAME_SeqNo = "SeqNo";
+
+	/** Set Sequence.
+	  * Method of ordering records;
+ lowest number comes first
 	  */
-	public void setOverwriteAsset (boolean OverwriteAsset);
+	public void setSeqNo (int SeqNo);
 
-	/** Get Overwrite Asset.
-	  * Overwrite the account segment Asset with the value specified
+	/** Get Sequence.
+	  * Method of ordering records;
+ lowest number comes first
 	  */
-	public boolean isOverwriteAsset();
-
-    /** Column name OverwriteAttributeSetInstance */
-    public static final String COLUMNNAME_OverwriteAttributeSetInstance = "OverwriteAttributeSetInstance";
-
-	/** Set Overwrite Attribute Set Instance.
-	  * Overwrite the account segment Attribute Set Instance with the value specified
-	  */
-	public void setOverwriteAttributeSetInstance (boolean OverwriteAttributeSetInstance);
-
-	/** Get Overwrite Attribute Set Instance.
-	  * Overwrite the account segment Attribute Set Instance with the value specified
-	  */
-	public boolean isOverwriteAttributeSetInstance();
-
-    /** Column name OverwriteBPartner */
-    public static final String COLUMNNAME_OverwriteBPartner = "OverwriteBPartner";
-
-	/** Set Overwrite Bus.Partner.
-	  * Overwrite the account segment Business Partner with the value specified
-	  */
-	public void setOverwriteBPartner (boolean OverwriteBPartner);
-
-	/** Get Overwrite Bus.Partner.
-	  * Overwrite the account segment Business Partner with the value specified
-	  */
-	public boolean isOverwriteBPartner();
-
-    /** Column name OverwriteCampaign */
-    public static final String COLUMNNAME_OverwriteCampaign = "OverwriteCampaign";
-
-	/** Set Overwrite Campaign.
-	  * Overwrite the account segment Campaign with the value specified
-	  */
-	public void setOverwriteCampaign (boolean OverwriteCampaign);
-
-	/** Get Overwrite Campaign.
-	  * Overwrite the account segment Campaign with the value specified
-	  */
-	public boolean isOverwriteCampaign();
-
-    /** Column name OverwriteCharge */
-    public static final String COLUMNNAME_OverwriteCharge = "OverwriteCharge";
-
-	/** Set Overwrite Charge.
-	  * Overwrite the account segment Charge with the value specified
-	  */
-	public void setOverwriteCharge (boolean OverwriteCharge);
-
-	/** Get Overwrite Charge.
-	  * Overwrite the account segment Charge with the value specified
-	  */
-	public boolean isOverwriteCharge();
-
-    /** Column name OverwriteCostCenter */
-    public static final String COLUMNNAME_OverwriteCostCenter = "OverwriteCostCenter";
-
-	/** Set Overwrite Cost Center.
-	  * Overwrite the account segment Cost Center with the value specified
-	  */
-	public void setOverwriteCostCenter (boolean OverwriteCostCenter);
-
-	/** Get Overwrite Cost Center.
-	  * Overwrite the account segment Cost Center with the value specified
-	  */
-	public boolean isOverwriteCostCenter();
-
-    /** Column name OverwriteDepartment */
-    public static final String COLUMNNAME_OverwriteDepartment = "OverwriteDepartment";
-
-	/** Set Overwrite Department.
-	  * Overwrite the account segment Department with the value specified
-	  */
-	public void setOverwriteDepartment (boolean OverwriteDepartment);
-
-	/** Get Overwrite Department.
-	  * Overwrite the account segment Department with the value specified
-	  */
-	public boolean isOverwriteDepartment();
-
-    /** Column name OverwriteEmployee */
-    public static final String COLUMNNAME_OverwriteEmployee = "OverwriteEmployee";
-
-	/** Set Overwrite Employee.
-	  * Overwrite the account segment Employee with the value specified
-	  */
-	public void setOverwriteEmployee (boolean OverwriteEmployee);
-
-	/** Get Overwrite Employee.
-	  * Overwrite the account segment Employee with the value specified
-	  */
-	public boolean isOverwriteEmployee();
-
-    /** Column name OverwriteLocFrom */
-    public static final String COLUMNNAME_OverwriteLocFrom = "OverwriteLocFrom";
-
-	/** Set Overwrite Location From.
-	  * Overwrite the account segment Location From with the value specified
-	  */
-	public void setOverwriteLocFrom (boolean OverwriteLocFrom);
-
-	/** Get Overwrite Location From.
-	  * Overwrite the account segment Location From with the value specified
-	  */
-	public boolean isOverwriteLocFrom();
-
-    /** Column name OverwriteLocTo */
-    public static final String COLUMNNAME_OverwriteLocTo = "OverwriteLocTo";
-
-	/** Set Overwrite Location To.
-	  * Overwrite the account segment Location From with the value specified
-	  */
-	public void setOverwriteLocTo (boolean OverwriteLocTo);
-
-	/** Get Overwrite Location To.
-	  * Overwrite the account segment Location From with the value specified
-	  */
-	public boolean isOverwriteLocTo();
-
-    /** Column name OverwriteOrg */
-    public static final String COLUMNNAME_OverwriteOrg = "OverwriteOrg";
-
-	/** Set Overwrite Organization.
-	  * Overwrite the account segment Organization with the value specified
-	  */
-	public void setOverwriteOrg (boolean OverwriteOrg);
-
-	/** Get Overwrite Organization.
-	  * Overwrite the account segment Organization with the value specified
-	  */
-	public boolean isOverwriteOrg();
-
-    /** Column name OverwriteOrgTrx */
-    public static final String COLUMNNAME_OverwriteOrgTrx = "OverwriteOrgTrx";
-
-	/** Set Overwrite Trx Organization.
-	  * Overwrite the account segment Transaction Organization with the value specified
-	  */
-	public void setOverwriteOrgTrx (boolean OverwriteOrgTrx);
-
-	/** Get Overwrite Trx Organization.
-	  * Overwrite the account segment Transaction Organization with the value specified
-	  */
-	public boolean isOverwriteOrgTrx();
-
-    /** Column name OverwriteProduct */
-    public static final String COLUMNNAME_OverwriteProduct = "OverwriteProduct";
-
-	/** Set Overwrite Product.
-	  * Overwrite the account segment Product with the value specified
-	  */
-	public void setOverwriteProduct (boolean OverwriteProduct);
-
-	/** Get Overwrite Product.
-	  * Overwrite the account segment Product with the value specified
-	  */
-	public boolean isOverwriteProduct();
-
-    /** Column name OverwriteProject */
-    public static final String COLUMNNAME_OverwriteProject = "OverwriteProject";
-
-	/** Set Overwrite Project.
-	  * Overwrite the account segment Project with the value specified
-	  */
-	public void setOverwriteProject (boolean OverwriteProject);
-
-	/** Get Overwrite Project.
-	  * Overwrite the account segment Project with the value specified
-	  */
-	public boolean isOverwriteProject();
-
-    /** Column name OverwriteSalesRegion */
-    public static final String COLUMNNAME_OverwriteSalesRegion = "OverwriteSalesRegion";
-
-	/** Set Overwrite Sales Region.
-	  * Overwrite the account segment Sales Region with the value specified
-	  */
-	public void setOverwriteSalesRegion (boolean OverwriteSalesRegion);
-
-	/** Get Overwrite Sales Region.
-	  * Overwrite the account segment Sales Region with the value specified
-	  */
-	public boolean isOverwriteSalesRegion();
-
-    /** Column name OverwriteUser1 */
-    public static final String COLUMNNAME_OverwriteUser1 = "OverwriteUser1";
-
-	/** Set Overwrite User1.
-	  * Overwrite the account segment User 1 with the value specified
-	  */
-	public void setOverwriteUser1 (boolean OverwriteUser1);
-
-	/** Get Overwrite User1.
-	  * Overwrite the account segment User 1 with the value specified
-	  */
-	public boolean isOverwriteUser1();
-
-    /** Column name OverwriteUser2 */
-    public static final String COLUMNNAME_OverwriteUser2 = "OverwriteUser2";
-
-	/** Set Overwrite User2.
-	  * Overwrite the account segment User 2 with the value specified
-	  */
-	public void setOverwriteUser2 (boolean OverwriteUser2);
-
-	/** Get Overwrite User2.
-	  * Overwrite the account segment User 2 with the value specified
-	  */
-	public boolean isOverwriteUser2();
-
-    /** Column name OverwriteWarehouse */
-    public static final String COLUMNNAME_OverwriteWarehouse = "OverwriteWarehouse";
-
-	/** Set Overwrite Warehouse.
-	  * Overwrite the account segment Warehouse with the value specified
-	  */
-	public void setOverwriteWarehouse (boolean OverwriteWarehouse);
-
-	/** Get Overwrite Warehouse.
-	  * Overwrite the account segment Warehouse with the value specified
-	  */
-	public boolean isOverwriteWarehouse();
-
-    /** Column name Percent */
-    public static final String COLUMNNAME_Percent = "Percent";
-
-	/** Set Percent.
-	  * Percentage
-	  */
-	public void setPercent (BigDecimal Percent);
-
-	/** Get Percent.
-	  * Percentage
-	  */
-	public BigDecimal getPercent();
+	public int getSeqNo();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
@@ -746,4 +841,30 @@ public interface I_GL_DistributionLine
 
 	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_ElementValue getUser2() throws RuntimeException;
+
+    /** Column name ValidFrom */
+    public static final String COLUMNNAME_ValidFrom = "ValidFrom";
+
+	/** Set Valid from.
+	  * Valid from including this date (first day)
+	  */
+	public void setValidFrom (Timestamp ValidFrom);
+
+	/** Get Valid from.
+	  * Valid from including this date (first day)
+	  */
+	public Timestamp getValidFrom();
+
+    /** Column name ValidTo */
+    public static final String COLUMNNAME_ValidTo = "ValidTo";
+
+	/** Set Valid to.
+	  * Valid to including this date (last day)
+	  */
+	public void setValidTo (Timestamp ValidTo);
+
+	/** Get Valid to.
+	  * Valid to including this date (last day)
+	  */
+	public Timestamp getValidTo();
 }

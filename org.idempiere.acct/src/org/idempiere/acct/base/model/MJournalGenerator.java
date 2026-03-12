@@ -22,50 +22,51 @@
 * Contributors:                                                       *
 * - Carlos Ruiz - globalqss                                           *
 **********************************************************************/
-package org.compiere.model;
+package org.idempiere.acct.base.model;
 
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
 
+import org.compiere.model.Query;
 import org.compiere.util.CLogger;
 
 /**
- *	GL Journal Generator Line Model
+ *	GL Journal Generator Model
  *
  *  @author Carlos Ruiz - GlobalQSS
  */
-public class MJournalGeneratorLine extends X_GL_JournalGeneratorLine
+public class MJournalGenerator extends X_GL_JournalGenerator
 {
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = -8151648371117046820L;
+	private static final long serialVersionUID = -8044550395699815424L;
 
 	/**	Logger			*/
 	@SuppressWarnings("unused")
-	private static CLogger s_log = CLogger.getCLogger(MJournalGeneratorLine.class);
+	private static CLogger s_log = CLogger.getCLogger(MJournalGenerator.class);
 
     /**
      * UUID based Constructor
      * @param ctx  Context
-     * @param GL_JournalGeneratorLine_UU  UUID key
+     * @param GL_JournalGenerator_UU  UUID key
      * @param trxName Transaction
      */
-    public MJournalGeneratorLine(Properties ctx, String GL_JournalGeneratorLine_UU, String trxName) {
-        super(ctx, GL_JournalGeneratorLine_UU, trxName);
+    public MJournalGenerator(Properties ctx, String GL_JournalGenerator_UU, String trxName) {
+        super(ctx, GL_JournalGenerator_UU, trxName);
     }
 
 	/**
 	 * 	Standard Constructor
 	 *	@param ctx context
-	 *	@param GL_JournalGeneratorLine_ID id
+	 *	@param GL_JournalGenerator_ID id
 	 *	@param trxName transaction
 	 */
-	public MJournalGeneratorLine (Properties ctx, int GL_JournalGeneratorLine_ID, String trxName)
+	public MJournalGenerator (Properties ctx, int GL_JournalGenerator_ID, String trxName)
 	{
-	      super (ctx, GL_JournalGeneratorLine_ID, trxName);
-	}	//	MJournalGeneratorLine
+	      super (ctx, GL_JournalGenerator_ID, trxName);
+	}	//	MJournalGenerator
 
 	/**
 	 * 	Load Constructor
@@ -73,25 +74,26 @@ public class MJournalGeneratorLine extends X_GL_JournalGeneratorLine
 	 *	@param rs result set
 	 *	@param trxName transaction
 	 */
-	public MJournalGeneratorLine (Properties ctx, ResultSet rs, String trxName)
+	public MJournalGenerator (Properties ctx, ResultSet rs, String trxName)
 	{
 		super(ctx, rs, trxName);
-	}	//	MJournalGeneratorLine
+	}	//	MJournalGenerator
 
 	/**
-	 * 	Get Journal Generator Sources of Journal Generator Line
-	 * 	@return sources
+	 * 	Get Journal Generator Lines of Journal Generator
+	 * 	@return lines
 	 */
-	public MJournalGeneratorSource[] getSources ()
+	public MJournalGeneratorLine[] getLines ()
 	{
-		List<MJournalGeneratorSource> list = new Query(getCtx(), MJournalGeneratorSource.Table_Name, "GL_JournalGeneratorLine_ID=?", get_TrxName())
+		List<MJournalGeneratorLine> list = new Query(getCtx(), MJournalGeneratorLine.Table_Name, "GL_JournalGenerator_ID=?", get_TrxName())
 			.setOnlyActiveRecords(true)
-			.setParameters(getGL_JournalGeneratorLine_ID())
+			.setParameters(getGL_JournalGenerator_ID())
+			.setOrderBy(MJournalGeneratorLine.COLUMNNAME_SeqNo)
 			.list();
 		//
-		MJournalGeneratorSource[] sources = new MJournalGeneratorSource[list.size()];
-		list.toArray(sources);
-		return sources;
-	}	//	getSources
+		MJournalGeneratorLine[] lines = new MJournalGeneratorLine[list.size()];
+		list.toArray(lines);
+		return lines;
+	}	//	getLines
 
-}	//	MJournalGeneratorLine
+}	//	MJournalGenerator

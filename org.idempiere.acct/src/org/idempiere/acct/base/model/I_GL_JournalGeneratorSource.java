@@ -14,7 +14,7 @@
  * ComPiere, Inc., 2620 Augustine Dr. #245, Santa Clara, CA 95054, USA        *
  * or via info@compiere.org or http://www.compiere.org/license.html           *
  *****************************************************************************/
-package org.compiere.model;
+package org.idempiere.acct.base.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -133,7 +133,7 @@ public interface I_GL_JournalGeneratorSource
 	public int getGL_JournalGeneratorLine_ID();
 
 	@Deprecated(since="13") // use better methods with cache
-	public org.compiere.model.I_GL_JournalGeneratorLine getGL_JournalGeneratorLine() throws RuntimeException;
+	public org.idempiere.acct.base.model.I_GL_JournalGeneratorLine getGL_JournalGeneratorLine() throws RuntimeException;
 
     /** Column name GL_JournalGeneratorSource_ID */
     public static final String COLUMNNAME_GL_JournalGeneratorSource_ID = "GL_JournalGeneratorSource_ID";

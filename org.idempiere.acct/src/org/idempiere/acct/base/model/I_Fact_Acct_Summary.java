@@ -564,7 +564,7 @@ public interface I_Fact_Acct_Summary
 	public int getPA_ReportCube_ID();
 
 	@Deprecated(since="13") // use better methods with cache
-	public org.compiere.model.I_PA_ReportCube getPA_ReportCube() throws RuntimeException;
+	public org.idempiere.acct.base.model.I_PA_ReportCube getPA_ReportCube() throws RuntimeException;
 
     /** Column name PostingType */
     public static final String COLUMNNAME_PostingType = "PostingType";

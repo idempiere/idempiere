@@ -19,7 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
  * MA 02110-1301, USA.                                                 *
  **********************************************************************/
-package org.compiere.process;
+package org.idempiere.acct.process;
 
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
@@ -28,13 +28,15 @@ import java.sql.Timestamp;
 import java.util.logging.Level;
 
 import org.compiere.model.MProcessPara;
+import org.compiere.process.ProcessInfoParameter;
+import org.compiere.process.SvrProcess;
 import org.compiere.util.DB;
 import org.compiere.util.Msg;
 
 /**
  * Account reconciliation report
  */
-@org.adempiere.base.annotation.Process
+@org.adempiere.base.annotation.Process( name = "org.compiere.process.FactReconciliation" )
 public class FactReconciliation extends SvrProcess
 {
 	private Timestamp			p_DateAcct_From = null;

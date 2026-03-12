@@ -18,10 +18,10 @@ package org.idempiere.acct.process;
 
 import java.util.logging.Level;
 
-import org.compiere.model.MDistribution;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.AdempiereUserError;
+import org.idempiere.acct.base.model.MDistribution;
 
 
 /**

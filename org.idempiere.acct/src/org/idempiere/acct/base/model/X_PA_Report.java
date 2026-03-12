@@ -433,9 +433,9 @@ public class X_PA_Report extends PO implements I_PA_Report, I_Persistent
 	}
 
 	@Deprecated(since="13") // use better methods with cache
-	public org.compiere.model.I_PA_ReportCube getPA_ReportCube() throws RuntimeException
+	public org.idempiere.acct.base.model.I_PA_ReportCube getPA_ReportCube() throws RuntimeException
 	{
-		return (org.compiere.model.I_PA_ReportCube)MTable.get(getCtx(), org.compiere.model.I_PA_ReportCube.Table_ID)
+		return (org.idempiere.acct.base.model.I_PA_ReportCube)MTable.get(getCtx(), org.idempiere.acct.base.model.I_PA_ReportCube.Table_ID)
 			.getPO(getPA_ReportCube_ID(), get_TrxName());
 	}
 

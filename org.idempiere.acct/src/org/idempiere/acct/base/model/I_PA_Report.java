@@ -265,7 +265,7 @@ public interface I_PA_Report
 	public int getPA_ReportCube_ID();
 
 	@Deprecated(since="13") // use better methods with cache
-	public org.compiere.model.I_PA_ReportCube getPA_ReportCube() throws RuntimeException;
+	public org.idempiere.acct.base.model.I_PA_ReportCube getPA_ReportCube() throws RuntimeException;
 
     /** Column name PA_ReportLineSet_ID */
     public static final String COLUMNNAME_PA_ReportLineSet_ID = "PA_ReportLineSet_ID";

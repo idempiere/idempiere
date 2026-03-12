@@ -22,7 +22,7 @@
 * Contributors:                                                       *
 * - Carlos Ruiz - globalqss                                           *
 **********************************************************************/
-package org.compiere.model;
+package org.idempiere.acct.base.model;
 
 import java.sql.ResultSet;
 import java.util.Properties;
