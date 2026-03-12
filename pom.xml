@@ -17,7 +17,7 @@
 	     Behaves exactly like the original single build.
 	     Runs all modules and uses org.idempiere.p2 for packaging.
 
-	     Build: mvn clean package
+	     Build: mvn clean verify
 	     ══════════════════════════════════════════════════════════ -->
 	<modules>
 		<module>org.adempiere.base</module>
