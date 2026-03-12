@@ -27,6 +27,7 @@ import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.impexp.MImpFormatRow;
 import org.compiere.model.I_AD_ImpFormat;
 import org.compiere.model.I_AD_ImpFormat_Row;
 import org.compiere.model.X_AD_ImpFormat_Row;
@@ -47,9 +48,9 @@ public class ImpFormatRowElementHandler extends AbstractElementHandler {
 			return;
 		}
 
-		X_AD_ImpFormat_Row mImpFormatRow = findPO(ctx, element);
+		MImpFormatRow mImpFormatRow = findPO(ctx, element);
 		if (mImpFormatRow == null) {
-			mImpFormatRow = new X_AD_ImpFormat_Row(ctx.ctx, 0, getTrxName(ctx));
+			mImpFormatRow = new MImpFormatRow(ctx.ctx, 0, getTrxName(ctx));
 		}
 		PoFiller filler = new PoFiller(ctx, mImpFormatRow, element, this);
 		List<String> notfounds = filler.autoFill(excludes);
