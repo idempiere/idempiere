@@ -394,10 +394,11 @@ public final class AEnv
 				return docPostingService.manualPosting(WindowNo, AD_Client_ID, AD_Table_ID, Record_ID, force);
 		}
 		
+		String error = "Accounting service not available";
 	    if (log.isLoggable(Level.FINE))
 	        log.fine("Accounting service not available - skipping accounting");
 
-		return null;
+		return error;
 	}   //  postImmediate
 
 	/**
