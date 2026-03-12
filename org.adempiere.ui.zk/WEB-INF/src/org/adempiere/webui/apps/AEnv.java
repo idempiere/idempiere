@@ -364,8 +364,11 @@ public final class AEnv
 	 * {@link IDocPostingService#manualPosting(int, int, int, int, boolean)} directly instead:
 	 * <pre>
 	 * if (AcctModelServices.isAccountingAvailable()) {
-	 *     String error = AcctModelServices.getDocPostingService()
-	 *             .manualPosting(WindowNo, AD_Client_ID, AD_Table_ID, Record_ID, force);
+	 *     IDocPostingService docPostingService = AcctModelServices.getDocPostingService();
+	 *     if (docPostingService != null) {
+	 *          String error = AcctModelServices.getDocPostingService()
+  	 *                 .manualPosting(WindowNo, AD_Client_ID, AD_Table_ID, Record_ID, force);
+  	 *     }
 	 * }
 	 * </pre>
 	 *
