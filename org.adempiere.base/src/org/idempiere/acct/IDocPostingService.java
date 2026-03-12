@@ -26,9 +26,27 @@ import org.compiere.model.MAcctSchema;
 
 public interface IDocPostingService {
 
+	/**
+	 *  Post document immediately
+	 * 	@param ass accounting schema
+	 * 	@param AD_Table_ID	Transaction table
+	 *  @param Record_ID    Record ID of this document
+	 *  @param force        force posting
+	 *  @param trxName	    transaction
+	 *  @return null if the document was posted or error message
+	 */
 	String postImmediate(MAcctSchema[] ass, int AD_Table_ID, 
 			int Record_ID, boolean force, String trxName);
 
+	/**
+	 * Manual posting by user
+	 * @param WindowNo
+	 * @param AD_Client_ID
+	 * @param AD_Table_ID
+	 * @param Record_ID
+	 * @param force
+	 * @return error message ( if any )
+	 */
 	String manualPosting(int WindowNo, int AD_Client_ID, 
 			int AD_Table_ID, int Record_ID, boolean force);
 
