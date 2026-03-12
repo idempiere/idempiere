@@ -521,7 +521,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	    
 	    boolean isSSOLogin = "Y".equals(Env.getContext(Env.getCtx(), Env.IS_SSO_LOGIN));
 		String provider = (String) desktop.getSession().getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
-	    if (isSSOLogin && !Util.isEmpty(provider, true))
+	    if (isSSOLogin && !Util.isEmpty(provider, true) && !MSysConfig.getBooleanValue(MSysConfig.SSO_SHOW_LOGINPAGE, true))
 	    {
 	    	setCookie(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider, 3600); // 1 hour
 	    }
