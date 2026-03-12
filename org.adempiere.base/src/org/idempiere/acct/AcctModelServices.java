@@ -65,7 +65,7 @@ public final class AcctModelServices {
 	 * @return true if the accounting service is available
 	 */
 	public static boolean isAccountingAvailable() {
-		return s_accountingService != null && s_postingService != null;
+		return s_accountingService != null;
 	}
 	
 	/**
@@ -91,6 +91,13 @@ public final class AcctModelServices {
 	 */
 	public static IDocPostingService getDocPostingService() {
 		return s_postingService;
+	}
+	
+	/**
+	 * @return true if the posting service is available
+	 */
+	public static boolean isDocPostingAvailable() {
+		return s_postingService != null;
 	}
 	
 }

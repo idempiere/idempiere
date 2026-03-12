@@ -388,9 +388,10 @@ public final class AEnv
 			+ ", AD_Table_ID=" + AD_Table_ID + "/" + Record_ID
 			+ ", Force=" + force);
 		
-		if (AcctModelServices.isAccountingAvailable()) {
-			return AcctModelServices.getDocPostingService()
-					.manualPosting(WindowNo, AD_Client_ID, AD_Table_ID, Record_ID, force);
+		if (AcctModelServices.isDocPostingAvailable()) {
+			IDocPostingService docPostingService = AcctModelServices.getDocPostingService();
+			if (docPostingService != null)
+				return docPostingService.manualPosting(WindowNo, AD_Client_ID, AD_Table_ID, Record_ID, force);
 		}
 		
 	    if (log.isLoggable(Level.FINE))

@@ -65,6 +65,7 @@ import org.eevolution.model.I_HR_Process;
 import org.eevolution.model.I_PP_Cost_Collector;
 import org.eevolution.model.I_PP_Order;
 import org.idempiere.acct.AcctModelServices;
+import org.idempiere.acct.IDocPostingService;
 import org.osgi.service.event.Event;
 
 /**
@@ -1442,10 +1443,11 @@ public class DocumentEngine implements DocAction
 
 		String error = null;
 		if (log.isLoggable(Level.INFO)) log.info ("Table=" + AD_Table_ID + ", Record=" + Record_ID);
-		if (AcctModelServices.isAccountingAvailable()) {
+		if (AcctModelServices.isDocPostingAvailable()) {
 			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(ctx, AD_Client_ID);
-			error = AcctModelServices.getDocPostingService()
-					.postImmediate(ass, AD_Table_ID, Record_ID, force, trxName);
+			IDocPostingService docPostingService = AcctModelServices.getDocPostingService();
+			if (docPostingService != null)
+				error = docPostingService.postImmediate(ass, AD_Table_ID, Record_ID, force, trxName);
 		}
 		return error;
 	}	//	postImmediate
