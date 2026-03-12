@@ -18,7 +18,6 @@ import java.sql.ResultSet;
 import java.util.logging.Level;
 
 import org.adempiere.base.IDocFactory;
-import org.compiere.acct.Doc;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MTable;
 import org.compiere.util.AdempiereUserError;
@@ -86,7 +85,7 @@ public class DefaultDocumentFactory implements IDocFactory {
 		 */
 
 		String tableName = MTable.getTableName(Env.getCtx(), AD_Table_ID);
-		String packageName = "org.compiere.acct";
+		String packageName = "org.idempiere.acct.doc";
 		String className = null;
 
 		int firstUnderscore = tableName.indexOf("_");

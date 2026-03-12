@@ -23,11 +23,11 @@ import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.factory.IPostingService;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.window.Dialog;
-import org.compiere.acct.Doc;
 import org.compiere.model.MProjectIssue;
 import org.compiere.model.SystemIDs;
 import org.compiere.process.DocAction;
 import org.compiere.util.Env;
+import org.idempiere.acct.doc.Doc;
 import org.osgi.service.component.annotations.Component;
 
 /**

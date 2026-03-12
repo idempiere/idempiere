@@ -31,8 +31,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.compiere.model.FactsValidationEngine;
-import org.compiere.model.FactsValidator;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClient;
 import org.compiere.model.MOrg;
@@ -40,8 +38,9 @@ import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.ModelValidator;
 import org.compiere.model.PO;
 import org.compiere.util.Env;
-
-import org.compiere.acct.Fact;
+import org.idempiere.acct.base.model.FactsValidator;
+import org.idempiere.acct.doc.Fact;
+import org.idempiere.acct.event.FactsValidationEngine;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

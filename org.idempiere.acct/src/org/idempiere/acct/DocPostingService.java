@@ -24,8 +24,8 @@
  **********************************************************************/
 package org.idempiere.acct;
 
-import org.compiere.acct.Doc;
 import org.compiere.model.MAcctSchema;
+import org.idempiere.acct.doc.Doc;
 
 public class DocPostingService implements IDocPostingService {
 

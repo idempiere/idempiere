@@ -13,12 +13,16 @@ Require-Bundle: org.adempiere.base;bundle-version="0.0.0",
  org.idempiere.zk.extra;bundle-version="14.0.0",
  zcommon;bundle-version="9.6.4",
  zk;bundle-version="9.6.4",
- zul;bundle-version="9.6.4"
+ zul;bundle-version="9.6.4",
+ org.adempiere.server
 Export-Package: org.idempiere.acct.base.model,
+ org.idempiere.acct.doc,
+ org.idempiere.acct.event,
  org.idempiere.acct.form
 Service-Component: OSGI-INF/*.xml
 Bundle-ClassPath: .
 Automatic-Module-Name: org.idempiere.acct
 Bundle-Vendor: iDempiere Community
 Import-Package: org.osgi.framework,
- org.osgi.service.component.annotations;version="1.5.1"
+ org.osgi.service.component.annotations;version="1.5.1",
+ org.osgi.service.event;version="[1.4.0,2.0.0)"
