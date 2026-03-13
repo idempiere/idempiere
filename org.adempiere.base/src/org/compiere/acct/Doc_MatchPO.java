@@ -35,6 +35,7 @@ import org.compiere.model.MCostDetail;
 import org.compiere.model.MCurrency;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
+import org.compiere.model.MInOutLineMA;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MMatchPO;
 import org.compiere.model.MOrder;
@@ -644,16 +645,141 @@ public class Doc_MatchPO extends Doc
 			poCost = poCost.multiply(getQty());			//	Delivered so far
 			tAmt = tAmt.add(isReturnTrx ? poCost.negate() : poCost);
 			tQty = tQty.add(isReturnTrx ? getQty().negate() : getQty());
-			
-			if (mMatchPO.isReversal()) 
+		
+		if (tAmt.scale() > as.getCostingPrecision())
+			tAmt = tAmt.setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
+		
+		// IDEMPIERE-6847: Handle Batch/Lot costing with M_InOutLineMA
+		MProduct product = MProduct.get(getCtx(), getM_Product_ID(), getTrxName());
+		if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as))
+				&& mMatchPO.getM_AttributeSetInstance_ID() == 0
+				&& m_ioLine != null)
+		{
+			MInOutLineMA[] mas = MInOutLineMA.get(getCtx(), m_ioLine.getM_InOutLine_ID(), getTrxName());
+			if (mas != null && mas.length > 0)
 			{
-				String error = createLandedCostAdjustments(as, landedCostMap, mMatchPO, tQty);
-				if (!Util.isEmpty(error))
-					return error;
+				// Guard against division by zero
+				if (tQty.abs().compareTo(BigDecimal.ZERO) == 0)
+				{
+					return "Error: Total quantity is zero for cost allocation";
+				}
+				
+				// Build map of cumulative quantities per ASI from all matched receipts on same date
+				Map<Integer, BigDecimal> asiQtyMap = new HashMap<Integer, BigDecimal>();
+				for (int i = 0; i < mPO.length; i++)
+				{
+					if (mPO[i].getM_AttributeSetInstance_ID() == mMatchPO.getM_AttributeSetInstance_ID()
+						&& mPO[i].getM_MatchPO_ID() != mMatchPO.getM_MatchPO_ID()
+						&& mPO[i].getDateAcct().compareTo(mMatchPO.getDateAcct()) == 0
+						&& mPO[i].getM_InOutLine_ID() > 0)
+					{
+						MInOutLineMA[] otherMas = MInOutLineMA.get(getCtx(), mPO[i].getM_InOutLine_ID(), getTrxName());
+						if (otherMas != null && otherMas.length > 0)
+						{
+							for (MInOutLineMA otherMa : otherMas)
+							{
+								int asiId = otherMa.getM_AttributeSetInstance_ID();
+								BigDecimal qty = isReturnTrx ? otherMa.getMovementQty().negate() : otherMa.getMovementQty();
+								BigDecimal absQty = qty.abs();
+								BigDecimal existingQty = asiQtyMap.get(asiId);
+								if (existingQty == null)
+									asiQtyMap.put(asiId, absQty);
+								else
+									asiQtyMap.put(asiId, existingQty.add(absQty));
+							}
+						}
+					}
+				}
+				
+				// Add current receipt's MA quantities to the map
+				for (MInOutLineMA ma : mas)
+				{
+					int asiId = ma.getM_AttributeSetInstance_ID();
+					BigDecimal qty = isReturnTrx ? ma.getMovementQty().negate() : ma.getMovementQty();
+					BigDecimal absQty = qty.abs();
+					BigDecimal existingQty = asiQtyMap.get(asiId);
+					if (existingQty == null)
+						asiQtyMap.put(asiId, absQty);
+					else
+						asiQtyMap.put(asiId, existingQty.add(absQty));
+				}
+				
+				// Create cost details per unique ASI (aggregated across all MA lines and receipts)
+				// This handles the case where multiple receipts on the same date have the same ASI
+				for (Map.Entry<Integer, BigDecimal> entry : asiQtyMap.entrySet())
+				{
+					int asiId = entry.getKey();
+					BigDecimal cumulativeAsiQty = entry.getValue();
+					// Apply return transaction sign to the quantity
+					BigDecimal asiQty = isReturnTrx ? cumulativeAsiQty.negate() : cumulativeAsiQty;
+					
+					// Calculate proportional amount based on cumulative ASI quantity
+					BigDecimal asiAmt = tAmt.multiply(cumulativeAsiQty).divide(tQty.abs(), 12, RoundingMode.HALF_UP);
+					if (asiAmt.scale() > as.getCostingPrecision())
+						asiAmt = asiAmt.setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
+					
+					int maRefCostDetailID = 0;
+					if (mMatchPO.getReversal_ID() > 0 && mMatchPO.get_ID() > mMatchPO.getReversal_ID())
+					{
+						MMatchPO reversal = new MMatchPO(getCtx(), mMatchPO.getReversal_ID(), getTrxName());
+						MCostDetail cd = MCostDetail.getOrder(as, getM_Product_ID(), asiId,
+								reversal.getC_OrderLine_ID(), 0, reversal.getDateAcct(), getTrxName());
+						if (cd != null)
+							maRefCostDetailID = cd.getM_CostDetail_ID();
+					}
+					
+					// Create base cost detail for this ASI
+					if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(),
+							getM_Product_ID(), asiId,
+							m_oLine.getC_OrderLine_ID(), 0,
+							asiAmt, asiQty,
+							m_oLine.getDescription(), getDateAcct(), maRefCostDetailID, getTrxName()))
+					{
+						return "SaveError";
+					}
+					
+					// Create landed cost adjustments per ASI
+					if (!mMatchPO.isReversal())
+					{
+						String error = createLandedCostAdjustments(as, landedCostMap, asiId, asiQty, getDateAcct());
+						if (!Util.isEmpty(error))
+							return error;
+					}
+				}
 			}
-			
-			if (tAmt.scale() > as.getCostingPrecision())
-				tAmt = tAmt.setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
+			else
+			{
+				// No M_InOutLineMA records, create single cost detail at ASI=0
+				int Ref_CostDetail_ID = 0;
+				if (mMatchPO.getReversal_ID() > 0 && mMatchPO.get_ID() > mMatchPO.getReversal_ID())
+				{
+					MMatchPO reversal = new MMatchPO(getCtx(), mMatchPO.getReversal_ID(), getTrxName());
+					MCostDetail cd = MCostDetail.getOrder(as, getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
+							reversal.getC_OrderLine_ID(), 0, reversal.getDateAcct(), getTrxName());
+					if (cd != null)
+						Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+				}
+				
+				if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(),
+						getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
+						m_oLine.getC_OrderLine_ID(), 0,
+						tAmt, tQty,
+						m_oLine.getDescription(), getDateAcct(), Ref_CostDetail_ID, getTrxName()))
+				{
+					return "SaveError";
+				}
+				
+				if (!mMatchPO.isReversal())
+				{
+					String error = createLandedCostAdjustments(as, landedCostMap, mMatchPO.getM_AttributeSetInstance_ID(), tQty, getDateAcct());
+					if (!Util.isEmpty(error))
+						return error;
+				}
+			}
+		}
+		else
+		{
+			// Set Total Amount and Total Quantity from Matched PO
 			int Ref_CostDetail_ID = 0;
 			if (mMatchPO.getReversal_ID() > 0 && mMatchPO.get_ID() > mMatchPO.getReversal_ID())
 			{
@@ -663,8 +789,8 @@ public class Doc_MatchPO extends Doc
 				if (cd != null)
 					Ref_CostDetail_ID = cd.getM_CostDetail_ID();
 			}
-			// Set Total Amount and Total Quantity from Matched PO
-			if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(), 
+			
+			if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(),
 					getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
 					m_oLine.getC_OrderLine_ID(), 0,		//	no cost element
 					tAmt, tQty,			//	Delivered
@@ -675,56 +801,47 @@ public class Doc_MatchPO extends Doc
 			
 			if (!mMatchPO.isReversal())
 			{
-				String error = createLandedCostAdjustments(as, landedCostMap, mMatchPO, tQty);
+				String error = createLandedCostAdjustments(as, landedCostMap, mMatchPO.getM_AttributeSetInstance_ID(), tQty, getDateAcct());
 				if (!Util.isEmpty(error))
 					return error;
 			}
-			// end MZ
 		}
-		return "";
+		// end MZ
 	}
+	return "";
+}
 
-	/**
-	 * Create cost detail for landed cost adjustment
-	 * @param as
-	 * @param landedCostMap
-	 * @param mMatchPO
-	 * @param tQty
-	 * @return error message or empty string
-	 */
-	private String createLandedCostAdjustments(MAcctSchema as,
-			Map<Integer, BigDecimal> landedCostMap, MMatchPO mMatchPO,
-			BigDecimal tQty) {
-		for(Integer elementId : landedCostMap.keySet())
+
+/**
+ * Create cost detail for landed cost adjustment
+ * @param as
+ * @param landedCostMap
+ * @param M_AttributeSetInstance_ID
+ * @param tQty
+ * @param dateAcct
+ * @return error message or empty string
+ */
+private String createLandedCostAdjustments(MAcctSchema as,
+		Map<Integer, BigDecimal> landedCostMap, int M_AttributeSetInstance_ID,
+		BigDecimal tQty, Timestamp dateAcct) {
+	for(Integer elementId : landedCostMap.keySet())
+	{
+		BigDecimal amt = landedCostMap.get(elementId);
+		amt = amt.multiply(tQty);
+		if (amt.scale() > as.getCostingPrecision())
+			amt = amt.setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
+		int Ref_CostDetail_ID = 0;
+		if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(),
+				getM_Product_ID(), M_AttributeSetInstance_ID,
+				m_oLine.getC_OrderLine_ID(), elementId,
+				amt, tQty,			//	Delivered
+				m_oLine.getDescription(), dateAcct, Ref_CostDetail_ID, getTrxName()))
 		{
-			BigDecimal amt = landedCostMap.get(elementId);
-			if (mMatchPO.isReversal())
-				amt = amt.negate();
-			amt = amt.multiply(tQty);
-			if (amt.scale() > as.getCostingPrecision())
-				amt = amt.setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
-			int Ref_CostDetail_ID = 0;
-			if (mMatchPO.getReversal_ID() > 0 && mMatchPO.get_ID() > mMatchPO.getReversal_ID())
-			{
-				MMatchPO reversal = new MMatchPO(getCtx(), mMatchPO.getReversal_ID(), getTrxName());
-				MCostDetail cd = MCostDetail.getOrder(as, getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
-						reversal.getC_OrderLine_ID(), 0, reversal.getDateAcct(), getTrxName());
-				if (cd != null)
-					Ref_CostDetail_ID = cd.getM_CostDetail_ID();
-			}
-			if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(), 
-					getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
-					m_oLine.getC_OrderLine_ID(), elementId,
-					amt, tQty,			//	Delivered
-					m_oLine.getDescription(), getDateAcct(), Ref_CostDetail_ID, getTrxName()))
-			{
-				return "SaveError";
-			}
+			return "SaveError";
 		}
-		return null;
 	}
-
-
+	return null;
+}
 	@Override
 	public boolean isDeferPosting() {
 		return m_deferPosting;
