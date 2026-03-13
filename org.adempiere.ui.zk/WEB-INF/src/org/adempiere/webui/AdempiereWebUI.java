@@ -46,6 +46,7 @@ import org.adempiere.webui.desktop.FavouriteController;
 import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.session.SessionContextListener;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.sso.filter.SSOWebUIFilter;
 import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.BrowserToken;
@@ -403,7 +404,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		//init favorite
 		FavouriteController.getInstance(currSess);
 		
-		processParameters();	
+		processParameters();			
     }
 
     /**
@@ -520,20 +521,20 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	    
 	    boolean isSSOLogin = "Y".equals(Env.getContext(Env.getCtx(), Env.IS_SSO_LOGIN));
 		String provider = (String) desktop.getSession().getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
-	    if (isSSOLogin && !Util.isEmpty(provider, true))
+	    if (isSSOLogin && !Util.isEmpty(provider, true) && !MSysConfig.getBooleanValue(MSysConfig.SSO_SHOW_LOGINPAGE, true))
 	    {
-	    	setCookie(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider, 86400 * 30); // 30 days
+	    	setCookie(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider, 3600); // 1 hour
 	    }
 	    
+	    String tenant = (String) desktop.getSession().getAttribute(SSOWebUIFilter.TENANT_PREFIX_PARAMETER);
 	    String ssoLogoutURL = null;
 	    if (!isAdminLogin && isSSOLogin)
 		{
-			ISSOPrincipalService service = SSOUtils.getSSOPrincipalService(provider);
+			ISSOPrincipalService service = SSOUtils.getSSOPrincipalService(provider, tenant);
 			if (service != null)
 				ssoLogoutURL = service.getLogoutURL();
 		}
-	    
-		String tenant = (String) desktop.getSession().getAttribute("tenant");
+	    		
 	    final Session session = logout0();
 	    
     	//clear context, invalidate session
@@ -762,6 +763,10 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		Env.setContext(properties, Env.CLIENT_INFO_MOBILE, clientInfo.tablet);
 		Env.setContext(properties, Env.CLIENT_INFO_TIME_ZONE, clientInfo.timeZone.getID());
 		Env.setContext(properties, Env.MFA_Registration_ID, Env.getContext(Env.getCtx(), Env.MFA_Registration_ID));
+		boolean isSSOLogin = "Y".equals(Env.getContext(Env.getCtx(), Env.IS_SSO_LOGIN));
+		if (isSSOLogin) {
+			Env.setContext(properties, Env.IS_SSO_LOGIN, "Y");
+		}
 		
 		Desktop desktop = Executions.getCurrent().getDesktop();
 		Locale locale = (Locale) desktop.getSession().getAttribute(Attributes.PREFERRED_LOCALE);
@@ -804,8 +809,8 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     	while(attributes.hasMoreElements()) {
     		String attribute = attributes.nextElement();
     		
-    		//need to keep zk's session attributes
-    		if (attribute.contains("zkoss.") || attribute.startsWith("sso."))
+    		//need to keep zk and sso session attributes
+    		if (attribute.contains("zkoss.") || attribute.startsWith("sso.") || attribute.equals(SSOWebUIFilter.TENANT_PREFIX_PARAMETER))
     			continue;
     		
     		httpSession.removeAttribute(attribute);
@@ -817,8 +822,6 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		
     	//show change role window and set new context for env and session
 		onChangeRole(locale, properties);
-		
-		Executions.schedule(desktop, e -> DesktopWatchDog.removeOtherDesktopsInSession(desktop), new Event("onRemoveOtherDesktops"));
 	}
 	
 	@Override

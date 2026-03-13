@@ -111,6 +111,7 @@ public final class DictionaryIDs {
 	public enum AD_User {
 		GARDEN_ADMIN(101),
 		GARDEN_USER(102),
+		SYSTEM_USER(10),
 		SUPER_USER(100);
 		
 		public final int id;

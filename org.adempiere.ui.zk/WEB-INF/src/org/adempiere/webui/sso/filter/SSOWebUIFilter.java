@@ -27,6 +27,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.adempiere.base.sso.ISSOPrincipalService;
 import org.adempiere.base.sso.SSOUtils;
+import org.compiere.model.MClient;
+import org.compiere.model.MSSOPrincipalConfig;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
 import org.compiere.util.Util;
@@ -38,6 +40,7 @@ import org.compiere.util.Util;
  */
 public class SSOWebUIFilter implements Filter
 {
+	public static final String TENANT_PREFIX_PARAMETER = "tenant";
 	/** Logger */
 	protected static CLogger log = CLogger.getCLogger(SSOWebUIFilter.class);
 
@@ -67,14 +70,22 @@ public class SSOWebUIFilter implements Filter
 		HttpServletRequest httpRequest = null;
 		if (request instanceof HttpServletRequest hsr)
 		{
-			String tenant = hsr.getParameter("tenant");
-			if (tenant != null)
+			if (hsr.getRequestURI().endsWith("index.zul"))
 			{
-				tenant = tenant.trim();
-				if (tenant.isEmpty())
-					hsr.getSession().removeAttribute("tenant");
+				String tenant = hsr.getParameter(TENANT_PREFIX_PARAMETER);
+				if (tenant != null)
+				{
+					tenant = tenant.trim();
+					if (tenant.isEmpty())
+						hsr.getSession().removeAttribute(TENANT_PREFIX_PARAMETER);
+					else
+						hsr.getSession().setAttribute(TENANT_PREFIX_PARAMETER, tenant);
+				}
 				else
-					hsr.getSession().setAttribute("tenant", tenant);
+				{
+					if (hsr.getSession().getAttribute(TENANT_PREFIX_PARAMETER) != null)
+						hsr.getSession().removeAttribute(TENANT_PREFIX_PARAMETER);
+				}
 			}
 			httpRequest = hsr;
 
@@ -115,17 +126,18 @@ public class SSOWebUIFilter implements Filter
 				return;
 			}
 
-			boolean isProviderFromSession = false;
 			String provider = httpRequest.getParameter(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
+			boolean providerFromCookie = false;
 			if (Util.isEmpty(provider))
 			{
 				if (httpRequest.getSession().getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER) != null)
 				{
-					isProviderFromSession = true;
 					provider = (String) httpRequest.getSession().getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
+					removeProviderCookie(httpRequest, httpResponse, provider);
 				}
 				else
 				{
+					// after logout and redirect back from SSO authentication, get the provider uuid from cookie
 					Cookie[] cookies = httpRequest.getCookies();
 					if (cookies != null)
 					{
@@ -137,7 +149,7 @@ public class SSOWebUIFilter implements Filter
 								if (!Util.isEmpty(provider))
 								{
 									httpRequest.getSession().setAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider);
-									isProviderFromSession = true;
+									providerFromCookie = true;
 								}
 								break;
 							}
@@ -147,26 +159,58 @@ public class SSOWebUIFilter implements Filter
 			}
 			else
 			{
-				// Update cookie if provider is from request parameter
-				Cookie cookie = new Cookie(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider);
-				cookie.setSecure(true);
-				cookie.setHttpOnly(true);
-				cookie.setMaxAge(86400 * 30); // 30 days
-				cookie.setPath(httpRequest.getContextPath());
-				httpResponse.addCookie(cookie);
+				removeProviderCookie(httpRequest, httpResponse, provider);
+				
+				httpRequest.getSession().setAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider);
 			}
 
-			String tenant = (String) httpRequest.getSession().getAttribute("tenant");
+			String tenant = (String) httpRequest.getSession().getAttribute(TENANT_PREFIX_PARAMETER);
 			ISSOPrincipalService m_SSOPrincipal = null;
 			try
 			{
-				m_SSOPrincipal = SSOUtils.getSSOPrincipalService(provider, tenant);
-
-				if (m_SSOPrincipal != null && !isAdminResRequest)
+				if (!isAdminResRequest)
+				{
+					m_SSOPrincipal =  SSOUtils.getSSOPrincipalService(provider, tenant);
+					// if cause by invalid cookie, try to get default SSO provider by tenant
+					if (m_SSOPrincipal== null && !Util.isEmpty(provider, true) && !Util.isEmpty(tenant, true) && providerFromCookie)
+					{
+						httpRequest.getSession().removeAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
+						MClient client = MClient.getByLoginPrefix(tenant);
+						if (client != null)
+						{
+							var configs = MSSOPrincipalConfig.getSSOPrincipalConfigByClient(client.getAD_Client_ID());
+							if (configs != null && configs.size() == 1)
+							{
+								provider= configs.get(0).getSSO_PrincipalConfig_UU();
+								m_SSOPrincipal =  SSOUtils.getSSOPrincipalService(provider, tenant);
+								if (m_SSOPrincipal != null)
+								{
+									httpRequest.getSession().setAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider);
+								}
+							}
+						}
+					} else if (m_SSOPrincipal != null && Util.isEmpty(provider, true)) 
+					{
+						// update provider to session if it's not set and can get SSOPrincipalService by tenant login prefix
+						MClient client = null;
+						if (!Util.isEmpty(tenant, true)) 
+						{
+							client = MClient.getByLoginPrefix(tenant);
+						}
+						var configs = MSSOPrincipalConfig.getSSOPrincipalConfigByClient(client != null ? client.getAD_Client_ID() : 0);
+						if (configs != null && configs.size() == 1)
+						{
+							provider= configs.get(0).getSSO_PrincipalConfig_UU();
+							httpRequest.getSession().setAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider);
+						}
+					}
+				}
+			
+				if (m_SSOPrincipal != null)
 				{
 					if (m_SSOPrincipal.hasAuthenticationCode(httpRequest, httpResponse))
 					{
-						// Use authentication code get get token
+						// Use authentication code to get token
 						String currentUri = httpRequest.getRequestURL().toString();
 						m_SSOPrincipal.getAuthenticationToken(httpRequest, httpResponse, SSOUtils.SSO_MODE_WEBUI);
 
@@ -178,28 +222,20 @@ public class SSOWebUIFilter implements Filter
 							if (queryString != null && queryString instanceof String && !Util.isEmpty((String) queryString))
 								currentUri += "?" + (String) queryString;
 							httpRequest.getSession().removeAttribute(ISSOPrincipalService.SSO_QUERY_STRING);
+							if (request.getParameter(TENANT_PREFIX_PARAMETER) != null && (queryString == null || !queryString.toString().contains(TENANT_PREFIX_PARAMETER+"=")))
+							{
+								currentUri += (currentUri.contains("?") ? "&" : "?") + TENANT_PREFIX_PARAMETER + "=" + request.getParameter(TENANT_PREFIX_PARAMETER);
+							}
 							httpResponse.sendRedirect(currentUri);
 						}
 					}
 					else if (!m_SSOPrincipal.isAuthenticated(httpRequest, httpResponse))
 					{
-						if (isProviderFromSession)
-						{
-							// If there is an issue on the SSO provide side & if a request is not
-							// the
-							// Authentication code or refresh request then have to remove the
-							// provide from the
-							// session.
-							httpRequest.getSession().removeAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
-						}
-						else
-						{
-							httpRequest.getSession().setAttribute(ISSOPrincipalService.SSO_QUERY_STRING, httpRequest.getQueryString());
-							// Redirect to SSO sign in page for authentication
-							m_SSOPrincipal.redirectForAuthentication(httpRequest, httpResponse, SSOUtils.SSO_MODE_WEBUI);
-							httpRequest.getSession().setAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider);
-							return;
-						}
+						httpRequest.getSession().setAttribute(ISSOPrincipalService.SSO_QUERY_STRING, httpRequest.getQueryString());
+						// Redirect to SSO sign in page for authentication
+						m_SSOPrincipal.redirectForAuthentication(httpRequest, httpResponse, SSOUtils.SSO_MODE_WEBUI);
+						httpRequest.getSession().setAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider);
+						return;
 					}
 				}
 			}
@@ -222,6 +258,17 @@ public class SSOWebUIFilter implements Filter
 		chain.doFilter(request, response);
 		return;
 	} // doFilter
+
+	private void removeProviderCookie(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
+			String provider) {
+		// Remove cookie if provider is from request parameter
+		Cookie cookie = new Cookie(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider);
+		cookie.setSecure(true);
+		cookie.setHttpOnly(true);
+		cookie.setMaxAge(0);
+		cookie.setPath(httpRequest.getContextPath());
+		httpResponse.addCookie(cookie);
+	}
 
 	@Override
 	public void destroy( )
