@@ -1023,13 +1023,7 @@ public final class MSetup
 	    
 	    createDocType("GL Journal Batch", Msg.getElement(m_ctx, "GL_JournalBatch_ID"), 
 	        MDocType.DOCBASETYPE_GLJournal, null, 0, 0, 100, GL_GL, false);
-	    
-	    // Banking
-	    createDocType("Bank Statement", Msg.getElement(m_ctx, "C_BankStatemet_ID", true), 
-	        MDocType.DOCBASETYPE_BankStatement, null, 0, 0, 700000, GL_CASH, false);
-	    createDocType("Cash Journal", Msg.getElement(m_ctx, "C_Cash_ID", true),
-	        MDocType.DOCBASETYPE_CashJournal, null, 0, 0, 750000, GL_CASH, false);
-	    
+
 	    return true;
 	}
 	

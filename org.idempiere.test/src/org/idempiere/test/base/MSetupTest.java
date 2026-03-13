@@ -81,57 +81,59 @@ public class MSetupTest extends AbstractTestCase {
 		// Create MSetup instance with dry-run = false to keep data in transaction for validation
 		MSetup setup = new MSetup(Env.getCtx(), 0, false);
 		
-		// Create client first
-		boolean clientCreated = setup.createClient(
-			clientName, 
-			orgValue, 
-			orgName, 
-			"AdminUser", 
-			"NormalUser",
-			null, null, null, null, null,
-			"admin@junit.org", 
-			"user@junit.org",
-			false // don't set initial password
-		);
-		assertTrue(clientCreated, "Client creation should succeed");
-		
-		trxName = setup.getTrxName();
-		
-		// Get the created client ID
-		int AD_Client_ID = DB.getSQLValueEx(trxName, 
-			"SELECT AD_Client_ID FROM AD_Client WHERE Name=?", clientName);
-		assertTrue(AD_Client_ID > 0, "Client should be created in database");
-		
-		// Create accounting setup
-		MCurrency currency = MCurrency.get(Env.getCtx(), 100); // USD
-		KeyNamePair currencyKNP = new KeyNamePair(currency.getC_Currency_ID(), currency.getDescription());
-		
-		File coaFile = new File(Adempiere.getAdempiereHome() + File.separator 
-			+ "org.adempiere.server-feature" + File.separator
-			+ "data" + File.separator + "import"
-			+ File.separator + "AccountingDefaultsOnly.csv");
-		assertTrue(coaFile.exists(), "CoA file should exist: " + coaFile.getAbsolutePath());
-		
-		boolean accountingCreated = setup.createAccounting(
-			currencyKNP,
-			true,  // hasProduct
-			true,  // hasBPartner
-			false, // hasProject
-			false, // hasCampaign
-			false, // hasSalesRegion
-			false, // hasActivity
-			coaFile,
-			false, // useDefaultCoA
-			false  // inactivateDefaults
-		);
-		assertTrue(accountingCreated, "Accounting creation should succeed: " + setup.getInfo());
-		
-		// NOW validate before rollback
-		validateAccountingSetup(AD_Client_ID);
-		
-		// Rollback to clean up
-		setup.rollback();
-		rollback();
+		try {
+			// Create client first
+			boolean clientCreated = setup.createClient(
+				clientName, 
+				orgValue, 
+				orgName, 
+				"AdminUser", 
+				"NormalUser",
+				null, null, null, null, null,
+				"admin@junit.org", 
+				"user@junit.org",
+				false // don't set initial password
+			);
+			assertTrue(clientCreated, "Client creation should succeed");
+			
+			trxName = setup.getTrxName();
+			
+			// Get the created client ID
+			int AD_Client_ID = DB.getSQLValueEx(trxName, 
+				"SELECT AD_Client_ID FROM AD_Client WHERE Name=?", clientName);
+			assertTrue(AD_Client_ID > 0, "Client should be created in database");
+			
+			// Create accounting setup
+			MCurrency currency = MCurrency.get(Env.getCtx(), 100); // USD
+			KeyNamePair currencyKNP = new KeyNamePair(currency.getC_Currency_ID(), currency.getDescription());
+			
+			File coaFile = new File(Adempiere.getAdempiereHome() + File.separator 
+				+ "org.adempiere.server-feature" + File.separator
+				+ "data" + File.separator + "import"
+				+ File.separator + "AccountingDefaultsOnly.csv");
+			assertTrue(coaFile.exists(), "CoA file should exist: " + coaFile.getAbsolutePath());
+			
+			boolean accountingCreated = setup.createAccounting(
+				currencyKNP,
+				true,  // hasProduct
+				true,  // hasBPartner
+				false, // hasProject
+				false, // hasCampaign
+				false, // hasSalesRegion
+				false, // hasActivity
+				coaFile,
+				false, // useDefaultCoA
+				false  // inactivateDefaults
+			);
+			assertTrue(accountingCreated, "Accounting creation should succeed: " + setup.getInfo());
+			
+			// NOW validate before rollback
+			validateAccountingSetup(AD_Client_ID);
+		} finally {
+			// Always rollback to clean up, even if assertions fail
+			setup.rollback();
+			rollback();
+		}
 	}
 	
 	/**
@@ -263,7 +265,7 @@ public class MSetupTest extends AbstractTestCase {
 		
 		for (String categoryName : expectedCategories) {
 			MGLCategory category = new Query(Env.getCtx(), MGLCategory.Table_Name,
-				"AD_Client_ID IN (0,?) AND Name=?", trxName)
+				"AD_Client_ID=? AND Name=?", trxName)
 				.setParameters(AD_Client_ID, categoryName)
 				.first();
 			assertNotNull(category, "GL Category '" + categoryName + "' should be created");
@@ -271,7 +273,7 @@ public class MSetupTest extends AbstractTestCase {
 		
 		// Verify default category
 		MGLCategory defaultCategory = new Query(Env.getCtx(), MGLCategory.Table_Name,
-			"AD_Client_ID IN (0,?) AND IsDefault=?", trxName)
+			"AD_Client_ID=? AND IsDefault=?", trxName)
 			.setParameters(AD_Client_ID, true)
 			.first();
 		assertNotNull(defaultCategory, "There should be a default GL Category");
@@ -305,7 +307,7 @@ public class MSetupTest extends AbstractTestCase {
 		
 		for (String docBaseType : expectedDocBaseTypes) {
 			int count = DB.getSQLValueEx(trxName,
-				"SELECT COUNT(*) FROM C_DocType WHERE AD_Client_ID IN (0,?) AND DocBaseType=?",
+				"SELECT COUNT(*) FROM C_DocType WHERE AD_Client_ID=? AND DocBaseType=?",
 				AD_Client_ID, docBaseType);
 			assertTrue(count > 0, 
 				"At least one document type with DocBaseType '" + docBaseType + "' should exist");
@@ -313,14 +315,14 @@ public class MSetupTest extends AbstractTestCase {
 		
 		// Verify specific important document types
 		MDocType glJournal = new Query(Env.getCtx(), MDocType.Table_Name,
-			"AD_Client_ID IN (0,?) AND DocBaseType=? AND Name LIKE '%Journal%'", trxName)
+			"AD_Client_ID=? AND DocBaseType=? AND Name LIKE '%Journal%'", trxName)
 			.setParameters(AD_Client_ID, "GLJ")
 			.first();
 		assertNotNull(glJournal, "GL Journal document type should be created");
 		
 		// Verify Standard Order exists
 		MDocType standardOrder = new Query(Env.getCtx(), MDocType.Table_Name,
-			"AD_Client_ID IN (0,?) AND DocBaseType=? AND DocSubTypeSO=?", trxName)
+			"AD_Client_ID=? AND DocBaseType=? AND DocSubTypeSO=?", trxName)
 			.setParameters(AD_Client_ID, "SOO", "SO")
 			.first();
 		assertNotNull(standardOrder, "Standard Order document type should be created");
