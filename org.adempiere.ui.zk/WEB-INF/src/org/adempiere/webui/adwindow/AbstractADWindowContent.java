@@ -1703,7 +1703,19 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		    {
 		    	if (adTabbox.needSave(true, true))
 				{
-		    		onSave(false, true, callback);
+					onSave(false, true, new Callback <Boolean>() {
+						@Override
+						public void onCallback(Boolean result)
+						{
+							if (result && adTabbox.getSelectedGridTab().hasChangedCurrentTabAndParents())
+							{
+								adTabbox.getSelectedGridTab().dataRefreshAll(true, true);
+								adTabbox.getSelectedGridTab().refreshParentTabs();
+							}
+							if (callback != null)
+								callback.onCallback(result);
+						}
+					});
 				}
 				else
 				{
