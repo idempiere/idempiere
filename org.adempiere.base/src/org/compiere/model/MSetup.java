@@ -1076,7 +1076,7 @@ public final class MSetup
 	private boolean createBankingDocTypes(int GL_CASH)
 	{
 	    // Banking
-	    createDocType("Bank Statement", Msg.getElement(m_ctx, "C_BankStatemet_ID", true), 
+	    createDocType("Bank Statement", Msg.getElement(m_ctx, "C_BankStatement_ID", true), 
 	        MDocType.DOCBASETYPE_BankStatement, null, 0, 0, 700000, GL_CASH, false);
 	    createDocType("Cash Journal", Msg.getElement(m_ctx, "C_Cash_ID", true),
 	        MDocType.DOCBASETYPE_CashJournal, null, 0, 0, 750000, GL_CASH, false);
