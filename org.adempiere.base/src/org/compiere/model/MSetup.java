@@ -24,6 +24,8 @@ import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -461,413 +463,418 @@ public final class MSetup
 		m_hasSRegion = hasSRegion;
 		m_hasActivity = hasActivity;
 
-		//  Standard variables
+		//  Initialize
 		m_info = new StringBuffer();
-		String name = null;
-		StringBuilder sqlCmd = null;
-		int no = 0;
 
-		/**
-		 *  Create Calendar
-		 */
-		m_calendar = new MCalendar(m_client);
-		if (!m_calendar.save())
-		{
-			String err = "Calendar NOT inserted";
-			log.log(Level.SEVERE, err);
-			m_info.append(err);
-			m_trx.rollback();
-			m_trx.close();
-			return false;
-		}
-		//  Info
-		m_info.append(Msg.translate(m_lang, "C_Calendar_ID")).append("=").append(m_calendar.getName()).append("\n");
-
-		if (m_calendar.createYear(m_client.getLocale()) == null)
-			log.log(Level.SEVERE, "Year NOT inserted");
-
-		//	Create Account Elements
-		name = m_clientName + " " + Msg.translate(m_lang, "Account_ID");
-		MElement element = new MElement (m_client, name, 
-			MElement.ELEMENTTYPE_Account, m_AD_Tree_Account_ID);
-		if (!element.save())
-		{
-			String err = "Acct Element NOT inserted";
-			log.log(Level.SEVERE, err);
-			m_info.append(err);
-			m_trx.rollback();
-			m_trx.close();
-			return false;
-		}
-		int C_Element_ID = element.getC_Element_ID();
-		m_info.append(Msg.translate(m_lang, "C_Element_ID")).append("=").append(name).append("\n");
-
-		//	Create Account Values
-		m_nap = new NaturalAccountMap<String,MElementValue>(m_ctx, m_trx.getTrxName());
-		String errMsg = m_nap.parseFile(AccountingFile);
-		if (errMsg.length() != 0)
-		{
-			log.log(Level.SEVERE, errMsg);
-			m_info.append(errMsg);
-			m_trx.rollback();
-			m_trx.close();
-			return false;
-		}
-		if (m_nap.saveAccounts(getAD_Client_ID(), getAD_Org_ID(), C_Element_ID, !inactivateDefaults))
-			m_info.append(Msg.translate(m_lang, "C_ElementValue_ID")).append(" # ").append(m_nap.size()).append("\n");
-		else
-		{
-			String err = "Acct Element Values NOT inserted";
-			log.log(Level.SEVERE, err);
-			m_info.append(err);
-			m_trx.rollback();
-			m_trx.close();
-			return false;
-		}
-
-		int summary_ID = m_nap.getC_ElementValue_ID("SUMMARY");
-		if (log.isLoggable(Level.FINE)) log.fine("summary_ID=" + summary_ID);
-		if (summary_ID > 0) {
-			DB.executeUpdateEx("UPDATE AD_TreeNode SET Parent_ID=? WHERE AD_Tree_ID=? AND Node_ID!=?",
-					new Object[] {summary_ID, m_AD_Tree_Account_ID, summary_ID},
-					m_trx.getTrxName());
-		}
-
-		int C_ElementValue_ID = m_nap.getC_ElementValue_ID("DEFAULT_ACCT");
-		if (log.isLoggable(Level.FINE)) log.fine("C_ElementValue_ID=" + C_ElementValue_ID);
-
-		/**
-		 *  Create AccountingSchema
-		 */
-		m_as = new MAcctSchema (m_client, currency);
-		if (!m_as.save())
-		{
-			String err = "AcctSchema NOT inserted";
-			log.log(Level.SEVERE, err);
-			m_info.append(err);
-			m_trx.rollback();
-			m_trx.close();
-			return false;
-		}
-		//  Info
-		m_info.append(Msg.translate(m_lang, "C_AcctSchema_ID")).append("=").append(m_as.getName()).append("\n");
-
-		/**
-		 *  Create AccountingSchema Elements (Structure)
-		 */
-		String sql2 = null;
-		if (Env.isBaseLanguage(m_lang, "AD_Reference"))	//	Get ElementTypes & Name
-			sql2 = "SELECT Value, Name FROM AD_Ref_List WHERE AD_Reference_ID=181";
-		else
-			sql2 = "SELECT l.Value, t.Name FROM AD_Ref_List l, AD_Ref_List_Trl t "
-				+ "WHERE l.AD_Reference_ID=181 AND l.AD_Ref_List_ID=t.AD_Ref_List_ID"
-				+ " AND t.AD_Language=" + DB.TO_STRING(m_lang); //bug [ 1638421 ]
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
-		try
-		{
-			int AD_Client_ID = m_client.getAD_Client_ID();
-			stmt = DB.prepareStatement(sql2, m_trx.getTrxName());
-			rs = stmt.executeQuery();
-			while (rs.next())
-			{
-				String ElementType = rs.getString(1);
-				name = rs.getString(2);
-				//
-				String IsMandatory = null;
-				String IsBalanced = "N";
-				int SeqNo = 0;
-				int C_AcctSchema_Element_ID = 0;
-
-				if (ElementType.equals("OO"))
-				{
-					C_AcctSchema_Element_ID = getNextID(AD_Client_ID, "C_AcctSchema_Element");
-					IsMandatory = "Y";
-					IsBalanced = "Y";
-					SeqNo = 10;
-				}
-				else if (ElementType.equals("AC"))
-				{
-					C_AcctSchema_Element_ID = getNextID(AD_Client_ID, "C_AcctSchema_Element");
-					IsMandatory = "Y";
-					SeqNo = 20;
-				}
-				else if (ElementType.equals("PR") && hasProduct)
-				{
-					C_AcctSchema_Element_ID = getNextID(AD_Client_ID, "C_AcctSchema_Element");
-					IsMandatory = "N";
-					SeqNo = 30;
-				}
-				else if (ElementType.equals("BP") && hasBPartner)
-				{
-					C_AcctSchema_Element_ID = getNextID(AD_Client_ID, "C_AcctSchema_Element");
-					IsMandatory = "N";
-					SeqNo = 40;
-				}
-				else if (ElementType.equals("PJ") && hasProject)
-				{
-					C_AcctSchema_Element_ID = getNextID(AD_Client_ID, "C_AcctSchema_Element");
-					IsMandatory = "N";
-					SeqNo = 50;
-				}
-				else if (ElementType.equals("MC") && hasMCampaign)
-				{
-					C_AcctSchema_Element_ID = getNextID(AD_Client_ID, "C_AcctSchema_Element");
-					IsMandatory = "N";
-					SeqNo = 60;
-				}
-				else if (ElementType.equals("SR") && hasSRegion)
-				{
-					C_AcctSchema_Element_ID = getNextID(AD_Client_ID, "C_AcctSchema_Element");
-					IsMandatory = "N";
-					SeqNo = 70;
-				}
-				else if (ElementType.equals("AY") && hasActivity)
-				{
-					C_AcctSchema_Element_ID = getNextID(AD_Client_ID, "C_AcctSchema_Element");
-					IsMandatory = "N";
-					SeqNo = 80;
-				}
-				//	Not OT, LF, LT, U1, U2
-
-				if (IsMandatory != null)
-				{
-					sqlCmd = new StringBuilder ("INSERT INTO C_AcctSchema_Element(");
-					sqlCmd.append(m_stdColumns).append(",C_AcctSchema_Element_ID,C_AcctSchema_ID,")
-						.append("ElementType,Name,SeqNo,IsMandatory,IsBalanced,C_AcctSchema_Element_UU) VALUES (");
-					sqlCmd.append(m_stdValues).append(",").append(C_AcctSchema_Element_ID).append(",").append(m_as.getC_AcctSchema_ID()).append(",")
-						.append("'").append(ElementType).append("','").append(name).append("',").append(SeqNo).append(",'")
-						.append(IsMandatory).append("','").append(IsBalanced).append("',").append(DB.TO_STRING(Util.generateUUIDv7().toString())).append(")");
-					no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
-					if (no == 1)
-						m_info.append(Msg.translate(m_lang, "C_AcctSchema_Element_ID")).append("=").append(name).append("\n");
-
-					/** Default value for mandatory elements: OO and AC */
-					if (ElementType.equals("OO"))
-					{
-						sqlCmd = new StringBuilder ("UPDATE C_AcctSchema_Element SET Org_ID=");
-						sqlCmd.append(getAD_Org_ID()).append(" WHERE C_AcctSchema_Element_ID=").append(C_AcctSchema_Element_ID);
-						no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
-						if (no != 1)
-							log.log(Level.SEVERE, "Default Org in AcctSchemaElement NOT updated");
-					}
-					if (ElementType.equals("AC"))
-					{
-						sqlCmd = new StringBuilder ("UPDATE C_AcctSchema_Element SET C_ElementValue_ID=");
-						sqlCmd.append(C_ElementValue_ID).append(", C_Element_ID=").append(C_Element_ID);
-						sqlCmd.append(" WHERE C_AcctSchema_Element_ID=").append(C_AcctSchema_Element_ID);
-						no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
-						if (no != 1)
-							log.log(Level.SEVERE, "Default Account in AcctSchemaElement NOT updated");
-					}
-				}
-			}
-		}
-		catch (SQLException e1)
-		{
-			log.log(Level.SEVERE, "Elements", e1);
-			m_info.append(e1.getMessage());
-			m_trx.rollback();
-			m_trx.close();
-			return false;
-		}
-		finally
-		{
-			DB.close(rs, stmt);
-			rs = null; stmt = null;
-		}
-		//  Create AcctSchema
-
-		//  Create Defaults Accounts
 		try {
-			createAccountingRecord(X_C_AcctSchema_GL.Table_Name);
-			createAccountingRecord(X_C_AcctSchema_Default.Table_Name);
-		}
-		catch (Exception e) {
-			String err = e.getLocalizedMessage();
-			log.log(Level.SEVERE, err);
-			m_info.append(err);
-			m_trx.rollback();
-			m_trx.close();
-			return false;
-		}
-
-		//  GL Categories
-		createGLCategory("Standard", MGLCategory.CATEGORYTYPE_Manual, true);
-		int GL_None = createGLCategory("None", MGLCategory.CATEGORYTYPE_Document, false);
-		int GL_GL = createGLCategory("Manual", MGLCategory.CATEGORYTYPE_Manual, false);
-		int GL_ARI = createGLCategory("AR Invoice", MGLCategory.CATEGORYTYPE_Document, false);
-		int GL_ARR = createGLCategory("AR Receipt", MGLCategory.CATEGORYTYPE_Document, false);
-		int GL_MM = createGLCategory("Material Management", MGLCategory.CATEGORYTYPE_Document, false);
-		int GL_API = createGLCategory("AP Invoice", MGLCategory.CATEGORYTYPE_Document, false);
-		int GL_APP = createGLCategory("AP Payment", MGLCategory.CATEGORYTYPE_Document, false);
-		int GL_CASH = createGLCategory("Cash/Payments", MGLCategory.CATEGORYTYPE_Document, false);
-		int GL_Manufacturing = createGLCategory("Manufacturing", MGLCategory.CATEGORYTYPE_Document, false);
-		int GL_Distribution = createGLCategory("Distribution", MGLCategory.CATEGORYTYPE_Document, false);
-		int GL_Payroll = createGLCategory("Payroll", MGLCategory.CATEGORYTYPE_Document, false);
-
-		//	Base DocumentTypes
-		int ii = createDocType("GL Journal", Msg.getElement(m_ctx, "GL_Journal_ID"), 
-			MDocType.DOCBASETYPE_GLJournal, null, 0, 0, 1000, GL_GL, false);
-		if (ii == 0)
-		{
-			String err = "Document Type not created";
-			m_info.append(err);
-			m_trx.rollback();
-			m_trx.close();
-			return false;
-		}
-		createDocType("GL Journal Batch", Msg.getElement(m_ctx, "GL_JournalBatch_ID"), 
-			MDocType.DOCBASETYPE_GLJournal, null, 0, 0, 100, GL_GL, false);
-		//	MDocType.DOCBASETYPE_GLDocument
-		//
-		int DT_I = createDocType("AR Invoice", Msg.getElement(m_ctx, "C_Invoice_ID", true), 
-			MDocType.DOCBASETYPE_ARInvoice, null, 0, 0, 100000, GL_ARI, false);
-		int DT_II = createDocType("AR Invoice Indirect", Msg.getElement(m_ctx, "C_Invoice_ID", true), 
-			MDocType.DOCBASETYPE_ARInvoice, null, 0, 0, 150000, GL_ARI, false);
-		int DT_IC = createDocType("AR Credit Memo", Msg.getMsg(m_ctx, "CreditMemo"), 
-			MDocType.DOCBASETYPE_ARCreditMemo, null, 0, 0, 170000, GL_ARI, false);
-		//	MDocType.DOCBASETYPE_ARProFormaInvoice
-		
-		createDocType("AP Invoice", Msg.getElement(m_ctx, "C_Invoice_ID", false), 
-			MDocType.DOCBASETYPE_APInvoice, null, 0, 0, 0, GL_API, false);
-		int DT_IPC = createDocType("AP CreditMemo", Msg.getMsg(m_ctx, "CreditMemo"), 
-			MDocType.DOCBASETYPE_APCreditMemo, null, 0, 0, 0, GL_API, false);
-		createDocType("Match Invoice", Msg.getElement(m_ctx, "M_MatchInv_ID", false), 
-			MDocType.DOCBASETYPE_MatchInvoice, null, 0, 0, 390000, GL_API, false);
-		
-		createDocType("AR Receipt", Msg.getElement(m_ctx, "C_Payment_ID", true), 
-			MDocType.DOCBASETYPE_ARReceipt, null, 0, 0, 0, GL_ARR, false);
-		createDocType("AP Payment", Msg.getElement(m_ctx, "C_Payment_ID", false), 
-			MDocType.DOCBASETYPE_APPayment, null, 0, 0, 0, GL_APP, false);
-		createDocType("Allocation", "Allocation", 
-			MDocType.DOCBASETYPE_PaymentAllocation, null, 0, 0, 490000, GL_CASH, false);
-
-		int DT_S  = createDocType("MM Shipment", "Delivery Note", 
-			MDocType.DOCBASETYPE_MaterialDelivery, null, 0, 0, 500000, GL_MM, false);
-		int DT_SI = createDocType("MM Shipment Indirect", "Delivery Note", 
-			MDocType.DOCBASETYPE_MaterialDelivery, null, 0, 0, 550000, GL_MM, false);
-		int DT_VRM = createDocType("MM Vendor Return", "Vendor Return", 
-	            MDocType.DOCBASETYPE_MaterialDelivery, null, 0, 0, 590000, GL_MM, true);
-		
-		createDocType("MM Receipt", "Vendor Delivery", 
-			MDocType.DOCBASETYPE_MaterialReceipt, null, 0, 0, 0, GL_MM, false);
-		int DT_RM = createDocType("MM Customer Return", "Customer Return", 
-			MDocType.DOCBASETYPE_MaterialReceipt, null, 0, 0, 570000, GL_MM, true);
-		
-		createDocType("Purchase Order", Msg.getElement(m_ctx, "C_Order_ID", false), 
-			MDocType.DOCBASETYPE_PurchaseOrder, null, 0, 0, 800000, GL_None, false);
-		createDocType("Match PO", Msg.getElement(m_ctx, "M_MatchPO_ID", false), 
-			MDocType.DOCBASETYPE_MatchPO, null, 0, 0, 890000, GL_None, false);
-		createDocType("Purchase Requisition", Msg.getElement(m_ctx, "M_Requisition_ID", false), 
-			MDocType.DOCBASETYPE_PurchaseRequisition, null, 0, 0, 900000, GL_None, false);
-		createDocType("Vendor Return Material", "Vendor Return Material Authorization",
-		    MDocType.DOCBASETYPE_PurchaseOrder, MDocType.DOCSUBTYPESO_ReturnMaterial, DT_VRM, 
-		    DT_IPC, 990000, GL_MM, false);
-		        
-		createDocType("Bank Statement", Msg.getElement(m_ctx, "C_BankStatemet_ID", true), 
-			MDocType.DOCBASETYPE_BankStatement, null, 0, 0, 700000, GL_CASH, false);
-		createDocType("Cash Journal", Msg.getElement(m_ctx, "C_Cash_ID", true),
-			MDocType.DOCBASETYPE_CashJournal, null, 0, 0, 750000, GL_CASH, false);
-		
-		createDocType("Material Movement", Msg.getElement(m_ctx, "M_Movement_ID", false),
-			MDocType.DOCBASETYPE_MaterialMovement, null, 0, 0, 610000, GL_MM, false);
-		createDocType("Physical Inventory", Msg.getElement(m_ctx, "M_Inventory_ID", false), 
-			MDocType.DOCBASETYPE_MaterialPhysicalInventory, MDocType.DOCSUBTYPEINV_PhysicalInventory, 0, 0, 620000, GL_MM, false);
-		createDocType("Material Production", Msg.getElement(m_ctx, "M_Production_ID", false), 
-			MDocType.DOCBASETYPE_MaterialProduction, null, 0, 0, 630000, GL_MM, false);
-		createDocType("Project Issue", Msg.getElement(m_ctx, "C_ProjectIssue_ID", false), 
-			MDocType.DOCBASETYPE_ProjectIssue, null, 0, 0, 640000, GL_MM, false);
-		createDocType("Internal Use Inventory", "Internal Use Inventory", 
-				MDocType.DOCBASETYPE_MaterialPhysicalInventory, MDocType.DOCSUBTYPEINV_InternalUseInventory, 0, 0, 650000, GL_MM, false);
-		createDocType("Cost Adjustment", "Cost Adjustment", 
-				MDocType.DOCBASETYPE_MaterialPhysicalInventory, MDocType.DOCSUBTYPEINV_CostAdjustment, 0, 0, 660000, GL_MM, false);
-
-		//  Order Entry
-		createDocType("Binding offer", "Quotation", 
-			MDocType.DOCBASETYPE_SalesOrder, MDocType.DOCSUBTYPESO_Quotation, 
-			0, 0, 10000, GL_None, false);
-		createDocType("Non binding offer", "Proposal", 
-			MDocType.DOCBASETYPE_SalesOrder, MDocType.DOCSUBTYPESO_Proposal, 
-			0, 0, 20000, GL_None, false);
-		createDocType("Prepay Order", "Prepay Order", 
-			MDocType.DOCBASETYPE_SalesOrder, MDocType.DOCSUBTYPESO_PrepayOrder, 
-			DT_S, DT_I, 30000, GL_None, false);
-		createDocType("Customer Return Material", "Customer Return Material Authorization", 
-			MDocType.DOCBASETYPE_SalesOrder, MDocType.DOCSUBTYPESO_ReturnMaterial, 
-			DT_RM, DT_IC, 30000, GL_None, false);
-		createDocType("Standard Order", "Order Confirmation", 
-			MDocType.DOCBASETYPE_SalesOrder, MDocType.DOCSUBTYPESO_StandardOrder, 
-			DT_S, DT_I, 50000, GL_None, false);
-		createDocType("Credit Order", "Order Confirmation", 
-			MDocType.DOCBASETYPE_SalesOrder, MDocType.DOCSUBTYPESO_OnCreditOrder, 
-			DT_SI, DT_I, 60000, GL_None, false);   //  RE
-		createDocType("Warehouse Order", "Order Confirmation", 
-			MDocType.DOCBASETYPE_SalesOrder, MDocType.DOCSUBTYPESO_WarehouseOrder, 
-			DT_S, DT_I,	70000, GL_None, false);    //  LS
-		
-		//Manufacturing Document
-		createDocType("Manufacturing Order", "Manufacturing Order", 
-			MDocType.DOCBASETYPE_ManufacturingOrder, null,
-			0, 0, 80000, GL_Manufacturing, false);
-		createDocType("Manufacturing Cost Collector","Cost Collector", 
-			MDocType.DOCBASETYPE_ManufacturingCostCollector, null, 
-			0, 0, 81000, GL_Manufacturing, false);
-		createDocType("Maintenance Order","Maintenance Order",
-			MDocType.DOCBASETYPE_MaintenanceOrder, null,
-			0, 0, 86000, GL_Manufacturing, false);
-		createDocType("Quality Order","Quality Order",
-				MDocType.DOCBASETYPE_QualityOrder, null,
-			0, 0, 87000, GL_Manufacturing, false);
-		createDocType("Distribution Order","Distribution Order", 
-			MDocType.DOCBASETYPE_DistributionOrder, null,
-			0, 0, 88000, GL_Distribution, false);
-		//Payroll
-		createDocType("Payroll","Payroll", 
-			MDocType.DOCBASETYPE_Payroll, null,
-			0, 0, 90000, GL_Payroll, false);
-
-		int DT = createDocType("POS Order", "Order Confirmation", 
-			MDocType.DOCBASETYPE_SalesOrder, MDocType.DOCSUBTYPESO_POSOrder, 
-			DT_SI, DT_II, 80000, GL_None, false);    // Bar
-		//	POS As Default for window SO
-		createPreference("C_DocTypeTarget_ID", String.valueOf(DT), 143);
-
-		//  Update ClientInfo
-		sqlCmd = new StringBuilder ("UPDATE AD_ClientInfo SET ");
-		sqlCmd.append("C_AcctSchema1_ID=").append(m_as.getC_AcctSchema_ID())
-			.append(", C_Calendar_ID=").append(m_calendar.getC_Calendar_ID())
-			.append(" WHERE AD_Client_ID=").append(m_client.getAD_Client_ID());
-		no = DB.executeUpdateEx(sqlCmd.toString(), m_trx.getTrxName());
-		if (no != 1)
-		{
-			String err = "ClientInfo not updated";
-			log.log(Level.SEVERE, err);
-			m_info.append(err);
-			m_trx.rollback();
-			m_trx.close();
-			return false;
-		}
-
-		//	Validate Completeness
-		ProcessInfo processInfo = new ProcessInfo("Document Type Verify", 0);
-		processInfo.setAD_Client_ID(getAD_Client_ID());
-		processInfo.setAD_User_ID(getAD_User_ID());
-		processInfo.setParameter(new ProcessInfoParameter[0]);
-		processInfo.setClassName("org.compiere.process.DocumentTypeVerify");
-		if (!ProcessUtil.startJavaProcess(m_ctx, processInfo, m_trx, false))
-		{
-			String err = "Document type verification failed. Message="+processInfo.getSummary();
-			log.log(Level.SEVERE, err);
-			m_info.append(err);
-			m_trx.rollback();
-			m_trx.close();
-			return false;
-		}
-		//
-		if (log.isLoggable(Level.INFO)) log.info("fini");
-		return true;
+			if (!createCalendar()) {
+				return false;
+			}
+			
+			// 1. Create core accounting infrastructure
+			if (!createAccountingInfrastructure(currency, AccountingFile, inactivateDefaults)) {
+				return false;
+			}
+			
+			// 2. Create accounting schema structure
+			if (!createAcctSchemaStructure(hasProduct, hasBPartner, hasProject, 
+					hasMCampaign, hasSRegion, hasActivity)) {
+				return false;
+			}
+			
+			// 3. Create default accounting records
+			if (!createDefaultAccountingRecords()) {
+				return false;
+			}
+			
+			// 4. Create GL categories (master data)
+			Map<String, Integer> glCategories = createGLCategories();
+			if (glCategories == null) {
+				return false;
+			}
+			
+			// 5. Create document types (master data)
+			if (!createDocumentTypes(glCategories)) {
+				return false;
+			}
+			
+			// 6. Update client info
+			if (!updateClientInfo()) {
+				return false;
+			}
+			
+			// 7. Validate setup
+			if (!validateDocumentTypeSetup()) {
+				return false;
+			}
+			
+			//
+			if (log.isLoggable(Level.INFO)) log.info("fini");
+			return true;
+		} catch (Exception e) {
+	        String err = "Accounting setup failed: " + e.getMessage();
+	        log.log(Level.SEVERE, err, e);
+	        m_info.append(err);
+	        m_trx.rollback();
+	        m_trx.close();
+	        return false;
+	    }
 	}   //  createAccounting
+	
+	/**
+	 * Create core accounting infrastructure:
+	 * - Account Element
+	 * - Chart of Accounts
+	 * - Accounting Schema
+	 * 
+	 * @param currency currency
+	 * @param accountingFile chart of accounts file
+	 * @param inactivateDefaults inactivate defaults
+	 * @return true if created
+	 */
+	private boolean createAccountingInfrastructure(KeyNamePair currency, 
+	                                              File accountingFile, 
+	                                              boolean inactivateDefaults)
+	{
+	    // Create Account Element
+	    int C_Element_ID = createAccountElement();
+	    if (C_Element_ID == 0) {
+	        return false;
+	    }
+	    
+	    // Create Chart of Accounts
+	    if (!createChartOfAccounts(accountingFile, C_Element_ID, inactivateDefaults)) {
+	        return false;
+	    }
+	    
+	    // Create Accounting Schema
+	    if (!createAcctSchema(currency)) {
+	        return false;
+	    }
+	    
+	    return true;
+	}
+	
+	/**
+	 * Create account element for chart of accounts
+	 * @return C_Element_ID or 0 if failed
+	 */
+	private int createAccountElement()
+	{
+	    String name = m_clientName + " " + Msg.translate(m_lang, "Account_ID");
+	    MElement element = new MElement(m_client, name, 
+	        MElement.ELEMENTTYPE_Account, m_AD_Tree_Account_ID);
+	    
+	    if (!element.save()) {
+	        String err = "Acct Element NOT inserted";
+	        log.log(Level.SEVERE, err);
+	        m_info.append(err);
+	        m_trx.rollback();
+	        m_trx.close();
+	        return 0;
+	    }
+	    
+	    m_info.append(Msg.translate(m_lang, "C_Element_ID"))
+	         .append("=").append(name).append("\n");
+	    
+	    return element.getC_Element_ID();
+	}
+	
+	/**
+	 * Create chart of accounts from file
+	 * @param accountingFile CoA file
+	 * @param C_Element_ID element ID
+	 * @param inactivateDefaults inactivate defaults
+	 * @return true if created
+	 */
+	private boolean createChartOfAccounts(File accountingFile, 
+	                                     int C_Element_ID, 
+	                                     boolean inactivateDefaults)
+	{
+	    m_nap = new NaturalAccountMap<String, MElementValue>(m_ctx, m_trx.getTrxName());
+	    
+	    // Parse CoA file
+	    String errMsg = m_nap.parseFile(accountingFile);
+	    if (errMsg.length() != 0) {
+	        log.log(Level.SEVERE, errMsg);
+	        m_info.append(errMsg);
+	        m_trx.rollback();
+	        m_trx.close();
+	        return false;
+	    }
+	    
+	    // Save accounts
+	    if (!m_nap.saveAccounts(getAD_Client_ID(), getAD_Org_ID(), 
+	                           C_Element_ID, !inactivateDefaults)) {
+	        String err = "Acct Element Values NOT inserted";
+	        log.log(Level.SEVERE, err);
+	        m_info.append(err);
+	        m_trx.rollback();
+	        m_trx.close();
+	        return false;
+	    }
+	    
+	    m_info.append(Msg.translate(m_lang, "C_ElementValue_ID"))
+	         .append(" # ").append(m_nap.size()).append("\n");
+	    
+	    // Set tree structure (summary account as parent)
+	    int summary_ID = m_nap.getC_ElementValue_ID("SUMMARY");
+	    if (log.isLoggable(Level.FINE)) log.fine("summary_ID=" + summary_ID);
+	    
+	    if (summary_ID > 0) {
+	        DB.executeUpdateEx(
+	            "UPDATE AD_TreeNode SET Parent_ID=? WHERE AD_Tree_ID=? AND Node_ID!=?",
+	            new Object[] {summary_ID, m_AD_Tree_Account_ID, summary_ID},
+	            m_trx.getTrxName());
+	    }
+	    
+	    return true;
+	}
+	
+	/**
+	 * Create accounting schema
+	 * @param currency currency
+	 * @return true if created
+	 */
+	private boolean createAcctSchema(KeyNamePair currency)
+	{
+	    m_as = new MAcctSchema(m_client, currency);
+	    
+	    if (!m_as.save()) {
+	        String err = "AcctSchema NOT inserted";
+	        log.log(Level.SEVERE, err);
+	        m_info.append(err);
+	        m_trx.rollback();
+	        m_trx.close();
+	        return false;
+	    }
+	    
+	    m_info.append(Msg.translate(m_lang, "C_AcctSchema_ID"))
+	         .append("=").append(m_as.getName()).append("\n");
+	    
+	    return true;
+	}
+	
+	/**
+	 * Create accounting schema structure (elements/dimensions)
+	 * @param hasProduct has product segment
+	 * @param hasBPartner has bp segment
+	 * @param hasProject has project segment
+	 * @param hasMCampaign has campaign segment
+	 * @param hasSRegion has sales region segment
+	 * @param hasActivity has activity segment
+	 * @return true if created
+	 */
+	private boolean createAcctSchemaStructure(boolean hasProduct, 
+	                                         boolean hasBPartner, 
+	                                         boolean hasProject,
+	                                         boolean hasMCampaign, 
+	                                         boolean hasSRegion,
+	                                         boolean hasActivity)
+	{
+	    String sql = null;
+	    if (Env.isBaseLanguage(m_lang, "AD_Reference")) { //	Get ElementTypes & Name
+	        sql = "SELECT Value, Name FROM AD_Ref_List WHERE AD_Reference_ID=181";
+	    } else {
+	        sql = "SELECT l.Value, t.Name FROM AD_Ref_List l, AD_Ref_List_Trl t "
+	            + "WHERE l.AD_Reference_ID=181 AND l.AD_Ref_List_ID=t.AD_Ref_List_ID"
+	            + " AND t.AD_Language=" + DB.TO_STRING(m_lang);
+	    }
+	    
+	    PreparedStatement stmt = null;
+	    ResultSet rs = null;
+	    
+	    try {
+	        int AD_Client_ID = m_client.getAD_Client_ID();
+	        stmt = DB.prepareStatement(sql, m_trx.getTrxName());
+	        rs = stmt.executeQuery();
+	        
+	        while (rs.next()) {
+	            String elementType = rs.getString(1);
+	            String name = rs.getString(2);
+	            
+	            // Determine if this element should be created
+	            AcctSchemaElementConfig config = getElementConfig(
+	                elementType, name, hasProduct, hasBPartner, 
+	                hasProject, hasMCampaign, hasSRegion, hasActivity);
+	            
+	            if (config != null) {
+	                if (!createAcctSchemaElement(config, AD_Client_ID)) {
+	                    return false;
+	                }
+	            }
+	        }
+	        
+	        return true;
+	        
+	    } catch (SQLException e) {
+	        log.log(Level.SEVERE, "Elements", e);
+	        m_info.append(e.getMessage());
+	        m_trx.rollback();
+	        m_trx.close();
+	        return false;
+	    } finally {
+	        DB.close(rs, stmt);
+	    }
+	}
+	
+	/**
+	 * Get configuration for accounting schema element
+	 * @param elementType element type code
+	 * @param name element name
+	 * @param hasProduct has product
+	 * @param hasBPartner has bpartner
+	 * @param hasProject has project
+	 * @param hasMCampaign has campaign
+	 * @param hasSRegion has sales region
+	 * @param hasActivity has activity
+	 * @return config or null if not needed
+	 */
+	private AcctSchemaElementConfig getElementConfig(String elementType, String name,
+	                                                 boolean hasProduct, boolean hasBPartner,
+	                                                 boolean hasProject, boolean hasMCampaign,
+	                                                 boolean hasSRegion, boolean hasActivity)
+	{
+	    AcctSchemaElementConfig config = null;
+	    
+	    if ("OO".equals(elementType)) {
+	        // Organization - always mandatory
+	        config = new AcctSchemaElementConfig(elementType, name, true, true, 10);
+	    }
+	    else if ("AC".equals(elementType)) {
+	        // Account - always mandatory
+	        config = new AcctSchemaElementConfig(elementType, name, true, false, 20);
+	    }
+	    else if ("PR".equals(elementType) && hasProduct) {
+	        config = new AcctSchemaElementConfig(elementType, name, false, false, 30);
+	    }
+	    else if ("BP".equals(elementType) && hasBPartner) {
+	        config = new AcctSchemaElementConfig(elementType, name, false, false, 40);
+	    }
+	    else if ("PJ".equals(elementType) && hasProject) {
+	        config = new AcctSchemaElementConfig(elementType, name, false, false, 50);
+	    }
+	    else if ("MC".equals(elementType) && hasMCampaign) {
+	        config = new AcctSchemaElementConfig(elementType, name, false, false, 60);
+	    }
+	    else if ("SR".equals(elementType) && hasSRegion) {
+	        config = new AcctSchemaElementConfig(elementType, name, false, false, 70);
+	    }
+	    else if ("AY".equals(elementType) && hasActivity) {
+	        config = new AcctSchemaElementConfig(elementType, name, false, false, 80);
+	    }
+	    
+	    return config;
+	}
+	
+	/**
+	 * Create single accounting schema element
+	 * @param config element configuration
+	 * @param AD_Client_ID client
+	 * @return true if created
+	 */
+	private boolean createAcctSchemaElement(AcctSchemaElementConfig config, int AD_Client_ID)
+	{
+	    int C_AcctSchema_Element_ID = getNextID(AD_Client_ID, "C_AcctSchema_Element");
+	    
+	    StringBuilder sql = new StringBuilder("INSERT INTO C_AcctSchema_Element(");
+	    sql.append(m_stdColumns).append(",C_AcctSchema_Element_ID,C_AcctSchema_ID,")
+	       .append("ElementType,Name,SeqNo,IsMandatory,IsBalanced,C_AcctSchema_Element_UU) VALUES (");
+	    sql.append(m_stdValues).append(",").append(C_AcctSchema_Element_ID)
+	       .append(",").append(m_as.getC_AcctSchema_ID()).append(",")
+	       .append("'").append(config.elementType).append("','").append(config.name).append("',")
+	       .append(config.seqNo).append(",'")
+	       .append(config.isMandatory ? "Y" : "N").append("','")
+	       .append(config.isBalanced ? "Y" : "N").append("',")
+	       .append(DB.TO_STRING(Util.generateUUIDv7().toString())).append(")");
+	    
+	    int no = DB.executeUpdateEx(sql.toString(), m_trx.getTrxName());
+	    if (no != 1) {
+	        log.log(Level.SEVERE, "AcctSchema Element NOT created: " + config.name);
+	        return false;
+	    }
+	    
+	    m_info.append(Msg.translate(m_lang, "C_AcctSchema_Element_ID"))
+	         .append("=").append(config.name).append("\n");
+	    
+	    // Set defaults for mandatory elements
+	    if ("OO".equals(config.elementType)) {
+	        return setDefaultOrg(C_AcctSchema_Element_ID);
+	    }
+	    else if ("AC".equals(config.elementType)) {
+	        return setDefaultAccount(C_AcctSchema_Element_ID);
+	    }
+	    
+	    return true;
+	}
+
+	/**
+	 * Set default organization for OO element
+	 * @param C_AcctSchema_Element_ID element ID
+	 * @return true if updated
+	 */
+	private boolean setDefaultOrg(int C_AcctSchema_Element_ID)
+	{
+	    StringBuilder sql = new StringBuilder("UPDATE C_AcctSchema_Element SET Org_ID=");
+	    sql.append(getAD_Org_ID())
+	       .append(" WHERE C_AcctSchema_Element_ID=").append(C_AcctSchema_Element_ID);
+	    
+	    int no = DB.executeUpdateEx(sql.toString(), m_trx.getTrxName());
+	    if (no != 1) {
+	        log.log(Level.SEVERE, "Default Org in AcctSchemaElement NOT updated");
+	        return false;
+	    }
+	    return true;
+	}
+
+	/**
+	 * Set default account for AC element
+	 * @param C_AcctSchema_Element_ID element ID
+	 * @return true if updated
+	 */
+	private boolean setDefaultAccount(int C_AcctSchema_Element_ID)
+	{
+	    int C_ElementValue_ID = m_nap.getC_ElementValue_ID("DEFAULT_ACCT");
+	    if (log.isLoggable(Level.FINE)) log.fine("C_ElementValue_ID=" + C_ElementValue_ID);
+	    
+	    // Also need C_Element_ID - get from created element
+	    String sql = "SELECT C_Element_ID FROM C_Element WHERE AD_Client_ID=? " +
+	                "AND ElementType='AC' AND IsActive='Y'";
+	    int C_Element_ID = DB.getSQLValueEx(m_trx.getTrxName(), sql, m_client.getAD_Client_ID());
+	    
+	    StringBuilder updateSql = new StringBuilder("UPDATE C_AcctSchema_Element SET ");
+	    updateSql.append("C_ElementValue_ID=").append(C_ElementValue_ID)
+	            .append(", C_Element_ID=").append(C_Element_ID)
+	            .append(" WHERE C_AcctSchema_Element_ID=").append(C_AcctSchema_Element_ID);
+	    
+	    int no = DB.executeUpdateEx(updateSql.toString(), m_trx.getTrxName());
+	    if (no != 1) {
+	        log.log(Level.SEVERE, "Default Account in AcctSchemaElement NOT updated");
+	        return false;
+	    }
+	    return true;
+	}
+	
+	/**
+	 * Create default accounting records (GL, Default accounts)
+	 * @return true if created
+	 */
+	private boolean createDefaultAccountingRecords()
+	{
+	    try {
+	        createAccountingRecord(X_C_AcctSchema_GL.Table_Name);
+	        createAccountingRecord(X_C_AcctSchema_Default.Table_Name);
+	        return true;
+	    } catch (Exception e) {
+	        String err = e.getLocalizedMessage();
+	        log.log(Level.SEVERE, err);
+	        m_info.append(err);
+	        m_trx.rollback();
+	        m_trx.close();
+	        return false;
+	    }
+	}
+
 	
 	/**
 	 * Create new record for accounting table (M_Product_Acct, M_Product_Category_Acct, etc)
@@ -901,6 +908,377 @@ public final class MSetup
 		if (!acct.save()) {
 			throw new AdempiereUserError(CLogger.retrieveErrorString(table.getName() + " not created"));
 		}
+	}
+	
+	/**
+	 * Create GL categories for different document types
+	 * @return map of category name to ID, or null if failed
+	 */
+	private Map<String, Integer> createGLCategories()
+	{
+	    Map<String, Integer> categories = new HashMap<>();
+	    
+	    // Standard category (default)
+	    int id = createGLCategory("Standard", MGLCategory.CATEGORYTYPE_Manual, true);
+	    if (id == 0) 
+	    	return null;
+	    
+	    categories.put("Standard", id);
+	    
+	    // Document categories
+	    categories.put("GL_None", createGLCategory("None", 
+	        MGLCategory.CATEGORYTYPE_Document, false));
+	    categories.put("GL_GL", createGLCategory("Manual", 
+	        MGLCategory.CATEGORYTYPE_Manual, false));
+	    categories.put("GL_ARI", createGLCategory("AR Invoice", 
+	        MGLCategory.CATEGORYTYPE_Document, false));
+	    categories.put("GL_ARR", createGLCategory("AR Receipt", 
+	        MGLCategory.CATEGORYTYPE_Document, false));
+	    categories.put("GL_MM", createGLCategory("Material Management", 
+	        MGLCategory.CATEGORYTYPE_Document, false));
+	    categories.put("GL_API", createGLCategory("AP Invoice", 
+	        MGLCategory.CATEGORYTYPE_Document, false));
+	    categories.put("GL_APP", createGLCategory("AP Payment", 
+	        MGLCategory.CATEGORYTYPE_Document, false));
+	    categories.put("GL_CASH", createGLCategory("Cash/Payments", 
+	        MGLCategory.CATEGORYTYPE_Document, false));
+	    categories.put("GL_Manufacturing", createGLCategory("Manufacturing", 
+	        MGLCategory.CATEGORYTYPE_Document, false));
+	    categories.put("GL_Distribution", createGLCategory("Distribution", 
+	        MGLCategory.CATEGORYTYPE_Document, false));
+	    categories.put("GL_Payroll", createGLCategory("Payroll", 
+	        MGLCategory.CATEGORYTYPE_Document, false));
+	    
+	    return categories;
+	}
+
+	/**
+	 * Create all document types
+	 * @param glCategories GL category map
+	 * @return true if created
+	 */
+	private boolean createDocumentTypes(Map<String, Integer> glCategories)
+	{
+	    // Extract GL category IDs
+	    int GL_None = glCategories.get("GL_None");
+	    int GL_GL = glCategories.get("GL_GL");
+	    int GL_ARI = glCategories.get("GL_ARI");
+	    int GL_ARR = glCategories.get("GL_ARR");
+	    int GL_MM = glCategories.get("GL_MM");
+	    int GL_API = glCategories.get("GL_API");
+	    int GL_APP = glCategories.get("GL_APP");
+	    int GL_CASH = glCategories.get("GL_CASH");
+	    int GL_Manufacturing = glCategories.get("GL_Manufacturing");
+	    int GL_Distribution = glCategories.get("GL_Distribution");
+	    int GL_Payroll = glCategories.get("GL_Payroll");
+	    
+	    // Create all document types
+	    if (!createAccountingDocTypes(GL_GL, GL_ARR, GL_APP, GL_CASH)) {
+	        return false;
+	    }
+	    
+	    if (!createInvoiceDocTypes(GL_ARI, GL_API)) {
+	        return false;
+	    }
+	    
+	    if (!createPaymentDocTypes(GL_ARR, GL_APP, GL_CASH)) {
+	        return false;
+	    }
+	    
+	    if (!createBankingDocTypes(GL_CASH)) {
+	        return false;
+	    }
+	    
+	    if (!createInventoryDocTypes(GL_MM)) {
+	        return false;
+	    }
+	    
+	    if (!createSalesDocTypes(GL_None, GL_MM, GL_ARI)) {
+	        return false;
+	    }
+	    
+	    if (!createManufacturingDocTypes(GL_Manufacturing, GL_Distribution, GL_Payroll)) {
+	        return false;
+	    }
+	    
+	    return true;
+	}
+	
+	/**
+	 * Create accounting-related document types
+	 * @return true if created
+	 */
+	private boolean createAccountingDocTypes(int GL_GL, int GL_ARR, int GL_APP, int GL_CASH)
+	{
+	    // GL Journal
+	    int id = createDocType("GL Journal", Msg.getElement(m_ctx, "GL_Journal_ID"), 
+	        MDocType.DOCBASETYPE_GLJournal, null, 0, 0, 1000, GL_GL, false);
+	    if (id == 0) {
+	        String err = "Document Type not created";
+	        m_info.append(err);
+	        m_trx.rollback();
+	        m_trx.close();
+	        return false;
+	    }
+	    
+	    createDocType("GL Journal Batch", Msg.getElement(m_ctx, "GL_JournalBatch_ID"), 
+	        MDocType.DOCBASETYPE_GLJournal, null, 0, 0, 100, GL_GL, false);
+	    
+	    // Banking
+	    createDocType("Bank Statement", Msg.getElement(m_ctx, "C_BankStatemet_ID", true), 
+	        MDocType.DOCBASETYPE_BankStatement, null, 0, 0, 700000, GL_CASH, false);
+	    createDocType("Cash Journal", Msg.getElement(m_ctx, "C_Cash_ID", true),
+	        MDocType.DOCBASETYPE_CashJournal, null, 0, 0, 750000, GL_CASH, false);
+	    
+	    return true;
+	}
+	
+	/**
+	 * Create invoice document types
+	 * @return true if created
+	 */
+	private boolean createInvoiceDocTypes(int GL_ARI, int GL_API)
+	{
+	    // AR Invoices
+	    createDocType("AR Invoice", Msg.getElement(m_ctx, "C_Invoice_ID", true), 
+	        MDocType.DOCBASETYPE_ARInvoice, null, 0, 0, 100000, GL_ARI, false);
+	    createDocType("AR Invoice Indirect", Msg.getElement(m_ctx, "C_Invoice_ID", true), 
+	        MDocType.DOCBASETYPE_ARInvoice, null, 0, 0, 150000, GL_ARI, false);
+	    createDocType("AR Credit Memo", Msg.getMsg(m_ctx, "CreditMemo"), 
+	        MDocType.DOCBASETYPE_ARCreditMemo, null, 0, 0, 170000, GL_ARI, false);
+	    
+	    // AP Invoices
+	    createDocType("AP Invoice", Msg.getElement(m_ctx, "C_Invoice_ID", false), 
+	        MDocType.DOCBASETYPE_APInvoice, null, 0, 0, 0, GL_API, false);
+	    createDocType("AP CreditMemo", Msg.getMsg(m_ctx, "CreditMemo"), 
+	        MDocType.DOCBASETYPE_APCreditMemo, null, 0, 0, 0, GL_API, false);
+	    createDocType("Match Invoice", Msg.getElement(m_ctx, "M_MatchInv_ID", false), 
+	        MDocType.DOCBASETYPE_MatchInvoice, null, 0, 0, 390000, GL_API, false);
+	    
+	    return true;
+	}
+	
+	/**
+	 * Create Payment document types
+	 * @return true if created
+	 */
+	private boolean createPaymentDocTypes(int GL_ARR, int GL_APP, int GL_CASH)
+	{
+	    // Payments
+	    createDocType("AR Receipt", Msg.getElement(m_ctx, "C_Payment_ID", true), 
+	        MDocType.DOCBASETYPE_ARReceipt, null, 0, 0, 0, GL_ARR, false);
+	    createDocType("AP Payment", Msg.getElement(m_ctx, "C_Payment_ID", false), 
+	        MDocType.DOCBASETYPE_APPayment, null, 0, 0, 0, GL_APP, false);
+	    createDocType("Allocation", "Allocation", 
+	        MDocType.DOCBASETYPE_PaymentAllocation, null, 0, 0, 490000, GL_CASH, false);
+	    
+	    return true;
+	}
+	
+	/**
+	 * Create accounting-related document types
+	 * @return true if created
+	 */
+	private boolean createBankingDocTypes(int GL_CASH)
+	{
+	    // Banking
+	    createDocType("Bank Statement", Msg.getElement(m_ctx, "C_BankStatemet_ID", true), 
+	        MDocType.DOCBASETYPE_BankStatement, null, 0, 0, 700000, GL_CASH, false);
+	    createDocType("Cash Journal", Msg.getElement(m_ctx, "C_Cash_ID", true),
+	        MDocType.DOCBASETYPE_CashJournal, null, 0, 0, 750000, GL_CASH, false);
+	    
+	    return true;
+	}
+
+	/**
+	 * Create inventory/material management document types
+	 * @return true if created
+	 */
+	private boolean createInventoryDocTypes(int GL_MM)
+	{
+	    // Shipments
+	    createDocType("MM Shipment", "Delivery Note", 
+	        MDocType.DOCBASETYPE_MaterialDelivery, null, 0, 0, 500000, GL_MM, false);
+	    createDocType("MM Shipment Indirect", "Delivery Note", 
+	        MDocType.DOCBASETYPE_MaterialDelivery, null, 0, 0, 550000, GL_MM, false);
+	    createDocType("MM Vendor Return", "Vendor Return", 
+	        MDocType.DOCBASETYPE_MaterialDelivery, null, 0, 0, 590000, GL_MM, true);
+	    
+	    // Receipts
+	    createDocType("MM Receipt", "Vendor Delivery", 
+	        MDocType.DOCBASETYPE_MaterialReceipt, null, 0, 0, 0, GL_MM, false);
+	    createDocType("MM Customer Return", "Customer Return", 
+	        MDocType.DOCBASETYPE_MaterialReceipt, null, 0, 0, 570000, GL_MM, true);
+	    
+	    // Inventory
+	    createDocType("Material Movement", Msg.getElement(m_ctx, "M_Movement_ID", false),
+	        MDocType.DOCBASETYPE_MaterialMovement, null, 0, 0, 610000, GL_MM, false);
+	    createDocType("Physical Inventory", Msg.getElement(m_ctx, "M_Inventory_ID", false), 
+	        MDocType.DOCBASETYPE_MaterialPhysicalInventory, 
+	        MDocType.DOCSUBTYPEINV_PhysicalInventory, 0, 0, 620000, GL_MM, false);
+	    createDocType("Internal Use Inventory", "Internal Use Inventory", 
+	        MDocType.DOCBASETYPE_MaterialPhysicalInventory, 
+	        MDocType.DOCSUBTYPEINV_InternalUseInventory, 0, 0, 650000, GL_MM, false);
+	    createDocType("Cost Adjustment", "Cost Adjustment", 
+	        MDocType.DOCBASETYPE_MaterialPhysicalInventory, 
+	        MDocType.DOCSUBTYPEINV_CostAdjustment, 0, 0, 660000, GL_MM, false);
+	    
+	    // Production
+	    createDocType("Material Production", Msg.getElement(m_ctx, "M_Production_ID", false), 
+	        MDocType.DOCBASETYPE_MaterialProduction, null, 0, 0, 630000, GL_MM, false);
+	    createDocType("Project Issue", Msg.getElement(m_ctx, "C_ProjectIssue_ID", false), 
+	        MDocType.DOCBASETYPE_ProjectIssue, null, 0, 0, 640000, GL_MM, false);
+	    
+	    return true;
+	}
+
+	/**
+	 * Create sales-related document types
+	 * @return true if created
+	 */
+	private boolean createSalesDocTypes(int GL_None, int GL_MM, int GL_ARI)
+	{
+	    // Get shipment/invoice doc types for linking
+	    int DT_S  = getDocTypeID("MM Shipment");
+	    int DT_SI = getDocTypeID("MM Shipment Indirect");
+	    int DT_I  = getDocTypeID("AR Invoice");
+	    int DT_II = getDocTypeID("AR Invoice Indirect");
+	    int DT_IC = getDocTypeID("AR Credit Memo");
+	    int DT_RM = getDocTypeID("MM Customer Return");
+	    int DT_VRM = getDocTypeID("MM Vendor Return");
+	    int DT_IPC = getDocTypeID("AP CreditMemo");
+	    
+	    // Purchase Orders
+	    createDocType("Purchase Order", Msg.getElement(m_ctx, "C_Order_ID", false), 
+	        MDocType.DOCBASETYPE_PurchaseOrder, null, 0, 0, 800000, GL_None, false);
+	    createDocType("Match PO", Msg.getElement(m_ctx, "M_MatchPO_ID", false), 
+	        MDocType.DOCBASETYPE_MatchPO, null, 0, 0, 890000, GL_None, false);
+	    createDocType("Purchase Requisition", Msg.getElement(m_ctx, "M_Requisition_ID", false), 
+	        MDocType.DOCBASETYPE_PurchaseRequisition, null, 0, 0, 900000, GL_None, false);
+	    createDocType("Vendor Return Material", "Vendor Return Material Authorization",
+	        MDocType.DOCBASETYPE_PurchaseOrder, MDocType.DOCSUBTYPESO_ReturnMaterial, 
+	        DT_VRM, DT_IPC, 990000, GL_MM, false);
+	    
+	    // Sales Orders
+	    createDocType("Binding offer", "Quotation", 
+	        MDocType.DOCBASETYPE_SalesOrder, MDocType.DOCSUBTYPESO_Quotation, 
+	        0, 0, 10000, GL_None, false);
+	    createDocType("Non binding offer", "Proposal", 
+	        MDocType.DOCBASETYPE_SalesOrder, MDocType.DOCSUBTYPESO_Proposal, 
+	        0, 0, 20000, GL_None, false);
+	    createDocType("Prepay Order", "Prepay Order", 
+	        MDocType.DOCBASETYPE_SalesOrder, MDocType.DOCSUBTYPESO_PrepayOrder, 
+	        DT_S, DT_I, 30000, GL_None, false);
+	    createDocType("Customer Return Material", "Customer Return Material Authorization", 
+	        MDocType.DOCBASETYPE_SalesOrder, MDocType.DOCSUBTYPESO_ReturnMaterial, 
+	        DT_RM, DT_IC, 30000, GL_None, false);
+	    createDocType("Standard Order", "Order Confirmation", 
+	        MDocType.DOCBASETYPE_SalesOrder, MDocType.DOCSUBTYPESO_StandardOrder, 
+	        DT_S, DT_I, 50000, GL_None, false);
+	    createDocType("Credit Order", "Order Confirmation", 
+	        MDocType.DOCBASETYPE_SalesOrder, MDocType.DOCSUBTYPESO_OnCreditOrder, 
+	        DT_SI, DT_I, 60000, GL_None, false);
+	    createDocType("Warehouse Order", "Order Confirmation", 
+	        MDocType.DOCBASETYPE_SalesOrder, MDocType.DOCSUBTYPESO_WarehouseOrder, 
+	        DT_S, DT_I, 70000, GL_None, false);
+	    
+	    // POS Order
+	    int DT = createDocType("POS Order", "Order Confirmation", 
+	        MDocType.DOCBASETYPE_SalesOrder, MDocType.DOCSUBTYPESO_POSOrder, 
+	        DT_SI, DT_II, 80000, GL_None, false);
+	    
+	    // Set POS as default for Sales Order window
+	    createPreference("C_DocTypeTarget_ID", String.valueOf(DT), 143);
+	    
+	    return true;
+	}
+
+	/**
+	 * Create manufacturing/distribution document types
+	 * @return true if created
+	 */
+	private boolean createManufacturingDocTypes(int GL_Manufacturing, 
+	                                           int GL_Distribution, int GL_Payroll)
+	{
+	    createDocType("Manufacturing Order", "Manufacturing Order", 
+	        MDocType.DOCBASETYPE_ManufacturingOrder, null,
+	        0, 0, 80000, GL_Manufacturing, false);
+	    createDocType("Manufacturing Cost Collector","Cost Collector", 
+	        MDocType.DOCBASETYPE_ManufacturingCostCollector, null, 
+	        0, 0, 81000, GL_Manufacturing, false);
+	    createDocType("Maintenance Order","Maintenance Order",
+	        MDocType.DOCBASETYPE_MaintenanceOrder, null,
+	        0, 0, 86000, GL_Manufacturing, false);
+	    createDocType("Quality Order","Quality Order",
+	        MDocType.DOCBASETYPE_QualityOrder, null,
+	        0, 0, 87000, GL_Manufacturing, false);
+	    createDocType("Distribution Order","Distribution Order", 
+	        MDocType.DOCBASETYPE_DistributionOrder, null,
+	        0, 0, 88000, GL_Distribution, false);
+	    createDocType("Payroll","Payroll", 
+	        MDocType.DOCBASETYPE_Payroll, null,
+	        0, 0, 90000, GL_Payroll, false);
+	    
+	    return true;
+	}
+	
+	/**
+	 * Helper to get doc type ID by name
+	 * @param name doc type name
+	 * @return C_DocType_ID
+	 */
+	private int getDocTypeID(String name)
+	{
+	    String sql = "SELECT C_DocType_ID FROM C_DocType WHERE AD_Client_ID=? AND Name=?";
+	    return DB.getSQLValueEx(m_trx.getTrxName(), sql, m_client.getAD_Client_ID(), name);
+	}
+	
+	/**
+	 * Update client with accounting configuration
+	 * @return true if updated
+	 */
+	private boolean updateClientInfo()
+	{
+	    StringBuilder sql = new StringBuilder("UPDATE AD_ClientInfo SET ");
+	    sql.append("C_AcctSchema1_ID=").append(m_as.getC_AcctSchema_ID())
+	       .append(", C_Calendar_ID=").append(m_calendar.getC_Calendar_ID())
+	       .append(" WHERE AD_Client_ID=").append(m_client.getAD_Client_ID());
+	    
+	    int no = DB.executeUpdateEx(sql.toString(), m_trx.getTrxName());
+	    if (no != 1) {
+	        String err = "ClientInfo not updated";
+	        log.log(Level.SEVERE, err);
+	        m_info.append(err);
+	        m_trx.rollback();
+	        m_trx.close();
+	        return false;
+	    }
+	    
+	    return true;
+	}
+	
+	/**
+	 * Validate accounting setup completeness
+	 * @return true if valid
+	 */
+	private boolean validateDocumentTypeSetup()
+	{
+	    ProcessInfo processInfo = new ProcessInfo("Document Type Verify", 0);
+	    processInfo.setAD_Client_ID(getAD_Client_ID());
+	    processInfo.setAD_User_ID(getAD_User_ID());
+	    processInfo.setParameter(new ProcessInfoParameter[0]);
+	    processInfo.setClassName("org.compiere.process.DocumentTypeVerify");
+	    
+	    if (!ProcessUtil.startJavaProcess(m_ctx, processInfo, m_trx, false)) {
+	        String err = "Document type verification failed. Message=" + processInfo.getSummary();
+	        log.log(Level.SEVERE, err);
+	        m_info.append(err);
+	        m_trx.rollback();
+	        m_trx.close();
+	        return false;
+	    }
+	    
+	    return true;
 	}
 
 	/**
@@ -1024,6 +1402,31 @@ public final class MSetup
 		//
 		return dt.getC_DocType_ID();
 	}   //  createDocType
+	
+	/**
+	 * Create calendar for the client
+	 * @return true if created
+	 */
+	private boolean createCalendar() {
+	    m_calendar = new MCalendar(m_client);
+	    if (!m_calendar.save()) {
+	        String err = "Calendar NOT inserted";
+	        log.log(Level.SEVERE, err);
+	        m_info.append(err);
+	        m_trx.rollback();
+	        m_trx.close();
+	        return false;
+	    }
+	    
+	    m_info.append(Msg.translate(m_lang, "C_Calendar_ID"))
+	         .append("=").append(m_calendar.getName()).append("\n");
+	    
+	    if (m_calendar.createYear(m_client.getLocale()) == null) {
+	        log.log(Level.SEVERE, "Year NOT inserted");
+	    }
+	    
+	    return true;
+	}
 	
 	/**
 	 *  <pre>
@@ -1578,5 +1981,25 @@ public final class MSetup
 	 */
 	public String getTrxName() {
 		return m_trx != null ? m_trx.getTrxName() : null;
+	}
+	
+	/**
+	 * Inner class to hold AcctSchema Element configuration
+	 */
+	private static class AcctSchemaElementConfig {
+	    String elementType;
+	    String name;
+	    boolean isMandatory;
+	    boolean isBalanced;
+	    int seqNo;
+	    
+	    AcctSchemaElementConfig(String elementType, String name, 
+	                           boolean isMandatory, boolean isBalanced, int seqNo) {
+	        this.elementType = elementType;
+	        this.name = name;
+	        this.isMandatory = isMandatory;
+	        this.isBalanced = isBalanced;
+	        this.seqNo = seqNo;
+	    }
 	}
 }   //  MSetup
