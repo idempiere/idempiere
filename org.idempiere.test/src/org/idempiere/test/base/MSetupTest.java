@@ -34,7 +34,6 @@ import java.sql.Timestamp;
 import org.compiere.Adempiere;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MCalendar;
-import org.compiere.model.MClient;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MCurrency;
 import org.compiere.model.MDocType;
