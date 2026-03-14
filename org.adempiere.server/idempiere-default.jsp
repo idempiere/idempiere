@@ -1,4 +1,4 @@
-<%@ page import="org.bmlaurus.home.Prop" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" import="org.bmlaurus.home.Prop" %>
 <!--
 Theme Name: iDempiere Default Theme
 Version: 1.0
@@ -6,7 +6,7 @@ Description: Default Theme for IDempiere
 Author: Zuhri Utama
 Author URI: https://zuhriutama.com
 -->
-<html data-theme="dark">
+<html lang="en" data-theme="dark">
 <% Prop.load(); %>
 <head>
     <meta charset="utf-8">
@@ -100,7 +100,7 @@ Author URI: https://zuhriutama.com
         <footer class="">
             <div class="row">
                 <div class="col-12 col-md-5">
-                    <p class="text-center text-md-start fs-6">iDempiere license is <a href="http://www.gnu.org/licenses/gpl-2.0.html" target="_blank" rel="noopener noreferrer">GPLv2</a> <%=Prop.getPropertyEscaped(Prop.COPYRIGHT_TXT)%></p>
+                    <p class="text-center text-md-start fs-6">iDempiere license is <a href="https://www.gnu.org/licenses/gpl-2.0.html" target="_blank" rel="noopener noreferrer">GPLv2</a> <%=Prop.getPropertyEscaped(Prop.COPYRIGHT_TXT)%></p>
                 </div>
                 <div class="col-12 col-md-2 d-flex justify-content-center align-items-center gap-2">
                     <%if(!Prop.getPropertyEscaped(Prop.SOC_FACEBOOK).equals("") && !Prop.getPropertyEscaped(Prop.SOC_FACEBOOK).equals("NONE")){%>
@@ -161,8 +161,14 @@ Author URI: https://zuhriutama.com
 (function() {
     var STORAGE_KEY = 'idempiere-theme';
     var root = document.documentElement;
-    function getStored() { return localStorage.getItem(STORAGE_KEY); }
-    function setStored(theme) { localStorage.setItem(STORAGE_KEY, theme); }
+    function getStored() {
+        try { return localStorage.getItem(STORAGE_KEY); }
+        catch (e) { return null; }
+    }
+    function setStored(theme) {
+        try { localStorage.setItem(STORAGE_KEY, theme); }
+        catch (e) { /* no-op: persistence unavailable */ }
+    }
     function apply(theme) {
         root.setAttribute('data-theme', theme);
         var src = theme === 'dark' ? 'data-src-dark' : 'data-src-light';
