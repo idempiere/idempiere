@@ -6,7 +6,7 @@ Description: Default Theme for IDempiere
 Author: Zuhri Utama
 Author URI: https://zuhriutama.com
 -->
-<html data-theme="light">
+<html data-theme="dark">
 <% Prop.load(); %>
 <head>
     <meta charset="utf-8">
