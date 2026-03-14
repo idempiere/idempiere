@@ -183,9 +183,10 @@ Author URI: https://zuhriutama.com
     }
     function init() {
         var preferred = getStored();
-        if (preferred === 'light' || preferred === 'dark') {
-            apply(preferred);
-        }
+        var initialTheme = (preferred === 'light' || preferred === 'dark')
+                ? preferred
+                : (root.getAttribute('data-theme') || 'dark');
+        apply(initialTheme);
         document.querySelectorAll('.theme-toggle').forEach(function(btn) {
             btn.addEventListener('click', function() {
                 var current = root.getAttribute('data-theme') || 'light';
