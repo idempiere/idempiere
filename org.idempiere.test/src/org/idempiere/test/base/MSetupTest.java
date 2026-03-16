@@ -488,6 +488,8 @@ public class MSetupTest extends AbstractTestCase {
 		
 		// 14. Validate ClientInfo updates
 		validateClientInfoEntities(AD_Client_ID);
+		
+		validateDimensionLinks(AD_Client_ID);
 	}
 	
 	private void validateMarketingChannel(int AD_Client_ID) {
@@ -719,5 +721,111 @@ public class MSetupTest extends AbstractTestCase {
 	private void validateClientInfoEntities(int AD_Client_ID) {
 		MClientInfo clientInfo = MClientInfo.get(Env.getCtx(), AD_Client_ID, trxName);
 		assertNotNull(clientInfo, "ClientInfo should exist");
+	}
+	
+	/**
+	 * Validate that all dimensions are correctly linked to the accounting schema.
+	 * This validates the work done by MSetup.linkEntitiesToAccounting
+	 * @param AD_Client_ID the client ID to validate
+	 */
+	private void validateDimensionLinks(int AD_Client_ID) {
+		// Get the accounting schema
+		MAcctSchema acctSchema = new Query(Env.getCtx(), MAcctSchema.Table_Name, 
+			"AD_Client_ID=?", trxName)
+			.setParameters(AD_Client_ID)
+			.first();
+		assertNotNull(acctSchema, "Accounting Schema should exist");
+		int C_AcctSchema_ID = acctSchema.getC_AcctSchema_ID();
+		
+		// 1. Validate Campaign dimension link
+		validateCampaignLink(AD_Client_ID, C_AcctSchema_ID);
+		
+		// 2. Validate Sales Region dimension link
+		validateSalesRegionLink(AD_Client_ID, C_AcctSchema_ID);
+		
+		// 3. Validate Activity dimension link
+		validateActivityLink(AD_Client_ID, C_AcctSchema_ID);
+		
+		// 4. Validate Business Partner dimension link
+		validateBPartnerLink(AD_Client_ID, C_AcctSchema_ID);
+		
+		// 5. Validate Product dimension link
+		validateProductLink(AD_Client_ID, C_AcctSchema_ID);
+		
+	}
+	
+	private void validateCampaignLink(int AD_Client_ID, int C_AcctSchema_ID) {
+		// Get the standard campaign created
+		int campaignID = DB.getSQLValueEx(trxName,
+			"SELECT C_Campaign_ID FROM C_Campaign WHERE AD_Client_ID=? AND Name='Standard'", 
+			AD_Client_ID);
+		assertTrue(campaignID > 0, "Standard Campaign should exist");
+		
+		// Verify it's linked to the accounting schema via C_AcctSchema_Element table
+		int linkedCampaignID = DB.getSQLValueEx(trxName,
+			"SELECT C_Campaign_ID FROM C_AcctSchema_Element WHERE C_AcctSchema_ID=? AND ElementType='MC'",
+			C_AcctSchema_ID);
+		assertEquals(campaignID, linkedCampaignID, 
+			"Campaign should be linked to Accounting Schema via C_AcctSchema_Element");
+	}
+	
+	private void validateSalesRegionLink(int AD_Client_ID, int C_AcctSchema_ID) {
+		// Get the standard sales region created
+		int regionID = DB.getSQLValueEx(trxName,
+			"SELECT C_SalesRegion_ID FROM C_SalesRegion WHERE AD_Client_ID=? AND Name='Standard'", 
+			AD_Client_ID);
+		assertTrue(regionID > 0, "Standard Sales Region should exist");
+		
+		// Verify it's linked to the accounting schema via C_AcctSchema_Element table
+		int linkedRegionID = DB.getSQLValueEx(trxName,
+			"SELECT C_SalesRegion_ID FROM C_AcctSchema_Element WHERE C_AcctSchema_ID=? AND ElementType='SR'",
+			C_AcctSchema_ID);
+		assertEquals(regionID, linkedRegionID, 
+			"Sales Region should be linked to Accounting Schema via C_AcctSchema_Element");
+	}
+	
+	private void validateActivityLink(int AD_Client_ID, int C_AcctSchema_ID) {
+		// Get the standard activity created
+		int activityID = DB.getSQLValueEx(trxName,
+			"SELECT C_Activity_ID FROM C_Activity WHERE AD_Client_ID=? AND Name='Standard'", 
+			AD_Client_ID);
+		assertTrue(activityID > 0, "Standard Activity should exist");
+		
+		// Verify it's linked to the accounting schema via C_AcctSchema_Element table
+		int linkedActivityID = DB.getSQLValueEx(trxName,
+			"SELECT C_Activity_ID FROM C_AcctSchema_Element WHERE C_AcctSchema_ID=? AND ElementType='AY'",
+			C_AcctSchema_ID);
+		assertEquals(activityID, linkedActivityID, 
+			"Activity should be linked to Accounting Schema via C_AcctSchema_Element");
+	}
+	
+	private void validateBPartnerLink(int AD_Client_ID, int C_AcctSchema_ID) {
+		// Get the standard business partner created
+		int bpID = DB.getSQLValueEx(trxName,
+			"SELECT C_BPartner_ID FROM C_BPartner WHERE AD_Client_ID=? AND Name='Standard'", 
+			AD_Client_ID);
+		assertTrue(bpID > 0, "Standard Business Partner should exist");
+		
+		// Verify it's linked to the accounting schema via C_AcctSchema_Element table
+		int linkedBPID = DB.getSQLValueEx(trxName,
+			"SELECT C_BPartner_ID FROM C_AcctSchema_Element WHERE C_AcctSchema_ID=? AND ElementType='BP'",
+			C_AcctSchema_ID);
+		assertEquals(bpID, linkedBPID, 
+			"Business Partner should be linked to Accounting Schema via C_AcctSchema_Element");
+	}
+	
+	private void validateProductLink(int AD_Client_ID, int C_AcctSchema_ID) {
+		// Get the standard product created
+		int productID = DB.getSQLValueEx(trxName,
+			"SELECT M_Product_ID FROM M_Product WHERE AD_Client_ID=? AND Name='Standard'", 
+			AD_Client_ID);
+		assertTrue(productID > 0, "Standard Product should exist");
+		
+		// Verify it's linked to the accounting schema via C_AcctSchema_Element table
+		int linkedProductID = DB.getSQLValueEx(trxName,
+			"SELECT M_Product_ID FROM C_AcctSchema_Element WHERE C_AcctSchema_ID=? AND ElementType='PR'",
+			C_AcctSchema_ID);
+		assertEquals(productID, linkedProductID, 
+			"Product should be linked to Accounting Schema via C_AcctSchema_Element");
 	}
 }
