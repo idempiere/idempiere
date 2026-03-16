@@ -42,6 +42,8 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
+import org.idempiere.acct.AcctModelServices;
+import org.idempiere.acct.IAccountingSetupService;
 
 /**
  * Initial Setup Model
@@ -1440,20 +1442,19 @@ public final class MSetup
 	 */
 	public boolean createEntities (int C_Country_ID, String City, int C_Region_ID, int C_Currency_ID, String postal, String address1)
 	{
-		if (m_as == null)
-		{
-			log.severe ("No AcctountingSChema");
-			m_trx.rollback();
-			m_trx.close();
-			return false;
-		}
+	    boolean hasAccounting = (m_as != null);
+	    if (!hasAccounting) {
+	    	if (log.isLoggable(Level.INFO)) log.info("No accounting schema - entities will be created without accounting links");
+	    }
+
 		if (log.isLoggable(Level.INFO)) log.info("C_Country_ID=" + C_Country_ID 
 			+ ", City=" + City + ", C_Region_ID=" + C_Region_ID);
 		m_info.append("\n----\n");
 		
 		try {
 			// 1. Create marketing and sales dimensions
-	        if (!createMarketingDimensions()) {
+	        DimensionIDs dimensions = createMarketingDimensions();
+	        if (dimensions == null) {
 	            return false;
 	        }
 	        
@@ -1480,7 +1481,8 @@ public final class MSetup
 	        }
 	        
 	        // 6. Create project setup
-	        if (!createProjectSetup(C_Currency_ID)) {
+	        int C_Project_ID = createProjectSetup(C_Currency_ID);
+	        if (C_Project_ID <= 0) {
 	            return false;
 	        }
 	        
@@ -1492,6 +1494,13 @@ public final class MSetup
 	        // 8. Update client configuration
 	        if (!updateClientEntities(standardBP, standardProduct)) {
 	            return false;
+	        }
+	        
+	        // Link to accounting schema if accounting is installed
+	        if (hasAccounting) {
+	            if (!linkEntitiesToAccounting(dimensions, standardBP, standardProduct, C_Project_ID)) {
+	                return false;
+	            }
 	        }
 	        
 	        // Commit if not dry run
@@ -1521,58 +1530,37 @@ public final class MSetup
 	 * - Sales Region
 	 * - Activity
 	 * 
-	 * @return true if created
+	 * @return DimensionIDs object with created dimension IDs, or null if failed
 	 */
-	private boolean createMarketingDimensions()
+	private DimensionIDs createMarketingDimensions()
 	{
 	    String defaultName = Msg.translate(m_lang, "Standard");
 	    
 	    // Create Marketing Channel
 	    int C_Channel_ID = createMarketingChannel(defaultName);
 	    if (C_Channel_ID == 0) {
-	        return false;
+	        return null;
 	    }
 	    
 	    // Create Marketing Campaign
 	    int C_Campaign_ID = createMarketingCampaign(defaultName, C_Channel_ID);
 	    if (C_Campaign_ID == 0) {
-	        return false;
-	    }
-	    
-	    // Link campaign to accounting schema if configured
-	    if (m_hasMCampaign) {
-	        if (!linkCampaignToAcctSchema(C_Campaign_ID)) {
-	            return false;
-	        }
+	        return null;
 	    }
 	    
 	    // Create Sales Region
 	    int C_SalesRegion_ID = createSalesRegion(defaultName);
 	    if (C_SalesRegion_ID == 0) {
-	        return false;
-	    }
-	    
-	    // Link sales region to accounting schema if configured
-	    if (m_hasSRegion) {
-	        if (!linkSalesRegionToAcctSchema(C_SalesRegion_ID)) {
-	            return false;
-	        }
+	        return null;
 	    }
 	    
 	    // Create Activity
 	    int C_Activity_ID = createActivity(defaultName);
 	    if (C_Activity_ID == 0) {
-	        return false;
+	        return null;
 	    }
 	    
-	    // Link activity to accounting schema if configured
-	    if (m_hasActivity) {
-	        if (!linkActivityToAcctSchema(C_Activity_ID)) {
-	            return false;
-	        }
-	    }
-	    
-	    return true;
+	    return new DimensionIDs(C_Campaign_ID, C_SalesRegion_ID, C_Activity_ID);
 	}
 
 	/**
@@ -1633,26 +1621,6 @@ public final class MSetup
 	}
 
 	/**
-	 * Link campaign to accounting schema element
-	 * @param C_Campaign_ID campaign ID
-	 * @return true if linked
-	 */
-	private boolean linkCampaignToAcctSchema(int C_Campaign_ID)
-	{
-	    StringBuilder sql = new StringBuilder("UPDATE C_AcctSchema_Element SET ");
-	    sql.append("C_Campaign_ID=").append(C_Campaign_ID);
-	    sql.append(" WHERE C_AcctSchema_ID=").append(m_as.getC_AcctSchema_ID());
-	    sql.append(" AND ElementType='MC'");
-	    
-	    int no = DB.executeUpdateEx(sql.toString(), m_trx.getTrxName());
-	    if (no != 1) {
-	        log.log(Level.SEVERE, "AcctSchema Element Campaign NOT updated");
-	        return false;
-	    }
-	    return true;
-	}
-
-	/**
 	 * Create sales region
 	 * @param name region name
 	 * @return C_SalesRegion_ID or 0 if failed
@@ -1684,26 +1652,6 @@ public final class MSetup
 	}
 
 	/**
-	 * Link sales region to accounting schema element
-	 * @param C_SalesRegion_ID sales region ID
-	 * @return true if linked
-	 */
-	private boolean linkSalesRegionToAcctSchema(int C_SalesRegion_ID)
-	{
-	    StringBuilder sql = new StringBuilder("UPDATE C_AcctSchema_Element SET ");
-	    sql.append("C_SalesRegion_ID=").append(C_SalesRegion_ID);
-	    sql.append(" WHERE C_AcctSchema_ID=").append(m_as.getC_AcctSchema_ID());
-	    sql.append(" AND ElementType='SR'");
-	    
-	    int no = DB.executeUpdateEx(sql.toString(), m_trx.getTrxName());
-	    if (no != 1) {
-	        log.log(Level.SEVERE, "AcctSchema Element SalesRegion NOT updated");
-	        return false;
-	    }
-	    return true;
-	}
-
-	/**
 	 * Create activity
 	 * @param name activity name
 	 * @return C_Activity_ID or 0 if failed
@@ -1732,26 +1680,6 @@ public final class MSetup
 	    createTranslations("C_Activity", C_Activity_ID);
 	    
 	    return C_Activity_ID;
-	}
-
-	/**
-	 * Link activity to accounting schema element
-	 * @param C_Activity_ID activity ID
-	 * @return true if linked
-	 */
-	private boolean linkActivityToAcctSchema(int C_Activity_ID)
-	{
-	    StringBuilder sql = new StringBuilder("UPDATE C_AcctSchema_Element SET ");
-	    sql.append("C_Activity_ID=").append(C_Activity_ID);
-	    sql.append(" WHERE C_AcctSchema_ID=").append(m_as.getC_AcctSchema_ID());
-	    sql.append(" AND ElementType='AY'");
-	    
-	    int no = DB.executeUpdateEx(sql.toString(), m_trx.getTrxName());
-	    if (no != 1) {
-	        log.log(Level.SEVERE, "AcctSchema Element Activity NOT updated");
-	        return false;
-	    }
-	    return true;
 	}
 
 	/**
@@ -2171,12 +2099,11 @@ public final class MSetup
 	 * Create project setup:
 	 * - Project Cycle
 	 * - Default Project
-	 * - Link to accounting schema
 	 * 
 	 * @param C_Currency_ID currency
-	 * @return true if created
+	 * @return C_Project_ID of default project or -1 if failed
 	 */
-	private boolean createProjectSetup(int C_Currency_ID)
+	private int createProjectSetup(int C_Currency_ID)
 	{
 	    String defaultName = Msg.translate(m_lang, "Standard");
 	    
@@ -2193,7 +2120,7 @@ public final class MSetup
 	    int no = DB.executeUpdateEx(sql.toString(), m_trx.getTrxName());
 	    if (no != 1) {
 	        log.log(Level.SEVERE, "Cycle NOT inserted");
-	        return false;
+	        return -1;
 	    }
 	    
 	    // Create Default Project
@@ -2211,40 +2138,13 @@ public final class MSetup
 	    no = DB.executeUpdateEx(sql.toString(), m_trx.getTrxName());
 	    if (no != 1) {
 	        log.log(Level.SEVERE, "Project NOT inserted");
-	        return false;
+	        return -1;
 	    }
 	    
 	    m_info.append(Msg.translate(m_lang, "C_Project_ID"))
 	         .append("=").append(defaultName).append("\n");
 	    
-	    // Link to accounting schema if configured
-	    if (m_hasProject) {
-	        if (!linkProjectToAcctSchema(C_Project_ID)) {
-	            return false;
-	        }
-	    }
-	    
-	    return true;
-	}
-
-	/**
-	 * Link project to accounting schema element
-	 * @param C_Project_ID project ID
-	 * @return true if linked
-	 */
-	private boolean linkProjectToAcctSchema(int C_Project_ID)
-	{
-	    StringBuilder sql = new StringBuilder("UPDATE C_AcctSchema_Element SET ");
-	    sql.append("C_Project_ID=").append(C_Project_ID);
-	    sql.append(" WHERE C_AcctSchema_ID=").append(m_as.getC_AcctSchema_ID());
-	    sql.append(" AND ElementType='PJ'");
-	    
-	    int no = DB.executeUpdateEx(sql.toString(), m_trx.getTrxName());
-	    if (no != 1) {
-	        log.log(Level.SEVERE, "AcctSchema Element Project NOT updated");
-	        return false;
-	    }
-	    return true;
+	    return C_Project_ID;
 	}
 
 	/**
@@ -2469,6 +2369,109 @@ public final class MSetup
 	}
 	
 	/**
+	 * Link created entities to accounting schema (ACCOUNTING-SPECIFIC)
+	 * This method calls the accounting service to link dimensions.
+	 * 
+	 * @param dimensions marketing dimensions
+	 * @param standardBP standard business partner
+	 * @param standardProduct standard product
+	 * @param projects project IDs
+	 * @return true if linked
+	 */
+	private boolean linkEntitiesToAccounting(DimensionIDs dimensions, 
+	                                        MBPartner standardBP,
+	                                        MProduct standardProduct,
+	                                        int C_Project_ID)
+	{
+		IAccountingSetupService acctService = null;
+		if (AcctModelServices.isAccountingSetupAvailable()) {
+			acctService = AcctModelServices.getAccountingSetupService();
+		}
+
+	    if (acctService == null) {
+	        log.warning("Accounting service not available - skipping dimension links");
+	        return true; // Not an error, just skip
+	    }
+	    
+	    int C_AcctSchema_ID = m_as.getC_AcctSchema_ID();
+	    
+	    // Link Campaign
+	    if (m_hasMCampaign && dimensions.C_Campaign_ID > 0) {
+	        if (!acctService.linkDimensionToAcctSchema(C_AcctSchema_ID, "MC", 
+	                                                  dimensions.C_Campaign_ID, 
+	                                                  m_trx.getTrxName())) {
+	            log.severe("Failed to link Campaign to AcctSchema");
+	            return false;
+	        }
+	    }
+	    
+	    // Link Sales Region
+	    if (m_hasSRegion && dimensions.C_SalesRegion_ID > 0) {
+	        if (!acctService.linkDimensionToAcctSchema(C_AcctSchema_ID, "SR",
+	                                                  dimensions.C_SalesRegion_ID,
+	                                                  m_trx.getTrxName())) {
+	            log.severe("Failed to link Sales Region to AcctSchema");
+	            return false;
+	        }
+	    }
+	    
+	    // Link Activity
+	    if (m_hasActivity && dimensions.C_Activity_ID > 0) {
+	        if (!acctService.linkDimensionToAcctSchema(C_AcctSchema_ID, "AY",
+	                                                  dimensions.C_Activity_ID,
+	                                                  m_trx.getTrxName())) {
+	            log.severe("Failed to link Activity to AcctSchema");
+	            return false;
+	        }
+	    }
+	    
+	    // Link BPartner
+	    if (standardBP != null) {
+	        if (!acctService.linkDimensionToAcctSchema(C_AcctSchema_ID, "BP",
+	                                                  standardBP.getC_BPartner_ID(),
+	                                                  m_trx.getTrxName())) {
+	            log.severe("Failed to link BPartner to AcctSchema");
+	            return false;
+	        }
+	    }
+	    
+	    // Link Product
+	    if (standardProduct != null) {
+	        if (!acctService.linkDimensionToAcctSchema(C_AcctSchema_ID, "PR",
+	                                                  standardProduct.getM_Product_ID(),
+	                                                  m_trx.getTrxName())) {
+	            log.severe("Failed to link Product to AcctSchema");
+	            return false;
+	        }
+	    }
+	    
+	    // Link Project
+	    if (m_hasProject && C_Project_ID > 0) {
+	        if (!acctService.linkDimensionToAcctSchema(C_AcctSchema_ID, "PJ",
+	                                                  C_Project_ID,
+	                                                  m_trx.getTrxName())) {
+	            log.severe("Failed to link Project to AcctSchema");
+	            return false;
+	        }
+	    }
+	    
+	    return true;
+	}
+	
+	// Helper classes to return multiple IDs
+	private static class DimensionIDs {
+	    int C_Campaign_ID;
+	    int C_SalesRegion_ID;
+	    int C_Activity_ID;
+	    
+	    DimensionIDs(int campaign, int salesRegion, int activity) {
+	        this.C_Campaign_ID = campaign;
+	        this.C_SalesRegion_ID = salesRegion;
+	        this.C_Activity_ID = activity;
+	    }
+	}
+	
+	/**
 	 * Inner class to hold AcctSchema Element configuration
 	 */
 	private static class AcctSchemaElementConfig {
@@ -2487,4 +2490,5 @@ public final class MSetup
 	        this.seqNo = seqNo;
 	    }
 	}
+
 }   //  MSetup

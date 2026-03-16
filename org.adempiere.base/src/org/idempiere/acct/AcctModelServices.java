@@ -35,6 +35,7 @@ public final class AcctModelServices {
 
 	private static volatile IPOAccountingService s_accountingService = null;
 	private static volatile IDocPostingService s_postingService = null;
+	private static volatile IAccountingSetupService s_accountingSetupService = null;
 
 	/**
 	 * Called by OSGi DS when the service becomes available.
@@ -98,6 +99,38 @@ public final class AcctModelServices {
 	 */
 	public static boolean isDocPostingAvailable() {
 		return s_postingService != null;
+	}
+	
+	/**
+	 * Called by OSGi DS when the service becomes available.
+	 * @param accounting setup service implementation
+	 */
+	public static void setAccountingSetupService(IAccountingSetupService service) {
+		s_accountingSetupService = service;
+	}
+
+	/**
+	 * Called by OSGi DS when the service is withdrawn.
+	 * @param service posting service implementation (ignored)
+	 */
+	public static void unsetAccountingSetupService(IAccountingSetupService service) {
+		if (s_accountingSetupService == service) {
+			s_accountingSetupService = null;
+		}
+	}
+
+	/**
+	 * @return the posting service, or {@code null} if not yet available
+	 */
+	public static IAccountingSetupService getAccountingSetupService() {
+		return s_accountingSetupService;
+	}
+	
+	/**
+	 * @return true if the posting service is available
+	 */
+	public static boolean isAccountingSetupAvailable() {
+		return s_accountingSetupService != null;
 	}
 	
 }
