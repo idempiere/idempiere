@@ -79,8 +79,7 @@ public class MSetupTest extends AbstractTestCase {
 		String orgValue = "JUnitOrg";
 		String orgName = "JUnit Org";
 		
-		// Create MSetup instance with dry-run = false to keep data in transaction for validation
-		MSetup setup = new MSetup(Env.getCtx(), 0, false);
+		MSetup setup = new MSetup(Env.getCtx(), 0, true);
 		
 		try {
 			// Create client first
@@ -632,6 +631,10 @@ public class MSetupTest extends AbstractTestCase {
 			"SELECT C_Tax_ID FROM C_Tax WHERE AD_Client_ID=? AND IsDefault='Y'", 
 			AD_Client_ID);
 		assertTrue(taxID > 0, "Default Tax should exist");
+		
+		int zeroRateCount = DB.getSQLValueEx(trxName,
+				"SELECT COUNT(*) FROM C_Tax WHERE C_Tax_ID=? AND Rate=0", taxID);
+		assertEquals(1, zeroRateCount, "Default Tax should have zero rate");
 	}
 	
 	private void validateProduct(int AD_Client_ID) {
