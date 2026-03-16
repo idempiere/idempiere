@@ -47,6 +47,7 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Language;
 import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.DictionaryIDs;
 import org.idempiere.test.LoginDetails;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
@@ -358,5 +359,362 @@ public class MSetupTest extends AbstractTestCase {
 			"SELECT COUNT(*) FROM C_AcctSchema_Default WHERE C_AcctSchema_ID=?",
 			acctSchema.getC_AcctSchema_ID());
 		assertEquals(1, defaultCount, "C_AcctSchema_Default record should be created");
+	}
+	
+	@Test
+	public void testCreateEntities() {
+		String clientName = "JUnit_CreateEntitiesTest";
+		String orgValue = "JUnitEntOrg";
+		String orgName = "JUnit Entities Org";
+		
+		// Create MSetup instance
+		MSetup setup = new MSetup(Env.getCtx(), 0, true);
+		
+		try {
+			// Create client first
+			boolean clientCreated = setup.createClient(
+				clientName, 
+				orgValue, 
+				orgName, 
+				"EntitiesAdmin", 
+				"EntitiesUser",
+				null, null, null, null, null,
+				"admin@entities.org", 
+				"user@entities.org",
+				false
+			);
+			assertTrue(clientCreated, "Client creation should succeed");
+			
+			trxName = setup.getTrxName();
+			
+			// Get the created client ID
+			int AD_Client_ID = DB.getSQLValueEx(trxName, 
+				"SELECT AD_Client_ID FROM AD_Client WHERE Name=?", clientName);
+			assertTrue(AD_Client_ID > 0, "Client should be created in database");
+			
+			// Create accounting setup first (required by createEntities)
+			MCurrency currency = MCurrency.get(Env.getCtx(), 100); // USD
+			KeyNamePair currencyKNP = new KeyNamePair(currency.getC_Currency_ID(), currency.getDescription());
+			
+			File coaFile = new File(Adempiere.getAdempiereHome() + File.separator 
+				+ "org.adempiere.server-feature" + File.separator
+				+ "data" + File.separator + "import"
+				+ File.separator + "AccountingDefaultsOnly.csv");
+			assertTrue(coaFile.exists(), "CoA file should exist: " + coaFile.getAbsolutePath());
+			
+			boolean accountingCreated = setup.createAccounting(
+				currencyKNP,
+				true,  // hasProduct
+				true,  // hasBPartner
+				false, // hasProject
+				true,  // hasCampaign
+				true,  // hasSalesRegion
+				true,  // hasActivity
+				coaFile,
+				false,
+				false
+			);
+			assertTrue(accountingCreated, "Accounting creation should succeed");
+			
+			// Now test createEntities
+			int C_Country_ID = 100; // USA
+			String city = "Test City";
+			int C_Region_ID = 100; // California
+			int C_Currency_ID = DictionaryIDs.C_Currency.USD.id;
+			String postal = "12345";
+			String address1 = "123 Test Street";
+			
+			boolean entitiesCreated = setup.createEntities(
+				C_Country_ID, 
+				city, 
+				C_Region_ID, 
+				C_Currency_ID, 
+				postal, 
+				address1
+			);
+			assertTrue(entitiesCreated, "Entities creation should succeed");
+			
+			// Validate all entities created
+			validateEntitiesSetup(AD_Client_ID);
+		} finally {
+			// Always rollback to clean up
+			setup.rollback();
+			rollback();
+		}
+	}
+	
+	/**
+	 * Validate all business entities created by MSetup.createEntities
+	 * @param AD_Client_ID the client ID to validate
+	 */
+	private void validateEntitiesSetup(int AD_Client_ID) {
+		// 1. Validate Marketing Channel
+		validateMarketingChannel(AD_Client_ID);
+		
+		// 2. Validate Campaign
+		validateCampaign(AD_Client_ID);
+		
+		// 3. Validate Sales Region
+		validateSalesRegion(AD_Client_ID);
+		
+		// 4. Validate Activity
+		validateActivity(AD_Client_ID);
+		
+		// 5. Validate Business Partner Group
+		validateBPGroup(AD_Client_ID);
+		
+		// 6. Validate Business Partner
+		validateBPartner(AD_Client_ID);
+		
+		// 7. Validate Product Category
+		validateProductCategory(AD_Client_ID);
+		
+		// 8. Validate Tax Category
+		validateTaxCategory(AD_Client_ID);
+		
+		// 9. Validate Tax
+		validateTax(AD_Client_ID);
+		
+		// 10. Validate Product
+		validateProduct(AD_Client_ID);
+		
+		// 11. Validate Warehouse and Locator
+		validateWarehouseAndLocator(AD_Client_ID);
+		
+		// 12. Validate Price List
+		validatePriceList(AD_Client_ID);
+		
+		// 13. Validate Sales Representatives
+		validateSalesReps(AD_Client_ID);
+		
+		// 14. Validate ClientInfo updates
+		validateClientInfoEntities(AD_Client_ID);
+	}
+	
+	private void validateMarketingChannel(int AD_Client_ID) {
+		int channelCount = DB.getSQLValueEx(trxName,
+			"SELECT COUNT(*) FROM C_Channel WHERE AD_Client_ID=?", AD_Client_ID);
+		assertTrue(channelCount > 0, "Marketing Channel should be created");
+		
+		// Verify default channel exists
+		int channelID = DB.getSQLValueEx(trxName,
+			"SELECT C_Channel_ID FROM C_Channel WHERE AD_Client_ID=? AND Name='Standard'", 
+			AD_Client_ID);
+		assertTrue(channelID > 0, "Standard Marketing Channel should exist");
+	}
+	
+	private void validateCampaign(int AD_Client_ID) {
+		int campaignCount = DB.getSQLValueEx(trxName,
+			"SELECT COUNT(*) FROM C_Campaign WHERE AD_Client_ID=?", AD_Client_ID);
+		assertTrue(campaignCount > 0, "Campaign should be created");
+		
+		// Verify default campaign
+		int campaignID = DB.getSQLValueEx(trxName,
+			"SELECT C_Campaign_ID FROM C_Campaign WHERE AD_Client_ID=? AND Name='Standard'", 
+			AD_Client_ID);
+		assertTrue(campaignID > 0, "Standard Campaign should exist");
+		
+		// Verify campaign translation records created
+		int trlCount = DB.getSQLValueEx(trxName,
+			"SELECT COUNT(*) FROM C_Campaign_Trl WHERE C_Campaign_ID=?", campaignID);
+		assertTrue(trlCount > 0, "Campaign translation records should be created");
+	}
+	
+	private void validateSalesRegion(int AD_Client_ID) {
+		int regionCount = DB.getSQLValueEx(trxName,
+			"SELECT COUNT(*) FROM C_SalesRegion WHERE AD_Client_ID=?", AD_Client_ID);
+		assertTrue(regionCount > 0, "Sales Region should be created");
+		
+		// Verify default sales region
+		int regionID = DB.getSQLValueEx(trxName,
+			"SELECT C_SalesRegion_ID FROM C_SalesRegion WHERE AD_Client_ID=? AND Name='Standard'", 
+			AD_Client_ID);
+		assertTrue(regionID > 0, "Standard Sales Region should exist");
+		
+		// Verify it's not a summary
+		String isSummary = DB.getSQLValueStringEx(trxName,
+			"SELECT IsSummary FROM C_SalesRegion WHERE C_SalesRegion_ID=?", regionID);
+		assertEquals("N", isSummary, "Sales Region should not be a summary");
+		
+		// Verify translation records
+		int trlCount = DB.getSQLValueEx(trxName,
+			"SELECT COUNT(*) FROM C_SalesRegion_Trl WHERE C_SalesRegion_ID=?", regionID);
+		assertTrue(trlCount > 0, "Sales Region translation records should be created");
+	}
+	
+	private void validateActivity(int AD_Client_ID) {
+		int activityCount = DB.getSQLValueEx(trxName,
+			"SELECT COUNT(*) FROM C_Activity WHERE AD_Client_ID=?", AD_Client_ID);
+		assertTrue(activityCount > 0, "Activity should be created");
+		
+		// Verify default activity
+		int activityID = DB.getSQLValueEx(trxName,
+			"SELECT C_Activity_ID FROM C_Activity WHERE AD_Client_ID=? AND Name='Standard'", 
+			AD_Client_ID);
+		assertTrue(activityID > 0, "Standard Activity should exist");
+		
+		// Verify it's not a summary
+		String isSummary = DB.getSQLValueStringEx(trxName,
+			"SELECT IsSummary FROM C_Activity WHERE C_Activity_ID=?", activityID);
+		assertEquals("N", isSummary, "Activity should not be a summary");
+		
+		// Verify translation records
+		int trlCount = DB.getSQLValueEx(trxName,
+			"SELECT COUNT(*) FROM C_Activity_Trl WHERE C_Activity_ID=?", activityID);
+		assertTrue(trlCount > 0, "Activity translation records should be created");
+	}
+	
+	private void validateBPGroup(int AD_Client_ID) {
+		int bpgCount = DB.getSQLValueEx(trxName,
+			"SELECT COUNT(*) FROM C_BP_Group WHERE AD_Client_ID=?", AD_Client_ID);
+		assertTrue(bpgCount > 0, "Business Partner Group should be created");
+		
+		// Verify default BP Group
+		int bpgID = DB.getSQLValueEx(trxName,
+			"SELECT C_BP_Group_ID FROM C_BP_Group WHERE AD_Client_ID=? AND IsDefault='Y'", 
+			AD_Client_ID);
+		assertTrue(bpgID > 0, "Default Business Partner Group should exist");
+	}
+	
+	private void validateBPartner(int AD_Client_ID) {
+		int bpCount = DB.getSQLValueEx(trxName,
+			"SELECT COUNT(*) FROM C_BPartner WHERE AD_Client_ID=?", AD_Client_ID);
+		assertTrue(bpCount > 0, "Business Partner should be created");
+		
+		// Verify standard BP
+		int bpID = DB.getSQLValueEx(trxName,
+			"SELECT C_BPartner_ID FROM C_BPartner WHERE AD_Client_ID=? AND Name='Standard'", 
+			AD_Client_ID);
+		assertTrue(bpID > 0, "Standard Business Partner should exist");
+		
+		// Verify BP Location exists
+		int bplCount = DB.getSQLValueEx(trxName,
+			"SELECT COUNT(*) FROM C_BPartner_Location WHERE C_BPartner_ID=?", bpID);
+		assertTrue(bplCount > 0, "Business Partner Location should be created");
+	}
+	
+	private void validateProductCategory(int AD_Client_ID) {
+		int pcCount = DB.getSQLValueEx(trxName,
+			"SELECT COUNT(*) FROM M_Product_Category WHERE AD_Client_ID=?", AD_Client_ID);
+		assertTrue(pcCount > 0, "Product Category should be created");
+		
+		// Verify default product category
+		int pcID = DB.getSQLValueEx(trxName,
+			"SELECT M_Product_Category_ID FROM M_Product_Category WHERE AD_Client_ID=? AND IsDefault='Y'", 
+			AD_Client_ID);
+		assertTrue(pcID > 0, "Default Product Category should exist");
+	}
+	
+	private void validateTaxCategory(int AD_Client_ID) {
+		int tcCount = DB.getSQLValueEx(trxName,
+			"SELECT COUNT(*) FROM C_TaxCategory WHERE AD_Client_ID=?", AD_Client_ID);
+		assertTrue(tcCount > 0, "Tax Category should be created");
+		
+		// Verify default tax category
+		int tcID = DB.getSQLValueEx(trxName,
+			"SELECT C_TaxCategory_ID FROM C_TaxCategory WHERE AD_Client_ID=? AND IsDefault='Y'", 
+			AD_Client_ID);
+		assertTrue(tcID > 0, "Default Tax Category should exist");
+		
+		// Verify translation records
+		int trlCount = DB.getSQLValueEx(trxName,
+			"SELECT COUNT(*) FROM C_TaxCategory_Trl WHERE C_TaxCategory_ID=?", tcID);
+		assertTrue(trlCount > 0, "Tax Category translation records should be created");
+	}
+	
+	private void validateTax(int AD_Client_ID) {
+		int taxCount = DB.getSQLValueEx(trxName,
+			"SELECT COUNT(*) FROM C_Tax WHERE AD_Client_ID=?", AD_Client_ID);
+		assertTrue(taxCount > 0, "Tax should be created");
+		
+		// Verify default tax with zero rate
+		int taxID = DB.getSQLValueEx(trxName,
+			"SELECT C_Tax_ID FROM C_Tax WHERE AD_Client_ID=? AND IsDefault='Y'", 
+			AD_Client_ID);
+		assertTrue(taxID > 0, "Default Tax should exist");
+	}
+	
+	private void validateProduct(int AD_Client_ID) {
+		int productCount = DB.getSQLValueEx(trxName,
+			"SELECT COUNT(*) FROM M_Product WHERE AD_Client_ID=?", AD_Client_ID);
+		assertTrue(productCount > 0, "Product should be created");
+		
+		// Verify standard product
+		int productID = DB.getSQLValueEx(trxName,
+			"SELECT M_Product_ID FROM M_Product WHERE AD_Client_ID=? AND Name='Standard'", 
+			AD_Client_ID);
+		assertTrue(productID > 0, "Standard Product should exist");
+	}
+	
+	private void validateWarehouseAndLocator(int AD_Client_ID) {
+		// Validate Warehouse
+		int whCount = DB.getSQLValueEx(trxName,
+			"SELECT COUNT(*) FROM M_Warehouse WHERE AD_Client_ID=?", AD_Client_ID);
+		assertTrue(whCount > 0, "Warehouse should be created");
+		
+		// Verify standard warehouse
+		int whID = DB.getSQLValueEx(trxName,
+			"SELECT M_Warehouse_ID FROM M_Warehouse WHERE AD_Client_ID=? AND Name='Standard'", 
+			AD_Client_ID);
+		assertTrue(whID > 0, "Standard Warehouse should exist");
+		
+		// Validate Locator
+		int locatorCount = DB.getSQLValueEx(trxName,
+			"SELECT COUNT(*) FROM M_Locator WHERE M_Warehouse_ID=?", whID);
+		assertTrue(locatorCount > 0, "Locator should be created");
+		
+		// Verify default locator
+		int defaultLocatorCount = DB.getSQLValueEx(trxName,
+			"SELECT COUNT(*) FROM M_Locator WHERE M_Warehouse_ID=? AND IsDefault='Y'", whID);
+		assertEquals(1, defaultLocatorCount, "One default Locator should exist");
+	}
+	
+	private void validatePriceList(int AD_Client_ID) {
+		// Validate Price List
+		int plCount = DB.getSQLValueEx(trxName,
+			"SELECT COUNT(*) FROM M_PriceList WHERE AD_Client_ID=?", AD_Client_ID);
+		assertTrue(plCount > 0, "Price List should be created");
+		
+		// Verify default price list
+		int plID = DB.getSQLValueEx(trxName,
+			"SELECT M_PriceList_ID FROM M_PriceList WHERE AD_Client_ID=? AND IsDefault='Y'", 
+			AD_Client_ID);
+		assertTrue(plID > 0, "Default Price List should exist");
+		
+		// Validate Discount Schema
+		int dsCount = DB.getSQLValueEx(trxName,
+			"SELECT COUNT(*) FROM M_DiscountSchema WHERE AD_Client_ID=?", AD_Client_ID);
+		assertTrue(dsCount > 0, "Discount Schema should be created");
+		
+		// Validate Price List Version
+		int plvCount = DB.getSQLValueEx(trxName,
+			"SELECT COUNT(*) FROM M_PriceList_Version WHERE M_PriceList_ID=?", plID);
+		assertTrue(plvCount > 0, "Price List Version should be created");
+		
+		// Validate Product Price
+		int ppCount = DB.getSQLValueEx(trxName,
+			"SELECT COUNT(*) FROM M_ProductPrice pp " +
+			"JOIN M_PriceList_Version plv ON pp.M_PriceList_Version_ID=plv.M_PriceList_Version_ID " +
+			"WHERE plv.M_PriceList_ID=?", plID);
+		assertTrue(ppCount > 0, "Product Price should be created");
+	}
+	
+	private void validateSalesReps(int AD_Client_ID) {
+		// Verify Sales Representatives created (both Admin and User)
+		int salesRepCount = DB.getSQLValueEx(trxName,
+			"SELECT COUNT(*) FROM C_BPartner WHERE AD_Client_ID=? AND IsSalesRep='Y'", 
+			AD_Client_ID);
+		assertTrue(salesRepCount >= 2, "At least 2 Sales Representatives should be created");
+		
+		// Verify they are also employees
+		int employeeCount = DB.getSQLValueEx(trxName,
+			"SELECT COUNT(*) FROM C_BPartner WHERE AD_Client_ID=? AND IsEmployee='Y'", 
+			AD_Client_ID);
+		assertTrue(employeeCount >= 2, "At least 2 Employees should be created");
+	}
+	
+	private void validateClientInfoEntities(int AD_Client_ID) {
+		MClientInfo clientInfo = MClientInfo.get(Env.getCtx(), AD_Client_ID, trxName);
+		assertNotNull(clientInfo, "ClientInfo should exist");
 	}
 }
