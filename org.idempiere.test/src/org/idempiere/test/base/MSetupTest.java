@@ -26,6 +26,7 @@ package org.idempiere.test.base;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -253,6 +254,35 @@ public class MSetupTest extends AbstractTestCase {
 			.setParameters(acctSchema.getC_AcctSchema_ID(), "BP")
 			.first();
 		assertNotNull(bpElement, "BPartner dimension should be created (enabled in test)");
+		
+		// Verify that explicitly disabled dimensions are NOT created
+		// Project dimension (disabled in testSetup)
+		X_C_AcctSchema_Element projectElement = new Query(Env.getCtx(), X_C_AcctSchema_Element.Table_Name,
+			"C_AcctSchema_ID=? AND ElementType=?", trxName)
+			.setParameters(acctSchema.getC_AcctSchema_ID(), "PJ")
+			.first();
+		assertNull(projectElement, "Project dimension should NOT be created (disabled in test)");
+		
+		// Campaign dimension (disabled in testSetup)
+		X_C_AcctSchema_Element campaignElement = new Query(Env.getCtx(), X_C_AcctSchema_Element.Table_Name,
+			"C_AcctSchema_ID=? AND ElementType=?", trxName)
+			.setParameters(acctSchema.getC_AcctSchema_ID(), "MC")
+			.first();
+		assertNull(campaignElement, "Campaign dimension should NOT be created (disabled in test)");
+		
+		// Sales Region dimension (disabled in testSetup)
+		X_C_AcctSchema_Element salesRegionElement = new Query(Env.getCtx(), X_C_AcctSchema_Element.Table_Name,
+			"C_AcctSchema_ID=? AND ElementType=?", trxName)
+			.setParameters(acctSchema.getC_AcctSchema_ID(), "SR")
+			.first();
+		assertNull(salesRegionElement, "Sales Region dimension should NOT be created (disabled in test)");
+		
+		// Activity dimension (disabled in testSetup)
+		X_C_AcctSchema_Element activityElement = new Query(Env.getCtx(), X_C_AcctSchema_Element.Table_Name,
+			"C_AcctSchema_ID=? AND ElementType=?", trxName)
+			.setParameters(acctSchema.getC_AcctSchema_ID(), "AY")
+			.first();
+		assertNull(activityElement, "Activity dimension should NOT be created (disabled in test)");
 	}
 	
 	private void validateGLCategories(int AD_Client_ID) {
@@ -705,17 +735,11 @@ public class MSetupTest extends AbstractTestCase {
 	}
 	
 	private void validateSalesReps(int AD_Client_ID) {
-		// Verify Sales Representatives created (both Admin and User)
-		int salesRepCount = DB.getSQLValueEx(trxName,
-			"SELECT COUNT(*) FROM C_BPartner WHERE AD_Client_ID=? AND IsSalesRep='Y'", 
-			AD_Client_ID);
-		assertTrue(salesRepCount >= 2, "At least 2 Sales Representatives should be created");
-		
-		// Verify they are also employees
-		int employeeCount = DB.getSQLValueEx(trxName,
-			"SELECT COUNT(*) FROM C_BPartner WHERE AD_Client_ID=? AND IsEmployee='Y'", 
-			AD_Client_ID);
-		assertTrue(employeeCount >= 2, "At least 2 Employees should be created");
+		int repEmployeeCount = DB.getSQLValueEx(trxName,
+				"SELECT COUNT(*) FROM C_BPartner WHERE AD_Client_ID=? AND IsSalesRep='Y' AND IsEmployee='Y'",
+				AD_Client_ID);
+		assertTrue(repEmployeeCount >= 2,
+				"At least 2 Business Partners should be both sales reps and employees");
 	}
 	
 	private void validateClientInfoEntities(int AD_Client_ID) {

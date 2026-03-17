@@ -24,7 +24,7 @@
  **********************************************************************/
 package org.idempiere.acct;
 
-import org.compiere.model.X_C_AcctSchema_Element;
+import org.compiere.model.MAcctSchemaElement;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.osgi.service.component.annotations.Component;
@@ -37,7 +37,7 @@ public class AccountingSetupServiceImpl implements IAccountingSetupService {
 	@Override
 	public boolean linkDimensionToAcctSchema(int C_AcctSchema_ID, String elementType, int dimensionID, String trxName) {
 		// Map element type to column name
-		String columnName = getColumnNameForElementType(elementType);
+		String columnName = MAcctSchemaElement.getColumnName(elementType);
 		if (columnName == null) {
 			log.severe("Unknown element type: " + elementType);
 			return false;
@@ -55,28 +55,6 @@ public class AccountingSetupServiceImpl implements IAccountingSetupService {
 		}
 
 		return true;
-	}
-
-	private String getColumnNameForElementType(String elementType) {
-		switch (elementType) {
-		case X_C_AcctSchema_Element.ELEMENTTYPE_Campaign: 
-			return "C_Campaign_ID";
-		case X_C_AcctSchema_Element.ELEMENTTYPE_SalesRegion: return 
-				"C_SalesRegion_ID";
-		case X_C_AcctSchema_Element.ELEMENTTYPE_Activity: 
-			return "C_Activity_ID";
-		case X_C_AcctSchema_Element.ELEMENTTYPE_BPartner: 
-			return "C_BPartner_ID";
-		case X_C_AcctSchema_Element.ELEMENTTYPE_Product: 
-			return "M_Product_ID";
-		case X_C_AcctSchema_Element.ELEMENTTYPE_Project: 
-			return "C_Project_ID";
-		case X_C_AcctSchema_Element.ELEMENTTYPE_Organization: 
-			return "Org_ID";
-		case X_C_AcctSchema_Element.ELEMENTTYPE_Account: 
-			return "C_ElementValue_ID";
-		default: return null;
-		}
 	}
 
 }

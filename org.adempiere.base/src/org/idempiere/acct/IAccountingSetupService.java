@@ -30,7 +30,6 @@ public interface IAccountingSetupService {
     
 	/**
      * Link dimension to accounting schema element
-     * @param ctx context
      * @param C_AcctSchema_ID accounting schema
      * @param elementType element type (MC, SR, AY, BP, PR, PJ)
      * @param dimensionID dimension ID to link

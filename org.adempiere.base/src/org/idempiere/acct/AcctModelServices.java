@@ -111,7 +111,7 @@ public final class AcctModelServices {
 
 	/**
 	 * Called by OSGi DS when the service is withdrawn.
-	 * @param service posting service implementation (ignored)
+	 * @param accounting setup service implementation (ignored)
 	 */
 	public static void unsetAccountingSetupService(IAccountingSetupService service) {
 		if (s_accountingSetupService == service) {
@@ -120,14 +120,14 @@ public final class AcctModelServices {
 	}
 
 	/**
-	 * @return the posting service, or {@code null} if not yet available
+	 * @return the accounting setup service, or {@code null} if not yet available
 	 */
 	public static IAccountingSetupService getAccountingSetupService() {
 		return s_accountingSetupService;
 	}
 	
 	/**
-	 * @return true if the posting service is available
+	 * @return true if the accounting setup service is available
 	 */
 	public static boolean isAccountingSetupAvailable() {
 		return s_accountingSetupService != null;
