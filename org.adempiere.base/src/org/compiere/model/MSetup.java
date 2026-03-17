@@ -21,10 +21,6 @@ import static org.compiere.model.SystemIDs.SCHEDULE_10_MINUTES;
 import static org.compiere.model.SystemIDs.SCHEDULE_15_MINUTES;
 
 import java.io.File;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -33,10 +29,8 @@ import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.ProcessUtil;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoParameter;
-import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
-import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
@@ -44,6 +38,7 @@ import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.idempiere.acct.AcctModelServices;
 import org.idempiere.acct.IAccountingSetupService;
+import org.idempiere.acct.IAccountingSetupService.AccountingSetupResult;
 
 /**
  * Initial Setup Model
@@ -100,18 +95,15 @@ public final class MSetup
 	private String          m_stdValues;
 	private String          m_stdValuesOrg;
 	//
-	private NaturalAccountMap<String,MElementValue> m_nap = null;
-	//
 	private MClient			m_client;
 	private MOrg			m_org;
-	private MAcctSchema		m_as;
+	private int             C_AcctSchema_ID = -1;
 	//
 	private int     		AD_User_ID;
 	private String  		AD_User_Name;
 	private int     		AD_User_U_ID;
 	private String  		AD_User_U_Name;
 	private MCalendar		m_calendar;
-	private int     		m_AD_Tree_Account_ID;
 	private int     		C_Cycle_ID;
 	//
 	private boolean         m_hasProject = false;
@@ -119,6 +111,7 @@ public final class MSetup
 	private boolean         m_hasSRegion = false;
 	private boolean         m_hasActivity = false;
 
+    private Map<String, Integer> glCategories = null;
 	private boolean 		m_dryRun = false;
 	
 	/**
@@ -205,7 +198,6 @@ public final class MSetup
 			m_trx.close();
 			return false;
 		}
-		m_AD_Tree_Account_ID = m_client.getSetup_AD_Tree_Account_ID();
 
 		/**
 		 *  Create Org
@@ -435,7 +427,6 @@ public final class MSetup
 	/**
 	 *  <pre>
 	 *  Create Accounting elements.
-	 *  - Calendar
 	 *  - Account Trees
 	 *  - Account Values
 	 *  - Accounting Schema
@@ -469,47 +460,37 @@ public final class MSetup
 		m_info = new StringBuffer();
 
 		try {
-			if (!createCalendar()) {
-				return false;
-			}
 			
-			// 1. Create core accounting infrastructure
-			if (!createAccountingInfrastructure(currency, AccountingFile, inactivateDefaults)) {
-				return false;
+			IAccountingSetupService acctService = null;
+			if (AcctModelServices.isAccountingSetupAvailable()) {
+				acctService = AcctModelServices.getAccountingSetupService();
 			}
-			
-			// 2. Create accounting schema structure
-			if (!createAcctSchemaStructure(hasProduct, hasBPartner, hasProject, 
-					hasMCampaign, hasSRegion, hasActivity)) {
-				return false;
-			}
-			
-			// 3. Create default accounting records
-			if (!createDefaultAccountingRecords()) {
-				return false;
-			}
-			
-			// 4. Create GL categories (master data)
-			Map<String, Integer> glCategories = createGLCategories();
-			if (glCategories == null) {
-				return false;
-			}
-			
-			// 5. Create document types (master data)
-			if (!createDocumentTypes(glCategories)) {
-				return false;
-			}
-			
-			// 6. Update client info
-			if (!updateClientInfo()) {
-				return false;
-			}
-			
-			// 7. Validate setup
-			if (!validateDocumentTypeSetup()) {
-				return false;
-			}
-			
+
+		    if (acctService == null) {
+		        log.warning("Accounting service not available - skipping dimension links");
+		        return true; // Not an error, just skip
+		    }
+		    
+		    AccountingSetupResult result = acctService.createAccountingInfrastructure(
+		    		m_ctx, m_client, getAD_Org_ID(), currency, 
+		    		hasProduct, hasBPartner, hasProject,
+		    		hasMCampaign, hasSRegion, hasActivity,
+		    		AccountingFile, inactivateDefaults, m_calendar.getC_Calendar_ID(),
+		    		m_stdColumns, m_stdValues,
+		    		m_trx.getTrxName()
+		    		);
+		    
+		    if (!result.isSuccess()) {
+		        m_info.append(result.getInfo());
+		        m_trx.rollback();
+		        m_trx.close();
+		        return false;
+		    }
+		    
+		    m_info.append(result.getInfo());
+			C_AcctSchema_ID = result.getC_AcctSchema_ID();
+			glCategories = result.getGLCategories();
+
 			//
 			if (log.isLoggable(Level.INFO)) log.info("fini");
 			return true;
@@ -524,458 +505,42 @@ public final class MSetup
 	}   //  createAccounting
 	
 	/**
-	 * Create core accounting infrastructure:
-	 * - Account Element
-	 * - Chart of Accounts
-	 * - Accounting Schema
+	 * Create default document types and validates the setup
+	 * @return true if created and validated
+	 */
+	public boolean createAndValidateDocumentTypes() {
+	    if (!createDocumentTypes(glCategories)) {
+	        return false;
+	    }
+	    
+	    return validateDocumentTypeSetup();
+	}
+
+	/**
+	 * Create document types with optional GL categories.
+	 * This method works even without accounting module installed.
+	 * If glCategories is null or empty, GL_Category_ID will be 0.
 	 * 
-	 * @param currency currency
-	 * @param accountingFile chart of accounts file
-	 * @param inactivateDefaults inactivate defaults
-	 * @return true if created
-	 */
-	private boolean createAccountingInfrastructure(KeyNamePair currency, 
-	                                              File accountingFile, 
-	                                              boolean inactivateDefaults)
-	{
-	    // Create Account Element
-	    int C_Element_ID = createAccountElement();
-	    if (C_Element_ID == 0) {
-	        return false;
-	    }
-	    
-	    // Create Chart of Accounts
-	    if (!createChartOfAccounts(accountingFile, C_Element_ID, inactivateDefaults)) {
-	        return false;
-	    }
-	    
-	    // Create Accounting Schema
-	    if (!createAcctSchema(currency)) {
-	        return false;
-	    }
-	    
-	    return true;
-	}
-	
-	/**
-	 * Create account element for chart of accounts
-	 * @return C_Element_ID or 0 if failed
-	 */
-	private int createAccountElement()
-	{
-	    String name = m_clientName + " " + Msg.translate(m_lang, "Account_ID");
-	    MElement element = new MElement(m_client, name, 
-	        MElement.ELEMENTTYPE_Account, m_AD_Tree_Account_ID);
-	    
-	    if (!element.save()) {
-	        String err = "Acct Element NOT inserted";
-	        log.log(Level.SEVERE, err);
-	        m_info.append(err);
-	        m_trx.rollback();
-	        m_trx.close();
-	        return 0;
-	    }
-	    
-	    m_info.append(Msg.translate(m_lang, "C_Element_ID"))
-	         .append("=").append(name).append("\n");
-	    
-	    return element.getC_Element_ID();
-	}
-	
-	/**
-	 * Create chart of accounts from file
-	 * @param accountingFile CoA file
-	 * @param C_Element_ID element ID
-	 * @param inactivateDefaults inactivate defaults
-	 * @return true if created
-	 */
-	private boolean createChartOfAccounts(File accountingFile, 
-	                                     int C_Element_ID, 
-	                                     boolean inactivateDefaults)
-	{
-	    m_nap = new NaturalAccountMap<String, MElementValue>(m_ctx, m_trx.getTrxName());
-	    
-	    // Parse CoA file
-	    String errMsg = m_nap.parseFile(accountingFile);
-	    if (errMsg.length() != 0) {
-	        log.log(Level.SEVERE, errMsg);
-	        m_info.append(errMsg);
-	        m_trx.rollback();
-	        m_trx.close();
-	        return false;
-	    }
-	    
-	    // Save accounts
-	    if (!m_nap.saveAccounts(getAD_Client_ID(), getAD_Org_ID(), 
-	                           C_Element_ID, !inactivateDefaults)) {
-	        String err = "Acct Element Values NOT inserted";
-	        log.log(Level.SEVERE, err);
-	        m_info.append(err);
-	        m_trx.rollback();
-	        m_trx.close();
-	        return false;
-	    }
-	    
-	    m_info.append(Msg.translate(m_lang, "C_ElementValue_ID"))
-	         .append(" # ").append(m_nap.size()).append("\n");
-	    
-	    // Set tree structure (summary account as parent)
-	    int summary_ID = m_nap.getC_ElementValue_ID("SUMMARY");
-	    if (log.isLoggable(Level.FINE)) log.fine("summary_ID=" + summary_ID);
-	    
-	    if (summary_ID > 0) {
-	        DB.executeUpdateEx(
-	            "UPDATE AD_TreeNode SET Parent_ID=? WHERE AD_Tree_ID=? AND Node_ID!=?",
-	            new Object[] {summary_ID, m_AD_Tree_Account_ID, summary_ID},
-	            m_trx.getTrxName());
-	    }
-	    
-	    return true;
-	}
-	
-	/**
-	 * Create accounting schema
-	 * @param currency currency
-	 * @return true if created
-	 */
-	private boolean createAcctSchema(KeyNamePair currency)
-	{
-	    m_as = new MAcctSchema(m_client, currency);
-	    
-	    if (!m_as.save()) {
-	        String err = "AcctSchema NOT inserted";
-	        log.log(Level.SEVERE, err);
-	        m_info.append(err);
-	        m_trx.rollback();
-	        m_trx.close();
-	        return false;
-	    }
-	    
-	    m_info.append(Msg.translate(m_lang, "C_AcctSchema_ID"))
-	         .append("=").append(m_as.getName()).append("\n");
-	    
-	    return true;
-	}
-	
-	/**
-	 * Create accounting schema structure (elements/dimensions)
-	 * @param hasProduct has product segment
-	 * @param hasBPartner has bp segment
-	 * @param hasProject has project segment
-	 * @param hasMCampaign has campaign segment
-	 * @param hasSRegion has sales region segment
-	 * @param hasActivity has activity segment
-	 * @return true if created
-	 */
-	private boolean createAcctSchemaStructure(boolean hasProduct, 
-	                                         boolean hasBPartner, 
-	                                         boolean hasProject,
-	                                         boolean hasMCampaign, 
-	                                         boolean hasSRegion,
-	                                         boolean hasActivity)
-	{
-	    String sql = null;
-	    if (Env.isBaseLanguage(m_lang, "AD_Reference")) { //	Get ElementTypes & Name
-	        sql = "SELECT Value, Name FROM AD_Ref_List WHERE AD_Reference_ID=181";
-	    } else {
-	        sql = "SELECT l.Value, t.Name FROM AD_Ref_List l, AD_Ref_List_Trl t "
-	            + "WHERE l.AD_Reference_ID=181 AND l.AD_Ref_List_ID=t.AD_Ref_List_ID"
-	            + " AND t.AD_Language=" + DB.TO_STRING(m_lang);
-	    }
-	    
-	    PreparedStatement stmt = null;
-	    ResultSet rs = null;
-	    
-	    try {
-	        int AD_Client_ID = m_client.getAD_Client_ID();
-	        stmt = DB.prepareStatement(sql, m_trx.getTrxName());
-	        rs = stmt.executeQuery();
-	        
-	        while (rs.next()) {
-	            String elementType = rs.getString(1);
-	            String name = rs.getString(2);
-	            
-	            // Determine if this element should be created
-	            AcctSchemaElementConfig config = getElementConfig(
-	                elementType, name, hasProduct, hasBPartner, 
-	                hasProject, hasMCampaign, hasSRegion, hasActivity);
-	            
-	            if (config != null) {
-	                if (!createAcctSchemaElement(config, AD_Client_ID)) {
-	                    return false;
-	                }
-	            }
-	        }
-	        
-	        return true;
-	        
-	    } catch (SQLException e) {
-	        log.log(Level.SEVERE, "Elements", e);
-	        m_info.append(e.getMessage());
-	        m_trx.rollback();
-	        m_trx.close();
-	        return false;
-	    } finally {
-	        DB.close(rs, stmt);
-	    }
-	}
-	
-	/**
-	 * Get configuration for accounting schema element
-	 * @param elementType element type code
-	 * @param name element name
-	 * @param hasProduct has product
-	 * @param hasBPartner has bpartner
-	 * @param hasProject has project
-	 * @param hasMCampaign has campaign
-	 * @param hasSRegion has sales region
-	 * @param hasActivity has activity
-	 * @return config or null if not needed
-	 */
-	private AcctSchemaElementConfig getElementConfig(String elementType, String name,
-	                                                 boolean hasProduct, boolean hasBPartner,
-	                                                 boolean hasProject, boolean hasMCampaign,
-	                                                 boolean hasSRegion, boolean hasActivity)
-	{
-	    AcctSchemaElementConfig config = null;
-	    
-	    if ("OO".equals(elementType)) {
-	        // Organization - always mandatory
-	        config = new AcctSchemaElementConfig(elementType, name, true, true, 10);
-	    }
-	    else if ("AC".equals(elementType)) {
-	        // Account - always mandatory
-	        config = new AcctSchemaElementConfig(elementType, name, true, false, 20);
-	    }
-	    else if ("PR".equals(elementType) && hasProduct) {
-	        config = new AcctSchemaElementConfig(elementType, name, false, false, 30);
-	    }
-	    else if ("BP".equals(elementType) && hasBPartner) {
-	        config = new AcctSchemaElementConfig(elementType, name, false, false, 40);
-	    }
-	    else if ("PJ".equals(elementType) && hasProject) {
-	        config = new AcctSchemaElementConfig(elementType, name, false, false, 50);
-	    }
-	    else if ("MC".equals(elementType) && hasMCampaign) {
-	        config = new AcctSchemaElementConfig(elementType, name, false, false, 60);
-	    }
-	    else if ("SR".equals(elementType) && hasSRegion) {
-	        config = new AcctSchemaElementConfig(elementType, name, false, false, 70);
-	    }
-	    else if ("AY".equals(elementType) && hasActivity) {
-	        config = new AcctSchemaElementConfig(elementType, name, false, false, 80);
-	    }
-	    
-	    return config;
-	}
-	
-	/**
-	 * Create single accounting schema element
-	 * @param config element configuration
-	 * @param AD_Client_ID client
-	 * @return true if created
-	 */
-	private boolean createAcctSchemaElement(AcctSchemaElementConfig config, int AD_Client_ID)
-	{
-	    int C_AcctSchema_Element_ID = getNextID(AD_Client_ID, "C_AcctSchema_Element");
-	    
-	    StringBuilder sql = new StringBuilder("INSERT INTO C_AcctSchema_Element(");
-	    sql.append(m_stdColumns).append(",C_AcctSchema_Element_ID,C_AcctSchema_ID,")
-	       .append("ElementType,Name,SeqNo,IsMandatory,IsBalanced,C_AcctSchema_Element_UU) VALUES (");
-	    sql.append(m_stdValues).append(",").append(C_AcctSchema_Element_ID)
-	       .append(",").append(m_as.getC_AcctSchema_ID()).append(",")
-	       .append("'").append(config.elementType).append("','").append(config.name).append("',")
-	       .append(config.seqNo).append(",'")
-	       .append(config.isMandatory ? "Y" : "N").append("','")
-	       .append(config.isBalanced ? "Y" : "N").append("',")
-	       .append(DB.TO_STRING(Util.generateUUIDv7().toString())).append(")");
-	    
-	    int no = DB.executeUpdateEx(sql.toString(), m_trx.getTrxName());
-	    if (no != 1) {
-	        log.log(Level.SEVERE, "AcctSchema Element NOT created: " + config.name);
-	        return false;
-	    }
-	    
-	    m_info.append(Msg.translate(m_lang, "C_AcctSchema_Element_ID"))
-	         .append("=").append(config.name).append("\n");
-	    
-	    // Set defaults for mandatory elements
-	    if ("OO".equals(config.elementType)) {
-	        return setDefaultOrg(C_AcctSchema_Element_ID);
-	    }
-	    else if ("AC".equals(config.elementType)) {
-	        return setDefaultAccount(C_AcctSchema_Element_ID);
-	    }
-	    
-	    return true;
-	}
-
-	/**
-	 * Set default organization for OO element
-	 * @param C_AcctSchema_Element_ID element ID
-	 * @return true if updated
-	 */
-	private boolean setDefaultOrg(int C_AcctSchema_Element_ID)
-	{
-	    StringBuilder sql = new StringBuilder("UPDATE C_AcctSchema_Element SET Org_ID=");
-	    sql.append(getAD_Org_ID())
-	       .append(" WHERE C_AcctSchema_Element_ID=").append(C_AcctSchema_Element_ID);
-	    
-	    int no = DB.executeUpdateEx(sql.toString(), m_trx.getTrxName());
-	    if (no != 1) {
-	        log.log(Level.SEVERE, "Default Org in AcctSchemaElement NOT updated");
-	        return false;
-	    }
-	    return true;
-	}
-
-	/**
-	 * Set default account for AC element
-	 * @param C_AcctSchema_Element_ID element ID
-	 * @return true if updated
-	 */
-	private boolean setDefaultAccount(int C_AcctSchema_Element_ID)
-	{
-	    int C_ElementValue_ID = m_nap.getC_ElementValue_ID("DEFAULT_ACCT");
-	    if (log.isLoggable(Level.FINE)) log.fine("C_ElementValue_ID=" + C_ElementValue_ID);
-	    
-	    // Also need C_Element_ID - get from created element
-	    String sql = "SELECT C_Element_ID FROM C_Element WHERE AD_Client_ID=? " +
-	                "AND ElementType='AC' AND IsActive='Y'";
-	    int C_Element_ID = DB.getSQLValueEx(m_trx.getTrxName(), sql, m_client.getAD_Client_ID());
-	    
-	    StringBuilder updateSql = new StringBuilder("UPDATE C_AcctSchema_Element SET ");
-	    updateSql.append("C_ElementValue_ID=").append(C_ElementValue_ID)
-	            .append(", C_Element_ID=").append(C_Element_ID)
-	            .append(" WHERE C_AcctSchema_Element_ID=").append(C_AcctSchema_Element_ID);
-	    
-	    int no = DB.executeUpdateEx(updateSql.toString(), m_trx.getTrxName());
-	    if (no != 1) {
-	        log.log(Level.SEVERE, "Default Account in AcctSchemaElement NOT updated");
-	        return false;
-	    }
-	    return true;
-	}
-	
-	/**
-	 * Create default accounting records (GL, Default accounts)
-	 * @return true if created
-	 */
-	private boolean createDefaultAccountingRecords()
-	{
-	    try {
-	        createAccountingRecord(X_C_AcctSchema_GL.Table_Name);
-	        createAccountingRecord(X_C_AcctSchema_Default.Table_Name);
-	        return true;
-	    } catch (Exception e) {
-	        String err = e.getLocalizedMessage();
-	        log.log(Level.SEVERE, err);
-	        m_info.append(err);
-	        m_trx.rollback();
-	        m_trx.close();
-	        return false;
-	    }
-	}
-
-	
-	/**
-	 * Create new record for accounting table (M_Product_Acct, M_Product_Category_Acct, etc)
-	 * @param tableName
-	 * @throws Exception
-	 */
-	private void createAccountingRecord(String tableName) throws Exception
-	{
-		MTable table = MTable.get(m_ctx, tableName);
-		PO acct = table.getPO(0, m_trx.getTrxName());
-		
-		MColumn[] cols = table.getColumns(false);
-		for (MColumn c : cols) {
-			if (!c.isActive())
-				continue;
-			String columnName = c.getColumnName();
-			if (c.isStandardColumn()) {
-			}
-			else if (DisplayType.Account == c.getAD_Reference_ID()) {
-				acct.set_Value(columnName, getAcct(columnName));
-				if (log.isLoggable(Level.INFO)) log.info("Account: " + columnName);
-			}
-			else if (DisplayType.YesNo == c.getAD_Reference_ID()) {
-				acct.set_Value(columnName, Boolean.TRUE);
-				if (log.isLoggable(Level.INFO)) log.info("YesNo: " + c.getColumnName());
-			}
-		}
-		acct.setAD_Client_ID(m_client.getAD_Client_ID());
-		acct.set_Value(I_C_AcctSchema.COLUMNNAME_C_AcctSchema_ID, m_as.getC_AcctSchema_ID());
-		//
-		if (!acct.save()) {
-			throw new AdempiereUserError(CLogger.retrieveErrorString(table.getName() + " not created"));
-		}
-	}
-	
-	/**
-	 * Create GL categories for different document types
-	 * @return map of category name to ID, or null if failed
-	 */
-	private Map<String, Integer> createGLCategories()
-	{
-	    Map<String, Integer> categories = new HashMap<>();
-	    
-	    // Standard category (default)
-	    int id = createGLCategory("Standard", MGLCategory.CATEGORYTYPE_Manual, true);
-	    if (id == 0) 
-	    	return null;
-	    
-	    categories.put("Standard", id);
-	    
-	    // Document categories
-	    categories.put("GL_None", createGLCategory("None", 
-	        MGLCategory.CATEGORYTYPE_Document, false));
-	    categories.put("GL_GL", createGLCategory("Manual", 
-	        MGLCategory.CATEGORYTYPE_Manual, false));
-	    categories.put("GL_ARI", createGLCategory("AR Invoice", 
-	        MGLCategory.CATEGORYTYPE_Document, false));
-	    categories.put("GL_ARR", createGLCategory("AR Receipt", 
-	        MGLCategory.CATEGORYTYPE_Document, false));
-	    categories.put("GL_MM", createGLCategory("Material Management", 
-	        MGLCategory.CATEGORYTYPE_Document, false));
-	    categories.put("GL_API", createGLCategory("AP Invoice", 
-	        MGLCategory.CATEGORYTYPE_Document, false));
-	    categories.put("GL_APP", createGLCategory("AP Payment", 
-	        MGLCategory.CATEGORYTYPE_Document, false));
-	    categories.put("GL_CASH", createGLCategory("Cash/Payments", 
-	        MGLCategory.CATEGORYTYPE_Document, false));
-	    categories.put("GL_Manufacturing", createGLCategory("Manufacturing", 
-	        MGLCategory.CATEGORYTYPE_Document, false));
-	    categories.put("GL_Distribution", createGLCategory("Distribution", 
-	        MGLCategory.CATEGORYTYPE_Document, false));
-	    categories.put("GL_Payroll", createGLCategory("Payroll", 
-	        MGLCategory.CATEGORYTYPE_Document, false));
-	    
-	    return categories;
-	}
-
-	/**
-	 * Create all document types
-	 * @param glCategories GL category map
+	 * @param glCategories map of GL category names to IDs (can be null)
 	 * @return true if created
 	 */
 	private boolean createDocumentTypes(Map<String, Integer> glCategories)
 	{
-	    // Extract GL category IDs
-	    int GL_None = glCategories.get("GL_None");
-	    int GL_GL = glCategories.get("GL_GL");
-	    int GL_ARI = glCategories.get("GL_ARI");
-	    int GL_ARR = glCategories.get("GL_ARR");
-	    int GL_MM = glCategories.get("GL_MM");
-	    int GL_API = glCategories.get("GL_API");
-	    int GL_APP = glCategories.get("GL_APP");
-	    int GL_CASH = glCategories.get("GL_CASH");
-	    int GL_Manufacturing = glCategories.get("GL_Manufacturing");
-	    int GL_Distribution = glCategories.get("GL_Distribution");
-	    int GL_Payroll = glCategories.get("GL_Payroll");
+		// Get GL category IDs (default to 0 if accounting not installed)
+	    int GL_None = getGLCategoryID(glCategories, "GL_None");
+	    int GL_GL = getGLCategoryID(glCategories, "GL_GL");
+	    int GL_ARI = getGLCategoryID(glCategories, "GL_ARI");
+	    int GL_ARR = getGLCategoryID(glCategories, "GL_ARR");
+	    int GL_MM = getGLCategoryID(glCategories, "GL_MM");
+	    int GL_API = getGLCategoryID(glCategories, "GL_API");
+	    int GL_APP = getGLCategoryID(glCategories, "GL_APP");
+	    int GL_CASH = getGLCategoryID(glCategories, "GL_CASH");
+	    int GL_Manufacturing = getGLCategoryID(glCategories, "GL_Manufacturing");
+	    int GL_Distribution = getGLCategoryID(glCategories, "GL_Distribution");
+	    int GL_Payroll = getGLCategoryID(glCategories, "GL_Payroll");
 	    
 	    // Create all document types
-	    if (!createAccountingDocTypes(GL_GL, GL_ARR, GL_APP, GL_CASH)) {
+	    if (!createAccountingDocTypes(GL_GL)) {
 	        return false;
 	    }
 	    
@@ -1007,11 +572,29 @@ public final class MSetup
 	}
 	
 	/**
+	 * Get GL category ID from map, return 0 if not found
+	 * @param glCategories category map
+	 * @param key category key
+	 * @return GL_Category_ID or 0
+	 */
+	private int getGLCategoryID(Map<String, Integer> glCategories, String key)
+	{
+	    if (glCategories == null || !glCategories.containsKey(key)) {
+	        return 0;
+	    }
+	    return glCategories.get(key);
+	}
+	
+	/**
 	 * Create accounting-related document types
 	 * @return true if created
 	 */
-	private boolean createAccountingDocTypes(int GL_GL, int GL_ARR, int GL_APP, int GL_CASH)
+	private boolean createAccountingDocTypes(int GL_GL)
 	{
+		if (!AcctModelServices.isAccountingSetupAvailable()) {
+			return true; // Skip if accounting module not available
+		}
+
 	    // GL Journal
 	    int id = createDocType("GL Journal", Msg.getElement(m_ctx, "GL_Journal_ID"), 
 	        MDocType.DOCBASETYPE_GLJournal, null, 0, 0, 1000, GL_GL, false);
@@ -1230,30 +813,6 @@ public final class MSetup
 	}
 	
 	/**
-	 * Update client with accounting configuration
-	 * @return true if updated
-	 */
-	private boolean updateClientInfo()
-	{
-	    StringBuilder sql = new StringBuilder("UPDATE AD_ClientInfo SET ");
-	    sql.append("C_AcctSchema1_ID=").append(m_as.getC_AcctSchema_ID())
-	       .append(", C_Calendar_ID=").append(m_calendar.getC_Calendar_ID())
-	       .append(" WHERE AD_Client_ID=").append(m_client.getAD_Client_ID());
-	    
-	    int no = DB.executeUpdateEx(sql.toString(), m_trx.getTrxName());
-	    if (no != 1) {
-	        String err = "ClientInfo not updated";
-	        log.log(Level.SEVERE, err);
-	        m_info.append(err);
-	        m_trx.rollback();
-	        m_trx.close();
-	        return false;
-	    }
-	    
-	    return true;
-	}
-	
-	/**
 	 * Validate accounting setup completeness
 	 * @return true if valid
 	 */
@@ -1276,60 +835,6 @@ public final class MSetup
 	    
 	    return true;
 	}
-
-	/**
-	 * Create new valid combination for predefine account column
-	 * @param key column name
-	 * @return C_ValidCombination_ID
-	 * @throws AdempiereUserError 
-	 */
-	private Integer getAcct (String key) throws AdempiereUserError
-	{
-		if (log.isLoggable(Level.FINE)) log.fine(key);
-		//  Element
-		int C_ElementValue_ID = m_nap.getC_ElementValue_ID(key.toUpperCase());
-		if (C_ElementValue_ID == 0)
-		{
-			throw new AdempiereUserError("Account not defined: " + key);
-		}
-
-		MAccount vc = MAccount.getDefault(m_as, true);	//	optional null
-		vc.setAD_Org_ID(0);		//	will be overwritten
-		vc.setAccount_ID(C_ElementValue_ID);
-		if (!vc.save())
-		{
-			throw new AdempiereUserError("Not Saved - Key=" + key + ", C_ElementValue_ID=" + C_ElementValue_ID);
-		}
-		int C_ValidCombination_ID = vc.getC_ValidCombination_ID();
-		if (C_ValidCombination_ID == 0)
-		{
-			throw new AdempiereUserError("No account - Key=" + key + ", C_ElementValue_ID=" + C_ElementValue_ID);
-		}
-		return C_ValidCombination_ID;
-	}   //  getAcct
-
-	/**
-	 *  Create GL Category
-	 *  @param Name name
-	 *  @param CategoryType category type MGLCategory.CATEGORYTYPE_*
-	 *  @param isDefault is default flag
-	 *  @return GL_Category_ID
-	 */
-	private int createGLCategory (String Name, String CategoryType, boolean isDefault)
-	{
-		MGLCategory cat = new MGLCategory (m_ctx, 0, m_trx.getTrxName());
-		cat.setAD_Org_ID(0);
-		cat.setName(Name);
-		cat.setCategoryType(CategoryType);
-		cat.setIsDefault(isDefault);
-		if (!cat.save())
-		{
-			log.log(Level.SEVERE, "GL Category NOT created - " + Name);
-			return 0;
-		}
-		//
-		return cat.getGL_Category_ID();
-	}   //  createGLCategory
 
 	/**
 	 *  Create Document Types with Sequence
@@ -1401,9 +906,9 @@ public final class MSetup
 	
 	/**
 	 * Create calendar for the client
-	 * @return true if created
+	 * @return C_Calendar_ID or -1 if failed
 	 */
-	private boolean createCalendar() {
+	public int createCalendar() {
 	    m_calendar = new MCalendar(m_client);
 	    if (!m_calendar.save()) {
 	        String err = "Calendar NOT inserted";
@@ -1411,7 +916,7 @@ public final class MSetup
 	        m_info.append(err);
 	        m_trx.rollback();
 	        m_trx.close();
-	        return false;
+	        return -1;
 	    }
 	    
 	    m_info.append(Msg.translate(m_lang, "C_Calendar_ID"))
@@ -1421,7 +926,7 @@ public final class MSetup
 	        log.log(Level.SEVERE, "Year NOT inserted");
 	    }
 	    
-	    return true;
+	    return m_calendar.getC_Calendar_ID();
 	}
 	
 	/**
@@ -1442,7 +947,7 @@ public final class MSetup
 	 */
 	public boolean createEntities (int C_Country_ID, String City, int C_Region_ID, int C_Currency_ID, String postal, String address1)
 	{
-	    boolean hasAccounting = (m_as != null);
+	    boolean hasAccounting = (C_AcctSchema_ID > 0);
 	    if (!hasAccounting) {
 	    	if (log.isLoggable(Level.INFO)) log.info("No accounting schema - entities will be created without accounting links");
 	    }
@@ -1765,11 +1270,6 @@ public final class MSetup
 	        return null;
 	    }
 	    
-	    // Link to accounting schema
-	    if (!linkBPartnerToAcctSchema(bp.getC_BPartner_ID())) {
-	        return null;
-	    }
-	    
 	    // Create user preference
 	    createPreference("C_BPartner_ID", String.valueOf(bp.getC_BPartner_ID()), 143);
 	    
@@ -1779,26 +1279,6 @@ public final class MSetup
         }
 	    
 	    return bp;
-	}
-
-	/**
-	 * Link business partner to accounting schema element
-	 * @param C_BPartner_ID bpartner ID
-	 * @return true if linked
-	 */
-	private boolean linkBPartnerToAcctSchema(int C_BPartner_ID)
-	{
-	    StringBuilder sql = new StringBuilder("UPDATE C_AcctSchema_Element SET ");
-	    sql.append("C_BPartner_ID=").append(C_BPartner_ID);
-	    sql.append(" WHERE C_AcctSchema_ID=").append(m_as.getC_AcctSchema_ID());
-	    sql.append(" AND ElementType='BP'");
-	    
-	    int no = DB.executeUpdateEx(sql.toString(), m_trx.getTrxName());
-	    if (no != 1) {
-	        log.log(Level.SEVERE, "AcctSchema Element BPartner NOT updated");
-	        return false;
-	    }
-	    return true;
 	}
 	
 	/**
@@ -1859,11 +1339,6 @@ public final class MSetup
 	    m_info.append(Msg.translate(m_lang, "M_Product_ID"))
 	         .append("=").append(defaultName).append("\n");
 	    
-	    // Link to accounting schema
-	    if (!linkProductToAcctSchema(product.getM_Product_ID())) {
-	        return null;
-	    }
-	    
 	    return product;
 	}
 
@@ -1917,26 +1392,6 @@ public final class MSetup
 	         .append("=").append(tax.getName()).append("\n");
 	    
 	    return tax;
-	}
-
-	/**
-	 * Link product to accounting schema element
-	 * @param M_Product_ID product ID
-	 * @return true if linked
-	 */
-	private boolean linkProductToAcctSchema(int M_Product_ID)
-	{
-	    StringBuilder sql = new StringBuilder("UPDATE C_AcctSchema_Element SET ");
-	    sql.append("M_Product_ID=").append(M_Product_ID);
-	    sql.append(" WHERE C_AcctSchema_ID=").append(m_as.getC_AcctSchema_ID());
-	    sql.append(" AND ElementType='PR'");
-	    
-	    int no = DB.executeUpdateEx(sql.toString(), m_trx.getTrxName());
-	    if (no != 1) {
-	        log.log(Level.SEVERE, "AcctSchema Element Product NOT updated");
-	        return false;
-	    }
-	    return true;
 	}
 	
 	/**
@@ -2393,8 +1848,6 @@ public final class MSetup
 	        return true; // Not an error, just skip
 	    }
 	    
-	    int C_AcctSchema_ID = m_as.getC_AcctSchema_ID();
-	    
 	    // Link Campaign
 	    if (m_hasMCampaign && dimensions.C_Campaign_ID > 0) {
 	        if (!acctService.linkDimensionToAcctSchema(C_AcctSchema_ID, "MC", 
@@ -2470,25 +1923,4 @@ public final class MSetup
 	        this.C_Activity_ID = activity;
 	    }
 	}
-	
-	/**
-	 * Inner class to hold AcctSchema Element configuration
-	 */
-	private static class AcctSchemaElementConfig {
-	    String elementType;
-	    String name;
-	    boolean isMandatory;
-	    boolean isBalanced;
-	    int seqNo;
-	    
-	    AcctSchemaElementConfig(String elementType, String name, 
-	                           boolean isMandatory, boolean isBalanced, int seqNo) {
-	        this.elementType = elementType;
-	        this.name = name;
-	        this.isMandatory = isMandatory;
-	        this.isBalanced = isBalanced;
-	        this.seqNo = seqNo;
-	    }
-	}
-
 }   //  MSetup

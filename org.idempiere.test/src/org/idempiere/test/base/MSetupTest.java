@@ -104,6 +104,10 @@ public class MSetupTest extends AbstractTestCase {
 				"SELECT AD_Client_ID FROM AD_Client WHERE Name=?", clientName);
 			assertTrue(AD_Client_ID > 0, "Client should be created in database");
 			
+			//create the calendar
+			int C_Calendar_ID = setup.createCalendar();
+			assertTrue(C_Calendar_ID > 0, "Calendar creation should succeed");
+			
 			// Create accounting setup
 			MCurrency currency = MCurrency.get(Env.getCtx(), 100); // USD
 			KeyNamePair currencyKNP = new KeyNamePair(currency.getC_Currency_ID(), currency.getDescription());
@@ -127,6 +131,9 @@ public class MSetupTest extends AbstractTestCase {
 				false  // inactivateDefaults
 			);
 			assertTrue(accountingCreated, "Accounting creation should succeed: " + setup.getInfo());
+			
+			boolean documentTypesCreated = setup.createAndValidateDocumentTypes();
+			assertTrue(documentTypesCreated, "Client creation should succeed");
 			
 			// NOW validate before rollback
 			validateAccountingSetup(AD_Client_ID);
@@ -420,6 +427,9 @@ public class MSetupTest extends AbstractTestCase {
 			int AD_Client_ID = DB.getSQLValueEx(trxName, 
 				"SELECT AD_Client_ID FROM AD_Client WHERE Name=?", clientName);
 			assertTrue(AD_Client_ID > 0, "Client should be created in database");
+			
+			int C_Calendar_ID = setup.createCalendar();
+			assertTrue(C_Calendar_ID > 0, "Calendar creation should succeed");
 			
 			// Create accounting setup first (required by createEntities)
 			MCurrency currency = MCurrency.get(Env.getCtx(), 100); // USD
