@@ -93,7 +93,7 @@ public interface IAccountingSetupService {
         private boolean success;
         private int C_AcctSchema_ID;
         private String info;
-        Map<String, Integer> glCategories;
+        private Map<String, Integer> glCategories;
         
         public AccountingSetupResult(boolean success, int acctSchemaID, 
         		String info, Map<String, Integer> glCategories) {
