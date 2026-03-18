@@ -48,6 +48,18 @@ END;
 $$ LANGUAGE plpgsql VOLATILE;
 
 /*
+-- for PostgreSQL >= 18 this is the recommended function:
+CREATE OR REPLACE FUNCTION Generate_UUID(ts timestamp with time zone DEFAULT clock_timestamp())
+RETURNS uuid AS $$
+BEGIN
+  RETURN uuidv7(ts - clock_timestamp());
+END;
+$$ LANGUAGE plpgsql VOLATILE;
+
+*/
+
+
+/*
 -- v4
 CREATE FUNCTION Generate_UUID()
 RETURNS uuid AS $$
@@ -56,6 +68,10 @@ $$ LANGUAGE SQL VOLATILE;
 */
 
 /*
+
+-- in PostgreSQL >= 18 the native function uuid_extract_timestamp to obtain the timestamp from a uuidv7
+
+-- For PostgreSQL < 18 you can use the following function:
 -- Function that extracts the timestamp from uuidv7, it must be the same as the Created column
 CREATE OR REPLACE FUNCTION uuid_v7_to_timestamp(uuid_val uuid)
 RETURNS timestamp with time zone AS $$
