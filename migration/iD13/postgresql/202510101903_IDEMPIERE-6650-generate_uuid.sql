@@ -33,6 +33,17 @@ END;
 $$ LANGUAGE plpgsql VOLATILE;
 
 /*
+-- for PostgreSQL >= 18 this is the recommended function:
+CREATE OR REPLACE FUNCTION Generate_UUID(ts timestamp with time zone DEFAULT clock_timestamp())
+RETURNS uuid AS $$
+BEGIN
+  RETURN uuidv7(ts - clock_timestamp());
+END;
+$$ LANGUAGE plpgsql VOLATILE;
+  
+*/
+
+/*
 -- v4
 CREATE FUNCTION Generate_UUID()
 RETURNS uuid AS $$
