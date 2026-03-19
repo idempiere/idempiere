@@ -765,7 +765,7 @@ public final class MSetup
 		    MDocType.DOCBASETYPE_PurchaseOrder, MDocType.DOCSUBTYPESO_ReturnMaterial, DT_VRM, 
 		    DT_IPC, 990000, GL_MM, false);
 		        
-		createDocType("Bank Statement", Msg.getElement(m_ctx, "C_BankStatemet_ID", true), 
+		createDocType("Bank Statement", Msg.getElement(m_ctx, "C_BankStatement_ID", true), 
 			MDocType.DOCBASETYPE_BankStatement, null, 0, 0, 700000, GL_CASH, false);
 		createDocType("Cash Journal", Msg.getElement(m_ctx, "C_Cash_ID", true),
 			MDocType.DOCBASETYPE_CashJournal, null, 0, 0, 750000, GL_CASH, false);
