@@ -157,7 +157,7 @@ public final class Prop implements Serializable {
 		if(s_prop.getProperty(CREDITS_TXT)==null||s_prop.getProperty(CREDITS_TXT).length()<=0)
 			s_prop.setProperty(CREDITS_TXT, CREDITS);
 		if(s_prop.getProperty(HOMEPAGE)==null||s_prop.getProperty(HOMEPAGE).length()<=0)
-			s_prop.setProperty(HOMEPAGE, "idempiere-12.jsp");
+			s_prop.setProperty(HOMEPAGE, "idempiere-default.jsp");
 		//LINKS
 		if(s_prop.getProperty(FELIX_LINK)==null||s_prop.getProperty(FELIX_LINK).length()<=0)
 			s_prop.setProperty(FELIX_LINK, DEF_FELIX_LINK);
