@@ -39,7 +39,6 @@ import org.adempiere.exceptions.PeriodClosedException;
 import org.adempiere.util.IReservationTracer;
 import org.adempiere.util.IReservationTracerFactory;
 import org.adempiere.util.ShippingUtil;
-import org.compiere.acct.Doc;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.DocAction;
@@ -57,6 +56,7 @@ import org.compiere.util.TrxEventListener;
 import org.compiere.util.Util;
 import org.compiere.wf.MWFActivity;
 import org.compiere.wf.MWorkflow;
+import org.idempiere.acct.IDoc;
 
 /**
  *  Shipment/Receipt Model
@@ -2092,7 +2092,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 								// Post deferred Match POs already linked to a receipt (excluding the current Match PO)
 								String whereClause = "C_OrderLine_ID=? AND Posted=? AND M_MatchPO_ID<>? AND M_InOutLine_ID IS NOT NULL";
 								List<MMatchPO> mpos = new Query(getCtx(), MMatchPO.Table_Name, whereClause, get_TrxName())
-										.setParameters(po.getC_OrderLine_ID(), Doc.STATUS_Deferred, po.getM_MatchPO_ID())
+										.setParameters(po.getC_OrderLine_ID(), IDoc.STATUS_Deferred, po.getM_MatchPO_ID())
 										.list();
 								for (MMatchPO mpo : mpos)
 									addDocsPostProcess(mpo);

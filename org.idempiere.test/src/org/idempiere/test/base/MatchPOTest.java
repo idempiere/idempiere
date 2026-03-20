@@ -32,7 +32,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-import org.compiere.acct.Doc;
 import org.compiere.apps.form.Match;
 import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
@@ -60,6 +59,8 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
+import org.idempiere.acct.IDoc;
+import org.idempiere.acct.doc.Doc;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
@@ -1118,7 +1119,7 @@ public class MatchPOTest extends AbstractTestCase {
 		MMatchPO[] matchPOs = MMatchPO.getOrderLine(Env.getCtx(), orderLine.get_ID(), getTrxName());
 		assertEquals(1, matchPOs.length, "Exactly one Match PO record should be created");
 		String posted = DB.getSQLValueStringEx(getTrxName(), "SELECT Posted FROM M_MatchPO WHERE M_MatchPO_ID=?", matchPOs[0].getM_MatchPO_ID());
-		assertEquals(Doc.STATUS_Deferred, posted, "Posting status should be 'Deferred'");
+		assertEquals(IDoc.STATUS_Deferred, posted, "Posting status should be 'Deferred'");
 		
 		// MR
 		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered());
