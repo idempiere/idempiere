@@ -305,12 +305,13 @@ public class MJournalLine extends X_GL_JournalLine
 
 		if (getM_AttributeSetInstance_ID() > 0 && getM_Product_ID() <= 0) {
 			MAttributeSetInstance asi = new MAttributeSetInstance(getCtx(), getM_AttributeSetInstance_ID(), get_TrxName());
-			MAttributeSet attributeSet = MAttributeSet.get(asi.getM_AttributeSet_ID());
-
-			if (MAttributeSet.M_ATTRIBUTESET_TYPE_MaterialManagementSystem.equals(attributeSet.getM_AttributeSet_Type()))
-			{
-				log.saveError("SaveError", Msg.getMsg(getCtx(), "ProductRequiredForMaterialASI"));
-				return false;
+			if (asi.getM_AttributeSet_ID() > 0) {
+				MAttributeSet attributeSet = MAttributeSet.get(asi.getM_AttributeSet_ID());
+				if (MAttributeSet.M_ATTRIBUTESET_TYPE_MaterialManagementSystem
+						.equals(attributeSet.getM_AttributeSet_Type())) {
+					log.saveError("SaveError", Msg.getMsg(getCtx(), "ProductRequiredForMaterialASI"));
+					return false;
+				}
 			}
 		}
 
