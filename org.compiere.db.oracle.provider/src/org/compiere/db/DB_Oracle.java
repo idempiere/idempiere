@@ -235,8 +235,9 @@ public class DB_Oracle implements AdempiereDatabase
             {
                 //  old: jdbc:oracle:thin:@dev2:1521:sid
                 //  new: jdbc:oracle:thin:@//dev2:1521/serviceName
-                sb.append("//")
-                    .append(connection.getDbHost())
+            	if (! connection.getDbHost().contains("://"))
+            		sb.append("//");
+            	sb.append(connection.getDbHost())
                     .append(":").append(connection.getDbPort())
                     .append("/").append(connection.getDbName());
             }
@@ -261,7 +262,8 @@ public class DB_Oracle implements AdempiereDatabase
         String userName)
     {
         m_userName = userName;
-        m_connectionURL = "jdbc:oracle:thin:@//"
+        m_connectionURL = "jdbc:oracle:thin:@"
+        	+ (dbHost.contains("://") ? "" : "//")
             + dbHost + ":" + dbPort + "/" + dbName;
         return m_connectionURL;
     }   //  getConnectionURL

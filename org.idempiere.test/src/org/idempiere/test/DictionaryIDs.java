@@ -111,6 +111,7 @@ public final class DictionaryIDs {
 	public enum AD_User {
 		GARDEN_ADMIN(101),
 		GARDEN_USER(102),
+		SYSTEM_USER(10),
 		SUPER_USER(100);
 		
 		public final int id;
@@ -641,6 +642,16 @@ public final class DictionaryIDs {
 
 		private M_ProductPrice(int id) {
 			this.id = id;
+		}
+	}
+
+	public enum M_Replenish {
+		P_CHAIR_IN_HQ("bd5db323-0341-4b29-9fbe-0887b98e7b3b");
+
+		public final String uuid;
+
+		private M_Replenish(String uuid) {
+			this.uuid = uuid;
 		}
 	}
 

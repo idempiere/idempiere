@@ -35,6 +35,7 @@ import java.util.logging.Level;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -547,14 +548,9 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 	        String sSalt = Secure.convertToHexString(bSalt);
 			super.setPassword(hash);
 			setSalt(sSalt);
-		} catch (NoSuchAlgorithmException e) {
-			super.setPassword(password);
-		} catch (UnsupportedEncodingException e) {
-			super.setPassword(password);
-		} catch (NoSuchProviderException e) {
-			super.setPassword(password);
-		} catch (InvalidKeySpecException e) {
-			super.setPassword(password);
+		} catch (NoSuchAlgorithmException | UnsupportedEncodingException
+				| NoSuchProviderException | InvalidKeySpecException e) {
+			throw new AdempiereException(e);
 		}
 	}
 	
@@ -1063,7 +1059,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 	/**
 	 * 	Get User that has roles (already authenticated)
 	 *	@param ctx context
-	 *	@param name name
+	 *	@param name name or email if USE_EMAIL_FOR_LOGIN=Y
 	 *	@return user or null
 	 */
 	public static MUser get(Properties ctx, String name) {

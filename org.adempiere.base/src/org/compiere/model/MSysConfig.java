@@ -24,7 +24,6 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.Adempiere;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.CacheMgt;
@@ -47,7 +46,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7296983461359423314L;
+	private static final long serialVersionUID = -2345815648281241687L;
 
 	/** Constant for Predefine System Configuration Names (in alphabetical order) */
 	
@@ -95,6 +94,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String CHECK_CREDIT_ON_CASH_POS_ORDER = "CHECK_CREDIT_ON_CASH_POS_ORDER";
     public static final String CHECK_CREDIT_ON_PREPAY_ORDER = "CHECK_CREDIT_ON_PREPAY_ORDER";
     public static final String CLIENT_ACCOUNTING = "CLIENT_ACCOUNTING";
+	public static final String COPY_TENANT_BATCH_FLUSH_SIZE = "COPY_TENANT_BATCH_FLUSH_SIZE";
     public static final String CSV_EXPORT_SANITIZATION = "CSV_EXPORT_SANITIZATION";
     public static final String DASHBOARD_LAYOUT_ORIENTATION = "DASHBOARD_LAYOUT_ORIENTATION";
     public static final String DB_READ_REPLICA_NORMAL_MAX_ITERATIONS = "DB_READ_REPLICA_NORMAL_MAX_ITERATIONS";
@@ -280,6 +280,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZK_REPORT_TABLE_OUTPUT_TYPE = "ZK_REPORT_TABLE_OUTPUT_TYPE";
     public static final String ZK_ROOT_FOLDER_BROWSER = "ZK_ROOT_FOLDER_BROWSER";
     public static final String ZK_SEARCH_AUTO_COMPLETE_MAX_ROWS = "ZK_SEARCH_AUTO_COMPLETE_MAX_ROWS";
+	public static final String ZK_SEARCH_AUTO_COMPLETE_TIMEOUT = "ZK_SEARCH_AUTO_COMPLETE_TIMEOUT";
     public static final String ZK_SEQ_DEFAULT_VALUE_PANEL = "ZK_SEQ_DEFAULT_VALUE_PANEL";
 	public static final String ZK_SESSION_FINGERPRINT_CHECK_ACCEPT_LANGUAGE = "ZK_SESSION_FINGERPRINT_CHECK_ACCEPT_LANGUAGE";
 	public static final String ZK_SESSION_FINGERPRINT_CHECK_IP = "ZK_SESSION_FINGERPRINT_CHECK_IP";
@@ -933,10 +934,9 @@ public class MSysConfig extends X_AD_SysConfig
 		if (success && newRecord && ! getName().endsWith("_NOCACHE")) {
 			// Clear cache of AD_SysConfig
 			// This is to clear the cache of AD_SysConfig when creating a new record
-			// the reset cache is being called on PO when a record is changed or deleted, but not on new
-			// NOTE also that reset the specific ID doesn't work because the MSysConfig cache holds a
-			//   String type, and CCache.reset(int) just call reset when the key is not an Integer
-			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(Table_Name));
+			// NOTE also that reset the specific ID doesn't work because the MSysConfig cache is
+			//   based on a key containing the client and org, so we need to reset the whole cache
+			CacheMgt.scheduleCacheReset(Table_Name, -1, false, get_TrxName());
 		}
 		return success;
 	}
@@ -944,7 +944,7 @@ public class MSysConfig extends X_AD_SysConfig
 	@Override
 	protected boolean afterDelete(boolean success) {
 		if (success && ! getName().endsWith("_NOCACHE")) {
-			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(Table_Name));
+			CacheMgt.scheduleCacheReset(Table_Name, -1, false, get_TrxName());
 		}
 		return success;
 	}

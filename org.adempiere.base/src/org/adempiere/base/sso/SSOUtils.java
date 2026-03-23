@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.adempiere.base.Service;
 import org.compiere.model.I_SSO_PrincipalConfig;
+import org.compiere.model.MClient;
 import org.compiere.model.MSSOPrincipalConfig;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.CCache;
@@ -56,12 +57,12 @@ public class SSOUtils
 	}
 
 	/**
-	 * Get single sign on service
-	 * @return single sign on service
+	 * Get system level default single sign on service
+	 * @return system level default single sign on service
 	 */
 	public static ISSOPrincipalService getSSOPrincipalService()
 	{
-		MSSOPrincipalConfig config = MSSOPrincipalConfig.getDefaultSSOPrincipalConfig();
+		MSSOPrincipalConfig config = MSSOPrincipalConfig.getDefaultSSOPrincipalConfig(0);
 		if (config == null)
 			return null;
 
@@ -144,11 +145,44 @@ public class SSOUtils
 			return urlpath != null && urlpath.length > 3 && ignoreResourceURL.contains(urlpath[3]);
 	}
 
+	/**
+	 * Get SSO Principal Service by UUID
+	 * @param uuID
+	 * @return
+	 */
 	public static ISSOPrincipalService getSSOPrincipalService(String uuID)
+	{
+		return getSSOPrincipalService(uuID, null);
+	}
+
+	/**
+	 * Get SSO Principal Service by UUID and tenant login prefix
+	 * @param uuID
+	 * @param tenant tenant login prefix
+	 * @return
+	 */
+	public static ISSOPrincipalService getSSOPrincipalService(String uuID, String tenant)
 	{
 		if (Util.isEmpty(uuID, true))
 		{
-			List<MSSOPrincipalConfig> configList = MSSOPrincipalConfig.getAllSSOPrincipalConfig();
+			List<MSSOPrincipalConfig> configList = null;
+			if (!Util.isEmpty(tenant, true))
+			{
+				MClient client = MClient.getByLoginPrefix(tenant);
+				if (client != null)
+				{
+					configList = MSSOPrincipalConfig.getSSOPrincipalConfigByClient(client.getAD_Client_ID());
+				}
+				else
+				{
+					return null;
+				}
+			}
+			else
+			{
+				configList = MSSOPrincipalConfig.getSSOPrincipalConfigByClient(0);
+			}
+
 			if (configList == null || configList.size() != 1  || MSysConfig.getBooleanValue(MSysConfig.SSO_SHOW_LOGINPAGE, false))
 				return null;
 			else
@@ -158,6 +192,20 @@ public class SSOUtils
 		MSSOPrincipalConfig config = MSSOPrincipalConfig.getSSOPrincipalConfig(uuID);
 		if (config == null)
 			return null;
+		
+		// validate config is valid for tenant login prefix argument
+		if (!Util.isEmpty(tenant, true)) 
+		{
+			MClient client = MClient.getByLoginPrefix(tenant);
+			if (client == null || config.getAD_Client_ID() != client.getAD_Client_ID())
+				return null;
+			
+		}
+		else if (config.getAD_Client_ID() != 0)
+		{
+			return null;
+		}
+		
 		return getSSOPrincipalService(config);
 	
 	}

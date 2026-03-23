@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.adempiere.base.Core;
+import org.compiere.Adempiere;
 import org.compiere.model.SystemProperties;
 import org.idempiere.distributed.ICacheService;
 import org.idempiere.distributed.IClusterMember;
@@ -550,4 +551,64 @@ public class CacheMgt
 	public void resumeTableCacheReset(String tableName) {
 		suspendedResetCacheTables.remove(tableName);
 	}
-}	//	CCache
+
+	/**
+	 * Schedule cache reset after transaction commit. If trxName is null or transaction cannot be found, the cache reset will be scheduled immediately
+	 *   exceptions are logged and ignored
+	 * @param cacheName
+	 * @param key - can be an Integer ID or String key, if key is -1, the whole cache will be reset
+	 * @param newRecord
+	 * @param trxName
+	 */
+	public static void scheduleCacheReset(String cacheName, Object key, boolean newRecord, String trxName) {
+		if (!CacheMgt.get().hasCache(cacheName))
+			return;
+		if (key instanceof Integer && (Integer)key == 0)
+			return;
+		try {
+			boolean cacheResetScheduled = false;
+			if (trxName != null) {
+				Trx trx = Trx.get(trxName, false);
+				if (trx != null) {
+					trx.addTrxEventListener(new TrxEventListener() {
+						@Override
+						public void afterRollback(Trx trx, boolean success) {
+							trx.removeTrxEventListener(this);
+						}
+						@Override
+						public void afterCommit(Trx sav, boolean success) {
+							if (success) {
+								if (!newRecord) {
+									if (key instanceof Integer)
+										Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(cacheName, (Integer) key));
+									else
+										Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(cacheName, String.valueOf(key)));
+								} else if (key instanceof Integer && (Integer)key > 0) {
+									Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().newRecord(cacheName, (Integer) key));
+								}
+							}
+							trx.removeTrxEventListener(this);
+						}
+						@Override
+						public void afterClose(Trx trx) {
+						}
+					});
+					cacheResetScheduled = true;
+				}
+			}
+			if (!cacheResetScheduled) {
+				if (!newRecord) {
+					if (key instanceof Integer)
+						Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(cacheName, (Integer) key));
+					else
+						Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(cacheName, String.valueOf(key)));
+				} else if (key instanceof Integer && (Integer)key > 0) {
+					Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().newRecord(cacheName, (Integer) key));
+				}
+			}
+		} catch (RuntimeException ex) {
+			log.log(Level.WARNING, "Failed to enqueue cache reset for " + cacheName + ", key=" + String.valueOf(key) + ", newRecord=" + newRecord + ", trxName=" + trxName, ex);
+		}
+	}
+
+}	//	CacheMgt

@@ -13,6 +13,7 @@
  *****************************************************************************/
 package org.idempiere.test.base;
 
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -49,6 +50,7 @@ import org.compiere.model.PO;
 import org.compiere.model.X_Test;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Ini;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Language;
 import org.compiere.util.TimeUtil;
@@ -1494,4 +1496,21 @@ public class DBTest extends AbstractTestCase
 		count = DB.getSQLValue(null, sql, inClause.parameters());
 		assertTrue(count >= 2, "NOT IN with non-existent ID should return all clients");
 	}
+
+	@Test
+	public void testQuotedColumnPostgres() {
+		if (DB.isOracle()) return;
+		final String originalLogMigrationScript = Env.getContext(Env.getCtx(), Ini.P_LOGMIGRATIONSCRIPT);
+		// this query as constructed at GridTable.createSelectSql on native mode
+		// on native mode the Limit column is changed to "limit" calling DB_PostgreSQL.quoteColumnName
+		final String sql = "SELECT AD_WF_Node_UU,AD_WF_Node_ID,Value,Name,Description,\"action\",R_MailText_ID,\"limit\" FROM AD_WF_Node WHERE AD_WF_Node_ID=244";
+		assertThatNoException().isThrownBy(() -> DB.getSQLArrayObjectsEx(getTrxName(), sql));
+		try {
+			Env.setContext(Env.getCtx(), Ini.P_LOGMIGRATIONSCRIPT, "Y");
+			assertThatNoException().isThrownBy(() -> DB.getSQLArrayObjectsEx(getTrxName(), sql));
+		} finally {
+			Env.setContext(Env.getCtx(), Ini.P_LOGMIGRATIONSCRIPT, originalLogMigrationScript);
+		}
+	}
+
 }

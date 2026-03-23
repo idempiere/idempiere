@@ -198,8 +198,8 @@ public class CacheTest extends AbstractTestCase {
 	@SuppressWarnings({"unchecked"})
 	@Test
 	public void testPOCacheAfterUpdate() throws InterruptedException {
-		int mulch = 137;
-		int oak = 123;
+		int mulch = DictionaryIDs.M_Product.MULCH.id;
+		int oak = DictionaryIDs.M_Product.OAK.id;
 		//init cache
 		MProduct p1 = MProduct.get(Env.getCtx(), mulch);
 		CCache<Integer, MProduct> pc = (CCache<Integer, MProduct>) findByTableNameAndKey(MProduct.Table_Name, mulch);
@@ -253,10 +253,24 @@ public class CacheTest extends AbstractTestCase {
 		p3.setC_UOM_ID(p1.getC_UOM_ID());
 		p3.setC_TaxCategory_ID(p1.getC_TaxCategory_ID());
 		p3.saveEx();
+		commit();
+		int testProductId = p3.getM_Product_ID();
+
+		// get after p3 insert, miss should increase
+		miss = pc.getMiss();
+		MProduct p3a = MProduct.get(Env.getCtx(), testProductId, getTrxName());
+		assertEquals(p3a.getM_Product_ID(), testProductId);
+		assertTrue(pc.getMiss() > miss, "First get of just saved test product, cache miss should increase");
 		
 		p3.deleteEx(true);
 		commit();
-		
+
+		Thread.sleep(500);
+		miss = pc.getMiss();
+		p3a = MProduct.get(Env.getCtx(), testProductId);
+		assertNull(p3a);
+		assertTrue(pc.getMiss() > miss, "Get of just deleted test product, cache miss should increase");
+
 		//cache for p2 not effected by p3 delete, hit should increase
 		hit = pc.getHit();
 		p2 = MProduct.get(Env.getCtx(), oak);

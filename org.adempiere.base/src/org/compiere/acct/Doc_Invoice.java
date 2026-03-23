@@ -625,7 +625,7 @@ public class Doc_Invoice extends Doc
 					tl.setC_Tax_ID(m_taxes[i].getC_Tax_ID());
 				if (tl != null && invoice.getReversal_ID() > 0 && invoice.getReversal_ID() < invoice.getC_Invoice_ID())
 				{
-					tl.updateReverseLine(MInvoice.Table_ID, invoice.getReversal_ID(), 0, BigDecimal.ONE);
+					tl.updateReverseLine(MInvoice.Table_ID, invoice.getReversal_ID(), 0, BigDecimal.ONE, null, false);
 				}
 			}
 			//  Expense         DR

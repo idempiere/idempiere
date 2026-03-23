@@ -54,7 +54,7 @@ public class AllocationReset extends SvrProcess
 	/** All Allocations */
 	private boolean		p_AllAllocations = false;
 	/** Transaction				*/
-	private Trx			m_trx = null;
+	protected Trx		m_trx = null;
 	
 	/**
 	 *  Prepare - e.g., get Parameters.

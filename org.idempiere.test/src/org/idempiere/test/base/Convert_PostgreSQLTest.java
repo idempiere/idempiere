@@ -379,6 +379,33 @@ public final class Convert_PostgreSQLTest extends AbstractTestCase {
 	}
 	
 	@Test
+	public void testReservedWordPostgres() {
+	  if (DB.isOracle()) return;
+	  String originalNative = Ini.getProperty(P_POSTGRE_SQL_NATIVE);
+	  try {
+		testNotNative();
+		// test conversion of reserved words inside quotes
+		sql = "UPDATE AD_Message_Trl SET MsgText='{0} Linea(s) {1,number,#,##0.00}  - Total: {2,number,#,##0.00}',MsgTip=NULL,Updated=TO_DATE('2007-01-12 21:44:31','YYYY-MM-DD HH24:MI:SS'),IsTranslated='Y' WHERE AD_Message_ID=828 AND AD_Language='es_MX'";
+		sqe = "UPDATE AD_Message_Trl SET MsgText='{0} Linea(s) {1,number,#,##0.00}  - Total: {2,number,#,##0.00}',MsgTip=NULL,Updated=TO_TIMESTAMP('2007-01-12 21:44:31','YYYY-MM-DD HH24:MI:SS'),IsTranslated='Y' WHERE AD_Message_ID=828 AND AD_Language='es_MX'";
+        r = DB.getDatabase().convertStatement(sql);
+        assertEquals(sqe, r);
+
+        sql = "SELECT \"action\",AD_WF_Node_UU,AD_WF_Node_ID,\"old\",\"new\",Value,Name,Description,\"action\",R_MailText_ID,\"limit\" FROM AD_WF_Node WHERE AD_WF_Node_ID=244";
+        sqe = "SELECT \"action\",AD_WF_Node_UU,AD_WF_Node_ID,\"old\",\"new\",Value,Name,Description,\"action\",R_MailText_ID,\"limit\" FROM AD_WF_Node WHERE AD_WF_Node_ID=244";
+        r = DB.getDatabase().convertStatement(sql);
+        assertEquals(sqe, r);
+
+        sql = "SELECT Action,AD_WF_Node_UU,AD_WF_Node_ID,Old,New,Value,Name,Description,Action,R_MailText_ID,Limit FROM AD_WF_Node WHERE AD_WF_Node_ID=244";
+        // same sqe expected as above
+        r = DB.getDatabase().convertStatement(sql);
+        assertEquals(sqe, r);
+
+	  } finally {
+		Ini.setProperty(P_POSTGRE_SQL_NATIVE, originalNative);
+	  }
+	}
+
+	@Test
 	public void test1580231() {
 	  if (DB.isOracle()) return;
 	  String originalNative = Ini.getProperty(P_POSTGRE_SQL_NATIVE);

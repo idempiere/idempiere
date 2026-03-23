@@ -34,7 +34,7 @@ public class X_GL_Fund extends PO implements I_GL_Fund, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250805L;
+	private static final long serialVersionUID = 20260309L;
 
     /** Standard Constructor */
     public X_GL_Fund (Properties ctx, int GL_Fund_ID, String trxName)

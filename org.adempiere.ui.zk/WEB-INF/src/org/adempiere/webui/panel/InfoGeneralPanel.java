@@ -428,18 +428,19 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		String uucolName = PO.getUUIDColumnName(p_tableName);
 		boolean hasWindowAndTab = new Query(Env.getCtx(), MTab.Table_Name, " AD_Table_ID = ? ", null)
 									.setParameters(table.getAD_Table_ID())
+									.setOnlyActiveRecords(true)
 									.match();
 
 		//	Get Query Columns
 		String sqlqc = "SELECT c.ColumnName, t.AD_Table_ID, t.TableName, c.ColumnSql "
 			+ "FROM AD_Table t"
-			+ " INNER JOIN AD_Column c ON (t.AD_Table_ID=c.AD_Table_ID)"
+			+ " INNER JOIN AD_Column c ON (t.AD_Table_ID=c.AD_Table_ID AND c.IsActive = 'Y' )"
 			+ "WHERE c.AD_Reference_ID IN (10,14)"
 			+ " AND t.TableName=? ";	//	#1
 		if(hasWindowAndTab) {
 			//	Displayed in Window
-			sqlqc += " AND EXISTS (SELECT * FROM AD_Field f "
-					+ " WHERE f.AD_Column_ID=c.AD_Column_ID "
+			sqlqc += " AND EXISTS (SELECT 1 FROM AD_Field f "
+				+ "WHERE f.AD_Column_ID=c.AD_Column_ID AND f.IsActive = 'Y'"
 					+ " AND f.IsDisplayed='Y' AND f.IsEncrypted='N' AND f.ObscureType IS NULL) ";
 		}
 		sqlqc += " ORDER BY c.IsIdentifier DESC, c.IsSelectionColumn Desc, c.AD_Reference_ID, c.SeqNoSelection, c.SeqNo";
@@ -538,7 +539,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 			+ " INNER JOIN AD_Table t ON (c.AD_Table_ID=t.AD_Table_ID)");
 		if(hasWindowAndTab) {
 			sqlc.append(" INNER JOIN AD_Tab tab ON (t.AD_Table_ID=tab.AD_Table_ID)"
-					+ " INNER JOIN AD_Field f ON (tab.AD_Tab_ID=f.AD_Tab_ID AND f.AD_Column_ID=c.AD_Column_ID) ");
+					+ " INNER JOIN AD_Field f ON (tab.AD_Tab_ID=f.AD_Tab_ID AND f.AD_Column_ID=c.AD_Column_ID AND f.IsActive='Y') ");
 		}	
 		sqlc.append( "WHERE t.AD_Table_ID=? ");
 		if(hasWindowAndTab) {
@@ -546,23 +547,23 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 					+ " AND tab.Ad_Tab_ID=(SELECT MIN(mt.AD_Tab_ID) FROM AD_tab mt WHERE mt.AD_Window_ID=? AND mt.AD_Table_ID=t.AD_Table_ID AND mt.IsActive='Y')"
 					+ " AND (c.IsKey='Y' OR "
 					+ "		(f.IsEncrypted='N' AND f.ObscureType IS NULL))");
-		} else {
-			sqlc.append(" AND (c.IsKey='Y' "
+		}
+		sqlc.append(" AND (c.IsKey='Y' "
 					+ "			OR c.IsIdentifier='Y' "
 					+ "			OR c.IsParent='Y' "
 					+ "			OR c.IsSelectionColumn='Y' "
 					+ "			OR Upper(c.ColumnName) IN ('NAME','VALUE','DESCRIPTION','DOCUMENTNO') "
 					+ "			OR Upper(c.ColumnName) Like '%_NAME' "
 					+ "			OR Upper(c.ColumnName) Like '%_Value') ");
-		}
+
 		sqlc.append(" AND c.IsActive = 'Y' "
 			+ "ORDER BY ");
 		if (table.isUUIDKeyTable() || p_keyColumn.endsWith("_UU"))
 			sqlc.append("CASE WHEN c.columnname=").append(DB.TO_STRING(uucolName)).append("THEN 0 ELSE 1 END");
 		else
 			sqlc.append("c.IsKey DESC");
-		if(hasWindowAndTab)
-			sqlc.append(", f.SeqNo");
+
+		sqlc.append(", c.IsSelectionColumn DESC, c.SeqNoSelection, c.IsIdentifier DESC, c.SeqNo, c.AD_Reference_ID ");
 
 		try
 		{

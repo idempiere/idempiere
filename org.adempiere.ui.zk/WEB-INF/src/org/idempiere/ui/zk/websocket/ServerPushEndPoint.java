@@ -54,13 +54,15 @@ import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
-import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
-import org.apache.hc.client5.http.io.HttpClientConnectionManager;
+import org.apache.hc.client5.http.impl.io.BasicHttpClientConnectionManager;
+import org.apache.hc.client5.http.socket.ConnectionSocketFactory;
+import org.apache.hc.client5.http.socket.PlainConnectionSocketFactory;
 import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
 import org.apache.hc.client5.http.ssl.TrustAllStrategy;
 import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.config.RegistryBuilder;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.ssl.SSLContextBuilder;
 import org.apache.hc.core5.util.Timeout;
@@ -172,7 +174,7 @@ public class ServerPushEndPoint {
 				String dtid = jsonRequest.get("dt").toString();
 				if (dtid == null || !dtid.equals(this.dtid)) {
 					try {
-						session.getBasicRemote().sendText("Error: Invalid desktop id");
+						session.getBasicRemote().sendText(errorResponse("Error: Invalid desktop id"));
 					} catch (IOException e) {
 						CLogger.getCLogger(getClass()).log(Level.WARNING, e.getMessage(), e);
 					}
@@ -191,7 +193,7 @@ public class ServerPushEndPoint {
 				} catch (IllegalStateException e) {
 					CLogger.getCLogger(getClass()).log(Level.WARNING, "HTTP Session already invalidated", e);
 					try {
-						session.getBasicRemote().sendText("Error: Session invalidated");
+						session.getBasicRemote().sendText(errorResponse("Error: Session invalidated"));
 					} catch (IOException ioe) {
 						CLogger.getCLogger(getClass()).log(Level.WARNING, "Error sending response to client", ioe);
 					}
@@ -221,7 +223,7 @@ public class ServerPushEndPoint {
 				        	}
 				        });
 				        httpPost.setConfig(org.apache.hc.client5.http.config.RequestConfig.custom()
-				            .setResponseTimeout(Timeout.ofSeconds(30))
+				            .setResponseTimeout(Timeout.ofSeconds(0))
 				            .build());
 		
 				        // Execute request asynchronously
@@ -252,13 +254,19 @@ public class ServerPushEndPoint {
 									}
 								} else {
 									try {
-										session.getBasicRemote().sendText("Error: No response from /zkau");
+										session.getBasicRemote().sendText(errorResponse("Error: No response from /zkau"));
 									} catch (IOException e) {
 										CLogger.getCLogger(getClass()).log(Level.WARNING, "Error sending response to client", e);
 									}
 								}
 					        } catch (Throwable e) {
 					        	CLogger.getCLogger(getClass()).log(Level.WARNING, "Error processing /zkau request", e);
+					        	//notify client about the error
+								try {
+									session.getBasicRemote().sendText(errorResponse("Error processing /zkau request"));
+								} catch (Throwable e1) {
+									CLogger.getCLogger(getClass()).log(Level.WARNING, "Error sending response to client", e1);
+								}
 					        }
 				        }, executorService);
 			        } catch (Throwable e) {
@@ -267,6 +275,13 @@ public class ServerPushEndPoint {
 		        }
 			}
 		}
+	}
+
+	private String errorResponse(String text) {
+		JSONObject jsonResponse = new JSONObject();
+		jsonResponse.put("status", 500);
+		jsonResponse.put("statusText", text);
+		return jsonResponse.toString();
 	}
 
 	// Disable SSL verification and host name verification for internal request
@@ -293,9 +308,12 @@ public class ServerPushEndPoint {
 	
 	private CloseableHttpClient createHttpClient() {
 		try {
-			HttpClientConnectionManager connectionManager = PoolingHttpClientConnectionManagerBuilder.create()
-					.setSSLSocketFactory(sslSocketFactory)
-					.build();
+			//use basic instead of pooling connection manager to avoid connection leak, as http client instance is created per each au request
+			BasicHttpClientConnectionManager connectionManager = new BasicHttpClientConnectionManager(
+					RegistryBuilder.<ConnectionSocketFactory>create()
+							.register("http", PlainConnectionSocketFactory.getSocketFactory())
+							.register("https", sslSocketFactory)
+							.build());
 
 			return HttpClients.custom()
 					.setConnectionManager(connectionManager)
