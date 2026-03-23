@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Scheduler
  *  @author iDempiere (generated) 
- *  @version Release 13
+ *  @version Release 14
  */
 public interface I_AD_Scheduler 
 {
@@ -329,4 +329,13 @@ public interface I_AD_Scheduler
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
+
+    /** Column name WebSessionLogic */
+    public static final String COLUMNNAME_WebSessionLogic = "WebSessionLogic";
+
+	/** Set Web Session Logic	  */
+	public void setWebSessionLogic (String WebSessionLogic);
+
+	/** Get Web Session Logic	  */
+	public String getWebSessionLogic();
 }

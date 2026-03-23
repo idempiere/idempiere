@@ -24,7 +24,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Scheduler
  *  @author iDempiere (generated)
- *  @version Release 13 - $Id$ */
+ *  @version Release 14 - $Id$ */
 @org.adempiere.base.Model(table="AD_Scheduler")
 public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 {
@@ -32,7 +32,7 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20260309L;
+	private static final long serialVersionUID = 20260323L;
 
     /** Standard Constructor */
     public X_AD_Scheduler (Properties ctx, int AD_Scheduler_ID, String trxName)
@@ -512,5 +512,20 @@ public class X_AD_Scheduler extends PO implements I_AD_Scheduler, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Web Session Logic.
+		@param WebSessionLogic Web Session Logic
+	*/
+	public void setWebSessionLogic (String WebSessionLogic)
+	{
+		set_Value (COLUMNNAME_WebSessionLogic, WebSessionLogic);
+	}
+
+	/** Get Web Session Logic.
+		@return Web Session Logic	  */
+	public String getWebSessionLogic()
+	{
+		return (String)get_Value(COLUMNNAME_WebSessionLogic);
 	}
 }
