@@ -436,21 +436,19 @@ public class HelpController
 					}
 				} 
 
-				if (form != null) {
-					nameMsg = userDef != null && userDef.getName() != null ? userDef.getName() : form.getName();
-					if (nameMsg != null && nameMsg.length() != 0)
-						baseContent.append("<p><strong>" + form.getName() + "</strong></p>\n");	
-				}
+        		if (form != null) {
+        			nameMsg = userDef != null && userDef.getName() != null ? userDef.getName() : form.getName();
+        			if (!Util.isEmpty(nameMsg))
+        				baseContent.append("<p><strong>").append(nameMsg).append("</strong></p>\n");
 
-				descMsg = userDef != null && userDef.getDescription() != null ? userDef.getDescription() : form.getDescription();
-				
-				if (descMsg != null && descMsg.length() != 0)
-					baseContent.append("<p><em>" + form.getDescription() + "</em></p>\n");
+        			descMsg = userDef != null && userDef.getDescription() != null ? userDef.getDescription() : form.getDescription();
+        			if (!Util.isEmpty(descMsg))
+        				baseContent.append("<p><em>").append(descMsg).append("</em></p>\n");
 
-				helpMsg = userDef != null && userDef.getHelp() != null ? userDef.getHelp() : form.getHelp();
-				
-				if (helpMsg != null && helpMsg.length() != 0)
-					baseContent.append("<p>" + form.getHelp() + "</p>\n");
+        			helpMsg = userDef != null && userDef.getHelp() != null ? userDef.getHelp() : form.getHelp();
+        			if (!Util.isEmpty(helpMsg))
+        				baseContent.append("<p>").append(helpMsg).append("</p>\n");
+        		}
 
 				if (baseContent.length() > 0)
 				{

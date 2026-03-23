@@ -199,10 +199,8 @@ public class Tab extends org.zkoss.zul.Tab
 			if (form != null){
 				
 				MUserDefForm userDef = MUserDefForm.getBestMatch(Env.getCtx(), form.getAD_Form_ID());
-				if (userDef != null) {
-					if (userDef.getImageURL() != null)
-						return new DecorateInfo(userDef.getImageURL());
-				}
+				if (userDef != null && !Util.isEmpty(userDef.getImageURL()))
+					return new DecorateInfo(userDef.getImageURL());
 
 				return new DecorateInfo(!Util.isEmpty(form.getImageURL()) ? form.getImageURL() : Icon.FORM);
 			}
