@@ -513,21 +513,6 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 	}
 
 	/**
-	 * This is unused.
-	 * The readonly property of a column should be set in
-	 * the parent table.
-	 *
-	 * @param colIndex
-	 * @param readOnly
-	 * @deprecated
-	 */
-	@Deprecated(forRemoval = true, since = "11")
-	public void setRO(int colIndex, Boolean readOnly)
-	{
-		return;
-	}
-
-	/**
 	 * Create a ListHeader using the given <code>headerValue</code> to
 	 * generate the header text.<br/>
 	 * The <code>toString</code> method of the <code>headerValue</code>

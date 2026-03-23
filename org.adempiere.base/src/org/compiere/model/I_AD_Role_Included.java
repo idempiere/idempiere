@@ -106,10 +106,10 @@ public interface I_AD_Role_Included
     /** Column name Included_Role_ID */
     public static final String COLUMNNAME_Included_Role_ID = "Included_Role_ID";
 
-	/** Set Included Role	  */
+	/** Set Included Role Template	  */
 	public void setIncluded_Role_ID (int Included_Role_ID);
 
-	/** Get Included Role	  */
+	/** Get Included Role Template	  */
 	public int getIncluded_Role_ID();
 
 	@Deprecated(since="13") // use better methods with cache

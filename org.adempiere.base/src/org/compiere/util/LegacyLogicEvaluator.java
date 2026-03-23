@@ -28,7 +28,7 @@ import java.util.logging.Level;
  *  @version $Id: Evaluator.java,v 1.3 2006/07/30 00:54:36 jjanke Exp $
  *  @deprecated
  */
-@Deprecated
+@Deprecated (since="13", forRemoval=true)
 public final class LegacyLogicEvaluator {
 
 	private final static CLogger s_log = CLogger.getCLogger(LegacyLogicEvaluator.class);

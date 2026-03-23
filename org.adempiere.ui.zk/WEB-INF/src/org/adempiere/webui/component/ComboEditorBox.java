@@ -45,7 +45,7 @@ public class ComboEditorBox extends Div {
 	 * generated serial id
 	 */
 	private static final long serialVersionUID = 4187563277424346012L;
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	protected PropertyChangeSupport m_propertyChangeListeners = new PropertyChangeSupport(this);
 	protected Combobox txt;
 	protected Button btn;
@@ -168,7 +168,7 @@ public class ComboEditorBox extends Div {
 	 * @param l PropertyChangeListener
 	 * @deprecated not implemented
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public synchronized void addPropertyChangeListener(PropertyChangeListener l) {
 		m_propertyChangeListeners.addPropertyChangeListener(l);
 	}

@@ -563,7 +563,8 @@ public class InvoiceGenerate extends SvrProcess
 				// minimum amount not reached
 				DecimalFormat format = DisplayType.getNumberFormat(DisplayType.Amount);
 				String amt = format.format(m_invoice.getGrandTotal().doubleValue());
-				String message = Msg.parseTranslation(getCtx(), "@NotInvoicedAmt@ " + amt + " - " + m_invoice.getC_BPartner().getName());
+				MBPartner bp = MBPartner.get(getCtx(), m_invoice.getC_BPartner_ID());
+				String message = Msg.parseTranslation(getCtx(), "@NotInvoicedAmt@ " + amt + " - " + bp.getName());
 				addLog(message);
 				if (m_savepoint != null) {
 					try {

@@ -349,7 +349,7 @@ public class WGadgets extends Window implements  EventListener<Event>{
 	    }
 
 		for(MDashboardPreference pre : dirtyList.values()) {
-			MDashboardContent content = (MDashboardContent) pre.getPA_DashboardContent();
+			MDashboardContent content = new MDashboardContent(pre.getCtx(), pre.getPA_DashboardContent_ID(), pre.get_TrxName());
 			if (pre.isActive())
 				yesItems.add(content);
 			else

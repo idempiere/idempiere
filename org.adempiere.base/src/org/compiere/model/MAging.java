@@ -130,44 +130,6 @@ public class MAging extends X_T_Aging
 		//
 		setDueDate(DueDate);		//	only sensible if List invoices
 	}	//	MAging
-
-	/**
-	 * 	Partial Constructor - backward compatibility
-	 *	@param ctx context
-	 *	@param AD_PInstance_ID instance
-	 *	@param StatementDate statement date
-	 *	@param C_BPartner_ID bpartner
-	 *	@param C_Currency_ID currency
-	 *	@param C_Invoice_ID invoice
-	 *	@param C_InvoicePaySchedule_ID invoice schedule
-	 *	@param C_BP_Group_ID group
-	 *	@param DueDate due date
-	 *	@param IsSOTrx SO Trx
-	 *	@param trxName transaction
-	 *
-	 * @deprecated - better use the new constructor with organization included
-	 */
-	@Deprecated(forRemoval = true, since = "11")
-	public MAging (Properties ctx, int AD_PInstance_ID, Timestamp StatementDate, 
-		int C_BPartner_ID, int C_Currency_ID, 
-		int C_Invoice_ID, int C_InvoicePaySchedule_ID,
-		int C_BP_Group_ID, Timestamp DueDate, boolean IsSOTrx, String trxName)
-	{
-		this (ctx, 0, trxName);
-		setAD_PInstance_ID (AD_PInstance_ID);
-		setStatementDate(StatementDate);
-		//
-		setC_BPartner_ID (C_BPartner_ID);
-		setC_Currency_ID (C_Currency_ID);
-		setC_BP_Group_ID (C_BP_Group_ID);
-		setIsSOTrx (IsSOTrx);
-
-		set_ValueNoCheck ("C_Invoice_ID", Integer.valueOf(C_Invoice_ID));
-		set_Value ("C_InvoicePaySchedule_ID", Integer.valueOf(C_InvoicePaySchedule_ID));
-		setIsListInvoices(C_Invoice_ID != 0);
-		//
-		setDueDate(DueDate);		//	only sensible if List invoices
-	}	//	MAging
 	
 	/**
 	 * 	Load Constructor

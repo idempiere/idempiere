@@ -28,12 +28,12 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.compiere.Adempiere;
 import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
 import org.compiere.model.MField;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MRefTable;
+import org.compiere.model.MReference;
 import org.compiere.model.MSequence;
 import org.compiere.model.MTab;
 import org.compiere.model.MTable;
@@ -131,7 +131,8 @@ public class DatabaseTableRename extends SvrProcess {
 			}
 			if (changed) {
 				reft.saveEx();
-				addLog(0, null, null, "@Updated@ @AD_Reference_ID@ " + reft.getAD_Reference().getName(), MRefTable.Table_ID, reft.getAD_Reference_ID());
+				MReference ref = MReference.get(reft.getAD_Reference_ID());
+				addLog(0, null, null, "@Updated@ @AD_Reference_ID@ " + ref.getName(), MRefTable.Table_ID, reft.getAD_Reference_ID());
 			}
 		}
 		
@@ -182,10 +183,10 @@ public class DatabaseTableRename extends SvrProcess {
 		table.setTableName(p_NewTableName);
 		table.saveEx();
 
-		Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MColumn.Table_Name));
-		Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MWindow.Table_Name));
-		Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MTab.Table_Name));
-		Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(MField.Table_Name));
+		CacheMgt.scheduleCacheReset(MColumn.Table_Name, -1, false, get_TrxName());
+		CacheMgt.scheduleCacheReset(MWindow.Table_Name, -1, false, get_TrxName());
+		CacheMgt.scheduleCacheReset(MTab.Table_Name, -1, false, get_TrxName());
+		CacheMgt.scheduleCacheReset(MField.Table_Name, -1, false, get_TrxName());
 
 		return "@OK@";
 	}

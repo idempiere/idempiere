@@ -44,7 +44,7 @@ public abstract class CreateFromBatch extends CreateFrom
 		super(gridTab);
 	}
 	
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public String getSQLWhere(Object BPartner, String DocumentNo, Object DateFrom, Object DateTo, 
 			Object AmtFrom, Object AmtTo, Object DocType, Object TenderType, String AuthCode)
 	{
@@ -65,7 +65,7 @@ public abstract class CreateFromBatch extends CreateFrom
 	 * @param AuthCode
 	 * @return where clause
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	protected String getSQLWhere(Integer BPartner, String DocumentNo, Timestamp DateFrom, Timestamp DateTo, 
 			BigDecimal AmtFrom, BigDecimal AmtTo, Integer DocType, String TenderType, String AuthCode)
 	{
@@ -135,7 +135,7 @@ public abstract class CreateFromBatch extends CreateFrom
 		return sql.toString();
 	}
 	
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	void setParameters(PreparedStatement pstmt, Object BankAccount, Object BPartner, String DocumentNo, Object DateFrom, Object DateTo, 
 			Object AmtFrom, Object AmtTo, Object DocType, Object TenderType, String AuthCode)
 	throws SQLException
@@ -144,7 +144,7 @@ public abstract class CreateFromBatch extends CreateFrom
 				(BigDecimal)AmtFrom, (BigDecimal)AmtTo, (Integer)DocType, (String)TenderType, AuthCode, 0, 0);
 	}
 	
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	void setParameters(PreparedStatement pstmt, Object BankAccount, Object BPartner, String DocumentNo, Object DateFrom, Object DateTo, 
 			Object AmtFrom, Object AmtTo, Object DocType, Object TenderType, String AuthCode, Object Currency)
 	throws SQLException
@@ -235,7 +235,7 @@ public abstract class CreateFromBatch extends CreateFrom
 		return s;
 	}
 	
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	protected Vector<Vector<Object>> getBankAccountData(Object BankAccount, Object BPartner, String DocumentNo, 
 			Object DateFrom, Object DateTo, Object AmtFrom, Object AmtTo, Object DocType, Object TenderType, String AuthCode)
 	{

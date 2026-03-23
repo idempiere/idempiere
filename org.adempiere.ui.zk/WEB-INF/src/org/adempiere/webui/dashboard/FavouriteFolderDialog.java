@@ -181,7 +181,7 @@ public class FavouriteFolderDialog extends Window implements EventListener<Event
 			{
 				if (favNodeSummary.getParent_ID() > 0)
 				{
-					favNodeSummary = (MTreeFavoriteNode) favNodeSummary.getParent();
+					favNodeSummary = new MTreeFavoriteNode(Env.getCtx(), favNodeSummary.getParent_ID(), favNodeSummary.get_TrxName());
 				}
 				else
 				{

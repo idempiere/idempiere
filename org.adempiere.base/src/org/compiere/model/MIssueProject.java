@@ -32,7 +32,7 @@ import org.compiere.util.DB;
  *  @version $Id: MIssueProject.java,v 1.2 2006/07/30 00:58:18 jjanke Exp $
  *  @deprecated
  */
-@Deprecated
+@Deprecated (since="13", forRemoval=true)
 public class MIssueProject extends X_R_IssueProject
 {
 	/**

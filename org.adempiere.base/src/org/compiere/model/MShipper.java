@@ -87,7 +87,8 @@ public class MShipper extends X_M_Shipper
 	 */
 	public String getShippingServiceCode()
 	{
-		return getM_ShipperCfg().getShippingServiceCode();
+		MShipperCfg cfg = new MShipperCfg(getCtx(), getM_ShipperCfg_ID(), get_TrxName());
+		return cfg.getShippingServiceCode();
 	}
 	
 	/**
@@ -95,7 +96,8 @@ public class MShipper extends X_M_Shipper
 	 */
 	public boolean isInternational()
 	{
-		return getM_ShipperCfg().isInternational();
+		MShipperCfg cfg = new MShipperCfg(getCtx(), getM_ShipperCfg_ID(), get_TrxName());
+		return cfg.isInternational();
 	}
 
 	/**
@@ -103,7 +105,8 @@ public class MShipper extends X_M_Shipper
 	 */
 	public boolean isResidential()
 	{
-		return getM_ShipperCfg().isResidential();
+		MShipperCfg cfg = new MShipperCfg(getCtx(), getM_ShipperCfg_ID(), get_TrxName());
+		return cfg.isResidential();
 	}
 	
 	/**
@@ -111,7 +114,8 @@ public class MShipper extends X_M_Shipper
 	 */
 	public boolean isSaturdayDelivery()
 	{
-		return getM_ShipperCfg().isSaturdayDelivery();
+		MShipperCfg cfg = new MShipperCfg(getCtx(), getM_ShipperCfg_ID(), get_TrxName());
+		return cfg.isSaturdayDelivery();
 	}
 	
 	/**
@@ -119,7 +123,8 @@ public class MShipper extends X_M_Shipper
 	 */
 	public String getTrackingURL()
 	{
-		return getM_ShipperCfg().getTrackingURL();
+		MShipperCfg cfg = new MShipperCfg(getCtx(), getM_ShipperCfg_ID(), get_TrxName());
+		return cfg.getTrackingURL();
 	}
 	
 }	//	MShipper

@@ -582,7 +582,7 @@ public class MJournal extends X_GL_Journal implements DocAction
 	private String validatePeriod(Timestamp dateAcct) {
 		// Get Period
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
-		MPeriod period = (MPeriod) getC_Period();
+		MPeriod period = MPeriod.get(getC_Period_ID());
 		SimpleDateFormat dateFormat = DisplayType.getDateFormat(DisplayType.Date);
 
 		if (! period.isInPeriod(dateAcct)) {
@@ -942,6 +942,26 @@ public class MJournal extends X_GL_Journal implements DocAction
 
 		if (!DocumentEngine.canReactivateThisDocType(getC_DocType_ID())) {
 			m_processMsg = Msg.getMsg(getCtx(), "DocTypeCannotBeReactivated", new Object[] {MDocType.get(getC_DocType_ID()).getNameTrl()});
+			return false;
+		}
+
+		List<List<Object>> list = DB.getSQLArrayObjectsEx(get_TrxName(), "SELECT DISTINCT ev.Value FROM Fact_Acct fa"
+				+ " INNER JOIN C_ElementValue ev ON (fa.Account_ID = ev.C_ElementValue_ID)"
+				+ " INNER JOIN Fact_Reconciliation fr ON (fa.Fact_Acct_ID = fr.Fact_Acct_ID)"
+				+ " WHERE fa.AD_Table_ID = ? AND fa.Record_ID = ?", Table_ID, getGL_Journal_ID());
+		if (list != null && list.size() > 0) {
+			StringBuilder accounts = new StringBuilder();
+
+			for (List<Object> row : list) {
+				String accountValue = (String) row.get(0);
+
+				if (accounts.length() > 0)
+					accounts.append(", ");
+
+				accounts.append(accountValue);
+			}
+
+			m_processMsg = Msg.getMsg(getCtx(), "JournalReactivationFailedReconciliation", new Object[] {accounts});
 			return false;
 		}
 

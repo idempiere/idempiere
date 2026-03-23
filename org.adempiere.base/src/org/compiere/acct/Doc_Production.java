@@ -30,6 +30,7 @@ import org.compiere.model.MCostDetail;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProduction;
 import org.compiere.model.MProductionLineMA;
+import org.compiere.model.MProductionPlan;
 import org.compiere.model.ProductCost;
 import org.compiere.model.X_M_Production;
 import org.compiere.model.X_M_ProductionLine;
@@ -147,10 +148,12 @@ public class Doc_Production extends Doc
 				DocLine docLine = new DocLine (line, this);
 				docLine.setQty (line.getMovementQty(), false);
 				//	Identify finished BOM Product
-				if (prod.isUseProductionPlan())
-					docLine.setProductionBOM(line.getM_Product_ID() == line.getM_ProductionPlan().getM_Product_ID());
-				else
+				if (prod.isUseProductionPlan()) {
+					MProductionPlan plan = new MProductionPlan(getCtx(), line.getM_ProductionPlan_ID(), getTrxName());
+					docLine.setProductionBOM(line.getM_Product_ID() == plan.getM_Product_ID());
+				} else {
 					docLine.setProductionBOM(line.getM_Product_ID() == prod.getM_Product_ID());
+				}
 				
 				if (docLine.isProductionBOM()){
 					manipulateQtyProduced (mQtyProduced, line, prod.isUseProductionPlan(), line.getMovementQty());
@@ -217,7 +220,7 @@ public class Doc_Production extends Doc
 			
 			X_M_ProductionLine prodline = (X_M_ProductionLine)line.getPO();
 			MProductionLineMA mas[] = MProductionLineMA.get(getCtx(), prodline.get_ID(), getTrxName());
-			MProduct product = (MProduct) prodline.getM_Product();
+			MProduct product = new MProduct(getCtx(), prodline.getM_Product_ID(), getTrxName());
 			String CostingLevel = product.getCostingLevel(as);
 			String costingMethod = product.getCostingMethod(as);
 
@@ -295,7 +298,7 @@ public class Doc_Production extends Doc
 					if (parentBomPro != parentEndPro)
 						continue;
 					if (!line0.isProductionBOM()) {
-						MProduct product0 = (MProduct) bomProLine.getM_Product();
+						MProduct product0 = new MProduct(getCtx(), bomProLine.getM_Product_ID(), getTrxName());
 						String CostingLevel0 = product0.getCostingLevel(as);
 						if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel0) )
 						{

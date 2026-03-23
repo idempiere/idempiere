@@ -172,8 +172,10 @@ public class MProjectTask extends X_C_ProjectTask
 	 * @return C_Project_ID
 	 */
 	private int getC_Project_ID(boolean reQuery) {
-		if (C_Project_ID==0 || reQuery)
-			C_Project_ID = getC_ProjectPhase().getC_Project_ID();
+		if (C_Project_ID==0 || reQuery) {
+			MProjectPhase pp = new MProjectPhase(getCtx(), getC_ProjectPhase_ID(), get_TrxName());
+			C_Project_ID = pp.getC_Project_ID();
+		}
 		return C_Project_ID;
 	}
 

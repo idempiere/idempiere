@@ -179,9 +179,11 @@ public class MProductPrice extends X_M_ProductPrice implements ImmutablePOSuppor
 	 */
 	public void setPrices (BigDecimal PriceList, BigDecimal PriceStd, BigDecimal PriceLimit)
 	{
-		setPriceLimit (PriceLimit.setScale(this.getM_PriceList_Version().getM_PriceList().getPricePrecision(), RoundingMode.HALF_UP)); 
-		setPriceList (PriceList.setScale(this.getM_PriceList_Version().getM_PriceList().getPricePrecision(), RoundingMode.HALF_UP)); 
-		setPriceStd (PriceStd.setScale(this.getM_PriceList_Version().getM_PriceList().getPricePrecision(), RoundingMode.HALF_UP));
+		MPriceListVersion plv = new MPriceListVersion (getCtx(), getM_PriceList_Version_ID(), get_TrxName());
+		MPriceList pl = new MPriceList (getCtx(), plv.getM_PriceList_ID(), get_TrxName());
+		setPriceLimit (PriceLimit.setScale(pl.getPricePrecision(), RoundingMode.HALF_UP)); 
+		setPriceList (PriceList.setScale(pl.getPricePrecision(), RoundingMode.HALF_UP)); 
+		setPriceStd (PriceStd.setScale(pl.getPricePrecision(), RoundingMode.HALF_UP));
 	}	//	setPrice
 
 	/**

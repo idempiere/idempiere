@@ -223,18 +223,6 @@ public final class Dialog {
         
 		Messagebox.showDialog(message, dialogTitle, Messagebox.OK, Messagebox.ERROR, callback);
     }
-
-    /**
-	 * Ask Question with question icon and (OK) (Cancel) buttons
-	 * @deprecated 
-	 * @param	windowNo	Number of Window
-	 * @param	adMessage	Message to be translated
-	 * @return true, if OK
-	 */
-    @Deprecated(forRemoval = true, since = "11")
-    public static boolean ask(int windowNo, String adMessage) {
-    	return ask(windowNo, adMessage, "");
-    }
     
     /**
 	 *	Ask Question with question icon and (OK) (Cancel) buttons
@@ -246,20 +234,6 @@ public final class Dialog {
 	 */    
     public static boolean ask(int windowNo, String adMessage, final Callback<Boolean> callback) {
     	return ask(null, windowNo, adMessage, callback);
-    }
-
-    /**
-	 * Ask Question with question icon and (OK) (Cancel) buttons
-	 *
-	 * @deprecated
-	 * @param	windowNo	Number of Window
-	 * @param	adMessage	Message to be translated
-	 * @param	additionalMessage			Additional clear text message
-	 * @return true, if OK
-	 */
-    @Deprecated(forRemoval = true, since = "11")
-    public static boolean ask(int windowNo, String adMessage, String additionalMessage) {
-    	return ask(windowNo, adMessage, additionalMessage, (Callback<Boolean>)null);
     }
     
     /**

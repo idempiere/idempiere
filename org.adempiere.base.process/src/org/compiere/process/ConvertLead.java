@@ -81,7 +81,7 @@ public class ConvertLead extends SvrProcess {
 		
 		if (lead.getC_Location_ID() != 0)
 		{
-			MLocation leadAddress = (MLocation) lead.getC_Location();
+			MLocation leadAddress = MLocation.get(lead.getC_Location_ID());
 			MBPartnerLocation loc = new MBPartnerLocation(bp);
 			MLocation address = new MLocation(getCtx(), 0, get_TrxName());
 			PO.copyValues(leadAddress, address);
@@ -101,7 +101,7 @@ public class ConvertLead extends SvrProcess {
 		// company address
 		if (lead.getBP_Location_ID() != 0)
 		{
-			MLocation leadAddress = (MLocation) lead.getBP_Location();
+			MLocation leadAddress = MLocation.get(lead.getBP_Location_ID());
 			MBPartnerLocation loc = new MBPartnerLocation(bp);
 			MLocation address = new MLocation(getCtx(), 0, get_TrxName());
 			PO.copyValues(leadAddress, address);

@@ -31,7 +31,7 @@ public class CalloutProcessCustomization extends CalloutEngine
 	 * @param value
 	 * @return
 	 */
-	@Deprecated // removed from the column definition
+	@Deprecated (since="13", forRemoval=true) // removed from the column definition
 	public String process (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
 	{
 		if(value == null)

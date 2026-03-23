@@ -455,15 +455,6 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
 	} // actionText
 	
 	/**
-	 *  Set Field/WindowNo for ValuePreference (NOP)
-	 *  @param mField Model Field
-	 */
-	@Deprecated(forRemoval = true, since = "11")
-	public void setField (org.compiere.model.GridField mField)
-	{
-	} // setField
-	
-	/**
 	 * 	Get Warehouse restriction if any.
 	 *	@return	M_Warehouse_ID or 0
 	 */	

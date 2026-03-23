@@ -33,7 +33,7 @@ import org.compiere.util.Util;
  * @author hengsin
  * @deprecated
  */
-@Deprecated
+@Deprecated (since="13", forRemoval=true)
 public class DefaultModelFactory extends AbstractModelFactory {
 
 	private CCache<String,Class<?>> s_classCache = new CCache<String,Class<?>>(null, "PO_Class", 100, 120, false, 2000);
@@ -85,6 +85,8 @@ public class DefaultModelFactory extends AbstractModelFactory {
 		}
 
 		MTable table = MTable.get(Env.getCtx(), tableName);
+		if (table == null)
+			return null;
 		String entityType = table.getEntityType();
 
 		//	Import Tables (Name conflict)

@@ -105,7 +105,7 @@ public class MRegion extends X_C_Region
 	 *	@return Region or null
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static synchronized MRegion getDefault (Properties ctx)
 	{
 		return getDefault();
@@ -128,7 +128,7 @@ public class MRegion extends X_C_Region
 	 *  @return Region Array
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static synchronized MRegion[] getRegions(Properties ctx)
 	{
 		return getRegions();
@@ -154,7 +154,7 @@ public class MRegion extends X_C_Region
 	 *  @return MRegion Array
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static synchronized MRegion[] getRegions (Properties ctx, int C_Country_ID)
 	{
 		return getRegions(C_Country_ID);

@@ -55,7 +55,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	 * @deprecated
 	 * @return MStorageOnHand
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static MStorageOnHand get (Properties ctx, int M_Locator_ID, 
 			int M_Product_ID, int M_AttributeSetInstance_ID, String trxName) {
 		return get (ctx, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID, null, trxName);
@@ -328,7 +328,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	 *
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static MStorageOnHand[] getWarehouse (Properties ctx, int M_Warehouse_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID, int M_AttributeSet_ID,
 		boolean allAttributeInstances, Timestamp minGuaranteeDate,
@@ -765,7 +765,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	 *	@return true if updated
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static boolean add (Properties ctx, int M_Warehouse_ID, int M_Locator_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		BigDecimal diffQtyOnHand, String trxName)
@@ -787,7 +787,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	 *	@return true if updated
 	 *  @deprecated
 	 */
-	@Deprecated	
+	@Deprecated (since="13", forRemoval=true)	
 	public static boolean add (Properties ctx, int M_Warehouse_ID, int M_Locator_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,
 		BigDecimal diffQtyOnHand,Timestamp dateMPolicy, String trxName)

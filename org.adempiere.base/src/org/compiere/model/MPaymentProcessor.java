@@ -107,7 +107,7 @@ public class MPaymentProcessor extends X_C_PaymentProcessor
 	 * @deprecated Use C_BankAccount.C_PaymentProcessor_ID 
 	 */
 	@Override
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public I_C_BankAccount getC_BankAccount() throws RuntimeException {
 		return super.getC_BankAccount();
 	}
@@ -116,7 +116,7 @@ public class MPaymentProcessor extends X_C_PaymentProcessor
 	 * @deprecated Use C_BankAccount.C_PaymentProcessor_ID
 	 */
 	@Override
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public void setC_BankAccount_ID(int C_BankAccount_ID) {
 		super.setC_BankAccount_ID(C_BankAccount_ID);
 	}
@@ -125,7 +125,7 @@ public class MPaymentProcessor extends X_C_PaymentProcessor
 	 * @deprecated Use C_BankAccount.C_PaymentProcessor_ID
 	 */
 	@Override
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public int getC_BankAccount_ID() {
 		return super.getC_BankAccount_ID();
 	}

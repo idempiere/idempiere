@@ -60,7 +60,7 @@ public class SimpleBooleanLexer extends Lexer {
 	/**
 	 * @deprecated Use {@link #VOCABULARY} instead.
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static final String[] tokenNames;
 	static {
 		tokenNames = new String[_SYMBOLIC_NAMES.length];
@@ -77,7 +77,7 @@ public class SimpleBooleanLexer extends Lexer {
 	}
 
 	@Override
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public String[] getTokenNames() {
 		return tokenNames;
 	}

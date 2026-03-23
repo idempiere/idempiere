@@ -32,7 +32,7 @@ import org.compiere.util.DB;
  *  @version $Id: MIssueSystem.java,v 1.3 2006/07/30 00:58:04 jjanke Exp $
  *  @deprecated
  */
-@Deprecated
+@Deprecated (since="13", forRemoval=true)
 public class MIssueSystem extends X_R_IssueSystem
 {
 	/**

@@ -139,7 +139,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 	 * @param wh warehouse
 	 * @deprecated since 3.5.3a . Please use {@link #MInventory(MWarehouse, String)}.
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public MInventory (MWarehouse wh)
 	{
 		this(wh, wh.get_TrxName());
@@ -541,20 +541,14 @@ public class MInventory extends X_M_Inventory implements DocAction
 						MClient client = MClient.get(getCtx(), getAD_Client_ID());
 						MAcctSchema as = client.getAcctSchema();
 						MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(getCtx(), client.get_ID());
-						
-						if (as.getC_Currency_ID() != getC_Currency_ID()) 
-						{
-							for (int i = 0; i < ass.length ; i ++)
-							{
-								MAcctSchema a =  ass[i];
-								if (a.getC_Currency_ID() ==  getC_Currency_ID()) 
+						if (as.getC_Currency_ID() != getC_Currency_ID()) {
+							for (MAcctSchema a : ass) {
+								if (a.getC_Currency_ID() == getC_Currency_ID()) 
 									as = a ; 
 							}
 						}
-	
-						ICostInfo cost = product.getCostInfo(as, getAD_Org_ID(), line.getM_AttributeSetInstance_ID(), getCostingMethod(), getMovementDate());
-						if (cost != null && cost.getCurrentCostPrice().compareTo(currentCost) != 0) 
-						{
+						BigDecimal currentCostPrice = line.getCurrentCostPriceForCostAdjustment();
+						if (currentCostPrice != null && currentCostPrice.compareTo(currentCost) != 0) {
 							m_processMsg = "Current Cost for Line " + line.getLine() + " have changed.";
 							return DocAction.STATUS_Invalid; 
 						}
@@ -667,7 +661,18 @@ public class MInventory extends X_M_Inventory implements DocAction
 					// Fallback
 					if (mtrx == null)
 					{
-						Timestamp dateMPolicy= qtyDiff.signum() > 0 ? getMovementDate() : null;
+						Timestamp dateMPolicy = null;
+						if (qtyDiff.signum() > 0 && product.getM_AttributeSet_ID() > 0 && line.getM_AttributeSetInstance_ID() > 0) {
+							MAttributeSet as = MAttributeSet.get(getCtx(), product.getM_AttributeSet_ID());
+							if (as.isUseGuaranteeDateForMPolicy()) {
+								MAttributeSetInstance asi = new MAttributeSetInstance(getCtx(), line.getM_AttributeSetInstance_ID(), get_TrxName());
+								if (asi != null && asi.getGuaranteeDate() != null) {
+									dateMPolicy = asi.getGuaranteeDate();
+								}
+							}
+						}
+						if (dateMPolicy == null && qtyDiff.signum() > 0)
+							dateMPolicy = getMovementDate();
 						if (line.getM_AttributeSetInstance_ID() > 0)
 						{
 							Timestamp t = MStorageOnHand.getDateMaterialPolicy(line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(), line.getM_Locator_ID(), line.get_TrxName());
@@ -804,7 +809,7 @@ public class MInventory extends X_M_Inventory implements DocAction
 				if(qtyDiff.compareTo(Env.ZERO)>0)
 				{
 					//AttributeSetInstance enable
-					I_M_AttributeSet as = line.getM_Product().getM_AttributeSet();
+					I_M_AttributeSet as = line.getProduct().getAttributeSet();
 					if (as != null && as.isInstanceAttribute())
 					{
 						//add quantity to last attributesetinstance

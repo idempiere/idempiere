@@ -31,6 +31,7 @@ import org.compiere.model.MJournal;
 import org.compiere.model.MJournalLine;
 import org.compiere.model.MOrg;
 import org.compiere.model.MProcessPara;
+import org.compiere.model.MRevenueRecognitionPlan;
 import org.compiere.model.MRevenueRecognitionRun;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
@@ -116,8 +117,8 @@ public class RevenueRecognition extends SvrProcess
 				"FROM C_RevenueRecognition_Plan rp " +
 				"WHERE rp.C_RevenueRecognition_Plan_ID=C_RevenueRecognition_Run.C_RevenueRecognition_Plan_ID) = ? " +
 				" AND EXISTS (SELECT * " + 
-				"	FROM C_RevenueRecognition_Plan rp " + 
-				"	WHERE rp.C_RevenueRecognition_Plan_ID=C_RevenueRecognition_Run.C_RevenueRecognition_Plan_ID "
+				"   FROM C_RevenueRecognition_Plan rp " + 
+				"   WHERE rp.C_RevenueRecognition_Plan_ID=C_RevenueRecognition_Run.C_RevenueRecognition_Plan_ID "
 				+ " AND rp.C_RevenueRecognition_ID = ? OR 0 = ?) ";
 				
 		Query query = new Query(getCtx(), MRevenueRecognitionRun.Table_Name, 
@@ -156,7 +157,8 @@ public class RevenueRecognition extends SvrProcess
 				addBufferLog(journal.getGL_Journal_ID(), journal.getDateAcct(), null, docType.getName() + " " + journal.getDocumentNo(), MJournal.Table_ID, journal.getGL_Journal_ID());
 			}
 
-			MInvoiceLine il = (MInvoiceLine) run.getC_RevenueRecognition_Plan().getC_InvoiceLine();
+			MRevenueRecognitionPlan runPlan = new MRevenueRecognitionPlan(run.getCtx(), run.getC_RevenueRecognition_Plan_ID(), run.get_TrxName());
+			MInvoiceLine il = new MInvoiceLine(run.getCtx(), runPlan.getC_InvoiceLine_ID(), run.get_TrxName());
 			MInvoice inv = il.getParent();
 			String description = inv.getDocumentInfo() + " (" + il.getLine() + ")";
 			if (!Util.isEmpty(il.getDescription()))
@@ -167,7 +169,7 @@ public class RevenueRecognition extends SvrProcess
 			line.setDescription(description);
 
 			//
-			line.setC_ValidCombination_ID(run.getC_RevenueRecognition_Plan().getP_Revenue_Acct());
+			line.setC_ValidCombination_ID(runPlan.getP_Revenue_Acct());
 
 			BigDecimal amtReval = run.getRecognizedAmt();
 
@@ -187,7 +189,7 @@ public class RevenueRecognition extends SvrProcess
 			
 			drline.setDescription(description);
 			//
-			drline.setC_ValidCombination_ID(run.getC_RevenueRecognition_Plan().getUnEarnedRevenue_Acct());
+			drline.setC_ValidCombination_ID(runPlan.getUnEarnedRevenue_Acct());
 
 			dr = amtReval.compareTo(Env.ZERO) < 0 ? amtReval.negate() : Env.ZERO;
 			cr = amtReval.compareTo(Env.ZERO) > 0 ? amtReval :  Env.ZERO;

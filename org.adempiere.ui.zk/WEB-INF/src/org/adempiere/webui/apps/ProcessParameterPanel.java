@@ -221,6 +221,16 @@ public class ProcessParameterPanel extends Panel implements
 	 * @return true if loaded OK
 	 */
 	public boolean init() {
+		return init(null);
+	}
+
+	/**
+	 * Render all visible fields
+	 * @param showHelp
+	 * @return true if loaded OK
+	 */
+	public boolean init(String showHelp) {
+		
 		if (log.isLoggable(Level.CONFIG)) log.config("");
 
 		// ASP
@@ -408,7 +418,7 @@ public class ProcessParameterPanel extends Panel implements
 			log.log(Level.SEVERE, "View & Model vector size is different");
 
 		// clean up
-		if (hasFields) {
+		if (hasFields || MProcess.SHOWHELP_ShowHelp.equals(showHelp)) {
 			centerPanel.appendChild(rows);
 			dynamicDisplay();
 

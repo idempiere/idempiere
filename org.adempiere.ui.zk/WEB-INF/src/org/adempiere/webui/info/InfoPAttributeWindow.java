@@ -28,7 +28,7 @@ package org.adempiere.webui.info;
  * @author hengsin
  * @deprecated not use
  */
-@Deprecated
+@Deprecated (since="13", forRemoval=true)
 public class InfoPAttributeWindow extends InfoWindow {
 
 	/**
@@ -45,6 +45,7 @@ public class InfoPAttributeWindow extends InfoWindow {
 	 * @param whereClause
 	 * @param AD_InfoWindow_ID
 	 */
+	@SuppressWarnings("removal")
 	public InfoPAttributeWindow(int WindowNo, String tableName,
 			String keyColumn, String queryValue, boolean multipleSelection,
 			String whereClause, int AD_InfoWindow_ID) {
@@ -63,6 +64,7 @@ public class InfoPAttributeWindow extends InfoWindow {
 	 * @param AD_InfoWindow_ID
 	 * @param lookup
 	 */
+	@SuppressWarnings("removal")
 	public InfoPAttributeWindow(int WindowNo, String tableName,
 			String keyColumn, String queryValue, boolean multipleSelection,
 			String whereClause, int AD_InfoWindow_ID, boolean lookup) {

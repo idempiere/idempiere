@@ -332,6 +332,7 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 			parentDTN = treeModel.getRoot();
 
 		treeModel.addNode(parentDTN, newNode, 0);
+		tree.setModel(treeModel);
 		int[] path = treeModel.getPath(newNode);
 		Treeitem ti = tree.renderItemByPath(path);
 		tree.renderItem(ti);

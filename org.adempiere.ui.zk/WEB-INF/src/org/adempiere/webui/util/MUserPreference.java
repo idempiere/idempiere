@@ -23,7 +23,7 @@ import org.compiere.model.MPreference;
  *
  * @deprecated - is not required anymore, for login preferences the client is being set now as the user client
  */
-@Deprecated
+@Deprecated (since="13", forRemoval=true)
 public class MUserPreference extends MPreference {
 
 	private static final long serialVersionUID = -3424015890197944847L;

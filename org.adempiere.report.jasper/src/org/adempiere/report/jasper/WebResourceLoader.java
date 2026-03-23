@@ -104,7 +104,7 @@ public class WebResourceLoader {
 						}
 					}
 				} else if (!Util.isEmpty(remoteMD5Hash, true)) {
-					@SuppressWarnings("deprecation")
+					@SuppressWarnings({ "removal" })
 					String localMD5hash = DigestOfFile.getMD5Hash(reportFile);
 					if (log.isLoggable(Level.INFO))
 						log.info("MD5 for local file is " + localMD5hash);

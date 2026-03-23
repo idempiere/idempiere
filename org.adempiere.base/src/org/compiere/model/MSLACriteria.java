@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.GeneratedCodeCoverageExclusion;
 import org.compiere.sla.SLACriteria;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.DB;
@@ -36,7 +37,9 @@ import org.idempiere.cache.ImmutablePOSupport;
  *  @version $Id: MSLACriteria.java,v 1.3 2006/07/30 00:51:05 jjanke Exp $
  *  @deprecated not fully implement, marked as inactive in application dictionary
  */
-@Deprecated
+@Deprecated (since="13", forRemoval=true)
+@SuppressWarnings("removal")
+@GeneratedCodeCoverageExclusion
 public class MSLACriteria extends X_PA_SLA_Criteria implements ImmutablePOSupport
 {
 	/**

@@ -148,15 +148,16 @@ public class MAssetAddition extends X_A_Asset_Addition
 		MAssetAddition assetAdd = new MAssetAddition(match);
 		assetAdd.dump();
 		//@win add condition to prevent asset creation when expense addition or second addition
+		MInvoiceLine invLine = new MInvoiceLine(match.getCtx(), match.getC_InvoiceLine_ID(), match.get_TrxName());
 		if (MAssetAddition.A_CAPVSEXP_Capital.equals(assetAdd.getA_CapvsExp())
-				&& match.getC_InvoiceLine().getA_Asset_ID() == 0 && assetAdd.isA_CreateAsset()) { 
-		//end @win add condition to prevent asset creation when expense addition or second addition
-		MAsset asset = assetAdd.createAsset();
-		asset.dump();
-		//@win add
-		
+				&& invLine.getA_Asset_ID() == 0 && assetAdd.isA_CreateAsset()) { 
+			//end @win add condition to prevent asset creation when expense addition or second addition
+			MAsset asset = assetAdd.createAsset();
+			asset.dump();
+			//@win add
+
 		} else {
-			assetAdd.setA_Asset_ID(match.getC_InvoiceLine().getA_Asset_ID());
+			assetAdd.setA_Asset_ID(invLine.getA_Asset_ID());
 			assetAdd.setA_CreateAsset(false);
 		}
 		assetAdd.saveEx();
@@ -381,25 +382,26 @@ public class MAssetAddition extends X_A_Asset_Addition
 		setA_SourceType(A_SOURCETYPE_Invoice);
 		setM_MatchInv_ID(mi.get_ID());
 		
-		if (MAssetAddition.A_CAPVSEXP_Capital.equals(mi.getC_InvoiceLine().getA_CapvsExp())
-					&& mi.getC_InvoiceLine().getA_Asset_ID() == 0) {
+		MInvoiceLine invLine = new MInvoiceLine(getCtx(), mi.getC_InvoiceLine_ID(), get_TrxName());
+		if (MAssetAddition.A_CAPVSEXP_Capital.equals(invLine.getA_CapvsExp())
+					&& invLine.getA_Asset_ID() == 0) {
 			setA_CreateAsset(true);
 		}
 		 
-		setC_Invoice_ID(mi.getC_InvoiceLine().getC_Invoice_ID());
+		setC_Invoice_ID(invLine.getC_Invoice_ID());
 		setC_InvoiceLine_ID(mi.getC_InvoiceLine_ID());
 		setM_InOutLine_ID(mi.getM_InOutLine_ID());
 		setM_Product_ID(mi.getM_Product_ID());
 		setM_AttributeSetInstance_ID(mi.getM_AttributeSetInstance_ID());
 		setA_QTY_Current(mi.getQty());
-		setLine(mi.getC_InvoiceLine().getLine());
+		setLine(invLine.getLine());
 		setM_Locator_ID(mi.getM_InOutLine().getM_Locator_ID());
-		setA_CapvsExp(mi.getC_InvoiceLine().getA_CapvsExp());
-		setAssetAmtEntered(mi.getC_InvoiceLine().getLineNetAmt());
-		setAssetSourceAmt(mi.getC_InvoiceLine().getLineNetAmt());
-		setC_Currency_ID(mi.getC_InvoiceLine().getC_Invoice().getC_Currency_ID());
-		setC_ConversionType_ID(mi.getC_InvoiceLine().getC_Invoice().getC_ConversionType_ID());
-		setDateDoc(mi.getM_InOutLine().getM_InOut().getMovementDate());
+		setA_CapvsExp(invLine.getA_CapvsExp());
+		setAssetAmtEntered(invLine.getLineNetAmt());
+		setAssetSourceAmt(invLine.getLineNetAmt());
+		setC_Currency_ID(invLine.getParent().getC_Currency_ID());
+		setC_ConversionType_ID(invLine.getParent().getC_ConversionType_ID());
+		setDateDoc(mi.getM_InOutLine().getParent().getMovementDate());
 		setDateAcct(mi.getDateAcct());
 		setAD_Org_ID(mi.getAD_Org_ID());
 		m_cacheMatchInv.set(mi);
@@ -709,7 +711,8 @@ public class MAssetAddition extends X_A_Asset_Addition
 		{
 			for (MAssetGroupAcct assetgrpacct :  MAssetGroupAcct.forA_Asset_Group_ID(getCtx(), asset.getA_Asset_Group_ID(), getPostingType(), get_TrxName()))
 			{
-				if (A_SOURCETYPE_Imported.equals(getA_SourceType()) && assetgrpacct.getC_AcctSchema_ID() != getI_FixedAsset().getC_AcctSchema_ID())
+				MIFixedAsset ifixedAsset = new MIFixedAsset(getCtx(), getI_FixedAsset_ID(), get_TrxName());
+				if (A_SOURCETYPE_Imported.equals(getA_SourceType()) && assetgrpacct.getC_AcctSchema_ID() != ifixedAsset.getC_AcctSchema_ID())
 					continue;
 				assetwk = new MDepreciationWorkfile(asset, getPostingType(), assetgrpacct);
 			}
@@ -718,17 +721,19 @@ public class MAssetAddition extends X_A_Asset_Addition
 
 		for (MDepreciationWorkfile assetworkFile :  MDepreciationWorkfile.forA_Asset_ID(getCtx(), getA_Asset_ID(), get_TrxName()))
 		{
-			if (A_SOURCETYPE_Imported.equals(getA_SourceType()) && assetworkFile.getC_AcctSchema_ID() != getI_FixedAsset().getC_AcctSchema_ID())
+			MIFixedAsset ifixedAsset = new MIFixedAsset(getCtx(), getI_FixedAsset_ID(), get_TrxName());
+			if (A_SOURCETYPE_Imported.equals(getA_SourceType()) && assetworkFile.getC_AcctSchema_ID() != ifixedAsset.getC_AcctSchema_ID())
 				continue;
 			
 			assetworkFile.setDateAcct(getDateAcct());
 			if (A_SOURCETYPE_Imported.equals(getA_SourceType())) {
-				assetworkFile.adjustCost(getI_FixedAsset().getA_Asset_Cost(), getA_QTY_Current(), isA_CreateAsset());
+				assetworkFile.adjustCost(ifixedAsset.getA_Asset_Cost(), getA_QTY_Current(), isA_CreateAsset());
 			} else {
-				if (assetworkFile.getC_AcctSchema().getC_Currency_ID() != getC_Currency_ID()) 
+				MAcctSchema acctSchema = MAcctSchema.get(assetworkFile.getC_AcctSchema_ID());
+				if (acctSchema.getC_Currency_ID() != getC_Currency_ID()) 
 				{				
 					BigDecimal convertedAssetCost  =  MConversionRate.convert(getCtx(), getAssetSourceAmt(),
-							getC_Currency_ID(), assetworkFile.getC_AcctSchema().getC_Currency_ID() ,
+							getC_Currency_ID(), acctSchema.getC_Currency_ID() ,
 							getDateAcct(), getC_ConversionType_ID(),
 							getAD_Client_ID(), getAD_Org_ID());
 					assetworkFile.adjustCost(convertedAssetCost, getA_QTY_Current(), isA_CreateAsset()); // reset if isA_CreateAsset
@@ -745,10 +750,11 @@ public class MAssetAddition extends X_A_Asset_Addition
 				if (A_SOURCETYPE_Imported.equals(getA_SourceType())) {
 					assetworkFile.setA_Salvage_Value(this.getA_Salvage_Value());
 				} else {
-					if (assetworkFile.getC_AcctSchema().getC_Currency_ID() != getC_Currency_ID()) 
+					MAcctSchema acctSchema = MAcctSchema.get(assetworkFile.getC_AcctSchema_ID());
+					if (acctSchema.getC_Currency_ID() != getC_Currency_ID()) 
 					{
 						BigDecimal salvageValue = MConversionRate.convert(getCtx(), this.getA_Salvage_Value(),
-								getC_Currency_ID(), assetworkFile.getC_AcctSchema().getC_Currency_ID() ,
+								getC_Currency_ID(), acctSchema.getC_Currency_ID() ,
 								getDateAcct(), getC_ConversionType_ID(),
 								getAD_Client_ID(), getAD_Org_ID());
 						assetworkFile.setA_Salvage_Value(salvageValue);
@@ -1143,7 +1149,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 		}
 		//
 		assetProduct.addA_Qty_Current(getA_QTY_Current());
-		assetProduct.setAD_Org_ID(getA_Asset().getAD_Org_ID()); 
+		assetProduct.setAD_Org_ID(new MAsset(getCtx(), getA_Asset_ID(), get_TrxName()).getAD_Org_ID()); 
 		assetProduct.saveEx();
 		if (isA_CreateAsset())
 		{

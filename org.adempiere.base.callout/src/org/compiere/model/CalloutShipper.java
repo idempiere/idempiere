@@ -31,7 +31,7 @@ public class CalloutShipper extends CalloutEngine
 		if (M_ShipperCfg_ID == null || M_ShipperCfg_ID.intValue() == 0)
 			return "";
 		
-		X_M_ShipperCfg s = new X_M_ShipperCfg(ctx, M_ShipperCfg_ID, null);
+		MShipperCfg s = new MShipperCfg(ctx, M_ShipperCfg_ID, null);
 		mTab.setValue(MShipper.COLUMNNAME_Name, s.getName());
 		
 		StringBuilder sb = new StringBuilder();
@@ -58,7 +58,7 @@ public class CalloutShipper extends CalloutEngine
 		if (M_ShipperLabelsCfg_ID == null || M_ShipperLabelsCfg_ID.intValue() == 0)
 			return "";
 		
-		X_M_ShipperLabelsCfg sl = new X_M_ShipperLabelsCfg(ctx, M_ShipperLabelsCfg_ID, null);
+		MShipperLabelsCfg sl = new MShipperLabelsCfg(ctx, M_ShipperLabelsCfg_ID, null);
 		mTab.setValue(MShipperLabels.COLUMNNAME_Name, sl.getName());
 		mTab.setValue(MShipperLabels.COLUMNNAME_LabelPrintMethod, sl.getLabelPrintMethod());
 		mTab.setValue(MShipperLabels.COLUMNNAME_IsDefault, sl.isDefault());
@@ -72,7 +72,7 @@ public class CalloutShipper extends CalloutEngine
 		if (M_ShipperPackagingCfg_ID == null || M_ShipperPackagingCfg_ID.intValue() == 0)
 			return "";
 		
-		X_M_ShipperPackagingCfg sp = new X_M_ShipperPackagingCfg(ctx, M_ShipperPackagingCfg_ID, null);
+		MShipperPackagingCfg sp = new MShipperPackagingCfg(ctx, M_ShipperPackagingCfg_ID, null);
 		mTab.setValue(MShipperPackaging.COLUMNNAME_Name, sp.getName());
 		mTab.setValue(MShipperPackaging.COLUMNNAME_IsDefault, sp.isDefault());
 		mTab.setValue(MShipperPackaging.COLUMNNAME_Weight, sp.getWeight());
@@ -86,7 +86,7 @@ public class CalloutShipper extends CalloutEngine
 		if (M_ShipperPickupTypesCfg_ID == null || M_ShipperPickupTypesCfg_ID.intValue() == 0)
 			return "";
 		
-		X_M_ShipperPickupTypesCfg spt = new X_M_ShipperPickupTypesCfg(ctx, M_ShipperPickupTypesCfg_ID, null);
+		MShipperPickupTypesCfg spt = new MShipperPickupTypesCfg(ctx, M_ShipperPickupTypesCfg_ID, null);
 		mTab.setValue(MShipperLabels.COLUMNNAME_Name, spt.getName());
 		mTab.setValue(MShipperLabels.COLUMNNAME_IsDefault, spt.isDefault());
 		

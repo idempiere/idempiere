@@ -409,7 +409,7 @@ public class MJournalLine extends X_GL_JournalLine
 			MJournal gl = new MJournal(getCtx(), getGL_Journal_ID(), get_TrxName());
 
 			// Validate all mandatory combinations are set
-			MAcctSchema as = (MAcctSchema) getParent().getC_AcctSchema();
+			MAcctSchema as = MAcctSchema.get(getParent().getC_AcctSchema_ID());
 			String errorFields = "";
 			for (MAcctSchemaElement elem : MAcctSchemaElement.getAcctSchemaElements(as)) {
 				if (! elem.isMandatory())

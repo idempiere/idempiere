@@ -573,7 +573,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			s_oldCountry_ID = m_location.getC_Country_ID();
 		}
 		
-		if (m_location.getC_Region_ID() > 0 && m_location.getC_Region().getC_Country_ID() == country.getC_Country_ID()) {
+		if (m_location.getC_Region_ID() > 0 && m_location.getRegion().getC_Country_ID() == country.getC_Country_ID()) {
 			setRegion();
 		} else {
 			lstRegion.setSelectedItem(null);
@@ -614,10 +614,6 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			if (s.startsWith("CO")) {
 				//  Country Last
 				addComponents((Row)lstCountry.getParent());
-				// TODO: Add Online
-				// if (m_location.getCountry().isPostcodeLookup()) {
-					// addLine(line++, lOnline, fOnline);
-				// }
 			} else if (s.startsWith("Com")) {
 				addComponents((Row)txtComments.getParent());
 				isCommentsMandatory = s.endsWith("!");
@@ -773,7 +769,8 @@ public class WLocationDialog extends Window implements EventListener<Event>
 			else
 			{
 				onSaveError = true;
-				Dialog.error(0, "CityNotFound", (String)null, new Callback<Integer>() {					
+				String errorMsg = CLogger.retrieveErrorString("Error saving Location - check the log");
+				Dialog.error(0, "Error", errorMsg, new Callback<Integer>() {
 					@Override
 					public void onCallback(Integer result) {
 						Events.echoEvent("onSaveError", WLocationDialog.this, null);
@@ -884,7 +881,8 @@ public class WLocationDialog extends Window implements EventListener<Event>
 				while (iter.hasNext())
 				{
 					ListItem listitem = (ListItem)iter.next();
-					if (m_location.getC_AddressValidation().equals(listitem.getValue()))
+					MAddressValidation addrVal = new MAddressValidation(Env.getCtx(), m_location.getC_AddressValidation_ID(), m_location.get_TrxName());
+					if (addrVal.equals(listitem.getValue()))
 					{
 						lstAddressValidation.setSelectedItem(listitem);
 						break;

@@ -22,7 +22,6 @@ import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
-import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import javax.swing.JOptionPane;
 
@@ -79,7 +78,7 @@ public class CConnection implements Serializable, Cloneable
 	 *  @return Connection Descriptor
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public synchronized static CConnection get (String apps_host)
 	{
 		return get();
@@ -440,7 +439,7 @@ public class CConnection implements Serializable, Cloneable
 	 * 	@return true if RMI over HTTP (Wan Connection Profile)
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public boolean isRMIoverHTTP ()
 	{
 		return false;
@@ -451,7 +450,7 @@ public class CConnection implements Serializable, Cloneable
 	 *  @return true if client and VPN/WAN
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public boolean isServerObjects()
 	{
 		return false;
@@ -462,7 +461,7 @@ public class CConnection implements Serializable, Cloneable
 	 *  @return true if client and Terminal/VPN/WAN
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public boolean isServerProcess()
 	{
 		return false;
@@ -473,7 +472,7 @@ public class CConnection implements Serializable, Cloneable
 	 *  @return true if client and Terminal
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public boolean isTerminalServer()
 	{
 		return false;
@@ -1203,18 +1202,6 @@ public class CConnection implements Serializable, Cloneable
 	{
 		return m_dbException;
 	}
-
-	/**
-	 *  Get Application Server Initial Context
-	 *  @param useCache if true, use existing cache
-	 *  @return Initial Context or null
-	 *  @deprecated
-	 */
-	@Deprecated(forRemoval = true, since = "11")
-	public InitialContext getInitialContext (boolean useCache)
-	{
-		return null;
-	}	//	getInitialContext
 
 	/**
 	 *  Convert Statement

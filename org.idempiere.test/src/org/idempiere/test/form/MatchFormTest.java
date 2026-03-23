@@ -116,8 +116,8 @@ public class MatchFormTest extends AbstractTestCase {
 		ColumnInfo[] columnLayout = match.getColumnLayout();
 		MiniTableImpl fromTable = new MiniTableImpl();
 		MiniTableImpl toTable = new MiniTableImpl();
-		fromTable.prepareTable(columnLayout, null, null, false, null);
-		toTable.prepareTable(columnLayout, null, null, false, null);
+		fromTable.prepareTable(columnLayout, null, false, null, null);
+		toTable.prepareTable(columnLayout, null, false, null, null);
 		
 		//load not matched shipments
 		match.cmd_search(fromTable, Match.MATCH_SHIPMENT, match.getMatchTypeText(Match.MATCH_ORDER), product.get_ID(), bpartner.get_ID(), null, null, false);

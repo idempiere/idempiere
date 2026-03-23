@@ -133,7 +133,7 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 			
 			// Testing Accounting For MR
 			Doc doc = DocManager.getDocument(as, MInOut.Table_ID, rLine.getM_InOut_ID(), getTrxName());
-			doc.setC_BPartner_ID(rLine.getM_InOut().getC_BPartner_ID());
+			doc.setC_BPartner_ID(rLine.getParent().getC_BPartner_ID());
 			MAccount acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
 
 			// get ProductExpense Of the created MR
@@ -313,13 +313,13 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 			assertNoAveragePOCost(product.get_ID());
 
 			// Create Invoice from the MR
-			MInOut mInOut = (MInOut) rLine.getM_InOut();
-			MInvoice invoice = new MInvoice(mInOut, rLine.getM_InOut().getMovementDate());
+			MInOut mInOut = (MInOut) rLine.getParent();
+			MInvoice invoice = new MInvoice(mInOut, rLine.getParent().getMovementDate());
 			invoice.setDocStatus(DocAction.STATUS_Drafted);
 			invoice.setDocAction(DocAction.ACTION_Complete);
 			invoice.saveEx();
 
-			MOrderLine oLine = (MOrderLine) rLine.getC_OrderLine();
+			MOrderLine oLine = new MOrderLine(rLine.getCtx(), rLine.getC_OrderLine_ID(), rLine.get_TrxName());
 			MInvoiceLine iLine = new MInvoiceLine(invoice);
 			iLine.setOrderLine(oLine);
 			iLine.setLine(10);
@@ -361,7 +361,8 @@ public class NonStockedExpTypeAvgPOCostingTest extends AbstractTestCase
 			
 			// get NotInvoicedReceipts for the MatchInv
 			Doc doc = DocManager.getDocument(as, MMatchInv.Table_ID, matchInvoices[0].get_ID(), getTrxName());
-			doc.setC_BPartner_ID(matchInvoices[0].getC_InvoiceLine().getC_Invoice().getC_BPartner_ID());
+			MInvoiceLine invLine = new MInvoiceLine(Env.getCtx(), matchInvoices[0].getC_InvoiceLine_ID(), getTrxName());
+			doc.setC_BPartner_ID(invLine.getParent().getC_BPartner_ID());
 			MAccount acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as);
 
 			// get Product Expense for the MatchInv

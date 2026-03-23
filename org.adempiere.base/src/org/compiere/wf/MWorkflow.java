@@ -746,7 +746,7 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 	 *  @deprecated
 	 *	@return process
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public MWFProcess start (ProcessInfo pi)
 	{
 		return start(pi, null);
@@ -820,7 +820,7 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 	 *	@return process
 	 *  @deprecated workflow process run in the same thread, this is meaningless
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public MWFProcess startWait (ProcessInfo pi)
 	{
 		final int SLEEP = 500;		//	1/2 sec

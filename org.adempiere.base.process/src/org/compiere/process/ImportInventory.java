@@ -30,13 +30,14 @@ import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAttributeSet;
 import org.compiere.model.MAttributeSetInstance;
 import org.compiere.model.MCost;
+import org.compiere.model.MCostElement;
+import org.compiere.model.MDocType;
 import org.compiere.model.MInventory;
 import org.compiere.model.MInventoryLine;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProductCategoryAcct;
 import org.compiere.model.ModelValidationEngine;
-import org.compiere.model.PO;
 import org.compiere.model.X_I_Inventory;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CLogger;
@@ -471,12 +472,12 @@ public class ImportInventory extends SvrProcess implements ImportProcess
 				if (!DocumentEngine.processIt(costingDoc, DocAction.ACTION_Complete)) 
 				{
 					StringBuilder msg = new StringBuilder();
-					I_C_DocType docType = costingDoc.getC_DocType();
+					MDocType docType = MDocType.get(getCtx(), costingDoc.getC_DocType_ID());
 					msg.append(Msg.getMsg(getCtx(), "ProcessFailed")).append(": ");
 					if (Env.isBaseLanguage(getCtx(), I_C_DocType.Table_Name))
 						msg.append(docType.getName());
 					else
-						msg.append(((PO)docType).get_Translation(I_C_DocType.COLUMNNAME_Name));
+						msg.append(docType.get_Translation(I_C_DocType.COLUMNNAME_Name));
 					throw new AdempiereUserError(msg.toString());
 				}
 				costingDoc.saveEx();
@@ -549,7 +550,8 @@ public class ImportInventory extends SvrProcess implements ImportProcess
 		if (costingDoc == null) {
 			costingDoc = new MInventory(getCtx(), 0, get_TrxName());
 			costingDoc.setC_DocType_ID(p_C_DocType_ID);
-			costingDoc.setCostingMethod(cost.getM_CostElement().getCostingMethod());
+			MCostElement costElement = MCostElement.get(cost.getM_CostElement_ID());
+			costingDoc.setCostingMethod(costElement.getCostingMethod());
 			costingDoc.setAD_Org_ID(imp.getAD_Org_ID());
 			costingDoc.setDocAction(DocAction.ACTION_Complete);
 			costingDoc.saveEx();

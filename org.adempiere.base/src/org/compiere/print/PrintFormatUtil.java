@@ -54,7 +54,7 @@ public class PrintFormatUtil
 	/**
 	 * @deprecated use {@link #addMissingColumns(String)}
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public void addMissingColumns ()
 	{
 		addMissingColumns((String)null);

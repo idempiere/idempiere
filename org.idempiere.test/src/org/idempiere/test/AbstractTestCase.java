@@ -164,6 +164,7 @@ public abstract class AbstractTestCase {
 				trx.rollback();
 			trx.close();
 		}
+		ServerContext.dispose();
 	}
 	
 	/**

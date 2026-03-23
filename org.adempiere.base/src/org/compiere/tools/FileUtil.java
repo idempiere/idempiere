@@ -441,8 +441,7 @@ public class FileUtil
 			title=Env.parseVariable(title, po, trxName, true);
 		}
 		else 
-			title=  Env.parseContext (ctx, m_WindowNo, title,
-					true, true);
+			title=  Env.parseContext (ctx, m_WindowNo, title, true, true, false, false);
 		return title;
 	}
 

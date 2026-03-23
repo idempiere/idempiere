@@ -48,6 +48,7 @@ import org.compiere.model.PO;
  */
 public class DefaultEvaluatee implements Evaluatee {
 
+	private static final String REPLACEMENT_VALUE_FOR_SECURE_CONTENT = "********";
 	private DataProvider m_dataProvider;
 	private int m_windowNo;
 	private int m_tabNo;
@@ -334,7 +335,7 @@ public class DefaultEvaluatee implements Evaluatee {
 							column = table.getColumn(format);
 							if (column != null) {
 								if (column.isSecure()) {
-									value = "********";
+									value = REPLACEMENT_VALUE_FOR_SECURE_CONTENT;
 								} else {
 									String trxName = m_trxName != null ? m_trxName : (m_dataProvider != null ? m_dataProvider.getTrxName() : null);
 									String keyCol = foreignTable + Evaluator.ID_COLUMN_SUFFIX;
@@ -362,7 +363,7 @@ public class DefaultEvaluatee implements Evaluatee {
 			}			
 		} else if (column != null) {
 			if (column.isSecure()) {
-				value = "********";
+				value = REPLACEMENT_VALUE_FOR_SECURE_CONTENT;
 			} else if (column != null && column.getAD_Reference_ID() == DisplayType.YesNo && dataValue != null && dataValue instanceof Boolean booleanValue) {
 				if (m_useMsgForBoolean ) {
 					if (booleanValue.booleanValue())
@@ -415,6 +416,11 @@ public class DefaultEvaluatee implements Evaluatee {
 		Object returnValue = defaultValue; 
 		String key = foreignTable+"|"+id;
 		PO po = null;
+		MColumn column = table.getColumn(foreignColumn);
+		if (column != null && column.isSecure()) {
+			returnValue = REPLACEMENT_VALUE_FOR_SECURE_CONTENT;
+			return returnValue;
+		}
 		if (s_ReferenceCache.containsKey(key))
 		{
 			po = s_ReferenceCache.get(key);

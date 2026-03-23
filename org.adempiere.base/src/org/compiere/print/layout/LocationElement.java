@@ -110,7 +110,7 @@ public class LocationElement extends GridElement
 	 * @deprecated since 3.3.1b
 	 * @see #LocationElement(Properties, int, Font, Paint, boolean, String, String, String)
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public LocationElement(Properties ctx, int C_Location_ID, Font font, Paint color) {
 		this(ctx, C_Location_ID, font, color, false, null, null, null);
 	}

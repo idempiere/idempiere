@@ -69,7 +69,8 @@ public class MShippingProcessor extends X_M_ShippingProcessor
 	 */
 	public String getShippingProcessorClass()
 	{
-		return getM_ShippingProcessorCfg().getShippingProcessorClass();
+		MShippingProcessorCfg cfg = new MShippingProcessorCfg(getCtx(), getM_ShippingProcessorCfg_ID(), get_TrxName());
+		return cfg.getShippingProcessorClass();
 	}
 	
 	/**
@@ -77,7 +78,8 @@ public class MShippingProcessor extends X_M_ShippingProcessor
 	 */
 	public String getHostAddress()
 	{
-		return getM_ShippingProcessorCfg().getHostAddress();
+		MShippingProcessorCfg cfg = new MShippingProcessorCfg(getCtx(), getM_ShippingProcessorCfg_ID(), get_TrxName());
+		return cfg.getHostAddress();
 	}
 	
 	/**
@@ -85,7 +87,8 @@ public class MShippingProcessor extends X_M_ShippingProcessor
 	 */
 	public int getHostPort()
 	{
-		return getM_ShippingProcessorCfg().getHostPort();
+		MShippingProcessorCfg cfg = new MShippingProcessorCfg(getCtx(), getM_ShippingProcessorCfg_ID(), get_TrxName());
+		return cfg.getHostPort();
 	}
 	
 	/**
@@ -93,7 +96,8 @@ public class MShippingProcessor extends X_M_ShippingProcessor
 	 */
 	public String getProxyAddress()
 	{
-		return getM_ShippingProcessorCfg().getProxyAddress();
+		MShippingProcessorCfg cfg = new MShippingProcessorCfg(getCtx(), getM_ShippingProcessorCfg_ID(), get_TrxName());
+		return cfg.getProxyAddress();
 	}
 	
 	/**
@@ -101,7 +105,8 @@ public class MShippingProcessor extends X_M_ShippingProcessor
 	 */
 	public int getProxyPort()
 	{
-		return getM_ShippingProcessorCfg().getProxyPort();
+		MShippingProcessorCfg cfg = new MShippingProcessorCfg(getCtx(), getM_ShippingProcessorCfg_ID(), get_TrxName());
+		return cfg.getProxyPort();
 	}
 	
 	/**
@@ -109,7 +114,8 @@ public class MShippingProcessor extends X_M_ShippingProcessor
 	 */
 	public String getProxyLogon()
 	{
-		return getM_ShippingProcessorCfg().getProxyLogon();
+		MShippingProcessorCfg cfg = new MShippingProcessorCfg(getCtx(), getM_ShippingProcessorCfg_ID(), get_TrxName());
+		return cfg.getProxyLogon();
 	}
 	
 	/**
@@ -117,7 +123,8 @@ public class MShippingProcessor extends X_M_ShippingProcessor
 	 */
 	public String getProxyPassword()
 	{
-		return getM_ShippingProcessorCfg().getProxyPassword();
+		MShippingProcessorCfg cfg = new MShippingProcessorCfg(getCtx(), getM_ShippingProcessorCfg_ID(), get_TrxName());
+		return cfg.getProxyPassword();
 	}
 	
 	/**
@@ -125,7 +132,8 @@ public class MShippingProcessor extends X_M_ShippingProcessor
 	 */
 	public String getServicePath()
 	{
-		return getM_ShippingProcessorCfg().getServicePath();
+		MShippingProcessorCfg cfg = new MShippingProcessorCfg(getCtx(), getM_ShippingProcessorCfg_ID(), get_TrxName());
+		return cfg.getServicePath();
 	}
 	
 }

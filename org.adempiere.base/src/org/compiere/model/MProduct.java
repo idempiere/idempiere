@@ -157,7 +157,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	 * @return MProduct or null if not found
 	 * @deprecated Since 3.5.3a. Please use {@link #forS_Resource_ID(Properties, int, String)}
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static MProduct forS_Resource_ID(Properties ctx, int S_Resource_ID)
 	{
 		return forS_Resource_ID(ctx, S_Resource_ID, null);
@@ -892,7 +892,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 			insert_Accounting("M_Product_Acct", "M_Product_Category_Acct",
 				"p.M_Product_Category_ID=" + 
 				(getM_Product_Category_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName())
-				 ? "toRecordId('M_Product_Category',"+DB.TO_STRING(MProductCategory.get(getM_Product_Category_ID()).getM_Product_Category_UU())+")"
+				 ? PO.buildUUIDSubquery("M_Product_Category", MProductCategory.get(getM_Product_Category_ID()).getM_Product_Category_UU())
 				 : getM_Product_Category_ID()));
 			insert_Tree(X_AD_Tree.TREETYPE_Product);
 		}
@@ -1014,7 +1014,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	 * @param isSOTrx is outgoing trx?
 	 * @return true if ASI is mandatory, false otherwise
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public boolean isASIMandatory(boolean isSOTrx) {
 		return isASIMandatoryFor(null, isSOTrx);
 	}

@@ -31,10 +31,10 @@ public class Panel extends Div
 	 */
 	private static final long serialVersionUID = -5549821938132356378L;
 
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static final String HORIZONTAL       = "horizontal";
 
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
     public static final String VERTICAL         = "vertical";
     
     /**

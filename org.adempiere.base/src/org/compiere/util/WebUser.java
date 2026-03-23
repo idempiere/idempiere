@@ -42,7 +42,7 @@ import org.compiere.model.MUser;
  *  @version $Id$
  *  @deprecated
  */
-@Deprecated
+@Deprecated (since="13", forRemoval=true)
 public class WebUser
 {
 	/**

@@ -43,20 +43,6 @@ public class MWFEventAudit extends X_AD_WF_EventAudit
 	private static final long serialVersionUID = 3760514881823970823L;
 
 	/**
-	 * Get Event Audit for node
-	 * @param ctx context
-	 * @param AD_WF_Process_ID process
-	 * @param AD_WF_Node_ID optional node
-	 * @return event audit or null
-	 * @deprecated Deprecated since 3.4.0. Use instead {@link #get(Properties, int, int, String)}
-	 */
-	@Deprecated(forRemoval = true, since = "11")
-	public static MWFEventAudit[] get (Properties ctx, int AD_WF_Process_ID, int AD_WF_Node_ID)
-	{
-		return get(ctx, AD_WF_Process_ID, AD_WF_Node_ID, null);
-	}
-	
-	/**
 	 * Get Event Audits for node
 	 * @param ctx context
 	 * @param AD_WF_Process_ID process
@@ -83,19 +69,6 @@ public class MWFEventAudit extends X_AD_WF_EventAudit
 		list.toArray (retValue);
 		return retValue;
 	}	//	get
-
-	/**
-	 * Get Event Audit for node
-	 * @param ctx context
-	 * @param AD_WF_Process_ID process
-	 * @return event audit or null
-	 * @deprecated Deprecated since 3.4.0. Use instead {@link #get(Properties, int, String)}
-	 */
-	@Deprecated(forRemoval = true, since = "11")
-	public static MWFEventAudit[] get (Properties ctx, int AD_WF_Process_ID)
-	{
-		return get(ctx, AD_WF_Process_ID, null);
-	}
 	
 	/**
 	 * Get Event Audits for node

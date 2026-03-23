@@ -98,7 +98,7 @@ public class MWFProcess extends X_AD_WF_Process
 	 *  @deprecated
 	 *	@throws Exception
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public MWFProcess (MWorkflow wf, ProcessInfo pi) throws Exception
 	{
 		this(wf, pi, wf.get_TrxName());

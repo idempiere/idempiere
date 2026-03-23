@@ -70,6 +70,7 @@ import org.eevolution.model.MPPProductBOMLine;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
@@ -78,6 +79,7 @@ import org.mockito.Mockito;
  * @author hengsin
  *
  */
+@Isolated
 public class ProductionTest extends AbstractTestCase {
 	// creates an order and material receipt for qty 25 at special price of 2.60 each
 	private void createPOAndMRForProduct(int mulchId) {

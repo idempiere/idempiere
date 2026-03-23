@@ -30,7 +30,7 @@ public class EditorBox extends Div {
 	 * generated serial id
 	 */
 	private static final long serialVersionUID = -3152111756471436612L;
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	protected PropertyChangeSupport m_propertyChangeListeners = new PropertyChangeSupport(this);
 	protected Textbox txt;
 	protected Button btn;
@@ -144,7 +144,7 @@ public class EditorBox extends Div {
 	 * @param l PropertyChangeListener
 	 * @deprecated not implemented
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public synchronized void addPropertyChangeListener(PropertyChangeListener l) {
 		m_propertyChangeListeners.addPropertyChangeListener(l);
 	}

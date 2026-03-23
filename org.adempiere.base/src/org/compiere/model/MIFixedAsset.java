@@ -154,7 +154,7 @@ public class MIFixedAsset extends X_I_FixedAsset
 	/**
 	 * @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public void process()
 	{
 		if (isProcessed()) {

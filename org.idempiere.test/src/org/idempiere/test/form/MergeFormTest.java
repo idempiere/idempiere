@@ -165,6 +165,8 @@ public class MergeFormTest extends AbstractTestCase {
 		MBPartner bp2 = null;
 		MOrder o1 = null;
 		MOrder o2 = null;
+		MLocation loc1 = null;
+		MLocation loc2 = null;
 		try {
 			MBPartner jb = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id);
 			MBPartnerLocation bpl = jb.getPrimaryC_BPartner_Location();
@@ -175,7 +177,7 @@ public class MergeFormTest extends AbstractTestCase {
 			bp1.setIsCustomer(true);
 			bp1.setC_BP_Group_ID(jb.getC_BP_Group_ID());
 			bp1.saveEx();
-			MLocation loc1 = new MLocation(Env.getCtx(), 0, null);
+			loc1 = new MLocation(Env.getCtx(), 0, null);
 			PO.copyValues(loc, loc1);
 			loc1.saveEx();
 			MBPartnerLocation bpl1 = new MBPartnerLocation(bp1);
@@ -189,7 +191,7 @@ public class MergeFormTest extends AbstractTestCase {
 			bp2.setIsCustomer(true);
 			bp2.setC_BP_Group_ID(bp1.getC_BP_Group_ID());
 			bp2.saveEx();
-			MLocation loc2 = new MLocation(Env.getCtx(), 0, null);
+			loc2 = new MLocation(Env.getCtx(), 0, null);
 			PO.copyValues(loc, loc2);
 			loc2.saveEx();
 			MBPartnerLocation bpl2 = new MBPartnerLocation(bp2);
@@ -228,6 +230,10 @@ public class MergeFormTest extends AbstractTestCase {
 				bp1.deleteEx(true);
 			if (bp2 != null && bp2.get_ID() > 0)
 				bp2.deleteEx(true);			
+			if (loc1 != null && loc1.get_ID() > 0)
+				loc1.deleteEx(true);		
+			if (loc2 != null && loc2.get_ID() > 0)
+				loc2.deleteEx(true);		
 		}
 	}
 	

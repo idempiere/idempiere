@@ -2,7 +2,7 @@
 <feature
       id="org.compiere.db.provider.feature"
       label="Database Provider-feature"
-      version="13.0.0.qualifier"
+      version="14.0.0.qualifier"
       provider-name="iDempiere Community">
 
    <description url="http://www.example.com/description">
@@ -46,7 +46,7 @@
          unpack="false"/>
 
    <plugin
-         id="wrapped.com.oracle.database.jdbc.ojdbc10"
+         id="wrapped.com.oracle.database.jdbc.ojdbc17"
          download-size="0"
          install-size="0"
          version="0.0.0"

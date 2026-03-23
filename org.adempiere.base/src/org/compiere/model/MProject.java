@@ -142,7 +142,7 @@ public class MProject extends X_C_Project
 	 *	@return C_ProjectType_ID id
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public int getC_ProjectType_ID_Int()
 	{
 		return getC_ProjectType_ID();		

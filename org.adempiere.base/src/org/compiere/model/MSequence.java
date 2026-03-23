@@ -645,7 +645,7 @@ public class MSequence extends X_AD_Sequence
 	 *	@return document no or null
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static String getDocumentNo(int C_DocType_ID, String trxName)
 	{
 		return getDocumentNo (C_DocType_ID, trxName, false);
@@ -999,7 +999,7 @@ public class MSequence extends X_AD_Sequence
 	 *	@return next no to use
 	 *  @deprecated use the static getNextID or getDocumentNo method instead
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public int getNextID()
 	{
 		int retValue = getCurrentNext();

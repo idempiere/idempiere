@@ -264,17 +264,16 @@ public class MInventoryLineMA extends X_M_InventoryLineMA
 		}
 		// Set DateMaterialPolicy after change of M_AttributeSetInstance_ID
 		if(!newRecord && is_ValueChanged(COLUMNNAME_M_AttributeSetInstance_ID)){
-			I_M_InventoryLine line = getM_InventoryLine();
 			
 			Timestamp dateMPolicy = null;
 			if(getM_AttributeSetInstance_ID()>0)
 			{
-				dateMPolicy = MStorageOnHand.getDateMaterialPolicy(line.getM_Product_ID(), getM_AttributeSetInstance_ID(), get_TrxName());
+				dateMPolicy = MStorageOnHand.getDateMaterialPolicy(parentline.getM_Product_ID(), getM_AttributeSetInstance_ID(), get_TrxName());
 			}
 			
 			if(dateMPolicy == null)
 			{
-				I_M_Inventory  inventory = line.getM_Inventory();
+				MInventory  inventory = parentline.getParent();
 				dateMPolicy = inventory.getMovementDate();
 			}
 			

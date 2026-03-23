@@ -586,7 +586,8 @@ public class MMatchPO extends X_M_MatchPO
 						{
 							if (matchPO.getC_InvoiceLine_ID() == 0)
 							{
-								String docStatus = matchPO.getM_InOutLine().getM_InOut().getDocStatus();
+								MInOutLine iol = new MInOutLine(iLine.getCtx(), matchPO.getM_InOutLine_ID(), iLine.get_TrxName());
+								String docStatus = iol.getParent().getDocStatus();
 								if (docStatus.equals(DocAction.STATUS_Completed) || docStatus.equals(DocAction.STATUS_Closed)) 
 								{
 									noInvoiceLines.put(matchPO.getM_MatchPO_ID(), new BigDecimal[]{matchPO.getQty()});
@@ -639,7 +640,8 @@ public class MMatchPO extends X_M_MatchPO
 							BigDecimal balance = matchInv.getQty().subtract(alreadyMatch);
 							if (balance.signum() > 0)
 							{
-								String docStatus = matchInv.getC_InvoiceLine().getC_Invoice().getDocStatus();
+								MInvoiceLine il = new MInvoiceLine(ctx, matchInv.getC_InvoiceLine_ID(), trxName);
+								String docStatus = il.getParent().getDocStatus();
 								if (docStatus.equals(DocAction.STATUS_Completed) || docStatus.equals(DocAction.STATUS_Closed)) 
 								{
 									qtyHolder[0] = qtyHolder[0].subtract(balance);
@@ -1339,7 +1341,8 @@ public class MMatchPO extends X_M_MatchPO
 			if (getC_OrderLine_ID() != 0)			
 				reversal.setC_OrderLine_ID(getC_OrderLine_ID());
 			else{
-				reversal.setC_OrderLine_ID(getM_InOutLine().getC_OrderLine_ID());
+				MInOutLine inoutLine = new MInOutLine(getCtx(), getM_InOutLine_ID(), get_TrxName());
+				reversal.setC_OrderLine_ID(inoutLine.getC_OrderLine_ID());
 			}
 			reversal.setM_Product_ID(getM_Product_ID());
 			reversal.setM_AttributeSetInstance_ID(getM_AttributeSetInstance_ID());

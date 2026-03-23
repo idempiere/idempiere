@@ -24,7 +24,7 @@ import java.io.Serializable;
  *  @author Jorg Janke
  *  @version $Id: NullParameter.java,v 1.2 2006/07/30 00:54:36 jjanke Exp $
  */
-@Deprecated
+@Deprecated (since="13", forRemoval=true)
 public class NullParameter implements Serializable
 {
 	/**

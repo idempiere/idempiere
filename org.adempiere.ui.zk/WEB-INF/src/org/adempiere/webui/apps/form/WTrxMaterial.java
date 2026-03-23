@@ -269,9 +269,16 @@ public class WTrxMaterial extends TrxMaterial
 	private void dynInit()
 	{
 		super.dynInit(statusBar);
-		//		
+		//
+		// m_mTab is level 0 GridTab of Material Transactions (indirect use)
+		if (m_mTab == null) { // no access
+			statusBar.setStatusLine(Msg.getMsg(Env.getCtx(), "AccessTableNoView"), true);
+			confirmPanel.setEnabledAll(false);
+			confirmPanel.getButton(ConfirmPanel.A_CANCEL).setEnabled(true);
+			parameterPanel.setVisible(false);
+			return;
+		}
 		m_gridController = new ADTabpanel();
-		// m_mTab is level 0 GridTab of Material Transactions (indirect use) 
 		m_gridController.init(null, m_mTab);
 		if (!m_gridController.isGridView())
 			m_gridController.switchRowPresentation();

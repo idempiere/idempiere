@@ -28,7 +28,7 @@ public class CalloutShippingProcessor extends CalloutEngine
 		if (M_ShippingProcessorCfg_ID == null || M_ShippingProcessorCfg_ID.intValue() == 0)
 			return "";
 		
-		X_M_ShippingProcessorCfg sp = new X_M_ShippingProcessorCfg(ctx, M_ShippingProcessorCfg_ID, null);
+		MShippingProcessorCfg sp = new MShippingProcessorCfg(ctx, M_ShippingProcessorCfg_ID, null);
 		mTab.setValue(MShippingProcessor.COLUMNNAME_Name, sp.getName());
 		
 		return null;

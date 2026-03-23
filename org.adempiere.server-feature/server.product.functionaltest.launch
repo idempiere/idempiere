@@ -404,7 +404,7 @@
         <setEntry value="stax2-api@default:default"/>
         <setEntry value="wrapped.com.google.http-client.google-http-client-gson@default:default"/>
         <setEntry value="wrapped.com.google.zxing.javase@default:default"/>
-        <setEntry value="wrapped.com.oracle.database.jdbc.ojdbc10@default:default"/>
+        <setEntry value="wrapped.com.oracle.database.jdbc.ojdbc17@default:default"/>
         <setEntry value="wrapped.com.sun.net.httpserver.http@default:default"/>
         <setEntry value="wrapped.com.sun.org.apache.xml.internal.resolver@default:default"/>
         <setEntry value="wrapped.com.zaxxer.SparseBitSet@default:default"/>

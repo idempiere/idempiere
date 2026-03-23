@@ -120,7 +120,7 @@ public class Query
 	 * @param trxName
 	 * @deprecated Use {@link #Query(Properties, MTable, String, String)} instead because this method is security error prone
 	 */
-    @Deprecated
+    @Deprecated (since="13", forRemoval=true)
 	public Query(MTable table, String whereClause, String trxName)
 	{
 		this.ctx = table.getCtx();
@@ -856,6 +856,24 @@ public class Query
 			boolean isFullyQualified = !joinClauseList.isEmpty();
 			if (selectColumns != null && selectColumns.length > 0)
 			{
+				if (virtualColumns != null) {
+					for (String vc : virtualColumns) {
+						boolean found = false;
+						for (String sc : selectColumns) {
+							if (vc.equalsIgnoreCase(sc)) {
+								found = true;
+								break;
+							}
+						}
+						if (!found) {
+							// add vc to array selectColumns
+							String[] tmp = new String[selectColumns.length + 1];
+							System.arraycopy(selectColumns, 0, tmp, 0, selectColumns.length);
+							tmp[selectColumns.length] = vc;
+							selectColumns = tmp;
+						}
+					}
+				}
 				selectClause = info.buildSelectForColumns(isFullyQualified, selectColumns);
 			}
 			else

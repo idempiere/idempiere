@@ -56,6 +56,7 @@ import org.compiere.model.MDocType;
 import org.compiere.model.MFactAcct;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
+import org.compiere.model.MOrder;
 import org.compiere.model.MPayment;
 import org.compiere.model.MPriceList;
 import org.compiere.model.MPriceListVersion;
@@ -2053,9 +2054,10 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			MAllocationLine[] lines = alloc.getLines(false);
 			for (MAllocationLine line : lines) {
 				if (line.getC_Payment_ID() > 0) {
-					C_BPartner_ID = line.getC_Payment().getC_BPartner_ID();
-					C_BankAccount_ID = line.getC_Payment().getC_BankAccount_ID();
-					C_Charge_ID = line.getC_Payment().getC_Charge_ID();
+					MPayment payment = new MPayment(Env.getCtx(), line.getC_Payment_ID(), line.get_TrxName());
+					C_BPartner_ID = payment.getC_BPartner_ID();
+					C_BankAccount_ID = payment.getC_BankAccount_ID();
+					C_Charge_ID = payment.getC_Charge_ID();
 					break;
 				}
 			}
@@ -2063,11 +2065,11 @@ public class Allocation2ndAcctSchemaTest extends AbstractTestCase {
 			if (C_BPartner_ID == 0) {
 				for (MAllocationLine line : lines) {
 					if (line.getC_Invoice_ID() > 0) {
-						C_BPartner_ID = line.getC_Invoice().getC_BPartner_ID();
+						C_BPartner_ID = line.getInvoice().getC_BPartner_ID();
 						break;
 					}
 					else if (line.getC_Order_ID() > 0) {
-						C_BPartner_ID = line.getC_Order().getC_BPartner_ID();
+						C_BPartner_ID = new MOrder(Env.getCtx(), line.getC_Order_ID(), line.get_TrxName()).getC_BPartner_ID();
 						break;
 					}
 				}

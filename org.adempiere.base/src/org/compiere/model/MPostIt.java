@@ -130,7 +130,7 @@ public class MPostIt extends X_AD_PostIt
 	 * @return AD_PostIt_ID
  	 * @deprecated Use {@link MPostIt#getID(int, int, String)} instead
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static int getID(int Table_ID, int Record_ID) {
 		String sql="SELECT AD_PostIt_ID FROM AD_PostIt WHERE AD_Table_ID=? AND Record_ID=?";
 		int postItID = DB.getSQLValueEx(null, sql, Table_ID, Record_ID);

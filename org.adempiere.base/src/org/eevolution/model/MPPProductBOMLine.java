@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Properties;
 
 import org.adempiere.exceptions.AdempiereException;
-import org.compiere.model.I_M_Product;
 import org.compiere.model.MProduct;
 import org.compiere.model.MUOM;
 import org.compiere.model.Query;
@@ -179,7 +178,8 @@ public class MPPProductBOMLine extends X_PP_Product_BOMLine implements Immutable
 	 */
 	public int getLowLevel()
 	{
-		I_M_Product parent = getPP_Product_BOM().getM_Product();
+		MPPProductBOM bom = getParent();
+		MProduct parent = new MProduct(getCtx(), bom.getM_Product_ID(), get_TrxName());
 		if (parent.getLowLevel() > 0)
 			return parent.getLowLevel()+1;
 		else
@@ -259,7 +259,7 @@ public class MPPProductBOMLine extends X_PP_Product_BOMLine implements Immutable
 		
 		// Reset IsVerified flag of parent product
 		MPPProductBOM bom = getParent();
-		MProduct parentProduct = (MProduct) bom.getM_Product();
+		MProduct parentProduct = new MProduct(getCtx(), bom.getM_Product_ID(), get_TrxName());
 		if (parentProduct.isVerified())
 		{
 			MPPProductBOM defaultBOM = MPPProductBOM.getDefault(parentProduct, get_TrxName());

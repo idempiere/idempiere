@@ -266,7 +266,8 @@ public class MStatusLine extends X_AD_StatusLine implements ImmutablePOSupport
 		}
 
 		MessageFormat mf = null;
-		String msgValue = getAD_Message().getValue();
+		MMessage message = MMessage.get(Env.getCtx(), getAD_Message_ID());
+		String msgValue = message.getValue();
 		try
 		{
 			mf = new MessageFormat(Msg.getMsg(Env.getAD_Language(getCtx()), msgValue), Env.getLanguage(getCtx()).getLocale());

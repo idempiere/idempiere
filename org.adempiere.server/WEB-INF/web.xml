@@ -27,6 +27,16 @@
 		<servlet-class>org.compiere.web.AdempiereMonitor</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
+	<servlet>
+		<servlet-name>login</servlet-name>
+		<servlet-class>org.compiere.web.LoginServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet>
+		<servlet-name>logout</servlet-name>
+		<servlet-class>org.compiere.web.LogoutServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
     <servlet>
     	<servlet-name>default</servlet-name>
     	<servlet-class>org.eclipse.jetty.ee8.servlet.DefaultServlet</servlet-class>
@@ -39,6 +49,10 @@
 		<servlet-name>OAuthCodeCallbackHandlerServlet</servlet-name>
 		<servlet-class>org.idempiere.web.OAuthCodeCallbackHandlerServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>loginPage</servlet-name>
+		<jsp-file>/idempiereMonitor/login.jsp</jsp-file>
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>OAuthCodeCallbackHandlerServlet</servlet-name>
 		<url-pattern>/oauth2/callback</url-pattern>
@@ -46,6 +60,18 @@
 	<servlet-mapping>
 		<servlet-name>idempiereMonitor</servlet-name>
 		<url-pattern>/idempiereMonitor/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>login</servlet-name>
+		<url-pattern>/idempiereMonitor/login</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>logout</servlet-name>
+		<url-pattern>/idempiereMonitor/logout</url-pattern>
+	</servlet-mapping>	
+	<servlet-mapping>
+		<servlet-name>loginPage</servlet-name>
+		<url-pattern>/idempiereMonitor/login.jsp</url-pattern>
 	</servlet-mapping>
 	<session-config>
 		<session-timeout>15</session-timeout>

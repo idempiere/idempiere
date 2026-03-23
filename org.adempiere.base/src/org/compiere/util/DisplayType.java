@@ -36,6 +36,7 @@ import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_ID;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_IMAGE;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_IMAGE_URL;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_INTEGER;
+import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_JSON;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_LIST;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_LOCATION;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_LOCATOR;
@@ -67,7 +68,6 @@ import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_TIMEZONE;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_URL;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_UUID;
 import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_YES_NO;
-import static org.compiere.model.SystemIDs.REFERENCE_DATATYPE_JSON;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -1063,7 +1063,9 @@ public final class DisplayType
 		}
 		if (displayType == DisplayType.JSON)
 			return getDatabase().getJsonDataType();
-		
+		if (DisplayType.isUUID(displayType))
+			return getDatabase().getUUIDDataType();
+
 		IServiceReferenceHolder<IDisplayTypeFactory> cache = s_displayTypeFactoryCache.get(displayType);
 		if (cache != null) {
 			IDisplayTypeFactory service = cache.getService();

@@ -361,8 +361,8 @@ public class CalloutInvoiceBatch extends CalloutEngine
 			int C_Invoice_ID = (Integer) mTab.getValue("C_Invoice_ID");
 			if (C_Invoice_ID > 0) {
 				MInvoice invoice = new MInvoice(ctx, C_Invoice_ID, null);
-				I_C_Order order = invoice.getC_Order();
-				if (order != null) {
+				if (invoice.getC_Order_ID() > 0) {
+					MOrder order = new MOrder(ctx, invoice.getC_Order_ID(), null);
 					return order.getDeliveryViaRule();
 				}
 			}
@@ -393,8 +393,8 @@ public class CalloutInvoiceBatch extends CalloutEngine
 			int C_Invoice_ID = (Integer) mTab.getValue("C_Invoice_ID");
 			if (C_Invoice_ID > 0) {
 				MInvoice invoice = new MInvoice(ctx, C_Invoice_ID, null);
-				I_C_Order order = invoice.getC_Order();
-				if (order != null) {
+				if (invoice.getC_Order_ID() > 0) {
+					MOrder order = new MOrder(ctx, invoice.getC_Order_ID(), null);
 					return order.getDropShip_Location_ID();
 				}
 			}

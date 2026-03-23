@@ -45,23 +45,6 @@ public class MBPartnerLocation extends X_C_BPartner_Location {
 	 *            context
 	 * @param C_BPartner_ID
 	 *            bp
-	 * @return array of locations
-	 * @deprecated Since 3.5.3a. Please use
-	 *             {@link #getForBPartner(Properties, int, String)}.
-	 */
-	@Deprecated(forRemoval = true, since = "11")
-	public static MBPartnerLocation[] getForBPartner(Properties ctx,
-			int C_BPartner_ID) {
-		return getForBPartner(ctx, C_BPartner_ID, null);
-	}
-
-	/**
-	 * Get Locations for BPartner
-	 * 
-	 * @param ctx
-	 *            context
-	 * @param C_BPartner_ID
-	 *            bp
 	 * @param trxName
 	 * @return array of locations
 	 */

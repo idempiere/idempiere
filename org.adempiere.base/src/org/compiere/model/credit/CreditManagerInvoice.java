@@ -25,6 +25,7 @@ import org.compiere.model.MConversionRateUtil;
 import org.compiere.model.MCurrency;
 import org.compiere.model.MDocType;
 import org.compiere.model.MInvoice;
+import org.compiere.model.MOrder;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -59,7 +60,7 @@ public class CreditManagerInvoice implements ICreditManager
 		String errorMsg = null;
 		if (MInvoice.DOCACTION_Prepare.equals(docAction) && mInvoice.isSOTrx())
 		{
-			MDocType doc = (MDocType) mInvoice.getC_DocTypeTarget();
+			MDocType doc = MDocType.get(mInvoice.getC_DocTypeTarget_ID());
 			// IDEMPIERE-365 - just check credit if is going to increase the debt
 			if ((doc.getDocBaseType().equals(MDocType.DOCBASETYPE_ARCreditMemo) && mInvoice.getGrandTotal().signum() < 0)
 				|| (doc.getDocBaseType().equals(MDocType.DOCBASETYPE_ARInvoice) && mInvoice.getGrandTotal().signum() > 0))
@@ -78,7 +79,8 @@ public class CreditManagerInvoice implements ICreditManager
 			boolean fromPOS = false;
 			if (mInvoice.getC_Order_ID() > 0)
 			{
-				fromPOS = mInvoice.getC_Order().getC_POS_ID() > 0;
+				MOrder order = new MOrder(mInvoice.getCtx(), mInvoice.getC_Order_ID(), mInvoice.get_TrxName());
+				fromPOS = order.getC_POS_ID() > 0;
 			}
 			// Update BP Statistics
 			MBPartner bp = new MBPartner(mInvoice.getCtx(), mInvoice.getC_BPartner_ID(), mInvoice.get_TrxName());

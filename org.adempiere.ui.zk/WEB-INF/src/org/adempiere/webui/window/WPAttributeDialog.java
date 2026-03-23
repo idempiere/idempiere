@@ -71,6 +71,7 @@ import org.compiere.model.MLotCtl;
 import org.compiere.model.MRole;
 import org.compiere.model.MSerNoCtl;
 import org.compiere.model.MSysConfig;
+import org.compiere.model.MValRule;
 import org.compiere.model.SystemIDs;
 import org.compiere.model.X_M_MovementLine;
 import org.compiere.util.CLogger;
@@ -137,10 +138,15 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 			+ ", ProductW=" + productWindow + ", Column=" + AD_Column_ID);
 		m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
 		m_M_AttributeSetInstance_ID = M_AttributeSetInstance_ID;
+		Env.setContext(Env.getCtx(), m_WindowNo, "M_AttributeSetInstance_ID", m_M_AttributeSetInstance_ID);
 		m_M_Product_ID = M_Product_ID;
+		Env.setContext(Env.getCtx(), m_WindowNo, "M_Product_ID", m_M_Product_ID);
 		m_C_BPartner_ID = C_BPartner_ID;
+		Env.setContext(Env.getCtx(), m_WindowNo, "C_BPartner_ID", m_C_BPartner_ID);
 		m_productWindow = productWindow;
+		Env.setContext(Env.getCtx(), m_WindowNo, "IsProductWindow", (productWindow? "Y" : "N"));
 		m_AD_Column_ID = AD_Column_ID;
+		Env.setContext(Env.getCtx(), m_WindowNo, "AD_Column_ID", m_AD_Column_ID);
 		m_WindowNoParent = WindowNo;
 
 		//get columnName from ad_column
@@ -658,7 +664,8 @@ public class WPAttributeDialog extends Window implements EventListener<Event>
 
 		if (attribute.isAttributeValueTypeReference() && DisplayType.isLookup(attribute.getAD_Reference_ID()) && attribute.getAD_Val_Rule_ID() > 0)
 		{
-			vo.ValidationCode = attribute.getAD_Val_Rule().getCode();
+			MValRule valRule = MValRule.get(Env.getCtx(), attribute.getAD_Val_Rule_ID());
+			vo.ValidationCode = valRule.getCode();
 			if (vo.lookupInfo != null)
 			{
 				vo.lookupInfo.ValidationCode = vo.ValidationCode;

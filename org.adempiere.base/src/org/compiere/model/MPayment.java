@@ -305,7 +305,8 @@ public class MPayment extends X_C_Payment
 		setAccountNo(ba.getAccountNo());
 		setIBAN(ba.getIBAN());
 		setSwiftCode(ba.getSwiftCode()) ;
-		setDescription(preparedPayment.getC_PaySelection().getName());
+		MPaySelection ps = new MPaySelection (preparedPayment.getCtx(), preparedPayment.getC_PaySelection_ID(), preparedPayment.get_TrxName());
+		setDescription(ps.getName());
 		setIsReceipt (X_C_Order.PAYMENTRULE_DirectDebit.equals	//	AR only
 				(preparedPayment.getPaymentRule()));
 		if ( MPaySelectionCheck.PAYMENTRULE_DirectDebit.equals(preparedPayment.getPaymentRule()) )
@@ -733,7 +734,8 @@ public class MPayment extends X_C_Payment
 		{
 			if (getReversal_ID() > 0)
 			{
-				setIsPrepayment(getReversal().isPrepayment());
+				MPayment reversal = new MPayment(getCtx(), getReversal_ID(), get_TrxName());
+				setIsPrepayment(reversal.isPrepayment());
 			}
 			else
 			{
@@ -782,22 +784,28 @@ public class MPayment extends X_C_Payment
 		}
 		
 		// Validate C_BPartner_ID same as C_BPartner_ID from order and invoice
-		if (getC_BPartner_ID() != 0 && (getC_Invoice_ID() != 0 || getC_Order_ID() != 0)) {
-			if (getC_Invoice_ID() != 0) {
-				MInvoice inv = new MInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
-				if (inv.getC_BPartner_ID() != getC_BPartner_ID()) {
-					log.saveError("Error", Msg.getMsg(getCtx(), "BPDifferentFromBPInvoice"));
-					return false;
+		if (   is_new()
+			|| is_ValueChanged("C_BPartner_ID")
+			|| is_ValueChanged("C_Invoice_ID")
+			|| is_ValueChanged("C_Order_ID")) {
+			if (getC_BPartner_ID() != 0 && (getC_Invoice_ID() != 0 || getC_Order_ID() != 0)) {
+				if (getC_Invoice_ID() != 0) {
+					MInvoice inv = new MInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
+					if (!isPayBPAllowed(inv.getC_BPartner_ID())) {
+						log.saveError("Error", Msg.getMsg(getCtx(), "BPDifferentFromBPInvoice"));
+						return false;
+					}
 				}
-			}
-			if (getC_Order_ID() != 0) {
-				MOrder ord = new MOrder(getCtx(), getC_Order_ID(), get_TrxName());
-				if (ord.getC_BPartner_ID() != getC_BPartner_ID()) {
-					log.saveError("Error", Msg.getMsg(getCtx(), "BPDifferentFromBPOrder"));
-					return false;
+				if (getC_Order_ID() != 0) {
+					MOrder ord = new MOrder(getCtx(), getC_Order_ID(), get_TrxName());
+					if (!isPayBPAllowed(ord.getC_BPartner_ID())) {
+						log.saveError("Error", Msg.getMsg(getCtx(), "BPDifferentFromBPOrder"));
+						return false;
+					}
 				}
 			}
 		}
+
 		// Encrypt credit card number and cvv
 		if (isProcessed())
 		{
@@ -897,6 +905,19 @@ public class MPayment extends X_C_Payment
 		
 		return true;
 	}	//	beforeSave
+
+	/**
+	 * Validates if the BP is allowed to pay as owner of the document or as a proxy in BP Relationship
+	 * @param c_BPartner_ID
+	 * @return
+	 */
+	private boolean isPayBPAllowed(int bpId) {
+		if (bpId == getC_BPartner_ID()) // same BP of the document
+			return true;
+		if (MBPRelation.canPay(getCtx(), getC_BPartner_ID(), bpId, get_TrxName())) // can pay as a proxy in BP relationship
+			return true;
+		return false;
+	}
 
 	@Override
 	protected boolean beforeDelete() {
@@ -2339,7 +2360,7 @@ public class MPayment extends X_C_Payment
 			else
 				aLine = new MAllocationLine (alloc, allocationAmt.negate(),
 					pa.getDiscountAmt().negate(), pa.getWriteOffAmt().negate(), pa.getOverUnderAmt().negate());
-			aLine.setDocInfo(pa.getC_BPartner_ID(), 0, pa.getC_Invoice_ID());
+			aLine.setDocInfo(getC_BPartner_ID(), 0, pa.getC_Invoice_ID());
 			aLine.setPaymentInfo(getC_Payment_ID(), 0, getC_BankTransfer_ID());
 			if (!aLine.save(get_TrxName()))
 				log.warning("P.Allocations - line not saved");
@@ -2573,10 +2594,13 @@ public class MPayment extends X_C_Payment
 	public boolean voidIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());		
-		
-		if (getC_DepositBatch_ID() > 0 && getC_DepositBatch().isProcessed()) {
-			m_processMsg = Msg.translate(getCtx(), "DepositBatchProcessed") + getC_DepositBatch();
-			return false;
+
+		if (getC_DepositBatch_ID() > 0) {
+			MDepositBatch db = new MDepositBatch(getCtx(), getC_DepositBatch_ID(), get_TrxName());
+			if (db.isProcessed()) {
+				m_processMsg = Msg.translate(getCtx(), "DepositBatchProcessed") + db;
+				return false;
+			}
 		}
 		
 		if (DOCSTATUS_Closed.equals(getDocStatus())
@@ -2675,9 +2699,12 @@ public class MPayment extends X_C_Payment
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
 		
-		if (getC_DepositBatch_ID() != 0 && getC_DepositBatch().isProcessed()) {
-			m_processMsg = Msg.translate(getCtx(), "DepositBatchProcessed" )+ getC_DepositBatch();
-			return false;
+		if (getC_DepositBatch_ID() > 0) {
+			MDepositBatch db = new MDepositBatch(getCtx(), getC_DepositBatch_ID(), get_TrxName());
+			if (db.isProcessed()) {
+				m_processMsg = Msg.translate(getCtx(), "DepositBatchProcessed") + db;
+				return false;
+			}
 		}
 		
 		// Before reverseCorrect
@@ -2857,12 +2884,15 @@ public class MPayment extends X_C_Payment
 	public boolean reverseAccrualIt()
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
-		
-		if (getC_DepositBatch_ID() != 0 && getC_DepositBatch().isProcessed()) {
-			m_processMsg = Msg.translate(getCtx(), "DepositBatchProcessed") + getC_DepositBatch();
-			return false;
+
+		if (getC_DepositBatch_ID() > 0) {
+			MDepositBatch db = new MDepositBatch(getCtx(), getC_DepositBatch_ID(), get_TrxName());
+			if (db.isProcessed()) {
+				m_processMsg = Msg.translate(getCtx(), "DepositBatchProcessed") + db;
+				return false;
+			}
 		}
-		
+
 		// Before reverseAccrual
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSEACCRUAL);
 		if (m_processMsg != null)
@@ -2928,10 +2958,43 @@ public class MPayment extends X_C_Payment
 			return false;
 		}
 
+		if (getRef_Payment_ID() > 0) {
+			m_processMsg = Msg.getMsg(getCtx(), "PaymentReactivationFailedCounterDocument");
+			return false;
+		}
+
+		if (isCashbookTrx() && DB.getSQLValueEx(get_TrxName(), "SELECT 1 FROM C_CashLine WHERE C_Payment_ID = ?", getC_Payment_ID()) == 1) {
+			m_processMsg = Msg.getMsg(getCtx(), "PaymentReactivationFailedCashLine");
+			return false;			
+		}
+
 		MFactAcct.deleteEx(Table_ID, getC_Payment_ID(), get_TrxName());
 		setPosted(false);
 		setDocAction(DOCACTION_Complete);
 		setProcessed(false);
+
+		ICreditManager creditManager = Core.getCreditManager(this);
+		if (creditManager != null)
+			creditManager.checkCreditStatus(DOCACTION_Re_Activate);
+
+		if (getC_Charge_ID() != 0)
+			setIsAllocated(false);
+
+		if (getC_Invoice_ID() != 0) {
+			MInvoice inv = new MInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
+			if (inv.getC_Payment_ID() == getC_Payment_ID()) {
+				inv.setC_Payment_ID(0);
+				inv.saveEx();
+			}
+		}
+
+		if (getC_Order_ID() != 0) {
+			MOrder ord = new MOrder(getCtx(), getC_Order_ID(), get_TrxName());
+			if (ord.getC_Payment_ID() == getC_Payment_ID()) {
+				ord.setC_Payment_ID(getC_Payment_ID());
+				ord.saveEx();
+			}
+		}
 
 		// After reActivate
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REACTIVATE);

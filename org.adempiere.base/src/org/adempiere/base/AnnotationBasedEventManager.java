@@ -216,6 +216,35 @@ public abstract class AnnotationBasedEventManager extends AnnotationBasedFactory
 	}
 
 	/**
+	 * @return array of registered event handlers
+	 */
+	public EventHandler[] getHandlers() {
+		synchronized (handlers) {
+			return handlers.toArray(new EventHandler[0]);
+		}
+	}
+	
+	/**
+	 * Remove a event handler
+	 * @param handler
+	 * @return true if removed
+	 */
+	public boolean removeHandler(EventHandler handler) {
+		if (handler == null)
+			return false;
+		
+		boolean removed = false;
+		synchronized (handlers) {
+			removed = handlers.remove(handler);
+		}
+		IEventManager em = eventManager;
+		if (em != null && removed) {
+			em.unregister(handler);
+		}
+		return removed;
+	}
+	
+	/**
 	 * @param classLoader
 	 * @param className
 	 * @param filter

@@ -70,9 +70,9 @@ public class TableIndexValidate extends SvrProcess {
 			tableName = tableName.toUpperCase();
 		else if (md.storesLowerCaseIdentifiers())
 			tableName = tableName.toLowerCase();
-		
-		String catalog = "REFERENCE";
-		String schema = null;
+
+		String catalog = DB.getDatabase().getCatalog();
+		String schema = DB.getDatabase().getSchema();
 		String[] indexColsFromDB = new String[30];
 		String[] ascOrDescColsFromDB = new String[30];
 		int numIndexColsFromDB = 0;

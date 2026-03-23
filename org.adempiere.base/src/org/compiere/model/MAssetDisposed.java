@@ -102,9 +102,9 @@ implements DocAction
 		if (log.isLoggable(Level.FINEST)) log.finest("Entering: Project=" + invLine);
 		setAD_Org_ID(invLine.getAD_Org_ID());
 		setPostingType(POSTINGTYPE_Actual);
-		setDateDoc(invLine.getC_Invoice().getDateInvoiced());
-		setDateAcct(invLine.getC_Invoice().getDateInvoiced());
-		setA_Disposed_Date(invLine.getC_Invoice().getDateInvoiced());
+		setDateDoc(invLine.getParent().getDateInvoiced());
+		setDateAcct(invLine.getParent().getDateInvoiced());
+		setA_Disposed_Date(invLine.getParent().getDateInvoiced());
 		setA_Disposed_Method(A_DISPOSED_METHOD_Trade);
 		setA_Asset_ID(invLine.getA_Asset_ID());
 		set_ValueNoCheck("C_Invoice_ID", invLine.getC_Invoice_ID());
@@ -480,7 +480,8 @@ implements DocAction
 		{
 			BigDecimal disposalAmt = Env.ZERO;
 			BigDecimal accumDeprAmt = Env.ZERO;
-			if (assetwk.getC_AcctSchema().getC_Currency_ID() != getC_Currency_ID()) 
+			MAcctSchema acctSchema = MAcctSchema.get(assetwk.getC_AcctSchema_ID());
+			if (acctSchema.getC_Currency_ID() != getC_Currency_ID()) 
 			{
 				disposalAmt  =  assetwk.getA_Asset_Cost();
 				accumDeprAmt = assetwk.getA_Accumulated_Depr();

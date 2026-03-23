@@ -174,7 +174,7 @@ public class WAttachment extends Window implements EventListener<Event>
 	 *  @param Record_ID record key
 	 *  @param trxName transaction
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public WAttachment(	int WindowNo, int AD_Attachment_ID,
 						int AD_Table_ID, int Record_ID, String trxName)
 	{
@@ -191,7 +191,7 @@ public class WAttachment extends Window implements EventListener<Event>
 	 *  @param trxName transaction
 	 *  @param eventListener
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public WAttachment(	int WindowNo, int AD_Attachment_ID,
 			int AD_Table_ID, int Record_ID, String trxName, EventListener<Event> eventListener)
 	{
@@ -707,7 +707,7 @@ public class WAttachment extends Window implements EventListener<Event>
 						saveAttachment();
 					}
 				} else {
-					m_attachment.delete(true);
+					m_attachment.deleteEx(true);
 					m_attachment = null;
 				}
 
@@ -743,8 +743,9 @@ public class WAttachment extends Window implements EventListener<Event>
 	 * Save the attachment to database
 	 */
 	private void saveAttachment() {
-		m_attachment.setBinaryData(new byte[0]); // ATTENTION! HEAVY HACK HERE... Else it will not save :(
-		m_attachment.setTextMsg(text.getText());
+		if (m_attachment.getTitle() == null || !m_attachment.getTitle().equals(MAttachment.TITLE_ListInAttachmentFile))
+			m_attachment.setBinaryData(new byte[0]); // ATTENTION! HEAVY HACK HERE... Else it will not save :(
+		m_attachment.setTextMsg(Util.isEmpty(text.getText()) ? null : text.getText());
 		m_attachment.saveEx();
 		m_change = false;
 	}
@@ -894,7 +895,7 @@ public class WAttachment extends Window implements EventListener<Event>
 				if (result)
 				{
 					if (m_attachment != null) {
-						m_attachment.delete(true);
+						m_attachment.deleteEx(true);
 						m_attachment = null;
 					}
 					dispose();

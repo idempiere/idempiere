@@ -136,6 +136,9 @@ public class PackOutProcess extends SvrProcess
 				if (dateFromValue != null) {
 					packOut.setFromDate((Timestamp) dateFromValue);
 				}
+				if (Env.getAD_Client_ID(Env.getCtx()) > 0) {
+					packOut.setIncludeOrganizationId(packageExp.isIncludeOrganizationId());
+				}
 				
 				packOut.setExportDictionaryEntity(packageExp.isExportDictionaryEntity());
 				packOut.export(packoutDirectory, null, packoutDocument, packoutItems, get_TrxName());

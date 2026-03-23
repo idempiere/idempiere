@@ -46,6 +46,7 @@ import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.compiere.model.I_Test;
+import org.compiere.model.MBankAccountProcessor;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MProcess;
 import org.compiere.model.MProduct;
@@ -505,5 +506,14 @@ public class QueryTest extends AbstractTestCase {
 		assertNull(product.getProductType());
 		assertTrue(product.getM_Product_Category_ID() == 0);
 		assertTrue(product.is_Immutable());		
+
+		// test if query with select and virtual columns can be ordered by a virtual column
+		Query querybap = new Query(Env.getCtx(), MBankAccountProcessor.Table_Name, MBankAccountProcessor.COLUMNNAME_C_BankAccount_Processor_UU + "=?", getTrxName());
+		MBankAccountProcessor bap = (MBankAccountProcessor) querybap.selectColumns(MBankAccountProcessor.COLUMNNAME_C_BankAccount_ID, MBankAccountProcessor.COLUMNNAME_AcceptCorporate)
+				.setParameters(DictionaryIDs.C_BankAccount_Processor.MONEYBANK_1234.uuid)
+				.setVirtualColumns(MBankAccountProcessor.COLUMNNAME_IsPPAcceptAMEX)
+				.setOrderBy(MBankAccountProcessor.COLUMNNAME_IsPPAcceptAMEX)
+				.scroll().next();
+		assertTrue(bap.getC_BankAccount_ID() > 0);
 	}
 }

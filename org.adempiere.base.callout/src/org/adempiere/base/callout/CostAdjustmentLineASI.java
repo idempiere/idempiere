@@ -62,7 +62,8 @@ public class CostAdjustmentLineASI implements IColumnCallout {
 			}
 		}
 		MInventory inventory = new MInventory(ctx, (Integer) mTab.getValue("M_Inventory_ID"), trxName);
-		if (MDocType.DOCSUBTYPEINV_CostAdjustment.equals(inventory.getC_DocType().getDocSubTypeInv())) {
+		MDocType docType = MDocType.get(inventory.getC_DocType_ID());
+		if (MDocType.DOCSUBTYPEINV_CostAdjustment.equals(docType.getDocSubTypeInv())) {
 			String costingMethod = inventory.getCostingMethod();
 			Object productValue = mTab.getValue(I_M_InventoryLine.COLUMNNAME_M_Product_ID);
 			if (productValue == null || ((Integer)productValue).intValue() == 0) return null;

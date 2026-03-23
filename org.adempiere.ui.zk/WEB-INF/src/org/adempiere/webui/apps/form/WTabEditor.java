@@ -60,6 +60,7 @@ import org.compiere.model.MField;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MUserDefTab;
+import org.compiere.model.MUserDefWin;
 import org.compiere.model.X_AD_FieldGroup;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -172,8 +173,8 @@ public class WTabEditor extends TabEditor implements IFormController, EventListe
 			if (Table_ID == MUserDefTab.Table_ID)
 			{
 				MUserDefTab udt = new MUserDefTab(Env.getCtx(), Record_ID, null);
-				
-				if (udt.getAD_UserDef_Win().getAD_Language() != null && !udt.getAD_UserDef_Win().getAD_Language().equals(Env.getAD_Language(Env.getCtx())))
+				MUserDefWin udw = new MUserDefWin(Env.getCtx(), udt.getAD_UserDef_Win_ID(), null);
+				if (udw.getAD_Language() != null && !udw.getAD_Language().equals(Env.getAD_Language(Env.getCtx())))
 				{
 					Dialog.error(m_WindowNo, "TabEditorWrongLanguage");
 					tabform.detach();

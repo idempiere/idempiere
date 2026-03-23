@@ -25,6 +25,8 @@
 package org.compiere.acct;
 
 import org.compiere.model.MInOutLine;
+import org.compiere.model.MOrderLine;
+import org.compiere.model.MRMALine;
 import org.compiere.model.PO;
 
 /**
@@ -47,12 +49,17 @@ public class DocLine_InOut extends DocLine
 	public int getC_Currency_ID()
 	{
 		MInOutLine iol = (MInOutLine) getPO();
-		if (iol.getC_OrderLine_ID() > 0)
-			return iol.getC_OrderLine().getC_Currency_ID();
-		else if (iol.getM_RMALine_ID() > 0) {
-			if (iol.getM_RMALine().getM_InOutLine_ID() > 0) {
-				if (iol.getM_RMALine().getM_InOutLine().getC_OrderLine_ID() > 0)
-					return iol.getM_RMALine().getM_InOutLine().getC_OrderLine().getC_Currency_ID();
+		if (iol.getC_OrderLine_ID() > 0) {
+			MOrderLine orderLine = new MOrderLine(iol.getCtx(), iol.getC_OrderLine_ID(), iol.get_TrxName());
+			return orderLine.getC_Currency_ID();
+		} else if (iol.getM_RMALine_ID() > 0) {
+			MRMALine rmaLine = new MRMALine(iol.getCtx(), iol.getM_RMALine_ID(), iol.get_TrxName());
+			if (rmaLine.getM_InOutLine_ID() > 0) {
+				MInOutLine inOutLine = new MInOutLine(iol.getCtx(), rmaLine.getM_InOutLine_ID(), iol.get_TrxName());
+				if (inOutLine.getC_OrderLine_ID() > 0) {
+					MOrderLine orderLine = new MOrderLine(inOutLine.getCtx(), inOutLine.getC_OrderLine_ID(), inOutLine.get_TrxName());
+					return orderLine.getC_Currency_ID();
+				}
 			}
 		}
 		return super.getC_Currency_ID();
@@ -62,12 +69,17 @@ public class DocLine_InOut extends DocLine
 	public int getC_ConversionType_ID()
 	{
 		MInOutLine iol = (MInOutLine) getPO();
-		if (iol.getC_OrderLine_ID() > 0)
-			return iol.getC_OrderLine().getC_Order().getC_ConversionType_ID();
-		else if (iol.getM_RMALine_ID() > 0) {
-			if (iol.getM_RMALine().getM_InOutLine_ID() > 0) {
-				if (iol.getM_RMALine().getM_InOutLine().getC_OrderLine_ID() > 0)
-					return iol.getM_RMALine().getM_InOutLine().getC_OrderLine().getC_Order().getC_ConversionType_ID();
+		if (iol.getC_OrderLine_ID() > 0) {
+			MOrderLine orderLine = new MOrderLine(iol.getCtx(), iol.getC_OrderLine_ID(), iol.get_TrxName());
+			return orderLine.getParent().getC_ConversionType_ID();
+		} else if (iol.getM_RMALine_ID() > 0) {
+			MRMALine rmaLine = new MRMALine(iol.getCtx(), iol.getM_RMALine_ID(), iol.get_TrxName());
+			if (rmaLine.getM_InOutLine_ID() > 0) {
+				MInOutLine inOutLine = new MInOutLine(iol.getCtx(), rmaLine.getM_InOutLine_ID(), iol.get_TrxName());
+				if (inOutLine.getC_OrderLine_ID() > 0) {
+					MOrderLine orderLine = new MOrderLine(inOutLine.getCtx(), inOutLine.getC_OrderLine_ID(), inOutLine.get_TrxName());
+					return orderLine.getParent().getC_ConversionType_ID();
+				}
 			}
 		}
 		return super.getC_ConversionType_ID();

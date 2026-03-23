@@ -56,7 +56,7 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 	 *	@return session session
 	 *	@deprecated use Get and Create functions.
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static MSession get (Properties ctx, boolean createNew)
 	{
 		MSession session = get(ctx);
@@ -323,7 +323,7 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 	 * 	Preserved for backward compatibility
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public MChangeLog changeLog (
 		String TrxName, int AD_ChangeLog_ID,
 		int AD_Table_ID, int AD_Column_ID, int Record_ID,

@@ -66,7 +66,17 @@ public class BarcodeElement extends PrintElement
 			|| item == null
 			|| item.getBarcodeType() == null || item.getBarcodeType().length() == 0)
 			m_valid = false;
-		
+
+		m_scaleFactor = 1f;
+		if (MPrintFormatItem.BARCODETYPE_QRCode.equals(item.getBarcodeType())) {
+			if (item.getScaleFactor() != null) {
+				float sf = item.getScaleFactor().floatValue();
+				if (Float.isFinite(sf) && sf > 0f) {
+					m_scaleFactor = sf;
+				}
+			}
+		}
+
 		createBarcode(code, item);
 		if (m_barcode == null && m_barcodeBean == null)
 			m_valid = false;
@@ -253,7 +263,6 @@ public class BarcodeElement extends PrintElement
 		if (p_width * p_height == 0)
 			return true;	//	don't bother scaling and prevent div by 0
 
-		m_scaleFactor = 1f;
 		if (p_maxWidth != 0 && p_width > p_maxWidth)
 			m_scaleFactor = p_maxWidth / p_width;
 		if (p_maxHeight != 0 && p_height > p_maxHeight && p_maxHeight/p_height < m_scaleFactor)

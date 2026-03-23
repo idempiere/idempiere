@@ -953,7 +953,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 	 */
 	private void addMailText()
 	{
-		MMailText mt = (MMailText) MUser.get(Env.getCtx()).getR_DefaultMailText();
+		MMailText mt = new MMailText(Env.getCtx(), MUser.get(Env.getCtx()).getR_DefaultMailText_ID(), null);
 		if (mt.get_ID() > 0) {
 			mt.setPO(MUser.get(Env.getCtx()));
 			try (MAttachment attachment = MAttachment.get(Env.getCtx(), MMailText.Table_ID, mt.get_ID(), null, null);) {

@@ -139,7 +139,7 @@ public class GLJournalGenerate extends SvrProcess
 				);
 
 		MJournalGenerator journalGenerator = new MJournalGenerator(getCtx(), p_QSS_JournalGenerator_ID, get_TrxName());
-		MAcctSchema as = (MAcctSchema) journalGenerator.getC_AcctSchema();
+		MAcctSchema as = MAcctSchema.get(journalGenerator.getC_AcctSchema_ID());
 
 		BigDecimal totalAmount = Env.ZERO;
 		List<List<Integer>> listDimOut = new ArrayList<List<Integer>>();
