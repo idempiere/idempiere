@@ -45,7 +45,7 @@ import org.compiere.util.Msg;
  *			@see https://sourceforge.net/p/adempiere/feature-requests/631/ 
  *  @version $Id: TrialBalance.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
  */
-@org.adempiere.base.annotation.Process(name = "org.compiere.report.TrialBalance")
+@org.adempiere.base.annotation.Process
 public class TrialBalance extends SvrProcess
 {
 	/** AcctSchame Parameter			*/

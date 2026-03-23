@@ -30,7 +30,7 @@ import org.idempiere.acct.base.model.MDistribution;
  *  @author Jorg Janke
  *  @version $Id: DistributionVerify.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  */
-@org.adempiere.base.annotation.Process(name = "org.compiere.process.DistributionVerify")
+@org.adempiere.base.annotation.Process
 public class DistributionVerify extends SvrProcess
 {
 

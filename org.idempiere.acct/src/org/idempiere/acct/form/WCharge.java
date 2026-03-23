@@ -68,7 +68,7 @@ import org.zkoss.zul.South;
  * @author Andrew Kimball
  *
  */
-@org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VCharge")
+@org.idempiere.ui.zk.annotation.Form(name = "org.idempiere.acct.form.WCharge")
 public class WCharge extends Charge implements IFormController, EventListener<Event>, Serializable
 {
 	/**

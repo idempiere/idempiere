@@ -28,7 +28,7 @@ import org.compiere.util.AdempiereUserError;
  *  @author Jorg Janke
  *  @version $Id: LandedCostDistribute.java,v 1.2 2006/07/30 00:51:02 jjanke Exp $
  */
-@org.adempiere.base.annotation.Process(name = "org.compiere.process.LandedCostDistribute")
+@org.adempiere.base.annotation.Process
 public class LandedCostDistribute extends SvrProcess
 {
 	/** Parameter			*/

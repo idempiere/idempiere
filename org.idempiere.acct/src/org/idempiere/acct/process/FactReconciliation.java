@@ -36,7 +36,7 @@ import org.compiere.util.Msg;
 /**
  * Account reconciliation report
  */
-@org.adempiere.base.annotation.Process( name = "org.compiere.process.FactReconciliation" )
+@org.adempiere.base.annotation.Process
 public class FactReconciliation extends SvrProcess
 {
 	private Timestamp			p_DateAcct_From = null;

@@ -66,7 +66,7 @@ import org.idempiere.acct.base.model.MJournalGeneratorSource;
  *
  * 	@author 	Carlos Ruiz - Quality Systems & Solutions - globalqss
  */
-@org.adempiere.base.annotation.Process(name = "org.globalqss.process.GLJournalGenerate")
+@org.adempiere.base.annotation.Process
 public class GLJournalGenerate extends SvrProcess
 {
 	/**	Processing date from/to */

@@ -35,7 +35,7 @@ import org.compiere.util.Msg;
  * @author YvonneAw
  *
  */
-@org.adempiere.base.annotation.Process(name = "org.compiere.report.BankRegister")
+@org.adempiere.base.annotation.Process
 public class BankRegister extends SvrProcess
 {
 	/**	Bank Parameter				*/

@@ -56,7 +56,7 @@ import org.compiere.util.Msg;
  *			<li>FR [2857076] User Element 1 and 2 completion - https://sourceforge.net/p/adempiere/feature-requests/817/
  *   
  */
-@org.adempiere.base.annotation.Process(name = "org.compiere.report.FinStatement")
+@org.adempiere.base.annotation.Process
 public class FinStatement extends SvrProcess
 {
 	/** AcctSchame Parameter			*/

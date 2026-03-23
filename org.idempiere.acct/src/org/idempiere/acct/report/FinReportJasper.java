@@ -37,7 +37,7 @@ import org.idempiere.acct.base.model.MReport;
  *  @author Jorg Janke
  *  @version $Id: FinReport.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
  */
-@org.adempiere.base.annotation.Process(name = "org.compiere.report.FinReportJasper")
+@org.adempiere.base.annotation.Process
 public class FinReportJasper extends FinReport
 {
 	/**	Report Definition				*/

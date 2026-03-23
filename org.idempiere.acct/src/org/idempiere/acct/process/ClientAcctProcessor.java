@@ -56,7 +56,7 @@ import org.idempiere.acct.doc.DocManager;
  *
  *  @author Carlos Ruiz
  */
-@org.adempiere.base.annotation.Process(name = "org.adempiere.process.ClientAcctProcessor")
+@org.adempiere.base.annotation.Process
 public class ClientAcctProcessor extends SvrProcess
 {
 	/* The Accounting Schema */

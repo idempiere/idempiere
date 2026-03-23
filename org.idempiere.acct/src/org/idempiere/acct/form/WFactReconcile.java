@@ -91,12 +91,12 @@ import org.zkoss.zul.Hbox;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 
-@org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VFactReconcile")
 /**
  * 
  * https://wiki.idempiere.org/en/NF1.0_GL_Reconciliation
  *
  */
+@org.idempiere.ui.zk.annotation.Form(name = "org.idempiere.acct.form.WFactReconcile")
 public class WFactReconcile extends FactReconcile 
 implements IFormController, EventListener<Event>, WTableModelListener, ValueChangeListener{
 	
