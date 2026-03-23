@@ -264,7 +264,7 @@ public class MReportSource extends X_PA_ReportSource
 			else
 				whcomb.append(" AND ").append(whtree);
 		}
-		else if (isIncludeNullsUserList2() && (getPA_ReportLine_ID() > 0 || getPA_ReportColumn_ID() > 0))
+		else if (isIncludeNullsUserList2())
 			whcomb.append(" AND User2_ID IS NULL");
 
 		// drop the first " AND "
@@ -385,6 +385,10 @@ public class MReportSource extends X_PA_ReportSource
 			s.append("X");
 		if (isIncludeNullsUserList2())
 			s.append("Y");
+		if (getUserElement2_ID() != 0)
+			s.append("AA");
+		if (isIncludeNullsUserElement2())
+			s.append("BB");
 		if (getC_ElementValue_ID() != 0)
 			s.append("Z");
 
