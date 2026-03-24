@@ -781,15 +781,18 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 			if (fCreateJournalDocType.getComponent().getItemCount() == 1)
 				fCreateJournalDocType.getComponent().setSelectedIndex(0);
 
+			MLookup accountLookup = null;
 			try {
-				lookup = MLookupFactory.get (Env.getCtx(), form.getWindowNo(), MColumn.getColumn_ID(MElementValue.Table_Name, MElementValue.COLUMNNAME_C_ElementValue_ID), DisplayType.TableDir, Env.getLanguage(Env.getCtx()), "Account_ID", 0, false,
+				accountLookup = MLookupFactory.get (Env.getCtx(), form.getWindowNo(), MColumn.getColumn_ID(MElementValue.Table_Name, MElementValue.COLUMNNAME_C_ElementValue_ID), DisplayType.TableDir, Env.getLanguage(Env.getCtx()), "Account_ID", 0, false,
 						"IsSummary = 'N' AND IsDocControlled = 'N' AND EXISTS (SELECT * FROM C_AcctSchema_Element ae WHERE C_ElementValue.C_Element_ID=ae.C_Element_ID AND ae.ElementType='AC' AND ae.C_AcctSchema_ID=" + m_C_AcctSchema_ID 
 						+ ") AND C_ElementValue_ID != " + fieldAccount.getValue());
 			} catch (Exception e) {
 				log.log(Level.SEVERE, "Can't init Account editor :", e);
+				onClose(); // can't proceed without a valid account lookup
+				return;
 			}
 
-			fCreateJournalAccount = new WTableDirEditor("Account_ID", true, false, true, lookup);
+			fCreateJournalAccount = new WTableDirEditor("Account_ID", true, false, true, accountLookup);
 			fCreateJournalAccount.getComponent().addEventListener(Events.ON_SELECT, this);
 			fCreateJournalAccount.getLabel().setValue(Msg.getElement(Env.getCtx(), "Account_ID"));
 
@@ -911,9 +914,11 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 
 					if (journal.processIt(MJournal.DOCACTION_Complete))
 						journal.saveEx();
+					trx.commit();
 				}
 				catch (Exception e) {
 					trx.rollback();
+					log.log(Level.SEVERE, "Error creating reconciliation journal", e);
 				} finally {
 					trx.close();
 				}

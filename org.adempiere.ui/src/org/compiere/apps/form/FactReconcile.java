@@ -44,7 +44,10 @@ import org.compiere.minigrid.IMiniTable;
 import org.compiere.model.MFactReconciliation;
 import org.compiere.model.MRole;
 import org.compiere.model.Query;
-import static org.compiere.model.SystemIDs.*;
+import static org.compiere.model.SystemIDs.COLUMN_FACT_ACCT_C_ACCTSCHEMA_ID;
+import static org.compiere.model.SystemIDs.COLUMN_C_PERIOD_AD_ORG_ID;
+import static org.compiere.model.SystemIDs.COLUMN_C_INVOICE_C_BPARTNER_ID;
+import static org.compiere.model.SystemIDs.COLUMN_FACT_ACCT_M_PRODUCT_ID;
 
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CLogger;
@@ -334,7 +337,7 @@ public class FactReconcile {
 						generate(balanceFactAcctID, time);
 					}
 					catch(Exception e) {
-						throw new AdempiereUserError("Can't generate reconciliation for the newly created journal line " + e);
+						throw new AdempiereUserError("Can't generate reconciliation for the newly created journal line ", e);
 					}
 				}
 			}
