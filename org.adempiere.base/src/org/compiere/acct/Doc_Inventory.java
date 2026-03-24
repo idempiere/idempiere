@@ -231,10 +231,14 @@ public class Doc_Inventory extends Doc
 			
 			boolean doPosting = true;
 			String costingLevel = null;
-			MProduct product = null;
+			MProduct product = line.getProduct();
+			//if product type expense and stocked, then no needs to do posting
+            if(product.isExpenseTypeStockedProduct()) {
+                continue;
+            }
+            
 			if (costAdjustment)
 			{				
-				product = line.getProduct();
 				if (!product.isStocked())
 				{
 					doPosting = false;
@@ -255,7 +259,6 @@ public class Doc_Inventory extends Doc
 			if (costAdjustment)
 			{
 				costs = line.getAmtSource();
-				product = line.getProduct();
 				int orgId = line.getAD_Org_ID();
 				int asiId = line.getM_AttributeSetInstance_ID();
 				if (MAcctSchema.COSTINGLEVEL_Client.equals(costingLevel))
@@ -278,9 +281,10 @@ public class Doc_Inventory extends Doc
 			}
 			else 
 			{
+				
+                
 				if (!isReversal(line))
 				{
-					product = line.getProduct();
 					if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as)) ) 
 					{
 						if (line.getM_AttributeSetInstance_ID() == 0 ) 
