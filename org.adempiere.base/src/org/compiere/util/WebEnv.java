@@ -219,9 +219,7 @@ public class WebEnv
 					message = Env.parseVariable(message, client, null, true);
 					message = Env.parseVariable(message, system, null, true);
 
-					client.sendEMail(recipient, subject, message, null);
-
-					mailSent = true;
+					mailSent = client.sendEMail(recipient, subject, message, null, mt.isHtml());
 
 				} catch (Exception e) {
 					log.warning("Can't send customized email when server starts: " + e.toString());
