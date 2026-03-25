@@ -229,7 +229,7 @@ public class WebEnv
 			}
 
 			if (!mailSent)
-				client.sendEMail(client.getRequestEMail(),
+				client.sendEMail(recipient,
 						"Server started: " + system.getName() + " (" + WebUtil.getServerName() + ")",
 						"ServerInfo: " + context.getServerInfo(), null);
 		}
