@@ -16,15 +16,11 @@
  *****************************************************************************/
 package org.compiere.model;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
 
-import org.compiere.util.DB;
 import org.compiere.util.Util;
 
 /**
@@ -146,35 +142,23 @@ public class MDunningRun extends X_C_DunningRun
 	{
 		if (m_entries != null && !requery)
 			return m_entries;
-		
-		String sql = "SELECT * FROM C_DunningRunEntry WHERE C_DunningRun_ID=? ORDER BY C_DunningLevel_ID, C_DunningRunEntry_ID";
-		ArrayList<MDunningRunEntry> list = new ArrayList<MDunningRunEntry>();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql, get_TrxName());
-			pstmt.setInt (1, getC_DunningRun_ID());
-			rs = pstmt.executeQuery ();
-			while (rs.next ())
-			{
-				MDunningRunEntry thisEntry = new MDunningRunEntry(getCtx(), rs, get_TrxName());
-				if (!(onlyInvoices && thisEntry.hasInvoices()))
-				list.add (new MDunningRunEntry(getCtx(), rs, get_TrxName()));
-			}
-		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
-		}
-		m_entries = new MDunningRunEntry[list.size ()];
-		list.toArray (m_entries);
+
+		String whereClause = "C_DunningRun_ID=?";
+		if (onlyInvoices)
+			whereClause += " AND EXISTS (SELECT 1 FROM C_DunningRunLine l WHERE l.C_DunningRunEntry_ID=C_DunningRunEntry.C_DunningRunEntry_ID AND l.C_Invoice_ID IS NOT NULL)";
+
+		List<MDunningRunEntry> list = new Query(
+				getCtx(),
+				MDunningRunEntry.Table_Name,
+				whereClause,
+				get_TrxName())
+			.setOnlyActiveRecords(true)
+			.setParameters(getC_DunningRun_ID())
+			.setOrderBy("C_DunningLevel_ID, C_DunningRunEntry_ID")
+			.list();
+
+		m_entries = new MDunningRunEntry[list.size()];
+		list.toArray(m_entries);
 		return m_entries;
 	}	//	getEntries
 	
