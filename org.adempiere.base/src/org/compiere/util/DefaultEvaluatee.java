@@ -672,24 +672,26 @@ public class DefaultEvaluatee implements Evaluatee {
 
 		@Override
 		public Object getValue(String columnName) {
-			if (bean == null || columnName == null)
-				return null;
-
-			try {
-				String methodName = "get" + columnName;
-				Method method = bean.getClass().getMethod(methodName);
-				Object value = method.invoke(bean);
-
-				return value != null ? value.toString() : null;
-
-			} catch (Exception e) {
-				return null;
-			}
+			return getProperty(columnName);
 		}
 
 		@Override
 		public Object getProperty(String propertyName) {
-			return null;
+			if (bean == null || propertyName == null)
+				return null;
+			
+			char startChar = propertyName.charAt(0);
+			if (startChar != Character.toUpperCase(startChar)) {
+				propertyName = Character.toUpperCase(startChar) + propertyName.substring(1);
+			}
+			String methodName = "get" + propertyName;
+			Expression methodExpression = new Expression(po, methodName, null);
+			Object poValue = null;
+			try {
+				poValue = methodExpression.getValue();
+			} catch (Exception e) {				
+			}
+			return poValue;
 		}
 
 		@Override
