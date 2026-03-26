@@ -685,13 +685,13 @@ public class DefaultEvaluatee implements Evaluatee {
 				propertyName = Character.toUpperCase(startChar) + propertyName.substring(1);
 			}
 			String methodName = "get" + propertyName;
-			Expression methodExpression = new Expression(po, methodName, null);
-			Object poValue = null;
+			Expression methodExpression = new Expression(bean, methodName, null);
+			Object value = null;
 			try {
-				poValue = methodExpression.getValue();
+				value = methodExpression.getValue();
 			} catch (Exception e) {				
 			}
-			return poValue;
+			return value;
 		}
 
 		@Override
