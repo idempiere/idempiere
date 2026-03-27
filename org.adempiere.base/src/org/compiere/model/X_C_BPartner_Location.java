@@ -31,7 +31,7 @@ public class X_C_BPartner_Location extends PO implements I_C_BPartner_Location, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250805L;
+	private static final long serialVersionUID = 20260309L;
 
     /** Standard Constructor */
     public X_C_BPartner_Location (Properties ctx, int C_BPartner_Location_ID, String trxName)
@@ -351,16 +351,16 @@ public class X_C_BPartner_Location extends PO implements I_C_BPartner_Location, 
 		return false;
 	}
 
-	/** Set Pay-From Address.
-		@param IsPayFrom Business Partner pays from that address and we&#039;ll send dunning letters there
+	/** Set Pay-From.
+		@param IsPayFrom Business Partner can pay invoices from the related Business Partner
 	*/
 	public void setIsPayFrom (boolean IsPayFrom)
 	{
 		set_Value (COLUMNNAME_IsPayFrom, Boolean.valueOf(IsPayFrom));
 	}
 
-	/** Get Pay-From Address.
-		@return Business Partner pays from that address and we&#039;ll send dunning letters there
+	/** Get Pay-From.
+		@return Business Partner can pay invoices from the related Business Partner
 	  */
 	public boolean isPayFrom()
 	{

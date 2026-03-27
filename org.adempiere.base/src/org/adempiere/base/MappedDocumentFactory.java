@@ -28,11 +28,11 @@ import java.sql.ResultSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
-import org.compiere.acct.Doc;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MTable;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
+import org.idempiere.acct.IDoc;
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -47,7 +47,7 @@ import org.osgi.service.component.annotations.Component;
 	property = {"service.ranking:Integer=1", "gaap=*"})
 public class MappedDocumentFactory implements IDocFactory, IMappedDocumentFactory {
 
-	private final ConcurrentHashMap<String, Function<Parameter, ? extends Doc>> documentMap = new ConcurrentHashMap<>();
+	private final ConcurrentHashMap<String, Function<Parameter, ? extends IDoc>> documentMap = new ConcurrentHashMap<>();
 	
 	/**
 	 * default constructor
@@ -56,10 +56,10 @@ public class MappedDocumentFactory implements IDocFactory, IMappedDocumentFactor
 	}
 
 	@Override
-	public Doc getDocument(MAcctSchema as, int AD_Table_ID, ResultSet rs, String trxName) {
+	public IDoc getDocument(MAcctSchema as, int AD_Table_ID, ResultSet rs, String trxName) {
 		String tableName = MTable.getTableName(Env.getCtx(), AD_Table_ID);
 		String key = tableName + "|" + as.getGAAP();
-		Function<Parameter, ? extends Doc> function = documentMap.get(key);
+		Function<Parameter, ? extends IDoc> function = documentMap.get(key);
 		if (function != null) {
 			return function.apply(new Parameter(as, rs, trxName));
 		}
@@ -74,7 +74,7 @@ public class MappedDocumentFactory implements IDocFactory, IMappedDocumentFactor
 	}
 
 	@Override
-	public void addMapping(String gaap, String tableName, Function<Parameter, ? extends Doc> supplier) {		
+	public void addMapping(String gaap, String tableName, Function<Parameter, ? extends IDoc> supplier) {		
 		StringBuilder key = new StringBuilder();
 		key.append(tableName).append("|");
 		if (Util.isEmpty(gaap, true))

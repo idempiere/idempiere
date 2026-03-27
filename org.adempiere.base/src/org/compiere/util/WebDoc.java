@@ -20,6 +20,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Properties;
 
+import org.adempiere.base.GeneratedCodeCoverageExclusion;
 import org.apache.ecs.AlignType;
 import org.apache.ecs.Element;
 import org.apache.ecs.xhtml.a;
@@ -306,6 +307,8 @@ public class WebDoc
 	 *  @deprecated
 	 */
 	@Deprecated (since="13", forRemoval=true)
+	@SuppressWarnings("removal")
+	@GeneratedCodeCoverageExclusion
 	public td[] addPopupClose(Properties ctx)
 	{
 		input button = WebUtil.createClosePopupButton(ctx); 

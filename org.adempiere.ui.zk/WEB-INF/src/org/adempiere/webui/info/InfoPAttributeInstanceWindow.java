@@ -46,6 +46,7 @@ public class InfoPAttributeInstanceWindow extends InfoWindow {
 	 * @param whereClause
 	 * @param AD_InfoWindow_ID
 	 */
+	@SuppressWarnings("removal")
 	public InfoPAttributeInstanceWindow(int WindowNo, String tableName,
 			String keyColumn, String queryValue, boolean multipleSelection,
 			String whereClause, int AD_InfoWindow_ID) {
@@ -63,6 +64,7 @@ public class InfoPAttributeInstanceWindow extends InfoWindow {
 	 * @param AD_InfoWindow_ID
 	 * @param lookup
 	 */
+	@SuppressWarnings("removal")
 	public InfoPAttributeInstanceWindow(int WindowNo, String tableName,
 			String keyColumn, String queryValue, boolean multipleSelection,
 			String whereClause, int AD_InfoWindow_ID, boolean lookup) {

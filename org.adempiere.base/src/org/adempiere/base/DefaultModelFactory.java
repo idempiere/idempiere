@@ -85,6 +85,8 @@ public class DefaultModelFactory extends AbstractModelFactory {
 		}
 
 		MTable table = MTable.get(Env.getCtx(), tableName);
+		if (table == null)
+			return null;
 		String entityType = table.getEntityType();
 
 		//	Import Tables (Name conflict)

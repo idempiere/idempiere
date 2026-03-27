@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.compiere.util;
 
+import org.adempiere.base.GeneratedCodeCoverageExclusion;
+
 /**
  * This RuntimeException is used to pass SQLException up the chain of calling
  * methods to determine what to do where needed.
@@ -26,6 +28,7 @@ package org.compiere.util;
  * 				and will be removed in future. 
  */
 @Deprecated (since="13", forRemoval=true)
+@GeneratedCodeCoverageExclusion
 public class DBException extends org.adempiere.exceptions.DBException {
 	/**
 	 * 

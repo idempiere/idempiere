@@ -23,7 +23,10 @@
 package org.idempiere.test.base;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -34,12 +37,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Properties;
+import java.util.UUID;
 
+import org.compiere.model.MMenu;
 import org.compiere.model.MTab;
 import org.compiere.model.MWindow;
+import org.compiere.model.PO;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
+import org.compiere.wf.MWFNode;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.idempiere.test.LoginDetails;
@@ -57,7 +64,7 @@ import org.junit.jupiter.api.TestInstance;
 public class MWindowTest extends AbstractTestCase {
 
 	private final Properties ctx = Env.getCtx();
-	private final int testWindowId = DictionaryIDs.AD_Window.USER.id;
+	private final int testWindowId = DictionaryIDs.AD_Window.TEST.id;
 	private String testWindowUUID;
 	private String testWindowName;
 
@@ -81,8 +88,7 @@ public class MWindowTest extends AbstractTestCase {
 	}
 
 	/**
-	 * Test ID-based constructor: MWindow(Properties ctx, int AD_Window_ID, String
-	 * trxName)
+	 * Test ID-based constructor: MWindow(Properties ctx, int AD_Window_ID, String trxName)
 	 */
 	@Test
 	public void testConstructor_ByID() {
@@ -92,19 +98,26 @@ public class MWindowTest extends AbstractTestCase {
 	}
 
 	/**
-	 * Test UUID-based constructor: MWindow(Properties ctx, String AD_Window_UU,
-	 * String trxName)
+	 * Test UUID-based constructor: MWindow(Properties ctx, String AD_Window_UU, String trxName)
 	 */
 	@Test
 	public void testConstructor_ByUUID() {
 		MWindow w = new MWindow(ctx, testWindowUUID, getTrxName());
 		assertNotNull(w, "MWindow constructed by UUID should not be null");
 		assertEquals(testWindowId, w.getAD_Window_ID(), "MWindow loaded by UUID should map to same AD_Window_ID");
+		
+		w = new MWindow(ctx, PO.UUID_NEW_RECORD, getTrxName());
+		assertNotNull(w, "MWindow constructed by UUID should not be null");
+		assertEquals(0, w.getAD_Window_ID(), "AD_Window_ID should be 0 for new record");
+		assertEquals(MWindow.WINDOWTYPE_Maintain, w.getWindowType());
+		assertEquals(MWindow.ENTITYTYPE_UserMaintained, w.getEntityType());
+		assertFalse(w.isBetaFunctionality());
+		assertFalse(w.isDefault());
+		assertTrue(w.isSOTrx());
 	}
 
 	/**
-	 * Test ResultSet-based constructor: MWindow(Properties ctx, ResultSet rs,
-	 * String trxName)
+	 * Test ResultSet-based constructor: MWindow(Properties ctx, ResultSet rs, String trxName)
 	 */
 	@Test
 	public void testConstructor_FromResultSet() throws SQLException {
@@ -121,27 +134,32 @@ public class MWindowTest extends AbstractTestCase {
 			assertNotNull(w, "MWindow constructed from ResultSet should not be null");
 			assertEquals(testWindowId, w.getAD_Window_ID(), "MWindow(ResultSet) must have expected AD_Window_ID");
 		} finally {
-			if (rs != null)
-				try {
-					rs.close();
-				} catch (SQLException ignored) {}
-			if (pstmt != null)
-				try {
-					pstmt.close();
-				} catch (SQLException ignored) {}
+			DB.close(rs, pstmt);
 		}
 	}
 
 	/**
-	 * Test copy constructor: MWindow(Properties ctx, MWindow copy, String trxName)
-	 * or MWindow(Properties ctx, MWindow copy)
+	 * Test copy constructor: MWindow(Properties ctx, MWindow copy, String trxName), MWindow(Properties ctx, MWindow copy)
+	 * and MWindow(MWindow copy)
 	 */
 	@Test
 	public void testConstructor_Copy() {
 		MWindow original = new MWindow(ctx, testWindowId, getTrxName());
-		MWindow copy = new MWindow(ctx, original, getTrxName());
-		assertNotNull(copy, "Copy of MWindow must not be null");
-		assertEquals(original.getName(), copy.getName(), "Copied MWindow should keep the same name");
+		MTab[] originalTabs = original.getTabs(false, getTrxName());
+		
+		MWindow[] copies = {
+				new MWindow(ctx, original, getTrxName()),
+				new MWindow(ctx, original),
+				new MWindow(original)
+		};		
+		for (MWindow copy : copies) {			
+			MTab[] copyTabs = copy.getTabs(false, getTrxName());
+			assertNotNull(copy, "Copy of MWindow must not be null");
+			assertEquals(original.getName(), copy.getName(), "Copied MWindow should keep the same name");
+			assertEquals(originalTabs.length, copyTabs.length, "Copied MWindow should keep the same number of tabs");
+			for (int i = 0; i < originalTabs.length; i++) 
+				assertEquals(originalTabs[i].getName(), copyTabs[i].getName(), "Copied MWindow should keep the same tab name");
+		}
 	}
 
 	/**
@@ -159,6 +177,9 @@ public class MWindowTest extends AbstractTestCase {
 		if (tabs.length > 0) {
 			assertEquals(testWindowId, tabs[0].getAD_Window_ID(), "Child tab should point to parent window.");
 		}
+		
+		MTab[] cacheTabs = w.getTabs(false, getTrxName());
+		assertSame(tabs, cacheTabs, "MWindow.getTabs(false, trxName) should return the same cached instance");
 	}
 
 	/**
@@ -197,61 +218,53 @@ public class MWindowTest extends AbstractTestCase {
 	}
 
 	/**
-	 * Test creating a persistent AD_Window and cleanup.
-	 * <p>
-	 * Attempts to provide minimal required fields to persist a window. Real DB
-	 * constraints may require additional setup (e.g., Tabs). The test ensures
-	 * cleanup using delete(true, trxName).
+	 * Test creating a persistent AD_Window
 	 */
 	@Test
 	public void testCreatePersistentObjectAndCleanup() {
-		MWindow newWin = new MWindow(ctx, 0, getTrxName());
-		String unique = "T_TEST_WIN_" + System.currentTimeMillis();
 		try {
+			MWindow newWin = new MWindow(ctx, 0, getTrxName());
+			String unique = "T_" + System.currentTimeMillis();
 			newWin.setName("Test Window " + unique);
 			newWin.setWindowType(MWindow.WINDOWTYPE_Maintain);
-			newWin.setIsActive(true);
 			boolean saved = newWin.save();
 			assertTrue(saved, "New AD_Window should save when minimal mandatory fields are provided (Name, WindowType, IsActive)");
 			assertTrue(newWin.get_ID() > 0, "Saved AD_Window must have assigned AD_Window_ID");
 		} finally {
-			try {
-				if (newWin.get_ID() > 0)
-					newWin.delete(true, getTrxName());
-			} catch (Exception e) {
-			}
+			rollback();
 		}
 	}
 
 	/**
-	 * Test helper methods: getWindow_ID(String) and get(ctx, uu) by UUID.
+	 * Test cases for markImmutable()
 	 */
 	@Test
-	public void testHelpers() {
-		int idByName = MWindow.getWindow_ID(testWindowName);
-		assertEquals(testWindowId, idByName, "getWindow_ID(name) should return expected AD_Window_ID");
-
-		MWindow wByUUID = MWindow.get(ctx, testWindowUUID);
-		assertNotNull(wByUUID, "get(ctx, uuid) should return a window instance");
-		assertEquals(testWindowId, wByUUID.getAD_Window_ID(), "Window loaded by UUID must match ID fetched in beforeAll");
+	public void testMarkImmutable() {
+		MWindow window = new MWindow(ctx, testWindowId, getTrxName());
+		MTab[] tabs = window.getTabs(false, getTrxName());
+		for (MTab tab : tabs)
+			assertFalse(tab.is_Immutable(), "Tab should not be marked as immutable");
+		
+		window.markImmutable();
+		for (MTab tab : tabs)
+			assertTrue(tab.is_Immutable(), "Tab should be marked immutable when window is immutable");
+		
+		tabs = window.getTabs(true, getTrxName());
+		for (MTab tab : tabs)
+			assertTrue(tab.is_Immutable(), "Tab should be marked immutable when window is immutable");
+		
+		assertThrows(Exception.class, () -> {
+			window.setWindowSize(new Dimension(800, 600));
+		}, "Should throw exception when updating window marked immutable");
+		assertTrue(window.getWinWidth() == 0, "WinWidth after setWindowSize should be zero, no change");
+		
+		MWindow returned = window.markImmutable();
+        assertSame(window, returned, "Should return itself if already immutable");
+        assertTrue(window.is_Immutable(), "Window should be marked immutable");
 	}
 
 	/**
-	 * Test markImmutable() and setWindowSize(Dimension) do not throw and behave as
-	 * expected.
-	 */
-	@Test
-	public void testMarkImmutableAndSetSize() {
-		MWindow w = new MWindow(ctx, testWindowId, getTrxName());
-		w.markImmutable();
-		try {
-			w.setWindowSize(new Dimension(800, 600));
-		} catch (Exception e) {}
-		assertTrue(w.getWinWidth() == 0, "WinWidth after setWindowSize should be zero, no change");
-	}
-
-	/**
-	 * Test setWindowSize(Dimension)
+	 * Test cases for setWindowSize(Dimension)
 	 */
 	@Test
 	public void testSetWindowSize() {
@@ -271,4 +284,92 @@ public class MWindowTest extends AbstractTestCase {
 		assertEquals(MWindow.WINDOWTYPE_QueryOnly, w.getWindowType(), "WindowType getter/setter should return the assigned value");
 	}
 
+	/**
+	 * Test cases for MWindow.get(int AD_Window_ID) and MWindow.get(Properties ctx, int AD_Window_ID)
+	 */
+	@Test
+	public void testGetById() {
+        // Valid ID
+        MWindow firstLoad = MWindow.get(ctx, testWindowId);
+        assertNotNull(firstLoad, "Valid ID should not return null");
+        assertEquals(testWindowId, firstLoad.getAD_Window_ID());
+        
+        MWindow secondLoad = MWindow.get(testWindowId);
+        assertNotNull(secondLoad, "Valid ID should not return null");
+        assertSame(firstLoad, secondLoad, "Cache should return same instance");
+        
+        // Invalid ID
+        MWindow invalid = MWindow.get(-1);
+        assertNull(invalid, "Invalid ID should return null");
+        
+        invalid = MWindow.get(ctx, -99999);
+        assertNull(invalid, "Invalid ID must return null");
+	}
+	
+	/**
+	 * Test cases for MWindow.get(Properties ctx, String uu)
+	 */
+	@Test
+	public void testGetByUUID() {
+		// Empty or null UU
+		assertNull(MWindow.get(ctx, null));
+	    assertNull(MWindow.get(ctx, ""));
+	    
+	    // Non-existing UU 
+	    String missingUU = UUID.randomUUID().toString();
+        MWindow missing = MWindow.get(ctx, missingUU);
+        assertNull(missing, "Non-existing UU must return null");
+	    
+        // Valid UU
+        MWindow firstLoad = MWindow.get(ctx, testWindowUUID);
+        assertNotNull(firstLoad, "Valid UUID should not return null");
+        assertEquals(testWindowId, firstLoad.getAD_Window_ID());
+        
+        MWindow secondLoad = MWindow.get(ctx, testWindowUUID);
+        assertNotNull(secondLoad, "Valid UUID should not return null");
+        assertNotSame(firstLoad, secondLoad, "get(ctx, uuid) creates new instances, not cached");
+	}
+	
+	/**
+	 * Test cases for MWindow.getWindow_ID(String windowName)
+	 */
+	@Test
+	public void testGetWindowID() {
+		// Valid window name
+        int windowId = MWindow.getWindow_ID(testWindowName);
+        assertEquals(testWindowId, windowId, "Valid window name should return the correct AD_Window_ID");
+        
+        // Unknown name
+        windowId = MWindow.getWindow_ID("NoSuchWindowXYZ123");
+        assertEquals(0, windowId, "Unknown window name should return 0");
+	}
+	
+	/**
+	 * Test cases for MWindow.afterSave(boolean newRecord, boolean success)
+	 */
+	@Test
+	public void testAfterSave() {
+		try {
+			MWindow window = new MWindow(ctx, DictionaryIDs.AD_Window.USER.id, getTrxName());
+			String oldDescription = window.getDescription();
+			String newDescription = "New " + oldDescription;
+			window.setDescription(newDescription);
+			assertTrue(window.save());
+			assertEquals(newDescription, window.getDescription(), "Description should be updated");
+			
+			MMenu[] menues = MMenu.get(ctx, "AD_Window_ID=" + window.getAD_Window_ID(), getTrxName());
+			for (MMenu menu : menues) {
+				assertEquals(newDescription, menu.getDescription(), "Description should be updated");
+			}
+			
+			MWFNode[] nodes = MWFNode.getWFNodes(ctx, "AD_Window_ID=" + window.getAD_Window_ID(), getTrxName());
+			for (MWFNode node : nodes) {
+				if (node.isCentrallyMaintained())
+					assertEquals(newDescription, node.getDescription(), "Description should be updated");
+			}	
+		} finally {
+			rollback();
+		}
+	}
+	
 }

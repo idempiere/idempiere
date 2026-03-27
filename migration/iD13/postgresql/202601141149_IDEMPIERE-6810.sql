@@ -1,0 +1,11 @@
+-- IDEMPIERE-6810 Make Global Document Search Extensible
+SELECT register_migration_script('202601141149_IDEMPIERE-6810.sql') FROM dual;
+
+-- Jan 14, 2026, 11:49:43 AM MYT
+UPDATE AD_Field SET DisplayLogic=NULL,Updated=TO_TIMESTAMP('2026-01-14 11:49:43','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208524
+;
+
+-- Jan 14, 2026, 11:50:19 AM MYT
+UPDATE AD_Field SET DisplayLogic=NULL,Updated=TO_TIMESTAMP('2026-01-14 11:50:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208525
+;
+

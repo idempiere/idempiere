@@ -48,6 +48,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.db.util.SQLFragment;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -151,7 +152,22 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 	public InfoPaymentPanel(int WindowNo, String value,
 			boolean multiSelection, String whereClause, boolean lookup)
 	{
-		super(WindowNo, "p", "C_Payment_ID", multiSelection, whereClause, lookup);
+		this(WindowNo, value, multiSelection, lookup, new SQLFragment(whereClause));
+	}
+	
+	/**
+	 *  Detail Protected Constructor
+	 *
+	 *  @param WindowNo window no
+	 *  @param value query value
+	 *  @param multiSelection multiple selections
+	 *  @param lookup
+	 *  @param sqlFilter SQL Filter
+	 */
+	public InfoPaymentPanel(int WindowNo, String value,
+			boolean multiSelection, boolean lookup, SQLFragment sqlFilter)
+	{
+		super(WindowNo, "p", "C_Payment_ID", multiSelection, lookup, sqlFilter);
 
 		log.info( "InfoPaymentPanel");
 		setTitle(Msg.getMsg(Env.getCtx(), "InfoPayment"));
@@ -275,6 +291,7 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 	 *	@return true, if success
 	 */
 
+	@SuppressWarnings("removal")
 	private boolean initInfo ()
 	{
 		//  Set Defaults

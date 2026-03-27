@@ -124,8 +124,8 @@ public class GridTabCSVExporter implements IGridTabExporter
 					procArray.add(new Optional(new FmtNumber(nf)));
 				} else if (DisplayType.YesNo == field.getDisplayType()) {
 					procArray.add(new Optional(new FmtBool("Y", "N")));
-				} else { // lookups
-					procArray.add(new Optional());
+				} else { // lookups and text
+					procArray.add(new SanitizeSuperCsvCell(new Optional()));
 				}
 			}
 			
@@ -181,7 +181,7 @@ public class GridTabCSVExporter implements IGridTabExporter
 					 } else if (DisplayType.YesNo == field.getDisplayType()) {
 						 procArray.add(new Optional(new FmtBool("Y", "N")));
 					 } else { // lookups and text
-						 procArray.add(new Optional());
+						 procArray.add(new SanitizeSuperCsvCell(new Optional()));
 					 }
 				} 
 			    if(specialDetDispayType > 0){

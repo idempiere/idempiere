@@ -25,6 +25,7 @@
 package org.compiere.util;
 
 import java.beans.Expression;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -48,6 +49,7 @@ import org.compiere.model.PO;
  */
 public class DefaultEvaluatee implements Evaluatee {
 
+	private static final String REPLACEMENT_VALUE_FOR_SECURE_CONTENT = "********";
 	private DataProvider m_dataProvider;
 	private int m_windowNo;
 	private int m_tabNo;
@@ -103,7 +105,14 @@ public class DefaultEvaluatee implements Evaluatee {
 	public DefaultEvaluatee(PO po) {
 		this(new PODataProvider(po));
 	}
-	
+
+	/**
+	 * @param Java bean
+	 */
+	public DefaultEvaluatee(Object bean) {
+		this(new JavaBeanDataProvider(bean));
+	}
+
 	/**
 	 * Help to use variable from window context 
 	 * @param dataProvider
@@ -334,7 +343,7 @@ public class DefaultEvaluatee implements Evaluatee {
 							column = table.getColumn(format);
 							if (column != null) {
 								if (column.isSecure()) {
-									value = "********";
+									value = REPLACEMENT_VALUE_FOR_SECURE_CONTENT;
 								} else {
 									String trxName = m_trxName != null ? m_trxName : (m_dataProvider != null ? m_dataProvider.getTrxName() : null);
 									String keyCol = foreignTable + Evaluator.ID_COLUMN_SUFFIX;
@@ -362,7 +371,7 @@ public class DefaultEvaluatee implements Evaluatee {
 			}			
 		} else if (column != null) {
 			if (column.isSecure()) {
-				value = "********";
+				value = REPLACEMENT_VALUE_FOR_SECURE_CONTENT;
 			} else if (column != null && column.getAD_Reference_ID() == DisplayType.YesNo && dataValue != null && dataValue instanceof Boolean booleanValue) {
 				if (m_useMsgForBoolean ) {
 					if (booleanValue.booleanValue())
@@ -415,6 +424,11 @@ public class DefaultEvaluatee implements Evaluatee {
 		Object returnValue = defaultValue; 
 		String key = foreignTable+"|"+id;
 		PO po = null;
+		MColumn column = table.getColumn(foreignColumn);
+		if (column != null && column.isSecure()) {
+			returnValue = REPLACEMENT_VALUE_FOR_SECURE_CONTENT;
+			return returnValue;
+		}
 		if (s_ReferenceCache.containsKey(key))
 		{
 			po = s_ReferenceCache.get(key);
@@ -643,5 +657,51 @@ public class DefaultEvaluatee implements Evaluatee {
 		public String getTrxName() {
 			return null;
 		}		
+	}
+
+	/**
+	 * Data provider implementation for Java bean
+	 */
+	public static class JavaBeanDataProvider implements DataProvider {
+
+		private final Object bean;
+
+		public JavaBeanDataProvider(Object bean) {
+			this.bean = bean;
+		}
+
+		@Override
+		public Object getValue(String columnName) {
+			return getProperty(columnName);
+		}
+
+		@Override
+		public Object getProperty(String propertyName) {
+			if (bean == null || propertyName == null)
+				return null;
+			
+			char startChar = propertyName.charAt(0);
+			if (startChar != Character.toUpperCase(startChar)) {
+				propertyName = Character.toUpperCase(startChar) + propertyName.substring(1);
+			}
+			String methodName = "get" + propertyName;
+			Expression methodExpression = new Expression(bean, methodName, null);
+			Object value = null;
+			try {
+				value = methodExpression.getValue();
+			} catch (Exception e) {				
+			}
+			return value;
+		}
+
+		@Override
+		public MColumn getColumn(String columnName) {
+			return null;
+		}
+
+		@Override
+		public String getTrxName() {
+			return null;
+		}
 	}
 }

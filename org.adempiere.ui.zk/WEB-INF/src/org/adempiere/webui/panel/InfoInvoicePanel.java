@@ -51,6 +51,7 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.db.util.SQLFragment;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
@@ -94,18 +95,32 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
     	this(WindowNo, value, multiSelection, whereClause, true);
     }
 
-	/**
+    /**
      * Detail protected constructor
      * @param WindowNo window no
      * @param value query value
      * @param multiSelection multiple selection
      * @param whereClause where clause
-    *
+     * @param lookup true if lookup
      */
     public InfoInvoicePanel(int WindowNo, String value,
             boolean multiSelection, String whereClause, boolean lookup)
     {
-        super ( WindowNo, "i", "C_Invoice_ID", multiSelection, whereClause, lookup);
+    	this(WindowNo, value, multiSelection, lookup, new SQLFragment(whereClause));
+    }
+    
+	/**
+     * Detail protected constructor
+     * @param WindowNo window no
+     * @param value query value
+     * @param multiSelection multiple selection
+     * @param lookup true if lookup
+     * @param sqlFilter SQL filter
+     */
+    public InfoInvoicePanel(int WindowNo, String value,
+            boolean multiSelection, boolean lookup, SQLFragment sqlFilter)
+    {
+        super ( WindowNo, "i", "C_Invoice_ID", multiSelection, lookup, sqlFilter);
 
         setTitle(Msg.getMsg(Env.getCtx(), "InfoInvoice"));
         //
@@ -301,7 +316,8 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
      *  General Init
      *  @return true, if success
      */
-    private boolean initInfo ()
+    @SuppressWarnings("removal")
+	private boolean initInfo ()
     {
         //  Set Defaults
         String bp = Env.getContext(Env.getCtx(), p_WindowNo, "C_BPartner_ID");

@@ -24,6 +24,7 @@ package org.idempiere.test.adwindow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -204,6 +205,7 @@ public class GridWindowTest extends AbstractTestCase {
 		field.setName(customFieldName);
 		field.saveEx();
 		
+		CacheMgt.get().reset(MUserDefWin.Table_Name);
 		try {
 			//test with GARDEN_WORLD_ADMIN role
 			MSession.create(Env.getCtx());
@@ -320,4 +322,84 @@ public class GridWindowTest extends AbstractTestCase {
             assertFalse(Util.isEmpty(Env.getContext(Env.getCtx(), tab.WindowNo, tab.TabNo, GridTab.CTX_IsAllowAdvancedLookup)));
         }
     }
+    
+    @Test
+    void testGetGridTabByUU() {
+    	var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+    	var gTab = gridWindow.getTab(0);
+    	var gTabByUU = gridWindow.getGridTab(gTab.getAD_Tab_UU());
+    	assertEquals(gTab, gTabByUU);
+    	assertNull(gridWindow.getGridTab(gTab.getAD_Tab_UU()+"x"));
+    }
+    
+    @Test
+    void testGetGridTabById() {
+    	var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+    	var gTab = gridWindow.getTab(0);
+    	var gTabById = gridWindow.getGridTab(gTab.getAD_Tab_ID());
+    	assertEquals(gTab, gTabById);
+    	assertNull(gridWindow.getGridTab(gTab.getAD_Tab_ID()+1000));
+    }
+
+    @Test
+    void testQueryFirstTab() {
+    	var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+    	gridWindow.query();
+    	assertTrue(gridWindow.getTab(0).getRowCount() > 0);
+    }
+    
+    @Test
+    void testGetNewInstance() {
+    	var gridWindow = GridWindow.get(Env.getCtx(), 1, SystemIDs.WINDOW_TEST);
+    	assertNotNull(gridWindow);
+    	assertEquals(SystemIDs.WINDOW_TEST, gridWindow.getAD_Window_ID());
+    }
+    
+    @Test
+    void testIsTabInitialized() {
+		var gridWindow = createGridWindow(SystemIDs.WINDOW_TEST);
+		assertTrue(gridWindow.isTabInitialized(0));
+		gridWindow = GridWindow.get(Env.getCtx(), 1, SystemIDs.WINDOW_TEST);
+		assertFalse(gridWindow.isTabInitialized(0));
+	}
+    
+    @Test
+    void testGetMImage() {
+    	var gridWindow = createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
+    	assertNotNull(gridWindow.getMImage());
+    }
+    
+    @Test
+    void testIsTransaction() {
+    	var gridWindow = createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
+    	assertFalse(gridWindow.isTransaction());
+    	gridWindow = createGridWindow(SystemIDs.WINDOW_SALES_ORDER);
+    	assertTrue(gridWindow.isTransaction());
+    }
+    
+    @Test
+    void testToString() {
+		var gridWindow = createGridWindow(SystemIDs.WINDOW_BUSINESS_PARTNER);
+		assertTrue(gridWindow.toString().contains(SystemIDs.WINDOW_BUSINESS_PARTNER+""));
+	}
+    
+    @Test
+    void testCreateVOFromMenu() {
+    	int menuID = DB.getSQLValue(null, "SELECT AD_Menu_ID FROM AD_Menu WHERE AD_Window_ID = ?", SystemIDs.WINDOW_TEST);
+    	assertTrue(menuID > 0, "No menu found for test window");
+    	var gWindowVO = GridWindowVO.create(Env.getCtx(), 1, 0, menuID);
+    	assertNotNull(gWindowVO);
+    	assertEquals(SystemIDs.WINDOW_TEST, gWindowVO.AD_Window_ID);
+    }
+    
+	static GridWindow createGridWindow(int AD_Window_ID) {
+		var gWindowVO = GridWindowVO.create(Env.getCtx(), 1, AD_Window_ID);
+		var gridWindow = new GridWindow(gWindowVO, true);
+		for (int i = 0; i < gridWindow.getTabCount(); i++) {
+			gridWindow.initTab(i);
+			GridTab gTab = gridWindow.getTab(i);
+			gTab.addDataStatusListener(GridTabTest.newGridTabDataStatusListener(gridWindow));
+		}
+		return gridWindow;
+	}
 }

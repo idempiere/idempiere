@@ -972,7 +972,9 @@ public class MRequest extends X_R_Request
 	 * @param whereClause
 	 * @param trxName
 	 * @return int[], [0] = inactive request count (Processed=Y) and [1] = active request count (Processed=N)
+	 * @deprecated - use {@link #getRequestCount(int, int, String, StringBuilder, List, String)} instead
 	 */
+	@Deprecated (since="13", forRemoval=true)
 	public static int[] getRequestCount(int AD_Table_ID, int Record_ID, String Record_UU, StringBuilder whereClause, String trxName) {
 		int[] counts = new int[] {0, 0};
 
@@ -1013,6 +1015,105 @@ public class MRequest extends X_R_Request
 		try
 		{
 			pstmt = DB.prepareStatement (sql, trxName);
+			rs = pstmt.executeQuery ();
+			while (rs.next ())
+			{
+				if ("Y".equals(rs.getString(1)))
+					counts[0] += rs.getInt(2);
+				else
+					counts[1] += rs.getInt(2);
+			}
+		}
+		catch (Exception e)
+		{
+			throw new AdempiereException(e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+		}
+		
+		return counts;
+	}
+
+	/**
+	 * Get number of active and inactive request
+	 * @param AD_Table_ID
+	 * @param Record_ID Record ID - used when Record_UU is null, and also to compare with User, BPartner, Order, Invoice, Payment, Project, Campaign and Asset
+	 * @param Record_UU Record UUID
+	 * @param whereClause
+	 * @param params
+	 * @param trxName
+	 * @return int[], [0] = inactive request count (Processed=Y) and [1] = active request count (Processed=N)
+	 */
+	public static int[] getRequestCount(int AD_Table_ID, int Record_ID, String Record_UU, StringBuilder whereClause, List<Object> params, String trxName) {
+		if (whereClause == null)
+			throw new IllegalArgumentException("whereClause is null");
+		if (params == null)
+			throw new IllegalArgumentException("params is null");
+		
+		int[] counts = new int[] {0, 0};
+
+		whereClause.append("(AD_Table_ID=?");
+		params.add(Integer.valueOf(AD_Table_ID));
+		
+		if (Util.isEmpty(Record_UU)) {
+			whereClause.append(" AND Record_ID=?");
+			params.add(Integer.valueOf(Record_ID));
+		} else {
+			whereClause.append(" AND Record_UU=?");
+			params.add(Record_UU);
+		}
+		whereClause.append(")");
+		//
+		if (AD_Table_ID == MUser.Table_ID) {
+			whereClause.append(" OR AD_User_ID=? OR SalesRep_ID=?");
+			params.add(Integer.valueOf(Record_ID));
+			params.add(Integer.valueOf(Record_ID));
+		}
+		else if (AD_Table_ID == MBPartner.Table_ID) {
+			whereClause.append(" OR C_BPartner_ID=?");
+			params.add(Integer.valueOf(Record_ID));
+		}
+		else if (AD_Table_ID == MOrder.Table_ID) {
+			whereClause.append(" OR C_Order_ID=?");
+			params.add(Integer.valueOf(Record_ID));
+		}
+		else if (AD_Table_ID == MInvoice.Table_ID) {
+			whereClause.append(" OR C_Invoice_ID=?");
+			params.add(Integer.valueOf(Record_ID));
+		}
+		else if (AD_Table_ID == MPayment.Table_ID) {
+			whereClause.append(" OR C_Payment_ID=?");
+			params.add(Integer.valueOf(Record_ID));
+		}
+		else if (AD_Table_ID == MProduct.Table_ID) {
+			whereClause.append(" OR M_Product_ID=?");
+			params.add(Integer.valueOf(Record_ID));
+		}
+		else if (AD_Table_ID == MProject.Table_ID) {
+			whereClause.append(" OR C_Project_ID=?");
+			params.add(Integer.valueOf(Record_ID));
+		}
+		else if (AD_Table_ID == MCampaign.Table_ID) {
+			whereClause.append(" OR C_Campaign_ID=?");
+			params.add(Integer.valueOf(Record_ID));
+		}
+		else if (AD_Table_ID == MAsset.Table_ID) {
+			whereClause.append(" OR A_Asset_ID=?");
+			params.add(Integer.valueOf(Record_ID));
+		}
+		//
+		String sql = "SELECT Processed, COUNT(*) "
+			+ "FROM R_Request WHERE " + whereClause 
+			+ " GROUP BY Processed "
+			+ "ORDER BY Processed DESC";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement (sql, trxName);
+			DB.setParameters(pstmt, params);
 			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{

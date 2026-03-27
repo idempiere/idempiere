@@ -24,7 +24,6 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.Adempiere;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.CacheMgt;
@@ -47,7 +46,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4467301251742419106L;
+	private static final long serialVersionUID = -2345815648281241687L;
 
 	/** Constant for Predefine System Configuration Names (in alphabetical order) */
 	
@@ -72,6 +71,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String APPLICATION_OS_INFO_SHOWN = "APPLICATION_OS_INFO_SHOWN";
     public static final String APPLICATION_URL = "APPLICATION_URL";
     public static final String ATTACH_EMBEDDED_2PACK = "ATTACH_EMBEDDED_2PACK";
+    public static final String ATTACHMENT_SAVE_LIST_IN_AD_ATTACHMENTFILE = "ATTACHMENT_SAVE_LIST_IN_AD_ATTACHMENTFILE";
     public static final String ATTACH_NOTIFY_2PACK = "ATTACH_NOTIFY_2PACK";
     public static final String AUTO_ASSIGN_ROLE_TO_CREATOR_USER = "AUTO_ASSIGN_ROLE_TO_CREATOR_USER";
     public static final String AUTOMATIC_PACKIN_FOLDERS = "AUTOMATIC_PACKIN_FOLDERS";
@@ -94,6 +94,8 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String CHECK_CREDIT_ON_CASH_POS_ORDER = "CHECK_CREDIT_ON_CASH_POS_ORDER";
     public static final String CHECK_CREDIT_ON_PREPAY_ORDER = "CHECK_CREDIT_ON_PREPAY_ORDER";
     public static final String CLIENT_ACCOUNTING = "CLIENT_ACCOUNTING";
+	public static final String COPY_TENANT_BATCH_FLUSH_SIZE = "COPY_TENANT_BATCH_FLUSH_SIZE";
+    public static final String CSV_EXPORT_SANITIZATION = "CSV_EXPORT_SANITIZATION";
     public static final String DASHBOARD_LAYOUT_ORIENTATION = "DASHBOARD_LAYOUT_ORIENTATION";
     public static final String DB_READ_REPLICA_NORMAL_MAX_ITERATIONS = "DB_READ_REPLICA_NORMAL_MAX_ITERATIONS";
     public static final String DB_READ_REPLICA_NORMAL_TIMEOUT_IN_MILLISECONDS = "DB_READ_REPLICA_NORMAL_TIMEOUT_IN_MILLISECONDS";
@@ -109,6 +111,8 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String DPViews_ShowInfoSchedule = "DPViews_ShowInfoSchedule";
     public static final String EMAIL_NOTIFY_2PACK = "EMAIL_NOTIFY_2PACK";
     public static final String EMAIL_SERVER_START_ENABLED = "EMAIL_SERVER_START_ENABLED";
+    public static final String EMAIL_SERVER_START_MAILTEXT_ID = "EMAIL_SERVER_START_MAILTEXT_ID";
+    public static final String EMAIL_SERVER_START_RECIPIENT = "EMAIL_SERVER_START_RECIPIENT";
     public static final String EMAIL_TEST_MAILTEXT_ID = "EMAIL_TEST_MAILTEXT_ID";
     public static final String ENABLE_PAYMENTBOX_BUTTON = "ENABLE_PAYMENTBOX_BUTTON";
     public static final String ENABLE_SSO = "ENABLE_SSO";
@@ -186,11 +190,13 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String PROJECT_ID_USER = "PROJECT_ID_USER";
     public static final String PROJECT_ID_WEBSITE = "PROJECT_ID_WEBSITE";
     public static final String QUICKFORM_PAGE_SIZE = "QUICKFORM_PAGE_SIZE";
+    public static final String READ_TABLES_NOT_IN_TABLE_ACCESS_INCLUDE_LIST = "READ_TABLES_NOT_IN_TABLE_ACCESS_INCLUDE_LIST";
     public static final String REAL_TIME_POS = "REAL_TIME_POS";
     public static final String RecentItems_MaxSaved = "RecentItems_MaxSaved";
     public static final String RecentItems_MaxShown = "RecentItems_MaxShown";
 	public static final String REPORT_LOAD_TIMEOUT_IN_SECONDS = "REPORT_LOAD_TIMEOUT_IN_SECONDS";
     public static final String REPORT_SWAP_MAX_ROWS = "REPORT_SWAP_MAX_ROWS";
+    public static final String SECURITY_DASHBOARD_LEGACY_KEY_WARNING = "SECURITY_DASHBOARD_LEGACY_KEY_WARNING";
     public static final String SHIPPING_DEFAULT_WEIGHT_PER_PACKAGE = "SHIPPING_DEFAULT_WEIGHT_PER_PACKAGE";
     public static final String STANDARD_REPORT_FOOTER_TRADEMARK_TEXT = "STANDARD_REPORT_FOOTER_TRADEMARK_TEXT";
     public static final String START_VALUE_BPLOCATION_NAME = "START_VALUE_BPLOCATION_NAME";
@@ -276,7 +282,14 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZK_REPORT_TABLE_OUTPUT_TYPE = "ZK_REPORT_TABLE_OUTPUT_TYPE";
     public static final String ZK_ROOT_FOLDER_BROWSER = "ZK_ROOT_FOLDER_BROWSER";
     public static final String ZK_SEARCH_AUTO_COMPLETE_MAX_ROWS = "ZK_SEARCH_AUTO_COMPLETE_MAX_ROWS";
+	public static final String ZK_SEARCH_AUTO_COMPLETE_TIMEOUT = "ZK_SEARCH_AUTO_COMPLETE_TIMEOUT";
     public static final String ZK_SEQ_DEFAULT_VALUE_PANEL = "ZK_SEQ_DEFAULT_VALUE_PANEL";
+	public static final String ZK_SESSION_FINGERPRINT_CHECK_ACCEPT_LANGUAGE = "ZK_SESSION_FINGERPRINT_CHECK_ACCEPT_LANGUAGE";
+	public static final String ZK_SESSION_FINGERPRINT_CHECK_IP = "ZK_SESSION_FINGERPRINT_CHECK_IP";
+	public static final String ZK_SESSION_FINGERPRINT_CHECK_USER_AGENT = "ZK_SESSION_FINGERPRINT_CHECK_USER_AGENT";
+	public static final String ZK_SESSION_FINGERPRINT_ENABLED = "ZK_SESSION_FINGERPRINT_ENABLED";
+	public static final String ZK_SESSION_SAVE_JSESSIONID = "ZK_SESSION_SAVE_JSESSIONID";
+	public static final String ZK_SESSION_SAVE_USER_AGENT = "ZK_SESSION_SAVE_USER_AGENT";
     public static final String ZK_SESSION_TIMEOUT_IN_SECONDS = "ZK_SESSION_TIMEOUT_IN_SECONDS";
     public static final String ZK_THEME = "ZK_THEME";
     public static final String ZK_THEME_USE_FONT_ICON_FOR_IMAGE = "ZK_THEME_USE_FONT_ICON_FOR_IMAGE";
@@ -923,10 +936,9 @@ public class MSysConfig extends X_AD_SysConfig
 		if (success && newRecord && ! getName().endsWith("_NOCACHE")) {
 			// Clear cache of AD_SysConfig
 			// This is to clear the cache of AD_SysConfig when creating a new record
-			// the reset cache is being called on PO when a record is changed or deleted, but not on new
-			// NOTE also that reset the specific ID doesn't work because the MSysConfig cache holds a
-			//   String type, and CCache.reset(int) just call reset when the key is not an Integer
-			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(Table_Name));
+			// NOTE also that reset the specific ID doesn't work because the MSysConfig cache is
+			//   based on a key containing the client and org, so we need to reset the whole cache
+			CacheMgt.scheduleCacheReset(Table_Name, -1, false, get_TrxName());
 		}
 		return success;
 	}
@@ -934,7 +946,7 @@ public class MSysConfig extends X_AD_SysConfig
 	@Override
 	protected boolean afterDelete(boolean success) {
 		if (success && ! getName().endsWith("_NOCACHE")) {
-			Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(Table_Name));
+			CacheMgt.scheduleCacheReset(Table_Name, -1, false, get_TrxName());
 		}
 		return success;
 	}

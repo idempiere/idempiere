@@ -567,7 +567,17 @@ public class MMovement extends X_M_Movement implements DocAction
 						
 						//Update Storage 
 						Timestamp effDateMPolicy = dateMPolicy;
-						if (dateMPolicy == null && line.getMovementQty().negate().signum() > 0)
+						if (effDateMPolicy == null && line.getMovementQty().negate().signum() > 0 
+								&& product.getM_AttributeSet_ID() > 0 && line.getM_AttributeSetInstance_ID() > 0) {
+							MAttributeSet as = MAttributeSet.get(getCtx(), product.getM_AttributeSet_ID());
+							if (as.isUseGuaranteeDateForMPolicy()) {
+								MAttributeSetInstance asi = new MAttributeSetInstance(getCtx(), line.getM_AttributeSetInstance_ID(), get_TrxName());
+								if (asi != null && asi.getGuaranteeDate() != null) {
+									effDateMPolicy = asi.getGuaranteeDate();
+								}
+							}
+						}
+						if (effDateMPolicy == null && line.getMovementQty().negate().signum() > 0)
 							effDateMPolicy = getMovementDate();
 						if (!MStorageOnHand.add(getCtx(),
 								line.getM_Locator_ID(),
@@ -579,10 +589,49 @@ public class MMovement extends X_M_Movement implements DocAction
 							m_processMsg = "Cannot correct Inventory OnHand (MA) [" + product.getValue() + "] - " + lastError;
 							return DocAction.STATUS_Invalid;
 						}
+						
+						// when the source and destination ASIs are different, re-lookup the storage record
+						if (line.getM_AttributeSetInstance_ID() > 0 && line.getM_AttributeSetInstanceTo_ID() > 0
+								&& line.getM_AttributeSetInstance_ID() != line.getM_AttributeSetInstanceTo_ID()) {
+							dateMPolicy= null;
+							storages = null;
+							if (line.getMovementQty().compareTo(Env.ZERO) > 0) {
+								// Find Date Material Policy bases on ASI To
+								storages = MStorageOnHand.getWarehouse(getCtx(), 0,
+										line.getM_Product_ID(), line.getM_AttributeSetInstanceTo_ID(), null,
+										MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), false,
+										line.getM_LocatorTo_ID(), get_TrxName());
+							} else {
+								// Case of reversal
+								storages = MStorageOnHand.getWarehouse(getCtx(), 0,
+										line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(), null,
+										MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), false,
+										line.getM_Locator_ID(), get_TrxName());
+							}
+							for (MStorageOnHand storage : storages) {
+								if (storage.getQtyOnHand().add(line.getMovementQty()).compareTo(Env.ZERO) >= 0) {
+									dateMPolicy = storage.getDateMaterialPolicy();
+									break;
+								}
+							}
+							
+							if (dateMPolicy == null && storages.length > 0)
+								dateMPolicy = storages[0].getDateMaterialPolicy();
+						}
 	
 						//Update Storage
 						effDateMPolicy = dateMPolicy;
-						if (dateMPolicy == null && line.getMovementQty().signum() > 0)
+						if (effDateMPolicy == null && line.getMovementQty().signum() > 0 
+								&& product.getM_AttributeSet_ID() > 0 && line.getM_AttributeSetInstanceTo_ID() > 0) {
+							MAttributeSet as = MAttributeSet.get(getCtx(), product.getM_AttributeSet_ID());
+							if (as.isUseGuaranteeDateForMPolicy()) {
+								MAttributeSetInstance asi = new MAttributeSetInstance(getCtx(), line.getM_AttributeSetInstanceTo_ID(), get_TrxName());
+								if (asi != null && asi.getGuaranteeDate() != null) {
+									effDateMPolicy = asi.getGuaranteeDate();
+								}
+							}
+						}
+						if (effDateMPolicy == null && line.getMovementQty().signum() > 0)
 							effDateMPolicy = getMovementDate();
 						if (!MStorageOnHand.add(getCtx(),
 								line.getM_LocatorTo_ID(),

@@ -480,7 +480,18 @@ public class MInventoryLine extends X_M_InventoryLine
 	public boolean isSOTrx() {
 		return getMovementQty().signum() < 0;
 	}
-	
+
+	/**
+	 * Check is inventory line is import inventory line
+	 * @param M_InventoryLine_ID
+	 * @param trxName
+	 * @return I_Inventory_ID
+	 */
+	public static int getImportLine_ID(int M_InventoryLine_ID, String trxName) {
+		int importLine = DB.getSQLValueEx(trxName, "SELECT I_Inventory_ID from I_Inventory where M_InventoryLine_ID=?", M_InventoryLine_ID);
+		return importLine;
+	}
+
 	public BigDecimal getCurrentCostPriceForCostAdjustment() {
 		MInventory inventory = getParent();
 		MClient client = MClient.get(inventory.getCtx(), inventory.getAD_Client_ID());
@@ -530,3 +541,4 @@ public class MInventoryLine extends X_M_InventoryLine
 		return null;
 	}
 }	//	MInventoryLine
+

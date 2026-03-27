@@ -27,6 +27,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+import org.adempiere.base.GeneratedCodeCoverageExclusion;
 import org.compiere.Adempiere;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -376,6 +377,8 @@ public class MIssue extends X_AD_Issue
 	 *  @deprecated
 	 */
 	@Deprecated (since="13", forRemoval=true)
+	@SuppressWarnings("removal")
+	@GeneratedCodeCoverageExclusion
 	public String process()
 	{
 		MIssueProject.get(this);	//	sets also Asset

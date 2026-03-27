@@ -24,6 +24,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
+import org.adempiere.base.GeneratedCodeCoverageExclusion;
 import org.compiere.apps.IStatusBar;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.minigrid.IMiniTable;
@@ -45,6 +46,8 @@ import org.compiere.util.Trx;
  * @deprecated ticket IDEMPIERE-1963 replaced this with an Info Window
  */
 @Deprecated (since="13", forRemoval=true)
+@SuppressWarnings("removal")
+@GeneratedCodeCoverageExclusion
 public class InOutGen extends GenForm
 {
 	/**	Logger			*/
@@ -240,7 +243,7 @@ public class InOutGen extends GenForm
 	
 	/**************************************************************************
 	 *	Generate Shipments
-	 */
+	 */	
 	public String generate(IStatusBar statusBar, KeyNamePair docTypeKNPair, String docActionSelected)
 	{
 		String info = "";

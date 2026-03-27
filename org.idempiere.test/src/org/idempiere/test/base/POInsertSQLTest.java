@@ -25,10 +25,12 @@ package org.idempiere.test.base;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 
 import org.compiere.db.Database;
@@ -296,7 +298,7 @@ class POInsertSQLTest extends AbstractTestCase {
 	@Test
 	void testToInsertSQL_RecordID_WithOfficialID() {
 		// Test Record_ID handling when the ID is <= MAX_OFFICIAL_ID (1000000)
-		// In this case, the ID should be used directly without toRecordId() function
+		// In this case, the ID should be used directly without using subquery
 		
 		X_AD_ChangeLog changeLog = new X_AD_ChangeLog(Env.getCtx(), 0, getTrxName());
 		changeLog.setAD_Session_ID(1);
@@ -311,16 +313,16 @@ class POInsertSQLTest extends AbstractTestCase {
 		assertNotNull(sql);
 		assertTrue(sql.startsWith("INSERT INTO AD_ChangeLog"));
 		
-		// When Record_ID <= MAX_OFFICIAL_ID, it should appear as-is (not wrapped in toRecordId)
+		// When Record_ID <= MAX_OFFICIAL_ID, it should appear as-is (not using subquery with uuid column)
 		assertTrue(sql.contains("100"), "Official Record_ID should be included directly");
-		assertFalse(sql.contains("toRecordId"), "toRecordId function should NOT be used for official IDs");
+		assertFalse(sql.contains("(SELECT"), "Subquery should NOT be used for official IDs");
 	}
 	
 	@Test
 	void testToInsertSQL_RecordID_WithNonOfficialID() {
 		// Test Record_ID handling when the ID is > MAX_OFFICIAL_ID (1000000)
-		// In this case, the ID should be converted using toRecordId() function
-		// which looks up the UUID and uses toRecordId('TableName', 'UUID')
+		// In this case, the ID should be converted using subquery
+		// which looks up the UUID and uses (select TableName_ID from 'TableName' WHERE TableName_UU = 'UUID')
 		
 		// First, create a test user to reference (this will have an ID > MAX_OFFICIAL_ID in most cases)
 		MUser testUser = new MUser(Env.getCtx(), 0, getTrxName());
@@ -348,10 +350,10 @@ class POInsertSQLTest extends AbstractTestCase {
 			assertTrue(sql.startsWith("INSERT INTO AD_ChangeLog"));
 			
 			// When Record_ID > MAX_OFFICIAL_ID and AD_Table_ID is set,
-			// it should use toRecordId() function with the table name and UUID
-			assertTrue(sql.contains("toRecordId"), "toRecordId function should be used for non-official IDs");
-			assertTrue(sql.contains("AD_User"), "Table name should be in toRecordId function");
-			assertTrue(sql.contains(userUUID), "UUID should be in toRecordId function");
+			// it should use subquery with the table name and UUID
+			assertTrue(sql.contains("(SELECT "), "(SELECT subquery should be used for non-official IDs");
+			assertTrue(sql.contains("AD_User"), "Table name should be in AD_User subquery");
+			assertTrue(sql.contains(userUUID), "UUID should be in AD_User subquery");
 			
 			// The raw ID should NOT appear in the SQL
 			assertFalse(sql.matches(".*[^a-zA-Z0-9_]" + userId + "[^a-zA-Z0-9_].*"), 
@@ -423,7 +425,28 @@ class POInsertSQLTest extends AbstractTestCase {
 			
 			insertSQL = image.toInsertSQL(DB.getDatabase().getName());
 			image.deleteEx(true);
-			DB.executeUpdateEx(insertSQL, getTrxName());
+			// Oracle has plsql block for inserting blob and that need special handling for jdbc
+			if (DB.isOracle()) {
+				int idx = insertSQL.indexOf(";");
+				if (idx == -1) {
+					fail("Unexpected insert SQL for Oracle not containing semicolon:\n" + insertSQL);
+				}
+				// split the insert part and plsql part
+				String insertPart = insertSQL.substring(0, idx);
+				String plsqlPart = insertSQL.substring(idx + 1);
+				DB.executeUpdateEx(insertPart, getTrxName());				
+				plsqlPart = plsqlPart.trim();
+				if (plsqlPart.endsWith("/"))
+					plsqlPart = plsqlPart.substring(0,  plsqlPart.length() - 1); // remove /
+				try (var pstmt = DB.prepareStatement(plsqlPart, getTrxName())) {
+					pstmt.execute();
+				} catch (SQLException e) {
+					e.printStackTrace();
+					fail("Failed to execute PL/SQL part of insert SQL for Oracle:\n" + plsqlPart);
+				}
+			} else {
+				DB.executeUpdateEx(insertSQL, getTrxName());
+			}
 		}
 	}
 }

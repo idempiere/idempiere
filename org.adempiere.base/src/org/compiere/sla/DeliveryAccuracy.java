@@ -23,6 +23,7 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 
+import org.adempiere.base.GeneratedCodeCoverageExclusion;
 import org.compiere.model.MInOut;
 import org.compiere.model.MSLAGoal;
 import org.compiere.model.MSLAMeasure;
@@ -43,6 +44,8 @@ import org.compiere.util.Env;
  *  @deprecated not fully implement, marked as inactive in application dictionary
  */
 @Deprecated (since="13", forRemoval=true)
+@SuppressWarnings("removal")
+@GeneratedCodeCoverageExclusion
 public class DeliveryAccuracy extends SLACriteria
 {
 

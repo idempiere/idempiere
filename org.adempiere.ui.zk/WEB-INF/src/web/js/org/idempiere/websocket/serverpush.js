@@ -47,9 +47,15 @@
     	  me.active = true;
     	  me.socket.send("__ping__");
       };
-	  this.socket.sendAjaxRequest = function(ajaxReqInf) {
-		  let ajaxMsg = "zkau;"+JSON.stringify(ajaxReqInf);
+	  this.socket.sendAjaxRequest = function(reqInf) {
+		  zAu.sentTime = jq.now(); //used by server-push (cpsp)
+          zk.ausending = true;
+		  zAu.ajaxReq = true; // processing flag
+          zAu.ajaxReqInf = reqInf;
+		  let ajaxMsg = "zkau;"+JSON.stringify(reqInf);
 		  me.socket.send(ajaxMsg);
+		  if (!reqInf.implicit)
+				zk.startProcessing(zk.procDelay, reqInf.sid); //wait a moment to avoid annoying
 	  }
       this.socket.onmessage = function (event) {
 		  if (event.data=="echo") {
@@ -58,7 +64,7 @@
 			  let requri = zk.ajaxURI(null, {desktop: dt, au: true});
 			  let content = zAu.encode(0, evtObj, dt);
 			  let ajaxReqInf = {
-			          sid: zAu.seqId, uri: requri, dt: dt, content: content,
+			          sid: zAu.seqId, uri: requri, dt: dt.id, content: content,
 			          implicit: true,
 			          ignorable: true, tmout: 0, rtags: evtObj.rtags, forceAjax: false
 			  };
@@ -80,6 +86,11 @@
 				//using undocumented, ZK internal api
 				//need verification after every ZK upgrade
 	            zAu._onResponseReady(responseJson);
+				let dt = zk.Desktop.$(me.dtid);
+				if (dt) {
+					let es = zAu.getAuRequests(dt);
+                	if (es.length > 0) setTimeout(() => zAu.sendNow(dt), 0);
+				}
 	          }
 	      }
       }
@@ -126,6 +137,14 @@
 		var es = zAu.getAuRequests(dt);
 		if (es.length == 0)
 			return false;
+
+		//websocket does not support file upload
+		for (var j = 0; j < es.length; ++j) {
+			var aureq = es[j];
+			if (aureq.file) {
+				return originalSendNow(dt); //fallback to ajax
+			}
+		}
 
 		if (zk.mounting) {
 			zk.afterMount(function () {zAu.sendNow(dt);});
@@ -215,12 +234,14 @@
 		//if (zk.portlet2AjaxURI)
 			//requri = zk.portlet2AjaxURI;
 		//modify to use WebSocket connection for au requests
-		if (content)
-			dt._serverpush.socket.sendAjaxRequest({
-				sid: zAu.seqId, uri: requri, dt: dt, content: content,
+		if (content) {
+			let reqInf =  {
+				sid: zAu.seqId, uri: requri, dt: dt.id, content: content,
 				implicit: implicit,
 				ignorable: ignorable, tmout: 0, rtags: rtags, forceAjax: forceAjax
-			});
+			}
+			dt._serverpush.socket.sendAjaxRequest(reqInf);			
+		}
 		return true;
 	  } else {
 		return originalSendNow(dt);

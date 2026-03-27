@@ -69,6 +69,7 @@ public class SystemIDs
 	public final static int FORM_SQL_QUERY = 200018;
 
 	public final static int MENU_NOTICE = 233;
+	public final static int MENU_TEST = 113;
 	
 	public final static int MESSAGE_REQUESTUPDATE = 834;
 	public final static int MESSAGE_WORKFLOWRESULT = 753;
@@ -242,9 +243,14 @@ public class SystemIDs
 
 	public final static int TAB_TAB = 106;
 
-	public final static int SYSCONFIG_USER_HASH_PASSWORD = 200013;
-	public final static int SYSCONFIG_USER_HASH_PASSWORD_ALGORITHM = 200285;
-	public final static int SYSCONFIG_SYSTEM_NATIVE_SEQUENCE = 50016;	
+	public final static int SYSCONFIG_USER_PASSWORD_HASH = 200013;
+	public final static int SYSCONFIG_USER_PASSWORD_HASH_ALGORITHM = 200285;
+	@Deprecated(since="13.0.0", forRemoval=true) // for backward compatibility, to be removed in future versions
+	public final static int SYSCONFIG_USER_HASH_PASSWORD = SYSCONFIG_USER_PASSWORD_HASH;
+	@Deprecated(since="13.0.0", forRemoval=true) // for backward compatibility, to be removed in future versions
+	public final static int SYSCONFIG_USER_HASH_PASSWORD_ALGORITHM = SYSCONFIG_USER_PASSWORD_HASH_ALGORITHM;
+	public final static int SYSCONFIG_SYSTEM_NATIVE_SEQUENCE = 50016;
+	public final static int SYSCONFIG_SECURITY_DASHBOARD_LEGACY_KEY_WARNING = 200296;
 	
 	public final static int SCHEDULE_10_MINUTES = 200002;
 	public final static int SCHEDULE_15_MINUTES = 200003;

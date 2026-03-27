@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Blob;
@@ -46,6 +47,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 import org.osgi.service.component.annotations.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -66,36 +68,57 @@ public class AttachmentDBLOB implements IAttachmentStore
     public boolean loadLOBData(MAttachment attach, MStorageProvider prov) {
         //	Reset
         attach.m_items = new ArrayList<>();
-        //
-        byte[] data = attach.getBinaryData();
-        if (data == null || data.length == 0)
-            return true;
+        byte[] data = null;
+    	if (! MAttachment.LIST_IN_ATTACHMENT_FILE.equals(attach.getTitle())) {
+            data = attach.getBinaryData();
+            if (data == null || data.length == 0)
+                return true;
+    	}
 
-        return loadXML(attach, data);
+        return loadEntries(attach, data);
     }
 
     /**
-     * Load attachment entries from XML
+     * Load attachment entries from XML or from AD_AttachmentFile
      * @param attach attachment record
      * @param data xml meta data
      * @return true if success, false otherwise
      */
-    private boolean loadXML(MAttachment attach, byte[] data) {
-        NodeList entries = getEntriesFromXML(data);
-        for (int i = 0; i < entries.getLength(); i++) {
-            final Node entryNode = entries.item(i);
-            final NamedNodeMap attributes = entryNode.getAttributes();
-            final Node nameNode = attributes.getNamedItem("name");
-            final Node sizeNode = attributes.getNamedItem("size");
-            if(nameNode==null) {
-                log.severe("No filename for entry " + i);
-                attach.m_items = null;
-                return false;
+    private boolean loadEntries(MAttachment attach, byte[] data) {
+    	if (MAttachment.LIST_IN_ATTACHMENT_FILE.equals(attach.getTitle())) {
+			int index = 0;
+    		for (MAttachmentFile attachFile : attach.getAttachmentFiles()) {
+    			BigDecimal fileSize = attachFile.getFileSize();
+    			String sizeStr = fileSize != null ? fileSize.toPlainString() : "0";
+    			IAttachmentLazyDataSource ds = new AttachmentDBLazyDataSource(attach.getAD_Attachment_ID(), index, attachFile.getFileName(), sizeStr);
+				final MAttachmentEntry entry = new MAttachmentEntry(attachFile.getFileName(), attach.m_items.size() + 1, ds);
+				entry.setSHA256Sum(attachFile.getSHA256Checksum());
+				attach.m_items.add(entry);
+				index++;
+    		}
+    	} else {
+    		// XML
+            NodeList entries = getEntriesFromXML(data);
+            if (entries == null) {
+            	log.severe("Failed to parse XML attachment data");
+            	attach.m_items = null;
+            	return false;
             }
-            IAttachmentLazyDataSource ds = new AttachmentDBLazyDataSource(attach.getAD_Attachment_ID(), i, nameNode.getNodeValue(), sizeNode.getNodeValue());
-            final MAttachmentEntry entry = new MAttachmentEntry(nameNode.getNodeValue(), attach.m_items.size() + 1, ds);
-            attach.m_items.add(entry);
-        }
+            for (int i = 0; i < entries.getLength(); i++) {
+                final Node entryNode = entries.item(i);
+                final NamedNodeMap attributes = entryNode.getAttributes();
+                final Node nameNode = attributes.getNamedItem("name");
+                final Node sizeNode = attributes.getNamedItem("size");
+                if(nameNode==null) {
+                    log.severe("No filename for entry " + i);
+                    attach.m_items = null;
+                    return false;
+                }
+                IAttachmentLazyDataSource ds = new AttachmentDBLazyDataSource(attach.getAD_Attachment_ID(), i, nameNode.getNodeValue(), sizeNode.getNodeValue());
+                final MAttachmentEntry entry = new MAttachmentEntry(nameNode.getNodeValue(), attach.m_items.size() + 1, ds);
+                attach.m_items.add(entry);
+            }
+    	}
         return true;
     }
 
@@ -113,60 +136,93 @@ public class AttachmentDBLOB implements IAttachmentStore
             return true;
         }
 
-        return saveAsXML(attach, beforeSave);
+        return saveEntries(attach, beforeSave);
     }
 
     /**
-     * Save attachment entries as XML and store the actual binary data to ad_attachment_entry
+     * Save attachment entries as XML and store the actual binary data to ad_attachment_entry, or to AD_AttachmentFile
      * @param attach attachment record
      * @param beforeSave true if calling from beforeSave of attachment record, false if calling from afterSave
      * @return true if success, false otherwise
      */
-    private boolean saveAsXML(MAttachment attach, boolean beforeSave) {
-        if (beforeSave) {
-            final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            try {
-                final DocumentBuilder builder = factory.newDocumentBuilder();
-                final Document document = builder.newDocument();
-                final Element root = document.createElement("attachments");
-                document.appendChild(root);
-                document.setXmlStandalone(true);
-                // create xml entries
-                for (int i = 0; i < attach.m_items.size(); i++) {
-                    if (log.isLoggable(Level.FINE)) log.fine(attach.m_items.get(i).toString());
+    private boolean saveEntries(MAttachment attach, boolean beforeSave) {
+    	if (beforeSave) {
+    		if (MSysConfig.getBooleanValue(MSysConfig.ATTACHMENT_SAVE_LIST_IN_AD_ATTACHMENTFILE, true, Env.getAD_Client_ID(Env.getCtx()))) {
+    			attach.setBinaryData(null);
+    			attach.setTitle(MAttachment.LIST_IN_ATTACHMENT_FILE);
+    			return true;
+    		} else {
+    			final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    			try {
+    				final DocumentBuilder builder = factory.newDocumentBuilder();
+    				final Document document = builder.newDocument();
+    				final Element root = document.createElement("attachments");
+    				document.appendChild(root);
+    				document.setXmlStandalone(true);
+    				// create xml entries
+    				for (int i = 0; i < attach.m_items.size(); i++) {
+    					if (log.isLoggable(Level.FINE)) log.fine(attach.m_items.get(i).toString());
 
-                    final Element entry = document.createElement("entry");
-                    entry.setAttribute("name", attach.getEntryName(i));
-                    entry.setAttribute("size", Long.toString(attach.getEntry(i).getSize()));
-                    root.appendChild(entry);
-                }
+    					final Element entry = document.createElement("entry");
+    					entry.setAttribute("name", attach.getEntryName(i));
+    					entry.setAttribute("size", Long.toString(attach.getEntry(i).getSize()));
+    					root.appendChild(entry);
+    				}
 
-                final Source source = new DOMSource(document);
-                final ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                final Result result = new StreamResult(bos);
-                final Transformer xformer = TransformerFactory.newInstance().newTransformer();
-                xformer.transform(source, result);
-                final byte[] xmlData = bos.toByteArray();
-                if (log.isLoggable(Level.FINE)) log.fine(bos.toString());
-                attach.setBinaryData(xmlData);
-                attach.setTitle(MAttachment.XML);
-                return true;
-            } catch (Exception e) {
-                log.log(Level.SEVERE, "saveLOBData", e);
-            }
-            attach.setBinaryData(null);
-            return false;
-        } else {
-            try {
-                for (int i = 0; i < attach.m_items.size(); i++) {
-                    insertOrReplace(attach, i);
-                }
-            } catch (Exception e) {
-                log.log(Level.SEVERE, e.getMessage(), e);
-                return false;
-            }
-            return true;
-        }
+    				final Source source = new DOMSource(document);
+    				final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    				final Result result = new StreamResult(bos);
+    				final Transformer xformer = TransformerFactory.newInstance().newTransformer();
+    				xformer.transform(source, result);
+    				final byte[] xmlData = bos.toByteArray();
+    				if (log.isLoggable(Level.FINE)) log.fine(bos.toString());
+    				attach.setBinaryData(xmlData);
+    				attach.setTitle(MAttachment.XML);
+    				return true;
+    			} catch (Exception e) {
+    				log.log(Level.SEVERE, "saveLOBData", e);
+    			}
+    			attach.setBinaryData(null);
+    			return false;
+    		}
+    	} else {
+    		if (MSysConfig.getBooleanValue(MSysConfig.ATTACHMENT_SAVE_LIST_IN_AD_ATTACHMENTFILE, true, Env.getAD_Client_ID(Env.getCtx()))) {
+    			for (int i = 0; i < attach.m_items.size(); i++) {
+    				MAttachmentEntry entry = attach.m_items.get(i);
+    				if (log.isLoggable(Level.FINE)) log.fine(entry.toString());
+    				MAttachmentFile af = MAttachmentFile.get(attach, entry.getName());
+    				af.setFilePath(null);
+    				af.setFileSize(BigDecimal.valueOf(entry.getSize()));
+    				af.setSeqNo(i+1);
+    				af.setSHA256Checksum(entry.getSHA256Sum());
+    				af.setMIMEType(entry.getContentType());
+    				af.saveEx(attach.get_TrxName());
+    			}
+    			for (MAttachmentFile oldAF : attach.getAttachmentFiles()) {
+					boolean found = false;
+					for (MAttachmentEntry entry : attach.m_items) {
+						if (oldAF.getFileName() != null && oldAF.getFileName().equals(entry.getName())) {
+							found = true;
+							break;
+						}
+					}
+					if (!found) {
+						if (log.isLoggable(Level.FINE)) log.fine("delete old attachment file " + oldAF);
+						oldAF.deleteEx(true, attach.get_TrxName());
+					}
+				}
+
+    		}
+			try {
+				for (int i = 0; i < attach.m_items.size(); i++) {
+					insertOrReplace(attach, i);
+				}
+			} catch (Exception e) {
+				log.log(Level.SEVERE, e.getMessage(), e);
+				return false;
+			}
+    		return true;
+    	}
     }
 
     private static final String AD_ATTACHMENT_ENTRY_GET = "SELECT BinaryData FROM AD_Attachment_Entry WHERE AD_Attachment_ID=? AND SeqNo=?";
@@ -207,146 +263,138 @@ public class AttachmentDBLOB implements IAttachmentStore
         if (DB.isOracle())
             sql += " FOR UPDATE ";
         boolean updateBlob = false;
-        try (PreparedStatement pstmt = conn != null
-                ? DB.prepareStatement(conn, sql)
-                : DB.prepareStatement(sql, attach.get_TrxName())) {
-            pstmt.setInt(1, attach.getAD_Attachment_ID());
-            pstmt.setInt(2, index);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    if (attach.m_items.get(index).isUpdated()) {
-                        File entryFile = attach.m_items.get(index).getFile();
-                        if (entryFile == null) {
-                            throw new AdempiereException("Attachment file not found: " + attach.getEntryName(index));
-                        }
-                        updateBlob = true;
-                        Blob blob = rs.getBlob(1);
-                        try (ZipOutputStream zos = new ZipOutputStream(blob.setBinaryStream(1));
-                             InputStream inputStream = new FileInputStream(entryFile)) {
-                            ZipEntry zipEntry = new ZipEntry(entryFile.getName());
-                            zipEntry.setSize(entryFile.length());
-                            zos.putNextEntry(zipEntry);
-                            byte[] buffer = new byte[2048];
-                            int length;
-                            while ((length = inputStream.read(buffer)) != -1) {
-                                zos.write(buffer, 0, length);
-                            }
-                        } finally {
-                            blob.free();
-                        }
-                    }
-                    if (updateBlob && conn != null)
-                    {
-                        try {
-                            conn.commit();
-                        } catch (SQLException e) {
-                            throw new DBException(e);
-                        }
-                    }
-                    return;
-                }
-            }
-        } catch (Exception e) {
-            if (conn != null) {
-                try {
-                    conn.rollback();
-                } catch (SQLException ex) {
-                    log.log(Level.WARNING, ex.getMessage(), ex);
-                }
-            }
-            throw new AdempiereException(e);
-        } finally {
-            if (conn != null)
-            {
-                try {
-                    conn.setAutoCommit(true);
-                } catch (SQLException e) {
-                    log.log(Level.WARNING, e.getMessage(), e);
-                }
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    log.log(Level.WARNING, e.getMessage(), e);
-                }
-            }
-        }
-
-        // no existing blob found, create a new one
-        sql = AD_ATTACHMENT_ENTRY_INSERT;
-        File entryFile = attach.m_items.get(index).getFile();
-        if (entryFile == null) {
-            throw new AdempiereException("Attachment file not found: " + attach.getEntryName(index));
-        }
-
-        // compress to temp file
-        Path tempFile = null;
+    	Path tempFile = null;
         try {
-            try {
-                Path tempDir = Files.createTempDirectory("attachment_");
-                tempFile = tempDir.resolve(entryFile.getName() + ".zip");
-                try (ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(tempFile))) {
-                    ZipEntry zipEntry = new ZipEntry(entryFile.getName());
-                    zipEntry.setSize(entryFile.length());
-                    zos.putNextEntry(zipEntry);
-                    byte[] buffer = new byte[2048];
-                    int length;
-                    try (InputStream inputStream = new FileInputStream(entryFile)) {
-                        while ((length = inputStream.read(buffer)) != -1) {
-                            zos.write(buffer, 0, length);
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                throw new AdempiereException(e);
-            }
-            // insert compress temp file to db
-            try (PreparedStatement pstmt = conn != null
-                    ? DB.prepareStatement(conn, sql)
-                    : DB.prepareStatement(sql, attach.get_TrxName())) {
-                pstmt.setInt(1, attach.getAD_Attachment_ID());
-                pstmt.setInt(2, index);
-                try (FileInputStream inputStream = new FileInputStream(tempFile.toFile())) {
-                    pstmt.setBlob(3, inputStream);
-                    pstmt.executeUpdate();
-                }
-            } catch (Exception e) {
-                if (conn != null) {
-                    try {
-                        conn.rollback();
-                    } catch (SQLException ex) {
-                        log.log(Level.WARNING, ex.getMessage(), ex);
-                    }
-                }
-                throw new AdempiereException(e);
-            }
-            if (conn != null) {
-                try {
-                    conn.commit();
-                } catch (SQLException e) {
-                    throw new DBException(e);
-                }
-            }
+        	try (PreparedStatement pstmt = conn != null
+        			? DB.prepareStatement(conn, sql)
+        					: DB.prepareStatement(sql, attach.get_TrxName())) {
+        		pstmt.setInt(1, attach.getAD_Attachment_ID());
+        		pstmt.setInt(2, index);
+        		try (ResultSet rs = pstmt.executeQuery()) {
+        			if (rs.next()) {
+        				if (attach.m_items.get(index).isUpdated()) {
+        					File entryFile = attach.m_items.get(index).getFile();
+        					if (entryFile == null) {
+        						throw new AdempiereException("Attachment file not found: " + attach.getEntryName(index));
+        					}
+        					updateBlob = true;
+        					Blob blob = rs.getBlob(1);
+        					try (ZipOutputStream zos = new ZipOutputStream(blob.setBinaryStream(1));
+        							InputStream inputStream = new FileInputStream(entryFile)) {
+        						ZipEntry zipEntry = new ZipEntry(entryFile.getName());
+        						zipEntry.setSize(entryFile.length());
+        						zos.putNextEntry(zipEntry);
+        						byte[] buffer = new byte[2048];
+        						int length;
+        						while ((length = inputStream.read(buffer)) != -1) {
+        							zos.write(buffer, 0, length);
+        						}
+        					} finally {
+        						blob.free();
+        					}
+        				}
+        				if (updateBlob && conn != null)
+        				{
+        					try {
+        						conn.commit();
+        					} catch (SQLException e) {
+        						throw new DBException(e);
+        					}
+        				}
+        				return;
+        			}
+        		}
+        	} catch (Exception e) {
+        		if (conn != null) {
+        			try {
+        				conn.rollback();
+        			} catch (SQLException ex) {
+        				log.log(Level.WARNING, ex.getMessage(), ex);
+        			}
+        		}
+        		throw new AdempiereException(e);
+        	}
+
+        	// no existing blob found, create a new one
+        	sql = AD_ATTACHMENT_ENTRY_INSERT;
+        	File entryFile = attach.m_items.get(index).getFile();
+        	if (entryFile == null) {
+        		throw new AdempiereException("Attachment file not found: " + attach.getEntryName(index));
+        	}
+
+        	// compress to temp file
+        	try {
+        		Path tempDir = Files.createTempDirectory("attachment_");
+        		tempFile = tempDir.resolve(entryFile.getName() + ".zip");
+        		try (ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(tempFile))) {
+        			ZipEntry zipEntry = new ZipEntry(entryFile.getName());
+        			zipEntry.setSize(entryFile.length());
+        			zos.putNextEntry(zipEntry);
+        			byte[] buffer = new byte[2048];
+        			int length;
+        			try (InputStream inputStream = new FileInputStream(entryFile)) {
+        				while ((length = inputStream.read(buffer)) != -1) {
+        					zos.write(buffer, 0, length);
+        				}
+        			}
+        		}
+        	} catch (Exception e) {
+        		throw new AdempiereException(e);
+        	}
+        	// insert compress temp file to db
+        	try (PreparedStatement pstmt = conn != null
+        			? DB.prepareStatement(conn, sql)
+        					: DB.prepareStatement(sql, attach.get_TrxName())) {
+        		pstmt.setInt(1, attach.getAD_Attachment_ID());
+        		pstmt.setInt(2, index);
+        		try (FileInputStream inputStream = new FileInputStream(tempFile.toFile())) {
+        			pstmt.setBlob(3, inputStream);
+        			pstmt.executeUpdate();
+        		}
+        	} catch (Exception e) {
+        		if (conn != null) {
+        			try {
+        				conn.rollback();
+        			} catch (SQLException ex) {
+        				log.log(Level.WARNING, ex.getMessage(), ex);
+        			}
+        		}
+        		throw new AdempiereException(e);
+        	}
+        	if (conn != null) {
+        		try {
+        			conn.commit();
+        		} catch (SQLException e) {
+        			throw new DBException(e);
+        		}
+        	}
         } finally {
-            if (conn != null)
-            {
-                try {
-                    conn.setAutoCommit(true);
-                } catch (SQLException e) {
-                    log.log(Level.WARNING, e.getMessage(), e);
-                }
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    log.log(Level.WARNING, e.getMessage(), e);
-                }
-            }
-            if (tempFile != null) {
-                File f = tempFile.toFile();
-                if (f.exists()) {
-                    if (!f.delete())
-                        f.deleteOnExit();
-                }
-            }
+        	if (conn != null)
+        	{
+        		try {
+        			conn.setAutoCommit(true);
+        		} catch (SQLException e) {
+        			log.log(Level.WARNING, e.getMessage(), e);
+        		}
+        		try {
+        			conn.close();
+        		} catch (SQLException e) {
+        			log.log(Level.WARNING, e.getMessage(), e);
+        		}
+        	}
+        	if (tempFile != null) {
+        		File f = tempFile.toFile();
+        		if (f.exists()) {
+        			if (!f.delete())
+        				f.deleteOnExit();
+        		}
+        		// Clean up temp directory
+        		File tempDir = f.getParentFile();
+        		if (tempDir != null && tempDir.exists() && tempDir.list().length == 0) {
+        			if (!tempDir.delete())
+        				tempDir.deleteOnExit();
+        		}
+        	}
         }
     }
 

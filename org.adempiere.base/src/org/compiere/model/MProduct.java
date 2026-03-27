@@ -892,7 +892,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 			insert_Accounting("M_Product_Acct", "M_Product_Category_Acct",
 				"p.M_Product_Category_ID=" + 
 				(getM_Product_Category_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName())
-				 ? "toRecordId('M_Product_Category',"+DB.TO_STRING(MProductCategory.get(getM_Product_Category_ID()).getM_Product_Category_UU())+")"
+				 ? PO.buildUUIDSubquery("M_Product_Category", MProductCategory.get(getM_Product_Category_ID()).getM_Product_Category_UU())
 				 : getM_Product_Category_ID()));
 			insert_Tree(X_AD_Tree.TREETYPE_Product);
 		}

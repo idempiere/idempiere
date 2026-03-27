@@ -32,6 +32,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.adempiere.base.GeneratedCodeCoverageExclusion;
 import org.compiere.Adempiere;
 import org.compiere.print.util.SerializableMatrix;
 import org.compiere.print.util.SerializableMatrixImpl;
@@ -39,6 +40,7 @@ import org.compiere.report.MReportLine;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Trace;
+import org.idempiere.db.util.SQLFragment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -106,7 +108,7 @@ public class PrintData implements Serializable
 	/**	Optional Column Meta Data	*/
 	private PrintDataColumn[]	m_columnInfo = null;
 	/**	Optional sql				*/
-	private String				m_sql = null;
+	private SQLFragment			m_sql = null;
 	/** Optional TableName			*/
 	private String				m_TableName = null;
 
@@ -165,21 +167,45 @@ public class PrintData implements Serializable
 	/**
 	 * 	Set SQL (optional)
 	 * 	@param sql SQL
+	 *  @deprecated use {@link #setSQLClause(SQLFragment)} instead
 	 */
+	@Deprecated (since="13", forRemoval=true)
+	@GeneratedCodeCoverageExclusion
 	public void setSQL (String sql)
 	{
-		m_sql = sql;
+		setSQLClause(new SQLFragment(sql));
 	}	//	setSQL
 
 	/**
 	 * 	Get optional SQL
 	 * 	@return SQL
+	 *  @deprecated use {@link #getSQLClause()} instead
 	 */
+	@Deprecated (since="13", forRemoval=true)
+	@GeneratedCodeCoverageExclusion
 	public String getSQL()
 	{
-		return m_sql;
+		return m_sql != null ? m_sql.toSQLWithParameters() : null;
 	}	//	getSQL
 
+	/**
+	 * Set SQL clause (optional)
+	 * @param sqlClause SQL clause and parameters
+	 */
+	public void setSQLClause(SQLFragment sqlClause)
+	{
+		m_sql = sqlClause;
+	}
+	
+	/**
+	 * Get optional SQL clause
+	 * @return SQL clause and parameters
+	 */
+	public SQLFragment getSQLClause()
+	{
+		return m_sql;
+	}
+	
 	/**
 	 * 	Set TableName (optional)
 	 * 	@param TableName TableName
@@ -456,6 +482,7 @@ public class PrintData implements Serializable
 	 *  @deprecated replace by {@link #getNodeByPrintFormatItemId(int)}
 	 */
 	@Deprecated (since="13", forRemoval=true)
+	@GeneratedCodeCoverageExclusion
 	public Object getNode (Integer AD_Column_ID)
 	{
 		int index = getIndex (AD_Column_ID.intValue());
@@ -547,6 +574,7 @@ public class PrintData implements Serializable
 	 * 	@return index or -1
 	 */
 	@Deprecated (since="13", forRemoval=true)
+	@GeneratedCodeCoverageExclusion
 	public int getIndex (int AD_Column_ID)
 	{
 		if (m_columnInfo == null)
@@ -594,6 +622,7 @@ public class PrintData implements Serializable
 	/**
 	 * 	Dump All Data - header and rows
 	 */
+	@GeneratedCodeCoverageExclusion
 	public void dump()
 	{
 		dump(this);
@@ -602,6 +631,7 @@ public class PrintData implements Serializable
 	/**
 	 * 	Dump All Data
 	 */
+	@GeneratedCodeCoverageExclusion
 	public void dumpHeader()
 	{
 		dumpHeader(this);
@@ -610,6 +640,7 @@ public class PrintData implements Serializable
 	/**
 	 * 	Dump All Data
 	 */
+	@GeneratedCodeCoverageExclusion
 	public void dumpCurrentRow()
 	{
 		dumpRow(this, m_matrix.getRowIndex());
@@ -619,6 +650,7 @@ public class PrintData implements Serializable
 	 * 	Dump all PrintData - header and rows
 	 *  @param pd print data
 	 */
+	@GeneratedCodeCoverageExclusion
 	private static void dump (PrintData pd)
 	{
 		dumpHeader(pd);
@@ -630,6 +662,7 @@ public class PrintData implements Serializable
 	 * 	Dump PrintData Header
 	 *  @param pd print data
 	 */
+	@GeneratedCodeCoverageExclusion
 	private static void dumpHeader (PrintData pd)
 	{
 		if (log.isLoggable(Level.INFO)) log.info(pd.toString());
@@ -645,6 +678,7 @@ public class PrintData implements Serializable
 	 *  @param pd print data
 	 * 	@param row row
 	 */
+	@GeneratedCodeCoverageExclusion
 	private static void dumpRow (PrintData pd, int row)
 	{
 		if (log.isLoggable(Level.INFO)) log.info("Row #" + row);
@@ -870,5 +904,4 @@ public class PrintData implements Serializable
 		if (m_hasLevelNo && reportLineID != 0)
 			addNode(new PrintDataElement(0, "PA_ReportLine_ID", reportLineID, DisplayType.Integer, null));
 	}
-
 }	//	PrintData

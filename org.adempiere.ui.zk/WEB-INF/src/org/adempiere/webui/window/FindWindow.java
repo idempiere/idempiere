@@ -116,6 +116,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
+import org.idempiere.db.util.SQLFragment;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Components;
@@ -195,7 +196,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     /** Table Name                  */
     protected String          m_tableName;
     /** Where                       */
-    protected String          m_whereExtended;
+    protected SQLFragment     m_filterExtended;
     /** Search fields of calling tab ({@link #m_AD_Tab_ID}) */
     protected GridField[]     m_findFields;
     /** Grid tab for current row of {@link #advancedPanel} */
@@ -325,7 +326,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     	this(targetWindowNo, targetTabNo, title, AD_Table_ID, tableName, whereExtended, findFields, minRecords, adTabId, null);
     }
 
-    /**
+ 	/**
      * FindWindow Constructor
      * @param targetWindowNo targetWindowNo
      * @param targetTabNo
@@ -338,8 +339,29 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      * @param adTabId
      * @param windowPanel AbstractADWindowContent
      */
-    public FindWindow (int targetWindowNo, int targetTabNo, String title,
+ 	public FindWindow (int targetWindowNo, int targetTabNo, String title,
             int AD_Table_ID, String tableName, String whereExtended,
+            GridField[] findFields, int minRecords, int adTabId, AbstractADWindowContent windowPanel)
+ 	{
+ 		this(targetWindowNo, targetTabNo, title, AD_Table_ID, tableName, 
+ 			(whereExtended != null ? new SQLFragment(whereExtended) : null), findFields, minRecords, adTabId, windowPanel);	
+ 	}
+ 	
+    /**
+     * FindWindow Constructor
+     * @param targetWindowNo targetWindowNo
+     * @param targetTabNo
+     * @param title title
+     * @param AD_Table_ID AD_Table_ID
+     * @param tableName tableName
+     * @param filterExtended filterExtended
+     * @param findFields findFields
+     * @param minRecords minRecords
+     * @param adTabId
+     * @param windowPanel AbstractADWindowContent
+     */
+    public FindWindow (int targetWindowNo, int targetTabNo, String title,
+            int AD_Table_ID, String tableName, SQLFragment filterExtended,
             GridField[] findFields, int minRecords, int adTabId, AbstractADWindowContent windowPanel)
     {
         m_targetWindowNo = targetWindowNo;
@@ -347,7 +369,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         m_title = title;
         m_AD_Table_ID = AD_Table_ID;
         m_tableName = tableName;
-        m_whereExtended = whereExtended;
+        m_filterExtended = filterExtended;
         m_findFields = findFields;
         if (findFields != null && findFields.length > 0)
         	m_gridTab = findFields[0].getGridTab();
@@ -385,7 +407,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     public boolean initialize() 
     {
     	m_query = new MQuery (m_tableName);
-        m_query.addRestriction(m_whereExtended);
+        if (m_filterExtended != null && !Util.isEmpty(m_filterExtended.sqlClause(), true)) {
+            m_query.addRestriction(m_filterExtended);
+        }
         //  Required for Column Validation
         Env.setContext(Env.getCtx(), m_targetWindowNo, "Find_Table_ID", m_AD_Table_ID);
         //
@@ -422,22 +446,75 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             int AD_Table_ID, String tableName, String whereExtended,
             GridField[] findFields, int minRecords, int adTabId)
     {
+    	return validate(targetWindowNo, title, AD_Table_ID, tableName, 
+			(whereExtended != null ? new SQLFragment(whereExtended) : null), 
+			findFields, minRecords, adTabId);
+    }
+    
+    /**
+     * @param targetWindowNo
+     * @param title
+     * @param AD_Table_ID
+     * @param tableName
+     * @param inputFilter
+     * @param findFields
+     * @param minRecords
+     * @param adTabId
+     * @return false if this find window instance doesn't match one of the input parameters 
+     */
+    public boolean validate(int targetWindowNo, String title,
+            int AD_Table_ID, String tableName, SQLFragment inputFilter,
+            GridField[] findFields, int minRecords, int adTabId)
+    {
     	if (m_targetWindowNo != targetWindowNo) return false;
     	if ((title == null && m_title != null) || (title != null && m_title == null) || !(title.equals(m_title))) return false;
     	if (AD_Table_ID != m_AD_Table_ID) return false;
     	if ((tableName == null && m_tableName != null) || (tableName != null && m_tableName == null) || !(tableName.equals(m_tableName))) return false;
-    	if (whereExtended.contains("@"))
-    		whereExtended = Env.parseContext(Env.getCtx(), targetWindowNo, whereExtended, false);
-    	if (m_whereExtended.contains("@"))
-    		m_whereExtended = Env.parseContext(Env.getCtx(), targetWindowNo, whereExtended, false);
-    	if ((whereExtended == null && m_whereExtended != null) || (whereExtended != null && m_whereExtended == null) || !(whereExtended.equals(m_whereExtended))) return false;
+    	
+    	String inputWhere = inputFilter != null ? inputFilter.sqlClause() : "";
+    	if (inputWhere.contains("@")) {
+    		List<Object> params = new ArrayList<Object>();
+    		inputWhere = Env.parseContextForSql(Env.getCtx(), targetWindowNo, inputWhere, false, params);
+    		if (inputFilter.parameters().size() > 0) {
+    			if (params.size() > 0)
+    				params = Env.mergeParameters(inputFilter.sqlClause(), inputWhere, inputFilter.parameters().toArray(), params.toArray());
+    			else
+    				params.addAll(inputFilter.parameters());
+    		}
+    		inputFilter = new SQLFragment(inputWhere, params);
+    	}
+    	String instanceWhere = m_filterExtended != null ? m_filterExtended.sqlClause() : "";
+    	SQLFragment instanceFilter = m_filterExtended;
+    	if (instanceWhere.contains("@"))
+    	{
+    		List<Object> instanceParams = new ArrayList<Object>();
+    		String parsedWhere = Env.parseContextForSql(Env.getCtx(), targetWindowNo, instanceWhere, false, instanceParams);
+    		if (instanceFilter.parameters().size() > 0)
+    		{
+    			if (instanceParams.size() > 0)
+    				instanceParams = Env.mergeParameters(instanceFilter.sqlClause(), parsedWhere, instanceFilter.parameters().toArray(), instanceParams.toArray());
+				else
+					instanceParams.addAll(instanceFilter.parameters());
+    		}
+    		instanceFilter = new SQLFragment(parsedWhere, instanceParams);
+    	}
+    	if (inputFilter != instanceFilter) {
+    	    if (inputFilter == null || instanceFilter == null 
+    	        || !inputFilter.equals(instanceFilter)) {
+    	        return false;
+    	    }
+    	}
     	if (adTabId != m_AD_Tab_ID) return false;
-    	if ((findFields == null && m_findFields != null) || (findFields != null && m_findFields == null) || (findFields.length != m_findFields.length)) return false;
+    	if ((findFields == null && m_findFields != null) 
+    		|| (findFields != null && m_findFields == null) 
+    		|| (findFields != null && m_findFields != null && findFields.length != m_findFields.length)) 
+    		return false;
     	if (findFields != null && findFields.length > 0) 
     	{
     		for(int i = 0; i < findFields.length; i++)
     		{
-    			if (m_findFields[i] != null && findFields[i].getAD_Field_ID() != m_findFields[i].getAD_Field_ID()) return false;
+    			if (m_findFields[i] != null && findFields[i].getAD_Field_ID() != m_findFields[i].getAD_Field_ID()) 
+    				return false;
     		}
     	}
     	
@@ -449,8 +526,10 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         }
     	
     	m_query = new MQuery (m_tableName);
-        m_query.addRestriction(m_whereExtended);
-        
+    	if (m_filterExtended != null && !Util.isEmpty(m_filterExtended.sqlClause(), true)) {
+    		m_query.addRestriction(m_filterExtended);
+    	}
+
     	return true;
     }
     
@@ -2429,7 +2508,17 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	{
 		//
 		m_query = new MQuery(m_tableName);
-		m_query.addRestriction(Env.parseContext(Env.getCtx(), m_targetWindowNo, m_whereExtended, false));
+		List<Object> params = new ArrayList<Object>();
+		if (m_filterExtended != null && !Util.isEmpty(m_filterExtended.sqlClause(), true)) {
+			String whereExtended = Env.parseContextForSql(Env.getCtx(), m_targetWindowNo, m_filterExtended.sqlClause(), false, params);
+			if (m_filterExtended.parameters().size() > 0) {
+				if (params.size() > 0)
+					params = Env.mergeParameters(m_filterExtended.sqlClause(), whereExtended, m_filterExtended.parameters().toArray(), params.toArray());
+				else
+					params.addAll(m_filterExtended.parameters());
+			}
+			m_query.addRestriction(new SQLFragment(whereExtended, params));
+		}
 		
 		if (m_whereUserQuery == null) {
 			StringBuilder code = new StringBuilder();
@@ -2579,13 +2668,13 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	    					if(!isCompositeExists)
 	    						where += "EXISTS(";	
 
-	    					where += m_query.getRestrictionSQL  (ColumnSQL, Operator, null,
-	    							infoName, null, and, openBrackets);
+	    					where += MQuery.getRestrictionSQLFilter  (ColumnSQL, Operator, null,
+	    							infoName, null, and, openBrackets).sqlClause();
 
 	    					if(!isCompositeExists)
 	    						where += ")";
 
-	    					m_query.addRestriction(where, and, not, isExistCondition, openBrackets);
+	    					m_query.addRestriction(new SQLFragment(where), and, not, isExistCondition, openBrackets);
 	            		} else {
 		            		m_query.addRestriction(ColumnSQL, Operator, null,
 		            				infoName, null, andOr, openBrackets);
@@ -2664,13 +2753,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	                	if(!isCompositeExists)
 							where += "EXISTS(";	
 
-	                	where +=  m_query.getRestrictionSQL(ColumnSQL, parsedValue, parsedValue2, 
+	                	SQLFragment existsFilter = MQuery.getRestrictionSQLFilter(ColumnSQL, parsedValue, parsedValue2, 
 	                    				 infoName, infoDisplay, infoDisplay_to, and, openBrackets);
-
+	                	where += existsFilter.sqlClause();
+	                	
 	                	if(!isCompositeExists)
 							where += ")";
 
-	               	 	m_query.addRestriction(where, and, not, isExistCondition, openBrackets);
+	               	 	m_query.addRestriction(new SQLFragment(where, existsFilter.parameters()), and, not, isExistCondition, openBrackets);
 	                } else {
 		                m_query.addRangeRestriction(ColumnSQL, parsedValue, parsedValue2,
 		                    infoName, infoDisplay, infoDisplay_to, andOr, openBrackets);
@@ -2682,16 +2772,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	                String where_rest= getSubCategoryWhereClause(field, ((Integer) parsedValue).intValue());
 	                if (isExists && !isCompositeExists)
 	                	where_rest="EXISTS("+where_rest+")";
-	                m_query.addRestriction(where_rest, and, not, isExistCondition, openBrackets);
+	                m_query.addRestriction(new SQLFragment(where_rest), and, not, isExistCondition, openBrackets);
 	            }
 	            else if (field != null && (field.getDisplayType()==DisplayType.ChosenMultipleSelectionList||field.getDisplayType()==DisplayType.ChosenMultipleSelectionSearch||field.getDisplayType()==DisplayType.ChosenMultipleSelectionTable) &&
 	            		(MQuery.OPERATORS[MQuery.EQUAL_INDEX].getValue().equals(Operator) || MQuery.OPERATORS[MQuery.NOT_EQUAL_INDEX].getValue().equals(Operator)))
 	            {
-	            	String clause = DB.intersectClauseForCSV(ColumnSQL, parsedValue.toString());
-	            	if (MQuery.OPERATORS[MQuery.EQUAL_INDEX].getValue().equals(Operator))
-	            		m_query.addRestriction(clause, openBrackets, andOr);
-	            	else
-	            		m_query.addRestriction("NOT (" + clause + ")", openBrackets, andOr);
+	            	boolean notIntersect = !(MQuery.OPERATORS[MQuery.EQUAL_INDEX].getValue().equals(Operator));
+	            	SQLFragment clause = DB.intersectFilterForCSV(ColumnSQL, parsedValue.toString(), notIntersect);
+	            	m_query.addRestriction(clause, openBrackets, andOr);
 	            } else {
 	            	if (table.getSelectedItem() != null && table.getSelectedItem().getValue().toString().equals(MAttribute.COLUMNNAME_M_Attribute_ID)
 	               			|| isExists) {
@@ -2701,15 +2789,16 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	                	if(!isCompositeExists)
 							where += "EXISTS(";	
 
-	                	where += m_query.getRestrictionSQL  (ColumnSQL, Operator, parsedValue,
+	                	SQLFragment filter = MQuery.getRestrictionSQLFilter(ColumnSQL, Operator, parsedValue,
 	    						infoName, infoDisplay, and, openBrackets);
+	                	where += filter.sqlClause();
 
 	                	if(!isCompositeExists)
 							where += ")";
 	                	
 	                	where += getRightBracketValue(row);
 
-						m_query.addRestriction(where, and, not, isExistCondition, openBrackets);
+						m_query.addRestriction(new SQLFragment(where, filter.parameters()), and, not, isExistCondition, openBrackets);
 					} else {
 						m_query.addRestriction  (ColumnSQL, Operator, parsedValue,
 								infoName, infoDisplay, and, not, openBrackets);
@@ -2725,7 +2814,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	        
 	        saveQuery(saveQuery, code);			
 		} else {
-			m_query.addRestriction(Env.parseContext(Env.getCtx(), m_targetWindowNo, m_whereUserQuery, false));
+			List<Object> paramsUserQuery = new ArrayList<Object>();
+			String where = Env.parseContextForSql(Env.getCtx(), m_targetWindowNo, m_whereUserQuery, false, paramsUserQuery);
+			m_query.addRestriction(new SQLFragment(where, paramsUserQuery));
 		}
 
 	}	//	cmd_saveAdvanced
@@ -2861,7 +2952,17 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	{
         //  Create Query String
         m_query = new MQuery(m_tableName);
-        m_query.addRestriction(Env.parseContext(Env.getCtx(), m_targetWindowNo, m_whereExtended, false));
+        List<Object> params = new ArrayList<Object>();
+        if (m_filterExtended != null && !Util.isEmpty(m_filterExtended.sqlClause(), true)) {
+			String whereExtended = Env.parseContextForSql(Env.getCtx(), m_targetWindowNo, m_filterExtended.sqlClause(), false, params);
+			if (m_filterExtended.parameters().size() > 0) {
+				if (params.size() > 0)
+					params = Env.mergeParameters(m_filterExtended.sqlClause(), whereExtended, m_filterExtended.parameters().toArray(), params.toArray());
+				else
+					params.addAll(m_filterExtended.parameters());
+			}
+			m_query.addRestriction(new SQLFragment(whereExtended, params));
+		}
 		StringBuilder code = new StringBuilder();
         //  Special Editors
         for (int i = 0; i < m_sEditors.size(); i++)
@@ -2916,7 +3017,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 
                     if (field.getDisplayType()==DisplayType.ChosenMultipleSelectionList||field.getDisplayType()==DisplayType.ChosenMultipleSelectionSearch||field.getDisplayType()==DisplayType.ChosenMultipleSelectionTable)
                     {
-                    	String clause = DB.intersectClauseForCSV(ColumnSQL.toString(), value.toString());
+                    	SQLFragment clause = DB.intersectFilterForCSV(ColumnSQL.toString(), value.toString());
                     	m_query.addRestriction(clause);
                     	continue;
                     }
@@ -2937,7 +3038,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                         m_query.addRestriction(ColumnSQL.toString(), MQuery.ILIKE, value, ColumnName, wed.getDisplay());
                         appendCode(code, ColumnName, MQuery.ILIKE, value.toString(), "", "AND", "", "", m_AD_Tab_UU);
                     } else if (isProductCategoryField && value instanceof Integer) {
-                        m_query.addRestriction(getSubCategoryWhereClause(field, ((Integer) value).intValue()));
+                        m_query.addRestriction(new SQLFragment(getSubCategoryWhereClause(field, ((Integer) value).intValue())));
                         appendCode(code, ColumnName, MQuery.EQUAL, value.toString(), "", "AND", "", "", m_AD_Tab_UU);
                     } else {
                     	String oper = MQuery.EQUAL;
@@ -3300,8 +3401,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     	{
     		StringBuilder where = new StringBuilder(m_tableName);
     		where.append(".Created >= ");
-    		where.append("getDate()-").append(getHistoryDays(selectedHistoryValue));
-    		m_query.addRestriction(where.toString());
+    		where.append("getDate()-?");
+    		m_query.addRestriction(new SQLFragment(where.toString(), List.of(getHistoryDays(selectedHistoryValue))));
     	}
     }
     
@@ -3359,25 +3460,42 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM ");
         sql.append(m_tableName);
         boolean hasWhere = false;
-        if (m_whereExtended != null && m_whereExtended.length() > 0)
+        List<Object> params = new ArrayList<Object>();
+        if (m_filterExtended != null && m_filterExtended.sqlClause().length() > 0)
         {
-            sql.append(" WHERE ").append(m_whereExtended);
+            sql.append(" WHERE ").append(m_filterExtended.sqlClause());
             hasWhere = true;
+            params.addAll(m_filterExtended.parameters());
         }
         if (query != null && query.isActive())
         {
             if (hasWhere)
-                sql.append(" AND ");
+                sql.append(" AND (");
             else
                 sql.append(" WHERE ");
-            sql.append(query.getWhereClause());
+            SQLFragment filter = query.getSQLFilter();
+            sql.append(filter.sqlClause());
+            if (hasWhere)
+				sql.append(") ");
+            params.addAll(filter.parameters());
         }
         //  Add Access
         String finalSQL = MRole.getDefault().addAccessSQL(sql.toString(),
             m_tableName, MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
-        finalSQL = Env.parseContext(Env.getCtx(), m_targetWindowNo, finalSQL, false);
+        String preParse = finalSQL;
+        List<Object> contextParams = new ArrayList<Object>();
+        finalSQL = Env.parseContextForSql(Env.getCtx(), m_targetWindowNo, finalSQL, false, contextParams);
         if (log.isLoggable(Level.INFO))
         	Env.setContext(Env.getCtx(), m_targetWindowNo, TABNO, GridTab.CTX_FindSQL, finalSQL);
+        if (params.size() > 0) 
+        {
+        	if (contextParams.size() > 0)
+        		params = Env.mergeParameters(preParse, finalSQL, params.toArray(), contextParams.toArray());
+        }
+        else
+        {
+        	params = contextParams;
+        }
 
         //  Execute Query
         int timeout = MSysConfig.getIntValue(MSysConfig.GRIDTABLE_INITIAL_COUNT_TIMEOUT_IN_SECONDS, 
@@ -3394,6 +3512,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
             pstmt = DB.prepareStatement(conn, finalSQL);
             if (timeout > 0)
             	pstmt.setQueryTimeout(timeout);
+            if (!params.isEmpty()) {
+				DB.setParameters(pstmt, params);
+			}
             rs = pstmt.executeQuery();
             if (rs.next())
                 m_total = rs.getInt(1);

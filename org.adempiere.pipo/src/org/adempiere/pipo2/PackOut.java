@@ -40,6 +40,7 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MClient;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
@@ -48,7 +49,6 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Trx;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
-import org.adempiere.exceptions.AdempiereException;
 
 /**
  *	Convert AD to XML
@@ -211,6 +211,7 @@ public class PackOut
 		} catch (Exception e) {}
 		packoutHandler.setResult(packoutStreamResult);
 		packoutHandler.startDocument();
+		MClient client = MClient.get(pipoContext.ctx);
 		AttributesImpl atts = new AttributesImpl();
 		atts.addAttribute("","","Name","CDATA",packoutDocument.getPackageName());
 		atts.addAttribute("","","Version","CDATA",packoutDocument.getPackageVersion());
@@ -222,9 +223,10 @@ public class PackOut
 		atts.addAttribute("","","CreatedDate","CDATA",packoutDocument.getCreated().toString());
 		atts.addAttribute("","","UpdatedDate","CDATA",packoutDocument.getUpdated().toString());
 		atts.addAttribute("","","PackOutVersion","CDATA",PackOutVersion);
-		atts.addAttribute("","","UpdateDictionary","CDATA", isExportDictionaryEntity ? "true" : "false");
+		// when exporting dictionary entities, for non System tenants is still marked as false to avoid potential risk
+		// of overwriting dictionary in target system, as they should be exported and imported with extra care
+		atts.addAttribute("","","UpdateDictionary","CDATA", (isExportDictionaryEntity && client.get_ID() == 0) ? "true" : "false");
 
-		MClient client = MClient.get(pipoContext.ctx);
 		StringBuilder sb = new StringBuilder ()
 			.append(client.get_ID())
 			.append("-")

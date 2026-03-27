@@ -19,6 +19,8 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.adempiere.base.GeneratedCodeCoverageExclusion;
+
 /**
  *	Asset Registration Attribute Value
  *	
@@ -27,6 +29,8 @@ import java.util.Properties;
  *  @deprecated not fully implemented
  */
 @Deprecated (since="13", forRemoval=true)
+@SuppressWarnings("removal")
+@GeneratedCodeCoverageExclusion
 public class MRegistrationValue extends X_A_RegistrationValue
 	implements Comparable<Object>
 {

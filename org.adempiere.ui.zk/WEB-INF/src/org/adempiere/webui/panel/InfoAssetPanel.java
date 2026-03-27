@@ -43,6 +43,7 @@ import org.compiere.model.MQuery;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.db.util.SQLFragment;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -126,18 +127,35 @@ public class InfoAssetPanel extends InfoPanel implements ValueChangeListener, Ev
 	 * @param value    Query Value or Name if enclosed in @
 	 * @param multiSelection multiple selections
 	 * @param whereClause where clause
+	 * @param lookup true if lookup
 	 */
 	
 	public InfoAssetPanel(	int WindowNo, int A_Asset_ID, String value,
 							boolean multiSelection, String whereClause, boolean lookup)
 	{
-		super (WindowNo, "a", "A_Asset_ID", multiSelection, whereClause, lookup);
+		this (WindowNo, A_Asset_ID, value, multiSelection, lookup, new SQLFragment(whereClause));
+	}
+	
+	/**
+	 *	Standard Constructor
+	 * @param WindowNo window no
+	 * @param A_Asset_ID asset
+	 * @param value    Query Value or Name if enclosed in @
+	 * @param multiSelection multiple selections
+	 * @param lookup true if lookup
+	 * @param sqlFilter SQL Filter
+	 */
+	
+	public InfoAssetPanel(	int WindowNo, int A_Asset_ID, String value,
+							boolean multiSelection, boolean lookup, SQLFragment sqlFilter)
+	{
+		super (WindowNo, "a", "A_Asset_ID", multiSelection, lookup, sqlFilter);
 		
-		log.info(value + ", ID=" + A_Asset_ID + ", WHERE=" + whereClause);
+		log.info(value + ", ID=" + A_Asset_ID + ", WHERE=" + sqlFilter);
 		setTitle(Msg.getMsg(Env.getCtx(), "InfoAsset"));
 
 		statInit();
-		initInfo(value, A_Asset_ID, whereClause);
+		initInfo(value, A_Asset_ID, sqlFilter);
 
 		int no = contentPanel.getRowCount();
 		setStatusLine(Integer.toString(no) + " " + Msg.getMsg(Env.getCtx(), "SearchRows_EnterQuery"), false);
@@ -234,19 +252,19 @@ public class InfoAssetPanel extends InfoPanel implements ValueChangeListener, Ev
 	/**
 	 *	Dynamic Init
 	 *  @param value value
-	 *  @param whereClause where clause
+	 *  @param sqlFilter where clause
 	 */
 	
-	private void initInfo (String value, int A_Asset_ID, String whereClause)
+	private void initInfo (String value, int A_Asset_ID, SQLFragment sqlFilter)
 	{
 		//	Create Grid
 		StringBuilder where = new StringBuilder();
 		where.append("a.IsActive='Y'");
 		
-		if (whereClause != null && whereClause.length() > 0)
-			where.append(" AND ").append(whereClause);
+		if (sqlFilter != null && sqlFilter.sqlClause().length() > 0)
+			where.append(" AND ").append(sqlFilter.sqlClause());
 		
-		prepareTable(s_assetLayout, s_assetFROM, where.toString(), "a.Value");
+		prepareTable(s_assetLayout, s_assetFROM, "a.Value", new SQLFragment(where.toString(), sqlFilter.parameters()));
 
 		//  Set Value
 		if (value == null)

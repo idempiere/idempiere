@@ -19,6 +19,7 @@ package org.compiere.sla;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 
+import org.adempiere.base.GeneratedCodeCoverageExclusion;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MSLACriteria;
 import org.compiere.model.MSLAGoal;
@@ -37,6 +38,8 @@ import org.compiere.util.AdempiereUserError;
  */
 @Deprecated (since="13", forRemoval=true)
 @org.adempiere.base.annotation.Process
+@SuppressWarnings("removal")
+@GeneratedCodeCoverageExclusion
 public class SLAGoalProcess extends SvrProcess
 {
 	/** Goal					*/
