@@ -61,7 +61,7 @@
 								<artifactItem>
 									<groupId>org.mockito</groupId>
     								<artifactId>mockito-core</artifactId>
-    								<version>5.16.1</version>
+    								<version>5.21.0</version>
 								</artifactItem>
 								<artifactItem>
 									<groupId>org.objenesis</groupId>
@@ -71,17 +71,17 @@
 								<artifactItem>
 									<groupId>net.bytebuddy</groupId>
 								    <artifactId>byte-buddy</artifactId>
-								    <version>1.15.11</version>
+								    <version>1.17.7</version>
 								</artifactItem>
 								<artifactItem>
 									<groupId>net.bytebuddy</groupId>
 								    <artifactId>byte-buddy-agent</artifactId>
-								    <version>1.15.11</version>
+								    <version>1.17.7</version>
 								</artifactItem>
 								<artifactItem>
                                     <groupId>org.mockito</groupId>
     								<artifactId>mockito-junit-jupiter</artifactId>
-    								<version>5.16.1</version>
+    								<version>5.21.0</version>
     							</artifactItem>
 							</artifactItems>
 							<outputDirectory>lib</outputDirectory>
@@ -171,6 +171,16 @@
 							</requirement>
 							<requirement>
 								<type>eclipse-plugin</type>
+								<id>org.adempiere.ui.zk</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.idempiere.zk.extra</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
 								<id>org.idempiere.tablepartition</id>
 								<versionRange>0.0.0</versionRange>
 							</requirement>
@@ -187,6 +197,61 @@
 							<requirement>
 								<type>eclipse-plugin</type>
 								<id>groovy-jsr223</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>zcommon</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>zel</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>zhtml</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>zk</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>zkbind</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>zkplus</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>zkwebfragment</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>zul</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>zweb</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.apache.commons.commons-fileupload2-core</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.apache.commons.commons-fileupload2-javax</id>
 								<versionRange>0.0.0</versionRange>
 							</requirement>
 						</extraRequirements>

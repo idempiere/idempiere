@@ -339,11 +339,23 @@ public class SecureEngine
 	 * @throws NoSuchAlgorithmException
 	 */
 	public static SecureRandom getSecureRandom() throws NoSuchAlgorithmException {
-		SecureRandom random = SecureRandom.getInstance(DEFAULT_SECURE_RANDOM_ALGORITHM,
-			    DrbgParameters.instantiation(256, // security strength
-			    DrbgParameters.Capability.PR_AND_RESEED, // prediction resistance
-			    null));
-		return random;
+		try {
+			SecureRandom random = SecureRandom.getInstance(DEFAULT_SECURE_RANDOM_ALGORITHM,
+				    DrbgParameters.instantiation(256, // security strength
+				    DrbgParameters.Capability.PR_AND_RESEED, // prediction resistance
+				    null));
+			return random;
+		} catch (NoSuchAlgorithmException e) {
+			if (log.isLoggable(Level.INFO))
+				log.info(DEFAULT_SECURE_RANDOM_ALGORITHM + " SecureRandom not available, falling back to platform default strong SecureRandom");
+			try {
+				return SecureRandom.getInstanceStrong();
+			} catch (NoSuchAlgorithmException e2) {
+				if (log.isLoggable(Level.WARNING))
+					log.warning("Strong SecureRandom not available, falling back to default SecureRandom");
+				return new SecureRandom();
+			}
+		}
 	}
 	
 	/** Test String					*/

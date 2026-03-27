@@ -41,8 +41,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
-import org.compiere.acct.Doc;
-import org.compiere.acct.DocManager;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAllocationHdr;
@@ -70,6 +68,8 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
+import org.idempiere.acct.doc.Doc;
+import org.idempiere.acct.doc.DocManager;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.ConversionRateHelper;
 import org.idempiere.test.DictionaryIDs;

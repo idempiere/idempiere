@@ -945,6 +945,26 @@ public class MJournal extends X_GL_Journal implements DocAction
 			return false;
 		}
 
+		List<List<Object>> list = DB.getSQLArrayObjectsEx(get_TrxName(), "SELECT DISTINCT ev.Value FROM Fact_Acct fa"
+				+ " INNER JOIN C_ElementValue ev ON (fa.Account_ID = ev.C_ElementValue_ID)"
+				+ " INNER JOIN Fact_Reconciliation fr ON (fa.Fact_Acct_ID = fr.Fact_Acct_ID)"
+				+ " WHERE fa.AD_Table_ID = ? AND fa.Record_ID = ?", Table_ID, getGL_Journal_ID());
+		if (list != null && list.size() > 0) {
+			StringBuilder accounts = new StringBuilder();
+
+			for (List<Object> row : list) {
+				String accountValue = (String) row.get(0);
+
+				if (accounts.length() > 0)
+					accounts.append(", ");
+
+				accounts.append(accountValue);
+			}
+
+			m_processMsg = Msg.getMsg(getCtx(), "JournalReactivationFailedReconciliation", new Object[] {accounts});
+			return false;
+		}
+
 		MFactAcct.deleteEx(MJournal.Table_ID, get_ID(), get_TrxName());
 		setPosted(false);
 		setProcessed(false);

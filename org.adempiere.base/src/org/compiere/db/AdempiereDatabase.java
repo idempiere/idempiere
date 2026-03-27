@@ -30,6 +30,7 @@ import org.compiere.dbPort.Convert;
 import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
+import org.idempiere.db.util.SQLFragment;
 
 /**
  *  Interface for database adapter
@@ -369,23 +370,51 @@ public interface AdempiereDatabase
 	 * @param columnName
 	 * @param csv comma separated value
 	 * @return subset sql clause
+	 * @deprecated replaced by {@link #subsetFilterForCSV(String, String)}
 	 */
+	@Deprecated(forRemoval = true, since = "13")
 	public String subsetClauseForCSV(String columnName, String csv);
+	
+	/**
+	 * @param columnName
+	 * @param csv
+	 * @return sql filter for subset
+	 */
+	public SQLFragment subsetFilterForCSV(String columnName, String csv);
 	
 	/**
 	 * @param columnName
 	 * @param csv comma separated value
 	 * @return intersect sql clause
+	 * @deprecated replaced by {@link #intersectFilterForCSV(String, String)}
 	 */
+	@Deprecated(forRemoval = true, since = "13")
 	public String intersectClauseForCSV(String columnName, String csv);
+	
+	/**
+	 * @param columnName
+	 * @param csv
+	 * @return sql filter for intersect
+	 */
+	public SQLFragment intersectFilterForCSV(String columnName, String csv);
 	
 	/**
 	 * @param columnName
 	 * @param csv comma separated value
 	 * @param isNotClause
 	 * @return intersect sql clause
+	 * @deprecated replaced by {@link #intersectFilterForCSV(String, String, boolean)}
 	 */
+	@Deprecated(forRemoval = true, since = "13")
 	public String intersectClauseForCSV(String columnName, String csv, boolean isNotClause);
+	
+	/**
+	 * @param columnName
+	 * @param csv
+	 * @param isNotClause
+	 * @return sql filter for intersect
+	 */
+	public SQLFragment intersectFilterForCSV(String columnName, String csv, boolean isNotClause);
 	
 	/**
 	 * Quote column name if necessary (usually to avoid conflict with reserved keywords)

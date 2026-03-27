@@ -32,6 +32,7 @@
 		<module>org.apache.ecs</module>
 		<module>org.compiere.db.oracle.provider</module>
 		<module>org.compiere.db.postgresql.provider</module>
+		<module>org.idempiere.acct</module>
 		<module>org.idempiere.felix.webconsole</module>
 		<module>org.idempiere.hazelcast.service</module>
 		<module>org.idempiere.webservices</module>

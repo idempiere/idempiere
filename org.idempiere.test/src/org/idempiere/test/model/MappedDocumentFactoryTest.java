@@ -30,14 +30,14 @@ import java.sql.ResultSet;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.IMappedDocumentFactory;
-import org.compiere.acct.Doc;
-import org.compiere.acct.DocManager;
-import org.compiere.acct.Doc_InOut;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MInOut;
 import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
+import org.idempiere.acct.doc.Doc;
+import org.idempiere.acct.doc.DocManager;
+import org.idempiere.acct.doc.Doc_InOut;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
 

@@ -30,6 +30,7 @@ import org.osgi.service.component.annotations.Component;
 import org.adempiere.webui.adwindow.AbstractADWindowContent;
 import org.adempiere.webui.window.FindWindow;
 import org.compiere.model.GridField;
+import org.idempiere.db.util.SQLFragment;
 
 /**
  * Default implementation of {@link IFindWindowFactory}
@@ -45,6 +46,14 @@ public class DefaultFindWindowFactory implements IFindWindowFactory
 
 		return new FindWindow(targetWindowNo, targetTabNo, title, AD_Table_ID, tableName, whereExtended, findFields, minRecords, adTabId, windowPanel);
 		
+	}
+
+	@Override
+	public FindWindow getInstance(int targetWindowNo, int targetTabNo, String title, int AD_Table_ID, String tableName,
+			SQLFragment filterExtended, GridField[] findFields, int minRecords, int adTabId,
+			AbstractADWindowContent windowPanel) {
+		
+		return new FindWindow(targetWindowNo, targetTabNo, title, AD_Table_ID, tableName, filterExtended, findFields, minRecords, adTabId, windowPanel);
 	}
 
 

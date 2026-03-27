@@ -76,6 +76,7 @@ import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
+import org.idempiere.db.util.SQLFragment;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRParameter;
@@ -649,15 +650,15 @@ public class ReportStarter implements ProcessCall, ClientProcess
 		    				
 		    				MQuery query = new MQuery(tableName);
 		    				for (int recordId : pi.getRecord_IDs())
-		    					query.addRestriction(tableVariable + "." + query.getTableName() + "_ID" + MQuery.EQUAL + recordId, false, 0);
+		    					query.addRestriction(new SQLFragment(tableVariable + "." + query.getTableName() + "_ID" + MQuery.EQUAL + recordId), false, 0);
 		    				
 		    				String newQueryText = null;
 		    				int index3 = originalQueryTemp.indexOf("WHERE");
 		    				if (index3 != -1)
-		    					newQueryText = originalQueryText + " AND " + query.toString();
+		    					newQueryText = originalQueryText + " AND " + query.getSQLFilter().toSQLWithParameters();
 		    				else
-		    					newQueryText = originalQueryText + " WHERE " + query.toString();
-		    				
+		    					newQueryText = originalQueryText + " WHERE " + query.getSQLFilter().toSQLWithParameters();
+
 		    			    File jrxmlFile = File.createTempFile(FileUtil.makePrefix(jasperReport.getName()), ".jrxml");
 		            		JRXmlWriter.writeReport(jasperReport, new FileOutputStream(jrxmlFile), "UTF-8");
 		            		

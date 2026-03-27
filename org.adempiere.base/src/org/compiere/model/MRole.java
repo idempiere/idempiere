@@ -480,14 +480,18 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			return success;
 		if (newRecord && success)
 		{
-			// Assign Role to SuperUser
-			MUserRoles su = new MUserRoles(getCtx(), SUPERUSER_USER_ID, getAD_Role_ID(), get_TrxName());
-			su.saveEx();
-			// Assign Role to Created By user
-			if (getCreatedBy() != SUPERUSER_USER_ID && MSysConfig.getBooleanValue(MSysConfig.AUTO_ASSIGN_ROLE_TO_CREATOR_USER, false, getAD_Client_ID()))
+			// Don't assign Role Template
+			if (!isMasterRole())
 			{
-				MUserRoles ur = new MUserRoles(getCtx(), getCreatedBy(), getAD_Role_ID(), get_TrxName());
-				ur.saveEx();
+				// Assign Role to SuperUser
+				MUserRoles su = new MUserRoles(getCtx(), SUPERUSER_USER_ID, getAD_Role_ID(), get_TrxName());
+				su.saveEx();
+				// Assign Role to Created By user
+				if (getCreatedBy() != SUPERUSER_USER_ID && MSysConfig.getBooleanValue(MSysConfig.AUTO_ASSIGN_ROLE_TO_CREATOR_USER, false, getAD_Client_ID()))
+				{
+					MUserRoles ur = new MUserRoles(getCtx(), getCreatedBy(), getAD_Role_ID(), get_TrxName());
+					ur.saveEx();
+				}
 			}
 			updateAccessRecords();
 		}
@@ -1293,8 +1297,10 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			}
 			else									//	Include
 			{
-				//positive list, can report ONLY on included tables
-				canReport = false;
+				//positive list, 
+				//READ_TABLES_NOT_IN_TABLE_ACCESS_INCLUDE_LIST=N, can report ONLY on included tables
+				//READ_TABLES_NOT_IN_TABLE_ACCESS_INCLUDE_LIST=Y, can report on other tables as well
+				canReport = MSysConfig.getBooleanValue(MSysConfig.READ_TABLES_NOT_IN_TABLE_ACCESS_INCLUDE_LIST, false, Env.getAD_Client_ID(Env.getCtx()));
 				if (m_tableAccess[i].getAD_Table_ID() == AD_Table_ID)
 				{
 					if (log.isLoggable(Level.FINE)) log.fine("Include " + AD_Table_ID);
@@ -1339,8 +1345,10 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			}
 			else									//	Include
 			{
-				//positive list, can export ONLY on included tables
-				canExport = false;
+				//positive list, 
+				//READ_TABLES_NOT_IN_TABLE_ACCESS_INCLUDE_LIST=N, can export ONLY on included tables
+				//READ_TABLES_NOT_IN_TABLE_ACCESS_INCLUDE_LIST=Y, can export on other tables as well
+				canExport = MSysConfig.getBooleanValue(MSysConfig.READ_TABLES_NOT_IN_TABLE_ACCESS_INCLUDE_LIST, false, Env.getAD_Client_ID(Env.getCtx()));
 				if (m_tableAccess[i].getAD_Table_ID() == AD_Table_ID)
 				{
 					if (log.isLoggable(Level.FINE)) log.fine("Include " + AD_Table_ID);
@@ -1389,8 +1397,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			//	If you Include Access to a table and select Read Only, 
 			//	you can only read data (otherwise full access).
 			{
-				//positive list, can access ONLY on included tables
-				hasAccess = false;
+				//positive list, no access or read-only access to tables not part of the include table list
+				hasAccess = ro ? MSysConfig.getBooleanValue(MSysConfig.READ_TABLES_NOT_IN_TABLE_ACCESS_INCLUDE_LIST, false, Env.getAD_Client_ID(Env.getCtx())) : false;
 				if (m_tableAccess[i].getAD_Table_ID() == AD_Table_ID)
 				{
 					if (!ro)	//	rw only if not r/o

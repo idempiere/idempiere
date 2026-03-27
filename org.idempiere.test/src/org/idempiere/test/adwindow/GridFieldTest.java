@@ -39,25 +39,33 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.beans.PropertyChangeListener;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.beans.PropertyChangeListener;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
+import org.adempiere.base.LookupFactoryHelper;
 import org.compiere.model.GridField;
 import org.compiere.model.GridFieldVO;
 import org.compiere.model.GridTab;
+import org.compiere.model.Lookup;
+import org.compiere.model.MBPartner;
 import org.compiere.model.MColumn;
+import org.compiere.model.MLookup;
+import org.compiere.model.MLookupInfo;
+import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
+import org.compiere.model.MTab;
 import org.compiere.model.MTest;
 import org.compiere.model.MUserDefField;
 import org.compiere.model.SystemIDs;
+import org.compiere.model.X_AD_Table;
 import org.compiere.util.CPreparedStatement;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
@@ -71,15 +79,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import org.adempiere.base.LookupFactoryHelper;
-import org.compiere.model.Lookup;
-import org.compiere.model.MBPartner;
-import org.compiere.model.MLookup;
-import org.compiere.model.MLookupInfo;
-import org.compiere.model.MQuery;
-import org.compiere.model.MTab;
-import org.compiere.model.X_AD_Table;
 
 @ExtendWith(MockitoExtension.class)
 public class GridFieldTest extends AbstractTestCase {
@@ -725,7 +724,7 @@ public class GridFieldTest extends AbstractTestCase {
 		GridFieldVO vo = mock(GridFieldVO.class);
 		vo.ctx = ctx;
 		vo.ColumnName = "VirtualColumn";
-		vo.ColumnSQL = MColumn.VIRTUAL_UI_COLUMN_PREFIX + "SELECT 1";
+		vo.ColumnSQL = MColumn.VIRTUAL_UI_COLUMN_PREFIX + "SELECT 1 FROM Dual";
 		vo.displayType = DisplayType.String;
 		
 		GridField gridField = new GridField(vo);

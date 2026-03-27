@@ -383,47 +383,47 @@ Export-Package:        *;-noimport:=true
       <version>69.1</version>
 	  <type>jar</type>
 	</location>
-	<!-- org.codehaus.groovy -->
+	<!-- org.apache.groovy -->
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.codehaus.groovy</groupId>
+      <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-console</artifactId>
-      <version>3.0.8</version>
+      <version>5.0.4</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.codehaus.groovy</groupId>
+      <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-datetime</artifactId>
-      <version>3.0.8</version>
+      <version>5.0.4</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.codehaus.groovy</groupId>
+      <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-json</artifactId>
-      <version>3.0.8</version>
+      <version>5.0.4</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.codehaus.groovy</groupId>
+      <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-jsr223</artifactId>
-      <version>3.0.8</version>
+      <version>5.0.4</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.codehaus.groovy</groupId>
+      <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-nio</artifactId>
-      <version>3.0.8</version>
+      <version>5.0.4</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.codehaus.groovy</groupId>
+      <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-sql</artifactId>
-      <version>3.0.8</version>
+      <version>5.0.4</version>
       <type>jar</type>
 	</location>	
 	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.codehaus.groovy</groupId>
+      <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-xml</artifactId>
-      <version>3.0.8</version>
+      <version>5.0.4</version>
       <type>jar</type>
 	</location>
 	<!-- net.sf.jasperreports -->
@@ -500,7 +500,7 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="false" missingManifest="generate" type="Maven">
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
-      <version>1.4.20</version>
+      <version>1.4.21</version>
 	  <type>jar</type>
 	</location>	
 	<location includeSource="true" missingManifest="generate" type="Maven">
@@ -572,7 +572,7 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>commons-beanutils</groupId>
       <artifactId>commons-beanutils</artifactId>
-      <version>1.9.4</version>
+      <version>1.11.0</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
@@ -602,19 +602,19 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>commons-fileupload</groupId>
       <artifactId>commons-fileupload</artifactId>
-      <version>1.5</version>
+      <version>1.6.0</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-fileupload2-core</artifactId>
-      <version>2.0.0-M2</version>
+      <version>2.0.0-M4</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-fileupload2-javax</artifactId>
-      <version>2.0.0-M2</version>
+      <version>2.0.0-M4</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
@@ -657,25 +657,25 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-      <version>3.6.3</version>
+      <version>3.6.5</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-security</artifactId>
-      <version>3.6.3</version>
+      <version>3.6.5</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-transports-http</artifactId>
-      <version>3.6.3</version>
+      <version>3.6.5</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-frontend-jaxws</artifactId>
-      <version>3.6.3</version>
+      <version>3.6.5</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
@@ -693,43 +693,43 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-core</artifactId>
-      <version>3.6.3</version>
+      <version>3.6.5</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-bindings-soap</artifactId>
-      <version>3.6.3</version>
+      <version>3.6.5</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-bindings-xml</artifactId>
-      <version>3.6.3</version>
+      <version>3.6.5</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-frontend-simple</artifactId>
-      <version>3.6.3</version>
+      <version>3.6.5</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-ws-addr</artifactId>
-      <version>3.6.3</version>
+      <version>3.6.5</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-wsdl</artifactId>
-      <version>3.6.3</version>
+      <version>3.6.5</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-ws-policy</artifactId>
-      <version>3.6.3</version>
+      <version>3.6.5</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
@@ -780,13 +780,13 @@ Require-Capability:    osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-rs-service-description</artifactId>
-      <version>3.6.3</version>
+      <version>3.6.5</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-ws-transfer</artifactId>
-      <version>3.6.3</version>
+      <version>3.6.5</version>
       <type>jar</type>
       <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
 version:               ${version_cleanup;${mvnVersion}}
@@ -799,13 +799,13 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-transports-local</artifactId>
-      <version>3.6.3</version>
+      <version>3.6.5</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-databinding-jaxb</artifactId>
-      <version>3.6.3</version>
+      <version>3.6.5</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
@@ -1190,73 +1190,73 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-ee</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-jndi</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>	
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-plus</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
 	  <groupId>org.eclipse.jetty</groupId>
 	  <artifactId>jetty-osgi</artifactId>
-	  <version>12.0.24</version>
+	  <version>12.0.25</version>
 	  <type>jar</type>
 	</location>	
 	<location includeSource="true" missingManifest="generate" type="Maven">
 	  <groupId>org.eclipse.jetty</groupId>
 	  <artifactId>jetty-security</artifactId>
-	  <version>12.0.24</version>
+	  <version>12.0.25</version>
 	  <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
 	  <groupId>org.eclipse.jetty</groupId>
 	  <artifactId>jetty-xml</artifactId>
-	  <version>12.0.24</version>
+	  <version>12.0.25</version>
 	  <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
 	  <groupId>org.eclipse.jetty.ee8</groupId>
 	  <artifactId>jetty-ee8-nested</artifactId>
-	  <version>12.0.24</version>
+	  <version>12.0.25</version>
 	  <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.ee8</groupId>
       <artifactId>jetty-ee8-servlet</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>	
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.ee8</groupId>
       <artifactId>jetty-ee8-servlets</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.ee8</groupId>
       <artifactId>jetty-ee8-webapp</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.ee8</groupId>
       <artifactId>jetty-ee8-annotations</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.ee8</groupId>
       <artifactId>jetty-ee8-security</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
@@ -1274,13 +1274,13 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.ee8</groupId>
       <artifactId>jetty-ee8-apache-jsp</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-util</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
@@ -1298,13 +1298,13 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.ee8.osgi</groupId>
       <artifactId>jetty-ee8-osgi-boot</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>	
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.ee8.osgi</groupId>
       <artifactId>jetty-ee8-osgi-boot-jsp</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
@@ -1316,7 +1316,7 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.ee8</groupId>
       <artifactId>jetty-ee8-glassfish-jstl</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
@@ -1340,37 +1340,37 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-client</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-jmx</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.ee8</groupId>
       <artifactId>jetty-ee8-plus</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-deploy</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-util-ajax</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.ee8</groupId>
       <artifactId>jetty-ee8-jaspi</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
@@ -1382,103 +1382,97 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-rewrite</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.ee8.websocket</groupId>
       <artifactId>jetty-ee8-websocket-jetty-server</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.ee8.websocket</groupId>
       <artifactId>jetty-ee8-websocket-jetty-api</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.ee8.websocket</groupId>
       <artifactId>jetty-ee8-websocket-jetty-common</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.ee8.websocket</groupId>
       <artifactId>jetty-ee8-websocket-javax-server</artifactId>
-      <version>12.0.24</version>
-      <type>jar</type>
-	</location>
-	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.eclipse.jetty.ee8.websocket</groupId>
-      <artifactId>jetty-ee8-websocket-javax-server</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.ee8.websocket</groupId>
       <artifactId>jetty-ee8-websocket-javax-client</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.ee8.websocket</groupId>
       <artifactId>jetty-ee8-websocket-javax-common</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.ee8.websocket</groupId>
       <artifactId>jetty-ee8-websocket-servlet</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
 	  <groupId>org.eclipse.jetty</groupId>
 	  <artifactId>jetty-session</artifactId>
-	  <version>12.0.24</version>
+	  <version>12.0.25</version>
 	  <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-http-spi</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.ee8</groupId>
       <artifactId>jetty-ee8-jndi</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.ee8</groupId>
       <artifactId>jetty-ee8-proxy</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-proxy</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.websocket</groupId>
       <artifactId>jetty-websocket-core-client</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.websocket</groupId>
       <artifactId>jetty-websocket-core-common</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.websocket</groupId>
       <artifactId>jetty-websocket-core-server</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
@@ -1490,13 +1484,13 @@ Export-Package:        *;version="${version}";-noimport:=true
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.http2</groupId>
       <artifactId>jetty-http2-server</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>
 	<location includeDependencyScope="compile" includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.eclipse.jetty.http3</groupId>
       <artifactId>jetty-http3-server</artifactId>
-      <version>12.0.24</version>
+      <version>12.0.25</version>
       <type>jar</type>
 	</location>	
 	<location includeSource="true" missingManifest="generate" type="Maven">

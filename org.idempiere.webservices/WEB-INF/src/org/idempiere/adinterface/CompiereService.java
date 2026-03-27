@@ -296,8 +296,9 @@ public class CompiereService {
 		}
 
 		session.setWebSession("WebService");
-		
-		session.setDescription(session.getDescription() + "\nUser Agent: " + getCtx().getProperty("#UserAgent"));
+
+		if (MSysConfig.getBooleanValue(MSysConfig.ZK_SESSION_SAVE_USER_AGENT, false))
+			session.setDescription(session.getDescription() + "\nUser Agent: " + getCtx().getProperty("#UserAgent"));
 
 		session.saveEx();
 				

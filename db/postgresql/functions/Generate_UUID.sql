@@ -27,23 +27,27 @@ DECLARE
   uuid_bytes bytea;
   random_part bytea;
 BEGIN
-  /* NOTE: in postgresql 18 uuidv7 will be native, and you can change this script to benefit from the native function */
-  -- Get timestamp in milliseconds
-  unix_ts_ms = floor(extract(epoch from ts) * 1000)::bigint;
-  -- Convert timestamp to 6 bytes (48 bits)
-  unix_ts_ms = unix_ts_ms & x'FFFFFFFFFFFF'::bigint;
-  -- Get random bytes from gen_random_uuid()
-  random_part = decode(replace(gen_random_uuid()::text, '-', ''), 'hex');
-  -- Construct UUID v7: 48-bit timestamp + version/variant + random
-  uuid_bytes = 
-    substring(int8send(unix_ts_ms) from 3 for 6) || -- 48-bit timestamp
-    substring(random_part from 7 for 2) ||           -- 16-bit random (with version)
-    substring(random_part from 9 for 8);             -- 64-bit random (with variant)
-  -- Set version to 7 (0111)
-  uuid_bytes = set_byte(uuid_bytes, 6, (get_byte(uuid_bytes, 6) & 15) | 112);
-  -- Set variant to 10
-  uuid_bytes = set_byte(uuid_bytes, 8, (get_byte(uuid_bytes, 8) & 63) | 128);
-  RETURN encode(uuid_bytes, 'hex')::uuid;
+  IF current_setting('server_version_num')::int >= 180000 THEN
+    /* postgresql 18 uuidv7 use native */
+    RETURN uuidv7(ts - clock_timestamp());
+  ELSE
+    -- Get timestamp in milliseconds
+    unix_ts_ms = floor(extract(epoch from ts) * 1000)::bigint;
+    -- Convert timestamp to 6 bytes (48 bits)
+    unix_ts_ms = unix_ts_ms & x'FFFFFFFFFFFF'::bigint;
+    -- Get random bytes from gen_random_uuid()
+    random_part = decode(replace(gen_random_uuid()::text, '-', ''), 'hex');
+    -- Construct UUID v7: 48-bit timestamp + version/variant + random
+    uuid_bytes =
+      substring(int8send(unix_ts_ms) from 3 for 6) || -- 48-bit timestamp
+      substring(random_part from 7 for 2) ||           -- 16-bit random (with version)
+      substring(random_part from 9 for 8);             -- 64-bit random (with variant)
+    -- Set version to 7 (0111)
+    uuid_bytes = set_byte(uuid_bytes, 6, (get_byte(uuid_bytes, 6) & 15) | 112);
+    -- Set variant to 10
+    uuid_bytes = set_byte(uuid_bytes, 8, (get_byte(uuid_bytes, 8) & 63) | 128);
+    RETURN encode(uuid_bytes, 'hex')::uuid;
+  END IF;
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
@@ -56,6 +60,10 @@ $$ LANGUAGE SQL VOLATILE;
 */
 
 /*
+
+-- in PostgreSQL >= 18 the native function uuid_extract_timestamp to obtain the timestamp from a uuidv7
+
+-- For PostgreSQL < 18 you can use the following function:
 -- Function that extracts the timestamp from uuidv7, it must be the same as the Created column
 CREATE OR REPLACE FUNCTION uuid_v7_to_timestamp(uuid_val uuid)
 RETURNS timestamp with time zone AS $$

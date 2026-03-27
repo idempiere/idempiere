@@ -288,6 +288,7 @@ public class AllocationAuto extends SvrProcess
 	
 	/**************************************************************************
 	 * 	Allocate Individual Payments with payment references
+	 *  Uses OverUnderAmt for calculation, fallback method allocateBPOldestFirst doesn't
 	 *	@return number of allocations
 	 */
 	private int allocateBPPaymentWithInfo ()
@@ -362,9 +363,9 @@ public class AllocationAuto extends SvrProcess
 					{
 						BigDecimal invoiceAmt = invoice.getOpenAmt(true, null);
 						BigDecimal overUnder = line.getOpenAmt().subtract(line.getPayAmt())
-							.subtract(line.getDiscountAmt()).subtract(line.getWriteOffAmt()).subtract(line.getDifferenceAmt());
+							.subtract(line.getDiscountAmt()).subtract(line.getWriteOffAmt());
 						invoiceAmt = invoiceAmt.subtract(line.getDiscountAmt()).subtract(line.getWriteOffAmt())
-							.subtract(line.getDifferenceAmt()).subtract(overUnder);
+							.subtract(overUnder);
 						if (!invoice.isSOTrx())
 							invoiceAmt = invoiceAmt.negate();
 						if (log.isLoggable(Level.FINE)) log.fine(invoice + ", Invoice=" + invoiceAmt);
@@ -393,6 +394,7 @@ public class AllocationAuto extends SvrProcess
 	
 	/**
 	 * 	Allocate Payment:Invoice 1:1
+	 *  Uses OverUnderAmt for calculation, fallback method allocateBPOldestFirst doesn't
 	 *	@return allocations
 	 */
 	private int allocateBPOneToOne() throws Exception
@@ -457,6 +459,7 @@ public class AllocationAuto extends SvrProcess
 	
 	/**
 	 * 	Allocate all Payments/Invoices using Accounting currency
+	 *  Uses OverUnderAmt for calculation, fallback method allocateBPOldestFirst doesn't
 	 *	@return allocations
 	 */
 	private int allocateBPartnerAll() throws Exception
@@ -565,6 +568,7 @@ public class AllocationAuto extends SvrProcess
 	
 	/**
 	 * 	Allocate Oldest First using Accounting currency
+	 *  on purpose this method doesn't use OverUnderAmt for calculation, fallback method
 	 *	@return allocations
 	 */
 	private int allocateBPOldestFirst() throws Exception
@@ -586,8 +590,7 @@ public class AllocationAuto extends SvrProcess
 			if (log.isLoggable(Level.INFO)) log.info(payment + ", Allocated=" + allocatedAmt);
 			BigDecimal availableAmt = payment.getPayAmt()
 				.add(payment.getDiscountAmt())
-				.add(payment.getWriteOffAmt())
-				.add(payment.getOverUnderAmt());
+				.add(payment.getWriteOffAmt());
 			availableAmt = availableAmt.subtract(allocatedAmt);
 			if (!payment.isReceipt())
 				availableAmt = availableAmt.negate();
@@ -647,8 +650,7 @@ public class AllocationAuto extends SvrProcess
 				allocatedAmt = Env.ZERO;
 			BigDecimal availableAmt = payment.getPayAmt()
 				.add(payment.getDiscountAmt())
-				.add(payment.getWriteOffAmt())
-				.add(payment.getOverUnderAmt());
+				.add(payment.getWriteOffAmt());
 			availableAmt = availableAmt.subtract(allocatedAmt);
 			if (!payment.isReceipt())
 				availableAmt = availableAmt.negate();

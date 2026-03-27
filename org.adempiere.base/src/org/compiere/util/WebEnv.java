@@ -46,6 +46,7 @@ import org.apache.ecs.xhtml.td;
 import org.apache.ecs.xhtml.tr;
 import org.compiere.Adempiere;
 import org.compiere.model.MClient;
+import org.compiere.model.MMailText;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MSystem;
 import org.compiere.model.SystemIDs;
@@ -189,11 +190,46 @@ public class WebEnv
 		//
 		boolean isSendServerStartEMail  = MSysConfig.getBooleanValue(MSysConfig.EMAIL_SERVER_START_ENABLED, true);
 		if (isSendServerStartEMail) {
+			boolean mailSent = false;
+
 			MClient client = MClient.get(Env.getCtx(), 0);
 			MSystem system = MSystem.get(Env.getCtx());
-			client.sendEMail(client.getRequestEMail(),
-				"Server started: " + system.getName() + " (" + WebUtil.getServerName() + ")",
-				"ServerInfo: " + context.getServerInfo(), null);
+
+			String recipient = MSysConfig.getValue(MSysConfig.EMAIL_SERVER_START_RECIPIENT, 0, 0);
+			if (Util.isEmpty(recipient) || !EMail.validate(recipient))
+				recipient = client.getRequestEMail();
+
+			int mailtextID = MSysConfig.getIntValue(MSysConfig.EMAIL_SERVER_START_MAILTEXT_ID, 0, 0);
+
+			if (mailtextID > 0) {
+
+				try {
+					ServerInfoBean serverBean = new ServerInfoBean(context);
+					DefaultEvaluatee de = new DefaultEvaluatee(serverBean);
+
+					MMailText mt = new MMailText(Env.getCtx(), mailtextID, null);
+
+					String subject = mt.getMailHeader(false);
+					subject = Env.parseVariable(subject, de, true, false);
+					subject = Env.parseVariable(subject, client, null, true);
+					subject = Env.parseVariable(subject, system, null, true);
+
+					String message = mt.getMailText(true, false);
+					message = Env.parseVariable(message, de, true, false);
+					message = Env.parseVariable(message, client, null, true);
+					message = Env.parseVariable(message, system, null, true);
+
+					mailSent = client.sendEMail(recipient, subject, message, null, mt.isHtml());
+
+				} catch (Exception e) {
+					log.warning("Can't send customized email when server starts: " + e.toString());
+				}
+			}
+
+			if (!mailSent)
+				client.sendEMail(recipient,
+						"Server started: " + system.getName() + " (" + WebUtil.getServerName() + ")",
+						"ServerInfo: " + context.getServerInfo(), null);
 		}
 
 		return s_initOK;
@@ -754,4 +790,32 @@ public class WebEnv
 		return table;
 	}	//	getServletInfo
 
+	public static class ServerInfoBean {
+
+		private final ServletContext context;
+
+		public ServerInfoBean(ServletContext context) {
+			this.context = context;
+		}
+
+		public String getServerName() {
+			return WebUtil.getServerName();
+		}
+
+		public String getServerInfo() {
+			return context.getServerInfo();
+		}
+
+		public String getVersion() {
+			return Adempiere.getVersion();
+		}
+
+		public String getSystemName() {
+			return MSystem.get(Env.getCtx()).getName();
+		}
+
+		public String getSystemDescription() {
+			return MSystem.get(Env.getCtx()).getDescription();
+		}
+	}
 }   //  WEnv

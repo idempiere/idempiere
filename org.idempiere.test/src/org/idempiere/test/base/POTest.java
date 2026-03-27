@@ -25,6 +25,7 @@
  **********************************************************************/
 package org.idempiere.test.base;
 
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -82,6 +83,8 @@ import org.compiere.model.MProduct;
 import org.compiere.model.MProductCategory;
 import org.compiere.model.MProductCategoryAcct;
 import org.compiere.model.MProductionLine;
+import org.compiere.model.MReplenish;
+import org.compiere.model.MRole;
 import org.compiere.model.MSession;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
@@ -93,6 +96,7 @@ import org.compiere.model.MTreeNode;
 import org.compiere.model.MTree_Base;
 import org.compiere.model.MTree_NodeBP;
 import org.compiere.model.MUOM;
+import org.compiere.model.MUserRoles;
 import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.ModelValidator;
 import org.compiere.model.PO;
@@ -620,52 +624,57 @@ public class POTest extends AbstractTestCase
 			lotLevel.deleteEx(true);
 		}
 		
-		// log migration script for update of lookup fields
-		MTest testPO = new MTest(Env.getCtx(), 0, getTrxName());
-		testPO.setName("testPO1");
-		testPO.setT_Integer(100);
-		testPO.saveEx();
-		
-		MTest testPO1 = new MTest(Env.getCtx(), 0, getTrxName());
-		testPO1.setName("testPO2");
-		testPO1.setT_Integer(100);
-		testPO1.saveEx();
-		
-		MUOM testUOM = new MUOM(Env.getCtx(), 0, getTrxName());
-		testUOM.setName("testUOM1");
-		testUOM.setX12DE355("testUOM1");
-		testUOM.saveEx();
-		testPO1.setAD_Table_ID(MTest.Table_ID);
-		testPO1.setRecord_ID(testPO.get_ID());
-		testPO1.setC_UOM_ID(testUOM.get_ID());
-		testPO1.setIsActive(false);
-		testPO1.setT_DateTime(new Timestamp(System.currentTimeMillis()));
-		testPO1.setT_Number(BigDecimal.TEN);
-		testPO1.saveEx();
-		
-		// test change log for insert
-		try (MockedStatic<MSysConfig> mocked = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
-			mocked.when(() -> MSysConfig.getValue(MSysConfig.SYSTEM_INSERT_CHANGELOG, "N", getAD_Client_ID()))
-				.thenReturn("K");
-			MTest t1 = new MTest(Env.getCtx(), "t1_"+System.currentTimeMillis(), 10, getTrxName());
-			t1.saveEx();
-			Query query = new Query(Env.getCtx(), MChangeLog.Table_Name, 
+		try {
+			// log migration script for update of lookup fields
+			MTest testPO = new MTest(Env.getCtx(), 0, getTrxName());
+			testPO.setName("testPO1");
+			testPO.setT_Integer(100);
+			testPO.saveEx();
+			
+			MTest testPO1 = new MTest(Env.getCtx(), 0, getTrxName());
+			testPO1.setName("testPO2");
+			testPO1.setT_Integer(100);
+			testPO1.saveEx();
+			
+			MUOM testUOM = new MUOM(Env.getCtx(), 0, getTrxName());
+			testUOM.setName("testUOM1");
+			testUOM.setX12DE355("testUOM1");
+			testUOM.saveEx();
+			testPO1.setAD_Table_ID(MTest.Table_ID);
+			testPO1.setRecord_ID(testPO.get_ID());
+			testPO1.setC_UOM_ID(testUOM.get_ID());
+			testPO1.setIsActive(false);
+			testPO1.setT_DateTime(new Timestamp(System.currentTimeMillis()));
+			testPO1.setT_Number(BigDecimal.TEN);
+			testPO1.saveEx();
+			
+			testPO1.load(getTrxName());
+			assertEquals(testPO1.getRecord_ID(), testPO.get_ID());
+			
+			// test change log for insert
+			try (MockedStatic<MSysConfig> mocked = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
+				mocked.when(() -> MSysConfig.getValue(MSysConfig.SYSTEM_INSERT_CHANGELOG, "N", getAD_Client_ID()))
+					.thenReturn("K");
+				MTest t1 = new MTest(Env.getCtx(), "t1_"+System.currentTimeMillis(), 10, getTrxName());
+				t1.saveEx();
+				Query query = new Query(Env.getCtx(), MChangeLog.Table_Name, 
 				MChangeLog.COLUMNNAME_AD_Table_ID + "=? AND " + MChangeLog.COLUMNNAME_Record_ID + "=?", getTrxName());
-			MChangeLog changeLog = query.setParameters(MTest.Table_ID, t1.get_ID()).first();
-			assertNotNull(changeLog, "No change log found for inserted record");
-			assertTrue(changeLog.get_ID() > 0, "Change log ID is invalid");
+				MChangeLog changeLog = query.setParameters(MTest.Table_ID, t1.get_ID()).first();
+				assertNotNull(changeLog, "No change log found for inserted record");
+				assertTrue(changeLog.get_ID() > 0, "Change log ID is invalid");
+			}
+		} finally {	
+			String fileName = Convert.getGeneratedMigrationScriptFileName();
+			String folderPg = Convert.getMigrationScriptFolder("postgresql");
+			String folderOr = Convert.getMigrationScriptFolder("oracle");
+			Convert.closeLogMigrationScript();
+			File file = new File(folderPg + fileName);
+			assertTrue(file.exists(), "Not found: " + folderPg + fileName);
+			file.delete();
+			file = new File(folderOr + fileName);
+			assertTrue(file.exists(), "Not found: " + folderOr + fileName);
+			file.delete();			
 		}
-				
-		String fileName = Convert.getGeneratedMigrationScriptFileName();
-		String folderPg = Convert.getMigrationScriptFolder("postgresql");
-		String folderOr = Convert.getMigrationScriptFolder("oracle");
-		Convert.closeLogMigrationScript();
-		File file = new File(folderPg + fileName);
-		assertTrue(file.exists(), "Not found: " + folderPg + fileName);
-		file.delete();
-		file = new File(folderOr + fileName);
-		assertTrue(file.exists(), "Not found: " + folderOr + fileName);
-		file.delete();
 	}
 	
 	@Test
@@ -751,6 +760,32 @@ public class POTest extends AbstractTestCase
 			MChangeLog changeLog = query.setParameters(MTest.Table_ID, t2.get_ID()).first();
 			assertNull(changeLog, "Change log found for inserted record");
 		}
+	}
+	
+	@Test
+	public void testChangeLogDeleteUserRoles() {
+		MSession.create(Env.getCtx());
+		MRole role = new MRole(Env.getCtx(), 0, null);
+		try {
+			role.setName("TestRole_"+System.currentTimeMillis());
+			role.saveEx();
+			
+			MUserRoles userRoles = new MUserRoles(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()), role.get_ID(), null);
+			assertTrue(userRoles.is_new(), "User role should be new");
+			userRoles.saveEx();
+			String uuid = userRoles.getAD_User_Roles_UU();
+			assertTrue(!Util.isEmpty(uuid, true), "UUID should not be empty");
+			userRoles.deleteEx(true);
+			Query query = new Query(Env.getCtx(), MChangeLog.Table_Name, 
+					MChangeLog.COLUMNNAME_AD_Table_ID + "=? AND " + MChangeLog.COLUMNNAME_Record_UU + "=?", getTrxName());
+				MChangeLog changeLog = query.setParameters(MUserRoles.Table_ID, uuid).first();
+				assertNotNull(changeLog, "Change log not found for deleted record");
+		} finally {
+			rollback();
+			if (role.get_ID() > 0)
+				role.deleteEx(true);
+		}
+		
 	}
 	
 	@Test
@@ -1117,8 +1152,28 @@ public class POTest extends AbstractTestCase
     	source.saveEx();
     	PO.copyValues(source, target2);	
     	assertEquals(source.getDescription(), target2.getDescription());
+
+    	// multi-key class
+    	MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
+    	product.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.STANDARD.id);
+    	product.setName("test Copy Values");
+    	product.setProductType(MProduct.PRODUCTTYPE_Item);
+    	product.setIsStocked(true);
+    	product.setIsSold(true);
+    	product.setIsPurchased(true);
+    	product.setC_UOM_ID(DictionaryIDs.C_UOM.EACH.id);
+    	product.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
+    	product.saveEx();
+    	MReplenish replenishSrc = new MReplenish(Env.getCtx(), DictionaryIDs.M_Replenish.P_CHAIR_IN_HQ.uuid, getTrxName());
+    	MReplenish replenishDst = new MReplenish(Env.getCtx(), PO.UUID_NEW_RECORD, getTrxName());
+    	PO.copyValues(replenishSrc, replenishDst);
+    	replenishDst.setM_Product_ID(product.get_ID());
+    	assertThatNoException().isThrownBy(() -> replenishDst.saveEx());
+    	assertNotNull(replenishDst.getM_Replenish_UU());
+    	assertEquals(DictionaryIDs.M_Warehouse.HQ.id, replenishDst.getM_Warehouse_ID());
+
     }
-    
+
     @Test
     void testLoadPOByUU() {
     	MTest test = new MTest(Env.getCtx(), 0, getTrxName());
@@ -1340,7 +1395,7 @@ public class POTest extends AbstractTestCase
 		
 		//test pdf attachment
 		MAttachment attachment = new MAttachment(Env.getCtx(), test.get_Table_ID(), test.get_ID(), test.get_UUID(), getTrxName());
-		attachment.setTitle("test pdf");
+		attachment.setTextMsg("test pdf");
 		
 		File pdfFile = File.createTempFile("test", ".pdf");
 		pdfFile.deleteOnExit();
@@ -1369,7 +1424,7 @@ public class POTest extends AbstractTestCase
 		test1.setName("testNonPdfAttachment1");
 		test1.saveEx();
 		MAttachment attachment1 = new MAttachment(Env.getCtx(), test1.get_Table_ID(), test1.get_ID(), test1.get_UUID(), getTrxName());
-		attachment1.setTitle("test non pdf");
+		attachment1.setTextMsg("test non pdf");
 		try (attachment1) {
 			MAttachmentEntry entry2 = new MAttachmentEntry(txtFile.getName(), "dummy txt content".getBytes(), 0);
 			attachment1.addEntry(entry2);
@@ -2098,6 +2153,10 @@ public class POTest extends AbstractTestCase
 	
 	@Test
 	void TestUseTimeoutForUpdate() {
+		// Skip for Oracle as it does not provide reliable query timeout support for update statements
+		if (DB.isOracle())
+			return;
+		
 		try (MockedStatic<SystemProperties> mocked = Mockito.mockStatic(SystemProperties.class, Mockito.CALLS_REAL_METHODS)) {
 			mocked.when(() -> SystemProperties.isUseTimeoutForUpdate())
 				.thenReturn(true);

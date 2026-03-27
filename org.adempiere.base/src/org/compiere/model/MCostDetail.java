@@ -30,13 +30,13 @@ import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
 import org.adempiere.exceptions.PeriodClosedException;
-import org.compiere.acct.Doc;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
+import org.idempiere.acct.IDoc;
 
 /**
  * 	Cost Detail Model
@@ -1223,7 +1223,7 @@ public class MCostDetail extends X_M_CostDetail
 		{
 			String docBaseType = DB.getSQLValueString((String)null, 
 					INOUTLINE_DOCBASETYPE_SQL, getM_InOutLine_ID());
-			return Doc.DOCTYPE_MatShipment.equals(docBaseType);
+			return IDoc.DOCTYPE_MatShipment.equals(docBaseType);
 		}
 		return false;
 	}
@@ -1444,11 +1444,12 @@ public class MCostDetail extends X_M_CostDetail
 			StringBuilder whereClause = new StringBuilder();
 			whereClause.append("C_OrderLine_ID = ? ");
 			whereClause.append(" AND TRUNC(DateAcct) = "+DB.TO_DATE(getDateAcct(), true));
+			whereClause.append(" AND M_Product_ID = ?");
 			whereClause.append(" AND M_AttributeSetInstance_ID = ?");
 			whereClause.append(" AND C_AcctSchema_ID = ?");
 			whereClause.append(" AND M_CostDetail_ID < ?");
 			cd = new Query(as.getCtx(), I_M_CostDetail.Table_Name, whereClause.toString(), get_TrxName())
-					.setParameters(getC_OrderLine_ID(), M_ASI_ID, as.get_ID(), this.get_ID())
+					.setParameters(getC_OrderLine_ID(), product.get_ID(), M_ASI_ID, as.get_ID(), this.get_ID())
 					.setOrderBy("M_CostDetail_ID DESC")
 					.first();
 		}
@@ -1459,18 +1460,19 @@ public class MCostDetail extends X_M_CostDetail
 			if (!i.isSOTrx()) {
 				MMatchPO[] mpoList = MMatchPO.getInvoice(Env.getCtx(), i.getC_Invoice_ID(), get_TrxName());
 				for (MMatchPO mpo : mpoList) {
+					// more than one match po for the same invoice line and account date
 					if (mpo.getC_InvoiceLine_ID() == getC_InvoiceLine_ID() 
 							&& mpo.getDateAcct().compareTo(getDateAcct()) == 0
 							&& mpo.getQty().compareTo(il.getQtyInvoiced()) != 0) { 
-						// partial MR, get the cost info from previous order
+						// get the cost info from previous cost detail
 						StringBuilder whereClause = new StringBuilder();
-						whereClause.append("C_OrderLine_ID = ? ");
-						whereClause.append(" AND TRUNC(DateAcct) = "+DB.TO_DATE(getDateAcct(), true));
+						whereClause.append("TRUNC(DateAcct) = "+DB.TO_DATE(getDateAcct(), true));
+						whereClause.append(" AND M_Product_ID = ?");
 						whereClause.append(" AND M_AttributeSetInstance_ID = ?");
 						whereClause.append(" AND C_AcctSchema_ID = ?");
 						whereClause.append(" AND M_CostDetail_ID < ?");
 						cd = new Query(as.getCtx(), I_M_CostDetail.Table_Name, whereClause.toString(), get_TrxName())
-								.setParameters(mpo.getC_OrderLine_ID(), M_ASI_ID, as.get_ID(), this.get_ID())
+								.setParameters(product.get_ID(), M_ASI_ID, as.get_ID(), this.get_ID())
 								.setOrderBy("M_CostDetail_ID DESC")
 								.first();
 						break;
@@ -1704,6 +1706,18 @@ public class MCostDetail extends X_M_CostDetail
 			boolean addition = qty.signum() > 0;
 			boolean adjustment = getM_InventoryLine_ID() > 0 && qty.signum() == 0 && amt.signum() != 0;
 			boolean isVendorRMA = isVendorRMA();
+			
+			//If not import and it is due to inventory then don't mark as addition
+			if(addition && getM_InventoryLine_ID() != 0) {
+				MInventoryLine invLine = new MInventoryLine(getCtx(), getM_InventoryLine_ID(), get_TrxName());
+				// Only apply import-line check for Physical Inventory, not Internal Use
+				if (!invLine.isInternalUseInventory()) {
+					int I_Inventory_ID = MInventoryLine.getImportLine_ID(getM_InventoryLine_ID(), get_TrxName());
+					if (I_Inventory_ID <= 0)
+						addition = false;
+				}
+			}
+			
 			//
 			if (ce.isAverageInvoice())
 			{
