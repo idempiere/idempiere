@@ -26,7 +26,9 @@ package org.idempiere.acct;
 
 import org.compiere.model.MAcctSchema;
 import org.idempiere.acct.doc.Doc;
+import org.osgi.service.component.annotations.Component;
 
+@Component(service = IDocPostingService.class, immediate = true)
 public class DocPostingService implements IDocPostingService {
 
 	@Override

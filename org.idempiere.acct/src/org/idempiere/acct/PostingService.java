@@ -39,7 +39,7 @@ import org.osgi.service.component.annotations.Component;
  * <p>Registered as an OSGi service so that the accounting module is optional —
  * when this bundle is absent, the "Posted" button is silently ignored.</p>
  */
-@Component(immediate = true, service = IPostingService.class)
+@Component(service = IPostingService.class, immediate = true)
 public class PostingService implements IPostingService {
 
 	@Override

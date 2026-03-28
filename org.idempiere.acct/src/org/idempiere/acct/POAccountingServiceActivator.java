@@ -34,7 +34,7 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 @Component(immediate = true)
 public class POAccountingServiceActivator {
 
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL)
+    @Reference(cardinality = ReferenceCardinality.MANDATORY)
     public void setAccountingService(IPOAccountingService service) {
         AcctModelServices.setAccountingService(service);
     }
