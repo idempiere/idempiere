@@ -282,6 +282,14 @@ public class SystemProperties {
 	 * ZK_THEME allows to define the theme to use, it overrides the SysConfig ZK_THEME so it can be used for testing purposes
 	 * @return
 	 */
+	public static String setZkTheme(String theme) {
+		return System.setProperty(ZK_THEME, theme);
+	}
+
+	/**
+	 * ZK_THEME allows to define the theme to use, it overrides the SysConfig ZK_THEME so it can be used for testing purposes
+	 * @return
+	 */
 	public static String getZkTheme() {
 		return System.getProperty(ZK_THEME);
 	}
