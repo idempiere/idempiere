@@ -18,8 +18,6 @@ package org.idempiere.acct.report;
 
 import static org.compiere.model.SystemIDs.PRINTFORMAT_STATEMENTOFACCOUNT;
 
-import static org.compiere.model.SystemIDs.PRINTFORMAT_STATEMENTOFACCOUNT;
-
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
