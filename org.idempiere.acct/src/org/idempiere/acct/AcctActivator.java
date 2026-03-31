@@ -43,7 +43,7 @@ public class AcctActivator extends Incremental2PackActivator {
 	@Reference(service = IMappedProcessFactory.class, cardinality = ReferenceCardinality.MANDATORY)
 	private IMappedProcessFactory mappedProcessFactory;
 
-	@Reference(service = IMappedFormFactory.class, cardinality = ReferenceCardinality.OPTIONAL)
+	@Reference(service = IMappedFormFactory.class, cardinality = ReferenceCardinality.MANDATORY)
 	private IMappedFormFactory mappedFormFactory;
 
 	@Reference(service = IMappedModelFactory.class, cardinality = ReferenceCardinality.MANDATORY)

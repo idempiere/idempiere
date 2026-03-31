@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" immediate="true" name="org.idempiere.acct.AcctActivator">
-   <reference cardinality="0..1" field="mappedFormFactory" interface="org.adempiere.webui.factory.IMappedFormFactory" name="mappedFormFactory"/>
+   <reference cardinality="1..1" field="mappedFormFactory" interface="org.adempiere.webui.factory.IMappedFormFactory" name="mappedFormFactory"/>
    <reference cardinality="1..1" field="mappedModelFactory" interface="org.idempiere.model.IMappedModelFactory" name="mappedModelFactory"/>
    <reference cardinality="1..1" field="mappedProcessFactory" interface="org.idempiere.process.IMappedProcessFactory" name="mappedProcessFactory"/>
    <implementation class="org.idempiere.acct.AcctActivator"/>

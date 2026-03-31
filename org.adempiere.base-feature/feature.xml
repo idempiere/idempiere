@@ -521,4 +521,8 @@
          id="slf4j.jdk14"
          version="0.0.0"/>
 
+   <plugin
+         id="org.idempiere.acct"
+         version="0.0.0"/>
+
 </feature>
