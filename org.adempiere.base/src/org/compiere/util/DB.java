@@ -2713,6 +2713,7 @@ public final class DB
 	    	builder.append(columnName);
 	    }
 	    
+	    builder.append(" IN (");	    
 		String[] values = csv.split("[,]");
 		for(int i = 0; i < values.length; i++)
 		{
