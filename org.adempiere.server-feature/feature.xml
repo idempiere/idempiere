@@ -50,10 +50,6 @@
          id="org.idempiere.zk.feature"
          version="0.0.0"/>
 
-   <includes
-         id="org.idempiere.webservices.feature"
-         version="0.0.0"/>
-
    <plugin
          id="javax.websocket-api"
          version="0.0.0"/>
