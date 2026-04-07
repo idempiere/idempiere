@@ -48,10 +48,6 @@ public class CKEditor
 
 	public static CKeditor get(boolean isMobile) {
 		CKeditor editor = new CKeditor();
-
-		String customConfigPath = getCustomConfigurationsPath(isMobile);
-		System.out.println(customConfigPath);
-
 		editor.setCustomConfigurationsPath(getCustomConfigurationsPath(isMobile));
 		editor.setToolbar("MyToolbar");
 		editor.setConfig(getLanguage());
