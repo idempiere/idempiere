@@ -49,7 +49,7 @@ public class CKEditor
 	public static CKeditor get(boolean isMobile) {
 		CKeditor editor = new CKeditor();
 		editor.setCustomConfigurationsPath(getCustomConfigurationsPath(isMobile));
-		editor.setToolbar("MyToolbar");
+		editor.setToolbar(getToolbar());
 		editor.setConfig(getLanguage());
 		return editor;
 	}
