@@ -13,7 +13,6 @@
 package org.adempiere.webui.window;
 
 import org.adempiere.util.Callback;
-import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
