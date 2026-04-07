@@ -64,7 +64,7 @@ import org.compiere.util.Util;
 public class TranslationImpExp extends SvrProcess {
 	
 	private String p_ImportOrExport;
-	private int p_AD_Client_ID;    // Client
+	private int p_AD_Client_ID = -1;    // Client
 	private String p_AD_Language;
 	private int p_AD_Table_ID;
 	private boolean p_IsOnlyCentralizedData;
@@ -78,7 +78,8 @@ public class TranslationImpExp extends SvrProcess {
 			if ("ImportOrExport".equals(name)) {
 				p_ImportOrExport = para.getParameterAsString();
 			} else if ("AD_AllClients_V_ID".equals(name)) {
-				p_AD_Client_ID  = para.getParameterAsInt();
+				if (para.getParameter() != null)
+					p_AD_Client_ID  = para.getParameterAsInt();
 			} else if ("AD_Language".equals(name)) {
 				p_AD_Language = para.getParameterAsString();
 			} else if ("AD_Table_ID".equals(name)) {

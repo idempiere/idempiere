@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--Adempiere(tm) Version 2.5.1a/2004-03-15 - Smart ERP & CRM - Copyright (c) 1999-2004 Jorg Janke -->
-<!--Adempiere Translation file DTD -->
-<!ELEMENT adempiereTrl (row+)>
-<!ATTLIST adempiereTrl
+<!--iDempiere(r) Release 14_2026-03-09 - Smart ERP & CRM -->
+<!--iDempiere Translation file DTD -->
+<!ELEMENT idempiereTrl (row+)>
+<!ATTLIST idempiereTrl
 	table CDATA #REQUIRED
 	language CDATA #REQUIRED
 >
