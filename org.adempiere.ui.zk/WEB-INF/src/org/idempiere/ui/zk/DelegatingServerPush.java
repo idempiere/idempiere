@@ -80,6 +80,11 @@ public class DelegatingServerPush implements ServerPush {
 			return new WebSocketServerPush();
 		}
 
+		if (pushType != null && !ATMOSPHERE.equalsIgnoreCase(pushType)) {
+			log.warning("Unsupported value for org.idempiere.ui.zk.serverpush: " + pushType
+					+ " - defaulting to AtmosphereServerPush");
+		}
+
 		// Default to Atmosphere
 		if (log.isLoggable(Level.INFO)) log.info("Using AtmosphereServerPush");
 		return new AtmosphereServerPush();
