@@ -70,7 +70,7 @@ public class DelegatingServerPush implements ServerPush {
 
 	/**
 	 * Creates the appropriate ServerPush implementation based on JVM parameter.
-	 * @return ServerPush implementation (WebSocketServerPush by default)
+	 * @return ServerPush implementation (AtmosphereServerPush by default)
 	 */
 	private ServerPush createDelegate() {
 		String pushType = SystemProperties.getZKServerPush();

@@ -67,7 +67,7 @@
 		comet - org.zkoss.zkmax.ui.comet.CometServerPush ( enterprise edition only )
 	-->
 
-	<!-- set JVM -Dorg.idempiere.ui.zk.serverpush to atmosphere or websocket (default) -->
+	<!-- set JVM -Dorg.idempiere.ui.zk.serverpush to atmosphere (default) or websocket -->
 	<device-config>
 		<device-type>ajax</device-type>
 		<server-push-class>org.idempiere.ui.zk.DelegatingServerPush</server-push-class>
