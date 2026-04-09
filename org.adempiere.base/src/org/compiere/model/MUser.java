@@ -502,6 +502,9 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 	 */
 	public String cleanValue (String value)
 	{
+		if (value == null)
+			return "";
+
 		char[] chars = value.toCharArray();
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < chars.length; i++)
