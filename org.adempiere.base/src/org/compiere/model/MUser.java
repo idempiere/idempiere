@@ -500,7 +500,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 	 *	@param value
 	 *	@return lower case cleaned value
 	 */
-	public String cleanValue (String value)
+	public static String cleanValue (String value)
 	{
 		if (value == null)
 			return "";
