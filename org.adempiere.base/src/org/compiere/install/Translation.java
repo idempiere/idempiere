@@ -88,7 +88,7 @@ public class Translation implements IApplication
 	}
 	
 	/**	DTD						*/
-	public static final String DTD = "<!DOCTYPE idempiereTrl PUBLIC \"-//iDempiere//DTD iDempiere Translation 1.0//EN\" \"https://jenkins.idempiere.org/job/iDempiere/ws/utils_dev/trl/idempiereTrl.dtd\">";
+	public static final String DTD = "<!DOCTYPE idempiereTrl PUBLIC \"-//iDempiere//DTD iDempiere Translation 1.0//EN\" \"https://raw.githubusercontent.com/idempiere/idempiere/refs/heads/master/utils_dev/trl/idempiereTrl.dtd\">";
 	/**	XML Element Tag			*/
 	public static final String	XML_TAG = "idempiereTrl";
 	public static final String	XML_TAG2 = "adempiereTrl"; // old translations
@@ -220,7 +220,7 @@ public class Translation implements IApplication
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			//	<!DOCTYPE idempiereTrl SYSTEM "https://jenkins.idempiere.org/job/iDempiere/ws/utils_dev/trl/idempiereTrl.dtd">
-			//	<!DOCTYPE idempiereTrl PUBLIC "-//iDempiere//DTD iDempiere Translation 1.0//EN" "https://jenkins.idempiere.org/job/iDempiere/ws/utils_dev/trl/idempiereTrl.dtd">
+			//	<!DOCTYPE idempiereTrl PUBLIC "-//iDempiere//DTD iDempiere Translation 1.0//EN" "https://raw.githubusercontent.com/idempiere/idempiere/refs/heads/master/utils_dev/trl/idempiereTrl.dtd">
 			Document document = builder.newDocument();
 			document.appendChild(document.createComment(Adempiere.getSummaryAscii()));
 			document.appendChild(document.createComment(DTD));
