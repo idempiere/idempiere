@@ -81,16 +81,6 @@ public class CalloutBankStatement extends CalloutEngine
 			trx = Env.ZERO;
 		BigDecimal bd = stmt.subtract(trx);
 
-		String targetColumn = bd.compareTo(Env.ZERO) > 0 ? "InterestAmt" : "ChargeAmt";
-		mTab.setValue(targetColumn, bd);
-
-		if (trx.compareTo(Env.ZERO) != 0) {
-			mTab.setValue("ChargeAmt", Env.ZERO);
-			mTab.setValue("InterestAmt", Env.ZERO);
-		    mTab.setValue(targetColumn, bd);
-		    return "";
-		}
-
 		//  Charge - calculate Interest
 		if (mField.getColumnName().equals("ChargeAmt"))
 		{
@@ -100,14 +90,17 @@ public class CalloutBankStatement extends CalloutEngine
 			bd = bd.subtract(charge);
 			mTab.setValue("InterestAmt", bd);
 		}
-		//  Calculate Charge
+		//  Calculate Charge when negative or Interest when positive
 		else
 		{
 			BigDecimal interest = (BigDecimal)mTab.getValue("InterestAmt");
 			if (interest == null)
 				interest = Env.ZERO;
 			bd = bd.subtract(interest);
-			mTab.setValue("ChargeAmt", bd);
+			String targetColumn = "ChargeAmt";
+			if (bd.signum() > 0 && !mField.getColumnName().equals("InterestAmt"))
+				targetColumn = "InterestAmt";
+			mTab.setValue(targetColumn, bd);
 		}
 		return "";
 	}   //  amount
