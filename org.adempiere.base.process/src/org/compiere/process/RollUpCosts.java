@@ -242,6 +242,10 @@ public class RollUpCosts extends SvrProcess {
 	 */
 	protected String rollUpCosts(int productId) throws Exception 
 	{
+		MProduct product = new MProduct(getCtx(), productId, get_TrxName());
+		if (product.isBOM() && ! product.isVerified())
+			return "BOM is not verified";
+
 		String sql = "SELECT bl.M_Product_ID FROM PP_Product_BOMLine bl " 
 			+ " JOIN PP_PRODUCT_BOM b " 
 			+ " ON ( b.PP_PRODUCT_BOM_ID = bl.PP_PRODUCT_BOM_ID ) WHERE b.M_Product_ID = ?"
@@ -257,7 +261,6 @@ public class RollUpCosts extends SvrProcess {
 			}
 		}
 		
-		MProduct product = new MProduct(getCtx(), productId, get_TrxName());
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
