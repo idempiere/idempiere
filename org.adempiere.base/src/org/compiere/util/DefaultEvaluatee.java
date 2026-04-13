@@ -25,7 +25,6 @@
 package org.compiere.util;
 
 import java.beans.Expression;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;

@@ -124,7 +124,7 @@
         <setEntry value="jakarta.xml.bind-api@default:default"/>
         <setEntry value="jakarta.xml.soap-api@default:default"/>
         <setEntry value="jakarta.xml.ws-api@default:default"/>
-        <setEntry value="javassist@default:default"/>
+        <setEntry value="javassist*3.30.2.GA@default:default"/>
         <setEntry value="javax.enterprise.cdi-api@default:default"/>
         <setEntry value="javax.interceptor-api@default:default"/>
         <setEntry value="javax.validation.api@default:default"/>
@@ -417,6 +417,7 @@
         <setEntry value="org.compiere.db.oracle.provider@default:default"/>
         <setEntry value="org.compiere.db.postgresql.provider@default:default"/>
         <setEntry value="org.idempiere.acct@5:default"/>
+        <setEntry value="org.idempiere.extension.manager@default:default"/>
         <setEntry value="org.idempiere.hazelcast.service@default:default"/>
         <setEntry value="org.idempiere.tablepartition@default:default"/>
         <setEntry value="org.idempiere.test@default:default"/>
