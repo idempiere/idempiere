@@ -42,9 +42,9 @@ import fi.jawsy.jawwa.zk.atmosphere.AtmosphereServerPush;
  * Delegating ServerPush implementation that switches between
  * WebSocketServerPush and AtmosphereServerPush based on JVM parameter.
  * <p>
- * Usage: Set the JVM parameter {@code -Dorg.idempiere.ui.zk.serverpush=atmosphere}
- * to use AtmosphereServerPush, or {@code -Dorg.idempiere.ui.zk.serverpush=websocket}
- * (or leave unset) to use WebSocketServerPush (default).
+ * Usage: Set the JVM parameter
+ * {@code -Dorg.idempiere.ui.zk.serverpush=atmosphere} to use AtmosphereServerPush (or leave it unset as this is the default),
+ * or {@code -Dorg.idempiere.ui.zk.serverpush=websocket} to use WebSocketServerPush.
  * </p>
  * 
  * @author Carlos Ruiz - globalqss
@@ -70,19 +70,24 @@ public class DelegatingServerPush implements ServerPush {
 
 	/**
 	 * Creates the appropriate ServerPush implementation based on JVM parameter.
-	 * @return ServerPush implementation (WebSocketServerPush by default)
+	 * @return ServerPush implementation (AtmosphereServerPush by default)
 	 */
 	private ServerPush createDelegate() {
 		String pushType = SystemProperties.getZKServerPush();
 
-		if (ATMOSPHERE.equalsIgnoreCase(pushType)) {
-			if (log.isLoggable(Level.INFO)) log.info("Using AtmosphereServerPush");
-			return new AtmosphereServerPush();
+		if (WEBSOCKET.equalsIgnoreCase(pushType)) {
+			if (log.isLoggable(Level.INFO)) log.info("Using WebSocketServerPush");
+			return new WebSocketServerPush();
 		}
 
-		// Default to WebSocket
-		if (log.isLoggable(Level.INFO)) log.info("Using WebSocketServerPush");
-		return new WebSocketServerPush();
+		if (pushType != null && !ATMOSPHERE.equalsIgnoreCase(pushType)) {
+			log.warning("Unsupported value for org.idempiere.ui.zk.serverpush: " + pushType
+					+ " - defaulting to AtmosphereServerPush");
+		}
+
+		// Default to Atmosphere
+		if (log.isLoggable(Level.INFO)) log.info("Using AtmosphereServerPush");
+		return new AtmosphereServerPush();
 	}
 
 	/**

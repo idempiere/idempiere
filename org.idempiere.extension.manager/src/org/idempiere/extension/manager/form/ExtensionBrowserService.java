@@ -38,6 +38,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -47,10 +48,12 @@ import org.adempiere.base.Core;
 import org.adempiere.base.markdown.IMarkdownRenderer;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.Callback;
+import org.adempiere.util.ServerContext;
 import org.compiere.model.MExtension;
 import org.compiere.model.MExtensionEntity;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
+import org.compiere.model.POInfo;
 import org.compiere.model.MPackageImp;
 import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.Query;
@@ -365,10 +368,18 @@ public class ExtensionBrowserService {
 				.setParameters(mExtension.getAD_Extension_ID())
 				.list();
 		for (MExtensionEntity entity : entities) {
-			PO po = MTable.get(Env.getCtx(), entity.getAD_Table_ID()).getPOByUU(entity.getRecord_UU(), null);
+			MTable table = MTable.get(Env.getCtx(), entity.getAD_Table_ID());
+			if (table == null)
+				continue;
+			POInfo poInfo = POInfo.getPOInfo(Env.getCtx(), table.getAD_Table_ID());
+			if (poInfo == null || poInfo.getTableName() == null)
+				continue;
+			PO po = table.getPOByUU(entity.getRecord_UU(), null);
 			if (po != null) {
-				po.set_Value("IsActive", false);
-				po.saveEx();
+				if (po.get_ColumnIndex("IsActive") >= 0) {
+					if (po.set_Value("IsActive", false))
+						po.saveEx();
+				}
 			}
 		}
 	}
@@ -425,10 +436,18 @@ public class ExtensionBrowserService {
 				.setParameters(mExtension.getAD_Extension_ID())
 				.list();
 		for (MExtensionEntity entity : entities) {
-			PO po = MTable.get(Env.getCtx(), entity.getAD_Table_ID()).getPOByUU(entity.getRecord_UU(), null);
+			MTable table = MTable.get(Env.getCtx(), entity.getAD_Table_ID());
+			if (table == null)
+				continue;
+			POInfo poInfo = POInfo.getPOInfo(Env.getCtx(), table.getAD_Table_ID());
+			if (poInfo == null || poInfo.getTableName() == null)
+				continue;
+			PO po = table.getPOByUU(entity.getRecord_UU(), null);
 			if (po != null) {
-				po.set_Value("IsActive", true);
-				po.saveEx();
+				if (po.get_ColumnIndex("IsActive") >= 0) {
+					if (po.set_Value("IsActive", true))
+						po.saveEx();
+				}
 			}
 		}
 	}
@@ -580,34 +599,41 @@ public class ExtensionBrowserService {
 	 * @param extension
 	 */
 	public void syncExtensionEntities(MExtension mExtension, ExtensionMetadata extension) {
+		final Properties ctx = new Properties();
+		ctx.putAll(ServerContext.getCurrentInstance());
 		CompletableFuture.runAsync(() -> {
-			if (!extension.hasBundles()) return;
-			JsonArray bundles = extension.getBundles();
-			for (JsonElement bel : bundles) {
-				String symbolicName = bel.getAsJsonObject().get("symbolicName").getAsString();
-				List<MPackageImp> imps = new Query(Env.getCtx(), MPackageImp.Table_Name, "Name=? AND PK_Status=?", null)
-						.setParameters(symbolicName, MPackageImp.PACKAGE_STATUS_COMPLETED)
-						.setOnlyActiveRecords(true)
-						.list();
-				for (MPackageImp imp : imps) {
-					List<MPackageImpDetail> details = new Query(Env.getCtx(), MPackageImpDetail.Table_Name, "AD_Package_Imp_ID=? AND Success=? AND Action IN (?,?)", null)
-							.setParameters(imp.getAD_Package_Imp_ID(), MPackageImpDetail.ACTION_STATUS_SUCCESS, MPackageImpDetail.ACTION_INSERT, MPackageImpDetail.ACTION_UPDATE)
+			try {
+				ServerContext.setCurrentInstance(ctx);
+				if (!extension.hasBundles()) return;
+				JsonArray bundles = extension.getBundles();
+				for (JsonElement bel : bundles) {
+					String symbolicName = bel.getAsJsonObject().get("symbolicName").getAsString();
+					List<MPackageImp> imps = new Query(Env.getCtx(), MPackageImp.Table_Name, "Name=? AND PK_Status=?", null)
+							.setParameters(symbolicName, MPackageImp.PACKAGE_STATUS_COMPLETED)
 							.setOnlyActiveRecords(true)
 							.list();
-					for (MPackageImpDetail detail : details) {
-						MExtensionEntity entity = new Query(Env.getCtx(), MExtensionEntity.Table_Name, "AD_Extension_ID=? AND AD_Table_ID=? AND Record_UU=?", null)
-								.setParameters(mExtension.getAD_Extension_ID(), detail.getAD_Table_ID(), detail.getRecord_UU())
+					for (MPackageImp imp : imps) {
+						List<MPackageImpDetail> details = new Query(Env.getCtx(), MPackageImpDetail.Table_Name, "AD_Package_Imp_ID=? AND Success=? AND Action IN (?,?)", null)
+								.setParameters(imp.getAD_Package_Imp_ID(), MPackageImpDetail.ACTION_STATUS_SUCCESS, MPackageImpDetail.ACTION_INSERT, MPackageImpDetail.ACTION_UPDATE)
 								.setOnlyActiveRecords(true)
-								.first();
-						if (entity == null) {
-							entity = new MExtensionEntity(Env.getCtx(), 0, null);
-							entity.setAD_Extension_ID(mExtension.getAD_Extension_ID());
-							entity.setAD_Table_ID(detail.getAD_Table_ID());
-							entity.setRecord_UU(detail.getRecord_UU());
-							entity.saveEx();
+								.list();
+						for (MPackageImpDetail detail : details) {
+							MExtensionEntity entity = new Query(Env.getCtx(), MExtensionEntity.Table_Name, "AD_Extension_ID=? AND AD_Table_ID=? AND Record_UU=?", null)
+									.setParameters(mExtension.getAD_Extension_ID(), detail.getAD_Table_ID(), detail.getRecord_UU())
+									.setOnlyActiveRecords(true)
+									.first();
+							if (entity == null) {
+								entity = new MExtensionEntity(Env.getCtx(), 0, null);
+								entity.setAD_Extension_ID(mExtension.getAD_Extension_ID());
+								entity.setAD_Table_ID(detail.getAD_Table_ID());
+								entity.setRecord_UU(detail.getRecord_UU());
+								entity.saveEx();
+							}
 						}
 					}
 				}
+			} finally {
+				ServerContext.dispose();
 			}
 		}).exceptionally(e -> {
 			log.log(Level.SEVERE, "Failed to sync extension entities for " + extension.getId(), e);

@@ -31,6 +31,7 @@ import org.adempiere.base.event.EventManager;
 import org.adempiere.base.event.annotations.EventDelegate;
 import org.adempiere.base.event.annotations.EventTopic;
 import org.adempiere.model.MBroadcastMessage;
+import org.adempiere.util.ServerContext;
 import org.compiere.model.MExtension;
 import org.compiere.model.MExtensionEntity;
 import org.compiere.model.MPackageImp;
@@ -212,24 +213,32 @@ public class PackageImpDelegate extends EventDelegate {
 				String extensionId = getExtensionId(symbolicName);
 				if (extensionId != null) {
 					Properties ctx = Env.getCtx();
+					Properties currentCtx = Env.getCtx();
 					if (getEvent().getProperty(EventManager.EVENT_CONTEXT) instanceof Properties properties) {
 						ctx = properties;
 					}
-					MExtension mExtension = new Query(ctx, MExtension.Table_Name, "ExtensionId=?", null)
-						.setParameters(extensionId)
-						.setOnlyActiveRecords(true)
-						.first();
-					if (mExtension != null) {
-						MBroadcastMessage msg = new MBroadcastMessage(ctx, 0, null);
-						msg.setTitle(mExtension.getName());
-						msg.setAD_User_ID(mExtension.getUpdatedBy());
-						msg.setBroadcastFrequency(MBroadcastMessage.BROADCASTFREQUENCY_JustOnce);
-						msg.setBroadcastType(MBroadcastMessage.BROADCASTTYPE_Immediate);
-						msg.setTarget(MBroadcastMessage.TARGET_User);
-						String adMessage = success ? "IncrementalPackInCompletedSuccessfully" : "IncrementalPackInCompletedWithErrors";
-						msg.setBroadcastMessage(Msg.getMsg(ctx, adMessage, new Object[] { symbolicName }));
-						msg.saveEx();
-						BroadcastMsgUtil.publishBroadcastMessage(msg.getAD_BroadcastMessage_ID(), null);
+					try {
+						if (ctx != currentCtx)
+							ServerContext.setCurrentInstance(ctx);
+						MExtension mExtension = new Query(ctx, MExtension.Table_Name, "ExtensionId=?", null)
+							.setParameters(extensionId)
+							.setOnlyActiveRecords(true)
+							.first();
+						if (mExtension != null) {
+							MBroadcastMessage msg = new MBroadcastMessage(ctx, 0, null);
+							msg.setTitle(mExtension.getName());
+							msg.setAD_User_ID(mExtension.getUpdatedBy());
+							msg.setBroadcastFrequency(MBroadcastMessage.BROADCASTFREQUENCY_JustOnce);
+							msg.setBroadcastType(MBroadcastMessage.BROADCASTTYPE_Immediate);
+							msg.setTarget(MBroadcastMessage.TARGET_User);
+							String adMessage = success ? "IncrementalPackInCompletedSuccessfully" : "IncrementalPackInCompletedWithErrors";
+							msg.setBroadcastMessage(Msg.getMsg(ctx, adMessage, new Object[] { symbolicName }));
+							msg.saveEx();
+							BroadcastMsgUtil.publishBroadcastMessage(msg.getAD_BroadcastMessage_ID(), null);
+						}
+					} finally {
+						if (ctx != currentCtx)
+							ServerContext.setCurrentInstance(currentCtx);
 					}
 				}
 			}

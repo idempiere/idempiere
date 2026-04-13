@@ -223,10 +223,6 @@ ALTER TABLE AD_Extension MODIFY ExtensionVersion VARCHAR2(30 CHAR)
 ;
 
 -- Mar 24, 2026, 5:06:00 PM GMT+08:00
-ALTER TABLE AD_Extension MODIFY ExtensionMetadata CLOB CONSTRAINT AD_Extension_ExtensionMetadata_isjson CHECK (ExtensionMetadata IS JSON)
-;
-
--- Mar 24, 2026, 5:06:00 PM GMT+08:00
 ALTER TABLE AD_Extension ADD Name VARCHAR2(255 CHAR) NOT NULL
 ;
 
@@ -474,3 +470,5 @@ UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=16,Updated=TO_TIMESTAMP('2026-03-24 
 UPDATE AD_TreeNodeMM SET Parent_ID=218, SeqNo=7,Updated=TO_TIMESTAMP('2026-03-24 17:18:51','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tree_ID=10 AND Node_ID=200250
 ;
 
+ALTER TABLE AD_Extension MODIFY ExtensionMetadata NULL
+;
