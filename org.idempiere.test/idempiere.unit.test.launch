@@ -342,6 +342,7 @@
         <setEntry value="org.osgi.util.pushstream@default:default"/>
         <setEntry value="org.osgi.util.tracker@default:default"/>
         <setEntry value="org.osgi.util.xml@default:default"/>
+        <setEntry value="org.owasp.encoder@default:default"/>
         <setEntry value="org.passay@default:default"/>
         <setEntry value="org.postgresql.jdbc@default:default"/>
         <setEntry value="org.sat4j.core@default:default"/>

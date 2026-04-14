@@ -18,7 +18,7 @@
 	<location includeSource="true" missingManifest="generate" type="Maven">
 	  <groupId>com.google.guava</groupId>
 	  <artifactId>failureaccess</artifactId>
-	  <version>1.0.1</version>
+	  <version>1.0.3</version>
 	  <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
