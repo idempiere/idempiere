@@ -1,13 +1,13 @@
 .zstbtn.z-toolbarbutton {
-	padding: var(--zk-space-xs);
+	padding: 2px;
 	min-width: 38px;
 }
 .zschktbtn-gridlines.zschktbtn.z-toolbarbutton {
 	min-width: 62px;
 }
 .zstbtn-real {
-    margin-right: var(--zk-space-3xl);
-    font-size: var(--zk-font-size-md);
+    margin-right: 12px;
+    font-size: 12px;
 }
 .zschktbtn .z-toolbarbutton-content {
 	justify-content: initial !important;

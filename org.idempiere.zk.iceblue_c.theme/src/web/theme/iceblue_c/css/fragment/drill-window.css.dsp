@@ -1,15 +1,15 @@
 .drill-window-tab td {
-	padding: var(--zk-space-lg) var(--zk-space-4xl) 0 var(--zk-space-4xl);
+	padding: 5px 15px 0 15px;
 }
 
 .drill-window-field-name {
-	color: var(--zk-text-color-shadow);
+	color: var(--zk-drill-window-field-color);
 }
 
 .drill-window-field-header {
-	color: var(--zk-text-color-shadow);
+	color: var(--zk-drill-window-field-color);
 }
 
 .drill-window-field-header td {
-	padding: var(--zk-space-2xl) var(--zk-space-4xl) 0 var(--zk-space-4xl);
+	padding: 10px 15px 0 15px;
 }

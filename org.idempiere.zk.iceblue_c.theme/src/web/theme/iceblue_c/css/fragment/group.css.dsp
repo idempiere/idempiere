@@ -1,66 +1,66 @@
 tr.z-group {
-	background: var(--zk-color-group-bg) repeat-x 0 0;
+	background: var(--zk-group-row-background-color) repeat-x 0 0;
 }
 
 .z-group-header .z-label {
-	color: var(--zk-text-color-brand-muted);
+	color: var(--zk-group-header-text-color);
 	width: auto;
-	font-weight: var(--zk-font-weight-bold);
-	font-size: var(--zk-font-size-sm);
+	font-weight: bold;
+	font-size: 11px;
 }
 
 .z-group td.z-group-inner {
 	overflow: hidden !important;
-	border-bottom: 1px solid var(--zk-text-color-brand-muted) !important;
+	border-bottom: 1px solid var(--zk-group-header-text-color) !important;
 	border-top: 0px !important;
-	padding: var(--zk-space-2xs) var(--zk-space-xs);
-	background: var(--zk-color-surface) !important;
+	padding: 1px 2px;
+	background: var(--zk-group-inner-background-color) !important;
 }
 .mobile .z-group td.z-group-inner {
-    padding: var(--zk-space-xl) var(--zk-space-xs);
+    padding: 8px 2px;
 }
 .mobile .z-group td.z-group-inner .z-group-icon {
-    height: var(--zk-dimension-control-md);
-    line-height: var(--zk-line-height-lg);
-    font-size: var(--zk-font-size-2xl);
+    height: 24px;
+    line-height: 24px;
+    font-size: 20px;
 }
 .mobile .z-group td.z-group-inner .z-label {
-    line-height: var(--zk-line-height-lg);
+    line-height: 24px;
 }
 
 .z-group-icon {
 	display: inline-block;
-	font-family: var(--zk-font-family-icon);
-	font-weight: var(--zk-font-weight-normal);
+	font-family: var(--zk-icon-font-family);
+	font-weight: normal;
 	font-style: normal;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
 .z-group-icon-close:before {
 	content: "\f0da";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-group-icon-open:before {
 	content: "\f0d7";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 
 div.z-listbox-body .z-listgroup-header {
-	padding-top: var(--zk-space-md);
-    padding-bottom: var(--zk-space-md);
-    border-bottom: 1px solid var(--zk-color-border-group);
+	padding-top: 4px;
+    padding-bottom: 4px;
+	border-bottom: 1px solid var(--zk-group-list-header-border-color);
 }
 .z-listgroup-header-content > .z-listitem-checkable.z-listitem-checkbox {
 	display: none;
 }
 .z-listgroup-icon {
 	display: inline-block;
-	font-weight: var(--zk-font-weight-bold);
+	font-weight: bold;
 	font-style: normal;
 	height: 22px;
 	width: 22px;
-	font-size: var(--zk-font-size-xl);
-	padding-top: var(--zk-space-xs);
+	font-size: 18px;
+	padding-top: 2px;
 }
 .z-icon-listgroup-close::before {
 	content: "\f105";

@@ -2,29 +2,29 @@
 .z-button, .z-button-os {
   display: inline-flex;
   align-items: center;
-  padding: var(--zk-space-md) var(--zk-space-5xl);
+  padding: 4px 20px;
   justify-content: center;
   cursor: pointer;
-  gap: var(--zk-space-lg);
+  gap: 5px;
 }
 .z-button-os {
-	border-radius: var(--zk-radius-md);
+	border-radius: 4px;
 }
 .z-button-os:hover {
-    color: var(--zk-color-surface);
+	color: var(--zk-button-os-hover-color);
     border-color: transparent;
-    background-color: var(--zk-color-primary);
+	background-color: var(--zk-button-os-hover-background-color);
 }
 
 .z-button:focus {
-    border-color: var(--zk-text-color-strong);
+	border-color: var(--zk-button-focus-border-color-local);
 }
 
 .z-button.btn-small {
-	padding: var(--zk-space-2xs) var(--zk-space-lg);
+	padding: 1px 5px;
 }
 .z-button.btn-medium {
-	padding: var(--zk-space-xs) var(--zk-space-2xl);
+	padding: 2px 10px;
 }
 
 .img-btn img {
@@ -34,55 +34,55 @@
 }
 
 .txt-btn img, .small-img-btn img, .img-txt-btn img {
-	height: var(--zk-dimension-icon-md);
-	width: var(--zk-dimension-icon-md);
+	height: 16px;
+	width: 16px;
 	background-color: transparent;
 	vertical-align: middle;
 	display: inline-block;
 }
 
 .btn-sorttab {
-	box-shadow: 0px 0px 4px var(--zk-color-neutral-400);
-	color: var(--zk-text-color-secondary-strong);
-	border: solid 1px var(--zk-color-neutral-400);
-	text-shadow: 0px 1px 2px var(--zk-text-color-shadow);
+	box-shadow: 0px 0px 4px var(--zk-button-sorttab-shadow-color);
+	color: var(--zk-button-sorttab-color);
+	border: solid 1px var(--zk-button-sorttab-border-color);
+	text-shadow: 0px 1px 2px var(--zk-button-sorttab-text-shadow-color);
 }
 
 .btn-cancel, .btn-help {
-	background: var(--zk-color-neutral-450);
-	color: var(--zk-text-color-action);
+	background: var(--zk-button-cancel-background-color);
+	color: var(--zk-button-cancel-color);
 }
 
 .btn-cancel:hover, .btn-help:hover {
-	background: var(--zk-color-button-hover);
-	color: var(--zk-text-color-button-hover);
+	background: var(--zk-button-cancel-hover-background-color);
+	color: var(--zk-button-cancel-hover-color);
 }
 
 .z-icon-Help, .z-icon-Cancel {
-	color: var(--zk-text-color-action) !important;
+	color: var(--zk-button-cancel-color) !important;
 }
 
 .z-button [class^="z-icon-"][disabled],
 .z-button-os [class^="z-icon-"][disabled]{
 	font-size: larger;
-	color: var(--zk-text-color-default);	
-	padding-left: var(--zk-space-xs);
-	padding-right: var(--zk-space-xs);
+	color: var(--zk-button-disabled-icon-color);	
+	padding-left: 2px;
+	padding-right: 2px;
 }
 .z-button.xlarge-toolbarbutton [class^="z-icon-"] {
-	font-size: var(--zk-font-size-3xl);
+	font-size: 24px;
 }
 .z-button.large-toolbarbutton [class^="z-icon-"] {
-	font-size: var(--zk-font-size-2xl);
+	font-size: 20px;
 }
 .z-button.medium-toolbarbutton [class^="z-icon-"] {
-	font-size: var(--zk-font-size-lg);
+	font-size: 16px;
 }
 .z-button.small-toolbarbutton [class^="z-icon-"] {
-	font-size: var(--zk-font-size-md);
+	font-size: 12px;
 }
 .btn-ok.z-button [class^="z-icon-"]:before {
-	color: var(--zk-color-surface);	
+	color: var(--zk-button-ok-icon-color);	
 }
 
 .z-combobox-button, .z-bandbox-button, .z-datebox-button, .z-timebox-button,
@@ -90,7 +90,7 @@
 	vertical-align: top;
 }
 .z-bandbox-button [class*="z-icon-"], .z-combobox-button [class*="z-icon-"] {
-	font-size: var(--zk-font-size-lg);
+	font-size: 16px;
 }
 
 .mobile .login-btn {

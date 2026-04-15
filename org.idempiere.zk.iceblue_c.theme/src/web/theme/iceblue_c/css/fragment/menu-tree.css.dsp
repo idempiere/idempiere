@@ -4,7 +4,7 @@
 	border: 0; margin: 0; padding: 0;
 	${fontFamilyC};
 	${fontSizeM}; 
-	font-weight: var(--zk-font-weight-normal);
+	font-weight: normal;
     overflow-x: hidden;
     white-space: nowrap;
     text-overflow: ellipsis !important;
@@ -13,9 +13,9 @@
 
 div.z-tree-body td.menu-tree-cell {
 	cursor: pointer;
-	padding: 0 var(--zk-space-xs);
+	padding: 0 2px;
    	${fontSizeM};
-   	font-weight: var(--zk-font-weight-normal);
+   	font-weight: normal;
    	overflow: visible;
 }
 
@@ -23,34 +23,34 @@ div.menu-tree-cell-cnt {
 	border: 0; margin: 0; padding: 0;
 	${fontFamilyC};
 	${fontSizeM}; 
-	font-weight: var(--zk-font-weight-normal);
+	font-weight: normal;
     white-space:nowrap
 }
 
 td.menu-tree-cell-disd * {
-	color: var(--zk-text-color-disabled-soft) !important; cursor: default!important;
+	color: var(--zk-menu-tree-disabled-color) !important; cursor: default!important;
 }
 
 td.menu-tree-cell-disd a:visited, td.menu-tree-cell-disd a:hover {
 	text-decoration: none !important;
 	cursor: default !important;
-	border-color: var(--zk-color-selected-border) !important;
+	border-color: var(--zk-menu-tree-disabled-border-color) !important;
 }
 
 div.z-dottree-body td.menu-tree-cell {
-	cursor: pointer; padding: 0 var(--zk-space-xs);
+	cursor: pointer; padding: 0 2px;
 	${fontSizeM}; 
-	font-weight: var(--zk-font-weight-normal); overflow: visible;
+	font-weight: normal; overflow: visible;
 }
 
 div.z-filetree-body td.menu-tree-cell {
-	cursor: pointer; padding: 0 var(--zk-space-xs);
+	cursor: pointer; padding: 0 2px;
 	${fontSizeM}; 
-	font-weight: var(--zk-font-weight-normal); overflow: visible;
+	font-weight: normal; overflow: visible;
 }
 
 div.z-vfiletree-body td.menu-tree-cell {
-	cursor: pointer; padding: 0 var(--zk-space-xs);
+	cursor: pointer; padding: 0 2px;
 	${fontSizeM}; 
-	font-weight: var(--zk-font-weight-normal); overflow: visible;
+	font-weight: normal; overflow: visible;
 }

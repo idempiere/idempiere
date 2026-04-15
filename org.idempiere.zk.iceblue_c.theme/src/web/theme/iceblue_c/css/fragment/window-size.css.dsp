@@ -1,6 +1,6 @@
 .about-window {
 	width: 800px;
-	height: var(--zk-dimension-dialog-md);
+	height: 600px;
 }
 @media screen and (max-width: 375px) {
 	.about-window {
@@ -14,7 +14,7 @@
 }
 
 .customize-grid-view-dialog {
-	width: var(--zk-dimension-dialog-md);
+	width: 600px;
 	height: 500px;
 }
 @media screen and (max-width: 600px) {
@@ -90,7 +90,7 @@
 
 .record-info-dialog {
 	width: 800px;
-	height: var(--zk-dimension-dialog-md);
+	height: 600px;
 }
 @media screen and (max-width: 800px) {
 	.record-info-dialog {
@@ -224,10 +224,10 @@
 }
 .quick-entry-dialog > .z-window-content {
 	overflow: auto;
-	padding: var(--zk-space-md);	
+	padding: 4px;	
 }
 .quick-entry-dialog > .z-window-content > .confirm-panel {
-	padding-top: var(--zk-space-md);
+	padding-top: 4px;
 }
 @media screen and (max-width: 350px) {
 	.quick-entry-dialog {
@@ -241,8 +241,8 @@
 }
 
 .feedback-request-dialog {
-	width: var(--zk-dimension-dialog-sm);
-	height: var(--zk-dimension-dialog-md);
+	width: 400px;
+	height: 600px;
 }
 @media screen and (max-width: 400px) {
 	.feedback-request-dialog {
@@ -256,7 +256,7 @@
 }
 
 .request-dialog {
-	width: var(--zk-dimension-dialog-sm);
+	width: 400px;
 	height: 550px;
 }
 @media screen and (max-width: 400px) {
@@ -295,7 +295,7 @@
 }
 
 .assignment-dialog {
-	width: var(--zk-dimension-dialog-md);
+	width: 600px;
 }
 @media screen and (max-width: 600px) {
 	.assignment-dialog {
@@ -313,7 +313,7 @@
 	white-space: nowrap;
 }
 .location-dialog .confirm-panel {
-	padding: var(--zk-space-md) var(--zk-space-xl);
+	padding: 4px 8px;
 }
 @media screen and (max-width: 380px) {
 	.location-dialog {
@@ -387,7 +387,7 @@
 }
 
 .chosenbox-assistant-dialog {
-	height: var(--zk-dimension-dialog-md);
+	height: 600px;
 	width: 700px;
 }
 @media screen and (max-width: 500px) {

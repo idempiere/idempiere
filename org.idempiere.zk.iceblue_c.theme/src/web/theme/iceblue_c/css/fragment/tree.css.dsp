@@ -6,17 +6,17 @@
 }
 @media screen and (min-width: 768px) {
 	.z-treecell-content {
-		padding: 0px var(--zk-space-2xs);
+		padding: 0px 1px;
 	}
 }
 
 @media screen and (max-width: 767px) {
 	.z-treecell-content {
-		padding: var(--zk-space-xs) var(--zk-space-2xs);
+		padding: 2px 1px;
 	}
 }
 .z-treecell-content > .menu-href.z-a {
-	margin-left: var(--zk-space-xl);
+	margin-left: 8px;
 }
 .z-treecell-text {
 	margin-left: 0px;
@@ -24,14 +24,14 @@
 
 div.z-treefooter-content, div.z-treecell-content, div.z-treecol-content, 
 tr.z-treerow, tr.z-treerow a, tr.z-treerow a:visited {
-	color: var(--zk-text-color-default);
+	color: var(--zk-tree-cell-text-color);
 }
 
 <%-- move tree item button (mobile only) --%>
 .tree-moveitem-btn {
-	padding: var(--zk-space-xs) var(--zk-space-md); 
+	padding: 2px 4px; 
 	border-radius: 3px;
 }
 .tree-moveitem-btn.pressed {
-	box-shadow: inset 0 0 0 1px var(--zk-shadow-inner-light), inset 0 3px 15px var(--zk-shadow-inner-dark);
+	box-shadow: inset 0 0 0 1px var(--zk-tree-moveitem-inset-border-shadow-color),inset 0 3px 15px var(--zk-tree-moveitem-inset-shadow-color);
 }

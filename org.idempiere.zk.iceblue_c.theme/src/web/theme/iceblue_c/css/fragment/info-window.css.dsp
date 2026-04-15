@@ -1,5 +1,5 @@
 .info-panel .z-window-overlapped, .info-panel .z-window-highlighted {
-	background-color: var(--zk-color-window-muted) !important;
+	background-color: var(--zk-info-window-panel-background-color) !important;
 }
 .info-panel .z-window-highlighted .z-window-content {
 	padding: 0px;
@@ -23,7 +23,7 @@
 }
 
 .info-panel .z-south {
-	margin-top: var(--zk-space-xs);
+	margin-top: 2px;
 }
 
 .info-panel .statusBar > div > .z-west,  .info-panel .statusBar > div > .z-east {

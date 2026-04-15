@@ -1,28 +1,28 @@
 <%@ taglib uri="http://www.idempiere.org/dsp/web/util" prefix="u" %>
 <%-- header --%>
 .desktop-north {
-	background-color: var(--zk-color-primary-light);
-	border-bottom: 1px solid var(--zk-color-header-border) !important;
+	background-color: var(--zk-desktop-header-background-color);
+	border-bottom: 1px solid var(--zk-desktop-header-border-color) !important;
 }
 <%-- left panel for logo and global search --%>
 .desktop-header-left {
 	margin: 0;
-	margin-left: var(--zk-space-2xs);
-	margin-top: var(--zk-space-2xs);
+	margin-left: 1px;
+	margin-top: 1px;
 	background-color: transparent !important; 
 	border: none !important;
 }
 
 .desktop-header {
-	background-color: ${u:sysConfig("ZK_DESKTOP_HEADER_BACKGROUND_COLOR", "var(--zk-color-primary-light)")}; <%-- SysConfig with default to var(--zk-color-primary-light) --%>
+	background-color: ${u:sysConfig("ZK_DESKTOP_HEADER_BACKGROUND_COLOR", "#C7E8FF")}; <%-- SysConfig with default to #C7E8FF --%>
 	width: 100%;
 	height: 46px;
-	padding-left: var(--zk-space-md);
+	padding-left: 4px;
 }
 
 .desktop-header.mobile {
 	height: 36px;
-	padding: var(--zk-space-md) var(--zk-space-md);
+	padding: 4px 4px;
 }
 .desktop-header.mobile .systemStatus {
 	display:none;
@@ -30,18 +30,18 @@
 
 <%-- user name and links --%>
 .desktop-header-font {
-	font-size: var(--zk-font-size-xs);
+	font-size: 10px;
 }
 
 <%-- popup container for collapsed desktop header --%>
 .desktop-header-popup {
 	width: 800px;
-	border-radius: var(--zk-radius-sm);
+	border-radius: 2px;
 	border: none;
-	right: var(--zk-space-2xs);
+	right: 1px;
 }
 .desktop-header-popup, .desktop-header-popup > .z-window-content {
-	background-color: var(--zk-color-primary-light);
+	background-color: var(--zk-desktop-header-background-color);
 }
 
 .desktop-header-popup .desktop-header {
@@ -53,28 +53,28 @@
 .desktop-user-panel {
 	float: right;
 	height: 45px;
-	padding-right: var(--zk-space-lg);
+	padding-right: 5px;
 }
 .desktop-user-panel tr {
 	vertical-align: middle;
 }
 .desktop-user-panel.mobile .desktop-header-font.desktop-header-username {
-	font-weight: var(--zk-font-weight-semibold);
+	font-weight: 600;
     white-space: nowrap;
 }
 .desktop-user-panel.mobile {
     height: auto;
 }
 .desktop-user-panel .z-toolbarbutton:hover {
-	background: var(--zk-color-primary-lighter);
-	color: var(--zk-text-color-hover);
+	background: var(--zk-desktop-header-hover-background-color);
+	color: var(--zk-desktop-header-hover-color);
 }
 .desktop-header-username {
-	padding: 0px var(--zk-space-md);
+	padding: 0px 4px;
 }
 .desktop-header-username:hover {
-	background: var(--zk-color-primary-lighter);
-	color: var(--zk-text-color-hover);
+	background: var(--zk-desktop-header-hover-background-color);
+	color: var(--zk-desktop-header-hover-color);
 }
 
 <%-- user panel popup for mobile client --%>
@@ -84,7 +84,7 @@
 }
 .user-panel-popup .z-popup-content > .z-vlayout {
 	overflow-x: auto;
-	padding: var(--zk-space-xl);
+	padding: 8px;
 }
 
 <%-- main desktop layout (border layout) --%>
@@ -96,7 +96,7 @@
 	border: none;
 }
 .desktop-center {
-	padding-top: var(--zk-space-2xs);
+	padding-top: 1px;
 }
 .desktop-center > .z-center-body {
 	padding: 0px;
@@ -135,22 +135,22 @@
 }
 .desktop-tabbox .z-tabs .z-toolbar-tabs .z-toolbarbutton-hover .z-toolbarbutton-content {
 	background-image: none !important;
-	background-color: var(--zk-color-neutral-350) !important;
+	background-color:var(--zk-desktop-tab-toolbar-hover-background-color) !important;
 	padding: 0px !important;
 	margin: 0px !important;
-	-webkit-box-shadow:inset 0px 0px 3px var(--zk-color-border-soft);
-	-moz-box-shadow:inset 0px 0px 3px var(--zk-color-border-soft);	
-	-o-box-shadow:inset 0px 0px 3px var(--zk-color-border-soft);	
-	-ms-box-shadow:inset 0px 0px 3px var(--zk-color-border-soft);	
-	box-shadow:inset 0px 0px 3px var(--zk-color-border-soft);
+	-webkit-box-shadow:inset 0px 0px 3px var(--zk-desktop-tab-toolbar-hover-shadow-color);
+	-moz-box-shadow:inset 0px 0px 3px var(--zk-desktop-tab-toolbar-hover-shadow-color);	
+	-o-box-shadow:inset 0px 0px 3px var(--zk-desktop-tab-toolbar-hover-shadow-color);	
+	-ms-box-shadow:inset 0px 0px 3px var(--zk-desktop-tab-toolbar-hover-shadow-color);	
+	box-shadow:inset 0px 0px 3px var(--zk-desktop-tab-toolbar-hover-shadow-color);
 }
 .desktop-tabbox.z-tabbox > .z-tabbox-icon.z-tabbox-left-scroll,
 .desktop-tabbox.z-tabbox > .z-tabbox-icon.z-tabbox-right-scroll {
-	line-height: var(--zk-line-height-xl);
+	line-height: 30px;
 }
 .desktop-tabbox.z-tabbox  > .z-tabs > .z-tabs-content .z-tab-image {
-	width: var(--zk-dimension-icon-md);
-	height: var(--zk-dimension-icon-md);
+	width: 16px;
+	height: 16px;
 }
 
 .desktop-tabpanel {
@@ -167,16 +167,16 @@
 	width: 100% !important;
 }
 .desktop-home-tabpanel .z-hlayout-inner {
-	padding: var(--zk-space-lg) !important;
+	padding: 5px !important;
 }
 
 <%-- left panel for side gadgets --%>
 .desktop-left-column {
-	width: var(--zk-dimension-panel-md);
+	width: 200px;
 	border: none;
-	border-right: 1px solid var(--zk-color-border-strong);
-	background-color: var(--zk-color-subtle-bg);
-	padding-top: var(--zk-space-xs); 
+	border-right: 1px solid var(--zk-desktop-column-border-color);
+	background-color: var(--zk-desktop-column-background-color);
+	padding-top: 2px; 
 }
 .desktop-left-column + .z-west-splitter,  .desktop-left-column.z-west {
 	border-top: none; 
@@ -188,11 +188,11 @@
 
 <%-- right panel for side gadgets --%>
 .desktop-right-column {
-	width: var(--zk-dimension-panel-md);
+	width: 200px;
 	border: none;
-	border-left: 1px solid var(--zk-color-border-strong);
-	background-color: var(--zk-color-subtle-bg);
-	padding-top: var(--zk-space-xs); 
+	border-left: 1px solid var(--zk-desktop-column-border-color);
+	background-color: var(--zk-desktop-column-background-color);
+	padding-top: 2px; 
 }
 .desktop-right-column + .z-east-splitter,  .desktop-right-column.z-east {
 	border-top: none; 
@@ -222,8 +222,8 @@
 <%-- bottom toolbar of application menu tree popup --%>
 .desktop-menu-toolbar {
 	verticle-align: middle; 
-	padding: var(--zk-space-xs);
-	border-top: 1px solid var(--zk-color-border-strong);
+	padding: 2px;
+	border-top: 1px solid var(--zk-desktop-column-border-color);
 }
 
 <%-- desktop window container --%>
@@ -233,12 +233,12 @@
 .window-container-toolbar-btn.z-toolbarbutton .z-toolbarbutton-content img {
 	width: 22px;
 	height: 22px;
-	padding: var(--zk-space-sm) 3px;
+	padding: 3px 3px;
 }
 .window-container-toolbar-btn.z-toolbarbutton .z-toolbarbutton-content [class^="z-icon"] {
-	padding: var(--zk-space-sm) 3px;
-	font-size: var(--zk-font-size-lg);
-	color: var(--zk-color-icon-muted);
+	padding: 3px 3px;
+	font-size: 16px;
+	color: var(--zk-desktop-toolbar-icon-color);
 }
 .window-container-toolbar > .z-toolbar-content,
 .window-container-toolbar-btn.z-toolbarbutton, 
@@ -251,15 +251,15 @@
 }
 .window-container-toolbar-btn.tab-list.z-toolbarbutton {
 	width: auto;	
-	padding: var(--zk-space-xs) var(--zk-space-sm);
+	padding: 2px 3px;
 }
 .window-container-toolbar-btn.tab-list.z-toolbarbutton > .z-toolbarbutton-content {
-	font-size: var(--zk-font-size-base);
-	padding-right: var(--zk-space-lg-plus);
+	font-size: 14px;
+	padding-right: 6px;
 }
 .window-container-toolbar-btn.tab-list.z-toolbarbutton > .z-toolbarbutton-content > i {
 	padding-right: 0px;
 	margin-right: -4px;
-	font-size: var(--zk-font-size-xl);
+	font-size: 18px;
 }
 

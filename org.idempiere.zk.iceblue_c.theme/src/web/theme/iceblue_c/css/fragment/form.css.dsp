@@ -10,19 +10,19 @@ td.form-label-above-input div.form-label {
     text-align: left;
 }
 td.form-label-above-input div.form-label > span.z-label {
-    font-weight: var(--zk-font-weight-normal);
+    font-weight: 400;
     font-size: smaller !important;
 }
 td.form-label-above-input.z-cell {
-    padding-top: var(--zk-space-lg);
-    padding-bottom: var(--zk-space-lg);
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 td.form-label-above-input.login-label {
     text-align: left;
 }
 td.form-label-above-input.login-label .z-label,
 .form-label-above-input .idempiere-label.z-label {
-    font-weight: var(--zk-font-weight-normal);
+    font-weight: 400;
     font-size: smaller !important;
 }
 .form-label-above-input.z-window .login-box-body,
@@ -36,8 +36,8 @@ td.form-label-above-input.login-label .z-label,
 	width: 99%;
 }
 .form-button img {
-	width: var(--zk-dimension-icon-md);
-	height: var(--zk-dimension-icon-md);
+	width: 16px;
+	height: 16px;
 }
 
 <%-- confirm panel --%>
@@ -45,41 +45,41 @@ td.form-label-above-input.login-label .z-label,
 	width: auto;
 	height: auto;
 	position: relative;
-	padding-left: var(--zk-space-xs);
-	padding-right: var(--zk-space-xs);
+	padding-left: 2px;
+	padding-right: 2px;
 }
 .confirm-panel-right {
 	float: right;
-	padding: var(--zk-space-2xs);
+	padding: 1px;
 }
 .confirm-panel-left {
 	float: left;
 }
 .confirm-panel-center{
-	padding-left: var(--zk-space-lg);
+	padding-left: 5px;
 	float: left;
 }
 
 <%-- busy dialog --%>
 .busy-dialog {
 	cursor: wait;
-	background-color: transparent;
+	background-color: var(--zk-form-busy-dialog-background-color);
 }
 .busy-dialog-box {
-	background-color: transparent;
-	padding: var(--zk-space-xl-plus); 
+	background-color: var(--zk-form-busy-dialog-box-background-color);
+	padding: 9px; 
 }
 .busy-dialog-img {
-	height: var(--zk-dimension-icon-md); 
-	width: var(--zk-dimension-icon-md);
-	background: transparent no-repeat center;
+	height: 16px; 
+	width: 16px;
+	background: var(--zk-form-busy-dialog-image-background-color) no-repeat center;
 	background-image: url(../images/progress3.gif) !important;
 	display: -moz-inline-box; 
 	vertical-align: top; 
 	display: inline-block;
 }
 .busy-dialog-label {
-	color: var(--zk-text-color-body);
+	color: var(--zk-form-busy-dialog-label-color);
 }
 
 <%-- status bar --%>
@@ -91,27 +91,27 @@ td.form-label-above-input.login-label .z-label,
 	white-space: nowrap;
 	padding-top: 0;
 	padding-bottom: 0;
-	padding-left: var(--zk-space-lg);
-	padding-right: var(--zk-space-lg);
+	padding-left: 5px;
+	padding-right: 5px;
 	cursor: pointer;
 	width: 100%;
 	height: 100%;
 	margin: 0;
-	border-left: solid 1px var(--zk-color-border-accent);
+	border-left: solid 1px var(--zk-form-status-border-color);
 	display: inline-block;
 }
 .status-info {
-	padding-right: var(--zk-space-2xl);
-	border-left: solid 1px var(--zk-color-border-accent);
+	padding-right: 10px;
+	border-left: solid 1px var(--zk-form-status-border-color);
 }
 
 .status-selected{
-	padding-right: var(--zk-space-lg);
-	border-right: solid 1px var(--zk-color-border-accent);
+	padding-right: 5px;
+	border-right: solid 1px var(--zk-form-status-border-color);
 }
 
 .status-border {
-	border: solid 1px var(--zk-color-border-accent);
+	border: solid 1px var(--zk-form-status-border-color);
 }
 
 <%-- report wizard --%>

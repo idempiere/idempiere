@@ -34,27 +34,27 @@
 <%-- north status bar --%>
 .adwindow-status {
 	min-height: 22px;
-	padding-top: var(--zk-space-sm);
-	background-color: var(--zk-color-subtle-bg);
+	padding-top: 3px;
+	background-color: var(--zk-adwindow-status-background-color);
 }
 
 <%-- record info text, east of status bar --%>
 .adwindow-status-docinfo {
 	display: inline-block;
 	position: absolute;
-	right: var(--zk-space-md);
+	right: 4px;
 	max-width: 90%;
 }
 
 .docstatus-error .z-label {
-	color: red;
+	color: var(--zk-adwindow-docstatus-error-color);
 }
 
 <%-- status text, west of status bar --%>
 .adwindow-status-docstatus {
 	display: inline-block;
 	float: left;
-	padding-left: var(--zk-space-md);
+	padding-left: 4px;
 }
 
 .adwindow-toolbar.mobile {
@@ -64,10 +64,10 @@
 
 .adwindow-breadcrumb {
 	min-height: 32px;
-	background-color: var(--zk-color-surface);
+	background-color: var(--zk-adwindow-breadcrumb-background-color);
 	padding: 0px;
-	padding-left: var(--zk-space-lg);
-	border-bottom: 1px solid var(--zk-color-border-strong) !important;
+	padding-left: 5px;
+	border-bottom: 1px solid var(--zk-adwindow-breadcrumb-border-color) !important;
 	display: flex;
 	align-items: center;
 	flex-wrap: wrap;
@@ -75,14 +75,14 @@
 }
 .adwindow-breadcrumb-paths {
 	display: inline-block;
-	padding: var(--zk-space-md) 0px;
+	padding: 4px 0px;
 }
 .adwindow-breadcrumb-toolbar {
 	display: inline-block; 
 	text-align: right;
 }
 .adwindow-breadcrumb-toolbar .z-toolbarbutton {
-	margin-left: var(--zk-space-xs);
+	margin-left: 2px;
 }
 .adwindow-breadcrumb-toolbar .z-toolbar {
 	background-image: none; 
@@ -97,12 +97,12 @@
 
 <%-- dropdown menu icon --%>
 .adwindow-breadcrumb-menu::after {
-	font-family: var(--zk-font-family-icon);
-	font-weight: var(--zk-font-weight-bolder);
+	font-family: var(--zk-icon-font-family);
+	font-weight: 900;
     font-style: normal;
-	font-size: var(--zk-font-size-md);
+	font-size: 12px;
     content: "\f0d7";
-    margin-left: var(--zk-space-sm);
+    margin-left: 3px;
 }
 
 <%-- div container of detail tabbox --%>
@@ -123,7 +123,7 @@
 }
 
 .adwindow-detailpane-tabpanel {
-	background-color: var(--zk-color-surface)
+	background-color: var(--zk-adwindow-breadcrumb-background-color);
 }
 
 <%-- toolbar of detail panel --%>
@@ -138,25 +138,25 @@
 .adwindow-detailpane-toolbar .z-toolbarbutton {
 	display: inline-flex;
 	padding: 0px;
-	width: var(--zk-dimension-control-sm);
-	line-height: var(--zk-line-height-sm);
+	width: 20px;
+	line-height: 14px;
 }
 .adwindow-detailpane-toolbar .z-toolbarbutton img {
-	width: var(--zk-dimension-icon-md);
-	height: var(--zk-dimension-icon-md);
+	width: 16px;
+	height: 16px;
 }
 .adwindow-detailpane-toolbar .z-toolbar-body .docstatus-normal,  
 .adwindow-detailpane-toolbar .z-toolbar-body .docstatus-error {
-	padding-left: var(--zk-space-md);
-	margin-top: var(--zk-space-xs);
+	padding-left: 4px;
+	margin-top: 2px;
 }
 .adwindow-detailpane-toolbar .z-toolbar-body .docstatus-normal .z-label,
 .adwindow-detailpane-toolbar .z-toolbar-body .docstatus-error .z-label {
 	${fontSizeM};
 }
 .adwindow-detailpane-toolbar .z-toolbarbutton-content {
-	line-height: var(--zk-line-height-sm);
-	height: var(--zk-dimension-icon-md);
+	line-height: 14px;
+	height: 16px;
 }
 
 .adwindow-detailpane-message {
@@ -169,30 +169,30 @@
 	position: absolute; 
 	right: 0px; 
 	top: 0px; 
-	height: var(--zk-dimension-control-md);
+	height: 24px;
 }
 .adwindow-detailpane-adtab-grid-south .z-paging {
 	padding: 0px !important;
 	height: 2em;
 	border: none;
-	background: var(--zk-color-surface);
+	background: var(--zk-adwindow-detailpane-grid-south-background-color);
 }
 .adwindow-detailpane-adtab-grid-south .z-paging .z-paging-inp {
-	height: var(--zk-dimension-icon-md);
-	line-height: var(--zk-line-height-md);
+	height: 16px;
+	line-height: 16px;
 }
 .z-paging .z-paging-icon {
-    font-size: var(--zk-font-size-md);
-    font-weight: var(--zk-font-weight-normal);
+    font-size: 12px;
+    font-weight: normal;
 }
 
 <%-- south region of AD tab for detail panel --%>
 .adwindow-gridview-detail {
-	min-height: var(--zk-dimension-panel-md);
+	min-height: 200px;
 	height: 35%;
 }
 .adwindow-gridview-detail .z-south-body {
-	padding-top: var(--zk-space-2xs);
+	padding-top: 1px;
 }
 
 <%-- AD tab in detail panel with tab level greater than 0 --%>
@@ -201,13 +201,13 @@
 	position: absolute;
 	width: 0px;
 	height: 0px;
-	top: var(--zk-space-lg-plus);
-	left: var(--zk-space-md);
+	top: 6px;
+	left: 4px;
 	border-top: 5px dashed transparent;
-	border-left: 5px dashed var(--zk-color-tree-arrow);
+	border-left: 5px dashed var(--zk-adwindow-sub-tab-border-color);
 	border-right: 5px dashed transparent;
 	border-bottom: 5px solid transparent;
-	margin-top: var(--zk-space-md);
+	margin-top: 4px;
 }
 
 <%-- ad tab --%>
@@ -224,14 +224,14 @@
 }
 .adtab-grid-south {
 	border: none;
-	height: var(--zk-dimension-control-lg);
+	height: 30px;
 }
 .adtab-grid-south .z-paging {
 	border: none;
 	padding: 0;
 }
 .adtab-grid .z-checkbox > input[type="checkbox"] {
-	font-size: var(--zk-font-size-base);
+	font-size: 14px;
 	height: 14px;
 	width: 14px;
 }
@@ -251,24 +251,24 @@
 	position: absolute;
 }
 .adtab-form-borderlayout .z-center-body {
-	background-color: var(--zk-color-subtle-bg);
+	background-color: var(--zk-adwindow-status-background-color);
 }
 
 .adtab-form-borderlayout .z-grid-body {
-	background-color: var(--zk-color-subtle-bg);
+	background-color: var(--zk-adwindow-status-background-color);
  }
 
 <%-- title text for collapsed detail panel --%>
 .adtab-form-borderlayout .z-south-collapsed:before { 
 	content: '${u:cleanAmp(u:getMsg(u:getCtx(), "Detail"))}';
 	position: absolute; 
-	font-size: var(--zk-font-size-md); 
-	font-weight: var(--zk-font-weight-bold);
+	font-size: 12px; 
+	font-weight: bold;
 	text-align: center;
-	line-height: var(--zk-line-height-xs);
-	left: var(--zk-space-md);
-	height: var(--zk-dimension-icon-sm);
-	top: var(--zk-space-md);
+	line-height: 12px;
+	left: 4px;
+	height: 12px;
+	top: 4px;
 }
 
 @media screen and (max-height: 767px) {
@@ -304,31 +304,31 @@
 
 <%-- record info --%>
 .activity-card {
-	border: 1px solid var(--zk-color-border-card);
+	border: 1px solid var(--zk-adwindow-activity-card-border-color);
 	border-top-left-radius: 2px;
 	border-top-right-radius: 2px;
-	border-bottom: 2px solid var(--zk-color-border-card);
+	border-bottom: 2px solid var(--zk-adwindow-activity-card-border-color);
 	border-bottom-left-radius: 4px;
 	border-bottom-right-radius: 4px;
-	margin-left: var(--zk-space-sm);
-	margin-right: var(--zk-space-sm);
+	margin-left: 3px;
+	margin-right: 3px;
 }
 .activity-card-spacing {
-	margin-top: var(--zk-space-xl);
+	margin-top: 8px;
 }
 .activity-card .help-content {
-	font-size: var(--zk-font-size-md-plus);
+	font-size: 13px;
 	line-height: 1em;
 }
 .mobile .activity-card .help-content {
-	font-size: var(--zk-font-size-lg);
+	font-size: 16px;
 }
 .record-info-dialog .record-info-radiogroup {
-	padding: var(--zk-space-md) var(--zk-space-md) var(--zk-space-xl) 4px;
+	padding: 4px 4px 8px 4px;
 }
 .record-info-dialog .record-info-changelog-table {
-	margin-left: var(--zk-space-sm);
-	margin-right: var(--zk-space-sm);
+	margin-left: 3px;
+	margin-right: 3px;
 }
 
 @media only screen 
@@ -345,18 +345,18 @@
 }
 
 .mobile-overflow-link {
-	font-weight: var(--zk-font-weight-bold); 
+	font-weight: 700; 
 	text-decoration: none;
 	transition: background 0.8s;
 	background-position: center;
 }
 .mobile-overflow-link:active {
-	background-color: var(--zk-color-neutral-350);
+	background-color: var(--zk-adwindow-mobile-overflow-active-background-color);
   	background-size: 80%;
 	transition: background 0s;
 }
 .adwindow-status-docstatus .z-label.mobile-overflow-link {
-	width: var(--zk-dimension-icon-lg);
+	width: 18px;
 	cursor: pointer;
 	display: inline-block;
 }
@@ -398,13 +398,13 @@
 @media only screen 
   and (max-device-width: 700px) {
 	.adwindow-detailpane-toolbar .z-paging-button {
-		margin-right: var(--zk-space-xs);
+		margin-right: 2px;
 	}
 	.adwindow-detailpane-toolbar .z-paging-input {
-		margin-left: var(--zk-space-sm);
+		margin-left: 3px;
 	}
 	.adwindow-detailpane-toolbar .z-paging-text {
-		margin-right: var(--zk-space-sm);
+		margin-right: 3px;
 	}
 	.adwindow-detailpane-toolbar {
 		padding-left: 0px;

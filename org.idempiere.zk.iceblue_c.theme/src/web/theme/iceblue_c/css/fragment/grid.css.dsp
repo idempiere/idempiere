@@ -2,13 +2,13 @@
 <%@ taglib uri="http://www.idempiere.org/dsp/web/util" prefix="u" %>
 <%-- z-grid customization --%>
 .z-grid .z-column, .z-listheader {
-	background-color: var(--zk-color-primary-lighter);
-	border-left: 1px solid var(--zk-color-border-soft);
-    border-bottom: 1px solid var(--zk-color-border-soft);
+	background-color: var(--zk-grid-header-background-color);
+	border-left: 1px solid var(--zk-grid-header-border-color);
+    border-bottom: 1px solid var(--zk-grid-header-border-color);
 }
 
 .z-grid-header {
-	background-color: var(--zk-color-primary-lighter);
+	background-color: var(--zk-grid-header-background-color);
 }
 
 .z-grid tbody tr.grid-inactive-row td.z-cell {
@@ -23,16 +23,16 @@
 }
 .z-grid tbody tr.grid-inactive-row span.row-indicator-selected.z-icon-Edit,
 .z-grid tbody tr.highlight span.row-indicator-selected.z-icon-Edit {
-	font-family: var(--zk-font-family-icon);
+	font-family: var(--zk-icon-font-family);
 	font-size: larger;
-	color: var(--zk-text-color-default); 
+	color: var(--zk-grid-row-indicator-color); 
 }
 .z-grid tbody tr.highlight td.z-cell { 
-	background-color: var(--zk-color-focus-bg) !important;
+	background-color: var(--zk-grid-highlight-background-color) !important;
 	background-image: none !important;
 }
 .z-grid tbody tr.highlight td.row-indicator-selected {
-	background-color: var(--zk-color-focus-bg) !important;
+	background-color: var(--zk-grid-highlight-background-color) !important;
 	background-image: url(${c:encodeURL('~./theme/iceblue_c/images/EditRecord16.png')}) !important;
 	background-position: center;
 	background-repeat: no-repeat;
@@ -40,7 +40,7 @@
 	cursor: pointer;
 }
 .z-grid tbody tr.highlight td.row-indicator {
-	background-color: transparent !important;
+	background-color: var(--zk-grid-transparent-color) !important;
 	background-image: none !important; 
 }
 tbody.z-grid-empty-body td {
@@ -50,13 +50,13 @@ tbody.z-grid-empty-body td {
 	text-align: left;
 }
 .z-grid-body {
-	background-color: var(--zk-color-surface);
+	background-color: var(--zk-grid-body-background-color);
 }
 div.z-column-cnt, div.z-grid-header div.z-auxheader-cnt {
-	padding: var(--zk-space-md) var(--zk-space-xs) var(--zk-space-sm);
+	padding: 4px 2px 3px;
 }
 .z-grid-body .z-cell {
-	padding: var(--zk-space-xs) var(--zk-space-sm);
+	padding: 2px 3px;
 }
 
 <%-- text overflow for grid cell --%>
@@ -80,21 +80,21 @@ div.z-column-cnt, div.z-grid-header div.z-auxheader-cnt {
 	}	
 }
 .z-column-content, .z-listheader-content, .z-listcell-content {
-	color: var(--zk-text-color-default);
-	padding: var(--zk-space-xs) var(--zk-space-sm) var(--zk-space-2xs);
+	color: var(--zk-grid-content-text-color);
+	padding: 2px 3px 1px;
 }
 
 .z-column-content:hover, .z-listheader-content:hover, .z-listcell-content:hover {
-	color: var(--zk-text-color-strong);
+	color: var(--zk-grid-content-hover-text-color);
 }
 
 .z-listheader-sort .z-listheader-content:active, .z-column-sort .z-column-content:active  {
-    background: var(--zk-color-primary-light);
-    color: var(--zk-text-color-strong);
+    background: var(--zk-grid-sort-active-background-color);
+    color: var(--zk-grid-content-hover-text-color);
 }
 
 .z-column-sort .z-column-sorticon, .z-listheader-sort .z-listheader-sorticon {
-	color: var(--zk-text-color-default);
+	color: var(--zk-grid-content-text-color);
 }
 
 <%-- grid layout for form --%>
@@ -102,11 +102,11 @@ div.z-column-cnt, div.z-grid-header div.z-auxheader-cnt {
 	border: none !important; 
 	margin: 0 !important; 
 	padding: 0 !important;
-	background-color: transparent !important;
+	background-color: var(--zk-grid-transparent-color) !important;
 }
 .grid-layout .z-row-inner, .grid-layout .z-cell {
 	border: none !important;
-	background-color: transparent !important;
+	background-color: var(--zk-grid-transparent-color) !important;
 }
 .grid-layout tr.z-row-over>td.z-row-inner, .grid-layout tr.z-row-over>.z-cell {
 	border: none !important;
@@ -117,33 +117,33 @@ div.z-column-cnt, div.z-grid-header div.z-auxheader-cnt {
 
 <%-- z-listbox customization --%>
 .z-listbox-header {
-	background-color: var(--zk-color-primary-lighter);
-	border-left: 1px solid var(--zk-color-border-soft);
-	border-bottom: 1px solid var(--zk-color-border-soft);
+	background-color: var(--zk-grid-header-background-color);
+	border-left: 1px solid var(--zk-grid-header-border-color);
+	border-bottom: 1px solid var(--zk-grid-header-border-color);
 }
 tbody.z-listbox-empty-body td {
 	text-align: left;
 }
 div.z-listbox-body .z-listcell {
-	padding: var(--zk-space-xs);
+	padding: 2px;
 }
 .z-listbox-autopaging .z-listcell-cnt {
-	height: var(--zk-dimension-control-sm);
+	height: 20px;
 }
 .z-row .z-cell, .z-listitem .z-listcell, .z-listitem.z-listitem-selected>.z-listcell {
-	border-left: 1px solid var(--zk-color-border);
+	border-left: 1px solid var(--zk-grid-row-cell-border-color);
 }
 .z-row .z-cell, .z-listitem .z-listcell:first-child, 
 .z-listitem.z-listitem-selected > .z-listcell:first-child {
 	border-left: none;
 }
 .z-listcell-content:has(> .z-listitem-checkbox) {
-    padding: var(--zk-space-xs) var(--zk-space-md) var(--zk-space-2xs) var(--zk-space-2xs);
+    padding: 2px 4px 1px 1px;
 }
 
 <%-- color editor --%>
 div.grid-view-color-fieldtype-display {
-	height: var(--zk-dimension-control-sm);
+	height: 20px;
 	display: flex;
 	align-items: center;
 	justify-content: center;

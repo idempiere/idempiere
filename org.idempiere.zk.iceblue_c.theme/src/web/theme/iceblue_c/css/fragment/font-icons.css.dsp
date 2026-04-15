@@ -1,25 +1,25 @@
 .z-icon-Account:before {
 	content: "\f12e";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-Archive:before {	
 	content: "\f187";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-Assignment:before {
 	content: "\f0cb";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-Attachment:before {	
 	content: "\f0c6";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-BPartner:before {
 	content: "\f007";
 }
 .z-icon-Calculator:before {
 	content: "\f1ec";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-Calendar:before {
 	content: "\f073";
@@ -29,7 +29,7 @@
 }
 .z-icon-ChangeLog:before {
 	content: "\f017";
-	font-weight: var(--zk-font-weight-bold);
+	font-weight: bold;
 }
 .z-icon-Chat:before {
 	content: "\f0e6";
@@ -45,10 +45,10 @@
 }
 .z-icon-Customize:before {
 	content: "\f0db";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-Delete:before {
-	font-weight: var(--zk-font-weight-bold);
+	font-weight: bold;
 	content: "\f068";
 }
 .z-icon-DeSelectAll:before {
@@ -62,16 +62,16 @@
 }
 .z-icon-ErrorMessageBox:before {
 	content: "\f057";
-	font-size: var(--zk-font-size-4xl);
-	color: red;
-	font-family: var(--zk-font-family-icon);
+	font-size: 32px;
+	color: var(--zk-font-icons-error-message-color);
+	font-family: var(--zk-icon-font-family);
 }
 .z-icon-ExclamationMessageBox:before {
 	content: "\f06a";
-	font-size: var(--zk-font-size-4xl);
-	color: yellow;
-	font-family: var(--zk-font-family-icon);
-	font-weight: var(--zk-font-weight-bolder);
+	font-size: 32px;
+	color: var(--zk-font-icons-exclamation-message-color);
+	font-family: var(--zk-icon-font-family);
+	font-weight: 900;
 }
 .z-icon-ExcludeSelected:before {
 	content: "\f05e";
@@ -84,7 +84,7 @@
 }
 .z-icon-Export:before {	
 	content: "\f0ed";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-FastBack:before {
 	content: "\f049";
@@ -94,11 +94,11 @@
 }
 .z-icon-FieldSuggestion:before {
 	content: "\e2ca";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-FileImport:before {
 	content: "\f0ee";
-	font-weight: var(--zk-font-weight-bolder);		
+	font-weight: 900;		
 }
 .z-icon-Find:before {	 
 	content: "\f002";
@@ -120,18 +120,18 @@
 }
 .z-icon-History:before {
 	content: "\f1da";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-Home:before {
 	content: "\f015";
 }
 .z-icon-Ignore:before {
 	content: "\f0e2";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-Import:before {
 	content: "\f0ee";
-	font-weight: var(--zk-font-weight-bolder);		
+	font-weight: 900;		
 }
 .z-icon-IncludeSelected:before {
 	content: "\f05d";
@@ -141,46 +141,46 @@
 }
 .z-icon-InfoAccount:before {	
 	content: "\f02d";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-InfoAsset:before {	
 	content: "\f0b1";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-InfoBPartner:before {	
 	content: "\f0c0";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-InfoMessageBox:before {
 	content: "\f05a";
-	font-size: var(--zk-font-size-4xl);
-	color: blue;
-	font-family: var(--zk-font-family-icon);
-	font-weight: var(--zk-font-weight-bolder);
+	font-size: 32px;
+	color: var(--zk-font-icons-info-message-color);
+	font-family: var(--zk-icon-font-family);
+	font-weight: 900;
 }
 .z-icon-InfoInOut:before {	
 	content: "\f0d1";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-InfoInvoice:before {	
 	content: "\f14b";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-InfoLocator:before {
 	content: "\f1b2";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-InfoOrder:before {	
 	content: "\f0c9";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-InfoPayment:before {	
 	content: "\f0d6";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-InfoProduct:before {	
 	content: "\f07a";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-InfoResource:before {	
 	content: "\f0eb";
@@ -190,26 +190,26 @@
 }
 .z-icon-InfoShipment:before {
 	content: "\f0d1";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-LastRecord:before, .z-icon-angle-double-right:before {
 	content: "\f051";
 }
 .z-icon-Location:before {
 	content: "\f036";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-Locator:before {
 	content: "\f233";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-Lock:before {
 	content: "\f13e";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-LockX:before {
 	content: "\f023";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-More:before {
 	content: "\f142";
@@ -228,7 +228,7 @@
 }
 .z-icon-Multi:before {	
 	content: "\f0ce";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-New:before {
 	content: "\f067";
@@ -240,7 +240,7 @@
 	content: "\f061";
 }
 .z-icon-Notice:before {
-	font-weight: var(--zk-font-weight-bold);
+	font-weight: bold;
 	content: "\f01c";
 }
 .z-icon-Ok:before {
@@ -248,7 +248,7 @@
 }
 .z-icon-Online:before {
 	content: "\f0ac";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-Open:before {
 	content: "\f016";
@@ -258,25 +258,25 @@
 }
 .z-icon-PAttribute:before {
 	content: "\f02b";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-Payment:before {
 	content: "\f0d6";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-PostIt:before {
 	content: "\f24a";
 }
 .z-icon-Label:before {
 	content: "\f02b";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-NotAllowed:before {
 	content: "\f05e";
 }
 .z-icon-Preference:before {
 	content: "\f085";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-Previous:before {
 	content: "\f0d9";
@@ -286,28 +286,28 @@
 }
 .z-icon-Print:before {
 	content: "\f02f";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-Process:before {
 	content: "\f013";
 }
 .z-icon-ProcessMenu:before {
 	content: "\f085";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-Product:before {	
 	content: "\f07a";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-QuestionMessageBox:before {
 	content: "\f059";
-	font-size: var(--zk-font-size-4xl);
-	color: green;
-	font-family: var(--zk-font-family-icon);
+	font-size: 32px;
+	color: var(--zk-font-icons-question-message-color);
+	font-family: var(--zk-icon-font-family);
 }
 .z-icon-QuickForm:before {
 	content: "\f0ae";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-Refresh:before {
 	content: "\f021";
@@ -323,7 +323,7 @@
 }
 .z-icon-Reset:before {
 	content: "\f0e2";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-Save:before {	
 	content: "\f0c7";
@@ -345,7 +345,7 @@
 }
 .z-icon-Share:before {
 	content: "\f0ac";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-ShowMore:before {
 	content: "\f142";
@@ -364,15 +364,15 @@
 }
 .z-icon-Task:before {
 	content: "\f0ae";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-ThreeLineMenu:before {
 	content: "\f0c9";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-Translate:before {
 	content: "\f1ab";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-Trash:before {
 	content: "\f014";
@@ -385,39 +385,39 @@
 }
 .z-icon-Undo:before {
 	content: "\f0e2";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-UnSort:before {
 	content: "\f074";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-File:before {
 	content: "\f15b";
 }
 .z-icon-VPreference:before {
 	content: "\f039";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-Window:before {
 	content: "\f022";
 }
 .z-icon-Wizard:before {
 	content: "\f0d0";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-Workflow:before, .z-icon-WorkFlow:before {	
 	content: "\f126";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-Zoom:before {
 	content: "\f14c";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-ZoomAcross:before {	
 	content: "\f00e";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }
 .z-icon-AttributeForm:before {
 	content: "\f29e";
-	font-weight: var(--zk-font-weight-bolder);
+	font-weight: 900;
 }

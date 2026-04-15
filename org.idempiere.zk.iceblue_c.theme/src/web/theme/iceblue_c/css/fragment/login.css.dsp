@@ -1,36 +1,36 @@
 .login-window {
-	background-color: var(--zk-color-primary-light);
+	background-color: var(--zk-login-window-background-color);
 }
 
 .login-window .z-window-content {
-	background-color: var(--zk-color-primary-light);
+	background-color: var(--zk-login-window-background-color);
 }
 
 .login-box-body {
 	width: 720px;
-	background-color: var(--zk-color-surface);
-	padding: 0px var(--zk-space-lg) 0px 0px;
+	background-color: var(--zk-login-box-background-color);
+	padding: 0px 5px 0px 0px;
 	margin: 0;
 	text-align: center;
 }
 
 .login-box-header {
-	background-color: var(--zk-color-surface);
+	background-color: var(--zk-login-box-background-color);
 	width: 720px;
-	border-radius: var(--zk-radius-xl) var(--zk-radius-xl) 0px 0px;
-	padding-left: var(--zk-space-7xl);
-	padding-top: var(--zk-space-7xl);
-	padding-right: var(--zk-space-7xl);
+	border-radius: 10px 10px 0px 0px;
+	padding-left: 30px;
+	padding-top: 30px;
+	padding-right: 30px;
 	box-sizing: border-box;
 }
 
 .login-box-header-txt {
-	font-weight: var(--zk-font-weight-bold);
+	font-weight: bold;
 	position: relative;
 	display: inline-block;
 	text-align: left;
-	padding: var(--zk-space-2xl);
-	color: var(--zk-text-color-dialog) !important;
+	padding: 10px;
+	color: var(--zk-login-header-text-color) !important;
 	width: 100%;	
 	font-size: 1.6em !important;
 }
@@ -42,35 +42,35 @@
 .login-box-footer {
 	height: 130px;
 	width: 720px;
-	background-color: var(--zk-color-surface);
-	border-radius: 0px 0px var(--zk-radius-xl) var(--zk-radius-xl);
-	padding-left: var(--zk-space-7xl);
-  	padding-right: var(--zk-space-7xl);
+	background-color: var(--zk-login-box-background-color);
+	border-radius: 0px 0px 10px 10px;
+	padding-left: 30px;
+  	padding-right: 30px;
   	box-sizing: border-box;
 }
 
 .login-box-footer .confirm-panel {
-	width: var(--zk-dimension-dialog-md) !important;
+	width: 600px !important;
 }
 
 .login-box-footer-pnl {
 	width: 604px;
-	margin-left: var(--zk-space-2xl);
-	margin-right: var(--zk-space-2xl);
+	margin-left: 10px;
+	margin-right: 10px;
 	padding-top: 60px !important;
 }
 
 .login-label {
-	color: var(--zk-text-color-strong);
+	color: var(--zk-login-label-color);
 	text-align: right;
 	width: 40%;
-	padding: var(--zk-space-xs) !important;
+	padding: 2px !important;
 }
 
 .login-field {
 	text-align: left;
 	width: 55%;
-	padding: var(--zk-space-xs) !important;
+	padding: 2px !important;
 }
 
 .login-field input:not([type="checkbox"]) {
@@ -78,12 +78,12 @@
 }
 
 .login-btn {
-	padding: var(--zk-space-md) var(--zk-space-5xl) !important;
+	padding: 4px 20px !important;
 }
 
 .login-east-panel, .login-west-panel {
 	width: 380px;
-	background-color: var(--zk-color-surface); 
+	background-color: var(--zk-login-side-panel-background-color); 
 	position: relative;
 	border: none;
 }
@@ -95,22 +95,22 @@
     justify-content: center;
     position: relative;
     width: 65% !important;
-    max-width: var(--zk-dimension-panel-lg);
+    max-width: 300px;
     border-radius: 20px !important;
     overflow: hidden;
-    padding: var(--zk-space-xl) var(--zk-space-4xl) !important;
+    padding: 8px 15px !important;
 }
 
 .sso-login-btn img {
     position: absolute;
-    left: var(--zk-space-4xl);
-    height: var(--zk-dimension-control-md);
+    left: 15px;
+    height: 24px;
     margin-right: 0;
 }
 
 .sso-login-btn.icon-only img {
     margin: 0 !important;
-    height: var(--zk-dimension-control-md);
+    height: 24px;
 }
 
 @media (max-width: 600px) {
@@ -131,8 +131,8 @@
         margin: 0px;
 	}
 	.login-box-footer {
-		padding-left: var(--zk-space-2xl);
-		padding-right: var(--zk-space-2xl);
+		padding-left: 10px;
+		padding-right: 10px;
     }
 	.login-box-header-txt {
 		display: none;
@@ -146,7 +146,7 @@
 		background-image: none;
 	}
 	.login-box-body {
-		padding-bottom: var(--zk-space-2xl);
+		padding-bottom: 10px;
 	}
 	.login-box-header {
 		height: 0px;
@@ -164,6 +164,6 @@
 }
 @media screen and (max-width: 359px) {
 	.login-window .z-center > .z-center-body .z-window.z-window-embedded > .z-window-content {
-		padding: var(--zk-space-lg)
+		padding: 5px
 	}
 }

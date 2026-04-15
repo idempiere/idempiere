@@ -1,6 +1,6 @@
 <%-- process modal dialog --%>
 .process-modal-dialog {
-	width: var(--zk-dimension-dialog-md);
+	width: 600px;
 }
 .process-modal-dialog .main-parameter-layout{
 	height: auto;
@@ -36,7 +36,7 @@
 }
 
 .report-option-container div {
-    padding: var(--zk-space-xs);
+    padding: 2px;
 }
 
 /* Chromium based browsers + Safari */
@@ -55,8 +55,8 @@
 
 <%-- run history and action buttons --%>
 .bottom-parameter-layout{
-	padding: var(--zk-space-md);
-	border-top: 1px solid var(--zk-overlay-color-light);
+	padding: 4px;
+	border-top: 1px solid var(--zk-parameter-process-bottom-border-color);
 	overflow: visible;
 }
 .bottom-container{
@@ -69,7 +69,7 @@
 .button-container{
 	float: right;
 	overflow: hidden;
-	padding: var(--zk-space-md);
+	padding: 4px;
 }
 @media screen and (max-width: 500px) {
 	.save-parameter-container .saved-parameter-label {
@@ -78,17 +78,17 @@
 }
 @media screen and (min-width: 501px) {
 	.save-parameter-container .saved-parameter-list > input::-webkit-input-placeholder {
-		color: var(--zk-color-surface);
+		color: var(--zk-parameter-process-placeholder-color);
 	}
 }
 @media screen and (min-width: 501px) {
 	.save-parameter-container .saved-parameter-list > input::-moz-placeholder {
-		color: var(--zk-color-surface);
+		color: var(--zk-parameter-process-placeholder-color);
 	}
 }
 @media screen and (min-width: 501px) {
 	.save-parameter-container .saved-parameter-list > input::-ms-input-placeholder {
-		color: var(--zk-color-surface);
+		color: var(--zk-parameter-process-placeholder-color);
 	}
 }
 
@@ -96,12 +96,12 @@
 .message-parameter{
 	max-height: 300pt; 
 	overflow: auto; 
-	margin: var(--zk-space-2xl);
+	margin: 10px;
 	line-height: normal;
 }
 
 .message-parameter p {
-	margin-bottom: var(--zk-space-2xl);
+	margin-bottom: 10px;
 }
 
 <%-- execution result panel --%>
@@ -140,17 +140,17 @@
 }
 @media screen and (min-width: 501px) {
 	.option-input-parameter.print-format-list > input::-webkit-input-placeholder {
-		color: var(--zk-color-surface);
+		color: var(--zk-parameter-process-placeholder-color);
 	}
 }
 @media screen and (min-width: 501px) {
 	.option-input-parameter.print-format-list > input::-moz-placeholder {
-		color: var(--zk-color-surface);
+		color: var(--zk-parameter-process-placeholder-color);
 	}
 }
 @media screen and (min-width: 501px) {
 	.option-input-parameter.print-format-list > input::-ms-input-placeholder {
-		color: var(--zk-color-surface);
+		color: var(--zk-parameter-process-placeholder-color);
 	}
 }
 @media screen and (max-width: 400px) {
@@ -160,6 +160,6 @@
 }
 @media screen and (max-width: 320px) {
 	.option-input-parameter.print-format-list {
-		width: var(--zk-dimension-panel-sm) !important;
+		width: 150px !important;
 	}
 }
