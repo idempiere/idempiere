@@ -37,7 +37,6 @@
         <listEntry value="=org.adempiere.ui.zk/WEB-INF\/src"/>
         <listEntry value="=org.apache.ecs/src"/>
         <listEntry value="=org.idempiere.felix.webconsole/src"/>
-        <listEntry value="=org.idempiere.webservices/WEB-INF\/src"/>
         <listEntry value="=org.adempiere.pipo/src"/>
         <listEntry value="=org.adempiere.payment.processor/src"/>
         <listEntry value="=org.adempiere.webstore/src"/>
