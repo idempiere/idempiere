@@ -480,7 +480,7 @@ public class AccountingSetupServiceImpl implements IAccountingSetupService {
 	    
 	    // Also need C_Element_ID - get from created element
 	    String sql = "SELECT C_Element_ID FROM C_Element WHERE AD_Client_ID=? " +
-	                "AND ElementType='AC' AND IsActive='Y'";
+	                "AND ElementType='A' AND IsActive='Y'";
 	    int C_Element_ID = DB.getSQLValueEx(setupCtx.trxName, sql, setupCtx.AD_Client_ID);
 	    
 	    StringBuilder updateSql = new StringBuilder("UPDATE C_AcctSchema_Element SET ");

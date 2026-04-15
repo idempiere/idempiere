@@ -71,7 +71,6 @@ public class EnvTest extends AbstractTestCase {
 	 * default constructor
 	 */
 	public EnvTest() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Test
@@ -1679,6 +1678,40 @@ public class EnvTest extends AbstractTestCase {
 		assertEquals(2, params.size(), "Should have 2 parameters");
 		assertEquals(100, params.get(0), "First parameter should be CreatedBy");
 		assertEquals(11, params.get(1), "Second parameter should be AD_Client_ID");
+
+		// Test _ID parameter type		
+		sql = "SELECT * FROM AD_Reference WHERE AD_Reference_ID=@AD_Reference_ID@";
+		params.clear();
+		Env.setContext(ctx, windowNo, "AD_Reference_ID", DisplayType.Amount);
+		parsed = Env.parseContextForSql(ctx, windowNo, sql, true, false, params);		
+		assertEquals("SELECT * FROM AD_Reference WHERE AD_Reference_ID=?", parsed, "SQL should use placeholder");
+		assertEquals(1, params.size(), "Should have 1 parameter");
+		assertEquals(DisplayType.Amount, params.get(0), "Parameter value should match context");
+		assertTrue((params.get(0) instanceof Integer), "Parameter value should be Integer");
+
+		params.clear();
+		Env.setContext(ctx, windowNo, "AD_Reference_ID", (String)null);
+		parsed = Env.parseContextForSql(ctx, windowNo, sql, true, false, params);
+		assertEquals("", parsed, "Empty string should be returned");
+		assertEquals(0, params.size(), "Should have 0 parameter");
+
+		// Test _ID parameter type with default value
+		sql = "SELECT * FROM AD_Reference WHERE AD_Reference_ID=@AD_Reference_ID:0@";
+		params.clear();
+		Env.setContext(ctx, windowNo, "AD_Reference_ID", DisplayType.Amount);
+		parsed = Env.parseContextForSql(ctx, windowNo, sql, true, false, params);		
+		assertEquals("SELECT * FROM AD_Reference WHERE AD_Reference_ID=?", parsed, "SQL should use placeholder");
+		assertEquals(1, params.size(), "Should have 1 parameter");
+		assertEquals(DisplayType.Amount, params.get(0), "Parameter value should match context");
+		assertTrue((params.get(0) instanceof Integer), "Parameter value should be Integer");
+
+		params.clear();
+		Env.setContext(ctx, windowNo, "AD_Reference_ID", (String)null);
+		parsed = Env.parseContextForSql(ctx, windowNo, sql, true, false, params);
+		assertEquals("SELECT * FROM AD_Reference WHERE AD_Reference_ID=?", parsed, "SQL should use placeholder");
+		assertEquals(1, params.size(), "Should have 1 parameter");
+		assertEquals(0, params.get(0), "Parameter value should match context");
+		assertTrue((params.get(0) instanceof Integer), "Parameter value should be Integer");
 	}
 
 	@Test

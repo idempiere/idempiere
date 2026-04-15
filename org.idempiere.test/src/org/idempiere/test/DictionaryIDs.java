@@ -334,7 +334,8 @@ public final class DictionaryIDs {
 
 	public enum C_ElementValue {
 		CHECKING_IN_TRANSFER(509),
-		DEFAULT_ACCOUNT(697);
+		DEFAULT_ACCOUNT(697),
+		SUSPENSE_BALANCING(698);
 		
 		public final int id;
 		
@@ -879,6 +880,8 @@ public final class DictionaryIDs {
 	
 	public enum AD_Process {
 		CACHE_RESET(205),
+		STANDARD_COST_UPDATE(182),
+		CREATE_UPDATE_PRODUCTION_LINES(53226),
 		C_ORDER_PROCESS(104),
 		DBA_RECOMPILE(185),
 		AD_COLUMN_SYNC(181),
