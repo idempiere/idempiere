@@ -143,6 +143,14 @@
          version="0.0.0"/>
 
    <plugin
+         id="org.glassfish.jersey.ext.jersey-entity-filtering"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.glassfish.jersey.containers.jersey-container-servlet-core"
+         version="0.0.0"/>
+
+   <plugin
          id="org.eclipse.jetty.websocket.core.client"
          version="0.0.0"/>
 
@@ -356,6 +364,10 @@
 
    <plugin
          id="com.sun.jna"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.apache.cxf.cxf-rt-databinding-xmlbeans"
          version="0.0.0"/>
 
    <plugin
