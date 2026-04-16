@@ -90,7 +90,7 @@ UPDATE AD_TableIndex SET IsActive='N', EntityType='EXT',Updated=TO_TIMESTAMP('20
 ;
 
 -- Apr 7, 2026, 5:55:48 PM CEST
-UPDATE AD_TableIndex SET IsActive='N', EntityType='EXT', EntityType='EXT',Updated=TO_TIMESTAMP('2026-04-07 17:55:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_TableIndex_ID=201042
+UPDATE AD_TableIndex SET IsActive='N', EntityType='EXT', Updated=TO_TIMESTAMP('2026-04-07 17:55:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_TableIndex_ID=201042
 ;
 
 -- Apr 7, 2026, 5:55:50 PM CEST
