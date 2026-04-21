@@ -581,13 +581,6 @@ public class MenuSearchController implements EventListener<Event>{
 	 */
 	private class MenuListComparator implements Comparator<MenuItem> {
 
-		/**
-		 * @param compare filter text
-		 */
-		private MenuListComparator() {
-			
-		}
-		
 		@Override
 		public int compare(MenuItem o1, MenuItem o2) {
 			if (o1 == null || o2 == null)
