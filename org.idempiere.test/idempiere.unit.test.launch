@@ -37,7 +37,6 @@
         <listEntry value="=org.adempiere.ui.zk/WEB-INF\/src"/>
         <listEntry value="=org.apache.ecs/src"/>
         <listEntry value="=org.idempiere.felix.webconsole/src"/>
-        <listEntry value="=org.idempiere.webservices/WEB-INF\/src"/>
         <listEntry value="=org.adempiere.pipo/src"/>
         <listEntry value="=org.adempiere.payment.processor/src"/>
         <listEntry value="=org.adempiere.webstore/src"/>
@@ -418,12 +417,10 @@
         <setEntry value="org.compiere.db.oracle.provider@default:default"/>
         <setEntry value="org.compiere.db.postgresql.provider@default:default"/>
         <setEntry value="org.idempiere.acct@5:default"/>
-        <setEntry value="org.idempiere.extension.manager@default:default"/>
+        <setEntry value="org.idempiere.extension.manager@5:true"/>
         <setEntry value="org.idempiere.hazelcast.service@default:default"/>
         <setEntry value="org.idempiere.tablepartition@default:default"/>
-        <setEntry value="org.idempiere.test@default:default"/>
-        <setEntry value="org.idempiere.webservices.resources@default:default"/>
-        <setEntry value="org.idempiere.webservices@default:default"/>
+        <setEntry value="org.idempiere.test*14.0.0.qualifier@default:default"/>
         <setEntry value="org.idempiere.zk.billboard.chart@default:default"/>
         <setEntry value="org.idempiere.zk.billboard@default:default"/>
         <setEntry value="org.idempiere.zk.extra@default:default"/>

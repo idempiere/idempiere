@@ -35,9 +35,6 @@
 		<module>org.idempiere.acct</module>
 		<module>org.idempiere.felix.webconsole</module>
 		<module>org.idempiere.hazelcast.service</module>
-		<module>org.idempiere.webservices</module>
-		<module>org.idempiere.webservices.resources</module>
-		<module>org.idempiere.webservices-feature</module>
 		<module>org.idempiere.zk.extra</module>
 		<module>org.idempiere.keikai</module>
 		<module>org.idempiere.printformat.editor</module>
@@ -46,6 +43,7 @@
 		<module>org.idempiere.zk.datatable</module>
 		<module>org.idempiere.zk.pivot</module>
 		<module>org.adempiere.report.jasper-feature</module>
+		<module>org.idempiere.webservices.client-feature</module>
 		<module>org.adempiere.base-feature</module>
 		<module>org.adempiere.replication-feature</module>
 		<module>org.adempiere.pipo-feature</module>
@@ -59,7 +57,6 @@
 		<module>org.idempiere.hazelcast.service-feature</module>
 		<module>org.adempiere.payment.processor-feature</module>
 		<module>org.idempiere.zk-feature</module>
-		<module>org.idempiere.webservices.client-feature</module>
 		<module>org.idempiere.jetty.osgi.boot.fragment</module>
 		<module>org.idempiere.ui.sso.oidc</module>
 		<module>org.idempiere.tablepartition</module>

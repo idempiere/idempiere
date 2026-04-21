@@ -31,6 +31,7 @@ import org.compiere.util.Util;
 import org.compiere.util.WebUtil;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.tracking.AuditTraceContext;
 
 /**
  *	Session Model.
@@ -411,6 +412,11 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 				AD_ChangeLog_ID, TrxName, getAD_Session_ID(),
 				AD_Table_ID, AD_Column_ID, Record_ID, Record_UU, AD_Client_ID, AD_Org_ID,
 				OldValue, NewValue, event);
+			
+			String externalTraceId = AuditTraceContext.getExternalTraceId();
+	        if (externalTraceId != null)
+	            cl.setExternalTraceId(externalTraceId);
+			
 			if (cl.saveCrossTenantSafe())
 				return cl;
 		}

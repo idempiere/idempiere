@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_PInstance
  *  @author iDempiere (generated)
- *  @version Release 13 - $Id$ */
+ *  @version Release 14 - $Id$ */
 @org.adempiere.base.Model(table="AD_PInstance")
 public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20260309L;
+	private static final long serialVersionUID = 20260326L;
 
     /** Standard Constructor */
     public X_AD_PInstance (Properties ctx, int AD_PInstance_ID, String trxName)
@@ -352,6 +352,22 @@ public class X_AD_PInstance extends PO implements I_AD_PInstance, I_Persistent
 	public String getErrorMsg()
 	{
 		return (String)get_Value(COLUMNNAME_ErrorMsg);
+	}
+
+	/** Set External Trace ID.
+		@param ExternalTraceId External identifier used for audit tracing
+	*/
+	public void setExternalTraceId (String ExternalTraceId)
+	{
+		set_Value (COLUMNNAME_ExternalTraceId, ExternalTraceId);
+	}
+
+	/** Get External Trace ID.
+		@return External identifier used for audit tracing
+	  */
+	public String getExternalTraceId()
+	{
+		return (String)get_Value(COLUMNNAME_ExternalTraceId);
 	}
 
 	/** Set Processing.
