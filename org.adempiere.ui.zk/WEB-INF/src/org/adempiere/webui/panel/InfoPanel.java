@@ -3528,6 +3528,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			Object key = lastSelectedRecord.get(0);
 			if(key instanceof IDColumn)
 				key = ((IDColumn)key).getRecord_ID();
+			else if(key instanceof UUIDColumn)
+				key = ((UUIDColumn)key).getRecord_UU();
 			m_rowSelectionOrder.add(key);
 		}
 		else {
@@ -3539,6 +3541,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 				Object key = candidateRecord.get(0);
 				if(key instanceof IDColumn)
 					key = ((IDColumn)key).getRecord_ID();
+				else if(key instanceof UUIDColumn)
+					key = ((UUIDColumn)key).getRecord_UU();
 				//
 				if(!m_rowSelectionOrder.contains(key))
 					m_rowSelectionOrder.add(key);
