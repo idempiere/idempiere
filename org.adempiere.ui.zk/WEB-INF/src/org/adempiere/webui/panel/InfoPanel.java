@@ -3531,8 +3531,9 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			m_rowSelectionOrder.add(key);
 		}
 		else {
+			Map<Object, List<Object>> sri = getSelectedRowInfo();
 			// add selected rows
-			for(Map.Entry<Object, List<Object>> entry : getSelectedRowInfo().entrySet()) {
+			for(Map.Entry<Object, List<Object>> entry : sri.entrySet()) {
 				List<Object> candidateRecord = entry.getValue();
 				// get row key
 				Object key = candidateRecord.get(0);
@@ -3544,7 +3545,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			}
 			// remove unselected rows
 			for(Iterator<Object> it = m_rowSelectionOrder.iterator(); it.hasNext();) {
-				if(!getSelectedRowInfo().containsKey(it.next()))
+				if(!sri.containsKey(it.next()))
 					it.remove();
 			}
 		}
