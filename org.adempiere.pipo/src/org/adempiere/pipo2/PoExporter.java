@@ -176,7 +176,7 @@ public class PoExporter {
 	public void addTableReference(String columnName, String tableName, AttributesImpl atts) {
 		if (tableName != null) {
 			MTable table = MTable.get(po.getCtx(), tableName, po.get_TrxName());
-			if (table.isUUIDKeyTable()) {
+			if (table.isUUIDKeyTable() || "Record_UU".equals(columnName)) {
 				String uuid = (String)po.get_Value(columnName);
 				addTableReferenceUUID(columnName, tableName, uuid, atts);
 			} else {
@@ -282,7 +282,7 @@ public class PoExporter {
 			String trxName = ctx.trx == null ? null : ctx.trx.getTrxName();
 			if (DisplayType.YesNo == displayType) {
 				add(columnName, false, new AttributesImpl());
-			} else if (DisplayType.TableDir == displayType || DisplayType.ID == displayType) {
+			} else if (DisplayType.TableDir == displayType || DisplayType.ID == displayType || DisplayType.RecordUU == displayType) {
 				String tableName = null;
 				if (("Record_ID".equalsIgnoreCase(columnName) || "Record_UU".equalsIgnoreCase(columnName)) && po.get_ColumnIndex("AD_Table_ID") >= 0) {
 					int AD_Table_ID = po.get_ValueAsInt("AD_Table_ID");
@@ -300,6 +300,8 @@ public class PoExporter {
 					MColumn column = MColumn.get(ctx.ctx, info.getTableName(), columnName, trxName);
 					tableName = column.getReferenceTableName();
 				}
+				if ("Record_UU".equalsIgnoreCase(columnName) && tableName == null)
+					throw new AdempiereException("Could not find the related table for column " + po.get_TableName() + "." + columnName);
 				addTableReference(columnName, tableName, new AttributesImpl());
 			} else if (DisplayType.isList(displayType)) {
 				add(columnName, "", new AttributesImpl());
