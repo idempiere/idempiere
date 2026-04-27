@@ -35,6 +35,7 @@ import org.compiere.model.MCostDetail;
 import org.compiere.model.MCurrency;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
+import org.compiere.model.MInOutLineMA;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MMatchPO;
 import org.compiere.model.MOrder;
@@ -654,23 +655,78 @@ public class Doc_MatchPO extends Doc
 			
 			if (tAmt.scale() > as.getCostingPrecision())
 				tAmt = tAmt.setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
-			int Ref_CostDetail_ID = 0;
-			if (mMatchPO.getReversal_ID() > 0 && mMatchPO.get_ID() > mMatchPO.getReversal_ID())
+
+			MProduct product = MProduct.get(getCtx(), getM_Product_ID());
+			MInOutLineMA mas[] = null;
+			if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as)) && mMatchPO.getM_AttributeSetInstance_ID() == 0)
+				mas = MInOutLineMA.get(getCtx(), m_ioLine.get_ID(), getTrxName());
+			
+			if (mas != null && mas.length > 0)
 			{
-				MMatchPO reversal = new MMatchPO(getCtx(), mMatchPO.getReversal_ID(), getTrxName());
-				MCostDetail cd = MCostDetail.getOrder(as, getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
-						reversal.getC_OrderLine_ID(), 0, reversal.getDateAcct(), getTrxName());
-				if (cd != null)
-					Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+				BigDecimal sumAmt = Env.ZERO;
+				BigDecimal sumQty = Env.ZERO;
+				BigDecimal totalIOLineQty = m_ioLine.getMovementQty();
+				for (int j = 0; j < mas.length; j++)
+				{
+					MInOutLineMA ma = mas[j];
+					BigDecimal maQty = ma.getMovementQty();
+					BigDecimal qty = Env.ZERO;
+					BigDecimal amt = Env.ZERO;
+					if (totalIOLineQty.signum() != 0)
+					{
+						qty = tQty.multiply(maQty).divide(totalIOLineQty, 12, RoundingMode.HALF_UP);
+						amt = tAmt.multiply(maQty).divide(totalIOLineQty, as.getCostingPrecision(), RoundingMode.HALF_UP);
+					}
+					if (j == mas.length - 1)
+					{
+						qty = tQty.subtract(sumQty);
+						amt = tAmt.subtract(sumAmt);
+					}
+					else
+					{
+						sumQty = sumQty.add(qty);
+						sumAmt = sumAmt.add(amt);
+					}
+					
+					int Ref_CostDetail_ID = 0;
+					if (mMatchPO.getReversal_ID() > 0 && mMatchPO.get_ID() > mMatchPO.getReversal_ID())
+					{
+						MMatchPO reversal = new MMatchPO(getCtx(), mMatchPO.getReversal_ID(), getTrxName());
+						MCostDetail cd = MCostDetail.getOrder(as, getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
+								reversal.getC_OrderLine_ID(), 0, reversal.getDateAcct(), getTrxName());
+						if (cd != null)
+							Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+					}
+					if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(), 
+							getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
+							m_oLine.getC_OrderLine_ID(), 0,		//	no cost element
+							amt, qty,			//	Delivered
+							m_oLine.getDescription(), getDateAcct(), Ref_CostDetail_ID, getTrxName()))
+					{
+						return "SaveError";
+					}
+				}
 			}
-			// Set Total Amount and Total Quantity from Matched PO
-			if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(), 
-					getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
-					m_oLine.getC_OrderLine_ID(), 0,		//	no cost element
-					tAmt, tQty,			//	Delivered
-					m_oLine.getDescription(), getDateAcct(), Ref_CostDetail_ID, getTrxName()))
+			else
 			{
-				return "SaveError";
+				int Ref_CostDetail_ID = 0;
+				if (mMatchPO.getReversal_ID() > 0 && mMatchPO.get_ID() > mMatchPO.getReversal_ID())
+				{
+					MMatchPO reversal = new MMatchPO(getCtx(), mMatchPO.getReversal_ID(), getTrxName());
+					MCostDetail cd = MCostDetail.getOrder(as, getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
+							reversal.getC_OrderLine_ID(), 0, reversal.getDateAcct(), getTrxName());
+					if (cd != null)
+						Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+				}
+				// Set Total Amount and Total Quantity from Matched PO
+				if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(), 
+						getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
+						m_oLine.getC_OrderLine_ID(), 0,		//	no cost element
+						tAmt, tQty,			//	Delivered
+						m_oLine.getDescription(), getDateAcct(), Ref_CostDetail_ID, getTrxName()))
+				{
+					return "SaveError";
+				}
 			}
 			
 			if (!mMatchPO.isReversal())
@@ -703,27 +759,82 @@ public class Doc_MatchPO extends Doc
 			amt = amt.multiply(tQty);
 			if (amt.scale() > as.getCostingPrecision())
 				amt = amt.setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
-			int Ref_CostDetail_ID = 0;
-			if (mMatchPO.getReversal_ID() > 0 && mMatchPO.get_ID() > mMatchPO.getReversal_ID())
+			
+			MProduct product = MProduct.get(getCtx(), getM_Product_ID());
+			MInOutLineMA mas[] = null;
+			if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as)) && mMatchPO.getM_AttributeSetInstance_ID() == 0 && m_ioLine != null && m_ioLine.get_ID() > 0)
+				mas = MInOutLineMA.get(getCtx(), m_ioLine.get_ID(), getTrxName());
+			
+			if (mas != null && mas.length > 0)
 			{
-				MMatchPO reversal = new MMatchPO(getCtx(), mMatchPO.getReversal_ID(), getTrxName());
-				MCostDetail cd = MCostDetail.getOrder(as, getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
-						reversal.getC_OrderLine_ID(), 0, reversal.getDateAcct(), getTrxName());
-				if (cd != null)
-					Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+				BigDecimal totalAmt = amt;
+				BigDecimal sumAmt = Env.ZERO;
+				BigDecimal sumQty = Env.ZERO;
+				BigDecimal totalIOLineQty = m_ioLine.getMovementQty();
+				for (int j = 0; j < mas.length; j++)
+				{
+					MInOutLineMA ma = mas[j];
+					BigDecimal maQty = ma.getMovementQty();
+					BigDecimal qty = Env.ZERO;
+					BigDecimal lineAmt = Env.ZERO;
+					if (totalIOLineQty.signum() != 0)
+					{
+						qty = tQty.multiply(maQty).divide(totalIOLineQty, 12, RoundingMode.HALF_UP);
+						lineAmt = totalAmt.multiply(maQty).divide(totalIOLineQty, as.getCostingPrecision(), RoundingMode.HALF_UP);
+					}
+					if (j == mas.length - 1)
+					{
+						qty = tQty.subtract(sumQty);
+						lineAmt = totalAmt.subtract(sumAmt);
+					}
+					else
+					{
+						sumQty = sumQty.add(qty);
+						sumAmt = sumAmt.add(lineAmt);
+					}
+					
+					int Ref_CostDetail_ID = 0;
+					if (mMatchPO.getReversal_ID() > 0 && mMatchPO.get_ID() > mMatchPO.getReversal_ID())
+					{
+						MMatchPO reversal = new MMatchPO(getCtx(), mMatchPO.getReversal_ID(), getTrxName());
+						MCostDetail cd = MCostDetail.getOrder(as, getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
+								reversal.getC_OrderLine_ID(), 0, reversal.getDateAcct(), getTrxName());
+						if (cd != null)
+							Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+					}
+					if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(), 
+							getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
+							m_oLine.getC_OrderLine_ID(), elementId,
+							lineAmt, qty,			//	Delivered
+							m_oLine.getDescription(), getDateAcct(), Ref_CostDetail_ID, getTrxName()))
+					{
+						return "SaveError";
+					}
+				}
 			}
-			if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(), 
-					getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
-					m_oLine.getC_OrderLine_ID(), elementId,
-					amt, tQty,			//	Delivered
-					m_oLine.getDescription(), getDateAcct(), Ref_CostDetail_ID, getTrxName()))
+			else
 			{
-				return "SaveError";
+				int Ref_CostDetail_ID = 0;
+				if (mMatchPO.getReversal_ID() > 0 && mMatchPO.get_ID() > mMatchPO.getReversal_ID())
+				{
+					MMatchPO reversal = new MMatchPO(getCtx(), mMatchPO.getReversal_ID(), getTrxName());
+					MCostDetail cd = MCostDetail.getOrder(as, getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
+							reversal.getC_OrderLine_ID(), 0, reversal.getDateAcct(), getTrxName());
+					if (cd != null)
+						Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+				}
+				if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(), 
+						getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
+						m_oLine.getC_OrderLine_ID(), elementId,
+						amt, tQty,			//	Delivered
+						m_oLine.getDescription(), getDateAcct(), Ref_CostDetail_ID, getTrxName()))
+				{
+					return "SaveError";
+				}
 			}
 		}
 		return null;
 	}
-
 
 	@Override
 	public boolean isDeferPosting() {
