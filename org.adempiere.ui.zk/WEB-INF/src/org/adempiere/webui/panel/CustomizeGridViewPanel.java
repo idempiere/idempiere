@@ -50,6 +50,7 @@ import org.compiere.model.MRefList;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTab;
+import org.compiere.model.MUserDefTab;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Tab_Customization;
 import org.compiere.util.CLogger;
@@ -353,8 +354,15 @@ public class CustomizeGridViewPanel extends Panel
 		noModel.removeAllElements();		
 		boolean baseLanguage = Env.isBaseLanguage(Env.getCtx(), "AD_Field");
 		Query query = null;
-		
-		query = new Query(Env.getCtx(), I_AD_Field.Table_Name, "AD_Tab_ID=? AND (IsDisplayed='Y' OR IsDisplayedGrid='Y') AND IsActive='Y'", null);
+
+		MUserDefTab udf = MUserDefTab.get(Env.getCtx(), m_AD_Tab_ID, MTab.get(m_AD_Tab_ID).getAD_Window_ID());
+
+		if (udf != null)
+			query = new Query(Env.getCtx(), I_AD_Field.Table_Name, "AD_Tab_ID=? AND (AD_UserDef_Field.IsDisplayed='Y' OR AD_UserDef_Field.IsDisplayedGrid='Y') AND AD_UserDef_Field.IsActive='Y'", null)	
+			.addJoinClause("LEFT OUTER JOIN AD_UserDef_Field ON (AD_UserDef_Field.AD_Field_ID = AD_Field.AD_Field_ID)");
+		else
+			query = new Query(Env.getCtx(), I_AD_Field.Table_Name, "AD_Tab_ID=? AND (IsDisplayed='Y' OR IsDisplayedGrid='Y') AND IsActive='Y'", null);	
+
 		query.setOrderBy("SeqNoGrid, Name, SeqNo");
 		query.setParameters(new Object [] {m_AD_Tab_ID});
 		query.setApplyAccessFilter(true);
