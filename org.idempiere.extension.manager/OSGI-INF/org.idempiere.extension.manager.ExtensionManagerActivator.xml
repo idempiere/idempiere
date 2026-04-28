@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" immediate="true" name="org.idempiere.extension.manager.ExtensionManagerActivator">
+   <service>
+      <provide interface="org.osgi.framework.BundleActivator"/>
+   </service>
    <reference cardinality="1..1" field="mappedFormFactory" interface="org.adempiere.webui.factory.IMappedFormFactory" name="mappedFormFactory"/>
    <reference cardinality="1..1" field="mappedProcessFactory" interface="org.idempiere.process.IMappedProcessFactory" name="mappedProcessFactory"/>
    <implementation class="org.idempiere.extension.manager.ExtensionManagerActivator"/>

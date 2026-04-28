@@ -12,11 +12,7 @@
  *****************************************************************************/
 package org.adempiere.webui.window;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.adempiere.util.Callback;
-import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
@@ -29,10 +25,10 @@ import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.CKEditor;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.Env;
-import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.zkforge.ckez.CKeditor;
 import org.zkoss.zk.au.out.AuScript;
@@ -214,15 +210,7 @@ public class WTextEditorDialog extends Window implements EventListener<Event>{
 	 * @param tabPanel
 	 */
 	private void createEditor(org.zkoss.zul.Tabpanel tabPanel) {		
-		editor = new CKeditor();
-		if (ClientInfo.isMobile())
-			editor.setCustomConfigurationsPath("/js/ckeditor/config-min.js");
-		else
-			editor.setCustomConfigurationsPath("/js/ckeditor/config.js");
-		editor.setToolbar("MyToolbar");
-		Map<String,Object> lang = new HashMap<String,Object>();
-		lang.put("language", Language.getLoginLanguage().getAD_Language());
-		editor.setConfig(lang);
+		editor = CKEditor.get();
 		tabPanel.appendChild(editor);
 		editor.setVflex("1");
 		editor.setWidth("100%");

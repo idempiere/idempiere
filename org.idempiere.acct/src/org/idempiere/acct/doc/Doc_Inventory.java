@@ -165,9 +165,9 @@ public class Doc_Inventory extends Doc
 				qtyDiff = line.getQtyCount().subtract(line.getQtyBook());
 			else if (MDocType.DOCSUBTYPEINV_CostAdjustment.equals(docSubTypeInv))
 				amtDiff = line.getNewCostPrice().subtract(line.getCurrentCostPrice());
-			//	don't skip, nothing to post but there might be changes in the costing
-//			if (qtyDiff.signum() == 0 && amtDiff.signum() == 0)
-//				continue;
+			//	nothing to post
+			if (qtyDiff.signum() == 0 && amtDiff.signum() == 0)
+				continue;
 			//
 			DocLine docLine = new DocLine (line, this);
 			docLine.setQty (qtyDiff, false);		// -5 => -5

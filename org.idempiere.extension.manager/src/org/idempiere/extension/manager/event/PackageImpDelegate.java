@@ -21,7 +21,6 @@
  **********************************************************************/
 package org.idempiere.extension.manager.event;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;

@@ -3528,23 +3528,28 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			Object key = lastSelectedRecord.get(0);
 			if(key instanceof IDColumn)
 				key = ((IDColumn)key).getRecord_ID();
+			else if(key instanceof UUIDColumn)
+				key = ((UUIDColumn)key).getRecord_UU();
 			m_rowSelectionOrder.add(key);
 		}
 		else {
+			Map<Object, List<Object>> sri = getSelectedRowInfo();
 			// add selected rows
-			for(Map.Entry<Object, List<Object>> entry : getSelectedRowInfo().entrySet()) {
+			for(Map.Entry<Object, List<Object>> entry : sri.entrySet()) {
 				List<Object> candidateRecord = entry.getValue();
 				// get row key
 				Object key = candidateRecord.get(0);
 				if(key instanceof IDColumn)
 					key = ((IDColumn)key).getRecord_ID();
+				else if(key instanceof UUIDColumn)
+					key = ((UUIDColumn)key).getRecord_UU();
 				//
 				if(!m_rowSelectionOrder.contains(key))
 					m_rowSelectionOrder.add(key);
 			}
 			// remove unselected rows
 			for(Iterator<Object> it = m_rowSelectionOrder.iterator(); it.hasNext();) {
-				if(!getSelectedRowInfo().containsKey(it.next()))
+				if(!sri.containsKey(it.next()))
 					it.remove();
 			}
 		}

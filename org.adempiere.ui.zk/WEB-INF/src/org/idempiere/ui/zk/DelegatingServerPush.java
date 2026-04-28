@@ -28,6 +28,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.SystemProperties;
 import org.compiere.util.CLogger;
+import org.compiere.util.Util;
 import org.idempiere.ui.zk.websocket.WebSocketServerPush;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.DesktopUnavailableException;
@@ -42,9 +43,9 @@ import fi.jawsy.jawwa.zk.atmosphere.AtmosphereServerPush;
  * Delegating ServerPush implementation that switches between
  * WebSocketServerPush and AtmosphereServerPush based on JVM parameter.
  * <p>
- * Usage: Set the JVM parameter
- * {@code -Dorg.idempiere.ui.zk.serverpush=atmosphere} to use AtmosphereServerPush (or leave it unset as this is the default),
- * or {@code -Dorg.idempiere.ui.zk.serverpush=websocket} to use WebSocketServerPush.
+ * Usage: Set the JVM parameter {@code -Dorg.idempiere.ui.zk.serverpush=atmosphere}
+ * to use AtmosphereServerPush, or {@code -Dorg.idempiere.ui.zk.serverpush=websocket}
+ * (or leave unset) to use WebSocketServerPush (default).
  * </p>
  * 
  * @author Carlos Ruiz - globalqss
@@ -70,24 +71,24 @@ public class DelegatingServerPush implements ServerPush {
 
 	/**
 	 * Creates the appropriate ServerPush implementation based on JVM parameter.
-	 * @return ServerPush implementation (AtmosphereServerPush by default)
+	 * @return ServerPush implementation (WebSocketServerPush by default)
 	 */
 	private ServerPush createDelegate() {
 		String pushType = SystemProperties.getZKServerPush();
+		if (pushType != null)
+			pushType = pushType.trim();
 
-		if (WEBSOCKET.equalsIgnoreCase(pushType)) {
-			if (log.isLoggable(Level.INFO)) log.info("Using WebSocketServerPush");
-			return new WebSocketServerPush();
+		if (ATMOSPHERE.equalsIgnoreCase(pushType)) {
+			if (log.isLoggable(Level.INFO)) log.info("Using AtmosphereServerPush");
+			return new AtmosphereServerPush();
 		}
 
-		if (pushType != null && !ATMOSPHERE.equalsIgnoreCase(pushType)) {
-			log.warning("Unsupported value for org.idempiere.ui.zk.serverpush: " + pushType
-					+ " - defaulting to AtmosphereServerPush");
-		}
+		if (!Util.isEmpty(pushType) && !WEBSOCKET.equalsIgnoreCase(pushType))
+			log.warning("Unsupported org.idempiere.ui.zk.serverpush value '" + pushType + "', using WebSocketServerPush");
 
-		// Default to Atmosphere
-		if (log.isLoggable(Level.INFO)) log.info("Using AtmosphereServerPush");
-		return new AtmosphereServerPush();
+		// Default to WebSocket
+		if (log.isLoggable(Level.INFO)) log.info("Using WebSocketServerPush");
+		return new WebSocketServerPush();
 	}
 
 	/**

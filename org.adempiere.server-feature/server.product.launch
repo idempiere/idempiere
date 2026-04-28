@@ -19,7 +19,6 @@
         <setEntry value="org.eclipse.jetty.deploy:12.0.11:default:true:default:true"/>
         <setEntry value="org.eclipse.jetty.ee8.annotations:12.0.11:default:true:default:true"/>
         <setEntry value="org.eclipse.jetty.ee8.apache-jsp:12.0.11:default:true:default:true"/>
-        <setEntry value="org.eclipse.jetty.ee8.osgi.boot.jsp:12.0.11:default:true:default:true"/>
         <setEntry value="org.eclipse.jetty.ee8.osgi.boot:12.0.11:default:true:default:true"/>
         <setEntry value="org.eclipse.jetty.ee8.plus:12.0.11:default:true:default:true"/>
         <setEntry value="org.eclipse.jetty.ee8.security.jaspi:12.0.11:default:true:default:true"/>
@@ -140,7 +139,7 @@
         <setEntry value="jakarta.xml.bind-api@default:default"/>
         <setEntry value="jakarta.xml.soap-api@default:default"/>
         <setEntry value="jakarta.xml.ws-api@default:default"/>
-        <setEntry value="javassist@default:default"/>
+        <setEntry value="javassist*3.30.2.GA@default:default"/>
         <setEntry value="javax.enterprise.cdi-api@default:default"/>
         <setEntry value="javax.interceptor-api@default:default"/>
         <setEntry value="javax.security.auth.message-api@default:default"/>
@@ -388,6 +387,7 @@
         <setEntry value="org.osgi.util.pushstream@default:default"/>
         <setEntry value="org.osgi.util.tracker@default:default"/>
         <setEntry value="org.osgi.util.xml@default:default"/>
+        <setEntry value="org.owasp.encoder@default:default"/>
         <setEntry value="org.passay@default:default"/>
         <setEntry value="org.postgresql.jdbc@default:default"/>
         <setEntry value="org.sat4j.core@default:default"/>
@@ -398,8 +398,8 @@
         <setEntry value="org.w3c.dom.smil@default:default"/>
         <setEntry value="org.w3c.dom.svg@default:default"/>
         <setEntry value="org.zkoss.zsoup@default:default"/>
-        <setEntry value="slf4j.api*2.0.17@3:true"/>
-        <setEntry value="slf4j.jdk14@3:true"/>
+        <setEntry value="slf4j.api*2.0.12@3:true"/>
+        <setEntry value="slf4j.jdk14@2.0.12:true"/>
         <setEntry value="stax2-api@default:default"/>
         <setEntry value="wrapped.com.google.http-client.google-http-client-gson@default:default"/>
         <setEntry value="wrapped.com.google.zxing.javase@default:default"/>
@@ -479,8 +479,6 @@
         <setEntry value="org.idempiere.printformat.editor@default:default"/>
         <setEntry value="org.idempiere.tablepartition@default:default"/>
         <setEntry value="org.idempiere.ui.sso.oidc@default:default"/>
-        <setEntry value="org.idempiere.webservices.resources@default:default"/>
-        <setEntry value="org.idempiere.webservices@default:default"/>
         <setEntry value="org.idempiere.zk.billboard.chart@default:default"/>
         <setEntry value="org.idempiere.zk.billboard@default:default"/>
         <setEntry value="org.idempiere.zk.breeze.theme@default:false"/>

@@ -76,6 +76,7 @@ Export-Package: bsh,
  org.idempiere.print,
  org.idempiere.print.renderer,
  org.idempiere.process,
+ org.idempiere.tracking,
  org.idempiere.util
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=17))"

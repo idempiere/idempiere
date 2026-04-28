@@ -5,7 +5,9 @@ import java.util.Properties;
 
 public class MExtension extends X_AD_Extension {
 
-    public MExtension(Properties ctx, int AD_Extension_ID, String trxName) {
+    private static final long serialVersionUID = -1869100025607142643L;
+
+	public MExtension(Properties ctx, int AD_Extension_ID, String trxName) {
         super(ctx, AD_Extension_ID, trxName);
     }
 

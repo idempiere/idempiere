@@ -5,6 +5,7 @@ import java.util.Properties;
 
 public class MPackageImpDetail extends X_AD_Package_Imp_Detail {
 
+	private static final long serialVersionUID = 124203258234563897L;
 	/**
 	 * Insert new record
 	 */

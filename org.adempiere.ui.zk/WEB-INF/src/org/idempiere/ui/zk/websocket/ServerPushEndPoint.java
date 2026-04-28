@@ -27,7 +27,7 @@ package org.idempiere.ui.zk.websocket;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +36,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 import javax.net.ssl.SSLContext;
 import javax.servlet.http.HttpSession;
@@ -51,9 +50,11 @@ import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
 import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.cookie.BasicCookieStore;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
 import org.apache.hc.client5.http.impl.io.BasicHttpClientConnectionManager;
 import org.apache.hc.client5.http.socket.ConnectionSocketFactory;
 import org.apache.hc.client5.http.socket.PlainConnectionSocketFactory;
@@ -61,6 +62,7 @@ import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
 import org.apache.hc.client5.http.ssl.TrustAllStrategy;
+import org.apache.hc.client5.http.utils.DateUtils;
 import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.config.RegistryBuilder;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
@@ -83,6 +85,7 @@ public class ServerPushEndPoint {
 	private HttpSession httpSession;
 	private String baseUrl;
 	private Map<String, List<String>> requestHeaders;
+	private BasicCookieStore cookieStore;
 
 	private static final ExecutorService executorService = Executors.newCachedThreadPool();
 
@@ -107,6 +110,10 @@ public class ServerPushEndPoint {
 			this.dtid = dtid;
 			this.httpSession = (HttpSession) config.getUserProperties().get(HttpSession.class.getName());
 			WebSocketServerPush.registerEndPoint(dtid, this);
+			this.cookieStore = (BasicCookieStore) config.getUserProperties().get(BasicCookieStore.class.getName());
+			if (this.cookieStore == null) {
+				this.cookieStore = new BasicCookieStore();
+			}
 			
 			HandshakeRequest handshakeRequest = (HandshakeRequest) config.getUserProperties().get(HandshakeRequest.class.getName());
 
@@ -200,8 +207,6 @@ public class ServerPushEndPoint {
 					return;
 				}
 	
-		        String jsessionidCookie = "JSESSIONID=" + sessionId;
-	
 		        synchronized (chainLock) {
 			        try {
 				        // Create POST request
@@ -210,7 +215,11 @@ public class ServerPushEndPoint {
 				        httpPost.setHeader("ZK-SID", sid);
 				        httpPost.setHeader("Pragma", "no-cache");
 				        httpPost.setHeader("Cache-Control", "no-cache");
-				        httpPost.setHeader("Cookie", jsessionidCookie);
+				        if (cookieStore != null) {
+				        	BasicClientCookie cookie = new BasicClientCookie("JSESSIONID", sessionId);
+							cookie.setDomain("localhost");
+				        	cookieStore.addCookie(cookie);
+				        }
 				        requestHeaders.forEach((key, values) -> {
 				        	// Forward selected headers
 				        	if ("User-Agent".equalsIgnoreCase(key) || "Accept-Language".equalsIgnoreCase(key) 
@@ -231,17 +240,61 @@ public class ServerPushEndPoint {
 				        	try (var httpClient = createHttpClient(); CloseableHttpResponse response = httpClient.execute(httpPost)) {
 					            String servletResponse = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
 					            
+								BasicCookieStore responseCookieStore = null;
 					            // Send servletResponse back to the client
 								if (servletResponse != null && !servletResponse.isEmpty()) {
 									if (response.getCode() >= 400) {
 										CLogger.getCLogger(getClass()).log(Level.WARNING, "Bad Request to /zkau: " + servletResponse);
 									}
-									Map<String, String> headersMap = Arrays.stream(response.getHeaders())
-									        .collect(Collectors.toMap(
-									            Header::getName,
-									            Header::getValue,
-									            (existing, replacement) -> existing + ", " + replacement // Handle duplicate headers
-									        ));
+									Map<String, String> headersMap = new HashMap<>();
+									for (Header header : response.getHeaders()) {
+										String name = header.getName();
+										String value = header.getValue();
+										if ("Set-Cookie".equalsIgnoreCase(name)) {
+											String[] cookieElements = value.split(";");
+											String[] pair = cookieElements[0].split("=", 2);
+											if (pair.length == 2) {
+												//localhost for internal request, no domain for browser cookie
+												BasicClientCookie cookie = new BasicClientCookie(pair[0].trim(), pair[1].trim());
+												cookie.setDomain("localhost");
+												
+												if (responseCookieStore == null) {
+													responseCookieStore = new BasicCookieStore();
+												}
+												BasicClientCookie responseCookie = new BasicClientCookie(pair[0].trim(), pair[1].trim());
+												
+												Date expiryDate = null;
+												// process max-age and other attributes
+												for (int i = 1; i < cookieElements.length; i++) {
+													String attr = cookieElements[i].trim();
+													String lowerAttr = attr.toLowerCase();
+													if (lowerAttr.startsWith("max-age=")) {
+														try {
+															long maxAge = Long.parseLong(attr.substring(8));
+															expiryDate = new Date(System.currentTimeMillis() + maxAge * 1000L);
+														} catch (Exception e) {}
+													} else if (lowerAttr.startsWith("expires=") && expiryDate == null) {
+														try {
+															String expiresValue = attr.substring(8);
+															expiryDate = DateUtils.parseDate(expiresValue);
+														} catch (Exception e) {}
+													} else if (lowerAttr.startsWith("path=")) {
+														String path = attr.substring(5);
+														cookie.setPath(path);
+														responseCookie.setPath(path);
+													}
+												}
+												if (expiryDate != null) {
+													cookie.setExpiryDate(expiryDate);
+													responseCookie.setExpiryDate(expiryDate);
+												}
+												
+												cookieStore.addCookie(cookie);
+												responseCookieStore.addCookie(responseCookie);
+											}
+										}
+										headersMap.merge(name, value, (existing, replacement) -> existing + ", " + replacement);										
+									}
 									JSONObject jsonResponse = new JSONObject();
 									jsonResponse.put("headers", headersMap);
 									jsonResponse.put("status", response.getCode());
@@ -249,6 +302,17 @@ public class ServerPushEndPoint {
 									jsonResponse.put("ajaxReqInf", jsonRequest);
 									try {
 										session.getBasicRemote().sendText(jsonResponse.toString());
+										//store cookie in http session for piggyback event in WebSocketServerPush
+										if (responseCookieStore != null && httpSession != null) {
+											synchronized (httpSession) {
+												Object existing = httpSession.getAttribute(WebSocketServerPush.WEBSOCKET_EVENT_COOKIE_STORE);
+												if (existing instanceof BasicCookieStore existingStore) {
+													responseCookieStore.getCookies().forEach(existingStore::addCookie);
+												} else {
+													httpSession.setAttribute(WebSocketServerPush.WEBSOCKET_EVENT_COOKIE_STORE, responseCookieStore);
+												}
+											}
+										}
 									} catch (IOException e) {
 										CLogger.getCLogger(getClass()).log(Level.WARNING, "Error sending response to client", e);
 									}
@@ -317,6 +381,7 @@ public class ServerPushEndPoint {
 
 			return HttpClients.custom()
 					.setConnectionManager(connectionManager)
+					.setDefaultCookieStore(cookieStore)
 					.build();
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to initialize ServerPushEndPoint HttpClient", e);

@@ -5,7 +5,8 @@ import java.util.Properties;
 
 public class MPackageImp extends X_AD_Package_Imp {
 
-    public static final String PACKAGE_STATUS_INSTALLING = "Installing";
+    private static final long serialVersionUID = -3309800166132173761L;
+	public static final String PACKAGE_STATUS_INSTALLING = "Installing";
     public static final String PACKAGE_STATUS_UNRESOLVED = "Completed - unresolved";
     public static final String PACKAGE_STATUS_COMPLETED = "Completed successfully";
     public static final String PACKAGE_STATUS_IMPORT_FAILED = "Import Failed";

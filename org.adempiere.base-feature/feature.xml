@@ -36,7 +36,7 @@
    <includes
          id="org.adempiere.report.jasper.feature"
          version="0.0.0"/>
-
+   
    <includes
          id="org.idempiere.webservices.client.feature"
          version="0.0.0"/>

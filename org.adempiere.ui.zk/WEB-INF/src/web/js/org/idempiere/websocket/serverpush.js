@@ -91,6 +91,11 @@
 					let es = zAu.getAuRequests(dt);
                 	if (es.length > 0) setTimeout(() => zAu.sendNow(dt), 0);
 				}
+				// if responseJson.headers has "Set-Cookie", use onPiggyback event to update browser cookie
+				if (responseJson.headers.get("Set-Cookie")) {
+					let evtObj = new zk.Event(dt, 'onPiggyback', null, {ignorable: true, rtags: {isDummy: true}});
+					setTimeout(() => zAu.send(evtObj), 100);
+				}
 	          }
 	      }
       }
@@ -143,6 +148,8 @@
 			var aureq = es[j];
 			if (aureq.file) {
 				return originalSendNow(dt); //fallback to ajax
+			} else if (aureq.name == "onPiggyback") {
+				return originalSendNow(dt); //ajax event to update cookie
 			}
 		}
 

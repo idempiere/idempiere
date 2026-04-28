@@ -90,14 +90,26 @@ public class CalloutBankStatement extends CalloutEngine
 			bd = bd.subtract(charge);
 			mTab.setValue("InterestAmt", bd);
 		}
-		//  Calculate Charge
+		//  Calculate Charge or Interest
 		else
 		{
 			BigDecimal interest = (BigDecimal)mTab.getValue("InterestAmt");
 			if (interest == null)
 				interest = Env.ZERO;
-			bd = bd.subtract(interest);
-			mTab.setValue("ChargeAmt", bd);
+			BigDecimal charge = (BigDecimal)mTab.getValue("ChargeAmt");
+			if (charge == null)
+				charge = Env.ZERO;
+
+			BigDecimal chargeCandidate = bd.subtract(interest); // StmtAmt - TrxAmt - InterestAmt
+			if (chargeCandidate.signum() > 0 && !mField.getColumnName().equals("InterestAmt"))
+			{
+				BigDecimal interestCandidate = bd.subtract(charge); // StmtAmt - TrxAmt - ChargeAmt
+				mTab.setValue("InterestAmt", interestCandidate);
+			}
+			else
+			{
+				mTab.setValue("ChargeAmt", chargeCandidate);
+			}		
 		}
 		return "";
 	}   //  amount
