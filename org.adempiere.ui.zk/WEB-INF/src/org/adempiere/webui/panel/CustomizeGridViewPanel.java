@@ -358,8 +358,8 @@ public class CustomizeGridViewPanel extends Panel
 		MUserDefTab udf = MUserDefTab.get(Env.getCtx(), m_AD_Tab_ID, MTab.get(m_AD_Tab_ID).getAD_Window_ID());
 
 		if (udf != null)
-			query = new Query(Env.getCtx(), I_AD_Field.Table_Name, "AD_Tab_ID=? AND (AD_UserDef_Field.IsDisplayed='Y' OR AD_UserDef_Field.IsDisplayedGrid='Y') AND AD_UserDef_Field.IsActive='Y'", null)	
-			.addJoinClause("LEFT OUTER JOIN AD_UserDef_Field ON (AD_UserDef_Field.AD_Field_ID = AD_Field.AD_Field_ID)");
+			query = new Query(Env.getCtx(), I_AD_Field.Table_Name, "AD_Tab_ID=? AND (COALESCE(AD_UserDef_Field.IsDisplayed, AD_Field.IsDisplayed) = 'Y' OR COALESCE(AD_UserDef_Field.IsDisplayedGrid, AD_Field.IsDisplayedGrid) = 'Y') AND AD_Field.IsActive = 'Y'", null)	
+			.addJoinClause("LEFT OUTER JOIN AD_UserDef_Field ON (AD_UserDef_Field.AD_Field_ID = AD_Field.AD_Field_ID AND AD_UserDef_Field.IsActive = 'Y')");
 		else
 			query = new Query(Env.getCtx(), I_AD_Field.Table_Name, "AD_Tab_ID=? AND (IsDisplayed='Y' OR IsDisplayedGrid='Y') AND IsActive='Y'", null);	
 
