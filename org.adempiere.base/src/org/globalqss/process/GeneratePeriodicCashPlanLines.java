@@ -142,7 +142,7 @@ public class GeneratePeriodicCashPlanLines  extends SvrProcess {
         	cpl.setUser2_ID(cp.getUser2_ID());
         	// cpl.setC_ProjectPhase_ID(cp.getC_ProjectPhase_ID());
         	// cpl.setC_ProjectTask_ID(cp.getC_ProjectTask_ID());
-        	// cpl.setDescription(cp.getDescription());
+        	cpl.setDescription(cp.getDescription());
         	cpl.setC_Activity_ID(p_C_Activity_ID);
         	cpl.setC_Project_ID(p_C_Project_ID);
         	cpl.setC_Charge_ID(p_C_Charge_ID);
