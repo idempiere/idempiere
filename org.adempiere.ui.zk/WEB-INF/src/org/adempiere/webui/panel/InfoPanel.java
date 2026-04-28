@@ -1818,13 +1818,16 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
     {
     	List<T> selectedDataList = new ArrayList<>();
 		for (Map.Entry<Object, List<Object>> rowInfo : getSelectedRowInfo().entrySet()) {
+			if (lazyRowKeys.contains(rowInfo.getKey())) {
+				selectedDataList.add((T) rowInfo.getKey());
+				continue;
+			}
 			Object col0 = rowInfo.getValue().get(0);
 			if(col0 instanceof IDColumn idColumn)
 				selectedDataList.add((T)idColumn.getRecord_ID());
 			else if(col0 instanceof UUIDColumn uuidColumn)
 				selectedDataList.add((T)uuidColumn.getRecord_UU());
 			else if(col0 instanceof Integer || col0 instanceof String)
-				// stub rows (off-screen select-all) store the raw key at position 0
 				selectedDataList.add((T)col0);
 		}
 		return selectedDataList;
@@ -2846,6 +2849,12 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 */
 	public void createT_Selection_InfoWindow(int AD_PInstance_ID)
 	{
+		if (infoWindow == null)
+			return;
+		if (!lazyRowKeys.isEmpty())
+			log.warning("createT_Selection_InfoWindow: " + lazyRowKeys.size()
+					+ " off-screen stub row(s) will be omitted from T_Selection_InfoWindow"
+					+ " — column data is unavailable until those pages are navigated to.");
 		MTable table = MTable.get(infoWindow.getAD_Table_ID());
 		StringBuilder insert = new StringBuilder();
 		insert.append("INSERT INTO T_Selection_InfoWindow (AD_PINSTANCE_ID, ");
@@ -3175,8 +3184,26 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 					: (indexKeyOfView + 1);
 			int keyStoreIndex = getIndexKeyColumnOfView();
 
+			if (infoWindow == null)
+				return;
 			MTable infoTable = MTable.get(infoWindow.getAD_Table_ID());
 			boolean uuidKey = infoTable != null && infoTable.isUUIDKeyTable();
+
+			// Pre-compute per-process metadata once — InfoColumnVO construction is not cheap
+			// and recreating it inside the row loop wastes memory for large result sets.
+			List<Integer> procSlots = new ArrayList<>();
+			List<InfoColumnVO> procVOs = new ArrayList<>();
+			if (infoProcessList != null) {
+				for (MInfoProcess proc : infoProcessList) {
+					if (proc.getInfoColumnID() <= 0)
+						continue;
+					Integer offset = columnDataIndex.get(proc.getInfoColumnID());
+					if (offset == null)
+						continue;
+					procSlots.add(p_layout.length + offset);
+					procVOs.add(new InfoColumnVO(Env.getCtx(), (MInfoColumn) proc.getAD_InfoColumn()));
+				}
+			}
 
 			while (rs.next()) {
 				Object keyValue;
@@ -3199,33 +3226,27 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 				stubRow.set(keyStoreIndex, keyValue);
 
 				// Populate viewID column slots so getSaveKeys() returns correct T_Selection.ViewID.
-				if (infoProcessList != null) {
-					for (MInfoProcess proc : infoProcessList) {
-						if (proc.getInfoColumnID() <= 0)
-							continue;
-						Integer offset = columnDataIndex.get(proc.getInfoColumnID());
-						if (offset == null)
-							continue;
-						MInfoColumn infoCol = (MInfoColumn) proc.getAD_InfoColumn();
-						InfoColumnVO vo = new InfoColumnVO(Env.getCtx(), infoCol);
-						Object viewIdVal;
-						try {
-							if (DisplayType.isID(vo.getAD_Reference_ID())) {
-								viewIdVal = rs.getInt(vo.getColumnName());
-							} else if (DisplayType.isDate(vo.getAD_Reference_ID())) {
-								viewIdVal = rs.getTimestamp(vo.getColumnName());
-							} else if (DisplayType.isNumeric(vo.getAD_Reference_ID())) {
-								viewIdVal = rs.getBigDecimal(vo.getColumnName());
-							} else {
-								viewIdVal = rs.getString(vo.getColumnName());
-							}
-							if (rs.wasNull())
-								viewIdVal = null;
-						} catch (SQLException e) {
-							viewIdVal = null;
+				for (int pi = 0; pi < procSlots.size(); pi++) {
+					InfoColumnVO vo = procVOs.get(pi);
+					Object viewIdVal;
+					try {
+						if (DisplayType.isID(vo.getAD_Reference_ID())) {
+							viewIdVal = rs.getInt(vo.getColumnName());
+						} else if (DisplayType.isDate(vo.getAD_Reference_ID())) {
+							viewIdVal = rs.getTimestamp(vo.getColumnName());
+						} else if (DisplayType.isNumeric(vo.getAD_Reference_ID())) {
+							viewIdVal = rs.getBigDecimal(vo.getColumnName());
+						} else {
+							viewIdVal = rs.getString(vo.getColumnName());
 						}
-						stubRow.set(p_layout.length + offset, viewIdVal);
+						if (rs.wasNull())
+							viewIdVal = null;
+					} catch (SQLException e) {
+						if (log.isLoggable(Level.FINE))
+							log.log(Level.FINE, "Failed to read viewID column " + vo.getColumnName(), e);
+						viewIdVal = null;
 					}
+					stubRow.set(procSlots.get(pi), viewIdVal);
 				}
 
 				recordSelectedData.put(keyValue, stubRow);
@@ -3233,6 +3254,13 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			}
 		} catch (Exception e) {
 			log.log(Level.SEVERE, "selectAllOffScreenRows failed", e);
+			lazyRowKeys.clear();
+			btnSelectAll.setEnabled(true);
+			btnDeSelectAll.setEnabled(false);
+			if (e instanceof SQLException sqle && DB.getDatabase().isQueryTimeout(sqle))
+				Dialog.error(p_WindowNo, INFO_QUERY_TIME_OUT_ERROR);
+			else
+				Dialog.error(p_WindowNo, "DBExecuteError", e.getMessage());
 		} finally {
 			DB.close(rs, ps);
 			if (trx != null)
