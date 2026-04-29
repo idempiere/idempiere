@@ -1817,18 +1817,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	protected <T extends Serializable> List<T> getSelectedRowKeys()
     {
     	List<T> selectedDataList = new ArrayList<>();
-		for (Map.Entry<Object, List<Object>> rowInfo : getSelectedRowInfo().entrySet()) {
-			if (lazyRowKeys.contains(rowInfo.getKey())) {
-				selectedDataList.add((T) rowInfo.getKey());
-				continue;
-			}
-			Object col0 = rowInfo.getValue().get(0);
-			if(col0 instanceof IDColumn idColumn)
-				selectedDataList.add((T)idColumn.getRecord_ID());
-			else if(col0 instanceof UUIDColumn uuidColumn)
-				selectedDataList.add((T)uuidColumn.getRecord_UU());
-			else if(col0 instanceof Integer || col0 instanceof String)
-				selectedDataList.add((T)col0);
+		for (Object key : getSelectedRowInfo().keySet()) {
+			selectedDataList.add((T) key);
 		}
 		return selectedDataList;
     }   //  getSelectedRowKeys
@@ -3137,14 +3127,17 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			// Visible page: use already-rendered rows (free — no SQL, no FK lookups).
 			addAllCurrentContentPanelToSelected();
 
+			boolean ok = true;
 			if (paging != null && paging.getPageCount() > 1) {
 				// Off-screen pages: fetch key + viewID columns only — no readData(), no N+1 FK lookups.
-				selectAllOffScreenRows();
+				ok = selectAllOffScreenRows();
 			}
 			restoreSelectedInPage();
 			setStatusSelected();
-			btnSelectAll.setEnabled(false);
-			btnDeSelectAll.setEnabled(true);
+			if (ok) {
+				btnSelectAll.setEnabled(false);
+				btnDeSelectAll.setEnabled(true);
+			}
 		} finally {
 			Clients.clearBusy();
 		}
@@ -3158,10 +3151,11 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 * Stubs are tracked in lazyRowKeys and rehydrated with full row data the first time
 	 * the user navigates to that page (see restoreSelectedInPage).
 	 */
-	private void selectAllOffScreenRows() {
+	private boolean selectAllOffScreenRows() {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		Trx trx = null;
+		List<Object> addedKeys = new ArrayList<>();
 		try {
 			SQLFragment sqlFragment = buildDataSQLFragment(0, 0);
 			String trxName = Trx.createTrxName("InfoPanelSelectAll:");
@@ -3184,10 +3178,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 					: (indexKeyOfView + 1);
 			int keyStoreIndex = getIndexKeyColumnOfView();
 
-			if (infoWindow == null)
-				return;
-			MTable infoTable = MTable.get(infoWindow.getAD_Table_ID());
-			boolean uuidKey = infoTable != null && infoTable.isUUIDKeyTable();
+			String keyName = keyColumnOfView != null ? keyColumnOfView.getColumnName() : p_keyColumn;
+			boolean uuidKey = keyName != null && keyName.endsWith("_UU");
 
 			// Pre-compute per-process metadata once — InfoColumnVO construction is not cheap
 			// and recreating it inside the row loop wastes memory for large result sets.
@@ -3251,16 +3243,18 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 
 				recordSelectedData.put(keyValue, stubRow);
 				lazyRowKeys.add(keyValue);
+				addedKeys.add(keyValue);
 			}
+			return true;
 		} catch (Exception e) {
 			log.log(Level.SEVERE, "selectAllOffScreenRows failed", e);
-			lazyRowKeys.clear();
-			btnSelectAll.setEnabled(true);
-			btnDeSelectAll.setEnabled(false);
+			recordSelectedData.keySet().removeAll(addedKeys);
+			lazyRowKeys.removeAll(addedKeys);
 			if (e instanceof SQLException sqle && DB.getDatabase().isQueryTimeout(sqle))
 				Dialog.error(p_WindowNo, INFO_QUERY_TIME_OUT_ERROR);
 			else
 				Dialog.error(p_WindowNo, "DBExecuteError", e.getMessage());
+			return false;
 		} finally {
 			DB.close(rs, ps);
 			if (trx != null)
