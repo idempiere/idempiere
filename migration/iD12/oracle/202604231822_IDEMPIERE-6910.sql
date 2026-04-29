@@ -1,0 +1,14 @@
+-- IDEMPIERE-6910 Add ExternalTraceId to core audit changelog
+SELECT register_migration_script('202604231822_IDEMPIERE-6910.sql') FROM dual;
+
+SET SQLBLANKLINES ON
+SET DEFINE OFF
+
+-- Apr 23, 2026, 6:22:29 PM MYT
+UPDATE AD_Field SET IsReadOnly='Y',Updated=TO_TIMESTAMP('2026-04-23 18:22:29','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=209075
+;
+
+-- Apr 23, 2026, 6:23:09 PM MYT
+UPDATE AD_Field SET IsReadOnly='Y',Updated=TO_TIMESTAMP('2026-04-23 18:23:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=209076
+;
+
