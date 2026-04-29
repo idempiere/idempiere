@@ -3658,13 +3658,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 		}
 		else {
 			// add selected rows
-			for(Map.Entry<Object, List<Object>> entry : getSelectedRowInfo().entrySet()) {
-				List<Object> candidateRecord = entry.getValue();
-				// get row key
-				Object key = candidateRecord.get(0);
-				if(key instanceof IDColumn)
-					key = ((IDColumn)key).getRecord_ID();
-				//
+			for(Object key : getSelectedRowInfo().keySet()) {
 				if(!m_rowSelectionOrder.contains(key))
 					m_rowSelectionOrder.add(key);
 			}
