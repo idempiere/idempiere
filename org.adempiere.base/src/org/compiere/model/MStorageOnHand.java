@@ -1424,17 +1424,17 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		return null;
 	}  //getDateMaterialPolicy
 
-	/** Fixed date used to consolidate storage records when IsUseDateMaterialPolicy is false */
-	public static final Timestamp FIXED_DATE_MATERIAL_POLICY = Timestamp.valueOf("1900-01-01 00:00:00");
+	/** Dummy date used to consolidate storage records when IsUseDateMaterialPolicy is false, nullifying the date material policy effect */
+	private static final Timestamp DUMMY_DATE_MATERIAL_POLICY = Timestamp.valueOf("1900-01-01 00:00:00");
 
 	/**
 	 * Returns effective DateMaterialPolicy based on product flag IsUseDateMaterialPolicy.
-	 * If false, returns fixed date 1900-01-01 to consolidate storage records.
+	 * If false, returns the dummy date 1900-01-01 to consolidate storage records.
 	 */
 	public static Timestamp getEffectiveDateMaterialPolicy(int M_Product_ID, Timestamp date, String trxName) {
 		MProduct product = MProduct.get(Env.getCtx(), M_Product_ID, trxName);
 		if (product != null && !product.isUseDateMaterialPolicy())
-			return FIXED_DATE_MATERIAL_POLICY;
+			return DUMMY_DATE_MATERIAL_POLICY;
 		return date;
 	}
 

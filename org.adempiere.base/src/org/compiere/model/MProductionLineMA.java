@@ -24,7 +24,6 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -102,17 +101,14 @@ public class MProductionLineMA extends X_M_ProductionLineMA {
 	 * @return MProductionLineMA
 	 */
 	public static MProductionLineMA get( MProductionLine parent, int asi, Timestamp dateMPolicy )  {
-		String where = " M_ProductionLine_ID = ? AND M_AttributeSetInstance_ID = ? ";
-		if(dateMPolicy==null){
-			dateMPolicy = new Timestamp(new Date().getTime());
-		}
-		dateMPolicy = MStorageOnHand.getEffectiveDateMaterialPolicy(
-			parent.getM_Product_ID(), dateMPolicy, parent.get_TrxName());
-		where = where + "AND DateMaterialPolicy = trunc(cast(? as date))";
+		Timestamp movementDate = new MProduction(parent.getCtx(), parent.getM_Production_ID(), parent.get_TrxName()).getMovementDate();
+		dateMPolicy = MStorageOnHand.resolveLineMADatePolicy(
+			parent.getM_Product_ID(), asi, dateMPolicy, movementDate, parent.get_TrxName());
+		String where = " M_ProductionLine_ID = ? AND M_AttributeSetInstance_ID = ? AND DateMaterialPolicy = trunc(cast(? as date))";
 
 		MProductionLineMA lineMA = MTable.get(parent.getCtx(), MProductionLineMA.Table_Name).createQuery(where, parent.get_TrxName())
 		.setParameters(parent.getM_ProductionLine_ID(), asi,dateMPolicy).first();
-		
+
 		if (lineMA != null)
 			return lineMA;
 		else
