@@ -30,6 +30,7 @@ import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_WF_Node;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_WF_Node;
 import org.compiere.util.Env;
@@ -75,9 +76,9 @@ public class WorkflowNodeElementHandler extends AbstractElementHandler {
 				String action = null;
 				if (!mWFNode.is_new()) {
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_WF_Node.Table_Name, mWFNode);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				} else {
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}
 				if (mWFNode.save(getTrxName(ctx)) == true) {
 					log.info("m_WFNode save success");

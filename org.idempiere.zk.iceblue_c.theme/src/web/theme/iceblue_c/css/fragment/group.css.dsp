@@ -1,9 +1,9 @@
 tr.z-group {
-	background: #f9f9f9 repeat-x 0 0;
+	background: var(--zk-group-row-background-color) repeat-x 0 0;
 }
 
 .z-group-header .z-label {
-	color: #5687a8;
+	color: var(--zk-group-header-text-color);
 	width: auto;
 	font-weight: bold;
 	font-size: 11px;
@@ -11,10 +11,10 @@ tr.z-group {
 
 .z-group td.z-group-inner {
 	overflow: hidden !important;
-	border-bottom: 1px solid #5687a8 !important;
+	border-bottom: 1px solid var(--zk-group-header-text-color) !important;
 	border-top: 0px !important;
 	padding: 1px 2px;
-	background: #fff !important;
+	background: var(--zk-group-inner-background-color) !important;
 }
 .mobile .z-group td.z-group-inner {
     padding: 8px 2px;
@@ -30,7 +30,7 @@ tr.z-group {
 
 .z-group-icon {
 	display: inline-block;
-	font-family: FontAwesome;
+	font-family: var(--zk-icon-font-family);
 	font-weight: normal;
 	font-style: normal;
 	-webkit-font-smoothing: antialiased;
@@ -48,7 +48,7 @@ tr.z-group {
 div.z-listbox-body .z-listgroup-header {
 	padding-top: 4px;
     padding-bottom: 4px;
-    border-bottom: 1px solid rgb(207, 207, 207);
+	border-bottom: 1px solid var(--zk-group-list-header-border-color);
 }
 .z-listgroup-header-content > .z-listitem-checkable.z-listitem-checkbox {
 	display: none;

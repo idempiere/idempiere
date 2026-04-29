@@ -9,6 +9,7 @@ import java.util.List;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.util.CKEditor;
 import org.compiere.model.I_AD_CtxHelpMsg;
 import org.compiere.model.MCtxHelp;
 import org.compiere.model.MCtxHelpMsg;
@@ -136,8 +137,8 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 		cell.appendChild(new Label(Msg.getElement(Env.getCtx(), "MsgText") + " : "));
 		hlayout.appendChild(cell);
 		helpTextbox = new CKeditor();
-		helpTextbox.setCustomConfigurationsPath("/js/ckeditor/config-min.js");
-		helpTextbox.setToolbar("MyToolbar");
+		helpTextbox.setCustomConfigurationsPath(CKEditor.getCustomConfigurationsPath(true));
+		helpTextbox.setToolbar(CKEditor.getToolbar());
 		String msgText = ctxHelpMsg != null ? ctxHelpMsg.get_Translation("MsgText") : (Util.isEmpty(translatedContent) ? baseContent : translatedContent);
 		msgText = removeHeaderTag(msgText);
 		helpTextbox.setValue(msgText);

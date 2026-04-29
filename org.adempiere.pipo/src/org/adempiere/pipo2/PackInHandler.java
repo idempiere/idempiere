@@ -29,9 +29,12 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.logging.Level;
 
+import org.adempiere.base.event.EventManager;
+import org.adempiere.base.event.IEventTopics;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.compiere.model.MColumn;
+import org.compiere.model.MPackageImp;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.Query;
@@ -41,6 +44,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
+import org.compiere.util.TrxEventListener;
 import org.compiere.util.Util;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -71,7 +75,7 @@ public class PackInHandler extends DefaultHandler {
 	private int AD_Package_Imp_Inst_ID=0;
     private static final CLogger log = CLogger.getCLogger(PackInHandler.class);
 	private boolean isInit = false;
-	private String packageStatus = "Installing";
+	private String packageStatus = MPackageImp.PACKAGE_STATUS_INSTALLING;
 	private PIPOContext m_ctx = null;
 
 	private IHandlerRegistry handlerRegistry = null;
@@ -305,9 +309,9 @@ public class PackInHandler extends DefaultHandler {
     		updateRoleAccess();
 
     		if (getUnresolvedCount() > 0) {
-    			packageStatus = "Completed - unresolved";
+    			packageStatus = MPackageImp.PACKAGE_STATUS_UNRESOLVED;
     		} else {
-    			packageStatus = "Completed successfully";
+    			packageStatus = MPackageImp.PACKAGE_STATUS_COMPLETED;
     			packIn.setSuccess(true);
     		}
     		packIn.getNotifier().addStatusLine(packageStatus);
@@ -324,12 +328,12 @@ public class PackInHandler extends DefaultHandler {
     			try {
     				processElement(e);
     			} catch (RuntimeException re) {
-    				packageStatus = "Import Failed";
+    				packageStatus = MPackageImp.PACKAGE_STATUS_IMPORT_FAILED;
     				packIn.getNotifier().addStatusLine(packageStatus);
     	    		updPackageImp(null);
     	    		throw re;
     			} catch (SAXException se) {
-    				packageStatus = "Import Failed";
+    				packageStatus = MPackageImp.PACKAGE_STATUS_IMPORT_FAILED;
     				packIn.getNotifier().addStatusLine(packageStatus);
     	    		updPackageImp(null);
     	    		throw se;
@@ -344,6 +348,32 @@ public class PackInHandler extends DefaultHandler {
     	DB.executeUpdateEx("UPDATE AD_Package_Imp SET Processed=?, PK_Status=?, UpdatedBy=?, Updated=getDate() WHERE AD_Package_Imp_ID=?",
     			new Object[] {"Y", packageStatus, Env.getAD_User_ID(m_ctx.ctx), AD_Package_Imp_ID},
     			trxName);
+		Trx trx = Trx.get(trxName, false);
+		if (trx == null) {
+			org.osgi.service.event.Event event = EventManager.newEvent(IEventTopics.POST_PACKIN_PACKAGE_IMP, AD_Package_Imp_ID, true);
+			EventManager.getInstance().postEvent(event);
+		} else {
+			TrxEventListener listener = new TrxEventListener() {
+
+				@Override
+				public void afterCommit(Trx trx, boolean success) {
+					if (success) {
+						org.osgi.service.event.Event event = EventManager.newEvent(IEventTopics.POST_PACKIN_PACKAGE_IMP, AD_Package_Imp_ID, true);
+						EventManager.getInstance().sendEvent(event);
+					}
+				}
+
+				@Override
+				public void afterRollback(Trx trx, boolean success) {
+				}
+
+				@Override
+				public void afterClose(Trx trx) {
+					trx.removeTrxEventListener(this);
+				}				
+			};
+			trx.addTrxEventListener(listener);
+		}
 	}
 
     private void updPackageImpInst(String trxName) {

@@ -38,6 +38,7 @@ import org.compiere.model.I_AD_TableAttribute;
 import org.compiere.model.I_AD_Val_Rule;
 import org.compiere.model.I_AD_Workflow;
 import org.compiere.model.MAttachment;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Attachment;
 import org.compiere.model.X_AD_Package_Exp_Detail;
@@ -77,9 +78,9 @@ public class ProcessElementHandler extends AbstractElementHandler {
 				String action = null;
 				if (!mProcess.is_new()) {				
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Process.Table_Name, mProcess);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				} else {
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}			
 			
 				if (mProcess.save(getTrxName(ctx)) == true) {

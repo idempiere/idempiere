@@ -1338,6 +1338,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 * @see org.adempiere.webui.panel.InfoPanel#getSQLWhere()
 	 */
 	@Override
+	@Deprecated
 	protected String getSQLWhere() {
 		return getSQLFilter().toSQLWithParameters();
 	}
@@ -2514,6 +2515,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         // combine static and dynamic parameters
         List<Object> params = new ArrayList<Object>(m_sqlFragmentMain.parameters());
         params.addAll(dynFilter.parameters());
+        m_preparedStatementParameters = params;
 		return new SQLFragment(dataSql, params);
 	}
 

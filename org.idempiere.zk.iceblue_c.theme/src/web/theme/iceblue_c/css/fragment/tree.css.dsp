@@ -24,7 +24,7 @@
 
 div.z-treefooter-content, div.z-treecell-content, div.z-treecol-content, 
 tr.z-treerow, tr.z-treerow a, tr.z-treerow a:visited {
-	color: #333;
+	color: var(--zk-tree-cell-text-color);
 }
 
 <%-- move tree item button (mobile only) --%>
@@ -33,5 +33,5 @@ tr.z-treerow, tr.z-treerow a, tr.z-treerow a:visited {
 	border-radius: 3px;
 }
 .tree-moveitem-btn.pressed {
-	box-shadow: inset 0 0 0 1px #efefef,inset 0 3px 15px #9f9f9f;
+	box-shadow: inset 0 0 0 1px var(--zk-tree-moveitem-inset-border-shadow-color),inset 0 3px 15px var(--zk-tree-moveitem-inset-shadow-color);
 }

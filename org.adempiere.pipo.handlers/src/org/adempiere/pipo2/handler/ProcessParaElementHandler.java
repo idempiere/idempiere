@@ -33,6 +33,7 @@ import org.compiere.model.I_AD_Element;
 import org.compiere.model.I_AD_Process;
 import org.compiere.model.I_AD_Process_Para;
 import org.compiere.model.I_AD_TableAttribute;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_Process_Para;
 import org.compiere.util.Env;
@@ -73,9 +74,9 @@ public class ProcessParaElementHandler extends AbstractElementHandler {
 				if (!mProcessPara.is_new()) {
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Process_Para.Table_Name,
 							mProcessPara);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				} else {
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}
 				if (mProcessPara.save(getTrxName(ctx)) == true) {
 					logImportDetail(ctx, impDetail, 1, mProcessPara.getColumnName(),

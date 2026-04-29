@@ -42,6 +42,7 @@ public class SystemProperties {
 	private static final String Cache_MaxSize_Per_Table_Prefix = "Cache.MaxSize.";
 	private static final String env_IDEMPIERE_HOME = Ini.ENV_PREFIX + Ini.IDEMPIERE_HOME;
 	private static final String IDEMPIERE_HOME = Ini.IDEMPIERE_HOME;
+	private static final String IDEMPIERE_EXTENSION_REPOSITORY = "IDEMPIERE_EXTENSION_REPOSITORY";
 	private static final String IDEMPIERE_SECURE_PROPERTIES = "IDEMPIERE_SECURE_PROPERTIES";
 	private static final String LogLevel = "LogLevel";
 	private static final String org_adempiere_po_useTimeoutForUpdate = "org.adempiere.po.useTimeoutForUpdate";
@@ -310,5 +311,16 @@ public class SystemProperties {
 	 */
 	public static boolean isFullExceptionTraceInLog() {
 		return "true".equals(System.getProperty(org_idempiere_FullExceptionTraceInLog));
+	}
+
+	/**
+	 * Get the iDempiere Extension Repository URL
+	 * @return iDempiere Extension Repository URL
+	 */
+	public static String getIDempiereRepositoryUrl() {
+		String repositoryUrl = System.getProperty(IDEMPIERE_EXTENSION_REPOSITORY);
+		if (Util.isEmpty(repositoryUrl, true))
+			repositoryUrl = System.getenv(IDEMPIERE_EXTENSION_REPOSITORY);
+		return repositoryUrl;
 	}
 }

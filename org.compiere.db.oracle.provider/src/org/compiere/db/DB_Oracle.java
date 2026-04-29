@@ -1013,20 +1013,32 @@ public class DB_Oracle implements AdempiereDatabase
 	
 	@Override
 	public String intersectClauseForCSV(String columnName, String csv, boolean isNotClause) {
-		StringBuilder builder = new StringBuilder();
-		builder.append("toTableOfVarchar2(")
-			.append(columnName)
-			.append(")");
-		builder.append(" MULTISET INTERSECT ")
-			.append("toTableOfVarchar2(")
-			.append(DB.TO_STRING(csv)).append(") IS ");
-		
-		if(!isNotClause)
-			builder.append("NOT "); 
-			
-		builder.append("EMPTY");
-		
-		return builder.toString();
+	    StringBuilder builder = new StringBuilder();
+
+	    if (isNotClause) {
+	        builder.append("(");
+	    }
+
+	    builder.append("toTableOfVarchar2(")
+	        .append(columnName)
+	        .append(")");
+	    builder.append(" MULTISET INTERSECT ")
+	        .append("toTableOfVarchar2(")
+	        .append(DB.TO_STRING(csv))
+	        .append(") IS ");
+
+	    if (!isNotClause)
+	        builder.append("NOT ");
+
+	    builder.append("EMPTY");
+
+	    if (isNotClause) {
+	        builder.append(" OR ")
+	            .append(columnName)
+	            .append(" IS NULL)");
+	    }
+
+	    return builder.toString();
 	}
 
 	@Override
@@ -1036,19 +1048,30 @@ public class DB_Oracle implements AdempiereDatabase
 	
 	@Override
 	public SQLFragment intersectFilterForCSV(String columnName, String csv, boolean isNotClause) {
-		StringBuilder builder = new StringBuilder();
-		builder.append("toTableOfVarchar2(")
-			.append(columnName)
-			.append(")");
-		builder.append(" MULTISET INTERSECT ")
-			.append("toTableOfVarchar2(?) IS ");
-		
-		if(!isNotClause)
-			builder.append("NOT "); 
-			
-		builder.append("EMPTY");
+	    StringBuilder builder = new StringBuilder();
 
-		return new SQLFragment(builder.toString(), List.of(csv));
+	    if (isNotClause) {
+	        builder.append("(");
+	    }
+
+	    builder.append("toTableOfVarchar2(")
+	        .append(columnName)
+	        .append(")");
+	    builder.append(" MULTISET INTERSECT ")
+	        .append("toTableOfVarchar2(?) IS ");
+
+	    if (!isNotClause)
+	        builder.append("NOT ");
+
+	    builder.append("EMPTY");
+
+	    if (isNotClause) {
+	        builder.append(" OR ")
+	            .append(columnName)
+	            .append(" IS NULL)");
+	    }
+
+	    return new SQLFragment(builder.toString(), List.of(csv));
 	}
 	
 	@Override

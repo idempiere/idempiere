@@ -1,0 +1,46 @@
+-- IDEMPIERE-6820 Add multi tenant support to SSO (DAD-209)
+SELECT register_migration_script('202603021646_IDEMPIERE-6820.sql') FROM dual;
+
+SET SQLBLANKLINES ON
+SET DEFINE OFF
+
+-- Mar 2, 2026, 4:46:05 PM GMT+08:00
+UPDATE AD_Tab SET WhereClause='SSO_PrincipalConfig.AD_Client_ID=@#AD_Client_ID@',Updated=TO_TIMESTAMP('2026-03-02 16:46:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tab_ID=200328
+;
+
+-- Mar 2, 2026, 4:46:42 PM GMT+08:00
+UPDATE AD_Column SET IsAlwaysUpdateable='N',Updated=TO_TIMESTAMP('2026-03-02 16:46:42','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=215298
+;
+
+-- Mar 2, 2026, 4:47:07 PM GMT+08:00
+UPDATE AD_Column SET IsAlwaysUpdateable='N',Updated=TO_TIMESTAMP('2026-03-02 16:47:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=215300
+;
+
+-- Mar 2, 2026, 4:47:32 PM GMT+08:00
+UPDATE AD_Column SET IsAlwaysUpdateable='N',Updated=TO_TIMESTAMP('2026-03-02 16:47:32','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=215637
+;
+
+-- Mar 2, 2026, 4:50:10 PM GMT+08:00
+UPDATE AD_Field SET DisplayLogic='@SSO_Provider@!''OIDC''',Updated=TO_TIMESTAMP('2026-03-02 16:50:10','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=207196
+;
+
+-- Mar 2, 2026, 4:50:48 PM GMT+08:00
+UPDATE AD_Field SET DisplayLogic='@SSO_Provider@=''OIDC''',Updated=TO_TIMESTAMP('2026-03-02 16:50:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=207414
+;
+
+-- Mar 2, 2026, 4:51:07 PM GMT+08:00
+UPDATE AD_Field SET MandatoryLogic='@SSO_Provider@=''OIDC''',Updated=TO_TIMESTAMP('2026-03-02 16:51:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=207197
+;
+
+-- Mar 2, 2026, 4:51:22 PM GMT+08:00
+UPDATE AD_Field SET DisplayLogic=NULL, MandatoryLogic='@SSO_Provider@=''OIDC''',Updated=TO_TIMESTAMP('2026-03-02 16:51:22','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=207414
+;
+
+-- Mar 2, 2026, 4:52:23 PM GMT+08:00
+UPDATE AD_Field SET DisplayLogic='@AD_Client_ID@=0',Updated=TO_TIMESTAMP('2026-03-02 16:52:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=207564
+;
+
+-- Mar 2, 2026, 4:52:45 PM GMT+08:00
+UPDATE AD_Field SET DisplayLogic='@AD_Client_ID@=0',Updated=TO_TIMESTAMP('2026-03-02 16:52:45','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=207565
+;
+

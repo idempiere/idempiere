@@ -10,13 +10,13 @@
 	<name>Maven parent project for idempiere</name>
 
 	<properties>
-		<revision>13.0.0-SNAPSHOT</revision>
+		<revision>14.0.0-SNAPSHOT</revision>
 		<jdk.version>17</jdk.version>
 		<tycho.version>4.0.8</tycho.version>
 		<tycho.extras.version>${tycho.version}</tycho.extras.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jp.version>6.17.0</jp.version>
-		<zk.version>10.0.1</zk.version>
+		<zk.version>10.3.0.1</zk.version>
 		<maven.dependency.version>3.7.1</maven.dependency.version>
 		<download.maven.version>1.9.0</download.maven.version>
 		<lifecycle.mapping.version>1.0.0</lifecycle.mapping.version>
@@ -693,7 +693,7 @@
 				            <artifact>
 					            <groupId>org.idempiere</groupId>
 					            <artifactId>${idempiere.target}</artifactId>
-					            <version>13.0.0-SNAPSHOT</version>
+					            <version>14.0.0-SNAPSHOT</version>
 				            </artifact>
 			            </target>
 

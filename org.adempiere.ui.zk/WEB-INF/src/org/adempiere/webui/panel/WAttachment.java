@@ -52,7 +52,6 @@ import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.WEMailDialog;
-import org.adempiere.webui.window.WTextEditorDialog;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MAttachmentEntry;
 import org.compiere.model.MSysConfig;
@@ -527,7 +526,7 @@ public class WAttachment extends Window implements EventListener<Event>
 					displayData(index, immediate);
 				} else {
 					clearPreview();
-					String msg = WTextEditorDialog.sanitize(Msg.getMsg(Env.getCtx(), "FileTooBigForPreview"));
+					String msg = AEnv.sanitize(Msg.getMsg(Env.getCtx(), "FileTooBigForPreview"));
 					Media media = new AMedia(null, null, "text/html", msg.getBytes());
 					preview.setContent(media);
 					preview.setVisible(true);
@@ -550,7 +549,7 @@ public class WAttachment extends Window implements EventListener<Event>
 							log.warning("Error previewing file in attachment entry " + entry.getName() + " -> " + e.getLocalizedMessage());
 							e.printStackTrace();
 							clearPreview();
-							String msg = WTextEditorDialog.sanitize(Msg.getMsg(Env.getCtx(), "ErrorPreviewingFile"));
+							String msg = AEnv.sanitize(Msg.getMsg(Env.getCtx(), "ErrorPreviewingFile"));
 							Media mediaErr = new AMedia(null, null, "text/html", msg.getBytes());
 							preview.setContent(mediaErr);
 							preview.setVisible(true);

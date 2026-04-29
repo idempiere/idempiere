@@ -38,6 +38,7 @@ import org.compiere.model.I_AD_Process;
 import org.compiere.model.I_AD_Tab;
 import org.compiere.model.I_AD_TableAttribute;
 import org.compiere.model.I_AD_Window;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.MTab;
 import org.compiere.model.X_AD_Field;
 import org.compiere.model.X_AD_Package_Imp_Detail;
@@ -81,10 +82,10 @@ public class TabElementHandler extends AbstractElementHandler {
 				String action = null;
 				if (!mTab.is_new()){
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Tab.Table_Name,mTab);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				}
 				else{
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}
 				if (mTab.save(getTrxName(ctx)) == true){
 					logImportDetail (ctx, impDetail, 1, mTab.getName(), mTab.get_ID(),action);

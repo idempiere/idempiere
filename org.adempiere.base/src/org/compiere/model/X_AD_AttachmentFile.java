@@ -32,7 +32,7 @@ public class X_AD_AttachmentFile extends PO implements I_AD_AttachmentFile, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20251223L;
+	private static final long serialVersionUID = 20260309L;
 
     /** Standard Constructor */
     public X_AD_AttachmentFile (Properties ctx, String AD_AttachmentFile_UU, String trxName)

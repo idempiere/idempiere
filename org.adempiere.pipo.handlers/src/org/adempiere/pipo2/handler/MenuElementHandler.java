@@ -41,6 +41,7 @@ import org.compiere.model.I_AD_Process;
 import org.compiere.model.I_AD_Task;
 import org.compiere.model.I_AD_Window;
 import org.compiere.model.I_AD_Workflow;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.X_AD_Menu;
 import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.model.X_AD_Package_Imp_Backup;
@@ -79,9 +80,9 @@ public class MenuElementHandler extends AbstractElementHandler {
 		String action = null;
 		if (!mMenu.is_new()) {
 			backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Menu.Table_Name, mMenu);
-			action = "Update";
+			action = MPackageImpDetail.ACTION_UPDATE;
 		} else {
-			action = "New";
+			action = MPackageImpDetail.ACTION_INSERT;
 		}
 		if (mMenu.save(getTrxName(ctx)) == true) {
 			try {

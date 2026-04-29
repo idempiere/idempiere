@@ -22,9 +22,9 @@ import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.compiere.acct.Doc;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.idempiere.acct.IDoc;
 
 /**
  *	Callout Engine. Default implementation of {@link Callout} interface using Java reflection.
@@ -273,11 +273,11 @@ public class CalloutEngine implements Callout
 		String docBase = null;
 		if (doctypeID <= 0) {
 			if (MInventory.Table_Name.equals(mTab.getTableName()))
-				docBase = Doc.DOCTYPE_MatInventory;
+				docBase = IDoc.DOCTYPE_MatInventory;
 			else if (MMovement.Table_Name.equals(mTab.getTableName()))
-				docBase = Doc.DOCTYPE_MatMovement;
+				docBase = IDoc.DOCTYPE_MatMovement;
 			else if (MRequisition.Table_Name.equals(mTab.getTableName()))
-				docBase = Doc.DOCTYPE_PurchaseRequisition;
+				docBase = IDoc.DOCTYPE_PurchaseRequisition;
 		}
 
 		if (doctypeID > 0) {

@@ -30,7 +30,7 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20260207L;
+	private static final long serialVersionUID = 20260309L;
 
     /** Standard Constructor */
     public X_PA_DocumentStatus (Properties ctx, int PA_DocumentStatus_ID, String trxName)
@@ -46,6 +46,7 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 			setName (null);
 			setPA_DocumentStatus_ID (0);
 			setSeqNo (0);
+// @SQL=SELECT COALESCE(MAX(SeqNo),0)+10 AS DefaultValue FROM PA_DocumentStatus WHERE AD_Client_ID IN (0,@AD_Client_ID@)
         } */
     }
 
@@ -63,6 +64,7 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 			setName (null);
 			setPA_DocumentStatus_ID (0);
 			setSeqNo (0);
+// @SQL=SELECT COALESCE(MAX(SeqNo),0)+10 AS DefaultValue FROM PA_DocumentStatus WHERE AD_Client_ID IN (0,@AD_Client_ID@)
         } */
     }
 
@@ -80,6 +82,7 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 			setName (null);
 			setPA_DocumentStatus_ID (0);
 			setSeqNo (0);
+// @SQL=SELECT COALESCE(MAX(SeqNo),0)+10 AS DefaultValue FROM PA_DocumentStatus WHERE AD_Client_ID IN (0,@AD_Client_ID@)
         } */
     }
 
@@ -97,6 +100,7 @@ public class X_PA_DocumentStatus extends PO implements I_PA_DocumentStatus, I_Pe
 			setName (null);
 			setPA_DocumentStatus_ID (0);
 			setSeqNo (0);
+// @SQL=SELECT COALESCE(MAX(SeqNo),0)+10 AS DefaultValue FROM PA_DocumentStatus WHERE AD_Client_ID IN (0,@AD_Client_ID@)
         } */
     }
 

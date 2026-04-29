@@ -24,6 +24,7 @@ import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.X_AD_Modification;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.util.Env;
@@ -71,9 +72,9 @@ public class ModificationElementHandler extends AbstractElementHandler{
 				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Modification.Table_Name, X_AD_Modification.Table_ID);
 				if (!modification.is_new()) {				
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Modification.Table_Name, modification);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				} else {
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}
 	
 				if (modification.save(getTrxName(ctx)) == true) {

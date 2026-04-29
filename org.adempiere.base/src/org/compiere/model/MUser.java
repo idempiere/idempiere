@@ -500,8 +500,11 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 	 *	@param value
 	 *	@return lower case cleaned value
 	 */
-	private String cleanValue (String value)
+	public static String cleanValue (String value)
 	{
+		if (value == null)
+			return "";
+
 		char[] chars = value.toCharArray();
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < chars.length; i++)
@@ -1059,7 +1062,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 	/**
 	 * 	Get User that has roles (already authenticated)
 	 *	@param ctx context
-	 *	@param name name
+	 *	@param name name or email if USE_EMAIL_FOR_LOGIN=Y
 	 *	@return user or null
 	 */
 	public static MUser get(Properties ctx, String name) {

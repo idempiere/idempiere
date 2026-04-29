@@ -31,17 +31,20 @@ import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_Workflow;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_WF_NextCondition;
 import org.compiere.model.X_AD_WF_Node;
 import org.compiere.model.X_AD_WF_NodeNext;
+import org.compiere.model.X_AD_WF_Node_Para;
 import org.compiere.model.X_AD_Workflow;
 import org.compiere.util.Env;
 import org.compiere.wf.MWFNextCondition;
 import org.compiere.wf.MWFNode;
 import org.compiere.wf.MWFNodeNext;
+import org.compiere.wf.MWFNodePara;
 import org.compiere.wf.MWorkflow;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -49,6 +52,7 @@ import org.xml.sax.helpers.AttributesImpl;
 public class WorkflowElementHandler extends AbstractElementHandler {
 
 	private WorkflowNodeElementHandler nodeHandler = new WorkflowNodeElementHandler();
+	private WorkflowNodeParaElementHandler nodeParaHandler = new WorkflowNodeParaElementHandler();
 	private WorkflowNodeNextElementHandler nodeNextHandler = new WorkflowNodeNextElementHandler();
 	private WorkflowNodeNextConditionElementHandler nextConditionHandler = new WorkflowNodeNextConditionElementHandler();
 
@@ -82,9 +86,9 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 				
 				if (!mWorkflow.is_new()) {
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Workflow.Table_Name, mWorkflow);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				} else {
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}
 				if (mWorkflow.save(getTrxName(ctx)) == true) {
 					log.info("m_Workflow save success");
@@ -130,14 +134,14 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 				if (m_Workflow.save(getTrxName(ctx)) == true) {
 					log.info("m_Workflow update success");
 					logImportDetail(ctx, impDetail, 1, m_Workflow.getName(), m_Workflow
-							.get_ID(), "Update");
+							.get_ID(), MPackageImpDetail.ACTION_UPDATE);
 					workflows.add(m_Workflow.getAD_Workflow_ID());
 					element.recordId = m_Workflow.getAD_Workflow_ID();
 					element.requireRoleAccessUpdate = true;
 				} else {
 					log.info("m_Workflow update fail");
 					logImportDetail(ctx, impDetail, 0, m_Workflow.getName(), m_Workflow
-							.get_ID(), "Update");
+							.get_ID(), MPackageImpDetail.ACTION_UPDATE);
 					throw new POSaveFailedException("Failed to save MWorkflow " + m_Workflow.getName());
 				}
 			}
@@ -170,21 +174,29 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 		}
 
 		try {
-			List<MWFNode> wns = new Query(ctx.ctx, MWFNode.Table_Name, "AD_Workflow_ID=? AND AD_Client_ID=?", getTrxName(ctx))
+			List<MWFNode> wns = new Query(ctx.ctx, MWFNode.Table_Name, "AD_Workflow_ID=? AND AD_Client_ID IN (0,?)", getTrxName(ctx))
 					.setParameters(AD_Workflow_ID, Env.getAD_Client_ID(ctx.ctx))
 					.list();
 			for (MWFNode wn : wns) {
 				int nodeId = wn.getAD_WF_Node_ID();
 				createNode(ctx, document, nodeId);
 
-				List<MWFNodeNext> wnns = new Query(ctx.ctx, MWFNodeNext.Table_Name, "AD_WF_Node_ID=? AND AD_Client_ID=?", getTrxName(ctx))
+				List<MWFNodePara> wnps = new Query(ctx.ctx, MWFNodePara.Table_Name, "AD_WF_Node_ID=? AND AD_Client_ID=?", getTrxName(ctx))
+						.setParameters(nodeId, Env.getAD_Client_ID(ctx.ctx))
+						.list();
+				for (MWFNodePara wnp : wnps) {
+					int ad_wf_node_para_id = wnp.getAD_WF_Node_Para_ID();
+					createNodePara(ctx, document, ad_wf_node_para_id);
+				}
+
+				List<MWFNodeNext> wnns = new Query(ctx.ctx, MWFNodeNext.Table_Name, "AD_WF_Node_ID=? AND AD_Client_ID IN (0,?)", getTrxName(ctx))
 						.setParameters(nodeId, Env.getAD_Client_ID(ctx.ctx))
 						.list();
 				for (MWFNodeNext wnn : wnns) {
 					int ad_wf_nodenext_id = wnn.getAD_WF_NodeNext_ID();
 					createNodeNext(ctx, document, ad_wf_nodenext_id);
 
-					List<MWFNextCondition> wncs = new Query(ctx.ctx, MWFNextCondition.Table_Name, "AD_WF_NodeNext_ID=? AND AD_Client_ID=?", getTrxName(ctx))
+					List<MWFNextCondition> wncs = new Query(ctx.ctx, MWFNextCondition.Table_Name, "AD_WF_NodeNext_ID=? AND AD_Client_ID IN (0,?)", getTrxName(ctx))
 							.setParameters(ad_wf_nodenext_id, Env.getAD_Client_ID(ctx.ctx))
 							.list();
 					for (MWFNextCondition wnc : wncs) {
@@ -213,6 +225,14 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 				ad_wf_nodenextcondition_id);
 		nextConditionHandler.create(ctx, document);
 		ctx.ctx.remove(X_AD_WF_NextCondition.COLUMNNAME_AD_WF_NextCondition_ID);
+	}
+
+	private void createNodePara(PIPOContext ctx, TransformerHandler document,
+			int ad_wf_node_para_id) throws SAXException {
+		Env.setContext(ctx.ctx, X_AD_WF_Node_Para.COLUMNNAME_AD_WF_Node_Para_ID,
+				ad_wf_node_para_id);
+		nodeParaHandler.create(ctx, document);
+		ctx.ctx.remove(X_AD_WF_Node_Para.COLUMNNAME_AD_WF_Node_Para_ID);
 	}
 
 	private void createNodeNext(PIPOContext ctx, TransformerHandler document,

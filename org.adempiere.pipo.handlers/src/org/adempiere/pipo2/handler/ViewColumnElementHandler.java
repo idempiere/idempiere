@@ -26,6 +26,7 @@ import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.ReferenceUtils;
 import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.MViewColumn;
 import org.compiere.model.MViewComponent;
 import org.compiere.model.X_AD_Package_Imp_Detail;
@@ -88,9 +89,9 @@ public class ViewColumnElementHandler extends AbstractElementHandler {
 				String action = null;
 				if (!mViewColumn.is_new()) {
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), MViewColumn.Table_Name, mViewColumn);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				} else {
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}
 				if (mViewColumn.save(getTrxName(ctx)) == true) {
 					logImportDetail(ctx, impDetail, 1, mViewColumn.toString(), mViewColumn.get_ID(), action);

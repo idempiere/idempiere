@@ -468,11 +468,11 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 				Treeitem ti = centerTree.renderItemByPath(model.getPath(stn));
 				ti.setTooltiptext(item.description);
 			} else {
+				addNode(item);
+
 				stn = new DefaultTreeNode<Object>(new MTreeNode(item.id, 0, item.name, item.description, 0, item.isSummary,
 						item.imageIndicator, false, null), new ArrayList<TreeNode<Object>>());
 				model.addNode(stn);
-				//	May cause Error if in tree
-				addNode(item);
 			}			
 		}
 	}	//	action_treeAdd

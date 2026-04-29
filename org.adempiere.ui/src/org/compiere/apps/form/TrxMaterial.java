@@ -66,7 +66,7 @@ public class TrxMaterial {
 		m_mTab = m_mWindow.getTab(0);
 		m_mWindow.initTab(0);
 		//
-		m_mTab.setQuery(MQuery.getEqualQuery("1", "2"));
+		m_mTab.setQuery(MQuery.getEqualQuery("1", 2));
 		m_mTab.query(false);
 		statusBar.setStatusLine(" ", false);
 		statusBar.setStatusDB(" ");

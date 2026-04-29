@@ -31,14 +31,18 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.hc.client5.http.cookie.BasicCookieStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.AbstractComponent;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.DesktopUnavailableException;
+import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.UiException;
 import org.zkoss.zk.ui.event.Event;
@@ -48,6 +52,7 @@ import org.zkoss.zk.ui.impl.ExecutionCarryOver;
 import org.zkoss.zk.ui.sys.Scheduler;
 import org.zkoss.zk.ui.sys.ServerPush;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zk.ui.util.ExecutionInit;
 
 /**
  * Server push implementation using web socket
@@ -56,7 +61,9 @@ import org.zkoss.zk.ui.util.Clients;
  */
 public class WebSocketServerPush implements ServerPush {
 
-    private static final String ON_ECHO = "onEcho";
+    protected static final String WEBSOCKET_EVENT_COOKIE_STORE = "websocket.event.cookie.store";
+
+	private static final String ON_ECHO = "onEcho";
 
 	private static final String ON_SCHEDULE = "onSchedule";
 
@@ -327,6 +334,29 @@ public class WebSocketServerPush implements ServerPush {
 			}
         }
         startServerPushAtClient(desktop);
+
+		ExecutionInit cookieHandler = (Execution exec, Execution parent) -> {
+			var responseObject = exec.getNativeResponse();
+			if (responseObject instanceof HttpServletResponse servletResponse) {
+				var session = desktop.getSession();
+				var cookieStore = session != null ? session.removeAttribute(WEBSOCKET_EVENT_COOKIE_STORE) : null;
+				if (cookieStore instanceof BasicCookieStore basicCookieStore) {
+					//add cookies from ServerPushEndPoint response to browser
+					basicCookieStore.getCookies().forEach(cookie -> {
+						Cookie browserCookie = new Cookie(cookie.getName(), cookie.getValue());
+						browserCookie.setSecure(true);
+						browserCookie.setHttpOnly(true);
+						if (cookie.getExpiryDate() != null) {
+							long maxAgeSeconds = Math.max(0L,
+									(cookie.getExpiryDate().getTime() - System.currentTimeMillis()) / 1000L);
+							browserCookie.setMaxAge((int) Math.min(Integer.MAX_VALUE, maxAgeSeconds));
+						}
+						servletResponse.addCookie(browserCookie);
+					});
+				}
+			}
+		};			
+		desktop.addListener(cookieHandler);
     }
 
 	private void startServerPushAtClient(Desktop desktop) {

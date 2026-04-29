@@ -19,6 +19,7 @@ package org.adempiere.webui.adwindow;
 
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.form.WQuickForm;
 import org.adempiere.webui.component.DocumentLink;
 import org.adempiere.webui.component.Label;
@@ -26,7 +27,6 @@ import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.adempiere.webui.window.WTextEditorDialog;
 import org.compiere.model.MSysConfig;
 import org.compiere.process.ProcessInfoLog;
 import org.compiere.util.Env;
@@ -281,7 +281,7 @@ public class StatusBar extends Panel implements EventListener<Event>
      * Create html content for {@link #msgPopupCnt}
      */
 	protected void createPopupContent() {
-		Html t = new Html(WTextEditorDialog.sanitize(m_statusText));
+		Html t = new Html(AEnv.sanitize(m_statusText));
 		msgPopupCnt.getChildren().clear();
 		msgPopupCnt.appendChild(t);
 	}

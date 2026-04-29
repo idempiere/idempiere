@@ -30,6 +30,7 @@ import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.MIndexColumn;
 import org.compiere.model.MMessage;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTableIndex;
 import org.compiere.model.X_AD_Package_Imp_Detail;
@@ -70,9 +71,9 @@ public class TableIndexElementHandler extends AbstractElementHandler {
 				String action = null;
 				if (!mTableIndex.is_new()) {
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), MTableIndex.Table_Name, mTableIndex);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				} else {
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}
 				if (mTableIndex.save(getTrxName(ctx)) == true) {
 					logImportDetail(ctx, impDetail, 1, mTableIndex.getName(), mTableIndex.get_ID(), action);
@@ -95,9 +96,9 @@ public class TableIndexElementHandler extends AbstractElementHandler {
 		int success = validateTableIndex(ctx, mTableIndex);
 		X_AD_Package_Imp_Detail dbDetail = createImportDetail(ctx, "dbIndex", MTableIndex.Table_Name, MTableIndex.Table_ID);
 		if (success == 1) {
-			logImportDetail(ctx, dbDetail, 1, mTableIndex.getName(), mTableIndex.get_ID(), "Validate");
+			logImportDetail(ctx, dbDetail, 1, mTableIndex.getName(), mTableIndex.get_ID(), MPackageImpDetail.ACTION_VALIDATE);
 		} else {
-			logImportDetail(ctx, dbDetail, 0, mTableIndex.getName(), mTableIndex.get_ID(), "Validate");
+			logImportDetail(ctx, dbDetail, 0, mTableIndex.getName(), mTableIndex.get_ID(), MPackageImpDetail.ACTION_VALIDATE);
 			throw new DatabaseAccessException("Failed to validate AD_TableIndex for " + mTableIndex.getName());
 		}
 	}

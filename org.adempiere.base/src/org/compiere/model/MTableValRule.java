@@ -139,7 +139,7 @@ public class MTableValRule extends X_AD_TableValRule implements ImmutablePOSuppo
 		if (retValue != null)
 			return retValue;
 		retValue = new MTableValRule(ctx, AD_TableValRule_UU, trxName);
-		if (retValue.get_UUID() == AD_TableValRule_UU) {
+		if (AD_TableValRule_UU != null && AD_TableValRule_UU.equals(retValue.get_UUID())) {
 			s_cache.put(key, retValue, e -> new MTableValRule(Env.getCtx(), e));
 			return retValue;
 		}

@@ -365,7 +365,7 @@ public final class WAccountDialog extends Window
 		m_query = new MQuery();
 		m_query.addRestriction("C_AcctSchema_ID", MQuery.EQUAL, m_C_AcctSchema_ID);
 		if (m_mAccount.C_ValidCombination_ID == 0)
-			m_mTab.setQuery(MQuery.getEqualQuery("1", "2"));
+			m_mTab.setQuery(MQuery.getEqualQuery("1", 2));
 		else
 		{
 			MQuery query = new MQuery();

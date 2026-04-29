@@ -37,7 +37,6 @@
         <listEntry value="=org.adempiere.ui.zk/WEB-INF\/src"/>
         <listEntry value="=org.apache.ecs/src"/>
         <listEntry value="=org.idempiere.felix.webconsole/src"/>
-        <listEntry value="=org.idempiere.webservices/WEB-INF\/src"/>
         <listEntry value="=org.adempiere.pipo/src"/>
         <listEntry value="=org.adempiere.payment.processor/src"/>
         <listEntry value="=org.adempiere.webstore/src"/>
@@ -205,7 +204,6 @@
         <setEntry value="org.apiguardian.api@default:default"/>
         <setEntry value="org.atmosphere.runtime@default:default"/>
         <setEntry value="org.codehaus.jettison.jettison@default:default"/>
-        <setEntry value="org.cryptacular@default:default"/>
         <setEntry value="org.eclipse.ant.core@default:default"/>
         <setEntry value="org.eclipse.core.commands@default:default"/>
         <setEntry value="org.eclipse.core.contenttype@default:default"/>
@@ -312,11 +310,11 @@
         <setEntry value="org.krysalis.barcode4j@default:default"/>
         <setEntry value="org.mortbay.jasper.apache-el@default:default"/>
         <setEntry value="org.mortbay.jasper.apache-jsp@default:default"/>
+        <setEntry value="org.objectweb.asm*9.9.1@default:default"/>
         <setEntry value="org.objectweb.asm.commons@default:default"/>
-        <setEntry value="org.objectweb.asm.tree.analysis@default:default"/>
-        <setEntry value="org.objectweb.asm.tree@default:default"/>
-        <setEntry value="org.objectweb.asm.util@default:default"/>
-        <setEntry value="org.objectweb.asm@default:default"/>
+        <setEntry value="org.objectweb.asm.tree*9.9.1@default:default"/>
+        <setEntry value="org.objectweb.asm.tree.analysis*9.9.1@default:default"/>
+        <setEntry value="org.objectweb.asm.util*9.9.1@default:default"/>
         <setEntry value="org.opentest4j@default:default"/>
         <setEntry value="org.osgi.annotation.bundle@default:default"/>
         <setEntry value="org.osgi.annotation.versioning@default:default"/>
@@ -353,7 +351,7 @@
         <setEntry value="org.w3c.dom.smil@default:default"/>
         <setEntry value="org.w3c.dom.svg@default:default"/>
         <setEntry value="org.zkoss.zsoup@default:default"/>
-        <setEntry value="slf4j.api@3:true"/>
+        <setEntry value="slf4j.api*2.0.17@3:true"/>
         <setEntry value="slf4j.jdk14@3:true"/>
         <setEntry value="stax2-api@default:default"/>
         <setEntry value="wrapped.com.google.http-client.google-http-client-gson@default:default"/>
@@ -416,12 +414,12 @@
         <setEntry value="org.adempiere.ui@default:default"/>
         <setEntry value="org.apache.ecs@default:default"/>
         <setEntry value="org.compiere.db.oracle.provider@default:default"/>
-        <setEntry value="org.compiere.db.postgresql.provider@default:default"/>
-        <setEntry value="org.idempiere.hazelcast.service@default:default"/>
-        <setEntry value="org.idempiere.tablepartition@default:default"/>
-        <setEntry value="org.idempiere.test@default:default"/>
-        <setEntry value="org.idempiere.webservices.resources@default:default"/>
-        <setEntry value="org.idempiere.webservices@default:default"/>
+         <setEntry value="org.compiere.db.postgresql.provider@default:default"/>
+         <setEntry value="org.idempiere.acct@5:default"/>
+         <setEntry value="org.idempiere.extension.manager@5:true"/>
+         <setEntry value="org.idempiere.hazelcast.service@default:default"/>
+         <setEntry value="org.idempiere.tablepartition@default:default"/>
+         <setEntry value="org.idempiere.test*14.0.0.qualifier@default:default"/>
         <setEntry value="org.idempiere.zk.billboard.chart@default:default"/>
         <setEntry value="org.idempiere.zk.billboard@default:default"/>
         <setEntry value="org.idempiere.zk.extra@default:default"/>

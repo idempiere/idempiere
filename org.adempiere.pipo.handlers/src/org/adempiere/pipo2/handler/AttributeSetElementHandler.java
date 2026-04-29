@@ -26,6 +26,7 @@ import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.MAttributeSet;
 import org.compiere.model.MAttributeUse;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_M_AttributeSet;
@@ -65,11 +66,11 @@ public class AttributeSetElementHandler extends AbstractElementHandler
 				if (!mAttributeSet.is_new())
 				{
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_M_AttributeSet.Table_Name, mAttributeSet);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				}
 				else
 				{
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}
 				if (mAttributeSet.save(getTrxName(ctx)) == true)
 				{

@@ -24,9 +24,13 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
+import org.adempiere.base.event.EventManager;
+import org.adempiere.base.event.IEventTopics;
 import org.adempiere.util.ServerContext;
 import org.compiere.Adempiere;
+import org.compiere.model.MPackageImp;
 import org.compiere.model.MSession;
 import org.compiere.model.Query;
 import org.compiere.model.ServerStateChangeEvent;
@@ -38,6 +42,7 @@ import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
 import org.osgi.framework.BundleContext;
+import org.osgi.service.event.Event;
 
 /**
  * 
@@ -73,10 +78,10 @@ public class Incremental2PackActivator extends AbstractActivator {
 	}
 
 	private void installPackage() {
-		String where = "Name=? AND PK_Status = 'Completed successfully'";
+		String where = "Name=? AND PK_Status = ?";
 		Query q = new Query(Env.getCtx(), X_AD_Package_Imp.Table_Name,
 				where.toString(), null);
-		q.setParameters(new Object[] { getName() });
+		q.setParameters(new Object[] { getName(), MPackageImp.PACKAGE_STATUS_COMPLETED });
 		List<X_AD_Package_Imp> pkgs = q.list();
 		List<String> installedVersions = new ArrayList<String>();
 		if (pkgs != null && !pkgs.isEmpty()) {
@@ -100,6 +105,10 @@ public class Incremental2PackActivator extends AbstractActivator {
 			this.url=url;
 			this.version = version;
 		}
+		@Override
+		public String toString() {
+			return "TwoPackEntry [url=" + url + ", version=" + version + "]";
+		}		
 	}
 	
 	protected void packIn(List<String> installedVersions) {
@@ -116,7 +125,7 @@ public class Incremental2PackActivator extends AbstractActivator {
 		}
 		
 		X_AD_Package_Imp firstImp = new Query(Env.getCtx(), X_AD_Package_Imp.Table_Name, "Name=? AND PK_Version=? AND PK_Status=?", null)
-				.setParameters(getName(), "0.0.0", "Completed successfully")
+				.setParameters(getName(), "0.0.0", MPackageImp.PACKAGE_STATUS_COMPLETED)
 				.setClient_ID()
 				.first();
 		if (firstImp == null) {
@@ -128,7 +137,7 @@ public class Incremental2PackActivator extends AbstractActivator {
 				firstImp = new X_AD_Package_Imp(Env.getCtx(), 0, trx.getTrxName());
 				firstImp.setName(getName());
 				firstImp.setPK_Version("0.0.0");
-				firstImp.setPK_Status("Completed successfully");
+				firstImp.setPK_Status(MPackageImp.PACKAGE_STATUS_COMPLETED);
 				firstImp.setProcessed(true);
 				firstImp.saveEx();
 				
@@ -153,7 +162,7 @@ public class Incremental2PackActivator extends AbstractActivator {
 							X_AD_Package_Imp pi = new X_AD_Package_Imp(Env.getCtx(), 0, trx.getTrxName());
 							pi.setName(getName());
 							pi.setPK_Version(entry.version);
-							pi.setPK_Status("Completed successfully");
+							pi.setPK_Status(MPackageImp.PACKAGE_STATUS_COMPLETED);
 							pi.setProcessed(true);
 							pi.saveEx();
 													
@@ -178,15 +187,26 @@ public class Incremental2PackActivator extends AbstractActivator {
 			}
 		});		
 
+		boolean success = true;
 		boolean cacheReset = false;
+
+		if (!list.isEmpty()) {
+			String csv = list.stream().map(e -> e.url.toString()).collect(Collectors.joining(","));
+			Event event = EventManager.newEvent(IEventTopics.PRE_INCREMENTAL_PACK_IN, 
+				new String[] {getName(), csv}, true);
+			EventManager.getInstance().sendEvent(event);
+		}
+		
 		try {
 			if (getDBLock()) {
 				for(TwoPackEntry entry : list) {
 					if (!installedVersions.contains(entry.version)) {
 						if (packIn(entry.url))
 							cacheReset = true;
-						else
-							break; // stop processing further packages if one fail
+						else {
+							success = false;
+							break; // stop processing further packages if one fail							
+						}
 					}
 				}
 			} else {
@@ -197,7 +217,14 @@ public class Incremental2PackActivator extends AbstractActivator {
 		} finally {
 			releaseLock();
 		}
-		logger.log(Level.INFO, "Cache Reset: " + cacheReset);
+
+		if (!list.isEmpty()) {
+			Event event = EventManager.newEvent(IEventTopics.POST_INCREMENTAL_PACK_IN, new Object[] {getName(), success}, true);
+			EventManager.getInstance().postEvent(event);
+		}
+
+		if (logger.isLoggable(Level.INFO))
+			logger.log(Level.INFO, "Cache Reset: " + cacheReset);
 		if (cacheReset)
 			CacheMgt.get().reset();
 	}

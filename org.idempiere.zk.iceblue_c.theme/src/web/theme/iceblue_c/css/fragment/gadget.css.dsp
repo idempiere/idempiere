@@ -13,7 +13,7 @@
 .z-panel-head .z-panel-header {
 	margin-top: 2px;
 	padding: 1px 5px 1px 10px;
-    border-bottom: 1px solid #e4e4e4;
+    border-bottom: 1px solid var(--zk-gadget-panel-header-border-color);
 }
 .z-caption .z-caption-content {
 	cursor: move;
@@ -21,14 +21,14 @@
 }
 .z-panel-icon {
 	font-size: 10px !important;
-    color: rgb(0 0 0 / 57%) !important;
+	color: var(--zk-gadget-panel-icon-color) !important;
     margin: 4px 0 0 0 !important;
     line-height: 24px !important;
     border: 0px !important;
     border-radius: 0px !important;
 }
 .z-panel-icon:hover {
-    color: rgb(0 0 0 / 100%) !important;
+	color: var(--zk-gadget-panel-icon-hover-color) !important;
 }
 
 <%-- dashboard widget --%>
@@ -47,7 +47,7 @@
 	flex-grow: 1;
 }
 .dashboard-widget.z-panel {
-	border: 1px solid rgba(0, 0, 0, 0.09);
+	border: 1px solid var(--zk-gadget-dashboard-widget-border-color);
 }
 .dashboard-widget {
 	margin-top: 1px; 
@@ -85,7 +85,7 @@
 	float: right;
 }
 .favourites-box .trash-font-icon {
-	font-family: FontAwesome;
+	font-family: var(--zk-icon-font-family);
 	font-size: 20px;
 }
 .fav-new-btn img {
@@ -106,17 +106,17 @@
 
 .recentitems-box .menu-href [class^="z-icon-"] {
 	font-size: 12px !important;
-	color: #333333;
+	color: var(--zk-gadget-recent-item-text-color);
 }
 
 .recentitems-box A {
 	display: block;
 	padding: 2px 14px 2px 18px;
  	line-height: 24px;
-	color: #333333 !important;
+	color: var(--zk-gadget-recent-item-text-color) !important;
 }
 .recentitems-box A.menu-href:hover {
-	background: #e0f2ff;
+	background: var(--zk-gadget-recent-item-hover-background-color);
 	text-decoration: none !important;
 }
 
@@ -133,7 +133,7 @@
 	align-items: center;
 }
 .recentitems-box .trash-font-icon {
-	font-family: FontAwesome;
+	font-family: var(--zk-icon-font-family);
 	font-size: 12px;
 }
 
@@ -159,8 +159,8 @@
 }
 
 .fill-mandatory-process-para-text {
-    background: #C62223;
-    color: white;
+	background: var(--zk-gadget-mandatory-process-background-color);
+	color: var(--zk-gadget-mandatory-process-text-color);
     padding: 10px;
     border-radius: 5px;
     opacity: 90%;
@@ -181,8 +181,8 @@
 	line-height: 24px;
 }
 .views-box .z-toolbarbutton:hover {
-	background: #e0f2ff;
-	color: rgba(0,0,0,0.9);
+	background: var(--zk-gadget-recent-item-hover-background-color);
+	color: var(--zk-gadget-views-button-hover-text-color);
 }
 .views-box .link img {
 	height: 16px;
@@ -225,15 +225,15 @@
 .window-view-pi .performance-indicator img {
 }
 .performance-indicator-box {
-	background-color: #eee; 
-	border: 1px solid #d8d8d8; 
+	background-color: var(--zk-gadget-performance-indicator-background-color); 
+	border: 1px solid var(--zk-gadget-performance-indicator-border-color); 
 	border-radius: 3px; 
 	cursor: pointer;
 }
 .performance-indicator-title {
 	text-align: center; 
-	background-color: #c8c8c8; 
-	border: 1px solid #c8c8c8;
+	background-color: var(--zk-gadget-performance-title-background-color); 
+	border: 1px solid var(--zk-gadget-performance-title-background-color);
 	padding-top: 4px; 
 	padding-bottom: 4px;
 	min-height: 48px;
@@ -317,7 +317,7 @@
 <%-- User Favorite Dashboard Panel Start --%>
 .fav-tree-panel .z-panelchildren {
   padding: 0px;
-  color: #333333 !important;
+	color: var(--zk-gadget-recent-item-text-color) !important;
 }
 .fav-tree-panel .z-treerow .z-treecell {
   border-top: 0px;
@@ -329,7 +329,7 @@
 .fav-tree-btn {
   margin-left: 5px !important;
   padding: 3px 15px;
-  border: 1px solid #6d6d6d;
+	border: 1px solid var(--zk-gadget-favorite-button-border-color);
 }
 .fav-folder-textbox {
   width: 100%;
@@ -361,8 +361,8 @@
 }
 .dashboard-content-help-icon:hover ~ .dashboard-content-help-popup {
 	display: inline-flex;
-	background: black;
-	color: white;
+	background: var(--zk-gadget-help-popup-background-color);
+	color: var(--zk-gadget-help-popup-text-color);
 	border-radius: 5px;
 	padding: 4px 7px;
     position: fixed;
@@ -370,8 +370,8 @@
     max-width: 300px;
 }
 .dashboard-content-help .z-popup-content {
-	background: black;
-	color: white;
+	background: var(--zk-gadget-help-popup-background-color);
+	color: var(--zk-gadget-help-popup-text-color);
 	border-radius: 5px;
 }
 .dashboard-widget .z-toolbar {

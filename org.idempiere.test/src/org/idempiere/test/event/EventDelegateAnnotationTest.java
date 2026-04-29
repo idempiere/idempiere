@@ -33,19 +33,19 @@ import java.util.concurrent.CompletableFuture;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.DefaultAnnotationBasedEventManager;
-import org.compiere.model.MAcctSchema;
 import org.adempiere.base.event.annotations.BaseEventHandler;
-import org.compiere.acct.Doc;
+import org.compiere.model.MAcctSchema;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MProcess;
 import org.compiere.model.MTest;
+import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ServerProcessCtl;
-import org.compiere.process.DocAction;
 import org.compiere.util.Env;
+import org.idempiere.acct.doc.Doc;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.idempiere.test.TestActivator;
@@ -79,6 +79,8 @@ public class EventDelegateAnnotationTest extends AbstractTestCase {
 		assertEquals(desc + "MTestEventDelegate", mtest.getDescription(), "MTestEventDelegate not handling before new event as expected");
 		assertTrue(MTestEventDelegate.eventLog.contains("BeforeNew"));
 		assertTrue(MTestEventDelegate.eventLog.contains("AfterNew"));
+		commit(); //trigger post create
+		waitForEvent(MTestEventDelegate.eventLog, "PostCreate");
 		assertTrue(MTestEventDelegate.eventLog.contains("PostCreate"));
 		
 		MTestEventDelegate.eventLog.clear();
@@ -86,12 +88,16 @@ public class EventDelegateAnnotationTest extends AbstractTestCase {
 		mtest.saveEx();
 		assertTrue(MTestEventDelegate.eventLog.contains("BeforeChange"));
 		assertTrue(MTestEventDelegate.eventLog.contains("AfterChange"));
+		commit(); //trigger post update
+		waitForEvent(MTestEventDelegate.eventLog, "PostUpdate");
 		assertTrue(MTestEventDelegate.eventLog.contains("PostUpdate"));
 		
 		MTestEventDelegate.eventLog.clear();
 		mtest.deleteEx(true);
 		assertTrue(MTestEventDelegate.eventLog.contains("BeforeDelete"));
 		assertTrue(MTestEventDelegate.eventLog.contains("AfterDelete"));
+		commit(); //trigger post delete
+		waitForEvent(MTestEventDelegate.eventLog, "PostDelete");
 		assertTrue(MTestEventDelegate.eventLog.contains("PostDelete"));
 
 		// 2. Replication Cycle
@@ -106,6 +112,8 @@ public class EventDelegateAnnotationTest extends AbstractTestCase {
 		assertTrue(MTestEventDelegate.eventLog.contains("BeforeNew"));
 		assertTrue(MTestEventDelegate.eventLog.contains("AfterNewReplication"));
 		assertFalse(MTestEventDelegate.eventLog.contains("AfterNew")); // Should use replication variant
+		commit(); //trigger post create
+		waitForEvent(MTestEventDelegate.eventLog, "PostCreate");
 		assertTrue(MTestEventDelegate.eventLog.contains("PostCreate"));
 
 		// Update
@@ -117,6 +125,8 @@ public class EventDelegateAnnotationTest extends AbstractTestCase {
 		assertTrue(MTestEventDelegate.eventLog.contains("BeforeChange"));
 		assertTrue(MTestEventDelegate.eventLog.contains("AfterChangeReplication"));
 		assertFalse(MTestEventDelegate.eventLog.contains("AfterChange")); // Should use replication variant
+		commit(); //trigger post update
+		waitForEvent(MTestEventDelegate.eventLog, "PostUpdate");
 		assertTrue(MTestEventDelegate.eventLog.contains("PostUpdate"));
 
 		// Delete
@@ -127,6 +137,8 @@ public class EventDelegateAnnotationTest extends AbstractTestCase {
 		assertTrue(MTestEventDelegate.eventLog.contains("BeforeDeleteReplication"));
 		assertFalse(MTestEventDelegate.eventLog.contains("BeforeDelete")); // BeforeDeleteReplication replaces BeforeDelete
 		assertTrue(MTestEventDelegate.eventLog.contains("AfterDelete")); // AfterDelete is always called (no replication variant for AfterDelete)
+		commit(); //trigger post delete
+		waitForEvent(MTestEventDelegate.eventLog, "PostDelete");
 		assertTrue(MTestEventDelegate.eventLog.contains("PostDelete"));
 		
 	}
@@ -288,6 +300,20 @@ public class EventDelegateAnnotationTest extends AbstractTestCase {
 					mgr.removeHandler(handler);
 				}
 			}
+		}
+	}
+
+	/**
+	 * Poll with timeout of 2 seconds to wait for event to be handled in async after commit
+	 * @param eventLog
+	 * @param event
+	 */
+	private void waitForEvent(List<String> eventLog, String event) {
+		for (int i = 0; i < 20; i++) {
+			if (eventLog.contains(event)) return;
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {}
 		}
 	}
 }
