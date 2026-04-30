@@ -1157,7 +1157,8 @@ public class Doc_InOut extends Doc
 					.append(MCostDetail.COLUMNNAME_C_AcctSchema_ID).append("=? ")
 					.append("AND ").append(MCostDetail.COLUMNNAME_M_AttributeSetInstance_ID).append("=? ")
 					.append("AND ").append(MCostDetail.COLUMNNAME_M_InOutLine_ID).append("=? ")
-					.append("AND ").append(MCostDetail.COLUMNNAME_M_Product_ID).append("=? ");
+					.append("AND ").append(MCostDetail.COLUMNNAME_M_Product_ID).append("=? ")
+					.append("AND COALESCE(").append(MCostDetail.COLUMNNAME_M_CostElement_ID).append(",0)=0 ");
 			
 			BigDecimal exactCost = DB.getSQLValueBDEx(getTrxName(), select.toString(), as.getC_AcctSchema_ID(), M_AttributeSetInstance_ID, reversalLine_ID, M_Product_ID);
 			return exactCost;
