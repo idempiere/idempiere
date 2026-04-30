@@ -2392,8 +2392,14 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			return 2;
 		else if (ClientInfo.maxWidth(ClientInfo.MEDIUM_WIDTH-1))
 			return 4;
-		else
+		else if (ClientInfo.maxWidth(ClientInfo.EXTRA_LARGE_WIDTH-1))
 			return 6;
+		else if (ClientInfo.maxWidth(ClientInfo.XX_LARGE_WIDTH-1))
+			return 8;
+		else if (ClientInfo.maxWidth(ClientInfo.XXX_LARGE_WIDTH-1))
+			return 10;
+		else
+			return 12;
 	}
 
 	/**
