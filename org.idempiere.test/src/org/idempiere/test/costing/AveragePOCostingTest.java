@@ -70,6 +70,7 @@ import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MLandedCost;
 import org.compiere.model.MLandedCostAllocation;
 import org.compiere.model.MMatchInv;
+import org.compiere.model.MMatchPO;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLandedCost;
 import org.compiere.model.MOrderLine;
@@ -769,7 +770,252 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			exclude1.deleteEx(true);
 		}
 	}
-	
+
+	@Test
+	public void testMRWithAttributeAndMatchPO() {
+		MClient client = MClient.get(Env.getCtx());
+		MAcctSchema as = client.getAcctSchema();
+
+		MAttributeSet mas = new MAttributeSet(Env.getCtx(), DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id, getTrxName());
+		mas.setMandatoryType(MAttributeSet.MANDATORYTYPE_NotMandatory);
+		mas.saveEx();
+
+		MAttributeSetExclude exclude = new MAttributeSetExclude(Env.getCtx(), 0, null);
+		exclude.setM_AttributeSet_ID(mas.get_ID());
+		exclude.setAD_Table_ID(MOrderLine.Table_ID);
+		exclude.setIsSOTrx(false);
+		exclude.saveEx();
+
+		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class);
+			MockedStatic<MProductCategory> mockedCategory = mockStatic(MProductCategory.class)) {
+
+			MProductCategory lotLevel = new MProductCategory(Env.getCtx(), 0, getTrxName());
+			lotLevel.setName("testMRAttributeLot");
+			lotLevel.saveEx();
+
+			mockedCategory.when(() -> MProductCategory.get(any(Properties.class), anyInt())).thenCallRealMethod();
+			mockedCategory.when(() -> MProductCategory.get(any(Properties.class), eq(lotLevel.get_ID()))).thenReturn(lotLevel);
+
+			MProductCategoryAcct lotLevelAcct = MProductCategoryAcct.get(lotLevel.get_ID(), as.get_ID(), getTrxName());
+			lotLevelAcct = new MProductCategoryAcct(Env.getCtx(), lotLevelAcct, getTrxName());
+			lotLevelAcct.setCostingMethod(MAcctSchema.COSTINGMETHOD_AveragePO);
+			lotLevelAcct.setCostingLevel(MAcctSchema.COSTINGLEVEL_BatchLot);
+			lotLevelAcct.saveEx();
+			CacheMgt.get().reset(MProductCategoryAcct.Table_Name);
+			MProductCategoryAcct.get(lotLevel.get_ID(), as.get_ID(), getTrxName());
+
+			MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
+			product.setM_Product_Category_ID(lotLevel.get_ID());
+			product.setName("testMRAttributeLot");
+			product.setProductType(MProduct.PRODUCTTYPE_Item);
+			product.setIsStocked(true);
+			product.setIsSold(true);
+			product.setIsPurchased(true);
+			product.setC_UOM_ID(DictionaryIDs.C_UOM.EACH.id);
+			product.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
+			product.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id);
+			product.saveEx();
+
+			mockedProduct.when(() -> MProduct.getCopy(any(Properties.class), anyInt(), any())).thenCallRealMethod();
+			mockedProduct.when(() -> MProduct.get(anyInt())).thenCallRealMethod();
+			mockedProduct.when(() -> MProduct.get(any(Properties.class), anyInt(), any())).thenCallRealMethod();
+			mockedProduct.when(() -> MProduct.get(any(Properties.class), anyInt())).thenCallRealMethod();
+			mockProductGet(mockedProduct, product);
+
+			MPriceListVersion plv = MPriceList.get(DictionaryIDs.M_PriceList.PURCHASE.id).getPriceListVersion(null);
+			MProductPrice pp = new MProductPrice(Env.getCtx(), 0, getTrxName());
+			pp.setM_PriceList_Version_ID(plv.getM_PriceList_Version_ID());
+			pp.setM_Product_ID(product.get_ID());
+			pp.setPriceStd(new BigDecimal("10"));
+			pp.setPriceList(new BigDecimal("10"));
+			pp.setPriceLimit(new BigDecimal("10"));
+			pp.saveEx();
+
+			// =====================
+			// 1. CREATE PO (Qty = 15)
+			// =====================
+			MOrder po = new MOrder(Env.getCtx(), 0, getTrxName());
+			po.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id));
+			po.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
+			po.setIsSOTrx(false);
+			po.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+			po.setDocStatus(DocAction.STATUS_Drafted);
+			po.setDocAction(DocAction.ACTION_Complete);
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			po.setDateOrdered(today);
+			po.setDatePromised(today);
+			po.saveEx();
+
+			MOrderLine poLine = new MOrderLine(po);
+			poLine.setLine(10);
+			poLine.setProduct(product);
+			poLine.setQty(new BigDecimal("15"));
+			poLine.setDatePromised(today);
+			poLine.setPrice(new BigDecimal("10.00"));
+			poLine.saveEx();
+
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(po, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			po.load(getTrxName());
+			assertEquals(DocAction.STATUS_Completed, po.getDocStatus());		
+
+			// =====================
+			// 2. CREATE MR
+			// =====================
+			MInOut receipt = new MInOut(po, DictionaryIDs.C_DocType.MM_RECEIPT.id, po.getDateOrdered());
+			receipt.setDocStatus(DocAction.STATUS_Drafted);
+			receipt.setDocAction(DocAction.ACTION_Complete);
+			receipt.saveEx();
+
+			MInOutLine receiptLine = new MInOutLine(receipt);
+			receiptLine.setOrderLine(poLine, 0, new BigDecimal("15"));
+			receiptLine.setQty(new BigDecimal("15"));
+			receiptLine.saveEx();
+
+			// =====================
+			// 3. CREATE ASI AND MA (6 + 9)
+			// =====================
+			MAttributeSetInstance asi1 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+			asi1.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id);
+			asi1.setLot("Lot6");
+			asi1.saveEx();			
+
+			MAttributeSetInstance asi2 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+			asi2.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id);
+			asi2.setLot("Lot9");
+			asi2.saveEx();
+
+			MInOutLineMA ma1 = new MInOutLineMA(Env.getCtx(), 0, getTrxName());
+			ma1.setM_InOutLine_ID(receiptLine.get_ID());
+			ma1.setM_AttributeSetInstance_ID(asi1.get_ID());
+			ma1.setMovementQty(new BigDecimal("6"));
+			ma1.saveEx();
+
+			MInOutLineMA ma2 = new MInOutLineMA(Env.getCtx(), 0, getTrxName());
+			ma2.setM_InOutLine_ID(receiptLine.get_ID());
+			ma2.setM_AttributeSetInstance_ID(asi2.get_ID());
+			ma2.setMovementQty(new BigDecimal("9"));
+			ma2.saveEx();
+
+			// =====================
+			// 4. COMPLETE MR
+			// =====================
+			info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			receipt.load(getTrxName());
+			assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
+			if (!receipt.isPosted()) {
+				String error = DocumentEngine.postImmediate(Env.getCtx(), receipt.getAD_Client_ID(), receipt.get_Table_ID(), receipt.get_ID(), false, getTrxName());
+				assertNull(error, error);
+			}
+
+			// =====================
+			// 5. MATCH PO
+			// =====================
+			MMatchPO[] matchPO = MMatchPO.getOrderLine(receipt.getCtx(), poLine.getC_OrderLine_ID(), getTrxName());
+			if (!matchPO[0].isPosted()) {
+				String error = DocumentEngine.postImmediate(Env.getCtx(), matchPO[0].getAD_Client_ID(), matchPO[0].get_Table_ID(), matchPO[0].get_ID(), false, getTrxName());
+				assertNull(error, error);
+				assertTrue(matchPO[0].isPosted(), "MatchPO not posted");
+			}
+
+			// =====================
+			// 6. CD VALIDATIONS
+			// =====================
+			MCostDetail cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", poLine.getC_OrderLine_ID(), asi1.get_ID(), as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for order line with asi1");
+			assertEquals(6, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
+			assertEquals(new BigDecimal("60.00").setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
+
+			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", poLine.getC_OrderLine_ID(), asi2.get_ID(), as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for order line with asi2");
+			assertEquals(9, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
+			assertEquals(new BigDecimal("90.00").setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
+
+			product.set_TrxName(getTrxName());
+			MCost cost1 = product.getCostingRecord(as, getAD_Org_ID(), asi1.get_ID(), as.getCostingMethod());
+			assertNotNull(cost1, "MCost record not found");
+			assertEquals(new BigDecimal("60.00"), cost1.getCumulatedAmt().setScale(2, RoundingMode.HALF_UP));
+
+			MCost cost2 = product.getCostingRecord(as, getAD_Org_ID(), asi2.get_ID(), as.getCostingMethod());
+			assertNotNull(cost2, "MCost record not found");
+			assertEquals(new BigDecimal("90.00"), cost2.getCumulatedAmt().setScale(2, RoundingMode.HALF_UP));
+
+			// =====================
+			// 7. REVERSE MR
+			// =====================
+			ProcessInfo infoREV = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Reverse_Accrual);
+			assertFalse(infoREV.isError(), infoREV.getSummary());
+
+			receipt.load(getTrxName());
+			assertEquals(DocAction.STATUS_Reversed, receipt.getDocStatus(), "MR not reversed");
+
+			// Get reversal document
+			MInOut reversal = new MInOut(Env.getCtx(), receipt.getReversal_ID(), getTrxName());
+			assertTrue(reversal.get_ID() > 0, "Reversal not created");
+
+			// Post reversal if needed
+			if (!reversal.isPosted()) {
+				String error = DocumentEngine.postImmediate(Env.getCtx(), reversal.getAD_Client_ID(), reversal.get_Table_ID(), reversal.get_ID(), false, getTrxName());
+				assertNull(error, error);
+			}
+
+			// =====================
+			// 8. MATCH PO FOR REVERSAL
+			// =====================
+			MInOutLine[] reversalLines = reversal.getLines();
+			assertTrue(reversalLines.length > 0, "No reversal lines found");
+
+			// Fetch MatchPO again
+			MMatchPO[] matchesAfterReversal = MMatchPO.getOrderLine(Env.getCtx(), poLine.get_ID(), getTrxName());
+			assertTrue(matchesAfterReversal.length > 0, "No MatchPO after reversal");
+
+			for (MMatchPO mpo : matchesAfterReversal) {
+				if (!mpo.isPosted()) {
+					String error = DocumentEngine.postImmediate(Env.getCtx(), mpo.getAD_Client_ID(), MMatchPO.Table_ID, mpo.get_ID(), false, getTrxName());
+					assertNull(error, error);
+				}
+				assertTrue(mpo.isPosted(), "MatchPO not posted after reversal");
+			}
+
+			// =====================
+			// 9. COST VALIDATION (SHOULD BE ZERO)
+			// =====================
+
+			// ASI1
+			MCostDetail cdRev1 = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", poLine.get_ID(), asi1.get_ID(), as.get_ID(), getTrxName());
+
+			assertNotNull(cdRev1, "CostDetail missing for ASI1 after reversal");
+			assertEquals(0, cdRev1.getQty().intValue(), "Qty not zero for ASI1 after reversal");
+			assertEquals(BigDecimal.ZERO.setScale(2), cdRev1.getAmt().setScale(2, RoundingMode.HALF_UP), "Amt not zero for ASI1 after reversal");
+
+			// ASI2
+			MCostDetail cdRev2 = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", poLine.get_ID(), asi2.get_ID(), as.get_ID(), getTrxName());
+
+			assertNotNull(cdRev2, "CostDetail missing for ASI2 after reversal");
+			assertEquals(0, cdRev2.getQty().intValue(), "Qty not zero for ASI2 after reversal");
+			assertEquals(BigDecimal.ZERO.setScale(2), cdRev2.getAmt().setScale(2, RoundingMode.HALF_UP), "Amt not zero for ASI2 after reversal");
+
+			// =====================
+			// 10. VERIFY COST RECORD RESET
+			// =====================
+			product.set_TrxName(getTrxName());
+
+			MCost costRev1 = product.getCostingRecord(as, getAD_Org_ID(), asi1.get_ID(), as.getCostingMethod());
+			assertNotNull(costRev1);
+			assertEquals(BigDecimal.ZERO.setScale(2), costRev1.getCumulatedAmt().setScale(2, RoundingMode.HALF_UP), "Cost not zero for ASI1");
+			assertEquals(BigDecimal.ZERO.setScale(2), costRev1.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Cost qty not zero for ASI1");
+
+			MCost costRev2 = product.getCostingRecord(as, getAD_Org_ID(), asi2.get_ID(), as.getCostingMethod());
+			assertNotNull(costRev2);
+			assertEquals(BigDecimal.ZERO.setScale(2), costRev2.getCumulatedAmt().setScale(2, RoundingMode.HALF_UP), "Cost not zero for ASI2");
+			assertEquals(BigDecimal.ZERO.setScale(2), costRev2.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Cost qty not zero for ASI2");
+		} finally {
+			rollback();
+			exclude.deleteEx(true);
+		}
+	} // testMRWithAttributeAndMatchPO
+
 	/**
 	 * PO, Product1, Qty=100, Price=100; Product2, Qty=100, Price=185 (Period 1)
 	 * MR, Product1, Qty=85, Price=100; Product2, Qty=100, Price=185 (Period 1)

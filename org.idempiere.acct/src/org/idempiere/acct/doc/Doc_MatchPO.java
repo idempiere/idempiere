@@ -660,7 +660,7 @@ public class Doc_MatchPO extends Doc
 			MInOutLineMA mas[] = null;
 			if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as)) && mMatchPO.getM_AttributeSetInstance_ID() == 0)
 				mas = MInOutLineMA.get(getCtx(), m_ioLine.get_ID(), getTrxName());
-			
+
 			if (mas != null && mas.length > 0)
 			{
 				BigDecimal sumAmt = Env.ZERO;
@@ -687,16 +687,8 @@ public class Doc_MatchPO extends Doc
 						sumQty = sumQty.add(qty);
 						sumAmt = sumAmt.add(amt);
 					}
-					
-					int Ref_CostDetail_ID = 0;
-					if (mMatchPO.getReversal_ID() > 0 && mMatchPO.get_ID() > mMatchPO.getReversal_ID())
-					{
-						MMatchPO reversal = new MMatchPO(getCtx(), mMatchPO.getReversal_ID(), getTrxName());
-						MCostDetail cd = MCostDetail.getOrder(as, getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
-								reversal.getC_OrderLine_ID(), 0, reversal.getDateAcct(), getTrxName());
-						if (cd != null)
-							Ref_CostDetail_ID = cd.getM_CostDetail_ID();
-					}
+
+					int Ref_CostDetail_ID = getReversalRefCostDetailID(as, mMatchPO, ma.getM_AttributeSetInstance_ID());
 					if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(), 
 							getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
 							m_oLine.getC_OrderLine_ID(), 0,		//	no cost element
@@ -709,15 +701,7 @@ public class Doc_MatchPO extends Doc
 			}
 			else
 			{
-				int Ref_CostDetail_ID = 0;
-				if (mMatchPO.getReversal_ID() > 0 && mMatchPO.get_ID() > mMatchPO.getReversal_ID())
-				{
-					MMatchPO reversal = new MMatchPO(getCtx(), mMatchPO.getReversal_ID(), getTrxName());
-					MCostDetail cd = MCostDetail.getOrder(as, getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
-							reversal.getC_OrderLine_ID(), 0, reversal.getDateAcct(), getTrxName());
-					if (cd != null)
-						Ref_CostDetail_ID = cd.getM_CostDetail_ID();
-				}
+				int Ref_CostDetail_ID = getReversalRefCostDetailID(as, mMatchPO, mMatchPO.getM_AttributeSetInstance_ID());
 				// Set Total Amount and Total Quantity from Matched PO
 				if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(), 
 						getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
@@ -751,6 +735,16 @@ public class Doc_MatchPO extends Doc
 	private String createLandedCostAdjustments(MAcctSchema as,
 			Map<Integer, BigDecimal> landedCostMap, MMatchPO mMatchPO,
 			BigDecimal tQty) {
+
+		MProduct product = MProduct.get(getCtx(), getM_Product_ID());
+		MInOutLineMA[] mas = null;
+		if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as))
+			&& mMatchPO.getM_AttributeSetInstance_ID() == 0
+			&& m_ioLine != null && m_ioLine.get_ID() > 0)
+		{
+			mas = MInOutLineMA.get(getCtx(), m_ioLine.get_ID(), getTrxName());
+		}
+
 		for(Integer elementId : landedCostMap.keySet())
 		{
 			BigDecimal amt = landedCostMap.get(elementId);
@@ -759,12 +753,7 @@ public class Doc_MatchPO extends Doc
 			amt = amt.multiply(tQty);
 			if (amt.scale() > as.getCostingPrecision())
 				amt = amt.setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
-			
-			MProduct product = MProduct.get(getCtx(), getM_Product_ID());
-			MInOutLineMA mas[] = null;
-			if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as)) && mMatchPO.getM_AttributeSetInstance_ID() == 0 && m_ioLine != null && m_ioLine.get_ID() > 0)
-				mas = MInOutLineMA.get(getCtx(), m_ioLine.get_ID(), getTrxName());
-			
+
 			if (mas != null && mas.length > 0)
 			{
 				BigDecimal totalAmt = amt;
@@ -792,16 +781,8 @@ public class Doc_MatchPO extends Doc
 						sumQty = sumQty.add(qty);
 						sumAmt = sumAmt.add(lineAmt);
 					}
-					
-					int Ref_CostDetail_ID = 0;
-					if (mMatchPO.getReversal_ID() > 0 && mMatchPO.get_ID() > mMatchPO.getReversal_ID())
-					{
-						MMatchPO reversal = new MMatchPO(getCtx(), mMatchPO.getReversal_ID(), getTrxName());
-						MCostDetail cd = MCostDetail.getOrder(as, getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
-								reversal.getC_OrderLine_ID(), 0, reversal.getDateAcct(), getTrxName());
-						if (cd != null)
-							Ref_CostDetail_ID = cd.getM_CostDetail_ID();
-					}
+
+					int Ref_CostDetail_ID = getReversalRefCostDetailID(as, mMatchPO, ma.getM_AttributeSetInstance_ID());
 					if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(), 
 							getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
 							m_oLine.getC_OrderLine_ID(), elementId,
@@ -814,15 +795,7 @@ public class Doc_MatchPO extends Doc
 			}
 			else
 			{
-				int Ref_CostDetail_ID = 0;
-				if (mMatchPO.getReversal_ID() > 0 && mMatchPO.get_ID() > mMatchPO.getReversal_ID())
-				{
-					MMatchPO reversal = new MMatchPO(getCtx(), mMatchPO.getReversal_ID(), getTrxName());
-					MCostDetail cd = MCostDetail.getOrder(as, getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
-							reversal.getC_OrderLine_ID(), 0, reversal.getDateAcct(), getTrxName());
-					if (cd != null)
-						Ref_CostDetail_ID = cd.getM_CostDetail_ID();
-				}
+				int Ref_CostDetail_ID = getReversalRefCostDetailID(as, mMatchPO, mMatchPO.getM_AttributeSetInstance_ID());
 				if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(), 
 						getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
 						m_oLine.getC_OrderLine_ID(), elementId,
@@ -835,6 +808,23 @@ public class Doc_MatchPO extends Doc
 		}
 		return null;
 	}
+
+	/**
+	* Resolve Ref_CostDetail_ID from the reversal MMatchPO for the given ASI, if any.
+	*/
+	private int getReversalRefCostDetailID(MAcctSchema as, MMatchPO mMatchPO, int M_AttributeSetInstance_ID)
+	{
+		if (mMatchPO.getReversal_ID() > 0 && mMatchPO.get_ID() > mMatchPO.getReversal_ID())
+		{
+			MMatchPO reversal = new MMatchPO(getCtx(), mMatchPO.getReversal_ID(), getTrxName());
+			MCostDetail cd = MCostDetail.getOrder(as, getM_Product_ID(), M_AttributeSetInstance_ID,
+					reversal.getC_OrderLine_ID(), 0, reversal.getDateAcct(), getTrxName());
+			if (cd != null)
+				return cd.getM_CostDetail_ID();
+		}
+		
+		return 0;
+	} // getReversalRefCostDetailID
 
 	@Override
 	public boolean isDeferPosting() {
