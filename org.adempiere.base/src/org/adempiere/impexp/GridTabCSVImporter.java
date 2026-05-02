@@ -668,6 +668,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 							currentGridTab.navigateCurrent();
 							if (! isDetail) {
 								for (GridTab child : childs) {
+									child.getTableModel().setImportingMode(true,trxName);
 									child.query(false);
 								}
 							}

@@ -709,8 +709,13 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 					setQuery(null);
 				m_linkValue = value;
 				//	Check validity
-				if (value.length() == 0 || (effectiveLinkColumnName.endsWith("_ID") && "0".equals(value)
-					&& getParentTab() != null && getParentTab().isNew()))
+				boolean isImporting = getTableModel().isImporting();
+				if (   value.length() == 0
+					|| (   !isImporting
+						&& effectiveLinkColumnName.endsWith("_ID")
+						&& "0".equals(value)
+						&& getParentTab() != null
+						&& getParentTab().isNew()))
 				{
 					//parent is new, can't retrieve detail
 					m_parentNeedSave = true;
