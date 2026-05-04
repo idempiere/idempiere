@@ -711,6 +711,11 @@ public class GridTabCSVImporter implements IGridTabImporter
 									Env.setContext(Env.getCtx(), currentGridTab.getWindowNo(), currentGridTab.getTabNo(), currentGridTab.getKeyColumnName(), Integer.toString(recordId));
 								}
 							}
+							if (! isDetail) {
+								for (GridTab child : childs) {
+									child.query(false);
+								}
+							}
 						} else {
 							logMsg = Msg.getMsg(Env.getCtx(), "Updated") + " " + po.toString(); 
 							if( currentGridTab.equals(gridTab) && sortedtTabMapIndexes.size()>1 )
