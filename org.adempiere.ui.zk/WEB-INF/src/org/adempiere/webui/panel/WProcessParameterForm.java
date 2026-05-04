@@ -42,7 +42,6 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Vlayout;
 
@@ -190,7 +189,8 @@ public class WProcessParameterForm extends ADForm
 		dialogContent.appendChild(div);
 		centerPanel = new Panel();
 		dialogContent.appendChild(centerPanel);
-		Hbox hbox = new Hbox();
+		@SuppressWarnings("deprecation")
+		org.zkoss.zul.Hbox hbox = new org.zkoss.zul.Hbox();
 		ZKUpdateUtil.setWidth(hbox, "100%");
 		hbox.setSclass("dialog-footer");
 		Button btn = ButtonFactory.createNamedButton(ConfirmPanel.A_OK);

@@ -162,7 +162,7 @@ import org.zkoss.zul.Paging;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
-import org.zkoss.zul.Vbox;
+import org.adempiere.webui.component.FlexVlayout;
 import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.event.ZulEvents;
 import org.zkoss.zul.impl.InputElement;
@@ -184,7 +184,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	/** Query parameter grid */
 	protected Grid parameterGrid;
 	private Borderlayout layout;
-	private Vbox southBody;
+	private FlexVlayout southBody;
 	/** List of WEditors            */
     protected List<WEditor> editors;
     protected ArrayList<WEditor> editors2;
@@ -1993,7 +1993,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 * @param south
 	 */
 	protected void renderFooter(South south) {		
-		southBody = new Vbox();
+		southBody = new FlexVlayout();
 		ZKUpdateUtil.setHflex(southBody, "1");
 		southBody.setClass("info");
 		south.appendChild(southBody);

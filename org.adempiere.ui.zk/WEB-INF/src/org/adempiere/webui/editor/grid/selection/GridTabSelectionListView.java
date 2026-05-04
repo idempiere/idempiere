@@ -38,7 +38,7 @@ import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.Box;
+import org.zkoss.zul.Layout;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.ext.Selectable;
@@ -84,7 +84,7 @@ public class GridTabSelectionListView extends Vlayout
 	/** Renderer of {@link #listbox} */
 	private GridTabSelectionListViewRenderer renderer;
 
-	private Box labelBox;
+	private Layout labelBox;
 	
 	/** Custom column width from {@link MTabCustomization} */
 	private Map<Integer, String> columnWidthMap;
@@ -110,7 +110,7 @@ public class GridTabSelectionListView extends Vlayout
 		listbox = new Listbox();
 		listbox.setCheckmark(true);
 		listbox.setMultiple(multiple);
-		labelBox = new Box();
+		labelBox = new Layout();
 		this.appendChild(labelBox);
 		
 		//default paging size
@@ -304,7 +304,7 @@ public class GridTabSelectionListView extends Vlayout
 		
 		updateModel();				
 		
-		Box listboxbox = new Box();
+		Layout listboxbox = new Layout();
 		listboxbox.appendChild(listbox);
         ZKUpdateUtil.setVflex(listboxbox, "1");
         ZKUpdateUtil.setHflex(listboxbox, "1");
