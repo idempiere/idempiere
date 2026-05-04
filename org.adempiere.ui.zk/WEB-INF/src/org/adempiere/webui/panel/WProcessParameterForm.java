@@ -49,6 +49,7 @@ import org.zkoss.zul.Vlayout;
 /**
  * Form to capture process parameters for scheduler, etc
  */
+@SuppressWarnings("deprecation")
 @org.idempiere.ui.zk.annotation.Form
 public class WProcessParameterForm extends ADForm
 {

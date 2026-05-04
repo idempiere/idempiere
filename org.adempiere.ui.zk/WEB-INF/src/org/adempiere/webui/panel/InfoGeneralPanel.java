@@ -65,7 +65,7 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
-import org.zkoss.zul.Vbox;
+import org.adempiere.webui.component.FlexVlayout;
 
 import static org.adempiere.webui.LayoutUtils.isLabelAboveInputForSmallWidth;
 
@@ -100,7 +100,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 	/** list of query columns (SQL) */
 	private ArrayList<String> m_queryColumnsSql = new ArrayList<String>();
 	private Borderlayout layout;
-	private Vbox southBody;
+	private FlexVlayout southBody;
 
 	private int noOfParameterColumn;
 
@@ -242,7 +242,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 
 		South south = new South();
 		layout.appendChild(south);
-		southBody = new Vbox();
+		southBody = new FlexVlayout();
 		ZKUpdateUtil.setWidth(southBody, "100%");
 		south.appendChild(southBody);
 		southBody.appendChild(new Separator());

@@ -49,6 +49,7 @@ import org.zkoss.zul.Vbox;
  * @author Logilite Technologies - IDEMPIERE-3340
  * @date   November 20, 2008
  */
+@SuppressWarnings("deprecation")
 public class DPFavourites extends DashboardPanel implements EventListener<Event>
 {
 	/**

@@ -36,6 +36,8 @@ import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
+import org.adempiere.webui.component.FlexHlayout;
+import org.adempiere.webui.component.FlexVlayout;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
@@ -69,7 +71,6 @@ import org.zkoss.zul.Hbox;
 import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
-import org.zkoss.zul.Vbox;
 
 /**
  * 	Fixed length file import.<br/>
@@ -78,6 +79,7 @@ import org.zkoss.zul.Vbox;
  *  @author 	Niraj Sohun
  *  			Aug 16, 2007
  */
+@SuppressWarnings("deprecation")
 @org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VFileImport")
 public class WFileImport extends ADForm implements EventListener<Event>
 {
@@ -135,7 +137,7 @@ public class WFileImport extends ADForm implements EventListener<Event>
 	private Div previewPanel = new Div();
 
 	/** North part of form */
-	private Vbox northPanel = new Vbox();
+	private FlexVlayout northPanel = new FlexVlayout();
 
 	/** Center part of form */
 	private Div centerPanel = new Div();
@@ -226,8 +228,8 @@ public class WFileImport extends ADForm implements EventListener<Event>
 		bPrevious.setLabel("<");
 		bPrevious.addEventListener(Events.ON_CLICK, this);
 				
-		Hbox hbox = new Hbox();
-		hbox.setAlign("center");
+		FlexHlayout hbox = new FlexHlayout();
+		hbox.setAlign(FlexHlayout.AlignType.CENTER);
 		hbox.appendChild(bFile);
 		hbox.appendChild(fCharset);
 		hbox.appendChild(info);

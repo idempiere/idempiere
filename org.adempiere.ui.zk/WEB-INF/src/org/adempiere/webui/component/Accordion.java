@@ -35,6 +35,7 @@ import org.zkoss.zul.Vbox;
  * - south is the list of not selected tabs
  * @author hengsin
  */
+@SuppressWarnings("deprecation")
 public class Accordion extends Borderlayout implements EventListener<Event> {
 	/**
 	 * generated serial id

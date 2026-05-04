@@ -54,6 +54,7 @@ import org.zkoss.zul.South;
  * @author Deepak Pansheriya
  *
  */
+@SuppressWarnings("deprecation")
 public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup,EventListener<Event>{
 	/**
 	 *  generated serial id

@@ -48,6 +48,7 @@ import org.zkoss.zul.Vbox;
  * Dialog to capture suggestion for context help (AD_CtxHelp)
  * @author hengsin
  */
+@SuppressWarnings("deprecation")
 public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 
 	/**

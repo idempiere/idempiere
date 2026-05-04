@@ -44,6 +44,7 @@ import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.DatetimeBox;
+import org.adempiere.webui.component.FlexHlayout;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Label;
@@ -106,6 +107,7 @@ import org.zkoss.zul.impl.XulElement;
  * @author	Niraj Sohun
  * @date	September 28, 2007
 */
+@SuppressWarnings("deprecation")
 @org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.ArchiveViewer")
 public class WArchiveViewer extends Archive implements IFormController, EventListener<Event>
 {
@@ -495,7 +497,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 			row = new Row();
 			rows.appendChild(row);
 			row.appendChild(createdQLabel);
-			Hbox hbox = new Hbox();
+			FlexHlayout hbox = new FlexHlayout();
 			hbox.appendChild(createdQFrom.getComponent());
 			hbox.appendChild(createdQTo.getComponent());
 			DateRangeButton drb = (new DateRangeButton(createdQFrom, createdQTo));
@@ -597,7 +599,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		
 		row = new Row();
 		rows.appendChild(row);		
-		Hbox hbox = new Hbox();
+		FlexHlayout hbox = new FlexHlayout();
 		hbox.appendChild(deleteArchive);
 		hbox.appendChild(bRefresh);
 		hbox.appendChild(bEmail);

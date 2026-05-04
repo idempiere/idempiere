@@ -50,7 +50,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Vbox;
+import org.adempiere.webui.component.FlexVlayout;
 
 /**
  * Search by Product Attribute.
@@ -133,7 +133,7 @@ public class InfoPAttributePanel extends Window implements EventListener<Event>
 	 */
 	private void jbInit() throws Exception
 	{
-		Vbox vbox = new Vbox();
+		FlexVlayout vbox = new FlexVlayout();
 		this.appendChild(vbox);
 		
 		Grid grid = new Grid();

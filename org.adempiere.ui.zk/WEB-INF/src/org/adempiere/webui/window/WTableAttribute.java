@@ -49,7 +49,7 @@ import org.compiere.util.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zul.Vbox;
+import org.adempiere.webui.component.FlexVlayout;
 
 /**
  * Window for editing custom attributes related to record based on configured
@@ -117,7 +117,7 @@ public class WTableAttribute extends Window implements EventListener<Event>
 	 */
 	private void init() throws Exception
 	{
-		Vbox vbox = new Vbox();
+		FlexVlayout vbox = new FlexVlayout();
 		this.appendChild(vbox);
 
 		Grid grid = new Grid();

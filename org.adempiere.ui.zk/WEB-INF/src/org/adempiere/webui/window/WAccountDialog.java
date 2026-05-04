@@ -71,10 +71,10 @@ import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Hbox;
+import org.adempiere.webui.component.FlexHlayout;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
-import org.zkoss.zul.Vbox;
+import org.adempiere.webui.component.FlexVlayout;
 import org.zkoss.zul.Vlayout;
 
 /**
@@ -184,10 +184,10 @@ public final class WAccountDialog extends Window
 	private boolean				m_newRow = true;
 	//
 	@SuppressWarnings("unused")
-	private Vbox panel = new Vbox();
+	private FlexVlayout panel = new FlexVlayout();
 	private ConfirmPanel confirmPanel = new ConfirmPanel(true);
 	private StatusBarPanel statusBar = new StatusBarPanel();
-	private Hbox northPanel = new Hbox();
+	private FlexHlayout northPanel = new FlexHlayout();
 	private Div parameterPanel = new Div();
 	private Grid parameterLayout = new Grid();
 	private ToolBar toolBar = new ToolBar();

@@ -38,6 +38,7 @@ import org.zkoss.zul.Separator;
  * 	@author 	Niraj Sohun
  * 	@date		September 24, 2007
  */
+@SuppressWarnings("deprecation")
 public class WOnlyCurrentDays extends Window implements EventListener<Event>, DialogEvents
 {
 	/**

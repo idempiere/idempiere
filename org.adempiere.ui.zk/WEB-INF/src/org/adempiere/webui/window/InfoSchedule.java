@@ -74,6 +74,7 @@ import org.zkoss.zul.Vbox;
  *  @author		Elaine
  *  @version	InfoSchedule.java Adempiere Swing UI 3.4.1 
  */
+@SuppressWarnings("deprecation")
 public class InfoSchedule extends Window implements EventListener<Event>
 {
 	/**
