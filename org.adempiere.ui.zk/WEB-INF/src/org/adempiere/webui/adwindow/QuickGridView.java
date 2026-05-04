@@ -35,6 +35,7 @@ import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Searchbox;
+import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.session.SessionManager;
@@ -265,7 +266,7 @@ public class QuickGridView extends FlexVlayout
 		appendChild(gridFooter);								
 		ZKUpdateUtil.setVflex(this, "true");
 		
-		setStyle(HEADER_GRID_STYLE);
+		ZkCssHelper.appendStyle(this, HEADER_GRID_STYLE);
 		gridFooter.setStyle(HEADER_GRID_STYLE);
 		
 		addEventListener(EVENT_ON_SELECT_ROW, this);

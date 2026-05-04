@@ -461,7 +461,7 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		
 		vbox = new FlexVlayout();
 		LayoutUtils.addSclass("about-main-panel-links", vbox);
-		ZKUpdateUtil.setWidth(vb, "100%");
+		ZKUpdateUtil.setWidth(vbox, "100%");
 		vbox.setAlign(FlexVlayout.AlignType.CENTER);
 		vbox.setParent(vb);
 		

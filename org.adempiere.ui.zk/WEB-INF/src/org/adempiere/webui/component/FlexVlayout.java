@@ -26,44 +26,26 @@ package org.adempiere.webui.component;
 
 public class FlexVlayout extends org.zkoss.zul.Vlayout {
 
-	private static final long serialVersionUID = 4258420492463096625L;
+	private static final long serialVersionUID = -6292157317163676833L;
 
 	public FlexVlayout() {
 		ZkCssHelper.appendStyle(this, "display: flex; flex-direction: column;");
 	}
 	
 	public void setPack(PackType pack) {
-		switch (pack) {
-	        case START:
-	        	ZkCssHelper.appendStyle(this, "justify-content: flex-start;");
-	            break;
-	        case CENTER:
-	        	ZkCssHelper.appendStyle(this, "justify-content: center;");
-	            break;
-	        case END:
-	        	ZkCssHelper.appendStyle(this, "justify-content: flex-end;");
-	            break;
-	    }
+		if (pack == null) return;
+	    ZkCssHelper.appendStyle(this, "justify-content: " + pack.getValue() + ";");
 	}
 	
-	public void setAlign(AlignType pack) {
-		switch (pack) {
-	        case START:
-	        	ZkCssHelper.appendStyle(this, "align-items: flex-start;");
-	            break;
-	        case CENTER:
-	        	ZkCssHelper.appendStyle(this, "align-items: center;");
-	            break;
-	        case END:
-	        	ZkCssHelper.appendStyle(this, "align-items: flex-end;");
-	            break;
-	    }
+	public void setAlign(AlignType align) {
+		if (align == null) return;		
+	    ZkCssHelper.appendStyle(this, "align-items: " + align.getValue() + ";");
 	}
 	
 	public enum PackType {
-	    START("start"), 
+		START("flex-start"), 
 	    CENTER("center"), 
-	    END("end");
+	    END("flex-end");
 
 	    private final String value;
 	    PackType(String value) { this.value = value; }
@@ -71,9 +53,9 @@ public class FlexVlayout extends org.zkoss.zul.Vlayout {
 	}
 	
 	public enum AlignType {
-	    START("start"), 
+		START("flex-start"), 
 	    CENTER("center"), 
-	    END("end");
+	    END("flex-end");
 
 	    private final String value;
 	    AlignType(String value) { this.value = value; }

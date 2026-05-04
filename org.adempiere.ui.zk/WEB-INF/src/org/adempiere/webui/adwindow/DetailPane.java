@@ -137,7 +137,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	/** Registered event listener for DetailPane events **/
 	private EventListener<Event> eventListener;
 
-	/** AD_Tab_ID:Hbox. Message (status, error) container for each tab. **/
+	/** AD_Tab_ID:FlexHlayout. Message (status, error) container for each tab. **/
 	private Map<Integer, FlexHlayout> messageContainers = new HashMap<Integer, FlexHlayout>();
 
 	/** content for message popup **/
