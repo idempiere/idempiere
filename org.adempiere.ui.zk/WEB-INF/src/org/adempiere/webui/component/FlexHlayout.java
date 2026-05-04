@@ -26,15 +26,31 @@ package org.adempiere.webui.component;
 
 public class FlexHlayout extends org.zkoss.zul.Hlayout {
 
-	private static final long serialVersionUID = -8751598066908184305L;
+	private static final long serialVersionUID = -6850198103709693157L;
 
 	public FlexHlayout() {
 		ZkCssHelper.appendStyle(this, "display: flex; flex-direction: row;");
 	}
 	
+	public void setPack(String pack) {
+	    try {
+	        setPack(PackType.valueOf(pack.toUpperCase()));
+	    } catch (IllegalArgumentException e) {
+	    	throw new IllegalArgumentException("Unknown pack type=" + pack);
+	    }
+	}
+
 	public void setPack(PackType pack) {
 		if (pack == null) return;
 	    ZkCssHelper.appendStyle(this, "justify-content: " + pack.getValue() + ";");
+	}
+	
+	public void setAlign(String align) {
+	    try {
+	    	setAlign(AlignType.valueOf(align.toUpperCase()));
+	    } catch (IllegalArgumentException e) {
+	    	throw new IllegalArgumentException("Unknown align type=" + align);
+	    }
 	}
 	
 	public void setAlign(AlignType align) {

@@ -67,7 +67,6 @@ import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Hbox;
 import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
@@ -79,7 +78,6 @@ import org.zkoss.zul.South;
  *  @author 	Niraj Sohun
  *  			Aug 16, 2007
  */
-@SuppressWarnings("deprecation")
 @org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VFileImport")
 public class WFileImport extends ADForm implements EventListener<Event>
 {
@@ -513,7 +511,8 @@ public class WFileImport extends ADForm implements EventListener<Event>
 			
 			m_labels[i] = new Label(row.getName());
 			
-			Hbox hbox = new Hbox();
+			@SuppressWarnings("deprecation")
+			org.zkoss.zul.Hbox hbox = new org.zkoss.zul.Hbox();
 			hbox.setAlign("center");
 			ZKUpdateUtil.setWidth(hbox, "100%");
 			hbox.setStyle("padding-bottom: 3px");

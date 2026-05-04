@@ -40,7 +40,6 @@ import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Treerow;
-import org.zkoss.zul.Vbox;
 
 /**
  * Dashboard gadget: User favourites - Tree based view organize
@@ -49,7 +48,6 @@ import org.zkoss.zul.Vbox;
  * @author Logilite Technologies - IDEMPIERE-3340
  * @date   November 20, 2008
  */
-@SuppressWarnings("deprecation")
 public class DPFavourites extends DashboardPanel implements EventListener<Event>
 {
 	/**
@@ -153,7 +151,8 @@ public class DPFavourites extends DashboardPanel implements EventListener<Event>
 		ZKUpdateUtil.setWidth(tree, "100%");
 		ZkCssHelper.appendStyle(tree, "border: none; min-height: 20px;");
 
-		Box box = new Vbox();
+		@SuppressWarnings("deprecation")
+		Box box = new org.zkoss.zul.Vbox();
 		ZKUpdateUtil.setVflex(box, "1");
 		ZKUpdateUtil.setHflex(box, "1");
 		box.appendChild(tree);

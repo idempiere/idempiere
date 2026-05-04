@@ -94,7 +94,6 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zk.ui.ext.render.DynamicMedia;
 import org.zkoss.zul.Cell;
-import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Space;
@@ -107,7 +106,6 @@ import org.zkoss.zul.impl.XulElement;
  * @author	Niraj Sohun
  * @date	September 28, 2007
 */
-@SuppressWarnings("deprecation")
 @org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.ArchiveViewer")
 public class WArchiveViewer extends Archive implements IFormController, EventListener<Event>
 {
@@ -619,7 +617,8 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 		Tab tabView = new Tab(Msg.getMsg(Env.getCtx(), "ViewerResult"));
 		
 		Tabpanel tabViewPanel = new Tabpanel();
-		Hbox boxViewSeparator = new Hbox();
+		@SuppressWarnings("deprecation")
+		org.zkoss.zul.Hbox boxViewSeparator = new org.zkoss.zul.Hbox();
 		ZKUpdateUtil.setWidth(boxViewSeparator, "100%");
 		ZKUpdateUtil.setHeight(boxViewSeparator, "100%");			
 		cell = new Cell();
