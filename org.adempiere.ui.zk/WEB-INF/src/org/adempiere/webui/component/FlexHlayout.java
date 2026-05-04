@@ -33,6 +33,7 @@ public class FlexHlayout extends org.zkoss.zul.Hlayout {
 	}
 	
 	public void setPack(String pack) {
+		if (pack == null) return;
 	    try {
 	        setPack(PackType.valueOf(pack.toUpperCase()));
 	    } catch (IllegalArgumentException e) {
@@ -46,6 +47,7 @@ public class FlexHlayout extends org.zkoss.zul.Hlayout {
 	}
 	
 	public void setAlign(String align) {
+		if (align == null) return;
 	    try {
 	    	setAlign(AlignType.valueOf(align.toUpperCase()));
 	    } catch (IllegalArgumentException e) {
