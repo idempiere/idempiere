@@ -84,6 +84,8 @@ public final class RedisConfig {
 
 	private static final String YAML_FILENAME = "redis.yaml";
 	private static final String PROPERTIES_FILENAME = "redis.properties";
+	private static final String IDEMPIERE_ENV_FILENAME = "idempiereEnv.properties";
+	private static final String IDEMPIERE_ENV_DB_NAME_KEY = "ADEMPIERE_DB_NAME";
 	private static final String INSTANCE_NAME_PROPERTY = "redis.instance.name";
 	private static final String INSTANCE_NAME_ENV = "IDEMPIERE_INSTANCE_NAME";
 	private static final String DEFAULT_REDIS_ADDRESS = "redis://localhost:6379";
@@ -214,7 +216,7 @@ public final class RedisConfig {
 		File home = resolveIdempiereHome();
 		Config redisson = loadRedissonConfig(home);
 		Properties props = loadProperties(home);
-		String prefix = resolveKeyPrefix(props);
+		String prefix = resolveKeyPrefix(props, home);
 		boolean nearCacheEnabled = boolProp(props, NEAR_CACHE_ENABLED, DEFAULT_NEAR_CACHE_ENABLED);
 		int nearCacheMax = intProp(props, NEAR_CACHE_MAX_SIZE, DEFAULT_NEAR_CACHE_MAX_SIZE);
 		Duration nearCacheExpire = durationProp(props, NEAR_CACHE_EXPIRE_AFTER_WRITE, DEFAULT_NEAR_CACHE_EXPIRE);
@@ -276,7 +278,31 @@ public final class RedisConfig {
 		return p;
 	}
 
-	private static String resolveKeyPrefix(Properties props) {
+	/**
+	 * Resolves the deployment instance name, which becomes the namespace
+	 * segment in every Redis key (final form: {@code idempiere:<name>:...}).
+	 *
+	 * <p>Precedence (highest first):</p>
+	 * <ol>
+	 *   <li>{@link #INSTANCE_NAME_PROPERTY} in {@code redis.properties} —
+	 *       explicit operator override.</li>
+	 *   <li>{@link #INSTANCE_NAME_ENV} environment variable — deployment-time
+	 *       injection (containers, ECS task env, ...).</li>
+	 *   <li>{@code ADEMPIERE_DB_NAME} from {@code idempiereEnv.properties} —
+	 *       auto-derived from the database iDempiere is already pointed at,
+	 *       so most operators don't have to set anything explicit.</li>
+	 *   <li>{@link #DEFAULT_INSTANCE_NAME} — last resort, with a WARN log
+	 *       so collision risk is visible.</li>
+	 * </ol>
+	 *
+	 * <p>The auto-derive step is keyed off the DB name because two iDempiere
+	 * deployments pointing at the same database are functionally one logical
+	 * cluster from the cache's perspective — sharing the namespace is the
+	 * correct default. Override via {@code redis.properties} if a deployment
+	 * intentionally needs a different namespace despite the shared DB
+	 * (e.g. a sandbox copy-of-prod that must not invalidate prod's cache).</p>
+	 */
+	private static String resolveKeyPrefix(Properties props, File home) {
 		String name = props.getProperty(INSTANCE_NAME_PROPERTY);
 		if (name != null && name.isBlank()) {
 			name = null;
@@ -284,13 +310,51 @@ public final class RedisConfig {
 		if (name == null) {
 			name = System.getenv(INSTANCE_NAME_ENV);
 		}
-		if (name == null || name.isBlank()) {
-			log.warn("No instance name configured (set {} property in {} or {} env var). "
-					+ "Falling back to '{}'. Multiple unconfigured deployments sharing one Redis WILL collide.",
-					INSTANCE_NAME_PROPERTY, PROPERTIES_FILENAME, INSTANCE_NAME_ENV, DEFAULT_INSTANCE_NAME);
-			name = DEFAULT_INSTANCE_NAME;
+		if (name != null && !name.isBlank()) {
+			return "idempiere:" + name.trim() + ":";
 		}
-		return "idempiere:" + name.trim() + ":";
+		String derived = deriveFromIdempiereEnv(home);
+		if (derived != null) {
+			log.info("Derived Redis instance name '{}' from {} ({}). Override with {} in {} "
+					+ "or {} env var if a different namespace is needed.",
+					derived, IDEMPIERE_ENV_FILENAME, IDEMPIERE_ENV_DB_NAME_KEY,
+					INSTANCE_NAME_PROPERTY, PROPERTIES_FILENAME, INSTANCE_NAME_ENV);
+			return "idempiere:" + derived + ":";
+		}
+		log.warn("No instance name configured (set {} property in {}, {} env var, or "
+				+ "{} in {}). Falling back to '{}'. Multiple unconfigured deployments "
+				+ "sharing one Redis WILL collide.",
+				INSTANCE_NAME_PROPERTY, PROPERTIES_FILENAME, INSTANCE_NAME_ENV,
+				IDEMPIERE_ENV_DB_NAME_KEY, IDEMPIERE_ENV_FILENAME, DEFAULT_INSTANCE_NAME);
+		return "idempiere:" + DEFAULT_INSTANCE_NAME + ":";
+	}
+
+	/**
+	 * Returns the trimmed value of {@code ADEMPIERE_DB_NAME} from
+	 * {@code $IDEMPIERE_HOME/idempiereEnv.properties}, or {@code null} when
+	 * the file is missing, unreadable, or the key is absent / blank.
+	 */
+	private static String deriveFromIdempiereEnv(File home) {
+		if (home == null) {
+			return null;
+		}
+		File envFile = new File(home, IDEMPIERE_ENV_FILENAME);
+		if (!envFile.isFile()) {
+			return null;
+		}
+		Properties p = new Properties();
+		try (InputStream in = new FileInputStream(envFile)) {
+			p.load(in);
+		} catch (IOException e) {
+			log.warn("Failed to read {} for instance-name derivation — ignoring: {}",
+					envFile.getAbsolutePath(), e.getMessage());
+			return null;
+		}
+		String dbName = p.getProperty(IDEMPIERE_ENV_DB_NAME_KEY);
+		if (dbName == null || dbName.isBlank()) {
+			return null;
+		}
+		return dbName.trim();
 	}
 
 	private static boolean boolProp(Properties p, String key, boolean defaultValue) {
