@@ -75,6 +75,36 @@ import com.github.benmanes.caffeine.cache.Caffeine;
  * additionally gated by {@code RedisConfig.isFallbackEnabled()}; when that is
  * off, only the near-cache is created and behaviour matches the single-tier
  * implementation that preceded the split.</p>
+ *
+ * <h3>Why not Redisson's {@code RLocalCachedMap}?</h3>
+ *
+ * <p>Redisson ships an {@code RLocalCachedMap} that bundles an in-memory
+ * cache with cross-node auto-invalidation via internal pub/sub. It was
+ * evaluated as a drop-in replacement and rejected for this bundle:</p>
+ *
+ * <ul>
+ *   <li><b>Single-tier only.</b> {@code RLocalCachedMap} can be sized for
+ *       fast reads <i>or</i> for outage bridging, not both — there is no
+ *       built-in equivalent of the near-cache / fallback split that
+ *       {@link #fallbackCache} provides here.</li>
+ *   <li><b>Cross-node invalidation is redundant.</b> iDempiere's {@code CCache}
+ *       layer already broadcasts cache-invalidation messages through
+ *       {@code IMessageService} (which this bundle implements via
+ *       {@code MessageServiceImpl}). Adding a second invalidation channel on
+ *       top would duplicate work and double the topic load on Redis.</li>
+ *   <li><b>Caffeine has richer eviction.</b> Window TinyLFU gives a measurably
+ *       better hit rate on iDempiere's mixed-traffic workload than the
+ *       LRU/LFU options Redisson exposes.</li>
+ *   <li><b>Circuit-breaker coupling.</b> {@link RedisHealth} short-circuits
+ *       reads to the local layer the moment Redis becomes unreachable.
+ *       Reproducing the same behaviour on top of {@code RLocalCachedMap}
+ *       would mean wrapping it anyway, which negates the simplification
+ *       argument for switching.</li>
+ * </ul>
+ *
+ * <p>Revisit this decision only if iDempiere ever drops {@code CCache}'s
+ * message-based invalidation, or if the near-cache/fallback split proves
+ * unnecessary in production telemetry.</p>
  */
 public final class CaffeineLayeredMap<K, V> implements Map<K, V> {
 
