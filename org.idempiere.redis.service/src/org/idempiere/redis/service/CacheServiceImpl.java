@@ -40,7 +40,13 @@ public class CacheServiceImpl implements ICacheService {
 
 	@Override
 	public <K, V> Map<K, V> getMap(String name) {
-		return Activator.getRedissonClient().getMap(prefixed(name));
+		RMap<K, V> rmap = Activator.getRedissonClient().getMap(prefixed(name));
+		RedisConfig cfg = Activator.getConfig();
+		if (cfg.isNearCacheEnabled()) {
+			return new CaffeineLayeredMap<>(rmap, Activator.getHealth(),
+					cfg.getNearCacheMaxSize(), cfg.getNearCacheExpireAfterWrite());
+		}
+		return rmap;
 	}
 
 	@Override
@@ -62,9 +68,10 @@ public class CacheServiceImpl implements ICacheService {
 	 * {@link #unLock(Map, Object)} is invoked, with Redisson's lock watchdog auto-renewing
 	 * the lease so a crashed JVM eventually releases it instead of holding it forever.</p>
 	 *
-	 * <p>Returns {@code false} if the supplied map is not a Redisson {@code RMap} (e.g. a
-	 * plain {@code HashMap} for testing) — the bundle cannot derive a stable distributed
-	 * lock identity from a non-distributed map.</p>
+	 * <p>Accepts either a raw {@code RMap} or a {@link CaffeineLayeredMap} returned from
+	 * {@link #getMap(String)}; both expose the same Redis map name. Returns {@code false}
+	 * for any other {@link Map} subtype because the bundle cannot derive a stable
+	 * distributed lock identity from a non-Redis map.</p>
 	 */
 	@Override
 	public <K, V> boolean tryLock(Map<K, V> map, K key, long timeout, TimeUnit timeunit) throws InterruptedException {
@@ -84,10 +91,15 @@ public class CacheServiceImpl implements ICacheService {
 	}
 
 	private static <K, V> RLock lockFor(Map<K, V> map, K key) {
-		if (!(map instanceof RMap<?, ?> rmap)) {
+		String mapName;
+		if (map instanceof CaffeineLayeredMap<?, ?> wrapped) {
+			mapName = wrapped.getName();
+		} else if (map instanceof RMap<?, ?> rmap) {
+			mapName = rmap.getName();
+		} else {
 			return null;
 		}
-		String lockName = rmap.getName() + ":lock:" + String.valueOf(key);
+		String lockName = mapName + ":lock:" + String.valueOf(key);
 		return Activator.getRedissonClient().getLock(lockName);
 	}
 
