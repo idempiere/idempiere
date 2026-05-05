@@ -17,12 +17,15 @@ package org.idempiere.redis.service;
 import org.idempiere.distributed.IMessageService;
 import org.idempiere.distributed.ITopic;
 import org.osgi.service.component.annotations.Component;
+import org.redisson.api.RTopic;
 
 @Component(service = IMessageService.class)
 public class MessageServiceImpl implements IMessageService {
 
 	@Override
 	public <T> ITopic<T> getTopic(String name) {
-		throw new UnsupportedOperationException("Phase 1 skeleton — implemented in Phase 2");
+		String prefixed = Activator.getKeyPrefix() + name;
+		RTopic topic = Activator.getRedissonClient().getTopic(prefixed);
+		return new TopicImpl<>(topic);
 	}
 }

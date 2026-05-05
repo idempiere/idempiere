@@ -28,21 +28,21 @@ public class ClusterServiceImpl implements IClusterService {
 
 	@Override
 	public Collection<IClusterMember> getMembers() {
-		throw new UnsupportedOperationException("Phase 1 skeleton — implemented in Phase 3");
+		throw new UnsupportedOperationException("Cluster membership not yet implemented");
 	}
 
 	@Override
 	public IClusterMember getLocalMember() {
-		throw new UnsupportedOperationException("Phase 1 skeleton — implemented in Phase 3");
+		throw new UnsupportedOperationException("Cluster membership not yet implemented");
 	}
 
 	@Override
 	public <V> Future<V> execute(Callable<V> task, IClusterMember member) {
-		throw new UnsupportedOperationException("Phase 1 skeleton — targeted execute() implemented in Phase 3 via topic-RPC");
+		throw new UnsupportedOperationException("Targeted distributed compute not yet implemented");
 	}
 
 	@Override
 	public <V> Map<IClusterMember, Future<V>> execute(Callable<V> task, Collection<IClusterMember> members) {
-		throw new UnsupportedOperationException("Phase 1 skeleton — broadcast execute() implemented in Phase 3 via topic fan-out");
+		throw new UnsupportedOperationException("Broadcast distributed compute not yet implemented");
 	}
 }

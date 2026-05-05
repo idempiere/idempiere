@@ -14,34 +14,60 @@
  *****************************************************************************/
 package org.idempiere.redis.service;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 import org.idempiere.distributed.ITopic;
 import org.idempiere.distributed.ITopicSubscriber;
+import org.redisson.api.RTopic;
 
-public class TopicImpl<T> implements ITopic<T> {
+/**
+ * Adapter mapping {@link ITopic} subscribe / unsubscribe / publish onto a Redisson
+ * {@link RTopic}. Each subscriber's listener id is tracked locally so unsubscribe
+ * can locate and remove the right Redisson registration.
+ *
+ * <p>Note: each call to {@link MessageServiceImpl#getTopic(String)} returns a new
+ * {@code TopicImpl} wrapping the same underlying Redis topic. Subscribe / unsubscribe
+ * pairs must therefore use the same {@code TopicImpl} instance (matches the contract
+ * of {@code org.idempiere.hazelcast.service.TopicImpl}).</p>
+ */
+public class TopicImpl<E> implements ITopic<E> {
 
-	private final String name;
+	private final RTopic topic;
+	private final ConcurrentMap<ITopicSubscriber<E>, Integer> listenerIds = new ConcurrentHashMap<>();
 
-	public TopicImpl(String name) {
-		this.name = name;
+	public TopicImpl(RTopic topic) {
+		this.topic = topic;
 	}
 
 	@Override
 	public String getName() {
-		return name;
+		// Redisson stores the topic name with our deployment prefix already applied;
+		// returning it as-is matches what callers wrote when calling getTopic(name).
+		return topic.getChannelNames().isEmpty() ? "" : topic.getChannelNames().get(0);
 	}
 
 	@Override
-	public void subscribe(ITopicSubscriber<T> subscriber) {
-		throw new UnsupportedOperationException("Phase 1 skeleton — implemented in Phase 2");
+	public void subscribe(ITopicSubscriber<E> subscriber) {
+		// Use Object.class for the message type — the iDempiere ITopic API is parametric
+		// and the type erasure prevents us from passing the real class. Redisson uses its
+		// configured codec to serialize / deserialize; the listener casts at delivery time.
+		@SuppressWarnings("unchecked")
+		Class<E> type = (Class<E>) (Class<?>) Object.class;
+		int id = topic.addListener(type, (channel, message) -> subscriber.onMessage(message));
+		listenerIds.put(subscriber, id);
 	}
 
 	@Override
-	public void unsubscribe(ITopicSubscriber<T> subscriber) {
-		throw new UnsupportedOperationException("Phase 1 skeleton — implemented in Phase 2");
+	public void unsubscribe(ITopicSubscriber<E> subscriber) {
+		Integer id = listenerIds.remove(subscriber);
+		if (id != null) {
+			topic.removeListener(id);
+		}
 	}
 
 	@Override
-	public void publish(T message) {
-		throw new UnsupportedOperationException("Phase 1 skeleton — implemented in Phase 2");
+	public void publish(E message) {
+		topic.publish(message);
 	}
 }
