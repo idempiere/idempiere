@@ -178,10 +178,8 @@ public final class RedisConsoleProvider implements CommandProvider {
 			pattern = Activator.getKeyPrefix() + "*";
 		}
 		try {
-			long count = 0L;
-			for (String ignored : client.getKeys().getKeysByPattern(pattern)) {
-				count++;
-			}
+			long count = java.util.stream.StreamSupport.stream(
+					client.getKeys().getKeysByPattern(pattern).spliterator(), false).count();
 			ci.println("Keys matching '" + pattern + "': " + count);
 		} catch (Exception e) {
 			ci.println("Failed to scan keys: " + e.getMessage());
