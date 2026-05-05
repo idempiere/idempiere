@@ -97,6 +97,11 @@ public final class RedisConsoleProvider implements CommandProvider {
 			sb.append("  near-cache max size:  ").append(cfg.getNearCacheMaxSize()).append('\n');
 			sb.append("  near-cache TTL:       ").append(cfg.getNearCacheExpireAfterWrite()).append('\n');
 		}
+		sb.append("  fallback enabled:     ").append(cfg.isFallbackEnabled()).append('\n');
+		if (cfg.isFallbackEnabled()) {
+			sb.append("  fallback max size:    ").append(cfg.getFallbackMaxSize()).append('\n');
+			sb.append("  fallback TTL:         ").append(cfg.getFallbackExpireAfterWrite()).append('\n');
+		}
 		sb.append("  circuit threshold:    ").append(cfg.getCircuitFailureThreshold()).append(" failures\n");
 		sb.append("  circuit probe period: ").append(cfg.getCircuitProbeInterval()).append('\n');
 		ci.println(sb);

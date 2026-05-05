@@ -37,42 +37,66 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
 /**
- * {@link Map} adapter that puts a Caffeine in-memory cache in front of a
- * Redisson {@link RMap}. Used both as a near-cache (speed up hot reads) and
- * as a graceful-degradation layer (serve stale values when Redis is briefly
- * unreachable).
+ * {@link Map} adapter that puts one or two Caffeine in-memory caches in front
+ * of a Redisson {@link RMap}, separating two concerns that were previously
+ * mixed in a single Caffeine instance:
  *
- * <p>Behaviour:</p>
  * <ul>
- *   <li><b>get</b>: Caffeine first; on miss, ask Redis if {@link RedisHealth}
- *       reports healthy; on a Redis hit, populate Caffeine and return; on a
- *       Redis miss or failure, return whatever Caffeine has (typically
- *       {@code null}).</li>
- *   <li><b>put</b> / <b>remove</b> / <b>clear</b>: try the Redis side first.
- *       On success, mirror the change to Caffeine. On Redis failure, mirror
- *       the change locally anyway and report the failure to the breaker so
- *       subsequent calls can short-circuit.</li>
+ *   <li><b>near-cache</b>: small, short-TTL, sized to fit a memory budget.
+ *       Speeds up hot reads when Redis is healthy. Always consulted first.</li>
+ *   <li><b>fallback cache</b>: larger, longer-TTL, populated as a side-effect
+ *       of every successful Redis read. Only consulted when the breaker is
+ *       OPEN — its purpose is to serve a possibly-stale answer through
+ *       Redis-down windows that outlast the near-cache TTL.</li>
+ * </ul>
+ *
+ * <p>Splitting the two layers means each can be sized for its job without
+ * compromise: a small near-cache to keep memory pressure low under steady
+ * state, plus a generous fallback to bridge multi-minute outages without
+ * eviction churn.</p>
+ *
+ * <p><b>Behaviour:</b></p>
+ * <ul>
+ *   <li><b>get</b>: near-cache first; on miss, if {@link RedisHealth} is
+ *       healthy, ask Redis — on hit, populate <i>both</i> caches and return;
+ *       on a Redis miss or failure, fall through. When the breaker is OPEN,
+ *       return whatever the fallback cache has (or {@code null}).</li>
+ *   <li><b>put</b> / <b>remove</b> / <b>clear</b>: mirror the change to both
+ *       caches first, then try Redis. On Redis failure, the local mirrors
+ *       still hold the new value so callers see consistent reads through the
+ *       outage.</li>
  *   <li>Size and iteration delegate straight to Redis — Caffeine is a partial
  *       window over Redis content, never authoritative for membership.</li>
  * </ul>
  *
  * <p>This wrapper is opt-in per {@code RedisConfig.isNearCacheEnabled()}.
  * When disabled, {@link CacheServiceImpl} returns the raw {@link RMap} and
- * Redis failures surface as exceptions to the caller.</p>
+ * Redis failures surface as exceptions to the caller. The fallback layer is
+ * additionally gated by {@code RedisConfig.isFallbackEnabled()}; when that is
+ * off, only the near-cache is created and behaviour matches the single-tier
+ * implementation that preceded the split.</p>
  */
 public final class CaffeineLayeredMap<K, V> implements Map<K, V> {
 
 	private final RMap<K, V> backing;
 	private final Cache<K, V> nearCache;
+	private final Cache<K, V> fallbackCache;
 	private final RedisHealth health;
 
-	public CaffeineLayeredMap(RMap<K, V> backing, RedisHealth health, int maxSize, Duration expireAfterWrite) {
+	public CaffeineLayeredMap(RMap<K, V> backing, RedisHealth health,
+			int nearMaxSize, Duration nearExpireAfterWrite,
+			int fallbackMaxSize, Duration fallbackExpireAfterWrite) {
 		this.backing = backing;
 		this.health = health;
 		this.nearCache = Caffeine.newBuilder()
-				.maximumSize(maxSize)
-				.expireAfterWrite(expireAfterWrite)
+				.maximumSize(nearMaxSize)
+				.expireAfterWrite(nearExpireAfterWrite)
 				.build();
+		// fallbackMaxSize <= 0 disables the fallback layer (single-tier mode).
+		this.fallbackCache = (fallbackMaxSize > 0) ? Caffeine.newBuilder()
+				.maximumSize(fallbackMaxSize)
+				.expireAfterWrite(fallbackExpireAfterWrite)
+				.build() : null;
 	}
 
 	/** @return the underlying Redis-backed map's name, including the deployment prefix. */
@@ -89,24 +113,34 @@ public final class CaffeineLayeredMap<K, V> implements Map<K, V> {
 			return cached;
 		}
 		if (!health.isHealthy()) {
-			return null;
+			return fallbackGet(typed);
 		}
 		try {
 			V remote = backing.get(typed);
 			health.recordSuccess();
 			if (remote != null) {
 				nearCache.put(typed, remote);
+				if (fallbackCache != null) {
+					fallbackCache.put(typed, remote);
+				}
 			}
 			return remote;
 		} catch (Exception e) {
 			health.recordFailure(e);
-			return null;
+			return fallbackGet(typed);
 		}
+	}
+
+	private V fallbackGet(K typed) {
+		return fallbackCache != null ? fallbackCache.getIfPresent(typed) : null;
 	}
 
 	@Override
 	public V put(K key, V value) {
 		nearCache.put(key, value);
+		if (fallbackCache != null) {
+			fallbackCache.put(key, value);
+		}
 		if (!health.isHealthy()) {
 			return null;
 		}
@@ -125,6 +159,9 @@ public final class CaffeineLayeredMap<K, V> implements Map<K, V> {
 	public V remove(Object key) {
 		K typed = (K) key;
 		nearCache.invalidate(typed);
+		if (fallbackCache != null) {
+			fallbackCache.invalidate(typed);
+		}
 		if (!health.isHealthy()) {
 			return null;
 		}
@@ -141,6 +178,9 @@ public final class CaffeineLayeredMap<K, V> implements Map<K, V> {
 	@Override
 	public void clear() {
 		nearCache.invalidateAll();
+		if (fallbackCache != null) {
+			fallbackCache.invalidateAll();
+		}
 		if (!health.isHealthy()) {
 			return;
 		}
@@ -160,7 +200,7 @@ public final class CaffeineLayeredMap<K, V> implements Map<K, V> {
 			return true;
 		}
 		if (!health.isHealthy()) {
-			return false;
+			return fallbackCache != null && fallbackCache.getIfPresent(typed) != null;
 		}
 		try {
 			boolean present = backing.containsKey(typed);
@@ -190,9 +230,12 @@ public final class CaffeineLayeredMap<K, V> implements Map<K, V> {
 
 	@Override
 	public void putAll(Map<? extends K, ? extends V> m) {
-		// Eagerly mirror to near-cache; Redis write may partially fail.
+		// Eagerly mirror to both local layers; Redis write may partially fail.
 		for (Map.Entry<? extends K, ? extends V> e : m.entrySet()) {
 			nearCache.put(e.getKey(), e.getValue());
+			if (fallbackCache != null) {
+				fallbackCache.put(e.getKey(), e.getValue());
+			}
 		}
 		if (!health.isHealthy()) {
 			return;
@@ -232,6 +275,12 @@ public final class CaffeineLayeredMap<K, V> implements Map<K, V> {
 
 	@Override
 	public String toString() {
-		return "CaffeineLayeredMap[" + backing.getName() + ", nearCacheSize=" + nearCache.estimatedSize() + "]";
+		StringBuilder sb = new StringBuilder("CaffeineLayeredMap[")
+				.append(backing.getName())
+				.append(", nearCacheSize=").append(nearCache.estimatedSize());
+		if (fallbackCache != null) {
+			sb.append(", fallbackSize=").append(fallbackCache.estimatedSize());
+		}
+		return sb.append(']').toString();
 	}
 }

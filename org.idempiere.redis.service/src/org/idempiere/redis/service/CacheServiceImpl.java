@@ -49,8 +49,12 @@ public class CacheServiceImpl implements ICacheService {
 		RMap<K, V> rmap = Activator.getRedissonClient().getMap(prefixed(name));
 		RedisConfig cfg = Activator.getConfig();
 		if (cfg.isNearCacheEnabled()) {
+			// Pass fallbackMaxSize=0 to disable the second tier when fallback is off,
+			// keeping behaviour identical to the pre-split single-tier wrapper.
+			int fallbackMax = cfg.isFallbackEnabled() ? cfg.getFallbackMaxSize() : 0;
 			return new CaffeineLayeredMap<>(rmap, Activator.getHealth(),
-					cfg.getNearCacheMaxSize(), cfg.getNearCacheExpireAfterWrite());
+					cfg.getNearCacheMaxSize(), cfg.getNearCacheExpireAfterWrite(),
+					fallbackMax, cfg.getFallbackExpireAfterWrite());
 		}
 		return rmap;
 	}

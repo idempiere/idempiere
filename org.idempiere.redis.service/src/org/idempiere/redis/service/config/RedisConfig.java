@@ -61,6 +61,12 @@ import org.slf4j.LoggerFactory;
  *   <li><code>near-cache.enabled</code> — wrap each {@code RMap} in a Caffeine front layer (default {@code false})</li>
  *   <li><code>near-cache.maxSize</code> — entries per cache (default 10000)</li>
  *   <li><code>near-cache.expireAfterWrite</code> — ISO-8601 duration (default {@code PT5M})</li>
+ *   <li><code>fallback.enabled</code> — keep a separate longer-lived Caffeine
+ *       layer that serves stale values when the breaker is OPEN; survives
+ *       Redis-down windows that outlast the near-cache TTL (default {@code true}
+ *       when {@code near-cache.enabled=true}, ignored otherwise)</li>
+ *   <li><code>fallback.maxSize</code> — entries per cache (default 100000)</li>
+ *   <li><code>fallback.expireAfterWrite</code> — ISO-8601 duration (default {@code PT30M})</li>
  *   <li><code>redis.circuit.failure-threshold</code> — consecutive failures to trip the breaker (default 5)</li>
  *   <li><code>redis.circuit.probe-interval</code> — ISO-8601 duration between recovery probes when OPEN (default {@code PT60S})</li>
  * </ul>
@@ -79,12 +85,18 @@ public final class RedisConfig {
 	private static final String NEAR_CACHE_ENABLED = "near-cache.enabled";
 	private static final String NEAR_CACHE_MAX_SIZE = "near-cache.maxSize";
 	private static final String NEAR_CACHE_EXPIRE_AFTER_WRITE = "near-cache.expireAfterWrite";
+	private static final String FALLBACK_ENABLED = "fallback.enabled";
+	private static final String FALLBACK_MAX_SIZE = "fallback.maxSize";
+	private static final String FALLBACK_EXPIRE_AFTER_WRITE = "fallback.expireAfterWrite";
 	private static final String CIRCUIT_FAILURE_THRESHOLD = "redis.circuit.failure-threshold";
 	private static final String CIRCUIT_PROBE_INTERVAL = "redis.circuit.probe-interval";
 
 	private static final boolean DEFAULT_NEAR_CACHE_ENABLED = false;
 	private static final int DEFAULT_NEAR_CACHE_MAX_SIZE = 10_000;
 	private static final Duration DEFAULT_NEAR_CACHE_EXPIRE = Duration.ofMinutes(5);
+	private static final boolean DEFAULT_FALLBACK_ENABLED = true;
+	private static final int DEFAULT_FALLBACK_MAX_SIZE = 100_000;
+	private static final Duration DEFAULT_FALLBACK_EXPIRE = Duration.ofMinutes(30);
 	private static final int DEFAULT_CIRCUIT_FAILURE_THRESHOLD = 5;
 	private static final Duration DEFAULT_CIRCUIT_PROBE_INTERVAL = Duration.ofSeconds(60);
 
@@ -93,17 +105,24 @@ public final class RedisConfig {
 	private final boolean nearCacheEnabled;
 	private final int nearCacheMaxSize;
 	private final Duration nearCacheExpireAfterWrite;
+	private final boolean fallbackEnabled;
+	private final int fallbackMaxSize;
+	private final Duration fallbackExpireAfterWrite;
 	private final int circuitFailureThreshold;
 	private final Duration circuitProbeInterval;
 
 	private RedisConfig(Config redissonConfig, String keyPrefix, boolean nearCacheEnabled,
 			int nearCacheMaxSize, Duration nearCacheExpireAfterWrite,
+			boolean fallbackEnabled, int fallbackMaxSize, Duration fallbackExpireAfterWrite,
 			int circuitFailureThreshold, Duration circuitProbeInterval) {
 		this.redissonConfig = redissonConfig;
 		this.keyPrefix = keyPrefix;
 		this.nearCacheEnabled = nearCacheEnabled;
 		this.nearCacheMaxSize = nearCacheMaxSize;
 		this.nearCacheExpireAfterWrite = nearCacheExpireAfterWrite;
+		this.fallbackEnabled = fallbackEnabled;
+		this.fallbackMaxSize = fallbackMaxSize;
+		this.fallbackExpireAfterWrite = fallbackExpireAfterWrite;
 		this.circuitFailureThreshold = circuitFailureThreshold;
 		this.circuitProbeInterval = circuitProbeInterval;
 	}
@@ -129,6 +148,23 @@ public final class RedisConfig {
 		return nearCacheExpireAfterWrite;
 	}
 
+	/**
+	 * @return {@code true} if a separate Redis-down fallback cache should be
+	 *         maintained alongside the near-cache. Always {@code false} when
+	 *         the near-cache itself is disabled (no wrapper, no fallback).
+	 */
+	public boolean isFallbackEnabled() {
+		return fallbackEnabled;
+	}
+
+	public int getFallbackMaxSize() {
+		return fallbackMaxSize;
+	}
+
+	public Duration getFallbackExpireAfterWrite() {
+		return fallbackExpireAfterWrite;
+	}
+
 	public int getCircuitFailureThreshold() {
 		return circuitFailureThreshold;
 	}
@@ -146,9 +182,17 @@ public final class RedisConfig {
 		boolean nearCacheEnabled = boolProp(props, NEAR_CACHE_ENABLED, DEFAULT_NEAR_CACHE_ENABLED);
 		int nearCacheMax = intProp(props, NEAR_CACHE_MAX_SIZE, DEFAULT_NEAR_CACHE_MAX_SIZE);
 		Duration nearCacheExpire = durationProp(props, NEAR_CACHE_EXPIRE_AFTER_WRITE, DEFAULT_NEAR_CACHE_EXPIRE);
+		// Fallback only makes sense when there's a near-cache wrapper to attach it to.
+		// When near-cache is off the bundle returns the raw RMap and Redis failures
+		// surface to callers - there's no wrapper layer to host a fallback cache.
+		boolean fallbackEnabled = nearCacheEnabled
+				&& boolProp(props, FALLBACK_ENABLED, DEFAULT_FALLBACK_ENABLED);
+		int fallbackMax = intProp(props, FALLBACK_MAX_SIZE, DEFAULT_FALLBACK_MAX_SIZE);
+		Duration fallbackExpire = durationProp(props, FALLBACK_EXPIRE_AFTER_WRITE, DEFAULT_FALLBACK_EXPIRE);
 		int circuitFailures = intProp(props, CIRCUIT_FAILURE_THRESHOLD, DEFAULT_CIRCUIT_FAILURE_THRESHOLD);
 		Duration circuitProbe = durationProp(props, CIRCUIT_PROBE_INTERVAL, DEFAULT_CIRCUIT_PROBE_INTERVAL);
 		return new RedisConfig(redisson, prefix, nearCacheEnabled, nearCacheMax, nearCacheExpire,
+				fallbackEnabled, fallbackMax, fallbackExpire,
 				circuitFailures, circuitProbe);
 	}
 
