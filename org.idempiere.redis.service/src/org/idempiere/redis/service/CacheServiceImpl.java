@@ -27,26 +27,30 @@ public class CacheServiceImpl implements ICacheService {
 
 	@Override
 	public <K, V> Map<K, V> getMap(String name) {
-		throw new UnsupportedOperationException("Phase 1 skeleton — implemented in Phase 2");
+		return Activator.getRedissonClient().getMap(prefixed(name));
 	}
 
 	@Override
 	public <K> List<K> getList(String name) {
-		throw new UnsupportedOperationException("Phase 1 skeleton — implemented in Phase 2");
+		return Activator.getRedissonClient().getList(prefixed(name));
 	}
 
 	@Override
 	public <K> Set<K> getSet(String name) {
-		throw new UnsupportedOperationException("Phase 1 skeleton — implemented in Phase 2");
+		return Activator.getRedissonClient().getSet(prefixed(name));
 	}
 
 	@Override
 	public <K, V> boolean tryLock(Map<K, V> map, K key, long timeout, TimeUnit timeunit) throws InterruptedException {
-		throw new UnsupportedOperationException("Phase 1 skeleton — implemented in Phase 2");
+		throw new UnsupportedOperationException("Phase 3 — locks not yet implemented");
 	}
 
 	@Override
 	public <K, V> void unLock(Map<K, V> map, K key) {
-		throw new UnsupportedOperationException("Phase 1 skeleton — implemented in Phase 2");
+		throw new UnsupportedOperationException("Phase 3 — locks not yet implemented");
+	}
+
+	private static String prefixed(String name) {
+		return Activator.getKeyPrefix() + name;
 	}
 }
