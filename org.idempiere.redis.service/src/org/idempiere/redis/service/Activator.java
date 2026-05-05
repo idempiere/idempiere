@@ -25,11 +25,14 @@
 **********************************************************************/
 package org.idempiere.redis.service;
 
+import org.eclipse.osgi.framework.console.CommandProvider;
 import org.idempiere.redis.service.config.RedisConfig;
+import org.idempiere.redis.service.console.RedisConsoleProvider;
 import org.idempiere.redis.service.events.HealthEventPublisher;
 import org.idempiere.redis.service.health.RedisHealth;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.runtime.ServiceComponentRuntime;
 import org.osgi.service.component.runtime.dto.ComponentDescriptionDTO;
@@ -70,6 +73,7 @@ public class Activator implements BundleActivator {
 	private static volatile RedisConfig config;
 	private static volatile RedisHealth health;
 	private static volatile HealthEventPublisher healthEventPublisher;
+	private static volatile ServiceRegistration<CommandProvider> consoleRegistration;
 	private static volatile boolean componentsEnabled;
 	private volatile Thread initThread;
 
@@ -150,6 +154,8 @@ public class Activator implements BundleActivator {
 			client = c;
 			health = h;
 			healthEventPublisher = publisher;
+			consoleRegistration = bundleContext.registerService(
+					CommandProvider.class, new RedisConsoleProvider(bundleContext), null);
 			enableDsComponents(bundleContext);
 			log.info("org.idempiere.redis.service activated as the distributed backend — "
 					+ "key prefix: {}; near-cache: {}; circuit failure-threshold: {}",
@@ -177,6 +183,15 @@ public class Activator implements BundleActivator {
 		if (componentsEnabled) {
 			disableDsComponents(bundleContext);
 			componentsEnabled = false;
+		}
+		ServiceRegistration<CommandProvider> reg = consoleRegistration;
+		consoleRegistration = null;
+		if (reg != null) {
+			try {
+				reg.unregister();
+			} catch (IllegalStateException ignored) {
+				// already unregistered during framework shutdown — fine
+			}
 		}
 		HealthEventPublisher publisher = healthEventPublisher;
 		healthEventPublisher = null;
