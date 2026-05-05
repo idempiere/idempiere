@@ -35,7 +35,11 @@ import org.osgi.service.component.annotations.Component;
 import org.redisson.api.RLock;
 import org.redisson.api.RMap;
 
-@Component(service = ICacheService.class, immediate = true)
+@Component(
+		service = ICacheService.class,
+		immediate = true,
+		enabled = false,
+		property = "service.ranking:Integer=100")
 public class CacheServiceImpl implements ICacheService {
 
 	@Override

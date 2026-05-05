@@ -80,7 +80,11 @@ import org.slf4j.LoggerFactory;
  * provides classloader access to whichever bundle defines the Callable's class
  * so deserialization on receiving nodes succeeds.</p>
  */
-@Component(service = IClusterService.class, immediate = true)
+@Component(
+		service = IClusterService.class,
+		immediate = true,
+		enabled = false,
+		property = "service.ranking:Integer=100")
 public class ClusterServiceImpl implements IClusterService {
 
 	private static final Logger log = LoggerFactory.getLogger(ClusterServiceImpl.class);

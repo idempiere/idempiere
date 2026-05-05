@@ -30,7 +30,10 @@ import org.idempiere.distributed.ITopic;
 import org.osgi.service.component.annotations.Component;
 import org.redisson.api.RTopic;
 
-@Component(service = IMessageService.class)
+@Component(
+		service = IMessageService.class,
+		enabled = false,
+		property = "service.ranking:Integer=100")
 public class MessageServiceImpl implements IMessageService {
 
 	@Override

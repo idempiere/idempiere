@@ -6,6 +6,9 @@ Bundle-Version: 14.0.0.qualifier
 Bundle-Activator: org.idempiere.redis.service.Activator
 Bundle-ActivationPolicy: lazy
 Import-Package: org.osgi.framework;version="1.10.0",
+ org.osgi.service.component.runtime;version="1.4.0",
+ org.osgi.service.component.runtime.dto;version="1.4.0",
+ org.osgi.util.promise;version="1.2.0",
  org.slf4j;version="2.0.12"
 DynamicImport-Package: org.*, com.*, javax.*
 Bundle-ClassPath: .,
