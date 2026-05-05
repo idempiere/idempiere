@@ -30,6 +30,7 @@ import org.eclipse.osgi.framework.console.CommandProvider;
 import org.idempiere.distributed.IClusterMember;
 import org.idempiere.redis.service.Activator;
 import org.idempiere.redis.service.config.RedisConfig;
+import org.idempiere.redis.service.events.KeyspaceNotificationSubscriber;
 import org.idempiere.redis.service.health.RedisHealth;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -77,6 +78,7 @@ public final class RedisConsoleProvider implements CommandProvider {
 		b.append("\tredisMembers - live cluster members from heartbeat keys\n");
 		b.append("\tredisKeys [pattern] - count Redis keys matching pattern (defaults to '<prefix>*')\n");
 		b.append("\tredisBound   - which backend (Redis vs Hazelcast) is currently bound for distributed services\n");
+		b.append("\tredisKeyspace - keyspace notification subscriber state and event count\n");
 		return b.toString();
 	}
 
@@ -105,6 +107,7 @@ public final class RedisConsoleProvider implements CommandProvider {
 		sb.append("  circuit threshold:    ").append(cfg.getCircuitFailureThreshold()).append(" failures\n");
 		sb.append("  circuit probe period: ").append(cfg.getCircuitProbeInterval()).append('\n');
 		sb.append("  messaging:            ").append(cfg.isMessagingReliable() ? "RReliableTopic (Redis Streams)" : "RTopic (pub/sub)").append('\n');
+		sb.append("  keyspace events:      ").append(cfg.isKeyspaceNotificationsEnabled() ? "subscribed" : "off").append('\n');
 		ci.println(sb);
 		return null;
 	}
@@ -190,6 +193,21 @@ public final class RedisConsoleProvider implements CommandProvider {
 		printBoundService(ci, "org.idempiere.distributed.ICacheService");
 		printBoundService(ci, "org.idempiere.distributed.IMessageService");
 		printBoundService(ci, "org.idempiere.distributed.IClusterService");
+		return null;
+	}
+
+	public Object _redisKeyspace(CommandInterpreter ci) {
+		KeyspaceNotificationSubscriber sub = Activator.getKeyspaceSubscriber();
+		if (sub == null) {
+			ci.println("Keyspace notification subscriber: NOT RUNNING");
+			ci.println("Set keyspace.notifications.enabled=true in redis.properties to start it.");
+			ci.println("Also requires server-side: redis-cli CONFIG SET notify-keyspace-events KEA");
+			return null;
+		}
+		ci.println("Keyspace notification subscriber: ACTIVE");
+		ci.println("  events forwarded:   " + sub.getEventCount());
+		ci.println("  EventAdmin topic:   " + KeyspaceNotificationSubscriber.TOPIC_KEY_CHANGED);
+		ci.println("Reminder: events fire only if Redis 'notify-keyspace-events' is configured.");
 		return null;
 	}
 

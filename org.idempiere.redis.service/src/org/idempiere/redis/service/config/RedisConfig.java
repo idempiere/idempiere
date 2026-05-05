@@ -72,6 +72,10 @@ import org.slf4j.LoggerFactory;
  *   <li><code>messaging.reliable</code> — back {@code IMessageService} topics with
  *       Redis Streams instead of plain pub/sub so subscribers receive messages
  *       missed during transient disconnects (default {@code false})</li>
+ *   <li><code>keyspace.notifications.enabled</code> — subscribe to Redis
+ *       keyspace notifications under this deployment's prefix and republish
+ *       each event via OSGi EventAdmin (default {@code false}; requires
+ *       {@code notify-keyspace-events} configured server-side)</li>
  * </ul>
  */
 public final class RedisConfig {
@@ -94,6 +98,7 @@ public final class RedisConfig {
 	private static final String CIRCUIT_FAILURE_THRESHOLD = "redis.circuit.failure-threshold";
 	private static final String CIRCUIT_PROBE_INTERVAL = "redis.circuit.probe-interval";
 	private static final String MESSAGING_RELIABLE = "messaging.reliable";
+	private static final String KEYSPACE_NOTIFICATIONS_ENABLED = "keyspace.notifications.enabled";
 
 	private static final boolean DEFAULT_NEAR_CACHE_ENABLED = false;
 	private static final int DEFAULT_NEAR_CACHE_MAX_SIZE = 10_000;
@@ -104,6 +109,7 @@ public final class RedisConfig {
 	private static final int DEFAULT_CIRCUIT_FAILURE_THRESHOLD = 5;
 	private static final Duration DEFAULT_CIRCUIT_PROBE_INTERVAL = Duration.ofSeconds(60);
 	private static final boolean DEFAULT_MESSAGING_RELIABLE = false;
+	private static final boolean DEFAULT_KEYSPACE_NOTIFICATIONS_ENABLED = false;
 
 	private final Config redissonConfig;
 	private final String keyPrefix;
@@ -116,12 +122,13 @@ public final class RedisConfig {
 	private final int circuitFailureThreshold;
 	private final Duration circuitProbeInterval;
 	private final boolean messagingReliable;
+	private final boolean keyspaceNotificationsEnabled;
 
 	private RedisConfig(Config redissonConfig, String keyPrefix, boolean nearCacheEnabled,
 			int nearCacheMaxSize, Duration nearCacheExpireAfterWrite,
 			boolean fallbackEnabled, int fallbackMaxSize, Duration fallbackExpireAfterWrite,
 			int circuitFailureThreshold, Duration circuitProbeInterval,
-			boolean messagingReliable) {
+			boolean messagingReliable, boolean keyspaceNotificationsEnabled) {
 		this.redissonConfig = redissonConfig;
 		this.keyPrefix = keyPrefix;
 		this.nearCacheEnabled = nearCacheEnabled;
@@ -133,6 +140,7 @@ public final class RedisConfig {
 		this.circuitFailureThreshold = circuitFailureThreshold;
 		this.circuitProbeInterval = circuitProbeInterval;
 		this.messagingReliable = messagingReliable;
+		this.keyspaceNotificationsEnabled = keyspaceNotificationsEnabled;
 	}
 
 	public Config getRedissonConfig() {
@@ -190,6 +198,17 @@ public final class RedisConfig {
 		return messagingReliable;
 	}
 
+	/**
+	 * @return {@code true} when the Activator should start a
+	 *         {@code KeyspaceNotificationSubscriber} that republishes Redis
+	 *         keyspace events for keys under {@link #getKeyPrefix()} via
+	 *         OSGi EventAdmin. Requires server-side
+	 *         {@code notify-keyspace-events} to be configured.
+	 */
+	public boolean isKeyspaceNotificationsEnabled() {
+		return keyspaceNotificationsEnabled;
+	}
+
 	/** Loads configuration from {@code $IDEMPIERE_HOME}, applying defaults where files are absent. */
 	public static RedisConfig load() throws IOException {
 		File home = resolveIdempiereHome();
@@ -209,9 +228,11 @@ public final class RedisConfig {
 		int circuitFailures = intProp(props, CIRCUIT_FAILURE_THRESHOLD, DEFAULT_CIRCUIT_FAILURE_THRESHOLD);
 		Duration circuitProbe = durationProp(props, CIRCUIT_PROBE_INTERVAL, DEFAULT_CIRCUIT_PROBE_INTERVAL);
 		boolean messagingReliable = boolProp(props, MESSAGING_RELIABLE, DEFAULT_MESSAGING_RELIABLE);
+		boolean keyspaceNotifications = boolProp(props, KEYSPACE_NOTIFICATIONS_ENABLED,
+				DEFAULT_KEYSPACE_NOTIFICATIONS_ENABLED);
 		return new RedisConfig(redisson, prefix, nearCacheEnabled, nearCacheMax, nearCacheExpire,
 				fallbackEnabled, fallbackMax, fallbackExpire,
-				circuitFailures, circuitProbe, messagingReliable);
+				circuitFailures, circuitProbe, messagingReliable, keyspaceNotifications);
 	}
 
 	private static File resolveIdempiereHome() {

@@ -29,6 +29,7 @@ import org.eclipse.osgi.framework.console.CommandProvider;
 import org.idempiere.redis.service.config.RedisConfig;
 import org.idempiere.redis.service.console.RedisConsoleProvider;
 import org.idempiere.redis.service.events.HealthEventPublisher;
+import org.idempiere.redis.service.events.KeyspaceNotificationSubscriber;
 import org.idempiere.redis.service.health.RedisHealth;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -73,6 +74,7 @@ public class Activator implements BundleActivator {
 	private static volatile RedisConfig config;
 	private static volatile RedisHealth health;
 	private static volatile HealthEventPublisher healthEventPublisher;
+	private static volatile KeyspaceNotificationSubscriber keyspaceSubscriber;
 	private static volatile ServiceRegistration<CommandProvider> consoleRegistration;
 	private static volatile boolean componentsEnabled;
 	private volatile Thread initThread;
@@ -110,6 +112,15 @@ public class Activator implements BundleActivator {
 			throw new IllegalStateException("RedisHealth not available — bundle is passive or not started");
 		}
 		return h;
+	}
+
+	/**
+	 * @return the active keyspace notification subscriber, or {@code null} if
+	 *         the bundle is passive or {@code keyspace.notifications.enabled}
+	 *         is off.
+	 */
+	public static KeyspaceNotificationSubscriber getKeyspaceSubscriber() {
+		return keyspaceSubscriber;
 	}
 
 	/** @return the deployment-level key prefix in the form <code>idempiere:&lt;name&gt;:</code>. */
@@ -156,6 +167,12 @@ public class Activator implements BundleActivator {
 			healthEventPublisher = publisher;
 			consoleRegistration = bundleContext.registerService(
 					CommandProvider.class, new RedisConsoleProvider(bundleContext), null);
+			if (cfg.isKeyspaceNotificationsEnabled()) {
+				KeyspaceNotificationSubscriber subscriber =
+						new KeyspaceNotificationSubscriber(bundleContext, c, cfg.getKeyPrefix());
+				subscriber.start();
+				keyspaceSubscriber = subscriber;
+			}
 			enableDsComponents(bundleContext);
 			log.info("org.idempiere.redis.service activated as the distributed backend — "
 					+ "key prefix: {}; near-cache: {}; circuit failure-threshold: {}",
@@ -192,6 +209,11 @@ public class Activator implements BundleActivator {
 			} catch (IllegalStateException ignored) {
 				// already unregistered during framework shutdown — fine
 			}
+		}
+		KeyspaceNotificationSubscriber subscriber = keyspaceSubscriber;
+		keyspaceSubscriber = null;
+		if (subscriber != null) {
+			subscriber.close();
 		}
 		HealthEventPublisher publisher = healthEventPublisher;
 		healthEventPublisher = null;
