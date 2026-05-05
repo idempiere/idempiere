@@ -14,15 +14,30 @@
  *****************************************************************************/
 package org.idempiere.redis.service;
 
+import java.io.Serializable;
 import java.net.InetAddress;
 
 import org.idempiere.distributed.IClusterMember;
 
-public class ClusterMember implements IClusterMember {
+/**
+ * Value object identifying one cluster member. Stored in Redis under a
+ * heartbeat key so other nodes can discover live members.
+ *
+ * <p>Mutable fields and a no-arg constructor are kept on purpose so that
+ * codecs which require POJO-style hydration (Kryo, Fury, Jackson) can
+ * deserialize without reflection-into-final-fields contortions.</p>
+ */
+public class ClusterMember implements IClusterMember, Serializable {
 
-	private final String id;
-	private final InetAddress address;
-	private final int port;
+	private static final long serialVersionUID = 1L;
+
+	private String id;
+	private InetAddress address;
+	private int port;
+
+	/** Required by serialization codecs. Do not call directly. */
+	public ClusterMember() {
+	}
 
 	public ClusterMember(String id, InetAddress address, int port) {
 		this.id = id;
@@ -43,5 +58,10 @@ public class ClusterMember implements IClusterMember {
 	@Override
 	public int getPort() {
 		return port;
+	}
+
+	@Override
+	public String toString() {
+		return "ClusterMember[id=" + id + ", address=" + address + ", port=" + port + "]";
 	}
 }
