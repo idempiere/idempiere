@@ -25,18 +25,52 @@
 **********************************************************************/
 package org.idempiere.redis.service;
 
-import org.idempiere.distributed.IMessageService;
-import org.idempiere.distributed.ITopic;
-import org.osgi.service.component.annotations.Component;
-import org.redisson.api.RTopic;
+import java.io.Serializable;
 
-@Component(service = IMessageService.class)
-public class MessageServiceImpl implements IMessageService {
+/**
+ * Envelope published on a per-request response topic. Carries either a
+ * successful {@code result} or a propagated {@code error}; never both.
+ */
+public class RpcResponse implements Serializable {
 
-	@Override
-	public <T> ITopic<T> getTopic(String name) {
-		String prefixed = Activator.getKeyPrefix() + name;
-		RTopic topic = Activator.getRedissonClient().getTopic(prefixed);
-		return new TopicImpl<>(topic);
+	private static final long serialVersionUID = 1L;
+
+	/** Matches {@link RpcRequest#getTaskId()} on the originator side. */
+	private String taskId;
+
+	/** UUID of the node that produced this response. */
+	private String memberUuid;
+
+	/** Successful result, or {@code null} if the Callable returned null or threw. */
+	private Object result;
+
+	/** Exception thrown by the Callable, or {@code null} on success. */
+	private Throwable error;
+
+	/** Required by serialization codecs. Do not call directly. */
+	public RpcResponse() {
+	}
+
+	public RpcResponse(String taskId, String memberUuid, Object result, Throwable error) {
+		this.taskId = taskId;
+		this.memberUuid = memberUuid;
+		this.result = result;
+		this.error = error;
+	}
+
+	public String getTaskId() {
+		return taskId;
+	}
+
+	public String getMemberUuid() {
+		return memberUuid;
+	}
+
+	public Object getResult() {
+		return result;
+	}
+
+	public Throwable getError() {
+		return error;
 	}
 }

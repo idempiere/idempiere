@@ -25,18 +25,63 @@
 **********************************************************************/
 package org.idempiere.redis.service;
 
-import org.idempiere.distributed.IMessageService;
-import org.idempiere.distributed.ITopic;
-import org.osgi.service.component.annotations.Component;
-import org.redisson.api.RTopic;
+import java.io.Serializable;
+import java.util.concurrent.Callable;
 
-@Component(service = IMessageService.class)
-public class MessageServiceImpl implements IMessageService {
+/**
+ * Envelope published on the cluster-wide RPC request topic. Carries the serialized
+ * Callable along with target identification so receiving nodes can decide whether
+ * to execute it.
+ */
+public class RpcRequest implements Serializable {
 
-	@Override
-	public <T> ITopic<T> getTopic(String name) {
-		String prefixed = Activator.getKeyPrefix() + name;
-		RTopic topic = Activator.getRedissonClient().getTopic(prefixed);
-		return new TopicImpl<>(topic);
+	private static final long serialVersionUID = 1L;
+
+	/** Random UUID identifying this request; used to route responses back. */
+	private String taskId;
+
+	/** UUID of the node that issued the request — informational, useful for logging. */
+	private String originatorUuid;
+
+	/** Target node UUIDs. Receivers execute only if their own UUID is in this set. */
+	private String[] targetUuids;
+
+	/** Per-request response topic name; receivers publish their {@link RpcResponse} here. */
+	private String responseTopic;
+
+	/** The unit of work to execute on each target node. Must be Serializable. */
+	private Callable<?> callable;
+
+	/** Required by serialization codecs. Do not call directly. */
+	public RpcRequest() {
+	}
+
+	public RpcRequest(String taskId, String originatorUuid, String[] targetUuids,
+			String responseTopic, Callable<?> callable) {
+		this.taskId = taskId;
+		this.originatorUuid = originatorUuid;
+		this.targetUuids = targetUuids;
+		this.responseTopic = responseTopic;
+		this.callable = callable;
+	}
+
+	public String getTaskId() {
+		return taskId;
+	}
+
+	public String getOriginatorUuid() {
+		return originatorUuid;
+	}
+
+	public String[] getTargetUuids() {
+		return targetUuids;
+	}
+
+	public String getResponseTopic() {
+		return responseTopic;
+	}
+
+	public Callable<?> getCallable() {
+		return callable;
 	}
 }
