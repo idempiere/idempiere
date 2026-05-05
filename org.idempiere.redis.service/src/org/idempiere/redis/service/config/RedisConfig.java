@@ -69,6 +69,9 @@ import org.slf4j.LoggerFactory;
  *   <li><code>fallback.expireAfterWrite</code> — ISO-8601 duration (default {@code PT30M})</li>
  *   <li><code>redis.circuit.failure-threshold</code> — consecutive failures to trip the breaker (default 5)</li>
  *   <li><code>redis.circuit.probe-interval</code> — ISO-8601 duration between recovery probes when OPEN (default {@code PT60S})</li>
+ *   <li><code>messaging.reliable</code> — back {@code IMessageService} topics with
+ *       Redis Streams instead of plain pub/sub so subscribers receive messages
+ *       missed during transient disconnects (default {@code false})</li>
  * </ul>
  */
 public final class RedisConfig {
@@ -90,6 +93,7 @@ public final class RedisConfig {
 	private static final String FALLBACK_EXPIRE_AFTER_WRITE = "fallback.expireAfterWrite";
 	private static final String CIRCUIT_FAILURE_THRESHOLD = "redis.circuit.failure-threshold";
 	private static final String CIRCUIT_PROBE_INTERVAL = "redis.circuit.probe-interval";
+	private static final String MESSAGING_RELIABLE = "messaging.reliable";
 
 	private static final boolean DEFAULT_NEAR_CACHE_ENABLED = false;
 	private static final int DEFAULT_NEAR_CACHE_MAX_SIZE = 10_000;
@@ -99,6 +103,7 @@ public final class RedisConfig {
 	private static final Duration DEFAULT_FALLBACK_EXPIRE = Duration.ofMinutes(30);
 	private static final int DEFAULT_CIRCUIT_FAILURE_THRESHOLD = 5;
 	private static final Duration DEFAULT_CIRCUIT_PROBE_INTERVAL = Duration.ofSeconds(60);
+	private static final boolean DEFAULT_MESSAGING_RELIABLE = false;
 
 	private final Config redissonConfig;
 	private final String keyPrefix;
@@ -110,11 +115,13 @@ public final class RedisConfig {
 	private final Duration fallbackExpireAfterWrite;
 	private final int circuitFailureThreshold;
 	private final Duration circuitProbeInterval;
+	private final boolean messagingReliable;
 
 	private RedisConfig(Config redissonConfig, String keyPrefix, boolean nearCacheEnabled,
 			int nearCacheMaxSize, Duration nearCacheExpireAfterWrite,
 			boolean fallbackEnabled, int fallbackMaxSize, Duration fallbackExpireAfterWrite,
-			int circuitFailureThreshold, Duration circuitProbeInterval) {
+			int circuitFailureThreshold, Duration circuitProbeInterval,
+			boolean messagingReliable) {
 		this.redissonConfig = redissonConfig;
 		this.keyPrefix = keyPrefix;
 		this.nearCacheEnabled = nearCacheEnabled;
@@ -125,6 +132,7 @@ public final class RedisConfig {
 		this.fallbackExpireAfterWrite = fallbackExpireAfterWrite;
 		this.circuitFailureThreshold = circuitFailureThreshold;
 		this.circuitProbeInterval = circuitProbeInterval;
+		this.messagingReliable = messagingReliable;
 	}
 
 	public Config getRedissonConfig() {
@@ -173,6 +181,15 @@ public final class RedisConfig {
 		return circuitProbeInterval;
 	}
 
+	/**
+	 * @return {@code true} when {@code IMessageService} should hand out
+	 *         {@code RReliableTopic} (Redis-Streams-backed, durable across
+	 *         subscriber disconnects) instead of plain {@code RTopic}.
+	 */
+	public boolean isMessagingReliable() {
+		return messagingReliable;
+	}
+
 	/** Loads configuration from {@code $IDEMPIERE_HOME}, applying defaults where files are absent. */
 	public static RedisConfig load() throws IOException {
 		File home = resolveIdempiereHome();
@@ -191,9 +208,10 @@ public final class RedisConfig {
 		Duration fallbackExpire = durationProp(props, FALLBACK_EXPIRE_AFTER_WRITE, DEFAULT_FALLBACK_EXPIRE);
 		int circuitFailures = intProp(props, CIRCUIT_FAILURE_THRESHOLD, DEFAULT_CIRCUIT_FAILURE_THRESHOLD);
 		Duration circuitProbe = durationProp(props, CIRCUIT_PROBE_INTERVAL, DEFAULT_CIRCUIT_PROBE_INTERVAL);
+		boolean messagingReliable = boolProp(props, MESSAGING_RELIABLE, DEFAULT_MESSAGING_RELIABLE);
 		return new RedisConfig(redisson, prefix, nearCacheEnabled, nearCacheMax, nearCacheExpire,
 				fallbackEnabled, fallbackMax, fallbackExpire,
-				circuitFailures, circuitProbe);
+				circuitFailures, circuitProbe, messagingReliable);
 	}
 
 	private static File resolveIdempiereHome() {

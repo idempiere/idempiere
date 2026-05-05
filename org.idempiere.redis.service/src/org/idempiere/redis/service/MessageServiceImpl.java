@@ -27,8 +27,10 @@ package org.idempiere.redis.service;
 
 import org.idempiere.distributed.IMessageService;
 import org.idempiere.distributed.ITopic;
+import org.idempiere.redis.service.message.ReliableTopicImpl;
 import org.idempiere.redis.service.message.TopicImpl;
 import org.osgi.service.component.annotations.Component;
+import org.redisson.api.RReliableTopic;
 import org.redisson.api.RTopic;
 
 @Component(
@@ -40,6 +42,10 @@ public class MessageServiceImpl implements IMessageService {
 	@Override
 	public <T> ITopic<T> getTopic(String name) {
 		String prefixed = Activator.getKeyPrefix() + name;
+		if (Activator.getConfig().isMessagingReliable()) {
+			RReliableTopic topic = Activator.getRedissonClient().getReliableTopic(prefixed);
+			return new ReliableTopicImpl<>(topic);
+		}
 		RTopic topic = Activator.getRedissonClient().getTopic(prefixed);
 		return new TopicImpl<>(topic);
 	}

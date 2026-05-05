@@ -104,6 +104,7 @@ public final class RedisConsoleProvider implements CommandProvider {
 		}
 		sb.append("  circuit threshold:    ").append(cfg.getCircuitFailureThreshold()).append(" failures\n");
 		sb.append("  circuit probe period: ").append(cfg.getCircuitProbeInterval()).append('\n');
+		sb.append("  messaging:            ").append(cfg.isMessagingReliable() ? "RReliableTopic (Redis Streams)" : "RTopic (pub/sub)").append('\n');
 		ci.println(sb);
 		return null;
 	}
