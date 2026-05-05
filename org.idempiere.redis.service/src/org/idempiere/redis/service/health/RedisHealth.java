@@ -59,11 +59,25 @@ public final class RedisHealth {
 	private final AtomicInteger consecutiveFailures = new AtomicInteger(0);
 	private final AtomicLong openedAt = new AtomicLong(0L);
 	private volatile State state = State.CLOSED;
+	private volatile StateListener listener = (p, c) -> { /* no-op default */ };
 
 	public RedisHealth(RedissonClient client, int failureThreshold, long probeIntervalMs) {
 		this.client = client;
 		this.failureThreshold = Math.max(1, failureThreshold);
 		this.probeIntervalMs = Math.max(1000L, probeIntervalMs);
+	}
+
+	/**
+	 * Sets the (single) listener notified on actual state transitions. Pass
+	 * {@code null} to clear. The Activator uses this to attach the
+	 * EventAdmin-publishing listener once the bundle is fully wired.
+	 */
+	public void setStateListener(StateListener listener) {
+		this.listener = listener != null ? listener : (p, c) -> { /* no-op */ };
+	}
+
+	public int getConsecutiveFailures() {
+		return consecutiveFailures.get();
 	}
 
 	public State getState() {
@@ -115,12 +129,31 @@ public final class RedisHealth {
 	}
 
 	private void open() {
+		State previous = state;
 		state = State.OPEN;
 		openedAt.set(System.currentTimeMillis());
+		if (previous != State.OPEN) {
+			fire(previous, State.OPEN);
+		}
 	}
 
 	private void close() {
+		State previous = state;
 		state = State.CLOSED;
 		consecutiveFailures.set(0);
+		if (previous != State.CLOSED) {
+			fire(previous, State.CLOSED);
+		}
+	}
+
+	private void fire(State previous, State current) {
+		try {
+			listener.onStateChange(previous, current);
+		} catch (Exception e) {
+			// Listener exceptions must never destabilise the breaker — they would
+			// otherwise propagate back to the call site that triggered the
+			// transition and mask the underlying Redis fault.
+			log.warn("RedisHealth state listener threw on {} -> {}", previous, current, e);
+		}
 	}
 }

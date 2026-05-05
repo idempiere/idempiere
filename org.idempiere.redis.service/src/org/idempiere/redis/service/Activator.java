@@ -26,6 +26,7 @@
 package org.idempiere.redis.service;
 
 import org.idempiere.redis.service.config.RedisConfig;
+import org.idempiere.redis.service.events.HealthEventPublisher;
 import org.idempiere.redis.service.health.RedisHealth;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -68,6 +69,7 @@ public class Activator implements BundleActivator {
 	private static volatile RedissonClient client;
 	private static volatile RedisConfig config;
 	private static volatile RedisHealth health;
+	private static volatile HealthEventPublisher healthEventPublisher;
 	private static volatile boolean componentsEnabled;
 	private volatile Thread initThread;
 
@@ -142,9 +144,12 @@ public class Activator implements BundleActivator {
 			RedissonClient c = Redisson.create(cfg.getRedissonConfig());
 			RedisHealth h = new RedisHealth(c, cfg.getCircuitFailureThreshold(),
 					cfg.getCircuitProbeInterval().toMillis());
+			HealthEventPublisher publisher = new HealthEventPublisher(bundleContext, h);
+			h.setStateListener(publisher);
 			config = cfg;
 			client = c;
 			health = h;
+			healthEventPublisher = publisher;
 			enableDsComponents(bundleContext);
 			log.info("org.idempiere.redis.service activated as the distributed backend — "
 					+ "key prefix: {}; near-cache: {}; circuit failure-threshold: {}",
@@ -172,6 +177,11 @@ public class Activator implements BundleActivator {
 		if (componentsEnabled) {
 			disableDsComponents(bundleContext);
 			componentsEnabled = false;
+		}
+		HealthEventPublisher publisher = healthEventPublisher;
+		healthEventPublisher = null;
+		if (publisher != null) {
+			publisher.close();
 		}
 		RedissonClient c = client;
 		client = null;

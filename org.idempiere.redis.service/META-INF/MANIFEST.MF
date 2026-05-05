@@ -8,7 +8,9 @@ Bundle-ActivationPolicy: lazy
 Import-Package: org.osgi.framework;version="1.10.0",
  org.osgi.service.component.runtime;version="1.4.0",
  org.osgi.service.component.runtime.dto;version="1.4.0",
+ org.osgi.service.event;version="1.4.0",
  org.osgi.util.promise;version="1.2.0",
+ org.osgi.util.tracker;version="1.5.0",
  org.slf4j;version="2.0.12"
 DynamicImport-Package: org.*, com.*, javax.*
 Bundle-ClassPath: .,
