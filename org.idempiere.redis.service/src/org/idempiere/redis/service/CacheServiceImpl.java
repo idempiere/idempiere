@@ -31,6 +31,8 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.idempiere.distributed.ICacheService;
+import org.idempiere.redis.service.cache.CaffeineLayeredMap;
+import org.idempiere.redis.service.config.RedisConfig;
 import org.osgi.service.component.annotations.Component;
 import org.redisson.api.RLock;
 import org.redisson.api.RMap;

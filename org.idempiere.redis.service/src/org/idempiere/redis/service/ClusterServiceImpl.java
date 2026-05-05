@@ -48,6 +48,9 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.idempiere.distributed.IClusterMember;
 import org.idempiere.distributed.IClusterService;
+import org.idempiere.redis.service.cluster.ClusterMember;
+import org.idempiere.redis.service.cluster.RpcRequest;
+import org.idempiere.redis.service.cluster.RpcResponse;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;

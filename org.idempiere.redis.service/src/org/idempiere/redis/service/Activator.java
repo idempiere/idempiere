@@ -25,6 +25,8 @@
 **********************************************************************/
 package org.idempiere.redis.service;
 
+import org.idempiere.redis.service.config.RedisConfig;
+import org.idempiere.redis.service.health.RedisHealth;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;

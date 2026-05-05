@@ -23,7 +23,7 @@
 * - Norbert Bede, Cloudempiere                                        *
 * - Peter Takacs, Cloudempiere                                        *
 **********************************************************************/
-package org.idempiere.redis.service;
+package org.idempiere.redis.service.cluster;
 
 import java.io.Serializable;
 

@@ -23,7 +23,7 @@
 * - Norbert Bede, Cloudempiere                                        *
 * - Peter Takacs, Cloudempiere                                        *
 **********************************************************************/
-package org.idempiere.redis.service;
+package org.idempiere.redis.service.config;
 
 import java.io.File;
 import java.io.FileInputStream;

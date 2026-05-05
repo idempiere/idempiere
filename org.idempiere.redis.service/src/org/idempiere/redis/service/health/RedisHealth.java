@@ -23,7 +23,7 @@
 * - Norbert Bede, Cloudempiere                                        *
 * - Peter Takacs, Cloudempiere                                        *
 **********************************************************************/
-package org.idempiere.redis.service;
+package org.idempiere.redis.service.health;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;

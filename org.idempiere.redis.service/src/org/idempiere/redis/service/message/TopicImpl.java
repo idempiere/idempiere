@@ -23,7 +23,7 @@
 * - Norbert Bede, Cloudempiere                                        *
 * - Peter Takacs, Cloudempiere                                        *
 **********************************************************************/
-package org.idempiere.redis.service;
+package org.idempiere.redis.service.message;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;

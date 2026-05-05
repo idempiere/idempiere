@@ -23,13 +23,14 @@
 * - Norbert Bede, Cloudempiere                                        *
 * - Peter Takacs, Cloudempiere                                        *
 **********************************************************************/
-package org.idempiere.redis.service;
+package org.idempiere.redis.service.cache;
 
 import java.time.Duration;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+import org.idempiere.redis.service.health.RedisHealth;
 import org.redisson.api.RMap;
 
 import com.github.benmanes.caffeine.cache.Cache;

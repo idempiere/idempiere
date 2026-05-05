@@ -27,6 +27,7 @@ package org.idempiere.redis.service;
 
 import org.idempiere.distributed.IMessageService;
 import org.idempiere.distributed.ITopic;
+import org.idempiere.redis.service.message.TopicImpl;
 import org.osgi.service.component.annotations.Component;
 import org.redisson.api.RTopic;
 
