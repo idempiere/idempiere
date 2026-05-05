@@ -27,6 +27,7 @@ package org.idempiere.redis.service;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -201,7 +202,7 @@ public class ClusterServiceImpl implements IClusterService {
 				(channel, response) -> handleResponse(response));
 
 		@SuppressWarnings({"rawtypes", "unchecked"})
-		PendingRequest pr = new PendingRequest(taskId, (Map) futures, responseTopic, listenerId);
+		PendingRequest pr = new PendingRequest((Map) futures, responseTopic, listenerId);
 		pending.put(taskId, pr);
 
 		ScheduledExecutorService te = timeoutExecutor;
@@ -250,7 +251,7 @@ public class ClusterServiceImpl implements IClusterService {
 		}
 		try {
 			RBucket<ClusterMember> bucket = Activator.getRedissonClient().getBucket(memberKey(self.getId()));
-			bucket.set(self, HEARTBEAT_TTL_SECONDS, TimeUnit.SECONDS);
+			bucket.set(self, Duration.ofSeconds(HEARTBEAT_TTL_SECONDS));
 		} catch (Exception e) {
 			log.warn("Heartbeat write failed; node may disappear from getMembers within {} s", HEARTBEAT_TTL_SECONDS, e);
 		}
@@ -429,17 +430,12 @@ public class ClusterServiceImpl implements IClusterService {
 	 * subscription that needs to be torn down on completion or timeout.
 	 */
 	private static final class PendingRequest {
-		private final String taskId;
-		private final Map<IClusterMember, CompletableFuture<Object>> futures;
 		private final ConcurrentMap<String, CompletableFuture<Object>> futuresByUuid;
 		private final RTopic responseTopic;
 		private final int listenerId;
 
-		PendingRequest(String taskId,
-				Map<IClusterMember, CompletableFuture<Object>> futures,
+		PendingRequest(Map<IClusterMember, CompletableFuture<Object>> futures,
 				RTopic responseTopic, int listenerId) {
-			this.taskId = taskId;
-			this.futures = futures;
 			this.responseTopic = responseTopic;
 			this.listenerId = listenerId;
 			this.futuresByUuid = new ConcurrentHashMap<>();
