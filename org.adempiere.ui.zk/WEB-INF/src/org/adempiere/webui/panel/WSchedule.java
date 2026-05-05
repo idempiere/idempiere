@@ -163,9 +163,9 @@ public class WSchedule extends Window implements EventListener<Event>
 		TimeZone timezone = SessionManager.getAppDesktop().getClientInfo().timeZone;
 		calendars.addTimeZone(timezone.getID(), timezone);
 		
-		calendars.addEventListener(CalendarsEvent.ON_EVENT_CREATE, this);
-		calendars.addEventListener(CalendarsEvent.ON_EVENT_EDIT, this);
-		calendars.addEventListener(CalendarsEvent.ON_EVENT_UPDATE, this);
+		calendars.addEventListener(CalendarsEvent.ON_ITEM_CREATE, this);
+		calendars.addEventListener(CalendarsEvent.ON_ITEM_EDIT, this);
+		calendars.addEventListener(CalendarsEvent.ON_ITEM_UPDATE, this);
 		
 		this.appendChild(calendarContainer);		
 		

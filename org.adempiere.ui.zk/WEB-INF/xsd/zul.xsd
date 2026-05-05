@@ -962,9 +962,9 @@
 		<xs:attribute name="dateFormatter" type="xs:string" use="optional" />
 		<xs:attribute name="readonly" type="xs:string" use="optional" />
 		<xs:attribute name="timeZone" type="xs:string" use="optional" />
-		<xs:attribute name="onEventCreate" type="xs:string" use="optional" />
-		<xs:attribute name="onEventEdit" type="xs:string" use="optional" />
-		<xs:attribute name="onEventUpdate" type="xs:string" use="optional" />
+		<xs:attribute name="onItemCreate" type="xs:string" use="optional" />
+		<xs:attribute name="onItemEdit" type="xs:string" use="optional" />
+		<xs:attribute name="onItemUpdate" type="xs:string" use="optional" />
 		<xs:attribute name="onDayClick" type="xs:string" use="optional" />
 		<xs:attribute name="onWeekClick" type="xs:string" use="optional" />
 		<xs:attributeGroup ref="rootAttrGroup" />

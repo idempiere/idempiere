@@ -243,15 +243,15 @@ public class InfoSchedule extends Window implements EventListener<Event>
 			div.appendChild(confirmPanel);			
 			schedulePane.addSouthPane(div, "80px");
 			
-			schedulePane.addEventListener(CalendarsEvent.ON_EVENT_CREATE, this);
-			schedulePane.addEventListener(CalendarsEvent.ON_EVENT_EDIT, this);
-			schedulePane.addEventListener(CalendarsEvent.ON_EVENT_UPDATE, this);
+			schedulePane.addEventListener(CalendarsEvent.ON_ITEM_CREATE, this);
+			schedulePane.addEventListener(CalendarsEvent.ON_ITEM_EDIT, this);
+			schedulePane.addEventListener(CalendarsEvent.ON_ITEM_UPDATE, this);
 			schedulePane.removeRefreshButton();
 		} 
 		else 
 		{
-			schedulePane.addEventListener(CalendarsEvent.ON_EVENT_EDIT, this);
-			schedulePane.addEventListener(CalendarsEvent.ON_EVENT_UPDATE, this);
+			schedulePane.addEventListener(CalendarsEvent.ON_ITEM_EDIT, this);
+			schedulePane.addEventListener(CalendarsEvent.ON_ITEM_UPDATE, this);
 		}
 		
 		fieldResourceType.setMold("select");
@@ -537,8 +537,8 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		int S_Resource_ID = pp.getKey();
 		
 		ScheduleUtil schedule = new ScheduleUtil (Env.getCtx());
-		Timestamp start = new Timestamp(event.getBeginDate() != null ? event.getBeginDate().getTime() : event.getCalendarEvent().getBeginDate().getTime());
-		Timestamp end =new Timestamp(event.getEndDate() != null ? event.getEndDate().getTime() : event.getCalendarEvent().getEndDate().getTime());
+		Timestamp start = new Timestamp(event.getBeginDate() != null ? event.getBeginDate().getTime() : event.getCalendarItem().getBeginDate().getTime());
+		Timestamp end =new Timestamp(event.getEndDate() != null ? event.getEndDate().getTime() : event.getCalendarItem().getEndDate().getTime());
 		double hours = (end.getTime() - start.getTime())/ 1000d / 60d / 60d;
 		
 		MAssignmentSlot[] mas = schedule.getAssignmentSlots(S_Resource_ID, TimeUtil.getPreviousDay(start), TimeUtil.getNextDay(end), null, true, null);
@@ -585,12 +585,12 @@ public class InfoSchedule extends Window implements EventListener<Event>
 					SimpleCalendarEvent newEvent = new SimpleCalendarEvent();
 					newEvent.setBeginDate(event.getBeginDate());
 					newEvent.setEndDate(event.getEndDate());
-					if (event.getCalendarEvent() != null) {
-						newEvent.setContent(event.getCalendarEvent().getContent());
-						newEvent.setContentColor(event.getCalendarEvent().getContentColor());
-						newEvent.setHeaderColor(event.getCalendarEvent().getHeaderColor());
-						newEvent.setTitle(event.getCalendarEvent().getTitle());						
-						schedulePane.getModel().remove(event.getCalendarEvent());
+					if (event.getCalendarItem() != null) {
+						newEvent.setContent(event.getCalendarItem().getContent());
+						newEvent.setContentColor(event.getCalendarItem().getContentColor());
+						newEvent.setHeaderColor(event.getCalendarItem().getHeaderColor());
+						newEvent.setTitle(event.getCalendarItem().getTitle());
+						schedulePane.getModel().remove(event.getCalendarItem());
 					}
 					schedulePane.getModel().add(newEvent);
 				}
@@ -626,12 +626,12 @@ public class InfoSchedule extends Window implements EventListener<Event>
 					SimpleCalendarEvent newEvent = new SimpleCalendarEvent();
 					newEvent.setBeginDate(event.getBeginDate());
 					newEvent.setEndDate(event.getEndDate());
-					if (event.getCalendarEvent() != null) {
-						newEvent.setContent(event.getCalendarEvent().getContent());
-						newEvent.setContentColor(event.getCalendarEvent().getContentColor());
-						newEvent.setHeaderColor(event.getCalendarEvent().getHeaderColor());
-						newEvent.setTitle(event.getCalendarEvent().getTitle());
-						schedulePane.getModel().remove(event.getCalendarEvent());
+					if (event.getCalendarItem() != null) {
+						newEvent.setContent(event.getCalendarItem().getContent());
+						newEvent.setContentColor(event.getCalendarItem().getContentColor());
+						newEvent.setHeaderColor(event.getCalendarItem().getHeaderColor());
+						newEvent.setTitle(event.getCalendarItem().getTitle());
+						schedulePane.getModel().remove(event.getCalendarItem());
 					}
 					schedulePane.getModel().add(newEvent);
 				}

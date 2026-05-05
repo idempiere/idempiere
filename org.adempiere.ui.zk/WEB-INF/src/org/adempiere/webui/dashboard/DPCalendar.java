@@ -51,7 +51,7 @@ import org.idempiere.distributed.ITopic;
 import org.idempiere.distributed.ITopicSubscriber;
 import org.osgi.service.event.EventHandler;
 import org.zkoss.calendar.Calendars;
-import org.zkoss.calendar.api.CalendarEvent;
+import org.zkoss.calendar.api.CalendarItem;
 import org.zkoss.calendar.event.CalendarsEvent;
 import org.zkoss.calendar.impl.SimpleCalendarModel;
 import org.zkoss.zk.ui.Component;
@@ -79,8 +79,8 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 	private static final long serialVersionUID = -224914882522997787L;
 	private static final String ON_MOBILE_SET_SELECTED_TAB_ECHO = "onMobileSetSelectedTabEcho";
 	private static final String ON_DAY_CLICK_EVENT = "onDayClick";
-	private static final String ON_EVENT_EDIT_EVENT = "onEventEdit";
-	private static final String ON_EVENT_CREATE_EVENT = "onEventCreate";
+	private static final String ON_ITEM_EDIT_EVENT = CalendarsEvent.ON_ITEM_EDIT;
+	private static final String ON_ITEM_CREATE_EVENT = CalendarsEvent.ON_ITEM_CREATE;
 	private static final String ON_MOVE_DATE_EVENT = "onMoveDate";
 	private static final String ON_REQUEST_CHANGED_TOPIC = "onRequestChanged";
 	
@@ -141,8 +141,8 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 		
 		this.appendChild(component);
 
-		calendars.addEventListener(ON_EVENT_CREATE_EVENT, this);
-		calendars.addEventListener(ON_EVENT_EDIT_EVENT, this);	
+		calendars.addEventListener(ON_ITEM_CREATE_EVENT, this);
+		calendars.addEventListener(ON_ITEM_EDIT_EVENT, this);
 		calendars.addEventListener(ON_DAY_CLICK_EVENT, this);
 				
 		createStaticListeners();
@@ -224,7 +224,7 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 			else if (e.getTarget() == divArrowRight)
 				divArrowClicked(true);
 		}
-		else if (type.equals(ON_EVENT_CREATE_EVENT) && ! Env.isReadOnlySession()) {
+		else if (type.equals(ON_ITEM_CREATE_EVENT) && ! Env.isReadOnlySession()) {
 			if (e instanceof CalendarsEvent) {
 				CalendarsEvent calendarsEvent = (CalendarsEvent) e;
 				RequestWindow requestWin = new RequestWindow(calendarsEvent, this);
@@ -233,15 +233,15 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 		}	
 		else if (type.equals(ON_DAY_CLICK_EVENT) && ! Env.isReadOnlySession()) {
 			if (e.getData() instanceof Date date) {
-				CalendarsEvent calendarsEvent = new CalendarsEvent(ON_EVENT_CREATE_EVENT, e.getTarget(), null, date, date, 0, 0, 0, 0);
+				CalendarsEvent calendarsEvent = new CalendarsEvent(ON_ITEM_CREATE_EVENT, e.getTarget(), null, date, date, 0, 0, 0, 0);
 				RequestWindow requestWin = new RequestWindow(calendarsEvent, this);
 				SessionManager.getAppDesktop().showWindow(requestWin);
 			}
 		}
-		else if (type.equals(ON_EVENT_EDIT_EVENT)) {
+		else if (type.equals(ON_ITEM_EDIT_EVENT)) {
 			if (e instanceof CalendarsEvent) {
 				CalendarsEvent calendarsEvent = (CalendarsEvent) e;
-				CalendarEvent calendarEvent = calendarsEvent.getCalendarEvent();
+				CalendarItem calendarEvent = calendarsEvent.getCalendarItem();
 
 				if (calendarEvent instanceof ADCalendarEvent) {
 					ADCalendarEvent ce = (ADCalendarEvent) calendarEvent;
