@@ -1,0 +1,32 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: iDempiere Redis Service
+Bundle-SymbolicName: org.idempiere.redis.service
+Bundle-Version: 14.0.0.qualifier
+Bundle-Activator: org.idempiere.redis.service.Activator
+Bundle-ActivationPolicy: lazy
+Import-Package: org.osgi.framework;version="1.10.0",
+ org.slf4j;version="2.0.12"
+DynamicImport-Package: org.*, com.*, javax.*
+Bundle-ClassPath: .,
+ lib/redisson.jar,
+ lib/netty-common.jar,
+ lib/netty-buffer.jar,
+ lib/netty-codec.jar,
+ lib/netty-handler.jar,
+ lib/netty-resolver.jar,
+ lib/netty-transport.jar,
+ lib/reactor-core.jar,
+ lib/reactive-streams.jar,
+ lib/snakeyaml.jar,
+ lib/jackson-core.jar,
+ lib/jackson-databind.jar,
+ lib/jackson-annotations.jar,
+ lib/caffeine.jar
+Service-Component: OSGI-INF/*.xml
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=17))"
+Require-Bundle: org.eclipse.osgi;bundle-version="3.18.500",
+ org.adempiere.base;bundle-version="14.0.0"
+Automatic-Module-Name: org.idempiere.redis.service
+Bundle-Vendor: iDempiere Community

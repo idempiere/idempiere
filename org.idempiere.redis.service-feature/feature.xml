@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.idempiere.redis.service.feature"
+      label="Redis Service Feature"
+      version="14.0.0.qualifier"
+      provider-name="iDempiere Community">
+
+   <description>
+      Redis-backed implementation of the org.idempiere.distributed cache, messaging, and cluster services.
+      Sibling to org.idempiere.hazelcast.service.feature; install one OR the other, not both.
+      Targets clustered/containerized deployments where the embedded Hazelcast peer-cluster model
+      is incompatible with rolling deploys, autoscaling, and ephemeral compute.
+   </description>
+
+   <copyright>
+      Copyright (C) 2026 Norbert Bede
+      Copyright (C) 2026 CloudEmpiere
+   </copyright>
+
+   <license url="https://www.gnu.org/licenses/old-licenses/gpl-2.0.html">
+      GNU General Public License version 2
+   </license>
+
+   <plugin
+         id="org.idempiere.redis.service"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
