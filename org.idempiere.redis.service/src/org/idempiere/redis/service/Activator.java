@@ -26,6 +26,7 @@
 package org.idempiere.redis.service;
 
 import org.eclipse.osgi.framework.console.CommandProvider;
+import org.idempiere.model.IMappedModelFactory;
 import org.idempiere.redis.service.config.RedisConfig;
 import org.idempiere.redis.service.console.RedisConsoleProvider;
 import org.idempiere.redis.service.events.HealthEventPublisher;
@@ -35,6 +36,10 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.runtime.ServiceComponentRuntime;
 import org.osgi.service.component.runtime.dto.ComponentDescriptionDTO;
 import org.redisson.Redisson;
@@ -60,8 +65,20 @@ import org.slf4j.LoggerFactory;
  * <code>service.ranking=100</code>, which guarantees that
  * {@code Service.locator().locate(...)} returns the Redis implementation when
  * both bundles are present.</p>
+ *
+ * <p>This class is also a DS {@link Component} with a mandatory
+ * {@link IMappedModelFactory} reference. SCR activates the component as soon as
+ * that core service appears at startup, which loads this class from the bundle
+ * and — combined with {@code Bundle-ActivationPolicy: lazy} — moves the bundle
+ * from RESOLVED to ACTIVE so {@link #start(BundleContext)} actually runs. The
+ * three service components stay {@code enabled=false} and are turned on
+ * programmatically only when the redis backend is selected.</p>
  */
+@Component(service = BundleActivator.class, immediate = true)
 public class Activator implements BundleActivator {
+
+	@Reference(service = IMappedModelFactory.class, cardinality = ReferenceCardinality.MANDATORY)
+	private IMappedModelFactory mappedModelFactory;
 
 	private static final Logger log = LoggerFactory.getLogger(Activator.class);
 
@@ -127,6 +144,12 @@ public class Activator implements BundleActivator {
 	public static String getKeyPrefix() {
 		RedisConfig c = config;
 		return c != null ? c.getKeyPrefix() : "";
+	}
+
+	@Activate
+	public void activate(BundleContext bundleContext) {
+		// Intentionally empty — presence of this DS component triggers lazy
+		// activation of the bundle, which in turn fires start(BundleContext).
 	}
 
 	@Override
