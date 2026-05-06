@@ -35,6 +35,7 @@ import org.redisson.api.RTopic;
 
 @Component(
 		service = IMessageService.class,
+		immediate = true,
 		enabled = false,
 		property = "service.ranking:Integer=100")
 public class MessageServiceImpl implements IMessageService {

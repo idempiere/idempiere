@@ -30,7 +30,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
-import java.time.format.DateTimeParseException;
 import java.util.Properties;
 
 import org.redisson.config.Config;
@@ -212,25 +211,30 @@ public final class RedisConfig {
 	}
 
 	/** Loads configuration from {@code $IDEMPIERE_HOME}, applying defaults where files are absent. */
-	public static RedisConfig load() throws IOException {
+	public static RedisConfig load() {
 		File home = resolveIdempiereHome();
 		Config redisson = loadRedissonConfig(home);
 		Properties props = loadProperties(home);
 		String prefix = resolveKeyPrefix(props, home);
-		boolean nearCacheEnabled = boolProp(props, NEAR_CACHE_ENABLED, DEFAULT_NEAR_CACHE_ENABLED);
-		int nearCacheMax = intProp(props, NEAR_CACHE_MAX_SIZE, DEFAULT_NEAR_CACHE_MAX_SIZE);
-		Duration nearCacheExpire = durationProp(props, NEAR_CACHE_EXPIRE_AFTER_WRITE, DEFAULT_NEAR_CACHE_EXPIRE);
+		boolean nearCacheEnabled = ConfigParser.boolProp(props, NEAR_CACHE_ENABLED, DEFAULT_NEAR_CACHE_ENABLED);
+		int nearCacheMax = ConfigParser.intProp(props, NEAR_CACHE_MAX_SIZE, DEFAULT_NEAR_CACHE_MAX_SIZE);
+		Duration nearCacheExpire = ConfigParser.durationProp(props, NEAR_CACHE_EXPIRE_AFTER_WRITE, DEFAULT_NEAR_CACHE_EXPIRE);
 		// Fallback only makes sense when there's a near-cache wrapper to attach it to.
 		// When near-cache is off the bundle returns the raw RMap and Redis failures
 		// surface to callers - there's no wrapper layer to host a fallback cache.
-		boolean fallbackEnabled = nearCacheEnabled
-				&& boolProp(props, FALLBACK_ENABLED, DEFAULT_FALLBACK_ENABLED);
-		int fallbackMax = intProp(props, FALLBACK_MAX_SIZE, DEFAULT_FALLBACK_MAX_SIZE);
-		Duration fallbackExpire = durationProp(props, FALLBACK_EXPIRE_AFTER_WRITE, DEFAULT_FALLBACK_EXPIRE);
-		int circuitFailures = intProp(props, CIRCUIT_FAILURE_THRESHOLD, DEFAULT_CIRCUIT_FAILURE_THRESHOLD);
-		Duration circuitProbe = durationProp(props, CIRCUIT_PROBE_INTERVAL, DEFAULT_CIRCUIT_PROBE_INTERVAL);
-		boolean messagingReliable = boolProp(props, MESSAGING_RELIABLE, DEFAULT_MESSAGING_RELIABLE);
-		boolean keyspaceNotifications = boolProp(props, KEYSPACE_NOTIFICATIONS_ENABLED,
+		boolean fallbackRequested = ConfigParser.boolProp(props, FALLBACK_ENABLED, DEFAULT_FALLBACK_ENABLED);
+		boolean fallbackEnabled = nearCacheEnabled && fallbackRequested;
+		if (fallbackRequested && !nearCacheEnabled) {
+			log.info("{}=true was requested but {}=false — fallback layer is hosted by the "
+					+ "near-cache wrapper, so it is implicitly off. Enable {} to opt in to fallback.",
+					FALLBACK_ENABLED, NEAR_CACHE_ENABLED, NEAR_CACHE_ENABLED);
+		}
+		int fallbackMax = ConfigParser.intProp(props, FALLBACK_MAX_SIZE, DEFAULT_FALLBACK_MAX_SIZE);
+		Duration fallbackExpire = ConfigParser.durationProp(props, FALLBACK_EXPIRE_AFTER_WRITE, DEFAULT_FALLBACK_EXPIRE);
+		int circuitFailures = ConfigParser.intProp(props, CIRCUIT_FAILURE_THRESHOLD, DEFAULT_CIRCUIT_FAILURE_THRESHOLD);
+		Duration circuitProbe = ConfigParser.durationProp(props, CIRCUIT_PROBE_INTERVAL, DEFAULT_CIRCUIT_PROBE_INTERVAL);
+		boolean messagingReliable = ConfigParser.boolProp(props, MESSAGING_RELIABLE, DEFAULT_MESSAGING_RELIABLE);
+		boolean keyspaceNotifications = ConfigParser.boolProp(props, KEYSPACE_NOTIFICATIONS_ENABLED,
 				DEFAULT_KEYSPACE_NOTIFICATIONS_ENABLED);
 		return new RedisConfig(redisson, prefix, nearCacheEnabled, nearCacheMax, nearCacheExpire,
 				fallbackEnabled, fallbackMax, fallbackExpire,
@@ -245,17 +249,30 @@ public final class RedisConfig {
 		return (path == null || path.isBlank()) ? null : new File(path);
 	}
 
-	private static Config loadRedissonConfig(File home) throws IOException {
+	private static Config loadRedissonConfig(File home) {
 		if (home != null) {
 			File yaml = new File(home, YAML_FILENAME);
 			if (yaml.isFile()) {
 				log.info("Loading Redisson configuration from {}", yaml.getAbsolutePath());
-				return Config.fromYAML(yaml);
+				try {
+					return Config.fromYAML(yaml);
+				} catch (IOException e) {
+					throw new IllegalStateException("Failed to parse " + yaml.getAbsolutePath()
+							+ " — fix the YAML or remove the file to fall back to the development default", e);
+				}
 			}
+			// IDEMPIERE_HOME is set but the YAML file is absent. That's a deployment
+			// misconfiguration: an operator who actually wanted localhost would not
+			// have set IDEMPIERE_HOME in the first place. Fail fast so the mistake
+			// is loud at boot rather than silent.
+			throw new IllegalStateException("IDEMPIERE_HOME=" + home.getAbsolutePath()
+					+ " is set but " + YAML_FILENAME + " is missing. Drop a redis.yaml in IDEMPIERE_HOME "
+					+ "(see redis-template.yaml) or unset IDEMPIERE_HOME to use the development default ("
+					+ DEFAULT_REDIS_ADDRESS + ").");
 		}
-		log.warn("No {} found in IDEMPIERE_HOME — falling back to single-server default ({}). "
-				+ "This is suitable for development only; configure {} for production deployments.",
-				YAML_FILENAME, DEFAULT_REDIS_ADDRESS, YAML_FILENAME);
+		log.warn("No IDEMPIERE_HOME set; using single-server development default ({}). "
+				+ "Configure {} in IDEMPIERE_HOME for any non-development deployment.",
+				DEFAULT_REDIS_ADDRESS, YAML_FILENAME);
 		Config cfg = new Config();
 		cfg.useSingleServer().setAddress(DEFAULT_REDIS_ADDRESS);
 		return cfg;
@@ -357,35 +374,4 @@ public final class RedisConfig {
 		return dbName.trim();
 	}
 
-	private static boolean boolProp(Properties p, String key, boolean defaultValue) {
-		String v = p.getProperty(key);
-		return (v == null || v.isBlank()) ? defaultValue : Boolean.parseBoolean(v.trim());
-	}
-
-	private static int intProp(Properties p, String key, int defaultValue) {
-		String v = p.getProperty(key);
-		if (v == null || v.isBlank()) {
-			return defaultValue;
-		}
-		try {
-			return Integer.parseInt(v.trim());
-		} catch (NumberFormatException e) {
-			log.warn("{}='{}' is not a valid integer; defaulting to {}", key, v, defaultValue);
-			return defaultValue;
-		}
-	}
-
-	private static Duration durationProp(Properties p, String key, Duration defaultValue) {
-		String v = p.getProperty(key);
-		if (v == null || v.isBlank()) {
-			return defaultValue;
-		}
-		try {
-			return Duration.parse(v.trim());
-		} catch (DateTimeParseException e) {
-			log.warn("{}='{}' is not a valid ISO-8601 duration (e.g. PT5M); defaulting to {}",
-					key, v, defaultValue);
-			return defaultValue;
-		}
-	}
 }

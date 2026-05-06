@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -42,6 +43,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
@@ -51,10 +54,12 @@ import org.idempiere.distributed.IClusterService;
 import org.idempiere.redis.service.cluster.ClusterMember;
 import org.idempiere.redis.service.cluster.RpcRequest;
 import org.idempiere.redis.service.cluster.RpcResponse;
+import org.idempiere.redis.service.config.ConfigParser;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.redisson.api.RBucket;
+import org.redisson.api.RBuckets;
 import org.redisson.api.RKeys;
 import org.redisson.api.RTopic;
 import org.redisson.api.RedissonClient;
@@ -67,16 +72,16 @@ import org.slf4j.LoggerFactory;
  * <p><b>Membership</b> uses heartbeat keys: each running JVM writes
  * <code>&lt;prefix&gt;cluster:members:&lt;uuid&gt;</code> with a 30-second TTL,
  * refreshed every 10 seconds by a daemon scheduler. {@link #getMembers()} scans
- * Redis for keys under that namespace and returns the live members. A node that
- * crashes stops refreshing; the key TTL-expires and the node naturally drops
- * from {@code getMembers()}.</p>
+ * Redis for keys under that namespace and pulls every value in one MGET round
+ * trip.</p>
  *
  * <p><b>Distributed compute</b> ({@link #execute}) uses topic-RPC on Redis pub/sub.
  * Originators publish an {@link RpcRequest} on a global request topic, target
  * members execute and publish an {@link RpcResponse} on a per-request response
  * topic, and each {@link Future} resolves as its node responds. A configurable
  * timeout (default 60 s, override via {@code idempiere.cluster.rpc.timeout})
- * fails any unfilled futures.</p>
+ * fails any unfilled futures. RPC to self is short-circuited to a direct local
+ * Callable invocation rather than a Redis round trip.</p>
  *
  * <p><b>Callable serialization</b>: Callables passed to {@code execute} must be
  * {@link java.io.Serializable}. The bundle's {@code DynamicImport-Package} entry
@@ -118,8 +123,10 @@ public class ClusterServiceImpl implements IClusterService {
 			startHeartbeat();
 			subscribeToRequestTopic();
 			log.info("Redis cluster service activated; local member: {}", self);
+		} catch (RuntimeException re) {
+			throw re;
 		} catch (Exception e) {
-			log.error("Failed to activate Redis cluster service — cluster operations will fail", e);
+			throw new IllegalStateException("Failed to activate Redis cluster service", e);
 		}
 	}
 
@@ -151,10 +158,18 @@ public class ClusterServiceImpl implements IClusterService {
 			RedissonClient client = Activator.getRedissonClient();
 			RKeys keys = client.getKeys();
 			String pattern = membersKeyPrefix() + "*";
-			Collection<IClusterMember> members = new ArrayList<>();
+			List<String> keyList = new ArrayList<>();
 			for (String key : keys.getKeysByPattern(pattern)) {
-				RBucket<ClusterMember> bucket = client.getBucket(key);
-				ClusterMember m = bucket.get();
+				keyList.add(key);
+			}
+			if (keyList.isEmpty()) {
+				return Collections.singletonList(self);
+			}
+			RBuckets buckets = client.getBuckets();
+			// One MGET round trip — a 50-node cluster used to mean 50 RTTs.
+			Map<String, ClusterMember> bulk = buckets.get(keyList.toArray(new String[0]));
+			Collection<IClusterMember> members = new ArrayList<>(bulk.size());
+			for (ClusterMember m : bulk.values()) {
 				if (m != null) {
 					members.add(m);
 				}
@@ -191,16 +206,37 @@ public class ClusterServiceImpl implements IClusterService {
 		if (self == null) {
 			throw new IllegalStateException("Cluster service is not activated");
 		}
+		if (requestTopic == null) {
+			throw new IllegalStateException("RPC request topic not subscribed; cluster execute is unavailable");
+		}
 
 		String taskId = UUID.randomUUID().toString();
 		String responseTopicName = rpcResponseTopicName(taskId);
 
 		Map<IClusterMember, CompletableFuture<V>> futures = new LinkedHashMap<>();
-		String[] targetUuids = new String[members.size()];
-		int idx = 0;
+		List<String> remoteUuids = new ArrayList<>(members.size());
+		IClusterMember selfTarget = null;
 		for (IClusterMember m : members) {
-			futures.put(m, new CompletableFuture<>());
-			targetUuids[idx++] = m.getId();
+			CompletableFuture<V> f = new CompletableFuture<>();
+			futures.put(m, f);
+			if (self.getId().equals(m.getId())) {
+				selfTarget = m;
+			} else {
+				remoteUuids.add(m.getId());
+			}
+		}
+
+		// Self-targeted execution: run the Callable directly instead of round-tripping
+		// through Redis pub/sub. Delivery semantics match: same future-completion
+		// timing relative to remote responses, plus saved network latency.
+		if (selfTarget != null) {
+			completeLocally(futures.get(selfTarget), task);
+		}
+
+		if (remoteUuids.isEmpty()) {
+			@SuppressWarnings({"rawtypes", "unchecked"})
+			Map<IClusterMember, Future<V>> result = (Map) futures;
+			return result;
 		}
 
 		RedissonClient client = Activator.getRedissonClient();
@@ -208,24 +244,35 @@ public class ClusterServiceImpl implements IClusterService {
 		int listenerId = responseTopic.addListener(RpcResponse.class,
 				(channel, response) -> handleResponse(response));
 
+		Map<IClusterMember, CompletableFuture<V>> remoteFutures = new LinkedHashMap<>();
+		for (Map.Entry<IClusterMember, CompletableFuture<V>> e : futures.entrySet()) {
+			if (!self.getId().equals(e.getKey().getId())) {
+				remoteFutures.put(e.getKey(), e.getValue());
+			}
+		}
+
 		@SuppressWarnings({"rawtypes", "unchecked"})
-		PendingRequest pr = new PendingRequest((Map) futures, responseTopic, listenerId);
+		PendingRequest pr = new PendingRequest((Map) remoteFutures, responseTopic, listenerId);
 		pending.put(taskId, pr);
 
 		ScheduledExecutorService te = timeoutExecutor;
 		if (te != null) {
-			te.schedule(() -> failPendingByTimeout(taskId), rpcTimeoutSeconds, TimeUnit.SECONDS);
+			ScheduledFuture<?> timeoutHandle = te.schedule(() -> failPendingByTimeout(taskId),
+					rpcTimeoutSeconds, TimeUnit.SECONDS);
+			pr.setTimeoutHandle(timeoutHandle);
 		}
 
 		try {
-			RpcRequest request = new RpcRequest(taskId, self.getId(), targetUuids, responseTopicName, task);
+			RpcRequest request = new RpcRequest(taskId, self.getId(),
+					remoteUuids.toArray(new String[0]), responseTopicName, task);
 			requestTopic.publish(request);
 		} catch (Exception e) {
 			pending.remove(taskId);
 			pr.unsubscribe();
+			pr.cancelTimeout();
 			IllegalStateException wrap = new IllegalStateException(
 					"Failed to publish RPC request — Callable may not be Serializable, or Redis is unavailable", e);
-			for (CompletableFuture<V> f : futures.values()) {
+			for (CompletableFuture<V> f : remoteFutures.values()) {
 				f.completeExceptionally(wrap);
 			}
 		}
@@ -233,6 +280,14 @@ public class ClusterServiceImpl implements IClusterService {
 		@SuppressWarnings({"rawtypes", "unchecked"})
 		Map<IClusterMember, Future<V>> result = (Map) futures;
 		return result;
+	}
+
+	private static <V> void completeLocally(CompletableFuture<V> future, Callable<V> task) {
+		try {
+			future.complete(task.call());
+		} catch (Throwable t) {
+			future.completeExceptionally(t);
+		}
 	}
 
 	// ---------------------------------------------------------------- Internals
@@ -265,14 +320,13 @@ public class ClusterServiceImpl implements IClusterService {
 	}
 
 	private void subscribeToRequestTopic() {
-		try {
-			timeoutExecutor = Executors.newSingleThreadScheduledExecutor(daemonThreadFactory("redis-cluster-rpc-timeout"));
-			requestTopic = Activator.getRedissonClient().getTopic(rpcRequestTopicName());
-			requestListenerId = requestTopic.addListener(RpcRequest.class,
-					(channel, request) -> handleRequest(request));
-		} catch (Exception e) {
-			log.error("Failed to subscribe to RPC request topic — execute() will not work", e);
-		}
+		// Caller wraps in try/catch in activate() and converts to ISE, which marks
+		// the DS component as failed. Better that than swallowing here and letting
+		// execute() NPE later with a misleading "Callable may not be Serializable".
+		timeoutExecutor = Executors.newSingleThreadScheduledExecutor(daemonThreadFactory("redis-cluster-rpc-timeout"));
+		requestTopic = Activator.getRedissonClient().getTopic(rpcRequestTopicName());
+		requestListenerId = requestTopic.addListener(RpcRequest.class,
+				(channel, request) -> handleRequest(request));
 	}
 
 	private void unsubscribeFromRequestTopic() {
@@ -340,6 +394,7 @@ public class ClusterServiceImpl implements IClusterService {
 		if (done) {
 			pending.remove(response.getTaskId());
 			pr.unsubscribe();
+			pr.cancelTimeout();
 		}
 	}
 
@@ -355,6 +410,7 @@ public class ClusterServiceImpl implements IClusterService {
 		for (PendingRequest pr : pending.values()) {
 			pr.failRemaining(cause);
 			pr.unsubscribe();
+			pr.cancelTimeout();
 		}
 		pending.clear();
 	}
@@ -377,34 +433,20 @@ public class ClusterServiceImpl implements IClusterService {
 	}
 
 	private static int resolveLocalPort() {
-		String override = System.getProperty("idempiere.cluster.port");
-		if (override != null && !override.isBlank()) {
-			try {
-				return Integer.parseInt(override.trim());
-			} catch (NumberFormatException ignored) {
-				log.warn("idempiere.cluster.port='{}' is not a valid integer; defaulting to 0", override);
-			}
-		}
-		return 0;
+		return ConfigParser.systemProp("idempiere.cluster.port", 0, Integer::parseInt);
 	}
 
 	private static long resolveRpcTimeout() {
-		String override = System.getProperty("idempiere.cluster.rpc.timeout");
-		if (override != null && !override.isBlank()) {
-			try {
-				long v = Long.parseLong(override.trim());
-				if (v > 0) {
-					return v;
-				}
-				log.warn("idempiere.cluster.rpc.timeout='{}' must be positive; defaulting to {} s", override, DEFAULT_RPC_TIMEOUT_SECONDS);
-			} catch (NumberFormatException ignored) {
-				log.warn("idempiere.cluster.rpc.timeout='{}' is not a valid number; defaulting to {} s", override, DEFAULT_RPC_TIMEOUT_SECONDS);
-			}
+		long parsed = ConfigParser.systemProp("idempiere.cluster.rpc.timeout",
+				DEFAULT_RPC_TIMEOUT_SECONDS, Long::parseLong);
+		if (parsed <= 0) {
+			log.warn("idempiere.cluster.rpc.timeout must be positive; defaulting to {} s", DEFAULT_RPC_TIMEOUT_SECONDS);
+			return DEFAULT_RPC_TIMEOUT_SECONDS;
 		}
-		return DEFAULT_RPC_TIMEOUT_SECONDS;
+		return parsed;
 	}
 
-	private static java.util.concurrent.ThreadFactory daemonThreadFactory(String name) {
+	private static ThreadFactory daemonThreadFactory(String name) {
 		return r -> {
 			Thread t = new Thread(r, name);
 			t.setDaemon(true);
@@ -434,12 +476,14 @@ public class ClusterServiceImpl implements IClusterService {
 
 	/**
 	 * Per-request state: pending Future per target member + the response topic
-	 * subscription that needs to be torn down on completion or timeout.
+	 * subscription that needs to be torn down on completion or timeout, plus the
+	 * scheduled timeout handle so an early completion can cancel the wakeup.
 	 */
 	private static final class PendingRequest {
 		private final ConcurrentMap<String, CompletableFuture<Object>> futuresByUuid;
 		private final RTopic responseTopic;
 		private final int listenerId;
+		private volatile ScheduledFuture<?> timeoutHandle;
 
 		PendingRequest(Map<IClusterMember, CompletableFuture<Object>> futures,
 				RTopic responseTopic, int listenerId) {
@@ -448,6 +492,18 @@ public class ClusterServiceImpl implements IClusterService {
 			this.futuresByUuid = new ConcurrentHashMap<>();
 			for (Map.Entry<IClusterMember, CompletableFuture<Object>> e : futures.entrySet()) {
 				futuresByUuid.put(e.getKey().getId(), e.getValue());
+			}
+		}
+
+		void setTimeoutHandle(ScheduledFuture<?> handle) {
+			this.timeoutHandle = handle;
+		}
+
+		void cancelTimeout() {
+			ScheduledFuture<?> h = timeoutHandle;
+			timeoutHandle = null;
+			if (h != null) {
+				h.cancel(false);
 			}
 		}
 

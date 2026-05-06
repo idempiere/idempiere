@@ -25,6 +25,7 @@
 **********************************************************************/
 package org.idempiere.redis.service;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 import org.idempiere.distributed.ICacheService;
 import org.idempiere.redis.service.cache.CaffeineLayeredMap;
 import org.idempiere.redis.service.config.RedisConfig;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.redisson.api.RLock;
 import org.redisson.api.RMap;
@@ -44,17 +46,36 @@ import org.redisson.api.RMap;
 		property = "service.ranking:Integer=100")
 public class CacheServiceImpl implements ICacheService {
 
+	// Snapshot of RedisConfig values resolved at @Activate time. Resolving these
+	// per getMap() call would mean dereferencing the Activator config singleton
+	// (and re-evaluating branches) on every CCache constructor — a hot path.
+	private boolean nearCacheEnabled;
+	private int nearCacheMaxSize;
+	private Duration nearCacheExpire;
+	private int fallbackMaxSize;
+	private Duration fallbackExpire;
+	private String keyPrefix = "";
+
+	@Activate
+	void activate() {
+		RedisConfig cfg = Activator.getConfig();
+		this.nearCacheEnabled = cfg.isNearCacheEnabled();
+		this.nearCacheMaxSize = cfg.getNearCacheMaxSize();
+		this.nearCacheExpire = cfg.getNearCacheExpireAfterWrite();
+		// fallbackMaxSize=0 disables the second tier when fallback is off,
+		// keeping behaviour identical to the pre-split single-tier wrapper.
+		this.fallbackMaxSize = cfg.isFallbackEnabled() ? cfg.getFallbackMaxSize() : 0;
+		this.fallbackExpire = cfg.getFallbackExpireAfterWrite();
+		this.keyPrefix = cfg.getKeyPrefix();
+	}
+
 	@Override
 	public <K, V> Map<K, V> getMap(String name) {
 		RMap<K, V> rmap = Activator.getRedissonClient().getMap(prefixed(name));
-		RedisConfig cfg = Activator.getConfig();
-		if (cfg.isNearCacheEnabled()) {
-			// Pass fallbackMaxSize=0 to disable the second tier when fallback is off,
-			// keeping behaviour identical to the pre-split single-tier wrapper.
-			int fallbackMax = cfg.isFallbackEnabled() ? cfg.getFallbackMaxSize() : 0;
+		if (nearCacheEnabled) {
 			return new CaffeineLayeredMap<>(rmap, Activator.getHealth(),
-					cfg.getNearCacheMaxSize(), cfg.getNearCacheExpireAfterWrite(),
-					fallbackMax, cfg.getFallbackExpireAfterWrite());
+					nearCacheMaxSize, nearCacheExpire,
+					fallbackMaxSize, fallbackExpire);
 		}
 		return rmap;
 	}
@@ -113,7 +134,7 @@ public class CacheServiceImpl implements ICacheService {
 		return Activator.getRedissonClient().getLock(lockName);
 	}
 
-	private static String prefixed(String name) {
-		return Activator.getKeyPrefix() + name;
+	private String prefixed(String name) {
+		return keyPrefix + name;
 	}
 }

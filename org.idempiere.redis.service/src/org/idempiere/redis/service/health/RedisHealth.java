@@ -25,8 +25,12 @@
 **********************************************************************/
 package org.idempiere.redis.service.health;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
@@ -42,11 +46,18 @@ import org.slf4j.LoggerFactory;
  * {@code false} so callers can short-circuit to a local fallback rather than
  * waiting for Redisson connection timeouts on every call.</p>
  *
- * <p>Recovery is probe-driven: {@link #isHealthy()} on an open breaker, once the
- * probe interval has elapsed, performs a lightweight Redis call (KEYS count) and
- * transitions back to {@code CLOSED} on success.</p>
+ * <p>Recovery is probe-driven on a background scheduler — never on the caller's
+ * thread. While the breaker is OPEN a single-threaded executor runs a lightweight
+ * Redis call (DBSIZE) every {@code probeIntervalMs}; a successful probe transitions
+ * back to {@link State#CLOSED}. Call sites pay only an atomic read on {@link
+ * #isHealthy()}.</p>
+ *
+ * <h3>Thread safety</h3>
+ * <p>State transitions use {@link AtomicReference#compareAndSet} so a flood of
+ * failing call sites never fires more than one {@link StateListener} event per
+ * actual transition.</p>
  */
-public final class RedisHealth {
+public final class RedisHealth implements AutoCloseable {
 
 	private static final Logger log = LoggerFactory.getLogger(RedisHealth.class);
 
@@ -57,14 +68,20 @@ public final class RedisHealth {
 	private final long probeIntervalMs;
 
 	private final AtomicInteger consecutiveFailures = new AtomicInteger(0);
-	private final AtomicLong openedAt = new AtomicLong(0L);
-	private volatile State state = State.CLOSED;
+	private final AtomicReference<State> state = new AtomicReference<>(State.CLOSED);
+	private final ScheduledExecutorService prober;
+	private volatile ScheduledFuture<?> probeFuture;
 	private volatile StateListener listener = (p, c) -> { /* no-op default */ };
 
 	public RedisHealth(RedissonClient client, int failureThreshold, long probeIntervalMs) {
 		this.client = client;
 		this.failureThreshold = Math.max(1, failureThreshold);
 		this.probeIntervalMs = Math.max(1000L, probeIntervalMs);
+		this.prober = Executors.newSingleThreadScheduledExecutor(r -> {
+			Thread t = new Thread(r, "redis-health-probe");
+			t.setDaemon(true);
+			return t;
+		});
 	}
 
 	/**
@@ -81,68 +98,73 @@ public final class RedisHealth {
 	}
 
 	public State getState() {
-		return state;
+		return state.get();
 	}
 
 	/**
-	 * @return {@code true} if the breaker is closed (calls should proceed) or if
-	 *         a recovery probe just succeeded; {@code false} if open and still
-	 *         within the probe-cooldown window.
+	 * Pure read of the current breaker state — no Redis I/O on the caller's
+	 * thread. Probing happens on a background scheduler; see {@link #recordFailure}.
+	 *
+	 * @return {@code true} when the breaker is closed (calls should proceed),
+	 *         {@code false} when open.
 	 */
 	public boolean isHealthy() {
-		if (state == State.CLOSED) {
-			return true;
-		}
-		long now = System.currentTimeMillis();
-		long opened = openedAt.get();
-		if (now - opened < probeIntervalMs) {
-			return false;
-		}
-		// Try to claim the probe slot — only one thread runs the probe per interval.
-		if (!openedAt.compareAndSet(opened, now)) {
-			return false;
-		}
-		try {
-			client.getKeys().count();
-			close();
-			log.info("Redis circuit breaker recovered to CLOSED after probe");
-			return true;
-		} catch (Exception e) {
-			log.warn("Redis circuit breaker probe failed; remaining OPEN", e);
-			return false;
-		}
+		return state.get() == State.CLOSED;
 	}
 
 	public void recordSuccess() {
 		consecutiveFailures.set(0);
-		if (state == State.OPEN) {
-			close();
-		}
+		transitionToClosed();
 	}
 
 	public void recordFailure(Throwable cause) {
 		int n = consecutiveFailures.incrementAndGet();
-		if (n >= failureThreshold && state == State.CLOSED) {
-			open();
+		if (n >= failureThreshold && state.compareAndSet(State.CLOSED, State.OPEN)) {
+			startProbing();
 			log.warn("Redis circuit breaker tripped to OPEN after {} consecutive failures", n, cause);
+			fire(State.CLOSED, State.OPEN);
 		}
 	}
 
-	private void open() {
-		State previous = state;
-		state = State.OPEN;
-		openedAt.set(System.currentTimeMillis());
-		if (previous != State.OPEN) {
-			fire(previous, State.OPEN);
+	@Override
+	public void close() {
+		ScheduledFuture<?> f = probeFuture;
+		probeFuture = null;
+		if (f != null) {
+			f.cancel(false);
+		}
+		prober.shutdownNow();
+	}
+
+	// ---- internals
+
+	private void startProbing() {
+		probeFuture = prober.scheduleWithFixedDelay(this::probe,
+				probeIntervalMs, probeIntervalMs, TimeUnit.MILLISECONDS);
+	}
+
+	private void probe() {
+		if (state.get() != State.OPEN) {
+			return;
+		}
+		try {
+			client.getKeys().count();
+			transitionToClosed();
+			log.info("Redis circuit breaker recovered to CLOSED after probe");
+		} catch (Exception e) {
+			log.warn("Redis circuit breaker probe failed; remaining OPEN", e);
 		}
 	}
 
-	private void close() {
-		State previous = state;
-		state = State.CLOSED;
-		consecutiveFailures.set(0);
-		if (previous != State.CLOSED) {
-			fire(previous, State.CLOSED);
+	private void transitionToClosed() {
+		if (state.compareAndSet(State.OPEN, State.CLOSED)) {
+			ScheduledFuture<?> f = probeFuture;
+			probeFuture = null;
+			if (f != null) {
+				f.cancel(false);
+			}
+			consecutiveFailures.set(0);
+			fire(State.OPEN, State.CLOSED);
 		}
 	}
 

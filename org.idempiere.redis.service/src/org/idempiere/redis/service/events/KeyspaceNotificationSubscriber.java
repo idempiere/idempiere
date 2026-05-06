@@ -94,6 +94,7 @@ public final class KeyspaceNotificationSubscriber {
 	public static final String PROP_TIMESTAMP = "timestamp";
 
 	private static final String CHANNEL_PATTERN_FORMAT = "__keyspace@*__:%s*";
+	private static final String CHANNEL_PREFIX = "__keyspace@";
 
 	private final RedissonClient client;
 	private final String keyPrefix;
@@ -157,10 +158,15 @@ public final class KeyspaceNotificationSubscriber {
 			// EventAdmin not registered (e.g. unit-test runtime) - count it but skip publish.
 			return;
 		}
-		// Channel format: __keyspace@<db>__:<key>
-		int at = channel.indexOf('@');
+		// Channel format: __keyspace@<db>__:<key>. Reject anything else so this code
+		// can't silently misparse a __keyevent@N__ channel if the subscriber pattern
+		// is ever broadened.
+		if (!channel.startsWith(CHANNEL_PREFIX)) {
+			return;
+		}
+		int at = CHANNEL_PREFIX.length() - 1;
 		int closeBrace = channel.indexOf("__:", at);
-		if (at < 0 || closeBrace < 0) {
+		if (closeBrace < 0) {
 			return;
 		}
 		int database;

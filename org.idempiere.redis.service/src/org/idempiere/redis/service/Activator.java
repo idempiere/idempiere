@@ -25,6 +25,13 @@
 **********************************************************************/
 package org.idempiere.redis.service;
 
+import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+
 import org.eclipse.osgi.framework.console.CommandProvider;
 import org.idempiere.model.IMappedModelFactory;
 import org.idempiere.redis.service.config.RedisConfig;
@@ -32,12 +39,13 @@ import org.idempiere.redis.service.console.RedisConsoleProvider;
 import org.idempiere.redis.service.events.HealthEventPublisher;
 import org.idempiere.redis.service.events.KeyspaceNotificationSubscriber;
 import org.idempiere.redis.service.health.RedisHealth;
-import org.osgi.framework.BundleActivator;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.runtime.ServiceComponentRuntime;
@@ -59,26 +67,34 @@ import org.slf4j.LoggerFactory;
  * the existing Hazelcast bundle continues to serve
  * {@code org.idempiere.distributed} interfaces unchanged.</p>
  *
- * <p>When the property is set to {@code redis}, this Activator initialises the
- * Redisson client, then enables the three DS components programmatically via
- * the OSGi {@link ServiceComponentRuntime}. Each component declares
+ * <p>When the property is set to {@code redis}, this DS component initialises
+ * the Redisson client, then enables the three target DS components programmatically
+ * via the OSGi {@link ServiceComponentRuntime}. Each component declares
  * <code>service.ranking=100</code>, which guarantees that
  * {@code Service.locator().locate(...)} returns the Redis implementation when
  * both bundles are present.</p>
  *
- * <p>This class is also a DS {@link Component} with a mandatory
- * {@link IMappedModelFactory} reference. SCR activates the component as soon as
- * that core service appears at startup, which loads this class from the bundle
- * and — combined with {@code Bundle-ActivationPolicy: lazy} — moves the bundle
- * from RESOLVED to ACTIVE so {@link #start(BundleContext)} actually runs. The
- * three service components stay {@code enabled=false} and are turned on
- * programmatically only when the redis backend is selected.</p>
+ * <h3>Activation ordering</h3>
+ *
+ * <p>The mandatory {@link IMappedModelFactory} reference exists purely to gate
+ * activation on iDempiere core readiness — SCR will only activate this
+ * component once that core service has registered, which guarantees
+ * {@link RedisConfig} parsing, the console provider, and any code that
+ * indirectly touches iDempiere context can run safely.</p>
+ *
+ * <h3>Synchronous init with bounded wait</h3>
+ *
+ * <p>{@link Redisson#create} opens a Netty-backed connection that needs to
+ * load classes from this bundle's {@code lib/redisson-all.jar}. Because OSGi
+ * may serialise class loads from a starting bundle, doing the connect on the
+ * SCR activation thread risks contention. Init runs on a dedicated worker
+ * thread; the activate method blocks on a {@link CountDownLatch} for up to
+ * {@link #INIT_TIMEOUT_SECONDS} seconds. If init times out, the bundle stays
+ * passive and Hazelcast continues to serve — the failure is logged and
+ * exposed via {@link #isInitialisationFailed()} for the console.</p>
  */
-@Component(service = BundleActivator.class, immediate = true)
-public class Activator implements BundleActivator {
-
-	@Reference(service = IMappedModelFactory.class, cardinality = ReferenceCardinality.MANDATORY)
-	private IMappedModelFactory mappedModelFactory;
+@Component(service = {}, immediate = true)
+public class Activator {
 
 	private static final Logger log = LoggerFactory.getLogger(Activator.class);
 
@@ -86,7 +102,29 @@ public class Activator implements BundleActivator {
 	private static final String BACKEND_ENV = "IDEMPIERE_DISTRIBUTED_BACKEND";
 	private static final String BACKEND_VALUE_REDIS = "redis";
 
-	private static volatile BundleContext context;
+	/** Hard upper bound on synchronous init time before we give up and stay passive. */
+	private static final long INIT_TIMEOUT_SECONDS = 30L;
+
+	/**
+	 * The set of DS components in this bundle that should be activated when the
+	 * Redis backend is selected. Listed by class name (== component name) so a
+	 * future addition to OSGI-INF/ doesn't accidentally inherit "enabled on
+	 * Redis activation".
+	 */
+	private static final Set<String> COMPONENTS_TO_ENABLE = Set.of(
+			"org.idempiere.redis.service.CacheServiceImpl",
+			"org.idempiere.redis.service.ClusterServiceImpl",
+			"org.idempiere.redis.service.MessageServiceImpl");
+
+	/**
+	 * Threading model for the static state below — written by the init worker
+	 * thread, read by application threads going through {@link CacheServiceImpl}
+	 * etc. {@code volatile} on each field gives us the necessary
+	 * happens-before for individual reads. The latch in
+	 * {@link #activate(BundleContext)} fences {@link #componentsEnabled} so DS
+	 * components are not enabled until {@link #client}, {@link #config}, and
+	 * {@link #health} are all visible.
+	 */
 	private static volatile RedissonClient client;
 	private static volatile RedisConfig config;
 	private static volatile RedisHealth health;
@@ -94,10 +132,15 @@ public class Activator implements BundleActivator {
 	private static volatile KeyspaceNotificationSubscriber keyspaceSubscriber;
 	private static volatile ServiceRegistration<CommandProvider> consoleRegistration;
 	private static volatile boolean componentsEnabled;
-	private volatile Thread initThread;
+	private static volatile boolean initialisationFailed;
 
-	public static BundleContext getContext() {
-		return context;
+	private volatile ExecutorService initExecutor;
+
+	@Reference(service = IMappedModelFactory.class, cardinality = ReferenceCardinality.MANDATORY)
+	void setMappedModelFactory(IMappedModelFactory mappedModelFactory) {
+		// Bind method intentionally ignores the value — the reference is a wait
+		// gate so SCR delays activation until iDempiere core has registered
+		// IMappedModelFactory. See class Javadoc.
 	}
 
 	/**
@@ -146,15 +189,18 @@ public class Activator implements BundleActivator {
 		return c != null ? c.getKeyPrefix() : "";
 	}
 
-	@Activate
-	public void activate(BundleContext bundleContext) {
-		// Intentionally empty — presence of this DS component triggers lazy
-		// activation of the bundle, which in turn fires start(BundleContext).
+	/**
+	 * @return {@code true} if Redis was selected as the backend but the bundle
+	 *         failed to initialise — used by the console to surface the
+	 *         partial-startup state that {@link #getRedissonClient()} can't
+	 *         distinguish from "bundle is passive".
+	 */
+	public static boolean isInitialisationFailed() {
+		return initialisationFailed;
 	}
 
-	@Override
-	public void start(BundleContext bundleContext) throws Exception {
-		context = bundleContext;
+	@Activate
+	public void activate(BundleContext bundleContext) {
 		String backend = resolveBackendSelector();
 		if (!BACKEND_VALUE_REDIS.equalsIgnoreCase(backend)) {
 			log.info("org.idempiere.redis.service started in passive mode "
@@ -165,18 +211,31 @@ public class Activator implements BundleActivator {
 					BACKEND_ENV, BACKEND_VALUE_REDIS);
 			return;
 		}
-		// Spin up Redisson + DS components on a background thread so this
-		// Activator.start() returns promptly. Redisson.create() opens a Netty-backed
-		// connection that needs to load classes from THIS bundle's lib/redisson-all.jar;
-		// OSGi serialises class loads from a STARTING bundle until its activator
-		// returns, so doing the connect synchronously here would deadlock (Netty thread
-		// waits for Activator → Activator waits for Netty).
-		initThread = new Thread(() -> initialiseAsync(bundleContext), "redis-bundle-init");
-		initThread.setDaemon(true);
-		initThread.start();
+		warnIfHazelcastAlsoInstalled(bundleContext);
+		// Synchronous init with bounded wait: the worker thread releases the
+		// latch only after the three target DS components are enabled. If we
+		// return before that, application code that does
+		// Service.locator().locate(ICacheService.class) will hit Hazelcast for
+		// the brief window in between — the exact race that motivated this
+		// change.
+		CountDownLatch ready = new CountDownLatch(1);
+		initExecutor = Executors.newSingleThreadExecutor(daemonThreadFactory("redis-bundle-init"));
+		initExecutor.execute(() -> initialiseAsync(bundleContext, ready));
+		try {
+			if (!ready.await(INIT_TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
+				initialisationFailed = true;
+				log.error("org.idempiere.redis.service initialisation did not complete within {} s — "
+						+ "bundle remains passive and Hazelcast continues to serve the distributed interfaces. "
+						+ "Inspect the bundle log for Redisson connection errors.", INIT_TIMEOUT_SECONDS);
+			}
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			initialisationFailed = true;
+			log.error("Interrupted while waiting for Redis bundle initialisation; remaining passive", e);
+		}
 	}
 
-	private void initialiseAsync(BundleContext bundleContext) {
+	private void initialiseAsync(BundleContext bundleContext, CountDownLatch ready) {
 		try {
 			RedisConfig cfg = RedisConfig.load();
 			RedissonClient c = Redisson.create(cfg.getRedissonConfig());
@@ -197,25 +256,27 @@ public class Activator implements BundleActivator {
 				keyspaceSubscriber = subscriber;
 			}
 			enableDsComponents(bundleContext);
+			componentsEnabled = true;
 			log.info("org.idempiere.redis.service activated as the distributed backend — "
 					+ "key prefix: {}; near-cache: {}; circuit failure-threshold: {}",
 					cfg.getKeyPrefix(), cfg.isNearCacheEnabled(), cfg.getCircuitFailureThreshold());
 		} catch (Exception e) {
+			initialisationFailed = true;
 			log.error("org.idempiere.redis.service failed to initialise — Hazelcast will continue serving "
-					+ "the distributed interfaces", e);
+					+ "the distributed interfaces. Use 'redisStatus' on the OSGi console for details.", e);
+		} finally {
+			ready.countDown();
 		}
 	}
 
-	@Override
-	public void stop(BundleContext bundleContext) throws Exception {
-		// If background init is still running, give it a chance to finish so we don't
-		// race a half-initialised RedissonClient that needs proper shutdown.
-		Thread t = initThread;
-		initThread = null;
-		if (t != null && t.isAlive()) {
-			t.interrupt();
+	@Deactivate
+	public void deactivate(BundleContext bundleContext) {
+		ExecutorService exec = initExecutor;
+		initExecutor = null;
+		if (exec != null) {
+			exec.shutdownNow();
 			try {
-				t.join(5000);
+				exec.awaitTermination(5, TimeUnit.SECONDS);
 			} catch (InterruptedException ie) {
 				Thread.currentThread().interrupt();
 			}
@@ -243,10 +304,19 @@ public class Activator implements BundleActivator {
 		if (publisher != null) {
 			publisher.close();
 		}
+		RedisHealth h = health;
+		health = null;
+		if (h != null) {
+			try {
+				h.close();
+			} catch (Exception e) {
+				log.warn("Error closing RedisHealth", e);
+			}
+		}
 		RedissonClient c = client;
 		client = null;
 		config = null;
-		health = null;
+		initialisationFailed = false;
 		if (c != null) {
 			try {
 				c.shutdown();
@@ -257,7 +327,6 @@ public class Activator implements BundleActivator {
 		} else {
 			log.info("org.idempiere.redis.service stopped");
 		}
-		context = null;
 	}
 
 	private static String resolveBackendSelector() {
@@ -268,11 +337,23 @@ public class Activator implements BundleActivator {
 		return value == null ? null : value.trim();
 	}
 
+	private static void warnIfHazelcastAlsoInstalled(BundleContext ctx) {
+		for (Bundle b : ctx.getBundles()) {
+			if ("org.idempiere.hazelcast.service".equals(b.getSymbolicName())) {
+				log.warn("Both org.idempiere.redis.service AND org.idempiere.hazelcast.service are installed. "
+						+ "Redis wins service-locate due to service.ranking=100, but Hazelcast will still spin "
+						+ "up its peer cluster (consuming memory and ports) for no benefit. "
+						+ "Uninstall the Hazelcast bundle for production deployments using Redis.");
+				return;
+			}
+		}
+	}
+
 	/**
-	 * Programmatically enables this bundle's DS components after the
-	 * {@link RedissonClient} is ready. The components ship with
-	 * <code>enabled = false</code> so they do not auto-activate when the bundle
-	 * starts in passive mode.
+	 * Enables this bundle's target DS components after the {@link RedissonClient}
+	 * is ready. Listed explicitly via {@link #COMPONENTS_TO_ENABLE} rather than
+	 * iterating all components in the bundle so future additions don't inherit
+	 * the activation behaviour by accident.
 	 */
 	private void enableDsComponents(BundleContext ctx) {
 		ServiceReference<ServiceComponentRuntime> ref = ctx.getServiceReference(ServiceComponentRuntime.class);
@@ -287,9 +368,10 @@ public class Activator implements BundleActivator {
 				return;
 			}
 			for (ComponentDescriptionDTO dto : scr.getComponentDescriptionDTOs(ctx.getBundle())) {
-				scr.enableComponent(dto);
+				if (COMPONENTS_TO_ENABLE.contains(dto.name)) {
+					scr.enableComponent(dto);
+				}
 			}
-			componentsEnabled = true;
 		} finally {
 			ctx.ungetService(ref);
 		}
@@ -306,10 +388,20 @@ public class Activator implements BundleActivator {
 				return;
 			}
 			for (ComponentDescriptionDTO dto : scr.getComponentDescriptionDTOs(ctx.getBundle())) {
-				scr.disableComponent(dto);
+				if (COMPONENTS_TO_ENABLE.contains(dto.name)) {
+					scr.disableComponent(dto);
+				}
 			}
 		} finally {
 			ctx.ungetService(ref);
 		}
+	}
+
+	private static ThreadFactory daemonThreadFactory(String name) {
+		return r -> {
+			Thread t = new Thread(r, name);
+			t.setDaemon(true);
+			return t;
+		};
 	}
 }

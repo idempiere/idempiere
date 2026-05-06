@@ -28,6 +28,7 @@ package org.idempiere.redis.service.cluster;
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Objects;
 
 import org.idempiere.distributed.IClusterMember;
 
@@ -98,5 +99,21 @@ public class ClusterMember implements IClusterMember, Serializable {
 	@Override
 	public String toString() {
 		return "ClusterMember[id=" + id + ", host=" + host + ", port=" + port + "]";
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof ClusterMember other)) {
+			return false;
+		}
+		return Objects.equals(id, other.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(id);
 	}
 }

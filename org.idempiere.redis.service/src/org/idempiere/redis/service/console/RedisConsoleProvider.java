@@ -28,6 +28,7 @@ package org.idempiere.redis.service.console;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
 import org.idempiere.distributed.IClusterMember;
+import org.idempiere.distributed.IClusterService;
 import org.idempiere.redis.service.Activator;
 import org.idempiere.redis.service.config.RedisConfig;
 import org.idempiere.redis.service.events.KeyspaceNotificationSubscriber;
@@ -86,8 +87,14 @@ public final class RedisConsoleProvider implements CommandProvider {
 		StringBuilder sb = new StringBuilder();
 		RedissonClient client = tryClient();
 		if (client == null) {
-			sb.append("Redis bundle is in PASSIVE mode (RedissonClient not initialised).\n");
-			sb.append("Set -Didempiere.distributed.backend=redis (or env IDEMPIERE_DISTRIBUTED_BACKEND=redis) to activate.\n");
+			if (Activator.isInitialisationFailed()) {
+				sb.append("Redis bundle is in FAILED state — initialisation was attempted but did not complete.\n");
+				sb.append("Hazelcast is currently serving the distributed interfaces.\n");
+				sb.append("Inspect the bundle log for Redisson connection errors.\n");
+			} else {
+				sb.append("Redis bundle is in PASSIVE mode (RedissonClient not initialised).\n");
+				sb.append("Set -Didempiere.distributed.backend=redis (or env IDEMPIERE_DISTRIBUTED_BACKEND=redis) to activate.\n");
+			}
 			ci.println(sb);
 			return null;
 		}
@@ -132,35 +139,27 @@ public final class RedisConsoleProvider implements CommandProvider {
 			ci.println("Redis bundle is in PASSIVE mode — no cluster membership available.");
 			return null;
 		}
-		// Avoid a hard compile-time dependency on ClusterServiceImpl by going through
-		// the OSGi service registry — same path application code uses.
-		ServiceReference<?> ref = context.getServiceReference("org.idempiere.distributed.IClusterService");
+		ServiceReference<IClusterService> ref = context.getServiceReference(IClusterService.class);
 		if (ref == null) {
 			ci.println("IClusterService not registered (cluster component disabled or not yet activated).");
 			return null;
 		}
 		try {
-			Object svc = context.getService(ref);
+			IClusterService svc = context.getService(ref);
 			if (svc == null) {
 				ci.println("IClusterService reference unbound.");
 				return null;
 			}
-			Object members = svc.getClass().getMethod("getMembers").invoke(svc);
 			StringBuilder sb = new StringBuilder("Live cluster members:\n");
 			int count = 0;
-			if (members instanceof Iterable<?> it) {
-				for (Object m : it) {
-					IClusterMember member = (IClusterMember) m;
-					sb.append("  ").append(member.getId());
-					sb.append(" @ ").append(member.getAddress()).append(":").append(member.getPort());
-					sb.append('\n');
-					count++;
-				}
+			for (IClusterMember member : svc.getMembers()) {
+				sb.append("  ").append(member.getId());
+				sb.append(" @ ").append(member.getAddress()).append(":").append(member.getPort());
+				sb.append('\n');
+				count++;
 			}
 			sb.append("Total: ").append(count);
 			ci.println(sb);
-		} catch (ReflectiveOperationException e) {
-			ci.println("Failed to query cluster members: " + e.getMessage());
 		} finally {
 			context.ungetService(ref);
 		}
@@ -178,8 +177,10 @@ public final class RedisConsoleProvider implements CommandProvider {
 			pattern = Activator.getKeyPrefix() + "*";
 		}
 		try {
-			long count = java.util.stream.StreamSupport.stream(
-					client.getKeys().getKeysByPattern(pattern).spliterator(), false).count();
+			long count = 0L;
+			for (@SuppressWarnings("unused") String k : client.getKeys().getKeysByPattern(pattern)) {
+				count++;
+			}
 			ci.println("Keys matching '" + pattern + "': " + count);
 		} catch (Exception e) {
 			ci.println("Failed to scan keys: " + e.getMessage());
