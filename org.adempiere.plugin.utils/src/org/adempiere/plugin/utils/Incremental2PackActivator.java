@@ -188,7 +188,7 @@ public class Incremental2PackActivator extends AbstractActivator {
 				}
 			});		
 		} catch (Exception e) {
-			logger.log(Level.WARNING, "Exception sorting 2packs on " + getName() + ": " + e.getLocalizedMessage());
+			logger.log(Level.WARNING, "Exception sorting 2packs on " + getName(), e);
 			return;
 		}
 
