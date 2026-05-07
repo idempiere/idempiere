@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Core
 Bundle-SymbolicName: org.adempiere.base;singleton:=true
-Bundle-Version: 13.0.0.qualifier
+Bundle-Version: 14.0.0.qualifier
 Bundle-ClassPath: .,
  lib/bsh.jar,
  lib/commons-validator.jar,
@@ -26,7 +26,6 @@ Export-Package: bsh,
  it.sauronsoftware.cron4j,
  org.adempiere.apps.graph,
  org.adempiere.base,
- org.adempiere.base.search,
  org.adempiere.base.annotation,
  org.adempiere.base.ds,
  org.adempiere.base.equinox,
@@ -37,6 +36,7 @@ Export-Package: bsh,
  org.adempiere.base.event.annotations.po,
  org.adempiere.base.event.annotations.process,
  org.adempiere.base.markdown,
+ org.adempiere.base.search,
  org.adempiere.base.sso,
  org.adempiere.base.upload,
  org.adempiere.exceptions,
@@ -64,6 +64,7 @@ Export-Package: bsh,
  org.compiere.util,
  org.compiere.wf,
  org.eevolution.model,
+ org.idempiere.acct,
  org.idempiere.broadcast,
  org.idempiere.cache,
  org.idempiere.db.util,
@@ -75,6 +76,7 @@ Export-Package: bsh,
  org.idempiere.print,
  org.idempiere.print.renderer,
  org.idempiere.process,
+ org.idempiere.tracking,
  org.idempiere.util
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=17))"

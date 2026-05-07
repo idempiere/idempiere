@@ -59,7 +59,6 @@ import org.adempiere.exceptions.CrossTenantException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.process.UUIDGenerator;
 import org.compiere.Adempiere;
-import org.compiere.acct.Doc;
 import org.compiere.db.AdempiereDatabase;
 import org.compiere.db.Database;
 import org.compiere.util.AdempiereUserError;
@@ -79,6 +78,9 @@ import org.compiere.util.Trx;
 import org.compiere.util.TrxEventListener;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
+import org.idempiere.acct.AcctModelServices;
+import org.idempiere.acct.IDoc;
+import org.idempiere.db.util.SQLFragment;
 import org.osgi.service.event.Event;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -121,7 +123,7 @@ public abstract class PO
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = -2260670916752225495L;
+	private static final long serialVersionUID = 5748940837798913359L;
 
 	/** String key to create a new record based in UUID constructor */
 	public static final String UUID_NEW_RECORD = "";
@@ -397,15 +399,15 @@ public abstract class PO
 	private boolean				m_setErrorsFilled = false;  // to optimize not traveling the array if no errors
 
 	/** Record_IDs          		*/
-	private Object[]       		m_IDs = new Object[] {I_ZERO};
+	protected Object[]       		m_IDs = new Object[] {I_ZERO};
 	/** Key Columns					*/
-	private String[]         	m_KeyColumns = null;
+	protected String[]         	m_KeyColumns = null;
 	/** Create New for Multi Key 	*/
 	private boolean				m_createNew = false;
 	/**	Attachment with entries	*/
-	private MAttachment			m_attachment = null;
+	protected MAttachment			m_attachment = null;
 	/**	Deleted ID					*/
-	private int					m_idOld = 0;
+	protected int					m_idOld = 0;
 	/** Custom Columns 				*/
 	private HashMap<String,String>	m_custom = null;
 	/** Attributes	 				*/
@@ -422,7 +424,7 @@ public abstract class PO
 	/** Immutable flag **/
 	private boolean m_isImmutable = false;
 	
-	private String[] m_optimisticLockingColumns = new String[] {"Updated"};
+	protected String[] m_optimisticLockingColumns = new String[] {"Updated"};
 	private Boolean m_useOptimisticLocking = null;
 
 	/** Indices of virtual columns that were already resolved */
@@ -1486,6 +1488,9 @@ public abstract class PO
 				to.m_newValues[i] = from.m_oldValues[i];
 			}
 		}	//	same class
+		MTable tableTo = MTable.get(to.getCtx(), to.get_Table_ID());
+		if (!tableTo.isIDKeyTable() && !tableTo.isUUIDKeyTable()) // multi-key table
+			to.setKeyInfo();
 	}	//	copy
 
 	/**
@@ -2463,6 +2468,65 @@ public abstract class PO
 	}	//	is_new
 
 	/**
+	 * Perform standard verification before saving of PO
+	 * @return true if pass verification, false otherwise
+	 */
+	protected final boolean doVerificationForSave() {
+		if (!checkReadOnlySession())
+			return false;
+		checkImmutable();
+		checkValidContext();
+		checkCrossTenant(true);
+		checkRecordIDCrossTenant();
+		checkRecordUUCrossTenant();
+
+		if (m_setErrorsFilled) {
+			for (int i = 0; i < m_setErrors.length; i++) {
+				ValueNamePair setError = m_setErrors[i];
+				if (setError != null) {
+					log.saveError(setError.getValue(), Msg.getElement(getCtx(), p_info.getColumnName(i)) + " - " + setError.getName());
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Perform organization verification
+	 * @return true if pass checking, false otherwise
+	 */
+	protected final boolean doOrganizationCheckForSave() {
+		//	Organization Check
+		if (getAD_Org_ID() == 0
+			&& (get_AccessLevel() == ACCESSLEVEL_ORG
+				|| (get_AccessLevel() == ACCESSLEVEL_CLIENTORG
+					&& MClientShare.isOrgLevelOnly(getAD_Client_ID(), get_Table_ID()))))
+		{
+			log.saveError("FillMandatory", Msg.getElement(getCtx(), "AD_Org_ID"));
+			return false;
+		}
+		//	Should be Org 0
+		if (getAD_Org_ID() != 0)
+		{
+			boolean reset = get_AccessLevel() == ACCESSLEVEL_SYSTEM;
+			if (!reset && MClientShare.isClientLevelOnly(getAD_Client_ID(), get_Table_ID()))
+			{
+				reset = get_AccessLevel() == ACCESSLEVEL_CLIENT
+					|| get_AccessLevel() == ACCESSLEVEL_SYSTEMCLIENT
+					|| get_AccessLevel() == ACCESSLEVEL_ALL
+					|| get_AccessLevel() == ACCESSLEVEL_CLIENTORG;
+			}
+			if (reset)
+			{
+				log.warning("Set Org to 0");
+				setAD_Org_ID(0);
+			}
+		}
+		return true;
+	}
+
+	/**
 	 * Classes which override save() method:
 	 * org.compiere.process.DocActionTemplate
 	 * org.compiere.model.MClient
@@ -2483,24 +2547,9 @@ public abstract class PO
 			if (log.isLoggable(Level.FINE)) log.fine("Nothing changed - " + p_info.getTableName());
 			return true;
 		}
-
-		if (!checkReadOnlySession())
+		
+		if (!doVerificationForSave())
 			return false;
-		checkImmutable();
-		checkValidContext();
-		checkCrossTenant(true);
-		checkRecordIDCrossTenant();
-		checkRecordUUCrossTenant();
-
-		if (m_setErrorsFilled) {
-			for (int i = 0; i < m_setErrors.length; i++) {
-				ValueNamePair setError = m_setErrors[i];
-				if (setError != null) {
-					log.saveError(setError.getValue(), Msg.getElement(getCtx(), p_info.getColumnName(i)) + " - " + setError.getName());
-					return false;
-				}
-			}
-		}
 
 		Trx localTrx = null;
 		Trx trx = null;
@@ -2599,32 +2648,22 @@ public abstract class PO
 				return false;
 			}
 
-		//	Organization Check
-		if (getAD_Org_ID() == 0
-			&& (get_AccessLevel() == ACCESSLEVEL_ORG
-				|| (get_AccessLevel() == ACCESSLEVEL_CLIENTORG
-					&& MClientShare.isOrgLevelOnly(getAD_Client_ID(), get_Table_ID()))))
-		{
-			log.saveError("FillMandatory", Msg.getElement(getCtx(), "AD_Org_ID"));
-			return false;
-		}
-		//	Should be Org 0
-		if (getAD_Org_ID() != 0)
-		{
-			boolean reset = get_AccessLevel() == ACCESSLEVEL_SYSTEM;
-			if (!reset && MClientShare.isClientLevelOnly(getAD_Client_ID(), get_Table_ID()))
+			if (!doOrganizationCheckForSave())
 			{
-				reset = get_AccessLevel() == ACCESSLEVEL_CLIENT
-					|| get_AccessLevel() == ACCESSLEVEL_SYSTEMCLIENT
-					|| get_AccessLevel() == ACCESSLEVEL_ALL
-					|| get_AccessLevel() == ACCESSLEVEL_CLIENTORG;
+				if (localTrx != null)
+				{
+					localTrx.rollback();
+				}
+				else if (savepoint != null)
+				{
+					try
+					{
+						trx.rollback(savepoint);
+					} catch (SQLException e1){}
+					savepoint = null;
+				}
+				return false;
 			}
-			if (reset)
-			{
-				log.warning("Set Org to 0");
-				setAD_Org_ID(0);
-			}
-		}
 
 			//	Save
 			if (newRecord)
@@ -2804,7 +2843,7 @@ public abstract class PO
 	 *	@param success current save state
 	 *	@return true if saved
 	 */
-	private boolean saveFinish (boolean newRecord, boolean success)
+	protected final boolean saveFinish (boolean newRecord, boolean success)
 	{
 		//	Translations
 		if (success)
@@ -2854,10 +2893,30 @@ public abstract class PO
 		//	OK
 		if (success)
 		{
-			//post osgi event
-			String topic = newRecord ? IEventTopics.PO_POST_CREATE : IEventTopics.PO_POST_UPADTE;
-			Event event = EventManager.newEvent(topic, this, true);
-			EventManager.getInstance().postEvent(event);
+			Trx trx = Util.isEmpty(get_TrxName()) ? null : Trx.get(get_TrxName(), false);
+			if (trx == null || !trx.isActive())
+			{
+				firePostSaveEvent(newRecord);
+			}
+			else
+			{
+				trx.addTrxEventListener(new TrxEventListener() {
+					@Override
+					public void afterRollback(Trx trx, boolean success) {
+						trx.removeTrxEventListener(this);
+					}
+					@Override
+					public void afterCommit(Trx trx, boolean success) {
+						if (success) {
+							firePostSaveEvent(newRecord);
+						}
+						trx.removeTrxEventListener(this);
+					}
+					@Override
+					public void afterClose(Trx trx) {
+					}
+				});
+			}
 
 			if (s_docWFMgr == null)
 			{
@@ -2891,110 +2950,61 @@ public abstract class PO
 		}
 		if (!newRecord && success)
 			MRecentItem.clearLabel(p_info.getAD_Table_ID(), get_ID(), get_UUID());
-		if (success && CacheMgt.get().hasCache(p_info.getTableName())) {
-			boolean cacheResetScheduled = false;
-			if (get_TrxName() != null) {
-				Trx trx = Trx.get(get_TrxName(), false);
-				if (trx != null) {
-					trx.addTrxEventListener(new TrxEventListener() {
-						@Override
-						public void afterRollback(Trx trx, boolean success) {
-							trx.removeTrxEventListener(this);
-						}
-						@Override
-						public void afterCommit(Trx sav, boolean success) {
-							if (success)
-								if (!newRecord)
-									Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(p_info.getTableName(), get_ID()));
-								else if (get_ID() > 0)
-									Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().newRecord(p_info.getTableName(), get_ID()));
-							trx.removeTrxEventListener(this);
-						}
-						@Override
-						public void afterClose(Trx trx) {
-						}
-					});
-					cacheResetScheduled = true;
-				}
-			}
-			if (!cacheResetScheduled) {
-				if (!newRecord)
-					Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(p_info.getTableName(), get_ID()));
-				else if (get_ID() > 0)
-					Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().newRecord(p_info.getTableName(), get_ID()));
-			}
-		} else if (success && p_info.getTableName().endsWith("_Trl") && CacheMgt.get().hasCache(TRANSLATION_CACHE_TABLE_NAME) && !newRecord) {
-			MTable table = MTable.get(getCtx(), p_info.getTableName().substring(0, p_info.getTableName().length() - 4));
-			POInfo parentInfo = POInfo.getPOInfo(getCtx(), table.getAD_Table_ID());
-			List<String> translatedColumns = new ArrayList<>();
-			for (int i = 0; i < parentInfo.getColumnCount(); i++)
-			{
-				String columnName = parentInfo.getColumnName(i);
-				if (parentInfo.isColumnTranslated(i) && updatedColumns.contains(columnName))
+		if (success) {
+			if (get_ID() == 0)
+				CacheMgt.scheduleCacheReset(p_info.getTableName(), get_UUID(), newRecord, get_TrxName());
+			else
+				CacheMgt.scheduleCacheReset(p_info.getTableName(), get_ID(), newRecord, get_TrxName());
+			if (p_info.getTableName().endsWith("_Trl") && CacheMgt.get().hasCache(TRANSLATION_CACHE_TABLE_NAME) && !newRecord) {
+				MTable table = MTable.get(getCtx(), p_info.getTableName().substring(0, p_info.getTableName().length() - 4));
+				POInfo parentInfo = POInfo.getPOInfo(getCtx(), table.getAD_Table_ID());
+				List<String> translatedColumns = new ArrayList<>();
+				for (int i = 0; i < parentInfo.getColumnCount(); i++)
 				{
-					translatedColumns.add(columnName);
-				}
-			}
-			if (translatedColumns.size() > 0) {
-				int id = 0;
-				String uuid = null;
-				if (m_IDs[0] instanceof String) {
-					//TestUU_Trl -> TestUU_UU
-					uuid = get_ValueAsString(p_info.getTableName().substring(0, p_info.getTableName().length() - "_Trl".length()) + "_UU");
-				} else {
-					id = get_ID();
-				}
-				final String fuuid = uuid;
-				final int fid = id;
-				
-				boolean cacheResetScheduled = false;
-				if (get_TrxName() != null) {
-					Trx trx = Trx.get(get_TrxName(), false);
-					if (trx != null) {
-						trx.addTrxEventListener(new TrxEventListener() {
-							@Override
-							public void afterRollback(Trx trx, boolean success) {
-								trx.removeTrxEventListener(this);
-							}
-							@Override
-							public void afterCommit(Trx sav, boolean success) {
-								if (success)
-									Adempiere.getThreadPoolExecutor().submit(() -> { 
-										for (String column : translatedColumns) {
-											if (fuuid != null)
-												CacheMgt.get().reset(TRANSLATION_CACHE_TABLE_NAME, 
-													toTrlCacheKey(table.getTableName(), column, fuuid, get_ValueAsString("AD_Language")));
-											else
-												CacheMgt.get().reset(TRANSLATION_CACHE_TABLE_NAME, 
-													toTrlCacheKey(table.getTableName(), column, fid, get_ValueAsString("AD_Language")));
-										}
-									});
-								trx.removeTrxEventListener(this);
-							}
-							@Override
-							public void afterClose(Trx trx) {
-							}
-						});
-						cacheResetScheduled = true;
+					String columnName = parentInfo.getColumnName(i);
+					if (parentInfo.isColumnTranslated(i) && updatedColumns.contains(columnName))
+					{
+						translatedColumns.add(columnName);
 					}
 				}
-				if (!cacheResetScheduled) {
-					Adempiere.getThreadPoolExecutor().submit(() -> {
-						for (String column : translatedColumns) {
-							if (fuuid != null)
-								CacheMgt.get().reset(TRANSLATION_CACHE_TABLE_NAME, 
-									toTrlCacheKey(table.getTableName(), column, fuuid, get_ValueAsString("AD_Language")));
-							else
-								CacheMgt.get().reset(TRANSLATION_CACHE_TABLE_NAME, 
-									toTrlCacheKey(table.getTableName(), column, fid, get_ValueAsString("AD_Language")));
-						}
-					});
+				if (translatedColumns.size() > 0) {
+					int id = 0;
+					String uuid = null;
+					if (m_IDs[0] instanceof String) {
+						//TestUU_Trl -> TestUU_UU
+						String baseTableName = p_info.getTableName().substring(0, p_info.getTableName().length() - "_Trl".length());
+						uuid = get_ValueAsString(PO.getUUIDColumnName(baseTableName));
+					} else {
+						id = get_ID();
+					}
+					final String fuuid = uuid;
+					final int fid = id;
+					for (String column : translatedColumns) {
+						String key;
+						if (fuuid != null)
+							key = toTrlCacheKey(table.getTableName(), column, fuuid, get_ValueAsString("AD_Language"));
+						else
+							key = toTrlCacheKey(table.getTableName(), column, Integer.valueOf(fid), get_ValueAsString("AD_Language"));
+						CacheMgt.scheduleCacheReset(TRANSLATION_CACHE_TABLE_NAME, key, false, get_TrxName());
+					}
 				}
 			}
 		}
 		
 		return success;
 	}	//	saveFinish
+
+	/**
+	 * Fire post save event to notify interested parties that a PO has been saved.<br/>
+	 * This method is called after the transaction has been committed successfully.
+	 * @param newRecord
+	 */
+	private void firePostSaveEvent(boolean newRecord) {
+		//post osgi event
+		String topic = newRecord ? IEventTopics.PO_POST_CREATE : IEventTopics.PO_POST_UPADTE;
+		Event event = EventManager.newEvent(topic, this, true);
+		EventManager.getInstance().postEvent(event);
+	}
 
 	/**
 	 * Get the MTable object associated to this PO
@@ -3114,7 +3124,7 @@ public abstract class PO
 	 * Is log SQL migration script.
 	 * @return true if sql migration script should be logged for changes to this PO instance
 	 */
-	private boolean isLogSQLScript() {
+	protected boolean isLogSQLScript() {
 		return Env.isLogMigrationScript(p_info.getTableName());
 	}
 
@@ -3124,6 +3134,60 @@ public abstract class PO
 	 * @return true if success
 	 */
 	private boolean doUpdate(boolean withValues) {
+		BatchInsert<MChangeLog> changeLogBatch = new BatchInsert<>(MChangeLog.class);
+		StringBuilder whereClauseHolder = new StringBuilder();
+		SQLFragment sqlFragment = buildUpdateSQL(withValues, whereClauseHolder, changeLogBatch);
+		if (sqlFragment != null && !Util.isEmpty(sqlFragment.sqlClause())) {
+			if (!changeLogBatch.isEmpty()) {
+				changeLogBatch.executeBatch(m_trxName);
+			}
+			var sql = sqlFragment.sqlClause();
+			var params = sqlFragment.parameters();			
+			// Execute update 		
+			int no = 0;
+			if (isUseTimeoutForUpdate())
+				no = withValues ? DB.executeUpdateEx(sql.toString(), m_trxName, get_QueryTimeout())
+								: DB.executeUpdateEx(sql.toString(), params.toArray(), m_trxName, get_QueryTimeout());
+			else
+				no = withValues ? DB.executeUpdate(sql.toString(), m_trxName)
+								: DB.executeUpdate(sql.toString(), params.toArray(), false, m_trxName);
+			boolean ok = no == 1;
+			if (ok)
+				ok = lobSave();
+			else
+			{
+				if (CLogger.peekError() == null) {
+					if (m_trxName == null)
+						log.saveError("SaveError", "Update return " + no + " instead of 1"
+							+ " - " + p_info.getTableName() + "." + whereClauseHolder.toString());
+					else
+						log.saveError("SaveError", "Update return " + no + " instead of 1"
+							+ " - [" + m_trxName + "] - " + p_info.getTableName() + "." + whereClauseHolder.toString());
+				} else {
+					String msg = "Not updated - ";
+					if (CLogMgt.isLevelFiner())
+						msg += sql.toString();
+					else
+						msg += get_TableName();
+					if (m_trxName == null)
+						log.log(Level.WARNING, msg);
+					else
+						log.log(Level.WARNING, "[" + m_trxName + "]" + msg);
+				}
+			}
+			if (!ok) return false;			
+		}
+		return true;
+	}
+
+	/**
+	 * Build the update record SQL statement
+	 * @param withValues true to create statement with column values, false to use parameter binding (i.e with ?)
+	 * @param whereClauseHolder buffer to return the where clause use to update the PO record
+	 * @param changeLogBatch batch insert for change log
+	 * @return SQL fragment if successful (or with empty sql clause if no changes), null if error
+	 */
+	protected final SQLFragment buildUpdateSQL(boolean withValues, StringBuilder whereClauseHolder, BatchInsert<MChangeLog> changeLogBatch) {
 		//params for insert statement
 		List<Object> params = new ArrayList<Object>();
 
@@ -3136,6 +3200,8 @@ public abstract class PO
 			addOptimisticLockingClause(optimisticLockingParams, builder);
 			where = builder.toString();
 		}
+		if (whereClauseHolder != null)
+			whereClauseHolder.append(where);
 		//
 		boolean changes = false;
 		StringBuilder sql = new StringBuilder ("UPDATE ");
@@ -3360,9 +3426,13 @@ public abstract class PO
 				MChangeLog cLog = session.changeLog (
 					m_trxName, AD_ChangeLog_ID,
 					p_info.getAD_Table_ID(), p_info.getColumn(i).AD_Column_ID,
-					(m_IDs.length == 1 ? get_ID() : 0), get_UUID(), getAD_Client_ID(), getAD_Org_ID(), oldV, newV, MChangeLog.EVENTCHANGELOG_Update);
+					(m_IDs.length == 1 ? get_ID() : 0), get_UUID(), getAD_Client_ID(), getAD_Org_ID(), oldV, newV, MChangeLog.EVENTCHANGELOG_Update, changeLogBatch == null);
 				if (cLog != null)
+				{
 					AD_ChangeLog_ID = cLog.getAD_ChangeLog_ID();
+					if (changeLogBatch != null)
+						changeLogBatch.add(cLog);
+				}
 			}
 		}	//   for all fields
 
@@ -3386,7 +3456,7 @@ public abstract class PO
 
 		//	Something changed
 		if (changes)
-		{
+		{			
 			if (m_trxName == null) {
 				if (log.isLoggable(Level.FINE)) log.fine(p_info.getTableName() + "." + where);
 			} else {
@@ -3426,44 +3496,13 @@ public abstract class PO
 			
 			if (is_UseOptimisticLocking() && optimisticLockingParams.size() > 0)
 				params.addAll(optimisticLockingParams);
-			
-			int no = 0;
-			if (isUseTimeoutForUpdate())
-				no = withValues ? DB.executeUpdateEx(sql.toString(), m_trxName, get_QueryTimeout())
-								: DB.executeUpdateEx(sql.toString(), params.toArray(), m_trxName, get_QueryTimeout());
-			else
-				no = withValues ? DB.executeUpdate(sql.toString(), m_trxName)
-						 		: DB.executeUpdate(sql.toString(), params.toArray(), false, m_trxName);
-			boolean ok = no == 1;
-			if (ok)
-				ok = lobSave();
-			else
-			{
-				if (CLogger.peekError() == null) {
-					if (m_trxName == null)
-						log.saveError("SaveError", "Update return " + no + " instead of 1"
-							+ " - " + p_info.getTableName() + "." + where);
-					else
-						log.saveError("SaveError", "Update return " + no + " instead of 1"
-							+ " - [" + m_trxName + "] - " + p_info.getTableName() + "." + where);
-				} else {
-					String msg = "Not updated - ";
-					if (CLogMgt.isLevelFiner())
-						msg += sql.toString();
-					else
-						msg += get_TableName();
-					if (m_trxName == null)
-						log.log(Level.WARNING, msg);
-					else
-						log.log(Level.WARNING, "[" + m_trxName + "]" + msg);
-				}
-			}
-			return ok;
+
+			return new SQLFragment(sql.toString(), params);
 		}
 		else
 		{
-			// nothing changed, so OK
-			return true;
+			// nothing changed, return empty sql fragment
+			return new SQLFragment("", null);
 		}
 	}
 	
@@ -3570,10 +3609,11 @@ public abstract class PO
 	}
 
 	/**
-	 *  Insert New Record
-	 *  @return true if new record inserted
+	 * Set ID for new record
+	 * @param trxName transaction
+	 * @return true if success
 	 */
-	private boolean saveNew()
+	protected final boolean set_IDForNewRecord(String trxName)
 	{
 		//  Set ID for single key - Multi-Key values need explicitly be set previously
 		if (m_IDs.length == 1 && p_info.hasKeyColumn()
@@ -3581,7 +3621,7 @@ public abstract class PO
 		{
 			int no = saveNew_getID();
 			if (no <= 0)
-				no = DB.getNextID(getAD_Client_ID(), p_info.getTableName(), m_trxName);
+				no = DB.getNextID(getAD_Client_ID(), p_info.getTableName(), trxName);
 			// the primary key is not overwrite with the local sequence
 			if (isReplication())
 			{
@@ -3593,13 +3633,20 @@ public abstract class PO
 			if (no <= 0)
 			{
 				log.severe("No NextID (" + no + ")");
-				return saveFinish (true, false);
+				return false;
 			}
 			m_IDs[0] = Integer.valueOf(no);
 			set_ValueNoCheck(m_KeyColumns[0], m_IDs[0]);
 			saveNew_afterSetID();
 		}
-		//uuid secondary key
+		return true;
+	}
+
+	/**
+	 * Set UUID for new record
+	 */
+	protected final void set_UUIDForNewRecord()
+	{
 		int uuidIndex = p_info.getColumnIndex(getUUIDColumnName());
 		if (uuidIndex >= 0)
 		{
@@ -3610,12 +3657,12 @@ public abstract class PO
 				set_ValueNoCheck(p_info.getColumnName(uuidIndex), uuid.toString());
 			}
 		}
-		if (m_trxName == null) {
-			if (log.isLoggable(Level.FINE)) log.fine(p_info.getTableName() + " - " + get_WhereClause(true));
-		} else {
-			if (log.isLoggable(Level.FINE)) log.fine("[" + m_trxName + "] - " + p_info.getTableName() + " - " + get_WhereClause(true));
-		}
+	}
 
+	/**
+	 * Set DocumentNo for new record
+	 */
+	protected final void set_DocumentNoForNewRecord() {
 		//	Set new DocumentNo
 		String columnName = "DocumentNo";
 
@@ -3638,8 +3685,13 @@ public abstract class PO
 					set_ValueNoCheck(columnName, value);
 				}
 			}	
-		}
+		}	
+	}
 
+	/**
+	 * Set Value (Search Key) for new record
+	 */
+	protected final void set_ValueForNewRecord() {
 		// ticket 1007459 - exclude M_AttributeInstance from filling Value column
 		// IDEMPIERE-4224 - exclude AD_TableAttribute from filling Value column
 		if (!MAttributeInstance.Table_Name.equals(get_TableName())
@@ -3647,7 +3699,7 @@ public abstract class PO
 			&& !MSysConfig.Table_Name.equals(get_TableName())
 			&& !get_TableName().startsWith("T_")) {
 			//	Set empty Value
-			columnName = "Value";
+			String columnName = "Value";
 			int index = p_info.getColumnIndex(columnName);
 			if (index != -1)
 			{
@@ -3662,6 +3714,25 @@ public abstract class PO
 				}
 			}
 		}
+	}
+
+	/**
+	 *  Insert New Record
+	 *  @return true if new record inserted
+	 */
+	private boolean saveNew()
+	{
+		if (!set_IDForNewRecord(m_trxName))
+			return saveFinish (true, false);
+		set_UUIDForNewRecord();
+		if (m_trxName == null) {
+			if (log.isLoggable(Level.FINE)) log.fine(p_info.getTableName() + " - " + get_WhereClause(true));
+		} else {
+			if (log.isLoggable(Level.FINE)) log.fine("[" + m_trxName + "] - " + p_info.getTableName() + " - " + get_WhereClause(true));
+		}
+
+		set_DocumentNoForNewRecord();
+		set_ValueForNewRecord();
 
 		boolean ok = doInsert(isLogSQLScript());
 		return saveFinish (true, ok);
@@ -3684,50 +3755,21 @@ public abstract class PO
 		//params for insert statement
 		List<Object> params = new ArrayList<Object>();
 				
+		BatchInsert<MChangeLog> changeLogBatch = new BatchInsert<>(MChangeLog.class);
 		//	SQL
 		StringBuilder sqlInsert = new StringBuilder();
-		AD_ChangeLog_ID = buildInsertSQL(sqlInsert, withValues, params, session, AD_ChangeLog_ID, false, null);
+		AD_ChangeLog_ID = buildInsertSQL(sqlInsert, withValues, params, session, AD_ChangeLog_ID, false, null, changeLogBatch);
+		if (!changeLogBatch.isEmpty()) {
+			changeLogBatch.executeBatch(m_trxName);
+		}
 		//
 		int no = withValues ? DB.executeUpdate(sqlInsert.toString(), m_trxName) 
 							: DB.executeUpdate(sqlInsert.toString(), params.toArray(), false, m_trxName);
 		boolean ok = no == 1;
 		if (ok)
 		{
-			if (withValues && m_IDs.length == 1 && p_info.hasKeyColumn()
-					&& m_KeyColumns[0].endsWith("_ID") && !Env.isUseCentralizedId(p_info.getTableName()))
-			{
-				StringBuilder sql = new StringBuilder("SELECT ").append(m_KeyColumns[0]).append(" FROM ").append(p_info.getTableName()).append(" WHERE ").append(getUUIDColumnName()).append("=?");
-				int id = DB.getSQLValueEx(get_TrxName(), sql.toString(), get_ValueAsString(getUUIDColumnName()));
-				m_IDs[0] = Integer.valueOf(id);
-				set_ValueNoCheck(m_KeyColumns[0], m_IDs[0]);
-			}
-
-			if (withValues && !Env.isUseCentralizedId(p_info.getTableName()))
-			{
-				int ki = p_info.getColumnIndex(m_KeyColumns[0]);
-				//	Change Log	- Only
-				String insertLog = MSysConfig.getValue(MSysConfig.SYSTEM_INSERT_CHANGELOG, "N", getAD_Client_ID());
-				if (   session != null
-					&& p_info.isAllowLogging(ki)		//	logging allowed
-					&& !p_info.isEncrypted(ki)		//	not encrypted
-					&& !p_info.isVirtualColumn(ki)	//	no virtual column
-					&& !"Password".equals(p_info.getColumnName(ki))
-					&& (   insertLog.equalsIgnoreCase("Y")
-						|| (   insertLog.equalsIgnoreCase("K") 
-							&& (   p_info.getColumn(ki).IsKey
-								|| (   !p_info.hasKeyColumn() 
-									&& p_info.getColumn(ki).ColumnName.equals(PO.getUUIDColumnName(p_info.getTableName())))))))
-				{
-					int id = (m_IDs.length == 1 ? get_ID() : 0);
-					// change log on new
-					MChangeLog cLog = session.changeLog (
-							m_trxName, AD_ChangeLog_ID,
-							p_info.getAD_Table_ID(), p_info.getColumn(ki).AD_Column_ID,
-							(m_IDs.length == 1 ? get_ID() : 0), get_UUID(), getAD_Client_ID(), getAD_Org_ID(), null, (id == 0 ? get_UUID() : id), MChangeLog.EVENTCHANGELOG_Insert);
-					if (cLog != null)
-						AD_ChangeLog_ID = cLog.getAD_ChangeLog_ID();
-				}
-			}
+			if (withValues)
+				afterInsertWithValues(session);
 			ok = lobSave();
 			if (!load(m_trxName))		//	re-read Info
 			{
@@ -3754,6 +3796,53 @@ public abstract class PO
 	}
 
 	/**
+	 * Handle post insert processing for new record that was inserted using column values instead of parameter binding.<br/>
+	 * Internal API, developer should not call this directly.
+	 * @param session session to capture change log
+	 */
+	protected final void afterInsertWithValues(MSession session) {
+		if (m_IDs.length == 1 && p_info.hasKeyColumn()
+				&& m_KeyColumns[0].endsWith("_ID") && !Env.isUseCentralizedId(p_info.getTableName()))
+		{
+			StringBuilder sql = new StringBuilder("SELECT ").append(m_KeyColumns[0]).append(" FROM ").append(p_info.getTableName()).append(" WHERE ").append(getUUIDColumnName()).append("=?");
+			int id = DB.getSQLValueEx(get_TrxName(), sql.toString(), get_ValueAsString(getUUIDColumnName()));
+			m_IDs[0] = Integer.valueOf(id);
+			set_ValueNoCheck(m_KeyColumns[0], m_IDs[0]);
+		}
+
+		if (!Env.isUseCentralizedId(p_info.getTableName()))
+		{
+			int ki = p_info.getColumnIndex(m_KeyColumns[0]);
+			//	Change Log	- Only
+			String insertLog = MSysConfig.getValue(MSysConfig.SYSTEM_INSERT_CHANGELOG, "N", getAD_Client_ID());
+			if (   session != null
+				&& p_info.isAllowLogging(ki)		//	logging allowed
+				&& !p_info.isEncrypted(ki)		//	not encrypted
+				&& !p_info.isVirtualColumn(ki)	//	no virtual column
+				&& !"Password".equals(p_info.getColumnName(ki))
+				&& (   insertLog.equalsIgnoreCase("Y")
+					|| (   insertLog.equalsIgnoreCase("K") 
+						&& (   p_info.getColumn(ki).IsKey
+							|| (   !p_info.hasKeyColumn() 
+								&& p_info.getColumn(ki).ColumnName.equals(PO.getUUIDColumnName(p_info.getTableName())))))))
+			{
+				BatchInsert<MChangeLog> changeLogBatch = new BatchInsert<>(MChangeLog.class);
+				int id = (m_IDs.length == 1 ? get_ID() : 0);
+				// change log on new
+				MChangeLog cLog = session.changeLog (
+						m_trxName, 0,
+						p_info.getAD_Table_ID(), p_info.getColumn(ki).AD_Column_ID,
+						(m_IDs.length == 1 ? get_ID() : 0), get_UUID(), getAD_Client_ID(), getAD_Org_ID(), null, (id == 0 ? get_UUID() : id), MChangeLog.EVENTCHANGELOG_Insert, false);
+				if (cLog != null)
+				{
+					changeLogBatch.add(cLog);
+					changeLogBatch.executeBatch(m_trxName);
+				}
+			}			
+		}
+	}
+
+	/**
 	 * Export data as insert SQL statement
 	 * @param database 
 	 * @return SQL insert statement
@@ -3773,10 +3862,28 @@ public abstract class PO
 	 * @param session to capture change log. null when call from toInsertSQL (i.e to build sql only, not for real insert to DB)
 	 * @param AD_ChangeLog_ID initial change log id
 	 * @param generateScriptOnly true if it is to generate sql script only, false for real DB insert
+	 * @param database database type
 	 * @return last AD_ChangeLog_ID
 	 */
-	protected int buildInsertSQL(StringBuilder sqlInsert, boolean withValues, List<Object> params, MSession session,
+	protected final int buildInsertSQL(StringBuilder sqlInsert, boolean withValues, List<Object> params, MSession session,
 			int AD_ChangeLog_ID, boolean generateScriptOnly, String database) {
+		return buildInsertSQL(sqlInsert, withValues, params, session, AD_ChangeLog_ID, generateScriptOnly, database, null);
+	}
+
+	/**
+	 * Build insert SQL statement and capture change log
+	 * @param sqlInsert
+	 * @param withValues true to create statement with column values, false to use parameter binding (i.e with ?)
+	 * @param params statement parameters when withValues is false
+	 * @param session to capture change log. null when call from toInsertSQL (i.e to build sql only, not for real insert to DB)
+	 * @param AD_ChangeLog_ID initial change log id
+	 * @param generateScriptOnly true if it is to generate sql script only, false for real DB insert
+	 * @param database database type
+	 * @param changeLogBatch batch insert for change log
+	 * @return last AD_ChangeLog_ID
+	 */
+	protected final int buildInsertSQL(StringBuilder sqlInsert, boolean withValues, List<Object> params, MSession session,
+			int AD_ChangeLog_ID, boolean generateScriptOnly, String database, BatchInsert<MChangeLog> changeLogBatch) {
 		String tableName = p_info.getTableName();
 		sqlInsert.append("INSERT INTO ");
 		sqlInsert.append(tableName).append(" (");
@@ -4041,9 +4148,13 @@ public abstract class PO
 					MChangeLog cLog = session.changeLog (
 							m_trxName, AD_ChangeLog_ID,
 							p_info.getAD_Table_ID(), p_info.getColumn(i).AD_Column_ID,
-							(m_IDs.length == 1 ? get_ID() : 0), get_UUID(), getAD_Client_ID(), getAD_Org_ID(), null, value, MChangeLog.EVENTCHANGELOG_Insert);
-					if (cLog != null)
+							(m_IDs.length == 1 ? get_ID() : 0), get_UUID(), getAD_Client_ID(), getAD_Org_ID(), null, value, MChangeLog.EVENTCHANGELOG_Insert, changeLogBatch == null);
+					if (cLog != null) 
+					{
 						AD_ChangeLog_ID = cLog.getAD_ChangeLog_ID();
+						if (changeLogBatch != null)
+							changeLogBatch.add(cLog);
+					}
 				}
 			}
 		}
@@ -4216,25 +4327,16 @@ public abstract class PO
 	}	//	decrypt
 
 	/**
-	 * 	Delete Current Record
-	 * 	@param force delete also processed records
-	 * 	@return true if deleted
+	 * Perform standard verification before delete of a PO record
+	 * @param force
+	 * @return true if pass verification, false otherwise
 	 */
-	public boolean delete (boolean force)
-	{
-		CLogger.resetLast();
-		if (is_new())
-			return true;
-
+	protected final boolean doVerificationForDelete(boolean force) {
 		if (!checkReadOnlySession())
 			return false;
 		checkImmutable();
 		checkValidContext();
 		checkCrossTenant(true);
-
-		int AD_Table_ID = p_info.getAD_Table_ID();
-		int Record_ID = get_ID();
-		String Record_UU = get_UUID();
 
 		if (!force)
 		{
@@ -4261,6 +4363,61 @@ public abstract class PO
 			return false;
 		}
 
+		return true;
+	}
+
+	/**
+	 * Get delete SQL statement for this PO record
+	 * @return delete SQL statement
+	 */
+	protected final SQLFragment get_deleteStatement() {
+		//	The Delete Statement
+		String where = isLogSQLScript() ? get_WhereClause(true, get_ValueAsString(getUUIDColumnName())) : get_WhereClause(true);
+		List<Object> optimisticLockingParams = new ArrayList<Object>();
+		if (is_UseOptimisticLocking() && m_optimisticLockingColumns != null && m_optimisticLockingColumns.length > 0)
+		{
+			StringBuilder builder = new StringBuilder(where);
+			addOptimisticLockingClause(optimisticLockingParams, builder);
+			where = builder.toString();
+		}
+		StringBuilder sql = new StringBuilder ("DELETE FROM ") //jz why no FROM??
+			.append(p_info.getTableName())
+			.append(" WHERE ")
+			.append(where);
+		return new SQLFragment(sql.toString(), optimisticLockingParams);
+	}
+
+	/**
+	 * Get is table has custom tree
+	 * @return true if table has custom tree, false otherwise
+	 */
+	protected boolean is_hasCustomTree() {
+		return (get_ColumnIndex("IsSummary") >= 0 && getTable().hasCustomTree());
+	}
+
+	/**
+	 * Delete custom tree records
+	 */
+	private void deleteCustomTree() {
+		if (is_hasCustomTree()) {
+			delete_Tree(MTree_Base.TREETYPE_CustomTable);
+		}
+	}
+
+	/**
+	 * 	Delete Current Record
+	 * 	@param force delete also processed records
+	 * 	@return true if deleted
+	 */
+	public boolean delete (boolean force)
+	{
+		CLogger.resetLast();
+		if (is_new())
+			return true;
+
+		if (!doVerificationForDelete(force))
+			return false;
+		
 		Trx localTrx = null;
 		Trx trx = null;
 		Savepoint savepoint = null;
@@ -4331,6 +4488,10 @@ public abstract class PO
 				}
 				return false;
 			}
+
+			int AD_Table_ID = p_info.getAD_Table_ID();
+			int Record_ID = get_ID();
+			String Record_UU = get_UUID();
 			//	Delete Restrict AD_Table_ID/Record_ID (Requests, ..)
 			String errorMsg = PO_Record.exists(AD_Table_ID, Record_ID, m_trxName);
 			if (errorMsg == null && Record_UU != null)
@@ -4376,9 +4537,7 @@ public abstract class PO
 			{
 				//
 				deleteTranslations(localTrxName);
-				if (get_ColumnIndex("IsSummary") >= 0 && getTable().hasCustomTree()) {
-					delete_Tree(MTree_Base.TREETYPE_CustomTable);
-				}
+				deleteCustomTree();
 
 				if (m_KeyColumns != null && m_KeyColumns.length == 1 && !getTable().isUUIDKeyTable()) {
 					//delete cascade only for single key column record
@@ -4395,27 +4554,16 @@ public abstract class PO
 				}
 		
 				//	The Delete Statement
-				String where = isLogSQLScript() ? get_WhereClause(true, get_ValueAsString(getUUIDColumnName())) : get_WhereClause(true);
-				List<Object> optimisticLockingParams = new ArrayList<Object>();
-				if (is_UseOptimisticLocking() && m_optimisticLockingColumns != null && m_optimisticLockingColumns.length > 0)
-				{
-					StringBuilder builder = new StringBuilder(where);
-					addOptimisticLockingClause(optimisticLockingParams, builder);
-					where = builder.toString();
-				}
-				StringBuilder sql = new StringBuilder ("DELETE FROM ") //jz why no FROM??
-					.append(p_info.getTableName())
-					.append(" WHERE ")
-					.append(where);
+				SQLFragment sqlFragment = get_deleteStatement();
 				int no = 0;
 				if (isUseTimeoutForUpdate())
-					no = optimisticLockingParams.isEmpty() 
-						 ? DB.executeUpdateEx(sql.toString(), localTrxName, get_QueryTimeout())
-						 : DB.executeUpdateEx(sql.toString(), optimisticLockingParams.toArray(), localTrxName, get_QueryTimeout());
+					no = sqlFragment.parameters().isEmpty()
+						 ? DB.executeUpdateEx(sqlFragment.sqlClause(), localTrxName, get_QueryTimeout())
+						 : DB.executeUpdateEx(sqlFragment.sqlClause(), sqlFragment.parameters().toArray(), localTrxName, get_QueryTimeout());
 				else
-					no = optimisticLockingParams.isEmpty() 
-						 ? DB.executeUpdate(sql.toString(), localTrxName)
-						 : DB.executeUpdate(sql.toString(), optimisticLockingParams.toArray(), false, localTrxName);
+					no = sqlFragment.parameters().isEmpty() 
+						 ? DB.executeUpdate(sqlFragment.sqlClause(), localTrxName)
+						 : DB.executeUpdate(sqlFragment.sqlClause(), sqlFragment.parameters().toArray(), false, localTrxName);
 				success = no == 1;
 			}
 			catch (Exception e)
@@ -4455,8 +4603,9 @@ public abstract class PO
 							log.fine("No Session found");
 						else if (m_IDs.length == 1 || !Util.isEmpty(Record_UU, true))
 						{
-							int AD_ChangeLog_ID = 0;
+							int	AD_ChangeLog_ID = 0;
 							int size = get_ColumnCount();
+							BatchInsert<MChangeLog> changeLogBatch = new BatchInsert<>(MChangeLog.class);
 							for (int i = 0; i < size; i++)
 							{
 								Object value = m_oldValues[i];
@@ -4471,20 +4620,24 @@ public abstract class PO
 									MChangeLog cLog = session.changeLog (
 										m_trxName != null ? m_trxName : localTrxName, AD_ChangeLog_ID,
 										AD_Table_ID, p_info.getColumn(i).AD_Column_ID,
-										(m_IDs.length == 1 ? Record_ID : 0), Record_UU, getAD_Client_ID(), getAD_Org_ID(), value, null, MChangeLog.EVENTCHANGELOG_Delete);
+										(m_IDs.length == 1 ? Record_ID : 0), Record_UU, getAD_Client_ID(), getAD_Org_ID(), value, null, MChangeLog.EVENTCHANGELOG_Delete, false);
 									if (cLog != null)
+									{
+										changeLogBatch.add(cLog);
 										AD_ChangeLog_ID = cLog.getAD_ChangeLog_ID();
+									}
 								}
 							}	//   for all fields
+							
+							if (!changeLogBatch.isEmpty()) {
+								changeLogBatch.executeBatch(m_trxName != null ? m_trxName : localTrxName);
+							}
 						}
 	
-						//	Housekeeping
-						m_IDs[0] = I_ZERO;
 						if (m_trxName == null)
 							log.fine("complete");
 						else
 							if (log.isLoggable(Level.FINE)) log.fine("[" + m_trxName + "] - complete");
-						m_attachment = null;
 					}
 				}
 				else
@@ -4531,49 +4684,7 @@ public abstract class PO
 			}
 			else
 			{
-				Trx trxdel = Trx.get(get_TrxName(), false);
-				if (trxdel != null) {
-					// Schedule the reset cache for after committed the delete
-					if (CacheMgt.get().hasCache(p_info.getTableName())) {
-						trxdel.addTrxEventListener(new TrxEventListener() {
-							@Override
-							public void afterRollback(Trx trxdel, boolean success) {
-								trxdel.removeTrxEventListener(this);
-							}
-							@Override
-							public void afterCommit(Trx trxdel, boolean success) {
-								if (success)
-									Adempiere.getThreadPoolExecutor().submit(() -> CacheMgt.get().reset(p_info.getTableName(), Record_ID));
-								trxdel.removeTrxEventListener(this);
-							}
-							@Override
-							public void afterClose(Trx trxdel) {
-							}
-						});
-					}
-					// trigger the deletion of attachments and archives for after committed the delete
-					trxdel.addTrxEventListener(new TrxEventListener() {
-						@Override
-						public void afterRollback(Trx trxdel, boolean success) {
-							trxdel.removeTrxEventListener(this);
-						}
-						@Override
-						public void afterCommit(Trx trxdel, boolean success) {
-							if (success) {
-								if (m_KeyColumns != null && m_KeyColumns.length == 1 && !getTable().isUUIDKeyTable())
-									// Delete Cascade AD_Table_ID/Record_ID on Attachments/Archive
-									// after commit because operations on external storage providers don't have rollback
-									PO_Record.deleteRecordCascade(AD_Table_ID, Record_ID, "AD_Table.TableName IN ('AD_Attachment','AD_Archive')", null);
-								if (Record_UU != null)
-									PO_Record.deleteRecordCascade(AD_Table_ID, Record_UU, "AD_Table.TableName IN ('AD_Attachment','AD_Archive')", null);
-							}
-							trxdel.removeTrxEventListener(this);
-						}
-						@Override
-						public void afterClose(Trx trxdel) {
-						}
-					});
-				}
+				setupDeleteActionsForTransactionEvent(Record_ID, Record_UU);
 				if (localTrx != null)
 				{
 					try {
@@ -4592,18 +4703,39 @@ public abstract class PO
 			//	Reset
 			if (success)
 			{
-				if (!postDelete()) {
-					log.warning("postDelete failed");
+				if (localTrx != null) 
+				{
+					firePostDeleteEvent();
+				}
+				else
+				{
+					Trx trxdel = Trx.get(get_TrxName(), false);
+					if (trxdel != null)
+					{
+						trxdel.addTrxEventListener(new TrxEventListener() {
+							@Override
+							public void afterRollback(Trx trxdel, boolean success) {
+								trxdel.removeTrxEventListener(this);
+							}
+							@Override
+							public void afterCommit(Trx trxdel, boolean success) {
+								if (success) {
+									firePostDeleteEvent();
+								}
+								trxdel.removeTrxEventListener(this);
+							}
+							@Override
+							public void afterClose(Trx trxdel) {
+							}
+						});
+					}
+					else
+					{
+						firePostDeleteEvent();
+					}
 				}
 
-				//osgi event handler
-				Event event = EventManager.newEvent(IEventTopics.PO_POST_DELETE, this, true);
-				EventManager.getInstance().postEvent(event);
-	
-				m_idOld = 0;
-				int size = p_info.getColumnCount();
-				m_oldValues = new Object[size];
-				m_newValues = new Object[size];
+				resetStateAfterDelete();
 			}
 		}
 		finally
@@ -4629,6 +4761,77 @@ public abstract class PO
 		}
 		return success;
 	}	//	delete
+
+	/**
+	 * Setup one-off delete actions for transaction event (commit or rollback).<br/>
+	 * Internal API, developer should not call this directly.
+	 * @param Record_ID 
+	 * @param Record_UU 
+	 */
+	protected final void setupDeleteActionsForTransactionEvent(int Record_ID, String Record_UU) {
+		Trx trxdel = Trx.get(get_TrxName(), false);
+		if (trxdel != null) {
+			int AD_Table_ID = p_info.getAD_Table_ID();
+			// Schedule the reset cache for after committed the delete
+			if (m_KeyColumns != null && m_KeyColumns.length == 1 && !getTable().isUUIDKeyTable())
+				CacheMgt.scheduleCacheReset(p_info.getTableName(), Record_ID, false, get_TrxName());
+			else
+				CacheMgt.scheduleCacheReset(p_info.getTableName(), Record_UU, false, get_TrxName());
+
+			// trigger the deletion of attachments and archives for after committed the delete
+			trxdel.addTrxEventListener(new TrxEventListener() {
+				@Override
+				public void afterRollback(Trx trxdel, boolean success) {
+					trxdel.removeTrxEventListener(this);
+				}
+				@Override
+				public void afterCommit(Trx trxdel, boolean success) {
+					if (success) {
+						m_idOld = get_ID();
+						m_IDs[0] = PO.I_ZERO;
+						m_attachment = null;						
+						if (m_KeyColumns != null && m_KeyColumns.length == 1 && !getTable().isUUIDKeyTable())
+							// Delete Cascade AD_Table_ID/Record_ID on Attachments/Archive
+							// after commit because operations on external storage providers don't have rollback
+							PO_Record.deleteRecordCascade(AD_Table_ID, Record_ID, "AD_Table.TableName IN ('AD_Attachment','AD_Archive')", null);
+						if (Record_UU != null)
+							PO_Record.deleteRecordCascade(AD_Table_ID, Record_UU, "AD_Table.TableName IN ('AD_Attachment','AD_Archive')", null);
+					}
+					trxdel.removeTrxEventListener(this);
+				}
+				@Override
+				public void afterClose(Trx trxdel) {
+				}
+			});
+
+		}
+	}
+
+	/**
+	 * Reset state after success delete.<br/>
+	 * Internal API, developer should not call this directly.
+	 */
+	protected final void resetStateAfterDelete() {
+		int size = p_info.getColumnCount();
+		m_oldValues = new Object[size];
+		m_newValues = new Object[size];
+	}
+
+	/**
+	 * Fire post delete event to notify interested parties that a record has been deleted.<br/>
+	 * This method is called after the transaction has been committed successfully.<br/>
+	 * Internal API, developer should not call this directly.
+	 */
+	protected final void firePostDeleteEvent() {
+		if (!postDelete()) {
+			log.warning("postDelete failed");
+		}
+
+		//osgi event handler
+		Event event = EventManager.newEvent(IEventTopics.PO_POST_DELETE, this, true);
+		EventManager.getInstance().postEvent(event);
+
+	}
 
 	/**
 	 * Delete Current Record
@@ -4846,7 +5049,7 @@ public abstract class PO
 		        for (String langName : availableLanguages) {
 		    		Language language = Language.getLanguage(langName);
 					String key = getTrlCacheKey(columnName, language.getAD_Language());
-					CacheMgt.get().reset(TRANSLATION_CACHE_TABLE_NAME, key);
+					CacheMgt.scheduleCacheReset(TRANSLATION_CACHE_TABLE_NAME, key, false, get_TrxName());
 				}
 			}
 		}
@@ -4931,12 +5134,26 @@ public abstract class PO
 	 */
 	private boolean deleteTranslations(String trxName)
 	{
+		String sql = get_deleteTranslationsSQL();
+		if (sql == null)
+			return true;
+		int no = DB.executeUpdate(sql, trxName);
+		if (log.isLoggable(Level.FINE)) log.fine("#" + no);
+		return no >= 0;
+	}
+
+	/**
+	 * 	Get SQL statement for delete of translation records
+	 * 	@return SQL to delete translation records
+	 */
+	protected final String get_deleteTranslationsSQL()
+	{
 		//	Not a translation table
 		if (m_IDs.length > 1
 			|| m_IDs[0].equals(I_ZERO)
 			|| !(m_IDs[0] instanceof Integer || m_IDs[0] instanceof String)
 			|| !p_info.isTranslated())
-			return true;
+			return null;
 		//
 		String tableName = p_info.getTableName();
 		MTable table = MTable.get(getCtx(), tableName);
@@ -4948,10 +5165,8 @@ public abstract class PO
 			sql.append(DB.TO_STRING(get_UUID()));
 		else
 			sql.append(get_ID());
-		int no = DB.executeUpdate(sql.toString(), trxName);
-		if (log.isLoggable(Level.FINE)) log.fine("#" + no);
-		return no >= 0;
-	}	//	deleteTranslations
+		return sql.toString();
+	}	
 
 	/**
 	 * 	Insert Accounting Records
@@ -4963,95 +5178,17 @@ public abstract class PO
 	protected boolean insert_Accounting (String acctTableName,
 		String acctBaseTable, String whereClause)
 	{
-		if (s_acctColumns == null	//	cannot cache C_BP_*_Acct as there are 3
-			|| acctTableName.startsWith("C_BP_"))
-		{
-			s_acctColumns = new ArrayList<String>();
-			String sql = "SELECT c.ColumnName "
-				+ "FROM AD_Column c INNER JOIN AD_Table t ON (c.AD_Table_ID=t.AD_Table_ID) "
-				+ "WHERE t.TableName=? AND c.IsActive='Y' AND c.AD_Reference_ID=25 ORDER BY c.ColumnName";
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
-			try
-			{
-				pstmt = DB.prepareStatement (sql, null);
-				pstmt.setString (1, acctTableName);
-				rs = pstmt.executeQuery ();
-				while (rs.next ())
-					s_acctColumns.add (rs.getString(1));
-			}
-			catch (Exception e)
-			{
-				log.log(Level.SEVERE, acctTableName, e);
-			}
-			finally {
-				DB.close(rs, pstmt);
-				rs = null; pstmt = null;
-			}
-			if (s_acctColumns.size() == 0)
-			{
-				log.severe ("No Columns for " + acctTableName);
-				return false;
-			}
+		if (AcctModelServices.isAccountingAvailable()) {
+			SQLFragment whereSQL = !Util.isEmpty(whereClause) ? new SQLFragment(whereClause) : null;
+			
+			return AcctModelServices.getPOAccountingService().insertAccounting(this, acctTableName, 
+					acctBaseTable, whereSQL);
 		}
+	    
+	    if (log.isLoggable(Level.FINE))
+	        log.fine("Accounting service not available - skipping accounting");
+	    return true;
 
-		//	Create SQL Statement - INSERT
-		StringBuilder sb = new StringBuilder("INSERT INTO ")
-			.append(acctTableName)
-			.append(" (").append(get_TableName())
-			.append("_ID, C_AcctSchema_ID, AD_Client_ID,AD_Org_ID,IsActive, Created,CreatedBy,Updated,UpdatedBy ");
-		for (int i = 0; i < s_acctColumns.size(); i++)
-			sb.append(",").append(s_acctColumns.get(i));
-
-		//check whether db have working generate_uuid function.
-		boolean uuidFunction = DB.isGenerateUUIDSupported();
-
-		MTable acctTable = MTable.get(getCtx(), acctTableName, get_TrxName());
-		if (acctTableName == null) {
-			throw new AdempiereException("Accounting table " + acctTableName + " does not exist");
-		}
-		MColumn uuidColumn = acctTable.getColumn(PO.getUUIDColumnName(acctTableName));
-		if (uuidColumn != null && uuidFunction)
-			sb.append(",").append(PO.getUUIDColumnName(acctTableName));
-		//	..	SELECT
-		sb.append(") SELECT ").append(get_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName())
-				 ? PO.buildUUIDSubquery(get_TableName(), get_UUID()) 
-				 : get_ID())
-			.append(", p.C_AcctSchema_ID, p.AD_Client_ID,0,'Y', getDate(),")
-			.append(getUpdatedBy()).append(",getDate(),").append(getUpdatedBy());
-		for (int i = 0; i < s_acctColumns.size(); i++)
-			sb.append(",p.").append(s_acctColumns.get(i));
-		if (uuidColumn != null && uuidFunction)
-			sb.append(",generate_uuid()");
-		//	.. 	FROM
-		sb.append(" FROM ").append(acctBaseTable)
-			.append(" p WHERE p.AD_Client_ID=")
-			.append(getAD_Client_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName()) 
-					? PO.buildUUIDSubquery("AD_Client", MClient.get(getAD_Client_ID()).getAD_Client_UU())
-					: getAD_Client_ID());
-		if (whereClause != null && whereClause.length() > 0)
-			sb.append (" AND ").append(whereClause);
-		sb.append(" AND NOT EXISTS (SELECT * FROM ").append(acctTableName)
-			.append(" e WHERE e.C_AcctSchema_ID=p.C_AcctSchema_ID AND e.")
-			.append(get_TableName()).append("_ID=");
-		if (get_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName()))
-			sb.append(PO.buildUUIDSubquery(get_TableName(),get_UUID())).append(")");
-		else
-			sb.append(get_ID()).append(")");
-		//
-		int no = DB.executeUpdate(sb.toString(), get_TrxName());
-		if (no > 0) {
-			if (log.isLoggable(Level.FINE)) log.fine("#" + no);
-		} else {
-			log.warning("#" + no
-					+ " - Table=" + acctTableName + " from " + acctBaseTable);
-		}
-
-		//fall back to the slow java client update code
-		if (uuidColumn != null && !uuidFunction) {
-			UUIDGenerator.updateUUID(uuidColumn, get_TrxName());
-		}
-		return no > 0;
 	}	//	insert_Accounting
 
 	/**
@@ -5286,26 +5423,28 @@ public abstract class PO
 	}
 
 	/**
-	 * 	Delete ID Tree Nodes
-	 *	@param treeType MTree TREETYPE_*
-	 *	@return true if deleted
+	 * Get SQL statement to delete tree records
+	 * @param treeType
+	 * @param doChildNodesValidation true to validate whether child nodes exists and throw exception if child nodes exists
+	 * @return SQL statement to delete tree records
 	 */
-	protected boolean delete_Tree (String treeType)
-	{
+	protected final String get_deleteTreeSQL(String treeType, boolean doChildNodesValidation) {
 		int id = get_ID();
 		if (id == 0)
 			id = get_IDOld();
 		
 		// IDEMPIERE-2453
-		StringBuilder countSql = new StringBuilder("SELECT COUNT(*) FROM ")
-			.append(MTree_Base.getNodeTableName(treeType))
-			.append(" n JOIN AD_Tree t ON n.AD_Tree_ID=t.AD_Tree_ID")
-			.append(" WHERE Parent_ID=? AND t.TreeType=?");
-		if (MTree_Base.TREETYPE_CustomTable.equals(treeType))
-			countSql.append(" AND t.AD_Table_ID=").append(get_Table_ID());
-		int cnt = DB.getSQLValueEx( get_TrxName(), countSql.toString(), id, treeType);
-		if (cnt > 0)
-			throw new AdempiereException(Msg.getMsg(Env.getCtx(),"NoParentDelete", new Object[] {cnt}));
+		if (doChildNodesValidation) {
+			StringBuilder countSql = new StringBuilder("SELECT COUNT(*) FROM ")
+				.append(MTree_Base.getNodeTableName(treeType))
+				.append(" n JOIN AD_Tree t ON n.AD_Tree_ID=t.AD_Tree_ID")
+				.append(" WHERE Parent_ID=? AND t.TreeType=?");
+			if (MTree_Base.TREETYPE_CustomTable.equals(treeType))
+				countSql.append(" AND t.AD_Table_ID=").append(get_Table_ID());
+			int cnt = DB.getSQLValueEx( get_TrxName(), countSql.toString(), id, treeType);
+			if (cnt > 0)
+				throw new AdempiereException(Msg.getMsg(Env.getCtx(),"NoParentDelete", new Object[] {cnt}));
+		}
 		
 		StringBuilder sb = new StringBuilder ("DELETE FROM ")
 			.append(MTree_Base.getNodeTableName(treeType))
@@ -5315,8 +5454,19 @@ public abstract class PO
 			.append(treeType).append("'");
 		if (MTree_Base.TREETYPE_CustomTable.equals(treeType))
 			sb.append(" AND t.AD_Table_ID=").append(get_Table_ID());
-		sb.append(")");
-		int no = DB.executeUpdate(sb.toString(), get_TrxName());
+		sb.append(")");	
+		return sb.toString();
+	}
+
+	/**
+	 * 	Delete ID Tree Nodes
+	 *	@param treeType MTree TREETYPE_*
+	 *	@return true if deleted
+	 */
+	protected boolean delete_Tree (String treeType)
+	{
+		String sql = get_deleteTreeSQL(treeType, true);
+		int no = DB.executeUpdate(sql, get_TrxName());
 		if (no > 0) {
 			if (log.isLoggable(Level.FINE)) log.fine("#" + no + " - TreeType=" + treeType);
 		} else {
@@ -5688,7 +5838,7 @@ public abstract class PO
 	 * 	Save LOB
 	 * 	@return true if saved ok
 	 */
-	private boolean lobSave ()
+	protected final boolean lobSave ()
 	{
 		if (m_lobInfo == null)
 			return true;
@@ -5849,7 +5999,7 @@ public abstract class PO
 	}	//	getDocument
 
 	/** Doc - To be used on ModelValidator to get the corresponding Doc from the PO */
-	private Doc m_doc;
+	private IDoc m_doc; // Generic - will be Doc if accounting loaded
 
 	/* Indicates if the PO was being loaded with partial data */
 	private boolean m_is_Partial;
@@ -5858,7 +6008,7 @@ public abstract class PO
 	 * Set the accounting document associated to the PO - for use in POST ModelValidator
 	 * @param doc Document
 	 */
-	public void setDoc(Doc doc) {
+	public void setDoc(IDoc doc) {
 		m_doc = doc;		
 	}
 
@@ -5884,7 +6034,7 @@ public abstract class PO
 	 * Get the accounting document associated to the PO - for use in POST ModelValidator
 	 * @return Doc Document
 	 */
-	public Doc getDoc() {
+	public IDoc getDoc() {
 		return m_doc;
 	}
 
@@ -6145,6 +6295,14 @@ public abstract class PO
 	 */
 	public static void clearCrossTenantSafe() {
 		isSafeCrossTenant.set(Boolean.FALSE);
+	}
+
+	/**
+	 * Is cross tenant safe thread local flag is turned on
+	 * @return true if cross tenant safe thread local flag is turned on, false otherwise
+	 */
+	public static boolean isCrossTenantSafe() {
+		return isSafeCrossTenant.get();
 	}
 
 	/**
@@ -6606,4 +6764,5 @@ public abstract class PO
 	           " FROM " + tableName +
 	           " WHERE " + uuCol + " = " + DB.TO_STRING(uuidValue) + ")";
 	}
+
 }   //  PO

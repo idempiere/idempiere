@@ -124,12 +124,7 @@
           <version>${revision}</version>
           <scope>compile</scope>
       </dependency>
-      <dependency>
-          <groupId>org.idempiere</groupId>
-          <artifactId>org.idempiere.webservices</artifactId>
-          <version>${revision}</version>
-          <scope>compile</scope>
-      </dependency>
+      <!-- org.idempiere.webservices was extracted to an external repository -->
       <dependency>
           <groupId>org.idempiere</groupId>
           <artifactId>org.idempiere.keikai</artifactId>

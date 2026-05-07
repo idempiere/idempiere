@@ -66,7 +66,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.Hbox;
+import org.adempiere.webui.component.FlexHlayout;
 import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
@@ -343,7 +343,7 @@ public class WMatch extends Match
 		row.appendChild(dateFromLabel.rightAlign());		
 		row.appendChild(dateFrom.getComponent());
 		row.appendChild(dateToLabel.rightAlign());
-		Hbox boxTo = new Hbox();
+		FlexHlayout boxTo = new FlexHlayout();
 		boxTo.appendChild(dateTo.getComponent());
 		DateRangeButton drb = (new DateRangeButton(dateFrom, dateTo));
 		boxTo.appendChild(drb);

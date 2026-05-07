@@ -2,9 +2,10 @@
 <zk>
 <borderlayout id="layout" sclass="login-window">
 	<center border="none" autoscroll="true" style="background-color: transparent;">
-		<vbox pack="center" align="center" style="background-color: transparent;" hflex="1" vflex="1">
+		<vlayout use="org.adempiere.webui.component.FlexVlayout" 
+			pack="center" align="center" hflex="1" vflex="1">
 			<window use="org.adempiere.webui.window.LoginWindow" id="loginWindow"/>
-		</vbox>
+		</vlayout>
 	</center>
 	<east sclass="login-east-panel">
 		<include src="~./theme/iceblue_c/zul/login/login-right.zul"/>

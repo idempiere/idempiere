@@ -1590,6 +1590,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		if (getAttribute("IsSOTrx") != null) {
 			Env.setContext(Env.getCtx(), m_WindowNo, "IsSOTrx", getAttribute("IsSOTrx").toString());
 		}
+		if (m_reportEngine.getProcessInfo() != null)
+			Env.setContext(Env.getCtx(), m_WindowNo, MPInstance.COLUMNNAME_AD_PInstance_ID, m_reportEngine.getProcessInfo().getAD_PInstance_ID());
 		ProcessModalDialog processModalDialog = new ProcessModalDialog(this, m_WindowNo, pi);
 		ZKUpdateUtil.setWindowWidthX(processModalDialog, 850);
 		this.getParent().appendChild(processModalDialog);

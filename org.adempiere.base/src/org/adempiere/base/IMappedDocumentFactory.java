@@ -27,11 +27,11 @@ package org.adempiere.base;
 import java.sql.ResultSet;
 import java.util.function.Function;
 
-import org.compiere.acct.Doc;
 import org.compiere.model.MAcctSchema;
+import org.idempiere.acct.IDoc;
 
 /**
- * Factory interface for mapping between tableName+gaap to {@link Doc} implementation.
+ * Factory interface for mapping between tableName+gaap to {@link IDoc} implementation.
  * @author hengsin
  *
  */
@@ -43,7 +43,7 @@ public interface IMappedDocumentFactory {
 	 * @param tableName
 	 * @param supplier
 	 */
-	public void addMapping(String gaap, String tableName, Function<Parameter, ? extends Doc> supplier);
+	public void addMapping(String gaap, String tableName, Function<Parameter, ? extends IDoc> supplier);
 
 	/**
 	 * Remove mapping

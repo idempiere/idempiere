@@ -212,15 +212,13 @@ public interface I_C_BPartner_Location
     /** Column name IsPayFrom */
     public static final String COLUMNNAME_IsPayFrom = "IsPayFrom";
 
-	/** Set Pay-From Address.
-	  * Business Partner pays from that address and we&#039;
-ll send dunning letters there
+	/** Set Pay-From.
+	  * Business Partner can pay invoices from the related Business Partner
 	  */
 	public void setIsPayFrom (boolean IsPayFrom);
 
-	/** Get Pay-From Address.
-	  * Business Partner pays from that address and we&#039;
-ll send dunning letters there
+	/** Get Pay-From.
+	  * Business Partner can pay invoices from the related Business Partner
 	  */
 	public boolean isPayFrom();
 

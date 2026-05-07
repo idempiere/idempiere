@@ -77,7 +77,9 @@ BEGIN
 	        INNER JOIN M_Attribute a ON (ai.M_Attribute_ID=a.M_Attribute_ID AND a.IsInstanceAttribute='Y')
         	WHERE ai.M_AttributeSetInstance_ID=p_M_AttributeSetInstance_ID
     	LOOP
-            v_NameAdd := v_NameAdd || r.Name || ':' || r.Value || ' ';
+			IF (r.Name IS NOT NULL AND r.Value IS NOT NULL) THEN
+				v_NameAdd := v_NameAdd || r.Name || ':' || r.Value || ' ';
+			END IF;
         END LOOP;
         --
         IF (LENGTH(v_NameAdd) > 0) THEN

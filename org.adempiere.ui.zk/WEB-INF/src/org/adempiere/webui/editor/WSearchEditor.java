@@ -52,12 +52,15 @@ import org.compiere.model.Lookup;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
+import org.compiere.model.MLookupInfo;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.CLogger;
+import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.NamePair;
@@ -616,6 +619,25 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			if (gridField != null)
 				gridField.setLookupEditorSettingValue(true);
 			
+			// translate integer id to uuid if lookup is using uuidkey
+			if (lookup instanceof MLookup mLookup) 
+			{
+				MLookupInfo linfo = mLookup.getLookupInfo();
+				if (linfo != null && linfo.KeyColumn != null && linfo.TableName != null
+					&& linfo.KeyColumn.endsWith("_UU") && value instanceof Integer integerId)
+				{
+					MTable table = MTable.get(Env.getCtx(), linfo.TableName);
+					if (table != null && table.getKeyColumns() != null && table.getKeyColumns().length == 1)
+					{
+						String uidColumn = PO.getUUIDColumnName(table.getTableName());
+						String uuid = DB.getSQLValueString(null, "SELECT "+uidColumn+" FROM "+table.getTableName()+" WHERE "
+							+ table.getKeyColumns()[0] + "=?", integerId);
+						if (uuid != null && uuid.length() > 0)
+							value = uuid;
+					}					
+				}
+			}
+
 			ValueChangeEvent evt = new ValueChangeEvent(this, this.getColumnName(), getValue(), value);
 			// -> ADTabpanel - valuechange
 			fireValueChange(evt);

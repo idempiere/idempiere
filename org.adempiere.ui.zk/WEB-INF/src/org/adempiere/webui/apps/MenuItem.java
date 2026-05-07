@@ -49,6 +49,10 @@ public class MenuItem {
 	public MenuItem() {
 	}
 
+	public MenuItem(String label) {
+		this.label = label;
+	}
+	
 	/**
 	 * @return the label
 	 */

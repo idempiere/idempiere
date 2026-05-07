@@ -71,7 +71,9 @@ BEGIN
         END IF;
         --
         FOR a IN CUR_Attributes LOOP
-            v_NameAdd := v_NameAdd || a.Name || ':' || a.Value || ' ';
+			IF (a.Name IS NOT NULL AND a.Value IS NOT NULL) THEN
+				v_NameAdd := v_NameAdd || a.Name || ':' || a.Value || ' ';
+			END IF;
         END LOOP;
         --
         IF (LENGTH(v_NameAdd) > 0) THEN

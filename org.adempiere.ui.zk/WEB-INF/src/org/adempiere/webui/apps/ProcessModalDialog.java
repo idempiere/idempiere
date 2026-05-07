@@ -110,7 +110,8 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 		this(WindowNo, pi, false);
 
 		if(isReRun) {
-			MPInstance instance = getLastRun();
+			int instanceId = Env.getContextAsInt(Env.getCtx(), WindowNo, MPInstance.COLUMNNAME_AD_PInstance_ID);
+			MPInstance instance = instanceId > 0 ? new MPInstance(Env.getCtx(), instanceId, null) : null;
 			if(instance != null) {
 				loadSavedParams(instance);
 				chooseSaveParameter(fSavedName.getRawText(), true);

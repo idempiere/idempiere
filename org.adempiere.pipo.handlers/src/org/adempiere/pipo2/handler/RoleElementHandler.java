@@ -33,6 +33,7 @@ import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_Role;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.MRole;
 import org.compiere.model.X_AD_Form;
 import org.compiere.model.X_AD_InfoWindow;
@@ -82,9 +83,9 @@ public class RoleElementHandler extends AbstractElementHandler {
 					X_AD_Role.Table_ID);
 			String action = null;
 			if (!mRole.is_new()) {
-				action = "Update";
+				action = MPackageImpDetail.ACTION_UPDATE;
 			} else {
-				action = "New";
+				action = MPackageImpDetail.ACTION_INSERT;
 			}
 			if (mRole.save(getTrxName(ctx)) == true) {
 				element.recordId = mRole.getAD_Role_ID();

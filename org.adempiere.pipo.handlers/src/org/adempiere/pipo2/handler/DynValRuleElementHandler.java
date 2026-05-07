@@ -28,6 +28,7 @@ import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_Val_Rule;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_Val_Rule;
@@ -62,10 +63,10 @@ public class DynValRuleElementHandler extends AbstractElementHandler {
 				String action = null;
 				if (!mValRule.is_new()){
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Val_Rule.Table_Name, mValRule);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				}
 				else{
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}
 	
 				if (mValRule.save(getTrxName(ctx)) == true){

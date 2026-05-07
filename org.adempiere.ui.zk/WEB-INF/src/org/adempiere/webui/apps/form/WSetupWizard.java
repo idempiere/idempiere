@@ -26,6 +26,7 @@ import org.adempiere.model.MWizardProcess;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
+import org.adempiere.webui.component.FlexHlayout;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Panel;
 import org.adempiere.webui.component.Textbox;
@@ -69,7 +70,7 @@ import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treechildren;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Treerow;
-import org.zkoss.zul.Vbox;
+import org.adempiere.webui.component.FlexVlayout;
 
 /**
  * Form for Client/Tenant Setup Wizard
@@ -108,7 +109,7 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 	private Textbox			notesField  = new Textbox();
 	
 	/** Footer of east panel of {@link #mainLayout} */
-	private Vbox westdown = new Vbox();
+	private FlexHlayout westdown = new FlexHlayout();
 	/** {@link #westdown} contents */	
 	private Label 			userLabel = new Label(Msg.getMsg(Env.getCtx(), "User"));
 	private WSearchEditor	userField;	
@@ -135,9 +136,9 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 	private boolean allFinished = true;
 	private boolean allPending = true;
 	/** Center of {@link #mainLayout} */
-	private Vbox centerBox = new Vbox();
+	private FlexVlayout centerBox = new FlexVlayout();
 	/** Footer of {@link #centerBox} */ 
-	private Vbox centerBoxdown = new Vbox();	
+	private FlexHlayout centerBoxdown = new FlexHlayout();	
 	private ArrayList<Integer> openNodes = new ArrayList<Integer>();
 
 	/**
@@ -456,9 +457,8 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		ZKUpdateUtil.setWidth(centerBox, "100%");
 		ZKUpdateUtil.setVflex(wfnodeTree, "1");
 		centerBox.appendChild(centerBoxdown);
-		centerBoxdown.setOrient("horizontal");
-		centerBoxdown.setAlign("center");
-		centerBoxdown.setPack("start");
+		centerBoxdown.setAlign(FlexHlayout.AlignType.CENTER);
+		centerBoxdown.setPack(FlexHlayout.PackType.START);
 		centerBoxdown.appendChild(bExpand);
 		centerBoxdown.appendChild(justmine);
 		centerBoxdown.appendChild(showColors);
@@ -494,9 +494,8 @@ public class WSetupWizard extends SetupWizard implements IFormController, EventL
 		userField = new WSearchEditor(lookup, Msg.translate(
                 Env.getCtx(), "AD_User_ID"), "", false, false, true);
 
-		westdown.setOrient("horizontal");
-		westdown.setAlign("center");
-		westdown.setPack("center");
+		westdown.setAlign(FlexHlayout.AlignType.CENTER);
+		westdown.setPack(FlexHlayout.PackType.CENTER);
 		westdown.appendChild(bZoomLabel);
 		westdown.appendChild(bZoom);
 		westdown.appendChild(userLabel);

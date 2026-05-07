@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "iDempiere Extension Index",
+  "type": "object",
+  "required": [
+    "generatedAt",
+    "extensions"
+  ],
+  "properties": {
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The date and time when the index was generated (ISO 8601 format)."
+    },
+    "extensions": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          {
+            "$ref": "metadata-schema.json"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "infoUrl": {
+                "type": "string",
+                "format": "uri",
+                "description": "URL to the human-readable description (info.md)."
+              },
+              "changeLogUrl": {
+                "type": "string",
+                "format": "uri",
+                "description": "URL to the changelog (CHANGELOG.md)."
+              },
+              "assets": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["name", "url"],
+                  "properties": {
+                    "name": { "type": "string" },
+                    "url": { "type": "string", "format": "uri" }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

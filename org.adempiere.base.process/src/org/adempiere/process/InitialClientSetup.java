@@ -279,6 +279,13 @@ public class InitialClientSetup extends SvrProcess
 			}
 				
 			addLog(ms.getInfo());
+			
+			//Create calendar (even if accounting is disabled, calendar is needed for period control)
+			int C_Calendar_ID = ms.createCalendar();
+			if (C_Calendar_ID <= 0) {
+				ms.rollback();
+				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "Create calendar failed"));
+			}
 
 			//  Generate Accounting
 			MCurrency currency = MCurrency.get(getCtx(), p_C_Currency_ID);
@@ -286,6 +293,12 @@ public class InitialClientSetup extends SvrProcess
 			if (!ms.createAccounting(currency_kp,
 				p_IsUseProductDimension, p_IsUseBPDimension, p_IsUseProjectDimension, p_IsUseCampaignDimension, p_IsUseSalesRegionDimension, p_IsUseActivityDimension,
 				coaFile, p_UseDefaultCoA, p_InactivateDefaults)) {
+				ms.rollback();
+				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "AccountSetupError"));
+			}
+			
+			// Create document types (master data)
+			if (!ms.createAndValidateDocumentTypes()) {
 				ms.rollback();
 				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "AccountSetupError"));
 			}

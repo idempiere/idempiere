@@ -28,6 +28,7 @@ import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_WF_NodeNext;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_WF_NodeNext;
 import org.compiere.util.Env;
@@ -42,10 +43,6 @@ public class WorkflowNodeNextElementHandler extends AbstractElementHandler {
 
 		String entitytype = getStringValue(element, "EntityType");
 		if (isProcessElement(ctx.ctx, entitytype)) {
-			/*if (isParentSkip(element, null)) {
-				element.skip = true;
-				return;
-			}*/
 
 			MWFNodeNext mWFNodeNext = findPO(ctx, element);
 			if (mWFNodeNext == null) {
@@ -66,11 +63,11 @@ public class WorkflowNodeNextElementHandler extends AbstractElementHandler {
 				String action = null;
 				if (!mWFNodeNext.is_new()){
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_WF_NodeNext.Table_Name,mWFNodeNext);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				} else{
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}
-				if (mWFNodeNext.save(getTrxName(ctx)) == true){
+				if (mWFNodeNext.save(getTrxName(ctx))){
 					log.info("m_WFNodeNext save success");
 					logImportDetail (ctx, impDetail, 1, String.valueOf(mWFNodeNext.get_ID()),mWFNodeNext.get_ID(), action);
 				} else{

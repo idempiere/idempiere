@@ -270,5 +270,13 @@ public interface IADTabpanel extends Component, Evaluatee {
 	 * @param toolbar - {@link Toolbar}
 	 */
 	public void updateDetailToolbar(Toolbar toolbar);
+    /**
+     * Get window number
+     * @return windowNo
+     */
+
+    public default int getWindowNo() {
+    	return -1;
+    }
 
 }

@@ -61,7 +61,6 @@ import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Space;
-import org.zkoss.zul.Vbox;
 
 
 /**
@@ -199,7 +198,8 @@ public class InfoSchedule extends Window implements EventListener<Event>
 	/**	Logger			*/
 	private static final CLogger log = CLogger.getCLogger(InfoSchedule.class);
 
-	private Vbox mainLayout = new Vbox();
+	@SuppressWarnings("deprecation")
+	private org.zkoss.zul.Vbox mainLayout = new org.zkoss.zul.Vbox();
 	private Hlayout parameterPanel = new Hlayout();
 	private Label labelResourceType = new Label();
 	private Listbox fieldResourceType = new Listbox();

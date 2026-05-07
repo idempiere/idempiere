@@ -31,6 +31,7 @@ import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_Form;
 import org.compiere.model.MForm;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.X_AD_Form;
 import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
@@ -63,10 +64,10 @@ public class FormElementHandler extends AbstractElementHandler {
 				String action = null;
 				if (!mForm.is_new()){
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Form.Table_Name, mForm);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				}
 				else{
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}
 				
 				if (mForm.save(getTrxName(ctx)) == true){

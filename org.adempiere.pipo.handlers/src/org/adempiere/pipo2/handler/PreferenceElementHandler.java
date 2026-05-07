@@ -28,6 +28,7 @@ import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_Preference;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.MPreference;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Package_Imp_Detail;
@@ -83,9 +84,9 @@ public class PreferenceElementHandler extends AbstractElementHandler {
 			String action = null;
 			if (!mPreference.is_new()) {
 				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Preference.Table_Name, mPreference);
-				action = "Update";
+				action = MPackageImpDetail.ACTION_UPDATE;
 			} else {
-				action = "New";
+				action = MPackageImpDetail.ACTION_INSERT;
 			}
 	
 			if (mPreference.save(getTrxName(ctx)) == true) {

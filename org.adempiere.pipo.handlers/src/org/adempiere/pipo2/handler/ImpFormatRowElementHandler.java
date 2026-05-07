@@ -29,6 +29,7 @@ import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_ImpFormat;
 import org.compiere.model.I_AD_ImpFormat_Row;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.X_AD_ImpFormat_Row;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.util.Env;
@@ -64,10 +65,10 @@ public class ImpFormatRowElementHandler extends AbstractElementHandler {
 					X_AD_ImpFormat_Row.Table_ID);
 			if (!mImpFormatRow.is_new()){
 				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_ImpFormat_Row.Table_Name, mImpFormatRow);
-				action = "Update";
+				action = MPackageImpDetail.ACTION_UPDATE;
 			}
 			else{
-				action = "New";
+				action = MPackageImpDetail.ACTION_INSERT;
 			}
 			if (mImpFormatRow.save(getTrxName(ctx)) == true){
 				logImportDetail (ctx, impDetail, 1, mImpFormatRow.getName(), mImpFormatRow.get_ID(),action);

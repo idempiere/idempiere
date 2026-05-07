@@ -40,6 +40,7 @@ import org.compiere.model.I_AD_Column;
 import org.compiere.model.I_AD_Table;
 import org.compiere.model.I_AD_TableAttribute;
 import org.compiere.model.MColumn;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.X_AD_Column;
@@ -104,9 +105,9 @@ public class ColumnElementHandler extends AbstractElementHandler {
 			String action = null;
 			if (!mColumn.is_new()) {
 				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), "AD_Column", mColumn);
-				action = "Update";
+				action = MPackageImpDetail.ACTION_UPDATE;
 			} else {
-				action = "New";
+				action = MPackageImpDetail.ACTION_INSERT;
 			}
 
 			// Setup Element.
@@ -120,7 +121,7 @@ public class ColumnElementHandler extends AbstractElementHandler {
 				X_AD_Package_Imp_Detail eleDetail = createImportDetail(ctx, "Element", X_AD_Element.Table_Name,
 						X_AD_Element.Table_ID);
 				logImportDetail(ctx, eleDetail, 1, mColumn.getColumnName(), adElement
-						.getAD_Element_ID(), "New");
+						.getAD_Element_ID(), MPackageImpDetail.ACTION_INSERT);
 				mColumn.setAD_Element_ID(adElement.getAD_Element_ID());
 			}
 

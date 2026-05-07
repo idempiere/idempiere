@@ -1,0 +1,136 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ *                                                                     *
+ **********************************************************************/
+package org.idempiere.acct;
+
+/**
+ * Static portal to accounting model services.
+ * The volatile reference is populated by OSGi Declarative Services
+ * via {@link #setAccountingService(IPOAccountingService)}.
+ *
+ * @author etantg / d-ruiz
+ */
+public final class AcctModelServices {
+
+	private AcctModelServices() {}
+
+	private static volatile IPOAccountingService s_accountingService = null;
+	private static volatile IDocPostingService s_postingService = null;
+	private static volatile IAccountingSetupService s_accountingSetupService = null;
+
+	/**
+	 * Called by OSGi DS when the service becomes available.
+	 * @param service accounting service implementation
+	 */
+	public static void setAccountingService(IPOAccountingService service) {
+		s_accountingService = service;
+	}
+
+	/**
+	 * Called by OSGi DS when the service is withdrawn.
+	 * @param service accounting service implementation (ignored)
+	 */
+	public static void unsetAccountingService(IPOAccountingService service) {
+		if (s_accountingService == service) {
+			s_accountingService = null;
+		}
+	}
+
+	/**
+	 * @return the accounting service, or {@code null} if not yet available
+	 */
+	public static IPOAccountingService getPOAccountingService() {
+		return s_accountingService;
+	}
+
+	/**
+	 * @return true if the accounting service is available
+	 */
+	public static boolean isAccountingAvailable() {
+		return s_accountingService != null;
+	}
+	
+	/**
+	 * Called by OSGi DS when the service becomes available.
+	 * @param service posting service implementation
+	 */
+	public static void setDocPostingService(IDocPostingService service) {
+		s_postingService = service;
+	}
+
+	/**
+	 * Called by OSGi DS when the service is withdrawn.
+	 * @param service posting service implementation (ignored)
+	 */
+	public static void unsetDocPostingService(IDocPostingService service) {
+		if (s_postingService == service) {
+			s_postingService = null;
+		}
+	}
+
+	/**
+	 * @return the posting service, or {@code null} if not yet available
+	 */
+	public static IDocPostingService getDocPostingService() {
+		return s_postingService;
+	}
+	
+	/**
+	 * @return true if the posting service is available
+	 */
+	public static boolean isDocPostingAvailable() {
+		return s_postingService != null;
+	}
+	
+	/**
+	 * Called by OSGi DS when the service becomes available.
+	 * @param accounting setup service implementation
+	 */
+	public static void setAccountingSetupService(IAccountingSetupService service) {
+		s_accountingSetupService = service;
+	}
+
+	/**
+	 * Called by OSGi DS when the service is withdrawn.
+	 * @param accounting setup service implementation (ignored)
+	 */
+	public static void unsetAccountingSetupService(IAccountingSetupService service) {
+		if (s_accountingSetupService == service) {
+			s_accountingSetupService = null;
+		}
+	}
+
+	/**
+	 * @return the accounting setup service, or {@code null} if not yet available
+	 */
+	public static IAccountingSetupService getAccountingSetupService() {
+		return s_accountingSetupService;
+	}
+	
+	/**
+	 * @return true if the accounting setup service is available
+	 */
+	public static boolean isAccountingSetupAvailable() {
+		return s_accountingSetupService != null;
+	}
+	
+}

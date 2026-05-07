@@ -67,11 +67,11 @@ public class HashPasswords extends SvrProcess
 		String where = " Password IS NOT NULL AND Salt IS NULL ";
 		
 		// update the sysconfig key to Y out of trx and reset the cache
-		MSysConfig conf = new MSysConfig(getCtx(), SystemIDs.SYSCONFIG_USER_HASH_PASSWORD, null);
+		MSysConfig conf = new MSysConfig(getCtx(), SystemIDs.SYSCONFIG_USER_PASSWORD_HASH, null);
 		conf.setValue("Y");
 		conf.saveEx();
 		
-		MSysConfig algorithmConfig = new MSysConfig(getCtx(), SystemIDs.SYSCONFIG_USER_HASH_PASSWORD_ALGORITHM, null);
+		MSysConfig algorithmConfig = new MSysConfig(getCtx(), SystemIDs.SYSCONFIG_USER_PASSWORD_HASH_ALGORITHM, null);
 		algorithmConfig.setValue(hashAlgorithm);
 		algorithmConfig.saveEx();
 		

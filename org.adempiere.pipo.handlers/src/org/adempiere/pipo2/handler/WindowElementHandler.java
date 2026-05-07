@@ -38,6 +38,7 @@ import org.compiere.model.I_AD_Color;
 import org.compiere.model.I_AD_Image;
 import org.compiere.model.I_AD_TableAttribute;
 import org.compiere.model.I_AD_Window;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.MWindow;
 import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
@@ -86,9 +87,9 @@ public class WindowElementHandler extends AbstractElementHandler {
 				String action = null;
 				if (!mWindow.is_new()) {
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Window.Table_Name, mWindow);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				} else {
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}
 				if (mWindow.save(getTrxName(ctx)) == true) {
 					logImportDetail(ctx, impDetail, 1, mWindow.getName(), mWindow
