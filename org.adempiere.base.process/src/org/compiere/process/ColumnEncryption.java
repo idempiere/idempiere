@@ -229,10 +229,10 @@ public class ColumnEncryption extends SvrProcess {
 				} else
 					addLog(0, null, null, "Save Error");
 			} else {
-				if (! p_ChangeSetting)
-					addLog(0, null, null, (p_IsEncrypted ? "Encryption. " : "Decryption. ") + " not performed.  Setting unchanged");
+				if (!p_ChangeSetting)
+					addLog(0, null, null, (p_IsEncrypted ? "Encryption" : "Decryption") + " not performed. Setting unchanged");
 				else
-					addLog(0, null, null, "Can't perform " + (p_IsEncrypted ? "encryption. " : "decryption. ") + "Column is " + (p_IsEncrypted ? "already Encrypted." : " not Encrypted."));
+					addLog(0, null, null, "Can't perform " + (p_IsEncrypted ? "encryption. " : "decryption. ") + "Column is " + (p_IsEncrypted ? "already Encrypted." : "not Encrypted."));
 			}
 		}
 		
@@ -243,7 +243,7 @@ public class ColumnEncryption extends SvrProcess {
 	
 	/**
 	 * Process all the contents of a database column.
-	 * @param columnName columnName The name of the column whose contents will be processed.
+	 * @param columnName The name of the column whose contents will be processed.
 	 * @param tableID The ID of the table which owns the column.
 	 * @param encrypt If true, encrypts the column contents; if false, decrypts them.
 	 * @return The number of rows processed.
