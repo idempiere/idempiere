@@ -20,7 +20,7 @@
 					<button id="menuButton" sclass="btn-small"/>
 					<span class="systemStatus">${msgText}</span>
 			</hlayout>
-			<vlayout use="org.adempiere.webui.component.FlexVlayout"  hflex="min" apply="org.adempiere.webui.panel.UserPanel" align="end"
+			<vlayout use="org.adempiere.webui.component.FlexVlayout" apply="org.adempiere.webui.panel.UserPanel" pack="center" align="end"
 					sclass="desktop-user-panel">
 					<vlayout use="org.adempiere.webui.component.FlexVlayout"  align="end">
 						<label use="org.adempiere.webui.component.Label" id="loginUserAndRole" 
