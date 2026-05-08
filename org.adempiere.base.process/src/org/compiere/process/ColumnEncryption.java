@@ -32,6 +32,7 @@ import java.util.logging.Level;
 import org.compiere.model.MColumn;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
@@ -216,21 +217,9 @@ public class ColumnEncryption extends SvrProcess {
 							throw new Exception();
 						}
 					}
-
-					// Encrypt column contents.
-					count = encryptColumnContents(columnName, column.getAD_Table_ID()); 
-					if (count == -1) {
-						log.warning("EncryptError: No records encrypted.");
-						throw new Exception();
-					}
-				} else {
-					// Decrypt column contents.
-					count = decryptColumnContents(columnName, column.getAD_Table_ID()); 
-					if (count == -1) {
-						log.warning("DecryptError: No records decrypted.");
-						throw new Exception();
-					}
 				}
+				// Process column contents.
+				count = processColumnContents(columnName, column.getAD_Table_ID(), p_IsEncrypted); 
 				column.setIsEncrypted(p_IsEncrypted);
 				if (column.save()){
 					addLog(0, null, null, "#" + (p_IsEncrypted ? "Encrypted=" : "Decrypted=") +count);
@@ -240,7 +229,10 @@ public class ColumnEncryption extends SvrProcess {
 				} else
 					addLog(0, null, null, "Save Error");
 			} else {
-				addLog(0, null, null, "Can't perform " + (p_IsEncrypted ? "encryption. " : "decryption. ") + "Column is " + (p_IsEncrypted ? "already Encrypted." : " not Encrypted."));
+				if (!p_ChangeSetting)
+					addLog(0, null, null, (p_IsEncrypted ? "Encryption" : "Decryption") + " not performed. Setting unchanged");
+				else
+					addLog(0, null, null, "Can't perform " + (p_IsEncrypted ? "encryption. " : "decryption. ") + "Column is " + (p_IsEncrypted ? "already Encrypted." : "not Encrypted."));
 			}
 		}
 		
@@ -250,112 +242,24 @@ public class ColumnEncryption extends SvrProcess {
 
 	
 	/**
-	 * Encrypt all the contents of a database column.
-	 * 
-	 * @param columnName
-	 *            The ID of the column to be encrypted.
-	 * @param tableID
-	 *            The ID of the table which owns the column.
-	 * @return The number of rows effected or -1 in case of errors.
-	 * @throws Exception
+	 * Process all the contents of a database column.
+	 * @param columnName The name of the column whose contents will be processed.
+	 * @param tableID The ID of the table which owns the column.
+	 * @param encrypt If true, encrypts the column contents; if false, decrypts them.
+	 * @return The number of rows processed.
+	 * @throws Exception on any row update failure.
 	 */
-	private int encryptColumnContents(String columnName, int tableID)
-			throws Exception {
-		// Find the table name
-		String tableName = MTable.getTableName(getCtx(), tableID);
+	private int processColumnContents(String columnName, int tableID, boolean encrypt) throws Exception {
 
-		return encryptColumnContents(columnName, tableName);
-	} // encryptColumnContents
+		MTable table = MTable.get(getCtx(), tableID);
+		String tableName = table.getTableName();
+		String idColumnName;
+		if (table.isIDKeyTable())
+			idColumnName = table.getKeyColumns()[0];
+		else
+			idColumnName = PO.getUUIDColumnName(tableName);
 
-	/**
-	 * Encrypt all the contents of a database column.
-	 * 
-	 * @param columnName
-	 *            The ID of the column to be encrypted.
-	 * @param tableName
-	 *            The name of the table which owns the column.
-	 * @return The number of rows effected or -1 in case of errors.
-	 */
-	private int encryptColumnContents(String columnName, String tableName)
-			throws Exception {
-		int recordsEncrypted = 0;
-		StringBuilder idColumnName = new StringBuilder(tableName).append("_ID");
-
-		StringBuilder selectSql = new StringBuilder();
-		selectSql.append("SELECT ").append(idColumnName).append(",").append(columnName).append(",AD_Client_ID");
-		selectSql.append(" FROM ").append(tableName);
-		selectSql.append(" ORDER BY 1");
-
-		StringBuilder updateSql = new StringBuilder();
-		updateSql.append("UPDATE ").append(tableName);
-		updateSql.append(" SET ").append(columnName).append("=?");
-		updateSql.append(" WHERE ").append(idColumnName).append("=?");
-
-		PreparedStatement selectStmt = null;
-		PreparedStatement updateStmt = null;
-		ResultSet rs = null;
-		
-		try {
-			selectStmt = DB.prepareStatement(selectSql.toString(), get_TrxName());
-			updateStmt = DB.prepareStatement(updateSql.toString(), get_TrxName());
-	
-			rs = selectStmt.executeQuery();
-	
-			for (recordsEncrypted = 0; rs.next(); ++recordsEncrypted) {
-				// Get the row id and column value
-				int id = rs.getInt(1);
-				String value = rs.getString(2);
-				int AD_Client_ID = rs.getInt(3);
-				// Encrypt the value
-				value = SecureEngine.encrypt(value, AD_Client_ID);
-				// Update the row
-				updateStmt.setString(1, value);
-				updateStmt.setInt(2, id);
-				if (updateStmt.executeUpdate() != 1) {
-					log.severe("EncryptError: Table=" + tableName + ", ID=" + id);
-					throw new Exception();
-				}
-			}
-		} finally {
-			DB.close(rs);
-			DB.close(selectStmt);
-			DB.close(updateStmt);
-		}
-
-		return recordsEncrypted;
-	} // encryptColumnContents
-
-	/**
-	 * Decrypt all the contents of a database column.
-	 * 
-	 * @param columnName
-	 *            The ID of the column to be encrypted.
-	 * @param tableID
-	 *            The ID of the table which owns the column.
-	 * @return The number of rows effected or -1 in case of errors.
-	 * @throws Exception
-	 */
-	private int decryptColumnContents(String columnName, int tableID)
-			throws Exception {
-		// Find the table name
-		String tableName = MTable.getTableName(getCtx(), tableID);
-
-		return decryptColumnContents(columnName, tableName);
-	} // decryptColumnContents
-
-	/**
-	 * Decrypt all the contents of a database column.
-	 * 
-	 * @param columnName
-	 *            The ID of the column to be encrypted.
-	 * @param tableName
-	 *            The name of the table which owns the column.
-	 * @return The number of rows effected or -1 in case of errors.
-	 */
-	private int decryptColumnContents(String columnName, String tableName)
-			throws Exception {
-		int recordsDecrypted = 0;
-		StringBuilder idColumnName = new StringBuilder(tableName).append("_ID");
+		int recordsProcessed = 0;
 
 		StringBuilder selectSql = new StringBuilder();
 		selectSql.append("SELECT ").append(idColumnName).append(",").append(columnName).append(",AD_Client_ID");
@@ -377,18 +281,21 @@ public class ColumnEncryption extends SvrProcess {
 	
 			rs = selectStmt.executeQuery();
 	
-			for (recordsDecrypted = 0; rs.next(); ++recordsDecrypted) {
+			for (recordsProcessed = 0; rs.next(); ++recordsProcessed) {
 				// Get the row id and column value
-				int id = rs.getInt(1);
+				Object id = rs.getObject(1);
 				String value = rs.getString(2);
 				int AD_Client_ID = rs.getInt(3);
-				// Encrypt the value
-				value = SecureEngine.decrypt(value, AD_Client_ID);
+				// Encrypt/Decrypt the value
+				if (encrypt)
+					value = SecureEngine.encrypt(value, AD_Client_ID);
+				else
+					value = SecureEngine.decrypt(value, AD_Client_ID);
 				// Update the row
 				updateStmt.setString(1, value);
-				updateStmt.setInt(2, id);
+				updateStmt.setObject(2, id);
 				if (updateStmt.executeUpdate() != 1) {
-					log.severe("DecryptError: Table=" + tableName + ", ID=" + id);
+					log.severe("ProcessError: Table=" + tableName + ", ID=" + id  + ", encrypt=" + encrypt);
 					throw new Exception();
 				}
 			}
@@ -398,9 +305,9 @@ public class ColumnEncryption extends SvrProcess {
 			DB.close(updateStmt);
 		}
 
-		return recordsDecrypted;
-	} // decryptColumnContents
-	
+		return recordsProcessed;
+	} // processColumnContents
+
 	/**
 	 * Determines the length of the encrypted column.
 	 * 
