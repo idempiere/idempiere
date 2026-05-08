@@ -220,10 +220,6 @@ public class ColumnEncryption extends SvrProcess {
 				}
 				// Process column contents.
 				count = processColumnContents(columnName, column.getAD_Table_ID(), p_IsEncrypted); 
-				if (count == -1) {
-					log.warning("ProcessError: No records processed. " + "ColumnID=" + columnID + ", Encrypt=" + p_IsEncrypted);
-					throw new Exception();
-				}
 				column.setIsEncrypted(p_IsEncrypted);
 				if (column.save()){
 					addLog(0, null, null, "#" + (p_IsEncrypted ? "Encrypted=" : "Decrypted=") +count);
@@ -247,11 +243,11 @@ public class ColumnEncryption extends SvrProcess {
 	
 	/**
 	 * Process all the contents of a database column.
-	 * @param columnName The ID of the column to be encrypted.
+	 * @param columnName columnName The name of the column whose contents will be processed.
 	 * @param tableID The ID of the table which owns the column.
-	 * @param encrypt If true, the column contents will be encrypted; if false, the column contents will be decrypted.
-	 * @return The number of rows effected or -1 in case of errors.
-	 * @throws Exception
+	 * @param encrypt If true, encrypts the column contents; if false, decrypts them.
+	 * @return The number of rows processed.
+	 * @throws Exception on any row update failure.
 	 */
 	private int processColumnContents(String columnName, int tableID, boolean encrypt) throws Exception {
 
