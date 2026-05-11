@@ -32,7 +32,7 @@ import com.hazelcast.map.IMap;
 @Component(
 		service = ICacheService.class,
 		immediate = true,
-		enabled = false)
+		enabled = true)
 public class CacheServiceImpl implements ICacheService {
 
 	@Reference(target = "(osgi.condition.id=distributed.provider.hazelcast)")
