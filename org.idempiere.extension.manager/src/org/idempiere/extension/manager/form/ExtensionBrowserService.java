@@ -139,6 +139,7 @@ public class ExtensionBrowserService {
 		try {
 			String markdown = "";
 			if (rawUrl.startsWith("file:")) {
+				validateFileURL(rawUrl);
 				try (InputStream is = new URL(rawUrl).openStream()) {
 					markdown = new String(is.readAllBytes(), StandardCharsets.UTF_8);
 				}
@@ -187,6 +188,7 @@ public class ExtensionBrowserService {
 		String rawUrl = toRawGithubPath(url);
 		String responseBody;
 		if (rawUrl.startsWith("file:")) {
+			validateFileURL(rawUrl);
 			try (InputStream is = new URL(rawUrl).openStream()) {
 				responseBody = new String(is.readAllBytes(), StandardCharsets.UTF_8);
 			}
@@ -498,6 +500,7 @@ public class ExtensionBrowserService {
 				infoUrl = toRawGithubPath(infoUrl);
 				byte[] data;
 				if (infoUrl.startsWith("file:")) {
+					validateFileURL(infoUrl);
 					try (InputStream is = new URL(infoUrl).openStream()) {
 						data = is.readAllBytes();
 					}
@@ -523,6 +526,7 @@ public class ExtensionBrowserService {
 				changelogUrl = toRawGithubPath(changelogUrl);
 				byte[] data;
 				if (changelogUrl.startsWith("file:")) {
+					validateFileURL(changelogUrl);
 					try (InputStream is = new URL(changelogUrl).openStream()) {
 						data = is.readAllBytes();
 					}
@@ -554,6 +558,7 @@ public class ExtensionBrowserService {
 						try {
 							byte[] data;
 							if (aUrl.startsWith("file:")) {
+								validateFileURL(aUrl);
 								try (InputStream is = new URL(aUrl).openStream()) {
 									data = is.readAllBytes();
 								}
@@ -591,6 +596,7 @@ public class ExtensionBrowserService {
 						}
 						
 						if (dUrl.startsWith("file:")) {
+							validateFileURL(dUrl);
 							try (InputStream is = new URL(dUrl).openStream()) {
 								zos.putNextEntry(new ZipEntry("bundles/" + fileName));
 								is.transferTo(zos);
@@ -603,6 +609,8 @@ public class ExtensionBrowserService {
 								zos.putNextEntry(new ZipEntry("bundles/" + fileName));
 								resJar.body().transferTo(zos);
 								zos.closeEntry();
+							} else {
+								throw new AdempiereException(Msg.getMsg(Env.getCtx(), "HttpFetchFailed", new Object[]{resJar.statusCode(), dUrl}));
 							}
 						}
 					}
@@ -975,6 +983,8 @@ public class ExtensionBrowserService {
 			File tempZip = File.createTempFile("extbundle_", ".jar");
 			
 			if (downloadUrl.startsWith("file:")) {
+				validateFileURL(downloadUrl);
+				
 				try (InputStream is = new URL(downloadUrl).openStream(); FileOutputStream fos = new FileOutputStream(tempZip)) {
 					is.transferTo(fos);
 				}
@@ -1045,6 +1055,14 @@ public class ExtensionBrowserService {
 		}
 
 		handleInstallationSuccess(metadata);
+	}
+
+	private void validateFileURL(String downloadUrl) {
+		String repoUrl = SystemProperties.getIDempiereRepositoryUrl();
+		// disallow download of local file if repourl is not file:
+		if (!repoUrl.startsWith("file:")) {
+			throw new AdempiereException("Local file download not supported when iDempiere repository is remote.");
+		}
 	}
 
 	private String calculateSHA256(File file) throws Exception {
