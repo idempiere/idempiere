@@ -97,15 +97,22 @@ public class ExtensionBrowserService {
 		String indexUrl = toRawGithubURL(repoUrl, "index.json");
 
 		// add reasonable timeout
-		HttpRequest request = HttpRequest.newBuilder().uri(URI.create(indexUrl)).GET().timeout(Duration.ofSeconds(30)).build();
-		HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-		
-		if (response.statusCode() == 200) {
-			JsonObject indexObj = JsonParser.parseString(response.body()).getAsJsonObject();
-			return indexObj.getAsJsonArray("extensions");
+		String body;
+		if (indexUrl.startsWith("file:")) {
+			try (InputStream is = new URL(indexUrl).openStream()) {
+				body = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+			}
 		} else {
-			throw new RuntimeException(Msg.getMsg(Env.getCtx(), "HttpFetchFailed", new Object[] {response.statusCode(), "index.json"})); //Http {0} fetching {1}
+			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(indexUrl)).GET().timeout(Duration.ofSeconds(30)).build();
+			HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+			if (response.statusCode() != 200) {
+				throw new RuntimeException(Msg.getMsg(Env.getCtx(), "HttpFetchFailed", new Object[] {response.statusCode(), "index.json"})); //Http {0} fetching {1}
+			}
+			body = response.body();
 		}
+		
+		JsonObject indexObj = JsonParser.parseString(body).getAsJsonObject();
+		return indexObj.getAsJsonArray("extensions");
 	}
 
 	/**
@@ -130,14 +137,20 @@ public class ExtensionBrowserService {
 		String rawUrl = toRawGithubPath(url);
 		
 		try {
-			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(rawUrl)).GET().timeout(Duration.ofSeconds(30)).build();
-			HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-			
 			String markdown = "";
-			if (response.statusCode() == 200) {
-				markdown = response.body();
+			if (rawUrl.startsWith("file:")) {
+				try (InputStream is = new URL(rawUrl).openStream()) {
+					markdown = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+				}
 			} else {
-				throw new Exception(Msg.getMsg(Env.getCtx(), "HttpFetchFailed", new Object[] {response.statusCode(), rawUrl})); //Http {0} fetching {1}
+				HttpRequest request = HttpRequest.newBuilder().uri(URI.create(rawUrl)).GET().timeout(Duration.ofSeconds(30)).build();
+				HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+				
+				if (response.statusCode() == 200) {
+					markdown = response.body();
+				} else {
+					throw new Exception(Msg.getMsg(Env.getCtx(), "HttpFetchFailed", new Object[] {response.statusCode(), rawUrl})); //Http {0} fetching {1}
+				}
 			}
 			
 			IMarkdownRenderer renderer = Core.getMarkdownRenderer();
@@ -170,21 +183,28 @@ public class ExtensionBrowserService {
 	public ExtensionMetadata fetchExtensionMetadata(String url) throws Exception {
 		if (url == null || url.isEmpty()) return null;
 		
+		// if url starts with file:, read from file
 		String rawUrl = toRawGithubPath(url);
-		HttpRequest request = HttpRequest.newBuilder().uri(URI.create(rawUrl)).GET().timeout(Duration.ofSeconds(30)).build();
-		HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-		
-		if (response.statusCode() == 200) {
-			String responseBody = response.body();
-			List<String> errors = ExtensionMetadataValidator.validate(responseBody);
-			if (!errors.isEmpty()) {
-				throw new AdempiereException("Metadata Validation Error:\n" + String.join("\n", errors));
+		String responseBody;
+		if (rawUrl.startsWith("file:")) {
+			try (InputStream is = new URL(rawUrl).openStream()) {
+				responseBody = new String(is.readAllBytes(), StandardCharsets.UTF_8);
 			}
-			JsonObject json = JsonParser.parseString(responseBody).getAsJsonObject();
-			return new ExtensionMetadata(json);
 		} else {
-			throw new RuntimeException(Msg.getMsg(Env.getCtx(), "HttpFetchFailed", new Object[] {response.statusCode(), rawUrl}));
+			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(rawUrl)).GET().timeout(Duration.ofSeconds(30)).build();
+			HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+			if (response.statusCode() != 200) {
+				throw new RuntimeException(Msg.getMsg(Env.getCtx(), "HttpFetchFailed", new Object[] {response.statusCode(), rawUrl}));
+			}
+			responseBody = response.body();
 		}
+		
+		List<String> errors = ExtensionMetadataValidator.validate(responseBody);
+		if (!errors.isEmpty()) {
+			throw new AdempiereException("Metadata Validation Error:\n" + String.join("\n", errors));
+		}
+		JsonObject json = JsonParser.parseString(responseBody).getAsJsonObject();
+		return new ExtensionMetadata(json);
 	}
 
 	/**
@@ -194,6 +214,9 @@ public class ExtensionBrowserService {
 	 * @return
 	 */
 	public String toRawGithubURL(String repoUrl, String relativePath) {
+		if (repoUrl.startsWith("file:")) {
+			return repoUrl.endsWith("/") ? repoUrl + relativePath : repoUrl + "/" + relativePath;
+		}
 		if (repoUrl.contains("github.com"))
 			repoUrl = repoUrl.replace("github.com", "raw.githubusercontent.com");
 		String rawUrl = repoUrl.endsWith("/") ? repoUrl + "main/" + relativePath : repoUrl + "/main/" + relativePath;
@@ -206,6 +229,9 @@ public class ExtensionBrowserService {
 	 * @return
 	 */
 	private String toRawGithubPath(String absolutePath) {
+		if (absolutePath.startsWith("file:")) {
+			return absolutePath;
+		}
 		if (absolutePath.contains("github.com") && absolutePath.contains("/blob/")) {
 			absolutePath = absolutePath.replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/");
 		}
@@ -470,11 +496,23 @@ public class ExtensionBrowserService {
 			if (extension.hasInfoUrl()) {
 				String infoUrl = extension.getInfoUrl();
 				infoUrl = toRawGithubPath(infoUrl);
-				HttpRequest reqInfo = HttpRequest.newBuilder().uri(URI.create(infoUrl)).GET().timeout(Duration.ofSeconds(30)).build();
-				HttpResponse<byte[]> resInfo = httpClient.send(reqInfo, HttpResponse.BodyHandlers.ofByteArray());
-				if (resInfo.statusCode() == 200) {
+				byte[] data;
+				if (infoUrl.startsWith("file:")) {
+					try (InputStream is = new URL(infoUrl).openStream()) {
+						data = is.readAllBytes();
+					}
+				} else {
+					HttpRequest reqInfo = HttpRequest.newBuilder().uri(URI.create(infoUrl)).GET().timeout(Duration.ofSeconds(30)).build();
+					HttpResponse<byte[]> resInfo = httpClient.send(reqInfo, HttpResponse.BodyHandlers.ofByteArray());
+					if (resInfo.statusCode() == 200) {
+						data = resInfo.body();
+					} else {
+						data = null;
+					}
+				}
+				if (data != null) {
 					zos.putNextEntry(new ZipEntry("info.md"));
-					zos.write(resInfo.body());
+					zos.write(data);
 					zos.closeEntry();
 				}
 			}
@@ -483,11 +521,23 @@ public class ExtensionBrowserService {
 			if (extension.hasChangeLogUrl()) {
 				String changelogUrl = extension.getChangeLogUrl();
 				changelogUrl = toRawGithubPath(changelogUrl);
-				HttpRequest reqChangelog = HttpRequest.newBuilder().uri(URI.create(changelogUrl)).GET().timeout(Duration.ofSeconds(30)).build();
-				HttpResponse<byte[]> resChangelog = httpClient.send(reqChangelog, HttpResponse.BodyHandlers.ofByteArray());
-				if (resChangelog.statusCode() == 200) {
+				byte[] data;
+				if (changelogUrl.startsWith("file:")) {
+					try (InputStream is = new URL(changelogUrl).openStream()) {
+						data = is.readAllBytes();
+					}
+				} else {
+					HttpRequest reqChangelog = HttpRequest.newBuilder().uri(URI.create(changelogUrl)).GET().timeout(Duration.ofSeconds(30)).build();
+					HttpResponse<byte[]> resChangelog = httpClient.send(reqChangelog, HttpResponse.BodyHandlers.ofByteArray());
+					if (resChangelog.statusCode() == 200) {
+						data = resChangelog.body();
+					} else {
+						data = null;
+					}
+				}
+				if (data != null) {
 					zos.putNextEntry(new ZipEntry("CHANGELOG.md"));
-					zos.write(resChangelog.body());
+					zos.write(data);
 					zos.closeEntry();
 				}
 			}
@@ -502,11 +552,23 @@ public class ExtensionBrowserService {
 						aUrl = toRawGithubPath(aUrl);
 						String assetName = Paths.get(a.get("name").getAsString()).getFileName().toString();
 						try {
-							HttpRequest reqAsset = HttpRequest.newBuilder().uri(URI.create(aUrl)).GET().timeout(Duration.ofSeconds(30)).build();
-							HttpResponse<byte[]> resAsset = httpClient.send(reqAsset, HttpResponse.BodyHandlers.ofByteArray());
-							if (resAsset.statusCode() == 200) {
+							byte[] data;
+							if (aUrl.startsWith("file:")) {
+								try (InputStream is = new URL(aUrl).openStream()) {
+									data = is.readAllBytes();
+								}
+							} else {
+								HttpRequest reqAsset = HttpRequest.newBuilder().uri(URI.create(aUrl)).GET().timeout(Duration.ofSeconds(30)).build();
+								HttpResponse<byte[]> resAsset = httpClient.send(reqAsset, HttpResponse.BodyHandlers.ofByteArray());
+								if (resAsset.statusCode() == 200) {
+									data = resAsset.body();
+								} else {
+									data = null;
+								}
+							}
+							if (data != null) {
 								zos.putNextEntry(new ZipEntry("assets/" + assetName));
-								zos.write(resAsset.body());
+								zos.write(data);
 								zos.closeEntry();
 							}
 						} catch (Exception e) {
@@ -523,16 +585,25 @@ public class ExtensionBrowserService {
 					JsonObject b = bel.getAsJsonObject();
 					if (b.has("downloadUrl")) {
 						String dUrl = toRawGithubPath(b.getAsJsonPrimitive("downloadUrl").getAsString());
-						HttpRequest reqJar = HttpRequest.newBuilder().uri(URI.create(dUrl)).GET().timeout(Duration.ofSeconds(30)).build();
-						HttpResponse<InputStream> resJar = httpClient.send(reqJar, HttpResponse.BodyHandlers.ofInputStream());
-						if (resJar.statusCode() == 200) {
-							String fileName = Paths.get(URI.create(dUrl).getPath()).getFileName().toString();
-							if (!fileName.endsWith(".jar") && b.has("symbolicName")) {
-								fileName = b.getAsJsonPrimitive("symbolicName").getAsString() + ".jar";
+						String fileName = Paths.get(URI.create(dUrl).getPath()).getFileName().toString();
+						if (!fileName.endsWith(".jar") && b.has("symbolicName")) {
+							fileName = b.getAsJsonPrimitive("symbolicName").getAsString() + ".jar";
+						}
+						
+						if (dUrl.startsWith("file:")) {
+							try (InputStream is = new URL(dUrl).openStream()) {
+								zos.putNextEntry(new ZipEntry("bundles/" + fileName));
+								is.transferTo(zos);
+								zos.closeEntry();
 							}
-							zos.putNextEntry(new ZipEntry("bundles/" + fileName));
-							resJar.body().transferTo(zos);
-							zos.closeEntry();
+						} else {
+							HttpRequest reqJar = HttpRequest.newBuilder().uri(URI.create(dUrl)).GET().timeout(Duration.ofSeconds(30)).build();
+							HttpResponse<InputStream> resJar = httpClient.send(reqJar, HttpResponse.BodyHandlers.ofInputStream());
+							if (resJar.statusCode() == 200) {
+								zos.putNextEntry(new ZipEntry("bundles/" + fileName));
+								resJar.body().transferTo(zos);
+								zos.closeEntry();
+							}
 						}
 					}
 				}
@@ -901,17 +972,23 @@ public class ExtensionBrowserService {
 			if (statusCallback != null)
 				statusCallback.onCallback(Msg.getMsg(Env.getCtx(), "DownloadingBundleFrom", new Object[]{bundleObj.get("symbolicName").getAsString(), downloadUrl}));
 
-			HttpRequest jarRequest = HttpRequest.newBuilder().uri(URI.create(downloadUrl)).GET().timeout(Duration.ofSeconds(30)).build();
-			HttpResponse<InputStream> jarResponse = httpClient.send(jarRequest, HttpResponse.BodyHandlers.ofInputStream());
-			
-			if (jarResponse.statusCode() != 200) {
-				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "HttpFetchFailed", new Object[]{jarResponse.statusCode(), downloadUrl}));
-			}
-			
 			File tempZip = File.createTempFile("extbundle_", ".jar");
 			
-			try (InputStream is = jarResponse.body(); FileOutputStream fos = new FileOutputStream(tempZip)) {
-				is.transferTo(fos);
+			if (downloadUrl.startsWith("file:")) {
+				try (InputStream is = new URL(downloadUrl).openStream(); FileOutputStream fos = new FileOutputStream(tempZip)) {
+					is.transferTo(fos);
+				}
+			} else {
+				HttpRequest jarRequest = HttpRequest.newBuilder().uri(URI.create(downloadUrl)).GET().timeout(Duration.ofSeconds(30)).build();
+				HttpResponse<InputStream> jarResponse = httpClient.send(jarRequest, HttpResponse.BodyHandlers.ofInputStream());
+				
+				if (jarResponse.statusCode() != 200) {
+					throw new AdempiereException(Msg.getMsg(Env.getCtx(), "HttpFetchFailed", new Object[]{jarResponse.statusCode(), downloadUrl}));
+				}
+				
+				try (InputStream is = jarResponse.body(); FileOutputStream fos = new FileOutputStream(tempZip)) {
+					is.transferTo(fos);
+				}
 			}
 			
 			if (bundleObj.has("sha256")) {
