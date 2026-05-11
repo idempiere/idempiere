@@ -36,15 +36,19 @@ import org.idempiere.redis.service.cache.CaffeineLayeredMap;
 import org.idempiere.redis.service.config.RedisConfig;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.condition.Condition;
 import org.redisson.api.RLock;
 import org.redisson.api.RMap;
 
 @Component(
 		service = ICacheService.class,
 		immediate = true,
-		enabled = false,
-		property = "service.ranking:Integer=100")
+		enabled = true)
 public class CacheServiceImpl implements ICacheService {
+
+	@Reference(target = "(osgi.condition.id=distributed.provider.redis.initialized)")
+    Condition distributedCondition;
 
 	// Snapshot of RedisConfig values resolved at @Activate time. Resolving these
 	// per getMap() call would mean dereferencing the Activator config singleton

@@ -58,6 +58,8 @@ import org.idempiere.redis.service.config.ConfigParser;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.condition.Condition;
 import org.redisson.api.RBucket;
 import org.redisson.api.RBuckets;
 import org.redisson.api.RKeys;
@@ -91,9 +93,11 @@ import org.slf4j.LoggerFactory;
 @Component(
 		service = IClusterService.class,
 		immediate = true,
-		enabled = false,
-		property = "service.ranking:Integer=100")
+		enabled = true)
 public class ClusterServiceImpl implements IClusterService {
+
+	@Reference(target = "(osgi.condition.id=distributed.provider.redis.initialized)")
+    Condition distributedCondition;
 
 	private static final Logger log = LoggerFactory.getLogger(ClusterServiceImpl.class);
 

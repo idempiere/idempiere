@@ -46,11 +46,6 @@
 									<artifactId>redisson-all</artifactId>
 									<version>${redisson.version}</version>
 								</artifactItem>
-								<artifactItem>
-									<groupId>com.github.ben-manes.caffeine</groupId>
-									<artifactId>caffeine</artifactId>
-									<version>${caffeine.version}</version>
-								</artifactItem>
 							</artifactItems>
 						</configuration>
 					</execution>

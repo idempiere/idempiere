@@ -50,6 +50,10 @@
          id="org.idempiere.zk.feature"
          version="0.0.0"/>
 
+   <includes
+         id="org.idempiere.redis.service.feature"
+         version="0.0.0"/>
+
    <plugin
          id="javax.websocket-api"
          version="0.0.0"/>
@@ -145,11 +149,11 @@
    <plugin
          id="org.glassfish.jersey.ext.jersey-entity-filtering"
          version="0.0.0"/>
-      
+
    <plugin
          id="org.glassfish.jersey.media.jersey-media-json-jackson"
          version="0.0.0"/>
-      
+
    <plugin
          id="org.glassfish.jersey.containers.jersey-container-servlet-core"
          version="0.0.0"/>

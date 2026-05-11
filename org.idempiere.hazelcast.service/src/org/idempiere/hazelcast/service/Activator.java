@@ -20,15 +20,17 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.logging.Level;
 
-import org.compiere.Adempiere;
-import org.compiere.model.ServerStateChangeEvent;
-import org.compiere.model.ServerStateChangeListener;
 import org.compiere.model.SystemProperties;
 import org.compiere.util.CLogger;
 import org.eclipse.osgi.framework.console.CommandProvider;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.condition.Condition;
 
 import com.hazelcast.config.Config;
 import com.hazelcast.config.FileSystemXmlConfig;
@@ -42,7 +44,13 @@ import com.hazelcast.core.HazelcastInstance;
  * @author hengsin
  *
  */
+@Component(
+		service = {},
+		immediate = true)
 public class Activator implements BundleActivator {
+
+	@Reference(target = "(osgi.condition.id=distributed.provider.hazelcast)")
+    Condition distributedCondition;
 
 	private static BundleContext context;
 	protected final static CLogger logger = CLogger.getCLogger(Activator.class.getName());
@@ -59,19 +67,14 @@ public class Activator implements BundleActivator {
 	 */
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
-		
-		if (Adempiere.isStarted())
-			createHazelCastInstance();
-		else {
-			Adempiere.addServerStateChangeListener(new ServerStateChangeListener() {
-				@Override
-				public void stateChange(ServerStateChangeEvent event) {
-					if (event.getEventType() == ServerStateChangeEvent.SERVER_START) 
-						createHazelCastInstance();
-				}
-			});
-		}
-        bundleContext.registerService(CommandProvider.class.getName(), new CacheConsoleProvider(), null);
+	}
+
+	@Activate
+	public void activate(BundleContext bundleContext) {
+		Activator.context = bundleContext;
+		createHazelCastInstance();
+		bundleContext.registerService(CommandProvider.class.getName(), new CacheConsoleProvider(), null);
+		logger.log(Level.OFF, "org.idempiere.hazelcast.service activated as the distributed backend provider");
 	}
 
 	private static synchronized void createHazelCastInstance() {

@@ -19,6 +19,9 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.idempiere.distributed.ICacheService;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.condition.Condition;
 
 import com.hazelcast.map.IMap;
 
@@ -26,7 +29,14 @@ import com.hazelcast.map.IMap;
  * @author hengsin
  *
  */
+@Component(
+		service = ICacheService.class,
+		immediate = true,
+		enabled = false)
 public class CacheServiceImpl implements ICacheService {
+
+	@Reference(target = "(osgi.condition.id=distributed.provider.hazelcast)")
+    Condition distributedCondition;
 
 	/**
 	 * default constructor

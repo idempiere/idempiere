@@ -30,15 +30,19 @@ import org.idempiere.distributed.ITopic;
 import org.idempiere.redis.service.message.ReliableTopicImpl;
 import org.idempiere.redis.service.message.TopicImpl;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.condition.Condition;
 import org.redisson.api.RReliableTopic;
 import org.redisson.api.RTopic;
 
 @Component(
 		service = IMessageService.class,
 		immediate = true,
-		enabled = false,
-		property = "service.ranking:Integer=100")
+		enabled = true)
 public class MessageServiceImpl implements IMessageService {
+
+	@Reference(target = "(osgi.condition.id=distributed.provider.redis.initialized)")
+    Condition distributedCondition;
 
 	@Override
 	public <T> ITopic<T> getTopic(String name) {
