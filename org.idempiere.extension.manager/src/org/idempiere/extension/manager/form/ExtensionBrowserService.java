@@ -461,7 +461,9 @@ public class ExtensionBrowserService {
 				byte[] data = null;
 				try {
 					data = fetchBytes(infoUrl);
-				} catch (Exception e) {}
+				} catch (Exception e) {
+					log.log(Level.WARNING, "Failed to fetch info: " + infoUrl, e);
+				}
 				if (data != null) {
 					zos.putNextEntry(new ZipEntry("info.md"));
 					zos.write(data);
@@ -517,9 +519,14 @@ public class ExtensionBrowserService {
 					JsonObject b = bel.getAsJsonObject();
 					if (b.has("downloadUrl")) {
 						String dUrl = toRawGithubPath(b.getAsJsonPrimitive("downloadUrl").getAsString());
-						String fileName = Paths.get(URI.create(dUrl).getPath()).getFileName().toString();
+						var fileNamePath = Paths.get(URI.create(dUrl).getPath()).getFileName();
+						String fileName = fileNamePath != null ? fileNamePath.toString() : "";
 						if (!fileName.endsWith(".jar") && b.has("symbolicName")) {
 							fileName = b.getAsJsonPrimitive("symbolicName").getAsString() + ".jar";
+						}
+						if (!fileName.endsWith(".jar")) {
+							log.log(Level.WARNING, "Failed to get file name: " + dUrl);
+							continue;
 						}
 						
 						zos.putNextEntry(new ZipEntry("bundles/" + fileName));
