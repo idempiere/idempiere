@@ -58,7 +58,7 @@ public class AllowlistKryo5Codec extends Kryo5Codec {
 
 	private final Set<String> allowedClassNames;
 
-	AllowlistKryo5Codec(ClassLoader classLoader, Set<String> allowedClassNames) {
+	public AllowlistKryo5Codec(ClassLoader classLoader, Set<String> allowedClassNames) {
 		super(classLoader);
 		this.allowedClassNames = allowedClassNames;
 	}
