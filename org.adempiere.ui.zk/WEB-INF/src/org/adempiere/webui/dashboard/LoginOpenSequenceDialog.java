@@ -40,6 +40,9 @@ import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.model.MTreeFavorite;
 import org.compiere.model.MTreeFavoriteNode;
+import org.compiere.model.MUserDefInfo;
+import org.compiere.model.MUserDefProc;
+import org.compiere.model.MUserDefWin;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.util.CLogger;
@@ -323,7 +326,17 @@ public class LoginOpenSequenceDialog extends Window
 				Boolean access = MTreeFavorite.getAccessForMenuItem(role, menu);
 				if (access != null && access.booleanValue())
 				{
-					ListElement pp = new ListElement(key, menu.get_Translation(MMenu.COLUMNNAME_Name));
+
+					String name = menu.get_Translation(MMenu.COLUMNNAME_Name);
+
+					if (menu.getAction().equals(MMenu.ACTION_Window) && MUserDefWin.getBestMatch(Env.getCtx(), menu.getAD_Window_ID()) != null)
+						name = MUserDefWin.getBestMatch(Env.getCtx(), menu.getAD_Window_ID()).getName();
+					else if (menu.getAction().equals(MMenu.ACTION_Process) && MUserDefProc.getBestMatch(Env.getCtx(), menu.getAD_Process_ID()) != null)
+						name = MUserDefProc.getBestMatch(Env.getCtx(), menu.getAD_Process_ID()).getName();
+					else if (menu.getAction().equals(MMenu.ACTION_Info) && MUserDefInfo.getBestMatch(Env.getCtx(), menu.getAD_InfoWindow_ID()) != null)
+						name = MUserDefInfo.getBestMatch(Env.getCtx(), menu.getAD_InfoWindow_ID()).getName();
+
+					ListElement pp = new ListElement(key, name);
 					if (autoOpenSeqs != null && autoOpenSeqs.size() > 0)
 					{
 						if (autoOpenSeqs.contains(key))
