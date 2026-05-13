@@ -49,6 +49,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.NamePair;
+import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
@@ -326,15 +327,23 @@ public class LoginOpenSequenceDialog extends Window
 				Boolean access = MTreeFavorite.getAccessForMenuItem(role, menu);
 				if (access != null && access.booleanValue())
 				{
-
 					String name = menu.get_Translation(MMenu.COLUMNNAME_Name);
 
-					if (menu.getAction().equals(MMenu.ACTION_Window) && MUserDefWin.getBestMatch(Env.getCtx(), menu.getAD_Window_ID()) != null)
-						name = MUserDefWin.getBestMatch(Env.getCtx(), menu.getAD_Window_ID()).getName();
-					else if (menu.getAction().equals(MMenu.ACTION_Process) && MUserDefProc.getBestMatch(Env.getCtx(), menu.getAD_Process_ID()) != null)
-						name = MUserDefProc.getBestMatch(Env.getCtx(), menu.getAD_Process_ID()).getName();
-					else if (menu.getAction().equals(MMenu.ACTION_Info) && MUserDefInfo.getBestMatch(Env.getCtx(), menu.getAD_InfoWindow_ID()) != null)
-						name = MUserDefInfo.getBestMatch(Env.getCtx(), menu.getAD_InfoWindow_ID()).getName();
+					if (MMenu.ACTION_Window.equals(menu.getAction())) {
+						MUserDefWin userDefWin = MUserDefWin.getBestMatch(Env.getCtx(), menu.getAD_Window_ID());
+						if (userDefWin != null && !Util.isEmpty(userDefWin.getName()))
+							name = userDefWin.getName();
+					}
+					else if (MMenu.ACTION_Process.equals(menu.getAction())) {
+						MUserDefProc userDefProc = MUserDefProc.getBestMatch(Env.getCtx(), menu.getAD_Process_ID());
+						if (userDefProc != null && !Util.isEmpty(userDefProc.getName()))
+							name = userDefProc.getName();
+					}
+					else if (MMenu.ACTION_Info.equals(menu.getAction())) {
+						MUserDefInfo userDefInfo = MUserDefInfo.getBestMatch(Env.getCtx(), menu.getAD_InfoWindow_ID());
+						if (userDefInfo != null && !Util.isEmpty(userDefInfo.getName()))
+							name = userDefInfo.getName();
+					}
 
 					ListElement pp = new ListElement(key, name);
 					if (autoOpenSeqs != null && autoOpenSeqs.size() > 0)
