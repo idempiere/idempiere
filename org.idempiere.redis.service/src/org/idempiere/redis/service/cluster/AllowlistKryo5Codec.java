@@ -52,7 +52,7 @@ import com.esotericsoftware.kryo.Kryo;
  * implementation or as a Callable return / exception type to
  * {@code rpc.callable.allowlist} in {@code redis.properties}.</p>
  */
-class AllowlistKryo5Codec extends Kryo5Codec {
+public class AllowlistKryo5Codec extends Kryo5Codec {
 
 	private static final Logger log = LoggerFactory.getLogger(AllowlistKryo5Codec.class);
 
