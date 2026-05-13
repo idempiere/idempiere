@@ -109,7 +109,12 @@ public final class HealthEventPublisher implements StateListener {
 		props.put(PROP_PREVIOUS, previousLabel);
 		props.put(PROP_CURRENT, currentLabel);
 		props.put(PROP_TIMESTAMP, System.currentTimeMillis());
-		props.put(PROP_CONSECUTIVE_FAILURES, health.getConsecutiveFailures());
+		// For CONNECTED (OPEN→CLOSED): report the pre-reset count so subscribers know outage severity.
+		// For DEGRADED (CLOSED→OPEN): report the current count (= failureThreshold).
+		int failureCount = (current == RedisHealth.State.CLOSED)
+				? health.getLastTrippedCount()
+				: health.getConsecutiveFailures();
+		props.put(PROP_CONSECUTIVE_FAILURES, failureCount);
 		// Subscribers can listen on the generic topic or the state-specific one.
 		admin.postEvent(new Event(TOPIC_STATE_CHANGED, props));
 		String specific = (current == RedisHealth.State.CLOSED) ? TOPIC_CONNECTED : TOPIC_DEGRADED;

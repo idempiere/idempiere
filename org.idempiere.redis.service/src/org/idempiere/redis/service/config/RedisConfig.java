@@ -30,7 +30,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Properties;
+import java.util.Set;
 
 import org.redisson.config.Config;
 import org.slf4j.Logger;
@@ -48,11 +52,12 @@ import org.slf4j.LoggerFactory;
  * <ol>
  *   <li><code>redis.instance.name</code> property in <code>redis.properties</code></li>
  *   <li><code>IDEMPIERE_INSTANCE_NAME</code> environment variable</li>
+ *   <li><code>ADEMPIERE_DB_NAME</code> auto-derived from <code>idempiereEnv.properties</code></li>
  *   <li>literal <code>"default"</code> (with warning — risks collision in shared Redis)</li>
  * </ol>
  *
  * <p>The resulting prefix is <code>idempiere:&lt;name&gt;:</code> and is prepended to every
- * cache key by {@link CacheServiceImpl} to isolate distinct deployments sharing one Redis.</p>
+ * cache key by {@code CacheServiceImpl} to isolate distinct deployments sharing one Redis.</p>
  *
  * <p>Optional Caffeine near-cache + circuit-breaker tuning is read from the same
  * <code>redis.properties</code> file (all properties optional; sensible defaults apply):</p>
@@ -100,6 +105,8 @@ public final class RedisConfig {
 	private static final String CIRCUIT_PROBE_INTERVAL = "redis.circuit.probe-interval";
 	private static final String MESSAGING_RELIABLE = "messaging.reliable";
 	private static final String KEYSPACE_NOTIFICATIONS_ENABLED = "keyspace.notifications.enabled";
+	private static final String RPC_CALLABLE_ALLOWLIST = "rpc.callable.allowlist";
+	private static final String RPC_HMAC_SECRET = "rpc.hmac.secret";
 
 	private static final boolean DEFAULT_NEAR_CACHE_ENABLED = false;
 	private static final int DEFAULT_NEAR_CACHE_MAX_SIZE = 10_000;
@@ -111,6 +118,8 @@ public final class RedisConfig {
 	private static final Duration DEFAULT_CIRCUIT_PROBE_INTERVAL = Duration.ofSeconds(60);
 	private static final boolean DEFAULT_MESSAGING_RELIABLE = false;
 	private static final boolean DEFAULT_KEYSPACE_NOTIFICATIONS_ENABLED = false;
+	private static final Set<String> DEFAULT_RPC_CALLABLE_ALLOWLIST = Collections.emptySet();
+	private static final String DEFAULT_RPC_HMAC_SECRET = null;
 
 	private final Config redissonConfig;
 	private final String keyPrefix;
@@ -124,12 +133,15 @@ public final class RedisConfig {
 	private final Duration circuitProbeInterval;
 	private final boolean messagingReliable;
 	private final boolean keyspaceNotificationsEnabled;
+	private final Set<String> rpcCallableAllowlist;
+	private final String rpcHmacSecret;
 
 	private RedisConfig(Config redissonConfig, String keyPrefix, boolean nearCacheEnabled,
 			int nearCacheMaxSize, Duration nearCacheExpireAfterWrite,
 			boolean fallbackEnabled, int fallbackMaxSize, Duration fallbackExpireAfterWrite,
 			int circuitFailureThreshold, Duration circuitProbeInterval,
-			boolean messagingReliable, boolean keyspaceNotificationsEnabled) {
+			boolean messagingReliable, boolean keyspaceNotificationsEnabled,
+			Set<String> rpcCallableAllowlist, String rpcHmacSecret) {
 		this.redissonConfig = redissonConfig;
 		this.keyPrefix = keyPrefix;
 		this.nearCacheEnabled = nearCacheEnabled;
@@ -142,6 +154,8 @@ public final class RedisConfig {
 		this.circuitProbeInterval = circuitProbeInterval;
 		this.messagingReliable = messagingReliable;
 		this.keyspaceNotificationsEnabled = keyspaceNotificationsEnabled;
+		this.rpcCallableAllowlist = rpcCallableAllowlist;
+		this.rpcHmacSecret = rpcHmacSecret;
 	}
 
 	public Config getRedissonConfig() {
@@ -210,6 +224,27 @@ public final class RedisConfig {
 		return keyspaceNotificationsEnabled;
 	}
 
+	/**
+	 * Returns the set of fully-qualified class names that may appear as
+	 * {@code Callable} implementations in RPC requests. When non-empty, the
+	 * bundle uses a Kryo codec with {@code registrationRequired=true} for both
+	 * RPC topics, rejecting deserialization of any class not in this set.
+	 * Empty set (default) = unrestricted (development only; see security note
+	 * on {@code RpcRequest}).
+	 */
+	public Set<String> getRpcCallableAllowlist() {
+		return rpcCallableAllowlist;
+	}
+
+	/**
+	 * Returns the shared HMAC-SHA256 secret used to authenticate RPC envelopes,
+	 * or {@code null} when HMAC is disabled. All cluster nodes must share the
+	 * same secret.
+	 */
+	public String getRpcHmacSecret() {
+		return rpcHmacSecret;
+	}
+
 	/** Loads configuration from {@code $IDEMPIERE_HOME}, applying defaults where files are absent. */
 	public static RedisConfig load() {
 		File home = resolveIdempiereHome();
@@ -236,9 +271,30 @@ public final class RedisConfig {
 		boolean messagingReliable = ConfigParser.boolProp(props, MESSAGING_RELIABLE, DEFAULT_MESSAGING_RELIABLE);
 		boolean keyspaceNotifications = ConfigParser.boolProp(props, KEYSPACE_NOTIFICATIONS_ENABLED,
 				DEFAULT_KEYSPACE_NOTIFICATIONS_ENABLED);
+		Set<String> rpcAllowlist = parseRpcAllowlist(props);
+		String rpcHmacSecret = props.getProperty(RPC_HMAC_SECRET);
+		if (rpcHmacSecret != null && rpcHmacSecret.isBlank()) {
+			rpcHmacSecret = DEFAULT_RPC_HMAC_SECRET;
+		}
 		return new RedisConfig(redisson, prefix, nearCacheEnabled, nearCacheMax, nearCacheExpire,
 				fallbackEnabled, fallbackMax, fallbackExpire,
-				circuitFailures, circuitProbe, messagingReliable, keyspaceNotifications);
+				circuitFailures, circuitProbe, messagingReliable, keyspaceNotifications,
+				rpcAllowlist, rpcHmacSecret);
+	}
+
+	private static Set<String> parseRpcAllowlist(Properties props) {
+		String raw = props.getProperty(RPC_CALLABLE_ALLOWLIST);
+		if (raw == null || raw.isBlank()) {
+			return DEFAULT_RPC_CALLABLE_ALLOWLIST;
+		}
+		Set<String> result = new LinkedHashSet<>();
+		for (String entry : raw.split(",")) {
+			String trimmed = entry.trim();
+			if (!trimmed.isEmpty()) {
+				result.add(trimmed);
+			}
+		}
+		return Collections.unmodifiableSet(result);
 	}
 
 	private static File resolveIdempiereHome() {

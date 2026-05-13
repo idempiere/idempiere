@@ -66,7 +66,10 @@ public class TopicImpl<E> implements ITopic<E> {
 		@SuppressWarnings("unchecked")
 		Class<E> type = (Class<E>) (Class<?>) Object.class;
 		int id = topic.addListener(type, (channel, message) -> subscriber.onMessage(message));
-		listenerIds.put(subscriber, id);
+		Integer oldId = listenerIds.put(subscriber, id);
+		if (oldId != null) {
+			topic.removeListener(oldId);
+		}
 	}
 
 	@Override

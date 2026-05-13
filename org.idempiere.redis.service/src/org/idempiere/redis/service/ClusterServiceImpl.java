@@ -27,14 +27,18 @@ package org.idempiere.redis.service;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
@@ -42,6 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadFactory;
@@ -49,12 +54,18 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
 import org.idempiere.distributed.IClusterMember;
 import org.idempiere.distributed.IClusterService;
+import org.idempiere.redis.service.cluster.AllowlistKryo5Codec;
 import org.idempiere.redis.service.cluster.ClusterMember;
 import org.idempiere.redis.service.cluster.RpcRequest;
 import org.idempiere.redis.service.cluster.RpcResponse;
 import org.idempiere.redis.service.config.ConfigParser;
+import org.idempiere.redis.service.config.RedisConfig;
+import org.redisson.client.codec.Codec;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -117,6 +128,8 @@ public class ClusterServiceImpl implements IClusterService {
 	private volatile RTopic requestTopic;
 	private volatile int requestListenerId = -1;
 	private volatile long rpcTimeoutSeconds = DEFAULT_RPC_TIMEOUT_SECONDS;
+	private volatile Codec rpcCodec;
+	private volatile String rpcHmacSecret;
 
 	@Activate
 	void activate() {
@@ -124,6 +137,8 @@ public class ClusterServiceImpl implements IClusterService {
 			ClusterMember self = createLocalMember();
 			localMember.set(self);
 			rpcTimeoutSeconds = resolveRpcTimeout();
+			rpcCodec = buildRpcCodec(Activator.getConfig());
+			rpcHmacSecret = Activator.getConfig().getRpcHmacSecret();
 			startHeartbeat();
 			subscribeToRequestTopic();
 			log.info("Redis cluster service activated; local member: {}", self);
@@ -244,7 +259,10 @@ public class ClusterServiceImpl implements IClusterService {
 		}
 
 		RedissonClient client = Activator.getRedissonClient();
-		RTopic responseTopic = client.getTopic(responseTopicName);
+		Codec codec = rpcCodec;
+		RTopic responseTopic = (codec != null)
+				? client.getTopic(responseTopicName, codec)
+				: client.getTopic(responseTopicName);
 		int listenerId = responseTopic.addListener(RpcResponse.class,
 				(channel, response) -> handleResponse(response));
 
@@ -261,14 +279,21 @@ public class ClusterServiceImpl implements IClusterService {
 
 		ScheduledExecutorService te = timeoutExecutor;
 		if (te != null) {
-			ScheduledFuture<?> timeoutHandle = te.schedule(() -> failPendingByTimeout(taskId),
-					rpcTimeoutSeconds, TimeUnit.SECONDS);
-			pr.setTimeoutHandle(timeoutHandle);
+			try {
+				pr.setTimeoutHandle(te.schedule(() -> failPendingByTimeout(taskId),
+						rpcTimeoutSeconds, TimeUnit.SECONDS));
+			} catch (RejectedExecutionException ignored) {
+				// Bundle is deactivating; failAllPending will complete this request.
+			}
 		}
 
 		try {
 			RpcRequest request = new RpcRequest(taskId, self.getId(),
 					remoteUuids.toArray(new String[0]), responseTopicName, task);
+			String secret = rpcHmacSecret;
+			if (secret != null) {
+				request.setHmac(computeHmac(secret, taskId, self.getId()));
+			}
 			requestTopic.publish(request);
 		} catch (Exception e) {
 			pending.remove(taskId);
@@ -328,7 +353,11 @@ public class ClusterServiceImpl implements IClusterService {
 		// the DS component as failed. Better that than swallowing here and letting
 		// execute() NPE later with a misleading "Callable may not be Serializable".
 		timeoutExecutor = Executors.newSingleThreadScheduledExecutor(daemonThreadFactory("redis-cluster-rpc-timeout"));
-		requestTopic = Activator.getRedissonClient().getTopic(rpcRequestTopicName());
+		Codec codec = rpcCodec;
+		String topicName = rpcRequestTopicName();
+		requestTopic = (codec != null)
+				? Activator.getRedissonClient().getTopic(topicName, codec)
+				: Activator.getRedissonClient().getTopic(topicName);
 		requestListenerId = requestTopic.addListener(RpcRequest.class,
 				(channel, request) -> handleRequest(request));
 	}
@@ -360,6 +389,10 @@ public class ClusterServiceImpl implements IClusterService {
 		if (!isTargeted(request, self)) {
 			return;
 		}
+		String secret = rpcHmacSecret;
+		if (secret != null && !verifyHmac(secret, request)) {
+			return;
+		}
 		Object result = null;
 		Throwable error = null;
 		try {
@@ -367,11 +400,24 @@ public class ClusterServiceImpl implements IClusterService {
 		} catch (Throwable t) {
 			error = t;
 		}
+		Throwable safeError = toSerializable(error);
+		Codec codec = rpcCodec;
+		RTopic responseTopic = (codec != null)
+				? Activator.getRedissonClient().getTopic(request.getResponseTopic(), codec)
+				: Activator.getRedissonClient().getTopic(request.getResponseTopic());
 		try {
-			RpcResponse response = new RpcResponse(request.getTaskId(), self.getId(), result, error);
-			Activator.getRedissonClient().getTopic(request.getResponseTopic()).publish(response);
+			RpcResponse response = new RpcResponse(request.getTaskId(), self.getId(), result, safeError);
+			responseTopic.publish(response);
 		} catch (Exception e) {
-			log.warn("Failed to publish RPC response for task {} from {}", request.getTaskId(), self.getId(), e);
+			log.warn("Failed to publish RPC response for task {} from {}; retrying with sanitised error",
+					request.getTaskId(), self.getId(), e);
+			try {
+				RpcResponse fallback = new RpcResponse(request.getTaskId(), self.getId(), null,
+						new RuntimeException("Response serialization failed: " + e));
+				responseTopic.publish(fallback);
+			} catch (Exception ee) {
+				log.error("Sanitised RPC response also failed for task {}", request.getTaskId(), ee);
+			}
 		}
 	}
 
@@ -417,6 +463,58 @@ public class ClusterServiceImpl implements IClusterService {
 			pr.cancelTimeout();
 		}
 		pending.clear();
+	}
+
+	// ---------------------------------------------------------- Security helpers
+
+	private static Codec buildRpcCodec(RedisConfig cfg) {
+		Set<String> allowlist = cfg.getRpcCallableAllowlist();
+		if (allowlist.isEmpty()) {
+			return null; // no restriction — existing Redisson default codec
+		}
+		ClassLoader cl = Thread.currentThread().getContextClassLoader();
+		log.info("RPC codec: allow-list active ({} class(es))", allowlist.size());
+		return new AllowlistKryo5Codec(cl, allowlist);
+	}
+
+	private static String computeHmac(String secret, String taskId, String originatorUuid) {
+		try {
+			Mac mac = Mac.getInstance("HmacSHA256");
+			mac.init(new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
+			mac.update(taskId.getBytes(StandardCharsets.UTF_8));
+			mac.update((byte) '|');
+			mac.update(originatorUuid.getBytes(StandardCharsets.UTF_8));
+			return Base64.getEncoder().encodeToString(mac.doFinal());
+		} catch (Exception e) {
+			throw new IllegalStateException("HMAC computation failed", e);
+		}
+	}
+
+	private boolean verifyHmac(String secret, RpcRequest request) {
+		String provided = request.getHmac();
+		if (provided == null || provided.isEmpty()) {
+			log.warn("RPC request {} rejected: HMAC required but missing", request.getTaskId());
+			return false;
+		}
+		String expected = computeHmac(secret, request.getTaskId(), request.getOriginatorUuid());
+		if (!MessageDigest.isEqual(
+				expected.getBytes(StandardCharsets.UTF_8),
+				provided.getBytes(StandardCharsets.UTF_8))) {
+			log.warn("RPC request {} rejected: HMAC mismatch (possible forgery)", request.getTaskId());
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Returns {@code error} if it is {@link java.io.Serializable}; otherwise wraps
+	 * it in a plain {@link RuntimeException} so the response can always be published.
+	 */
+	private static Throwable toSerializable(Throwable error) {
+		if (error == null || error instanceof java.io.Serializable) {
+			return error;
+		}
+		return new RuntimeException(error.getClass().getName() + ": " + error.getMessage());
 	}
 
 	// ----------------------------------------------------- Local member helpers

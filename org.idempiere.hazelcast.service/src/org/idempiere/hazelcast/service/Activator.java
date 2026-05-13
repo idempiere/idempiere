@@ -74,7 +74,7 @@ public class Activator implements BundleActivator {
 		Activator.context = bundleContext;
 		createHazelCastInstance();
 		bundleContext.registerService(CommandProvider.class.getName(), new CacheConsoleProvider(), null);
-		logger.log(Level.OFF, "org.idempiere.hazelcast.service activated as the distributed backend provider");
+		logger.log(Level.INFO, "org.idempiere.hazelcast.service activated as the distributed backend provider");
 	}
 
 	private static synchronized void createHazelCastInstance() {

@@ -31,6 +31,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
 import org.compiere.model.SystemProperties;
@@ -101,6 +102,7 @@ public class Activator {
 	private static volatile boolean initialisationFailed;
 
 	private volatile ExecutorService initExecutor;
+	private final AtomicBoolean stopping = new AtomicBoolean(false);
 
 	/**
 	 * @return the shared {@link RedissonClient} created at bundle start.
@@ -166,6 +168,7 @@ public class Activator {
 		initExecutor.execute(() -> initialiseAsync(bundleContext, ready));
 		try {
 			if (!ready.await(INIT_TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
+				stopping.set(true);
 				initialisationFailed = true;
 				log.severe("org.idempiere.redis.service initialisation did not complete within %s s — "
 						+ "bundle remains passive. "
@@ -173,6 +176,7 @@ public class Activator {
 			}
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
+			stopping.set(true);
 			initialisationFailed = true;
 			log.log(Level.SEVERE, "Interrupted while waiting for Redis bundle initialisation; remaining passive", e);
 		}
@@ -182,6 +186,13 @@ public class Activator {
 		try {
 			RedisConfig cfg = RedisConfig.load();
 			RedissonClient c = Redisson.create(cfg.getRedissonConfig());
+			// Redisson.create() is the slow/blocking call. Check whether activate() timed
+			// out or deactivate() already ran before we publish any shared state.
+			if (stopping.get()) {
+				try { c.shutdown(); } catch (Exception ignore) {}
+				log.log(Level.WARNING, "Redis init completed after timeout/deactivate; discarding client");
+				return;
+			}
 			RedisHealth h = new RedisHealth(c, cfg.getCircuitFailureThreshold(),
 					cfg.getCircuitProbeInterval().toMillis());
 			HealthEventPublisher publisher = new HealthEventPublisher(bundleContext, h);
@@ -198,11 +209,16 @@ public class Activator {
 				subscriber.start();
 				keyspaceSubscriber = subscriber;
 			}
+			// Second stopping check: do not enable DS components if we are already shutting down.
+			if (stopping.get()) {
+				log.log(Level.WARNING, "Redis bundle deactivated before DS components could be enabled; staying passive");
+				return;
+			}
 			// Register the Condition service to enable the three target DS components.
 	        Hashtable<String, Object> props = new Hashtable<>();
 	        props.put("osgi.condition.id", "distributed.provider.redis.initialized");
 	        bundleContext.registerService(Condition.class, Condition.INSTANCE, props);
-			log.log(Level.OFF, "org.idempiere.redis.service activated as the distributed backend — "
+			log.log(Level.INFO, "org.idempiere.redis.service activated as the distributed backend — "
 					+ "key prefix: %s; near-cache: %s; circuit failure-threshold: %s".formatted(
 					cfg.getKeyPrefix(), cfg.isNearCacheEnabled(), cfg.getCircuitFailureThreshold()));
 		} catch (Exception e) {
@@ -216,6 +232,7 @@ public class Activator {
 
 	@Deactivate
 	public void deactivate(BundleContext bundleContext) {
+		stopping.set(true);
 		ExecutorService exec = initExecutor;
 		initExecutor = null;
 		if (exec != null) {

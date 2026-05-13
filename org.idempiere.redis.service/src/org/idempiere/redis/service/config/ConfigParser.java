@@ -47,7 +47,18 @@ public final class ConfigParser {
 
 	public static boolean boolProp(Properties p, String key, boolean defaultValue) {
 		String v = p.getProperty(key);
-		return (v == null || v.isBlank()) ? defaultValue : Boolean.parseBoolean(v.trim());
+		if (v == null || v.isBlank()) {
+			return defaultValue;
+		}
+		String t = v.trim();
+		if (t.equalsIgnoreCase("true")) {
+			return true;
+		}
+		if (t.equalsIgnoreCase("false")) {
+			return false;
+		}
+		log.warn("{}='{}' is not a valid boolean (true/false); defaulting to {}", key, v, defaultValue);
+		return defaultValue;
 	}
 
 	public static int intProp(Properties p, String key, int defaultValue) {

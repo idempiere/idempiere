@@ -52,6 +52,9 @@ public class RpcResponse implements Serializable {
 	}
 
 	public RpcResponse(String taskId, String memberUuid, Object result, Throwable error) {
+		if (result != null && error != null) {
+			throw new IllegalArgumentException("RpcResponse cannot carry both result and error");
+		}
 		this.taskId = taskId;
 		this.memberUuid = memberUuid;
 		this.result = result;

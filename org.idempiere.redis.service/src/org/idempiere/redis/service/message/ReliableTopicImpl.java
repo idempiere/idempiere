@@ -78,7 +78,10 @@ public class ReliableTopicImpl<E> implements ITopic<E> {
 		@SuppressWarnings("unchecked")
 		Class<E> type = (Class<E>) (Class<?>) Object.class;
 		String id = topic.addListener(type, (channel, message) -> subscriber.onMessage(message));
-		listenerIds.put(subscriber, id);
+		String previous = listenerIds.putIfAbsent(subscriber, id);
+		if (previous != null) {
+			topic.removeListener(id); // drop the just-registered duplicate to avoid leak
+		}
 	}
 
 	@Override

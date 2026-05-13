@@ -245,17 +245,38 @@ public final class CaffeineLayeredMap<K, V> implements Map<K, V> {
 	@Override
 	public boolean containsValue(Object value) {
 		// Caffeine is a partial view; cannot answer membership questions accurately.
-		return backing.containsValue(value);
+		try {
+			boolean r = backing.containsValue(value);
+			health.recordSuccess();
+			return r;
+		} catch (Exception e) {
+			health.recordFailure(e);
+			throw e;
+		}
 	}
 
 	@Override
 	public int size() {
-		return backing.size();
+		try {
+			int s = backing.size();
+			health.recordSuccess();
+			return s;
+		} catch (Exception e) {
+			health.recordFailure(e);
+			throw e;
+		}
 	}
 
 	@Override
 	public boolean isEmpty() {
-		return backing.isEmpty();
+		try {
+			boolean r = backing.isEmpty();
+			health.recordSuccess();
+			return r;
+		} catch (Exception e) {
+			health.recordFailure(e);
+			throw e;
+		}
 	}
 
 	@Override
@@ -280,17 +301,38 @@ public final class CaffeineLayeredMap<K, V> implements Map<K, V> {
 
 	@Override
 	public Set<K> keySet() {
-		return backing.keySet();
+		try {
+			Set<K> r = backing.keySet();
+			health.recordSuccess();
+			return r;
+		} catch (Exception e) {
+			health.recordFailure(e);
+			throw e;
+		}
 	}
 
 	@Override
 	public Collection<V> values() {
-		return backing.values();
+		try {
+			Collection<V> r = backing.values();
+			health.recordSuccess();
+			return r;
+		} catch (Exception e) {
+			health.recordFailure(e);
+			throw e;
+		}
 	}
 
 	@Override
 	public Set<Map.Entry<K, V>> entrySet() {
-		return backing.entrySet();
+		try {
+			Set<Map.Entry<K, V>> r = backing.entrySet();
+			health.recordSuccess();
+			return r;
+		} catch (Exception e) {
+			health.recordFailure(e);
+			throw e;
+		}
 	}
 
 	@Override

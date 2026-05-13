@@ -72,6 +72,8 @@ public final class RedisHealth implements AutoCloseable {
 	private final ScheduledExecutorService prober;
 	private volatile ScheduledFuture<?> probeFuture;
 	private volatile StateListener listener = (p, c) -> { /* no-op default */ };
+	/** Count of consecutive failures at the moment the breaker last tripped OPEN. */
+	private volatile int lastTrippedCount = 0;
 
 	public RedisHealth(RedissonClient client, int failureThreshold, long probeIntervalMs) {
 		this.client = client;
@@ -97,6 +99,11 @@ public final class RedisHealth implements AutoCloseable {
 		return consecutiveFailures.get();
 	}
 
+	/** @return consecutive failures recorded when the breaker last tripped to OPEN. */
+	public int getLastTrippedCount() {
+		return lastTrippedCount;
+	}
+
 	public State getState() {
 		return state.get();
 	}
@@ -118,8 +125,12 @@ public final class RedisHealth implements AutoCloseable {
 	}
 
 	public void recordFailure(Throwable cause) {
+		if (state.get() == State.OPEN) {
+			return; // already tripped — nothing more to count
+		}
 		int n = consecutiveFailures.incrementAndGet();
 		if (n >= failureThreshold && state.compareAndSet(State.CLOSED, State.OPEN)) {
+			lastTrippedCount = n;
 			startProbing();
 			log.warn("Redis circuit breaker tripped to OPEN after {} consecutive failures", n, cause);
 			fire(State.CLOSED, State.OPEN);
@@ -163,7 +174,7 @@ public final class RedisHealth implements AutoCloseable {
 			if (f != null) {
 				f.cancel(false);
 			}
-			consecutiveFailures.set(0);
+			lastTrippedCount = consecutiveFailures.getAndSet(0); // snapshot before reset so CONNECTED event carries outage severity
 			fire(State.OPEN, State.CLOSED);
 		}
 	}
