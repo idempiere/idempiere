@@ -589,21 +589,17 @@ public class Doc_MatchPO extends Doc
 		{
 			MMatchPO mMatchPO = (MMatchPO) getPO(); 
 			
-			// Source from Doc_MatchPO.createFacts(MAcctSchema)
-			MInOut inOut = m_ioLine.getParent(); 
-			boolean isReturnTrx = inOut.getMovementType().equals(X_M_InOut.MOVEMENTTYPE_VendorReturns);
-
 			// Create Cost Detail Matched PO using Total Amount and Total Qty based on OrderLine
 			MMatchPO[] mPO = MMatchPO.getOrderLine(getCtx(), m_oLine.getC_OrderLine_ID(), getTrxName());
+			BigDecimal unitCost = poCost;
 			BigDecimal tQty = Env.ZERO;
 			BigDecimal tAmt = Env.ZERO;
 			for (int i = 0 ; i < mPO.length ; i++)
 			{
 				if (mPO[i].getM_AttributeSetInstance_ID() == mMatchPO.getM_AttributeSetInstance_ID()
-					&& mPO[i].getM_MatchPO_ID() != mMatchPO.getM_MatchPO_ID()
-					&& mPO[i].getDateAcct().compareTo(mMatchPO.getDateAcct()) == 0)
+					&& mPO[i].getM_MatchPO_ID() != mMatchPO.getM_MatchPO_ID())
 				{
-					BigDecimal qty = (isReturnTrx ? mPO[i].getQty().negate() : mPO[i].getQty());
+					BigDecimal qty = mPO[i].getQty();
 					BigDecimal orderCost = BigDecimal.ZERO;
 					if (mPO[i].getM_InOutLine_ID() > 0)
 					{
@@ -643,9 +639,12 @@ public class Doc_MatchPO extends Doc
 				}
 			}			
 			poCost = poCost.multiply(getQty());			//	Delivered so far
-			tAmt = tAmt.add(isReturnTrx ? poCost.negate() : poCost);
-			tQty = tQty.add(isReturnTrx ? getQty().negate() : getQty());
+			tAmt = tAmt.add(poCost);
+			tQty = tQty.add(getQty());
 			
+			BigDecimal currentQty = getQty();
+			BigDecimal currentAmt = poCost;
+
 			if (mMatchPO.isReversal()) 
 			{
 				String error = createLandedCostAdjustments(as, landedCostMap, mMatchPO, tQty);
@@ -663,6 +662,83 @@ public class Doc_MatchPO extends Doc
 
 			if (mas != null && mas.length > 0)
 			{
+				Map<Integer, BigDecimal[]> asiTotals = new LinkedHashMap<Integer, BigDecimal[]>();
+
+				// previous same-day receipts for same order line and batch/lot ASI distribution
+				for (int i = 0 ; i < mPO.length ; i++)
+				{
+					if (mPO[i].getM_MatchPO_ID() == mMatchPO.getM_MatchPO_ID()
+						|| mPO[i].getM_InOutLine_ID() == 0
+						|| mPO[i].getDateAcct().compareTo(mMatchPO.getDateAcct()) != 0)
+						continue;
+
+					BigDecimal qty = mPO[i].getQty();
+					BigDecimal orderAmt = Env.ZERO;
+					if (m_oLine.getC_Currency_ID() != as.getC_Currency_ID())
+					{
+						MOrder order = m_oLine.getParent();
+						MProduct productPrev = new MProduct(getCtx(), m_oLine.getM_Product_ID(), getTrxName());
+						if(MAcctSchema.COSTINGMETHOD_AveragePO.equals(productPrev.getCostingMethod(as))) 
+						{
+							MInOutLine iol = new MInOutLine(getCtx(), mPO[i].getM_InOutLine_ID(), getTrxName());
+							MOrderLine ol = new MOrderLine(getCtx(), iol.getC_OrderLine_ID(), getTrxName());
+							BigDecimal orderCost = ol.getPriceActual();
+							Timestamp dateAcct = iol.getParent().getDateAcct();
+							BigDecimal rate = MConversionRate.getRate(
+								order.getC_Currency_ID(), as.getC_Currency_ID(),
+								dateAcct, order.getC_ConversionType_ID(),
+								m_oLine.getAD_Client_ID(), m_oLine.getAD_Org_ID());
+
+							if (rate == null)
+							{
+								p_Error = "Purchase Order not convertible - " + as.getName();
+								return null;
+							}
+							orderCost = orderCost.multiply(rate);
+							orderAmt = orderCost.multiply(qty);
+						}
+						else {
+							orderAmt = unitCost.multiply(qty);
+						}
+					} else {
+						orderAmt = unitCost.multiply(qty);
+					}
+
+					MInOutLine prevLine = new MInOutLine(getCtx(), mPO[i].getM_InOutLine_ID(), getTrxName());
+					MInOutLineMA[] prevMas = MInOutLineMA.get(getCtx(), prevLine.get_ID(), getTrxName());
+					BigDecimal totalPrevQty = prevLine.getMovementQty();
+					BigDecimal sumPrevQty = Env.ZERO;
+					BigDecimal sumPrevAmt = Env.ZERO;
+					for (int k = 0; k < prevMas.length; k++)
+					{
+						MInOutLineMA prevMA = prevMas[k];
+						BigDecimal prevMaQty = prevMA.getMovementQty();
+						BigDecimal qtyByASI = Env.ZERO;
+						BigDecimal amtByASI = Env.ZERO;
+						if (totalPrevQty.signum() != 0)
+						{
+							qtyByASI = qty.multiply(prevMaQty).divide(totalPrevQty, 12, RoundingMode.HALF_UP);
+							amtByASI = orderAmt.multiply(prevMaQty).divide(totalPrevQty, as.getCostingPrecision(), RoundingMode.HALF_UP);
+						}
+						if (k == prevMas.length - 1)
+						{
+							qtyByASI = qty.subtract(sumPrevQty);
+							amtByASI = orderAmt.subtract(sumPrevAmt);
+						}
+						else
+						{
+							sumPrevQty = sumPrevQty.add(qtyByASI);
+							sumPrevAmt = sumPrevAmt.add(amtByASI);
+						}
+						BigDecimal[] totals = asiTotals.get(prevMA.getM_AttributeSetInstance_ID());
+						if (totals == null)
+							totals = new BigDecimal[] { Env.ZERO, Env.ZERO };
+						totals[0] = totals[0].add(qtyByASI);
+						totals[1] = totals[1].add(amtByASI);
+						asiTotals.put(prevMA.getM_AttributeSetInstance_ID(), totals);
+					}
+				}
+
 				BigDecimal sumAmt = Env.ZERO;
 				BigDecimal sumQty = Env.ZERO;
 				BigDecimal totalIOLineQty = m_ioLine.getMovementQty();
@@ -674,25 +750,36 @@ public class Doc_MatchPO extends Doc
 					BigDecimal amt = Env.ZERO;
 					if (totalIOLineQty.signum() != 0)
 					{
-						qty = tQty.multiply(maQty).divide(totalIOLineQty, 12, RoundingMode.HALF_UP);
-						amt = tAmt.multiply(maQty).divide(totalIOLineQty, as.getCostingPrecision(), RoundingMode.HALF_UP);
+						qty = currentQty.multiply(maQty).divide(totalIOLineQty, 12, RoundingMode.HALF_UP);
+						amt = currentAmt.multiply(maQty).divide(totalIOLineQty, as.getCostingPrecision(), RoundingMode.HALF_UP);
 					}
 					if (j == mas.length - 1)
 					{
-						qty = tQty.subtract(sumQty);
-						amt = tAmt.subtract(sumAmt);
+						qty = currentQty.subtract(sumQty);
+						amt = currentAmt.subtract(sumAmt);
 					}
 					else
 					{
 						sumQty = sumQty.add(qty);
 						sumAmt = sumAmt.add(amt);
 					}
+					BigDecimal[] totals = asiTotals.get(ma.getM_AttributeSetInstance_ID());
+					if (totals == null)
+						totals = new BigDecimal[] { Env.ZERO, Env.ZERO };
+					totals[0] = totals[0].add(qty);
+					totals[1] = totals[1].add(amt);
+					asiTotals.put(ma.getM_AttributeSetInstance_ID(), totals);
+				}
 
-					int Ref_CostDetail_ID = getReversalRefCostDetailID(as, mMatchPO, ma.getM_AttributeSetInstance_ID());
+				for (Map.Entry<Integer, BigDecimal[]> entry : asiTotals.entrySet())
+				{
+					int asiId = entry.getKey();
+					BigDecimal[] totals = entry.getValue();
+					int Ref_CostDetail_ID = getReversalRefCostDetailID(as, mMatchPO, asiId);
 					if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(), 
-							getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
-							m_oLine.getC_OrderLine_ID(), 0,		//	no cost element
-							amt, qty,			//	Delivered
+							getM_Product_ID(), asiId,
+							m_oLine.getC_OrderLine_ID(), 0, 		//	no cost element
+							totals[1], totals[0], 		//	Delivered
 							m_oLine.getDescription(), getDateAcct(), Ref_CostDetail_ID, getTrxName()))
 					{
 						return "SaveError";
@@ -748,9 +835,7 @@ public class Doc_MatchPO extends Doc
 		for(Integer elementId : landedCostMap.keySet())
 		{
 			BigDecimal amt = landedCostMap.get(elementId);
-			if (mMatchPO.isReversal())
-				amt = amt.negate();
-			amt = amt.multiply(tQty);
+			amt = amt.multiply(getQty());
 			if (amt.scale() > as.getCostingPrecision())
 				amt = amt.setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
 
@@ -760,6 +845,7 @@ public class Doc_MatchPO extends Doc
 				BigDecimal sumAmt = Env.ZERO;
 				BigDecimal sumQty = Env.ZERO;
 				BigDecimal totalIOLineQty = m_ioLine.getMovementQty();
+				BigDecimal currentQty = getQty();
 				for (int j = 0; j < mas.length; j++)
 				{
 					MInOutLineMA ma = mas[j];
@@ -768,12 +854,12 @@ public class Doc_MatchPO extends Doc
 					BigDecimal lineAmt = Env.ZERO;
 					if (totalIOLineQty.signum() != 0)
 					{
-						qty = tQty.multiply(maQty).divide(totalIOLineQty, 12, RoundingMode.HALF_UP);
+						qty = currentQty.multiply(maQty).divide(totalIOLineQty, 12, RoundingMode.HALF_UP);
 						lineAmt = totalAmt.multiply(maQty).divide(totalIOLineQty, as.getCostingPrecision(), RoundingMode.HALF_UP);
 					}
 					if (j == mas.length - 1)
 					{
-						qty = tQty.subtract(sumQty);
+						qty = currentQty.subtract(sumQty);
 						lineAmt = totalAmt.subtract(sumAmt);
 					}
 					else
