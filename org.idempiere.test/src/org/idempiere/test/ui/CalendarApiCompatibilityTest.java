@@ -23,21 +23,18 @@ package org.idempiere.test.ui;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 import org.zkoss.calendar.api.CalendarItem;
 import org.zkoss.calendar.event.CalendarsEvent;
-import org.zkoss.calendar.impl.SimpleCalendarEvent;
 
 /**
  * Pins the bundled ZK Calendar API surface that iDempiere's calendar UI
  * (DPCalendar, CalendarWindow, WSchedule, InfoSchedule) depends on.
  *
- * If a future ZK Calendar upgrade renames these constants, removes the
- * SimpleCalendarEvent → CalendarItem contract, or changes the
- * getCalendarItem() return type, this test fails at build time instead
- * of at runtime in the dashboard.
+ * If a future ZK Calendar upgrade renames these constants or changes the
+ * getCalendarItem() return type, this test fails at build time instead of at
+ * runtime in the dashboard.
  *
  * Background: see IDEMPIERE-6984 (ZK Calendar 2.1.5 → 3.2.1 upgrade
  * renamed CalendarEvent → CalendarItem and ON_EVENT_* → ON_ITEM_*).
@@ -56,13 +53,6 @@ public class CalendarApiCompatibilityTest {
 		assertNotEquals(CalendarsEvent.ON_ITEM_CREATE, CalendarsEvent.ON_ITEM_EDIT);
 		assertNotEquals(CalendarsEvent.ON_ITEM_CREATE, CalendarsEvent.ON_ITEM_UPDATE);
 		assertNotEquals(CalendarsEvent.ON_ITEM_EDIT,   CalendarsEvent.ON_ITEM_UPDATE);
-	}
-
-	@Test
-	public void testSimpleCalendarEventImplementsCalendarItem() {
-		assertTrue(CalendarItem.class.isAssignableFrom(SimpleCalendarEvent.class),
-				"SimpleCalendarEvent must implement CalendarItem — InfoSchedule and "
-				+ "CalendarWindow cast getCalendarItem() results to SimpleCalendarEvent");
 	}
 
 	@Test

@@ -51,7 +51,7 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 import org.zkoss.calendar.event.CalendarsEvent;
-import org.zkoss.calendar.impl.SimpleCalendarEvent;
+import org.zkoss.calendar.impl.SimpleCalendarItem;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
@@ -535,10 +535,19 @@ public class InfoSchedule extends Window implements EventListener<Event>
 		//	Get Resource Type
 		KeyNamePair pp = new KeyNamePair((Integer)listItem.getValue(), listItem.getLabel());
 		int S_Resource_ID = pp.getKey();
-		
+
 		ScheduleUtil schedule = new ScheduleUtil (Env.getCtx());
-		Timestamp start = new Timestamp(event.getBeginDate() != null ? event.getBeginDate().getTime() : event.getCalendarItem().getBeginDate().getTime());
-		Timestamp end =new Timestamp(event.getEndDate() != null ? event.getEndDate().getTime() : event.getCalendarItem().getEndDate().getTime());
+		if (event.getBeginDate() == null || event.getEndDate() == null) {
+			if (event.getCalendarItem() == null || event.getCalendarItem().getBegin() == null || event.getCalendarItem().getEnd() == null) {
+				return;
+			}
+		}
+		Timestamp start = new Timestamp(event.getBeginDate() != null
+				? event.getBeginDate().getTime()
+				: event.getCalendarItem().getBegin().toEpochMilli());
+		Timestamp end = new Timestamp(event.getEndDate() != null
+				? event.getEndDate().getTime()
+				: event.getCalendarItem().getEnd().toEpochMilli());
 		double hours = (end.getTime() - start.getTime())/ 1000d / 60d / 60d;
 		
 		MAssignmentSlot[] mas = schedule.getAssignmentSlots(S_Resource_ID, TimeUtil.getPreviousDay(start), TimeUtil.getNextDay(end), null, true, null);
@@ -582,13 +591,13 @@ public class InfoSchedule extends Window implements EventListener<Event>
 				
 				vad =  new WAssignmentDialog (ma, false, createNew);
 				if (event.getBeginDate() != null && event.getEndDate() != null) {
-					SimpleCalendarEvent newEvent = new SimpleCalendarEvent();
+					SimpleCalendarItem newEvent = new SimpleCalendarItem();
 					newEvent.setBeginDate(event.getBeginDate());
 					newEvent.setEndDate(event.getEndDate());
 					if (event.getCalendarItem() != null) {
 						newEvent.setContent(event.getCalendarItem().getContent());
-						newEvent.setContentColor(event.getCalendarItem().getContentColor());
-						newEvent.setHeaderColor(event.getCalendarItem().getHeaderColor());
+						newEvent.setContentStyle(event.getCalendarItem().getContentStyle());
+						newEvent.setHeaderStyle(event.getCalendarItem().getHeaderStyle());
 						newEvent.setTitle(event.getCalendarItem().getTitle());
 						schedulePane.getModel().remove(event.getCalendarItem());
 					}
@@ -623,13 +632,13 @@ public class InfoSchedule extends Window implements EventListener<Event>
 			
 			if (m_parent == null || m_callback == null) {
 				if (event.getBeginDate() != null && event.getEndDate() != null) {
-					SimpleCalendarEvent newEvent = new SimpleCalendarEvent();
+					SimpleCalendarItem newEvent = new SimpleCalendarItem();
 					newEvent.setBeginDate(event.getBeginDate());
 					newEvent.setEndDate(event.getEndDate());
 					if (event.getCalendarItem() != null) {
 						newEvent.setContent(event.getCalendarItem().getContent());
-						newEvent.setContentColor(event.getCalendarItem().getContentColor());
-						newEvent.setHeaderColor(event.getCalendarItem().getHeaderColor());
+						newEvent.setContentStyle(event.getCalendarItem().getContentStyle());
+						newEvent.setHeaderStyle(event.getCalendarItem().getHeaderStyle());
 						newEvent.setTitle(event.getCalendarItem().getTitle());
 						schedulePane.getModel().remove(event.getCalendarItem());
 					}

@@ -17,6 +17,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -51,7 +53,7 @@ import org.jfree.data.general.DefaultPieDataset;
 import org.zkoss.calendar.Calendars;
 import org.zkoss.calendar.api.CalendarItem;
 import org.zkoss.calendar.event.CalendarsEvent;
-import org.zkoss.calendar.impl.SimpleCalendarEvent;
+import org.zkoss.calendar.impl.SimpleCalendarItem;
 import org.zkoss.calendar.impl.SimpleCalendarModel;
 import org.zkoss.image.AImage;
 import org.zkoss.zk.ui.Component;
@@ -141,8 +143,8 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 
 		calendars = (Calendars) component.getFellow("cal");
 		calendars.setModel(scm);
-		if (calendars.getCurrentDate() != null)
-			calendars.setCurrentDate(calendars.getCurrentDate());
+		if (calendars.getCurrentDateTime() != null)
+			calendars.setCurrentDateTime(calendars.getCurrentDateTime());
 		setTimeZone();
 
 		btnRefresh = (Toolbarbutton) component.getFellow("btnRefresh");
@@ -349,12 +351,12 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 			if (e instanceof CalendarsEvent)
 			{
 				CalendarsEvent evt = (CalendarsEvent) e;
-				SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy/MM/d");
-				sdf1.setTimeZone(calendars.getDefaultTimeZone());
+				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/d")
+						.withZone(calendars.getDefaultTimeZone().toZoneId());
 				StringBuilder sb = new StringBuilder("Update... from ");
-				sb.append(sdf1.format(evt.getCalendarItem().getBeginDate()));
+				sb.append(dtf.format(evt.getCalendarItem().getBegin()));
 				sb.append(" to ");
-				sb.append(sdf1.format(evt.getBeginDate()));
+				sb.append(dtf.format(evt.getBeginDate().toInstant()));
 				popupLabel.setValue(sb.toString());
 				int left = evt.getX();
 				int top = evt.getY();
@@ -366,7 +368,7 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 				timer.start();
 				org.zkoss.calendar.Calendars cal = (org.zkoss.calendar.Calendars) evt.getTarget();
 				SimpleCalendarModel m = (SimpleCalendarModel) cal.getModel();
-				SimpleCalendarEvent sce = (SimpleCalendarEvent) evt.getCalendarItem();
+				SimpleCalendarItem sce = (SimpleCalendarItem) evt.getCalendarItem();
 				sce.setBeginDate(evt.getBeginDate());
 				sce.setEndDate(evt.getEndDate());
 				m.update(sce);
@@ -379,8 +381,9 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 	 */
 	private void syncModel() {
 		Hashtable<String,BigDecimal> ht = new Hashtable<String,BigDecimal>();
-		
-		List<?> list = calendars.getModel().get(calendars.getBeginDate(), calendars.getEndDate(), null);
+
+		List<?> list = calendars.getModel().get(calendars.getBeginDateTime(), calendars.getEndDateTime(),
+				() -> calendars.getDefaultTimeZone());
 		int size = list.size();
 		for (Iterator<?> it = list.iterator(); it.hasNext();) {
 			String key = ((ADCalendarEvent)it.next()).getR_RequestType_ID() + "";
@@ -486,18 +489,20 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 	 * Update {@link #lblDate}
 	 */
 	private void updateDateLabel() {
-		Date b = calendars.getBeginDate();
-		Date e = calendars.getEndDate();
+		LocalDateTime b = calendars.getBeginDateTime();
+		LocalDateTime e = calendars.getEndDateTime();
 		SimpleDateFormat sdfV = DisplayType.getDateFormat();
-		sdfV.setTimeZone(calendars.getDefaultTimeZone());
-		lblDate.setValue(sdfV.format(b) + " - " + sdfV.format(e));
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern(sdfV.toPattern());
+		lblDate.setValue(dtf.format(b) + " - " + dtf.format(e));
 	}
 	
 	/**
 	 * Set {@link #calendars} to current date
 	 */
 	private void btnCurrentDateClicked() {
-		calendars.setCurrentDate(Calendar.getInstance(calendars.getDefaultTimeZone()).getTime());
+		calendars.setCurrentDateTime(LocalDateTime.ofInstant(
+				Calendar.getInstance(calendars.getDefaultTimeZone()).toInstant(),
+				calendars.getDefaultTimeZone().toZoneId()));
 		updateDateLabel();
 		syncModel();
 	}

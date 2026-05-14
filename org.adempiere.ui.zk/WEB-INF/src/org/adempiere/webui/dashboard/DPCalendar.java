@@ -18,6 +18,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -46,6 +48,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
 import org.compiere.util.TrxEventListener;
+import org.compiere.util.Util;
 import org.idempiere.distributed.IMessageService;
 import org.idempiere.distributed.ITopic;
 import org.idempiere.distributed.ITopicSubscriber;
@@ -342,8 +345,11 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 					event.setEndDate(cal.getTime());
 
 					event.setContent(summary);
-					event.setHeaderColor(headerColor);
-					event.setContentColor(contentColor);
+					event.setTitle(summary);
+					if (!Util.isEmpty(headerColor, true))
+						event.setHeaderStyle("background-color:" + headerColor);
+					if (!Util.isEmpty(contentColor, true))
+						event.setContentStyle("background-color:" + contentColor);
 					event.setR_RequestType_ID(R_RequestType_ID);
 					event.setLocked(true);
 					events.add(event);
@@ -387,13 +393,16 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 					
 					event.setBeginDate(calBegin.getTime());
 					event.setEndDate(calEnd.getTime());
-					
-					if(event.getBeginDate().compareTo(event.getEndDate()) >= 0)
+
+					if(event.getBegin().compareTo(event.getEnd()) >= 0)
 						continue;
 
 					event.setContent(summary);
-					event.setHeaderColor(headerColor);
-					event.setContentColor(contentColor);
+					event.setTitle(summary);
+					if (!Util.isEmpty(headerColor, true))
+						event.setHeaderStyle("background-color:" + headerColor);
+					if (!Util.isEmpty(contentColor, true))
+						event.setContentStyle("background-color:" + contentColor);
 					event.setR_RequestType_ID(R_RequestType_ID);
 					event.setLocked(true);
 					events.add(event);
@@ -500,18 +509,20 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 	 * Update {@link #lblDate}
 	 */
 	private void updateDateLabel() {
-		Date b = calendars.getBeginDate();
-		Date e = calendars.getEndDate();
+		LocalDateTime b = calendars.getBeginDateTime();
+		LocalDateTime e = calendars.getEndDateTime();
 		SimpleDateFormat sdfV = DisplayType.getDateFormat();
-		sdfV.setTimeZone(calendars.getDefaultTimeZone());
-		lblDate.setValue(sdfV.format(b) + " - " + sdfV.format(e));
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern(sdfV.toPattern());
+		lblDate.setValue(dtf.format(b) + " - " + dtf.format(e));
 	}
 	
 	/**
 	 * Set {@link #calendars} to current date
 	 */
 	private void btnCurrentDateClicked() {
-		calendars.setCurrentDate(Calendar.getInstance(calendars.getDefaultTimeZone()).getTime());
+		calendars.setCurrentDateTime(LocalDateTime.ofInstant(
+				Calendar.getInstance(calendars.getDefaultTimeZone()).toInstant(),
+				calendars.getDefaultTimeZone().toZoneId()));
 		updateDateLabel();
 		updateUI();
 	}
