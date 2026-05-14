@@ -1,12 +1,12 @@
 zk.afterLoad('calendar', function() {
-    zk.override(calendar.Event.prototype, "calculate_", function() {
-      if (typeof this.event === "undefined" || this.event == null) {
+    zk.override(calendar.Item.prototype, "calculate_", function() {
+      if (typeof this.item === "undefined" || this.item == null) {
         return;
       }
       this.$calculate_.apply(this, arguments);
     });
 
-    zk.override(calendar.Event.prototype, "unbind_", function() {
+    zk.override(calendar.Item.prototype, "unbind_", function() {
       let node = this.$n();
       if (typeof node === "undefined") {
         return;
