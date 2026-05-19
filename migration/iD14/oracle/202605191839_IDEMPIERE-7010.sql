@@ -52,7 +52,8 @@ UPDATE M_InventoryLine SET QtyEntered = QtyCount WHERE EXISTS (
     WHERE i.M_Inventory_ID = M_InventoryLine.M_Inventory_ID
       AND dt.DocSubTypeInv = 'PI'
 )
-AND M_InventoryLine.QtyEntered = 0;
+AND M_InventoryLine.QtyEntered = 0
+;
 
 -- May 19, 2026, 6:41:35 PM CEST
 UPDATE M_InventoryLine SET QtyEntered = QtyInternalUse WHERE EXISTS (
@@ -62,7 +63,7 @@ UPDATE M_InventoryLine SET QtyEntered = QtyInternalUse WHERE EXISTS (
     WHERE i.M_Inventory_ID = M_InventoryLine.M_Inventory_ID
       AND dt.DocSubTypeInv = 'IU'
 )
-AND M_InventoryLine.QtyEntered = 0;
+AND M_InventoryLine.QtyEntered = 0
 ;
 
 -- May 19, 2026, 6:41:49 PM CEST
