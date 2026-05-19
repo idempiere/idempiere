@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Hashtable;
 import java.util.Properties;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.logging.Level;
@@ -29,6 +30,7 @@ import java.util.logging.Level;
 import javax.swing.ImageIcon;
 import javax.swing.event.EventListenerList;
 
+import org.adempiere.base.BaseActivator;
 import org.adempiere.base.Core;
 import org.compiere.db.CConnection;
 import org.compiere.model.MClient;
@@ -52,6 +54,7 @@ import org.compiere.util.Util;
 import org.eclipse.core.runtime.IProduct;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
+import org.osgi.service.condition.Condition;
 
 /**
  *  Static methods for iDempiere startup, system info and global thread pool.
@@ -603,6 +606,11 @@ public final class Adempiere
 
 		createThreadPool();
 		
+        // Register the Condition service to activate the distributed backend
+        Hashtable<String, Object> props = new Hashtable<>();
+        props.put("osgi.condition.id", "distributed.provider."+SystemProperties.getDistributedBackend());
+        BaseActivator.getBundleContext().registerService(Condition.class, Condition.INSTANCE, props);
+
 		fireServerStateChanged(new ServerStateChangeEvent(new Object(), ServerStateChangeEvent.SERVER_START));
 		
 		if (isClient)		//	don't test connection

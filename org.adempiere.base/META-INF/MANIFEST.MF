@@ -159,6 +159,7 @@ Import-Package: com.github.benmanes.caffeine;version="3.1.8",
  org.osgi.service.component.annotations;version="1.5.1",
  org.osgi.service.component.runtime;version="1.5.0",
  org.osgi.service.component.runtime.dto;version="1.5.0",
+ org.osgi.service.condition;version="[1.0.0,2.0.0)",
  org.osgi.service.event;version="1.4.1",
  org.osgi.util.promise;version="1.3.0",
  org.osgi.util.tracker;version="1.5.0"
