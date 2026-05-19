@@ -45,11 +45,24 @@ ALTER TABLE M_InventoryLine ADD QtyEntered NUMBER DEFAULT 0 NOT NULL
 ;
 
 -- May 19, 2026, 6:41:35 PM CEST
-UPDATE M_InventoryLine SET QtyEntered = QtyCount WHERE C_Charge_ID IS NULL
-;
+UPDATE M_InventoryLine SET QtyEntered = QtyCount WHERE EXISTS (
+    SELECT 1
+    FROM M_Inventory i
+    JOIN C_DocType dt ON dt.C_DocType_ID = i.C_DocType_ID
+    WHERE i.M_Inventory_ID = M_InventoryLine.M_Inventory_ID
+      AND dt.DocSubTypeInv = 'PI'
+)
+AND M_InventoryLine.QtyEntered = 0;
 
 -- May 19, 2026, 6:41:35 PM CEST
-UPDATE M_InventoryLine SET QtyEntered = QtyInternalUse WHERE C_Charge_ID IS NOT null
+UPDATE M_InventoryLine SET QtyEntered = QtyInternalUse WHERE EXISTS (
+    SELECT 1
+    FROM M_Inventory i
+    JOIN C_DocType dt ON dt.C_DocType_ID = i.C_DocType_ID
+    WHERE i.M_Inventory_ID = M_InventoryLine.M_Inventory_ID
+      AND dt.DocSubTypeInv = 'IU'
+)
+AND M_InventoryLine.QtyEntered = 0;
 ;
 
 -- May 19, 2026, 6:41:49 PM CEST
