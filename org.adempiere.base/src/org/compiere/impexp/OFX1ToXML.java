@@ -211,11 +211,6 @@ public final class OFX1ToXML extends InputStream implements Runnable
 
 		int ch = m_reader.read();
 
-		if (ch == -1 && m_runException != null)
-		{
-			throw m_runException;
-		}
-
 		return ch;
 	}	//	read
 
@@ -229,7 +224,13 @@ public final class OFX1ToXML extends InputStream implements Runnable
 	 */
 	public int read(char[] cbuf, int off, int len) throws IOException
 	{
-		return m_reader.read(cbuf, off, len);
+		if (m_runException != null) {
+			throw m_runException;
+		}
+
+		int result = m_reader.read(cbuf, off, len);
+
+		return result;
 	}	//	read
 	
 	/**
