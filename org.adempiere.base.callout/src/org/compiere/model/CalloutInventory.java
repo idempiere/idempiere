@@ -100,6 +100,8 @@ public class CalloutInventory extends CalloutEngine
 			if (product != null) {
 				mTab.setValue("C_UOM_ID", product.getC_UOM_ID());
 				mTab.setValue("QtyEntered", Env.ZERO);
+				mTab.setValue("QtyCount", Env.ZERO);
+				mTab.setValue("QtyInternalUse", Env.ZERO);
 			}
 		}
 			
