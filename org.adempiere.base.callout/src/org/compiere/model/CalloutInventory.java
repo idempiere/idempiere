@@ -17,6 +17,7 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -93,6 +94,13 @@ public class CalloutInventory extends CalloutEngine
 				mTab.setValue(MInventoryLine.COLUMNNAME_M_AttributeSetInstance_ID, M_AttributeSetInstance_ID);
 			else
 				mTab.setValue(MInventoryLine.COLUMNNAME_M_AttributeSetInstance_ID, 0);
+
+			// Set UOM from product and reset QtyEntered
+			MProduct product = MProduct.get(ctx, M_Product_ID);
+			if (product != null) {
+				mTab.setValue("C_UOM_ID", product.getC_UOM_ID());
+				mTab.setValue("QtyEntered", Env.ZERO);
+			}
 		}
 			
 		// Set QtyBook from first storage location
@@ -126,5 +134,75 @@ public class CalloutInventory extends CalloutEngine
 			+ " - QtyBook=" + bd);
 		return "";
 	}   //  product
-	
+
+	/**
+	 *	Inventory Line - Quantity / UOM.
+	 *		- called from C_UOM_ID, QtyEntered
+	 *		- converts QtyEntered to product UOM and stores in QtyCount (Physical) or QtyInternalUse (Internal Use)
+	 *	@param ctx context
+	 *	@param WindowNo window no
+	 *	@param mTab tab model
+	 *	@param mField field model
+	 *	@param value new value
+	 *	@return error message or ""
+	 */
+	public String qty (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
+	{
+		if (isCalloutActive() || value == null)
+			return "";
+
+		int M_Product_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "M_Product_ID");
+		if (M_Product_ID == 0)
+			return "";
+
+		int doctypeid = Env.getContextAsInt(ctx, WindowNo, "C_DocType_ID");
+		String docSubTypeInv = null;
+		if (doctypeid > 0) {
+			MDocType dt = MDocType.get(ctx, doctypeid);
+			docSubTypeInv = dt.getDocSubTypeInv();
+		}
+		// CostAdjustment lines don't use QtyEntered
+		if (MDocType.DOCSUBTYPEINV_CostAdjustment.equals(docSubTypeInv))
+			return "";
+
+		int C_UOM_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), "C_UOM_ID");
+		if (C_UOM_ID == 0)
+			return "";
+
+		BigDecimal QtyEntered;
+
+		// UOM changed - re-scale QtyEntered to new UOM precision and reconvert
+		if (mField.getColumnName().equals("C_UOM_ID")) {
+			int C_UOM_To_ID = ((Integer) value).intValue();
+			QtyEntered = (BigDecimal) mTab.getValue("QtyEntered");
+			if (QtyEntered == null)
+				QtyEntered = Env.ZERO;
+			BigDecimal QtyEntered1 = QtyEntered.setScale(MUOM.getPrecision(ctx, C_UOM_To_ID), RoundingMode.HALF_UP);
+			if (QtyEntered.compareTo(QtyEntered1) != 0) {
+				QtyEntered = QtyEntered1;
+				mTab.setValue("QtyEntered", QtyEntered);
+			}
+		} else {
+			// QtyEntered changed
+			QtyEntered = (BigDecimal) value;
+			BigDecimal QtyEntered1 = QtyEntered.setScale(MUOM.getPrecision(ctx, C_UOM_ID), RoundingMode.HALF_UP);
+			if (QtyEntered.compareTo(QtyEntered1) != 0) {
+				QtyEntered = QtyEntered1;
+				mTab.setValue("QtyEntered", QtyEntered);
+			}
+		}
+
+		// Convert QtyEntered (entered UOM) -> stock UOM
+		BigDecimal qtyConverted = MUOMConversion.convertProductFrom(ctx, M_Product_ID, C_UOM_ID, QtyEntered);
+		if (qtyConverted == null)
+			qtyConverted = QtyEntered;
+
+		if (MDocType.DOCSUBTYPEINV_InternalUseInventory.equals(docSubTypeInv))
+			mTab.setValue("QtyInternalUse", qtyConverted);
+		else if (MDocType.DOCSUBTYPEINV_PhysicalInventory.equals(docSubTypeInv))
+			mTab.setValue("QtyCount", qtyConverted);
+
+		return "";
+	}	//	qty
+
 }	//	CalloutInventory
