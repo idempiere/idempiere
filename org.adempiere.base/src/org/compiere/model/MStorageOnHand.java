@@ -857,6 +857,12 @@ public class MStorageOnHand extends X_M_StorageOnHand
 			new Object[] {addition, Env.getAD_User_ID(Env.getCtx()), getM_Product_ID(), getM_Locator_ID(), getM_AttributeSetInstance_ID(), getDateMaterialPolicy()}, 
 			get_TrxName());
 		load(get_TrxName());
+		
+		IWarehouseMovementValidator warehouseMovValidator = getWarehouseMovementValidator();
+		if (warehouseMovValidator != null) {			
+			warehouseMovValidator.validate(getCtx(), getM_Warehouse_ID(), getM_Product_ID(), getM_AttributeSetInstance_ID(), addition, get_TrxName());
+		}
+		
 		if (getQtyOnHand().signum() == -1) {
 			MWarehouse wh = MWarehouse.get(Env.getCtx(), getM_Warehouse_ID());
 			if (wh.isDisallowNegativeInv()) {
@@ -864,6 +870,18 @@ public class MStorageOnHand extends X_M_StorageOnHand
 						getQtyOnHand().subtract(addition), addition.negate());
 			}
 		}
+	}
+	
+	public IWarehouseMovementValidator getWarehouseMovementValidator() {
+		IWarehouseMovementValidator warehouseMovementValidator = null;
+		List<IWarehouseMovementValidatorFactory> factories = Service.locator().list(IWarehouseMovementValidatorFactory.class).getServices();
+		if (factories != null) {
+			for(IWarehouseMovementValidatorFactory factory : factories) {
+				warehouseMovementValidator = factory.getWarehouseMovementValidator();
+				if(warehouseMovementValidator != null) break;
+			}
+		}
+		return warehouseMovementValidator;
 	}
 
 	/**
