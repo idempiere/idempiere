@@ -10,5 +10,5 @@ import java.util.Properties;
  */
 
 public interface IWarehouseMovementValidator {
-	public void validate(Properties ctx, Integer m_warehouse_id, Integer m_product_id, Integer m_attributeinstance_id, BigDecimal movementQty, String trx);
+	public void validate(Properties ctx, int mWarehouseId, int mProductId, int mAttributeSetInstanceId, BigDecimal movementQty, String trxName);
 }
