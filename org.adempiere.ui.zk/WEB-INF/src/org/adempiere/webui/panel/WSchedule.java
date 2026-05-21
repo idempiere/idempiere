@@ -18,6 +18,8 @@ package org.adempiere.webui.panel;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -42,7 +44,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.calendar.Calendars;
 import org.zkoss.calendar.event.CalendarsEvent;
-import org.zkoss.calendar.impl.SimpleCalendarEvent;
+import org.zkoss.calendar.impl.SimpleCalendarItem;
 import org.zkoss.calendar.impl.SimpleCalendarModel;
 import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
@@ -163,9 +165,9 @@ public class WSchedule extends Window implements EventListener<Event>
 		TimeZone timezone = SessionManager.getAppDesktop().getClientInfo().timeZone;
 		calendars.addTimeZone(timezone.getID(), timezone);
 		
-		calendars.addEventListener(CalendarsEvent.ON_EVENT_CREATE, this);
-		calendars.addEventListener(CalendarsEvent.ON_EVENT_EDIT, this);
-		calendars.addEventListener(CalendarsEvent.ON_EVENT_UPDATE, this);
+		calendars.addEventListener(CalendarsEvent.ON_ITEM_CREATE, this);
+		calendars.addEventListener(CalendarsEvent.ON_ITEM_EDIT, this);
+		calendars.addEventListener(CalendarsEvent.ON_ITEM_UPDATE, this);
 		
 		this.appendChild(calendarContainer);		
 		
@@ -235,8 +237,9 @@ public class WSchedule extends Window implements EventListener<Event>
 	public void recreate (int S_Resource_ID, Date date)
 	{
 		this.S_Resource_ID = S_Resource_ID;
-		calendars.setCurrentDate(date);
-		
+		calendars.setCurrentDateTime(LocalDateTime.ofInstant(date.toInstant(),
+				calendars.getDefaultTimeZone().toZoneId()));
+
 		Events.echoEvent("onAfterReCreate", this, null);
 	}	//	recreate
 
@@ -248,7 +251,8 @@ public class WSchedule extends Window implements EventListener<Event>
 		
 		//		Calculate Start Day
 		GregorianCalendar cal = new GregorianCalendar();
-		cal.setTime(calendars.getCurrentDate());
+		cal.setTime(Date.from(calendars.getCurrentDateTime()
+				.atZone(calendars.getDefaultTimeZone().toZoneId()).toInstant()));
 		cal.set(Calendar.HOUR, 0);
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
@@ -264,15 +268,15 @@ public class WSchedule extends Window implements EventListener<Event>
 		scm = new SimpleCalendarModel();
 		if (S_Resource_ID > 0) {
 			MAssignmentSlot[] list = m_model.getAssignmentSlots (S_Resource_ID, startDate, endDate, null, true, null);
-			
+
 			for(MAssignmentSlot mas : list) {
-				SimpleCalendarEvent event = new SimpleCalendarEvent();
+				SimpleCalendarItem event = new SimpleCalendarItem();
 				event.setBeginDate(mas.getStartTime());
 				event.setEndDate(mas.getEndTime());
 				event.setTitle(mas.getName());
 				event.setContent(mas.getDescription() != null ? mas.getDescription() : mas.getName());
-				event.setHeaderColor('#'+ZkCssHelper.createHexColorString(mas.getColor(true)));
-				event.setContentColor('#'+ZkCssHelper.createHexColorString(mas.getColor(true)));
+				event.setHeaderStyle("background-color:" + '#' + ZkCssHelper.createHexColorString(mas.getColor(true)));
+				event.setContentStyle("background-color:" + '#' + ZkCssHelper.createHexColorString(mas.getColor(true)));
 				if (!mas.isAssignment() || mas.getMAssignment().isConfirmed())
 					event.setLocked(true);
 				scm.add(event);
@@ -321,7 +325,9 @@ public class WSchedule extends Window implements EventListener<Event>
 	 * Select current day
 	 */
 	private void btnCurrentDateClicked() {
-		calendars.setCurrentDate(Calendar.getInstance(calendars.getDefaultTimeZone()).getTime());
+		calendars.setCurrentDateTime(LocalDateTime.ofInstant(
+				Calendar.getInstance(calendars.getDefaultTimeZone()).toInstant(),
+				calendars.getDefaultTimeZone().toZoneId()));
 		updateDateLabel();
 		updateModel();
 	}
@@ -330,11 +336,11 @@ public class WSchedule extends Window implements EventListener<Event>
 	 * Update label after calendar selection change
 	 */
 	private void updateDateLabel() {
-		Date b = calendars.getBeginDate();
-		Date e = calendars.getEndDate();
+		LocalDateTime b = calendars.getBeginDateTime();
+		LocalDateTime e = calendars.getEndDateTime();
 		SimpleDateFormat sdfV = new SimpleDateFormat("yyyy/MMM/dd", Locales.getCurrent());
-		sdfV.setTimeZone(calendars.getDefaultTimeZone());
-		lblDate.setValue(sdfV.format(b) + " - " + sdfV.format(e));
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern(sdfV.toPattern());
+		lblDate.setValue(dtf.format(b) + " - " + dtf.format(e));
 	}
 	
 	/**

@@ -23,6 +23,9 @@ import java.util.concurrent.Future;
 
 import org.idempiere.distributed.IClusterMember;
 import org.idempiere.distributed.IClusterService;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.condition.Condition;
 
 import com.hazelcast.cluster.Member;
 import com.hazelcast.core.HazelcastInstance;
@@ -34,7 +37,11 @@ import com.hazelcast.instance.impl.HazelcastInstanceProxy;
  * @author hengsin
  *
  */
+@Component(immediate = true, service = IClusterService.class)
 public class ClusterServiceImpl implements IClusterService {
+
+	@Reference(target = "(osgi.condition.id=distributed.provider.hazelcast)")
+    Condition distributedCondition;
 
 	/* (non-Javadoc)
 	 * @see org.idempiere.distributed.IClusterService#getMembers()

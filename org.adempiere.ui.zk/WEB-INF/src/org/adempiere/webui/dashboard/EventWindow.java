@@ -13,6 +13,7 @@
  *****************************************************************************/
 package org.adempiere.webui.dashboard;
 
+import java.util.Date;
 import java.util.Properties;
 
 import org.adempiere.webui.apps.AEnv;
@@ -155,11 +156,11 @@ public class EventWindow extends Window implements EventListener<Event> {
 	 * @param event {@link ADCalendarEvent}
 	 */
 	public void setData(ADCalendarEvent event) {
-		txtHeaderColor.setStyle("background-color: " + event.getHeaderColor());
-		txtContentColor.setStyle("background-color: " + event.getContentColor());
-		
-		dtBeginDate.setValue(event.getBeginDate());
-		dtEndDate.setValue(event.getEndDate());
+		txtHeaderColor.setStyle(event.getHeaderStyle());
+		txtContentColor.setStyle(event.getContentStyle());
+
+		dtBeginDate.setValue(event.getBegin() != null ? Date.from(event.getBegin()) : null);
+		dtEndDate.setValue(event.getEnd() != null ? Date.from(event.getEnd()) : null);
 		txtContent.setText(event.getContent());
 		
 		R_Request_ID = event.getR_Request_ID();
