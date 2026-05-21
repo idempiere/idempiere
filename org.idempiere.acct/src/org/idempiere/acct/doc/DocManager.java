@@ -712,6 +712,14 @@ public class DocManager {
 				updateSql.append("  ) WHEN MATCHED THEN ");
 				updateSql.append("UPDATE SET Processed = 'N' ");
 				updateSql.append("WHERE t.Processed = 'Y' ");
+				updateSql.append("	AND NOT EXISTS ( ");
+				updateSql.append("  	SELECT 1 FROM M_MatchPO mpo ");
+				updateSql.append("  	WHERE mpo.C_OrderLine_ID = t.C_OrderLine_ID ");
+				updateSql.append("  		AND mpo.DateAcct = t.DateAcct ");
+				updateSql.append("  		AND ( mpo.Reversal_ID IS NOT NULL ");
+				updateSql.append("    			OR EXISTS ( SELECT 1 FROM M_MatchPO rev ");
+				updateSql.append("      					WHERE rev.Reversal_ID = mpo.M_MatchPO_ID ) ");
+				updateSql.append("  )  ) ");
 			} else {
 				updateSql.append("WITH base_cd AS (");
 				updateSql.append("  SELECT ");
@@ -746,6 +754,14 @@ public class DocManager {
 				updateSql.append("  ) ");
 				updateSql.append("  AND t.DateAcct >= ? ");
 				updateSql.append("  AND t.Processed = 'Y' ");
+				updateSql.append("  AND NOT EXISTS ( ");
+				updateSql.append("    	SELECT 1 FROM M_MatchPO mpo ");
+				updateSql.append("    	WHERE mpo.C_OrderLine_ID = t.C_OrderLine_ID ");
+				updateSql.append("    		AND mpo.DateAcct = t.DateAcct ");
+				updateSql.append("   		AND ( mpo.Reversal_ID IS NOT NULL ");
+				updateSql.append("      		OR EXISTS ( SELECT 1 FROM M_MatchPO rev ");
+				updateSql.append("        					WHERE rev.Reversal_ID = mpo.M_MatchPO_ID ) ");
+				updateSql.append("    )  ) ");
 			}
 			noUpdate += DB.executeUpdateEx(updateSql.toString(), 
 					new Object[] {bdcd.getM_CostDetail_ID(), bdcd.getAD_Client_ID(), bdcd.getC_AcctSchema_ID(), bdcd.getM_Product_ID(), bdcd.getDateAcct()}, 

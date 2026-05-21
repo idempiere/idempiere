@@ -799,7 +799,6 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	 *   Both ASI cost quantities and amounts must return to zero.
 	 * </pre>
 	 */
-	@SuppressWarnings("deprecation")
 	@Test
 	public void testMRWithASIAttributeSplitAndMatchPO() {
 		MClient client = MClient.get(Env.getCtx());
@@ -955,6 +954,10 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd, "MCostDetail not found for order line with asi2");
 			assertEquals(9, cd.getQty().intValue(), "Unexpected MCostDetail Qty");
 			assertEquals(new BigDecimal("90.00").setScale(2, RoundingMode.HALF_UP), cd.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected MCostDetail Amt");
+
+			// Verify no fallback ASI=0 cost detail exists
+			MCostDetail cdASI0 = MCostDetail.getOrder(as, product.getM_Product_ID(), 0, poLine.getC_OrderLine_ID(), 0, matchPOs[0].getDateAcct(), getTrxName());
+			assertNull(cdASI0, "Fallback ASI=0 Cost Detail should not exist");
 
 			//
 			MCost cost1 = product.getCostingRecord(as, getAD_Org_ID(), asi1.get_ID(), as.getCostingMethod());
@@ -1302,7 +1305,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				postDocument(m, m.isPosted());
 			}
 
-			// After MR3 Completion - Cost Validation
+			// After MR3 Completion - Validation
 			costA = product.getCostingRecord(as, getAD_Org_ID(), asiA.get_ID(), product.getCostingMethod(as));
 			assertNotNull(costA, "MCost record not found for asiA");
 			assertEquals(new BigDecimal("18.00"), costA.getCurrentQty().setScale(2, RoundingMode.HALF_UP));
@@ -1313,21 +1316,49 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertEquals(new BigDecimal("32.00"), costB.getCurrentQty().setScale(2, RoundingMode.HALF_UP));
 			assertEquals(new BigDecimal("320.00"), costB.getCumulatedAmt().setScale(2, RoundingMode.HALF_UP));
 
-			// ==========================
-			// Validate MCostDetail Records
-			// ==========================
-
-			// ASI A
 			MCostDetail cdA = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", poLine.getC_OrderLine_ID(), asiA.get_ID(), as.get_ID(), getTrxName());
 			assertNotNull(cdA, "MCostDetail not found for asiA");
 			assertEquals(new BigDecimal("18"), cdA.getQty().setScale(0, RoundingMode.HALF_UP), "Unexpected Qty for asiA");
 			assertEquals(new BigDecimal("180.00"), cdA.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected Amt for asiA");
 
-			// ASI B
 			MCostDetail cdB = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", poLine.getC_OrderLine_ID(), asiB.get_ID(), as.get_ID(), getTrxName());
 			assertNotNull(cdB, "MCostDetail not found for asiB");
 			assertEquals(new BigDecimal("32"), cdB.getQty().setScale(0, RoundingMode.HALF_UP), "Unexpected Qty for asiB");
 			assertEquals(new BigDecimal("320.00"), cdB.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected Amt for asiB");
+	
+			// ==========================
+			// MR3 Reversal
+			// ==========================
+			pi = MWorkflow.runDocumentActionWorkflow(mr3, DocAction.ACTION_Reverse_Correct);
+			mr3.load(getTrxName());
+			assertFalse(pi.isError(), "MR3 Reverse Failed");
+			postDocument((MInOut)mr3.getReversal(), mr3.getReversal().isPosted());
+
+			// MR3 MatchPO Reversal - Validation
+			costA = product.getCostingRecord(as, getAD_Org_ID(), asiA.get_ID(), product.getCostingMethod(as));
+			assertNotNull(costA, "MCost record not found for asiA");
+			assertEquals(new BigDecimal("8.00"), costA.getCurrentQty().setScale(2, RoundingMode.HALF_UP));
+			assertEquals(new BigDecimal("80.00"), costA.getCumulatedAmt().setScale(2, RoundingMode.HALF_UP));
+
+			costB = product.getCostingRecord(as, getAD_Org_ID(), asiB.get_ID(), product.getCostingMethod(as));
+			assertNotNull(costB, "MCost record not found for asiB");
+			assertEquals(new BigDecimal("12.00"), costB.getCurrentQty().setScale(2, RoundingMode.HALF_UP));
+			assertEquals(new BigDecimal("120.00"), costB.getCumulatedAmt().setScale(2, RoundingMode.HALF_UP));
+
+			// Verify no fallback ASI=0 cost record exists
+			MCost costASI0 = product.getCostingRecord(as, 0, 0, MClient.MMPOLICY_FiFo);
+			assertTrue(costASI0 == null || costASI0.getCurrentQty().signum() == 0, "Fallback ASI=0 Cost should not exist");
+
+			cdA = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", poLine.getC_OrderLine_ID(), asiA.get_ID(), as.get_ID(), getTrxName());
+			assertNotNull(cdA, "MCostDetail not found for asiA");
+			assertEquals(new BigDecimal("8"), cdA.getQty().setScale(0, RoundingMode.HALF_UP), "Unexpected Qty for asiA");
+			assertEquals(new BigDecimal("80.00"), cdA.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected Amt for asiA");
+
+			cdB = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", poLine.getC_OrderLine_ID(), asiB.get_ID(), as.get_ID(), getTrxName());
+			assertNotNull(cdB, "MCostDetail not found for asiB");
+			assertEquals(new BigDecimal("12"), cdB.getQty().setScale(0, RoundingMode.HALF_UP), "Unexpected Qty for asiB");
+			assertEquals(new BigDecimal("120.00"), cdB.getAmt().setScale(2, RoundingMode.HALF_UP), "Unexpected Amt for asiB");
+
 		} finally {
 	        rollback();
 	        exclude.deleteEx(true);
