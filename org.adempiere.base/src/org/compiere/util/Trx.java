@@ -640,8 +640,8 @@ public class Trx
 	}	//	toString
 
 	/**
-	 * Returns the open transactions sorted by start time in ascending order.
-	 * Transactions with a null start time are placed at the end of the list.
+	 * Returns the open transactions sorted by start time in ascending order
+	 * Transactions with a null start time are placed at the beginning of the list
 	 */
 	public static Trx[] getOpenTransactions()
 	{
