@@ -30,6 +30,7 @@ import org.adempiere.exceptions.FillMandatoryException;
 import org.adempiere.util.IProcessUI;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 /**
@@ -247,6 +248,7 @@ public class MYear extends X_C_Year
 
 		//
 		IProcessUI processMonitor = Env.getProcessUI(getCtx());
+		BatchInsert<MPeriod> batchInsertPeriod = new BatchInsert<>(MPeriod.class);
 		for (int month = 0; month < 12; month++)
 		{
 			
@@ -271,14 +273,15 @@ public class MYear extends X_C_Year
 				period.setStartDate(start);
 				period.setEndDate(end);
 			}
-			if (processMonitor != null)
-			{
-				processMonitor.statusUpdate(period.toString());
-			}
-			period.saveEx(get_TrxName());	//	Creates Period Control
+			batchInsertPeriod.add(period); // Saving period	creates Period Control
 			// get first day of next month
 			cal.add(Calendar.DAY_OF_YEAR, 1);
 		}
+		if (processMonitor != null)
+		{
+			processMonitor.statusUpdate(Msg.getMsg(getCtx(), "RowCount", new Object[] {batchInsertPeriod.getCount()}));
+		}
+		batchInsertPeriod.executeBatch(get_TrxName());
 		
 		return true;
 		

@@ -22,9 +22,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
@@ -54,6 +52,7 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.CKEditor;
 import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.Lookup;
@@ -71,7 +70,6 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.EMail;
 import org.compiere.util.Env;
-import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkforge.ckez.CKeditor;
@@ -175,14 +173,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		this.setMaximizable(true);
 		this.setSizable(true);
 		        
-		fMessage = new CKeditor();
-		if (ClientInfo.isMobile())
-			fMessage.setCustomConfigurationsPath("/js/ckeditor/config-min.js");
-		else
-			fMessage.setCustomConfigurationsPath("/js/ckeditor/config.js");
-		Map<String,Object> lang = new HashMap<String,Object>();
-		lang.put("language", Language.getLoginLanguage().getAD_Language());
-		fMessage.setConfig(lang);
+		fMessage = CKEditor.get();
 
 		commonInit(from, to, subject, message, attachment);	
 

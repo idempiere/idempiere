@@ -31,6 +31,7 @@ import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_Message;
 import org.compiere.model.MMessage;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.X_AD_Message;
 import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
@@ -70,10 +71,10 @@ public class MessageElementHandler extends AbstractElementHandler {
 				String action = null;
 				if (!mMessage.is_new()){
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Message.Table_Name, mMessage);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				}
 				else{
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}
 				if (mMessage.save(getTrxName(ctx)) == true){
 					logImportDetail (ctx, impDetail, 1, mMessage.getValue(), mMessage.get_ID(),action);

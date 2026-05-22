@@ -73,7 +73,7 @@ import org.zkoss.zk.ui.util.Notification;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Hbox;
+import org.adempiere.webui.component.FlexHlayout;
 import org.zkoss.zul.Listhead;
 import org.zkoss.zul.Listheader;
 import org.zkoss.zul.North;
@@ -240,7 +240,7 @@ public class WRecordInfo extends Window implements EventListener<Event>
 		m_permalink.setTooltiptext(Msg.getMsg(Env.getCtx(), "Permalink_tooltip"));
 		m_copySelect.setLabel(Msg.getMsg(Env.getCtx(), "CopySelect"));
 		m_copySelect.setTooltiptext(Msg.getMsg(Env.getCtx(), "CopySelect_tooltip"));
-		Hbox hbox = new Hbox();
+		FlexHlayout hbox = new FlexHlayout();
 		hbox.setWidth("100%");
 		south.appendChild(hbox);
 		hbox.appendChild(m_permalink);

@@ -397,7 +397,8 @@ public class FinReport extends SvrProcess
 		doColumnPercentageOfLineForMultiRange();
 
 		deleteUnprintedLines();
-		
+		cleanBlankLines();
+
 		scaleResults();
 
 		//	Create Report
@@ -1816,6 +1817,30 @@ public class FinReport extends SvrProcess
 			}
 		}	//	for all lines
 	}	//	deleteUnprintedLines
+
+	/**
+	 *	Clean Blank Lines
+	 */
+	private void cleanBlankLines()
+	{
+		final String sql = """
+			UPDATE T_Report SET Col_0=NULL,
+				Col_1=NULL, Col_2=NULL, Col_3=NULL, Col_4=NULL, Col_5=NULL, Col_6=NULL, Col_7=NULL, Col_8=NULL, Col_9=NULL, Col_10=NULL,
+				Col_11=NULL, Col_12=NULL, Col_13=NULL, Col_14=NULL, Col_15=NULL, Col_16=NULL, Col_17=NULL, Col_18=NULL, Col_19=NULL, Col_20=NULL,
+				Col_21=NULL, Col_22=NULL, Col_23=NULL, Col_24=NULL, Col_25=NULL, Col_26=NULL, Col_27=NULL, Col_28=NULL, Col_29=NULL, Col_30=NULL
+				WHERE AD_PInstance_ID=? AND PA_ReportLine_ID=?
+			""";
+		for (int line = 0; line < m_lines.length; line++)
+		{
+			//	Blank Lines - Clean values
+			if (m_lines[line].isLineTypeBlankLine())
+			{
+				int no = DB.executeUpdateEx(sql, new Object[] {getAD_PInstance_ID(), m_lines[line].getPA_ReportLine_ID()}, get_TrxName());
+				if (no > 0)
+					if (log.isLoggable(Level.FINE)) log.fine(m_lines[line].getName() + " - #" + no);
+			}
+		}	//	for all lines
+	}	//	cleanBlankLines
 
 	/**
 	 * Update result with multiplier and rounding factor

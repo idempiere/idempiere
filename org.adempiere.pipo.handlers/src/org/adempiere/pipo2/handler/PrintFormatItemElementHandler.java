@@ -30,6 +30,7 @@ import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_PrintFormatItem;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_PrintFormatItem;
 import org.compiere.util.Env;
@@ -67,9 +68,9 @@ public class PrintFormatItemElementHandler extends AbstractElementHandler {
 			String action = null;
 			if (!mPrintFormatItem.is_new()) {
 				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_PrintFormatItem.Table_Name, mPrintFormatItem);
-				action = "Update";
+				action = MPackageImpDetail.ACTION_UPDATE;
 			} else {
-				action = "New";
+				action = MPackageImpDetail.ACTION_INSERT;
 			}
 			if (mPrintFormatItem.save(getTrxName(ctx)) == true) {
 				logImportDetail(ctx, impDetail, 1, mPrintFormatItem.getName(),

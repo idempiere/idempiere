@@ -39,6 +39,7 @@ import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_InfoProcess;
 import org.compiere.model.I_AD_InfoWindow;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.X_AD_InfoProcess;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.util.Env;
@@ -76,9 +77,9 @@ public class InfoProcessElementHandler extends AbstractElementHandler {
 				String action = null;
 				if (!mInfoProcess.is_new()) {
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_InfoProcess.Table_Name, mInfoProcess);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				} else {
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}
 				if (mInfoProcess.save(getTrxName(ctx)) == true) {
 					logImportDetail(ctx, impDetail, 1, mInfoProcess.toString(), mInfoProcess.get_ID(), action);

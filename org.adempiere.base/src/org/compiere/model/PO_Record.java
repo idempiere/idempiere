@@ -61,6 +61,20 @@ public class PO_Record
 	 */
 	protected static boolean deleteRecordCascade (int AD_Table_ID, Serializable Record_IDorUU, String whereTables, String trxName)
 	{
+		return deleteRecordCascade(AD_Table_ID, Record_IDorUU, whereTables, trxName, null);
+	}
+
+	/**
+	 * 	Delete Cascade including (selected)parent relationships
+	 *	@param AD_Table_ID table
+	 *	@param Record_IDorUU record ID (int) or UUID (String)
+	 *  @param whereTables filter for the Tables
+	 *	@param trxName transaction
+	 *  @param deletes if not null, the to be deleted PO record is added to the list instead of delete from DB
+	 *	@return false if could not be deleted
+	 */
+	protected static boolean deleteRecordCascade (int AD_Table_ID, Serializable Record_IDorUU, String whereTables, String trxName, List<PO> deletes)
+	{
 		int refId;
 		String columnName;
 		if (Record_IDorUU instanceof Integer) {
@@ -91,7 +105,11 @@ public class PO_Record
 					   )
 					)
 					continue;
-				po.deleteEx(true);
+				if (deletes != null) {
+					deletes.add(po);
+				} else {
+					po.deleteEx(true);
+				}
 				count++;
 			}
 			if (count > 0)
@@ -109,6 +127,18 @@ public class PO_Record
 	 * @param trxName
 	 */
 	public static void deleteModelCascade(String tableName, Serializable Record_IDorUU, String trxName) {
+		deleteModelCascade(tableName, Record_IDorUU, trxName, null);
+	}
+
+	/**
+	 * Delete dependent records.<br/>
+	 * This is model class implementation of the delete cascade option of foreign key constraint.
+	 * @param tableName
+	 * @param Record_IDorUU record ID (int) or UUID (String)
+	 * @param trxName
+	 * @param deletes if not null, the to be deleted PO record is added to the list instead of delete from DB
+	 */
+	public static void deleteModelCascade(String tableName, Serializable Record_IDorUU, String trxName, List<PO> deletes) {
 		int refId;
 		if (Record_IDorUU instanceof Integer) {
 			refId = DisplayType.RecordID;
@@ -127,7 +157,10 @@ public class PO_Record
 					dependentWhere,
 					trxName).setParameters(Record_IDorUU).list();
 			for (PO po : poList) {
-				po.deleteEx(true, trxName);
+				if (deletes != null)
+					deletes.add(po);
+				else
+					po.deleteEx(true, trxName);
 			}
 		}
 	}
@@ -198,7 +231,19 @@ public class PO_Record
 	 * @param Record_IDorUU record ID (int) or UUID (String)
 	 * @param trxName
 	 */
-	public static void setRecordNull(int AD_Table_ID, Serializable Record_IDorUU, String trxName){
+	public static void setRecordNull(int AD_Table_ID, Serializable Record_IDorUU, String trxName) {
+		setRecordNull(AD_Table_ID, Record_IDorUU, trxName, null);
+	} 
+
+	/**
+	 * If a referencing Record ID or Record UU exists to the deleted record, set it to NULL.<br/>
+	 * This is model class implementation of the set null option of foreign key constraint. 
+	 * @param AD_Table_ID
+	 * @param Record_IDorUU record ID (int) or UUID (String)
+	 * @param trxName
+	 * @param updates if not null, the to be updated PO record is added to the list instead of saving to DB
+	 */
+	public static void setRecordNull(int AD_Table_ID, Serializable Record_IDorUU, String trxName, List<PO> updates){
 		int refId;
 		String columnName;
 		if (Record_IDorUU instanceof Integer) {
@@ -234,7 +279,11 @@ public class PO_Record
 				} else {
 					po.set_Value(columnName, null);
 				}
-				po.saveEx(trxName);
+				if (updates != null) {
+					updates.add(po);
+				} else {
+					po.saveEx(trxName);
+				}
 				count++;
 			}
 			if (count > 0) {

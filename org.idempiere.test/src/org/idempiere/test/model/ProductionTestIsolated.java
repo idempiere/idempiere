@@ -26,6 +26,7 @@ package org.idempiere.test.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -64,7 +65,9 @@ import org.compiere.model.Query;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
+import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.ServerProcessCtl;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
@@ -455,6 +458,163 @@ public class ProductionTestIsolated extends AbstractTestCase {
 		if (!receipt1.isPosted()) {
 			String error = DocumentEngine.postImmediate(Env.getCtx(), receipt1.getAD_Client_ID(), receipt1.get_Table_ID(), receipt1.get_ID(), false, getTrxName());
 			assertNull(error, error);
+		}
+	}
+	
+	@Test
+	public void testBOMCostingDoesNotPostToSuspenseBalancing() {
+
+		MAcctSchema acctSchema = new MAcctSchema(Env.getCtx(), DictionaryIDs.C_AcctSchema.DOLLAR.id, getTrxName());
+		String originalCostingMethod = acctSchema.getCostingMethod();
+		MCostElement averagePOElement = new MCostElement(Env.getCtx(), DictionaryIDs.M_CostElement.AVERAGE_PO.id, getTrxName());
+		boolean originalAveragePOActive = averagePOElement.isActive();
+
+		MProduct component1 = null;
+		MProduct component2 = null;
+		MProduct endProduct = null;
+		try {
+			acctSchema.setCostingMethod(MAcctSchema.COSTINGMETHOD_StandardCosting);
+			acctSchema.saveEx();
+
+			// Deactivate Average PO Cost Element for this scenario.
+			averagePOElement.setIsActive(false);
+			averagePOElement.saveEx();
+
+			CacheMgt.get().reset();
+
+			component1 = new MProduct(Env.getCtx(), 0, getTrxName());
+			component1.setName("BOMCosting_Component1");
+			component1.setIsStocked(true);
+			component1.setProductType(MProduct.PRODUCTTYPE_Item);
+			component1.setC_UOM_ID(DictionaryIDs.C_UOM.EACH.id);
+			component1.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
+			component1.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.STANDARD.id);
+			component1.saveEx();
+
+			MCost cost1 = MCost.get(component1, 0, acctSchema, component1.getAD_Org_ID(), DictionaryIDs.M_CostElement.MATERIAL.id, getTrxName());
+			cost1.setFutureCostPrice(BigDecimal.valueOf(15.60));
+			cost1.saveEx();
+
+			component2 = new MProduct(Env.getCtx(), 0, getTrxName());
+			component2.setName("BOMCosting_Component2");
+			component2.setIsStocked(true);
+			component2.setProductType(MProduct.PRODUCTTYPE_Item);
+			component2.setC_UOM_ID(DictionaryIDs.C_UOM.EACH.id);
+			component2.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
+			component2.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.STANDARD.id);
+			component2.saveEx();
+
+			MCost cost2 = MCost.get(component2, 0, acctSchema, component2.getAD_Org_ID(), DictionaryIDs.M_CostElement.MATERIAL.id, getTrxName());
+			cost2.setFutureCostPrice(BigDecimal.valueOf(43.84));
+			cost2.saveEx();
+
+			endProduct = new MProduct(Env.getCtx(), 0, getTrxName());
+			endProduct.setName("BOMCosting_EndProduct");
+			endProduct.setIsBOM(true);
+			endProduct.setIsStocked(true);
+			endProduct.setProductType(MProduct.PRODUCTTYPE_Item);
+			endProduct.setC_UOM_ID(DictionaryIDs.C_UOM.EACH.id);
+			endProduct.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
+			endProduct.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.STANDARD.id);
+			endProduct.saveEx();
+
+			MCost cost3 = MCost.get(endProduct, 0, acctSchema, endProduct.getAD_Org_ID(), DictionaryIDs.M_CostElement.MATERIAL.id, getTrxName());
+			cost3.setFutureCostPrice(BigDecimal.valueOf(3.7));
+			cost3.saveEx();
+
+			MPPProductBOM bom = new MPPProductBOM(Env.getCtx(), 0, getTrxName());
+			bom.setM_Product_ID(endProduct.get_ID());
+			bom.setBOMType(MPPProductBOM.BOMTYPE_CurrentActive);
+			bom.setBOMUse(MPPProductBOM.BOMUSE_Master);
+			bom.setName(endProduct.getName());
+			bom.saveEx();
+
+			MPPProductBOMLine line1 = new MPPProductBOMLine(bom);
+			line1.setM_Product_ID(component1.get_ID());
+			line1.setQtyBOM(new BigDecimal("0.23"));
+			line1.saveEx();
+
+			MPPProductBOMLine line2 = new MPPProductBOMLine(bom);
+			line2.setM_Product_ID(component2.get_ID());
+			line2.setQtyBOM(new BigDecimal("0.001"));
+			line2.saveEx();
+
+			endProduct.load(getTrxName());
+			endProduct.setIsVerified(true);
+			endProduct.saveEx();
+
+			// Run Standard Cost Update: Set Standard Cost to = Future Standard Cost, Document Type = Cost Adjustment
+			int costUpdateProcessId = DictionaryIDs.AD_Process.STANDARD_COST_UPDATE.id;
+			MProcess costUpdateProcess = MProcess.get(Env.getCtx(), costUpdateProcessId);
+			ProcessInfo costUpdatePi = new ProcessInfo(costUpdateProcess.getName(), costUpdateProcess.get_ID());
+			costUpdatePi.setAD_Client_ID(getAD_Client_ID());
+			costUpdatePi.setAD_User_ID(getAD_User_ID());
+			costUpdatePi.setParameter(new ProcessInfoParameter[] {
+				new ProcessInfoParameter("SetStandardCostTo", "f", null, null, null),
+				new ProcessInfoParameter("C_DocType_ID", new BigDecimal(DictionaryIDs.C_DocType.COST_ADJUSTMENT.id), null, null, null)
+			});
+			ServerProcessCtl.process(costUpdatePi, getTrx(), false);
+			assertFalse(costUpdatePi.isError(), costUpdatePi.getSummary());
+			
+			MProduction production = new MProduction(Env.getCtx(), 0, getTrxName());
+			production.setM_Product_ID(endProduct.get_ID());
+			production.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+			production.setIsUseProductionPlan(false);
+			production.setMovementDate(getLoginDate());
+			production.setDocAction(DocAction.ACTION_Complete);
+			production.setDocStatus(DocAction.STATUS_Drafted);
+			production.setIsComplete(false);
+			production.setProductionQty(new BigDecimal("68"));
+			production.setPP_Product_BOM_ID(bom.getPP_Product_BOM_ID());
+			production.saveEx();
+	
+			int productionCreate = DictionaryIDs.AD_Process.CREATE_UPDATE_PRODUCTION_LINES.id;
+			MProcess process = MProcess.get(Env.getCtx(), productionCreate);
+			ProcessInfo pi = new ProcessInfo(process.getName(), process.get_ID());
+			pi.setAD_Client_ID(getAD_Client_ID());
+			pi.setAD_User_ID(getAD_User_ID());
+			pi.setRecord_ID(production.get_ID());
+			pi.setTransactionName(getTrxName());
+			ServerProcessCtl.process(pi, getTrx(), false);
+			assertFalse(pi.isError(), pi.getSummary());
+	
+			production.load(getTrxName());
+			assertEquals("Y", production.getIsCreated(), "MProduction.IsCreated != Y");
+			assertTrue(production.getLines().length > 0, "No Production Lines");
+			assertEquals(3, production.getLines().length, "Unexpected number of production lines");
+
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(production, DocAction.ACTION_Complete);
+			production.load(getTrxName());
+			assertFalse(info.isError(), info.getSummary());
+			assertEquals(DocAction.STATUS_Completed, production.getDocStatus(), "Production Status="+production.getDocStatus());
+			
+			Query query = MFactAcct.createRecordIdQuery(MProduction.Table_ID, production.get_ID(), acctSchema.getC_AcctSchema_ID(), getTrxName());
+			List<MFactAcct> factAccts = query.list();
+			assertFalse(factAccts.isEmpty(), "No accounting entries found for production");
+			for (MFactAcct factAcct : factAccts) {
+				assertNotEquals(DictionaryIDs.C_ElementValue.SUSPENSE_BALANCING.id, factAcct.getAccount_ID(),
+					"Suspense Balancing account (C_ElementValue_ID=698) used in production posting - postings are not balanced");
+			}
+
+		} finally {
+			getTrx().rollback();
+
+			// Restore shared config outside test trx to avoid leaking state to other tests.
+			MAcctSchema acctSchemaRestore = new MAcctSchema(Env.getCtx(), DictionaryIDs.C_AcctSchema.DOLLAR.id, null);
+			acctSchemaRestore.setCostingMethod(originalCostingMethod);
+			acctSchemaRestore.saveEx();
+
+			MCostElement averagePOElementRestore = new MCostElement(Env.getCtx(), DictionaryIDs.M_CostElement.AVERAGE_PO.id, null);
+			averagePOElementRestore.setIsActive(originalAveragePOActive);
+			averagePOElementRestore.saveEx();
+
+			CacheMgt.get().reset();
+			if (component1 != null && component1.get_ID() > 0)
+				component1.deleteEx(true);
+			if (component2 != null && component2.get_ID() > 0)
+				component2.deleteEx(true);
+			if (endProduct != null && endProduct.get_ID() > 0)
+				endProduct.deleteEx(true);
 		}
 	}
 }

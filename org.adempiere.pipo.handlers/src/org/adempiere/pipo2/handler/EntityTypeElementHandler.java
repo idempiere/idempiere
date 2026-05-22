@@ -30,6 +30,7 @@ import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.X_AD_EntityType;
 import org.compiere.model.X_AD_Modification;
 import org.compiere.model.X_AD_Package_Imp_Detail;
@@ -80,9 +81,9 @@ public class EntityTypeElementHandler extends AbstractElementHandler{
 				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_EntityType.Table_Name, X_AD_EntityType.Table_ID);
 				if (!m_EntityType.is_new()) {				
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_EntityType.Table_Name, m_EntityType);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				} else {
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}
 	
 				if (m_EntityType.save(getTrxName(ctx)) == true) {

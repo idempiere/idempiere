@@ -52,7 +52,6 @@ import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.WEMailDialog;
-import org.adempiere.webui.window.WTextEditorDialog;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MAttachmentEntry;
 import org.compiere.model.MSysConfig;
@@ -78,7 +77,7 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Filedownload;
-import org.zkoss.zul.Hbox;
+import org.adempiere.webui.component.FlexHlayout;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.North;
@@ -412,8 +411,8 @@ public class WAttachment extends Window implements EventListener<Event>
 		confirmPanel.appendChild(bDeleteAll);
 		confirmPanel.appendChild(bPreview);
 		ZKUpdateUtil.setHflex(confirmPanel, "1");
-		Hbox hbox = new Hbox();
-		hbox.setPack("end");
+		FlexHlayout hbox = new FlexHlayout();
+		hbox.setPack(FlexHlayout.PackType.END);
 		ZKUpdateUtil.setHflex(hbox, "1");
 		confirmPanel.appendChild(hbox);
 		hbox.appendChild(bOk);
@@ -527,7 +526,7 @@ public class WAttachment extends Window implements EventListener<Event>
 					displayData(index, immediate);
 				} else {
 					clearPreview();
-					String msg = WTextEditorDialog.sanitize(Msg.getMsg(Env.getCtx(), "FileTooBigForPreview"));
+					String msg = AEnv.sanitize(Msg.getMsg(Env.getCtx(), "FileTooBigForPreview"));
 					Media media = new AMedia(null, null, "text/html", msg.getBytes());
 					preview.setContent(media);
 					preview.setVisible(true);
@@ -550,7 +549,7 @@ public class WAttachment extends Window implements EventListener<Event>
 							log.warning("Error previewing file in attachment entry " + entry.getName() + " -> " + e.getLocalizedMessage());
 							e.printStackTrace();
 							clearPreview();
-							String msg = WTextEditorDialog.sanitize(Msg.getMsg(Env.getCtx(), "ErrorPreviewingFile"));
+							String msg = AEnv.sanitize(Msg.getMsg(Env.getCtx(), "ErrorPreviewingFile"));
 							Media mediaErr = new AMedia(null, null, "text/html", msg.getBytes());
 							preview.setContent(mediaErr);
 							preview.setVisible(true);

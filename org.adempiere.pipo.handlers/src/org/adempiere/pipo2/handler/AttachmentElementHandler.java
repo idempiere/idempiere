@@ -29,6 +29,7 @@ import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.MAttachment;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.PO;
 import org.compiere.model.X_AD_Attachment;
 import org.compiere.model.X_AD_AttachmentNote;
@@ -69,9 +70,9 @@ public class AttachmentElementHandler extends AbstractElementHandler {
 			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Attachment.Table_Name, X_AD_Attachment.Table_ID);
 			if (!mAttachment.is_new()) {
 				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Attachment.Table_Name, mAttachment);
-				action = "Update";
+				action = MPackageImpDetail.ACTION_UPDATE;
 			} else {
-				action = "New";
+				action = MPackageImpDetail.ACTION_INSERT;
 			}
 
 			if (mAttachment.save(getTrxName(ctx)) == true) {

@@ -42,6 +42,7 @@ public class SystemProperties {
 	private static final String Cache_MaxSize_Per_Table_Prefix = "Cache.MaxSize.";
 	private static final String env_IDEMPIERE_HOME = Ini.ENV_PREFIX + Ini.IDEMPIERE_HOME;
 	private static final String IDEMPIERE_HOME = Ini.IDEMPIERE_HOME;
+	private static final String IDEMPIERE_EXTENSION_REPOSITORY = "IDEMPIERE_EXTENSION_REPOSITORY";
 	private static final String IDEMPIERE_SECURE_PROPERTIES = "IDEMPIERE_SECURE_PROPERTIES";
 	private static final String LogLevel = "LogLevel";
 	private static final String org_adempiere_po_useTimeoutForUpdate = "org.adempiere.po.useTimeoutForUpdate";
@@ -62,6 +63,23 @@ public class SystemProperties {
 	private static final String TRACE_NULL_TRX_CONNECTION = "TRACE_NULL_TRX_CONNECTION";
 	private static final String ZK_THEME = MSysConfig.ZK_THEME;
 	private static final String ZkUnitTest = "ZkUnitTest";
+	public static final String IDEMPIERE_DISTRIBUTED_BACKEND_PROPERTY = "idempiere.distributed.backend";
+	public static final String IDEMPIERE_DISTRIBUTED_BACKEND_ENV = "IDEMPIERE_DISTRIBUTED_BACKEND";
+
+	/**
+	 * Get the distributed backend defined in system properties or environment variable, <br/>
+	 * if not defined return hazelcast as default
+	 * @return the distributed backend
+	 */
+	public static String getDistributedBackend() {
+		String backend = System.getProperty(IDEMPIERE_DISTRIBUTED_BACKEND_PROPERTY);
+		if (Util.isEmpty(backend, true))
+			backend = System.getenv(IDEMPIERE_DISTRIBUTED_BACKEND_ENV);
+		// fallback to hazelcast if not defined, as it is the default distribution provider
+		if (Util.isEmpty(backend, true))
+			backend = "hazelcast";
+		return backend;
+	}
 
 	/**
 	 * ADEMPIERE_DB_SYSTEM_USER allows to override the default name of the system user for the database
@@ -310,5 +328,16 @@ public class SystemProperties {
 	 */
 	public static boolean isFullExceptionTraceInLog() {
 		return "true".equals(System.getProperty(org_idempiere_FullExceptionTraceInLog));
+	}
+
+	/**
+	 * Get the iDempiere Extension Repository URL
+	 * @return iDempiere Extension Repository URL
+	 */
+	public static String getIDempiereRepositoryUrl() {
+		String repositoryUrl = System.getProperty(IDEMPIERE_EXTENSION_REPOSITORY);
+		if (Util.isEmpty(repositoryUrl, true))
+			repositoryUrl = System.getenv(IDEMPIERE_EXTENSION_REPOSITORY);
+		return repositoryUrl;
 	}
 }

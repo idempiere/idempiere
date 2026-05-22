@@ -29,6 +29,7 @@ import java.util.logging.Level;
 import org.adempiere.util.ServerContext;
 import org.compiere.Adempiere;
 import org.compiere.model.MClient;
+import org.compiere.model.MPackageImp;
 import org.compiere.model.MSession;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.Query;
@@ -244,7 +245,7 @@ public class PackInApplicationActivator extends AbstractActivator{
 				X_AD_Package_Imp pimp = new X_AD_Package_Imp(Env.getCtx(), 0, null);
 				pimp.setAD_Package_Imp_Proc_ID(pimpr.getAD_Package_Imp_Proc_ID());
 				pimp.setName(fileName);
-				pimp.setPK_Status("Completed successfully");
+				pimp.setPK_Status(MPackageImp.PACKAGE_STATUS_COMPLETED);
 				pimp.setDescription("This ALL-CLIENT 2Pack was applied successfully in all tenants");
 				pimp.setProcessed(true);
 				pimp.saveEx();

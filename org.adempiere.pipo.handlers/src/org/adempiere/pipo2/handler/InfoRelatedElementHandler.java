@@ -39,6 +39,7 @@ import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_InfoRelated;
 import org.compiere.model.I_AD_InfoWindow;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.X_AD_InfoRelated;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.util.Env;
@@ -76,9 +77,9 @@ public class InfoRelatedElementHandler extends AbstractElementHandler {
 				String action = null;
 				if (!mInfoRelated.is_new()) {
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_InfoRelated.Table_Name, mInfoRelated);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				} else {
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}
 				if (mInfoRelated.save(getTrxName(ctx)) == true) {
 					logImportDetail(ctx, impDetail, 1, mInfoRelated.toString(), mInfoRelated.get_ID(), action);

@@ -1,0 +1,29 @@
+{
+  "id": "org.adempiere.replication",
+  "version": "0.0.0",
+  "idempiereVersion": "0",
+  "releaseDate": "2026-03-30",
+  "name": "iDempiere Data Replication",
+  "description": "Core engine for synchronizing data between distributed iDempiere instances and databases.",
+  "infoUrl": "https://github.com/idempiere/idempiere-extension-repository/blob/main/extensions/org.adempiere.replication/info.md",
+  "categories": [
+    "Core",
+    "Data Management",
+    "Integration"
+  ],
+  "tags": [
+    "replication",
+    "sync",
+    "JMS"
+  ],
+  "entityType": "EE05",
+  "bundles": [
+    {
+      "symbolicName": "org.adempiere.replication"
+    },
+    {
+      "symbolicName": "org.adempiere.replication.server"
+    }
+  ],
+  "dependencies": []
+}

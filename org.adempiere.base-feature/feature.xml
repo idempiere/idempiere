@@ -36,7 +36,7 @@
    <includes
          id="org.adempiere.report.jasper.feature"
          version="0.0.0"/>
-
+   
    <includes
          id="org.idempiere.webservices.client.feature"
          version="0.0.0"/>
@@ -519,6 +519,10 @@
 
    <plugin
          id="slf4j.jdk14"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.idempiere.acct"
          version="0.0.0"/>
 
 </feature>

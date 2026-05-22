@@ -10,7 +10,8 @@ Import-Package: org.apache.commons.codec;version="1.16.1",
  org.apache.tools.ant,
  org.apache.tools.ant.taskdefs,
  org.apache.xerces.jaxp;version="2.12.1",
- org.osgi.framework;version="1.10.0"
+ org.osgi.framework;version="1.10.0",
+ org.osgi.service.event;version="1.4.1"
 Export-Package: org.adempiere.pipo.srv,
  org.adempiere.pipo2,
  org.adempiere.pipo2.exception

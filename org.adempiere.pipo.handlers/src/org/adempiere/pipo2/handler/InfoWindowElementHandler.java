@@ -44,6 +44,7 @@ import org.compiere.model.I_AD_Process;
 import org.compiere.model.I_AD_Reference;
 import org.compiere.model.I_AD_Table;
 import org.compiere.model.I_AD_Val_Rule;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_InfoColumn;
 import org.compiere.model.X_AD_InfoProcess;
@@ -83,9 +84,9 @@ public class InfoWindowElementHandler extends AbstractElementHandler {
 				String action = null;
 				if (!mInfoWindow.is_new()) {				
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_InfoWindow.Table_Name, mInfoWindow);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				} else {
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}			
 
 				if (mInfoWindow.save(getTrxName(ctx)) == true) {

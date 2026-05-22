@@ -13,6 +13,7 @@ import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.X_AD_ModelValidator;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.util.Env;
@@ -56,9 +57,9 @@ public class ModelValidatorElementHandler extends AbstractElementHandler{
 				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_ModelValidator.Table_Name, X_AD_ModelValidator.Table_ID);
 				if (!validator.is_new()) {				
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), AD_MODELVALIDATOR, validator);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				} else {
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}
 	
 				if (validator.save(getTrxName(ctx)) == true) {

@@ -68,10 +68,10 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Foot;
 import org.zkoss.zul.Footer;
-import org.zkoss.zul.Hbox;
+import org.adempiere.webui.component.FlexHlayout;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Separator;
-import org.zkoss.zul.Vbox;
+import org.adempiere.webui.component.FlexVlayout;
 
 /**
  * Form to customize print format of a {@link ReportEngine} instance (i.e starting from report output).<br/> 
@@ -502,7 +502,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 			cboType.appendItem("xlsx" + " - " + Msg.getMsg(Env.getCtx(), "FileXLSX"), "xlsx");
 			cboType.setSelectedItem(li);
 			
-			Hbox hb = new Hbox();
+			FlexHlayout hb = new FlexHlayout();
 			Div div = new Div();
 			div.setStyle("text-align: right;");
 			div.appendChild(new Label(Msg.getMsg(Env.getCtx(), "FilesOfType")));
@@ -512,7 +512,7 @@ public class WReportCustomization  implements IFormController,EventListener<Even
 			ZKUpdateUtil.setVflex(hb, "1");
 			hb.setStyle("margin-top: 10px");
 
-			Vbox vb = new Vbox();
+			FlexVlayout vb = new FlexVlayout();
 			ZKUpdateUtil.setVflex(vb, "1");
 			ZKUpdateUtil.setWidth(vb, "100%");
 			winExportFile.appendChild(vb);

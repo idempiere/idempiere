@@ -36,6 +36,7 @@ import org.compiere.model.I_AD_Tab;
 import org.compiere.model.I_AD_TableAttribute;
 import org.compiere.model.I_AD_Val_Rule;
 import org.compiere.model.MField;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.X_AD_Field;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.util.Env;
@@ -75,10 +76,10 @@ public class FieldElementHandler extends AbstractElementHandler {
 				String action = null;
 				if (!mField.is_new()){
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), I_AD_Field.Table_Name, mField);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				}
 				else{
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}
 
 				if (mField.save(getTrxName(ctx)) == true) {
