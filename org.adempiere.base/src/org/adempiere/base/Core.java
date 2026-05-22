@@ -844,6 +844,39 @@ public class Core {
 
 		return null;
 	}
+
+	private static IServiceReferenceHolder<IStorageValidatorFactory> s_storageValidatorFactoryCache = null;
+	
+	/**
+	 * get StorageValidator instance
+	 * 
+	 * @return instance of the IStorageValidator or null
+	 */
+	public static synchronized IStorageValidator getStorageValidator() {
+		if (s_storageValidatorFactoryCache != null) {
+			IStorageValidatorFactory service = s_storageValidatorFactoryCache.getService();
+			if (service != null) {
+				IStorageValidator storageValidator = service.getStorageValidator();
+				if (storageValidator != null)
+					return storageValidator;
+			}
+			s_storageValidatorFactoryCache = null;
+		}
+		
+		IServiceReferenceHolder<IStorageValidatorFactory> factoryReference = Service.locator().locate(IStorageValidatorFactory.class).getServiceReference();
+		if (factoryReference != null) {
+			IStorageValidatorFactory service = factoryReference.getService();
+			if (service != null) {
+				IStorageValidator storageValidator = service.getStorageValidator();
+				if (storageValidator != null) {
+					s_storageValidatorFactoryCache = factoryReference;
+					return storageValidator;
+				}
+			}
+		}
+
+		return null;
+	}
 	
 	private final static CCache<String, IServiceReferenceHolder<IDepreciationMethodFactory>> s_depreciationMethodFactoryCache = new CCache<>(IDEPRECIATION_METHOD_FACTORY_CACHE_TABLE_NAME, "IDepreciationMethodFactory", 100, false);
 	
