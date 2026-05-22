@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.exceptions.PeriodClosedException;
 import org.compiere.util.CLogger;
@@ -1558,7 +1559,8 @@ public class MCostDetail extends X_M_CostDetail
 			}
 			catch (Exception e)
 			{
-				log.warning("Error querying landed cost price: " + e.getMessage());
+				log.log(Level.SEVERE, "Error querying landed cost price", e);
+				throw new AdempiereException("Failed to query landed cost price", e);
 			}
 		}
 

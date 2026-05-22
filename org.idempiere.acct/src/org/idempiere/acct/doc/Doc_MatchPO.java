@@ -1045,7 +1045,7 @@ public class Doc_MatchPO extends Doc
 			}
 			else
 			{
-				int Ref_CostDetail_ID = getReversalRefCostDetailID(as, mMatchPO, mMatchPO.getM_AttributeSetInstance_ID(), 0);
+				int Ref_CostDetail_ID = getReversalRefCostDetailID(as, mMatchPO, mMatchPO.getM_AttributeSetInstance_ID(), elementID);
 				if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(), 
 						getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
 						m_oLine.getC_OrderLine_ID(), elementID,

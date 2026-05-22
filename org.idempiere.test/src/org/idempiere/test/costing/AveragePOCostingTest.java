@@ -1332,7 +1332,12 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			pi = MWorkflow.runDocumentActionWorkflow(mr3, DocAction.ACTION_Reverse_Correct);
 			mr3.load(getTrxName());
 			assertFalse(pi.isError(), "MR3 Reverse Failed");
-			postDocument((MInOut)mr3.getReversal(), mr3.getReversal().isPosted());
+			MInOut mr3Reversal = (MInOut) mr3.getReversal();
+			postDocument(mr3Reversal, mr3Reversal.isPosted());
+			for (MMatchPO m : MMatchPO.getOrderLine(Env.getCtx(), poLine.getC_OrderLine_ID(), getTrxName()))
+			{
+				postDocument(m, m.isPosted());
+			}
 
 			// MR3 MatchPO Reversal - Validation
 			costA = product.getCostingRecord(as, getAD_Org_ID(), asiA.get_ID(), product.getCostingMethod(as));
