@@ -21,8 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
-import org.adempiere.base.IWarehouseMovementValidator;
-import org.adempiere.base.IWarehouseMovementValidatorFactory;
+
+import org.adempiere.base.Core;
+import org.adempiere.base.IStorageValidator;
 import org.adempiere.base.Service;
 import org.adempiere.util.IReservationTracer;
 import org.compiere.util.CLogger;
