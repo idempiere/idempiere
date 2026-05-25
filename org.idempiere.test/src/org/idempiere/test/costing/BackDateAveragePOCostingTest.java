@@ -9982,7 +9982,279 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			rollback();
 			resetAcctSchema(ass, backDateDays);
 		}
+	}
+	
+	/**
+	 * IDEMPIERE-6832
+	 * PO Qty=36, Price=26.47 (GBP)
+	 * PI Qty=36, Price=26.47, Date1
+	 * MR1 Qty=30, Current Date
+	 * MR2 Qty=6, Current Date, CostQty=36, CostPrice=28.0583
+	 */
+	@Test
+	public void testMultiMRInDiffCurrency1() {
+		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), getAD_Client_ID());
+		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
+		MAcctSchema as = ci.getMAcctSchema1();
 		
+		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id);
+		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id);
+		MCurrency pound = MCurrency.get(DictionaryIDs.C_Currency.GBP.id);
+		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id;
+
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(today.getTime());
+		cal.add(Calendar.DAY_OF_MONTH, -1);
+		Timestamp backDate = new Timestamp(cal.getTimeInMillis());
+		
+		BigDecimal crate1 = new BigDecimal("1.060");
+		BigDecimal crate2 = new BigDecimal("1.068");
+
+		BigDecimal crate3 = new BigDecimal("37.94423615");
+		BigDecimal crate4 = new BigDecimal("38.2275317");
+ 
+		BigDecimal crate5 = new BigDecimal("35.5391046");
+		BigDecimal crate6 = new BigDecimal("35.7936");
+
+		int[] backDateDays = new int[ass.length];
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class);
+				MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic();
+				MockedStatic<MPriceList> priceListMock = mockStatic(MPriceList.class)) {
+			backDateDays = configureAcctSchema(ass);
+			
+			mockGetRate(conversionRateMock, pound, usd, 0, backDate, crate1);
+			mockGetRate(conversionRateMock, pound, usd, 0, today, crate2);
+			mockGetRate(conversionRateMock, pound, euro, 0, backDate, crate3);
+			mockGetRate(conversionRateMock, pound, euro, 0, today, crate4);
+			mockGetRate(conversionRateMock, euro, usd, 0, backDate, crate5);
+			mockGetRate(conversionRateMock, euro, usd, 0, today, crate6);
+			
+			MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
+			product.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.STANDARD.id);
+			product.setName("testMultiMRInDiffCurrency1");
+			product.setProductType(MProduct.PRODUCTTYPE_Item);
+			product.setIsStocked(true);
+			product.setIsSold(true);
+			product.setIsPurchased(true);
+			product.setC_UOM_ID(DictionaryIDs.C_UOM.EACH.id);
+			product.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
+			product.saveEx();
+			product.set_TrxName(getTrxName());
+			mockProductGet(productMock, product);
+			
+			MPriceList priceList = new MPriceList(Env.getCtx(), 0, getTrxName());
+			priceList.setName("Purchase GBP " + System.currentTimeMillis());
+			priceList.setC_Currency_ID(pound.getC_Currency_ID());
+			priceList.setPricePrecision(pound.getStdPrecision());
+			priceList.saveEx();
+			priceListMock.when(() -> MPriceList.get(any(Properties.class), anyInt(), any())).thenCallRealMethod();
+			priceListMock.when(() -> MPriceList.get(any(Properties.class), eq(priceList.get_ID()), any())).thenReturn(priceList);
+			
+			MPriceListVersion plv = new MPriceListVersion(priceList);
+			plv.setM_DiscountSchema_ID(DictionaryIDs.M_DiscountSchema.PURCHASE_2001.id); // Purchase 2001
+			plv.setValidFrom(backDate);
+			plv.saveEx();
+			
+			MProductPrice pp = new MProductPrice(Env.getCtx(), 0, getTrxName());
+			pp.setM_PriceList_Version_ID(plv.getM_PriceList_Version_ID());
+			pp.setM_Product_ID(product.get_ID());
+			BigDecimal price = new BigDecimal("26.47");
+			pp.setPriceStd(price);
+			pp.setPriceList(price);
+			pp.saveEx();
+			
+			// Purchase Order
+			MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+			order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id));
+			order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
+			order.setM_PriceList_ID(priceList.getM_PriceList_ID());
+			order.setC_Currency_ID(priceList.getC_Currency_ID());
+			order.setC_ConversionType_ID(C_ConversionType_ID);
+			order.setIsSOTrx(false);
+			order.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+			order.setDocStatus(DocAction.STATUS_Drafted);
+			order.setDocAction(DocAction.ACTION_Complete);
+			order.setDateAcct(backDate);
+			order.setDateOrdered(backDate);
+			order.setDatePromised(backDate);		
+			order.saveEx();
+
+			MOrderLine orderLine = new MOrderLine(order);
+			orderLine.setLine(10);
+			orderLine.setProduct(product);
+			orderLine.setQty(new BigDecimal(36));
+			orderLine.setDatePromised(backDate);
+			orderLine.setPrice(price);
+			orderLine.saveEx();
+			
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+			order.load(getTrxName());
+			assertFalse(info.isError(), info.getSummary());
+			assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+
+			// PI
+			createInvoiceForPO(orderLine, backDate, new BigDecimal(36));
+			
+			// MR1
+			createMRForPO(orderLine, today, new BigDecimal(30));
+			product.set_TrxName(getTrxName());
+			MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			assertNotNull(cost, "No MCost record found");
+ 			assertEquals(new BigDecimal("30").setScale(2, RoundingMode.HALF_UP), cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+ 			assertEquals(new BigDecimal("28.0583").setScale(4, RoundingMode.HALF_UP), cost.getCurrentCostPrice().setScale(4, RoundingMode.HALF_UP), "Unexpected current cost price");
+			validateProductCostQty(ass, product);
+			
+			// MR2
+			createMRForPO(orderLine, today, new BigDecimal(6));
+			product.set_TrxName(getTrxName());
+			cost.load(getTrxName());
+			assertNotNull(cost, "No MCost record found");
+ 			assertEquals(new BigDecimal("36").setScale(2, RoundingMode.HALF_UP), cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+ 			assertEquals(new BigDecimal("28.0583").setScale(4, RoundingMode.HALF_UP), cost.getCurrentCostPrice().setScale(4, RoundingMode.HALF_UP), "Unexpected current cost price");
+			validateProductCostQty(ass, product);
+		} finally {
+			rollback();
+			resetAcctSchema(ass, backDateDays);
+		}
+	}
+	
+	/**
+	 * IDEMPIERE-6832
+	 * PO Qty=36, Price=26.47 (GBP)
+	 * PI Qty=36, Price=26.47, Date1
+	 * MR1 Qty=30, Date2
+	 * MR2 Qty=6, Date2, CostQty=36, CostPrice=28.0583
+	 */
+	@Test
+	public void testMultiMRInDiffCurrency2() {
+		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), getAD_Client_ID());
+		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
+		MAcctSchema as = ci.getMAcctSchema1();
+		
+		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id);
+		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id);
+		MCurrency pound = MCurrency.get(DictionaryIDs.C_Currency.GBP.id);
+		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id;
+
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(today.getTime());
+		cal.add(Calendar.DAY_OF_MONTH, -2);
+		Timestamp backDate1 = new Timestamp(cal.getTimeInMillis());
+		cal.setTimeInMillis(today.getTime());
+		cal.add(Calendar.DAY_OF_MONTH, -1);
+		Timestamp backDate2 = new Timestamp(cal.getTimeInMillis());
+		
+		BigDecimal crate1 = new BigDecimal("1.060");
+		BigDecimal crate2 = new BigDecimal("1.068");
+
+		BigDecimal crate3 = new BigDecimal("37.94423615");
+		BigDecimal crate4 = new BigDecimal("38.2275317");
+ 
+		BigDecimal crate5 = new BigDecimal("35.5391046");
+		BigDecimal crate6 = new BigDecimal("35.7936");
+
+		int[] backDateDays = new int[ass.length];
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class);
+				MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic();
+				MockedStatic<MPriceList> priceListMock = mockStatic(MPriceList.class)) {
+			backDateDays = configureAcctSchema(ass);
+			
+			mockGetRate(conversionRateMock, pound, usd, 0, backDate1, crate1);
+			mockGetRate(conversionRateMock, pound, usd, 0, backDate2, crate2);
+			mockGetRate(conversionRateMock, pound, euro, 0, backDate1, crate3);
+			mockGetRate(conversionRateMock, pound, euro, 0, backDate2, crate4);
+			mockGetRate(conversionRateMock, euro, usd, 0, backDate1, crate5);
+			mockGetRate(conversionRateMock, euro, usd, 0, backDate2, crate6);
+			
+			MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
+			product.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.STANDARD.id);
+			product.setName("testMultiMRInDiffCurrency2");
+			product.setProductType(MProduct.PRODUCTTYPE_Item);
+			product.setIsStocked(true);
+			product.setIsSold(true);
+			product.setIsPurchased(true);
+			product.setC_UOM_ID(DictionaryIDs.C_UOM.EACH.id);
+			product.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
+			product.saveEx();
+			product.set_TrxName(getTrxName());
+			mockProductGet(productMock, product);
+			
+			MPriceList priceList = new MPriceList(Env.getCtx(), 0, getTrxName());
+			priceList.setName("Purchase GBP " + System.currentTimeMillis());
+			priceList.setC_Currency_ID(pound.getC_Currency_ID());
+			priceList.setPricePrecision(pound.getStdPrecision());
+			priceList.saveEx();
+			priceListMock.when(() -> MPriceList.get(any(Properties.class), anyInt(), any())).thenCallRealMethod();
+			priceListMock.when(() -> MPriceList.get(any(Properties.class), eq(priceList.get_ID()), any())).thenReturn(priceList);
+			
+			MPriceListVersion plv = new MPriceListVersion(priceList);
+			plv.setM_DiscountSchema_ID(DictionaryIDs.M_DiscountSchema.PURCHASE_2001.id); // Purchase 2001
+			plv.setValidFrom(backDate1);
+			plv.saveEx();
+			
+			MProductPrice pp = new MProductPrice(Env.getCtx(), 0, getTrxName());
+			pp.setM_PriceList_Version_ID(plv.getM_PriceList_Version_ID());
+			pp.setM_Product_ID(product.get_ID());
+			BigDecimal price = new BigDecimal("26.47");
+			pp.setPriceStd(price);
+			pp.setPriceList(price);
+			pp.saveEx();
+			
+			// Purchase Order
+			MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+			order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id));
+			order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
+			order.setM_PriceList_ID(priceList.getM_PriceList_ID());
+			order.setC_Currency_ID(priceList.getC_Currency_ID());
+			order.setC_ConversionType_ID(C_ConversionType_ID);
+			order.setIsSOTrx(false);
+			order.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+			order.setDocStatus(DocAction.STATUS_Drafted);
+			order.setDocAction(DocAction.ACTION_Complete);
+			order.setDateAcct(backDate1);
+			order.setDateOrdered(backDate1);
+			order.setDatePromised(backDate1);		
+			order.saveEx();
+
+			MOrderLine orderLine = new MOrderLine(order);
+			orderLine.setLine(10);
+			orderLine.setProduct(product);
+			orderLine.setQty(new BigDecimal(36));
+			orderLine.setDatePromised(backDate1);
+			orderLine.setPrice(price);
+			orderLine.saveEx();
+			
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+			order.load(getTrxName());
+			assertFalse(info.isError(), info.getSummary());
+			assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+
+			// PI
+			createInvoiceForPO(orderLine, backDate1, new BigDecimal(36));
+			
+			// MR1
+			createMRForPO(orderLine, backDate2, new BigDecimal(30));
+			product.set_TrxName(getTrxName());
+			MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			assertNotNull(cost, "No MCost record found");
+ 			assertEquals(new BigDecimal("30").setScale(2, RoundingMode.HALF_UP), cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+ 			assertEquals(new BigDecimal("28.0583").setScale(4, RoundingMode.HALF_UP), cost.getCurrentCostPrice().setScale(4, RoundingMode.HALF_UP), "Unexpected current cost price");
+			validateProductCostQty(ass, product);
+			
+			// MR2
+			createMRForPO(orderLine, backDate2, new BigDecimal(6));
+			product.set_TrxName(getTrxName());
+			cost.load(getTrxName());
+			assertNotNull(cost, "No MCost record found");
+ 			assertEquals(new BigDecimal("36").setScale(2, RoundingMode.HALF_UP), cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+ 			assertEquals(new BigDecimal("28.0583").setScale(4, RoundingMode.HALF_UP), cost.getCurrentCostPrice().setScale(4, RoundingMode.HALF_UP), "Unexpected current cost price");
+			validateProductCostQty(ass, product);
+		} finally {
+			rollback();
+			resetAcctSchema(ass, backDateDays);
+		}
 	}
 	
 	private MProduct createProduct(String name, BigDecimal price) {

@@ -1474,6 +1474,48 @@ public class MCostDetail extends X_M_CostDetail
 			}
 		}
 		
+		BigDecimal matchInvAdjAmt = null;
+		if (ce.isAveragePO() && getM_MatchInv_ID() > 0 && getM_CostElement_ID() == 0) {
+			// get total amount of previous match invoice cost details for the same invoice line and account date
+			StringBuilder sql = new StringBuilder();
+			sql.append("SELECT COALESCE(SUM(Amt),0) ");
+			sql.append("FROM M_CostDetail ");
+			sql.append("WHERE M_MatchInv_ID IN (");
+			sql.append(" SELECT M_MatchInv_ID FROM M_MatchInv ");
+			sql.append(" WHERE C_InvoiceLine_ID = (");
+			sql.append("  SELECT C_InvoiceLine_ID ");
+			sql.append("  FROM M_MatchInv ");
+			sql.append("  WHERE COALESCE(Reversal_ID,0) = 0 ");
+			sql.append("  AND M_MatchInv_ID = ?)");
+			sql.append(")");
+			sql.append(" AND TRUNC(DateAcct) = "+DB.TO_DATE(getDateAcct(), true));
+			sql.append(" AND M_Product_ID = ?");
+			sql.append(" AND M_AttributeSetInstance_ID = ?");
+			sql.append(" AND C_AcctSchema_ID = ?");
+			sql.append(" AND M_CostDetail_ID < ?");
+			sql.append(" AND COALESCE(Ref_CostDetail_ID,0) = 0"); // not reversal
+			matchInvAdjAmt = DB.getSQLValueBD(get_TrxName(), sql.toString(), getM_MatchInv_ID(), product.get_ID(), M_ASI_ID, as.get_ID(), this.get_ID());
+			
+			if (matchInvAdjAmt != null && matchInvAdjAmt.signum() != 0) {
+				// get the cost info from order cost detail
+				StringBuilder whereClause = new StringBuilder();
+				whereClause.append("C_OrderLine_ID IN ( ");
+				whereClause.append(" SELECT mpo.C_OrderLine_ID");
+				whereClause.append(" FROM M_MatchInv mi");
+				whereClause.append(" JOIN M_MatchPO mpo ON mpo.C_InvoiceLine_ID = mi.C_InvoiceLine_ID");
+				whereClause.append(" WHERE mi.M_MatchInv_ID = ?");
+				whereClause.append(") ");
+				whereClause.append(" AND M_Product_ID = ?");
+				whereClause.append(" AND M_AttributeSetInstance_ID = ?");
+				whereClause.append(" AND C_AcctSchema_ID = ?");
+				whereClause.append(" AND M_CostDetail_ID < ?");
+				cd = new Query(as.getCtx(), I_M_CostDetail.Table_Name, whereClause.toString(), get_TrxName())
+						.setParameters(getM_MatchInv_ID(), product.get_ID(), M_ASI_ID, as.get_ID(), this.get_ID())
+						.setOrderBy("M_CostDetail_ID DESC")
+						.first();
+			}
+		}
+		
 		if (getM_InOutLine_ID() > 0) { // skip average costing qty check for reversed shipment
 			MInOutLine iol = new MInOutLine(getCtx(), getM_InOutLine_ID(), get_TrxName());
 			MInOut io = new MInOut(getCtx(), iol.getM_InOut_ID(), get_TrxName());
@@ -1551,6 +1593,11 @@ public class MCostDetail extends X_M_CostDetail
 				qty = BigDecimal.ZERO;
 				costAdjustment = true;
 			}
+		}
+		
+		if (matchInvAdjAmt != null && matchInvAdjAmt.signum() != 0)
+		{
+			amt = amt.add(matchInvAdjAmt);
 		}
 		
 		int precision = as.getCostingPrecision();
