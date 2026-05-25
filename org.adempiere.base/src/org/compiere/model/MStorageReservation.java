@@ -24,7 +24,6 @@ import java.util.logging.Level;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.IStorageValidator;
-import org.adempiere.base.Service;
 import org.adempiere.util.IReservationTracer;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
