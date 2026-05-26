@@ -54,6 +54,7 @@ import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MAuthorizationCredential;
 import org.compiere.model.MAuthorizationProvider;
 import org.compiere.model.MBankAccountProcessor;
+import org.compiere.model.MPaySchedule;
 import org.compiere.model.MPaymentProcessor;
 import org.compiere.model.MRule;
 import org.compiere.model.MSysConfig;
@@ -1310,4 +1311,40 @@ public class Core {
 		IServiceReferenceHolder<IMarkdownRenderer> holder = Service.locator().locate(IMarkdownRenderer.class).getServiceReference();
 		return holder != null ? holder.getService() : null; 
 	}
+
+	/**
+	 * Get Pay Schedule Manager
+	 * @param PO
+	 * @param MPaySchedule
+	 * @return instance of the IPayScheduleManager
+	 */
+	public static IPayScheduleManager getPayScheduleManager(PO po, MPaySchedule paySchedule)
+	{
+		if (po == null || paySchedule == null)
+		{
+			s_log.log(Level.SEVERE, "Invalid PO (" + po + ") / PaySchedule (" + paySchedule + ")");
+			return null;
+		}
+
+		IPayScheduleManager paySelectionManager = null;
+
+		List<IPayScheduleManagerFactory> factoryList = Service.locator().list(IPayScheduleManagerFactory.class).getServices();
+		if (factoryList != null)
+		{
+			for (IPayScheduleManagerFactory factory : factoryList)
+			{
+				paySelectionManager = factory.getPayScheduleManager(po, paySchedule);
+				if (paySelectionManager != null)
+					break;
+			}
+		}
+
+		if (paySelectionManager == null)
+		{
+			s_log.log(Level.CONFIG, "For " + po.get_TableName() + " not found any service/extension registry.");
+			return null;
+		}
+
+		return paySelectionManager;
+	} // getPayScheduleManager
 }

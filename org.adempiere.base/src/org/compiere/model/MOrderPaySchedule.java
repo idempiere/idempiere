@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
+import org.adempiere.base.IPayScheduleManager;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -175,10 +177,14 @@ public class MOrderPaySchedule extends X_C_OrderPaySchedule
 		}
 		
 		//	Dates		
-		Timestamp dueDate = TimeUtil.addDays(order.getDateOrdered(), paySchedule.getNetDays());
-		setDueDate (dueDate);
-		Timestamp discountDate = TimeUtil.addDays(order.getDateOrdered(), paySchedule.getDiscountDays());
-		setDiscountDate (discountDate);
+		IPayScheduleManager payScheduleManager = Core.getPayScheduleManager(order, paySchedule);
+		if (payScheduleManager != null) {
+			Timestamp dueDate = payScheduleManager.getDueDate(order, paySchedule);
+			setDueDate (dueDate);
+
+			Timestamp discountDate = payScheduleManager.getDueDate(order, paySchedule);
+			setDiscountDate (discountDate);
+		}
 	}	//	MOrderPaySchedule
 	
 	/**	Parent						*/
