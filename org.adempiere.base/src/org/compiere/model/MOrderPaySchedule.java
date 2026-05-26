@@ -182,7 +182,7 @@ public class MOrderPaySchedule extends X_C_OrderPaySchedule
 			Timestamp dueDate = payScheduleManager.getDueDate(order, paySchedule);
 			setDueDate (dueDate);
 
-			Timestamp discountDate = payScheduleManager.getDueDate(order, paySchedule);
+			Timestamp discountDate = payScheduleManager.getDiscountDate(order, paySchedule);
 			setDiscountDate (discountDate);
 		}
 	}	//	MOrderPaySchedule
