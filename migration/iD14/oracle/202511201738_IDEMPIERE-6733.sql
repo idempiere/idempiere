@@ -112,3 +112,5 @@ ALTER TABLE T_ReportStatement DROP CONSTRAINT t_reportstatement_pkey
 ALTER TABLE T_ReportStatement ADD CONSTRAINT t_reportstatement_pkey PRIMARY KEY (AD_PInstance_ID,Fact_Acct_ID,Account_ID)
 ;
 
+UPDATE AD_Column SET IsMandatory='Y', Updated=TO_TIMESTAMP('2025-11-20 19:00:05','YYYY-MM-DD HH24:MI:SS'), UpdatedBy=100 WHERE ColumnName='Account_ID' AND AD_Table_ID=545
+;
