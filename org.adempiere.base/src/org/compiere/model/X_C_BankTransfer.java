@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for C_BankTransfer
  *  @author iDempiere (generated)
- *  @version Release 13 - $Id$ */
+ *  @version Release 14 - $Id$ */
 @org.adempiere.base.Model(table="C_BankTransfer")
 public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20260507L;
+	private static final long serialVersionUID = 20260526L;
 
     /** Standard Constructor */
     public X_C_BankTransfer (Properties ctx, int C_BankTransfer_ID, String trxName)
@@ -633,6 +633,62 @@ public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persiste
 		return (String)get_Value(COLUMNNAME_From_TenderType);
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_ElementValue getFrom_User1() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getFrom_User1_ID(), get_TrxName());
+	}
+
+	/** Set From User Element List 1.
+		@param From_User1_ID From User Element List 1
+	*/
+	public void setFrom_User1_ID (int From_User1_ID)
+	{
+		if (From_User1_ID < 1)
+			set_Value (COLUMNNAME_From_User1_ID, null);
+		else
+			set_Value (COLUMNNAME_From_User1_ID, Integer.valueOf(From_User1_ID));
+	}
+
+	/** Get From User Element List 1.
+		@return From User Element List 1	  */
+	public int getFrom_User1_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_From_User1_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_ElementValue getFrom_User2() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getFrom_User2_ID(), get_TrxName());
+	}
+
+	/** Set From User Element List 2.
+		@param From_User2_ID From User Element List 2
+	*/
+	public void setFrom_User2_ID (int From_User2_ID)
+	{
+		if (From_User2_ID < 1)
+			set_Value (COLUMNNAME_From_User2_ID, null);
+		else
+			set_Value (COLUMNNAME_From_User2_ID, Integer.valueOf(From_User2_ID));
+	}
+
+	/** Get From User Element List 2.
+		@return From User Element List 2	  */
+	public int getFrom_User2_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_From_User2_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Override Currency Conversion Rate.
 		@param IsOverrideCurrencyRate Override Currency Conversion Rate
 	*/
@@ -944,5 +1000,61 @@ public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persiste
 	public String getTo_TenderType()
 	{
 		return (String)get_Value(COLUMNNAME_To_TenderType);
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_ElementValue getTo_User1() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getTo_User1_ID(), get_TrxName());
+	}
+
+	/** Set To User Element List 1.
+		@param To_User1_ID To User Element List 1
+	*/
+	public void setTo_User1_ID (int To_User1_ID)
+	{
+		if (To_User1_ID < 1)
+			set_Value (COLUMNNAME_To_User1_ID, null);
+		else
+			set_Value (COLUMNNAME_To_User1_ID, Integer.valueOf(To_User1_ID));
+	}
+
+	/** Get To User Element List 1.
+		@return To User Element List 1	  */
+	public int getTo_User1_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_To_User1_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_ElementValue getTo_User2() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_ElementValue)MTable.get(getCtx(), org.compiere.model.I_C_ElementValue.Table_ID)
+			.getPO(getTo_User2_ID(), get_TrxName());
+	}
+
+	/** Set To User Element List 2.
+		@param To_User2_ID To User Element List 2
+	*/
+	public void setTo_User2_ID (int To_User2_ID)
+	{
+		if (To_User2_ID < 1)
+			set_Value (COLUMNNAME_To_User2_ID, null);
+		else
+			set_Value (COLUMNNAME_To_User2_ID, Integer.valueOf(To_User2_ID));
+	}
+
+	/** Get To User Element List 2.
+		@return To User Element List 2	  */
+	public int getTo_User2_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_To_User2_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 }
