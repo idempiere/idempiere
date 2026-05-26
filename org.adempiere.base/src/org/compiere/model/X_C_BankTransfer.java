@@ -33,7 +33,7 @@ public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20260309L;
+	private static final long serialVersionUID = 20260507L;
 
     /** Standard Constructor */
     public X_C_BankTransfer (Properties ctx, int C_BankTransfer_ID, String trxName)
@@ -575,6 +575,34 @@ public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persiste
 		return ii.intValue();
 	}
 
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_DocType getFrom_DocType() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
+			.getPO(getFrom_DocType_ID(), get_TrxName());
+	}
+
+	/** Set From Document Type.
+		@param From_DocType_ID From Document Type
+	*/
+	public void setFrom_DocType_ID (int From_DocType_ID)
+	{
+		if (From_DocType_ID < 1)
+			set_Value (COLUMNNAME_From_DocType_ID, null);
+		else
+			set_Value (COLUMNNAME_From_DocType_ID, Integer.valueOf(From_DocType_ID));
+	}
+
+	/** Get From Document Type.
+		@return From Document Type	  */
+	public int getFrom_DocType_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_From_DocType_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** From_TenderType AD_Reference_ID=214 */
 	public static final int FROM_TENDERTYPE_AD_Reference_ID=214;
 	/** Direct Deposit = A */
@@ -855,6 +883,34 @@ public class X_C_BankTransfer extends PO implements I_C_BankTransfer, I_Persiste
 	public int getTo_C_Currency_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_To_C_Currency_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_DocType getTo_DocType() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_DocType)MTable.get(getCtx(), org.compiere.model.I_C_DocType.Table_ID)
+			.getPO(getTo_DocType_ID(), get_TrxName());
+	}
+
+	/** Set To Document Type.
+		@param To_DocType_ID To Document Type
+	*/
+	public void setTo_DocType_ID (int To_DocType_ID)
+	{
+		if (To_DocType_ID < 1)
+			set_Value (COLUMNNAME_To_DocType_ID, null);
+		else
+			set_Value (COLUMNNAME_To_DocType_ID, Integer.valueOf(To_DocType_ID));
+	}
+
+	/** Get To Document Type.
+		@return To Document Type	  */
+	public int getTo_DocType_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_To_DocType_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

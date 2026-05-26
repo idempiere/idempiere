@@ -27,6 +27,7 @@ import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.ReferenceUtils;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.MIndexColumn;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.MTableIndex;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.util.Env;
@@ -97,9 +98,9 @@ public class IndexColumnElementHandler extends AbstractElementHandler {
 				String action = null;
 				if (!mIndexColumn.is_new()) {
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), MIndexColumn.Table_Name, mIndexColumn);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				} else {
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}
 				if (mIndexColumn.save(getTrxName(ctx)) == true) {
 					logImportDetail(ctx, impDetail, 1, mIndexColumn.toString(), mIndexColumn.get_ID(), action);

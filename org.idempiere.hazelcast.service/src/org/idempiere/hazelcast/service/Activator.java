@@ -20,15 +20,18 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.logging.Level;
 
-import org.compiere.Adempiere;
-import org.compiere.model.ServerStateChangeEvent;
-import org.compiere.model.ServerStateChangeListener;
 import org.compiere.model.SystemProperties;
 import org.compiere.util.CLogger;
 import org.eclipse.osgi.framework.console.CommandProvider;
-import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.condition.Condition;
 
 import com.hazelcast.config.Config;
 import com.hazelcast.config.FileSystemXmlConfig;
@@ -38,11 +41,15 @@ import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 
 /**
- * 
+ *
  * @author hengsin
  *
  */
-public class Activator implements BundleActivator {
+@Component(service = {}, immediate = true)
+public class Activator {
+
+	@Reference(target = "(osgi.condition.id=distributed.provider.hazelcast)")
+	Condition distributedCondition;
 
 	private static BundleContext context;
 	protected final static CLogger logger = CLogger.getCLogger(Activator.class.getName());
@@ -52,26 +59,14 @@ public class Activator implements BundleActivator {
 	}
 
 	private volatile static HazelcastInstance hazelcastInstance;
+	private volatile ServiceRegistration<CommandProvider> consoleRegistration;
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-	 */
-	public void start(BundleContext bundleContext) throws Exception {
+	@Activate
+	public void activate(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
-		
-		if (Adempiere.isStarted())
-			createHazelCastInstance();
-		else {
-			Adempiere.addServerStateChangeListener(new ServerStateChangeListener() {
-				@Override
-				public void stateChange(ServerStateChangeEvent event) {
-					if (event.getEventType() == ServerStateChangeEvent.SERVER_START) 
-						createHazelCastInstance();
-				}
-			});
-		}
-        bundleContext.registerService(CommandProvider.class.getName(), new CacheConsoleProvider(), null);
+		createHazelCastInstance();
+		consoleRegistration = bundleContext.registerService(CommandProvider.class, new CacheConsoleProvider(), null);
+		logger.log(Level.INFO, "org.idempiere.hazelcast.service activated as the distributed backend provider");
 	}
 
 	private static synchronized void createHazelCastInstance() {
@@ -95,7 +90,7 @@ public class Activator implements BundleActivator {
 							file = null;
 					} catch (Exception e) {}
 				}
-			}				
+			}
 			//try osgi install area
 			if (file == null) {
 				dataArea = System.getProperty("osgi.install.area");
@@ -132,7 +127,7 @@ public class Activator implements BundleActivator {
 					return;
 				} catch (FileNotFoundException e) {}
 			}
-			
+
 			Enumeration<URL> entries = getContext().getBundle().findEntries("/", "hazelcast.xml", false);
 			URL url = (entries != null && entries.hasMoreElements()) ? entries.nextElement() : null;
 			if (url != null) {
@@ -148,10 +143,10 @@ public class Activator implements BundleActivator {
 					return;
 				} catch (IOException e) {}
 			}
-			
+
 			Config config = new Config();
 			config.setClassLoader(Activator.class.getClassLoader());
-			hazelcastInstance = Hazelcast.newHazelcastInstance(config);	
+			hazelcastInstance = Hazelcast.newHazelcastInstance(config);
 			logger.warning("Starting hazelcast with default configuration");
 			MapConfig mc = config.getMapConfig("default");
 			if (mc != null) {
@@ -176,19 +171,23 @@ public class Activator implements BundleActivator {
 					t.printStackTrace();
 					hazelcastInstance = null;
 					System.err.println(DateFormat.getDateTimeInstance().format(new Date()) + " Failed to re-create Hazelcast instance!");
-				}				
-			}						
+				}
+			}
 		}
-		
+
 		return hazelcastInstance;
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-	 */
-	public void stop(BundleContext bundleContext) throws Exception {
+
+	@Deactivate
+	public void deactivate(BundleContext bundleContext) throws Exception {
 		Activator.context = null;
+		ServiceRegistration<CommandProvider> reg = consoleRegistration;
+		consoleRegistration = null;
+		if (reg != null) {
+			try {
+				reg.unregister();
+			} catch (IllegalStateException ignored) {}
+		}
 		synchronized (Activator.class) {
 			if (hazelcastInstance != null) {
 				hazelcastInstance.getLifecycleService().shutdown();

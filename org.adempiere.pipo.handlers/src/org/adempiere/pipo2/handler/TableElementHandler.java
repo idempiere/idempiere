@@ -36,6 +36,7 @@ import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_Table;
 import org.compiere.model.I_AD_TableAttribute;
 import org.compiere.model.MColumn;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.MTableAttributeSet;
@@ -89,10 +90,10 @@ public class TableElementHandler extends AbstractElementHandler {
 				String action = null;
 				if (!mTable.is_new()){
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(),X_AD_Table.Table_Name,mTable);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				}
 				else{
-					action = "New";				
+					action = MPackageImpDetail.ACTION_INSERT;				
 				}
 				if (mTable.save(getTrxName(ctx)) == true){
 					logImportDetail (ctx, impDetail, 1, mTable.getName(),mTable.get_ID(),action);
@@ -123,9 +124,9 @@ public class TableElementHandler extends AbstractElementHandler {
 			int success = validateDatabaseView(ctx, mTable);
 			X_AD_Package_Imp_Detail dbDetail = createImportDetail(ctx, "dbView", MTable.Table_Name, MTable.Table_ID);
 			if (success == 1) {
-				logImportDetail(ctx, dbDetail, 1, mTable.getName(), mTable.get_ID(), "Validate");
+				logImportDetail(ctx, dbDetail, 1, mTable.getName(), mTable.get_ID(), MPackageImpDetail.ACTION_VALIDATE);
 			} else {
-				logImportDetail(ctx, dbDetail, 0, mTable.getName(), mTable.get_ID(), "Validate");
+				logImportDetail(ctx, dbDetail, 0, mTable.getName(), mTable.get_ID(), MPackageImpDetail.ACTION_VALIDATE);
 				throw new DatabaseAccessException("Failed to validate view for " + mTable.getName());
 			}
 		}

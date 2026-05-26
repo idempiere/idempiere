@@ -1911,9 +1911,8 @@ public class POTest extends AbstractTestCase
 		} catch (Exception e) {
 			// expected
 		}
-		// for afterDelete error, t2 doesn't exist in current trx
-		if (t2.get_ID() > 0)
-			assertFalse(MyTestPO.exists(t2.get_ID(), getTrxName()), "t2 should not exist for afterDelete failure");
+		// for afterDelete error, t2 still exist in current trx
+		assertTrue(MyTestPO.exists(t2.get_ID(), getTrxName()), "t2 should still exist after afterDelete failure");
 		// test without trx
 		t2 = new ThrowAfterDeletePO(Env.getCtx(), 200003, null);
 		try {
@@ -2025,9 +2024,8 @@ public class POTest extends AbstractTestCase
 		} catch (Exception e) {
 			// expected
 		}
-		// for afterDelete error, t2 doesn't exist in current trx
-		if (t2.get_ID() > 0)
-			assertFalse(MyTestPO.exists(t2.get_ID(), getTrxName()), "t2 should not exists for afterDelete failure");
+		// for afterDelete error, t2 still exist in current trx
+		assertTrue(MyTestPO.exists(t2.get_ID(), getTrxName()), "t2 should still exist after afterDelete failure");
 		t2 = new AfterDeleteFalsePO(Env.getCtx(), 200003, null);
 		try {
 			t2.deleteEx(false);

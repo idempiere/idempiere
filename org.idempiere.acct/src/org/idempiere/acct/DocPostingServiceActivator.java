@@ -34,7 +34,7 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 @Component(immediate = true)
 public class DocPostingServiceActivator {
 
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL)
+    @Reference(cardinality = ReferenceCardinality.MANDATORY)
     public void setDocPostingService(IDocPostingService service) {
         AcctModelServices.setDocPostingService(service);
     }

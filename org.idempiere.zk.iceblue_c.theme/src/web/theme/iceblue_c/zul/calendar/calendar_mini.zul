@@ -23,7 +23,7 @@
 <calendars sclass="${calendarClass}" firstDayOfWeek="Monday" mold="month" id="cal" xmlns:w="client" w:onBind="try{_overrideMsgCal(); var me=this; setTimeout(function(){me.onSize();},50); }catch(error){} ">
 	<toolbar sclass="calendar-toolbar">
 		<div class="float-left">
-			<hbox align="center">
+			<hlayout use="org.adempiere.webui.component.FlexHlayout" align="center">
 				<divarrow id="divArrowLeft" type="${leftBtn}" fontClass="${fontClass}"/>
 				<divarrow id="divArrowRight" type="${rightBtn}" fontClass="${fontClass}"/>
 				<div>
@@ -33,7 +33,7 @@
 					<button id="btnRefresh" label="${refresh}" sclass="btn-small"/>
 					<toolbarbutton id="btnCal" image="${calendarIcon}" iconSclass="${calIconClass}"/>
 				</div>
-			</hbox>
+			</hlayout>
 		</div>
 	</toolbar>
 </calendars>

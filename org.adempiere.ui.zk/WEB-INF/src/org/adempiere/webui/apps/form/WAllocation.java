@@ -73,7 +73,7 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Hbox;
+import org.adempiere.webui.component.FlexHlayout;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
@@ -360,12 +360,12 @@ public class WAllocation extends Allocation
 		row.appendCellChild(currencyPick.getComponent(),1);		
 		currencyPick.showMenu();
 		
-		Hbox cbox = new Hbox();
+		FlexHlayout cbox = new FlexHlayout();
 		cbox.setWidth("100%");
 		if (noOfColumn == 6)
-			cbox.setPack("center");
+			cbox.setPack(FlexHlayout.PackType.CENTER);
 		else
-			cbox.setPack("end");
+			cbox.setPack(FlexHlayout.PackType.END);
 		cbox.appendChild(multiCurrency);
 		cbox.appendChild(autoWriteOff);
 		cbox.appendChild(sameBP);
@@ -392,9 +392,9 @@ public class WAllocation extends Allocation
 		row = rows.newRow();
 		if (maxWidth(SMALL_WIDTH-1))
 		{
-			Hbox box = new Hbox();
+			FlexHlayout box = new FlexHlayout();
 			box.setWidth("100%");
-			box.setPack("end");
+			box.setPack(FlexHlayout.PackType.END);
 			box.appendChild(differenceLabel.rightAlign());
 			box.appendChild(allocCurrencyLabel.rightAlign());
 			row.appendCellChild(box);
@@ -424,17 +424,17 @@ public class WAllocation extends Allocation
 		if (maxWidth(SMALL_WIDTH-1))
 		{
 			row = rows.newRow();
-			Hbox box = new Hbox();
+			FlexHlayout box = new FlexHlayout();
 			box.setWidth("100%");
-			box.setPack("end");
+			box.setPack(FlexHlayout.PackType.END);
 			box.appendChild(allocateButton);
 			box.appendChild(refreshButton);
 			row.appendCellChild(box, 2);
 		}
 		else
 		{
-			Hbox box = new Hbox();
-			box.setPack("end");
+			FlexHlayout box = new FlexHlayout();
+			box.setPack(FlexHlayout.PackType.END);
 			box.appendChild(allocateButton);
 			box.appendChild(refreshButton);
 			ZKUpdateUtil.setHflex(box, "1");

@@ -77,4 +77,7 @@
          id="org.apache.commons.commons-fileupload2-javax"
          version="0.0.0"/>
 
+   <plugin
+         id="org.idempiere.extension.manager"
+         version="0.0.0"/>
 </feature>

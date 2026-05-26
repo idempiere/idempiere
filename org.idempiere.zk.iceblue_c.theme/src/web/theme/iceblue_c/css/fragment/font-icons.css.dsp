@@ -63,14 +63,14 @@
 .z-icon-ErrorMessageBox:before {
 	content: "\f057";
 	font-size: 32px;
-	color: red;
-	font-family: FontAwesome;
+	color: var(--zk-font-icons-error-message-color);
+	font-family: var(--zk-icon-font-family);
 }
 .z-icon-ExclamationMessageBox:before {
 	content: "\f06a";
 	font-size: 32px;
-	color: yellow;
-	font-family: FontAwesome;
+	color: var(--zk-font-icons-exclamation-message-color);
+	font-family: var(--zk-icon-font-family);
 	font-weight: 900;
 }
 .z-icon-ExcludeSelected:before {
@@ -154,8 +154,8 @@
 .z-icon-InfoMessageBox:before {
 	content: "\f05a";
 	font-size: 32px;
-	color: blue;
-	font-family: FontAwesome;
+	color: var(--zk-font-icons-info-message-color);
+	font-family: var(--zk-icon-font-family);
 	font-weight: 900;
 }
 .z-icon-InfoInOut:before {	
@@ -302,8 +302,8 @@
 .z-icon-QuestionMessageBox:before {
 	content: "\f059";
 	font-size: 32px;
-	color: green;
-	font-family: FontAwesome;
+	color: var(--zk-font-icons-question-message-color);
+	font-family: var(--zk-icon-font-family);
 }
 .z-icon-QuickForm:before {
 	content: "\f0ae";

@@ -56,7 +56,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Vbox;
+import org.adempiere.webui.component.FlexVlayout;
 
 /**
  * A Custom Form to manage plugins in iDempiere
@@ -105,7 +105,7 @@ public class WPluginManager extends ADForm implements EventListener<Event> {
 	@Override
 	protected void initForm() {
 		Properties ctx = Env.getCtx();
-		Vbox vbox = new Vbox();
+		FlexVlayout vbox = new FlexVlayout();
 		ZKUpdateUtil.setHflex(vbox, "1");
 		ZKUpdateUtil.setVflex(vbox, "1");
 

@@ -69,7 +69,7 @@ import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.South;
-import org.zkoss.zul.Vbox;
+import org.adempiere.webui.component.FlexVlayout;
 
 /**
  * Dialog to view and edit location address
@@ -439,7 +439,7 @@ public class WLocationDialog extends Window implements EventListener<Event>
 		centerPane.setAutoscroll(true);
 		borderlayout.appendChild(centerPane);
 		
-		Vbox vbox = new Vbox();
+		FlexVlayout vbox = new FlexVlayout();
 		centerPane.appendChild(vbox);
 		vbox.appendChild(mainPanel);
 		if (MLocation.LOCATION_MAPS_URL_PREFIX != null || MLocation.LOCATION_MAPS_ROUTE_PREFIX != null)

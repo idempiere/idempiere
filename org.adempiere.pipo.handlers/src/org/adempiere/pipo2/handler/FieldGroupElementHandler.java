@@ -31,6 +31,7 @@ import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.MFieldGroup;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.util.Env;
 import org.xml.sax.SAXException;
@@ -79,9 +80,9 @@ public class FieldGroupElementHandler extends AbstractElementHandler {
 						MFieldGroup.Table_ID);
 				if (!fieldGroup.is_new()) {				
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), MFieldGroup.Table_Name, fieldGroup);
-					action = "Update";				
+					action = MPackageImpDetail.ACTION_UPDATE;				
 				} else {
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}
 				
 				if (fieldGroup.save(getTrxName(ctx)) == true) {

@@ -33,6 +33,7 @@ import javax.xml.transform.sax.TransformerHandler;
 
 import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.compiere.model.MColumn;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
@@ -147,7 +148,7 @@ public abstract class AbstractElementHandler implements ElementHandler {
      */
     public void logImportDetail (PIPOContext ctx, X_AD_Package_Imp_Detail detail, int success, String objectName, int objectID, String objectUU,
     		String action, String execCode, String result) throws SAXException{
-		String msgSuccess = success == 1 ? "Success" : "Failure";
+		String msgSuccess = success == 1 ? MPackageImpDetail.ACTION_STATUS_SUCCESS : MPackageImpDetail.ACTION_STATUS_FAILURE;
 
 		// try to figure out the UUID when empty
 		if (Util.isEmpty(objectUU) && objectID > 0 && detail.getAD_Table_ID() > 0) {

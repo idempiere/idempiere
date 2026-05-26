@@ -31,6 +31,7 @@ import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_Workflow;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
@@ -85,9 +86,9 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 				
 				if (!mWorkflow.is_new()) {
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Workflow.Table_Name, mWorkflow);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				} else {
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}
 				if (mWorkflow.save(getTrxName(ctx)) == true) {
 					log.info("m_Workflow save success");
@@ -133,14 +134,14 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 				if (m_Workflow.save(getTrxName(ctx)) == true) {
 					log.info("m_Workflow update success");
 					logImportDetail(ctx, impDetail, 1, m_Workflow.getName(), m_Workflow
-							.get_ID(), "Update");
+							.get_ID(), MPackageImpDetail.ACTION_UPDATE);
 					workflows.add(m_Workflow.getAD_Workflow_ID());
 					element.recordId = m_Workflow.getAD_Workflow_ID();
 					element.requireRoleAccessUpdate = true;
 				} else {
 					log.info("m_Workflow update fail");
 					logImportDetail(ctx, impDetail, 0, m_Workflow.getName(), m_Workflow
-							.get_ID(), "Update");
+							.get_ID(), MPackageImpDetail.ACTION_UPDATE);
 					throw new POSaveFailedException("Failed to save MWorkflow " + m_Workflow.getName());
 				}
 			}

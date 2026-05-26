@@ -30,6 +30,7 @@ import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.ReferenceUtils;
 import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.compiere.model.I_AD_Ref_Table;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.MRefTable;
 import org.compiere.model.MReference;
 import org.compiere.model.X_AD_Package_Imp_Detail;
@@ -56,7 +57,7 @@ public class ReferenceTableElementHandler extends AbstractElementHandler {
 			if (refTable == null) {
 				refTable = new X_AD_Ref_Table(ctx.ctx, 0, getTrxName(ctx));
 			}
-			String action = refTable.is_new() ? "New" : "Update";
+			String action = refTable.is_new() ? MPackageImpDetail.ACTION_INSERT : MPackageImpDetail.ACTION_UPDATE;
 			PoFiller filler = new PoFiller(ctx, refTable, element, this);
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {

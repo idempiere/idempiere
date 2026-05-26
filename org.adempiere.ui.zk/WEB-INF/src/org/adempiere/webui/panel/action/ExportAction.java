@@ -56,7 +56,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Space;
-import org.zkoss.zul.Vbox;
+import org.adempiere.webui.component.FlexVlayout;
 import org.zkoss.zul.Vlayout;
 
 /**
@@ -137,7 +137,7 @@ public class ExportAction implements EventListener<Event>
 			cboType.setSelectedIndex(0);
 			cboType.addActionListener(this);
 
-			Vbox vb = new Vbox();
+			FlexVlayout vb = new FlexVlayout();
 			ZKUpdateUtil.setWidth(vb, "100%");
 			winExportFile.appendChild(vb);
 

@@ -36,6 +36,7 @@ import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_PrintFormat;
 import org.compiere.model.I_AD_ReportView;
 import org.compiere.model.I_AD_Table;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.MReportView;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Package_Exp_Detail;
@@ -75,9 +76,9 @@ public class ReportViewElementHandler extends AbstractElementHandler {
 			String action = null;
 			if (!mReportview.is_new()) {
 				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), MReportView.Table_Name, mReportview);
-				action = "Update";
+				action = MPackageImpDetail.ACTION_UPDATE;
 			} else {
-				action = "New";
+				action = MPackageImpDetail.ACTION_INSERT;
 			}
 			if (mReportview.save(getTrxName(ctx)) == true) {
 				logImportDetail(ctx, impDetail, 1, mReportview.getName(),

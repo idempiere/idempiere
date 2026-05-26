@@ -1,6 +1,6 @@
 <%-- z-window customization --%>
 div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
-	background-color: white;
+	background-color: var(--zk-window-modal-background-color);
 }
 
 .z-window {
@@ -26,14 +26,14 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 }
 .z-window-embedded > .z-window-header {
 	border-radius: 0px;
-	background-color: transparent;
+	background-color: var(--zk-window-transparent-color);
 }
 .z-window-overlapped .z-window-header,
 .z-window-popup .z-window-header,
 .z-window-modal .z-window-header,
 .z-window-highlighted .z-window-header
 {
-	color: #484848;
+	color: var(--zk-window-header-color);
 	font-weight: bold;
 }
 
@@ -56,7 +56,7 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	position: absolute;
 }
 .embedded-dialog .z-window-embedded-header {
-	color: #fff;
+	color: var(--zk-window-embedded-header-color);
 	font-weight: bold;
 }
 .embedded-dialog .z-window-embedded
@@ -95,11 +95,11 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 
 .dialog-footer {
 	margin-bottom: 0;
-	background-color: #F7FAFF;
-	border-top: 1px solid transparent;
-	-webkit-box-shadow: inset 0 1px 0 #ffffff;
-	-moz-box-shadow: inset 0 1px 0 #ffffff;
-	box-shadow: inset 0 1px 0 #ffffff;
+	background-color: var(--zk-window-dialog-footer-background-color);
+	border-top: 1px solid var(--zk-window-transparent-color);
+	-webkit-box-shadow: inset 0 1px 0 var(--zk-window-dialog-footer-shadow-color);
+	-moz-box-shadow: inset 0 1px 0 var(--zk-window-dialog-footer-shadow-color);
+	box-shadow: inset 0 1px 0 var(--zk-window-dialog-footer-shadow-color);
 }
 
 <%-- notification message --%>
@@ -110,7 +110,7 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	padding: 3px !important;
 }
 .z-notification-info .z-notification-left {
-  border-right-color: transparent;
+	border-right-color: var(--zk-window-transparent-color);
 }
 .z-notification-left + .z-notification-icon {
   left: 12px;
@@ -122,7 +122,7 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 .quickform-readonly .z-textbox[readonly], .quickform-readonly .z-intbox[readonly], .quickform-readonly .z-longbox[readonly], .quickform-readonly .z-doublebox[readonly],
 .quickform-readonly .z-decimalbox[readonly], .quickform-readonly .z-datebox[readonly], .quickform-readonly .z-timebox[readonly]
 {
-    color: #252525 !important;
+	color: var(--zk-window-quickform-readonly-color) !important;
     opacity: .8;
 }
 <%-- quick entry form --%>
@@ -132,12 +132,12 @@ div.wc-modal, div.wc-modal-none, div.wc-highlighted, div.wc-highlighted-none {
 	height:99%;
 }
 .quick-form.z-window .adtab-grid.z-row .z-cell {
-	border-top: 2px solid transparent; 
-	border-bottom: 2px solid transparent;
+	border-top: 2px solid var(--zk-window-transparent-color); 
+	border-bottom: 2px solid var(--zk-window-transparent-color);
 }
 .quick-form.z-window .adtab-grid.z-row.current-row .z-cell {
-	border-top: 2px solid #6f97d2 !important; 
-	border-bottom: 2px solid #6f97d2 !important;
+	border-top: 2px solid var(--zk-window-quickform-current-row-border-color) !important; 
+	border-bottom: 2px solid var(--zk-window-quickform-current-row-border-color) !important;
 }
 .quick-form.z-window .z-south-body > .z-div > .z-div {
 	height: 20px; 

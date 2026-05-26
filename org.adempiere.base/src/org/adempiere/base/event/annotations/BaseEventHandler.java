@@ -74,6 +74,12 @@ public abstract class BaseEventHandler implements EventHandler {
 						method.setAccessible(true);
 						eventTopicMap.put(topic, method);
 					}
+				} else if (annotation.annotationType() == EventTopic.class) {
+					String topic = ((EventTopic) annotation).topic();
+					if (!eventTopicMap.containsKey(topic)) {
+						method.setAccessible(true);
+						eventTopicMap.put(topic, method);
+					}
 				}
 			}
 		}		

@@ -1,0 +1,25 @@
+{
+  "id": "org.adempiere.payment.processor",
+  "version": "0.0.0",
+  "idempiereVersion": "0",
+  "releaseDate": "2026-03-30",
+  "name": "iDempiere Payment Processor",
+  "description": "Payment processor implementations for payment gateways.",
+  "infoUrl": "https://github.com/idempiere/idempiere-extension-repository/blob/main/extensions/org.adempiere.payment.processor/info.md",
+  "categories": [
+    "Payments"
+  ],
+  "tags": [
+    "payments",
+    "credit-card",
+    "gateway",
+    "ach",
+    "pci"
+  ],
+  "bundles": [
+    {
+      "symbolicName": "org.adempiere.payment.processor"
+    }
+  ],
+  "dependencies": []
+}
