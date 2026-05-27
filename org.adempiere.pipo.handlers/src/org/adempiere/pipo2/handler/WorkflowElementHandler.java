@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.AbstractElementHandler;
@@ -148,8 +149,8 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 		}
 	}
 
-	public void create(PIPOContext ctx, TransformerHandler document)
-			throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document)
+			throws Exception {
 		int AD_Workflow_ID = Env.getContextAsInt(ctx.ctx,
 				X_AD_Package_Exp_Detail.COLUMNNAME_AD_Workflow_ID);
 		if (ctx.packOut.isExported(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Workflow_ID+"|"+AD_Workflow_ID))
@@ -162,7 +163,7 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 		if (createElement) {
 			atts.addAttribute("", "", "type", "CDATA", "object");
 			atts.addAttribute("", "", "type-name", "CDATA", "ad.workflow");
-			document.startElement("", "", MWorkflow.Table_Name, atts);
+			document.startElement(MWorkflow.Table_Name, atts);
 			createWorkflowBinding(ctx, document, m_Workflow);
 
 			packOut.getCtx().ctx.put("Table_Name",I_AD_Workflow.Table_Name);
@@ -212,14 +213,14 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 			throw new AdempiereException(e);
 		}
 		if (createElement) {
-			document.endElement("", "", MWorkflow.Table_Name);
+			document.endElement(MWorkflow.Table_Name);
 		}
 
 	}
 
 	private void createNodeNextCondition(PIPOContext ctx,
-			TransformerHandler document, int ad_wf_nodenextcondition_id)
-			throws SAXException {
+			IPackSerializer document, int ad_wf_nodenextcondition_id)
+			throws Exception {
 		Env.setContext(ctx.ctx,
 				X_AD_WF_NextCondition.COLUMNNAME_AD_WF_NextCondition_ID,
 				ad_wf_nodenextcondition_id);
@@ -227,31 +228,31 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 		ctx.ctx.remove(X_AD_WF_NextCondition.COLUMNNAME_AD_WF_NextCondition_ID);
 	}
 
-	private void createNodePara(PIPOContext ctx, TransformerHandler document,
-			int ad_wf_node_para_id) throws SAXException {
+	private void createNodePara(PIPOContext ctx, IPackSerializer document,
+			int ad_wf_node_para_id) throws Exception {
 		Env.setContext(ctx.ctx, X_AD_WF_Node_Para.COLUMNNAME_AD_WF_Node_Para_ID,
 				ad_wf_node_para_id);
 		nodeParaHandler.create(ctx, document);
 		ctx.ctx.remove(X_AD_WF_Node_Para.COLUMNNAME_AD_WF_Node_Para_ID);
 	}
 
-	private void createNodeNext(PIPOContext ctx, TransformerHandler document,
-			int ad_wf_nodenext_id) throws SAXException {
+	private void createNodeNext(PIPOContext ctx, IPackSerializer document,
+			int ad_wf_nodenext_id) throws Exception {
 		Env.setContext(ctx.ctx, X_AD_WF_NodeNext.COLUMNNAME_AD_WF_NodeNext_ID,
 				ad_wf_nodenext_id);
 		nodeNextHandler.create(ctx, document);
 		ctx.ctx.remove(X_AD_WF_NodeNext.COLUMNNAME_AD_WF_NodeNext_ID);
 	}
 
-	private void createNode(PIPOContext ctx, TransformerHandler document,
-			int AD_WF_Node_ID) throws SAXException {
+	private void createNode(PIPOContext ctx, IPackSerializer document,
+			int AD_WF_Node_ID) throws Exception {
 		Env.setContext(ctx.ctx, X_AD_WF_Node.COLUMNNAME_AD_WF_Node_ID,
 				AD_WF_Node_ID);
 		nodeHandler.create(ctx, document);
 		ctx.ctx.remove(X_AD_WF_Node.COLUMNNAME_AD_WF_Node_ID);
 	}
 
-	private void createWorkflowBinding(PIPOContext ctx, TransformerHandler document, MWorkflow m_Workflow) {
+	private void createWorkflowBinding(PIPOContext ctx, IPackSerializer document, MWorkflow m_Workflow) {
 
 		PoExporter filler = new PoExporter(ctx, document, m_Workflow);
 		List<String> excludes = defaultExcludeList(X_AD_Workflow.Table_Name);
@@ -262,10 +263,10 @@ public class WorkflowElementHandler extends AbstractElementHandler {
 	}
 
 
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler,int recordId) throws Exception
 	{
 		Env.setContext(packout.getCtx().ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Workflow_ID, recordId);
-		this.create(packout.getCtx(), packoutHandler);
+		this.create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Workflow_ID);
 	}
 }

@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
@@ -97,7 +98,7 @@ public class InfoRelatedElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(PIPOContext ctx, TransformerHandler document) throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document) throws Exception {
 		int AD_InfoRelated_ID = Env.getContextAsInt(ctx.ctx, X_AD_InfoRelated.COLUMNNAME_AD_InfoRelated_ID);
 		if (ctx.packOut.isExported(X_AD_InfoRelated.COLUMNNAME_AD_InfoRelated_ID+"|"+AD_InfoRelated_ID))
 			return;
@@ -111,7 +112,7 @@ public class InfoRelatedElementHandler extends AbstractElementHandler {
 
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
-		document.startElement("", "", I_AD_InfoRelated.Table_Name, atts);
+		document.startElement(I_AD_InfoRelated.Table_Name, atts);
 		createInfoRelatedBinding(ctx, document, m_InfoRelated);
 
 		PackOut packOut = ctx.packOut;
@@ -122,10 +123,10 @@ public class InfoRelatedElementHandler extends AbstractElementHandler {
 			if (log.isLoggable(Level.INFO)) log.info(e.toString());
 		}
 
-		document.endElement("", "", I_AD_InfoRelated.Table_Name);
+		document.endElement(I_AD_InfoRelated.Table_Name);
 	}
 
-	private void createInfoRelatedBinding(PIPOContext ctx, TransformerHandler document, X_AD_InfoRelated m_InfoRelated) {
+	private void createInfoRelatedBinding(PIPOContext ctx, IPackSerializer document, X_AD_InfoRelated m_InfoRelated) {
 
 		PoExporter filler = new PoExporter(ctx, document, m_InfoRelated);
 		List<String> excludes = defaultExcludeList(X_AD_InfoRelated.Table_Name);
@@ -136,9 +137,9 @@ public class InfoRelatedElementHandler extends AbstractElementHandler {
 	}
 
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler, int recordId) throws Exception {
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler, int recordId) throws Exception {
 		Env.setContext(packout.getCtx().ctx, I_AD_InfoRelated.COLUMNNAME_AD_InfoRelated_ID, recordId);
-		create(packout.getCtx(), packoutHandler);
+		create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(I_AD_InfoRelated.COLUMNNAME_AD_InfoRelated_ID);
 	}
 }

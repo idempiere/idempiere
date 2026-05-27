@@ -78,6 +78,7 @@
         <setEntry value="com.fasterxml.jackson.core.jackson-core@default:default"/>
         <setEntry value="com.fasterxml.jackson.core.jackson-databind@default:default"/>
         <setEntry value="com.fasterxml.jackson.dataformat.jackson-dataformat-xml@default:default"/>
+        <setEntry value="com.fasterxml.jackson.dataformat.jackson-dataformat-yaml@default:default"/>
         <setEntry value="com.fasterxml.jackson.datatype.jackson-datatype-guava@default:default"/>
         <setEntry value="com.fasterxml.jackson.datatype.jackson-datatype-joda@default:default"/>
         <setEntry value="com.fasterxml.jackson.datatype.jackson-datatype-json-org@default:default"/>
@@ -350,6 +351,7 @@
         <setEntry value="org.w3c.dom.events@default:default"/>
         <setEntry value="org.w3c.dom.smil@default:default"/>
         <setEntry value="org.w3c.dom.svg@default:default"/>
+        <setEntry value="org.yaml.snakeyaml@default:default"/>
         <setEntry value="org.zkoss.zsoup@default:default"/>
         <setEntry value="slf4j.api*2.0.17@3:true"/>
         <setEntry value="slf4j.jdk14@3:true"/>

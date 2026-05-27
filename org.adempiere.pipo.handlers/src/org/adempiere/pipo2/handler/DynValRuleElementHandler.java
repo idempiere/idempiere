@@ -19,6 +19,7 @@ package org.adempiere.pipo2.handler;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
@@ -86,8 +87,8 @@ public class DynValRuleElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	protected void create(PIPOContext ctx, TransformerHandler document)
-			throws SAXException {
+	protected void create(PIPOContext ctx, IPackSerializer document)
+			throws Exception {
 		int AD_Val_Rule_ID = Env.getContextAsInt(ctx.ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Val_Rule_ID);
 		if (ctx.packOut.isExported(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Val_Rule_ID+"|"+AD_Val_Rule_ID))
 			return;
@@ -100,13 +101,13 @@ public class DynValRuleElementHandler extends AbstractElementHandler {
 		
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
-		document.startElement("","",I_AD_Val_Rule.Table_Name, atts);
+		document.startElement(I_AD_Val_Rule.Table_Name, atts);
 		createDynamicValidationRuleBinding(ctx,document,m_ValRule);
-		document.endElement("","",I_AD_Val_Rule.Table_Name);
+		document.endElement(I_AD_Val_Rule.Table_Name);
 
 	}
 
-	private void createDynamicValidationRuleBinding(PIPOContext ctx, TransformerHandler document, X_AD_Val_Rule m_ValRule)
+	private void createDynamicValidationRuleBinding(PIPOContext ctx, IPackSerializer document, X_AD_Val_Rule m_ValRule)
 	{
 		PoExporter filler = new PoExporter(ctx, document, m_ValRule);
 		List<String>excludes = defaultExcludeList(X_AD_Val_Rule.Table_Name);
@@ -118,12 +119,12 @@ public class DynValRuleElementHandler extends AbstractElementHandler {
 	}
 
 
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler,int recordId) throws Exception
 	{
 
 		Env.setContext(packout.getCtx().ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Val_Rule_ID, recordId);
 
-		this.create(packout.getCtx(), packoutHandler);
+		this.create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Val_Rule_ID);
 	}
 }

@@ -16,7 +16,8 @@
 		<org.apache.taglibs.version>1.2.5</org.apache.taglibs.version>
 		<groovy.version>2.5.3</groovy.version>
 		<org.bouncycastle.version>1.66</org.bouncycastle.version><!--https://www.bouncycastle.org/latest_releases.html-->
-		<jackson.version>2.10.1</jackson.version> <!--jasperreport/jersey dependency-->
+		<jackson.version>2.15.4</jackson.version> <!--jasperreport/jersey dependency-->
+		<snakeyaml.version>2.1</snakeyaml.version> <!--jackson-dataformat-yaml dependency-->
 		<stax2.api.version>4.2</stax2.api.version> <!--jackson-dataformat-xml dependency-->
 		<validation.api.version>1.1.0.Final</validation.api.version> <!--it up to version of jackson-module-jsonSchema-->
 		<validation.api.jersey.version>2.0.1.Final</validation.api.jersey.version> <!--jersey-server also import it but from 2.0-->
@@ -897,6 +898,16 @@
 										</artifact>
 										<artifact>
 											<id>com.fasterxml.jackson.dataformat:jackson-dataformat-xml:jar:${jackson.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:jar:${jackson.version}</id>
+											<source>true</source>
+											<transitive>false</transitive>
+										</artifact>
+										<artifact>
+											<id>org.yaml:snakeyaml:jar:${snakeyaml.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
 										</artifact>

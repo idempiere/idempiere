@@ -18,6 +18,7 @@ import java.sql.Statement;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.DataElementParameters;
@@ -32,14 +33,13 @@ import org.compiere.model.MRole;
 import org.compiere.model.MTable;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
-import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class AttributeUseElementHandler extends GenericPOElementHandler
 {
 	@SuppressWarnings("resource")
 	@Override
-	public void create(PIPOContext ctx, TransformerHandler document) throws SAXException
+	public void create(PIPOContext ctx, IPackSerializer document) throws Exception
 	{
 		AttributesImpl atts = new AttributesImpl();
 		String sql = Env.getContext(ctx.ctx, DataElementParameters.SQL_STATEMENT);
@@ -102,10 +102,10 @@ public class AttributeUseElementHandler extends GenericPOElementHandler
 				{
 					verifyPackOutRequirement(mAttributeUse);
 					addTypeName(atts, "table");
-					document.startElement("", "", tableName, atts);
+					document.startElement(tableName, atts);
 					PoExporter filler = new PoExporter(ctx, document, mAttributeUse);
 					filler.export(excludes, ctx.packOut.isIncludeOrganizationId());
-					document.endElement("", "", tableName);
+					document.endElement(tableName);
 				}
 			}
 		}
@@ -120,11 +120,11 @@ public class AttributeUseElementHandler extends GenericPOElementHandler
 	}
 
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler, int recordId, String uuid) throws Exception
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler, int recordId, String uuid) throws Exception
 	{
 		StringBuilder sql = new StringBuilder("SELECT * FROM M_AttributeUse WHERE M_AttributeUse_UU = '").append(uuid).append("'");
 		packout.getCtx().ctx.put(DataElementParameters.SQL_STATEMENT, sql.toString());
-		this.create(packout.getCtx(), packoutHandler);
+		this.create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(DataElementParameters.SQL_STATEMENT);
 	}
 }

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.AbstractElementHandler;
@@ -102,8 +103,8 @@ public class ProcessElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(PIPOContext ctx, TransformerHandler document)
-			throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document)
+			throws Exception {
 		int AD_Process_ID = Env.getContextAsInt(ctx.ctx, "AD_Process_ID");
 		if (ctx.packOut.isExported("AD_Process_ID"+"|"+AD_Process_ID))
 			return;
@@ -146,7 +147,7 @@ public class ProcessElementHandler extends AbstractElementHandler {
 			if (createElement) {
 				verifyPackOutRequirement(m_Process);
 				addTypeName(atts, "table");
-				document.startElement("", "", I_AD_Process.Table_Name, atts);
+				document.startElement(I_AD_Process.Table_Name, atts);
 				createProcessBinding(ctx, document, m_Process);
 
 				packOut.getCtx().ctx.put("Table_Name",I_AD_Process.Table_Name);
@@ -195,7 +196,7 @@ public class ProcessElementHandler extends AbstractElementHandler {
 			}
 
 			if (createElement) {
-				document.endElement("", "", X_AD_Process.Table_Name);
+				document.endElement(X_AD_Process.Table_Name);
 			}
 		} catch (Exception e) {
 			throw new AdempiereException(e);
@@ -203,15 +204,15 @@ public class ProcessElementHandler extends AbstractElementHandler {
 
 	}
 
-	private void createProcessPara(PIPOContext ctx, TransformerHandler document,
-			int AD_Process_Para_ID) throws SAXException {
+	private void createProcessPara(PIPOContext ctx, IPackSerializer document,
+			int AD_Process_Para_ID) throws Exception {
 		Env.setContext(ctx.ctx, X_AD_Process_Para.COLUMNNAME_AD_Process_Para_ID,
 				AD_Process_Para_ID);
 		paraHandler.create(ctx, document);
 		ctx.ctx.remove(X_AD_Process_Para.COLUMNNAME_AD_Process_Para_ID);
 	}
 
-	private void createProcessBinding(PIPOContext ctx, TransformerHandler document,
+	private void createProcessBinding(PIPOContext ctx, IPackSerializer document,
 			X_AD_Process m_Process) {
 		PoExporter filler = new PoExporter(ctx, document, m_Process);
 		List<String> excludes = defaultExcludeList(X_AD_Process.Table_Name);
@@ -222,10 +223,10 @@ public class ProcessElementHandler extends AbstractElementHandler {
 		filler.export(excludes);
 	}
 
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler,int recordId) throws Exception
 	{
 		Env.setContext(packout.getCtx().ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Process_ID, recordId);
-		this.create(packout.getCtx(), packoutHandler);
+		this.create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Process_ID);
 	}
 }

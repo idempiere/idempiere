@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
@@ -94,8 +95,8 @@ public class AttachmentElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	protected void create(PIPOContext ctx, TransformerHandler document)
-			throws SAXException {
+	protected void create(PIPOContext ctx, IPackSerializer document)
+			throws Exception {
 
 
 		int AD_Attachment_ID = Env.getContextAsInt(ctx.ctx, "AD_Attachment_ID");
@@ -111,7 +112,7 @@ public class AttachmentElementHandler extends AbstractElementHandler {
 		
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
-		document.startElement("", "", "AD_Attachment", atts);
+		document.startElement("AD_Attachment", atts);
 		createAttachmentBinding(ctx, document, mAttachment);
 
 		int[] ids = PO.getAllIDs(X_AD_AttachmentNote.Table_Name, "AD_Attachment_ID="+AD_Attachment_ID, getTrxName(ctx));
@@ -125,11 +126,11 @@ public class AttachmentElementHandler extends AbstractElementHandler {
 				}
 			}
 		}
-		document.endElement("", "", "AD_Attachment");		
+		document.endElement("AD_Attachment");		
 	}
 
 
-	private void createAttachmentBinding(PIPOContext ctx, TransformerHandler document,
+	private void createAttachmentBinding(PIPOContext ctx, IPackSerializer document,
 			MAttachment mAttachment) {
 
 		PoExporter filler = new PoExporter(ctx, document, mAttachment);
@@ -140,10 +141,10 @@ public class AttachmentElementHandler extends AbstractElementHandler {
 		filler.export(excludes);
 	}
 
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler,int recordId) throws Exception
 	{
 		packout.getCtx().ctx.put("AD_Attachment_ID", Integer.toString(recordId));
-		this.create(packout.getCtx(), packoutHandler);
+		this.create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove("AD_Attachment_ID");
 	}
 }

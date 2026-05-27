@@ -37,6 +37,10 @@
         <setEntry value="bcprov@default:default"/>
         <setEntry value="bcutil@default:default"/>
         <setEntry value="com.diffplug.osgi.extension.sun.misc@default:false"/>
+        <setEntry value="com.fasterxml.jackson.core.jackson-annotations@default:default"/>
+        <setEntry value="com.fasterxml.jackson.core.jackson-core@default:default"/>
+        <setEntry value="com.fasterxml.jackson.core.jackson-databind@default:default"/>
+        <setEntry value="com.fasterxml.jackson.dataformat.jackson-dataformat-yaml@default:default"/>
         <setEntry value="com.github.ben-manes.caffeine@default:default"/>
         <setEntry value="com.github.librepdf.openpdf-fonts-extra@default:default"/>
         <setEntry value="com.github.librepdf.openpdf@default:default"/>
@@ -133,6 +137,7 @@
         <setEntry value="org.osgi.util.xml@default:default"/>
         <setEntry value="org.passay@default:default"/>
         <setEntry value="org.postgresql.jdbc@default:default"/>
+        <setEntry value="org.yaml.snakeyaml@default:default"/>
         <setEntry value="slf4j.api@3:true"/>
         <setEntry value="slf4j.jdk14@3:true"/>
         <setEntry value="wrapped.com.google.http-client.google-http-client-gson@default:default"/>

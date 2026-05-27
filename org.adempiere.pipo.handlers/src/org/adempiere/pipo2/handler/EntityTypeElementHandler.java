@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
@@ -111,7 +112,7 @@ public class EntityTypeElementHandler extends AbstractElementHandler{
 			throws SAXException {
 	}
 
-	public void create(PIPOContext ctx, TransformerHandler document) throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document) throws Exception {
 		int AD_ElementType_ID = Env.getContextAsInt(ctx.ctx, X_AD_EntityType.COLUMNNAME_AD_EntityType_ID);
 		if (ctx.packOut.isExported(X_AD_EntityType.COLUMNNAME_AD_EntityType_ID+"|"+AD_ElementType_ID))
 			return;
@@ -130,7 +131,7 @@ public class EntityTypeElementHandler extends AbstractElementHandler{
 			verifyPackOutRequirement(m_EntityType);
 			AttributesImpl atts = new AttributesImpl();
 			addTypeName(atts, "table");
-			document.startElement("", "", X_AD_EntityType.Table_Name, atts);
+			document.startElement(X_AD_EntityType.Table_Name, atts);
 			createEntityTypeBinding(ctx, document, m_EntityType);
 		}
 		
@@ -163,18 +164,18 @@ public class EntityTypeElementHandler extends AbstractElementHandler{
 		
 		
 		if (createElement) {
-			document.endElement("", "", X_AD_EntityType.Table_Name);
+			document.endElement(X_AD_EntityType.Table_Name);
 		}
 	}
 	
-	private void createModificaiton(PIPOContext ctx, TransformerHandler document,
-			int AD_Modification_ID) throws SAXException {
+	private void createModificaiton(PIPOContext ctx, IPackSerializer document,
+			int AD_Modification_ID) throws Exception {
 		Env.setContext(ctx.ctx, X_AD_Modification.COLUMNNAME_AD_Modification_ID, AD_Modification_ID);
 		modificationHandler.create(ctx, document);
 		ctx.ctx.remove(X_AD_Modification.COLUMNNAME_AD_Modification_ID);
 	}
 	
-	private void createEntityTypeBinding(PIPOContext ctx, TransformerHandler document,
+	private void createEntityTypeBinding(PIPOContext ctx, IPackSerializer document,
 			X_AD_EntityType m_EntityType) {
 		PoExporter filler = new PoExporter(ctx, document, m_EntityType);
 		List<String> excludes = defaultExcludeList(X_AD_EntityType.Table_Name);
@@ -186,10 +187,10 @@ public class EntityTypeElementHandler extends AbstractElementHandler{
 	}
 	
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer,
 			TransformerHandler docHandler, int recordId) throws Exception {
 		Env.setContext(packout.getCtx().ctx, X_AD_EntityType.COLUMNNAME_AD_EntityType_ID, recordId);
-		this.create(packout.getCtx(), packoutHandler);
+		this.create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(X_AD_EntityType.COLUMNNAME_AD_EntityType_ID);
 	}
 
