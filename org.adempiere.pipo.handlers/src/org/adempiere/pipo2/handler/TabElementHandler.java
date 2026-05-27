@@ -118,7 +118,7 @@ public class TabElementHandler extends AbstractElementHandler {
 			verifyPackOutRequirement(m_Tab);
 			AttributesImpl atts = new AttributesImpl();
 			addTypeName(atts, "table");
-			document.startElement(I_AD_Tab.Table_Name,atts);
+			document.startElement(X_AD_Tab.Table_Name,atts);
 			createTabBinding(ctx,document,m_Tab);
 
 			packOut.getCtx().ctx.put("Table_Name",X_AD_Tab.Table_Name);

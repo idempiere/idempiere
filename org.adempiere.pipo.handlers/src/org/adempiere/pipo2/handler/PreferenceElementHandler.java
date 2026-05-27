@@ -123,7 +123,7 @@ public class PreferenceElementHandler extends AbstractElementHandler {
 		addTypeName(atts, "table");
 		document.startElement(X_AD_Preference.Table_Name, atts);
 		createPreferenceBinding(ctx, document, m_Preference);
-		document.endElement(I_AD_Preference.Table_Name);
+		document.endElement(X_AD_Preference.Table_Name);
 	}
 
 	private void createPreferenceBinding(PIPOContext ctx, IPackSerializer document,

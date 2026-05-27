@@ -170,7 +170,7 @@ public class PrintFormatElementHandler extends AbstractElementHandler {
 		}
 
 		if (createElement) {
-			document.endElement(X_AD_PrintFormat.Table_Name);
+			document.endElement(I_AD_PrintFormat.Table_Name);
 		}
 	}
 

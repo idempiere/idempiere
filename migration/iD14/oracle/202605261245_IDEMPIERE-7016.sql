@@ -1,4 +1,6 @@
 -- IDEMPIERE-7016
+-- Purpose: Add ExportFormat2Pack parameter to the PackOut process, enabling JSON and YAML as export formats alongside XML
+-- Impact: Inserts new AD_Reference, AD_Ref_List (XML/JSON/YAML), AD_Element, and AD_Process_Para records
 SELECT register_migration_script('202605261245_IDEMPIERE-7016.sql') FROM dual;
 
 SET SQLBLANKLINES ON

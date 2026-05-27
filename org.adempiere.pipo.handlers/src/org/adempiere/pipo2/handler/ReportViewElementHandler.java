@@ -35,7 +35,6 @@ import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_PrintFormat;
-import org.compiere.model.I_AD_ReportView;
 import org.compiere.model.I_AD_Table;
 import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.MReportView;
@@ -119,7 +118,7 @@ public class ReportViewElementHandler extends AbstractElementHandler {
 		if (createElement) {
 			verifyPackOutRequirement(m_Reportview);
 			addTypeName(atts, "table");
-			document.startElement(I_AD_ReportView.Table_Name, atts);
+			document.startElement(MReportView.Table_Name, atts);
 			createReportViewBinding(ctx, document, m_Reportview);
 		}
 

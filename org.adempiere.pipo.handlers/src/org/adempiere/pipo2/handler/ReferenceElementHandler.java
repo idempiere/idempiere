@@ -30,7 +30,6 @@ import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
-import org.compiere.model.I_AD_Reference;
 import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.MReference;
 import org.compiere.model.X_AD_Package_Exp_Detail;
@@ -119,7 +118,7 @@ public class ReferenceElementHandler extends AbstractElementHandler {
 		if (createElement) {
 			verifyPackOutRequirement(m_Reference);
 			addTypeName(atts, "table");
-			document.startElement(I_AD_Reference.Table_Name, atts);
+			document.startElement(MReference.Table_Name, atts);
 			createReferenceBinding(ctx, document, m_Reference);
 			try {
 				new CommonTranslationHandler().packOut(packOut,document,null,m_Reference.get_ID());

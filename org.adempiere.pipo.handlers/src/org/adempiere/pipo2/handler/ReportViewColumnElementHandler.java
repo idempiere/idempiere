@@ -146,7 +146,7 @@ public class ReportViewColumnElementHandler extends AbstractElementHandler {
 			this.create(packout.getCtx(), packoutSerializer);
 			packout.getCtx().ctx.remove("po", po);
 		} else {
-			throw new AdempiereException("AD_Process_Access_UU not found = " + uuid);
+			throw new AdempiereException("AD_ReportView_Column_UU not found = " + uuid);
 		}
 	}
 }

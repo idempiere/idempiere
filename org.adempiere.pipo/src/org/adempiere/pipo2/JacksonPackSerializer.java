@@ -70,7 +70,7 @@ abstract class JacksonPackSerializer implements IPackSerializer {
 
 	protected JacksonPackSerializer(OutputStream output, ObjectMapper mapper) {
 		this.output = output;
-		this.mapper = mapper;
+		this.mapper = mapper.copy();
 		this.mapper.enable(SerializationFeature.INDENT_OUTPUT);
 	}
 
@@ -100,7 +100,7 @@ abstract class JacksonPackSerializer implements IPackSerializer {
 			return;
 		}
 		// Field element inside the current record.
-		fieldStack.push(new FieldCtx(qName, atts));
+		fieldStack.push(new FieldCtx(atts));
 	}
 
 	@Override
@@ -165,12 +165,10 @@ abstract class JacksonPackSerializer implements IPackSerializer {
 	}
 
 	private static final class FieldCtx {
-		final String         qName;
 		final AttributesImpl atts;
 		final StringBuilder  text = new StringBuilder();
 
-		FieldCtx(String qName, Attributes atts) {
-			this.qName = qName;
+		FieldCtx(Attributes atts) {
 			// Copy attributes so caller can reuse their AttributesImpl.
 			this.atts = new AttributesImpl(atts);
 		}
