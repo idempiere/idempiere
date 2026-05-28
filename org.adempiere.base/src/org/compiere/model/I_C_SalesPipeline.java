@@ -134,6 +134,19 @@ Complex Project&quot;
 	  */
 	public boolean isActive();
 
+    /** Column name IsDefault */
+    public static final String COLUMNNAME_IsDefault = "IsDefault";
+
+	/** Set Default.
+	  * Default value
+	  */
+	public void setIsDefault (boolean IsDefault);
+
+	/** Get Default.
+	  * Default value
+	  */
+	public boolean isDefault();
+
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
 

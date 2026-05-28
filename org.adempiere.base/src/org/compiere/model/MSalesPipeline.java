@@ -25,8 +25,11 @@
 package org.compiere.model;
 
 import java.sql.ResultSet;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
+import org.compiere.util.CCache;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutablePOCache;
 import org.idempiere.cache.ImmutablePOSupport;
@@ -40,6 +43,7 @@ public class MSalesPipeline extends X_C_SalesPipeline implements ImmutablePOSupp
 {
 	private static final long serialVersionUID = 5972622552430578603L;
 	private static ImmutablePOCache<Integer, MSalesPipeline> s_cache = new ImmutablePOCache<Integer, MSalesPipeline>(Table_Name, 50);
+	private static CCache<Integer, MSalesPipeline[]> s_cacheAll = new CCache<Integer, MSalesPipeline[]>(Table_Name + "_Of_Client", 50);
 
 	public MSalesPipeline (Properties ctx, int C_SalesPipeline_ID, String trxName) {
 		super (ctx, C_SalesPipeline_ID, trxName);
@@ -78,6 +82,43 @@ public class MSalesPipeline extends X_C_SalesPipeline implements ImmutablePOSupp
 	public MSalesPipeline(Properties ctx, MSalesPipeline copy, String trxName) {
 		this(ctx, 0, trxName);
 		copyPO(copy);
+	}
+
+	public static MSalesPipeline[] getAll (Properties ctx, int clientID) {
+		MSalesPipeline[] retValue = (MSalesPipeline[]) s_cacheAll.get(clientID);
+
+		if (retValue != null) {
+			if (ctx == Env.getCtx())
+				return retValue;
+			else
+				return Arrays.stream(retValue).map(e -> {return new MSalesPipeline(ctx, e).markImmutable();}).toArray(MSalesPipeline[]::new);
+		}
+
+		List<MSalesPipeline> list = new Query(ctx, Table_Name, "AD_Client_ID = ?", null)
+				.setParameters(clientID)
+				.setOnlyActiveRecords(true)
+				.setOrderBy("C_SalesPipeline_ID")
+				.list();
+
+		for (MSalesPipeline cc : list)
+			s_cache.put(cc.get_ID(), cc, e -> new MSalesPipeline(Env.getCtx(), e));
+
+		retValue = list.toArray(new MSalesPipeline[list.size()]);
+		if (ctx == Env.getCtx())
+			s_cacheAll.put(clientID, retValue);
+		else
+			s_cacheAll.put(clientID, Arrays.stream(retValue).map(e -> {return new MSalesPipeline(Env.getCtx(), e);}).toArray(MSalesPipeline[]::new));
+		return retValue;
+	}	//	getAll
+
+	public static MSalesPipeline getDefault(Properties ctx, int clientID) {
+
+		for (MSalesPipeline sp : getAll(ctx, clientID)) {
+			if (sp.isDefault())
+				return sp;
+		}
+
+		return null;
 	}
 
 }	//	MSalesPipeline

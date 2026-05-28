@@ -46,6 +46,7 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 // @C_BPartner_ID@
 			setC_Currency_ID (0);
 			setC_Opportunity_ID (0);
+			setC_SalesPipeline_ID (0);
 			setC_SalesStage_ID (0);
 			setDocumentNo (null);
 			setExpectedCloseDate (new Timestamp( System.currentTimeMillis() ));
@@ -64,6 +65,7 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 // @C_BPartner_ID@
 			setC_Currency_ID (0);
 			setC_Opportunity_ID (0);
+			setC_SalesPipeline_ID (0);
 			setC_SalesStage_ID (0);
 			setDocumentNo (null);
 			setExpectedCloseDate (new Timestamp( System.currentTimeMillis() ));
@@ -82,6 +84,7 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 // @C_BPartner_ID@
 			setC_Currency_ID (0);
 			setC_Opportunity_ID (0);
+			setC_SalesPipeline_ID (0);
 			setC_SalesStage_ID (0);
 			setDocumentNo (null);
 			setExpectedCloseDate (new Timestamp( System.currentTimeMillis() ));
@@ -100,6 +103,7 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 // @C_BPartner_ID@
 			setC_Currency_ID (0);
 			setC_Opportunity_ID (0);
+			setC_SalesPipeline_ID (0);
 			setC_SalesStage_ID (0);
 			setDocumentNo (null);
 			setExpectedCloseDate (new Timestamp( System.currentTimeMillis() ));

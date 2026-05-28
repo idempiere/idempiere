@@ -39,6 +39,8 @@ public class X_C_SalesPipeline extends PO implements I_C_SalesPipeline, I_Persis
       /** if (C_SalesPipeline_ID == 0)
         {
 			setC_SalesPipeline_ID (0);
+			setIsDefault (false);
+// N
 			setName (null);
         } */
     }
@@ -50,6 +52,8 @@ public class X_C_SalesPipeline extends PO implements I_C_SalesPipeline, I_Persis
       /** if (C_SalesPipeline_ID == 0)
         {
 			setC_SalesPipeline_ID (0);
+			setIsDefault (false);
+// N
 			setName (null);
         } */
     }
@@ -61,6 +65,8 @@ public class X_C_SalesPipeline extends PO implements I_C_SalesPipeline, I_Persis
       /** if (C_SalesPipeline_UU == null)
         {
 			setC_SalesPipeline_ID (0);
+			setIsDefault (false);
+// N
 			setName (null);
         } */
     }
@@ -72,6 +78,8 @@ public class X_C_SalesPipeline extends PO implements I_C_SalesPipeline, I_Persis
       /** if (C_SalesPipeline_UU == null)
         {
 			setC_SalesPipeline_ID (0);
+			setIsDefault (false);
+// N
 			setName (null);
         } */
     }
@@ -155,6 +163,29 @@ public class X_C_SalesPipeline extends PO implements I_C_SalesPipeline, I_Persis
 	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
+	}
+
+	/** Set Default.
+		@param IsDefault Default value
+	*/
+	public void setIsDefault (boolean IsDefault)
+	{
+		set_Value (COLUMNNAME_IsDefault, Boolean.valueOf(IsDefault));
+	}
+
+	/** Get Default.
+		@return Default value
+	  */
+	public boolean isDefault()
+	{
+		Object oo = get_Value(COLUMNNAME_IsDefault);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Name.

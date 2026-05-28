@@ -68,6 +68,13 @@ public class MOpportunity extends X_C_Opportunity {
 
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
+
+		if (getC_SalesPipeline_ID() <= 0) {
+			MSalesPipeline defaultSP = MSalesPipeline.getDefault(getCtx(), getAD_Client_ID());
+			if (defaultSP != null)
+				setC_SalesPipeline_ID(defaultSP.getC_SalesPipeline_ID());
+		}
+
 		// Set OpportunityAmt to GrandTotal of order.
 		if ( getC_Order_ID() > 0 )
 		{
