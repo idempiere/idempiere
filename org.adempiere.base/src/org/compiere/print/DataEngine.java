@@ -537,7 +537,6 @@ public class DataEngine
 						csvValuesSql = "string_to_array(replace(" + lookupValue + ", ' ', ''), ',')";
 					}
 
-					// Multi seleção baseada em lista
 					if (DisplayType.isList(AD_Reference_ID) || AD_Reference_Value_ID <= 0) {
 						String eSql;
 
@@ -602,7 +601,6 @@ public class DataEngine
 						synonymNext();
 
 					} else {
-						// Multi seleção baseada em tabela/search
 						TableReference tr = getTableReference(AD_Reference_Value_ID);
 
 						String displayColumn = tr.DisplayColumn;
