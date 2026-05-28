@@ -1,5 +1,6 @@
--- IDEMPIERE-7018
--- https://idempiere.atlassian.net/browse/IDEMPIERE-7018
+-- IDEMPIERE-7018 https://idempiere.atlassian.net/browse/IDEMPIERE-7018
+-- Purpose: Add Fields for User Element 1 and 2, in both, To and From groups.
+-- Impact: Create new Fields (Columns) in C_BankTransfer (new Columns/Fields: To_User1_ID, To_User2_ID, From_User1_ID, From_User2_ID)
 SELECT register_migration_script('202605261044_IDEMPIERE-7018.sql') FROM dual;
 
 -- May 26, 2026, 10:44:02 AM BRT
