@@ -53,6 +53,20 @@ public class MSalesPipeline extends X_C_SalesPipeline implements ImmutablePOSupp
 		super (ctx, rs, trxName);
 	}	//	MSalesPipeline
 
+	@Override
+	protected boolean afterSave(boolean newRecord, boolean success) {
+		if (success)
+			s_cacheAll.remove(getAD_Client_ID());
+		return success;
+	}
+
+	@Override
+	protected boolean afterDelete(boolean success) {
+		if (success)
+			s_cacheAll.remove(getAD_Client_ID());
+		return success;
+	}
+
 	public static MSalesPipeline get (Properties ctx, int salesPipelineID) {
 
 		MSalesPipeline retValue = s_cache.get (ctx, salesPipelineID, e -> new MSalesPipeline(ctx, e));

@@ -127,6 +127,8 @@ BEGIN
 
         END LOOP;
 
+		UPDATE C_Opportunity SET C_SalesPipeline_ID = v_pipeline_id WHERE AD_Client_ID = v_client.AD_Client_ID;
+
     END LOOP;
 
 END;
