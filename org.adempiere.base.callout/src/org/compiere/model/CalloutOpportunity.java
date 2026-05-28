@@ -20,8 +20,6 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.util.Properties;
 
-import org.compiere.util.DB;
-
 /**
  * 
  * Sales Opportunity callout
@@ -46,12 +44,20 @@ public class CalloutOpportunity extends CalloutEngine {
 			return "";
 	
 		int C_SalesStage_ID = (Integer) value;
-		
-		String sql = "SELECT Probability FROM C_SalesStage WHERE C_SalesStage_ID = ?";
-		BigDecimal probability = DB.getSQLValueBD(null, sql, C_SalesStage_ID);
-		if ( probability != null )
-			mTab.setValue("Probability", probability);
-		
+		BigDecimal probability = null;
+
+		if (mTab.getValue(MOpportunity.COLUMNNAME_C_SalesPipeline_ID) != null) {
+
+			MSalesPipelineStage sps = MSalesPipelineStage.get(ctx, (Integer) mTab.getValue(MOpportunity.COLUMNNAME_C_SalesPipeline_ID), C_SalesStage_ID, null);
+
+			if (sps != null)
+				probability = sps.getProbability();
+		}
+		else
+			probability = MSalesStage.get(ctx, C_SalesStage_ID).getProbability();
+
+		mTab.setValue(MOpportunity.COLUMNNAME_Probability, probability);
+
 		return "";
 	}
 }

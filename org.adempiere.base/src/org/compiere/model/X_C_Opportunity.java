@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Opportunity
  *  @author iDempiere (generated)
- *  @version Release 13 - $Id$ */
+ *  @version Release 14 - $Id$ */
 @org.adempiere.base.Model(table="C_Opportunity")
 public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20260309L;
+	private static final long serialVersionUID = 20260528L;
 
     /** Standard Constructor */
     public X_C_Opportunity (Properties ctx, int C_Opportunity_ID, String trxName)
@@ -312,6 +312,35 @@ public class X_C_Opportunity extends PO implements I_C_Opportunity, I_Persistent
 	public int getC_Order_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Order_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_SalesPipeline getC_SalesPipeline() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_SalesPipeline)MTable.get(getCtx(), org.compiere.model.I_C_SalesPipeline.Table_ID)
+			.getPO(getC_SalesPipeline_ID(), get_TrxName());
+	}
+
+	/** Set Sales Pipeline.
+		@param C_SalesPipeline_ID Defines a sales pipeline (e.g. &quot;Standard Sales&quot;, &quot;Complex Project&quot;, etc.)
+	*/
+	public void setC_SalesPipeline_ID (int C_SalesPipeline_ID)
+	{
+		if (C_SalesPipeline_ID < 1)
+			set_Value (COLUMNNAME_C_SalesPipeline_ID, null);
+		else
+			set_Value (COLUMNNAME_C_SalesPipeline_ID, Integer.valueOf(C_SalesPipeline_ID));
+	}
+
+	/** Get Sales Pipeline.
+		@return Defines a sales pipeline (e.g. &quot;Standard Sales&quot;, &quot;Complex Project&quot;, etc.)
+	  */
+	public int getC_SalesPipeline_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_SalesPipeline_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
