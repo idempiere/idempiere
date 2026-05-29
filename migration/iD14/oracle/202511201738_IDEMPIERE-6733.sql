@@ -9,15 +9,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,Co
 ;
 
 -- Nov 20, 2025, 5:38:45 PM IST
-UPDATE AD_Column SET FKConstraintName='Account_TReportStatement', FKConstraintType='N',Updated=TO_TIMESTAMP('2025-11-20 17:38:45','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217167
-;
-
--- Nov 20, 2025, 5:38:45 PM IST
 ALTER TABLE T_ReportStatement ADD Account_ID NUMBER(10) DEFAULT 0
-;
-
--- Nov 20, 2025, 5:38:45 PM IST
-ALTER TABLE T_ReportStatement ADD CONSTRAINT Account_TReportStatement FOREIGN KEY (Account_ID) REFERENCES c_elementvalue(c_elementvalue_id) DEFERRABLE INITIALLY DEFERRED
 ;
 
 -- Nov 20, 2025, 5:39:43 PM IST
@@ -25,17 +17,8 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,Co
 ;
 
 -- Nov 20, 2025, 5:39:45 PM IST
-UPDATE AD_Column SET FKConstraintName='CBPartner_TReportStatement', FKConstraintType='N',Updated=TO_TIMESTAMP('2025-11-20 17:39:45','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217168
-;
-
--- Nov 20, 2025, 5:39:45 PM IST
 ALTER TABLE T_ReportStatement ADD C_BPartner_ID NUMBER(10) DEFAULT NULL 
 ;
-
--- Nov 20, 2025, 5:39:45 PM IST
-ALTER TABLE T_ReportStatement ADD CONSTRAINT CBPartner_TReportStatement FOREIGN KEY (C_BPartner_ID) REFERENCES c_bpartner(c_bpartner_id) DEFERRABLE INITIALLY DEFERRED
-;
-
 
 -- Nov 20, 2025, 5:41:42 PM IST
 INSERT INTO AD_PrintFormatItem (SeqNo,Name,Created,IsNextLine,AD_Client_ID,YSpace,SortNo,AD_Column_ID,IsPageBreak,IsRelativePosition,UpdatedBy,MaxWidth,AD_PrintFormatItem_ID,CreatedBy,IsSummarized,YPosition,AD_PrintColor_ID,Updated,AD_PrintFormat_ID,AD_Org_ID,XSpace,AD_PrintFont_ID,IsActive,IsHeightOneLine,MaxHeight,XPosition,FieldAlignmentType,IsPrinted,IsOrderBy,IsGroupBy,LineAlignmentType,PrintFormatType,PrintAreaType,ImageIsAttached,IsCounted,IsAveraged,IsSuppressNull,IsSetNLPosition,BelowColumn,IsNextPage,IsFixedWidth,IsMaxCalc,RunningTotalLines,IsRunningTotal,IsMinCalc,IsVarianceCalc,IsDeviationCalc,IsFilledRectangle,LineWidth,ArcDiameter,ShapeType,IsCentrallyMaintained,IsImageField,IsSuppressRepeats,AD_PrintFormatItem_UU,IsDesc,IsPrintBarcodeText,IsPrintInstanceAttributes,PrintName) VALUES (80,'Account',TO_TIMESTAMP('2025-11-20 17:41:41','YYYY-MM-DD HH24:MI:SS'),'Y',0,0,10,217167,'N','Y',100,0,200534,100,'N',0,100,TO_TIMESTAMP('2025-11-20 17:41:41','YYYY-MM-DD HH24:MI:SS'),134,0,0,130,'Y','Y',0,0,'D','Y','Y','Y','X','F','C','N','N','N','N','N',0,'N','N','N',20,'N','N','N','N','N',1,0,'N','N','N','N','019aa12d-7469-7898-ad51-b5ea90f32314','N','Y','N','Account')
