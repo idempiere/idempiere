@@ -146,6 +146,8 @@ public class MCostDetail extends X_M_CostDetail
 				cd.setProcessed(false);
 				cd.setAmt(Amt);
 				cd.setQty(Qty);
+				if (!cd.isBackDate())
+					cd.setIsBackDate(true);
 			}
 			else if (cd.isProcessed())
 				return true;	//	nothing to do
@@ -241,6 +243,8 @@ public class MCostDetail extends X_M_CostDetail
 				cd.setProcessed(false);
 				cd.setAmt(Amt);
 				cd.setQty(Qty);
+				if (!cd.isBackDate())
+					cd.setIsBackDate(true);
 			}
 			else if (cd.isProcessed())
 				return true;	//	nothing to do
@@ -1476,17 +1480,23 @@ public class MCostDetail extends X_M_CostDetail
 		
 		BigDecimal matchInvAdjAmt = null;
 		if (ce.isAveragePO() && getM_MatchInv_ID() > 0 && getM_CostElement_ID() == 0) {
-			// get total amount of previous match invoice cost details for the same invoice line and account date
+			// get total amount of previous match invoice cost details for the same order line and account date
 			StringBuilder sql = new StringBuilder();
 			sql.append("SELECT COALESCE(SUM(Amt),0) ");
 			sql.append("FROM M_CostDetail ");
 			sql.append("WHERE M_MatchInv_ID IN (");
-			sql.append(" SELECT M_MatchInv_ID FROM M_MatchInv ");
-			sql.append(" WHERE C_InvoiceLine_ID = (");
-			sql.append("  SELECT C_InvoiceLine_ID ");
-			sql.append("  FROM M_MatchInv ");
-			sql.append("  WHERE COALESCE(Reversal_ID,0) = 0 ");
-			sql.append("  AND M_MatchInv_ID = ?)");
+			sql.append(" SELECT M_MatchInv_ID ");
+			sql.append(" FROM M_MatchInv ");
+			sql.append(" WHERE M_InOutLine_ID IN (");
+			sql.append("  SELECT M_InOutLine_ID ");
+			sql.append("  FROM M_MatchPO ");
+			sql.append("  WHERE C_OrderLine_ID IN ( ");
+			sql.append("   SELECT mpo.C_OrderLine_ID");
+			sql.append("   FROM M_MatchInv mi");
+			sql.append("   JOIN M_MatchPO mpo ON mpo.C_InvoiceLine_ID = mi.C_InvoiceLine_ID");
+			sql.append("   WHERE mi.M_MatchInv_ID = ?");
+			sql.append("  )");
+			sql.append(" )");
 			sql.append(")");
 			sql.append(" AND TRUNC(DateAcct) = "+DB.TO_DATE(getDateAcct(), true));
 			sql.append(" AND M_Product_ID = ?");
