@@ -199,9 +199,12 @@ public class AllocationReset extends SvrProcess
 
 			try {
 				success = m_trx.commit(true);
-			}
-			catch (Exception e) {
-				throw new AdempiereException (e.getMessage());
+				if (!success)
+					m_trx.rollback();
+
+			} catch (Exception e) {
+				m_trx.rollback();
+				throw new AdempiereException(e.getMessage(), e);
 			}
 		}
 		else
