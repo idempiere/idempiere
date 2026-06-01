@@ -195,8 +195,15 @@ public class AllocationReset extends SvrProcess
 			if (log.isLoggable(Level.FINE)) log.fine(hdr.toString());
 			success = true;
 		}
-		if (success)
-			success = m_trx.commit();
+		if (success) {
+
+			try {
+				success = m_trx.commit(true);
+			}
+			catch (Exception e) {
+				throw new AdempiereException (e.getMessage());
+			}
+		}
 		else
 			m_trx.rollback();
 		return success;
