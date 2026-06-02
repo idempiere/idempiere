@@ -174,15 +174,17 @@ public class MOrderPaySchedule extends X_C_OrderPaySchedule
 			setDiscountAmt (discount);
 			setIsValid(true);
 		}
-		
-		//	Dates		
-		IPayScheduleManager payScheduleManager = Core.getPayScheduleManager(order, paySchedule);
-		if (payScheduleManager != null) {
-			Timestamp dueDate = payScheduleManager.getDueDate(order, paySchedule);
-			setDueDate (dueDate);
 
-			Timestamp discountDate = payScheduleManager.getDiscountDate(order, paySchedule);
-			setDiscountDate (discountDate);
+		IPayScheduleManager<?> payScheduleManager = Core.getPayScheduleManager(order, paySchedule);
+		if (payScheduleManager != null) {
+		    @SuppressWarnings("unchecked")
+		    IPayScheduleManager<MOrder> orderManager = (IPayScheduleManager<MOrder>) payScheduleManager;
+
+		    Timestamp dueDate = orderManager.getDueDate(order, paySchedule);
+		    setDueDate(dueDate);
+
+		    Timestamp discountDate = orderManager.getDiscountDate(order, paySchedule);
+		    setDiscountDate(discountDate);
 		}
 	}	//	MOrderPaySchedule
 	

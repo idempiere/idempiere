@@ -34,9 +34,32 @@ import org.compiere.model.PO;
  * 
  * @author Nicolas Micoud, TGI
  */
-public interface IPayScheduleManager
+public interface IPayScheduleManager <T extends PO>
 {
-	public Timestamp getDueDate(PO po, MPaySchedule paySchedule);
+	
+	 /**
+     * Returns true if this manager can handle the given document.
+     *
+     * @param po document
+     * @return true if supported
+     */
+    boolean supports(PO po);
+	
+    /**
+     * Calculate due date.
+     *
+     * @param po document
+     * @param paySchedule payment schedule
+     * @return due date or null
+     */
+	public Timestamp getDueDate(T po, MPaySchedule paySchedule);
 
-	public Timestamp getDiscountDate(PO po, MPaySchedule paySchedule);
+	/**
+     * Calculate discount date.
+     *
+     * @param po document
+     * @param paySchedule payment schedule
+     * @return discount date or null
+     */
+	public Timestamp getDiscountDate(T po, MPaySchedule paySchedule);
 }

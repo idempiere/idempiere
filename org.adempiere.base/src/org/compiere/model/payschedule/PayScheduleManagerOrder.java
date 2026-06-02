@@ -33,19 +33,24 @@ import org.compiere.model.PO;
 import org.compiere.util.TimeUtil;
 
 /**
- * Credit Status Management for Order
+ * Pay Schedule Management for Order
  * 
  * @author Nicolas Micoud, TGI
  */
-public class PayScheduleManagerOrder implements IPayScheduleManager
+public class PayScheduleManagerOrder implements IPayScheduleManager<MOrder>
 {
 	@Override
-	public Timestamp getDueDate(PO po, MPaySchedule paySchedule) {
-		return TimeUtil.addDays(((MOrder) po).getDateOrdered(), paySchedule.getNetDays());
+	public Timestamp getDueDate(MOrder order, MPaySchedule paySchedule) {
+		return TimeUtil.addDays(order.getDateOrdered(), paySchedule.getNetDays());
 	}
 
 	@Override
-	public Timestamp getDiscountDate(PO po, MPaySchedule paySchedule) {
-		return TimeUtil.addDays(((MOrder) po).getDateOrdered(), paySchedule.getDiscountDays());
+	public Timestamp getDiscountDate(MOrder order, MPaySchedule paySchedule) {
+		return TimeUtil.addDays(order.getDateOrdered(), paySchedule.getDiscountDays());
+	}
+	
+	@Override
+	public boolean supports(PO po) {
+		return po instanceof MOrder;
 	}
 }

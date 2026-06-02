@@ -1318,33 +1318,24 @@ public class Core {
 	 * @param MPaySchedule
 	 * @return instance of the IPayScheduleManager
 	 */
-	public static IPayScheduleManager getPayScheduleManager(PO po, MPaySchedule paySchedule)
-	{
-		if (po == null || paySchedule == null)
-		{
-			s_log.log(Level.SEVERE, "Invalid PO (" + po + ") / PaySchedule (" + paySchedule + ")");
-			return null;
-		}
+	 public static IPayScheduleManager<?> getPayScheduleManager(PO po, MPaySchedule paySchedule) {
+	        if (po == null || paySchedule == null) {
+	            s_log.log(Level.SEVERE, "Invalid PO or MPaySchedule");
+	            return null;
+	        }
 
-		IPayScheduleManager paySelectionManager = null;
+	        @SuppressWarnings("rawtypes")
+	        List<IPayScheduleManager> services = Service.locator().list(IPayScheduleManager.class).getServices();
+	        
+	        if (services != null) {
+	            for (IPayScheduleManager<?> manager : services) {
+	                if (manager != null && manager.supports(po)) {
+	                    return manager;
+	                }
+	            }
+	        }
 
-		List<IPayScheduleManagerFactory> factoryList = Service.locator().list(IPayScheduleManagerFactory.class).getServices();
-		if (factoryList != null)
-		{
-			for (IPayScheduleManagerFactory factory : factoryList)
-			{
-				paySelectionManager = factory.getPayScheduleManager(po, paySchedule);
-				if (paySelectionManager != null)
-					break;
-			}
-		}
-
-		if (paySelectionManager == null)
-		{
-			s_log.log(Level.CONFIG, "For " + po.get_TableName() + " not found any service/extension registry.");
-			return null;
-		}
-
-		return paySelectionManager;
-	} // getPayScheduleManager
+	        s_log.log(Level.CONFIG, "No IPayScheduleManager found for " + po.get_TableName());
+	        return null;
+	}
 }

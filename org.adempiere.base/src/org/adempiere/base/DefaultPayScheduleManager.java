@@ -24,30 +24,35 @@
  **********************************************************************/
 package org.adempiere.base;
 
+import java.sql.Timestamp;
+
 import org.compiere.model.MInvoice;
 import org.compiere.model.MOrder;
-import org.compiere.model.MPaySchedule;
 import org.compiere.model.PO;
-import org.compiere.model.payschedule.PayScheduleManagerInvoice;
-import org.compiere.model.payschedule.PayScheduleManagerOrder;
 import org.osgi.service.component.annotations.Component;
 
 /**
- * Default Pay Schedule Manager Factory
+ * Default Pay Schedule Manager
  * 
  * @author Nicolas Micoud
  */
-@Component(immediate = true, service = IPayScheduleManagerFactory.class)
-public class DefaultPayScheduleManager implements IPayScheduleManagerFactory
+@Component(service = IPayScheduleManager.class, property = {"service.ranking:Integer=0"})
+public class DefaultPayScheduleManager extends AbstractPayScheduleManager<PO>
 {
-
 	@Override
-	public IPayScheduleManager getPayScheduleManager(PO po, MPaySchedule paySchedule) {
-
+    public boolean supports(PO po) {
+        return po instanceof MOrder || po instanceof MInvoice;
+    }
+	
+	@Override
+	protected Timestamp getBaseDate(PO po)
+	{
 		if (po instanceof MOrder)
-			return new PayScheduleManagerOrder();
-		else if (po instanceof MInvoice)
-			return new PayScheduleManagerInvoice();
+			return ((MOrder)po).getDateOrdered();
+
+		if (po instanceof MInvoice)
+			return ((MInvoice)po).getDateInvoiced();
+
 		return null;
 	}
 }
