@@ -1,7 +1,6 @@
 package org.adempiere.base;
 
 import java.math.BigDecimal;
-import java.util.Properties;
 
 import org.adempiere.util.IReservationTracer;
 import org.compiere.model.PO;
@@ -13,5 +12,5 @@ import org.compiere.model.PO;
  */
 
 public interface IStorageValidator {
-	public void validate(Properties ctx, PO po, BigDecimal movementQty, IReservationTracer tracer, String trxName);
+	public void validate(PO po, BigDecimal movementQty, IReservationTracer tracer, String trxName);
 }
