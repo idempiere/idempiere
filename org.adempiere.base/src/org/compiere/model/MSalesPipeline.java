@@ -69,6 +69,9 @@ public class MSalesPipeline extends X_C_SalesPipeline implements ImmutablePOSupp
 
 	public static MSalesPipeline get (Properties ctx, int salesPipelineID) {
 
+		if (salesPipelineID <= 0)
+			return null;
+
 		MSalesPipeline retValue = s_cache.get (ctx, salesPipelineID, e -> new MSalesPipeline(ctx, e));
 		if (retValue != null)
 			return retValue;
