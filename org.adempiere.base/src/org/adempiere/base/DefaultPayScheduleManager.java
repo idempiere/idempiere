@@ -28,6 +28,7 @@ import java.sql.Timestamp;
 
 import org.compiere.model.MInvoice;
 import org.compiere.model.MOrder;
+import org.compiere.model.MPaySchedule;
 import org.compiere.model.PO;
 import org.osgi.service.component.annotations.Component;
 
@@ -40,7 +41,7 @@ import org.osgi.service.component.annotations.Component;
 public class DefaultPayScheduleManager extends AbstractPayScheduleManager<PO>
 {
 	@Override
-    public boolean supports(PO po) {
+    public boolean supports(PO po, MPaySchedule paySchedule) {
         return po instanceof MOrder || po instanceof MInvoice;
     }
 	

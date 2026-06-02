@@ -43,7 +43,7 @@ public interface IPayScheduleManager <T extends PO>
      * @param po document
      * @return true if supported
      */
-    boolean supports(PO po);
+	boolean supports(PO po, MPaySchedule paySchedule);
 	
     /**
      * Calculate due date.
@@ -62,4 +62,5 @@ public interface IPayScheduleManager <T extends PO>
      * @return discount date or null
      */
 	public Timestamp getDiscountDate(T po, MPaySchedule paySchedule);
+
 }

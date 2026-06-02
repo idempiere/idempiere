@@ -1329,13 +1329,27 @@ public class Core {
 	        
 	        if (services != null) {
 	            for (IPayScheduleManager<?> manager : services) {
-	                if (manager != null && manager.supports(po)) {
-	                    return manager;
-	                }
+	            	 IPayScheduleManager<?> result = resolveManager(manager, po, paySchedule);
+	                 if (result != null) {
+	                     return result;
+	                 }
 	            }
 	        }
 
 	        s_log.log(Level.CONFIG, "No IPayScheduleManager found for " + po.get_TableName());
 	        return null;
-	}
+	 }
+
+	 private static <T extends PO> IPayScheduleManager<T> resolveManager(IPayScheduleManager<T> manager, PO po, MPaySchedule paySchedule)
+	 {
+		 if (manager == null) {
+			 return null;
+		 }
+
+		 if (manager.supports(po, paySchedule)) {
+			 return manager;
+		 }
+
+		 return null;
+	 }
 }

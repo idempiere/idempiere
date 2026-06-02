@@ -50,7 +50,7 @@ public class PayScheduleManagerOrder implements IPayScheduleManager<MOrder>
 	}
 	
 	@Override
-	public boolean supports(PO po) {
-		return po instanceof MOrder;
+	public boolean supports(PO po, MPaySchedule paySchedule) {
+		 return po != null && po instanceof MOrder && paySchedule != null;
 	}
 }

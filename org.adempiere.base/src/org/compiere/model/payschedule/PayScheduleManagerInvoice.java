@@ -50,7 +50,7 @@ public class PayScheduleManagerInvoice implements IPayScheduleManager<MInvoice> 
 	}
 
 	@Override
-	public boolean supports(PO po) {
-		return po instanceof MInvoice;
+	public boolean supports(PO po, MPaySchedule paySchedule) {
+		return po != null && po instanceof MInvoice && paySchedule != null;
 	}
 }
