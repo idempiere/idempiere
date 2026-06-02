@@ -362,15 +362,15 @@ public class DefaultEvaluatee implements Evaluatee {
 				else if (format.equals("Description"))
 					value = MRefList.getListDescription(Env.getCtx(), DB.getSQLValueStringEx(null, "SELECT Name FROM AD_Reference WHERE AD_Reference_ID = ?", refID), value);
 			} else if (dataValue != null && dataValue instanceof Date dateValue) {
-				if ("FY".equals(format)) {
-					MPeriod period = MPeriod.get(Env.getCtx(), (Timestamp) dataValue, Env.getAD_Org_ID(Env.getCtx()), null);
+				if ("FY".equals(format) && dataValue instanceof Timestamp ts) {
+					MPeriod period = MPeriod.get(Env.getCtx(), ts, Env.getAD_Org_ID(Env.getCtx()), null);
 					if (period != null) {
 						MYear year = MYear.get(period.getC_Year_ID());
 						if (year != null) {
 							value = year.getFiscalYear();
 						}
 					}
-				} else {
+				} else if (!"FY".equals(format)) {
 					SimpleDateFormat df = new SimpleDateFormat(format);
 					value = df.format(dateValue);
 				}

@@ -81,6 +81,7 @@ public class MYear extends X_C_Year implements ImmutablePOSupport
 
 			if (retValue.get_ID() == C_Year_ID)
 			{
+				retValue.markImmutable();
 				s_cache.put(key, retValue);
 				return retValue;
 			}
