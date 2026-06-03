@@ -451,6 +451,15 @@ public class GridField
 			|| (m_vo.ColumnName.equals("Record_ID") && m_vo.displayType == DisplayType.Button))	//  Zoom
 			return true;
 
+		// IDEMPIERE-7024 hook: ask registered IUIBehaviour providers whether
+		// this field is editable in the current context; any provider returning
+		// false forces read-only (e.g. workflow approval state, role-based
+		// masking, license-based feature gating).
+		if (!org.adempiere.base.UIBehaviour.isEditable(ctx, this, checkContext, isGrid)) {
+			if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " NO - UIBehaviour denied");
+			return false;
+		}
+
 		//  Tab or field is R/O
 		if (m_vo.tabReadOnly || m_vo.IsReadOnly)
 		{

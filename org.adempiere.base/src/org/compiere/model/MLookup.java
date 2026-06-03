@@ -582,11 +582,16 @@ public final class MLookup extends Lookup implements Serializable
 				{
 					name.insert(0, INACTIVE_S).append(INACTIVE_E);
 				}
+				// IDEMPIERE-7024 hook: ask registered IUIBehaviour providers whether
+				// this lookup is cacheable; if any provider returns false the cache
+				// fill below is skipped (the resolved value is still returned for
+				// the current request).
+				boolean uiCacheable = org.adempiere.base.UIBehaviour.isLookupCacheable(this, m_info);
 				if (isNumber)
 				{
 					int keyValue = rs.getInt(1);
 					KeyNamePair p = new KeyNamePair(keyValue, name.toString());
-					if (saveInCache)		//	save if
+					if (saveInCache && uiCacheable)		//	save if
 						m_lookup.put(Integer.valueOf(keyValue), p);
 					directValue = p;
 					knpCache.put(p.getKey(), p);
@@ -599,7 +604,7 @@ public final class MLookup extends Lookup implements Serializable
 					else
 						value = rs.getString(2);
 					ValueNamePair p = new ValueNamePair(value, name.toString());
-					if (saveInCache)		//	save if
+					if (saveInCache && uiCacheable)		//	save if
 						m_lookup.put(value, p);
 					directValue = p;
 					vnpCache.put(p.getValue(), p);
