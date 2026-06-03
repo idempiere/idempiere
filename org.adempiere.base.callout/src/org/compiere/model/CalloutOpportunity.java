@@ -47,16 +47,17 @@ public class CalloutOpportunity extends CalloutEngine {
 	
 		int C_SalesStage_ID = (Integer) value;
 		BigDecimal probability = null;
+		Integer salesPipelineID = (Integer) mTab.getValue(MOpportunity.COLUMNNAME_C_SalesPipeline_ID);
 
-		if (mTab.getValue(MOpportunity.COLUMNNAME_C_SalesPipeline_ID) != null) {
+		if (salesPipelineID != null) {
 
-			MSalesPipelineStage sps = MSalesPipelineStage.get(ctx, (Integer) mTab.getValue(MOpportunity.COLUMNNAME_C_SalesPipeline_ID), C_SalesStage_ID, null);
+			MSalesPipelineStage sps = MSalesPipelineStage.get(ctx, salesPipelineID, C_SalesStage_ID, null);
 
 			if (sps != null)
 				probability = sps.getProbability();
 			else {
 				mTab.fireDataStatusEEvent("Error", Msg.parseTranslation(ctx, "@FindZeroRecords@:"
-						+ " @C_SalesPipeline_ID@ " + MSalesPipeline.get(ctx, (Integer) mTab.getValue(MOpportunity.COLUMNNAME_C_SalesPipeline_ID)).getName() 
+						+ " @C_SalesPipeline_ID@ " + MSalesPipeline.get(ctx, salesPipelineID).getName() 
 						+ " @C_SalesStage_ID@: " + MSalesStage.get(ctx, C_SalesStage_ID).getName()), true);
 				return "";
 			}
