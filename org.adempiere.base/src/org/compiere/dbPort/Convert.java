@@ -243,9 +243,74 @@ public abstract class Convert
 			log.info(m_conversionError);
 			return null;
 		}
-		//
+		// IDEMPIERE-7023 hook: apply ISQLStatementRewriter providers before the
+		// Oracle->PostgreSQL conversion takes place.
+		sqlStatements = rewriteStatements(sqlStatements);
 		return convertIt (sqlStatements);
 	}   //  convert
+
+	/**
+	 * IDEMPIERE-7023
+	 * ThreadLocal re-entrancy guard: when a rewriter (or its evaluation logic)
+	 * transitively executes a SQL statement that flows through convertStatement(),
+	 * the rewrite / cacheable check must NOT recurse into itself (StackOverflowError).
+	 * While the guard is ON, rewriteStatements() returns the input unchanged and
+	 * isConvertCacheable() returns true (vanilla behavior).
+	 */
+	private static final ThreadLocal<Boolean> rewriteGuard = ThreadLocal.withInitial(() -> Boolean.FALSE);
+
+	/**
+	 * IDEMPIERE-7023
+	 * Iterates all OSGi-registered ISQLStatementRewriter providers and chains
+	 * their rewrites. Returns the input unchanged when no provider is registered
+	 * or when invoked re-entrantly.
+	 * @param sqlStatements input SQL
+	 * @return possibly rewritten SQL
+	 */
+	public static String rewriteStatements(String sqlStatements)
+	{
+		if (sqlStatements == null) return null;
+		if (Boolean.TRUE.equals(rewriteGuard.get())) return sqlStatements;  // re-entrancy guard
+		java.util.List<org.compiere.dbPort.ISQLStatementRewriter> rewriters =
+				org.adempiere.base.Service.locator().list(org.compiere.dbPort.ISQLStatementRewriter.class).getServices();
+		if (rewriters == null || rewriters.isEmpty()) return sqlStatements;
+		rewriteGuard.set(Boolean.TRUE);
+		try {
+			String result = sqlStatements;
+			for (org.compiere.dbPort.ISQLStatementRewriter r : rewriters) {
+				result = r.rewriteStatements(result);
+			}
+			return result;
+		} finally {
+			rewriteGuard.set(Boolean.FALSE);
+		}
+	}
+
+	/**
+	 * IDEMPIERE-7023
+	 * @return true if EVERY registered rewriter declares its output cacheable.
+	 *         Used by the Oracle->PostgreSQL conversion cache in DB_PostgreSQL
+	 *         to avoid stale entries when a rewriter is dynamic (e.g. depends on
+	 *         a ThreadLocal context). Returns true under re-entrancy (a rewriter
+	 *         running SQL during its own evaluation) to break the loop and let
+	 *         the inner conversion proceed.
+	 */
+	public static boolean isConvertCacheable()
+	{
+		if (Boolean.TRUE.equals(rewriteGuard.get())) return true;  // re-entrancy guard
+		java.util.List<org.compiere.dbPort.ISQLStatementRewriter> rewriters =
+				org.adempiere.base.Service.locator().list(org.compiere.dbPort.ISQLStatementRewriter.class).getServices();
+		if (rewriters == null || rewriters.isEmpty()) return true;
+		rewriteGuard.set(Boolean.TRUE);
+		try {
+			for (org.compiere.dbPort.ISQLStatementRewriter r : rewriters) {
+				if (!r.rewriteIsCacheable()) return false;
+			}
+			return true;
+		} finally {
+			rewriteGuard.set(Boolean.FALSE);
+		}
+	}
 
 	/**
 	 *  Return last conversion error or null.
