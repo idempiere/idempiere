@@ -243,9 +243,6 @@ public abstract class Convert
 			log.info(m_conversionError);
 			return null;
 		}
-		// IDEMPIERE-7023 hook: apply ISQLStatementRewriter providers before the
-		// Oracle->PostgreSQL conversion takes place.
-		sqlStatements = rewriteStatements(sqlStatements);
 		return convertIt (sqlStatements);
 	}   //  convert
 
