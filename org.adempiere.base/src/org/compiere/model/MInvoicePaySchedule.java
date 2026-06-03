@@ -177,13 +177,11 @@ public class MInvoicePaySchedule extends X_C_InvoicePaySchedule
 
 		//	Dates
 		IPayScheduleManager<MInvoice> payScheduleManager = PayScheduleManager.getPayScheduleManager(invoice, paySchedule);
-		if (payScheduleManager != null) {
-		    Timestamp dueDate = payScheduleManager.getDueDate(invoice, paySchedule);
-		    setDueDate(dueDate);
+		Timestamp dueDate = payScheduleManager.getDueDate(invoice, paySchedule);
+		setDueDate(dueDate);
 
-		    Timestamp discountDate = payScheduleManager.getDiscountDate(invoice, paySchedule);
-		    setDiscountDate(discountDate);
-		}
+		Timestamp discountDate = payScheduleManager.getDiscountDate(invoice, paySchedule);
+		setDiscountDate(discountDate);
 	}	//	MInvoicePaySchedule
 	
 	/**	Parent						*/

@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MPaySchedule;
 import org.compiere.model.PO;
 import org.compiere.util.CLogger;
@@ -98,12 +99,10 @@ public class PayScheduleManager
 				return typed;
 			}
 		}
-
-		s_log.log(Level.CONFIG, "No IPayScheduleManager found for " + po.get_TableName());
-		return null;
+		throw new AdempiereException("No IPayScheduleManager found for " + po.get_TableName() + " and pay schedule " + paySchedule.toString());
 	}
 
-	@SuppressWarnings({"unchecked", "rawtypes"})
+	@SuppressWarnings("rawtypes")
 	private static boolean supportsUnchecked(IPayScheduleManager<?> manager, PO po, MPaySchedule paySchedule)
 	{
 		return ((IPayScheduleManager) manager).supports(po, paySchedule);
