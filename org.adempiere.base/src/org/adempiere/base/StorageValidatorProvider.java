@@ -21,21 +21,26 @@
  **********************************************************************/
 package org.adempiere.base;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 
 /**
- * OSGi component provider for IStorageValidator service.
- * Used to expose dynamic service reference to non-component model classes.
+ * OSGi component provider for IStorageValidator services.
+ * Used to expose dynamic service references to non-component model classes.
+ * Supports multiple validators with priority ordering.
  * 
  * @author hengsin
  */
 @Component(immediate = true, service = {StorageValidatorProvider.class})
 public class StorageValidatorProvider {
 
-	private static volatile IStorageValidator s_storageValidator = null;
+	private static final CopyOnWriteArrayList<IStorageValidator> s_storageValidators = new CopyOnWriteArrayList<>();
 
 	/**
 	 * Bind storage validator
@@ -43,12 +48,14 @@ public class StorageValidatorProvider {
 	 */
 	@Reference(
 		service = IStorageValidator.class,
-		cardinality = ReferenceCardinality.OPTIONAL,
+		cardinality = ReferenceCardinality.MULTIPLE,
 		policy = ReferencePolicy.DYNAMIC,
 		unbind = "unbindStorageValidator"
 	)
 	public void bindStorageValidator(IStorageValidator validator) {
-		s_storageValidator = validator;
+		if (validator != null && !s_storageValidators.contains(validator)) {
+			s_storageValidators.add(validator);
+		}
 	}
 
 	/**
@@ -56,16 +63,14 @@ public class StorageValidatorProvider {
 	 * @param validator
 	 */
 	public void unbindStorageValidator(IStorageValidator validator) {
-		if (s_storageValidator == validator) {
-			s_storageValidator = null;
-		}
+		s_storageValidators.remove(validator);
 	}
 
 	/**
-	 * Get bound storage validator
-	 * @return storage validator or null
+	 * Get all bound storage validators in arbitrary order
+	 * @return list of storage validators, empty list if none bound
 	 */
-	public static IStorageValidator getStorageValidator() {
-		return s_storageValidator;
+	public static List<IStorageValidator> getStorageValidators() {
+		return new ArrayList<>(s_storageValidators);
 	}
 }

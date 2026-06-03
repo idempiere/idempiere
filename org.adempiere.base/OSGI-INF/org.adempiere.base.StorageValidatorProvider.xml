@@ -4,5 +4,5 @@
       <provide interface="org.adempiere.base.StorageValidatorProvider"/>
    </service>
    <implementation class="org.adempiere.base.StorageValidatorProvider"/>
-   <reference bind="bindStorageValidator" cardinality="0..1" interface="org.adempiere.base.IStorageValidator" name="IStorageValidator" policy="dynamic" unbind="unbindStorageValidator"/>
+   <reference bind="bindStorageValidator" cardinality="0..n" interface="org.adempiere.base.IStorageValidator" name="IStorageValidator" policy="dynamic" unbind="unbindStorageValidator"/>
 </scr:component>
