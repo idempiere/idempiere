@@ -20,6 +20,8 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.util.Properties;
 
+import org.compiere.util.Msg;
+
 /**
  * 
  * Sales Opportunity callout
@@ -52,6 +54,12 @@ public class CalloutOpportunity extends CalloutEngine {
 
 			if (sps != null)
 				probability = sps.getProbability();
+			else {
+				mTab.fireDataStatusEEvent("Error", Msg.parseTranslation(ctx, "@FindZeroRecords@:"
+						+ " @C_SalesPipeline_ID@ " + MSalesPipeline.get(ctx, (Integer) mTab.getValue(MOpportunity.COLUMNNAME_C_SalesPipeline_ID)).getName() 
+						+ " @C_SalesStage_ID@: " + MSalesStage.get(ctx, C_SalesStage_ID).getName()), true);
+				return "";
+			}
 		}
 		else
 			probability = MSalesStage.get(ctx, C_SalesStage_ID).getProbability();
