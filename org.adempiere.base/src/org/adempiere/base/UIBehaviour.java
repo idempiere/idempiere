@@ -23,11 +23,13 @@ package org.adempiere.base;
 
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.Lookup;
 import org.compiere.model.MLookupInfo;
+import org.compiere.util.CLogger;
 
 /**
  * IDEMPIERE-7024
@@ -40,9 +42,17 @@ import org.compiere.model.MLookupInfo;
  *   - at least one provider says false           -> false
  *
  * With no registered provider returns true (vanilla behavior).
+ *
+ * Provider failures are isolated: any Throwable raised by a provider is
+ * logged at WARNING and treated as neutral (null), so a single bad plugin
+ * cannot abort lookup resolution or field-editability checks for the whole
+ * window. This matches the pattern used by {@code AbstractEventHandler}.
  */
 public final class UIBehaviour
 {
+	/**	Logger	*/
+	private static final CLogger log = CLogger.getCLogger(UIBehaviour.class);
+
 	private UIBehaviour() {
 		// utility class - no instances
 	}
@@ -57,7 +67,15 @@ public final class UIBehaviour
 		if (services == null || services.isEmpty())
 			return true;
 		for (IUIBehaviour svc : services) {
-			Boolean res = svc.isLookupCacheable(lookup, lookupInfo);
+			Boolean res = null;
+			try {
+				res = svc.isLookupCacheable(lookup, lookupInfo);
+			} catch (Throwable t) {
+				// IDEMPIERE-7024: isolate provider failures - log and treat as neutral
+				log.log(Level.WARNING,
+					"IUIBehaviour provider " + svc.getClass().getName()
+					+ " threw in isLookupCacheable; treating as neutral", t);
+			}
 			if (Boolean.FALSE.equals(res))
 				return false;
 		}
@@ -73,7 +91,15 @@ public final class UIBehaviour
 		if (services == null || services.isEmpty())
 			return true;
 		for (IUIBehaviour svc : services) {
-			Boolean res = svc.isEditable(ctx, tab);
+			Boolean res = null;
+			try {
+				res = svc.isEditable(ctx, tab);
+			} catch (Throwable t) {
+				// IDEMPIERE-7024: isolate provider failures - log and treat as neutral
+				log.log(Level.WARNING,
+					"IUIBehaviour provider " + svc.getClass().getName()
+					+ " threw in isEditable(ctx, tab); treating as neutral", t);
+			}
 			if (Boolean.FALSE.equals(res))
 				return false;
 		}
@@ -90,7 +116,15 @@ public final class UIBehaviour
 		if (services == null || services.isEmpty())
 			return true;
 		for (IUIBehaviour svc : services) {
-			Boolean res = svc.isEditable(ctx, field, checkContext, isGrid);
+			Boolean res = null;
+			try {
+				res = svc.isEditable(ctx, field, checkContext, isGrid);
+			} catch (Throwable t) {
+				// IDEMPIERE-7024: isolate provider failures - log and treat as neutral
+				log.log(Level.WARNING,
+					"IUIBehaviour provider " + svc.getClass().getName()
+					+ " threw in isEditable(ctx, field, ...); treating as neutral", t);
+			}
 			if (Boolean.FALSE.equals(res))
 				return false;
 		}
