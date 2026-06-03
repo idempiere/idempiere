@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.base.Core;
 import org.adempiere.base.IPayScheduleManager;
+import org.adempiere.base.PayScheduleManager;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -176,15 +176,12 @@ public class MInvoicePaySchedule extends X_C_InvoicePaySchedule
 		}
 
 		//	Dates
-		IPayScheduleManager<?> payScheduleManager = Core.getPayScheduleManager(invoice, paySchedule);
+		IPayScheduleManager<MInvoice> payScheduleManager = PayScheduleManager.getPayScheduleManager(invoice, paySchedule);
 		if (payScheduleManager != null) {
-		    @SuppressWarnings("unchecked")
-		    IPayScheduleManager<MInvoice> invoiceManager = (IPayScheduleManager<MInvoice>) payScheduleManager;
-
-		    Timestamp dueDate = invoiceManager.getDueDate(invoice, paySchedule);
+		    Timestamp dueDate = payScheduleManager.getDueDate(invoice, paySchedule);
 		    setDueDate(dueDate);
 
-		    Timestamp discountDate = invoiceManager.getDiscountDate(invoice, paySchedule);
+		    Timestamp discountDate = payScheduleManager.getDiscountDate(invoice, paySchedule);
 		    setDiscountDate(discountDate);
 		}
 	}	//	MInvoicePaySchedule

@@ -26,27 +26,26 @@ package org.compiere.model.payschedule;
 
 import java.sql.Timestamp;
 
+import org.adempiere.base.AbstractPayScheduleManager;
 import org.adempiere.base.IPayScheduleManager;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MPaySchedule;
 import org.compiere.model.PO;
-import org.compiere.util.TimeUtil;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * Pay Schedule Management for Invoice
  * 
  * @author Nicolas Micoud, TGI
  */
-public class PayScheduleManagerInvoice implements IPayScheduleManager<MInvoice> {
+@Component(service = IPayScheduleManager.class, property = {"service.ranking:Integer=0"})
+public class PayScheduleManagerInvoice extends AbstractPayScheduleManager<MInvoice> {
 
 	@Override
-	public Timestamp getDueDate(MInvoice invoice, MPaySchedule paySchedule) {
-		return TimeUtil.addDays(invoice.getDateInvoiced(), paySchedule.getNetDays());
-	}
-
-	@Override
-	public Timestamp getDiscountDate(MInvoice invoice, MPaySchedule paySchedule) {
-		return TimeUtil.addDays(invoice.getDateInvoiced(), paySchedule.getDiscountDays());
+	protected Timestamp getBaseDate(MInvoice invoice) {
+		if (invoice == null)
+			return null;
+		return invoice.getDateInvoiced();
 	}
 
 	@Override

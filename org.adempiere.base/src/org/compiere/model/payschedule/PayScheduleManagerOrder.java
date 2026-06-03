@@ -26,29 +26,28 @@ package org.compiere.model.payschedule;
 
 import java.sql.Timestamp;
 
+import org.adempiere.base.AbstractPayScheduleManager;
 import org.adempiere.base.IPayScheduleManager;
 import org.compiere.model.MOrder;
 import org.compiere.model.MPaySchedule;
 import org.compiere.model.PO;
-import org.compiere.util.TimeUtil;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * Pay Schedule Management for Order
  * 
  * @author Nicolas Micoud, TGI
  */
-public class PayScheduleManagerOrder implements IPayScheduleManager<MOrder>
+@Component(service = IPayScheduleManager.class, property = {"service.ranking:Integer=0"})
+public class PayScheduleManagerOrder extends AbstractPayScheduleManager<MOrder>
 {
 	@Override
-	public Timestamp getDueDate(MOrder order, MPaySchedule paySchedule) {
-		return TimeUtil.addDays(order.getDateOrdered(), paySchedule.getNetDays());
+	protected Timestamp getBaseDate(MOrder order) {
+		if (order == null)
+			return null;
+		return order.getDateOrdered();
 	}
 
-	@Override
-	public Timestamp getDiscountDate(MOrder order, MPaySchedule paySchedule) {
-		return TimeUtil.addDays(order.getDateOrdered(), paySchedule.getDiscountDays());
-	}
-	
 	@Override
 	public boolean supports(PO po, MPaySchedule paySchedule) {
 		 return po != null && po instanceof MOrder && paySchedule != null;

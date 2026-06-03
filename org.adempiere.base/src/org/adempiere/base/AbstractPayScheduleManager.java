@@ -2,7 +2,6 @@ package org.adempiere.base;
 
 import java.sql.Timestamp;
 
-import org.apache.poi.ss.formula.functions.T;
 import org.compiere.model.MPaySchedule;
 import org.compiere.model.PO;
 import org.compiere.util.TimeUtil;
@@ -13,10 +12,10 @@ import org.compiere.util.TimeUtil;
  * @param <T> concrete document type
  */
 
-public abstract class AbstractPayScheduleManager<P extends PO> implements IPayScheduleManager<P> {
+public abstract class AbstractPayScheduleManager<T extends PO> implements IPayScheduleManager<T> {
 
     @Override
-    public Timestamp getDueDate(P po, MPaySchedule paySchedule) {
+    public Timestamp getDueDate(T po, MPaySchedule paySchedule) {
         if (po == null || paySchedule == null) {
             return null;
         }
@@ -28,7 +27,7 @@ public abstract class AbstractPayScheduleManager<P extends PO> implements IPaySc
     }
 
     @Override
-    public Timestamp getDiscountDate(P po, MPaySchedule paySchedule) {
+    public Timestamp getDiscountDate(T po, MPaySchedule paySchedule) {
         if (po == null || paySchedule == null) {
             return null;
         }
@@ -39,5 +38,5 @@ public abstract class AbstractPayScheduleManager<P extends PO> implements IPaySc
         return TimeUtil.addDays(baseDate, paySchedule.getDiscountDays());
     }
 
-    protected abstract Timestamp getBaseDate(P po);
+    protected abstract Timestamp getBaseDate(T po);
 }

@@ -54,7 +54,6 @@ import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MAuthorizationCredential;
 import org.compiere.model.MAuthorizationProvider;
 import org.compiere.model.MBankAccountProcessor;
-import org.compiere.model.MPaySchedule;
 import org.compiere.model.MPaymentProcessor;
 import org.compiere.model.MRule;
 import org.compiere.model.MSysConfig;
@@ -1312,44 +1311,5 @@ public class Core {
 		return holder != null ? holder.getService() : null; 
 	}
 
-	/**
-	 * Get Pay Schedule Manager
-	 * @param PO
-	 * @param MPaySchedule
-	 * @return instance of the IPayScheduleManager
-	 */
-	 public static IPayScheduleManager<?> getPayScheduleManager(PO po, MPaySchedule paySchedule) {
-	        if (po == null || paySchedule == null) {
-	            s_log.log(Level.SEVERE, "Invalid PO or MPaySchedule");
-	            return null;
-	        }
 
-	        @SuppressWarnings("rawtypes")
-	        List<IPayScheduleManager> services = Service.locator().list(IPayScheduleManager.class).getServices();
-	        
-	        if (services != null) {
-	            for (IPayScheduleManager<?> manager : services) {
-	            	 IPayScheduleManager<?> result = resolveManager(manager, po, paySchedule);
-	                 if (result != null) {
-	                     return result;
-	                 }
-	            }
-	        }
-
-	        s_log.log(Level.CONFIG, "No IPayScheduleManager found for " + po.get_TableName());
-	        return null;
-	 }
-
-	 private static <T extends PO> IPayScheduleManager<T> resolveManager(IPayScheduleManager<T> manager, PO po, MPaySchedule paySchedule)
-	 {
-		 if (manager == null) {
-			 return null;
-		 }
-
-		 if (manager.supports(po, paySchedule)) {
-			 return manager;
-		 }
-
-		 return null;
-	 }
 }
