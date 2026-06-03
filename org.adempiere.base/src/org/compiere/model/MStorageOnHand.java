@@ -27,9 +27,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import org.adempiere.base.Core;
 import org.adempiere.base.IStorageValidator;
 import org.adempiere.exceptions.NegativeInventoryDisallowedException;
+import org.adempiere.base.StorageValidatorProvider;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -860,7 +860,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 			get_TrxName());
 		load(get_TrxName());
 		
-		IStorageValidator storageValidator = Core.getStorageValidator();
+		IStorageValidator storageValidator = StorageValidatorProvider.getStorageValidator();
 		if (storageValidator != null) {			
 			storageValidator.validate(this, addition, null, get_TrxName());
 		}

@@ -845,30 +845,7 @@ public class Core {
 		return null;
 	}
 
-	private static IServiceReferenceHolder<IStorageValidator> s_storageValidatorReference = null;
-	
-	/**
-	 * get StorageValidator instance
-	 * 
-	 * @return instance of the IStorageValidator or null
-	 */
-	public static IStorageValidator getStorageValidator() {
-		IStorageValidator storageValidator = null;
-		if (s_storageValidatorReference != null) {
-			storageValidator = s_storageValidatorReference.getService();
-			if (storageValidator != null)
-				return storageValidator;
-		}
-		IServiceReferenceHolder<IStorageValidator> serviceReference = Service.locator().locate(IStorageValidator.class).getServiceReference();
-		if (serviceReference != null) {
-			storageValidator = serviceReference.getService();
-			if (storageValidator != null) {
-				s_storageValidatorReference = serviceReference;
-			}
-		}
-		return storageValidator;
-	}
-	
+
 	private final static CCache<String, IServiceReferenceHolder<IDepreciationMethodFactory>> s_depreciationMethodFactoryCache = new CCache<>(IDEPRECIATION_METHOD_FACTORY_CACHE_TABLE_NAME, "IDepreciationMethodFactory", 100, false);
 	
 	/**

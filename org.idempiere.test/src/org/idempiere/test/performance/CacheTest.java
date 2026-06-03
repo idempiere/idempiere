@@ -505,11 +505,6 @@ public class CacheTest extends AbstractTestCase {
 		assertNotNull(Core.getProductPricing(), "Can't find product pricing service");
 		//second call to check service reference cache is working
 		assertNotNull(Core.getProductPricing(), "Can't find product pricing service");
-
-		//IStorageValidator
-		assertNotNull(Core.getStorageValidator(), "Can't find storage validator service");
-		//second call to check service reference cache is working
-		assertNotNull(Core.getStorageValidator(), "Can't find storage validator service");
 		
 		//IDepreciationMethodFactory
 		TestActivator.context.registerService(IDepreciationMethodFactory.class, new FakeDepreciationMethodFactory(), null);
