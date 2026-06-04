@@ -659,9 +659,14 @@ public final class MLookup extends Lookup implements Serializable
 	}	//	getDirect
 	
 	@Override
-	public NamePair[] getDirect(Object[] keys) 
+	public NamePair[] getDirect(Object[] keys)
 	{
 		List<NamePair> list = new ArrayList<NamePair>();
+		// IDEMPIERE-7024 hook: same gate as the single-key getDirect(); when any
+		// provider denies caching every shared-cache read and write is bypassed
+		// so the batched lookup also resolves from the database for the current
+		// context and does not seed stale labels into the shared caches.
+		boolean uiCacheable = org.adempiere.base.UIBehaviour.isLookupCacheable(this, m_info);
 		String cacheKey = m_info.TableName+"|"+m_info.KeyColumn+"|"+m_info.AD_Reference_Value_ID+"|"+Env.getAD_Language(Env.getCtx());
 		boolean isNumber = m_info.KeyColumn.endsWith("_ID");
 		CCache<Integer, KeyNamePair> knpCache = null;
@@ -674,27 +679,33 @@ public final class MLookup extends Lookup implements Serializable
 			{
 				KeyNamePair knp = null;
 				int id = Integer.parseInt(key.toString());
-				knpCache = getDirectKeyNamePairCache(m_info, cacheKey);
-				knp = knpCache.get(id);
-				if (knp == null) 
+				if (uiCacheable)
+				{
+					knpCache = getDirectKeyNamePairCache(m_info, cacheKey);
+					knp = knpCache.get(id);
+				}
+				if (knp == null)
 				{
 					knp = new KeyNamePair(id, null);
 					notInCaches.put(id, i);
 				}
-				list.add(knp);				
+				list.add(knp);
 			}
 			else
 			{
 				ValueNamePair vnp = null;
-				vnpCache = getDirectValueNamePairCache(m_info, cacheKey);
-				vnp = vnpCache.get(key.toString());
+				if (uiCacheable)
+				{
+					vnpCache = getDirectValueNamePairCache(m_info, cacheKey);
+					vnp = vnpCache.get(key.toString());
+				}
 				if (vnp == null)
 				{
 					vnp = new ValueNamePair(key.toString(), null);
 					notInCaches.put(key.toString(), i);
 				}
-				list.add(vnp);				
-			}			
+				list.add(vnp);
+			}
 		}
 				
 		if (notInCaches.size() > 0)
@@ -736,7 +747,8 @@ public final class MLookup extends Lookup implements Serializable
 					{
 						int keyValue = rs.getInt(1);
 						KeyNamePair p = new KeyNamePair(keyValue, name.toString());
-						knpCache.put(p.getKey(), p);
+						if (uiCacheable && knpCache != null)
+							knpCache.put(p.getKey(), p);
 						Integer idx  = notInCaches.get(p.getKey());
 						if (idx != null)
 							list.set(idx.intValue(), p);
@@ -749,7 +761,8 @@ public final class MLookup extends Lookup implements Serializable
 						else
 							value = rs.getString(2);
 						ValueNamePair p = new ValueNamePair(value, name.toString());
-						vnpCache.put(p.getValue(), p);
+						if (uiCacheable && vnpCache != null)
+							vnpCache.put(p.getValue(), p);
 						Integer idx  = notInCaches.get(p.getValue());
 						if (idx != null)
 							list.set(idx.intValue(), p);
