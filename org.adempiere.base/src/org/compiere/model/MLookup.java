@@ -534,9 +534,15 @@ public final class MLookup extends Lookup implements Serializable
 			return null;
 		if (key.toString().trim().length() == 0)
 			return null;
+		// IDEMPIERE-7024 hook: decide once whether the lookup-result caches may
+		// be read and written for this call. When any provider denies caching
+		// (e.g. the lookup depends on a dynamic context such as the current
+		// time-travel date), every cache access below is bypassed and the value
+		// is always resolved from the database for the current context.
+		boolean uiCacheable = org.adempiere.base.UIBehaviour.isLookupCacheable(this, m_info);
 		//
 		NamePair directValue = null;
-		if (m_lookupDirect != null)		//	Lookup cache
+		if (uiCacheable && m_lookupDirect != null)		//	Lookup cache
 		{
 			directValue = (NamePair)m_lookupDirect.get(key);
 			if (directValue != null)
@@ -549,19 +555,22 @@ public final class MLookup extends Lookup implements Serializable
 		boolean isNumber = m_info.KeyColumn.endsWith("_ID");
 		CCache<Integer, KeyNamePair> knpCache = null;
 		CCache<String, ValueNamePair> vnpCache = null;
-		if (isNumber)
+		if (uiCacheable)
 		{
-			knpCache = getDirectKeyNamePairCache(m_info, cacheKey);
-			KeyNamePair knp = knpCache.get(Integer.parseInt(key.toString()));
-			if (knp != null)
-				return knp;
-		}
-		else
-		{
-			vnpCache = getDirectValueNamePairCache(m_info, cacheKey);
-			ValueNamePair vnp = vnpCache.get(key.toString());
-			if (vnp != null)
-				return vnp;
+			if (isNumber)
+			{
+				knpCache = getDirectKeyNamePairCache(m_info, cacheKey);
+				KeyNamePair knp = knpCache.get(Integer.parseInt(key.toString()));
+				if (knp != null)
+					return knp;
+			}
+			else
+			{
+				vnpCache = getDirectValueNamePairCache(m_info, cacheKey);
+				ValueNamePair vnp = vnpCache.get(key.toString());
+				if (vnp != null)
+					return vnp;
+			}
 		}
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -582,11 +591,6 @@ public final class MLookup extends Lookup implements Serializable
 				{
 					name.insert(0, INACTIVE_S).append(INACTIVE_E);
 				}
-				// IDEMPIERE-7024 hook: ask registered IUIBehaviour providers whether
-				// this lookup is cacheable; if any provider returns false the cache
-				// fill below is skipped (the resolved value is still returned for
-				// the current request).
-				boolean uiCacheable = org.adempiere.base.UIBehaviour.isLookupCacheable(this, m_info);
 				if (isNumber)
 				{
 					int keyValue = rs.getInt(1);
@@ -594,7 +598,8 @@ public final class MLookup extends Lookup implements Serializable
 					if (saveInCache && uiCacheable)		//	save if
 						m_lookup.put(Integer.valueOf(keyValue), p);
 					directValue = p;
-					knpCache.put(p.getKey(), p);
+					if (uiCacheable && knpCache != null)
+						knpCache.put(p.getKey(), p);
 				}
 				else
 				{
@@ -607,7 +612,8 @@ public final class MLookup extends Lookup implements Serializable
 					if (saveInCache && uiCacheable)		//	save if
 						m_lookup.put(value, p);
 					directValue = p;
-					vnpCache.put(p.getValue(), p);
+					if (uiCacheable && vnpCache != null)
+						vnpCache.put(p.getValue(), p);
 				}
 				if (rs.next()) {
 					Level level = Level.SEVERE;
@@ -636,7 +642,7 @@ public final class MLookup extends Lookup implements Serializable
 			pstmt = null;
 		}
 		//	Cache Local if not added to R/W cache
-		if (cacheLocal  && !saveInCache && directValue != null)
+		if (uiCacheable && cacheLocal && !saveInCache && directValue != null)
 		{
 			if (m_lookupDirect == null)
 			{
