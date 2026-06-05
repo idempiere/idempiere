@@ -146,6 +146,7 @@ public class MCostDetail extends X_M_CostDetail
 				cd.setProcessed(false);
 				cd.setAmt(Amt);
 				cd.setQty(Qty);
+				// Treat delta adjustments as backdated transactions to trigger back-date processing (e.g. current-date deltas)
 				if (!cd.isBackDate())
 					cd.setIsBackDate(true);
 			}
@@ -243,6 +244,7 @@ public class MCostDetail extends X_M_CostDetail
 				cd.setProcessed(false);
 				cd.setAmt(Amt);
 				cd.setQty(Qty);
+				// Treat delta adjustments as backdated transactions to trigger back-date processing (e.g. current-date deltas)
 				if (!cd.isBackDate())
 					cd.setIsBackDate(true);
 			}
