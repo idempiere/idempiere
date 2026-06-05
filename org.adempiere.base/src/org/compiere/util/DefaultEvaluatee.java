@@ -27,6 +27,7 @@ package org.compiere.util;
 import java.beans.Expression;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
@@ -38,8 +39,10 @@ import java.util.stream.Collectors;
 import org.compiere.model.GridTab;
 import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
+import org.compiere.model.MPeriod;
 import org.compiere.model.MRefList;
 import org.compiere.model.MTable;
+import org.compiere.model.MYear;
 import org.compiere.model.PO;
 
 /**
@@ -359,8 +362,18 @@ public class DefaultEvaluatee implements Evaluatee {
 				else if (format.equals("Description"))
 					value = MRefList.getListDescription(Env.getCtx(), DB.getSQLValueStringEx(null, "SELECT Name FROM AD_Reference WHERE AD_Reference_ID = ?", refID), value);
 			} else if (dataValue != null && dataValue instanceof Date dateValue) {
-				SimpleDateFormat df = new SimpleDateFormat(format);
-				value = df.format(dateValue);
+				if ("FY".equals(format) && dataValue instanceof Timestamp ts) {
+					MPeriod period = MPeriod.get(Env.getCtx(), ts, Env.getAD_Org_ID(Env.getCtx()), null);
+					if (period != null) {
+						MYear year = MYear.get(period.getC_Year_ID());
+						if (year != null) {
+							value = year.getFiscalYear();
+						}
+					}
+				} else if (!"FY".equals(format)) {
+					SimpleDateFormat df = new SimpleDateFormat(format);
+					value = df.format(dateValue);
+				}
 			} else if (dataValue != null && dataValue instanceof Number numberValue) {
 				DecimalFormat df = new DecimalFormat(format);
 				value = df.format(numberValue.doubleValue());
