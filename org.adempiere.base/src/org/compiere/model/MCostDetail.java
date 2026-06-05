@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.exceptions.PeriodClosedException;
 import org.compiere.util.CLogger;
@@ -1453,7 +1454,25 @@ public class MCostDetail extends X_M_CostDetail
 					.setOrderBy("M_CostDetail_ID DESC")
 					.first();
 		}
-		
+		else if (isReversedOrderLandedCost) {
+			// For a reversed landed cost (freight reversal), load costInfo from the
+			// reversal product CD (M_CostElement_ID=0) that was just processed.
+			// This ensures setWeightedAverage uses the post-reversal product-only price
+			// as its base, not the pre-reversal combined price from freight history.
+			StringBuilder whereClause = new StringBuilder();
+			whereClause.append("C_OrderLine_ID = ? ");
+			whereClause.append(" AND TRUNC(DateAcct) = "+DB.TO_DATE(getDateAcct(), true));
+			whereClause.append(" AND M_Product_ID = ?");
+			whereClause.append(" AND M_AttributeSetInstance_ID = ?");
+			whereClause.append(" AND C_AcctSchema_ID = ?");
+			whereClause.append(" AND COALESCE(M_CostElement_ID,0) = 0");  // product CD only
+			whereClause.append(" AND M_CostDetail_ID < ?");
+			cd = new Query(as.getCtx(), I_M_CostDetail.Table_Name, whereClause.toString(), get_TrxName())
+					.setParameters(getC_OrderLine_ID(), product.get_ID(), M_ASI_ID, as.get_ID(), this.get_ID())
+					.setOrderBy("M_CostDetail_ID DESC")
+					.first();
+		}
+
 		if (getC_InvoiceLine_ID() > 0 && getM_CostElement_ID() == 0) {
 			MInvoiceLine il = new MInvoiceLine(getCtx(), getC_InvoiceLine_ID(), get_TrxName());
 			MInvoice i = new MInvoice(getCtx(), il.getC_Invoice_ID(), get_TrxName());
@@ -1509,12 +1528,66 @@ public class MCostDetail extends X_M_CostDetail
 		ICostInfo costInfo = MCost.getCostInfo(product.getCtx(), product.getAD_Client_ID(), Org_ID, product.getM_Product_ID(), 
 					as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(), M_ASI_ID, getDateAcct(), 
 					cd != null ? cd : this, get_TrxName());
+
+		// When processing a PO product CD, aggregate all non-costing-method elements (freight, labor, etc.)
+		// MCost must show the complete unit cost including all landed cost components
+		BigDecimal additionalLandedCostPrice = Env.ZERO;
+		if (getC_OrderLine_ID() > 0 && ce.isCostingMethod() && costInfo != null)
+		{
+			// This is a PO product CD with costing method
+			// Look for landed cost MCost records (freight, labor, etc.) for same product and date
+			try
+			{
+				// Query for MCost records of other cost elements from same date (not product element)
+				StringBuilder sql = new StringBuilder();
+				sql.append("SELECT SUM(COALESCE(m.CurrentCostPrice, 0)) as TotalLandedPrice ");
+				sql.append("FROM M_Cost m ");
+				sql.append("LEFT OUTER JOIN M_CostElement ce ON (m.M_CostElement_ID = ce.M_CostElement_ID) ");
+				sql.append("WHERE m.M_Product_ID = ? ");
+				sql.append("  AND m.M_AttributeSetInstance_ID = ? ");
+				sql.append("  AND m.C_AcctSchema_ID = ? ");
+				sql.append("  AND m.AD_Org_ID = ? ");
+				sql.append("  AND m.M_CostElement_ID <> ? ");  // Exclude product element (usually 0)
+				sql.append("  AND m.M_CostElement_ID > 0 ");   // Only freight/labor elements
+				sql.append("  AND (ce.CostingMethod IS NULL)");  // Only non-costing-method elements
+
+				BigDecimal lPrice = DB.getSQLValueBD(get_TrxName(), sql.toString(), 
+					new Object[]{product.get_ID(), M_ASI_ID, as.getC_AcctSchema_ID(), Org_ID, ce.getM_CostElement_ID()});
+
+				if (lPrice != null && lPrice.signum() != 0)
+					additionalLandedCostPrice = lPrice;
+			}
+			catch (Exception e)
+			{
+				log.log(Level.SEVERE, "Error querying landed cost price", e);
+				throw new AdempiereException("Failed to query landed cost price", e);
+			}
+		}
+
 		if (costInfo != null)
 		{
-			cost.setCurrentQty(costInfo.getCurrentQty());
-			cost.setCurrentCostPrice(costInfo.getCurrentCostPrice());
-			cost.setCumulatedQty(costInfo.getCumulatedQty());
-			cost.setCumulatedAmt(costInfo.getCumulatedAmt());
+			// For a reversed landed cost (freight reversal), costInfo is loaded from the
+			// reversal product CD to get the correct post-reversal CurrentQty and price base.
+			// We only apply CurrentQty and CurrentCostPrice from it — NOT CumulatedAmt/CumulatedQty,
+			// which belong to the freight MCost record and must be updated via delta below.
+			if (isReversedOrderLandedCost)
+			{
+				cost.setCurrentQty(costInfo.getCurrentQty());
+				cost.setCurrentCostPrice(costInfo.getCurrentCostPrice());
+			}
+			else
+			{
+				cost.setCurrentQty(costInfo.getCurrentQty());
+
+				// Set the product-only cost price for the weighted average calculation.
+				// additionalLandedCostPrice is added back AFTER setWeightedAverage so that
+				// the weighted average formula uses only the product component as its base,
+				// preventing double-counting of freight in the average calculation.
+				cost.setCurrentCostPrice(costInfo.getCurrentCostPrice());
+
+				cost.setCumulatedQty(costInfo.getCumulatedQty());
+				cost.setCumulatedAmt(costInfo.getCumulatedAmt());
+			}
 		}
 		
 		DB.getDatabase().forUpdate(cost, 120);
@@ -1533,8 +1606,13 @@ public class MCostDetail extends X_M_CostDetail
 				amt = getDeltaAmt();
 			} else {
 				if (isReversedOrderLandedCost) {
-					qty = getDeltaQty();
-					amt = getDeltaAmt();
+					// For a reversed landed cost (e.g. freight reversal), the qty change
+					// was already handled by the product CD. Set qty=0 so only the price
+					// is adjusted here, not the CurrentQty.
+					// Use getAmt() (the new cumulative target) not getDeltaAmt() (the negative delta),
+					// so setWeightedAverage computes the correct new price from the target total.
+					qty = BigDecimal.ZERO;
+					amt = getAmt();
 				} else {
 					qty = getQty();
 					amt = getAmt();
@@ -1572,8 +1650,31 @@ public class MCostDetail extends X_M_CostDetail
 			
 			if (ce.isAveragePO())
 			{
-				if (!(qty.signum() == 0 && cost.getCurrentQty().signum() <= 0))
-					cost.setWeightedAverage(amt, qty);
+				if (isReversedOrderLandedCost)
+				{
+					// For a reversed landed cost (freight reversal), the product CD has already
+					// updated CurrentQty and CumulatedAmt/CumulatedQty on the AveragePO MCost.
+					// We only need to set the correct final price:
+					// product-only price (from costInfo) + per-unit landed cost (getAmt()/getQty().abs()).
+					// Do NOT call setWeightedAverage.
+					BigDecimal unitLandedCost = Env.ZERO;
+					if (getQty().signum() != 0)
+						unitLandedCost = getAmt().divide(getQty().abs(), as.getCostingPrecision(), RoundingMode.HALF_UP);
+					cost.setCurrentCostPrice(cost.getCurrentCostPrice().add(unitLandedCost));
+					// Set CumulatedAmt/CumulatedQty to the new cumulative freight totals
+					// stored in the CD itself (getAmt()=new target total, getQty()=new target qty).
+					cost.setCumulatedAmt(getAmt());
+					cost.setCumulatedQty(getQty());
+				}
+				else
+				{
+					if (!(qty.signum() == 0 && cost.getCurrentQty().signum() <= 0))
+						cost.setWeightedAverage(amt, qty);
+					// After the weighted average is computed from the product-only component,
+					// add the landed cost (freight, etc.) to show the full unit cost.
+					if (additionalLandedCostPrice.signum() != 0)
+						cost.setCurrentCostPrice(cost.getCurrentCostPrice().add(additionalLandedCostPrice));
+				}
 				if (log.isLoggable(Level.FINER)) log.finer("PO - AveragePO - " + cost);
 			}
 			else if (ce.isLastPOPrice() && !costAdjustment)

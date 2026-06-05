@@ -35,6 +35,7 @@ import org.compiere.model.MCostDetail;
 import org.compiere.model.MCurrency;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
+import org.compiere.model.MInOutLineMA;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MMatchPO;
 import org.compiere.model.MOrder;
@@ -50,6 +51,7 @@ import org.compiere.process.DocAction;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
 
 /**
@@ -370,7 +372,9 @@ public class Doc_MatchPO extends Doc
 				}
 				amt = amt.multiply(rate);
 			}
-			amt = amt.divide(getQty(), 12, RoundingMode.HALF_UP);
+			// Use absolute qty so landedCostMap always stores a positive per-unit amount.
+			// For reversals getQty() is negative; the sign is applied later in createLandedCostAdjustments.
+			amt = amt.divide(getQty().abs(), 12, RoundingMode.HALF_UP);
 			landedCost = landedCost.add(amt);
 			if (landedCost.scale() > as.getCostingPrecision())
 				landedCost = landedCost.setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
@@ -575,11 +579,28 @@ public class Doc_MatchPO extends Doc
 	}
 
 	/**
-	 * Create cost detail for MatchPO 	
-	 * @param as
-	 * @param poCost
-	 * @param landedCostMap
-	 * @return error message or empty string
+	 * Creates MCostDetail records for a MatchPO document (product cost and any PO estimated
+	 * landed costs such as freight, duty, insurance, etc.).
+	 * <p>
+	 * For each receipt the method maintains a single cumulative MCostDetail record per
+	 * order line / ASI / cost element / accounting date, updating it via the delta mechanism
+	 * when subsequent receipts arrive on the same date.
+	 * <p>
+	 * <b>Landed cost handling:</b> PO estimated landed costs (M_OrderLandedCost) are stored
+	 * as separate MCostDetail records keyed by their cost element (M_CostElement_ID &gt; 0).
+	 * The amount passed is the cumulative total (unitAmt &times; cumulativeQty) so that
+	 * MCostDetail.process() can derive the correct per-unit cost via setWeightedAverage.
+	 * <p>
+	 * <b>Reversal handling:</b> The product cost detail is created first so that MCost
+	 * reflects the post-reversal state before the landed cost details are processed.
+	 * For Batch/Lot costing the per-ASI cumulative totals (asiTotals) are passed to
+	 * createLandedCostAdjustments so each lot's landed cost is proportional to its own
+	 * cumulative quantity rather than a ratio of the current receipt's MA split.
+	 *
+	 * @param as           accounting schema
+	 * @param poCost       PO unit cost (product only, already currency-converted)
+	 * @param landedCostMap map of M_CostElement_ID to per-unit landed cost amount
+	 * @return error message, or empty string on success
 	 */
 	private String createMatchPOCostDetail(MAcctSchema as, BigDecimal poCost, Map<Integer, BigDecimal> landedCostMap)
 	{
@@ -588,21 +609,30 @@ public class Doc_MatchPO extends Doc
 		{
 			MMatchPO mMatchPO = (MMatchPO) getPO(); 
 			
-			// Source from Doc_MatchPO.createFacts(MAcctSchema)
-			MInOut inOut = m_ioLine.getParent(); 
-			boolean isReturnTrx = inOut.getMovementType().equals(X_M_InOut.MOVEMENTTYPE_VendorReturns);
-
-			// Create Cost Detail Matched PO using Total Amount and Total Qty based on OrderLine
+			// Fetch all MatchPO records for same OrderLine
 			MMatchPO[] mPO = MMatchPO.getOrderLine(getCtx(), m_oLine.getC_OrderLine_ID(), getTrxName());
+
+			// Preserve original unit cost
+			BigDecimal unitCost = poCost;
+
+			// tQty/tAmt represent cumulative totals BEFORE current MatchPO
 			BigDecimal tQty = Env.ZERO;
 			BigDecimal tAmt = Env.ZERO;
+			
+			// Build cumulative totals from previous MatchPOs
+			// During reversal exclude the original reversed MatchPO
 			for (int i = 0 ; i < mPO.length ; i++)
 			{
+				// Keep aggregation window aligned with MCostDetail DateAcct key. Only accumulate
+				// MatchPO records posted on the same accounting date.
+				// During reversal exclude the original reversed MatchPO itself, otherwise reversal
+				// recalculates from an already-to-be-reversed state.
 				if (mPO[i].getM_AttributeSetInstance_ID() == mMatchPO.getM_AttributeSetInstance_ID()
 					&& mPO[i].getM_MatchPO_ID() != mMatchPO.getM_MatchPO_ID()
-					&& mPO[i].getDateAcct().compareTo(mMatchPO.getDateAcct()) == 0)
+					&& TimeUtil.isSameDay(mPO[i].getDateAcct(), mMatchPO.getDateAcct())
+					&& !(mMatchPO.isReversal() && mMatchPO.getReversal_ID() > 0 && mPO[i].getM_MatchPO_ID() == mMatchPO.getReversal_ID()))
 				{
-					BigDecimal qty = (isReturnTrx ? mPO[i].getQty().negate() : mPO[i].getQty());
+					BigDecimal qty = mPO[i].getQty();
 					BigDecimal orderCost = BigDecimal.ZERO;
 					if (mPO[i].getM_InOutLine_ID() > 0)
 					{
@@ -622,108 +652,429 @@ public class Doc_MatchPO extends Doc
 									order.getC_Currency_ID(), as.getC_Currency_ID(),
 									dateAcct, order.getC_ConversionType_ID(),
 									m_oLine.getAD_Client_ID(), m_oLine.getAD_Org_ID());
-
 								if (rate == null)
 								{
 									p_Error = "Purchase Order not convertible - " + as.getName();
 									return null;
 								}
-									orderCost = orderCost.multiply(rate);
-									tAmt = tAmt.add(orderCost.multiply(qty));
-
+								orderCost = orderCost.multiply(rate);
+								tAmt = tAmt.add(orderCost.multiply(qty));
 							} else {
 								tAmt = tAmt.add(poCost.multiply(qty));
 							}
-						}  //IDEMPIERE-3742  Wrong product cost for partial MR
-						else {
+						} else {
 							tAmt = tAmt.add(poCost.multiply(qty));
 						}
 					}
 				}
-			}			
-			poCost = poCost.multiply(getQty());			//	Delivered so far
-			tAmt = tAmt.add(isReturnTrx ? poCost.negate() : poCost);
-			tQty = tQty.add(isReturnTrx ? getQty().negate() : getQty());
-			
-			if (mMatchPO.isReversal()) 
-			{
-				String error = createLandedCostAdjustments(as, landedCostMap, mMatchPO, tQty);
-				if (!Util.isEmpty(error))
-					return error;
 			}
-			
+
+			// currentQty/currentAmt represent ONLY current document delta
+			BigDecimal currentQty = mMatchPO.isReversal() ? tQty : getQty();
+			BigDecimal currentAmt = Env.ZERO;
+
+			if (mMatchPO.isReversal()) {
+
+				// For reversals:
+				// tQty/tAmt already exclude reversed MatchPO,
+				// therefore they represent final cumulative state
+				poCost = poCost.multiply(tQty);
+
+				// Replace cumulative amount instead of adding.
+				// tAmt carries product cost only — landed costs are handled
+				// separately by createLandedCostAdjustments below.
+				tAmt = poCost;
+
+				// Current reversal delta used for MA redistribution
+				currentAmt = getQty().multiply(unitCost);
+
+			} else {
+
+				// Normal receipt accumulation
+				poCost = poCost.multiply(getQty());
+
+				tAmt = tAmt.add(poCost);
+				tQty = tQty.add(getQty());
+
+				currentAmt = poCost;
+			}
+
+			// Enforce costing precision
 			if (tAmt.scale() > as.getCostingPrecision())
 				tAmt = tAmt.setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
-			int Ref_CostDetail_ID = 0;
-			if (mMatchPO.getReversal_ID() > 0 && mMatchPO.get_ID() > mMatchPO.getReversal_ID())
+
+			MProduct product = MProduct.get(getCtx(), getM_Product_ID());
+
+			MInOutLineMA mas[] = null;
+
+			// Batch/Lot costing requires ASI redistribution
+			if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as))
+				&& mMatchPO.getM_AttributeSetInstance_ID() == 0)
 			{
-				MMatchPO reversal = new MMatchPO(getCtx(), mMatchPO.getReversal_ID(), getTrxName());
-				MCostDetail cd = MCostDetail.getOrder(as, getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
-						reversal.getC_OrderLine_ID(), 0, reversal.getDateAcct(), getTrxName());
-				if (cd != null)
-					Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+				mas = MInOutLineMA.get(getCtx(), m_ioLine.get_ID(), getTrxName());
 			}
-			// Set Total Amount and Total Quantity from Matched PO
-			if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(), 
-					getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
-					m_oLine.getC_OrderLine_ID(), 0,		//	no cost element
-					tAmt, tQty,			//	Delivered
-					m_oLine.getDescription(), getDateAcct(), Ref_CostDetail_ID, getTrxName()))
+
+			// asiTotals: per-ASI cumulative [qty, productAmt] map built in the Batch/Lot path.
+			// Passed to createLandedCostAdjustments so each lot's landed cost amount is
+			// computed from its own cumulative qty rather than a proportional share of tQty.
+			Map<Integer, BigDecimal[]> asiTotals = null;
+
+			if (mas != null && mas.length > 0)
 			{
-				return "SaveError";
+				// key = ASI, value = [qty, amt]
+				asiTotals = new LinkedHashMap<Integer, BigDecimal[]>();
+
+				// Rebuild cumulative ASI totals from previous same-day receipts
+				// using EACH receipt's own MA distribution
+				for (int i = 0 ; i < mPO.length ; i++)
+				{
+					if (mPO[i].getM_MatchPO_ID() == mMatchPO.getM_MatchPO_ID()
+						|| mPO[i].getM_InOutLine_ID() == 0
+						|| mPO[i].getDateAcct().compareTo(mMatchPO.getDateAcct()) != 0
+						|| (mMatchPO.isReversal() && mMatchPO.getReversal_ID() > 0 && mPO[i].getM_MatchPO_ID() == mMatchPO.getReversal_ID()))
+						continue;
+
+					BigDecimal qty = mPO[i].getQty();
+					BigDecimal orderAmt = Env.ZERO;
+
+					// Rebuild historical receipt amount
+					if (m_oLine.getC_Currency_ID() != as.getC_Currency_ID())
+					{
+						MOrder order = m_oLine.getParent();
+						MProduct productPrev = new MProduct(getCtx(), m_oLine.getM_Product_ID(), getTrxName());
+						if(MAcctSchema.COSTINGMETHOD_AveragePO.equals(productPrev.getCostingMethod(as))) 
+						{
+							MInOutLine iol = new MInOutLine(getCtx(), mPO[i].getM_InOutLine_ID(), getTrxName());
+							MOrderLine ol = new MOrderLine(getCtx(), iol.getC_OrderLine_ID(), getTrxName());
+
+							BigDecimal orderCost = ol.getPriceActual();
+							Timestamp dateAcct = iol.getParent().getDateAcct();
+							BigDecimal rate = MConversionRate.getRate(
+								order.getC_Currency_ID(), as.getC_Currency_ID(),
+								dateAcct, order.getC_ConversionType_ID(),
+								m_oLine.getAD_Client_ID(), m_oLine.getAD_Org_ID());
+							if (rate == null)
+							{
+								p_Error = "Purchase Order not convertible - " + as.getName();
+								return null;
+							}
+
+							orderCost = orderCost.multiply(rate);
+							orderAmt = orderCost.multiply(qty);
+						} else {
+							orderAmt = unitCost.multiply(qty);
+						}
+					} else {
+						orderAmt = unitCost.multiply(qty);
+					}
+
+					// Reconstruct ORIGINAL receipt ASI distribution
+					MInOutLine prevLine = new MInOutLine(getCtx(), mPO[i].getM_InOutLine_ID(), getTrxName());
+
+					MInOutLineMA[] prevMas = MInOutLineMA.get(getCtx(), prevLine.get_ID(), getTrxName());
+
+					BigDecimal totalPrevQty = prevLine.getMovementQty();
+					BigDecimal sumPrevQty = Env.ZERO;
+					BigDecimal sumPrevAmt = Env.ZERO;
+					for (int k = 0; k < prevMas.length; k++)
+					{
+						MInOutLineMA prevMA = prevMas[k];
+						BigDecimal prevMaQty = prevMA.getMovementQty();
+						BigDecimal qtyByASI = Env.ZERO;
+						BigDecimal amtByASI = Env.ZERO;
+
+						// Allocate using ORIGINAL MA ratio
+						if (totalPrevQty.signum() != 0)
+						{
+							qtyByASI = qty.multiply(prevMaQty).divide(totalPrevQty, 12, RoundingMode.HALF_UP);
+							amtByASI = orderAmt.multiply(prevMaQty).divide(totalPrevQty, as.getCostingPrecision(), RoundingMode.HALF_UP);
+						}
+
+						// Last-line remainder protection
+						if (k == prevMas.length - 1)
+						{
+							qtyByASI = qty.subtract(sumPrevQty);
+							amtByASI = orderAmt.subtract(sumPrevAmt);
+						}
+						else
+						{
+							sumPrevQty = sumPrevQty.add(qtyByASI);
+							sumPrevAmt = sumPrevAmt.add(amtByASI);
+						}
+
+						BigDecimal[] totals = asiTotals.get(prevMA.getM_AttributeSetInstance_ID());
+						if (totals == null)
+							totals = new BigDecimal[] { Env.ZERO, Env.ZERO };
+						totals[0] = totals[0].add(qtyByASI);
+						totals[1] = totals[1].add(amtByASI);
+						asiTotals.put(prevMA.getM_AttributeSetInstance_ID(), totals);
+					}
+				}
+
+				// For normal receipts: add the current receipt's MA-distributed qty/amt to asiTotals.
+				// For reversals: asiTotals already holds the final target state (cumulative from all
+				// remaining non-reversed receipts). Do not add the reversal delta. Instead, ensure
+				// every ASI from the reversed receipt line appears in asiTotals (defaulting to zero)
+				// so its MCostDetail is updated even when no prior receipts remain.
+				if (mMatchPO.isReversal())
+				{
+					for (int j = 0; j < mas.length; j++)
+					{
+						MInOutLineMA ma = mas[j];
+						if (!asiTotals.containsKey(ma.getM_AttributeSetInstance_ID()))
+							asiTotals.put(ma.getM_AttributeSetInstance_ID(), new BigDecimal[] { Env.ZERO, Env.ZERO });
+					}
+				}
+				else
+				{
+					BigDecimal sumAmt = Env.ZERO;
+					BigDecimal sumQty = Env.ZERO;
+					BigDecimal totalIOLineQty = m_ioLine.getMovementQty();
+	
+					for (int j = 0; j < mas.length; j++)
+					{
+						MInOutLineMA ma = mas[j];
+						BigDecimal maQty = ma.getMovementQty();
+						BigDecimal qty = Env.ZERO;
+						BigDecimal amt = Env.ZERO;
+	
+						// IMPORTANT:
+						// Only current receipt delta is distributed here
+						if (totalIOLineQty.signum() != 0)
+						{
+							qty = currentQty.multiply(maQty).divide(totalIOLineQty, 12, RoundingMode.HALF_UP);
+							amt = currentAmt.multiply(maQty).divide(totalIOLineQty, as.getCostingPrecision(), RoundingMode.HALF_UP);
+						}
+	
+						// Last-line remainder protection
+						if (j == mas.length - 1)
+						{
+							qty = currentQty.subtract(sumQty);
+							amt = currentAmt.subtract(sumAmt);
+						}
+						else
+						{
+							sumQty = sumQty.add(qty);
+							sumAmt = sumAmt.add(amt);
+						}
+	
+						BigDecimal[] totals = asiTotals.get(ma.getM_AttributeSetInstance_ID());
+						if (totals == null)
+							totals = new BigDecimal[] { Env.ZERO, Env.ZERO };
+	
+						// Merge current receipt into cumulative ASI totals
+						totals[0] = totals[0].add(qty);
+						totals[1] = totals[1].add(amt);
+						asiTotals.put(ma.getM_AttributeSetInstance_ID(), totals);
+					}
+				} // !isReversal
+
+				// Persist final ASI cumulative totals
+				for (Map.Entry<Integer, BigDecimal[]> entry : asiTotals.entrySet())
+				{
+					int asiId = entry.getKey();
+					BigDecimal[] totals = entry.getValue();
+					int Ref_CostDetail_ID = getReversalRefCostDetailID(as, mMatchPO, asiId, 0);
+					if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(), 
+							getM_Product_ID(), asiId,
+							m_oLine.getC_OrderLine_ID(), 0, 		//	no cost element
+							totals[1], totals[0], 		//	Delivered
+							m_oLine.getDescription(), getDateAcct(), Ref_CostDetail_ID, getTrxName()))
+					{
+						return "SaveError";
+					}
+				}
+			}
+			else
+			{
+				// Non-ASI costing
+				int Ref_CostDetail_ID = getReversalRefCostDetailID(as, mMatchPO, mMatchPO.getM_AttributeSetInstance_ID(), 0);
+				// Set Total Amount and Total Quantity from Matched PO
+				if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(), 
+						getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
+						m_oLine.getC_OrderLine_ID(), 0,		//	no cost element
+						tAmt, tQty,			//	Delivered
+						m_oLine.getDescription(), getDateAcct(), Ref_CostDetail_ID, getTrxName()))
+				{
+					return "SaveError";
+				}
 			}
 			
-			if (!mMatchPO.isReversal())
+			// Landed cost adjustment executes AFTER product cost detail creation for
+			// both normal receipts and reversals. This ensures MCost already reflects
+			// the correct post-receipt/post-reversal qty and price when the freight
+			// CD's setWeightedAverage runs.
 			{
-				String error = createLandedCostAdjustments(as, landedCostMap, mMatchPO, tQty);
+				String error = createLandedCostAdjustments(as, landedCostMap, mMatchPO, tQty,
+						mas != null && mas.length > 0 ? asiTotals : null);
 				if (!Util.isEmpty(error))
 					return error;
 			}
-			// end MZ
 		}
+
 		return "";
 	}
 
 	/**
-	 * Create cost detail for landed cost adjustment
+	 * Create cost detail for landed cost adjustment.
+	 * <p>
+	 * The amount passed to MCostDetail.createOrder must be the CUMULATIVE total
+	 * (unitAmt × tQty) so that MCostDetail.process() — which uses setWeightedAverage
+	 * with qty=0 (costAdjustment mode) and divides by currentQty — arrives at the
+	 * correct per-unit landed cost price.
+	 * <p>
+	 * For normal receipts:  tQty = cumulative qty including this receipt.
+	 * For reversals:        tQty = cumulative qty AFTER reversal (excluding reversed MR).
+	 * <p>
+	 * For Batch/Lot costing, asiTotals provides the per-ASI cumulative qty so that
+	 * each ASI's freight amount = unitAmt × asiCumulativeQty (not a ratio of tQty).
+	 *
 	 * @param as
-	 * @param landedCostMap
+	 * @param landedCostMap  map of costElementID → per-unit landed cost amount
 	 * @param mMatchPO
-	 * @param tQty
+	 * @param tQty           cumulative quantity (used for non-ASI path)
+	 * @param asiTotals      per-ASI cumulative [qty, amt] map (null for non-ASI path)
 	 * @return error message or empty string
 	 */
 	private String createLandedCostAdjustments(MAcctSchema as,
 			Map<Integer, BigDecimal> landedCostMap, MMatchPO mMatchPO,
-			BigDecimal tQty) {
-		for(Integer elementId : landedCostMap.keySet())
+			BigDecimal tQty, Map<Integer, BigDecimal[]> asiTotals) {
+
+		MProduct product = MProduct.get(getCtx(), getM_Product_ID());
+		MInOutLineMA[] mas = null;
+		if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as))
+			&& mMatchPO.getM_AttributeSetInstance_ID() == 0
+			&& m_ioLine != null && m_ioLine.get_ID() > 0)
 		{
-			BigDecimal amt = landedCostMap.get(elementId);
-			if (mMatchPO.isReversal())
-				amt = amt.negate();
-			amt = amt.multiply(tQty);
+			mas = MInOutLineMA.get(getCtx(), m_ioLine.get_ID(), getTrxName());
+		}
+
+		for(Integer elementID : landedCostMap.keySet())
+		{
+			BigDecimal unitAmt = landedCostMap.get(elementID);
+
+			// amt = unitAmt × tQty (cumulative total), mirroring how the product CD
+			// passes tAmt/tQty. MCostDetail.process() uses setWeightedAverage(amt, qty=0)
+			// in costAdjustment mode and divides amt by currentQty, so passing the
+			// cumulative total ensures the correct per-unit landed cost price.
+			//
+			// For reversals tQty is the remaining qty after reversal (e.g. 2 after
+			// reversing one of two receipts), so amt correctly reflects the new
+			// cumulative landed cost total.
+			BigDecimal amt = unitAmt.multiply(tQty);
+
 			if (amt.scale() > as.getCostingPrecision())
 				amt = amt.setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
-			int Ref_CostDetail_ID = 0;
-			if (mMatchPO.getReversal_ID() > 0 && mMatchPO.get_ID() > mMatchPO.getReversal_ID())
+
+			// qty for the CD record must also be cumulative (tQty) so that the
+			// existing CD is updated consistently with the product CD pattern.
+			// For both normal receipts and reversals, pass the positive remaining
+			// cumulative qty — the delta mechanism in createOrder computes the
+			// correct signed difference against the previously stored value.
+			BigDecimal baseQty = tQty;
+
+			if (mas != null && mas.length > 0 && asiTotals != null)
 			{
-				MMatchPO reversal = new MMatchPO(getCtx(), mMatchPO.getReversal_ID(), getTrxName());
-				MCostDetail cd = MCostDetail.getOrder(as, getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
-						reversal.getC_OrderLine_ID(), 0, reversal.getDateAcct(), getTrxName());
-				if (cd != null)
-					Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+				// Batch/Lot path: each ASI gets its own cumulative freight amount
+				// = unitAmt × asiCumulativeQty (from asiTotals built by the product CD path).
+				// This ensures each lot's freight is proportional to its own cumulative qty,
+				// not a ratio of the current receipt's MA split applied to the total.
+				for (Map.Entry<Integer, BigDecimal[]> entry : asiTotals.entrySet())
+				{
+					int asiId = entry.getKey();
+					BigDecimal[] totals = entry.getValue();
+					BigDecimal asiCumulativeQty = totals[0];
+
+					// Freight cumulative total for this ASI = unitAmt × asiCumulativeQty
+					BigDecimal lineAmt = unitAmt.multiply(asiCumulativeQty);
+					if (lineAmt.scale() > as.getCostingPrecision())
+						lineAmt = lineAmt.setScale(as.getCostingPrecision(), RoundingMode.HALF_UP);
+
+					int Ref_CostDetail_ID = getReversalRefCostDetailID(as, mMatchPO, asiId, elementID);
+					if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(),
+							getM_Product_ID(), asiId,
+							m_oLine.getC_OrderLine_ID(), elementID,
+							lineAmt, asiCumulativeQty,
+							m_oLine.getDescription(), getDateAcct(), Ref_CostDetail_ID, getTrxName()))
+					{
+						return "SaveError";
+					}
+				}
 			}
-			if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(), 
-					getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
-					m_oLine.getC_OrderLine_ID(), elementId,
-					amt, tQty,			//	Delivered
-					m_oLine.getDescription(), getDateAcct(), Ref_CostDetail_ID, getTrxName()))
+			else if (mas != null && mas.length > 0)
 			{
-				return "SaveError";
+				BigDecimal totalAmt = amt;
+				BigDecimal sumAmt = Env.ZERO;
+				BigDecimal sumQty = Env.ZERO;
+				BigDecimal totalIOLineQty = m_ioLine.getMovementQty();
+				// Use current receipt qty for MA proportional distribution (not cumulative tQty)
+				BigDecimal currentQty = getQty();
+
+				for (int j = 0; j < mas.length; j++)
+				{
+					MInOutLineMA ma = mas[j];
+					BigDecimal maQty = ma.getMovementQty();
+					BigDecimal qty = Env.ZERO;
+					BigDecimal lineAmt = Env.ZERO;
+					if (totalIOLineQty.signum() != 0)
+					{
+						qty = currentQty.multiply(maQty).divide(totalIOLineQty, 12, RoundingMode.HALF_UP);
+						lineAmt = totalAmt.multiply(maQty).divide(totalIOLineQty, as.getCostingPrecision(), RoundingMode.HALF_UP);
+					}
+					if (j == mas.length - 1)
+					{
+						qty = currentQty.subtract(sumQty);
+						lineAmt = totalAmt.subtract(sumAmt);
+					}
+					else
+					{
+						sumQty = sumQty.add(qty);
+						sumAmt = sumAmt.add(lineAmt);
+					}
+
+					int Ref_CostDetail_ID = getReversalRefCostDetailID(as, mMatchPO, ma.getM_AttributeSetInstance_ID(), elementID);
+					if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(), 
+							getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
+							m_oLine.getC_OrderLine_ID(), elementID,
+							lineAmt, qty,			//	Delivered
+							m_oLine.getDescription(), getDateAcct(), Ref_CostDetail_ID, getTrxName()))
+					{
+						return "SaveError";
+					}
+				}
+			}
+			else
+			{
+				int Ref_CostDetail_ID = getReversalRefCostDetailID(as, mMatchPO, mMatchPO.getM_AttributeSetInstance_ID(), elementID);
+				if (!MCostDetail.createOrder(as, m_oLine.getAD_Org_ID(), 
+						getM_Product_ID(), mMatchPO.getM_AttributeSetInstance_ID(),
+						m_oLine.getC_OrderLine_ID(), elementID,
+						amt, baseQty,			//	Delivered
+						m_oLine.getDescription(), getDateAcct(), Ref_CostDetail_ID, getTrxName()))
+				{
+					return "SaveError";
+				}
 			}
 		}
 		return null;
 	}
 
+	/**
+	* Resolve Ref_CostDetail_ID from the reversal MMatchPO for the given ASI and cost element, if any.
+	*/
+	private int getReversalRefCostDetailID(MAcctSchema as, MMatchPO mMatchPO, int M_AttributeSetInstance_ID, int costElementID)
+	{
+		if (mMatchPO.getReversal_ID() > 0 && mMatchPO.get_ID() > mMatchPO.getReversal_ID())
+		{
+			MMatchPO reversal = new MMatchPO(getCtx(), mMatchPO.getReversal_ID(), getTrxName());
+			MCostDetail cd = MCostDetail.getOrder(as, getM_Product_ID(), M_AttributeSetInstance_ID,
+					reversal.getC_OrderLine_ID(), costElementID, reversal.getDateAcct(), getTrxName());
+			if (cd != null)
+				return cd.getM_CostDetail_ID();
+		}
+		
+		return 0;
+	} // getReversalRefCostDetailID
 
 	@Override
 	public boolean isDeferPosting() {
