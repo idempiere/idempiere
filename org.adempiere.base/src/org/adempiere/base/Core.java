@@ -1310,4 +1310,6 @@ public class Core {
 		IServiceReferenceHolder<IMarkdownRenderer> holder = Service.locator().locate(IMarkdownRenderer.class).getServiceReference();
 		return holder != null ? holder.getService() : null; 
 	}
+
+
 }
