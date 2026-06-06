@@ -262,6 +262,10 @@ public class MBankTransfer extends X_C_BankTransfer implements DocAction {
 		}else {
 			paymentBankFrom.setC_DocType_ID(false);
 		}
+		if(getFrom_User1_ID() > 0)
+			paymentBankFrom.setUser1_ID(getFrom_User1_ID());
+		if(getFrom_User2_ID() > 0)
+			paymentBankFrom.setUser2_ID(getFrom_User2_ID());
 		paymentBankFrom.setC_Charge_ID(getFrom_C_Charge_ID());
 		if (as.getC_Currency_ID() != getFrom_C_Currency_ID()) {
 			paymentBankFrom.setC_ConversionType_ID(getC_ConversionType_ID());
@@ -296,6 +300,10 @@ public class MBankTransfer extends X_C_BankTransfer implements DocAction {
 		}else {
 			paymentBankTo.setC_DocType_ID(true);
 		}
+		if(getTo_User1_ID() > 0)
+			paymentBankTo.setUser1_ID(getTo_User1_ID());
+		if(getTo_User2_ID() > 0)
+			paymentBankTo.setUser2_ID(getTo_User2_ID());
 		paymentBankTo.setC_Charge_ID(getTo_C_Charge_ID());
 		if (as.getC_Currency_ID() != getTo_C_Currency_ID()) {
 			paymentBankTo.setC_ConversionType_ID(getC_ConversionType_ID());

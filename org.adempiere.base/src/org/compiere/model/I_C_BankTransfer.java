@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_BankTransfer
  *  @author iDempiere (generated) 
- *  @version Release 13
+ *  @version Release 14
  */
 public interface I_C_BankTransfer 
 {
@@ -272,6 +272,30 @@ public interface I_C_BankTransfer
 	/** Get From Tender Type	  */
 	public String getFrom_TenderType();
 
+    /** Column name From_User1_ID */
+    public static final String COLUMNNAME_From_User1_ID = "From_User1_ID";
+
+	/** Set From User Element List 1	  */
+	public void setFrom_User1_ID (int From_User1_ID);
+
+	/** Get From User Element List 1	  */
+	public int getFrom_User1_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_ElementValue getFrom_User1() throws RuntimeException;
+
+    /** Column name From_User2_ID */
+    public static final String COLUMNNAME_From_User2_ID = "From_User2_ID";
+
+	/** Set From User Element List 2	  */
+	public void setFrom_User2_ID (int From_User2_ID);
+
+	/** Get From User Element List 2	  */
+	public int getFrom_User2_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_ElementValue getFrom_User2() throws RuntimeException;
+
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
 
@@ -436,6 +460,30 @@ public interface I_C_BankTransfer
 
 	/** Get To Tender Type	  */
 	public String getTo_TenderType();
+
+    /** Column name To_User1_ID */
+    public static final String COLUMNNAME_To_User1_ID = "To_User1_ID";
+
+	/** Set To User Element List 1	  */
+	public void setTo_User1_ID (int To_User1_ID);
+
+	/** Get To User Element List 1	  */
+	public int getTo_User1_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_ElementValue getTo_User1() throws RuntimeException;
+
+    /** Column name To_User2_ID */
+    public static final String COLUMNNAME_To_User2_ID = "To_User2_ID";
+
+	/** Set To User Element List 2	  */
+	public void setTo_User2_ID (int To_User2_ID);
+
+	/** Get To User Element List 2	  */
+	public int getTo_User2_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_ElementValue getTo_User2() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
