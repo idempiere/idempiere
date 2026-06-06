@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MAllocationHdr;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.POResultSet;
@@ -55,7 +54,9 @@ public class AllocationReset extends SvrProcess
 	private boolean		p_AllAllocations = false;
 	/** Transaction				*/
 	protected Trx		m_trx = null;
-	
+
+	private String m_lastError = null;
+
 	/**
 	 *  Prepare - e.g., get Parameters.
 	 */
@@ -119,10 +120,12 @@ public class AllocationReset extends SvrProcess
 				String err = testIfDeleteable(hdr);
 				if (!Util.isEmpty(err))
 					return "@Error@ " + err;
-				if (delete(hdr))
+
+				err = deleteAndGetError(hdr);
+				if (Util.isEmpty(err))
 					count++;
 				else
-					throw new AdempiereException("Cannot delete");
+					return err;
 			} finally {
 				m_trx.close();
 			}
@@ -168,7 +171,10 @@ public class AllocationReset extends SvrProcess
 				if (!Util.isEmpty(err))
 					return "@Error@ " + err;
 
-				if (delete(hdr))
+				err = deleteAndGetError(hdr);
+				if (!Util.isEmpty(err))
+					return err;
+				else
 					count++;
 			}
 		} finally {
@@ -187,19 +193,44 @@ public class AllocationReset extends SvrProcess
 		return "";
 	}
 
-	protected boolean delete(MAllocationHdr hdr)
-	{
-		boolean success = false;
-		if (hdr.delete(true, m_trx.getTrxName()))
+	protected boolean delete(MAllocationHdr hdr) {
+		if (log.isLoggable(Level.FINE)) log.fine(hdr.toString());
+		String documentInfo = hdr.getDocumentInfo();
+		boolean success = hdr.delete(true, m_trx.getTrxName());
+		if (!success)
 		{
-			if (log.isLoggable(Level.FINE)) log.fine(hdr.toString());
-			success = true;
-		}
-		if (success)
-			success = m_trx.commit();
-		else
+			m_lastError = "@DeleteError@" + documentInfo;
 			m_trx.rollback();
-		return success;
+			return false;
+		}
+		else {
+			try {
+				success = m_trx.commit(true);
+
+				if (!success) {
+					m_lastError = "CommitError" + " " + documentInfo;
+					m_trx.rollback();
+					return false;
+			    }
+			}
+			catch (Exception e) {
+				m_lastError = "CommitError" + " " + documentInfo + ": " + e.getMessage();
+				m_trx.rollback();
+			    return false;
+			}
+		}
+		return true;
 	}	//	delete
+
+	protected String deleteAndGetError(MAllocationHdr hdr)
+	{
+		 m_lastError = null;
+
+		    if (!delete(hdr))
+		        return m_lastError;
+
+		   return "";
+		
+	}	//	deleteAndGetError
 
 }	//	AllocationReset
