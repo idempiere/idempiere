@@ -41,8 +41,8 @@ import org.compiere.util.TimeUtil;
  * Cost History Model
  */
 public class MCostHistory extends X_M_CostHistory implements ICostInfo {
-	
-	private static final long serialVersionUID = -5916746920051232413L;
+
+	private static final long serialVersionUID = 2888046182215046615L;
 
 	/**
      * UUID based Constructor
@@ -328,5 +328,24 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
 	public BigDecimal getCurrentQty() {
 		return getNewQty();
 	}
+	
+	/**
+	 * 	String Representation
+	 *	@return info
+	 */
+	@Override
+	public String toString ()
+	{
+		StringBuilder sb = new StringBuilder ("MCostHistory[");
+		sb.append (get_ID());
+		if (getM_CostDetail_ID() != 0)
+			sb.append (",M_CostDetail_ID=").append (getM_CostDetail_ID());
+		sb.append(",NewCostPrice=").append(getNewCostPrice())
+			.append(",NewQty=").append(getNewQty());
+		sb.append(",OldCostPrice=").append(getOldCostPrice())
+			.append(",OldQty=").append(getOldQty());
+		sb.append ("]");
+		return sb.toString ();
+	}	//	toString
 
 }
