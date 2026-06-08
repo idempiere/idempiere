@@ -860,7 +860,7 @@ public class MStorageOnHand extends X_M_StorageOnHand
 			get_TrxName());
 		load(get_TrxName());
 		
-		List<IStorageValidator> validators = StorageValidatorProvider.getStorageValidators();
+		IStorageValidator[] validators = StorageValidatorProvider.getStorageValidators();
 		for (IStorageValidator validator : validators) {
 			validator.validate(this, addition, null, get_TrxName());
 		}

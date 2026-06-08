@@ -320,7 +320,7 @@ public class MStorageReservation extends X_M_StorageReservation {
 			get_TrxName());
 		load(get_TrxName());
 		
-		List<IStorageValidator> validators = StorageValidatorProvider.getStorageValidators();
+		IStorageValidator[] validators = StorageValidatorProvider.getStorageValidators();
 		for (IStorageValidator validator : validators) {
 			validator.validate(this, addition, tracer, get_TrxName());
 		}
