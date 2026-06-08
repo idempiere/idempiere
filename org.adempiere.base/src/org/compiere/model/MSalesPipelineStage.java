@@ -37,7 +37,7 @@ import org.idempiere.cache.ImmutablePOSupport;
  *  @author Nicolas Micoud
  *  @version $Id: MSalesPipelineStage.java
  */
-public class MSalesPipelineStage extends X_C_SalesPipeline_Stage implements ImmutablePOSupport
+public class MSalesPipelineStage extends X_C_SalesPipelineStage implements ImmutablePOSupport
 {
 	private static final long serialVersionUID = -1434268649136407257L;
 	private static CLogger s_log = CLogger.getCLogger(MSalesPipelineStage.class);

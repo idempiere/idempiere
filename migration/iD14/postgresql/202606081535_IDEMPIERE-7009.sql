@@ -1,5 +1,5 @@
 -- IDEMPIERE-7009
-SELECT register_migration_script('202605281018_IDEMPIERE-7009.sql') FROM dual;
+SELECT register_migration_script('202606081535_IDEMPIERE-7009.sql') FROM dual;
 
 -- May 28, 2026, 10:18:40 AM CEST
 INSERT INTO AD_Table (AD_Table_ID,Name,Description,TableName,AccessLevel,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSecurityEnabled,IsDeleteable,IsHighVolume,IsView,EntityType,IsChangeLog,ReplicationType,AD_Table_UU,Processing) VALUES (200445,'Sales Pipeline','Defines a sales pipeline (e.g. "Standard Sales", "Complex Project", etc.)','C_SalesPipeline','3',0,0,'Y',TO_TIMESTAMP('2026-05-28 10:18:40','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2026-05-28 10:18:40','YYYY-MM-DD HH24:MI:SS'),10,'N','Y','N','N','D','Y','L','019e6daa-084f-7079-8723-d45a5a208550','N')
@@ -256,137 +256,6 @@ ALTER TABLE C_SalesPipeline_Trl ADD CONSTRAINT UpdatedBy_CSalesPipelineTrl FOREI
 ALTER TABLE C_SalesPipeline_Trl ADD CONSTRAINT C_SalesPipeline_Trl_pkey PRIMARY KEY (AD_Language,C_SalesPipeline_ID)
 ;
 
--- May 28, 2026, 10:20:31 AM CEST
-INSERT INTO AD_Table (AD_Table_ID,Name,Description,TableName,AccessLevel,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSecurityEnabled,IsDeleteable,IsHighVolume,IsView,EntityType,IsChangeLog,ReplicationType,AD_Table_UU,Processing) VALUES (200447,'Sales Pipeline / Sales Stage','Link between Sales Pipeline and Sales Stages ','C_SalesPipeline_Stage','3',0,0,'Y',TO_TIMESTAMP('2026-05-28 10:20:31','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2026-05-28 10:20:31','YYYY-MM-DD HH24:MI:SS'),10,'N','Y','N','N','D','Y','L','019e6dab-bb5e-736d-85a0-ce2ba3be4c95','N')
-;
-
--- May 28, 2026, 10:20:31 AM CEST
-INSERT INTO AD_Sequence (Name,CurrentNext,IsAudited,StartNewYear,Description,IsActive,IsTableID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,AD_Sequence_ID,IsAutoSequence,StartNo,IncrementNo,CurrentNextSys,AD_Sequence_UU) VALUES ('C_SalesPipeline_Stage',1000000,'N','N','Table C_SalesPipeline_Stage','Y','Y',0,0,TO_TIMESTAMP('2026-05-28 10:20:31','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2026-05-28 10:20:31','YYYY-MM-DD HH24:MI:SS'),10,200538,'Y',1000000,1,200000,'019e6dab-bc58-72ae-937b-f016c94c9cc0')
-;
-
--- May 28, 2026, 10:20:32 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,DefaultValue,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,ReadOnlyLogic,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (217606,0.0,'Tenant','Tenant for this installation.','A Tenant is a company or a legal entity. You cannot share data between Tenants.',200447,'AD_Client_ID','@#AD_Client_ID@',10,'N','N','Y','N','N','N',30,0,0,'Y',TO_TIMESTAMP('2026-05-28 10:20:31','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2026-05-28 10:20:31','YYYY-MM-DD HH24:MI:SS'),10,102,'N','N','1=1','D','N','019e6dab-bd5b-7ea4-85e1-af9be1bb985d','N')
-;
-
--- May 28, 2026, 10:20:32 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,DefaultValue,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (217607,0.0,'Organization','Organizational entity within tenant','An organization is a unit of your tenant or legal entity - examples are store, department. You can share data between organizations.',200447,'AD_Org_ID','@AD_Org_ID@',10,'N','N','Y','N','N','N',19,0,0,'Y',TO_TIMESTAMP('2026-05-28 10:20:32','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2026-05-28 10:20:32','YYYY-MM-DD HH24:MI:SS'),10,113,'N','N','D','N','019e6dab-be7f-7992-b1e1-54543049c4b1','N')
-;
-
--- May 28, 2026, 10:20:32 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (217608,0.0,'Created','Date this record was created','The Created field indicates the date that this record was created.',200447,'Created',7,'N','N','Y','N','N','N',16,0,0,'Y',TO_TIMESTAMP('2026-05-28 10:20:32','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2026-05-28 10:20:32','YYYY-MM-DD HH24:MI:SS'),10,245,'N','N','D','N','019e6dab-bf75-7584-a5ac-31709d30302d','N')
-;
-
--- May 28, 2026, 10:20:33 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Reference_Value_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (217609,0.0,'Created By','User who created this records','The Created By field indicates the user who created this record.',200447,'CreatedBy',10,'N','N','Y','N','N','N',30,110,0,0,'Y',TO_TIMESTAMP('2026-05-28 10:20:32','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2026-05-28 10:20:32','YYYY-MM-DD HH24:MI:SS'),10,246,'N','N','D','N','019e6dab-c069-7490-a322-c9e953f9b434','N')
-;
-
--- May 28, 2026, 10:20:33 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (217610,0.0,'Updated','Date this record was updated','The Updated field indicates the date that this record was updated.',200447,'Updated',7,'N','N','Y','N','N','N',16,0,0,'Y',TO_TIMESTAMP('2026-05-28 10:20:33','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2026-05-28 10:20:33','YYYY-MM-DD HH24:MI:SS'),10,607,'N','N','D','N','019e6dab-c160-7e6d-84ff-9bf6a9e81acb','N')
-;
-
--- May 28, 2026, 10:20:33 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Reference_Value_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (217611,0.0,'Updated By','User who updated this records','The Updated By field indicates the user who updated this record.',200447,'UpdatedBy',10,'N','N','Y','N','N','N',30,110,0,0,'Y',TO_TIMESTAMP('2026-05-28 10:20:33','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2026-05-28 10:20:33','YYYY-MM-DD HH24:MI:SS'),10,608,'N','N','D','N','019e6dab-c254-7bb3-aa32-91b0f182145d','N')
-;
-
--- May 28, 2026, 10:20:33 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,DefaultValue,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (217612,0.0,'Active','The record is active in the system','There are two methods of making records unavailable in the system: One is to delete the record, the other is to de-activate the record. A de-activated record is not available for selection, but available for reports.
-There are two reasons for de-activating and not deleting records:
-(1) The system requires the record for audit purposes.
-(2) The record is referenced by other records. E.g., you cannot delete a Business Partner, if there are invoices for this partner record existing. You de-activate the Business Partner and prevent that this record is used for future entries.',200447,'IsActive','Y',1,'N','N','Y','N','N','N',20,0,0,'Y',TO_TIMESTAMP('2026-05-28 10:20:33','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2026-05-28 10:20:33','YYYY-MM-DD HH24:MI:SS'),10,348,'Y','N','D','N','019e6dab-c353-717e-ad75-0a840ee6c3b5','N')
-;
-
--- May 28, 2026, 10:20:33 AM CEST
-INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,Description,PrintName,EntityType,AD_Element_UU) VALUES (204108,0,0,'Y',TO_TIMESTAMP('2026-05-28 10:20:33','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2026-05-28 10:20:33','YYYY-MM-DD HH24:MI:SS'),10,'C_SalesPipeline_Stage_ID','Sales Pipeline / Sales Stage','Link between Sales Pipeline and Sales Stages ','Sales Pipeline / Sales Stage','D','019e6dab-c440-7685-95c3-7bee631583f8')
-;
-
--- May 28, 2026, 10:20:34 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (217613,0.0,'Sales Pipeline / Sales Stage','Link between Sales Pipeline and Sales Stages ',200447,'C_SalesPipeline_Stage_ID',22,'Y','N','Y','N','N','N',13,0,0,'Y',TO_TIMESTAMP('2026-05-28 10:20:33','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2026-05-28 10:20:33','YYYY-MM-DD HH24:MI:SS'),10,204108,'N','N','D','N','019e6dab-c536-7881-ba13-508da3f57e9e','N')
-;
-
--- May 28, 2026, 10:20:34 AM CEST
-INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,PrintName,EntityType,AD_Element_UU) VALUES (204109,0,0,'Y',TO_TIMESTAMP('2026-05-28 10:20:34','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2026-05-28 10:20:34','YYYY-MM-DD HH24:MI:SS'),10,'C_SalesPipeline_Stage_UU','C_SalesPipeline_Stage_UU','C_SalesPipeline_Stage_UU','D','019e6dab-c62e-757c-b73a-8f896273e9ec')
-;
-
--- May 28, 2026, 10:20:34 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (217614,0.0,'C_SalesPipeline_Stage_UU',200447,'C_SalesPipeline_Stage_UU',36,'N','N','N','N','N','N',200231,0,0,'Y',TO_TIMESTAMP('2026-05-28 10:20:34','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2026-05-28 10:20:34','YYYY-MM-DD HH24:MI:SS'),10,204109,'Y','N','D','N','019e6dab-c725-7964-afad-7ddef30fb8d3','N')
-;
-
--- May 28, 2026, 10:20:34 AM CEST
-INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201320,'019e6dab-c830-7ea7-86a3-a3357ee9ea34',TO_TIMESTAMP('2026-05-28 10:20:34','YYYY-MM-DD HH24:MI:SS'),10,'D','Y','C_SalesPipeline_Stage_UU_idx',TO_TIMESTAMP('2026-05-28 10:20:34','YYYY-MM-DD HH24:MI:SS'),10,200447,'Y','Y','N','N')
-;
-
--- May 28, 2026, 10:20:35 AM CEST
-INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201819,'019e6dab-c92b-7b78-9abe-d3c3ab6d7e91',TO_TIMESTAMP('2026-05-28 10:20:34','YYYY-MM-DD HH24:MI:SS'),10,'D','Y',TO_TIMESTAMP('2026-05-28 10:20:34','YYYY-MM-DD HH24:MI:SS'),10,217614,201320,10)
-;
-
--- May 28, 2026, 10:21:36 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml,IsPartitionKey) VALUES (217615,0,'Sales Pipeline','Defines a sales pipeline (e.g. "Standard Sales", "Complex Project", etc.)',200447,'C_SalesPipeline_ID',22,'N','N','Y','N','N',0,'N',30,0,0,'Y',TO_TIMESTAMP('2026-05-28 10:21:36','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2026-05-28 10:21:36','YYYY-MM-DD HH24:MI:SS'),10,204105,'N','N','D','N','N','N','Y','019e6dac-ba5d-7ab3-b951-d947b2d611e3','Y',0,'N','N','N','N','N')
-;
-
--- May 28, 2026, 10:22:06 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,IsHtml,IsPartitionKey) VALUES (217616,0,'Sales Stage','Stages of the sales process','Define what stages your sales process will move through',200447,'C_SalesStage_ID',22,'N','N','Y','N','N',0,'N',19,0,0,'Y',TO_TIMESTAMP('2026-05-28 10:22:06','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2026-05-28 10:22:06','YYYY-MM-DD HH24:MI:SS'),10,55289,'Y','N','D','N','N','N','Y','019e6dad-2de1-7b88-bbc5-14cbc9f73378','Y',0,'N','N','N','N')
-;
-
--- May 28, 2026, 10:22:14 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,IsHtml,IsPartitionKey) VALUES (217617,0,'Probability',200447,'Probability',10,'N','N','Y','N','N',0,'N',22,0,0,'Y',TO_TIMESTAMP('2026-05-28 10:22:13','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2026-05-28 10:22:13','YYYY-MM-DD HH24:MI:SS'),10,54396,'Y','N','D','N','N','N','Y','019e6dad-4bc7-75d3-97d9-8f0e029a71f9','Y',0,'N','N','N','N')
-;
-
--- May 28, 2026, 10:22:34 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,DefaultValue,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,IsHtml,IsPartitionKey) VALUES (217618,0,'Sequence','Method of ordering records; lowest number comes first','The Sequence indicates the order of records',200447,'SeqNo','@SQL=SELECT NVL(MAX(SeqNo), 0) + 10 AS DefaultValue FROM C_SalesPipeline_Stage WHERE C_SalesPipeline_ID =@C_SalesPipeline_ID@',22,'N','N','Y','N','N',0,'N',11,0,0,'Y',TO_TIMESTAMP('2026-05-28 10:22:34','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2026-05-28 10:22:34','YYYY-MM-DD HH24:MI:SS'),10,566,'Y','N','D','N','N','N','Y','019e6dad-9a8b-72f0-be4b-a8abd56973d2','Y',0,'N','N','N','N')
-;
-
--- May 28, 2026, 10:22:35 AM CEST
-UPDATE AD_Column SET IsAllowCopy='N', FKConstraintName='ADClient_CSalesPipelineStage', FKConstraintType='N',Updated=TO_TIMESTAMP('2026-05-28 10:22:35','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Column_ID=217606
-;
-
--- May 28, 2026, 10:22:35 AM CEST
-UPDATE AD_Column SET IsAllowCopy='N', FKConstraintName='ADOrg_CSalesPipelineStage', FKConstraintType='N',Updated=TO_TIMESTAMP('2026-05-28 10:22:35','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Column_ID=217607
-;
-
--- May 28, 2026, 10:22:35 AM CEST
-UPDATE AD_Column SET FKConstraintName='CSalesPipeline_CSalesPipelineStage', FKConstraintType='N',Updated=TO_TIMESTAMP('2026-05-28 10:22:35','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Column_ID=217615
-;
-
--- May 28, 2026, 10:22:35 AM CEST
-UPDATE AD_Column SET FKConstraintName='CSalesStage_CSalesPipelineStage', FKConstraintType='N',Updated=TO_TIMESTAMP('2026-05-28 10:22:35','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Column_ID=217616
-;
-
--- May 28, 2026, 10:22:35 AM CEST
-UPDATE AD_Column SET IsAllowCopy='N', FKConstraintName='CreatedBy_CSalesPipelineStage', FKConstraintType='N',Updated=TO_TIMESTAMP('2026-05-28 10:22:35','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Column_ID=217609
-;
-
--- May 28, 2026, 10:22:35 AM CEST
-UPDATE AD_Column SET IsAllowCopy='N', FKConstraintName='UpdatedBy_CSalesPipelineStage', FKConstraintType='N',Updated=TO_TIMESTAMP('2026-05-28 10:22:35','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Column_ID=217611
-;
-
--- May 28, 2026, 10:22:35 AM CEST
-CREATE TABLE C_SalesPipeline_Stage (AD_Client_ID NUMERIC(10) NOT NULL, AD_Org_ID NUMERIC(10) NOT NULL, C_SalesPipeline_ID NUMERIC(10) NOT NULL, C_SalesPipeline_Stage_ID NUMERIC(10) NOT NULL, C_SalesPipeline_Stage_UU UUID DEFAULT NULL , C_SalesStage_ID NUMERIC(10) NOT NULL, Created TIMESTAMP NOT NULL, CreatedBy NUMERIC(10) NOT NULL, IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, Probability NUMERIC NOT NULL, SeqNo NUMERIC(10) NOT NULL, Updated TIMESTAMP NOT NULL, UpdatedBy NUMERIC(10) NOT NULL, CONSTRAINT C_SalesPipeline_Stage_Key PRIMARY KEY (C_SalesPipeline_Stage_ID), CONSTRAINT C_SalesPipeline_Stage_UU_idx UNIQUE (C_SalesPipeline_Stage_UU))
-;
-
--- May 28, 2026, 10:22:35 AM CEST
-ALTER TABLE C_SalesPipeline_Stage ADD CONSTRAINT ADClient_CSalesPipelineStage FOREIGN KEY (AD_Client_ID) REFERENCES ad_client(ad_client_id) DEFERRABLE INITIALLY DEFERRED
-;
-
--- May 28, 2026, 10:22:35 AM CEST
-ALTER TABLE C_SalesPipeline_Stage ADD CONSTRAINT ADOrg_CSalesPipelineStage FOREIGN KEY (AD_Org_ID) REFERENCES ad_org(ad_org_id) DEFERRABLE INITIALLY DEFERRED
-;
-
--- May 28, 2026, 10:22:35 AM CEST
-ALTER TABLE C_SalesPipeline_Stage ADD CONSTRAINT CSalesPipeline_CSalesPipelineStage FOREIGN KEY (C_SalesPipeline_ID) REFERENCES c_salespipeline(c_salespipeline_id) DEFERRABLE INITIALLY DEFERRED
-;
-
--- May 28, 2026, 10:22:35 AM CEST
-ALTER TABLE C_SalesPipeline_Stage ADD CONSTRAINT CSalesStage_CSalesPipelineStage FOREIGN KEY (C_SalesStage_ID) REFERENCES c_salesstage(c_salesstage_id) DEFERRABLE INITIALLY DEFERRED
-;
-
--- May 28, 2026, 10:22:35 AM CEST
-ALTER TABLE C_SalesPipeline_Stage ADD CONSTRAINT CreatedBy_CSalesPipelineStage FOREIGN KEY (CreatedBy) REFERENCES ad_user(ad_user_id) DEFERRABLE INITIALLY DEFERRED
-;
-
--- May 28, 2026, 10:22:35 AM CEST
-ALTER TABLE C_SalesPipeline_Stage ADD CONSTRAINT UpdatedBy_CSalesPipelineStage FOREIGN KEY (UpdatedBy) REFERENCES ad_user(ad_user_id) DEFERRABLE INITIALLY DEFERRED
-;
-
 -- May 28, 2026, 10:23:01 AM CEST
 INSERT INTO AD_Window (AD_Window_ID,Name,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,WindowType,Processing,EntityType,IsSOTrx,IsDefault,IsBetaFunctionality,AD_Window_UU) VALUES (200164,'Sales Pipeline',0,0,'Y',TO_TIMESTAMP('2026-05-28 10:23:00','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2026-05-28 10:23:00','YYYY-MM-DD HH24:MI:SS'),10,'M','N','D','Y','N','N','019e6dae-0330-7c11-8a0e-bbae7f57e4fc')
 ;
@@ -490,59 +359,8 @@ There are two reasons for de-activating and not deleting records:
 UPDATE AD_Table SET AD_Window_ID=200164,Updated=TO_TIMESTAMP('2026-05-28 10:23:42','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Table_ID=200446
 ;
 
--- May 28, 2026, 10:23:55 AM CEST
-INSERT INTO AD_Tab (AD_Tab_ID,Name,AD_Window_ID,SeqNo,IsSingleRow,AD_Table_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,HasTree,IsTranslationTab,IsReadOnly,AD_Column_ID,OrderByClause,Processing,TabLevel,IsSortTab,EntityType,IsInsertRecord,IsAdvancedTab,AD_Tab_UU) VALUES (200426,'Sales Pipeline / Sales Stage',200164,30,'Y',200447,0,0,'Y',TO_TIMESTAMP('2026-05-28 10:23:55','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2026-05-28 10:23:55','YYYY-MM-DD HH24:MI:SS'),10,'N','N','N',217615,'C_SalesPipeline_Stage.Created DESC','N',1,'N','D','Y','N','019e6dae-d869-7a9d-bbb9-6ca2fcef8701')
-;
-
--- May 28, 2026, 10:23:56 AM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,ColumnSpan) VALUES (209204,'Tenant','Tenant for this installation.','A Tenant is a company or a legal entity. You cannot share data between Tenants.',200426,217606,'Y',10,10,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2026-05-28 10:23:55','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2026-05-28 10:23:55','YYYY-MM-DD HH24:MI:SS'),10,'N','Y','D','019e6dae-d971-7dbe-9791-beefa0e72b04','N',2)
-;
-
--- May 28, 2026, 10:23:56 AM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsAllowCopy,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan) VALUES (209205,'Organization','Organizational entity within tenant','An organization is a unit of your tenant or legal entity - examples are store, department. You can share data between organizations.',200426,217607,'Y',10,20,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2026-05-28 10:23:56','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2026-05-28 10:23:56','YYYY-MM-DD HH24:MI:SS'),10,'N','Y','D','019e6dae-da65-7ab2-9f29-6ed64746a420','Y','Y',10,4,2)
-;
-
--- May 28, 2026, 10:23:56 AM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,Description,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,ColumnSpan) VALUES (209206,'Sales Pipeline / Sales Stage','Link between Sales Pipeline and Sales Stages ',200426,217613,'N',22,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2026-05-28 10:23:56','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2026-05-28 10:23:56','YYYY-MM-DD HH24:MI:SS'),10,'N','Y','D','019e6dae-db59-79a1-8bf6-358eb67b45c1','N',2)
-;
-
--- May 28, 2026, 10:23:56 AM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,ColumnSpan) VALUES (209207,'C_SalesPipeline_Stage_UU',200426,217614,'N',36,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2026-05-28 10:23:56','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2026-05-28 10:23:56','YYYY-MM-DD HH24:MI:SS'),10,'N','Y','D','019e6dae-dc57-7a02-ab11-b195ccc05628','N',2)
-;
-
--- May 28, 2026, 10:23:57 AM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,Description,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (209208,'Sales Pipeline','Defines a sales pipeline (e.g. "Standard Sales", "Complex Project", etc.)',200426,217615,'Y',22,30,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2026-05-28 10:23:56','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2026-05-28 10:23:56','YYYY-MM-DD HH24:MI:SS'),10,'N','Y','D','019e6dae-dd5f-7c2a-a2d9-bf6f3c1242a6','Y',20,2)
-;
-
--- May 28, 2026, 10:23:57 AM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (209209,'Sales Stage','Stages of the sales process','Define what stages your sales process will move through',200426,217616,'Y',22,40,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2026-05-28 10:23:57','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2026-05-28 10:23:57','YYYY-MM-DD HH24:MI:SS'),10,'N','Y','D','019e6dae-de50-71c5-baa6-6c39cf42a3fe','Y',30,2)
-;
-
--- May 28, 2026, 10:23:57 AM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (209210,'Probability',200426,217617,'Y',10,50,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2026-05-28 10:23:57','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2026-05-28 10:23:57','YYYY-MM-DD HH24:MI:SS'),10,'N','Y','D','019e6dae-df49-7731-b4e4-48cc270ad5c2','Y',40,2)
-;
-
--- May 28, 2026, 10:23:57 AM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (209211,'Sequence','Method of ordering records; lowest number comes first','The Sequence indicates the order of records',200426,217618,'Y',22,60,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2026-05-28 10:23:57','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2026-05-28 10:23:57','YYYY-MM-DD HH24:MI:SS'),10,'N','Y','D','019e6dae-e045-7f85-ab10-1692cd3bb3ea','Y',50,2)
-;
-
--- May 28, 2026, 10:23:58 AM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan) VALUES (209212,'Active','The record is active in the system','There are two methods of making records unavailable in the system: One is to delete the record, the other is to de-activate the record. A de-activated record is not available for selection, but available for reports.
-There are two reasons for de-activating and not deleting records:
-(1) The system requires the record for audit purposes.
-(2) The record is referenced by other records. E.g., you cannot delete a Business Partner, if there are invoices for this partner record existing. You de-activate the Business Partner and prevent that this record is used for future entries.',200426,217612,'Y',1,70,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2026-05-28 10:23:57','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2026-05-28 10:23:57','YYYY-MM-DD HH24:MI:SS'),10,'N','Y','D','019e6dae-e133-7b13-87f5-976af2e64bc9','Y',60,2,2)
-;
-
--- May 28, 2026, 10:23:58 AM CEST
-UPDATE AD_Table SET AD_Window_ID=200164,Updated=TO_TIMESTAMP('2026-05-28 10:23:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Table_ID=200447
-;
-
 -- May 28, 2026, 10:24:15 AM CEST
 UPDATE AD_Tab SET Name='Translation',Updated=TO_TIMESTAMP('2026-05-28 10:24:15','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Tab_ID=200425
-;
-
--- May 28, 2026, 10:24:57 AM CEST
-UPDATE AD_Tab SET OrderByClause='C_SalesPipeline_Stage.SeqNo, C_SalesPipeline_Stage.C_SalesPipeline_Stage_ID',Updated=TO_TIMESTAMP('2026-05-28 10:24:57','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Tab_ID=200426
 ;
 
 -- May 28, 2026, 10:26:12 AM CEST
@@ -550,22 +368,18 @@ INSERT INTO AD_Reference (AD_Reference_ID,Name,ValidationType,AD_Client_ID,AD_Or
 ;
 
 -- May 28, 2026, 10:26:47 AM CEST
-INSERT INTO AD_Ref_Table (AD_Reference_ID,AD_Table_ID,AD_Key,AD_Display,WhereClause,OrderByClause,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsValueDisplayed,EntityType,AD_Ref_Table_UU,IsDisplayIdentifier) VALUES (200287,53338,62154,62154,'C_SalesStage.IsActive=''Y''','COALESCE(
-(
-    SELECT TO_CHAR(sps.SeqNo)
-    FROM C_SalesPipeline_Stage sps
-    WHERE sps.C_SalesStage_ID=C_SalesStage.C_SalesStage_ID
-    AND sps.C_SalesPipeline_ID=@C_SalesPipeline_ID:0@
-),
-C_SalesStage.Value
+INSERT INTO AD_Ref_Table (AD_Reference_ID,AD_Table_ID,AD_Key,AD_Display,WhereClause,OrderByClause,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsValueDisplayed,EntityType,AD_Ref_Table_UU,IsDisplayIdentifier) VALUES (200287,53338,62154,62154,'C_SalesStage.IsActive=''Y''','(
+    SELECT sps.SeqNo
+    FROM C_SalesPipelineStage sps
+    WHERE sps.C_SalesStage_ID = C_SalesStage.C_SalesStage_ID
+    AND sps.C_SalesPipeline_ID = @C_SalesPipeline_ID:0@
 )',0,0,'Y',TO_TIMESTAMP('2026-05-28 10:26:47','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2026-05-28 10:26:47','YYYY-MM-DD HH24:MI:SS'),10,'N','D','019e6db1-7706-7f83-b8cc-5b73e3b58de4','N')
 ;
 
 -- May 28, 2026, 10:27:05 AM CEST
-INSERT INTO AD_Val_Rule (AD_Val_Rule_ID,Name,Type,Code,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,AD_Val_Rule_UU) VALUES (200209,'C_SalesStage for Opportunity','S','@C_SalesPipeline_ID:0@ = 0
-OR EXISTS (
+INSERT INTO AD_Val_Rule (AD_Val_Rule_ID,Name,Type,Code,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,AD_Val_Rule_UU) VALUES (200209,'C_SalesStage for Opportunity','S','EXISTS (
     SELECT 1
-    FROM C_SalesPipeline_Stage sps
+    FROM C_SalesPipelineStage sps
     WHERE sps.C_SalesPipeline_ID = @C_SalesPipeline_ID:0@
     AND sps.C_SalesStage_ID = C_SalesStage.C_SalesStage_ID
 )',0,0,'Y',TO_TIMESTAMP('2026-05-28 10:27:04','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2026-05-28 10:27:04','YYYY-MM-DD HH24:MI:SS'),10,'D','019e6db1-bc58-7448-890a-4bcc062536e8')
@@ -573,22 +387,6 @@ OR EXISTS (
 
 -- May 28, 2026, 10:28:02 AM CEST
 UPDATE AD_Column SET AD_Val_Rule_ID=200209, AD_Reference_Value_ID=200287,Updated=TO_TIMESTAMP('2026-05-28 10:28:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Column_ID=62166
-;
-
--- May 28, 2026, 10:31:23 AM CEST
-INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,TableIndexDrop,IsKey) VALUES (0,0,201321,'019e6db5-ae50-7498-9e9d-5a743c72b5d5',TO_TIMESTAMP('2026-05-28 10:31:23','YYYY-MM-DD HH24:MI:SS'),10,'D','Y','C_SalesPipeline_Stage_Unique',TO_TIMESTAMP('2026-05-28 10:31:23','YYYY-MM-DD HH24:MI:SS'),10,200447,'N','Y','N','N','N')
-;
-
--- May 28, 2026, 10:31:32 AM CEST
-INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201820,'019e6db5-d078-72c7-98ff-cf544b2708d4',TO_TIMESTAMP('2026-05-28 10:31:32','YYYY-MM-DD HH24:MI:SS'),10,'D','Y',TO_TIMESTAMP('2026-05-28 10:31:32','YYYY-MM-DD HH24:MI:SS'),10,217615,201321,10)
-;
-
--- May 28, 2026, 10:31:34 AM CEST
-INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201821,'019e6db5-d8ad-7c2b-bbbe-3a61b1f0d569',TO_TIMESTAMP('2026-05-28 10:31:34','YYYY-MM-DD HH24:MI:SS'),10,'D','Y',TO_TIMESTAMP('2026-05-28 10:31:34','YYYY-MM-DD HH24:MI:SS'),10,217616,201321,20)
-;
-
--- May 28, 2026, 10:31:37 AM CEST
-CREATE UNIQUE INDEX C_SalesPipeline_Stage_Unique ON C_SalesPipeline_Stage (C_SalesPipeline_ID,C_SalesStage_ID)
 ;
 
 -- May 28, 2026, 10:45:14 AM CEST
@@ -679,18 +477,6 @@ UPDATE AD_Field SET SeqNo=190,Updated=TO_TIMESTAMP('2026-05-28 10:45:35','YYYY-M
 UPDATE AD_Field SET SeqNo=0,Updated=TO_TIMESTAMP('2026-05-28 10:45:35','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=204756
 ;
 
--- May 28, 2026, 11:02:30 AM CEST
-UPDATE AD_Ref_Table SET OrderByClause='COALESCE(
-(
-    SELECT LPAD(CAST(sps.SeqNo AS VARCHAR(10)), 10, ''0'')
-    FROM C_SalesPipeline_Stage sps
-    WHERE sps.C_SalesStage_ID = C_SalesStage.C_SalesStage_ID
-    AND sps.C_SalesPipeline_ID = @C_SalesPipeline_ID:0@
-),
-C_SalesStage.Value
-)',Updated=TO_TIMESTAMP('2026-05-28 11:02:30','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Reference_ID=200287
-;
-
 -- May 28, 2026, 11:05:28 AM CEST
 UPDATE AD_TreeNodeMM SET Parent_ID=0, SeqNo=14,Updated=TO_TIMESTAMP('2026-05-28 11:05:28','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Tree_ID=10 AND Node_ID=200233
 ;
@@ -705,4 +491,382 @@ UPDATE AD_TreeNodeMM SET Parent_ID=53363, SeqNo=2,Updated=TO_TIMESTAMP('2026-05-
 
 -- May 28, 2026, 11:05:28 AM CEST
 UPDATE AD_TreeNodeMM SET Parent_ID=53363, SeqNo=6,Updated=TO_TIMESTAMP('2026-05-28 11:05:28','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Tree_ID=10 AND Node_ID=53360
+;
+
+-- May 28, 2026, 1:28:21 PM CEST
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,DefaultValue,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,IsHtml,IsPartitionKey) VALUES (217620,0,'Default','Default value','The Default Checkbox indicates if this record will be used as a default value.',200445,'IsDefault','N',1,'N','N','Y','N','N',0,'N',20,0,0,'Y',TO_TIMESTAMP('2026-05-28 13:28:21','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2026-05-28 13:28:21','YYYY-MM-DD HH24:MI:SS'),10,1103,'Y','N','D','N','N','N','Y','019e6e57-b172-765d-86da-b0d11fa1eb77','Y',0,'N','N','N','N')
+;
+
+-- May 28, 2026, 1:28:22 PM CEST
+ALTER TABLE C_SalesPipeline ADD COLUMN IsDefault CHAR(1) DEFAULT 'N' CHECK (IsDefault IN ('Y','N')) NOT NULL
+;
+
+-- May 28, 2026, 1:28:31 PM CEST
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan) VALUES (209214,'Default','Default value','The Default Checkbox indicates if this record will be used as a default value.',200424,217620,'Y',1,70,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2026-05-28 13:28:31','YYYY-MM-DD HH24:MI:SS'),10,TO_TIMESTAMP('2026-05-28 13:28:31','YYYY-MM-DD HH24:MI:SS'),10,'N','Y','D','019e6e57-da86-7a5b-964f-ae70c6e65e61','Y',60,2,2)
+;
+
+-- May 28, 2026, 1:28:38 PM CEST
+UPDATE AD_Field SET SeqNo=0,Updated=TO_TIMESTAMP('2026-05-28 13:28:38','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=209193
+;
+
+-- May 28, 2026, 1:28:38 PM CEST
+UPDATE AD_Field SET SeqNo=0,Updated=TO_TIMESTAMP('2026-05-28 13:28:38','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Field_ID=209192
+;
+
+-- Jun 8, 2026, 2:19:18 PM CEST
+INSERT INTO AD_Table (AD_Table_ID,Name,Description,TableName,AccessLevel,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSecurityEnabled,IsDeleteable,IsHighVolume,IsView,EntityType,IsChangeLog,ReplicationType,AD_Table_UU,Processing) VALUES (200448,'Sales Pipeline / Sales Stage','Link between Sales Pipeline and Sales Stages','C_SalesPipelineStage','3',0,0,'Y',TO_TIMESTAMP('2026-06-08 14:19:18','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-06-08 14:19:18','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','N','N','D','Y','L','019ea72c-4b00-78ad-b956-739d619a665a','N')
+;
+
+-- Jun 8, 2026, 2:19:18 PM CEST
+INSERT INTO AD_Sequence (Name,CurrentNext,IsAudited,StartNewYear,Description,IsActive,IsTableID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,AD_Sequence_ID,IsAutoSequence,StartNo,IncrementNo,CurrentNextSys,AD_Sequence_UU) VALUES ('C_SalesPipelineStage',1000000,'N','N','Table C_SalesPipelineStage','Y','Y',0,0,TO_TIMESTAMP('2026-06-08 14:19:18','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-06-08 14:19:18','YYYY-MM-DD HH24:MI:SS'),100,200539,'Y',1000000,1,200000,'019ea72c-4c00-7dfc-84e1-54151dc2f5ea')
+;
+
+-- Jun 8, 2026, 2:19:18 PM CEST
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,DefaultValue,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,ReadOnlyLogic,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (217621,0.0,'Tenant','Tenant for this installation.','A Tenant is a company or a legal entity. You cannot share data between Tenants.',200448,'AD_Client_ID','@#AD_Client_ID@',10,'N','N','Y','N','N','N',30,0,0,'Y',TO_TIMESTAMP('2026-06-08 14:19:18','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-06-08 14:19:18','YYYY-MM-DD HH24:MI:SS'),100,102,'N','N','1=1','D','N','019ea72c-4d02-7eea-8aa4-3cc26fb9be2d','N')
+;
+
+-- Jun 8, 2026, 2:19:19 PM CEST
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,DefaultValue,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (217622,0.0,'Organization','Organizational entity within tenant','An organization is a unit of your tenant or legal entity - examples are store, department. You can share data between organizations.',200448,'AD_Org_ID','@AD_Org_ID@',10,'N','N','Y','N','N','N',19,0,0,'Y',TO_TIMESTAMP('2026-06-08 14:19:18','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-06-08 14:19:18','YYYY-MM-DD HH24:MI:SS'),100,113,'N','N','D','N','019ea72c-4e0f-734b-b904-06aabfc6fc38','N')
+;
+
+-- Jun 8, 2026, 2:19:19 PM CEST
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (217623,0.0,'Created','Date this record was created','The Created field indicates the date that this record was created.',200448,'Created',7,'N','N','Y','N','N','N',16,0,0,'Y',TO_TIMESTAMP('2026-06-08 14:19:19','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-06-08 14:19:19','YYYY-MM-DD HH24:MI:SS'),100,245,'N','N','D','N','019ea72c-4f0a-7cd2-b7a5-3aee140538df','N')
+;
+
+-- Jun 8, 2026, 2:19:19 PM CEST
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Reference_Value_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (217624,0.0,'Created By','User who created this records','The Created By field indicates the user who created this record.',200448,'CreatedBy',10,'N','N','Y','N','N','N',30,110,0,0,'Y',TO_TIMESTAMP('2026-06-08 14:19:19','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-06-08 14:19:19','YYYY-MM-DD HH24:MI:SS'),100,246,'N','N','D','N','019ea72c-5009-7466-9d49-d363a2f826ab','N')
+;
+
+-- Jun 8, 2026, 2:19:19 PM CEST
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (217625,0.0,'Updated','Date this record was updated','The Updated field indicates the date that this record was updated.',200448,'Updated',7,'N','N','Y','N','N','N',16,0,0,'Y',TO_TIMESTAMP('2026-06-08 14:19:19','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-06-08 14:19:19','YYYY-MM-DD HH24:MI:SS'),100,607,'N','N','D','N','019ea72c-5105-7847-b595-f2cd0cd0e506','N')
+;
+
+-- Jun 8, 2026, 2:19:20 PM CEST
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Reference_Value_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (217626,0.0,'Updated By','User who updated this records','The Updated By field indicates the user who updated this record.',200448,'UpdatedBy',10,'N','N','Y','N','N','N',30,110,0,0,'Y',TO_TIMESTAMP('2026-06-08 14:19:19','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-06-08 14:19:19','YYYY-MM-DD HH24:MI:SS'),100,608,'N','N','D','N','019ea72c-5201-7c2f-acff-e452fbe525b1','N')
+;
+
+-- Jun 8, 2026, 2:19:20 PM CEST
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,DefaultValue,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (217627,0.0,'Active','The record is active in the system','There are two methods of making records unavailable in the system: One is to delete the record, the other is to de-activate the record. A de-activated record is not available for selection, but available for reports.
+There are two reasons for de-activating and not deleting records:
+(1) The system requires the record for audit purposes.
+(2) The record is referenced by other records. E.g., you cannot delete a Business Partner, if there are invoices for this partner record existing. You de-activate the Business Partner and prevent that this record is used for future entries.',200448,'IsActive','Y',1,'N','N','Y','N','N','N',20,0,0,'Y',TO_TIMESTAMP('2026-06-08 14:19:20','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-06-08 14:19:20','YYYY-MM-DD HH24:MI:SS'),100,348,'Y','N','D','N','019ea72c-530a-7b5d-9ba4-320e0614a465','N')
+;
+
+-- Jun 8, 2026, 2:19:20 PM CEST
+INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,PrintName,EntityType,AD_Element_UU) VALUES (204110,0,0,'Y',TO_TIMESTAMP('2026-06-08 14:19:20','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-06-08 14:19:20','YYYY-MM-DD HH24:MI:SS'),100,'C_SalesPipelineStage_UU','C_SalesPipelineStage_UU','C_SalesPipelineStage_UU','D','019ea72c-5403-7d0b-8b19-ff453bbce52d')
+;
+
+-- Jun 8, 2026, 2:19:20 PM CEST
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (217628,0.0,'C_SalesPipelineStage_UU',200448,'C_SalesPipelineStage_UU',36,'N','N','N','N','N','N',200231,0,0,'Y',TO_TIMESTAMP('2026-06-08 14:19:20','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-06-08 14:19:20','YYYY-MM-DD HH24:MI:SS'),100,204110,'Y','N','D','N','019ea72c-5511-77d4-9dda-7d1902d7bbb8','N')
+;
+
+-- Jun 8, 2026, 2:19:21 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201322,'019ea72c-5601-7e9f-86ff-5d977d3836c2',TO_TIMESTAMP('2026-06-08 14:19:20','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','C_SalesPipelineStage_UU_idx',TO_TIMESTAMP('2026-06-08 14:19:20','YYYY-MM-DD HH24:MI:SS'),100,200448,'Y','Y','N','Y')
+;
+
+-- Jun 8, 2026, 2:19:21 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201822,'019ea72c-5706-7db6-993d-ec7b0a5f69e3',TO_TIMESTAMP('2026-06-08 14:19:21','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2026-06-08 14:19:21','YYYY-MM-DD HH24:MI:SS'),100,217628,201322,10)
+;
+
+-- Jun 8, 2026, 2:19:57 PM CEST
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,DefaultValue,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,IsHtml,IsPartitionKey) VALUES (217629,0,'Sequence','Method of ordering records; lowest number comes first','The Sequence indicates the order of records',200448,'SeqNo','@SQL=SELECT NVL(MAX(SeqNo), 0) + 10 AS DefaultValue FROM C_SalesPipelineStage WHERE C_SalesPipeline_ID =@C_SalesPipeline_ID@',22,'N','N','Y','N','N',0,'N',11,0,0,'Y',TO_TIMESTAMP('2026-06-08 14:19:57','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-06-08 14:19:57','YYYY-MM-DD HH24:MI:SS'),100,566,'Y','N','D','N','N','N','Y','019ea72c-e2e1-7a28-bbdf-81e3d9e68cfd','N',0,'N','N','N','N')
+;
+
+-- Jun 8, 2026, 2:20:06 PM CEST
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,IsHtml,IsPartitionKey) VALUES (217630,0,'Probability',200448,'Probability',10,'N','N','Y','N','N',0,'N',22,0,0,'Y',TO_TIMESTAMP('2026-06-08 14:20:06','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-06-08 14:20:06','YYYY-MM-DD HH24:MI:SS'),100,54396,'Y','N','D','N','N','N','Y','019ea72d-0651-7aed-ac38-aa28080f0d4e','Y',0,'N','N','N','N')
+;
+
+-- Jun 8, 2026, 2:20:07 PM CEST
+UPDATE AD_Column SET IsAllowCopy='N', FKConstraintName='ADClient_CSalesPipelineStage', FKConstraintType='N',Updated=TO_TIMESTAMP('2026-06-08 14:20:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217621
+;
+
+-- Jun 8, 2026, 2:20:07 PM CEST
+UPDATE AD_Column SET IsAllowCopy='N', FKConstraintName='ADOrg_CSalesPipelineStage', FKConstraintType='N',Updated=TO_TIMESTAMP('2026-06-08 14:20:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217622
+;
+
+-- Jun 8, 2026, 2:20:07 PM CEST
+UPDATE AD_Column SET IsAllowCopy='N', FKConstraintName='CreatedBy_CSalesPipelineStage', FKConstraintType='N',Updated=TO_TIMESTAMP('2026-06-08 14:20:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217624
+;
+
+-- Jun 8, 2026, 2:20:07 PM CEST
+UPDATE AD_Column SET IsAllowCopy='N', FKConstraintName='UpdatedBy_CSalesPipelineStage', FKConstraintType='N',Updated=TO_TIMESTAMP('2026-06-08 14:20:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217626
+;
+
+-- Jun 8, 2026, 2:20:07 PM CEST
+CREATE TABLE C_SalesPipelineStage (AD_Client_ID NUMERIC(10) NOT NULL, AD_Org_ID NUMERIC(10) NOT NULL, C_SalesPipelineStage_UU UUID DEFAULT NULL , Created TIMESTAMP NOT NULL, CreatedBy NUMERIC(10) NOT NULL, IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, Probability NUMERIC NOT NULL, SeqNo NUMERIC(10) NOT NULL, Updated TIMESTAMP NOT NULL, UpdatedBy NUMERIC(10) NOT NULL, CONSTRAINT C_SalesPipelineStage_UU_idx UNIQUE (C_SalesPipelineStage_UU))
+;
+
+-- Jun 8, 2026, 2:20:07 PM CEST
+ALTER TABLE C_SalesPipelineStage ADD CONSTRAINT ADClient_CSalesPipelineStage FOREIGN KEY (AD_Client_ID) REFERENCES ad_client(ad_client_id) DEFERRABLE INITIALLY DEFERRED
+;
+
+-- Jun 8, 2026, 2:20:07 PM CEST
+ALTER TABLE C_SalesPipelineStage ADD CONSTRAINT ADOrg_CSalesPipelineStage FOREIGN KEY (AD_Org_ID) REFERENCES ad_org(ad_org_id) DEFERRABLE INITIALLY DEFERRED
+;
+
+-- Jun 8, 2026, 2:20:07 PM CEST
+ALTER TABLE C_SalesPipelineStage ADD CONSTRAINT CreatedBy_CSalesPipelineStage FOREIGN KEY (CreatedBy) REFERENCES ad_user(ad_user_id) DEFERRABLE INITIALLY DEFERRED
+;
+
+-- Jun 8, 2026, 2:20:07 PM CEST
+ALTER TABLE C_SalesPipelineStage ADD CONSTRAINT UpdatedBy_CSalesPipelineStage FOREIGN KEY (UpdatedBy) REFERENCES ad_user(ad_user_id) DEFERRABLE INITIALLY DEFERRED
+;
+
+-- Jun 8, 2026, 2:20:55 PM CEST
+INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,IsKey) VALUES (0,0,201323,'019ea72d-c67f-7916-aa38-f100f221a124',TO_TIMESTAMP('2026-06-08 14:20:55','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','C_SalesPipelineStage_Unique',TO_TIMESTAMP('2026-06-08 14:20:55','YYYY-MM-DD HH24:MI:SS'),100,200448,'N','Y','N','Y')
+;
+
+-- Jun 8, 2026, 2:21:22 PM CEST
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml,IsPartitionKey) VALUES (217631,0,'Sales Pipeline','Defines a sales pipeline (e.g. "Standard Sales", "Complex Project", etc.)',200448,'C_SalesPipeline_ID',22,'N','Y','Y','N','N',0,'N',30,0,0,'Y',TO_TIMESTAMP('2026-06-08 14:21:22','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-06-08 14:21:22','YYYY-MM-DD HH24:MI:SS'),100,204105,'N','N','D','N','N','N','Y','019ea72e-3192-759a-b64f-ce20845179cb','N',0,'N','N','N','N','N')
+;
+
+-- Jun 8, 2026, 2:21:33 PM CEST
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,IsHtml,IsPartitionKey) VALUES (217632,0,'Sales Stage','Stages of the sales process','Define what stages your sales process will move through',200448,'C_SalesStage_ID',22,'N','N','Y','N','N',0,'N',19,0,0,'Y',TO_TIMESTAMP('2026-06-08 14:21:33','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-06-08 14:21:33','YYYY-MM-DD HH24:MI:SS'),100,55289,'Y','N','D','N','N','N','Y','019ea72e-5c11-7698-a1c8-c8375aa50835','Y',0,'N','N','N','N')
+;
+
+-- Jun 8, 2026, 2:21:36 PM CEST
+UPDATE AD_Column SET IsAllowCopy='N',Updated=TO_TIMESTAMP('2026-06-08 14:21:36','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217632
+;
+
+-- Jun 8, 2026, 2:21:37 PM CEST
+UPDATE AD_Column SET FKConstraintName='CSalesStage_CSalesPipelineStage', FKConstraintType='N',Updated=TO_TIMESTAMP('2026-06-08 14:21:37','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217632
+;
+
+-- Jun 8, 2026, 2:21:37 PM CEST
+ALTER TABLE C_SalesPipelineStage ADD COLUMN C_SalesStage_ID NUMERIC(10) NOT NULL
+;
+
+-- Jun 8, 2026, 2:21:37 PM CEST
+ALTER TABLE C_SalesPipelineStage ADD CONSTRAINT CSalesStage_CSalesPipelineStage FOREIGN KEY (C_SalesStage_ID) REFERENCES c_salesstage(c_salesstage_id) DEFERRABLE INITIALLY DEFERRED
+;
+
+-- Jun 8, 2026, 2:21:37 PM CEST
+UPDATE AD_Column SET IsUpdateable='N', FKConstraintName='CSalesPipeline_CSalesPipelineStage', FKConstraintType='N',Updated=TO_TIMESTAMP('2026-06-08 14:21:37','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217631
+;
+
+-- Jun 8, 2026, 2:21:37 PM CEST
+ALTER TABLE C_SalesPipelineStage ADD COLUMN C_SalesPipeline_ID NUMERIC(10) NOT NULL
+;
+
+-- Jun 8, 2026, 2:21:37 PM CEST
+ALTER TABLE C_SalesPipelineStage ADD CONSTRAINT CSalesPipeline_CSalesPipelineStage FOREIGN KEY (C_SalesPipeline_ID) REFERENCES c_salespipeline(c_salespipeline_id) DEFERRABLE INITIALLY DEFERRED
+;
+
+-- Jun 8, 2026, 2:21:49 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201823,'019ea72e-97b7-750e-bf92-8a374892b043',TO_TIMESTAMP('2026-06-08 14:21:48','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2026-06-08 14:21:48','YYYY-MM-DD HH24:MI:SS'),100,217631,201323,10)
+;
+
+-- Jun 8, 2026, 2:21:51 PM CEST
+INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201824,'019ea72e-a257-7c08-bc82-34b52226cc2c',TO_TIMESTAMP('2026-06-08 14:21:51','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2026-06-08 14:21:51','YYYY-MM-DD HH24:MI:SS'),100,217632,201323,20)
+;
+
+-- Jun 8, 2026, 2:21:55 PM CEST
+CREATE UNIQUE INDEX C_SalesPipelineStage_Unique ON C_SalesPipelineStage (C_SalesPipeline_ID,C_SalesStage_ID)
+;
+
+-- Jun 8, 2026, 2:22:11 PM CEST
+INSERT INTO AD_Tab (AD_Tab_ID,Name,AD_Window_ID,SeqNo,IsSingleRow,AD_Table_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,HasTree,IsTranslationTab,IsReadOnly,AD_Column_ID,OrderByClause,Processing,TabLevel,IsSortTab,EntityType,IsInsertRecord,IsAdvancedTab,AD_Tab_UU) VALUES (200427,'Sales Pipeline / Sales Stage',200164,30,'Y',200448,0,0,'Y',TO_TIMESTAMP('2026-06-08 14:22:10','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-06-08 14:22:10','YYYY-MM-DD HH24:MI:SS'),100,'N','N','N',217631,'C_SalesPipelineStage.Created DESC','N',1,'N','D','Y','N','019ea72e-ed67-7f98-9565-bca124bd2287')
+;
+
+-- Jun 8, 2026, 2:22:11 PM CEST
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,ColumnSpan) VALUES (209215,'Tenant','Tenant for this installation.','A Tenant is a company or a legal entity. You cannot share data between Tenants.',200427,217621,'Y',10,10,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2026-06-08 14:22:11','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-06-08 14:22:11','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','019ea72e-ee9d-76d3-a9f7-a01a441e2df4','N',2)
+;
+
+-- Jun 8, 2026, 2:22:11 PM CEST
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsAllowCopy,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan) VALUES (209216,'Organization','Organizational entity within tenant','An organization is a unit of your tenant or legal entity - examples are store, department. You can share data between organizations.',200427,217622,'Y',10,20,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2026-06-08 14:22:11','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-06-08 14:22:11','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','019ea72e-efb1-7c66-b00c-bb5853f2bb17','Y','Y',10,4,2)
+;
+
+-- Jun 8, 2026, 2:22:11 PM CEST
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (209217,'Sales Pipeline','Defines a sales pipeline (e.g. "Standard Sales", "Complex Project", etc.)',200427,217631,'Y',22,30,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2026-06-08 14:22:11','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-06-08 14:22:11','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','019ea72e-f0b2-7de1-a575-e7f68fa8cbe9','Y',20,2)
+;
+
+-- Jun 8, 2026, 2:22:12 PM CEST
+INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,ColumnSpan) VALUES (209218,'C_SalesPipelineStage_UU',200427,217628,'N',36,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2026-06-08 14:22:11','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-06-08 14:22:11','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','019ea72e-f1ba-7dcc-9de4-26323150d3a1','N',2)
+;
+
+-- Jun 8, 2026, 2:22:12 PM CEST
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (209219,'Sequence','Method of ordering records; lowest number comes first','The Sequence indicates the order of records',200427,217629,'Y',22,40,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2026-06-08 14:22:12','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-06-08 14:22:12','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','019ea72e-f2ca-7aae-a015-d7f3d636b727','Y',30,2)
+;
+
+-- Jun 8, 2026, 2:22:12 PM CEST
+INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (209220,'Probability',200427,217630,'Y',10,50,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2026-06-08 14:22:12','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-06-08 14:22:12','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','019ea72e-f3bc-7233-bb37-477fed70cd31','Y',40,2)
+;
+
+-- Jun 8, 2026, 2:22:12 PM CEST
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (209221,'Sales Stage','Stages of the sales process','Define what stages your sales process will move through',200427,217632,'Y',22,60,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2026-06-08 14:22:12','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-06-08 14:22:12','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','019ea72e-f4b5-77dd-bd22-0d72a56658e9','Y',50,2)
+;
+
+-- Jun 8, 2026, 2:22:13 PM CEST
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan) VALUES (209222,'Active','The record is active in the system','There are two methods of making records unavailable in the system: One is to delete the record, the other is to de-activate the record. A de-activated record is not available for selection, but available for reports.
+There are two reasons for de-activating and not deleting records:
+(1) The system requires the record for audit purposes.
+(2) The record is referenced by other records. E.g., you cannot delete a Business Partner, if there are invoices for this partner record existing. You de-activate the Business Partner and prevent that this record is used for future entries.',200427,217627,'Y',1,70,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2026-06-08 14:22:12','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-06-08 14:22:12','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','019ea72e-f5ae-7c22-9d92-6b836638f266','Y',60,2,2)
+;
+
+-- Jun 8, 2026, 2:22:13 PM CEST
+UPDATE AD_Table SET AD_Window_ID=200164,Updated=TO_TIMESTAMP('2026-06-08 14:22:13','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Table_ID=200448
+;
+
+-- Jun 8, 2026, 2:23:07 PM CEST
+UPDATE AD_Tab SET OrderByClause='C_SalesPipelineStage.SeqNo, C_SalesPipelineStage.Created DESC',Updated=TO_TIMESTAMP('2026-06-08 14:23:07','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tab_ID=200427
+;
+
+-- Jun 8, 2026, 2:23:20 PM CEST
+UPDATE AD_Field SET IsDisplayedGrid='Y', SeqNoGrid=40,Updated=TO_TIMESTAMP('2026-06-08 14:23:20','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=209221
+;
+
+-- Jun 8, 2026, 2:23:20 PM CEST
+UPDATE AD_Field SET IsDisplayedGrid='Y', SeqNoGrid=50,Updated=TO_TIMESTAMP('2026-06-08 14:23:20','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=209220
+;
+
+-- Jun 8, 2026, 2:23:41 PM CEST
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=40, XPosition=4,Updated=TO_TIMESTAMP('2026-06-08 14:23:41','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=209219
+;
+
+-- Jun 8, 2026, 2:23:41 PM CEST
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=50, XPosition=1,Updated=TO_TIMESTAMP('2026-06-08 14:23:41','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=209221
+;
+
+-- Jun 8, 2026, 2:23:41 PM CEST
+UPDATE AD_Field SET IsDisplayed='Y', SeqNo=60, XPosition=4,Updated=TO_TIMESTAMP('2026-06-08 14:23:41','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=209220
+;
+
+-- Jun 8, 2026, 2:23:41 PM CEST
+UPDATE AD_Field SET SeqNo=0,Updated=TO_TIMESTAMP('2026-06-08 14:23:41','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=209218
+;
+
+-- Jun 8, 2026, 2:30:50 PM CEST
+-- Insert Default Pipeline for GW
+INSERT INTO C_SalesPipeline (AD_Client_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,IsActive,C_SalesPipeline_ID,C_SalesPipeline_UU,Value,Name,IsDefault) VALUES (11,0,TO_TIMESTAMP('2026-06-08 14:30:50','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-06-08 14:30:50','YYYY-MM-DD HH24:MI:SS'),100,'Y',200000,'019ea736-db6b-7afb-9d17-c19473382160','Default','Default','Y')
+;
+
+DO $$
+DECLARE
+	v_sequenceSP_ID numeric;
+	v_salesPipeline_ID numeric;
+    v_client RECORD;
+	rec RECORD;
+    v_pipeline_id NUMERIC;
+    v_seqno NUMERIC;
+BEGIN
+
+	-- Get sequence
+    SELECT AD_Sequence_ID INTO v_sequenceSP_ID FROM AD_Sequence WHERE Name = 'C_SalesPipeline' AND IsActive='Y' AND IsTableID='Y' AND IsAutoSequence='Y' AND AD_Client_ID = 0;
+
+    FOR v_client IN
+		SELECT AD_Client_ID FROM AD_Client WHERE AD_Client_ID > 0 AND AD_Client_ID NOT IN (SELECT AD_Client_ID FROM C_SalesPipeline WHERE IsDefault = 'Y')
+
+    LOOP
+
+		v_salesPipeline_ID := nextidfunc(v_sequenceSP_ID::integer, 'N');
+
+        -- Create Default Pipeline
+        INSERT INTO C_SalesPipeline (
+            C_SalesPipeline_ID,
+			C_SalesPipeline_UU,
+            AD_Client_ID,
+            AD_Org_ID,
+            IsActive,
+            Created,
+            CreatedBy,
+            Updated,
+            UpdatedBy,
+            Name,
+			Value,
+            IsDefault
+        )
+        VALUES (
+            v_salesPipeline_ID,
+            generate_uuid(),
+			v_client.AD_Client_ID,
+            0,
+            'Y',
+            NOW(),
+            100,
+            NOW(),
+            100,
+            'Default',
+			'Default',
+            'Y'
+        )
+        RETURNING C_SalesPipeline_ID INTO v_pipeline_id;
+
+        v_seqno := 10;
+
+        -- Insert all active stages ordered by Value
+        FOR rec IN
+            SELECT C_SalesStage_ID, Probability
+            FROM C_SalesStage
+            WHERE IsActive = 'Y'
+            ORDER BY Value
+        LOOP
+
+            INSERT INTO C_SalesPipelineStage (
+				C_SalesPipelineStage_UU,
+                AD_Client_ID,
+                AD_Org_ID,
+                IsActive,
+                Created,
+                CreatedBy,
+                Updated,
+                UpdatedBy,
+                C_SalesPipeline_ID,
+                C_SalesStage_ID,
+                SeqNo,
+                Probability
+            )
+            VALUES (
+				generate_uuid(),
+                v_client.AD_Client_ID,
+                0,
+                'Y',
+                NOW(),
+                100,
+                NOW(),
+                100,
+                v_pipeline_id,
+                rec.C_SalesStage_ID,
+                v_seqno,
+                rec.Probability
+            );
+
+            v_seqno := v_seqno + 10;
+
+        END LOOP;
+
+		UPDATE C_Opportunity SET C_SalesPipeline_ID = v_pipeline_id WHERE AD_Client_ID = v_client.AD_Client_ID;
+
+    END LOOP;
+
+END $$;
+
+
+
+
+-- May 28, 2026, 2:01:48 PM CEST
+UPDATE AD_Column SET IsMandatory='Y',Updated=TO_TIMESTAMP('2026-05-28 14:01:48','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Column_ID=217619
+;
+
+-- May 28, 2026, 2:01:50 PM CEST
+INSERT INTO t_alter_column values('c_opportunity','C_SalesPipeline_ID','NUMERIC(10)',null,null)
+;
+
+-- May 28, 2026, 2:01:50 PM CEST
+INSERT INTO t_alter_column values('c_opportunity','C_SalesPipeline_ID',null,'NOT NULL',null)
+;
+
+-- Jun 8, 2026, 3:33:21 PM CEST
+UPDATE AD_Column SET DefaultValue='0',Updated=TO_TIMESTAMP('2026-06-08 15:33:21','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Column_ID=62162
+;
+
+-- Jun 8, 2026, 3:33:22 PM CEST
+INSERT INTO t_alter_column values('c_salesstage','Probability','NUMERIC',null,'0')
+;
+
+-- Jun 8, 2026, 3:33:22 PM CEST
+UPDATE C_SalesStage SET Probability=0 WHERE Probability IS NULL
+;
+
+-- Jun 8, 2026, 3:33:25 PM CEST
+UPDATE AD_Column SET IsActive='N',Updated=TO_TIMESTAMP('2026-06-08 15:33:25','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Column_ID=62162
 ;

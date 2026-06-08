@@ -62,8 +62,6 @@ public class CalloutOpportunity extends CalloutEngine {
 				return "";
 			}
 		}
-		else
-			probability = MSalesStage.get(ctx, C_SalesStage_ID).getProbability();
 
 		mTab.setValue(MOpportunity.COLUMNNAME_Probability, probability);
 

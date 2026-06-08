@@ -20,18 +20,18 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import org.compiere.util.KeyNamePair;
 
-/** Generated Interface for C_SalesPipeline_Stage
+/** Generated Interface for C_SalesPipelineStage
  *  @author iDempiere (generated) 
  *  @version Release 14
  */
-public interface I_C_SalesPipeline_Stage 
+public interface I_C_SalesPipelineStage 
 {
 
-    /** TableName=C_SalesPipeline_Stage */
-    public static final String Table_Name = "C_SalesPipeline_Stage";
+    /** TableName=C_SalesPipelineStage */
+    public static final String Table_Name = "C_SalesPipelineStage";
 
-    /** AD_Table_ID=200447 */
-    public static final int Table_ID = 200447;
+    /** AD_Table_ID=200448 */
+    public static final int Table_ID = 200448;
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
 
@@ -62,6 +62,15 @@ public interface I_C_SalesPipeline_Stage
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name C_SalesPipelineStage_UU */
+    public static final String COLUMNNAME_C_SalesPipelineStage_UU = "C_SalesPipelineStage_UU";
+
+	/** Set C_SalesPipelineStage_UU	  */
+	public void setC_SalesPipelineStage_UU (String C_SalesPipelineStage_UU);
+
+	/** Get C_SalesPipelineStage_UU	  */
+	public String getC_SalesPipelineStage_UU();
+
     /** Column name C_SalesPipeline_ID */
     public static final String COLUMNNAME_C_SalesPipeline_ID = "C_SalesPipeline_ID";
 
@@ -85,28 +94,6 @@ Complex Project&quot;
 
 	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_SalesPipeline getC_SalesPipeline() throws RuntimeException;
-
-    /** Column name C_SalesPipeline_Stage_ID */
-    public static final String COLUMNNAME_C_SalesPipeline_Stage_ID = "C_SalesPipeline_Stage_ID";
-
-	/** Set Sales Pipeline / Sales Stage.
-	  * Link between Sales Pipeline and Sales Stages 
-	  */
-	public void setC_SalesPipeline_Stage_ID (int C_SalesPipeline_Stage_ID);
-
-	/** Get Sales Pipeline / Sales Stage.
-	  * Link between Sales Pipeline and Sales Stages 
-	  */
-	public int getC_SalesPipeline_Stage_ID();
-
-    /** Column name C_SalesPipeline_Stage_UU */
-    public static final String COLUMNNAME_C_SalesPipeline_Stage_UU = "C_SalesPipeline_Stage_UU";
-
-	/** Set C_SalesPipeline_Stage_UU	  */
-	public void setC_SalesPipeline_Stage_UU (String C_SalesPipeline_Stage_UU);
-
-	/** Get C_SalesPipeline_Stage_UU	  */
-	public String getC_SalesPipeline_Stage_UU();
 
     /** Column name C_SalesStage_ID */
     public static final String COLUMNNAME_C_SalesStage_ID = "C_SalesStage_ID";

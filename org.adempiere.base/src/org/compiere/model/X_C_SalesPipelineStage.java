@@ -22,80 +22,76 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import org.compiere.util.Env;
 
-/** Generated Model for C_SalesPipeline_Stage
+/** Generated Model for C_SalesPipelineStage
  *  @author iDempiere (generated)
  *  @version Release 14 - $Id$ */
-@org.adempiere.base.Model(table="C_SalesPipeline_Stage")
-public class X_C_SalesPipeline_Stage extends PO implements I_C_SalesPipeline_Stage, I_Persistent
+@org.adempiere.base.Model(table="C_SalesPipelineStage")
+public class X_C_SalesPipelineStage extends PO implements I_C_SalesPipelineStage, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20260528L;
+	private static final long serialVersionUID = 20260608L;
 
     /** Standard Constructor */
-    public X_C_SalesPipeline_Stage (Properties ctx, int C_SalesPipeline_Stage_ID, String trxName)
+    public X_C_SalesPipelineStage (Properties ctx, int C_SalesPipelineStage_ID, String trxName)
     {
-      super (ctx, C_SalesPipeline_Stage_ID, trxName);
-      /** if (C_SalesPipeline_Stage_ID == 0)
+      super (ctx, C_SalesPipelineStage_ID, trxName);
+      /** if (C_SalesPipelineStage_ID == 0)
         {
 			setC_SalesPipeline_ID (0);
-			setC_SalesPipeline_Stage_ID (0);
 			setC_SalesStage_ID (0);
 			setProbability (Env.ZERO);
 			setSeqNo (0);
-// @SQL=SELECT NVL(MAX(SeqNo), 0) + 10 AS DefaultValue FROM C_SalesPipeline_Stage WHERE C_SalesPipeline_ID =@C_SalesPipeline_ID@
+// @SQL=SELECT NVL(MAX(SeqNo), 0) + 10 AS DefaultValue FROM C_SalesPipelineStage WHERE C_SalesPipeline_ID =@C_SalesPipeline_ID@
         } */
     }
 
     /** Standard Constructor */
-    public X_C_SalesPipeline_Stage (Properties ctx, int C_SalesPipeline_Stage_ID, String trxName, String ... virtualColumns)
+    public X_C_SalesPipelineStage (Properties ctx, int C_SalesPipelineStage_ID, String trxName, String ... virtualColumns)
     {
-      super (ctx, C_SalesPipeline_Stage_ID, trxName, virtualColumns);
-      /** if (C_SalesPipeline_Stage_ID == 0)
+      super (ctx, C_SalesPipelineStage_ID, trxName, virtualColumns);
+      /** if (C_SalesPipelineStage_ID == 0)
         {
 			setC_SalesPipeline_ID (0);
-			setC_SalesPipeline_Stage_ID (0);
 			setC_SalesStage_ID (0);
 			setProbability (Env.ZERO);
 			setSeqNo (0);
-// @SQL=SELECT NVL(MAX(SeqNo), 0) + 10 AS DefaultValue FROM C_SalesPipeline_Stage WHERE C_SalesPipeline_ID =@C_SalesPipeline_ID@
+// @SQL=SELECT NVL(MAX(SeqNo), 0) + 10 AS DefaultValue FROM C_SalesPipelineStage WHERE C_SalesPipeline_ID =@C_SalesPipeline_ID@
         } */
     }
 
     /** Standard Constructor */
-    public X_C_SalesPipeline_Stage (Properties ctx, String C_SalesPipeline_Stage_UU, String trxName)
+    public X_C_SalesPipelineStage (Properties ctx, String C_SalesPipelineStage_UU, String trxName)
     {
-      super (ctx, C_SalesPipeline_Stage_UU, trxName);
-      /** if (C_SalesPipeline_Stage_UU == null)
+      super (ctx, C_SalesPipelineStage_UU, trxName);
+      /** if (C_SalesPipelineStage_UU == null)
         {
 			setC_SalesPipeline_ID (0);
-			setC_SalesPipeline_Stage_ID (0);
 			setC_SalesStage_ID (0);
 			setProbability (Env.ZERO);
 			setSeqNo (0);
-// @SQL=SELECT NVL(MAX(SeqNo), 0) + 10 AS DefaultValue FROM C_SalesPipeline_Stage WHERE C_SalesPipeline_ID =@C_SalesPipeline_ID@
+// @SQL=SELECT NVL(MAX(SeqNo), 0) + 10 AS DefaultValue FROM C_SalesPipelineStage WHERE C_SalesPipeline_ID =@C_SalesPipeline_ID@
         } */
     }
 
     /** Standard Constructor */
-    public X_C_SalesPipeline_Stage (Properties ctx, String C_SalesPipeline_Stage_UU, String trxName, String ... virtualColumns)
+    public X_C_SalesPipelineStage (Properties ctx, String C_SalesPipelineStage_UU, String trxName, String ... virtualColumns)
     {
-      super (ctx, C_SalesPipeline_Stage_UU, trxName, virtualColumns);
-      /** if (C_SalesPipeline_Stage_UU == null)
+      super (ctx, C_SalesPipelineStage_UU, trxName, virtualColumns);
+      /** if (C_SalesPipelineStage_UU == null)
         {
 			setC_SalesPipeline_ID (0);
-			setC_SalesPipeline_Stage_ID (0);
 			setC_SalesStage_ID (0);
 			setProbability (Env.ZERO);
 			setSeqNo (0);
-// @SQL=SELECT NVL(MAX(SeqNo), 0) + 10 AS DefaultValue FROM C_SalesPipeline_Stage WHERE C_SalesPipeline_ID =@C_SalesPipeline_ID@
+// @SQL=SELECT NVL(MAX(SeqNo), 0) + 10 AS DefaultValue FROM C_SalesPipelineStage WHERE C_SalesPipeline_ID =@C_SalesPipeline_ID@
         } */
     }
 
     /** Load Constructor */
-    public X_C_SalesPipeline_Stage (Properties ctx, ResultSet rs, String trxName)
+    public X_C_SalesPipelineStage (Properties ctx, ResultSet rs, String trxName)
     {
       super (ctx, rs, trxName);
     }
@@ -117,10 +113,25 @@ public class X_C_SalesPipeline_Stage extends PO implements I_C_SalesPipeline_Sta
 
     public String toString()
     {
-      StringBuilder sb = new StringBuilder ("X_C_SalesPipeline_Stage[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_C_SalesPipelineStage[")
+        .append(get_UUID()).append("]");
       return sb.toString();
     }
+
+	/** Set C_SalesPipelineStage_UU.
+		@param C_SalesPipelineStage_UU C_SalesPipelineStage_UU
+	*/
+	public void setC_SalesPipelineStage_UU (String C_SalesPipelineStage_UU)
+	{
+		set_Value (COLUMNNAME_C_SalesPipelineStage_UU, C_SalesPipelineStage_UU);
+	}
+
+	/** Get C_SalesPipelineStage_UU.
+		@return C_SalesPipelineStage_UU	  */
+	public String getC_SalesPipelineStage_UU()
+	{
+		return (String)get_Value(COLUMNNAME_C_SalesPipelineStage_UU);
+	}
 
 	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_SalesPipeline getC_SalesPipeline() throws RuntimeException
@@ -149,43 +160,6 @@ public class X_C_SalesPipeline_Stage extends PO implements I_C_SalesPipeline_Sta
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	/** Set Sales Pipeline / Sales Stage.
-		@param C_SalesPipeline_Stage_ID Link between Sales Pipeline and Sales Stages 
-	*/
-	public void setC_SalesPipeline_Stage_ID (int C_SalesPipeline_Stage_ID)
-	{
-		if (C_SalesPipeline_Stage_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_SalesPipeline_Stage_ID, null);
-		else
-			set_ValueNoCheck (COLUMNNAME_C_SalesPipeline_Stage_ID, Integer.valueOf(C_SalesPipeline_Stage_ID));
-	}
-
-	/** Get Sales Pipeline / Sales Stage.
-		@return Link between Sales Pipeline and Sales Stages 
-	  */
-	public int getC_SalesPipeline_Stage_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_SalesPipeline_Stage_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set C_SalesPipeline_Stage_UU.
-		@param C_SalesPipeline_Stage_UU C_SalesPipeline_Stage_UU
-	*/
-	public void setC_SalesPipeline_Stage_UU (String C_SalesPipeline_Stage_UU)
-	{
-		set_Value (COLUMNNAME_C_SalesPipeline_Stage_UU, C_SalesPipeline_Stage_UU);
-	}
-
-	/** Get C_SalesPipeline_Stage_UU.
-		@return C_SalesPipeline_Stage_UU	  */
-	public String getC_SalesPipeline_Stage_UU()
-	{
-		return (String)get_Value(COLUMNNAME_C_SalesPipeline_Stage_UU);
 	}
 
 	@Deprecated(since="13") // use better methods with cache
