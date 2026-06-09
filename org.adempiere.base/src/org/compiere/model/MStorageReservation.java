@@ -22,7 +22,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.IStorageValidator;
 import org.adempiere.util.IReservationTracer;
+import org.adempiere.base.StorageValidatorProvider;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -317,6 +319,12 @@ public class MStorageReservation extends X_M_StorageReservation {
 			new Object[] {addition, Env.getAD_User_ID(Env.getCtx()), getM_Product_ID(), getM_Warehouse_ID(), getM_AttributeSetInstance_ID(), isSOTrx()}, 
 			get_TrxName());
 		load(get_TrxName());
+		
+		IStorageValidator[] validators = StorageValidatorProvider.getStorageValidators();
+		for (IStorageValidator validator : validators) {
+			validator.validate(this, addition, tracer, get_TrxName());
+		}
+		
 		if (tracer != null) {
 			BigDecimal oldQty = getQty().subtract(addition);
 			tracer.trace(oldQty, addition);
