@@ -844,7 +844,8 @@ public class Core {
 
 		return null;
 	}
-	
+
+
 	private final static CCache<String, IServiceReferenceHolder<IDepreciationMethodFactory>> s_depreciationMethodFactoryCache = new CCache<>(IDEPRECIATION_METHOD_FACTORY_CACHE_TABLE_NAME, "IDepreciationMethodFactory", 100, false);
 	
 	/**
