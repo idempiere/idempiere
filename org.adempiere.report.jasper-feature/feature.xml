@@ -58,6 +58,14 @@
          version="0.0.0"/>
 
    <plugin
+         id="com.fasterxml.jackson.dataformat.jackson-dataformat-yaml"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.yaml.snakeyaml"
+         version="0.0.0"/>
+
+   <plugin
          id="com.fasterxml.jackson.datatype.jackson-datatype-guava"
          version="0.0.0"/>
 

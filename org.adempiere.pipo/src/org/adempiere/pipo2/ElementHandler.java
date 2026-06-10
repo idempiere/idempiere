@@ -48,7 +48,7 @@ public interface ElementHandler {
 	 * Export a record using the provided format-agnostic serializer.
 	 * @param packout
 	 * @param packoutSerializer format-agnostic record writer (XML, JSON, or YAML)
-	 * @param docHandler SAX handler for the human-readable doc file (always XML)
+	 * @param docHandler SAX handler for the human-readable doc file (always XML (a no-op discard handler is passed for non-XML formats))
 	 * @param recordId
 	 * @throws Exception
 	 */
@@ -58,7 +58,7 @@ public interface ElementHandler {
 	 * Export a record identified by UUID (default delegates to id-based method).
 	 * @param packout
 	 * @param packoutSerializer format-agnostic record writer
-	 * @param docHandler SAX handler for the doc file (always XML)
+	 * @param docHandler SAX handler for the doc file (always XML (a no-op discard handler is passed for non-XML formats))
 	 * @param recordId
 	 * @param uuid
 	 * @throws Exception

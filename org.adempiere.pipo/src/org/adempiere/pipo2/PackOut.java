@@ -18,6 +18,7 @@
  *****************************************************************************/
 package org.adempiere.pipo2;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -29,9 +30,14 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -123,16 +129,28 @@ public class PackOut
 		processedCount = 0;
 		try {
 			packageDirectory = packoutDirectory+ packoutDocument.getPackageName();
+			File packageDir = new File(packageDirectory);
+			if (packageDir.exists())
+				FileUtil.deleteFolderRecursive(packageDir);
 			File docDirectoryFile = new File(packageDirectory+File.separator+"doc"+File.separator);
-			if (!docDirectoryFile.exists()) {
-				boolean success = docDirectoryFile.mkdirs();
-				if (!success) {
-					throw new AdempiereException("Failed to create directory for pack out. " + packageDirectory+File.separator+"doc"+File.separator);
-				}
+			boolean success = docDirectoryFile.mkdirs();
+			if (!success) {
+				throw new AdempiereException("Failed to create directory for pack out. " + packageDirectory+File.separator+"doc"+File.separator);
 			}
-			String docFileName = packageDirectory+File.separator+"doc"+File.separator+packoutDocument.getPackageName()+"Doc.xml";
-			docStream = new FileOutputStream (docFileName, false);
-			TransformerHandler docHandler = createDocHandler(docStream);
+			String docFileName = packageDirectory+File.separator+"doc"+File.separator+getDocFileName();
+			docStream = new FileOutputStream(docFileName, false);
+			TransformerHandler docHandler;
+			if (FORMAT_XML.equals(exportFormat)) {
+				docHandler = createDocHandler(docStream);
+			} else {
+				writeDocFile(docStream);
+				docHandler = createNullDocHandler();
+			}
+
+			File packageDictDirFile = new File(packageDirectory+File.separator+"dict"+File.separator);
+			success = packageDictDirFile.mkdirs();
+			if (!success)
+				throw new AdempiereException("Failed to create directory. " + packageDirectory+File.separator+"dict"+File.separator);
 
 			String packoutFileName = packageDirectory+File.separator+"dict"+File.separator+getPackoutFileName();
 			packoutStream = new FileOutputStream (packoutFileName, false);
@@ -199,6 +217,48 @@ public class PackOut
 		if (FORMAT_JSON.equals(exportFormat)) return "PackOut.json";
 		if (FORMAT_YAML.equals(exportFormat)) return "PackOut.yaml";
 		return "PackOut.xml";
+	}
+
+	/** Returns the doc file name for the selected export format. */
+	private String getDocFileName() {
+		if (FORMAT_JSON.equals(exportFormat)) return packoutDocument.getPackageName() + "Doc.json";
+		if (FORMAT_YAML.equals(exportFormat)) return packoutDocument.getPackageName() + "Doc.yaml";
+		return packoutDocument.getPackageName() + "Doc.xml";
+	}
+
+	/** Writes package metadata to docStream as JSON or YAML. */
+	private void writeDocFile(OutputStream docStream) throws Exception {
+		MClient client = MClient.get(pipoContext.ctx);
+		String clientStr = client.get_ID() + "-" + client.getValue() + "-" + client.getName();
+
+		LinkedHashMap<String, Object> doc = new LinkedHashMap<>();
+		doc.put("name", packoutDocument.getPackageName());
+		doc.put("author", emptyIfNull(packoutDocument.getAuthor()));
+		doc.put("email", emptyIfNull(packoutDocument.getAuthorEmail()));
+		doc.put("created", packoutDocument.getCreated().toString());
+		doc.put("updated", packoutDocument.getUpdated().toString());
+		doc.put("description", emptyIfNull(packoutDocument.getDescription()));
+		doc.put("instructions", emptyIfNull(packoutDocument.getInstructions()));
+		LinkedHashMap<String, Object> fileEntry = new LinkedHashMap<>();
+		fileEntry.put("file", getPackoutFileName());
+		fileEntry.put("directory", "dict");
+		fileEntry.put("notes", "Contains all application/object settings for package");
+		doc.put("files", Collections.singletonList(fileEntry));
+		doc.put("client", clientStr);
+
+		ObjectMapper mapper = FORMAT_YAML.equals(exportFormat) ? new YAMLMapper() : new ObjectMapper();
+		mapper.disable(com.fasterxml.jackson.core.JsonGenerator.Feature.AUTO_CLOSE_TARGET);
+		mapper.writerWithDefaultPrettyPrinter().writeValue(docStream, doc);
+	}
+
+	/** Returns a SAX handler that discards its output (used when doc is written in a non-XML format). */
+	private TransformerHandler createNullDocHandler() throws TransformerConfigurationException, SAXException {
+		SAXTransformerFactory factory = (SAXTransformerFactory) SAXTransformerFactory.newInstance();
+		TransformerHandler handler = factory.newTransformerHandler();
+		handler.setResult(new StreamResult(new ByteArrayOutputStream()));
+		handler.startDocument();
+		handler.startElement("", "", "idempiereDocument", new AttributesImpl());
+		return handler;
 	}
 
 	/**
@@ -320,12 +380,6 @@ public class PackOut
 		addTextElement(docHandler, "H1", "Client:", atts);
 		addTextElement(docHandler, "Client", sb.toString(), atts);
 
-		File packageDictDirFile = new File(packageDirectory+File.separator+ "dict"+File.separator);
-		if (!packageDictDirFile.exists()) {
-			boolean success = packageDictDirFile.mkdirs();
-			if (!success)
-				throw new AdempiereException("Failed to create directory. " + packageDirectory+File.separator+ "dict"+File.separator);
-		}
 		return docHandler;
 	}
 

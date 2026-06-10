@@ -912,11 +912,6 @@
 											<transitive>false</transitive>
 										</artifact>
 										<artifact>
-											<id>com.fasterxml.jackson.datatype:jackson-datatype-guava:jar:${jackson.version}</id>
-											<source>true</source>
-											<transitive>false</transitive>
-										</artifact>
-										<artifact>
 											<id>com.fasterxml.jackson.datatype:jackson-datatype-joda:jar:${jackson.version}</id>
 											<source>true</source>
 											<transitive>false</transitive>
