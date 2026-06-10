@@ -51,6 +51,7 @@ import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAttributeSetInstance;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MCharge;
+import org.compiere.model.MClient;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MCost;
@@ -11053,7 +11054,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			
 			if (!invoice.isPosted()) {
 				String error = DocumentEngine.postImmediate(Env.getCtx(), invoice.getAD_Client_ID(), MInvoice.Table_ID, invoice.get_ID(), false, getTrxName());
-				assertTrue(error == null);
+				assertNull(error, error);
 			}
 			invoice.load(getTrxName());
 			assertTrue(invoice.isPosted());
@@ -11155,7 +11156,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			
 			if (!landedCostInvoice.isPosted()) {
 				error = DocumentEngine.postImmediate(Env.getCtx(), landedCostInvoice.getAD_Client_ID(), MInvoice.Table_ID, landedCostInvoice.get_ID(), false, getTrxName());
-				assertTrue(error == null, error);
+				assertNull(error, error);
 			}
 			landedCostInvoice.load(getTrxName());
 			assertTrue(landedCostInvoice.isPosted());
@@ -11196,6 +11197,286 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			
 			validateProductCostQty(ass, product);
 		} finally {
+			rollback();
+			resetAcctSchema(ass, backDateDays);
+		}
+	}
+	
+	/**
+	 * IDEMPIERE-6973
+	 * PO
+	 *  Line1, Qty=2, Price=30
+	 *  Line2, Qty=3, Price=10
+	 * PI (from PO)
+	 * 	Line1, Qty=2, Price=30
+	 *  Line2, Qty=3, Price=10
+	 * MR (from PO)
+	 * 	Line1, Qty=2
+	 *  Line2, Qty=3
+	 * Landed Cost
+	 *  Landed Cost1, Price=10, Cost Distribution=Quantity
+	 *  Landed Cost2, Price=10, Cost Distribution=Cost
+	 *  Landed Cost3, Price=10, Cost Distribution=Line
+	 * Landed Cost (Reverse-Correct) - Current cost=10
+	 */
+	@Test
+	public void testReverseCorrectMultiMRUnplannedLandedCost() {
+		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), getAD_Client_ID());
+		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
+		MAcctSchema as = ci.getMAcctSchema1();
+		
+		int[] backDateDays = new int[ass.length];
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
+			backDateDays = configureAcctSchema(ass);
+	        MProduct productA = new MProduct(Env.getCtx(), 0, getTrxName());
+	        productA.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.STANDARD.id);
+	        productA.setName("testReverseCorrectMultiMRUnplannedLandedCostA");
+	        productA.setProductType(MProduct.PRODUCTTYPE_Item);
+	        productA.setIsStocked(true);
+	        productA.setIsSold(true);
+	        productA.setIsPurchased(true);
+	        productA.setC_UOM_ID(DictionaryIDs.C_UOM.EACH.id);
+	        productA.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
+	        productA.saveEx();
+
+	        MProduct productB = new MProduct(Env.getCtx(), 0, getTrxName());
+	        productB.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.STANDARD.id);
+	        productB.setName("testReverseCorrectMultiMRUnplannedLandedCostB");
+	        productB.setProductType(MProduct.PRODUCTTYPE_Item);
+	        productB.setIsStocked(true);
+	        productB.setIsSold(true);
+	        productB.setIsPurchased(true);
+	        productB.setC_UOM_ID(DictionaryIDs.C_UOM.EACH.id);
+	        productB.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
+	        productB.saveEx();
+
+	        mockProductGet(productMock, productA);
+	        mockProductGet(productMock, productB);
+
+	        MPriceListVersion plv = MPriceList.get(DictionaryIDs.M_PriceList.PURCHASE.id).getPriceListVersion(null);
+
+	        MProductPrice ppA = new MProductPrice(Env.getCtx(), 0, getTrxName());
+	        ppA.setM_PriceList_Version_ID(plv.getM_PriceList_Version_ID());
+	        ppA.setM_Product_ID(productA.get_ID());
+	        ppA.setPriceStd(new BigDecimal("30"));
+	        ppA.setPriceList(new BigDecimal("30"));
+	        ppA.saveEx();
+
+	        MProductPrice ppB = new MProductPrice(Env.getCtx(), 0, getTrxName());
+	        ppB.setM_PriceList_Version_ID(plv.getM_PriceList_Version_ID());
+	        ppB.setM_Product_ID(productB.get_ID());
+	        ppB.setPriceStd(new BigDecimal("10"));
+	        ppB.setPriceList(new BigDecimal("10"));
+	        ppB.saveEx();
+
+	        // PO
+	        MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id);
+	        MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+	        order.setBPartner(bpartner);
+	        order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
+	        order.setIsSOTrx(false);
+	        order.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+	        order.setDocStatus(DocAction.STATUS_Drafted);
+	        order.setDocAction(DocAction.ACTION_Complete);
+	        Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+	        order.setDateOrdered(today);
+	        order.setDatePromised(today);
+	        order.saveEx();
+
+	        MOrderLine orderLineA = new MOrderLine(order);
+	        orderLineA.setLine(10);
+	        orderLineA.setProduct(new MProduct(Env.getCtx(), productA.get_ID(), getTrxName()));
+	        orderLineA.setQty(new BigDecimal("2"));
+	        orderLineA.setDatePromised(today);
+	        orderLineA.setPrice(new BigDecimal("30"));
+	        orderLineA.saveEx();
+
+	        MOrderLine orderLineB = new MOrderLine(order);
+	        orderLineB.setLine(20);
+	        orderLineB.setProduct(new MProduct(Env.getCtx(), productB.get_ID(), getTrxName()));
+	        orderLineB.setQty(new BigDecimal("3"));
+	        orderLineB.setDatePromised(today);
+	        orderLineB.setPrice(new BigDecimal("10"));
+	        orderLineB.saveEx();
+
+	        ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+	        assertFalse(info.isError(), info.getSummary());
+	        order.load(getTrxName());
+	        assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+
+	        // PI
+	        MInvoice invoice = new MInvoice(order, DictionaryIDs.C_DocType.AP_INVOICE.id, today);
+	        invoice.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_APInvoice);
+	        invoice.setDocStatus(DocAction.STATUS_Drafted);
+	        invoice.setDocAction(DocAction.ACTION_Complete);
+	        invoice.saveEx();
+
+	        MInvoiceLine invLineA = new MInvoiceLine(invoice);
+	        invLineA.setC_OrderLine_ID(orderLineA.get_ID());
+	        invLineA.setLine(10);
+	        invLineA.setProduct(productA);
+	        invLineA.setQty(new BigDecimal("2"));
+	        invLineA.saveEx();
+
+	        MInvoiceLine invLineB = new MInvoiceLine(invoice);
+	        invLineB.setC_OrderLine_ID(orderLineB.get_ID());
+	        invLineB.setLine(20);
+	        invLineB.setProduct(productB);
+	        invLineB.setQty(new BigDecimal("3"));
+	        invLineB.saveEx();
+
+	        info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+	        invoice.load(getTrxName());
+	        assertFalse(info.isError(), info.getSummary());
+	        assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
+
+	        if (!invoice.isPosted()) {
+	            String error = DocumentEngine.postImmediate(Env.getCtx(), invoice.getAD_Client_ID(), MInvoice.Table_ID, invoice.get_ID(), false, getTrxName());
+	            assertNull(error, error);
+	        }
+	        invoice.load(getTrxName());
+	        assertTrue(invoice.isPosted());
+
+	        // MR
+	        MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered());
+	        receipt.setDocStatus(DocAction.STATUS_Drafted);
+	        receipt.setDocAction(DocAction.ACTION_Complete);
+	        receipt.saveEx();
+
+	        MInOutLine receiptLine1 = new MInOutLine(receipt);
+	        receiptLine1.setOrderLine(orderLineA, 0, new BigDecimal("2"));
+	        receiptLine1.setQty(new BigDecimal("2"));
+	        receiptLine1.saveEx();
+
+	        MInOutLine receiptLine2 = new MInOutLine(receipt);
+	        receiptLine2.setOrderLine(orderLineB, 0, new BigDecimal("3"));
+	        receiptLine2.setQty(new BigDecimal("3"));
+	        receiptLine2.saveEx();
+
+	        info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
+	        assertFalse(info.isError(), info.getSummary());
+	        receipt.load(getTrxName());
+	        assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
+
+	        if (!receipt.isPosted()) {
+	            String error = DocumentEngine.postImmediate(Env.getCtx(), receipt.getAD_Client_ID(), receipt.get_Table_ID(), receipt.get_ID(), false, getTrxName());
+	            assertNull(error, error);
+	        }
+
+	        productA.set_TrxName(getTrxName());
+	        productB.set_TrxName(getTrxName());
+	        MCost costA1 = productA.getCostingRecord(as, getAD_Org_ID(), 0, MCostElement.COSTINGMETHOD_AveragePO);
+	        MCost costB1 = productB.getCostingRecord(as, getAD_Org_ID(), 0, MCostElement.COSTINGMETHOD_AveragePO);
+	        assertNotNull(costA1, "No MCost record found for productA");
+	        assertNotNull(costB1, "No MCost record found for productB");
+	        assertEquals(new BigDecimal("30.00"), costA1.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "productA baseline cost");
+	        assertEquals(new BigDecimal("10.00"), costB1.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "productB baseline cost");
+
+	        // Landed Cost
+	        MInvoice landedCostInvoice = new MInvoice(Env.getCtx(), 0, getTrxName());
+	        landedCostInvoice.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_APInvoice);
+	        landedCostInvoice.setBPartner(bpartner);
+	        landedCostInvoice.setDocStatus(DocAction.STATUS_Drafted);
+	        landedCostInvoice.setDocAction(DocAction.ACTION_Complete);
+	        landedCostInvoice.saveEx();
+
+	        MInvoiceLine lcInvLine1 = new MInvoiceLine(landedCostInvoice);
+	        lcInvLine1.setLine(10);
+	        lcInvLine1.setC_Charge_ID(DictionaryIDs.C_Charge.FREIGHT.id);
+	        lcInvLine1.setQty(BigDecimal.ONE);
+	        lcInvLine1.setPrice(new BigDecimal("10"));
+	        lcInvLine1.setC_UOM_ID(DictionaryIDs.C_UOM.EACH.id);
+	        lcInvLine1.saveEx();
+
+	        MLandedCost landedCost1 = new MLandedCost(Env.getCtx(), 0, getTrxName());
+	        landedCost1.setC_InvoiceLine_ID(lcInvLine1.get_ID());
+	        landedCost1.setM_CostElement_ID(DictionaryIDs.M_CostElement.FREIGHT.id);
+	        landedCost1.setM_InOut_ID(receipt.get_ID());
+	        landedCost1.setLandedCostDistribution(MLandedCost.LANDEDCOSTDISTRIBUTION_Quantity);
+	        landedCost1.saveEx();
+	        String error = landedCost1.allocateCosts();
+	        assertTrue(Util.isEmpty(error, true), error);
+
+	        MInvoiceLine lcInvLine2 = new MInvoiceLine(landedCostInvoice);
+	        lcInvLine2.setLine(20);
+	        lcInvLine2.setC_Charge_ID(DictionaryIDs.C_Charge.BANK.id);
+	        lcInvLine2.setQty(BigDecimal.ONE);
+	        lcInvLine2.setPrice(new BigDecimal("10"));
+	        lcInvLine2.setC_UOM_ID(DictionaryIDs.C_UOM.EACH.id);
+	        lcInvLine2.saveEx();
+
+	        MLandedCost landedCost2 = new MLandedCost(Env.getCtx(), 0, getTrxName());
+	        landedCost2.setC_InvoiceLine_ID(lcInvLine2.get_ID());
+	        landedCost2.setM_CostElement_ID(DictionaryIDs.M_CostElement.FREIGHT.id);
+	        landedCost2.setM_InOut_ID(receipt.get_ID());
+	        landedCost2.setLandedCostDistribution(MLandedCost.LANDEDCOSTDISTRIBUTION_Costs);
+	        landedCost2.saveEx();
+	        error = landedCost2.allocateCosts();
+	        assertTrue(Util.isEmpty(error, true), error);
+
+	        MInvoiceLine lcInvLine3 = new MInvoiceLine(landedCostInvoice);
+	        lcInvLine3.setLine(30);
+	        lcInvLine3.setC_Charge_ID(DictionaryIDs.C_Charge.COMMISSIONS.id);
+	        lcInvLine3.setQty(BigDecimal.ONE);
+	        lcInvLine3.setPrice(new BigDecimal("10"));
+	        lcInvLine3.setC_UOM_ID(DictionaryIDs.C_UOM.EACH.id);
+	        lcInvLine3.saveEx();
+
+	        MLandedCost landedCost3 = new MLandedCost(Env.getCtx(), 0, getTrxName());
+	        landedCost3.setC_InvoiceLine_ID(lcInvLine3.get_ID());
+	        landedCost3.setM_CostElement_ID(DictionaryIDs.M_CostElement.FREIGHT.id);
+	        landedCost3.setM_InOut_ID(receipt.get_ID());
+	        landedCost3.setLandedCostDistribution(MLandedCost.LANDEDCOSTDISTRIBUTION_Line);
+	        landedCost3.saveEx();
+	        error = landedCost3.allocateCosts();
+	        assertTrue(Util.isEmpty(error, true), error);
+
+	        info = MWorkflow.runDocumentActionWorkflow(landedCostInvoice, DocAction.ACTION_Complete);
+	        landedCostInvoice.load(getTrxName());
+	        assertFalse(info.isError(), info.getSummary());
+	        assertEquals(DocAction.STATUS_Completed, landedCostInvoice.getDocStatus());
+
+	        if (!landedCostInvoice.isPosted()) {
+	            error = DocumentEngine.postImmediate(Env.getCtx(), landedCostInvoice.getAD_Client_ID(), MInvoice.Table_ID, landedCostInvoice.get_ID(), false, getTrxName());
+	            assertNull(error, error);
+	        }
+	        landedCostInvoice.load(getTrxName());
+	        assertTrue(landedCostInvoice.isPosted());
+
+	        productA.set_TrxName(getTrxName());
+	        productB.set_TrxName(getTrxName());
+	        MCost costA2 = productA.getCostingRecord(as, getAD_Org_ID(), 0, MCostElement.COSTINGMETHOD_AveragePO);
+	        MCost costB2 = productB.getCostingRecord(as, getAD_Org_ID(), 0, MCostElement.COSTINGMETHOD_AveragePO);
+	        assertNotNull(costA2, "No MCost record found for productA after landed cost");
+	        assertNotNull(costB2, "No MCost record found for productB after landed cost");
+	        assertEquals(new BigDecimal("37.84"), costA2.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "productA cost after landed cost");
+	        assertEquals(new BigDecimal("14.78"), costB2.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "productB cost after landed cost");
+
+	        // Landed Cost (Reverse-Correct)
+	        info = MWorkflow.runDocumentActionWorkflow(landedCostInvoice, DocAction.ACTION_Reverse_Correct);
+	        landedCostInvoice.load(getTrxName());
+	        assertFalse(info.isError(), info.getSummary());
+	        assertEquals(DocAction.STATUS_Reversed, landedCostInvoice.getDocStatus());
+	        assertTrue(landedCostInvoice.getReversal_ID() > 0, "Unexpected reversal id");
+
+	        MInvoice reversal = new MInvoice(Env.getCtx(), landedCostInvoice.getReversal_ID(), getTrxName());
+	        assertEquals(landedCostInvoice.getReversal_ID(), reversal.get_ID(), "Failed to load reversal invoice");
+
+	        if (!reversal.isPosted()) {
+	            error = DocumentEngine.postImmediate(Env.getCtx(), reversal.getAD_Client_ID(), MInvoice.Table_ID, reversal.get_ID(), false, getTrxName());
+	            assertNull(error, error);
+	            reversal.load(getTrxName());
+	        }
+
+	        productA.set_TrxName(getTrxName());
+	        productB.set_TrxName(getTrxName());
+	        MCost costA3 = productA.getCostingRecord(as, getAD_Org_ID(), 0, MCostElement.COSTINGMETHOD_AveragePO);
+	        MCost costB3 = productB.getCostingRecord(as, getAD_Org_ID(), 0, MCostElement.COSTINGMETHOD_AveragePO);
+	        assertNotNull(costA3, "No MCost record found for productA after reversal");
+	        assertNotNull(costB3, "No MCost record found for productB after reversal");
+	        assertEquals(new BigDecimal("30.00"), costA3.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "productA cost must revert to baseline after reversal");
+	        assertEquals(new BigDecimal("10.00"), costB3.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "productB cost must revert to baseline after reversal");
+	    } finally {
 			rollback();
 			resetAcctSchema(ass, backDateDays);
 		}

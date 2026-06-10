@@ -1466,15 +1466,16 @@ public class MCostDetail extends X_M_CostDetail
 		if (isReversedInvoiceLandedCost) {
 			// invoice landed cost, get the cost info from previous invoice or invoice landed cost
 			MInvoiceLine invoiceLine = new MInvoiceLine(getCtx(), getC_InvoiceLine_ID(), get_TrxName());
+			MInvoice invoice = new MInvoice(getCtx(), invoiceLine.getC_Invoice_ID(), get_TrxName());
 			StringBuilder whereClause = new StringBuilder();
-			whereClause.append("C_InvoiceLine_ID IN (SELECT C_InvoiceLine_ID FROM C_Invoice WHERE C_Invoice_ID=?) ");
+			whereClause.append("C_InvoiceLine_ID IN (SELECT C_InvoiceLine_ID FROM C_InvoiceLine WHERE C_Invoice_ID IN (?,?)) ");
 			whereClause.append(" AND TRUNC(DateAcct) = "+DB.TO_DATE(getDateAcct(), true));
 			whereClause.append(" AND M_Product_ID = ?");
 			whereClause.append(" AND M_AttributeSetInstance_ID = ?");
 			whereClause.append(" AND C_AcctSchema_ID = ?");
 			whereClause.append(" AND M_CostDetail_ID < ?");
 			cd = new Query(as.getCtx(), I_M_CostDetail.Table_Name, whereClause.toString(), get_TrxName())
-					.setParameters(invoiceLine.getC_Invoice_ID(), product.get_ID(), M_ASI_ID, as.get_ID(), this.get_ID())
+					.setParameters(invoice.getC_Invoice_ID(), invoice.getReversal_ID(), product.get_ID(), M_ASI_ID, as.get_ID(), this.get_ID())
 					.setOrderBy("M_CostDetail_ID DESC")
 					.first();
 		}
