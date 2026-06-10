@@ -51,7 +51,6 @@ import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAttributeSetInstance;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MCharge;
-import org.compiere.model.MClient;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MCost;
