@@ -147,7 +147,7 @@ public class ServerProcessCtl implements Runnable {
 	 * Run this process in a new thread
 	 * @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public void start()
 	{
 		Thread thread = new Thread(this);

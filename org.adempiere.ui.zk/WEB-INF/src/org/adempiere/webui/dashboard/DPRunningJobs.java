@@ -21,6 +21,7 @@ import org.adempiere.base.Core;
 import org.adempiere.base.event.EventManager;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.apps.BackgroundJob;
+import org.adempiere.webui.component.FlexVlayout;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.Icon;
@@ -43,12 +44,11 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.DesktopCleanup;
 import org.zkoss.zul.A;
-import org.zkoss.zul.Box;
 import org.zkoss.zul.Image;
+import org.zkoss.zul.Layout;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Panelchildren;
 import org.zkoss.zul.Toolbar;
-import org.zkoss.zul.Vbox;
 
 /**
  * Dashboard gadget: running background jobs (Run As Job in Process Dialog).
@@ -64,7 +64,7 @@ public class DPRunningJobs extends DashboardPanel implements EventListener<Event
 	
 	private static TopicSubscriber topicSubscriber;
 
-	private Box bxJobs;
+	private Layout bxJobs;
 
 	/** Login user id */
 	private int AD_User_ID;
@@ -88,7 +88,7 @@ public class DPRunningJobs extends DashboardPanel implements EventListener<Event
 
 		Panelchildren jobsContent = new Panelchildren();
 		panel.appendChild(jobsContent);
-		bxJobs = new Vbox();
+		bxJobs = new FlexVlayout();
 		ZKUpdateUtil.setHflex(bxJobs, "1");
 		this.setSclass("recentitems-box");
 		jobsContent.appendChild(bxJobs);

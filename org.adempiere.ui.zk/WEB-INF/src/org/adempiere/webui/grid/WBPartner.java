@@ -60,7 +60,7 @@ import org.zkoss.zul.Vlayout;
  *
  */
 
-@Deprecated /* use WQuickEntry instead */
+@Deprecated (since="13", forRemoval=true) /* use WQuickEntry instead */
 public class WBPartner extends Window implements EventListener<Event>, ValueChangeListener
 {
 	/**

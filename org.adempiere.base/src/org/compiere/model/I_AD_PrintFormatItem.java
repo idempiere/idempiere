@@ -811,6 +811,19 @@ public interface I_AD_PrintFormatItem
 	  */
 	public int getRunningTotalLines();
 
+    /** Column name ScaleFactor */
+    public static final String COLUMNNAME_ScaleFactor = "ScaleFactor";
+
+	/** Set Scale Factor.
+	  * Scale Factor
+	  */
+	public void setScaleFactor (BigDecimal ScaleFactor);
+
+	/** Get Scale Factor.
+	  * Scale Factor
+	  */
+	public BigDecimal getScaleFactor();
+
     /** Column name Script */
     public static final String COLUMNNAME_Script = "Script";
 

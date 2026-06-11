@@ -101,7 +101,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	 *	@return active Period or null
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static MPeriod get (Properties ctx, Timestamp DateAcct)
 	{	
 		return get(ctx, DateAcct, 0, null);
@@ -125,7 +125,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
         return findByCalendar(ctx, DateAcct, C_Calendar_ID, trxName);
 	}	//	get
 
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static MPeriod get (Properties ctx, Timestamp DateAcct, int AD_Org_ID)
 	{
 		return get(ctx, DateAcct, AD_Org_ID, null);
@@ -153,7 +153,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	 * @return MPeriod
 	 * @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static MPeriod findByCalendar(Properties ctx, Timestamp DateAcct, int C_Calendar_ID) {
 		return findByCalendar(ctx, DateAcct, C_Calendar_ID, null);
 	}
@@ -228,7 +228,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	 *	@return C_Period_ID or 0
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static int getC_Period_ID (Properties ctx, Timestamp DateAcct)
 	{
 		MPeriod period = get (ctx, DateAcct, 0, null);
@@ -260,7 +260,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	 *	@return true if open
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static boolean isOpen (Properties ctx, Timestamp DateAcct, String DocBaseType)
 	{
 		return isOpen(ctx, DateAcct,DocBaseType, 0 );
@@ -447,7 +447,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	 *	@return active first Period
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static MPeriod getFirstInYear (Properties ctx, Timestamp DateAcct)
 	{
 		return getFirstInYear(ctx , DateAcct, 0);
@@ -692,7 +692,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	 * @return true if open
 	 * @deprecated since 3.3.1b; use {@link #isOpen(String, Timestamp)} instead
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public boolean isOpen (String DocBaseType)
 	{
 		return isOpen(DocBaseType, null);
@@ -856,6 +856,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 			MDocType[] types = MDocType.getOfClient(getCtx());
 			int count = 0;
 			ArrayList<String> baseTypes = new ArrayList<String>();
+			BatchInsert<MPeriodControl> batchInsertPeriodControls = new BatchInsert<>(MPeriodControl.class);
 			for (int i = 0; i < types.length; i++)
 			{
 				MDocType type = types[i];
@@ -863,10 +864,11 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 				if (baseTypes.contains(DocBaseType))
 					continue;
 				MPeriodControl pc = new MPeriodControl(this, DocBaseType);
-				pc.saveEx();
+				batchInsertPeriodControls.add(pc);
 				count++;
 				baseTypes.add (DocBaseType);
 			}
+			batchInsertPeriodControls.executeBatch(get_TrxName());
 			if (log.isLoggable(Level.FINE)) log.fine("PeriodControl #" + count);
 		}
 		return success;
@@ -896,7 +898,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	 * @see #isOpen(Properties, Timestamp, String)
 	 * @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static void testPeriodOpen(Properties ctx, Timestamp dateAcct, String docBaseType)
 	throws PeriodClosedException 
 	{
@@ -931,7 +933,7 @@ public class MPeriod extends X_C_Period implements ImmutablePOSupport
 	 * @see {@link #isOpen(Properties, Timestamp, String)}
      * @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static void testPeriodOpen(Properties ctx, Timestamp dateAcct, int C_DocType_ID)
 	throws PeriodClosedException
 	{

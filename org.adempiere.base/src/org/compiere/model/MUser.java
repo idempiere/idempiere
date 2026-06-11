@@ -35,6 +35,7 @@ import java.util.logging.Level;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -74,7 +75,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 	 * @return array of users
 	 * @deprecated Since 3.5.3a. Please use {@link #getOfBPartner(Properties, int, String)}.
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static MUser[] getOfBPartner (Properties ctx, int C_BPartner_ID)
 	{
 		return getOfBPartner(ctx, C_BPartner_ID, null);
@@ -297,7 +298,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 	public static String getNameOfUser (int AD_User_ID)
 	{
 		MUser user = get(Env.getCtx(), AD_User_ID);
-		if (user.getAD_User_ID() != AD_User_ID)
+		if (user == null || user.getAD_User_ID() != AD_User_ID)
 			return "?";
 		return user.getName();
 	}	//	getNameOfUser
@@ -499,8 +500,11 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 	 *	@param value
 	 *	@return lower case cleaned value
 	 */
-	private String cleanValue (String value)
+	public static String cleanValue (String value)
 	{
+		if (value == null)
+			return "";
+
 		char[] chars = value.toCharArray();
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < chars.length; i++)
@@ -547,14 +551,9 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 	        String sSalt = Secure.convertToHexString(bSalt);
 			super.setPassword(hash);
 			setSalt(sSalt);
-		} catch (NoSuchAlgorithmException e) {
-			super.setPassword(password);
-		} catch (UnsupportedEncodingException e) {
-			super.setPassword(password);
-		} catch (NoSuchProviderException e) {
-			super.setPassword(password);
-		} catch (InvalidKeySpecException e) {
-			super.setPassword(password);
+		} catch (NoSuchAlgorithmException | UnsupportedEncodingException
+				| NoSuchProviderException | InvalidKeySpecException e) {
+			throw new AdempiereException(e);
 		}
 	}
 	
@@ -1063,7 +1062,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 	/**
 	 * 	Get User that has roles (already authenticated)
 	 *	@param ctx context
-	 *	@param name name
+	 *	@param name name or email if USE_EMAIL_FOR_LOGIN=Y
 	 *	@return user or null
 	 */
 	public static MUser get(Properties ctx, String name) {

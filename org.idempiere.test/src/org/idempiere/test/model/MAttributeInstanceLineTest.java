@@ -128,9 +128,7 @@ public class MAttributeInstanceLineTest extends AbstractTestCase {
 			
 			lines = MAttributeInstanceLine.getOfAttributeInstance(ai);
 			assertEquals(1, lines.size(), "List<MAttributeInstanceLine> not of expected size");
-			assertEquals(av3.get_ID(), lines.get(0).getM_AttributeValue_ID(), "MAttributeInstanceLine[0] not of expected attribute value");
-			
-			masi.deleteEx(true);
+			assertEquals(av3.get_ID(), lines.get(0).getM_AttributeValue_ID(), "MAttributeInstanceLine[0] not of expected attribute value");			
 		}
 	}
 }

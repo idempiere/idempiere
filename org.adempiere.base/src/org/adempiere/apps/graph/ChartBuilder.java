@@ -16,9 +16,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
@@ -32,6 +34,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
+import org.idempiere.db.util.SQLFragment;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
@@ -260,6 +263,7 @@ public class ChartBuilder {
 
 		try
 		{
+			List<Object> params = new ArrayList<Object>();
 			pstmt = DB.prepareStatement(sql, null);
 			rs = pstmt.executeQuery();
 			while(rs.next())
@@ -273,7 +277,8 @@ public class ChartBuilder {
 				if ( hasWhere )
 					queryWhere += where + " AND ";
 
-				queryWhere += series + " = " + DB.TO_STRING(seriesName) + " AND " + category + " = " ;
+				params.add(seriesName);
+				queryWhere += series + " = ?" + " AND " + category + " = ?" ;
 
 				if ( chartModel.isTimeSeries() && dataset instanceof TimeSeriesCollection )
 				{
@@ -302,17 +307,17 @@ public class ChartBuilder {
 
 					tseries.add(period, rs.getBigDecimal(1));
 					key = period.toString();
-					queryWhere += DB.TO_DATE(new Timestamp(date.getTime()));
+					params.add(new Timestamp(date.getTime()));
 				}
 				else {
-					queryWhere += DB.TO_STRING(key);
+					params.add(key);
 				}
 
 				MQuery query = new MQuery(ds.getAD_Table_ID());
 				String keyCol = MTable.get(Env.getCtx(), ds.getAD_Table_ID()).getKeyColumns()[0];
 				String whereClause = keyCol  + " IN (SELECT " + ds.getKeyColumn() + " FROM " 
 						+ ds.getFromClause() + " WHERE " + queryWhere + " )";
-				query.addRestriction(whereClause.toString());
+				query.addRestriction(new SQLFragment(whereClause, params));
 				query.setRecordCount(1);
 
 				HashMap<String, MQuery> map = getQueries();

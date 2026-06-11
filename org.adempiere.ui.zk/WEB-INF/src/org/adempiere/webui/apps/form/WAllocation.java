@@ -73,7 +73,7 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Hbox;
+import org.adempiere.webui.component.FlexHlayout;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
@@ -129,6 +129,8 @@ public class WAllocation extends Allocation
 	private WTableDirEditor currencyPick = null;
 	/** Multi currency parameter */
 	private Checkbox multiCurrency = new Checkbox();
+	/** Same BP parameter */
+	private Checkbox sameBP = new Checkbox();
 	private Label chargeLabel = new Label();
 	private Label dateLabel = new Label();
 	/** Document date parameter */
@@ -230,6 +232,9 @@ public class WAllocation extends Allocation
 		currencyLabel.setText(Msg.translate(Env.getCtx(), "C_Currency_ID"));
 		multiCurrency.setText(Msg.getMsg(Env.getCtx(), "MultiCurrency"));
 		multiCurrency.addActionListener(this);
+		sameBP.setText(Msg.getMsg(Env.getCtx(), "SameBPartner"));
+		sameBP.setSelected(true);
+		sameBP.addActionListener(this);
 		allocCurrencyLabel.setText(".");		
 		organizationLabel.setText(Msg.translate(Env.getCtx(), "AD_Org_ID"));
 		
@@ -355,15 +360,16 @@ public class WAllocation extends Allocation
 		row.appendCellChild(currencyPick.getComponent(),1);		
 		currencyPick.showMenu();
 		
-		Hbox cbox = new Hbox();
+		FlexHlayout cbox = new FlexHlayout();
 		cbox.setWidth("100%");
 		if (noOfColumn == 6)
-			cbox.setPack("center");
+			cbox.setPack(FlexHlayout.PackType.CENTER);
 		else
-			cbox.setPack("end");
+			cbox.setPack(FlexHlayout.PackType.END);
 		cbox.appendChild(multiCurrency);
 		cbox.appendChild(autoWriteOff);
-		row.appendCellChild(cbox, 2);		
+		cbox.appendChild(sameBP);
+		row.appendCellChild(cbox, 3);		
 		if (noOfColumn < 6)		
 			LayoutUtils.compactTo(parameterLayout, noOfColumn);
 		else
@@ -386,9 +392,9 @@ public class WAllocation extends Allocation
 		row = rows.newRow();
 		if (maxWidth(SMALL_WIDTH-1))
 		{
-			Hbox box = new Hbox();
+			FlexHlayout box = new FlexHlayout();
 			box.setWidth("100%");
-			box.setPack("end");
+			box.setPack(FlexHlayout.PackType.END);
 			box.appendChild(differenceLabel.rightAlign());
 			box.appendChild(allocCurrencyLabel.rightAlign());
 			row.appendCellChild(box);
@@ -418,17 +424,17 @@ public class WAllocation extends Allocation
 		if (maxWidth(SMALL_WIDTH-1))
 		{
 			row = rows.newRow();
-			Hbox box = new Hbox();
+			FlexHlayout box = new FlexHlayout();
 			box.setWidth("100%");
-			box.setPack("end");
+			box.setPack(FlexHlayout.PackType.END);
 			box.appendChild(allocateButton);
 			box.appendChild(refreshButton);
 			row.appendCellChild(box, 2);
 		}
 		else
 		{
-			Hbox box = new Hbox();
-			box.setPack("end");
+			FlexHlayout box = new FlexHlayout();
+			box.setPack(FlexHlayout.PackType.END);
 			box.appendChild(allocateButton);
 			box.appendChild(refreshButton);
 			ZKUpdateUtil.setHflex(box, "1");
@@ -557,7 +563,7 @@ public class WAllocation extends Allocation
 	public void onEvent(Event e)
 	{
 		if (log.isLoggable(Level.CONFIG)) log.config("");
-		if (e.getTarget().equals(multiCurrency))
+		if (e.getTarget().equals(multiCurrency) || e.getTarget().equals(sameBP))
 			loadBPartner();
 		//	Allocate
 		else if (e.getTarget().equals(allocateButton))
@@ -712,8 +718,8 @@ public class WAllocation extends Allocation
 		setPaymentColumnClass(paymentTable, multiCurrency.isSelected());
 		//
 
-		data = getInvoiceData(multiCurrency.isSelected(), dateField.getValue(), (String)null);
-		columnNames = getInvoiceColumnNames(multiCurrency.isSelected());
+		data = getInvoiceData(multiCurrency.isSelected(), dateField.getValue(), sameBP.isSelected(), (String)null);
+		columnNames = getInvoiceColumnNames(multiCurrency.isSelected(), sameBP.isSelected());
 		
 		invoiceTable.clear();
 		
@@ -724,7 +730,7 @@ public class WAllocation extends Allocation
 		ListModelTable modelI = new ListModelTable(data);
 		modelI.addTableModelListener(this);
 		invoiceTable.setData(modelI, columnNames);
-		setInvoiceColumnClass(invoiceTable, multiCurrency.isSelected());
+		setInvoiceColumnClass(invoiceTable, multiCurrency.isSelected(), sameBP.isSelected());
 		//
 		
 		//  Calculate Totals

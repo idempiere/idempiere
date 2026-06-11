@@ -69,7 +69,8 @@ public class MShipperPickupTypes extends X_M_ShipperPickupTypes
 	 */
 	public String getValue()
 	{
-		return getM_ShipperPickupTypesCfg().getValue();
+		MShipperPickupTypesCfg cfg = new MShipperPickupTypesCfg(getCtx(), getM_ShipperPickupTypesCfg_ID(), get_TrxName());
+		return cfg.getValue();
 	}
 	
 }

@@ -56,6 +56,7 @@ import org.compiere.util.TrxEventListener;
 import org.compiere.util.Util;
 import org.compiere.wf.MWFActivity;
 import org.compiere.wf.MWorkflow;
+import org.idempiere.acct.IDoc;
 
 /**
  *  Shipment/Receipt Model
@@ -533,7 +534,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	 *	@return Shipment
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static MInOut copyFrom (MInOut from, Timestamp dateDoc,
 		int C_DocType_ID, boolean isSOTrx, boolean counter, String trxName, boolean setOrder)
 	{
@@ -2087,12 +2088,23 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 								m_processMsg = "Could not create PO Matching";
 								return DocAction.STATUS_Invalid;
 							}
+							if (po.getQty().compareTo(matchQty) != 0) {
+								// Post deferred Match POs already linked to a receipt (excluding the current Match PO)
+								String whereClause = "C_OrderLine_ID=? AND Posted=? AND M_MatchPO_ID<>? AND M_InOutLine_ID IS NOT NULL";
+								List<MMatchPO> mpos = new Query(getCtx(), MMatchPO.Table_Name, whereClause, get_TrxName())
+										.setParameters(po.getC_OrderLine_ID(), IDoc.STATUS_Deferred, po.getM_MatchPO_ID())
+										.list();
+								for (MMatchPO mpo : mpos)
+									addDocsPostProcess(mpo);
+							}
 							if (!po.isPosted())
 								addDocsPostProcess(po);
 							
-							MMatchInv[] matchInvList = MMatchInv.getInOut(getCtx(), getM_InOut_ID(), get_TrxName());
-							for (MMatchInv matchInvCreated : matchInvList)
-								addDocsPostProcess(matchInvCreated);
+							MMatchInv[] matchInvList = MMatchInv.getInOutLine(getCtx(), sLine.getM_InOutLine_ID(), get_TrxName());
+							for (MMatchInv matchInvCreated : matchInvList) {
+								if (!docsPostProcess.contains(matchInvCreated))
+									addDocsPostProcess(matchInvCreated);
+							}
 						}
 						//	Update PO with ASI
 						if (   oLine != null && oLine.getM_AttributeSetInstance_ID() == 0
@@ -2306,7 +2318,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		for (int i = 0; i < lines.length; i++)
 		{
 			MInOutLine dropLine = lines[i];
-			MOrderLine ol = new MOrderLine(getCtx(), dropLine.getC_OrderLine_ID(), null);
+			MOrderLine ol = new MOrderLine(getCtx(), dropLine.getC_OrderLine_ID(), get_TrxName());
 			if ( ol.getC_OrderLine_ID() != 0 ) {
 				dropLine.setC_OrderLine_ID(ol.getLink_OrderLine_ID());
 				dropLine.saveEx();
@@ -3465,11 +3477,18 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 				for (MCostDetail costDetail : costDetailList) {
 					if (costDetail.getM_InOutLine_ID() > 0) {
 						MInOutLine inoutLine = new MInOutLine(getCtx(), costDetail.getM_InOutLine_ID(), get_TrxName());
-						if (inoutLine.getParent().getReversal_ID() > 0)
+						MInOut inout = inoutLine.getParent();						
+						if (inout.getReversal_ID() > 0) // reversed shipment
 							continue;
+						MOrder sOrder = new MOrder(getCtx(), inout.getC_Order_ID(), get_TrxName());
+						if (sOrder.getLink_Order_ID() > 0) {
+							MOrder lOrder = new MOrder(getCtx(), sOrder.getLink_Order_ID(), get_TrxName());
+							if (lOrder.isDropShip()) // drop shipment
+								continue;
+						}
 					} else if (costDetail.getC_ProjectIssue_ID() > 0) {
 						MProjectIssue projectIssue = new MProjectIssue(getCtx(), costDetail.getC_ProjectIssue_ID(), get_TrxName());
-						if (projectIssue.getReversal_ID() > 0)
+						if (projectIssue.getReversal_ID() > 0) // reversed project issue
 							continue;
 					} else {
 						continue;
@@ -3481,6 +3500,14 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 				}
 			}
 		} else if (reversalDate == null && MovementType.equals(MOVEMENTTYPE_CustomerShipment)) {
+			if (getC_Order_ID() > 0) {
+				MOrder sOrder = new MOrder(getCtx(), getC_Order_ID(), get_TrxName());
+				if (sOrder.getLink_Order_ID() > 0) {
+					MOrder lOrder = new MOrder(getCtx(), sOrder.getLink_Order_ID(), get_TrxName());
+					if (lOrder.isDropShip()) // drop shipment
+						return true;
+				}
+			}
  			MInOutLine[] sLines = getLines(false);
 			for (MInOutLine sLine : sLines) {
 				int AD_Org_ID = sLine.getAD_Org_ID();

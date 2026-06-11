@@ -18,7 +18,7 @@ Experience iDempiere instantly. No installation required!
 👉 **[Live Cloud Test Sites](https://www.idempiere.org/test-sites)**
 
 Want to install it locally?
-📘 Follow our official [Installation Guide](https://wiki.idempiere.org/en/Installing_iDempiere) for step-by-step setup instructions.
+📘 Follow our official [Installation Guide](https://docs.idempiere.org/docs/category/basic-installation) for step-by-step setup instructions.
 
 ---
 
@@ -77,4 +77,5 @@ Follow our [Contribution Guide](https://github.com/idempiere/idempiere/blob/mast
 - 📗 [Official Docusaurus Documentation](https://docs.idempiere.org/)
 - 🧭 [About iDempiere](https://www.idempiere.org/about/)
 - 🌟 [Solutions & Real-World Use Cases](https://idempiere.org/solutions/)
+
 

@@ -63,23 +63,23 @@ td.form-label-above-input.login-label .z-label,
 <%-- busy dialog --%>
 .busy-dialog {
 	cursor: wait;
-	background-color: transparent;
+	background-color: var(--zk-form-busy-dialog-background-color);
 }
 .busy-dialog-box {
-	background-color: transparent;
+	background-color: var(--zk-form-busy-dialog-box-background-color);
 	padding: 9px; 
 }
 .busy-dialog-img {
 	height: 16px; 
 	width: 16px;
-	background: transparent no-repeat center;
+	background: var(--zk-form-busy-dialog-image-background-color) no-repeat center;
 	background-image: url(../images/progress3.gif) !important;
 	display: -moz-inline-box; 
 	vertical-align: top; 
 	display: inline-block;
 }
 .busy-dialog-label {
-	color: #363636;
+	color: var(--zk-form-busy-dialog-label-color);
 }
 
 <%-- status bar --%>
@@ -97,22 +97,21 @@ td.form-label-above-input.login-label .z-label,
 	width: 100%;
 	height: 100%;
 	margin: 0;
-	border-left: solid 1px #9CBDFF;
+	border-left: solid 1px var(--zk-form-status-border-color);
 	display: inline-block;
 }
 .status-info {
 	padding-right: 10px;
-	border-left: solid 1px #9CBDFF;
+	border-left: solid 1px var(--zk-form-status-border-color);
 }
 
 .status-selected{
 	padding-right: 5px;
-	padding-right: 5px;
-	border-right: solid 1px #9CBDFF;
+	border-right: solid 1px var(--zk-form-status-border-color);
 }
 
 .status-border {
-	border: solid 1px #9CBDFF;
+	border: solid 1px var(--zk-form-status-border-color);
 }
 
 <%-- report wizard --%>

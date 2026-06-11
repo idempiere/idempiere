@@ -36,7 +36,7 @@ public class CalloutWindowCustomization extends CalloutEngine
 	 *	@param value value
 	 *	@return null or error message
 	 */
-	@Deprecated // removed from the column definition
+	@Deprecated (since="13", forRemoval=true) // removed from the column definition
 	public String window (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
 	{
 		Integer AD_Window_ID = (Integer)value;
@@ -71,7 +71,7 @@ public class CalloutWindowCustomization extends CalloutEngine
 	 *	@param value value
 	 *	@return null or error message
 	 */
-	@Deprecated // removed from the column definition
+	@Deprecated (since="13", forRemoval=true) // removed from the column definition
 	public String tab (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
 	{
 		Integer p_AD_Tab_ID = (Integer)value;
@@ -99,7 +99,7 @@ public class CalloutWindowCustomization extends CalloutEngine
 	 *	@param value value
 	 *	@return null or error message
 	 */
-	@Deprecated // removed from the column definition
+	@Deprecated (since="13", forRemoval=true) // removed from the column definition
 	public String field (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
 	{
 		Integer p_AD_Field_ID = (Integer)value;

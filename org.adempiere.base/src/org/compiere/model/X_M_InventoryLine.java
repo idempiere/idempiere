@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_InventoryLine
  *  @author iDempiere (generated)
- *  @version Release 13 - $Id$ */
+ *  @version Release 14 - $Id$ */
 @org.adempiere.base.Model(table="M_InventoryLine")
 public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250805L;
+	private static final long serialVersionUID = 20260519L;
 
     /** Standard Constructor */
     public X_M_InventoryLine (Properties ctx, int M_InventoryLine_ID, String trxName)
@@ -41,6 +41,8 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
       super (ctx, M_InventoryLine_ID, trxName);
       /** if (M_InventoryLine_ID == 0)
         {
+			setC_UOM_ID (0);
+// @#C_UOM_ID@
 			setInventoryType (null);
 // D
 			setM_AttributeSetInstance_ID (0);
@@ -51,6 +53,8 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 			setQtyBook (Env.ZERO);
 			setQtyCount (Env.ZERO);
 			setQtyCsv (Env.ZERO);
+			setQtyEntered (Env.ZERO);
+// 0
         } */
     }
 
@@ -60,6 +64,8 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
       super (ctx, M_InventoryLine_ID, trxName, virtualColumns);
       /** if (M_InventoryLine_ID == 0)
         {
+			setC_UOM_ID (0);
+// @#C_UOM_ID@
 			setInventoryType (null);
 // D
 			setM_AttributeSetInstance_ID (0);
@@ -70,6 +76,8 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 			setQtyBook (Env.ZERO);
 			setQtyCount (Env.ZERO);
 			setQtyCsv (Env.ZERO);
+			setQtyEntered (Env.ZERO);
+// 0
         } */
     }
 
@@ -79,6 +87,8 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
       super (ctx, M_InventoryLine_UU, trxName);
       /** if (M_InventoryLine_UU == null)
         {
+			setC_UOM_ID (0);
+// @#C_UOM_ID@
 			setInventoryType (null);
 // D
 			setM_AttributeSetInstance_ID (0);
@@ -89,6 +99,8 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 			setQtyBook (Env.ZERO);
 			setQtyCount (Env.ZERO);
 			setQtyCsv (Env.ZERO);
+			setQtyEntered (Env.ZERO);
+// 0
         } */
     }
 
@@ -98,6 +110,8 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
       super (ctx, M_InventoryLine_UU, trxName, virtualColumns);
       /** if (M_InventoryLine_UU == null)
         {
+			setC_UOM_ID (0);
+// @#C_UOM_ID@
 			setInventoryType (null);
 // D
 			setM_AttributeSetInstance_ID (0);
@@ -108,6 +122,8 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 			setQtyBook (Env.ZERO);
 			setQtyCount (Env.ZERO);
 			setQtyCsv (Env.ZERO);
+			setQtyEntered (Env.ZERO);
+// 0
         } */
     }
 
@@ -219,6 +235,35 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 	public int getC_Department_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_Department_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_UOM getC_UOM() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_UOM)MTable.get(getCtx(), org.compiere.model.I_C_UOM.Table_ID)
+			.getPO(getC_UOM_ID(), get_TrxName());
+	}
+
+	/** Set UOM.
+		@param C_UOM_ID Unit of Measure
+	*/
+	public void setC_UOM_ID (int C_UOM_ID)
+	{
+		if (C_UOM_ID < 1)
+			set_Value (COLUMNNAME_C_UOM_ID, null);
+		else
+			set_Value (COLUMNNAME_C_UOM_ID, Integer.valueOf(C_UOM_ID));
+	}
+
+	/** Get UOM.
+		@return Unit of Measure
+	  */
+	public int getC_UOM_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_UOM_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -555,6 +600,25 @@ public class X_M_InventoryLine extends PO implements I_M_InventoryLine, I_Persis
 	public BigDecimal getQtyCsv()
 	{
 		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyCsv);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Quantity.
+		@param QtyEntered The Quantity Entered is based on the selected UoM
+	*/
+	public void setQtyEntered (BigDecimal QtyEntered)
+	{
+		set_Value (COLUMNNAME_QtyEntered, QtyEntered);
+	}
+
+	/** Get Quantity.
+		@return The Quantity Entered is based on the selected UoM
+	  */
+	public BigDecimal getQtyEntered()
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_QtyEntered);
 		if (bd == null)
 			 return Env.ZERO;
 		return bd;

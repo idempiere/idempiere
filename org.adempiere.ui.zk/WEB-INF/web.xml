@@ -10,6 +10,17 @@
 	</context-param>
 
 	<filter>
+		<display-name>Session Fingerprint Filter</display-name>
+		<filter-name>sessionfingerprintfilter</filter-name>
+		<filter-class>org.adempiere.webui.session.SessionFingerprintFilter</filter-class>
+		<async-supported>true</async-supported>
+	</filter>
+	<filter-mapping>
+		<filter-name>sessionfingerprintfilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter>
 		<display-name>SSO WebUI Filter</display-name>
 		<filter-name>ssowebuifilter</filter-name>
 		<filter-class>org.adempiere.webui.sso.filter.SSOWebUIFilter</filter-class>

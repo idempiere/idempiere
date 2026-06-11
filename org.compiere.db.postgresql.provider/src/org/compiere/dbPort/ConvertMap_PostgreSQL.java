@@ -51,10 +51,10 @@ public final class ConvertMap_PostgreSQL {
         //begin vpj-cd e-evolution 03/11/2005 PostgreSQL
 		s_pg.put("\\bBLOB\\b",                  "BYTEA");                 //  BLOB not directly supported
 		s_pg.put("\\bCLOB\\b",                  "TEXT");                //  CLOB not directly supported
-		s_pg.put("\\bLIMIT\\b","\"limit\""); 
-		s_pg.put("\\bACTION\\b","\"action\""); 
-		s_pg.put("\\bold\\b","\"old\""); 
-		s_pg.put("\\bnew\\b","\"new\""); 
+		s_pg.put("(?i)(?<!\")\\bLIMIT\\b(?!\")","\"limit\""); 
+		s_pg.put("(?i)(?<!\")\\bACTION\\b(?!\")","\"action\""); 
+		s_pg.put("(?i)(?<!\")\\bold\\b(?!\")","\"old\""); 
+		s_pg.put("(?i)(?<!\")\\bnew\\b(?!\")","\"new\""); 
 		//s_pg.put("\\bBLOB\\b",                  "OID");                 //  BLOB not directly supported
 		//s_pg.put("\\bCLOB\\b",                  "OID");                //  CLOB not directly supported
         //end vpj-cd e-evolution 03/11/2005 PostgreSQL

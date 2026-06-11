@@ -1,25 +1,25 @@
 .tree-wsetupwizard-finished {
-	background-color: #90EE90;
+	background-color: var(--zk-setup-wizard-finished-background-color);
 	margin-left:20px
 }
 
 .tree-wsetupwizard-skipped {
-	background-color: #00FF00;
+	background-color: var(--zk-setup-wizard-skipped-background-color);
 	margin-left:20px
 }
 
 .tree-wsetupwizard-delayed {
-	background-color: #0080FF;
+	background-color: var(--zk-setup-wizard-delayed-background-color);
 	margin-left:20px;
 }
 
 .tree-wsetupwizard-in-progress {
-	background-color: #FFFF33;
+	background-color: var(--zk-setup-wizard-in-progress-background-color);
 	margin-left:20px;
 }
 
 .tree-wsetupwizard-pending {
-	background-color: #FFFF00;
+	background-color: var(--zk-setup-wizard-pending-background-color);
 	margin-left:20px;
 }
 
@@ -28,20 +28,20 @@
 }
 
 .tree-wsetupwizard-finished-all {
-	background-color: #90EE90;
+	background-color: var(--zk-setup-wizard-finished-background-color);
 }
 
 .progressmeter-setupwizard {
-	background: #FFFF00 repeat-x 0 0 ;
+	background: var(--zk-setup-wizard-pending-background-color) repeat-x 0 0 ;
 	background-image: none;
-	border: 1px solid #CFCFCF;
+	border: 1px solid var(--zk-setup-wizard-progress-border-color);
 	text-align: left;
 	height: 20px;
 	overflow: hidden;
 }
 .progressmeter-setupwizard-image {
 	display: inline-block;
-	background: #90EE90;
+	background: var(--zk-setup-wizard-finished-background-color);
 	background-image: none;
 	height: 20px;
 	line-height: 0;

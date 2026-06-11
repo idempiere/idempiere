@@ -32,7 +32,7 @@ import org.compiere.process.ProcessCall;
  */
 public class ProcessFactory implements IProcessFactory {
 
-	public static final String JASPER_STARTER_CLASS_DEPRECATED = "org.compiere.report.ReportStarter";
+	public static final String JASPER_STARTER_CLASS_DEPRECATED = ProcessUtil.JASPER_STARTER_CLASS_DEPRECATED;
 
 	@Override
 	public ProcessCall newProcessInstance(String className) {

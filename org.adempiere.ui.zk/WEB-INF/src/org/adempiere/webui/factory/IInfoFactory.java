@@ -17,6 +17,7 @@ import org.adempiere.webui.info.InfoWindow;
 import org.adempiere.webui.panel.InfoPanel;
 import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
+import org.idempiere.db.util.SQLFragment;
 
 /**
  * Factory interface for {@link InfoPanel} ({@link InfoWindow})
@@ -55,6 +56,22 @@ public interface IInfoFactory {
 	public InfoPanel create (Lookup lookup, GridField field,
             String tableName, String keyColumn, String value,
             boolean multiSelection, String whereClause, int AD_InfoWindow_ID);
+	
+	/**
+	 * Create info panel or info window
+	 * @param lookup
+	 * @param field
+	 * @param tableName
+	 * @param keyColumn
+	 * @param value
+	 * @param multiSelection
+	 * @param AD_InfoWindow_ID
+	 * @param sqlFilter
+	 * @return {@link InfoPanel}
+	 */
+	public InfoPanel create (Lookup lookup, GridField field,
+            String tableName, String keyColumn, String value,
+            boolean multiSelection, int AD_InfoWindow_ID, SQLFragment sqlFilter);
 	
 	/**
 	 * Create info window
@@ -98,4 +115,20 @@ public interface IInfoFactory {
 	 */
 	public InfoPanel create(int WindowNo, String tableName, String keyColumn, String value, boolean multiSelection,
 			String whereClause, int AD_InfoWindow_ID, boolean lookup, GridField field);
+
+	/**
+	 * Create info panel or info window
+	 * @param WindowNo
+	 * @param tableName
+	 * @param keyColumn
+	 * @param value
+	 * @param multiSelection
+	 * @param AD_InfoWindow_ID
+	 * @param lookup
+	 * @param field
+	 * @param sqlFilter
+	 * @return
+	 */
+	InfoPanel create(int WindowNo, String tableName, String keyColumn, String value, boolean multiSelection,
+			int AD_InfoWindow_ID, boolean lookup, GridField field, SQLFragment sqlFilter);
 }

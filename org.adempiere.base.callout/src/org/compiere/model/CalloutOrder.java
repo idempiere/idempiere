@@ -712,7 +712,7 @@ public class CalloutOrder extends CalloutEngine
 	 *	@return null or error message
 	 *  @Deprecated - business logic moved to MOrder.beforeSave - must not create/delete external records with callouts
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public String paymentTerm (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
 	{
 		Integer C_PaymentTerm_ID = (Integer)value;

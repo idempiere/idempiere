@@ -29,6 +29,7 @@ import java.util.logging.Level;
 import org.adempiere.util.ServerContext;
 import org.compiere.Adempiere;
 import org.compiere.model.MClient;
+import org.compiere.model.MPackageImp;
 import org.compiere.model.MSession;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.Query;
@@ -39,6 +40,7 @@ import org.compiere.model.X_AD_Package_Imp;
 import org.compiere.model.X_AD_Package_Imp_Proc;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.CLogger;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 
@@ -97,6 +99,7 @@ public class PackInApplicationActivator extends AbstractActivator{
 			return;
 		}
 
+		boolean cacheReset = false;
 		MSession localSession = null;
 		try {
 			if (getDBLock()) {
@@ -125,6 +128,7 @@ public class PackInApplicationActivator extends AbstractActivator{
 					}
 					addLog(Level.INFO, "Successful application of " + zipFile);
 					filesToProcess.remove(zipFile);
+					cacheReset = true;
 				}
 			} else {
 				addLog(Level.WARNING, "Could not acquire the DB lock to automatically install the packins");
@@ -138,7 +142,10 @@ public class PackInApplicationActivator extends AbstractActivator{
 			if (localSession != null)
 				localSession.logout();
 		}
-		
+		logger.log(Level.INFO, "Cache Reset: " + cacheReset);
+		if (cacheReset)
+			CacheMgt.get().reset();
+
 		if (filesToProcess.size() > 0) {
 			StringBuilder pending = new StringBuilder("The following packages were not applied: ");
 			for (File file : filesToProcess) {
@@ -238,7 +245,7 @@ public class PackInApplicationActivator extends AbstractActivator{
 				X_AD_Package_Imp pimp = new X_AD_Package_Imp(Env.getCtx(), 0, null);
 				pimp.setAD_Package_Imp_Proc_ID(pimpr.getAD_Package_Imp_Proc_ID());
 				pimp.setName(fileName);
-				pimp.setPK_Status("Completed successfully");
+				pimp.setPK_Status(MPackageImp.PACKAGE_STATUS_COMPLETED);
 				pimp.setDescription("This ALL-CLIENT 2Pack was applied successfully in all tenants");
 				pimp.setProcessed(true);
 				pimp.saveEx();

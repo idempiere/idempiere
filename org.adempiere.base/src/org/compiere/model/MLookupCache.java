@@ -32,7 +32,7 @@ import org.compiere.util.CLogger;
  *  @version  $Id: MLookupCache.java,v 1.2 2006/07/30 00:58:37 jjanke Exp $
  *  @deprecated for deprecated swing client only
  */
-@Deprecated
+@Deprecated (since="13", forRemoval=true)
 public class MLookupCache
 {
 	/** Static Logger					*/

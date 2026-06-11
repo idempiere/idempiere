@@ -10,5 +10,5 @@
 * Check latest version available at https://mvnrepository.com/
 * bc-fips doesn't include JCE provider, only JCAJCE Provider
 * Apply fips.diff to switch from normal bouncy castle bundles to FIPS 140-3 Level 1 compliance bundles
-
+* Apply fips.remove_argon2.diff to remove use of argon2 that's not supported by BC FIPS
 

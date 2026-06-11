@@ -48,7 +48,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 		return true;
 	}
 
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public String getSQLWhere(Object BPartner, String DocumentNo, Object DateFrom, Object DateTo, 
 			Object AmtFrom, Object AmtTo, Object DocType, Object TenderType, String AuthCode)
 	{
@@ -114,7 +114,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 		return sql.toString();
 	}
 	
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	void setParameters(PreparedStatement pstmt, Object BankAccount, Object BPartner, String DocumentNo, Object DateFrom, Object DateTo, 
 			Object AmtFrom, Object AmtTo, Object DocType, Object TenderType, String AuthCode, GridTab gridTab)
 	throws SQLException
@@ -205,7 +205,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 		return s;
 	}
 	
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	protected Vector<Vector<Object>> getBankAccountData(Object BankAccount, Object BPartner, String DocumentNo, 
 			Object DateFrom, Object DateTo, Object AmtFrom, Object AmtTo, Object DocType, Object TenderType, String AuthCode, 
 			GridTab gridTab)

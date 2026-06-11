@@ -16,6 +16,7 @@ package org.adempiere.webui.apps.form;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
+import org.adempiere.base.GeneratedCodeCoverageExclusion;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Column;
@@ -54,7 +55,9 @@ import org.zkoss.zul.North;
  * @deprecated ticket IDEMPIERE-1963 replaced this with an Info Window
  */
 @org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VInOutGen")
-@Deprecated
+@Deprecated (since="13", forRemoval=true)
+@SuppressWarnings("removal")
+@GeneratedCodeCoverageExclusion
 public class WInOutGen extends InOutGen implements IFormController, EventListener<Event>, ValueChangeListener
 {
 	private WGenForm form;

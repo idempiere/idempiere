@@ -51,7 +51,8 @@ public class MatchPOAutoMatch {
 				{
 					if (mpo.getC_InvoiceLine_ID() > 0 && mpo.getM_InOutLine_ID() == 0)
 					{
-						String docStatus = mpo.getC_InvoiceLine().getC_Invoice().getDocStatus();
+						MInvoiceLine il = new MInvoiceLine(ctx, mpo.getC_InvoiceLine_ID(), trxName);
+						String docStatus = il.getParent().getDocStatus();
 						if (docStatus.equals(DocAction.STATUS_Completed) || docStatus.equals(DocAction.STATUS_Closed)) {
 							creditMemoMatchPOList.add(mpo);
 							continue;
@@ -80,7 +81,8 @@ public class MatchPOAutoMatch {
 			for (MMatchPO matchPOCreditMemo : creditMemoMatchPOList)
 			{
 				boolean found = false;
-				int Ref_InvoiceLine_ID = matchPOCreditMemo.getC_InvoiceLine().getRef_InvoiceLine_ID();
+				MInvoiceLine il = new MInvoiceLine(ctx, matchPOCreditMemo.getC_InvoiceLine_ID(), trxName);
+				int Ref_InvoiceLine_ID = il.getRef_InvoiceLine_ID();
 				if (Ref_InvoiceLine_ID > 0)
 				{
 					for (MMatchPO matchPO : notMatchedMatchPOList)
@@ -160,7 +162,8 @@ public class MatchPOAutoMatch {
 				{
 					if (mpo.getC_InvoiceLine_ID() > 0 && mpo.getM_InOutLine_ID() == 0)
 					{
-						String docStatus = mpo.getC_InvoiceLine().getC_Invoice().getDocStatus();
+						MInvoiceLine il = new MInvoiceLine(ctx, mpo.getC_InvoiceLine_ID(), trxName);
+						String docStatus = il.getParent().getDocStatus();
 						if ((currentPO != null && mpo.getM_MatchPO_ID() == currentPO.getM_MatchPO_ID())
 								|| docStatus.equals(DocAction.STATUS_Completed)
 								|| docStatus.equals(DocAction.STATUS_Closed)) {
@@ -191,7 +194,8 @@ public class MatchPOAutoMatch {
 			{
 				BigDecimal creditMemoQty = matchPOCreditMemo.getQty().negate();
 
-				int Ref_InvoiceLine_ID = matchPOCreditMemo.getC_InvoiceLine().getRef_InvoiceLine_ID();
+				MInvoiceLine il = new MInvoiceLine(ctx, matchPOCreditMemo.getC_InvoiceLine_ID(), trxName);
+				int Ref_InvoiceLine_ID = il.getRef_InvoiceLine_ID();
 				if (Ref_InvoiceLine_ID > 0)
 				{
 					for (MMatchPO matchPO : notMatchedMatchPOList)
@@ -204,7 +208,7 @@ public class MatchPOAutoMatch {
 								matchPO.saveEx(trxName);
 
 								MInvoiceLine iLine = new MInvoiceLine(ctx, matchPO.getC_InvoiceLine_ID(), trxName);
-								MMatchPO po = new MMatchPO(iLine, iLine.getC_Invoice().getDateInvoiced(), creditMemoQty);
+								MMatchPO po = new MMatchPO(iLine, iLine.getParent().getDateInvoiced(), creditMemoQty);
 								po.setC_OrderLine_ID(C_OrderLine_ID);
 								po.setRef_MatchPO_ID(matchPOCreditMemo.getM_MatchPO_ID());
 								po.setPosted(true);
@@ -262,7 +266,7 @@ public class MatchPOAutoMatch {
 								matchPOCreditMemo.saveEx(trxName);
 
 								MInvoiceLine iLine = new MInvoiceLine(ctx, matchPOCreditMemo.getC_InvoiceLine_ID(), trxName);
-								MMatchPO po = new MMatchPO(iLine, iLine.getC_Invoice().getDateInvoiced(), matchPO.getQty().negate());
+								MMatchPO po = new MMatchPO(iLine, iLine.getParent().getDateInvoiced(), matchPO.getQty().negate());
 								po.setC_OrderLine_ID(C_OrderLine_ID);
 								po.setRef_MatchPO_ID(matchPO.getM_MatchPO_ID());
 								po.setPosted(true);
@@ -311,7 +315,7 @@ public class MatchPOAutoMatch {
 							matchPO.saveEx(trxName);
 
 							MInvoiceLine iLine = new MInvoiceLine(ctx, matchPO.getC_InvoiceLine_ID(), trxName);
-							MMatchPO po = new MMatchPO(iLine, iLine.getC_Invoice().getDateInvoiced(), creditMemoQty);
+							MMatchPO po = new MMatchPO(iLine, iLine.getParent().getDateInvoiced(), creditMemoQty);
 							po.setC_OrderLine_ID(C_OrderLine_ID);
 							po.setRef_MatchPO_ID(matchPOCreditMemo.getM_MatchPO_ID());
 							po.setPosted(true);
@@ -369,7 +373,7 @@ public class MatchPOAutoMatch {
 							matchPOCreditMemo.saveEx(trxName);
 
 							MInvoiceLine iLine = new MInvoiceLine(ctx, matchPOCreditMemo.getC_InvoiceLine_ID(), trxName);
-							MMatchPO po = new MMatchPO(iLine, iLine.getC_Invoice().getDateInvoiced(), matchPO.getQty().negate());
+							MMatchPO po = new MMatchPO(iLine, iLine.getParent().getDateInvoiced(), matchPO.getQty().negate());
 							po.setC_OrderLine_ID(C_OrderLine_ID);
 							po.setRef_MatchPO_ID(matchPO.getM_MatchPO_ID());
 							po.setPosted(true);
@@ -456,17 +460,23 @@ public class MatchPOAutoMatch {
 				{
 					if (po.getReversal_ID() == 0 && po.getC_InvoiceLine_ID() > 0 && po.getRef_MatchPO_ID() > 0)
 					{
-						if (po.getC_InvoiceLine().getC_Invoice_ID() == C_Invoice_ID)
+						MInvoiceLine il = new MInvoiceLine(ctx, po.getC_InvoiceLine_ID(), trxName);
+						if (il.getC_Invoice_ID() == C_Invoice_ID)
 						{
 							po.setRef_MatchPO_ID(0);
 							po.setPosted(false);
 							po.saveEx(trxName);
 						}
-						else if (po.getRef_MatchPO().getC_InvoiceLine().getC_Invoice_ID() == C_Invoice_ID)
+						else
 						{
-							po.setRef_MatchPO_ID(0);
-							po.setPosted(false);
-							po.saveEx(trxName);
+							MMatchPO refMatchPO = new MMatchPO(ctx, po.getRef_MatchPO_ID(), trxName);
+							MInvoiceLine refIL = new MInvoiceLine(ctx, refMatchPO.getC_InvoiceLine_ID(), trxName);
+							if (refIL.getC_Invoice_ID() == C_Invoice_ID)
+							{
+								po.setRef_MatchPO_ID(0);
+								po.setPosted(false);
+								po.saveEx(trxName);
+							}
 						}
 					}
 				}

@@ -8,7 +8,7 @@ AND IsTranslationTab='N';
 
 UPDATE AD_Tab
 SET IsInsertRecord='N'
-WHERE IsTranslationTab='Y' AND IsInsertRecord='Y';
+WHERE IsTranslationTab='Y' AND IsInsertRecord='Y' AND AD_Tab_ID!=200302;
 
 UPDATE AD_Table
 SET IsDeleteable='N'

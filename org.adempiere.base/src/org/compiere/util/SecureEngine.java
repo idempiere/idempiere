@@ -25,6 +25,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.GeneratedCodeCoverageExclusion;
 import org.adempiere.base.IServiceHolder;
 import org.adempiere.base.Service;
 import org.adempiere.base.ServiceQuery;
@@ -138,7 +139,9 @@ public class SecureEngine
 	 *  @param value message
 	 *  @return HexString of digested message (length = 32 characters)
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
+	@SuppressWarnings("removal")
+	@GeneratedCodeCoverageExclusion
 	public static String getDigest (String value)
 	{
 		if (s_engine == null)
@@ -297,7 +300,7 @@ public class SecureEngine
 	 * @param planText
 	 * @return true if valid
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static boolean isMatchHash (String hashedText, String hexSalt, String planText) {
 		return isMatchHash(Secure.LEGACY_PASSWORD_HASH_ALGORITHM, hashedText, hexSalt, planText);
 	}
@@ -336,11 +339,23 @@ public class SecureEngine
 	 * @throws NoSuchAlgorithmException
 	 */
 	public static SecureRandom getSecureRandom() throws NoSuchAlgorithmException {
-		SecureRandom random = SecureRandom.getInstance(DEFAULT_SECURE_RANDOM_ALGORITHM,
-			    DrbgParameters.instantiation(256, // security strength
-			    DrbgParameters.Capability.PR_AND_RESEED, // prediction resistance
-			    null));
-		return random;
+		try {
+			SecureRandom random = SecureRandom.getInstance(DEFAULT_SECURE_RANDOM_ALGORITHM,
+				    DrbgParameters.instantiation(256, // security strength
+				    DrbgParameters.Capability.PR_AND_RESEED, // prediction resistance
+				    null));
+			return random;
+		} catch (NoSuchAlgorithmException e) {
+			if (log.isLoggable(Level.INFO))
+				log.info(DEFAULT_SECURE_RANDOM_ALGORITHM + " SecureRandom not available, falling back to platform default strong SecureRandom");
+			try {
+				return SecureRandom.getInstanceStrong();
+			} catch (NoSuchAlgorithmException e2) {
+				if (log.isLoggable(Level.WARNING))
+					log.warning("Strong SecureRandom not available, falling back to default SecureRandom");
+				return new SecureRandom();
+			}
+		}
 	}
 	
 	/** Test String					*/

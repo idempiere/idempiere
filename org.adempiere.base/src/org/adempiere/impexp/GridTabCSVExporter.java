@@ -124,8 +124,8 @@ public class GridTabCSVExporter implements IGridTabExporter
 					procArray.add(new Optional(new FmtNumber(nf)));
 				} else if (DisplayType.YesNo == field.getDisplayType()) {
 					procArray.add(new Optional(new FmtBool("Y", "N")));
-				} else { // lookups
-					procArray.add(new Optional());
+				} else { // lookups and text
+					procArray.add(new SanitizeSuperCsvCell(new Optional()));
 				}
 			}
 			
@@ -181,7 +181,7 @@ public class GridTabCSVExporter implements IGridTabExporter
 					 } else if (DisplayType.YesNo == field.getDisplayType()) {
 						 procArray.add(new Optional(new FmtBool("Y", "N")));
 					 } else { // lookups and text
-						 procArray.add(new Optional());
+						 procArray.add(new SanitizeSuperCsvCell(new Optional()));
 					 }
 				} 
 			    if(specialDetDispayType > 0){
@@ -410,7 +410,7 @@ public class GridTabCSVExporter implements IGridTabExporter
 	 * @param currentParentIndex
 	 * @return
 	 */
-	@Deprecated // don't use any where, relate IDEMPIERE-2788
+	@Deprecated (since="13", forRemoval=true) // don't use any where, relate IDEMPIERE-2788
 	public String getWhereClause (GridTab childTab, GridTab parentGrid, int currentParentIndex){
 		String whereClau = null; 
 		String linkColumn = childTab.getLinkColumnName();

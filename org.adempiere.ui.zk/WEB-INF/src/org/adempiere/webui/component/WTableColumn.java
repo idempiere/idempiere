@@ -27,21 +27,6 @@ import org.adempiere.webui.editor.WEditor;
  */
 public class WTableColumn
 {
-	@Deprecated(forRemoval = true, since = "11")
-    protected int width;
-
-    @Deprecated(forRemoval = true, since = "11")
-    protected int minWidth;
-
-    @Deprecated(forRemoval = true, since = "11")
-    private int preferredWidth;
-
-    @Deprecated(forRemoval = true, since = "11")
-    protected int maxWidth;
-    
-    @Deprecated(forRemoval = true, since = "11")
-    protected boolean	isResizable;
-
     /** The header value of the column. */
     protected Object		headerValue;
     
@@ -60,23 +45,6 @@ public class WTableColumn
     	headerValue = null;
     }
     
-    /**
-     * @param width
-     */
-    @Deprecated(forRemoval = true, since = "11")
-    public WTableColumn(int width) 
-    {
-		this.width = width;
-		this.preferredWidth = width;
-		
-		// Set other instance variables to default values.
-		minWidth = 15;
-		maxWidth = Integer.MAX_VALUE;
-		isResizable = true;
-		headerValue = null;
-    }
-    
-
     /**
      * Sets the <code>Object</code> whose string representation will be
      * used as the value for the <code>headerRenderer</code>.  When the
@@ -101,90 +69,6 @@ public class WTableColumn
     public Object getHeaderValue() 
     {
     	return headerValue;
-    }
-    
-    @Deprecated(forRemoval = true, since = "11")
-    public void setWidth(int width) 
-    {
-		this.width = Math.min(Math.max(width, minWidth), maxWidth);
-		
-		return;
-    }
-
-    @Deprecated(forRemoval = true, since = "11")
-    public int getWidth() 
-    {
-    	return width;
-    }
-
-    @Deprecated(forRemoval = true, since = "11")
-    public void setPreferredWidth(int preferredWidth) 
-    { 
-		this.preferredWidth = Math.min(Math.max(preferredWidth, minWidth), maxWidth);
-    }
-
-    @Deprecated(forRemoval = true, since = "11")
-    public int getPreferredWidth() 
-    {
-    	return preferredWidth;
-    }
-
-    @Deprecated(forRemoval = true, since = "11")
-    public void setMinWidth(int minWidth) 
-    { 	
-		this.minWidth = Math.max(minWidth, 0);
-		
-		if (width < minWidth) 
-		{
-		    setWidth(minWidth);
-		}
-		
-		if (preferredWidth < minWidth) 
-		{
-		    setPreferredWidth(minWidth);
-		}
-		
-		return;
-    }
-
-    @Deprecated(forRemoval = true, since = "11")
-    public int getMinWidth() 
-    {
-    	return minWidth;
-    }
-
-    @Deprecated(forRemoval = true, since = "11")
-    public void setMaxWidth(int maxWidth) 
-    {	
-		this.maxWidth = Math.max(minWidth, maxWidth);
-		if (width > maxWidth) 
-		{
-		    setWidth(maxWidth);
-		}
-		if (preferredWidth > maxWidth) 
-		{
-		    setPreferredWidth(maxWidth);
-		}
-		
-		return;
-    }
-
-    @Deprecated(forRemoval = true, since = "11")
-    public int getMaxWidth() 
-    {
-    	return maxWidth;
-    }
-
-    @Deprecated(forRemoval = true, since = "11")
-    public void setResizable(boolean isResizable) 
-    {	
-    	this.isResizable = isResizable;	
-    }
-
-    @Deprecated(forRemoval = true, since = "11")
-    public boolean getResizable() 
-    {
-    	return isResizable;
     }
 
     /**

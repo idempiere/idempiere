@@ -41,7 +41,7 @@ import org.compiere.model.MSysConfig;
 public final class Msg
 {
 	/** Initial size of HashMap     */
-	private static final int 		MAP_SIZE = 2000;
+	private static final int 		MAP_SIZE = 2500;
 	/**  Separator between Msg and optional Tip     */
 	private static final String     SEPARATOR = Env.NL + Env.NL;
 

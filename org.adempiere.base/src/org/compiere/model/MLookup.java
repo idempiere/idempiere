@@ -40,6 +40,7 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.NamePair;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
+import org.idempiere.db.util.SQLFragment;
 
 /**
  *	An intelligent MutableComboBoxModel, which determines what can be cached.
@@ -71,7 +72,7 @@ public final class MLookup extends Lookup implements Serializable
 	{
 		super(info.DisplayType, info.WindowNo);
 		m_info = info;
-		m_tabNo = TabNo;
+		m_info.tabNo = TabNo;
 		if (log.isLoggable(Level.FINE)) log.fine(m_info.KeyColumn);
 
 		//  Don't load Search or CreatedBy/UpdatedBy
@@ -96,8 +97,6 @@ public final class MLookup extends Lookup implements Serializable
 
 	/** The Lookup Info Value Object        */
 	private MLookupInfo         m_info = null;
-
-	private int 				m_tabNo = 0;
 
 	/** Storage of data  Key-NamePair	*/
 	private volatile LinkedHashMap<Object,Object>	m_lookup = new LinkedHashMap<Object,Object>();
@@ -780,7 +779,8 @@ public final class MLookup extends Lookup implements Serializable
 		if (m_info.ZoomWindowPO == 0 || query == null)
 			return m_info.ZoomWindow;
 		//	Need to check SO/PO
-		boolean isSOTrx = DB.isSOTrx(m_info.TableName, query.getWhereClause(false), m_info.WindowNo);
+		SQLFragment filter = query.getSQLFilter(false);
+		boolean isSOTrx = DB.isSOTrx(m_info.TableName, filter.sqlClause(), m_info.WindowNo, filter.parameters());
 		//
 		return getZoom(isSOTrx);
 	}	//	getZoom
@@ -921,7 +921,7 @@ public final class MLookup extends Lookup implements Serializable
 	{
 		if (info.IsValidated) return true;
 		if (info.ValidationCode.length() == 0) return true;
-		String validation = Env.parseContext(m_info.ctx, m_info.WindowNo, m_tabNo, m_info.ValidationCode, false);
+		String validation = Env.parseContext(m_info.ctx, m_info.WindowNo, m_info.tabNo, m_info.ValidationCode, false);
 		if (validation.equals(info.parsedValidationCode)) return true;
 		return false;
 	}
@@ -1125,7 +1125,7 @@ public final class MLookup extends Lookup implements Serializable
 			//	not validated
 			if (!m_info.IsValidated)
 			{
-				String validation = Env.parseContext(m_info.ctx, m_info.WindowNo, m_tabNo, m_info.ValidationCode, false);
+				String validation = Env.parseContext(m_info.ctx, m_info.WindowNo, m_info.tabNo, m_info.ValidationCode, false);
 				m_info.parsedValidationCode = validation;
 				if (validation.length() == 0 && m_info.ValidationCode.length() > 0)
 				{
@@ -1173,6 +1173,10 @@ public final class MLookup extends Lookup implements Serializable
 			boolean isNumber = m_info.KeyColumn.endsWith("_ID");
 			
 			String cacheKey = sql.toString();
+			if (m_info.Parameters != null && !m_info.Parameters.isEmpty())
+			{
+				cacheKey += "|" + m_info.Parameters.toString();
+			}
 			List<KeyNamePair> knpCache =  null;
 			List<ValueNamePair> vnpCache = null;
 			if (isNumber) 
@@ -1232,6 +1236,8 @@ public final class MLookup extends Lookup implements Serializable
 				pstmt = DB.prepareStatement(sqlFirstRows, null);
 				if (! DB.getDatabase().isPagingSupported())
 					pstmt.setMaxRows(MAX_ROWS+1);
+				if (m_info.Parameters != null && !m_info.Parameters.isEmpty())
+					DB.setParameters(pstmt, m_info.Parameters);
 				int timeout = MSysConfig.getIntValue(MSysConfig.GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, GridTable.DEFAULT_GRIDTABLE_LOAD_TIMEOUT_IN_SECONDS, Env.getAD_Client_ID(Env.getCtx()));
 				if (timeout > 0)
 					pstmt.setQueryTimeout(timeout);

@@ -37,7 +37,9 @@ import org.compiere.util.DB;
 import org.compiere.util.EMail;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
+import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
@@ -120,14 +122,21 @@ public class MClient extends X_AD_Client implements ImmutablePOSupport
 		list.toArray (retValue);
 		return retValue;
 	}	//	getAll
-
+	
+	
 	/**
 	 * Get a MClient object based on LoginPrefix
 	 * @param loginPrefix
 	 * @return MClient
 	 */
 	public static MClient getByLoginPrefix(String loginPrefix) {
-		MClient client = null;
+		if (Util.isEmpty(loginPrefix, true))
+			return null;
+				
+		MClient client = s_cacheByLoginPrefix.get(loginPrefix);
+		if (client != null)
+			return client;
+		
 		try {
 			PO.setCrossTenantSafe();
 			client = new Query(Env.getCtx(), Table_Name, "LoginPrefix=?", (String)null)
@@ -141,6 +150,7 @@ public class MClient extends X_AD_Client implements ImmutablePOSupport
 			Integer key = Integer.valueOf(client.getAD_Client_ID());
 			if (! s_cache.containsKey(key))
 				s_cache.put (Integer.valueOf(client.getAD_Client_ID()), client, e -> new MClient(Env.getCtx(), e));
+			s_cacheByLoginPrefix.put(loginPrefix, client, e -> new MClient(Env.getCtx(), e));
 		}
 		return client;
 	}
@@ -160,6 +170,8 @@ public class MClient extends X_AD_Client implements ImmutablePOSupport
 	private static CLogger	s_log	= CLogger.getCLogger (MClient.class);
 	/**	Cache						*/
 	private static ImmutableIntPOCache<Integer,MClient>	s_cache = new ImmutableIntPOCache<Integer,MClient>(Table_Name, 3, 0, false, 0);
+	
+	private static ImmutablePOCache<String, MClient> s_cacheByLoginPrefix = new ImmutablePOCache<>(MClient.Table_Name, "MClientByLoginPrefix", 3, 60*24*7, false, 0);
 
 	/**
 	 * 	Standard Constructor

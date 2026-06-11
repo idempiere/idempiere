@@ -721,18 +721,25 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element implements Immuta
 	 */
 	private void updateData (String element, int id)
 	{
-		StringBuilder sql = new StringBuilder("UPDATE C_ValidCombination SET ").append(element).append("=").append(id)
-			.append(" WHERE ").append(element).append(" IS NULL AND AD_Client_ID=").append(getAD_Client_ID());
-		int noC = DB.executeUpdate(sql.toString(), get_TrxName());
+		MTable tableValidCombination = MTable.get(MAccount.Table_ID);
+		StringBuilder sql;
+		int noC = 0;
+		if (tableValidCombination.columnExistsInDictionary(element)) {
+			sql = new StringBuilder("UPDATE C_ValidCombination SET ").append(element).append("=").append(id)
+					.append(" WHERE ").append(element).append(" IS NULL AND AD_Client_ID=").append(getAD_Client_ID());
+			noC = DB.executeUpdateEx(sql.toString(), get_TrxName());
+		}
 		//
 		sql = new StringBuilder("UPDATE Fact_Acct SET ").append(element).append("=").append(id)
 			.append(" WHERE ").append(element).append(" IS NULL AND C_AcctSchema_ID=").append(getC_AcctSchema_ID());
-		int noF = DB.executeUpdate(sql.toString(), get_TrxName());
+		int noF = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		//
 		if (log.isLoggable(Level.FINE)) log.fine("ValidCombination=" + noC + ", Fact=" + noF);
 		//
-		StringBuilder msguvd = new StringBuilder(element).append("=").append(id);
-		MAccount.updateValueDescription(getCtx(),msguvd.toString(), get_TrxName());
+		if (tableValidCombination.columnExistsInDictionary(element)) {
+			StringBuilder whereValidCombination = new StringBuilder(element).append("=").append(id);
+			MAccount.updateValueDescription(getCtx(),whereValidCombination.toString(), get_TrxName());
+		}
 	}	//	updateData
 
 	@Override

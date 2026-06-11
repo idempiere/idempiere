@@ -40,6 +40,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.idempiere.distributed.IMessageService;
 import org.idempiere.distributed.ITopic;
+import org.idempiere.tracking.AuditTraceContext;
 import org.osgi.service.event.Event;
 
 /**
@@ -113,7 +114,7 @@ public class MPInstance extends X_AD_PInstance
 	 *	@param Record_ID Record
 	 *  @deprecated Please use {@link #MPInstance(MProcess, int, int, String)}
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public MPInstance (MProcess process, int Record_ID)
 	{
 		this(process, -1, Record_ID, null);
@@ -154,7 +155,7 @@ public class MPInstance extends X_AD_PInstance
 	 *	@param Record_ID record
 	 *  @deprecated Please use {@link #MPInstance(Properties, int, int, int, String)}
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public MPInstance (Properties ctx, int AD_Process_ID, int Record_ID)
 	{
 		this(ctx, AD_Process_ID, -1, Record_ID, null);
@@ -710,6 +711,10 @@ public class MPInstance extends X_AD_PInstance
 			int sessionId = Env.getContextAsInt(Env.getCtx(), Env.AD_SESSION_ID);
 			if (sessionId > 0)
 				setAD_Session_ID(sessionId);
+			
+			String externalTraceId = AuditTraceContext.getExternalTraceId();
+	        if (externalTraceId != null)
+	            setExternalTraceId(externalTraceId);
 		}
 		
 		return true;

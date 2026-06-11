@@ -183,6 +183,19 @@ public interface I_AD_Ref_Table
 	  */
 	public int getCreatedBy();
 
+    /** Column name DisplaySQL */
+    public static final String COLUMNNAME_DisplaySQL = "DisplaySQL";
+
+	/** Set Display SQL.
+	  * SQL for display of lookup value
+	  */
+	public void setDisplaySQL (String DisplaySQL);
+
+	/** Get Display SQL.
+	  * SQL for display of lookup value
+	  */
+	public String getDisplaySQL();
+
     /** Column name EntityType */
     public static final String COLUMNNAME_EntityType = "EntityType";
 
@@ -210,6 +223,19 @@ public interface I_AD_Ref_Table
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsDisplayIdentifier */
+    public static final String COLUMNNAME_IsDisplayIdentifier = "IsDisplayIdentifier";
+
+	/** Set Display Identifier.
+	  * Display the record identifier
+	  */
+	public void setIsDisplayIdentifier (boolean IsDisplayIdentifier);
+
+	/** Get Display Identifier.
+	  * Display the record identifier
+	  */
+	public boolean isDisplayIdentifier();
 
     /** Column name IsValueDisplayed */
     public static final String COLUMNNAME_IsValueDisplayed = "IsValueDisplayed";

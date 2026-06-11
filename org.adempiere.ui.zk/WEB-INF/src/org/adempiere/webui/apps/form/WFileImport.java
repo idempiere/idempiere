@@ -29,12 +29,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
+import org.adempiere.webui.component.FlexHlayout;
+import org.adempiere.webui.component.FlexVlayout;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
@@ -53,6 +56,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.Msg;
+import org.idempiere.db.util.SQLFragment;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
@@ -63,11 +67,9 @@ import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Hbox;
 import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
-import org.zkoss.zul.Vbox;
 
 /**
  * 	Fixed length file import.<br/>
@@ -133,7 +135,7 @@ public class WFileImport extends ADForm implements EventListener<Event>
 	private Div previewPanel = new Div();
 
 	/** North part of form */
-	private Vbox northPanel = new Vbox();
+	private FlexVlayout northPanel = new FlexVlayout();
 
 	/** Center part of form */
 	private Div centerPanel = new Div();
@@ -224,8 +226,8 @@ public class WFileImport extends ADForm implements EventListener<Event>
 		bPrevious.setLabel("<");
 		bPrevious.addEventListener(Events.ON_CLICK, this);
 				
-		Hbox hbox = new Hbox();
-		hbox.setAlign("center");
+		FlexHlayout hbox = new FlexHlayout();
+		hbox.setAlign(FlexHlayout.AlignType.CENTER);
 		hbox.appendChild(bFile);
 		hbox.appendChild(fCharset);
 		hbox.appendChild(info);
@@ -509,7 +511,8 @@ public class WFileImport extends ADForm implements EventListener<Event>
 			
 			m_labels[i] = new Label(row.getName());
 			
-			Hbox hbox = new Hbox();
+			@SuppressWarnings("deprecation")
+			org.zkoss.zul.Hbox hbox = new org.zkoss.zul.Hbox();
 			hbox.setAlign("center");
 			ZKUpdateUtil.setWidth(hbox, "100%");
 			hbox.setStyle("padding-bottom: 3px");
@@ -606,7 +609,7 @@ public class WFileImport extends ADForm implements EventListener<Event>
 			    result -> {
 			        if (importedFinal > 0) {
 			            MQuery query = new MQuery(m_format.getAD_Table_ID());
-			            query.addRestriction("I_IsImported='N'");
+			            query.addRestriction(new SQLFragment("I_IsImported=?", List.of("N")));
 			            AEnv.zoom(m_format.getAD_Table_ID(), 0, query);
 			        }
 			    });

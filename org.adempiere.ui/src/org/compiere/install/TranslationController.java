@@ -29,7 +29,7 @@ import org.compiere.util.ValueNamePair;
  * Deprecated with IDEMPIERE-4566
  * moved to org.idempiere.process.TranslationImpExp
  */
-@Deprecated
+@Deprecated (since="13", forRemoval=true)
 public class TranslationController
 {
 	public TranslationController()

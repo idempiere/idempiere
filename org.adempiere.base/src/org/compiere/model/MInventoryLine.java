@@ -40,9 +40,9 @@ import org.compiere.util.Util;
 public class MInventoryLine extends X_M_InventoryLine
 {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = 3973418005721380194L;
+	private static final long serialVersionUID = 5791199734970832880L;
 
 	/**
 	 * 	Get Inventory Line with parameters
@@ -106,6 +106,7 @@ public class MInventoryLine extends X_M_InventoryLine
 		setInventoryType (INVENTORYTYPE_InventoryDifference);
 		setQtyBook (Env.ZERO);
 		setQtyCount (Env.ZERO);
+		setQtyEntered (Env.ZERO);
 		setProcessed(false);
 	}
 
@@ -144,13 +145,23 @@ public class MInventoryLine extends X_M_InventoryLine
 		setM_Locator_ID (M_Locator_ID);		//	FK
 		setM_Product_ID (M_Product_ID);		//	FK
 		setM_AttributeSetInstance_ID (M_AttributeSetInstance_ID);
+		// Set UOM from product
+		if (M_Product_ID != 0) {
+			MProduct product = MProduct.get(inventory.getCtx(), M_Product_ID);
+			if (product != null)
+				setC_UOM_ID(product.getC_UOM_ID());
+		}
 		//
 		if (QtyBook != null)
 			setQtyBook (QtyBook);
-		if (QtyCount != null && QtyCount.signum() != 0)
+		if (QtyCount != null && QtyCount.signum() != 0) {
 			setQtyCount (QtyCount);
-		if (QtyInternalUse != null && QtyInternalUse.signum() != 0)
+			setQtyEntered (QtyCount);	// same UOM as product UOM
+		}
+		if (QtyInternalUse != null && QtyInternalUse.signum() != 0) {
 			setQtyInternalUse (QtyInternalUse);
+			setQtyEntered (QtyInternalUse);	// same UOM as product UOM
+		}
 	}	//	MInventoryLine
 
 	/**
@@ -262,7 +273,21 @@ public class MInventoryLine extends X_M_InventoryLine
 		super.setQtyInternalUse(QtyInternalUse);
 	}	//	setQtyInternalUse
 
-	
+	/**
+	 * 	Set Entered Qty - enforce entered UOM precision
+	 *	@param QtyEntered qty
+	 */
+	@Override
+	public void setQtyEntered (BigDecimal QtyEntered)
+	{
+		if (QtyEntered != null && getC_UOM_ID() != 0)
+		{
+			int precision = MUOM.getPrecision(getCtx(), getC_UOM_ID());
+			QtyEntered = QtyEntered.setScale(precision, RoundingMode.HALF_UP);
+		}
+		super.setQtyEntered(QtyEntered);
+	}	//	setQtyEntered
+
 	/**
 	 * 	Add to Description
 	 *	@param description text
@@ -339,12 +364,75 @@ public class MInventoryLine extends X_M_InventoryLine
 			setLine (ii);
 		}
 
+		//	Set default UOM from product if not set
+		if (getC_UOM_ID() == 0 && getM_Product_ID() != 0) {
+			MProduct product = getProduct();
+			if (product != null)
+				setC_UOM_ID(product.getC_UOM_ID());
+		}
+
+		//	Enforce QtyEntered UOM precision
+		if (newRecord || is_ValueChanged(COLUMNNAME_QtyEntered))
+			setQtyEntered(getQtyEntered());
+
 		//	Enforce Qty UOM precision
 		if (newRecord || is_ValueChanged("QtyCount"))
 			setQtyCount(getQtyCount());
 		if (newRecord || is_ValueChanged("QtyInternalUse"))
 			setQtyInternalUse(getQtyInternalUse());
-		
+
+		//		Convert QtyEntered -> QtyCount / QtyInternalUse.
+		//	New record: use value-based detection — stock-qty is "explicitly set" when it is non-zero,
+		//	because setInitialDefaults always sets QtyCount=0 so is_ValueChanged is useless on new records.
+		//	  - QtyEntered!=0 and stock-qty==0  → forward convert (UI/REST set QtyEntered)
+		//	  - QtyEntered==0 and stock-qty!=0  → backward compat back-fill (legacy/API set stock qty)
+		//	  - QtyEntered!=0 and stock-qty!=0  → neither branch runs; stock-qty wins
+		//	    (reversal: copyValues copied QtyEntered, then setQtyCount/setQtyInternalUse overrode it)
+		//	Existing record: forward-convert only when QtyEntered or C_UOM_ID was changed.
+		boolean stockQtyExplicitlySet;
+		if (newRecord) {
+			MDocType dtForCheck = MDocType.get(getCtx(), getParent().getC_DocType_ID());
+			if (MDocType.DOCSUBTYPEINV_InternalUseInventory.equals(dtForCheck.getDocSubTypeInv()))
+				stockQtyExplicitlySet = getQtyInternalUse().signum() != 0;
+			else
+				stockQtyExplicitlySet = getQtyCount().signum() != 0;
+		} else {
+			stockQtyExplicitlySet = is_ValueChanged(COLUMNNAME_QtyCount) || is_ValueChanged(COLUMNNAME_QtyInternalUse);
+		}
+		if ((!newRecord && (is_ValueChanged(COLUMNNAME_QtyEntered) || is_ValueChanged(COLUMNNAME_C_UOM_ID)))
+				|| (newRecord && getQtyEntered() != null && getQtyEntered().signum() != 0 && !stockQtyExplicitlySet)) {
+
+			int C_UOM_ID = getC_UOM_ID();
+			BigDecimal qtyEntered = getQtyEntered();
+			if (C_UOM_ID != 0 && qtyEntered != null && getM_Product_ID() != 0) {
+				BigDecimal qtyConverted = MUOMConversion.convertProductFrom(getCtx(), getM_Product_ID(), C_UOM_ID, qtyEntered);
+				if (qtyConverted == null)
+					qtyConverted = qtyEntered;
+				MDocType dtCheck = MDocType.get(getCtx(), getParent().getC_DocType_ID());
+				String subTypeCheck = dtCheck.getDocSubTypeInv();
+				if (MDocType.DOCSUBTYPEINV_InternalUseInventory.equals(subTypeCheck))
+					super.setQtyInternalUse(qtyConverted);
+				else if (MDocType.DOCSUBTYPEINV_PhysicalInventory.equals(subTypeCheck))
+					super.setQtyCount(qtyConverted);
+				// CostAdjustment does not use QtyEntered
+			}
+		}
+		//	Backward compatibility QtyEntered when stock-qty is set directly (REST API/import).
+		//	Legacy callers always use the product's stock UOM, so QtyEntered = stock qty and C_UOM_ID = product UOM.
+		else if (getQtyEntered() == null || getQtyEntered().signum() == 0) {
+			MDocType dtCheck = MDocType.get(getCtx(), getParent().getC_DocType_ID());
+			String subTypeCheck = dtCheck.getDocSubTypeInv();
+			BigDecimal stockQty = null;
+			if (MDocType.DOCSUBTYPEINV_InternalUseInventory.equals(subTypeCheck))
+				stockQty = getQtyInternalUse();
+			else if (MDocType.DOCSUBTYPEINV_PhysicalInventory.equals(subTypeCheck))
+				stockQty = getQtyCount();
+			if (stockQty != null && stockQty.signum() != 0) {
+				super.setQtyEntered(stockQty);	// same value, already in product UOM
+				// C_UOM_ID already set to product UOM by the block above
+			}
+		}
+
 		MDocType dt = MDocType.get(getCtx(), getParent().getC_DocType_ID());
 		String docSubTypeInv = dt.getDocSubTypeInv();
 
@@ -423,9 +511,8 @@ public class MInventoryLine extends X_M_InventoryLine
 			
 			// Set current cost price
 			String costingMethod = getParent().getCostingMethod();
-			int AD_Org_ID = getAD_Org_ID();
-			ICostInfo cost = product.getCostInfo(as, AD_Org_ID, M_ASI_ID, costingMethod, getParent().getMovementDate());					
-			if (cost == null) {
+			BigDecimal currentCostPrice = getCurrentCostPriceForCostAdjustment();
+			if (currentCostPrice == null) {
 				// Error if no costing record (except standard costing)
 				if (!MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod)) {
 					log.saveError("NoCostingRecord", "");
@@ -433,7 +520,7 @@ public class MInventoryLine extends X_M_InventoryLine
 				}
 			} else {
 				if (is_new() || is_ValueChanged(COLUMNNAME_M_Product_ID) || is_ValueChanged(COLUMNNAME_M_AttributeSetInstance_ID))
-					setCurrentCostPrice(cost.getCurrentCostPrice());
+					setCurrentCostPrice(currentCostPrice);
 			}
 			setM_Locator_ID(0);
 		} else {
@@ -481,5 +568,65 @@ public class MInventoryLine extends X_M_InventoryLine
 	public boolean isSOTrx() {
 		return getMovementQty().signum() < 0;
 	}
-	
+
+	/**
+	 * Check is inventory line is import inventory line
+	 * @param M_InventoryLine_ID
+	 * @param trxName
+	 * @return I_Inventory_ID
+	 */
+	public static int getImportLine_ID(int M_InventoryLine_ID, String trxName) {
+		int importLine = DB.getSQLValueEx(trxName, "SELECT I_Inventory_ID from I_Inventory where M_InventoryLine_ID=?", M_InventoryLine_ID);
+		return importLine;
+	}
+
+	public BigDecimal getCurrentCostPriceForCostAdjustment() {
+		MInventory inventory = getParent();
+		MClient client = MClient.get(inventory.getCtx(), inventory.getAD_Client_ID());
+		MAcctSchema as = client.getAcctSchema();
+		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(inventory.getCtx(), client.get_ID());
+		if (as.getC_Currency_ID() != inventory.getC_Currency_ID()) {
+			for (MAcctSchema a : ass) {
+				if (a.getC_Currency_ID() == inventory.getC_Currency_ID()) 
+					as = a ; 
+			}
+		}
+		int AD_Org_ID = getAD_Org_ID();
+		int M_AttributeSetInstance_ID = getM_AttributeSetInstance_ID();
+		if (MAcctSchema.COSTINGLEVEL_Client.equals(as.getCostingLevel()))
+		{
+			AD_Org_ID = 0;
+			M_AttributeSetInstance_ID = 0;
+		}
+		else if (MAcctSchema.COSTINGLEVEL_Organization.equals(as.getCostingLevel()))
+			M_AttributeSetInstance_ID = 0;
+		else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(as.getCostingLevel()))
+			AD_Org_ID = 0;
+		MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), inventory.getCostingMethod(), AD_Org_ID);
+		
+		MCostHistory history = null;
+		int M_InventoryLine_ID = getM_InventoryLine_ID();
+		if (getReversalLine_ID() > 0 && get_ID() > getReversalLine_ID())
+			M_InventoryLine_ID = getReversalLine_ID();
+		MCostDetail cd = MCostDetail.getInventory(as, getM_Product_ID(), M_AttributeSetInstance_ID, 
+				M_InventoryLine_ID, 0, get_TrxName());
+		if (cd != null)
+ 			history = MCostHistory.get(getCtx(), AD_Org_ID, 
+ 					as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(), 
+ 					M_AttributeSetInstance_ID, cd, get_TrxName());
+		if (history == null)
+			history = MCostHistory.get(getCtx(), getAD_Client_ID(), AD_Org_ID, getM_Product_ID(), 
+					as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(),
+					M_AttributeSetInstance_ID, inventory.getMovementDate(), get_TrxName());
+		if (history != null)
+			return history.getCurrentCostPrice();
+		
+		MCost cost = MCost.get(getCtx(), getAD_Client_ID(), AD_Org_ID, getM_Product_ID(), 
+				as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(), 
+				M_AttributeSetInstance_ID, get_TrxName());
+		if (cost != null)
+			return cost.getCurrentCostPrice();
+		return null;
+	}
 }	//	MInventoryLine
+

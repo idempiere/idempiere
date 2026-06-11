@@ -63,6 +63,7 @@ import org.compiere.model.MSysConfig;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.db.util.SQLFragment;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Executions;
@@ -72,7 +73,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Space;
-import org.zkoss.zul.Vbox;
+import org.adempiere.webui.component.FlexVlayout;
 import org.zkoss.zul.Vlayout;
 
 /**
@@ -150,7 +151,7 @@ public class CSVImportAction implements EventListener<Event>
 			winImportFile.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "importAction");
 			winImportFile.setSclass("popup-dialog");
 
-			Vbox vb = new Vbox();
+			FlexVlayout vb = new FlexVlayout();
 			ZKUpdateUtil.setWidth(vb, "100%");
 			winImportFile.appendChild(vb);
 
@@ -361,14 +362,14 @@ public class CSVImportAction implements EventListener<Event>
 			Filedownload.save(media);
 
 			if (query != null) {
-	        	query.addRestriction("1=1");
+	        	query.addRestriction(new SQLFragment("1=1"));
 	        	panel.getActiveGridTab().setQuery(query);
 	        	panel.getADTab().getSelectedTabpanel().query(false, 0, panel.getActiveGridTab().getMaxQueryRecords());
 	        }
 	        panel.getActiveGridTab().dataRefresh(false);
 	        
 	        if (detailQuery != null){
-	        	detailQuery.addRestriction("1=1");
+	        	detailQuery.addRestriction(new SQLFragment("1=1"));
 	        	panel.getADTab().getSelectedDetailADTabpanel().getGridTab().setQuery(detailQuery);	        	
 	        	panel.getADTab().getSelectedDetailADTabpanel().query(false, 0, panel.getActiveGridTab().getMaxQueryRecords());
 		        panel.getADTab().getSelectedDetailADTabpanel().getGridTab().dataRefresh(false);

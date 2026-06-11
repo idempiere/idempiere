@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Hashtable;
 import java.util.Properties;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.logging.Level;
@@ -29,6 +30,7 @@ import java.util.logging.Level;
 import javax.swing.ImageIcon;
 import javax.swing.event.EventListenerList;
 
+import org.adempiere.base.BaseActivator;
 import org.adempiere.base.Core;
 import org.compiere.db.CConnection;
 import org.compiere.model.MClient;
@@ -52,6 +54,7 @@ import org.compiere.util.Util;
 import org.eclipse.core.runtime.IProduct;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
+import org.osgi.service.condition.Condition;
 
 /**
  *  Static methods for iDempiere startup, system info and global thread pool.
@@ -61,14 +64,14 @@ import org.osgi.framework.Bundle;
 public final class Adempiere
 {
 	/** Timestamp                   */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	static public final String	ID				= "$Id: Adempiere.java,v 1.8 2006/08/11 02:58:14 jjanke Exp $";
 	/** Main Version String         */
-	static public String	MAIN_VERSION	= "Release 13";
+	static public String	MAIN_VERSION	= "Release 14";
 	/** Detail Version as date      Used for Client/Server		*/
-	static public String	DATE_VERSION	= "2024-12-24";
+	static public String	DATE_VERSION	= "2026-03-09";
 	/** Database Version as date    Compared with AD_System		*/
-	static public String	DB_VERSION		= "2024-12-24";
+	static public String	DB_VERSION		= "2026-03-09";
 
 	/** Product Name            */
 	static public final String	NAME 			= "iDempiere\u00AE";
@@ -91,7 +94,7 @@ public final class Adempiere
 	/** Subtitle                */
 	static public final String	SUB_TITLE		= "Smart Suite ERP, CRM and SCM";
 	static public final String	ADEMPIERE_R		= "iDempiere\u00AE";
-	static public final String	COPYRIGHT		= "\u00A9 1999-2025 iDempiere\u00AE";
+	static public final String	COPYRIGHT		= "\u00A9 1999-2026 iDempiere\u00AE";
 
 	static private String		s_ImplementationVersion = null;
 	static private String		s_ImplementationVendor = null;
@@ -603,6 +606,11 @@ public final class Adempiere
 
 		createThreadPool();
 		
+        // Register the Condition service to activate the distributed backend
+        Hashtable<String, Object> props = new Hashtable<>();
+        props.put("osgi.condition.id", "distributed.provider."+SystemProperties.getDistributedBackend());
+        BaseActivator.getBundleContext().registerService(Condition.class, Condition.INSTANCE, props);
+
 		fireServerStateChanged(new ServerStateChangeEvent(new Object(), ServerStateChangeEvent.SERVER_START));
 		
 		if (isClient)		//	don't test connection

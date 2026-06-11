@@ -268,7 +268,8 @@ public class PoFiller{
 				return 0;
 			}
 		} else {
-			po.set_ValueNoCheck(columnName, null);
+			if (po.get_ColumnIndex(columnName) >= 0)
+				po.set_ValueNoCheck(columnName, null);
 			return 0;
 		}
 	}

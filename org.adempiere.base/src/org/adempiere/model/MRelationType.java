@@ -43,6 +43,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
+import org.idempiere.db.util.SQLFragment;
 
 /**
  * Extended model class for AD_RelationType.<br/>
@@ -361,6 +362,16 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 	 * @return parsed where clause
 	 */
 	public static String parseWhereClause(final PO po, final String where) {
+		return parseWhereClause(po, where, null);
+	}
+	
+	/**
+	 * @param po
+	 * @param where
+	 * @param params
+	 * @return parsed where clause
+	 */
+	public static String parseWhereClause(final PO po, final String where, List<Object> params) {
 
 		if (logger.isLoggable(Level.FINE))
 			logger.fine("building private ctx instance containing the PO's String and int values");
@@ -390,8 +401,9 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 			}
 		}
 
-		final String parsedWhere = Env.parseContext(privateCtx, -1, where,
-				false);
+		final String parsedWhere = params == null 
+				? Env.parseContext(privateCtx, -1, where, false)
+				: Env.parseContextForSql(privateCtx, -1, where, false, params);
 
 		if (logger.isLoggable(Level.FINE)) logger.fine("whereClause='" + where + "'; parsedWhere='" + parsedWhere
 				+ "'");
@@ -423,7 +435,9 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 				get_TrxName());
 
 		final MQuery query = new MQuery();
-		query.addRestriction(parseWhereClause(po, refTable.getWhereClause()));
+		List<Object> params = new ArrayList<Object>();
+		String whereClause = parseWhereClause(po, refTable.getWhereClause(), params);
+		query.addRestriction(new SQLFragment(whereClause, params));
 		query.setZoomTableName(retrieveDestinationTableName());
 		query.setZoomColumnName(retrieveDestinationKeyColName());
 
@@ -451,12 +465,19 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 		MTable table = null;
 
 		int windowId = refTable.getAD_Window_ID();
+		boolean isSoTrx = false;
+		
 		if (windowId == 0) {
 
 			final int tableId = refTable.getAD_Table_ID();
 			table = MTable.get(po.getCtx(), tableId);
-
-			if (Env.isSOTrx(po.getCtx())) {
+			if (po.get_ColumnIndex("IsSOTrx") >= 0) {
+				if (isSoTrx = po.get_ValueAsBoolean("IsSOTrx")) {
+					windowId = table.getAD_Window_ID();
+				} else {
+					windowId = table.getPO_Window_ID();
+				}
+			} else if ( isSoTrx = Env.isSOTrx(po.getCtx())) {
 				windowId = table.getAD_Window_ID();
 			} else {
 				windowId = table.getPO_Window_ID();
@@ -465,7 +486,7 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 
 		if (windowId == 0) {
 			MReference refTarget = MReference.get(getAD_Reference_Target_ID());
-			PORelationException.throwMissingWindowId(po, refTarget.getName(), table.getName(), Env.isSOTrx(po.getCtx()));
+			PORelationException.throwMissingWindowId(po, refTarget.getName(), table.getName(),isSoTrx);
 		}
 		return windowId;
 
@@ -495,12 +516,13 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 	 */
 	private static void evaluateQuery(final MQuery query) {
 
+		SQLFragment filter = query.getSQLFilter(false);
 		StringBuilder sqlCommon = new StringBuilder(" FROM ").append(query.getZoomTableName())
-				.append(" WHERE ").append(query.getWhereClause(false));
+				.append(" WHERE ").append(filter.sqlClause());
 
 		final String sqlCount = "SELECT COUNT(*) " + sqlCommon;
 
-		final int count = DB.getSQLValueEx(null, sqlCount);
+		final int count = DB.getSQLValueEx(null, sqlCount, filter.parameters());
 		query.setRecordCount(count);
 
 		if (count > 0) {
@@ -508,7 +530,7 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 			StringBuilder sqlFirstKey = new StringBuilder("SELECT ").append(query.getZoomColumnName())
 					.append(sqlCommon);
 
-			final int firstKey = DB.getSQLValueEx(null, sqlFirstKey.toString());
+			final int firstKey = DB.getSQLValueEx(null, sqlFirstKey.toString(), filter.parameters());
 			query.setZoomValue(firstKey);
 		}
 	}

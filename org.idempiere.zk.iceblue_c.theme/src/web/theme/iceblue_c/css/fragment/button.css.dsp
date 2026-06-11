@@ -11,13 +11,13 @@
 	border-radius: 4px;
 }
 .z-button-os:hover {
-    color: #FFFFFF;
+	color: var(--zk-button-os-hover-color);
     border-color: transparent;
-    background-color: #7ac8ff;
+	background-color: var(--zk-button-os-hover-background-color);
 }
 
 .z-button:focus {
-    border-color: black;
+	border-color: var(--zk-button-focus-border-color-local);
 }
 
 .z-button.btn-small {
@@ -42,30 +42,30 @@
 }
 
 .btn-sorttab {
-	box-shadow: 0px 0px 4px #bbb;
-	color: #555;
-	border: solid 1px #bbb;
-	text-shadow: 0px 1px 2px #888;
+	box-shadow: 0px 0px 4px var(--zk-button-sorttab-shadow-color);
+	color: var(--zk-button-sorttab-color);
+	border: solid 1px var(--zk-button-sorttab-border-color);
+	text-shadow: 0px 1px 2px var(--zk-button-sorttab-text-shadow-color);
 }
 
 .btn-cancel, .btn-help {
-    background: #f1f1f1;
-    color: #111111;
+	background: var(--zk-button-cancel-background-color);
+	color: var(--zk-button-cancel-color);
 }
 
 .btn-cancel:hover, .btn-help:hover {
-    background: #e5e5e5;
-    color: #1d1d1d;
+	background: var(--zk-button-cancel-hover-background-color);
+	color: var(--zk-button-cancel-hover-color);
 }
 
 .z-icon-Help, .z-icon-Cancel {
-    color: #111111 !important;
+	color: var(--zk-button-cancel-color) !important;
 }
 
 .z-button [class^="z-icon-"][disabled],
 .z-button-os [class^="z-icon-"][disabled]{
 	font-size: larger;
-	color: #333;	
+	color: var(--zk-button-disabled-icon-color);	
 	padding-left: 2px;
 	padding-right: 2px;
 }
@@ -82,7 +82,7 @@
 	font-size: 12px;
 }
 .btn-ok.z-button [class^="z-icon-"]:before {
-	color: white;	
+	color: var(--zk-button-ok-icon-color);	
 }
 
 .z-combobox-button, .z-bandbox-button, .z-datebox-button, .z-timebox-button,

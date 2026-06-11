@@ -110,7 +110,8 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 		this(WindowNo, pi, false);
 
 		if(isReRun) {
-			MPInstance instance = getLastRun();
+			int instanceId = Env.getContextAsInt(Env.getCtx(), WindowNo, MPInstance.COLUMNNAME_AD_PInstance_ID);
+			MPInstance instance = instanceId > 0 ? new MPInstance(Env.getCtx(), instanceId, null) : null;
 			if(instance != null) {
 				loadSavedParams(instance);
 				chooseSaveParameter(fSavedName.getRawText(), true);
@@ -246,7 +247,7 @@ public class ProcessModalDialog extends AbstractProcessDialog implements EventLi
 	 * @param autoStart
 	 * @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public ProcessModalDialog (Window parent, String title,
 			int WindowNo, int AD_Process_ID,
 			int tableId, int recordId, boolean autoStart)

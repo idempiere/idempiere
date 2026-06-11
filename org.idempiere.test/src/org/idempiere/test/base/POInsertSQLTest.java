@@ -25,18 +25,27 @@ package org.idempiere.test.base;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 
 import org.compiere.db.Database;
 import org.compiere.model.MTest;
 import org.compiere.model.MUser;
+import org.compiere.model.MImage;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.X_AD_ChangeLog;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 /**
  * Unit tests for PO.toInsertSQL() and PO.buildInsertSQL() methods
@@ -249,8 +258,6 @@ class POInsertSQLTest extends AbstractTestCase {
 		assertNotNull(sql);
 		assertTrue(sql.startsWith("INSERT INTO Test"));
 		
-
-		
 		// Custom column should appear
 		assertTrue(sql.contains("secret123"), "Password value should not be in SQL for script generation");
 		assertTrue(sql.contains("NormalColumn"), "Normal custom columns should be included");
@@ -291,7 +298,7 @@ class POInsertSQLTest extends AbstractTestCase {
 	@Test
 	void testToInsertSQL_RecordID_WithOfficialID() {
 		// Test Record_ID handling when the ID is <= MAX_OFFICIAL_ID (1000000)
-		// In this case, the ID should be used directly without toRecordId() function
+		// In this case, the ID should be used directly without using subquery
 		
 		X_AD_ChangeLog changeLog = new X_AD_ChangeLog(Env.getCtx(), 0, getTrxName());
 		changeLog.setAD_Session_ID(1);
@@ -306,16 +313,16 @@ class POInsertSQLTest extends AbstractTestCase {
 		assertNotNull(sql);
 		assertTrue(sql.startsWith("INSERT INTO AD_ChangeLog"));
 		
-		// When Record_ID <= MAX_OFFICIAL_ID, it should appear as-is (not wrapped in toRecordId)
+		// When Record_ID <= MAX_OFFICIAL_ID, it should appear as-is (not using subquery with uuid column)
 		assertTrue(sql.contains("100"), "Official Record_ID should be included directly");
-		assertFalse(sql.contains("toRecordId"), "toRecordId function should NOT be used for official IDs");
+		assertFalse(sql.contains("(SELECT"), "Subquery should NOT be used for official IDs");
 	}
 	
 	@Test
 	void testToInsertSQL_RecordID_WithNonOfficialID() {
 		// Test Record_ID handling when the ID is > MAX_OFFICIAL_ID (1000000)
-		// In this case, the ID should be converted using toRecordId() function
-		// which looks up the UUID and uses toRecordId('TableName', 'UUID')
+		// In this case, the ID should be converted using subquery
+		// which looks up the UUID and uses (select TableName_ID from 'TableName' WHERE TableName_UU = 'UUID')
 		
 		// First, create a test user to reference (this will have an ID > MAX_OFFICIAL_ID in most cases)
 		MUser testUser = new MUser(Env.getCtx(), 0, getTrxName());
@@ -343,10 +350,10 @@ class POInsertSQLTest extends AbstractTestCase {
 			assertTrue(sql.startsWith("INSERT INTO AD_ChangeLog"));
 			
 			// When Record_ID > MAX_OFFICIAL_ID and AD_Table_ID is set,
-			// it should use toRecordId() function with the table name and UUID
-			assertTrue(sql.contains("toRecordId"), "toRecordId function should be used for non-official IDs");
-			assertTrue(sql.contains("AD_User"), "Table name should be in toRecordId function");
-			assertTrue(sql.contains(userUUID), "UUID should be in toRecordId function");
+			// it should use subquery with the table name and UUID
+			assertTrue(sql.contains("(SELECT "), "(SELECT subquery should be used for non-official IDs");
+			assertTrue(sql.contains("AD_User"), "Table name should be in AD_User subquery");
+			assertTrue(sql.contains(userUUID), "UUID should be in AD_User subquery");
 			
 			// The raw ID should NOT appear in the SQL
 			assertFalse(sql.matches(".*[^a-zA-Z0-9_]" + userId + "[^a-zA-Z0-9_].*"), 
@@ -375,5 +382,71 @@ class POInsertSQLTest extends AbstractTestCase {
 		// When AD_Table_ID is not set, Record_ID should be used directly even if > MAX_OFFICIAL_ID
 		assertTrue(sql.contains("5000000"), "Record_ID should be included directly when AD_Table_ID not set");
 		assertFalse(sql.contains("toRecordId"), "toRecordId function should NOT be used when AD_Table_ID not set");
+	}
+	
+	@Test
+	void testToInsertSQLAndExecute() throws IOException {
+		MTest testPO = new MTest(Env.getCtx(), 0, getTrxName());
+		testPO.setName("InsertSQLTest0");
+		testPO.setT_Integer(100);
+		testPO.saveEx();
+		
+		MTest testPO1 = new MTest(Env.getCtx(), 0, getTrxName());
+		testPO1.setName("InsertSQLTest1");
+		testPO1.setT_Integer(100);
+		testPO1.setAD_Table_ID(MTest.Table_ID);
+		testPO1.setRecord_ID(testPO.get_ID());
+		testPO1.saveEx();
+		
+		String insertSQL = testPO1.toInsertSQL(DB.getDatabase().getName());
+		assertNotNull(insertSQL);
+		assertTrue(insertSQL.startsWith("INSERT INTO "));
+		assertTrue(insertSQL.contains(MTest.Table_Name));
+		assertTrue(insertSQL.contains(MTest.COLUMNNAME_Name));
+		assertTrue(insertSQL.contains(MTest.COLUMNNAME_T_Integer));
+		
+		testPO1.deleteEx(true);
+		
+		DB.executeUpdateEx(insertSQL, getTrxName());
+		
+		// test for binary data
+		try (MockedStatic<MSysConfig> mocked = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
+			mocked.when(() -> MSysConfig.getBooleanValue(MSysConfig.EXPORT_BLOB_COLUMN_FOR_INSERT, true, Env.getAD_Client_ID(Env.getCtx())))
+				.thenReturn(true);
+			byte[] imageData = null;
+	        try (InputStream is = getClass().getResourceAsStream("/org/idempiere/test/model/idempiere_logo.png")) {
+	        	imageData = is.readAllBytes();
+	        }
+	        assertTrue(imageData != null && imageData.length > 0, "Image data should not be null or empty");        
+	        MImage image = new MImage(Env.getCtx(), 0, getTrxName());
+	        image.setName("idempiere_logo.png");
+	        image.setBinaryData(imageData);
+			image.saveEx();
+			
+			insertSQL = image.toInsertSQL(DB.getDatabase().getName());
+			image.deleteEx(true);
+			// Oracle has plsql block for inserting blob and that need special handling for jdbc
+			if (DB.isOracle()) {
+				int idx = insertSQL.indexOf(";");
+				if (idx == -1) {
+					fail("Unexpected insert SQL for Oracle not containing semicolon:\n" + insertSQL);
+				}
+				// split the insert part and plsql part
+				String insertPart = insertSQL.substring(0, idx);
+				String plsqlPart = insertSQL.substring(idx + 1);
+				DB.executeUpdateEx(insertPart, getTrxName());				
+				plsqlPart = plsqlPart.trim();
+				if (plsqlPart.endsWith("/"))
+					plsqlPart = plsqlPart.substring(0,  plsqlPart.length() - 1); // remove /
+				try (var pstmt = DB.prepareStatement(plsqlPart, getTrxName())) {
+					pstmt.execute();
+				} catch (SQLException e) {
+					e.printStackTrace();
+					fail("Failed to execute PL/SQL part of insert SQL for Oracle:\n" + plsqlPart);
+				}
+			} else {
+				DB.executeUpdateEx(insertSQL, getTrxName());
+			}
+		}
 	}
 }

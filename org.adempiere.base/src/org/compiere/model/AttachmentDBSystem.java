@@ -124,6 +124,8 @@ public class AttachmentDBSystem implements IAttachmentStore
 			if (log.isLoggable(Level.FINE)) log.fine("Length=" +  zipData.length);
 			attach.setBinaryData(zipData);
 			attach.setTitle(MAttachment.ZIP);
+			// clear AD_AttachmentFile if any
+			attach.deleteAttachmentFiles();
 			return true;
 		}
 		catch (Exception e)

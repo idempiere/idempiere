@@ -50,10 +50,10 @@ import org.compiere.util.Env;
  */
 public class POInfo implements Serializable
 {
-	/**
-	 * generated serial id
+    /**
+	 * 
 	 */
-	private static final long serialVersionUID = -6346988499971159874L;
+	private static final long serialVersionUID = -8631166243023103892L;
 
 	/**
 	 *  POInfo Factory Method
@@ -413,10 +413,11 @@ public class POInfo implements Serializable
 	{
 		if (index < 0 || index >= m_columns.length)
 			return true;
-		return m_columns[index].ColumnSQL != null 
-			&& m_columns[index].ColumnSQL.length() > 0
-			&& !m_columns[index].ColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)
-			&& !m_columns[index].ColumnSQL.startsWith(MColumn.VIRTUAL_SEARCH_COLUMN_PREFIX);
+		String originalColumnSQL = MColumn.get(m_columns[index].AD_Column_ID).getColumnSQL();
+		return originalColumnSQL != null 
+			&& !originalColumnSQL.isEmpty()
+			&& !originalColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)
+			&& !originalColumnSQL.startsWith(MColumn.VIRTUAL_SEARCH_COLUMN_PREFIX);
 	}   //  isVirtualDBColumn
 
 	/**
@@ -428,9 +429,10 @@ public class POInfo implements Serializable
 	{
 		if (index < 0 || index >= m_columns.length)
 			return true;
-		return m_columns[index].ColumnSQL != null 
-			&& m_columns[index].ColumnSQL.length() > 0
-			&& m_columns[index].ColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX);
+		String originalColumnSQL = MColumn.get(m_columns[index].AD_Column_ID).getColumnSQL();
+		return originalColumnSQL != null 
+			&& !originalColumnSQL.isEmpty()
+			&& originalColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX);
 	}   //  isVirtualUIColumn
 	
 	/**
@@ -442,9 +444,10 @@ public class POInfo implements Serializable
 	{
 		if (index < 0 || index >= m_columns.length)
 			return true;
-		return m_columns[index].ColumnSQL != null 
-			&& m_columns[index].ColumnSQL.length() > 0
-			&& m_columns[index].ColumnSQL.startsWith(MColumn.VIRTUAL_SEARCH_COLUMN_PREFIX);
+		String originalColumnSQL = MColumn.get(m_columns[index].AD_Column_ID).getColumnSQL();
+		return originalColumnSQL != null 
+			&& !originalColumnSQL.isEmpty()
+			&& originalColumnSQL.startsWith(MColumn.VIRTUAL_SEARCH_COLUMN_PREFIX);
 	}   //  isVirtualSearchColumn
 
 	/**
@@ -891,6 +894,28 @@ public class POInfo implements Serializable
 	protected boolean isColumnAlwaysLoadedForPartialPO(int columnIndex)
 	{
 		String columnName = getColumnName(columnIndex);
+		return isColumnAlwaysLoadedForPartialPO(columnIndex, columnName);
+	}
+
+	/**
+	 * Is column should always be loaded for partial loading of PO
+	 * @param columnName
+	 * @return true if column should always be loaded for partial loading of PO
+	 */
+	protected boolean isColumnAlwaysLoadedForPartialPO(String columnName)
+	{
+		int columnIndex = getColumnIndex(columnName);
+		return isColumnAlwaysLoadedForPartialPO(columnIndex, columnName);
+	}
+
+	/**
+	 * Is column should always be loaded for partial loading of PO
+	 * @param columnIndex
+	 * @param columnName
+	 * @return true if column should always be loaded for partial loading of PO
+	 */
+	protected boolean isColumnAlwaysLoadedForPartialPO(int columnIndex, String columnName)
+	{
 		boolean isKey = isKey(columnIndex);
 		boolean isUUID = columnName.equals(PO.getUUIDColumnName(m_TableName));
 		// Always load key, uuid and standard columns

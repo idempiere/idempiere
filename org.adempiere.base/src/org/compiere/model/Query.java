@@ -120,7 +120,7 @@ public class Query
 	 * @param trxName
 	 * @deprecated Use {@link #Query(Properties, MTable, String, String)} instead because this method is security error prone
 	 */
-    @Deprecated
+    @Deprecated (since="13", forRemoval=true)
 	public Query(MTable table, String whereClause, String trxName)
 	{
 		this.ctx = table.getCtx();

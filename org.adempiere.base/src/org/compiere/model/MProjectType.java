@@ -21,6 +21,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -28,6 +29,7 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.db.util.SQLFragment;
 
 /**
  * 	Project Type Model
@@ -323,8 +325,9 @@ public class MProjectType extends X_C_ProjectType implements ImmutablePOSupport
 		String pColumn = null;
 		//
 		MQuery query = new MQuery("C_Project");
-		query.addRangeRestriction("C_ProjectType_ID", "=", getC_ProjectType_ID());
+		query.addRestriction("C_ProjectType_ID", MQuery.EQUAL, getC_ProjectType_ID());
 		//
+		List<Object> params = new ArrayList<>();
 		String where = null;
 		if (C_Phase_ID != 0)
 			where = "C_Phase_ID=" + C_Phase_ID;
@@ -341,12 +344,13 @@ public class MProjectType extends X_C_ProjectType implements ImmutablePOSupport
 				trunc = "W";
 
 			where = "TRUNC(" + dateColumn + ",'" + trunc
-				+ "')=TRUNC(" + DB.TO_DATE(date) + ",'" + trunc + "')";
+				+ "')=TRUNC(" + DB.TO_DATE(date)
+				+ ",'" + trunc + "')";
 		}
 		String sql = MMeasureCalc.addRestrictions(where + " AND Processed<>'Y' ",
 			true, restrictions, role, 
-			"C_Project", orgColumn, bpColumn, pColumn);
-		query.addRestriction(sql);
+			"C_Project", orgColumn, bpColumn, pColumn, params);
+		query.addRestriction(new SQLFragment(sql, params));
 		query.setRecordCount(1);
 		return query;
 	}	//	getQuery

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" activate="activate" enabled="true" immediate="true" name="org.idempiere.redis.service.CacheServiceImpl">
+   <service>
+      <provide interface="org.idempiere.distributed.ICacheService"/>
+   </service>
+   <reference cardinality="1..1" field="distributedCondition" interface="org.osgi.service.condition.Condition" name="distributedCondition" target="(osgi.condition.id=distributed.provider.redis.initialized)"/>
+   <implementation class="org.idempiere.redis.service.CacheServiceImpl"/>
+</scr:component>

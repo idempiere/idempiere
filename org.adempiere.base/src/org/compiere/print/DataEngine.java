@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
@@ -55,6 +56,7 @@ import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
+import org.idempiere.db.util.SQLFragment;
 
 import bsh.EvalError;
 import bsh.Interpreter;
@@ -207,9 +209,9 @@ public class DataEngine
 					if (!Util.isEmpty(whereClause)) {
 						whereClause = "(" + whereClause + ")";  // IDEMPIERE-2597
 						if (whereClause.indexOf("@") == -1) {
-							queryCopy.addRestriction(whereClause);
+							queryCopy.addRestriction(new SQLFragment(whereClause));
 						} else { // replace context variables
-							queryCopy.addRestriction(Env.parseContext(ctx, m_windowNo, whereClause.toString(), false, true));
+							queryCopy.addRestriction(new SQLFragment(Env.parseContext(ctx, m_windowNo, whereClause.toString(), false, true)));
 						}
 					}
 				}
@@ -465,12 +467,12 @@ public class DataEngine
 
 					if (ColumnSQL.length() > 0)
 					{
-						eSql = MLookupFactory.getLookup_TableDirEmbed(m_language, ColumnName, tableName, "(" + ColumnSQL + ")");
+						eSql = MLookupFactory.getLookup_TableDirEmbed(m_language, ColumnName, tableName, "(" + ColumnSQL + ")", true);
 						lookupSQL = ColumnSQL;
 					}
 					else
 					{
-						eSql = MLookupFactory.getLookup_TableDirEmbed(m_language, ColumnName, tableName);
+						eSql = MLookupFactory.getLookup_TableDirEmbed(m_language, ColumnName, tableName, true);
 					}
 
 					if (Util.isEmpty(eSql)) { // No Identifier records found
@@ -493,7 +495,7 @@ public class DataEngine
 						|| (AD_Reference_ID == DisplayType.Search && AD_Reference_Value_ID != 0)
 					)
 				{
-					String eSql = MLookupFactory.getLookup_TableEmbed(m_language, ColumnName, tableName, AD_Reference_Value_ID);
+					String eSql = MLookupFactory.getLookup_TableEmbed(m_language, ColumnName, tableName, AD_Reference_Value_ID, true);
 
 					if (ColumnSQL.length() > 0)
 						lookupSQL = ColumnSQL;
@@ -511,6 +513,146 @@ public class DataEngine
 					String foreignColumnName = tr.KeyColumn;
 					pdc = new PrintDataColumn(AD_PrintFormatItem_ID, AD_Column_ID, ColumnName, AD_Reference_ID, FieldLength, orderName, isPageBreak, foreignColumnName);
 					synonymNext();
+				}
+				
+				else if (DisplayType.isChosenMultipleSelection(AD_Reference_ID)) {
+					if (ColumnSQL.length() > 0)
+						lookupSQL = ColumnSQL;
+
+					String display = ColumnName;
+					boolean isOracle = DB.isOracle();
+
+					String lookupValue;
+					String csvValuesSql;
+
+					if (isOracle) {
+						lookupValue = "NVL(TO_CHAR(" + lookupSQL + "), '')";
+
+						csvValuesSql =
+							"(select trim(regexp_substr(replace(" + lookupValue + ", ' ', ''), '[^,]+', 1, level)) " +
+							"   from dual " +
+							" connect by regexp_substr(replace(" + lookupValue + ", ' ', ''), '[^,]+', 1, level) is not null)";
+					} else {
+						lookupValue = "NVL(" + lookupSQL + "::text,'')";
+						csvValuesSql = "string_to_array(replace(" + lookupValue + ", ' ', ''), ',')";
+					}
+
+					if (DisplayType.isList(AD_Reference_ID) || AD_Reference_Value_ID <= 0) {
+						String eSql;
+
+						if (Env.isBaseLanguage(m_language, "AD_Ref_List")) {
+							if (isOracle) {
+								eSql =
+									"(select LISTAGG(rl.Name, ', ') WITHIN GROUP (ORDER BY rl.Name) " +
+									"   from AD_Ref_List rl " +
+									"  where rl.AD_Reference_ID = " + AD_Reference_Value_ID +
+									"    and rl.Value in " + csvValuesSql +
+									")";
+							} else {
+								eSql =
+									"(select string_agg(rl.Name, ', ' order by rl.Name) " +
+									"   from AD_Ref_List rl " +
+									"  where rl.AD_Reference_ID = " + AD_Reference_Value_ID +
+									"    and rl.Value = any(" + csvValuesSql + ")" +
+									")";
+							}
+						} else {
+							String translatedName = "NVL(trl.Name, rl.Name)";
+
+							if (isOracle) {
+								eSql =
+									"(select LISTAGG(" + translatedName + ", ', ') WITHIN GROUP (ORDER BY " + translatedName + ") " +
+									"   from AD_Ref_List rl " +
+									"   left join AD_Ref_List_Trl trl " +
+									"     on trl.AD_Ref_List_ID = rl.AD_Ref_List_ID " +
+									"    and trl.AD_Language = '" + m_language.getAD_Language() + "' " +
+									"  where rl.AD_Reference_ID = " + AD_Reference_Value_ID +
+									"    and rl.Value in " + csvValuesSql +
+									")";
+							} else {
+								eSql =
+									"(select string_agg(" + translatedName + ", ', ' order by " + translatedName + ") " +
+									"   from AD_Ref_List rl " +
+									"   left join AD_Ref_List_Trl trl " +
+									"     on trl.AD_Ref_List_ID = rl.AD_Ref_List_ID " +
+									"    and trl.AD_Language = '" + m_language.getAD_Language() + "' " +
+									"  where rl.AD_Reference_ID = " + AD_Reference_Value_ID +
+									"    and rl.Value = any(" + csvValuesSql + ")" +
+									")";
+							}
+						}
+
+						sqlSELECT.append(eSql).append(" as ").append(m_synonym).append(display).append(",")
+								.append(lookupSQL).append(" as ").append(ColumnName).append(",");
+
+						groupByColumns.add(lookupSQL);
+						orderName = m_synonym + display;
+
+						pdc = new PrintDataColumn(
+								AD_PrintFormatItem_ID,
+								AD_Column_ID,
+								ColumnName,
+								DisplayType.Text,
+								FieldLength,
+								orderName,
+								isPageBreak
+						);
+
+						synonymNext();
+
+					} else {
+						TableReference tr = getTableReference(AD_Reference_Value_ID);
+
+						String displayColumn = tr.DisplayColumn;
+						String keyColumn = tr.KeyColumn;
+						String refTable = tr.TableName;
+
+						String translatedDisplay;
+
+						if (tr.IsValueDisplayed) {
+							translatedDisplay =
+								"NVL(t.Value,'') || CASE WHEN NVL(t.Value,'') <> '' THEN ' - ' ELSE '' END || NVL(t."
+								+ displayColumn + ", '')";
+						} else {
+							translatedDisplay = "t." + displayColumn;
+						}
+
+						String eSql;
+
+						if (isOracle) {
+							eSql =
+								"(select LISTAGG(TO_CHAR(" + translatedDisplay + "), ', ') " +
+								"        WITHIN GROUP (ORDER BY TO_CHAR(" + translatedDisplay + ")) " +
+								"   from " + refTable + " t " +
+								"  where TO_CHAR(t." + keyColumn + ") in " + csvValuesSql +
+								")";
+						} else {
+							eSql =
+								"(select string_agg((" + translatedDisplay + ")::text, ', ' order by (" + translatedDisplay + ")::text) " +
+								"   from " + refTable + " t " +
+								"  where t." + keyColumn + "::text = any(" + csvValuesSql + ")" +
+								")";
+						}
+
+						sqlSELECT.append(eSql).append(" as ").append(m_synonym).append(display).append(",")
+								.append(lookupSQL).append(" as ").append(ColumnName).append(",");
+
+						groupByColumns.add(lookupSQL);
+						orderName = m_synonym + display;
+
+						pdc = new PrintDataColumn(
+								AD_PrintFormatItem_ID,
+								AD_Column_ID,
+								ColumnName,
+								DisplayType.Text,
+								FieldLength,
+								orderName,
+								isPageBreak,
+								keyColumn
+						);
+
+						synonymNext();
+					}
 				}
 
 				//	-- List or Button with ReferenceValue --
@@ -734,14 +876,18 @@ public class DataEngine
 			.append(sqlFROM);
 
 		//	WHERE clause
+		List<Object>params = new ArrayList<Object>();
 		if (tableName.startsWith("T_Report"))
 		{
 			finalSQL.append(" WHERE ");
 			for (int i = 0; i < query.getRestrictionCount(); i++)
 			{
-				String q = query.getWhereClause (i);
+				String q = query.getSQLFilter(i).sqlClause();
 				if (q.indexOf("AD_PInstance_ID") != -1)	//	ignore all other Parameters
+				{
 					finalSQL.append (q);
+					params.addAll(query.getSQLFilter(i).parameters());
+				}
 			}	//	for all restrictions
 		}
 		else
@@ -752,7 +898,9 @@ public class DataEngine
 				finalSQL.append (" WHERE ");
 				if (!query.getTableName ().equals (tableName))
 					query.setTableName (tableName);
-				finalSQL.append (query.getWhereClause (true));
+				SQLFragment filter = query.getSQLFilter(true);
+				finalSQL.append(filter.sqlClause());
+				params.addAll(filter.parameters());
 			}
 			//	Access Restriction
 			MRole role = MRole.getDefault(ctx, false);
@@ -807,7 +955,7 @@ public class DataEngine
 		columns.toArray(info);		//	column order is is m_synonymc with SELECT column position
 		pd.setColumnInfo(info);
 		pd.setTableName(tableName);
-		pd.setSQL(finalSQL.toString());
+		pd.setSQLClause(new SQLFragment(finalSQL.toString(), params));
 		pd.setHasLevelNo(hasLevelNo);
 
 		if (log.isLoggable(Level.FINEST))
@@ -939,17 +1087,23 @@ public class DataEngine
 		int timeout = MSysConfig.getIntValue(MSysConfig.REPORT_LOAD_TIMEOUT_IN_SECONDS, DEFAULT_REPORT_LOAD_TIMEOUT_IN_SECONDS, Env.getAD_Client_ID(Env.getCtx()));
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		String sql = pd.getSQL();
+		SQLFragment sqlFragment = pd.getSQLClause();
+		String sqlClause = sqlFragment.sqlClause();
 		try
 		{
 			int maxRows = MSysConfig.getIntValue(MSysConfig.GLOBAL_MAX_REPORT_RECORDS, DEFAULT_GLOBAL_MAX_REPORT_RECORDS, Env.getAD_Client_ID(Env.getCtx()));
 			if (maxRows > 0 && DB.getDatabase().isPagingSupported())
-				sql = DB.getDatabase().addPagingSQL(sql, 1, maxRows+1);
-			pstmt = DB.prepareNormalReadReplicaStatement(sql, m_trxName);
+				sqlClause = DB.getDatabase().addPagingSQL(sqlClause, 1, maxRows+1);
+			pstmt = DB.prepareNormalReadReplicaStatement(sqlClause, m_trxName);
 			if (maxRows > 0 && ! DB.getDatabase().isPagingSupported())
 				pstmt.setMaxRows(maxRows+1);
 			if (timeout > 0)
 				pstmt.setQueryTimeout(timeout);
+			List<Object> sqlParams = sqlFragment.parameters();
+			if (sqlParams != null && sqlParams.size() > 0)
+			{
+				DB.setParameters(pstmt, sqlParams);
+			}
 			rs = pstmt.executeQuery();
 
 			boolean isExistsT_Report_PA_ReportLine_ID = false;
@@ -1208,7 +1362,7 @@ public class DataEngine
 		{
 			if (DB.getDatabase().isQueryTimeout(e))
 				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "ReportQueryTimeout", new Object[] {timeout}));
-			log.log(Level.SEVERE, pdc + " - " + e.getMessage() + "\nSQL=" + sql);
+			log.log(Level.SEVERE, pdc + " - " + e.getMessage() + "\nSQL=" + sqlFragment.sqlClause());
 			throw new AdempiereException(e);
 		}
 		finally
@@ -1327,7 +1481,7 @@ public class DataEngine
 		{
 			if (CLogMgt.isLevelFiner())
 				log.finer("NO Rows - ms=" + (System.currentTimeMillis()-m_startTime) 
-					+ " - " + sql);
+					+ " - " + sqlFragment.sqlClause());
 			else
 				log.info("NO Rows - ms=" + (System.currentTimeMillis()-m_startTime)); 
 		}

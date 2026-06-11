@@ -13,13 +13,13 @@
  *****************************************************************************/
 package org.adempiere.webui.dashboard;
 
-import org.zkoss.calendar.impl.SimpleCalendarEvent;
+import org.zkoss.calendar.impl.SimpleCalendarItem;
 
 /**
  * Calendar event for R_Request 
  * @author Elaine
  */
-public class ADCalendarEvent extends SimpleCalendarEvent {
+public class ADCalendarEvent extends SimpleCalendarItem {
 	/**
 	 * generated serial id
 	 */

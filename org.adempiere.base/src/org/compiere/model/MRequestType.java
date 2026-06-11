@@ -20,6 +20,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -29,6 +30,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.db.util.SQLFragment;
 
 /**
  *	Request Type Model
@@ -543,6 +545,7 @@ public class MRequestType extends X_R_RequestType implements ImmutablePOSupport
 		MQuery query = new MQuery("R_Request");
 		query.addRestriction("R_RequestType_ID", "=", getR_RequestType_ID());
 		//
+		List<Object> params = new ArrayList<>();
 		String where = null;
 		if (R_Status_ID != 0)
 			where = "R_Status_ID=" + R_Status_ID;
@@ -559,12 +562,13 @@ public class MRequestType extends X_R_RequestType implements ImmutablePOSupport
 				trunc = "W";
 
 			where = "TRUNC(" + dateColumn + ",'" + trunc
-				+ "')=TRUNC(" + DB.TO_DATE(date) + ",'" + trunc + "')";
+				+ "')=TRUNC(" + DB.TO_DATE(date)
+				+ ",'" + trunc + "')";
 		}
 		String whereRestriction = MMeasureCalc.addRestrictions(where + " AND Processed<>'Y' ",
 			true, restrictions, role, 
-			"R_Request", orgColumn, bpColumn, pColumn);
-		query.addRestriction(whereRestriction);
+			"R_Request", orgColumn, bpColumn, pColumn, params);
+		query.addRestriction(new SQLFragment(whereRestriction, params));
 		query.setRecordCount(1);
 		return query;
 	}	//	getQuery

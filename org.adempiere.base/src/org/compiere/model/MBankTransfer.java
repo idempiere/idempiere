@@ -103,25 +103,27 @@ public class MBankTransfer extends X_C_BankTransfer implements DocAction {
 			return false;
 		}
 		// From bank account and bank transfer document must belongs to the same organization
-		if (getFrom_C_BankAccount().getAD_Org_ID() != 0 && getFrom_C_BankAccount().getAD_Org_ID() != getFrom_AD_Org_ID()) {
+		MBankAccount fromBankAccount = new MBankAccount(getCtx(), getFrom_C_BankAccount_ID(), get_TrxName());
+		if (fromBankAccount.getAD_Org_ID() != 0 && fromBankAccount.getAD_Org_ID() != getFrom_AD_Org_ID()) {
 			log.saveError("Error", Msg.getMsg(getCtx(), "FromOrgNotMatchBankAccount", new Object[] {toString()}));
 			return false;
 		}
 		// Set From Currency from From_C_BankAccount_ID
 		if (getFrom_C_Currency_ID() == 0) {
-			int From_C_Currency_ID = getFrom_C_BankAccount().getC_Currency_ID();
+			int From_C_Currency_ID = fromBankAccount.getC_Currency_ID();
 			if (From_C_Currency_ID > 0)
 				setFrom_C_Currency_ID(From_C_Currency_ID);
 		}
 		// Set To_AD_Org_ID from To_C_BankAccount_ID
+		MBankAccount toBankAccount = new MBankAccount(getCtx(), getTo_C_BankAccount_ID(), get_TrxName());
 		if (getTo_AD_Org_ID() == 0) {
-			int To_AD_Org_ID = getTo_C_BankAccount().getAD_Org_ID();
+			int To_AD_Org_ID = toBankAccount.getAD_Org_ID();
 			if (To_AD_Org_ID > 0)
 				setTo_AD_Org_ID(To_AD_Org_ID);
 		}
 		// Set To_C_Currency_ID from To_C_BankAccount_ID
 		if (getTo_C_Currency_ID() == 0) {
-			int To_C_Currency_ID = getTo_C_BankAccount().getC_Currency_ID();
+			int To_C_Currency_ID = toBankAccount.getC_Currency_ID();
 			if (To_C_Currency_ID > 0)
 				setTo_C_Currency_ID(To_C_Currency_ID);
 		}
@@ -255,7 +257,15 @@ public class MBankTransfer extends X_C_BankTransfer implements DocAction {
 		paymentBankFrom.setC_Currency_ID(getFrom_C_Currency_ID());
 		paymentBankFrom.setPayAmt(getFrom_Amt());
 		paymentBankFrom.setOverUnderAmt(Env.ZERO);
-		paymentBankFrom.setC_DocType_ID(false);
+		if(getFrom_DocType_ID() > 0) {
+			paymentBankFrom.setC_DocType_ID(getFrom_DocType_ID());
+		}else {
+			paymentBankFrom.setC_DocType_ID(false);
+		}
+		if(getFrom_User1_ID() > 0)
+			paymentBankFrom.setUser1_ID(getFrom_User1_ID());
+		if(getFrom_User2_ID() > 0)
+			paymentBankFrom.setUser2_ID(getFrom_User2_ID());
 		paymentBankFrom.setC_Charge_ID(getFrom_C_Charge_ID());
 		if (as.getC_Currency_ID() != getFrom_C_Currency_ID()) {
 			paymentBankFrom.setC_ConversionType_ID(getC_ConversionType_ID());
@@ -285,7 +295,15 @@ public class MBankTransfer extends X_C_BankTransfer implements DocAction {
 		paymentBankTo.setC_Currency_ID(getTo_C_Currency_ID());
 		paymentBankTo.setPayAmt(getTo_Amt());
 		paymentBankTo.setOverUnderAmt(Env.ZERO);
-		paymentBankTo.setC_DocType_ID(true);
+		if(getTo_DocType_ID() > 0) {
+			paymentBankTo.setC_DocType_ID(getTo_DocType_ID());
+		}else {
+			paymentBankTo.setC_DocType_ID(true);
+		}
+		if(getTo_User1_ID() > 0)
+			paymentBankTo.setUser1_ID(getTo_User1_ID());
+		if(getTo_User2_ID() > 0)
+			paymentBankTo.setUser2_ID(getTo_User2_ID());
 		paymentBankTo.setC_Charge_ID(getTo_C_Charge_ID());
 		if (as.getC_Currency_ID() != getTo_C_Currency_ID()) {
 			paymentBankTo.setC_ConversionType_ID(getC_ConversionType_ID());

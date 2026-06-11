@@ -36,6 +36,7 @@ import org.compiere.util.Util;
 public class CreditManagerPayment implements ICreditManager
 {
 	private MPayment payment;
+	private String m_errorMsg;
 
 	/**
 	 * Payment Credit Manager Load Constructor
@@ -50,18 +51,17 @@ public class CreditManagerPayment implements ICreditManager
 	@Override
 	public CreditStatus checkCreditStatus(String docAction)
 	{
-		String errorMsg = null;
 		if (MPayment.DOCACTION_Prepare.equals(docAction) && !payment.isReceipt())
 		{ //	Do not pay when Credit Stop/Hold and issue refund to customer
 			MBPartner bp = new MBPartner(payment.getCtx(), payment.getC_BPartner_ID(), payment.get_TrxName());
 			if (MBPartner.SOCREDITSTATUS_CreditStop.equals(bp.getSOCreditStatus()))
 			{
-				errorMsg = "@BPartnerCreditStop@ - @TotalOpenBalance@=" + bp.getTotalOpenBalance()
+				m_errorMsg = "@BPartnerCreditStop@ - @TotalOpenBalance@=" + bp.getTotalOpenBalance()
 						+ ", @SO_CreditLimit@=" + bp.getSO_CreditLimit();
 			}
 			if (MBPartner.SOCREDITSTATUS_CreditHold.equals(bp.getSOCreditStatus()))
 			{
-				errorMsg = "@BPartnerCreditHold@ - @TotalOpenBalance@=" + bp.getTotalOpenBalance()
+				m_errorMsg = "@BPartnerCreditHold@ - @TotalOpenBalance@=" + bp.getTotalOpenBalance()
 						+ ", @SO_CreditLimit@=" + bp.getSO_CreditLimit();
 			}
 		}
@@ -85,30 +85,10 @@ public class CreditManagerPayment implements ICreditManager
 				MBPartner bp = new MBPartner(ctx, payment.getC_BPartner_ID(), payment.get_TrxName());
 				DB.getDatabase().forUpdate(bp, 0);
 				// Update total balance to include this payment
-				BigDecimal payAmt = null;
-				int baseCurrencyId = Env.getContextAsInt(ctx, Env.C_CURRENCY_ID);
-				if (payment.getC_Currency_ID() != baseCurrencyId && payment.isOverrideCurrencyRate())
-				{
-					payAmt = payment.getConvertedAmt();
-				}
-				else
-				{
-					payAmt = MConversionRate.convertBase(	ctx, payment.getPayAmt(),
-															payment.getC_Currency_ID(),
-															payment.getDateAcct(),
-															payment.getC_ConversionType_ID(),
-															payment.getAD_Client_ID(),
-															payment.getAD_Org_ID());
-				}
-
-				if (payAmt == null)
-				{
-					errorMsg = MConversionRateUtil.getErrorMessage(	ctx, "ErrorConvertingCurrencyToBaseCurrency",
-																payment.getC_Currency_ID(),
-																MClient.get(ctx).getC_Currency_ID(),
-																payment.getC_ConversionType_ID(),
-																payment.getDateAcct(), payment.get_TrxName());
-					return new CreditStatus(errorMsg, true);
+				BigDecimal payAmt = getPayAmt(ctx);
+				
+				if (!Util.isEmpty(m_errorMsg)) {
+					return new CreditStatus(m_errorMsg, true);
 				}
 				else
 				{
@@ -136,6 +116,46 @@ public class CreditManagerPayment implements ICreditManager
 				bp.saveEx(payment.get_TrxName());
 			}
 		}
-		return new CreditStatus(errorMsg, !Util.isEmpty(errorMsg));
+		
+		else if (MPayment.DOCACTION_Re_Activate.equals(docAction)) {
+			if (payment.getC_BPartner_ID() != 0)
+			{
+				MBPartner bp = new MBPartner(payment.getCtx(), payment.getC_BPartner_ID(), payment.get_TrxName());
+				BigDecimal payAmt = getPayAmt(payment.getCtx());
+				bp.setTotalOpenBalanceUsingCurrentDocument(payment.isReceipt() ? payAmt.negate() : payAmt);
+				bp.saveEx(payment.get_TrxName());
+			}
+		}
+
+		return new CreditStatus(m_errorMsg, !Util.isEmpty(m_errorMsg));
+		
 	} // creditCheck
+
+	private BigDecimal getPayAmt(Properties ctx) {
+		BigDecimal payAmt = null;
+		int baseCurrencyId = Env.getContextAsInt(ctx, Env.C_CURRENCY_ID);
+		if (payment.getC_Currency_ID() != baseCurrencyId && payment.isOverrideCurrencyRate())
+		{
+			payAmt = payment.getConvertedAmt();
+		}
+		else
+		{
+			payAmt = MConversionRate.convertBase(	ctx, payment.getPayAmt(),
+					payment.getC_Currency_ID(),
+					payment.getDateAcct(),
+					payment.getC_ConversionType_ID(),
+					payment.getAD_Client_ID(),
+					payment.getAD_Org_ID());
+			
+			if (payAmt == null)
+			{
+				m_errorMsg = MConversionRateUtil.getErrorMessage(	ctx, "ErrorConvertingCurrencyToBaseCurrency",
+						payment.getC_Currency_ID(),
+						MClient.get(ctx).getC_Currency_ID(),
+						payment.getC_ConversionType_ID(),
+						payment.getDateAcct(), payment.get_TrxName());
+			}
+		}
+		return payAmt;
+	}
 }

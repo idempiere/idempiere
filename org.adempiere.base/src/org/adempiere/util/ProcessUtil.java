@@ -24,8 +24,11 @@ import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.util.Properties;
+import java.util.function.BiConsumer;
 import java.util.logging.Level;
 
+import javax.script.Bindings;
+import javax.script.CompiledScript;
 import javax.script.ScriptEngine;
 
 import org.adempiere.base.Core;
@@ -55,6 +58,7 @@ import org.compiere.wf.MWorkflow;
 public final class ProcessUtil {
 
 	public static final String JASPER_STARTER_CLASS = "org.adempiere.report.jasper.ReportStarter";
+	public static final String JASPER_STARTER_CLASS_DEPRECATED = "org.compiere.report.ReportStarter";
 
 	/**	Logger				*/
 	private static final CLogger log = CLogger.getCLogger(ProcessUtil.class);
@@ -116,7 +120,7 @@ public final class ProcessUtil {
 		return true;
 	}
 
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static boolean startJavaProcess(ProcessInfo pi, Trx trx) {
 		return startJavaProcess(Env.getCtx(), pi, trx);
 	}
@@ -226,63 +230,43 @@ public final class ProcessUtil {
 				return false;
 			}
 
-			ScriptEngine engine = rule.getScriptEngine();
-			if (engine == null) {
-				throw new AdempiereException("Engine not found: " + rule.getEngineName());
-			}
+			// Try to use cached compiled script for better performance
+			CompiledScript compiled = Core.getCompiledScript(rule);
 
-			// Window context are    W_
-			// Login context  are    G_
-			// Method arguments context are A_
-			// Parameter context are P_
-			MRule.setContext(engine, ctx, 0);  // no window
-			// now add the method arguments to the engine
-			engine.put(MRule.ARGUMENTS_PREFIX + "Ctx", ctx);
+			// Prepare transaction
 			if (trx == null) {
 				trx = Trx.get(Trx.createTrxName(pi.getTitle()+"_"+pi.getAD_PInstance_ID()), true);
 				trx.setDisplayName(ProcessUtil.class.getName()+"_startScriptProcess");
 			}
-			engine.put(MRule.ARGUMENTS_PREFIX + "Trx", trx);
-			engine.put(MRule.ARGUMENTS_PREFIX + "TrxName", trx.getTrxName());
-			engine.put(MRule.ARGUMENTS_PREFIX + "Record_ID", pi.getRecord_ID());
-			engine.put(MRule.ARGUMENTS_PREFIX + "AD_Client_ID", pi.getAD_Client_ID());
-			engine.put(MRule.ARGUMENTS_PREFIX + "AD_User_ID", pi.getAD_User_ID());
-			engine.put(MRule.ARGUMENTS_PREFIX + "AD_PInstance_ID", pi.getAD_PInstance_ID());
-			engine.put(MRule.ARGUMENTS_PREFIX + "Table_ID", pi.getTable_ID());
+
 			// Add process parameters
 			ProcessInfoParameter[] para = pi.getParameter();
 			if (para == null) {
 				ProcessInfoUtil.setParameterFromDB(pi);
 				para = pi.getParameter();
 			}
-			if (para != null) {
-				engine.put(MRule.ARGUMENTS_PREFIX + "Parameter", pi.getParameter());
-				for (int i = 0; i < para.length; i++)
-				{
-					String name = para[i].getParameterName();
-					if (para[i].getParameter_To() == null) {
-						Object value = para[i].getParameter();
-						if (name.endsWith("_ID") && (value instanceof BigDecimal))
-							engine.put(MRule.PARAMETERS_PREFIX + name, ((BigDecimal)value).intValue());
-						else
-							engine.put(MRule.PARAMETERS_PREFIX + name, value);
-					} else {
-						Object value1 = para[i].getParameter();
-						Object value2 = para[i].getParameter_To();
-						if (name.endsWith("_ID") && (value1 instanceof BigDecimal))
-							engine.put(MRule.PARAMETERS_PREFIX + name + "1", ((BigDecimal)value1).intValue());
-						else
-							engine.put(MRule.PARAMETERS_PREFIX + name + "1", value1);
-						if (name.endsWith("_ID") && (value2 instanceof BigDecimal))
-							engine.put(MRule.PARAMETERS_PREFIX + name + "2", ((BigDecimal)value2).intValue());
-						else
-							engine.put(MRule.PARAMETERS_PREFIX + name + "2", value2);
-					}
-				}
-			}
-			engine.put(MRule.ARGUMENTS_PREFIX + "ProcessInfo", pi);
 
-			msg = engine.eval(rule.getScript()).toString();
+			if (compiled != null)
+			{
+				Bindings bindings = compiled.getEngine().createBindings();
+				MRule.setContext(bindings, ctx, 0); // // no window
+				setProcessScriptContext(bindings::put, ctx, trx, pi, para);
+				Object result = compiled.eval(bindings);
+				msg = (result == null ? "" : result.toString());
+			}
+			else
+			{
+				ScriptEngine engine = rule.getScriptEngine();
+				if (engine == null)
+				{
+					throw new AdempiereException("Engine not found: " + rule.getEngineName());
+				}
+				MRule.setContext(engine, ctx, 0); // no window
+				setProcessScriptContext(engine::put, ctx, trx, pi, para);
+				Object result = engine.eval(rule.getScript());
+				msg = (result == null ? "" : result.toString());
+			}
+
 			//transaction should rollback if there are error in process
 			if (msg != null && msg.startsWith("@Error@"))
 				success = false;
@@ -322,6 +306,84 @@ public final class ProcessUtil {
 		}
 		return success;
 	}
+
+	/**
+	 * Populates the script execution context with standard process-related objects and parameters
+	 * in a unified way for both compiled and non-compiled scripts.
+	 * <p>
+	 * This method abstracts the differences between {@link Bindings} (used by
+	 * {@link CompiledScript}) and {@link ScriptEngine} by accepting a generic
+	 * key/value setter. This allows callers to avoid duplicating context and
+	 * parameter binding logic across compiled and non-compiled execution paths.
+	 * <p>
+	 * The following objects are exposed to the script using the
+	 * {@link MRule#ARGUMENTS_PREFIX}:
+	 * <ul>
+	 * <li>{@code Ctx} � application context</li>
+	 * <li>{@code Trx} � current transaction</li>
+	 * <li>{@code ProcessInfo} � process execution metadata</li>
+	 * <li>{@code Parameter} � raw process parameters array</li>
+	 * <li>Individual process parameters by name</li>
+	 * </ul>
+	 *
+	 * @param putter Consumer used to bind variables into the script context.
+	 *               Typically {@code Bindings::put} for compiled scripts or
+	 *               {@code ScriptEngine::put} for non-compiled scripts.
+	 * @param ctx    Application context.
+	 * @param trx    Transaction associated with the process execution
+	 * @param pi     Process information object containing metadata and parameters.
+	 * @param para   Array of process parameters (may be {@code null}).
+	 */
+	private static void setProcessScriptContext(BiConsumer<String, Object> putter, Properties ctx, Trx trx, ProcessInfo pi, ProcessInfoParameter[] para)
+	{
+		// Window context are W_
+		// Login context are G_
+		// Method arguments context are A_
+		// Parameter context are P_
+
+		// now add the method arguments to the engine
+		putter.accept(MRule.ARGUMENTS_PREFIX + "Ctx", ctx);
+		putter.accept(MRule.ARGUMENTS_PREFIX + "Trx", trx);
+		putter.accept(MRule.ARGUMENTS_PREFIX + "TrxName", trx != null ? trx.getTrxName() : null);
+		putter.accept(MRule.ARGUMENTS_PREFIX + "Record_ID", pi.getRecord_ID());
+		putter.accept(MRule.ARGUMENTS_PREFIX + "AD_Client_ID", pi.getAD_Client_ID());
+		putter.accept(MRule.ARGUMENTS_PREFIX + "AD_User_ID", pi.getAD_User_ID());
+		putter.accept(MRule.ARGUMENTS_PREFIX + "AD_PInstance_ID", pi.getAD_PInstance_ID());
+		putter.accept(MRule.ARGUMENTS_PREFIX + "Table_ID", pi.getTable_ID());
+
+		if (para != null)
+		{
+			putter.accept(MRule.ARGUMENTS_PREFIX + "Parameter", pi.getParameter());
+			for (int i = 0; i < para.length; i++)
+			{
+				String name = para[i].getParameterName();
+				if (para[i].getParameter_To() == null)
+				{
+					Object value = para[i].getParameter();
+					if (name.endsWith("_ID") && (value instanceof BigDecimal))
+						putter.accept(MRule.PARAMETERS_PREFIX + name, ((BigDecimal) value).intValue());
+					else
+						putter.accept(MRule.PARAMETERS_PREFIX + name, value);
+				}
+				else
+				{
+					Object value1 = para[i].getParameter();
+					Object value2 = para[i].getParameter_To();
+					if (name.endsWith("_ID") && (value1 instanceof BigDecimal))
+						putter.accept(MRule.PARAMETERS_PREFIX + name + "1", ((BigDecimal) value1).intValue());
+					else
+						putter.accept(MRule.PARAMETERS_PREFIX + name + "1", value1);
+
+					if (name.endsWith("_ID") && (value2 instanceof BigDecimal))
+						putter.accept(MRule.PARAMETERS_PREFIX + name + "2", ((BigDecimal) value2).intValue());
+					else
+						putter.accept(MRule.PARAMETERS_PREFIX + name + "2", value2);
+				}
+			}
+		}
+		//
+		putter.accept(MRule.ARGUMENTS_PREFIX + "ProcessInfo", pi);
+	} // setProcessScriptContext
 
 	/**
 	 * Start workflow

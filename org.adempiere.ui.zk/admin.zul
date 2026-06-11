@@ -30,7 +30,6 @@ if (window.location.protocol == 'https:') {
   zk.load("org.idempiere.commons");
   zk.load("jquery.maskedinput");
   zk.load("photobooth");
-  zk.load("dragdrop.attachment");
 
   zk.afterLoad(function() {
     zk._Erbx.push = function(msg) {
@@ -45,5 +44,14 @@ else {
 ]]>
 </script>
 <include src="${themePreference}" if="${execution.getScheme() == 'https'}"/>
+<zscript>
+<![CDATA[
+var currentZkTheme = org.zkoss.zul.theme.Themes.getTheme(org.zkoss.zk.ui.Executions.getCurrent());
+var setZkTheme = org.zkoss.zk.ui.Executions.getCurrent().getAttribute("Themes.setTheme");
+if (setZkTheme != null && !setZkTheme.equals(currentZkTheme)) {
+	org.zkoss.zk.ui.Executions.sendRedirect(null);
+}
+]]>
+</zscript>
 <window use="org.adempiere.webui.AdempiereWebUI" if="${execution.getScheme() == 'https'}"/>
 </zk>

@@ -28,7 +28,7 @@ import org.compiere.model.X_AD_PrintGraph;
  * 	@version 	$Id: MPrintGraph.java,v 1.2 2006/07/30 00:53:02 jjanke Exp $
  *  @deprecated not fully implemented
  */
-@Deprecated
+@Deprecated (since="13", forRemoval=true)
 public class MPrintGraph extends X_AD_PrintGraph
 {
 	/**

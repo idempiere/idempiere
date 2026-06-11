@@ -853,7 +853,7 @@ public class CCachedRowSet implements RowSet, Serializable, Cloneable, CachedRow
 	}
 
 	@Override
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public BigDecimal getBigDecimal(int columnIndex, int scale) throws SQLException  {
 		return compositeCachedRowSet.getBigDecimal(columnIndex, scale);
 	}
@@ -884,7 +884,7 @@ public class CCachedRowSet implements RowSet, Serializable, Cloneable, CachedRow
 	}
 
 	@Override
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public InputStream getUnicodeStream(int columnIndex) throws SQLException  {
 		return compositeCachedRowSet.getUnicodeStream(columnIndex);
 	}
@@ -930,7 +930,7 @@ public class CCachedRowSet implements RowSet, Serializable, Cloneable, CachedRow
 	}
 
 	@Override
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public BigDecimal getBigDecimal(String columnLabel, int scale) throws SQLException  {
 		return compositeCachedRowSet.getBigDecimal(columnLabel, scale);
 	}
@@ -961,7 +961,7 @@ public class CCachedRowSet implements RowSet, Serializable, Cloneable, CachedRow
 	}
 
 	@Override
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public InputStream getUnicodeStream(String columnLabel) throws SQLException  {
 		return compositeCachedRowSet.getUnicodeStream(columnLabel);
 	}

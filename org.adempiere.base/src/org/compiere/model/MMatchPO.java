@@ -35,7 +35,6 @@ import org.adempiere.base.Core;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.IReservationTracer;
 import org.adempiere.util.IReservationTracerFactory;
-import org.compiere.acct.Doc;
 import org.compiere.process.DocAction;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -43,6 +42,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
+import org.idempiere.acct.IDoc;
 
 /**
  *	Match PO Model.
@@ -586,7 +586,8 @@ public class MMatchPO extends X_M_MatchPO
 						{
 							if (matchPO.getC_InvoiceLine_ID() == 0)
 							{
-								String docStatus = matchPO.getM_InOutLine().getM_InOut().getDocStatus();
+								MInOutLine iol = new MInOutLine(iLine.getCtx(), matchPO.getM_InOutLine_ID(), iLine.get_TrxName());
+								String docStatus = iol.getParent().getDocStatus();
 								if (docStatus.equals(DocAction.STATUS_Completed) || docStatus.equals(DocAction.STATUS_Closed)) 
 								{
 									noInvoiceLines.put(matchPO.getM_MatchPO_ID(), new BigDecimal[]{matchPO.getQty()});
@@ -639,7 +640,8 @@ public class MMatchPO extends X_M_MatchPO
 							BigDecimal balance = matchInv.getQty().subtract(alreadyMatch);
 							if (balance.signum() > 0)
 							{
-								String docStatus = matchInv.getC_InvoiceLine().getC_Invoice().getDocStatus();
+								MInvoiceLine il = new MInvoiceLine(ctx, matchInv.getC_InvoiceLine_ID(), trxName);
+								String docStatus = il.getParent().getDocStatus();
 								if (docStatus.equals(DocAction.STATUS_Completed) || docStatus.equals(DocAction.STATUS_Closed)) 
 								{
 									qtyHolder[0] = qtyHolder[0].subtract(balance);
@@ -1339,7 +1341,8 @@ public class MMatchPO extends X_M_MatchPO
 			if (getC_OrderLine_ID() != 0)			
 				reversal.setC_OrderLine_ID(getC_OrderLine_ID());
 			else{
-				reversal.setC_OrderLine_ID(getM_InOutLine().getC_OrderLine_ID());
+				MInOutLine inoutLine = new MInOutLine(getCtx(), getM_InOutLine_ID(), get_TrxName());
+				reversal.setC_OrderLine_ID(inoutLine.getC_OrderLine_ID());
 			}
 			reversal.setM_Product_ID(getM_Product_ID());
 			reversal.setM_AttributeSetInstance_ID(getM_AttributeSetInstance_ID());
@@ -1388,7 +1391,7 @@ public class MMatchPO extends X_M_MatchPO
 					IReservationTracerFactory factory = Core.getReservationTracerFactory();
 					if (factory != null) 
 					{
-						int docTypeId = DB.getSQLValue((String)null, Doc.DOC_TYPE_BY_DOC_BASE_TYPE_SQL, getAD_Client_ID(), Doc.DOCTYPE_MatMatchPO);
+						int docTypeId = DB.getSQLValue((String)null, IDoc.DOC_TYPE_BY_DOC_BASE_TYPE_SQL, getAD_Client_ID(), IDoc.DOCTYPE_MatMatchPO);
 						tracer = factory.newTracer(docTypeId, reversal.getDocumentNo(), 10, 
 								reversal.get_Table_ID(), reversal.get_ID(), oLine.getM_Warehouse_ID(), 
 								oLine.getM_Product_ID(), oLine.getM_AttributeSetInstance_ID(), oLine.getParent().isSOTrx(), 
@@ -1466,7 +1469,7 @@ public class MMatchPO extends X_M_MatchPO
 	 */
 	public static MMatchPO getOrCreate(int C_OrderLine_ID, BigDecimal qty, MInOutLine sLine, String trxName) {
 		Query query = new Query(Env.getCtx(), MMatchPO.Table_Name, "C_OrderLine_ID=? AND Qty=? AND Posted IN (?,?) AND M_InOutLine_ID IS NULL", trxName);
-		MMatchPO matchPO = query.setParameters(C_OrderLine_ID, qty, Doc.STATUS_NotPosted, Doc.STATUS_Deferred).first();
+		MMatchPO matchPO = query.setParameters(C_OrderLine_ID, qty, IDoc.STATUS_NotPosted, IDoc.STATUS_Deferred).first();
 		if (matchPO != null) {
 			matchPO.setM_InOutLine_ID(sLine.getM_InOutLine_ID());
 			return matchPO;

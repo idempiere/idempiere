@@ -23,7 +23,7 @@ import java.util.Properties;
  * @author Low Heng Sin
  * @deprecated Swing client have been deprecated
  */
-@Deprecated
+@Deprecated (since="13", forRemoval=true)
 public class DefaultContextProvider implements ContextProvider {
 
 	/**	Logging								*/

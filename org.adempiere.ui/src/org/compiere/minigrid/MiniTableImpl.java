@@ -38,6 +38,7 @@ import org.compiere.apps.form.Match;
 import org.compiere.model.MRole;
 import org.compiere.model.PO;
 import org.compiere.util.KeyNamePair;
+import org.idempiere.db.util.SQLFragment;
 
 /**
  * Headless implementation of {@link IMiniTable}.<br/>
@@ -106,6 +107,12 @@ public class MiniTableImpl implements IMiniTable {
 	@Override
 	public String prepareTable(ColumnInfo[] layout, String from, String where, boolean multiSelection,
 			String tableName) {
+		return prepareTable(layout, from, multiSelection, tableName, new SQLFragment(where)).toSQLWithParameters();
+	}
+
+	@Override
+	public SQLFragment prepareTable(ColumnInfo[] layout, String from, boolean multiSelection,
+			String tableName, boolean addAccessSQL, SQLFragment sqlFilter) {
 		m_layout = layout;
 		m_tableColumns.clear();
 		model.clear();
@@ -132,13 +139,17 @@ public class MiniTableImpl implements IMiniTable {
 		}
 		
 		sql.append( " FROM ").append(from);
-	    sql.append(" WHERE ").append(where);
+	    sql.append(" WHERE ").append(sqlFilter != null ? sqlFilter.sqlClause() : "");
 		
-        String finalSQL = MRole.getDefault().addAccessSQL(sql.toString(),
-                                                    tableName,
-                                                    MRole.SQL_FULLYQUALIFIED,
-                                                    MRole.SQL_RO);
-        return finalSQL;
+	    if (addAccessSQL) {
+	        String finalSQL = MRole.getDefault().addAccessSQL(sql.toString(),
+	                                                    tableName,
+	                                                    MRole.SQL_FULLYQUALIFIED,
+	                                                    MRole.SQL_RO);
+	        return new SQLFragment(finalSQL, sqlFilter != null ? sqlFilter.parameters() : List.of());
+	    } else {
+	    	return new SQLFragment(sql.toString(), sqlFilter != null ? sqlFilter.parameters() : List.of());
+	    }
 	}
 
 	@Override

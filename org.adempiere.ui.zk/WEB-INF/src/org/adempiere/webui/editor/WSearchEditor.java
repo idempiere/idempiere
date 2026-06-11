@@ -52,16 +52,20 @@ import org.compiere.model.Lookup;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
+import org.compiere.model.MLookupInfo;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.CLogger;
+import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.NamePair;
 import org.compiere.util.Util;
+import org.idempiere.db.util.SQLFragment;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -282,7 +286,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		
 		autoCompleteListener = e -> {
 				if (!e.isChangingBySelectBack()) {
-					listModel.setWhereClause(getWhereClause());
+					listModel.setSQLFilter(getSQLFilter());
 					String s = e.getValue();					
 					getComponent().getCombobox().setModel(listModel.getSubModel(s, maxRows));
 				}
@@ -519,7 +523,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			setTableAndKeyColumn();
 		
 		// process input text with infopanel/infowindow
-		final InfoPanel ip = InfoManager.create(lookup, gridField, m_tableName, m_keyColumnName, getComponent().getText(), multipleSelection, getWhereClause());
+		final InfoPanel ip = InfoManager.create(lookup, gridField, m_tableName, m_keyColumnName, getComponent().getText(), multipleSelection, getSQLFilter());
 		if (ip != null && ip.loadedOK() && ip.getRowCount() == 1)
 		{
 			if (ip.getFirstRowKey() instanceof Integer)
@@ -615,6 +619,25 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			if (gridField != null)
 				gridField.setLookupEditorSettingValue(true);
 			
+			// translate integer id to uuid if lookup is using uuidkey
+			if (lookup instanceof MLookup mLookup) 
+			{
+				MLookupInfo linfo = mLookup.getLookupInfo();
+				if (linfo != null && linfo.KeyColumn != null && linfo.TableName != null
+					&& linfo.KeyColumn.endsWith("_UU") && value instanceof Integer integerId)
+				{
+					MTable table = MTable.get(Env.getCtx(), linfo.TableName);
+					if (table != null && table.getKeyColumns() != null && table.getKeyColumns().length == 1)
+					{
+						String uidColumn = PO.getUUIDColumnName(table.getTableName());
+						String uuid = DB.getSQLValueString(null, "SELECT "+uidColumn+" FROM "+table.getTableName()+" WHERE "
+							+ table.getKeyColumns()[0] + "=?", integerId);
+						if (uuid != null && uuid.length() > 0)
+							value = uuid;
+					}					
+				}
+			}
+
 			ValueChangeEvent evt = new ValueChangeEvent(this, this.getColumnName(), getValue(), value);
 			// -> ADTabpanel - valuechange
 			fireValueChange(evt);
@@ -737,7 +760,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		 */
 
 		//  Zoom / Validation
-		String whereClause = getWhereClause();
+		SQLFragment whereClause = getSQLFilter();
 
 		if (log.isLoggable(Level.FINE))
 			log.fine(lookup.getColumnName() + ", Zoom=" + lookup.getZoom() + " (" + whereClause + ")");
@@ -848,51 +871,18 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		}
 	}
 
-	/**
-	 * Parse where clause from lookup validation code.
-	 * @return where clause
-	 */
-	private String getWhereClause()
-	{
-		String whereClause = "";
-
-		if (lookup == null)
-			return "";
-
-		if (lookup.getZoomQuery() != null)
-			whereClause = lookup.getZoomQuery().getWhereClause();
-
-		String validation = lookup.getValidation();
-
-		if (validation == null)
-			validation = "";
-
-		if (whereClause.length() == 0)
-			whereClause = validation;
-		else if (validation.length() > 0)
-			whereClause += " AND " + validation;
-
-		if (whereClause.indexOf('@') != -1)
-		{
-			String validated = Env.parseContext(Env.getCtx(), lookup.getWindowNo(), whereClause, false);
-
-			if (validated.length() == 0)
-				log.severe(getColumnName() + " - Cannot Parse=" + whereClause);
-			else
-			{
-				if (log.isLoggable(Level.FINE))
-					log.fine(getColumnName() + " - Parsed: " + validated);
-				return validated;
-			}
-		}
-		return whereClause;
-	}	//	getWhereClause
-
 	@Override
 	public String[] getEvents()
     {
         return LISTENER_EVENTS;
     }
+
+	private SQLFragment getSQLFilter()
+	{
+		if (lookup == null)
+			return null;
+		return lookup.getSQLFilter();
+	}
 
 	@Override
 	public void valueChange(ValueChangeEvent evt)

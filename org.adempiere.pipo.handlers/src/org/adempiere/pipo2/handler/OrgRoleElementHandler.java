@@ -19,6 +19,7 @@ package org.adempiere.pipo2.handler;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.AbstractElementHandler;
@@ -58,8 +59,8 @@ public class OrgRoleElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(PIPOContext ctx, TransformerHandler document)
-			throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document)
+			throws Exception {
 		int AD_Org_ID = Env.getContextAsInt(ctx.ctx, X_AD_Role.COLUMNNAME_AD_Org_ID);
 		int AD_Role_ID = Env.getContextAsInt(ctx.ctx, X_AD_Role.COLUMNNAME_AD_Role_ID);
 		
@@ -73,13 +74,13 @@ public class OrgRoleElementHandler extends AbstractElementHandler {
 			
 			AttributesImpl atts = new AttributesImpl();
 			addTypeName(atts, "table");
-			document.startElement("", "", I_AD_Role_OrgAccess.Table_Name, atts);
+			document.startElement(I_AD_Role_OrgAccess.Table_Name, atts);
 			createOrgAccessBinding(ctx, document, po);
-			document.endElement("", "", I_AD_Role_OrgAccess.Table_Name);
+			document.endElement(I_AD_Role_OrgAccess.Table_Name);
 		}
 	}
 
-	private void createOrgAccessBinding(PIPOContext ctx, TransformerHandler document,
+	private void createOrgAccessBinding(PIPOContext ctx, IPackSerializer document,
 			X_AD_Role_OrgAccess po) {
 		PoExporter filler = new PoExporter(ctx, document, po);
 
@@ -88,13 +89,13 @@ public class OrgRoleElementHandler extends AbstractElementHandler {
 	}
 
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler, int recordId)
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler, int recordId)
 			throws Exception {
 		throw new AdempiereException("AD_Role_OrgAccess doesn't have ID, use method with UUID");
 	}
 
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer,
 			TransformerHandler docHandler,
 			int recordId, String uuid) throws Exception {
 		X_AD_Role_OrgAccess po = new Query(packout.getCtx().ctx, X_AD_Role_OrgAccess.Table_Name, "AD_Role_OrgAccess_UU=?", getTrxName(packout.getCtx()))
@@ -103,7 +104,7 @@ public class OrgRoleElementHandler extends AbstractElementHandler {
 		if (po != null) {
 			Env.setContext(packout.getCtx().ctx, X_AD_Role.COLUMNNAME_AD_Org_ID, po.getAD_Org_ID());
 			Env.setContext(packout.getCtx().ctx, X_AD_Role.COLUMNNAME_AD_Role_ID, po.getAD_Role_ID());
-			this.create(packout.getCtx(), packoutHandler);
+			this.create(packout.getCtx(), packoutSerializer);
 			packout.getCtx().ctx.remove(X_AD_Role.COLUMNNAME_AD_Org_ID);
 			packout.getCtx().ctx.remove(X_AD_Role.COLUMNNAME_AD_Role_ID);
 		} else {

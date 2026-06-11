@@ -17,6 +17,8 @@
 package org.adempiere.webui;
 
 import java.lang.ref.WeakReference;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Properties;
@@ -26,7 +28,9 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.adempiere.base.sso.ISSOPrincipalService;
@@ -42,6 +46,7 @@ import org.adempiere.webui.desktop.FavouriteController;
 import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.session.SessionContextListener;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.sso.filter.SSOWebUIFilter;
 import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.BrowserToken;
@@ -133,9 +138,6 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	private Keylistener keyListener;
 
 	private static final CLogger logger = CLogger.getCLogger(AdempiereWebUI.class);
-
-	@Deprecated(forRemoval = true, since = "11")
-	public static final String EXECUTION_CARRYOVER_SESSION_KEY = "execution.carryover";
 
 	/** Session attribute to hold {@link ClientInfo} reference */
 	private static final String CLIENT_INFO = "client.info";
@@ -316,10 +318,15 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
         Session currSess = Executions.getCurrent().getDesktop().getSession();
         HttpSession httpSess = (HttpSession) currSess.getNativeSession();
         String x_Forward_IP = Executions.getCurrent().getHeader("X-Forwarded-For");
-        
+
+        String sessionId;
+        if (MSysConfig.getBooleanValue(MSysConfig.ZK_SESSION_SAVE_JSESSIONID, false))
+        	sessionId = httpSess.getId();
+        else
+        	sessionId = "zkwebui";
 		MSession mSession = MSession.get (ctx, x_Forward_IP!=null ? x_Forward_IP : Executions.getCurrent().getRemoteAddr(),
-			Executions.getCurrent().getRemoteHost(), httpSess.getId());
-		if (clientInfo.userAgent != null) {
+			Executions.getCurrent().getRemoteHost(), sessionId);
+		if (clientInfo.userAgent != null && MSysConfig.getBooleanValue(MSysConfig.ZK_SESSION_SAVE_USER_AGENT, false)) {
 			mSession.setDescription(mSession.getDescription() + "\n" + clientInfo.toString());
 			mSession.saveEx();
 		}
@@ -397,7 +404,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		//init favorite
 		FavouriteController.getInstance(currSess);
 		
-		processParameters();	
+		processParameters();			
     }
 
     /**
@@ -514,14 +521,20 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	    
 	    boolean isSSOLogin = "Y".equals(Env.getContext(Env.getCtx(), Env.IS_SSO_LOGIN));
 		String provider = (String) desktop.getSession().getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
+	    if (isSSOLogin && !Util.isEmpty(provider, true) && !MSysConfig.getBooleanValue(MSysConfig.SSO_SHOW_LOGINPAGE, true))
+	    {
+	    	setCookie(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider, 3600); // 1 hour
+	    }
+	    
+	    String tenant = (String) desktop.getSession().getAttribute(SSOWebUIFilter.TENANT_PREFIX_PARAMETER);
 	    String ssoLogoutURL = null;
 	    if (!isAdminLogin && isSSOLogin)
 		{
-			ISSOPrincipalService service = SSOUtils.getSSOPrincipalService(provider);
+			ISSOPrincipalService service = SSOUtils.getSSOPrincipalService(provider, tenant);
 			if (service != null)
 				ssoLogoutURL = service.getLogoutURL();
 		}
-	    
+	    		
 	    final Session session = logout0();
 	    
     	//clear context, invalidate session
@@ -542,7 +555,12 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     		}
     		else
     		{
-    			Executions.sendRedirect("index.zul");
+				String redirect = "index.zul";
+				if (!Util.isEmpty(tenant, true)) 
+				{
+					redirect += "?tenant=" + URLEncoder.encode(tenant, StandardCharsets.UTF_8);
+				}
+    			Executions.sendRedirect(redirect);
     		}
     	}
         
@@ -559,11 +577,6 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
      * @param session
      */
 	private void afterLogout(final Session session) {
-		try {
-    		((SessionCtrl)session).onDestroyed();
-    	} catch (Throwable t) {
-    		t.printStackTrace();
-    	}
     	((SessionCtrl)session).invalidateNow();
 	}
     
@@ -750,6 +763,10 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		Env.setContext(properties, Env.CLIENT_INFO_MOBILE, clientInfo.tablet);
 		Env.setContext(properties, Env.CLIENT_INFO_TIME_ZONE, clientInfo.timeZone.getID());
 		Env.setContext(properties, Env.MFA_Registration_ID, Env.getContext(Env.getCtx(), Env.MFA_Registration_ID));
+		boolean isSSOLogin = "Y".equals(Env.getContext(Env.getCtx(), Env.IS_SSO_LOGIN));
+		if (isSSOLogin) {
+			Env.setContext(properties, Env.IS_SSO_LOGIN, "Y");
+		}
 		
 		Desktop desktop = Executions.getCurrent().getDesktop();
 		Locale locale = (Locale) desktop.getSession().getAttribute(Attributes.PREFERRED_LOCALE);
@@ -792,8 +809,8 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     	while(attributes.hasMoreElements()) {
     		String attribute = attributes.nextElement();
     		
-    		//need to keep zk's session attributes
-    		if (attribute.contains("zkoss.") || attribute.startsWith("sso."))
+    		//need to keep zk and sso session attributes
+    		if (attribute.contains("zkoss.") || attribute.startsWith("sso.") || attribute.equals(SSOWebUIFilter.TENANT_PREFIX_PARAMETER))
     			continue;
     		
     		httpSession.removeAttribute(attribute);
@@ -805,8 +822,6 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		
     	//show change role window and set new context for env and session
 		onChangeRole(locale, properties);
-		
-		Executions.schedule(desktop, e -> DesktopWatchDog.removeOtherDesktopsInSession(desktop), new Event("onRemoveOtherDesktops"));
 	}
 	
 	@Override
@@ -819,10 +834,25 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 	 */	
 	public static String getUploadSetting() {
 		StringBuilder uploadSetting = new StringBuilder("true,native");
-		int size = MSysConfig.getIntValue(MSysConfig.ZK_MAX_UPLOAD_SIZE, 0);
+		int size = MSysConfig.getIntValue(MSysConfig.ZK_MAX_UPLOAD_SIZE, 0, Env.getAD_Client_ID(Env.getCtx()));
 		if (size > 0) {
 			uploadSetting.append(",maxsize=").append(size);
 		}
 		return uploadSetting.toString();
-	}	
+	}
+
+	/**
+	 * Set a cookie
+	 * @param name
+	 * @param value
+	 * @param expiry
+	 */
+	private void setCookie(String name, String value, int expiry) {
+		Cookie cookie = new Cookie(name, value);
+		cookie.setSecure(true);
+		cookie.setHttpOnly(true);
+		cookie.setMaxAge(expiry);
+		cookie.setPath(Executions.getCurrent().getContextPath());
+		((HttpServletResponse) Executions.getCurrent().getNativeResponse()).addCookie(cookie);
+	}
 }

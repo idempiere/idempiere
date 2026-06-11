@@ -16,9 +16,12 @@ import java.sql.ResultSet;
 import java.util.Base64;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.CCache;
+import org.compiere.util.CLogger;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 
@@ -32,21 +35,32 @@ public class MSSOPrincipalConfig extends X_SSO_PrincipalConfig
 	 */
 	private static final long serialVersionUID =  -5318719820186470903L;
 	
-	private static final CCache<String, Object>	s_SSOPrincipalConfigCache		= new CCache<String, Object>(MSSOPrincipalConfig.class.getSimpleName(), 10, 0);
+	/**
+	 * UUID:MSSOPrincipalConfig
+	 */
+	private static final CCache<String, MSSOPrincipalConfig>	s_SSOPrincipalConfigCache		= new CCache<>(MSSOPrincipalConfig.Table_Name, 10, 0);
 
-	private static final String					DEFAULT_SSO_PRINCIPAL_CACHEKEY	= "DEFAULT_SSO_PRINCIPAL";
-	private static final String					ALL_SSO_CONFIG_CACHEKEY			= "ALL_SSO_CONFIG";
+	/**
+	 * AD_Client_ID:List<MSSOPrincipalConfig>
+	 */
+	private static final CCache<Integer, List<MSSOPrincipalConfig>> s_SSOPrincipalConfigCacheByClient	
+		= new CCache<>(MSSOPrincipalConfig.class.getSimpleName() + "ByClient", 10, 0);
 	
 	private String								imageBase64Src					= null;
 
 	/**
+	 * Ending for well-known openid configuration URL
+	 */
+	public static final String WELL_KNOWN_OPENID_CONFIGURATION_SUFFIX = "/.well-known/openid-configuration";
+
+	/**
 	 * @param ctx
-	 * @param MFA_SSOAuthentication_ID
+	 * @param SSO_PrincipalConfig_ID
 	 * @param trxName
 	 */
-	public MSSOPrincipalConfig(Properties ctx, int MFA_SSOAuthentication_ID, String trxName)
+	public MSSOPrincipalConfig(Properties ctx, int SSO_PrincipalConfig_ID, String trxName)
 	{
-		super(ctx, MFA_SSOAuthentication_ID, trxName);
+		super(ctx, SSO_PrincipalConfig_ID, trxName);
 	}
 
 	/**
@@ -59,31 +73,52 @@ public class MSSOPrincipalConfig extends X_SSO_PrincipalConfig
 		super(ctx, rs, trxName);
 	}
 
+	@Deprecated
 	public static MSSOPrincipalConfig getDefaultSSOPrincipalConfig()
 	{
-		MSSOPrincipalConfig defaultConfig = (MSSOPrincipalConfig) s_SSOPrincipalConfigCache.get(DEFAULT_SSO_PRINCIPAL_CACHEKEY);
-		if (defaultConfig != null)
-			return defaultConfig;
-
-		defaultConfig = new Query(Env.getCtx(), Table_Name, COLUMNNAME_IsDefault + " = 'Y'", null).setOnlyActiveRecords(true).firstOnly();
-
-		if (defaultConfig != null)
-			s_SSOPrincipalConfigCache.put(DEFAULT_SSO_PRINCIPAL_CACHEKEY, defaultConfig);
-
-		return defaultConfig;
+		return getDefaultSSOPrincipalConfig(0);
 	}
 
+	/**
+	 * Get default SSO Principal Configuration by client
+	 * @param AD_Client_ID
+	 * @return
+	 */
+	public static MSSOPrincipalConfig getDefaultSSOPrincipalConfig(int AD_Client_ID)
+	{
+		var list = getSSOPrincipalConfigByClient(AD_Client_ID);
+		for (var config : list)
+		{
+			if (config.isDefault())
+				return config;
+		}
+		
+		return null;
+	}
+
+	/**
+	 * Get SSO Principal Configuration by UUID
+	 * @param uuID
+	 * @return
+	 */
 	public static MSSOPrincipalConfig getSSOPrincipalConfig(String uuID)
 	{
 		if (Util.isEmpty(uuID))
 			return null;
 
-		MSSOPrincipalConfig cachedConfig = (MSSOPrincipalConfig) s_SSOPrincipalConfigCache.get(uuID);
+		MSSOPrincipalConfig cachedConfig = s_SSOPrincipalConfigCache.get(uuID);
 		if (cachedConfig != null)
 			return cachedConfig;
 
-		cachedConfig = new Query(Env.getCtx(), Table_Name, COLUMNNAME_SSO_PrincipalConfig_UU + " = ?", null).setOnlyActiveRecords(true).setParameters(uuID)
-																											.firstOnly();
+		try {
+			cachedConfig = new Query(Env.getCtx(), Table_Name, COLUMNNAME_SSO_PrincipalConfig_UU + " = ?", null)
+									.setOnlyActiveRecords(true)
+									.setParameters(uuID)
+									.firstOnly();
+		} catch (Exception e) {
+			CLogger.getCLogger(MSSOPrincipalConfig.class).log(Level.WARNING, e.getLocalizedMessage(), e);
+			return null;
+		}
 
 		if (cachedConfig != null)
 			s_SSOPrincipalConfigCache.put(uuID, cachedConfig);
@@ -91,19 +126,28 @@ public class MSSOPrincipalConfig extends X_SSO_PrincipalConfig
 		return cachedConfig;
 	}
 
+	@Deprecated
 	public static List<MSSOPrincipalConfig> getAllSSOPrincipalConfig()
 	{
-		@SuppressWarnings("unchecked")
-		List<MSSOPrincipalConfig> allConfigs = (List<MSSOPrincipalConfig>) s_SSOPrincipalConfigCache.get(ALL_SSO_CONFIG_CACHEKEY);
-		if (allConfigs != null)
-			return allConfigs;
+		return getSSOPrincipalConfigByClient(0);
+	}
 
-		allConfigs = new Query(Env.getCtx(), Table_Name, null, null).setOnlyActiveRecords(true).list();
-
-		if (allConfigs != null && !allConfigs.isEmpty())
-			s_SSOPrincipalConfigCache.put(ALL_SSO_CONFIG_CACHEKEY, allConfigs);
-
-		return allConfigs;
+	/**
+	 * Get SSO Principal Configurations by client
+	 * @param AD_Client_ID
+	 * @return list of SSO Principal Configurations
+	 */
+	public static List<MSSOPrincipalConfig> getSSOPrincipalConfigByClient(int AD_Client_ID)
+	{
+		List<MSSOPrincipalConfig> list = s_SSOPrincipalConfigCacheByClient.get(AD_Client_ID);
+		if (list != null)
+			return list;
+		list = new Query(Env.getCtx(), Table_Name, COLUMNNAME_AD_Client_ID + " = ?", null)
+				.setOnlyActiveRecords(true)
+				.setParameters(AD_Client_ID)
+				.list();
+		s_SSOPrincipalConfigCacheByClient.put(AD_Client_ID, list);
+		return list;
 	}
 	
 	/**
@@ -143,17 +187,51 @@ public class MSSOPrincipalConfig extends X_SSO_PrincipalConfig
 				setIsDefault(false);
 			}
 
-			if (isDefault() && getDefaultSSOPrincipalConfig() != null)
+			if (isDefault() && getDefaultSSOPrincipalConfig(getAD_Client_ID()) != null)
 			{
 				throw new AdempiereException("There can be only one default SSO Principal Configuration");
 			}
 
-			if (newRecord && getDefaultSSOPrincipalConfig() == null)
+			if (newRecord && getDefaultSSOPrincipalConfig(getAD_Client_ID()) == null)
 			{
 				setIsDefault(true);
 			}
 			
 		}
+
+		// Validate well-known configuration url for OIDC provider
+		if (newRecord 
+			|| is_ValueChanged(COLUMNNAME_SSO_ApplicationDiscoveryURI)
+			|| is_ValueChanged(COLUMNNAME_SSO_Provider))
+		{
+			if ("OIDC".equals(getSSO_Provider()))
+			{
+				String discoveryURI = getSSO_ApplicationDiscoveryURI();
+				if (discoveryURI == null || !discoveryURI.trim().endsWith(WELL_KNOWN_OPENID_CONFIGURATION_SUFFIX)) 
+				{
+					log.saveError("DiscoveryURIMustEndWith", "");
+					return false;
+				}			
+			}
+		}
 		return super.beforeSave(newRecord);
+	}
+
+	@Override
+	protected boolean afterDelete(boolean success) {
+		if (success) {
+			CacheMgt.scheduleCacheReset(MSSOPrincipalConfig.Table_Name, getSSO_PrincipalConfig_UU(), false, get_TrxName());
+			CacheMgt.scheduleCacheReset(s_SSOPrincipalConfigCacheByClient.getName(), getAD_Client_ID(), false, get_TrxName());
+		}
+		return super.afterDelete(success);
+	}
+
+	@Override
+	protected boolean afterSave(boolean newRecord, boolean success) {
+		if (success) {
+			CacheMgt.scheduleCacheReset(MSSOPrincipalConfig.Table_Name, getSSO_PrincipalConfig_UU(), newRecord, get_TrxName());
+			CacheMgt.scheduleCacheReset(s_SSOPrincipalConfigCacheByClient.getName(), getAD_Client_ID(), false, get_TrxName());
+		}
+		return super.afterSave(newRecord, success);
 	}
 }

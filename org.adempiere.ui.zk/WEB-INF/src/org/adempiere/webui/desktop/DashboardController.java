@@ -1794,7 +1794,7 @@ public class DashboardController implements EventListener<Event> {
 					 }	//	SQL Statement
 					 else if (paramValue.indexOf('@') != -1)	//	we have a variable
 					 {
-						 value = Env.parseContext(Env.getCtx(), 0, paramValue, false, false);
+						 value = Env.parseContext(Env.getCtx(), 0, paramValue, false, false, false, false);
 					 }	//	@variable@
 
 					 //	No Value

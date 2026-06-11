@@ -54,6 +54,7 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.db.util.SQLFragment;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -64,7 +65,7 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
-import org.zkoss.zul.Vbox;
+import org.adempiere.webui.component.FlexVlayout;
 
 import static org.adempiere.webui.LayoutUtils.isLabelAboveInputForSmallWidth;
 
@@ -99,7 +100,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 	/** list of query columns (SQL) */
 	private ArrayList<String> m_queryColumnsSql = new ArrayList<String>();
 	private Borderlayout layout;
-	private Vbox southBody;
+	private FlexVlayout southBody;
 
 	private int noOfParameterColumn;
 
@@ -110,7 +111,12 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 
 	public InfoGeneralPanel(String queryValue, int windowNo,String tableName,String keyColumn, boolean multipleSelection, String whereClause, boolean lookup, GridField field)
 	{
-		super(windowNo, tableName, keyColumn, multipleSelection, whereClause, lookup, 0, queryValue);
+		this(queryValue, windowNo, tableName, keyColumn, multipleSelection, lookup, field, (!Util.isEmpty(whereClause)) ? new SQLFragment(whereClause) : null);
+	}
+	
+	public InfoGeneralPanel(String queryValue, int windowNo,String tableName,String keyColumn, boolean multipleSelection, boolean lookup, GridField field, SQLFragment sqlFilter)
+	{
+		super(windowNo, tableName, keyColumn, multipleSelection, lookup, 0, queryValue, sqlFilter);
 
 		setGridfield(field);
 		setTitle(Msg.getMsg(Env.getCtx(), "Info"));
@@ -236,7 +242,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 
 		South south = new South();
 		layout.appendChild(south);
-		southBody = new Vbox();
+		southBody = new FlexVlayout();
 		ZKUpdateUtil.setWidth(southBody, "100%");
 		south.appendChild(southBody);
 		southBody.appendChild(new Separator());
@@ -355,12 +361,12 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 			}
 		}
 
-		if (p_whereClause.length() > 0) {
+		if (p_sqlFilter != null && p_sqlFilter.sqlClause().length() > 0) {
 			if(where.length() > 0)
 				where.append(" AND ");
-			where.append(" (").append(p_whereClause).append(")");
+			where.append(" (").append(p_sqlFilter.sqlClause()).append(")");
 		}
-		prepareTable(m_generalLayout, p_tableName, where.toString(), "2");
+		prepareTable(m_generalLayout, p_tableName, "2", new SQLFragment(where.toString(),  p_sqlFilter != null ? p_sqlFilter.parameters() : null));
 		contentPanel.repaint();
 		
 		//	Set & enable Fields
@@ -422,18 +428,19 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		String uucolName = PO.getUUIDColumnName(p_tableName);
 		boolean hasWindowAndTab = new Query(Env.getCtx(), MTab.Table_Name, " AD_Table_ID = ? ", null)
 									.setParameters(table.getAD_Table_ID())
+									.setOnlyActiveRecords(true)
 									.match();
 
 		//	Get Query Columns
 		String sqlqc = "SELECT c.ColumnName, t.AD_Table_ID, t.TableName, c.ColumnSql "
 			+ "FROM AD_Table t"
-			+ " INNER JOIN AD_Column c ON (t.AD_Table_ID=c.AD_Table_ID)"
+			+ " INNER JOIN AD_Column c ON (t.AD_Table_ID=c.AD_Table_ID AND c.IsActive = 'Y' )"
 			+ "WHERE c.AD_Reference_ID IN (10,14)"
 			+ " AND t.TableName=? ";	//	#1
 		if(hasWindowAndTab) {
 			//	Displayed in Window
-			sqlqc += " AND EXISTS (SELECT * FROM AD_Field f "
-					+ " WHERE f.AD_Column_ID=c.AD_Column_ID "
+			sqlqc += " AND EXISTS (SELECT 1 FROM AD_Field f "
+				+ "WHERE f.AD_Column_ID=c.AD_Column_ID AND f.IsActive = 'Y'"
 					+ " AND f.IsDisplayed='Y' AND f.IsEncrypted='N' AND f.ObscureType IS NULL) ";
 		}
 		sqlqc += " ORDER BY c.IsIdentifier DESC, c.IsSelectionColumn Desc, c.AD_Reference_ID, c.SeqNoSelection, c.SeqNo";
@@ -532,7 +539,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 			+ " INNER JOIN AD_Table t ON (c.AD_Table_ID=t.AD_Table_ID)");
 		if(hasWindowAndTab) {
 			sqlc.append(" INNER JOIN AD_Tab tab ON (t.AD_Table_ID=tab.AD_Table_ID)"
-					+ " INNER JOIN AD_Field f ON (tab.AD_Tab_ID=f.AD_Tab_ID AND f.AD_Column_ID=c.AD_Column_ID) ");
+					+ " INNER JOIN AD_Field f ON (tab.AD_Tab_ID=f.AD_Tab_ID AND f.AD_Column_ID=c.AD_Column_ID AND f.IsActive='Y') ");
 		}	
 		sqlc.append( "WHERE t.AD_Table_ID=? ");
 		if(hasWindowAndTab) {
@@ -540,23 +547,23 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 					+ " AND tab.Ad_Tab_ID=(SELECT MIN(mt.AD_Tab_ID) FROM AD_tab mt WHERE mt.AD_Window_ID=? AND mt.AD_Table_ID=t.AD_Table_ID AND mt.IsActive='Y')"
 					+ " AND (c.IsKey='Y' OR "
 					+ "		(f.IsEncrypted='N' AND f.ObscureType IS NULL))");
-		} else {
-			sqlc.append(" AND (c.IsKey='Y' "
+		}
+		sqlc.append(" AND (c.IsKey='Y' "
 					+ "			OR c.IsIdentifier='Y' "
 					+ "			OR c.IsParent='Y' "
 					+ "			OR c.IsSelectionColumn='Y' "
 					+ "			OR Upper(c.ColumnName) IN ('NAME','VALUE','DESCRIPTION','DOCUMENTNO') "
 					+ "			OR Upper(c.ColumnName) Like '%_NAME' "
 					+ "			OR Upper(c.ColumnName) Like '%_Value') ");
-		}
+
 		sqlc.append(" AND c.IsActive = 'Y' "
 			+ "ORDER BY ");
 		if (table.isUUIDKeyTable() || p_keyColumn.endsWith("_UU"))
 			sqlc.append("CASE WHEN c.columnname=").append(DB.TO_STRING(uucolName)).append("THEN 0 ELSE 1 END");
 		else
 			sqlc.append("c.IsKey DESC");
-		if(hasWindowAndTab)
-			sqlc.append(", f.SeqNo");
+
+		sqlc.append(", c.IsSelectionColumn DESC, c.SeqNoSelection, c.IsIdentifier DESC, c.SeqNo, c.AD_Reference_ID ");
 
 		try
 		{
@@ -722,6 +729,11 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 	protected void setParameters(PreparedStatement pstmt, boolean forCount) throws SQLException
 	{
 		int index = 1;
+		if (m_sqlFragmentMain.parameters().size() > 0) {
+			for (Object param : m_sqlFragmentMain.parameters()) {
+				pstmt.setObject(index++, param);
+			}
+		}
 		if (txt1.getText().length() > 0)
 			pstmt.setString(index++, getSQLText(txt1));
 		if (txt2.getText().length() > 0)
@@ -761,7 +773,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		MColumn column = table.getColumn(columnName);
 		String embedded;
 		if (AD_Reference_Value_ID > 0) {
-			embedded = MLookupFactory.getLookup_TableEmbed(Env.getLanguage(Env.getCtx()), columnName, p_tableName, AD_Reference_Value_ID);
+			embedded = MLookupFactory.getLookup_TableEmbed(Env.getLanguage(Env.getCtx()), columnName, p_tableName, AD_Reference_Value_ID, true);
 		} else {
 			if (column.isVirtualColumn())
 				embedded = MLookupFactory.getLookup_TableDirEmbed(Env.getLanguage(Env.getCtx()), columnName, p_tableName, column.getColumnSQL());

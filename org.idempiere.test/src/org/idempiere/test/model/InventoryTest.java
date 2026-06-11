@@ -29,12 +29,14 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Properties;
 
 import org.compiere.model.MAcctSchema;
+import org.compiere.model.MAttributeSet;
 import org.compiere.model.MAttributeSetInstance;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MClient;
@@ -46,6 +48,7 @@ import org.compiere.model.MInventoryLine;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MProduct;
+import org.compiere.model.MStorageOnHand;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
@@ -55,10 +58,14 @@ import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 /**
  * @author Carlos Ruiz - globalqss
  */
+@Isolated
 public class InventoryTest extends AbstractTestCase {
 
 	public InventoryTest() {
@@ -130,11 +137,214 @@ public class InventoryTest extends AbstractTestCase {
 		assertEquals(cost.getCurrentCostPrice(), line.getCurrentCostPrice());
 	}
 	
-	private void createPOAndMRForProduct(int productId) {
-		createPOAndMRForProduct(productId, null);
+	/**
+	 * IDEMPIERE-6600 : Posting Error For No Cost Product On Physical Inventory
+	 * @author ZuhriUtama
+	 */
+	@Test
+	public void testZeroCostProductPosting() {
+		Properties ctx = Env.getCtx();
+		String trxName = getTrxName();
+		
+		MClient client = MClient.get(ctx);
+		MAcctSchema as = client.getAcctSchema();
+		
+		// create purchase order
+		MOrder order = new MOrder(ctx, 0, trxName);
+		order.setBPartner(MBPartner.get(ctx, DictionaryIDs.C_BPartner.C_AND_W.id));
+		order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
+		order.setIsSOTrx(false);
+		order.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		order.setDateOrdered(today);
+		order.setDatePromised(today);
+		order.saveEx();
+
+		MOrderLine line1 = new MOrderLine(order);
+		line1.setLine(10);
+		line1.setM_Product_ID(DictionaryIDs.M_Product.FERTILIZER_50.id);
+		line1.setQty(Env.ONEHUNDRED);
+		line1.setDatePromised(today);
+		line1.saveEx();
+
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		order.load(trxName);
+		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+
+		MInOut materialReceipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered());
+		materialReceipt.saveEx();
+
+		MInOutLine receiptLine = new MInOutLine(materialReceipt);
+		receiptLine.setOrderLine(line1, 0, Env.ONEHUNDRED);
+		receiptLine.setQty(Env.ONEHUNDRED);
+		receiptLine.saveEx();
+		
+		info = MWorkflow.runDocumentActionWorkflow(materialReceipt, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		materialReceipt.load(trxName);
+		assertEquals(DocAction.STATUS_Completed, materialReceipt.getDocStatus());
+		assertEquals(true, materialReceipt.isPosted());
+		
+		MInventory inventory = new MInventory(ctx, 0, trxName);
+		inventory.setC_DocType_ID(DictionaryIDs.C_DocType.MATERIAL_PHYSICAL_INVENTORY.id);
+		inventory.setCostingMethod(as.getCostingMethod());
+		inventory.saveEx();
+
+		MInventoryLine iline = new MInventoryLine(inventory,
+				DictionaryIDs.M_Locator.HQ.id, 
+				DictionaryIDs.M_Product.FERTILIZER_50.id,
+				0, // M_AttributeSetInstance_ID
+				Env.ONEHUNDRED, // QtyBook
+				Env.ONE);
+		iline.saveEx();
+		
+		info = MWorkflow.runDocumentActionWorkflow(inventory, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		inventory.load(trxName);
+		assertEquals(DocAction.STATUS_Completed, inventory.getDocStatus());
+		assertEquals(true, inventory.isPosted());
 	}
 	
-	private void createPOAndMRForProduct(int productId, MAttributeSetInstance asi) {
+	/**
+	 * IDEMPIERE-6737
+	 * Attribute Set with "Use Guarantee Date for Material Policy" = "Y"
+	 */
+	@Test
+	public void testAttributeSetWithGuaranteeDateForMaterialPolicy() {
+		Properties ctx = Env.getCtx();
+		String trxName = getTrxName();
+		
+		MProduct product = new MProduct(ctx, DictionaryIDs.M_Product.FERTILIZER_50.id, trxName);
+		MAttributeSet attributeSet = MAttributeSet.get(ctx, product.getM_AttributeSet_ID());
+		
+		// Mock only the attribute set
+	    MAttributeSet attributeSetMock = Mockito.mock(MAttributeSet.class);
+	    Mockito.when(attributeSetMock.get_ID()).thenReturn(product.getM_AttributeSet_ID());
+	    Mockito.when(attributeSetMock.isUseGuaranteeDateForMPolicy()).thenReturn(true); // simulate "Y"
+	    Mockito.when(attributeSetMock.getM_AttributeSet_ID()).thenReturn(product.getM_AttributeSet_ID());
+	    
+	    try (MockedStatic<MAttributeSet> attributeSetStaticMock = Mockito.mockStatic(MAttributeSet.class)) {
+	        attributeSetStaticMock.when(() -> MAttributeSet.get(ctx, product.getM_AttributeSet_ID()))
+	                              .thenReturn(attributeSetMock);
+
+	        attributeSet = MAttributeSet.get(ctx, product.getM_AttributeSet_ID());
+	        assertTrue(attributeSet.isUseGuaranteeDateForMPolicy());
+			
+			Timestamp today = TimeUtil.getDay(null);
+			Timestamp tomorrow = TimeUtil.addDays(today, 1);
+			
+			MAttributeSetInstance asi = new MAttributeSetInstance(ctx, 0, trxName);
+			asi.setM_AttributeSet_ID(product.getM_AttributeSet_ID());
+			asi.setLot("8888");
+			asi.setGuaranteeDate(tomorrow);
+			asi.saveEx();
+			
+			MInventory inventory = new MInventory(ctx, 0, trxName);
+			inventory.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.HQ.id);
+			inventory.setC_DocType_ID(DictionaryIDs.C_DocType.MATERIAL_PHYSICAL_INVENTORY.id);
+			inventory.setMovementDate(today);
+			inventory.saveEx();
+
+			MInventoryLine iline = new MInventoryLine(inventory,
+					DictionaryIDs.M_Locator.HQ.id, 
+					product.getM_Product_ID(),
+					asi.get_ID(), // M_AttributeSetInstance_ID
+					Env.ZERO, // QtyBook
+					Env.ONEHUNDRED);
+			iline.saveEx();
+
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(inventory, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			inventory.load(trxName);
+			assertEquals(DocAction.STATUS_Completed, inventory.getDocStatus());
+			
+			MStorageOnHand[] storages = MStorageOnHand.getWarehouse(ctx, inventory.getM_Warehouse_ID(),
+					product.get_ID(), asi.getM_AttributeSetInstance_ID(), null,
+					MClient.MMPOLICY_FiFo.equals(product.getMMPolicy()), false,
+					0, trxName);
+			assertEquals(1, storages.length);
+			MStorageOnHand storage = storages[0];
+			assertEquals(100, storage.getQtyOnHand().intValue());
+			assertEquals(tomorrow, storage.getDateMaterialPolicy());
+		} finally {
+			rollback();
+		}
+	}
+	
+	/**
+	 * IDEMPIERE-6972
+	 * MR1, Product1, ASI1, Qty=100
+	 * MR2, Product1, ASI2, Qty=100
+	 * Physical Inventory
+	 * 	Line1, Product1, ASI1, QtyBook=1, QtyCount=100
+	 * 	Line2, Product1, ASI2, QtyBook=100, QtyCount=100
+	 */
+	@Test
+	public void testZeroDifferenceInventoryLine() {
+		MClient client = MClient.get(Env.getCtx());
+		MAcctSchema as = client.getAcctSchema();
+		MProduct product = new MProduct(Env.getCtx(), DictionaryIDs.M_Product.FERTILIZER_50.id, getTrxName());
+
+		MAttributeSetInstance asi1 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+		asi1.setM_AttributeSet_ID(product.getM_AttributeSet_ID());
+		asi1.setLot("asi1");
+		asi1.setDescription();
+		asi1.saveEx();
+		
+		MAttributeSetInstance asi2 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+		asi2.setM_AttributeSet_ID(product.getM_AttributeSet_ID());
+		asi2.setLot("asi2");
+		asi2.setDescription();
+		asi2.saveEx();
+		
+		createPOAndMRForProduct(DictionaryIDs.M_Product.FERTILIZER_50.id, asi1, Env.ONEHUNDRED);
+		createPOAndMRForProduct(DictionaryIDs.M_Product.FERTILIZER_50.id, asi2, Env.ONEHUNDRED);
+		
+		MInventory inventory = new MInventory(Env.getCtx(), 0, getTrxName());
+		inventory.setC_DocType_ID(DictionaryIDs.C_DocType.MATERIAL_PHYSICAL_INVENTORY.id);
+		inventory.setCostingMethod(as.getCostingMethod());
+		inventory.saveEx();
+		
+		// Qty Count <> Qty Book
+		MInventoryLine line1 = new MInventoryLine(
+				inventory,
+				DictionaryIDs.M_Locator.HQ.id, 
+				product.getM_Product_ID(),
+				asi1.get_ID(),
+				Env.ONE, // QtyBook
+				Env.ONEHUNDRED); // QtyCount
+		line1.saveEx();
+		
+		// Qty Count = Qty Book
+		MInventoryLine line2 = new MInventoryLine(
+				inventory,
+				DictionaryIDs.M_Locator.HQ.id, 
+				product.getM_Product_ID(),
+				asi2.get_ID(),
+				Env.ONEHUNDRED, // QtyBook
+				Env.ONEHUNDRED); // QtyCount
+		line2.saveEx();
+		
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(inventory, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		inventory.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, inventory.getDocStatus());
+		if (!inventory.isPosted()) {
+			String error = DocumentEngine.postImmediate(Env.getCtx(), inventory.getAD_Client_ID(), inventory.get_Table_ID(), inventory.get_ID(), false, getTrxName());
+			assertNull(error, error);
+			inventory.load(getTrxName());
+		}
+		assertTrue(inventory.isPosted(), "Inventory should be posted successfully");
+	}
+	
+	private void createPOAndMRForProduct(int productId) {
+		createPOAndMRForProduct(productId, null, BigDecimal.ONE);
+	}
+	
+	private void createPOAndMRForProduct(int productId, MAttributeSetInstance asi, BigDecimal qty) {
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id));
 		order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
@@ -150,7 +360,7 @@ public class InventoryTest extends AbstractTestCase {
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
 		line1.setProduct(new MProduct(Env.getCtx(), productId, getTrxName()));
-		line1.setQty(new BigDecimal("1"));
+		line1.setQty(qty);
 		line1.setDatePromised(today);
 		line1.saveEx();
 		
@@ -165,8 +375,8 @@ public class InventoryTest extends AbstractTestCase {
 		receipt1.saveEx();
 
 		MInOutLine receiptLine1 = new MInOutLine(receipt1);
-		receiptLine1.setOrderLine(line1, 0, new BigDecimal("1"));
-		receiptLine1.setQty(new BigDecimal("1"));
+		receiptLine1.setOrderLine(line1, 0, qty);
+		receiptLine1.setQty(qty);
 		if (asi != null)
 			receiptLine1.setM_AttributeSetInstance_ID(asi.get_ID());
 		receiptLine1.saveEx();

@@ -712,7 +712,7 @@ public class MInOutConfirm extends X_M_InOutConfirm implements DocAction
 				|| DOCSTATUS_Approved.equals(getDocStatus())
 				|| DOCSTATUS_NotApproved.equals(getDocStatus()) )
 		{
-			MInOut inout = (MInOut)getM_InOut();
+			MInOut inout = new MInOut (getCtx(), getM_InOut_ID(), get_TrxName());
 			if (!MInOut.DOCSTATUS_Voided.equals(inout.getDocStatus())
 					&& !MInOut.DOCSTATUS_Reversed.equals(inout.getDocStatus()) )
 			{

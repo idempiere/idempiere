@@ -31,7 +31,7 @@ import javax.servlet.http.HttpSession;
 
 import org.adempiere.base.sso.ISSOPrincipalService;
 import org.adempiere.base.sso.SSOUtils;
-import org.apache.commons.codec.binary.Base64;
+
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.util.CLogger;
@@ -53,15 +53,11 @@ public class AdempiereMonitorFilter implements Filter
 	public AdempiereMonitorFilter ()
 	{
 		super ();
-		m_authorization = Long.valueOf(System.currentTimeMillis());
 	}	//	AdempiereMonitorFilter
 
 	/** Logger */
 	protected CLogger				log				= CLogger.getCLogger(getClass());
-	/** Authorization ID */
-	private static final String		AUTHORIZATION	= "AdempiereAuthorization";
-	/** Authorization Marker */
-	private Long					m_authorization	= null;
+
 
 	/**
 	 * 	Init
@@ -86,7 +82,6 @@ public class AdempiereMonitorFilter implements Filter
 		throws IOException, ServletException
 	{
 		String errorPage = "/error.html";
-		boolean pass = false;
 		try
 		{
 			if (!(request instanceof HttpServletRequest && response instanceof HttpServletResponse))
@@ -142,21 +137,38 @@ public class AdempiereMonitorFilter implements Filter
 
 			if (m_SSOPrincipal == null || !isSSOEnable)
 			{
-				HttpSession session = req.getSession(true);
-				// Previously checked
-				Long compare = (Long) session.getAttribute(AUTHORIZATION);
-				if (compare != null && compare.compareTo(m_authorization) == 0) {
-					pass = true;
-				} else if (checkAuthorization(req.getHeader("Authorization"))) {
-					session.setAttribute(AUTHORIZATION, m_authorization);
-					pass = true;
+				// Check for authenticated session
+				HttpSession session = req.getSession(false);
+				String authenticatedUser = null;
+				
+				if (session != null) {
+					authenticatedUser = (String) session.getAttribute(LoginServlet.AUTHENTICATED_USER);
 				}
-				// --------------------------------------------
-				if (pass) {
+				
+				// Check if this is a login or logout request (allow through)
+				String requestURI = req.getRequestURI();
+				String contextPath = req.getContextPath();
+				if (requestURI.equals(contextPath + "/idempiereMonitor/login") || 
+					requestURI.equals(contextPath + "/idempiereMonitor/logout") || 
+					requestURI.equals(contextPath + "/idempiereMonitor/login.jsp")) {
+					chain.doFilter(request, response);
+					return;
+				}
+				
+				if (authenticatedUser != null) {
+					// User is authenticated, allow access
 					chain.doFilter(request, response);
 				} else {
-					resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-					resp.setHeader("WWW-Authenticate", "BASIC realm=\"Adempiere Server\"");
+					// Not authenticated, redirect to login page
+					String returnUrl = req.getRequestURI();
+					if (req.getQueryString() != null) {
+						returnUrl += "?" + req.getQueryString();
+					}
+					if ("/idempiereMonitor".equals(returnUrl) || "/idempiereMonitor/".equals(returnUrl))
+						resp.sendRedirect(req.getContextPath() + "/idempiereMonitor/login.jsp");
+					else
+					resp.sendRedirect(req.getContextPath() + "/idempiereMonitor/login.jsp?returnUrl=" + 
+						java.net.URLEncoder.encode(returnUrl, "UTF-8"));
 				}
 			}
 			return;
@@ -184,32 +196,7 @@ public class AdempiereMonitorFilter implements Filter
 		return false;
 	}
 
-	/**
-	 * 	Check Authorization
-	 *	@param authorization authorization
-	 *	@return true if authenticated
-	 */
-	private boolean checkAuthorization (String authorization)
-	{
-		if (authorization == null)
-			return false;
-		try
-		{
-			String userInfo = authorization.substring(6).trim();
-			Base64 decoder = new Base64();
-			String namePassword = new String (decoder.decode(userInfo.getBytes()));
-		//	log.fine("checkAuthorization - Name:Password=" + namePassword);
-			int index = namePassword.indexOf(':');
-			String name = namePassword.substring(0, index);
-			String password = namePassword.substring(index+1);
-			return validateUser(name, password, false);
-		}
-		catch (Exception e)
-		{
-			log.log(Level.SEVERE, "check", e);
-		}
-		return false;
-	}	//	check
+
 
 	private boolean validateUser(String name, String password, boolean isSSO)
 	{

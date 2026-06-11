@@ -136,9 +136,15 @@ public class MUserRoles extends X_AD_User_Roles
 
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
+		MRole role = new MRole(getCtx(), getAD_Role_ID(), get_TrxName());
+		// Prevent assigning Role Template to user		
+		if (role.isMasterRole() ) {
+			log.saveError("Error", Msg.getMsg(getCtx(), "CannotAssignRoleTemplateToUser"));
+			return false;
+		}
+				
 		// IDEMPIERE-1410
 		if (! MRole.getDefault().isAccessAdvanced()) {
-			MRole role = new MRole(getCtx(), getAD_Role_ID(), get_TrxName());
 			// Disallow non-advanced role to edit advanced role record
 			if (role.isAccessAdvanced()) {
 				log.saveError("Error", Msg.getMsg(getCtx(), "ActionNotAllowedHere"));

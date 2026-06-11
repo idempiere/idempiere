@@ -33,7 +33,6 @@ import java.util.logging.Level;
 
 import javax.servlet.ServletRequest;
 
-import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.ISupportMask;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.adwindow.ADWindow;
@@ -49,7 +48,6 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.IServerPushCallback;
 import org.adempiere.webui.util.ServerPushTemplate;
 import org.adempiere.webui.window.Dialog;
-import org.compiere.acct.Doc;
 import org.compiere.model.GridWindowVO;
 import org.compiere.model.I_AD_Window;
 import org.compiere.model.Lookup;
@@ -73,6 +71,10 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.compiere.util.Util;
+import org.idempiere.acct.AcctModelServices;
+import org.idempiere.acct.IDocPostingService;
+import org.owasp.html.PolicyFactory;
+import org.owasp.html.Sanitizers;
 import org.zkoss.web.servlet.Servlets;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
@@ -236,16 +238,6 @@ public final class AEnv
 	}
 
 	/**
-	 *	Exit System.
-	 *  @param status System exit status (usually 0 for no error)
-	 */
-	@Deprecated(forRemoval = true, since = "11")
-	public static void exit (int status)
-	{
-		Env.exitEnv(status);
-	}	//	exit
-
-	/**
 	 * Logout AD_Session and clear {@link #windowCache}.
 	 */
 	public static void logout()
@@ -318,7 +310,7 @@ public final class AEnv
 				mWindowVO = cache.get(AD_Window_ID);
 				if (mWindowVO != null)
 				{
-					mWindowVO = mWindowVO.clone(WindowNo);
+					mWindowVO = mWindowVO.clone(Env.getCtx(), WindowNo);
 					if (log.isLoggable(Level.INFO))
 						log.info("Cached=" + mWindowVO);
 				}
@@ -367,15 +359,32 @@ public final class AEnv
 	}   //  getWindow
 
 	/**
-	 *  Post Immediate.<br/>
-	 *  Call {@link Doc#manualPosting(int, int, int, int, boolean)}.
-	 *  @param  WindowNo 		window
-	 *  @param  AD_Table_ID     Table ID of Document
-	 *  @param  AD_Client_ID    Client ID of Document
-	 *  @param  Record_ID       Record ID of Document
-	 *  @param  force           force posting. if false, only post if (Processing='N' OR Processing IS NULL)
-	 *  @return null if success, otherwise error
+	 * Post a document immediately.
+	 * <p>
+	 * This method is <b>deprecated</b>. Call
+	 * {@link AcctModelServices#getDocPostingService()} and then
+	 * {@link IDocPostingService#manualPosting(int, int, int, int, boolean)} directly instead:
+	 * <pre>
+	 * if (AcctModelServices.isAccountingAvailable()) {
+	 *     IDocPostingService docPostingService = AcctModelServices.getDocPostingService();
+	 *     if (docPostingService != null) {
+	 *          String error = AcctModelServices.getDocPostingService()
+  	 *                 .manualPosting(WindowNo, AD_Client_ID, AD_Table_ID, Record_ID, force);
+  	 *     }
+	 * }
+	 * </pre>
+	 *
+	 * @param  WindowNo      window number
+	 * @param  AD_Client_ID  Client ID of the document
+	 * @param  AD_Table_ID   Table ID of the document
+	 * @param  Record_ID     Record ID of the document
+	 * @param  force         force posting; if {@code false}, only posts when
+	 *                       {@code Processing='N'} or {@code Processing IS NULL}
+	 * @return {@code null} if posting succeeded, otherwise an error message
+	 * @deprecated since 14, use {@link AcctModelServices#getDocPostingService()}
+	 *             and {@link IDocPostingService#manualPosting(int, int, int, int, boolean)} directly
 	 */
+	@Deprecated (since="14", forRemoval=true)
 	public static String postImmediate (int WindowNo, int AD_Client_ID,
 		int AD_Table_ID, int Record_ID, boolean force)
 	{
@@ -383,8 +392,18 @@ public final class AEnv
 		log.info("Window=" + WindowNo
 			+ ", AD_Table_ID=" + AD_Table_ID + "/" + Record_ID
 			+ ", Force=" + force);
+		
+		if (AcctModelServices.isDocPostingAvailable()) {
+			IDocPostingService docPostingService = AcctModelServices.getDocPostingService();
+			if (docPostingService != null)
+				return docPostingService.manualPosting(WindowNo, AD_Client_ID, AD_Table_ID, Record_ID, force);
+		}
+		
+		String error = "Accounting service not available";
+	    if (log.isLoggable(Level.FINE))
+	        log.fine("Accounting service not available - skipping accounting");
 
-		return Doc.manualPosting(WindowNo, AD_Client_ID, AD_Table_ID, Record_ID, force);
+		return error;
 	}   //  postImmediate
 
 	/**
@@ -526,7 +545,7 @@ public final class AEnv
 			}
 		}
 		else
-			log.warning("No Table found for " + data.getQuery().getWhereClause(true));
+			log.warning("No Table found for " + data.getQuery().getSQLFilter(true));
     }
     
     /**
@@ -616,7 +635,7 @@ public final class AEnv
      * @return true if client browser is firefox 2+
      * @deprecated
      */
-    @Deprecated
+    @Deprecated (since="13", forRemoval=true)
     public static boolean isFirefox2() {
     	Execution execution = Executions.getCurrent();
     	if (execution == null)
@@ -635,7 +654,7 @@ public final class AEnv
      * @return boolean
      * @deprecated See IDEMPIERE-1022
      */
-    @Deprecated
+    @Deprecated (since="13", forRemoval=true)
     public static boolean isBrowserSupported() {
     	Execution execution = Executions.getCurrent();
     	if (execution == null)
@@ -669,7 +688,7 @@ public final class AEnv
      * @return true if user agent is internet explorer
      * @deprecated
      */
-    @Deprecated
+    @Deprecated (since="13", forRemoval=true)
     public static boolean isInternetExplorer()
     {
     	Execution execution = Executions.getCurrent();
@@ -863,15 +882,6 @@ public final class AEnv
 	}
 	
 	/**
-	 * @deprecated replace by ClientInfo.isMobile()
-	 * @return true if running on a tablet
-	 */
-	@Deprecated(forRemoval = true, since = "11")
-	public static boolean isTablet() {
-		return ClientInfo.isMobile();
-	}
-	
-	/**
 	 * Get AD_Window_ID from windowNo.
 	 * @param windowNo
 	 * @return AD_Window_ID or {@link Env#adWindowDummyID} (if it is ProcessDialog of InfoWindow)
@@ -1010,5 +1020,21 @@ public final class AEnv
 		StringBuilder url = new StringBuilder(viewer);
 		url.append(pdfUrl);
 		return url.toString();
+	}
+
+	/**
+	 * @param untrustedHTML
+	 * @return sanitized html content
+	 */
+	public static String sanitize(String untrustedHTML) {
+		final PolicyFactory policy = Sanitizers.BLOCKS
+				.and(Sanitizers.FORMATTING)
+				.and(Sanitizers.IMAGES)
+				.and(Sanitizers.LINKS)
+				.and(Sanitizers.STYLES)
+				.and(Sanitizers.TABLES);
+
+		String ret = policy.sanitize(untrustedHTML);
+		return ret;
 	}
 }	//	AEnv

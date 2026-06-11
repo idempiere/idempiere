@@ -1263,7 +1263,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			new WReport (AD_Table_ID, data.getQuery(), component, m_WindowNo);
 		}
 		else
-			log.warning("No Table found for " + data.getQuery().getWhereClause(true));
+			log.warning("No Table found for " + data.getQuery().getSQLFilter(true));
 	}	//	executeDrill
 
 	/**
@@ -1590,6 +1590,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		if (getAttribute("IsSOTrx") != null) {
 			Env.setContext(Env.getCtx(), m_WindowNo, "IsSOTrx", getAttribute("IsSOTrx").toString());
 		}
+		if (m_reportEngine.getProcessInfo() != null)
+			Env.setContext(Env.getCtx(), m_WindowNo, MPInstance.COLUMNNAME_AD_PInstance_ID, m_reportEngine.getProcessInfo().getAD_PInstance_ID());
 		ProcessModalDialog processModalDialog = new ProcessModalDialog(this, m_WindowNo, pi);
 		ZKUpdateUtil.setWindowWidthX(processModalDialog, 850);
 		this.getParent().appendChild(processModalDialog);
@@ -1734,7 +1736,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			if (find == null) 
 			{
 
-				find = Extensions.getFindWindow(m_WindowNo, 0, title, AD_Table_ID, tableName,m_reportEngine.getWhereExtended(), findFields, 1, AD_Tab_ID, null);
+				find = Extensions.getFindWindow(m_WindowNo, 0, title, AD_Table_ID, tableName,m_reportEngine.getExtendedFilter(), findFields, 1, AD_Tab_ID, null);
 	            
 				if (!find.initialize()) 
 	            {
@@ -1944,7 +1946,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 						MProcess jasperProcess = new MProcess(Env.getCtx(), format.getJasperProcess_ID(), null);
 						jasperProcessInfo.setAD_Process_UU(jasperProcess.getAD_Process_UU());
 						if (!Util.isEmpty(jasperProcess.getClassname(), true)) {
-							if (!ProcessUtil.JASPER_STARTER_CLASS.equals(jasperProcess.getClassname())) {
+							if (   !ProcessUtil.JASPER_STARTER_CLASS.equals(jasperProcess.getClassname())
+								&& !ProcessUtil.JASPER_STARTER_CLASS_DEPRECATED.equals(jasperProcess.getClassname())) {
 								jasperProcessInfo.setClassName (jasperProcess.getClassname());
 								MPInstance jasperInstance = new MPInstance(Env.getCtx(), jasperProcessInfo.getAD_Process_ID(),
 										jasperProcessInfo.getTable_ID(), jasperProcessInfo.getRecord_ID(),

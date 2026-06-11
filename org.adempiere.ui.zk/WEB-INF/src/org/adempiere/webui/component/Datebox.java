@@ -39,6 +39,7 @@ public class Datebox extends org.zkoss.zul.Datebox
 	 */
 	public Datebox() {
 		super();
+		setStrictDate(true);
 		setFormat(DisplayType.getDateFormat(AEnv.getLanguage(Env.getCtx())).toPattern());
 	}
 

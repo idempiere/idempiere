@@ -52,7 +52,6 @@ import org.idempiere.expression.logic.LogicEvaluator;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
 
-@SuppressWarnings("deprecation")
 /**
  * Unit test for logical expression using context variables 
  * @author hengsin
@@ -64,6 +63,7 @@ public class LogicExpressionTest  extends AbstractTestCase {
 	public LogicExpressionTest() {
 	}
 
+	@SuppressWarnings("removal")
 	@Test
 	public void testEqual() {
 		
@@ -110,6 +110,7 @@ public class LogicExpressionTest  extends AbstractTestCase {
 	/**
 	 * Test and (&)
 	 */
+	@SuppressWarnings("removal")
 	@Test
 	public void testAnd() {
 		String expr = "@$Element_BP@=Y & @AnyBPartner@=N";
@@ -156,6 +157,7 @@ public class LogicExpressionTest  extends AbstractTestCase {
 		testInName123(expr);
 	}
 
+	@SuppressWarnings("removal")
 	private void testInName123(String expr) {
 		Env.setContext(Env.getCtx(), "Name", (String)null);
 		assertFalse(LegacyLogicEvaluator.evaluateLogic(evaluatee, expr));
@@ -172,6 +174,7 @@ public class LogicExpressionTest  extends AbstractTestCase {
 		assertFalse(LogicEvaluator.evaluateLogic(evaluatee, expr));
 	}
 
+	@SuppressWarnings("removal")
 	private void testInARS(String expr) {
 		Env.setContext(Env.getCtx(), "LineType", (String)null);
 		Env.setContext(Env.getCtx(), "CalculationType", (String)null);
@@ -207,6 +210,7 @@ public class LogicExpressionTest  extends AbstractTestCase {
 	/**
 	 * Test not equal (!)
 	 */
+	@SuppressWarnings("removal")
 	@Test
 	public void testNotEqual() {
 		String expr = "@C_Bpartner_ID@!0";
@@ -249,6 +253,7 @@ public class LogicExpressionTest  extends AbstractTestCase {
 	/**
 	 * Test the combine use of or (|) plus and (&) operator
 	 */
+	@SuppressWarnings("removal")
 	@Test
 	public void testOrAnd() {
 		String expr = "@IsSold@='Y' | @IsPurchased@='Y' & @IsSummary@='N'";
@@ -286,6 +291,7 @@ public class LogicExpressionTest  extends AbstractTestCase {
 	/**
 	 * Test the combine use of and (&) plus or (|) operator
 	 */
+	@SuppressWarnings("removal")
 	@Test
 	public void testAndOr() {
 		String expr = "@IsSummary@='N' & @ProductType@=I | @ProductType@=S";
@@ -361,6 +367,7 @@ public class LogicExpressionTest  extends AbstractTestCase {
 	/**
 	 * Test greater than (>)
 	 */
+	@SuppressWarnings("removal")
 	@Test
 	public void testGT() {
 		String expr = "@IsLot@=Y& @M_LotCtl_ID@ > 0";
@@ -411,6 +418,7 @@ public class LogicExpressionTest  extends AbstractTestCase {
 	/**
 	 * Test less than (<)
 	 */
+	@SuppressWarnings("removal")
 	@Test
 	public void testLT() {
 		String expr = "@A_Asset_ID@<1&@A_CreateAsset@='Y'";
@@ -535,6 +543,7 @@ public class LogicExpressionTest  extends AbstractTestCase {
 	/**
 	 * Test default operator (:)
 	 */
+	@SuppressWarnings("removal")
 	@Test
 	public void testConditionalVariable() {
 		String expr = "@IsSOTrx:N@=N | @+IgnoreIsSOTrxInBPInfo:N@=Y";
@@ -602,6 +611,7 @@ public class LogicExpressionTest  extends AbstractTestCase {
 	/**
 	 * Test comparison of date and timestamp values
 	 */
+	@SuppressWarnings("removal")
 	@Test
 	public void testDateExpression() {
 		String expr = "@DateAcct@<@DateOrdered@";
@@ -631,6 +641,7 @@ public class LogicExpressionTest  extends AbstractTestCase {
 	/**
 	 * Test comparison of numeric values
 	 */
+	@SuppressWarnings("removal")
 	@Test
 	public void testNumericExpression() {
 		String expr = "@QtyReserved@=0";
@@ -660,6 +671,7 @@ public class LogicExpressionTest  extends AbstractTestCase {
 	/**
 	 * Test the use of empty string literal ('')
 	 */
+	@SuppressWarnings("removal")
 	@Test
 	public void testEmptyStringExpression() {
 		String expr = "@ColumnSQL@=''";
@@ -685,6 +697,7 @@ public class LogicExpressionTest  extends AbstractTestCase {
 	/**
 	 * Test the use of $env to access environment variables
 	 */
+	@SuppressWarnings("removal")
 	@Test
 	public void testOSEnvVariable() {
 		String username = System.getenv("USER");
@@ -697,6 +710,7 @@ public class LogicExpressionTest  extends AbstractTestCase {
 	/**
 	 * Test nested property operator (.)
 	 */
+	@SuppressWarnings("removal")
 	@Test
 	public void testNestedProperty() {
 		String expr = "@Processed@=Y & @M_Product_ID.IsBOM@=Y";

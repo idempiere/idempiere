@@ -20,6 +20,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Properties;
 
+import org.adempiere.base.GeneratedCodeCoverageExclusion;
 import org.apache.ecs.AlignType;
 import org.apache.ecs.Element;
 import org.apache.ecs.xhtml.a;
@@ -76,7 +77,7 @@ public class WebDoc
 	 *  @return Document
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static WebDoc createPopup (String title)
 	{
 		WebDoc doc = create (title);
@@ -100,7 +101,7 @@ public class WebDoc
 	 *  @return Document
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static WebDoc createWindow (String title)
 	{
 		WebDoc doc = create (title);
@@ -305,7 +306,9 @@ public class WebDoc
 	 *	@return null or array with left/right td
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
+	@SuppressWarnings("removal")
+	@GeneratedCodeCoverageExclusion
 	public td[] addPopupClose(Properties ctx)
 	{
 		input button = WebUtil.createClosePopupButton(ctx); 
@@ -329,7 +332,7 @@ public class WebDoc
 	 *	@return empty single center td
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public td addWindowCenter(boolean nowrap)
 	{
 		if (m_table == null)
@@ -347,7 +350,7 @@ public class WebDoc
 	 *	@return null or array with empty left/right td
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public td[] addWindowFooters()
 	{
 		if (m_table == null)
@@ -366,7 +369,7 @@ public class WebDoc
 	 *	@return empty single center td
 	 *  @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public td addWindowFooter()
 	{
 		if (m_table == null)

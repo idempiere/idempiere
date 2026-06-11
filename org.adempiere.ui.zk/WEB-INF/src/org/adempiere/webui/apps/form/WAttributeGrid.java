@@ -55,7 +55,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Vbox;
+import org.adempiere.webui.component.FlexVlayout;
 
 
 /**
@@ -172,7 +172,7 @@ public class WAttributeGrid extends ADForm implements EventListener<Event>
 		div.appendChild(modeCombo);
 		modeCombo.addEventListener(Events.ON_CHANGE, this);
 		
-		Vbox vbAttributeGrid = new Vbox();
+		FlexVlayout vbAttributeGrid = new FlexVlayout();
 		vbAttributeGrid.appendChild(div);
 		vbAttributeGrid.appendChild(gridView);
 
@@ -454,7 +454,7 @@ public class WAttributeGrid extends ADForm implements EventListener<Event>
 				
 				if (rowIndex == 0 && colIndex == 0)
 				{
-					Vbox descr = new Vbox();
+					FlexVlayout descr = new FlexVlayout();
 					ZKUpdateUtil.setWidth(descr, "100%");
 					if (xValues != null)
 					{
@@ -580,7 +580,7 @@ public class WAttributeGrid extends ADForm implements EventListener<Event>
 	private void addProduct(Panel element, MProduct product)
 	{
 		int M_Product_ID = product.getM_Product_ID();
-		Vbox pe = new Vbox();
+		FlexVlayout pe = new FlexVlayout();
 		pe.setStyle("border-width: thin; border-color: blue;");
 		
 		//	Product Value - Price

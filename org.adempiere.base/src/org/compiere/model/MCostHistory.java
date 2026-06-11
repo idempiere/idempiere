@@ -35,13 +35,14 @@ import java.util.Properties;
 
 import org.adempiere.exceptions.DBException;
 import org.compiere.util.DB;
+import org.compiere.util.TimeUtil;
 
 /**
  * Cost History Model
  */
 public class MCostHistory extends X_M_CostHistory implements ICostInfo {
-	
-	private static final long serialVersionUID = -5916746920051232413L;
+
+	private static final long serialVersionUID = 2888046182215046615L;
 
 	/**
      * UUID based Constructor
@@ -95,6 +96,7 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
 	
 	/**
 	 * Get Cost History Record by Cost Detail
+	 * Retrieves the cost history record based on the account date and back-date days configuration
 	 * @param ctx context
 	 * @param AD_Org_ID org
 	 * @param M_CostType_ID cost type
@@ -113,6 +115,13 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
 	{
 		if (cd == null)
 			return null;
+		
+		MAcctSchema as = new MAcctSchema(ctx, C_AcctSchema_ID, trxName);
+		if (as.getBackDateDay() == 0) {
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			if (cd.getDateAcct().before(today))
+				return null;
+		}
 		
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT c.* ");
@@ -176,6 +185,7 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
 	
 	/**
 	 * Get Cost History Record by Account Date
+	 * Retrieves the cost history record based on the account date and back-date days configuration
 	 * If no cost history record <= account date, simulate using the first cost history record after account date
 	 * @param ctx context
 	 * @param AD_Client_ID client
@@ -196,6 +206,10 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
 			String trxName)
 	{
 		if (dateAcct == null)
+			return null;
+		
+		MAcctSchema as = new MAcctSchema(ctx, C_AcctSchema_ID, trxName);
+		if (as.getBackDateDay() == 0)
 			return null;
 		
 		StringBuilder sql = new StringBuilder();
@@ -233,7 +247,7 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
 			sql.append(" AND c.M_CostElement_ID=? ");
 		sql.append("ORDER BY c.DateAcct ASC, ");
 		sql.append("CASE WHEN COALESCE(refcd.DateAcct,cd.DateAcct) = cd.DateAcct THEN COALESCE(cd.Ref_CostDetail_ID, c.M_CostDetail_ID) ELSE c.M_CostDetail_ID END ASC, ");
-		sql.append("c.M_CostHistory_ID DESC ");
+		sql.append("c.M_CostHistory_ID ASC");
 		sql = new StringBuilder(DB.getDatabase().addPagingSQL(sql.toString(), 1, 1));
 		
 		sql.append(")");
@@ -314,5 +328,24 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
 	public BigDecimal getCurrentQty() {
 		return getNewQty();
 	}
+	
+	/**
+	 * 	String Representation
+	 *	@return info
+	 */
+	@Override
+	public String toString ()
+	{
+		StringBuilder sb = new StringBuilder ("MCostHistory[");
+		sb.append (get_ID());
+		if (getM_CostDetail_ID() != 0)
+			sb.append (",M_CostDetail_ID=").append (getM_CostDetail_ID());
+		sb.append(",NewCostPrice=").append(getNewCostPrice())
+			.append(",NewQty=").append(getNewQty());
+		sb.append(",OldCostPrice=").append(getOldCostPrice())
+			.append(",OldQty=").append(getOldQty());
+		sb.append ("]");
+		return sb.toString ();
+	}	//	toString
 
 }

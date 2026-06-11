@@ -52,7 +52,6 @@ import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.WEMailDialog;
-import org.adempiere.webui.window.WTextEditorDialog;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MAttachmentEntry;
 import org.compiere.model.MSysConfig;
@@ -78,7 +77,7 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Filedownload;
-import org.zkoss.zul.Hbox;
+import org.adempiere.webui.component.FlexHlayout;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.North;
@@ -174,7 +173,7 @@ public class WAttachment extends Window implements EventListener<Event>
 	 *  @param Record_ID record key
 	 *  @param trxName transaction
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public WAttachment(	int WindowNo, int AD_Attachment_ID,
 						int AD_Table_ID, int Record_ID, String trxName)
 	{
@@ -191,7 +190,7 @@ public class WAttachment extends Window implements EventListener<Event>
 	 *  @param trxName transaction
 	 *  @param eventListener
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public WAttachment(	int WindowNo, int AD_Attachment_ID,
 			int AD_Table_ID, int Record_ID, String trxName, EventListener<Event> eventListener)
 	{
@@ -412,8 +411,8 @@ public class WAttachment extends Window implements EventListener<Event>
 		confirmPanel.appendChild(bDeleteAll);
 		confirmPanel.appendChild(bPreview);
 		ZKUpdateUtil.setHflex(confirmPanel, "1");
-		Hbox hbox = new Hbox();
-		hbox.setPack("end");
+		FlexHlayout hbox = new FlexHlayout();
+		hbox.setPack(FlexHlayout.PackType.END);
 		ZKUpdateUtil.setHflex(hbox, "1");
 		confirmPanel.appendChild(hbox);
 		hbox.appendChild(bOk);
@@ -527,7 +526,7 @@ public class WAttachment extends Window implements EventListener<Event>
 					displayData(index, immediate);
 				} else {
 					clearPreview();
-					String msg = WTextEditorDialog.sanitize(Msg.getMsg(Env.getCtx(), "FileTooBigForPreview"));
+					String msg = AEnv.sanitize(Msg.getMsg(Env.getCtx(), "FileTooBigForPreview"));
 					Media media = new AMedia(null, null, "text/html", msg.getBytes());
 					preview.setContent(media);
 					preview.setVisible(true);
@@ -550,7 +549,7 @@ public class WAttachment extends Window implements EventListener<Event>
 							log.warning("Error previewing file in attachment entry " + entry.getName() + " -> " + e.getLocalizedMessage());
 							e.printStackTrace();
 							clearPreview();
-							String msg = WTextEditorDialog.sanitize(Msg.getMsg(Env.getCtx(), "ErrorPreviewingFile"));
+							String msg = AEnv.sanitize(Msg.getMsg(Env.getCtx(), "ErrorPreviewingFile"));
 							Media mediaErr = new AMedia(null, null, "text/html", msg.getBytes());
 							preview.setContent(mediaErr);
 							preview.setVisible(true);
@@ -707,7 +706,7 @@ public class WAttachment extends Window implements EventListener<Event>
 						saveAttachment();
 					}
 				} else {
-					m_attachment.delete(true);
+					m_attachment.deleteEx(true);
 					m_attachment = null;
 				}
 
@@ -743,8 +742,9 @@ public class WAttachment extends Window implements EventListener<Event>
 	 * Save the attachment to database
 	 */
 	private void saveAttachment() {
-		m_attachment.setBinaryData(new byte[0]); // ATTENTION! HEAVY HACK HERE... Else it will not save :(
-		m_attachment.setTextMsg(text.getText());
+		if (m_attachment.getTitle() == null || !m_attachment.getTitle().equals(MAttachment.TITLE_ListInAttachmentFile))
+			m_attachment.setBinaryData(new byte[0]); // ATTENTION! HEAVY HACK HERE... Else it will not save :(
+		m_attachment.setTextMsg(Util.isEmpty(text.getText()) ? null : text.getText());
 		m_attachment.saveEx();
 		m_change = false;
 	}
@@ -894,7 +894,7 @@ public class WAttachment extends Window implements EventListener<Event>
 				if (result)
 				{
 					if (m_attachment != null) {
-						m_attachment.delete(true);
+						m_attachment.deleteEx(true);
 						m_attachment = null;
 					}
 					dispose();

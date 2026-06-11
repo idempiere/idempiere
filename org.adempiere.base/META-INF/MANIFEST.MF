@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: iDempiere Core
 Bundle-SymbolicName: org.adempiere.base;singleton:=true
-Bundle-Version: 13.0.0.qualifier
+Bundle-Version: 14.0.0.qualifier
 Bundle-ClassPath: .,
  lib/bsh.jar,
  lib/commons-validator.jar,
@@ -23,7 +23,6 @@ Export-Package: bsh,
  bsh.reflect,
  bsh.servlet,
  bsh.util,
- com.akunagroup.uk.postcode,
  it.sauronsoftware.cron4j,
  org.adempiere.apps.graph,
  org.adempiere.base,
@@ -37,6 +36,7 @@ Export-Package: bsh,
  org.adempiere.base.event.annotations.po,
  org.adempiere.base.event.annotations.process,
  org.adempiere.base.markdown,
+ org.adempiere.base.search,
  org.adempiere.base.sso,
  org.adempiere.base.upload,
  org.adempiere.exceptions,
@@ -64,15 +64,20 @@ Export-Package: bsh,
  org.compiere.util,
  org.compiere.wf,
  org.eevolution.model,
+ org.idempiere.acct,
  org.idempiere.broadcast,
  org.idempiere.cache,
+ org.idempiere.db.util,
  org.idempiere.distributed,
+ org.idempiere.exceptions,
  org.idempiere.expression.logic,
  org.idempiere.fa.service.api,
  org.idempiere.model,
  org.idempiere.print,
  org.idempiere.print.renderer,
- org.idempiere.process
+ org.idempiere.process,
+ org.idempiere.tracking,
+ org.idempiere.util
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=17))"
 Import-Package: com.github.benmanes.caffeine;version="3.1.8",
@@ -154,6 +159,7 @@ Import-Package: com.github.benmanes.caffeine;version="3.1.8",
  org.osgi.service.component.annotations;version="1.5.1",
  org.osgi.service.component.runtime;version="1.5.0",
  org.osgi.service.component.runtime.dto;version="1.5.0",
+ org.osgi.service.condition;version="[1.0.0,2.0.0)",
  org.osgi.service.event;version="1.4.1",
  org.osgi.util.promise;version="1.3.0",
  org.osgi.util.tracker;version="1.5.0"

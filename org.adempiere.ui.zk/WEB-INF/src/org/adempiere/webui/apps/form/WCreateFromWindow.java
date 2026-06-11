@@ -294,15 +294,6 @@ public class WCreateFromWindow extends Window implements EventListener<Event>, W
 	}
 
 	/**
-	 * @param statusBar
-	 */
-	@Deprecated(forRemoval = true, since = "11")
-	public void setStatusBar(StatusBarPanel statusBar)
-	{
-		this.statusBar = statusBar;
-	}
-	
-	/**
 	 * @return {@link WListbox}
 	 */
 	public WListbox getWListbox()

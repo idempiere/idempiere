@@ -19,6 +19,7 @@ import java.util.List;
 import org.compiere.model.MLookup;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.SvrProcess;
+import org.idempiere.db.util.SQLFragment;
 
 /**
  * Interface to provide server process access to UI.<br/>
@@ -150,6 +151,23 @@ public interface IProcessUI {
 	default public void showInfoWindow(int WindowNo, String tableName, String keyColumn, String queryValue,
 			boolean multipleSelection, String whereClause, Integer AD_InfoWindow_ID, boolean lookup)
 	{
-		throw new RuntimeException();
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * show an info window from inside a process with user defined parameters  
+	 * @param WindowNo
+	 * @param tableName
+	 * @param keyColumn
+	 * @param queryValue
+	 * @param multipleSelection
+	 * @param AD_InfoWindow_ID
+	 * @param lookup
+	 * @param sqlFilter
+	 */
+	default void showInfoWindow(int WindowNo, String tableName, String keyColumn, String queryValue, boolean multipleSelection,
+			Integer AD_InfoWindow_ID, boolean lookup, SQLFragment sqlFilter) 
+	{
+		throw new UnsupportedOperationException();
 	}
 }

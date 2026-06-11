@@ -1,0 +1,213 @@
+-- IDEMPIERE-6789 Supporting Scale factor on Barcode type print element
+SELECT register_migration_script('202512121212_IDEMPIERE-6789.sql') FROM dual;
+
+SET SQLBLANKLINES ON
+SET DEFINE OFF
+
+-- Dec 12, 2025, 5:02:47 PM IST
+INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,Description,Help,PrintName,EntityType,AD_Element_UU) VALUES (204023,0,0,'Y',TO_TIMESTAMP('2025-12-12 17:00:19','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-12-12 17:00:19','YYYY-MM-DD HH24:MI:SS'),100,'ScaleFactor','Scale Factor','Scale Factor','Proportional scaling factor for barcode dimensions based on max width/height constraints','Scale Factor','D','019b1255-bd0d-7c55-a28b-51a66af80bf0')
+;
+
+-- Dec 12, 2025, 5:05:11 PM IST
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,DefaultValue,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,IsHtml,IsPartitionKey) VALUES (217173,0,'Scale Factor','Scale Factor','Proportional scaling factor for barcode dimensions based on max width/height constraints',489,'ScaleFactor','1.0',10,'N','N','N','N','N',0,'N',22,0,0,'Y',TO_TIMESTAMP('2025-12-12 17:05:10','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-12-12 17:05:10','YYYY-MM-DD HH24:MI:SS'),100,204023,'Y','N','D','N','N','N','Y','019b1257-ef14-7b8e-92f6-593685c94f8e','Y',0,'N','N','N','N')
+;
+
+-- Dec 12, 2025, 5:43:59 PM IST
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLogic,DisplayLength,SeqNo,SortNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,XPosition,ColumnSpan,NumLines,IsQuickEntry,IsDefaultFocus,IsAdvancedField,IsQuickForm) VALUES (208980,'Scale Factor','Scale Factor','Proportional scaling factor for barcode dimensions based on max width/height constraints',426,217173,'Y','@PrintFormatType@=F & @BarcodeType@=QRC',0,240,0,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2025-12-12 17:43:58','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-12-12 17:43:58','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','c65366f6-bf56-4390-8588-ebd1eeae26a7','Y',590,4,2,1,'N','N','N','N')
+;
+
+-- Dec 12, 2025, 5:52:02 PM IST
+UPDATE AD_Column SET MandatoryLogic='@PrintFormatType@=F & @BarcodeType@=QRC',ValueMin='1',Updated=TO_TIMESTAMP('2025-12-12 17:52:02','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217173
+;
+
+-- Dec 12, 2025, 6:12:53 PM IST
+ALTER TABLE AD_PrintFormatItem ADD ScaleFactor NUMBER DEFAULT 1.0
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=160,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=205192
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=170,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5671
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=180,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=11200
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=190,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5756
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=200,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5755
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=210,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5697
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=220,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=13016
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=230,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=204351
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=240, ColumnSpan=2,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=208980
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=250,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5677
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=260,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5761
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=270,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5690
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=280,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5681
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=290,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5669
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=300,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5804
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=310,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5763
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=320,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5695
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=330,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5691
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=340,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5685
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=350,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5673
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=360,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5678
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=370,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5805
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=380,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=11023
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=390,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5689
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=400,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5688
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=410,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=11021
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=420,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5682
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=430,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5686
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=440,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206903
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=450,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=204366
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=460,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=11020
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=470,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5693
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=480,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5674
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=490,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=200001
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=500,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5694
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=510,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5676
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=520,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5680
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=530,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=8294
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=540,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5757
+;
+
+-- Dec 12, 2025, 6:28:58 PM IST
+UPDATE AD_Field SET SeqNo=550,Updated=TO_TIMESTAMP('2025-12-12 18:28:58','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=8293
+;
+
+-- Dec 12, 2025, 6:28:59 PM IST
+UPDATE AD_Field SET SeqNo=560,Updated=TO_TIMESTAMP('2025-12-12 18:28:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=8295
+;
+
+-- Dec 12, 2025, 6:28:59 PM IST
+UPDATE AD_Field SET SeqNo=570,Updated=TO_TIMESTAMP('2025-12-12 18:28:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=8292
+;
+
+-- Dec 12, 2025, 6:28:59 PM IST
+UPDATE AD_Field SET SeqNo=580,Updated=TO_TIMESTAMP('2025-12-12 18:28:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=5758
+;
+
+-- Dec 12, 2025, 6:28:59 PM IST
+UPDATE AD_Field SET SeqNo=590,Updated=TO_TIMESTAMP('2025-12-12 18:28:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=8604
+;
+
+-- Dec 12, 2025, 6:28:59 PM IST
+UPDATE AD_Field SET SeqNo=600,Updated=TO_TIMESTAMP('2025-12-12 18:28:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=8605
+;
+
+-- Dec 12, 2025, 6:28:59 PM IST
+UPDATE AD_Field SET SeqNo=610,Updated=TO_TIMESTAMP('2025-12-12 18:28:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206598
+;
+
+-- Dec 12, 2025, 6:28:59 PM IST
+UPDATE AD_Field SET SeqNo=0,Updated=TO_TIMESTAMP('2025-12-12 18:28:59','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=204562
+;

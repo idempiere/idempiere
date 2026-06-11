@@ -16,10 +16,18 @@
  *****************************************************************************/
 package org.compiere.model;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.HexFormat;
 import java.util.Random;
 import java.util.logging.Level;
 
@@ -93,6 +101,7 @@ public class MAttachmentEntry
 		this.m_isDataSet = copy.m_isDataSet;
 		this.m_ds = copy.m_ds;
 		this.m_data = copy.m_data != null ? Arrays.copyOf(copy.m_data, copy.m_data.length) : null;
+        this.m_sha256sum = copy.m_sha256sum;
 		this.m_index = copy.m_index;
 		this.m_name = copy.m_name;
         this.m_file = copy.m_file;
@@ -103,9 +112,12 @@ public class MAttachmentEntry
 
 	/** If m_data has been set */
 	private boolean m_isDataSet = false;
-	/** The Data, do not use m_data directly, it can be not loaded yet, always use the method getData to access this variable */
+	/** The Data, do not use m_data directly, it can be not loaded yet, always use the method getData to access this variable,
+	 *  also, do not assign it directly, use the method setData that calculates the sha256 checksum */
 	private byte[] 	m_data = null;
-	
+	/* sha256 checksum of the data */
+	private String m_sha256sum = null;
+
 	/** Random Seed			*/
 	private static long		s_seed = System.currentTimeMillis(); 
 	/** Random Number		*/
@@ -134,7 +146,7 @@ public class MAttachmentEntry
 		} else {
             if (m_data == null && m_file != null) {
                 try {
-                    m_data = Files.readAllBytes(m_file.toPath());
+                    setData(Files.readAllBytes(m_file.toPath()));
                 } catch (IOException e) {
                     log.log(Level.WARNING, e.getMessage(), e);
                 }
@@ -151,6 +163,23 @@ public class MAttachmentEntry
 		m_data = data;
         m_file = null;
 		m_isDataSet = true;
+		setSHA256Sum(m_data != null ? calculateSHA256Sum(m_data) : null);
+	}
+
+	/**
+	 * Get the SHA256 checksum of the data
+	 * @return sha256sum
+	 */
+	public String getSHA256Sum() {
+		return m_sha256sum;
+	}
+
+	/**
+	 * Set the SHA256 checksum of the data
+	 * @param m_sha256sum
+	 */
+	public void setSHA256Sum(String m_sha256sum) {
+		this.m_sha256sum = m_sha256sum;
 	}
 
     /**
@@ -160,6 +189,11 @@ public class MAttachmentEntry
     public void setFile(File file) {
         m_file = file;
         m_data = null;
+        try {
+        	setData(Files.readAllBytes(m_file.toPath()));
+        } catch (IOException e) {
+        	log.log(Level.WARNING, e.getMessage(), e);
+        }
         m_isDataSet = true;
     }
 
@@ -467,4 +501,23 @@ public class MAttachmentEntry
             m_ds.cleanUp();
         }
     }
-}	//	MAttachmentItem
+
+	/**
+	 * Calculate SHA256 checksum
+	 * @param data
+	 * @param algorithm
+	 * @return
+	 */
+	private String calculateSHA256Sum(byte[] data) {
+		if (data == null)
+			return null;
+		MessageDigest digest;
+		try {
+			digest = MessageDigest.getInstance("SHA-256");
+		} catch (NoSuchAlgorithmException e) {
+			throw new AdempiereException("Error calculating checksum", e);
+		}
+		return HexFormat.of().formatHex(digest.digest(data));
+	}
+
+}	//	MAttachmentEntry

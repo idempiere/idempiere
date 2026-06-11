@@ -22,7 +22,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.IStorageValidator;
 import org.adempiere.util.IReservationTracer;
+import org.adempiere.base.StorageValidatorProvider;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -240,7 +242,7 @@ public class MStorageReservation extends X_M_StorageReservation {
 	 * @return true if ok
 	 * @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static boolean add (Properties ctx, int M_Warehouse_ID, 
 			int M_Product_ID, int M_AttributeSetInstance_ID,
 			BigDecimal diffQty, boolean isSOTrx, String trxName)
@@ -301,7 +303,7 @@ public class MStorageReservation extends X_M_StorageReservation {
 	 * @param addition
 	 * @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public void addQty(BigDecimal addition) {
 		addQty(addition, null);
 	}
@@ -317,6 +319,12 @@ public class MStorageReservation extends X_M_StorageReservation {
 			new Object[] {addition, Env.getAD_User_ID(Env.getCtx()), getM_Product_ID(), getM_Warehouse_ID(), getM_AttributeSetInstance_ID(), isSOTrx()}, 
 			get_TrxName());
 		load(get_TrxName());
+		
+		IStorageValidator[] validators = StorageValidatorProvider.getStorageValidators();
+		for (IStorageValidator validator : validators) {
+			validator.validate(this, addition, tracer, get_TrxName());
+		}
+		
 		if (tracer != null) {
 			BigDecimal oldQty = getQty().subtract(addition);
 			tracer.trace(oldQty, addition);
@@ -336,7 +344,7 @@ public class MStorageReservation extends X_M_StorageReservation {
 	 *	@param trxName transaction
 	 *	@return true if updated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static boolean add (Properties ctx, int M_Warehouse_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID, int reservationAttributeSetInstance_ID,
 		BigDecimal diffQty, boolean isSOTrx, String trxName)

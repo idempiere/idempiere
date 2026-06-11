@@ -35,13 +35,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import org.compiere.apps.form.FactReconcile;
 import org.compiere.minigrid.MiniTableImpl;
 import org.compiere.model.MBankStatement;
 import org.compiere.model.MBankStatementLine;
 import org.compiere.model.MClientInfo;
 import org.compiere.model.MFactAcct;
-import org.compiere.model.MFactReconciliation;
 import org.compiere.model.MPayment;
 import org.compiere.model.Query;
 import org.compiere.process.DocAction;
@@ -51,6 +49,8 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Util;
 import org.compiere.wf.MWorkflow;
+import org.idempiere.acct.base.model.I_Fact_Reconciliation;
+import org.idempiere.acct.form.FactReconcile;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
@@ -141,7 +141,7 @@ public class FactReconcileFormTest extends AbstractTestCase {
 		assertEquals(2, fri.getSelectedCount(), "Failed to locate not reconciled payment and bank statement fact records in mini table");		
 		List<Integer> generated = new ArrayList<>();
 		fri.generate(fri.miniTable, generated);
-		assertEquals(2, generated.size(), "Failed to generate " + MFactReconciliation.Table_Name + " records");
+		assertEquals(2, generated.size(), "Failed to generate " + I_Fact_Reconciliation.Table_Name + " records");
 		
 		//reload not reconciled fact records after generate
 		fri.setParameters(payment.getC_BPartner_ID(), payment.getDateAcct(), checkingInTransfer, false);
@@ -170,7 +170,7 @@ public class FactReconcileFormTest extends AbstractTestCase {
 		//select and reset
 		List<Integer> reseted = new ArrayList<>();
 		fri.reset(fri.miniTable, reseted);
-		assertEquals(2, reseted.size(), "Failed to reset " + MFactReconciliation.Table_Name + " records");
+		assertEquals(2, reseted.size(), "Failed to reset " + I_Fact_Reconciliation.Table_Name + " records");
 		
 		//reload not reconciled fact records after reset
 		fri.setParameters(payment.getC_BPartner_ID(), payment.getDateAcct(), checkingInTransfer, false);

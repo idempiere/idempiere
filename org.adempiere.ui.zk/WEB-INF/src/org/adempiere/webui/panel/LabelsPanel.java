@@ -67,7 +67,7 @@ public class LabelsPanel extends Div implements EventListener<Event> {
 	 * @param Record_ID
  	 * @deprecated Use {@link LabelsPanel#LabelsPanel(AbstractADWindowContent, int, int, String)} instead
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public LabelsPanel(AbstractADWindowContent abstractADWindowContent, int AD_Table_ID, int Record_ID) {
 		this(abstractADWindowContent, AD_Table_ID, Record_ID, null);
 		if (Record_ID > 0) {

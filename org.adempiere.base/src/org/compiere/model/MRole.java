@@ -41,13 +41,13 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
-import org.compiere.util.Ini;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Trace;
 import org.compiere.util.Util;
 import org.compiere.wf.MWorkflow;
 import org.compiere.wf.MWorkflowAccess;
+import org.idempiere.acct.AcctModelServices;
 import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.POCopyCache;
 
@@ -425,7 +425,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 *	@return true if query required
 	 *  @deprecated replace by {@link GridTab#isQueryRequire(int)}
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public boolean isQueryRequire (int noRecords)
 	{
 		if (noRecords < 2)
@@ -443,7 +443,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 	 *	@return true if over max query
 	 *  @deprecated replace by {@link GridTab#isQueryMax(int)}
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public boolean isQueryMax (int noRecords)
 	{
 		int max = getMaxQueryRecords();
@@ -481,14 +481,18 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			return success;
 		if (newRecord && success)
 		{
-			// Assign Role to SuperUser
-			MUserRoles su = new MUserRoles(getCtx(), SUPERUSER_USER_ID, getAD_Role_ID(), get_TrxName());
-			su.saveEx();
-			// Assign Role to Created By user
-			if (getCreatedBy() != SUPERUSER_USER_ID && MSysConfig.getBooleanValue(MSysConfig.AUTO_ASSIGN_ROLE_TO_CREATOR_USER, false, getAD_Client_ID()))
+			// Don't assign Role Template
+			if (!isMasterRole())
 			{
-				MUserRoles ur = new MUserRoles(getCtx(), getCreatedBy(), getAD_Role_ID(), get_TrxName());
-				ur.saveEx();
+				// Assign Role to SuperUser
+				MUserRoles su = new MUserRoles(getCtx(), SUPERUSER_USER_ID, getAD_Role_ID(), get_TrxName());
+				su.saveEx();
+				// Assign Role to Created By user
+				if (getCreatedBy() != SUPERUSER_USER_ID && MSysConfig.getBooleanValue(MSysConfig.AUTO_ASSIGN_ROLE_TO_CREATOR_USER, false, getAD_Client_ID()))
+				{
+					MUserRoles ur = new MUserRoles(getCtx(), getCreatedBy(), getAD_Role_ID(), get_TrxName());
+					ur.saveEx();
+				}
 			}
 			updateAccessRecords();
 		}
@@ -834,17 +838,14 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		m_orgAccess = new OrgAccess[list.size()];
 		list.toArray(m_orgAccess); 
 		if (log.isLoggable(Level.FINE)) log.fine("#" + m_orgAccess.length + (reload ? " - reload" : "")); 
-		if (Ini.isClient())
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < m_orgAccess.length; i++)
 		{
-			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < m_orgAccess.length; i++)
-			{
-				if (i > 0)
-					sb.append(",");
-				sb.append(m_orgAccess[i].AD_Org_ID);
-			}
-			Env.setContext(Env.getCtx(), "#User_Org", sb.toString());
+			if (i > 0)
+				sb.append(",");
+			sb.append(m_orgAccess[i].AD_Org_ID);
 		}
+		Env.setContext(Env.getCtx(), Env.USER_ORG, sb.toString());
 	}	//	loadOrgAccess
 
 	/**
@@ -1297,8 +1298,10 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			}
 			else									//	Include
 			{
-				//positive list, can report ONLY on included tables
-				canReport = false;
+				//positive list, 
+				//READ_TABLES_NOT_IN_TABLE_ACCESS_INCLUDE_LIST=N, can report ONLY on included tables
+				//READ_TABLES_NOT_IN_TABLE_ACCESS_INCLUDE_LIST=Y, can report on other tables as well
+				canReport = MSysConfig.getBooleanValue(MSysConfig.READ_TABLES_NOT_IN_TABLE_ACCESS_INCLUDE_LIST, false, Env.getAD_Client_ID(Env.getCtx()));
 				if (m_tableAccess[i].getAD_Table_ID() == AD_Table_ID)
 				{
 					if (log.isLoggable(Level.FINE)) log.fine("Include " + AD_Table_ID);
@@ -1343,8 +1346,10 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			}
 			else									//	Include
 			{
-				//positive list, can export ONLY on included tables
-				canExport = false;
+				//positive list, 
+				//READ_TABLES_NOT_IN_TABLE_ACCESS_INCLUDE_LIST=N, can export ONLY on included tables
+				//READ_TABLES_NOT_IN_TABLE_ACCESS_INCLUDE_LIST=Y, can export on other tables as well
+				canExport = MSysConfig.getBooleanValue(MSysConfig.READ_TABLES_NOT_IN_TABLE_ACCESS_INCLUDE_LIST, false, Env.getAD_Client_ID(Env.getCtx()));
 				if (m_tableAccess[i].getAD_Table_ID() == AD_Table_ID)
 				{
 					if (log.isLoggable(Level.FINE)) log.fine("Include " + AD_Table_ID);
@@ -1393,8 +1398,8 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			//	If you Include Access to a table and select Read Only, 
 			//	you can only read data (otherwise full access).
 			{
-				//positive list, can access ONLY on included tables
-				hasAccess = false;
+				//positive list, no access or read-only access to tables not part of the include table list
+				hasAccess = ro ? MSysConfig.getBooleanValue(MSysConfig.READ_TABLES_NOT_IN_TABLE_ACCESS_INCLUDE_LIST, false, Env.getAD_Client_ID(Env.getCtx())) : false;
 				if (m_tableAccess[i].getAD_Table_ID() == AD_Table_ID)
 				{
 					if (!ro)	//	rw only if not r/o
@@ -3524,6 +3529,13 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			predefinedContextVariables.append(get_Value(COLUMNNAME_PredefinedContextVariables).toString());
 		}
 		return predefinedContextVariables.toString();
+	}
+
+	@Override
+	public boolean isShowAcct() {
+		if (!AcctModelServices.isAccountingAvailable())
+			return false;
+		return super.isShowAcct();
 	}
 
 }	//	MRole

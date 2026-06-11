@@ -105,7 +105,7 @@ public class MMenu extends X_AD_Menu implements ImmutablePOSupport
 	 * @return MMenu[]
 	 * @deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	public static MMenu[] get (Properties ctx, String whereClause)
 	{
 		return get(ctx, whereClause, null);

@@ -41,7 +41,7 @@ public class Tabpanel extends org.zkoss.zul.Tabpanel implements IdSpace, ISuppor
     
     private boolean enabled;
 
-    @Deprecated
+    @Deprecated (since="13", forRemoval=true)
 	private int tabLevel;
 
 	protected ShowMaskWrapper showMaskWrapper = new ShowMaskWrapper(this);
@@ -76,7 +76,7 @@ public class Tabpanel extends org.zkoss.zul.Tabpanel implements IdSpace, ISuppor
 	/**
 	 * @return AD_Tab Tab level
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
     public int getTabLevel() 
     {
     	return tabLevel;    	
@@ -86,7 +86,7 @@ public class Tabpanel extends org.zkoss.zul.Tabpanel implements IdSpace, ISuppor
      * Set AD_Tab tab level 
      * @param l Tab level
      */
-    @Deprecated
+    @Deprecated (since="13", forRemoval=true)
     public void setTabLevel(int l)
     {
     	tabLevel = l;

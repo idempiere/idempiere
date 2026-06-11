@@ -21,14 +21,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MAllocationHdr;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.POResultSet;
 import org.compiere.model.Query;
 import org.compiere.util.AdempiereUserError;
+import org.compiere.util.DB;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 
 /**
  *	Reset (delete) Allocations	
@@ -52,8 +53,10 @@ public class AllocationReset extends SvrProcess
 	/** All Allocations */
 	private boolean		p_AllAllocations = false;
 	/** Transaction				*/
-	private Trx			m_trx = null;
-	
+	protected Trx		m_trx = null;
+
+	private String m_lastError = null;
+
 	/**
 	 *  Prepare - e.g., get Parameters.
 	 */
@@ -113,10 +116,16 @@ public class AllocationReset extends SvrProcess
 		{
 			try {
 				MAllocationHdr hdr = new MAllocationHdr(getCtx(), p_C_AllocationHdr_ID, m_trx.getTrxName());
-				if (delete(hdr))
+				
+				String err = testIfDeleteable(hdr);
+				if (!Util.isEmpty(err))
+					return "@Error@ " + err;
+
+				err = deleteAndGetError(hdr);
+				if (Util.isEmpty(err))
 					count++;
 				else
-					throw new AdempiereException("Cannot delete");
+					return err;
 			} finally {
 				m_trx.close();
 			}
@@ -151,36 +160,77 @@ public class AllocationReset extends SvrProcess
 			.append(" INNER JOIN C_PeriodControl pc ON (p.C_Period_ID=pc.C_Period_ID AND pc.DocBaseType='CMA') ")
 			.append("WHERE C_AllocationHdr.DateAcct BETWEEN p.StartDate AND p.EndDate)");
 
-		try (POResultSet<MAllocationHdr> pors = new Query(getCtx(), MAllocationHdr.Table_Name, where.toString(), get_TrxName())
+		try (POResultSet<MAllocationHdr> pors = new Query(getCtx(), MAllocationHdr.Table_Name, where.toString(), m_trx.getTrxName())
 				.setClient_ID()
 				.setParameters(params)
 				.scroll()) {
 			while (pors.hasNext()) {
 				MAllocationHdr hdr = pors.next();
-				if (delete(hdr))
+
+				String err = testIfDeleteable(hdr);
+				if (!Util.isEmpty(err))
+					return "@Error@ " + err;
+
+				err = deleteAndGetError(hdr);
+				if (!Util.isEmpty(err))
+					return err;
+				else
 					count++;
 			}
+		} finally {
+			m_trx.close();
 		}
 
 		StringBuilder msgreturn = new StringBuilder("@Deleted@ #").append(count);
 		return msgreturn.toString();
 	}	//	doIt
 
-	
-	private boolean delete(MAllocationHdr hdr)
-	{
-	//	m_trx.start();
-		boolean success = false;
-		if (hdr.delete(true, m_trx.getTrxName()))
+	protected String testIfDeleteable(MAllocationHdr hdr) {
+
+		if (DB.getSQLValueEx(m_trx.getTrxName(), "SELECT 1 FROM Fact_Reconciliation WHERE Fact_Acct_ID IN (SELECT Fact_Acct_ID FROM Fact_Acct WHERE AD_Table_ID = ? AND Record_ID = ?)", MAllocationHdr.Table_ID, hdr.getC_AllocationHdr_ID()) == 1)
+			return Msg.getMsg(getCtx(), "AllocationDeletionFailedReconciliation", new Object[] {hdr.getDocumentNo()});
+
+		return "";
+	}
+
+	protected boolean delete(MAllocationHdr hdr) {
+		if (log.isLoggable(Level.FINE)) log.fine(hdr.toString());
+		String documentInfo = hdr.getDocumentInfo();
+		boolean success = hdr.delete(true, m_trx.getTrxName());
+		if (!success)
 		{
-			if (log.isLoggable(Level.FINE)) log.fine(hdr.toString());
-			success = true;
-		}
-		if (success)
-			success = m_trx.commit();
-		else
+			m_lastError = "@DeleteError@" + documentInfo;
 			m_trx.rollback();
-		return success;
+			return false;
+		}
+		else {
+			try {
+				success = m_trx.commit(true);
+
+				if (!success) {
+					m_lastError = "CommitError" + " " + documentInfo;
+					m_trx.rollback();
+					return false;
+			    }
+			}
+			catch (Exception e) {
+				m_lastError = "CommitError" + " " + documentInfo + ": " + e.getMessage();
+				m_trx.rollback();
+			    return false;
+			}
+		}
+		return true;
 	}	//	delete
+
+	protected String deleteAndGetError(MAllocationHdr hdr)
+	{
+		 m_lastError = null;
+
+		    if (!delete(hdr))
+		        return m_lastError;
+
+		   return "";
+		
+	}	//	deleteAndGetError
 
 }	//	AllocationReset

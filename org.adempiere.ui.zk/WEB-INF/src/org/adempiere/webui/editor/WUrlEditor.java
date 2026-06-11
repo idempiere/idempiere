@@ -57,6 +57,28 @@ public class WUrlEditor extends WEditor implements ContextMenuListener
 	public WUrlEditor(GridField gridField, boolean tableEditor, IEditorConfiguration editorConfiguration)
 	{
 		super(new Urlbox(), gridField, tableEditor, editorConfiguration);
+		init();
+	}
+
+    /**
+     *
+     * @param columnName
+     * @param label
+     * @param description
+     * @param mandatory
+     * @param readonly
+     * @param updateable
+     */
+    public WUrlEditor(String columnName, String label, String description, boolean mandatory, boolean readonly, boolean updateable) {
+		super(new Urlbox(), columnName, label, description, mandatory, readonly, updateable);
+		init();
+	}
+	
+    /**
+     * Init component and context menu
+     */
+	private void init()
+    {
 		if (ThemeManager.isUseFontIconForImage())
 			getComponent().getButton().setIconSclass(Icon.getIconSclass(Icon.ONLINE));
 		else

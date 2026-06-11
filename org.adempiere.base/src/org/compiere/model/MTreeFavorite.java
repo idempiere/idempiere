@@ -127,7 +127,11 @@ public class MTreeFavorite extends X_AD_Tree_Favorite
 				if (!isSummary)
 				{
 					menuID = rs.getInt(6);
-					MMenu menu = (MMenu) MTable.get(Env.getCtx(), MMenu.Table_ID).getPO(menuID, null);
+					MMenu menu = (MMenu) MTable.get(Env.getCtx(), MMenu.Table_ID).getPO(menuID, get_TrxName());
+					if(menu.isActive()==false) {
+						continue;
+					}
+					
 					access = getAccessForMenuItem(role, menu);
 
 					if (access != null)

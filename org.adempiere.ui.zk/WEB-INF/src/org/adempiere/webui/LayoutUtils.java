@@ -55,13 +55,6 @@ public final class LayoutUtils {
 	public static final String ON_REDRAW_EVENT = "onRedraw";
 	
 	/**
-	 * @param layout
-	 */
-	@Deprecated(forRemoval = true, since = "11")
-	public static void sendDeferLayoutEvent(org.zkoss.zul.Borderlayout layout, int timeout) {
-	}
-	
-	/**
 	 * append cls to target's sclass property
 	 * @param cls
 	 * @param target

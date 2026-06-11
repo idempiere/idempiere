@@ -488,7 +488,7 @@ public class Util
 	 * @param comp  Component with ActionMap
 	 * @deprecated Swing client have been deprecated
 	 */
-	@Deprecated
+	@Deprecated (since="13", forRemoval=true)
 	@Generated
 	public static void printActionInputMap (JComponent comp)
 	{
@@ -870,6 +870,21 @@ public class Util
 		lsb = (lsb & 0x3FFFFFFFFFFFFFFFL) | 0x8000000000000000L;
 
 		return new UUID(msb, lsb);
+	}
+
+	public static final String CSV_ESCAPE_FORMULA_CHARACTERS = "=+-@";
+	/**
+	 * Sanitize a single value to prevent CSV Injection attacks (OWASP).
+	 * Prefixes values starting with =+-@ with a space
+	 * @param value the value to sanitize
+	 * @return sanitized value
+	 */
+	public static String sanitizeCsvValue(String value) {
+		if (value == null || value.isEmpty()) 
+			return value;
+		if (CSV_ESCAPE_FORMULA_CHARACTERS.indexOf(value.charAt(0)) >= 0)
+			value = " " + value;
+		return value;
 	}
 
 }   //  Util

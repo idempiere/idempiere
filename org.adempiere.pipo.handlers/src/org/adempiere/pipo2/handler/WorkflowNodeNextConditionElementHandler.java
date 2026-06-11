@@ -19,6 +19,7 @@ package org.adempiere.pipo2.handler;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
@@ -28,6 +29,7 @@ import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_WF_NextCondition;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_WF_NextCondition;
 import org.compiere.util.Env;
@@ -69,9 +71,9 @@ public class WorkflowNodeNextConditionElementHandler extends
 				if (!mWFNodeNextCondition.is_new()) {
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_WF_NextCondition.Table_Name,
 							mWFNodeNextCondition);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				} else {
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}
 				if (mWFNodeNextCondition.save(getTrxName(ctx)) == true) {
 					log.info("m_WFNodeNextCondition save success");
@@ -102,8 +104,8 @@ public class WorkflowNodeNextConditionElementHandler extends
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(PIPOContext ctx, TransformerHandler document)
-			throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document)
+			throws Exception {
 		int ad_wf_nodenextcondition_id = Env.getContextAsInt(ctx.ctx, "AD_WF_NextCondition_ID");
 		if (ctx.packOut.isExported("AD_WF_NextCondition_ID"+"|"+ad_wf_nodenextcondition_id))
 			return;
@@ -115,12 +117,12 @@ public class WorkflowNodeNextConditionElementHandler extends
 		verifyPackOutRequirement(m_WF_NodeNextCondition);
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
-		document.startElement("", "", I_AD_WF_NextCondition.Table_Name, atts);
+		document.startElement(I_AD_WF_NextCondition.Table_Name, atts);
 		createWorkflowNodeNextConditionBinding(ctx, document, m_WF_NodeNextCondition);
-		document.endElement("", "", I_AD_WF_NextCondition.Table_Name);
+		document.endElement(I_AD_WF_NextCondition.Table_Name);
 	}
 
-	private void createWorkflowNodeNextConditionBinding(PIPOContext ctx, TransformerHandler document, MWFNextCondition mWFNodeNextCondition) {
+	private void createWorkflowNodeNextConditionBinding(PIPOContext ctx, IPackSerializer document, MWFNextCondition mWFNodeNextCondition) {
 		PoExporter filler = new PoExporter(ctx, document, mWFNodeNextCondition);
 		List<String> excludes = defaultExcludeList(X_AD_WF_NextCondition.Table_Name);
 
@@ -131,11 +133,11 @@ public class WorkflowNodeNextConditionElementHandler extends
 	}
 
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer,
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
 		Env.setContext(packout.getCtx().ctx, I_AD_WF_NextCondition.COLUMNNAME_AD_WF_NextCondition_ID, recordId);
-		create(packout.getCtx(), packoutHandler);
+		create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(I_AD_WF_NextCondition.COLUMNNAME_AD_WF_NextCondition_ID);
 	}
 

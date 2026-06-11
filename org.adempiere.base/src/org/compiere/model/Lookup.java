@@ -25,9 +25,12 @@ import javax.swing.AbstractListModel;
 import javax.swing.MutableComboBoxModel;
 
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.NamePair;
+import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
+import org.idempiere.db.util.SQLFragment;
 
 /**
  *	Base Class for MLookup, MLocator, MLocation and MAccount (only single value).<br/>
@@ -545,4 +548,56 @@ public abstract class Lookup extends AbstractListModel<Object>
 		return m_shortList;
 	}
 	// IDEMPIERE 90
+
+    /**
+     * Parse where clause from lookup validation code.
+     * @return sql filter
+     */
+    public SQLFragment getSQLFilter()
+    {
+    	String whereClause = null;
+    	List<Object> params = new ArrayList<>();
+    
+    	if (getZoomQuery() != null)
+    	{
+    		SQLFragment filter = getZoomQuery().getSQLFilter();
+    		whereClause = filter.sqlClause();
+    		params.addAll(filter.parameters());
+    	}
+    
+    	String validation = getValidation();
+    
+    	if (validation == null)
+    		validation = "";
+    
+    	if (Util.isEmpty(whereClause, true))
+    		whereClause = validation;
+    	else if (!Util.isEmpty(validation, true))
+    		whereClause += " AND " + validation;
+    
+    	if (whereClause.indexOf('@') != -1)
+    	{
+    		List<Object> contextParams = new ArrayList<>();
+    		String validated = Env.parseContextForSql(Env.getCtx(), getWindowNo(), whereClause, false, contextParams);
+    
+    		if (validated.length() == 0)
+    			log.severe(getColumnName() + " - Cannot Parse=" + whereClause);
+    		else
+    		{
+    			if (log.isLoggable(Level.FINE))
+    				log.fine(getColumnName() + " - Parsed: " + validated);
+    			if (params.size() > 0)
+    			{
+    				if (contextParams.size() > 0)
+    					params = Env.mergeParameters(whereClause, validated, params.toArray(), contextParams.toArray());
+    			}
+    			else
+    			{
+    				params = contextParams;
+    			}
+    			whereClause = validated;
+    		}
+    	}
+    	return new SQLFragment(whereClause, params);
+    }
 }	//	Lookup
