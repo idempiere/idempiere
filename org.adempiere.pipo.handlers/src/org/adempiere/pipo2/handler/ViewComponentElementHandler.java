@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
@@ -86,7 +87,7 @@ public class ViewComponentElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 	
-	public void create(PIPOContext ctx, TransformerHandler document) throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document) throws Exception {
 		int AD_ViewComponent_ID = Env.getContextAsInt(ctx.ctx, MViewComponent.COLUMNNAME_AD_ViewComponent_ID);
 		
 		if (viewComponents.contains(AD_ViewComponent_ID))
@@ -101,7 +102,7 @@ public class ViewComponentElementHandler extends AbstractElementHandler {
 		if (createElement) {
 			verifyPackOutRequirement(m_ViewComponent);
 			addTypeName(atts, "table");
-			document.startElement("", "", MViewComponent.Table_Name, atts);
+			document.startElement(MViewComponent.Table_Name, atts);
 			createViewComponentBinding(ctx, document, m_ViewComponent);
 		}
 		
@@ -111,11 +112,11 @@ public class ViewComponentElementHandler extends AbstractElementHandler {
 		}
 
 		if (createElement) {
-			document.endElement("", "", MViewComponent.Table_Name);
+			document.endElement(MViewComponent.Table_Name);
 		}
 	}
 	
-	private void createViewColumn(PIPOContext ctx, TransformerHandler document, int AD_ViewColumn_ID) throws SAXException {
+	private void createViewColumn(PIPOContext ctx, IPackSerializer document, int AD_ViewColumn_ID) throws Exception {
 		try {
 			ctx.packOut.getHandler(MViewColumn.Table_Name).packOut(ctx.packOut, document, ctx.logDocument, AD_ViewColumn_ID);
 		} catch (Exception e) {
@@ -123,7 +124,7 @@ public class ViewComponentElementHandler extends AbstractElementHandler {
 		}
 	}
 
-	private void createViewComponentBinding(PIPOContext ctx, TransformerHandler document, MViewComponent m_ViewComponent) {
+	private void createViewComponentBinding(PIPOContext ctx, IPackSerializer document, MViewComponent m_ViewComponent) {
 		PoExporter filler = new PoExporter(ctx, document, m_ViewComponent);
 		List<String>excludes = defaultExcludeList(MViewComponent.Table_Name);
 
@@ -134,9 +135,9 @@ public class ViewComponentElementHandler extends AbstractElementHandler {
 	}
 
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler, int recordId) throws Exception {
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler, int recordId) throws Exception {
 		Env.setContext(packout.getCtx().ctx, MViewComponent.COLUMNNAME_AD_ViewComponent_ID, recordId);
-		this.create(packout.getCtx(), packoutHandler);
+		this.create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(MViewComponent.COLUMNNAME_AD_ViewComponent_ID);	
 	}
 

@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.model.GenericPO;
@@ -126,8 +127,8 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(PIPOContext ctx, TransformerHandler document)
-			throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document)
+			throws Exception {
 		AttributesImpl atts = new AttributesImpl();
 
 		String sql = Env.getContext(ctx.ctx, DataElementParameters.SQL_STATEMENT);
@@ -192,7 +193,7 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 					if (createElement) {
 						verifyPackOutRequirement(po);
 						addTypeName(atts, "table");
-						document.startElement("","", tableName, atts);
+						document.startElement(tableName, atts);
 						PoExporter filler = new PoExporter(ctx, document, po);
 						if (MColumn.Table_Name.equals(po.get_TableName())) {
 							filler.addString("IsSyncDatabase", "Y", new AttributesImpl());
@@ -229,7 +230,7 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 				}
 
 				if (createElement) {
-					document.endElement("","",tableName);
+					document.endElement(tableName);
 				}
 			}
 		} catch (Exception e)	{
@@ -237,7 +238,7 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 		}
 	}
 
-	private void exportDetail(PIPOContext ctx, TransformerHandler document, GenericPO parent, String[] tables) {
+	private void exportDetail(PIPOContext ctx, IPackSerializer document, GenericPO parent, String[] tables) {
 		String mainTable = tables[0];
 		AttributesImpl atts = new AttributesImpl();
 		String keyColumn;
@@ -284,7 +285,7 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 						verifyPackOutRequirement(po);
 						List<String> excludes = defaultExcludeList(mainTable);
 						addTypeName(atts, "table");
-						document.startElement("", "", mainTable, atts);
+						document.startElement(mainTable, atts);
 						PoExporter filler = new PoExporter(ctx, document, po);
 						filler.export(excludes, ctx.packOut.isIncludeOrganizationId());
 						ctx.packOut.getCtx().ctx.put("Table_Name",mainTable);
@@ -327,7 +328,7 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 					exportDetail(ctx, document, po, detTables);
 				}
 				if (createElement) {
-					document.endElement("","",mainTable);
+					document.endElement(mainTable);
 				}
 			}
 		} catch (Exception e)	{
@@ -338,7 +339,7 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 
 	}
 
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler,int recordId) throws Exception
 	{
 		PackoutItem detail = packout.getCurrentPackoutItem();
 		int tableId = 0;
@@ -359,7 +360,7 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 		}
 		packout.getCtx().ctx.put(DataElementParameters.AD_TABLE_ID, Integer.toString(tableId));
 		packout.getCtx().ctx.put(DataElementParameters.SQL_STATEMENT, sql);
-		this.create(packout.getCtx(), packoutHandler);
+		this.create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(DataElementParameters.AD_TABLE_ID);
 		packout.getCtx().ctx.remove(DataElementParameters.SQL_STATEMENT);
 	}

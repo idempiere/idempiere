@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
@@ -96,8 +97,8 @@ public class ProcessParaElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(PIPOContext ctx, TransformerHandler document)
-			throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document)
+			throws Exception {
 		int AD_Process_Para_ID = Env.getContextAsInt(ctx.ctx,
 				X_AD_Process_Para.COLUMNNAME_AD_Process_Para_ID);
 		if (ctx.packOut.isExported(X_AD_Process_Para.COLUMNNAME_AD_Process_Para_ID+"|"+AD_Process_Para_ID))
@@ -124,7 +125,7 @@ public class ProcessParaElementHandler extends AbstractElementHandler {
 
 			AttributesImpl atts = new AttributesImpl();
 			addTypeName(atts, "table");
-			document.startElement("", "", I_AD_Process_Para.Table_Name, atts);
+			document.startElement(I_AD_Process_Para.Table_Name, atts);
 			createProcessParaBinding(ctx, document, m_Processpara);
 
 			packOut.getCtx().ctx.put("Table_Name", I_AD_Process_Para.Table_Name);
@@ -152,10 +153,10 @@ public class ProcessParaElementHandler extends AbstractElementHandler {
 		}
 
 		if (createElement)
-			document.endElement("", "", I_AD_Process_Para.Table_Name);
+			document.endElement(I_AD_Process_Para.Table_Name);
 	}
 
-	private void createProcessParaBinding(PIPOContext ctx, TransformerHandler document,
+	private void createProcessParaBinding(PIPOContext ctx, IPackSerializer document,
 			X_AD_Process_Para m_Processpara) {
 
 		PoExporter filler = new PoExporter(ctx, document, m_Processpara);
@@ -167,11 +168,11 @@ public class ProcessParaElementHandler extends AbstractElementHandler {
 	}
 
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer,
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
 		Env.setContext(packout.getCtx().ctx, I_AD_Process_Para.COLUMNNAME_AD_Process_Para_ID, recordId);
-		create(packout.getCtx(), packoutHandler);
+		create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(I_AD_Process_Para.COLUMNNAME_AD_Process_Para_ID);
 	}
 }

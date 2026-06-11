@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
@@ -104,8 +105,8 @@ public class RoleElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(PIPOContext ctx, TransformerHandler document)
-			throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document)
+			throws Exception {
 		int Role_id = Env.getContextAsInt(ctx.ctx,
 				X_AD_Package_Exp_Detail.COLUMNNAME_AD_Role_ID);
 		if (ctx.packOut.isExported(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Role_ID+"|"+Role_id))
@@ -118,7 +119,7 @@ public class RoleElementHandler extends AbstractElementHandler {
 			verifyPackOutRequirement(m_Role);
 			AttributesImpl atts = new AttributesImpl();
 			addTypeName(atts, "table");
-			document.startElement("", "", I_AD_Role.Table_Name, atts);
+			document.startElement(I_AD_Role.Table_Name, atts);
 			createRoleBinding(ctx, document, m_Role);
 		}
 
@@ -263,12 +264,12 @@ public class RoleElementHandler extends AbstractElementHandler {
 		}
 		
 		if (createElement) {
-			document.endElement("", "", X_AD_Role.Table_Name);
+			document.endElement(X_AD_Role.Table_Name);
 		}
 	}
 
-	private void createTaskAccess(PIPOContext ctx, TransformerHandler document,
-			int AD_Task_ID, int AD_Role_ID) throws SAXException {
+	private void createTaskAccess(PIPOContext ctx, IPackSerializer document,
+			int AD_Task_ID, int AD_Role_ID) throws Exception {
 		Env.setContext(ctx.ctx, X_AD_Task.COLUMNNAME_AD_Task_ID, AD_Task_ID);
 		Env.setContext(ctx.ctx, X_AD_Role.COLUMNNAME_AD_Role_ID, AD_Role_ID);
 		taskHandler.create(ctx, document);
@@ -277,7 +278,7 @@ public class RoleElementHandler extends AbstractElementHandler {
 	}
 
 	private void createWorkflowAccess(PIPOContext ctx,
-			TransformerHandler document, int AD_Workflow_ID, int AD_Role_ID) throws SAXException {
+			IPackSerializer document, int AD_Workflow_ID, int AD_Role_ID) throws Exception {
 		Env.setContext(ctx.ctx, X_AD_Workflow.COLUMNNAME_AD_Workflow_ID, AD_Workflow_ID);
 		Env.setContext(ctx.ctx, X_AD_Role.COLUMNNAME_AD_Role_ID, AD_Role_ID);
 		workflowHandler.create(ctx, document);
@@ -285,8 +286,8 @@ public class RoleElementHandler extends AbstractElementHandler {
 		ctx.ctx.remove(X_AD_Role.COLUMNNAME_AD_Role_ID);
 	}
 
-	private void createFormAccess(PIPOContext ctx, TransformerHandler document,
-			int AD_Form_ID, int AD_Role_ID) throws SAXException {
+	private void createFormAccess(PIPOContext ctx, IPackSerializer document,
+			int AD_Form_ID, int AD_Role_ID) throws Exception {
 		Env.setContext(ctx.ctx, X_AD_Form.COLUMNNAME_AD_Form_ID, AD_Form_ID);
 		Env.setContext(ctx.ctx, X_AD_Role.COLUMNNAME_AD_Role_ID, AD_Role_ID);
 		formHandler.create(ctx, document);
@@ -295,7 +296,7 @@ public class RoleElementHandler extends AbstractElementHandler {
 	}
 
 	private void createProcessAccess(PIPOContext ctx,
-			TransformerHandler document, int AD_Process_ID, int AD_Role_ID) throws SAXException {
+			IPackSerializer document, int AD_Process_ID, int AD_Role_ID) throws Exception {
 		Env.setContext(ctx.ctx, X_AD_Process.COLUMNNAME_AD_Process_ID, AD_Process_ID);
 		Env.setContext(ctx.ctx, X_AD_Role.COLUMNNAME_AD_Role_ID, AD_Role_ID);
 		processHandler.create(ctx, document);
@@ -304,7 +305,7 @@ public class RoleElementHandler extends AbstractElementHandler {
 	}
 
 	private void createWindowAccess(PIPOContext ctx,
-			TransformerHandler document, int AD_Window_ID, int AD_Role_ID) throws SAXException {
+			IPackSerializer document, int AD_Window_ID, int AD_Role_ID) throws Exception {
 		Env.setContext(ctx.ctx, X_AD_Window.COLUMNNAME_AD_Window_ID, AD_Window_ID);
 		Env.setContext(ctx.ctx, X_AD_Role.COLUMNNAME_AD_Role_ID, AD_Role_ID);
 		windowHandler.create(ctx, document);
@@ -313,7 +314,7 @@ public class RoleElementHandler extends AbstractElementHandler {
 	}
 
 	private void createInfoWindowAccess(PIPOContext ctx,
-			TransformerHandler document, int AD_InfoWindow_ID, int AD_Role_ID) throws SAXException {
+			IPackSerializer document, int AD_InfoWindow_ID, int AD_Role_ID) throws Exception {
 		Env.setContext(ctx.ctx, X_AD_InfoWindow.COLUMNNAME_AD_InfoWindow_ID, AD_InfoWindow_ID);
 		Env.setContext(ctx.ctx, X_AD_Role.COLUMNNAME_AD_Role_ID, AD_Role_ID);
 		infoWindowHandler.create(ctx, document);
@@ -322,8 +323,8 @@ public class RoleElementHandler extends AbstractElementHandler {
 	}
 
 	/*
-	private void createUserRole(PIPOContext ctx, TransformerHandler document,
-			int AD_User_ID, int AD_Role_ID, int AD_Org_ID) throws SAXException {
+	private void createUserRole(PIPOContext ctx, IPackSerializer document,
+			int AD_User_ID, int AD_Role_ID, int AD_Org_ID) throws Exception {
 		Env.setContext(ctx.ctx, X_AD_User.COLUMNNAME_AD_User_ID, AD_User_ID);
 		Env.setContext(ctx.ctx, X_AD_Role.COLUMNNAME_AD_Role_ID, AD_Role_ID);
 		Env.setContext(ctx.ctx, "AD_Org_ID", AD_Org_ID);
@@ -334,8 +335,8 @@ public class RoleElementHandler extends AbstractElementHandler {
 	}
 	*/
 
-	private void createOrgAccess(PIPOContext ctx, TransformerHandler document,
-			int AD_Org_ID, int AD_Role_ID) throws SAXException {
+	private void createOrgAccess(PIPOContext ctx, IPackSerializer document,
+			int AD_Org_ID, int AD_Role_ID) throws Exception {
 		Env.setContext(ctx.ctx, "AD_Org_ID", AD_Org_ID);
 		Env.setContext(ctx.ctx, X_AD_Role.COLUMNNAME_AD_Role_ID, AD_Role_ID);
 		orgHandler.create(ctx, document);
@@ -343,7 +344,7 @@ public class RoleElementHandler extends AbstractElementHandler {
 		ctx.ctx.remove(X_AD_Role.COLUMNNAME_AD_Role_ID);
 	}
 
-	private void createRoleBinding(PIPOContext ctx, TransformerHandler document,
+	private void createRoleBinding(PIPOContext ctx, IPackSerializer document,
 			X_AD_Role m_Role) {
 		PoExporter filler = new PoExporter(ctx, document, m_Role);
 		List<String> excludes = defaultExcludeList(X_AD_Role.Table_Name);
@@ -353,10 +354,10 @@ public class RoleElementHandler extends AbstractElementHandler {
 		filler.export(excludes);
 	}
 
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler,int recordId) throws Exception
 	{
 		Env.setContext(packout.getCtx().ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Role_ID, recordId);
-		this.create(packout.getCtx(), packoutHandler);
+		this.create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Role_ID);
 	}
 }

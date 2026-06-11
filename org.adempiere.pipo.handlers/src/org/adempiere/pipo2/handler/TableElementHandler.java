@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.AbstractElementHandler;
@@ -175,8 +176,8 @@ public class TableElementHandler extends AbstractElementHandler {
 		return 1;
 	}
 
-	public void create(PIPOContext ctx, TransformerHandler document)
-			throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document)
+			throws Exception {
 
 		int AD_Table_ID = Env.getContextAsInt(ctx.ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Table_ID);
 		if (ctx.packOut.isExported(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Table_ID+"|"+AD_Table_ID))
@@ -188,7 +189,7 @@ public class TableElementHandler extends AbstractElementHandler {
 		if (createElement) {
 			verifyPackOutRequirement(m_Table);
 			addTypeName(atts, "table");
-			document.startElement("","",I_AD_Table.Table_Name,atts);
+			document.startElement(I_AD_Table.Table_Name,atts);
 			createTableBinding(ctx,document,m_Table);
 		}
 		
@@ -291,29 +292,29 @@ public class TableElementHandler extends AbstractElementHandler {
 		}
 		
 		if (createElement) {
-			document.endElement("","",X_AD_Table.Table_Name);
+			document.endElement(X_AD_Table.Table_Name);
 		}
 	}
 
-	private void createColumn(PIPOContext ctx, TransformerHandler document, int AD_Column_ID) throws SAXException {
+	private void createColumn(PIPOContext ctx, IPackSerializer document, int AD_Column_ID) throws Exception {
 		Env.setContext(ctx.ctx, X_AD_Column.COLUMNNAME_AD_Column_ID, AD_Column_ID);
 		columnHandler.create(ctx, document);
 		ctx.ctx.remove(X_AD_Column.COLUMNNAME_AD_Column_ID);
 	}
 	
-	private void createTableIndex(PIPOContext ctx, TransformerHandler document, int AD_TableIndex_ID) throws SAXException {
+	private void createTableIndex(PIPOContext ctx, IPackSerializer document, int AD_TableIndex_ID) throws Exception {
 		Env.setContext(ctx.ctx, MTableIndex.COLUMNNAME_AD_TableIndex_ID, AD_TableIndex_ID);
 		tableIndexHandler.create(ctx, document);
 		ctx.ctx.remove(MTableIndex.COLUMNNAME_AD_TableIndex_ID);
 	}
 	
-	private void createViewComponent(PIPOContext ctx, TransformerHandler document, int AD_ViewComponent_ID) throws SAXException {
+	private void createViewComponent(PIPOContext ctx, IPackSerializer document, int AD_ViewComponent_ID) throws Exception {
 		Env.setContext(ctx.ctx, MViewComponent.COLUMNNAME_AD_ViewComponent_ID, AD_ViewComponent_ID);
 		viewComponentHandler.create(ctx, document);
 		ctx.ctx.remove(MViewComponent.COLUMNNAME_AD_ViewComponent_ID);
 	}
 
-	private void createTableBinding(PIPOContext ctx, TransformerHandler document, X_AD_Table m_Table)
+	private void createTableBinding(PIPOContext ctx, IPackSerializer document, X_AD_Table m_Table)
 	{
 		PoExporter filler = new PoExporter(ctx, document, m_Table);
 		if (m_Table.getAD_Table_ID() <= PackOut.MAX_OFFICIAL_ID)
@@ -325,10 +326,10 @@ public class TableElementHandler extends AbstractElementHandler {
 		filler.export(excludes);
 	}
 
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler,int recordId) throws Exception
 	{
 		Env.setContext(packout.getCtx().ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Table_ID, recordId);
-		this.create(packout.getCtx(), packoutHandler);
+		this.create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Table_ID);
 	}
 }

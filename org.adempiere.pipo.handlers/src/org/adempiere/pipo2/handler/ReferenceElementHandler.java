@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
@@ -29,7 +30,6 @@ import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
-import org.compiere.model.I_AD_Reference;
 import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.MReference;
 import org.compiere.model.X_AD_Package_Exp_Detail;
@@ -100,8 +100,8 @@ public class ReferenceElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(PIPOContext ctx, TransformerHandler document)
-			throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document)
+			throws Exception {
 		int Reference_id = Env.getContextAsInt(ctx.ctx,
 				MReference.COLUMNNAME_AD_Reference_ID);
 		if (ctx.packOut.isExported(MReference.COLUMNNAME_AD_Reference_ID+"|"+Reference_id))
@@ -118,7 +118,7 @@ public class ReferenceElementHandler extends AbstractElementHandler {
 		if (createElement) {
 			verifyPackOutRequirement(m_Reference);
 			addTypeName(atts, "table");
-			document.startElement("", "", I_AD_Reference.Table_Name, atts);
+			document.startElement(MReference.Table_Name, atts);
 			createReferenceBinding(ctx, document, m_Reference);
 			try {
 				new CommonTranslationHandler().packOut(packOut,document,null,m_Reference.get_ID());
@@ -138,27 +138,27 @@ public class ReferenceElementHandler extends AbstractElementHandler {
 		}
 
 		if (createElement) {
-			document.endElement("", "", MReference.Table_Name);
+			document.endElement(MReference.Table_Name);
 		}
 	}
 
-	private void createReferenceTable(PIPOContext ctx, TransformerHandler document,
-			int reference_id) throws SAXException {
+	private void createReferenceTable(PIPOContext ctx, IPackSerializer document,
+			int reference_id) throws Exception {
 		Env.setContext(ctx.ctx, X_AD_Ref_Table.COLUMNNAME_AD_Reference_ID, reference_id);
 		tableHandler.create(ctx, document);
 		ctx.ctx.remove(X_AD_Ref_Table.COLUMNNAME_AD_Reference_ID);
 	}
 
 	private void createReferenceList(PIPOContext ctx,
-			TransformerHandler document, int AD_Ref_List_ID)
-			throws SAXException {
+			IPackSerializer document, int AD_Ref_List_ID)
+			throws Exception {
 		Env.setContext(ctx.ctx, X_AD_Ref_List.COLUMNNAME_AD_Ref_List_ID,
 				AD_Ref_List_ID);
 		listHandler.create(ctx, document);
 		ctx.ctx.remove(X_AD_Ref_List.COLUMNNAME_AD_Ref_List_ID);
 	}
 
-	private void createReferenceBinding(PIPOContext ctx, TransformerHandler document,
+	private void createReferenceBinding(PIPOContext ctx, IPackSerializer document,
 			MReference m_Reference) {
 		List<String> excludes = defaultExcludeList(MReference.Table_Name);
 		PoExporter filler = new PoExporter(ctx, document, m_Reference);
@@ -168,10 +168,10 @@ public class ReferenceElementHandler extends AbstractElementHandler {
 		filler.export(excludes);
 	}
 
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler,int recordId) throws Exception
 	{
 		Env.setContext(packout.getCtx().ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Reference_ID, recordId);
-		this.create(packout.getCtx(), packoutHandler);
+		this.create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Reference_ID);
 	}
 }

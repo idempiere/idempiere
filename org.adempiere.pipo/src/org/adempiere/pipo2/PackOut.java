@@ -18,6 +18,7 @@
  *****************************************************************************/
 package org.adempiere.pipo2;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -29,9 +30,14 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -72,6 +78,11 @@ public class PackOut
 	private String packageDirectory;
 	private int blobCount = 0;
 
+	/** Format values from AD_Ref_List (2Pack Export Format, AD_Reference_ID=200286). */
+	public static final String FORMAT_XML  = "X";
+	public static final String FORMAT_JSON = "J";
+	public static final String FORMAT_YAML = "Y";
+
 	private IHandlerRegistry handlerRegistry = new OSGiHandlerRegistry();
 	private PackoutItem packoutItem;
 	private String trxName;
@@ -82,6 +93,7 @@ public class PackOut
 	private PIPOContext pipoContext = new PIPOContext();
 	private Timestamp fromDate;
 	private boolean isExportDictionaryEntity = false;
+	private String exportFormat = FORMAT_XML;
 
 	public static final int MAX_OFFICIAL_ID = MTable.MAX_OFFICIAL_ID;
 
@@ -89,14 +101,9 @@ public class PackOut
 
 	public static void addTextElement(TransformerHandler handler, String qName, String text, AttributesImpl atts) throws SAXException {
 		handler.startElement("", "", qName, atts);
-		append(handler, text);
+		char[] contents = text != null ? text.toCharArray() : new char[0];
+		handler.characters(contents, 0, contents.length);
 		handler.endElement("", "", qName);
-	}
-
-	private static void append(TransformerHandler handler, String str) throws SAXException
-	{
-		char[] contents = str != null ? str.toCharArray() : new char[0];
-		handler.characters(contents,0,contents.length);
 	}
 
 	/**
@@ -122,20 +129,32 @@ public class PackOut
 		processedCount = 0;
 		try {
 			packageDirectory = packoutDirectory+ packoutDocument.getPackageName();
+			File packageDir = new File(packageDirectory);
+			if (packageDir.exists())
+				FileUtil.deleteFolderRecursive(packageDir);
 			File docDirectoryFile = new File(packageDirectory+File.separator+"doc"+File.separator);
-			if (!docDirectoryFile.exists()) {
-				boolean success = docDirectoryFile.mkdirs();
-				if (!success) {
-					throw new AdempiereException("Failed to create directory for pack out. " + packageDirectory+File.separator+"doc"+File.separator);
-				}
+			boolean success = docDirectoryFile.mkdirs();
+			if (!success) {
+				throw new AdempiereException("Failed to create directory for pack out. " + packageDirectory+File.separator+"doc"+File.separator);
 			}
-			String docFileName = packageDirectory+File.separator+"doc"+File.separator+packoutDocument.getPackageName()+"Doc.xml";
-			docStream = new FileOutputStream (docFileName, false);
-			TransformerHandler docHandler = createDocHandler(docStream);
+			String docFileName = packageDirectory+File.separator+"doc"+File.separator+getDocFileName();
+			docStream = new FileOutputStream(docFileName, false);
+			TransformerHandler docHandler;
+			if (FORMAT_XML.equals(exportFormat)) {
+				docHandler = createDocHandler(docStream);
+			} else {
+				writeDocFile(docStream);
+				docHandler = createNullDocHandler();
+			}
 
-			String packoutFileName = packageDirectory+File.separator+ "dict"+File.separator+"PackOut.xml";
+			File packageDictDirFile = new File(packageDirectory+File.separator+"dict"+File.separator);
+			success = packageDictDirFile.mkdirs();
+			if (!success)
+				throw new AdempiereException("Failed to create directory. " + packageDirectory+File.separator+"dict"+File.separator);
+
+			String packoutFileName = packageDirectory+File.separator+"dict"+File.separator+getPackoutFileName();
 			packoutStream = new FileOutputStream (packoutFileName, false);
-			TransformerHandler packoutHandler = createPackoutHandler(packoutStream);
+			IPackSerializer packoutSerializer = createPackoutSerializer(packoutStream);
 
 			for(PackoutItem packoutItem : packoutItems){
 				this.packoutItem = packoutItem;
@@ -143,15 +162,15 @@ public class PackOut
 
 				ElementHandler handler = handlerRegistry.getHandler(type);
 				if (handler != null)
-					handler.packOut(this,packoutHandler,docHandler,packoutItem.getRecordId(),packoutItem.getUUID());
+					handler.packOut(this, packoutSerializer, docHandler, packoutItem.getRecordId(), packoutItem.getUUID());
 				else
 					throw new IllegalArgumentException("Packout handler not found for type " + type);
 
 				processedCount++;
 			}
 
-			packoutHandler.endElement("","","idempiere");
-			packoutHandler.endDocument();
+			packoutSerializer.endElement("idempiere");
+			packoutSerializer.endDocument();
 			docHandler.endElement("","","idempiereDocument");
 			docHandler.endDocument();
 		}
@@ -193,25 +212,83 @@ public class PackOut
 		FileUtil.deleteFolderRecursive(new File(packageDirectory));
 	}	//	doIt
 
-	private TransformerHandler createPackoutHandler(
-			OutputStream packoutStream) throws UnsupportedEncodingException, TransformerConfigurationException, SAXException {
-		StreamResult packoutStreamResult = new StreamResult(new OutputStreamWriter(packoutStream,"UTF-8"));
-		SAXTransformerFactory packoutFactory = (SAXTransformerFactory) SAXTransformerFactory.newInstance();
-		//indent-number attribute support is not guarantee
-		try {
-			packoutFactory.setAttribute("indent-number", Integer.valueOf(4));
-		} catch (Exception e) {}
-		TransformerHandler packoutHandler = packoutFactory.newTransformerHandler();
-		Transformer packoutTransformer = packoutHandler.getTransformer();
-		packoutTransformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-		packoutTransformer.setOutputProperty(OutputKeys.INDENT,"yes");
-		//indent-amount property support is not guarantee
-		try {
-			packoutTransformer.setOutputProperty("{http://xml.apache.org/xalan}indent-amount","4");
-		} catch (Exception e) {}
-		packoutHandler.setResult(packoutStreamResult);
-		packoutHandler.startDocument();
+	/** Returns the output file name for the selected export format. */
+	private String getPackoutFileName() {
+		if (FORMAT_JSON.equals(exportFormat)) return "PackOut.json";
+		if (FORMAT_YAML.equals(exportFormat)) return "PackOut.yaml";
+		return "PackOut.xml";
+	}
+
+	/** Returns the doc file name for the selected export format. */
+	private String getDocFileName() {
+		if (FORMAT_JSON.equals(exportFormat)) return packoutDocument.getPackageName() + "Doc.json";
+		if (FORMAT_YAML.equals(exportFormat)) return packoutDocument.getPackageName() + "Doc.yaml";
+		return packoutDocument.getPackageName() + "Doc.xml";
+	}
+
+	/** Writes package metadata to docStream as JSON or YAML. */
+	private void writeDocFile(OutputStream docStream) throws Exception {
 		MClient client = MClient.get(pipoContext.ctx);
+		String clientStr = client.get_ID() + "-" + client.getValue() + "-" + client.getName();
+
+		LinkedHashMap<String, Object> doc = new LinkedHashMap<>();
+		doc.put("name", packoutDocument.getPackageName());
+		doc.put("author", emptyIfNull(packoutDocument.getAuthor()));
+		doc.put("email", emptyIfNull(packoutDocument.getAuthorEmail()));
+		doc.put("created", packoutDocument.getCreated().toString());
+		doc.put("updated", packoutDocument.getUpdated().toString());
+		doc.put("description", emptyIfNull(packoutDocument.getDescription()));
+		doc.put("instructions", emptyIfNull(packoutDocument.getInstructions()));
+		LinkedHashMap<String, Object> fileEntry = new LinkedHashMap<>();
+		fileEntry.put("file", getPackoutFileName());
+		fileEntry.put("directory", "dict");
+		fileEntry.put("notes", "Contains all application/object settings for package");
+		doc.put("files", Collections.singletonList(fileEntry));
+		doc.put("client", clientStr);
+
+		ObjectMapper mapper = FORMAT_YAML.equals(exportFormat) ? new YAMLMapper() : new ObjectMapper();
+		mapper.disable(com.fasterxml.jackson.core.JsonGenerator.Feature.AUTO_CLOSE_TARGET);
+		mapper.writerWithDefaultPrettyPrinter().writeValue(docStream, doc);
+	}
+
+	/** Returns a SAX handler that discards its output (used when doc is written in a non-XML format). */
+	private TransformerHandler createNullDocHandler() throws TransformerConfigurationException, SAXException {
+		SAXTransformerFactory factory = (SAXTransformerFactory) SAXTransformerFactory.newInstance();
+		TransformerHandler handler = factory.newTransformerHandler();
+		handler.setResult(new StreamResult(new ByteArrayOutputStream()));
+		handler.startDocument();
+		handler.startElement("", "", "idempiereDocument", new AttributesImpl());
+		return handler;
+	}
+
+	/**
+	 * Creates and initialises the serializer for the selected export format.
+	 * For XML this wraps a SAX TransformerHandler (original behavior).
+	 * For JSON/YAML it writes the package header and opens the records container.
+	 */
+	private IPackSerializer createPackoutSerializer(OutputStream packoutStream) throws Exception {
+		MClient client = MClient.get(pipoContext.ctx);
+		AttributesImpl atts = buildPackageHeaderAtts(client);
+
+		if (FORMAT_JSON.equals(exportFormat)) {
+			JsonPackSerializer s = new JsonPackSerializer(packoutStream);
+			s.startElement("idempiere", atts);
+			return s;
+		}
+		if (FORMAT_YAML.equals(exportFormat)) {
+			YamlPackSerializer s = new YamlPackSerializer(packoutStream);
+			s.startElement("idempiere", atts);
+			return s;
+		}
+		// Default: XML via SAX
+		TransformerHandler packoutHandler = createXmlPackoutHandler(packoutStream);
+		packoutHandler.startElement("","","idempiere", atts);
+		return new SAXPackSerializer(packoutHandler);
+	}
+
+	private AttributesImpl buildPackageHeaderAtts(MClient client) {
+		if (client.getAD_Client_UU() == null)
+			throw new IllegalStateException("2Pack requires UUID on AD_Client");
 		AttributesImpl atts = new AttributesImpl();
 		atts.addAttribute("","","Name","CDATA",packoutDocument.getPackageName());
 		atts.addAttribute("","","Version","CDATA",packoutDocument.getPackageVersion());
@@ -223,22 +300,29 @@ public class PackOut
 		atts.addAttribute("","","CreatedDate","CDATA",packoutDocument.getCreated().toString());
 		atts.addAttribute("","","UpdatedDate","CDATA",packoutDocument.getUpdated().toString());
 		atts.addAttribute("","","PackOutVersion","CDATA",PackOutVersion);
-		// when exporting dictionary entities, for non System tenants is still marked as false to avoid potential risk
-		// of overwriting dictionary in target system, as they should be exported and imported with extra care
-		atts.addAttribute("","","UpdateDictionary","CDATA", (isExportDictionaryEntity && client.get_ID() == 0) ? "true" : "false");
-
-		StringBuilder sb = new StringBuilder ()
-			.append(client.get_ID())
-			.append("-")
-			.append(client.getValue())
-			.append("-")
-			.append(client.getName());
+		atts.addAttribute("","","UpdateDictionary","CDATA",
+				(isExportDictionaryEntity && client.get_ID() == 0) ? "true" : "false");
+		StringBuilder sb = new StringBuilder()
+				.append(client.get_ID()).append("-")
+				.append(client.getValue()).append("-")
+				.append(client.getName());
 		atts.addAttribute("", "", "Client", "CDATA", sb.toString());
-		if (client.getAD_Client_UU() == null)
-			throw new IllegalStateException("2Pack requires UUID on AD_Client");
 		atts.addAttribute("", "", "AD_Client_UU", "CDATA", client.getAD_Client_UU());
+		return atts;
+	}
 
-		packoutHandler.startElement("","","idempiere",atts);
+	private TransformerHandler createXmlPackoutHandler(OutputStream packoutStream)
+			throws UnsupportedEncodingException, TransformerConfigurationException, SAXException {
+		StreamResult packoutStreamResult = new StreamResult(new OutputStreamWriter(packoutStream,"UTF-8"));
+		SAXTransformerFactory packoutFactory = (SAXTransformerFactory) SAXTransformerFactory.newInstance();
+		try { packoutFactory.setAttribute("indent-number", Integer.valueOf(4)); } catch (Exception e) {}
+		TransformerHandler packoutHandler = packoutFactory.newTransformerHandler();
+		Transformer packoutTransformer = packoutHandler.getTransformer();
+		packoutTransformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+		packoutTransformer.setOutputProperty(OutputKeys.INDENT,"yes");
+		try { packoutTransformer.setOutputProperty("{http://xml.apache.org/xalan}indent-amount","4"); } catch (Exception e) {}
+		packoutHandler.setResult(packoutStreamResult);
+		packoutHandler.startDocument();
 		return packoutHandler;
 	}
 
@@ -282,7 +366,7 @@ public class PackOut
 		addTextElement(docHandler, "H1", "Instructions:", atts);
 		addTextElement(docHandler, "instructions", packoutDocument.getInstructions(), atts);
 		addTextElement(docHandler, "H1", "Files in Package:", atts);
-		addTextElement(docHandler, "file", "File: PackOut.xml", atts);
+		addTextElement(docHandler, "file", "File: " + getPackoutFileName(), atts);
 		addTextElement(docHandler, "filedirectory", "Directory: \\dict\\", atts);
 		addTextElement(docHandler, "filenotes", "Notes: Contains all application/object settings for package", atts);
 
@@ -296,12 +380,6 @@ public class PackOut
 		addTextElement(docHandler, "H1", "Client:", atts);
 		addTextElement(docHandler, "Client", sb.toString(), atts);
 
-		File packageDictDirFile = new File(packageDirectory+File.separator+ "dict"+File.separator);
-		if (!packageDictDirFile.exists()) {
-			boolean success = packageDictDirFile.mkdirs();
-			if (!success)
-				throw new AdempiereException("Failed to create directory. " + packageDirectory+File.separator+ "dict"+File.separator);
-		}
 		return docHandler;
 	}
 
@@ -489,5 +567,20 @@ public class PackOut
 	
 	public boolean isIncludeOrganizationId() {
 		return includeOrganizationId;
+	}
+
+	/**
+	 * Set export format. Use FORMAT_XML / FORMAT_JSON / FORMAT_YAML constants.
+	 * Defaults to FORMAT_XML when not set.
+	 */
+	public void setExportFormat(String format) {
+		if (FORMAT_JSON.equals(format) || FORMAT_YAML.equals(format) || FORMAT_XML.equals(format))
+			this.exportFormat = format;
+		else
+			this.exportFormat = FORMAT_XML;
+	}
+
+	public String getExportFormat() {
+		return exportFormat;
 	}
 }	//	PackOut

@@ -33,6 +33,7 @@ import java.util.regex.Pattern;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.base.Core;
 import org.adempiere.exceptions.AdempiereException;
@@ -98,30 +99,28 @@ public class ScriptJSR223ElementHandler extends AbstractElementHandler implement
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(PIPOContext ctx, TransformerHandler document) throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document) throws Exception {
 		String execCode = Env.getContext(ctx.ctx, MPackageExpDetail.COLUMNNAME_ExecCode);
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "custom");
-		document.startElement("","",SCRIPT_JSR223,atts);
+		document.startElement(SCRIPT_JSR223,atts);
 		createShellScriptBinding(document, execCode);
-		document.endElement("","",SCRIPT_JSR223);
+		document.endElement(SCRIPT_JSR223);
 	}
 
-	private void createShellScriptBinding( TransformerHandler document, String execCode) throws SAXException {
-		document.startElement("","",SCRIPT_JSR223, new AttributesImpl());
+	private void createShellScriptBinding( IPackSerializer document, String execCode) throws Exception {
+		document.startElement(SCRIPT_JSR223, new AttributesImpl());
 		char [] contents = execCode.toCharArray();
-		document.startCDATA();
-		document.characters(contents,0,contents.length);
-		document.endCDATA();
-		document.endElement("","",SCRIPT_JSR223);
+		document.characters(new String(contents, 0, contents.length));
+		document.endElement(SCRIPT_JSR223);
 	}
 
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler, int recordId)
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler, int recordId)
 			throws Exception {
 		PackoutItem detail = packout.getCurrentPackoutItem();
 		Env.setContext(packout.getCtx().ctx, MPackageExpDetail.COLUMNNAME_ExecCode, (String)detail.getProperty(MPackageExpDetail.COLUMNNAME_ExecCode));
-		this.create(packout.getCtx(), packoutHandler);
+		this.create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(MPackageExpDetail.COLUMNNAME_ExecCode);
 	}
 

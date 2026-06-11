@@ -17,6 +17,7 @@ package org.adempiere.pipo2.handler;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
@@ -110,7 +111,7 @@ public class ViewColumnElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {		
 	}
 	
-	public void create(PIPOContext ctx, TransformerHandler document) throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document) throws Exception {
 		int AD_ViewColumn_ID = Env.getContextAsInt(ctx.ctx, MViewColumn.COLUMNNAME_AD_ViewColumn_ID);
 		MViewColumn m_ViewColumn = new MViewColumn(ctx.ctx, AD_ViewColumn_ID, getTrxName(ctx));
 
@@ -119,12 +120,12 @@ public class ViewColumnElementHandler extends AbstractElementHandler {
 
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
-		document.startElement("", "", MViewColumn.Table_Name, atts);
+		document.startElement(MViewColumn.Table_Name, atts);
 		createViewColumnBinding(ctx, document, m_ViewColumn);
-		document.endElement("", "", MViewColumn.Table_Name);
+		document.endElement(MViewColumn.Table_Name);
 	}
 
-	private void createViewColumnBinding(PIPOContext ctx, TransformerHandler document, MViewColumn m_ViewColumn) {
+	private void createViewColumnBinding(PIPOContext ctx, IPackSerializer document, MViewColumn m_ViewColumn) {
 		PoExporter filler = new PoExporter(ctx, document, m_ViewColumn);
 		List<String>excludes = defaultExcludeList(MViewColumn.Table_Name);
 
@@ -135,9 +136,9 @@ public class ViewColumnElementHandler extends AbstractElementHandler {
 	}
 
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler, int recordId) throws Exception {
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler, int recordId) throws Exception {
 		Env.setContext(packout.getCtx().ctx, MViewColumn.COLUMNNAME_AD_ViewColumn_ID, recordId);
-		create(packout.getCtx(), packoutHandler);
+		create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(MViewColumn.COLUMNNAME_AD_ViewColumn_ID);
 	}
 

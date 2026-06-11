@@ -15,6 +15,7 @@ package org.adempiere.pipo2.handler;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.AbstractElementHandler;
@@ -96,14 +97,14 @@ public class AttributeSetElementHandler extends AbstractElementHandler
 	}
 
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler, int recordId) throws Exception
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler, int recordId) throws Exception
 	{
 		Env.setContext(packout.getCtx().ctx, X_M_AttributeSet.COLUMNNAME_M_AttributeSet_ID, recordId);
-		this.create(packout.getCtx(), packoutHandler);
+		this.create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(X_M_AttributeSet.COLUMNNAME_M_AttributeSet_ID);
 	}
 
-	private void create(PIPOContext ctx, TransformerHandler document) throws SAXException
+	private void create(PIPOContext ctx, IPackSerializer document) throws Exception
 	{
 		int mAttributeSet_id = Env.getContextAsInt(ctx.ctx, X_M_AttributeSet.COLUMNNAME_M_AttributeSet_ID);
 		if (ctx.packOut.isExported(X_M_AttributeSet.COLUMNNAME_M_AttributeSet_ID + "|" + mAttributeSet_id))
@@ -117,7 +118,7 @@ public class AttributeSetElementHandler extends AbstractElementHandler
 			verifyPackOutRequirement(mAdElement);
 			AttributesImpl atts = new AttributesImpl();
 			addTypeName(atts, "table");
-			document.startElement("", "", X_M_AttributeSet.Table_Name, atts);
+			document.startElement(X_M_AttributeSet.Table_Name, atts);
 			createAttributeSetBinding(ctx, document, mAdElement);
 		}
 
@@ -139,10 +140,10 @@ public class AttributeSetElementHandler extends AbstractElementHandler
 		}
 
 		if (createElement)
-			document.endElement("", "", X_M_AttributeSet.Table_Name);
+			document.endElement(X_M_AttributeSet.Table_Name);
 	}
 
-	private void createAttributeSetBinding(PIPOContext ctx, TransformerHandler document, X_M_AttributeSet mAdElement)
+	private void createAttributeSetBinding(PIPOContext ctx, IPackSerializer document, X_M_AttributeSet mAdElement)
 	{
 		PoExporter filler = new PoExporter(ctx, document, mAdElement);
 		if (mAdElement.getM_AttributeSet_ID() <= PackOut.MAX_OFFICIAL_ID)
