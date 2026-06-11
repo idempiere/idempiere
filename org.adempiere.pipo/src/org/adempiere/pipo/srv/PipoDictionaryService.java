@@ -96,8 +96,11 @@ public class PipoDictionaryService implements IDictionaryService {
 			File targetDir = new File(System.getProperty("java.io.tmpdir"));
 			Zipper.unpackFile(packageFile, targetDir);
 
-			String dict_file = targetDir + File.separator + parentDir + File.separator
-					+ "dict" + File.separator + "PackOut.xml";
+			String dictBase = targetDir + File.separator + parentDir + File.separator + "dict" + File.separator;
+			String dict_file;
+			if      (new File(dictBase + "PackOut.json").exists()) dict_file = dictBase + "PackOut.json";
+			else if (new File(dictBase + "PackOut.yaml").exists()) dict_file = dictBase + "PackOut.yaml";
+			else                                                   dict_file = dictBase + "PackOut.xml";
 			
 			packIn.setPackageDirectory(targetDir + File.separator + parentDir);
 

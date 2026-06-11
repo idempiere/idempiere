@@ -19,6 +19,7 @@ package org.adempiere.pipo2.handler;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.AbstractElementHandler;
@@ -60,8 +61,8 @@ public class FormAccessElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(PIPOContext ctx, TransformerHandler document)
-			throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document)
+			throws Exception {
 		int AD_Form_ID = Env.getContextAsInt(ctx.ctx, X_AD_Form.COLUMNNAME_AD_Form_ID);
 		int AD_Role_ID = Env.getContextAsInt(ctx.ctx, X_AD_Role.COLUMNNAME_AD_Role_ID);
 		
@@ -78,13 +79,13 @@ public class FormAccessElementHandler extends AbstractElementHandler {
 			
 			AttributesImpl atts = new AttributesImpl();
 			addTypeName(atts, "table");
-			document.startElement("", "", I_AD_Form_Access.Table_Name, atts);
+			document.startElement(I_AD_Form_Access.Table_Name, atts);
 			createFormAccessBinding(ctx, document, po);
-			document.endElement("", "", I_AD_Form_Access.Table_Name);
+			document.endElement(I_AD_Form_Access.Table_Name);
 		}
 	}
 
-	private void createFormAccessBinding(PIPOContext ctx, TransformerHandler document,
+	private void createFormAccessBinding(PIPOContext ctx, IPackSerializer document,
 			MFormAccess po) {
 		PoExporter filler = new PoExporter(ctx, document, po);
 		List<String> excludes = defaultExcludeList(X_AD_Form_Access.Table_Name);
@@ -92,13 +93,13 @@ public class FormAccessElementHandler extends AbstractElementHandler {
 	}
 
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler, int recordId)
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler, int recordId)
 			throws Exception {
 		throw new AdempiereException("AD_Form_Access doesn't have ID, use method with UUID");
 	}
 
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer,
 			TransformerHandler docHandler,
 			int recordId, String uuid) throws Exception {
 		MFormAccess po = new Query(packout.getCtx().ctx, MFormAccess.Table_Name, "AD_Form_Access_UU=?", getTrxName(packout.getCtx()))
@@ -107,7 +108,7 @@ public class FormAccessElementHandler extends AbstractElementHandler {
 		if (po != null) {
 			Env.setContext(packout.getCtx().ctx, X_AD_Form.COLUMNNAME_AD_Form_ID, po.getAD_Form_ID());
 			Env.setContext(packout.getCtx().ctx, X_AD_Role.COLUMNNAME_AD_Role_ID, po.getAD_Role_ID());
-			this.create(packout.getCtx(), packoutHandler);
+			this.create(packout.getCtx(), packoutSerializer);
 			packout.getCtx().ctx.remove(X_AD_Form.COLUMNNAME_AD_Form_ID);
 			packout.getCtx().ctx.remove(X_AD_Role.COLUMNNAME_AD_Role_ID);
 		} else {

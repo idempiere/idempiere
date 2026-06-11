@@ -19,6 +19,7 @@ package org.adempiere.pipo2.handler;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.AbstractElementHandler;
@@ -60,8 +61,8 @@ public class UserRoleElementHandler extends AbstractElementHandler {
 			throws SAXException {
 	}
 
-	public void create(PIPOContext ctx, TransformerHandler document)
-			throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document)
+			throws Exception {
 		int AD_User_ID = Env.getContextAsInt(ctx.ctx, X_AD_User.COLUMNNAME_AD_User_ID);
 		int AD_Role_ID = Env.getContextAsInt(ctx.ctx, X_AD_Role.COLUMNNAME_AD_Role_ID);
 		Query query = new Query(ctx.ctx, "AD_User_Roles",
@@ -74,14 +75,14 @@ public class UserRoleElementHandler extends AbstractElementHandler {
 			verifyPackOutRequirement(po);
 			AttributesImpl atts = new AttributesImpl();
 			addTypeName(atts, "table");
-			document.startElement("", "", I_AD_User_Roles.Table_Name, atts);
+			document.startElement(I_AD_User_Roles.Table_Name, atts);
 			createUserAssignBinding(ctx, document, po);
-			document.endElement("", "", I_AD_User_Roles.Table_Name);
+			document.endElement(I_AD_User_Roles.Table_Name);
 		}
 	}
 
 	private void createUserAssignBinding(PIPOContext ctx,
-			TransformerHandler document, X_AD_User_Roles po) {
+			IPackSerializer document, X_AD_User_Roles po) {
 		PoExporter filler = new PoExporter(ctx, document, po);
 
 		verifyPackOutRequirement(po);
@@ -91,13 +92,13 @@ public class UserRoleElementHandler extends AbstractElementHandler {
 	}
 
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler, int recordId)
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler, int recordId)
 			throws Exception {
 		throw new AdempiereException("AD_User_Roles doesn't have ID, use method with UUID");
 	}
 
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer,
 			TransformerHandler docHandler,
 			int recordId, String uuid) throws Exception {
 		X_AD_User_Roles po = new Query(packout.getCtx().ctx, X_AD_User_Roles.Table_Name, "AD_User_Roles_UU=?", getTrxName(packout.getCtx()))
@@ -106,7 +107,7 @@ public class UserRoleElementHandler extends AbstractElementHandler {
 		if (po != null) {
 			Env.setContext(packout.getCtx().ctx, X_AD_User.COLUMNNAME_AD_User_ID, po.getAD_User_ID());
 			Env.setContext(packout.getCtx().ctx, X_AD_Role.COLUMNNAME_AD_Role_ID, po.getAD_Role_ID());
-			this.create(packout.getCtx(), packoutHandler);
+			this.create(packout.getCtx(), packoutSerializer);
 			packout.getCtx().ctx.remove(X_AD_User.COLUMNNAME_AD_User_ID);
 			packout.getCtx().ctx.remove(X_AD_Role.COLUMNNAME_AD_Role_ID);
 		} else {

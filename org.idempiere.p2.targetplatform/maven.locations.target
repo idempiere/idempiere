@@ -94,6 +94,18 @@ Export-Package:        *;version="${version}";-noimport:=true
 	  <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-yaml</artifactId>
+      <version>2.15.4</version>
+	  <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
+	  <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <version>2.1</version>
+	  <type>jar</type>
+	</location>
+	<location includeSource="true" missingManifest="generate" type="Maven">
 	  <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-guava</artifactId>
       <version>2.15.4</version>

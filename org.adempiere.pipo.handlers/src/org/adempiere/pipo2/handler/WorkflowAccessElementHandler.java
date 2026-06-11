@@ -19,6 +19,7 @@ package org.adempiere.pipo2.handler;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.AbstractElementHandler;
@@ -60,8 +61,8 @@ public class WorkflowAccessElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(PIPOContext ctx, TransformerHandler document)
-			throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document)
+			throws Exception {
 		int AD_Workflow_ID = Env.getContextAsInt(ctx.ctx, X_AD_Workflow.COLUMNNAME_AD_Workflow_ID);
 		int AD_Role_ID = Env.getContextAsInt(ctx.ctx, X_AD_Role.COLUMNNAME_AD_Role_ID);
 		MWorkflowAccess po = null;
@@ -73,13 +74,13 @@ public class WorkflowAccessElementHandler extends AbstractElementHandler {
 			verifyPackOutRequirement(po);
 			AttributesImpl atts = new AttributesImpl();
 			addTypeName(atts, "table");
-			document.startElement("", "", I_AD_Workflow_Access.Table_Name, atts);
+			document.startElement(I_AD_Workflow_Access.Table_Name, atts);
 			createWorkflowAccessBinding(ctx, document, po);
-			document.endElement("", "", I_AD_Workflow_Access.Table_Name);
+			document.endElement(I_AD_Workflow_Access.Table_Name);
 		}
 	}
 	
-	private void createWorkflowAccessBinding(PIPOContext ctx, TransformerHandler document,
+	private void createWorkflowAccessBinding(PIPOContext ctx, IPackSerializer document,
 			MWorkflowAccess po) {
 		PoExporter filler = new PoExporter(ctx, document, po);
 		List<String> excludes = defaultExcludeList(X_AD_Workflow_Access.Table_Name);
@@ -88,13 +89,13 @@ public class WorkflowAccessElementHandler extends AbstractElementHandler {
 	}
 
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler, int recordId)
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler, int recordId)
 			throws Exception {
 		throw new AdempiereException("AD_Workflow_Access doesn't have ID, use method with UUID");
 	}
 
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer,
 			TransformerHandler docHandler,
 			int recordId, String uuid) throws Exception {
 		MWorkflowAccess po = new Query(packout.getCtx().ctx, MWorkflowAccess.Table_Name, "AD_Workflow_Access_UU=?", getTrxName(packout.getCtx()))
@@ -103,7 +104,7 @@ public class WorkflowAccessElementHandler extends AbstractElementHandler {
 		if (po != null) {
 			Env.setContext(packout.getCtx().ctx, X_AD_Workflow.COLUMNNAME_AD_Workflow_ID, po.getAD_Workflow_ID());
 			Env.setContext(packout.getCtx().ctx, X_AD_Role.COLUMNNAME_AD_Role_ID, po.getAD_Role_ID());
-			this.create(packout.getCtx(), packoutHandler);
+			this.create(packout.getCtx(), packoutSerializer);
 			packout.getCtx().ctx.remove(X_AD_Workflow.COLUMNNAME_AD_Workflow_ID);
 			packout.getCtx().ctx.remove(X_AD_Role.COLUMNNAME_AD_Role_ID);
 		} else {

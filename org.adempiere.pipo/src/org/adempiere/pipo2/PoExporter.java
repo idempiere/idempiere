@@ -6,8 +6,6 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.util.List;
 
-import javax.xml.transform.sax.TransformerHandler;
-
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.I_AD_Org;
 import org.compiere.model.MArchive;
@@ -28,7 +26,6 @@ import org.compiere.model.X_M_AttributeSetInstance;
 import org.compiere.model.X_M_Locator;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
-import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class PoExporter {
@@ -39,35 +36,30 @@ public class PoExporter {
 	private static final CLogger log = CLogger.getCLogger(PoExporter.class);
 	private PIPOContext ctx;
 
-	private TransformerHandler transformerHandler;
+	private IPackSerializer serializer;
 
 	public static final String POEXPORTER_BLOB_TYPE_STRING = "string";
 	public static final String POEXPORTER_BLOB_TYPE_BYTEARRAY = "byte[]";
 
 	private void addTextElement(String qName, String text, AttributesImpl atts) {
 		try {
-			transformerHandler.startElement("", "", qName, atts);
-			append(text);
-			transformerHandler.endElement("", "", qName);
-		} catch (SAXException e) {
+			serializer.startElement(qName, atts);
+			serializer.characters(text);
+			serializer.endElement(qName);
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private void append(String str) throws SAXException
-	{
-		char[] contents = str != null ? str.toCharArray() : new char[0];
-		transformerHandler.characters(contents,0,contents.length);
-	}
-
 	/**
 	 * @param ctx
+	 * @param serializer format-agnostic serializer (XML, JSON, or YAML)
 	 * @param po
 	 */
-	public PoExporter(PIPOContext ctx, TransformerHandler handler, PO po){
+	public PoExporter(PIPOContext ctx, IPackSerializer serializer, PO po){
 		this.ctx = ctx;
 		this.po = po;
-		transformerHandler = handler;
+		this.serializer = serializer;
 	}
 
 	/**

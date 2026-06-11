@@ -45,25 +45,26 @@ public interface ElementHandler {
 	public void endElement (PIPOContext ctx, Element element) throws SAXException;
 
 	/**
+	 * Export a record using the provided format-agnostic serializer.
 	 * @param packout
-	 * @param packoutHandler
-	 * @param docHandler
+	 * @param packoutSerializer format-agnostic record writer (XML, JSON, or YAML)
+	 * @param docHandler SAX handler for the human-readable doc file (always XML (a no-op discard handler is passed for non-XML formats))
 	 * @param recordId
 	 * @throws Exception
 	 */
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception;
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler, int recordId) throws Exception;
 
 	/**
+	 * Export a record identified by UUID (default delegates to id-based method).
 	 * @param packout
-	 * @param packoutHandler
-	 * @param docHandler
+	 * @param packoutSerializer format-agnostic record writer
+	 * @param docHandler SAX handler for the doc file (always XML (a no-op discard handler is passed for non-XML formats))
 	 * @param recordId
 	 * @param uuid
 	 * @throws Exception
 	 */
-	default public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId, String uuid) throws Exception {
-		// element handlers for tables without ID must implement this method
-		packOut(packout, packoutHandler, docHandler, recordId); // defaults to calling the method without uuid
+	default public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler, int recordId, String uuid) throws Exception {
+		packOut(packout, packoutSerializer, docHandler, recordId);
 	}
 
 }

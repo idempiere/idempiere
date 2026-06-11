@@ -132,6 +132,10 @@ public class PackIn {
 			throw new AdempiereException(msg);
 		}
 		try (FileInputStream input = new FileInputStream(in)) {
+			if (fileName.endsWith(".json"))
+				return importDataPack(input, ctx, trxName, "json");
+			if (fileName.endsWith(".yaml") || fileName.endsWith(".yml"))
+				return importDataPack(input, ctx, trxName, "yaml");
 			return importXML(input, ctx, trxName);
 		} catch (Exception e) {
 			log.log(Level.SEVERE, "importXML:", e);
@@ -184,6 +188,47 @@ public class PackIn {
 			return msg;
 		} catch (Exception e) {
 			log.log(Level.SEVERE, "importXML:", e);
+			throw new RuntimeException(e.getLocalizedMessage(), e);
+		}
+	}
+
+	/**
+	 * Import a 2Pack from a JSON or YAML input stream by replaying synthetic SAX
+	 * events into the existing PackInHandler.
+	 * @param input stream of the JSON or YAML file
+	 * @param format "json" or "yaml"
+	 */
+	public String importDataPack(InputStream input, Properties ctx, String trxName, String format) {
+		try {
+			log.info("starting data pack import, format=" + format);
+			IDFinder.clearIDCache();
+			importDetails = new ArrayList<X_AD_Package_Imp_Detail>();
+
+			PackInHandler handler = new PackInHandler();
+			PIPOContext context = new PIPOContext();
+			context.trx = Trx.get(trxName, true);
+			context.packIn = this;
+			context.ctx = ctx;
+			context.ctx.setProperty("isHandleTranslations", MSysConfig.getValue(MSysConfig.TWOPACK_HANDLE_TRANSLATIONS));
+			handler.setCtx(context);
+			handler.setProcess(this);
+
+			DataPackInReader reader = new DataPackInReader(handler, format);
+			reader.read(input);
+
+			for (PO importDetail : importDetails) {
+				importDetail.saveEx();
+			}
+			String msg = "Processed=" + handler.getElementsProcessed()
+					+ " Un-Resolved=" + handler.getUnresolvedCount();
+			getNotifier().addStatusLine(msg);
+			if (handler.getUnresolvedCount() > 0) {
+				handler.dumpUnresolvedElements();
+				throw new AdempiereException("Unresolved elements");
+			}
+			return msg;
+		} catch (Exception e) {
+			log.log(Level.SEVERE, "importDataPack:", e);
 			throw new RuntimeException(e.getLocalizedMessage(), e);
 		}
 	}

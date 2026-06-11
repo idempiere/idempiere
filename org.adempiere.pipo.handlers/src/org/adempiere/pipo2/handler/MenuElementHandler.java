@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.exceptions.DBException;
 import org.adempiere.pipo2.AbstractElementHandler;
@@ -185,8 +186,8 @@ public class MenuElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(PIPOContext ctx, TransformerHandler document)
-			throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document)
+			throws Exception {
 		int AD_Menu_ID = Env.getContextAsInt(ctx.ctx, "AD_Menu_ID");
 		if (ctx.packOut.isExported("AD_Menu_ID"+"|"+AD_Menu_ID))
 			return;
@@ -197,7 +198,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 			verifyPackOutRequirement(m_Menu);
 			AttributesImpl atts = new AttributesImpl();
 			addTypeName(atts, "table");
-			document.startElement("", "", I_AD_Menu.Table_Name, atts);
+			document.startElement(I_AD_Menu.Table_Name, atts);
 			createMenuBinding(ctx, document, m_Menu);
 
 			PackOut packOut = ctx.packOut;
@@ -209,11 +210,11 @@ public class MenuElementHandler extends AbstractElementHandler {
 			}
 
 			createModule(ctx, document, AD_Menu_ID);
-			document.endElement("", "", I_AD_Menu.Table_Name);
+			document.endElement(I_AD_Menu.Table_Name);
 		}
 	}
 
-	private void createMenuBinding(PIPOContext ctx, TransformerHandler document,
+	private void createMenuBinding(PIPOContext ctx, IPackSerializer document,
 			X_AD_Menu m_Menu) {
 
 		PoExporter filler = new PoExporter(ctx, document, m_Menu);
@@ -233,8 +234,8 @@ public class MenuElementHandler extends AbstractElementHandler {
 		filler.export(excludes);
 	}
 
-	private void createApplication(PIPOContext ctx, TransformerHandler document,
-			int AD_Menu_ID) throws SAXException {
+	private void createApplication(PIPOContext ctx, IPackSerializer document,
+			int AD_Menu_ID) throws Exception {
 		PackOut packOut = ctx.packOut;
 		int AD_Tree_ID = getDefaultMenuTreeId();
 		final String sql = "SELECT A.Node_ID, B.AD_Menu_ID, B.Name, B.AD_WINDOW_ID, B.AD_WORKFLOW_ID, B.AD_TASK_ID, "
@@ -255,7 +256,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 				verifyPackOutRequirement(m_Menu);
 				AttributesImpl atts = new AttributesImpl();
 				addTypeName(atts, "table");
-				document.startElement("", "", I_AD_Menu.Table_Name, atts);
+				document.startElement(I_AD_Menu.Table_Name, atts);
 				createMenuBinding(ctx, document, m_Menu);
 
 				packOut.getCtx().ctx.put("Table_Name",X_AD_Menu.Table_Name);
@@ -305,7 +306,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 				} else {
 					createModule(ctx, document, rs.getInt("Node_ID"));
 				}
-				document.endElement("", "", I_AD_Menu.Table_Name);
+				document.endElement(I_AD_Menu.Table_Name);
 			}
 		} catch (Exception e) {
 			log.log(Level.SEVERE, "getWindows", e);
@@ -315,8 +316,8 @@ public class MenuElementHandler extends AbstractElementHandler {
 		}
 	}
 
-	public void createModule(PIPOContext ctx, TransformerHandler document,
-			int menu_id) throws SAXException {
+	public void createModule(PIPOContext ctx, IPackSerializer document,
+			int menu_id) throws Exception {
 		PackOut packOut = ctx.packOut;
 		int AD_Tree_ID = getDefaultMenuTreeId();
 		final String sql = "SELECT A.Node_ID, B.AD_Menu_ID, B.Name, B.AD_WINDOW_ID, B.AD_WORKFLOW_ID, B.AD_TASK_ID, "
@@ -338,7 +339,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 				verifyPackOutRequirement(m_Menu);
 				AttributesImpl atts = new AttributesImpl();
 				addTypeName(atts, "table");
-				document.startElement("", "", I_AD_Menu.Table_Name, atts);
+				document.startElement(I_AD_Menu.Table_Name, atts);
 				createMenuBinding(ctx, document, m_Menu);
 
 				packOut.getCtx().ctx.put("Table_Name",X_AD_Menu.Table_Name);
@@ -389,7 +390,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 				} else {
 					createModule(ctx, document, rs.getInt("Node_ID"));
 				}
-				document.endElement("", "", I_AD_Menu.Table_Name);
+				document.endElement(I_AD_Menu.Table_Name);
 			}
 		} catch (Exception e) {
 			log.log(Level.SEVERE, "getWindows", e);
@@ -399,10 +400,10 @@ public class MenuElementHandler extends AbstractElementHandler {
 		}
 	}
 
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler, int recordId) throws Exception
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler, int recordId) throws Exception
 	{
 		Env.setContext(packout.getCtx().ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Menu_ID, recordId);
-		this.create(packout.getCtx(), packoutHandler);
+		this.create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Menu_ID);
 	}
 }
