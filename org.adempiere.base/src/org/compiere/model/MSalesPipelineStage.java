@@ -43,8 +43,14 @@ public class MSalesPipelineStage extends X_C_SalesPipelineStage implements Immut
 	private static CLogger s_log = CLogger.getCLogger(MSalesPipelineStage.class);
 	private static ImmutablePOCache<String, MSalesPipelineStage> s_cache = new ImmutablePOCache<String, MSalesPipelineStage>(Table_Name, 50);
 
-	public MSalesPipelineStage (Properties ctx, int C_SalesPipelineStage_ID, String trxName) {
-		super (ctx, C_SalesPipelineStage_ID, trxName);
+    /**
+     * UUID based Constructor
+     * @param ctx  Context
+     * @param C_SalesPipelineStage_UU  UUID key
+     * @param trxName Transaction
+     */
+    public MSalesPipelineStage(Properties ctx, String C_SalesPipelineStage_UU, String trxName) {
+        super(ctx, C_SalesPipelineStage_UU, trxName);
 	}	//	MSalesPipelineStage
 
 	public MSalesPipelineStage (Properties ctx, ResultSet rs, String trxName) {
@@ -90,7 +96,7 @@ public class MSalesPipelineStage extends X_C_SalesPipelineStage implements Immut
 	}
 
 	public MSalesPipelineStage(Properties ctx, MSalesPipelineStage copy, String trxName) {
-		this(ctx, 0, trxName);
+		this(ctx, "", trxName);
 		copyPO(copy);
 	}
 
