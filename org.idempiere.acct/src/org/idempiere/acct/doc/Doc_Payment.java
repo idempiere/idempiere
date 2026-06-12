@@ -29,6 +29,7 @@ import org.compiere.model.MClientInfo;
 import org.compiere.model.MPayment;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *  Post {@link MPayment} Documents.
@@ -118,6 +119,17 @@ public class Doc_Payment extends Doc
 			return facts;
 		}
 
+		MPayment pay = (MPayment) getPO();
+		// check is date of both Payment same
+		if (as.isDeleteReverseCorrectPosting()
+			&& pay.getReversal_ID() > 0
+				&& Util.compareDate(pay.getDateAcct(), pay.getReversal().getDateAcct()) == 0)
+		{
+			ArrayList<Fact> facts = new ArrayList<Fact>();
+			facts.add(fact);
+			return facts;
+		}
+		
 		int AD_Org_ID = getBank_Org_ID();		//	Bank Account Org
 		if (getDocumentType().equals(DOCTYPE_ARReceipt))
 		{
