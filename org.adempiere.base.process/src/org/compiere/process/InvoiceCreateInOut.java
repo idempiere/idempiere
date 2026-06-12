@@ -29,6 +29,7 @@ import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MProduct;
+import org.compiere.model.MSysConfig;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -139,8 +140,9 @@ public class InvoiceCreateInOut extends SvrProcess
 		// Remaining quantity to generate
 		BigDecimal qtyNotMatched = qtyInvoiced.subtract(qtyMatched);
 
+		boolean validateOrderedQty = MSysConfig.getBooleanValue(MSysConfig.VALIDATE_MATCHING_TO_ORDERED_QTY, true, Env.getAD_Client_ID(Env.getCtx()));
 		int orderLineId = invoiceLine.getC_OrderLine_ID();
-		if (orderLineId > 0) {
+		if (orderLineId > 0 && validateOrderedQty) {
 			MOrderLine orderLine = new MOrderLine(getCtx(), orderLineId, get_TrxName());
 			BigDecimal qtyOrdered = orderLine.getQtyOrdered(); // product UOM
 
@@ -153,7 +155,7 @@ public class InvoiceCreateInOut extends SvrProcess
 			        "WHERE io.docstatus IN ('DR','IP','CO','CL') " +
 			        "  AND iol.c_orderline_id = ?";
 
-			BigDecimal qtyDraft = DB.getSQLValueBD(get_TrxName(), sql, invoiceLine.getC_OrderLine_ID());
+			BigDecimal qtyDraft = DB.getSQLValueBDEx(get_TrxName(), sql, invoiceLine.getC_OrderLine_ID());
 			if (qtyDraft == null)
 				qtyDraft = Env.ZERO;
 
