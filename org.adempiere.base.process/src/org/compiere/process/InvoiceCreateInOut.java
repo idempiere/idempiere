@@ -26,8 +26,13 @@ import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
+import org.compiere.model.MOrderLine;
 import org.compiere.model.MProcessPara;
+import org.compiere.model.MProduct;
+import org.compiere.model.MSysConfig;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
  
 /**
  * Create (Generate) Shipment from Invoice
@@ -131,12 +136,44 @@ public class InvoiceCreateInOut extends SvrProcess
 	{
 		BigDecimal qtyMatched = invoiceLine.getMatchedQty();
 		BigDecimal qtyInvoiced = invoiceLine.getQtyInvoiced();
+		
+		// Remaining quantity to generate
 		BigDecimal qtyNotMatched = qtyInvoiced.subtract(qtyMatched);
-		// If is fully matched don't create anything
-		if (qtyNotMatched.signum() == 0)
-		{
-			return null;
+
+		boolean validateOrderedQty = MSysConfig.getBooleanValue(MSysConfig.VALIDATE_MATCHING_TO_ORDERED_QTY, true, Env.getAD_Client_ID(Env.getCtx()));
+		int orderLineId = invoiceLine.getC_OrderLine_ID();
+		if (orderLineId > 0 && validateOrderedQty) {
+			MOrderLine orderLine = new MOrderLine(getCtx(), orderLineId, get_TrxName());
+			BigDecimal qtyOrdered = orderLine.getQtyOrdered(); // product UOM
+
+			// Quantity already received in InOut documents that are not completed yet
+			// (Drafted, In Progress, Completed or Closed)
+			final String sql =
+			        "SELECT COALESCE(SUM(iol.movementqty), 0) " +
+			        "FROM m_inout io " +
+			        "INNER JOIN m_inoutline iol ON io.m_inout_id = iol.m_inout_id " +
+			        "WHERE io.docstatus IN ('DR','IP','CO','CL') " +
+			        "  AND iol.c_orderline_id = ?";
+
+			BigDecimal qtyDraft = DB.getSQLValueBDEx(get_TrxName(), sql, invoiceLine.getC_OrderLine_ID());
+			if (qtyDraft == null)
+				qtyDraft = Env.ZERO;
+
+			BigDecimal qtyRemaining = qtyOrdered.subtract(qtyDraft);
+			if (qtyRemaining.signum() < 0) 
+				qtyRemaining = Env.ZERO; // avoid negative "balance" in the message
+
+			if(qtyNotMatched.compareTo(qtyRemaining) > 0) {
+				MProduct product = MProduct.get(invoiceLine.getM_Product_ID());
+				String productName = product != null ? product.getName() : "";
+				throw new AdempiereException(Msg.getMsg(getCtx(), "ReceiptQtyExceedsBalance", new Object[] {invoiceLine.getLine(),productName,qtyRemaining}));
+			}
 		}
+		
+		// If there is no remaining quantity, do not create a receipt line
+		if (qtyNotMatched.signum() == 0)
+		    return null;
+		
 		MInOut inout = getCreateHeader(invoice);
 		MInOutLine sLine = new MInOutLine(inout);
 		sLine.setInvoiceLine(invoiceLine, 0,	//	Locator 
