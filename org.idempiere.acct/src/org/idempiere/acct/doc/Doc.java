@@ -42,6 +42,7 @@ import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MDocType;
+import org.compiere.model.MFactAcct;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MMatchInv;
@@ -719,27 +720,6 @@ public abstract class Doc implements IDoc
 			if (log.isLoggable(Level.INFO))	log.info("deleted=" + no);
 		return no;
 	}	//	deleteAcct
-	
-	/**
-	 * Delete fact records based on table, record and accounting schema
-	 * 
-	 * @param  AD_Table_ID
-	 * @param  Record_ID
-	 * @param  AcctSchema_ID
-	 * @param  trx
-	 * @return               number of records deleted
-	 */
-	public static int deleteAcct(int AD_Table_ID, int Record_ID, int AcctSchema_ID, String trx)
-	{
-        StringBuilder sql = new StringBuilder ("DELETE FROM Fact_Acct WHERE AD_Table_ID=")
-        				.append(AD_Table_ID)
-						.append(" AND Record_ID=")
-						.append(Record_ID)
-						.append(" AND C_AcctSchema_ID=")
-						.append(AcctSchema_ID);
-
-		return DB.executeUpdate(sql.toString(), trx);
-	} // deleteAcct
 
 	/**
 	 *  Posting logic for Accounting Schema
@@ -2519,27 +2499,25 @@ public abstract class Doc implements IDoc
 	}
 
 	/**
-	 * Delete the posting based on the table and record for the client accounting schema with
-	 * isDeleteReverseCorrectPosting true
+	 * Delete reverse correct posting for the document.
 	 * 
-	 * @param ctx
-	 * @param client_ID
-	 * @param tableId
-	 * @param record_ID
+	 * @param AD_Client_ID
+	 * @param AD_Table_ID
+	 * @param Record_ID
 	 * @param trxName
 	 */
-	public static void deleteReverseCorrectPosting(Properties ctx, int client_ID, int tableId, int record_ID, String trxName)
+	public static void deleteReverseCorrectPosting(int AD_Client_ID, int AD_Table_ID, int Record_ID, String trxName)
 	{
-		MAcctSchema[] acctSchemas = MAcctSchema.getClientAcctSchema(ctx, client_ID);
+		MAcctSchema[] acctSchemas = MAcctSchema.getClientAcctSchema(Env.getCtx(), AD_Client_ID);
 		for (MAcctSchema as : acctSchemas)
 		{
 			if (as.isDeleteReverseCorrectPosting())
 			{
-				Doc.deleteAcct(tableId, record_ID, as.getC_AcctSchema_ID(), trxName);
+				MFactAcct.deleteEx(AD_Table_ID, Record_ID, as.getC_AcctSchema_ID(), trxName);
 			}
 		}
-	} // deleteAcctForClientSchema
-	
+	} // deleteReverseCorrectPosting
+
 	/** In a Back-Date Posting Process **/
 	private boolean isInBackDatePostingProcess;
 	

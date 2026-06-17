@@ -53,8 +53,8 @@ import org.compiere.model.Query;
 import org.compiere.model.X_M_Cost;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.TimeUtil;
 import org.compiere.util.Trx;
-import org.compiere.util.Util;
 
 /**
  *  Post Invoice Documents.
@@ -439,8 +439,8 @@ public class Doc_Invoice extends Doc
 		MInvoice inv = (MInvoice) getPO();
 		// check is date of both invoiced same
 		boolean isCreatePost = !(as.isDeleteReverseCorrectPosting()
-				&& inv.getReversal_ID() > 0
-				&& Util.compareDate(inv.getDateAcct(), inv.getReversal().getDateAcct()) == 0);
+									&& inv.getReversal_ID() > 0
+									&& TimeUtil.isSameDay(inv.getDateAcct(), inv.getReversal().getDateAcct()));
 
 		//  ** ARI, ARF
 		if (getDocumentType().equals(DOCTYPE_ARInvoice)
@@ -693,22 +693,21 @@ public class Doc_Invoice extends Doc
 
 							if(isCreatePost)
 							{
-							FactLine fl = fact.createLine (line, tradeDiscountReceived,
-									getC_Currency_ID(), null, dAmt);
-							if (fl != null && invoice.getReversal_ID() > 0 && invoice.getReversal_ID() < invoice.getC_Invoice_ID())
-							{
-								int lineId = 0;
-								if (originalInvoice != null)
+								FactLine fl = fact.createLine (line, tradeDiscountReceived, getC_Currency_ID(), null, dAmt);
+								if (fl != null && invoice.getReversal_ID() > 0 && invoice.getReversal_ID() < invoice.getC_Invoice_ID())
 								{
-									MInvoiceLine[] lines = originalInvoice.getLines();
-									if (lines.length > i)
-										lineId = lines[i].getC_InvoiceLine_ID();
+									int lineId = 0;
+									if (originalInvoice != null)
+									{
+										MInvoiceLine[] lines = originalInvoice.getLines();
+										if (lines.length > i)
+											lineId = lines[i].getC_InvoiceLine_ID();
+									}
+									fl.updateReverseLine(MInvoice.Table_ID, invoice.getReversal_ID(), lineId, BigDecimal.ONE);
 								}
-								fl.updateReverseLine(MInvoice.Table_ID, invoice.getReversal_ID(), lineId, BigDecimal.ONE);
 							}
 						}
 					}
-				}
 					if(isCreatePost)
 			        {
 			            FactLine fl = fact.createLine (line, expense,
@@ -766,26 +765,25 @@ public class Doc_Invoice extends Doc
 				grossAmt = Env.ZERO;
 			}
 
-      if (isCreatePost)
-      {
-        FactLine fl = null;
-        if (grossAmt.signum() > 0)
-          fl = fact.createLine(null, MAccount.get(getCtx(), payables_ID),
-            getC_Currency_ID(), null, grossAmt);
-        else if (grossAmt.signum() < 0)
-          fl = fact.createLine(null, MAccount.get(getCtx(), payables_ID),
-              getC_Currency_ID(), grossAmt.negate(), null);
-        if (serviceAmt.signum() > 0)
-          fl = fact.createLine(null, MAccount.get(getCtx(), payablesServices_ID),
-            getC_Currency_ID(), null, serviceAmt);
-        else if (serviceAmt.signum() < 0)
-          fl = fact.createLine(null, MAccount.get(getCtx(), payablesServices_ID),
-              getC_Currency_ID(), serviceAmt.negate(), null);
-        if (fl != null && invoice.getReversal_ID() > 0 && invoice.getReversal_ID() < invoice.getC_Invoice_ID())
-        {
-          fl.updateReverseLine(MInvoice.Table_ID, invoice.getReversal_ID(), 0, BigDecimal.ONE);
-        }
-      }
+			if (isCreatePost)
+			{
+				FactLine fl = null;
+				if (grossAmt.signum() > 0)
+					fl = fact.createLine(null, MAccount.get(getCtx(), payables_ID), getC_Currency_ID(), null, grossAmt);
+				else if (grossAmt.signum() < 0)
+					fl = fact.createLine(null, MAccount.get(getCtx(), payables_ID), getC_Currency_ID(), grossAmt.negate(), null);
+				if (fl != null && invoice.getReversal_ID() > 0 && invoice.getReversal_ID() < invoice.getC_Invoice_ID())
+					fl.updateReverseLine(MInvoice.Table_ID, invoice.getReversal_ID(), 0, BigDecimal.ONE);
+
+				fl = null;
+				if (serviceAmt.signum() > 0)
+					fl = fact.createLine(null, MAccount.get(getCtx(), payablesServices_ID), getC_Currency_ID(), null, serviceAmt);
+				else if (serviceAmt.signum() < 0)
+					fl = fact.createLine(null, MAccount.get(getCtx(), payablesServices_ID), getC_Currency_ID(), serviceAmt.negate(), null);
+				if (fl != null && invoice.getReversal_ID() > 0 && invoice.getReversal_ID() < invoice.getC_Invoice_ID())
+					fl.updateReverseLine(MInvoice.Table_ID, invoice.getReversal_ID(), 0, BigDecimal.ONE);
+			}
+
 			//  Set Locations
 			FactLine[] fLines = fact.getLines();
 			for (int i = 0; i < fLines.length; i++)

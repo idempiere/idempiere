@@ -57,8 +57,8 @@ import org.compiere.model.Query;
 import org.compiere.model.X_M_Cost;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.TimeUtil;
 import org.compiere.util.Trx;
-import org.compiere.util.Util;
 
 /**
  *  Post MatchInv Documents.
@@ -157,10 +157,12 @@ public class Doc_MatchInv extends Doc
 	public ArrayList<Fact> createFacts (MAcctSchema as)
 	{
 		ArrayList<Fact> facts = new ArrayList<Fact>();
-		
-		if (as.isDeleteReverseCorrectPosting()
-			&& m_matchInv.getReversal_ID() > 0
-				&& Util.compareDate(m_matchInv.getDateAcct(), m_matchInv.getReversal().getDateAcct()) == 0)
+
+		boolean isCreatePost = !(as.isDeleteReverseCorrectPosting()
+									&& m_matchInv.getReversal_ID() > 0
+									&& TimeUtil.isSameDay(m_matchInv.getDateAcct(), m_matchInv.getReversal().getDateAcct()));
+
+		if (!isCreatePost)
 		{
 			// Check if the original document has created costing then only created costing.
 			String error = createMatchInvCostDetail(as, true);

@@ -29,7 +29,7 @@ import org.compiere.model.MClientInfo;
 import org.compiere.model.MPayment;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.Env;
-import org.compiere.util.Util;
+import org.compiere.util.TimeUtil;
 
 /**
  *  Post {@link MPayment} Documents.
@@ -123,7 +123,7 @@ public class Doc_Payment extends Doc
 		// check is date of both Payment same
 		if (as.isDeleteReverseCorrectPosting()
 			&& pay.getReversal_ID() > 0
-				&& Util.compareDate(pay.getDateAcct(), pay.getReversal().getDateAcct()) == 0)
+			&& TimeUtil.isSameDay(pay.getDateAcct(), pay.getReversal().getDateAcct()))
 		{
 			ArrayList<Fact> facts = new ArrayList<Fact>();
 			facts.add(fact);
