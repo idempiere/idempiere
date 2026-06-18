@@ -333,50 +333,59 @@ public class PaymentTest extends AbstractTestCase {
 	{
 		// Setup accounting schema to delete accounting entries on Reverse Correct
 		MClientInfo clientInfo = MClientInfo.get(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
-		MAcctSchema as = clientInfo.getMAcctSchema1();
+		MAcctSchema as = new MAcctSchema(Env.getCtx(), clientInfo.getC_AcctSchema1_ID(), getTrxName());
+		boolean oldDeleteReverseCorrectPosting = as.isDeleteReverseCorrectPosting();
 		as.setIsDeleteReverseCorrectPosting(true);
 		as.saveEx(getTrxName());
 
-		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		try
+		{
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
 
-		// Create a payment document
-		MPayment payment = new MPayment(Env.getCtx(), 0, getTrxName());
-		payment.setC_BPartner_ID(DictionaryIDs.C_BPartner.JOE_BLOCK.id);
-		payment.setC_BankAccount_ID(DictionaryIDs.C_BankAccount.HQ_POS_CASH.id);
-		payment.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
-		payment.setAD_Org_ID(DictionaryIDs.AD_Org.HQ.id);
-		payment.setPayAmt(new BigDecimal(1000));
-		payment.setC_DocType_ID(false);
-		payment.setDateTrx(today);
-		payment.setDateAcct(today);
-		payment.saveEx();
+			// Create a payment document
+			MPayment payment = new MPayment(Env.getCtx(), 0, getTrxName());
+			payment.setC_BPartner_ID(DictionaryIDs.C_BPartner.JOE_BLOCK.id);
+			payment.setC_BankAccount_ID(DictionaryIDs.C_BankAccount.HQ_POS_CASH.id);
+			payment.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
+			payment.setAD_Org_ID(DictionaryIDs.AD_Org.HQ.id);
+			payment.setPayAmt(new BigDecimal(1000));
+			payment.setC_DocType_ID(false);
+			payment.setDateTrx(today);
+			payment.setDateAcct(today);
+			payment.saveEx();
 
-		// Complete Payment
-		payment.load(getTrxName());
-		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Complete);
-		assertFalse(info.isError(), info.getSummary());
-		assertEquals(DocAction.STATUS_Completed, payment.getDocStatus());
+			// Complete Payment
+			payment.load(getTrxName());
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			assertEquals(DocAction.STATUS_Completed, payment.getDocStatus());
 
-		// Verify posting created
-		Query query = MFactAcct.createRecordIdQuery(MPayment.Table_ID, payment.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
-		List<MFactAcct> factAccts = query.list();
-		assertFalse(factAccts.isEmpty(), "Expected accounting entries after payment completion for schema " + as.getName());
+			// Verify posting created
+			Query query = MFactAcct.createRecordIdQuery(MPayment.Table_ID, payment.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+			List<MFactAcct> factAccts = query.list();
+			assertFalse(factAccts.isEmpty(), "Expected accounting entries after payment completion for schema " + as.getName());
 
-		// Reverse Correct Payment
-		info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Reverse_Correct);
-		assertFalse(info.isError(), info.getSummary());
-		payment.load(getTrxName());
-		assertEquals(DocAction.STATUS_Reversed, payment.getDocStatus());
-		assertTrue(payment.getReversal_ID() > 0, "Reversal document should be created");
+			// Reverse Correct Payment
+			info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Reverse_Correct);
+			assertFalse(info.isError(), info.getSummary());
+			payment.load(getTrxName());
+			assertEquals(DocAction.STATUS_Reversed, payment.getDocStatus());
+			assertTrue(payment.getReversal_ID() > 0, "Reversal document should be created");
 
-		// Verify accounting entries are deleted for both original and reversal payment
-		// Original
-		query = MFactAcct.createRecordIdQuery(MPayment.Table_ID, payment.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
-		factAccts = query.list();
-		assertEquals(0, factAccts.size(), "Fact_Acct entries should be deleted for original payment after Reverse Correct");
-		// Reversal
-		query = MFactAcct.createRecordIdQuery(MPayment.Table_ID, payment.getReversal_ID(), as.getC_AcctSchema_ID(), getTrxName());
-		factAccts = query.list();
-		assertEquals(0, factAccts.size(), "Fact_Acct entries should be deleted for reversed payment after Reverse Correct");
+			// Verify accounting entries are deleted for both original and reversal payment
+			// Original
+			query = MFactAcct.createRecordIdQuery(MPayment.Table_ID, payment.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+			factAccts = query.list();
+			assertEquals(0, factAccts.size(), "Fact_Acct entries should be deleted for original payment after Reverse Correct");
+			// Reversal
+			query = MFactAcct.createRecordIdQuery(MPayment.Table_ID, payment.getReversal_ID(), as.getC_AcctSchema_ID(), getTrxName());
+			factAccts = query.list();
+			assertEquals(0, factAccts.size(), "Fact_Acct entries should be deleted for reversed payment after Reverse Correct");
+		}
+		finally
+		{
+			as.setIsDeleteReverseCorrectPosting(oldDeleteReverseCorrectPosting);
+			as.saveEx(getTrxName());
+		}
 	}
 }
