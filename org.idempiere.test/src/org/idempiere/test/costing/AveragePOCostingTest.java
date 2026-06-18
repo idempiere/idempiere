@@ -7056,7 +7056,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
 			if (!receipt.isPosted()) {
 				String error = DocumentEngine.postImmediate(Env.getCtx(), receipt.getAD_Client_ID(), receipt.get_Table_ID(), receipt.get_ID(), false, getTrxName());
-				assertTrue(error == null, error);
+				assertNull(error, error);
 			}
 			receipt.load(getTrxName());
 			assertTrue(receipt.isPosted());
@@ -7080,7 +7080,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
 			if (!invoice.isPosted()) {
 				String error = DocumentEngine.postImmediate(Env.getCtx(), invoice.getAD_Client_ID(), MInvoice.Table_ID, invoice.get_ID(), false, getTrxName());
-				assertTrue(error == null, error);
+				assertNull(error, error);
 			}
 			invoice.load(getTrxName());
 			assertTrue(invoice.isPosted());
@@ -7089,7 +7089,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			for (MMatchInv mi : miList) {
 				if (!mi.isPosted()) {
 					String error = DocumentEngine.postImmediate(Env.getCtx(), mi.getAD_Client_ID(), MMatchInv.Table_ID, mi.get_ID(), false, getTrxName());
-					assertTrue(error == null, error);
+					assertNull(error, error);
 				}
 				mi.load(getTrxName());
 				assertTrue(mi.isPosted());
@@ -7152,7 +7152,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
 			if (!invoice.isPosted()) {
 				String error = DocumentEngine.postImmediate(Env.getCtx(), invoice.getAD_Client_ID(), MInvoice.Table_ID, invoice.get_ID(), false, getTrxName());
-				assertTrue(error == null, error);
+				assertNull(error, error);
 			}
 			invoice.load(getTrxName());
 			assertTrue(invoice.isPosted());
@@ -7193,7 +7193,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
 			if (!receipt.isPosted()) {
 				String error = DocumentEngine.postImmediate(Env.getCtx(), receipt.getAD_Client_ID(), receipt.get_Table_ID(), receipt.get_ID(), false, getTrxName());
-				assertTrue(error == null, error);
+				assertNull(error, error);
 			}
 			receipt.load(getTrxName());
 			assertTrue(receipt.isPosted());
@@ -7203,7 +7203,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			for (MMatchInv mi : miList) {
 				if (!mi.isPosted()) {
 					String error = DocumentEngine.postImmediate(Env.getCtx(), mi.getAD_Client_ID(), MMatchInv.Table_ID, mi.get_ID(), false, getTrxName());
-					assertTrue(error == null, error);
+					assertNull(error, error);
 				}
 				mi.load(getTrxName());
 				assertTrue(mi.isPosted());
@@ -7228,6 +7228,11 @@ public class AveragePOCostingTest extends AbstractTestCase {
 					expected.add(new FactAcct(assetAccount, mrQty2.multiply(invPrice.subtract(poPrice)), 2, true));
 				}
 				assertFactAcctEntries(factAccts, expected);
+				
+				List<MCostDetail> costDetails = MCostDetail.list(Env.getCtx(),
+						"M_MatchInv_ID=? AND M_CostElement_ID IS NULL", mi.get_ID(),
+						mi.getM_AttributeSetInstance_ID(), as.get_ID(), getTrxName());
+				assertEquals(1, costDetails.size(), "Unexpected IPV cost detail for match invoice ASI");
 			}
 			
 			product.set_TrxName(getTrxName());
@@ -7245,7 +7250,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			MInOut reversal = new MInOut(Env.getCtx(), receipt.getReversal_ID(), getTrxName());
 			if (!reversal.isPosted()) {
 				String error = DocumentEngine.postImmediate(Env.getCtx(), reversal.getAD_Client_ID(), reversal.get_Table_ID(), reversal.get_ID(), false, getTrxName());
-				assertTrue(error == null, error);
+				assertNull(error, error);
 			}
 			reversal.load(getTrxName());
 			assertTrue(reversal.isPosted());
@@ -7255,7 +7260,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			for (MMatchInv mi : miList) {
 				if (!mi.isPosted()) {
 					String error = DocumentEngine.postImmediate(Env.getCtx(), mi.getAD_Client_ID(), MMatchInv.Table_ID, mi.get_ID(), false, getTrxName());
-					assertTrue(error == null, error);
+					assertNull(error, error);
 				}
 				mi.load(getTrxName());
 				assertTrue(mi.isPosted());
@@ -7281,6 +7286,11 @@ public class AveragePOCostingTest extends AbstractTestCase {
 					expected.add(new FactAcct(assetAccount, mrQty2.multiply(invPrice.subtract(poPrice)), 2, isDebit));
 				}
 				assertFactAcctEntries(factAccts, expected);
+				
+				List<MCostDetail> costDetails = MCostDetail.list(Env.getCtx(),
+						"M_MatchInv_ID=? AND M_CostElement_ID IS NULL", mi.get_ID(),
+						mi.getM_AttributeSetInstance_ID(), as.get_ID(), getTrxName());
+				assertEquals(1, costDetails.size(), "Unexpected IPV cost detail for match invoice ASI");
 			}
 			
 			product.set_TrxName(getTrxName());
@@ -7383,7 +7393,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
 			if (!receipt.isPosted()) {
 				String error = DocumentEngine.postImmediate(Env.getCtx(), receipt.getAD_Client_ID(), receipt.get_Table_ID(), receipt.get_ID(), false, getTrxName());
-				assertTrue(error == null, error);
+				assertNull(error, error);
 			}
 			receipt.load(getTrxName());
 			assertTrue(receipt.isPosted());
@@ -7407,7 +7417,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
 			if (!invoice.isPosted()) {
 				String error = DocumentEngine.postImmediate(Env.getCtx(), invoice.getAD_Client_ID(), MInvoice.Table_ID, invoice.get_ID(), false, getTrxName());
-				assertTrue(error == null, error);
+				assertNull(error, error);
 			}
 			invoice.load(getTrxName());
 			assertTrue(invoice.isPosted());
@@ -7416,7 +7426,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			for (MMatchInv mi : miList) {
 				if (!mi.isPosted()) {
 					String error = DocumentEngine.postImmediate(Env.getCtx(), mi.getAD_Client_ID(), MMatchInv.Table_ID, mi.get_ID(), false, getTrxName());
-					assertTrue(error == null, error);
+					assertNull(error, error);
 				}
 				mi.load(getTrxName());
 				assertTrue(mi.isPosted());
@@ -7479,7 +7489,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
 			if (!invoice.isPosted()) {
 				String error = DocumentEngine.postImmediate(Env.getCtx(), invoice.getAD_Client_ID(), MInvoice.Table_ID, invoice.get_ID(), false, getTrxName());
-				assertTrue(error == null, error);
+				assertNull(error, error);
 			}
 			invoice.load(getTrxName());
 			assertTrue(invoice.isPosted());
@@ -7520,7 +7530,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
 			if (!receipt.isPosted()) {
 				String error = DocumentEngine.postImmediate(Env.getCtx(), receipt.getAD_Client_ID(), receipt.get_Table_ID(), receipt.get_ID(), false, getTrxName());
-				assertTrue(error == null, error);
+				assertNull(error, error);
 			}
 			receipt.load(getTrxName());
 			assertTrue(receipt.isPosted());
@@ -7530,7 +7540,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			for (MMatchInv mi : miList) {
 				if (!mi.isPosted()) {
 					String error = DocumentEngine.postImmediate(Env.getCtx(), mi.getAD_Client_ID(), MMatchInv.Table_ID, mi.get_ID(), false, getTrxName());
-					assertTrue(error == null, error);
+					assertNull(error, error);
 				}
 				mi.load(getTrxName());
 				assertTrue(mi.isPosted());
@@ -7555,6 +7565,11 @@ public class AveragePOCostingTest extends AbstractTestCase {
 					expected.add(new FactAcct(assetAccount, mrQty2.multiply(poPrice.subtract(invPrice)), 2, false));
 				}
 				assertFactAcctEntries(factAccts, expected);
+				
+				List<MCostDetail> costDetails = MCostDetail.list(Env.getCtx(),
+						"M_MatchInv_ID=? AND M_CostElement_ID IS NULL", mi.get_ID(),
+						mi.getM_AttributeSetInstance_ID(), as.get_ID(), getTrxName());
+				assertEquals(1, costDetails.size(), "Unexpected IPV cost detail for match invoice ASI");
 			}
 			
 			product.set_TrxName(getTrxName());
@@ -7572,7 +7587,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			MInOut reversal = new MInOut(Env.getCtx(), receipt.getReversal_ID(), getTrxName());
 			if (!reversal.isPosted()) {
 				String error = DocumentEngine.postImmediate(Env.getCtx(), reversal.getAD_Client_ID(), reversal.get_Table_ID(), reversal.get_ID(), false, getTrxName());
-				assertTrue(error == null, error);
+				assertNull(error, error);
 			}
 			reversal.load(getTrxName());
 			assertTrue(reversal.isPosted());
@@ -7582,7 +7597,7 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			for (MMatchInv mi : miList) {
 				if (!mi.isPosted()) {
 					String error = DocumentEngine.postImmediate(Env.getCtx(), mi.getAD_Client_ID(), MMatchInv.Table_ID, mi.get_ID(), false, getTrxName());
-					assertTrue(error == null, error);
+					assertNull(error, error);
 				}
 				mi.load(getTrxName());
 				assertTrue(mi.isPosted());
@@ -7608,6 +7623,11 @@ public class AveragePOCostingTest extends AbstractTestCase {
 					expected.add(new FactAcct(assetAccount, mrQty2.multiply(poPrice.subtract(invPrice)), 2, !isDebit));
 				}
 				assertFactAcctEntries(factAccts, expected);
+				
+				List<MCostDetail> costDetails = MCostDetail.list(Env.getCtx(),
+						"M_MatchInv_ID=? AND M_CostElement_ID IS NULL", mi.get_ID(),
+						mi.getM_AttributeSetInstance_ID(), as.get_ID(), getTrxName());
+				assertEquals(1, costDetails.size(), "Unexpected IPV cost detail for match invoice ASI");
 			}
 			
 			product.set_TrxName(getTrxName());
