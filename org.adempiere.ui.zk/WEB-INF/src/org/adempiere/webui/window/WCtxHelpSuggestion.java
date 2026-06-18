@@ -39,10 +39,8 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.South;
-import org.zkoss.zul.Vbox;
 
 /**
  * Dialog to capture suggestion for context help (AD_CtxHelp)
@@ -92,6 +90,7 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 	/**
 	 * Layout dialog
 	 */
+	@SuppressWarnings("deprecation")
 	private void layout() {
 		Borderlayout borderlayout = new Borderlayout();
 		appendChild(borderlayout);
@@ -103,13 +102,13 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 		center.setHflex("1");
 		borderlayout.appendChild(center);
 		
-		Vbox vlayout = new Vbox();
+		org.zkoss.zul.Vbox vlayout = new org.zkoss.zul.Vbox();
 		vlayout.setStyle("padding: 8px 16px");
 		vlayout.setWidth("100%");
 		vlayout.setHeight("100%");
 		vlayout.setPack("stretch");
 		center.appendChild(vlayout);
-		Hbox hlayout = new Hbox();
+		org.zkoss.zul.Hbox hlayout = new org.zkoss.zul.Hbox();
 		hlayout.setVflex("min");
 		hlayout.setWidth("100%");
 		hlayout.setAlign("center");
@@ -126,7 +125,7 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 		hlayout.appendChild(cell);
 		vlayout.appendChild(hlayout);
 				
-		hlayout = new Hbox();
+		hlayout = new org.zkoss.zul.Hbox();
 		hlayout.setVflex("1");
 		hlayout.setHflex("1");
 		hlayout.setAlign("stretch");

@@ -1808,8 +1808,9 @@ public class MCost extends X_M_Cost implements ICostInfo
 			sb.append (",AD_ASI_ID=").append (getM_AttributeSetInstance_ID());
 		sb.append (",M_CostElement_ID=").append (getM_CostElement_ID());
 		//
-		sb.append (", CurrentCost=").append (getCurrentCostPrice())
-			.append (", C.Amt=").append (getCumulatedAmt())
+		sb.append (",CurrentQty=").append (getCurrentQty());
+		sb.append (",CurrentCost=").append (getCurrentCostPrice())
+			.append (",C.Amt=").append (getCumulatedAmt())
 			.append (",C.Qty=").append (getCumulatedQty())
 			.append ("]");
 		return sb.toString ();

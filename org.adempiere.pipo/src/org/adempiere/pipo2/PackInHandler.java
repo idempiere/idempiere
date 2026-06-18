@@ -348,7 +348,7 @@ public class PackInHandler extends DefaultHandler {
     	DB.executeUpdateEx("UPDATE AD_Package_Imp SET Processed=?, PK_Status=?, UpdatedBy=?, Updated=getDate() WHERE AD_Package_Imp_ID=?",
     			new Object[] {"Y", packageStatus, Env.getAD_User_ID(m_ctx.ctx), AD_Package_Imp_ID},
     			trxName);
-		Trx trx = Trx.get(trxName, false);
+		Trx trx = trxName == null ? null : Trx.get(trxName, false);
 		if (trx == null) {
 			org.osgi.service.event.Event event = EventManager.newEvent(IEventTopics.POST_PACKIN_PACKAGE_IMP, AD_Package_Imp_ID, true);
 			EventManager.getInstance().postEvent(event);

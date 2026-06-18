@@ -180,12 +180,17 @@ public class Incremental2PackActivator extends AbstractActivator {
 				trx.close();
 			}
 		}
-		Collections.sort(list, new Comparator<TwoPackEntry>() {
-			@Override
-			public int compare(TwoPackEntry o1, TwoPackEntry o2) {
-				return new Version(o1.version).compareTo(new Version(o2.version));
-			}
-		});		
+		try {
+			Collections.sort(list, new Comparator<TwoPackEntry>() {
+				@Override
+				public int compare(TwoPackEntry o1, TwoPackEntry o2) {
+					return new Version(o1.version).compareTo(new Version(o2.version));
+				}
+			});		
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "Exception sorting 2packs on " + getName(), e);
+			return;
+		}
 
 		boolean success = true;
 		boolean cacheReset = false;

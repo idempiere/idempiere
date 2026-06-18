@@ -72,7 +72,7 @@ import org.zkoss.zk.ui.sys.ExecutionCtrl;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.A;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Hbox;
+import org.adempiere.webui.component.FlexHlayout;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.LayoutRegion;
 import org.zkoss.zul.Popup;
@@ -137,8 +137,8 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	/** Registered event listener for DetailPane events **/
 	private EventListener<Event> eventListener;
 
-	/** AD_Tab_ID:Hbox. Message (status, error) container for each tab. **/
-	private Map<Integer, Hbox> messageContainers = new HashMap<Integer, Hbox>();
+	/** AD_Tab_ID:FlexHlayout. Message (status, error) container for each tab. **/
+	private Map<Integer, FlexHlayout> messageContainers = new HashMap<Integer, FlexHlayout>();
 
 	/** content for message popup **/
 	private Div msgPopupCnt;
@@ -533,9 +533,9 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 		}
 		
 		//container for status and error text
-		Hbox messageContainer = new Hbox();
-		messageContainer.setPack("end");
-		messageContainer.setAlign("center");
+		FlexHlayout messageContainer = new FlexHlayout();
+		messageContainer.setPack(FlexHlayout.PackType.END);
+		messageContainer.setAlign(FlexHlayout.AlignType.CENTER);
 		messageContainer.setSclass("adwindow-detailpane-message");
 		messageContainer.setId("messages");
 		if (ClientInfo.minWidth(ClientInfo.SMALL_WIDTH))
@@ -711,7 +711,7 @@ public class DetailPane extends Panel implements EventListener<Event>, IdSpace {
 	public void setStatusMessage(String status, boolean error) {		
 		IADTabpanel tabPanel = getSelectedADTabpanel();
 		if (tabPanel == null) return;
-		Hbox messageContainer = messageContainers.get(tabPanel.getAttribute("AD_Tab_ID"));
+		FlexHlayout messageContainer = messageContainers.get(tabPanel.getAttribute("AD_Tab_ID"));
 		
 		Execution execution = Executions.getCurrent();
     	if (execution != null) {

@@ -291,6 +291,13 @@ public class MMenu extends X_AD_Menu implements ImmutablePOSupport
 						return userDef.getName();
 				}
 			}
+			else if (ACTION_Form.equals(getAction())) {
+				MUserDefForm userDef = MUserDefForm.getBestMatch(getCtx(), getAD_Form_ID());
+				if (userDef != null) {
+					if (userDef.getName() != null)
+						return userDef.getName();
+				}
+			}
 		}
 
 		return get_Translation(MMenu.COLUMNNAME_Name);

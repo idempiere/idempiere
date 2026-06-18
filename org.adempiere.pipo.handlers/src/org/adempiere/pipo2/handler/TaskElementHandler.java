@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
@@ -89,8 +90,8 @@ public class TaskElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(PIPOContext ctx, TransformerHandler document)
-			throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document)
+			throws Exception {
 		int AD_Task_ID = Env.getContextAsInt(ctx.ctx, "AD_Task_ID");
 		if (ctx.packOut.isExported("AD_Task_ID"+"|"+AD_Task_ID))
 			return;
@@ -101,7 +102,7 @@ public class TaskElementHandler extends AbstractElementHandler {
 		verifyPackOutRequirement(m_Task);
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
-		document.startElement("", "", I_AD_Task.Table_Name, atts);
+		document.startElement(I_AD_Task.Table_Name, atts);
 		createTaskBinding(ctx, document, m_Task);
 
 		PackOut packOut = ctx.packOut;
@@ -112,11 +113,11 @@ public class TaskElementHandler extends AbstractElementHandler {
 			if (log.isLoggable(Level.INFO)) log.info(e.toString());
 		}
 
-		document.endElement("", "", I_AD_Task.Table_Name);
+		document.endElement(I_AD_Task.Table_Name);
 
 	}
 
-	private void createTaskBinding(PIPOContext ctx, TransformerHandler document,
+	private void createTaskBinding(PIPOContext ctx, IPackSerializer document,
 			X_AD_Task m_Task) {
 		PoExporter filler = new PoExporter(ctx, document, m_Task);
 		List<String> excludes = defaultExcludeList(X_AD_Task.Table_Name);
@@ -125,11 +126,11 @@ public class TaskElementHandler extends AbstractElementHandler {
 		filler.export(excludes);
 	}
 
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler,int recordId) throws Exception
 	{
 		Env.setContext(packout.getCtx().ctx, X_AD_Task.COLUMNNAME_AD_Task_ID, recordId);
 
-		this.create(packout.getCtx(), packoutHandler);
+		this.create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(X_AD_Task.COLUMNNAME_AD_Task_ID);
 	}
 }

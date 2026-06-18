@@ -36,6 +36,8 @@ import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
+import org.adempiere.webui.component.FlexHlayout;
+import org.adempiere.webui.component.FlexVlayout;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
@@ -65,11 +67,9 @@ import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Hbox;
 import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
-import org.zkoss.zul.Vbox;
 
 /**
  * 	Fixed length file import.<br/>
@@ -135,7 +135,7 @@ public class WFileImport extends ADForm implements EventListener<Event>
 	private Div previewPanel = new Div();
 
 	/** North part of form */
-	private Vbox northPanel = new Vbox();
+	private FlexVlayout northPanel = new FlexVlayout();
 
 	/** Center part of form */
 	private Div centerPanel = new Div();
@@ -226,8 +226,8 @@ public class WFileImport extends ADForm implements EventListener<Event>
 		bPrevious.setLabel("<");
 		bPrevious.addEventListener(Events.ON_CLICK, this);
 				
-		Hbox hbox = new Hbox();
-		hbox.setAlign("center");
+		FlexHlayout hbox = new FlexHlayout();
+		hbox.setAlign(FlexHlayout.AlignType.CENTER);
 		hbox.appendChild(bFile);
 		hbox.appendChild(fCharset);
 		hbox.appendChild(info);
@@ -511,7 +511,8 @@ public class WFileImport extends ADForm implements EventListener<Event>
 			
 			m_labels[i] = new Label(row.getName());
 			
-			Hbox hbox = new Hbox();
+			@SuppressWarnings("deprecation")
+			org.zkoss.zul.Hbox hbox = new org.zkoss.zul.Hbox();
 			hbox.setAlign("center");
 			ZKUpdateUtil.setWidth(hbox, "100%");
 			hbox.setStyle("padding-bottom: 3px");

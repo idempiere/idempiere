@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
@@ -87,8 +88,8 @@ public class PrintFormatItemElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(PIPOContext ctx, TransformerHandler document)
-			throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document)
+			throws Exception {
 		int AD_PrintFormatItem_ID = Env.getContextAsInt(ctx.ctx,
 				X_AD_PrintFormatItem.COLUMNNAME_AD_PrintFormatItem_ID);
 		if (ctx.packOut.isExported(X_AD_PrintFormatItem.COLUMNNAME_AD_PrintFormatItem_ID+"|"+AD_PrintFormatItem_ID))
@@ -105,7 +106,7 @@ public class PrintFormatItemElementHandler extends AbstractElementHandler {
 		PackOut packOut = ctx.packOut;
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
-		document.startElement("", "", I_AD_PrintFormatItem.Table_Name, atts);
+		document.startElement(I_AD_PrintFormatItem.Table_Name, atts);
 		createPrintFormatItemBinding(ctx, document, m_PrintFormatItem);
 
 		packOut.getCtx().ctx.put("Table_Name",I_AD_PrintFormatItem.Table_Name);
@@ -115,10 +116,10 @@ public class PrintFormatItemElementHandler extends AbstractElementHandler {
 			if (log.isLoggable(Level.INFO)) log.info(e.toString());
 		}
 
-		document.endElement("", "", I_AD_PrintFormatItem.Table_Name);
+		document.endElement(I_AD_PrintFormatItem.Table_Name);
 	}
 
-	private void createPrintFormatItemBinding(PIPOContext ctx, TransformerHandler document,
+	private void createPrintFormatItemBinding(PIPOContext ctx, IPackSerializer document,
 			X_AD_PrintFormatItem mPrintformatItem) {
 
 		PoExporter filler = new PoExporter(ctx, document, mPrintformatItem);
@@ -130,13 +131,13 @@ public class PrintFormatItemElementHandler extends AbstractElementHandler {
 		filler.export(excludes);
 	}
 
-	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer,
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
 
 		Env.setContext(packout.getCtx().ctx, X_AD_PrintFormatItem.COLUMNNAME_AD_PrintFormatItem_ID, recordId);
 
-		this.create(packout.getCtx(), packoutHandler);
+		this.create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(X_AD_PrintFormatItem.COLUMNNAME_AD_PrintFormatItem_ID);
 	}
 }

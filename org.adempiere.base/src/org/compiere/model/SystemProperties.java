@@ -63,6 +63,23 @@ public class SystemProperties {
 	private static final String TRACE_NULL_TRX_CONNECTION = "TRACE_NULL_TRX_CONNECTION";
 	private static final String ZK_THEME = MSysConfig.ZK_THEME;
 	private static final String ZkUnitTest = "ZkUnitTest";
+	public static final String IDEMPIERE_DISTRIBUTED_BACKEND_PROPERTY = "idempiere.distributed.backend";
+	public static final String IDEMPIERE_DISTRIBUTED_BACKEND_ENV = "IDEMPIERE_DISTRIBUTED_BACKEND";
+
+	/**
+	 * Get the distributed backend defined in system properties or environment variable, <br/>
+	 * if not defined return hazelcast as default
+	 * @return the distributed backend
+	 */
+	public static String getDistributedBackend() {
+		String backend = System.getProperty(IDEMPIERE_DISTRIBUTED_BACKEND_PROPERTY);
+		if (Util.isEmpty(backend, true))
+			backend = System.getenv(IDEMPIERE_DISTRIBUTED_BACKEND_ENV);
+		// fallback to hazelcast if not defined, as it is the default distribution provider
+		if (Util.isEmpty(backend, true))
+			backend = "hazelcast";
+		return backend;
+	}
 
 	/**
 	 * ADEMPIERE_DB_SYSTEM_USER allows to override the default name of the system user for the database

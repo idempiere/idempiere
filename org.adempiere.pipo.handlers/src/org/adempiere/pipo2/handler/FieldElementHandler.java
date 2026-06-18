@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
@@ -100,8 +101,8 @@ public class FieldElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(PIPOContext ctx, TransformerHandler document)
-			throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document)
+			throws Exception {
 		int AD_Field_ID = Env.getContextAsInt(ctx.ctx,
 				X_AD_Field.COLUMNNAME_AD_Field_ID);
 		if (ctx.packOut.isExported(X_AD_Field.COLUMNNAME_AD_Field_ID+"|"+AD_Field_ID))
@@ -143,7 +144,7 @@ public class FieldElementHandler extends AbstractElementHandler {
 
 			AttributesImpl atts = new AttributesImpl();
 			addTypeName(atts, "table");
-			document.startElement("", "", X_AD_Field.Table_Name, atts);
+			document.startElement(X_AD_Field.Table_Name, atts);
 			createFieldBinding(ctx, document, m_Field);
 			packOut.getCtx().ctx.put("Table_Name", X_AD_Field.Table_Name);
 			try
@@ -170,10 +171,10 @@ public class FieldElementHandler extends AbstractElementHandler {
 		}
 
 		if (createElement)
-			document.endElement("", "", X_AD_Field.Table_Name);	
+			document.endElement(X_AD_Field.Table_Name);	
 	}
 
-	private void createFieldBinding(PIPOContext ctx, TransformerHandler document,
+	private void createFieldBinding(PIPOContext ctx, IPackSerializer document,
 			X_AD_Field m_Field) {
 
 		List<String> excludes = defaultExcludeList(X_AD_Field.Table_Name);
@@ -186,11 +187,11 @@ public class FieldElementHandler extends AbstractElementHandler {
 	}
 
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer,
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
 		Env.setContext(packout.getCtx().ctx, I_AD_Field.COLUMNNAME_AD_Field_ID, recordId);
-		create(packout.getCtx(), packoutHandler);
+		create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(I_AD_Field.COLUMNNAME_AD_Field_ID);
 	}
 }

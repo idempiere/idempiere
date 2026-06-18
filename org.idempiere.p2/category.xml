@@ -39,6 +39,9 @@
    <feature url="features/org.idempiere.hazelcast.service.feature_14.0.0.qualifier.jar" id="org.idempiere.hazelcast.service.feature" version="14.0.0.qualifier">
       <category name="idempiere.server"/>
    </feature>
+   <feature url="features/org.idempiere.redis.service.feature_14.0.0.qualifier.jar" id="org.idempiere.redis.service.feature" version="14.0.0.qualifier">
+      <category name="idempiere.server"/>
+   </feature>
    <feature url="features/org.idempiere.zk.feature_14.0.0.qualifier.jar" id="org.idempiere.zk.feature" version="14.0.0.qualifier">
       <category name="idempiere.server"/>
    </feature>

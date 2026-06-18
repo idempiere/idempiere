@@ -88,6 +88,7 @@
         <setEntry value="com.fasterxml.jackson.core.jackson-core@default:default"/>
         <setEntry value="com.fasterxml.jackson.core.jackson-databind@default:default"/>
         <setEntry value="com.fasterxml.jackson.dataformat.jackson-dataformat-xml@default:default"/>
+        <setEntry value="com.fasterxml.jackson.dataformat.jackson-dataformat-yaml@default:default"/>
         <setEntry value="com.fasterxml.jackson.datatype.jackson-datatype-guava@default:default"/>
         <setEntry value="com.fasterxml.jackson.datatype.jackson-datatype-joda@default:default"/>
         <setEntry value="com.fasterxml.jackson.datatype.jackson-datatype-json-org@default:default"/>
@@ -397,6 +398,7 @@
         <setEntry value="org.w3c.dom.events@default:default"/>
         <setEntry value="org.w3c.dom.smil@default:default"/>
         <setEntry value="org.w3c.dom.svg@default:default"/>
+        <setEntry value="org.yaml.snakeyaml@default:default"/>
         <setEntry value="org.zkoss.zsoup@default:default"/>
         <setEntry value="slf4j.api*2.0.12@3:true"/>
         <setEntry value="slf4j.jdk14@2.0.12:true"/>
@@ -477,6 +479,7 @@
         <setEntry value="org.idempiere.jetty.osgi.boot.fragment@default:false"/>
         <setEntry value="org.idempiere.keikai@default:false"/>
         <setEntry value="org.idempiere.printformat.editor@default:default"/>
+        <setEntry value="org.idempiere.redis.service@default:default"/>
         <setEntry value="org.idempiere.tablepartition@default:default"/>
         <setEntry value="org.idempiere.ui.sso.oidc@default:default"/>
         <setEntry value="org.idempiere.zk.billboard.chart@default:default"/>

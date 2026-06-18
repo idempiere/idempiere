@@ -29,8 +29,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import javax.xml.transform.sax.TransformerHandler;
-
 import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.compiere.model.MColumn;
 import org.compiere.model.MPackageImpDetail;
@@ -514,30 +512,16 @@ public abstract class AbstractElementHandler implements ElementHandler {
     }
 
     /**
-     *
-     * @param handler
+     * @param serializer
      * @param qName
      * @param text
-     * @throws SAXException
      */
-    protected void addTextProperty(TransformerHandler handler, String qName, String text) throws SAXException {
+    protected void addTextProperty(IPackSerializer serializer, String qName, String text) throws Exception {
     	AttributesImpl atts = new AttributesImpl();
     	atts.addAttribute("", "", qName, "reference", "property");
-		handler.startElement("", "", qName, atts);
-		append(handler, text);
-		handler.endElement("", "", qName);
-	}
-
-    /**
-     *
-     * @param document
-     * @param str
-     * @throws SAXException
-     */
-    protected void append(TransformerHandler document, String str) throws SAXException
-	{
-		char[] contents = str != null ? str.toCharArray() : new char[0];
-		document.characters(contents,0,contents.length);
+		serializer.startElement(qName, atts);
+		serializer.characters(text);
+		serializer.endElement(qName);
 	}
 
     /**

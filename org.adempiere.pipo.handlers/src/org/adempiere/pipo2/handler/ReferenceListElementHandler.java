@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.PIPOContext;
@@ -90,8 +91,8 @@ public class ReferenceListElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(PIPOContext ctx, TransformerHandler document)
-			throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document)
+			throws Exception {
 		int AD_Ref_List_ID = Env.getContextAsInt(ctx.ctx,
 				X_AD_Ref_List.COLUMNNAME_AD_Ref_List_ID);
 		if (ctx.packOut.isExported(X_AD_Ref_List.COLUMNNAME_AD_Ref_List_ID+"|"+AD_Ref_List_ID))
@@ -105,7 +106,7 @@ public class ReferenceListElementHandler extends AbstractElementHandler {
 		
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
-		document.startElement("", "", I_AD_Ref_List.Table_Name, atts);
+		document.startElement(I_AD_Ref_List.Table_Name, atts);
 		createRefListBinding(ctx, document, m_Ref_List);
 
 		PackOut packOut = ctx.packOut;
@@ -116,10 +117,10 @@ public class ReferenceListElementHandler extends AbstractElementHandler {
 			if (log.isLoggable(Level.INFO)) log.info(e.toString());
 		}
 
-		document.endElement("", "", I_AD_Ref_List.Table_Name);
+		document.endElement(I_AD_Ref_List.Table_Name);
 	}
 
-	private void createRefListBinding(PIPOContext ctx, TransformerHandler document,
+	private void createRefListBinding(PIPOContext ctx, IPackSerializer document,
 			X_AD_Ref_List m_Ref_List) {
 		List<String> excludes = defaultExcludeList(X_AD_Ref_List.Table_Name);
 		PoExporter filler = new PoExporter(ctx, document, m_Ref_List);
@@ -130,11 +131,11 @@ public class ReferenceListElementHandler extends AbstractElementHandler {
 	}
 
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer,
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
 		Env.setContext(packout.getCtx().ctx, I_AD_Ref_List.COLUMNNAME_AD_Ref_List_ID, recordId);
-		create(packout.getCtx(), packoutHandler);
+		create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(I_AD_Ref_List.COLUMNNAME_AD_Ref_List_ID);
 	}
 }

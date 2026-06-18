@@ -19,6 +19,8 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import org.compiere.util.Msg;
+
 /**
  * Business Opportunity model
  */
@@ -68,6 +70,17 @@ public class MOpportunity extends X_C_Opportunity {
 
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
+
+		if (getC_SalesPipeline_ID() <= 0) {
+			MSalesPipeline defaultSP = MSalesPipeline.getDefault(getCtx(), getAD_Client_ID());
+			if (defaultSP != null)
+				setC_SalesPipeline_ID(defaultSP.getC_SalesPipeline_ID());
+			else {
+				log.saveError("SaveError", Msg.parseTranslation(getCtx(), "@FillMandatory@ @C_SalesPipeline_ID@"));
+				return false;
+			}
+		}
+
 		// Set OpportunityAmt to GrandTotal of order.
 		if ( getC_Order_ID() > 0 )
 		{

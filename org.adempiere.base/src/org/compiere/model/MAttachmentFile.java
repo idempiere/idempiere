@@ -79,6 +79,7 @@ public class MAttachmentFile extends X_AD_AttachmentFile {
 				.firstOnly();
 		if (af == null) {
 			af = new MAttachmentFile(attach.getCtx(), PO.UUID_NEW_RECORD, attach.get_TrxName());
+			af.setClientOrg(attach);
 			af.setAD_Attachment_ID(attach.getAD_Attachment_ID());
 			af.setFileName(name);
 		}

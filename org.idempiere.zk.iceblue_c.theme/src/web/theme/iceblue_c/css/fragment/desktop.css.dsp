@@ -53,7 +53,11 @@
 .desktop-user-panel {
 	float: right;
 	height: 45px;
-	padding-right: 5px;
+	margin-right: 5px;
+	width: auto;
+}
+.desktop-user-panel .z-hlayout-inner {
+	padding-right: 0 !important;
 }
 .desktop-user-panel tr {
 	vertical-align: middle;
@@ -71,6 +75,10 @@
 }
 .desktop-header-username {
 	padding: 0px 4px;
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 .desktop-header-username:hover {
 	background: var(--zk-desktop-header-hover-background-color);

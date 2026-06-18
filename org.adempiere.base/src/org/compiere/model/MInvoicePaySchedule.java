@@ -25,10 +25,11 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.IPayScheduleManager;
+import org.adempiere.base.PayScheduleManager;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
-import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
 
 /**
@@ -173,12 +174,14 @@ public class MInvoicePaySchedule extends X_C_InvoicePaySchedule
 			setDiscountAmt (discount);
 			setIsValid(true);
 		}
-		
-		//	Dates		
-		Timestamp dueDate = TimeUtil.addDays(invoice.getDateInvoiced(), paySchedule.getNetDays());
-		setDueDate (dueDate);
-		Timestamp discountDate = TimeUtil.addDays(invoice.getDateInvoiced(), paySchedule.getDiscountDays());
-		setDiscountDate (discountDate);
+
+		//	Dates
+		IPayScheduleManager<MInvoice> payScheduleManager = PayScheduleManager.getPayScheduleManager(invoice, paySchedule);
+		Timestamp dueDate = payScheduleManager.getDueDate(invoice, paySchedule);
+		setDueDate(dueDate);
+
+		Timestamp discountDate = payScheduleManager.getDiscountDate(invoice, paySchedule);
+		setDiscountDate(discountDate);
 	}	//	MInvoicePaySchedule
 	
 	/**	Parent						*/

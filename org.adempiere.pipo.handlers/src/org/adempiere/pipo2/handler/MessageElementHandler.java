@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.PIPOContext;
@@ -95,8 +96,8 @@ public class MessageElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(PIPOContext ctx, TransformerHandler document)
-			throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document)
+			throws Exception {
 		int AD_Message_ID = Env.getContextAsInt(ctx.ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Message_ID);
 		if (ctx.packOut.isExported(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Message_ID+"|"+AD_Message_ID))
 			return;
@@ -109,7 +110,7 @@ public class MessageElementHandler extends AbstractElementHandler {
 		verifyPackOutRequirement(m_Message);
 		
 		addTypeName(atts, "table");
-		document.startElement("","",I_AD_Message.Table_Name,atts);
+		document.startElement(I_AD_Message.Table_Name,atts);
 		createMessageBinding(ctx,document,m_Message);
 
 		PackOut packOut = ctx.packOut;
@@ -120,10 +121,10 @@ public class MessageElementHandler extends AbstractElementHandler {
 			if (log.isLoggable(Level.INFO)) log.info(e.toString());
 		}
 
-		document.endElement("","",I_AD_Message.Table_Name);
+		document.endElement(I_AD_Message.Table_Name);
 	}
 
-	private void createMessageBinding(PIPOContext ctx, TransformerHandler document, X_AD_Message m_Message)
+	private void createMessageBinding(PIPOContext ctx, IPackSerializer document, X_AD_Message m_Message)
 	{
 		PoExporter filler = new PoExporter(ctx, document, m_Message);
 		if (m_Message.getAD_Message_ID() <= PackOut.MAX_OFFICIAL_ID)
@@ -133,10 +134,10 @@ public class MessageElementHandler extends AbstractElementHandler {
 		filler.export(excludes);
 	}
 
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler,int recordId) throws Exception
 	{
 		Env.setContext(packout.getCtx().ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_Message_ID, recordId);
-		this.create(packout.getCtx(), packoutHandler);
+		this.create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_Message_ID);
 	}
 }

@@ -27,7 +27,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.IStorageValidator;
 import org.adempiere.exceptions.NegativeInventoryDisallowedException;
+import org.adempiere.base.StorageValidatorProvider;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -857,6 +859,12 @@ public class MStorageOnHand extends X_M_StorageOnHand
 			new Object[] {addition, Env.getAD_User_ID(Env.getCtx()), getM_Product_ID(), getM_Locator_ID(), getM_AttributeSetInstance_ID(), getDateMaterialPolicy()}, 
 			get_TrxName());
 		load(get_TrxName());
+		
+		IStorageValidator[] validators = StorageValidatorProvider.getStorageValidators();
+		for (IStorageValidator validator : validators) {
+			validator.validate(this, addition, null, get_TrxName());
+		}
+		
 		if (getQtyOnHand().signum() == -1) {
 			MWarehouse wh = MWarehouse.get(Env.getCtx(), getM_Warehouse_ID());
 			if (wh.isDisallowNegativeInv()) {
