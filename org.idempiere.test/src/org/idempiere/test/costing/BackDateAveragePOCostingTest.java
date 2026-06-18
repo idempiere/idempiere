@@ -11494,7 +11494,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	 *  Line2, Qty=8, ASI=L#2
 	 * MR (Reverse-Correct), Cost price=1
 	 */
-	public void testReverseCorrectMRWithMultiASILines1() {//TODO
+	public void testReverseCorrectMRWithMultiASILines1() {
 		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), getAD_Client_ID());
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
@@ -11719,6 +11719,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertTrue(receipt.isPosted());
 			
 			miList = MMatchInv.getInvoiceLine(Env.getCtx(), invoiceLine.get_ID(), getTrxName());
+			assertEquals(2, miList.length, "Unexpected number of match invoice records before reversal");
 			for (MMatchInv mi : miList) {
 				if (!mi.isPosted()) {
 					String error = DocumentEngine.postImmediate(Env.getCtx(), mi.getAD_Client_ID(), MMatchInv.Table_ID, mi.get_ID(), false, getTrxName());
@@ -11770,6 +11771,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertTrue(reversal.isPosted());
 			
 			miList = MMatchInv.getInvoiceLine(Env.getCtx(), invoiceLine.get_ID(), getTrxName());
+			assertEquals(4, miList.length, "Unexpected number of match invoice records after reversal");
 			for (MMatchInv mi : miList) {
 				if (!mi.isPosted()) {
 					String error = DocumentEngine.postImmediate(Env.getCtx(), mi.getAD_Client_ID(), MMatchInv.Table_ID, mi.get_ID(), false, getTrxName());
@@ -12049,6 +12051,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertTrue(receipt.isPosted());
 			
 			miList = MMatchInv.getInvoiceLine(Env.getCtx(), invoiceLine.get_ID(), getTrxName());
+			assertEquals(2, miList.length, "Unexpected number of match invoice records before reversal");
 			for (MMatchInv mi : miList) {
 				if (!mi.isPosted()) {
 					String error = DocumentEngine.postImmediate(Env.getCtx(), mi.getAD_Client_ID(), MMatchInv.Table_ID, mi.get_ID(), false, getTrxName());
@@ -12100,6 +12103,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertTrue(reversal.isPosted());
 			
 			miList = MMatchInv.getInvoiceLine(Env.getCtx(), invoiceLine.get_ID(), getTrxName());
+			assertEquals(4, miList.length, "Unexpected number of match invoice records after reversal");
 			for (MMatchInv mi : miList) {
 				if (!mi.isPosted()) {
 					String error = DocumentEngine.postImmediate(Env.getCtx(), mi.getAD_Client_ID(), MMatchInv.Table_ID, mi.get_ID(), false, getTrxName());
@@ -12391,6 +12395,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			query = MFactAcct.createRecordIdQuery(MInvoice.Table_ID, purchaseInvoice.get_ID(), as.get_ID(), getTrxName());
 			factAccts = query.list();
 			expected = Arrays.asList(new FactAcct(inventoryClearingAccount, p1price.multiply(orderQty).multiply(crate1), p1price.multiply(orderQty), 2, true),
+					new FactAcct(inventoryClearingAccount, p2price.multiply(orderQty).multiply(crate1), p2price.multiply(orderQty), 2, true),
 					new FactAcct(liabilityAccount, p1price.multiply(orderQty).multiply(crate1).add(p2price.multiply(orderQty).multiply(crate1)), 
 							p1price.multiply(orderQty).add(p2price.multiply(orderQty)), 2, false));
 			assertFactAcctEntries(factAccts, expected);
@@ -12524,7 +12529,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 					new FactAcct(assetAccount, p1a1assetAmt, p1a1assetAmt, 2, true),
 					new FactAcct(assetAccount, p1a2assetAmt, p1a2assetAmt, 2, true),
 					new FactAcct(varianceAccount, p2varianceAmt, p2varianceAmt, 2, true),
-					new FactAcct(varianceAccount, p1a2varianceAmt, p1a2varianceAmt, 2, true),
 					new FactAcct(apAccount, freightInvoice.getGrandTotal(), freightInvoice.getGrandTotal(), 2, false));
 			assertFactAcctEntries(factAccts, expected);
 			

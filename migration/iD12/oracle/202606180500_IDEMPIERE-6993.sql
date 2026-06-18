@@ -1,4 +1,5 @@
 -- IDEMPIERE-6993 Match Invoice wrong GL account and posting
+-- Fix existing Invoice Price Variance M_CostDetail ASI values to match linked M_MatchInv rows
 SELECT register_migration_script('202606180500_IDEMPIERE-6993.sql') FROM dual;
 
 SET SQLBLANKLINES ON

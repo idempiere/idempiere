@@ -521,6 +521,7 @@ public class Doc_MatchInv extends Doc
 						m_pc.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as), as.getC_Currency_ID(),
 						amtVariance);
 				updateFactLine(varianceLine);
+				varianceLine.setM_AttributeSetInstance_ID(matchInv.getM_AttributeSetInstance_ID());
 				
 				if (m_invoiceLine.getParent().getC_Currency_ID() != as.getC_Currency_ID())
 				{
@@ -531,6 +532,7 @@ public class Doc_MatchInv extends Doc
 			{
 				FactLine line = fact.createLine(null, account, as.getC_Currency_ID(), amtAsset);
 				updateFactLine(line);
+				line.setM_AttributeSetInstance_ID(matchInv.getM_AttributeSetInstance_ID());
 
 				if (m_invoiceLine.getParent().getC_Currency_ID() != as.getC_Currency_ID())
 				{
@@ -2838,6 +2840,8 @@ public class Doc_MatchInv extends Doc
 			whereClause.append(" SELECT mpo.C_OrderLine_ID, mpo.M_AttributeSetInstance_ID");
 			whereClause.append(" FROM M_MatchInv mi");
 			whereClause.append(" JOIN M_MatchPO mpo ON mpo.C_InvoiceLine_ID = mi.C_InvoiceLine_ID");
+			whereClause.append("  AND mpo.M_InOutLine_ID = mi.M_InOutLine_ID");
+			whereClause.append("  AND mpo.M_AttributeSetInstance_ID = mi.M_AttributeSetInstance_ID");
 			whereClause.append(" WHERE mi.M_MatchInv_ID = ?");
 			whereClause.append(") ");
 			whereClause.append(" AND M_Product_ID = ?");
@@ -2883,8 +2887,13 @@ public class Doc_MatchInv extends Doc
 	 * the remainder goes to variance; otherwise the full amount goes to asset.
 	 */
 	private AssetVarianceAmounts calculateAmountsForAveragePO(BigDecimal qtyCost, BigDecimal ipv, BigDecimal qtyForCoverage, int costingPrecision) {
-	    if (qtyCost != null && qtyCost.compareTo(qtyForCoverage) < 0) {
-	        BigDecimal asset = qtyCost.multiply(ipv).divide(qtyForCoverage, costingPrecision, RoundingMode.HALF_UP);
+		BigDecimal coverageQty = qtyForCoverage.abs();
+		if (coverageQty.signum() == 0) {
+			return new AssetVarianceAmounts(Env.ZERO, ipv);
+		}
+		BigDecimal coveredQty = qtyCost == null ? coverageQty : qtyCost.max(Env.ZERO).min(coverageQty);
+		if (coveredQty.compareTo(coverageQty) < 0) {
+			BigDecimal asset = coveredQty.multiply(ipv).divide(coverageQty, costingPrecision, RoundingMode.HALF_UP);
 	        return new AssetVarianceAmounts(asset, ipv.subtract(asset));
 	    } else {
 	        return new AssetVarianceAmounts(ipv, BigDecimal.ZERO);

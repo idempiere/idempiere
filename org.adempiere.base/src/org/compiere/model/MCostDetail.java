@@ -1535,6 +1535,8 @@ public class MCostDetail extends X_M_CostDetail
 				whereClause.append(" SELECT mpo.C_OrderLine_ID, mpo.M_AttributeSetInstance_ID");
 				whereClause.append(" FROM M_MatchInv mi");
 				whereClause.append(" JOIN M_MatchPO mpo ON mpo.C_InvoiceLine_ID = mi.C_InvoiceLine_ID");
+				whereClause.append("  AND mpo.M_InOutLine_ID = mi.M_InOutLine_ID");
+				whereClause.append("  AND mpo.M_AttributeSetInstance_ID = mi.M_AttributeSetInstance_ID");
 				whereClause.append(" WHERE mi.M_MatchInv_ID = ?");
 				whereClause.append(") ");
 				whereClause.append(" AND M_Product_ID = ?");
