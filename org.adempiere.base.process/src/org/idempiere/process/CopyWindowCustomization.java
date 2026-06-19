@@ -31,14 +31,14 @@ public class CopyWindowCustomization extends SvrProcess {
 	@Override
 	protected String doIt() throws Exception {
 		if (getRecord_ID() <= 0)
-			return null;
+			throw new AdempiereException(Msg.getMsg(getCtx(), "RecordNotFound"));
 
 		if (p_AD_UserDef_Win_ID <= 0)
 			throw new AdempiereException(
 					Msg.getMsg(getCtx(), "FillMandatory") + ": " + Msg.getElement(getCtx(), "AD_UserDef_Win_ID"));
 
 		if (p_AD_UserDef_Win_ID == getRecord_ID())
-			return null;
+			throw new AdempiereException(Msg.getMsg(getCtx(), "UserDefWinSameRecord"));
 
 		MUserDefWin targetWin = new MUserDefWin(getCtx(), getRecord_ID(), get_TrxName());
 		MUserDefWin sourceWin = new MUserDefWin(getCtx(), p_AD_UserDef_Win_ID, get_TrxName());

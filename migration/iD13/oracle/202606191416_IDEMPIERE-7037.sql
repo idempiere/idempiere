@@ -1,4 +1,17 @@
 -- IDEMPIERE-7037
+-- Title: Install 'Copy Customization' process and related metadata
+-- Description: Adds the AD_Process record for the 'Copy Customization' process
+-- (implemented by org.idempiere.process.CopyWindowCustomization), its
+-- parameter 'User defined Window', a validation rule to ensure source and
+-- target customizations belong to the same window, a toolbar button to
+-- trigger the process, and an accompanying error message. Also updates the
+-- process classname for the inserted AD_Process row.
+-- Impact: Inserts metadata rows into AD_Process, AD_Process_Para,
+-- AD_Val_Rule, AD_ToolBarButton and AD_Message and updates AD_Process. This
+-- migration affects application metadata (UI/process availability) but does
+-- not alter transactional business data. Review for ID conflicts before
+-- applying in environments with overlapping custom IDs.
+-- Change-Log: IDEMPIERE-7037 - 2026-06-19 - added by developer
 SELECT register_migration_script('202606191416_IDEMPIERE-7037.sql') FROM dual;
 
 SET SQLBLANKLINES ON
