@@ -38,6 +38,15 @@ public interface ISQLStatementRewriter
 {
 	/**
 	 * Rewrite a SQL statement.
+	 * <p>
+	 * <strong>Contract:</strong> implementations must NOT execute SQL through
+	 * the iDempiere DB layer (DB, Query, PO, etc.) inside this method.
+	 * If the rewriter needs database-derived metadata (e.g. to decide whether
+	 * a table has history enabled), that data must be loaded into a local cache
+	 * before rewrite time and read from the cache here. Violating this contract
+	 * causes re-entrant calls to {@code Convert.convertStatement()} and a
+	 * {@link StackOverflowError}.
+	 *
 	 * @param sqlStatements input SQL
 	 * @return possibly modified SQL to execute; if no rewrite is needed,
 	 *         return the parameter unchanged
