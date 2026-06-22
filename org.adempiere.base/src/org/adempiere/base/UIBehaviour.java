@@ -54,9 +54,10 @@ import org.osgi.service.component.annotations.ReferencePolicy;
  *
  * With no registered provider returns true (vanilla behaviour).
  *
- * Provider failures are isolated: any Throwable raised by a provider is
- * logged at WARNING and treated as neutral, so a single bad plug-in
+ * Provider failures are isolated: any Exception raised by a provider is
+ * logged at WARNING and treated as neutral (allowing), so a single bad plug-in
  * cannot abort lookup resolution or field-editability for the whole window.
+ * JVM errors (OutOfMemoryError, etc.) are intentionally not caught and propagate normally.
  */
 @Component(name = "org.adempiere.base.UIBehaviour", immediate = true, service = {})
 public class UIBehaviour
