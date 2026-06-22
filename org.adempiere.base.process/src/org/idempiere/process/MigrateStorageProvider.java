@@ -378,6 +378,7 @@ public class MigrateStorageProvider extends SvrProcess {
 				image.set_ValueNoCheck("Updated", new Timestamp(System.currentTimeMillis())); // to force save
 				// create file on the new storage provider
 				image.saveEx();
+				cntImage++;
 				// commit on every record migrated
 				commitEx();
 	
