@@ -64,7 +64,7 @@ public interface IUIBehaviour
 	 * @param tab the tab being evaluated
 	 * @return null when not relevant, true to allow edit, false to deny
 	 */
-	public Boolean isEditable(Properties ctx, GridTab tab);
+	public Boolean isTabEditable(Properties ctx, GridTab tab);
 
 	/**
 	 * Additional check on field editability. The field is editable only if
@@ -76,6 +76,6 @@ public interface IUIBehaviour
 	 * @param isGrid       pass-through flag from GridField.isEditable
 	 * @return null when not relevant, true to allow edit, false to deny
 	 */
-	public Boolean isEditable(Properties ctx, GridField field,
-	                          boolean checkContext, boolean isGrid);
+	public Boolean isFieldEditable(Properties ctx, GridField field,
+	                               boolean checkContext, boolean isGrid);
 }

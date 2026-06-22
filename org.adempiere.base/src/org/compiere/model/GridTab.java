@@ -1522,6 +1522,10 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		//hengsin, make detail readonly when parent is empty
 		if (m_parentNeedSave) return true;
 
+		// IDEMPIERE-7024 hook: provider veto (e.g. time-travel read-only mode)
+		if (!org.adempiere.base.UIBehaviour.isTabEditable(m_vo.ctx, this))
+			return true;
+
 		//  no restrictions
 		if (m_vo.ReadOnlyLogic == null || m_vo.ReadOnlyLogic.equals(""))
 			return m_vo.IsReadOnly;

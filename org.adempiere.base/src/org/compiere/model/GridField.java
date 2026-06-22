@@ -446,16 +446,6 @@ public class GridField
 			return false;
 		if (m_lockedRecord)
 			return false;
-		// IDEMPIERE-7024 hook: ask registered IUIBehaviour providers whether
-		// this field is editable in the current context; any provider returning
-		// false forces read-only. Placed before the Posted /
-		// Record_ID escape hatch so providers can veto even those normally-
-		// always-enabled fields (e.g. time-travel read-only mode).
-		if (!org.adempiere.base.UIBehaviour.isEditable(ctx, this, checkContext, isGrid)) {
-			if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " NO - UIBehaviour denied");
-			return false;
-		}
-
 		//  Fields always enabled (are usually not updatable)
 		if (m_vo.ColumnName.equals("Posted")
 			|| (m_vo.ColumnName.equals("Record_ID") && m_vo.displayType == DisplayType.Button))	//  Zoom
@@ -491,7 +481,14 @@ public class GridField
 			if(isAlwaysUpdatable)
 				return true;
 		}
-		
+
+		// IDEMPIERE-7024 hook: placed after always-updateable checks so providers
+		// cannot veto fields that are forced editable by core logic.
+		if (!org.adempiere.base.UIBehaviour.isFieldEditable(ctx, this, checkContext, isGrid)) {
+			if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " NO - UIBehaviour denied");
+			return false;
+		}
+
 		//check tab context
 		if (checkContext && getGridTab() != null &&
 			! "Y".equals(Env.getContext(Env.getCtx(), getWindowNo(), "_QUICK_ENTRY_MODE_")))

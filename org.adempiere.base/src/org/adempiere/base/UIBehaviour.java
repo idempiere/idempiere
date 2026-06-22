@@ -23,6 +23,7 @@ package org.adempiere.base;
 
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 
 import org.compiere.model.GridField;
@@ -30,47 +31,86 @@ import org.compiere.model.GridTab;
 import org.compiere.model.Lookup;
 import org.compiere.model.MLookupInfo;
 import org.compiere.util.CLogger;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
 /**
  * IDEMPIERE-7024
  * Static helper that aggregates the three UI decisions exposed by
  * {@link IUIBehaviour}.
  *
- * For each decision, iterates all OSGi-registered IUIBehaviour services
- * (via {@link Service#locator()}) and aggregates with AND logic:
- *   - all providers say true (or null = neutral) -> true
- *   - at least one provider says false           -> false
+ * Registered as an immediate OSGi DS component; all IUIBehaviour providers
+ * are injected via @Reference (cardinality 0..n, dynamic policy).
+ * The static methods delegate to the component instance so callers
+ * (MLookup, GridField) need no OSGi awareness.
  *
- * With no registered provider returns true (vanilla behavior).
+ * For each decision the aggregator applies AND/veto logic:
+ *   - all providers return true (or null = neutral) -> true
+ *   - at least one provider returns false           -> false
+ *
+ * With no registered provider returns true (vanilla behaviour).
  *
  * Provider failures are isolated: any Throwable raised by a provider is
- * logged at WARNING and treated as neutral (null), so a single bad plugin
- * cannot abort lookup resolution or field-editability checks for the whole
- * window. This matches the pattern used by {@code AbstractEventHandler}.
+ * logged at WARNING and treated as neutral, so a single bad plug-in
+ * cannot abort lookup resolution or field-editability for the whole window.
  */
-public final class UIBehaviour
+@Component(name = "org.adempiere.base.UIBehaviour", immediate = true, service = {})
+public class UIBehaviour
 {
-	/**	Logger	*/
+	/** Logger */
 	private static final CLogger log = CLogger.getCLogger(UIBehaviour.class);
 
-	private UIBehaviour() {
-		// utility class - no instances
+	/** Singleton instance set by OSGi DS on activate/deactivate. */
+	private static volatile UIBehaviour instance;
+
+	private final List<IUIBehaviour> behaviours = new CopyOnWriteArrayList<>();
+
+	@Activate
+	public void activate()
+	{
+		instance = this;
+	}
+
+	@Deactivate
+	public void deactivate()
+	{
+		instance = null;
+	}
+
+	// IDEMPIERE-7024
+	@Reference(name = "IUIBehaviour",
+	           service = IUIBehaviour.class,
+	           cardinality = ReferenceCardinality.MULTIPLE,
+	           policy = ReferencePolicy.DYNAMIC,
+	           unbind = "removeIUIBehaviour")
+	public void addIUIBehaviour(IUIBehaviour behaviour)
+	{
+		behaviours.add(behaviour);
+	}
+
+	public void removeIUIBehaviour(IUIBehaviour behaviour)
+	{
+		behaviours.remove(behaviour);
 	}
 
 	/**
-	 * @return true if EVERY registered IUIBehaviour service allows caching
-	 *         (or if no service is registered).
+	 * @return true if every registered IUIBehaviour allows caching,
+	 *         or if no provider is registered.
 	 */
 	public static boolean isLookupCacheable(Lookup lookup, MLookupInfo lookupInfo)
 	{
-		List<IUIBehaviour> services = Service.locator().list(IUIBehaviour.class).getServices();
-		if (services == null || services.isEmpty())
+		UIBehaviour inst = instance;
+		if (inst == null || inst.behaviours.isEmpty())
 			return true;
-		for (IUIBehaviour svc : services) {
+		for (IUIBehaviour svc : inst.behaviours) {
 			Boolean res = null;
 			try {
 				res = svc.isLookupCacheable(lookup, lookupInfo);
-			} catch (Throwable t) {
+			} catch (Exception t) {
 				// IDEMPIERE-7024: isolate provider failures - log and treat as neutral
 				log.log(Level.WARNING,
 					"IUIBehaviour provider " + svc.getClass().getName()
@@ -83,22 +123,23 @@ public final class UIBehaviour
 	}
 
 	/**
-	 * @return true if EVERY registered IUIBehaviour service allows tab edit.
+	 * @return true if every registered IUIBehaviour allows tab editing,
+	 *         or if no provider is registered.
 	 */
-	public static boolean isEditable(Properties ctx, GridTab tab)
+	public static boolean isTabEditable(Properties ctx, GridTab tab)
 	{
-		List<IUIBehaviour> services = Service.locator().list(IUIBehaviour.class).getServices();
-		if (services == null || services.isEmpty())
+		UIBehaviour inst = instance;
+		if (inst == null || inst.behaviours.isEmpty())
 			return true;
-		for (IUIBehaviour svc : services) {
+		for (IUIBehaviour svc : inst.behaviours) {
 			Boolean res = null;
 			try {
-				res = svc.isEditable(ctx, tab);
-			} catch (Throwable t) {
+				res = svc.isTabEditable(ctx, tab);
+			} catch (Exception t) {
 				// IDEMPIERE-7024: isolate provider failures - log and treat as neutral
 				log.log(Level.WARNING,
 					"IUIBehaviour provider " + svc.getClass().getName()
-					+ " threw in isEditable(ctx, tab); treating as neutral", t);
+					+ " threw in isTabEditable; treating as neutral", t);
 			}
 			if (Boolean.FALSE.equals(res))
 				return false;
@@ -107,23 +148,24 @@ public final class UIBehaviour
 	}
 
 	/**
-	 * @return true if EVERY registered IUIBehaviour service allows field edit.
+	 * @return true if every registered IUIBehaviour allows field editing,
+	 *         or if no provider is registered.
 	 */
-	public static boolean isEditable(Properties ctx, GridField field,
-	                                  boolean checkContext, boolean isGrid)
+	public static boolean isFieldEditable(Properties ctx, GridField field,
+	                                       boolean checkContext, boolean isGrid)
 	{
-		List<IUIBehaviour> services = Service.locator().list(IUIBehaviour.class).getServices();
-		if (services == null || services.isEmpty())
+		UIBehaviour inst = instance;
+		if (inst == null || inst.behaviours.isEmpty())
 			return true;
-		for (IUIBehaviour svc : services) {
+		for (IUIBehaviour svc : inst.behaviours) {
 			Boolean res = null;
 			try {
-				res = svc.isEditable(ctx, field, checkContext, isGrid);
-			} catch (Throwable t) {
+				res = svc.isFieldEditable(ctx, field, checkContext, isGrid);
+			} catch (Exception t) {
 				// IDEMPIERE-7024: isolate provider failures - log and treat as neutral
 				log.log(Level.WARNING,
 					"IUIBehaviour provider " + svc.getClass().getName()
-					+ " threw in isEditable(ctx, field, ...); treating as neutral", t);
+					+ " threw in isFieldEditable; treating as neutral", t);
 			}
 			if (Boolean.FALSE.equals(res))
 				return false;
