@@ -107,17 +107,15 @@ public class UIBehaviour
 		if (inst == null || inst.behaviours.isEmpty())
 			return true;
 		for (IUIBehaviour svc : inst.behaviours) {
-			Boolean res = null;
 			try {
-				res = svc.isLookupCacheable(lookup, lookupInfo);
+				if (!svc.isLookupCacheable(lookup, lookupInfo))
+					return false;
 			} catch (Exception t) {
 				// IDEMPIERE-7024: isolate provider failures - log and treat as neutral
 				log.log(Level.WARNING,
 					"IUIBehaviour provider " + svc.getClass().getName()
 					+ " threw in isLookupCacheable; treating as neutral", t);
 			}
-			if (Boolean.FALSE.equals(res))
-				return false;
 		}
 		return true;
 	}
@@ -132,17 +130,15 @@ public class UIBehaviour
 		if (inst == null || inst.behaviours.isEmpty())
 			return true;
 		for (IUIBehaviour svc : inst.behaviours) {
-			Boolean res = null;
 			try {
-				res = svc.isTabEditable(ctx, tab);
+				if (!svc.isTabEditable(ctx, tab))
+					return false;
 			} catch (Exception t) {
 				// IDEMPIERE-7024: isolate provider failures - log and treat as neutral
 				log.log(Level.WARNING,
 					"IUIBehaviour provider " + svc.getClass().getName()
 					+ " threw in isTabEditable; treating as neutral", t);
 			}
-			if (Boolean.FALSE.equals(res))
-				return false;
 		}
 		return true;
 	}
@@ -158,17 +154,15 @@ public class UIBehaviour
 		if (inst == null || inst.behaviours.isEmpty())
 			return true;
 		for (IUIBehaviour svc : inst.behaviours) {
-			Boolean res = null;
 			try {
-				res = svc.isFieldEditable(ctx, field, checkContext, isGrid);
+				if (!svc.isFieldEditable(ctx, field, checkContext, isGrid))
+					return false;
 			} catch (Exception t) {
 				// IDEMPIERE-7024: isolate provider failures - log and treat as neutral
 				log.log(Level.WARNING,
 					"IUIBehaviour provider " + svc.getClass().getName()
 					+ " threw in isFieldEditable; treating as neutral", t);
 			}
-			if (Boolean.FALSE.equals(res))
-				return false;
 		}
 		return true;
 	}

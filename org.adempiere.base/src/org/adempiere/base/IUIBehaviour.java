@@ -37,8 +37,9 @@ import org.compiere.model.MLookupInfo;
  *  - whether a single field is editable (e.g. PII masking for certain roles,
  *    license-based feature gating)
  *
- * All methods return a nullable Boolean: returning null means "not relevant
- * for this case" and does not alter the framework's aggregated decision.
+ * Methods use veto semantics: return true when not relevant (neutral/allow),
+ * false to deny. The aggregator in {@link UIBehaviour} returns false as soon
+ * as any provider returns false.
  *
  * Implementations must be registered via OSGi Declarative Services as
  * providers of this interface. The core helper {@link UIBehaviour} iterates
@@ -52,9 +53,9 @@ public interface IUIBehaviour
 	 *
 	 * @param lookup     the lookup being evaluated
 	 * @param lookupInfo the lookup info (may be null)
-	 * @return null when not relevant, true to allow cache, false to disable
+	 * @return true to allow cache (or when not relevant), false to disable
 	 */
-	public Boolean isLookupCacheable(Lookup lookup, MLookupInfo lookupInfo);
+	public boolean isLookupCacheable(Lookup lookup, MLookupInfo lookupInfo);
 
 	/**
 	 * Additional check on tab editability. The tab is editable only if EVERY
@@ -62,9 +63,9 @@ public interface IUIBehaviour
 	 *
 	 * @param ctx current context
 	 * @param tab the tab being evaluated
-	 * @return null when not relevant, true to allow edit, false to deny
+	 * @return true to allow edit (or when not relevant), false to deny
 	 */
-	public Boolean isTabEditable(Properties ctx, GridTab tab);
+	public boolean isTabEditable(Properties ctx, GridTab tab);
 
 	/**
 	 * Additional check on field editability. The field is editable only if
@@ -74,8 +75,8 @@ public interface IUIBehaviour
 	 * @param field        the field being evaluated
 	 * @param checkContext pass-through flag from GridField.isEditable
 	 * @param isGrid       pass-through flag from GridField.isEditable
-	 * @return null when not relevant, true to allow edit, false to deny
+	 * @return true to allow edit (or when not relevant), false to deny
 	 */
-	public Boolean isFieldEditable(Properties ctx, GridField field,
+	public boolean isFieldEditable(Properties ctx, GridField field,
 	                               boolean checkContext, boolean isGrid);
 }
