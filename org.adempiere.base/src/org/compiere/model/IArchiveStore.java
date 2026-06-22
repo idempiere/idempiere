@@ -78,6 +78,19 @@ public interface IArchiveStore {
 	public boolean deleteArchive(MArchive archive, MStorageProvider prov);
 
 	/**
+	 * Generate a backend-native presigned URL for direct download of archive content.
+	 * Return null if this backend does not support native URL signing; the caller will
+	 * fall back to application-level HMAC signing.
+	 * @param archive
+	 * @param prov
+	 * @param expiresInSeconds lifetime of the URL
+	 * @return presigned URL string, or null if not supported
+	 */
+	default String getPresignedURL(MArchive archive, MStorageProvider prov, long expiresInSeconds) {
+		return null;
+	}
+
+	/**
 	 * @return true if archive content is being buffered and pending flush to destination storage
 	 */
 	public boolean isPendingFlush();
