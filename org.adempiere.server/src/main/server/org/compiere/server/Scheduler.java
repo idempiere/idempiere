@@ -205,11 +205,15 @@ public class Scheduler extends AdempiereServer
 				if (m_trx != null)
 					m_trx.close();
 				m_trx = null;
-				if (Util.isEmpty(webSession)) {
-					session.logout();
+
+				try {
+					if (Util.isEmpty(webSession)) {
+						session.logout();
+					}
+				} finally {
+					getCtx().remove(Env.AD_SESSION_ID);
+					getCtx().remove(Env.AD_SCHEDULER_ID);
 				}
-				getCtx().remove(Env.AD_SESSION_ID);
-				getCtx().remove(Env.AD_SCHEDULER_ID);
 			}
 		} else {
 			log.log(Level.WARNING, errorMessage);
