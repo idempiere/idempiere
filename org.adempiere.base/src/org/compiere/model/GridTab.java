@@ -1523,7 +1523,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 		if (m_parentNeedSave) return true;
 
 		// IDEMPIERE-7024 hook: provider veto (e.g. time-travel read-only mode)
-		if (!org.adempiere.base.UIBehaviour.isTabEditable(m_vo.ctx, this))
+		if (!org.adempiere.base.UIBehaviourProvider.isTabEditable(m_vo.ctx, this))
 			return true;
 
 		//  no restrictions

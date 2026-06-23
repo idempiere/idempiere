@@ -484,8 +484,8 @@ public class GridField
 
 		// IDEMPIERE-7024 hook: placed after always-updateable checks so providers
 		// cannot veto fields that are forced editable by core logic.
-		if (!org.adempiere.base.UIBehaviour.isFieldEditable(ctx, this, checkContext, isGrid)) {
-			if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " NO - UIBehaviour denied");
+		if (!org.adempiere.base.UIBehaviourProvider.isFieldEditable(ctx, this, checkContext, isGrid)) {
+			if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " NO - UIBehaviourProvider denied");
 			return false;
 		}
 

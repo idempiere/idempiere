@@ -38,11 +38,11 @@ import org.compiere.model.MLookupInfo;
  *    license-based feature gating)
  *
  * Methods use veto semantics: return true when not relevant (neutral/allow),
- * false to deny. The aggregator in {@link UIBehaviour} returns false as soon
+ * false to deny. The aggregator in {@link UIBehaviourProvider} returns false as soon
  * as any provider returns false.
  *
  * Implementations must be registered via OSGi Declarative Services as
- * providers of this interface. The core helper {@link UIBehaviour} iterates
+ * providers of this interface. The core helper {@link UIBehaviourProvider} iterates
  * all registered providers and aggregates their answers with AND logic.
  */
 public interface IUIBehaviour

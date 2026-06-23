@@ -539,7 +539,7 @@ public final class MLookup extends Lookup implements Serializable
 		// (e.g. the lookup depends on a dynamic context such as the current
 		// time-travel date), every cache access below is bypassed and the value
 		// is always resolved from the database for the current context.
-		boolean uiCacheable = org.adempiere.base.UIBehaviour.isLookupCacheable(this, m_info);
+		boolean uiCacheable = org.adempiere.base.UIBehaviourProvider.isLookupCacheable(this, m_info);
 		//
 		NamePair directValue = null;
 		if (uiCacheable && m_lookupDirect != null)		//	Lookup cache
@@ -666,7 +666,7 @@ public final class MLookup extends Lookup implements Serializable
 		// provider denies caching every shared-cache read and write is bypassed
 		// so the batched lookup also resolves from the database for the current
 		// context and does not seed stale labels into the shared caches.
-		boolean uiCacheable = org.adempiere.base.UIBehaviour.isLookupCacheable(this, m_info);
+		boolean uiCacheable = org.adempiere.base.UIBehaviourProvider.isLookupCacheable(this, m_info);
 		String cacheKey = m_info.TableName+"|"+m_info.KeyColumn+"|"+m_info.AD_Reference_Value_ID+"|"+Env.getAD_Language(Env.getCtx());
 		boolean isNumber = m_info.KeyColumn.endsWith("_ID");
 		CCache<Integer, KeyNamePair> knpCache = null;
