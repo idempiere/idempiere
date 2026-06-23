@@ -45,11 +45,11 @@ import org.osgi.service.component.annotations.ReferencePolicy;
  * implementation: providers must not execute SQL through the iDempiere DB layer
  * inside {@code rewriteStatements()} — see that method's contract.
  */
-@Component(name = "org.compiere.dbPort.SQLStatementRewriter", immediate = true, service = {})
-public class SQLStatementRewriter
+@Component(name = "org.compiere.dbPort.SQLStatementRewriterProvider", immediate = true, service = {})
+public class SQLStatementRewriterProvider
 {
 	/** Singleton instance set by OSGi DS on activate/deactivate. */
-	private static volatile SQLStatementRewriter instance;
+	private static volatile SQLStatementRewriterProvider instance;
 
 	private final List<ISQLStatementRewriter> rewriters = new CopyOnWriteArrayList<>();
 
@@ -91,7 +91,7 @@ public class SQLStatementRewriter
 	public static String rewriteStatements(String sqlStatements)
 	{
 		if (sqlStatements == null) return null;
-		SQLStatementRewriter inst = instance;
+		SQLStatementRewriterProvider inst = instance;
 		if (inst == null || inst.rewriters.isEmpty()) return sqlStatements;
 		String result = sqlStatements;
 		for (ISQLStatementRewriter r : inst.rewriters)
@@ -105,7 +105,7 @@ public class SQLStatementRewriter
 	 */
 	public static boolean isConvertCacheable()
 	{
-		SQLStatementRewriter inst = instance;
+		SQLStatementRewriterProvider inst = instance;
 		if (inst == null || inst.rewriters.isEmpty()) return true;
 		for (ISQLStatementRewriter r : inst.rewriters)
 		{
