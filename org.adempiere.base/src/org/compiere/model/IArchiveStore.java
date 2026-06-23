@@ -79,8 +79,7 @@ public interface IArchiveStore {
 
 	/**
 	 * Generate a backend-native presigned URL for direct download of archive content.
-	 * Return null if this backend does not support native URL signing; the caller will
-	 * fall back to application-level HMAC signing.
+	 * Return null if this backend does not support native URL signing.
 	 * @param archive
 	 * @param prov
 	 * @param expiresInSeconds lifetime of the URL

@@ -216,7 +216,7 @@ public class MArchive extends X_AD_Archive {
 	/**
 	 * Get a backend-native presigned URL for direct download, if the active storage
 	 * provider supports it. Returns null when the backend does not implement native
-	 * URL signing; callers should fall back to application-level signing.
+	 * URL signing.
 	 * @param expiresInSeconds lifetime of the URL
 	 * @return presigned URL string, or null if not supported
 	 */
