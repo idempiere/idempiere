@@ -99,6 +99,32 @@ public class UIBehaviourProvider
 	}
 
 	/**
+	 * Return the first non-null suffix from any registered provider, or null.
+	 * A non-null suffix appended to the cache key partitions the cache (e.g. by
+	 * history date) without disabling it.
+	 *
+	 * @return first non-null suffix, or null if no provider supplies one
+	 */
+	public static String getLookupCacheKeySuffix(Lookup lookup, MLookupInfo lookupInfo)
+	{
+		UIBehaviourProvider inst = instance;
+		if (inst == null || inst.behaviours.isEmpty())
+			return null;
+		for (IUIBehaviour svc : inst.behaviours) {
+			try {
+				String suffix = svc.getLookupCacheKeySuffix(lookup, lookupInfo);
+				if (suffix != null)
+					return suffix;
+			} catch (Exception t) {
+				log.log(Level.WARNING,
+					"IUIBehaviour provider " + svc.getClass().getName()
+					+ " threw in getLookupCacheKeySuffix; treating as neutral", t);
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * @return true if every registered IUIBehaviour allows caching,
 	 *         or if no provider is registered.
 	 */

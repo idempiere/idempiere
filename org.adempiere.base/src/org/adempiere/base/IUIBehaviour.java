@@ -31,13 +31,20 @@ import org.compiere.model.MLookupInfo;
 /**
  * IDEMPIERE-7024
  * OSGi extension point that lets a plugin participate in three UI decisions:
- *  - whether a lookup is cacheable (e.g. disable cache when a plugin depends
- *    on a dynamic context that may change at runtime)
+ *  - lookup cache partitioning / disabling
  *  - whether a tab is editable (e.g. workflow approval, role-based read-only)
  *  - whether a single field is editable (e.g. PII masking for certain roles,
  *    license-based feature gating)
  *
- * Methods use veto semantics: return true when not relevant (neutral/allow),
+ * <h3>Lookup cache</h3>
+ * The preferred way to customise lookup caching is {@link #getLookupCacheKeySuffix}.
+ * A non-null suffix appended to the cache key creates an isolated cache bucket
+ * (e.g. one per history date) without disabling the cache entirely.
+ * {@link #isLookupCacheable} is a safety valve for the rare case where a provider
+ * genuinely cannot cache at all.
+ *
+ * <h3>Veto semantics</h3>
+ * Boolean methods use veto semantics: return true when not relevant (neutral/allow),
  * false to deny. The aggregator in {@link UIBehaviourProvider} returns false as soon
  * as any provider returns false.
  *
@@ -48,8 +55,30 @@ import org.compiere.model.MLookupInfo;
 public interface IUIBehaviour
 {
 	/**
-	 * Allow caching of the lookup. The lookup cache is enabled only if EVERY
-	 * registered provider allows it.
+	 * Return a suffix appended to the lookup cache key to create an isolated cache
+	 * bucket, or {@code null} to use the standard key.
+	 * <p>
+	 * Example: a time-machine provider returns {@code "HST@2026-06-23"} so each
+	 * history date gets its own cache partition while caching stays active.
+	 * In normal (non-time-travel) mode the provider returns {@code null} — zero
+	 * overhead, identical to vanilla iDempiere.
+	 * <p>
+	 * When a non-null suffix is returned by any provider, {@link #isLookupCacheable}
+	 * is overridden to {@code true} for that lookup (partitioned cache is on).
+	 *
+	 * @param lookup     the lookup being evaluated
+	 * @param lookupInfo the lookup info (may be null)
+	 * @return null to use the standard cache key, or a non-empty string to partition
+	 */
+	default String getLookupCacheKeySuffix(Lookup lookup, MLookupInfo lookupInfo) {
+		return null;
+	}
+
+	/**
+	 * Safety valve: disable the lookup cache entirely for this lookup.
+	 * Prefer {@link #getLookupCacheKeySuffix} when partitioned caching is sufficient.
+	 * The cache is enabled only if EVERY registered provider returns true AND
+	 * no provider returned a non-null suffix (suffix wins over a false return).
 	 *
 	 * @param lookup     the lookup being evaluated
 	 * @param lookupInfo the lookup info (may be null)
