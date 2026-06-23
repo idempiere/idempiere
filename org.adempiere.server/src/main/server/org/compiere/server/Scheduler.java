@@ -144,11 +144,11 @@ public class Scheduler extends AdempiereServer
 		if (Util.isEmpty(errorMessage)) {
 			//Create new Session and set #AD_Session_ID to context
 
+			Env.setContext(getCtx(), Env.AD_SCHEDULER_ID, AD_Scheduler_ID);
 			String webSession = Env.parseVariable(scheduler.getWebSessionLogic(), new DefaultEvaluatee(), true, false);
 
 			if (!Util.isEmpty(webSession)) {
 
-				Env.setContext(getCtx(), Env.AD_SCHEDULER_ID, AD_Scheduler_ID);
 				StringBuilder whereClause = new StringBuilder("AD_Client_ID = ? AND AD_Org_ID = ? AND AD_Role_ID = ? AND CreatedBy = ? AND ServerName = ? AND WebSession = ?");
 				ArrayList<Object> params = new ArrayList<Object>();
 				params.add(Env.getAD_Client_ID(getCtx()));
@@ -166,6 +166,8 @@ public class Scheduler extends AdempiereServer
 				int oldSessionID = query.firstId();
 				if (oldSessionID > 0)
 					Env.setContext(getCtx(), Env.AD_SESSION_ID, oldSessionID);
+				else
+					getCtx().remove(Env.AD_SESSION_ID);
 			}
 
 			MSession session = MSession.get(Env.getCtx());
@@ -205,8 +207,9 @@ public class Scheduler extends AdempiereServer
 				m_trx = null;
 				if (Util.isEmpty(webSession)) {
 					session.logout();
-					getCtx().remove(Env.AD_SESSION_ID);	
 				}
+				getCtx().remove(Env.AD_SESSION_ID);
+				getCtx().remove(Env.AD_SCHEDULER_ID);
 			}
 		} else {
 			log.log(Level.WARNING, errorMessage);
