@@ -247,28 +247,6 @@ public abstract class Convert
 	}   //  convert
 
 	/**
-	 * IDEMPIERE-7023
-	 * Iterates all OSGi-registered ISQLStatementRewriter providers and chains
-	 * their rewrites. Delegates to {@link SQLStatementRewriterProvider}.
-	 * @param sqlStatements input SQL
-	 * @return possibly rewritten SQL
-	 */
-	public static String rewriteStatements(String sqlStatements)
-	{
-		return SQLStatementRewriterProvider.rewriteStatements(sqlStatements);
-	}
-
-	/**
-	 * IDEMPIERE-7023
-	 * @return true if EVERY registered rewriter declares its output cacheable.
-	 *         Delegates to {@link SQLStatementRewriterProvider}.
-	 */
-	public static boolean isConvertCacheable()
-	{
-		return SQLStatementRewriterProvider.isConvertCacheable();
-	}
-
-	/**
 	 *  Return last conversion error or null.
 	 *  @return last conversion error
 	 */

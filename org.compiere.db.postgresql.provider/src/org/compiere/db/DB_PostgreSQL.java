@@ -360,8 +360,8 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		// convertCache lookup. Skip the cache entirely when any registered rewriter
 		// declares its output non-cacheable (rewriteIsCacheable=false), i.e. when
 		// rewrite depends on a dynamic context (ThreadLocal, session, etc.).
-		oraStatement = Convert.rewriteStatements(oraStatement);
-		boolean useCache = Convert.isConvertCacheable();
+		oraStatement = org.compiere.dbPort.SQLStatementRewriterProvider.rewriteStatements(oraStatement);
+		boolean useCache = org.compiere.dbPort.SQLStatementRewriterProvider.isConvertCacheable();
 
 		if (!isNativeMode() && useCache)
 		{
