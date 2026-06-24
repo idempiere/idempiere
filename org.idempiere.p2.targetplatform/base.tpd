@@ -160,8 +160,6 @@ location "https://download.eclipse.org/tools/orbit/downloads/drops/R202203021722
 	org.w3c.dom.smil
 	org.w3c.dom.svg
 	org.w3c.dom.events
-	// 1.3.4
-	javax.xml	
 }
 
 location jasperstudio "https://idempiere.github.io/binary.file/p2.repackaged/jasperstudio/6.17.0" {
