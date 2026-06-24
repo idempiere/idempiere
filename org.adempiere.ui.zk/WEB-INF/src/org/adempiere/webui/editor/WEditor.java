@@ -52,8 +52,10 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
+import org.compiere.model.MField;
 import org.compiere.model.MRole;
 import org.compiere.model.MStyle;
+import org.idempiere.ui.zk.field.FieldDynamicDisplayListenerProvider;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
@@ -354,6 +356,22 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
         		adwindow.getADWindowContent().setLastFocusEditor(component);
         	}
         });
+        
+        if (gridField != null) {
+        	int fieldId = gridField.getAD_Field_ID();
+        	if (fieldId > 0) {
+        		MField mField = MField.get(Env.getCtx(), fieldId);
+        		if (mField != null) {
+        			String uu = mField.getAD_Field_UU();
+        			if (uu != null) {
+        				List<DynamicDisplayListener> list = FieldDynamicDisplayListenerProvider.getListeners(uu);
+        				for (DynamicDisplayListener listener : list) {
+        					addDynamicDisplayListener(listener);
+        				}
+        			}
+        		}
+        	}
+        }
     }
 
     /**
