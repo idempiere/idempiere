@@ -125,28 +125,6 @@ public class UIBehaviourProvider
 	}
 
 	/**
-	 * @return true if every registered IUIBehaviour allows caching,
-	 *         or if no provider is registered.
-	 */
-	public static boolean isLookupCacheable(Lookup lookup, MLookupInfo lookupInfo)
-	{
-		UIBehaviourProvider inst = instance;
-		if (inst == null || inst.behaviours.isEmpty())
-			return true;
-		for (IUIBehaviour svc : inst.behaviours) {
-			try {
-				if (!svc.isLookupCacheable(lookup, lookupInfo))
-					return false;
-			} catch (Exception t) {
-				log.log(Level.WARNING,
-					"IUIBehaviour provider " + svc.getClass().getName()
-					+ " threw in isLookupCacheable; treating as neutral", t);
-			}
-		}
-		return true;
-	}
-
-	/**
 	 * @return true if every registered IUIBehaviour allows tab editing,
 	 *         or if no provider is registered.
 	 */

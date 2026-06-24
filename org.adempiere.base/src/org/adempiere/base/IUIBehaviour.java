@@ -31,17 +31,16 @@ import org.compiere.model.MLookupInfo;
 /**
  * IDEMPIERE-7024
  * OSGi extension point that lets a plugin participate in three UI decisions:
- *  - lookup cache partitioning / disabling
+ *  - lookup cache partitioning via {@link #getLookupCacheKeySuffix}
  *  - whether a tab is editable (e.g. workflow approval, role-based read-only)
  *  - whether a single field is editable (e.g. PII masking for certain roles,
  *    license-based feature gating)
  *
  * <h3>Lookup cache</h3>
- * The preferred way to customise lookup caching is {@link #getLookupCacheKeySuffix}.
  * A non-null suffix appended to the cache key creates an isolated cache bucket
- * (e.g. one per history date) without disabling the cache entirely.
- * {@link #isLookupCacheable} is a safety valve for the rare case where a provider
- * genuinely cannot cache at all.
+ * (e.g. one per history date) using the existing {@link org.compiere.util.CCache}
+ * infrastructure — caching stays active, just partitioned.
+ * Returning {@code null} (the default) is a no-op with zero overhead.
  *
  * <h3>Veto semantics</h3>
  * Boolean methods use veto semantics: return true when not relevant (neutral/allow),
@@ -62,9 +61,6 @@ public interface IUIBehaviour
 	 * history date gets its own cache partition while caching stays active.
 	 * In normal (non-time-travel) mode the provider returns {@code null} — zero
 	 * overhead, identical to vanilla iDempiere.
-	 * <p>
-	 * When a non-null suffix is returned by any provider, {@link #isLookupCacheable}
-	 * is overridden to {@code true} for that lookup (partitioned cache is on).
 	 *
 	 * @param lookup     the lookup being evaluated
 	 * @param lookupInfo the lookup info (may be null)
@@ -73,18 +69,6 @@ public interface IUIBehaviour
 	default String getLookupCacheKeySuffix(Lookup lookup, MLookupInfo lookupInfo) {
 		return null;
 	}
-
-	/**
-	 * Safety valve: disable the lookup cache entirely for this lookup.
-	 * Prefer {@link #getLookupCacheKeySuffix} when partitioned caching is sufficient.
-	 * The cache is enabled only if EVERY registered provider returns true AND
-	 * no provider returned a non-null suffix (suffix wins over a false return).
-	 *
-	 * @param lookup     the lookup being evaluated
-	 * @param lookupInfo the lookup info (may be null)
-	 * @return true to allow cache (or when not relevant), false to disable
-	 */
-	public boolean isLookupCacheable(Lookup lookup, MLookupInfo lookupInfo);
 
 	/**
 	 * Additional check on tab editability. The tab is editable only if EVERY
