@@ -364,8 +364,8 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
         		if (mField != null) {
         			String uu = mField.getAD_Field_UU();
         			if (uu != null) {
-        				List<DynamicDisplayListener> list = FieldDynamicDisplayListenerProvider.getListeners(uu);
-        				for (DynamicDisplayListener listener : list) {
+        				WEditor.DynamicDisplayListener[] list = FieldDynamicDisplayListenerProvider.getListeners(uu);
+        				for (WEditor.DynamicDisplayListener listener : list) {
         					addDynamicDisplayListener(listener);
         				}
         			}

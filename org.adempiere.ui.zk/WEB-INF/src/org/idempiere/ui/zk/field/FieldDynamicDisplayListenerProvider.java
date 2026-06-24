@@ -21,14 +21,15 @@
  **********************************************************************/
 package org.idempiere.ui.zk.field;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.adempiere.webui.editor.WEditor;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
@@ -43,7 +44,20 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 @Component(immediate = true, service = {FieldDynamicDisplayListenerProvider.class})
 public class FieldDynamicDisplayListenerProvider {
 
-	private static final Map<String, List<WEditor.DynamicDisplayListener>> s_listeners = new ConcurrentHashMap<>();
+	private static volatile FieldDynamicDisplayListenerProvider instance;
+
+	private final Map<String, List<WEditor.DynamicDisplayListener>> listeners = new ConcurrentHashMap<>();
+
+	@Activate
+	public void activate() {
+		instance = this;
+	}
+  
+	@Deactivate
+	public void deactivate() {
+		listeners.clear();
+		instance = null;
+	}
 
 	/**
 	 * Bind dynamic display listener
@@ -61,10 +75,10 @@ public class FieldDynamicDisplayListenerProvider {
 			return;
 
 		Object val = properties.get("AD_Field_UU");
-		if (val instanceof String) {
-			String uu = (String) val;
-			if (!uu.trim().isEmpty()) {
-				List<WEditor.DynamicDisplayListener> list = s_listeners.computeIfAbsent(uu, k -> new CopyOnWriteArrayList<>());
+		if (val instanceof String str) {
+			String uu = str.trim();
+			if (!uu.isEmpty()) {
+				List<WEditor.DynamicDisplayListener> list = listeners.computeIfAbsent(uu, k -> new CopyOnWriteArrayList<>());
 				if (!list.contains(listener)) {
 					list.add(listener);
 				}
@@ -80,28 +94,35 @@ public class FieldDynamicDisplayListenerProvider {
 		if (listener == null)
 			return;
 
-		for (Map.Entry<String, List<WEditor.DynamicDisplayListener>> entry : s_listeners.entrySet()) {
+		String keyToRemove = null;
+		for (Map.Entry<String, List<WEditor.DynamicDisplayListener>> entry : listeners.entrySet()) {
 			if (entry.getValue().remove(listener)) {
 				if (entry.getValue().isEmpty()) {
-					s_listeners.remove(entry.getKey());
+					keyToRemove = entry.getKey();
 				}
 				break;
 			}
+		}
+
+		if (keyToRemove != null) {
+			listeners.remove(keyToRemove);
 		}
 	}
 
 	/**
 	 * Get dynamic display listeners for field UUID
 	 * @param adFieldUU field UUID
-	 * @return list of dynamic display listeners, or empty list if none
+	 * @return array of dynamic display listeners, or empty array if none
 	 */
-	public static List<WEditor.DynamicDisplayListener> getListeners(String adFieldUU) {
-		if (adFieldUU == null)
-			return Collections.emptyList();
-		List<WEditor.DynamicDisplayListener> list = s_listeners.get(adFieldUU);
+	public static WEditor.DynamicDisplayListener[] getListeners(String adFieldUU) {
+		FieldDynamicDisplayListenerProvider provider = instance;
+		if (provider == null || adFieldUU == null)
+			return new WEditor.DynamicDisplayListener[0];
+		
+		List<WEditor.DynamicDisplayListener> list = provider.listeners.get(adFieldUU);
 		if (list == null) {
-			return Collections.emptyList();
+			return new WEditor.DynamicDisplayListener[0];
 		}
-		return list;
+		return list.toArray(new WEditor.DynamicDisplayListener[0]);
 	}
 }
