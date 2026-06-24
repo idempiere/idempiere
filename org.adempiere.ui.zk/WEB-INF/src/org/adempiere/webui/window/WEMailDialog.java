@@ -408,7 +408,7 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 			btn.setImage(ThemeManager.getThemeResource("images/Attachment24.png"));
 		btn.setUpload(AdempiereWebUI.getUploadSetting());
 		btn.addEventListener(Events.ON_UPLOAD, this);
-		btn.setLabel(Msg.getMsg(Env.getCtx(), "Attachment")); // or just "Attach"
+		btn.setLabel(Msg.getMsg(Env.getCtx(), "Attachment"));
 		btn.setTooltiptext(Msg.getMsg(Env.getCtx(), "Attachment"));
 		btn.setStyle("min-width: fit-content; white-space: nowrap;");
 		confirmPanel.addComponentsLeft(btn);
