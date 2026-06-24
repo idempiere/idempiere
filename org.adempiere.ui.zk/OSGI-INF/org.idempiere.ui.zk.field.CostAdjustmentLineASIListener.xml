@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.idempiere.ui.zk.field.CostAdjustmentLineASIListener">
+   <property name="AD_Field_UU" type="String" value="374eb2f5-41b6-45e4-8032-877d6f401c93"/>
+   <service>
+      <provide interface="org.adempiere.webui.editor.WEditor$DynamicDisplayListener"/>
+   </service>
+   <implementation class="org.idempiere.ui.zk.field.CostAdjustmentLineASIListener"/>
+</scr:component>
