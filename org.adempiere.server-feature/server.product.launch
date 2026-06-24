@@ -147,7 +147,6 @@
         <setEntry value="javax.servlet.jsp.jstl-api@default:default"/>
         <setEntry value="javax.validation.api@default:default"/>
         <setEntry value="javax.websocket-api@default:default"/>
-        <setEntry value="javax.xml@default:default"/>
         <setEntry value="jaxen@default:default"/>
         <setEntry value="joda-time@default:default"/>
         <setEntry value="json@default:default"/>
