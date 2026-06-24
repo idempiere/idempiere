@@ -854,6 +854,7 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 					}
 					
 					editor.setReadWrite(gridPanelFields[i].isEditableGrid(true));
+					editor.dynamicDisplay(ctx);
 				}
 			}
 			editing = true;
