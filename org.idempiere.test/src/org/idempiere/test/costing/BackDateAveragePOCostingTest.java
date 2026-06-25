@@ -13489,7 +13489,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			if (currentQty == null)
 				currentQty = cost1.getCurrentQty();
 			else
-				assertEquals(currentQty.setScale(2, RoundingMode.HALF_UP), cost1.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+				assertEquals(currentQty.setScale(2, RoundingMode.HALF_UP), cost1.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity across accounting schemas");
 			
 			List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "M_Product_ID=? AND Processed='N'", product.get_ID(), 0, as.getC_AcctSchema_ID(), getTrxName());
 			assertTrue(cds.isEmpty(), "Found unprocessed MCostDetail rows for product=" + product.get_ID() + ", acctSchema=" + as.getC_AcctSchema_ID());
