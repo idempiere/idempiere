@@ -621,10 +621,10 @@ public class DocManager {
 		
 		StringBuilder conditionClause = new StringBuilder();
 		if (table.getAD_Table_ID() == MMatchPO.Table_ID)
-			conditionClause.append("C_OrderLine_ID IN (SELECT C_OrderLine_ID FROM M_MatchPO WHERE M_MatchPO_ID=?)");
+			conditionClause.append("(C_OrderLine_ID, M_AttributeSetInstance_ID) IN (SELECT C_OrderLine_ID, M_AttributeSetInstance_ID FROM M_MatchPO WHERE M_MatchPO_ID=?)");
 		else if (table.getAD_Table_ID() == MInOut.Table_ID) {
 			conditionClause.append("(M_InOutLine_ID IN (SELECT M_InOutLine_ID FROM M_InOutLine WHERE M_InOut_ID=?)) OR ");
-			conditionClause.append("(C_OrderLine_ID IN (SELECT C_OrderLine_ID FROM M_MatchPO WHERE M_InOutLine_ID IN (")
+			conditionClause.append("((C_OrderLine_ID, M_AttributeSetInstance_ID) IN (SELECT C_OrderLine_ID, M_AttributeSetInstance_ID FROM M_MatchPO WHERE M_InOutLine_ID IN (")
 				.append("SELECT M_InOutLine_ID FROM M_InOutLine WHERE M_InOut_ID=").append(Record_ID).append(")))");
 		} else if (table.getAD_Table_ID() == MMatchInv.Table_ID) {
 			conditionClause.append("(M_MatchInv_ID=?) OR ");
@@ -767,7 +767,7 @@ public class DocManager {
 		selectSql.append("ml.M_Movement_ID, pl.M_Production_ID, pi.C_ProjectIssue_ID, cd.M_CostDetail_ID, cd.IsBackDate ");
 		selectSql.append("FROM M_CostDetail cd ");
 		selectSql.append("LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=cd.Ref_CostDetail_ID) ");
-		selectSql.append("LEFT JOIN M_MatchPO mpo ON (mpo.C_OrderLine_ID = cd.C_OrderLine_ID AND mpo.DateAcct = cd.DateAcct) ");
+		selectSql.append("LEFT JOIN M_MatchPO mpo ON (mpo.C_OrderLine_ID = cd.C_OrderLine_ID AND mpo.DateAcct = cd.DateAcct AND mpo.M_AttributeSetInstance_ID=cd.M_AttributeSetInstance_ID) ");
 		selectSql.append("LEFT JOIN C_InvoiceLine il ON (il.C_InvoiceLine_ID = cd.C_InvoiceLine_ID) ");
 		selectSql.append("LEFT JOIN M_InOutLine iol ON (iol.M_InOutLine_ID = cd.M_InOutLine_ID) ");
 		selectSql.append("LEFT JOIN M_MatchInv mi ON (mi.M_MatchInv_ID = cd.M_MatchInv_ID) ");
