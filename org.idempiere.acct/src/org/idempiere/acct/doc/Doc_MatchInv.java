@@ -664,12 +664,17 @@ public class Doc_MatchInv extends Doc
 	} // createMatchInvCostDetail
 
 	/**
-	 * Create cost detail for match invoice
-	 * @param as accounting schema
-	 * @param isCheckCost if true then check whether original document has created costing then only created costing, false do not check
+	 * Create cost detail for Match Invoice.
+	 *
+	 * @param as                        accounting schema
+	 * @param requireOriginalCostDetail when true, cost detail is created only if
+	 *                                  the original Match Invoice already has a
+	 *                                  corresponding cost detail (used for reversal
+	 *                                  processing); when false, no such validation
+	 *                                  is performed.
 	 * @return error message or null
 	 */
-	private String createMatchInvCostDetail(MAcctSchema as, boolean isCheckCost)
+	private String createMatchInvCostDetail(MAcctSchema as, boolean requireOriginalCostDetail)
 	{
 		if (m_invoiceLine != null && m_invoiceLine.get_ID() > 0 
 			&& m_receiptLine != null && m_receiptLine.get_ID() > 0)
@@ -782,9 +787,8 @@ public class Doc_MatchInv extends Doc
 					Ref_CostDetail_ID = cd.getM_CostDetail_ID();
 			}	
 
-			// If original match invoice has no cost detail created, then no needs to create it for
-			// reversal
-			if (!isCheckCost || (((MMatchInv) matchInv.getReversal()).getInvoiceCostDetail(as, 0) != null))
+			// When required, ensure the original Match Invoice has a cost detail before creating a reversal cost detail.
+			if (!requireOriginalCostDetail || (((MMatchInv) matchInv.getReversal()).getInvoiceCostDetail(as, 0) != null))
 			{
 				// Set Total Amount and Total Quantity from Matched Invoice
 				if (!MCostDetail.createInvoice(as, getAD_Org_ID(),
@@ -859,8 +863,8 @@ public class Doc_MatchInv extends Doc
 						Ref_CostDetail_ID = cd.getM_CostDetail_ID();
 				}
 
-				// If original match invoice has no cost detail created, then no needs to create it for reversal
-				if (!isCheckCost || (((MMatchInv) matchInv.getReversal()).getInvoiceCostDetail(as, 0) != null))
+				// Skip creating a reversal cost detail when the original Match Invoice does not have a corresponding cost detail.
+				if (!requireOriginalCostDetail || (((MMatchInv) matchInv.getReversal()).getInvoiceCostDetail(as, 0) != null))
 				{
 					if (!MCostDetail.createShipment(as, getAD_Org_ID(),
 									getM_Product_ID(), matchInv.getM_AttributeSetInstance_ID(),

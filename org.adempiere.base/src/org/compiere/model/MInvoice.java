@@ -2609,7 +2609,8 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			return false;
 
 		// delete the fact line of the Invoice after reverse Correct
-		DocumentEngine.deleteReverseCorrectPosting(getAD_Client_ID(), MInvoice.Table_ID, getC_Invoice_ID(), get_TrxName());
+		if (TimeUtil.isSameDay(getDateAcct(), reversal.getDateAcct()))
+			DocumentEngine.deleteReverseCorrectPosting(getAD_Client_ID(), MInvoice.Table_ID, getC_Invoice_ID(), get_TrxName());
 
 		// After reverseCorrect
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT);

@@ -35,7 +35,6 @@ import java.util.List;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MBPRelation;
 import org.compiere.model.MBPartner;
-import org.compiere.model.MClientInfo;
 import org.compiere.model.MFactAcct;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
@@ -55,6 +54,8 @@ import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 /**
  * 
@@ -108,18 +109,27 @@ public class PaymentTest extends AbstractTestCase {
 		payment.setDateAcct(today);
 		payment.saveEx();
 
-		payment.load(getTrxName());
+		// Should fail Prepare because BP is on Credit Stop
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Prepare);
 		assertTrue(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Invalid, payment.getDocStatus());
 
+		// Remove Credit Stop
 		bp.setSOCreditStatus(MBPartner.SOCREDITSTATUS_NoCreditCheck);
 		bp.saveEx();
 
+		payment.load(getTrxName());
+
+		// Prepare again - should now succeed
+		info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Prepare);
+		assertFalse(info.isError(), info.getSummary());
+
+		// Complete payment
 		info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Complete);
 		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Completed, payment.getDocStatus());
 
+		// Reverse payment
 		info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Reverse_Accrual);
 		assertFalse(info.isError(), info.getSummary());
 		assertEquals(DocAction.STATUS_Reversed, payment.getDocStatus());
@@ -326,20 +336,34 @@ public class PaymentTest extends AbstractTestCase {
 	/**
 	 * Verify Reverse Correct deletes accounting entries for both
 	 * the original payment and the reversal document when
-	 * C_DocType.IsDeleteReverseCorrectPosting = Y.
+	 * C_DocType.IsDeleteReverseCorrectPosting = Y with multiple accounting schemas
 	 */
 	@Test
 	public void testDeleteReverseCorrectPosting()
 	{
-		// Setup accounting schema to delete accounting entries on Reverse Correct
-		MClientInfo clientInfo = MClientInfo.get(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx()));
-		MAcctSchema as = new MAcctSchema(Env.getCtx(), clientInfo.getC_AcctSchema1_ID(), getTrxName());
-		boolean oldDeleteReverseCorrectPosting = as.isDeleteReverseCorrectPosting();
-		as.setIsDeleteReverseCorrectPosting(true);
-		as.saveEx(getTrxName());
+		testDeleteReverseCorrectPosting(true);
+		testDeleteReverseCorrectPosting(false);
+	}
 
-		try
-		{
+	public void testDeleteReverseCorrectPosting(boolean isOnlyDollarSchemaDelete) 
+	{
+		// Setup accounting schema to delete accounting entries on Reverse Correct
+		MAcctSchema asDollar = new MAcctSchema(Env.getCtx(), DictionaryIDs.C_AcctSchema.DOLLAR.id, getTrxName());
+		MAcctSchema asEuro = new MAcctSchema(Env.getCtx(), DictionaryIDs.C_AcctSchema.EURO.id, getTrxName());
+
+		MAcctSchema spyDollarAS = Mockito.spy(asDollar);
+		MAcctSchema spyEuroAS = Mockito.spy(asEuro);
+		Mockito.doReturn(true).when(spyDollarAS).isDeleteReverseCorrectPosting();
+		if(!isOnlyDollarSchemaDelete)
+			Mockito.doReturn(true).when(spyEuroAS).isDeleteReverseCorrectPosting();
+
+		try (MockedStatic<MAcctSchema> mockedAcctSchema = Mockito.mockStatic(MAcctSchema.class,
+				Mockito.CALLS_REAL_METHODS)) {
+			// Mock the static method MAcctSchema.getClientAcctSchema to return our spy accounting schema
+			mockedAcctSchema
+					.when(() -> MAcctSchema.getClientAcctSchema(Env.getCtx(), Env.getAD_Client_ID(Env.getCtx())))
+					.thenReturn(new MAcctSchema[] { spyDollarAS, spyEuroAS });
+
 			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
 
 			// Create a payment document
@@ -361,9 +385,9 @@ public class PaymentTest extends AbstractTestCase {
 			assertEquals(DocAction.STATUS_Completed, payment.getDocStatus());
 
 			// Verify posting created
-			Query query = MFactAcct.createRecordIdQuery(MPayment.Table_ID, payment.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+			Query query = MFactAcct.createRecordIdQuery(MPayment.Table_ID, payment.get_ID(), asDollar.getC_AcctSchema_ID(), getTrxName());
 			List<MFactAcct> factAccts = query.list();
-			assertFalse(factAccts.isEmpty(), "Expected accounting entries after payment completion for schema " + as.getName());
+			assertFalse(factAccts.isEmpty(), "Expected accounting entries after payment completion for schema " + asDollar.getName());
 
 			// Reverse Correct Payment
 			info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Reverse_Correct);
@@ -372,20 +396,28 @@ public class PaymentTest extends AbstractTestCase {
 			assertEquals(DocAction.STATUS_Reversed, payment.getDocStatus());
 			assertTrue(payment.getReversal_ID() > 0, "Reversal document should be created");
 
-			// Verify accounting entries are deleted for both original and reversal payment
+			// Dollar Schema
 			// Original
-			query = MFactAcct.createRecordIdQuery(MPayment.Table_ID, payment.get_ID(), as.getC_AcctSchema_ID(), getTrxName());
+			query = MFactAcct.createRecordIdQuery(MPayment.Table_ID, payment.get_ID(), asDollar.getC_AcctSchema_ID(), getTrxName());
 			factAccts = query.list();
 			assertEquals(0, factAccts.size(), "Fact_Acct entries should be deleted for original payment after Reverse Correct");
 			// Reversal
-			query = MFactAcct.createRecordIdQuery(MPayment.Table_ID, payment.getReversal_ID(), as.getC_AcctSchema_ID(), getTrxName());
+			query = MFactAcct.createRecordIdQuery(MPayment.Table_ID, payment.getReversal_ID(), asDollar.getC_AcctSchema_ID(), getTrxName());
 			factAccts = query.list();
 			assertEquals(0, factAccts.size(), "Fact_Acct entries should be deleted for reversed payment after Reverse Correct");
+
+			//  EURO Schema
+			// Original
+			query = MFactAcct.createRecordIdQuery(MPayment.Table_ID, payment.get_ID(), asEuro.getC_AcctSchema_ID(), getTrxName());
+			factAccts = query.list();
+			assertEquals(isOnlyDollarSchemaDelete? 2:0, factAccts.size(), "Fact_Acct entries not respected as per functionality");
+			// Reversal
+			query = MFactAcct.createRecordIdQuery(MPayment.Table_ID, payment.getReversal_ID(), asEuro.getC_AcctSchema_ID(), getTrxName());
+			factAccts = query.list();
+			assertEquals(isOnlyDollarSchemaDelete? 2:0, factAccts.size(), "Fact_Acct entries not respected as per functionality");
 		}
 		finally
 		{
-			as.setIsDeleteReverseCorrectPosting(oldDeleteReverseCorrectPosting);
-			as.saveEx(getTrxName());
 		}
 	}
 }
