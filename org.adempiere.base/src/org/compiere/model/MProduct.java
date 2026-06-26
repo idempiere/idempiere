@@ -703,6 +703,18 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 			return false; 
 		}
 		
+		// Block change of IsUseDateMaterialPolicy when product has on hand storage
+		if (!newRecord && is_ValueChanged(COLUMNNAME_IsUseDateMaterialPolicy))
+		{
+			BigDecimal qtyOnHand = DB.getSQLValueBDEx(get_TrxName(),
+				"SELECT COALESCE(SUM(QtyOnHand),0) FROM M_StorageOnHand WHERE M_Product_ID=?", getM_Product_ID());
+			if (qtyOnHand.signum() != 0)
+			{
+				log.saveError("Error", Msg.getMsg(getCtx(), "CannotChangeUseDateMaterialPolicy"));
+				return false;
+			}
+		}
+
 		// Reset IsStocked to false if not Item product type
 		if (!PRODUCTTYPE_Item.equals(getProductType()))
 			setIsStocked(false);
