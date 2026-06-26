@@ -95,45 +95,52 @@ public class PaymentTest extends AbstractTestCase {
 		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
 		// Joe Block
 		MBPartner bp = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName());
-		bp.setSOCreditStatus(MBPartner.SOCREDITSTATUS_CreditStop);
-		bp.saveEx();
+		String originalCreditStatus = bp.getSOCreditStatus();
 
-		MPayment payment = new MPayment(Env.getCtx(), 0, getTrxName());
-		payment.setC_BPartner_ID(bp.getC_BPartner_ID());
-		payment.setC_BankAccount_ID(DictionaryIDs.C_BankAccount.HQ_POS_CASH.id);
-		payment.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
-		payment.setAD_Org_ID(DictionaryIDs.AD_Org.HQ.id);
-		payment.setC_DocType_ID(false);
-		payment.setDateTrx(today);
-		payment.setPayAmt(new BigDecimal(1000));
-		payment.setDateAcct(today);
-		payment.saveEx();
+		try {
+			bp.setSOCreditStatus(MBPartner.SOCREDITSTATUS_CreditStop);
+			bp.saveEx();
 
-		// Should fail Prepare because BP is on Credit Stop
-		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Prepare);
-		assertTrue(info.isError(), info.getSummary());
-		assertEquals(DocAction.STATUS_Invalid, payment.getDocStatus());
+			MPayment payment = new MPayment(Env.getCtx(), 0, getTrxName());
+			payment.setC_BPartner_ID(bp.getC_BPartner_ID());
+			payment.setC_BankAccount_ID(DictionaryIDs.C_BankAccount.HQ_POS_CASH.id);
+			payment.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
+			payment.setAD_Org_ID(DictionaryIDs.AD_Org.HQ.id);
+			payment.setC_DocType_ID(false);
+			payment.setDateTrx(today);
+			payment.setPayAmt(new BigDecimal(1000));
+			payment.setDateAcct(today);
+			payment.saveEx();
 
-		// Remove Credit Stop
-		bp.setSOCreditStatus(MBPartner.SOCREDITSTATUS_NoCreditCheck);
-		bp.saveEx();
+			// Should fail Prepare because BP is on Credit Stop
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Prepare);
+			assertTrue(info.isError(), info.getSummary());
+			assertEquals(DocAction.STATUS_Invalid, payment.getDocStatus());
 
-		payment.load(getTrxName());
+			// Remove Credit Stop
+			bp.setSOCreditStatus(MBPartner.SOCREDITSTATUS_NoCreditCheck);
+			bp.saveEx();
 
-		// Prepare again - should now succeed
-		info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Prepare);
-		assertFalse(info.isError(), info.getSummary());
+			payment.load(getTrxName());
 
-		// Complete payment
-		info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Complete);
-		assertFalse(info.isError(), info.getSummary());
-		assertEquals(DocAction.STATUS_Completed, payment.getDocStatus());
+			// Prepare again - should now succeed
+			info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Prepare);
+			assertFalse(info.isError(), info.getSummary());
 
-		// Reverse payment
-		info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Reverse_Accrual);
-		assertFalse(info.isError(), info.getSummary());
-		assertEquals(DocAction.STATUS_Reversed, payment.getDocStatus());
-	}
+			// Complete payment
+			info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			assertEquals(DocAction.STATUS_Completed, payment.getDocStatus());
+
+			// Reverse payment
+			info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Reverse_Accrual);
+			assertFalse(info.isError(), info.getSummary());
+			assertEquals(DocAction.STATUS_Reversed, payment.getDocStatus());
+		} finally {
+			bp.setSOCreditStatus(originalCreditStatus);
+			bp.saveEx();
+		}
+	} // testCreditCheckPayment
 
 	/**
 	 * Test proxy payment feature - a business partner can pay for another business partner's invoice
@@ -348,11 +355,8 @@ public class PaymentTest extends AbstractTestCase {
 	public void testDeleteReverseCorrectPosting(boolean isOnlyDollarSchemaDelete) 
 	{
 		// Setup accounting schema to delete accounting entries on Reverse Correct
-		MAcctSchema asDollar = new MAcctSchema(Env.getCtx(), DictionaryIDs.C_AcctSchema.DOLLAR.id, getTrxName());
-		MAcctSchema asEuro = new MAcctSchema(Env.getCtx(), DictionaryIDs.C_AcctSchema.EURO.id, getTrxName());
-
-		MAcctSchema spyDollarAS = Mockito.spy(asDollar);
-		MAcctSchema spyEuroAS = Mockito.spy(asEuro);
+		MAcctSchema spyDollarAS = Mockito.spy(new MAcctSchema(Env.getCtx(), DictionaryIDs.C_AcctSchema.DOLLAR.id, getTrxName()));
+		MAcctSchema spyEuroAS = Mockito.spy( new MAcctSchema(Env.getCtx(), DictionaryIDs.C_AcctSchema.EURO.id, getTrxName()));
 		Mockito.doReturn(true).when(spyDollarAS).isDeleteReverseCorrectPosting();
 		if(!isOnlyDollarSchemaDelete)
 			Mockito.doReturn(true).when(spyEuroAS).isDeleteReverseCorrectPosting();
@@ -378,18 +382,25 @@ public class PaymentTest extends AbstractTestCase {
 			payment.setDateAcct(today);
 			payment.saveEx();
 
-			// Complete Payment
+			/*
+			 *  Complete Payment
+			 */
 			payment.load(getTrxName());
 			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Complete);
 			assertFalse(info.isError(), info.getSummary());
 			assertEquals(DocAction.STATUS_Completed, payment.getDocStatus());
 
 			// Verify posting created
-			Query query = MFactAcct.createRecordIdQuery(MPayment.Table_ID, payment.get_ID(), asDollar.getC_AcctSchema_ID(), getTrxName());
-			List<MFactAcct> factAccts = query.list();
-			assertFalse(factAccts.isEmpty(), "Expected accounting entries after payment completion for schema " + asDollar.getName());
+			Query query = MFactAcct.createRecordIdQuery(MPayment.Table_ID, payment.get_ID(), spyDollarAS.getC_AcctSchema_ID(), getTrxName());
+ 			List<MFactAcct> factAccts = query.list();
+			assertFalse(factAccts.isEmpty(), "Expected accounting entries after payment completion for schema " + spyDollarAS.getName());
+			query = MFactAcct.createRecordIdQuery(MPayment.Table_ID, payment.get_ID(), spyEuroAS.getC_AcctSchema_ID(), getTrxName());
+			factAccts = query.list();
+			assertFalse(factAccts.isEmpty(), "Expected accounting entries after payment completion for schema " + spyEuroAS.getName());
 
-			// Reverse Correct Payment
+			/*
+			 *  Reverse Correct Payment
+			 */
 			info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Reverse_Correct);
 			assertFalse(info.isError(), info.getSummary());
 			payment.load(getTrxName());
@@ -397,24 +408,24 @@ public class PaymentTest extends AbstractTestCase {
 			assertTrue(payment.getReversal_ID() > 0, "Reversal document should be created");
 
 			// Dollar Schema
-			// Original
-			query = MFactAcct.createRecordIdQuery(MPayment.Table_ID, payment.get_ID(), asDollar.getC_AcctSchema_ID(), getTrxName());
+			// Original payment
+			query = MFactAcct.createRecordIdQuery(MPayment.Table_ID, payment.get_ID(), spyDollarAS.getC_AcctSchema_ID(), getTrxName());
 			factAccts = query.list();
 			assertEquals(0, factAccts.size(), "Fact_Acct entries should be deleted for original payment after Reverse Correct");
-			// Reversal
-			query = MFactAcct.createRecordIdQuery(MPayment.Table_ID, payment.getReversal_ID(), asDollar.getC_AcctSchema_ID(), getTrxName());
+			// Reversal payment
+			query = MFactAcct.createRecordIdQuery(MPayment.Table_ID, payment.getReversal_ID(), spyDollarAS.getC_AcctSchema_ID(), getTrxName());
 			factAccts = query.list();
 			assertEquals(0, factAccts.size(), "Fact_Acct entries should be deleted for reversed payment after Reverse Correct");
 
-			//  EURO Schema
-			// Original
-			query = MFactAcct.createRecordIdQuery(MPayment.Table_ID, payment.get_ID(), asEuro.getC_AcctSchema_ID(), getTrxName());
+			// EURO Schema
+			// Original payment
+			query = MFactAcct.createRecordIdQuery(MPayment.Table_ID, payment.get_ID(), spyEuroAS.getC_AcctSchema_ID(), getTrxName());
 			factAccts = query.list();
-			assertEquals(isOnlyDollarSchemaDelete? 2:0, factAccts.size(), "Fact_Acct entries not respected as per functionality");
-			// Reversal
-			query = MFactAcct.createRecordIdQuery(MPayment.Table_ID, payment.getReversal_ID(), asEuro.getC_AcctSchema_ID(), getTrxName());
+			assertEquals(isOnlyDollarSchemaDelete? 2:0, factAccts.size(), "accounting not respected as per functionality for schema " + spyEuroAS.getName());
+			// Reversal payment
+			query = MFactAcct.createRecordIdQuery(MPayment.Table_ID, payment.getReversal_ID(), spyEuroAS.getC_AcctSchema_ID(), getTrxName());
 			factAccts = query.list();
-			assertEquals(isOnlyDollarSchemaDelete? 2:0, factAccts.size(), "Fact_Acct entries not respected as per functionality");
+			assertEquals(isOnlyDollarSchemaDelete? 2:0, factAccts.size(), "accounting not respected as per functionality for schema" + spyEuroAS.getName());
 		}
 		finally
 		{
