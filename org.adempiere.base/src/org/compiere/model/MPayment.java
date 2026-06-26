@@ -2300,7 +2300,7 @@ public class MPayment extends X_C_Payment
 				counter.setDocAction(counterDT.getDocAction());
 				// added AdempiereException by zuhri
 				if (!counter.processIt(counterDT.getDocAction()))
-					throw new AdempiereException("Failed when rocessing document - " + counter.getProcessMsg());
+					throw new AdempiereException("Failed when processing document - " + counter.getProcessMsg());
 				// end added
 				counter.saveEx(get_TrxName());
 			}
@@ -2344,6 +2344,8 @@ public class MPayment extends X_C_Payment
 			log.severe("P.Allocations not created");
 			return false;
 		}
+
+		BigDecimal chargeAmt = Env.ZERO;
 		//	Lines
 		for (int i = 0; i < pAllocs.length; i++)
 		{
@@ -2354,14 +2356,31 @@ public class MPayment extends X_C_Payment
 				allocationAmt = allocationAmt.add(pa.getOverUnderAmt());	//	overpayment (negative)
 
 			MAllocationLine aLine = null;
-			if (isReceipt())
-				aLine = new MAllocationLine (alloc, allocationAmt,
-					pa.getDiscountAmt(), pa.getWriteOffAmt(), pa.getOverUnderAmt());
+			int bpartnerID = pa.getC_BPartner_ID();
+
+			// Create Charge Allocation line
+			if (pa.getC_Charge_ID() > 0 && pa.getC_Invoice_ID() == 0)
+			{
+				if (isReceipt())
+					aLine = new MAllocationLine(alloc, allocationAmt.negate(), Env.ZERO, Env.ZERO, Env.ZERO);
+				else
+					aLine = new MAllocationLine(alloc, allocationAmt, Env.ZERO, Env.ZERO, Env.ZERO);
+
+				bpartnerID = pa.getC_Payment().getC_BPartner_ID();
+				aLine.setC_Charge_ID(pa.getC_Charge_ID());
+				chargeAmt = chargeAmt.add(allocationAmt);
+			}
 			else
-				aLine = new MAllocationLine (alloc, allocationAmt.negate(),
-					pa.getDiscountAmt().negate(), pa.getWriteOffAmt().negate(), pa.getOverUnderAmt().negate());
-			aLine.setDocInfo(getC_BPartner_ID(), 0, pa.getC_Invoice_ID());
-			aLine.setPaymentInfo(getC_Payment_ID(), 0, getC_BankTransfer_ID());
+			{
+				if (isReceipt())
+					aLine = new MAllocationLine(alloc, allocationAmt, pa.getDiscountAmt(), pa.getWriteOffAmt(), pa.getOverUnderAmt());
+				else
+					aLine = new MAllocationLine(alloc, allocationAmt.negate(), pa.getDiscountAmt().negate(), pa.getWriteOffAmt().negate(),
+												pa.getOverUnderAmt().negate());
+			}
+			aLine.setDocInfo(bpartnerID, 0, pa.getC_Invoice_ID());
+			if (pa.getC_Invoice_ID() > 0)
+				aLine.setPaymentInfo(getC_Payment_ID(), 0, getC_BankTransfer_ID());
 			if (!aLine.save(get_TrxName()))
 				log.warning("P.Allocations - line not saved");
 			else
@@ -2370,6 +2389,22 @@ public class MPayment extends X_C_Payment
 				pa.saveEx();
 			}
 		}
+
+		// Create Payment Line With Total Charge Amounts if Charge Allocation amount exist.
+		if (chargeAmt.compareTo(Env.ZERO) != 0)
+		{
+			MAllocationLine aPayLine = null;
+			if (isReceipt())
+				aPayLine = new MAllocationLine(alloc, chargeAmt, Env.ZERO, Env.ZERO, Env.ZERO);
+			else
+				aPayLine = new MAllocationLine(alloc, chargeAmt.negate(), Env.ZERO, Env.ZERO, Env.ZERO);
+
+			aPayLine.setDocInfo(getC_BPartner_ID(), 0, getC_Invoice_ID());
+			aPayLine.setPaymentInfo(getC_Payment_ID(), 0);
+			if (!aPayLine.save(get_TrxName()))
+				log.warning("P.Allocations - line not saved");
+		}
+
 		//do not post immediate alloc, alloc should post after payment
 		alloc.set_Attribute(DocumentEngine.DOCUMENT_POST_IMMEDIATE_AFTER_COMPLETE, Boolean.FALSE);
 		// added AdempiereException by zuhri
