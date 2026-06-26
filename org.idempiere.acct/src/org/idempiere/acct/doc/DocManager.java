@@ -683,6 +683,8 @@ public class DocManager {
 				updateSql.append("  SELECT ");
 				updateSql.append("    cd.DateAcct, ");
 				updateSql.append("    cd.M_CostDetail_ID, ");
+				updateSql.append("    cd.M_AttributeSetInstance_ID, ");
+				updateSql.append("    cd.M_CostElement_ID, ");
 				updateSql.append("    CASE ");
 				updateSql.append("      WHEN COALESCE(refcd.DateAcct, cd.DateAcct) = cd.DateAcct ");
 				updateSql.append("      THEN COALESCE(cd.Ref_CostDetail_ID, cd.M_CostDetail_ID) ");
@@ -696,6 +698,8 @@ public class DocManager {
 				updateSql.append("  t.AD_Client_ID = ? ");
 				updateSql.append("  AND t.C_AcctSchema_ID = ? ");
 				updateSql.append("  AND t.M_Product_ID = ? ");
+				updateSql.append("  AND t.M_AttributeSetInstance_ID = base_cd.M_AttributeSetInstance_ID ");
+				updateSql.append("  AND COALESCE(t.M_CostElement_ID, 0) = COALESCE(base_cd.M_CostElement_ID, 0) ");
 				updateSql.append("  AND ( ");
 				updateSql.append("    t.DateAcct > base_cd.DateAcct ");
 				updateSql.append("    OR ( ");
@@ -725,6 +729,8 @@ public class DocManager {
 				updateSql.append("  SELECT ");
 				updateSql.append("    cd.DateAcct, ");
 				updateSql.append("    cd.M_CostDetail_ID, ");
+				updateSql.append("    cd.M_AttributeSetInstance_ID, ");
+				updateSql.append("    cd.M_CostElement_ID, ");
 				updateSql.append("    CASE ");
 				updateSql.append("      WHEN COALESCE(refcd.DateAcct, cd.DateAcct) = cd.DateAcct ");
 				updateSql.append("      THEN COALESCE(cd.Ref_CostDetail_ID, cd.M_CostDetail_ID) ");
@@ -740,6 +746,8 @@ public class DocManager {
 				updateSql.append("  t.AD_Client_ID = ? ");
 				updateSql.append("  AND t.C_AcctSchema_ID = ? ");
 				updateSql.append("  AND t.M_Product_ID = ? ");
+				updateSql.append("  AND t.M_AttributeSetInstance_ID = (SELECT M_AttributeSetInstance_ID FROM base_cd) ");
+				updateSql.append("  AND COALESCE(t.M_CostElement_ID, 0) = COALESCE((SELECT M_CostElement_ID FROM base_cd), 0) ");
 				updateSql.append("  AND ( ");
 				updateSql.append("    t.DateAcct > (SELECT DateAcct FROM base_cd) ");
 				updateSql.append("    OR ( ");

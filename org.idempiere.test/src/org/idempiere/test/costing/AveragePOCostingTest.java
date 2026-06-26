@@ -773,6 +773,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	}
 
 	/**
+	 * IDEMPIERE-6847
+	 * 
 	 * Tests Average PO costing behavior for Material Receipts with
 	 * Attribute Set Instance (ASI) based lot costing.
 	 *
@@ -1032,6 +1034,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 	} // testMRWithASIAttributeSplitAndMatchPO
 
 	/**
+	 * IDEMPIERE-6847
+	 * 
 	 * Tests Average PO costing behavior for multiple Material Receipts
 	 * posted on the same day with multiple Attribute Set Instances (ASI)
 	 * using Batch/Lot costing level.
@@ -4139,8 +4143,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
 			p2mcost = p2.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
 			
-			BigDecimal p1cogs = p1mcost.getCurrentCostPrice().multiply(p1ShipQty);
-			BigDecimal p2cogs = p2mcost.getCurrentCostPrice().multiply(p2ShipQty);
+			BigDecimal p1cogs = p1mcost.getCurrentCostPrice().multiply(p1ShipQty).add(p1a1.multiply(p1ShipQty).divide(mr1Qty, 2, RoundingMode.HALF_UP));
+			BigDecimal p2cogs = p2mcost.getCurrentCostPrice().multiply(p2ShipQty).add(p2a1.multiply(p2ShipQty).divide(mr1Qty, 2, RoundingMode.HALF_UP));
 			
 			ProductCost pc1 = new ProductCost(Env.getCtx(), p1.get_ID(), 0, getTrxName());
 			MAccount cogsAccount1 = pc1.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
