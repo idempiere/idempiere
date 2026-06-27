@@ -122,8 +122,9 @@ public final class DictionaryIDs {
 	}
 
 	public enum C_AcctSchema {
-		DOLLAR(101);
-
+		DOLLAR(101),
+		EURO(200000);
+		
 		public final int id;
 
 		private C_AcctSchema(int id) {

@@ -57,6 +57,7 @@ import org.compiere.model.Query;
 import org.compiere.model.X_M_Cost;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.TimeUtil;
 import org.compiere.util.Trx;
 
 /**
@@ -156,6 +157,23 @@ public class Doc_MatchInv extends Doc
 	public ArrayList<Fact> createFacts (MAcctSchema as)
 	{
 		ArrayList<Fact> facts = new ArrayList<Fact>();
+
+		boolean isCreatePost = !(as.isDeleteReverseCorrectPosting()
+									&& m_matchInv.getReversal_ID() > 0
+									&& TimeUtil.isSameDay(m_matchInv.getDateAcct(), m_matchInv.getReversal().getDateAcct()));
+
+		if (!isCreatePost)
+		{
+			// Check if the original document has created costing then only created costing.
+			String error = createMatchInvCostDetail(as, true);
+			if (error != null && error.trim().length() > 0)
+			{
+				p_Error = error;
+				return null;
+			}
+			return facts;
+		}
+
 		// invoice gain/loss accounting fact line list
 		ArrayList<FactLine> invGainLossFactLines = new ArrayList<FactLine>();
 		// invoice list
@@ -636,10 +654,27 @@ public class Doc_MatchInv extends Doc
 
 	/**
 	 * Create cost detail for match invoice
-	 * @param as accounting schema
+	 * 
+	 * @param  as accounting schema
+	 * @return    error message or null
+	 */
+	public String createMatchInvCostDetail(MAcctSchema as)
+	{
+		return createMatchInvCostDetail(as, false);
+	} // createMatchInvCostDetail
+
+	/**
+	 * Create cost detail for Match Invoice.
+	 *
+	 * @param as                        accounting schema
+	 * @param requireOriginalCostDetail when true, cost detail is created only if
+	 *                                  the original Match Invoice already has a
+	 *                                  corresponding cost detail (used for reversal
+	 *                                  processing); when false, no such validation
+	 *                                  is performed.
 	 * @return error message or null
 	 */
-	private String createMatchInvCostDetail(MAcctSchema as)
+	private String createMatchInvCostDetail(MAcctSchema as, boolean requireOriginalCostDetail)
 	{
 		if (m_invoiceLine != null && m_invoiceLine.get_ID() > 0 
 			&& m_receiptLine != null && m_receiptLine.get_ID() > 0)
@@ -741,6 +776,7 @@ public class Doc_MatchInv extends Doc
 				tQty = tQty.add(getQty().negate()); //	Qty is set to negative value
 			else
 				tQty = tQty.add(getQty());
+
 			int Ref_CostDetail_ID = 0;
 			if (matchInv.getReversal_ID() > 0 && matchInv.get_ID() > matchInv.getReversal_ID())
 			{
@@ -749,14 +785,26 @@ public class Doc_MatchInv extends Doc
 						originalMatchInv.getC_InvoiceLine_ID(), 0, originalMatchInv.getDateAcct(), getTrxName());
 				if (cd != null)
 					Ref_CostDetail_ID = cd.getM_CostDetail_ID();
-			}		
-			// Set Total Amount and Total Quantity from Matched Invoice
-			if (!MCostDetail.createInvoice(as, getAD_Org_ID(), 
-					getM_Product_ID(), matchInv.getM_AttributeSetInstance_ID(),
-					m_invoiceLine.getC_InvoiceLine_ID(), 0,		//	No cost element
-					tAmt, tQty,	getDescription(), getDateAcct(), Ref_CostDetail_ID, getTrxName()))
+			}	
+
+			// When required, ensure the original Match Invoice has a cost detail before creating a reversal cost detail.
+			if (!requireOriginalCostDetail || (((MMatchInv) matchInv.getReversal()).getInvoiceCostDetail(as, 0) != null))
 			{
-				return "Failed to create cost detail record";
+				// Set Total Amount and Total Quantity from Matched Invoice
+				if (!MCostDetail.createInvoice(as, getAD_Org_ID(),
+								getM_Product_ID(), matchInv.getM_AttributeSetInstance_ID(),
+								m_invoiceLine.getC_InvoiceLine_ID(), 0, // No cost element
+								tAmt, tQty, getDescription(), getDateAcct(), Ref_CostDetail_ID, getTrxName()))
+				{
+					// Set Total Amount and Total Quantity from Matched Invoice
+					if (!MCostDetail.createInvoice(as, getAD_Org_ID(),
+									getM_Product_ID(), matchInv.getM_AttributeSetInstance_ID(),
+									m_invoiceLine.getC_InvoiceLine_ID(), 0, // No cost element
+									tAmt, tQty, getDescription(), getTrxName()))
+					{
+						return "Failed to create cost detail record";
+					}
+				}
 			}
 			
 			Map<Integer, BigDecimal> landedCostMap = new LinkedHashMap<Integer, BigDecimal>();
@@ -814,12 +862,24 @@ public class Doc_MatchInv extends Doc
 					if (cd != null)
 						Ref_CostDetail_ID = cd.getM_CostDetail_ID();
 				}
-				if (!MCostDetail.createShipment(as, getAD_Org_ID(), 
-					getM_Product_ID(), matchInv.getM_AttributeSetInstance_ID(),
-					m_receiptLine.getM_InOutLine_ID(), elementId,
-					amt, tQty,	getDescription(), false, getDateAcct(), Ref_CostDetail_ID, getTrxName()))
+
+				// Skip creating a reversal cost detail when the original Match Invoice does not have a corresponding cost detail.
+				if (!requireOriginalCostDetail || (((MMatchInv) matchInv.getReversal()).getInvoiceCostDetail(as, 0) != null))
 				{
-					return "Failed to create cost detail record";
+					if (!MCostDetail.createShipment(as, getAD_Org_ID(),
+									getM_Product_ID(), matchInv.getM_AttributeSetInstance_ID(),
+									m_receiptLine.getM_InOutLine_ID(), elementId,
+									amt, tQty, getDescription(), false, getDateAcct(), Ref_CostDetail_ID, getTrxName()))
+					{
+						amt = landedCostMap.get(elementId);
+						if (!MCostDetail.createShipment(as, getAD_Org_ID(),
+										getM_Product_ID(), matchInv.getM_AttributeSetInstance_ID(),
+										m_receiptLine.getM_InOutLine_ID(), elementId,
+										amt, tQty, getDescription(), false, getTrxName()))
+						{
+							return "Failed to create cost detail record";
+						}
+					}
 				}
 			}
 			// end MZ
