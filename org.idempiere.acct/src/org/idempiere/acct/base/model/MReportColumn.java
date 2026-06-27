@@ -290,7 +290,7 @@ public class MReportColumn extends X_PA_ReportColumn
 		if (m_whereClause == null)
 		{
 			// Only one
-			if (m_sources.length == 0)
+			if (m_sources == null || m_sources.length == 0)
 				m_whereClause = "";
 			else if (m_sources.length == 1)
 				m_whereClause = " AND " + m_sources[0].getWhereClause(PA_Hierarchy_ID);
@@ -308,6 +308,8 @@ public class MReportColumn extends X_PA_ReportColumn
 				m_whereClause = sb.toString();
 			}
 		}
+
+		String whereClause = m_whereClause;
 
 		if (isColumnTypeSegmentValue())
 		{
@@ -342,25 +344,25 @@ public class MReportColumn extends X_PA_ReportColumn
 			else if (MReportColumn.ELEMENTTYPE_UserElementList2.equals(et))
 				ID = getC_ElementValue_ID();
 			else if (MReportColumn.ELEMENTTYPE_UserColumn1.equals(et))
-				return " AND UserElement1_ID="+getUserElement1_ID(); // Not Tree
+				return whereClause + " AND UserElement1_ID="+getUserElement1_ID(); // Not Tree
 			else if (MReportColumn.ELEMENTTYPE_UserColumn2.equals(et))
-				return " AND UserElement2_ID="+getUserElement2_ID(); // Not Tree
+				return whereClause + " AND UserElement2_ID="+getUserElement2_ID(); // Not Tree
 			// Financial Report Source with Type Combination
 			else if (MReportColumn.ELEMENTTYPE_Combination.equals(et))
-				return getWhereCombination(PA_Hierarchy_ID);
+				return whereClause + getWhereCombination(PA_Hierarchy_ID);
 			else
 				log.warning("Unsupported Element Type=" + et);
 
 			if (ID == 0)
 			{
 				if (log.isLoggable(Level.FINE)) log.fine("No Restrictions - No ID for EntityType=" + et);
-				return m_whereClause;
+				return whereClause;
 			}
 
-			m_whereClause += " AND " + MReportTree.getWhereClause(getCtx(), PA_Hierarchy_ID, et, ID);
+			whereClause += " AND " + MReportTree.getWhereClause(getCtx(), PA_Hierarchy_ID, et, ID);
 		}
 
-		return m_whereClause;
+		return whereClause;
 	}	//	getWhereClause
 	
 	/**

@@ -1448,17 +1448,16 @@ public class FinReport extends SvrProcess
 			int combinationID = 0;
 			if (isCombination)
 			{
-				MAccount account = MAccount.get(getCtx(), getAD_Client_ID(), sources[lsIdx].getAD_Org_ID(), Env.getContextAsInt(getCtx(), "$C_AcctSchema_ID"),
+				MAccount account = MAccount.get(getCtx(), getAD_Client_ID(), sources[lsIdx].getOrg_ID(), Env.getContextAsInt(getCtx(), "$C_AcctSchema_ID"),
 						sources[lsIdx].getC_ElementValue_ID(), 0, sources[lsIdx].getM_Product_ID(), sources[lsIdx].getC_BPartner_ID(), sources[lsIdx].getAD_OrgTrx_ID(),
 						sources[lsIdx].getC_Location_ID(), 0, sources[lsIdx].getC_SalesRegion_ID(), sources[lsIdx].getC_Project_ID(), sources[lsIdx].getC_Campaign_ID(),
 						sources[lsIdx].getC_Activity_ID(), sources[lsIdx].getUser1_ID(), sources[lsIdx].getUser2_ID(), sources[lsIdx].getUserElement1_ID(),
 						sources[lsIdx].getUserElement2_ID(), get_TrxName());
-				
-				 if (account != null)
-				 {
-					 combinationID = account.getC_ValidCombination_ID();
-					 insert.append("," + combinationID + " ");
-				 }
+
+				if (account == null)
+					throw new AdempiereUserError("`@NotFound`@ `@C_ValidCombination_ID`@");
+				combinationID = account.getC_ValidCombination_ID();
+				insert.append("," + combinationID + " ");
 			}
 
 			String numericType = DB.getDatabase().getNumericDataType();
@@ -1547,7 +1546,7 @@ public class FinReport extends SvrProcess
 				}
 				//	Link
 				if (isCombination)
-					select.append(m_lines[line].getSelectClauseCombination());
+					select.append(m_lines[line].getSelectClauseCombination(sources[lsIdx]));
 				else
 					select.append(" AND fb.").append(variable).append("=x.").append(variable);
 				//	PostingType
@@ -1660,7 +1659,7 @@ public class FinReport extends SvrProcess
 
 			if (isCombination)
 			{
-				List<String> colNames = m_lines[line].getCombinationGroupByColumns();
+				List<String> colNames = m_lines[line].getCombinationGroupByColumns(sources[lsIdx]);
 				StringBuilder groupBy = new StringBuilder("");
 				for (int j = 0; j < colNames.size(); j++)
 				{
@@ -2173,7 +2172,7 @@ public class FinReport extends SvrProcess
 	 */
 	private FinReportPeriod getPeriodTo(BigDecimal relativeOffsetTo)
 	{
-		if (relativeOffsetTo != null && !relativeOffsetTo.equals(BigDecimal.ZERO))
+		if (relativeOffsetTo != null && relativeOffsetTo.signum() != 0)
 			return getPeriod(relativeOffsetTo);
 		return null;
 	} // getPeriodTo
