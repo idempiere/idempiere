@@ -31,6 +31,7 @@ import org.compiere.util.Util;
 import org.compiere.util.WebUtil;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.tracking.AuditTraceContext;
 
 /**
  *	Session Model.
@@ -357,7 +358,7 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 	{
 		return changeLog(TrxName, AD_ChangeLog_ID, AD_Table_ID, AD_Column_ID,
 				Record_ID, null, AD_Client_ID, AD_Org_ID, OldValue, NewValue,
-				(String) null);
+				event);
 	}
 
 	/**
@@ -380,6 +381,33 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 		int AD_Table_ID, int AD_Column_ID, int Record_ID, String Record_UU,
 		int AD_Client_ID, int AD_Org_ID,
 		Object OldValue, Object NewValue, String event)
+	{
+		return changeLog(TrxName, AD_ChangeLog_ID, AD_Table_ID, AD_Column_ID,
+				Record_ID, Record_UU, AD_Client_ID, AD_Org_ID, OldValue, NewValue,
+				event, true);
+	}
+
+	/**
+	 * 	Create Change Log (if table is logged)
+	 * 	@param TrxName transaction name
+	 *	@param AD_ChangeLog_ID 0 for new change log
+	 *	@param AD_Table_ID table
+	 *	@param AD_Column_ID column
+	 *	@param Record_ID record
+	 *	@param Record_UU record UUID
+	 *	@param AD_Client_ID client
+	 *	@param AD_Org_ID org
+	 *	@param OldValue old
+	 *	@param NewValue new
+	 *  @param event
+	 *  @param save true to save to DB, false to return change log without save
+	 *	@return saved change log or null
+	 */
+	public MChangeLog changeLog (
+		String TrxName, int AD_ChangeLog_ID,
+		int AD_Table_ID, int AD_Column_ID, int Record_ID, String Record_UU,
+		int AD_Client_ID, int AD_Org_ID,
+		Object OldValue, Object NewValue, String event, boolean save)
 	{
 		// never log change log itself (recursive error)
 		if (AD_Table_ID == MChangeLog.Table_ID)
@@ -411,8 +439,20 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 				AD_ChangeLog_ID, TrxName, getAD_Session_ID(),
 				AD_Table_ID, AD_Column_ID, Record_ID, Record_UU, AD_Client_ID, AD_Org_ID,
 				OldValue, NewValue, event);
-			if (cl.saveCrossTenantSafe())
+
+			String externalTraceId = AuditTraceContext.getExternalTraceId();
+	        if (externalTraceId != null)
+	            cl.setExternalTraceId(externalTraceId);
+
+			if (save)
+			{
+				if (cl.saveCrossTenantSafe())
+					return cl;
+			}
+			else
+			{
 				return cl;
+			}
 		}
 		catch (Exception e)
 		{

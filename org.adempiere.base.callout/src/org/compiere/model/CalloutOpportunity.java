@@ -20,7 +20,7 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.util.Properties;
 
-import org.compiere.util.DB;
+import org.compiere.util.Msg;
 
 /**
  * 
@@ -46,12 +46,25 @@ public class CalloutOpportunity extends CalloutEngine {
 			return "";
 	
 		int C_SalesStage_ID = (Integer) value;
-		
-		String sql = "SELECT Probability FROM C_SalesStage WHERE C_SalesStage_ID = ?";
-		BigDecimal probability = DB.getSQLValueBD(null, sql, C_SalesStage_ID);
-		if ( probability != null )
-			mTab.setValue("Probability", probability);
-		
+		BigDecimal probability = null;
+		Integer salesPipelineID = (Integer) mTab.getValue(MOpportunity.COLUMNNAME_C_SalesPipeline_ID);
+
+		if (salesPipelineID != null) {
+
+			MSalesPipelineStage sps = MSalesPipelineStage.get(ctx, salesPipelineID, C_SalesStage_ID, null);
+
+			if (sps != null)
+				probability = sps.getProbability();
+			else {
+				mTab.fireDataStatusEEvent("Error", Msg.parseTranslation(ctx, "@FindZeroRecords@:"
+						+ " @C_SalesPipeline_ID@ " + MSalesPipeline.get(ctx, salesPipelineID).getName() 
+						+ " @C_SalesStage_ID@: " + MSalesStage.get(ctx, C_SalesStage_ID).getName()), true);
+				return "";
+			}
+		}
+
+		mTab.setValue(MOpportunity.COLUMNNAME_Probability, probability);
+
 		return "";
 	}
 }

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
@@ -30,6 +31,7 @@ import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.ReferenceUtils;
 import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.compiere.model.I_AD_Ref_Table;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.MRefTable;
 import org.compiere.model.MReference;
 import org.compiere.model.X_AD_Package_Imp_Detail;
@@ -56,7 +58,7 @@ public class ReferenceTableElementHandler extends AbstractElementHandler {
 			if (refTable == null) {
 				refTable = new X_AD_Ref_Table(ctx.ctx, 0, getTrxName(ctx));
 			}
-			String action = refTable.is_new() ? "New" : "Update";
+			String action = refTable.is_new() ? MPackageImpDetail.ACTION_INSERT : MPackageImpDetail.ACTION_UPDATE;
 			PoFiller filler = new PoFiller(ctx, refTable, element, this);
 			List<String> notfounds = filler.autoFill(excludes);
 			if (notfounds.size() > 0) {
@@ -91,14 +93,14 @@ public class ReferenceTableElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(PIPOContext ctx, TransformerHandler document)
-			throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document)
+			throws Exception {
 		int Reference_id = Env.getContextAsInt(ctx.ctx, "AD_Reference_ID");
 		createReferenceTableBinding(ctx, document, Reference_id);
 	}
 
 	private void createReferenceTableBinding(PIPOContext ctx,
-			TransformerHandler document, int reference_ID) {
+			IPackSerializer document, int reference_ID) {
 
 		try {
 			MRefTable refTable = MRefTable.get(ctx.ctx, reference_ID);
@@ -109,7 +111,7 @@ public class ReferenceTableElementHandler extends AbstractElementHandler {
 
 			AttributesImpl atts = new AttributesImpl();
 			addTypeName(atts, "table");
-			document.startElement("", "", X_AD_Ref_Table.Table_Name, atts);
+			document.startElement(X_AD_Ref_Table.Table_Name, atts);
 
 			if (reference_ID <= PackOut.MAX_OFFICIAL_ID)
 			{
@@ -125,7 +127,7 @@ public class ReferenceTableElementHandler extends AbstractElementHandler {
 			filler.addTableReference("AD_Display", "AD_Column", new AttributesImpl());
 			filler.addTableReference("AD_Key", "AD_Column", new AttributesImpl());
 
-			document.endElement("", "", X_AD_Ref_Table.Table_Name);
+			document.endElement(X_AD_Ref_Table.Table_Name);
 		} catch (Exception e) {
 			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
 			throw new DatabaseAccessException("Failed to export Reference Table", e);
@@ -134,11 +136,11 @@ public class ReferenceTableElementHandler extends AbstractElementHandler {
 	}
 
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer,
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
 		Env.setContext(packout.getCtx().ctx, I_AD_Ref_Table.COLUMNNAME_AD_Reference_ID, recordId);
-		create(packout.getCtx(), packoutHandler);
+		create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(I_AD_Ref_Table.COLUMNNAME_AD_Reference_ID);
 	}
 }

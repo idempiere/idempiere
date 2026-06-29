@@ -12,9 +12,6 @@
  *****************************************************************************/
 package org.adempiere.webui.window;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
@@ -27,10 +24,10 @@ import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.VerticalBox;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.util.CKEditor;
 import org.compiere.model.MPostIt;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.Env;
-import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.zkforge.ckez.CKeditor;
 import org.zkoss.zk.ui.event.Event;
@@ -138,7 +135,7 @@ public class WPostIt extends Window implements EventListener<Event>{
 		tabPanel = new Tabpanel();
 		tabPanels.appendChild(tabPanel);
 
-		editor = new CKeditor();
+		editor = CKEditor.get();
 		tabPanel.appendChild(editor);
 		if (ClientInfo.minWidth(730))
 			editor.setWidth("700px");
@@ -146,14 +143,6 @@ public class WPostIt extends Window implements EventListener<Event>{
 			editor.setWidth(ClientInfo.get().desktopWidth-30 + "px");
 		editor.setVflex("1");
 		editor.setValue(note);
-		if (ClientInfo.isMobile())
-			editor.setCustomConfigurationsPath("/js/ckeditor/config-min.js");
-		else
-			editor.setCustomConfigurationsPath("/js/ckeditor/config.js");
-		editor.setToolbar("MyToolbar");
-		Map<String,Object> lang = new HashMap<String,Object>();
-		lang.put("language", Language.getLoginLanguage().getAD_Language());
-		editor.setConfig(lang);
 
 		vbox.appendChild(new Separator());
 		createdBox = new Label();	

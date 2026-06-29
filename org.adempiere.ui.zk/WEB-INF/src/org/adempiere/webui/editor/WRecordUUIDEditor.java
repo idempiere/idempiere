@@ -36,9 +36,11 @@ import org.adempiere.webui.window.WRecordIDDialog;
 import org.compiere.model.GridField;
 import org.compiere.model.MRole;
 import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  * Default editor for {@link DisplayType#RecordUU}.<br/>
@@ -106,4 +108,47 @@ public class WRecordUUIDEditor extends WRecordEditor<String> {
 			return "TableHasNoKeyColumn";
 		return null;		
 	}
+
+	@Override
+	protected void setValue(Object value, boolean fire) {
+		if (value == null) {
+			super.setValue(value, fire);
+			return;
+		}
+
+		// mirror parent lazy init
+		if (tableIDValue == null && tableIDGridField != null) {
+			tableIDValue = tableIDGridField.getValue();
+		}
+
+		Integer id = null;
+		if (value instanceof Integer integerId) {
+			id = integerId;
+		} else if (value instanceof String strValue) {
+			if (!Util.isEmpty(strValue, true)) {
+				if (!(strValue.length() == 36)) {
+					try {
+						id = Integer.parseInt(strValue);
+					} catch (Exception e) {
+					}					
+				}
+			}				
+		}
+
+		if (id != null) {
+			int tableID =  tableIDValue != null ? Integer.parseInt(String.valueOf(tableIDValue)) : 0;
+			if (tableID > 0 && MTable.get(tableID) != null) {
+				PO po = MTable.get(tableID).getPO(id, null);
+				if (po != null) {
+					String uuid = po.get_UUID();
+					super.setValue(uuid, fire);
+					return;
+				}
+			}
+		}
+		
+		super.setValue(value, fire);
+	}
+
+	
 }

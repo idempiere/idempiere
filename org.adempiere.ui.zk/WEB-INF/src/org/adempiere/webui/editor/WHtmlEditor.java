@@ -23,6 +23,7 @@ import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.ValuePreference;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.adwindow.AbstractADWindowContent;
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.event.ContextMenuEvent;
 import org.adempiere.webui.event.ContextMenuListener;
 import org.adempiere.webui.event.DialogEvents;
@@ -212,7 +213,7 @@ public class WHtmlEditor extends WEditor implements ContextMenuListener
 					adwindowContent.hideBusyMask();
 				}
 				if (!dialog.isCancelled()) {
-					box.setContent(WTextEditorDialog.sanitize(dialog.getText()));
+					box.setContent(AEnv.sanitize(dialog.getText()));
 					String newText = box.getContent();
 			        ValueChangeEvent changeEvent = new ValueChangeEvent(WHtmlEditor.this, WHtmlEditor.this.getColumnName(), oldValue, newText);
 			        WHtmlEditor.super.fireValueChange(changeEvent);

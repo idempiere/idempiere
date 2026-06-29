@@ -19,6 +19,7 @@ package org.adempiere.pipo2.handler;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
@@ -29,6 +30,7 @@ import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_ImpFormat;
 import org.compiere.model.I_AD_ImpFormat_Row;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.X_AD_ImpFormat_Row;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.util.Env;
@@ -64,10 +66,10 @@ public class ImpFormatRowElementHandler extends AbstractElementHandler {
 					X_AD_ImpFormat_Row.Table_ID);
 			if (!mImpFormatRow.is_new()){
 				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_ImpFormat_Row.Table_Name, mImpFormatRow);
-				action = "Update";
+				action = MPackageImpDetail.ACTION_UPDATE;
 			}
 			else{
-				action = "New";
+				action = MPackageImpDetail.ACTION_INSERT;
 			}
 			if (mImpFormatRow.save(getTrxName(ctx)) == true){
 				logImportDetail (ctx, impDetail, 1, mImpFormatRow.getName(), mImpFormatRow.get_ID(),action);
@@ -82,8 +84,8 @@ public class ImpFormatRowElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(PIPOContext ctx, TransformerHandler document)
-			throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document)
+			throws Exception {
 		int AD_ImpFormat_Row_ID = Env.getContextAsInt(ctx.ctx, X_AD_ImpFormat_Row.COLUMNNAME_AD_ImpFormat_Row_ID);
 		if (ctx.packOut.isExported(X_AD_ImpFormat_Row.COLUMNNAME_AD_ImpFormat_Row_ID+"|"+AD_ImpFormat_Row_ID))
 			return;
@@ -97,12 +99,12 @@ public class ImpFormatRowElementHandler extends AbstractElementHandler {
 		
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
-		document.startElement("","",I_AD_ImpFormat_Row.Table_Name,atts);
+		document.startElement(I_AD_ImpFormat_Row.Table_Name,atts);
 		createImpFormatRowBinding(ctx,document,m_ImpFormat_Row);
-		document.endElement("","",I_AD_ImpFormat_Row.Table_Name);
+		document.endElement(I_AD_ImpFormat_Row.Table_Name);
 	}
 
-	private void createImpFormatRowBinding(PIPOContext ctx, TransformerHandler document, X_AD_ImpFormat_Row m_ImpFormat_Row)
+	private void createImpFormatRowBinding(PIPOContext ctx, IPackSerializer document, X_AD_ImpFormat_Row m_ImpFormat_Row)
 	{
 		PoExporter filler = new PoExporter(ctx, document, m_ImpFormat_Row);
 		List<String> excludes = defaultExcludeList(X_AD_ImpFormat_Row.Table_Name);
@@ -116,11 +118,11 @@ public class ImpFormatRowElementHandler extends AbstractElementHandler {
 	}
 
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer,
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
 		Env.setContext(packout.getCtx().ctx, I_AD_ImpFormat_Row.COLUMNNAME_AD_ImpFormat_Row_ID, recordId);
-		create(packout.getCtx(), packoutHandler);
+		create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(I_AD_ImpFormat_Row.COLUMNNAME_AD_ImpFormat_Row_ID);
 	}
 }

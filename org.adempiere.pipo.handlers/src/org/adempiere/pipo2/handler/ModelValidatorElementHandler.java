@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
@@ -13,6 +14,7 @@ import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.X_AD_ModelValidator;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.util.Env;
@@ -56,9 +58,9 @@ public class ModelValidatorElementHandler extends AbstractElementHandler{
 				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_ModelValidator.Table_Name, X_AD_ModelValidator.Table_ID);
 				if (!validator.is_new()) {				
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), AD_MODELVALIDATOR, validator);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				} else {
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}
 	
 				if (validator.save(getTrxName(ctx)) == true) {
@@ -87,7 +89,7 @@ public class ModelValidatorElementHandler extends AbstractElementHandler{
 	
 
 	
-	public void create(PIPOContext ctx, TransformerHandler document) throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document) throws Exception {
 		int ad_modelvalidator_id = Env.getContextAsInt(ctx.ctx, X_AD_ModelValidator.COLUMNNAME_AD_ModelValidator_ID);
 		if (ctx.packOut.isExported(X_AD_ModelValidator.COLUMNNAME_AD_ModelValidator_ID+"|"+ad_modelvalidator_id))
 			return;
@@ -101,7 +103,7 @@ public class ModelValidatorElementHandler extends AbstractElementHandler{
 		
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
-		document.startElement("", "", "AD_ModelValidator", atts);
+		document.startElement("AD_ModelValidator", atts);
 		createADModelValidatorBinding(ctx, document, validator);
 
 		PackOut packOut = ctx.packOut;
@@ -113,10 +115,10 @@ public class ModelValidatorElementHandler extends AbstractElementHandler{
 			if (log.isLoggable(Level.INFO)) log.info(e.toString());
 		}
 
-		document.endElement("", "", "AD_ModelValidator");
+		document.endElement("AD_ModelValidator");
 	}
 
-	private void createADModelValidatorBinding(PIPOContext ctx, TransformerHandler document, X_AD_ModelValidator validator) {
+	private void createADModelValidatorBinding(PIPOContext ctx, IPackSerializer document, X_AD_ModelValidator validator) {
 		PoExporter filler = new PoExporter(ctx, document, validator);
 		if (validator.getAD_ModelValidator_ID() <= PackOut.MAX_OFFICIAL_ID)
 			filler.add(X_AD_ModelValidator.COLUMNNAME_AD_ModelValidator_ID, new AttributesImpl());
@@ -125,9 +127,9 @@ public class ModelValidatorElementHandler extends AbstractElementHandler{
 	}
 	
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler,	TransformerHandler docHandler, int recordId) throws Exception {
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer,	TransformerHandler docHandler, int recordId) throws Exception {
 		Env.setContext(packout.getCtx().ctx, X_AD_ModelValidator.COLUMNNAME_AD_ModelValidator_ID, recordId);
-		this.create(packout.getCtx(), packoutHandler);
+		this.create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(X_AD_ModelValidator.COLUMNNAME_AD_ModelValidator_ID);
 	}
 

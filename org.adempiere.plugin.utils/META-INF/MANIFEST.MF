@@ -40,6 +40,7 @@ Import-Package: org.apache.xerces.dom;version="2.12.1",
  org.apache.xerces.xs.datatypes;version="2.12.1",
  org.apache.xml.serialize;version="2.12.1",
  org.osgi.framework;version="1.10.0",
+ org.osgi.service.event;version="1.4.1",
  org.osgi.util.tracker;version="1.5.0"
 Export-Package: org.adempiere.plugin.utils
 Bundle-ClassPath: .

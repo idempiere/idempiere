@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
@@ -41,6 +42,7 @@ import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_Element;
 import org.compiere.model.I_AD_InfoColumn;
 import org.compiere.model.I_AD_InfoWindow;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.X_AD_InfoColumn;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.util.Env;
@@ -78,9 +80,9 @@ public class InfoColumnElementHandler extends AbstractElementHandler {
 				String action = null;
 				if (!mInfoColumn.is_new()) {
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_InfoColumn.Table_Name, mInfoColumn);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				} else {
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}
 				if (mInfoColumn.save(getTrxName(ctx)) == true) {
 					logImportDetail(ctx, impDetail, 1, mInfoColumn.getColumnName(), mInfoColumn.get_ID(), action);
@@ -98,7 +100,7 @@ public class InfoColumnElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(PIPOContext ctx, TransformerHandler document) throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document) throws Exception {
 		int AD_InfoColumn_ID = Env.getContextAsInt(ctx.ctx, X_AD_InfoColumn.COLUMNNAME_AD_InfoColumn_ID);
 		if (ctx.packOut.isExported(X_AD_InfoColumn.COLUMNNAME_AD_InfoColumn_ID+"|"+AD_InfoColumn_ID))
 			return;
@@ -122,7 +124,7 @@ public class InfoColumnElementHandler extends AbstractElementHandler {
 
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
-		document.startElement("", "", I_AD_InfoColumn.Table_Name, atts);
+		document.startElement(I_AD_InfoColumn.Table_Name, atts);
 		createInfoColumnBinding(ctx, document, m_InfoColumn);
 
 		PackOut packOut = ctx.packOut;
@@ -133,10 +135,10 @@ public class InfoColumnElementHandler extends AbstractElementHandler {
 			if (log.isLoggable(Level.INFO)) log.info(e.toString());
 		}
 
-		document.endElement("", "", I_AD_InfoColumn.Table_Name);
+		document.endElement(I_AD_InfoColumn.Table_Name);
 	}
 
-	private void createInfoColumnBinding(PIPOContext ctx, TransformerHandler document, X_AD_InfoColumn m_InfoColumn) {
+	private void createInfoColumnBinding(PIPOContext ctx, IPackSerializer document, X_AD_InfoColumn m_InfoColumn) {
 
 		PoExporter filler = new PoExporter(ctx, document, m_InfoColumn);
 		List<String> excludes = defaultExcludeList(X_AD_InfoColumn.Table_Name);
@@ -147,9 +149,9 @@ public class InfoColumnElementHandler extends AbstractElementHandler {
 	}
 
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler, int recordId) throws Exception {
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler, int recordId) throws Exception {
 		Env.setContext(packout.getCtx().ctx, I_AD_InfoColumn.COLUMNNAME_AD_InfoColumn_ID, recordId);
-		create(packout.getCtx(), packoutHandler);
+		create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(I_AD_InfoColumn.COLUMNNAME_AD_InfoColumn_ID);
 	}
 }

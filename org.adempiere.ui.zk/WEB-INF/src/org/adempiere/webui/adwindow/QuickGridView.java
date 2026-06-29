@@ -35,6 +35,7 @@ import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Searchbox;
+import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.editor.WSearchEditor;
 import org.adempiere.webui.session.SessionManager;
@@ -69,7 +70,7 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Frozen;
 import org.zkoss.zul.Paging;
 import org.zkoss.zul.Row;
-import org.zkoss.zul.Vbox;
+import org.adempiere.webui.component.FlexVlayout;
 import org.zkoss.zul.event.ZulEvents;
 import org.zkoss.zul.impl.CustomGridDataLoader;
 
@@ -79,7 +80,7 @@ import org.zkoss.zul.impl.CustomGridDataLoader;
  * @author Logilite Technologies
  * @since Nov 03, 2017
  */
-public class QuickGridView extends Vbox
+public class QuickGridView extends FlexVlayout
 		implements EventListener<Event>, IdSpace, IFieldEditorContainer, StateChangeListener {
 	/**
 	 * generated serial id
@@ -265,7 +266,7 @@ public class QuickGridView extends Vbox
 		appendChild(gridFooter);								
 		ZKUpdateUtil.setVflex(this, "true");
 		
-		setStyle(HEADER_GRID_STYLE);
+		ZkCssHelper.appendStyle(this, HEADER_GRID_STYLE);
 		gridFooter.setStyle(HEADER_GRID_STYLE);
 		
 		addEventListener(EVENT_ON_SELECT_ROW, this);

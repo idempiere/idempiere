@@ -18,6 +18,7 @@ import java.sql.Statement;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.DataElementParameters;
@@ -32,26 +33,22 @@ import org.compiere.model.MTableAttribute;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
-import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class AttributeElementHandler extends GenericPOElementHandler
 {
 	
 	@Override
-	public void create(PIPOContext ctx, TransformerHandler document) throws SAXException
+	public void create(PIPOContext ctx, IPackSerializer document) throws Exception
 	{
 		AttributesImpl atts = new AttributesImpl();
 		int tableId = MTable.getTable_ID(MTableAttribute.Table_Name);
 		String sql = Env.getContext(ctx.ctx, DataElementParameters.SQL_STATEMENT);
 		List<String> excludes = defaultExcludeList(MTableAttribute.Table_Name);
-		Statement stmt = null;
-		ResultSet rs = null;
-		try
+		sql = MRole.getDefault().addAccessSQL(sql, MAttribute.Table_Name, true, true);
+		try (Statement stmt = DB.createStatement();
+			 ResultSet rs = stmt.executeQuery(sql))
 		{
-			sql = MRole.getDefault().addAccessSQL(sql, MAttribute.Table_Name, true, true);
-			stmt = DB.createStatement();
-			rs = stmt.executeQuery(sql);
 			while (rs.next())
 			{
 				MAttribute attribute = new MAttribute(ctx.ctx, rs, getTrxName(ctx));
@@ -93,10 +90,10 @@ public class AttributeElementHandler extends GenericPOElementHandler
 				{
 					verifyPackOutRequirement(attribute);
 					addTypeName(atts, "table");
-					document.startElement("", "", MAttribute.Table_Name, atts);
+					document.startElement(MAttribute.Table_Name, atts);
 					PoExporter filler = new PoExporter(ctx, document, attribute);
 					filler.export(excludes, ctx.packOut.isIncludeOrganizationId());
-					document.endElement("", "", MAttribute.Table_Name);
+					document.endElement(MAttribute.Table_Name);
 				}
 			}
 		}
@@ -104,14 +101,10 @@ public class AttributeElementHandler extends GenericPOElementHandler
 		{
 			throw new AdempiereException(e);
 		}
-		finally
-		{
-			DB.close(rs, stmt);
-		}
 	}
 
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler, int recordId) throws Exception
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler, int recordId) throws Exception
 	{
 		if(m_tableName == null)
 			m_tableName = Env.getContext(packout.getCtx().ctx, "Table_Name");
@@ -121,13 +114,13 @@ public class AttributeElementHandler extends GenericPOElementHandler
 		String sql = "SELECT * FROM M_Attribute WHERE M_Attribute_ID=" + recordId;
 		packout.getCtx().ctx.put(DataElementParameters.AD_TABLE_ID, Integer.toString(tableId));
 		packout.getCtx().ctx.put(DataElementParameters.SQL_STATEMENT, sql);
-		this.create(packout.getCtx(), packoutHandler);
+		this.create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(DataElementParameters.AD_TABLE_ID);
 		packout.getCtx().ctx.remove(DataElementParameters.SQL_STATEMENT);
 	}
 
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler, int recordId, String uuid) throws Exception
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler, int recordId, String uuid) throws Exception
 	{
 		if(m_tableName == null)
 			m_tableName = Env.getContext(packout.getCtx().ctx, "Table_Name");
@@ -139,7 +132,7 @@ public class AttributeElementHandler extends GenericPOElementHandler
 				: "SELECT * FROM M_Attribute WHERE M_Attribute_ID=" + recordId;
 		packout.getCtx().ctx.put(DataElementParameters.AD_TABLE_ID, Integer.toString(tableId));
 		packout.getCtx().ctx.put(DataElementParameters.SQL_STATEMENT, sql);
-		this.create(packout.getCtx(), packoutHandler);
+		this.create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(DataElementParameters.AD_TABLE_ID);
 		packout.getCtx().ctx.remove(DataElementParameters.SQL_STATEMENT);
 	}

@@ -30,7 +30,10 @@ import org.adempiere.exceptions.FillMandatoryException;
 import org.adempiere.util.IProcessUI;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Year Model
@@ -42,12 +45,50 @@ import org.compiere.util.Util;
  * 			<li>BF [ 1761918 ] Error creating periods for a year with per. created partial
  * 			<li>BF [ 2430755 ] Year Create Periods display proper error message
  */
-public class MYear extends X_C_Year
+public class MYear extends X_C_Year implements ImmutablePOSupport
 {
 	/**
 	 * generated serial id 
 	 */
 	private static final long serialVersionUID = 2110541427179611810L;
+
+	/**
+	 * Cache
+	 */
+	private static ImmutableIntPOCache<Integer, MYear>	s_cache = new ImmutableIntPOCache<Integer, MYear>(Table_Name, 12, 1440);
+
+	/**
+	 * @param  C_Year_ID
+	 * @return           MYear
+	 */
+	public static MYear get(int C_Year_ID)
+	{
+		return get(Env.getCtx(), C_Year_ID);
+	}
+
+	/**
+	 * @param  ctx
+	 * @param  C_Year_ID
+	 * @return           MYear
+	 */
+	public static MYear get(Properties ctx, int C_Year_ID)
+	{
+		Integer key = Integer.valueOf(C_Year_ID);
+		MYear retValue = s_cache.get(ctx, key);
+		if (retValue == null)
+		{
+			retValue = new MYear(ctx, C_Year_ID, (String) null);
+
+			if (retValue.get_ID() == C_Year_ID)
+			{
+				retValue.markImmutable();
+				s_cache.put(key, retValue);
+				return retValue;
+			}
+			return null;
+		}
+		return retValue;
+	}
 
     /**
      * UUID based Constructor
@@ -247,6 +288,7 @@ public class MYear extends X_C_Year
 
 		//
 		IProcessUI processMonitor = Env.getProcessUI(getCtx());
+		BatchInsert<MPeriod> batchInsertPeriod = new BatchInsert<>(MPeriod.class);
 		for (int month = 0; month < 12; month++)
 		{
 			
@@ -271,17 +313,31 @@ public class MYear extends X_C_Year
 				period.setStartDate(start);
 				period.setEndDate(end);
 			}
-			if (processMonitor != null)
-			{
-				processMonitor.statusUpdate(period.toString());
-			}
-			period.saveEx(get_TrxName());	//	Creates Period Control
+			batchInsertPeriod.add(period); // Saving period	creates Period Control
 			// get first day of next month
 			cal.add(Calendar.DAY_OF_YEAR, 1);
 		}
+		if (processMonitor != null)
+		{
+			processMonitor.statusUpdate(Msg.getMsg(getCtx(), "RowCount", new Object[] {batchInsertPeriod.getCount()}));
+		}
+		batchInsertPeriod.executeBatch(get_TrxName());
 		
 		return true;
 		
 	}	//	createStdPeriods
-	
+
+	/**
+	 * Mark this PO as immutable
+	 */
+	@Override
+	public MYear markImmutable()
+	{
+		if (is_Immutable())
+			return this;
+
+		makeImmutable();
+
+		return this;
+	}
 }	//	MYear

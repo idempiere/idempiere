@@ -73,6 +73,8 @@ import org.compiere.util.Language;
 import org.compiere.util.Util;
 import org.idempiere.acct.AcctModelServices;
 import org.idempiere.acct.IDocPostingService;
+import org.owasp.html.PolicyFactory;
+import org.owasp.html.Sanitizers;
 import org.zkoss.web.servlet.Servlets;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
@@ -1018,5 +1020,21 @@ public final class AEnv
 		StringBuilder url = new StringBuilder(viewer);
 		url.append(pdfUrl);
 		return url.toString();
+	}
+
+	/**
+	 * @param untrustedHTML
+	 * @return sanitized html content
+	 */
+	public static String sanitize(String untrustedHTML) {
+		final PolicyFactory policy = Sanitizers.BLOCKS
+				.and(Sanitizers.FORMATTING)
+				.and(Sanitizers.IMAGES)
+				.and(Sanitizers.LINKS)
+				.and(Sanitizers.STYLES)
+				.and(Sanitizers.TABLES);
+
+		String ret = policy.sanitize(untrustedHTML);
+		return ret;
 	}
 }	//	AEnv

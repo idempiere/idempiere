@@ -55,7 +55,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.Hbox;
+import org.adempiere.webui.component.FlexHlayout;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 
@@ -227,7 +227,7 @@ public class WTrxMaterial extends TrxMaterial
 				row = rows.newRow();
 		}
 		row.appendCellChild(dateTLabel.rightAlign());
-		Hbox boxTo = new Hbox();
+		FlexHlayout boxTo = new FlexHlayout();
 		boxTo.appendChild(dateTField.getComponent());
 		DateRangeButton drb = (new DateRangeButton(dateFField, dateTField));
 		boxTo.appendChild(drb);

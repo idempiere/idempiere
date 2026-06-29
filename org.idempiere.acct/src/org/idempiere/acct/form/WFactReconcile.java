@@ -87,7 +87,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.Hbox;
+import org.adempiere.webui.component.FlexHlayout;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 
@@ -265,7 +265,7 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		row.appendCellChild(labelDateAcct.rightAlign());
 		row.appendCellChild(fieldDateAcct.getComponent(), 2);
 		row.appendCellChild(labelDateAcct2.rightAlign());
-		Hbox boxTo = new Hbox();
+		FlexHlayout boxTo = new FlexHlayout();
 		boxTo.appendChild(fieldDateAcct2.getComponent());
 		DateRangeButton drb = (new DateRangeButton(fieldDateAcct, fieldDateAcct2));
 		boxTo.appendChild(drb);

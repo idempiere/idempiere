@@ -44,7 +44,7 @@ import org.zkoss.zul.Popup;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treechildren;
 import org.zkoss.zul.Treeitem;
-import org.zkoss.zul.Vbox;
+import org.adempiere.webui.component.FlexVlayout;
 
 /**
  * Popup panel with menu type filter and flat view toggle for a menu tree.
@@ -75,7 +75,7 @@ public class MenuTreeFilterPanel extends Popup implements EventListener<Event>, 
 		this.tree = tree;
 		this.searchPanel = panel;
 
-		Vbox box = new Vbox();
+		FlexVlayout box = new FlexVlayout();
 
 		Checkbox report = new Checkbox();
 		if (ThemeManager.isUseFontIconForImage())

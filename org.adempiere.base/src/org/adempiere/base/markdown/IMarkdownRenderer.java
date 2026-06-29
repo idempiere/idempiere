@@ -39,10 +39,20 @@ public interface IMarkdownRenderer {
 	}
 	
 	/**
+	 * @param inputText
+	 * @param autoLink
+	 * @return html
+	 */
+	default String renderToHtml(String inputText, boolean autoLink) {
+		return renderToHtml(inputText, autoLink, null);
+	}
+	
+	/**
 	 * Render inputText with markdown to html (with table and optional autolink extension)
 	 * @param inputText
 	 * @param autoLink true to enable autolink extension
+	 * @param baseURL base URL for relative links
 	 * @return html
 	 */
-	String renderToHtml(String inputText, boolean autoLink);
+	String renderToHtml(String inputText, boolean autoLink, String baseURL);
 }

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
@@ -29,6 +30,7 @@ import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.MAttachment;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.PO;
 import org.compiere.model.X_AD_Attachment;
 import org.compiere.model.X_AD_AttachmentNote;
@@ -69,9 +71,9 @@ public class AttachmentElementHandler extends AbstractElementHandler {
 			X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Attachment.Table_Name, X_AD_Attachment.Table_ID);
 			if (!mAttachment.is_new()) {
 				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Attachment.Table_Name, mAttachment);
-				action = "Update";
+				action = MPackageImpDetail.ACTION_UPDATE;
 			} else {
-				action = "New";
+				action = MPackageImpDetail.ACTION_INSERT;
 			}
 
 			if (mAttachment.save(getTrxName(ctx)) == true) {
@@ -93,8 +95,8 @@ public class AttachmentElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	protected void create(PIPOContext ctx, TransformerHandler document)
-			throws SAXException {
+	protected void create(PIPOContext ctx, IPackSerializer document)
+			throws Exception {
 
 
 		int AD_Attachment_ID = Env.getContextAsInt(ctx.ctx, "AD_Attachment_ID");
@@ -110,7 +112,7 @@ public class AttachmentElementHandler extends AbstractElementHandler {
 		
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
-		document.startElement("", "", "AD_Attachment", atts);
+		document.startElement("AD_Attachment", atts);
 		createAttachmentBinding(ctx, document, mAttachment);
 
 		int[] ids = PO.getAllIDs(X_AD_AttachmentNote.Table_Name, "AD_Attachment_ID="+AD_Attachment_ID, getTrxName(ctx));
@@ -124,11 +126,11 @@ public class AttachmentElementHandler extends AbstractElementHandler {
 				}
 			}
 		}
-		document.endElement("", "", "AD_Attachment");		
+		document.endElement("AD_Attachment");		
 	}
 
 
-	private void createAttachmentBinding(PIPOContext ctx, TransformerHandler document,
+	private void createAttachmentBinding(PIPOContext ctx, IPackSerializer document,
 			MAttachment mAttachment) {
 
 		PoExporter filler = new PoExporter(ctx, document, mAttachment);
@@ -139,10 +141,10 @@ public class AttachmentElementHandler extends AbstractElementHandler {
 		filler.export(excludes);
 	}
 
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler,int recordId) throws Exception
 	{
 		packout.getCtx().ctx.put("AD_Attachment_ID", Integer.toString(recordId));
-		this.create(packout.getCtx(), packoutHandler);
+		this.create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove("AD_Attachment_ID");
 	}
 }

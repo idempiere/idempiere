@@ -19,6 +19,7 @@ package org.adempiere.pipo2.handler;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
@@ -28,6 +29,7 @@ import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_WF_NodeNext;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_WF_NodeNext;
 import org.compiere.util.Env;
@@ -62,9 +64,9 @@ public class WorkflowNodeNextElementHandler extends AbstractElementHandler {
 				String action = null;
 				if (!mWFNodeNext.is_new()){
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_WF_NodeNext.Table_Name,mWFNodeNext);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				} else{
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}
 				if (mWFNodeNext.save(getTrxName(ctx))){
 					log.info("m_WFNodeNext save success");
@@ -83,8 +85,8 @@ public class WorkflowNodeNextElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(PIPOContext ctx, TransformerHandler document)
-			throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document)
+			throws Exception {
 		int ad_wf_nodenext_id = Env.getContextAsInt(ctx.ctx, "AD_WF_NodeNext_ID");
 		if (ctx.packOut.isExported("AD_WF_NodeNext_ID"+"|"+ad_wf_nodenext_id))
 			return;
@@ -96,13 +98,13 @@ public class WorkflowNodeNextElementHandler extends AbstractElementHandler {
 		verifyPackOutRequirement(m_WF_NodeNext);
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
-		document.startElement("", "", I_AD_WF_NodeNext.Table_Name, atts);
+		document.startElement(I_AD_WF_NodeNext.Table_Name, atts);
 		createWorkflowNodeNextBinding(ctx, document, m_WF_NodeNext);
-		document.endElement("", "", I_AD_WF_NodeNext.Table_Name);
+		document.endElement(I_AD_WF_NodeNext.Table_Name);
 
 	}
 
-	private void createWorkflowNodeNextBinding(PIPOContext ctx, TransformerHandler document,
+	private void createWorkflowNodeNextBinding(PIPOContext ctx, IPackSerializer document,
 			MWFNodeNext m_WF_NodeNext)
 	{
 
@@ -116,11 +118,11 @@ public class WorkflowNodeNextElementHandler extends AbstractElementHandler {
 	}
 
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer,
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
 		Env.setContext(packout.getCtx().ctx, I_AD_WF_NodeNext.COLUMNNAME_AD_WF_NodeNext_ID, recordId);
-		create(packout.getCtx(), packoutHandler);
+		create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(I_AD_WF_NodeNext.COLUMNNAME_AD_WF_NodeNext_ID);
 	}
 }

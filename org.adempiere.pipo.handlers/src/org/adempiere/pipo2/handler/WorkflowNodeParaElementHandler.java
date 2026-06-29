@@ -28,6 +28,7 @@ package org.adempiere.pipo2.handler;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
@@ -37,6 +38,7 @@ import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_WF_Node_Para;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_WF_Node_Para;
 import org.compiere.util.Env;
@@ -71,9 +73,9 @@ public class WorkflowNodeParaElementHandler extends AbstractElementHandler {
 				String action = null;
 				if (!mWFNodePara.is_new()){
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_WF_Node_Para.Table_Name,mWFNodePara);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				} else{
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}
 				if (mWFNodePara.save(getTrxName(ctx))){
 					log.info("m_WFNodePara save success");
@@ -92,8 +94,8 @@ public class WorkflowNodeParaElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(PIPOContext ctx, TransformerHandler document)
-			throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document)
+			throws Exception {
 		int AD_WF_Node_Para_id = Env.getContextAsInt(ctx.ctx, "AD_WF_Node_Para_ID");
 		if (ctx.packOut.isExported("AD_WF_Node_Para_ID"+"|"+AD_WF_Node_Para_id))
 			return;
@@ -105,13 +107,13 @@ public class WorkflowNodeParaElementHandler extends AbstractElementHandler {
 		verifyPackOutRequirement(m_WF_NodePara);
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
-		document.startElement("", "", I_AD_WF_Node_Para.Table_Name, atts);
+		document.startElement(I_AD_WF_Node_Para.Table_Name, atts);
 		createWorkflowNodeParaBinding(ctx, document, m_WF_NodePara);
-		document.endElement("", "", I_AD_WF_Node_Para.Table_Name);
+		document.endElement(I_AD_WF_Node_Para.Table_Name);
 
 	}
 
-	private void createWorkflowNodeParaBinding(PIPOContext ctx, TransformerHandler document,
+	private void createWorkflowNodeParaBinding(PIPOContext ctx, IPackSerializer document,
 			MWFNodePara m_WF_NodePara)
 	{
 
@@ -125,11 +127,11 @@ public class WorkflowNodeParaElementHandler extends AbstractElementHandler {
 	}
 
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer,
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
 		Env.setContext(packout.getCtx().ctx, I_AD_WF_Node_Para.COLUMNNAME_AD_WF_Node_Para_ID, recordId);
-		create(packout.getCtx(), packoutHandler);
+		create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(I_AD_WF_Node_Para.COLUMNNAME_AD_WF_Node_Para_ID);
 	}
 }

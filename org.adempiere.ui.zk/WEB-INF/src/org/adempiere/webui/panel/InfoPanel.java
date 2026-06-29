@@ -198,7 +198,10 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 * {@link #getSelectedRowInfo()} instead.
 	 */
 	protected Map<Object, List<Object>> recordSelectedData = new HashMap<Object, List<Object>>();
-	
+
+	/** Keys of off-screen stub rows created by selectAllRecords() — cleared alongside recordSelectedData. */
+	protected Set<Object> lazyRowKeys = new LinkedHashSet<>();
+
 	/**
 	 * When re-query but don't want to clear selected record (example after run process), 
 	 * set this flag to true to run sync selected record. See also
@@ -1814,11 +1817,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	protected <T extends Serializable> List<T> getSelectedRowKeys()
     {
     	List<T> selectedDataList = new ArrayList<>();
-		for (Map.Entry<Object, List<Object>> rowInfo : getSelectedRowInfo().entrySet()) {
-			if(rowInfo.getValue().get(0) instanceof IDColumn idColumn)
-				selectedDataList.add((T)idColumn.getRecord_ID());
-			else if(rowInfo.getValue().get(0) instanceof UUIDColumn uuidColumn)
-				selectedDataList.add((T)uuidColumn.getRecord_UU());
+		for (Object key : getSelectedRowInfo().keySet()) {
+			selectedDataList.add((T) key);
 		}
 		return selectedDataList;
     }   //  getSelectedRowKeys
@@ -1993,7 +1993,14 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 				// TODO: maybe add logic to check value of current record (focus only to viewKeys value) is same as value save in lsSelectedKeyValue
 				// because record can change by other user
 				Object row = contentPanel.getModel().get(rowIndex);
-								
+
+				// rehydrate stub rows so updateListSelected() can handle deselection correctly
+				if (lazyRowKeys.remove(keyViewValue)) {
+					@SuppressWarnings("unchecked")
+					List<Object> fullRow = (List<Object>) row;
+					recordSelectedData.put(keyViewValue, fullRow);
+				}
+
 				if(onRestoreSelectedItemIndexInPage(keyViewValue, rowIndex, row)) // F3P: provide an hook for operations on restored index
 					lsSelectionRecord.add(row);
 			}
@@ -2400,6 +2407,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         else if (event.getTarget().equals(confirmPanel.getButton(ConfirmPanel.A_REFRESH)))
         {
     		recordSelectedData.clear();
+    		lazyRowKeys.clear();
     		setStatusSelected();
         	onUserQuery();
         }
@@ -2409,6 +2417,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         }
         else if (event.getTarget().equals(confirmPanel.getButton(ConfirmPanel.A_RESET))) {
     		recordSelectedData.clear();
+    		lazyRowKeys.clear();
         	resetParameters ();
         }
         else if (event.getTarget().equals(confirmPanel.getButton(ConfirmPanel.A_HISTORY)))
@@ -2604,6 +2613,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
      */
     public void onUserQuery (){
 		recordSelectedData.clear();
+		lazyRowKeys.clear();
 
     	if (Executions.getCurrent().getAttribute(ON_USER_QUERY_ATTR) != null)
     		return;
@@ -2699,6 +2709,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
                     public void onEvent(Event event) throws Exception {
                         updateListSelected();
                         recordSelectedData.clear();
+                        lazyRowKeys.clear();
                         Clients.response(new AuEcho(InfoPanel.this, "onQueryCallback", null));
                         onUserQuery();
                     }
@@ -2731,6 +2742,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 					saveResultSelection(getInfoColumnIDFromProcess(processModalDialog.getAD_Process_ID()));
 					createT_Selection_InfoWindow(pInstanceID);
 					recordSelectedData.clear();
+					lazyRowKeys.clear();
 				}else if (ProcessModalDialog.ON_WINDOW_CLOSE.equals(event.getName())){ 
 					if (getDesktop() == null) 
 						return;
@@ -2760,6 +2772,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 						}
 					}
 					recordSelectedData.clear();
+					lazyRowKeys.clear();
 				}
 			}
 		});   		
@@ -2805,10 +2818,14 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
                 
                 // get Data
 				LinkedHashMap<String, Object> values = new LinkedHashMap<String, Object>();
-				for(int col  = 0 ; col < p_layout.length; col ++)
-				{
-					// layout has same columns as selectedInfo
+				// stub rows (off-screen, never navigated to) have null for all columns;
+				// skip them so no null T_Selection_InfoWindow rows are inserted.
+				if (!lazyRowKeys.contains(keyData)) {
+					for(int col  = 0 ; col < p_layout.length; col ++)
+					{
+						// layout has same columns as selectedInfo
 						values.put(p_layout[col].getColumnName(), selectedInfo.getValue().get(col));
+					}
 				}
 				if(values.size() > 0)
 					m_values.put(kp, values);
@@ -2822,6 +2839,12 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 */
 	public void createT_Selection_InfoWindow(int AD_PInstance_ID)
 	{
+		if (infoWindow == null)
+			return;
+		if (!lazyRowKeys.isEmpty())
+			log.warning("createT_Selection_InfoWindow: " + lazyRowKeys.size()
+					+ " off-screen stub row(s) will be omitted from T_Selection_InfoWindow"
+					+ " — column data is unavailable until those pages are navigated to.");
 		MTable table = MTable.get(infoWindow.getAD_Table_ID());
 		StringBuilder insert = new StringBuilder();
 		insert.append("INSERT INTO T_Selection_InfoWindow (AD_PINSTANCE_ID, ");
@@ -3001,6 +3024,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
         		bindInfoProcess();
         		// reset selected list
                 recordSelectedData.clear();
+                lazyRowKeys.clear();
                 isRequeryByRunSuccessProcess = false;
         	}
         	if (isRequeryByRunSuccessProcess){
@@ -3099,48 +3123,143 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	 * Select all records from all pages
 	 */
 	private void selectAllRecords() {
-		// select all
 		try {
-			if (paging != null) {
-				int currentPage = paging.getActivePage();
-				int pgCnt = paging.getPageCount();
-				for (int pgNo = 0; pgNo <= pgCnt-1; pgNo++) {
-					if (pgNo == currentPage)
-						continue; // will be done at the end
-					setAndLoadActivePage(pgNo);
-				}
-				setAndLoadActivePage(currentPage);
-			} else {
-		        addAllCurrentContentPanelToSelected();
+			// Visible page: use already-rendered rows (free — no SQL, no FK lookups).
+			addAllCurrentContentPanelToSelected();
+
+			boolean ok = true;
+			if (paging != null && paging.getPageCount() > 1) {
+				// Off-screen pages: fetch key + viewID columns only — no readData(), no N+1 FK lookups.
+				ok = selectAllOffScreenRows();
 			}
 			restoreSelectedInPage();
 			setStatusSelected();
-			btnSelectAll.setEnabled(false);
-			btnDeSelectAll.setEnabled(true);
+			if (ok) {
+				btnSelectAll.setEnabled(false);
+				btnDeSelectAll.setEnabled(true);
+			}
 		} finally {
 			Clients.clearBusy();
 		}
 	}
 
 	/**
-	 * Set and load pgNo as active page
-	 * @param pgNo
+	 * Fetch key + viewID column values for all off-screen rows using the full data SQL,
+	 * but without invoking readData() — eliminating N+1 FK display-lookup overhead.
+	 * For each key not already in recordSelectedData a lightweight stub row is created
+	 * (only key and viewID positions are populated; all other positions are null).
+	 * Stubs are tracked in lazyRowKeys and rehydrated with full row data the first time
+	 * the user navigates to that page (see restoreSelectedInPage).
 	 */
-	private void setAndLoadActivePage(int pgNo) {
-		paging.setActivePage(pgNo);
-		contentPanel.clearSelection();
-		pageNo = pgNo;
-		int start = pageNo * pageSize;
-		int end = getOverIntValue ((long)start + pageSize, extra_max_row);
-		if (end >= m_count)
-			end = m_count;
-		List<Object> subList = readLine(start, end);
-		model = new ListModelTable(subList);
-		model.setSorter(this);
-        model.addTableModelListener(this);
-        model.setMultiple(p_multipleSelection);
-        contentPanel.setData(model, null);
-        addAllCurrentContentPanelToSelected();
+	private boolean selectAllOffScreenRows() {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Trx trx = null;
+		List<Object> addedKeys = new ArrayList<>();
+		try {
+			SQLFragment sqlFragment = buildDataSQLFragment(0, 0);
+			String trxName = Trx.createTrxName("InfoPanelSelectAll:");
+			trx = Trx.get(trxName, true);
+			ps = DB.prepareStatement(sqlFragment.sqlClause(), trxName);
+			if (queryTimeout > 0)
+				ps.setQueryTimeout(queryTimeout);
+			setParameters(ps, false);
+			ps.setFetchSize(100);
+			rs = ps.executeQuery();
+
+			int rowSize = p_layout.length + columnDataIndex.size();
+			// keyColumnOfView == null  → primary key, always at RS position 1.
+			// isNeedAppendKeyViewData()→ hidden column appended to SQL via addKeyViewToQuery();
+			//   indexKeyOfView is -1 (not in p_layout), so read by column name instead of index.
+			// otherwise               → key column is at its p_layout position (1-based).
+			boolean keyByName = keyColumnOfView != null && isNeedAppendKeyViewData();
+			int keyRsIndex = (keyColumnOfView == null) ? 1
+					: keyByName ? -1
+					: (indexKeyOfView + 1);
+			int keyStoreIndex = getIndexKeyColumnOfView();
+
+			String keyName = keyColumnOfView != null ? keyColumnOfView.getColumnName() : p_keyColumn;
+			boolean uuidKey = keyName != null && keyName.endsWith("_UU");
+
+			// Pre-compute per-process metadata once — InfoColumnVO construction is not cheap
+			// and recreating it inside the row loop wastes memory for large result sets.
+			List<Integer> procSlots = new ArrayList<>();
+			List<InfoColumnVO> procVOs = new ArrayList<>();
+			if (infoProcessList != null) {
+				for (MInfoProcess proc : infoProcessList) {
+					if (proc.getInfoColumnID() <= 0)
+						continue;
+					Integer offset = columnDataIndex.get(proc.getInfoColumnID());
+					if (offset == null)
+						continue;
+					procSlots.add(p_layout.length + offset);
+					procVOs.add(new InfoColumnVO(Env.getCtx(), (MInfoColumn) proc.getAD_InfoColumn()));
+				}
+			}
+
+			while (rs.next()) {
+				Object keyValue;
+				if (uuidKey) {
+					keyValue = keyByName ? rs.getString(keyColumnOfView.getColumnName())
+							: rs.getString(keyRsIndex);
+					if (rs.wasNull() || keyValue == null)
+						continue;
+				} else {
+					int id = keyByName ? rs.getInt(keyColumnOfView.getColumnName())
+							: rs.getInt(keyRsIndex);
+					if (rs.wasNull() || id == 0)
+						continue;
+					keyValue = id;
+				}
+				if (recordSelectedData.containsKey(keyValue))
+					continue;
+
+				List<Object> stubRow = new ArrayList<>(Collections.nCopies(rowSize, null));
+				stubRow.set(keyStoreIndex, keyValue);
+
+				// Populate viewID column slots so getSaveKeys() returns correct T_Selection.ViewID.
+				for (int pi = 0; pi < procSlots.size(); pi++) {
+					InfoColumnVO vo = procVOs.get(pi);
+					Object viewIdVal;
+					try {
+						if (DisplayType.isID(vo.getAD_Reference_ID())) {
+							viewIdVal = rs.getInt(vo.getColumnName());
+						} else if (DisplayType.isDate(vo.getAD_Reference_ID())) {
+							viewIdVal = rs.getTimestamp(vo.getColumnName());
+						} else if (DisplayType.isNumeric(vo.getAD_Reference_ID())) {
+							viewIdVal = rs.getBigDecimal(vo.getColumnName());
+						} else {
+							viewIdVal = rs.getString(vo.getColumnName());
+						}
+						if (rs.wasNull())
+							viewIdVal = null;
+					} catch (SQLException e) {
+						if (log.isLoggable(Level.FINE))
+							log.log(Level.FINE, "Failed to read viewID column " + vo.getColumnName(), e);
+						viewIdVal = null;
+					}
+					stubRow.set(procSlots.get(pi), viewIdVal);
+				}
+
+				recordSelectedData.put(keyValue, stubRow);
+				lazyRowKeys.add(keyValue);
+				addedKeys.add(keyValue);
+			}
+			return true;
+		} catch (Exception e) {
+			log.log(Level.SEVERE, "selectAllOffScreenRows failed", e);
+			recordSelectedData.keySet().removeAll(addedKeys);
+			lazyRowKeys.removeAll(addedKeys);
+			if (e instanceof SQLException sqle && DB.getDatabase().isQueryTimeout(sqle))
+				Dialog.error(p_WindowNo, INFO_QUERY_TIME_OUT_ERROR);
+			else
+				Dialog.error(p_WindowNo, "DBExecuteError", e.getMessage());
+			return false;
+		} finally {
+			DB.close(rs, ps);
+			if (trx != null)
+				trx.close();
+		}
 	}
 
 	/**
@@ -3163,6 +3282,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 	private void deSelectAllRecords() {
 		// unselect all
 		recordSelectedData.clear();
+		lazyRowKeys.clear();
 		restoreSelectedInPage();
 		setStatusSelected();
 		btnSelectAll.setEnabled(true);
@@ -3528,23 +3648,20 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			Object key = lastSelectedRecord.get(0);
 			if(key instanceof IDColumn)
 				key = ((IDColumn)key).getRecord_ID();
+			else if(key instanceof UUIDColumn)
+				key = ((UUIDColumn)key).getRecord_UU();
 			m_rowSelectionOrder.add(key);
 		}
 		else {
+			Map<Object, List<Object>> sri = getSelectedRowInfo();
 			// add selected rows
-			for(Map.Entry<Object, List<Object>> entry : getSelectedRowInfo().entrySet()) {
-				List<Object> candidateRecord = entry.getValue();
-				// get row key
-				Object key = candidateRecord.get(0);
-				if(key instanceof IDColumn)
-					key = ((IDColumn)key).getRecord_ID();
-				//
+			for(Object key : sri.keySet()) {
 				if(!m_rowSelectionOrder.contains(key))
 					m_rowSelectionOrder.add(key);
 			}
 			// remove unselected rows
 			for(Iterator<Object> it = m_rowSelectionOrder.iterator(); it.hasNext();) {
-				if(!getSelectedRowInfo().containsKey(it.next()))
+				if(!sri.containsKey(it.next()))
 					it.remove();
 			}
 		}
