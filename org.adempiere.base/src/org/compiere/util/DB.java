@@ -16,9 +16,12 @@
  *****************************************************************************/
 package org.compiere.util;
 
+import static org.compiere.model.MSysConfig.ORACLE_SET_STRING_MAX_LENGTH;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.StringReader;
 import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Clob;
@@ -99,6 +102,8 @@ public final class DB
 
 	/** SQL Statement Separator "; "	*/
 	public static final String SQLSTATEMENT_SEPARATOR = "; ";
+
+	private static final int DEFAULT_ORACLE_SET_STRING_MAX_LENGTH = 32766;
 
 	/**
 	 * 	Update Mail Settings for System Client and System User (idempiereEnv.properties)
@@ -630,8 +635,14 @@ public final class DB
 	{
 		if (param == null)
 			pstmt.setObject(index, null);
-		else if (param instanceof String)
-			pstmt.setString(index, (String)param);
+		else if (param instanceof String) {
+
+			String s = (String) param;
+			if (isOracle() && s.length() > MSysConfig.getIntValue(ORACLE_SET_STRING_MAX_LENGTH, DEFAULT_ORACLE_SET_STRING_MAX_LENGTH))
+				pstmt.setClob(index, new StringReader(s), s.length());
+			else
+				pstmt.setString(index, s);
+		}
 		else if (param instanceof Integer)
 			pstmt.setInt(index, ((Integer)param).intValue());
 		else if (param instanceof BigDecimal)
