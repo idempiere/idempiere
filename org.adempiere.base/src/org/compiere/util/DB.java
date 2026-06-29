@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.StringReader;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.sql.CallableStatement;
 import java.sql.Clob;
 import java.sql.Connection;
@@ -638,7 +639,7 @@ public final class DB
 		else if (param instanceof String) {
 
 			String s = (String) param;
-			if (isOracle() && s.length() > MSysConfig.getIntValue(ORACLE_SET_STRING_MAX_LENGTH, DEFAULT_ORACLE_SET_STRING_MAX_LENGTH))
+			if (isOracle() && s.getBytes(StandardCharsets.UTF_8).length > MSysConfig.getIntValue(ORACLE_SET_STRING_MAX_LENGTH, DEFAULT_ORACLE_SET_STRING_MAX_LENGTH))
 				pstmt.setClob(index, new StringReader(s), s.length());
 			else
 				pstmt.setString(index, s);
