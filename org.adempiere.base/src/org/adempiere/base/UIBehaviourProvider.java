@@ -110,18 +110,21 @@ public class UIBehaviourProvider
 		UIBehaviourProvider inst = instance;
 		if (inst == null || inst.behaviours.isEmpty())
 			return null;
+		StringBuilder sb = null;
 		for (IUIBehaviour svc : inst.behaviours) {
 			try {
 				String suffix = svc.getLookupCacheKeySuffix(lookup, lookupInfo);
-				if (suffix != null)
-					return suffix;
+				if (suffix != null && !suffix.isEmpty()) {
+					if (sb == null) sb = new StringBuilder(suffix);
+					else sb.append("|").append(suffix);
+				}
 			} catch (Exception t) {
 				log.log(Level.WARNING,
 					"IUIBehaviour provider " + svc.getClass().getName()
 					+ " threw in getLookupCacheKeySuffix; treating as neutral", t);
 			}
 		}
-		return null;
+		return sb != null ? sb.toString() : null;
 	}
 
 	/**
