@@ -243,7 +243,6 @@ public abstract class Convert
 			log.info(m_conversionError);
 			return null;
 		}
-		//
 		return convertIt (sqlStatements);
 	}   //  convert
 
