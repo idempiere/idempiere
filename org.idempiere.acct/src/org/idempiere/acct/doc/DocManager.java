@@ -628,7 +628,7 @@ public class DocManager {
 				.append("SELECT M_InOutLine_ID FROM M_InOutLine WHERE M_InOut_ID=").append(Record_ID).append(")))");
 		} else if (table.getAD_Table_ID() == MMatchInv.Table_ID) {
 			conditionClause.append("(M_MatchInv_ID=?) OR ");
-			conditionClause.append("(C_InvoiceLine_ID IN (SELECT C_InvoiceLine_ID FROM M_MatchInv WHERE M_MatchInv_ID=").append(Record_ID).append("))");
+			conditionClause.append("((C_InvoiceLine_ID, M_AttributeSetInstance_ID) IN (SELECT C_InvoiceLine_ID, M_AttributeSetInstance_ID FROM M_MatchInv WHERE M_MatchInv_ID=").append(Record_ID).append("))");
 		} else {
 			MTable childTable = MTable.get(Env.getCtx(), table.getTableName() + "Line");
 			if (childTable != null) {

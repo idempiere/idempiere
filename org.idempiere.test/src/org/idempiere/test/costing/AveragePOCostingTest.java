@@ -7664,7 +7664,17 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		cal.add(Calendar.DAY_OF_MONTH, -1);
 		Timestamp date1 = new Timestamp(cal.getTimeInMillis());
 		
-		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
+		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id);
+		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id);
+
+		BigDecimal crate1 = new BigDecimal("31.346223109251");
+		BigDecimal crate2 = new BigDecimal("32.573724925968");
+		
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class);
+				MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			mockGetRate(conversionRateMock, usd, euro, 0, date1, crate1);
+			mockGetRate(conversionRateMock, usd, euro, 0, today, crate2);
+			
 			MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
 			product.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.STANDARD.id);
 			product.setName("testReverseCorrectMRWithMultiASILines3");
@@ -7922,11 +7932,17 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				assertFactAcctEntries(factAccts, expected);
 			}
 			
+			MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), getAD_Client_ID());
 			product.set_TrxName(getTrxName());
-			cost = product.getCostingRecord(as, getAD_Org_ID(), 0, MCostElement.COSTINGMETHOD_AveragePO);
-			assertNotNull(cost, "No MCost record found");
-			assertEquals(new BigDecimal("10.00"), cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
-			assertEquals(new BigDecimal("10.00"), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
+			for (MAcctSchema as0 : ass) {
+				cost = product.getCostingRecord(as0, getAD_Org_ID(), 0, MCostElement.COSTINGMETHOD_AveragePO);
+				assertNotNull(cost, "No MCost record found");
+				assertEquals(new BigDecimal("10.00"), cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+				if (as0.getC_Currency_ID() == DictionaryIDs.C_Currency.USD.id)
+					assertEquals(new BigDecimal("10.00"), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
+				else if (as0.getC_Currency_ID() == DictionaryIDs.C_Currency.EUR.id)
+					assertEquals(new BigDecimal("313.46"), cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected current cost price");
+			}
 		} finally {
 			rollback();
 		}
