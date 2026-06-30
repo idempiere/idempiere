@@ -88,7 +88,20 @@ INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexCol
 INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201768,'019aa175-2e14-7d13-8b6e-1364d2267960',TO_TIMESTAMP('2025-11-20 19:00:01','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2025-11-20 19:00:01','YYYY-MM-DD HH24:MI:SS'),100,217167,201291,30)
 ;
 
-ALTER TABLE T_ReportStatement DROP CONSTRAINT t_reportstatement_pkey
+DECLARE
+    v_count NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO v_count
+      FROM USER_CONSTRAINTS
+     WHERE CONSTRAINT_NAME = UPPER('t_reportstatement_key')
+       AND TABLE_NAME = UPPER('T_ReportStatement');
+
+    IF v_count > 0 THEN
+         EXECUTE IMMEDIATE
+            'ALTER TABLE T_ReportStatement DROP CONSTRAINT t_reportstatement_key';
+    END IF;
+END
 ;
 
 -- Nov 20, 2025, 7:00:05 PM IST
