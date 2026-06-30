@@ -567,52 +567,13 @@ public class MReportLine extends X_PA_ReportLine
 	 */
 	public String getSelectClauseCombination(MReportSource source)
 	{
-		if (source == null)
-			return "";
-
 		StringBuilder select = new StringBuilder();
 
-		if (source.getOrg_ID() != 0 || source.isIncludeNullsOrg())
-			appendCombinationLink(select, MReportSource.COLUMNNAME_AD_Org_ID, source.isIncludeNullsOrg());
-
-		if (source.getAD_OrgTrx_ID() != 0 || source.isIncludeNullsOrgTrx())
-			appendCombinationLink(select, MReportSource.COLUMNNAME_AD_OrgTrx_ID, source.isIncludeNullsOrgTrx());
-
-		if (source.getC_ElementValue_ID() != 0 || source.isIncludeNullsElementValue())
-			appendCombinationLink(select, "Account_ID", source.isIncludeNullsElementValue());
-
-		if (source.getC_BPartner_ID() != 0 || source.isIncludeNullsBPartner())
-			appendCombinationLink(select, MReportSource.COLUMNNAME_C_BPartner_ID, source.isIncludeNullsBPartner());
-
-		if (source.getM_Product_ID() != 0 || source.isIncludeNullsProduct())
-			appendCombinationLink(select, MReportSource.COLUMNNAME_M_Product_ID, source.isIncludeNullsProduct());
-
-		if (source.getC_Location_ID() != 0 || source.isIncludeNullsLocation())
-			appendCombinationLink(select, "C_LocFrom_ID", source.isIncludeNullsLocation());
-
-		if (source.getC_Project_ID() != 0 || source.isIncludeNullsProject())
-			appendCombinationLink(select, MReportSource.COLUMNNAME_C_Project_ID, source.isIncludeNullsProject());
-
-		if (source.getC_SalesRegion_ID() != 0 || source.isIncludeNullsSalesRegion())
-			appendCombinationLink(select, MReportSource.COLUMNNAME_C_SalesRegion_ID, source.isIncludeNullsSalesRegion());
-
-		if (source.getC_Activity_ID() != 0 || source.isIncludeNullsActivity())
-			appendCombinationLink(select, MReportSource.COLUMNNAME_C_Activity_ID, source.isIncludeNullsActivity());
-
-		if (source.getC_Campaign_ID() != 0 || source.isIncludeNullsCampaign())
-			appendCombinationLink(select, MReportSource.COLUMNNAME_C_Campaign_ID, source.isIncludeNullsCampaign());
-
-		if (source.getUserElement1_ID() != 0 || source.isIncludeNullsUserElement1())
-			appendCombinationLink(select, MReportSource.COLUMNNAME_UserElement1_ID, source.isIncludeNullsUserElement1());
-
-		if (source.getUserElement2_ID() != 0 || source.isIncludeNullsUserElement2())
-			appendCombinationLink(select, MReportSource.COLUMNNAME_UserElement2_ID, source.isIncludeNullsUserElement2());
-
-		if (source.getUser1_ID() != 0 || source.isIncludeNullsUserList1())
-			appendCombinationLink(select, MReportSource.COLUMNNAME_User1_ID, source.isIncludeNullsUserList1());
-
-		if (source.getUser2_ID() != 0 || source.isIncludeNullsUserList2())
-			appendCombinationLink(select, MReportSource.COLUMNNAME_User2_ID, source.isIncludeNullsUserList2());
+		for (CombinationDimension dimension : getCombinationDimensions(source))
+		{
+			if (dimension.enabled)
+				appendCombinationLink(select, dimension.columnName, dimension.includeNulls);
+		}
 
 		log.fine(select.toString());
 
@@ -629,54 +590,79 @@ public class MReportLine extends X_PA_ReportLine
 	{
 		List<String> groupBy = new ArrayList<>();
 
-		if (source == null)
-			return groupBy;
-
-		if (source.getOrg_ID() != 0 || source.isIncludeNullsOrg())
-			groupBy.add(MReportSource.COLUMNNAME_AD_Org_ID);
-
-		if (source.getAD_OrgTrx_ID() != 0 || source.isIncludeNullsOrgTrx())
-			groupBy.add(MReportSource.COLUMNNAME_AD_OrgTrx_ID);
-
-		if (source.getC_ElementValue_ID() != 0 || source.isIncludeNullsElementValue())
-			groupBy.add("Account_ID");
-
-		if (source.getC_BPartner_ID() != 0 || source.isIncludeNullsBPartner())
-			groupBy.add(MReportSource.COLUMNNAME_C_BPartner_ID);
-
-		if (source.getM_Product_ID() != 0 || source.isIncludeNullsProduct())
-			groupBy.add(MReportSource.COLUMNNAME_M_Product_ID);
-
-		if (source.getC_Location_ID() != 0 || source.isIncludeNullsLocation())
-			groupBy.add("C_LocFrom_ID");
-
-		if (source.getC_Project_ID() != 0 || source.isIncludeNullsProject())
-			groupBy.add(MReportSource.COLUMNNAME_C_Project_ID);
-
-		if (source.getC_SalesRegion_ID() != 0 || source.isIncludeNullsSalesRegion())
-			groupBy.add(MReportSource.COLUMNNAME_C_SalesRegion_ID);
-
-		if (source.getC_Activity_ID() != 0 || source.isIncludeNullsActivity())
-			groupBy.add(MReportSource.COLUMNNAME_C_Activity_ID);
-
-		if (source.getC_Campaign_ID() != 0 || source.isIncludeNullsCampaign())
-			groupBy.add(MReportSource.COLUMNNAME_C_Campaign_ID);
-
-		if (source.getUserElement1_ID() != 0 || source.isIncludeNullsUserElement1())
-			groupBy.add(MReportSource.COLUMNNAME_UserElement1_ID);
-
-		if (source.getUserElement2_ID() != 0 || source.isIncludeNullsUserElement2())
-			groupBy.add(MReportSource.COLUMNNAME_UserElement2_ID);
-
-		if (source.getUser1_ID() != 0 || source.isIncludeNullsUserList1())
-			groupBy.add(MReportSource.COLUMNNAME_User1_ID);
-
-		if (source.getUser2_ID() != 0 || source.isIncludeNullsUserList2())
-			groupBy.add(MReportSource.COLUMNNAME_User2_ID);
+		for (CombinationDimension dimension : getCombinationDimensions(source))
+		{
+			if (dimension.enabled)
+				groupBy.add(dimension.columnName);
+		}
 
 		return groupBy;
 	} // getCombinationGroupByColumns
 
+	/**
+	 * Get combination dimensions for the given report source.
+	 * 
+	 * @param  source
+	 * @return
+	 */
+	private List<CombinationDimension> getCombinationDimensions(MReportSource source)
+	{
+		List<CombinationDimension> dimensions = new ArrayList<>();
+
+		if (source == null)
+			return dimensions;
+
+		dimensions.add(new CombinationDimension(source.getOrg_ID() != 0 || source.isIncludeNullsOrg(),
+												source.isIncludeNullsOrg(), MReportSource.COLUMNNAME_AD_Org_ID));
+
+		dimensions.add(new CombinationDimension(source.getAD_OrgTrx_ID() != 0	|| source.isIncludeNullsOrgTrx(),
+												source.isIncludeNullsOrgTrx(), MReportSource.COLUMNNAME_AD_OrgTrx_ID));
+
+		dimensions.add(new CombinationDimension(source.getC_ElementValue_ID() != 0	|| source.isIncludeNullsElementValue(),
+												source.isIncludeNullsElementValue(), "Account_ID"));
+
+		dimensions.add(new CombinationDimension(source.getC_BPartner_ID() != 0	|| source.isIncludeNullsBPartner(),
+												source.isIncludeNullsBPartner(), MReportSource.COLUMNNAME_C_BPartner_ID));
+
+		dimensions.add(new CombinationDimension(source.getM_Product_ID() != 0	|| source.isIncludeNullsProduct(),
+												source.isIncludeNullsProduct(), MReportSource.COLUMNNAME_M_Product_ID));
+
+		dimensions.add(new CombinationDimension(source.getC_Location_ID() != 0	|| source.isIncludeNullsLocation(),
+												source.isIncludeNullsLocation(), "C_LocFrom_ID"));
+
+		dimensions.add(new CombinationDimension(source.getC_Project_ID() != 0	|| source.isIncludeNullsProject(),
+												source.isIncludeNullsProject(), MReportSource.COLUMNNAME_C_Project_ID));
+
+		dimensions.add(new CombinationDimension(source.getC_SalesRegion_ID() != 0	|| source.isIncludeNullsSalesRegion(),
+												source.isIncludeNullsSalesRegion(), MReportSource.COLUMNNAME_C_SalesRegion_ID));
+
+		dimensions.add(new CombinationDimension(source.getC_Activity_ID() != 0	|| source.isIncludeNullsActivity(),
+												source.isIncludeNullsActivity(), MReportSource.COLUMNNAME_C_Activity_ID));
+
+		dimensions.add(new CombinationDimension(source.getC_Campaign_ID() != 0	|| source.isIncludeNullsCampaign(),
+												source.isIncludeNullsCampaign(), MReportSource.COLUMNNAME_C_Campaign_ID));
+
+		dimensions.add(new CombinationDimension(source.getUserElement1_ID() != 0	|| source.isIncludeNullsUserElement1(),
+												source.isIncludeNullsUserElement1(), MReportSource.COLUMNNAME_UserElement1_ID));
+
+		dimensions.add(new CombinationDimension(source.getUserElement2_ID() != 0	|| source.isIncludeNullsUserElement2(),
+												source.isIncludeNullsUserElement2(), MReportSource.COLUMNNAME_UserElement2_ID));
+
+		dimensions.add(new CombinationDimension(source.getUser1_ID() != 0	|| source.isIncludeNullsUserList1(),
+												source.isIncludeNullsUserList1(), MReportSource.COLUMNNAME_User1_ID));
+
+		dimensions.add(new CombinationDimension(source.getUser2_ID() != 0	|| source.isIncludeNullsUserList2(),
+												source.isIncludeNullsUserList2(), MReportSource.COLUMNNAME_User2_ID));
+		return dimensions;
+	}
+
+	/**
+	 * Append combination link to the select clause.
+	 * 
+	 * @param select
+	 * @param columnName
+	 * @param includeNulls
+	 */
 	private void appendCombinationLink(StringBuilder select, String columnName, boolean includeNulls)
 	{
 		select.append(" AND (fb.").append(columnName).append("=x.").append(columnName);
@@ -685,4 +671,21 @@ public class MReportLine extends X_PA_ReportLine
 		select.append(")");
 	} // appendCombinationLink
 
+	/**
+	 * Class to hold information about a combination dimension, including whether it is enabled,
+	 * whether to include nulls, and the column name.
+	 */
+	private static final class CombinationDimension
+	{
+		private final boolean	enabled;
+		private final boolean	includeNulls;
+		private final String	columnName;
+
+		private CombinationDimension(boolean enabled, boolean includeNulls, String columnName)
+		{
+			this.enabled = enabled;
+			this.includeNulls = includeNulls;
+			this.columnName = columnName;
+		}
+	}
 }	//	MReportLine
