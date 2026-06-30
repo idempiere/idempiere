@@ -7219,10 +7219,12 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				List<MFactAcct> factAccts = query.list();
 				List<FactAcct> expected = new ArrayList<FactAcct>();
 				if (mi.getM_InOutLine_ID() == receiptLine1.getM_InOutLine_ID()) {
+					assertEquals(receiptLine1.getM_AttributeSetInstance_ID(), mi.getM_AttributeSetInstance_ID(), "Unexpected match invoice ASI for receipt line 1");
 					expected.add(new FactAcct(acctNIR, mrQty1.multiply(poPrice), 2, true));
 					expected.add(new FactAcct(acctInvClr, mrQty1.multiply(invPrice), 2, false));
 					expected.add(new FactAcct(assetAccount, mrQty1.multiply(invPrice.subtract(poPrice)), 2, true));
 				} else if (mi.getM_InOutLine_ID() == receiptLine2.getM_InOutLine_ID()) {
+					assertEquals(receiptLine2.getM_AttributeSetInstance_ID(), mi.getM_AttributeSetInstance_ID(), "Unexpected match invoice ASI for receipt line 2");
 					expected.add(new FactAcct(acctNIR, mrQty2.multiply(poPrice), 2, true));
 					expected.add(new FactAcct(acctInvClr, mrQty2.multiply(invPrice), 2, false));
 					expected.add(new FactAcct(assetAccount, mrQty2.multiply(invPrice.subtract(poPrice)), 2, true));
@@ -7277,10 +7279,12 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				boolean isDebit = mi.getQty().signum() >= 0;
 				List<FactAcct> expected = new ArrayList<FactAcct>();
 				if (mi.getM_InOutLine_ID() == receiptLine1.getM_InOutLine_ID()) {
+					assertEquals(receiptLine1.getM_AttributeSetInstance_ID(), mi.getM_AttributeSetInstance_ID(), "Unexpected match invoice ASI for receipt line 1");
 					expected.add(new FactAcct(acctNIR, mrQty1.multiply(poPrice), 2, isDebit));
 					expected.add(new FactAcct(acctInvClr, mrQty1.multiply(invPrice), 2, !isDebit));
 					expected.add(new FactAcct(assetAccount, mrQty1.multiply(invPrice.subtract(poPrice)), 2, isDebit));
 				} else if (mi.getM_InOutLine_ID() == receiptLine2.getM_InOutLine_ID()) {
+					assertEquals(receiptLine2.getM_AttributeSetInstance_ID(), mi.getM_AttributeSetInstance_ID(), "Unexpected match invoice ASI for receipt line 2");
 					expected.add(new FactAcct(acctNIR, mrQty2.multiply(poPrice), 2, isDebit));
 					expected.add(new FactAcct(acctInvClr, mrQty2.multiply(invPrice), 2, !isDebit));
 					expected.add(new FactAcct(assetAccount, mrQty2.multiply(invPrice.subtract(poPrice)), 2, isDebit));
@@ -7555,10 +7559,12 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				List<MFactAcct> factAccts = query.list();
 				List<FactAcct> expected = new ArrayList<FactAcct>();
 				if (mi.getM_InOutLine_ID() == receiptLine1.getM_InOutLine_ID()) {
+					assertEquals(receiptLine1.getM_AttributeSetInstance_ID(), mi.getM_AttributeSetInstance_ID(), "Unexpected match invoice ASI for receipt line 1");
 					expected.add(new FactAcct(acctNIR, mrQty1.multiply(poPrice), 2, true));
 					expected.add(new FactAcct(acctInvClr, mrQty1.multiply(invPrice), 2, false));
 					expected.add(new FactAcct(assetAccount, mrQty1.multiply(poPrice.subtract(invPrice)), 2, false));
 				} else if (mi.getM_InOutLine_ID() == receiptLine2.getM_InOutLine_ID()) {
+					assertEquals(receiptLine2.getM_AttributeSetInstance_ID(), mi.getM_AttributeSetInstance_ID(), "Unexpected match invoice ASI for receipt line 2");
 					expected.add(new FactAcct(acctNIR, mrQty2.multiply(poPrice), 2, true));
 					expected.add(new FactAcct(acctInvClr, mrQty2.multiply(invPrice), 2, false));
 					expected.add(new FactAcct(assetAccount, mrQty2.multiply(poPrice.subtract(invPrice)), 2, false));
@@ -7613,10 +7619,12 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				boolean isDebit = mi.getQty().signum() >= 0;
 				List<FactAcct> expected = new ArrayList<FactAcct>();
 				if (mi.getM_InOutLine_ID() == receiptLine1.getM_InOutLine_ID()) {
+					assertEquals(receiptLine1.getM_AttributeSetInstance_ID(), mi.getM_AttributeSetInstance_ID(), "Unexpected match invoice ASI for receipt line 1");
 					expected.add(new FactAcct(acctNIR, mrQty1.multiply(poPrice), 2, isDebit));
 					expected.add(new FactAcct(acctInvClr, mrQty1.multiply(invPrice), 2, !isDebit));
 					expected.add(new FactAcct(assetAccount, mrQty1.multiply(poPrice.subtract(invPrice)), 2, !isDebit));
 				} else if (mi.getM_InOutLine_ID() == receiptLine2.getM_InOutLine_ID()) {
+					assertEquals(receiptLine2.getM_AttributeSetInstance_ID(), mi.getM_AttributeSetInstance_ID(), "Unexpected match invoice ASI for receipt line 2");
 					expected.add(new FactAcct(acctNIR, mrQty2.multiply(poPrice), 2, isDebit));
 					expected.add(new FactAcct(acctInvClr, mrQty2.multiply(invPrice), 2, !isDebit));
 					expected.add(new FactAcct(assetAccount, mrQty2.multiply(poPrice.subtract(invPrice)), 2, !isDebit));
@@ -7814,9 +7822,11 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				List<MFactAcct> factAccts = query.list();
 				List<FactAcct> expected = new ArrayList<FactAcct>();
 				if (mi.getM_InOutLine_ID() == receiptLine1.getM_InOutLine_ID()) {
+					assertEquals(receiptLine1.getM_AttributeSetInstance_ID(), mi.getM_AttributeSetInstance_ID(), "Unexpected match invoice ASI for receipt line 1");
 					expected.add(new FactAcct(acctNIR, mrQty1.multiply(poPrice), 2, true));
 					expected.add(new FactAcct(acctInvClr, mrQty1.multiply(invPrice), 2, false));
 				} else if (mi.getM_InOutLine_ID() == receiptLine2.getM_InOutLine_ID()) {
+					assertEquals(receiptLine2.getM_AttributeSetInstance_ID(), mi.getM_AttributeSetInstance_ID(), "Unexpected match invoice ASI for receipt line 2");
 					expected.add(new FactAcct(acctNIR, mrQty2.multiply(poPrice), 2, true));
 					expected.add(new FactAcct(acctInvClr, mrQty2.multiply(invPrice), 2, false));
 				}
@@ -7864,9 +7874,11 @@ public class AveragePOCostingTest extends AbstractTestCase {
 				boolean isDebit = mi.getQty().signum() >= 0;
 				List<FactAcct> expected = new ArrayList<FactAcct>();
 				if (mi.getM_InOutLine_ID() == receiptLine1.getM_InOutLine_ID()) {
+					assertEquals(receiptLine1.getM_AttributeSetInstance_ID(), mi.getM_AttributeSetInstance_ID(), "Unexpected match invoice ASI for receipt line 1");
 					expected.add(new FactAcct(acctNIR, mrQty1.multiply(poPrice), 2, isDebit));
 					expected.add(new FactAcct(acctInvClr, mrQty1.multiply(invPrice), 2, !isDebit));
 				} else if (mi.getM_InOutLine_ID() == receiptLine2.getM_InOutLine_ID()) {
+					assertEquals(receiptLine2.getM_AttributeSetInstance_ID(), mi.getM_AttributeSetInstance_ID(), "Unexpected match invoice ASI for receipt line 2");
 					expected.add(new FactAcct(acctNIR, mrQty2.multiply(poPrice), 2, isDebit));
 					expected.add(new FactAcct(acctInvClr, mrQty2.multiply(invPrice), 2, !isDebit));
 				}
