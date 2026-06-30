@@ -413,12 +413,17 @@ public class PoExporter {
 
 		MColumn column = MColumn.get(ctx.ctx, info.getTableName(), columnName, trxName);
 		if (column != null)
-			return column.getReferenceTableName();
-
+		{
+			String referenceTableName = column.getReferenceTableName();
+			if (referenceTableName != null)
+				return referenceTableName;
+		}
 		if (info.getColumnLookup(columnIndex) != null)
 		{
 			String lookupColumn = info.getColumnLookup(columnIndex).getColumnName();
-			return lookupColumn.substring(0, lookupColumn.indexOf('.'));
+			int separator = lookupColumn.indexOf('.');
+			if (separator > 0)
+				return lookupColumn.substring(0, separator);
 		}
 
 		return null;
