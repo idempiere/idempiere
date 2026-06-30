@@ -1531,18 +1531,19 @@ public class MCostDetail extends X_M_CostDetail
 			if (matchInvAdjAmt != null && matchInvAdjAmt.signum() != 0) {
 				// get the cost info from order cost detail
 				StringBuilder whereClause = new StringBuilder();
-				whereClause.append("C_OrderLine_ID IN ( ");
-				whereClause.append(" SELECT mpo.C_OrderLine_ID");
+				whereClause.append("(C_OrderLine_ID, M_AttributeSetInstance_ID) IN ( ");
+				whereClause.append(" SELECT mpo.C_OrderLine_ID, mpo.M_AttributeSetInstance_ID");
 				whereClause.append(" FROM M_MatchInv mi");
 				whereClause.append(" JOIN M_MatchPO mpo ON mpo.C_InvoiceLine_ID = mi.C_InvoiceLine_ID");
+				whereClause.append("  AND mpo.M_InOutLine_ID = mi.M_InOutLine_ID");
+				whereClause.append("  AND mpo.M_AttributeSetInstance_ID = mi.M_AttributeSetInstance_ID");
 				whereClause.append(" WHERE mi.M_MatchInv_ID = ?");
 				whereClause.append(") ");
 				whereClause.append(" AND M_Product_ID = ?");
-				whereClause.append(" AND M_AttributeSetInstance_ID = ?");
-				whereClause.append(" AND C_AcctSchema_ID = ?");
+		    	whereClause.append(" AND C_AcctSchema_ID = ?");
 				whereClause.append(" AND M_CostDetail_ID < ?");
 				cd = new Query(as.getCtx(), I_M_CostDetail.Table_Name, whereClause.toString(), get_TrxName())
-						.setParameters(getM_MatchInv_ID(), product.get_ID(), M_ASI_ID, as.get_ID(), this.get_ID())
+						.setParameters(getM_MatchInv_ID(), product.getM_Product_ID(), as.get_ID(), this.get_ID())
 						.setOrderBy("M_CostDetail_ID DESC")
 						.first();
 			}
@@ -2025,7 +2026,7 @@ public class MCostDetail extends X_M_CostDetail
 		selectSql.append("ml.M_Movement_ID, pl.M_Production_ID, pi.C_ProjectIssue_ID ");
 		selectSql.append("FROM M_CostDetail cd ");
 		selectSql.append("LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=cd.Ref_CostDetail_ID) ");
-		selectSql.append("LEFT JOIN M_MatchPO mpo ON (mpo.C_OrderLine_ID = cd.C_OrderLine_ID AND mpo.DateAcct = cd.DateAcct) ");
+		selectSql.append("LEFT JOIN M_MatchPO mpo ON (mpo.C_OrderLine_ID = cd.C_OrderLine_ID AND mpo.DateAcct = cd.DateAcct AND mpo.M_AttributeSetInstance_ID=cd.M_AttributeSetInstance_ID) ");
 		selectSql.append("LEFT JOIN C_InvoiceLine il ON (il.C_InvoiceLine_ID = cd.C_InvoiceLine_ID) ");
 		selectSql.append("LEFT JOIN M_InOutLine iol ON (iol.M_InOutLine_ID = cd.M_InOutLine_ID) ");
 		selectSql.append("LEFT JOIN M_MatchInv mi ON (mi.M_MatchInv_ID = cd.M_MatchInv_ID) ");
