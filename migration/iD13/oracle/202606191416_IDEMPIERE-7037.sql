@@ -49,7 +49,3 @@ INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,
 INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('E','The source Window Customization cannot be the same as the target.',0,0,'Y',TO_TIMESTAMP('2026-07-01 11:34:13','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-07-01 11:34:13','YYYY-MM-DD HH24:MI:SS'),100,201045,'UserDefWinSameRecord','U','ef45aa8c-3bde-44ea-8a4b-cd964f80a913')
 ;
 
--- 1 de jul. de 2026 11:34:13 BRT
-INSERT INTO AD_Message_Trl (AD_Language,AD_Message_ID, MsgText,MsgTip, IsTranslated,AD_Client_ID,AD_Org_ID,Created,Createdby,Updated,UpdatedBy,AD_Message_Trl_UU ) SELECT l.AD_Language,t.AD_Message_ID, t.MsgText,t.MsgTip, CASE WHEN l.AD_Language=c.AD_Language THEN 'Y' ELSE 'N' END AS IsTranslated,t.AD_Client_ID,t.AD_Org_ID,t.Created,t.Createdby,t.Updated,t.UpdatedBy,Generate_UUID() FROM AD_Language l, AD_Message t, AD_Client c WHERE t.AD_Client_ID=c.AD_Client_ID AND l.IsActive='Y' AND l.IsSystemLanguage='Y' AND l.IsBaseLanguage='N' AND t.AD_Message_ID=201045 AND NOT EXISTS (SELECT * FROM AD_Message_Trl tt WHERE tt.AD_Language=l.AD_Language AND tt.AD_Message_ID=t.AD_Message_ID)
-;
-
