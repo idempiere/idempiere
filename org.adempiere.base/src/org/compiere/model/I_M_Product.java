@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_Product
  *  @author iDempiere (generated) 
- *  @version Release 13
+ *  @version Release 14
  */
 public interface I_M_Product 
 {
@@ -528,6 +528,19 @@ public interface I_M_Product
 	  * This is a summary entity
 	  */
 	public boolean isSummary();
+
+    /** Column name IsUseDateMaterialPolicy */
+    public static final String COLUMNNAME_IsUseDateMaterialPolicy = "IsUseDateMaterialPolicy";
+
+	/** Set Use Date Material Policy.
+	  * Use transaction or guarantee date to track storage records per date
+	  */
+	public void setIsUseDateMaterialPolicy (boolean IsUseDateMaterialPolicy);
+
+	/** Get Use Date Material Policy.
+	  * Use transaction or guarantee date to track storage records per date
+	  */
+	public boolean isUseDateMaterialPolicy();
 
     /** Column name IsVerified */
     public static final String COLUMNNAME_IsVerified = "IsVerified";

@@ -43,7 +43,6 @@ import org.compiere.model.MPayment;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
-import org.compiere.util.Util;
 
 /**
  *  Post Allocation Documents.
@@ -537,7 +536,7 @@ public class Doc_AllocationHdr extends Doc
 			for (FactLine factLine : factlines) {
 				netBalance = netBalance.add(factLine.getAmtSourceDr()).subtract(factLine.getAmtSourceCr());
 				if (prevFactLine != null) {
-					if (! equalFactLineIDs(prevFactLine, factLine)) {
+					if (!prevFactLine.hasSameAccountingDimensions(factLine)) {
 						allEquals = false;
 						break;
 					}
@@ -616,68 +615,6 @@ public class Doc_AllocationHdr extends Doc
 
 		return false;
 	}
-
-	/**
-	 * Compare the dimension ID's from two factlines
-	 * @param allEquals
-	 * @param prevFactLine
-	 * @param factLine
-	 * @return boolean indicating if both dimension ID's are equal
-	 */
-	private boolean equalFactLineIDs(FactLine prevFactLine, FactLine factLine) {
-		return (factLine.getA_Asset_ID() == prevFactLine.getA_Asset_ID()
-				&& factLine.getAccount_ID() == prevFactLine.getAccount_ID()
-				&& factLine.getAD_Client_ID() == prevFactLine.getAD_Client_ID()
-				&& factLine.getAD_Org_ID() == prevFactLine.getAD_Org_ID()
-				&& factLine.getAD_OrgTrx_ID() == prevFactLine.getAD_OrgTrx_ID()
-				&& factLine.getC_AcctSchema_ID() == prevFactLine.getC_AcctSchema_ID()
-				&& factLine.getC_Activity_ID() == prevFactLine.getC_Activity_ID()
-				&& factLine.getC_BPartner_ID() == prevFactLine.getC_BPartner_ID()
-				&& factLine.getC_Campaign_ID() == prevFactLine.getC_Campaign_ID()
-				&& factLine.getC_Currency_ID() == prevFactLine.getC_Currency_ID()
-				&& factLine.getC_LocFrom_ID() == prevFactLine.getC_LocFrom_ID()
-				&& factLine.getC_LocTo_ID() == prevFactLine.getC_LocTo_ID()
-				&& factLine.getC_Period_ID() == prevFactLine.getC_Period_ID()
-				&& factLine.getC_Project_ID() == prevFactLine.getC_Project_ID()
-				&& factLine.getC_ProjectPhase_ID() == prevFactLine.getC_ProjectPhase_ID()
-				&& factLine.getC_ProjectTask_ID() == prevFactLine.getC_ProjectTask_ID()
-				&& factLine.getC_SalesRegion_ID() == prevFactLine.getC_SalesRegion_ID()
-				&& factLine.getC_SubAcct_ID() == prevFactLine.getC_SubAcct_ID()
-				&& factLine.getC_Tax_ID() == prevFactLine.getC_Tax_ID()
-				&& factLine.getC_UOM_ID() == prevFactLine.getC_UOM_ID()
-				&& factLine.getGL_Budget_ID() == prevFactLine.getGL_Budget_ID()
-				&& factLine.getGL_Category_ID() == prevFactLine.getGL_Category_ID()
-				&& factLine.getM_Locator_ID() == prevFactLine.getM_Locator_ID()
-				&& factLine.getM_Product_ID() == prevFactLine.getM_Product_ID()
-				&& factLine.getUserElement1_ID() == prevFactLine.getUserElement1_ID()
-				&& factLine.getUserElement2_ID() == prevFactLine.getUserElement2_ID()
-				&& factLine.getUser1_ID() == prevFactLine.getUser1_ID()
-				&& factLine.getUser2_ID() == prevFactLine.getUser2_ID()
-				&& factLine.getA_Asset_ID() == prevFactLine.getA_Asset_ID()
-				&& factLine.getC_Employee_ID() == prevFactLine.getC_Employee_ID()
-				&& factLine.getC_Charge_ID() == prevFactLine.getC_Charge_ID()
-				&& factLine.getC_CostCenter_ID() == prevFactLine.getC_CostCenter_ID()
-				&& factLine.getC_Department_ID() == prevFactLine.getC_Department_ID()
-				&& factLine.getM_Warehouse_ID() == prevFactLine.getM_Warehouse_ID()
-				&& factLine.getM_AttributeSetInstance_ID() == prevFactLine.getM_AttributeSetInstance_ID())
-				&& areCustomFieldsEqual(factLine.getCustomFieldText1(), prevFactLine.getCustomFieldText1())
-				&& areCustomFieldsEqual(factLine.getCustomFieldText2(), prevFactLine.getCustomFieldText2())
-				&& areCustomFieldsEqual(factLine.getCustomFieldText3(), prevFactLine.getCustomFieldText3())
-				&& areCustomFieldsEqual(factLine.getCustomFieldText4(), prevFactLine.getCustomFieldText4());
-	}
-
-	/**
-	 * Compares two custom field text values.
-	 * 
-	 * @param  cfieldText1 fact from Custom Field Text
-	 * @param  cfieldText2 fact to Custom Field Text
-	 * @return
-	 */
-	private boolean areCustomFieldsEqual(String cfieldText1, String cfieldText2)
-	{
-		return (Util.isEmpty(cfieldText1) && Util.isEmpty(cfieldText2))
-				|| (!Util.isEmpty(cfieldText1) && cfieldText1.equalsIgnoreCase(cfieldText2));
-	}// areCustomFieldsEqual
 
 	/**
 	 * 	Create Cash Based Acct

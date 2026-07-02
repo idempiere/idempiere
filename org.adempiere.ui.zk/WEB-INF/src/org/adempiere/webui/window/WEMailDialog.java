@@ -408,7 +408,9 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 			btn.setImage(ThemeManager.getThemeResource("images/Attachment24.png"));
 		btn.setUpload(AdempiereWebUI.getUploadSetting());
 		btn.addEventListener(Events.ON_UPLOAD, this);
+		btn.setLabel(Msg.getMsg(Env.getCtx(), "Attachment"));
 		btn.setTooltiptext(Msg.getMsg(Env.getCtx(), "Attachment"));
+		btn.setSclass("mail-template-btn");
 		confirmPanel.addComponentsLeft(btn);
 
 		bAddDefaultMailText = new Button();
@@ -417,6 +419,8 @@ public class WEMailDialog extends Window implements EventListener<Event>, ValueC
 		else
 			bAddDefaultMailText.setImage(ThemeManager.getThemeResource("images/DefaultMailText.png"));
 		bAddDefaultMailText.addEventListener(Events.ON_CLICK, this);
+		bAddDefaultMailText.setLabel(Msg.getMsg(Env.getCtx(), "AddDefaultMailText"));
+		bAddDefaultMailText.setSclass("mail-template-btn");
 		bAddDefaultMailText.setTooltiptext(Msg.getMsg(Env.getCtx(), "AddDefaultMailTextContent"));
 		if (new MUser(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()), null).getR_DefaultMailText_ID() > 0)
 			confirmPanel.addComponentsLeft(bAddDefaultMailText);
