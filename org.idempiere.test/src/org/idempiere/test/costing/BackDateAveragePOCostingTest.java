@@ -8070,6 +8070,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			MInvoiceLine invoiceLine = createInvoiceForMR(receiptLine, backDate3, price);
 			
 			MMatchInv[] miList = MMatchInv.getInvoiceLine(Env.getCtx(), invoiceLine.get_ID(), getTrxName());
+			assertEquals(1, miList.length, "Unexpected number of match invoice records");
 			for (MMatchInv mi : miList) {
 				if (!mi.isPosted()) {
 					String error = DocumentEngine.postImmediate(Env.getCtx(), mi.getAD_Client_ID(), MMatchInv.Table_ID, mi.get_ID(), false, getTrxName());
@@ -8152,7 +8153,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			mockGetRate(conversionRateMock, usd, euro, 0, backDate2, crate2);
 			mockGetRate(conversionRateMock, usd, euro, 0, backDate3, crate3);
 
-			MProduct product = createProduct("testPurchaseInvoiceAfterInternalUseInventory3", new BigDecimal(40.5));
+			MProduct product = createProduct("testPurchaseInvoiceAfterInternalUseInventory4", new BigDecimal(40.5));
 			mockProductGet(productMock, product);
 			
 			BigDecimal qty = new BigDecimal(10);
@@ -8175,6 +8176,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			MInvoiceLine invoiceLine = createInvoiceForPO(orderLine, backDate3, qty);
 			
 			MMatchInv[] miList = MMatchInv.getInvoiceLine(Env.getCtx(), invoiceLine.get_ID(), getTrxName());
+			assertEquals(1, miList.length, "Unexpected number of match invoice records");
 			for (MMatchInv mi : miList) {
 				if (!mi.isPosted()) {
 					String error = DocumentEngine.postImmediate(Env.getCtx(), mi.getAD_Client_ID(), MMatchInv.Table_ID, mi.get_ID(), false, getTrxName());
