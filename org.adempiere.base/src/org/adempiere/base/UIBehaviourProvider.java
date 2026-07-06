@@ -99,11 +99,13 @@ public class UIBehaviourProvider
 	}
 
 	/**
-	 * Return the first non-null suffix from any registered provider, or null.
-	 * A non-null suffix appended to the cache key partitions the cache (e.g. by
-	 * history date) without disabling it.
+	 * Concatenate all non-null suffixes returned by registered providers with {@code |}
+	 * as separator, or return {@code null} if no provider supplies one.
+	 * Each provider contributes an independent dimension to the composite cache key
+	 * (e.g. {@code "HST@2026-06-23|ROLE@admin"}), keeping caching active and
+	 * well-defined for any number of registered providers.
 	 *
-	 * @return first non-null suffix, or null if no provider supplies one
+	 * @return concatenated suffixes, or null if no provider supplies one
 	 */
 	public static String getLookupCacheKeySuffix(Lookup lookup, MLookupInfo lookupInfo)
 	{
