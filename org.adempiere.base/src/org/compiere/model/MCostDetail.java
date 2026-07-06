@@ -1534,8 +1534,8 @@ public class MCostDetail extends X_M_CostDetail
 				whereClause.append("(C_OrderLine_ID, M_AttributeSetInstance_ID) IN ( ");
 				whereClause.append(" SELECT mpo.C_OrderLine_ID, mpo.M_AttributeSetInstance_ID");
 				whereClause.append(" FROM M_MatchInv mi");
-				whereClause.append(" JOIN M_MatchPO mpo ON mpo.C_InvoiceLine_ID = mi.C_InvoiceLine_ID");
-				whereClause.append("  AND mpo.M_InOutLine_ID = mi.M_InOutLine_ID");
+				// Don't join with M_MatchPO.C_InvoiceLine_ID, it is not mandatory
+				whereClause.append(" JOIN M_MatchPO mpo ON mpo.M_InOutLine_ID = mi.M_InOutLine_ID"); 
 				whereClause.append("  AND mpo.M_AttributeSetInstance_ID = mi.M_AttributeSetInstance_ID");
 				whereClause.append(" WHERE mi.M_MatchInv_ID = ?");
 				whereClause.append(") ");
@@ -2209,7 +2209,7 @@ public class MCostDetail extends X_M_CostDetail
 	 * @param trxName transaction name
 	 * @return MCostDetail or null
 	 */
-	private static MCostDetail getLastCostDetailFromCostHistory(Properties ctx, int AD_Client_ID, int AD_Org_ID, int M_Product_ID,
+	public static MCostDetail getLastCostDetailFromCostHistory(Properties ctx, int AD_Client_ID, int AD_Org_ID, int M_Product_ID,
 			int M_CostType_ID, int C_AcctSchema_ID, String costingMethod, int M_CostElement_ID,
 			int M_AttributeSetInstance_ID, Timestamp dateAcct, 
 			String trxName) {

@@ -8009,6 +8009,215 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	}
 	
 	/**
+	 * PO Qty=10, Price=100
+	 * MR Qty=10, Date1
+	 * Internal use inventory Qty=-10, Date2
+	 * PI Qty=10, Date3 (from MR)
+	 */
+	@Test
+	public void testPurchaseInvoiceAfterInternalUseInventory3() {
+		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), getAD_Client_ID());
+		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
+		MAcctSchema as = ci.getMAcctSchema1();
+		
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(today.getTime());
+		cal.add(Calendar.DAY_OF_MONTH, -3);
+		Timestamp backDate1 = new Timestamp(cal.getTimeInMillis());
+		cal.setTimeInMillis(today.getTime());
+		cal.add(Calendar.DAY_OF_MONTH, -2);
+		Timestamp backDate2  = new Timestamp(cal.getTimeInMillis());
+		cal.setTimeInMillis(today.getTime());
+		cal.add(Calendar.DAY_OF_MONTH, -1);
+		Timestamp backDate3  = new Timestamp(cal.getTimeInMillis());
+		
+		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id);
+		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id);
+
+		BigDecimal crate1 = new BigDecimal("31.621653243275");
+		BigDecimal crate2 = new BigDecimal("31.621653243275");
+		BigDecimal crate3 = new BigDecimal("32.573724925968");
+
+		int[] backDateDays = new int[ass.length];
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class);
+				MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			backDateDays = configureAcctSchema(ass);
+			
+			mockGetRate(conversionRateMock, usd, euro, 0, backDate1, crate1);
+			mockGetRate(conversionRateMock, usd, euro, 0, backDate2, crate2);
+			mockGetRate(conversionRateMock, usd, euro, 0, backDate3, crate3);
+
+			MProduct product = createProduct("testPurchaseInvoiceAfterInternalUseInventory3", new BigDecimal(40.5));
+			mockProductGet(productMock, product);
+			
+			BigDecimal qty = new BigDecimal(10);
+			BigDecimal price = new BigDecimal(100);
+			
+			// Purchase Order
+			MInOutLine receiptLine = createPOAndMRForProduct(backDate1, product.get_ID(), qty, price);
+			
+			// Inventory Decrease
+			createInventoryUse(backDate2, product.get_ID(), qty);
+			
+			product.set_TrxName(getTrxName());
+			MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			assertNotNull(cost, "No MCost record found");			
+ 			assertEquals(new BigDecimal("0").setScale(2, RoundingMode.HALF_UP), cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+			validateProductCostQty(ass, product);
+									
+			// Purchase invoice
+			MInvoiceLine invoiceLine = createInvoiceForMR(receiptLine, backDate3, price);
+			
+			MMatchInv[] miList = MMatchInv.getInvoiceLine(Env.getCtx(), invoiceLine.get_ID(), getTrxName());
+			for (MMatchInv mi : miList) {
+				if (!mi.isPosted()) {
+					String error = DocumentEngine.postImmediate(Env.getCtx(), mi.getAD_Client_ID(), MMatchInv.Table_ID, mi.get_ID(), false, getTrxName());
+					assertNull(error, error);
+				}
+				mi.load(getTrxName());
+				assertTrue(mi.isPosted());
+				
+				for (MAcctSchema as0 : ass) {
+					Doc doc = DocManager.getDocument(as0, MMatchInv.Table_ID, mi.get_ID(), getTrxName());
+					MInvoiceLine invLine = new MInvoiceLine(Env.getCtx(), mi.getC_InvoiceLine_ID(), getTrxName());
+					doc.setC_BPartner_ID(invLine.getParent().getC_BPartner_ID());
+					MAccount acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as0);
+					ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
+					MAccount acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as0);
+					MAccount varianceAccount = pc.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as0);
+					Query query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, mi.get_ID(), as0.getC_AcctSchema_ID(), getTrxName());
+					List<MFactAcct> factAccts = query.list();
+					List<FactAcct> expected = new ArrayList<FactAcct>();
+					BigDecimal exchangeRate1 = as0.getC_Currency_ID() == DictionaryIDs.C_Currency.USD.id ? BigDecimal.ONE : crate1;
+					BigDecimal amtNIR = qty.multiply(price).multiply(exchangeRate1);
+					BigDecimal exchangeRate3 = as0.getC_Currency_ID() == DictionaryIDs.C_Currency.USD.id ? BigDecimal.ONE : crate3;
+					BigDecimal amtInvClr = qty.multiply(price).multiply(exchangeRate3);
+					BigDecimal amtIPV = amtInvClr.subtract(amtNIR);
+					expected.add(new FactAcct(acctNIR, amtNIR, 2, true));
+					expected.add(new FactAcct(acctInvClr, amtInvClr, 2, false));
+					if (as0.getC_Currency_ID() == DictionaryIDs.C_Currency.EUR.id)
+						expected.add(new FactAcct(varianceAccount, amtIPV, 2, true));
+					assertFactAcctEntries(factAccts, expected);					
+				}				
+			}
+			
+			product.set_TrxName(getTrxName());
+			cost.load(getTrxName());
+ 			assertEquals(new BigDecimal("0").setScale(2, RoundingMode.HALF_UP), cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+			validateProductCostQty(ass, product);
+		} finally {
+			rollback();
+			resetAcctSchema(ass, backDateDays);
+		}
+	}
+	
+	/**
+	 * PO Qty=10, Price=100
+	 * MR Qty=10, Date1
+	 * Internal use inventory Qty=-10, Date2
+	 * PI Qty=10, Date3 (from PO)
+	 */
+	@Test
+	public void testPurchaseInvoiceAfterInternalUseInventory4() {
+		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), getAD_Client_ID());
+		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
+		MAcctSchema as = ci.getMAcctSchema1();
+		
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(today.getTime());
+		cal.add(Calendar.DAY_OF_MONTH, -3);
+		Timestamp backDate1 = new Timestamp(cal.getTimeInMillis());
+		cal.setTimeInMillis(today.getTime());
+		cal.add(Calendar.DAY_OF_MONTH, -2);
+		Timestamp backDate2  = new Timestamp(cal.getTimeInMillis());
+		cal.setTimeInMillis(today.getTime());
+		cal.add(Calendar.DAY_OF_MONTH, -1);
+		Timestamp backDate3  = new Timestamp(cal.getTimeInMillis());
+		
+		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id);
+		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id);
+
+		BigDecimal crate1 = new BigDecimal("31.621653243275");
+		BigDecimal crate2 = new BigDecimal("31.621653243275");
+		BigDecimal crate3 = new BigDecimal("32.573724925968");
+
+		int[] backDateDays = new int[ass.length];
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class);
+				MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
+			backDateDays = configureAcctSchema(ass);
+			
+			mockGetRate(conversionRateMock, usd, euro, 0, backDate1, crate1);
+			mockGetRate(conversionRateMock, usd, euro, 0, backDate2, crate2);
+			mockGetRate(conversionRateMock, usd, euro, 0, backDate3, crate3);
+
+			MProduct product = createProduct("testPurchaseInvoiceAfterInternalUseInventory3", new BigDecimal(40.5));
+			mockProductGet(productMock, product);
+			
+			BigDecimal qty = new BigDecimal(10);
+			BigDecimal price = new BigDecimal(100);
+			
+			// Purchase Order
+			MInOutLine receiptLine = createPOAndMRForProduct(backDate1, product.get_ID(), qty, price);
+			
+			// Inventory Decrease
+			createInventoryUse(backDate2, product.get_ID(), qty);
+			
+			product.set_TrxName(getTrxName());
+			MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			assertNotNull(cost, "No MCost record found");			
+ 			assertEquals(new BigDecimal("0").setScale(2, RoundingMode.HALF_UP), cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+			validateProductCostQty(ass, product);
+									
+			// Purchase invoice
+			MOrderLine orderLine = new MOrderLine(Env.getCtx(), receiptLine.getC_OrderLine_ID(), getTrxName());
+			MInvoiceLine invoiceLine = createInvoiceForPO(orderLine, backDate3, qty);
+			
+			MMatchInv[] miList = MMatchInv.getInvoiceLine(Env.getCtx(), invoiceLine.get_ID(), getTrxName());
+			for (MMatchInv mi : miList) {
+				if (!mi.isPosted()) {
+					String error = DocumentEngine.postImmediate(Env.getCtx(), mi.getAD_Client_ID(), MMatchInv.Table_ID, mi.get_ID(), false, getTrxName());
+					assertNull(error, error);
+				}
+				mi.load(getTrxName());
+				assertTrue(mi.isPosted());
+				
+				for (MAcctSchema as0 : ass) {
+					Doc doc = DocManager.getDocument(as0, MMatchInv.Table_ID, mi.get_ID(), getTrxName());
+					MInvoiceLine invLine = new MInvoiceLine(Env.getCtx(), mi.getC_InvoiceLine_ID(), getTrxName());
+					doc.setC_BPartner_ID(invLine.getParent().getC_BPartner_ID());
+					MAccount acctNIR = doc.getAccount(Doc.ACCTTYPE_NotInvoicedReceipts, as0);
+					ProductCost pc = new ProductCost (Env.getCtx(), mi.getM_Product_ID(), mi.getM_AttributeSetInstance_ID(), getTrxName());
+					MAccount acctInvClr = pc.getAccount(ProductCost.ACCTTYPE_P_InventoryClearing, as0);
+					MAccount varianceAccount = pc.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as0);
+					Query query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, mi.get_ID(), as0.getC_AcctSchema_ID(), getTrxName());
+					List<MFactAcct> factAccts = query.list();
+					List<FactAcct> expected = new ArrayList<FactAcct>();
+					BigDecimal exchangeRate1 = as0.getC_Currency_ID() == DictionaryIDs.C_Currency.USD.id ? BigDecimal.ONE : crate1;
+					BigDecimal amtNIR = qty.multiply(price).multiply(exchangeRate1);
+					BigDecimal exchangeRate3 = as0.getC_Currency_ID() == DictionaryIDs.C_Currency.USD.id ? BigDecimal.ONE : crate3;
+					BigDecimal amtInvClr = qty.multiply(price).multiply(exchangeRate3);
+					BigDecimal amtIPV = amtInvClr.subtract(amtNIR);
+					expected.add(new FactAcct(acctNIR, amtNIR, 2, true));
+					expected.add(new FactAcct(acctInvClr, amtInvClr, 2, false));
+					if (as0.getC_Currency_ID() == DictionaryIDs.C_Currency.EUR.id)
+						expected.add(new FactAcct(varianceAccount, amtIPV, 2, true));
+					assertFactAcctEntries(factAccts, expected);					
+				}				
+			}
+			
+			product.set_TrxName(getTrxName());
+			cost.load(getTrxName());
+ 			assertEquals(new BigDecimal("0").setScale(2, RoundingMode.HALF_UP), cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+			validateProductCostQty(ass, product);
+		} finally {
+			rollback();
+			resetAcctSchema(ass, backDateDays);
+		}
+	}
+	
+	/**
 	 * PO Qty=40, Price=40.5
 	 * MR Qty=40
 	 * SH Qty=5

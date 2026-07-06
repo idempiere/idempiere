@@ -2827,35 +2827,7 @@ public class Doc_MatchInv extends Doc
 	 * or falling back to MCost.getCostInfo if neither is found.
 	 */
 	private BigDecimal resolveQtyCostForAveragePO(MAcctSchema as, MMatchInv matchInv, String costingMethod) {
-	    if (matchInv.getReversal_ID() > 0) {
-		    MCostDetail cd = MCostDetail.getMatchInvoice(as, matchInv.getM_Product_ID(), matchInv.getM_AttributeSetInstance_ID(),
-		            matchInv.getM_MatchInv_ID(), 0, getTrxName());
-		    if (cd != null) {
-		        return cd.getCurrentQty();
-		    }
-	    } else {
-	    	// get stock quantity from the order cost detail
-		    StringBuilder whereClause = new StringBuilder();
-			whereClause.append("(C_OrderLine_ID, M_AttributeSetInstance_ID) IN ( ");
-			whereClause.append(" SELECT mpo.C_OrderLine_ID, mpo.M_AttributeSetInstance_ID");
-			whereClause.append(" FROM M_MatchInv mi");
-			whereClause.append(" JOIN M_MatchPO mpo ON mpo.C_InvoiceLine_ID = mi.C_InvoiceLine_ID");
-			whereClause.append("  AND mpo.M_InOutLine_ID = mi.M_InOutLine_ID");
-			whereClause.append("  AND mpo.M_AttributeSetInstance_ID = mi.M_AttributeSetInstance_ID");
-			whereClause.append(" WHERE mi.M_MatchInv_ID = ?");
-			whereClause.append(") ");
-			whereClause.append(" AND M_Product_ID = ?");
-	    	whereClause.append(" AND C_AcctSchema_ID = ?");
-			MCostDetail cd = new Query(as.getCtx(), I_M_CostDetail.Table_Name, whereClause.toString(), getTrxName())
-					.setParameters(matchInv.getM_MatchInv_ID(), matchInv.getM_Product_ID(), as.get_ID())
-					.setOrderBy("M_CostDetail_ID DESC")
-					.first();
-			if (cd != null) {
-		        return cd.getCurrentQty();
-		    }
-	    }
-	    
-	    // Costing-level AD_Org_ID and M_AttributeSetInstance_ID
+		// Costing-level AD_Org_ID and M_AttributeSetInstance_ID
  		int AD_Org_ID = m_receiptLine.getAD_Org_ID();
  	    int M_AttributeSetInstance_ID = matchInv.getM_AttributeSetInstance_ID();
  	    String costingLevel = as.getCostingLevel();
@@ -2868,6 +2840,39 @@ public class Doc_MatchInv extends Doc
  	        AD_Org_ID = 0;
  	    }
 	    MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), costingMethod, AD_Org_ID);
+	    if (matchInv.getReversal_ID() > 0) {
+		    MCostDetail cd = MCostDetail.getMatchInvoice(as, matchInv.getM_Product_ID(), matchInv.getM_AttributeSetInstance_ID(),
+		            matchInv.getM_MatchInv_ID(), 0, getTrxName());
+		    if (cd != null) {
+		        return cd.getCurrentQty();
+		    }
+	    } else if (matchInv.getM_AttributeSetInstance_ID() > 0) {
+	    	MCostDetail cd = MCostDetail.getLastCostDetailFromCostHistory(getCtx(), getAD_Client_ID(), AD_Org_ID, matchInv.getM_Product_ID(), 
+					as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(), 
+					M_AttributeSetInstance_ID, getDateAcct(), getTrxName());
+	    	if (cd.getC_OrderLine_ID() > 0 || cd.getM_MatchInv_ID() > 0) {
+	    		// get stock quantity from the order cost detail
+			    StringBuilder whereClause = new StringBuilder();
+				whereClause.append("(C_OrderLine_ID, M_AttributeSetInstance_ID) IN ( ");
+				whereClause.append(" SELECT mpo.C_OrderLine_ID, mpo.M_AttributeSetInstance_ID");
+				whereClause.append(" FROM M_MatchInv mi");
+				// Don't join with M_MatchPO.C_InvoiceLine_ID, it is not mandatory
+				whereClause.append(" JOIN M_MatchPO mpo ON mpo.M_InOutLine_ID = mi.M_InOutLine_ID"); 
+				whereClause.append("  AND mpo.M_AttributeSetInstance_ID = mi.M_AttributeSetInstance_ID");
+				whereClause.append(" WHERE mi.M_MatchInv_ID = ?");
+				whereClause.append(") ");
+				whereClause.append(" AND M_Product_ID = ?");
+		    	whereClause.append(" AND C_AcctSchema_ID = ?");
+				cd = new Query(as.getCtx(), I_M_CostDetail.Table_Name, whereClause.toString(), getTrxName())
+						.setParameters(matchInv.getM_MatchInv_ID(), matchInv.getM_Product_ID(), as.get_ID())
+						.setOrderBy("M_CostDetail_ID DESC")
+						.first();
+				if (cd != null) {
+			        return cd.getCurrentQty();
+			    }
+	    	}
+	    }
+	    
 	    ICostInfo c = MCost.getCostInfo(getCtx(), getAD_Client_ID(), AD_Org_ID, m_invoiceLine.getM_Product_ID(),
 	            as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(),
 	            M_AttributeSetInstance_ID, 
