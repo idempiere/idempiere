@@ -30,7 +30,6 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.LoginWindow;
-import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.zhtml.Div;
@@ -52,7 +51,7 @@ import org.zkoss.zul.Image;
  * through {@link IPasswordResetService} from {@link Core#getPasswordResetService()}.
  * Shown when email login is enabled.
  *
- * @author iDempiere - IDEMPIERE-7060
+ * @author d-ruiz - IDEMPIERE-7060
  */
 public class PasswordResetPanel extends Window implements EventListener<Event>
 {
@@ -251,7 +250,7 @@ public class PasswordResetPanel extends Window implements EventListener<Event>
 			box.setCols(1);
 			box.setClientAttribute("inputmode", "numeric");
 			box.setClientAttribute("autocomplete", i == 0 ? "one-time-code" : "off");
-			box.setClientAttribute("aria-label", Msg.getMsg(m_ctx, "Code") + " " + (i + 1) + "/" + OTP_LENGTH);
+			box.setClientAttribute("aria-label", Msg.getElement(m_ctx, "OneTimeCode") + " " + (i + 1) + "/" + OTP_LENGTH);
 			box.setClientAttribute("onfocus", "this.select()");
 			box.setWidgetListener("onKeyUp", OTP_KEYUP_JS);
 			box.addCallback(ComponentCtrl.AFTER_PAGE_DETACHED,
