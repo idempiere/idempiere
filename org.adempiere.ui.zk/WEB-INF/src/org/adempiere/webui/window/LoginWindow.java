@@ -41,6 +41,7 @@ import org.adempiere.webui.IWebClient;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.ChangePasswordPanel;
 import org.adempiere.webui.panel.LoginPanel;
+import org.adempiere.webui.panel.PasswordResetPanel;
 import org.adempiere.webui.panel.ResetPasswordPanel;
 import org.adempiere.webui.panel.RolePanel;
 import org.adempiere.webui.panel.ValidateMFAPanel;
@@ -92,6 +93,7 @@ public class LoginWindow extends Window implements EventListener<Event>
     protected Properties ctx;
     protected LoginPanel pnlLogin;
     protected ResetPasswordPanel pnlResetPassword;
+    protected PasswordResetPanel pnlPasswordReset;
     protected ChangePasswordPanel pnlChangePassword;
     protected ValidateMFAPanel pnlValidateMFA = null;
     protected RolePanel pnlRole;
@@ -331,6 +333,29 @@ public class LoginWindow extends Window implements EventListener<Event>
 	}
 
 	/**
+	 * Show code-based password reset panel (IDEMPIERE-7060)
+	 * @param email pre-filled email
+	 * @param clientId tenant context
+	 * @param language AD_Language for the email template
+	 */
+	public void passwordReset(String email, int clientId, String language)
+	{
+		createPasswordResetPanel(email, clientId, language);
+		this.getChildren().clear();
+		this.appendChild(pnlPasswordReset);
+	}
+
+	/**
+	 * Create code-based password reset panel
+	 * @param email pre-filled email
+	 * @param clientId tenant context
+	 * @param language AD_Language for the email template
+	 */
+	protected void createPasswordResetPanel(String email, int clientId, String language) {
+		pnlPasswordReset = new PasswordResetPanel(ctx, this, email, clientId, language);
+	}
+
+	/**
 	 * Show MFA panel
 	 * @param orgKNPair
 	 * @param isClientDefined
@@ -454,6 +479,12 @@ public class LoginWindow extends Window implements EventListener<Event>
            ResetPasswordPanel resetPasswordPanel = (ResetPasswordPanel)this.getFellowIfAny("resetPasswordPanel");
            if (resetPasswordPanel != null){
         	   resetPasswordPanel.validate();
+        	   return;
+           }
+
+           PasswordResetPanel passwordResetPanel = (PasswordResetPanel)this.getFellowIfAny("passwordResetPanel");
+           if (passwordResetPanel != null){
+        	   passwordResetPanel.validate();
         	   return;
            }
 

@@ -286,6 +286,38 @@ public class Core {
 		return null;
 	}
 
+	private static IServiceReferenceHolder<IPasswordResetService> s_passwordResetServiceReference = null;
+
+	/**
+	 * Get the registered password reset service.
+	 * @return {@link IPasswordResetService}, or null if none is registered
+	 */
+	public static IPasswordResetService getPasswordResetService()
+	{
+		if (s_passwordResetServiceReference != null)
+		{
+			IPasswordResetService service = s_passwordResetServiceReference.getService();
+			if (service != null)
+				return service;
+		}
+
+		IServicesHolder<IPasswordResetService> holder = Service.locator().list(IPasswordResetService.class);
+		List<IServiceReferenceHolder<IPasswordResetService>> references = holder.getServiceReferences();
+		if (references != null)
+		{
+			for (IServiceReferenceHolder<IPasswordResetService> refHolder : references)
+			{
+				IPasswordResetService service = refHolder.getService();
+				if (service != null)
+				{
+					s_passwordResetServiceReference = refHolder;
+					return service;
+				}
+			}
+		}
+		return null;
+	}
+
 	private static IServiceReferenceHolder<IKeyStore> s_keystoreServiceReference = null;
 	private static volatile boolean s_legacyKeyWarningLogged = false;
 	

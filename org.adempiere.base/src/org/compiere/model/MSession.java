@@ -25,6 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import org.compiere.Adempiere;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
@@ -319,6 +320,30 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 		s_sessions.remove(Integer.valueOf(getAD_Session_ID()));
 		if (log.isLoggable(Level.INFO)) log.info(TimeUtil.formatElapsed(getCreated(), getUpdated()));
 	}	//	logout
+
+	/**
+	 * 	Invalidate (mark as processed/logged out) all active sessions of a user.
+	 * 	Used for example after a password reset to force the user to re-login.
+	 * 	@param AD_User_ID user
+	 * 	@param trxName optional transaction name
+	 * 	@return number of sessions invalidated
+	 */
+	public static int invalidateSessionsForUser(int AD_User_ID, String trxName)
+	{
+		if (AD_User_ID <= 0)
+			return 0;
+		final String where = "CreatedBy=? AND Processed='N'";
+		// collect the ids first: after the UPDATE none match Processed='N' anymore
+		int[] ids = DB.getIDsEx(trxName, "SELECT AD_Session_ID FROM AD_Session WHERE " + where, AD_User_ID);
+		if (ids.length == 0)
+			return 0;
+		int no = DB.executeUpdateEx("UPDATE AD_Session SET Processed='Y' WHERE " + where,
+				new Object[]{AD_User_ID}, trxName);
+		// evict the now-stale cached sessions (s_sessions.reset() is a no-op here) so they reload as processed
+		for (int id : ids)
+			s_sessions.remove(Integer.valueOf(id));
+		return no;
+	}	//	invalidateSessionsForUser
 
 	/**
 	 * 	Preserved for backward compatibility

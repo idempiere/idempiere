@@ -833,6 +833,17 @@ public class LoginPanel extends Window implements EventListener<Event>
 	 */
 	private void btnResetPasswordClicked()
 	{
+		// IDEMPIERE-7060: when logging in by email, use the code-based reset flow
+		if (email_login)
+		{
+			String prefill = Login.getAppUser(txtUserId.getValue());
+			String lang = null;
+			if (lstLanguage.getSelectedItem() != null)
+				lang = (String) lstLanguage.getSelectedItem().getValue();
+			wndLogin.passwordReset(prefill, Env.getAD_Client_ID(ctx), lang);
+			return;
+		}
+
 		String userId = Login.getAppUser(txtUserId.getValue());
 		if (Util.isEmpty(userId))
     		throw new IllegalArgumentException(Msg.getMsg(ctx, "FillMandatory") + " " + lblUserId.getValue());

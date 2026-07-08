@@ -158,3 +158,30 @@
 		padding: 0px
 	}
 }
+
+/* Password reset (IDEMPIERE-7060) */
+.password-reset-message {
+	display: block;
+	text-align: center;
+	color: #555;
+	margin: 4px 0;
+}
+
+.otp-input {
+	display: flex;
+	gap: 8px;
+	justify-content: center;
+	margin: 4px 0;
+}
+
+.otp-input input {
+	width: 44px !important;
+	height: 52px;
+	box-sizing: border-box;
+	text-align: center !important;
+	padding-left: 0;
+	padding-right: 0;
+	font-size: 24px;
+	border: 1px solid #bbb;
+	border-radius: 6px;
+}
