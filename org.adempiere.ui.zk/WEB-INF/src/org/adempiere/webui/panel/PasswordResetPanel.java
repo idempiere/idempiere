@@ -73,8 +73,9 @@ public class PasswordResetPanel extends Window implements EventListener<Event>
 			  "var inp=this.$n();"
 			+ "if(inp){inp.value=inp.value.replace(/[^0-9]/g,'');}"
 			+ "var kc=(event&&(event.keyCode||event.which))||0;"
+			+ "var isDigit=(kc>=48&&kc<=57)||(kc>=96&&kc<=105);"
 			+ "if(kc===8){ if((!inp||!inp.value||inp.value.length===0) && this.previousSibling){ this.previousSibling.focus(); } }"
-			+ "else if(inp&&inp.value&&inp.value.length>=1 && this.nextSibling){ this.nextSibling.focus(); }";
+			+ "else if(isDigit && inp&&inp.value&&inp.value.length>=1 && this.nextSibling){ this.nextSibling.focus(); }";
 
 	private final LoginWindow wndLogin;
 	private final Properties m_ctx;

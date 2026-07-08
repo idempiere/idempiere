@@ -194,6 +194,17 @@ public class DefaultPasswordResetService implements IPasswordResetService
 			for (MUser user : users)
 			{
 				user.set_TrxName(trx.getTrxName());
+				// honor CHANGE_PASSWORD_MUST_DIFFER: the forgot-password flow has no typed old
+				// password, so compare the new password against this user's current stored password
+				// (mirrors WResetPassword's old-password check). Must run before set_ValueOfColumn.
+				if (MSysConfig.getBooleanValue(MSysConfig.CHANGE_PASSWORD_MUST_DIFFER, true))
+				{
+					boolean same = MSysConfig.getBooleanValue(MSysConfig.USER_PASSWORD_HASH, false)
+							? user.authenticateHash(newPassword)
+							: newPassword.equals(user.getPassword());
+					if (same)
+						throw new AdempiereException(Msg.getMsg(Env.getCtx(), "NewPasswordMustDiffer"));
+				}
 				user.set_ValueOfColumn("Password", newPassword); // hashed & policy-validated on saveEx
 				// the user proved control of the email + code, so clear any failed-login lockout
 				// (Login.java otherwise keeps them locked out until MAX_ACCOUNT_LOCK_MINUTES elapses)
