@@ -31,7 +31,7 @@ import org.compiere.util.Util;
 /**
  * Password reset token model.
  * <p>
- * Persists a single password-reset request: the emailed 6-digit code (hashed) and,
+ * Persists a single password-reset request: the emailed 6-digit code (encrypted at rest) and,
  * after the code is verified, the short-lived verified token (hashed) that authorizes
  * setting a new password. Auto-registered with the model factory as the leaf subclass
  * of the {@code @Model}-annotated {@link X_AD_PasswordResetToken}.

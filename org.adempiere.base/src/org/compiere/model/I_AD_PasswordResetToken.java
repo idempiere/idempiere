@@ -18,14 +18,12 @@ package org.compiere.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import org.compiere.model.*;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_PasswordResetToken
  *  @author iDempiere (generated) 
  *  @version Release 14
  */
-@SuppressWarnings("all")
 public interface I_AD_PasswordResetToken 
 {
 
@@ -91,15 +89,6 @@ public interface I_AD_PasswordResetToken
 	/** Get Attempts Used	  */
 	public int getAttemptsUsed();
 
-    /** Column name CodeHash */
-    public static final String COLUMNNAME_CodeHash = "CodeHash";
-
-	/** Set Code Hash	  */
-	public void setCodeHash (String CodeHash);
-
-	/** Get Code Hash	  */
-	public String getCodeHash();
-
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -154,6 +143,15 @@ public interface I_AD_PasswordResetToken
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name OneTimeCode */
+    public static final String COLUMNNAME_OneTimeCode = "OneTimeCode";
+
+	/** Set One Time Code	  */
+	public void setOneTimeCode (String OneTimeCode);
+
+	/** Get One Time Code	  */
+	public String getOneTimeCode();
 
     /** Column name TokenStatus */
     public static final String COLUMNNAME_TokenStatus = "TokenStatus";

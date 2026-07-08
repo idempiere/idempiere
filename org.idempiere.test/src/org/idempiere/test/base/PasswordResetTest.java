@@ -38,7 +38,6 @@ import org.compiere.model.Query;
 import org.compiere.model.X_AD_PasswordResetToken;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
-import org.compiere.util.SecureEngine;
 import org.compiere.util.Util;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
@@ -158,7 +157,7 @@ public class PasswordResetTest extends AbstractTestCase
 		{
 			MPasswordResetToken token = new MPasswordResetToken(Env.getCtx(), 0, null);
 			token.setEMail(email);
-			token.setCodeHash(SecureEngine.getSHA256Digest(code + "|" + email));
+			token.setOneTimeCode(code);
 			token.setTokenStatus(X_AD_PasswordResetToken.TOKENSTATUS_Pending);
 			token.setAttemptsUsed(0);
 			token.setExpiration(new Timestamp(System.currentTimeMillis() + 600000L));
@@ -222,7 +221,7 @@ public class PasswordResetTest extends AbstractTestCase
 	{
 		MPasswordResetToken token = new MPasswordResetToken(Env.getCtx(), 0, getTrxName());
 		token.setEMail(email);
-		token.setCodeHash(SecureEngine.getSHA256Digest("000000|" + email));
+		token.setOneTimeCode("000000");
 		token.setTokenStatus(X_AD_PasswordResetToken.TOKENSTATUS_Pending);
 		token.setAttemptsUsed(0);
 		token.setExpiration(new Timestamp(System.currentTimeMillis() + 600000L));

@@ -72,11 +72,11 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,Co
 ;
 
 -- Jul 7, 2026, 8:13:53 PM CEST
-INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,Description,Help,PrintName,EntityType,AD_Element_UU) VALUES (204113,0,0,'Y',TO_TIMESTAMP('2026-07-07 20:13:34','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-07-07 20:13:34','YYYY-MM-DD HH24:MI:SS'),100,'CodeHash','Code Hash',NULL,NULL,'Code Hash','D','019f3dc9-59bb-7559-82d6-332055d91ccb')
+INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,Description,Help,PrintName,EntityType,AD_Element_UU) VALUES (204113,0,0,'Y',TO_TIMESTAMP('2026-07-07 20:13:34','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-07-07 20:13:34','YYYY-MM-DD HH24:MI:SS'),100,'OneTimeCode','One Time Code',NULL,NULL,'One Time Code','D','019f3dc9-59bb-7559-82d6-332055d91ccb')
 ;
 
 -- Jul 7, 2026, 8:14:05 PM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,IsHtml,IsPartitionKey) VALUES (217646,0,'Code Hash',200449,'CodeHash',10,'N','N','Y','N','N',0,'N',10,0,0,'Y',TO_TIMESTAMP('2026-07-07 20:14:04','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-07-07 20:14:04','YYYY-MM-DD HH24:MI:SS'),100,204113,'Y','N','D','N','N','N','Y','019f3dc9-8685-7399-b8bb-86dcaf03c9c0','Y',0,'N','N','N','N')
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,IsHtml,IsPartitionKey) VALUES (217646,0,'One Time Code',200449,'OneTimeCode',10,'N','N','Y','N','N',0,'Y',10,0,0,'Y',TO_TIMESTAMP('2026-07-07 20:14:04','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-07-07 20:14:04','YYYY-MM-DD HH24:MI:SS'),100,204113,'Y','N','D','N','N','N','N','019f3dc9-8685-7399-b8bb-86dcaf03c9c0','N',0,'N','Y','N','N')
 ;
 
 -- Jul 7, 2026, 8:15:09 PM CEST
@@ -156,7 +156,7 @@ UPDATE AD_Column SET IsAllowCopy='N', FKConstraintName='UpdatedBy_ADPasswordRese
 ;
 
 -- Jul 7, 2026, 8:22:57 PM CEST
-CREATE TABLE AD_PasswordResetToken (AD_Client_ID NUMBER(10) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, AD_PasswordResetToken_ID NUMBER(10) NOT NULL, AD_PasswordResetToken_UU VARCHAR2/*UUID*/(36) DEFAULT NULL , AttemptsUsed NUMBER(10) DEFAULT 0 NOT NULL, CodeHash VARCHAR2(10 CHAR) NOT NULL, Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, EMail VARCHAR2(60 CHAR) NOT NULL, Expiration DATE NOT NULL, IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, TokenStatus CHAR(1) DEFAULT 'P' NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, VerifiedTokenExpires DATE DEFAULT NULL , VerifiedTokenHash VARCHAR2(10 CHAR) DEFAULT NULL , CONSTRAINT AD_PasswordResetToken_Key PRIMARY KEY (AD_PasswordResetToken_ID), CONSTRAINT AD_PasswordResetToken_UU_idx UNIQUE (AD_PasswordResetToken_UU))
+CREATE TABLE AD_PasswordResetToken (AD_Client_ID NUMBER(10) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, AD_PasswordResetToken_ID NUMBER(10) NOT NULL, AD_PasswordResetToken_UU VARCHAR2/*UUID*/(36) DEFAULT NULL , AttemptsUsed NUMBER(10) DEFAULT 0 NOT NULL, OneTimeCode VARCHAR2(10 CHAR) NOT NULL, Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, EMail VARCHAR2(60 CHAR) NOT NULL, Expiration DATE NOT NULL, IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, TokenStatus CHAR(1) DEFAULT 'P' NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, VerifiedTokenExpires DATE DEFAULT NULL , VerifiedTokenHash VARCHAR2(10 CHAR) DEFAULT NULL , CONSTRAINT AD_PasswordResetToken_Key PRIMARY KEY (AD_PasswordResetToken_ID), CONSTRAINT AD_PasswordResetToken_UU_idx UNIQUE (AD_PasswordResetToken_UU))
 ;
 
 -- Jul 7, 2026, 8:22:57 PM CEST
@@ -204,7 +204,7 @@ INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,I
 ;
 
 -- Jul 7, 2026, 8:23:17 PM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (209231,'Code Hash',200428,217646,'Y',10,40,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2026-07-07 20:23:16','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-07-07 20:23:16','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','019f3dd1-f23d-70f9-86eb-89bbbad1d330','Y',20,2)
+INSERT INTO AD_Field (AD_Field_ID,Name,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (209231,'One Time Code',200428,217646,'Y',10,40,'N','N','N','Y',0,0,'Y',TO_TIMESTAMP('2026-07-07 20:23:16','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-07-07 20:23:16','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','019f3dd1-f23d-70f9-86eb-89bbbad1d330','Y',20,2)
 ;
 
 -- Jul 7, 2026, 8:23:17 PM CEST
@@ -350,7 +350,7 @@ UPDATE AD_Column SET FieldLength=100,Updated=TO_TIMESTAMP('2026-07-07 20:39:23',
 ;
 
 -- Jul 7, 2026, 8:39:27 PM CEST
-ALTER TABLE AD_PasswordResetToken MODIFY CodeHash VARCHAR2(100 CHAR)
+ALTER TABLE AD_PasswordResetToken MODIFY OneTimeCode VARCHAR2(100 CHAR)
 ;
 
 -- Jul 7, 2026, 8:39:39 PM CEST

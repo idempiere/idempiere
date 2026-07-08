@@ -20,7 +20,6 @@ package org.compiere.model;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
-import org.compiere.model.*;
 
 /** Generated Model for AD_PasswordResetToken
  *  @author iDempiere (generated)
@@ -32,7 +31,7 @@ public class X_AD_PasswordResetToken extends PO implements I_AD_PasswordResetTok
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20260707L;
+	private static final long serialVersionUID = 20260708L;
 
     /** Standard Constructor */
     public X_AD_PasswordResetToken (Properties ctx, int AD_PasswordResetToken_ID, String trxName)
@@ -43,9 +42,9 @@ public class X_AD_PasswordResetToken extends PO implements I_AD_PasswordResetTok
 			setAD_PasswordResetToken_ID (0);
 			setAttemptsUsed (0);
 // 0
-			setCodeHash (null);
 			setEMail (null);
 			setExpiration (new Timestamp( System.currentTimeMillis() ));
+			setOneTimeCode (null);
 			setTokenStatus (null);
 // P
         } */
@@ -60,9 +59,9 @@ public class X_AD_PasswordResetToken extends PO implements I_AD_PasswordResetTok
 			setAD_PasswordResetToken_ID (0);
 			setAttemptsUsed (0);
 // 0
-			setCodeHash (null);
 			setEMail (null);
 			setExpiration (new Timestamp( System.currentTimeMillis() ));
+			setOneTimeCode (null);
 			setTokenStatus (null);
 // P
         } */
@@ -77,9 +76,9 @@ public class X_AD_PasswordResetToken extends PO implements I_AD_PasswordResetTok
 			setAD_PasswordResetToken_ID (0);
 			setAttemptsUsed (0);
 // 0
-			setCodeHash (null);
 			setEMail (null);
 			setExpiration (new Timestamp( System.currentTimeMillis() ));
+			setOneTimeCode (null);
 			setTokenStatus (null);
 // P
         } */
@@ -94,9 +93,9 @@ public class X_AD_PasswordResetToken extends PO implements I_AD_PasswordResetTok
 			setAD_PasswordResetToken_ID (0);
 			setAttemptsUsed (0);
 // 0
-			setCodeHash (null);
 			setEMail (null);
 			setExpiration (new Timestamp( System.currentTimeMillis() ));
+			setOneTimeCode (null);
 			setTokenStatus (null);
 // P
         } */
@@ -184,21 +183,6 @@ public class X_AD_PasswordResetToken extends PO implements I_AD_PasswordResetTok
 		return ii.intValue();
 	}
 
-	/** Set Code Hash.
-		@param CodeHash Code Hash
-	*/
-	public void setCodeHash (String CodeHash)
-	{
-		set_Value (COLUMNNAME_CodeHash, CodeHash);
-	}
-
-	/** Get Code Hash.
-		@return Code Hash	  */
-	public String getCodeHash()
-	{
-		return (String)get_Value(COLUMNNAME_CodeHash);
-	}
-
 	/** Set EMail Address.
 		@param EMail Electronic Mail Address
 	*/
@@ -229,6 +213,21 @@ public class X_AD_PasswordResetToken extends PO implements I_AD_PasswordResetTok
 	public Timestamp getExpiration()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_Expiration);
+	}
+
+	/** Set One Time Code.
+		@param OneTimeCode One Time Code
+	*/
+	public void setOneTimeCode (String OneTimeCode)
+	{
+		set_ValueE (COLUMNNAME_OneTimeCode, OneTimeCode);
+	}
+
+	/** Get One Time Code.
+		@return One Time Code	  */
+	public String getOneTimeCode()
+	{
+		return (String)get_ValueE(COLUMNNAME_OneTimeCode);
 	}
 
 	/** TokenStatus AD_Reference_ID=200288 */

@@ -85,7 +85,7 @@ public class DefaultPasswordResetService implements IPasswordResetService
 
 			MPasswordResetToken token = new MPasswordResetToken(Env.getCtx(), 0, trx.getTrxName());
 			token.setEMail(email);
-			token.setCodeHash(hashResetCode(code, email));
+			token.setOneTimeCode(code); // stored encrypted at rest (AD_Column IsEncrypted='Y')
 			token.setTokenStatus(X_AD_PasswordResetToken.TOKENSTATUS_Pending);
 			token.setAttemptsUsed(0);
 			token.setExpiration(new Timestamp(System.currentTimeMillis() + expiryMin * 60000L));
@@ -140,9 +140,8 @@ public class DefaultPasswordResetService implements IPasswordResetService
 			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "PasswordResetAttemptsExceeded"));
 		}
 
-		// salt with the token's stored email (what the code was hashed against at request time),
-		// not the verify-time input, so a case-insensitive EMail match still verifies correctly
-		if (!hashResetCode(code, token.getEMail()).equals(token.getCodeHash()))
+		// the code is stored encrypted; PO decrypts getOneTimeCode() on read for a direct compare
+		if (!code.equals(token.getOneTimeCode()))
 		{
 			int used = token.incrementAttempts();
 			boolean locked = used >= maxAttempts;
@@ -374,12 +373,6 @@ public class DefaultPasswordResetService implements IPasswordResetService
 		{
 			throw new AdempiereException(e);
 		}
-	}
-
-	/** SHA-256 (64 hex chars) of the code salted with the email */
-	private String hashResetCode(String code, String email)
-	{
-		return SecureEngine.getSHA256Digest(code + "|" + email);
 	}
 
 	/** SHA-256 (64 hex chars) of the verified token */
