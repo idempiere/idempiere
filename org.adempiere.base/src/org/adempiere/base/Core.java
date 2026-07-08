@@ -286,36 +286,15 @@ public class Core {
 		return null;
 	}
 
-	private static IServiceReferenceHolder<IPasswordResetService> s_passwordResetServiceReference = null;
-
 	/**
-	 * Get the registered password reset service.
+	 * Get the password reset service for the current tenant. Delegates to
+	 * {@link PasswordResetServiceFactory}, which honors the {@code PASSWORD_RESET_SERVICE_CLASS}
+	 * config and falls back to the default provider.
 	 * @return {@link IPasswordResetService}, or null if none is registered
 	 */
 	public static IPasswordResetService getPasswordResetService()
 	{
-		if (s_passwordResetServiceReference != null)
-		{
-			IPasswordResetService service = s_passwordResetServiceReference.getService();
-			if (service != null)
-				return service;
-		}
-
-		IServicesHolder<IPasswordResetService> holder = Service.locator().list(IPasswordResetService.class);
-		List<IServiceReferenceHolder<IPasswordResetService>> references = holder.getServiceReferences();
-		if (references != null)
-		{
-			for (IServiceReferenceHolder<IPasswordResetService> refHolder : references)
-			{
-				IPasswordResetService service = refHolder.getService();
-				if (service != null)
-				{
-					s_passwordResetServiceReference = refHolder;
-					return service;
-				}
-			}
-		}
-		return null;
+		return PasswordResetServiceFactory.getService(Env.getAD_Client_ID(Env.getCtx()));
 	}
 
 	private static IServiceReferenceHolder<IKeyStore> s_keystoreServiceReference = null;

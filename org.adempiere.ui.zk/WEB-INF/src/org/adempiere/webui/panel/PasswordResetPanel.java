@@ -18,8 +18,8 @@ package org.adempiere.webui.panel;
 
 import java.util.Properties;
 
-import org.adempiere.base.Core;
 import org.adempiere.base.IPasswordResetService;
+import org.adempiere.base.PasswordResetServiceFactory;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Label;
@@ -48,7 +48,7 @@ import org.zkoss.zul.Image;
  * Code-based password reset panel (3 steps: identify, enter code, set new password).
  * <p>
  * In-page panel that replaces the login panel (styled like it). UI-only: all logic goes
- * through {@link IPasswordResetService} from {@link Core#getPasswordResetService()}.
+ * through {@link IPasswordResetService} from {@link PasswordResetServiceFactory}.
  * Shown when email login is enabled.
  *
  * @author d-ruiz - IDEMPIERE-7060
@@ -291,7 +291,7 @@ public class PasswordResetPanel extends Window implements EventListener<Event>
 	public void validate()
 	{
 		Clients.clearBusy();
-		IPasswordResetService service = Core.getPasswordResetService();
+		IPasswordResetService service = PasswordResetServiceFactory.getService(clientId);
 		if (service == null)
 		{
 			setMessage(Msg.getMsg(m_ctx, "Error"));
