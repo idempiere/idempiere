@@ -25,6 +25,9 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
 
+import org.compiere.util.DB;
+import org.compiere.util.Util;
+
 /**
  * Password reset token model.
  * <p>
@@ -65,6 +68,23 @@ public class MPasswordResetToken extends X_AD_PasswordResetToken
 	public MPasswordResetToken(Properties ctx, ResultSet rs, String trxName)
 	{
 		super(ctx, rs, trxName);
+	}
+
+	/**
+	 * Expire every still-pending reset token for the given email. Issuing a new code
+	 * calls this so only the most recently emailed code remains verifiable.
+	 * @param email token email
+	 * @param trxName transaction
+	 * @return number of tokens expired
+	 */
+	public static int expirePendingForEMail(String email, String trxName)
+	{
+		if (Util.isEmpty(email, true))
+			return 0;
+		return DB.executeUpdateEx(
+				"UPDATE " + Table_Name + " SET " + COLUMNNAME_TokenStatus + "=?"
+						+ " WHERE " + COLUMNNAME_EMail + "=? AND " + COLUMNNAME_TokenStatus + "=?",
+				new Object[]{TOKENSTATUS_Expired, email.trim(), TOKENSTATUS_Pending}, trxName);
 	}
 
 	/**

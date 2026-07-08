@@ -182,7 +182,7 @@ public class PasswordResetPanel extends Window implements EventListener<Event>
 				txtEmail.setId("txtEmail");
 				txtEmail.setCols(25);
 				ZKUpdateUtil.setWidth(txtEmail, "220px");
-				txtEmail.setClientAttribute("autocomplete", "username");
+				txtEmail.setClientAttribute("autocomplete", "email");
 				if (!Util.isEmpty(email))
 					txtEmail.setValue(email);
 				addFieldRow(Msg.getMsg(m_ctx, "EMail"), txtEmail);
@@ -250,6 +250,7 @@ public class PasswordResetPanel extends Window implements EventListener<Event>
 			box.setCols(1);
 			box.setClientAttribute("inputmode", "numeric");
 			box.setClientAttribute("autocomplete", i == 0 ? "one-time-code" : "off");
+			box.setClientAttribute("aria-label", Msg.getMsg(m_ctx, "Code") + " " + (i + 1) + "/" + OTP_LENGTH);
 			box.setClientAttribute("onfocus", "this.select()");
 			box.setWidgetListener("onKeyUp", OTP_KEYUP_JS);
 			box.addCallback(ComponentCtrl.AFTER_PAGE_DETACHED,

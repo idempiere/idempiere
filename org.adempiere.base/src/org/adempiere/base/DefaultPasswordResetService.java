@@ -78,6 +78,11 @@ public class DefaultPasswordResetService implements IPasswordResetService
 		Trx trx = Trx.get(Trx.createTrxName("PwdResetReq"), true);
 		try
 		{
+			// issuing a new code invalidates any earlier pending code for this email,
+			// so only the most recently emailed code can be verified (avoids the
+			// silent failure where an older code no longer matches the latest token)
+			MPasswordResetToken.expirePendingForEMail(email, trx.getTrxName());
+
 			MPasswordResetToken token = new MPasswordResetToken(Env.getCtx(), 0, trx.getTrxName());
 			token.setEMail(email);
 			token.setCodeHash(hashResetCode(code, email));
@@ -85,9 +90,6 @@ public class DefaultPasswordResetService implements IPasswordResetService
 			token.setAttemptsUsed(0);
 			token.setExpiration(new Timestamp(System.currentTimeMillis() + expiryMin * 60000L));
 			token.saveEx();
-
-			if (!sendCodeEmail(users.get(0), email, code, expiryMin, language))
-				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "RequestActionEMailError") + ": " + email);
 
 			trx.commit(true);
 		}
@@ -102,6 +104,12 @@ public class DefaultPasswordResetService implements IPasswordResetService
 		{
 			trx.close();
 		}
+
+		// send the code after the token is committed, so the DB transaction is not held
+		// open across the SMTP round-trip (lock/connection contention) and a commit failure
+		// can never leave the user with a code that was emailed but not persisted
+		if (!sendCodeEmail(users.get(0), email, code, expiryMin, language))
+			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "RequestActionEMailError") + ": " + email);
 	}
 
 	@Override
@@ -132,7 +140,9 @@ public class DefaultPasswordResetService implements IPasswordResetService
 			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "PasswordResetAttemptsExceeded"));
 		}
 
-		if (!hashResetCode(code, email).equals(token.getCodeHash()))
+		// salt with the token's stored email (what the code was hashed against at request time),
+		// not the verify-time input, so a case-insensitive EMail match still verifies correctly
+		if (!hashResetCode(code, token.getEMail()).equals(token.getCodeHash()))
 		{
 			int used = token.incrementAttempts();
 			boolean locked = used >= maxAttempts;
@@ -302,9 +312,16 @@ public class DefaultPasswordResetService implements IPasswordResetService
 		String message = mailText.getMailText(true, true, true);
 		Env.setContext(ctx, "#ResetCode", code);
 		Env.setContext(ctx, "#ResetCodeExpiryMinutes", String.valueOf(expiryMin));
-		message = Env.parseVariable(message, to, null, true);
-		Env.setContext(ctx, "#ResetCode", "");
-		Env.setContext(ctx, "#ResetCodeExpiryMinutes", "");
+		try
+		{
+			message = Env.parseVariable(message, to, null, true);
+		}
+		finally
+		{
+			// always clear the plaintext code from the session context, even if parsing fails
+			Env.setContext(ctx, "#ResetCode", "");
+			Env.setContext(ctx, "#ResetCodeExpiryMinutes", "");
+		}
 
 		EMail mail = client.createEMail(email, mailText.getMailHeader(), message, mailText.isHtml());
 		if (mailText.isHtml())

@@ -24,7 +24,6 @@ package org.idempiere.test.base;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -35,9 +34,6 @@ import org.adempiere.base.IPasswordResetService;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MPasswordResetToken;
 import org.compiere.model.MSession;
-import org.compiere.model.MSysConfig;
-import org.compiere.model.MUser;
-import org.compiere.model.MUserRoles;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_PasswordResetToken;
 import org.compiere.util.DB;
@@ -45,7 +41,6 @@ import org.compiere.util.Env;
 import org.compiere.util.SecureEngine;
 import org.compiere.util.Util;
 import org.idempiere.test.AbstractTestCase;
-import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -192,5 +187,46 @@ public class PasswordResetTest extends AbstractTestCase
 		{
 			DB.executeUpdateEx("DELETE FROM AD_PasswordResetToken WHERE EMail=?", new Object[]{email}, null);
 		}
+	}
+
+	/**
+	 * Issuing a new code expires any earlier pending code for the same email
+	 * ({@link MPasswordResetToken#expirePendingForEMail(String, String)}, the seam
+	 * {@code requestReset} uses). Runs on the test transaction so all writes roll back;
+	 * the SMTP-bound {@code requestReset} full path is intentionally not exercised here.
+	 */
+	@Test
+	public void testRequestResetExpiresPriorPending()
+	{
+		String email = "pwreset-expire-" + System.nanoTime() + "@example.com";
+
+		int id1 = newPendingToken(email);
+		int id2 = newPendingToken(email);
+		assertEquals(X_AD_PasswordResetToken.TOKENSTATUS_Pending,
+				new MPasswordResetToken(Env.getCtx(), id1, getTrxName()).getTokenStatus(),
+				"token should start pending");
+
+		int expired = MPasswordResetToken.expirePendingForEMail(email, getTrxName());
+		assertEquals(2, expired, "both prior pending tokens should be expired");
+
+		assertEquals(X_AD_PasswordResetToken.TOKENSTATUS_Expired,
+				new MPasswordResetToken(Env.getCtx(), id1, getTrxName()).getTokenStatus());
+		assertEquals(X_AD_PasswordResetToken.TOKENSTATUS_Expired,
+				new MPasswordResetToken(Env.getCtx(), id2, getTrxName()).getTokenStatus());
+	}
+
+	/**
+	 * Create a pending token on the test transaction (rolled back after the test) and return its id.
+	 */
+	private int newPendingToken(String email)
+	{
+		MPasswordResetToken token = new MPasswordResetToken(Env.getCtx(), 0, getTrxName());
+		token.setEMail(email);
+		token.setCodeHash(SecureEngine.getSHA256Digest("000000|" + email));
+		token.setTokenStatus(X_AD_PasswordResetToken.TOKENSTATUS_Pending);
+		token.setAttemptsUsed(0);
+		token.setExpiration(new Timestamp(System.currentTimeMillis() + 600000L));
+		token.saveEx();
+		return token.getAD_PasswordResetToken_ID();
 	}
 }
