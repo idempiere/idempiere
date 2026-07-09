@@ -589,6 +589,9 @@ public class Doc_MatchInv extends Doc
 			{
 				FactLine line = fact.createLine(null, account, as.getC_Currency_ID(), amtAsset);
 				updateFactLine(line);
+				// Price variance is a financial adjustment and does not affect inventory quantity,
+				// so the Product Asset accounting entry is created with zero quantity.
+				line.setQty(Env.ZERO);
 
 				if (m_invoiceLine.getParent().getC_Currency_ID() != as.getC_Currency_ID())
 				{
@@ -599,6 +602,7 @@ public class Doc_MatchInv extends Doc
 			//TODO test for avg Invoice costing method as here dropped posting of posting to IPV account
 			FactLine line = fact.createLine(null, account, as.getC_Currency_ID(), ipv);
 			updateFactLine(line);
+			line.setQty(Env.ZERO);
 			
 			if (m_invoiceLine.getParent().getC_Currency_ID() != as.getC_Currency_ID())
 			{
