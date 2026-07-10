@@ -70,7 +70,7 @@ public class RequisitionTest extends AbstractTestCase {
 		requisition.setM_PriceList_ID(standardPriceList);
 		requisition.setPriorityRule(MRequisition.PRIORITYRULE_Medium);
 		requisition.saveEx();
-		
+
 		int seeder = DictionaryIDs.M_Product.SEEDER.id;
 		int each = DictionaryIDs.C_UOM.EACH.id;
 		MRequisitionLine line = new MRequisitionLine(requisition);
@@ -79,10 +79,18 @@ public class RequisitionTest extends AbstractTestCase {
 		line.setQty(new BigDecimal("1"));
 		line.setPrice();
 		line.saveEx();
-		
+
+		line = new MRequisitionLine(requisition);
+		line.setC_BPartner_ID(DictionaryIDs.C_BPartner.SEED_FARM.id);
+		line.setC_Charge_ID(DictionaryIDs.C_Charge.COMMISSIONS.id);
+		line.setQty(new BigDecimal("1"));
+		line.setPriceEntered(new BigDecimal("100"));
+		line.setPriceActual(new BigDecimal("100"));
+		line.saveEx();
+
 		ProcessInfo pi = MWorkflow.runDocumentActionWorkflow(requisition, DocAction.ACTION_Complete);
 		assertFalse(pi.isError(), pi.getSummary());
-		
+
 		requisition.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, requisition.getDocStatus());
 	}
