@@ -86,7 +86,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			"""
 				SELECT hdr.C_Invoice_ID, hdr.DocumentNo, hdr.DateInvoiced, bp.Name, hdr.C_BPartner_ID,
 				lin.Line, lin.C_InvoiceLine_ID, p.Name, lin.M_Product_ID,
-				CASE WHEN dt.DocBaseType='APC' THEN lin.QtyInvoiced * -1 ELSE lin.QtyInvoiced END,SUM(NVL(mi.Qty,0)), org.Name, hdr.AD_Org_ID
+				CASE WHEN dt.DocBaseType='APC' THEN -1 ELSE 1 END * lin.QtyInvoiced, SUM(NVL(mi.Qty,0)), org.Name, hdr.AD_Org_ID
 				 FROM C_Invoice hdr 
 				 INNER JOIN AD_Org org ON (hdr.AD_Org_ID=org.AD_Org_ID)
 				 INNER JOIN C_BPartner bp ON (hdr.C_BPartner_ID=bp.C_BPartner_ID)
@@ -97,15 +97,17 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 				 WHERE hdr.DocStatus IN ('CO','CL')
 			""";
 	
+	public static final String MATCH_SIGN =
+			"(CASE WHEN dt.DocBaseType='APC' THEN -1 ELSE 1 END)";
+
 	/** Matching to Receipt Group By Template */
 	private static final String BASE_MATCHING_GROUP_BY_SQL =
 			"""
-				GROUP BY hdr.C_Invoice_ID,hdr.DocumentNo,hdr.DateInvoiced,bp.Name,hdr.C_BPartner_ID,
-				lin.Line,lin.C_InvoiceLine_ID,p.Name,lin.M_Product_ID,dt.DocBaseType,lin.QtyInvoiced, org.Name, hdr.AD_Org_ID, dt.DocBaseType 
+				GROUP BY hdr.C_Invoice_ID, bp.C_BPartner_ID, lin.C_InvoiceLine_ID, p.M_Product_ID, dt.DocBaseType, org.AD_Org_ID 
 				HAVING %s <> SUM(NVL(mi.Qty,0))
 			""";
 	public static final String NOT_FULLY_MATCHED_TO_RECEIPT_GROUP_BY = BASE_MATCHING_GROUP_BY_SQL
-				.formatted("CASE WHEN dt.DocBaseType='APC' THEN lin.QtyInvoiced * -1 ELSE lin.QtyInvoiced END");
+				.formatted(MATCH_SIGN + " * lin.QtyInvoiced ");
 	
 	public static final String FULL_OR_PARTIALLY_MATCHED_TO_RECEIPT_GROUP_BY = BASE_MATCHING_GROUP_BY_SQL.formatted("0");
 	

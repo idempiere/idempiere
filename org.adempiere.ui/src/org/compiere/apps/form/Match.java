@@ -314,7 +314,7 @@ public class Match
 		{
 			//invoice matched with material receipt (m_matchinv)
 			m_dateColumn = "hdr.DateInvoiced";
-			m_qtyColumn = "lin.QtyInvoiced";
+			m_qtyColumn = MInvoice.MATCH_SIGN + " * lin.QtyInvoiced";
 			m_sql.append(MInvoice.MATCH_TO_RECEIPT_SQL);
 			if (lineMatched!= null && Line_ID > 0 )
 				m_sql.append(" AND mi.M_InOutLine_ID  = ").append(Line_ID);
@@ -346,7 +346,7 @@ public class Match
 		{
 			//receipt match with order (m_matchpo) or invoice (m_matchinv)
 			m_dateColumn = "hdr.MovementDate";
-			m_qtyColumn = "lin.MovementQty";
+			m_qtyColumn = MInOut.MATCH_SIGN + " * lin.MovementQty";
 			if (matchToType == MATCH_ORDER)
 				m_sql.append(matched ? MInOut.FULL_OR_PARTIALLY_MATCHED_TO_ORDER : MInOut.NOT_FULLY_MATCHED_TO_ORDER);
 			else
