@@ -37,10 +37,8 @@ import org.zkoss.zhtml.Table;
 import org.zkoss.zhtml.Td;
 import org.zkoss.zhtml.Tr;
 import org.zkoss.zk.au.out.AuFocus;
-import org.zkoss.zk.ui.AbstractComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.sys.ComponentCtrl;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Image;
 
@@ -64,18 +62,6 @@ public class PasswordResetPanel extends Window implements EventListener<Event>
 	private static final int STEP_CODE = 2;
 	private static final int STEP_PASSWORD = 3;
 
-	/** Number of digits in the reset code (matches the service) */
-	private static final int OTP_LENGTH = 6;
-
-	/** Client-side auto-advance for the OTP boxes (boxes are direct widget siblings) */
-	private static final String OTP_KEYUP_JS =
-			  "var inp=this.$n();"
-			+ "if(inp){inp.value=inp.value.replace(/[^0-9]/g,'');}"
-			+ "var kc=(event&&(event.keyCode||event.which))||0;"
-			+ "var isDigit=(kc>=48&&kc<=57)||(kc>=96&&kc<=105);"
-			+ "if(kc===8){ if((!inp||!inp.value||inp.value.length===0) && this.previousSibling){ this.previousSibling.focus(); } }"
-			+ "else if(isDigit && inp&&inp.value&&inp.value.length>=1 && this.nextSibling){ this.nextSibling.focus(); }";
-
 	private final LoginWindow wndLogin;
 	private final Properties m_ctx;
 	private final int clientId;
@@ -89,7 +75,7 @@ public class PasswordResetPanel extends Window implements EventListener<Event>
 	private Table bodyTable;
 
 	private Textbox txtEmail;
-	private Textbox[] otpBoxes;
+	private Textbox txtCode;
 	private Textbox txtNewPassword;
 	private Textbox txtConfirmPassword;
 
@@ -190,9 +176,14 @@ public class PasswordResetPanel extends Window implements EventListener<Event>
 				break;
 			case STEP_CODE:
 				lblMessage.setValue(Msg.getMsg(m_ctx, "PasswordResetEnterCode"));
-				addOtpRow();
-				if (otpBoxes.length > 0)
-					Clients.response(new AuFocus(otpBoxes[0]));
+				txtCode = new Textbox();
+				txtCode.setId("txtCode");
+				txtCode.setCols(25);
+				ZKUpdateUtil.setWidth(txtCode, "220px");
+				txtCode.setClientAttribute("inputmode", "numeric");
+				txtCode.setClientAttribute("autocomplete", "one-time-code");
+				addFieldRow(Msg.getMsg(m_ctx, "Code"), txtCode);
+				focus(txtCode);
 				break;
 			case STEP_PASSWORD:
 				lblMessage.setValue(Msg.getMsg(m_ctx, "New Password"));
@@ -231,38 +222,6 @@ public class PasswordResetPanel extends Window implements EventListener<Event>
 		td = new Td();
 		td.setSclass(ITheme.LOGIN_FIELD_CLASS);
 		td.appendChild(field);
-		tr.appendChild(td);
-	}
-
-	/**
-	 * Append the OTP boxes row (full width, outside a .login-field cell so they keep the
-	 * square OTP styling instead of the 220px login-field width).
-	 */
-	private void addOtpRow()
-	{
-		otpBoxes = new Textbox[OTP_LENGTH];
-		Div otpDiv = new Div();
-		otpDiv.setSclass("otp-input");
-		for (int i = 0; i < OTP_LENGTH; i++)
-		{
-			Textbox box = new Textbox();
-			box.setMaxlength(1);
-			box.setCols(1);
-			box.setClientAttribute("inputmode", "numeric");
-			box.setClientAttribute("autocomplete", i == 0 ? "one-time-code" : "off");
-			box.setClientAttribute("aria-label", Msg.getElement(m_ctx, "OneTimeCode") + " " + (i + 1) + "/" + OTP_LENGTH);
-			box.setClientAttribute("onfocus", "this.select()");
-			box.setWidgetListener("onKeyUp", OTP_KEYUP_JS);
-			box.addCallback(ComponentCtrl.AFTER_PAGE_DETACHED,
-					t -> ((AbstractComponent) t).setWidgetListener("onKeyUp", null));
-			otpBoxes[i] = box;
-			otpDiv.appendChild(box);
-		}
-		Tr tr = new Tr();
-		bodyTable.appendChild(tr);
-		Td td = new Td();
-		td.setDynamicProperty("colspan", "2");
-		td.appendChild(otpDiv);
 		tr.appendChild(td);
 	}
 
@@ -338,20 +297,13 @@ public class PasswordResetPanel extends Window implements EventListener<Event>
 
 	private void doVerify(IPasswordResetService service)
 	{
-		StringBuilder sb = new StringBuilder();
-		for (Textbox box : otpBoxes)
+		String code = txtCode.getValue();
+		if (Util.isEmpty(code, true))
 		{
-			String v = box.getValue();
-			if (v != null)
-				sb.append(v.trim());
-		}
-		String code = sb.toString();
-		if (code.length() < OTP_LENGTH)
-		{
-			setMessage(Msg.getMsg(m_ctx, "FillMandatory") + " " + Msg.getMsg(m_ctx, "Code"));
+			setMessage(Msg.getMsg(m_ctx, "FillMandatory") + " " + Msg.getElement(m_ctx, "OneTimeCode"));
 			return;
 		}
-		verifiedToken = service.verifyCode(email, code);
+		verifiedToken = service.verifyCode(email, code.trim());
 		step = STEP_PASSWORD;
 		buildStep();
 	}

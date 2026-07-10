@@ -350,14 +350,21 @@ public class DefaultPasswordResetService implements IPasswordResetService
 	}
 
 	/**
-	 * @return a random 6-digit numeric code (zero padded)
+	 * @return a random numeric code whose length is set by the
+	 *         {@link MSysConfig#PASSWORD_RESET_CODE_LENGTH} system configuration (default 6)
 	 */
 	private String generateCode()
 	{
+		int length = MSysConfig.getIntValue(MSysConfig.PASSWORD_RESET_CODE_LENGTH, 6);
+		if (length < 4) // sane floor so a misconfig cannot make codes trivially guessable
+			length = 4;
 		try
 		{
 			SecureRandom random = SecureEngine.getSecureRandom();
-			return String.format("%06d", random.nextInt(1000000));
+			StringBuilder sb = new StringBuilder(length);
+			for (int i = 0; i < length; i++)
+				sb.append(random.nextInt(10));
+			return sb.toString();
 		}
 		catch (Exception e)
 		{

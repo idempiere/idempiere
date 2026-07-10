@@ -27,13 +27,16 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.lang.reflect.Method;
 import java.sql.Timestamp;
 
 import org.adempiere.base.Core;
+import org.adempiere.base.DefaultPasswordResetService;
 import org.adempiere.base.IPasswordResetService;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MPasswordResetToken;
 import org.compiere.model.MSession;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_PasswordResetToken;
 import org.compiere.util.DB;
@@ -41,6 +44,8 @@ import org.compiere.util.Env;
 import org.compiere.util.Util;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 /**
  * Tests for the code-based password reset feature (IDEMPIERE-7060).
@@ -212,6 +217,48 @@ public class PasswordResetTest extends AbstractTestCase
 				new MPasswordResetToken(Env.getCtx(), id1, getTrxName()).getTokenStatus());
 		assertEquals(X_AD_PasswordResetToken.TOKENSTATUS_Expired,
 				new MPasswordResetToken(Env.getCtx(), id2, getTrxName()).getTokenStatus());
+	}
+
+	/**
+	 * The reset code length is driven by the {@link MSysConfig#PASSWORD_RESET_CODE_LENGTH}
+	 * system configuration (default 6, floor 4). Drives the private {@code generateCode()} directly
+	 * via reflection while stubbing the SysConfig read, so no DB write / SMTP / transaction is involved.
+	 */
+	@Test
+	public void testGenerateCodeLength() throws Exception
+	{
+		Method m = DefaultPasswordResetService.class.getDeclaredMethod("generateCode");
+		m.setAccessible(true);
+		DefaultPasswordResetService svc = new DefaultPasswordResetService();
+
+		// default 6: length is exactly 6 and the code is all digits (checked over many draws)
+		try (MockedStatic<MSysConfig> mocked = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS))
+		{
+			mocked.when(() -> MSysConfig.getIntValue(MSysConfig.PASSWORD_RESET_CODE_LENGTH, 6)).thenReturn(6);
+			for (int i = 0; i < 20; i++)
+			{
+				String code = (String) m.invoke(svc);
+				assertEquals(6, code.length(), "default length should be 6");
+				assertTrue(code.matches("\\d+"), "code should be all digits: " + code);
+			}
+		}
+
+		// configurator lengthens the code
+		try (MockedStatic<MSysConfig> mocked = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS))
+		{
+			mocked.when(() -> MSysConfig.getIntValue(MSysConfig.PASSWORD_RESET_CODE_LENGTH, 6)).thenReturn(8);
+			String code = (String) m.invoke(svc);
+			assertEquals(8, code.length(), "configured length 8 should produce an 8-digit code");
+			assertTrue(code.matches("\\d+"), "code should be all digits: " + code);
+		}
+
+		// a length below the floor clamps to 4
+		try (MockedStatic<MSysConfig> mocked = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS))
+		{
+			mocked.when(() -> MSysConfig.getIntValue(MSysConfig.PASSWORD_RESET_CODE_LENGTH, 6)).thenReturn(2);
+			String code = (String) m.invoke(svc);
+			assertEquals(4, code.length(), "length below 4 should clamp to 4");
+		}
 	}
 
 	/**
