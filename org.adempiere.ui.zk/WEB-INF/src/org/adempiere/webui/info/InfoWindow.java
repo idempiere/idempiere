@@ -58,6 +58,7 @@ import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.EditorBox;
+import org.adempiere.webui.component.FlexVlayout;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Label;
@@ -131,6 +132,7 @@ import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 import org.idempiere.db.util.SQLFragment;
+import org.idempiere.ui.zk.event.UIEventManager;
 import org.idempiere.ui.zk.media.IMediaView;
 import org.idempiere.ui.zk.media.Medias;
 import org.idempiere.ui.zk.media.WMediaOptions;
@@ -162,7 +164,6 @@ import org.zkoss.zul.Paging;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
-import org.adempiere.webui.component.FlexVlayout;
 import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.event.ZulEvents;
 import org.zkoss.zul.impl.InputElement;
@@ -397,6 +398,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
    		});
 
    		Env.setPredefinedVariables(Env.getCtx(), getWindowNo(), predefinedContextVariables);
+   		UIEventManager.fireOpenInfoEvent(Env.getCtx(), AD_InfoWindow_ID, getWindowNo());
 		infoContext = new Properties(Env.getCtx());
 		p_loadedOK = loadInfoDefinition(); 
 		

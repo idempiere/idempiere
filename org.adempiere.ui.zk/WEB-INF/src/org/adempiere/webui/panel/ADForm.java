@@ -35,6 +35,7 @@ import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.idempiere.ui.zk.event.UIEventManager;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -231,6 +232,7 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
                 form.setProcessInfo(pi);
         		Env.setPredefinedVariables(Env.getCtx(), form.getWindowNo(), predefinedContextVariables);
         		Env.setContext(Env.getCtx(), form.getWindowNo(), "IsSOTrx", isSOTrx);
+        		UIEventManager.fireOpenFormEvent(Env.getCtx(), adFormID, form.getWindowNo());
 				form.init(adFormID, name);
 		    	form.setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, form.getWindowNo());	// for closing the window with shortcut
 		    	SessionManager.getSessionApplication().getKeylistener().addEventListener(Events.ON_CTRL_KEY, form);

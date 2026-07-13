@@ -122,6 +122,7 @@ import org.idempiere.print.renderer.HTMLReportRendererConfiguration;
 import org.idempiere.print.renderer.PDFReportRendererConfiguration;
 import org.idempiere.print.renderer.XLSReportRendererConfiguration;
 import org.idempiere.print.renderer.XLSXReportRendererConfiguration;
+import org.idempiere.ui.zk.event.UIEventManager;
 import org.idempiere.ui.zk.media.IMediaView;
 import org.idempiere.ui.zk.media.WMediaOptions;
 import org.idempiere.ui.zk.report.IReportViewerRenderer;
@@ -1586,6 +1587,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		if (!Util.isEmpty(predefined, true)) {
 			Env.setContext(Env.getCtx(), m_WindowNo, ProcessDialog.SAVED_PREDEFINED_CONTEXT_VARIABLES, predefined);
 			Env.setPredefinedVariables(Env.getCtx(), m_WindowNo, predefined);
+			UIEventManager.fireOpenProcessEvent(Env.getCtx(), AD_Process_ID, m_WindowNo);
 		}
 		if (getAttribute("IsSOTrx") != null) {
 			Env.setContext(Env.getCtx(), m_WindowNo, "IsSOTrx", getAttribute("IsSOTrx").toString());
