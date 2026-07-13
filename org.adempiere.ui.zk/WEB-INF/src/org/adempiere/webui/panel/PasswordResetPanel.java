@@ -182,7 +182,7 @@ public class PasswordResetPanel extends Window implements EventListener<Event>
 				ZKUpdateUtil.setWidth(txtCode, "220px");
 				txtCode.setClientAttribute("inputmode", "numeric");
 				txtCode.setClientAttribute("autocomplete", "one-time-code");
-				addFieldRow(Msg.getMsg(m_ctx, "Code"), txtCode);
+				addFieldRow(Msg.getElement(m_ctx, "OneTimeCode"), txtCode);
 				focus(txtCode);
 				break;
 			case STEP_PASSWORD:
