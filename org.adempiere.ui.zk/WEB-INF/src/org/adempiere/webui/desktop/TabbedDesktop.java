@@ -42,6 +42,7 @@ import org.compiere.model.MTask;
 import org.compiere.model.SystemProperties;
 import org.compiere.util.Env;
 import org.compiere.wf.MWorkflow;
+import org.idempiere.ui.zk.event.UIEventManager;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -175,6 +176,7 @@ public abstract class TabbedDesktop extends AbstractDesktop {
 		tab.setClosable(false);		
 		final OpenWindowRunnable runnable = new OpenWindowRunnable(adWindow, tab, tabPanel, callback);
 		Env.setPredefinedVariables(Env.getCtx(), windowNo, getPredefinedContextVariables());
+		UIEventManager.fireOpenWindowEvent(Env.getCtx(), windowId, windowNo, query);
 		preOpenNewTab();
 		runnable.run();
 	}
