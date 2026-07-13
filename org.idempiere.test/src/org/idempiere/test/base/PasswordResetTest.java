@@ -41,6 +41,7 @@ import org.compiere.model.Query;
 import org.compiere.model.X_AD_PasswordResetToken;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
@@ -259,6 +260,78 @@ public class PasswordResetTest extends AbstractTestCase
 			String code = (String) m.invoke(svc);
 			assertEquals(4, code.length(), "length below 4 should clamp to 4");
 		}
+	}
+
+	/**
+	 * Anti-enumeration: an UNKNOWN email must lock out exactly like a registered one at the verify
+	 * step (invalid code -> ... -> too many attempts) instead of always reporting "invalid code",
+	 * which would let a bot tell registered from unregistered addresses. Driven directly against the
+	 * service; unknown emails create no token and send no mail.
+	 */
+	@Test
+	public void testUnknownEmailVerifyLocksLikeRealEmail()
+	{
+		IPasswordResetService service = Core.getPasswordResetService();
+		assertNotNull(service, "IPasswordResetService should be registered");
+
+		String email = "pwreset-decoy-verify-" + System.nanoTime() + "@example.com";
+		String invalid = Msg.getMsg(Env.getCtx(), "PasswordResetInvalidCode");
+		String exceeded = Msg.getMsg(Env.getCtx(), "PasswordResetAttemptsExceeded");
+
+		try (MockedStatic<MSysConfig> mocked = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS))
+		{
+			mocked.when(() -> MSysConfig.getIntValue(MSysConfig.PASSWORD_RESET_MAX_ATTEMPTS, 5)).thenReturn(3);
+
+			// attempts 1..max-1 -> "invalid code"
+			for (int i = 1; i <= 2; i++)
+			{
+				AdempiereException ex = assertThrows(AdempiereException.class,
+						() -> service.verifyCode(email, "000000"));
+				assertEquals(invalid, ex.getMessage(), "attempt " + i + " should report invalid code");
+			}
+			// attempt == max -> "too many attempts" (mirrors the real token flipping to Expired)
+			AdempiereException locked = assertThrows(AdempiereException.class,
+					() -> service.verifyCode(email, "000000"));
+			assertEquals(exceeded, locked.getMessage(), "attempt at max should report too many attempts");
+			// attempt > max -> reverts to "invalid code" (the real token would be gone by now)
+			AdempiereException after = assertThrows(AdempiereException.class,
+					() -> service.verifyCode(email, "000000"));
+			assertEquals(invalid, after.getMessage(), "past max should revert to invalid code");
+		}
+	}
+
+	/**
+	 * Anti-enumeration: an UNKNOWN email must be able to hit the request rate limit
+	 * ({@code PasswordResetTooManyRequests}) just like a registered one, instead of always returning
+	 * neutrally. Still must not create a token row or send mail.
+	 */
+	@Test
+	public void testUnknownEmailRequestCanRateLimit()
+	{
+		IPasswordResetService service = Core.getPasswordResetService();
+		assertNotNull(service, "IPasswordResetService should be registered");
+
+		String email = "pwreset-decoy-req-" + System.nanoTime() + "@example.com";
+		int clientId = getAD_Client_ID();
+
+		try (MockedStatic<MSysConfig> mocked = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS))
+		{
+			mocked.when(() -> MSysConfig.getIntValue(MSysConfig.PASSWORD_RESET_REQUEST_COOLDOWN_SECONDS, 60, clientId))
+					.thenReturn(60);
+
+			// first request for an unknown email -> neutral (no throw)
+			service.requestReset(email, clientId, "en_US");
+			// second request within the cooldown -> rate-limited, exactly like a registered email
+			assertThrows(AdempiereException.class,
+					() -> service.requestReset(email, clientId, "en_US"),
+					"a second rapid request for an unknown email should be rate-limited");
+		}
+
+		// no token row was ever created for the unknown email (no table bloat)
+		int tokens = new Query(Env.getCtx(), MPasswordResetToken.Table_Name, "EMail=?", null)
+				.setParameters(email)
+				.count();
+		assertEquals(0, tokens, "no token should be created for an unknown email");
 	}
 
 	/**

@@ -71,6 +71,9 @@ public class PasswordResetPanel extends Window implements EventListener<Event>
 	private String email;
 	private String verifiedToken;
 
+	/* Number of failures, to calculate an incremental delay on every trial (see LoginPanel) */
+	private int failures = 0;
+
 	private Label lblMessage;
 	private Table bodyTable;
 
@@ -275,6 +278,11 @@ public class PasswordResetPanel extends Window implements EventListener<Event>
 		}
 		catch (Exception e)
 		{
+			// Incremental delay to avoid brute-force attack on testing codes (mirrors LoginPanel)
+			try {
+				Thread.sleep(failures * 2000L);
+			} catch (InterruptedException ie) {}
+			failures++;
 			setMessage(Util.cleanAmp(e.getLocalizedMessage()));
 		}
 	}

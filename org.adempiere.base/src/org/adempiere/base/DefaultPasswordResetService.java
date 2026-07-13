@@ -23,6 +23,7 @@ package org.adempiere.base;
 
 import java.security.SecureRandom;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -37,6 +38,7 @@ import org.compiere.model.MUser;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_PasswordResetToken;
+import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.EMail;
@@ -58,6 +60,21 @@ public class DefaultPasswordResetService implements IPasswordResetService
 	/** Name of the seed R_MailText carrying the reset code */
 	private static final String MAIL_TEXT_NAME = "Password Reset Code";
 
+	/**
+	 * Per-email decoy state for unknown addresses, so an email that is NOT registered produces the
+	 * same verify/request responses as a registered one (anti-enumeration) without ever creating a
+	 * token row or sending mail. Never persisted.
+	 * <p>
+	 * Marked distributed so the counters are shared across cluster nodes (a real email locks
+	 * cluster-wide via its DB token, so the decoy must too); on a clustered instance the entries live
+	 * in a Hazelcast map bounded by the shipped {@code hazelcast.xml} default map config (LRU per node
+	 * + max-idle TTL), and on a stand-alone instance it falls back to the local capped/expiring cache.
+	 */
+	private static final CCache<String, Integer> s_decoyVerifyAttempts =
+			new CCache<>(null, "PasswordResetDecoyVerify", 100, 15, true, 10000);
+	private static final CCache<String, List<Long>> s_decoyRequestTimes =
+			new CCache<>(null, "PasswordResetDecoyRequest", 100, 60, true, 10000);
+
 	@Override
 	public void requestReset(String email, int AD_Client_ID, String language)
 	{
@@ -67,7 +84,13 @@ public class DefaultPasswordResetService implements IPasswordResetService
 
 		List<MUser> users = findUsers(email);
 		if (users.isEmpty())
+		{
+			// unknown email: apply the same cooldown / per-hour limits from memory so it can also
+			// return TooManyRequests, without creating a token or sending mail
+			if (isVirtualRequestRateLimited(email, AD_Client_ID))
+				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "PasswordResetTooManyRequests"));
 			return; // neutral response - do not reveal whether the account exists
+		}
 
 		if (isRateLimited(email, AD_Client_ID))
 			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "PasswordResetTooManyRequests"));
@@ -122,7 +145,7 @@ public class DefaultPasswordResetService implements IPasswordResetService
 
 		MPasswordResetToken token = getLatestPending(email);
 		if (token == null)
-			throw new AdempiereException(Msg.getMsg(Env.getCtx(), "PasswordResetInvalidCode"));
+			throw decoyVerifyException(email); // unknown email: mimic the real token's attempt lockout
 
 		int maxAttempts = MSysConfig.getIntValue(MSysConfig.PASSWORD_RESET_MAX_ATTEMPTS, 5, token.getAD_Client_ID());
 
@@ -300,6 +323,62 @@ public class DefaultPasswordResetService implements IPasswordResetService
 				return true;
 		}
 		return false;
+	}
+
+	/**
+	 * No pending token exists for this email (unknown address or an already-consumed code). Mirror the
+	 * real token's attempt accounting from memory so the response is indistinguishable from a
+	 * registered email, without creating any DB row: attempts 1..max-1 report "invalid code", attempt
+	 * {@code max} reports "too many attempts" (matching the real token flipping to Expired), and any
+	 * further attempt reports "invalid code" again (the real token is then gone).
+	 *
+	 * @param email trimmed email
+	 * @return the exception to throw
+	 */
+	private AdempiereException decoyVerifyException(String email)
+	{
+		int max = MSysConfig.getIntValue(MSysConfig.PASSWORD_RESET_MAX_ATTEMPTS, 5);
+		int used;
+		synchronized (s_decoyVerifyAttempts)
+		{
+			Integer prev = s_decoyVerifyAttempts.get(email);
+			used = (prev == null ? 0 : prev.intValue()) + 1;
+			s_decoyVerifyAttempts.put(email, Integer.valueOf(used));
+		}
+		String key = (used == max) ? "PasswordResetAttemptsExceeded" : "PasswordResetInvalidCode";
+		return new AdempiereException(Msg.getMsg(Env.getCtx(), key));
+	}
+
+	/**
+	 * In-memory twin of {@link #isRateLimited(String, int)} for unknown emails: records a virtual
+	 * request when allowed (mirroring the token row a real request would create) and blocks on the same
+	 * cooldown / per-hour thresholds, so a registered and an unregistered email throw
+	 * {@code PasswordResetTooManyRequests} under identical conditions. No token row is created.
+	 *
+	 * @return true if the (virtual) request should be blocked
+	 */
+	private boolean isVirtualRequestRateLimited(String email, int AD_Client_ID)
+	{
+		int cooldownSec = MSysConfig.getIntValue(MSysConfig.PASSWORD_RESET_REQUEST_COOLDOWN_SECONDS, 60, AD_Client_ID);
+		int maxPerHour = MSysConfig.getIntValue(MSysConfig.PASSWORD_RESET_MAX_REQUESTS_PER_HOUR, 5, AD_Client_ID);
+		long now = System.currentTimeMillis();
+		synchronized (s_decoyRequestTimes)
+		{
+			List<Long> times = s_decoyRequestTimes.get(email);
+			times = (times == null) ? new ArrayList<>() : new ArrayList<>(times);
+			times.removeIf(t -> t <= now - 3600000L); // prune > 1h (matches the per-hour window)
+			boolean cooled = cooldownSec > 0 && times.stream().anyMatch(t -> t > now - cooldownSec * 1000L);
+			boolean capped = maxPerHour > 0 && times.size() >= maxPerHour;
+			if (cooled || capped)
+			{
+				// blocked -> caller throws; do not record (mirrors the valid path not creating a token)
+				s_decoyRequestTimes.put(email, times);
+				return true;
+			}
+			times.add(Long.valueOf(now));
+			s_decoyRequestTimes.put(email, times);
+			return false;
+		}
 	}
 
 	/**
