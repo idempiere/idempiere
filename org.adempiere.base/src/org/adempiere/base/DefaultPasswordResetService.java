@@ -328,9 +328,11 @@ public class DefaultPasswordResetService implements IPasswordResetService
 	/**
 	 * No pending token exists for this email (unknown address or an already-consumed code). Mirror the
 	 * real token's attempt accounting from memory so the response is indistinguishable from a
-	 * registered email, without creating any DB row: attempts 1..max-1 report "invalid code", attempt
-	 * {@code max} reports "too many attempts" (matching the real token flipping to Expired), and any
-	 * further attempt reports "invalid code" again (the real token is then gone).
+	 * registered email, without creating any DB row: attempts 1..max-1 report "invalid code" and
+	 * attempt {@code max} reports "too many attempts" (matching the real token flipping to Expired),
+	 * then the counter resets and the cycle repeats. This mirrors a registered email whose token
+	 * expires at {@code max} and drops back into this same decoy path, so the lockout message recurs
+	 * for both and neither can be told apart by a bot that keeps guessing.
 	 *
 	 * @param email trimmed email
 	 * @return the exception to throw
@@ -343,9 +345,13 @@ public class DefaultPasswordResetService implements IPasswordResetService
 		{
 			Integer prev = s_decoyVerifyAttempts.get(email);
 			used = (prev == null ? 0 : prev.intValue()) + 1;
-			s_decoyVerifyAttempts.put(email, Integer.valueOf(used));
+			// reset after the lockout boundary so an unknown email cycles invalid*(max-1) -> exceeded
+			// repeatedly, exactly like a registered email whose token expires and re-enters this path
+			// (otherwise "AttemptsExceeded" fires only once here and only registered emails repeat it,
+			// which would let a bot tell registered from unregistered addresses)
+			s_decoyVerifyAttempts.put(email, Integer.valueOf(used >= max ? 0 : used));
 		}
-		String key = (used == max) ? "PasswordResetAttemptsExceeded" : "PasswordResetInvalidCode";
+		String key = (used >= max) ? "PasswordResetAttemptsExceeded" : "PasswordResetInvalidCode";
 		return new AdempiereException(Msg.getMsg(Env.getCtx(), key));
 	}
 

@@ -278,12 +278,13 @@ public class PasswordResetTest extends AbstractTestCase
 		String invalid = Msg.getMsg(Env.getCtx(), "PasswordResetInvalidCode");
 		String exceeded = Msg.getMsg(Env.getCtx(), "PasswordResetAttemptsExceeded");
 
+		int max = 3;
 		try (MockedStatic<MSysConfig> mocked = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS))
 		{
-			mocked.when(() -> MSysConfig.getIntValue(MSysConfig.PASSWORD_RESET_MAX_ATTEMPTS, 5)).thenReturn(3);
+			mocked.when(() -> MSysConfig.getIntValue(MSysConfig.PASSWORD_RESET_MAX_ATTEMPTS, 5)).thenReturn(max);
 
 			// attempts 1..max-1 -> "invalid code"
-			for (int i = 1; i <= 2; i++)
+			for (int i = 1; i < max; i++)
 			{
 				AdempiereException ex = assertThrows(AdempiereException.class,
 						() -> service.verifyCode(email, "000000"));
@@ -293,10 +294,20 @@ public class PasswordResetTest extends AbstractTestCase
 			AdempiereException locked = assertThrows(AdempiereException.class,
 					() -> service.verifyCode(email, "000000"));
 			assertEquals(exceeded, locked.getMessage(), "attempt at max should report too many attempts");
-			// attempt > max -> reverts to "invalid code" (the real token would be gone by now)
-			AdempiereException after = assertThrows(AdempiereException.class,
+			// the decoy counter now resets, so the same email cycles invalid*(max-1) -> exceeded again,
+			// exactly like a registered email whose token expires and re-enters the decoy path. If it
+			// did not cycle, "too many attempts" would recur only for registered emails (enumeration).
+			for (int i = max + 1; i < 2 * max; i++)
+			{
+				AdempiereException ex = assertThrows(AdempiereException.class,
+						() -> service.verifyCode(email, "000000"));
+				assertEquals(invalid, ex.getMessage(), "attempt " + i + " should report invalid code");
+			}
+			// attempt == 2*max -> "too many attempts" again (the cycle repeats)
+			AdempiereException lockedAgain = assertThrows(AdempiereException.class,
 					() -> service.verifyCode(email, "000000"));
-			assertEquals(invalid, after.getMessage(), "past max should revert to invalid code");
+			assertEquals(exceeded, lockedAgain.getMessage(),
+					"attempt at 2*max should report too many attempts again (cycle)");
 		}
 	}
 

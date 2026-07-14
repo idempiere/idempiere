@@ -76,6 +76,7 @@ public class PasswordResetPanel extends Window implements EventListener<Event>
 
 	private Label lblMessage;
 	private Table bodyTable;
+	private ConfirmPanel pnlButtons;
 
 	private Textbox txtEmail;
 	private Textbox txtCode;
@@ -127,7 +128,7 @@ public class PasswordResetPanel extends Window implements EventListener<Event>
 
 		div = new Div();
 		div.setSclass(ITheme.LOGIN_BOX_FOOTER_CLASS);
-		ConfirmPanel pnlButtons = new ConfirmPanel(true);
+		pnlButtons = new ConfirmPanel(true);
 		pnlButtons.addActionListener(this);
 		LayoutUtils.addSclass(ITheme.LOGIN_BOX_FOOTER_PANEL_CLASS, pnlButtons);
 		ZKUpdateUtil.setWidth(pnlButtons, null);
@@ -284,6 +285,10 @@ public class PasswordResetPanel extends Window implements EventListener<Event>
 			} catch (InterruptedException ie) {}
 			failures++;
 			setMessage(Util.cleanAmp(e.getLocalizedMessage()));
+			// once the code is locked out, stop the user from retrying; they must request a new code
+			if (step == STEP_CODE
+					&& Msg.getMsg(m_ctx, "PasswordResetAttemptsExceeded").equals(e.getLocalizedMessage()))
+				pnlButtons.getButton(ConfirmPanel.A_OK).setDisabled(true);
 		}
 	}
 
