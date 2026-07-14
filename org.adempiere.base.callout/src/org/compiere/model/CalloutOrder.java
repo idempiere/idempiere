@@ -59,7 +59,7 @@ public class CalloutOrder extends CalloutEngine
 	 *  @param mTab     Model Tab
 	 *  @param mField   Model Field
 	 *  @param value    The new value
-	 *  @param value    The old value
+	 *  @param oldValue The old value
 	 *  @return Error message or ""
 	 */
 	public String docType (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value, Object oldValue)
