@@ -167,3 +167,10 @@
 		padding: 5px
 	}
 }
+
+/* Password reset (IDEMPIERE-7060) */
+.password-reset-message {
+	display: block;
+	text-align: center;
+	margin: 4px 0;
+}
