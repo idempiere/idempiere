@@ -30,7 +30,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.List;
 
+import org.compiere.model.MAllocationHdr;
+import org.compiere.model.MAllocationLine;
 import org.compiere.model.MBPRelation;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MInvoice;
@@ -39,7 +42,9 @@ import org.compiere.model.MPaySelection;
 import org.compiere.model.MPaySelectionCheck;
 import org.compiere.model.MPaySelectionLine;
 import org.compiere.model.MPayment;
+import org.compiere.model.MPaymentAllocate;
 import org.compiere.model.MProduct;
+import org.compiere.model.Query;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.DB;
@@ -318,4 +323,169 @@ public class PaymentTest extends AbstractTestCase {
 		assertEquals(MPayment.TENDERTYPE_Check, payment.getTenderType(), "Payment tender type should be Check");
 	}
 
+	/**
+	 * Verify that a payment can be allocated to multiple charges using
+	 * Payment Allocate records and completed successfully.
+	 */
+	@Test
+	public void testAllocatePaymentToMultipleCharges()
+	{
+		// Create a payment that will be fully allocated across multiple charges
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		MBPartner bp = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName());
+
+		MPayment payment = new MPayment(Env.getCtx(), 0, getTrxName());
+		payment.setC_BPartner_ID(bp.getC_BPartner_ID());
+		payment.setC_BankAccount_ID(DictionaryIDs.C_BankAccount.HQ_POS_CASH.id);
+		payment.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
+		payment.setAD_Org_ID(DictionaryIDs.AD_Org.HQ.id);
+		payment.setC_DocType_ID(false);
+		payment.setDateTrx(today);
+		payment.setDateAcct(today);
+		payment.setPayAmt(new BigDecimal("450"));
+		payment.saveEx();
+
+		// Allocate payment to three different charges
+		MPaymentAllocate pa1 = new MPaymentAllocate(Env.getCtx(), 0, getTrxName());
+		pa1.setC_Payment_ID(payment.getC_Payment_ID());
+		pa1.setC_Charge_ID(DictionaryIDs.C_Charge.BANK.id);
+		pa1.setAmount(new BigDecimal("100"));
+		pa1.saveEx();
+
+		MPaymentAllocate pa2 = new MPaymentAllocate(Env.getCtx(), 0, getTrxName());
+		pa2.setC_Payment_ID(payment.getC_Payment_ID());
+		pa2.setC_Charge_ID(DictionaryIDs.C_Charge.COMMISSIONS.id);
+		pa2.setAmount(new BigDecimal("150"));
+		pa2.saveEx();
+
+		MPaymentAllocate pa3 = new MPaymentAllocate(Env.getCtx(), 0, getTrxName());
+		pa3.setC_Payment_ID(payment.getC_Payment_ID());
+		pa3.setC_Charge_ID(DictionaryIDs.C_Charge.FREIGHT.id);
+		pa3.setAmount(new BigDecimal("200"));
+		pa3.saveEx();
+
+		// Complete the payment and verify it is processed successfully
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), "Payment completion failed: " + info.getSummary());
+		payment.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, payment.getDocStatus(), "Payment failed to complete");
+
+		// Verify all payment allocation records are retained
+		MPaymentAllocate[] allocations = MPaymentAllocate.get(payment);
+		assertEquals(3, allocations.length, "Payment Allocate records were not retained after completion");
+
+		// Verify the allocated amount equals the payment amount
+		BigDecimal allocatedAmt = BigDecimal.ZERO;
+		for (MPaymentAllocate allocation : allocations)
+			allocatedAmt = allocatedAmt.add(allocation.getAmount());
+
+		assertEquals(0, allocatedAmt.compareTo(payment.getPayAmt()), "Allocated amount does not match payment amount");
+		assertEquals(0, payment.getPayAmt().add(payment.getAllocatedAmt()).compareTo(BigDecimal.ZERO), "Payment has an unallocated remaining amount");
+		assertTrue(payment.isAllocated(), "Payment is not marked as fully allocated");
+		
+		//
+		MAllocationHdr[] hdrs = MAllocationHdr.getOfPayment(payment.getCtx(), payment.getC_Payment_ID(), getTrxName());
+		assertEquals(1, hdrs.length, "Allocation Header was not created for the payment");
+
+		Query query = new Query(Env.getCtx(), MAllocationLine.Table_Name, "C_AllocationHdr_ID=?", getTrxName());
+		query.setParameters(hdrs[0].getC_AllocationHdr_ID());
+		List<MAllocationLine> lines = query.list();
+		assertEquals(4, lines.size(), "Allocation Lines missing for payment and charge allocations");
+	}
+
+	/**
+	 * Verify that a payment can be allocated to both an invoice and multiple
+	 * charges in the same payment allocation and complete successfully.
+	 */
+	@Test
+	public void testAllocateChargeTogetherWithInvoice()
+	{
+		// Create a completed invoice and allocate the same payment to both invoice and charges
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		MBPartner bp = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName());
+
+		MInvoice invoice = new MInvoice(Env.getCtx(), 0, getTrxName());
+		invoice.setC_BPartner_ID(DictionaryIDs.C_BPartner.JOE_BLOCK.id);
+		invoice.setAD_Org_ID(DictionaryIDs.AD_Org.HQ.id);
+		invoice.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.AP_INVOICE.id);
+		invoice.setDateInvoiced(today);
+		invoice.setDateAcct(today);
+		invoice.setPaymentRule(MInvoice.PAYMENTRULE_Check);
+		invoice.setC_PaymentTerm_ID(DictionaryIDs.C_PaymentTerm.IMMEDIATE.id);
+		invoice.saveEx();
+
+		// Add a charge line to create an invoice amount of 300
+		MInvoiceLine invoiceLine = new MInvoiceLine(invoice);
+		invoiceLine.setLine(10);
+		invoiceLine.setC_Charge_ID(DictionaryIDs.C_Charge.COMMISSIONS.id);
+		invoiceLine.setQty(BigDecimal.ONE);
+		invoiceLine.setPrice(new BigDecimal("300"));
+		invoiceLine.saveEx();
+
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), "Invoice completion failed: " + info.getSummary());
+		invoice.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus(), "Invoice failed to complete");
+
+		// Create a payment that will be allocated to one invoice and two charges
+		MPayment payment = new MPayment(Env.getCtx(), 0, getTrxName());
+		payment.setC_BPartner_ID(bp.getC_BPartner_ID());
+		payment.setC_BankAccount_ID(DictionaryIDs.C_BankAccount.HQ_POS_CASH.id);
+		payment.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
+		payment.setAD_Org_ID(DictionaryIDs.AD_Org.HQ.id);
+		payment.setC_DocType_ID(false);
+		payment.setDateTrx(today);
+		payment.setDateAcct(today);
+		payment.setPayAmt(new BigDecimal("500"));
+		payment.saveEx();
+
+		// Allocate part of the payment to the invoice
+		MPaymentAllocate pai = new MPaymentAllocate(Env.getCtx(), 0, getTrxName());
+		pai.setC_Payment_ID(payment.getC_Payment_ID());
+		pai.setC_Invoice_ID(invoice.getC_Invoice_ID());
+		pai.setAmount(new BigDecimal("300"));
+		pai.setInvoiceAmt(new BigDecimal("300"));
+		pai.saveEx();
+
+		// Allocate the remaining payment amount to two different charges
+		MPaymentAllocate pac1 = new MPaymentAllocate(Env.getCtx(), 0, getTrxName());
+		pac1.setC_Payment_ID(payment.getC_Payment_ID());
+		pac1.setC_Charge_ID(DictionaryIDs.C_Charge.COMMISSIONS.id);
+		pac1.setAmount(new BigDecimal("100"));
+		pac1.saveEx();
+
+		MPaymentAllocate pac2 = new MPaymentAllocate(Env.getCtx(), 0, getTrxName());
+		pac2.setC_Payment_ID(payment.getC_Payment_ID());
+		pac2.setC_Charge_ID(DictionaryIDs.C_Charge.BANK.id);
+		pac2.setAmount(new BigDecimal("100"));
+		pac2.saveEx();
+
+		// Complete the payment and verify both invoice and charge allocations are processed
+		info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), "Payment completion failed: " + info.getSummary());
+		payment.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, payment.getDocStatus(), "Payment failed to complete");
+
+		// Verify all payment allocation records are retained
+		MPaymentAllocate[] allocations = MPaymentAllocate.get(payment);
+		assertEquals(3, allocations.length, "Payment Allocate records were not retained after completion");
+
+		// Verify the allocated amount equals the payment amount
+		BigDecimal allocatedAmt = BigDecimal.ZERO;
+		for (MPaymentAllocate allocation : allocations)
+			allocatedAmt = allocatedAmt.add(allocation.getAmount());
+
+		assertEquals(0, allocatedAmt.compareTo(payment.getPayAmt()), "Allocated amount does not match payment amount");
+		assertEquals(0, payment.getPayAmt().add(payment.getAllocatedAmt()).compareTo(BigDecimal.ZERO), "Payment has an unallocated remaining amount");
+		assertTrue(payment.isAllocated(), "Payment is not marked as fully allocated");
+
+		//
+		MAllocationHdr[] hdrs = MAllocationHdr.getOfPayment(payment.getCtx(), payment.getC_Payment_ID(), getTrxName());
+		assertEquals(1, hdrs.length, "Allocation Header was not created for the payment");
+
+		Query query = new Query(Env.getCtx(), MAllocationLine.Table_Name, "C_AllocationHdr_ID=?", getTrxName());
+		query.setParameters(hdrs[0].getC_AllocationHdr_ID());
+		List<MAllocationLine> lines = query.list();
+		assertEquals(4, lines.size(), "Allocation Lines missing for payment, invoice and charge allocations");
+	}
 }

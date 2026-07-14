@@ -65,3 +65,8 @@ INSERT INTO t_alter_column values('c_paymentallocate','C_Invoice_ID','NUMERIC(10
 -- 02-Sep-2024, 7:35:30 PM IST
 INSERT INTO t_alter_column values('c_paymentallocate','C_Invoice_ID',null,'NULL',null)
 ;
+
+ALTER TABLE C_PaymentAllocate ADD CONSTRAINT CPaymentAllocate_InvOrCharge_CHK
+	CHECK (	(C_Invoice_ID IS NOT NULL AND C_Charge_ID IS NULL)
+		OR 	(C_Invoice_ID IS NULL AND C_Charge_ID IS NOT NULL) )
+;

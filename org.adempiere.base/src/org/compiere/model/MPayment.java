@@ -2400,7 +2400,7 @@ public class MPayment extends X_C_Payment
 				aPayLine = new MAllocationLine(alloc, chargeAmt.negate(), Env.ZERO, Env.ZERO, Env.ZERO);
 
 			aPayLine.setDocInfo(getC_BPartner_ID(), 0, getC_Invoice_ID());
-			aPayLine.setPaymentInfo(getC_Payment_ID(), 0);
+			aPayLine.setPaymentInfo(getC_Payment_ID(), 0, getC_BankTransfer_ID());
 			if (!aPayLine.save(get_TrxName()))
 				log.warning("P.Allocations - line not saved");
 		}
