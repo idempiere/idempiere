@@ -147,7 +147,6 @@ public class CalloutRequisition extends CalloutEngine
 			if (log.isLoggable(Level.FINE))
 				log.fine("QtyChanged -> PriceActual=" + pp.getPriceStd() + ", PriceEntered=" + PriceEntered);
 			PriceActual = pp.getPriceStd();
-			PriceEntered = pp.getPriceStd();
 			mTab.setValue(I_M_RequisitionLine.COLUMNNAME_PriceActual, PriceEntered);
 			mTab.setValue(I_M_RequisitionLine.COLUMNNAME_PriceEntered, PriceActual);
 			Env.setContext(ctx, WindowNo, "DiscountSchema", pp.isDiscountSchema() ? "Y" : "N");
@@ -243,21 +242,13 @@ public class CalloutRequisition extends CalloutEngine
 		{
 			int C_UOM_To_ID = ((Integer) value).intValue();
 			Qty = (BigDecimal) mTab.getValue(I_M_RequisitionLine.COLUMNNAME_Qty);
-			BigDecimal Qty1 = Qty.setScale(MUOM.getPrecision(ctx, C_UOM_To_ID), BigDecimal.ROUND_HALF_UP);
 
-			if (Qty.compareTo(Qty1) != 0)
-			{
-				if (log.isLoggable(Level.FINE))
-					log.fine("Corrected Qty Scale UOM=" + C_UOM_To_ID + "; Qty=" + Qty + "->" + Qty1);
-				Qty = Qty1;
-				mTab.setValue("Qty", Qty);
-			}
+			QuantityConversion conversion = correctScaleAndConvert(ctx, M_Product_ID, C_UOM_To_ID, Qty);
+			Qty = conversion.correctedQty;
+			QtyOrdered = conversion.qtyOrdered;
+			mTab.setValue(I_M_RequisitionLine.COLUMNNAME_Qty, Qty);
 
-			QtyOrdered = MUOMConversion.convertProductFrom(ctx, M_Product_ID, C_UOM_To_ID, Qty);
-			if (QtyOrdered == null)
-				QtyOrdered = Qty;
-
-			boolean conversion = Qty.compareTo(QtyOrdered) != 0;
+			boolean conversionPerformed = Qty.compareTo(QtyOrdered) != 0;
 			PriceActual = (BigDecimal) mTab.getValue(I_M_RequisitionLine.COLUMNNAME_PriceActual);
 			PriceEntered = MUOMConversion.convertProductFrom(ctx, M_Product_ID, C_UOM_To_ID, PriceActual);
 			if (PriceEntered == null)
@@ -265,34 +256,27 @@ public class CalloutRequisition extends CalloutEngine
 			if (log.isLoggable(Level.FINE))
 				log.fine("UOM=" + C_UOM_To_ID + ", Qty/PriceActual=" + Qty + "/" + PriceActual + " -> " + conversion
 						+ " QtyOrdered/PriceEntered=" + QtyOrdered + "/" + PriceEntered);
-			Env.setContext(ctx, WindowNo, "UOMConversion", conversion ? "Y" : "N");
+			Env.setContext(ctx, WindowNo, "UOMConversion", conversionPerformed ? "Y" : "N");
 			mTab.setValue(I_M_RequisitionLine.COLUMNNAME_QtyOrdered, QtyOrdered);
 			mTab.setValue(I_M_RequisitionLine.COLUMNNAME_PriceEntered, PriceEntered);
 		}
 		// Qty changed - calculate QtyOrdered
 		else if (mField.getColumnName().equals(I_M_RequisitionLine.COLUMNNAME_Qty))
 		{
-			int C_UOM_To_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(),
-					I_M_RequisitionLine.COLUMNNAME_C_UOM_ID);
+			int C_UOM_To_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), I_M_RequisitionLine.COLUMNNAME_C_UOM_ID);
 			Qty = (BigDecimal) value;
-			BigDecimal Qty1 = Qty.setScale(MUOM.getPrecision(ctx, C_UOM_To_ID), BigDecimal.ROUND_HALF_UP);
 
-			if (Qty.compareTo(Qty1) != 0)
-			{
-				if (log.isLoggable(Level.FINE))
-					log.fine("Corrected Qty Scale UOM=" + C_UOM_To_ID + "; Qty=" + Qty + "->" + Qty1);
-				Qty = Qty1;
-				mTab.setValue(I_M_RequisitionLine.COLUMNNAME_Qty, Qty);
-			}
-			QtyOrdered = MUOMConversion.convertProductFrom(ctx, M_Product_ID, C_UOM_To_ID, Qty);
-			if (QtyOrdered == null)
-				QtyOrdered = Qty;
-			boolean conversion = Qty.compareTo(QtyOrdered) != 0;
+			QuantityConversion conversion = correctScaleAndConvert(ctx, M_Product_ID, C_UOM_To_ID, Qty);
+			Qty = conversion.correctedQty;
+			QtyOrdered = conversion.qtyOrdered;
+			mTab.setValue(I_M_RequisitionLine.COLUMNNAME_Qty, Qty);
+
+			boolean conversionPerformed = Qty.compareTo(QtyOrdered) != 0;
 
 			if (log.isLoggable(Level.FINE))
-				log.fine("UOM=" + C_UOM_To_ID + ", Qty=" + Qty + " -> " + conversion + " QtyOrdered=" + QtyOrdered);
+				log.fine("UOM=" + C_UOM_To_ID + ", Qty=" + Qty + " -> " + conversionPerformed + " QtyOrdered=" + QtyOrdered);
 
-			Env.setContext(ctx, WindowNo, "UOMConversion", conversion ? "Y" : "N");
+			Env.setContext(ctx, WindowNo, "UOMConversion", conversionPerformed ? "Y" : "N");
 			mTab.setValue(I_M_RequisitionLine.COLUMNNAME_QtyOrdered, QtyOrdered);
 		}
 		// QtyOrdered changed - calculate Qty (should not happen)
@@ -327,5 +311,37 @@ public class CalloutRequisition extends CalloutEngine
 
 		return "";
 	} // qty
+
+	private QuantityConversion correctScaleAndConvert(Properties ctx, int M_Product_ID, int C_UOM_To_ID, BigDecimal qty)
+	{
+		if (qty == null)
+			return new QuantityConversion(Env.ZERO, Env.ZERO);
+
+		BigDecimal correctedQty = qty;
+		int precision = MUOM.getPrecision(ctx, C_UOM_To_ID);
+		if (correctedQty.scale() > precision)
+		{
+			correctedQty = correctedQty.setScale(precision, RoundingMode.HALF_UP);
+			log.warning("Corrected Qty scale for UOM from " + qty + " to " + correctedQty);
+		}
+
+		BigDecimal convertedQty = MUOMConversion.convertProductFrom(ctx, M_Product_ID, C_UOM_To_ID, correctedQty);
+		if (convertedQty == null)
+			convertedQty = correctedQty;
+
+		return new QuantityConversion(correctedQty, convertedQty);
+	}
+
+	private static final class QuantityConversion
+	{
+		private final BigDecimal	correctedQty;
+		private final BigDecimal	qtyOrdered;
+
+		private QuantityConversion(BigDecimal correctedQty, BigDecimal qtyOrdered)
+		{
+			this.correctedQty = correctedQty;
+			this.qtyOrdered = qtyOrdered;
+		}
+	}
 
 } // CalloutRequisition

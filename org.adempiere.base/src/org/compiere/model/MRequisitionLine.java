@@ -226,7 +226,11 @@ public class MRequisitionLine extends X_M_RequisitionLine
 		{
 			MUOM uom = MUOM.get(getCtx(), getC_UOM_ID());
 			if (uom.getC_UOM_ID() != getM_Product().getC_UOM_ID())
-				Qty = MUOMConversion.convertProductFrom(getCtx(), getM_Product_ID(), getC_UOM_ID(), Qty);
+			{
+				BigDecimal converted = MUOMConversion.convertProductFrom(getCtx(), getM_Product_ID(), getC_UOM_ID(), Qty);
+				if (converted != null)
+					Qty = converted;
+			}
 		}
 		super.setQtyOrdered(Qty);
 	}
@@ -272,7 +276,11 @@ public class MRequisitionLine extends X_M_RequisitionLine
 		{
 			MUOM uom = MUOM.get(getCtx(), getC_UOM_ID());
 			if (uom.getC_UOM_ID() != getM_Product().getC_UOM_ID())
-				priceEntered = MUOMConversion.convertProductFrom(getCtx(), getM_Product_ID(), getC_UOM_ID(), priceEntered);
+			{
+				BigDecimal converted = MUOMConversion.convertProductFrom(getCtx(), getM_Product_ID(), getC_UOM_ID(), priceEntered);
+				if (converted != null)
+					priceEntered = converted;
+			}
 		}
 		setPriceEntered(priceEntered);
 		setLineNetAmt();

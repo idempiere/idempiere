@@ -289,7 +289,7 @@ public class RequisitionPOCreate extends SvrProcess
 		{
 			orderClause.append("M_Requisition_ID, ");
 		}
-		orderClause.append("(SELECT DateRequired FROM M_Requisition r WHERE M_RequisitionLine.M_Requisition_ID=r.M_Requisition_ID),");
+		orderClause.append("r.DateRequired, ");
 		orderClause.append("C_Project_ID, C_Campaign_ID, M_Product_ID, C_Charge_ID, M_AttributeSetInstance_ID ");
 
 		String joinClause = "LEFT JOIN M_Requisition r ON r.M_Requisition_ID = M_RequisitionLine.M_Requisition_ID";
@@ -402,18 +402,15 @@ public class RequisitionPOCreate extends SvrProcess
 			if (MConversionType.getDefault(getAD_Client_ID()) > 0)
 				m_order.setC_ConversionType_ID(MConversionType.getDefault(getAD_Client_ID()));
 
-			int C_Project_ID = rLine.getC_Project_ID();
-			if (C_Project_ID <= 0)
-				C_Project_ID = rLine.getParent().getC_Project_ID();
-
-			int C_Campaign_ID = rLine.getC_Campaign_ID();
-			if (C_Campaign_ID <= 0)
-				C_Campaign_ID = rLine.getParent().getC_Campaign_ID();
-
+			MRequisition req = rLine.getParent();
+			int user1ID = rLine.getUser1_ID() > 0 ? rLine.getUser1_ID() : req.getUser1_ID();
+			int user2ID = rLine.getUser2_ID() > 0 ? rLine.getUser2_ID() : req.getUser2_ID();
+			int C_Project_ID = rLine.getC_Project_ID() > 0 ? rLine.getC_Project_ID() : req.getC_Project_ID();
+			int C_Campaign_ID = rLine.getC_Campaign_ID() > 0 ? rLine.getC_Campaign_ID() : req.getC_Campaign_ID();
+			m_order.setUser1_ID(user1ID);
+			m_order.setUser2_ID(user2ID);
 			m_order.setC_Project_ID(C_Project_ID);
 			m_order.setC_Campaign_ID(C_Campaign_ID);
-			m_order.setUser1_ID(rLine.getUser1_ID());
-			m_order.setUser2_ID(rLine.getUser2_ID());
 
 			//	default po document type
 			if (!p_ConsolidateDocument)

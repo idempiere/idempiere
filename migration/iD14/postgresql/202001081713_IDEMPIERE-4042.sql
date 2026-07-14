@@ -280,6 +280,122 @@ UPDATE AD_Column SET IsUpdateable='Y', Callout='org.compiere.model.CalloutRequis
 UPDATE AD_Field SET IsReadOnly='N', Updated=TO_TIMESTAMP('2020-01-08 15:01:32','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=57388
 ;
 
+
+CREATE OR REPLACE FUNCTION uom_convertproductfrom(
+    p_m_product_id  INTEGER,
+    p_c_uom_to_id   INTEGER,
+    p_qtyprice      NUMERIC,
+    p_precision     INTEGER DEFAULT -1
+) RETURNS NUMERIC AS $$
+
+/*************************************************************************
+* Title	   : Convert Product Value From Stocking UOM
+* Function : uom_convertproductfrom()
+* Purpose  : Converts a Qty/Price value expressed in a Product's stocking 
+*            UOM (M_Product.C_UOM_ID) into a target UOM, using the rate 
+*            defined in C_UOM_Conversion.
+*            This is a SQL/PL-pgSQL port of iDempiere's Java utility method:
+*                MUOMConversion.convertProductFrom(ctx, M_Product_ID, C_UOM_To_ID, qtyPrice, precision)
+* 
+* Parameters:
+*   p_m_product_id : M_Product_ID of the product whose stocking UOM the 
+*                    input value (p_qtyprice) is currently expressed in.
+*   p_c_uom_to_id  : Target C_UOM_ID to convert the value into.
+*   p_qtyprice     : The Qty or Price value to convert (in the product's stocking UOM).
+*   p_precision    : Decimal places to round the result to.
+*                      >= 0  -> round to that many decimal places.
+*                      -1    -> round using the target UOM's StdPrecision 
+*                               (default, mirrors MUOM.round() behavior).
+* 
+* Returns:
+*   NUMERIC - the converted value, rounded per p_precision.
+*   Returns the original p_qtyprice unchanged if:
+*     - p_qtyprice is NULL or 0
+*     - p_c_uom_to_id or p_m_product_id is NULL/0
+*     - the matched conversion rate is exactly 1 (no real conversion needed)
+*   Returns NULL if no active C_UOM_Conversion row is found for the 
+*   product's stocking UOM -> target UOM pair (product-specific rows take 
+*   priority over generic/product-independent rows).
+* 
+* Test:
+*		SELECT uom_convertproductfrom(137, 100, 10, -1);
+*
+* Notes:
+*   	Lookup is DIRECTION-SPECIFIC: only checks 
+*		C_UOM_ID = ProductStockingUOM AND C_UOM_To_ID = p_c_uom_to_id.
+*
+* Contributor(s): Logilite Technologies LLP
+*************************************************************************/
+
+DECLARE
+    v_product_uom_id INTEGER;
+    v_rate           NUMERIC;
+    v_result         NUMERIC;
+    v_uom_precision  INTEGER;
+BEGIN
+    -- No conversion: same short-circuit conditions as the Java method
+    IF p_qtyprice IS NULL 
+       OR p_qtyprice = 0 
+       OR p_c_uom_to_id IS NULL OR p_c_uom_to_id = 0
+       OR p_m_product_id IS NULL OR p_m_product_id = 0 THEN
+        RETURN p_qtyprice;
+    END IF;
+
+    -- Get product's stocking UOM (M_Product.C_UOM_ID)
+    SELECT C_UOM_ID INTO v_product_uom_id 
+    FROM M_Product 
+    WHERE M_Product_ID = p_m_product_id;
+
+    IF v_product_uom_id IS NULL THEN
+        RETURN NULL;  -- product not found
+    END IF;
+
+    -- getProductRateFrom: direct lookup only (Product UOM -> Target UOM)
+    SELECT	DivideRate INTO v_rate
+    FROM C_UOM_Conversion
+    WHERE C_UOM_ID    = v_product_uom_id
+      AND C_UOM_To_ID  = p_c_uom_to_id
+      AND IsActive     = 'Y'
+      AND (M_Product_ID = p_m_product_id OR M_Product_ID IS NULL)
+    ORDER BY M_Product_ID NULLS LAST   -- product-specific wins over generic
+    LIMIT 1;
+
+    IF v_rate IS NULL THEN
+        RETURN NULL;
+    END IF;
+
+    -- Rate of 1 (same UOM effectively) -> return as-is
+    IF v_rate = 1 THEN
+        RETURN p_qtyprice;
+    END IF;
+
+    v_result := v_rate * p_qtyprice;
+
+    IF p_precision >= 0 THEN
+        RETURN ROUND(v_result, p_precision);
+    ELSE
+        -- precision = -1 -> round using the target UOM's StdPrecision (mirrors MUOM.round())
+        SELECT StdPrecision INTO v_uom_precision 
+        FROM C_UOM 
+        WHERE C_UOM_ID = p_c_uom_to_id;
+
+        IF v_uom_precision IS NOT NULL THEN
+            RETURN ROUND(v_result, v_uom_precision);
+        ELSE
+            RETURN v_result;
+        END IF;
+    END IF;
+END;
+$$ LANGUAGE plpgsql
+;
+
+
+UPDATE M_RequisitionLine
+SET 
+	QtyOrdered	= COALESCE( uom_convertproductfrom( M_Product_ID::INTEGER, C_UOM_ID::INTEGER, Qty, 		    -1 ), Qty		  ),
+	PriceActual	= COALESCE( uom_convertproductfrom( M_Product_ID::INTEGER, C_UOM_ID::INTEGER, PriceEntered, -1 ), PriceEntered)
+;
+
 SELECT register_migration_script('202001081713_IDEMPIERE-4042.sql') FROM dual
 ;
 
