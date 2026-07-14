@@ -593,8 +593,8 @@ public class MatchFormTest extends AbstractTestCase {
 			int qtyCheckRR = ((Number) toTableReturn.getValueAt(selectedReturnRow, Match.I_QTY)).intValue();
 			assertEquals(0, matchedCR, "Credit Memo should initially have zero matched quantity");
 			assertEquals(0, matchedRR, "Vendor Return should initially have zero matched quantity");
-			assertEquals(qtyReturn.negate().intValue(), qtyCheckCR);
-			assertEquals(qtyReturn.negate().intValue(), qtyCheckRR);
+			assertEquals(qtyReturn.negate().intValue(), qtyCheckCR, "Unexpected qty for Credit Memo line in Not Matched Invoice list");
+			assertEquals(qtyReturn.negate().intValue(), qtyCheckRR, "Unexpected qty for Vendor Return line in Not Matched Shipment list");
 
 			// Select the Vendor Return row and process the match
 			IDColumn id = (IDColumn) toTableReturn.getValueAt(selectedReturnRow, Match.I_ID);
