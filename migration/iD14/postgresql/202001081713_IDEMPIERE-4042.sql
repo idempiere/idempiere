@@ -1,4 +1,6 @@
 -- IDEMPIERE-4042: Make Requisition Line Model Order Line - Add UOM, QTY Ordered, Reference, Charge Fields
+SELECT register_migration_script('202001081713_IDEMPIERE-4042.sql') FROM dual
+;
 
 -- Oct 10, 2019 3:31:06 PM IST
 INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure) VALUES (214080,0,'Project','Financial Project','A Project allows you to track and control internal or external activities.',702,'C_Project_ID',10,'N','N','N','N','N',0,'N',19,0,0,'Y',TO_TIMESTAMP('2019-10-10 15:31:06','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2019-10-10 15:31:06','YYYY-MM-DD HH24:MI:SS'),100,208,'Y','N','D','N','N','N','Y','3851c14e-b601-42b1-974b-90d9e9476a18','Y',0,'N','N')
@@ -395,7 +397,3 @@ SET
 	QtyOrdered	= COALESCE( uom_convertproductfrom( M_Product_ID::INTEGER, C_UOM_ID::INTEGER, Qty, 		    -1 ), Qty		  ),
 	PriceActual	= COALESCE( uom_convertproductfrom( M_Product_ID::INTEGER, C_UOM_ID::INTEGER, PriceEntered, -1 ), PriceEntered)
 ;
-
-SELECT register_migration_script('202001081713_IDEMPIERE-4042.sql') FROM dual
-;
-
