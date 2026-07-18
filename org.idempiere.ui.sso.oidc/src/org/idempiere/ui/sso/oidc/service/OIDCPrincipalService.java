@@ -113,7 +113,7 @@ public class OIDCPrincipalService implements ISSOPrincipalService {
 
 	@Override
 	public Language getLanguage(Object principalObject) throws ParseException {
-		return Language.getBaseLanguage();
+		return null;
 	}
 
 	@Override
