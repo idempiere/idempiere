@@ -288,7 +288,6 @@ public class OIDCPrincipalService implements ISSOPrincipalService {
 					new URI(getRedirectURL(principalConfig, redirectMode))) 
 			    .state(new State())
 			    .nonce(new Nonce())
-			    .prompt(new Prompt(Prompt.Type.LOGIN)) 
 			    .endpointURI(getMetaData().getAuthorizationEndpointURI())
 			    .build();
 		} catch (URISyntaxException e) {
