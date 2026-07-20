@@ -1085,19 +1085,11 @@ public class CompositeADTabbox extends AbstractADTabbox
 			invalidateTabPanel(tabPanel);
 		}
 		boolean wasForm = false;
-		boolean displayGrid = true;
 
-		MTabCustomization tabcust = MTabCustomization.get(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()), tabPanel.getGridTab().getAD_Tab_ID(), null);
-		if (tabcust != null && !Util.isEmpty(tabcust.getIsDisplayedGridInDetail()))
-			displayGrid = "Y".equals(tabcust.getIsDisplayedGridInDetail());
-
-		if (!tabPanel.isGridView() && displayGrid) {
+		if (!tabPanel.isGridView()) {
 			tabPanel.switchRowPresentation(); // required to avoid NPE on GridTabRowRenderer.getCurrentRow below
 			wasForm = true;
 		}
-
-		if (!displayGrid && tabPanel.isGridView())
-			tabPanel.switchRowPresentation();
 
 		tabPanel.setDetailPaneMode(true);
 		headerTab.getDetailPane().setVflex("true");
@@ -1115,23 +1107,39 @@ public class CompositeADTabbox extends AbstractADTabbox
 				}
 			}
 		}
+
+		MTabCustomization tabcust = MTabCustomization.get(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()), tabPanel.getGridTab().getAD_Tab_ID(), null);
+		boolean displayGrid = true;
+		if (tabcust != null && !Util.isEmpty(tabcust.getIsDisplayedGridInDetail()))
+			displayGrid = "Y".equals(tabcust.getIsDisplayedGridInDetail());
+
+		boolean targetIsForm = !displayGrid;
+		DetailPane.Tabpanel dtpToToggle = null;
+
 		if (wasForm) {
 			// maintain form on header when zooming to a detail tab
 			if (tabPanel.getTabLevel() == 0 && headerTab.getTabLevel() != 0) { 
 				tabPanel.switchRowPresentation();
+				targetIsForm = true;
 			} else {
 				Component parent = tabPanel.getParent();
 				while (parent != null) {
 					if (parent instanceof DetailPane.Tabpanel) {
 						DetailPane.Tabpanel dtp = (Tabpanel) parent;
 						if (dtp.isToggleToFormView()) {
-							tabPanel.switchRowPresentation();
-							dtp.afterToggle();
-						}
+							targetIsForm = true;
+							dtpToToggle = dtp;						}
 						break;
 					}
 					parent = parent.getParent();
 				}
+			}
+		}
+
+		if (targetIsForm) {
+			tabPanel.switchRowPresentation();
+			if (dtpToToggle != null) {
+				dtpToToggle.afterToggle();
 			}
 		}
 	}
