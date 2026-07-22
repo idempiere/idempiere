@@ -710,7 +710,8 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 				m_linkValue = value;
 				//	Check validity
 				if (value.length() == 0 || (effectiveLinkColumnName.endsWith("_ID") && "0".equals(value)
-					&& getParentTab() != null && getParentTab().isNew()))
+					&& getParentTab() != null && getParentTab().isNew()
+					&& !"Y".equals(Env.getContext(m_vo.ctx, m_vo.WindowNo, "_QUICK_ENTRY_MODE_"))))
 				{
 					//parent is new, can't retrieve detail
 					m_parentNeedSave = true;
