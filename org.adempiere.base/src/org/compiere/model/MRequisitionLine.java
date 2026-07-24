@@ -191,18 +191,6 @@ public class MRequisitionLine extends X_M_RequisitionLine
 	private int 	m_M_PriceList_ID = 0;
 	
 	/**
-	 * Get Ordered Qty
-	 * @return Ordered Qty
-	 */
-	public BigDecimal getQtyOrdered()
-	{
-		if (getC_OrderLine_ID() > 0)
-			return getQty();
-		else
-			return Env.ZERO;
-	}
-	
-	/**
 	 * 	Get Parent
 	 *	@return parent
 	 */
@@ -227,7 +215,26 @@ public class MRequisitionLine extends X_M_RequisitionLine
 	{
 		return getParent().getDateRequired();
 	}
-	
+
+	@Override
+	public void setQty(BigDecimal Qty)
+	{
+		if (Qty == null)
+			Qty = Env.ZERO;
+		super.setQty(Qty);
+		if (getC_UOM_ID() > 0 && getM_Product_ID() > 0)
+		{
+			MUOM uom = MUOM.get(getCtx(), getC_UOM_ID());
+			if (uom.getC_UOM_ID() != getM_Product().getC_UOM_ID())
+			{
+				BigDecimal converted = MUOMConversion.convertProductFrom(getCtx(), getM_Product_ID(), getC_UOM_ID(), Qty);
+				if (converted != null)
+					Qty = converted;
+			}
+		}
+		super.setQtyOrdered(Qty);
+	}
+
 	/**
 	 * 	Set PriceActual to charge amount or standard product price
 	 */
@@ -264,6 +271,19 @@ public class MRequisitionLine extends X_M_RequisitionLine
 		pp.setM_PriceList_ID(M_PriceList_ID);
 		//
 		setPriceActual (pp.getPriceStd());
+		BigDecimal priceEntered = pp.getPriceStd();
+		if (getC_UOM_ID() > 0 && getM_Product_ID() > 0)
+		{
+			MUOM uom = MUOM.get(getCtx(), getC_UOM_ID());
+			if (uom.getC_UOM_ID() != getM_Product().getC_UOM_ID())
+			{
+				BigDecimal converted = MUOMConversion.convertProductFrom(getCtx(), getM_Product_ID(), getC_UOM_ID(), priceEntered);
+				if (converted != null)
+					priceEntered = converted;
+			}
+		}
+		setPriceEntered(priceEntered);
+		setLineNetAmt();
 	}	//	setPrice
 
 	/**
@@ -271,7 +291,7 @@ public class MRequisitionLine extends X_M_RequisitionLine
 	 */
 	public void setLineNetAmt ()
 	{
-		BigDecimal lineNetAmt = getQty().multiply(getPriceActual());
+		BigDecimal lineNetAmt = getQtyOrdered().multiply(getPriceActual());
 		super.setLineNetAmt (lineNetAmt);
 	}	//	setLineNetAmt
 		

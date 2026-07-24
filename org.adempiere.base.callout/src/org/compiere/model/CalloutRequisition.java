@@ -51,11 +51,12 @@ public class CalloutRequisition extends CalloutEngine
 			return "";
 		final I_M_Requisition req = GridTabWrapper.create(mTab.getParentTab(), I_M_Requisition.class);
 		final I_M_RequisitionLine line = GridTabWrapper.create(mTab, I_M_RequisitionLine.class);
-		setPrice(ctx, WindowNo, req, line);
+		setPrice(ctx, WindowNo, req, line, mTab);
 		MProduct product = MProduct.get(ctx, M_Product_ID);
 		line.setC_UOM_ID(product.getC_UOM_ID());
+		line.setQtyOrdered(line.getQty());
 
-		return "";
+		return amt(ctx, WindowNo, mTab, mField, value);
 	}	//	product
 
 	/**
@@ -75,20 +76,109 @@ public class CalloutRequisition extends CalloutEngine
 		
 		final I_M_Requisition req = GridTabWrapper.create(mTab.getParentTab(), I_M_Requisition.class);
 		final I_M_RequisitionLine line = GridTabWrapper.create(mTab, I_M_RequisitionLine.class);
-		//	Qty changed - recalc price
-		if (mField.getColumnName().equals(I_M_RequisitionLine.COLUMNNAME_Qty) 
-			&& "Y".equals(Env.getContext(ctx, WindowNo, "DiscountSchema")))
+
+		int C_UOM_To_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), I_M_RequisitionLine.COLUMNNAME_C_UOM_ID);
+		int M_Product_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), I_M_RequisitionLine.COLUMNNAME_M_Product_ID);
+		int M_PriceList_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), I_M_Requisition.COLUMNNAME_M_PriceList_ID);
+		int StdPrecision = MPriceList.getStandardPrecision(ctx, M_PriceList_ID);
+
+		BigDecimal Qty, QtyOrdered, PriceEntered, PriceActual;
+		// get values
+		Qty = (BigDecimal) mTab.getValue(I_M_RequisitionLine.COLUMNNAME_Qty);
+		QtyOrdered = (BigDecimal) mTab.getValue(I_M_RequisitionLine.COLUMNNAME_QtyOrdered);
+		if (log.isLoggable(Level.FINE))
+			log.fine("Qty=" + Qty + ", Ordered=" + QtyOrdered + ", UOM=" + C_UOM_To_ID);
+		//
+		PriceEntered = (BigDecimal) mTab.getValue(I_M_RequisitionLine.COLUMNNAME_PriceEntered);
+		PriceActual = (BigDecimal) mTab.getValue(I_M_RequisitionLine.COLUMNNAME_PriceActual);
+		if (log.isLoggable(Level.FINE))
 		{
-			setPrice(ctx, WindowNo, req, line);
+			log.fine("PriceEntered=" + PriceEntered + ", Actual=" + PriceActual);
 		}
 
-		int StdPrecision = Env.getContextAsInt(ctx, WindowNo, "StdPrecision");
-		BigDecimal Qty = line.getQty();
-		BigDecimal PriceActual = line.getPriceActual();
-		if (log.isLoggable(Level.FINE)) log.fine("amt - Qty=" + Qty + ", Price=" + PriceActual + ", Precision=" + StdPrecision);
+		// Qty changed - recalc price
+		if (mField.getColumnName().equals(I_M_RequisitionLine.COLUMNNAME_Qty)
+				&& "Y".equals(Env.getContext(ctx, WindowNo, "DiscountSchema")))
+		{
+			setPrice(ctx, WindowNo, req, line, mTab);
+		}
 
-		//	Multiply
-		BigDecimal LineNetAmt = Qty.multiply(PriceActual);
+		// No Product
+		if (M_Product_ID == 0)
+		{
+			// if price change sync price actual and entered
+			// else ignore
+			if (mField.getColumnName().equals(I_M_RequisitionLine.COLUMNNAME_PriceActual))
+			{
+				PriceEntered = (BigDecimal) value;
+				mTab.setValue(I_M_RequisitionLine.COLUMNNAME_PriceEntered, value);
+			}
+			else if (mField.getColumnName().equals(I_M_RequisitionLine.COLUMNNAME_PriceEntered))
+			{
+				PriceActual = (BigDecimal) value;
+				mTab.setValue(I_M_RequisitionLine.COLUMNNAME_PriceActual, value);
+			}
+		}
+		// Product Qty changed - recalc price
+		else if ((mField.getColumnName().equals(I_M_RequisitionLine.COLUMNNAME_QtyOrdered)
+				|| mField.getColumnName().equals(I_M_RequisitionLine.COLUMNNAME_Qty)
+				|| mField.getColumnName().equals(I_M_RequisitionLine.COLUMNNAME_C_UOM_ID) 
+				|| mField.getColumnName().equals(I_M_RequisitionLine.COLUMNNAME_M_Product_ID))
+				&& !"N".equals(Env.getContext(ctx, WindowNo, "DiscountSchema")))
+		{
+			int C_BPartner_ID = Env.getContextAsInt(ctx, WindowNo, I_M_RequisitionLine.COLUMNNAME_C_BPartner_ID);
+			if (mField.getColumnName().equals(I_M_RequisitionLine.COLUMNNAME_Qty))
+				QtyOrdered = MUOMConversion.convertProductFrom(ctx, M_Product_ID, C_UOM_To_ID, Qty);
+			if (QtyOrdered == null)
+				QtyOrdered = Qty;
+			boolean isSOTrx = false;
+			MProductPricing pp = new MProductPricing(M_Product_ID, C_BPartner_ID, QtyOrdered, isSOTrx);
+			//
+			pp.setM_PriceList_ID(M_PriceList_ID);
+			int M_PriceList_Version_ID = Env.getContextAsInt(ctx, WindowNo, "M_PriceList_Version_ID");
+			pp.setM_PriceList_Version_ID(M_PriceList_Version_ID);
+			Timestamp orderDate = req.getDateRequired();
+			pp.setPriceDate(orderDate);
+			//
+			PriceEntered = MUOMConversion.convertProductFrom(ctx, M_Product_ID, C_UOM_To_ID, pp.getPriceStd());
+			if (PriceEntered == null)
+				PriceEntered = pp.getPriceStd();
+			//
+			if (log.isLoggable(Level.FINE))
+				log.fine("QtyChanged -> PriceActual=" + pp.getPriceStd() + ", PriceEntered=" + PriceEntered);
+			PriceActual = pp.getPriceStd();
+			mTab.setValue(I_M_RequisitionLine.COLUMNNAME_PriceActual, PriceEntered);
+			mTab.setValue(I_M_RequisitionLine.COLUMNNAME_PriceEntered, PriceActual);
+			Env.setContext(ctx, WindowNo, "DiscountSchema", pp.isDiscountSchema() ? "Y" : "N");
+		}
+		else if (mField.getColumnName().equals(I_M_RequisitionLine.COLUMNNAME_PriceActual))
+		{
+			PriceActual = (BigDecimal) value;
+			PriceEntered = MUOMConversion.convertProductFrom(ctx, M_Product_ID, C_UOM_To_ID, PriceActual);
+			if (PriceEntered == null)
+				PriceEntered = PriceActual;
+			//
+			if (log.isLoggable(Level.FINE))
+				log.fine("PriceActual=" + PriceActual + " -> PriceEntered=" + PriceEntered);
+			mTab.setValue(I_M_RequisitionLine.COLUMNNAME_PriceEntered, PriceEntered);
+		}
+		else if (mField.getColumnName().equals(I_M_RequisitionLine.COLUMNNAME_PriceEntered))
+		{
+			PriceEntered = (BigDecimal) value;
+			PriceActual = MUOMConversion.convertProductTo(ctx, M_Product_ID, C_UOM_To_ID, PriceEntered);
+			if (PriceActual == null)
+				PriceActual = PriceEntered;
+			//
+			if (log.isLoggable(Level.FINE))
+				log.fine("PriceEntered=" + PriceEntered + " -> PriceActual=" + PriceActual);
+			mTab.setValue(I_M_RequisitionLine.COLUMNNAME_PriceActual, PriceActual);
+		}
+
+		if (log.isLoggable(Level.FINE))
+			log.fine("PriceEntered=" + PriceEntered + ", Actual=" + PriceActual);
+
+		// Line Net Amt
+		BigDecimal LineNetAmt = QtyOrdered.multiply(PriceActual);
 		if (LineNetAmt.scale() > StdPrecision)
 			LineNetAmt = LineNetAmt.setScale(StdPrecision, RoundingMode.HALF_UP);
 		line.setLineNetAmt(LineNetAmt);
@@ -97,7 +187,7 @@ public class CalloutRequisition extends CalloutEngine
 		return "";
 	}	//	amt
 
-	private void setPrice(Properties ctx, int WindowNo, I_M_Requisition req, I_M_RequisitionLine line)
+	private void setPrice(Properties ctx, int WindowNo, I_M_Requisition req, I_M_RequisitionLine line, GridTab mTab)
 	{
 		int C_BPartner_ID = line.getC_BPartner_ID();
 		BigDecimal Qty = line.getQty();
@@ -105,7 +195,7 @@ public class CalloutRequisition extends CalloutEngine
 		IProductPricing pp = Core.getProductPricing();
 		pp.setInitialValues(line.getM_Product_ID(), C_BPartner_ID, Qty, isSOTrx, null);
 		//
-		int M_PriceList_ID = req.getM_PriceList_ID();
+		int M_PriceList_ID = Env.getContextAsInt(ctx, WindowNo, "M_PriceList_ID");
 		pp.setM_PriceList_ID(M_PriceList_ID);
 		int M_PriceList_Version_ID = Env.getContextAsInt(ctx, WindowNo, "M_PriceList_Version_ID");
 		pp.setM_PriceList_Version_ID(M_PriceList_Version_ID);
@@ -113,7 +203,145 @@ public class CalloutRequisition extends CalloutEngine
 		pp.setPriceDate(orderDate);
 		//
 		line.setPriceActual(pp.getPriceStd());
+		line.setPriceEntered(pp.getPriceStd());
 		Env.setContext(ctx, WindowNo, "EnforcePriceLimit", pp.isEnforcePriceLimit() ? "Y" : "N");	//	not used
 		Env.setContext(ctx, WindowNo, "DiscountSchema", pp.isDiscountSchema() ? "Y" : "N");
 	}
-}	//	CalloutRequisition
+
+	/**
+	 * Requisition Line - Quantity. - called from C_UOM_ID, Qty, QtyOrdered -
+	 * enforces qty UOM relationship
+	 * 
+	 * @param ctx context
+	 * @param WindowNo current Window No
+	 * @param mTab Grid Tab
+	 * @param mField Grid Field
+	 * @param value New Value
+	 * @return null or error message
+	 */
+	public String qty(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
+	{
+		if (isCalloutActive() || value == null)
+			return "";
+
+		int M_Product_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(),
+				I_M_RequisitionLine.COLUMNNAME_M_Product_ID);
+
+		BigDecimal QtyOrdered = Env.ZERO;
+		BigDecimal Qty, PriceActual, PriceEntered;
+
+		// No Product
+		if (M_Product_ID == 0)
+		{
+			Qty = (BigDecimal) mTab.getValue(I_M_RequisitionLine.COLUMNNAME_Qty);
+			QtyOrdered = Qty;
+			mTab.setValue(I_M_RequisitionLine.COLUMNNAME_QtyOrdered, QtyOrdered);
+		}
+		// UOM Changed - convert from Entered -> Product
+		else if (mField.getColumnName().equals(I_M_RequisitionLine.COLUMNNAME_C_UOM_ID))
+		{
+			int C_UOM_To_ID = ((Integer) value).intValue();
+			Qty = (BigDecimal) mTab.getValue(I_M_RequisitionLine.COLUMNNAME_Qty);
+
+			QuantityConversion conversion = correctScaleAndConvert(ctx, M_Product_ID, C_UOM_To_ID, Qty);
+			Qty = conversion.correctedQty;
+			QtyOrdered = conversion.qtyOrdered;
+			mTab.setValue(I_M_RequisitionLine.COLUMNNAME_Qty, Qty);
+
+			boolean conversionPerformed = Qty.compareTo(QtyOrdered) != 0;
+			PriceActual = (BigDecimal) mTab.getValue(I_M_RequisitionLine.COLUMNNAME_PriceActual);
+			PriceEntered = MUOMConversion.convertProductFrom(ctx, M_Product_ID, C_UOM_To_ID, PriceActual);
+			if (PriceEntered == null)
+				PriceEntered = PriceActual;
+			if (log.isLoggable(Level.FINE))
+				log.fine("UOM=" + C_UOM_To_ID + ", Qty/PriceActual=" + Qty + "/" + PriceActual + " -> " + conversion
+						+ " QtyOrdered/PriceEntered=" + QtyOrdered + "/" + PriceEntered);
+			Env.setContext(ctx, WindowNo, "UOMConversion", conversionPerformed ? "Y" : "N");
+			mTab.setValue(I_M_RequisitionLine.COLUMNNAME_QtyOrdered, QtyOrdered);
+			mTab.setValue(I_M_RequisitionLine.COLUMNNAME_PriceEntered, PriceEntered);
+		}
+		// Qty changed - calculate QtyOrdered
+		else if (mField.getColumnName().equals(I_M_RequisitionLine.COLUMNNAME_Qty))
+		{
+			int C_UOM_To_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(), I_M_RequisitionLine.COLUMNNAME_C_UOM_ID);
+			Qty = (BigDecimal) value;
+
+			QuantityConversion conversion = correctScaleAndConvert(ctx, M_Product_ID, C_UOM_To_ID, Qty);
+			Qty = conversion.correctedQty;
+			QtyOrdered = conversion.qtyOrdered;
+			mTab.setValue(I_M_RequisitionLine.COLUMNNAME_Qty, Qty);
+
+			boolean conversionPerformed = Qty.compareTo(QtyOrdered) != 0;
+
+			if (log.isLoggable(Level.FINE))
+				log.fine("UOM=" + C_UOM_To_ID + ", Qty=" + Qty + " -> " + conversionPerformed + " QtyOrdered=" + QtyOrdered);
+
+			Env.setContext(ctx, WindowNo, "UOMConversion", conversionPerformed ? "Y" : "N");
+			mTab.setValue(I_M_RequisitionLine.COLUMNNAME_QtyOrdered, QtyOrdered);
+		}
+		// QtyOrdered changed - calculate Qty (should not happen)
+		else if (mField.getColumnName().equals(I_M_RequisitionLine.COLUMNNAME_QtyOrdered))
+		{
+			int C_UOM_To_ID = Env.getContextAsInt(ctx, WindowNo, mTab.getTabNo(),
+					I_M_RequisitionLine.COLUMNNAME_C_UOM_ID);
+			QtyOrdered = (BigDecimal) value;
+			int precision = MProduct.get(ctx, M_Product_ID).getUOMPrecision();
+			BigDecimal QtyOrdered1 = QtyOrdered.setScale(precision, BigDecimal.ROUND_HALF_UP);
+
+			if (QtyOrdered.compareTo(QtyOrdered1) != 0)
+			{
+				if (log.isLoggable(Level.FINE))
+					log.fine("Corrected QtyOrdered Scale " + QtyOrdered + "->" + QtyOrdered1);
+				QtyOrdered = QtyOrdered1;
+				mTab.setValue(I_M_RequisitionLine.COLUMNNAME_QtyOrdered, QtyOrdered);
+			}
+			Qty = MUOMConversion.convertProductTo(ctx, M_Product_ID, C_UOM_To_ID, QtyOrdered);
+			if (Qty == null)
+				Qty = QtyOrdered;
+			boolean conversion = QtyOrdered.compareTo(Qty) != 0;
+			if (log.isLoggable(Level.FINE))
+				log.fine("UOM=" + C_UOM_To_ID + ", QtyOrdered=" + QtyOrdered + " -> " + conversion + " Qty=" + Qty);
+			Env.setContext(ctx, WindowNo, "UOMConversion", conversion ? "Y" : "N");
+			mTab.setValue(I_M_RequisitionLine.COLUMNNAME_Qty, Qty);
+		}
+		else
+		{
+			QtyOrdered = (BigDecimal) mTab.getValue(I_M_RequisitionLine.COLUMNNAME_QtyOrdered);
+		}
+
+		return "";
+	} // qty
+
+	private QuantityConversion correctScaleAndConvert(Properties ctx, int M_Product_ID, int C_UOM_To_ID, BigDecimal qty)
+	{
+		if (qty == null)
+			return new QuantityConversion(Env.ZERO, Env.ZERO);
+
+		BigDecimal correctedQty = qty;
+		int precision = MUOM.getPrecision(ctx, C_UOM_To_ID);
+		if (correctedQty.scale() > precision)
+		{
+			correctedQty = correctedQty.setScale(precision, RoundingMode.HALF_UP);
+			log.warning("Corrected Qty scale for UOM from " + qty + " to " + correctedQty);
+		}
+
+		BigDecimal convertedQty = MUOMConversion.convertProductFrom(ctx, M_Product_ID, C_UOM_To_ID, correctedQty);
+		if (convertedQty == null)
+			convertedQty = correctedQty;
+
+		return new QuantityConversion(correctedQty, convertedQty);
+	}
+
+	private static final class QuantityConversion
+	{
+		private final BigDecimal	correctedQty;
+		private final BigDecimal	qtyOrdered;
+
+		private QuantityConversion(BigDecimal correctedQty, BigDecimal qtyOrdered)
+		{
+			this.correctedQty = correctedQty;
+			this.qtyOrdered = qtyOrdered;
+		}
+	}
+
+} // CalloutRequisition

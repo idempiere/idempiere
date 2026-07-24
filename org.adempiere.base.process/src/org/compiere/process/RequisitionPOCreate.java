@@ -16,6 +16,7 @@
  *****************************************************************************/
 package org.compiere.process;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,6 +83,12 @@ public class RequisitionPOCreate extends SvrProcess
 	private int			p_C_BP_Group_ID = 0;
 	/** Requisition			*/
 	private int 		p_M_Requisition_ID = 0;
+	/** Project				*/
+	private int 		p_C_Project_ID = 0;
+	/** Campaign			*/
+	private int 		p_C_Campaign_ID = 0;
+	/** Charge 			*/
+	private int 		p_C_Charge_ID = 0;
 
 	/** Consolidate			*/
 	private boolean		p_ConsolidateDocument = false;
@@ -132,6 +139,12 @@ public class RequisitionPOCreate extends SvrProcess
 				p_M_Requisition_ID = para[i].getParameterAsInt();
 			else if (name.equals("ConsolidateDocument"))
 				p_ConsolidateDocument = "Y".equals(para[i].getParameter());
+			else if (name.equals("C_Project_ID"))
+				p_C_Project_ID = para[i].getParameterAsInt();
+			else if (name.equals("C_Campaign_ID"))
+				p_C_Campaign_ID = para[i].getParameterAsInt();
+			else if (name.equals("C_Charge_ID"))
+				p_C_Charge_ID = para[i].getParameterAsInt();
 			else
 				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para[i]);
 		}
@@ -173,6 +186,9 @@ public class RequisitionPOCreate extends SvrProcess
 			+ ", PriorityRule=" + p_PriorityRule
 			+ ", AD_User_ID=" + p_AD_User_ID
 			+ ", M_Product_ID=" + p_M_Product_ID
+			+ ", C_Project_ID=" + p_C_Project_ID
+			+ ", C_Campaign_ID=" + p_C_Campaign_ID
+			+ ", C_Charge_ID=" + p_C_Charge_ID
 			+ ", ConsolidateDocument" + p_ConsolidateDocument);
 		
 		ArrayList<Object> params = new ArrayList<Object>();
@@ -244,6 +260,28 @@ public class RequisitionPOCreate extends SvrProcess
 			params.add(p_AD_User_ID);
 		}
 		whereClause.append(")"); // End Requisition Header
+
+		// Project check on Requisition line
+		if (p_C_Project_ID > 0)
+		{
+			whereClause.append(" AND COALESCE (M_RequisitionLine.C_Project_ID, r.C_Project_ID) = ?");
+			params.add(p_C_Project_ID);
+		}
+
+		// Campaign check on Requisition line
+		if (p_C_Campaign_ID > 0)
+		{
+			whereClause.append(" AND COALESCE (M_RequisitionLine.C_Campaign_ID, r.C_Campaign_ID) = ?");
+			params.add(p_C_Campaign_ID);
+		}
+
+		// Charge check on Requisition line
+		if (p_C_Charge_ID > 0)
+		{
+			whereClause.append(" AND C_Charge_ID=?");
+			params.add(p_C_Charge_ID);
+		}
+
 		//
 		// ORDER BY clause
 		StringBuilder orderClause = new StringBuilder();
@@ -251,10 +289,13 @@ public class RequisitionPOCreate extends SvrProcess
 		{
 			orderClause.append("M_Requisition_ID, ");
 		}
-		orderClause.append("(SELECT DateRequired FROM M_Requisition r WHERE M_RequisitionLine.M_Requisition_ID=r.M_Requisition_ID),");
-		orderClause.append("M_Product_ID, C_Charge_ID, M_AttributeSetInstance_ID");
+		orderClause.append("r.DateRequired, ");
+		orderClause.append("C_Project_ID, C_Campaign_ID, M_Product_ID, C_Charge_ID, M_AttributeSetInstance_ID ");
+
+		String joinClause = "LEFT JOIN M_Requisition r ON r.M_Requisition_ID = M_RequisitionLine.M_Requisition_ID";
 		
 		POResultSet<MRequisitionLine> rs = new Query(getCtx(), MRequisitionLine.Table_Name, whereClause.toString(), get_TrxName())
+											.addJoinClause(joinClause)
 											.setParameters(params)
 											.setOrderBy(orderClause.toString())
 											.setClient_ID()
@@ -306,6 +347,8 @@ public class RequisitionPOCreate extends SvrProcess
 			|| m_order == null
 			|| (rLine.getC_BPartner_ID() > 0 && m_order.getC_BPartner_ID() != rLine.getC_BPartner_ID())
 			|| m_order.getDatePromised().compareTo(rLine.getDateRequired()) != 0
+			|| m_orderLine.getC_Project_ID() != rLine.getC_Project_ID()
+			|| m_orderLine.getC_Campaign_ID() != rLine.getC_Campaign_ID()
 			)
 		{
 			newLine(rLine);
@@ -314,8 +357,9 @@ public class RequisitionPOCreate extends SvrProcess
 				return;
 		}
 
-		//	Update Order Line
-		m_orderLine.setQty(m_orderLine.getQtyOrdered().add(rLine.getQty()));
+		// Update Order Line
+		m_orderLine.setQtyEntered(m_orderLine.getQtyEntered().add(rLine.getQty()));
+		m_orderLine.setQtyOrdered(m_orderLine.getQtyOrdered().add(rLine.getQtyOrdered()));
 		//	Update Requisition Line
 		rLine.setC_OrderLine_ID(m_orderLine.getC_OrderLine_ID());
 		rLine.saveEx();
@@ -339,8 +383,7 @@ public class RequisitionPOCreate extends SvrProcess
 		{
 			m_bpartner = MBPartner.get(getCtx(), C_BPartner_ID);
 		}
-		
-		
+
 		//	Order
 		Timestamp DateRequired = rLine.getDateRequired();
 		int M_PriceList_ID = rLine.getParent().getM_PriceList_ID();
@@ -358,6 +401,17 @@ public class RequisitionPOCreate extends SvrProcess
 			m_order.setM_PriceList_ID(M_PriceList_ID);
 			if (MConversionType.getDefault(getAD_Client_ID()) > 0)
 				m_order.setC_ConversionType_ID(MConversionType.getDefault(getAD_Client_ID()));
+
+			MRequisition req = rLine.getParent();
+			int user1ID = rLine.getUser1_ID() > 0 ? rLine.getUser1_ID() : req.getUser1_ID();
+			int user2ID = rLine.getUser2_ID() > 0 ? rLine.getUser2_ID() : req.getUser2_ID();
+			int C_Project_ID = rLine.getC_Project_ID() > 0 ? rLine.getC_Project_ID() : req.getC_Project_ID();
+			int C_Campaign_ID = rLine.getC_Campaign_ID() > 0 ? rLine.getC_Campaign_ID() : req.getC_Campaign_ID();
+			m_order.setUser1_ID(user1ID);
+			m_order.setUser2_ID(user2ID);
+			m_order.setC_Project_ID(C_Project_ID);
+			m_order.setC_Campaign_ID(C_Campaign_ID);
+
 			//	default po document type
 			if (!p_ConsolidateDocument)
 			{
@@ -476,11 +530,28 @@ public class RequisitionPOCreate extends SvrProcess
 			m_orderLine.setPriceActual(rLine.getPriceActual());
 		}
 		m_orderLine.setAD_Org_ID(rLine.getAD_Org_ID());
-				
-		
+
 		//	Prepare Save
 		m_M_Product_ID = rLine.getM_Product_ID();
 		m_M_AttributeSetInstance_ID = rLine.getM_AttributeSetInstance_ID();
+
+		int C_Project_ID = rLine.getC_Project_ID();
+		if (C_Project_ID <= 0)
+			C_Project_ID = rLine.getParent().getC_Project_ID();
+
+		int C_Campaign_ID = rLine.getC_Campaign_ID();
+		if (C_Campaign_ID <= 0)
+			C_Campaign_ID = rLine.getParent().getC_Campaign_ID();
+
+		m_orderLine.setC_Project_ID(C_Project_ID);
+		m_orderLine.setC_Campaign_ID(C_Campaign_ID);
+		m_orderLine.setDescription(rLine.getDescription());
+		m_orderLine.setC_UOM_ID(rLine.getC_UOM_ID());
+		m_orderLine.setPrice((BigDecimal) rLine.getPriceEntered());
+		m_orderLine.setPriceActual(rLine.getPriceActual());
+		m_orderLine.setLineNetAmt();
+		m_orderLine.setUser1_ID(rLine.getUser1_ID());
+		m_orderLine.setUser2_ID(rLine.getUser2_ID());
 		m_orderLine.saveEx();
 	}	//	newLine
 
@@ -508,5 +579,5 @@ public class RequisitionPOCreate extends SvrProcess
 		return match;
 	}
 	private List<Integer> m_excludedVendors = new ArrayList<Integer>();
-	
+
 }	//	RequisitionPOCreate
