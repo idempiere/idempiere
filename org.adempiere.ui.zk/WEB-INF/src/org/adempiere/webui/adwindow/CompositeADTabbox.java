@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.adempiere.model.MTabCustomization;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.adwindow.DetailPane.Tabpanel;
@@ -40,6 +41,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluator;
 import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Execution;
@@ -1083,10 +1085,12 @@ public class CompositeADTabbox extends AbstractADTabbox
 			invalidateTabPanel(tabPanel);
 		}
 		boolean wasForm = false;
+
 		if (!tabPanel.isGridView()) {
 			tabPanel.switchRowPresentation(); // required to avoid NPE on GridTabRowRenderer.getCurrentRow below
 			wasForm = true;
 		}
+
 		tabPanel.setDetailPaneMode(true);
 		headerTab.getDetailPane().setVflex("true");
 		if (tabPanel instanceof ADSortTab) {
@@ -1103,23 +1107,39 @@ public class CompositeADTabbox extends AbstractADTabbox
 				}
 			}
 		}
+
+		MTabCustomization tabcust = MTabCustomization.get(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()), tabPanel.getGridTab().getAD_Tab_ID(), null);
+		boolean displayGrid = true;
+		if (tabcust != null && !Util.isEmpty(tabcust.getIsDisplayedGridInDetail()))
+			displayGrid = "Y".equals(tabcust.getIsDisplayedGridInDetail());
+
+		boolean targetIsForm = !displayGrid;
+		DetailPane.Tabpanel dtpToToggle = null;
+
 		if (wasForm) {
 			// maintain form on header when zooming to a detail tab
 			if (tabPanel.getTabLevel() == 0 && headerTab.getTabLevel() != 0) { 
 				tabPanel.switchRowPresentation();
+				targetIsForm = true;
 			} else {
 				Component parent = tabPanel.getParent();
 				while (parent != null) {
 					if (parent instanceof DetailPane.Tabpanel) {
 						DetailPane.Tabpanel dtp = (Tabpanel) parent;
 						if (dtp.isToggleToFormView()) {
-							tabPanel.switchRowPresentation();
-							dtp.afterToggle();
-						}
+							targetIsForm = true;
+							dtpToToggle = dtp;						}
 						break;
 					}
 					parent = parent.getParent();
 				}
+			}
+		}
+
+		if (targetIsForm) {
+			tabPanel.switchRowPresentation();
+			if (dtpToToggle != null) {
+				dtpToToggle.afterToggle();
 			}
 		}
 	}
