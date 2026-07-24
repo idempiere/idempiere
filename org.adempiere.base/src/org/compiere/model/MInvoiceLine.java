@@ -1027,13 +1027,12 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	{
 		if (!success)
 			return success;
-		// Re-calculate tax of document
-		MTax tax = new MTax(getCtx(), getC_Tax_ID(), get_TrxName());
+        MTax tax = new MTax(getCtx(), getC_Tax_ID(), get_TrxName());
         MTaxProvider provider = new MTaxProvider(tax.getCtx(), tax.getC_TaxProvider_ID(), tax.get_TrxName());
-		ITaxProvider calculator = Core.getTaxProvider(provider);
-		if (calculator == null)
-			throw new AdempiereException(Msg.getMsg(getCtx(), "TaxNoProvider"));
-    	return calculator.recalculateTax(provider, this, newRecord);
+        ITaxProvider calculator = Core.getTaxProvider(provider);
+        if (calculator == null)
+            throw new AdempiereException(Msg.getMsg(getCtx(), "TaxNoProvider"));
+        return calculator.recalculateTax(provider, this, newRecord);
 	}	//	afterSave
 
 	@Override
