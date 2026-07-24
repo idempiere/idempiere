@@ -35,6 +35,7 @@ import org.compiere.model.MToolBarButtonRestrict;
 import org.compiere.model.MWindow;
 import org.compiere.model.X_AD_ToolBarButton;
 import org.compiere.util.Env;
+import org.idempiere.ui.zk.event.UIEventManager;
 import org.zkoss.zk.ui.Component;
 
 /**
@@ -95,6 +96,7 @@ public class ADWindow extends AbstractUIPart
          this.adWindowUUID = window.getAD_Window_UU();
          windowNo = SessionManager.getAppDesktop().registerWindow(this);
          Env.setPredefinedVariables(ctx, windowNo, window.getPredefinedContextVariables());
+         UIEventManager.fireOpenWindowEvent(ctx, adWindowId, windowNo, query);
          this.query = query;
          try {
              init();
