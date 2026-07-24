@@ -121,6 +121,8 @@ public class InfoColumnVO implements Serializable, Cloneable {
 	private String EntityType;
 
 	private MInfoColumn infoColumn;
+	
+	private boolean IsFilterOnlyInfoRelated;
 
 	/**
 	 * Default Constructor
@@ -173,6 +175,7 @@ public class InfoColumnVO implements Serializable, Cloneable {
 			isRange = infoColumn.isRange();
 		else
 			isRange = false;
+		IsFilterOnlyInfoRelated = infoColumn.is_FilterOnlyInfoRelated();
 		
 		
 		this.afterCreate();
@@ -549,5 +552,13 @@ public class InfoColumnVO implements Serializable, Cloneable {
 	 */
 	public boolean isRange() {
 		return isRange;
+	}
+	
+	public boolean getIsFilterOnlyInfoRelated() {
+		return IsFilterOnlyInfoRelated;
+	}
+
+	public void setIsFilterOnlyInfoRelated(boolean isFilterOnlyInfoRelated) {
+		IsFilterOnlyInfoRelated = isFilterOnlyInfoRelated;
 	}
 }
