@@ -182,5 +182,31 @@ public class CalloutPaymentAllocate extends CalloutEngine
 		return "";
 	}	//	amounts
 
-	
+	/**
+	 * Payment_Charge
+	 * Remove Invoice & Invoice amount once Select Charge
+	 * 
+	 * @param  ctx      Context
+	 * @param  WindowNo Window No
+	 * @param  mTab     Grid Tab
+	 * @param  mField   Grid Field
+	 * @param  value    New Value
+	 * @return          null or error message
+	 */
+	public String charge(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
+	{
+		Integer C_Charge_ID = (Integer) value;
+		if (isCalloutActive() || C_Charge_ID == null || C_Charge_ID.intValue() == 0)
+			return "";
+
+		mTab.setValue("C_Invoice_ID", null);
+		mTab.setValue("InvoiceAmt", Env.ZERO);
+		mTab.setValue("DiscountAmt", Env.ZERO);
+		mTab.setValue("WriteOffAmt", Env.ZERO);
+		mTab.setValue("OverUnderAmt", Env.ZERO);
+		mTab.setValue("Amount", Env.ZERO);
+
+		return "";
+	} // charge
+
 }	//	CalloutPaymentAllocate
