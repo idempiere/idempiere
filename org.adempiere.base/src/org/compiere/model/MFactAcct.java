@@ -18,6 +18,8 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -75,23 +77,56 @@ public class MFactAcct extends X_Fact_Acct
 	public static int deleteEx(int AD_Table_ID, int Record_ID, String trxName)
 	throws DBException
 	{
-		// backup the posting records before delete them
-		final String sqlInsert = "INSERT INTO T_Fact_Acct_History SELECT * FROM Fact_Acct WHERE AD_Table_ID=? AND Record_ID=?";
-		int no = DB.executeUpdateEx(sqlInsert, new Object[]{AD_Table_ID, Record_ID}, trxName);
-		if (no != 0)
-			if (s_log.isLoggable(Level.INFO)) s_log.fine("insert - AD_Table_ID=" + AD_Table_ID + ", Record_ID=" + Record_ID + " - #" + no);
-		
-		// set the updated to current time - for house keeping purpose
-		final String sqlUpdate = "UPDATE T_Fact_Acct_History SET Updated=? WHERE AD_Table_ID=? AND Record_ID=? AND Created=Updated";
-		no = DB.executeUpdateEx(sqlUpdate.toString(), new Object[] {new Timestamp(System.currentTimeMillis()), AD_Table_ID, Record_ID}, trxName);
-		if (no != 0)
-			if (s_log.isLoggable(Level.INFO)) s_log.fine("update - AD_Table_ID=" + AD_Table_ID + ", Record_ID=" + Record_ID + " - #" + no);
-				
-		final String sql = "DELETE FROM Fact_Acct WHERE AD_Table_ID=? AND Record_ID=?";
-		no = DB.executeUpdateEx(sql, new Object[]{AD_Table_ID, Record_ID}, trxName);
-		if (s_log.isLoggable(Level.FINE)) s_log.fine("delete - AD_Table_ID=" + AD_Table_ID + ", Record_ID=" + Record_ID + " - #" + no);
-		return no;
+		return deleteEx(AD_Table_ID, Record_ID, 0, trxName);
 	}
+
+	/**
+	 * Delete Fact_Acct records via table and record id
+	 * @param AD_Table_ID table
+	 * @param Record_ID record
+	 * @param C_AcctSchema_ID accounting schema, if 0 then delete for all accounting schema
+	 * @param trxName transaction
+	 * @return number of rows deleted
+	 * @throws DBException on database exception
+	 */
+	public static int deleteEx(int AD_Table_ID, int Record_ID, int C_AcctSchema_ID, String trxName)
+	throws DBException
+	{
+		List<Object> params = new ArrayList<>();
+		params.add(AD_Table_ID);
+		params.add(Record_ID);
+
+		String whereClause = "AD_Table_ID=? AND Record_ID=?";
+		String logInfo = " AD_Table_ID=" + AD_Table_ID + ", Record_ID=" + Record_ID;
+		if (C_AcctSchema_ID > 0)
+		{
+			logInfo += ", C_AcctSchema_ID=" + C_AcctSchema_ID;
+			whereClause += " AND C_AcctSchema_ID=?";
+			params.add(C_AcctSchema_ID);
+		}
+		logInfo += " - #";
+
+		// backup the posting records before delete them
+		final String sqlInsert = "INSERT INTO T_Fact_Acct_History SELECT * FROM Fact_Acct WHERE "  + whereClause;
+		int no = DB.executeUpdateEx(sqlInsert, params.toArray(), trxName);
+		if (no != 0)
+			if (s_log.isLoggable(Level.INFO)) s_log.fine("insert -" + logInfo + no);
+
+		// set the updated to current time - for house keeping purpose
+		final String sqlUpdate = "UPDATE T_Fact_Acct_History SET Updated=? WHERE Created=Updated AND " + whereClause;
+
+		List<Object> updateParams = new ArrayList<>();
+		updateParams.add(new Timestamp(System.currentTimeMillis()));
+		updateParams.addAll(params);
+		no = DB.executeUpdateEx(sqlUpdate.toString(), updateParams.toArray(), trxName);
+		if (no != 0)
+			if (s_log.isLoggable(Level.INFO)) s_log.fine("update -" + logInfo + no);
+
+		final String sql = "DELETE FROM Fact_Acct WHERE " + whereClause;
+		no = DB.executeUpdateEx(sql,  params.toArray(), trxName);
+		if (s_log.isLoggable(Level.FINE)) s_log.fine("delete -" + logInfo + no);
+		return no;
+	} // deleteEx
 
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MFactAcct.class);
