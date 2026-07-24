@@ -81,6 +81,10 @@ public class PO_Record
 			refId = DisplayType.RecordID;
 			columnName = "Record_ID";
 		} else if (Record_IDorUU instanceof String) {
+			
+			if (Util.isEmpty(Record_IDorUU.toString()))
+				return true;
+			
 			refId = DisplayType.RecordUU;
 			columnName = "Record_UU";
 		} else {
