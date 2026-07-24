@@ -90,56 +90,69 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			"""
 				SELECT hdr.M_InOut_ID, hdr.DocumentNo, hdr.MovementDate, bp.Name, hdr.C_BPartner_ID,
 				lin.Line, lin.M_InOutLine_ID, p.Name, lin.M_Product_ID,
-				CASE WHEN (dt.DocBaseType='MMS' AND hdr.issotrx='N') THEN lin.MovementQty * -1 ELSE lin.MovementQty END,
+				%s * lin.MovementQty,
 				%s, org.Name, hdr.AD_Org_ID 
 				 FROM M_InOut hdr 
 				 INNER JOIN AD_Org org ON (hdr.AD_Org_ID=org.AD_Org_ID)
 				 INNER JOIN C_BPartner bp ON (hdr.C_BPartner_ID=bp.C_BPartner_ID)
 				 INNER JOIN M_InOutLine lin ON (hdr.M_InOut_ID=lin.M_InOut_ID)
 				 INNER JOIN M_Product p ON (lin.M_Product_ID=p.M_Product_ID)
-				 INNER JOIN C_DocType dt ON (hdr.C_DocType_ID = dt.C_DocType_ID AND (dt.DocBaseType='MMR' OR (dt.DocBaseType='MMS' AND hdr.isSOTrx ='N')))
+				 INNER JOIN C_DocType dt ON (hdr.C_DocType_ID = dt.C_DocType_ID)
 				 FULL JOIN %s m ON (lin.M_InOutLine_ID=m.M_InOutLine_ID) 
-				 WHERE hdr.DocStatus IN ('CO','CL')				  
+				 WHERE hdr.DocStatus IN ('CO','CL')	AND hdr.IsSOTrx='N'	  
 			""";
+	
+	public static final String MATCH_SIGN =
+			"(CASE WHEN dt.DocBaseType='MMS' AND dt.IsSOTrx='N' THEN -1 ELSE 1 END)";
+	
+	private static final String MATCHINV_QTY_SUM =
+		    "SUM(COALESCE(m.Qty,0))";
+	
+	private static final String MATCHPO_QTY_SUM =
+		    "SUM(CASE WHEN m.M_InOutLine_ID IS NOT NULL THEN COALESCE(m.Qty,0) ELSE 0 END)";
 	
 	/** Matching SQL template for GROUP BY */
 	private static final String BASE_MATCHING_GROUP_BY_SQL =
 			"""
-				GROUP BY hdr.M_InOut_ID,hdr.DocumentNo,hdr.MovementDate,bp.Name,hdr.C_BPartner_ID,
-				  lin.Line,lin.M_InOutLine_ID,p.Name,lin.M_Product_ID,lin.MovementQty, org.Name, hdr.AD_Org_ID, dt.DocBaseType, hdr.IsSOTrx
+				GROUP BY hdr.M_InOut_ID, bp.C_BPartner_ID, lin.M_InOutLine_ID, p.M_Product_ID, org.AD_Org_ID, dt.DocBaseType, dt.IsSOTrx
 				HAVING %s <> %s
 			""";
 	
 	public static final String NOT_FULLY_MATCHED_TO_ORDER = BASE_MATCHING_SQL.formatted(
-			"SUM(CASE WHEN m.M_InOutLine_ID IS NOT NULL THEN COALESCE(m.Qty,0) ELSE 0 END)", 
+			MATCH_SIGN,
+			MATCHPO_QTY_SUM, 
 			"M_MatchPO");
 	
 	public static final String NOT_FULLY_MATCHED_TO_ORDER_GROUP_BY = BASE_MATCHING_GROUP_BY_SQL.formatted(
-			"CASE WHEN (dt.DocBaseType='MMS' AND hdr.issotrx='N') THEN lin.MovementQty * -1 ELSE lin.MovementQty END",
-			"SUM(CASE WHEN m.M_InOutLine_ID IS NOT NULL THEN COALESCE(m.Qty,0) ELSE 0 END)"); 
-			
+			MATCH_SIGN + " * lin.MovementQty",
+			MATCHPO_QTY_SUM); 
+	
 	public static final String FULL_OR_PARTIALLY_MATCHED_TO_ORDER = BASE_MATCHING_SQL.formatted(
-			"SUM(CASE WHEN m.M_InOutLine_ID IS NOT NULL THEN COALESCE(m.Qty,0) ELSE 0 END)", 
+			MATCH_SIGN,
+			MATCHPO_QTY_SUM, 
 			"M_MatchPO");
 	
 	public static final String FULL_OR_PARTIALLY_MATCHED_TO_ORDER_GROUP_BY = BASE_MATCHING_GROUP_BY_SQL.formatted(
 			"0",
-			"SUM(CASE WHEN m.M_InOutLine_ID IS NOT NULL THEN COALESCE(m.Qty,0) ELSE 0 END)");
+			MATCHPO_QTY_SUM);
 	
-	public static final String NOT_FULLY_MATCHED_TO_INVOICE = BASE_MATCHING_SQL.formatted("SUM(COALESCE(m.Qty,0))", 
+	public static final String NOT_FULLY_MATCHED_TO_INVOICE = BASE_MATCHING_SQL.formatted(
+			MATCH_SIGN,
+	        MATCHINV_QTY_SUM, 
 			"M_MatchInv");
 	
 	public static final String NOT_FULLY_MATCHED_TO_INVOICE_GROUP_BY = BASE_MATCHING_GROUP_BY_SQL.formatted(
-			"CASE WHEN (dt.DocBaseType='MMS' AND hdr.issotrx='N') THEN lin.MovementQty * -1 ELSE lin.MovementQty END",
-			"SUM(COALESCE(m.Qty,0))");
+			MATCH_SIGN  + " * lin.MovementQty",
+			MATCHINV_QTY_SUM);
 	
-	public static final String FULL_OR_PARTIALLY_MATCHED_TO_INVOICE = BASE_MATCHING_GROUP_BY_SQL.formatted(
-			"SUM(COALESCE(m.Qty,0))", 
+	public static final String FULL_OR_PARTIALLY_MATCHED_TO_INVOICE = BASE_MATCHING_SQL.formatted(
+			MATCH_SIGN,
+			MATCHINV_QTY_SUM, 
 			"M_MatchInv");
 	
 	public static final String FULL_OR_PARTIALLY_MATCHED_TO_INVOICE_GROUP_BY = BASE_MATCHING_GROUP_BY_SQL.formatted(
 			"0",
-			"SUM(COALESCE(m.Qty,0))");
+			MATCHINV_QTY_SUM);
 	
 	/**
 	 * @param C_BPartner_ID
