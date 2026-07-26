@@ -281,15 +281,17 @@ public class OIDCPrincipalService implements ISSOPrincipalService {
 			throws IOException {		
 		AuthenticationRequest authRequest = null;
 		try {
-			authRequest = new AuthenticationRequest.Builder(
+			AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(
 					new ResponseType(AUTHENTICATION_CODE_PARAMETER),		      
 					new Scope("openid", "profile", "email"),
 					new ClientID(principalConfig.getSSO_ApplicationClientID()),
 					new URI(getRedirectURL(principalConfig, redirectMode))) 
 			    .state(new State())
 			    .nonce(new Nonce())
-			    .endpointURI(getMetaData().getAuthorizationEndpointURI())
-			    .build();
+			    .endpointURI(getMetaData().getAuthorizationEndpointURI());
+			if (principalConfig.isForceLogin())
+				builder.prompt(new Prompt(Prompt.Type.LOGIN));
+			authRequest = builder.build();
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(e);
 		} catch (GeneralException e) {
