@@ -161,7 +161,7 @@ public class LoginWindow extends Window implements EventListener<Event>
 
 			Login login = new Login(ctx);
 			KeyNamePair[] clients = login.getClients(username, null, null, token, tenant);
-			if (language == null && clients != null && clients.length > 0)
+			if (language == null && clients != null && clients.length == 1)
 				language = MClient.get(ctx, clients[0].getKey()).getLanguage();
 			if (language == null)
 				language = Language.getBaseLanguage();
