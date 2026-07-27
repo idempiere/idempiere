@@ -935,7 +935,7 @@ public class MOrderLine extends X_C_OrderLine
 		MTax tax = getTax();
 		if (tax.getC_TaxProvider_ID() <= 0)
 			return false;
-		MTaxProvider provider = new MTaxProvider(getCtx(), tax.getC_TaxProvider_ID(), get_TrxName());
+		MTaxProvider provider = MTaxProvider.get(getCtx(), tax.getC_TaxProvider_ID());
 		ITaxProvider calculator = Core.getTaxProvider(provider);
 		return calculator != null && calculator.isTaxIncludedSummarySupported();
 	}
