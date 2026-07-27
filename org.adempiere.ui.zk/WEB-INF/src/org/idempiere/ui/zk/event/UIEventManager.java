@@ -100,6 +100,55 @@ public class UIEventManager {
 		sendEvent(event);
 	}
 
+	/**
+	 * Fires an event when querying within a window
+	 * @param ctx
+	 * @param window
+	 * @param windowId
+	 * @param query
+	 */
+	public static void fireQueryWindowEvent(Properties ctx, int windowId, int windowNo, MQuery query) {
+		Event event = EventManager.newEvent(IUIEventTopics.UI_QUERY_WINDOW,
+				new EventProperty("windowId", windowId),
+				new EventProperty("windowNo", windowNo),
+				new EventProperty("query", query)
+				);
+		sendEvent(event);
+	}
+
+	/**
+	 * Fires an event when querying within an info window
+	 * @param ctx
+	 * @param window
+	 * @param infoWindowId
+	 * @param where
+	 */
+	public static void fireQueryInfoEvent(Properties ctx, int infoWindowId, int windowNo, String where) {
+		Event event = EventManager.newEvent(IUIEventTopics.UI_QUERY_INFO,
+				new EventProperty("infoWindowId", infoWindowId),
+				new EventProperty("windowNo", windowNo),
+				new EventProperty("where", where)
+				);
+		sendEvent(event);
+	}
+
+	/**
+	 * Fires an event when querying within an info window
+	 * @param ctx
+	 * @param window
+	 * @param infoWindowId
+	 * @param where
+	 */
+	public static void fireAccessRecordEvent(Properties ctx, int infoWindowId, int windowNo, int tableId, Object recordId) {
+		Event event = EventManager.newEvent(IUIEventTopics.UI_ACCESS_RECORD,
+				new EventProperty("windowId", infoWindowId),
+				new EventProperty("windowNo", windowNo),
+				new EventProperty("tableId", tableId),
+				new EventProperty("recordId", recordId)
+				);
+		sendEvent(event);
+	}
+
 	private static void sendEvent(Event event) {
 		EventManager.getInstance().sendEvent(event);
 		@SuppressWarnings("unchecked")

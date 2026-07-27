@@ -398,7 +398,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
    		});
 
    		Env.setPredefinedVariables(Env.getCtx(), getWindowNo(), predefinedContextVariables);
-   		UIEventManager.fireOpenInfoEvent(Env.getCtx(), AD_InfoWindow_ID, getWindowNo());
+   		if (infoWindow != null)
+   			UIEventManager.fireOpenInfoEvent(Env.getCtx(), infoWindow.getAD_InfoWindow_ID(), getWindowNo());
 		infoContext = new Properties(Env.getCtx());
 		p_loadedOK = loadInfoDefinition(); 
 		

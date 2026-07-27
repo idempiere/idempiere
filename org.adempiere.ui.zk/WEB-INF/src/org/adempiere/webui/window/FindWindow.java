@@ -52,6 +52,7 @@ import org.adempiere.webui.component.ComboItem;
 import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.DatetimeBox;
+import org.adempiere.webui.component.FlexHlayout;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.Group;
 import org.adempiere.webui.component.Label;
@@ -117,6 +118,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 import org.idempiere.db.util.SQLFragment;
+import org.idempiere.ui.zk.event.UIEventManager;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Components;
@@ -132,7 +134,6 @@ import org.zkoss.zul.Center;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Div;
-import org.adempiere.webui.component.FlexHlayout;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.North;
 import org.zkoss.zul.Popup;
@@ -3561,6 +3562,12 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
         }
         else
             if (log.isLoggable(Level.CONFIG)) log.config("#" + m_total);
+        if (alertRecords) { // alertRecords is false when opening the window and true when user is searching
+        	int windowId = -1;
+        	if (m_gridTab != null)
+        		windowId = m_gridTab.getAD_Window_ID();
+        	UIEventManager.fireQueryWindowEvent(Env.getCtx(), windowId, m_targetWindowNo, query);
+        }
 
         return m_total;
     }   //  getNoOfRecords

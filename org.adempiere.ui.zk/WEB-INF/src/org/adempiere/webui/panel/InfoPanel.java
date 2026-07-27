@@ -107,6 +107,7 @@ import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 import org.idempiere.db.util.SQLFragment;
+import org.idempiere.ui.zk.event.UIEventManager;
 import org.zkoss.zk.au.out.AuEcho;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -832,6 +833,8 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			testCount();
 		else
 			m_count = Integer.MAX_VALUE;
+
+		UIEventManager.fireQueryInfoEvent(Env.getCtx(), m_infoWindowID, p_WindowNo, getSQLWhere());
 		
 		if (m_count > 0)
 		{

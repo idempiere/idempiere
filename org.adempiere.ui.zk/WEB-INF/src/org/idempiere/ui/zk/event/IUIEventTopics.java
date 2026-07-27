@@ -37,11 +37,17 @@ public interface IUIEventTopics {
 
 	/* zkwebui Events */
 	public static final String UI_EVENT_PREFIX = "idempiere/ui/";
+
 	public static final String UI_OPEN_WINDOW = UI_EVENT_PREFIX+"openWindow";
 	public static final String UI_OPEN_FORM = UI_EVENT_PREFIX+"openForm";
 	public static final String UI_OPEN_INFO = UI_EVENT_PREFIX+"openInfo";
 	public static final String UI_OPEN_PROCESS = UI_EVENT_PREFIX+"openProcess";
+
+	public static final String UI_QUERY_WINDOW = UI_EVENT_PREFIX+"queryWindow";
+	public static final String UI_QUERY_INFO = UI_EVENT_PREFIX+"queryInfo";
+
 	public static final String UI_ACCESS_RECORD = UI_EVENT_PREFIX+"accessRecord";
+	public static final String UI_VIEW_ATTACHMENT = UI_EVENT_PREFIX+"viewAttachment";
 	public static final String UI_DOWNLOAD_ATTACHMENT = UI_EVENT_PREFIX+"downloadAttachment";
 
 }
