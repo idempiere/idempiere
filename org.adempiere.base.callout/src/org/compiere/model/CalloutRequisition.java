@@ -147,8 +147,8 @@ public class CalloutRequisition extends CalloutEngine
 			if (log.isLoggable(Level.FINE))
 				log.fine("QtyChanged -> PriceActual=" + pp.getPriceStd() + ", PriceEntered=" + PriceEntered);
 			PriceActual = pp.getPriceStd();
-			mTab.setValue(I_M_RequisitionLine.COLUMNNAME_PriceActual, PriceEntered);
-			mTab.setValue(I_M_RequisitionLine.COLUMNNAME_PriceEntered, PriceActual);
+			mTab.setValue(I_M_RequisitionLine.COLUMNNAME_PriceActual, PriceActual);
+			mTab.setValue(I_M_RequisitionLine.COLUMNNAME_PriceEntered, PriceEntered);
 			Env.setContext(ctx, WindowNo, "DiscountSchema", pp.isDiscountSchema() ? "Y" : "N");
 		}
 		else if (mField.getColumnName().equals(I_M_RequisitionLine.COLUMNNAME_PriceActual))
