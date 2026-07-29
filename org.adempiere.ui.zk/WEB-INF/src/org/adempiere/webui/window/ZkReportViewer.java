@@ -1923,6 +1923,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 
 		private ZkReportViewer viewer;
 		private String rendererId;
+		private Exception error;
 
 		public RendererRunnable(ZkReportViewer viewer, String rendererId) {
 			this.viewer = viewer;
@@ -1932,6 +1933,12 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		@Override
 		public void updateUI() {
 			viewer.onPreviewReport();
+			if (error != null) {
+				String message = error.getLocalizedMessage();
+				if (Util.isEmpty(message, true) && error.getCause() != null)
+					message = error.getCause().getLocalizedMessage();
+				Dialog.error(viewer.m_WindowNo, "Error", message);
+			}
 		}
 
 		@Override
@@ -1955,10 +1962,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 				}
 				viewer.createNewMedia(rendererId);
 			} catch (Exception e) {
-				if (e instanceof RuntimeException)
-					throw (RuntimeException)e;
-				else
-					throw new RuntimeException(e);
+				error = e;
+				log.log(Level.SEVERE, "Error rendering report viewer content", e);
 			} finally {		
 				Desktop desktop = AEnv.getDesktop();
 				if (desktop != null && desktop.isAlive()) {
