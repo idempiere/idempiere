@@ -4065,7 +4065,13 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			p2mcost = p2.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
 			assertEquals(p2price.add(p2a1.divide(p2QtyOnHand, 2, RoundingMode.HALF_UP))
 					.setScale(1, RoundingMode.HALF_UP), p2mcost.getCurrentCostPrice().setScale(1, RoundingMode.HALF_UP), "Unexpected current cost price");
-			
+
+			// Shipment accounting is created before the freight invoice reversal.
+			// Capture the current product cost (including landed cost) so the expected
+			// shipment COGS can be verified after the reversal restores CurrentCostPrice.
+			BigDecimal p1CostAtShipment = p1mcost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP);
+			BigDecimal p2CostAtShipment = p2mcost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP);
+
 			//so and shipment
 			MBPartner customer = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id);
 			MOrder salesOrder = new MOrder(Env.getCtx(), 0, getTrxName());
@@ -4143,8 +4149,14 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			p1mcost = p1.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
 			p2mcost = p2.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
 			
-			BigDecimal p1cogs = p1mcost.getCurrentCostPrice().multiply(p1ShipQty).add(p1a1.multiply(p1ShipQty).divide(mr1Qty, 2, RoundingMode.HALF_UP));
-			BigDecimal p2cogs = p2mcost.getCurrentCostPrice().multiply(p2ShipQty).add(p2a1.multiply(p2ShipQty).divide(mr1Qty, 2, RoundingMode.HALF_UP));
+			assertEquals(p1price.setScale(2, RoundingMode.HALF_UP), p1mcost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP),
+						"Unexpected current cost price after freight invoice reversal");
+			assertEquals(p2price.setScale(2, RoundingMode.HALF_UP), p2mcost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP),
+						"Unexpected current cost price after freight invoice reversal");
+
+			//
+			BigDecimal p1cogs = p1ShipQty.multiply(p1CostAtShipment).setScale(2, RoundingMode.HALF_UP);
+			BigDecimal p2cogs = p2ShipQty.multiply(p2CostAtShipment).setScale(2, RoundingMode.HALF_UP);
 			
 			ProductCost pc1 = new ProductCost(Env.getCtx(), p1.get_ID(), 0, getTrxName());
 			MAccount cogsAccount1 = pc1.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
@@ -4152,7 +4164,8 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			MAccount cogsAccount2 = pc2.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
 			query = MFactAcct.createRecordIdQuery(MInOut.Table_ID, shipment.get_ID(), as.get_ID(), getTrxName());
 			factAccts = query.list();
-			expected = Arrays.asList(new FactAcct(cogsAccount1, p1cogs, 2, true),
+			expected = Arrays.asList(
+			        new FactAcct(cogsAccount1, p1cogs, 2, true),
 					new FactAcct(cogsAccount2, p2cogs, 2, true),
 					new FactAcct(assetAccount, p1cogs, 2, false),
 					new FactAcct(assetAccount, p2cogs, 2, false));
