@@ -1,0 +1,105 @@
+/**********************************************************************
+ * This file is part of iDempiere ERP Open Source                     *
+ * http://www.idempiere.org                                           *
+ *                                                                    *
+ * Copyright (C) Contributors                                         *
+ *                                                                    *
+ * This program is free software; you can redistribute it and/or      *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2     *
+ * of the License, or (at your option) any later version.              *
+ **********************************************************************/
+package org.idempiere.test.ui;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.List;
+
+import org.adempiere.base.IServiceReferenceHolder;
+import org.adempiere.base.Service;
+import org.adempiere.webui.Extensions;
+import org.adempiere.webui.window.IReportViewerExportSource.ExportFormat;
+import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.TestActivator;
+import org.idempiere.ui.zk.report.IReportViewerContentRenderer;
+import org.idempiere.ui.zk.report.IReportViewerContentRendererFactory;
+import org.idempiere.ui.zk.report.JasperReportViewerContentRendererFactory;
+import org.idempiere.ui.zk.report.ReportViewerRequest;
+import org.junit.jupiter.api.Test;
+import org.osgi.framework.Constants;
+import org.osgi.framework.ServiceRegistration;
+import org.zkoss.util.media.AMedia;
+
+public class ReportViewerContentRendererFactoryTest extends AbstractTestCase {
+
+	@Test
+	public void testHigherRankingFactoryTakesPrecedence() {
+		IReportViewerContentRenderer highRankingRenderer = new TestRenderer();
+		IReportViewerContentRenderer lowRankingRenderer = new TestRenderer();
+		ServiceRegistration<IReportViewerContentRendererFactory> highRankingRegistration =
+				registerFactory(request -> highRankingRenderer, 20);
+		ServiceRegistration<IReportViewerContentRendererFactory> lowRankingRegistration =
+				registerFactory(request -> lowRankingRenderer, 10);
+		try {
+			assertSame(highRankingRenderer, Extensions.getReportViewerContentRenderer(emptyRequest()));
+		} finally {
+			lowRankingRegistration.unregister();
+			highRankingRegistration.unregister();
+		}
+	}
+
+	@Test
+	public void testNullResultFallsBackToNextFactory() {
+		IReportViewerContentRenderer fallbackRenderer = new TestRenderer();
+		ServiceRegistration<IReportViewerContentRendererFactory> firstRegistration =
+				registerFactory(request -> null, 20);
+		ServiceRegistration<IReportViewerContentRendererFactory> fallbackRegistration =
+				registerFactory(request -> fallbackRenderer, 10);
+		try {
+			assertSame(fallbackRenderer, Extensions.getReportViewerContentRenderer(emptyRequest()));
+		} finally {
+			fallbackRegistration.unregister();
+			firstRegistration.unregister();
+		}
+	}
+
+	@Test
+	public void testCoreJasperFactoryIsRegisteredAsFallback() {
+		List<IServiceReferenceHolder<IReportViewerContentRendererFactory>> references = Service.locator()
+				.list(IReportViewerContentRendererFactory.class).getServiceReferences();
+		IServiceReferenceHolder<IReportViewerContentRendererFactory> defaultReference = references.stream()
+				.filter(reference -> reference.getService() instanceof JasperReportViewerContentRendererFactory)
+				.findFirst()
+				.orElseThrow();
+
+		assertEquals(0, defaultReference.getServiceReference().getProperty(Constants.SERVICE_RANKING));
+		assertTrue(defaultReference.getService() instanceof JasperReportViewerContentRendererFactory);
+	}
+
+	private ServiceRegistration<IReportViewerContentRendererFactory> registerFactory(
+			IReportViewerContentRendererFactory factory, int ranking) {
+		Dictionary<String, Object> properties = new Hashtable<>();
+		properties.put(Constants.SERVICE_RANKING, ranking);
+		return TestActivator.context.registerService(IReportViewerContentRendererFactory.class, factory, properties);
+	}
+
+	private ReportViewerRequest emptyRequest() {
+		return new ReportViewerRequest(null, null, null, "Test");
+	}
+
+	private static final class TestRenderer implements IReportViewerContentRenderer {
+		@Override
+		public AMedia getMedia(String contentType, String fileExtension) {
+			return null;
+		}
+
+		@Override
+		public ExportFormat[] getExportFormats() {
+			return new ExportFormat[0];
+		}
+	}
+}

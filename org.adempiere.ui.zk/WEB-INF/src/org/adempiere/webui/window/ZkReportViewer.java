@@ -258,7 +258,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	 */
 	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 
-	private IReportViewerContentRenderer jasperPrintRenderer = null;
+	private IReportViewerContentRenderer reportContentRenderer = null;
 	
 	/**
 	 * @param re
@@ -1397,7 +1397,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		if (pp == null)
 			return;
 		
-		jasperPrintRenderer = null;
+		reportContentRenderer = null;
 		setTabOnCloseHandler();
 		//
 		MPrintFormat pf = null;
@@ -1944,15 +1944,12 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		@Override
 		protected void doRun() {
 			try {
-				if (viewer.m_reportEngine.getPrintFormat().getJasperProcess_ID() > 0) {
-					if (viewer.jasperPrintRenderer == null) {
-						ReportViewerRequest request = new ReportViewerRequest(viewer.m_reportEngine,
-								viewer.m_reportEngine.getPrintFormat(), viewer.m_reportEngine.getPrintInfo(), viewer.getTitle());
-						viewer.jasperPrintRenderer = Extensions.getReportViewerContentRenderer(request);
-						if (viewer.jasperPrintRenderer == null)
-							throw new AdempiereException("No report viewer content renderer available");
-					}
-				} else {
+				if (viewer.reportContentRenderer == null) {
+					ReportViewerRequest request = new ReportViewerRequest(viewer.m_reportEngine,
+							viewer.m_reportEngine.getPrintFormat(), viewer.m_reportEngine.getPrintInfo(), viewer.getTitle());
+					viewer.reportContentRenderer = Extensions.getReportViewerContentRenderer(request);
+				}
+				if (viewer.reportContentRenderer == null) {
 					viewer.m_reportEngine.initName();
 					List<String> archiveList = Arrays.asList(PDF_OUTPUT_TYPE, HTML_OUTPUT_TYPE, XLS_OUTPUT_TYPE, XLSX_OUTPUT_TYPE);
 					if (archiveList.contains(rendererId)) {
@@ -1981,8 +1978,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	
 	@Override
 	public AMedia getMedia(String contentType, String fileExtension) {
-		if (jasperPrintRenderer != null) {
-			return jasperPrintRenderer.getMedia(contentType, fileExtension);
+		if (reportContentRenderer != null) {
+			return reportContentRenderer.getMedia(contentType, fileExtension);
 		}
 		
 		IReportViewerRenderer renderer = rendererMap.get(toRendererId(contentType, fileExtension));
@@ -1995,8 +1992,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}
 
 	public AMedia getMedia(String rendererId) {
-		if (jasperPrintRenderer != null) {
-			return jasperPrintRenderer.getMedia(JasperPrintRenderer.getMIMEType(rendererId), JasperPrintRenderer.getFileExtension(rendererId));
+		if (reportContentRenderer != null) {
+			return reportContentRenderer.getMedia(JasperPrintRenderer.getMIMEType(rendererId), JasperPrintRenderer.getFileExtension(rendererId));
 		}
 		IReportViewerRenderer renderer = rendererMap.get(rendererId);
 		return renderer != null ? renderer.renderMedia(this, false) : null;
@@ -2004,8 +2001,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	
 	@Override
 	public ExportFormat[] getExportFormats() {
-		if (jasperPrintRenderer != null) {
-			return jasperPrintRenderer.getExportFormats();
+		if (reportContentRenderer != null) {
+			return reportContentRenderer.getExportFormats();
 		}
 		return exportMap.keySet().toArray(new ExportFormat[0]);
 	}
@@ -2054,7 +2051,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	 */
 	private void updateRowCount() {
 		if(rowCount != null) {
-			if (jasperPrintRenderer != null) {
+			if (reportContentRenderer != null) {
 				rowCount.setValue("");
 			} else if (m_reportEngine.getPrintData() != null) {
 				rowCount.setValue(Msg.getMsg(Env.getCtx(), "RowCount", new Object[] {m_reportEngine.getPrintData().getRowCount(false)}));

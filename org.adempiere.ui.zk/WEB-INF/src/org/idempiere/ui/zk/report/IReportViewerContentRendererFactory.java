@@ -14,6 +14,10 @@ package org.idempiere.ui.zk.report;
 /**
  * OSGi extension point for report viewer content generation.
  * Implementations are evaluated in descending service ranking order.
+ * The Core fallback implementation has service ranking {@code 0}. Extension
+ * plug-ins that should take precedence must register their implementation with
+ * a positive {@code service.ranking} and return {@code null} for requests they
+ * do not support, allowing the next ranked factory to handle the request.
  */
 public interface IReportViewerContentRendererFactory {
 	/** @return renderer, or {@code null} if this factory is not applicable */
