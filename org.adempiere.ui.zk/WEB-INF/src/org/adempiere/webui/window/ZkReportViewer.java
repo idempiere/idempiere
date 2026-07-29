@@ -19,6 +19,8 @@ package org.adempiere.webui.window;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -40,12 +42,10 @@ import java.util.logging.Level;
 import javax.activation.FileDataSource;
 import javax.servlet.http.HttpServletRequest;
 
-import org.adempiere.base.Core;
 import org.adempiere.base.upload.IUploadService;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.util.Callback;
-import org.adempiere.util.ProcessUtil;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.Extensions;
 import org.adempiere.webui.LayoutUtils;
@@ -91,7 +91,6 @@ import org.compiere.model.MPInstance;
 import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
-import org.compiere.model.MRule;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.MToolBarButtonRestrict;
@@ -103,8 +102,6 @@ import org.compiere.model.X_AD_ToolBarButton;
 import org.compiere.print.ArchiveEngine;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
-import org.compiere.print.ServerReportCtl;
-import org.compiere.process.ProcessCall;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.ProcessInfoUtil;
@@ -125,6 +122,8 @@ import org.idempiere.print.renderer.XLSXReportRendererConfiguration;
 import org.idempiere.ui.zk.media.IMediaView;
 import org.idempiere.ui.zk.media.WMediaOptions;
 import org.idempiere.ui.zk.report.IReportViewerRenderer;
+import org.idempiere.ui.zk.report.IReportViewerContentRenderer;
+import org.idempiere.ui.zk.report.ReportViewerRequest;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.au.out.AuScript;
@@ -156,7 +155,6 @@ import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.impl.Utils;
 import org.zkoss.zul.impl.XulElement;
 
-import net.sf.jasperreports.engine.JasperPrint;
 
 /**
  *	Report Viewer.
@@ -260,7 +258,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	 */
 	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 
-	private JasperPrintRenderer jasperPrintRenderer = null;
+	private IReportViewerContentRenderer jasperPrintRenderer = null;
 	
 	/**
 	 * @param re
@@ -1291,7 +1289,12 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		try
 		{
 			attachment = new File(FileUtil.getTempMailName(subject, ".pdf"));
-			m_reportEngine.getPDF(attachment);
+			AMedia pdf = getMedia(PDF_OUTPUT_TYPE);
+			if (pdf == null)
+				throw new AdempiereException("Unable to generate PDF report content");
+			try (InputStream input = pdf.getStreamData()) {
+				Files.copy(input, attachment.toPath(), StandardCopyOption.REPLACE_EXISTING);
+			}
 		}
 		catch (Exception e)
 		{
@@ -1936,55 +1939,11 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			try {
 				if (viewer.m_reportEngine.getPrintFormat().getJasperProcess_ID() > 0) {
 					if (viewer.jasperPrintRenderer == null) {
-						MPrintFormat format = viewer.m_reportEngine.getPrintFormat();
-						PrintInfo printInfo = viewer.m_reportEngine.getPrintInfo();
-						ProcessInfo jasperProcessInfo = new ProcessInfo (viewer.getTitle(), format.getJasperProcess_ID());
-						jasperProcessInfo.setRecord_ID (printInfo.getRecord_ID());
-						jasperProcessInfo.setRecord_UU ( printInfo.getRecord_UU() );
-						jasperProcessInfo.setTable_ID(printInfo.getAD_Table_ID());
-						// if there's process, need to run it before preview
-						MProcess jasperProcess = new MProcess(Env.getCtx(), format.getJasperProcess_ID(), null);
-						jasperProcessInfo.setAD_Process_UU(jasperProcess.getAD_Process_UU());
-						if (!Util.isEmpty(jasperProcess.getClassname(), true)) {
-							if (   !ProcessUtil.JASPER_STARTER_CLASS.equals(jasperProcess.getClassname())
-								&& !ProcessUtil.JASPER_STARTER_CLASS_DEPRECATED.equals(jasperProcess.getClassname())) {
-								jasperProcessInfo.setClassName (jasperProcess.getClassname());
-								MPInstance jasperInstance = new MPInstance(Env.getCtx(), jasperProcessInfo.getAD_Process_ID(),
-										jasperProcessInfo.getTable_ID(), jasperProcessInfo.getRecord_ID(),
-										jasperProcessInfo.getRecord_UU());
-								jasperInstance.saveEx();
-								jasperProcessInfo.setAD_PInstance_ID (jasperInstance.getAD_PInstance_ID());
-								boolean runOk = false;
-								if (jasperProcess.getClassname().toLowerCase().startsWith(MRule.SCRIPT_PREFIX)) {
-									runOk = ProcessUtil.startScriptProcess(Env.getCtx(), jasperProcessInfo, null);
-								} else {
-									runOk = ProcessUtil.startJavaProcess(Env.getCtx(), jasperProcessInfo, null, true);
-								}
-								if (!runOk || jasperProcessInfo.isError()) {
-									String msg = jasperProcessInfo.getSummary();
-									if (Util.isEmpty(msg, true)) {
-										msg = Msg.getMsg(Env.getCtx(), "ProcessRunError");
-									}
-									msg = msg + " (" + jasperProcessInfo.getTitle() + ")";
-									throw new AdempiereException(msg);
-								}
-							}							
-						}
-																		
-						jasperProcessInfo.setSerializableObject(format);
-						ArrayList<ProcessInfoParameter> jasperPrintParams = new ArrayList<ProcessInfoParameter>();
-						ProcessInfoParameter pip = new ProcessInfoParameter(ServerReportCtl.PARAM_PRINT_FORMAT, format, null, null, null);
-						jasperPrintParams.add(pip);
-						pip = new ProcessInfoParameter(ServerReportCtl.PARAM_PRINT_INFO, printInfo, null, null, null);
-						jasperPrintParams.add(pip);						
-						jasperProcessInfo.setParameter(jasperPrintParams.toArray(new ProcessInfoParameter[]{}));
-						jasperProcessInfo.setExport(true);
-						jasperProcessInfo.setExportFileExtension("JasperPrint");
-						ProcessCall pc = Core.getProcess("org.adempiere.report.jasper.ReportStarter");
-						pc.startProcess(Env.getCtx(), jasperProcessInfo, null);						
-						JasperPrint jasperPrint = (JasperPrint) jasperProcessInfo.getInternalReportObject();
-						viewer.jasperPrintRenderer = new JasperPrintRenderer(jasperPrint, viewer.getTitle());
-						viewer.jasperPrintRenderer.setRowCount(jasperProcessInfo.getRowCount());
+						ReportViewerRequest request = new ReportViewerRequest(viewer.m_reportEngine,
+								viewer.m_reportEngine.getPrintFormat(), viewer.m_reportEngine.getPrintInfo(), viewer.getTitle());
+						viewer.jasperPrintRenderer = Extensions.getReportViewerContentRenderer(request);
+						if (viewer.jasperPrintRenderer == null)
+							throw new AdempiereException("No report viewer content renderer available");
 					}
 				} else {
 					viewer.m_reportEngine.initName();

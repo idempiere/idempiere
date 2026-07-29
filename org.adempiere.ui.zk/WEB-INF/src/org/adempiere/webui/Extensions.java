@@ -54,6 +54,9 @@ import org.idempiere.db.util.SQLFragment;
 import org.idempiere.ui.zk.media.IMediaView;
 import org.idempiere.ui.zk.media.IMediaViewProvider;
 import org.idempiere.ui.zk.report.IReportViewerRenderer;
+import org.idempiere.ui.zk.report.IReportViewerContentRenderer;
+import org.idempiere.ui.zk.report.IReportViewerContentRendererFactory;
+import org.idempiere.ui.zk.report.ReportViewerRequest;
 import org.zkoss.zk.ui.Component;
 
 /**
@@ -419,6 +422,21 @@ public class Extensions {
 	public static List<IReportViewerRenderer> getReportViewerRenderers() {
 		List<IServiceReferenceHolder<IReportViewerRenderer>> references = Service.locator().list(IReportViewerRenderer.class, null, null).getServiceReferences();
 		return references.stream().filter(e -> e.getService() != null).map(e -> e.getService()).collect(Collectors.toCollection(ArrayList::new));
+	}
+
+	/** Get the first applicable report content renderer in OSGi service ranking order. */
+	public static IReportViewerContentRenderer getReportViewerContentRenderer(ReportViewerRequest request) {
+		List<IServiceReferenceHolder<IReportViewerContentRendererFactory>> references = Service.locator()
+				.list(IReportViewerContentRendererFactory.class).getServiceReferences();
+		for (IServiceReferenceHolder<IReportViewerContentRendererFactory> reference : references) {
+			IReportViewerContentRendererFactory factory = reference.getService();
+			if (factory != null) {
+				IReportViewerContentRenderer renderer = factory.createRenderer(request);
+				if (renderer != null)
+					return renderer;
+			}
+		}
+		return null;
 	}
 	
 	

@@ -39,6 +39,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
 import org.idempiere.ui.zk.media.Medias;
+import org.idempiere.ui.zk.report.IReportViewerContentRenderer;
 import org.zkoss.util.media.AMedia;
 
 import com.google.common.net.MediaType;
@@ -65,7 +66,7 @@ import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 /**
  * Media renderer for JasperPrint
  */
-public class JasperPrintRenderer {
+public class JasperPrintRenderer implements IReportViewerContentRenderer {
 
 	protected JasperPrint jasperPrint;
 
@@ -462,6 +463,7 @@ public class JasperPrintRenderer {
 	 * Get row count
 	 * @return
 	 */
+	@Override
 	public int getRowCount() {
 		return rowCount;
 	}
