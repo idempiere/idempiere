@@ -147,7 +147,7 @@ public class MInventoryLine extends X_M_InventoryLine
 		setM_AttributeSetInstance_ID (M_AttributeSetInstance_ID);
 		// Set UOM from product
 		if (M_Product_ID != 0) {
-			MProduct product = MProduct.get(inventory.getCtx(), M_Product_ID);
+			MProduct product = MProduct.get(inventory.getCtx(), M_Product_ID, get_TrxName());
 			if (product != null)
 				setC_UOM_ID(product.getC_UOM_ID());
 		}
