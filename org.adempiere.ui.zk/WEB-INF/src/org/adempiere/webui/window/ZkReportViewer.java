@@ -42,6 +42,7 @@ import java.util.logging.Level;
 import javax.activation.FileDataSource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.adempiere.base.Core;
 import org.adempiere.base.upload.IUploadService;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
@@ -122,8 +123,9 @@ import org.idempiere.print.renderer.XLSXReportRendererConfiguration;
 import org.idempiere.ui.zk.media.IMediaView;
 import org.idempiere.ui.zk.media.WMediaOptions;
 import org.idempiere.ui.zk.report.IReportViewerRenderer;
-import org.idempiere.ui.zk.report.IReportViewerContentRenderer;
-import org.idempiere.ui.zk.report.ReportViewerRequest;
+import org.idempiere.print.IReportContentRenderer;
+import org.idempiere.print.ReportContentRequest;
+import org.idempiere.print.ReportContentType;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.au.out.AuScript;
@@ -258,7 +260,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	 */
 	private boolean isUseEscForTabClosing = MSysConfig.getBooleanValue(MSysConfig.USE_ESC_FOR_TAB_CLOSING, false, Env.getAD_Client_ID(Env.getCtx()));
 
-	private IReportViewerContentRenderer reportContentRenderer = null;
+	private IReportContentRenderer reportContentRenderer = null;
 	
 	/**
 	 * @param re
@@ -1945,9 +1947,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		protected void doRun() {
 			try {
 				if (viewer.reportContentRenderer == null) {
-					ReportViewerRequest request = new ReportViewerRequest(viewer.m_reportEngine,
+					ReportContentRequest request = new ReportContentRequest(viewer.m_reportEngine,
 							viewer.m_reportEngine.getPrintFormat(), viewer.m_reportEngine.getPrintInfo(), viewer.getTitle());
-					viewer.reportContentRenderer = Extensions.getReportViewerContentRenderer(request);
+					viewer.reportContentRenderer = Core.getReportContentRenderer(request);
 				}
 				if (viewer.reportContentRenderer == null) {
 					viewer.m_reportEngine.initName();
@@ -1979,7 +1981,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	@Override
 	public AMedia getMedia(String contentType, String fileExtension) {
 		if (reportContentRenderer != null) {
-			return reportContentRenderer.getMedia(contentType, fileExtension);
+			File file = reportContentRenderer.getContent(contentType, fileExtension);
+			return file != null ? new AMedia(file.getName(), fileExtension, contentType, file, true) : null;
 		}
 		
 		IReportViewerRenderer renderer = rendererMap.get(toRendererId(contentType, fileExtension));
@@ -1993,7 +1996,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 
 	public AMedia getMedia(String rendererId) {
 		if (reportContentRenderer != null) {
-			return reportContentRenderer.getMedia(JasperPrintRenderer.getMIMEType(rendererId), JasperPrintRenderer.getFileExtension(rendererId));
+			return getMedia(JasperPrintRenderer.getMIMEType(rendererId), JasperPrintRenderer.getFileExtension(rendererId));
 		}
 		IReportViewerRenderer renderer = rendererMap.get(rendererId);
 		return renderer != null ? renderer.renderMedia(this, false) : null;
@@ -2002,7 +2005,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	@Override
 	public ExportFormat[] getExportFormats() {
 		if (reportContentRenderer != null) {
-			return reportContentRenderer.getExportFormats();
+			return Arrays.stream(reportContentRenderer.getSupportedContentTypes())
+					.map(type -> new ExportFormat(type.name(), type.fileExtension(), type.contentType()))
+					.toArray(ExportFormat[]::new);
 		}
 		return exportMap.keySet().toArray(new ExportFormat[0]);
 	}

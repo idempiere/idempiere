@@ -29,21 +29,24 @@ import org.compiere.process.ProcessInfoParameter;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.print.IReportContentRenderer;
+import org.idempiere.print.IReportContentRendererFactory;
+import org.idempiere.print.ReportContentRequest;
 import org.osgi.service.component.annotations.Component;
 
 import net.sf.jasperreports.engine.JasperPrint;
 
 /** Default report viewer content renderer factory for Jasper print formats. */
-@Component(service = IReportViewerContentRendererFactory.class, immediate = true,
+@Component(service = IReportContentRendererFactory.class, immediate = true,
 		property = "service.ranking:Integer=0")
-public class JasperReportViewerContentRendererFactory implements IReportViewerContentRendererFactory {
+public class JasperReportViewerContentRendererFactory implements IReportContentRendererFactory {
 	@Override
-	public IReportViewerContentRenderer createRenderer(ReportViewerRequest request) {
-		MPrintFormat format = request.getPrintFormat();
+	public IReportContentRenderer createRenderer(ReportContentRequest request) {
+		MPrintFormat format = request.printFormat();
 		if (format == null || format.getJasperProcess_ID() <= 0)
 			return null;
-		PrintInfo printInfo = request.getPrintInfo();
-		ProcessInfo pi = new ProcessInfo(request.getTitle(), format.getJasperProcess_ID());
+		PrintInfo printInfo = request.printInfo();
+		ProcessInfo pi = new ProcessInfo(request.title(), format.getJasperProcess_ID());
 		pi.setRecord_ID(printInfo.getRecord_ID());
 		pi.setRecord_UU(printInfo.getRecord_UU());
 		pi.setTable_ID(printInfo.getAD_Table_ID());
@@ -62,7 +65,7 @@ public class JasperReportViewerContentRendererFactory implements IReportViewerCo
 			throwProcessError(pi);
 		if (!(pi.getInternalReportObject() instanceof JasperPrint jasperPrint))
 			throw new AdempiereException("Jasper report process did not return a JasperPrint");
-		JasperPrintRenderer renderer = new JasperPrintRenderer(jasperPrint, request.getTitle());
+		JasperPrintRenderer renderer = new JasperPrintRenderer(jasperPrint, request.title());
 		renderer.setRowCount(pi.getRowCount());
 		return renderer;
 	}

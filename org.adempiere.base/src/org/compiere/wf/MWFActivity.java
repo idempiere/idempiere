@@ -33,6 +33,7 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MBPartner;
@@ -70,6 +71,8 @@ import org.compiere.util.Trx;
 import org.compiere.util.TrxEventListener;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
+import org.idempiere.print.IReportContentRenderer;
+import org.idempiere.print.ReportContentRequest;
 
 /**
  *	Extended Workflow Activity Model for AD_WF_Activity. <br/>
@@ -1172,7 +1175,11 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			ReportEngine re = ReportEngine.get(getCtx(), pi);
 			if (re == null)
 				throw new IllegalStateException("Cannot create Report AD_Process_ID=" + m_node.getAD_Process_ID());
-			File report = re.getPDF();
+			IReportContentRenderer renderer = Core.getReportContentRenderer(new ReportContentRequest(re,
+					re.getPrintFormat(), re.getPrintInfo(), pi.getTitle()));
+			File report = renderer != null ? renderer.getContent("application/pdf", "pdf") : re.getPDF();
+			if (report == null)
+				throw new IllegalStateException("Cannot create PDF report AD_Process_ID=" + m_node.getAD_Process_ID());
 			//	Notice
 			int AD_Message_ID = MESSAGE_WORKFLOWRESULT;		//	HARDCODED WorkflowResult
 			MNote note = new MNote(getCtx(), AD_Message_ID, getAD_User_ID(), trx.getTrxName());

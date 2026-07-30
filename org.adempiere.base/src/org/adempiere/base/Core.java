@@ -83,6 +83,9 @@ import org.idempiere.fa.service.api.IDepreciationMethod;
 import org.idempiere.fa.service.api.IDepreciationMethodFactory;
 import org.idempiere.model.IMappedModelFactory;
 import org.idempiere.print.IPrintHeaderFooter;
+import org.idempiere.print.IReportContentRenderer;
+import org.idempiere.print.IReportContentRendererFactory;
+import org.idempiere.print.ReportContentRequest;
 import org.idempiere.print.renderer.IReportRenderer;
 import org.idempiere.print.renderer.IReportRendererConfiguration;
 import org.idempiere.process.IMappedProcessFactory;
@@ -1226,6 +1229,25 @@ public class Core {
 			renderer = holder.getService();
 			if (renderer.getId().equals(id)) {
 				return renderer;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Gets the first applicable report content renderer in OSGi service ranking order.
+	 * @param request report content request
+	 * @return renderer or {@code null}
+	 */
+	public static IReportContentRenderer getReportContentRenderer(ReportContentRequest request) {
+		List<IServiceReferenceHolder<IReportContentRendererFactory>> references = Service.locator()
+				.list(IReportContentRendererFactory.class).getServiceReferences();
+		for (IServiceReferenceHolder<IReportContentRendererFactory> reference : references) {
+			IReportContentRendererFactory factory = reference.getService();
+			if (factory != null) {
+				IReportContentRenderer renderer = factory.createRenderer(request);
+				if (renderer != null)
+					return renderer;
 			}
 		}
 		return null;

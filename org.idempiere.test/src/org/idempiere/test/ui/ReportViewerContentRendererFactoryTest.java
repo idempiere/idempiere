@@ -21,31 +21,30 @@ import java.util.List;
 
 import org.adempiere.base.IServiceReferenceHolder;
 import org.adempiere.base.Service;
-import org.adempiere.webui.Extensions;
-import org.adempiere.webui.window.IReportViewerExportSource.ExportFormat;
+import org.adempiere.base.Core;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.TestActivator;
-import org.idempiere.ui.zk.report.IReportViewerContentRenderer;
-import org.idempiere.ui.zk.report.IReportViewerContentRendererFactory;
+import org.idempiere.print.IReportContentRenderer;
+import org.idempiere.print.IReportContentRendererFactory;
+import org.idempiere.print.ReportContentRequest;
+import org.idempiere.print.ReportContentType;
 import org.idempiere.ui.zk.report.JasperReportViewerContentRendererFactory;
-import org.idempiere.ui.zk.report.ReportViewerRequest;
 import org.junit.jupiter.api.Test;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
-import org.zkoss.util.media.AMedia;
 
 public class ReportViewerContentRendererFactoryTest extends AbstractTestCase {
 
 	@Test
 	public void testHigherRankingFactoryTakesPrecedence() {
-		IReportViewerContentRenderer highRankingRenderer = new TestRenderer();
-		IReportViewerContentRenderer lowRankingRenderer = new TestRenderer();
-		ServiceRegistration<IReportViewerContentRendererFactory> highRankingRegistration =
+		IReportContentRenderer highRankingRenderer = new TestRenderer();
+		IReportContentRenderer lowRankingRenderer = new TestRenderer();
+		ServiceRegistration<IReportContentRendererFactory> highRankingRegistration =
 				registerFactory(request -> highRankingRenderer, 20);
-		ServiceRegistration<IReportViewerContentRendererFactory> lowRankingRegistration =
+		ServiceRegistration<IReportContentRendererFactory> lowRankingRegistration =
 				registerFactory(request -> lowRankingRenderer, 10);
 		try {
-			assertSame(highRankingRenderer, Extensions.getReportViewerContentRenderer(emptyRequest()));
+			assertSame(highRankingRenderer, Core.getReportContentRenderer(emptyRequest()));
 		} finally {
 			lowRankingRegistration.unregister();
 			highRankingRegistration.unregister();
@@ -54,13 +53,13 @@ public class ReportViewerContentRendererFactoryTest extends AbstractTestCase {
 
 	@Test
 	public void testNullResultFallsBackToNextFactory() {
-		IReportViewerContentRenderer fallbackRenderer = new TestRenderer();
-		ServiceRegistration<IReportViewerContentRendererFactory> firstRegistration =
+		IReportContentRenderer fallbackRenderer = new TestRenderer();
+		ServiceRegistration<IReportContentRendererFactory> firstRegistration =
 				registerFactory(request -> null, 20);
-		ServiceRegistration<IReportViewerContentRendererFactory> fallbackRegistration =
+		ServiceRegistration<IReportContentRendererFactory> fallbackRegistration =
 				registerFactory(request -> fallbackRenderer, 10);
 		try {
-			assertSame(fallbackRenderer, Extensions.getReportViewerContentRenderer(emptyRequest()));
+			assertSame(fallbackRenderer, Core.getReportContentRenderer(emptyRequest()));
 		} finally {
 			fallbackRegistration.unregister();
 			firstRegistration.unregister();
@@ -69,9 +68,9 @@ public class ReportViewerContentRendererFactoryTest extends AbstractTestCase {
 
 	@Test
 	public void testCoreJasperFactoryIsRegisteredAsFallback() {
-		List<IServiceReferenceHolder<IReportViewerContentRendererFactory>> references = Service.locator()
-				.list(IReportViewerContentRendererFactory.class).getServiceReferences();
-		IServiceReferenceHolder<IReportViewerContentRendererFactory> defaultReference = references.stream()
+		List<IServiceReferenceHolder<IReportContentRendererFactory>> references = Service.locator()
+				.list(IReportContentRendererFactory.class).getServiceReferences();
+		IServiceReferenceHolder<IReportContentRendererFactory> defaultReference = references.stream()
 				.filter(reference -> reference.getService() instanceof JasperReportViewerContentRendererFactory)
 				.findFirst()
 				.orElseThrow();
@@ -80,26 +79,26 @@ public class ReportViewerContentRendererFactoryTest extends AbstractTestCase {
 		assertTrue(defaultReference.getService() instanceof JasperReportViewerContentRendererFactory);
 	}
 
-	private ServiceRegistration<IReportViewerContentRendererFactory> registerFactory(
-			IReportViewerContentRendererFactory factory, int ranking) {
+	private ServiceRegistration<IReportContentRendererFactory> registerFactory(
+			IReportContentRendererFactory factory, int ranking) {
 		Dictionary<String, Object> properties = new Hashtable<>();
 		properties.put(Constants.SERVICE_RANKING, ranking);
-		return TestActivator.context.registerService(IReportViewerContentRendererFactory.class, factory, properties);
+		return TestActivator.context.registerService(IReportContentRendererFactory.class, factory, properties);
 	}
 
-	private ReportViewerRequest emptyRequest() {
-		return new ReportViewerRequest(null, null, null, "Test");
+	private ReportContentRequest emptyRequest() {
+		return new ReportContentRequest(null, null, null, "Test");
 	}
 
-	private static final class TestRenderer implements IReportViewerContentRenderer {
+	private static final class TestRenderer implements IReportContentRenderer {
 		@Override
-		public AMedia getMedia(String contentType, String fileExtension) {
+		public java.io.File getContent(String contentType, String fileExtension) {
 			return null;
 		}
 
 		@Override
-		public ExportFormat[] getExportFormats() {
-			return new ExportFormat[0];
+		public ReportContentType[] getSupportedContentTypes() {
+			return new ReportContentType[0];
 		}
 	}
 }

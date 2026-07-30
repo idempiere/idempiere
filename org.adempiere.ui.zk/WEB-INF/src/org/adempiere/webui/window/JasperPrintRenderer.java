@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 
-import org.adempiere.webui.window.IReportViewerExportSource.ExportFormat;
 import org.compiere.model.MSysConfig;
 import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
@@ -39,7 +38,8 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
 import org.idempiere.ui.zk.media.Medias;
-import org.idempiere.ui.zk.report.IReportViewerContentRenderer;
+import org.idempiere.print.IReportContentRenderer;
+import org.idempiere.print.ReportContentType;
 import org.zkoss.util.media.AMedia;
 
 import com.google.common.net.MediaType;
@@ -66,11 +66,11 @@ import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 /**
  * Media renderer for JasperPrint
  */
-public class JasperPrintRenderer implements IReportViewerContentRenderer {
+public class JasperPrintRenderer implements IReportContentRenderer {
 
 	protected JasperPrint jasperPrint;
 
-	protected final Map<String, Supplier<AMedia>> mediaSuppliers = new HashMap<String, Supplier<AMedia>>();
+	protected final Map<String, Supplier<File>> mediaSuppliers = new HashMap<String, Supplier<File>>();
 
 	private String title;
 
@@ -80,18 +80,18 @@ public class JasperPrintRenderer implements IReportViewerContentRenderer {
 	
 	private static final CLogger log = CLogger.getCLogger(JasperPrintRenderer.class);
 	
-	private final ExportFormat[] exportFormats = new ExportFormat[] {
-			new ExportFormat(Msg.getMsg(Env.getCtx(), "FilePDF"), Medias.PDF_FILE_EXT, Medias.PDF_MIME_TYPE),
-			new ExportFormat(Msg.getMsg(Env.getCtx(), "FileHTML"), Medias.HTML_FILE_EXT, Medias.HTML_MIME_TYPE),			
-			new ExportFormat(Msg.getMsg(Env.getCtx(), "FileCSV"), Medias.CSV_FILE_EXT, Medias.CSV_MIME_TYPE),
-			new ExportFormat(Msg.getMsg(Env.getCtx(), "FileXLS"), Medias.EXCEL_FILE_EXT, Medias.EXCEL_MIME_TYPE),
-			new ExportFormat(Msg.getMsg(Env.getCtx(), "FileXLSX"), Medias.EXCEL_XML_FILE_EXT, Medias.EXCEL_XML_MIME_TYPE),
-			new ExportFormat(Msg.getMsg(Env.getCtx(), "FileSSV"), Medias.SSV_FILE_EXT, Medias.CSV_MIME_TYPE)
-	};
-
 	private File pdfFile;
 
 	private int rowCount;
+
+	private final ReportContentType[] supportedContentTypes = new ReportContentType[] {
+			new ReportContentType(Msg.getMsg(Env.getCtx(), "FilePDF"), Medias.PDF_FILE_EXT, Medias.PDF_MIME_TYPE),
+			new ReportContentType(Msg.getMsg(Env.getCtx(), "FileHTML"), Medias.HTML_FILE_EXT, Medias.HTML_MIME_TYPE),
+			new ReportContentType(Msg.getMsg(Env.getCtx(), "FileCSV"), Medias.CSV_FILE_EXT, Medias.CSV_MIME_TYPE),
+			new ReportContentType(Msg.getMsg(Env.getCtx(), "FileXLS"), Medias.EXCEL_FILE_EXT, Medias.EXCEL_MIME_TYPE),
+			new ReportContentType(Msg.getMsg(Env.getCtx(), "FileXLSX"), Medias.EXCEL_XML_FILE_EXT, Medias.EXCEL_XML_MIME_TYPE),
+			new ReportContentType(Msg.getMsg(Env.getCtx(), "FileSSV"), Medias.SSV_FILE_EXT, Medias.CSV_MIME_TYPE)
+	};
 	
 	/**
 	 * @param jasperPrint
@@ -122,7 +122,7 @@ public class JasperPrintRenderer implements IReportViewerContentRenderer {
 		mediaSuppliers.put(toMediaType(Medias.PDF_MIME_TYPE, Medias.PDF_FILE_EXT), () -> {
 			try {
 				createPDF();
-				return new AMedia(pdfFile.getName(), Medias.PDF_FILE_EXT, Medias.PDF_MIME_TYPE, pdfFile, true);			
+				return pdfFile;
 			} catch (Exception e) {
 				if (e instanceof RuntimeException)
 					throw (RuntimeException)e;
@@ -156,7 +156,7 @@ public class JasperPrintRenderer implements IReportViewerContentRenderer {
 				exporter.setExporterOutput(new SimpleHtmlExporterOutput(file));
 				exporter.setConfiguration(htmlConfig);
 		 	    exporter.exportReport();
-				return new AMedia(makePrefix(title)+"."+Medias.HTML_FILE_EXT, Medias.HTML_FILE_EXT, Medias.HTML_MIME_TYPE, file, false);
+				return file;
 			} catch (Exception e) {
 				if (e instanceof RuntimeException)
 					throw (RuntimeException)e;
@@ -199,7 +199,7 @@ public class JasperPrintRenderer implements IReportViewerContentRenderer {
 					if (fos != null)
 						fos.close();
 				}
-				return new AMedia(makePrefix(title)+"."+Medias.EXCEL_FILE_EXT, Medias.EXCEL_FILE_EXT, Medias.EXCEL_MIME_TYPE, file, true);
+				return file;
 			} catch (Exception e) {
 				if (e instanceof RuntimeException)
 					throw (RuntimeException)e;
@@ -242,7 +242,7 @@ public class JasperPrintRenderer implements IReportViewerContentRenderer {
 					if (fos != null)
 						fos.close();
 				}
-				return new AMedia(makePrefix(title)+"."+Medias.EXCEL_XML_FILE_EXT, Medias.EXCEL_XML_FILE_EXT, Medias.EXCEL_XML_MIME_TYPE, file, true);
+				return file;
 			} catch (Exception e) {
 				if (e instanceof RuntimeException)
 					throw (RuntimeException)e;
@@ -281,7 +281,7 @@ public class JasperPrintRenderer implements IReportViewerContentRenderer {
 					if (fos != null)
 						fos.close();
 				}	
-				return new AMedia(makePrefix(title)+"."+Medias.CSV_FILE_EXT, Medias.CSV_FILE_EXT, Medias.CSV_MIME_TYPE, file, false);
+				return file;
 			} catch (Exception e) {
 				if (e instanceof RuntimeException)
 					throw (RuntimeException)e;
@@ -321,7 +321,7 @@ public class JasperPrintRenderer implements IReportViewerContentRenderer {
 					if (fos != null)
 						fos.close();
 				}
-				return new AMedia(makePrefix(title)+"."+Medias.SSV_FILE_EXT, Medias.SSV_FILE_EXT, Medias.CSV_MIME_TYPE, file, false);
+				return file;
 			} catch (Exception e) {
 				if (e instanceof RuntimeException)
 					throw (RuntimeException)e;
@@ -349,17 +349,26 @@ public class JasperPrintRenderer implements IReportViewerContentRenderer {
 	 * @param fileExtension
 	 * @return media
 	 */
-	public AMedia getMedia(String contentType, String fileExtension) {
-		Supplier<AMedia> supplier = mediaSuppliers.get(toMediaType(contentType, fileExtension));
+	@Override
+	public File getContent(String contentType, String fileExtension) {
+		Supplier<File> supplier = mediaSuppliers.get(toMediaType(contentType, fileExtension));
 		return supplier != null ? supplier.get() : null;
 	}
 
+	@Override
+	public ReportContentType[] getSupportedContentTypes() {
+		return supportedContentTypes;
+	}
+
 	/**
-	 * Get supported export format
-	 * @return export formats
+	 * Creates ZK media for legacy viewer consumers.
+	 * @param contentType MIME type
+	 * @param fileExtension file extension
+	 * @return media or {@code null}
 	 */
-	public ExportFormat[] getExportFormats() {
-		return exportFormats;
+	public AMedia getMedia(String contentType, String fileExtension) {
+		File file = getContent(contentType, fileExtension);
+		return file != null ? new AMedia(file.getName(), fileExtension, contentType, file, true) : null;
 	}
 	
 	/**

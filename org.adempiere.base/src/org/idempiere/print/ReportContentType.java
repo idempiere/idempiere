@@ -9,17 +9,8 @@
  * as published by the Free Software Foundation; either version 2     *
  * of the License, or (at your option) any later version.              *
  **********************************************************************/
-package org.idempiere.ui.zk.report;
+package org.idempiere.print;
 
-/**
- * OSGi extension point for report viewer content generation.
- * Implementations are evaluated in descending service ranking order.
- * The Core fallback implementation has service ranking {@code 0}. Extension
- * plug-ins that should take precedence must register their implementation with
- * a positive {@code service.ranking} and return {@code null} for requests they
- * do not support, allowing the next ranked factory to handle the request.
- */
-public interface IReportViewerContentRendererFactory {
-	/** @return renderer, or {@code null} if this factory is not applicable */
-	IReportViewerContentRenderer createRenderer(ReportViewerRequest request);
+/** UI-independent description of a supported report output type. */
+public record ReportContentType(String name, String fileExtension, String contentType) {
 }
