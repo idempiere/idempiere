@@ -37,6 +37,7 @@ import org.adempiere.webui.Extensions;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
+import org.adempiere.webui.component.FlexHlayout;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
@@ -61,6 +62,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.ui.zk.event.UIEventManager;
 import org.idempiere.ui.zk.media.IMediaView;
 import org.idempiere.ui.zk.media.Medias;
 import org.zkoss.io.RepeatableInputStream;
@@ -77,7 +79,6 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Filedownload;
-import org.adempiere.webui.component.FlexHlayout;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.North;
@@ -635,6 +636,14 @@ public class WAttachment extends Window implements EventListener<Event>
 			try
 			{
 				String contentType = entry.getContentType();
+
+				Object recordId = null;
+				if (m_attachment.getRecord_ID() > 0)
+					recordId = m_attachment.getRecord_ID();
+				else
+					recordId = m_attachment.getRecord_UU();
+				UIEventManager.fireAccessViewAttachment(Env.getCtx(), m_WindowNo, m_attachment.getAD_Table_ID(), recordId, entry.getName());
+
 				media = new AMedia(entry.getName(), null, contentType, RepeatableInputStream.getInstance(entry.getInputStream()));
 				if (   MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false, Env.getAD_Client_ID(Env.getCtx())) 
 					&& Medias.PDF_MIME_TYPE.equals(contentType)) {
@@ -954,6 +963,12 @@ public class WAttachment extends Window implements EventListener<Event>
 		{
 			try
 			{
+				Object recordId = null;
+				if (m_attachment.getRecord_ID() > 0)
+					recordId = m_attachment.getRecord_ID();
+				else
+					recordId = m_attachment.getRecord_UU();
+				UIEventManager.fireAccessDownloadAttachment(Env.getCtx(), m_WindowNo, m_attachment.getAD_Table_ID(), recordId, entry.getName());
 				media = new AMedia(entry.getName(), null, entry.getContentType(), RepeatableInputStream.getInstance(entry.getInputStream()));
 				Filedownload.save(media);
 			}
@@ -990,6 +1005,12 @@ public class WAttachment extends Window implements EventListener<Event>
 			String name = MTable.get(Env.getCtx(), m_attachment.getAD_Table_ID()).getTableName() + "_" + m_attachment.getRecord_ID();
 			media = null;
 			try {
+				Object recordId = null;
+				if (m_attachment.getRecord_ID() > 0)
+					recordId = m_attachment.getRecord_ID();
+				else
+					recordId = m_attachment.getRecord_UU();
+				UIEventManager.fireAccessDownloadAttachment(Env.getCtx(), m_WindowNo, m_attachment.getAD_Table_ID(), recordId, null);
 				media = new AMedia(name, null, "application/zip", zipFile, true);
 			} catch (Exception e) {
 				throw new AdempiereException("Error when converting zip file to media : " + e);

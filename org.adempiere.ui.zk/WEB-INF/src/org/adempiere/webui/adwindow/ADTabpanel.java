@@ -1836,15 +1836,26 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         		listPanel.invalidateGridView();
         	}
         }
-        if (e.Record_ID != null) { // TODO: if table is multi-key, Record_ID arrives null and we need to get the UUID from the GridTable
-            if (e.getSource() instanceof GridTab gt) {
-                UIEventManager.fireAccessRecordEvent(Env.getCtx(), gt.getAD_Window_ID(), windowNo, e.AD_Table_ID, e.Record_ID);
-            } else if (e.getSource() instanceof GridTable gtb) {
-            	int windowId = -1;
-            	if (gtb.getFieldCount() > 0 && gtb.getField(0).getGridTab() != null)
-           			windowId = gtb.getField(0).getGridTab().getAD_Window_ID();
-                UIEventManager.fireAccessRecordEvent(Env.getCtx(), windowId, windowNo, e.AD_Table_ID, e.Record_ID);
+        if (GridTab.DEFAULT_STATUS_MESSAGE.equals(e.getAD_Message())) {
+        	GridTab gt = null;
+        	Object recordId = null;
+            if (e.Record_ID != null) {
+            	recordId = e.Record_ID;
+                if (e.getSource() instanceof GridTab)
+                	gt = (GridTab) e.getSource();
+                else if (e.getSource() instanceof GridTable gtb && gtb.getFieldCount() > 0 && gtb.getField(0).getGridTab() != null)
+               		gt = gtb.getField(0).getGridTab();
+            } else {
+            	// multi-key table, here Record_ID arrives null and we need to report the Record_UU
+                if (e.getSource() instanceof GridTab)
+                	gt = (GridTab) e.getSource();
+                else if (e.getSource() instanceof GridTable gtb && gtb.getFieldCount() > 0 && gtb.getField(0).getGridTab() != null)
+               		gt = gtb.getField(0).getGridTab();
+                if (gt != null)
+                	recordId = gt.getRecord_UU();
             }
+            if (gt != null && recordId != null)
+            	UIEventManager.fireAccessRecordEvent(Env.getCtx(), gt.getAD_Window_ID(), windowNo, e.AD_Table_ID, recordId);
         }
     }
 

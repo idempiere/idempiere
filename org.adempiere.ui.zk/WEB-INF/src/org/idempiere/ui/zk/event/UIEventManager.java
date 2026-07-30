@@ -136,15 +136,52 @@ public class UIEventManager {
 	 * Fires an event when querying within an info window
 	 * @param ctx
 	 * @param window
-	 * @param infoWindowId
+	 * @param windowId
 	 * @param where
 	 */
-	public static void fireAccessRecordEvent(Properties ctx, int infoWindowId, int windowNo, int tableId, Object recordId) {
+	public static void fireAccessRecordEvent(Properties ctx, int windowId, int windowNo, int tableId, Object recordId) {
 		Event event = EventManager.newEvent(IUIEventTopics.UI_ACCESS_RECORD,
-				new EventProperty("windowId", infoWindowId),
+				new EventProperty("windowId", windowId),
 				new EventProperty("windowNo", windowNo),
 				new EventProperty("tableId", tableId),
 				new EventProperty("recordId", recordId)
+				);
+		sendEvent(event);
+	}
+
+	/**
+	 * Fires an event when viewing an attachment
+	 * @param ctx
+	 * @param windowId
+	 * @param windowNo
+	 * @param tableId
+	 * @param recordId
+	 * @param fileName
+	 */
+	public static void fireAccessViewAttachment(Properties ctx, int windowNo, int tableId, Object recordId, String fileName) {
+		Event event = EventManager.newEvent(IUIEventTopics.UI_VIEW_ATTACHMENT,
+				new EventProperty("windowNo", windowNo),
+				new EventProperty("tableId", tableId),
+				new EventProperty("recordId", recordId),
+				new EventProperty("fileName", fileName)
+				);
+		sendEvent(event);
+	}
+
+	/**
+	 * Fires an event when downloading an attachment
+	 * @param ctx
+	 * @param windowId
+	 * @param tableId
+	 * @param recordId
+	 * @param fileName - when null it means downloaded all attachments
+	 */
+	public static void fireAccessDownloadAttachment(Properties ctx, int windowNo, int tableId, Object recordId, String fileName) {
+		Event event = EventManager.newEvent(IUIEventTopics.UI_DOWNLOAD_ATTACHMENT,
+				new EventProperty("windowNo", windowNo),
+				new EventProperty("tableId", tableId),
+				new EventProperty("recordId", recordId),
+				new EventProperty("fileName", fileName)
 				);
 		sendEvent(event);
 	}
