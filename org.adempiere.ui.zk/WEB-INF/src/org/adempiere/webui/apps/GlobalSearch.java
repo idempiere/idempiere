@@ -150,6 +150,7 @@ public class GlobalSearch extends Div implements EventListener<Event> {
 			// Auto switch to Search with "/"
 			if (value != null && value.startsWith("/") && tabbox.getSelectedIndex()==0)
 				tabbox.setSelectedIndex(1);
+			value = value.trim();
 			bandbox.setAttribute(LAST_ONCHANGING_ATTR, value);
 			Events.postEvent(ON_SEARCH_EVENT, this, value);		
 		} else if (Events.ON_CHANGE.equals(event.getName())) {
