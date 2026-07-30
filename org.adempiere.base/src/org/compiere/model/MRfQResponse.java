@@ -298,7 +298,7 @@ public class MRfQResponse extends X_C_RfQResponse
 		ReportEngine re = ReportEngine.get (getCtx(), ReportEngine.RFQ, getC_RfQResponse_ID(),get_TrxName());
 		if (re == null)
 			return null;
-		return Core.getReportContent(new ReportContentRequest(re, null, getDocumentInfo()),
+		return Core.getReportContent(new ReportContentRequest(re, null, getName()),
 				"application/pdf", "pdf", file);
 	}	//	getPDF
 	
