@@ -14,8 +14,15 @@ package org.idempiere.print;
 import org.compiere.model.PrintInfo;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
+import org.compiere.process.ProcessInfo;
 
 /** Immutable input for an {@link IReportContentRendererFactory}. */
-public record ReportContentRequest(ReportEngine reportEngine, MPrintFormat printFormat, PrintInfo printInfo,
-		String title) {
+public record ReportContentRequest(ReportEngine reportEngine, ProcessInfo processInfo, String title) {
+	public MPrintFormat printFormat() {
+		return reportEngine != null ? reportEngine.getPrintFormat() : null;
+	}
+
+	public PrintInfo printInfo() {
+		return reportEngine != null ? reportEngine.getPrintInfo() : null;
+	}
 }

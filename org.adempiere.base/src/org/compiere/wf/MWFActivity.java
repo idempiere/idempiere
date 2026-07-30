@@ -1175,8 +1175,8 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			ReportEngine re = ReportEngine.get(getCtx(), pi);
 			if (re == null)
 				throw new IllegalStateException("Cannot create Report AD_Process_ID=" + m_node.getAD_Process_ID());
-			IReportContentRenderer renderer = Core.getReportContentRenderer(new ReportContentRequest(re,
-					re.getPrintFormat(), re.getPrintInfo(), pi.getTitle()));
+			re.setProcessInfo(pi);
+			IReportContentRenderer renderer = Core.getReportContentRenderer(new ReportContentRequest(re, pi, pi.getTitle()));
 			File report = renderer != null ? renderer.getContent("application/pdf", "pdf") : re.getPDF();
 			if (report == null)
 				throw new IllegalStateException("Cannot create PDF report AD_Process_ID=" + m_node.getAD_Process_ID());

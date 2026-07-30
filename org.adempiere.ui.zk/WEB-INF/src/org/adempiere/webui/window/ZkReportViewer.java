@@ -1948,7 +1948,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			try {
 				if (viewer.reportContentRenderer == null) {
 					ReportContentRequest request = new ReportContentRequest(viewer.m_reportEngine,
-							viewer.m_reportEngine.getPrintFormat(), viewer.m_reportEngine.getPrintInfo(), viewer.getTitle());
+							viewer.m_reportEngine.getProcessInfo(), viewer.getTitle());
 					viewer.reportContentRenderer = Core.getReportContentRenderer(request);
 				}
 				if (viewer.reportContentRenderer == null) {

@@ -28,7 +28,7 @@ import org.idempiere.print.IReportContentRenderer;
 import org.idempiere.print.IReportContentRendererFactory;
 import org.idempiere.print.ReportContentRequest;
 import org.idempiere.print.ReportContentType;
-import org.idempiere.ui.zk.report.JasperReportViewerContentRendererFactory;
+import org.adempiere.report.jasper.JasperReportContentRendererFactory;
 import org.junit.jupiter.api.Test;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
@@ -71,12 +71,12 @@ public class ReportViewerContentRendererFactoryTest extends AbstractTestCase {
 		List<IServiceReferenceHolder<IReportContentRendererFactory>> references = Service.locator()
 				.list(IReportContentRendererFactory.class).getServiceReferences();
 		IServiceReferenceHolder<IReportContentRendererFactory> defaultReference = references.stream()
-				.filter(reference -> reference.getService() instanceof JasperReportViewerContentRendererFactory)
+				.filter(reference -> reference.getService() instanceof JasperReportContentRendererFactory)
 				.findFirst()
 				.orElseThrow();
 
 		assertEquals(0, defaultReference.getServiceReference().getProperty(Constants.SERVICE_RANKING));
-		assertTrue(defaultReference.getService() instanceof JasperReportViewerContentRendererFactory);
+		assertTrue(defaultReference.getService() instanceof JasperReportContentRendererFactory);
 	}
 
 	private ServiceRegistration<IReportContentRendererFactory> registerFactory(
@@ -87,7 +87,7 @@ public class ReportViewerContentRendererFactoryTest extends AbstractTestCase {
 	}
 
 	private ReportContentRequest emptyRequest() {
-		return new ReportContentRequest(null, null, null, "Test");
+		return new ReportContentRequest(null, null, "Test");
 	}
 
 	private static final class TestRenderer implements IReportContentRenderer {
