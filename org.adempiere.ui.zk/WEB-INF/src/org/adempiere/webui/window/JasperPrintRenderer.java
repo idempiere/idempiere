@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 
+import org.adempiere.webui.window.IReportViewerExportSource.ExportFormat;
 import org.compiere.model.MSysConfig;
 import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
@@ -369,6 +370,16 @@ public class JasperPrintRenderer implements IReportContentRenderer {
 	public AMedia getMedia(String contentType, String fileExtension) {
 		File file = getContent(contentType, fileExtension);
 		return file != null ? new AMedia(file.getName(), fileExtension, contentType, file, true) : null;
+	}
+
+	/**
+	 * Gets ZK export formats for legacy viewer consumers.
+	 * @return export formats
+	 */
+	public ExportFormat[] getExportFormats() {
+		return java.util.Arrays.stream(getSupportedContentTypes())
+				.map(type -> new ExportFormat(type.name(), type.fileExtension(), type.contentType()))
+				.toArray(ExportFormat[]::new);
 	}
 	
 	/**
