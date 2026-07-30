@@ -35,10 +35,7 @@ import org.compiere.model.MLookupFactory;
 import org.compiere.model.MLookupInfo;
 import org.compiere.model.MPaySelectionCheck;
 import org.compiere.model.MPaymentBatch;
-import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
-import org.compiere.process.ProcessInfo;
-import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -47,6 +44,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.PaymentExport;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
+import org.idempiere.print.ReportContentRequest;
 
 import com.lowagie.text.pdf.PdfReader;
 
@@ -329,23 +327,9 @@ public class PayPrint {
 
 			//	ReportCtrl will check BankAccountDoc for PrintFormat
 			ReportEngine re = ReportEngine.get(Env.getCtx(), ReportEngine.CHECK, check.get_ID(), m_WindowNo);
-			MPrintFormat format = re.getPrintFormat();
-			File pdfFile = null;
-			if (format.getJasperProcess_ID() > 0)	
-			{
-				ProcessInfo pi = new ProcessInfo("", format.getJasperProcess_ID());
-				pi.setRecord_ID(check.get_ID());
-				pi.setIsBatch(true);
-				pi.setTransientObject(format);
-									
-				ServerProcessCtl.process(pi, null);
-				pdfFile = pi.getPDFReport();
-			}
-			else
-			{
-				pdfFile = File.createTempFile("WPayPrint", null);
-				re.getPDF(pdfFile);
-			}
+			File pdfFile = Core.getReportContent(
+					new ReportContentRequest(re, null, check.getDocumentNo()),
+					"application/pdf", "pdf", File.createTempFile("WPayPrint", null));
 			
 			if (pdfFile != null)
 			{
@@ -383,23 +367,10 @@ public class PayPrint {
 			ReportEngine re = ReportEngine.get(Env.getCtx(), ReportEngine.REMITTANCE, check.get_ID(), m_WindowNo);
 			try
 			{
-				MPrintFormat format = re.getPrintFormat();
-				if (format.getJasperProcess_ID() > 0)	
-				{
-					ProcessInfo pi = new ProcessInfo("", format.getJasperProcess_ID());
-					pi.setRecord_ID(check.get_ID());
-					pi.setIsBatch(true);
-					pi.setTransientObject(format);
-					
-					ServerProcessCtl.process(pi, null);
-					pdfList.add(pi.getPDFReport());
-				}
-				else
-				{
-					File file = File.createTempFile("WPayPrint", null);
-					re.getPDF(file);
-					pdfList.add(file);
-				}
+				File file = File.createTempFile("WPayPrint", null);
+				pdfList.add(Core.getReportContent(
+						new ReportContentRequest(re, null, check.getDocumentNo()),
+						"application/pdf", "pdf", file));
 			}
 			catch (Exception e)
 			{

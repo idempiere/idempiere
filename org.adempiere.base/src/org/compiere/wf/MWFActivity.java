@@ -71,7 +71,6 @@ import org.compiere.util.Trx;
 import org.compiere.util.TrxEventListener;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
-import org.idempiere.print.IReportContentRenderer;
 import org.idempiere.print.ReportContentRequest;
 
 /**
@@ -1176,8 +1175,8 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			if (re == null)
 				throw new IllegalStateException("Cannot create Report AD_Process_ID=" + m_node.getAD_Process_ID());
 			re.setProcessInfo(pi);
-			IReportContentRenderer renderer = Core.getReportContentRenderer(new ReportContentRequest(re, pi, pi.getTitle()));
-			File report = renderer != null ? renderer.getContent("application/pdf", "pdf") : re.getPDF();
+			File report = Core.getReportContent(new ReportContentRequest(re, pi, pi.getTitle()),
+					"application/pdf", "pdf");
 			if (report == null)
 				throw new IllegalStateException("Cannot create PDF report AD_Process_ID=" + m_node.getAD_Process_ID());
 			//	Notice

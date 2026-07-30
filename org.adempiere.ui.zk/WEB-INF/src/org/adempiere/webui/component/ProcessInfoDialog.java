@@ -20,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.adempiere.base.Core;
 import org.adempiere.webui.ISupportMask;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
@@ -37,6 +38,7 @@ import org.compiere.tools.FileUtil;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.print.ReportContentRequest;
 import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -264,7 +266,8 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 			
 			if((reportEngineType >= 0) && (recordID > 0)) {
 				re = ReportEngine.get (Env.getCtx(), reportEngineType, recordID);
-				pdfList.add(re.getPDF());
+				pdfList.add(Core.getReportContent(new ReportContentRequest(re, null, re.getName()),
+						"application/pdf", "pdf"));
 			}
 		}
 		if (pdfList.size() > 1) {

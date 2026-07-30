@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
@@ -47,6 +48,7 @@ import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
+import org.idempiere.print.ReportContentRequest;
 
 /**
  * Static method for running of report at server side
@@ -124,29 +126,29 @@ public class ServerReportCtl {
 					{
 						pi.setExport(true);
 						pi.setExportFileExtension("html");
-						pi.setExportFile(re.getHTML());
+						pi.setExportFile(getReportContent(re, pi, "text/html; charset=utf-8", "html"));
 					}
 					else if ("CSV".equals(pi.getReportType()))
 					{
 						pi.setExport(true);
 						pi.setExportFileExtension("csv");
-						pi.setExportFile(re.getCSV());					
+						pi.setExportFile(getReportContent(re, pi, "text/csv; charset=utf-8", "csv"));
 					}
 					else if ("XLS".equals(pi.getReportType()))
 					{
 						pi.setExport(true);
 						pi.setExportFileExtension("xls");
-						pi.setExportFile(re.getXLS());					
+						pi.setExportFile(getReportContent(re, pi, "application/vnd.ms-excel", "xls"));
 					}
 					else if ("XLSX".equals(pi.getReportType()))
 					{
 						pi.setExport(true);
 						pi.setExportFileExtension("xlsx");
-						pi.setExportFile(re.getXLSX());					
+						pi.setExportFile(getReportContent(re, pi, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "xlsx"));
 					}
 					else
 					{
-						pi.setPDFReport(re.getPDF());
+						pi.setPDFReport(getReportContent(re, pi, "application/pdf", "pdf"));
 					}
 				}
 				else
@@ -232,6 +234,13 @@ public class ServerReportCtl {
 			re.getPrintInfo().setPrinterName(printerName);
 		}
 		re.print();
+	}
+
+	private static java.io.File getReportContent(ReportEngine re, ProcessInfo pi, String contentType,
+			String fileExtension) {
+		re.setProcessInfo(pi);
+		String title = pi != null ? pi.getTitle() : re.getName();
+		return Core.getReportContent(new ReportContentRequest(re, pi, title), contentType, fileExtension);
 	}
 		
 	/**
@@ -332,29 +341,29 @@ public class ServerReportCtl {
 				{
 					pi.setExport(true);
 					pi.setExportFileExtension("html");
-					pi.setExportFile(re.getHTML());
+					pi.setExportFile(getReportContent(re, pi, "text/html; charset=utf-8", "html"));
 				}
 				else if ("CSV".equals(pi.getReportType()))
 				{
 					pi.setExport(true);
 					pi.setExportFileExtension("csv");
-					pi.setExportFile(re.getCSV());					
+					pi.setExportFile(getReportContent(re, pi, "text/csv; charset=utf-8", "csv"));
 				}
 				else if ("XLS".equals(pi.getReportType()))
 				{
 					pi.setExport(true);
 					pi.setExportFileExtension("xls");
-					pi.setExportFile(re.getXLS());					
+					pi.setExportFile(getReportContent(re, pi, "application/vnd.ms-excel", "xls"));
 				}
 				else if ("XLSX".equals(pi.getReportType()))
 				{
 					pi.setExport(true);
 					pi.setExportFileExtension("xlsx");
-					pi.setExportFile(re.getXLSX());					
+					pi.setExportFile(getReportContent(re, pi, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "xlsx"));
 				}
 				else
 				{
-					pi.setPDFReport(re.getPDF());
+					pi.setPDFReport(getReportContent(re, pi, "application/pdf", "pdf"));
 				}
 			}
 			else
@@ -380,29 +389,29 @@ public class ServerReportCtl {
 			{
 				pi.setExport(true);
 				pi.setExportFileExtension("html");
-				pi.setExportFile(re.getHTML());
+				pi.setExportFile(getReportContent(re, pi, "text/html; charset=utf-8", "html"));
 			}
 			else if ("CSV".equals(pi.getReportType()))
 			{
 				pi.setExport(true);
 				pi.setExportFileExtension("csv");
-				pi.setExportFile(re.getCSV());					
+				pi.setExportFile(getReportContent(re, pi, "text/csv; charset=utf-8", "csv"));
 			}
 			else if ("XLS".equals(pi.getReportType()))
 			{
 				pi.setExport(true);
 				pi.setExportFileExtension("xls");
-				pi.setExportFile(re.getXLS());					
+				pi.setExportFile(getReportContent(re, pi, "application/vnd.ms-excel", "xls"));
 			}
 			else if ("XLSX".equals(pi.getReportType()))
 			{
 				pi.setExport(true);
 				pi.setExportFileExtension("xlsx");
-				pi.setExportFile(re.getXLSX());					
+				pi.setExportFile(getReportContent(re, pi, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "xlsx"));
 			}
 			else
 			{
-				pi.setPDFReport(re.getPDF());
+				pi.setPDFReport(getReportContent(re, pi, "application/pdf", "pdf"));
 			}
 		}
 		else
@@ -444,29 +453,29 @@ public class ServerReportCtl {
 			{
 				pi.setExport(true);
 				pi.setExportFileExtension("html");
-				pi.setExportFile(re.getHTML());
+				pi.setExportFile(getReportContent(re, pi, "text/html; charset=utf-8", "html"));
 			}
 			else if ("CSV".equals(pi.getReportType()))
 			{
 				pi.setExport(true);
 				pi.setExportFileExtension("csv");
-				pi.setExportFile(re.getCSV());					
+				pi.setExportFile(getReportContent(re, pi, "text/csv; charset=utf-8", "csv"));
 			}
 			else if ("XLS".equals(pi.getReportType()))
 			{
 				pi.setExport(true);
 				pi.setExportFileExtension("xls");
-				pi.setExportFile(re.getXLS());					
+				pi.setExportFile(getReportContent(re, pi, "application/vnd.ms-excel", "xls"));
 			}
 			else if ("XLSX".equals(pi.getReportType()))
 			{
 				pi.setExport(true);
 				pi.setExportFileExtension("xlsx");
-				pi.setExportFile(re.getXLSX());					
+				pi.setExportFile(getReportContent(re, pi, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "xlsx"));
 			}
 			else
 			{
-				pi.setPDFReport(re.getPDF());
+				pi.setPDFReport(getReportContent(re, pi, "application/pdf", "pdf"));
 			}
 		}
 		else

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MClient;
 import org.compiere.model.MDunningLevel;
@@ -40,6 +41,7 @@ import org.compiere.util.AdempiereUserError;
 import org.compiere.util.EMail;
 import org.compiere.util.Language;
 import org.compiere.util.Util;
+import org.idempiere.print.ReportContentRequest;
 
 /**
  *	Dunning Letter Print
@@ -209,7 +211,9 @@ public class DunningPrint extends SvrProcess
 				}
 				//
 				if (re != null) {
-					File attachment = re.getPDF(File.createTempFile("Dunning", ".pdf"));
+					File attachment = Core.getReportContent(
+							new ReportContentRequest(re, getProcessInfo(), bp.getName()),
+							"application/pdf", "pdf", File.createTempFile("Dunning", ".pdf"));
 					StringBuilder msglog = new StringBuilder().append(to.toString()).append(" - ").append(attachment);
 					if (log.isLoggable(Level.FINE)) log.fine(msglog.toString());
 					email.addAttachment(attachment);
@@ -236,7 +240,8 @@ public class DunningPrint extends SvrProcess
 			else
 			{
 				if (re != null) {
-					pdfList.add(re.getPDF());					
+					pdfList.add(Core.getReportContent(new ReportContentRequest(re, getProcessInfo(), bp.getName()),
+							"application/pdf", "pdf"));
 					count++;
 					printed = true;
 				}

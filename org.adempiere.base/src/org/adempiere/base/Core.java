@@ -20,7 +20,11 @@
  *****************************************************************************/
 package org.adempiere.base;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -1251,6 +1255,57 @@ public class Core {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Creates report content through the highest-ranking applicable service and
+	 * falls back to the standard {@link org.compiere.print.ReportEngine}.
+	 *
+	 * @param request report content request
+	 * @param contentType requested MIME type
+	 * @param fileExtension requested file extension
+	 * @return generated content or {@code null}
+	 */
+	public static File getReportContent(ReportContentRequest request, String contentType, String fileExtension) {
+		return getReportContent(request, contentType, fileExtension, null);
+	}
+
+	/**
+	 * Creates report content through the highest-ranking applicable service and
+	 * copies it to {@code outputFile} when supplied.
+	 *
+	 * @param request report content request
+	 * @param contentType requested MIME type
+	 * @param fileExtension requested file extension
+	 * @param outputFile optional target file
+	 * @return generated content or {@code null}
+	 */
+	public static File getReportContent(ReportContentRequest request, String contentType, String fileExtension,
+			File outputFile) {
+		if (request == null || request.reportEngine() == null)
+			return null;
+
+		IReportContentRenderer renderer = getReportContentRenderer(request);
+		File content = renderer != null ? renderer.getContent(contentType, fileExtension) : null;
+		if (content == null) {
+			String extension = fileExtension != null ? fileExtension.toLowerCase() : "";
+			content = switch (extension) {
+				case "html" -> request.reportEngine().getHTML();
+				case "csv" -> request.reportEngine().getCSV();
+				case "xls" -> request.reportEngine().getXLS();
+				case "xlsx" -> request.reportEngine().getXLSX();
+				default -> request.reportEngine().getPDF(outputFile);
+			};
+		}
+
+		if (content == null || outputFile == null || content.equals(outputFile))
+			return content;
+		try {
+			Files.copy(content.toPath(), outputFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+			return outputFile;
+		} catch (IOException e) {
+			throw new AdempiereException("Unable to copy report content to " + outputFile, e);
+		}
 	}
 
 	/** Cache for compiled scripts, keyed by AD_Rule_ID */
