@@ -1985,7 +1985,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			if (file == null)
 				return null;
 			try {
-				return new AMedia(file.getName(), fileExtension, contentType, file, true);
+				String fileName = FileUtil.makePrefix(m_reportEngine.getName()) + "." + fileExtension;
+				return new AMedia(fileName, fileExtension, contentType, file, true);
 			} catch (IOException e) {
 				throw new AdempiereException("Unable to read report content", e);
 			}

@@ -372,7 +372,8 @@ public class JasperPrintRenderer implements IReportContentRenderer {
 		if (file == null)
 			return null;
 		try {
-			return new AMedia(file.getName(), fileExtension, contentType, file, true);
+			String fileName = FileUtil.makePrefix(title) + "." + fileExtension;
+			return new AMedia(fileName, fileExtension, contentType, file, true);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
