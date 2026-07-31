@@ -80,9 +80,9 @@ public class PO_Record
 		if (Record_IDorUU instanceof Integer) {
 			refId = DisplayType.RecordID;
 			columnName = "Record_ID";
-		} else if (Record_IDorUU instanceof String) {
+		} else if (Record_IDorUU instanceof String uuid) {
 			
-			if (Util.isEmpty(Record_IDorUU.toString()))
+			if (Util.isEmpty(uuid))
 				return true;
 			
 			refId = DisplayType.RecordUU;
@@ -146,7 +146,11 @@ public class PO_Record
 		int refId;
 		if (Record_IDorUU instanceof Integer) {
 			refId = DisplayType.RecordID;
-		} else if (Record_IDorUU instanceof String) {
+		} else if (Record_IDorUU instanceof String uuid) {
+
+			if (Util.isEmpty(uuid))
+				return;
+
 			refId = DisplayType.RecordUU;
 		} else {
 			throw new IllegalArgumentException(Record_IDorUU.getClass().getName() + " not supported for ID/UUID");
@@ -253,7 +257,11 @@ public class PO_Record
 		if (Record_IDorUU instanceof Integer) {
 			refId = DisplayType.RecordID;
 			columnName = "Record_ID";
-		} else if (Record_IDorUU instanceof String) {
+		} else if (Record_IDorUU instanceof String uuid) {
+
+			if (Util.isEmpty(uuid))
+				return;
+
 			refId = DisplayType.RecordUU;
 			columnName = "Record_UU";
 		} else {
