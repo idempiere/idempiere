@@ -26,7 +26,9 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 import javax.crypto.SecretKey;
@@ -87,9 +89,11 @@ import org.idempiere.fa.service.api.IDepreciationMethod;
 import org.idempiere.fa.service.api.IDepreciationMethodFactory;
 import org.idempiere.model.IMappedModelFactory;
 import org.idempiere.print.IPrintHeaderFooter;
+import org.idempiere.print.IReportContentProcessor;
 import org.idempiere.print.IReportContentRenderer;
 import org.idempiere.print.IReportContentRendererFactory;
 import org.idempiere.print.ReportContentRequest;
+import org.idempiere.print.ReportContentType;
 import org.idempiere.print.renderer.IReportRenderer;
 import org.idempiere.print.renderer.IReportRendererConfiguration;
 import org.idempiere.process.IMappedProcessFactory;
@@ -1258,6 +1262,19 @@ public class Core {
 	}
 
 	/**
+	 * Gets a report content renderer that applies the report content processor
+	 * pipeline to generated content. Processed content is cached per MIME type and
+	 * file extension so that repeated viewer operations use the same final file.
+	 *
+	 * @param request report content request
+	 * @return processing renderer or {@code null}
+	 */
+	public static IReportContentRenderer getProcessedReportContentRenderer(ReportContentRequest request) {
+		IReportContentRenderer renderer = getReportContentRenderer(request);
+		return renderer != null ? new ProcessedReportContentRenderer(request, renderer) : null;
+	}
+
+	/**
 	 * Creates report content through the highest-ranking applicable service and
 	 * falls back to the standard {@link org.compiere.print.ReportEngine}.
 	 *
@@ -1285,7 +1302,7 @@ public class Core {
 		if (request == null || request.reportEngine() == null)
 			return null;
 
-		IReportContentRenderer renderer = getReportContentRenderer(request);
+		IReportContentRenderer renderer = getProcessedReportContentRenderer(request);
 		File content = renderer != null ? renderer.getContent(contentType, fileExtension) : null;
 		if (content == null) {
 			String extension = fileExtension != null ? fileExtension.toLowerCase() : "";
@@ -1294,8 +1311,9 @@ public class Core {
 				case "csv" -> request.reportEngine().getCSV();
 				case "xls" -> request.reportEngine().getXLS();
 				case "xlsx" -> request.reportEngine().getXLSX();
-				default -> request.reportEngine().getPDF(outputFile);
+				default -> request.reportEngine().getPDF();
 			};
+			content = processReportContent(request, contentType, fileExtension, content);
 		}
 
 		if (content == null || outputFile == null || content.equals(outputFile))
@@ -1305,6 +1323,68 @@ public class Core {
 			return outputFile;
 		} catch (IOException e) {
 			throw new AdempiereException("Unable to copy report content to " + outputFile, e);
+		}
+	}
+
+	/**
+	 * Applies all applicable report content processors in descending OSGi service
+	 * ranking order.
+	 *
+	 * @param request report content request
+	 * @param contentType requested MIME type
+	 * @param fileExtension requested file extension
+	 * @param content generated content
+	 * @return processed content, or {@code null} when {@code content} is {@code null}
+	 */
+	public static File processReportContent(ReportContentRequest request, String contentType, String fileExtension,
+			File content) {
+		if (content == null)
+			return null;
+
+		List<IServiceReferenceHolder<IReportContentProcessor>> references = Service.locator()
+				.list(IReportContentProcessor.class).getServiceReferences();
+		for (IServiceReferenceHolder<IReportContentProcessor> reference : references) {
+			IReportContentProcessor processor = reference.getService();
+			if (processor == null || !processor.isApplicable(request, contentType, fileExtension))
+				continue;
+			content = processor.process(request, contentType, fileExtension, content);
+			if (content == null)
+				throw new AdempiereException("Report content processor returned no content: "
+						+ processor.getClass().getName());
+		}
+		return content;
+	}
+
+	private static final class ProcessedReportContentRenderer implements IReportContentRenderer {
+		private final ReportContentRequest request;
+		private final IReportContentRenderer renderer;
+		private final Map<String, File> content = new HashMap<>();
+
+		private ProcessedReportContentRenderer(ReportContentRequest request, IReportContentRenderer renderer) {
+			this.request = request;
+			this.renderer = renderer;
+		}
+
+		@Override
+		public File getContent(String contentType, String fileExtension) {
+			String key = contentType + ";" + fileExtension;
+			if (content.containsKey(key))
+				return content.get(key);
+			File generated = renderer.getContent(contentType, fileExtension);
+			File processed = processReportContent(request, contentType, fileExtension, generated);
+			if (processed != null)
+				content.put(key, processed);
+			return processed;
+		}
+
+		@Override
+		public ReportContentType[] getSupportedContentTypes() {
+			return renderer.getSupportedContentTypes();
+		}
+
+		@Override
+		public int getRowCount() {
+			return renderer.getRowCount();
 		}
 	}
 
