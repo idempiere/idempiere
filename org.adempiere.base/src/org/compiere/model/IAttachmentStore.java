@@ -70,4 +70,17 @@ public interface IAttachmentStore {
 	 */
 	public boolean deleteEntry(MAttachment mAttachment, MStorageProvider provider, int index);
 
+	/**
+	 * Generate a backend-native presigned URL for direct download of a single attachment entry.
+	 * Return null if this backend does not support native URL signing.
+	 * @param attachment
+	 * @param prov
+	 * @param entryIndex zero-based index of the attachment entry
+	 * @param expiresInSeconds lifetime of the URL
+	 * @return presigned URL string, or null if not supported
+	 */
+	default String getPresignedURL(MAttachment attachment, MStorageProvider prov, int entryIndex, long expiresInSeconds) {
+		return null;
+	}
+
 }
