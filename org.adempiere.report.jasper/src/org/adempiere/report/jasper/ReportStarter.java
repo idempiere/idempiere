@@ -37,6 +37,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.PropertyResourceBundle;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -635,6 +638,20 @@ public class ReportStarter implements ProcessCall, ClientProcess
 				{
 					MTable table = new MTable(ctx, pi.getTable_ID(), trxName);
 					String tableName = table.getTableName();
+					String recordIds = pi.getRecord_IDs().stream()
+							.map(String::valueOf)
+							.collect(Collectors.joining(","));
+					String recordIdColumn = tableName + "_ID";
+					Pattern recordIdParameterPattern = Pattern.compile(
+							"(?i)(\\b(?:[A-Z_][A-Z0-9_]*\\.)?" + Pattern.quote(recordIdColumn)
+									+ ")\\s*=\\s*\\$P\\{RECORD_ID\\}");
+					Matcher recordIdParameterMatcher = recordIdParameterPattern.matcher(originalQueryText);
+					if (recordIdParameterMatcher.find())
+					{
+						String newQueryText = recordIdParameterMatcher.replaceAll("$1 IN (" + recordIds + ")");
+						jasperReport = compileReportQuery(jasperData, jasperReport, newQueryText);
+						return jasperReport;
+					}
 		    		String originalQueryTemp = originalQueryText.toUpperCase();
 		    		int index1 = originalQueryTemp.indexOf(" " + tableName.toUpperCase());
 		    		if (index1 != -1)
@@ -659,22 +676,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 		    				else
 		    					newQueryText = originalQueryText + " WHERE " + query.getSQLFilter().toSQLWithParameters();
 
-		    			    File jrxmlFile = File.createTempFile(FileUtil.makePrefix(jasperReport.getName()), ".jrxml");
-		            		JRXmlWriter.writeReport(jasperReport, new FileOutputStream(jrxmlFile), "UTF-8");
-		            		
-		            		JasperDesign jasperDesign = JRXmlLoader.load(jrxmlFile);
-		            		
-		    				JRDesignQuery newQuery = new JRDesignQuery();
-		    			    newQuery.setText(newQueryText);
-		    			    jasperDesign.setQuery(newQuery);
-		    			    
-		    	        	JasperCompileManager manager = JasperCompileManager.getInstance(jasperReportContext);
-		    	        	JasperReport newJasperReport = manager.compile(jasperDesign);
-		    			    if (newJasperReport != null)
-		    			    {
-		    			    	jasperData.jasperReport = newJasperReport;
-		    			    	jasperReport = newJasperReport;
-		    			    }
+							jasperReport = compileReportQuery(jasperData, jasperReport, newQueryText);
 		    			}
 		    		}
 				}
@@ -683,6 +685,27 @@ public class ReportStarter implements ProcessCall, ClientProcess
 		catch(Exception e)
 		{
 			log.log(Level.SEVERE, "Failed to modify the report query", e);
+		}
+		return jasperReport;
+	}
+
+	private JasperReport compileReportQuery(JasperInfo jasperData, JasperReport jasperReport, String queryText)
+			throws JRException, IOException
+	{
+		File jrxmlFile = File.createTempFile(FileUtil.makePrefix(jasperReport.getName()), ".jrxml");
+		JRXmlWriter.writeReport(jasperReport, new FileOutputStream(jrxmlFile), "UTF-8");
+
+		JasperDesign jasperDesign = JRXmlLoader.load(jrxmlFile);
+		JRDesignQuery newQuery = new JRDesignQuery();
+		newQuery.setText(queryText);
+		jasperDesign.setQuery(newQuery);
+
+		JasperCompileManager manager = JasperCompileManager.getInstance(jasperReportContext);
+		JasperReport newJasperReport = manager.compile(jasperDesign);
+		if (newJasperReport != null)
+		{
+			jasperData.jasperReport = newJasperReport;
+			return newJasperReport;
 		}
 		return jasperReport;
 	}
