@@ -31,6 +31,7 @@ import java.util.logging.Level;
 
 import javax.activation.FileDataSource;
 
+import org.adempiere.base.Core;
 import org.adempiere.base.upload.IUploadService;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.report.jasper.ReportStarter;
@@ -59,6 +60,8 @@ import org.compiere.model.MUser;
 import org.compiere.model.PO;
 import org.compiere.model.PrintInfo;
 import org.compiere.model.X_AD_ToolBarButton;
+import org.compiere.process.ProcessInfo;
+import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -66,6 +69,7 @@ import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 import org.idempiere.ui.zk.media.IMediaView;
 import org.idempiere.ui.zk.media.WMediaOptions;
+import org.idempiere.print.ReportContentRequest;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Component;
@@ -118,6 +122,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	protected ToolBarButton bExport = new ToolBarButton();
 	protected ToolBarButton bCloudUpload = new ToolBarButton();
 	private PrintInfo			m_printInfo;
+	private ProcessInfo			m_processInfo;
 	
 	private int mediaVersion = 0;
 	
@@ -143,6 +148,10 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	 * @param printInfo
 	 */
 	public ZkJRViewer(JasperPrint jasperPrint, String title, PrintInfo printInfo) {
+		this(jasperPrint, title, printInfo, null);
+	}
+
+	public ZkJRViewer(JasperPrint jasperPrint, String title, PrintInfo printInfo, ProcessInfo processInfo) {
 		super();
 		this.setTitle(title);
 		m_title = title;
@@ -150,6 +159,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
 		setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, m_WindowNo);
 		m_printInfo = printInfo;
+		m_processInfo = processInfo;
 		init();
 	}
 
@@ -159,6 +169,11 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	 * @param printInfo
 	 */
 	public ZkJRViewer(java.util.List<JasperPrint> jasperPrintList, String title, PrintInfo printInfo) {
+		this(jasperPrintList, title, printInfo, null);
+	}
+
+	public ZkJRViewer(java.util.List<JasperPrint> jasperPrintList, String title, PrintInfo printInfo,
+			ProcessInfo processInfo) {
 		super();
 		this.setTitle(title);
 		m_title = title;
@@ -166,6 +181,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
 		setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, m_WindowNo);
 		m_printInfo = printInfo;
+		m_processInfo = processInfo;
 		init();
 	}
 
@@ -707,7 +723,17 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		if (media != null && media.getContentType().equals(contentType) && media.getFormat().equals(fileExtension))
 			return media;
 		
-		return jasperRenderer.getMedia(contentType, fileExtension);
+		File file = jasperRenderer.getContent(contentType, fileExtension);
+		if (file == null)
+			return null;
+		file = Core.processReportContent(new ReportContentRequest(null, m_processInfo, m_title),
+				contentType, fileExtension, file);
+		try {
+			return new AMedia(FileUtil.makePrefix(m_title) + "." + fileExtension,
+					fileExtension, contentType, file, true);
+		} catch (IOException e) {
+			throw new AdempiereException("Unable to read Jasper report content", e);
+		}
 	}
 
 	@Override

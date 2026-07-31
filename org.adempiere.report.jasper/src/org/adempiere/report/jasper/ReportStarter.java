@@ -533,7 +533,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 	            	jasperPrint.setProperty(IDEMPIERE_REPORT_TYPE, processInfo.getReportType());
 	            }
 	            try {
-					viewerLauncher.openViewer(jasperPrint, pi.getTitle(), printInfo);
+					viewerLauncher.openViewer(jasperPrint, pi.getTitle(), printInfo, pi);
 				} catch (JRException e) {
 					throw new AdempiereException(e.getLocalizedMessage() + (e.getCause() != null ? " -> " + e.getCause().getLocalizedMessage() : ""), e);
 				}
@@ -543,7 +543,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 	            	throw new AdempiereException("Can not find a viewer provider for multiple jasper reports");
 	            }
 	            try {
-					viewerLauncher.openViewer(jasperPrintList, pi.getTitle(), printInfo);
+					viewerLauncher.openViewer(jasperPrintList, pi.getTitle(), printInfo, pi);
 				} catch (JRException e) {
 					throw new AdempiereException(e.getLocalizedMessage() + (e.getCause() != null ? " -> " + e.getCause().getLocalizedMessage() : ""), e);
 				}
