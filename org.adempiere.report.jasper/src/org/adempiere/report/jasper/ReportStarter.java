@@ -30,7 +30,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -72,10 +74,13 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
+import org.compiere.util.KeyNamePair;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
+import org.compiere.util.NamePair;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
+import org.compiere.util.ValueNamePair;
 import org.idempiere.db.util.SQLFragment;
 
 import net.sf.jasperreports.engine.JRException;
@@ -135,6 +140,12 @@ import net.sf.jasperreports.export.SimpleXmlExporterOutput;
 public class ReportStarter implements ProcessCall, ClientProcess
 {
 	public static final String IDEMPIERE_REPORT_TYPE = "IDEMPIERE_REPORT_TYPE";
+	public static final String RECORD_SELECTION_MODE = "idempiere.recordSelectionMode";
+	public static final String RECORD_SELECTION_MODE_ITERATE = "ITERATE";
+	public static final String RECORD_SELECTION_MODE_T_SELECTION = "T_SELECTION";
+	public static final String RECORD_IDS = "RECORD_IDS";
+	public static final String RECORD_UU = "RECORD_UU";
+	public static final String RECORD_UUS = "RECORD_UUS";
 	
 	private static final String SUBREPORT_DIR = "SUBREPORT_DIR";	
 	private static final String COLUMN_LOOKUP = "COLUMN_LOOKUP";
@@ -227,8 +238,9 @@ public class ReportStarter implements ProcessCall, ClientProcess
         int Record_ID=pi.getRecord_ID();
 
         if (log.isLoggable(Level.INFO)) log.info( "Name="+pi.getTitle()+"  AD_PInstance_ID="+AD_PInstance_ID+" Record_ID="+Record_ID);
-        String trxName = trx != null ? trx.getTrxName() : null;
-        ReportInfo reportInfo = getReportInfo(pi, trxName);
+		String trxName = trx != null ? trx.getTrxName() : null;
+		RecordSelection recordSelection = RecordSelection.from(ctx, pi);
+		ReportInfo reportInfo = getReportInfo(pi, trxName);
         List<JasperPrint> jasperPrintList = new ArrayList<JasperPrint>();
         List<File> batchPDFExportList = new ArrayList<File>();
         List<File> exportFileList = new ArrayList<File>();
@@ -273,6 +285,11 @@ public class ReportStarter implements ProcessCall, ClientProcess
 			
 			JasperInfo jasperInfo = reportFile != null ? getJasperInfo(reportFile) : getJasperInfo(reportURL);			
 			JasperReport jasperReport = jasperInfo.getJasperReport();
+			RecordSelectionMode selectionMode = getRecordSelectionMode(jasperReport, recordSelection);
+			if (selectionMode == RecordSelectionMode.T_SELECTION)
+				prepareTSelection(pi, recordSelection, trxName);
+			else if (selectionMode == RecordSelectionMode.LEGACY_QUERY)
+				jasperReport = processRecordIds(ctx, pi, trxName, jasperInfo, jasperReport);
 	        String jasperName = jasperInfo.getJasperName();
 	        File reportDir = jasperInfo.getReportDir();
 	        
@@ -297,11 +314,6 @@ public class ReportStarter implements ProcessCall, ClientProcess
 	        } else {
 	        	params.put(SUBREPORT_DIR, fileResourcePath);
 	        	params.put(RESOURCE_DIR, fileResourcePath);
-	        }
-	
-	        if (pi.getTable_ID() > 0 && Record_ID <= 0 && pi.getRecord_IDs() != null && pi.getRecord_IDs().size() > 0)
-	        {
-	        	jasperReport = processRecordIds(ctx, pi, trxName, jasperInfo, jasperReport);
 	        }
 	
 			File[] subreports = null;
@@ -343,8 +355,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
             	} // @Trifon - end
             }
 
-            if (Record_ID > 0)
-            	params.put("RECORD_ID", Integer.valueOf( Record_ID));
+			recordSelection.addCollectionParameters(params);
 
         	// contribution from Ricardo (ralexsander)
             // in iReports you can 'SELECT' AD_Client_ID, AD_Org_ID and AD_User_ID using only AD_PINSTANCE_ID
@@ -454,43 +465,53 @@ public class ReportStarter implements ProcessCall, ClientProcess
             }
             params.put(JRParameter.REPORT_RESOURCE_BUNDLE, new MsgResourceBundle(propertyResourceBundle, currLang.getLocale(), currLang.getAD_Language(), Env.isSOTrx(Env.getCtx())));
 
-            Connection conn = null;             
-            int maxPages = MSysConfig.getIntValue(MSysConfig.JASPER_SWAP_MAX_PAGES, DEFAULT_SWAP_MAX_PAGES);
-            try {
-            	if (trx != null)
-            		conn = trx.getConnection();
-            	else
-            		conn = getConnection();
+			Connection conn = null;
+			int maxPages = MSysConfig.getIntValue(MSysConfig.JASPER_SWAP_MAX_PAGES, DEFAULT_SWAP_MAX_PAGES);
+			try {
+				if (trx != null)
+					conn = trx.getConnection();
+				else
+					conn = getConnection();
 
-            	String swapPath = System.getProperty("java.io.tmpdir");
-				JRSwapFile swapFile = new JRSwapFile(swapPath, 1024, 1024);
-				JRSwapFileVirtualizer virtualizer = new JRSwapFileVirtualizer(maxPages, swapFile, true);
-				params.put(JRParameter.REPORT_VIRTUALIZER, virtualizer);
-				JRBaseFiller filler = JRFiller.createFiller(jasperReportContext, jasperReport);
-				JasperPrint jasperPrint = filler.fill(params, conn);
-				jasperPrint.setName(pi.getTitle());
-				recordCounts = filler.getVariableValue(JRVariable.REPORT_COUNT);
+				List<JasperPrint> reportPrints = new ArrayList<>();
+				int reportRecordCount = 0;
+				for (SelectionItem item : recordSelection.getExecutions(selectionMode)) {
+					Map<String, Object> executionParams = new HashMap<>(params);
+					item.addParameters(executionParams);
+					String swapPath = System.getProperty("java.io.tmpdir");
+					JRSwapFile swapFile = new JRSwapFile(swapPath, 1024, 1024);
+					JRSwapFileVirtualizer virtualizer = new JRSwapFileVirtualizer(maxPages, swapFile, true);
+					executionParams.put(JRParameter.REPORT_VIRTUALIZER, virtualizer);
+					JRBaseFiller filler = JRFiller.createFiller(jasperReportContext, jasperReport);
+					JasperPrint jasperPrint = filler.fill(executionParams, conn);
+					jasperPrint.setName(pi.getTitle());
+					reportPrints.add(jasperPrint);
+					Object count = filler.getVariableValue(JRVariable.REPORT_COUNT);
+					if (count instanceof Number)
+						reportRecordCount += ((Number) count).intValue();
+				}
+				recordCounts = Integer.valueOf(reportRecordCount);
 
-                if (!processInfo.isExport())
-                {
-	                if (reportInfo.isDirectPrint() || processInfo.isBatch())
+	                if (!processInfo.isExport())
 	                {
-	                    //RF 1906632
-	                    if (!processInfo.isBatch()) {	
-	                    	doDirectPrint(pi, printerName, printFormat, printInfo, jasperPrint);	
-	                    } else {
-	                    	doBatchExport(jasperPrint, batchPDFExportList);
-	                    }	
-	                } else {
-						if (printInfo == null)
-							printInfo = new PrintInfo(pi);
-						jasperPrintList.add(jasperPrint);						
+		                if (reportInfo.isDirectPrint() || processInfo.isBatch())
+		                {
+		                    for (JasperPrint jasperPrint : reportPrints) {
+								if (!processInfo.isBatch())
+									doDirectPrint(pi, printerName, printFormat, printInfo, jasperPrint);
+								else
+									doBatchExport(jasperPrint, batchPDFExportList);
+		                    }
+		                } else {
+							if (printInfo == null)
+								printInfo = new PrintInfo(pi);
+							jasperPrintList.addAll(reportPrints);
+		                }
 	                }
-                }
-                else
-                {
-                	doExport(pi, jasperPrint, exportFileList);
-                }
+	                else
+	                {
+						doExport(pi, reportPrints, exportFileList);
+	                }
             } catch (JRException e) {
                 throw new AdempiereException(e.getLocalizedMessage() + (e.getCause() != null ? " -> " + e.getCause().getLocalizedMessage() : ""));
             } finally {
@@ -614,77 +635,147 @@ public class ReportStarter implements ProcessCall, ClientProcess
 		}
 	}
 
-    /**
-     * Add process info record ids to report query (multiple or)
-     * @param ctx
-     * @param pi
-     * @param trxName
-     * @param jasperData
-     * @param jasperReport
-     * @return JasReport
-     */
+	/**
+	 * Legacy fallback for reports that do not declare a scalar record parameter.
+	 */
 	private JasperReport processRecordIds(Properties ctx, ProcessInfo pi, String trxName, JasperInfo jasperData,
 			JasperReport jasperReport) {
-		try
-		{        		
+		try {
 			JRQuery originalQuery = jasperReport.getQuery();
-			if (originalQuery != null)
-			{
-				String originalQueryText = originalQuery.getText();
-				if (originalQueryText != null)
-				{
-					MTable table = new MTable(ctx, pi.getTable_ID(), trxName);
-					String tableName = table.getTableName();
-		    		String originalQueryTemp = originalQueryText.toUpperCase();
-		    		int index1 = originalQueryTemp.indexOf(" " + tableName.toUpperCase());
-		    		if (index1 != -1)
-		    		{
-		    			int index2 = originalQueryTemp.substring(index1).indexOf(",");
-		    			if (index2 != -1)
-		    			{
-		    				String tableVariable = originalQueryTemp.substring(index1 + tableName.length() + 1, index1 + index2);
-		    				tableVariable = tableVariable.trim();
-		    				
-		    				if (tableVariable.length() == 0)
-		    					tableVariable = tableName;
-		    				
-		    				MQuery query = new MQuery(tableName);
-		    				for (int recordId : pi.getRecord_IDs())
-		    					query.addRestriction(new SQLFragment(tableVariable + "." + query.getTableName() + "_ID" + MQuery.EQUAL + recordId), false, 0);
-		    				
-		    				String newQueryText = null;
-		    				int index3 = originalQueryTemp.indexOf("WHERE");
-		    				if (index3 != -1)
-		    					newQueryText = originalQueryText + " AND " + query.getSQLFilter().toSQLWithParameters();
-		    				else
-		    					newQueryText = originalQueryText + " WHERE " + query.getSQLFilter().toSQLWithParameters();
-
-		    			    File jrxmlFile = File.createTempFile(FileUtil.makePrefix(jasperReport.getName()), ".jrxml");
-		            		JRXmlWriter.writeReport(jasperReport, new FileOutputStream(jrxmlFile), "UTF-8");
-		            		
-		            		JasperDesign jasperDesign = JRXmlLoader.load(jrxmlFile);
-		            		
-		    				JRDesignQuery newQuery = new JRDesignQuery();
-		    			    newQuery.setText(newQueryText);
-		    			    jasperDesign.setQuery(newQuery);
-		    			    
-		    	        	JasperCompileManager manager = JasperCompileManager.getInstance(jasperReportContext);
-		    	        	JasperReport newJasperReport = manager.compile(jasperDesign);
-		    			    if (newJasperReport != null)
-		    			    {
-		    			    	jasperData.jasperReport = newJasperReport;
-		    			    	jasperReport = newJasperReport;
-		    			    }
-		    			}
-		    		}
-				}
-			}
-		}
-		catch(Exception e)
-		{
+			if (originalQuery == null || originalQuery.getText() == null)
+				return jasperReport;
+			String originalQueryText = originalQuery.getText();
+			MTable table = new MTable(ctx, pi.getTable_ID(), trxName);
+			String tableName = table.getTableName();
+			String originalQueryTemp = originalQueryText.toUpperCase();
+			int index1 = originalQueryTemp.indexOf(" " + tableName.toUpperCase());
+			if (index1 == -1)
+				return jasperReport;
+			int index2 = originalQueryTemp.substring(index1).indexOf(",");
+			if (index2 == -1)
+				return jasperReport;
+			String tableVariable = originalQueryTemp.substring(index1 + tableName.length() + 1, index1 + index2).trim();
+			if (tableVariable.length() == 0)
+				tableVariable = tableName;
+			MQuery query = new MQuery(tableName);
+			for (int recordId : pi.getRecord_IDs())
+				query.addRestriction(new SQLFragment(tableVariable + "." + query.getTableName() + "_ID"
+						+ MQuery.EQUAL + recordId), false, 0);
+			String filter = query.getSQLFilter().toSQLWithParameters();
+			String newQueryText = originalQueryTemp.indexOf("WHERE") != -1
+					? originalQueryText + " AND " + filter
+					: originalQueryText + " WHERE " + filter;
+			return compileReportQuery(jasperData, jasperReport, newQueryText);
+		} catch (Exception e) {
 			log.log(Level.SEVERE, "Failed to modify the report query", e);
+			return jasperReport;
+		}
+	}
+
+	private JasperReport compileReportQuery(JasperInfo jasperData, JasperReport jasperReport, String queryText)
+			throws JRException, IOException {
+		File jrxmlFile = File.createTempFile(FileUtil.makePrefix(jasperReport.getName()), ".jrxml");
+		JRXmlWriter.writeReport(jasperReport, new FileOutputStream(jrxmlFile), "UTF-8");
+		JasperDesign jasperDesign = JRXmlLoader.load(jrxmlFile);
+		JRDesignQuery newQuery = new JRDesignQuery();
+		newQuery.setText(queryText);
+		jasperDesign.setQuery(newQuery);
+		JasperReport compiledReport = JasperCompileManager.getInstance(jasperReportContext).compile(jasperDesign);
+		if (compiledReport != null) {
+			jasperData.jasperReport = compiledReport;
+			return compiledReport;
 		}
 		return jasperReport;
+	}
+
+	private RecordSelectionMode getRecordSelectionMode(JasperReport report, RecordSelection selection) {
+		if (!selection.isMultiple())
+			return RecordSelectionMode.ITERATE;
+		String value = report.getProperty(RECORD_SELECTION_MODE);
+		if (RECORD_SELECTION_MODE_ITERATE.equalsIgnoreCase(value))
+			return RecordSelectionMode.ITERATE;
+		if (RECORD_SELECTION_MODE_T_SELECTION.equalsIgnoreCase(value))
+			return RecordSelectionMode.T_SELECTION;
+		if (Util.isEmpty(value, true) || "AUTO".equalsIgnoreCase(value)) {
+			String scalarParameter = selection.uuidKeyTable() ? RECORD_UU : "RECORD_ID";
+			for (JRParameter parameter : report.getParameters()) {
+				if (scalarParameter.equals(parameter.getName()))
+					return RecordSelectionMode.ITERATE;
+			}
+			return RecordSelectionMode.LEGACY_QUERY;
+		}
+		throw new AdempiereException("Unsupported Jasper record selection mode: " + value);
+	}
+
+	private void prepareTSelection(ProcessInfo pi, RecordSelection selection, String trxName) {
+		if (pi.getAD_PInstance_ID() <= 0)
+			throw new AdempiereException("T_Selection record mode requires an AD_PInstance_ID");
+		DB.executeUpdateEx("DELETE FROM T_Selection WHERE AD_PInstance_ID=?",
+				new Object[] { pi.getAD_PInstance_ID() }, trxName);
+		List<NamePair> keys = new ArrayList<>();
+		if (selection.uuidKeyTable()) {
+			for (String uu : selection.uus())
+				keys.add(new ValueNamePair(uu, null));
+		} else {
+			for (Integer id : selection.ids())
+				keys.add(new KeyNamePair(id, null));
+		}
+		if (!keys.isEmpty())
+			DB.createT_SelectionNewNP(pi.getAD_PInstance_ID(), keys, trxName);
+	}
+
+	private enum RecordSelectionMode {
+		ITERATE,
+		T_SELECTION,
+		LEGACY_QUERY
+	}
+
+	private record SelectionItem(Integer id, String uu) {
+		private static final SelectionItem EMPTY = new SelectionItem(null, null);
+
+		private void addParameters(Map<String, Object> params) {
+			if (id != null)
+				params.put("RECORD_ID", id);
+			if (uu != null)
+				params.put(RECORD_UU, uu);
+		}
+	}
+
+	private record RecordSelection(List<Integer> ids, List<String> uus, boolean uuidKeyTable) {
+		private static RecordSelection from(Properties ctx, ProcessInfo pi) {
+			boolean uuidKeyTable = pi.getTable_ID() > 0 && MTable.get(ctx, pi.getTable_ID()).isUUIDKeyTable();
+			LinkedHashSet<Integer> ids = new LinkedHashSet<>();
+			if (pi.getRecord_IDs() != null)
+				pi.getRecord_IDs().stream().filter(id -> id != null && id > 0).forEach(ids::add);
+			if (ids.isEmpty() && pi.getRecord_ID() > 0)
+				ids.add(pi.getRecord_ID());
+			LinkedHashSet<String> uus = new LinkedHashSet<>();
+			if (pi.getRecord_UUs() != null)
+				pi.getRecord_UUs().stream().filter(uu -> !Util.isEmpty(uu, true)).forEach(uus::add);
+			if (uus.isEmpty() && !Util.isEmpty(pi.getRecord_UU(), true))
+				uus.add(pi.getRecord_UU());
+			return new RecordSelection(List.copyOf(ids), List.copyOf(uus), uuidKeyTable);
+		}
+
+		private boolean isMultiple() {
+			return uuidKeyTable ? uus.size() > 1 : ids.size() > 1;
+		}
+
+		private void addCollectionParameters(Map<String, Object> params) {
+			params.put(RECORD_IDS, Collections.unmodifiableList(ids));
+			params.put(RECORD_UUS, Collections.unmodifiableList(uus));
+		}
+
+		private List<SelectionItem> getExecutions(RecordSelectionMode mode) {
+			if (mode != RecordSelectionMode.ITERATE)
+				return List.of(SelectionItem.EMPTY);
+			List<SelectionItem> executions = new ArrayList<>();
+			if (uuidKeyTable)
+				uus.forEach(uu -> executions.add(new SelectionItem(null, uu)));
+			else
+				ids.forEach(id -> executions.add(new SelectionItem(id, null)));
+			return executions.isEmpty() ? List.of(SelectionItem.EMPTY) : executions;
+		}
 	}
 
 	/**
@@ -739,12 +830,14 @@ public class ReportStarter implements ProcessCall, ClientProcess
 	 * @param exportFileList
 	 * @throws JRException
 	 */
-	private void doExport(ProcessInfo pi, JasperPrint jasperPrint, List<File> exportFileList) throws JRException {
+	private void doExport(ProcessInfo pi, List<JasperPrint> jasperPrints, List<File> exportFileList) throws JRException {
+		if (jasperPrints.isEmpty())
+			return;
 		String ext = pi.getExportFileExtension();
 		
 		//export JasperPrint to process info
 		if ("JasperPrint".equalsIgnoreCase(ext)) {
-			pi.setInternalReportObject(jasperPrint);
+			pi.setInternalReportObject(jasperPrints.size() == 1 ? jasperPrints.get(0) : jasperPrints);
 			return;
 		}
 				
@@ -752,7 +845,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 			ext = "pdf";
 		
 		try {						
-			File exportFile = File.createTempFile(FileUtil.makePrefix(jasperPrint.getName()), "." + ext);
+			File exportFile = File.createTempFile(FileUtil.makePrefix(jasperPrints.get(0).getName()), "." + ext);
 
 			try (FileOutputStream outputStream = new FileOutputStream(exportFile);) {
 
@@ -820,7 +913,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 				if (exporter == null)
 					exporter = new JRPdfExporter(jasperReportContext);
 				
-				exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+				exporter.setExporterInput(SimpleExporterInput.getInstance(jasperPrints));
 	
 				exporter.exportReport();
 				exportFileList.add(exportFile);
