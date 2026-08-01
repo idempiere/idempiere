@@ -385,7 +385,8 @@ public class JasperPrintRenderer implements IReportContentRenderer {
 	 */
 	public ExportFormat[] getExportFormats() {
 		return java.util.Arrays.stream(getSupportedContentTypes())
-				.map(type -> new ExportFormat(type.name(), type.fileExtension(), type.contentType()))
+				.map(type -> new ExportFormat(IReportViewerExportSource.getFormatLabel(
+						type.fileExtension(), type.name()), type.fileExtension(), type.contentType()))
 				.toArray(ExportFormat[]::new);
 	}
 	
@@ -397,14 +398,21 @@ public class JasperPrintRenderer implements IReportContentRenderer {
 	public static ValueNamePair[] getPreviewType(boolean canExport) {
 		List<ValueNamePair> list = new ArrayList<ValueNamePair>();
 		if (canExport) {
-			list.add(new ValueNamePair(ZkJRViewer.PDF_OUTPUT_TYPE, ZkJRViewer.PDF_OUTPUT_TYPE));
-			list.add(new ValueNamePair(ZkJRViewer.HTML_OUTPUT_TYPE, ZkJRViewer.HTML_OUTPUT_TYPE));
-			list.add(new ValueNamePair(ZkJRViewer.XLS_OUTPUT_TYPE, ZkJRViewer.XLS_OUTPUT_TYPE));
-			list.add(new ValueNamePair(ZkJRViewer.CSV_OUTPUT_TYPE, ZkJRViewer.CSV_OUTPUT_TYPE));
-			list.add(new ValueNamePair(ZkJRViewer.XLSX_OUTPUT_TYPE, ZkJRViewer.XLSX_OUTPUT_TYPE));
+			list.add(new ValueNamePair(ZkJRViewer.PDF_OUTPUT_TYPE, IReportViewerExportSource.getFormatLabel(
+					Medias.PDF_FILE_EXT, Msg.getMsg(Env.getCtx(), "FilePDF"))));
+			list.add(new ValueNamePair(ZkJRViewer.HTML_OUTPUT_TYPE, IReportViewerExportSource.getFormatLabel(
+					Medias.HTML_FILE_EXT, Msg.getMsg(Env.getCtx(), "FileHTML"))));
+			list.add(new ValueNamePair(ZkJRViewer.XLS_OUTPUT_TYPE, IReportViewerExportSource.getFormatLabel(
+					Medias.EXCEL_FILE_EXT, Msg.getMsg(Env.getCtx(), "FileXLS"))));
+			list.add(new ValueNamePair(ZkJRViewer.CSV_OUTPUT_TYPE, IReportViewerExportSource.getFormatLabel(
+					Medias.CSV_FILE_EXT, Msg.getMsg(Env.getCtx(), "FileCSV"))));
+			list.add(new ValueNamePair(ZkJRViewer.XLSX_OUTPUT_TYPE, IReportViewerExportSource.getFormatLabel(
+					Medias.EXCEL_XML_FILE_EXT, Msg.getMsg(Env.getCtx(), "FileXLSX"))));
 		} else {
-			list.add(new ValueNamePair(ZkJRViewer.PDF_OUTPUT_TYPE, ZkJRViewer.PDF_OUTPUT_TYPE));
-			list.add(new ValueNamePair(ZkJRViewer.HTML_OUTPUT_TYPE, ZkJRViewer.HTML_OUTPUT_TYPE));
+			list.add(new ValueNamePair(ZkJRViewer.PDF_OUTPUT_TYPE, IReportViewerExportSource.getFormatLabel(
+					Medias.PDF_FILE_EXT, Msg.getMsg(Env.getCtx(), "FilePDF"))));
+			list.add(new ValueNamePair(ZkJRViewer.HTML_OUTPUT_TYPE, IReportViewerExportSource.getFormatLabel(
+					Medias.HTML_FILE_EXT, Msg.getMsg(Env.getCtx(), "FileHTML"))));
 		}
 		
 		return list.toArray(new ValueNamePair[0]);

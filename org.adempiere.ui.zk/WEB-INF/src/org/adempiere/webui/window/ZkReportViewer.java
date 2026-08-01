@@ -319,7 +319,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		});
 		for(IReportViewerRenderer renderer : renderers) {
 			if (renderer.isExport()) { 
-				ExportFormat exportFormat = new ExportFormat(renderer.getExportLabel(), renderer.getFileExtension(), renderer.getContentType());
+				ExportFormat exportFormat = new ExportFormat(
+						IReportViewerExportSource.getFormatLabel(renderer.getFileExtension(), renderer.getExportLabel()),
+						renderer.getFileExtension(), renderer.getContentType());
 				exportMap.put(exportFormat, renderer.getId());
 			}
 			rendererMap.put(renderer.getId(), renderer);
@@ -797,7 +799,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 						.orElse(null);
 				if (renderer == null || !renderer.isPreview(m_isCanExport))
 					continue;
-				ListItem li = previewType.appendItem(contentType.name(), renderer.getId());
+				ListItem li = previewType.appendItem(IReportViewerExportSource.getFormatLabel(
+						contentType.fileExtension(), contentType.name()), renderer.getId());
 				if (selectedValue != null && selectedValue.equals(li.getValue()))
 					previewType.setSelectedItem(li);
 			}
@@ -2017,7 +2020,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	public ExportFormat[] getExportFormats() {
 		if (reportContentRenderer != null) {
 			return Arrays.stream(reportContentRenderer.getSupportedContentTypes())
-					.map(type -> new ExportFormat(type.name(), type.fileExtension(), type.contentType()))
+					.map(type -> new ExportFormat(IReportViewerExportSource.getFormatLabel(
+							type.fileExtension(), type.name()), type.fileExtension(), type.contentType()))
 					.toArray(ExportFormat[]::new);
 		}
 		return exportMap.keySet().toArray(new ExportFormat[0]);

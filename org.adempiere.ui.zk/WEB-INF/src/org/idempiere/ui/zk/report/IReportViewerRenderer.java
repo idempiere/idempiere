@@ -47,7 +47,7 @@ public interface IReportViewerRenderer {
 	 * @return label for preview output type selection
 	 */
 	default String getPreviewLabel() {
-		return getId();
+		return org.adempiere.webui.window.IReportViewerExportSource.getFormatLabel(getFileExtension(), getExportLabel());
 	}
 	
 	/**
