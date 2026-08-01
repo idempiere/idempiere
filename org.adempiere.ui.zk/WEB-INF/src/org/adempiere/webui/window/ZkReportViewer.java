@@ -777,6 +777,11 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}
 
 	private void setupPreviewType() {
+		if (reportContentRenderer == null) {
+			ReportContentRequest request = new ReportContentRequest(m_reportEngine,
+					m_reportEngine.getProcessInfo(), getTitle());
+			reportContentRenderer = Core.getProcessedReportContentRenderer(request);
+		}
 		String selectedValue = null;
 		if (previewType.getItemCount() > 0) {
 			if (previewType.getSelectedIndex() >= 0) {
@@ -784,7 +789,21 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			}
 			previewType.getChildren().clear();
 		}
-		if (m_reportEngine.getPrintFormat().getJasperProcess_ID() > 0) {
+		if (reportContentRenderer != null) {
+			for (ReportContentType contentType : reportContentRenderer.getSupportedContentTypes()) {
+				IReportViewerRenderer renderer = rendererMap.values().stream()
+						.filter(candidate -> candidate.getFileExtension().equalsIgnoreCase(contentType.fileExtension()))
+						.findFirst()
+						.orElse(null);
+				if (renderer == null || !renderer.isPreview(m_isCanExport))
+					continue;
+				ListItem li = previewType.appendItem(contentType.name(), renderer.getId());
+				if (selectedValue != null && selectedValue.equals(li.getValue()))
+					previewType.setSelectedItem(li);
+			}
+			if (summary != null)
+				summary.setVisible(false);
+		} else if (m_reportEngine.getPrintFormat().getJasperProcess_ID() > 0) {
 			for (ValueNamePair vnp : JasperPrintRenderer.getPreviewType(m_isCanExport)) {
 				ListItem li = previewType.appendItem(vnp.getName(), vnp.getValue());
 				if (selectedValue != null && selectedValue.equals(li.getValue()))
@@ -804,6 +823,19 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			if (summary != null)
 				summary.setVisible(true);
 		}		
+	}
+
+	/**
+	 * Set the active print format and prepare the matching viewer implementation.
+	 * @param printFormat print format to use
+	 */
+	private void setViewerPrintFormat(MPrintFormat printFormat) {
+		m_reportEngine.setPrintFormat(printFormat);
+		setupPreviewType();
+		if (reportContentRenderer == null && printFormat.getJasperProcess_ID() == 0) {
+			m_reportEngine.setQuery(m_reportEngine.getQuery());
+			m_reportEngine.getLayout();
+		}
 	}
 
 	/**
@@ -1451,16 +1483,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 							pf.setTranslationLanguage(m_reportEngine.getPrintFormat().getLanguage());
 						}
 						
-						if (m_reportEngine.getPrintFormat().getJasperProcess_ID() != pf.getJasperProcess_ID()) {
-							m_reportEngine.setPrintFormat(pf);
-							setupPreviewType();
-							if (m_reportEngine.getPrintFormat().getJasperProcess_ID() == 0) {
-								m_reportEngine.setQuery(m_reportEngine.getQuery());
-								m_reportEngine.getLayout();
-							}
-						} else {
-							m_reportEngine.setPrintFormat(pf);
-						}
+						setViewerPrintFormat(pf);
 						m_reportEngine.initName();
 						postRenderReportEvent();
 					}
@@ -1509,17 +1532,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 							pf.setLanguage(m_reportEngine.getPrintFormat().getLanguage());		//	needs to be re-set - otherwise viewer will be blank
 							pf.setTranslationLanguage(m_reportEngine.getPrintFormat().getLanguage());
 						}
+						setViewerPrintFormat(pf);
 						m_reportEngine.initName();
-						if (m_reportEngine.getPrintFormat().getJasperProcess_ID() != pf.getJasperProcess_ID()) {
-							m_reportEngine.setPrintFormat(pf);
-							setupPreviewType();
-							if (m_reportEngine.getPrintFormat().getJasperProcess_ID() == 0) {
-								m_reportEngine.setQuery(m_reportEngine.getQuery());
-								m_reportEngine.getLayout();
-							}
-						} else {
-							m_reportEngine.setPrintFormat(pf);
-						}
 						postRenderReportEvent();
 					}
 					else {
@@ -1537,16 +1551,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 				pf.setLanguage(m_reportEngine.getPrintFormat().getLanguage());		//	needs to be re-set - otherwise viewer will be blank
 				pf.setTranslationLanguage(m_reportEngine.getPrintFormat().getLanguage());
 			}
-			if (m_reportEngine.getPrintFormat().getJasperProcess_ID() != pf.getJasperProcess_ID()) {
-				m_reportEngine.setPrintFormat(pf);
-				setupPreviewType();
-				if (m_reportEngine.getPrintFormat().getJasperProcess_ID() == 0) {
-					m_reportEngine.setQuery(m_reportEngine.getQuery());
-					m_reportEngine.getLayout();
-				}
-			} else {
-				m_reportEngine.setPrintFormat(pf);
-			}
+			setViewerPrintFormat(pf);
 			m_reportEngine.initName();
 			postRenderReportEvent();
 		}
