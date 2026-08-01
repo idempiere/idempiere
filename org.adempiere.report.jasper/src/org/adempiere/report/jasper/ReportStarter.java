@@ -837,7 +837,10 @@ public class ReportStarter implements ProcessCall, ClientProcess
 		
 		//export JasperPrint to process info
 		if ("JasperPrint".equalsIgnoreCase(ext)) {
-			pi.setInternalReportObject(jasperPrints.size() == 1 ? jasperPrints.get(0) : jasperPrints);
+			Serializable reportObject = jasperPrints.size() == 1
+					? jasperPrints.get(0)
+					: new ArrayList<>(jasperPrints);
+			pi.setInternalReportObject(reportObject);
 			return;
 		}
 				
