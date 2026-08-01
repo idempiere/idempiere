@@ -73,11 +73,13 @@ import org.compiere.model.ServerStateChangeListener;
 import org.compiere.model.StandardTaxProvider;
 import org.compiere.model.SystemIDs;
 import org.compiere.process.ProcessCall;
+import org.compiere.print.ReportEngine;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DefaultKeyStore;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.PaymentExport;
 import org.compiere.util.ReplenishInterface;
 import org.compiere.util.Util;
@@ -1270,7 +1272,11 @@ public class Core {
 	 * @return processing renderer or {@code null}
 	 */
 	public static IReportContentRenderer getProcessedReportContentRenderer(ReportContentRequest request) {
+		if (request == null)
+			return null;
 		IReportContentRenderer renderer = getReportContentRenderer(request);
+		if (renderer == null && request.reportEngine() != null)
+			renderer = new ReportEngineContentRenderer(request.reportEngine());
 		return renderer != null ? new ProcessedReportContentRenderer(request, renderer) : null;
 	}
 
@@ -1353,6 +1359,45 @@ public class Core {
 						+ processor.getClass().getName());
 		}
 		return content;
+	}
+
+	private static final class ReportEngineContentRenderer implements IReportContentRenderer {
+		private static final ReportContentType[] SUPPORTED_CONTENT_TYPES = {
+				new ReportContentType(Msg.getMsg(Env.getCtx(), "FilePDF"), "pdf", "application/pdf"),
+				new ReportContentType(Msg.getMsg(Env.getCtx(), "FileHTML"), "html", "text/html"),
+				new ReportContentType(Msg.getMsg(Env.getCtx(), "FileCSV"), "csv", "text/csv"),
+				new ReportContentType(Msg.getMsg(Env.getCtx(), "FileXLS"), "xls", "application/vnd.ms-excel"),
+				new ReportContentType(Msg.getMsg(Env.getCtx(), "FileXLSX"), "xlsx",
+						"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") };
+
+		private final ReportEngine reportEngine;
+
+		private ReportEngineContentRenderer(ReportEngine reportEngine) {
+			this.reportEngine = reportEngine;
+		}
+
+		@Override
+		public File getContent(String contentType, String fileExtension) {
+			String extension = fileExtension != null ? fileExtension.toLowerCase() : "";
+			return switch (extension) {
+				case "pdf" -> reportEngine.getPDF();
+				case "html" -> reportEngine.getHTML();
+				case "csv" -> reportEngine.getCSV();
+				case "xls" -> reportEngine.getXLS();
+				case "xlsx" -> reportEngine.getXLSX();
+				default -> null;
+			};
+		}
+
+		@Override
+		public ReportContentType[] getSupportedContentTypes() {
+			return SUPPORTED_CONTENT_TYPES;
+		}
+
+		@Override
+		public int getRowCount() {
+			return reportEngine.getRowCount();
+		}
 	}
 
 	private static final class ProcessedReportContentRenderer implements IReportContentRenderer {
