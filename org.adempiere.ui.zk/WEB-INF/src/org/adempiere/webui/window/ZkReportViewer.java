@@ -830,12 +830,11 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	 * @param printFormat print format to use
 	 */
 	private void setViewerPrintFormat(MPrintFormat printFormat) {
+		reportContentRenderer = null;
 		m_reportEngine.setPrintFormat(printFormat);
-		setupPreviewType();
-		if (reportContentRenderer == null && printFormat.getJasperProcess_ID() == 0) {
+		if (printFormat.getJasperProcess_ID() == 0)
 			m_reportEngine.setQuery(m_reportEngine.getQuery());
-			m_reportEngine.getLayout();
-		}
+		setupPreviewType();
 	}
 
 	/**
