@@ -27,7 +27,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -433,10 +435,46 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 		}
 		if (retValue == null)
 		{
+			sql = "SELECT c.DivideRate, uom.StdPrecision, uom.CostingPrecision "
+					+ " FROM C_UOM_Conversion c "
+					+ " INNER JOIN C_UOM uom ON (c.C_UOM_ID=uom.C_UOM_ID) "
+					+ " WHERE c.IsActive='Y' AND c.C_UOM_ID=? AND c.C_UOM_TO_ID=? AND c.M_Product_ID IS NULL "
+					+ " ORDER BY c.AD_Client_ID DESC, c.AD_Org_ID DESC ";
+			try
+			{
+				pstmt = DB.prepareStatement(sql, null);
+				pstmt.setInt(1, C_UOM_To_ID);
+				pstmt.setInt(2, C_UOM_From_ID);
+				rs = pstmt.executeQuery();
+				if (rs.next())
+				{
+					retValue = rs.getBigDecimal(1);
+					precision = rs.getInt(StdPrecision ? 2 : 3);
+				}
+			}
+			catch (SQLException e)
+			{
+				throw new DBException(e, sql);
+			}
+			finally
+			{
+				DB.close(rs, pstmt);
+				rs = null;
+				pstmt = null;
+			}
+		}
+
+		if (retValue == null)
+		{
+			retValue = getRateUsingCommonUOM(Env.getCtx(), C_UOM_From_ID, C_UOM_To_ID, -1);
+		}
+
+		if (retValue == null)
+		{
 			if (s_log.isLoggable(Level.INFO)) s_log.info ("NOT found - FromUOM=" + C_UOM_From_ID + ", ToUOM=" + C_UOM_To_ID);
 			return null;
 		}
-			
+
 		//	Just get Rate
 		if (GETRATE.equals(qty))
 			return retValue;
@@ -521,7 +559,15 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 	{
 		if (M_Product_ID == 0)
 			return null;
-		
+
+		int prodUOMId = MProduct.get(ctx, M_Product_ID).getC_UOM_ID();
+		if (prodUOMId == C_UOM_To_ID)
+		{
+			return Env.ONE;
+		}
+
+		int precision = 50; // get it with many decimals to minimize rounding issues
+
 		//first check product specific conversion
 		MUOMConversion[] rates = getProductConversions(ctx, M_Product_ID);
 		
@@ -532,25 +578,24 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 				if (rate.getMultiplyRate().compareTo(Env.ONE) >= 0)
 					return rate.getMultiplyRate();
 				else
-					return getOppositeRate(rate.getDivideRate(), 50); // get it with many decimals to minimize rounding issues
+					return getOppositeRate(rate.getDivideRate(), precision);
+			}
+			else {
+				if (rate.getC_UOM_ID() == C_UOM_To_ID) {
+					if (rate.getDivideRate().compareTo(Env.ONE) >= 0)
+						return rate.getDivideRate();
+					else
+						return getOppositeRate(rate.getMultiplyRate(), precision);
+				}
 			}
 		}
-		
-		//fall back to generic conversion
-		List<MUOMConversion> conversions = new Query(ctx, Table_Name, "C_UOM_ID=? AND C_UOM_TO_ID=? AND M_Product_ID IS NULL AND AD_Client_ID IN (0, ?)", null)
-				.setParameters(MProduct.get(ctx, M_Product_ID).getC_UOM_ID(), C_UOM_To_ID, Env.getAD_Client_ID(ctx))
-				.setOrderBy("AD_Client_ID Desc")
-				.setOnlyActiveRecords(true)
-				.list();
-		for (int i = 0; i < conversions.size(); i++)
+
+		// getRateUsingCommonUOM already covers generic records (M_Product_ID IS NULL) in its query,
+		// so no additional generic fallback is needed here.
+		BigDecimal retValue = getRateUsingCommonUOM(ctx, prodUOMId, C_UOM_To_ID, M_Product_ID);
+		if (retValue != null)
 		{
-			MUOMConversion rate = conversions.get(i);
-			if (rate.getC_UOM_To_ID() == C_UOM_To_ID) {
-				if (rate.getMultiplyRate().compareTo(Env.ONE) >= 0)
-					return rate.getMultiplyRate();
-				else
-					return getOppositeRate(rate.getDivideRate(), 50); // get it with many decimals to minimize rounding issues
-			}
+			return retValue;
 		}
 		return null;
 	}	//	getProductRateTo
@@ -633,30 +678,44 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 	{
 		if (M_Product_ID == 0)
 			return null;
-				
+
+		int prodUOMId = MProduct.get(ctx, M_Product_ID).getC_UOM_ID();
+		if (prodUOMId == C_UOM_To_ID)
+		{
+			return Env.ONE;
+		}
+
+		int precision = 50; // get it with many decimals to minimize rounding issues
+
 		//first, check product specific conversion
 		MUOMConversion[] rates = getProductConversions(ctx, M_Product_ID);
 		
 		for (int i = 0; i < rates.length; i++)
 		{
 			MUOMConversion rate = rates[i];
-			if (rate.getC_UOM_To_ID() == C_UOM_To_ID)
-				return rate.getDivideRate();
+			if (rate.getC_UOM_To_ID() == C_UOM_To_ID) {
+				if (rate.getDivideRate().compareTo(Env.ONE) >= 0)
+					return rate.getDivideRate();
+				else
+					return getOppositeRate(rate.getMultiplyRate(), precision);
+			}
+			else {
+				if (rate.getC_UOM_ID() == C_UOM_To_ID) {
+					if (rate.getMultiplyRate().compareTo(Env.ONE) >= 0)
+						return rate.getMultiplyRate();
+					else
+						return getOppositeRate(rate.getDivideRate(), precision);
+				}
+			}
 		}
-	
-		//fall back to generic conversion
-		List<MUOMConversion> conversions = new Query(ctx, Table_Name, "C_UOM_ID=? AND C_UOM_TO_ID=? AND M_Product_ID IS NULL AND AD_Client_ID IN (0, ?)", null)
-				.setParameters(MProduct.get(ctx, M_Product_ID).getC_UOM_ID(), C_UOM_To_ID, Env.getAD_Client_ID(ctx))
-				.setOrderBy("AD_Client_ID Desc")
-				.setOnlyActiveRecords(true)
-				.list();
-		for (int i = 0; i < conversions.size(); i++)
+
+		// getRateUsingCommonUOM already covers generic records (M_Product_ID IS NULL) in its query,
+		// so no additional generic fallback is needed here.
+		BigDecimal retValue = getRateUsingCommonUOM(ctx, C_UOM_To_ID, prodUOMId, M_Product_ID);
+		if (retValue != null)
 		{
-			MUOMConversion rate = conversions.get(i);
-			if (rate.getC_UOM_To_ID() == C_UOM_To_ID)
-				return rate.getDivideRate();
+			return retValue;
 		}
-		
 		return null;
 	}	//	getProductRateFrom
 
@@ -685,9 +744,8 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 		MUOMConversion defRate = new MUOMConversion (MProduct.get(ctx, M_Product_ID));
 		list.add(defRate);
 		//
-		final String whereClause = "M_Product_ID=?"
-			+ " AND EXISTS (SELECT 1 FROM M_Product p "
-				+ "WHERE C_UOM_Conversion.M_Product_ID=p.M_Product_ID AND C_UOM_Conversion.C_UOM_ID=p.C_UOM_ID)";
+		final String whereClause = "M_Product_ID=? AND EXISTS (SELECT 1 FROM M_Product p "
+									+ " WHERE C_UOM_Conversion.M_Product_ID=p.M_Product_ID AND (C_UOM_Conversion.C_UOM_ID=p.C_UOM_ID OR C_UOM_Conversion.C_UOM_To_ID=p.C_UOM_ID))";
 		List<MUOMConversion> conversions = new Query(ctx, Table_Name, whereClause, null)
 		.setParameters(M_Product_ID)
 		.setOnlyActiveRecords(true)
@@ -912,5 +970,88 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 	public static BigDecimal getOppositeRate(BigDecimal rate, int scale) {
 		return Env.ONE.divide(rate, scale, RoundingMode.HALF_UP);
 	}
+
+	/**
+	 * Get conversion rate using common UOM between FromUOM and ToUOM
+	 * 
+	 * @param  ctx
+	 * @param  C_UOM_ID
+	 * @param  C_UOM_To_ID
+	 * @param  M_Product_ID
+	 * @return              conversion rate or null
+	 */
+	public static BigDecimal getRateUsingCommonUOM(Properties ctx, int C_UOM_ID, int C_UOM_To_ID, int M_Product_ID)
+	{
+		if (C_UOM_ID == C_UOM_To_ID)
+		{
+			return Env.ONE;
+		}
+
+		Map<Integer, BigDecimal> fromUOMRelatedUOMsWithRate = new HashMap<Integer, BigDecimal>();
+		List<MUOMConversion> conversions = new Query(	ctx, Table_Name,
+														"(C_UOM_ID=? OR C_UOM_TO_ID=?) AND (M_Product_ID IS NULL OR M_Product_ID=?) AND AD_Client_ID IN (0, ?)",
+														null)
+																.setParameters(C_UOM_ID, C_UOM_ID, M_Product_ID, Env.getAD_Client_ID(ctx))
+																.setOnlyActiveRecords(true)
+																.setOrderBy("M_Product_ID DESC, AD_Client_ID DESC, AD_Org_ID DESC")
+																.list();
+		for (int i = 0; i < conversions.size(); i++)
+		{
+			MUOMConversion conversion = conversions.get(i);
+			if (conversion.getC_UOM_ID() == C_UOM_ID)
+			{
+				// if direct conversion is available between From UOM and To UOM then return MultiplyRate
+				if (conversion.getC_UOM_To_ID() == C_UOM_To_ID)
+				{
+					return conversion.getMultiplyRate();
+				}
+
+				if (!fromUOMRelatedUOMsWithRate.containsKey(conversion.getC_UOM_To_ID()))
+					fromUOMRelatedUOMsWithRate.put(conversion.getC_UOM_To_ID(), conversion.getMultiplyRate());
+			}
+			else
+			{
+				// if direct conversion is available between To UOM and From UOM then return DivideRate
+				if (conversion.getC_UOM_ID() == C_UOM_To_ID)
+				{
+					return conversion.getDivideRate();
+				}
+
+				if (!fromUOMRelatedUOMsWithRate.containsKey(conversion.getC_UOM_ID()))
+					fromUOMRelatedUOMsWithRate.put(conversion.getC_UOM_ID(), conversion.getDivideRate());
+			}
+		}
+
+		if (fromUOMRelatedUOMsWithRate.size() > 0)
+		{
+			int precision = 50;// get it with many decimals to minimize rounding issues
+
+			conversions = new Query(ctx, Table_Name, "(C_UOM_ID=? OR C_UOM_TO_ID=?) AND (M_Product_ID IS NULL OR M_Product_ID=?) AND AD_Client_ID IN (0, ?)", null)
+											.setParameters(C_UOM_To_ID, C_UOM_To_ID, M_Product_ID, Env.getAD_Client_ID(ctx))
+											.setOnlyActiveRecords(true)
+											.setOrderBy("M_Product_ID DESC, AD_Client_ID DESC, AD_Org_ID DESC")
+											.list();
+			for (int i = 0; i < conversions.size(); i++)
+			{
+				MUOMConversion conversion = conversions.get(i);
+				if (conversion.getC_UOM_ID() == C_UOM_To_ID)
+				{
+					if (fromUOMRelatedUOMsWithRate.containsKey(conversion.getC_UOM_To_ID()))
+					{
+						return fromUOMRelatedUOMsWithRate.get(conversion.getC_UOM_To_ID()).divide(conversion.getMultiplyRate(), precision, RoundingMode.HALF_UP);
+					}
+				}
+				else
+				{
+					if (fromUOMRelatedUOMsWithRate.containsKey(conversion.getC_UOM_ID()))
+					{
+						return fromUOMRelatedUOMsWithRate.get(conversion.getC_UOM_ID()).divide(conversion.getDivideRate(), precision, RoundingMode.HALF_UP);
+					}
+				}
+			}
+		}
+
+		return null;
+	} // getRateUsingCommonUOM
 
 }	//	UOMConversion
