@@ -89,6 +89,7 @@ public class JasperReportContentRendererFactory implements IReportContentRendere
 				pi.setAD_User_ID(source.getAD_User_ID());
 				pi.setLanguageID(source.getLanguageID());
 				pi.setRecord_IDs(source.getRecord_IDs());
+				pi.setRecord_UUs(source.getRecord_UUs());
 				pi.setTransactionName(source.getTransactionName());
 			} else {
 				pi.setLanguageID(request.reportEngine().getLanguageID());
