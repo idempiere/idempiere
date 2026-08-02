@@ -791,6 +791,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			}
 			previewType.getChildren().clear();
 		}
+		List<String> previewRendererIds = new ArrayList<>();
 		if (reportContentRenderer != null) {
 			for (ReportContentType contentType : reportContentRenderer.getSupportedContentTypes()) {
 				IReportViewerRenderer renderer = rendererMap.values().stream()
@@ -801,6 +802,14 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 					continue;
 				ListItem li = previewType.appendItem(IReportViewerExportSource.getFormatLabel(
 						contentType.fileExtension(), contentType.name()), renderer.getId());
+				previewRendererIds.add(renderer.getId());
+				if (selectedValue != null && selectedValue.equals(li.getValue()))
+					previewType.setSelectedItem(li);
+			}
+			for (IReportViewerRenderer renderer : rendererMap.values()) {
+				if (!renderer.isPreview(m_isCanExport) || previewRendererIds.contains(renderer.getId()))
+					continue;
+				ListItem li = previewType.appendItem(renderer.getPreviewLabel(), renderer.getId());
 				if (selectedValue != null && selectedValue.equals(li.getValue()))
 					previewType.setSelectedItem(li);
 			}
@@ -2003,11 +2012,16 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}
 
 	public AMedia getMedia(String rendererId) {
-		if (reportContentRenderer != null) {
-			return getMedia(JasperPrintRenderer.getMIMEType(rendererId), JasperPrintRenderer.getFileExtension(rendererId));
+		if (reportContentRenderer != null && (PDF_OUTPUT_TYPE.equals(rendererId)
+				|| HTML_OUTPUT_TYPE.equals(rendererId) || XLS_OUTPUT_TYPE.equals(rendererId)
+				|| XLSX_OUTPUT_TYPE.equals(rendererId) || CSV_OUTPUT_TYPE.equals(rendererId))) {
+			return getMedia(JasperPrintRenderer.getMIMEType(rendererId),
+					JasperPrintRenderer.getFileExtension(rendererId));
 		}
 		IReportViewerRenderer renderer = rendererMap.get(rendererId);
-		return renderer != null ? renderer.renderMedia(this, false) : null;
+		if (renderer != null)
+			return renderer.renderMedia(this, false);
+		return null;
 	}
 	
 	@Override
