@@ -329,7 +329,7 @@ public class PayPrint {
 			ReportEngine re = ReportEngine.get(Env.getCtx(), ReportEngine.CHECK, check.get_ID(), m_WindowNo);
 			File pdfFile = Core.getReportContent(
 					new ReportContentRequest(re, null, check.getDocumentNo()),
-					"application/pdf", "pdf", File.createTempFile("WPayPrint", null));
+					"application/pdf", "pdf", File.createTempFile("WPayPrint", ".pdf"));
 			
 			if (pdfFile != null)
 			{
@@ -367,10 +367,14 @@ public class PayPrint {
 			ReportEngine re = ReportEngine.get(Env.getCtx(), ReportEngine.REMITTANCE, check.get_ID(), m_WindowNo);
 			try
 			{
-				File file = File.createTempFile("WPayPrint", null);
-				pdfList.add(Core.getReportContent(
+				File file = File.createTempFile("WPayPrint", ".pdf");
+				File content = Core.getReportContent(
 						new ReportContentRequest(re, null, check.getDocumentNo()),
-						"application/pdf", "pdf", file));
+						"application/pdf", "pdf", file);
+				if (content != null)
+					pdfList.add(content);
+				else if (!file.delete())
+					file.deleteOnExit();
 			}
 			catch (Exception e)
 			{

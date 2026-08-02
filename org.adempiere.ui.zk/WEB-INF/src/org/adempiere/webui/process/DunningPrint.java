@@ -210,8 +210,9 @@ public class DunningPrint extends SvrProcess
 					email.setMessageText (message);
 				}
 				//
+				File attachment = null;
 				if (re != null) {
-					File attachment = Core.getReportContent(
+					attachment = Core.getReportContent(
 							new ReportContentRequest(re, getProcessInfo(), bp.getName()),
 							"application/pdf", "pdf", File.createTempFile("Dunning", ".pdf"));
 					StringBuilder msglog = new StringBuilder().append(to.toString()).append(" - ").append(attachment);
@@ -219,7 +220,13 @@ public class DunningPrint extends SvrProcess
 					email.addAttachment(attachment);
 				}
 				//
-				String msg = email.send();
+				String msg;
+				try {
+					msg = email.send();
+				} finally {
+					if (attachment != null && attachment.exists() && !attachment.delete())
+						attachment.deleteOnExit();
+				}
 				MUserMail um = new MUserMail(mText, entry.getAD_User_ID(), email);
 				um.saveEx();
 				if (msg.equals(EMail.SENT_OK))

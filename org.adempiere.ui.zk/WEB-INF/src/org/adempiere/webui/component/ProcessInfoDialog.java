@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.adempiere.base.Core;
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.ISupportMask;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
@@ -266,8 +267,11 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 			
 			if((reportEngineType >= 0) && (recordID > 0)) {
 				re = ReportEngine.get (Env.getCtx(), reportEngineType, recordID);
-				pdfList.add(Core.getReportContent(new ReportContentRequest(re, null, re.getName()),
-						"application/pdf", "pdf"));
+				File content = Core.getReportContent(new ReportContentRequest(re, null, re.getName()),
+						"application/pdf", "pdf");
+				if (content == null)
+					throw new AdempiereException("No PDF content generated for record " + recordID);
+				pdfList.add(content);
 			}
 		}
 		if (pdfList.size() > 1) {

@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.window.IReportViewerExportSource.ExportFormat;
 import org.compiere.model.MSysConfig;
 import org.compiere.tools.FileUtil;
@@ -375,7 +376,7 @@ public class JasperPrintRenderer implements IReportContentRenderer {
 			String fileName = FileUtil.makePrefix(title) + "." + fileExtension;
 			return new AMedia(fileName, fileExtension, contentType, file, true);
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new AdempiereException("Unable to read Jasper report content", e);
 		}
 	}
 

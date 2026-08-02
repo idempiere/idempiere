@@ -24,6 +24,9 @@ package org.adempiere.webui.window;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -404,14 +407,16 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	 */
 	private void cmd_sendMail()
 	{
-		File attachment = jasperRenderer.getPDF();
+		File attachment;
+		try {
+			attachment = getProcessedPDF();
+		} catch (Exception e) {
+			Dialog.error(m_WindowNo, e.getLocalizedMessage(), m_title);
+			return;
+		}
 		if (attachment == null) {
-			try {
-				attachment = createPDF();
-			} catch (Exception e) {
-				Dialog.error(m_WindowNo, e.getLocalizedMessage(), m_title);
-				return;
-			}
+			Dialog.error(m_WindowNo, "Unable to generate PDF report content", m_title);
+			return;
 		}
 		String to = "";
 		MUser from = MUser.get(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()));
@@ -637,11 +642,10 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	protected void cmd_archive()
 	{
 		boolean success = false;
+		File file = null;
 		try
 		{
-			File file = jasperRenderer.getPDF();
-			if (file == null)
-				file = createPDF();		
+			file = getProcessedPDF();
 			if (file != null && m_printInfo != null)
 			{
 				try (FileInputStream fis = new FileInputStream(file)) {
@@ -660,11 +664,24 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		{
 			log.log(Level.SEVERE, "Exception while reading file " + e);
 		}
-		catch (JRException e)
+		finally
 		{
-			log.log(Level.SEVERE, "Error loading object from InputStream" + e);
+			if (file != null && file.exists() && !file.delete())
+				file.deleteOnExit();
 		}
 	} // cmd_archive
+
+	private File getProcessedPDF() throws IOException {
+		AMedia pdf = getMedia(PDF_MIME_TYPE, PDF_FILE_EXT);
+		if (pdf == null)
+			return null;
+		File file = FileUtil.createTempFile(FileUtil.makePrefix(m_title), ".pdf");
+		file.deleteOnExit();
+		try (InputStream input = pdf.getStreamData()) {
+			Files.copy(input, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+		}
+		return file;
+	}
 
 	/**
 	 * Save jasper report as attachment of a record (AD_Table_ID and Record_ID from {@link #m_printInfo})

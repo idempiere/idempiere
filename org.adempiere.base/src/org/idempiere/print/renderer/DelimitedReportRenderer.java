@@ -64,7 +64,8 @@ public abstract class DelimitedReportRenderer<C extends DelimitedReportRendererC
 				fw = new OutputStreamWriter(new FileOutputStream(configuration.getOutputFile(), false), Ini.getCharset());
 			else 
 				fw = configuration.getOutputWriter();
-			createdDelimitedOutput(reportEngine, fw, configuration.getDelimiter(), configuration.getLanguage());
+			if (!createdDelimitedOutput(reportEngine, fw, configuration.getDelimiter(), configuration.getLanguage()))
+				throw new AdempiereException("Failed to create delimited report content");
 		}
 		catch (FileNotFoundException fnfe) {
 			log.log(Level.SEVERE, "(f) - " + fnfe.toString());

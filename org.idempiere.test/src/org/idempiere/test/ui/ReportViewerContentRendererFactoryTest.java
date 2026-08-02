@@ -12,6 +12,7 @@
 package org.idempiere.test.ui;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -160,6 +161,7 @@ public class ReportViewerContentRendererFactoryTest extends AbstractTestCase {
 				registerProcessor(processor, 10);
 		try {
 			IReportContentRenderer processedRenderer = Core.getProcessedReportContentRenderer(emptyRequest());
+			assertNotNull(processedRenderer);
 			assertSame(content, processedRenderer.getContent("application/pdf", "pdf"));
 			assertSame(content, processedRenderer.getContent("application/pdf", "pdf"));
 			assertEquals(1, calls.get());

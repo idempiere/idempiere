@@ -903,9 +903,8 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		{
 			log.log(Level.SEVERE, "", e);
 		}
-		if (createHTML(file, false, Env.getLanguage(getCtx())))
-			return file;
-		return null;
+		createHTML(file, false, Env.getLanguage(getCtx()));
+		return file;
 	}	//	getHTML
 	
 	/**
@@ -933,9 +932,8 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		{
 			log.log(Level.SEVERE, "", e);
 		}
-		if (createCSV(file, ',', Env.getLanguage(getCtx())))
-			return file;
-		return null;
+		createCSV(file, ',', Env.getLanguage(getCtx()));
+		return file;
 	}	//	getCSV
 	
 	/**
@@ -971,7 +969,9 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "", e);
-			return null;
+			if (e instanceof RuntimeException runtimeException)
+				throw runtimeException;
+			throw new AdempiereException(e);
 		}
 	}	//	getXLS
 	
@@ -1008,7 +1008,9 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "", e);
-			return null;
+			if (e instanceof RuntimeException runtimeException)
+				throw runtimeException;
+			throw new AdempiereException(e);
 		}
 	}	//	getXLSX
 	
