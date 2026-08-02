@@ -660,9 +660,10 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 			else
 				Dialog.error(m_WindowNo, "ArchiveError");
 		}
-		catch (IOException e)
+		catch (IOException | AdempiereException e)
 		{
 			log.log(Level.SEVERE, "Exception while reading file " + e);
+			Dialog.error(m_WindowNo, "ArchiveError");
 		}
 		finally
 		{
@@ -676,10 +677,14 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		if (pdf == null)
 			return null;
 		File file = FileUtil.createTempFile(FileUtil.makePrefix(m_title), ".pdf");
-		file.deleteOnExit();
 		try (InputStream input = pdf.getStreamData()) {
 			Files.copy(input, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+		} catch (IOException e) {
+			if (file.exists() && !file.delete())
+				file.deleteOnExit();
+			throw e;
 		}
+		file.deleteOnExit();
 		return file;
 	}
 

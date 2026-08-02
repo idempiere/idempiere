@@ -36,6 +36,7 @@ import org.compiere.model.MLookupInfo;
 import org.compiere.model.MPaySelectionCheck;
 import org.compiere.model.MPaymentBatch;
 import org.compiere.print.ReportEngine;
+import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -327,17 +328,25 @@ public class PayPrint {
 
 			//	ReportCtrl will check BankAccountDoc for PrintFormat
 			ReportEngine re = ReportEngine.get(Env.getCtx(), ReportEngine.CHECK, check.get_ID(), m_WindowNo);
-			File pdfFile = Core.getReportContent(
-					new ReportContentRequest(re, null, check.getDocumentNo()),
-					"application/pdf", "pdf", File.createTempFile("WPayPrint", ".pdf"));
-			
-			if (pdfFile != null)
-			{
+			File outputFile = FileUtil.createTempFile("WPayPrint", ".pdf");
+			File pdfFile = null;
+			try {
+				pdfFile = Core.getReportContent(
+						new ReportContentRequest(re, null, check.getDocumentNo()),
+						"application/pdf", "pdf", outputFile);
+				if (pdfFile == null) {
+					if (outputFile.exists() && !outputFile.delete()) outputFile.deleteOnExit();
+					continue;
+				}
 				// increase the check document no by the number of pages of the generated pdf file
 				try (PdfReader document = new PdfReader(pdfFile.getAbsolutePath())) {
 					lastDocumentNo += document.getNumberOfPages();
 				}
 				pdfList.add(pdfFile);
+			} catch (Exception e) {
+				File cleanupFile = pdfFile != null ? pdfFile : outputFile;
+				if (cleanupFile.exists() && !cleanupFile.delete()) cleanupFile.deleteOnExit();
+				throw e;
 			}
 		}
 
@@ -365,9 +374,10 @@ public class PayPrint {
 		{
 			MPaySelectionCheck check = m_checks[i];
 			ReportEngine re = ReportEngine.get(Env.getCtx(), ReportEngine.REMITTANCE, check.get_ID(), m_WindowNo);
+			File file = null;
 			try
 			{
-				File file = File.createTempFile("WPayPrint", ".pdf");
+				file = FileUtil.createTempFile("WPayPrint", ".pdf");
 				File content = Core.getReportContent(
 						new ReportContentRequest(re, null, check.getDocumentNo()),
 						"application/pdf", "pdf", file);
@@ -378,6 +388,8 @@ public class PayPrint {
 			}
 			catch (Exception e)
 			{
+				if (file.exists() && !file.delete())
+					file.deleteOnExit();
 				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
 			}
 		}
