@@ -629,13 +629,13 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		catch (FileNotFoundException fnfe)
 		{
 			log.log(Level.SEVERE, "(f) - " + fnfe.toString());
+			throw new AdempiereException(fnfe);
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "(f)", e);
 			throw new AdempiereException(e);
 		}
-		return false;
 	}	//	createHTML
 
 	/**
@@ -784,12 +784,15 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		catch (FileNotFoundException fnfe)
 		{
 			log.log(Level.SEVERE, "(f) - " + fnfe.toString());
+			throw new AdempiereException(fnfe);
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "(f)", e);
+			if (e instanceof RuntimeException runtimeException)
+				throw runtimeException;
+			throw new AdempiereException(e);
 		}
-		return false;
 	}	//	createCSV
 
 	/**
@@ -1035,7 +1038,9 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "file", e);
-			return false;
+			if (e instanceof RuntimeException runtimeException)
+				throw runtimeException;
+			throw new AdempiereException(e);
 		}
 			
 		if (log.isLoggable(Level.FINE)) log.fine(uri.toString());

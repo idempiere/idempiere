@@ -139,6 +139,7 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 		catch (FileNotFoundException fnfe)
 		{
 			log.log(Level.SEVERE, "(f) - " + fnfe.toString());
+			throw new AdempiereException(fnfe);
 		}
 		catch (Exception e)
 		{

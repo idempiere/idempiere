@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MSysConfig;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.MPrintFormatItem;
@@ -67,10 +68,14 @@ public abstract class DelimitedReportRenderer<C extends DelimitedReportRendererC
 		}
 		catch (FileNotFoundException fnfe) {
 			log.log(Level.SEVERE, "(f) - " + fnfe.toString());
+			throw new AdempiereException(fnfe);
 		}
 		catch (Exception e) {
 			log.log(Level.SEVERE, "(f)", e);
-		}		
+			if (e instanceof RuntimeException runtimeException)
+				throw runtimeException;
+			throw new AdempiereException(e);
+		}
 	}
 
 	@Override

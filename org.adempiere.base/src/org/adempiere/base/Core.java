@@ -74,6 +74,7 @@ import org.compiere.model.StandardTaxProvider;
 import org.compiere.model.SystemIDs;
 import org.compiere.process.ProcessCall;
 import org.compiere.print.ReportEngine;
+import org.compiere.tools.FileUtil;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -1379,14 +1380,30 @@ public class Core {
 		@Override
 		public File getContent(String contentType, String fileExtension) {
 			String extension = fileExtension != null ? fileExtension.toLowerCase() : "";
-			return switch (extension) {
-				case "pdf" -> reportEngine.getPDF();
-				case "html" -> reportEngine.getHTML();
-				case "csv" -> reportEngine.getCSV();
-				case "xls" -> reportEngine.getXLS();
-				case "xlsx" -> reportEngine.getXLSX();
-				default -> null;
-			};
+			if (!List.of("pdf", "html", "csv", "xls", "xlsx").contains(extension))
+				return null;
+			try {
+				File file = FileUtil.createTempFile(FileUtil.makePrefix(reportEngine.getName()), "." + extension);
+				switch (extension) {
+					case "pdf" -> ensureCreated(reportEngine.createPDF(file), extension);
+					case "html" -> ensureCreated(
+							reportEngine.createHTML(file, false, Env.getLanguage(reportEngine.getCtx())), extension);
+					case "csv" -> ensureCreated(
+							reportEngine.createCSV(file, ',', Env.getLanguage(reportEngine.getCtx())), extension);
+					case "xls" -> reportEngine.createXLS(file, Env.getLanguage(reportEngine.getCtx()));
+					case "xlsx" -> reportEngine.createXLSX(file, Env.getLanguage(reportEngine.getCtx()));
+				}
+				return file;
+			} catch (Exception e) {
+				if (e instanceof RuntimeException runtimeException)
+					throw runtimeException;
+				throw new AdempiereException(e);
+			}
+		}
+
+		private void ensureCreated(boolean created, String extension) {
+			if (!created)
+				throw new AdempiereException("Failed to create report content: " + extension);
 		}
 
 		@Override
