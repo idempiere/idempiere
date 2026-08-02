@@ -809,7 +809,6 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			for (IReportViewerRenderer renderer : rendererMap.values()) {
 				if (!renderer.isPreview(m_isCanExport)
 						|| previewRendererIds.contains(renderer.getId())
-						|| reportContentRenderer != null
 						|| !renderer.isSupported(m_reportEngine))
 					continue;
 				ListItem li = previewType.appendItem(renderer.getPreviewLabel(), renderer.getId());
