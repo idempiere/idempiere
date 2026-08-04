@@ -47,6 +47,7 @@ import org.compiere.model.MLandedCostAllocation;
 import org.compiere.model.MOrderLandedCost;
 import org.compiere.model.MOrderLandedCostAllocation;
 import org.compiere.model.MOrderLine;
+import org.compiere.model.MProduct;
 import org.compiere.model.MTax;
 import org.compiere.model.ProductCost;
 import org.compiere.model.Query;
@@ -1170,15 +1171,17 @@ public class Doc_Invoice extends Doc
 						{
 							int AD_Org_ID = lca.getAD_Org_ID();
 							int M_AttributeSetInstance_ID = lca.getM_AttributeSetInstance_ID();
+							MProduct product = new MProduct(lca.getCtx(), lca.getM_Product_ID(), lca.get_TrxName());
+							String costingLevel = product.getCostingLevel(as);
 
-							if (MAcctSchema.COSTINGLEVEL_Client.equals(as.getCostingLevel()))
+							if (MAcctSchema.COSTINGLEVEL_Client.equals(costingLevel))
 							{
 								AD_Org_ID = 0;
 								M_AttributeSetInstance_ID = 0;
 							}
-							else if (MAcctSchema.COSTINGLEVEL_Organization.equals(as.getCostingLevel()))
+							else if (MAcctSchema.COSTINGLEVEL_Organization.equals(costingLevel))
 								M_AttributeSetInstance_ID = 0;
-							else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(as.getCostingLevel()))
+							else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel))
 								AD_Org_ID = 0;
 							
 							MCostDetail cd = MCostDetail.getInvoice(as, lca.getM_Product_ID(), M_AttributeSetInstance_ID, 
@@ -1269,15 +1272,17 @@ public class Doc_Invoice extends Doc
 					costDetailQty = BigDecimal.ZERO;
 					int AD_Org_ID = lca.getAD_Org_ID();
 					int M_AttributeSetInstance_ID = lca.getM_AttributeSetInstance_ID();
+					MProduct product = new MProduct(lca.getCtx(), lca.getM_Product_ID(), lca.get_TrxName());
+					String costingLevel = product.getCostingLevel(as);
 
-					if (MAcctSchema.COSTINGLEVEL_Client.equals(as.getCostingLevel()))
+					if (MAcctSchema.COSTINGLEVEL_Client.equals(costingLevel))
 					{
 						AD_Org_ID = 0;
 						M_AttributeSetInstance_ID = 0;
 					}
-					else if (MAcctSchema.COSTINGLEVEL_Organization.equals(as.getCostingLevel()))
+					else if (MAcctSchema.COSTINGLEVEL_Organization.equals(costingLevel))
 						M_AttributeSetInstance_ID = 0;
-					else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(as.getCostingLevel()))
+					else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel))
 						AD_Org_ID = 0;
 					String key = lca.getM_Product_ID()+"_"+M_AttributeSetInstance_ID;
 					if (!costDetailAmtMap.containsKey(key)) {

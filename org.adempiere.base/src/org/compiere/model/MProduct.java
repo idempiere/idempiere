@@ -1076,7 +1076,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	public String getCostingLevel(MAcctSchema as)
 	{
 		MProductCategoryAcct pca = MProductCategoryAcct.get(getCtx(), getM_Product_Category_ID(), as.get_ID(), get_TrxName());
-		String costingLevel = pca.getCostingLevel();
+		String costingLevel = pca != null ? pca.getCostingLevel() : null;
 		if (costingLevel == null)
 		{
 			costingLevel = as.getCostingLevel();
@@ -1092,7 +1092,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	public String getCostingMethod(MAcctSchema as)
 	{
 		MProductCategoryAcct pca = MProductCategoryAcct.get(getCtx(), getM_Product_Category_ID(), as.get_ID(), get_TrxName());
-		String costingMethod = pca.getCostingMethod();
+		String costingMethod = pca != null ? pca.getCostingMethod() : null;
 		if (costingMethod == null)
 		{
 			costingMethod = as.getCostingMethod();

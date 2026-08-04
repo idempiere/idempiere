@@ -39,6 +39,7 @@ import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MMatchInv;
 import org.compiere.model.MMatchPO;
+import org.compiere.model.MProduct;
 import org.compiere.model.MTable;
 import org.compiere.model.Query;
 import org.compiere.util.AdempiereUserError;
@@ -676,6 +677,12 @@ public class DocManager {
 		// set all the cost detail records after the back-date transaction to unprocessed
 		int noUpdate = 0;
 		for (MCostDetail bdcd : bdcds) {
+			// get costing level for product
+			MAcctSchema as = MAcctSchema.get(Env.getCtx(), bdcd.getC_AcctSchema_ID());
+			MProduct product = new MProduct(Env.getCtx(), bdcd.getM_Product_ID(), trxName);
+			String costingLevel = product.getCostingLevel(as);	        
+			boolean isBatchLot = MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel);
+						
 			StringBuilder updateSql = new StringBuilder();
 			if (DB.isOracle()) {
 				updateSql.append("MERGE INTO M_CostDetail t ");
@@ -696,6 +703,9 @@ public class DocManager {
 				updateSql.append("  t.AD_Client_ID = ? ");
 				updateSql.append("  AND t.C_AcctSchema_ID = ? ");
 				updateSql.append("  AND t.M_Product_ID = ? ");
+				if (isBatchLot) {
+	                updateSql.append("  AND t.M_AttributeSetInstance_ID = ? ");
+	            }
 				updateSql.append("  AND ( ");
 				updateSql.append("    t.DateAcct > base_cd.DateAcct ");
 				updateSql.append("    OR ( ");
@@ -732,6 +742,9 @@ public class DocManager {
 				updateSql.append("  t.AD_Client_ID = ? ");
 				updateSql.append("  AND t.C_AcctSchema_ID = ? ");
 				updateSql.append("  AND t.M_Product_ID = ? ");
+				if (isBatchLot) {
+	                updateSql.append("  AND t.M_AttributeSetInstance_ID = ? ");
+	            }
 				updateSql.append("  AND ( ");
 				updateSql.append("    t.DateAcct > (SELECT DateAcct FROM base_cd) ");
 				updateSql.append("    OR ( ");
@@ -747,9 +760,16 @@ public class DocManager {
 				updateSql.append("  AND t.DateAcct >= ? ");
 				updateSql.append("  AND t.Processed = 'Y' ");
 			}
-			noUpdate += DB.executeUpdateEx(updateSql.toString(), 
-					new Object[] {bdcd.getM_CostDetail_ID(), bdcd.getAD_Client_ID(), bdcd.getC_AcctSchema_ID(), bdcd.getM_Product_ID(), bdcd.getDateAcct()}, 
-					trxName);
+			List<Object> params = new ArrayList<Object>();
+	        params.add(bdcd.getM_CostDetail_ID());
+	        params.add(bdcd.getAD_Client_ID());
+	        params.add(bdcd.getC_AcctSchema_ID());
+	        params.add(bdcd.getM_Product_ID());
+	        if (isBatchLot) {
+	            params.add(bdcd.getM_AttributeSetInstance_ID());
+	        }
+	        params.add(bdcd.getDateAcct());
+			noUpdate += DB.executeUpdateEx(updateSql.toString(), params.toArray(), trxName);
 			if (s_log.isLoggable(Level.INFO))
 				s_log.info("Update cost detail to unprocessed: " + noUpdate);
 		}

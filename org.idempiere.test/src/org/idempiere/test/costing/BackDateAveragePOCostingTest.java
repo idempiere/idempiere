@@ -50,6 +50,7 @@ import java.util.stream.Stream;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAllocationHdr;
+import org.compiere.model.MAttributeSet;
 import org.compiere.model.MAttributeSetInstance;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MCharge;
@@ -86,6 +87,7 @@ import org.compiere.model.Query;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
@@ -13235,6 +13237,161 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		}		
 	}
 	
+	/**
+	 * IDEMPIERE-6960
+	 * MR1 Product1, ASI1, Qty=7500, Price=0.814 (Date2)
+	 * MR2 Product1, ASI2, Qty=18000, Price=0.814 (Date3)
+	 * MR3 Product1, ASI3, Qty=1, Price=1 (Date1) - Back Date
+	 */
+	@Test
+	public void testBatchLotCostingLevel() {
+		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), getAD_Client_ID());
+		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
+		MAcctSchema as = ci.getMAcctSchema1();
+		
+		MAttributeSet mas = new MAttributeSet(Env.getCtx(), DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id, getTrxName());
+		mas.setMandatoryType(MAttributeSet.MANDATORYTYPE_NotMandatory);
+		mas.saveEx();
+
+		int[] backDateDays = new int[ass.length];
+		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class);
+				MockedStatic<MProductCategory> mockedCategory = mockStatic(MProductCategory.class)) {	
+			backDateDays = configureAcctSchema(ass);
+			
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -3);
+			Timestamp backDate1 = new Timestamp(cal.getTimeInMillis());
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -2);
+			Timestamp backDate2  = new Timestamp(cal.getTimeInMillis());
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -1);
+			Timestamp backDate3  = new Timestamp(cal.getTimeInMillis());
+			
+			MProductCategory lotLevel = new MProductCategory(Env.getCtx(), 0, getTrxName());
+			lotLevel.setName("testBatchLotCostingLevel");
+			lotLevel.saveEx();
+			
+			mockedCategory.when(() -> MProductCategory.get(any(Properties.class), anyInt())).thenCallRealMethod();
+			mockedCategory.when(() -> MProductCategory.get(any(Properties.class), eq(lotLevel.get_ID()))).thenReturn(lotLevel);
+			
+			for (MAcctSchema as0 : ass) {						
+				MProductCategoryAcct lotLevelAcct = MProductCategoryAcct.get(lotLevel.get_ID(), as0.get_ID(), getTrxName());
+				lotLevelAcct = new MProductCategoryAcct(Env.getCtx(), lotLevelAcct, getTrxName());
+				lotLevelAcct.setCostingLevel(MAcctSchema.COSTINGLEVEL_BatchLot);
+				lotLevelAcct.saveEx();
+			}
+			CacheMgt.get().reset(MProductCategoryAcct.Table_Name);
+			for (MAcctSchema as0 : ass) {
+				MProductCategoryAcct lotLevelAcct = MProductCategoryAcct.get(lotLevel.get_ID(), as0.get_ID(), getTrxName());
+				assertEquals(MAcctSchema.COSTINGLEVEL_BatchLot, lotLevelAcct.getCostingLevel());
+			}
+			
+			MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
+			product.setM_Product_Category_ID(lotLevel.get_ID());
+			product.setName("testBatchLotCostingLevel");
+			product.setProductType(MProduct.PRODUCTTYPE_Item);
+			product.setIsStocked(true);
+			product.setIsSold(true);
+			product.setIsPurchased(true);
+			product.setC_UOM_ID(DictionaryIDs.C_UOM.EACH.id);
+			product.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
+			product.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id);
+			product.saveEx();
+			
+			mockedProduct.when(() -> MProduct.getCopy(any(Properties.class), anyInt(), any())).thenCallRealMethod();
+			mockedProduct.when(() -> MProduct.get(anyInt())).thenCallRealMethod();
+			mockedProduct.when(() -> MProduct.get(any(Properties.class), anyInt(), any())).thenCallRealMethod();
+			mockedProduct.when(() -> MProduct.get(any(Properties.class), anyInt())).thenCallRealMethod();
+			mockProductGet(mockedProduct, product);
+			
+			MPriceListVersion plv = MPriceList.get(DictionaryIDs.M_PriceList.PURCHASE.id).getPriceListVersion(null);
+			MProductPrice pp = new MProductPrice(Env.getCtx(), 0, getTrxName());
+			pp.setM_PriceList_Version_ID(plv.getM_PriceList_Version_ID());
+			pp.setM_Product_ID(product.get_ID());
+			pp.setPriceStd(new BigDecimal("0.814"));
+			pp.setPriceList(new BigDecimal("0.814"));
+			pp.saveEx();
+			
+			// MR1
+			MAttributeSetInstance asi1 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+			asi1.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id);
+			asi1.setLot("Lot1");
+			asi1.saveEx();
+			createPOAndMRForProduct(backDate2, product.get_ID(), asi1.get_ID(), new BigDecimal("7500"), new BigDecimal("0.814"));
+			MCost cost1 = product.getCostingRecord(as, getAD_Org_ID(), asi1.get_ID(), as.getCostingMethod());
+			assertNotNull(cost1, "No MCost record found");
+ 			assertEquals(new BigDecimal("7500").setScale(2, RoundingMode.HALF_UP), cost1.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+			
+			// MR2
+			MAttributeSetInstance asi2 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+			asi2.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id);
+			asi2.setLot("Lot2");
+			asi2.saveEx();
+			createPOAndMRForProduct(backDate3, product.get_ID(), asi2.get_ID(), new BigDecimal("18000"), new BigDecimal("0.814"));
+			MCost cost2 = product.getCostingRecord(as, getAD_Org_ID(), asi2.get_ID(), as.getCostingMethod());
+			assertNotNull(cost2, "No MCost record found");
+ 			assertEquals(new BigDecimal("18000").setScale(2, RoundingMode.HALF_UP), cost2.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+
+			// MR3
+			MAttributeSetInstance asi3 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+			asi3.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id);
+			asi3.setLot("Lot3");
+			asi3.saveEx();
+			createPOAndMRForProduct(backDate1, product.get_ID(), asi3.get_ID(), new BigDecimal("1"), new BigDecimal("1"));
+			MCost cost3 = product.getCostingRecord(as, getAD_Org_ID(), asi3.get_ID(), as.getCostingMethod());
+			assertNotNull(cost3, "No MCost record found");
+ 			assertEquals(new BigDecimal("1").setScale(2, RoundingMode.HALF_UP), cost3.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+ 			
+ 			cost1.load(getTrxName());
+ 			assertEquals(new BigDecimal("7500").setScale(2, RoundingMode.HALF_UP), cost1.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity"); 			
+ 			cost2.load(getTrxName());
+ 			assertEquals(new BigDecimal("18000").setScale(2, RoundingMode.HALF_UP), cost2.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+ 			
+ 			BigDecimal currentQty1 = null;
+ 			BigDecimal currentQty2 = null;
+ 			BigDecimal currentQty3 = null;
+ 			for (MAcctSchema as0 : ass) {
+ 				MCost cost1a = product.getCostingRecord(as0, getAD_Org_ID(), asi1.get_ID(), MCostElement.COSTINGMETHOD_AveragePO);
+ 				MCost cost2a = product.getCostingRecord(as0, getAD_Org_ID(), asi2.get_ID(), MCostElement.COSTINGMETHOD_AveragePO);
+ 				MCost cost3a = product.getCostingRecord(as0, getAD_Org_ID(), asi3.get_ID(), MCostElement.COSTINGMETHOD_AveragePO);
+ 				MCost cost1b = product.getCostingRecord(as0, getAD_Org_ID(), asi1.get_ID(), MCostElement.COSTINGMETHOD_StandardCosting);
+ 				MCost cost2b = product.getCostingRecord(as0, getAD_Org_ID(), asi2.get_ID(), MCostElement.COSTINGMETHOD_StandardCosting);
+ 				MCost cost3b = product.getCostingRecord(as0, getAD_Org_ID(), asi3.get_ID(), MCostElement.COSTINGMETHOD_StandardCosting);
+ 				assertNotNull(cost1a, "No MCost record found");
+ 				assertNotNull(cost2a, "No MCost record found");
+ 				assertNotNull(cost3a, "No MCost record found");
+ 				assertNotNull(cost1b, "No MCost record found");
+ 				assertNotNull(cost2b, "No MCost record found");
+ 				assertNotNull(cost3b, "No MCost record found");
+ 				assertEquals(cost1a.getCurrentQty().setScale(2, RoundingMode.HALF_UP), cost1b.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+ 				assertEquals(cost2a.getCurrentQty().setScale(2, RoundingMode.HALF_UP), cost2b.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+ 				assertEquals(cost3a.getCurrentQty().setScale(2, RoundingMode.HALF_UP), cost3b.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+ 				
+ 				if (currentQty1 == null)
+ 					currentQty1 = cost1a.getCurrentQty();
+ 				else
+ 					assertEquals(currentQty1.setScale(2, RoundingMode.HALF_UP), cost1a.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity across accounting schemas");
+ 				if (currentQty2 == null)
+ 					currentQty2 = cost2a.getCurrentQty();
+ 				else
+ 					assertEquals(currentQty2.setScale(2, RoundingMode.HALF_UP), cost2a.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity across accounting schemas");
+ 				if (currentQty3 == null)
+ 					currentQty3 = cost3a.getCurrentQty();
+ 				else
+ 					assertEquals(currentQty3.setScale(2, RoundingMode.HALF_UP), cost3a.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity across accounting schemas");
+ 				
+ 				List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "M_Product_ID=? AND Processed='N'", product.get_ID(), 0, as.getC_AcctSchema_ID(), getTrxName());
+ 				assertTrue(cds.isEmpty(), "Found unprocessed MCostDetail rows for product=" + product.get_ID() + ", acctSchema=" + as.getC_AcctSchema_ID());
+ 			}
+		} finally {
+			rollback();
+			resetAcctSchema(ass, backDateDays);
+		}
+	}
+	
 	private MProduct createProduct(String name, BigDecimal price) {
 		return createProduct(name, price, DictionaryIDs.M_Product_Category.STANDARD.id);
 	}
@@ -13270,8 +13427,12 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		
 		return product;		
 	}
-		
+	
 	private MInOutLine createPOAndMRForProduct(Timestamp acctDate, int productId, BigDecimal qty, BigDecimal price) {
+		return createPOAndMRForProduct(acctDate, productId, 0, qty, price);
+	}
+		
+	private MInOutLine createPOAndMRForProduct(Timestamp acctDate, int productId, int asiId, BigDecimal qty, BigDecimal price) {
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id));
 		order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
@@ -13287,6 +13448,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MOrderLine orderLine = new MOrderLine(order);
 		orderLine.setLine(10);
 		orderLine.setProduct(new MProduct(Env.getCtx(), productId, getTrxName()));
+		if (asiId > 0)
+			orderLine.setM_AttributeSetInstance_ID(asiId);
 		orderLine.setQty(qty);
 		orderLine.setDatePromised(acctDate);
 		if (price != null)
@@ -13305,6 +13468,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 
 		MInOutLine receiptLine = new MInOutLine(receipt);
 		receiptLine.setOrderLine(orderLine, 0, qty);
+		if (asiId > 0)
+			receiptLine.setM_AttributeSetInstance_ID(asiId);
 		receiptLine.setQty(qty);
 		receiptLine.saveEx();
 
