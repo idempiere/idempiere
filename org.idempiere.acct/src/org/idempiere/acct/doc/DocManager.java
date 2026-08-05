@@ -682,6 +682,7 @@ public class DocManager {
 			MProduct product = new MProduct(Env.getCtx(), bdcd.getM_Product_ID(), trxName);
 			String costingLevel = product.getCostingLevel(as);	        
 			boolean isBatchLot = MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel);
+			boolean isOrgLevel = MAcctSchema.COSTINGLEVEL_Organization.equals(costingLevel);
 						
 			StringBuilder updateSql = new StringBuilder();
 			if (DB.isOracle()) {
@@ -705,6 +706,8 @@ public class DocManager {
 				updateSql.append("  AND t.M_Product_ID = ? ");
 				if (isBatchLot) {
 	                updateSql.append("  AND t.M_AttributeSetInstance_ID = ? ");
+	            } else if (isOrgLevel) {
+	            	updateSql.append("  AND t.AD_Org_ID = ? ");
 	            }
 				updateSql.append("  AND ( ");
 				updateSql.append("    t.DateAcct > base_cd.DateAcct ");
@@ -744,6 +747,8 @@ public class DocManager {
 				updateSql.append("  AND t.M_Product_ID = ? ");
 				if (isBatchLot) {
 	                updateSql.append("  AND t.M_AttributeSetInstance_ID = ? ");
+	            } else if (isOrgLevel) {
+	            	updateSql.append("  AND t.AD_Org_ID = ? ");
 	            }
 				updateSql.append("  AND ( ");
 				updateSql.append("    t.DateAcct > (SELECT DateAcct FROM base_cd) ");
@@ -767,6 +772,8 @@ public class DocManager {
 	        params.add(bdcd.getM_Product_ID());
 	        if (isBatchLot) {
 	            params.add(bdcd.getM_AttributeSetInstance_ID());
+	        } else if (isOrgLevel) {
+	        	params.add(bdcd.getAD_Org_ID());
 	        }
 	        params.add(bdcd.getDateAcct());
 			noUpdate += DB.executeUpdateEx(updateSql.toString(), params.toArray(), trxName);
