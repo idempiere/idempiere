@@ -2833,14 +2833,9 @@ public class Doc_MatchInv extends Doc
  	    int M_AttributeSetInstance_ID = matchInv.getM_AttributeSetInstance_ID();
  	    MProduct product = new MProduct(matchInv.getCtx(), matchInv.getM_Product_ID(), matchInv.get_TrxName());
  	    String costingLevel = product.getCostingLevel(as);
- 	    if (MAcctSchema.COSTINGLEVEL_Client.equals(costingLevel)) {
- 	        AD_Org_ID = 0;
- 	        M_AttributeSetInstance_ID = 0;
- 	    } else if (MAcctSchema.COSTINGLEVEL_Organization.equals(costingLevel)) {
- 	        M_AttributeSetInstance_ID = 0;
- 	    } else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel)) {
- 	        AD_Org_ID = 0;
- 	    }
+ 	    MCost.CostingLevelKey costKey = MCost.CostingLevelKey.resolve(AD_Org_ID, M_AttributeSetInstance_ID, costingLevel);
+		AD_Org_ID = costKey.AD_Org_ID();
+		M_AttributeSetInstance_ID = costKey.M_AttributeSetInstance_ID();
 	    MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), costingMethod, AD_Org_ID);
 	    if (matchInv.getReversal_ID() > 0) {
 		    MCostDetail cd = MCostDetail.getMatchInvoice(as, matchInv.getM_Product_ID(), matchInv.getM_AttributeSetInstance_ID(),

@@ -60,7 +60,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = 7669971447038015333L;
+	private static final long serialVersionUID = -1554882384162646674L;
 
 	/**
 	 * @param product
@@ -123,15 +123,9 @@ public class MCost extends X_M_Cost implements ICostInfo
 			String trxName)
 	{
 		String CostingLevel = product.getCostingLevel(as);
-		if (MAcctSchema.COSTINGLEVEL_Client.equals(CostingLevel))
-		{
-			AD_Org_ID = 0;
-			M_AttributeSetInstance_ID = 0;
-		}
-		else if (MAcctSchema.COSTINGLEVEL_Organization.equals(CostingLevel))
-			M_AttributeSetInstance_ID = 0;
-		else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel))
-			AD_Org_ID = 0;
+		MCost.CostingLevelKey costKey = MCost.CostingLevelKey.resolve(AD_Org_ID, M_AttributeSetInstance_ID, CostingLevel);
+		AD_Org_ID = costKey.AD_Org_ID();
+		M_AttributeSetInstance_ID = costKey.M_AttributeSetInstance_ID();
 		//	Costing Method
 		if (costingMethod == null)
 		{
@@ -1943,4 +1937,26 @@ public class MCost extends X_M_Cost implements ICostInfo
 		this.isSkipAverageCostingQtyCheck = isSkipAverageCostingQtyCheck;
 	}
 	
+	public record CostingLevelKey(int AD_Org_ID, int M_AttributeSetInstance_ID)
+	{
+		public static CostingLevelKey resolve(int AD_Org_ID, int M_AttributeSetInstance_ID, String costingLevel)
+		{
+			if (MAcctSchema.COSTINGLEVEL_Client.equals(costingLevel))
+			{
+				AD_Org_ID = 0;
+				M_AttributeSetInstance_ID = 0;
+			}
+			else if (MAcctSchema.COSTINGLEVEL_Organization.equals(costingLevel))
+				M_AttributeSetInstance_ID = 0;
+			else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel))
+				AD_Org_ID = 0;
+
+			return new CostingLevelKey(AD_Org_ID, M_AttributeSetInstance_ID);
+		}
+		
+		public boolean isBatchLotZeroASI(String costingLevel)
+		{
+			return MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel) && M_AttributeSetInstance_ID == 0;
+		}
+	}
 }	//	MCost

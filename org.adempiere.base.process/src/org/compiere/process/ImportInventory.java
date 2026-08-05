@@ -535,14 +535,9 @@ public class ImportInventory extends SvrProcess implements ImportProcess
 
 		int costOrgID = p_AD_OrgTrx_ID;
 		int costASI = line.getM_AttributeSetInstance_ID();
-		if (MAcctSchema.COSTINGLEVEL_Client.equals(costingLevel)){
-			costOrgID = 0;
-			costASI = 0;
-		} else if (MAcctSchema.COSTINGLEVEL_Organization.equals(costingLevel)) { 
-			costASI = 0;
-		} else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel)) {
-			costOrgID = 0;
-		}
+		MCost.CostingLevelKey costKey = MCost.CostingLevelKey.resolve(costOrgID, costASI, costingLevel);
+		costOrgID = costKey.AD_Org_ID();
+		costASI = costKey.M_AttributeSetInstance_ID();
 		MCost cost = MCost.get (product, costASI
 				, acctSchema, costOrgID, p_M_CostElement_ID, get_TrxName());
 		if (cost.is_new())

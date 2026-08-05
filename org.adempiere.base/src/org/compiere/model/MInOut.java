@@ -3514,15 +3514,9 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 				int M_AttributeSetInstance_ID = sLine.getM_AttributeSetInstance_ID();
 				MProduct product = new MProduct(sLine.getCtx(), sLine.getM_Product_ID(), sLine.get_TrxName());
 				String costingLevel = product.getCostingLevel(as);
-				if (MAcctSchema.COSTINGLEVEL_Client.equals(costingLevel))
-				{
-					AD_Org_ID = 0;
-					M_AttributeSetInstance_ID = 0;
-				}
-				else if (MAcctSchema.COSTINGLEVEL_Organization.equals(costingLevel))
-					M_AttributeSetInstance_ID = 0;
-				else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel))
-					AD_Org_ID = 0;
+				MCost.CostingLevelKey costKey = MCost.CostingLevelKey.resolve(AD_Org_ID, M_AttributeSetInstance_ID, costingLevel);
+				AD_Org_ID = costKey.AD_Org_ID();
+				M_AttributeSetInstance_ID = costKey.M_AttributeSetInstance_ID();
 				
 				MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), as.getCostingMethod(), AD_Org_ID);
 				
@@ -3576,15 +3570,9 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			int M_AttributeSetInstance_ID = sLine.getM_AttributeSetInstance_ID();
 			MProduct product = new MProduct(sLine.getCtx(), sLine.getM_Product_ID(), sLine.get_TrxName());
 			String costingLevel = product.getCostingLevel(as);
-			if (MAcctSchema.COSTINGLEVEL_Client.equals(costingLevel))
-			{
-				AD_Org_ID = 0;
-				M_AttributeSetInstance_ID = 0;
-			}
-			else if (MAcctSchema.COSTINGLEVEL_Organization.equals(costingLevel))
-				M_AttributeSetInstance_ID = 0;
-			else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel))
-				AD_Org_ID = 0;
+			MCost.CostingLevelKey costKey = MCost.CostingLevelKey.resolve(AD_Org_ID, M_AttributeSetInstance_ID, costingLevel);
+			AD_Org_ID = costKey.AD_Org_ID();
+			M_AttributeSetInstance_ID = costKey.M_AttributeSetInstance_ID();
 			
 			MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), as.getCostingMethod(), AD_Org_ID);
 			

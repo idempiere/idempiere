@@ -1121,19 +1121,11 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	public MCost getCostingRecord(MAcctSchema as, int AD_Org_ID, int M_ASI_ID, String costingMethod)
 	{
 		String costingLevel = getCostingLevel(as);
-		if (MAcctSchema.COSTINGLEVEL_Client.equals(costingLevel))
-		{
-			AD_Org_ID = 0;
-			M_ASI_ID = 0;
-		}
-		else if (MAcctSchema.COSTINGLEVEL_Organization.equals(costingLevel))
-			M_ASI_ID = 0;
-		else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel))
-		{
-			AD_Org_ID = 0;
-			if (M_ASI_ID == 0)
-				return null;
-		}
+		MCost.CostingLevelKey costKey = MCost.CostingLevelKey.resolve(AD_Org_ID, M_ASI_ID, costingLevel);
+		if (costKey.isBatchLotZeroASI(costingLevel))
+			return null;
+		AD_Org_ID = costKey.AD_Org_ID();
+		M_ASI_ID = costKey.M_AttributeSetInstance_ID();
 		MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), costingMethod, AD_Org_ID);
 		if (ce == null) {
 			return null;
@@ -1153,19 +1145,11 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	public ICostInfo getCostInfo(MAcctSchema as, int AD_Org_ID, int M_ASI_ID, String costingMethod, Timestamp dateAcct)
 	{		
 		String costingLevel = getCostingLevel(as);
-		if (MAcctSchema.COSTINGLEVEL_Client.equals(costingLevel))
-		{
-			AD_Org_ID = 0;
-			M_ASI_ID = 0;
-		}
-		else if (MAcctSchema.COSTINGLEVEL_Organization.equals(costingLevel))
-			M_ASI_ID = 0;
-		else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel))
-		{
-			AD_Org_ID = 0;
-			if (M_ASI_ID == 0)
-				return null;
-		}
+		MCost.CostingLevelKey costKey = MCost.CostingLevelKey.resolve(AD_Org_ID, M_ASI_ID, costingLevel);
+		if (costKey.isBatchLotZeroASI(costingLevel))
+			return null;
+		AD_Org_ID = costKey.AD_Org_ID();
+		M_ASI_ID = costKey.M_AttributeSetInstance_ID();
 		MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), costingMethod, AD_Org_ID);
 		if (ce == null) {
 			return null;

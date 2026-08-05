@@ -258,15 +258,9 @@ public class Doc_Inventory extends Doc
 				product = line.getProduct();
 				int orgId = line.getAD_Org_ID();
 				int asiId = line.getM_AttributeSetInstance_ID();
-				if (MAcctSchema.COSTINGLEVEL_Client.equals(costingLevel))
-				{
-					orgId = 0;
-					asiId = 0;
-				}
-				else if (MAcctSchema.COSTINGLEVEL_Organization.equals(costingLevel))
-					asiId = 0;
-				else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel))
-					orgId = 0;
+				MCost.CostingLevelKey costKey = MCost.CostingLevelKey.resolve(orgId, asiId, costingLevel);
+				orgId = costKey.AD_Org_ID();
+				asiId = costKey.M_AttributeSetInstance_ID();
 				MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), docCostingMethod, orgId);
 				MCostDetail cd = MCostDetail.getInventory(as, product.getM_Product_ID(), asiId, line.get_ID(), ce.getM_CostElement_ID(), getTrxName());
 				ICostInfo cost = MCost.getCostInfo(product, asiId, as, 
