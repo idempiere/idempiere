@@ -1,0 +1,29 @@
+# ============================================================
+#  docker-compose.yml — iDempiere release-12
+#  Variables lues depuis le fichier .env généré par le pipeline
+# ============================================================
+
+services:
+
+  idempiere:
+    image: ${IMAGE_NAME}
+    container_name: idempiere-release12
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8099}:8080"
+    environment:
+      DB_HOST:     ${DB_HOST:-localhost}
+      DB_PORT:     ${DB_PORT:-5444}
+      DB_NAME:     ${DB_NAME:-idempiere}
+      DB_USER:     ${DB_USER:-adempiere}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JAVA_OPTS:   "-Xms512m -Xmx1024m"
+    network_mode: host
+    # network_mode: host permet d'accéder au PostgreSQL natif du ZBook
+    # sans avoir à exposer le port PG dans Docker
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/webui/index.zul"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
