@@ -586,6 +586,368 @@ public class PurchaseOrderTest extends AbstractTestCase {
 			CacheMgt.get().reset();
 		}
 	}
+
+	/**
+	 * https://idempiere.atlassian.net/browse/IDEMPIERE-7075
+	 */
+	@Test
+	public void testOverReceiptVoidAndOrderCloseReservation() {
+		Properties ctx = Env.getCtx();
+		String trxName = getTrxName();
+		int productId = DictionaryIDs.M_Product.ROSE_BUSH.id;
+		BigDecimal qtyOrdered = new BigDecimal("300");
+		BigDecimal qtyReceived = new BigDecimal("303");
+		BigDecimal initialQtyOrdered = getQtyOrdered(ctx, productId, trxName);
+
+		DB.executeUpdateEx("UPDATE AD_SysConfig SET Value='N' WHERE AD_Client_ID=0 AND Name=?",
+				new Object[] {MSysConfig.VALIDATE_MATCHING_TO_ORDERED_QTY}, null);
+		CacheMgt.get().reset();
+
+		try {
+			MOrder order = new MOrder(ctx, 0, trxName);
+			order.setBPartner(MBPartner.get(ctx, DictionaryIDs.C_BPartner.PATIO.id));
+			order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
+			order.setIsSOTrx(false);
+			order.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+			order.setDocStatus(DocAction.STATUS_Drafted);
+			order.setDocAction(DocAction.ACTION_Complete);
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			order.setDateOrdered(today);
+			order.setDatePromised(today);
+			order.saveEx();
+
+			MOrderLine orderLine = new MOrderLine(order);
+			orderLine.setLine(10);
+			orderLine.setProduct(MProduct.get(ctx, productId));
+			orderLine.setQty(qtyOrdered);
+			orderLine.setDatePromised(today);
+			orderLine.saveEx();
+
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			order.load(trxName);
+			assertEquals(DocAction.STATUS_Completed, order.getDocStatus(), "Order not completed");
+			orderLine.load(trxName);
+			assertEquals(0, qtyOrdered.compareTo(orderLine.getQtyReserved()), "Wrong order line reserved qty after order completion");
+			assertEquals(0, initialQtyOrdered.add(qtyOrdered).compareTo(getQtyOrdered(ctx, productId, trxName)),
+					"Wrong storage reservation after order completion");
+
+			MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered());
+			receipt.setDocStatus(DocAction.STATUS_Drafted);
+			receipt.setDocAction(DocAction.ACTION_Complete);
+			receipt.saveEx();
+
+			MInOutLine receiptLine = new MInOutLine(receipt);
+			receiptLine.setOrderLine(orderLine, 0, qtyReceived);
+			receiptLine.setQty(qtyReceived);
+			receiptLine.saveEx();
+
+			info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			receipt.load(trxName);
+			assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus(), "Material receipt not completed");
+			orderLine.load(trxName);
+			assertEquals(0, Env.ZERO.compareTo(orderLine.getQtyReserved()), "Order line reservation not cleared by over-receipt");
+			assertEquals(0, initialQtyOrdered.compareTo(getQtyOrdered(ctx, productId, trxName)),
+					"Storage reservation not cleared by over-receipt");
+
+			info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Void);
+			assertFalse(info.isError(), info.getSummary());
+			receipt.load(trxName);
+			assertEquals(DocAction.STATUS_Reversed, receipt.getDocStatus(), "Material receipt not voided through reversal");
+			orderLine.load(trxName);
+			assertEquals(0, qtyOrdered.compareTo(orderLine.getQtyReserved()), "Over-receipt quantity was restored as reservation");
+			assertEquals(0, initialQtyOrdered.add(qtyOrdered).compareTo(getQtyOrdered(ctx, productId, trxName)),
+					"Wrong storage reservation after voiding over-receipt");
+
+			info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Close);
+			assertFalse(info.isError(), info.getSummary());
+			order.load(trxName);
+			assertEquals(DocAction.STATUS_Closed, order.getDocStatus(), "Order not closed");
+			orderLine.load(trxName);
+			assertEquals(0, Env.ZERO.compareTo(orderLine.getQtyOrdered()), "Wrong ordered qty on closed order line");
+			assertEquals(0, Env.ZERO.compareTo(orderLine.getQtyDelivered()), "Wrong delivered qty on closed order line");
+			assertEquals(0, qtyOrdered.compareTo(orderLine.getQtyLostSales()), "Wrong lost sales qty on closed order line");
+			assertEquals(0, Env.ZERO.compareTo(orderLine.getQtyReserved()), "Order line reservation not cleared on close");
+			assertEquals(0, initialQtyOrdered.compareTo(getQtyOrdered(ctx, productId, trxName)),
+					"Closed order left a storage reservation");
+		} finally {
+			DB.executeUpdateEx("UPDATE AD_SysConfig SET Value='Y' WHERE AD_Client_ID=0 AND Name=?",
+					new Object[] {MSysConfig.VALIDATE_MATCHING_TO_ORDERED_QTY}, null);
+			CacheMgt.get().reset();
+		}
+	}
+
+	/**
+	 * https://idempiere.atlassian.net/browse/IDEMPIERE-7075
+	 */
+	@Test
+	public void testPartialReceiptsOverReceiptVoidAndOrderCloseReservation() {
+		Properties ctx = Env.getCtx();
+		String trxName = getTrxName();
+		int productId = DictionaryIDs.M_Product.ROSE_BUSH.id;
+		BigDecimal qtyOrdered = new BigDecimal("200");
+		BigDecimal firstReceiptQty = new BigDecimal("150");
+		BigDecimal secondReceiptQty = new BigDecimal("60");
+		BigDecimal openQtyAfterFirstReceipt = new BigDecimal("50");
+		BigDecimal initialQtyOrdered = getQtyOrdered(ctx, productId, trxName);
+
+		DB.executeUpdateEx("UPDATE AD_SysConfig SET Value='N' WHERE AD_Client_ID=0 AND Name=?",
+				new Object[] {MSysConfig.VALIDATE_MATCHING_TO_ORDERED_QTY}, null);
+		CacheMgt.get().reset();
+
+		try {
+			MOrder order = new MOrder(ctx, 0, trxName);
+			order.setBPartner(MBPartner.get(ctx, DictionaryIDs.C_BPartner.PATIO.id));
+			order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
+			order.setIsSOTrx(false);
+			order.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+			order.setDocStatus(DocAction.STATUS_Drafted);
+			order.setDocAction(DocAction.ACTION_Complete);
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			order.setDateOrdered(today);
+			order.setDatePromised(today);
+			order.saveEx();
+
+			MOrderLine orderLine = new MOrderLine(order);
+			orderLine.setLine(10);
+			orderLine.setProduct(MProduct.get(ctx, productId));
+			orderLine.setQty(qtyOrdered);
+			orderLine.setDatePromised(today);
+			orderLine.saveEx();
+
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			order.load(trxName);
+			assertEquals(DocAction.STATUS_Completed, order.getDocStatus(), "Order not completed");
+			orderLine.load(trxName);
+			assertEquals(0, qtyOrdered.compareTo(orderLine.getQtyReserved()), "Wrong order line reserved qty after order completion");
+			assertEquals(0, initialQtyOrdered.add(qtyOrdered).compareTo(getQtyOrdered(ctx, productId, trxName)),
+					"Wrong storage reservation after order completion");
+
+			MInOut firstReceipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered());
+			firstReceipt.setDocStatus(DocAction.STATUS_Drafted);
+			firstReceipt.setDocAction(DocAction.ACTION_Complete);
+			firstReceipt.saveEx();
+
+			MInOutLine firstReceiptLine = new MInOutLine(firstReceipt);
+			firstReceiptLine.setOrderLine(orderLine, 0, firstReceiptQty);
+			firstReceiptLine.setQty(firstReceiptQty);
+			firstReceiptLine.saveEx();
+
+			info = MWorkflow.runDocumentActionWorkflow(firstReceipt, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			firstReceipt.load(trxName);
+			assertEquals(DocAction.STATUS_Completed, firstReceipt.getDocStatus(), "First material receipt not completed");
+			orderLine.load(trxName);
+			assertEquals(0, firstReceiptQty.compareTo(orderLine.getQtyDelivered()), "Wrong delivered qty after first receipt");
+			assertEquals(0, openQtyAfterFirstReceipt.compareTo(orderLine.getQtyReserved()), "Wrong reserved qty after first receipt");
+			assertEquals(0, initialQtyOrdered.add(openQtyAfterFirstReceipt).compareTo(getQtyOrdered(ctx, productId, trxName)),
+					"Wrong storage reservation after first receipt");
+
+			MInOut secondReceipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered());
+			secondReceipt.setDocStatus(DocAction.STATUS_Drafted);
+			secondReceipt.setDocAction(DocAction.ACTION_Complete);
+			secondReceipt.saveEx();
+
+			MInOutLine secondReceiptLine = new MInOutLine(secondReceipt);
+			secondReceiptLine.setOrderLine(orderLine, 0, secondReceiptQty);
+			secondReceiptLine.setQty(secondReceiptQty);
+			secondReceiptLine.saveEx();
+
+			info = MWorkflow.runDocumentActionWorkflow(secondReceipt, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			secondReceipt.load(trxName);
+			assertEquals(DocAction.STATUS_Completed, secondReceipt.getDocStatus(), "Second material receipt not completed");
+			orderLine.load(trxName);
+			assertEquals(0, firstReceiptQty.add(secondReceiptQty).compareTo(orderLine.getQtyDelivered()),
+					"Wrong delivered qty after second receipt");
+			assertEquals(0, Env.ZERO.compareTo(orderLine.getQtyReserved()), "Order line reservation not cleared by over-receipt");
+			assertEquals(0, initialQtyOrdered.compareTo(getQtyOrdered(ctx, productId, trxName)),
+					"Storage reservation not cleared by over-receipt");
+
+			info = MWorkflow.runDocumentActionWorkflow(secondReceipt, DocAction.ACTION_Void);
+			assertFalse(info.isError(), info.getSummary());
+			secondReceipt.load(trxName);
+			assertEquals(DocAction.STATUS_Reversed, secondReceipt.getDocStatus(), "Second material receipt not voided through reversal");
+			orderLine.load(trxName);
+			assertEquals(0, firstReceiptQty.compareTo(orderLine.getQtyDelivered()), "Wrong delivered qty after voiding second receipt");
+			assertEquals(0, openQtyAfterFirstReceipt.compareTo(orderLine.getQtyReserved()),
+					"Reversal restored more than the open order quantity");
+			assertEquals(0, initialQtyOrdered.add(openQtyAfterFirstReceipt).compareTo(getQtyOrdered(ctx, productId, trxName)),
+					"Wrong storage reservation after voiding second receipt");
+
+			info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Close);
+			assertFalse(info.isError(), info.getSummary());
+			order.load(trxName);
+			assertEquals(DocAction.STATUS_Closed, order.getDocStatus(), "Order not closed");
+			orderLine.load(trxName);
+			assertEquals(0, firstReceiptQty.compareTo(orderLine.getQtyOrdered()), "Wrong ordered qty on closed order line");
+			assertEquals(0, firstReceiptQty.compareTo(orderLine.getQtyDelivered()), "Wrong delivered qty on closed order line");
+			assertEquals(0, openQtyAfterFirstReceipt.compareTo(orderLine.getQtyLostSales()), "Wrong lost sales qty on closed order line");
+			assertEquals(0, Env.ZERO.compareTo(orderLine.getQtyReserved()), "Order line reservation not cleared on close");
+			assertEquals(0, initialQtyOrdered.compareTo(getQtyOrdered(ctx, productId, trxName)),
+					"Closed order left a storage reservation");
+		} finally {
+			DB.executeUpdateEx("UPDATE AD_SysConfig SET Value='Y' WHERE AD_Client_ID=0 AND Name=?",
+					new Object[] {MSysConfig.VALIDATE_MATCHING_TO_ORDERED_QTY}, null);
+			CacheMgt.get().reset();
+		}
+	}
+
+	/**
+	 * https://idempiere.atlassian.net/browse/IDEMPIERE-7075
+	 */
+	@Test
+	public void testOverReceiptReversalDoesNotAffectOtherOrderReservation() {
+		Properties ctx = Env.getCtx();
+		String trxName = getTrxName();
+		int productId = DictionaryIDs.M_Product.ROSE_BUSH.id;
+		BigDecimal firstOrderQty = new BigDecimal("200");
+		BigDecimal secondOrderQty = new BigDecimal("100");
+		BigDecimal firstReceiptQty = new BigDecimal("150");
+		BigDecimal overReceiptQty = new BigDecimal("60");
+		BigDecimal firstOrderOpenQty = new BigDecimal("50");
+		BigDecimal initialQtyOrdered = getQtyOrdered(ctx, productId, trxName);
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+
+		DB.executeUpdateEx("UPDATE AD_SysConfig SET Value='N' WHERE AD_Client_ID=0 AND Name=?",
+				new Object[] {MSysConfig.VALIDATE_MATCHING_TO_ORDERED_QTY}, null);
+		CacheMgt.get().reset();
+
+		try {
+			MOrder firstOrder = new MOrder(ctx, 0, trxName);
+			firstOrder.setBPartner(MBPartner.get(ctx, DictionaryIDs.C_BPartner.PATIO.id));
+			firstOrder.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
+			firstOrder.setIsSOTrx(false);
+			firstOrder.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+			firstOrder.setDocStatus(DocAction.STATUS_Drafted);
+			firstOrder.setDocAction(DocAction.ACTION_Complete);
+			firstOrder.setDateOrdered(today);
+			firstOrder.setDatePromised(today);
+			firstOrder.saveEx();
+
+			MOrderLine firstOrderLine = new MOrderLine(firstOrder);
+			firstOrderLine.setLine(10);
+			firstOrderLine.setProduct(MProduct.get(ctx, productId));
+			firstOrderLine.setQty(firstOrderQty);
+			firstOrderLine.setDatePromised(today);
+			firstOrderLine.saveEx();
+
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(firstOrder, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			firstOrder.load(trxName);
+			assertEquals(DocAction.STATUS_Completed, firstOrder.getDocStatus(), "First order not completed");
+
+			MOrder secondOrder = new MOrder(ctx, 0, trxName);
+			secondOrder.setBPartner(MBPartner.get(ctx, DictionaryIDs.C_BPartner.PATIO.id));
+			secondOrder.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
+			secondOrder.setIsSOTrx(false);
+			secondOrder.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+			secondOrder.setDocStatus(DocAction.STATUS_Drafted);
+			secondOrder.setDocAction(DocAction.ACTION_Complete);
+			secondOrder.setDateOrdered(today);
+			secondOrder.setDatePromised(today);
+			secondOrder.saveEx();
+
+			MOrderLine secondOrderLine = new MOrderLine(secondOrder);
+			secondOrderLine.setLine(10);
+			secondOrderLine.setProduct(MProduct.get(ctx, productId));
+			secondOrderLine.setQty(secondOrderQty);
+			secondOrderLine.setDatePromised(today);
+			secondOrderLine.saveEx();
+
+			info = MWorkflow.runDocumentActionWorkflow(secondOrder, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			secondOrder.load(trxName);
+			assertEquals(DocAction.STATUS_Completed, secondOrder.getDocStatus(), "Second order not completed");
+			firstOrderLine.load(trxName);
+			secondOrderLine.load(trxName);
+			assertEquals(0, firstOrderQty.compareTo(firstOrderLine.getQtyReserved()), "Wrong reservation on first order line");
+			assertEquals(0, secondOrderQty.compareTo(secondOrderLine.getQtyReserved()), "Wrong reservation on second order line");
+			assertEquals(0, initialQtyOrdered.add(firstOrderQty).add(secondOrderQty)
+					.compareTo(getQtyOrdered(ctx, productId, trxName)), "Wrong combined storage reservation");
+
+			MInOut firstReceipt = new MInOut(firstOrder, DictionaryIDs.C_DocType.MM_RECEIPT.id, firstOrder.getDateOrdered());
+			firstReceipt.setDocStatus(DocAction.STATUS_Drafted);
+			firstReceipt.setDocAction(DocAction.ACTION_Complete);
+			firstReceipt.saveEx();
+
+			MInOutLine firstReceiptLine = new MInOutLine(firstReceipt);
+			firstReceiptLine.setOrderLine(firstOrderLine, 0, firstReceiptQty);
+			firstReceiptLine.setQty(firstReceiptQty);
+			firstReceiptLine.saveEx();
+
+			info = MWorkflow.runDocumentActionWorkflow(firstReceipt, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			firstOrderLine.load(trxName);
+			secondOrderLine.load(trxName);
+			assertEquals(0, firstOrderOpenQty.compareTo(firstOrderLine.getQtyReserved()), "Wrong reservation after first receipt");
+			assertEquals(0, secondOrderQty.compareTo(secondOrderLine.getQtyReserved()), "First receipt changed second order line");
+			assertEquals(0, initialQtyOrdered.add(firstOrderOpenQty).add(secondOrderQty)
+					.compareTo(getQtyOrdered(ctx, productId, trxName)), "Wrong combined reservation after first receipt");
+
+			MInOut overReceipt = new MInOut(firstOrder, DictionaryIDs.C_DocType.MM_RECEIPT.id, firstOrder.getDateOrdered());
+			overReceipt.setDocStatus(DocAction.STATUS_Drafted);
+			overReceipt.setDocAction(DocAction.ACTION_Complete);
+			overReceipt.saveEx();
+
+			MInOutLine overReceiptLine = new MInOutLine(overReceipt);
+			overReceiptLine.setOrderLine(firstOrderLine, 0, overReceiptQty);
+			overReceiptLine.setQty(overReceiptQty);
+			overReceiptLine.saveEx();
+
+			info = MWorkflow.runDocumentActionWorkflow(overReceipt, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			firstOrderLine.load(trxName);
+			secondOrderLine.load(trxName);
+			assertEquals(0, Env.ZERO.compareTo(firstOrderLine.getQtyReserved()), "Over-received first order still reserved");
+			assertEquals(0, secondOrderQty.compareTo(secondOrderLine.getQtyReserved()), "Over-receipt changed second order line");
+			assertEquals(0, initialQtyOrdered.add(secondOrderQty).compareTo(getQtyOrdered(ctx, productId, trxName)),
+					"Over-receipt changed the other order's storage reservation");
+
+			info = MWorkflow.runDocumentActionWorkflow(overReceipt, DocAction.ACTION_Void);
+			assertFalse(info.isError(), info.getSummary());
+			overReceipt.load(trxName);
+			assertEquals(DocAction.STATUS_Reversed, overReceipt.getDocStatus(), "Over-receipt not voided through reversal");
+			firstOrderLine.load(trxName);
+			secondOrderLine.load(trxName);
+			assertEquals(0, firstOrderOpenQty.compareTo(firstOrderLine.getQtyReserved()), "Wrong first order reservation after void");
+			assertEquals(0, secondOrderQty.compareTo(secondOrderLine.getQtyReserved()), "Void changed second order line");
+			assertEquals(0, initialQtyOrdered.add(firstOrderOpenQty).add(secondOrderQty)
+					.compareTo(getQtyOrdered(ctx, productId, trxName)), "Wrong combined reservation after void");
+
+			info = MWorkflow.runDocumentActionWorkflow(firstOrder, DocAction.ACTION_Close);
+			assertFalse(info.isError(), info.getSummary());
+			firstOrder.load(trxName);
+			assertEquals(DocAction.STATUS_Closed, firstOrder.getDocStatus(), "First order not closed");
+			firstOrderLine.load(trxName);
+			secondOrderLine.load(trxName);
+			assertEquals(0, firstReceiptQty.compareTo(firstOrderLine.getQtyOrdered()), "Wrong ordered qty on closed first order line");
+			assertEquals(0, firstReceiptQty.compareTo(firstOrderLine.getQtyDelivered()), "Wrong delivered qty on closed first order line");
+			assertEquals(0, firstOrderOpenQty.compareTo(firstOrderLine.getQtyLostSales()), "Wrong lost sales on closed first order line");
+			assertEquals(0, Env.ZERO.compareTo(firstOrderLine.getQtyReserved()), "Closed first order line still reserved");
+			assertEquals(0, secondOrderQty.compareTo(secondOrderLine.getQtyReserved()), "Closing first order changed second order line");
+			assertEquals(0, initialQtyOrdered.add(secondOrderQty).compareTo(getQtyOrdered(ctx, productId, trxName)),
+					"Closing first order did not preserve second order's storage reservation");
+
+			info = MWorkflow.runDocumentActionWorkflow(secondOrder, DocAction.ACTION_Close);
+			assertFalse(info.isError(), info.getSummary());
+			secondOrder.load(trxName);
+			assertEquals(DocAction.STATUS_Closed, secondOrder.getDocStatus(), "Second order not closed");
+			secondOrderLine.load(trxName);
+			assertEquals(0, Env.ZERO.compareTo(secondOrderLine.getQtyOrdered()), "Wrong ordered qty on closed second order line");
+			assertEquals(0, Env.ZERO.compareTo(secondOrderLine.getQtyDelivered()), "Wrong delivered qty on closed second order line");
+			assertEquals(0, secondOrderQty.compareTo(secondOrderLine.getQtyLostSales()), "Wrong lost sales on closed second order line");
+			assertEquals(0, Env.ZERO.compareTo(secondOrderLine.getQtyReserved()), "Closed second order line still reserved");
+			assertEquals(0, initialQtyOrdered.compareTo(getQtyOrdered(ctx, productId, trxName)),
+					"Closing both orders did not clear the combined storage reservation");
+		} finally {
+			DB.executeUpdateEx("UPDATE AD_SysConfig SET Value='Y' WHERE AD_Client_ID=0 AND Name=?",
+					new Object[] {MSysConfig.VALIDATE_MATCHING_TO_ORDERED_QTY}, null);
+			CacheMgt.get().reset();
+		}
+	}
 	
 	@Test
 	public void testVendorRMA() {

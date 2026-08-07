@@ -1693,6 +1693,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	
 				//	Update Order Line
 				MOrderLine oLine = null;
+				BigDecimal reservationDelta = Env.ZERO;
 				if (sLine.getC_OrderLine_ID() != 0)
 				{
 					oLine = new MOrderLine (getCtx(), sLine.getC_OrderLine_ID(), get_TrxName());
@@ -1744,21 +1745,27 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 								toDelivered = Env.ZERO;
 						}
 					} 
+
+					reservationDelta = sLine.getMovementQty().negate();
 					
-					BigDecimal storageReservationToUpdate = sLine.getMovementQty();
-					if (oLine != null)
+					if (oLine != null && oLine.getQtyOrdered().signum() >= 0)
 					{
-						if (!isReversal()) 
-						{
-							if (storageReservationToUpdate.compareTo(oLine.getQtyReserved()) > 0) 
-								storageReservationToUpdate = oLine.getQtyReserved();
-						}
-						else
-						{
-							BigDecimal tmp = storageReservationToUpdate.negate().add(oLine.getQtyReserved());
-							if (tmp.compareTo(oLine.getQtyOrdered()) > 0)
-								storageReservationToUpdate = oLine.getQtyOrdered().subtract(oLine.getQtyReserved());
-						}
+						BigDecimal currentReserved = oLine.getQtyReserved();
+						BigDecimal targetReserved = currentReserved.add(reservationDelta);
+						BigDecimal anticipatedDelivered = oLine.getQtyDelivered();
+						if (isSOTrx())
+							anticipatedDelivered = anticipatedDelivered.add(sLine.getMovementQty());
+						BigDecimal maxReserved = oLine.getQtyOrdered().subtract(anticipatedDelivered);
+
+						if (targetReserved.signum() < 0)
+							targetReserved = Env.ZERO;
+						if (maxReserved.signum() < 0)
+							maxReserved = Env.ZERO;
+
+						if (targetReserved.compareTo(maxReserved) > 0)
+							targetReserved = maxReserved;
+
+						reservationDelta = targetReserved.subtract(currentReserved);
 					}
 					
 					//
@@ -1833,7 +1840,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 								if (!MStorageReservation.add(getCtx(), oLine.getM_Warehouse_ID(),
 										oLine.getM_Product_ID(),
 										oLine.getM_AttributeSetInstance_ID(),
-										storageReservationToUpdate.negate(),
+										reservationDelta,
 										isSOTrx(),
 										get_TrxName(), tracer))
 								{
@@ -1929,7 +1936,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 							if (!MStorageReservation.add(getCtx(), oLine.getM_Warehouse_ID(),
 									oLine.getM_Product_ID(),
 									oLine.getM_AttributeSetInstance_ID(),
-									storageReservationToUpdate.negate(), isSOTrx(), get_TrxName(), tracer))
+									reservationDelta, isSOTrx(), get_TrxName(), tracer))
 							{
 								m_processMsg = "Cannot correct Inventory Reserved " + (isSOTrx()? "Reserved [" :"Ordered [") + product.getValue() + "]";
 								return DocAction.STATUS_Invalid;
@@ -1963,12 +1970,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 				{
 					if (oLine.getQtyOrdered().signum() >= 0)
 					{
-						oLine.setQtyReserved(oLine.getQtyReserved().subtract(sLine.getMovementQty()));
-
-						if (oLine.getQtyReserved().signum() == -1)
-							oLine.setQtyReserved(Env.ZERO);
-						else if (oLine.getQtyDelivered().compareTo(oLine.getQtyOrdered()) > 0)
-							oLine.setQtyReserved(Env.ZERO);
+						oLine.setQtyReserved(oLine.getQtyReserved().add(reservationDelta));
 					}
 				}
 	
