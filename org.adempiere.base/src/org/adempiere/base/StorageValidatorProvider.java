@@ -53,7 +53,8 @@ public class StorageValidatorProvider {
 		service = IStorageValidator.class,
 		cardinality = ReferenceCardinality.MULTIPLE,
 		policy = ReferencePolicy.DYNAMIC,
-		unbind = "unbindStorageValidator"
+		unbind = "unbindStorageValidator",
+		name = "IStorageValidator"
 	)
 	public synchronized void bindStorageValidator(IStorageValidator validator, Map<String, Object> properties) {
 		if (validator == null)

@@ -366,10 +366,6 @@
          version="0.0.0"/>
 
    <plugin
-         id="javax.xml"
-         version="0.0.0"/>
-
-   <plugin
          id="org.eclipse.osgi"
          version="0.0.0"/>
 

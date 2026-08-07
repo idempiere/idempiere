@@ -374,6 +374,8 @@ public class DB_Oracle implements AdempiereDatabase
      */
     public String convertStatement (String oraStatement)
     {
+    	// IDEMPIERE-7023 hook: apply ISQLStatementRewriter providers (if any)
+    	oraStatement = org.compiere.dbPort.SQLStatementRewriterProvider.rewriteStatements(oraStatement);
     	Convert.logMigrationScript(oraStatement, null);
 		if (SystemProperties.isDBDebug()) {
 			String filterOrDebug = SystemProperties.getDBDebugFilter();

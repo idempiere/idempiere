@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for SSO_PrincipalConfig
  *  @author iDempiere (generated)
- *  @version Release 13 - $Id$ */
+ *  @version Release 14 - $Id$ */
 @org.adempiere.base.Model(table="SSO_PrincipalConfig")
 public class X_SSO_PrincipalConfig extends PO implements I_SSO_PrincipalConfig, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_SSO_PrincipalConfig extends PO implements I_SSO_PrincipalConfig, 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20260309L;
+	private static final long serialVersionUID = 20260726L;
 
     /** Standard Constructor */
     public X_SSO_PrincipalConfig (Properties ctx, int SSO_PrincipalConfig_ID, String trxName)
@@ -38,6 +38,8 @@ public class X_SSO_PrincipalConfig extends PO implements I_SSO_PrincipalConfig, 
       super (ctx, SSO_PrincipalConfig_ID, trxName);
       /** if (SSO_PrincipalConfig_ID == 0)
         {
+			setIsForceLogin (true);
+// Y
 			setSSO_PrincipalConfig_ID (0);
 			setSSO_Provider (null);
         } */
@@ -49,6 +51,8 @@ public class X_SSO_PrincipalConfig extends PO implements I_SSO_PrincipalConfig, 
       super (ctx, SSO_PrincipalConfig_ID, trxName, virtualColumns);
       /** if (SSO_PrincipalConfig_ID == 0)
         {
+			setIsForceLogin (true);
+// Y
 			setSSO_PrincipalConfig_ID (0);
 			setSSO_Provider (null);
         } */
@@ -60,6 +64,8 @@ public class X_SSO_PrincipalConfig extends PO implements I_SSO_PrincipalConfig, 
       super (ctx, SSO_PrincipalConfig_UU, trxName);
       /** if (SSO_PrincipalConfig_UU == null)
         {
+			setIsForceLogin (true);
+// Y
 			setSSO_PrincipalConfig_ID (0);
 			setSSO_Provider (null);
         } */
@@ -71,6 +77,8 @@ public class X_SSO_PrincipalConfig extends PO implements I_SSO_PrincipalConfig, 
       super (ctx, SSO_PrincipalConfig_UU, trxName, virtualColumns);
       /** if (SSO_PrincipalConfig_UU == null)
         {
+			setIsForceLogin (true);
+// Y
 			setSSO_PrincipalConfig_ID (0);
 			setSSO_Provider (null);
         } */
@@ -118,6 +126,29 @@ public class X_SSO_PrincipalConfig extends PO implements I_SSO_PrincipalConfig, 
 	public boolean isDefault()
 	{
 		Object oo = get_Value(COLUMNNAME_IsDefault);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Force Login.
+		@param IsForceLogin Require the OpenID Connect provider to reauthenticate the user
+	*/
+	public void setIsForceLogin (boolean IsForceLogin)
+	{
+		set_Value (COLUMNNAME_IsForceLogin, Boolean.valueOf(IsForceLogin));
+	}
+
+	/** Get Force Login.
+		@return Require the OpenID Connect provider to reauthenticate the user
+	  */
+	public boolean isForceLogin()
+	{
+		Object oo = get_Value(COLUMNNAME_IsForceLogin);
 		if (oo != null)
 		{
 			 if (oo instanceof Boolean)

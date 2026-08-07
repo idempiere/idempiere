@@ -31,6 +31,7 @@ import java.util.logging.Level;
 
 import org.adempiere.exceptions.AverageCostingZeroQtyException;
 import org.compiere.model.ICostInfo;
+import org.compiere.model.I_M_CostDetail;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAcctSchemaElement;
@@ -445,90 +446,30 @@ public class Doc_MatchInv extends Doc
 		BigDecimal qtyCost = null;
 		Boolean isStockCoverage = false;
 
-		boolean isReversal = matchInv.getReversal_ID() > 0 && matchInv.getReversal_ID() < matchInv.get_ID();
-		if (X_M_Cost.COSTINGMETHOD_AveragePO.equals(costingMethod)  && m_invoiceLine.getM_Product_ID() > 0 && !isReversal)
+		if (X_M_Cost.COSTINGMETHOD_AveragePO.equals(costingMethod) && m_invoiceLine.getM_Product_ID() > 0)
 		{
-			isStockCoverage = true;
-
-			int AD_Org_ID = m_receiptLine.getAD_Org_ID();
-			int M_AttributeSetInstance_ID = matchInv.getM_AttributeSetInstance_ID();
-			if (MAcctSchema.COSTINGLEVEL_Client.equals(as.getCostingLevel()))
-			{
-				AD_Org_ID = 0;
-				M_AttributeSetInstance_ID = 0;
-			}
-			else if (MAcctSchema.COSTINGLEVEL_Organization.equals(as.getCostingLevel()))
-				M_AttributeSetInstance_ID = 0;
-			else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(as.getCostingLevel()))
-				AD_Org_ID = 0;
-			MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), costingMethod, AD_Org_ID);
-			MCostDetail cd = MCostDetail.getMatchInvoice(as, matchInv.getM_Product_ID(), M_AttributeSetInstance_ID,
-					matchInv.getM_MatchInv_ID(), 0, getTrxName());
-			if (cd != null) {
-				qtyCost = cd.getCurrentQty();
-			} else {
-				ICostInfo c = MCost.getCostInfo(getCtx(), getAD_Client_ID(), AD_Org_ID, m_invoiceLine.getM_Product_ID(),
-					as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(),
-					M_AttributeSetInstance_ID, 
-					getDateAcct(), null, getTrxName());
-				qtyCost = (c != null ? c.getCurrentQty() : Env.ZERO);
-			}
-			if (qtyCost != null && qtyCost.compareTo(qtyMatched) < 0 )
-			{
-				// If current cost qty < invoice qty
-				amtAsset = qtyCost.multiply(ipv).divide(qtyMatched,as.getCostingPrecision(),RoundingMode.HALF_UP);
-				amtVariance = ipv.subtract(amtAsset);
-				
-			} else {
-				// If current qty >= invoice qty
-				amtAsset = ipv;
-			}
-		}
-		else if (X_M_Cost.COSTINGMETHOD_AveragePO.equals(costingMethod)  && m_invoiceLine.getM_Product_ID() > 0 && isReversal)
-		{
-			isStockCoverage = true;
-			MMatchInv originalMatchInv = new MMatchInv(getCtx(), matchInv.getReversal_ID(), getTrxName());
-			if (originalMatchInv.getDateAcct().compareTo(getDateAcct()) != 0) { // reverse-accrual
-				// If it is a reverse-accrual, perform a stock coverage check using the current stock quantity to prevent any leftover amount in the inventory GL
-				int AD_Org_ID = m_receiptLine.getAD_Org_ID();
-				int M_AttributeSetInstance_ID = matchInv.getM_AttributeSetInstance_ID();
-				if (MAcctSchema.COSTINGLEVEL_Client.equals(as.getCostingLevel()))
-				{
-					AD_Org_ID = 0;
-					M_AttributeSetInstance_ID = 0;
-				}
-				else if (MAcctSchema.COSTINGLEVEL_Organization.equals(as.getCostingLevel()))
-					M_AttributeSetInstance_ID = 0;
-				else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(as.getCostingLevel()))
-					AD_Org_ID = 0;
-				MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), costingMethod, AD_Org_ID); 
-				MCostDetail cd = MCostDetail.getMatchInvoice(as, matchInv.getM_Product_ID(), M_AttributeSetInstance_ID,
-						matchInv.getM_MatchInv_ID(), 0, getTrxName());
-				if (cd != null) {
-					qtyCost = cd.getCurrentQty();
-				} else {
-					ICostInfo c = MCost.getCostInfo(getCtx(), getAD_Client_ID(), AD_Org_ID, m_invoiceLine.getM_Product_ID(),
-						as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(),
-						M_AttributeSetInstance_ID, 
-						getDateAcct(), null, getTrxName());
-					qtyCost = (c != null ? c.getCurrentQty() : Env.ZERO);
-				}	
-				if (qtyCost != null && qtyCost.compareTo(qtyMatched.negate()) < 0 )
-				{
-					// If current cost qty < invoice qty
-					amtAsset = qtyCost.multiply(ipv).divide(qtyMatched.negate(),as.getCostingPrecision(),RoundingMode.HALF_UP);
-					amtVariance = ipv.subtract(amtAsset); 
-				} else {
-					// If current qty >= invoice qty
-					amtAsset = ipv;
-				} 
-			} else { // reverse-correct
-				int M_AttributeSetInstance_ID = matchInv.getM_AttributeSetInstance_ID();
-				MCostDetail cd = MCostDetail.getMatchInvoice(as, matchInv.getM_Product_ID(), M_AttributeSetInstance_ID,
-						matchInv.getReversal_ID(), 0, getTrxName());
-				amtAsset = cd != null ? cd.getAmt().negate() : BigDecimal.ZERO;
-				amtVariance = ipv.subtract(amtAsset);
-			}
+		    isStockCoverage = true;
+		    if (matchInv.getReversal_ID() > 0) {
+		        boolean isReversal = matchInv.isReversal();
+		        MMatchInv counterpartMatchInv = new MMatchInv(getCtx(), matchInv.getReversal_ID(), getTrxName());
+		        if (counterpartMatchInv.getDateAcct().compareTo(getDateAcct()) != 0) { // reverse-accrual
+		            BigDecimal qtyForCoverage = isReversal ? qtyMatched.negate() : qtyMatched;
+		            qtyCost = resolveQtyCostForAveragePO(as, matchInv, costingMethod);
+		            AssetVarianceAmounts result = calculateAmountsForAveragePO(qtyCost, ipv, qtyForCoverage, as.getCostingPrecision());
+			        amtAsset = result.amtAsset();
+			        amtVariance = result.amtVariance();
+		        } else { // reverse-correct
+		            MCostDetail cd = MCostDetail.getMatchInvoice(as, matchInv.getM_Product_ID(), matchInv.getM_AttributeSetInstance_ID(),
+		                    matchInv.getReversal_ID(), 0, getTrxName());
+		            amtAsset = cd != null ? cd.getAmt().negate() : BigDecimal.ZERO;
+		            amtVariance = ipv.subtract(amtAsset);
+		        }
+		    } else { // normal (no reversal)
+		        qtyCost = resolveQtyCostForAveragePO(as, matchInv, costingMethod);
+		        AssetVarianceAmounts result = calculateAmountsForAveragePO(qtyCost, ipv, qtyMatched, as.getCostingPrecision());
+		        amtAsset = result.amtAsset();
+		        amtVariance = result.amtVariance();
+		    }
 		}
 		
 		Trx trx = Trx.get(getTrxName(), false);
@@ -539,13 +480,14 @@ public class Doc_MatchInv extends Doc
 			int Ref_CostDetail_ID = 0;
 			if (matchInv.getReversal_ID() > 0 && matchInv.get_ID() > matchInv.getReversal_ID())
 			{
-				MCostDetail cd = MCostDetail.getMatchInvoice(as, m_invoiceLine.getM_Product_ID(), m_invoiceLine.getM_AttributeSetInstance_ID(),
+				MCostDetail cd = MCostDetail.getMatchInvoice(as, matchInv.getM_Product_ID(), matchInv.getM_AttributeSetInstance_ID(),
 						matchInv.getReversal_ID(), 0, getTrxName());
 				if (cd != null)
 					Ref_CostDetail_ID = cd.getM_CostDetail_ID();
 			}
-			if (!MCostDetail.createMatchInvoice(as, m_invoiceLine.getAD_Org_ID(),
-					m_invoiceLine.getM_Product_ID(), m_invoiceLine.getM_AttributeSetInstance_ID(),
+			// Use matchInv instead of m_invoiceLine to ensure the IPV cost detail is created with the correct ASI from the match invoice record
+			if (!MCostDetail.createMatchInvoice(as, matchInv.getAD_Org_ID(),
+					matchInv.getM_Product_ID(), matchInv.getM_AttributeSetInstance_ID(),
 					matchInv.getM_MatchInv_ID(), 0,
 					isStockCoverage ? amtAsset: ipv, BigDecimal.ZERO, "Invoice Price Variance", getDateAcct(), Ref_CostDetail_ID, getTrxName())) {
 				throw new RuntimeException("Failed to create cost detail record.");
@@ -579,6 +521,7 @@ public class Doc_MatchInv extends Doc
 						m_pc.getAccount(ProductCost.ACCTTYPE_P_AverageCostVariance, as), as.getC_Currency_ID(),
 						amtVariance);
 				updateFactLine(varianceLine);
+				varianceLine.setM_AttributeSetInstance_ID(matchInv.getM_AttributeSetInstance_ID());
 				
 				if (m_invoiceLine.getParent().getC_Currency_ID() != as.getC_Currency_ID())
 				{
@@ -589,6 +532,7 @@ public class Doc_MatchInv extends Doc
 			{
 				FactLine line = fact.createLine(null, account, as.getC_Currency_ID(), amtAsset);
 				updateFactLine(line);
+				line.setM_AttributeSetInstance_ID(matchInv.getM_AttributeSetInstance_ID());
 
 				if (m_invoiceLine.getParent().getC_Currency_ID() != as.getC_Currency_ID())
 				{
@@ -2874,5 +2818,90 @@ public class Doc_MatchInv extends Doc
 		}
 		
 		return isLineFullyMatched;
+	}
+	
+	/**
+	 * Resolves the current stock quantity to use for the Average PO coverage check, 
+	 * looking it up from the match invoice cost detail (for reversals), 
+	 * from the related order cost detail via M_MatchPO, 
+	 * or falling back to MCost.getCostInfo if neither is found.
+	 */
+	private BigDecimal resolveQtyCostForAveragePO(MAcctSchema as, MMatchInv matchInv, String costingMethod) {
+		// Costing-level AD_Org_ID and M_AttributeSetInstance_ID
+ 		int AD_Org_ID = m_receiptLine.getAD_Org_ID();
+ 	    int M_AttributeSetInstance_ID = matchInv.getM_AttributeSetInstance_ID();
+ 	    String costingLevel = as.getCostingLevel();
+ 	    if (MAcctSchema.COSTINGLEVEL_Client.equals(costingLevel)) {
+ 	        AD_Org_ID = 0;
+ 	        M_AttributeSetInstance_ID = 0;
+ 	    } else if (MAcctSchema.COSTINGLEVEL_Organization.equals(costingLevel)) {
+ 	        M_AttributeSetInstance_ID = 0;
+ 	    } else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel)) {
+ 	        AD_Org_ID = 0;
+ 	    }
+	    MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), costingMethod, AD_Org_ID);
+	    if (matchInv.getReversal_ID() > 0) {
+		    MCostDetail cd = MCostDetail.getMatchInvoice(as, matchInv.getM_Product_ID(), matchInv.getM_AttributeSetInstance_ID(),
+		            matchInv.getM_MatchInv_ID(), 0, getTrxName());
+		    if (cd != null) {
+		        return cd.getCurrentQty();
+		    }
+	    } else if (matchInv.getM_AttributeSetInstance_ID() > 0) {
+	    	MCostDetail cd = MCostDetail.getLastCostDetailFromCostHistory(getCtx(), getAD_Client_ID(), AD_Org_ID, matchInv.getM_Product_ID(), 
+					as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getCostingMethod(), ce.getM_CostElement_ID(), 
+					M_AttributeSetInstance_ID, getDateAcct(), getTrxName());
+	    	if (cd.getC_OrderLine_ID() > 0 || cd.getM_MatchInv_ID() > 0) {
+	    		// get stock quantity from the order cost detail
+			    StringBuilder whereClause = new StringBuilder();
+				whereClause.append("(C_OrderLine_ID, M_AttributeSetInstance_ID) IN ( ");
+				whereClause.append(" SELECT mpo.C_OrderLine_ID, mpo.M_AttributeSetInstance_ID");
+				whereClause.append(" FROM M_MatchInv mi");
+				// Don't join with M_MatchPO.C_InvoiceLine_ID, it is not mandatory
+				whereClause.append(" JOIN M_MatchPO mpo ON mpo.M_InOutLine_ID = mi.M_InOutLine_ID"); 
+				whereClause.append("  AND mpo.M_AttributeSetInstance_ID = mi.M_AttributeSetInstance_ID");
+				whereClause.append(" WHERE mi.M_MatchInv_ID = ?");
+				whereClause.append(") ");
+				whereClause.append(" AND M_Product_ID = ?");
+		    	whereClause.append(" AND C_AcctSchema_ID = ?");
+				cd = new Query(as.getCtx(), I_M_CostDetail.Table_Name, whereClause.toString(), getTrxName())
+						.setParameters(matchInv.getM_MatchInv_ID(), matchInv.getM_Product_ID(), as.get_ID())
+						.setOrderBy("M_CostDetail_ID DESC")
+						.first();
+				if (cd != null) {
+			        return cd.getCurrentQty();
+			    }
+	    	}
+	    }
+	    
+	    ICostInfo c = MCost.getCostInfo(getCtx(), getAD_Client_ID(), AD_Org_ID, m_invoiceLine.getM_Product_ID(),
+	            as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(),
+	            M_AttributeSetInstance_ID, 
+	            getDateAcct(), null, getTrxName());
+	    return c != null ? c.getCurrentQty() : Env.ZERO;
+	}
+	
+	/**
+	 * A record that holds the split IPV amounts for Average PO costing
+	 */
+	private record AssetVarianceAmounts(BigDecimal amtAsset, BigDecimal amtVariance) {}
+
+	/**
+	 * Splits the total IPV amount between asset and variance 
+	 * based on whether current stock quantity covers the matched quantity. 
+	 * If stock is insufficient, only the covered portion goes to asset and 
+	 * the remainder goes to variance; otherwise the full amount goes to asset.
+	 */
+	private AssetVarianceAmounts calculateAmountsForAveragePO(BigDecimal qtyCost, BigDecimal ipv, BigDecimal qtyForCoverage, int costingPrecision) {
+		BigDecimal coverageQty = qtyForCoverage.abs();
+		if (coverageQty.signum() == 0) {
+			return new AssetVarianceAmounts(Env.ZERO, ipv);
+		}
+		BigDecimal coveredQty = qtyCost == null ? coverageQty : qtyCost.max(Env.ZERO).min(coverageQty);
+		if (coveredQty.compareTo(coverageQty) < 0) {
+			BigDecimal asset = coveredQty.multiply(ipv).divide(coverageQty, costingPrecision, RoundingMode.HALF_UP);
+	        return new AssetVarianceAmounts(asset, ipv.subtract(asset));
+	    } else {
+	        return new AssetVarianceAmounts(ipv, BigDecimal.ZERO);
+	    }
 	}
 }   //  Doc_MatchInv

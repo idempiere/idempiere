@@ -286,6 +286,17 @@ public class Core {
 		return null;
 	}
 
+	/**
+	 * Get the password reset service for the current tenant. Delegates to
+	 * {@link PasswordResetServiceFactory}, which honors the {@code PASSWORD_RESET_SERVICE_CLASS}
+	 * config and falls back to the default provider.
+	 * @return {@link IPasswordResetService}, or null if none is registered
+	 */
+	public static IPasswordResetService getPasswordResetService()
+	{
+		return PasswordResetServiceFactory.getService(Env.getAD_Client_ID(Env.getCtx()));
+	}
+
 	private static IServiceReferenceHolder<IKeyStore> s_keystoreServiceReference = null;
 	private static volatile boolean s_legacyKeyWarningLogged = false;
 	
