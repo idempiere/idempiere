@@ -37,10 +37,12 @@ import org.compiere.model.MAttributeSetInstance;
 import org.compiere.model.MClient;
 import org.compiere.model.MMovement;
 import org.compiere.model.MMovementLine;
+import org.compiere.model.MMovementLineMA;
 import org.compiere.model.MProduct;
 import org.compiere.model.MStorageOnHand;
 import org.compiere.model.MUOMConversion;
 import org.compiere.model.MWarehouse;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.idempiere.test.AbstractTestCase;
@@ -183,6 +185,85 @@ public class InventoryMoveTest extends AbstractTestCase {
 		rollback();
 	}
 	
+	/**
+	 * Same ASI with multiple storage records at different DateMaterialPolicy
+	 * must complete Inventory Move by consuming each storage (IDEMPIERE-4768 pattern).
+	 */
+	@Test
+	public void testMultiASIDateMaterialPolicyMove() {
+		Properties ctx = Env.getCtx();
+		String trxName = getTrxName();
+
+		MProduct fert50 = new MProduct(ctx, DictionaryIDs.M_Product.FERTILIZER_50.id, trxName);
+
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		Timestamp pastMonth = TimeUtil.addMonths(today, -1);
+
+		// Use HQ warehouse (same pattern as testInventoryMove) with negative inventory disallowed
+		MWarehouse wh = new MWarehouse(ctx, HQ_WAREHOUSE_ID, trxName);
+		wh.setIsDisallowNegativeInv(true);
+		wh.saveEx();
+		CacheMgt.get().reset(MWarehouse.Table_Name, HQ_WAREHOUSE_ID);
+		MWarehouse.get(ctx, HQ_WAREHOUSE_ID, trxName);
+
+		MAttributeSetInstance asi = new MAttributeSetInstance(ctx, 0, trxName);
+		asi.setM_AttributeSet_ID(fert50.getM_AttributeSet_ID());
+		asi.setLot("MOVE-1010");
+		asi.saveEx();
+
+		int locatorFrom = DictionaryIDs.M_Locator.HQ.id;
+		int locatorTo = DictionaryIDs.M_Locator.STORE.id;
+
+		MStorageOnHand.add(ctx, locatorFrom, DictionaryIDs.M_Product.FERTILIZER_50.id,
+				asi.getM_AttributeSetInstance_ID(), Env.ONE, pastMonth, trxName);
+		MStorageOnHand.add(ctx, locatorFrom, DictionaryIDs.M_Product.FERTILIZER_50.id,
+				asi.getM_AttributeSetInstance_ID(), Env.ONE, today, trxName);
+
+		MStorageOnHand[] storages = MStorageOnHand.getWarehouse(ctx, HQ_WAREHOUSE_ID,
+				DictionaryIDs.M_Product.FERTILIZER_50.id, asi.getM_AttributeSetInstance_ID(), null,
+				MClient.MMPOLICY_FiFo.equals(fert50.getMMPolicy()), true,
+				locatorFrom, trxName);
+		assertEquals(2, storages.length);
+
+		MMovement mh = new MMovement(ctx, 0, trxName);
+		mh.setM_Warehouse_ID(HQ_WAREHOUSE_ID);
+		mh.setM_WarehouseTo_ID(STORE_WAREHOUSE_ID);
+		mh.saveEx();
+
+		MMovementLine ml = new MMovementLine(mh);
+		ml.setM_Product_ID(DictionaryIDs.M_Product.FERTILIZER_50.id);
+		ml.setM_Locator_ID(locatorFrom);
+		ml.setM_LocatorTo_ID(locatorTo);
+		ml.setM_AttributeSetInstance_ID(asi.getM_AttributeSetInstance_ID());
+		ml.setM_AttributeSetInstanceTo_ID(asi.getM_AttributeSetInstance_ID());
+		ml.setMovementQty(new BigDecimal("2"));
+		ml.saveEx();
+
+		boolean completed = mh.processIt(MMovement.ACTION_Complete);
+		assertTrue(completed, mh.getProcessMsg());
+		mh.saveEx();
+		assertEquals(MMovement.DOCSTATUS_Completed, mh.getDocStatus());
+
+		// Auto MAs should have been created to split by DateMaterialPolicy
+		MMovementLineMA[] mas = MMovementLineMA.get(ctx, ml.getM_MovementLine_ID(), trxName);
+		assertEquals(2, mas.length, "Expected MA split by DateMaterialPolicy");
+
+		storages = MStorageOnHand.getWarehouse(ctx, HQ_WAREHOUSE_ID,
+				DictionaryIDs.M_Product.FERTILIZER_50.id, asi.getM_AttributeSetInstance_ID(), null,
+				MClient.MMPOLICY_FiFo.equals(fert50.getMMPolicy()), false,
+				locatorFrom, trxName);
+		assertEquals(0, storages.length);
+
+		storages = MStorageOnHand.getWarehouse(ctx, STORE_WAREHOUSE_ID,
+				DictionaryIDs.M_Product.FERTILIZER_50.id, asi.getM_AttributeSetInstance_ID(), null,
+				MClient.MMPOLICY_FiFo.equals(fert50.getMMPolicy()), true,
+				locatorTo, trxName);
+		assertEquals(2, storages.length);
+		for (MStorageOnHand storage : storages) {
+			assertEquals(1, storage.getQtyOnHand().intValue());
+		}
+	}
+
 	/**
 	 * IDEMPIERE-6737
 	 * Attribute Set with "Use Guarantee Date for Material Policy" = "Y"

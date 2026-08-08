@@ -475,10 +475,12 @@ public class MMovement extends X_M_Movement implements DocAction
 					}
 						
 	
-					if (line.getM_AttributeSetInstance_ID() == 0)
+					// Process Attribute Set Instance (MA) records when present
+					// (ASI=0 allocation, or ASI set with multiple DateMaterialPolicy storages)
+					MMovementLineMA mas[] = MMovementLineMA.get(getCtx(),
+							line.getM_MovementLine_ID(), get_TrxName());
+					if (mas.length > 0)
 					{
-						MMovementLineMA mas[] = MMovementLineMA.get(getCtx(),
-								line.getM_MovementLine_ID(), get_TrxName());
 						for (int j = 0; j < mas.length; j++)
 						{
 							MMovementLineMA ma = mas[j];
@@ -537,7 +539,7 @@ public class MMovement extends X_M_Movement implements DocAction
 							}
 						}
 					}
-					//	Fallback - We have ASI
+					//	Fallback - We have ASI (no MA records)
 					if (trxFrom == null)
 					{
 						Timestamp dateMPolicy= null;
@@ -729,7 +731,9 @@ public class MMovement extends X_M_Movement implements DocAction
 	}
 
 	/**
-	 * 	Check Material Policy. Create MMovementLineMA records (if line M_AttributeSetInstance_ID is 0).
+	 * 	Check Material Policy. Create MMovementLineMA records
+	 *  (when line M_AttributeSetInstance_ID is 0, or when ASI is set but inventory
+	 *  is split across multiple DateMaterialPolicy storage records).
 	 *  @param line
 	 *  @param qtyToDeliver
 	 */
@@ -788,7 +792,52 @@ public class MMovement extends X_M_Movement implements DocAction
 				
 			}
 		}	//	attributeSetInstance
-		
+		else
+		{
+			// ASI is set on line - still may need to split across DateMaterialPolicy (IDEMPIERE-4768)
+			MProduct product = MProduct.get(getCtx(), line.getM_Product_ID());
+			String MMPolicy = product.getMMPolicy();
+			MStorageOnHand[] storages = MStorageOnHand.getWarehouse(getCtx(), 0, line.getM_Product_ID(),
+					line.getM_AttributeSetInstance_ID(), null, MClient.MMPOLICY_FiFo.equals(MMPolicy), true,
+					line.getM_Locator_ID(), get_TrxName());
+
+			boolean needSplit = storages.length > 1
+					|| (storages.length == 1 && storages[0].getQtyOnHand().compareTo(qtyToDeliver) < 0);
+			if (needSplit)
+			{
+				for (MStorageOnHand storage : storages)
+				{
+					if (storage.getQtyOnHand().compareTo(qtyToDeliver) >= 0)
+					{
+						MMovementLineMA ma = new MMovementLineMA(line,
+								line.getM_AttributeSetInstance_ID(),
+								qtyToDeliver, storage.getDateMaterialPolicy(), true);
+						ma.saveEx();
+						qtyToDeliver = Env.ZERO;
+						if (log.isLoggable(Level.FINE)) log.fine(ma + ", QtyToDeliver=" + qtyToDeliver);
+					}
+					else if (storage.getQtyOnHand().signum() > 0)
+					{
+						MMovementLineMA ma = new MMovementLineMA(line,
+								line.getM_AttributeSetInstance_ID(),
+								storage.getQtyOnHand(), storage.getDateMaterialPolicy(), true);
+						ma.saveEx();
+						qtyToDeliver = qtyToDeliver.subtract(storage.getQtyOnHand());
+						if (log.isLoggable(Level.FINE)) log.fine(ma + ", QtyToDeliver=" + qtyToDeliver);
+					}
+					if (qtyToDeliver.signum() == 0)
+						break;
+				}
+				if (qtyToDeliver.signum() != 0)
+				{
+					MMovementLineMA ma = MMovementLineMA.addOrCreate(line,
+							line.getM_AttributeSetInstance_ID(), qtyToDeliver, getMovementDate(), true);
+					ma.saveEx();
+					if (log.isLoggable(Level.FINE)) log.fine("##: " + ma);
+				}
+			}
+		}
+
 		if (needSave)
 		{
 			line.saveEx();
