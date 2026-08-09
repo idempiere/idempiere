@@ -12,6 +12,7 @@
 package org.idempiere.test.ui;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -28,9 +29,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.IServiceReferenceHolder;
+import org.adempiere.base.ReportContentServiceProvider;
 import org.adempiere.base.Service;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.report.jasper.JasperReportContentRendererFactory;
+import org.compiere.print.ReportEngine;
 import org.idempiere.print.IReportContentProcessor;
 import org.idempiere.print.IReportContentRenderer;
 import org.idempiere.print.IReportContentRendererFactory;
@@ -45,31 +48,43 @@ import org.osgi.framework.ServiceRegistration;
 public class ReportViewerContentRendererFactoryTest extends AbstractTestCase {
 
 	@Test
-	public void testHigherRankingFactoryTakesPrecedence() {
-		IReportContentRenderer highRankingRenderer = new TestRenderer();
-		IReportContentRenderer lowRankingRenderer = new TestRenderer();
+	public void testHigherRankingFactoryTakesPrecedence() throws IOException {
+		File highRankingContent = Files.createTempFile("high-ranking-report-content-", ".pdf").toFile();
+		File lowRankingContent = Files.createTempFile("low-ranking-report-content-", ".pdf").toFile();
+		IReportContentRenderer highRankingRenderer = new TestRenderer(highRankingContent);
+		IReportContentRenderer lowRankingRenderer = new TestRenderer(lowRankingContent);
+		IReportContentRendererFactory highRankingFactory = request -> highRankingRenderer;
 		ServiceRegistration<IReportContentRendererFactory> highRankingRegistration =
-				registerFactory(request -> highRankingRenderer, 20);
+				registerFactory(highRankingFactory, 20);
 		ServiceRegistration<IReportContentRendererFactory> lowRankingRegistration =
 				registerFactory(request -> lowRankingRenderer, 10);
 		try {
-			assertSame(highRankingRenderer, Core.getReportContentRenderer(emptyRequest()));
+			IReportContentRenderer renderer = Core.getReportContentRenderer(emptyRequest());
+			assertNotNull(renderer);
+			assertSame(highRankingContent, renderer.getContent("application/pdf", "pdf"));
 		} finally {
+			lowRankingContent.delete();
+			highRankingContent.delete();
 			lowRankingRegistration.unregister();
 			highRankingRegistration.unregister();
 		}
+		assertFalse(List.of(ReportContentServiceProvider.getRendererFactories()).contains(highRankingFactory));
 	}
 
 	@Test
-	public void testNullResultFallsBackToNextFactory() {
-		IReportContentRenderer fallbackRenderer = new TestRenderer();
+	public void testNullResultFallsBackToNextFactory() throws IOException {
+		File fallbackContent = Files.createTempFile("fallback-report-content-", ".pdf").toFile();
+		IReportContentRenderer fallbackRenderer = new TestRenderer(fallbackContent);
 		ServiceRegistration<IReportContentRendererFactory> firstRegistration =
 				registerFactory(request -> null, 20);
 		ServiceRegistration<IReportContentRendererFactory> fallbackRegistration =
 				registerFactory(request -> fallbackRenderer, 10);
 		try {
-			assertSame(fallbackRenderer, Core.getReportContentRenderer(emptyRequest()));
+			IReportContentRenderer renderer = Core.getReportContentRenderer(emptyRequest());
+			assertNotNull(renderer);
+			assertSame(fallbackContent, renderer.getContent("application/pdf", "pdf"));
 		} finally {
+			fallbackContent.delete();
 			fallbackRegistration.unregister();
 			firstRegistration.unregister();
 		}
@@ -134,7 +149,7 @@ public class ReportViewerContentRendererFactoryTest extends AbstractTestCase {
 	}
 
 	@Test
-	public void testProcessedRendererCachesFinalContent() throws IOException {
+	public void testRendererCachesFinalContent() throws IOException {
 		File content = Files.createTempFile("report-content-", ".pdf").toFile();
 		IReportContentRenderer renderer = new TestRenderer() {
 			@Override
@@ -160,7 +175,7 @@ public class ReportViewerContentRendererFactoryTest extends AbstractTestCase {
 		ServiceRegistration<IReportContentProcessor> processorRegistration =
 				registerProcessor(processor, 10);
 		try {
-			IReportContentRenderer processedRenderer = Core.getProcessedReportContentRenderer(emptyRequest());
+			IReportContentRenderer processedRenderer = Core.getReportContentRenderer(emptyRequest());
 			assertNotNull(processedRenderer);
 			assertSame(content, processedRenderer.getContent("application/pdf", "pdf"));
 			assertSame(content, processedRenderer.getContent("application/pdf", "pdf"));
@@ -170,6 +185,65 @@ public class ReportViewerContentRendererFactoryTest extends AbstractTestCase {
 			processorRegistration.unregister();
 			factoryRegistration.unregister();
 		}
+	}
+
+	@Test
+	public void testPostProcessingIsEnabledByDefault() {
+		assertTrue(emptyRequest().applyPostProcessing());
+	}
+
+	@Test
+	public void testDisabledPostProcessingReturnsAndCachesOriginalContent() throws IOException {
+		File content = Files.createTempFile("unprocessed-report-content-", ".pdf").toFile();
+		AtomicInteger rendererCalls = new AtomicInteger();
+		IReportContentRenderer renderer = new TestRenderer(content) {
+			@Override
+			public File getContent(String contentType, String fileExtension) {
+				rendererCalls.incrementAndGet();
+				return super.getContent(contentType, fileExtension);
+			}
+		};
+		AtomicInteger processorCalls = new AtomicInteger();
+		IReportContentProcessor processor = new IReportContentProcessor() {
+			@Override
+			public boolean isApplicable(ReportContentRequest request, String contentType, String fileExtension) {
+				processorCalls.incrementAndGet();
+				return true;
+			}
+
+			@Override
+			public File process(ReportContentRequest request, String contentType, String fileExtension, File input) {
+				processorCalls.incrementAndGet();
+				return input;
+			}
+		};
+		ServiceRegistration<IReportContentRendererFactory> factoryRegistration =
+				registerFactory(request -> renderer, 20);
+		ServiceRegistration<IReportContentProcessor> processorRegistration =
+				registerProcessor(processor, 10);
+		ReportContentRequest request = new ReportContentRequest(null, null, "Test", false);
+		try {
+			IReportContentRenderer cachedRenderer = Core.getReportContentRenderer(request);
+			assertNotNull(cachedRenderer);
+			assertSame(content, cachedRenderer.getContent("application/pdf", "pdf"));
+			assertSame(content, cachedRenderer.getContent("application/pdf", "pdf"));
+			assertEquals(1, rendererCalls.get());
+			assertEquals(0, processorCalls.get());
+			assertSame(content, Core.processReportContent(request, "application/pdf", "pdf", content));
+			assertEquals(0, processorCalls.get());
+		} finally {
+			content.delete();
+			processorRegistration.unregister();
+			factoryRegistration.unregister();
+		}
+	}
+
+	@Test
+	public void testReportEngineIsUsedAsRendererFallback() {
+		ReportEngine reportEngine = org.mockito.Mockito.mock(ReportEngine.class);
+		ReportContentRequest request = new ReportContentRequest(reportEngine, null, "Test", false);
+
+		assertNotNull(Core.getReportContentRenderer(request));
 	}
 
 	private ServiceRegistration<IReportContentRendererFactory> registerFactory(
@@ -206,9 +280,19 @@ public class ReportViewerContentRendererFactoryTest extends AbstractTestCase {
 	}
 
 	private static class TestRenderer implements IReportContentRenderer {
+		private final File content;
+
+		private TestRenderer() {
+			this(null);
+		}
+
+		private TestRenderer(File content) {
+			this.content = content;
+		}
+
 		@Override
-		public java.io.File getContent(String contentType, String fileExtension) {
-			return null;
+		public File getContent(String contentType, String fileExtension) {
+			return content;
 		}
 
 		@Override

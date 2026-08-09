@@ -282,7 +282,6 @@ public class ReportEngine implements PrintServiceAttributeListener
 	{
 		m_printFormat = pf;
 		pf.reloadItems();
-		m_printData = null;
 		if (m_layout != null)
 		{
 			setPrintData();

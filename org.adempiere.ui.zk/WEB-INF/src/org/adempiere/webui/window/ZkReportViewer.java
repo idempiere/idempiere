@@ -782,7 +782,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		if (reportContentRenderer == null) {
 			ReportContentRequest request = new ReportContentRequest(m_reportEngine,
 					m_reportEngine.getProcessInfo(), getTitle());
-			reportContentRenderer = Core.getProcessedReportContentRenderer(request);
+			reportContentRenderer = Core.getReportContentRenderer(request);
 		}
 		String selectedValue = null;
 		if (previewType.getItemCount() > 0) {
@@ -1961,7 +1961,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 				if (viewer.reportContentRenderer == null) {
 					ReportContentRequest request = new ReportContentRequest(viewer.m_reportEngine,
 							viewer.m_reportEngine.getProcessInfo(), viewer.getTitle());
-					viewer.reportContentRenderer = Core.getProcessedReportContentRenderer(request);
+					viewer.reportContentRenderer = Core.getReportContentRenderer(request);
 				}
 				if (viewer.reportContentRenderer == null) {
 					viewer.m_reportEngine.initName();

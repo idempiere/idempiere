@@ -16,8 +16,14 @@ import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
 
-/** Immutable input for an {@link IReportContentRendererFactory}. */
-public record ReportContentRequest(ReportEngine reportEngine, ProcessInfo processInfo, String title) {
+/** Immutable input for report content rendering and post-processing. */
+public record ReportContentRequest(ReportEngine reportEngine, ProcessInfo processInfo, String title,
+		boolean applyPostProcessing) {
+
+	public ReportContentRequest(ReportEngine reportEngine, ProcessInfo processInfo, String title) {
+		this(reportEngine, processInfo, title, true);
+	}
+
 	public MPrintFormat printFormat() {
 		return reportEngine != null ? reportEngine.getPrintFormat() : null;
 	}

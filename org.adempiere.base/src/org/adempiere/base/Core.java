@@ -73,6 +73,7 @@ import org.compiere.model.ServerStateChangeListener;
 import org.compiere.model.StandardTaxProvider;
 import org.compiere.model.SystemIDs;
 import org.compiere.process.ProcessCall;
+import org.compiere.process.ProcessInfo;
 import org.compiere.print.ReportEngine;
 import org.compiere.tools.FileUtil;
 import org.compiere.util.CCache;
@@ -1246,39 +1247,28 @@ public class Core {
 	}
 
 	/**
-	 * Gets the first applicable report content renderer in OSGi service ranking order.
+	 * Gets a cached report content renderer using the first applicable factory in
+	 * OSGi service ranking order, or the standard report engine as fallback.
+	 * Post-processing is controlled by the report content request.
+	 *
 	 * @param request report content request
 	 * @return renderer or {@code null}
 	 */
 	public static IReportContentRenderer getReportContentRenderer(ReportContentRequest request) {
-		List<IServiceReferenceHolder<IReportContentRendererFactory>> references = Service.locator()
-				.list(IReportContentRendererFactory.class).getServiceReferences();
-		for (IServiceReferenceHolder<IReportContentRendererFactory> reference : references) {
-			IReportContentRendererFactory factory = reference.getService();
-			if (factory != null) {
-				IReportContentRenderer renderer = factory.createRenderer(request);
-				if (renderer != null)
-					return renderer;
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Gets a report content renderer that applies the report content processor
-	 * pipeline to generated content. Processed content is cached per MIME type and
-	 * file extension so that repeated viewer operations use the same final file.
-	 *
-	 * @param request report content request
-	 * @return processing renderer or {@code null}
-	 */
-	public static IReportContentRenderer getProcessedReportContentRenderer(ReportContentRequest request) {
 		if (request == null)
 			return null;
-		IReportContentRenderer renderer = getReportContentRenderer(request);
+
+		IReportContentRenderer renderer = null;
+		for (IReportContentRendererFactory factory : ReportContentServiceProvider.getRendererFactories()) {
+			if (factory != null) {
+				renderer = factory.createRenderer(request);
+				if (renderer != null)
+					break;
+			}
+		}
 		if (renderer == null && request.reportEngine() != null)
 			renderer = new ReportEngineContentRenderer(request.reportEngine());
-		return renderer != null ? new ProcessedReportContentRenderer(request, renderer) : null;
+		return renderer != null ? new CachedReportContentRenderer(request, renderer) : null;
 	}
 
 	/**
@@ -1291,7 +1281,20 @@ public class Core {
 	 * @return generated content or {@code null}
 	 */
 	public static File getReportContent(ReportContentRequest request, String contentType, String fileExtension) {
-		return getReportContent(request, contentType, fileExtension, null);
+		File outputFile = null;
+		ProcessInfo processInfo = request != null && request.reportEngine() != null
+				? request.reportEngine().getProcessInfo()
+				: null;
+		if ("pdf".equalsIgnoreCase(fileExtension) && processInfo != null
+				&& !Util.isEmpty(processInfo.getPDFFileName(), true)) {
+			try {
+				outputFile = FileUtil.createFile(processInfo.getPDFFileName());
+			} catch (IOException e) {
+				throw new AdempiereException("Unable to create report output file "
+						+ processInfo.getPDFFileName(), e);
+			}
+		}
+		return getReportContent(request, contentType, fileExtension, outputFile);
 	}
 
 	/**
@@ -1306,12 +1309,12 @@ public class Core {
 	 */
 	public static File getReportContent(ReportContentRequest request, String contentType, String fileExtension,
 			File outputFile) {
-		if (request == null || request.reportEngine() == null)
+		if (request == null)
 			return null;
 
-		IReportContentRenderer renderer = getProcessedReportContentRenderer(request);
+		IReportContentRenderer renderer = getReportContentRenderer(request);
 		File content = renderer != null ? renderer.getContent(contentType, fileExtension) : null;
-		if (content == null) {
+		if (content == null && request.reportEngine() != null) {
 			String extension = fileExtension != null ? fileExtension.toLowerCase() : "";
 			content = switch (extension) {
 				case "html" -> request.reportEngine().getHTML();
@@ -1345,13 +1348,10 @@ public class Core {
 	 */
 	public static File processReportContent(ReportContentRequest request, String contentType, String fileExtension,
 			File content) {
-		if (content == null)
-			return null;
+		if (content == null || (request != null && !request.applyPostProcessing()))
+			return content;
 
-		List<IServiceReferenceHolder<IReportContentProcessor>> references = Service.locator()
-				.list(IReportContentProcessor.class).getServiceReferences();
-		for (IServiceReferenceHolder<IReportContentProcessor> reference : references) {
-			IReportContentProcessor processor = reference.getService();
+		for (IReportContentProcessor processor : ReportContentServiceProvider.getProcessors()) {
 			if (processor == null || !processor.isApplicable(request, contentType, fileExtension))
 				continue;
 			content = processor.process(request, contentType, fileExtension, content);
@@ -1417,12 +1417,12 @@ public class Core {
 		}
 	}
 
-	private static final class ProcessedReportContentRenderer implements IReportContentRenderer {
+	private static final class CachedReportContentRenderer implements IReportContentRenderer {
 		private final ReportContentRequest request;
 		private final IReportContentRenderer renderer;
 		private final Map<String, File> content = new HashMap<>();
 
-		private ProcessedReportContentRenderer(ReportContentRequest request, IReportContentRenderer renderer) {
+		private CachedReportContentRenderer(ReportContentRequest request, IReportContentRenderer renderer) {
 			this.request = request;
 			this.renderer = renderer;
 		}

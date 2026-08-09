@@ -420,7 +420,8 @@ public class Extensions {
 		List<IServiceReferenceHolder<IReportViewerRenderer>> references = Service.locator().list(IReportViewerRenderer.class, null, null).getServiceReferences();
 		return references.stream().filter(e -> e.getService() != null).map(e -> e.getService()).collect(Collectors.toCollection(ArrayList::new));
 	}
-
+	
+	
 	/**
 	 * Get find window
 	 * @param targetWindowNo
