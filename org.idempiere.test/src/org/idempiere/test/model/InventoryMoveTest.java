@@ -30,7 +30,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 
 import org.compiere.model.MAttributeSet;
 import org.compiere.model.MAttributeSetInstance;
@@ -42,6 +45,7 @@ import org.compiere.model.MProduct;
 import org.compiere.model.MStorageOnHand;
 import org.compiere.model.MUOMConversion;
 import org.compiere.model.MWarehouse;
+import org.compiere.process.DocAction;
 import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
@@ -196,72 +200,185 @@ public class InventoryMoveTest extends AbstractTestCase {
 
 		MProduct fert50 = new MProduct(ctx, DictionaryIDs.M_Product.FERTILIZER_50.id, trxName);
 
-		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		Timestamp today = TimeUtil.getDay(2024, 6, 15);
 		Timestamp pastMonth = TimeUtil.addMonths(today, -1);
 
-		// Use HQ warehouse (same pattern as testInventoryMove) with negative inventory disallowed
-		MWarehouse wh = new MWarehouse(ctx, HQ_WAREHOUSE_ID, trxName);
-		wh.setIsDisallowNegativeInv(true);
-		wh.saveEx();
-		CacheMgt.get().reset(MWarehouse.Table_Name, HQ_WAREHOUSE_ID);
-		MWarehouse.get(ctx, HQ_WAREHOUSE_ID, trxName);
+		try {
+			// Use HQ warehouse (same pattern as testInventoryMove) with negative inventory disallowed
+			MWarehouse wh = new MWarehouse(ctx, HQ_WAREHOUSE_ID, trxName);
+			wh.setIsDisallowNegativeInv(true);
+			wh.saveEx();
+			CacheMgt.get().reset(MWarehouse.Table_Name, HQ_WAREHOUSE_ID);
+			MWarehouse.get(ctx, HQ_WAREHOUSE_ID, trxName);
 
-		MAttributeSetInstance asi = new MAttributeSetInstance(ctx, 0, trxName);
-		asi.setM_AttributeSet_ID(fert50.getM_AttributeSet_ID());
-		asi.setLot("MOVE-1010");
-		asi.saveEx();
+			MAttributeSetInstance asi = new MAttributeSetInstance(ctx, 0, trxName);
+			asi.setM_AttributeSet_ID(fert50.getM_AttributeSet_ID());
+			asi.setLot("MOVE-1010");
+			asi.saveEx();
 
-		int locatorFrom = DictionaryIDs.M_Locator.HQ.id;
-		int locatorTo = DictionaryIDs.M_Locator.STORE.id;
+			int locatorFrom = DictionaryIDs.M_Locator.HQ.id;
+			int locatorTo = DictionaryIDs.M_Locator.STORE.id;
 
-		MStorageOnHand.add(ctx, locatorFrom, DictionaryIDs.M_Product.FERTILIZER_50.id,
-				asi.getM_AttributeSetInstance_ID(), Env.ONE, pastMonth, trxName);
-		MStorageOnHand.add(ctx, locatorFrom, DictionaryIDs.M_Product.FERTILIZER_50.id,
-				asi.getM_AttributeSetInstance_ID(), Env.ONE, today, trxName);
+			MStorageOnHand.add(ctx, locatorFrom, DictionaryIDs.M_Product.FERTILIZER_50.id,
+					asi.getM_AttributeSetInstance_ID(), Env.ONE, pastMonth, trxName);
+			MStorageOnHand.add(ctx, locatorFrom, DictionaryIDs.M_Product.FERTILIZER_50.id,
+					asi.getM_AttributeSetInstance_ID(), Env.ONE, today, trxName);
 
-		MStorageOnHand[] storages = MStorageOnHand.getWarehouse(ctx, HQ_WAREHOUSE_ID,
-				DictionaryIDs.M_Product.FERTILIZER_50.id, asi.getM_AttributeSetInstance_ID(), null,
-				MClient.MMPOLICY_FiFo.equals(fert50.getMMPolicy()), true,
-				locatorFrom, trxName);
-		assertEquals(2, storages.length);
+			MStorageOnHand[] storages = MStorageOnHand.getWarehouse(ctx, HQ_WAREHOUSE_ID,
+					DictionaryIDs.M_Product.FERTILIZER_50.id, asi.getM_AttributeSetInstance_ID(), null,
+					MClient.MMPOLICY_FiFo.equals(fert50.getMMPolicy()), true,
+					locatorFrom, trxName);
+			assertEquals(2, storages.length);
 
-		MMovement mh = new MMovement(ctx, 0, trxName);
-		mh.setM_Warehouse_ID(HQ_WAREHOUSE_ID);
-		mh.setM_WarehouseTo_ID(STORE_WAREHOUSE_ID);
-		mh.saveEx();
+			MMovement mh = new MMovement(ctx, 0, trxName);
+			mh.setM_Warehouse_ID(HQ_WAREHOUSE_ID);
+			mh.setM_WarehouseTo_ID(STORE_WAREHOUSE_ID);
+			mh.saveEx();
 
-		MMovementLine ml = new MMovementLine(mh);
-		ml.setM_Product_ID(DictionaryIDs.M_Product.FERTILIZER_50.id);
-		ml.setM_Locator_ID(locatorFrom);
-		ml.setM_LocatorTo_ID(locatorTo);
-		ml.setM_AttributeSetInstance_ID(asi.getM_AttributeSetInstance_ID());
-		ml.setM_AttributeSetInstanceTo_ID(asi.getM_AttributeSetInstance_ID());
-		ml.setMovementQty(new BigDecimal("2"));
-		ml.saveEx();
+			MMovementLine ml = new MMovementLine(mh);
+			ml.setM_Product_ID(DictionaryIDs.M_Product.FERTILIZER_50.id);
+			ml.setM_Locator_ID(locatorFrom);
+			ml.setM_LocatorTo_ID(locatorTo);
+			ml.setM_AttributeSetInstance_ID(asi.getM_AttributeSetInstance_ID());
+			ml.setM_AttributeSetInstanceTo_ID(asi.getM_AttributeSetInstance_ID());
+			ml.setMovementQty(new BigDecimal("2"));
+			ml.saveEx();
 
-		boolean completed = mh.processIt(MMovement.ACTION_Complete);
-		assertTrue(completed, mh.getProcessMsg());
-		mh.saveEx();
-		assertEquals(MMovement.DOCSTATUS_Completed, mh.getDocStatus());
+			boolean completed = mh.processIt(MMovement.ACTION_Complete);
+			assertTrue(completed, mh.getProcessMsg());
+			mh.saveEx();
+			assertEquals(MMovement.DOCSTATUS_Completed, mh.getDocStatus());
 
-		// Auto MAs should have been created to split by DateMaterialPolicy
-		MMovementLineMA[] mas = MMovementLineMA.get(ctx, ml.getM_MovementLine_ID(), trxName);
-		assertEquals(2, mas.length, "Expected MA split by DateMaterialPolicy");
+			// Auto MAs should have been created to split by DateMaterialPolicy
+			MMovementLineMA[] mas = MMovementLineMA.get(ctx, ml.getM_MovementLine_ID(), trxName);
+			assertEquals(2, mas.length, "Expected MA split by DateMaterialPolicy");
+			assertMaterialPolicyDates(mas, pastMonth, today);
 
-		storages = MStorageOnHand.getWarehouse(ctx, HQ_WAREHOUSE_ID,
-				DictionaryIDs.M_Product.FERTILIZER_50.id, asi.getM_AttributeSetInstance_ID(), null,
-				MClient.MMPOLICY_FiFo.equals(fert50.getMMPolicy()), false,
-				locatorFrom, trxName);
-		assertEquals(0, storages.length);
+			storages = MStorageOnHand.getWarehouse(ctx, HQ_WAREHOUSE_ID,
+					DictionaryIDs.M_Product.FERTILIZER_50.id, asi.getM_AttributeSetInstance_ID(), null,
+					MClient.MMPOLICY_FiFo.equals(fert50.getMMPolicy()), false,
+					locatorFrom, trxName);
+			assertEquals(0, storages.length);
 
-		storages = MStorageOnHand.getWarehouse(ctx, STORE_WAREHOUSE_ID,
-				DictionaryIDs.M_Product.FERTILIZER_50.id, asi.getM_AttributeSetInstance_ID(), null,
-				MClient.MMPOLICY_FiFo.equals(fert50.getMMPolicy()), true,
-				locatorTo, trxName);
-		assertEquals(2, storages.length);
+			storages = MStorageOnHand.getWarehouse(ctx, STORE_WAREHOUSE_ID,
+					DictionaryIDs.M_Product.FERTILIZER_50.id, asi.getM_AttributeSetInstance_ID(), null,
+					MClient.MMPOLICY_FiFo.equals(fert50.getMMPolicy()), true,
+					locatorTo, trxName);
+			assertEquals(2, storages.length);
+			assertMaterialPolicyStorage(storages, pastMonth, today);
+		} finally {
+			rollback();
+			CacheMgt.get().reset(MWarehouse.Table_Name, HQ_WAREHOUSE_ID);
+		}
+	}
+
+	/**
+	 * Reverse correction must restore both DateMaterialPolicy allocations for assigned ASI.
+	 */
+	@Test
+	public void testMultiASIDateMaterialPolicyMoveReverse() {
+		Properties ctx = Env.getCtx();
+		String trxName = getTrxName();
+
+		MProduct fert50 = new MProduct(ctx, DictionaryIDs.M_Product.FERTILIZER_50.id, trxName);
+
+		Timestamp today = TimeUtil.getDay(2024, 6, 15);
+		Timestamp pastMonth = TimeUtil.addMonths(today, -1);
+
+		try {
+			MWarehouse wh = new MWarehouse(ctx, HQ_WAREHOUSE_ID, trxName);
+			wh.setIsDisallowNegativeInv(true);
+			wh.saveEx();
+			CacheMgt.get().reset(MWarehouse.Table_Name, HQ_WAREHOUSE_ID);
+			MWarehouse.get(ctx, HQ_WAREHOUSE_ID, trxName);
+
+			MAttributeSetInstance asi = new MAttributeSetInstance(ctx, 0, trxName);
+			asi.setM_AttributeSet_ID(fert50.getM_AttributeSet_ID());
+			asi.setLot("MOVE-1011");
+			asi.saveEx();
+
+			int locatorFrom = DictionaryIDs.M_Locator.HQ.id;
+			int locatorTo = DictionaryIDs.M_Locator.STORE.id;
+
+			MStorageOnHand.add(ctx, locatorFrom, DictionaryIDs.M_Product.FERTILIZER_50.id,
+					asi.getM_AttributeSetInstance_ID(), Env.ONE, pastMonth, trxName);
+			MStorageOnHand.add(ctx, locatorFrom, DictionaryIDs.M_Product.FERTILIZER_50.id,
+					asi.getM_AttributeSetInstance_ID(), Env.ONE, today, trxName);
+
+			MMovement mh = new MMovement(ctx, 0, trxName);
+			mh.setM_Warehouse_ID(HQ_WAREHOUSE_ID);
+			mh.setM_WarehouseTo_ID(STORE_WAREHOUSE_ID);
+			mh.saveEx();
+
+			MMovementLine ml = new MMovementLine(mh);
+			ml.setM_Product_ID(DictionaryIDs.M_Product.FERTILIZER_50.id);
+			ml.setM_Locator_ID(locatorFrom);
+			ml.setM_LocatorTo_ID(locatorTo);
+			ml.setM_AttributeSetInstance_ID(asi.getM_AttributeSetInstance_ID());
+			ml.setM_AttributeSetInstanceTo_ID(asi.getM_AttributeSetInstance_ID());
+			ml.setMovementQty(new BigDecimal("2"));
+			ml.saveEx();
+
+			boolean completed = mh.processIt(MMovement.ACTION_Complete);
+			assertTrue(completed, mh.getProcessMsg());
+			mh.saveEx();
+			assertEquals(MMovement.DOCSTATUS_Completed, mh.getDocStatus());
+
+			MMovementLineMA[] mas = MMovementLineMA.get(ctx, ml.getM_MovementLine_ID(), trxName);
+			assertEquals(2, mas.length, "Expected MA split by DateMaterialPolicy");
+			assertMaterialPolicyDates(mas, pastMonth, today);
+
+			boolean reversed = mh.processIt(DocAction.ACTION_Reverse_Correct);
+			assertTrue(reversed, mh.getProcessMsg());
+			mh.saveEx();
+			assertEquals(MMovement.DOCSTATUS_Reversed, mh.getDocStatus());
+
+			MMovement reversal = new MMovement(ctx, mh.getReversal_ID(), trxName);
+			MMovementLine[] rLines = reversal.getLines(true);
+			assertEquals(1, rLines.length);
+			MMovementLineMA[] rMas = MMovementLineMA.get(ctx, rLines[0].getM_MovementLine_ID(), trxName);
+			assertEquals(2, rMas.length, "Reversal must preserve MA split by DateMaterialPolicy");
+			assertMaterialPolicyDates(rMas, pastMonth, today);
+			for (MMovementLineMA ma : rMas) {
+				assertEquals(-1, ma.getMovementQty().intValue());
+			}
+
+			MStorageOnHand[] storages = MStorageOnHand.getWarehouse(ctx, HQ_WAREHOUSE_ID,
+					DictionaryIDs.M_Product.FERTILIZER_50.id, asi.getM_AttributeSetInstance_ID(), null,
+					MClient.MMPOLICY_FiFo.equals(fert50.getMMPolicy()), true,
+					locatorFrom, trxName);
+			assertEquals(2, storages.length);
+			assertMaterialPolicyStorage(storages, pastMonth, today);
+
+			storages = MStorageOnHand.getWarehouse(ctx, STORE_WAREHOUSE_ID,
+					DictionaryIDs.M_Product.FERTILIZER_50.id, asi.getM_AttributeSetInstance_ID(), null,
+					MClient.MMPOLICY_FiFo.equals(fert50.getMMPolicy()), false,
+					locatorTo, trxName);
+			assertEquals(0, storages.length);
+		} finally {
+			rollback();
+			CacheMgt.get().reset(MWarehouse.Table_Name, HQ_WAREHOUSE_ID);
+		}
+	}
+
+	private static void assertMaterialPolicyDates(MMovementLineMA[] mas, Timestamp pastMonth, Timestamp today) {
+		Set<Timestamp> dates = new HashSet<>();
+		for (MMovementLineMA ma : mas) {
+			assertEquals(1, Math.abs(ma.getMovementQty().intValue()));
+			dates.add(ma.getDateMaterialPolicy());
+		}
+		assertTrue(dates.containsAll(Arrays.asList(pastMonth, today)),
+				"Expected DateMaterialPolicy allocations for pastMonth and today");
+	}
+
+	private static void assertMaterialPolicyStorage(MStorageOnHand[] storages, Timestamp pastMonth, Timestamp today) {
+		Set<Timestamp> dates = new HashSet<>();
 		for (MStorageOnHand storage : storages) {
 			assertEquals(1, storage.getQtyOnHand().intValue());
+			dates.add(storage.getDateMaterialPolicy());
 		}
+		assertTrue(dates.containsAll(Arrays.asList(pastMonth, today)),
+				"Expected storage DateMaterialPolicy for pastMonth and today");
 	}
 
 	/**

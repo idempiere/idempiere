@@ -1048,18 +1048,15 @@ public class MMovement extends X_M_Movement implements DocAction
 				return null;
 			}
 			
-			//We need to copy MA
-			if (rLine.getM_AttributeSetInstance_ID() == 0)
+			// Copy MA (including assigned ASI split by DateMaterialPolicy - IDEMPIERE-7076)
+			MMovementLineMA mas[] = MMovementLineMA.get(getCtx(),
+					oLine.getM_MovementLine_ID(), get_TrxName());
+			for (int j = 0; j < mas.length; j++)
 			{
-				MMovementLineMA mas[] = MMovementLineMA.get(getCtx(),
-						oLine.getM_MovementLine_ID(), get_TrxName());
-				for (int j = 0; j < mas.length; j++)
-				{
-					MMovementLineMA ma = new MMovementLineMA (rLine, 
-							mas[j].getM_AttributeSetInstance_ID(),
-							mas[j].getMovementQty().negate(),mas[j].getDateMaterialPolicy(),true);
-					ma.saveEx();
-				}
+				MMovementLineMA ma = new MMovementLineMA (rLine, 
+						mas[j].getM_AttributeSetInstance_ID(),
+						mas[j].getMovementQty().negate(),mas[j].getDateMaterialPolicy(),true);
+				ma.saveEx();
 			}
 			
 		}
