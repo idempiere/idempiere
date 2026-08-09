@@ -330,7 +330,7 @@ public class InventoryMoveTest extends AbstractTestCase {
 			assertEquals(2, rMas.length, "Reversal must preserve MA split by DateMaterialPolicy");
 			assertMaterialPolicyDates(rMas, pastMonth, today);
 			for (MMovementLineMA ma : rMas) {
-				assertEquals(-1, ma.getMovementQty().intValue());
+				assertEquals(0, ma.getMovementQty().compareTo(Env.ONE.negate()));
 			}
 
 			MStorageOnHand[] storages = MStorageOnHand.getWarehouse(ctx, HQ_WAREHOUSE_ID,
@@ -367,7 +367,7 @@ public class InventoryMoveTest extends AbstractTestCase {
 	private static void assertMaterialPolicyDates(MMovementLineMA[] mas, Timestamp pastMonth, Timestamp today) {
 		Set<Timestamp> dates = new HashSet<>();
 		for (MMovementLineMA ma : mas) {
-			assertEquals(1, Math.abs(ma.getMovementQty().intValue()));
+			assertEquals(0, ma.getMovementQty().abs().compareTo(Env.ONE));
 			dates.add(ma.getDateMaterialPolicy());
 		}
 		assertTrue(dates.containsAll(Arrays.asList(pastMonth, today)),
@@ -377,7 +377,7 @@ public class InventoryMoveTest extends AbstractTestCase {
 	private static void assertMaterialPolicyStorage(MStorageOnHand[] storages, Timestamp pastMonth, Timestamp today) {
 		Set<Timestamp> dates = new HashSet<>();
 		for (MStorageOnHand storage : storages) {
-			assertEquals(1, storage.getQtyOnHand().intValue());
+			assertEquals(0, storage.getQtyOnHand().compareTo(Env.ONE));
 			dates.add(storage.getDateMaterialPolicy());
 		}
 		assertTrue(dates.containsAll(Arrays.asList(pastMonth, today)),
