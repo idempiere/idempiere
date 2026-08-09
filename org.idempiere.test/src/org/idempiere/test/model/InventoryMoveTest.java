@@ -27,6 +27,11 @@ package org.idempiere.test.model;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.CALLS_REAL_METHODS;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -46,7 +51,6 @@ import org.compiere.model.MStorageOnHand;
 import org.compiere.model.MUOMConversion;
 import org.compiere.model.MWarehouse;
 import org.compiere.process.DocAction;
-import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.idempiere.test.AbstractTestCase;
@@ -203,14 +207,7 @@ public class InventoryMoveTest extends AbstractTestCase {
 		Timestamp today = TimeUtil.getDay(2024, 6, 15);
 		Timestamp pastMonth = TimeUtil.addMonths(today, -1);
 
-		try {
-			// Use HQ warehouse (same pattern as testInventoryMove) with negative inventory disallowed
-			MWarehouse wh = new MWarehouse(ctx, HQ_WAREHOUSE_ID, trxName);
-			wh.setIsDisallowNegativeInv(true);
-			wh.saveEx();
-			CacheMgt.get().reset(MWarehouse.Table_Name, HQ_WAREHOUSE_ID);
-			MWarehouse.get(ctx, HQ_WAREHOUSE_ID, trxName);
-
+		try (MockedStatic<MWarehouse> warehouseMock = mockDisallowNegativeInvWarehouse(ctx, HQ_WAREHOUSE_ID, trxName)) {
 			MAttributeSetInstance asi = new MAttributeSetInstance(ctx, 0, trxName);
 			asi.setM_AttributeSet_ID(fert50.getM_AttributeSet_ID());
 			asi.setLot("MOVE-1010");
@@ -268,7 +265,6 @@ public class InventoryMoveTest extends AbstractTestCase {
 			assertMaterialPolicyStorage(storages, pastMonth, today);
 		} finally {
 			rollback();
-			CacheMgt.get().reset(MWarehouse.Table_Name, HQ_WAREHOUSE_ID);
 		}
 	}
 
@@ -285,13 +281,7 @@ public class InventoryMoveTest extends AbstractTestCase {
 		Timestamp today = TimeUtil.getDay(2024, 6, 15);
 		Timestamp pastMonth = TimeUtil.addMonths(today, -1);
 
-		try {
-			MWarehouse wh = new MWarehouse(ctx, HQ_WAREHOUSE_ID, trxName);
-			wh.setIsDisallowNegativeInv(true);
-			wh.saveEx();
-			CacheMgt.get().reset(MWarehouse.Table_Name, HQ_WAREHOUSE_ID);
-			MWarehouse.get(ctx, HQ_WAREHOUSE_ID, trxName);
-
+		try (MockedStatic<MWarehouse> warehouseMock = mockDisallowNegativeInvWarehouse(ctx, HQ_WAREHOUSE_ID, trxName)) {
 			MAttributeSetInstance asi = new MAttributeSetInstance(ctx, 0, trxName);
 			asi.setM_AttributeSet_ID(fert50.getM_AttributeSet_ID());
 			asi.setLot("MOVE-1011");
@@ -357,8 +347,21 @@ public class InventoryMoveTest extends AbstractTestCase {
 			assertEquals(0, storages.length);
 		} finally {
 			rollback();
-			CacheMgt.get().reset(MWarehouse.Table_Name, HQ_WAREHOUSE_ID);
 		}
+	}
+
+	/**
+	 * Mock IsDisallowNegativeInv for a warehouse without persisting shared seed data.
+	 */
+	private static MockedStatic<MWarehouse> mockDisallowNegativeInvWarehouse(Properties ctx, int warehouseId, String trxName) {
+		MWarehouse warehouseSpy = spy(new MWarehouse(ctx, warehouseId, trxName));
+		doReturn(true).when(warehouseSpy).isDisallowNegativeInv();
+
+		MockedStatic<MWarehouse> warehouseMock = Mockito.mockStatic(MWarehouse.class, CALLS_REAL_METHODS);
+		warehouseMock.when(() -> MWarehouse.get(warehouseId)).thenReturn(warehouseSpy);
+		warehouseMock.when(() -> MWarehouse.get(any(Properties.class), eq(warehouseId))).thenReturn(warehouseSpy);
+		warehouseMock.when(() -> MWarehouse.get(any(Properties.class), eq(warehouseId), any())).thenReturn(warehouseSpy);
+		return warehouseMock;
 	}
 
 	private static void assertMaterialPolicyDates(MMovementLineMA[] mas, Timestamp pastMonth, Timestamp today) {
