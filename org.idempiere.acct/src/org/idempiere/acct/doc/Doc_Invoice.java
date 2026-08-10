@@ -1173,7 +1173,7 @@ public class Doc_Invoice extends Doc
 							int M_AttributeSetInstance_ID = lca.getM_AttributeSetInstance_ID();
 							MProduct product = new MProduct(lca.getCtx(), lca.getM_Product_ID(), lca.get_TrxName());
 							String costingLevel = product.getCostingLevel(as);
-							MCost.CostingLevelKey costKey = MCost.CostingLevelKey.resolve(AD_Org_ID, M_AttributeSetInstance_ID, costingLevel);
+							MCost.CostingKey costKey = MCost.CostingKey.resolve(AD_Org_ID, M_AttributeSetInstance_ID, costingLevel);
 							AD_Org_ID = costKey.AD_Org_ID();
 							M_AttributeSetInstance_ID = costKey.M_AttributeSetInstance_ID();
 							
@@ -1267,7 +1267,7 @@ public class Doc_Invoice extends Doc
 					int M_AttributeSetInstance_ID = lca.getM_AttributeSetInstance_ID();
 					MProduct product = new MProduct(lca.getCtx(), lca.getM_Product_ID(), lca.get_TrxName());
 					String costingLevel = product.getCostingLevel(as);
-					MCost.CostingLevelKey costKey = MCost.CostingLevelKey.resolve(AD_Org_ID, M_AttributeSetInstance_ID, costingLevel);
+					MCost.CostingKey costKey = MCost.CostingKey.resolve(AD_Org_ID, M_AttributeSetInstance_ID, costingLevel);
 					AD_Org_ID = costKey.AD_Org_ID();
 					M_AttributeSetInstance_ID = costKey.M_AttributeSetInstance_ID();
 					String key = lca.getM_Product_ID()+"_"+M_AttributeSetInstance_ID;

@@ -525,7 +525,7 @@ public class ImportInventory extends SvrProcess implements ImportProcess
 		String costingLevel = product.getCostingLevel(acctSchema);
 		int costOrgID = p_AD_OrgTrx_ID;
 		int costASI = line.getM_AttributeSetInstance_ID();
-		MCost.CostingLevelKey costKey = MCost.CostingLevelKey.resolve(costOrgID, costASI, costingLevel);
+		MCost.CostingKey costKey = MCost.CostingKey.resolve(costOrgID, costASI, costingLevel);
 		costOrgID = costKey.AD_Org_ID();
 		costASI = costKey.M_AttributeSetInstance_ID();
 		MCost cost = MCost.get (product, costASI

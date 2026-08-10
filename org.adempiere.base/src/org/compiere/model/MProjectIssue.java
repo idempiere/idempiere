@@ -516,7 +516,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		int M_AttributeSetInstance_ID = getM_AttributeSetInstance_ID();
 		MProduct product = new MProduct(getCtx(), getM_Product_ID(), get_TrxName());
 		String costingLevel = product.getCostingLevel(as);
-		MCost.CostingLevelKey costKey = MCost.CostingLevelKey.resolve(AD_Org_ID, M_AttributeSetInstance_ID, costingLevel);
+		MCost.CostingKey costKey = MCost.CostingKey.resolve(AD_Org_ID, M_AttributeSetInstance_ID, costingLevel);
 		AD_Org_ID = costKey.AD_Org_ID();
 		M_AttributeSetInstance_ID = costKey.M_AttributeSetInstance_ID();
 		

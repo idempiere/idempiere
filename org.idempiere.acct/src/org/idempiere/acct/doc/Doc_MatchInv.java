@@ -2833,7 +2833,7 @@ public class Doc_MatchInv extends Doc
  	    int M_AttributeSetInstance_ID = matchInv.getM_AttributeSetInstance_ID();
  	    MProduct product = new MProduct(matchInv.getCtx(), matchInv.getM_Product_ID(), matchInv.get_TrxName());
  	    String costingLevel = product.getCostingLevel(as);
- 	    MCost.CostingLevelKey costKey = MCost.CostingLevelKey.resolve(AD_Org_ID, M_AttributeSetInstance_ID, costingLevel);
+ 	    MCost.CostingKey costKey = MCost.CostingKey.resolve(AD_Org_ID, M_AttributeSetInstance_ID, costingLevel);
 		AD_Org_ID = costKey.AD_Org_ID();
 		M_AttributeSetInstance_ID = costKey.M_AttributeSetInstance_ID();
 	    MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), costingMethod, AD_Org_ID);

@@ -1346,7 +1346,7 @@ public class MCostDetail extends X_M_CostDetail
 		//	Org Element
 		int Org_ID = getAD_Org_ID();
 		int M_ASI_ID = getM_AttributeSetInstance_ID();
-		MCost.CostingLevelKey costKey = MCost.CostingLevelKey.resolve(Org_ID, M_ASI_ID, CostingLevel);
+		MCost.CostingKey costKey = MCost.CostingKey.resolve(Org_ID, M_ASI_ID, CostingLevel);
 		Org_ID = costKey.AD_Org_ID();
 		M_ASI_ID = costKey.M_AttributeSetInstance_ID();
 

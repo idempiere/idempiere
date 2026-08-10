@@ -1121,8 +1121,8 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	public MCost getCostingRecord(MAcctSchema as, int AD_Org_ID, int M_ASI_ID, String costingMethod)
 	{
 		String costingLevel = getCostingLevel(as);
-		MCost.CostingLevelKey costKey = MCost.CostingLevelKey.resolve(AD_Org_ID, M_ASI_ID, costingLevel);
-		if (costKey.isBatchLotZeroASI(costingLevel))
+		MCost.CostingKey costKey = MCost.CostingKey.resolve(AD_Org_ID, M_ASI_ID, costingLevel);
+		if (costKey.isSkipCostingProcessing(costingLevel))
 			return null;
 		AD_Org_ID = costKey.AD_Org_ID();
 		M_ASI_ID = costKey.M_AttributeSetInstance_ID();
@@ -1145,8 +1145,8 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	public ICostInfo getCostInfo(MAcctSchema as, int AD_Org_ID, int M_ASI_ID, String costingMethod, Timestamp dateAcct)
 	{		
 		String costingLevel = getCostingLevel(as);
-		MCost.CostingLevelKey costKey = MCost.CostingLevelKey.resolve(AD_Org_ID, M_ASI_ID, costingLevel);
-		if (costKey.isBatchLotZeroASI(costingLevel))
+		MCost.CostingKey costKey = MCost.CostingKey.resolve(AD_Org_ID, M_ASI_ID, costingLevel);
+		if (costKey.isSkipCostingProcessing(costingLevel))
 			return null;
 		AD_Org_ID = costKey.AD_Org_ID();
 		M_ASI_ID = costKey.M_AttributeSetInstance_ID();

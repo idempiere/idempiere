@@ -258,7 +258,7 @@ public class Doc_Inventory extends Doc
 				product = line.getProduct();
 				int orgId = line.getAD_Org_ID();
 				int asiId = line.getM_AttributeSetInstance_ID();
-				MCost.CostingLevelKey costKey = MCost.CostingLevelKey.resolve(orgId, asiId, costingLevel);
+				MCost.CostingKey costKey = MCost.CostingKey.resolve(orgId, asiId, costingLevel);
 				orgId = costKey.AD_Org_ID();
 				asiId = costKey.M_AttributeSetInstance_ID();
 				MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), docCostingMethod, orgId);

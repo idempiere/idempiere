@@ -3561,7 +3561,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			int M_AttributeSetInstance_ID = iLine.getM_AttributeSetInstance_ID();
 			MProduct product = new MProduct(iLine.getCtx(), iLine.getM_Product_ID(), iLine.get_TrxName());
 			String costingLevel = product.getCostingLevel(as);
-			MCost.CostingLevelKey costKey = MCost.CostingLevelKey.resolve(AD_Org_ID, M_AttributeSetInstance_ID, costingLevel);
+			MCost.CostingKey costKey = MCost.CostingKey.resolve(AD_Org_ID, M_AttributeSetInstance_ID, costingLevel);
 			AD_Org_ID = costKey.AD_Org_ID();
 			M_AttributeSetInstance_ID = costKey.M_AttributeSetInstance_ID();
 			
