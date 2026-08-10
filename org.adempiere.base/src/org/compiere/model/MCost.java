@@ -1985,14 +1985,22 @@ public class MCost extends X_M_Cost implements ICostInfo
 		}
 		
 		/**
-		 * Checks whether this key is invalid for BatchLot costing due to a missing ASI.
+		 * Indicates whether cost lookup/processing should be skipped for this key because
 		 * BatchLot-level costing requires a specific attribute set instance (lot) to
-		 * record cost against; a resolved ASI of 0 means no lot could be determined,
-		 * and callers should typically treat this as "no cost record available" rather
-		 * than falling back to a client/org-level lookup.
+		 * associate cost with, and none could be resolved (M_AttributeSetInstance_ID is 0).
+		 * <p>
+		 * When this returns {@code true}, callers should abort the current cost lookup or
+		 * costing-record retrieval and return {@code null} (or otherwise skip processing),
+		 * rather than falling back to a client- or organization-level cost record — no
+		 * BatchLot-level cost record can exist without a lot to key it against.
+		 * <p>
+		 * Used by {@link MProduct#getCostInfo(MAcctSchema, int, int, String, Timestamp)} and
+		 * {@link MProduct#getCostingRecord(MAcctSchema, int, int, String)} as an early-exit
+		 * guard before resolving cost elements or cost records.
 		 *
 		 * @param costingLevel one of the {@code MAcctSchema.COSTINGLEVEL_*} constants
-		 * @return {@code true} if costingLevel is BatchLot and M_AttributeSetInstance_ID is 0
+		 * @return {@code true} if costingLevel is BatchLot and no ASI (lot) could be resolved,
+		 *         meaning the caller should skip cost processing and return {@code null}
 		 */
 		public boolean isBatchLotZeroASI(String costingLevel)
 		{
