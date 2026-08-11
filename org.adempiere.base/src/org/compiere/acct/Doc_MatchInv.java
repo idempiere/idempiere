@@ -51,6 +51,7 @@ import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLandedCost;
 import org.compiere.model.MOrderLandedCostAllocation;
 import org.compiere.model.MOrderLine;
+import org.compiere.model.MProduct;
 import org.compiere.model.MTax;
 import org.compiere.model.MUOM;
 import org.compiere.model.ProductCost;
@@ -2830,15 +2831,11 @@ public class Doc_MatchInv extends Doc
 		// Costing-level AD_Org_ID and M_AttributeSetInstance_ID
  		int AD_Org_ID = m_receiptLine.getAD_Org_ID();
  	    int M_AttributeSetInstance_ID = matchInv.getM_AttributeSetInstance_ID();
- 	    String costingLevel = as.getCostingLevel();
- 	    if (MAcctSchema.COSTINGLEVEL_Client.equals(costingLevel)) {
- 	        AD_Org_ID = 0;
- 	        M_AttributeSetInstance_ID = 0;
- 	    } else if (MAcctSchema.COSTINGLEVEL_Organization.equals(costingLevel)) {
- 	        M_AttributeSetInstance_ID = 0;
- 	    } else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel)) {
- 	        AD_Org_ID = 0;
- 	    }
+ 	    MProduct product = new MProduct(matchInv.getCtx(), matchInv.getM_Product_ID(), matchInv.get_TrxName());
+ 	    String costingLevel = product.getCostingLevel(as);
+ 	    MCost.CostingKey costKey = MCost.CostingKey.resolve(AD_Org_ID, M_AttributeSetInstance_ID, costingLevel);
+		AD_Org_ID = costKey.AD_Org_ID();
+		M_AttributeSetInstance_ID = costKey.M_AttributeSetInstance_ID();
 	    MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), costingMethod, AD_Org_ID);
 	    if (matchInv.getReversal_ID() > 0) {
 		    MCostDetail cd = MCostDetail.getMatchInvoice(as, matchInv.getM_Product_ID(), matchInv.getM_AttributeSetInstance_ID(),

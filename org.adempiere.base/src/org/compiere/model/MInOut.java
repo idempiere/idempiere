@@ -3512,16 +3512,11 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			for (MInOutLine sLine : sLines) {
 				int AD_Org_ID = sLine.getAD_Org_ID();
 				int M_AttributeSetInstance_ID = sLine.getM_AttributeSetInstance_ID();
-
-				if (MAcctSchema.COSTINGLEVEL_Client.equals(as.getCostingLevel()))
-				{
-					AD_Org_ID = 0;
-					M_AttributeSetInstance_ID = 0;
-				}
-				else if (MAcctSchema.COSTINGLEVEL_Organization.equals(as.getCostingLevel()))
-					M_AttributeSetInstance_ID = 0;
-				else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(as.getCostingLevel()))
-					AD_Org_ID = 0;
+				MProduct product = new MProduct(sLine.getCtx(), sLine.getM_Product_ID(), sLine.get_TrxName());
+				String costingLevel = product.getCostingLevel(as);
+				MCost.CostingKey costKey = MCost.CostingKey.resolve(AD_Org_ID, M_AttributeSetInstance_ID, costingLevel);
+				AD_Org_ID = costKey.AD_Org_ID();
+				M_AttributeSetInstance_ID = costKey.M_AttributeSetInstance_ID();
 				
 				MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), as.getCostingMethod(), AD_Org_ID);
 				
@@ -3573,16 +3568,11 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		for (MInOutLine sLine : sLines) {
 			int AD_Org_ID = sLine.getAD_Org_ID();
 			int M_AttributeSetInstance_ID = sLine.getM_AttributeSetInstance_ID();
-
-			if (MAcctSchema.COSTINGLEVEL_Client.equals(as.getCostingLevel()))
-			{
-				AD_Org_ID = 0;
-				M_AttributeSetInstance_ID = 0;
-			}
-			else if (MAcctSchema.COSTINGLEVEL_Organization.equals(as.getCostingLevel()))
-				M_AttributeSetInstance_ID = 0;
-			else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(as.getCostingLevel()))
-				AD_Org_ID = 0;
+			MProduct product = new MProduct(sLine.getCtx(), sLine.getM_Product_ID(), sLine.get_TrxName());
+			String costingLevel = product.getCostingLevel(as);
+			MCost.CostingKey costKey = MCost.CostingKey.resolve(AD_Org_ID, M_AttributeSetInstance_ID, costingLevel);
+			AD_Org_ID = costKey.AD_Org_ID();
+			M_AttributeSetInstance_ID = costKey.M_AttributeSetInstance_ID();
 			
 			MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), as.getCostingMethod(), AD_Org_ID);
 			

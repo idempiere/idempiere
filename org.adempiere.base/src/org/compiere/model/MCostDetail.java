@@ -1346,15 +1346,9 @@ public class MCostDetail extends X_M_CostDetail
 		//	Org Element
 		int Org_ID = getAD_Org_ID();
 		int M_ASI_ID = getM_AttributeSetInstance_ID();
-		if (MAcctSchema.COSTINGLEVEL_Client.equals(CostingLevel))
-		{
-			Org_ID = 0;
-			M_ASI_ID = 0;
-		}
-		else if (MAcctSchema.COSTINGLEVEL_Organization.equals(CostingLevel))
-			M_ASI_ID = 0;
-		else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel))
-			Org_ID = 0;
+		MCost.CostingKey costKey = MCost.CostingKey.resolve(Org_ID, M_ASI_ID, CostingLevel);
+		Org_ID = costKey.AD_Org_ID();
+		M_ASI_ID = costKey.M_AttributeSetInstance_ID();
 
 		//	Create Material Cost elements
 		if (getM_CostElement_ID() == 0)
