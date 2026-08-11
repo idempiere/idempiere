@@ -36,7 +36,6 @@ import org.compiere.model.MInventory;
 import org.compiere.model.MInventoryLine;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MProduct;
-import org.compiere.model.MProductCategoryAcct;
 import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.X_I_Inventory;
 import org.compiere.util.AdempiereUserError;
@@ -523,26 +522,12 @@ public class ImportInventory extends SvrProcess implements ImportProcess
 
 	protected void updateCosting(X_I_Inventory imp, MProduct product,
 			MInventoryLine line) {
-		String costingLevel = null;
-		if(product.getM_Product_Category_ID() > 0){
-			MProductCategoryAcct pca = MProductCategoryAcct.get(getCtx(), product.getM_Product_Category_ID(), p_C_AcctSchema_ID, get_TrxName());
-			costingLevel = pca.getCostingLevel();
-			if (costingLevel == null) {
-				costingLevel = acctSchema.getCostingLevel();
-			}
-
-		}
-
+		String costingLevel = product.getCostingLevel(acctSchema);
 		int costOrgID = p_AD_OrgTrx_ID;
 		int costASI = line.getM_AttributeSetInstance_ID();
-		if (MAcctSchema.COSTINGLEVEL_Client.equals(costingLevel)){
-			costOrgID = 0;
-			costASI = 0;
-		} else if (MAcctSchema.COSTINGLEVEL_Organization.equals(costingLevel)) { 
-			costASI = 0;
-		} else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel)) {
-			costOrgID = 0;
-		}
+		MCost.CostingKey costKey = MCost.CostingKey.resolve(costOrgID, costASI, costingLevel);
+		costOrgID = costKey.AD_Org_ID();
+		costASI = costKey.M_AttributeSetInstance_ID();
 		MCost cost = MCost.get (product, costASI
 				, acctSchema, costOrgID, p_M_CostElement_ID, get_TrxName());
 		if (cost.is_new())
