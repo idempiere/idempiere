@@ -58,6 +58,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.ui.zk.event.UIEventManager;
 import org.zkoss.zhtml.Table;
 import org.zkoss.zhtml.Td;
 import org.zkoss.zhtml.Text;
@@ -164,6 +165,7 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 			Env.setContext(Env.getCtx(), m_WindowNo, SAVED_PREDEFINED_CONTEXT_VARIABLES, predefinedContextVariables);
 		}
 		Env.setPredefinedVariables(Env.getCtx(), m_WindowNo, predefinedContextVariables);
+		UIEventManager.fireOpenProcessEvent(Env.getCtx(), AD_Process_ID, m_WindowNo);
 		try
 		{
 			init(Env.getCtx(), m_WindowNo, AD_Process_ID, null, false, false);

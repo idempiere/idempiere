@@ -97,6 +97,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.ui.zk.event.UIEventManager;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
@@ -109,7 +110,22 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.*;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Cell;
+import org.zkoss.zul.Center;
+import org.zkoss.zul.DefaultTreeNode;
+import org.zkoss.zul.Div;
+import org.zkoss.zul.RowRenderer;
+import org.zkoss.zul.Separator;
+import org.zkoss.zul.South;
+import org.zkoss.zul.Space;
+import org.zkoss.zul.Tabpanels;
+import org.zkoss.zul.Tabs;
+import org.zkoss.zul.Toolbar;
+import org.zkoss.zul.TreeModel;
+import org.zkoss.zul.Treeitem;
+import org.zkoss.zul.Vlayout;
+import org.zkoss.zul.West;
 import org.zkoss.zul.impl.XulElement;
 
 /**
@@ -1819,6 +1835,27 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         		"Sorted".equals(e.getAD_Message())) {
         		listPanel.invalidateGridView();
         	}
+        }
+        if (GridTab.DEFAULT_STATUS_MESSAGE.equals(e.getAD_Message())) {
+        	GridTab gt = null;
+        	Object recordId = null;
+            if (e.Record_ID != null) {
+            	recordId = e.Record_ID;
+                if (e.getSource() instanceof GridTab)
+                	gt = (GridTab) e.getSource();
+                else if (e.getSource() instanceof GridTable gtb && gtb.getFieldCount() > 0 && gtb.getField(0).getGridTab() != null)
+               		gt = gtb.getField(0).getGridTab();
+            } else {
+            	// multi-key table, here Record_ID arrives null and we need to report the Record_UU
+                if (e.getSource() instanceof GridTab)
+                	gt = (GridTab) e.getSource();
+                else if (e.getSource() instanceof GridTable gtb && gtb.getFieldCount() > 0 && gtb.getField(0).getGridTab() != null)
+               		gt = gtb.getField(0).getGridTab();
+                if (gt != null)
+                	recordId = gt.getRecord_UU();
+            }
+            if (gt != null && recordId != null)
+            	UIEventManager.fireAccessRecordEvent(Env.getCtx(), gt.getAD_Window_ID(), windowNo, e.AD_Table_ID, recordId);
         }
     }
 
