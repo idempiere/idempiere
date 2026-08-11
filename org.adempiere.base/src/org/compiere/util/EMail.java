@@ -18,6 +18,8 @@ package org.compiere.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -976,7 +978,14 @@ public final class EMail implements Serializable
 			return;
 		if (m_attachments == null)
 			m_attachments = new ArrayList<DataSource>();
-		m_attachments.add(new FileDataSource(file));
+		final String contentType = MimeType.getMimeType(file.getName());
+		FileDataSource fds = new FileDataSource(file) {
+	        @Override
+	        public String getContentType() {
+	            return contentType != null ? contentType : super.getContentType();
+	        }
+	    };
+		m_attachments.add(fds);
 	}	//	addAttachment
 
 	/**
@@ -1003,7 +1012,14 @@ public final class EMail implements Serializable
 		if (m_attachments == null)
 			m_attachments = new ArrayList<DataSource>();
 		try {
-			m_attachments.add(new URLDataSource(url.toURL()));
+			final String contentType = MimeType.getMimeType(url.getPath());
+			URLDataSource urlds = new URLDataSource(url.toURL()) {
+		        @Override
+		        public String getContentType() {
+		            return contentType != null ? contentType : super.getContentType();
+		        }
+		    };
+			m_attachments.add(urlds);
 		} catch (MalformedURLException e) {
 			throw new RuntimeException(e);
 		}
@@ -1032,6 +1048,7 @@ public final class EMail implements Serializable
 			return;
 		if (m_attachments == null)
 			m_attachments = new ArrayList<DataSource>();
+		dataSource = fixContentType(dataSource);
 		m_attachments.add(dataSource);
 	}	//	addAttachment
 
@@ -1300,4 +1317,49 @@ public final class EMail implements Serializable
 	public void setForTenantSmtp(boolean forceTenantSmtp) {
 		m_forceUseTenantSmtp = forceTenantSmtp;	
 	}
+
+	/**
+	 * Wraps a DataSource so its Content-Type is resolved from the file name
+	 * (via MimeType) instead of whatever the original DataSource reports —
+	 * fixes cases where callers pass application/octet-stream by default.
+	 */
+	private static DataSource fixContentType(final DataSource ds)
+	{
+	    String currentType = ds.getContentType();
+	    boolean isGeneric = currentType == null
+	            || currentType.isEmpty()
+	            || currentType.toLowerCase().startsWith("application/octet-stream")
+	            || currentType.toLowerCase().startsWith("content/unknown");
+
+	    if (!isGeneric)
+	        return ds; // already has a meaningful type, trust it
+
+	    final String name = ds.getName();
+	    if (name == null || name.isEmpty())
+	        return ds; // nothing to infer from, leave as-is
+
+	    final String resolvedType = MimeType.getMimeType(name);
+	    if (resolvedType == null || resolvedType.isEmpty())
+	        return ds; // MimeType doesn't know this extension either, leave as-is
+
+	    return new DataSource() {
+	        @Override
+	        public String getContentType() {
+	            return resolvedType;
+	        }
+	        @Override
+	        public InputStream getInputStream() throws IOException {
+	            return ds.getInputStream();
+	        }
+	        @Override
+	        public OutputStream getOutputStream() throws IOException {
+	            return ds.getOutputStream();
+	        }
+	        @Override
+	        public String getName() {
+	            return ds.getName();
+	        }
+	    };
+	}
+
 }	//	EMail
