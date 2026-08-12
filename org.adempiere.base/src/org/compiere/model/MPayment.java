@@ -2716,7 +2716,15 @@ public class MPayment extends X_C_Payment
 		if (info == null) {
 			return false;
 		}
-		
+
+		// delete the fact line of the payment after reverse Correct
+		if (getReversal_ID() > 0)
+		{
+			MPayment reversal = new MPayment(getCtx(), getReversal_ID(), get_TrxName());
+			if (TimeUtil.isSameDay(getDateAcct(), reversal.getDateAcct()))
+				DocumentEngine.deleteReverseCorrectPosting(getAD_Client_ID(), MPayment.Table_ID, getC_Payment_ID(), get_TrxName());
+		}
+
 		// After reverseCorrect
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT);
 		if (m_processMsg != null)

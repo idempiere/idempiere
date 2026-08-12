@@ -2608,6 +2608,10 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		if (reversal == null)
 			return false;
 
+		// delete the fact line of the Invoice after reverse Correct
+		if (TimeUtil.isSameDay(getDateAcct(), reversal.getDateAcct()))
+			DocumentEngine.deleteReverseCorrectPosting(getAD_Client_ID(), MInvoice.Table_ID, getC_Invoice_ID(), get_TrxName());
+
 		// After reverseCorrect
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT);
 		if (m_processMsg != null)
@@ -2628,7 +2632,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		if (reversalDate == null) {
 			reversalDate = new Timestamp(System.currentTimeMillis());
 		}
-		Timestamp reversalDateInvoiced = accrual ? reversalDate : getDateInvoiced();
+		Timestamp reversalDateInvoiced = accrual ? reversalDate : getDateAcct();
 		
 		MPeriod.testPeriodOpen(getCtx(), reversalDate, getC_DocType_ID(), getAD_Org_ID());
 		MAcctSchema.testBackDateTrxAllowed(getCtx(), reversalDate, get_TrxName());
