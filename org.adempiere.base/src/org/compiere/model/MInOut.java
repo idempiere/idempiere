@@ -1700,6 +1700,25 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 					if (log.isLoggable(Level.FINE)) log.fine("OrderLine - Reserved=" + oLine.getQtyReserved()
 						+ ", Delivered=" + oLine.getQtyDelivered());
 				}
+				if (oLine != null && oLine.getQtyOrdered().signum() >= 0)
+				{
+					BigDecimal currentReserved = oLine.getQtyReserved();
+					BigDecimal targetReserved = currentReserved.subtract(sLine.getMovementQty());
+					BigDecimal anticipatedDelivered = oLine.getQtyDelivered();
+					if (isSOTrx())
+						anticipatedDelivered = anticipatedDelivered.add(sLine.getMovementQty());
+					BigDecimal maxReserved = oLine.getQtyOrdered().subtract(anticipatedDelivered);
+
+					if (targetReserved.signum() < 0)
+						targetReserved = Env.ZERO;
+					if (maxReserved.signum() < 0)
+						maxReserved = Env.ZERO;
+
+					if (targetReserved.compareTo(maxReserved) > 0)
+						targetReserved = maxReserved;
+
+					reservationDelta = targetReserved.subtract(currentReserved);
+				}
 				boolean orderClosed = oLine != null && DocAction.STATUS_Closed.equals(oLine.getParent().getDocStatus());
 				
 	            // Load RMA Line
@@ -1746,28 +1765,6 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 						}
 					} 
 
-					reservationDelta = sLine.getMovementQty().negate();
-					
-					if (oLine != null && oLine.getQtyOrdered().signum() >= 0)
-					{
-						BigDecimal currentReserved = oLine.getQtyReserved();
-						BigDecimal targetReserved = currentReserved.add(reservationDelta);
-						BigDecimal anticipatedDelivered = oLine.getQtyDelivered();
-						if (isSOTrx())
-							anticipatedDelivered = anticipatedDelivered.add(sLine.getMovementQty());
-						BigDecimal maxReserved = oLine.getQtyOrdered().subtract(anticipatedDelivered);
-
-						if (targetReserved.signum() < 0)
-							targetReserved = Env.ZERO;
-						if (maxReserved.signum() < 0)
-							maxReserved = Env.ZERO;
-
-						if (targetReserved.compareTo(maxReserved) > 0)
-							targetReserved = maxReserved;
-
-						reservationDelta = targetReserved.subtract(currentReserved);
-					}
-					
 					//
 					if (sLine.getM_AttributeSetInstance_ID() == 0)
 					{

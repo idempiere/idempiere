@@ -85,6 +85,54 @@ public class SalesOrderTest extends AbstractTestCase {
 	}
 
 	@Test
+	public void testServiceProductReservationForShipmentAndReversal() {
+		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
+		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
+		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		order.setDateOrdered(today);
+		order.setDatePromised(today);
+		order.saveEx();
+
+		MOrderLine orderLine = new MOrderLine(order);
+		orderLine.setLine(10);
+		orderLine.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.PLANTING.id));
+		orderLine.setQty(Env.ONE);
+		orderLine.setDatePromised(today);
+		orderLine.saveEx();
+
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		orderLine.load(getTrxName());
+		assertEquals(0, Env.ONE.compareTo(orderLine.getQtyReserved()), "Service product was not reserved");
+
+		MInOut shipment = new MInOut(order, DictionaryIDs.C_DocType.MM_SHIPMENT.id, today);
+		shipment.setDocStatus(DocAction.STATUS_Drafted);
+		shipment.setDocAction(DocAction.ACTION_Complete);
+		shipment.saveEx();
+
+		MInOutLine shipmentLine = new MInOutLine(shipment);
+		shipmentLine.setOrderLine(orderLine, 0, Env.ONE);
+		shipmentLine.setQty(Env.ONE);
+		shipmentLine.saveEx();
+
+		info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		orderLine.load(getTrxName());
+		assertEquals(0, Env.ZERO.compareTo(orderLine.getQtyReserved()), "Shipment did not clear service product reservation");
+
+		info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Reverse_Correct);
+		assertFalse(info.isError(), info.getSummary());
+		shipment.load(getTrxName());
+		assertEquals(DocAction.STATUS_Reversed, shipment.getDocStatus(), "Shipment was not reversed");
+		orderLine.load(getTrxName());
+		assertEquals(0, Env.ONE.compareTo(orderLine.getQtyReserved()), "Reversal did not restore service product reservation");
+	}
+
+	@Test
 	/**
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-235
 	 */
