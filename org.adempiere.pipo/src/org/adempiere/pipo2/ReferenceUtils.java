@@ -52,6 +52,8 @@ public class ReferenceUtils {
 			{
 				String uuid = value.trim();
 				String target = Env.getAD_Client_ID(ctx) > 0 ? POFinder.getTargetUUID(ctx, referenceKey, uuid, trxName) : uuid;
+				if ("Record_UU".equals(e.qName))
+					return target;
 				Object id = IDFinder.findIdByColumn(referenceKey, PO.getUUIDColumnName(referenceKey), target, Env.getAD_Client_ID(ctx), trxName);
 				return id;
 			}
