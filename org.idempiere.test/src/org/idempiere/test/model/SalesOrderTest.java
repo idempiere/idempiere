@@ -308,6 +308,78 @@ public class SalesOrderTest extends AbstractTestCase {
 		line1.load(getTrxName());
 		assertEquals(0, line1.getQtyReserved().intValue());
 	}
+
+	/**
+	 * https://idempiere.atlassian.net/browse/IDEMPIERE-7075
+	 */
+	@Test
+	public void testQtyReservedForOverShipmentReversal() {
+		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
+		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
+		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		order.setDateOrdered(today);
+		order.setDatePromised(today);
+		order.saveEx();
+
+		MOrderLine orderLine = new MOrderLine(order);
+		orderLine.setLine(10);
+		orderLine.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id));
+		orderLine.setQty(Env.ONE);
+		orderLine.setDatePromised(today);
+		orderLine.saveEx();
+
+		BigDecimal initialQtyReserved = MStorageReservation.getQty(orderLine.getM_Product_ID(),
+				orderLine.getM_Warehouse_ID(), 0, true, getTrxName());
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		orderLine.load(getTrxName());
+		assertEquals(0, Env.ONE.compareTo(orderLine.getQtyOrdered()), "Wrong order line ordered quantity");
+		assertEquals(0, Env.ZERO.compareTo(orderLine.getQtyDelivered()), "Wrong order line delivered quantity");
+		assertEquals(0, Env.ONE.compareTo(orderLine.getQtyReserved()), "Wrong order line reserved quantity");
+		assertEquals(0, initialQtyReserved.add(Env.ONE).compareTo(MStorageReservation.getQty(
+				orderLine.getM_Product_ID(), orderLine.getM_Warehouse_ID(), 0, true, getTrxName())),
+				"Wrong storage reservation after order completion");
+
+		BigDecimal shipmentQty = new BigDecimal("2");
+		MInOut shipment = new MInOut(order, DictionaryIDs.C_DocType.MM_SHIPMENT.id, today);
+		shipment.setDocStatus(DocAction.STATUS_Drafted);
+		shipment.setDocAction(DocAction.ACTION_Complete);
+		shipment.saveEx();
+
+		MInOutLine shipmentLine = new MInOutLine(shipment);
+		shipmentLine.setOrderLine(orderLine, 0, shipmentQty);
+		shipmentLine.setQty(shipmentQty);
+		shipmentLine.saveEx();
+
+		info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		shipment.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus(), "Over-shipment not completed");
+		orderLine.load(getTrxName());
+		assertEquals(0, Env.ONE.compareTo(orderLine.getQtyOrdered()), "Over-shipment changed ordered quantity");
+		assertEquals(0, shipmentQty.compareTo(orderLine.getQtyDelivered()), "Wrong delivered quantity after over-shipment");
+		assertEquals(0, Env.ZERO.compareTo(orderLine.getQtyReserved()), "Over-shipment left an order line reservation");
+		assertEquals(0, initialQtyReserved.compareTo(MStorageReservation.getQty(orderLine.getM_Product_ID(),
+				orderLine.getM_Warehouse_ID(), 0, true, getTrxName())),
+				"Over-shipment left a storage reservation");
+
+		info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Reverse_Correct);
+		assertFalse(info.isError(), info.getSummary());
+		shipment.load(getTrxName());
+		assertEquals(DocAction.STATUS_Reversed, shipment.getDocStatus(), "Over-shipment not reversed");
+		orderLine.load(getTrxName());
+		assertEquals(0, Env.ONE.compareTo(orderLine.getQtyOrdered()), "Reversal changed ordered quantity");
+		assertEquals(0, Env.ZERO.compareTo(orderLine.getQtyDelivered()), "Reversal did not clear delivered quantity");
+		assertEquals(0, Env.ONE.compareTo(orderLine.getQtyReserved()),
+				"Reversal restored more than the ordered quantity on the order line");
+		assertEquals(0, initialQtyReserved.add(Env.ONE).compareTo(MStorageReservation.getQty(
+				orderLine.getM_Product_ID(), orderLine.getM_Warehouse_ID(), 0, true, getTrxName())),
+				"Reversal restored more than the ordered quantity in storage reservation");
+	}
 	
 	@Test
 	public void testQtyReservedForNegativeOrderAndShipment() {
