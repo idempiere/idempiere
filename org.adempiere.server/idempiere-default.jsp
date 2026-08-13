@@ -67,7 +67,7 @@ Author URI: https://zuhriutama.com
                             data-src-light="<%=Prop.getImage("idempiere-logo.png")%>" data-src-dark="<%=Prop.getImage("idempiere-logo-dark.png")%>">
                         <img id="squareLogo" src="<%=Prop.getImage("idempiere-square.png")%>" alt="iDempiere" class="d-block d-md-none img-fluid"
                             data-src-light="<%=Prop.getImage("idempiere-square.png")%>" data-src-dark="<%=Prop.getImage("idempiere-square-dark.png")%>">
-                        <span class="fs-3 fs-md-1 mt-2"><%=Prop.getPropertyEscaped(Prop.WEBUI_TEXT)%></span>
+                        <span class="fs-3 mt-2"><%=Prop.getPropertyEscaped(Prop.WEBUI_TEXT)%></span>
                     </a>
                 </div>
                 <div class="col-12 text-center">
