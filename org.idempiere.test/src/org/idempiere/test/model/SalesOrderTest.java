@@ -270,9 +270,9 @@ public class SalesOrderTest extends AbstractTestCase {
 		order.load(getTrxName());		
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		line1.load(getTrxName());
-		assertEquals(1, line1.getQtyReserved().intValue());
+		assertEquals(0, Env.ONE.compareTo(line1.getQtyReserved()), "Wrong reserved quantity after order completion");
 		assertEquals(0, initialQtyReserved.add(Env.ONE).compareTo(MStorageReservation.getQty(line1.getM_Product_ID(),
-				line1.getM_Warehouse_ID(), 0, true, getTrxName())));
+				line1.getM_Warehouse_ID(), 0, true, getTrxName())), "Wrong storage reservation after order completion");
 		
 		MInOut shipment = new MInOut(order, DictionaryIDs.C_DocType.MM_SHIPMENT.id, order.getDateOrdered());
 		shipment.setDocStatus(DocAction.STATUS_Drafted);
@@ -291,10 +291,10 @@ public class SalesOrderTest extends AbstractTestCase {
 		assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus());
 		
 		line1.load(getTrxName());
-		assertEquals(0, line1.getQtyReserved().intValue());
-		assertEquals(2, line1.getQtyDelivered().intValue());
+		assertEquals(0, Env.ZERO.compareTo(line1.getQtyReserved()), "Over-shipment left an order line reservation");
+		assertEquals(0, new BigDecimal("2").compareTo(line1.getQtyDelivered()), "Wrong delivered quantity after over-shipment");
 		assertEquals(0, initialQtyReserved.compareTo(MStorageReservation.getQty(line1.getM_Product_ID(),
-				line1.getM_Warehouse_ID(), 0, true, getTrxName())));
+				line1.getM_Warehouse_ID(), 0, true, getTrxName())), "Over-shipment left a storage reservation");
 		
 		shipment = new MInOut(order, DictionaryIDs.C_DocType.MM_SHIPMENT.id, order.getDateOrdered());
 		shipment.setDocStatus(DocAction.STATUS_Drafted);
@@ -313,10 +313,10 @@ public class SalesOrderTest extends AbstractTestCase {
 		assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus());
 		
 		line1.load(getTrxName());
-		assertEquals(0, line1.getQtyReserved().intValue());
-		assertEquals(1, line1.getQtyDelivered().intValue());
+		assertEquals(0, Env.ZERO.compareTo(line1.getQtyReserved()), "First negative shipment changed the order line reservation");
+		assertEquals(0, Env.ONE.compareTo(line1.getQtyDelivered()), "Wrong delivered quantity after first negative shipment");
 		assertEquals(0, initialQtyReserved.compareTo(MStorageReservation.getQty(line1.getM_Product_ID(),
-				line1.getM_Warehouse_ID(), 0, true, getTrxName())));
+				line1.getM_Warehouse_ID(), 0, true, getTrxName())), "First negative shipment changed the storage reservation");
 
 		shipment = new MInOut(order, DictionaryIDs.C_DocType.MM_SHIPMENT.id, order.getDateOrdered());
 		shipment.setDocStatus(DocAction.STATUS_Drafted);
@@ -335,10 +335,10 @@ public class SalesOrderTest extends AbstractTestCase {
 		assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus());
 
 		line1.load(getTrxName());
-		assertEquals(1, line1.getQtyReserved().intValue());
-		assertEquals(0, line1.getQtyDelivered().intValue());
+		assertEquals(0, Env.ONE.compareTo(line1.getQtyReserved()), "Second negative shipment did not restore the order line reservation");
+		assertEquals(0, Env.ZERO.compareTo(line1.getQtyDelivered()), "Second negative shipment did not clear the delivered quantity");
 		assertEquals(0, initialQtyReserved.add(Env.ONE).compareTo(MStorageReservation.getQty(line1.getM_Product_ID(),
-				line1.getM_Warehouse_ID(), 0, true, getTrxName())));
+				line1.getM_Warehouse_ID(), 0, true, getTrxName())), "Second negative shipment did not restore the storage reservation");
 	}
 
 	/**
