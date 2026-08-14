@@ -1982,8 +1982,22 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 						jasperProcessInfo.setExportFileExtension("JasperPrint");
 						ProcessCall pc = Core.getProcess("org.adempiere.report.jasper.ReportStarter");
 						pc.startProcess(Env.getCtx(), jasperProcessInfo, null);						
-						JasperPrint jasperPrint = (JasperPrint) jasperProcessInfo.getInternalReportObject();
-						viewer.jasperPrintRenderer = new JasperPrintRenderer(jasperPrint, viewer.getTitle());
+						Object reportObject = jasperProcessInfo.getInternalReportObject();
+						if (reportObject instanceof JasperPrint jasperPrint) {
+							viewer.jasperPrintRenderer = new JasperPrintRenderer(jasperPrint, viewer.getTitle());
+						} else if (reportObject instanceof List<?> reportList) {
+							List<JasperPrint> jasperPrints = new ArrayList<>();
+							for (Object item : reportList) {
+								if (!(item instanceof JasperPrint jasperPrint))
+									throw new AdempiereException("Invalid Jasper report result item: " + item);
+								jasperPrints.add(jasperPrint);
+							}
+							if (jasperPrints.isEmpty())
+								throw new AdempiereException("Jasper report returned no printable documents");
+							viewer.jasperPrintRenderer = new JasperPrintRenderer(jasperPrints, viewer.getTitle());
+						} else {
+							throw new AdempiereException("Invalid Jasper report result: " + reportObject);
+						}
 						viewer.jasperPrintRenderer.setRowCount(jasperProcessInfo.getRowCount());
 					}
 				} else {

@@ -289,7 +289,7 @@ public class ReportStarter implements ProcessCall, ClientProcess
 			if (selectionMode == RecordSelectionMode.T_SELECTION)
 				prepareTSelection(pi, recordSelection, trxName);
 			else if (selectionMode == RecordSelectionMode.LEGACY_QUERY)
-				jasperReport = processRecordIds(ctx, pi, trxName, jasperInfo, jasperReport);
+				jasperReport = processRecordIds(ctx, pi, recordSelection, trxName, jasperInfo, jasperReport);
 	        String jasperName = jasperInfo.getJasperName();
 	        File reportDir = jasperInfo.getReportDir();
 	        
@@ -638,8 +638,8 @@ public class ReportStarter implements ProcessCall, ClientProcess
 	/**
 	 * Legacy fallback for reports that do not declare a scalar record parameter.
 	 */
-	private JasperReport processRecordIds(Properties ctx, ProcessInfo pi, String trxName, JasperInfo jasperData,
-			JasperReport jasperReport) {
+	private JasperReport processRecordIds(Properties ctx, ProcessInfo pi, RecordSelection selection, String trxName,
+			JasperInfo jasperData, JasperReport jasperReport) {
 		try {
 			JRQuery originalQuery = jasperReport.getQuery();
 			if (originalQuery == null || originalQuery.getText() == null)
@@ -658,14 +658,24 @@ public class ReportStarter implements ProcessCall, ClientProcess
 			if (tableVariable.length() == 0)
 				tableVariable = tableName;
 			MQuery query = new MQuery(tableName);
-			for (int recordId : pi.getRecord_IDs())
-				query.addRestriction(new SQLFragment(tableVariable + "." + query.getTableName() + "_ID"
-						+ MQuery.EQUAL + recordId), false, 0);
+			String[] keyColumns = table.getKeyColumns();
+			if (keyColumns == null || keyColumns.length != 1)
+				throw new AdempiereException("Jasper multiple-record selection requires a table with one key column: " + tableName);
+			String qualifiedKeyColumn = tableVariable + "." + keyColumns[0];
+			if (selection.uuidKeyTable()) {
+				for (String recordUU : selection.uus())
+					query.addRestriction(new SQLFragment(qualifiedKeyColumn + MQuery.EQUAL + DB.TO_STRING(recordUU)), false, 0);
+			} else {
+				for (Integer recordId : selection.ids())
+					query.addRestriction(new SQLFragment(qualifiedKeyColumn + MQuery.EQUAL + recordId), false, 0);
+			}
 			String filter = query.getSQLFilter().toSQLWithParameters();
 			String newQueryText = originalQueryTemp.indexOf("WHERE") != -1
 					? originalQueryText + " AND " + filter
 					: originalQueryText + " WHERE " + filter;
 			return compileReportQuery(jasperData, jasperReport, newQueryText);
+		} catch (AdempiereException e) {
+			throw e;
 		} catch (Exception e) {
 			log.log(Level.SEVERE, "Failed to modify the report query", e);
 			return jasperReport;
@@ -689,14 +699,14 @@ public class ReportStarter implements ProcessCall, ClientProcess
 	}
 
 	private RecordSelectionMode getRecordSelectionMode(JasperReport report, RecordSelection selection) {
-		if (!selection.isMultiple())
-			return RecordSelectionMode.ITERATE;
 		String value = report.getProperty(RECORD_SELECTION_MODE);
 		if (RECORD_SELECTION_MODE_ITERATE.equalsIgnoreCase(value))
 			return RecordSelectionMode.ITERATE;
 		if (RECORD_SELECTION_MODE_T_SELECTION.equalsIgnoreCase(value))
 			return RecordSelectionMode.T_SELECTION;
 		if (Util.isEmpty(value, true) || "AUTO".equalsIgnoreCase(value)) {
+			if (!selection.isMultiple())
+				return RecordSelectionMode.ITERATE;
 			String scalarParameter = selection.uuidKeyTable() ? RECORD_UU : "RECORD_ID";
 			for (JRParameter parameter : report.getParameters()) {
 				if (scalarParameter.equals(parameter.getName()))
