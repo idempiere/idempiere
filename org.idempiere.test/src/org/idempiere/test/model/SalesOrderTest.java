@@ -261,7 +261,9 @@ public class SalesOrderTest extends AbstractTestCase {
 		line1.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id));
 		line1.setQty(new BigDecimal("1"));
 		line1.setDatePromised(today);
-		line1.saveEx();		
+		line1.saveEx();
+		BigDecimal initialQtyReserved = MStorageReservation.getQty(line1.getM_Product_ID(),
+				line1.getM_Warehouse_ID(), 0, true, getTrxName());
 		
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
 		assertFalse(info.isError(), info.getSummary());
@@ -269,6 +271,8 @@ public class SalesOrderTest extends AbstractTestCase {
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		line1.load(getTrxName());
 		assertEquals(1, line1.getQtyReserved().intValue());
+		assertEquals(0, initialQtyReserved.add(Env.ONE).compareTo(MStorageReservation.getQty(line1.getM_Product_ID(),
+				line1.getM_Warehouse_ID(), 0, true, getTrxName())));
 		
 		MInOut shipment = new MInOut(order, DictionaryIDs.C_DocType.MM_SHIPMENT.id, order.getDateOrdered());
 		shipment.setDocStatus(DocAction.STATUS_Drafted);
@@ -288,6 +292,9 @@ public class SalesOrderTest extends AbstractTestCase {
 		
 		line1.load(getTrxName());
 		assertEquals(0, line1.getQtyReserved().intValue());
+		assertEquals(2, line1.getQtyDelivered().intValue());
+		assertEquals(0, initialQtyReserved.compareTo(MStorageReservation.getQty(line1.getM_Product_ID(),
+				line1.getM_Warehouse_ID(), 0, true, getTrxName())));
 		
 		shipment = new MInOut(order, DictionaryIDs.C_DocType.MM_SHIPMENT.id, order.getDateOrdered());
 		shipment.setDocStatus(DocAction.STATUS_Drafted);
@@ -307,6 +314,31 @@ public class SalesOrderTest extends AbstractTestCase {
 		
 		line1.load(getTrxName());
 		assertEquals(0, line1.getQtyReserved().intValue());
+		assertEquals(1, line1.getQtyDelivered().intValue());
+		assertEquals(0, initialQtyReserved.compareTo(MStorageReservation.getQty(line1.getM_Product_ID(),
+				line1.getM_Warehouse_ID(), 0, true, getTrxName())));
+
+		shipment = new MInOut(order, DictionaryIDs.C_DocType.MM_SHIPMENT.id, order.getDateOrdered());
+		shipment.setDocStatus(DocAction.STATUS_Drafted);
+		shipment.setDocAction(DocAction.ACTION_Complete);
+		shipment.saveEx();
+
+		// Return the remaining delivered quantity and restore the order reservation
+		shipmentLine = new MInOutLine(shipment);
+		shipmentLine.setOrderLine(line1, 0, new BigDecimal("-1"));
+		shipmentLine.setQty(new BigDecimal("-1"));
+		shipmentLine.saveEx();
+
+		info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		shipment.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus());
+
+		line1.load(getTrxName());
+		assertEquals(1, line1.getQtyReserved().intValue());
+		assertEquals(0, line1.getQtyDelivered().intValue());
+		assertEquals(0, initialQtyReserved.add(Env.ONE).compareTo(MStorageReservation.getQty(line1.getM_Product_ID(),
+				line1.getM_Warehouse_ID(), 0, true, getTrxName())));
 	}
 
 	/**

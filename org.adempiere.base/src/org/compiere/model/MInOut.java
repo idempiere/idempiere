@@ -1753,17 +1753,6 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	
 					log.fine("Material Transaction");
 					MTransaction mtrx = null;
-					
-					if (!isReversal()) 
-					{
-						if (oLine != null) 
-						{
-							BigDecimal toDelivered = oLine.getQtyOrdered()
-									.subtract(oLine.getQtyDelivered());
-							if (toDelivered.signum() < 0) // IDEMPIERE-2889
-								toDelivered = Env.ZERO;
-						}
-					} 
 
 					//
 					if (sLine.getM_AttributeSetInstance_ID() == 0)
@@ -1821,8 +1810,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 							}
 						}
 												
-						if (oLine!=null && mtrx!=null && !orderClosed && 
-						   ((!isReversal() && oLine.getQtyReserved().signum() > 0) || (isReversal() && oLine.getQtyOrdered().signum() > 0)))
+						if (oLine != null && mtrx != null && !orderClosed && reservationDelta.signum() != 0)
 						{					
 							if (sLine.getC_OrderLine_ID() != 0 && oLine.getM_Product_ID() > 0)
 							{
@@ -1919,8 +1907,7 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 							m_processMsg = "Cannot correct Inventory OnHand [" + product.getValue() + "] - " + lastError;
 							return DocAction.STATUS_Invalid;
 						}
-						if (oLine!=null && oLine.getM_Product_ID() > 0 && !orderClosed &&
-							((!isReversal() && oLine.getQtyReserved().signum() > 0) || (isReversal() && oLine.getQtyOrdered().signum() > 0)))  
+						if (oLine != null && oLine.getM_Product_ID() > 0 && !orderClosed && reservationDelta.signum() != 0)
 						{
 							IReservationTracer tracer = null;
 							IReservationTracerFactory factory = Core.getReservationTracerFactory();
