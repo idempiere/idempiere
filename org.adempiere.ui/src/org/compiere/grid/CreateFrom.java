@@ -155,10 +155,15 @@ public abstract class CreateFrom implements ICreateFrom
 			.append(" FROM C_Order o WHERE ")
 			.append(colBP)
 			.append("=? AND o.IsSOTrx=? ");
-		if (!forInvoice && !isSOTrx)
+		if (!forInvoice)
 		{
-			// Completed purchase orders are eligible for additional material receipts, including over-receipts
+			// Shipments/receipts can only reference completed orders; purchase receipts can exceed ordered quantity
 			sql.append("AND o.DocStatus='CO' ");
+			if (isSOTrx)
+			{
+				// Customer shipments require an open delivery quantity
+				sql.append("AND o.C_Order_ID IN (SELECT ol.C_Order_ID FROM C_OrderLine ol WHERE ol.QtyOrdered-ol.QtyDelivered!=0) ");
+			}
 		}
 		else
 		{

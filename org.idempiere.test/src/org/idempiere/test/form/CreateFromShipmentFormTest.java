@@ -50,17 +50,19 @@ import org.compiere.model.MProduct;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRMA;
 import org.compiere.model.MRMALine;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MWarehouse;
 import org.compiere.model.SystemIDs;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
-import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 /**
  * @author hengsin
@@ -83,7 +85,7 @@ public class CreateFromShipmentFormTest extends AbstractTestCase {
 		order.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
 		order.setDocStatus(DocAction.STATUS_Drafted);
 		order.setDocAction(DocAction.ACTION_Complete);
-		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		Timestamp today = getLoginDate();
 		order.setDateOrdered(today);
 		order.setDatePromised(today);
 		order.saveEx();
@@ -163,7 +165,7 @@ public class CreateFromShipmentFormTest extends AbstractTestCase {
 		order.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
 		order.setDocStatus(DocAction.STATUS_Drafted);
 		order.setDocAction(DocAction.ACTION_Complete);
-		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		Timestamp today = getLoginDate();
 		order.setDateOrdered(today);
 		order.setDatePromised(today);
 		order.saveEx();
@@ -180,28 +182,73 @@ public class CreateFromShipmentFormTest extends AbstractTestCase {
 		order.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 
-		completeReceipt(order, orderLine, BigDecimal.ONE);
-		orderLine.load(getTrxName());
-		assertEquals(0, orderLine.getQtyDelivered().compareTo(orderLine.getQtyOrdered()), "Order must be fully delivered");
+		try (MockedStatic<MSysConfig> mocked = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
+			mocked.when(() -> MSysConfig.getBooleanValue(MSysConfig.VALIDATE_MATCHING_TO_ORDERED_QTY, true,
+					Env.getAD_Client_ID(Env.getCtx()))).thenReturn(false);
 
-		MInOut selectionReceipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, today);
-		selectionReceipt.saveEx();
-		CreateFromShipmentImpl form = createFromShipmentForm(selectionReceipt);
-		assertOrderListed(form.getOrders(order.getC_BPartner_ID()), order.get_ID(), true,
-				"Completed and fully delivered purchase order must be listed");
+			completeReceipt(order, orderLine, BigDecimal.ONE);
+			orderLine.load(getTrxName());
+			assertEquals(0, orderLine.getQtyDelivered().compareTo(orderLine.getQtyOrdered()), "Order must be fully delivered");
 
-		completeReceipt(order, orderLine, BigDecimal.ONE);
+			MInOut selectionReceipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, today);
+			selectionReceipt.saveEx();
+			CreateFromShipmentImpl form = createFromShipmentForm(selectionReceipt);
+			assertOrderListed(form.getOrders(order.getC_BPartner_ID()), order.get_ID(), true,
+					"Completed and fully delivered purchase order must be listed");
+
+			completeReceipt(order, orderLine, BigDecimal.ONE);
+			orderLine.load(getTrxName());
+			assertTrue(orderLine.getQtyDelivered().compareTo(orderLine.getQtyOrdered()) > 0, "Order must be over-received");
+			assertOrderListed(form.getOrders(order.getC_BPartner_ID()), order.get_ID(), true,
+					"Completed and over-received purchase order must be listed");
+
+			info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Close);
+			assertFalse(info.isError(), info.getSummary());
+			order.load(getTrxName());
+			assertEquals(DocAction.STATUS_Closed, order.getDocStatus());
+			assertOrderListed(form.getOrders(order.getC_BPartner_ID()), order.get_ID(), false,
+					"Closed purchase order must not be listed");
+		}
+	}
+
+	@Test
+	public void testSalesOrderSelectionExcludesClosedOrders() {
+		Timestamp today = getLoginDate();
+		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
+		order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.STANDARD_ORDER.id);
+		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
+		order.setSalesRep_ID(getAD_User_ID());
+		order.setDateOrdered(today);
+		order.setDatePromised(today);
+		order.saveEx();
+
+		MOrderLine orderLine = new MOrderLine(order);
+		orderLine.setLine(10);
+		orderLine.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id));
+		orderLine.setQty(BigDecimal.ONE);
+		orderLine.setDatePromised(today);
+		orderLine.saveEx();
+
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		order.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
 		orderLine.load(getTrxName());
-		assertTrue(orderLine.getQtyDelivered().compareTo(orderLine.getQtyOrdered()) > 0, "Order must be over-received");
+		assertEquals(0, Env.ZERO.compareTo(orderLine.getQtyDelivered()), "Sales order must have an open delivery quantity");
+
+		MInOut selectionShipment = new MInOut(order, DictionaryIDs.C_DocType.MM_SHIPMENT.id, today);
+		selectionShipment.saveEx();
+		CreateFromShipmentImpl form = createFromShipmentForm(selectionShipment, SystemIDs.WINDOW_SHIPMENT_CUSTOMER);
 		assertOrderListed(form.getOrders(order.getC_BPartner_ID()), order.get_ID(), true,
-				"Completed and over-received purchase order must be listed");
+				"Completed sales order with an open delivery quantity must be listed");
 
 		info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Close);
 		assertFalse(info.isError(), info.getSummary());
 		order.load(getTrxName());
 		assertEquals(DocAction.STATUS_Closed, order.getDocStatus());
 		assertOrderListed(form.getOrders(order.getC_BPartner_ID()), order.get_ID(), false,
-				"Closed purchase order must not be listed");
+				"Closed sales order must not be listed");
 	}
 	
 	@Test
@@ -213,7 +260,7 @@ public class CreateFromShipmentFormTest extends AbstractTestCase {
 		order.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
 		order.setDocStatus(DocAction.STATUS_Drafted);
 		order.setDocAction(DocAction.ACTION_Complete);
-		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		Timestamp today = getLoginDate();
 		order.setDateOrdered(today);
 		order.setDatePromised(today);
 		order.saveEx();
@@ -305,7 +352,7 @@ public class CreateFromShipmentFormTest extends AbstractTestCase {
 		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
 		order.setDocStatus(DocAction.STATUS_Drafted);
 		order.setDocAction(DocAction.ACTION_Complete);
-		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		Timestamp today = getLoginDate();
 		order.setDateOrdered(today);
 		order.setDatePromised(today);
 		order.setSalesRep_ID(getAD_User_ID());
@@ -435,12 +482,16 @@ public class CreateFromShipmentFormTest extends AbstractTestCase {
 	}
 
 	private CreateFromShipmentImpl createFromShipmentForm(MInOut receipt) {
-		GridWindow gridWindow = GridWindow.get(Env.getCtx(), 1, SystemIDs.WINDOW_MATERIAL_RECEIPT);
-		assertNotNull(gridWindow, "Failed to load grid window of Material Receipt");
+		return createFromShipmentForm(receipt, SystemIDs.WINDOW_MATERIAL_RECEIPT);
+	}
+
+	private CreateFromShipmentImpl createFromShipmentForm(MInOut inOut, int windowId) {
+		GridWindow gridWindow = GridWindow.get(Env.getCtx(), 1, windowId);
+		assertNotNull(gridWindow, "Failed to load shipment/receipt grid window");
 		gridWindow.initTab(0);
 		GridTab gridTab = gridWindow.getTab(0);
 		MQuery query = new MQuery(MInOut.Table_Name);
-		query.addRestriction(MInOut.COLUMNNAME_M_InOut_ID, "=", receipt.get_ID());
+		query.addRestriction(MInOut.COLUMNNAME_M_InOut_ID, "=", inOut.get_ID());
 		gridTab.setQuery(query);
 		gridTab.getTableModel().setImportingMode(false, getTrxName());
 		gridTab.query(false);
