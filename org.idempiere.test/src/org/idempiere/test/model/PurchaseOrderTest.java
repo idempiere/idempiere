@@ -60,7 +60,6 @@ import org.compiere.model.Query;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ServerProcessCtl;
-import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
@@ -68,6 +67,8 @@ import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 /**
  * @author Carlos Ruiz - globalqss
@@ -489,13 +490,12 @@ public class PurchaseOrderTest extends AbstractTestCase {
 	public void testQtyOverReceipt() {
 		Properties ctx = Env.getCtx();
 		String trxName = getTrxName();
-		
-		DB.executeUpdateEx("UPDATE AD_SysConfig SET Value='N' WHERE AD_Client_ID=0 AND Name=?", 
-				new Object[] {MSysConfig.VALIDATE_MATCHING_TO_ORDERED_QTY}, null);
-		CacheMgt.get().reset();
 
 		BigDecimal initialQtyOrdered = getQtyOrdered(Env.getCtx(), DictionaryIDs.M_Product.ROSE_BUSH.id, getTrxName());
-		try {			
+		try (MockedStatic<MSysConfig> mocked = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
+			mocked.when(() -> MSysConfig.getBooleanValue(MSysConfig.VALIDATE_MATCHING_TO_ORDERED_QTY, true,
+					Env.getAD_Client_ID(ctx))).thenReturn(false);
+
 			MOrder order = new MOrder(ctx, 0, trxName);
 			order.setBPartner(MBPartner.get(ctx, DictionaryIDs.C_BPartner.PATIO.id));
 			order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
@@ -580,10 +580,6 @@ public class PurchaseOrderTest extends AbstractTestCase {
 			assertEquals(0, line1.getQtyDelivered().intValue(), "Wrong order line qty delivered value");
 			newQtyOrdered = getQtyOrdered(Env.getCtx(), DictionaryIDs.M_Product.ROSE_BUSH.id, getTrxName());
 			assertEquals(initialQtyOrdered.intValue()+2, newQtyOrdered.intValue(), "Quantiy Ordered not updated as expected");
-		} finally {
-			DB.executeUpdateEx("UPDATE AD_SysConfig SET Value='Y' WHERE AD_Client_ID=0 AND Name=?", 
-					new Object[] {MSysConfig.VALIDATE_MATCHING_TO_ORDERED_QTY}, null);
-			CacheMgt.get().reset();
 		}
 	}
 
@@ -591,7 +587,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-7075
 	 */
 	@Test
-	public void testOverReceiptVoidAndOrderCloseReservation() {
+	public void testOverReceiptReversalAndOrderCloseReservation() {
 		Properties ctx = Env.getCtx();
 		String trxName = getTrxName();
 		int productId = DictionaryIDs.M_Product.ROSE_BUSH.id;
@@ -599,11 +595,10 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		BigDecimal qtyReceived = new BigDecimal("303");
 		BigDecimal initialQtyOrdered = getQtyOrdered(ctx, productId, trxName);
 
-		DB.executeUpdateEx("UPDATE AD_SysConfig SET Value='N' WHERE AD_Client_ID=0 AND Name=?",
-				new Object[] {MSysConfig.VALIDATE_MATCHING_TO_ORDERED_QTY}, null);
-		CacheMgt.get().reset();
+		try (MockedStatic<MSysConfig> mocked = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
+			mocked.when(() -> MSysConfig.getBooleanValue(MSysConfig.VALIDATE_MATCHING_TO_ORDERED_QTY, true,
+					Env.getAD_Client_ID(ctx))).thenReturn(false);
 
-		try {
 			MOrder order = new MOrder(ctx, 0, trxName);
 			order.setBPartner(MBPartner.get(ctx, DictionaryIDs.C_BPartner.PATIO.id));
 			order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
@@ -651,14 +646,14 @@ public class PurchaseOrderTest extends AbstractTestCase {
 			assertEquals(0, initialQtyOrdered.compareTo(getQtyOrdered(ctx, productId, trxName)),
 					"Storage reservation not cleared by over-receipt");
 
-			info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Void);
+			info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Reverse_Correct);
 			assertFalse(info.isError(), info.getSummary());
 			receipt.load(trxName);
-			assertEquals(DocAction.STATUS_Reversed, receipt.getDocStatus(), "Material receipt not voided through reversal");
+			assertEquals(DocAction.STATUS_Reversed, receipt.getDocStatus(), "Material receipt not reversed");
 			orderLine.load(trxName);
 			assertEquals(0, qtyOrdered.compareTo(orderLine.getQtyReserved()), "Over-receipt quantity was restored as reservation");
 			assertEquals(0, initialQtyOrdered.add(qtyOrdered).compareTo(getQtyOrdered(ctx, productId, trxName)),
-					"Wrong storage reservation after voiding over-receipt");
+					"Wrong storage reservation after reversing over-receipt");
 
 			info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Close);
 			assertFalse(info.isError(), info.getSummary());
@@ -671,10 +666,6 @@ public class PurchaseOrderTest extends AbstractTestCase {
 			assertEquals(0, Env.ZERO.compareTo(orderLine.getQtyReserved()), "Order line reservation not cleared on close");
 			assertEquals(0, initialQtyOrdered.compareTo(getQtyOrdered(ctx, productId, trxName)),
 					"Closed order left a storage reservation");
-		} finally {
-			DB.executeUpdateEx("UPDATE AD_SysConfig SET Value='Y' WHERE AD_Client_ID=0 AND Name=?",
-					new Object[] {MSysConfig.VALIDATE_MATCHING_TO_ORDERED_QTY}, null);
-			CacheMgt.get().reset();
 		}
 	}
 
@@ -682,7 +673,7 @@ public class PurchaseOrderTest extends AbstractTestCase {
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-7075
 	 */
 	@Test
-	public void testPartialReceiptsOverReceiptVoidAndOrderCloseReservation() {
+	public void testPartialReceiptsOverReceiptReversalAndOrderCloseReservation() {
 		Properties ctx = Env.getCtx();
 		String trxName = getTrxName();
 		int productId = DictionaryIDs.M_Product.ROSE_BUSH.id;
@@ -692,11 +683,10 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		BigDecimal openQtyAfterFirstReceipt = new BigDecimal("50");
 		BigDecimal initialQtyOrdered = getQtyOrdered(ctx, productId, trxName);
 
-		DB.executeUpdateEx("UPDATE AD_SysConfig SET Value='N' WHERE AD_Client_ID=0 AND Name=?",
-				new Object[] {MSysConfig.VALIDATE_MATCHING_TO_ORDERED_QTY}, null);
-		CacheMgt.get().reset();
+		try (MockedStatic<MSysConfig> mocked = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
+			mocked.when(() -> MSysConfig.getBooleanValue(MSysConfig.VALIDATE_MATCHING_TO_ORDERED_QTY, true,
+					Env.getAD_Client_ID(ctx))).thenReturn(false);
 
-		try {
 			MOrder order = new MOrder(ctx, 0, trxName);
 			order.setBPartner(MBPartner.get(ctx, DictionaryIDs.C_BPartner.PATIO.id));
 			order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
@@ -766,16 +756,16 @@ public class PurchaseOrderTest extends AbstractTestCase {
 			assertEquals(0, initialQtyOrdered.compareTo(getQtyOrdered(ctx, productId, trxName)),
 					"Storage reservation not cleared by over-receipt");
 
-			info = MWorkflow.runDocumentActionWorkflow(secondReceipt, DocAction.ACTION_Void);
+			info = MWorkflow.runDocumentActionWorkflow(secondReceipt, DocAction.ACTION_Reverse_Correct);
 			assertFalse(info.isError(), info.getSummary());
 			secondReceipt.load(trxName);
-			assertEquals(DocAction.STATUS_Reversed, secondReceipt.getDocStatus(), "Second material receipt not voided through reversal");
+			assertEquals(DocAction.STATUS_Reversed, secondReceipt.getDocStatus(), "Second material receipt not reversed");
 			orderLine.load(trxName);
-			assertEquals(0, firstReceiptQty.compareTo(orderLine.getQtyDelivered()), "Wrong delivered qty after voiding second receipt");
+			assertEquals(0, firstReceiptQty.compareTo(orderLine.getQtyDelivered()), "Wrong delivered qty after reversing second receipt");
 			assertEquals(0, openQtyAfterFirstReceipt.compareTo(orderLine.getQtyReserved()),
 					"Reversal restored more than the open order quantity");
 			assertEquals(0, initialQtyOrdered.add(openQtyAfterFirstReceipt).compareTo(getQtyOrdered(ctx, productId, trxName)),
-					"Wrong storage reservation after voiding second receipt");
+					"Wrong storage reservation after reversing second receipt");
 
 			info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Close);
 			assertFalse(info.isError(), info.getSummary());
@@ -788,10 +778,6 @@ public class PurchaseOrderTest extends AbstractTestCase {
 			assertEquals(0, Env.ZERO.compareTo(orderLine.getQtyReserved()), "Order line reservation not cleared on close");
 			assertEquals(0, initialQtyOrdered.compareTo(getQtyOrdered(ctx, productId, trxName)),
 					"Closed order left a storage reservation");
-		} finally {
-			DB.executeUpdateEx("UPDATE AD_SysConfig SET Value='Y' WHERE AD_Client_ID=0 AND Name=?",
-					new Object[] {MSysConfig.VALIDATE_MATCHING_TO_ORDERED_QTY}, null);
-			CacheMgt.get().reset();
 		}
 	}
 
@@ -811,11 +797,10 @@ public class PurchaseOrderTest extends AbstractTestCase {
 		BigDecimal initialQtyOrdered = getQtyOrdered(ctx, productId, trxName);
 		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
 
-		DB.executeUpdateEx("UPDATE AD_SysConfig SET Value='N' WHERE AD_Client_ID=0 AND Name=?",
-				new Object[] {MSysConfig.VALIDATE_MATCHING_TO_ORDERED_QTY}, null);
-		CacheMgt.get().reset();
+		try (MockedStatic<MSysConfig> mocked = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
+			mocked.when(() -> MSysConfig.getBooleanValue(MSysConfig.VALIDATE_MATCHING_TO_ORDERED_QTY, true,
+					Env.getAD_Client_ID(ctx))).thenReturn(false);
 
-		try {
 			MOrder firstOrder = new MOrder(ctx, 0, trxName);
 			firstOrder.setBPartner(MBPartner.get(ctx, DictionaryIDs.C_BPartner.PATIO.id));
 			firstOrder.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
@@ -906,16 +891,16 @@ public class PurchaseOrderTest extends AbstractTestCase {
 			assertEquals(0, initialQtyOrdered.add(secondOrderQty).compareTo(getQtyOrdered(ctx, productId, trxName)),
 					"Over-receipt changed the other order's storage reservation");
 
-			info = MWorkflow.runDocumentActionWorkflow(overReceipt, DocAction.ACTION_Void);
+			info = MWorkflow.runDocumentActionWorkflow(overReceipt, DocAction.ACTION_Reverse_Correct);
 			assertFalse(info.isError(), info.getSummary());
 			overReceipt.load(trxName);
-			assertEquals(DocAction.STATUS_Reversed, overReceipt.getDocStatus(), "Over-receipt not voided through reversal");
+			assertEquals(DocAction.STATUS_Reversed, overReceipt.getDocStatus(), "Over-receipt not reversed");
 			firstOrderLine.load(trxName);
 			secondOrderLine.load(trxName);
-			assertEquals(0, firstOrderOpenQty.compareTo(firstOrderLine.getQtyReserved()), "Wrong first order reservation after void");
-			assertEquals(0, secondOrderQty.compareTo(secondOrderLine.getQtyReserved()), "Void changed second order line");
+			assertEquals(0, firstOrderOpenQty.compareTo(firstOrderLine.getQtyReserved()), "Wrong first order reservation after reversal");
+			assertEquals(0, secondOrderQty.compareTo(secondOrderLine.getQtyReserved()), "Reversal changed second order line");
 			assertEquals(0, initialQtyOrdered.add(firstOrderOpenQty).add(secondOrderQty)
-					.compareTo(getQtyOrdered(ctx, productId, trxName)), "Wrong combined reservation after void");
+					.compareTo(getQtyOrdered(ctx, productId, trxName)), "Wrong combined reservation after reversal");
 
 			info = MWorkflow.runDocumentActionWorkflow(firstOrder, DocAction.ACTION_Close);
 			assertFalse(info.isError(), info.getSummary());
@@ -942,10 +927,6 @@ public class PurchaseOrderTest extends AbstractTestCase {
 			assertEquals(0, Env.ZERO.compareTo(secondOrderLine.getQtyReserved()), "Closed second order line still reserved");
 			assertEquals(0, initialQtyOrdered.compareTo(getQtyOrdered(ctx, productId, trxName)),
 					"Closing both orders did not clear the combined storage reservation");
-		} finally {
-			DB.executeUpdateEx("UPDATE AD_SysConfig SET Value='Y' WHERE AD_Client_ID=0 AND Name=?",
-					new Object[] {MSysConfig.VALIDATE_MATCHING_TO_ORDERED_QTY}, null);
-			CacheMgt.get().reset();
 		}
 	}
 	
