@@ -752,7 +752,12 @@ public class ReportStarter implements ProcessCall, ClientProcess
 			ext = "pdf";
 		
 		try {						
-			File exportFile = File.createTempFile(FileUtil.makePrefix(jasperPrint.getName()), "." + ext);
+			String exportFilePrefix = Util.isEmpty(jasperPrint.getName(), true)
+					? "jasper"
+					: FileUtil.makePrefix(jasperPrint.getName());
+			if (exportFilePrefix.length() < 3)
+				exportFilePrefix = "jasper";
+			File exportFile = File.createTempFile(exportFilePrefix, "." + ext);
 
 			try (FileOutputStream outputStream = new FileOutputStream(exportFile);) {
 
