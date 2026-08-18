@@ -86,8 +86,7 @@ Import-Package: com.google.common.annotations;version="33.2.1",
  org.osgi.util.tracker;version="1.5.0",
  org.slf4j;version="1.7.2",
  org.slf4j.helpers;version="1.7.2",
- org.slf4j.spi;version="1.7.2",
- org.springframework.web.util
+ org.slf4j.spi;version="1.7.2"
 DynamicImport-Package: action.images
 Bundle-ClassPath: .,
  lib/ckez.jar,

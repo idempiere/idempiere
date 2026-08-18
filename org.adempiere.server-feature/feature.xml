@@ -147,6 +147,46 @@
          version="0.0.0"/>
 
    <plugin
+         id="org.glassfish.hk2.external.jakarta.inject"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.glassfish.hk2.api"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.glassfish.hk2.locator"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.glassfish.hk2.utils"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.glassfish.hk2.osgi-resource-locator"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.glassfish.jersey.core.jersey-common"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.glassfish.jersey.core.jersey-server"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.glassfish.jersey.core.jersey-client"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.glassfish.jersey.inject.jersey-hk2"
+         version="0.0.0"/>
+
+   <plugin
+         id="javassist"
+         version="0.0.0"/>
+
+   <plugin
          id="org.glassfish.jersey.ext.jersey-entity-filtering"
          version="0.0.0"/>
 
@@ -372,10 +412,6 @@
 
    <plugin
          id="com.sun.jna"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.apache.cxf.cxf-rt-databinding-xmlbeans"
          version="0.0.0"/>
 
    <plugin
