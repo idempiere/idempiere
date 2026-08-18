@@ -268,6 +268,42 @@
          version="0.0.0"/>
 
    <plugin
+         id="org.glassfish.hk2.api"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.glassfish.hk2.locator"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.glassfish.hk2.utils"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.glassfish.hk2.osgi-resource-locator"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.glassfish.jersey.core.jersey-common"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.glassfish.jersey.core.jersey-server"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.glassfish.jersey.core.jersey-client"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.glassfish.jersey.inject.jersey-hk2"
+         version="0.0.0"/>
+
+   <plugin
+         id="javassist"
+         version="0.0.0"/>
+
+   <plugin
          id="org.glassfish.jersey.ext.jersey-entity-filtering"
          version="0.0.0"/>
       
@@ -496,10 +532,6 @@
          version="0.0.0"/>
 
    <plugin
-         id="org.apache.cxf.cxf-rt-databinding-xmlbeans"
-         version="0.0.0"/>
-
-   <plugin
          id="javax.security.auth.message-api"
          version="0.0.0"/>
 		 
@@ -515,21 +547,6 @@
    <plugin id="jakarta.xml.soap-api" version="0.0.0"/>
    <plugin id="jakarta.xml.ws-api" version="0.0.0"/>
    <plugin id="org.apache.ant" version="0.0.0"/>
-   <plugin id="org.apache.commons.discovery" version="0.0.0"/>
-   <plugin id="org.apache.cxf.cxf-rt-bindings-soap" version="0.0.0"/>
-   <plugin id="org.apache.cxf.cxf-rt-bindings-xml" version="0.0.0"/>
-   <plugin id="org.apache.cxf.cxf-rt-databinding-jaxb" version="0.0.0"/>
-   <plugin id="org.apache.cxf.cxf-rt-frontend-jaxrs" version="0.0.0"/>
-   <plugin id="org.apache.cxf.cxf-rt-frontend-jaxws" version="0.0.0"/>
-   <plugin id="org.apache.cxf.cxf-rt-frontend-simple" version="0.0.0"/>
-   <plugin id="org.apache.cxf.cxf-rt-rs-extension-providers" version="0.0.0"/>
-   <plugin id="org.apache.cxf.cxf-rt-rs-service-description" version="0.0.0"/>
-   <plugin id="org.apache.cxf.cxf-rt-security" version="0.0.0"/>
-   <plugin id="org.apache.cxf.cxf-rt-transports-http" version="0.0.0"/>
-   <plugin id="org.apache.cxf.cxf-rt-ws-addr" version="0.0.0"/>
-   <plugin id="org.apache.cxf.cxf-rt-ws-policy" version="0.0.0"/>
-   <plugin id="org.apache.cxf.cxf-rt-wsdl" version="0.0.0"/>
-   <plugin id="org.apache.neethi" version="0.0.0"/>
    <plugin id="org.glassfish.external.management-api" version="0.0.0"/>
    <plugin id="org.glassfish.gmbal.gmbal" version="0.0.0"/>
    <plugin id="org.glassfish.ha.ha-api" version="0.0.0"/>
@@ -541,14 +558,6 @@
    <plugin id="org.jvnet.staxex.stax-ex" version="0.0.0"/>
    <plugin id="wrapped.com.sun.net.httpserver.http" version="0.0.0"/>
    <plugin id="wrapped.com.sun.org.apache.xml.internal.resolver" version="0.0.0"/>
-   <plugin id="wrapped.org.apache.cxf.cxf-rt-ws-transfer" version="0.0.0"/>
    <plugin id="wrapped.org.glassfish.jaxb.txw2" version="0.0.0"/>
-   <plugin id="wrapped.org.springframework.spring-aop" version="0.0.0"/>
-   <plugin id="wrapped.org.springframework.spring-beans" version="0.0.0"/>
-   <plugin id="wrapped.org.springframework.spring-context-support" version="0.0.0"/>
-   <plugin id="wrapped.org.springframework.spring-context" version="0.0.0"/>
-   <plugin id="wrapped.org.springframework.spring-core" version="0.0.0"/>
-   <plugin id="wrapped.org.springframework.spring-expression" version="0.0.0"/>
-   <plugin id="wrapped.wsdl4j.wsdl4j" version="0.0.0"/>
     
 </feature>
