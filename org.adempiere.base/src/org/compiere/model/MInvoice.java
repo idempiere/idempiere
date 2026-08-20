@@ -2600,13 +2600,13 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
 
-		// Check Invoice Line reference
-		if (hasProjectIssueLine())
-			return false;
-
 		// Before reverseCorrect
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSECORRECT);
 		if (m_processMsg != null)
+			return false;
+
+		// Check Invoice Line reference
+		if (hasProjectIssueLine())
 			return false;
 
 		MInvoice reversal = reverse(false);
@@ -2845,13 +2845,13 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 	{
 		if (log.isLoggable(Level.INFO)) log.info(toString());
 
-		// Check Invoice Line reference
-		if (hasProjectIssueLine())
-			return false;
-
 		// Before reverseAccrual
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_BEFORE_REVERSEACCRUAL);
 		if (m_processMsg != null)
+			return false;
+
+		// Check Invoice Line reference
+		if (hasProjectIssueLine())
 			return false;
 
 		MInvoice reversal = reverse(true);
@@ -3681,8 +3681,9 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 
 			if (projectIssue != null)
 			{
-				// "Invoice Line:" + invLine.getLine() + " Reference Present in Project Issue : " + prjIssue
-				m_processMsg = Msg.getMsg(getCtx(), "InvLineRefProjeIssue", new Object[] { invLine, projectIssue});
+				// "Invoice Line:" + invLine.getLine() + " Reference Present in Project Issue : " + projectIssue
+				m_processMsg = Msg.getMsg(	getCtx(), "InvLineRefProjeIssue",
+											new Object[] { invLine.getLine(), projectIssue.getC_ProjectIssue_ID() });
 				return true;
 			}
 		}
