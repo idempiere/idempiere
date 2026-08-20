@@ -3683,7 +3683,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			{
 				// "Invoice Line:" + invLine.getLine() + " Reference Present in Project Issue : " + projectIssue
 				m_processMsg = Msg.getMsg(	getCtx(), "InvLineRefProjeIssue",
-											new Object[] { invLine.getLine(), projectIssue.getC_ProjectIssue_ID() });
+											new Object[] { invLine.getLine(), projectIssue.getDocumentNo()});
 				return true;
 			}
 		}
