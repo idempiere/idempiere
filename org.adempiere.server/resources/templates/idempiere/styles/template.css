@@ -148,13 +148,15 @@ body {
 .nav-link {
     color: var(--theme-accent) !important;
     font-size: 1.2em;
-    white-space: nowrap;
 }
 .nav-link:hover {
     color: var(--theme-text-muted) !important;
     text-decoration: underline;
 }
 @media (min-width: 992px) {
+	.nav-link {
+        white-space: nowrap;
+    }
     .navbar-expand-lg .navbar-collapse {
         flex-grow: 0;
         flex-shrink: 0;
