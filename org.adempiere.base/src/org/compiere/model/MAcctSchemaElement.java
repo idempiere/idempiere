@@ -217,6 +217,10 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element implements Immuta
 				   || elementType.equals(ELEMENTTYPE_CustomField4)) {
 			return null;
 		}
+		else if (elementType.equals("CO")) {
+			return "SELECT Combination, Description FROM C_ValidCombination WHERE C_ValidCombination_ID=";
+		}
+
 		//
 		return "";
 	}   //  getValueQuery
