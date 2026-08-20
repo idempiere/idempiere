@@ -119,6 +119,34 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	}	//	get
 
 	/**
+	 * Returns the most recent workflow activity for the specified record.
+	 *
+	 * @param  ctx         application context
+	 * @param  AD_Table_ID table ID
+	 * @param  Record_ID   record ID
+	 * @param  activeOnly  {@code true} to return only active activities
+	 * @return             the latest matching workflow activity, or {@code null} if none exists
+	 */
+	public static MWFActivity getLast(Properties ctx, int AD_Table_ID, int Record_ID, boolean activeOnly)
+	{
+		ArrayList<Object> params = new ArrayList<>();
+		StringBuilder whereClause = new StringBuilder("AD_Table_ID=? AND Record_ID=?");
+		params.add(AD_Table_ID);
+		params.add(Record_ID);
+
+		if (activeOnly)
+		{
+			whereClause.append(" AND Processed<>?");
+			params.add(true);
+		}
+
+		return new Query(ctx, Table_Name, whereClause.toString(), null)
+						.setParameters(params)
+						.setOrderBy(COLUMNNAME_AD_WF_Activity_ID + " DESC")
+						.first();
+	}
+
+	/**
 	 * 	Get info of active activities
 	 * 	@param ctx context
 	 *	@param AD_Table_ID table
@@ -134,6 +162,10 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < acts.length; i++)
 		{
+			// When activity is Suspended, Allow user to continue workflow on doc action
+			if (WFSTATE_Suspended.compareTo(acts[i].getWFState()) == 0)
+				return null;
+
 			if (i > 0)
 				sb.append("\n");
 			MWFActivity activity = acts[i];
