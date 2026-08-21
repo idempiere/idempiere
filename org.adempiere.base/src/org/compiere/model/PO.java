@@ -4494,7 +4494,7 @@ public abstract class PO
 			String Record_UU = get_UUID();
 			//	Delete Restrict AD_Table_ID/Record_ID (Requests, ..)
 			String errorMsg = PO_Record.exists(AD_Table_ID, Record_ID, m_trxName);
-			if (errorMsg == null && Record_UU != null)
+			if (errorMsg == null && !Util.isEmpty(Record_UU))
 				errorMsg = PO_Record.exists(AD_Table_ID, Record_UU, m_trxName);
 			if (errorMsg != null)
 			{

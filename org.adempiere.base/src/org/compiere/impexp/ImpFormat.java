@@ -28,11 +28,13 @@ import org.compiere.model.I_I_BPartner;
 import org.compiere.model.I_I_ElementValue;
 import org.compiere.model.I_I_Product;
 import org.compiere.model.I_I_ReportLine;
+import org.compiere.model.PO;
 import org.compiere.model.X_AD_ImpFormat;
 import org.compiere.model.X_I_GLJournal;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *	Import implementation using {@link MImpFormat} and {@link MImpFormatRow}.
@@ -640,14 +642,25 @@ public final class ImpFormat
 		//	Insert Basic Record -----------------------------------------------
 		if (ID == 0)
 		{
+			String uuidColumnName = PO.getUUIDColumnName(m_tableName);
+			boolean hasUUID = !Util.isEmpty(uuidColumnName);
+
 			ID = DB.getNextID(ctx, m_tableName, null);		//	get ID
 			sql = new StringBuilder("INSERT INTO ")
 				.append(m_tableName).append("(").append(m_tablePK).append(",")
-				.append("AD_Client_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,IsActive")	//	StdFields
-				.append(") VALUES (").append(ID).append(",")
+				.append("AD_Client_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,IsActive");	//	StdFields
+
+			if (hasUUID)
+				sql.append(",").append(uuidColumnName);
+
+			sql.append(") VALUES (").append(ID).append(",")
 				.append(AD_Client_ID).append(",").append(AD_Org_ID)
-				.append(",getDate(),").append(UpdatedBy).append(",getDate(),").append(UpdatedBy).append(",'Y'")
-				.append(")");
+				.append(",getDate(),").append(UpdatedBy).append(",getDate(),").append(UpdatedBy).append(",'Y'");
+
+			if (hasUUID)
+				sql.append(",generate_uuid()");
+
+			sql.append(")");
 			//
 			int no = DB.executeUpdate(sql.toString(), trxName);
 			if (no != 1)
