@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Role
  *  @author iDempiere (generated) 
- *  @version Release 13
+ *  @version Release 14
  */
 public interface I_AD_Role 
 {
@@ -498,6 +498,19 @@ public interface I_AD_Role
 	  * Users with this role can see accounting information
 	  */
 	public boolean isShowAcct();
+
+    /** Column name IsShowChangeLog */
+    public static final String COLUMNNAME_IsShowChangeLog = "IsShowChangeLog";
+
+	/** Set Show Change Log.
+	  * Allow users with this role to view change log information
+	  */
+	public void setIsShowChangeLog (boolean IsShowChangeLog);
+
+	/** Get Show Change Log.
+	  * Allow users with this role to view change log information
+	  */
+	public boolean isShowChangeLog();
 
     /** Column name IsUseUserOrgAccess */
     public static final String COLUMNNAME_IsUseUserOrgAccess = "IsUseUserOrgAccess";

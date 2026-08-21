@@ -217,8 +217,7 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 			setTitle(title + " - " + table1.getName());
 		}
 
-		//	Only Client Preference can view Change Log
-		if (!MRole.PREFERENCETYPE_Client.equals(MRole.getDefault().getPreferenceType()))
+		if (!MRole.getDefault().isShowChangeLog())
 			return false;
 		
 		if (Record_ID == 0 && Util.isEmpty(Record_UU))

@@ -253,6 +253,7 @@ public final class MSetup
 		admin.setName(name);
 		admin.setUserLevel(MRole.USERLEVEL_ClientPlusOrganization);
 		admin.setPreferenceType(MRole.PREFERENCETYPE_Client);
+		admin.setIsShowChangeLog(true);
 		admin.setIsShowAcct(true);
 		admin.setIsAccessAdvanced(true);
 		admin.setIsClientAdministrator(true);
