@@ -378,15 +378,13 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
 			}
 		}
 		
-		if (text.endsWith("%"))
-			text = text.toUpperCase();
-		else
-			text = text.toUpperCase() + "%";
+		if (!text.endsWith("%"))
+			text += "%";
 		
 		//	Look up - see MLocatorLookup.run		
 		StringBuffer sql = new StringBuffer("SELECT M_Locator_ID FROM M_Locator ")
 			.append(" WHERE IsActive='Y' AND UPPER(Value) LIKE ")
-			.append(DB.TO_STRING(text));
+			.append("UPPER(").append(DB.TO_STRING(text)).append(")");
 		
 		if (getOnly_Warehouse_ID() != 0)
 			sql.append(" AND M_Warehouse_ID=?");

@@ -63,13 +63,13 @@ public class MWarehousePrice extends X_RV_WarehousePrice
 		StringBuilder sb = new StringBuilder();
 		Value = getFindParameter (Value);
 		if (Value != null)
-			sb.append("UPPER(Value) LIKE ?");
+			sb.append("UPPER(Value) LIKE UPPER(?)");
 		Name = getFindParameter (Name);
 		if (Name != null)
 		{
 			if (sb.length() > 0)
 				sb.append(" OR ");
-			sb.append("UPPER(Name) LIKE ?");
+			sb.append("UPPER(Name) LIKE UPPER(?)");
 		}
 		if (UPC != null && UPC.length() > 0)
 		{

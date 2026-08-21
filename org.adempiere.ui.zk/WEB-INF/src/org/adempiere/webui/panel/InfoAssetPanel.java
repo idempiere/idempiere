@@ -288,17 +288,17 @@ public class InfoAssetPanel extends InfoPanel implements ValueChangeListener, Ev
 	
 		//	=> Value
 		
-		String value = fieldValue.getText().toUpperCase();
+		String value = fieldValue.getText();
 		
 		if (!(value.equals("") || value.equals("%")))
-			sql.append(" AND UPPER(a.Value) LIKE ?");
+			sql.append(" AND UPPER(a.Value) LIKE UPPER(?)");
 		
 		//	=> Name
 		
-		String name = fieldName.getText().toUpperCase();
+		String name = fieldName.getText();
 		
 		if (!(name.equals("") || name.equals("%")))
-			sql.append (" AND UPPER(a.Name) LIKE ?");
+			sql.append (" AND UPPER(a.Name) LIKE UPPER(?)");
 		
 		//	C_BPartner_ID
 		
@@ -338,7 +338,7 @@ public class InfoAssetPanel extends InfoPanel implements ValueChangeListener, Ev
 		
 		//	=> Value
 		
-		String value = fieldValue.getText().toUpperCase();
+		String value = fieldValue.getText();
 		
 		if (!(value.equals("") || value.equals("%")))
 		{
@@ -351,7 +351,7 @@ public class InfoAssetPanel extends InfoPanel implements ValueChangeListener, Ev
 		
 		//	=> Name
 		
-		String name = fieldName.getText().toUpperCase();
+		String name = fieldName.getText();
 		
 		if (!(name.equals("") || name.equals("%")))
 		{

@@ -5746,7 +5746,7 @@ public abstract class PO
 
 	/**
 	 * 	Convert query value.<br/>
-	 * 	Convert to upper case and add % at the end.
+	 * 	Add % at the end.
 	 *	@param query in string
 	 *	@return converted query value
 	 */
@@ -5758,7 +5758,7 @@ public abstract class PO
 			return null;
 		if (!query.endsWith("%"))
 			query += "%";
-		return query.toUpperCase();
+		return query;
 	}	//	getFindParameter
 
 	/**
