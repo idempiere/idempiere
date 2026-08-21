@@ -682,10 +682,10 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 	public String getSQLWhere()
 	{
 		StringBuffer sql = new StringBuffer();
-		addSQLWhere (sql, 0, txt1.getText().toUpperCase());
-		addSQLWhere (sql, 1, txt2.getText().toUpperCase());
-		addSQLWhere (sql, 2, txt3.getText().toUpperCase());
-		addSQLWhere (sql, 3, txt4.getText().toUpperCase());
+		addSQLWhere (sql, 0, txt1.getText());
+		addSQLWhere (sql, 1, txt2.getText());
+		addSQLWhere (sql, 2, txt3.getText());
+		addSQLWhere (sql, 3, txt4.getText());
 		return sql.toString();
 	}
 
@@ -694,7 +694,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		if (!(value.equals("")) && index < m_queryColumns.size())
 		{
 			// Angelo Dabala' (genied) nectosoft: [2893220] avoid to append string parameters directly because of special chars like quote(s)
-			sql.append(" AND UPPER(").append(m_queryColumnsSql.get(index).toString()).append(") LIKE ?");
+			sql.append(" AND UPPER(").append(m_queryColumnsSql.get(index).toString()).append(") LIKE UPPER(?)");
 		}
 	}
 
@@ -705,7 +705,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 	 */
 	private String getSQLText (Textbox f)
 	{
-		String s = f.getText().toUpperCase();
+		String s = f.getText();
 		if (!s.endsWith("%"))
 			s += "%";
 		if (log.isLoggable(Level.FINE)) log.fine( "String=" + s);
