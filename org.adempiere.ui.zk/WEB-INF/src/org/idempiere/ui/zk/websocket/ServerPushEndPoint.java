@@ -96,6 +96,12 @@ public class ServerPushEndPoint {
 	public ServerPushEndPoint() {
 	}
 	
+	/**
+	 * Unregister this endpoint when its WebSocket session closes.
+	 *
+	 * @param sess WebSocket session
+	 * @throws IOException if closing the endpoint fails
+	 */
 	@OnClose
 	public void onClose(Session sess) throws IOException {
 		if (this.session != null) {
@@ -147,6 +153,12 @@ public class ServerPushEndPoint {
 		}
 	}
 
+	/**
+	 * Log an error raised by the WebSocket container.
+	 *
+	 * @param sess WebSocket session
+	 * @param throwable reported error
+	 */
 	@OnError
 	public void onError(Session sess, Throwable throwable) {
 		CLogger.getCLogger(getClass()).log(Level.WARNING, throwable.getMessage(), throwable);	
@@ -370,6 +382,11 @@ public class ServerPushEndPoint {
 				.build();
 	}
 	
+	/**
+	 * Create the HTTP client used to forward AU requests to the local connector.
+	 *
+	 * @return configured HTTP client
+	 */
 	private CloseableHttpClient createHttpClient() {
 		try {
 			//use basic instead of pooling connection manager to avoid connection leak, as http client instance is created per each au request

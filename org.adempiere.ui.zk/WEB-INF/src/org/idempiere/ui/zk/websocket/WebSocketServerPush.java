@@ -403,6 +403,11 @@ public class WebSocketServerPush implements ServerPush {
 		return WS_LOCAL_BASE_URL + "." + desktopId;
 	}
 
+	/**
+	 * Notify the browser to open the WebSocket server-push connection.
+	 *
+	 * @param desktop ZK desktop to connect
+	 */
 	private void startServerPushAtClient(Desktop desktop) {
 		Clients.response("org.idempiere.websocket.serverpush.start", new AuScript(null, "org.idempiere.websocket.startServerPush('" + desktop.getId() + "');"));
 	}
