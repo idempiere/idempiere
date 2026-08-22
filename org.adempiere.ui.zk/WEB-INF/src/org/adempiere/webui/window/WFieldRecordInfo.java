@@ -429,6 +429,9 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 	 * @param popupMenu
 	 */
 	public static void addMenu(WEditorPopupMenu popupMenu) {
+		if (MRole.getDefault() == null || !MRole.getDefault().isShowChangeLog())
+			return;
+
 		Menuitem changeLogItem = new Menuitem();
         changeLogItem.setLabel(Msg.getElement(Env.getCtx(), "AD_ChangeLog_ID"));
         if (ThemeManager.isUseFontIconForImage())
