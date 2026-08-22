@@ -24,6 +24,8 @@
  **********************************************************************/
 package org.idempiere.ui.zk.websocket;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +39,38 @@ import org.apache.hc.client5.http.cookie.BasicCookieStore;
 import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
 
 public class EndpointConfigurator extends ServerEndpointConfig.Configurator {
+
+	static URI getInternalBaseUri(HttpSession httpSession, HandshakeRequest request) {
+		URI requestUri = request.getRequestURI();
+		if (httpSession != null && requestUri != null) {
+			String path = requestUri.getPath();
+			int separator = path != null ? path.lastIndexOf('/') : -1;
+			if (separator >= 0 && separator + 1 < path.length()) {
+				String desktopId = path.substring(separator + 1);
+				Object value = httpSession.getAttribute(WebSocketServerPush.getLocalBaseUrlAttribute(desktopId));
+				if (value instanceof String localBaseUrl) {
+					try {
+						URI uri = URI.create(localBaseUrl);
+						if (("http".equals(uri.getScheme()) || "https".equals(uri.getScheme()))
+								&& uri.getHost() != null && uri.getPort() > 0)
+							return uri;
+					} catch (IllegalArgumentException e) {
+						// Ignore invalid session data and use the compatibility fallback below.
+					}
+				}
+			}
+		}
+
+		// Compatibility fallback for desktops created before this code was deployed.
+		String scheme = requestUri != null && ("wss".equalsIgnoreCase(requestUri.getScheme())
+				|| "https".equalsIgnoreCase(requestUri.getScheme())) ? "https" : "http";
+		int port = requestUri != null ? requestUri.getPort() : -1;
+		try {
+			return new URI(scheme, null, "localhost", port, null, null, null);
+		} catch (URISyntaxException e) {
+			throw new IllegalArgumentException("Unable to build the internal server push URL", e);
+		}
+	}
 
 	@Override
     public void modifyHandshake(ServerEndpointConfig sec, HandshakeRequest request, HandshakeResponse response) {
@@ -52,6 +86,8 @@ public class EndpointConfigurator extends ServerEndpointConfig.Configurator {
             sec.getUserProperties().put(HttpSession.class.getName(), httpSession);
             sec.getUserProperties().put(ServletContext.class.getName(), httpSession.getServletContext());
             sec.getUserProperties().put(HandshakeRequest.class.getName(), request);
+			URI internalBaseUri = getInternalBaseUri(httpSession, request);
+			sec.getUserProperties().put(WebSocketServerPush.WS_LOCAL_BASE_URL, internalBaseUri);
 
             //create BasicCookieStore from request
             Map<String, List<String>> headers = request.getHeaders();
@@ -60,6 +96,7 @@ public class EndpointConfigurator extends ServerEndpointConfig.Configurator {
             	cookieHeaders = headers.get("cookie");
             if (cookieHeaders != null && !cookieHeaders.isEmpty()) {
             	BasicCookieStore cookieStore = new BasicCookieStore();
+	            String requestHost = internalBaseUri.getHost();
             	for(String cookieHeader : cookieHeaders) {
             		String[] cookies = cookieHeader.split(";");
                     for (String cookie : cookies) {
@@ -68,8 +105,7 @@ public class EndpointConfigurator extends ServerEndpointConfig.Configurator {
                         	String name = pair[0].trim();
                         	String value = pair[1].trim();
                         	BasicClientCookie c = new BasicClientCookie(name, value);
-                            // localhost domain for internal request cookies
-                            c.setDomain("localhost");
+	                        c.setDomain(requestHost);
                         	cookieStore.addCookie(c);
                         }
                     }

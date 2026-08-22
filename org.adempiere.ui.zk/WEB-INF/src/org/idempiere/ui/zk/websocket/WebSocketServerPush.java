@@ -24,6 +24,8 @@
  **********************************************************************/
 package org.idempiere.ui.zk.websocket;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -87,6 +89,10 @@ public class WebSocketServerPush implements ServerPush {
     private AbstractComponent dummyTarget;
     
     protected static final String WS_CLIENT_IP = "ws-client-ip";
+
+    protected static final String WS_LOCAL_BASE_URL = "ws-local-base-url";
+
+    private static final String SSL_CIPHER_SUITE_ATTRIBUTE = "javax.servlet.request.cipher_suite";
 
     private static class OnScheduleEvent extends Event {
 		private static final long serialVersionUID = 1L;
@@ -319,16 +325,20 @@ public class WebSocketServerPush implements ServerPush {
         	log.debug("Starting server push for " + desktop);
         registerEndPoint(desktop.getId(), STUB);
 
-        // Store client IP address in session attribute for later use in EndpointConfigurator
+        // Store connection details in session attributes for later use in EndpointConfigurator
         var execution = Executions.getCurrent();
         if (execution != null) {
         	var request = execution.getNativeRequest();
         	if (request instanceof HttpServletRequest httpRequest) {
-				var clientIp = httpRequest.getRemoteAddr();
-				if (clientIp != null) {
-					var session = desktop.getSession();
-					if (session != null) {
+				var session = desktop.getSession();
+				if (session != null) {
+					var clientIp = httpRequest.getRemoteAddr();
+					if (clientIp != null)
 						session.setAttribute(WS_CLIENT_IP, clientIp);
+
+					String localBaseUrl = getLocalBaseUrl(httpRequest);
+					if (localBaseUrl != null) {
+						session.setAttribute(getLocalBaseUrlAttribute(desktop.getId()), localBaseUrl);
 					}
 				}
 			}
@@ -359,6 +369,27 @@ public class WebSocketServerPush implements ServerPush {
 		desktop.addListener(cookieHandler);
     }
 
+	private String getLocalBaseUrl(HttpServletRequest request) {
+		String localAddress = request.getLocalAddr();
+		int localPort = request.getLocalPort();
+		if (localAddress == null || localAddress.isBlank() || localPort <= 0)
+			return null;
+
+		// Do not use request.getScheme(): a reverse proxy can replace it with the
+		// browser-facing scheme. The standard TLS attribute reflects the local connector.
+		String scheme = request.getAttribute(SSL_CIPHER_SUITE_ATTRIBUTE) != null ? "https" : "http";
+		try {
+			return new URI(scheme, null, localAddress, localPort, null, null, null).toASCIIString();
+		} catch (URISyntaxException e) {
+			log.warn("Unable to build the node-local server push URL", e);
+			return null;
+		}
+	}
+
+	protected static String getLocalBaseUrlAttribute(String desktopId) {
+		return WS_LOCAL_BASE_URL + "." + desktopId;
+	}
+
 	private void startServerPushAtClient(Desktop desktop) {
 		Clients.response("org.idempiere.websocket.serverpush.start", new AuScript(null, "org.idempiere.websocket.startServerPush('" + desktop.getId() + "');"));
 	}
@@ -373,6 +404,9 @@ public class WebSocketServerPush implements ServerPush {
 
         if (log.isDebugEnabled())
         	log.debug("Stopping server push for " + desktop);
+		var session = desktop.getSession();
+		if (session != null)
+			session.removeAttribute(getLocalBaseUrlAttribute(desktop.getId()));
         Clients.response("org.idempiere.websocket.serverpush.stop", new AuScript(null, "org.idempiere.websocket.stopServerPush('" + desktop.getId() + "');"));
     }
 
