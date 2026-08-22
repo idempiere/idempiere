@@ -1462,6 +1462,21 @@ public class MRoleTest extends AbstractTestCase {
         role.setPreferenceType(MRole.PREFERENCETYPE_Organization);
         assertTrue(role.isShowPreference(), "PreferenceType=Organization should return true");
     }
+
+    /**
+     * Test that change log visibility is independent of the preference type.
+     */
+    @Test
+    public void testIsShowChangeLog() {
+        MRole role = new MRole(Env.getCtx(), 0, getTrxName());
+
+        role.setPreferenceType(MRole.PREFERENCETYPE_Client);
+        assertFalse(role.isShowChangeLog(), "Client preference must not grant change log access");
+
+        role.setIsShowChangeLog(true);
+        role.setPreferenceType(MRole.PREFERENCETYPE_None);
+        assertTrue(role.isShowChangeLog(), "Change log access must not depend on preference type");
+    }
     
     /**
      * Test cases for MRole.isTableAccessExcluded(int)
