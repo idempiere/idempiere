@@ -313,6 +313,7 @@ public class WebSocketServerPush implements ServerPush {
     	}
     }
     
+	/** {@inheritDoc} */
     @Override
     public void start(Desktop desktop) {
         Desktop oldDesktop = this.desktop.getAndSet(desktop);
@@ -369,6 +370,12 @@ public class WebSocketServerPush implements ServerPush {
 		desktop.addListener(cookieHandler);
     }
 
+	/**
+	 * Build the base URL of the local servlet connector that accepted the request.
+	 *
+	 * @param request current servlet request
+	 * @return node-local base URL, or {@code null} when connector data is unavailable
+	 */
 	private String getLocalBaseUrl(HttpServletRequest request) {
 		String localAddress = request.getLocalAddr();
 		int localPort = request.getLocalPort();
@@ -386,6 +393,12 @@ public class WebSocketServerPush implements ServerPush {
 		}
 	}
 
+	/**
+	 * Build the session attribute name for a desktop's node-local connector URL.
+	 *
+	 * @param desktopId ZK desktop identifier
+	 * @return session attribute name
+	 */
 	protected static String getLocalBaseUrlAttribute(String desktopId) {
 		return WS_LOCAL_BASE_URL + "." + desktopId;
 	}
@@ -394,6 +407,7 @@ public class WebSocketServerPush implements ServerPush {
 		Clients.response("org.idempiere.websocket.serverpush.start", new AuScript(null, "org.idempiere.websocket.startServerPush('" + desktop.getId() + "');"));
 	}
 
+	/** {@inheritDoc} */
     @Override
     public void stop() {
         Desktop desktop = this.desktop.getAndSet(null);

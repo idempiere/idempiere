@@ -40,6 +40,13 @@ import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
 
 public class EndpointConfigurator extends ServerEndpointConfig.Configurator {
 
+	/**
+	 * Resolve the node-local HTTP base URI used to forward WebSocket events.
+	 *
+	 * @param httpSession HTTP session containing the per-desktop connector URI
+	 * @param request WebSocket handshake request
+	 * @return node-local base URI, or a localhost compatibility URI
+	 */
 	static URI getInternalBaseUri(HttpSession httpSession, HandshakeRequest request) {
 		URI requestUri = request.getRequestURI();
 		if (httpSession != null && requestUri != null) {
@@ -72,6 +79,7 @@ public class EndpointConfigurator extends ServerEndpointConfig.Configurator {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
     public void modifyHandshake(ServerEndpointConfig sec, HandshakeRequest request, HandshakeResponse response) {
         // Store the ServletContext, HttpSession and remote address in user properties for the ServerPushEndPoint to access

@@ -104,6 +104,14 @@ public class ServerPushEndPoint {
 		}
 	}
 
+	/**
+	 * Initialize the endpoint with the node-local connector URI captured for the desktop.
+	 *
+	 * @param sess WebSocket session
+	 * @param config endpoint configuration populated during the handshake
+	 * @param dtid ZK desktop identifier
+	 * @throws IOException if endpoint initialization fails
+	 */
 	@OnOpen
 	public void onOpen(Session sess, EndpointConfig config, @PathParam("dtid") String dtid) throws IOException {
 		if (!Util.isEmpty(dtid, true) && WebSocketServerPush.isValidDesktopId(dtid)) {			
