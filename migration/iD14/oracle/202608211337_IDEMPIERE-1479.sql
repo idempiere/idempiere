@@ -1,4 +1,4 @@
--- IDEMPIERE-1479 Implement AD_Role.IsShowChangeLog
+-- IDEMPIERE-1479 Add the default-deny AD_Role.IsShowChangeLog flag and preserve visibility for roles with PreferenceType='C'
 SELECT register_migration_script('202608211337_IDEMPIERE-1479.sql') FROM dual;
 
 SET SQLBLANKLINES ON
