@@ -147,18 +147,30 @@ public class MAssetAddition extends X_A_Asset_Addition
 	 */
 	public static MAssetAddition createAsset(MMatchInv match)
 	{
-		return createAssets(match).get(0);
+		return createAssetAdditions(match).get(0);
 	}
 
 	/**
-	 * Create assets and asset additions from a match invoice.
+	 * Create asset additions and assets from a match invoice.
 	 * When the effective asset group is configured for one asset per UOM,
 	 * one asset and addition is created for every matched unit.
 	 * @param match match invoice
 	 * @return created asset additions, or existing additions for the match
 	 */
-	public static List<MAssetAddition> createAssets(MMatchInv match)
+	public static List<MAssetAddition> createAssetAdditions(MMatchInv match)
 	{
+		if (match.isReversal())
+			throw new AssetException("@Invalid@ @M_MatchInv_ID@=" + match.getM_MatchInv_ID()
+					+ " (@Reversal_ID@)");
+
+		// Serialize creation for the same match. The existence check alone does not
+		// protect against a process and the model event running concurrently.
+		new Query(match.getCtx(), MMatchInv.Table_Name,
+				MMatchInv.COLUMNNAME_M_MatchInv_ID + "=?", match.get_TrxName())
+				.setParameters(match.getM_MatchInv_ID())
+				.setForUpdate(true)
+				.first();
+
 		List<MAssetAddition> existingAdditions = new Query(match.getCtx(), Table_Name,
 				COLUMNNAME_M_MatchInv_ID + "=?", match.get_TrxName())
 				.setParameters(match.getM_MatchInv_ID())
@@ -171,7 +183,9 @@ public class MAssetAddition extends X_A_Asset_Addition
 		int assetGroupId = invLine.getA_Asset_Group_ID();
 		if (assetGroupId <= 0)
 			assetGroupId = MProduct.get(match.getCtx(), match.getM_Product_ID()).getA_Asset_Group_ID();
-		MAssetGroup assetGroup = MAssetGroup.get(match.getCtx(), assetGroupId);
+		MAssetGroup assetGroup = assetGroupId > 0
+				? new MAssetGroup(match.getCtx(), assetGroupId, match.get_TrxName())
+				: null;
 		boolean oneAssetPerUOM = assetGroup != null && assetGroup.isOneAssetPerUOM();
 
 		int additionCount = 1;
@@ -191,10 +205,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 			}
 		}
 
-		BigDecimal matchNetAmt = DB.getSQLValueBD(match.get_TrxName(),
-				"SELECT MatchNetAmt FROM mb_matchinv WHERE M_MatchInv_ID=?", match.getM_MatchInv_ID());
-		if (matchNetAmt == null)
-			throw new AssetException("@NotFound@ MatchNetAmt, @M_MatchInv_ID@=" + match.getM_MatchInv_ID());
+		BigDecimal matchNetAmt = getMatchNetAmt(match);
 
 		int precision = new MCurrency(match.getCtx(), invLine.getParent().getC_Currency_ID(),
 				match.get_TrxName()).getStdPrecision();
@@ -204,10 +215,13 @@ public class MAssetAddition extends X_A_Asset_Addition
 		for (int i = 1; i <= additionCount; i++)
 		{
 			BigDecimal amount = i == additionCount ? matchNetAmt.subtract(allocatedAmt) : additionAmt;
-			MAssetAddition assetAdd = new MAssetAddition(match);
+			MAssetAddition assetAdd = new MAssetAddition(match, matchNetAmt);
 			assetAdd.setSourceAmt(amount);
 			if (oneAssetPerUOM)
+			{
+				assetAdd.setA_CreateAsset(true);
 				assetAdd.setA_QTY_Current(Env.ONE);
+			}
 			createAsset(assetAdd, invLine, oneAssetPerUOM ? i : 0);
 			additions.add(assetAdd);
 			allocatedAmt = allocatedAmt.add(amount);
@@ -226,7 +240,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 		assetAdd.dump();
 		//@win add condition to prevent asset creation when expense addition or second addition
 		if (A_CAPVSEXP_Capital.equals(assetAdd.getA_CapvsExp())
-				&& invLine.getA_Asset_ID() == 0 && assetAdd.isA_CreateAsset())
+				&& (sequence > 0 || invLine.getA_Asset_ID() == 0) && assetAdd.isA_CreateAsset())
 		{
 			//end @win add condition to prevent asset creation when expense addition or second addition
 			MAsset asset = assetAdd.createAsset();
@@ -258,9 +272,30 @@ public class MAssetAddition extends X_A_Asset_Addition
 	{
 		String suffix = "-" + sequence;
 		int fieldLength = POInfo.getPOInfo(asset.getCtx(), MAsset.Table_ID).getFieldLength(columnName);
+		if (value == null)
+			value = "";
 		if (fieldLength > 0 && value.length() + suffix.length() > fieldLength)
-			value = value.substring(0, fieldLength - suffix.length());
+			value = value.substring(0, Math.max(0, fieldLength - suffix.length()));
 		return value + suffix;
+	}
+
+	/**
+	 * Get the amount represented by a match invoice.
+	 * @param match match invoice
+	 * @return match net amount
+	 */
+	private static BigDecimal getMatchNetAmt(MMatchInv match)
+	{
+		MInvoiceLine invoiceLine = new MInvoiceLine(match.getCtx(), match.getC_InvoiceLine_ID(),
+				match.get_TrxName());
+		BigDecimal qtyInvoiced = invoiceLine.getQtyInvoiced();
+		if (qtyInvoiced == null || qtyInvoiced.signum() == 0)
+			throw new AssetException("@Invalid@ @QtyInvoiced@=" + qtyInvoiced
+					+ ", @C_InvoiceLine_ID@=" + invoiceLine.getC_InvoiceLine_ID());
+
+		int precision = invoiceLine.getParent().getC_Currency().getStdPrecision();
+		return invoiceLine.getLineNetAmt().multiply(match.getQty())
+				.divide(qtyInvoiced, precision, RoundingMode.HALF_UP);
 	}
 	
 	/**
@@ -360,8 +395,18 @@ public class MAssetAddition extends X_A_Asset_Addition
 	 */
 	private MAssetAddition (MMatchInv match)
 	{
+		this(match, getMatchNetAmt(match));
+	}
+
+	/**
+	 * Construct an addition from a match invoice with its already resolved amount.
+	 * @param match match invoice
+	 * @param matchNetAmt amount represented by the match
+	 */
+	private MAssetAddition (MMatchInv match, BigDecimal matchNetAmt)
+	{
 		this(match.getCtx(), 0, match.get_TrxName());
-		setM_MatchInv(match);
+		setM_MatchInv(match, matchNetAmt);
 		setC_DocType_ID();
 	}
 	
@@ -473,7 +518,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 	/**
 	 * @param mi
 	 */
-	private void setM_MatchInv(MMatchInv mi)
+	private void setM_MatchInv(MMatchInv mi, BigDecimal matchNetAmt)
 	{
 		mi.load(get_TrxName());
 		setAD_Org_ID(mi.getAD_Org_ID());
@@ -496,10 +541,7 @@ public class MAssetAddition extends X_A_Asset_Addition
 		setLine(invLine.getLine());
 		setM_Locator_ID(mi.getM_InOutLine().getM_Locator_ID());
 		setA_CapvsExp(invLine.getA_CapvsExp());
-		BigDecimal matchNetAmt = DB.getSQLValueBD(get_TrxName(),
-				"SELECT MatchNetAmt FROM mb_matchinv WHERE M_MatchInv_ID=?", mi.getM_MatchInv_ID());
-		setAssetAmtEntered(matchNetAmt);
-		setAssetSourceAmt(matchNetAmt);
+		setSourceAmt(matchNetAmt);
 		setC_Currency_ID(invLine.getParent().getC_Currency_ID());
 		setC_ConversionType_ID(invLine.getParent().getC_ConversionType_ID());
 		setDateDoc(mi.getM_InOutLine().getParent().getMovementDate());
@@ -1140,35 +1182,13 @@ public class MAssetAddition extends X_A_Asset_Addition
 		}
 		final String sourceType = getA_SourceType();
 		//
-		// Invoice: mark C_InvoiceLine.A_Processed='Y' and set C_InvoiceLine.A_Asset_ID
-		if (A_SOURCETYPE_Invoice.equals(sourceType) && isProcessed())
+		// Invoice: reconcile the line against all of its active asset additions.
+		if (A_SOURCETYPE_Invoice.equals(sourceType))
 		{
 			int C_InvoiceLine_ID = getC_InvoiceLine_ID();
 			if (C_InvoiceLine_ID == 0)
 				throw new AdempiereException("No Invoice Line");
-			MInvoiceLine invoiceLine = new MInvoiceLine(getCtx(), C_InvoiceLine_ID, get_TrxName());
-			invoiceLine.setA_Processed(!isReversal);
-			if (isReversal)
-			{
-				if (invoiceLine.getA_Asset_ID() == getA_Asset_ID())
-					invoiceLine.setA_Asset_ID(0);
-			}
-			else if (invoiceLine.getA_Asset_ID() == 0)
-			{
-				int assetId = getA_Asset_ID();
-				if (getM_MatchInv_ID() > 0)
-				{
-					MAssetAddition firstAddition = new Query(getCtx(), Table_Name,
-							COLUMNNAME_M_MatchInv_ID + "=? AND " + COLUMNNAME_A_Asset_ID + ">0", get_TrxName())
-							.setParameters(getM_MatchInv_ID())
-							.setOrderBy(COLUMNNAME_A_Asset_Addition_ID)
-							.first();
-					if (firstAddition != null)
-						assetId = firstAddition.getA_Asset_ID();
-				}
-				invoiceLine.setA_Asset_ID(assetId);
-			}
-			invoiceLine.saveEx();
+			reconcileInvoiceLine(C_InvoiceLine_ID, isReversal ? getA_Asset_Addition_ID() : 0);
 		}
 		//
 		// Project
@@ -1219,6 +1239,47 @@ public class MAssetAddition extends X_A_Asset_Addition
 			if (log.isLoggable(Level.FINE))
 				log.fine("Nothing to do");
 		}
+	}
+
+	/**
+	 * Recalculate the fixed asset processing state of an invoice line from all
+	 * active additions. The optional excluded addition is used while a reversal
+	 * is in progress and its new document status has not been saved yet.
+	 * @param C_InvoiceLine_ID invoice line
+	 * @param excludedAdditionId addition currently being reversed, or zero
+	 */
+	private void reconcileInvoiceLine(int C_InvoiceLine_ID, int excludedAdditionId)
+	{
+		StringBuilder whereClause = new StringBuilder(COLUMNNAME_C_InvoiceLine_ID)
+				.append("=? AND IsActive='Y' AND DocStatus NOT IN ('")
+				.append(DOCSTATUS_Reversed).append("','").append(DOCSTATUS_Voided).append("')");
+		if (excludedAdditionId > 0)
+			whereClause.append(" AND ").append(COLUMNNAME_A_Asset_Addition_ID).append("<>?");
+
+		Query query = new Query(getCtx(), Table_Name, whereClause.toString(), get_TrxName())
+				.setOrderBy(COLUMNNAME_A_Asset_Addition_ID);
+		if (excludedAdditionId > 0)
+			query.setParameters(C_InvoiceLine_ID, excludedAdditionId);
+		else
+			query.setParameters(C_InvoiceLine_ID);
+
+		List<MAssetAddition> additions = query.list();
+		boolean allProcessed = !additions.isEmpty();
+		int firstProcessedAssetId = 0;
+		for (MAssetAddition addition : additions)
+		{
+			boolean completed = addition.isProcessed()
+					&& (DOCSTATUS_Completed.equals(addition.getDocStatus())
+							|| DOCSTATUS_Closed.equals(addition.getDocStatus()));
+			allProcessed &= completed;
+			if (completed && firstProcessedAssetId == 0)
+				firstProcessedAssetId = addition.getA_Asset_ID();
+		}
+
+		MInvoiceLine invoiceLine = new MInvoiceLine(getCtx(), C_InvoiceLine_ID, get_TrxName());
+		invoiceLine.setA_Processed(allProcessed);
+		invoiceLine.setA_Asset_ID(firstProcessedAssetId);
+		invoiceLine.saveEx();
 	}
 	
 	/**
