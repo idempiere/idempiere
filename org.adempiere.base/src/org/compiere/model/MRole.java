@@ -336,6 +336,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 		setIsPersonalAccess (false);
 		setIsPersonalLock (false);
 		setIsShowAcct (false);
+		setIsShowChangeLog(false);
 		setIsAccessAllOrgs(false);
 		setUserLevel (USERLEVEL_Organization);
 		setPreferenceType(PREFERENCETYPE_Organization);
