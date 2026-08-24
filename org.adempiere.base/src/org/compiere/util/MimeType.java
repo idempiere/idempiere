@@ -16,6 +16,8 @@
  *****************************************************************************/
 package org.compiere.util;
 
+import java.util.Locale;
+
 import com.google.common.net.MediaType;
 
 /**
@@ -45,7 +47,7 @@ public class MimeType
 		{
 			String[] type = TYPES[i];
 			
-			if (type[0].equals(extension.toLowerCase()))
+			if (type[0].equals(extension.toLowerCase(Locale.ROOT)))
 				return type[1];
 		}
 		return BINARY;
@@ -121,7 +123,7 @@ public class MimeType
 	{
 		return m_mimeType + "(" + m_extension + ")";
 	}	//	toString
-	
+
 	/**
 	 * 	Mime / Content Type Map
 	 */
@@ -153,7 +155,6 @@ public class MimeType
 		{ ".asf", "video/x-ms-asf"},
 		{ ".asm", "text/x-asm"}, 
 		{ ".asp", "text/asp"},
-		{ ".asx", "application/x-mplayer2"}, 
 		{ ".asx", "video/x-ms-asf"},
 		{ ".au", "audio/basic"},
 		{ ".avi", "video/avi"}, 
@@ -169,8 +170,7 @@ public class MimeType
 		{ ".bsh", "application/x-bsh"},
 		{ ".bz", "application/x-bzip"}, 
 		{ ".bz2", "application/x-bzip2"},
-		
-		{ ".c", "text/plain"}, 
+
 		{ ".c", "text/x-c"}, 
 		{ ".c++", "text/plain"},
 		{ ".cat", "application/vnd.ms-pki.seccat"}, 
@@ -194,7 +194,7 @@ public class MimeType
 		{ ".csv", MediaType.CSV_UTF_8.toString()},
 		{ ".cvs", "application/vnd.ms-excel"},
 		{ ".cxx", "text/plain"},
-		
+
 		{ ".dcr", "application/x-director"},
 		{ ".deepv", "application/x-deepv"}, 
 		{ ".def", "text/plain"},
@@ -229,7 +229,7 @@ public class MimeType
 		{ ".etx", "text/x-setext"},
 		{ ".evy", "application/envoy"}, 
 		{ ".exe", "application/octet-stream"},
-		
+
 		{ ".f", "text/x-fortran"}, 
 		{ ".f77", "text/x-fortran"},
 		{ ".f90", "text/x-fortran"},
@@ -245,11 +245,10 @@ public class MimeType
 		{ ".fpx", "image/vnd.fpx"},
 		{ ".frl", "application/freeloader"},
 		{ ".funk", "audio/make"}, 
-		
+
 		{ ".g", "text/plain"},
 		{ ".g3", "image/g3fax"}, 
 		{ ".gif", "image/gif"}, 
-		{ ".gl", "video/gl"},
 		{ ".gl", "video/x-gl"}, 
 		{ ".gsd", "audio/x-gsm"},
 		{ ".gsm", "audio/x-gsm"}, 
@@ -258,7 +257,7 @@ public class MimeType
 		{ ".gtar", "application/x-gtar"},
 		{ ".gz", "application/x-gzip"},
 		{ ".gzip", "application/x-gzip"}, 
-		
+
 		{ ".h", "text/x-h"},
 		{ ".hdf", "application/x-hdf"}, 
 		{ ".heic", "image/heic"},
@@ -278,7 +277,7 @@ public class MimeType
 		{ ".htmls", "text/html"},
 		{ ".htt", "text/webviewhtml"}, 
 		{ ".htx", "text/html"},
-		
+
 		{ ".ice", "x-conference/x-cooltalk"}, 
 		{ ".ico", "image/x-icon"},
 		{ ".idc", "text/plain"}, 
@@ -296,7 +295,7 @@ public class MimeType
 		{ ".iv", "application/x-inventor"},
 		{ ".ivr", "i-world/i-vrml"}, 
 		{ ".ivy", "application/x-livescreen"},
-		
+
 		{ ".jam", "audio/x-jam"}, 
 		{ ".jar", "application/java-archive"},
 		{ ".jav", "text/x-java-source"}, 
@@ -311,34 +310,26 @@ public class MimeType
 		{ ".js", "text/javascript"},
 		{ ".json", "application/json"},
 		{ ".jut", "image/jutvision"},
-		
+
 		{ ".kar", "audio/midi"},
-		{ ".kar", "music/x-karaoke"}, 
 		{ ".ksh", "text/x-script.ksh"}, 
-		
-		{ ".la", "audio/nspaudio"},
+
 		{ ".la", "audio/x-nspaudio"}, 
 		{ ".lam", "audio/x-liveaudio"},
 		{ ".latex", "application/x-latex"}, 
 		{ ".lha", "application/lha"},
 		{ ".lhx", "application/octet-stream"}, 
 		{ ".list", "text/plain"},
-		{ ".lma", "audio/nspaudio"}, 
 		{ ".lma", "audio/x-nspaudio"},
 		{ ".log", "text/plain"}, 
 		{ ".lsp", "application/x-lisp"},
-		{ ".lsp", "text/x-script.lisp"}, 
 		{ ".lst", "text/plain"},
 		{ ".lsx", "text/x-la-asf"}, 
 		{ ".ltx", "application/x-latex"},
-		{ ".lzh", "application/octet-stream"}, 
 		{ ".lzh", "application/x-lzh"},
-		{ ".lzx", "application/lzx"}, 
-		{ ".lzx", "application/octet-stream"},
 		{ ".lzx", "application/x-lzx"},
-		
+
 		{ ".m", "text/plain"},
-		{ ".m", "text/x-m"}, 
 		{ ".m1v", "video/mpeg"}, 
 		{ ".m2a", "audio/mpeg"},
 		{ ".m2v", "video/mpeg"}, 
@@ -351,34 +342,22 @@ public class MimeType
 		{ ".markdown", "text/markdown"},
 		{ ".mbd", "application/mbedlet"},
 		{ ".mc$", "application/x-magic-cap-package-1.0"},
-		{ ".mcd", "application/mcad"}, 
 		{ ".mcd", "application/x-mathcad"},
 		{ ".mcf", "image/vasa"}, 
-		{ ".mcf", "text/mcf"},
 		{ ".mcp", "application/netmc"}, 
 		{ ".md", "text/markdown"},
 		{ ".me", "application/x-troff-me"},
 		{ ".mht", "message/rfc822"}, 
 		{ ".mhtml", "message/rfc822"},
-		{ ".mid", "application/x-midi"}, 
 		{ ".mid", "audio/midi"},
-		{ ".mid", "audio/x-mid"}, 
-		{ ".mid", "audio/x-midi"},
-		{ ".mid", "music/crescendo"}, 
-		{ ".mid", "x-music/x-midi"},
 		{ ".midi", "audio/midi"},
-		{ ".midi", "music/crescendo"}, 
-		{ ".midi", "x-music/x-midi"},
-		{ ".mif", "application/x-frame"}, 
 		{ ".mif", "application/x-mif"},
 		{ ".mime", "message/rfc822"}, 
 		{ ".mjf", "audio/x-vnd.AudioExplosion.MjuiceMediaFile"},
 		{ ".mjpg", "video/x-motion-jpeg"}, 
 		{ ".mkv", "video/x-matroska"},
 		{ ".mm", "application/base64"},
-		{ ".mm", "application/x-meme"}, 
 		{ ".mme", "application/base64"},
-		{ ".mod", "audio/mod"}, 
 		{ ".mod", "audio/x-mod"},
 		{ ".moov", "video/quicktime"}, 
 		{ ".mov", "video/quicktime"},
@@ -390,7 +369,6 @@ public class MimeType
 		{ ".mpc", "application/x-project"}, 
 		{ ".mpe", "video/mpeg"},
 		{ ".mpeg", "video/mpeg"}, 
-		{ ".mpg", "audio/mpeg"},
 		{ ".mpg", "video/mpeg"}, 
 		{ ".mpga", "audio/mpeg"},
 		{ ".mpp", "application/vnd.ms-project"},
@@ -402,7 +380,7 @@ public class MimeType
 		{ ".mv", "video/x-sgi-movie"},
 		{ ".my", "audio/make"},
 		{ ".mzz", "application/x-vnd.AudioExplosion.mzz"},
-		
+
 		{ ".nap", "image/naplps"}, 
 		{ ".naplps", "image/naplps"},
 		{ ".nc", "application/x-netcdf"},
@@ -412,7 +390,7 @@ public class MimeType
 		{ ".nix", "application/x-mix-transfer"},
 		{ ".nsc", "application/x-conference"},
 		{ ".nvd", "application/x-navidoc"},
-		
+
 		{ ".o", "application/octet-stream"}, 
 		{ ".oda", "application/oda"},
 		{ ".odf", "application/vnd.oasis.opendocument.formula"},
@@ -428,61 +406,46 @@ public class MimeType
 		{ ".omcr", "application/x-omcregerator"}, 
 		{ ".opus", "audio/opus"},
 		{ ".otf", "font/otf"},
-		
+
 		{ ".p", "text/x-pascal"},
 		{ ".p10", "application/pkcs10"}, 
-		{ ".p10", "application/x-pkcs10"},
-		{ ".p12", "application/pkcs-12"}, 
 		{ ".p12", "application/x-pkcs12"},
 		{ ".p7a", "application/x-pkcs7-signature"},
 		{ ".p7c", "application/pkcs7-mime"},
-		{ ".p7c", "application/x-pkcs7-mime"},
 		{ ".p7m", "application/pkcs7-mime"},
-		{ ".p7m", "application/x-pkcs7-mime"},
 		{ ".p7r", "application/x-pkcs7-certreqresp"},
 		{ ".p7s", "application/pkcs7-signature"},
 		{ ".part", "application/pro_eng"}, 
 		{ ".pas", "text/pascal"},
 		{ ".pbm", "image/x-portable-bitmap"},
 		{ ".pcl", "application/vnd.hp-PCL"}, 
-		{ ".pcl", "application/x-pcl"},
 		{ ".pct", "image/x-pict"}, 
 		{ ".pcx", "image/x-pcx"},
 		{ ".pdb", "chemical/x-pdb"}, 
 		{ ".pdf", "application/pdf"},
 		{ ".pfunk", "audio/make"}, 
-		{ ".pfunk", "audio/make.my.funk"},
 		{ ".pgm", "image/x-portable-graymap"},
-		{ ".pgm", "image/x-portable-greymap"}, 
 		{ ".pic", "image/pict"},
 		{ ".pict", "image/pict"},
 		{ ".pkg", "application/x-newton-compatible-pkg"},
 		{ ".pko", "application/vnd.ms-pki.pko"}, 
 		{ ".pl", "text/plain"},
-		{ ".pl", "text/x-script.perl"}, 
 		{ ".plx", "application/x-PiXCLscript"},
 		{ ".pm", "image/x-xpixmap"}, 
-		{ ".pm", "text/x-script.perl-module"},
 		{ ".pm4", "application/x-pagemaker"},
 		{ ".pm5", "application/x-pagemaker"}, 
 		{ ".png", "image/png"},
-		{ ".pnm", "application/x-portable-anymap"},
 		{ ".pnm", "image/x-portable-anymap"},
-		{ ".pot", "application/mspowerpoint"},
 		{ ".pot", "application/vnd.ms-powerpoint"}, 
 		{ ".potm", "application/vnd.ms-powerpoint.template.macroEnabled.12"},
 		{ ".potx", "application/vnd.openxmlformats-officedocument.presentationml.template"},
 		{ ".pov", "model/x-pov"},
 		{ ".ppa", "application/vnd.ms-powerpoint"},
 		{ ".ppm", "image/x-portable-pixmap"},
-		{ ".pps", "application/mspowerpoint"},
 		{ ".pps", "application/vnd.ms-powerpoint"},
 		{ ".ppsm", "application/vnd.ms-powerpoint.slideshow.macroEnabled.12"},
 		{ ".ppsx", "application/vnd.openxmlformats-officedocument.presentationml.slideshow"},
-		{ ".ppt", "application/mspowerpoint"},
-		{ ".ppt", "application/powerpoint"},
 		{ ".ppt", "application/vnd.ms-powerpoint"},
-		{ ".ppt", "application/x-mspowerpoint"},
 		{ ".pptm", "application/vnd.ms-powerpoint.presentation.macroEnabled.12"},
 		{ ".pptx", MediaType.OOXML_PRESENTATION.toString()},
 		{ ".ppz", "application/mspowerpoint"},
@@ -494,7 +457,7 @@ public class MimeType
 		{ ".pwz", "application/vnd.ms-powerpoint"},
 		{ ".py", "text/x-python"},
 		{ ".pyc", "application/x-bytecode.python"},
-		
+
 		{ ".qcp", "audio/vnd.qcelp"}, 
 		{ ".qd3", "x-world/x-3dmf"},
 		{ ".qd3d", "x-world/x-3dmf"}, 
@@ -503,9 +466,8 @@ public class MimeType
 		{ ".qtc", "video/x-qtc"},
 		{ ".qti", "image/x-quicktime"}, 
 		{ ".qtif", "image/x-quicktime"},
-		
+
 		{ ".ra", "audio/x-pn-realaudio"},
-		{ ".ra", "audio/x-realaudio"},
 		{ ".ram", "audio/x-pn-realaudio"},
 		{ ".rar", "application/vnd.rar"},
 		{ ".ras", "image/cmu-raster"},
@@ -526,7 +488,7 @@ public class MimeType
 		{ ".rtf", "application/rtf"},
 		{ ".rtx", "application/rtf"}, 
 		{ ".rv", "video/vnd.rn-realvideo"}, 
-		
+
 		{ ".s", "text/x-asm"},
 		{ ".s3m", "audio/s3m"}, 
 		{ ".saveme", "application/octet-stream"},
@@ -542,7 +504,6 @@ public class MimeType
 		{ ".sh", "text/x-script.sh"},
 		{ ".shar", "application/x-shar"},
 		{ ".shtml", "text/html"}, 
-		{ ".shtml", "text/x-server-parsed-html"},
 		{ ".sid", "audio/x-psid"}, 
 		{ ".sit", "application/x-sit"},
 		{ ".skd", "application/x-koan"},
@@ -572,7 +533,7 @@ public class MimeType
 		{ ".svgz", "image/svg+xml"},
 		{ ".svr", "x-world/x-svr"}, 
 		{ ".swf", "application/x-shockwave-flash"},
-		
+
 		{ ".t", "application/x-troff"}, 
 		{ ".talk", "text/x-speech"},
 		{ ".tar", "application/x-tar"}, 
@@ -589,12 +550,11 @@ public class MimeType
 		{ ".tr", "application/x-troff"}, 
 		{ ".tsi", "audio/tsp-audio"},
 		{ ".tsp", "application/dsptype"}, 
-		{ ".tsp", "audio/tsplayer"},
 		{ ".tsv", "text/tab-separated-values"}, 
 		{ ".ttf", "font/ttf"},
 		{ ".turbot", "image/florian"},
 		{ ".txt", "text/plain"}, 
-		
+
 		{ ".uil", "text/x-uil"},
 		{ ".uni", "text/uri-list"}, 
 		{ ".unis", "text/uri-list"},
@@ -604,7 +564,7 @@ public class MimeType
 		{ ".ustar", "application/x-ustar"},
 		{ ".uu", "text/x-uuencode"}, 
 		{ ".uue", "text/x-uuencode"},
-		
+
 		{ ".vcd", "application/x-cdlink"}, 
 		{ ".vcs", "text/x-vCalendar"},
 		{ ".vda", "application/vda"}, 
@@ -620,13 +580,12 @@ public class MimeType
 		{ ".vqe", "audio/x-twinvq-plugin"},
 		{ ".vqf", "audio/x-twinvq"}, 
 		{ ".vql", "audio/x-twinvq-plugin"},
-		{ ".vrml", "application/x-vrml"}, 
 		{ ".vrml", "model/vrml"},
 		{ ".vrt", "x-world/x-vrt"},
 		{ ".vsd", "application/x-visio"}, 
 		{ ".vst", "application/x-visio"},
 		{ ".vsw", "application/x-visio"},
-		
+
 		{ ".w60", "application/wordperfect6.0"},
 		{ ".w61", "application/wordperfect6.1"},
 		{ ".w6w", "application/msword"}, 
@@ -650,7 +609,6 @@ public class MimeType
 		{ ".word", "application/msword"}, 
 		{ ".wp", "application/wordperfect"},
 		{ ".wp5", "application/wordperfect"},
-		{ ".wp5", "application/wordperfect6.0"},
 		{ ".wp6", "application/wordperfect"},
 		{ ".wpd", "application/wordperfect"}, 
 		{ ".wq1", "application/x-lotus"}, 
@@ -660,35 +618,26 @@ public class MimeType
 		{ ".wsc", "text/scriplet"}, 
 		{ ".wsrc", "application/x-wais-source"},
 		{ ".wtk", "application/x-wintalk"},
-		
+
 		{ ".xbm", "image/xbm"},
 		{ ".xdr", "video/x-amt-demorun"}, 
 		{ ".xgz", "xgl/drawing"},
 		{ ".xif", "image/vnd.xiff"}, 
 		{ ".xl", "application/excel"},
 		{ ".xla", "application/x-excel"},
-		{ ".xlb", "application/excel"},
 		{ ".xlb", "application/vnd.ms-excel"},
-		{ ".xlc", "application/excel"},
 		{ ".xlc", "application/vnd.ms-excel"},
-		{ ".xld", "application/excel"},
 		{ ".xld", "application/x-excel"}, 
-		{ ".xlk", "application/excel"},
 		{ ".xlk", "application/x-excel"}, 
-		{ ".xll", "application/excel"},
 		{ ".xll", "application/vnd.ms-excel"},
-		{ ".xlm", "application/excel"},
 		{ ".xlm", "application/vnd.ms-excel"},
-		{ ".xls", "application/excel"},
 		{ ".xls", "application/vnd.ms-excel"},
 		{ ".xlsm", "application/vnd.ms-excel.sheet.macroEnabled.12"},
 		{ ".xlsx", MediaType.OOXML_SHEET.toString()},
 		{ ".xlt", "application/excel"}, 
 		{ ".xltm", "application/vnd.ms-excel.template.macroEnabled.12"},
 		{ ".xltx", "application/vnd.openxmlformats-officedocument.spreadsheetml.template"},
-		{ ".xlv", "application/excel"}, 
 		{ ".xlv", "application/x-excel"},
-		{ ".xlw", "application/excel"}, 
 		{ ".xlw", "application/vnd.ms-excel"},
 		{ ".xm", "audio/xm"}, 
 		{ ".xml", "text/xml"}, 
@@ -703,7 +652,7 @@ public class MimeType
 
 		{ ".yaml", "application/yaml"},
 		{ ".yml", "application/yaml"},
-		
+
 		{ ".z", "application/x-compressed"},
 		{ ".zip", "application/zip"}, 
 		{ ".zoo", "application/octet-stream"}, 
