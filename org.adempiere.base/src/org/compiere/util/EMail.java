@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -1328,8 +1329,8 @@ public final class EMail implements Serializable
 	    String currentType = ds.getContentType();
 	    boolean isGeneric = currentType == null
 	            || currentType.isEmpty()
-	            || currentType.toLowerCase().startsWith("application/octet-stream")
-	            || currentType.toLowerCase().startsWith("content/unknown");
+	            || currentType.toLowerCase(Locale.ROOT).startsWith("application/octet-stream")
+	            || currentType.toLowerCase(Locale.ROOT).startsWith("content/unknown");
 
 	    if (!isGeneric)
 	        return ds; // already has a meaningful type, trust it
