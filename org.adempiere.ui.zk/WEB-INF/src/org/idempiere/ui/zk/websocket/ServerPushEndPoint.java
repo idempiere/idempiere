@@ -84,6 +84,7 @@ public class ServerPushEndPoint {
 	private String dtid;
 	private HttpSession httpSession;
 	private String baseUrl;
+	private String requestHost;
 	private Map<String, List<String>> requestHeaders;
 	private BasicCookieStore cookieStore;
 
@@ -95,6 +96,12 @@ public class ServerPushEndPoint {
 	public ServerPushEndPoint() {
 	}
 	
+	/**
+	 * Unregister this endpoint when its WebSocket session closes.
+	 *
+	 * @param sess WebSocket session
+	 * @throws IOException if closing the endpoint fails
+	 */
 	@OnClose
 	public void onClose(Session sess) throws IOException {
 		if (this.session != null) {
@@ -103,6 +110,14 @@ public class ServerPushEndPoint {
 		}
 	}
 
+	/**
+	 * Initialize the endpoint with the node-local connector URI captured for the desktop.
+	 *
+	 * @param sess WebSocket session
+	 * @param config endpoint configuration populated during the handshake
+	 * @param dtid ZK desktop identifier
+	 * @throws IOException if endpoint initialization fails
+	 */
 	@OnOpen
 	public void onOpen(Session sess, EndpointConfig config, @PathParam("dtid") String dtid) throws IOException {
 		if (!Util.isEmpty(dtid, true) && WebSocketServerPush.isValidDesktopId(dtid)) {			
@@ -117,22 +132,13 @@ public class ServerPushEndPoint {
 			
 			HandshakeRequest handshakeRequest = (HandshakeRequest) config.getUserProperties().get(HandshakeRequest.class.getName());
 
-			// Build the Base URL dynamically
+			// Use the actual connector address captured on this node when server push started.
 	        if (handshakeRequest != null) {
-	            URI requestUri = handshakeRequest.getRequestURI();
-
-	            // Map ws -> http and wss -> https
-	            String scheme = "wss".equalsIgnoreCase(requestUri.getScheme()) || "https".equalsIgnoreCase(requestUri.getScheme()) ? "https" : "http";
-	            String host = "localhost";
-	            int port = requestUri.getPort();
-
-	            // Construct the base URL, handling default ports
-	            StringBuilder urlBuilder = new StringBuilder();
-	            urlBuilder.append(scheme).append("://").append(host);
-	            if (port != -1 && !((scheme.equals("http") && port == 80) || (scheme.equals("https") && port == 443))) {
-	                urlBuilder.append(":").append(port);
-	            }
-	            this.baseUrl = urlBuilder.toString();
+				URI internalBaseUri = (URI) config.getUserProperties().get(WebSocketServerPush.WS_LOCAL_BASE_URL);
+				if (internalBaseUri == null)
+					internalBaseUri = EndpointConfigurator.getInternalBaseUri(httpSession, handshakeRequest);
+	            this.baseUrl = internalBaseUri.toASCIIString();
+	            this.requestHost = internalBaseUri.getHost();
 	            this.requestHeaders = handshakeRequest.getHeaders();
 	            if (!this.requestHeaders.containsKey("X-Forwarded-For")) {
 	            	Object ipAttr = config.getUserProperties().get(WebSocketServerPush.WS_CLIENT_IP);
@@ -147,6 +153,12 @@ public class ServerPushEndPoint {
 		}
 	}
 
+	/**
+	 * Log an error raised by the WebSocket container.
+	 *
+	 * @param sess WebSocket session
+	 * @param throwable reported error
+	 */
 	@OnError
 	public void onError(Session sess, Throwable throwable) {
 		CLogger.getCLogger(getClass()).log(Level.WARNING, throwable.getMessage(), throwable);	
@@ -215,11 +227,11 @@ public class ServerPushEndPoint {
 				        httpPost.setHeader("ZK-SID", sid);
 				        httpPost.setHeader("Pragma", "no-cache");
 				        httpPost.setHeader("Cache-Control", "no-cache");
-				        if (cookieStore != null) {
-				        	BasicClientCookie cookie = new BasicClientCookie("JSESSIONID", sessionId);
-							cookie.setDomain("localhost");
-				        	cookieStore.addCookie(cookie);
-				        }
+						if (cookieStore != null) {
+							BasicClientCookie cookie = new BasicClientCookie("JSESSIONID", sessionId);
+							cookie.setDomain(requestHost);
+							cookieStore.addCookie(cookie);
+						}
 				        requestHeaders.forEach((key, values) -> {
 				        	// Forward selected headers
 				        	if ("User-Agent".equalsIgnoreCase(key) || "Accept-Language".equalsIgnoreCase(key) 
@@ -254,9 +266,9 @@ public class ServerPushEndPoint {
 											String[] cookieElements = value.split(";");
 											String[] pair = cookieElements[0].split("=", 2);
 											if (pair.length == 2) {
-												//localhost for internal request, no domain for browser cookie
+												// Internal request cookie uses the node-local host; browser cookie has no domain.
 												BasicClientCookie cookie = new BasicClientCookie(pair[0].trim(), pair[1].trim());
-												cookie.setDomain("localhost");
+												cookie.setDomain(requestHost);
 												
 												if (responseCookieStore == null) {
 													responseCookieStore = new BasicCookieStore();
@@ -370,6 +382,11 @@ public class ServerPushEndPoint {
 				.build();
 	}
 	
+	/**
+	 * Create the HTTP client used to forward AU requests to the local connector.
+	 *
+	 * @return configured HTTP client
+	 */
 	private CloseableHttpClient createHttpClient() {
 		try {
 			//use basic instead of pooling connection manager to avoid connection leak, as http client instance is created per each au request
