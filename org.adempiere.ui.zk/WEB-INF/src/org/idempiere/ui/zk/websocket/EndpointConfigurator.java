@@ -58,8 +58,9 @@ public class EndpointConfigurator extends ServerEndpointConfig.Configurator {
 				if (value instanceof String localBaseUrl) {
 					try {
 						URI uri = URI.create(localBaseUrl);
+						int port = uri.getPort();
 						if (("http".equals(uri.getScheme()) || "https".equals(uri.getScheme()))
-								&& uri.getHost() != null && uri.getPort() > 0)
+								&& uri.getHost() != null && (port == -1 || port > 0))
 							return uri;
 					} catch (IllegalArgumentException e) {
 						// Ignore invalid session data and use the compatibility fallback below.
