@@ -415,3 +415,6 @@ SET
 	QtyOrdered	= COALESCE( uom_convertproductfrom( M_Product_ID, C_UOM_ID, Qty, 		  -1 ), Qty			),
 	PriceActual	= COALESCE( uom_convertproductfrom( M_Product_ID, C_UOM_ID, PriceEntered, -1 ), PriceEntered)
 ;
+
+DROP FUNCTION uom_convertproductfrom
+;

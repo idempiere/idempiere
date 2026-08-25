@@ -397,3 +397,7 @@ SET
 	QtyOrdered	= COALESCE( uom_convertproductfrom( M_Product_ID::INTEGER, C_UOM_ID::INTEGER, Qty, 		    -1 ), Qty		  ),
 	PriceActual	= COALESCE( uom_convertproductfrom( M_Product_ID::INTEGER, C_UOM_ID::INTEGER, PriceEntered, -1 ), PriceEntered)
 ;
+
+
+DROP FUNCTION IF EXISTS uom_convertproductfrom(integer, integer, numeric, integer)
+;
