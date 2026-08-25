@@ -331,6 +331,7 @@ CREATE OR REPLACE FUNCTION uom_convertproductfrom(
 
 DECLARE
     v_product_uom_id INTEGER;
+    v_product_client_id INTEGER;
     v_rate           NUMERIC;
     v_result         NUMERIC;
     v_uom_precision  INTEGER;
@@ -343,8 +344,8 @@ BEGIN
         RETURN p_qtyprice;
     END IF;
 
-    -- Get product's stocking UOM (M_Product.C_UOM_ID)
-    SELECT C_UOM_ID INTO v_product_uom_id 
+    -- Get product's stocking UOM (M_Product.C_UOM_ID) and client
+    SELECT C_UOM_ID, AD_Client_ID INTO v_product_uom_id, v_product_client_id
     FROM M_Product 
     WHERE M_Product_ID = p_m_product_id;
 
@@ -353,13 +354,22 @@ BEGIN
     END IF;
 
     -- getProductRateFrom: direct lookup only (Product UOM -> Target UOM)
-    SELECT	DivideRate INTO v_rate
+    SELECT DivideRate INTO v_rate
     FROM C_UOM_Conversion
-    WHERE C_UOM_ID    = v_product_uom_id
-      AND C_UOM_To_ID  = p_c_uom_to_id
-      AND IsActive     = 'Y'
-      AND (M_Product_ID = p_m_product_id OR M_Product_ID IS NULL)
-    ORDER BY M_Product_ID NULLS LAST   -- product-specific wins over generic
+    WHERE C_UOM_ID = v_product_uom_id
+      AND C_UOM_To_ID = p_c_uom_to_id
+      AND IsActive = 'Y'
+      AND (
+          M_Product_ID = p_m_product_id
+          OR (
+              M_Product_ID IS NULL
+              AND AD_Client_ID IN (0, v_product_client_id)
+          )
+      )
+    ORDER BY
+        CASE WHEN M_Product_ID = p_m_product_id THEN 0 ELSE 1 END,
+        CASE WHEN AD_Client_ID = v_product_client_id THEN 0 ELSE 1 END,
+        C_UOM_Conversion_ID
     LIMIT 1;
 
     IF v_rate IS NULL THEN
@@ -391,11 +401,11 @@ END;
 $$ LANGUAGE plpgsql
 ;
 
-
+-- Product UOM to Requisition Line UOM conversion if UOM different
 UPDATE M_RequisitionLine
 SET 
-	QtyOrdered	= COALESCE( uom_convertproductfrom( M_Product_ID::INTEGER, C_UOM_ID::INTEGER, Qty, 		    -1 ), Qty		  ),
-	PriceActual	= COALESCE( uom_convertproductfrom( M_Product_ID::INTEGER, C_UOM_ID::INTEGER, PriceEntered, -1 ), PriceEntered)
+	QtyOrdered	= COALESCE( uom_convertproductfrom( M_Product_ID::INTEGER, C_UOM_ID::INTEGER, Qty, 	    	-1 ), Qty	     ),
+	PriceEntered= COALESCE( uom_convertproductfrom( M_Product_ID::INTEGER, C_UOM_ID::INTEGER, PriceActual, 	-1 ), PriceActual)
 ;
 
 

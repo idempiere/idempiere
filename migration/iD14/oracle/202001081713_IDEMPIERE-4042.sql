@@ -334,6 +334,7 @@ CREATE OR REPLACE FUNCTION UOM_CONVERTPRODUCTFROM (
 
 IS
     v_product_uom_id NUMBER;
+    v_product_client_id NUMBER;
     v_rate            NUMBER;
     v_result          NUMBER;
     v_uom_precision   NUMBER;
@@ -346,9 +347,9 @@ BEGIN
         RETURN p_qtyprice;
     END IF;
 
-    -- Get product's stocking UOM (M_Product.C_UOM_ID)
+    -- Get product's stocking UOM (M_Product.C_UOM_ID) and client
     BEGIN
-        SELECT C_UOM_ID INTO v_product_uom_id 
+        SELECT C_UOM_ID, AD_Client_ID INTO v_product_uom_id, v_product_client_id
         FROM M_Product 
         WHERE M_Product_ID = p_m_product_id;
     EXCEPTION
@@ -365,10 +366,17 @@ BEGIN
             WHERE C_UOM_ID     = v_product_uom_id
               AND C_UOM_To_ID  = p_c_uom_to_id
               AND IsActive     = 'Y'
-              AND (M_Product_ID = p_m_product_id OR M_Product_ID IS NULL)
+              AND (
+		          M_Product_ID = p_m_product_id
+		          OR (
+		              M_Product_ID IS NULL
+		              AND AD_Client_ID IN (0, v_product_client_id)
+		          )
+		      )
             ORDER BY 
-                CASE WHEN M_Product_ID IS NULL THEN 1 ELSE 0 END,  -- product-specific first
-                M_Product_ID
+                CASE WHEN M_Product_ID = p_m_product_id THEN 0 ELSE 1 END,
+		        CASE WHEN AD_Client_ID = v_product_client_id THEN 0 ELSE 1 END,
+		        C_UOM_Conversion_ID
         )
         WHERE ROWNUM = 1;
     EXCEPTION
@@ -410,10 +418,11 @@ END uom_convertproductfrom
 ;
 /
 
+-- Product UOM to Requisition Line UOM conversion if UOM different
 UPDATE M_RequisitionLine
 SET 
-	QtyOrdered	= COALESCE( uom_convertproductfrom( M_Product_ID, C_UOM_ID, Qty, 		  -1 ), Qty			),
-	PriceActual	= COALESCE( uom_convertproductfrom( M_Product_ID, C_UOM_ID, PriceEntered, -1 ), PriceEntered)
+	QtyOrdered	= COALESCE( uom_convertproductfrom( M_Product_ID, C_UOM_ID, Qty, 		 -1 ), Qty		  ),
+	PriceEntered= COALESCE( uom_convertproductfrom( M_Product_ID, C_UOM_ID, PriceActual, -1 ), PriceActual)
 ;
 
 DROP FUNCTION uom_convertproductfrom
