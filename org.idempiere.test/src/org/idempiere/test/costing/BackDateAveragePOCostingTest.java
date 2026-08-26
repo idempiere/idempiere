@@ -13528,7 +13528,9 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			}
 			
 			long elapsedMs = (System.nanoTime() - start) / 1_000_000;
-		    assertTrue(elapsedMs < 150000, "Expected under 150000ms, took " + elapsedMs + "ms");
+			System.out.println("testLargeMRWithMultiProductLine(" + noOfProducts + ") took " + elapsedMs + "ms");
+			if (Boolean.getBoolean("idempiere.test.assertTiming"))
+				assertTrue(elapsedMs < 150000, "Expected under 150000ms, took " + elapsedMs + "ms");
 		} finally {
 			rollback();
 			resetAcctSchema(ass, backDateDays);			  

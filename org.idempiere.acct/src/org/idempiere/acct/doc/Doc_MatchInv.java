@@ -1731,69 +1731,86 @@ public class Doc_MatchInv extends Doc
 		
 		if (!allCandidateRecordIds.isEmpty())
 		{
-			String idList = allCandidateRecordIds.stream().map(String::valueOf).collect(java.util.stream.Collectors.joining(","));
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
-			
-			StringBuilder sql = new StringBuilder()
-				.append("SELECT Record_ID, Qty, AmtSourceDr, AmtAcctDr, AmtSourceCr, AmtAcctCr")
-				.append(" FROM Fact_Acct ")
-				.append("WHERE AD_Table_ID=? AND Record_ID IN (").append(idList).append(")")
-				.append(" AND C_AcctSchema_ID=?")
-				.append(" AND PostingType='A'")
-				.append(" AND Account_ID=?");
-			try
-			{
-				pstmt = DB.prepareStatement(sql.toString(), getTrxName());
-				DB.setParameters(pstmt, new Object[] {MMatchInv.Table_ID, as.getC_AcctSchema_ID(), acct.getAccount_ID()});
-				rs = pstmt.executeQuery();
-				while (rs.next())
-				{
-					int recId = rs.getInt(1);
-					Object[] row = new Object[] { rs.getBigDecimal(2), rs.getBigDecimal(3), rs.getBigDecimal(4), rs.getBigDecimal(5), rs.getBigDecimal(6) };
-					acctRowsByRecord.computeIfAbsent(recId, k -> new ArrayList<Object[]>()).add(row);
-				}
-			}
-			catch (SQLException e)
-			{
-				throw new DBException(e, sql.toString());
-			}
-			finally
-			{
-				DB.close(rs, pstmt);
-				rs = null; pstmt = null;
-			}
-			
-			sql = new StringBuilder()
-				.append("SELECT Record_ID, Qty, AmtSourceDr, AmtSourceCr")
-				.append(" FROM Fact_Acct ")
-				.append("WHERE AD_Table_ID=? AND Record_ID IN (").append(idList).append(")")
-				.append(" AND C_AcctSchema_ID=?")
-				.append(" AND PostingType='A'")
-				.append(" AND (Account_ID=? OR Account_ID=? OR Account_ID=?)")
-				.append(" AND Description LIKE 'Invoice%'");
-			try
-			{
-				pstmt = DB.prepareStatement(sql.toString(), getTrxName());
-				DB.setParameters(pstmt, new Object[] {MMatchInv.Table_ID, as.getC_AcctSchema_ID(),
-						gain.getAccount_ID(), loss.getAccount_ID(), as.getCurrencyBalancing_Acct().getAccount_ID()});
-				rs = pstmt.executeQuery();
-				while (rs.next())
-				{
-					int recId = rs.getInt(1);
-					Object[] row = new Object[] { rs.getBigDecimal(2), rs.getBigDecimal(3), rs.getBigDecimal(4) };
-					glRowsByRecord.computeIfAbsent(recId, k -> new ArrayList<Object[]>()).add(row);
-				}
-			}
-			catch (SQLException e)
-			{
-				throw new DBException(e, sql.toString());
-			}
-			finally
-			{
-				DB.close(rs, pstmt);
-				rs = null; pstmt = null;
-			}
+		    List<Integer> recordIdList = new ArrayList<Integer>(allCandidateRecordIds);
+		    final int batchSize = 1000; // stay under Oracle's 1000-item IN-list limit
+		    for (int start = 0; start < recordIdList.size(); start += batchSize)
+		    {
+		        List<Integer> batch = recordIdList.subList(start, Math.min(start + batchSize, recordIdList.size()));
+		        String placeholders = batch.stream().map(id -> "?").collect(java.util.stream.Collectors.joining(","));
+		        PreparedStatement pstmt = null;
+		        ResultSet rs = null;
+
+		        StringBuilder sql = new StringBuilder()
+		            .append("SELECT Record_ID, Qty, AmtSourceDr, AmtAcctDr, AmtSourceCr, AmtAcctCr")
+		            .append(" FROM Fact_Acct ")
+		            .append("WHERE AD_Table_ID=? AND Record_ID IN (").append(placeholders).append(")")
+		            .append(" AND C_AcctSchema_ID=?")
+		            .append(" AND PostingType='A'")
+		            .append(" AND Account_ID=?");
+		        try
+		        {
+		            pstmt = DB.prepareStatement(sql.toString(), getTrxName());
+		            List<Object> params = new ArrayList<Object>();
+		            params.add(MMatchInv.Table_ID);
+		            params.addAll(batch);
+		            params.add(as.getC_AcctSchema_ID());
+		            params.add(acct.getAccount_ID());
+		            DB.setParameters(pstmt, params.toArray());
+		            rs = pstmt.executeQuery();
+		            while (rs.next())
+		            {
+		                int recId = rs.getInt(1);
+		                Object[] row = new Object[] { rs.getBigDecimal(2), rs.getBigDecimal(3), rs.getBigDecimal(4), rs.getBigDecimal(5), rs.getBigDecimal(6) };
+		                acctRowsByRecord.computeIfAbsent(recId, k -> new ArrayList<Object[]>()).add(row);
+		            }
+		        }
+		        catch (SQLException e)
+		        {
+		            throw new DBException(e, sql.toString());
+		        }
+		        finally
+		        {
+		            DB.close(rs, pstmt);
+		            rs = null; pstmt = null;
+		        }
+
+		        sql = new StringBuilder()
+		            .append("SELECT Record_ID, Qty, AmtSourceDr, AmtSourceCr")
+		            .append(" FROM Fact_Acct ")
+		            .append("WHERE AD_Table_ID=? AND Record_ID IN (").append(placeholders).append(")")
+		            .append(" AND C_AcctSchema_ID=?")
+		            .append(" AND PostingType='A'")
+		            .append(" AND (Account_ID=? OR Account_ID=? OR Account_ID=?)")
+		            .append(" AND Description LIKE 'Invoice%'");
+		        try
+		        {
+		            pstmt = DB.prepareStatement(sql.toString(), getTrxName());
+		            List<Object> params = new ArrayList<Object>();
+		            params.add(MMatchInv.Table_ID);
+		            params.addAll(batch);
+		            params.add(as.getC_AcctSchema_ID());
+		            params.add(gain.getAccount_ID());
+		            params.add(loss.getAccount_ID());
+		            params.add(as.getCurrencyBalancing_Acct().getAccount_ID());
+		            DB.setParameters(pstmt, params.toArray());
+		            rs = pstmt.executeQuery();
+		            while (rs.next())
+		            {
+		                int recId = rs.getInt(1);
+		                Object[] row = new Object[] { rs.getBigDecimal(2), rs.getBigDecimal(3), rs.getBigDecimal(4) };
+		                glRowsByRecord.computeIfAbsent(recId, k -> new ArrayList<Object[]>()).add(row);
+		            }
+		        }
+		        catch (SQLException e)
+		        {
+		            throw new DBException(e, sql.toString());
+		        }
+		        finally
+		        {
+		            DB.close(rs, pstmt);
+		            rs = null; pstmt = null;
+		        }
+		    }
 		}
 		
 		for (MInvoice invoice : invList)
@@ -1878,10 +1895,11 @@ public class Doc_MatchInv extends Doc
 						for (Object[] row : rows)
 						{
 							BigDecimal qty = (BigDecimal) row[0];
-							if (qtyPositive != null && qty != null)
+							if (qtyPositive != null)
 							{
-								if (qtyPositive && qty.signum() <= 0) continue;
-								if (!qtyPositive && qty.signum() >= 0) continue;
+							    if (qty == null) continue; // matches SQL: NULL > 0 / NULL < 0 excludes the row
+							    if (qtyPositive && qty.signum() <= 0) continue;
+							    if (!qtyPositive && qty.signum() >= 0) continue;
 							}
 							sumSourceDr = sumSourceDr.add(row[1] != null ? (BigDecimal) row[1] : Env.ZERO);
 							sumAcctDr = sumAcctDr.add(row[2] != null ? (BigDecimal) row[2] : Env.ZERO);
@@ -2566,71 +2584,88 @@ public class Doc_MatchInv extends Doc
 		
 		if (!candidateRecordIds.isEmpty())
 		{
-			String idList = candidateRecordIds.stream().map(String::valueOf).collect(java.util.stream.Collectors.joining(","));
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
-			
-			StringBuilder sql = new StringBuilder()
-				.append("SELECT Record_ID, SUM(AmtSourceDr), SUM(AmtAcctDr), SUM(AmtSourceCr), SUM(AmtAcctCr)")
-				.append(" FROM Fact_Acct ")
-				.append("WHERE AD_Table_ID=? AND Record_ID IN (").append(idList).append(")")
-				.append(" AND C_AcctSchema_ID=?")
-				.append(" AND PostingType='A'")
-				.append(" AND Account_ID=?")
-				.append(" GROUP BY Record_ID");
-			try
-			{
-				pstmt = DB.prepareStatement(sql.toString(), getTrxName());
-				DB.setParameters(pstmt, new Object[] {MMatchInv.Table_ID, as.getC_AcctSchema_ID(), acct.getAccount_ID()});
-				rs = pstmt.executeQuery();
-				while (rs.next())
-				{
-					int recId = rs.getInt(1);
-					Object[] row = new Object[] { rs.getBigDecimal(2), rs.getBigDecimal(3), rs.getBigDecimal(4), rs.getBigDecimal(5) };
-					acctSumByRecord.put(recId, row);
-				}
-			}
-			catch (SQLException e)
-			{
-				throw new DBException(e, sql.toString());
-			}
-			finally
-			{
-				DB.close(rs, pstmt);
-				rs = null; pstmt = null;
-			}
-			
-			sql = new StringBuilder()
-				.append("SELECT Record_ID, SUM(AmtSourceDr), SUM(AmtAcctDr), SUM(AmtSourceCr), SUM(AmtAcctCr)")
-				.append(" FROM Fact_Acct ")
-				.append("WHERE AD_Table_ID=? AND Record_ID IN (").append(idList).append(")")
-				.append(" AND C_AcctSchema_ID=?")
-				.append(" AND PostingType='A'")
-				.append(" AND (Account_ID=? OR Account_ID=? OR Account_ID=?)")
-				.append(" AND Description LIKE 'InOut%'")
-				.append(" GROUP BY Record_ID");
-			try
-			{
-				pstmt = DB.prepareStatement(sql.toString(), getTrxName());
-				DB.setParameters(pstmt, new Object[] {MMatchInv.Table_ID, as.getC_AcctSchema_ID(),
-						gain.getAccount_ID(), loss.getAccount_ID(), as.getCurrencyBalancing_Acct().getAccount_ID()});
-				rs = pstmt.executeQuery();
-				while (rs.next())
-				{
-					int recId = rs.getInt(1);
-					Object[] row = new Object[] { rs.getBigDecimal(2), rs.getBigDecimal(3), rs.getBigDecimal(4), rs.getBigDecimal(5) };
-					glSumByRecord.put(recId, row);
-				}
-			}
-			catch (SQLException e)
-			{
-				throw new DBException(e, sql.toString());
-			}
-			finally
-			{
-				DB.close(rs, pstmt);
-				rs = null; pstmt = null;
-			}
+		    List<Integer> recordIdList = new ArrayList<Integer>(candidateRecordIds);
+		    final int batchSize = 1000; // stay under Oracle's 1000-item IN-list limit
+		    for (int start = 0; start < recordIdList.size(); start += batchSize)
+		    {
+		        List<Integer> batch = recordIdList.subList(start, Math.min(start + batchSize, recordIdList.size()));
+		        String placeholders = batch.stream().map(id -> "?").collect(java.util.stream.Collectors.joining(","));
+		        PreparedStatement pstmt = null;
+		        ResultSet rs = null;
+
+		        StringBuilder sql = new StringBuilder()
+		            .append("SELECT Record_ID, SUM(AmtSourceDr), SUM(AmtAcctDr), SUM(AmtSourceCr), SUM(AmtAcctCr)")
+		            .append(" FROM Fact_Acct ")
+		            .append("WHERE AD_Table_ID=? AND Record_ID IN (").append(placeholders).append(")")
+		            .append(" AND C_AcctSchema_ID=?")
+		            .append(" AND PostingType='A'")
+		            .append(" AND Account_ID=?")
+		            .append(" GROUP BY Record_ID");
+		        try
+		        {
+		            pstmt = DB.prepareStatement(sql.toString(), getTrxName());
+		            List<Object> params = new ArrayList<Object>();
+		            params.add(MMatchInv.Table_ID);
+		            params.addAll(batch);
+		            params.add(as.getC_AcctSchema_ID());
+		            params.add(acct.getAccount_ID());
+		            DB.setParameters(pstmt, params.toArray());
+		            rs = pstmt.executeQuery();
+		            while (rs.next())
+		            {
+		                int recId = rs.getInt(1);
+		                Object[] row = new Object[] { rs.getBigDecimal(2), rs.getBigDecimal(3), rs.getBigDecimal(4), rs.getBigDecimal(5) };
+		                acctSumByRecord.put(recId, row);
+		            }
+		        }
+		        catch (SQLException e)
+		        {
+		            throw new DBException(e, sql.toString());
+		        }
+		        finally
+		        {
+		            DB.close(rs, pstmt);
+		            rs = null; pstmt = null;
+		        }
+
+		        sql = new StringBuilder()
+		            .append("SELECT Record_ID, SUM(AmtSourceDr), SUM(AmtAcctDr), SUM(AmtSourceCr), SUM(AmtAcctCr)")
+		            .append(" FROM Fact_Acct ")
+		            .append("WHERE AD_Table_ID=? AND Record_ID IN (").append(placeholders).append(")")
+		            .append(" AND C_AcctSchema_ID=?")
+		            .append(" AND PostingType='A'")
+		            .append(" AND (Account_ID=? OR Account_ID=? OR Account_ID=?)")
+		            .append(" AND Description LIKE 'InOut%'")
+		            .append(" GROUP BY Record_ID");
+		        try
+		        {
+		            pstmt = DB.prepareStatement(sql.toString(), getTrxName());
+		            List<Object> params = new ArrayList<Object>();
+		            params.add(MMatchInv.Table_ID);
+		            params.addAll(batch);
+		            params.add(as.getC_AcctSchema_ID());
+		            params.add(gain.getAccount_ID());
+		            params.add(loss.getAccount_ID());
+		            params.add(as.getCurrencyBalancing_Acct().getAccount_ID());
+		            DB.setParameters(pstmt, params.toArray());
+		            rs = pstmt.executeQuery();
+		            while (rs.next())
+		            {
+		                int recId = rs.getInt(1);
+		                Object[] row = new Object[] { rs.getBigDecimal(2), rs.getBigDecimal(3), rs.getBigDecimal(4), rs.getBigDecimal(5) };
+		                glSumByRecord.put(recId, row);
+		            }
+		        }
+		        catch (SQLException e)
+		        {
+		            throw new DBException(e, sql.toString());
+		        }
+		        finally
+		        {
+		            DB.close(rs, pstmt);
+		            rs = null; pstmt = null;
+		        }
+		    }
 		}
 		
 		for (MMatchInv matchInv : candidates)
