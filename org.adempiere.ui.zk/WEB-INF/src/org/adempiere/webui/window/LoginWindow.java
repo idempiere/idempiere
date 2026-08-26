@@ -41,6 +41,7 @@ import org.adempiere.webui.IWebClient;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.ChangePasswordPanel;
 import org.adempiere.webui.panel.LoginPanel;
+import org.adempiere.webui.panel.PasswordResetPanel;
 import org.adempiere.webui.panel.ResetPasswordPanel;
 import org.adempiere.webui.panel.RolePanel;
 import org.adempiere.webui.panel.ValidateMFAPanel;
@@ -51,6 +52,7 @@ import org.adempiere.webui.sso.filter.SSOWebUIFilter;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.UserPreference;
 import org.adempiere.webui.util.ZkSSOUtils;
+import org.compiere.model.MClient;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.util.CLogger;
@@ -92,6 +94,7 @@ public class LoginWindow extends Window implements EventListener<Event>
     protected Properties ctx;
     protected LoginPanel pnlLogin;
     protected ResetPasswordPanel pnlResetPassword;
+    protected PasswordResetPanel pnlPasswordReset;
     protected ChangePasswordPanel pnlChangePassword;
     protected ValidateMFAPanel pnlValidateMFA = null;
     protected RolePanel pnlRole;
@@ -155,21 +158,25 @@ public class LoginWindow extends Window implements EventListener<Event>
 			boolean isEmailLogin = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
 			if (Util.isEmpty(username))
 				throw new AdempiereException("No Apps " + (isEmailLogin ? "Email" : "User"));
+
+			Login login = new Login(ctx);
+			KeyNamePair[] clients = login.getClients(username, null, null, token, tenant);
+			if (language == null && clients != null && clients.length == 1)
+				language = MClient.get(ctx, clients[0].getKey()).getLanguage();
 			if (language == null)
 				language = Language.getBaseLanguage();
 
 			Env.setContext(ctx, UserPreference.LANGUAGE_NAME, language.getName());
+			Env.setContext(ctx, Env.LANGUAGE, language.getAD_Language());
 			Locale locale = language.getLocale();
 			getDesktop().getSession().setAttribute(Attributes.PREFERRED_LOCALE, locale);
 
-			Login login = new Login(ctx);
 			boolean isShowRolePanel = MSysConfig.getBooleanValue(MSysConfig.SSO_SELECT_ROLE, true);
 			
 			// show role panel when change role 
 			if(getDesktop().getSession().hasAttribute(SSOUtils.ISCHANGEROLE_REQUEST))
 				isShowRolePanel = isShowRolePanel || (boolean) getDesktop().getSession().getAttribute(SSOUtils.ISCHANGEROLE_REQUEST);
 			
-			KeyNamePair[] clients = login.getClients(username, null, null, token, tenant);
 			if (clients != null)
 				loginOk(username, isShowRolePanel, clients, true);
 			else
@@ -331,6 +338,29 @@ public class LoginWindow extends Window implements EventListener<Event>
 	}
 
 	/**
+	 * Show code-based password reset panel (IDEMPIERE-7060)
+	 * @param email pre-filled email
+	 * @param clientId tenant context
+	 * @param language AD_Language for the email template
+	 */
+	public void passwordReset(String email, int clientId, String language)
+	{
+		createPasswordResetPanel(email, clientId, language);
+		this.getChildren().clear();
+		this.appendChild(pnlPasswordReset);
+	}
+
+	/**
+	 * Create code-based password reset panel
+	 * @param email pre-filled email
+	 * @param clientId tenant context
+	 * @param language AD_Language for the email template
+	 */
+	protected void createPasswordResetPanel(String email, int clientId, String language) {
+		pnlPasswordReset = new PasswordResetPanel(ctx, this, email, clientId, language);
+	}
+
+	/**
 	 * Show MFA panel
 	 * @param orgKNPair
 	 * @param isClientDefined
@@ -454,6 +484,12 @@ public class LoginWindow extends Window implements EventListener<Event>
            ResetPasswordPanel resetPasswordPanel = (ResetPasswordPanel)this.getFellowIfAny("resetPasswordPanel");
            if (resetPasswordPanel != null){
         	   resetPasswordPanel.validate();
+        	   return;
+           }
+
+           PasswordResetPanel passwordResetPanel = (PasswordResetPanel)this.getFellowIfAny("passwordResetPanel");
+           if (passwordResetPanel != null){
+        	   passwordResetPanel.validate();
         	   return;
            }
 

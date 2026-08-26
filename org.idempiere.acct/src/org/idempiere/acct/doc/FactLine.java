@@ -1449,4 +1449,67 @@ public final class FactLine extends X_Fact_Acct
 		return success;
 	}   //  updateReverseLine
 
+	/**
+	 * Returns true if this FactLine and the given FactLine have the same accounting dimensions.
+	 * @param other the FactLine to compare with
+	 * @return true if both FactLines have identical accounting dimensions
+	 */
+	public boolean hasSameAccountingDimensions(FactLine other) {
+
+		if (other == null)
+			return false;
+
+		return (getA_Asset_ID() == other.getA_Asset_ID()
+				&& getAccount_ID() == other.getAccount_ID()
+				&& getAD_Client_ID() == other.getAD_Client_ID()
+				&& getAD_Org_ID() == other.getAD_Org_ID()
+				&& getAD_OrgTrx_ID() == other.getAD_OrgTrx_ID()
+				&& getC_AcctSchema_ID() == other.getC_AcctSchema_ID()
+				&& getC_Activity_ID() == other.getC_Activity_ID()
+				&& getC_BPartner_ID() == other.getC_BPartner_ID()
+				&& getC_Campaign_ID() == other.getC_Campaign_ID()
+				&& getC_Currency_ID() == other.getC_Currency_ID()
+				&& getC_LocFrom_ID() == other.getC_LocFrom_ID()
+				&& getC_LocTo_ID() == other.getC_LocTo_ID()
+				&& getC_Period_ID() == other.getC_Period_ID()
+				&& getC_Project_ID() == other.getC_Project_ID()
+				&& getC_ProjectPhase_ID() == other.getC_ProjectPhase_ID()
+				&& getC_ProjectTask_ID() == other.getC_ProjectTask_ID()
+				&& getC_SalesRegion_ID() == other.getC_SalesRegion_ID()
+				&& getC_SubAcct_ID() == other.getC_SubAcct_ID()
+				&& getC_Tax_ID() == other.getC_Tax_ID()
+				&& getC_UOM_ID() == other.getC_UOM_ID()
+				&& getGL_Budget_ID() == other.getGL_Budget_ID()
+				&& getGL_Category_ID() == other.getGL_Category_ID()
+				&& getM_Locator_ID() == other.getM_Locator_ID()
+				&& getM_Product_ID() == other.getM_Product_ID()
+				&& getUserElement1_ID() == other.getUserElement1_ID()
+				&& getUserElement2_ID() == other.getUserElement2_ID()
+				&& getUser1_ID() == other.getUser1_ID()
+				&& getUser2_ID() == other.getUser2_ID()
+				&& getC_Employee_ID() == other.getC_Employee_ID()
+				&& getC_Charge_ID() == other.getC_Charge_ID()
+				&& getC_CostCenter_ID() == other.getC_CostCenter_ID()
+				&& getC_Department_ID() == other.getC_Department_ID()
+				&& getM_Warehouse_ID() == other.getM_Warehouse_ID()
+				&& getM_AttributeSetInstance_ID() == other.getM_AttributeSetInstance_ID())
+				&& areCustomFieldsEqual(getCustomFieldText1(), other.getCustomFieldText1())
+				&& areCustomFieldsEqual(getCustomFieldText2(), other.getCustomFieldText2())
+				&& areCustomFieldsEqual(getCustomFieldText3(), other.getCustomFieldText3())
+				&& areCustomFieldsEqual(getCustomFieldText4(), other.getCustomFieldText4());
+	}
+
+	/**
+	 * Compares two custom field text values.
+	 * 
+	 * @param  cfieldText1 fact from Custom Field Text
+	 * @param  cfieldText2 fact to Custom Field Text
+	 * @return
+	 */
+	private boolean areCustomFieldsEqual(String cfieldText1, String cfieldText2)
+	{
+		return (Util.isEmpty(cfieldText1) && Util.isEmpty(cfieldText2))
+				|| (!Util.isEmpty(cfieldText1) && cfieldText1.equalsIgnoreCase(cfieldText2));
+	} // areCustomFieldsEqual
+
 }	//	FactLine

@@ -209,8 +209,11 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
 			return null;
 		
 		MAcctSchema as = new MAcctSchema(ctx, C_AcctSchema_ID, trxName);
-		if (as.getBackDateDay() == 0)
-			return null;
+		if (as.getBackDateDay() == 0) {
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			if (dateAcct.before(today))
+				return null;
+		}
 		
 		StringBuilder sql = new StringBuilder();
 		sql.append("(");

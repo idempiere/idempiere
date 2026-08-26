@@ -168,3 +168,8 @@
 .mobile .login-btn {
     font-size: 0px !important;
 }
+
+.mail-template-btn {
+    min-width: fit-content;
+    white-space: nowrap;
+}

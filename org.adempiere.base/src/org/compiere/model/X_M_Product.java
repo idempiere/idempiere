@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Product
  *  @author iDempiere (generated)
- *  @version Release 13 - $Id$ */
+ *  @version Release 14 - $Id$ */
 @org.adempiere.base.Model(table="M_Product")
 public class X_M_Product extends PO implements I_M_Product, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20260309L;
+	private static final long serialVersionUID = 20260406L;
 
     /** Standard Constructor */
     public X_M_Product (Properties ctx, int M_Product_ID, String trxName)
@@ -72,6 +72,8 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 			setIsStocked (true);
 // Y
 			setIsSummary (false);
+			setIsUseDateMaterialPolicy (true);
+// Y
 			setIsVerified (false);
 // N
 			setIsWebStoreFeatured (false);
@@ -123,6 +125,8 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 			setIsStocked (true);
 // Y
 			setIsSummary (false);
+			setIsUseDateMaterialPolicy (true);
+// Y
 			setIsVerified (false);
 // N
 			setIsWebStoreFeatured (false);
@@ -174,6 +178,8 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 			setIsStocked (true);
 // Y
 			setIsSummary (false);
+			setIsUseDateMaterialPolicy (true);
+// Y
 			setIsVerified (false);
 // N
 			setIsWebStoreFeatured (false);
@@ -225,6 +231,8 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 			setIsStocked (true);
 // Y
 			setIsSummary (false);
+			setIsUseDateMaterialPolicy (true);
+// Y
 			setIsVerified (false);
 // N
 			setIsWebStoreFeatured (false);
@@ -976,6 +984,29 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	public boolean isSummary()
 	{
 		Object oo = get_Value(COLUMNNAME_IsSummary);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Use Date Material Policy.
+		@param IsUseDateMaterialPolicy Use transaction or guarantee date to track storage records per date
+	*/
+	public void setIsUseDateMaterialPolicy (boolean IsUseDateMaterialPolicy)
+	{
+		set_Value (COLUMNNAME_IsUseDateMaterialPolicy, Boolean.valueOf(IsUseDateMaterialPolicy));
+	}
+
+	/** Get Use Date Material Policy.
+		@return Use transaction or guarantee date to track storage records per date
+	  */
+	public boolean isUseDateMaterialPolicy()
+	{
+		Object oo = get_Value(COLUMNNAME_IsUseDateMaterialPolicy);
 		if (oo != null)
 		{
 			 if (oo instanceof Boolean)

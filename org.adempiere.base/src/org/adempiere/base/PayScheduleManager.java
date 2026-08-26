@@ -54,8 +54,9 @@ public class PayScheduleManager
 		cardinality = ReferenceCardinality.MULTIPLE,
 		policy = ReferencePolicy.DYNAMIC,
 		bind = "bindPayScheduleManager",
-		unbind = "unbindPayScheduleManager"
-	)
+		unbind = "unbindPayScheduleManager",
+		name = "IPayScheduleManager"
+		)
 	public synchronized void bindPayScheduleManager(IPayScheduleManager<?> manager, Map<String, Object> properties)
 	{
 		int ranking = 0;

@@ -39,6 +39,7 @@ import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MMatchInv;
 import org.compiere.model.MMatchPO;
+import org.compiere.model.MProduct;
 import org.compiere.model.MTable;
 import org.compiere.model.Query;
 import org.compiere.util.AdempiereUserError;
@@ -621,14 +622,14 @@ public class DocManager {
 		
 		StringBuilder conditionClause = new StringBuilder();
 		if (table.getAD_Table_ID() == MMatchPO.Table_ID)
-			conditionClause.append("C_OrderLine_ID IN (SELECT C_OrderLine_ID FROM M_MatchPO WHERE M_MatchPO_ID=?)");
+			conditionClause.append("(C_OrderLine_ID, M_AttributeSetInstance_ID) IN (SELECT C_OrderLine_ID, M_AttributeSetInstance_ID FROM M_MatchPO WHERE M_MatchPO_ID=?)");
 		else if (table.getAD_Table_ID() == MInOut.Table_ID) {
 			conditionClause.append("(M_InOutLine_ID IN (SELECT M_InOutLine_ID FROM M_InOutLine WHERE M_InOut_ID=?)) OR ");
-			conditionClause.append("(C_OrderLine_ID IN (SELECT C_OrderLine_ID FROM M_MatchPO WHERE M_InOutLine_ID IN (")
+			conditionClause.append("((C_OrderLine_ID, M_AttributeSetInstance_ID) IN (SELECT C_OrderLine_ID, M_AttributeSetInstance_ID FROM M_MatchPO WHERE M_InOutLine_ID IN (")
 				.append("SELECT M_InOutLine_ID FROM M_InOutLine WHERE M_InOut_ID=").append(Record_ID).append(")))");
 		} else if (table.getAD_Table_ID() == MMatchInv.Table_ID) {
 			conditionClause.append("(M_MatchInv_ID=?) OR ");
-			conditionClause.append("(C_InvoiceLine_ID IN (SELECT C_InvoiceLine_ID FROM M_MatchInv WHERE M_MatchInv_ID=").append(Record_ID).append("))");
+			conditionClause.append("((C_InvoiceLine_ID, M_AttributeSetInstance_ID) IN (SELECT C_InvoiceLine_ID, M_AttributeSetInstance_ID FROM M_MatchInv WHERE M_MatchInv_ID=").append(Record_ID).append("))");
 		} else {
 			MTable childTable = MTable.get(Env.getCtx(), table.getTableName() + "Line");
 			if (childTable != null) {
@@ -676,6 +677,13 @@ public class DocManager {
 		// set all the cost detail records after the back-date transaction to unprocessed
 		int noUpdate = 0;
 		for (MCostDetail bdcd : bdcds) {
+			// get costing level for product
+			MAcctSchema as = MAcctSchema.get(Env.getCtx(), bdcd.getC_AcctSchema_ID());
+			MProduct product = new MProduct(Env.getCtx(), bdcd.getM_Product_ID(), trxName);
+			String costingLevel = product.getCostingLevel(as);	        
+			boolean isBatchLot = MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel);
+			boolean isOrgLevel = MAcctSchema.COSTINGLEVEL_Organization.equals(costingLevel);
+						
 			StringBuilder updateSql = new StringBuilder();
 			if (DB.isOracle()) {
 				updateSql.append("MERGE INTO M_CostDetail t ");
@@ -698,8 +706,11 @@ public class DocManager {
 				updateSql.append("  t.AD_Client_ID = ? ");
 				updateSql.append("  AND t.C_AcctSchema_ID = ? ");
 				updateSql.append("  AND t.M_Product_ID = ? ");
-				updateSql.append("  AND t.M_AttributeSetInstance_ID = base_cd.M_AttributeSetInstance_ID ");
-				updateSql.append("  AND COALESCE(t.M_CostElement_ID, 0) = COALESCE(base_cd.M_CostElement_ID, 0) ");
+				if (isBatchLot) {
+	                updateSql.append("  AND t.M_AttributeSetInstance_ID = ? ");
+	            } else if (isOrgLevel) {
+	            	updateSql.append("  AND t.AD_Org_ID = ? ");
+	            }
 				updateSql.append("  AND ( ");
 				updateSql.append("    t.DateAcct > base_cd.DateAcct ");
 				updateSql.append("    OR ( ");
@@ -746,8 +757,11 @@ public class DocManager {
 				updateSql.append("  t.AD_Client_ID = ? ");
 				updateSql.append("  AND t.C_AcctSchema_ID = ? ");
 				updateSql.append("  AND t.M_Product_ID = ? ");
-				updateSql.append("  AND t.M_AttributeSetInstance_ID = (SELECT M_AttributeSetInstance_ID FROM base_cd) ");
-				updateSql.append("  AND COALESCE(t.M_CostElement_ID, 0) = COALESCE((SELECT M_CostElement_ID FROM base_cd), 0) ");
+				if (isBatchLot) {
+	                updateSql.append("  AND t.M_AttributeSetInstance_ID = ? ");
+	            } else if (isOrgLevel) {
+	            	updateSql.append("  AND t.AD_Org_ID = ? ");
+	            }
 				updateSql.append("  AND ( ");
 				updateSql.append("    t.DateAcct > (SELECT DateAcct FROM base_cd) ");
 				updateSql.append("    OR ( ");
@@ -771,9 +785,18 @@ public class DocManager {
 				updateSql.append("        					WHERE rev.Reversal_ID = mpo.M_MatchPO_ID ) ");
 				updateSql.append("    )  ) ");
 			}
-			noUpdate += DB.executeUpdateEx(updateSql.toString(), 
-					new Object[] {bdcd.getM_CostDetail_ID(), bdcd.getAD_Client_ID(), bdcd.getC_AcctSchema_ID(), bdcd.getM_Product_ID(), bdcd.getDateAcct()}, 
-					trxName);
+			List<Object> params = new ArrayList<Object>();
+	        params.add(bdcd.getM_CostDetail_ID());
+	        params.add(bdcd.getAD_Client_ID());
+	        params.add(bdcd.getC_AcctSchema_ID());
+	        params.add(bdcd.getM_Product_ID());
+	        if (isBatchLot) {
+	            params.add(bdcd.getM_AttributeSetInstance_ID());
+	        } else if (isOrgLevel) {
+	        	params.add(bdcd.getAD_Org_ID());
+	        }
+	        params.add(bdcd.getDateAcct());
+			noUpdate += DB.executeUpdateEx(updateSql.toString(), params.toArray(), trxName);
 			if (s_log.isLoggable(Level.INFO))
 				s_log.info("Update cost detail to unprocessed: " + noUpdate);
 		}
@@ -791,7 +814,7 @@ public class DocManager {
 		selectSql.append("ml.M_Movement_ID, pl.M_Production_ID, pi.C_ProjectIssue_ID, cd.M_CostDetail_ID, cd.IsBackDate ");
 		selectSql.append("FROM M_CostDetail cd ");
 		selectSql.append("LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=cd.Ref_CostDetail_ID) ");
-		selectSql.append("LEFT JOIN M_MatchPO mpo ON (mpo.C_OrderLine_ID = cd.C_OrderLine_ID AND mpo.DateAcct = cd.DateAcct) ");
+		selectSql.append("LEFT JOIN M_MatchPO mpo ON (mpo.C_OrderLine_ID = cd.C_OrderLine_ID AND mpo.DateAcct = cd.DateAcct AND mpo.M_AttributeSetInstance_ID=cd.M_AttributeSetInstance_ID) ");
 		selectSql.append("LEFT JOIN C_InvoiceLine il ON (il.C_InvoiceLine_ID = cd.C_InvoiceLine_ID) ");
 		selectSql.append("LEFT JOIN M_InOutLine iol ON (iol.M_InOutLine_ID = cd.M_InOutLine_ID) ");
 		selectSql.append("LEFT JOIN M_MatchInv mi ON (mi.M_MatchInv_ID = cd.M_MatchInv_ID) ");

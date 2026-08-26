@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Role
  *  @author iDempiere (generated)
- *  @version Release 13 - $Id$ */
+ *  @version Release 14 - $Id$ */
 @org.adempiere.base.Model(table="AD_Role")
 public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20260309L;
+	private static final long serialVersionUID = 20260821L;
 
     /** Standard Constructor */
     public X_AD_Role (Properties ctx, int AD_Role_ID, String trxName)
@@ -88,6 +88,8 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 			setIsPersonalLock (false);
 // N
 			setIsShowAcct (false);
+// N
+			setIsShowChangeLog (false);
 // N
 			setIsUseUserOrgAccess (false);
 // N
@@ -155,6 +157,8 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 // N
 			setIsShowAcct (false);
 // N
+			setIsShowChangeLog (false);
+// N
 			setIsUseUserOrgAccess (false);
 // N
 			setMaxQueryRecords (0);
@@ -221,6 +225,8 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 // N
 			setIsShowAcct (false);
 // N
+			setIsShowChangeLog (false);
+// N
 			setIsUseUserOrgAccess (false);
 // N
 			setMaxQueryRecords (0);
@@ -286,6 +292,8 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 			setIsPersonalLock (false);
 // N
 			setIsShowAcct (false);
+// N
+			setIsShowChangeLog (false);
 // N
 			setIsUseUserOrgAccess (false);
 // N
@@ -1096,6 +1104,29 @@ public class X_AD_Role extends PO implements I_AD_Role, I_Persistent
 	public boolean isShowAcct()
 	{
 		Object oo = get_Value(COLUMNNAME_IsShowAcct);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Show Change Log.
+		@param IsShowChangeLog Allow users with this role to view change log information
+	*/
+	public void setIsShowChangeLog (boolean IsShowChangeLog)
+	{
+		set_Value (COLUMNNAME_IsShowChangeLog, Boolean.valueOf(IsShowChangeLog));
+	}
+
+	/** Get Show Change Log.
+		@return Allow users with this role to view change log information
+	  */
+	public boolean isShowChangeLog()
+	{
+		Object oo = get_Value(COLUMNNAME_IsShowChangeLog);
 		if (oo != null)
 		{
 			 if (oo instanceof Boolean)

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" activate="activate" enabled="true" immediate="true" name="org.idempiere.redis.service.CacheServiceImpl">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" enabled="true" immediate="true" name="org.idempiere.redis.service.CacheServiceImpl">
    <service>
       <provide interface="org.idempiere.distributed.ICacheService"/>
    </service>
