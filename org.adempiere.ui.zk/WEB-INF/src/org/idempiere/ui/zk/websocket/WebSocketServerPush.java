@@ -53,6 +53,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.impl.ExecutionCarryOver;
 import org.zkoss.zk.ui.sys.Scheduler;
 import org.zkoss.zk.ui.sys.ServerPush;
+import org.zkoss.zk.ui.sys.SessionCtrl;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.ExecutionInit;
 
@@ -424,7 +425,7 @@ public class WebSocketServerPush implements ServerPush {
         if (log.isDebugEnabled())
         	log.debug("Stopping server push for " + desktop);
 		var session = desktop.getSession();
-		if (session != null)
+		if (session instanceof SessionCtrl sessionCtrl && !sessionCtrl.isInvalidated())
 			session.removeAttribute(getLocalBaseUrlAttribute(desktop.getId()));
         Clients.response("org.idempiere.websocket.serverpush.stop", new AuScript(null, "org.idempiere.websocket.stopServerPush('" + desktop.getId() + "');"));
     }
