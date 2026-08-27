@@ -71,7 +71,7 @@ public class MProductPO extends X_M_Product_PO
 			return false;
 
 		String whereClause = COLUMNNAME_M_Product_ID + "=? AND "
-				+ COLUMNNAME_C_BPartner_ID + "=? AND IsApprovedVendor='Y' AND COALESCE("
+				+ COLUMNNAME_C_BPartner_ID + "=? AND " + COLUMNNAME_IsApprovedVendor + "='Y' AND COALESCE("
 				+ COLUMNNAME_Discontinued + ",'N')='N'";
 		return new Query(ctx, Table_Name, whereClause, trxName)
 				.setParameters(M_Product_ID, C_BPartner_ID)
@@ -110,7 +110,7 @@ public class MProductPO extends X_M_Product_PO
 	 * Set the initial defaults for a new record
 	 */
 	private void setInitialDefaults() {
-		set_Value("IsApprovedVendor", Boolean.FALSE);
+		setIsApprovedVendor(false);
 		setIsCurrentVendor (true);	// Y
 	}
 

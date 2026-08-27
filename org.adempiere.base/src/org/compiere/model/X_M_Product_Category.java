@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for M_Product_Category
  *  @author iDempiere (generated)
- *  @version Release 13 - $Id$ */
+ *  @version Release 14 - $Id$ */
 @org.adempiere.base.Model(table="M_Product_Category")
 public class X_M_Product_Category extends PO implements I_M_Product_Category, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_M_Product_Category extends PO implements I_M_Product_Category, I_
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20260309L;
+	private static final long serialVersionUID = 20260827L;
 
     /** Standard Constructor */
     public X_M_Product_Category (Properties ctx, int M_Product_Category_ID, String trxName)
@@ -41,6 +41,8 @@ public class X_M_Product_Category extends PO implements I_M_Product_Category, I_
       super (ctx, M_Product_Category_ID, trxName);
       /** if (M_Product_Category_ID == 0)
         {
+			setIsApprovedVendorRequired (false);
+// N
 			setIsDefault (false);
 			setIsSelfService (true);
 // Y
@@ -59,6 +61,8 @@ public class X_M_Product_Category extends PO implements I_M_Product_Category, I_
       super (ctx, M_Product_Category_ID, trxName, virtualColumns);
       /** if (M_Product_Category_ID == 0)
         {
+			setIsApprovedVendorRequired (false);
+// N
 			setIsDefault (false);
 			setIsSelfService (true);
 // Y
@@ -77,6 +81,8 @@ public class X_M_Product_Category extends PO implements I_M_Product_Category, I_
       super (ctx, M_Product_Category_UU, trxName);
       /** if (M_Product_Category_UU == null)
         {
+			setIsApprovedVendorRequired (false);
+// N
 			setIsDefault (false);
 			setIsSelfService (true);
 // Y
@@ -95,6 +101,8 @@ public class X_M_Product_Category extends PO implements I_M_Product_Category, I_
       super (ctx, M_Product_Category_UU, trxName, virtualColumns);
       /** if (M_Product_Category_UU == null)
         {
+			setIsApprovedVendorRequired (false);
+// N
 			setIsDefault (false);
 			setIsSelfService (true);
 // Y
@@ -207,6 +215,29 @@ public class X_M_Product_Category extends PO implements I_M_Product_Category, I_
 	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
+	}
+
+	/** Set Approved Vendor Required.
+		@param IsApprovedVendorRequired Products in this category must normally be purchased from an approved vendor.
+	*/
+	public void setIsApprovedVendorRequired (boolean IsApprovedVendorRequired)
+	{
+		set_Value (COLUMNNAME_IsApprovedVendorRequired, Boolean.valueOf(IsApprovedVendorRequired));
+	}
+
+	/** Get Approved Vendor Required.
+		@return Products in this category must normally be purchased from an approved vendor.
+	  */
+	public boolean isApprovedVendorRequired()
+	{
+		Object oo = get_Value(COLUMNNAME_IsApprovedVendorRequired);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Default.
