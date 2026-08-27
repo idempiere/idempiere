@@ -53,6 +53,11 @@ import org.idempiere.cache.ImmutablePOSupport;
  */
 public class MProduct extends X_M_Product implements ImmutablePOSupport
 {
+	private static final String COLUMN_APPROVED_VENDOR_REQUIREMENT = "ApprovedVendorRequirement";
+	private static final String APPROVED_VENDOR_USE_PRODUCT_CATEGORY = "C";
+	private static final String APPROVED_VENDOR_REQUIRED = "Y";
+	private static final String APPROVED_VENDOR_NOT_REQUIRED = "N";
+
 	/**
 	 * generated serial id
 	 */
@@ -254,6 +259,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	 * Set the initial defaults for a new record
 	 */
 	private void setInitialDefaults() {
+		set_Value(COLUMN_APPROVED_VENDOR_REQUIREMENT, APPROVED_VENDOR_USE_PRODUCT_CATEGORY);
 		setProductType (PRODUCTTYPE_Item);	// I
 		setIsBOM (false);	// N
 		setIsInvoicePrintDetails (false);
@@ -268,6 +274,24 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 		setIsExcludeAutoDelivery(false);
 		setProcessing (false);	// N
 		setLowLevel(0);
+	}
+
+	/**
+	 * Determine whether purchases of this product require an approved vendor.
+	 * The product setting overrides the product category default.
+	 *
+	 * @return {@code true} if an approved vendor is required
+	 */
+	public boolean isApprovedVendorRequired()
+	{
+		String requirement = (String) get_Value(COLUMN_APPROVED_VENDOR_REQUIREMENT);
+		if (APPROVED_VENDOR_REQUIRED.equals(requirement))
+			return true;
+		if (APPROVED_VENDOR_NOT_REQUIRED.equals(requirement))
+			return false;
+
+		MProductCategory category = new MProductCategory(getCtx(), getM_Product_Category_ID(), get_TrxName());
+		return category.get_ID() > 0 && category.get_ValueAsBoolean("IsApprovedVendorRequired");
 	}
 
 	/**

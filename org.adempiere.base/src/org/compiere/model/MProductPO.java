@@ -56,6 +56,29 @@ public class MProductPO extends X_M_Product_PO
 		return list.toArray(new MProductPO[list.size()]);
 	}	//	getOfProduct
 
+	/**
+	 * Test whether a vendor has an active, non-discontinued approval for a product.
+	 *
+	 * @param ctx context
+	 * @param M_Product_ID product
+	 * @param C_BPartner_ID vendor
+	 * @param trxName transaction
+	 * @return {@code true} if the vendor is approved for the product
+	 */
+	public static boolean isApprovedVendor(Properties ctx, int M_Product_ID, int C_BPartner_ID, String trxName)
+	{
+		if (M_Product_ID <= 0 || C_BPartner_ID <= 0)
+			return false;
+
+		String whereClause = COLUMNNAME_M_Product_ID + "=? AND "
+				+ COLUMNNAME_C_BPartner_ID + "=? AND IsApprovedVendor='Y' AND COALESCE("
+				+ COLUMNNAME_Discontinued + ",'N')='N'";
+		return new Query(ctx, Table_Name, whereClause, trxName)
+				.setParameters(M_Product_ID, C_BPartner_ID)
+				.setOnlyActiveRecords(true)
+				.match();
+	}
+
     /**
      * UUID based Constructor
      * @param ctx  Context
@@ -87,6 +110,7 @@ public class MProductPO extends X_M_Product_PO
 	 * Set the initial defaults for a new record
 	 */
 	private void setInitialDefaults() {
+		set_Value("IsApprovedVendor", Boolean.FALSE);
 		setIsCurrentVendor (true);	// Y
 	}
 
