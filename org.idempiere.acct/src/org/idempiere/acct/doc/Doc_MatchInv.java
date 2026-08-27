@@ -24,6 +24,7 @@ import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -1729,89 +1730,38 @@ public class Doc_MatchInv extends Doc
 		// Record_ID -> list of raw rows [Qty, AmtSourceDr, AmtSourceCr] (gain/loss/currency-balancing, 'Invoice%' description)
 		Map<Integer, List<Object[]>> glRowsByRecord = new HashMap<Integer, List<Object[]>>();
 		
-		if (!allCandidateRecordIds.isEmpty())
-		{
-		    List<Integer> recordIdList = new ArrayList<Integer>(allCandidateRecordIds);
-		    final int batchSize = 1000; // stay under Oracle's 1000-item IN-list limit
-		    for (int start = 0; start < recordIdList.size(); start += batchSize)
-		    {
-		        List<Integer> batch = recordIdList.subList(start, Math.min(start + batchSize, recordIdList.size()));
-		        String placeholders = batch.stream().map(id -> "?").collect(java.util.stream.Collectors.joining(","));
-		        PreparedStatement pstmt = null;
-		        ResultSet rs = null;
+		executeBatchedFactAcctQuery(
+		    "SELECT Record_ID, Qty, AmtSourceDr, AmtAcctDr, AmtSourceCr, AmtAcctCr"
+		        + " FROM Fact_Acct"
+		        + " WHERE AD_Table_ID=? AND Record_ID IN ($$IDS$$)"
+		        + " AND C_AcctSchema_ID=?"
+		        + " AND PostingType='A'"
+		        + " AND Account_ID=?",
+		    java.util.Arrays.asList(MMatchInv.Table_ID),
+		    allCandidateRecordIds,
+		    java.util.Arrays.asList(as.getC_AcctSchema_ID(), acct.getAccount_ID()),
+		    rs -> {
+		        int recId = rs.getInt(1);
+		        Object[] row = new Object[] { rs.getBigDecimal(2), rs.getBigDecimal(3), rs.getBigDecimal(4), rs.getBigDecimal(5), rs.getBigDecimal(6) };
+		        acctRowsByRecord.computeIfAbsent(recId, k -> new ArrayList<Object[]>()).add(row);
+		    });
 
-		        StringBuilder sql = new StringBuilder()
-		            .append("SELECT Record_ID, Qty, AmtSourceDr, AmtAcctDr, AmtSourceCr, AmtAcctCr")
-		            .append(" FROM Fact_Acct ")
-		            .append("WHERE AD_Table_ID=? AND Record_ID IN (").append(placeholders).append(")")
-		            .append(" AND C_AcctSchema_ID=?")
-		            .append(" AND PostingType='A'")
-		            .append(" AND Account_ID=?");
-		        try
-		        {
-		            pstmt = DB.prepareStatement(sql.toString(), getTrxName());
-		            List<Object> params = new ArrayList<Object>();
-		            params.add(MMatchInv.Table_ID);
-		            params.addAll(batch);
-		            params.add(as.getC_AcctSchema_ID());
-		            params.add(acct.getAccount_ID());
-		            DB.setParameters(pstmt, params.toArray());
-		            rs = pstmt.executeQuery();
-		            while (rs.next())
-		            {
-		                int recId = rs.getInt(1);
-		                Object[] row = new Object[] { rs.getBigDecimal(2), rs.getBigDecimal(3), rs.getBigDecimal(4), rs.getBigDecimal(5), rs.getBigDecimal(6) };
-		                acctRowsByRecord.computeIfAbsent(recId, k -> new ArrayList<Object[]>()).add(row);
-		            }
-		        }
-		        catch (SQLException e)
-		        {
-		            throw new DBException(e, sql.toString());
-		        }
-		        finally
-		        {
-		            DB.close(rs, pstmt);
-		            rs = null; pstmt = null;
-		        }
-
-		        sql = new StringBuilder()
-		            .append("SELECT Record_ID, Qty, AmtSourceDr, AmtSourceCr")
-		            .append(" FROM Fact_Acct ")
-		            .append("WHERE AD_Table_ID=? AND Record_ID IN (").append(placeholders).append(")")
-		            .append(" AND C_AcctSchema_ID=?")
-		            .append(" AND PostingType='A'")
-		            .append(" AND (Account_ID=? OR Account_ID=? OR Account_ID=?)")
-		            .append(" AND Description LIKE 'Invoice%'");
-		        try
-		        {
-		            pstmt = DB.prepareStatement(sql.toString(), getTrxName());
-		            List<Object> params = new ArrayList<Object>();
-		            params.add(MMatchInv.Table_ID);
-		            params.addAll(batch);
-		            params.add(as.getC_AcctSchema_ID());
-		            params.add(gain.getAccount_ID());
-		            params.add(loss.getAccount_ID());
-		            params.add(as.getCurrencyBalancing_Acct().getAccount_ID());
-		            DB.setParameters(pstmt, params.toArray());
-		            rs = pstmt.executeQuery();
-		            while (rs.next())
-		            {
-		                int recId = rs.getInt(1);
-		                Object[] row = new Object[] { rs.getBigDecimal(2), rs.getBigDecimal(3), rs.getBigDecimal(4) };
-		                glRowsByRecord.computeIfAbsent(recId, k -> new ArrayList<Object[]>()).add(row);
-		            }
-		        }
-		        catch (SQLException e)
-		        {
-		            throw new DBException(e, sql.toString());
-		        }
-		        finally
-		        {
-		            DB.close(rs, pstmt);
-		            rs = null; pstmt = null;
-		        }
-		    }
-		}
+		executeBatchedFactAcctQuery(
+		    "SELECT Record_ID, Qty, AmtSourceDr, AmtSourceCr"
+		        + " FROM Fact_Acct"
+		        + " WHERE AD_Table_ID=? AND Record_ID IN ($$IDS$$)"
+		        + " AND C_AcctSchema_ID=?"
+		        + " AND PostingType='A'"
+		        + " AND (Account_ID=? OR Account_ID=? OR Account_ID=?)"
+		        + " AND Description LIKE 'Invoice%'",
+		    java.util.Arrays.asList(MMatchInv.Table_ID),
+		    allCandidateRecordIds,
+		    java.util.Arrays.asList(as.getC_AcctSchema_ID(), gain.getAccount_ID(), loss.getAccount_ID(), as.getCurrencyBalancing_Acct().getAccount_ID()),
+		    rs -> {
+		        int recId = rs.getInt(1);
+		        Object[] row = new Object[] { rs.getBigDecimal(2), rs.getBigDecimal(3), rs.getBigDecimal(4) };
+		        glRowsByRecord.computeIfAbsent(recId, k -> new ArrayList<Object[]>()).add(row);
+		    });
 		
 		for (MInvoice invoice : invList)
 		{
@@ -1930,8 +1880,9 @@ public class Doc_MatchInv extends Doc
 						for (Object[] row : rows)
 						{
 							BigDecimal qty = (BigDecimal) row[0];
-							if (qtyPositive != null && qty != null)
+							if (qtyPositive != null)
 							{
+								if (qty == null) continue; // matches SQL: NULL > 0 / NULL < 0 excludes the row
 								if (qtyPositive && qty.signum() <= 0) continue;
 								if (!qtyPositive && qty.signum() >= 0) continue;
 							}
@@ -2582,91 +2533,40 @@ public class Doc_MatchInv extends Doc
 		// Record_ID -> raw rows [AmtSourceDr, AmtAcctDr, AmtSourceCr, AmtAcctCr] (gain/loss/currency-balancing, 'InOut%' description)
 		Map<Integer, Object[]> glSumByRecord = new HashMap<Integer, Object[]>();
 		
-		if (!candidateRecordIds.isEmpty())
-		{
-		    List<Integer> recordIdList = new ArrayList<Integer>(candidateRecordIds);
-		    final int batchSize = 1000; // stay under Oracle's 1000-item IN-list limit
-		    for (int start = 0; start < recordIdList.size(); start += batchSize)
-		    {
-		        List<Integer> batch = recordIdList.subList(start, Math.min(start + batchSize, recordIdList.size()));
-		        String placeholders = batch.stream().map(id -> "?").collect(java.util.stream.Collectors.joining(","));
-		        PreparedStatement pstmt = null;
-		        ResultSet rs = null;
+		executeBatchedFactAcctQuery(
+		    "SELECT Record_ID, SUM(AmtSourceDr), SUM(AmtAcctDr), SUM(AmtSourceCr), SUM(AmtAcctCr)"
+		        + " FROM Fact_Acct"
+		        + " WHERE AD_Table_ID=? AND Record_ID IN ($$IDS$$)"
+		        + " AND C_AcctSchema_ID=?"
+		        + " AND PostingType='A'"
+		        + " AND Account_ID=?"
+		        + " GROUP BY Record_ID",
+		    java.util.Arrays.asList(MMatchInv.Table_ID),
+		    candidateRecordIds,
+		    java.util.Arrays.asList(as.getC_AcctSchema_ID(), acct.getAccount_ID()),
+		    rs -> {
+		        int recId = rs.getInt(1);
+		        Object[] row = new Object[] { rs.getBigDecimal(2), rs.getBigDecimal(3), rs.getBigDecimal(4), rs.getBigDecimal(5) };
+		        acctSumByRecord.put(recId, row);
+		    });
 
-		        StringBuilder sql = new StringBuilder()
-		            .append("SELECT Record_ID, SUM(AmtSourceDr), SUM(AmtAcctDr), SUM(AmtSourceCr), SUM(AmtAcctCr)")
-		            .append(" FROM Fact_Acct ")
-		            .append("WHERE AD_Table_ID=? AND Record_ID IN (").append(placeholders).append(")")
-		            .append(" AND C_AcctSchema_ID=?")
-		            .append(" AND PostingType='A'")
-		            .append(" AND Account_ID=?")
-		            .append(" GROUP BY Record_ID");
-		        try
-		        {
-		            pstmt = DB.prepareStatement(sql.toString(), getTrxName());
-		            List<Object> params = new ArrayList<Object>();
-		            params.add(MMatchInv.Table_ID);
-		            params.addAll(batch);
-		            params.add(as.getC_AcctSchema_ID());
-		            params.add(acct.getAccount_ID());
-		            DB.setParameters(pstmt, params.toArray());
-		            rs = pstmt.executeQuery();
-		            while (rs.next())
-		            {
-		                int recId = rs.getInt(1);
-		                Object[] row = new Object[] { rs.getBigDecimal(2), rs.getBigDecimal(3), rs.getBigDecimal(4), rs.getBigDecimal(5) };
-		                acctSumByRecord.put(recId, row);
-		            }
-		        }
-		        catch (SQLException e)
-		        {
-		            throw new DBException(e, sql.toString());
-		        }
-		        finally
-		        {
-		            DB.close(rs, pstmt);
-		            rs = null; pstmt = null;
-		        }
-
-		        sql = new StringBuilder()
-		            .append("SELECT Record_ID, SUM(AmtSourceDr), SUM(AmtAcctDr), SUM(AmtSourceCr), SUM(AmtAcctCr)")
-		            .append(" FROM Fact_Acct ")
-		            .append("WHERE AD_Table_ID=? AND Record_ID IN (").append(placeholders).append(")")
-		            .append(" AND C_AcctSchema_ID=?")
-		            .append(" AND PostingType='A'")
-		            .append(" AND (Account_ID=? OR Account_ID=? OR Account_ID=?)")
-		            .append(" AND Description LIKE 'InOut%'")
-		            .append(" GROUP BY Record_ID");
-		        try
-		        {
-		            pstmt = DB.prepareStatement(sql.toString(), getTrxName());
-		            List<Object> params = new ArrayList<Object>();
-		            params.add(MMatchInv.Table_ID);
-		            params.addAll(batch);
-		            params.add(as.getC_AcctSchema_ID());
-		            params.add(gain.getAccount_ID());
-		            params.add(loss.getAccount_ID());
-		            params.add(as.getCurrencyBalancing_Acct().getAccount_ID());
-		            DB.setParameters(pstmt, params.toArray());
-		            rs = pstmt.executeQuery();
-		            while (rs.next())
-		            {
-		                int recId = rs.getInt(1);
-		                Object[] row = new Object[] { rs.getBigDecimal(2), rs.getBigDecimal(3), rs.getBigDecimal(4), rs.getBigDecimal(5) };
-		                glSumByRecord.put(recId, row);
-		            }
-		        }
-		        catch (SQLException e)
-		        {
-		            throw new DBException(e, sql.toString());
-		        }
-		        finally
-		        {
-		            DB.close(rs, pstmt);
-		            rs = null; pstmt = null;
-		        }
-		    }
-		}
+		executeBatchedFactAcctQuery(
+		    "SELECT Record_ID, SUM(AmtSourceDr), SUM(AmtAcctDr), SUM(AmtSourceCr), SUM(AmtAcctCr)"
+		        + " FROM Fact_Acct"
+		        + " WHERE AD_Table_ID=? AND Record_ID IN ($$IDS$$)"
+		        + " AND C_AcctSchema_ID=?"
+		        + " AND PostingType='A'"
+		        + " AND (Account_ID=? OR Account_ID=? OR Account_ID=?)"
+		        + " AND Description LIKE 'InOut%'"
+		        + " GROUP BY Record_ID",
+		    java.util.Arrays.asList(MMatchInv.Table_ID),
+		    candidateRecordIds,
+		    java.util.Arrays.asList(as.getC_AcctSchema_ID(), gain.getAccount_ID(), loss.getAccount_ID(), as.getCurrencyBalancing_Acct().getAccount_ID()),
+		    rs -> {
+		        int recId = rs.getInt(1);
+		        Object[] row = new Object[] { rs.getBigDecimal(2), rs.getBigDecimal(3), rs.getBigDecimal(4), rs.getBigDecimal(5) };
+		        glSumByRecord.put(recId, row);
+		    });
 		
 		for (MMatchInv matchInv : candidates)
 		{
@@ -3079,6 +2979,74 @@ public class Doc_MatchInv extends Doc
 	        return new AssetVarianceAmounts(asset, ipv.subtract(asset));
 	    } else {
 	        return new AssetVarianceAmounts(ipv, BigDecimal.ZERO);
+	    }
+	}
+	
+	/**
+	 * Functional handler for a single Fact_Acct result row, given the caller's
+	 * choice of column extraction and aggregation target.
+	 */
+	@FunctionalInterface
+	private interface FactAcctRowHandler {
+	    void handle(ResultSet rs) throws SQLException;
+	}
+
+	/**
+	 * Executes a Fact_Acct query whose WHERE clause includes a
+	 * "Record_ID IN (...)" filter over a (potentially large) set of record ids,
+	 * batching the ids into Oracle-safe chunks (max 1000 per IN-list) and binding
+	 * every id as a parameter rather than concatenating it into the SQL text.
+	 *
+	 * @param sqlTemplate SQL text containing the literal marker "$$IDS$$" exactly
+	 *        where the comma-separated bind placeholders for the current batch's
+	 *        ids should be substituted. Using a literal token (rather than
+	 *        String.format's "%s") avoids clashing with '%' wildcards already
+	 *        present in LIKE clauses (e.g. "Description LIKE 'Invoice%'").
+	 * @param leadingParams parameters bound BEFORE the id list, in order
+	 * @param recordIds full set of record ids to filter on (chunked internally)
+	 * @param trailingParams parameters bound AFTER the id list, in order
+	 * @param handler invoked once per result row for the caller to extract
+	 *        columns and update its own aggregation structures
+	 */
+	private void executeBatchedFactAcctQuery(String sqlTemplate, List<Object> leadingParams,
+	        Collection<Integer> recordIds, List<Object> trailingParams, FactAcctRowHandler handler)
+	{
+	    if (recordIds == null || recordIds.isEmpty())
+	        return;
+
+	    List<Integer> recordIdList = new ArrayList<Integer>(recordIds);
+	    final int batchSize = 1000; // stay under Oracle's 1000-item IN-list limit
+	    for (int start = 0; start < recordIdList.size(); start += batchSize)
+	    {
+	        List<Integer> batch = recordIdList.subList(start, Math.min(start + batchSize, recordIdList.size()));
+	        String placeholders = batch.stream().map(id -> "?").collect(java.util.stream.Collectors.joining(","));
+	        String sql = sqlTemplate.replace("$$IDS$$", placeholders);
+
+	        PreparedStatement pstmt = null;
+	        ResultSet rs = null;
+	        try
+	        {
+	            pstmt = DB.prepareStatement(sql, getTrxName());
+	            List<Object> params = new ArrayList<Object>();
+	            params.addAll(leadingParams);
+	            params.addAll(batch);
+	            params.addAll(trailingParams);
+	            DB.setParameters(pstmt, params.toArray());
+	            rs = pstmt.executeQuery();
+	            while (rs.next())
+	            {
+	                handler.handle(rs);
+	            }
+	        }
+	        catch (SQLException e)
+	        {
+	            throw new DBException(e, sql);
+	        }
+	        finally
+	        {
+	            DB.close(rs, pstmt);
+	            rs = null; pstmt = null;
+	        }
 	    }
 	}
 }   //  Doc_MatchInv
