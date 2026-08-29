@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" immediate="true" name="org.adempiere.base.ReportContentServiceProvider">
+   <implementation class="org.adempiere.base.ReportContentServiceProvider"/>
+   <reference bind="bindRendererFactory" cardinality="0..n" interface="org.idempiere.print.IReportContentRendererFactory" name="IReportContentRendererFactory" policy="dynamic" unbind="unbindRendererFactory"/>
+   <reference bind="bindProcessor" cardinality="0..n" interface="org.idempiere.print.IReportContentProcessor" name="IReportContentProcessor" policy="dynamic" unbind="unbindProcessor"/>
+</scr:component>

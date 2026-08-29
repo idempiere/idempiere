@@ -42,13 +42,10 @@ import org.adempiere.exceptions.BackDateTrxNotAllowedException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.exceptions.PeriodClosedException;
 import org.adempiere.model.ITaxProvider;
-import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.IDocsPostProcess;
-import org.compiere.process.ProcessInfo;
-import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -56,6 +53,7 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
+import org.idempiere.print.ReportContentRequest;
 import org.eevolution.model.MPPProductBOM;
 import org.eevolution.model.MPPProductBOMLine;
 
@@ -1619,23 +1617,8 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		ReportEngine re = ReportEngine.get (getCtx(), ReportEngine.INVOICE, getC_Invoice_ID(), get_TrxName());
 		if (re == null)
 			return null;
-		MPrintFormat format = re.getPrintFormat();
-		// We have a Jasper Print Format
-		// ==============================
-		if(format.getJasperProcess_ID() > 0)	
-		{
-			ProcessInfo pi = new ProcessInfo ("", format.getJasperProcess_ID());
-			pi.setRecord_ID ( getC_Invoice_ID() );
-			pi.setIsBatch(true);
-			pi.setTransientObject(format);
-			
-			ServerProcessCtl.process(pi, null);
-			
-			return pi.getPDFReport();
-		}
-		// Standard Print Format (Non-Jasper)
-		// ==================================
-		return re.getPDF(file);
+		return Core.getReportContent(new ReportContentRequest(re, null, getDocumentInfo()),
+				"application/pdf", "pdf", file);
 	}	//	createPDF
 
 	/**

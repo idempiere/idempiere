@@ -24,6 +24,9 @@ package org.adempiere.webui.window;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -31,6 +34,7 @@ import java.util.logging.Level;
 
 import javax.activation.FileDataSource;
 
+import org.adempiere.base.Core;
 import org.adempiere.base.upload.IUploadService;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.report.jasper.ReportStarter;
@@ -59,6 +63,8 @@ import org.compiere.model.MUser;
 import org.compiere.model.PO;
 import org.compiere.model.PrintInfo;
 import org.compiere.model.X_AD_ToolBarButton;
+import org.compiere.process.ProcessInfo;
+import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -66,6 +72,7 @@ import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 import org.idempiere.ui.zk.media.IMediaView;
 import org.idempiere.ui.zk.media.WMediaOptions;
+import org.idempiere.print.ReportContentRequest;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Component;
@@ -118,6 +125,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	protected ToolBarButton bExport = new ToolBarButton();
 	protected ToolBarButton bCloudUpload = new ToolBarButton();
 	private PrintInfo			m_printInfo;
+	private ProcessInfo			m_processInfo;
 	
 	private int mediaVersion = 0;
 	
@@ -143,6 +151,10 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	 * @param printInfo
 	 */
 	public ZkJRViewer(JasperPrint jasperPrint, String title, PrintInfo printInfo) {
+		this(jasperPrint, title, printInfo, null);
+	}
+
+	public ZkJRViewer(JasperPrint jasperPrint, String title, PrintInfo printInfo, ProcessInfo processInfo) {
 		super();
 		this.setTitle(title);
 		m_title = title;
@@ -150,6 +162,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
 		setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, m_WindowNo);
 		m_printInfo = printInfo;
+		m_processInfo = processInfo;
 		init();
 	}
 
@@ -159,6 +172,11 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	 * @param printInfo
 	 */
 	public ZkJRViewer(java.util.List<JasperPrint> jasperPrintList, String title, PrintInfo printInfo) {
+		this(jasperPrintList, title, printInfo, null);
+	}
+
+	public ZkJRViewer(java.util.List<JasperPrint> jasperPrintList, String title, PrintInfo printInfo,
+			ProcessInfo processInfo) {
 		super();
 		this.setTitle(title);
 		m_title = title;
@@ -166,6 +184,7 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		m_WindowNo = SessionManager.getAppDesktop().registerWindow(this);
 		setAttribute(IDesktop.WINDOWNO_ATTRIBUTE, m_WindowNo);
 		m_printInfo = printInfo;
+		m_processInfo = processInfo;
 		init();
 	}
 
@@ -388,14 +407,16 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	 */
 	private void cmd_sendMail()
 	{
-		File attachment = jasperRenderer.getPDF();
+		File attachment;
+		try {
+			attachment = getProcessedPDF();
+		} catch (Exception e) {
+			Dialog.error(m_WindowNo, e.getLocalizedMessage(), m_title);
+			return;
+		}
 		if (attachment == null) {
-			try {
-				attachment = createPDF();
-			} catch (Exception e) {
-				Dialog.error(m_WindowNo, e.getLocalizedMessage(), m_title);
-				return;
-			}
+			Dialog.error(m_WindowNo, "Unable to generate PDF report content", m_title);
+			return;
 		}
 		String to = "";
 		MUser from = MUser.get(Env.getCtx(), Env.getAD_User_ID(Env.getCtx()));
@@ -621,11 +642,10 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 	protected void cmd_archive()
 	{
 		boolean success = false;
+		File file = null;
 		try
 		{
-			File file = jasperRenderer.getPDF();
-			if (file == null)
-				file = createPDF();		
+			file = getProcessedPDF();
 			if (file != null && m_printInfo != null)
 			{
 				try (FileInputStream fis = new FileInputStream(file)) {
@@ -640,15 +660,33 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 			else
 				Dialog.error(m_WindowNo, "ArchiveError");
 		}
-		catch (IOException e)
+		catch (IOException | AdempiereException e)
 		{
 			log.log(Level.SEVERE, "Exception while reading file " + e);
+			Dialog.error(m_WindowNo, "ArchiveError");
 		}
-		catch (JRException e)
+		finally
 		{
-			log.log(Level.SEVERE, "Error loading object from InputStream" + e);
+			if (file != null && file.exists() && !file.delete())
+				file.deleteOnExit();
 		}
 	} // cmd_archive
+
+	private File getProcessedPDF() throws IOException {
+		AMedia pdf = getMedia(PDF_MIME_TYPE, PDF_FILE_EXT);
+		if (pdf == null)
+			return null;
+		File file = FileUtil.createTempFile(FileUtil.makePrefix(m_title), ".pdf");
+		try (InputStream input = pdf.getStreamData()) {
+			Files.copy(input, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+		} catch (IOException e) {
+			if (file.exists() && !file.delete())
+				file.deleteOnExit();
+			throw e;
+		}
+		file.deleteOnExit();
+		return file;
+	}
 
 	/**
 	 * Save jasper report as attachment of a record (AD_Table_ID and Record_ID from {@link #m_printInfo})
@@ -707,7 +745,17 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		if (media != null && media.getContentType().equals(contentType) && media.getFormat().equals(fileExtension))
 			return media;
 		
-		return jasperRenderer.getMedia(contentType, fileExtension);
+		File file = jasperRenderer.getContent(contentType, fileExtension);
+		if (file == null)
+			return null;
+		file = Core.processReportContent(new ReportContentRequest(null, m_processInfo, m_title),
+				contentType, fileExtension, file);
+		try {
+			return new AMedia(FileUtil.makePrefix(m_title) + "." + fileExtension,
+					fileExtension, contentType, file, true);
+		} catch (IOException e) {
+			throw new AdempiereException("Unable to read Jasper report content", e);
+		}
 	}
 
 	@Override

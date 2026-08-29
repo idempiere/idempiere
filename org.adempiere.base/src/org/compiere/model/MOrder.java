@@ -43,6 +43,7 @@ import org.adempiere.util.IReservationTracer;
 import org.adempiere.util.IReservationTracerFactory;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.DocAction;
+import org.idempiere.print.ReportContentRequest;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -897,7 +898,8 @@ public class MOrder extends X_C_Order implements DocAction
 		ReportEngine re = ReportEngine.get (getCtx(), ReportEngine.ORDER, getC_Order_ID(), get_TrxName());
 		if (re == null)
 			return null;
-		return re.getPDF(file);
+		return Core.getReportContent(new ReportContentRequest(re, null, getDocumentInfo()),
+				"application/pdf", "pdf", file);
 	}	//	createPDF
 	
 	/**

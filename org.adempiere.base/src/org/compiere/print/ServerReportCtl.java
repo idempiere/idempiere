@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MProcess;
 import org.compiere.model.MQuery;
@@ -47,6 +48,7 @@ import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
+import org.idempiere.print.ReportContentRequest;
 
 /**
  * Static method for running of report at server side
@@ -117,42 +119,7 @@ public class ServerReportCtl {
 			// Standard Print Format (Non-Jasper)
 			// ==================================
 			{
-				if (pi != null && pi.isBatch() && pi.isPrintPreview())
-				{
-					re.setProcessInfo(pi);
-					if ("HTML".equals(pi.getReportType())) 
-					{
-						pi.setExport(true);
-						pi.setExportFileExtension("html");
-						pi.setExportFile(re.getHTML());
-					}
-					else if ("CSV".equals(pi.getReportType()))
-					{
-						pi.setExport(true);
-						pi.setExportFileExtension("csv");
-						pi.setExportFile(re.getCSV());					
-					}
-					else if ("XLS".equals(pi.getReportType()))
-					{
-						pi.setExport(true);
-						pi.setExportFileExtension("xls");
-						pi.setExportFile(re.getXLS());					
-					}
-					else if ("XLSX".equals(pi.getReportType()))
-					{
-						pi.setExport(true);
-						pi.setExportFileExtension("xlsx");
-						pi.setExportFile(re.getXLSX());					
-					}
-					else
-					{
-						pi.setPDFReport(re.getPDF());
-					}
-				}
-				else
-				{
-					createOutput(re, printerName);
-				}
+				exportReportContent(re, pi, printerName);
 				ReportEngine.printConfirm (type, Record_ID);
 			}
 		}
@@ -232,6 +199,37 @@ public class ServerReportCtl {
 			re.getPrintInfo().setPrinterName(printerName);
 		}
 		re.print();
+	}
+
+	private static java.io.File getReportContent(ReportEngine re, ProcessInfo pi, String contentType,
+			String fileExtension) {
+		re.setProcessInfo(pi);
+		String title = pi != null ? pi.getTitle() : re.getName();
+		return Core.getReportContent(new ReportContentRequest(re, pi, title), contentType, fileExtension);
+	}
+
+	private static void exportReportContent(ReportEngine re, ProcessInfo pi, String printerName) {
+		if (pi == null || !pi.isBatch() || !pi.isPrintPreview()) {
+			createOutput(re, printerName);
+			return;
+		}
+		re.setProcessInfo(pi);
+		String reportType = pi.getReportType();
+		switch (reportType != null ? reportType : "") {
+			case "HTML" -> setExportContent(re, pi, "text/html; charset=utf-8", "html");
+			case "CSV" -> setExportContent(re, pi, "text/csv; charset=utf-8", "csv");
+			case "XLS" -> setExportContent(re, pi, "application/vnd.ms-excel", "xls");
+			case "XLSX" -> setExportContent(re, pi,
+					"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "xlsx");
+			default -> pi.setPDFReport(getReportContent(re, pi, "application/pdf", "pdf"));
+		}
+	}
+
+	private static void setExportContent(ReportEngine re, ProcessInfo pi, String contentType,
+			String fileExtension) {
+		pi.setExport(true);
+		pi.setExportFileExtension(fileExtension);
+		pi.setExportFile(getReportContent(re, pi, contentType, fileExtension));
 	}
 		
 	/**
@@ -326,41 +324,7 @@ public class ServerReportCtl {
 			MQuery query = MQuery.get (ctx, pi.getAD_PInstance_ID(), TableName);
 			PrintInfo info = new PrintInfo(pi);
 			re = new ReportEngine(ctx, format, query, info, pi.isSummary(), pi.getTransactionName());
-			if (pi.isPrintPreview() && pi.isBatch())
-			{
-				if ("HTML".equals(pi.getReportType())) 
-				{
-					pi.setExport(true);
-					pi.setExportFileExtension("html");
-					pi.setExportFile(re.getHTML());
-				}
-				else if ("CSV".equals(pi.getReportType()))
-				{
-					pi.setExport(true);
-					pi.setExportFileExtension("csv");
-					pi.setExportFile(re.getCSV());					
-				}
-				else if ("XLS".equals(pi.getReportType()))
-				{
-					pi.setExport(true);
-					pi.setExportFileExtension("xls");
-					pi.setExportFile(re.getXLS());					
-				}
-				else if ("XLSX".equals(pi.getReportType()))
-				{
-					pi.setExport(true);
-					pi.setExportFileExtension("xlsx");
-					pi.setExportFile(re.getXLSX());					
-				}
-				else
-				{
-					pi.setPDFReport(re.getPDF());
-				}
-			}
-			else
-			{
-				createOutput(re, null);
-			}
+			exportReportContent(re, pi, null);
 			return true;
 		}
 		//
@@ -374,41 +338,7 @@ public class ServerReportCtl {
 			}
 		}
 		
-		if (pi.isPrintPreview() && pi.isBatch())
-		{
-			if ("HTML".equals(pi.getReportType())) 
-			{
-				pi.setExport(true);
-				pi.setExportFileExtension("html");
-				pi.setExportFile(re.getHTML());
-			}
-			else if ("CSV".equals(pi.getReportType()))
-			{
-				pi.setExport(true);
-				pi.setExportFileExtension("csv");
-				pi.setExportFile(re.getCSV());					
-			}
-			else if ("XLS".equals(pi.getReportType()))
-			{
-				pi.setExport(true);
-				pi.setExportFileExtension("xls");
-				pi.setExportFile(re.getXLS());					
-			}
-			else if ("XLSX".equals(pi.getReportType()))
-			{
-				pi.setExport(true);
-				pi.setExportFileExtension("xlsx");
-				pi.setExportFile(re.getXLSX());					
-			}
-			else
-			{
-				pi.setPDFReport(re.getPDF());
-			}
-		}
-		else
-		{
-			createOutput(re, null);
-		}
+		exportReportContent(re, pi, null);
 		return true;
 	}	//	startStandardReport
 
@@ -438,41 +368,7 @@ public class ServerReportCtl {
 		PrintInfo info = new PrintInfo(pi);
 
 		ReportEngine re = new ReportEngine(Env.getCtx(), format, query, info);
-		if (pi.isPrintPreview() && pi.isBatch())
-		{
-			if ("HTML".equals(pi.getReportType())) 
-			{
-				pi.setExport(true);
-				pi.setExportFileExtension("html");
-				pi.setExportFile(re.getHTML());
-			}
-			else if ("CSV".equals(pi.getReportType()))
-			{
-				pi.setExport(true);
-				pi.setExportFileExtension("csv");
-				pi.setExportFile(re.getCSV());					
-			}
-			else if ("XLS".equals(pi.getReportType()))
-			{
-				pi.setExport(true);
-				pi.setExportFileExtension("xls");
-				pi.setExportFile(re.getXLS());					
-			}
-			else if ("XLSX".equals(pi.getReportType()))
-			{
-				pi.setExport(true);
-				pi.setExportFileExtension("xlsx");
-				pi.setExportFile(re.getXLSX());					
-			}
-			else
-			{
-				pi.setPDFReport(re.getPDF());
-			}
-		}
-		else
-		{
-			createOutput(re, null);
-		}
+		exportReportContent(re, pi, null);
 		return true;
 	}	//	startFinReport
 		

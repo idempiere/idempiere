@@ -305,6 +305,7 @@ public class ReportEngine implements PrintServiceAttributeListener
 	public void setQuery (MQuery query)
 	{
 		m_query = query;
+		m_printData = null;
 		if (query == null)
 			return;
 		//
@@ -629,13 +630,13 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		catch (FileNotFoundException fnfe)
 		{
 			log.log(Level.SEVERE, "(f) - " + fnfe.toString());
+			throw new AdempiereException(fnfe);
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "(f)", e);
 			throw new AdempiereException(e);
 		}
-		return false;
 	}	//	createHTML
 
 	/**
@@ -784,12 +785,15 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		catch (FileNotFoundException fnfe)
 		{
 			log.log(Level.SEVERE, "(f) - " + fnfe.toString());
+			throw new AdempiereException(fnfe);
 		}
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "(f)", e);
+			if (e instanceof RuntimeException runtimeException)
+				throw runtimeException;
+			throw new AdempiereException(e);
 		}
-		return false;
 	}	//	createCSV
 
 	/**
@@ -900,9 +904,8 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		{
 			log.log(Level.SEVERE, "", e);
 		}
-		if (createHTML(file, false, Env.getLanguage(getCtx())))
-			return file;
-		return null;
+		createHTML(file, false, Env.getLanguage(getCtx()));
+		return file;
 	}	//	getHTML
 	
 	/**
@@ -930,9 +933,8 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		{
 			log.log(Level.SEVERE, "", e);
 		}
-		if (createCSV(file, ',', Env.getLanguage(getCtx())))
-			return file;
-		return null;
+		createCSV(file, ',', Env.getLanguage(getCtx()));
+		return file;
 	}	//	getCSV
 	
 	/**
@@ -968,7 +970,9 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "", e);
-			return null;
+			if (e instanceof RuntimeException runtimeException)
+				throw runtimeException;
+			throw new AdempiereException(e);
 		}
 	}	//	getXLS
 	
@@ -1005,7 +1009,9 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "", e);
-			return null;
+			if (e instanceof RuntimeException runtimeException)
+				throw runtimeException;
+			throw new AdempiereException(e);
 		}
 	}	//	getXLSX
 	
@@ -1035,7 +1041,9 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, "file", e);
-			return false;
+			if (e instanceof RuntimeException runtimeException)
+				throw runtimeException;
+			throw new AdempiereException(e);
 		}
 			
 		if (log.isLoggable(Level.FINE)) log.fine(uri.toString());

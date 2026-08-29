@@ -28,6 +28,7 @@ import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.NegativeInventoryDisallowedException;
+import org.adempiere.base.Core;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MDocType;
@@ -46,6 +47,7 @@ import org.compiere.model.Query;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
+import org.idempiere.print.ReportContentRequest;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -439,7 +441,8 @@ public class MDDOrder extends X_DD_Order implements DocAction
 		ReportEngine re = ReportEngine.get (getCtx(), ReportEngine.DISTRIBUTION_ORDER, getDD_Order_ID());
 		if (re == null)
 			return null;
-		return re.getPDF(file);
+		return Core.getReportContent(new ReportContentRequest(re, null, getDocumentInfo()),
+				"application/pdf", "pdf", file);
 	}	//	createPDF
 	
 

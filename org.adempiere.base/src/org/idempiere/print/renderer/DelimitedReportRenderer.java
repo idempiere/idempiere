@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MSysConfig;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.MPrintFormatItem;
@@ -63,14 +64,19 @@ public abstract class DelimitedReportRenderer<C extends DelimitedReportRendererC
 				fw = new OutputStreamWriter(new FileOutputStream(configuration.getOutputFile(), false), Ini.getCharset());
 			else 
 				fw = configuration.getOutputWriter();
-			createdDelimitedOutput(reportEngine, fw, configuration.getDelimiter(), configuration.getLanguage());
+			if (!createdDelimitedOutput(reportEngine, fw, configuration.getDelimiter(), configuration.getLanguage()))
+				throw new AdempiereException("Failed to create delimited report content");
 		}
 		catch (FileNotFoundException fnfe) {
 			log.log(Level.SEVERE, "(f) - " + fnfe.toString());
+			throw new AdempiereException(fnfe);
 		}
 		catch (Exception e) {
 			log.log(Level.SEVERE, "(f)", e);
-		}		
+			if (e instanceof RuntimeException runtimeException)
+				throw runtimeException;
+			throw new AdempiereException(e);
+		}
 	}
 
 	@Override

@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -58,6 +59,7 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.print.ReportContentRequest;
 import org.zkoss.zhtml.Table;
 import org.zkoss.zhtml.Td;
 import org.zkoss.zhtml.Text;
@@ -631,7 +633,8 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		{
 			int M_InOut_ID = m_ids[i];
 			ReportEngine re = ReportEngine.get (Env.getCtx(), ReportEngine.SHIPMENT, M_InOut_ID, getWindowNo());
-			pdfList.add(re.getPDF());				
+			pdfList.add(Core.getReportContent(new ReportContentRequest(re, getProcessInfo(), re.getName()),
+					"application/pdf", "pdf"));
 		}
 		
 		if (pdfList.size() > 1) {
@@ -726,7 +729,8 @@ public class ProcessDialog extends AbstractProcessDialog implements EventListene
 		{
 			int C_Invoice_ID = m_ids[i];
 			ReportEngine re = ReportEngine.get (Env.getCtx(), ReportEngine.INVOICE, C_Invoice_ID, getWindowNo());
-			pdfList.add(re.getPDF());				
+			pdfList.add(Core.getReportContent(new ReportContentRequest(re, getProcessInfo(), re.getName()),
+					"application/pdf", "pdf"));
 		}
 		
 		if (pdfList.size() > 1) {
