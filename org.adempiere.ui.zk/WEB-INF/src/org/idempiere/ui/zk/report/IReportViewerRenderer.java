@@ -22,6 +22,7 @@
 package org.idempiere.ui.zk.report;
 
 import org.adempiere.webui.window.ZkReportViewer;
+import org.compiere.print.ReportEngine;
 import org.zkoss.util.media.AMedia;
 
 /**
@@ -47,7 +48,7 @@ public interface IReportViewerRenderer {
 	 * @return label for preview output type selection
 	 */
 	default String getPreviewLabel() {
-		return getId();
+		return org.adempiere.webui.window.IReportViewerExportSource.getFormatLabel(getFileExtension(), getExportLabel());
 	}
 	
 	/**
@@ -74,6 +75,17 @@ public interface IReportViewerRenderer {
 	 * @return true if renderer support preview
 	 */
 	boolean isPreview(boolean roleCanExport);
+
+	/**
+	 * Whether this renderer can handle the supplied report engine.
+	 * Renderers which need tabular report data are therefore not offered for
+	 * reports which provide their content through a separate content renderer.
+	 * @param reportEngine report engine
+	 * @return true if this renderer can render the report
+	 */
+	default boolean isSupported(ReportEngine reportEngine) {
+		return reportEngine != null && reportEngine.getPrintData() != null;
+	}
 	
 	/**
 	 * Render output media for report

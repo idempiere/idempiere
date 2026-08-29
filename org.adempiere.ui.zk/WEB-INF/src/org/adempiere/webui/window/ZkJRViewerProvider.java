@@ -30,6 +30,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
 import org.compiere.model.PrintInfo;
+import org.compiere.process.ProcessInfo;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -42,11 +43,17 @@ public class ZkJRViewerProvider implements JRViewerProvider, JRViewerProviderLis
 	@Override
 	public void openViewer(final JasperPrint jasperPrint, final String title, final PrintInfo printInfo)
 			throws JRException {
+		openViewer(jasperPrint, title, printInfo, null);
+	}
+
+	@Override
+	public void openViewer(final JasperPrint jasperPrint, final String title, final PrintInfo printInfo,
+			final ProcessInfo processInfo) throws JRException {
 		Runnable runnable = new Runnable() {
 
 			@Override
 			public void run() {
-				Window viewer = new ZkJRViewer(jasperPrint, title, printInfo);
+				Window viewer = new ZkJRViewer(jasperPrint, title, printInfo, processInfo);
 
 				viewer.setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
 				viewer.setAttribute(Window.INSERT_POSITION_KEY, Window.INSERT_NEXT);
@@ -60,11 +67,17 @@ public class ZkJRViewerProvider implements JRViewerProvider, JRViewerProviderLis
 	@Override
 	public void openViewer(final List<JasperPrint> jasperPrintList, final String title , final PrintInfo printInfo)
 			throws JRException {
+		openViewer(jasperPrintList, title, printInfo, null);
+	}
+
+	@Override
+	public void openViewer(final List<JasperPrint> jasperPrintList, final String title, final PrintInfo printInfo,
+			final ProcessInfo processInfo) throws JRException {
 		Runnable runnable = new Runnable() {
 
 			@Override
 			public void run() {
-				Window viewer = new ZkJRViewer(jasperPrintList, title, printInfo);
+				Window viewer = new ZkJRViewer(jasperPrintList, title, printInfo, processInfo);
 
 				viewer.setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
 				viewer.setAttribute(Window.INSERT_POSITION_KEY, Window.INSERT_NEXT);
