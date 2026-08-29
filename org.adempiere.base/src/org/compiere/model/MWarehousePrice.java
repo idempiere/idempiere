@@ -61,10 +61,10 @@ public class MWarehousePrice extends X_RV_WarehousePrice
 		StringBuilder sql = new StringBuilder ("SELECT * FROM RV_WarehousePrice "
 			+ "WHERE M_PriceList_Version_ID=? AND M_Warehouse_ID=?");
 		StringBuilder sb = new StringBuilder();
-		Value = getFindParameter (Value);
+		Value = getFindParameterPreserveCase (Value);
 		if (Value != null)
 			sb.append("UPPER(Value) LIKE UPPER(?)");
-		Name = getFindParameter (Name);
+		Name = getFindParameterPreserveCase (Name);
 		if (Name != null)
 		{
 			if (sb.length() > 0)

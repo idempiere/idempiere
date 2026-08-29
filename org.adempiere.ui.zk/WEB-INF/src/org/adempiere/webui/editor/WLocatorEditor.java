@@ -383,8 +383,7 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
 		
 		//	Look up - see MLocatorLookup.run		
 		StringBuffer sql = new StringBuffer("SELECT M_Locator_ID FROM M_Locator ")
-			.append(" WHERE IsActive='Y' AND UPPER(Value) LIKE ")
-			.append("UPPER(").append(DB.TO_STRING(text)).append(")");
+			.append(" WHERE IsActive='Y' AND UPPER(Value) LIKE UPPER(?)");
 		
 		if (getOnly_Warehouse_ID() != 0)
 			sql.append(" AND M_Warehouse_ID=?");
@@ -406,6 +405,7 @@ public class WLocatorEditor extends WEditor implements EventListener<Event>, Pro
 		{
 			pstmt = DB.prepareStatement(finalSql, null);
 			int index = 1;
+			pstmt.setString(index++, text);
 		
 			if (only_Warehouse_ID != 0)
 				pstmt.setInt(index++, only_Warehouse_ID);

@@ -27,19 +27,24 @@ public class POFindParameterTest {
 	@ParameterizedTest
 	@ValueSource(strings = { "Großformat", "Straße", "Änderung", "Österreich", "İstanbul", "Standard" })
 	void testPreservesCaseAndAddsWildcard(String searchValue) {
-		assertEquals(searchValue + "%", FindParameterPO.getFindParameterForTest(searchValue));
+		assertEquals(searchValue + "%", FindParameterPO.getFindParameterPreserveCaseForTest(searchValue));
 	}
 
 	@Test
 	void testPreservesExistingWildcard() {
-		assertEquals("Großformat%", FindParameterPO.getFindParameterForTest("Großformat%"));
+		assertEquals("Großformat%", FindParameterPO.getFindParameterPreserveCaseForTest("Großformat%"));
 	}
 
 	@Test
 	void testIgnoresEmptySearchValues() {
-		assertNull(FindParameterPO.getFindParameterForTest(null));
-		assertNull(FindParameterPO.getFindParameterForTest(""));
-		assertNull(FindParameterPO.getFindParameterForTest("%"));
+		assertNull(FindParameterPO.getFindParameterPreserveCaseForTest(null));
+		assertNull(FindParameterPO.getFindParameterPreserveCaseForTest(""));
+		assertNull(FindParameterPO.getFindParameterPreserveCaseForTest("%"));
+	}
+
+	@Test
+	void testLegacyMethodConvertsToUpperCase() {
+		assertEquals("GROSSFORMAT%", FindParameterPO.getLegacyFindParameterForTest("Großformat"));
 	}
 
 	private static final class FindParameterPO extends PO {
@@ -50,7 +55,12 @@ public class POFindParameterTest {
 			super(new Properties());
 		}
 
-		private static String getFindParameterForTest(String query) {
+		private static String getFindParameterPreserveCaseForTest(String query) {
+			return getFindParameterPreserveCase(query);
+		}
+
+		@SuppressWarnings("deprecation")
+		private static String getLegacyFindParameterForTest(String query) {
 			return getFindParameter(query);
 		}
 
