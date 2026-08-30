@@ -1221,7 +1221,7 @@ public class DBDifference {
 				final String searchCondition = rs2.getString("SEARCH_CONDITION");
 				if (searchCondition == null) {
 					continue;
-				} else if (searchCondition.toUpperCase().indexOf("IS NOT NULL") != -1) {
+				} else if (searchCondition.toUpperCase().indexOf("IS NOT NULL") != -1) { // IDEMPIERE-7089-P6
 					// not null constraints are handled by alter table
 					continue;
 				}

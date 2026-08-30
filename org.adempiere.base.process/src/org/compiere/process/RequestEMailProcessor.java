@@ -170,9 +170,9 @@ public class RequestEMailProcessor extends SvrProcess implements ProcessEmailHan
 		
 		if(imapProtocolIndex > 0) {
 			String str_Protocol = p_IMAPHost.substring(0, imapProtocolIndex);
-			if(str_Protocol.toLowerCase().equals("imaps"))
+			if(str_Protocol.toLowerCase(java.util.Locale.ROOT).equals("imaps")) // IDEMPIERE-7089-P2
 				isSSL  = true;
-			else if(str_Protocol.toLowerCase().equals("imap"))
+			else if(str_Protocol.toLowerCase(java.util.Locale.ROOT).equals("imap")) // IDEMPIERE-7089-P2
 				isSSL = false;
 			else
 				log.warning("Unrecognized protocol - " + str_Protocol);

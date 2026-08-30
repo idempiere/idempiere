@@ -854,7 +854,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	{
 		if (IXName == null || IXName.length()==0)
 			return "0";
-		if (IXName.toUpperCase().endsWith("_KEY"))
+		if (IXName.toUpperCase(java.util.Locale.ROOT).endsWith("_KEY")) // IDEMPIERE-7089-P3
 			return "1"+IXName;
 		else
 			return "0";
@@ -919,7 +919,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 				trxName = Trx.createTrxName("getNextval");
 				trx = Trx.get(trxName, true);
 			}
-			m_sequence_id = DB.getSQLValueEx(trxName, "SELECT nextval('"+name.toLowerCase()+"')");
+			m_sequence_id = DB.getSQLValueEx(trxName, "SELECT nextval('"+name.toLowerCase(java.util.Locale.ROOT)+"')"); // IDEMPIERE-7089-P3
 		} catch (Exception e) {
 			if (trx != null) {
 				trx.rollback();
@@ -935,7 +935,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	public boolean createSequence(String name , int increment , int minvalue , int maxvalue ,int  start, String trxName)
 	{
 		// Check if Sequence exists
-		final int cnt = DB.getSQLValueEx(trxName, "SELECT COUNT(*) FROM pg_class WHERE UPPER(relname)=? AND relkind='S'", name.toUpperCase());
+		final int cnt = DB.getSQLValueEx(trxName, "SELECT COUNT(*) FROM pg_class WHERE UPPER(relname)=? AND relkind='S'", name.toUpperCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P3
 		final int no;
 		if (start < minvalue)
 			start = minvalue;
@@ -943,7 +943,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		// New Sequence
 		if (cnt == 0)
 		{
-			no = DB.executeUpdate("CREATE SEQUENCE "+name.toUpperCase()
+			no = DB.executeUpdate("CREATE SEQUENCE "+name.toUpperCase(java.util.Locale.ROOT) // IDEMPIERE-7089-P3
 								+ " INCREMENT BY " + increment
 								+ " MINVALUE " + minvalue
 								+ " MAXVALUE " + maxvalue
@@ -953,7 +953,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		// Already existing sequence => ALTER
 		else
 		{
-			no = DB.executeUpdate("ALTER SEQUENCE "+name.toUpperCase()
+			no = DB.executeUpdate("ALTER SEQUENCE "+name.toUpperCase(java.util.Locale.ROOT) // IDEMPIERE-7089-P3
 					+ " INCREMENT BY " + increment
 					+ " MINVALUE " + minvalue
 					+ " MAXVALUE " + maxvalue
@@ -1162,7 +1162,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 			return columnName;
 		}
 		
-		String lowerCase = columnName.toLowerCase();
+		String lowerCase = columnName.toLowerCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
 		if (reservedKeywords.contains(lowerCase)) {
 			StringBuilder sql = new StringBuilder("\"");
 			sql.append(lowerCase).append("\"");

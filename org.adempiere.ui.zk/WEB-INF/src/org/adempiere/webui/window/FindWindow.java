@@ -1722,7 +1722,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 						if (((String) key).length() == 0)
 							return true;
 					}
-					return value.toString().toLowerCase().startsWith(key.toString().toLowerCase());
+					return value.toString().toLowerCase().startsWith(key.toString().toLowerCase()); // IDEMPIERE-7089-P4
 				}
 				
 				protected int getMaxNumberInSubModel(int nRows) {

@@ -33,6 +33,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Locale;
 import java.util.Properties;
 
 import org.compiere.model.MColumn;
@@ -56,6 +57,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.parallel.ResourceAccessMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 
 /**
  * Comprehensive JUnit 5 tests for {@link M_Element}.
@@ -152,6 +156,24 @@ public class M_ElementTest extends AbstractTestCase {
 	}
 
 	/**
+	 * Verify that case-insensitive database lookup does not depend on the JVM
+	 * default locale.
+	 */
+	@Test
+	@ResourceLock(value = Resources.GLOBAL, mode = ResourceAccessMode.READ_WRITE)
+	public void testStaticGetByColumnNameWithTurkishDefaultLocale() {
+		Locale originalLocale = Locale.getDefault();
+		try {
+			Locale.setDefault(Locale.forLanguageTag("tr-TR"));
+			M_Element element = M_Element.get(ctx, "isactive", getTrxName());
+			assertNotNull(element, "Lookup must not depend on Java's default locale");
+			assertEquals("IsActive", element.getColumnName());
+		} finally {
+			Locale.setDefault(originalLocale);
+		}
+	}
+
+	/**
 	 * Test getOfColumn(ctx, AD_Column_ID) helper.
 	 */
 	@Test
@@ -168,7 +190,7 @@ public class M_ElementTest extends AbstractTestCase {
 	public void testGetColumnNameHelper() {
 		String columnName = DB.getSQLValueString(getTrxName(), "SELECT ColumnName FROM AD_Element WHERE AD_Element_ID=?", testElementId);
 		assertNotNull(columnName, "ColumnName must exist for test element");
-		String resolved = M_Element.getColumnName(columnName.toUpperCase());
+		String resolved = M_Element.getColumnName(columnName.toUpperCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P6
 		assertNotNull(resolved, "getColumnName should return a case-sensitive column name when present");
 		assertEquals(resolved, columnName, "M_Element.getColumnName(columnName) must have column name");
 	}
@@ -253,7 +275,7 @@ public class M_ElementTest extends AbstractTestCase {
             assertTrue(existing.save(), "New record should save successfully");
 
             duplicate = new M_Element(ctx, 0, getTrxName());
-            duplicate.setColumnName(columnName.toUpperCase());
+            duplicate.setColumnName(columnName.toUpperCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P6
             duplicate.setName(name);
             duplicate.setPrintName(name);
             duplicate.setEntityType(entityType);

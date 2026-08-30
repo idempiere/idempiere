@@ -64,7 +64,7 @@ public class TablePartitionService implements ITablePartitionService {
 				SELECT 1 FROM USER_TAB_PARTITIONS
 				WHERE TABLE_NAME = ?
 			""";
-		return DB.getSQLValueEx(trxName, sql, table.getTableName().toUpperCase()) == 1;
+		return DB.getSQLValueEx(trxName, sql, table.getTableName().toUpperCase(java.util.Locale.ROOT)) == 1; // IDEMPIERE-7089-P3
 	}
 
 	@Override
@@ -179,7 +179,7 @@ public class TablePartitionService implements ITablePartitionService {
 			return false;
 		MColumn partitionKeyColumn = partitionKeyColumns.get(0);		
 		String sql = "SELECT Column_Name FROM User_Part_Key_Columns WHERE Name=? ORDER BY Column_Position";
-		String partKeyColumn = DB.getSQLValueString(trxName, sql, table.getTableName().toUpperCase());
+		String partKeyColumn = DB.getSQLValueString(trxName, sql, table.getTableName().toUpperCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P3
 		if (!partitionKeyColumn.getColumnName().equalsIgnoreCase(partKeyColumn))
 			return false;
 		MColumn subPartitionColumn = null;
@@ -267,8 +267,8 @@ public class TablePartitionService implements ITablePartitionService {
 					WHERE Table_Name=? AND Partition_Name=?
 				""";
 		try(PreparedStatement stmt = DB.prepareStatement(sql, trxName)) {
-			stmt.setString(1, table.getTableName().toUpperCase());
-			stmt.setString(2, primaryPartition.getName().toUpperCase());
+			stmt.setString(1, table.getTableName().toUpperCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P3
+			stmt.setString(2, primaryPartition.getName().toUpperCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P3
 			ResultSet rs = stmt.executeQuery();
 			while(rs.next()) {
 				String expression = rs.getString(1);
@@ -349,7 +349,7 @@ public class TablePartitionService implements ITablePartitionService {
 	private void syncAutoList(MTable table, MColumn partitionKeyColumn, String trxName, ProcessInfo pi) {
 		String keyColumn = partitionKeyColumn.getColumnName();
 		String sql = "SELECT Column_Name FROM User_Part_Key_Columns WHERE Name=? ORDER BY Column_Position";
-		List<List<Object>> columnNames = DB.getSQLArrayObjectsEx(trxName, sql, table.getTableName().toUpperCase());
+		List<List<Object>> columnNames = DB.getSQLArrayObjectsEx(trxName, sql, table.getTableName().toUpperCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P3
 		boolean notSync = false;
 		if (columnNames.size() != 1) {
 			notSync = true;
@@ -381,10 +381,10 @@ public class TablePartitionService implements ITablePartitionService {
 	 */
 	private void syncInterval(MTable table, MColumn partitionKeyColumn, String trxName, String interval, ProcessInfo pi) {
 		String sql = "SELECT Column_Name FROM User_Part_Key_Columns WHERE Name=? ORDER BY Column_Position";
-		String intervalColumn = DB.getSQLValueString(trxName, sql, table.getTableName().toUpperCase());
+		String intervalColumn = DB.getSQLValueString(trxName, sql, table.getTableName().toUpperCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P3
 		String expression = getIntervalExpression(partitionKeyColumn);
-		if (partitionKeyColumn.getColumnName().toUpperCase().equals(intervalColumn)) {
-			if (!interval.toUpperCase().equals(expression)) {
+		if (partitionKeyColumn.getColumnName().toUpperCase(java.util.Locale.ROOT).equals(intervalColumn)) { // IDEMPIERE-7089-P3
+			if (!interval.toUpperCase(java.util.Locale.ROOT).equals(expression)) { // IDEMPIERE-7089-P3
 				//note that this only effect new data inserted into table and will not change existing partition
 				sql = "ALTER TABLE " + table.getTableName() + " SET INTERVAL (" + expression + ")";
 				int no = DB.executeUpdateEx(sql, trxName);
@@ -406,7 +406,7 @@ public class TablePartitionService implements ITablePartitionService {
 	 */
 	private void syncRange(MTable table, MColumn partitionKeyColumn, String trxName, String interval, ProcessInfo pi) {
 		String sql = "SELECT Column_Name FROM User_Part_Key_Columns WHERE Name=? ORDER BY Column_Position";
-		List<List<Object>> columnNames = DB.getSQLArrayObjectsEx(trxName, sql, table.getTableName().toUpperCase());
+		List<List<Object>> columnNames = DB.getSQLArrayObjectsEx(trxName, sql, table.getTableName().toUpperCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P3
 		boolean notSync = false;
 		if (columnNames.size() != 1) {
 			notSync = true;
@@ -447,7 +447,7 @@ public class TablePartitionService implements ITablePartitionService {
 		List<Integer> matchedIds = new ArrayList<Integer>();
 		List<MColumn> partitionKeyColumns = table.getPartitionKeyColumns(false);
 		try(PreparedStatement stmt = DB.prepareStatement(sql, trxName)) {
-			stmt.setString(1, table.getTableName().toUpperCase());
+			stmt.setString(1, table.getTableName().toUpperCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P3
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				String partitionName = rs.getString(1);
@@ -485,7 +485,7 @@ public class TablePartitionService implements ITablePartitionService {
 				FROM User_Part_Tables
 				WHERE Table_Name = ?
 			""";
-		String autoList = DB.getSQLValueStringEx(trxName, sql, table.getTableName().toUpperCase());
+		String autoList = DB.getSQLValueStringEx(trxName, sql, table.getTableName().toUpperCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P3
 		return "YES".equals(autoList);
 	}
 
@@ -501,7 +501,7 @@ public class TablePartitionService implements ITablePartitionService {
 				FROM User_Part_Tables
 				WHERE Table_Name = ?
 			""";
-		String interval = DB.getSQLValueStringEx(trxName, sql, table.getTableName().toUpperCase());
+		String interval = DB.getSQLValueStringEx(trxName, sql, table.getTableName().toUpperCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P3
 		return interval;
 	}
 	
@@ -517,7 +517,7 @@ public class TablePartitionService implements ITablePartitionService {
 					FROM User_Part_Tables
 					WHERE Table_Name = ?
 				""";
-		String type = DB.getSQLValueStringEx(trxName, sql, table.getTableName().toUpperCase());
+		String type = DB.getSQLValueStringEx(trxName, sql, table.getTableName().toUpperCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P3
 		return "RANGE".equals(type);
 	}
 	/**
@@ -732,9 +732,9 @@ public class TablePartitionService implements ITablePartitionService {
 			""";
 		
 		try (PreparedStatement stmt = DB.prepareStatement(sql, trxName)) {
-			stmt.setString(1, table.getTableName().toUpperCase());
-			stmt.setString(2, table.getTableName().toUpperCase());
-			stmt.setString(3, table.getTableName().toUpperCase());
+			stmt.setString(1, table.getTableName().toUpperCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P3
+			stmt.setString(2, table.getTableName().toUpperCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P3
+			stmt.setString(3, table.getTableName().toUpperCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P3
 			ResultSet rs = stmt.executeQuery();
 			while(rs.next()) {
 				StringBuilder alter = new StringBuilder("ALTER INDEX ")

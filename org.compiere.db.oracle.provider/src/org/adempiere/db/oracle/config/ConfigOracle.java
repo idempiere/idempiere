@@ -92,8 +92,8 @@ public class ConfigOracle implements IDatabaseConfig
 		if (def != null && def.trim().length() == 0)
 			def = null;
 		if (def != null) {
-			list.add(def.toLowerCase());
-			dblist.add(def.toLowerCase());
+			list.add(def.toLowerCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P3
+			dblist.add(def.toLowerCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P3
 		}
 
 		if (m_XE)
@@ -114,7 +114,7 @@ public class ConfigOracle implements IDatabaseConfig
 			String[] entries = path.split(File.pathSeparator);
 			for (int e = 0; e < entries.length; e++)
 			{
-				String entry = entries[e].toLowerCase();
+				String entry = entries[e].toLowerCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
 				if (entry.indexOf("ora") != -1 && entry.endsWith("bin"))
 				{
 					StringBuffer sb = getTNS_File (entries[e].substring(0, entries[e].length()-4));
@@ -266,7 +266,7 @@ public class ConfigOracle implements IDatabaseConfig
 					&& line.indexOf("EXTPROC_") == -1
 					&& line.indexOf("_HTTP") == -1)
 				{
-					String entry = line.substring(0, line.indexOf('=')).trim().toLowerCase();
+					String entry = line.substring(0, line.indexOf('=')).trim().toLowerCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
 					log.fine(entry);
 					list.add(entry);
 				}
@@ -274,9 +274,9 @@ public class ConfigOracle implements IDatabaseConfig
 			else	//	search service names
 			{
 				if (line.length() > 0
-					&& line.toUpperCase().indexOf("SERVICE_NAME") != -1)
+					&& line.toUpperCase(java.util.Locale.ROOT).indexOf("SERVICE_NAME") != -1) // IDEMPIERE-7089-P3
 				{
-					String entry = line.substring(line.indexOf('=')+1).trim().toLowerCase();
+					String entry = line.substring(line.indexOf('=')+1).trim().toLowerCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
 					int index = entry.indexOf(')');
 					if (index != 0)
 						entry = entry.substring(0, index).trim();
@@ -337,7 +337,7 @@ public class ConfigOracle implements IDatabaseConfig
 		data.setProperty(ConfigurationData.ADEMPIERE_DB_SERVER, databaseServer!=null ? ((databaseServerProtocol.equals("//") ? "" : databaseServerProtocol) + databaseServerName) : null);
 		//store as lower case for better script level backward compatibility
 		data.setProperty(ConfigurationData.ADEMPIERE_DB_TYPE, data.getDatabaseType());
-		data.setProperty(ConfigurationData.ADEMPIERE_DB_PATH, data.getDatabaseType().toLowerCase());
+		data.setProperty(ConfigurationData.ADEMPIERE_DB_PATH, data.getDatabaseType().toLowerCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P3
 
 		//	Database Port
 		int databasePort = data.getDatabasePort();

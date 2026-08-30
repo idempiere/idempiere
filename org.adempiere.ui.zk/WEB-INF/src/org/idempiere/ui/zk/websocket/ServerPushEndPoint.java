@@ -279,7 +279,7 @@ public class ServerPushEndPoint {
 												// process max-age and other attributes
 												for (int i = 1; i < cookieElements.length; i++) {
 													String attr = cookieElements[i].trim();
-													String lowerAttr = attr.toLowerCase();
+													String lowerAttr = attr.toLowerCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P2
 													if (lowerAttr.startsWith("max-age=")) {
 														try {
 															long maxAge = Long.parseLong(attr.substring(8));

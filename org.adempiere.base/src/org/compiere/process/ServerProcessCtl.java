@@ -334,7 +334,7 @@ public class ServerProcessCtl implements Runnable {
 	protected boolean startProcess ()
 	{
 		if (log.isLoggable(Level.FINE)) log.fine(m_pi.toString());
-		if (m_pi.getClassName().toLowerCase().startsWith(MRule.SCRIPT_PREFIX)) {
+		if (m_pi.getClassName().toLowerCase(java.util.Locale.ROOT).startsWith(MRule.SCRIPT_PREFIX)) { // IDEMPIERE-7089-P2
 			return ProcessUtil.startScriptProcess(Env.getCtx(), m_pi, m_trx);
 		} else {
 			return ProcessUtil.startJavaProcess(Env.getCtx(), m_pi, m_trx, managedTrxForJavaProcess);

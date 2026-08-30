@@ -562,7 +562,7 @@ public class AccountingSetupServiceImpl implements IAccountingSetupService {
 	{
 		if (log.isLoggable(Level.FINE)) log.fine(key);
 		//  Element
-		int C_ElementValue_ID = setupCtx.m_nap.getC_ElementValue_ID(key.toUpperCase());
+		int C_ElementValue_ID = setupCtx.m_nap.getC_ElementValue_ID(key.toUpperCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P5
 		if (C_ElementValue_ID == 0)
 		{
 			throw new AdempiereUserError("Account not defined: " + key);

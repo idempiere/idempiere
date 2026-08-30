@@ -175,7 +175,7 @@ public class MViewComponent extends X_AD_ViewComponent implements ImmutablePOSup
 				sb.append(", ");
 			String colSQL = vc.getColumnSQL();
 			
-			if (colSQL == null || colSQL.toUpperCase().equals("NULL"))
+			if (colSQL == null || colSQL.toUpperCase(java.util.Locale.ROOT).equals("NULL")) // IDEMPIERE-7089-P3
 			{
 				String dt = vc.getDBDataType();
 				if (dt != null)

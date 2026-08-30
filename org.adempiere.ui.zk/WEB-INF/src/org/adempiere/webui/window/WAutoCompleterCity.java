@@ -98,10 +98,10 @@ public class WAutoCompleterCity extends AutoComplete implements EventListener<Ev
 		this.setDict(null);
 		this.setDescription(null);
 		boolean truncated = false;
-		search = search.toUpperCase();
+		search = search.toUpperCase(); // IDEMPIERE-7089-P4
 		int i = 0;
 		for (CityVO vo : m_cities) {
-			if (vo.CityName.toUpperCase().startsWith(search)) {
+			if (vo.CityName.toUpperCase().startsWith(search)) { // IDEMPIERE-7089-P4
 				if (i > 0 && i == m_maxRows+1)
 				{
 					m_citiesShow.add(ITEM_More);

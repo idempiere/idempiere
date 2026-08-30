@@ -164,7 +164,7 @@ public class ReportTest extends AbstractTestCase {
 			assertEquals(1, attachment.getEntryCount(), "Unexpected number of notice attachment");
 			MAttachmentEntry entry = attachment.getEntry(0);
 			assertNotNull(entry, "Failed to retrieve attachment entry");
-			assertTrue(entry.getName() != null && entry.getName().toUpperCase().contains(".PDF"), "No PDF report attach to notice");
+			assertTrue(entry.getName() != null && entry.getName().toUpperCase(java.util.Locale.ROOT).contains(".PDF"), "No PDF report attach to notice"); // IDEMPIERE-7089-P6
 			
 		} finally {
 			rollback();

@@ -120,11 +120,11 @@ public class ColumnSync extends SvrProcess
 			String tableName = table.getTableName();
 			if (md.storesUpperCaseIdentifiers())
 			{
-				tableName = tableName.toUpperCase();
+				tableName = tableName.toUpperCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
 			}
 			else if (md.storesLowerCaseIdentifiers())
 			{
-				tableName = tableName.toLowerCase();
+				tableName = tableName.toLowerCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
 			}
 			int noColumns = 0;
 			String sql = null;

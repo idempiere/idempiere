@@ -436,7 +436,7 @@ public class QueryTest extends AbstractTestCase {
 		assertNotNull(user, "Failed to retrieve garden user record");
 		
 		String sql = query.getSQL();
-		assertTrue(sql.toLowerCase().contains("inner join c_bpartner on (ad_user.c_bpartner_id=c_bpartner.c_bpartner_id)"), "Unexpected SQL clause generated from query");
+		assertTrue(sql.toLowerCase(java.util.Locale.ROOT).contains("inner join c_bpartner on (ad_user.c_bpartner_id=c_bpartner.c_bpartner_id)"), "Unexpected SQL clause generated from query"); // IDEMPIERE-7089-P6
 	}
 	
 	@Test

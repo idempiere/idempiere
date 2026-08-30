@@ -664,7 +664,7 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 			clientInfo.timeZone = TimeZone.getTimeZone(c.getZoneId());			
 			String ua = Servlets.getUserAgent((ServletRequest) Executions.getCurrent().getNativeRequest());
 			clientInfo.userAgent = ua;
-			ua = ua.toLowerCase();
+			ua = ua.toLowerCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P2
 			clientInfo.tablet = false;
 			if (Executions.getCurrent().getBrowser("mobile") !=null) {
 				clientInfo.tablet = true;

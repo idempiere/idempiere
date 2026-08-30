@@ -358,7 +358,7 @@ public class ModelInterfaceGenerator
 		sb.append("\tpublic ").append(dataType);
 		if (clazz.equals(Boolean.class)) {
 			sb.append(" is");
-			if (columnName.toLowerCase().startsWith("is"))
+			if (columnName.toLowerCase(java.util.Locale.ROOT).startsWith("is")) // IDEMPIERE-7089-P3
 				sb.append(columnName.substring(2));
 			else
 				sb.append(columnName);
@@ -812,7 +812,7 @@ public class ModelInterfaceGenerator
 		if (tableName == null || tableName.trim().length() == 0)
 			throw new IllegalArgumentException("Must specify table name");
 
-		StringBuilder tableLike = new StringBuilder().append(tableName.trim().toUpperCase().replace("'", ""));
+		StringBuilder tableLike = new StringBuilder().append(tableName.trim().toUpperCase(java.util.Locale.ROOT).replace("'", "")); // IDEMPIERE-7089-P3
 
 		StringBuilder entityTypeFilter = new StringBuilder();
 		if (entityType != null && entityType.trim().length() > 0)

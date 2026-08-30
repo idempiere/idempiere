@@ -327,7 +327,7 @@ public class UseLifeImpl
 				ivalue = ((Integer)value).intValue();
 			}
 			
-			String columnName = mField.getColumnName().toUpperCase();
+			String columnName = mField.getColumnName().toUpperCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
 			if (columnName.endsWith(FIELD_FiscalPostfix)) {
 				sufix = FIELD_FiscalPostfix;
 				columnName = columnName.substring(0, columnName.length() - FIELD_FiscalPostfix.length());

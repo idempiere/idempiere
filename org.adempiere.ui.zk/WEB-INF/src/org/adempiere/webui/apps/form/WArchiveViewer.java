@@ -158,7 +158,7 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 				try {
 					dynInit();
 					zkInit();
-					if (   media != null && iframe.getSrc() == null && media.getName().toLowerCase().endsWith(".pdf")
+					if (   media != null && iframe.getSrc() == null && media.getName().toLowerCase(java.util.Locale.ROOT).endsWith(".pdf") // IDEMPIERE-7089-P2
 						&& (ClientInfo.isMobile() || MSysConfig.getBooleanValue(MSysConfig.ZK_USE_PDF_JS_VIEWER, false, Env.getAD_Client_ID(Env.getCtx())))) {
 						String url = Utils.getDynamicMediaURI(form, mediaVersion, media.getName(), media.getFormat());
 						String pdfJsUrl = AEnv.toPdfJsUrl(url);

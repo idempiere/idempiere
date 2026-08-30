@@ -554,7 +554,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		// If this is column of translation table (_trl), validate field length is >= field length of the corresponding column in base table
 		MTable table = MTable.get(getCtx(), getAD_Table_ID(), get_TrxName());
 		String tableName = table.getTableName();
-		if (tableName.toLowerCase().endsWith("_trl")) {
+		if (tableName.toLowerCase(java.util.Locale.ROOT).endsWith("_trl")) { // IDEMPIERE-7089-P3
 			String parentTable = tableName.substring(0, tableName.length()-4);
 			MColumn column = MColumn.get(getCtx(), parentTable, colname, get_TrxName());
 			if (column != null && column.isTranslated()) {
@@ -820,7 +820,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
         else if (columnName.equals("Description") || (!caseSensitive && columnName.equalsIgnoreCase("Description")))
             return true;
         else if (columnName.indexOf("Name") != -1
-        		|| (!caseSensitive && columnName.toUpperCase().indexOf("Name".toUpperCase()) != -1) )
+		|| (!caseSensitive && columnName.toUpperCase(java.util.Locale.ROOT).indexOf("Name".toUpperCase(java.util.Locale.ROOT)) != -1) ) // IDEMPIERE-7089-P3
             return true;
         else
         	return false;
@@ -1054,11 +1054,11 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 					Hashtable<String, DatabaseKey> htForeignKeys = new Hashtable<String, DatabaseKey>();
 
 					if (md.storesUpperCaseIdentifiers()) {
-						referenceTableName = referenceTableName.toUpperCase();
-						tableName = tableName.toUpperCase();
+						referenceTableName = referenceTableName.toUpperCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
+						tableName = tableName.toUpperCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
 					} else if (md.storesLowerCaseIdentifiers()) {
-						referenceTableName = referenceTableName.toLowerCase();
-						tableName = tableName.toLowerCase();
+						referenceTableName = referenceTableName.toLowerCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
+						tableName = tableName.toLowerCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
 					}
 
 					if (!isNoTable) {
@@ -1074,7 +1074,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 								String dbFKTable = rs.getString("FKTABLE_NAME");
 								short deleteRule = rs.getShort("DELETE_RULE");
 
-								String key = dbFKName.toLowerCase();
+								String key = dbFKName.toLowerCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
 								DatabaseKey dbForeignKey = htForeignKeys.get(key);
 								if (dbForeignKey == null)
 									dbForeignKey = new DatabaseKey(dbFKName, dbFKTable, new String[30], deleteRule);
@@ -1233,9 +1233,9 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 		
 		String tableName = primaryTableName;		
 		if (md.storesUpperCaseIdentifiers())
-			tableName = tableName.toUpperCase();
+			tableName = tableName.toUpperCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
 		else if (md.storesLowerCaseIdentifiers())
-			tableName = tableName.toLowerCase();
+			tableName = tableName.toLowerCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
 		
 		ResultSet rs = null;
 		try {
@@ -1301,7 +1301,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 						if (fkConstraintName == null || fkConstraintName.trim().length() == 0)
 						{
 							String columnName = column.getColumnName();
-							if (columnName.toUpperCase().endsWith("_ID"))
+							if (columnName.toUpperCase(java.util.Locale.ROOT).endsWith("_ID")) // IDEMPIERE-7089-P3
 								columnName = columnName.substring(0, columnName.length() - 3);
 							
 							StringBuilder constraintName = new StringBuilder();
@@ -1312,7 +1312,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 								constraintName = new StringBuilder(constraintName.substring(0, AdempiereDatabase.MAX_OBJECT_NAME_LENGTH));
 							fkConstraintName = constraintName.toString();
 							
-							int duplicateId = DB.getSQLValueEx(column.get_TrxName(), "SELECT AD_Column_ID FROM AD_Column WHERE Upper(FkConstraintName)=?", fkConstraintName.toUpperCase());
+							int duplicateId = DB.getSQLValueEx(column.get_TrxName(), "SELECT AD_Column_ID FROM AD_Column WHERE Upper(FkConstraintName)=Upper(?)", fkConstraintName); // IDEMPIERE-7089-P1
 							int loop = 0;
 							while (duplicateId > 0) 
 							{
@@ -1321,7 +1321,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 								if (fkConstraintName.length() + suffix.length() > AdempiereDatabase.MAX_OBJECT_NAME_LENGTH)
 									fkConstraintName = fkConstraintName.substring(0, fkConstraintName.length() - (fkConstraintName.length() + suffix.length() - AdempiereDatabase.MAX_OBJECT_NAME_LENGTH));
 								fkConstraintName = fkConstraintName + loop;
-								duplicateId = DB.getSQLValueEx(column.get_TrxName(), "SELECT AD_Column_ID FROM AD_Column WHERE Upper(FkConstraintName)=?", fkConstraintName.toUpperCase());
+								duplicateId = DB.getSQLValueEx(column.get_TrxName(), "SELECT AD_Column_ID FROM AD_Column WHERE Upper(FkConstraintName)=Upper(?)", fkConstraintName); // IDEMPIERE-7089-P1
 							}
 						}
 						
@@ -1413,7 +1413,7 @@ public class MColumn extends X_AD_Column implements ImmutablePOSupport
 	public String renameDBColumn(String newColumnName) {
 		int rvalue = -1;
 		String sql;
-		if (! newColumnName.toLowerCase().equals(getColumnName().toLowerCase())) {
+		if (! newColumnName.toLowerCase(java.util.Locale.ROOT).equals(getColumnName().toLowerCase(java.util.Locale.ROOT))) { // IDEMPIERE-7089-P3
 			MTable table = new MTable(getCtx(), getAD_Table_ID(), get_TrxName());
 			sql = "ALTER TABLE " + table.getTableName() + " RENAME COLUMN " + getColumnName() + " TO " + newColumnName;
 			rvalue = DB.executeUpdateEx(sql, get_TrxName());

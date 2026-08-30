@@ -69,7 +69,7 @@ public class PrepareMigrationScripts extends SvrProcess {
 
 		FilenameFilter filter = new FilenameFilter() {
 			public boolean accept(File dir, String name) {
-				return name.toLowerCase().endsWith(".sql");
+				return name.toLowerCase(java.util.Locale.ROOT).endsWith(".sql"); // IDEMPIERE-7089-P2
 			}
 		};
 		dirList = dir.listFiles(filter);

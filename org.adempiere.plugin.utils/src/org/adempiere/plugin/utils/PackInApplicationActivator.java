@@ -292,7 +292,7 @@ public class PackInApplicationActivator extends AbstractActivator{
 	
 	private void processFilePath(File toProcess) {
 		if (toProcess.isFile() && toProcess.canRead()) {
-			if (toProcess.getName().toLowerCase().endsWith(".zip"))
+			if (toProcess.getName().toLowerCase(java.util.Locale.ROOT).endsWith(".zip")) // IDEMPIERE-7089-P2
 				filesToProcess.add(toProcess);
 			else {
 				logger.log(Level.WARNING, toProcess.getName() + " is not a valid .zip file");
@@ -301,7 +301,7 @@ public class PackInApplicationActivator extends AbstractActivator{
 		} else if (toProcess.isDirectory() && toProcess.canRead()) {
 			FileFilter filter = new FileFilter() {
 				public boolean accept(File file) {
-					if (file.getName().toUpperCase().endsWith(".ZIP") || file.isDirectory())
+					if (file.getName().toUpperCase(java.util.Locale.ROOT).endsWith(".ZIP") || file.isDirectory()) // IDEMPIERE-7089-P2
 						return true;
 					else
 						return false;

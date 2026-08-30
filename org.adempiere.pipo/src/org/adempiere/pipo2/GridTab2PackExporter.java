@@ -71,7 +71,7 @@ public class GridTab2PackExporter implements IGridTabExporter {
 				sql.append("))");
 			}
 			for(GridTab child : childs) {
-				if (child.getTableName().toLowerCase().endsWith("_trl")) // ignore trl tabs as they are exported as translation
+				if (child.getTableName().toLowerCase(java.util.Locale.ROOT).endsWith("_trl")) // ignore trl tabs as they are exported as translation // IDEMPIERE-7089-P3
 					continue;
 				if (child.getTabLevel() > gridTab.getTabLevel()+1) {
 					int level = child.getTabLevel() - gridTab.getTabLevel() - 1;
@@ -183,7 +183,7 @@ public class GridTab2PackExporter implements IGridTabExporter {
 	 */
 	@Override
 	public boolean isExportableTab(GridTab gridTab) {
-		if (gridTab.getTableName().toLowerCase().endsWith("_trl"))
+		if (gridTab.getTableName().toLowerCase(java.util.Locale.ROOT).endsWith("_trl")) // IDEMPIERE-7089-P3
 			return false;
 		return true;
 	}

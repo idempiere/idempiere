@@ -596,7 +596,7 @@ public class ExtensionBrowserFormController implements IFormController {
 			return;
 		}
 		
-		String filterLower = filter.toLowerCase();
+		String filterLower = filter.toLowerCase(); // IDEMPIERE-7089-P4
 		boolean filterTag = filterLower.startsWith("tag:");
 		boolean filterCategory = filterLower.startsWith("category:");
 		String searchStr = filterLower;
@@ -608,7 +608,7 @@ public class ExtensionBrowserFormController implements IFormController {
 			if (filterTag) {
 				if (ext.hasTags()) {
 					for (JsonElement tag : ext.getTags()) {
-						if (tag.getAsString().toLowerCase().contains(searchStr)) {
+						if (tag.getAsString().toLowerCase().contains(searchStr)) { // IDEMPIERE-7089-P4
 							match = true;
 							break;
 						}
@@ -617,16 +617,16 @@ public class ExtensionBrowserFormController implements IFormController {
 			} else if (filterCategory) {
 				if (ext.hasCategories()) {
 					for (JsonElement cat : ext.getCategories()) {
-						if (cat.getAsString().toLowerCase().contains(searchStr)) {
+						if (cat.getAsString().toLowerCase().contains(searchStr)) { // IDEMPIERE-7089-P4
 							match = true;
 							break;
 						}
 					}
 				}
 			} else {
-				if (ext.getName() != null && ext.getName().toLowerCase().contains(searchStr)) {
+				if (ext.getName() != null && ext.getName().toLowerCase().contains(searchStr)) { // IDEMPIERE-7089-P4
 					match = true;
-				} else if (ext.getDescription() != null && ext.getDescription().toLowerCase().contains(searchStr)) {
+				} else if (ext.getDescription() != null && ext.getDescription().toLowerCase().contains(searchStr)) { // IDEMPIERE-7089-P4
 					match = true;
 				}
 			}

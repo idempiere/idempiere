@@ -77,7 +77,7 @@ public class WLogin extends AbstractUIPart
 			mobile = true;
 		} else {
 			String ua = Servlets.getUserAgent((ServletRequest) Executions.getCurrent().getNativeRequest());
-			ua = ua.toLowerCase();
+			ua = ua.toLowerCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P2
 			if (ua.contains("ipad") || ua.contains("iphone") || ua.contains("android"))
 				mobile = true;
 		}

@@ -127,7 +127,7 @@ public class ColumnLookup implements BiFunction<String, Object, Object> {
 				return getImage(((Number)key).intValue());				
 			} else if (t.equalsIgnoreCase("YesNo") && (key instanceof String)) {
 				return getYesNoText((String) key);
-			} else if (t.toLowerCase().startsWith("chart/") && (key instanceof Number)) {
+			} else if (t.toLowerCase(java.util.Locale.ROOT).startsWith("chart/") && (key instanceof Number)) { // IDEMPIERE-7089-P2
 				//expression syntax - chart/width/height
 				parts = t.split("[/]");
 				if (parts.length == 3) {
@@ -142,7 +142,7 @@ public class ColumnLookup implements BiFunction<String, Object, Object> {
 					}
 				}
 				return null;
-			} else if (t.toLowerCase().startsWith("attachment/")) {
+			} else if (t.toLowerCase(java.util.Locale.ROOT).startsWith("attachment/")) { // IDEMPIERE-7089-P2
 				return getAttachmentData(t, key);
 			}
 		}

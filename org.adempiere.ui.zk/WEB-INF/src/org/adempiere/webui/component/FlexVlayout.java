@@ -35,7 +35,7 @@ public class FlexVlayout extends org.zkoss.zul.Vlayout {
 	public void setPack(String pack) {
 		if (pack == null) return;
 	    try {
-	        setPack(PackType.valueOf(pack.toUpperCase()));
+	        setPack(PackType.valueOf(pack.toUpperCase(java.util.Locale.ROOT))); // IDEMPIERE-7089-P2
 	    } catch (IllegalArgumentException e) {
 	    	throw new IllegalArgumentException("Unknown pack type=" + pack);
 	    }
@@ -49,7 +49,7 @@ public class FlexVlayout extends org.zkoss.zul.Vlayout {
 	public void setAlign(String align) {
 		if (align == null) return;
 	    try {
-	    	setAlign(AlignType.valueOf(align.toUpperCase()));
+		setAlign(AlignType.valueOf(align.toUpperCase(java.util.Locale.ROOT))); // IDEMPIERE-7089-P2
 	    } catch (IllegalArgumentException e) {
 	    	throw new IllegalArgumentException("Unknown align type=" + align);
 	    }

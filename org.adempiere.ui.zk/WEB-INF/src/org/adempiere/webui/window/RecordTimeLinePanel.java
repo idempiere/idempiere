@@ -248,7 +248,7 @@ public class RecordTimeLinePanel extends Vlayout {
 				if (i > 0) {
 					if (i+1 == columns.size()) {
 						sb.append(" ")
-						  .append(Msg.getMsg(Env.getCtx(), "AND").toLowerCase())
+						  .append(Msg.getMsg(Env.getCtx(), "AND").toLowerCase()) // IDEMPIERE-7089-P4
 						  .append(" ");
 					} else {
 						sb.append(", ");

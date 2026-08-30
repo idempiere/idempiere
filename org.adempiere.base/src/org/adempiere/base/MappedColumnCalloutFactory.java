@@ -68,11 +68,11 @@ public class MappedColumnCalloutFactory implements IColumnCalloutFactory, IMappe
 	public IColumnCallout[] getColumnCallouts(String tableName, String columnName) {
 		List<IColumnCallout> calloutList = new ArrayList<IColumnCallout>();
 		StringBuilder key = new StringBuilder();
-		key.append(tableName.toLowerCase()).append("|").append(columnName.toLowerCase());
+		key.append(tableName.toLowerCase(java.util.Locale.ROOT)).append("|").append(columnName.toLowerCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P2
 		StringBuilder key1 = new StringBuilder();
-		key1.append("*|").append(columnName.toLowerCase());
+		key1.append("*|").append(columnName.toLowerCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P2
 		StringBuilder key2 = new StringBuilder();
-		key2.append(tableName.toLowerCase()).append("|*");
+		key2.append(tableName.toLowerCase(java.util.Locale.ROOT)).append("|*"); // IDEMPIERE-7089-P2
 		synchronized (calloutMap) {
 			List<Supplier<IColumnCallout>> list = calloutMap.get(key.toString());
 			if (list != null && list.size() > 0) {
@@ -93,7 +93,7 @@ public class MappedColumnCalloutFactory implements IColumnCalloutFactory, IMappe
 	@Override
 	public void addMapping(String tableName, String columnName, Supplier<IColumnCallout> supplier) {
 		StringBuilder key = new StringBuilder();
-		key.append(tableName.toLowerCase()).append("|").append(columnName.toLowerCase());
+		key.append(tableName.toLowerCase(java.util.Locale.ROOT)).append("|").append(columnName.toLowerCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P2
 		synchronized (calloutMap) {
 			List<Supplier<IColumnCallout>> list = calloutMap.get(key.toString());
 			if (list == null) {
@@ -107,7 +107,7 @@ public class MappedColumnCalloutFactory implements IColumnCalloutFactory, IMappe
 	@Override
 	public void removeMapping(String tableName, String columnName, Supplier<IColumnCallout> supplier) {
 		StringBuilder key = new StringBuilder();
-		key.append(tableName.toLowerCase()).append("|").append(columnName.toLowerCase());
+		key.append(tableName.toLowerCase(java.util.Locale.ROOT)).append("|").append(columnName.toLowerCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P2
 		synchronized (calloutMap) {
 			List<Supplier<IColumnCallout>> list = calloutMap.get(key.toString());
 			if (list != null) {

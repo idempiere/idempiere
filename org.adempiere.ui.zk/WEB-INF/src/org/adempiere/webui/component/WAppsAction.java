@@ -77,7 +77,7 @@ public class WAppsAction
        int pos = newToolTipText.indexOf('&');
        if (pos != -1  && newToolTipText.length() > pos)   //  We have a nemonic - creates ALT-_
        {
-           Character ch = Character.valueOf(newToolTipText.toLowerCase().charAt(pos + 1));
+           Character ch = Character.valueOf(newToolTipText.toLowerCase().charAt(pos + 1)); // IDEMPIERE-7089-P4
            if (ch != ' ')
            {
                // remove ampersand

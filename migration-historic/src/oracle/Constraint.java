@@ -172,7 +172,7 @@ public class Constraint {
 
 	public void setDeleteRule(String deleteRule) {
 		this.deleteRule = deleteRule;
-		if(deleteRule!=null && deleteRule.trim().toUpperCase().equals("NO ACTION")){
+		if(deleteRule!=null && deleteRule.trim().toUpperCase().equals("NO ACTION")){ // IDEMPIERE-7089-P6
 			this.deleteRule = null;
 		}
 

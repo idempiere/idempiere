@@ -226,7 +226,7 @@ public class WSQLProcess extends ADForm implements EventListener<Event>
 		StringBuilder result = new StringBuilder("SQL> ")
 				.append(sql)
 				.append(Env.NL);
-		String SQL = sql.toUpperCase();
+		String SQL = sql.toUpperCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
 		String cleanSQL = SQL
 				.replaceAll(REGEX_REMOVE_COMMENTS, "")
 				.replaceAll(REGEX_REMOVE_QUOTED_STRINGS, "")

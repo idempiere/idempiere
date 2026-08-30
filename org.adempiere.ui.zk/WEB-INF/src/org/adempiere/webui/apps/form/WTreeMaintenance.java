@@ -322,7 +322,7 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 	 */
 	private void searchElement() {
 		String filter = searchBox.getText() == null ? "" : searchBox.getText();
-		filter = Util.deleteAccents(filter.trim().toUpperCase());
+		filter = Util.deleteAccents(filter.trim().toUpperCase()); // IDEMPIERE-7089-P4
 		action_loadTree(filter);
 	}
 
@@ -363,7 +363,7 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 			if (Util.isEmpty(filter)) {
 				model.addElement(item);
 			} else {
-				String valueItem = item.toString() == null ? "" : Util.deleteAccents(item.toString().toUpperCase());
+				String valueItem = item.toString() == null ? "" : Util.deleteAccents(item.toString().toUpperCase()); // IDEMPIERE-7089-P4
 				if (valueItem.contains(filter)) {
 					model.addElement(item);
 				}

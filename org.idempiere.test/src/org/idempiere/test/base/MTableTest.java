@@ -435,7 +435,7 @@ public class MTableTest extends AbstractTestCase {
 		String indexName = MTable.getUUIDIndexName(MUser.Table_Name);
 		assertNotNull(indexName, "UUID index name must not be null");
 		assertTrue(indexName.length() > 0, "UUID index name must not be empty");
-		assertTrue(indexName.toUpperCase().contains("AD_USER"), "UUID index name should contain the table name");
+		assertTrue(indexName.toUpperCase(java.util.Locale.ROOT).contains("AD_USER"), "UUID index name should contain the table name"); // IDEMPIERE-7089-P6
 
 	    String tableName = MTable.Table_Name;
 	    String uuidCol = PO.getUUIDColumnName(tableName);

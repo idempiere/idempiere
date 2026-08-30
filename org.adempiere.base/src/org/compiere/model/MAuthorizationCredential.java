@@ -195,7 +195,7 @@ public class MAuthorizationCredential extends X_AD_AuthorizationCredential {
 			if (account == null) {
 				account = new MAuthorizationAccount(ctx, 0, get_TrxName());
 				account.setEMail(email);
-				if (preferred_username != null && ! email.toLowerCase().equals(preferred_username.toLowerCase()) && EMail.validate(preferred_username)) {
+				if (preferred_username != null && ! email.toLowerCase(java.util.Locale.ROOT).equals(preferred_username.toLowerCase(java.util.Locale.ROOT)) && EMail.validate(preferred_username)) { // IDEMPIERE-7089-P5
 					account.setPreferred_UserName(preferred_username);
 				}
 				account.setAD_AuthorizationCredential_ID(getAD_AuthorizationCredential_ID());

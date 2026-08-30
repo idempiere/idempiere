@@ -172,7 +172,7 @@ public class AutoComplete extends Combobox
 			return;
 		}
 		
-		String compare = val.toLowerCase().trim();
+		String compare = val.toLowerCase().trim(); // IDEMPIERE-7089-P4
 		
 		Iterator<?> it = getItems().iterator();
 		for (int i = 0; i < comboItems.length; i++)
@@ -180,11 +180,11 @@ public class AutoComplete extends Combobox
 			boolean match = false;
 			if (compare.length() < 3)
 			{
-				match = comboItems[i].toLowerCase().startsWith(compare);
+				match = comboItems[i].toLowerCase().startsWith(compare); // IDEMPIERE-7089-P4
 			}
 			else
 			{
-				match = comboItems[i].toLowerCase().contains(compare);
+				match = comboItems[i].toLowerCase().contains(compare); // IDEMPIERE-7089-P4
 			}
 			if (match)
 			{

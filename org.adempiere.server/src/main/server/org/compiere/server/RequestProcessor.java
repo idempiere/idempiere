@@ -623,7 +623,7 @@ public class RequestProcessor extends AdempiereServer
 		if (QText == null)
 			QText = "";
 		else
-			QText = QText.toUpperCase();
+			QText = QText.toUpperCase(); // IDEMPIERE-7089-P4
 		//
 		MRequestProcessorRoute[] routes = m_model.getRoutes(false);
 		for (int i = 0; i < routes.length; i++)
@@ -639,7 +639,7 @@ public class RequestProcessor extends AdempiereServer
 			String keyword = route.getKeyword();
 			if (keyword != null)
 			{
-				StringTokenizer st = new StringTokenizer(keyword.toUpperCase(), " ,;\t\n\r\f");
+				StringTokenizer st = new StringTokenizer(keyword.toUpperCase(), " ,;\t\n\r\f"); // IDEMPIERE-7089-P4
 				while (st.hasMoreElements())
 				{
 					if (QText.indexOf(st.nextToken()) != -1)

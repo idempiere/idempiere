@@ -80,7 +80,7 @@ public class MIFixedAsset extends X_I_FixedAsset
 			if (key == null || key.trim().length() == 0) {
 				throw new FillMandatoryException(COLUMNNAME_ProductValue, COLUMNNAME_Name);
 			}
-			key = key.toUpperCase();
+			key = key.toUpperCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P5
 			whereClause.append(DB.TO_STRING(key));
 			whereClause.append(" AND AD_Client_ID=").append(getAD_Client_ID());
 			String sql = "SELECT M_Product_ID FROM M_Product WHERE " + whereClause.toString();

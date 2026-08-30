@@ -147,7 +147,7 @@ public class TablePartitionService implements ITablePartitionService {
 
 					List<String> lowerCasePartitionKeyColumnNames = new ArrayList<String>();
 					for (String partitionKeyColumnName : partitionKeyColumnNames)
-						lowerCasePartitionKeyColumnNames.add(partitionKeyColumnName.toLowerCase());
+						lowerCasePartitionKeyColumnNames.add(partitionKeyColumnName.toLowerCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P3
 					String constraintColumnsStr = constraint_definition.substring(constraint_definition.indexOf("(")+1, constraint_definition.length()-1);
 					StringTokenizer st = new StringTokenizer(constraintColumnsStr, ",");
 					while (st.hasMoreTokens()) {
@@ -185,8 +185,8 @@ public class TablePartitionService implements ITablePartitionService {
 				
 				if (constraint_definition.startsWith("CHECK ") || constraint_definition.startsWith("FOREIGN KEY "))
 				{
-					if (constraint_definition.indexOf(getDefaultPartitionName(table).toLowerCase()) >= 0) {
-						constraint_definition = constraint_definition.replace(getDefaultPartitionName(table).toLowerCase(), table.getTableName().toLowerCase());
+					if (constraint_definition.indexOf(getDefaultPartitionName(table).toLowerCase(java.util.Locale.ROOT)) >= 0) { // IDEMPIERE-7089-P3
+						constraint_definition = constraint_definition.replace(getDefaultPartitionName(table).toLowerCase(java.util.Locale.ROOT), table.getTableName().toLowerCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P3
 					}
 					StringBuilder alterStmt = new StringBuilder();
 					alterStmt.append("ALTER TABLE ").append(table.getTableName()).append(" ");
@@ -224,7 +224,7 @@ public class TablePartitionService implements ITablePartitionService {
 		Map<String, String> indexMap = new HashMap<String, String>();
 		Map<String, String> uniqueMap = new HashMap<String, String>();
 		try (PreparedStatement stmt = DB.prepareStatement(indexs, trxName)) {
-			stmt.setString(1, getDefaultPartitionName(table).toLowerCase());
+			stmt.setString(1, getDefaultPartitionName(table).toLowerCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P3
 			ResultSet rs = stmt.executeQuery();
 			while(rs.next()) {
 				String indexName = rs.getString(1);
@@ -242,22 +242,22 @@ public class TablePartitionService implements ITablePartitionService {
 		List<String> partitionKeyColumnNames = table.getPartitionKeyColumnNames();
 		for(String indexName : uniqueMap.keySet()) {
 			String consql = "select conindid::regclass from pg_constraint where conrelid = ?::regclass and conindid = ?::regclass";
-			String conindid = DB.getSQLValueString(trxName, consql, table.getTableName().toLowerCase(), indexName.toLowerCase());
+			String conindid = DB.getSQLValueString(trxName, consql, table.getTableName().toLowerCase(java.util.Locale.ROOT), indexName.toLowerCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P3
 			if (conindid != null && conindid.equalsIgnoreCase(indexName))
 				continue;
 			
 			//unique index must include partition key column
 			String indexdef = uniqueMap.get(indexName);
 			for(String partitionKey : partitionKeyColumnNames) {
-				if (!indexdef.contains(partitionKey.toLowerCase()+",") && !indexdef.contains(partitionKey.toLowerCase()+")")) {
-					int whereIndex = indexdef.toLowerCase().indexOf(" where ");
+				if (!indexdef.contains(partitionKey.toLowerCase(java.util.Locale.ROOT)+",") && !indexdef.contains(partitionKey.toLowerCase(java.util.Locale.ROOT)+")")) { // IDEMPIERE-7089-P3
+					int whereIndex = indexdef.toLowerCase(java.util.Locale.ROOT).indexOf(" where "); // IDEMPIERE-7089-P3
 					if (whereIndex > 0) {
 						String whereClause = indexdef.substring(whereIndex);
 						indexdef = indexdef.substring(0, whereIndex);
-						indexdef = indexdef.substring(0, indexdef.length()-1)+", "+partitionKey.toLowerCase()+")";
+						indexdef = indexdef.substring(0, indexdef.length()-1)+", "+partitionKey.toLowerCase(java.util.Locale.ROOT)+")"; // IDEMPIERE-7089-P3
 						indexdef = indexdef + whereClause;
 					} else {
-						indexdef = indexdef.substring(0, indexdef.length()-1)+", "+partitionKey.toLowerCase()+")";
+						indexdef = indexdef.substring(0, indexdef.length()-1)+", "+partitionKey.toLowerCase(java.util.Locale.ROOT)+")"; // IDEMPIERE-7089-P3
 					}
 				}
 			}			
@@ -265,7 +265,7 @@ public class TablePartitionService implements ITablePartitionService {
 			DB.executeUpdateEx(alter.toString(), trxName);
 			if (pi != null)
 				pi.addLog(0, null, null, alter.toString());
-			indexdef = indexdef.replace(" ON adempiere."+getDefaultPartitionName(table).toLowerCase()+" ", " ON adempiere."+table.getTableName().toLowerCase()+" ");
+			indexdef = indexdef.replace(" ON adempiere."+getDefaultPartitionName(table).toLowerCase(java.util.Locale.ROOT)+" ", " ON adempiere."+table.getTableName().toLowerCase(java.util.Locale.ROOT)+" "); // IDEMPIERE-7089-P3
 			DB.executeUpdateEx(indexdef, trxName);
 			if (pi != null)
 				pi.addLog(0, null, null, indexdef);
@@ -273,7 +273,7 @@ public class TablePartitionService implements ITablePartitionService {
 		
 		for(String indexName : indexMap.keySet()) {
 			String consql = "select conindid::regclass from pg_constraint where conrelid = ?::regclass and conindid = ?::regclass";
-			String conindid = DB.getSQLValueString(trxName, consql, table.getTableName().toLowerCase(), indexName.toLowerCase());
+			String conindid = DB.getSQLValueString(trxName, consql, table.getTableName().toLowerCase(java.util.Locale.ROOT), indexName.toLowerCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P3
 			if (conindid != null && conindid.equalsIgnoreCase(indexName))
 				continue;
 			
@@ -282,7 +282,7 @@ public class TablePartitionService implements ITablePartitionService {
 			DB.executeUpdateEx(alter.toString(), trxName);
 			if (pi != null)
 				pi.addLog(0, null, null, alter.toString());
-			indexdef = indexdef.replace(" ON adempiere."+getDefaultPartitionName(table).toLowerCase()+" ", " ON adempiere."+table.getTableName().toLowerCase()+" ");
+			indexdef = indexdef.replace(" ON adempiere."+getDefaultPartitionName(table).toLowerCase(java.util.Locale.ROOT)+" ", " ON adempiere."+table.getTableName().toLowerCase(java.util.Locale.ROOT)+" "); // IDEMPIERE-7089-P3
 			DB.executeUpdateEx(indexdef, trxName);
 			if (pi != null)
 				pi.addLog(0, null, null, indexdef);
@@ -451,8 +451,8 @@ public class TablePartitionService implements ITablePartitionService {
 			)
 			select relname, viewoid, max(depth) from depv group by relname, viewoid order by 3 desc
 			""";
-		String defaultPartitionName = getDefaultPartitionName(table).toLowerCase();
-		String tableName = table.getTableName().toLowerCase();
+		String defaultPartitionName = getDefaultPartitionName(table).toLowerCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
+		String tableName = table.getTableName().toLowerCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
 		List<String> viewTexts = new ArrayList<String>();
 		List<String> viewNames = new ArrayList<String>();
 		List<String> grants = new ArrayList<String>();
@@ -476,7 +476,7 @@ public class TablePartitionService implements ITablePartitionService {
 			for(int i = 0; i < viewNames.size(); i++) {
 				String viewName = viewNames.get(i);
 				try(PreparedStatement stmt1 = DB.prepareStatement(grantSQL, trxName)) {
-					stmt1.setString(1, viewName.toLowerCase());
+					stmt1.setString(1, viewName.toLowerCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P3
 					ResultSet rs1 = stmt1.executeQuery();
 					while(rs1.next()) {
 						grants.add(rs1.getString(1));
@@ -566,7 +566,7 @@ public class TablePartitionService implements ITablePartitionService {
 			currentPartitionKey = "LIST";
 		else if (partitioningMethod.equals(MColumn.PARTITIONINGMETHOD_Range))
 			currentPartitionKey = "RANGE";
-		currentPartitionKey += " (" + partitionKeyColumn.getColumnName().toLowerCase() + ")";
+		currentPartitionKey += " (" + partitionKeyColumn.getColumnName().toLowerCase(java.util.Locale.ROOT) + ")"; // IDEMPIERE-7089-P3
 		currentPartitionKey = currentPartitionKey.replace(",", ", ");				
 		if (!currentPartitionKey.equalsIgnoreCase(partitionKey))
 			return Msg.getMsg(Env.getCtx(), "PartitionConfigurationChanged") + ": " + partitionKey;
@@ -748,7 +748,7 @@ public class TablePartitionService implements ITablePartitionService {
 		
 		for (RangePartitionInterval rangePartitionInterval : rangePartitionIntervals)
 		{
-			X_AD_TablePartition partition = createNewRangePartition(rangePartitionInterval, tablePartitionNames, table, partitionKeyColumn, table.getTableName().toLowerCase(), 
+			X_AD_TablePartition partition = createNewRangePartition(rangePartitionInterval, tablePartitionNames, table, partitionKeyColumn, table.getTableName().toLowerCase(java.util.Locale.ROOT),  // IDEMPIERE-7089-P3
 					getDefaultPartitionName(table), null, trxName);			
 			if (partition != null)
 			{
@@ -787,7 +787,7 @@ public class TablePartitionService implements ITablePartitionService {
 				ResultSet rs = stmt.executeQuery();
 				while(rs.next()) {
 					X_AD_TablePartition partition = new X_AD_TablePartition(Env.getCtx(), rs, trxName);
-					if (partition.getName().toLowerCase().endsWith("_default_partition"))
+					if (partition.getName().toLowerCase(java.util.Locale.ROOT).endsWith("_default_partition")) // IDEMPIERE-7089-P3
 						continue;
 					partitions.add(partition);
 					tablePartitionNames.add(partition.getName());
@@ -947,7 +947,7 @@ public class TablePartitionService implements ITablePartitionService {
 	private boolean addListPartition(MTable table, MColumn partitionKeyColumn, String trxName, ProcessInfo pi, MColumn subPartitionColumn) {
 		boolean isUpdated = false;
 		HashMap<String, Object> columnValues = new HashMap<>();
-		List<X_AD_TablePartition> partitions = generateListPartition(table, table.getTableName().toLowerCase(), getDefaultPartitionName(table), partitionKeyColumn, columnValues, null, trxName);
+		List<X_AD_TablePartition> partitions = generateListPartition(table, table.getTableName().toLowerCase(java.util.Locale.ROOT), getDefaultPartitionName(table), partitionKeyColumn, columnValues, null, trxName); // IDEMPIERE-7089-P3
 		for (X_AD_TablePartition partition : partitions)
 		{
 			Object value = columnValues.get(partition.getName());
@@ -988,7 +988,7 @@ public class TablePartitionService implements ITablePartitionService {
 				ResultSet rs = stmt.executeQuery();
 				while(rs.next()) {
 					X_AD_TablePartition partition = new X_AD_TablePartition(Env.getCtx(), rs, trxName);
-					if (partition.getName().toLowerCase().endsWith("_default_partition"))
+					if (partition.getName().toLowerCase(java.util.Locale.ROOT).endsWith("_default_partition")) // IDEMPIERE-7089-P3
 						continue;
 					partitions.add(partition);
 					tablePartitionNames.add(partition.getName());
@@ -1099,7 +1099,7 @@ public class TablePartitionService implements ITablePartitionService {
 		else if (partitioningMethod.equals(MColumn.PARTITIONINGMETHOD_Range))
 			currentPartitionKey = "RANGE";
 		String partitionKey = getPartitionKeyDefinition(table, trxName);
-		if (!partitionKey.toLowerCase().startsWith(currentPartitionKey.toLowerCase()))
+		if (!partitionKey.toLowerCase(java.util.Locale.ROOT).startsWith(currentPartitionKey.toLowerCase(java.util.Locale.ROOT))) // IDEMPIERE-7089-P3
 			return Msg.getMsg(Env.getCtx(), "PartitionConfigurationChanged") + " [" + MColumn.COLUMNNAME_PartitioningMethod + "]";
 		return null;
 	}

@@ -102,9 +102,9 @@ public class MSearchDefinition extends X_AD_SearchDefinition {
 		sql = "SELECT AD_SearchDefinition_ID FROM AD_SearchDefinition WHERE IsActive = 'Y' ";
 
 		if (transactionCode != null) {
-			sql += "AND UPPER(TransactionCode) = ?";
+			sql += "AND UPPER(TransactionCode) = UPPER(?)";
 			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setString(1, transactionCode.toUpperCase());
+			pstmt.setString(1, transactionCode); // IDEMPIERE-7089-P1
 		} else {
 			sql += "AND IsDefault = 'Y'";
 			pstmt = DB.prepareStatement(sql, null);
@@ -139,10 +139,10 @@ public class MSearchDefinition extends X_AD_SearchDefinition {
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 
-			sql = "SELECT AD_SearchDefinition_ID FROM AD_SearchDefinition WHERE UPPER(TransactionCode) = ? AND IsActive = 'Y'";
+			sql = "SELECT AD_SearchDefinition_ID FROM AD_SearchDefinition WHERE UPPER(TransactionCode) = UPPER(?) AND IsActive = 'Y'";
 
 			pstmt = DB.prepareStatement(sql, null);
-			pstmt.setString(1, transactionCode.toUpperCase());
+			pstmt.setString(1, transactionCode); // IDEMPIERE-7089-P1
 
 			if (pstmt != null) {
 				rs = pstmt.executeQuery();

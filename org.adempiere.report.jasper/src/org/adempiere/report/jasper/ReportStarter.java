@@ -333,8 +333,8 @@ public class ReportStarter implements ProcessCall, ClientProcess
 			//doesn't work for web, class resource and bundle resource
             for( int i=0; i<subreports.length; i++) {
             	// @Trifon - begin
-            	if (subreports[i].getName().toLowerCase().endsWith(".jasper")
-            		|| subreports[i].getName().toLowerCase().endsWith(".jrxml"))
+	if (subreports[i].getName().toLowerCase(java.util.Locale.ROOT).endsWith(".jasper") // IDEMPIERE-7089-P3
+		|| subreports[i].getName().toLowerCase(java.util.Locale.ROOT).endsWith(".jrxml")) // IDEMPIERE-7089-P3
             	{
                     JasperInfo subInfo = getJasperInfo( subreports[i] );
                     if (subInfo.getJasperReport()!=null) {
@@ -635,8 +635,8 @@ public class ReportStarter implements ProcessCall, ClientProcess
 				{
 					MTable table = new MTable(ctx, pi.getTable_ID(), trxName);
 					String tableName = table.getTableName();
-		    		String originalQueryTemp = originalQueryText.toUpperCase();
-		    		int index1 = originalQueryTemp.indexOf(" " + tableName.toUpperCase());
+					String originalQueryTemp = originalQueryText.toUpperCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
+					int index1 = originalQueryTemp.indexOf(" " + tableName.toUpperCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P3
 		    		if (index1 != -1)
 		    		{
 		    			int index2 = originalQueryTemp.substring(index1).indexOf(",");

@@ -147,9 +147,9 @@ public class CreateForeignKey extends SvrProcess {
 		
 		String tableName = table.getTableName();		
 		if (md.storesUpperCaseIdentifiers())
-			tableName = tableName.toUpperCase();
+			tableName = tableName.toUpperCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
 		else if (md.storesLowerCaseIdentifiers())
-			tableName = tableName.toLowerCase();
+			tableName = tableName.toLowerCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
 		
 		ResultSet rs = null;
 		try {
@@ -163,7 +163,7 @@ public class CreateForeignKey extends SvrProcess {
 				String dbFKTable = rs.getString("FKTABLE_NAME");
 				short deleteRule = rs.getShort("DELETE_RULE");
 
-				String key = dbFKName.toLowerCase();
+				String key = dbFKName.toLowerCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
 				DatabaseKey dbForeignKey = htForeignKeys.get(key);
 				if (dbForeignKey == null)
 					dbForeignKey = new DatabaseKey(dbFKName, dbFKTable, new String[30], deleteRule);
@@ -201,7 +201,7 @@ public class CreateForeignKey extends SvrProcess {
 					if (columnName == null)
 						continue;
 					
-					int AD_Column_ID = DB.getSQLValue(null, getColumnIDSql, table.getAD_Table_ID(), columnName.toLowerCase());
+					int AD_Column_ID = DB.getSQLValue(null, getColumnIDSql, table.getAD_Table_ID(), columnName.toLowerCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P3
 					if (AD_Column_ID > 0)
 					{
 						column = MColumn.getCopy(getCtx(), AD_Column_ID, get_TrxName());

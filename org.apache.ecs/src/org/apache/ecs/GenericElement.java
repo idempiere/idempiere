@@ -354,9 +354,9 @@ public abstract class GenericElement implements Element,Serializable
         switch (getCase())
         {
             case UPPERCASE:
-                return value.toUpperCase();
+                return value.toUpperCase(); // IDEMPIERE-7089-P6
             case LOWERCASE:
-                return value.toLowerCase();
+                return value.toLowerCase(); // IDEMPIERE-7089-P6
             default:
                 return value;
         }

@@ -236,7 +236,7 @@ public class DataEngine
 			log.log(Level.SEVERE, "Not found Format=" + format);
 			return null;
 		}
-		if (format.isTranslationView() && tableName.toLowerCase().endsWith("_v"))	//	_vt not just _v
+		if (format.isTranslationView() && tableName.toLowerCase(java.util.Locale.ROOT).endsWith("_v"))	//	_vt not just _v // IDEMPIERE-7089-P3
 		{
 			boolean hasVT = DB.isTableOrViewExists(tableName+"t");
 			if (hasVT)
@@ -337,7 +337,7 @@ public class DataEngine
 			// init regular object to replace table name in virtual column
 			String orgTable = null;
 			Pattern regTranslateTable = null; 
-			if (tableName.toLowerCase().endsWith("_vt")){
+			if (tableName.toLowerCase(java.util.Locale.ROOT).endsWith("_vt")){ // IDEMPIERE-7089-P3
 				orgTable = MTable.getTableName(ctx, format.getAD_Table_ID());
 				regTranslateTable =  Pattern.compile("\\b" + orgTable + "\\b", Pattern.CASE_INSENSITIVE);
 			}
@@ -359,7 +359,7 @@ public class DataEngine
 					ColumnSQL = "";
 				else{
 					// replace table with translate table IDEMPIERE-2234
-					if (tableName.toLowerCase().endsWith("_vt")){
+					if (tableName.toLowerCase(java.util.Locale.ROOT).endsWith("_vt")){ // IDEMPIERE-7089-P3
 						ColumnSQL = regTranslateTable.matcher(ColumnSQL).replaceAll(tableName);
 					}
 				}

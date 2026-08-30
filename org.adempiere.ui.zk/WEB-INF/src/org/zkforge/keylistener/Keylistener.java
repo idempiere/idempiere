@@ -135,7 +135,7 @@ public class Keylistener extends HtmlBasedComponent {
 					throw new WrongValueException(MCommon.UNEXPECTED_CHARACTER,
 							new Object[] { Character.valueOf(cc), keys });
 
-				final String s = keys.substring(j + 1, k).toLowerCase();
+				final String s = keys.substring(j + 1, k).toLowerCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P2
 				if ("pgup".equals(s))
 					cc = 'A';
 				else if ("pgdn".equals(s))

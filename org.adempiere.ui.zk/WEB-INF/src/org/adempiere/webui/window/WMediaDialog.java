@@ -285,7 +285,7 @@ public class WMediaDialog extends Window implements EventListener<Event>
 			Clob clob = (Clob)m_data;
 			long length = clob.length() > 100 ? 100 : clob.length();
 			String data = ((Clob)m_data).getSubString(1, Long.valueOf(length).intValue());
-			if (data.toUpperCase().indexOf("<html>") >= 0)
+			if (data.toUpperCase(java.util.Locale.ROOT).indexOf("<html>") >= 0) // IDEMPIERE-7089-P2
 			{
 				contentType = "text/html";
 			}
