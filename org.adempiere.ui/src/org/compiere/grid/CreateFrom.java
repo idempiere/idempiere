@@ -154,11 +154,25 @@ public abstract class CreateFrom implements ICreateFrom
 			.append(display)
 			.append(" FROM C_Order o WHERE ")
 			.append(colBP)
-			.append("=? AND o.IsSOTrx=? AND o.DocStatus IN ('CL','CO') AND o.C_Order_ID IN (SELECT ol.C_Order_ID FROM C_OrderLine ol WHERE ");
-		if (forCreditMemo)
-			sql.append(column).append(">0 AND (CASE WHEN ol.QtyDelivered>=ol.QtyOrdered THEN ol.QtyDelivered-ol.QtyInvoiced!=0 ELSE 1=1 END)) ");
+			.append("=? AND o.IsSOTrx=? ");
+		if (!forInvoice)
+		{
+			// Shipments/receipts can only reference completed orders; purchase receipts can exceed ordered quantity
+			sql.append("AND o.DocStatus='CO' ");
+			if (isSOTrx)
+			{
+				// Customer shipments require an open delivery quantity
+				sql.append("AND o.C_Order_ID IN (SELECT ol.C_Order_ID FROM C_OrderLine ol WHERE ol.QtyOrdered-ol.QtyDelivered!=0) ");
+			}
+		}
 		else
-			sql.append("ol.QtyOrdered-").append(column).append("!=0) ");
+		{
+			sql.append("AND o.DocStatus IN ('CL','CO') AND o.C_Order_ID IN (SELECT ol.C_Order_ID FROM C_OrderLine ol WHERE ");
+			if (forCreditMemo)
+				sql.append(column).append(">0 AND (CASE WHEN ol.QtyDelivered>=ol.QtyOrdered THEN ol.QtyDelivered-ol.QtyInvoiced!=0 ELSE 1=1 END)) ");
+			else
+				sql.append("ol.QtyOrdered-").append(column).append("!=0) ");
+		}
 					
 		if(sameWarehouseOnly)
 		{
