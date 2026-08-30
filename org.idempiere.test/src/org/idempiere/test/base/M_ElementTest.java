@@ -190,7 +190,7 @@ public class M_ElementTest extends AbstractTestCase {
 	public void testGetColumnNameHelper() {
 		String columnName = DB.getSQLValueString(getTrxName(), "SELECT ColumnName FROM AD_Element WHERE AD_Element_ID=?", testElementId);
 		assertNotNull(columnName, "ColumnName must exist for test element");
-		String resolved = M_Element.getColumnName(columnName.toUpperCase()); // IDEMPIERE-7089-P6
+		String resolved = M_Element.getColumnName(columnName.toUpperCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P6
 		assertNotNull(resolved, "getColumnName should return a case-sensitive column name when present");
 		assertEquals(resolved, columnName, "M_Element.getColumnName(columnName) must have column name");
 	}
@@ -275,7 +275,7 @@ public class M_ElementTest extends AbstractTestCase {
             assertTrue(existing.save(), "New record should save successfully");
 
             duplicate = new M_Element(ctx, 0, getTrxName());
-            duplicate.setColumnName(columnName.toUpperCase()); // IDEMPIERE-7089-P6
+            duplicate.setColumnName(columnName.toUpperCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P6
             duplicate.setName(name);
             duplicate.setPrintName(name);
             duplicate.setEntityType(entityType);

@@ -189,7 +189,7 @@ public class Query
 	public Query setOrderBy(String orderBy)
 	{
 		this.orderBy = orderBy != null ? orderBy.trim() : null;
-		if (this.orderBy != null && this.orderBy.toUpperCase().startsWith("ORDER BY")) // IDEMPIERE-7089-P3
+		if (this.orderBy != null && this.orderBy.toUpperCase(java.util.Locale.ROOT).startsWith("ORDER BY")) // IDEMPIERE-7089-P3
 		{
 			this.orderBy = this.orderBy.substring(8);
 		}

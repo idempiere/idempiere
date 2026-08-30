@@ -539,7 +539,7 @@ public class RelatedInfoWindow implements EventListener<Event>, Sortable<Object>
 			{
 				String tmp = colsql.substring(0, lastSpaceIdx).trim();
 				char last = tmp.charAt(tmp.length() - 1);
-				if (tmp.toLowerCase().endsWith("as")) // IDEMPIERE-7089-P3
+				if (tmp.toLowerCase(java.util.Locale.ROOT).endsWith("as")) // IDEMPIERE-7089-P3
 				{
 					colsql = colsql.substring(lastSpaceIdx).trim();
 				}

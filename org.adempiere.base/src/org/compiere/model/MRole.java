@@ -2144,7 +2144,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			String TableName = ti[i].getTableName();
 			
 			//[ 1644310 ] Rev. 1292 hangs on start
-			if (TableName.toUpperCase().endsWith("_TRL")) continue; // IDEMPIERE-7089-P3
+			if (TableName.toUpperCase(java.util.Locale.ROOT).endsWith("_TRL")) continue; // IDEMPIERE-7089-P3
 			if (isView(TableName)) continue;
 			
 			int AD_Table_ID = getAD_Table_ID (TableName);
@@ -2197,7 +2197,7 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			if (columnName == null)
 				continue;	//	no key column
 			
-			if (mainSql.toUpperCase().startsWith("SELECT COUNT(*) FROM ")) { // IDEMPIERE-7089-P3
+			if (mainSql.toUpperCase(java.util.Locale.ROOT).startsWith("SELECT COUNT(*) FROM ")) { // IDEMPIERE-7089-P3
 				// globalqss - Carlos Ruiz - [ 1965744 ] Dependent entities access problem
 				// this is the count select, it doesn't have the column but needs to be filtered
 				 MTable table = MTable.get(getCtx(), tableName);

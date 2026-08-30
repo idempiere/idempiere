@@ -456,7 +456,7 @@ public class PackInHandler extends DefaultHandler {
 
         		String fkConstraintSql = MColumn.getForeignKeyConstraintSql(md, catalog, schema, tableName, table, column, false);
         		if (! Util.isEmpty(fkConstraintSql)) {
-			if (fkConstraintSql.toLowerCase().contains(" ad_sequence(ad_sequence_id)")) // IDEMPIERE-7089-P3
+			if (fkConstraintSql.toLowerCase(java.util.Locale.ROOT).contains(" ad_sequence(ad_sequence_id)")) // IDEMPIERE-7089-P3
         				fkConstraintSql = fkConstraintSql + "; COMMIT";
         			if (fkConstraintSql.indexOf(DB.SQLSTATEMENT_SEPARATOR) == -1) {
         				DB.executeUpdate(fkConstraintSql, false, m_ctx.trx.getTrxName());

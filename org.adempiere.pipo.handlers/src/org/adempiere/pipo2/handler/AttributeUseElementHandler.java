@@ -75,16 +75,16 @@ public class AttributeUseElementHandler extends GenericPOElementHandler
 						{
 							throw new Exception("SQL Statement must include AD_Client_ID and AD_Org_ID");
 						}
-						if (!excludes.contains(column.getColumnName().toLowerCase())) // IDEMPIERE-7089-P3
+						if (!excludes.contains(column.getColumnName().toLowerCase(java.util.Locale.ROOT))) // IDEMPIERE-7089-P3
 						{
-							excludes.add(column.getColumnName().toLowerCase()); // IDEMPIERE-7089-P3
+							excludes.add(column.getColumnName().toLowerCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P3
 						}
 					}
 				}
 
 				for (String keycol : mAttributeUse.get_KeyColumns())
 				{
-					if (excludes.contains(keycol.toLowerCase())) // IDEMPIERE-7089-P3
+					if (excludes.contains(keycol.toLowerCase(java.util.Locale.ROOT))) // IDEMPIERE-7089-P3
 					{
 						throw new Exception("SQL Statement must include key columns");
 					}

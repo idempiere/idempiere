@@ -61,7 +61,7 @@ public class DatabaseElementColumnRename extends SvrProcess {
 		M_Element element = new M_Element(getCtx(), p_AD_Element_ID, get_TrxName());
 		if (log.isLoggable(Level.INFO)) log.info(element.toString());
 		if (Util.isEmpty(p_NewColumnName, true)
-			|| p_NewColumnName.toLowerCase().equals(element.getColumnName().toLowerCase())) { // IDEMPIERE-7089-P3
+			|| p_NewColumnName.toLowerCase(java.util.Locale.ROOT).equals(element.getColumnName().toLowerCase(java.util.Locale.ROOT))) { // IDEMPIERE-7089-P3
 			throw new AdempiereException(Util.cleanAmp(Msg.parseTranslation(getCtx(), "@NotValid@: @NewColumnName@")));
 		}
 		// Validate there is not another element with new column name

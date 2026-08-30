@@ -130,7 +130,7 @@ public final class ThemeManager {
 		MUserDefTheme userDef = MUserDefTheme.getBestMatch(Env.getCtx(), getTheme());
 		if (userDef != null && !Util.isEmpty(userDef.getStylesheet())) {
 			String styleSheet = userDef.getStylesheet();
-			if (styleSheet.toLowerCase().startsWith("https://")) { // IDEMPIERE-7089-P2
+			if (styleSheet.toLowerCase(java.util.Locale.ROOT).startsWith("https://")) { // IDEMPIERE-7089-P2
 				return styleSheet;
 			} else if (MAttachment.isAttachmentURLPath(styleSheet)) {
 				return MAttachment.getStyleSheetAttachmentURLFromPath(null, styleSheet);

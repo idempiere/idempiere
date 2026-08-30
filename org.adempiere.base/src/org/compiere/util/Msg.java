@@ -492,7 +492,7 @@ public final class Msg
 		String className = "org.compiere.util.AmtInWords_";
 		try
 		{
-			className += language.getLanguageCode().toUpperCase(); // IDEMPIERE-7089-P2
+			className += language.getLanguageCode().toUpperCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P2
 			Class<?> clazz = Class.forName(className);
 			AmtInWords aiw = (AmtInWords)clazz.getDeclaredConstructor().newInstance();
 			return aiw.getAmtInWords(amount);

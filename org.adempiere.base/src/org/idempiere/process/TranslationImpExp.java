@@ -123,7 +123,7 @@ public class TranslationImpExp extends SvrProcess {
 						fos.close();
 					}
 				} else {
-					if (! p_FileName.toLowerCase().endsWith(".zip")) { // IDEMPIERE-7089-P2
+					if (! p_FileName.toLowerCase(java.util.Locale.ROOT).endsWith(".zip")) { // IDEMPIERE-7089-P2
 						throw new AdempiereSystemError("@FileMustBeZIP@");
 					}
 				}

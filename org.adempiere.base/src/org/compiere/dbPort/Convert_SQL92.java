@@ -54,11 +54,11 @@ public abstract class Convert_SQL92 extends Convert {
 	{
 		boolean trace = false;
 		//
-		int fromIndex = Util.findIndexOf (sqlStatement.toUpperCase(), " FROM "); // IDEMPIERE-7089-P3
-		int whereIndex = Util.findIndexOf(sqlStatement.toUpperCase(), " WHERE "); // IDEMPIERE-7089-P3
-		int endWhereIndex = Util.findIndexOf(sqlStatement.toUpperCase(), " GROUP BY "); // IDEMPIERE-7089-P3
+		int fromIndex = Util.findIndexOf (sqlStatement.toUpperCase(java.util.Locale.ROOT), " FROM "); // IDEMPIERE-7089-P3
+		int whereIndex = Util.findIndexOf(sqlStatement.toUpperCase(java.util.Locale.ROOT), " WHERE "); // IDEMPIERE-7089-P3
+		int endWhereIndex = Util.findIndexOf(sqlStatement.toUpperCase(java.util.Locale.ROOT), " GROUP BY "); // IDEMPIERE-7089-P3
 		if (endWhereIndex == -1)
-			endWhereIndex = Util.findIndexOf(sqlStatement.toUpperCase(), " ORDER BY "); // IDEMPIERE-7089-P3
+			endWhereIndex = Util.findIndexOf(sqlStatement.toUpperCase(java.util.Locale.ROOT), " ORDER BY "); // IDEMPIERE-7089-P3
 		if (endWhereIndex == -1)
 			endWhereIndex = sqlStatement.length();
 		//
@@ -328,7 +328,7 @@ public abstract class Convert_SQL92 extends Convert {
 		String statement = sqlStatement;
 		StringBuilder sb = new StringBuilder("CASE");
 
-		int index = statement.toUpperCase().indexOf("DECODE", fromIndex); // IDEMPIERE-7089-P3
+		int index = statement.toUpperCase(java.util.Locale.ROOT).indexOf("DECODE", fromIndex); // IDEMPIERE-7089-P3
 		if (index <= 0) return sqlStatement;
 		
 		char previousChar = statement.charAt(index - 1);
@@ -414,7 +414,7 @@ public abstract class Convert_SQL92 extends Convert {
 	 */
 	protected String convertDelete(String sqlStatement) {
 
-		int index = sqlStatement.toUpperCase().indexOf("DELETE "); // IDEMPIERE-7089-P3
+		int index = sqlStatement.toUpperCase(java.util.Locale.ROOT).indexOf("DELETE "); // IDEMPIERE-7089-P3
 		if (index < 7) {
 			return "DELETE FROM " + sqlStatement.substring(index + 7);
 

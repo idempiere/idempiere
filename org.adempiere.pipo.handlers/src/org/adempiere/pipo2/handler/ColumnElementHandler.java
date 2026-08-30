@@ -247,11 +247,11 @@ public class ColumnElementHandler extends AbstractElementHandler {
 			String tableName = table.getTableName();
 			String columnName = column.getColumnName();
 			if (md.storesUpperCaseIdentifiers()) {
-				tableName = tableName.toUpperCase(); // IDEMPIERE-7089-P3
-				columnName = columnName.toUpperCase(); // IDEMPIERE-7089-P3
+				tableName = tableName.toUpperCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
+				columnName = columnName.toUpperCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
 			} else if (md.storesLowerCaseIdentifiers()) {
-				tableName = tableName.toLowerCase(); // IDEMPIERE-7089-P3
-				columnName = columnName.toLowerCase(); // IDEMPIERE-7089-P3
+				tableName = tableName.toLowerCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
+				columnName = columnName.toLowerCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
 			}
 
 			rst = md.getTables(catalog, schema, tableName,

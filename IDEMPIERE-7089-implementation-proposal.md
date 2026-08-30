@@ -41,7 +41,7 @@ Before an IDEMPIERE-7089 pull request is finalized, the branch should be rebased
 
 IDEMPIERE-7089 will be delivered in one draft pull request. The current 409-location scope remains divided into six internal implementation phases so that database behavior, technical normalization, UI behavior, domain decisions, and maintenance code remain separately reviewable within the same pull request.
 
-The current `workspace/IDEMPIERE-7089` branch is the single draft pull request. Its WIP commits are organized according to the six phases below; the initial code commit implements Phase 1 and the remaining locations carry explicit phase markers until their implementation is completed.
+The current `workspace/IDEMPIERE-7089` branch is the single draft pull request. Its WIP commits are organized according to the six phases below. The current implementation covers 364 of the 409 active locations; the remaining 45 locations carry explicit phase markers until their product or maintenance decision is completed.
 
 During the draft stage, affected source locations are marked with compact comments that preserve the originally proposed pull-request grouping:
 
@@ -197,7 +197,7 @@ Menu search, autocomplete, document search, city search, and extension-manager s
 
 Scope: 11 `DOMAIN` locations.
 
-Document the normalization contract for every value type before changing code. Likely dispositions include:
+Document the normalization contract for every value type before changing code. The current implementation applies explicit `java.util.Locale.ROOT` normalization to the technical domain values in this category. The email comparison remains a candidate for a later `equalsIgnoreCase()` refinement. Likely dispositions include:
 
 - IBAN: explicit locale-neutral uppercase canonicalization;
 - fixed-asset and account keys: explicit technical-key normalization;

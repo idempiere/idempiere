@@ -295,7 +295,7 @@ public class WPluginManager extends ADForm implements EventListener<Event> {
 		BundleContext bundleCtx = WebUIActivator.getBundleContext();
 		for (Bundle bundle : bundleCtx.getBundles()) {
 
-			if (!Util.isEmpty(fFilter.getValue()) && !bundle.getSymbolicName().toUpperCase().contains(fFilter.getValue().toUpperCase())) // IDEMPIERE-7089-P2
+			if (!Util.isEmpty(fFilter.getValue()) && !bundle.getSymbolicName().toUpperCase(java.util.Locale.ROOT).contains(fFilter.getValue().toUpperCase(java.util.Locale.ROOT))) // IDEMPIERE-7089-P2
 				continue;
 
 			Vector<Object> line = new Vector<Object>();

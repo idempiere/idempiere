@@ -878,7 +878,7 @@ public class MSequence extends X_AD_Sequence
 		try
 		{
 			pstmt = DB.prepareStatement (sql, trxName);
-			pstmt.setString(1, tableName.toUpperCase()); // IDEMPIERE-7089-P3
+			pstmt.setString(1, tableName.toUpperCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P3
 			pstmt.setString(2, ( tableID ? "Y" : "N" ) );
 			if (! tableID)
 				pstmt.setInt (3, Env.getAD_Client_ID(Env.getCtx()));

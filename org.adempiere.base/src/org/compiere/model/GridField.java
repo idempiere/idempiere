@@ -684,7 +684,7 @@ public class GridField
 		for (Character seqType : seqGetDefaultValue){
 			if (   seqType == DEFAULT_LOGIC  // default from Expression 
 				&& m_vo.DefaultValue != null
-				&& m_vo.DefaultValue.toUpperCase().equals("NULL")) // IDEMPIERE-2678 // IDEMPIERE-7089-P3
+				&& m_vo.DefaultValue.toUpperCase(java.util.Locale.ROOT).equals("NULL")) // IDEMPIERE-2678 // IDEMPIERE-7089-P3
 				return null;
 			defaultValue = getDefaultValueByType(seqType);
 			if (defaultValue != null)
@@ -1072,7 +1072,7 @@ public class GridField
 	private Object createDefault (String value)
 	{
 		//	true NULL
-		if (value == null || value.toString().length() == 0 || value.toUpperCase().equals("NULL")) // IDEMPIERE-7089-P3
+		if (value == null || value.toString().length() == 0 || value.toUpperCase(java.util.Locale.ROOT).equals("NULL")) // IDEMPIERE-7089-P3
 			return null;
 		//	see also MTable.readData
 		try

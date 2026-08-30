@@ -911,7 +911,7 @@ public abstract class PO
 		checkImmutable();
 		
 		if (value instanceof String && ColumnName.equals("WhereClause")
-			&& value.toString().toUpperCase().indexOf("=NULL") != -1) // IDEMPIERE-7089-P3
+			&& value.toString().toUpperCase(java.util.Locale.ROOT).indexOf("=NULL") != -1) // IDEMPIERE-7089-P3
 			log.warning("Invalid Null Value - " + ColumnName + "=" + value);
 
 		int index = get_ColumnIndex(ColumnName);

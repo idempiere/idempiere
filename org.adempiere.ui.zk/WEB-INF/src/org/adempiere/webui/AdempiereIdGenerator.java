@@ -101,7 +101,7 @@ public class AdempiereIdGenerator implements IdGenerator {
 
 	private static String getWidgetName(String widgetClass) {
 		String name = widgetClass.substring(widgetClass.lastIndexOf(".")+1);
-		return name.toLowerCase(); // IDEMPIERE-7089-P2
+		return name.toLowerCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P2
 	}
 
 	/**

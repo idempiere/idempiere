@@ -2008,8 +2008,8 @@ class Restriction  implements Serializable
 					.append(ColumnName.substring(end));
 			else
 			{
-				int selectIndex = ColumnName.toLowerCase().indexOf("select "); // IDEMPIERE-7089-P3
-				int fromIndex = ColumnName.toLowerCase().indexOf(" from "); // IDEMPIERE-7089-P3
+				int selectIndex = ColumnName.toLowerCase(java.util.Locale.ROOT).indexOf("select "); // IDEMPIERE-7089-P3
+				int fromIndex = ColumnName.toLowerCase(java.util.Locale.ROOT).indexOf(" from "); // IDEMPIERE-7089-P3
 				if (selectIndex >= 0 && fromIndex > 0) 
 				{
 					sb.append(ColumnName);
@@ -2029,7 +2029,7 @@ class Restriction  implements Serializable
 		if ( ! (Operator.equals(MQuery.NULL) || Operator.equals(MQuery.NOT_NULL)))
 		{
 			if (Code instanceof String) {
-				if (ColumnName.toUpperCase().startsWith("UPPER(")) { // IDEMPIERE-7089-P3
+				if (ColumnName.toUpperCase(java.util.Locale.ROOT).startsWith("UPPER(")) { // IDEMPIERE-7089-P3
 					sb.append("UPPER("+DB.TO_STRING(Code.toString())+")");
 				} else {
 					sb.append(DB.TO_STRING(Code.toString()));
@@ -2108,8 +2108,8 @@ class Restriction  implements Serializable
 						.append(DB.getDatabase().quoteColumnName(ColumnName.substring(pos, end)))
 						.append(ColumnName.substring(end));
 			else {
-				int selectIndex = ColumnName.toLowerCase().indexOf("select "); // IDEMPIERE-7089-P3
-				int fromIndex = ColumnName.toLowerCase().indexOf(" from "); // IDEMPIERE-7089-P3
+				int selectIndex = ColumnName.toLowerCase(java.util.Locale.ROOT).indexOf("select "); // IDEMPIERE-7089-P3
+				int fromIndex = ColumnName.toLowerCase(java.util.Locale.ROOT).indexOf(" from "); // IDEMPIERE-7089-P3
 				if (selectIndex >= 0 && fromIndex > 0) {
 					sb.append(ColumnName);
 				} else {
@@ -2123,7 +2123,7 @@ class Restriction  implements Serializable
 		else
 			sb.append(Operator);
 		if (!(Operator.equals(MQuery.NULL) || Operator.equals(MQuery.NOT_NULL))) {
-			boolean useUpper = (Code instanceof String) && ColumnName.toUpperCase().startsWith("UPPER("); // IDEMPIERE-7089-P3
+			boolean useUpper = (Code instanceof String) && ColumnName.toUpperCase(java.util.Locale.ROOT).startsWith("UPPER("); // IDEMPIERE-7089-P3
 			if (useUpper)
 				sb.append("UPPER(");
 			sb.append("?");

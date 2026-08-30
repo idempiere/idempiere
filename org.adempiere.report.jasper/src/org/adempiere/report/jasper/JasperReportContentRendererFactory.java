@@ -126,7 +126,7 @@ public class JasperReportContentRendererFactory implements IReportContentRendere
 			instance.saveEx();
 			pi.setAD_PInstance_ID(instance.getAD_PInstance_ID());
 			Trx trx = pi.getTransactionName() != null ? Trx.get(pi.getTransactionName(), false) : null;
-			boolean ok = process.getClassname().toLowerCase().startsWith(MRule.SCRIPT_PREFIX) // IDEMPIERE-7089-P2
+			boolean ok = process.getClassname().toLowerCase(java.util.Locale.ROOT).startsWith(MRule.SCRIPT_PREFIX) // IDEMPIERE-7089-P2
 					? ProcessUtil.startScriptProcess(request.reportEngine().getCtx(), pi, trx)
 					: ProcessUtil.startJavaProcess(request.reportEngine().getCtx(), pi, trx, true);
 			if (!ok || pi.isError())

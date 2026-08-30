@@ -122,9 +122,9 @@ public class CreateTableIndex extends SvrProcess {
 		
 		String tableName = table.getTableName();		
 		if (md.storesUpperCaseIdentifiers())
-			tableName = tableName.toUpperCase(); // IDEMPIERE-7089-P3
+			tableName = tableName.toUpperCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
 		else if (md.storesLowerCaseIdentifiers())
-			tableName = tableName.toLowerCase(); // IDEMPIERE-7089-P3
+			tableName = tableName.toLowerCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
 		
 		addLog(Msg.getMsg(getCtx(), "CreateTableIndexProcessTable") + tableName);
 		addLog(table.getAD_Table_ID(), null, null, table.toString(), table.get_Table_ID(), table.getAD_Table_ID());
@@ -137,7 +137,7 @@ public class CreateTableIndex extends SvrProcess {
 			if (dbIndexName == null)
 				continue;
 
-			String key = dbIndexName.toLowerCase(); // IDEMPIERE-7089-P3
+			String key = dbIndexName.toLowerCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
 			DatabaseTableIndex dbTableIndex = htIndexes.get(key);
 			if (dbTableIndex == null)
 				dbTableIndex = new DatabaseTableIndex(dbIndexName, new String[30], true, null);
@@ -173,15 +173,15 @@ public class CreateTableIndex extends SvrProcess {
 		
 		String tableName = table.getTableName();		
 		if (md.storesUpperCaseIdentifiers())
-			tableName = tableName.toUpperCase(); // IDEMPIERE-7089-P3
+			tableName = tableName.toUpperCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
 		else if (md.storesLowerCaseIdentifiers())
-			tableName = tableName.toLowerCase(); // IDEMPIERE-7089-P3
+			tableName = tableName.toLowerCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
 		
 		ResultSet rs = md.getPrimaryKeys(catalog, schema, tableName);
 		while (rs.next())
 		{
 			String primaryKeyName = rs.getString("PK_NAME");
-			String key = primaryKeyName.toLowerCase(); // IDEMPIERE-7089-P3
+			String key = primaryKeyName.toLowerCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
 			DatabaseTableIndex dbTableIndex = htIndexes.get(key);
 			if (dbTableIndex != null)
 				htIndexes.remove(key);
@@ -196,7 +196,7 @@ public class CreateTableIndex extends SvrProcess {
 		MTableIndex[] tableIndexes = MTableIndex.get(table);
 		for (MTableIndex tableIndex : tableIndexes)
 		{
-			String key = tableIndex.getName().toLowerCase(); // IDEMPIERE-7089-P3
+			String key = tableIndex.getName().toLowerCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
 			DatabaseTableIndex dbTableIndex = htIndexes.get(key);
 			tableIndexesToValidate.add(tableIndex);
 			if (dbTableIndex != null)
@@ -225,7 +225,7 @@ public class CreateTableIndex extends SvrProcess {
 					String dbIndexColumn = dbTableIndex.columns[i];
 					if (dbIndexColumn == null)
 						break;
-					int AD_Column_ID = DB.getSQLValue(null, getColumnIDSql, table.getAD_Table_ID(), dbIndexColumn.toLowerCase()); // IDEMPIERE-7089-P3
+					int AD_Column_ID = DB.getSQLValue(null, getColumnIDSql, table.getAD_Table_ID(), dbIndexColumn.toLowerCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P3
 					String columnName = dbIndexColumn;
 					
 					if (AD_Column_ID > 0)

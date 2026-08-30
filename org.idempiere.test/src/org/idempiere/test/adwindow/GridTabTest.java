@@ -199,7 +199,7 @@ public class GridTabTest extends AbstractTestCase {
 		
 		// test with function
 		query = new MQuery(MBPartner.Table_Name);
-		query.addRestriction("Upper("+MBPartner.COLUMNNAME_Name+")", MQuery.EQUAL, bpartner.getName().toUpperCase()); // IDEMPIERE-7089-P6
+		query.addRestriction("Upper("+MBPartner.COLUMNNAME_Name+")", MQuery.EQUAL, bpartner.getName().toUpperCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P6
 		gTab.setQuery(query);
 		gTab.query(false, 0, 0);
 		assertTrue(gTab.getRowCount()==1, "GridTab Row Count is not 1. GridTab="+gTab.getName());

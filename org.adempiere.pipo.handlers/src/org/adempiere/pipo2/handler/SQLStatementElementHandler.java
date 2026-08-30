@@ -48,7 +48,7 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 		log.info(elementValue);
 		String DBType = getStringValue(element, "DBType");
 		String sql = getStringValue(element, "statement");
-		if (sql.endsWith(";") && !(sql.toLowerCase().endsWith("end;"))) // IDEMPIERE-7089-P3
+		if (sql.endsWith(";") && !(sql.toLowerCase(java.util.Locale.ROOT).endsWith("end;"))) // IDEMPIERE-7089-P3
 			sql = sql.substring(0, sql.length() - 1);
 		sql=Env.parseContext(Env.getCtx(), 0, sql, false);  // tbayen IDEMPIERE-2140
 		Savepoint savepoint = null;
@@ -94,10 +94,10 @@ public class SQLStatementElementHandler extends AbstractElementHandler {
 			logImportDetail (ctx, impDetail, 1, "SQLStatement",count,"Execute", sql, String.valueOf(count));
 			ctx.packIn.getNotifier().addSuccessLine("-> " + sql);
 			// Cache Reset when deleting records via SQL
-			if (sql.toLowerCase().startsWith("delete from ")) { // IDEMPIERE-7089-P3
+			if (sql.toLowerCase(java.util.Locale.ROOT).startsWith("delete from ")) { // IDEMPIERE-7089-P3
 				String[] words = sql.split("[ \r\n]");
 				String table = words[2];
-				String tableName = DB.getSQLValueString(null, "SELECT TableName FROM AD_Table WHERE LOWER(TableName)=?", table.toLowerCase()); // IDEMPIERE-7089-P3
+				String tableName = DB.getSQLValueString(null, "SELECT TableName FROM AD_Table WHERE LOWER(TableName)=?", table.toLowerCase(java.util.Locale.ROOT)); // IDEMPIERE-7089-P3
 				if (! Util.isEmpty(tableName)) {
 					CacheMgt.get().reset(tableName);
 				}

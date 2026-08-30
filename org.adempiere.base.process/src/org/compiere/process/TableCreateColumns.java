@@ -111,10 +111,10 @@ public class TableCreateColumns extends SvrProcess
 				if (log.isLoggable(Level.INFO)) log.info(table.getTableName() + ", EntityType=" + p_EntityType);
 				String tableName = table.getTableName();
 				if (DB.isOracle())
-					tableName = tableName.toUpperCase(); // IDEMPIERE-7089-P3
+					tableName = tableName.toUpperCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
 	            // globalqss 2005-10-24
 				if (DB.isPostgreSQL())
-				    tableName = tableName.toLowerCase(); // IDEMPIERE-7089-P3
+				    tableName = tableName.toLowerCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
 				// end globalqss 2005-10-24
 				ResultSet rs = null;
 				try {
@@ -164,7 +164,7 @@ public class TableCreateColumns extends SvrProcess
 				//	Create new ?
 				if (table == null)
 				{
-					String tn = tableName.toUpperCase(); // IDEMPIERE-7089-P3
+					String tn = tableName.toUpperCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
 					if (tn.startsWith("T_SELECTION")	//	temp table
 						|| tn.endsWith("_VT")			//	print trl views
 						|| tn.endsWith("_V")			//	views
@@ -192,10 +192,10 @@ public class TableCreateColumns extends SvrProcess
 				}
 				//	Check Columns
 				if (DB.isOracle())
-					tableName = tableName.toUpperCase(); // IDEMPIERE-7089-P3
+					tableName = tableName.toUpperCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
 				// globalqss 2005-10-24
 				if (DB.isPostgreSQL())
-				    tableName = tableName.toLowerCase(); // IDEMPIERE-7089-P3
+				    tableName = tableName.toLowerCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
 				// end globalqss 2005-10-24
 				try {
 					rsC = md.getColumns(catalog, schema, tableName, null);
@@ -285,7 +285,7 @@ public class TableCreateColumns extends SvrProcess
 				&& size == 10)
 				column.setAD_Reference_ID (DisplayType.Account);
 			// ID
-			else if (columnName.toUpperCase().endsWith ("_ID")) // IDEMPIERE-7089-P3
+			else if (columnName.toUpperCase(java.util.Locale.ROOT).endsWith ("_ID")) // IDEMPIERE-7089-P3
 				column.setAD_Reference_ID (DisplayType.TableDir);
 			// Date
 			else if (dataType == Types.DATE || dataType == Types.TIME
@@ -345,8 +345,8 @@ public class TableCreateColumns extends SvrProcess
 				&& (table.isView()
 					|| columnName.equalsIgnoreCase("AD_Client_ID") 
 					|| columnName.equalsIgnoreCase("AD_Org_ID")
-					|| columnName.toUpperCase().startsWith("CREATED")  // IDEMPIERE-7089-P3
-					|| columnName.toUpperCase().equals("UPDATED") )) // IDEMPIERE-7089-P3
+					|| columnName.toUpperCase(java.util.Locale.ROOT).startsWith("CREATED")  // IDEMPIERE-7089-P3
+					|| columnName.toUpperCase(java.util.Locale.ROOT).equals("UPDATED") )) // IDEMPIERE-7089-P3
 				column.setIsUpdateable(false);
 			
 			//	Done

@@ -3018,7 +3018,7 @@ public class GridTab implements DataStatusListener, Evaluatee, Serializable
 				// FR [1877902]
 				// CarlosRuiz - globalqss - implement beanshell callout
 				// Victor Perez  - vpj-cd implement JSR 223 Scripting
-				if (cmd.toLowerCase().startsWith(MRule.SCRIPT_PREFIX)) { // IDEMPIERE-7089-P2
+				if (cmd.toLowerCase(java.util.Locale.ROOT).startsWith(MRule.SCRIPT_PREFIX)) { // IDEMPIERE-7089-P2
 
 					MRule rule = MRule.get(m_vo.ctx, cmd.substring(MRule.SCRIPT_PREFIX.length()));
 					if (rule == null) {

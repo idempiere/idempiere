@@ -830,7 +830,7 @@ public abstract class SvrProcess implements ProcessCall
 		        if(map.containsValue(field))
 		        	continue;
 		        String name = pa.name().isEmpty() ? field.getName() : pa.name();
-		        map.put(name.toLowerCase(), field); // IDEMPIERE-7089-P2
+		        map.put(name.toLowerCase(java.util.Locale.ROOT), field); // IDEMPIERE-7089-P2
 		    }
 	    	target = target.getSuperclass();
 	    }
@@ -839,7 +839,7 @@ public abstract class SvrProcess implements ProcessCall
 	        return;
 
         for(ProcessInfoParameter parameter : getParameter()){
-            String name = parameter.getParameterName().trim().toLowerCase(); // IDEMPIERE-7089-P2
+            String name = parameter.getParameterName().trim().toLowerCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P2
             Field field = map.get(name);
             Field toField = map.containsKey(name + "_to") ? map.get(name + "_to") : null;
             Field notField = map.containsKey(name + "_not") ? map.get(name + "_not") : null;

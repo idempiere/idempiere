@@ -138,7 +138,7 @@ public class SSOUtils
 	 */
 	public static boolean isResourceRequest(HttpServletRequest request, boolean isWebUI)
 	{
-		String[] urlpath = request.getServletPath().toLowerCase().split("/"); // IDEMPIERE-7089-P2
+		String[] urlpath = request.getServletPath().toLowerCase(java.util.Locale.ROOT).split("/"); // IDEMPIERE-7089-P2
 		if (isWebUI)
 			return urlpath != null && urlpath.length > 1 && ignoreResourceURL.contains(urlpath[1]);
 		else

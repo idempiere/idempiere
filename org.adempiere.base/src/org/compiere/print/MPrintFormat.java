@@ -476,7 +476,7 @@ public class MPrintFormat extends X_AD_PrintFormat implements ImmutablePOSupport
 	public void setTranslationViewQuery (MQuery query)
 	{
 		//	Set Table Name and add add restriction, if a view and language set
-		if (m_translationViewLanguage != null && query != null && query.getTableName().toUpperCase().endsWith("_V")) // IDEMPIERE-7089-P3
+		if (m_translationViewLanguage != null && query != null && query.getTableName().toUpperCase(java.util.Locale.ROOT).endsWith("_V")) // IDEMPIERE-7089-P3
 		{
 			query.setTableName(query.getTableName() + "t");
 			query.addRestriction("AD_Language", MQuery.EQUAL, m_translationViewLanguage);

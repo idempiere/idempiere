@@ -98,7 +98,7 @@ public class ButtonFactory {
         }
                 
         //add named class for further customization option 
-        String className = "btn-" + name.toLowerCase(); // IDEMPIERE-7089-P2
+        String className = "btn-" + name.toLowerCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P2
         LayoutUtils.addSclass(className, button);
         if (ThemeManager.isUseFontIconForImage())
         	LayoutUtils.addSclass("font-icon-button", button);

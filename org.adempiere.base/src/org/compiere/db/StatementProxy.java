@@ -114,7 +114,7 @@ public class StatementProxy implements InvocationHandler {
 		{
 			if (name.equals("executeUpdate") || name.equals("execute"))
 			{
-				logSql = getSql().toUpperCase(); // IDEMPIERE-7089-P3
+				logSql = getSql().toUpperCase(java.util.Locale.ROOT); // IDEMPIERE-7089-P3
 				if (logSql.startsWith("UPDATE ")) {
 					logSql = logSql.substring("UPDATE ".length()).trim();
 					logOperation = "Update";

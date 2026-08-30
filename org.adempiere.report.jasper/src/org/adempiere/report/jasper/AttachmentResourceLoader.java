@@ -177,8 +177,8 @@ public class AttachmentResourceLoader {
 			if (!entries[i].getName().equals(name)) {
 				File reportFile = getAttachmentEntryFile(entries[i]);
 				if (reportFile != null) {
-					if (entries[i].getName().toLowerCase().endsWith(".jrxml") // IDEMPIERE-7089-P2
-							|| entries[i].getName().toLowerCase().endsWith(".jasper")) { // IDEMPIERE-7089-P2
+					if (entries[i].getName().toLowerCase(java.util.Locale.ROOT).endsWith(".jrxml") // IDEMPIERE-7089-P2
+							|| entries[i].getName().toLowerCase(java.util.Locale.ROOT).endsWith(".jasper")) { // IDEMPIERE-7089-P2
 						subreports.add(reportFile);
 					}
 				}

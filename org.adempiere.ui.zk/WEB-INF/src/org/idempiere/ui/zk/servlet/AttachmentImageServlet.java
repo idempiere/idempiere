@@ -63,7 +63,7 @@ public class AttachmentImageServlet extends AttachmentDataServlet {
 		}
 		//imageio not workings for svg
 		if (contentType == null) {
-			if (imageData.name() != null && imageData.name().toLowerCase().endsWith(".svg")) { // IDEMPIERE-7089-P2
+			if (imageData.name() != null && imageData.name().toLowerCase(java.util.Locale.ROOT).endsWith(".svg")) { // IDEMPIERE-7089-P2
 				contentType = "image/svg+xml";
 			}
 		}
