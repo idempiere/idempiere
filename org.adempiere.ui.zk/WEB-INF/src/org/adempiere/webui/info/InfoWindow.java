@@ -1500,7 +1500,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 							   .append(" ")
 							   .append(InfoColumnVO.getQueryOperator());
 						if (columnClause.toUpperCase().startsWith("UPPER(")) {
-							builder.append(" ").append(DB.getSearchExpression("?"));
+							builder.append(" UPPER(?)");
 						} else {
 							builder.append(" ?");
 						}
@@ -1512,7 +1512,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 							.append(" ")
 							.append(X_AD_InfoColumn.QUERYOPERATOR_GtEq);
 							if (columnClause.toUpperCase().startsWith("UPPER(")) {
-								builder.append(" ").append(DB.getSearchExpression("?"));
+								builder.append(" UPPER(?)");
 							} else {
 								builder.append(" ?");
 							}
@@ -1526,7 +1526,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 							.append(" ")
 							.append(X_AD_InfoColumn.QUERYOPERATOR_LeEq);
 							if (columnClause.toUpperCase().startsWith("UPPER(")) {
-								builder.append(" ").append(DB.getSearchExpression("?"));
+								builder.append(" UPPER(?)");
 							} else {
 								builder.append(" ?");
 							}

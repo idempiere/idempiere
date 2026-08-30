@@ -108,8 +108,7 @@ public class MTablePartition extends X_AD_TablePartition {
 		StringBuilder sqlSelect = new StringBuilder();
 		sqlSelect.append("SELECT 1 FROM ")
 		    .append(X_AD_TablePartition.Table_Name)
-		    .append(" WHERE AD_Table_ID = ? AND ")
-		    .append(DB.getSearchCondition("Name"));
+		    .append(" WHERE AD_Table_ID = ? AND UPPER(Name) LIKE UPPER(?) ");
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {

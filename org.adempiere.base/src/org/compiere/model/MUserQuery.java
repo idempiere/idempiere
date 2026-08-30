@@ -229,7 +229,7 @@ public class MUserQuery extends X_AD_UserQuery
 	{
 		int AD_User_ID = Env.getAD_User_ID(ctx);
 		String sql = "SELECT * FROM AD_UserQuery "
-				 + "WHERE AD_Client_ID=? AND AD_Tab_ID=? AND " + DB.getSearchCondition("Name") + " AND IsActive='Y' "
+			 + "WHERE AD_Client_ID=? AND AD_Tab_ID=? AND UPPER(Name) LIKE UPPER(?) AND IsActive='Y' "
 			 + "AND AD_User_ID in (0, " + AD_User_ID + ") "
 			 + "ORDER BY Name";
 		int AD_Client_ID = Env.getAD_Client_ID (ctx);
@@ -270,7 +270,7 @@ public class MUserQuery extends X_AD_UserQuery
 	 */
 	public static MUserQuery getUserQueryByName(Properties ctx, int AD_Tab_ID, String name)
 	{
-		String sqlWhere = " AD_Client_ID=? AND AD_Tab_ID=? AND " + DB.getSearchCondition("Name") + " "
+		String sqlWhere = " AD_Client_ID=? AND AD_Tab_ID=? AND UPPER(Name) LIKE UPPER(?) "
 			 + "AND (AD_User_ID = ? OR AD_User_ID IS NULL) ";
 
 		return new Query(ctx, Table_Name, sqlWhere, null)

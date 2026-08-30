@@ -44,7 +44,6 @@ import org.compiere.minigrid.IDColumn;
 import org.compiere.model.MInOut;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MQuery;
-import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -320,13 +319,13 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 		StringBuilder sql = new StringBuilder();
 
 		if (fDocumentNo.getText().length() > 0)
-			sql.append(" AND " + DB.getSearchCondition("i.DocumentNo"));
+			sql.append(" AND UPPER(i.DocumentNo) LIKE UPPER(?)");
 
 		if (fDescription.getText().length() > 0)
-			sql.append(" AND " + DB.getSearchCondition("i.Description"));
+			sql.append(" AND UPPER(i.Description) LIKE UPPER(?)");
 
 		if (fPOReference.getText().length() > 0)
-			sql.append(" AND " + DB.getSearchCondition("i.POReference"));
+			sql.append(" AND UPPER(i.POReference) LIKE UPPER(?)");
 
 		if (!"".equals(fBPartner_ID.getDisplay()))
 			sql.append(" AND i.C_BPartner_ID=?");

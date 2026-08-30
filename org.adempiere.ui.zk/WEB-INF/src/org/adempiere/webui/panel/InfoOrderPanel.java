@@ -46,7 +46,6 @@ import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MOrder;
 import org.compiere.model.MQuery;
-import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -309,11 +308,11 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
     {
         StringBuilder sql = new StringBuilder();
         if (txtDocumentNo.getText().length() > 0)
-            sql.append(" AND " + DB.getSearchCondition("o.DocumentNo"));
+            sql.append(" AND UPPER(o.DocumentNo) LIKE UPPER(?)");
         if (txtDescription.getText().length() > 0)
-            sql.append(" AND " + DB.getSearchCondition("o.Description"));
+            sql.append(" AND UPPER(o.Description) LIKE UPPER(?)");
         if (txtOrderRef.getText().length() > 0)
-            sql.append(" AND " + DB.getSearchCondition("o.POReference"));
+            sql.append(" AND UPPER(o.POReference) LIKE UPPER(?)");
         //
         if (editorBPartner.getValue() != null)
             sql.append(" AND o.C_BPartner_ID=?");

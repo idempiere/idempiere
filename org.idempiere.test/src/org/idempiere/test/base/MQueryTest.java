@@ -177,13 +177,11 @@ public class MQueryTest extends AbstractTestCase {
 	void testCaseInsensitiveRestrictionPreservesSearchValue(String searchValue) {
 		String searchPattern = searchValue + "%";
 		MQuery query = new MQuery("M_Product");
-		query.addRestriction(DB.getSearchExpression("Name"), MQuery.ILIKE, searchPattern);
+		query.addRestriction("UPPER(Name)", MQuery.ILIKE, searchPattern);
 
 		SQLFragment sqlFilter = query.getSQLFilter(0, true);
 		assertEquals("UPPER(M_Product.Name) LIKE UPPER(?)", sqlFilter.sqlClause());
 		assertEquals(List.of(searchPattern), sqlFilter.parameters());
-		assertEquals("UPPER(M_Product.Name) LIKE UPPER(?)",
-				DB.getSearchCondition("M_Product.Name"));
 	}
 
 	@ParameterizedTest
@@ -196,7 +194,7 @@ public class MQueryTest extends AbstractTestCase {
 		message.saveEx();
 
 		MQuery query = new MQuery(MMessage.Table_Name);
-		query.addRestriction(DB.getSearchExpression("Value"), MQuery.ILIKE, searchValue + "%");
+		query.addRestriction("UPPER(Value)", MQuery.ILIKE, searchValue + "%");
 		query.addRestriction(MMessage.COLUMNNAME_AD_Message_ID, MQuery.EQUAL, message.getAD_Message_ID());
 		SQLFragment sqlFilter = query.getSQLFilter(true);
 		int count = DB.getSQLValueEx(getTrxName(), "SELECT COUNT(*) FROM AD_Message WHERE "

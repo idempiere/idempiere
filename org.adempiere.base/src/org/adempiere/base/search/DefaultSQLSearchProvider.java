@@ -94,8 +94,7 @@ public class DefaultSQLSearchProvider implements ISearchProvider {
                 sql.append("WHERE ").append(column.getColumnName()).append("=?");
                 // search for a String
             } else {
-                sql.append("WHERE ")
-                        .append(DB.getSearchCondition(column.getColumnName()));
+                sql.append("WHERE UPPER(").append(column.getColumnName()).append(") LIKE UPPER(?)");
             }
             
             // search for a Integer

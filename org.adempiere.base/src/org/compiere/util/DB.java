@@ -2090,45 +2090,6 @@ public final class DB
 	}   //  TO_STRING
 
 	/**
-	 * Build the database-specific expression used for case-insensitive search.
-	 * Keep column and parameter normalization in one place so additional
-	 * normalization, such as accent removal, can be added by the database
-	 * provider later.
-	 *
-	 * @param expression column expression or parameter placeholder
-	 * @return normalized search expression
-	 */
-	public static String getSearchExpression(String expression)
-	{
-		return getDatabase().getSearchExpression(expression);
-	}
-
-	/**
-	 * Build a case-insensitive LIKE condition using the same normalization on
-	 * both sides of the comparison.
-	 *
-	 * @param expression column expression
-	 * @return SQL condition with one parameter placeholder
-	 */
-	public static String getSearchCondition(String expression)
-	{
-		return getSearchCondition(expression, "?");
-	}
-
-	/**
-	 * Build a case-insensitive LIKE condition using the same normalization on
-	 * both sides of the comparison.
-	 *
-	 * @param expression column expression
-	 * @param valueExpression parameter or SQL value expression
-	 * @return SQL condition
-	 */
-	public static String getSearchCondition(String expression, String valueExpression)
-	{
-		return getSearchExpression(expression) + " LIKE " + getSearchExpression(valueExpression);
-	}
-
-	/**
 	 *	Package Strings for SQL command in quotes.
 	 *  <pre>
 	 *	    -	include in ' (single quotes)

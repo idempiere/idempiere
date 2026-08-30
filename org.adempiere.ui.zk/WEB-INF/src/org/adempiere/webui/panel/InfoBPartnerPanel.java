@@ -39,7 +39,6 @@ import org.compiere.minigrid.ColumnInfo;
 import org.compiere.minigrid.IDColumn;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MQuery;
-import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
@@ -448,27 +447,27 @@ public class InfoBPartnerPanel extends InfoPanel implements EventListener<Event>
 		//	=> Value
 		String value = fieldValue.getText();
 		if (!(value.equals("") || value.equals("%")))
-			list.add (DB.getSearchCondition("C_BPartner.Value"));
+			list.add ("UPPER(C_BPartner.Value) LIKE UPPER(?)");
 		//	=> Name
 		String name = fieldName.getText();
 		if (!(name.equals("") || name.equals("%")))
-			list.add (DB.getSearchCondition("C_BPartner.Name"));
+			list.add ("UPPER(C_BPartner.Name) LIKE UPPER(?)");
 		//	=> Contact
 		String contact = fieldContact.getText();
 		if (!(contact.equals("") || contact.equals("%")))
-			list.add (DB.getSearchCondition("c.Name"));
+			list.add ("UPPER(c.Name) LIKE UPPER(?)");
 		//	=> EMail
 		String email = fieldEMail.getText();
 		if (!(email.equals("") || email.equals("%")))
-			list.add (DB.getSearchCondition("c.EMail"));
+			list.add ("UPPER(c.EMail) LIKE UPPER(?)");
 		//	=> Phone
 		String phone = fieldPhone.getText();
 		if (!(phone.equals("") || phone.equals("%")))
-			list.add (DB.getSearchCondition("c.Phone"));
+			list.add ("UPPER(c.Phone) LIKE UPPER(?)");
 		//	=> Postal
 		String postal = fieldPostal.getText();
 		if (!(postal.equals("") || postal.equals("%")))
-			list.add (DB.getSearchCondition("a.Postal"));
+			list.add ("UPPER(a.Postal) LIKE UPPER(?)");
 		StringBuilder sql = new StringBuilder();
 		int size = list.size();
 		//	Just one

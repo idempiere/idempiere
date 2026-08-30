@@ -40,7 +40,6 @@ import org.compiere.minigrid.IDColumn;
 import org.compiere.model.MAsset;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MQuery;
-import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -292,14 +291,14 @@ public class InfoAssetPanel extends InfoPanel implements ValueChangeListener, Ev
 		String value = fieldValue.getText();
 		
 		if (!(value.equals("") || value.equals("%")))
-			sql.append(" AND " + DB.getSearchCondition("a.Value"));
+			sql.append(" AND UPPER(a.Value) LIKE UPPER(?)");
 		
 		//	=> Name
 		
 		String name = fieldName.getText();
 		
 		if (!(name.equals("") || name.equals("%")))
-			sql.append (" AND " + DB.getSearchCondition("a.Name"));
+			sql.append (" AND UPPER(a.Name) LIKE UPPER(?)");
 		
 		//	C_BPartner_ID
 		

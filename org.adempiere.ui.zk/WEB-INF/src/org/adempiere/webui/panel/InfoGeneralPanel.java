@@ -694,8 +694,7 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 		if (!(value.equals("")) && index < m_queryColumns.size())
 		{
 			// Angelo Dabala' (genied) nectosoft: [2893220] avoid to append string parameters directly because of special chars like quote(s)
-			sql.append(" AND ")
-				.append(DB.getSearchCondition(m_queryColumnsSql.get(index).toString()));
+			sql.append(" AND UPPER(").append(m_queryColumnsSql.get(index).toString()).append(") LIKE UPPER(?)");
 		}
 	}
 

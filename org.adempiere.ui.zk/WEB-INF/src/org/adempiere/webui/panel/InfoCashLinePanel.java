@@ -327,7 +327,7 @@ public class InfoCashLinePanel extends InfoPanel implements ValueChangeListener,
 		StringBuilder sql = new StringBuilder();
 
 		if (fName.getText().length() > 0)
-			sql.append(" AND " + DB.getSearchCondition("c.Name"));
+			sql.append(" AND UPPER(c.Name) LIKE UPPER(?)");
 
 		if (!"".equals(fCashBook_ID.getDisplay()))
 			sql.append(" AND c.C_CashBook_ID=?");
@@ -474,7 +474,7 @@ public class InfoCashLinePanel extends InfoPanel implements ValueChangeListener,
 	/**
 	 *  Get SQL WHERE parameter
 	 *  @param f field
-	 *  @return text with % appended when it is not already present
+	 *  @return text with % at the end
 	 */
 
 	private String getSQLText (Textbox f)

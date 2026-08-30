@@ -46,7 +46,6 @@ import org.compiere.model.MInvoice;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MQuery;
-import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -342,9 +341,9 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
     {
         StringBuilder sql = new StringBuilder();
         if (txtDocumentNo.getText().length() > 0)
-            sql.append(" AND " + DB.getSearchCondition("i.DocumentNo"));
+            sql.append(" AND UPPER(i.DocumentNo) LIKE UPPER(?)");
         if (txtDescription.getText().length() > 0)
-            sql.append(" AND " + DB.getSearchCondition("i.Description"));
+            sql.append(" AND UPPER(i.Description) LIKE UPPER(?)");
         //
         if (editorBPartner.getValue() != null)
             sql.append(" AND i.C_BPartner_ID=?");
