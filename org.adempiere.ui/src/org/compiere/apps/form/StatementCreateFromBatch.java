@@ -86,7 +86,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 			sql.append(" AND p.C_BPartner_ID=?");
 		
 		if(DocumentNo.length() > 0)
-			sql.append(" AND UPPER(p.DocumentNo) LIKE ?");
+			sql.append(" AND UPPER(p.DocumentNo) LIKE UPPER(?)");
 		if(AuthCode.length() > 0)
 			sql.append(" AND p.R_AuthCode LIKE ?");
 		
@@ -160,7 +160,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 			pstmt.setString(index++, getSQLText(DocumentNo));
 		
 		if(AuthCode.length() > 0)
-			pstmt.setString(index++, getSQLText(AuthCode));
+			pstmt.setString(index++, getSQLText(AuthCode).toUpperCase());
 		
 		if(AmtFrom != null || AmtTo != null)
 		{
@@ -192,13 +192,13 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 	}
 	
 	/**
-	 * Convert to upper case and append %
+	 * Append %
 	 * @param text
 	 * @return converted text
 	 */
 	private String getSQLText(String text)
 	{
-		String s = text.toUpperCase();
+		String s = text;
 		if(!s.endsWith("%"))
 			s += "%";
 		if (log.isLoggable(Level.FINE)) log.fine( "String=" + s);
