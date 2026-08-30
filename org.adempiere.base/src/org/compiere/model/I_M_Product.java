@@ -62,6 +62,19 @@ public interface I_M_Product
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name ApprovedVendorRequirement */
+    public static final String COLUMNNAME_ApprovedVendorRequirement = "ApprovedVendorRequirement";
+
+	/** Set Approved Vendor Requirement.
+	  * Defines whether an approved vendor is required for purchasing this product.
+	  */
+	public void setApprovedVendorRequirement (String ApprovedVendorRequirement);
+
+	/** Get Approved Vendor Requirement.
+	  * Defines whether an approved vendor is required for purchasing this product.
+	  */
+	public String getApprovedVendorRequirement();
+
     /** Column name C_RevenueRecognition_ID */
     public static final String COLUMNNAME_C_RevenueRecognition_ID = "C_RevenueRecognition_ID";
 
