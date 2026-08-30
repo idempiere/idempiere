@@ -209,8 +209,8 @@ public class VerifyMigration extends SvrProcess {
 				String columnName = vcol.getColumnName();
 				if (columnName.startsWith("\"") && columnName.endsWith("\""))
 					columnName = columnName.substring(1, columnName.length()-1);
-				listDict.add(columnName.toUpperCase());
-				mapDict.put(columnName.toUpperCase(), vcol);
+				listDict.add(columnName.toUpperCase()); // IDEMPIERE-7089-P3
+				mapDict.put(columnName.toUpperCase(), vcol); // IDEMPIERE-7089-P3
 			}
 
 			if (listDict.size() == 0) { // ignore, view not defined in dictionary
@@ -229,13 +229,13 @@ public class VerifyMigration extends SvrProcess {
 				String schema = DB.getDatabase().getSchema();
 				String tableName = table.getTableName();
 				if (md.storesUpperCaseIdentifiers())
-					tableName = tableName.toUpperCase();
+					tableName = tableName.toUpperCase(); // IDEMPIERE-7089-P3
 				else if (md.storesLowerCaseIdentifiers())
-					tableName = tableName.toLowerCase();
+					tableName = tableName.toLowerCase(); // IDEMPIERE-7089-P3
 				rs = md.getColumns(catalog, schema, tableName, null);
 				while (rs.next()) {
 					String columnName = rs.getString ("COLUMN_NAME");
-					listDB.add(columnName.toUpperCase());
+					listDB.add(columnName.toUpperCase()); // IDEMPIERE-7089-P3
 				}
 			} finally {
 				DB.close(rs);

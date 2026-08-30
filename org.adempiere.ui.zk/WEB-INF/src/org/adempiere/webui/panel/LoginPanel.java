@@ -894,15 +894,15 @@ public class LoginPanel extends Window implements EventListener<Event>
 				s = s.trim();
 				if (!s.startsWith("q=")) {
 					if (s.contains("_") && s.length() == 5) {
-						String baselang = s.substring(0, 2).toLowerCase();
-						StringBuffer lang = new StringBuffer(baselang).append("_").append(s.substring(3).toUpperCase());
+						String baselang = s.substring(0, 2).toLowerCase(); // IDEMPIERE-7089-P2
+						StringBuffer lang = new StringBuffer(baselang).append("_").append(s.substring(3).toUpperCase()); // IDEMPIERE-7089-P2
 						if (!arrstr.contains(lang.toString()))
 							arrstr.add(lang.toString());
 						if (!arrstr.contains(baselang))
 							arrstr.add(baselang);
 					} else {
-						if (s.length() == 2 && !arrstr.contains(s.toLowerCase()))
-							arrstr.add(s.toLowerCase());
+						if (s.length() == 2 && !arrstr.contains(s.toLowerCase())) // IDEMPIERE-7089-P2
+							arrstr.add(s.toLowerCase()); // IDEMPIERE-7089-P2
 					}
 				}
 			}

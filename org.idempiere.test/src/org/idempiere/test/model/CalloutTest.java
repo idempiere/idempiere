@@ -161,7 +161,7 @@ public class CalloutTest extends AbstractTestCase {
 			while (st.hasMoreTokens()) {
 				String cmd = st.nextToken().trim();
 	
-				if (cmd.toLowerCase().startsWith(MRule.SCRIPT_PREFIX))
+				if (cmd.toLowerCase().startsWith(MRule.SCRIPT_PREFIX)) // IDEMPIERE-7089-P6
 					continue;
 				int methodStart = cmd.lastIndexOf('.');
 				try {

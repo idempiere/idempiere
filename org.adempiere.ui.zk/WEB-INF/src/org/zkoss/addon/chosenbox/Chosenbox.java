@@ -661,13 +661,13 @@ public class Chosenbox<T> extends HtmlBasedComponent {
 				if (excludeUnselected) {
 					for (int i = 0; i < _selIdxs.size(); i++) {
 						String s = renderer.render(this, model.getElementAt(_selIdxs.get(i)), _selIdxs.get(i));
-						if (prefix == null || s.toLowerCase().startsWith(prefix.toLowerCase()))
+						if (prefix == null || s.toLowerCase().startsWith(prefix.toLowerCase())) // IDEMPIERE-7089-P4
 							optList.add(s);
 					}
 				} else {
 					for (int i = 0; i < model.getSize(); i++) {
 						String s = renderer.render(this, model.getElementAt(i), i);
-						if (prefix == null || s.toLowerCase().startsWith(prefix.toLowerCase()))
+						if (prefix == null || s.toLowerCase().startsWith(prefix.toLowerCase())) // IDEMPIERE-7089-P4
 							optList.add(s);
 					}
 				}

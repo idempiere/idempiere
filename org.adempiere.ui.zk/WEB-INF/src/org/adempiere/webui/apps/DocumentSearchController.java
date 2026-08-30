@@ -187,10 +187,10 @@ public class DocumentSearchController implements EventListener<Event> {
 				}
 			});
 
-			String matchString = searchString.toLowerCase();
+			String matchString = searchString.toLowerCase(); // IDEMPIERE-7089-P4
 			if (searchString != null && searchString.startsWith("/") && searchString.indexOf(" ") > 1) {
 				// "/TransactionCode Search Text"
-				matchString = searchString.substring(searchString.indexOf(" ") + 1).toLowerCase();
+				matchString = searchString.substring(searchString.indexOf(" ") + 1).toLowerCase(); // IDEMPIERE-7089-P4
 			}
 
 			String windowName = null;
@@ -420,7 +420,7 @@ public class DocumentSearchController implements EventListener<Event> {
 	 * @return true if added highlight span
 	 */
 	private boolean addHighlightSpan(String matchString, String inputString, StringBuilder sb) {
-		int match = inputString.toLowerCase().indexOf(matchString);
+		int match = inputString.toLowerCase().indexOf(matchString); // IDEMPIERE-7089-P4
 		boolean hasMatch = false;
 		while (match >= 0) {
 			hasMatch = true;
@@ -436,7 +436,7 @@ public class DocumentSearchController implements EventListener<Event> {
 				sb.append("</span>");
 				inputString = inputString.substring(matchString.length());
 			}
-			match = inputString.toLowerCase().indexOf(matchString);
+			match = inputString.toLowerCase().indexOf(matchString); // IDEMPIERE-7089-P4
 		}
 		if (inputString.length() > 0)
 			sb.append(inputString);
@@ -632,7 +632,7 @@ public class DocumentSearchController implements EventListener<Event> {
 		a.addEventListener(Events.ON_CLICK, this);
 		String label = result.getLabel();
 		if (!Util.isEmpty(matchString, true)) {
-			int match = label.toLowerCase().indexOf(matchString);
+			int match = label.toLowerCase().indexOf(matchString); // IDEMPIERE-7089-P4
 			while (match >= 0) {
 				if (match > 0) {
 					a.appendChild(new Label(label.substring(0, match)));
@@ -646,7 +646,7 @@ public class DocumentSearchController implements EventListener<Event> {
 					a.appendChild(l);
 					label = label.substring(matchString.length());
 				}
-				match = label.toLowerCase().indexOf(matchString);
+				match = label.toLowerCase().indexOf(matchString); // IDEMPIERE-7089-P4
 			}
 		}
 		if (label.length() > 0)
@@ -670,7 +670,7 @@ public class DocumentSearchController implements EventListener<Event> {
 			// "/TransactionCode Search Text"
 			transactionCode = searchString.substring(1, searchString.indexOf(" "));
 			searchString = searchString.substring(searchString.indexOf(" ") + 1);
-			whereClause.append("Upper(TransactionCode) = ?");
+			whereClause.append("Upper(TransactionCode) = Upper(?)");
 		} else {
 			// Search with definition that doesn't use transaction code
 			whereClause.append("TransactionCode IS NULL");
@@ -678,7 +678,7 @@ public class DocumentSearchController implements EventListener<Event> {
 
 		Query query = new Query(Env.getCtx(), I_AD_SearchDefinition.Table_Name, whereClause.toString(), null);
 		if (transactionCode != null)
-			query.setParameters(transactionCode.toUpperCase());
+			query.setParameters(transactionCode); // IDEMPIERE-7089-P1
 		List<MSearchDefinition> definitions = query.setOnlyActiveRecords(true).list();
 
 		List<ISearchProvider> providers = Core.getSearchProviders();
@@ -735,7 +735,7 @@ public class DocumentSearchController implements EventListener<Event> {
 		String text = textbox.getText();
 		if (Util.isEmpty(text))
 			return false;
-		text = text.toLowerCase();
+		text = text.toLowerCase(); // IDEMPIERE-7089-P4
 		int size = layout.getChildren().size();
 		A firstStart = null;
 		A exact = null;
@@ -750,7 +750,7 @@ public class DocumentSearchController implements EventListener<Event> {
 			} else if (text.equalsIgnoreCase(result.getName())) {
 				exact = a;
 				break;
-			} else if (firstStart == null && result.getLabel().toLowerCase().startsWith(text) && text.length() >= 3) {
+			} else if (firstStart == null && result.getLabel().toLowerCase().startsWith(text) && text.length() >= 3) { // IDEMPIERE-7089-P4
 				firstStart = a;
 			}
 		}

@@ -356,7 +356,7 @@ public abstract class AbstractProcessCtl implements Runnable
 	private boolean startProcess ()
 	{
 		if (log.isLoggable(Level.FINE)) log.fine(m_pi.toString());
-		if (m_pi.getClassName().toLowerCase().startsWith(MRule.SCRIPT_PREFIX)) {
+		if (m_pi.getClassName().toLowerCase().startsWith(MRule.SCRIPT_PREFIX)) { // IDEMPIERE-7089-P2
 			m_pi.setProcessUI(m_processUI);
 			return ProcessUtil.startScriptProcess(Env.getCtx(), m_pi, m_trx);
 		} else {

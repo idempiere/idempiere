@@ -684,7 +684,7 @@ public class EMailProcessor
 			printOut("Plain text ---------------------------");
 			System.out.println((String)p.getContent());
 		}
-		else if (p.getContentType().toUpperCase().startsWith("TEXT"))
+		else if (p.getContentType().toUpperCase().startsWith("TEXT")) // IDEMPIERE-7089-P2
 		{
 			printOut("Other text ---------------------------");
 			System.out.println((String)p.getContent());

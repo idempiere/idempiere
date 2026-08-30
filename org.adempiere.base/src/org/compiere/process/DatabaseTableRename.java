@@ -74,12 +74,12 @@ public class DatabaseTableRename extends SvrProcess {
 		String oldTableName = table.getTableName();
 		if (log.isLoggable(Level.INFO)) log.info(table.toString());
 		if (   Util.isEmpty(p_NewTableName, true)
-			|| p_NewTableName.toLowerCase().equals(oldTableName.toLowerCase())) {
+			|| p_NewTableName.toLowerCase().equals(oldTableName.toLowerCase())) { // IDEMPIERE-7089-P3
 			throw new AdempiereException(Util.cleanAmp(Msg.parseTranslation(getCtx(), "@NotValid@: @NewTableName@")));
 		}
 		int cnt = DB.getSQLValueEx(get_TrxName(),
 				"SELECT COUNT(*) FROM AD_Table WHERE LOWER(TableName)=?",
-				p_NewTableName.toLowerCase());
+				p_NewTableName.toLowerCase()); // IDEMPIERE-7089-P3
 		if (cnt > 0) {
 			throw new AdempiereException(Util.cleanAmp(Msg.parseTranslation(getCtx(), "@AlreadyExists@: @TableName@ = " + p_NewTableName)));
 		}
@@ -160,14 +160,14 @@ public class DatabaseTableRename extends SvrProcess {
 			}
 		}
 		
-		String colPrefix = oldTableName.toLowerCase();
+		String colPrefix = oldTableName.toLowerCase(); // IDEMPIERE-7089-P3
 		List<M_Element> elements = new Query(getCtx(), M_Element.Table_Name, "LOWER(ColumnName) IN (?, ?)", get_TrxName())
 				.setParameters(colPrefix+"_id", colPrefix+"_uu")
 				.setOrderBy("AD_Element_ID")
 				.list();
 		for (M_Element element : elements) {
 			String newColumnName;
-			if (element.getColumnName().toLowerCase().endsWith("_id")) {
+			if (element.getColumnName().toLowerCase().endsWith("_id")) { // IDEMPIERE-7089-P3
 				newColumnName = p_NewTableName + "_ID";
 			} else {
 				newColumnName = p_NewTableName + "_UU";

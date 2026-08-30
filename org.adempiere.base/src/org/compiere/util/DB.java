@@ -2486,9 +2486,9 @@ public final class DB
 			DatabaseMetaData metadata = conn.getMetaData();
 			String tblName;
 			if (metadata.storesUpperCaseIdentifiers())
-				tblName = tableName.toUpperCase();
+				tblName = tableName.toUpperCase(); // IDEMPIERE-7089-P3
 			else if (metadata.storesLowerCaseIdentifiers())
-				tblName = tableName.toLowerCase();
+				tblName = tableName.toLowerCase(); // IDEMPIERE-7089-P3
 			else
 				tblName = tableName;
 			rs = metadata.getTables(null, null, tblName, null);
@@ -2897,7 +2897,7 @@ public final class DB
 		String removeComments = "/\\*(?:.|[\\n\\r])*?\\*/";
 		String removeQuotedStrings = "'(?:.|[\\n\\r])*?'";
 		String removeLeadingSpaces = "^\\s+";
-		String cleanSql = sql.toLowerCase().replaceAll(removeComments, "").replaceAll(removeQuotedStrings, "").replaceFirst(removeLeadingSpaces, "");
+		String cleanSql = sql.toLowerCase().replaceAll(removeComments, "").replaceAll(removeQuotedStrings, "").replaceFirst(removeLeadingSpaces, ""); // IDEMPIERE-7089-P3
 		if(cleanSql.matches("^select\\s.*$") && !cleanSql.contains(";"))
 			return true;
 		else

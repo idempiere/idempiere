@@ -492,7 +492,7 @@ public final class Msg
 		String className = "org.compiere.util.AmtInWords_";
 		try
 		{
-			className += language.getLanguageCode().toUpperCase();
+			className += language.getLanguageCode().toUpperCase(); // IDEMPIERE-7089-P2
 			Class<?> clazz = Class.forName(className);
 			AmtInWords aiw = (AmtInWords)clazz.getDeclaredConstructor().newInstance();
 			return aiw.getAmtInWords(amount);
@@ -576,7 +576,7 @@ public final class Msg
 			if (AD_Language == null || AD_Language.length() == 0 || Env.isBaseLanguage(AD_Language, "AD_Element")) {
 				StringBuilder sql = new StringBuilder("SELECT")
 						.append(isPrintName ? " PrintName, PO_PrintName" : " Name, PO_Name")
-						.append(" FROM AD_Element WHERE UPPER(ColumnName)=?");
+						.append(" FROM AD_Element WHERE UPPER(ColumnName)=UPPER(?)");
 				pstmt = DB.prepareStatement(sql.toString(), null);
 			}
 			else
@@ -584,13 +584,13 @@ public final class Msg
 				StringBuilder sql = new StringBuilder("SELECT")
 						.append(isPrintName ? " t.PrintName, t.PO_PrintName" : " t.Name, t.PO_Name")
 						.append(" FROM AD_Element_Trl t, AD_Element e")
-						.append(" WHERE t.AD_Element_ID=e.AD_Element_ID AND UPPER(e.ColumnName)=?")
+						.append(" WHERE t.AD_Element_ID=e.AD_Element_ID AND UPPER(e.ColumnName)=UPPER(?)")
 						.append(" AND t.AD_Language=?");
 				pstmt = DB.prepareStatement(sql.toString(), null);
 				pstmt.setString(2, AD_Language);
 			}
 
-			pstmt.setString(1, ColumnName.toUpperCase());
+			pstmt.setString(1, ColumnName); // IDEMPIERE-7089-P1
 			rs = pstmt.executeQuery();
 			if (rs.next())
 			{

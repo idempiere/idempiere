@@ -525,7 +525,7 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 	 * @param tableName table name, case insensitive
 	 */
 	public void addSkipChangeLogForUpdate(String tableName) {
-		skipChangeLogForUpdateSet.add(tableName.toUpperCase());
+		skipChangeLogForUpdateSet.add(tableName.toUpperCase()); // IDEMPIERE-7089-P2
 	}
 	
 	/**
@@ -534,7 +534,7 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 	 * @param tableName table name, case insensitive
 	 */
 	public void removeSkipChangeLogForUpdate(String tableName) {
-		skipChangeLogForUpdateSet.remove(tableName.toUpperCase());
+		skipChangeLogForUpdateSet.remove(tableName.toUpperCase()); // IDEMPIERE-7089-P2
 	}
 	
 	/**
@@ -543,7 +543,7 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 	 * @return true if it is to skip the capture of update change log for this session
 	 */
 	public boolean isSkipChangeLogForUpdate(String tableName) {
-		return skipChangeLogForUpdateSet.contains(tableName.toUpperCase());
+		return skipChangeLogForUpdateSet.contains(tableName.toUpperCase()); // IDEMPIERE-7089-P2
 	}
 }	//	MSession
 

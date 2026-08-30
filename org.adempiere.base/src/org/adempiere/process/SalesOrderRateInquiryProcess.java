@@ -225,7 +225,7 @@ public class SalesOrderRateInquiryProcess extends SvrProcess
 		boolean isPound = false;
 		if (unit != null)
 		{
-			unit = unit.toUpperCase();
+			unit = unit.toUpperCase(); // IDEMPIERE-7089-P5
 			if (unit.equals("LB") || unit.equals("LBS"))
 				isPound = true;
 		}

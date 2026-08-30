@@ -90,7 +90,7 @@ public class EmailSrv {
 		if(isSSL != null) {
 			this.isSSL = isSSL;
 		} else {
-			this.isSSL = this.imapHost.toLowerCase().startsWith ("imap.gmail.com");
+			this.isSSL = this.imapHost.toLowerCase().startsWith ("imap.gmail.com"); // IDEMPIERE-7089-P2
 			if(!this.isSSL && imapPort == 993)
 				this.isSSL = true;	// Port is 993 set to SSL IMAPS
 			if (this.isSSL && imapPort != 993){
@@ -110,7 +110,7 @@ public class EmailSrv {
 	 */
 	@Deprecated (since="13", forRemoval=true)
 	public EmailSrv (String imapHost, String  imapUser, String  imapPass){
-		this (imapHost, imapUser, imapPass, (imapHost != null && imapHost.toLowerCase().startsWith ("imap.gmail.com"))? 993 : 143, (imapHost != null && imapHost.toLowerCase().startsWith ("imap.gmail.com"))? true : false);
+		this (imapHost, imapUser, imapPass, (imapHost != null && imapHost.toLowerCase().startsWith ("imap.gmail.com"))? 993 : 143, (imapHost != null && imapHost.toLowerCase().startsWith ("imap.gmail.com"))? true : false); // IDEMPIERE-7089-P2
 	}
 	
 	/**

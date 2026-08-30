@@ -206,7 +206,7 @@ public class WSQLQuery extends ADForm implements EventListener<Event>
 			return "";
 		//
 		StringBuilder result = new StringBuilder();
-		String SQL = sql.toUpperCase();
+		String SQL = sql.toUpperCase(); // IDEMPIERE-7089-P3
 		String cleanSQL = SQL
 				.replaceAll(REGEX_REMOVE_COMMENTS, "")
 				.replaceAll(REGEX_REMOVE_QUOTED_STRINGS, "")
@@ -270,7 +270,7 @@ public class WSQLQuery extends ADForm implements EventListener<Event>
 				List<Object> row = new ArrayList<Object>();
 				row.add(++count);
 				for (int col = 1; col <= meta.getColumnCount(); col++) {
-					String colName = header.get(col).toLowerCase();
+					String colName = header.get(col).toLowerCase(); // IDEMPIERE-7089-P3
 					if (rs.getObject(col) instanceof BigDecimal
 						&& (colName.endsWith("_id") || colName.equals("createdby") || colName.equals("updatedby")))
 						row.add(rs.getInt(col));

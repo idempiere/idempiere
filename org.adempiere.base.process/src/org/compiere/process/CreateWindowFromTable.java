@@ -190,7 +190,7 @@ public class CreateWindowFromTable extends SvrProcess
 			else 
 				tab.setOrderByClause(table.getTableName() + ".Created DESC");
 
-			if (table.getTableName().toLowerCase().endsWith("_trl")) {
+			if (table.getTableName().toLowerCase().endsWith("_trl")) { // IDEMPIERE-7089-P3
 				tab.setIsTranslationTab(true);
 				tab.setIsInsertRecord(false);
 				if (table.columnExistsInDB("AD_Language"))

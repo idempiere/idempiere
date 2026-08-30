@@ -395,7 +395,7 @@ public class MAttachmentEntry
 	 */
 	public boolean isPDF()
 	{
-		return m_name.toLowerCase().endsWith(".pdf");
+		return m_name.toLowerCase().endsWith(".pdf"); // IDEMPIERE-7089-P2
 	}	//	isPDF
 	
 	/**
@@ -404,7 +404,7 @@ public class MAttachmentEntry
 	 */
 	public boolean isGraphic()
 	{
-		String m_lowname = m_name.toLowerCase();
+		String m_lowname = m_name.toLowerCase(); // IDEMPIERE-7089-P2
 		return m_lowname.endsWith(".gif") || m_lowname.endsWith(".jpg") || m_lowname.endsWith(".png");
 	}	//	isGraphic
 	

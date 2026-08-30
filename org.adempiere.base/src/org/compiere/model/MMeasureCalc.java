@@ -263,7 +263,7 @@ public class MMeasureCalc extends X_PA_MeasureCalc implements ImmutablePOSupport
 		String selectFrom = getSelectClause();
 		int index = selectFrom.indexOf("FROM ");
 		if (index == -1)
-			index = selectFrom.toUpperCase().indexOf("FROM ");
+			index = selectFrom.toUpperCase().indexOf("FROM "); // IDEMPIERE-7089-P3
 		if (index == -1)
 			throw new IllegalArgumentException("Cannot find FROM in sql - " + selectFrom);
 		sb.append(selectFrom.substring(0, index))

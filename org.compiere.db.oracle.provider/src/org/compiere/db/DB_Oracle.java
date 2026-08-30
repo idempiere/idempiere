@@ -297,7 +297,7 @@ public class DB_Oracle implements AdempiereDatabase
     public String getSchema()
     {
         if (m_userName != null)
-            return m_userName.toUpperCase();
+            return m_userName.toUpperCase(); // IDEMPIERE-7089-P3
         log.severe("User Name not set (yet) - call getConnectionURL first");
         return null;
     }   //  getSchema
@@ -838,14 +838,14 @@ public class DB_Oracle implements AdempiereDatabase
 	}
 
 	public int getNextID(String name, String trxName) {
-		int m_sequence_id = DB.getSQLValueEx(trxName, "SELECT "+name.toUpperCase()+".nextval FROM DUAL");
+		int m_sequence_id = DB.getSQLValueEx(trxName, "SELECT "+name.toUpperCase()+".nextval FROM DUAL"); // IDEMPIERE-7089-P3
 		return m_sequence_id;
 	}
 
 	public boolean createSequence(String name , int increment , int minvalue , int maxvalue ,int  start , String trxName)
 	{
 		// Check if Sequence exists
-		final int cnt = DB.getSQLValueEx(trxName, "SELECT COUNT(*) FROM USER_SEQUENCES WHERE UPPER(sequence_name)=?", name.toUpperCase());
+		final int cnt = DB.getSQLValueEx(trxName, "SELECT COUNT(*) FROM USER_SEQUENCES WHERE UPPER(sequence_name)=?", name.toUpperCase()); // IDEMPIERE-7089-P3
 		final int no;
 		if (start < minvalue)
 			start = minvalue;
@@ -853,7 +853,7 @@ public class DB_Oracle implements AdempiereDatabase
 		// New Sequence
 		if (cnt == 0)
 		{
-			no = DB.executeUpdate("CREATE SEQUENCE "+name.toUpperCase()
+			no = DB.executeUpdate("CREATE SEQUENCE "+name.toUpperCase() // IDEMPIERE-7089-P3
 								+ " MINVALUE " + minvalue
 								+ " MAXVALUE " + maxvalue
 								+ " START WITH " + start 
@@ -864,12 +864,12 @@ public class DB_Oracle implements AdempiereDatabase
 		// Already existing sequence => ALTER
 		else
 		{
-			no = DB.executeUpdate("ALTER SEQUENCE "+name.toUpperCase()
+			no = DB.executeUpdate("ALTER SEQUENCE "+name.toUpperCase() // IDEMPIERE-7089-P3
 					+ " INCREMENT BY " + increment
 					// + " MINVALUE " + minvalue // ORA-04007
 					+ " MAXVALUE " + maxvalue
 					+ " CACHE 20", trxName);
-			while (DB.getSQLValue(trxName, "SELECT " + name.toUpperCase() + ".NEXTVAL FROM DUAL") < start) {
+			while (DB.getSQLValue(trxName, "SELECT " + name.toUpperCase() + ".NEXTVAL FROM DUAL") < start) { // IDEMPIERE-7089-P3
 	        	// do nothing - the while is incrementing the sequence
 	        }
 		}

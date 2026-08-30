@@ -29,7 +29,7 @@ import org.zkoss.zk.ui.Executions;
 public class ZulDashboardGadgetFactory implements IDashboardGadgetFactory {
 	@Override
 	public Component getGadget(String uri, Component parent) {
-		if (uri != null && uri.toLowerCase().endsWith(".zul")) {
+		if (uri != null && uri.toLowerCase().endsWith(".zul")) { // IDEMPIERE-7089-P2
 	        IResourceFinder rf = Core.getResourceFinder();
 	        URL url =  rf.getResource(uri);
 	        if(url!=null)

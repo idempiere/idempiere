@@ -102,7 +102,7 @@ public class IDFinder {
 				if (i > 0)
 					sqlB.append(" AND ");
 				if (ignorecase) {
-					sqlB.append("UPPER(").append(columns[i]).append(")=? ");
+					sqlB.append("UPPER(").append(columns[i]).append(")=UPPER(?) ");
 				} else {
 					sqlB.append(columns[i]).append("=? ");
 				}
@@ -110,7 +110,7 @@ public class IDFinder {
 					byte[] bytes = Hex.decodeHex(values[i].toCharArray());
 					String s = new String(bytes, "UTF-8");
 					if (ignorecase) {
-						paramList.add(s.toUpperCase());
+						paramList.add(s); // IDEMPIERE-7089-P1
 					} else {
 						paramList.add(s);
 					}
@@ -123,8 +123,8 @@ public class IDFinder {
 			params = paramList.toArray();
 		} else {
 			if (ignorecase && value != null && value instanceof String) {
-				sqlB.append("UPPER(").append(columnName).append(") =? ");
-				params = new Object[]{ ((String)value).toUpperCase()};
+				sqlB.append("UPPER(").append(columnName).append(") =UPPER(?) ");
+				params = new Object[]{value}; // IDEMPIERE-7089-P1
 			} else {
 				sqlB.append(columnName).append(" =? ");
 				params = new Object[]{value};
@@ -325,7 +325,7 @@ public class IDFinder {
 		if (ignoreCase) {
 			sqlB.append("UPPER(")
 				.append(columnName)
-				.append(") = ? AND ");
+				.append(") = UPPER(?) AND ");
 		} else {
 			sqlB.append(columnName)
 				.append(" = ? AND ");
@@ -341,7 +341,7 @@ public class IDFinder {
 
 			pstmt = DB.prepareStatement(sqlB.toString(), trxName);
 			if (ignoreCase) {
-				pstmt.setString(1, name.toUpperCase());
+				pstmt.setString(1, name); // IDEMPIERE-7089-P1
 			} else {
 				pstmt.setString(1, name);
 			}

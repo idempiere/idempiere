@@ -295,11 +295,11 @@ public class UUIDGenerator extends SvrProcess {
 			String tableName = table.getTableName();
 			if (md.storesUpperCaseIdentifiers())
 			{
-				tableName = tableName.toUpperCase();
+				tableName = tableName.toUpperCase(); // IDEMPIERE-7089-P3
 			}
 			else if (md.storesLowerCaseIdentifiers())
 			{
-				tableName = tableName.toLowerCase();
+				tableName = tableName.toLowerCase(); // IDEMPIERE-7089-P3
 			}
 			int noColumns = 0;
 			StringBuilder sql = null;

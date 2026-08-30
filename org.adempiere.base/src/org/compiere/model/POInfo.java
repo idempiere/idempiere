@@ -223,7 +223,7 @@ public class POInfo implements Serializable
 					IsAllowLogging, IsAllowCopy);
 				list.add(col);
 				
-				m_columnNameMap.put(ColumnName.toUpperCase(), list.size() - 1);
+				m_columnNameMap.put(ColumnName.toUpperCase(), list.size() - 1); // IDEMPIERE-7089-P3
 				m_columnIdMap.put(AD_Column_ID, list.size() - 1);
 			}
 		}
@@ -314,7 +314,7 @@ public class POInfo implements Serializable
 	 */
 	public int getColumnIndex (String ColumnName)
 	{
-		Integer i = m_columnNameMap.get(ColumnName.toUpperCase());
+		Integer i = m_columnNameMap.get(ColumnName.toUpperCase()); // IDEMPIERE-7089-P3
 		if (i != null)
 			return i.intValue();
 		

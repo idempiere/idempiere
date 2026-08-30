@@ -96,9 +96,9 @@ public class M_Element extends X_AD_Element
 			return null;
 		//
 		// TODO: caching if trxName == null
- 	 	final String whereClause = "UPPER(ColumnName)=?";
+		final String whereClause = "UPPER(ColumnName)=UPPER(?)";
 	 	M_Element retValue = new Query(ctx, I_AD_Element.Table_Name, whereClause, trxName)
-			.setParameters(columnName.toUpperCase())
+			.setParameters(columnName) // IDEMPIERE-7089-P1
 			.firstOnly();
 		return retValue;
 	}	//	get
@@ -191,10 +191,10 @@ public class M_Element extends X_AD_Element
 			if (getColumnName().length() != columnName.length())
 				setColumnName(columnName);
 			
-			StringBuilder sql = new StringBuilder("select count(*) from AD_Element where UPPER(ColumnName)=?");
+			StringBuilder sql = new StringBuilder("select count(*) from AD_Element where UPPER(ColumnName)=UPPER(?)");
 			if (!newRecord)
 				sql.append(" AND AD_Element_ID<>").append(get_ID()); 
-			int no = DB.getSQLValue(null, sql.toString(), columnName.toUpperCase());
+			int no = DB.getSQLValue(null, sql.toString(), columnName); // IDEMPIERE-7089-P1
 			if (no > 0) {
 				log.saveError(DBException.SAVE_ERROR_NOT_UNIQUE_MSG, Msg.getElement(getCtx(), COLUMNNAME_ColumnName));
 				return false;
@@ -246,8 +246,9 @@ public class M_Element extends X_AD_Element
 					.append(", Description=").append(DB.TO_STRING(getDescription()))
 					.append(", Help=").append(DB.TO_STRING(getHelp()))
 					.append(", AD_Element_ID=").append(get_ID())
-					.append(" WHERE UPPER(ColumnName)=")
-					.append(DB.TO_STRING(getColumnName().toUpperCase()))
+					.append(" WHERE UPPER(ColumnName)=UPPER(")
+					.append(DB.TO_STRING(getColumnName())) // IDEMPIERE-7089-P1
+					.append(")")
 					.append(" AND IsCentrallyMaintained='Y' AND AD_Element_ID IS NULL");
 				no = DB.executeUpdate(sql.toString(), get_TrxName());
 				

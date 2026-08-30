@@ -1189,7 +1189,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			{
 				ColumnInfo columnInfo = null;
 				String colSQL = infoColumn.getSelectClause();
-				if (! colSQL.toUpperCase().contains(" AS "))
+				if (! colSQL.toUpperCase().contains(" AS ")) // IDEMPIERE-7089-P3
 					colSQL += " AS " + infoColumn.getColumnName();
 				if (infoColumn.getAD_Reference_ID() == DisplayType.ID) 
 				{
@@ -1292,7 +1292,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         editor.setReadWrite(false);
 
 		String colSQL = infoColumn.getSelectClause();
-		if (! colSQL.toUpperCase().contains(" AS "))
+		if (! colSQL.toUpperCase().contains(" AS ")) // IDEMPIERE-7089-P3
 			colSQL += " AS " + infoColumn.getColumnName();
         editorMap.put(colSQL, editor);
         Class<?> colClass = columnName.endsWith("_ID") || columnName.equals("CreatedBy") || columnName.equals("UpdatedBy") ? KeyNamePair.class : String.class;
@@ -1420,7 +1420,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					continue;
 				}
 				String columnName = InfoColumnVO.getSelectClause();
-				int asIndex = columnName.toUpperCase().lastIndexOf(" AS ");
+				int asIndex = columnName.toUpperCase().lastIndexOf(" AS "); // IDEMPIERE-7089-P3
 				if (asIndex > 0) {
 					columnName = columnName.substring(0, asIndex);
 				}
@@ -1446,7 +1446,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					String column = columnName;
 					if (column.indexOf(".") > 0)
 						column = column.substring(column.indexOf(".")+1);
-					int cnt = DB.getSQLValueEx(null, "SELECT Count(*) From AD_Column WHERE IsActive='Y' AND AD_Client_ID=0 AND Upper(ColumnName)=? AND AD_Reference_ID=?", column.toUpperCase(), DisplayType.ChosenMultipleSelectionList);
+					int cnt = DB.getSQLValueEx(null, "SELECT Count(*) From AD_Column WHERE IsActive='Y' AND AD_Client_ID=0 AND Upper(ColumnName)=Upper(?) AND AD_Reference_ID=?", column, DisplayType.ChosenMultipleSelectionList); // IDEMPIERE-7089-P1
 					if (cnt > 0)
 					{
 						SQLFragment filter = DB.intersectFilterForCSV(columnName, pString);
@@ -1499,7 +1499,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 						builder.append(columnClause)
 							   .append(" ")
 							   .append(InfoColumnVO.getQueryOperator());
-						if (columnClause.toUpperCase().startsWith("UPPER(")) {
+						if (columnClause.toUpperCase().startsWith("UPPER(")) { // IDEMPIERE-7089-P3
 							builder.append(" UPPER(?)");
 						} else {
 							builder.append(" ?");
@@ -1511,7 +1511,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 							builder.append(columnClause)
 							.append(" ")
 							.append(X_AD_InfoColumn.QUERYOPERATOR_GtEq);
-							if (columnClause.toUpperCase().startsWith("UPPER(")) {
+							if (columnClause.toUpperCase().startsWith("UPPER(")) { // IDEMPIERE-7089-P3
 								builder.append(" UPPER(?)");
 							} else {
 								builder.append(" ?");
@@ -1525,7 +1525,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 							builder.append(columnClause)
 							.append(" ")
 							.append(X_AD_InfoColumn.QUERYOPERATOR_LeEq);
-							if (columnClause.toUpperCase().startsWith("UPPER(")) {
+							if (columnClause.toUpperCase().startsWith("UPPER(")) { // IDEMPIERE-7089-P3
 								builder.append(" UPPER(?)");
 							} else {
 								builder.append(" ?");
@@ -2562,7 +2562,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					parenthesisLevel++;
 	
 				// RegEx ^(\s+FROM)(\s) checks for <whitespace>FROM<whitespace> pattern
-				if(sql.substring(i, i+6).toUpperCase().matches("^(\\s+FROM)(\\s)") && parenthesisLevel == 0)
+				if(sql.substring(i, i+6).toUpperCase().matches("^(\\s+FROM)(\\s)") && parenthesisLevel == 0) // IDEMPIERE-7089-P3
 					return i;
 		}
 	
@@ -2978,7 +2978,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			{
 				ColumnInfo columnInfo = null;
 				String colSQL = infoColumn.getSelectClause();
-				if (! colSQL.toUpperCase().contains(" AS "))
+				if (! colSQL.toUpperCase().contains(" AS ")) // IDEMPIERE-7089-P3
 					colSQL += " AS " + infoColumn.getColumnName();
 				if (infoColumn.getAD_Reference_ID() == DisplayType.ID)
 				{

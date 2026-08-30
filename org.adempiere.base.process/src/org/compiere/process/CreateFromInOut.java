@@ -147,7 +147,7 @@ public class CreateFromInOut extends SvrProcess
 				String Value_String = rs.getString("Value_String");
 				
 				Object Value_Number = null;
-				if (ColumnName.toUpperCase().endsWith("_ID"))
+				if (ColumnName.toUpperCase().endsWith("_ID")) // IDEMPIERE-7089-P3
 					Value_Number = rs.getInt("Value_Number");
 				else
 					Value_Number = rs.getBigDecimal("Value_Number");

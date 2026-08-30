@@ -1357,7 +1357,7 @@ public class POTest extends AbstractTestCase
     @Test
     void testGetFindParameter() {
     	MBPartner bp = new MBPartner(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id, getTrxName());
-    	MBPartnerInfo[] bpInfos = MBPartnerInfo.find(Env.getCtx(), null, bp.getName().toLowerCase(), "", null, "%", null);
+	MBPartnerInfo[] bpInfos = MBPartnerInfo.find(Env.getCtx(), null, bp.getName().toLowerCase(), "", null, "%", null); // IDEMPIERE-7089-P6
     	assertTrue(bpInfos.length > 0);
     	Optional<MBPartnerInfo> optional = Arrays.stream(bpInfos).filter(e -> e.getName().equals(bp.getName())).findFirst();
     	assertTrue(optional.isPresent());		

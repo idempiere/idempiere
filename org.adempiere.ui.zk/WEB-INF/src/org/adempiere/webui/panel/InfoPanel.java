@@ -1541,7 +1541,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 			String alias = colsql.substring(lastSpaceIdx).trim();
 			boolean hasAlias = alias.matches("^[a-zA-Z_][a-zA-Z0-9_]*$"); // valid SQL alias - starts with letter then digits, letters, underscore
 
-			if (tmp.toLowerCase().endsWith("as") && hasAlias)
+			if (tmp.toLowerCase().endsWith("as") && hasAlias) // IDEMPIERE-7089-P3
 			{
 				colsql = alias;
 			}

@@ -74,16 +74,16 @@ public class TableAttributeSetElementHandler extends GenericPOElementHandler {
 						{
 							throw new Exception("SQL Statement must include AD_Client_ID and AD_Org_ID");
 						}
-						if (!excludes.contains(column.getColumnName().toLowerCase()))
+						if (!excludes.contains(column.getColumnName().toLowerCase())) // IDEMPIERE-7089-P3
 						{
-							excludes.add(column.getColumnName().toLowerCase());
+							excludes.add(column.getColumnName().toLowerCase()); // IDEMPIERE-7089-P3
 						}
 					}
 				}
 
 				for (String keycol : mTableAttributeSet.get_KeyColumns())
 				{
-					if (excludes.contains(keycol.toLowerCase()))
+					if (excludes.contains(keycol.toLowerCase())) // IDEMPIERE-7089-P3
 					{
 						throw new Exception("SQL Statement must include key columns");
 					}

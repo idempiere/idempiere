@@ -587,10 +587,10 @@ public class MenuSearchController implements EventListener<Event>{
 				return -1;
 			
 			String label2 = o2.getLabel();
-			label2 = Util.deleteAccents(label2.toLowerCase());
+			label2 = Util.deleteAccents(label2.toLowerCase()); // IDEMPIERE-7089-P4
 			
 			String compare = o1.getLabel();			
-			compare = Util.deleteAccents(compare.toLowerCase());
+			compare = Util.deleteAccents(compare.toLowerCase()); // IDEMPIERE-7089-P4
 			
 			boolean match = false;
 			if (compare.length() < 3)
@@ -659,7 +659,7 @@ public class MenuSearchController implements EventListener<Event>{
 		String text = textbox.getText();
 		if (Util.isEmpty(text))
 			return false;
-		text = text.toLowerCase();
+		text = text.toLowerCase(); // IDEMPIERE-7089-P4
 		ListItem exact = null;
 		ListItem firstStart = null;
 		int count = listbox.getItemCount();
@@ -672,7 +672,7 @@ public class MenuSearchController implements EventListener<Event>{
 			if (label.equalsIgnoreCase(text)) {
 				exact = item;
 				break;
-			} else if (firstStart == null && label.toLowerCase().startsWith(text) && text.length() >= 3) {
+			} else if (firstStart == null && label.toLowerCase().startsWith(text) && text.length() >= 3) { // IDEMPIERE-7089-P4
 				firstStart = item;
 			}
 		}
@@ -730,13 +730,13 @@ public class MenuSearchController implements EventListener<Event>{
 			}
 			
 			// Highlight search text
-			if (!Util.isEmpty(highlightText, true) && Util.deleteAccents(data.getLabel()).toLowerCase().contains(Util.deleteAccents(highlightText).toLowerCase())) {
+			if (!Util.isEmpty(highlightText, true) && Util.deleteAccents(data.getLabel()).toLowerCase().contains(Util.deleteAccents(highlightText).toLowerCase())) { // IDEMPIERE-7089-P4
 				// Space to maintain proper gap between icon and label
 				cell.setLabel(" ");
 				String label = data.getLabel();
 				String unaccentedLabel = Util.deleteAccents(label);
-				String matchString = Util.deleteAccents(highlightText.toLowerCase());
-				int match = unaccentedLabel.toLowerCase().indexOf(matchString);
+				String matchString = Util.deleteAccents(highlightText.toLowerCase()); // IDEMPIERE-7089-P4
+				int match = unaccentedLabel.toLowerCase().indexOf(matchString); // IDEMPIERE-7089-P4
     			while (match >= 0) {
     				if (match > 0) {
     					cell.appendChild(new Label(label.substring(0, match)));
@@ -752,7 +752,7 @@ public class MenuSearchController implements EventListener<Event>{
     					unaccentedLabel = unaccentedLabel.substring(matchString.length());
     					label = label.substring(matchString.length());
     				}
-    				match = unaccentedLabel.toLowerCase().indexOf(matchString);
+				match = unaccentedLabel.toLowerCase().indexOf(matchString); // IDEMPIERE-7089-P4
     			}
     			if (label.length() > 0)
     				cell.appendChild(new Label(label));

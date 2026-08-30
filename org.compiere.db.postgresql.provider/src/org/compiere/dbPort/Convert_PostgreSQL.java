@@ -108,7 +108,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 			statement = convertSimilarTo(statement);
 			statement = DB_PostgreSQL.removeNativeKeyworkMarker(statement);
 
-			String cmpString = statement.toUpperCase();
+			String cmpString = statement.toUpperCase(); // IDEMPIERE-7089-P3
 			boolean isCreate = cmpString.startsWith("CREATE ");
 
 			// Process
@@ -257,16 +257,16 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 		String retValue = sqlStatement;
 
 		// Convert all decode parts
-		int found = retValue.toUpperCase().indexOf("DECODE"); 
+		int found = retValue.toUpperCase().indexOf("DECODE");  // IDEMPIERE-7089-P3
 		int fromIndex = 0;
 		while ( found != -1) {
 			retValue = convertDecode(retValue, fromIndex);
 			fromIndex = found + 6;
-			found = retValue.toUpperCase().indexOf("DECODE", fromIndex);
+			found = retValue.toUpperCase().indexOf("DECODE", fromIndex); // IDEMPIERE-7089-P3
 		}
 		
 		// Outer Join Handling -----------------------------------------------
-		int index = retValue.toUpperCase().indexOf("SELECT ");
+		int index = retValue.toUpperCase().indexOf("SELECT "); // IDEMPIERE-7089-P3
 		if (index != -1 && retValue.indexOf("(+)", index) != -1)
 			retValue = convertOuterJoin(retValue);
 
@@ -304,7 +304,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 			String arg1 = m.group(gidx_arg1);
 			String arg2 = m.group(gidx_arg2);
 			//
-			String datatype = convertMap.get("\\b"+arg2.toUpperCase()+"\\b");
+			String datatype = convertMap.get("\\b"+arg2.toUpperCase()+"\\b"); // IDEMPIERE-7089-P3
 			if (datatype == null)
 				datatype = arg2;
 			m.appendReplacement(retValue, "cast("+arg1+" as "+datatype+")");
@@ -473,7 +473,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 		String targetTable = null;
 		String targetAlias = null;
 		
-		String sqlUpper = sqlStatement.toUpperCase();
+		String sqlUpper = sqlStatement.toUpperCase(); // IDEMPIERE-7089-P3
 		StringBuilder token = new StringBuilder();
 		String previousToken = null;
 		int charIndex = 0;
@@ -687,7 +687,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 					{
 						if (token.length() == 0 && 
 							( "SELECT".equalsIgnoreCase(previousToken) || 
-							  (previousToken != null && previousToken.toUpperCase().endsWith("SELECT")))) 
+							  (previousToken != null && previousToken.toUpperCase().endsWith("SELECT"))))  // IDEMPIERE-7089-P3
 							joinFieldsBegin = i;
 					}
 					else if (c == '(')
@@ -813,7 +813,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 	 */
 	private boolean useAggregateFunction(String fields) 
 	{
-		String fieldsUpper = fields.toUpperCase();
+		String fieldsUpper = fields.toUpperCase(); // IDEMPIERE-7089-P3
 		int size = fieldsUpper.length();
 		StringBuilder buffer = new StringBuilder();
 		String token = null;
@@ -910,7 +910,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 					}
 					if (t.length() > 0)
 					{
-						if ("SELECT".equalsIgnoreCase(t.toString().toUpperCase())) 
+						if ("SELECT".equalsIgnoreCase(t.toString().toUpperCase()))  // IDEMPIERE-7089-P3
 						{
 							o = 0;
 							result = result + t.toString();
@@ -1054,27 +1054,27 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 	// ALTER TABLE AD_FieldGroup ALTER COLUMN IsTab TYPE CHAR(1); ALTER TABLE
 	// AD_FieldGroup ALTER COLUMN SET DEFAULT 'N';
 	private String convertDDL(String sqlStatement) {
-		if (sqlStatement.toUpperCase().indexOf("ALTER TABLE ") == 0) {
+		if (sqlStatement.toUpperCase().indexOf("ALTER TABLE ") == 0) { // IDEMPIERE-7089-P3
 			String action = null;
 			int begin_col = -1;
-			if (sqlStatement.toUpperCase().indexOf(" MODIFY ") > 0) {
+			if (sqlStatement.toUpperCase().indexOf(" MODIFY ") > 0) { // IDEMPIERE-7089-P3
 				action = " MODIFY ";
-				begin_col = sqlStatement.toUpperCase().indexOf(" MODIFY ")
+				begin_col = sqlStatement.toUpperCase().indexOf(" MODIFY ") // IDEMPIERE-7089-P3
 						+ action.length();
-			} else if (sqlStatement.toUpperCase().indexOf(" ADD ") > 0) {
-				if (sqlStatement.toUpperCase().indexOf(" ADD CONSTRAINT ") < 0 &&
-						sqlStatement.toUpperCase().indexOf(" ADD FOREIGN KEY " ) < 0 )
+			} else if (sqlStatement.toUpperCase().indexOf(" ADD ") > 0) { // IDEMPIERE-7089-P3
+				if (sqlStatement.toUpperCase().indexOf(" ADD CONSTRAINT ") < 0 && // IDEMPIERE-7089-P3
+						sqlStatement.toUpperCase().indexOf(" ADD FOREIGN KEY " ) < 0 ) // IDEMPIERE-7089-P3
 				{
 					action = " ADD ";
-					begin_col = sqlStatement.toUpperCase().indexOf(" ADD ")
+					begin_col = sqlStatement.toUpperCase().indexOf(" ADD ") // IDEMPIERE-7089-P3
 							+ action.length();
 				}
 			}
 
 			// System.out.println( "MODIFY :" +
-			// sqlStatement.toUpperCase().indexOf(" MODIFY "));
+			// sqlStatement.toUpperCase().indexOf(" MODIFY ")); // IDEMPIERE-7089-P6
 			// System.out.println( "ADD :" +
-			// sqlStatement.toUpperCase().indexOf(" ADD "));
+			// sqlStatement.toUpperCase().indexOf(" ADD ")); // IDEMPIERE-7089-P6
 			// System.out.println( "begincolumn:" + sqlStatement +
 			// "begincolumn:" + begin_col );
 
@@ -1101,9 +1101,9 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 				String rest = sqlStatement.substring(end_col + 1); 
 				
 				if (action.equals(" ADD ")) {
-					if (rest.toUpperCase().indexOf(" DEFAULT ") != -1) {
-						String beforeDefault = rest.substring(0, rest.toUpperCase().indexOf(" DEFAULT "));
-						begin_default = rest.toUpperCase().indexOf(
+					if (rest.toUpperCase().indexOf(" DEFAULT ") != -1) { // IDEMPIERE-7089-P3
+						String beforeDefault = rest.substring(0, rest.toUpperCase().indexOf(" DEFAULT ")); // IDEMPIERE-7089-P3
+						begin_default = rest.toUpperCase().indexOf( // IDEMPIERE-7089-P3
 								" DEFAULT ") + 9;
 						defaultvalue = rest.substring(begin_default);
 						String endDefaultChar = " ";
@@ -1158,8 +1158,8 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 				} else if (action.equals(" MODIFY "))
 				{
 					rest = rest.trim();
-					if (rest.toUpperCase().startsWith("NOT ") || rest.toUpperCase().startsWith("NULL ") 
-							|| rest.toUpperCase().equals("NULL") || rest.toUpperCase().equals("NOT NULL"))
+					if (rest.toUpperCase().startsWith("NOT ") || rest.toUpperCase().startsWith("NULL ")  // IDEMPIERE-7089-P3
+							|| rest.toUpperCase().equals("NULL") || rest.toUpperCase().equals("NOT NULL")) // IDEMPIERE-7089-P3
 					{
 						type = null;
 					}
@@ -1170,8 +1170,8 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 						rest = typeEnd > 0 ? rest.substring(typeEnd) : "";
 					}
 
-					if (rest.toUpperCase().indexOf(" DEFAULT ") != -1) {
-						begin_default = rest.toUpperCase().indexOf(
+					if (rest.toUpperCase().indexOf(" DEFAULT ") != -1) { // IDEMPIERE-7089-P3
+						begin_default = rest.toUpperCase().indexOf( // IDEMPIERE-7089-P3
 								" DEFAULT ") + 9;
 						defaultvalue = rest.substring(begin_default);
 						String endDefaultChar = " ";
@@ -1192,26 +1192,26 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 						if(defaultvalue.startsWith("'") && defaultvalue.endsWith("'"))
 							defaultvalue = defaultvalue.substring(1, defaultvalue.length() - 1);
 						
-						if (rest != null && rest.toUpperCase().indexOf("NOT NULL") >= 0)
+						if (rest != null && rest.toUpperCase().indexOf("NOT NULL") >= 0) // IDEMPIERE-7089-P3
 							nullclause = "NOT NULL";
-						else if (rest != null && rest.toUpperCase().indexOf("NULL") >= 0)
+						else if (rest != null && rest.toUpperCase().indexOf("NULL") >= 0) // IDEMPIERE-7089-P3
 							nullclause = "NULL";
 							
 						// return DDL;
 					}
-					else if ( rest != null && rest.toUpperCase().indexOf("NOT NULL") >= 0 ) {
+					else if ( rest != null && rest.toUpperCase().indexOf("NOT NULL") >= 0 ) { // IDEMPIERE-7089-P3
 						nullclause = "NOT NULL";
 						
 					}
-					else if ( rest != null && rest.toUpperCase().indexOf("NULL") >= 0) {
+					else if ( rest != null && rest.toUpperCase().indexOf("NULL") >= 0) { // IDEMPIERE-7089-P3
 						nullclause = "NULL";
 						
 					}
 
 					DDL = "INSERT INTO t_alter_column values('";
 					String tableName = sqlStatement.substring(0, begin_col - action.length());
-					tableName = tableName.toUpperCase().replace("ALTER TABLE", "");
-					tableName = tableName.trim().toLowerCase();
+					tableName = tableName.toUpperCase().replace("ALTER TABLE", ""); // IDEMPIERE-7089-P3
+					tableName = tableName.trim().toLowerCase(); // IDEMPIERE-7089-P3
 					DDL = DDL + tableName + "','" + column + "',";
 					if (type != null)
 						DDL = DDL + "'" + type +"',";
@@ -1241,7 +1241,7 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 	 * @return
 	 */
 	private String convertAddJson(String statement) {
-		if (statement.toUpperCase().matches(".*\\bCLOB\\b.*\\bCONSTRAINT\\b.*CHECK\\b.*\\bIS JSON\\).*")) {
+		if (statement.toUpperCase().matches(".*\\bCLOB\\b.*\\bCONSTRAINT\\b.*CHECK\\b.*\\bIS JSON\\).*")) { // IDEMPIERE-7089-P3
 			// remove the CONSTRAINT ... IS JSON part
 			statement = statement.replaceAll("(?i)\\bCONSTRAINT\\b.*CHECK\\b.*\\(.*\\bIS JSON\\)", "");
 			// change type CLOB to JSONB

@@ -142,7 +142,7 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 		int tableId = Env.getContextAsInt(ctx.ctx, DataElementParameters.AD_TABLE_ID);
 		String tableName = MTable.getTableName(ctx.ctx, tableId);
 		List<String> excludes = defaultExcludeList(tableName);
-		boolean checkExcluded = ! sql.toLowerCase().startsWith("select *");				
+		boolean checkExcluded = ! sql.toLowerCase().startsWith("select *");				 // IDEMPIERE-7089-P3
 		try (Statement stmt = DB.createStatement();) {
 			sql = MRole.getDefault().addAccessSQL(sql, tableName, true, true);			
 			ResultSet rs = stmt.executeQuery(sql);
@@ -163,17 +163,17 @@ public class GenericPOElementHandler extends AbstractElementHandler {
 							if (column.getColumnName().equals("AD_Client_ID") || column.getColumnName().equals("AD_Org_ID")) {
 								throw new Exception("SQL Statement must include AD_Client_ID and AD_Org_ID");
 							}
-							if (!excludes.contains(column.getColumnName().toLowerCase())) {
-								excludes.add(column.getColumnName().toLowerCase());
+							if (!excludes.contains(column.getColumnName().toLowerCase())) { // IDEMPIERE-7089-P3
+								excludes.add(column.getColumnName().toLowerCase()); // IDEMPIERE-7089-P3
 							}
 						}
 					}
 					for (String keycol : po.get_KeyColumns()) {
-						if (excludes.contains(keycol.toLowerCase())) {
+						if (excludes.contains(keycol.toLowerCase())) { // IDEMPIERE-7089-P3
 							throw new Exception("SQL Statement must include key columns");
 						}
 					}
-					if (excludes.contains(po.getUUIDColumnName().toLowerCase())) {
+					if (excludes.contains(po.getUUIDColumnName().toLowerCase())) { // IDEMPIERE-7089-P3
 						throw new Exception("SQL Statement must include UUID column");
 					}
 					checkExcluded = false;

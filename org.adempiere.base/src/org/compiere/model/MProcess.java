@@ -479,7 +479,7 @@ public class MProcess extends X_AD_Process implements ImmutablePOSupport
 	{
 		if (log.isLoggable(Level.INFO)) log.info(pi.getClassName());
 
-		if (pi.getClassName().toLowerCase().startsWith(MRule.SCRIPT_PREFIX)) {
+		if (pi.getClassName().toLowerCase().startsWith(MRule.SCRIPT_PREFIX)) { // IDEMPIERE-7089-P2
 			return ProcessUtil.startScriptProcess(getCtx(), pi, trx);
 		} else {
 			return ProcessUtil.startJavaProcess(getCtx(), pi, trx, managedTrx);

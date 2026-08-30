@@ -201,7 +201,7 @@ public class SetGetUtil
 		String[] columnNames = new String[no];
 		for (int i = 1; i <= no; i++)
 		{
-			columnNames[i - 1] = rsmd.getColumnName(i).toUpperCase();
+			columnNames[i - 1] = rsmd.getColumnName(i).toUpperCase(); // IDEMPIERE-7089-P3
 		}
 		//
 		return columnNames;

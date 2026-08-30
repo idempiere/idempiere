@@ -112,15 +112,15 @@ public class SSOWebUIFilter implements Filter
 			boolean isAdminResRequest = false;
 			if (httpRequest.getSession().getAttribute(ISSOPrincipalService.SSO_ADMIN_LOGIN) != null)
 				isAdminResRequest = (boolean) httpRequest.getSession().getAttribute(ISSOPrincipalService.SSO_ADMIN_LOGIN);
-			isAdminResRequest = isAdminResRequest || httpRequest.getServletPath().toLowerCase().startsWith("/admin");
+			isAdminResRequest = isAdminResRequest || httpRequest.getServletPath().toLowerCase().startsWith("/admin"); // IDEMPIERE-7089-P2
 
 			// work as default log in
-			if (httpRequest.getServletPath().toLowerCase().startsWith("/index") || httpRequest.getServletPath().equalsIgnoreCase("/"))
+			if (httpRequest.getServletPath().toLowerCase().startsWith("/index") || httpRequest.getServletPath().equalsIgnoreCase("/")) // IDEMPIERE-7089-P2
 				isAdminResRequest = false;
 
 			httpRequest.getSession().setAttribute(ISSOPrincipalService.SSO_ADMIN_LOGIN, isAdminResRequest);
 			// redirect to admin zul file
-			if (isAdminResRequest && httpRequest.getServletPath().toLowerCase().endsWith("admin"))
+			if (isAdminResRequest && httpRequest.getServletPath().toLowerCase().endsWith("admin")) // IDEMPIERE-7089-P2
 			{
 				httpResponse.sendRedirect("/webui/admin.zul");
 				return;

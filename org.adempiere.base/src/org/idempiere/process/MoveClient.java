@@ -220,13 +220,13 @@ public class MoveClient extends SvrProcess {
 			p_excludeTablesWhere.append(" AND UPPER(TableName) NOT IN (");
 			boolean addComma = false;
 			for (String tableName : p_TablesToExclude.split(",")) {
-				p_tablesToExcludeList.add(tableName.toUpperCase());
+				p_tablesToExcludeList.add(tableName.toUpperCase()); // IDEMPIERE-7089-P3
 				if (addComma) {
 					p_excludeTablesWhere.append(",");
 				} else {
 					addComma = true;
 				}
-				p_excludeTablesWhere.append(DB.TO_STRING(tableName.toUpperCase()));
+				p_excludeTablesWhere.append(DB.TO_STRING(tableName.toUpperCase())); // IDEMPIERE-7089-P3
 			}
 			p_excludeTablesWhere.append("))");
 		}
@@ -271,7 +271,7 @@ public class MoveClient extends SvrProcess {
 			} else {
 				p_isPreserveAll = false;
 				for (String tableName : p_TablesToPreserveIDs.split(",")) {
-					p_tablesToPreserveIDsList.add(tableName.toUpperCase());
+					p_tablesToPreserveIDsList.add(tableName.toUpperCase()); // IDEMPIERE-7089-P3
 				}
 			}
 		}
@@ -330,9 +330,9 @@ public class MoveClient extends SvrProcess {
 			int cntCV = DB.getSQLValueEx(get_TrxName(), "SELECT COUNT(*) FROM AD_Client WHERE Value=?", p_ClientValue);
 			if (cntCV > 0)
 				throw new AdempiereUserError("Tenant with search key " + p_ClientValue + " already exists in database");
-			int cntCW = DB.getSQLValueEx(get_TrxName(), "SELECT COUNT(*) FROM W_Store WHERE WebContext=?", p_ClientValue.toLowerCase());
+			int cntCW = DB.getSQLValueEx(get_TrxName(), "SELECT COUNT(*) FROM W_Store WHERE WebContext=?", p_ClientValue.toLowerCase()); // IDEMPIERE-7089-P5
 			if (cntCW > 0)
-				throw new AdempiereUserError("WebStore with context " + p_ClientValue.toLowerCase() + " already exists in database");
+				throw new AdempiereUserError("WebStore with context " + p_ClientValue.toLowerCase() + " already exists in database"); // IDEMPIERE-7089-P5
 		}
 		
 		// validate there are clients to move, and doesn't exist in target
@@ -527,14 +527,14 @@ public class MoveClient extends SvrProcess {
 		ResultSet rsRC = null;
 		try {
 			stmtRC = externalConn.prepareStatement(sqlRemoteColumns, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-			stmtRC.setString(1, tableName.toUpperCase());
+			stmtRC.setString(1, tableName.toUpperCase()); // IDEMPIERE-7089-P3
 			rsRC = stmtRC.executeQuery();
 			while (rsRC.next()) {
 				String columnName = rsRC.getString(1);
 				int refID = rsRC.getInt(2);
 				int length = rsRC.getInt(3);
 				if (columnName.equalsIgnoreCase("AD_Client_ID")) {
-					p_columnsVerifiedList.add(tableName.toUpperCase() + "." + columnName.toUpperCase());
+					p_columnsVerifiedList.add(tableName.toUpperCase() + "." + columnName.toUpperCase()); // IDEMPIERE-7089-P3
 				} else {
 					validateExternalColumn(tableName, columnName, refID, length);
 				}
@@ -544,7 +544,7 @@ public class MoveClient extends SvrProcess {
 		} finally {
 			DB.close(rsRC, stmtRC);
 		}
-		p_tablesVerifiedList.add(tableName.toUpperCase());
+		p_tablesVerifiedList.add(tableName.toUpperCase()); // IDEMPIERE-7089-P3
 	}
 
 	/**
@@ -619,8 +619,8 @@ public class MoveClient extends SvrProcess {
 				sqlForeignClientSB.append(" AND AD_Ref_List.AD_Reference_ID=")
 				.append(" (SELECT AD_Column.AD_Reference_Value_ID FROM AD_Column")
 				.append(" JOIN AD_Table ON (AD_Column.AD_Table_ID=AD_Table.AD_Table_ID)")
-				.append(" WHERE UPPER(AD_Table.TableName)='").append(tableName.toUpperCase())
-				.append("' AND UPPER(AD_Column.ColumnName)='").append(columnName.toUpperCase()).append("'))")
+				.append(" WHERE UPPER(AD_Table.TableName)='").append(tableName.toUpperCase()) // IDEMPIERE-7089-P3
+				.append("' AND UPPER(AD_Column.ColumnName)='").append(columnName.toUpperCase()).append("'))") // IDEMPIERE-7089-P3
 				.append(" WHERE ").append(p_whereClient)
 				.append(" AND ").append(foreignTableName).append(".AD_Client_ID!=").append(tableName).append(".AD_Client_ID")
 				.append(" ORDER BY 2");
@@ -674,7 +674,7 @@ public class MoveClient extends SvrProcess {
 						continue;
 					}
 					if (foreignID != null) {
-						if (! p_idSystemConversionList.contains(foreignTableName.toUpperCase() + "." + foreignID)) {
+						if (! p_idSystemConversionList.contains(foreignTableName.toUpperCase() + "." + foreignID)) { // IDEMPIERE-7089-P3
 							Object localID = getFromUUID(foreignTableName, uuidCol, tableName, columnName, foreignUU, foreignID);
 							if (localID == null || (localID instanceof Number && ((Number)localID).intValue() < 0)) {
 								continue;
@@ -689,7 +689,7 @@ public class MoveClient extends SvrProcess {
 			}
 		}
 		// add to the list of verified columns
-		p_columnsVerifiedList.add(tableName.toUpperCase() + "." + columnName.toUpperCase());
+		p_columnsVerifiedList.add(tableName.toUpperCase() + "." + columnName.toUpperCase()); // IDEMPIERE-7089-P3
 	}
 
 	/**
@@ -718,8 +718,8 @@ public class MoveClient extends SvrProcess {
 						.append("FROM   AD_Table t ")
 						.append("       JOIN AD_Column c ")
 						.append("         ON ( c.AD_Table_ID = t.AD_Table_ID ) ")
-						.append("WHERE  UPPER(t.TableName)=").append(DB.TO_STRING(tableName.toUpperCase()))
-						.append("       AND UPPER(c.ColumnName)=").append(DB.TO_STRING(columnName.toUpperCase()))
+						.append("WHERE  UPPER(t.TableName)=").append(DB.TO_STRING(tableName.toUpperCase())) // IDEMPIERE-7089-P3
+						.append("       AND UPPER(c.ColumnName)=").append(DB.TO_STRING(columnName.toUpperCase())) // IDEMPIERE-7089-P3
 						.append("       AND ( c.FKConstraintType IS NULL OR c.FKConstraintType=").append(DB.TO_STRING(MColumn.FKCONSTRAINTTYPE_DoNotCreate_Ignore)).append(")");
 				int cntFk = countInExternal(sqlVerifFKSB.toString());
 				if (cntFk > 0) {
@@ -801,16 +801,16 @@ public class MoveClient extends SvrProcess {
 		// create/verify the ID conversions
 		for (MTable table : tables) {
 			String tableName = table.getTableName();
-			if (! p_tablesVerifiedList.contains(tableName.toUpperCase())) {
+			if (! p_tablesVerifiedList.contains(tableName.toUpperCase())) { // IDEMPIERE-7089-P3
 				continue;
 			}
 			String uuidCol = PO.getUUIDColumnName(tableName);
 			String keyCol;
 			if (table.isUUIDKeyTable())
-				keyCol = uuidCol.toUpperCase();
+				keyCol = uuidCol.toUpperCase(); // IDEMPIERE-7089-P3
 			else
-				keyCol = tableName.toUpperCase() + "_ID";
-			if (! p_columnsVerifiedList.contains(tableName.toUpperCase() + "." + keyCol))
+				keyCol = tableName.toUpperCase() + "_ID"; // IDEMPIERE-7089-P3
+			if (! p_columnsVerifiedList.contains(tableName.toUpperCase() + "." + keyCol)) // IDEMPIERE-7089-P3
 				continue;
 			
 			statusUpdate("Converting IDs for table " + tableName);
@@ -833,7 +833,7 @@ public class MoveClient extends SvrProcess {
 				while (rsGI.next()) {
 					Object source_Key = rsGI.getObject(1);
 					Object target_Key = null;
-					if (p_isPreserveAll || p_tablesToPreserveIDsList.contains(tableName.toUpperCase())) {
+					if (p_isPreserveAll || p_tablesToPreserveIDsList.contains(tableName.toUpperCase())) { // IDEMPIERE-7089-P3
 						List<Object> list = DB.getSQLValueObjectsEx(get_TrxName(), selectVerifyIdSB.toString(), source_Key);
 						Object localID = null;
 						if (list != null && list.size() == 1)
@@ -866,7 +866,7 @@ public class MoveClient extends SvrProcess {
 					if (target_Key != null || (target_Key instanceof Number && ((Number)target_Key).intValue() >= 0)) {
 						if (p_IsCopyClient) {
 							stmtInsertConv.setInt(1, getAD_PInstance_ID());
-							stmtInsertConv.setString(2, tableName.toUpperCase());
+							stmtInsertConv.setString(2, tableName.toUpperCase()); // IDEMPIERE-7089-P3
 							stmtInsertConv.setString(3, source_Key.toString());
 							stmtInsertConv.setString(4, target_Key.toString());
 							stmtInsertConv.setString(5, null);
@@ -880,7 +880,7 @@ public class MoveClient extends SvrProcess {
 							}
 						} else {
 							DB.executeUpdateEx(insertConversionId,
-									new Object[] {getAD_PInstance_ID(), tableName.toUpperCase(), source_Key.toString(), target_Key.toString(), null},
+									new Object[] {getAD_PInstance_ID(), tableName.toUpperCase(), source_Key.toString(), target_Key.toString(), null}, // IDEMPIERE-7089-P3
 									get_TrxName());
 						}
 					}
@@ -927,7 +927,7 @@ public class MoveClient extends SvrProcess {
 		// get the source data and insert into target converting the IDs
 		for (MTable table : tables) {
 			String tableName = table.getTableName();
-			if (! p_tablesVerifiedList.contains(tableName.toUpperCase())) {
+			if (! p_tablesVerifiedList.contains(tableName.toUpperCase())) { // IDEMPIERE-7089-P3
 				continue;
 			}
 			statusUpdate("Inserting data for table " + tableName);
@@ -941,7 +941,7 @@ public class MoveClient extends SvrProcess {
 					continue;
 				}
 				String columnName = column.getColumnName();
-				if (! p_columnsVerifiedList.contains(tableName.toUpperCase() + "." + columnName.toUpperCase())) {
+				if (! p_columnsVerifiedList.contains(tableName.toUpperCase() + "." + columnName.toUpperCase())) { // IDEMPIERE-7089-P3
 					continue;
 				}
 				if (columnsSB.length() > 0) {
@@ -1061,7 +1061,7 @@ public class MoveClient extends SvrProcess {
 						} else if ("AD_Preference".equalsIgnoreCase(tableName) && "Value".equalsIgnoreCase(columnName)) {
 							// Special case for AD_Preference.Value
 							String att = rsGD.getString("Attribute");
-							if (att.toUpperCase().endsWith("_ID")) {
+							if (att.toUpperCase().endsWith("_ID")) { // IDEMPIERE-7089-P3
 								convertTable = att.substring(0, att.length()-3);
 								if ("C_DocTypeTarget".equals(convertTable)) {
 									convertTable = "C_DocType";
@@ -1148,7 +1148,7 @@ public class MoveClient extends SvrProcess {
 								if (columnName.equals(uuidCol)) {
 									String oldUUID = parameters[i] == null ? null : parameters[i].toString();
 									// it is possible that the UUID has been resolved before because of a foreign key Record_UU, so search in T_MoveClient first
-									String newUUID = DB.getSQLValueStringEx(get_TrxName(), queryT_MoveClient, getAD_PInstance_ID(), tableName.toUpperCase(), oldUUID);
+									String newUUID = DB.getSQLValueStringEx(get_TrxName(), queryT_MoveClient, getAD_PInstance_ID(), tableName.toUpperCase(), oldUUID); // IDEMPIERE-7089-P3
 									if (newUUID == null) {
 										newUUID = Util.generateUUIDv7().toString();
 									}
@@ -1169,7 +1169,7 @@ public class MoveClient extends SvrProcess {
 										   ("W_Store".equalsIgnoreCase(tableName) && "WebContext".equalsIgnoreCase(columnName))
 										|| ("AD_User".equalsIgnoreCase(tableName) && "Value".equalsIgnoreCase(columnName))
 										) {
-									parameters[i] = p_ClientValue.toLowerCase();
+									parameters[i] = p_ClientValue.toLowerCase(); // IDEMPIERE-7089-P5
 								} else if (
 										   ("AD_User".equalsIgnoreCase(tableName) && "Password".equalsIgnoreCase(columnName))
 										|| ("AD_User".equalsIgnoreCase(tableName) && "Salt".equalsIgnoreCase(columnName))
@@ -1269,7 +1269,7 @@ public class MoveClient extends SvrProcess {
 								|| "AD_TreeNodeU4".equalsIgnoreCase(tableName)
 								|| "AD_Tree_Favorite_Node".equalsIgnoreCase(tableName)
 								|| "AD_TreeBar".equalsIgnoreCase(tableName)))) {
-			if (p_tablesToExcludeList.contains(convertTable.toUpperCase())) {
+			if (p_tablesToExcludeList.contains(convertTable.toUpperCase())) { // IDEMPIERE-7089-P3
 				// record is pointing to a table that is not included, ignore it
 				return true;
 			}
@@ -1295,7 +1295,7 @@ public class MoveClient extends SvrProcess {
 		Object convertedId = null;
 		try {
 			List<Object> list = DB.getSQLValueObjectsEx(get_TrxName(), queryT_MoveClient,
-					getAD_PInstance_ID(), convertTable.toUpperCase(), String.valueOf(key));
+					getAD_PInstance_ID(), convertTable.toUpperCase(), String.valueOf(key)); // IDEMPIERE-7089-P3
 			if (list != null && list.size() == 1)
 				convertedId = list.get(0);
 		} catch (Exception e) {
@@ -1311,7 +1311,7 @@ public class MoveClient extends SvrProcess {
 			if ((key instanceof String || key instanceof UUID) && ! cTable.isUUIDKeyTable() && columnName.equals("Record_UU")) {
 				convertedId = Util.generateUUIDv7().toString();
 				DB.executeUpdateEx(insertConversionId,
-						new Object[] {getAD_PInstance_ID(), convertTable.toUpperCase(), key.toString(), convertedId.toString(), null},
+						new Object[] {getAD_PInstance_ID(), convertTable.toUpperCase(), key.toString(), convertedId.toString(), null}, // IDEMPIERE-7089-P3
 						get_TrxName());
 			} else {
 				// not found in the T_MoveClient table - try to get it again - could be missed in first pass
@@ -1535,9 +1535,9 @@ public class MoveClient extends SvrProcess {
 			}
 		}
 		DB.executeUpdateEx(insertConversionId,
-				new Object[] {getAD_PInstance_ID(), foreignTableName.toUpperCase(), foreign_Key, local_Key, identifier},
+				new Object[] {getAD_PInstance_ID(), foreignTableName.toUpperCase(), foreign_Key, local_Key, identifier}, // IDEMPIERE-7089-P3
 				get_TrxName());
-		p_idSystemConversionList.add(foreignTableName.toUpperCase() + "." + foreign_Key);
+		p_idSystemConversionList.add(foreignTableName.toUpperCase() + "." + foreign_Key); // IDEMPIERE-7089-P3
 		return local_Key;
 	}
 

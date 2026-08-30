@@ -125,7 +125,7 @@ public class FileResourceLoader {
 		public boolean accept(File file, String name) {
 			if (file.equals(directory)) {
 				if (!name.equals(reportFile.getName())) {
-					String lower = name.toLowerCase();
+					String lower = name.toLowerCase(); // IDEMPIERE-7089-P2
 					if (lower.endsWith(".jasper") || lower.endsWith(".jrxml"))
 						return true;
 				}

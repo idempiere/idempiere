@@ -170,7 +170,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		try
 		{
 			pstmt = DB.prepareStatement (sql, trxName);
-			pstmt.setString(1, tableName.toUpperCase());
+			pstmt.setString(1, tableName.toUpperCase()); // IDEMPIERE-7089-P3
 			rs = pstmt.executeQuery ();
 			if (rs.next())
 				retValue = new MTable (ctx, rs, trxName);
@@ -393,7 +393,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 				if (is_Immutable())
 					column.markImmutable();
 				list.add (column);
-				m_columnNameMap.put(column.getColumnName().toUpperCase(), list.size() - 1);
+				m_columnNameMap.put(column.getColumnName().toUpperCase(), list.size() - 1); // IDEMPIERE-7089-P3
 				m_columnIdMap.put(column.getAD_Column_ID(), list.size() - 1);
 			}
 		}
@@ -438,7 +438,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	{
 		if (m_columns == null)
 			getColumns(false);
-		Integer i = m_columnNameMap.get(ColumnName.toUpperCase());
+		Integer i = m_columnNameMap.get(ColumnName.toUpperCase()); // IDEMPIERE-7089-P3
 		if (i != null)
 			return i.intValue();
 		
@@ -553,7 +553,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		String uuColName = PO.getUUIDColumnName(getTableName());
 		if (m_columns == null)
 			getColumns(false);
-		return m_columnNameMap.get(uuColName.toUpperCase()) != null;
+		return m_columnNameMap.get(uuColName.toUpperCase()) != null; // IDEMPIERE-7089-P3
 	}
 
 	/**

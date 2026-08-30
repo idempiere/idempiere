@@ -399,7 +399,7 @@ public class MSystem extends X_AD_System
 	private void setDBInfo()
 	{
 		String dbAddress = CConnection.get().getConnectionURL();
-		setDBAddress(dbAddress.toLowerCase());
+		setDBAddress(dbAddress.toLowerCase()); // IDEMPIERE-7089-P2
 		//
 		if (!Ini.isClient())
 		{
@@ -420,7 +420,7 @@ public class MSystem extends X_AD_System
 			if (rs.next())
 			{
 				dbName = rs.getString(2);
-				setDBInstance(dbName.toLowerCase());
+				setDBInstance(dbName.toLowerCase()); // IDEMPIERE-7089-P2
 			}
 		}
 		catch (SQLException e)

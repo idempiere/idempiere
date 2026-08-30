@@ -449,7 +449,7 @@ public class CreateTable extends SvrProcess {
 		if (columnThatExists != null) {
 			if (   p_isCreateTranslationTable
 				&& !columnThatExists.isTranslated()
-				&& !table.getTableName().toUpperCase().endsWith("_TRL")
+				&& !table.getTableName().toUpperCase().endsWith("_TRL") // IDEMPIERE-7089-P3
 				&& (   (p_isCreateColName && columnName.equals("Name"))
 					|| (p_isCreateColHelp && columnName.equals("Help"))
 					|| (p_isCreateColDescription && columnName.equals("Description")))) {
@@ -522,7 +522,7 @@ public class CreateTable extends SvrProcess {
 				length = LENGTH_60;
 				column.setIsMandatory(true);
 				column.setIsIdentifier(true);
-				if (p_isCreateTranslationTable && !table.getTableName().toUpperCase().endsWith("_TRL"))
+				if (p_isCreateTranslationTable && !table.getTableName().toUpperCase().endsWith("_TRL")) // IDEMPIERE-7089-P3
 					column.setIsTranslated(true);
 			}
 			else if (columnName.equals("DocumentNo"))
@@ -538,7 +538,7 @@ public class CreateTable extends SvrProcess {
 			else if (columnName.equals("Help"))
 				length = LENGTH_2000;
 			column.setFieldLength(length);
-			if (p_isCreateTranslationTable && !table.getTableName().toUpperCase().endsWith("_TRL"))
+			if (p_isCreateTranslationTable && !table.getTableName().toUpperCase().endsWith("_TRL")) // IDEMPIERE-7089-P3
 				column.setIsTranslated(true);
 		}
 		else if (columnName.equals("C_Currency_ID")) {

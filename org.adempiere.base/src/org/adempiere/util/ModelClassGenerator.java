@@ -545,7 +545,7 @@ public class ModelClassGenerator
 		if (clazz.equals(Boolean.class))
 		{
 			sb.append(" is");
-			if (columnName.toLowerCase().startsWith("is"))
+			if (columnName.toLowerCase().startsWith("is")) // IDEMPIERE-7089-P3
 				sb.append(columnName.substring(2));
 			else
 				sb.append(columnName);
@@ -654,7 +654,7 @@ public class ModelClassGenerator
 		if (AD_Reference_ID <= MTable.MAX_OFFICIAL_ID)
 		{
 			retValue.append("\n\t/** ").append(columnName).append(" AD_Reference_ID=").append(AD_Reference_ID) .append(" */")
-				.append("\n\tpublic static final int ").append(columnName.toUpperCase())
+				.append("\n\tpublic static final int ").append(columnName.toUpperCase()) // IDEMPIERE-7089-P3
 				.append("_AD_Reference_ID=").append(AD_Reference_ID).append(";");
 		}
 		//
@@ -734,7 +734,7 @@ public class ModelClassGenerator
 					}
 				}
 				retValue.append("\n\t/** ").append(Util.maskHTML(name)).append(" = ").append(Util.maskHTML(value)).append(" */");
-				retValue.append("\n\tpublic static final String ").append(columnName.toUpperCase())
+				retValue.append("\n\tpublic static final String ").append(columnName.toUpperCase()) // IDEMPIERE-7089-P3
 					.append("_").append(nameClean)
 					.append(" = \"").append(value).append("\";");
 			}

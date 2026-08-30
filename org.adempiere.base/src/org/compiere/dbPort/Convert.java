@@ -361,7 +361,7 @@ public abstract class Convert
 	 */
 	private String applyConvertMap(String sqlStatement) {
 		// Error Checks
-		if (sqlStatement.toUpperCase().indexOf("EXCEPTION WHEN") != -1) {
+		if (sqlStatement.toUpperCase().indexOf("EXCEPTION WHEN") != -1) { // IDEMPIERE-7089-P3
 			String error = "Exception clause needs to be converted: "
 					+ sqlStatement;
 			if (log.isLoggable(Level.INFO))
@@ -623,7 +623,7 @@ public abstract class Convert
 		// Do not log *Access records - teo_Sarca BF [ 2782095 ]
 		// IDEMPIERE-323 Migration script log AD_Document_Action_Access (nmicoud / CarlosRuiz_globalqss)
 
-		String uppStmt = statement.toUpperCase().trim();
+		String uppStmt = statement.toUpperCase().trim(); // IDEMPIERE-7089-P3
 		// don't log selects
 		if (uppStmt.startsWith("SELECT "))
 			return true;

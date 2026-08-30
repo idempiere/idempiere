@@ -78,7 +78,7 @@ public class Column {
 				// default value of NULL is eaqual to default value not set
 				if (defaultValue != null) {
 					defaultValue = defaultValue.trim();
-					if (defaultValue.toUpperCase().equals("NULL")) {
+					if (defaultValue.toUpperCase().equals("NULL")) { // IDEMPIERE-7089-P6
 						defaultValue = null;
 					}
 				}

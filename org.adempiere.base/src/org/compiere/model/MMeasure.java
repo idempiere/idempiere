@@ -654,7 +654,7 @@ public class MMeasure extends X_PA_Measure implements ImmutablePOSupport
 			{
 				String cmd = st.nextToken().trim();	
 				StringBuilder retValue = new StringBuilder();
-				if (cmd.toLowerCase().startsWith(MRule.SCRIPT_PREFIX)) {
+				if (cmd.toLowerCase().startsWith(MRule.SCRIPT_PREFIX)) { // IDEMPIERE-7089-P2
 					
 					MRule rule = MRule.get(getCtx(), cmd.substring(MRule.SCRIPT_PREFIX.length()));
 					if (rule == null) {

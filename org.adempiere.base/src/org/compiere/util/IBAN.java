@@ -28,7 +28,7 @@ public class IBAN {
 	{
 		if (iban!=null)
 		{
-			return iban.trim().replace(" ", "").toUpperCase() ;
+			return iban.trim().replace(" ", "").toUpperCase() ; // IDEMPIERE-7089-P5
 		}
 		return null ;
 	}

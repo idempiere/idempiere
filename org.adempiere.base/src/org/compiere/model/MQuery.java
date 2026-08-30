@@ -195,7 +195,7 @@ public class MQuery implements Serializable, Cloneable
 						if (Reference_ID == DisplayType.ChosenMultipleSelectionList)
 						{
 							String columnName = TableName + "." + ParameterName;		
-							int cnt = DB.getSQLValueEx(null, "SELECT Count(*) From AD_Column WHERE IsActive='Y' AND AD_Client_ID=0 AND Upper(ColumnName)=? AND AD_Reference_ID=?", ParameterName.toUpperCase(), DisplayType.ChosenMultipleSelectionList);
+							int cnt = DB.getSQLValueEx(null, "SELECT Count(*) From AD_Column WHERE IsActive='Y' AND AD_Client_ID=0 AND Upper(ColumnName)=Upper(?) AND AD_Reference_ID=?", ParameterName, DisplayType.ChosenMultipleSelectionList); // IDEMPIERE-7089-P1
 							if (cnt > 0)
 								query.addRestriction(DB.intersectFilterForCSV(columnName, P_String, isNotClause), isNotClause ? MQuery.NOT_EQUAL : MQuery.EQUAL, Name, Info);
 							else
@@ -2008,8 +2008,8 @@ class Restriction  implements Serializable
 					.append(ColumnName.substring(end));
 			else
 			{
-				int selectIndex = ColumnName.toLowerCase().indexOf("select ");
-				int fromIndex = ColumnName.toLowerCase().indexOf(" from ");
+				int selectIndex = ColumnName.toLowerCase().indexOf("select "); // IDEMPIERE-7089-P3
+				int fromIndex = ColumnName.toLowerCase().indexOf(" from "); // IDEMPIERE-7089-P3
 				if (selectIndex >= 0 && fromIndex > 0) 
 				{
 					sb.append(ColumnName);
@@ -2029,7 +2029,7 @@ class Restriction  implements Serializable
 		if ( ! (Operator.equals(MQuery.NULL) || Operator.equals(MQuery.NOT_NULL)))
 		{
 			if (Code instanceof String) {
-				if (ColumnName.toUpperCase().startsWith("UPPER(")) {
+				if (ColumnName.toUpperCase().startsWith("UPPER(")) { // IDEMPIERE-7089-P3
 					sb.append("UPPER("+DB.TO_STRING(Code.toString())+")");
 				} else {
 					sb.append(DB.TO_STRING(Code.toString()));
@@ -2108,8 +2108,8 @@ class Restriction  implements Serializable
 						.append(DB.getDatabase().quoteColumnName(ColumnName.substring(pos, end)))
 						.append(ColumnName.substring(end));
 			else {
-				int selectIndex = ColumnName.toLowerCase().indexOf("select ");
-				int fromIndex = ColumnName.toLowerCase().indexOf(" from ");
+				int selectIndex = ColumnName.toLowerCase().indexOf("select "); // IDEMPIERE-7089-P3
+				int fromIndex = ColumnName.toLowerCase().indexOf(" from "); // IDEMPIERE-7089-P3
 				if (selectIndex >= 0 && fromIndex > 0) {
 					sb.append(ColumnName);
 				} else {
@@ -2123,7 +2123,7 @@ class Restriction  implements Serializable
 		else
 			sb.append(Operator);
 		if (!(Operator.equals(MQuery.NULL) || Operator.equals(MQuery.NOT_NULL))) {
-			boolean useUpper = (Code instanceof String) && ColumnName.toUpperCase().startsWith("UPPER(");
+			boolean useUpper = (Code instanceof String) && ColumnName.toUpperCase().startsWith("UPPER("); // IDEMPIERE-7089-P3
 			if (useUpper)
 				sb.append("UPPER(");
 			sb.append("?");

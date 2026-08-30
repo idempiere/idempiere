@@ -267,7 +267,7 @@ public class MPrintPaper extends X_AD_PrintPaper implements ImmutablePOSupport
 	public CPaper getCPaper()
 	{
 		CPaper retValue;
-		if (getCode().toLowerCase().startsWith("custom"))
+		if (getCode().toLowerCase().startsWith("custom")) // IDEMPIERE-7089-P2
 		{
 			retValue = new CPaper (getSizeX().doubleValue(), getSizeY().doubleValue(), getUnitsInt(),
 					isLandscape(),

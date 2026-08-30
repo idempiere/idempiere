@@ -136,7 +136,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 	
 						for (int q = 1; q <= columns; q++) {
 	
-							String colName = meta.getColumnName(q).toUpperCase();
+							String colName = meta.getColumnName(q).toUpperCase(); // IDEMPIERE-7089-P3
 							final String sql3 = "SELECT AD_Column_ID FROM AD_column WHERE Upper(ColumnName) = ? AND AD_Table_ID = ?";
 							int columnID = DB.getSQLValueEx(getTrxName(ctx), sql3, colName, tableID);
 							final String sql4 = "SELECT AD_Reference_ID FROM AD_COLUMN WHERE AD_Column_ID = ?";

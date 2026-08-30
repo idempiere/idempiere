@@ -2282,7 +2282,7 @@ public final class Env
 	public static boolean isMac()
    	{
    		String osName = System.getProperty ("os.name");
-   		osName = osName.toLowerCase();
+		osName = osName.toLowerCase(); // IDEMPIERE-7089-P2
    		return osName.indexOf ("mac") != -1;
    	}	//	isMac
 
@@ -2293,7 +2293,7 @@ public final class Env
    	public static boolean isWindows()
    	{
    		String osName = System.getProperty ("os.name");
-   		osName = osName.toLowerCase();
+		osName = osName.toLowerCase(); // IDEMPIERE-7089-P2
    		return osName.indexOf ("windows") != -1;
    	}	//	isWindows
 

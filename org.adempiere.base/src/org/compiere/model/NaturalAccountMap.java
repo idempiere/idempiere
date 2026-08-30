@@ -246,13 +246,13 @@ public final class NaturalAccountMap<K,V> extends CCache<K,V>
 				//  Create Account - save later
 				na = new MElementValue(m_ctx, Value, Name, Description,
 					AccountType, AccountSign,
-					IsDocControlled.toUpperCase().startsWith("Y"), 
-					IsSummary.toUpperCase().startsWith("Y"), m_trxName);
+					IsDocControlled.toUpperCase().startsWith("Y"),  // IDEMPIERE-7089-P5
+					IsSummary.toUpperCase().startsWith("Y"), m_trxName); // IDEMPIERE-7089-P5
 				m_valueMap.put(Value, na);
 			}
 			
 			//  Add to Cache
-			put((K)Default_Account.toUpperCase(), (V)na);
+			put((K)Default_Account.toUpperCase(), (V)na); // IDEMPIERE-7089-P5
 		}
 		catch (Exception e)
 		{

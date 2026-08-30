@@ -305,7 +305,7 @@ ContextMenuListener, IZoomableEditor
 		if(getGridField() != null && getGridField().getGridTab() != null && getGridField().getColumnName().endsWith("_ID") 
 				&& MRole.getDefault().isCanReport(getGridField().getGridTab().getAD_Table_ID()))
 			enableDrill = true;
-        if (tableName.toUpperCase().equals("C_BPARTNER_LOCATION"))    				
+        if (tableName.toUpperCase().equals("C_BPARTNER_LOCATION"))    				 // IDEMPIERE-7089-P3
 		{
 			popupMenu = new WEditorPopupMenu(true, true, isShowPreference(), false, false, true, enableDrill, lookup);
 		} else {

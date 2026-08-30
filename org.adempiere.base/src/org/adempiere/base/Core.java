@@ -1315,7 +1315,7 @@ public class Core {
 		IReportContentRenderer renderer = getReportContentRenderer(request);
 		File content = renderer != null ? renderer.getContent(contentType, fileExtension) : null;
 		if (content == null && request.reportEngine() != null) {
-			String extension = fileExtension != null ? fileExtension.toLowerCase() : "";
+			String extension = fileExtension != null ? fileExtension.toLowerCase() : ""; // IDEMPIERE-7089-P2
 			content = switch (extension) {
 				case "html" -> request.reportEngine().getHTML();
 				case "csv" -> request.reportEngine().getCSV();
@@ -1379,7 +1379,7 @@ public class Core {
 
 		@Override
 		public File getContent(String contentType, String fileExtension) {
-			String extension = fileExtension != null ? fileExtension.toLowerCase() : "";
+			String extension = fileExtension != null ? fileExtension.toLowerCase() : ""; // IDEMPIERE-7089-P2
 			if (!List.of("pdf", "html", "csv", "xls", "xlsx").contains(extension))
 				return null;
 			try {

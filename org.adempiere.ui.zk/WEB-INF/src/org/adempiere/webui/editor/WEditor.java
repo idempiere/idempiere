@@ -745,10 +745,10 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	 */
 	protected void setLabelStyle(String style) {
 		if (label != null) {
-			if (style != null && style.toLowerCase().startsWith(MStyle.SCLASS_PREFIX)) {
+			if (style != null && style.toLowerCase().startsWith(MStyle.SCLASS_PREFIX)) { // IDEMPIERE-7089-P2
 				String sclass = style.substring(MStyle.SCLASS_PREFIX.length());
 				label.setSclass(sclass);
-			} else if (style != null && style.toLowerCase().startsWith(MStyle.ZCLASS_PREFIX)) {
+			} else if (style != null && style.toLowerCase().startsWith(MStyle.ZCLASS_PREFIX)) { // IDEMPIERE-7089-P2
 				String zclass = style.substring(MStyle.ZCLASS_PREFIX.length());
 				label.setZclass(zclass);
 			} else {

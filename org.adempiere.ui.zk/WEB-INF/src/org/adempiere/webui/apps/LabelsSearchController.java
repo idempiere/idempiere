@@ -194,7 +194,7 @@ public class LabelsSearchController implements EventListener<Event>{
 					LabelItem i = new LabelItem(rs.getInt(1), rs.getString(2), rs.getInt(3), rs.getBoolean(4));
 					newModel.add(i);
 					
-					if (rs.getString(2).toUpperCase().equals(value.toUpperCase())) {
+					if (rs.getString(2).toUpperCase().equals(value.toUpperCase())) { // IDEMPIERE-7089-P4
 						found = true;
 						foundIndex = currentIndex;
 					}
