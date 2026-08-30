@@ -228,7 +228,6 @@ public class SSOWebUIFilter implements Filter
 							}
 							httpResponse.sendRedirect(currentUri);
 						}
-						return;
 					}
 					else if (!m_SSOPrincipal.isAuthenticated(httpRequest, httpResponse))
 					{

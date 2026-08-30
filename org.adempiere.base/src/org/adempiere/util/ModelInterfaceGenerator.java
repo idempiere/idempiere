@@ -865,7 +865,7 @@ public class ModelInterfaceGenerator
 			.append("WHERE IsActive = 'Y' AND TableName NOT LIKE '%_Trl' ");
 		// Autodetect if we need to use IN or LIKE clause - teo_sarca [ 3020640 ]
 		if (tableLike.indexOf(",") == -1)
-			sql.append(" AND UPPER(TableName) LIKE ").append(DB.TO_STRING(tableLike.toString()));
+			sql.append(" AND ").append(DB.getSearchCondition("TableName", DB.TO_STRING(tableLike.toString())));
 		else { // only specific tables
 			StringBuilder finalTableLike = new StringBuilder("");
 			for (String table : tableLike.toString().split(",")) {

@@ -30,6 +30,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.UUID;
 
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 
 /**
@@ -176,7 +177,7 @@ public class MLabel extends X_AD_Label {
 	 * @return MLabel
 	 */
 	public static MLabel getByName(Properties ctx, String name, String trxName) {
-		String sqlWhere = " AD_Client_ID=? AND UPPER(Name) LIKE UPPER(?)";
+		String sqlWhere = " AD_Client_ID=? AND " + DB.getSearchCondition("Name");
 
 		return new Query(ctx, Table_Name, sqlWhere, trxName)
 				.setParameters(Env.getAD_Client_ID(ctx), name)

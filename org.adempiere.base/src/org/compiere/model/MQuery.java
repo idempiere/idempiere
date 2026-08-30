@@ -2030,7 +2030,7 @@ class Restriction  implements Serializable
 		{
 			if (Code instanceof String) {
 				if (ColumnName.toUpperCase().startsWith("UPPER(")) {
-					sb.append("UPPER("+DB.TO_STRING(Code.toString())+")");
+					sb.append(DB.getSearchExpression(DB.TO_STRING(Code.toString())));
 				} else {
 					sb.append(DB.TO_STRING(Code.toString()));
 				}
@@ -2125,10 +2125,9 @@ class Restriction  implements Serializable
 		if (!(Operator.equals(MQuery.NULL) || Operator.equals(MQuery.NOT_NULL))) {
 			boolean useUpper = (Code instanceof String) && ColumnName.toUpperCase().startsWith("UPPER(");
 			if (useUpper)
-				sb.append("UPPER(");
-			sb.append("?");
-			if (useUpper)
-				sb.append(")");
+				sb.append(DB.getSearchExpression("?"));
+			else
+				sb.append("?");
 			parameters.add(Code);
 
 			// Between

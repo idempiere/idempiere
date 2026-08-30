@@ -132,6 +132,20 @@ public interface AdempiereDatabase
 	public String convertStatement (String oraStatement);
 
 	/**
+	 * Build the database-specific expression used for case-insensitive search.
+	 * The same method must be used for both the column expression and the
+	 * parameter expression so that database-specific Unicode mappings are
+	 * applied consistently.
+	 *
+	 * @param expression column expression or parameter placeholder
+	 * @return normalized search expression
+	 */
+	default String getSearchExpression(String expression)
+	{
+		return "UPPER(" + expression + ")";
+	}
+
+	/**
 	 *  Check if DBMS support the sql statement
 	 *  @param sql SQL statement
 	 *  @return true: yes

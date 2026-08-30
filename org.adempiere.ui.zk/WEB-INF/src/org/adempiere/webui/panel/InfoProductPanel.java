@@ -1047,26 +1047,26 @@ public class InfoProductPanel extends InfoPanel implements EventListener<Event>
 		//  => Value
 		String value = fieldValue.getText();
 		if (!(value.equals("") || value.equals("%")))
-			where.append(" AND UPPER(p.Value) LIKE UPPER(?)");
+			where.append(" AND " + DB.getSearchCondition("p.Value"));
 
 		//  => Name
 		String name = fieldName.getText();
 		if (!(name.equals("") || name.equals("%")))
-			where.append(" AND UPPER(p.Name) LIKE UPPER(?)");
+			where.append(" AND " + DB.getSearchCondition("p.Name"));
 
 		//  => UPC
 		String upc = fieldUPC.getText();
 		if (!(upc.equals("") || upc.equals("%")))
-			where.append(" AND UPPER(p.UPC) LIKE UPPER(?)");
+			where.append(" AND " + DB.getSearchCondition("p.UPC"));
 
 		//  => SKU
 		String sku = fieldSKU.getText();
 		if (!(sku.equals("") || sku.equals("%")))
-			where.append(" AND UPPER(p.SKU) LIKE UPPER(?)");
+			where.append(" AND " + DB.getSearchCondition("p.SKU"));
 		//	=> Vendor
 		String vendor = fieldVendor.getText();
 		if (!(vendor.equals("") || vendor.equals("%")))
-			where.append(" AND UPPER(bp.Name) LIKE UPPER(?) AND ppo.IsCurrentVendor='Y' AND ppo.IsActive='Y'"); // Elaine 2008/12/16
+			where.append(" AND " + DB.getSearchCondition("bp.Name") + " AND ppo.IsCurrentVendor='Y' AND ppo.IsActive='Y'"); // Elaine 2008/12/16
 
 		return where.toString();
 	}	//	getSQLWhere

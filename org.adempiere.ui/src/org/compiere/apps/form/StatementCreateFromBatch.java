@@ -86,9 +86,9 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 			sql.append(" AND p.C_BPartner_ID=?");
 		
 		if(DocumentNo.length() > 0)
-			sql.append(" AND UPPER(p.DocumentNo) LIKE UPPER(?)");
+			sql.append(" AND " + DB.getSearchCondition("p.DocumentNo"));
 		if(AuthCode.length() > 0)
-			sql.append(" AND p.R_AuthCode LIKE ?");
+			sql.append(" AND " + DB.getSearchCondition("p.R_AuthCode"));
 		
 		if(AmtFrom != null || AmtTo != null)
 		{
@@ -160,7 +160,7 @@ public abstract class StatementCreateFromBatch extends CreateFromForm
 			pstmt.setString(index++, getSQLText(DocumentNo));
 		
 		if(AuthCode.length() > 0)
-			pstmt.setString(index++, getSQLText(AuthCode).toUpperCase());
+			pstmt.setString(index++, getSQLText(AuthCode));
 		
 		if(AmtFrom != null || AmtTo != null)
 		{

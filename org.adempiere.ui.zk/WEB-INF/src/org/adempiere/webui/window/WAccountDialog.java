@@ -859,7 +859,7 @@ public final class WAccountDialog extends Window
 			String value = f_Alias.getValue().toString();
 			if (!value.endsWith("%"))
 				value += "%";
-			query.addRestriction("UPPER(Alias)", MQuery.LIKE, value);
+			query.addRestriction(DB.getSearchExpression("Alias"), MQuery.LIKE, value);
 		}
 		//	Combination (mandatory)
 		if (includeAliasCombination && !isEmpty(f_Combination.getValue()))
@@ -867,7 +867,7 @@ public final class WAccountDialog extends Window
 			String value = f_Combination.getValue().toString();
 			if (!value.endsWith("%"))
 				value += "%";
-			query.addRestriction("UPPER(Combination)", MQuery.LIKE, value);
+			query.addRestriction(DB.getSearchExpression("Combination"), MQuery.LIKE, value);
 		}
 		//	Org (mandatory)
 		if (f_AD_Org_ID != null && !isEmpty(f_AD_Org_ID.getValue()))

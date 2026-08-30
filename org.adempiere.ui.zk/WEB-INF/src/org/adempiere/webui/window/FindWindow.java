@@ -2684,7 +2684,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	            	continue;
 	            }else {
 	            	if(MQuery.ILIKE.equals(Operator)) {
-	            		ColumnSQL = "UPPER("+ColumnSQL+")";
+				ColumnSQL = DB.getSearchExpression(ColumnSQL);
 	            	}
 	            }
 	            Object parsedValue = null;
@@ -3030,7 +3030,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
                         if (!valueStr.toString().endsWith("%"))
                             valueStr.append("%");
                         //
-                        ColumnSQL = new StringBuilder("UPPER(").append(ColumnSQL).append(")");
+                        ColumnSQL = new StringBuilder(DB.getSearchExpression(ColumnSQL.toString()));
                         value = valueStr.toString();
                     }
                     //

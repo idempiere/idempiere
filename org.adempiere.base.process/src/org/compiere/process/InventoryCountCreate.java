@@ -176,13 +176,13 @@ public class InventoryCountCreate extends SvrProcess
 			(p_LocatorValue.trim().length() == 0 || p_LocatorValue.equals("%")))
 			p_LocatorValue = null;
 		if (p_LocatorValue != null)
-			sql.append(" AND UPPER(l.Value) LIKE UPPER(?)");
+			sql.append(" AND " + DB.getSearchCondition("l.Value"));
 		//
 		if (p_ProductValue != null && 
 			(p_ProductValue.trim().length() == 0 || p_ProductValue.equals("%")))
 			p_ProductValue = null;
 		if (p_ProductValue != null)
-			sql.append(" AND UPPER(p.Value) LIKE UPPER(?)");
+			sql.append(" AND " + DB.getSearchCondition("p.Value"));
 		//
 		if (p_M_Product_Category_ID != 0)
 			sql.append(" AND p.M_Product_Category_ID IN (")

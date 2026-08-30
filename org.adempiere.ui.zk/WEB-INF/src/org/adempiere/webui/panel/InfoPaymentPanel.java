@@ -44,6 +44,7 @@ import org.compiere.minigrid.IDColumn;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MPayment;
 import org.compiere.model.MQuery;
+import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -324,7 +325,7 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 		StringBuilder sql = new StringBuilder();
 
 		if (fDocumentNo.getText().length() > 0)
-			sql.append(" AND UPPER(p.DocumentNo) LIKE UPPER(?)");
+			sql.append(" AND " + DB.getSearchCondition("p.DocumentNo"));
 
 		if (!"".equals(fBPartner_ID.getDisplay()))
 			sql.append(" AND p.C_BPartner_ID=?");
@@ -473,7 +474,7 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 	/**
 	 *  Get SQL WHERE parameter
 	 *  @param f field
-	 *  @return text with % at the end
+	 *  @return text with % appended when it is not already present
 	 */
 
 	private String getSQLText (Textbox f)

@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import org.compiere.apps.IStatusBar;
 import org.compiere.minigrid.IMiniTable;
 import org.compiere.model.GridTab;
+import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -104,9 +105,9 @@ public abstract class CreateFromBatch extends CreateFrom
 			sql.append(" AND p.C_Currency_ID=?");
 		
 		if(DocumentNo != null && DocumentNo.length() > 0)
-			sql.append(" AND UPPER(p.DocumentNo) LIKE UPPER(?)");
+			sql.append(" AND " + DB.getSearchCondition("p.DocumentNo"));
 		if(AuthCode != null && AuthCode.length() > 0)
-			sql.append(" AND UPPER(p.R_AuthCode) LIKE UPPER(?)");
+			sql.append(" AND " + DB.getSearchCondition("p.R_AuthCode"));
 		
 		if(AmtFrom != null || AmtTo != null)
 		{
