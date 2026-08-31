@@ -162,6 +162,7 @@ public final class RedisConfig {
 	private final Duration distributedCacheMapTtl;
 	private final int distributedCacheMapMaxSize;
 	private final String tenantPrefixMode;
+	private final int defaultClientId;
 	private final int subscriptionConnectionPoolSize;
 	private final int subscriptionPoolThreshold;
 
@@ -172,7 +173,8 @@ public final class RedisConfig {
 			boolean messagingReliable, boolean keyspaceNotificationsEnabled,
 			Set<String> rpcCallableAllowlist, String rpcHmacSecret,
 			Duration distributedCacheMapTtl, int distributedCacheMapMaxSize,
-			String tenantPrefixMode, int subscriptionConnectionPoolSize, int subscriptionPoolThreshold) {
+			String tenantPrefixMode, int defaultClientId,
+			int subscriptionConnectionPoolSize, int subscriptionPoolThreshold) {
 		this.redissonConfig = redissonConfig;
 		this.keyPrefix = keyPrefix;
 		this.nearCacheEnabled = nearCacheEnabled;
@@ -190,6 +192,7 @@ public final class RedisConfig {
 		this.distributedCacheMapTtl = distributedCacheMapTtl;
 		this.distributedCacheMapMaxSize = distributedCacheMapMaxSize;
 		this.tenantPrefixMode = tenantPrefixMode;
+		this.defaultClientId = defaultClientId;
 		this.subscriptionConnectionPoolSize = subscriptionConnectionPoolSize;
 		this.subscriptionPoolThreshold = subscriptionPoolThreshold;
 	}
@@ -314,6 +317,18 @@ public final class RedisConfig {
 	}
 
 	/**
+	 * The {@code AD_CLIENT_ID} resolved at startup from system property/environment, used as the
+	 * cache-key namespace fallback when {@link #isClientPrefixMode()} and no client can be resolved
+	 * from the calling thread's session (e.g. a background/system-context thread). Callers on a JVM
+	 * that only ever serves this one client can rely on this value alone; a JVM that serves multiple
+	 * clients must resolve the active client per request instead (see {@code CacheServiceImpl.prefixed}).
+	 * -1 when {@link #isClientPrefixMode()} is {@code false}.
+	 */
+	public int getDefaultClientId() {
+		return defaultClientId;
+	}
+
+	/**
 	 * Configured Redisson {@code subscriptionConnectionPoolSize} (or the property override).
 	 * Used together with {@link #getSubscriptionPoolThreshold()} to drive the circuit-breaker
 	 * pool-exhaustion check.
@@ -364,6 +379,12 @@ public final class RedisConfig {
 		}
 		Duration distMapTtl = ConfigParser.durationProp(props, DISTRIBUTED_CACHE_MAP_TTL,
 				DEFAULT_DISTRIBUTED_CACHE_MAP_TTL);
+		if (distMapTtl.toMillis() <= 0) {
+			throw new IllegalStateException(DISTRIBUTED_CACHE_MAP_TTL + " must resolve to a positive duration "
+					+ "(got " + distMapTtl + "), otherwise distributed cache entries would never expire per-entry. "
+					+ "Remove the property to use the default (" + DEFAULT_DISTRIBUTED_CACHE_MAP_TTL + ") "
+					+ "or set it to a positive ISO-8601 duration.");
+		}
 		int distMapMaxSize = ConfigParser.intProp(props, DISTRIBUTED_CACHE_MAP_MAX_SIZE,
 				DEFAULT_DISTRIBUTED_CACHE_MAP_MAX_SIZE);
 		String tenantMode = props.getProperty(TENANT_PREFIX_MODE, DEFAULT_TENANT_PREFIX_MODE).trim();
@@ -373,6 +394,7 @@ public final class RedisConfig {
 					TENANT_PREFIX_MODE, tenantMode, DEFAULT_TENANT_PREFIX_MODE);
 			tenantMode = DEFAULT_TENANT_PREFIX_MODE;
 		}
+		int defaultClientId = -1;
 		if (TENANT_PREFIX_MODE_CLIENT.equalsIgnoreCase(tenantMode)) {
 			String clientId = System.getProperty("AD_CLIENT_ID");
 			if (clientId == null || clientId.isBlank()) {
@@ -386,8 +408,8 @@ public final class RedisConfig {
 								+ TENANT_PREFIX_MODE_INSTANCE + " mode.");
 			}
 			try {
-				int clientIdInt = Integer.parseInt(clientId.trim());
-				if (clientIdInt <= 0) {
+				defaultClientId = Integer.parseInt(clientId.trim());
+				if (defaultClientId <= 0) {
 					throw new NumberFormatException("must be positive");
 				}
 			} catch (NumberFormatException e) {
@@ -395,7 +417,10 @@ public final class RedisConfig {
 						TENANT_PREFIX_MODE + "=" + TENANT_PREFIX_MODE_CLIENT
 								+ ": AD_CLIENT_ID must be a positive integer, got: " + clientId, e);
 			}
-			prefix = prefix + "client-" + clientId.trim() + ":";
+			// The client-<id> namespace segment is no longer baked into the static prefix here:
+			// a JVM can serve more than one AD_Client_ID, so CacheServiceImpl resolves the active
+			// client per request instead (falling back to this startup-configured value when no
+			// session context is available). See CacheServiceImpl.prefixed(String).
 		}
 		int subscriptionPoolSize = ConfigParser.intProp(props, SUBSCRIPTION_POOL_SIZE,
 				DEFAULT_SUBSCRIPTION_POOL_SIZE);
@@ -406,11 +431,48 @@ public final class RedisConfig {
 		int subscriptionPoolThreshold = (thresholdPercent > 0 && subscriptionPoolSize > 0)
 				? (int) Math.floor(subscriptionPoolSize * thresholdPercent / 100.0)
 				: 0;
+		if (props.getProperty(SUBSCRIPTION_POOL_SIZE) != null) {
+			// Operator explicitly tuned the breaker's pool-size assumption — push it onto the
+			// loaded Redisson configuration too, so the pool-exhaustion threshold actually matches
+			// the live subscriptionConnectionPoolSize instead of silently diverging from it.
+			applySubscriptionPoolSizeOverride(redisson, subscriptionPoolSize);
+		}
 		return new RedisConfig(redisson, prefix, nearCacheEnabled, nearCacheMax, nearCacheExpire,
 				fallbackEnabled, fallbackMax, fallbackExpire,
 				circuitFailures, circuitProbe, messagingReliable, keyspaceNotifications,
-				rpcAllowlist, rpcHmacSecret, distMapTtl, distMapMaxSize, tenantMode,
+				rpcAllowlist, rpcHmacSecret, distMapTtl, distMapMaxSize, tenantMode, defaultClientId,
 				subscriptionPoolSize, subscriptionPoolThreshold);
+	}
+
+	/**
+	 * Applies {@code poolSize} as the {@code subscriptionConnectionPoolSize} on whichever
+	 * server-mode config Redisson actually loaded (single/cluster/sentinel/master-slave/replicated).
+	 * Redisson's {@code Config} exposes no single generic getter for the active mode's pool size —
+	 * only {@code isSingleConfig()}/{@code isClusterConfig()}/{@code isSentinelConfig()} are public —
+	 * so master-slave and replicated topologies are detected by attempting each {@code useX()} call
+	 * in turn and relying on {@code Config}'s own validation (throws {@link IllegalStateException}
+	 * when a different mode is already active) to skip the wrong ones.
+	 */
+	private static void applySubscriptionPoolSizeOverride(Config redisson, int poolSize) {
+		try {
+			if (redisson.isSingleConfig()) {
+				redisson.useSingleServer().setSubscriptionConnectionPoolSize(poolSize);
+			} else if (redisson.isClusterConfig()) {
+				redisson.useClusterServers().setSubscriptionConnectionPoolSize(poolSize);
+			} else if (redisson.isSentinelConfig()) {
+				redisson.useSentinelServers().setSubscriptionConnectionPoolSize(poolSize);
+			} else {
+				try {
+					redisson.useMasterSlaveServers().setSubscriptionConnectionPoolSize(poolSize);
+				} catch (IllegalStateException notMasterSlave) {
+					redisson.useReplicatedServers().setSubscriptionConnectionPoolSize(poolSize);
+				}
+			}
+		} catch (IllegalStateException e) {
+			log.warn("Could not apply {}={} to the loaded Redisson configuration ({}); "
+					+ "the circuit breaker's pool-exhaustion threshold may not match the "
+					+ "actual subscription pool size.", SUBSCRIPTION_POOL_SIZE, poolSize, e.getMessage());
+		}
 	}
 
 	private static Set<String> parseRpcAllowlist(Properties props) {

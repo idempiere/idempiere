@@ -145,6 +145,10 @@ public class ClusterServiceImpl implements IClusterService {
 			rpcHmacSecret = Activator.getConfig().getRpcHmacSecret();
 			startHeartbeat();
 			subscribeToRequestTopic();
+			RedisHealth health = Activator.getHealthOrNull();
+			if (health != null) {
+				health.setSubscriptionUsageSupplier(activeResponseSubscriptions::get);
+			}
 			log.info("Redis cluster service activated; local member: {}", self);
 		} catch (RuntimeException re) {
 			throw re;
@@ -155,6 +159,10 @@ public class ClusterServiceImpl implements IClusterService {
 
 	@Deactivate
 	void deactivate() {
+		RedisHealth health = Activator.getHealthOrNull();
+		if (health != null) {
+			health.setSubscriptionUsageSupplier(null);
+		}
 		stopHeartbeat();
 		unsubscribeFromRequestTopic();
 		failAllPending(new IllegalStateException("Bundle deactivating"));
@@ -262,6 +270,26 @@ public class ClusterServiceImpl implements IClusterService {
 			return result;
 		}
 
+		// Check the breaker BEFORE allocating another response-topic subscription: once OPEN
+		// (typically because the subscription pool is already at/near threshold), every further
+		// call must stop adding listeners too, or the fast-path never actually gates anything —
+		// it would just keep tripping later without ever preventing pool exhaustion. Self-targeted
+		// futures were already completed above and are unaffected; only remote targets fail here.
+		RedisHealth h = Activator.getHealthOrNull();
+		if (h != null && !h.isHealthy()) {
+			IllegalStateException unavailable = new IllegalStateException(
+					"Redis circuit breaker is OPEN (" + h.getLastTripReason()
+							+ "); cluster RPC to remote members is unavailable");
+			for (Map.Entry<IClusterMember, CompletableFuture<V>> e : futures.entrySet()) {
+				if (!self.getId().equals(e.getKey().getId())) {
+					e.getValue().completeExceptionally(unavailable);
+				}
+			}
+			@SuppressWarnings({"rawtypes", "unchecked"})
+			Map<IClusterMember, Future<V>> result = (Map) futures;
+			return result;
+		}
+
 		RedissonClient client = Activator.getRedissonClient();
 		Codec codec = rpcCodec;
 		RTopic responseTopic = (codec != null)
@@ -271,7 +299,6 @@ public class ClusterServiceImpl implements IClusterService {
 				(channel, response) -> handleResponse(response));
 		// Track pool usage and probe circuit breaker.
 		int active = activeResponseSubscriptions.incrementAndGet();
-		RedisHealth h = Activator.getHealthOrNull();
 		if (h != null) {
 			h.recordSubscriptionPoolUsage(active, Activator.getConfig().getSubscriptionConnectionPoolSize());
 		}

@@ -30,6 +30,7 @@ import java.util.AbstractSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
 import org.redisson.api.RMapCache;
@@ -45,8 +46,15 @@ import org.redisson.api.RMapCache;
  * <p>All reads and structural mutations delegate to the underlying {@link RMapCache}.
  * {@code put} and {@code putAll} additionally pass the configured TTL so Redis
  * assigns a per-entry expiry at write time.</p>
+ *
+ * <p>Implements {@link ConcurrentMap} — rather than {@code AbstractMap}'s inherited
+ * {@code Map} default implementations of {@code putIfAbsent}/conditional {@code remove}/
+ * {@code replace} (non-atomic check-then-act) — by forwarding directly to {@link RMapCache}'s
+ * server-side-atomic equivalents, so concurrent cache fills cannot race and overwrite each other.
+ * {@link #putIfAbsent(Object, Object)} uses the TTL-aware overload so a successful insert retains
+ * the configured expiry, same as {@link #put}.</p>
  */
-public final class TtlAwareMapCache<K, V> extends AbstractMap<K, V> {
+public final class TtlAwareMapCache<K, V> extends AbstractMap<K, V> implements ConcurrentMap<K, V> {
 
 	private final RMapCache<K, V> backing;
 	private final long ttlMs;
@@ -86,6 +94,29 @@ public final class TtlAwareMapCache<K, V> extends AbstractMap<K, V> {
 	@Override
 	public void clear() {
 		backing.clear();
+	}
+
+	// --- atomic ConcurrentMap operations, forwarded to RMapCache's server-side-atomic equivalents ---
+
+	/** Atomic insert-if-absent that retains the configured TTL on success, unlike a plain {@link #put}-after-{@link #get} race. */
+	@Override
+	public V putIfAbsent(K key, V value) {
+		return backing.putIfAbsent(key, value, ttlMs, TimeUnit.MILLISECONDS);
+	}
+
+	@Override
+	public boolean remove(Object key, Object value) {
+		return backing.remove(key, value);
+	}
+
+	@Override
+	public boolean replace(K key, V oldValue, V newValue) {
+		return backing.replace(key, oldValue, newValue);
+	}
+
+	@Override
+	public V replace(K key, V value) {
+		return backing.replace(key, value);
 	}
 
 	// --- read operations delegated to Redis ---

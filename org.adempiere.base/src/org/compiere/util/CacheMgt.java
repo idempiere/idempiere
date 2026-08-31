@@ -441,9 +441,11 @@ public class CacheMgt
 	 * @param tableName table to reset; when {@code null} resets all caches
 	 * @param recordId  integer key; -1 resets all entries for the table
 	 */
-	// guard is per-table, not per-record — one in-flight reset per table is sufficient since the reset clears all records for the table
+	// guard scope: whole-table resets (recordId == -1, or tableName == null) share one in-flight
+	// slot per table since they clear every record; a specific recordId gets its own slot so a
+	// reset for one record is never skipped in favor of an unrelated record's in-flight reset.
 	public int resetLocalCacheWithAntiStampede(String tableName, int recordId) {
-		String guardKey = tableName != null ? tableName : "__all__";
+		String guardKey = resetInFlightGuardKey(tableName, recordId == -1 ? null : String.valueOf(recordId));
 		AtomicBoolean flag = resetInFlight.computeIfAbsent(guardKey, k -> new AtomicBoolean(false));
 		if (!flag.compareAndSet(false, true)) {
 			if (log.isLoggable(Level.FINE))
@@ -466,6 +468,20 @@ public class CacheMgt
 	}
 
 	/**
+	 * Builds the {@link #resetInFlight} guard key for an anti-stampede local reset.
+	 * @param tableName table to reset; {@code null} means "reset all caches"
+	 * @param scopeKey  the specific record id / string key being reset, or {@code null} for a
+	 *                  whole-table (or whole-cache) reset
+	 * @return {@code "__all__"} for a whole-cache reset, {@code tableName} for a whole-table
+	 *         reset, or {@code tableName + "#" + scopeKey} for a key-specific reset
+	 */
+	private static String resetInFlightGuardKey(String tableName, String scopeKey) {
+		if (tableName == null)
+			return "__all__";
+		return scopeKey == null ? tableName : tableName + "#" + scopeKey;
+	}
+
+	/**
 	 * Reset local Cache
 	 * @param tableName cache name
 	 * @param key cache key
@@ -481,9 +497,11 @@ public class CacheMgt
 	 * @param tableName table to reset
 	 * @param key       string key; empty string resets all entries for the table
 	 */
-	// guard is per-table, not per-record — one in-flight reset per table is sufficient since the reset clears all records for the table
+	// guard scope: whole-table resets (key blank, or tableName == null) share one in-flight slot
+	// per table since they clear every record; a specific key gets its own slot so a reset for
+	// one key is never skipped in favor of an unrelated key's in-flight reset.
 	public int resetLocalCacheWithAntiStampede(String tableName, String key) {
-		String guardKey = tableName != null ? tableName : "__all__";
+		String guardKey = resetInFlightGuardKey(tableName, (key == null || key.isEmpty()) ? null : key);
 		AtomicBoolean flag = resetInFlight.computeIfAbsent(guardKey, k -> new AtomicBoolean(false));
 		if (!flag.compareAndSet(false, true)) {
 			if (log.isLoggable(Level.FINE))

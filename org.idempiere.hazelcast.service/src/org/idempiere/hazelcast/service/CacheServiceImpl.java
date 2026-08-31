@@ -13,12 +13,19 @@
  *****************************************************************************/
 package org.idempiere.hazelcast.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import org.adempiere.base.Core;
+import org.compiere.util.CacheMgt;
+import org.compiere.util.ResetCacheCallable;
 import org.idempiere.distributed.ICacheService;
+import org.idempiere.distributed.IClusterMember;
+import org.idempiere.distributed.IClusterService;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.condition.Condition;
@@ -86,6 +93,46 @@ public class CacheServiceImpl implements ICacheService {
 			IMap<K, V> imap = (IMap<K, V>) map;
 			imap.unlock(key);
 		}
+	}
+
+	/**
+	 * Resets the local cache on this node synchronously first, then dispatches the same reset
+	 * to every other cluster member via {@link IClusterService#execute(Callable, java.util.Collection)}.
+	 * Without this override, {@code ICacheService.broadcastReset}'s default no-op would mean
+	 * {@code CacheMgt}'s cluster-wide reset path (which now only calls this method) never actually
+	 * resets any node's local cache for the Hazelcast backend.
+	 */
+	@Override
+	public void broadcastReset(String tableName, int recordId) {
+		CacheMgt.get().resetLocalCache(tableName, recordId);
+		executeOnOtherMembers(new ResetCacheCallable(tableName, recordId));
+	}
+
+	/** @see #broadcastReset(String, int) */
+	@Override
+	public void broadcastReset(String tableName, String key) {
+		CacheMgt.get().resetLocalCache(tableName, key);
+		executeOnOtherMembers(new ResetCacheCallable(tableName, key));
+	}
+
+	/**
+	 * Dispatches {@code resetCallable} (which itself invokes {@code CacheMgt.get().resetLocalCache(...)})
+	 * to every cluster member other than the local node. The local node's reset is already applied
+	 * synchronously by the caller, so it is excluded here to avoid resetting it twice.
+	 */
+	private void executeOnOtherMembers(Callable<Integer> resetCallable) {
+		IClusterService service = Core.getClusterService();
+		if (service == null)
+			return;
+		IClusterMember local = service.getLocalMember();
+		String localId = local != null ? local.getId() : null;
+		List<IClusterMember> remoteMembers = new ArrayList<>();
+		for (IClusterMember member : service.getMembers()) {
+			if (localId == null || !localId.equals(member.getId()))
+				remoteMembers.add(member);
+		}
+		if (!remoteMembers.isEmpty())
+			service.execute(resetCallable, remoteMembers);
 	}
 
 }

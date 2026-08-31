@@ -25,16 +25,20 @@
 **********************************************************************/
 package org.idempiere.redis.service;
 
+import java.net.InetSocketAddress;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.compiere.util.CacheMgt;
+import org.compiere.util.Env;
 import org.idempiere.distributed.ICacheService;
 import org.idempiere.redis.service.cache.CacheResetMessage;
 import org.idempiere.redis.service.cache.CaffeineLayeredMap;
@@ -50,6 +54,7 @@ import org.redisson.api.RMap;
 import org.redisson.api.RMapCache;
 import org.redisson.api.RTopic;
 import org.redisson.codec.TypedJsonJacksonCodec;
+import org.redisson.connection.ConnectionListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +68,15 @@ public class CacheServiceImpl implements ICacheService {
 
 	/** Suffix appended to the key prefix to form the durable invalidation channel name. */
 	private static final String CACHE_INVALIDATION_TOPIC_SUFFIX = "cache:invalidation";
+
+	/** Bounds on {@link #resetExecutor} so a burst of invalidations cannot spawn unbounded threads. */
+	private static final int RESET_EXECUTOR_CORE_POOL_SIZE = 4;
+	private static final int RESET_EXECUTOR_MAX_POOL_SIZE = 16;
+	private static final int RESET_EXECUTOR_QUEUE_CAPACITY = 1000;
+	private static final long RESET_EXECUTOR_KEEP_ALIVE_SECONDS = 60L;
+
+	/** Minimum gap between reconnect-triggered full local resets, so a flapping link cannot repeatedly hammer the DB. */
+	private static final long MIN_RECONCILE_INTERVAL_MS = 5_000L;
 
 	@Reference(target = "(osgi.condition.id=distributed.provider.redis.initialized)")
     Condition distributedCondition;
@@ -78,6 +92,8 @@ public class CacheServiceImpl implements ICacheService {
 	private String keyPrefix = "";
 	private long distributedCacheMapTtlMs;
 	private int distributedCacheMapMaxSize;
+	private boolean clientPrefixMode;
+	private int defaultClientId;
 
 	/** Tracks map names that have already had setMaxSize applied. */
 	private final Set<String> configuredMaps = ConcurrentHashMap.newKeySet();
@@ -92,7 +108,25 @@ public class CacheServiceImpl implements ICacheService {
 	/** Executor for dispatching anti-stampede resets off the Redisson netty I/O thread. */
 	private ExecutorService resetExecutor;
 
+	/**
+	 * Redis node addresses currently seen as disconnected. Plain pub/sub (the invalidation
+	 * topic subscribed above) drops any message published while a subscriber is disconnected —
+	 * Redisson resubscribes automatically once the link is back, but does not replay what was
+	 * missed. This set (backing {@link #onNodeConnect}/{@link #onNodeDisconnect}) lets us detect
+	 * "we just recovered from an outage" and fall back to a full local reset, bounding staleness
+	 * instead of leaving it unbounded.
+	 */
+	private final Set<InetSocketAddress> downNodeAddresses = ConcurrentHashMap.newKeySet();
+	private final AtomicLong lastReconcileAtMs = new AtomicLong(0L);
+	private volatile int connectionListenerId = -1;
+
 	@Activate
+	// getNodesGroup()/ConnectionListener's InetSocketAddress-only overloads are deprecated in
+	// Redisson 3.27.2 in favor of getRedisNodes(...), but that newer API (BaseRedisNodes) exposes
+	// no connection-event hook at all — getNodesGroup() remains the only way to observe node
+	// connect/disconnect, and ConnectionListener's single-arg methods are abstract (must be
+	// implemented) regardless of the NodeType-aware default overloads also being available.
+	@SuppressWarnings("deprecation")
 	void activate() {
 		RedisConfig cfg = Activator.getConfig();
 		this.nearCacheEnabled = cfg.isNearCacheEnabled();
@@ -105,14 +139,27 @@ public class CacheServiceImpl implements ICacheService {
 		this.keyPrefix = cfg.getKeyPrefix();
 		this.distributedCacheMapTtlMs = cfg.getDistributedCacheMapTtl().toMillis();
 		this.distributedCacheMapMaxSize = cfg.getDistributedCacheMapMaxSize();
+		this.clientPrefixMode = cfg.isClientPrefixMode();
+		this.defaultClientId = cfg.getDefaultClientId();
 
 		this.localNodeId = Activator.getRedissonClient().getId();
 
-		resetExecutor = Executors.newCachedThreadPool(r -> {
-			Thread t = new Thread(r, "cache-reset");
-			t.setDaemon(true);
-			return t;
-		});
+		resetExecutor = new ThreadPoolExecutor(
+				RESET_EXECUTOR_CORE_POOL_SIZE, RESET_EXECUTOR_MAX_POOL_SIZE,
+				RESET_EXECUTOR_KEEP_ALIVE_SECONDS, TimeUnit.SECONDS,
+				new LinkedBlockingQueue<>(RESET_EXECUTOR_QUEUE_CAPACITY),
+				r -> {
+					Thread t = new Thread(r, "cache-reset");
+					t.setDaemon(true);
+					return t;
+				},
+				// Bounded queue is full under a sustained invalidation burst: drop the task
+				// rather than blocking the Redisson listener (netty I/O) thread. Anti-stampede
+				// dedup means a dropped reset is only lost work, not lost correctness for
+				// concurrent duplicate resets, but a genuinely distinct reset can be dropped too —
+				// logged so operators can see when this bound is being hit.
+				(task, executor) -> log.warn("Cache reset executor saturated (queue capacity {}); "
+						+ "dropping a pending local cache-invalidation task", RESET_EXECUTOR_QUEUE_CAPACITY));
 
 		// Subscribe once to the durable invalidation topic using JSON codec to prevent
 		// Java deserialization attacks. All cache-reset broadcasts arrive here.
@@ -125,8 +172,14 @@ public class CacheServiceImpl implements ICacheService {
 			if (exec == null) return;
 			exec.submit(() -> {
 				try {
-					if (msg == null || msg.getTableName() == null || msg.getTableName().isBlank()
-							|| msg.getTableName().length() > 200) {
+					if (msg == null) {
+						log.warn("Received invalid cache invalidation message; ignoring: {}", msg);
+						return;
+					}
+					String msgTableName = msg.getTableName();
+					// tableName == null (with recordId == -1) is the table-wide/whole-cache reset
+					// sentinel published by CacheMgt.reset(); only reject blank/oversized non-null names.
+					if (msgTableName != null && (msgTableName.isBlank() || msgTableName.length() > 200)) {
 						log.warn("Received invalid cache invalidation message; ignoring: {}", msg);
 						return;
 					}
@@ -147,10 +200,62 @@ public class CacheServiceImpl implements ICacheService {
 		this.invalidationTopic = topic;
 		this.invalidationListenerId = listenerId;
 		log.info("Cache invalidation topic subscribed: {}", topicName);
+
+		this.connectionListenerId = Activator.getRedissonClient().getNodesGroup().addConnectionListener(
+				new ConnectionListener() {
+					@Override
+					public void onConnect(InetSocketAddress addr) {
+						onNodeConnect(addr);
+					}
+
+					@Override
+					public void onDisconnect(InetSocketAddress addr) {
+						downNodeAddresses.add(addr);
+					}
+				});
+	}
+
+	/**
+	 * A node address just (re)connected. If it was previously down and no other node address is
+	 * still down, the cluster link just recovered from an outage during which this node's
+	 * invalidation-topic subscription could have silently dropped messages (plain Redis pub/sub
+	 * is at-most-once and does not replay history). Fall back to one full local reset — debounced —
+	 * to bound the staleness window instead of leaving it unbounded until an unrelated reset
+	 * happens to touch the same table again.
+	 */
+	private void onNodeConnect(InetSocketAddress addr) {
+		if (!downNodeAddresses.remove(addr) || !downNodeAddresses.isEmpty()) {
+			return;
+		}
+		long now = System.currentTimeMillis();
+		long prev = lastReconcileAtMs.get();
+		if (now - prev < MIN_RECONCILE_INTERVAL_MS || !lastReconcileAtMs.compareAndSet(prev, now)) {
+			return;
+		}
+		ExecutorService exec = resetExecutor;
+		if (exec == null) return;
+		log.warn("Redis connectivity recovered after an outage ({}); resetting local cache to "
+				+ "recover any invalidations that may have been missed while disconnected", addr);
+		exec.submit(() -> {
+			try {
+				CacheMgt.get().resetLocalCache();
+			} catch (Exception e) {
+				log.warn("Reconnect-triggered local cache reset failed", e);
+			}
+		});
 	}
 
 	@Deactivate
+	@SuppressWarnings("deprecation") // see activate() — getNodesGroup() has no non-deprecated replacement
 	void deactivate() {
+		int connListenerId = connectionListenerId;
+		connectionListenerId = -1;
+		if (connListenerId != -1) {
+			try {
+				Activator.getRedissonClient().getNodesGroup().removeConnectionListener(connListenerId);
+			} catch (Exception ignored) {}
+		}
+		downNodeAddresses.clear();
 		RTopic topic = invalidationTopic;
 		int listenerId = invalidationListenerId;
 		invalidationTopic = null;
@@ -172,18 +277,16 @@ public class CacheServiceImpl implements ICacheService {
 		if (distributedCacheMapMaxSize > 0 && configuredMaps.add(prefixed(name))) {
 			rmap.setMaxSize(distributedCacheMapMaxSize);
 		}
-		Map<K, V> base = (distributedCacheMapTtlMs > 0)
+		if (nearCacheEnabled) {
+			// CaffeineLayeredMap writes straight to rmap (bypassing TtlAwareMapCache), so it is
+			// given the TTL directly and applies it itself via the RMapCache TTL-aware put overload.
+			return new CaffeineLayeredMap<>(rmap, Activator.getHealth(),
+					nearCacheMaxSize, nearCacheExpire,
+					fallbackMaxSize, fallbackExpire, distributedCacheMapTtlMs);
+		}
+		return (distributedCacheMapTtlMs > 0)
 				? new TtlAwareMapCache<>(rmap, distributedCacheMapTtlMs)
 				: rmap;
-		if (nearCacheEnabled) {
-			RMap<K, V> backingRMap = (base instanceof TtlAwareMapCache)
-					? ((TtlAwareMapCache<K, V>) base).getBacking()
-					: rmap;
-			return new CaffeineLayeredMap<>(backingRMap, Activator.getHealth(),
-					nearCacheMaxSize, nearCacheExpire,
-					fallbackMaxSize, fallbackExpire);
-		}
-		return base;
 	}
 
 	@Override
@@ -276,7 +379,22 @@ public class CacheServiceImpl implements ICacheService {
 		}
 	}
 
+	/**
+	 * Prefixes {@code name} with the deployment instance prefix and, in
+	 * {@code redis.tenant.prefix.mode=client}, the AD_Client_ID active on the calling thread —
+	 * resolved fresh on every call rather than baked in at {@code @Activate} time, so a single JVM
+	 * that serves more than one client does not have every client's cache data collapse into one
+	 * shared Redis namespace. Falls back to the startup-configured {@link RedisConfig#getDefaultClientId()}
+	 * when the calling thread has no session context (e.g. a background/system thread).
+	 */
 	private String prefixed(String name) {
-		return keyPrefix + name;
+		if (!clientPrefixMode) {
+			return keyPrefix + name;
+		}
+		int clientId = Env.getAD_Client_ID(Env.getCtx());
+		if (clientId <= 0) {
+			clientId = defaultClientId;
+		}
+		return keyPrefix + "client-" + clientId + ":" + name;
 	}
 }
