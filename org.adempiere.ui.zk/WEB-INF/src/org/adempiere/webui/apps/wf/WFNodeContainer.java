@@ -19,6 +19,7 @@ import java.awt.Rectangle;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.apps.wf.WFGraphLayout;
 import org.compiere.apps.wf.WFNodeWidget;
 import org.compiere.apps.wf.WorkflowGraphScene;
@@ -39,9 +40,10 @@ import org.netbeans.api.visual.layout.SceneLayout;
 public class WFNodeContainer
 {
 	private static final int DEFAULT_COLUMN_COUNT = 4;
+	private static final int MAX_COLUMN_COUNT = 20;
+	private static final int MAX_ROW_COUNT = 50;
 
 	/**	Logger			*/
-	@SuppressWarnings("unused")
 	private static final CLogger	log = CLogger.getCLogger(WFNodeContainer.class);
 
 	/** The Workflow		*/
@@ -90,10 +92,21 @@ public class WFNodeContainer
 	}	//	removeAll
 
 	/**
-	 * Set number of columns
-	 * @param columnCount column count
+	 * Set number of columns from valid workflow node positions
+	 * @param nodes workflow nodes
+	 * @param addEmptyColumn whether to add an empty column for editing
 	 */
-	public void setColumnCount(int columnCount) {
+	public void setColumnCount(MWFNode[] nodes, boolean addEmptyColumn) {
+		int columnCount = 0;
+		for (MWFNode node : nodes) {
+			int xPosition = node.getXPosition();
+			if (xPosition > 0 && xPosition <= MAX_COLUMN_COUNT) {
+				columnCount = Math.max(columnCount, xPosition);
+			}
+		}
+		if (addEmptyColumn && columnCount < MAX_COLUMN_COUNT) {
+			columnCount++;
+		}
 		noOfColumns = Math.max(DEFAULT_COLUMN_COUNT, columnCount);
 	}
 
@@ -104,13 +117,14 @@ public class WFNodeContainer
 	public void addNode(MWFNode node) {
 		int oldRow = currentRow;
 		int oldColumn = currentColumn;
-		if (node.getXPosition() > 0 && node.getYPosition() > 0) {
+		if (node.getXPosition() > MAX_COLUMN_COUNT || node.getYPosition() > MAX_ROW_COUNT) {
+			log.warning("Ignoring out-of-range workflow node position for " + node
+					+ ": x=" + node.getXPosition() + ", y=" + node.getYPosition());
+		}
+		if (node.getXPosition() > 0 && node.getXPosition() <= noOfColumns
+				&& node.getYPosition() > 0 && node.getYPosition() <= MAX_ROW_COUNT) {
 			currentColumn = node.getXPosition();
 			currentRow = node.getYPosition();
-			if (currentColumn > noOfColumns) {
-				currentColumn = 1;
-				currentRow ++;
-			}
 		} else if (currentColumn == noOfColumns) {
 			currentColumn = 1;
 			if (m_wf.getWorkflowType().equals(X_AD_Workflow.WORKFLOWTYPE_General)) {
@@ -130,11 +144,8 @@ public class WFNodeContainer
 			}
 		}
 
-		Integer[] nodes = matrix.get(currentRow);
-		if (nodes == null) {
-			nodes = new Integer[noOfColumns];
-			matrix.put(currentRow, nodes);
-		} else {
+		Integer[] nodes = getOrCreateRow(currentRow);
+		if (nodes[currentColumn - 1] != null) {
 			//detect collision
 			while (nodes[currentColumn - 1] != null) {
 				if (nodes[currentColumn - 1] == node.getAD_WF_Node_ID()) {
@@ -142,11 +153,7 @@ public class WFNodeContainer
 				} else if (currentColumn == noOfColumns) {
 					currentColumn = 1;
 					currentRow ++;
-					nodes = matrix.get(currentRow);
-					if (nodes == null) {
-						nodes = new Integer[noOfColumns];
-						matrix.put(currentRow, nodes);
-					}
+					nodes = getOrCreateRow(currentRow);
 				} else {
 					currentColumn ++;
 				}
@@ -171,6 +178,23 @@ public class WFNodeContainer
 		} else if ( currentRow == oldRow && currentColumn < oldColumn) {
 			currentColumn = oldColumn;
 		}
+	}
+
+	/**
+	 * Get or create row in node matrix
+	 * @param row row number
+	 * @return node row
+	 */
+	private Integer[] getOrCreateRow(int row) {
+		if (row > MAX_ROW_COUNT) {
+			throw new AdempiereException("Workflow layout exceeds the maximum of " + MAX_ROW_COUNT + " rows");
+		}
+		Integer[] nodes = matrix.get(row);
+		if (nodes == null) {
+			nodes = new Integer[noOfColumns];
+			matrix.put(row, nodes);
+		}
+		return nodes;
 	}
 
 	/**

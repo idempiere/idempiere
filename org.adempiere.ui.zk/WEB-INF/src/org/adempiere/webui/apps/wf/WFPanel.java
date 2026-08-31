@@ -169,11 +169,7 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 		
 		//	Add Nodes for Paint
 		MWFNode[] nodes = m_wf.getNodes(true, Env.getAD_Client_ID(Env.getCtx()));
-		int maxColumn = 0;
-		for (MWFNode node : nodes) {
-			maxColumn = Math.max(maxColumn, node.getXPosition());
-		}
-		nodeContainer.setColumnCount(maxColumn);
+		nodeContainer.setColumnCount(nodes, false);
 		List<Integer> added = new ArrayList<Integer>();
 		for (int i = 0; i < nodes.length; i++)
 		{

@@ -300,11 +300,7 @@ public class WFEditor extends ADForm {
 
 		//	Add Nodes for Paint
 		MWFNode[] nodes = m_wf.getNodes(true, Env.getAD_Client_ID(Env.getCtx()));
-		int maxColumn = 0;
-		for (MWFNode node : nodes) {
-			maxColumn = Math.max(maxColumn, node.getXPosition());
-		}
-		nodeContainer.setColumnCount(maxColumn + 1);
+		nodeContainer.setColumnCount(nodes, true);
 		List<Integer> added = new ArrayList<Integer>();
 		for (int i = 0; i < nodes.length; i++)
 		{
