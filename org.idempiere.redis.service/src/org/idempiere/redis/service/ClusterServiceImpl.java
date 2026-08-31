@@ -159,13 +159,18 @@ public class ClusterServiceImpl implements IClusterService {
 
 	@Deactivate
 	void deactivate() {
+		stopHeartbeat();
+		unsubscribeFromRequestTopic();
+		failAllPending(new IllegalStateException("Bundle deactivating"));
+		// Reset the supplier only after failAllPending() has unsubscribed every PendingRequest
+		// (which decrements activeResponseSubscriptions) — resetting it first would make the
+		// breaker see usage=0 while real subscriptions are still open, letting a concurrent probe
+		// or recordSuccess() close the breaker and a concurrent execute() call add yet another
+		// subscription mid-shutdown.
 		RedisHealth health = Activator.getHealthOrNull();
 		if (health != null) {
 			health.setSubscriptionUsageSupplier(null);
 		}
-		stopHeartbeat();
-		unsubscribeFromRequestTopic();
-		failAllPending(new IllegalStateException("Bundle deactivating"));
 		ClusterMember self = localMember.getAndSet(null);
 		if (self != null) {
 			try {

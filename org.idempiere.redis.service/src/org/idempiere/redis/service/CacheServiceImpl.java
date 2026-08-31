@@ -33,10 +33,14 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.compiere.Adempiere;
 import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
 import org.idempiere.distributed.ICacheService;
@@ -77,6 +81,9 @@ public class CacheServiceImpl implements ICacheService {
 
 	/** Minimum gap between reconnect-triggered full local resets, so a flapping link cannot repeatedly hammer the DB. */
 	private static final long MIN_RECONCILE_INTERVAL_MS = 5_000L;
+
+	/** How often {@link #retryPendingRecoveryReset} checks for a coalesced reset owed after a saturated-executor drop. */
+	private static final long RECOVERY_RETRY_INTERVAL_SECONDS = 30L;
 
 	@Reference(target = "(osgi.condition.id=distributed.provider.redis.initialized)")
     Condition distributedCondition;
@@ -120,6 +127,16 @@ public class CacheServiceImpl implements ICacheService {
 	private final AtomicLong lastReconcileAtMs = new AtomicLong(0L);
 	private volatile int connectionListenerId = -1;
 
+	/**
+	 * Set whenever {@link #resetExecutor}'s bounded queue rejects a task (a per-message
+	 * invalidation, or the reconnect-reconciliation reset) — coalesces any number of dropped
+	 * resets into one pending "do a full reset" flag, retried on iDempiere's shared scheduled
+	 * pool ({@link Adempiere#getThreadPoolExecutor()}, independent of {@link #resetExecutor} so
+	 * a saturated bundle-local pool cannot also block its own recovery).
+	 */
+	private final AtomicBoolean pendingRecoveryReset = new AtomicBoolean(false);
+	private volatile ScheduledFuture<?> recoveryRetryTask;
+
 	@Activate
 	// getNodesGroup()/ConnectionListener's InetSocketAddress-only overloads are deprecated in
 	// Redisson 3.27.2 in favor of getRedisNodes(...), but that newer API (BaseRedisNodes) exposes
@@ -153,13 +170,22 @@ public class CacheServiceImpl implements ICacheService {
 					t.setDaemon(true);
 					return t;
 				},
-				// Bounded queue is full under a sustained invalidation burst: drop the task
-				// rather than blocking the Redisson listener (netty I/O) thread. Anti-stampede
-				// dedup means a dropped reset is only lost work, not lost correctness for
-				// concurrent duplicate resets, but a genuinely distinct reset can be dropped too —
-				// logged so operators can see when this bound is being hit.
-				(task, executor) -> log.warn("Cache reset executor saturated (queue capacity {}); "
-						+ "dropping a pending local cache-invalidation task", RESET_EXECUTOR_QUEUE_CAPACITY));
+				// Bounded queue is full under a sustained invalidation burst: rather than silently
+				// dropping the task (which could leave a distinct reset permanently unapplied),
+				// flag a coalesced full-reset recovery — retried independently of this executor
+				// via retryPendingRecoveryReset() — and reject so submitResetTask() can tell its
+				// caller the submission did not actually happen.
+				(task, executor) -> {
+					pendingRecoveryReset.set(true);
+					log.warn("Cache reset executor saturated (queue capacity {}); dropping a pending "
+							+ "local cache-invalidation task — a coalesced full local reset will be "
+							+ "retried within {}s", RESET_EXECUTOR_QUEUE_CAPACITY, RECOVERY_RETRY_INTERVAL_SECONDS);
+					throw new RejectedExecutionException("cache reset executor saturated");
+				});
+
+		recoveryRetryTask = Adempiere.getThreadPoolExecutor().scheduleWithFixedDelay(
+				this::retryPendingRecoveryReset,
+				RECOVERY_RETRY_INTERVAL_SECONDS, RECOVERY_RETRY_INTERVAL_SECONDS, TimeUnit.SECONDS);
 
 		// Subscribe once to the durable invalidation topic using JSON codec to prevent
 		// Java deserialization attacks. All cache-reset broadcasts arrive here.
@@ -168,9 +194,7 @@ public class CacheServiceImpl implements ICacheService {
 				topicName,
 				new TypedJsonJacksonCodec(CacheResetMessage.class));
 		int listenerId = topic.addListener(CacheResetMessage.class, (channel, msg) -> {
-			ExecutorService exec = resetExecutor;
-			if (exec == null) return;
-			exec.submit(() -> {
+			submitResetTask(() -> {
 				try {
 					if (msg == null) {
 						log.warn("Received invalid cache invalidation message; ignoring: {}", msg);
@@ -232,17 +256,54 @@ public class CacheServiceImpl implements ICacheService {
 		if (now - prev < MIN_RECONCILE_INTERVAL_MS || !lastReconcileAtMs.compareAndSet(prev, now)) {
 			return;
 		}
-		ExecutorService exec = resetExecutor;
-		if (exec == null) return;
-		log.warn("Redis connectivity recovered after an outage ({}); resetting local cache to "
-				+ "recover any invalidations that may have been missed while disconnected", addr);
-		exec.submit(() -> {
+		boolean submitted = submitResetTask(() -> {
 			try {
 				CacheMgt.get().resetLocalCache();
 			} catch (Exception e) {
 				log.warn("Reconnect-triggered local cache reset failed", e);
 			}
 		});
+		if (submitted) {
+			log.warn("Redis connectivity recovered after an outage ({}); resetting local cache to "
+					+ "recover any invalidations that may have been missed while disconnected", addr);
+		} else {
+			// Submission was rejected (already logged + flagged for coalesced recovery by the
+			// executor's rejection handler). Release this debounce claim so a later genuine
+			// reconnect isn't blocked by a reset that never actually ran.
+			lastReconcileAtMs.compareAndSet(now, prev);
+		}
+	}
+
+	/**
+	 * Submits {@code task} to {@link #resetExecutor}.
+	 * @return {@code true} if accepted; {@code false} if the executor is unavailable (deactivating)
+	 *         or its queue is saturated — in the latter case the rejection handler has already
+	 *         logged it and flagged {@link #pendingRecoveryReset} for retry.
+	 */
+	private boolean submitResetTask(Runnable task) {
+		ExecutorService exec = resetExecutor;
+		if (exec == null) return false;
+		try {
+			exec.execute(task);
+			return true;
+		} catch (RejectedExecutionException e) {
+			return false;
+		}
+	}
+
+	/** Runs on iDempiere's shared scheduled pool, independent of {@link #resetExecutor}. */
+	private void retryPendingRecoveryReset() {
+		if (!pendingRecoveryReset.compareAndSet(true, false)) {
+			return;
+		}
+		try {
+			CacheMgt.get().resetLocalCache();
+			log.info("Coalesced recovery reset applied after earlier cache-invalidation task(s) "
+					+ "were dropped due to executor saturation");
+		} catch (Exception e) {
+			log.warn("Coalesced recovery reset failed; will retry in {}s", RECOVERY_RETRY_INTERVAL_SECONDS, e);
+			pendingRecoveryReset.set(true);
+		}
 	}
 
 	@Deactivate
@@ -256,6 +317,12 @@ public class CacheServiceImpl implements ICacheService {
 			} catch (Exception ignored) {}
 		}
 		downNodeAddresses.clear();
+		ScheduledFuture<?> retryTask = recoveryRetryTask;
+		recoveryRetryTask = null;
+		if (retryTask != null) {
+			retryTask.cancel(false);
+		}
+		pendingRecoveryReset.set(false);
 		RTopic topic = invalidationTopic;
 		int listenerId = invalidationListenerId;
 		invalidationTopic = null;

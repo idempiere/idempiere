@@ -232,33 +232,43 @@ public final class RedisHealth implements AutoCloseable {
 		}
 		try {
 			client.getKeys().count();
-			if (transitionToClosed()) {
-				log.info("Redis circuit breaker recovered to CLOSED after probe");
-			} else {
-				log.warn("Redis circuit breaker probe succeeded but subscription pool usage ({}) "
-						+ "is still at or above threshold ({}); remaining OPEN",
-						subscriptionUsageSupplier.getAsInt(), subscriptionPoolThreshold);
+			switch (transitionToClosed()) {
+				case CLOSED:
+					log.info("Redis circuit breaker recovered to CLOSED after probe");
+					break;
+				case BLOCKED_BY_POOL_USAGE:
+					// Genuine saturation, distinct from a concurrent transition below — only this
+					// case actually means the probe succeeded but closing was refused.
+					log.warn("Redis circuit breaker probe succeeded but subscription pool usage ({}) "
+							+ "is still at or above threshold ({}); remaining OPEN",
+							subscriptionUsageSupplier.getAsInt(), subscriptionPoolThreshold);
+					break;
+				case ALREADY_TRANSITIONED:
+					// Another thread (a concurrent recordSuccess()/probe()) already closed the
+					// breaker, or raced our CAS — nothing to log, this isn't a saturation case.
+					break;
 			}
 		} catch (Exception e) {
 			log.warn("Redis circuit breaker probe failed; remaining OPEN", e);
 		}
 	}
 
+	/** Outcome of an OPEN -&gt; CLOSED attempt; lets callers tell genuine pool saturation apart from a benign concurrent transition. */
+	private enum CloseAttempt { CLOSED, BLOCKED_BY_POOL_USAGE, ALREADY_TRANSITIONED }
+
 	/**
 	 * Attempts OPEN -&gt; CLOSED. Refuses while subscription-pool usage is still at or above
 	 * the configured threshold — closing on an unrelated success (a probe, or any other Redis
 	 * call routed through {@link #recordSuccess()}) would just let {@code execute()} resume
 	 * allocating subscriptions and immediately re-trip the pool-exhaustion fast-path.
-	 *
-	 * @return {@code true} if the breaker actually transitioned OPEN -&gt; CLOSED
 	 */
-	private boolean transitionToClosed() {
+	private CloseAttempt transitionToClosed() {
 		if (state.get() != State.OPEN) {
-			return false;
+			return CloseAttempt.ALREADY_TRANSITIONED;
 		}
 		int threshold = subscriptionPoolThreshold;
 		if (threshold > 0 && subscriptionUsageSupplier.getAsInt() >= threshold) {
-			return false;
+			return CloseAttempt.BLOCKED_BY_POOL_USAGE;
 		}
 		if (state.compareAndSet(State.OPEN, State.CLOSED)) {
 			ScheduledFuture<?> f = probeFuture;
@@ -268,9 +278,9 @@ public final class RedisHealth implements AutoCloseable {
 			}
 			lastTrippedCount = consecutiveFailures.getAndSet(0); // snapshot before reset so CONNECTED event carries outage severity
 			fire(State.OPEN, State.CLOSED);
-			return true;
+			return CloseAttempt.CLOSED;
 		}
-		return false;
+		return CloseAttempt.ALREADY_TRANSITIONED;
 	}
 
 	private void fire(State previous, State current) {
