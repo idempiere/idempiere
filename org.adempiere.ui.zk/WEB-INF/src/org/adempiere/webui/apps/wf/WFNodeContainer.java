@@ -38,6 +38,8 @@ import org.netbeans.api.visual.layout.SceneLayout;
  */
 public class WFNodeContainer
 {
+	private static final int DEFAULT_COLUMN_COUNT = 4;
+
 	/**	Logger			*/
 	@SuppressWarnings("unused")
 	private static final CLogger	log = CLogger.getCLogger(WFNodeContainer.class);
@@ -47,7 +49,7 @@ public class WFNodeContainer
 
 	private int currentRow = 1;
 	private int currentColumn = 0;
-	private int noOfColumns = 4;
+	private int noOfColumns = DEFAULT_COLUMN_COUNT;
 	private int maxColumn = 0;
 	private int rowCount = 0;
 
@@ -81,8 +83,19 @@ public class WFNodeContainer
 		graphScene = new WorkflowGraphScene();
 		currentColumn = 0;
 		currentRow = 1;
+		noOfColumns = DEFAULT_COLUMN_COUNT;
+		maxColumn = 0;
+		rowCount = 0;
 		matrix = new HashMap<Integer, Integer[]>();
 	}	//	removeAll
+
+	/**
+	 * Set number of columns
+	 * @param columnCount column count
+	 */
+	public void setColumnCount(int columnCount) {
+		noOfColumns = Math.max(DEFAULT_COLUMN_COUNT, columnCount);
+	}
 
 	/**
 	 * Add workflow node
@@ -117,10 +130,6 @@ public class WFNodeContainer
 			}
 		}
 
-		if (currentRow > rowCount) {
-			rowCount = currentRow;
-		}
-
 		Integer[] nodes = matrix.get(currentRow);
 		if (nodes == null) {
 			nodes = new Integer[noOfColumns];
@@ -149,6 +158,9 @@ public class WFNodeContainer
 		w.setRow(currentRow);
 
 		nodes[currentColumn - 1] = node.getAD_WF_Node_ID();
+		if (currentRow > rowCount) {
+			rowCount = currentRow;
+		}
 		if (currentColumn > maxColumn) {
 			maxColumn = currentColumn;
 		}
@@ -207,7 +219,7 @@ public class WFNodeContainer
 	 */
 	public Dimension getDimension()
 	{
-		return new Dimension(noOfColumns * WFGraphLayout.COLUMN_WIDTH, currentRow * WFGraphLayout.ROW_HEIGHT);
+		return new Dimension(noOfColumns * WFGraphLayout.COLUMN_WIDTH, Math.max(1, rowCount) * WFGraphLayout.ROW_HEIGHT);
 	}
 
 	/**
