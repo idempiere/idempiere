@@ -66,9 +66,16 @@ public final class RedisHealth implements AutoCloseable {
 	private final RedissonClient client;
 	private final int failureThreshold;
 	private final long probeIntervalMs;
+	/**
+	 * Absolute subscription count at which the breaker trips due to pool exhaustion.
+	 * 0 means the pool-exhaustion check is disabled (default when not configured).
+	 */
+	private volatile int subscriptionPoolThreshold;
 
 	private final AtomicInteger consecutiveFailures = new AtomicInteger(0);
 	private final AtomicReference<State> state = new AtomicReference<>(State.CLOSED);
+	/** Description of why the breaker last tripped, for console display. */
+	private volatile String lastTripReason = "failure-threshold";
 	private final ScheduledExecutorService prober;
 	private volatile ScheduledFuture<?> probeFuture;
 	private volatile StateListener listener = (p, c) -> { /* no-op default */ };
@@ -84,6 +91,24 @@ public final class RedisHealth implements AutoCloseable {
 			t.setDaemon(true);
 			return t;
 		});
+	}
+
+	/**
+	 * Sets the absolute subscription-count threshold at which the breaker trips to OPEN.
+	 * Call from Activator after reading the pool configuration.
+	 * Pass 0 to disable the pool-exhaustion check.
+	 */
+	public void setSubscriptionPoolThreshold(int threshold) {
+		this.subscriptionPoolThreshold = Math.max(0, threshold);
+	}
+
+	public int getSubscriptionPoolThreshold() {
+		return subscriptionPoolThreshold;
+	}
+
+	/** @return human-readable reason the breaker last tripped, for console display. */
+	public String getLastTripReason() {
+		return lastTripReason;
 	}
 
 	/**
@@ -131,8 +156,36 @@ public final class RedisHealth implements AutoCloseable {
 		int n = consecutiveFailures.incrementAndGet();
 		if (n >= failureThreshold && state.compareAndSet(State.CLOSED, State.OPEN)) {
 			lastTrippedCount = n;
+			lastTripReason = "failure-threshold " + n + "/" + failureThreshold;
 			startProbing();
 			log.warn("Redis circuit breaker tripped to OPEN after {} consecutive failures", n, cause);
+			fire(State.CLOSED, State.OPEN);
+		}
+	}
+
+	/**
+	 * Checks whether the active subscription count has exceeded the configured threshold.
+	 * If so, trips the breaker to OPEN immediately (pool-exhaustion fast-path).
+	 *
+	 * <p>Call this every time an RPC subscription is added or removed. No-op when
+	 * {@link #setSubscriptionPoolThreshold(int)} was not configured (threshold == 0).</p>
+	 *
+	 * @param activeSubscriptions current number of open pub/sub subscriptions
+	 * @param poolSize            configured Redisson subscriptionConnectionPoolSize
+	 */
+	public void recordSubscriptionPoolUsage(int activeSubscriptions, int poolSize) {
+		int threshold = subscriptionPoolThreshold;
+		if (threshold <= 0 || state.get() == State.OPEN) {
+			return;
+		}
+		if (activeSubscriptions >= threshold && state.compareAndSet(State.CLOSED, State.OPEN)) {
+			lastTrippedCount = activeSubscriptions;
+			lastTripReason = "subscription-pool " + activeSubscriptions + "/" + poolSize;
+			startProbing();
+			log.warn("Redis circuit breaker tripped to OPEN: subscription pool usage {}/{} "
+					+ "reached threshold {} ({}% of pool)",
+					activeSubscriptions, poolSize, threshold,
+					poolSize > 0 ? (threshold * 100 / poolSize) : 0);
 			fire(State.CLOSED, State.OPEN);
 		}
 	}

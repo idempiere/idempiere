@@ -29,23 +29,40 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.compiere.util.CacheMgt;
 import org.idempiere.distributed.ICacheService;
+import org.idempiere.redis.service.cache.CacheResetMessage;
 import org.idempiere.redis.service.cache.CaffeineLayeredMap;
+import org.idempiere.redis.service.cache.TtlAwareMapCache;
 import org.idempiere.redis.service.config.RedisConfig;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.condition.Condition;
 import org.redisson.api.RLock;
 import org.redisson.api.RMap;
+import org.redisson.api.RMapCache;
+import org.redisson.api.RTopic;
+import org.redisson.codec.TypedJsonJacksonCodec;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Component(
 		service = ICacheService.class,
 		immediate = true,
 		enabled = true)
 public class CacheServiceImpl implements ICacheService {
+
+	private static final Logger log = LoggerFactory.getLogger(CacheServiceImpl.class);
+
+	/** Suffix appended to the key prefix to form the durable invalidation channel name. */
+	private static final String CACHE_INVALIDATION_TOPIC_SUFFIX = "cache:invalidation";
 
 	@Reference(target = "(osgi.condition.id=distributed.provider.redis.initialized)")
     Condition distributedCondition;
@@ -59,6 +76,21 @@ public class CacheServiceImpl implements ICacheService {
 	private int fallbackMaxSize;
 	private Duration fallbackExpire;
 	private String keyPrefix = "";
+	private long distributedCacheMapTtlMs;
+	private int distributedCacheMapMaxSize;
+
+	/** Tracks map names that have already had setMaxSize applied. */
+	private final Set<String> configuredMaps = ConcurrentHashMap.newKeySet();
+
+	/** Durable topic shared by the whole lifetime of this component. */
+	private volatile RTopic invalidationTopic;
+	private volatile int invalidationListenerId = -1;
+
+	/** Local node ID used to skip re-applying resets published by this node. */
+	private String localNodeId;
+
+	/** Executor for dispatching anti-stampede resets off the Redisson netty I/O thread. */
+	private ExecutorService resetExecutor;
 
 	@Activate
 	void activate() {
@@ -71,17 +103,87 @@ public class CacheServiceImpl implements ICacheService {
 		this.fallbackMaxSize = cfg.isFallbackEnabled() ? cfg.getFallbackMaxSize() : 0;
 		this.fallbackExpire = cfg.getFallbackExpireAfterWrite();
 		this.keyPrefix = cfg.getKeyPrefix();
+		this.distributedCacheMapTtlMs = cfg.getDistributedCacheMapTtl().toMillis();
+		this.distributedCacheMapMaxSize = cfg.getDistributedCacheMapMaxSize();
+
+		this.localNodeId = Activator.getRedissonClient().getId();
+
+		resetExecutor = Executors.newCachedThreadPool(r -> {
+			Thread t = new Thread(r, "cache-reset");
+			t.setDaemon(true);
+			return t;
+		});
+
+		// Subscribe once to the durable invalidation topic using JSON codec to prevent
+		// Java deserialization attacks. All cache-reset broadcasts arrive here.
+		String topicName = keyPrefix + CACHE_INVALIDATION_TOPIC_SUFFIX;
+		RTopic topic = Activator.getRedissonClient().getTopic(
+				topicName,
+				new TypedJsonJacksonCodec(CacheResetMessage.class));
+		int listenerId = topic.addListener(CacheResetMessage.class, (channel, msg) -> {
+			ExecutorService exec = resetExecutor;
+			if (exec == null) return;
+			exec.submit(() -> {
+				try {
+					if (msg == null || msg.getTableName() == null || msg.getTableName().isBlank()
+							|| msg.getTableName().length() > 200) {
+						log.warn("Received invalid cache invalidation message; ignoring: {}", msg);
+						return;
+					}
+					// Skip: publishing node already reset synchronously before publish.
+					if (localNodeId != null && localNodeId.equals(msg.getOriginatorNodeId())) {
+						return;
+					}
+					if (msg.isStringKeyReset()) {
+						CacheMgt.get().resetLocalCacheWithAntiStampede(msg.getTableName(), msg.getStringKey());
+					} else {
+						CacheMgt.get().resetLocalCacheWithAntiStampede(msg.getTableName(), msg.getRecordId());
+					}
+				} catch (Exception e) {
+					log.warn("Error applying received cache invalidation for {}", msg, e);
+				}
+			});
+		});
+		this.invalidationTopic = topic;
+		this.invalidationListenerId = listenerId;
+		log.info("Cache invalidation topic subscribed: {}", topicName);
+	}
+
+	@Deactivate
+	void deactivate() {
+		RTopic topic = invalidationTopic;
+		int listenerId = invalidationListenerId;
+		invalidationTopic = null;
+		invalidationListenerId = -1;
+		if (topic != null && listenerId != -1) {
+			try {
+				topic.removeListener(listenerId);
+			} catch (Exception ignored) {}
+		}
+		ExecutorService exec = resetExecutor;
+		resetExecutor = null;
+		if (exec != null) exec.shutdownNow();
 	}
 
 	@Override
 	public <K, V> Map<K, V> getMap(String name) {
-		RMap<K, V> rmap = Activator.getRedissonClient().getMap(prefixed(name));
+		RMapCache<K, V> rmap = Activator.getRedissonClient().getMapCache(prefixed(name));
+		// Fire setMaxSize exactly once per map name regardless of concurrent callers.
+		if (distributedCacheMapMaxSize > 0 && configuredMaps.add(prefixed(name))) {
+			rmap.setMaxSize(distributedCacheMapMaxSize);
+		}
+		Map<K, V> base = (distributedCacheMapTtlMs > 0)
+				? new TtlAwareMapCache<>(rmap, distributedCacheMapTtlMs)
+				: rmap;
 		if (nearCacheEnabled) {
-			return new CaffeineLayeredMap<>(rmap, Activator.getHealth(),
+			RMap<K, V> backingRMap = (base instanceof TtlAwareMapCache)
+					? ((TtlAwareMapCache<K, V>) base).getBacking()
+					: rmap;
+			return new CaffeineLayeredMap<>(backingRMap, Activator.getHealth(),
 					nearCacheMaxSize, nearCacheExpire,
 					fallbackMaxSize, fallbackExpire);
 		}
-		return rmap;
+		return base;
 	}
 
 	@Override
@@ -129,6 +231,8 @@ public class CacheServiceImpl implements ICacheService {
 		String mapName;
 		if (map instanceof CaffeineLayeredMap<?, ?> wrapped) {
 			mapName = wrapped.getName();
+		} else if (map instanceof TtlAwareMapCache<?, ?> ttlWrapped) {
+			mapName = ttlWrapped.getName();
 		} else if (map instanceof RMap<?, ?> rmap) {
 			mapName = rmap.getName();
 		} else {
@@ -136,6 +240,40 @@ public class CacheServiceImpl implements ICacheService {
 		}
 		String lockName = mapName + ":lock:" + String.valueOf(key);
 		return Activator.getRedissonClient().getLock(lockName);
+	}
+
+	/**
+	 * Resets the local cache on this node synchronously first (no jitter — this is the saving node),
+	 * then publishes a fire-and-forget invalidation to all other cluster nodes.
+	 * The topic listener skips this node since the local reset is already applied.
+	 */
+	@Override
+	public void broadcastReset(String tableName, int recordId) {
+		// Always reset local cache synchronously first (no jitter — this is the saving node).
+		CacheMgt.get().resetLocalCache(tableName, recordId);
+		RTopic topic = invalidationTopic;
+		if (topic == null) return;
+		try {
+			topic.publish(new CacheResetMessage(tableName, recordId, localNodeId));
+		} catch (Exception e) {
+			log.warn("broadcastReset publish failed for table {}; local reset already applied", tableName, e);
+		}
+	}
+
+	/**
+	 * Resets the local cache on this node synchronously first, then publishes to other nodes.
+	 */
+	@Override
+	public void broadcastReset(String tableName, String key) {
+		// Always reset local cache synchronously first (no jitter — this is the saving node).
+		CacheMgt.get().resetLocalCache(tableName, key);
+		RTopic topic = invalidationTopic;
+		if (topic == null) return;
+		try {
+			topic.publish(new CacheResetMessage(tableName, key, localNodeId));
+		} catch (Exception e) {
+			log.warn("broadcastReset publish failed for table {}; local reset already applied", tableName, e);
+		}
 	}
 
 	private String prefixed(String name) {

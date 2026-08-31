@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+import org.idempiere.redis.service.CacheServiceImpl;
 import org.idempiere.redis.service.health.RedisHealth;
 import org.redisson.api.RMap;
 

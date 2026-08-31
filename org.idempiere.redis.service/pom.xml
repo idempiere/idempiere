@@ -46,6 +46,16 @@
 									<artifactId>redisson-all</artifactId>
 									<version>${redisson.version}</version>
 								</artifactItem>
+								<!--
+								  Vendored directly instead of imported via OSGi Import-Package:
+								  CaffeineLayeredMap's TTL-aware layered cache needs a pinned
+								  version regardless of what other bundles happen to provide.
+								-->
+								<artifactItem>
+									<groupId>com.github.ben-manes.caffeine</groupId>
+									<artifactId>caffeine</artifactId>
+									<version>${caffeine.version}</version>
+								</artifactItem>
 							</artifactItems>
 						</configuration>
 					</execution>

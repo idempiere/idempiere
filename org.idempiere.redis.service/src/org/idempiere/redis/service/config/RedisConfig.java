@@ -79,6 +79,19 @@ import org.slf4j.LoggerFactory;
  *       keyspace notifications under this deployment's prefix and republish
  *       each event via OSGi EventAdmin (default {@code false}; requires
  *       {@code notify-keyspace-events} configured server-side)</li>
+ *   <li><code>distributed.cache.map.ttl</code> — TTL applied to every entry in a
+ *       distributed {@code RMapCache} (ISO-8601 duration, default {@code PT1H})</li>
+ *   <li><code>distributed.cache.map.maxSize</code> — max entries per distributed
+ *       cache map before LRU eviction (default 50000; 0 disables size eviction)</li>
+ *   <li><code>redis.tenant.prefix.mode</code> — {@code instance} (default) or
+ *       {@code client}; {@code client} additionally namespaces every key by
+ *       {@code AD_CLIENT_ID} for per-tenant isolation on a shared Redis</li>
+ *   <li><code>redis.circuit.subscription-pool-size</code> — configured Redisson
+ *       {@code subscriptionConnectionPoolSize} (default 50)</li>
+ *   <li><code>redis.circuit.subscription-pool-threshold-percent</code> — percentage
+ *       of the subscription pool at which the circuit breaker trips OPEN as a
+ *       pool-exhaustion fast-path, independent of the failure-count threshold
+ *       (default 80; 0 disables this check)</li>
  * </ul>
  */
 public final class RedisConfig {
@@ -106,6 +119,13 @@ public final class RedisConfig {
 	private static final String KEYSPACE_NOTIFICATIONS_ENABLED = "keyspace.notifications.enabled";
 	private static final String RPC_CALLABLE_ALLOWLIST = "rpc.callable.allowlist";
 	private static final String RPC_HMAC_SECRET = "rpc.hmac.secret";
+	private static final String DISTRIBUTED_CACHE_MAP_TTL = "distributed.cache.map.ttl";
+	private static final String DISTRIBUTED_CACHE_MAP_MAX_SIZE = "distributed.cache.map.maxSize";
+	private static final String TENANT_PREFIX_MODE = "redis.tenant.prefix.mode";
+	public static final String TENANT_PREFIX_MODE_INSTANCE = "instance";
+	public static final String TENANT_PREFIX_MODE_CLIENT = "client";
+	private static final String SUBSCRIPTION_POOL_SIZE = "redis.circuit.subscription-pool-size";
+	private static final String SUBSCRIPTION_POOL_THRESHOLD_PERCENT = "redis.circuit.subscription-pool-threshold-percent";
 
 	private static final boolean DEFAULT_NEAR_CACHE_ENABLED = false;
 	private static final int DEFAULT_NEAR_CACHE_MAX_SIZE = 10_000;
@@ -119,6 +139,11 @@ public final class RedisConfig {
 	private static final boolean DEFAULT_KEYSPACE_NOTIFICATIONS_ENABLED = false;
 	private static final Set<String> DEFAULT_RPC_CALLABLE_ALLOWLIST = Collections.emptySet();
 	private static final String DEFAULT_RPC_HMAC_SECRET = null;
+	private static final Duration DEFAULT_DISTRIBUTED_CACHE_MAP_TTL = Duration.ofHours(1);
+	private static final int DEFAULT_DISTRIBUTED_CACHE_MAP_MAX_SIZE = 50_000;
+	private static final String DEFAULT_TENANT_PREFIX_MODE = TENANT_PREFIX_MODE_INSTANCE;
+	private static final int DEFAULT_SUBSCRIPTION_POOL_SIZE = 50;
+	private static final int DEFAULT_SUBSCRIPTION_POOL_THRESHOLD_PERCENT = 80;
 
 	private final Config redissonConfig;
 	private final String keyPrefix;
@@ -134,13 +159,20 @@ public final class RedisConfig {
 	private final boolean keyspaceNotificationsEnabled;
 	private final Set<String> rpcCallableAllowlist;
 	private final String rpcHmacSecret;
+	private final Duration distributedCacheMapTtl;
+	private final int distributedCacheMapMaxSize;
+	private final String tenantPrefixMode;
+	private final int subscriptionConnectionPoolSize;
+	private final int subscriptionPoolThreshold;
 
 	private RedisConfig(Config redissonConfig, String keyPrefix, boolean nearCacheEnabled,
 			int nearCacheMaxSize, Duration nearCacheExpireAfterWrite,
 			boolean fallbackEnabled, int fallbackMaxSize, Duration fallbackExpireAfterWrite,
 			int circuitFailureThreshold, Duration circuitProbeInterval,
 			boolean messagingReliable, boolean keyspaceNotificationsEnabled,
-			Set<String> rpcCallableAllowlist, String rpcHmacSecret) {
+			Set<String> rpcCallableAllowlist, String rpcHmacSecret,
+			Duration distributedCacheMapTtl, int distributedCacheMapMaxSize,
+			String tenantPrefixMode, int subscriptionConnectionPoolSize, int subscriptionPoolThreshold) {
 		this.redissonConfig = redissonConfig;
 		this.keyPrefix = keyPrefix;
 		this.nearCacheEnabled = nearCacheEnabled;
@@ -155,6 +187,11 @@ public final class RedisConfig {
 		this.keyspaceNotificationsEnabled = keyspaceNotificationsEnabled;
 		this.rpcCallableAllowlist = rpcCallableAllowlist;
 		this.rpcHmacSecret = rpcHmacSecret;
+		this.distributedCacheMapTtl = distributedCacheMapTtl;
+		this.distributedCacheMapMaxSize = distributedCacheMapMaxSize;
+		this.tenantPrefixMode = tenantPrefixMode;
+		this.subscriptionConnectionPoolSize = subscriptionConnectionPoolSize;
+		this.subscriptionPoolThreshold = subscriptionPoolThreshold;
 	}
 
 	public Config getRedissonConfig() {
@@ -244,6 +281,56 @@ public final class RedisConfig {
 		return rpcHmacSecret;
 	}
 
+	/**
+	 * TTL applied to every entry written to a distributed {@code RMapCache}.
+	 * Entries older than this are automatically evicted by Redis, bounding memory
+	 * growth even when no explicit cache reset arrives.
+	 */
+	public Duration getDistributedCacheMapTtl() {
+		return distributedCacheMapTtl;
+	}
+
+	/**
+	 * Maximum number of entries per distributed {@code RMapCache}.
+	 * When reached, the oldest/least-recently-used entries are evicted.
+	 * Set to 0 to disable size-based eviction (not recommended in production).
+	 */
+	public int getDistributedCacheMapMaxSize() {
+		return distributedCacheMapMaxSize;
+	}
+
+	/**
+	 * Tenant prefix mode: {@code "instance"} (default — prefix by deployment instance name,
+	 * current behaviour) or {@code "client"} (prefix additionally includes the AD_Client_ID,
+	 * providing per-tenant key isolation on a shared Redis).
+	 */
+	public String getTenantPrefixMode() {
+		return tenantPrefixMode;
+	}
+
+	/** @return {@code true} when per-client key isolation has been requested. */
+	public boolean isClientPrefixMode() {
+		return TENANT_PREFIX_MODE_CLIENT.equalsIgnoreCase(tenantPrefixMode);
+	}
+
+	/**
+	 * Configured Redisson {@code subscriptionConnectionPoolSize} (or the property override).
+	 * Used together with {@link #getSubscriptionPoolThreshold()} to drive the circuit-breaker
+	 * pool-exhaustion check.
+	 */
+	public int getSubscriptionConnectionPoolSize() {
+		return subscriptionConnectionPoolSize;
+	}
+
+	/**
+	 * Absolute subscription count at which the circuit breaker trips to OPEN.
+	 * Computed as {@code floor(subscriptionConnectionPoolSize * thresholdPercent / 100)}.
+	 * 0 when the feature is disabled.
+	 */
+	public int getSubscriptionPoolThreshold() {
+		return subscriptionPoolThreshold;
+	}
+
 	/** Loads configuration from {@code $IDEMPIERE_HOME}, applying defaults where files are absent. */
 	public static RedisConfig load() {
 		File home = resolveIdempiereHome();
@@ -275,10 +362,55 @@ public final class RedisConfig {
 		if (rpcHmacSecret != null && rpcHmacSecret.isBlank()) {
 			rpcHmacSecret = DEFAULT_RPC_HMAC_SECRET;
 		}
+		Duration distMapTtl = ConfigParser.durationProp(props, DISTRIBUTED_CACHE_MAP_TTL,
+				DEFAULT_DISTRIBUTED_CACHE_MAP_TTL);
+		int distMapMaxSize = ConfigParser.intProp(props, DISTRIBUTED_CACHE_MAP_MAX_SIZE,
+				DEFAULT_DISTRIBUTED_CACHE_MAP_MAX_SIZE);
+		String tenantMode = props.getProperty(TENANT_PREFIX_MODE, DEFAULT_TENANT_PREFIX_MODE).trim();
+		if (!TENANT_PREFIX_MODE_INSTANCE.equalsIgnoreCase(tenantMode)
+				&& !TENANT_PREFIX_MODE_CLIENT.equalsIgnoreCase(tenantMode)) {
+			log.warn("{} value '{}' is not recognised; defaulting to '{}'",
+					TENANT_PREFIX_MODE, tenantMode, DEFAULT_TENANT_PREFIX_MODE);
+			tenantMode = DEFAULT_TENANT_PREFIX_MODE;
+		}
+		if (TENANT_PREFIX_MODE_CLIENT.equalsIgnoreCase(tenantMode)) {
+			String clientId = System.getProperty("AD_CLIENT_ID");
+			if (clientId == null || clientId.isBlank()) {
+				clientId = System.getenv("AD_CLIENT_ID");
+			}
+			if (clientId == null || clientId.isBlank()) {
+				throw new IllegalStateException(
+						TENANT_PREFIX_MODE + "=" + TENANT_PREFIX_MODE_CLIENT
+								+ " is configured but AD_CLIENT_ID cannot be resolved from system properties "
+								+ "or environment. Either set AD_CLIENT_ID or switch to "
+								+ TENANT_PREFIX_MODE_INSTANCE + " mode.");
+			}
+			try {
+				int clientIdInt = Integer.parseInt(clientId.trim());
+				if (clientIdInt <= 0) {
+					throw new NumberFormatException("must be positive");
+				}
+			} catch (NumberFormatException e) {
+				throw new IllegalStateException(
+						TENANT_PREFIX_MODE + "=" + TENANT_PREFIX_MODE_CLIENT
+								+ ": AD_CLIENT_ID must be a positive integer, got: " + clientId, e);
+			}
+			prefix = prefix + "client-" + clientId.trim() + ":";
+		}
+		int subscriptionPoolSize = ConfigParser.intProp(props, SUBSCRIPTION_POOL_SIZE,
+				DEFAULT_SUBSCRIPTION_POOL_SIZE);
+		int thresholdPercent = ConfigParser.intProp(props, SUBSCRIPTION_POOL_THRESHOLD_PERCENT,
+				DEFAULT_SUBSCRIPTION_POOL_THRESHOLD_PERCENT);
+		// Clamp to [0,100]; 0 disables the pool-exhaustion check entirely.
+		thresholdPercent = Math.max(0, Math.min(100, thresholdPercent));
+		int subscriptionPoolThreshold = (thresholdPercent > 0 && subscriptionPoolSize > 0)
+				? (int) Math.floor(subscriptionPoolSize * thresholdPercent / 100.0)
+				: 0;
 		return new RedisConfig(redisson, prefix, nearCacheEnabled, nearCacheMax, nearCacheExpire,
 				fallbackEnabled, fallbackMax, fallbackExpire,
 				circuitFailures, circuitProbe, messagingReliable, keyspaceNotifications,
-				rpcAllowlist, rpcHmacSecret);
+				rpcAllowlist, rpcHmacSecret, distMapTtl, distMapMaxSize, tenantMode,
+				subscriptionPoolSize, subscriptionPoolThreshold);
 	}
 
 	private static Set<String> parseRpcAllowlist(Properties props) {
