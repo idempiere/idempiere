@@ -160,6 +160,10 @@ public class WFNodeContainer
 			}
 		}
 
+		if (currentRow > rowCount) {
+			rowCount = currentRow;
+		}
+
 		WFNodeWidget w = (WFNodeWidget) graphScene.addNode(node.getAD_WF_Node_ID());
 		w.setColumn(currentColumn);
 		w.setRow(currentRow);
