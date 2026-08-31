@@ -326,7 +326,8 @@ public class WFEditor extends ADForm {
 
 		try {
 			int row = nodeContainer.getRowCount();
-			for(int i = 0; i < row+1; i++) {
+			int rowsToRender = row + (nodeContainer.canAddRow() ? 1 : 0);
+			for(int i = 0; i < rowsToRender; i++) {
 				Tr tr = new Tr();
 				table.appendChild(tr);
 				for(int c = 0; c < nodeContainer.getColumnCount(); c++) {

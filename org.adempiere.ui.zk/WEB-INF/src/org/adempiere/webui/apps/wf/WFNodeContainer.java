@@ -277,6 +277,14 @@ public class WFNodeContainer
 	}
 
 	/**
+	 * Check whether another row can be added
+	 * @return true if another row can be added
+	 */
+	public boolean canAddRow() {
+		return rowCount < MAX_ROW_COUNT;
+	}
+
+	/**
 	 * Get current row index
 	 * @return current row index
 	 */
