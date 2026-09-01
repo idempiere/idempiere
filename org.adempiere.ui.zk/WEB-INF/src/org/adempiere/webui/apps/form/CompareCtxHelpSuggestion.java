@@ -41,11 +41,11 @@ import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.CKEditor;
+import org.apache.commons.text.StringEscapeUtils;
 import org.compiere.model.GridTab;
 import org.compiere.model.X_AD_CtxHelpMsg;
 import org.compiere.util.Env;
 import org.outerj.daisy.diff.DaisyDiff;
-import org.springframework.web.util.HtmlUtils;
 import org.xml.sax.helpers.AttributesImpl;
 import org.zkforge.ckez.CKeditor;
 import org.zkoss.zk.ui.Component;
@@ -205,14 +205,14 @@ public class CompareCtxHelpSuggestion extends ADForm {
 			if (start >= 0) {
 				if (start > i) {
 					String s = diff.substring(i, start);
-					s = HtmlUtils.htmlUnescape(s);
+					s = StringEscapeUtils.unescapeHtml4(s);
 					builder.append(s);
 				}
 				i = start + "<span class=\"diff-tag-html\">".length();
 				int end = diff.indexOf("</span>", i);
 				if (end > i) {
 					String s = diff.substring(i, end);
-					s = HtmlUtils.htmlUnescape(s);
+					s = StringEscapeUtils.unescapeHtml4(s);
 					builder.append(s);
 					i = end + "</span>".length();
 				} else {
@@ -224,7 +224,7 @@ public class CompareCtxHelpSuggestion extends ADForm {
 		}
 		if (i < length) {
 			String s = diff.substring(i, length);
-			s = HtmlUtils.htmlUnescape(s);
+			s = StringEscapeUtils.unescapeHtml4(s);
 			builder.append(s);
 		}
 		String s = builder.toString();
