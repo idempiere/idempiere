@@ -106,6 +106,9 @@ window.idempiere.showFullSizeImage = function (event) {
   if (imageUrl == 'data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAUUAAEALAAAAAABAAEAAAICTAEAOw==')
 	return;
 
+	// Always remove the previous preview
+    window.idempiere.hideFullSizeImage();
+
   // Get the mouse pointer position relative to the document
   const mouseX = event.pageX + 10;
   const mouseY = event.pageY + 10;
@@ -129,34 +132,34 @@ window.idempiere.showFullSizeImage = function (event) {
   // Add the original image to the document body
   document.body.appendChild(fullsizeImage);
 
-  event.target._fullsize = fullsizeImage;
-  
-  const rect = event.target._fullsize.getBoundingClientRect();
-  const viewportHeight = jq(window).height();
-  const viewportWidth = jq(window).width();
-  if (rect.bottom > viewportHeight || rect.right > viewportWidth) {
-	 if (rect.right > viewportWidth) {
-		const rw = rect.right - rect.left;
-		let x = event.pageX - rw - 10;
-		if (x < 0)
-			x = 0;
-		event.target._fullsize.style.left = x + "px";
-	 }
-	 if (rect.bottom > viewportHeight) {
-		const rh = rect.bottom - rect.top;
-		let y = event.pageY - rh - 10
-		if (y < 0)
-			y = 0;
-		event.target._fullsize.style.top = y + "px";
-	 }
-  }
+	window.idempiere._fullsizeImage = fullsizeImage;
+
+	const rect = fullsizeImage.getBoundingClientRect();
+	const viewportHeight = jq(window).height();
+	const viewportWidth = jq(window).width();
+    if (rect.bottom > viewportHeight || rect.right > viewportWidth) {
+        if (rect.right > viewportWidth) {
+            const rw = rect.right - rect.left;
+            let x = event.pageX - rw - 10;
+            if (x < 0)
+                x = 0;
+            fullsizeImage.style.left = x + "px";
+        }
+        if (rect.bottom > viewportHeight) {
+            const rh = rect.bottom - rect.top;
+            let y = event.pageY - rh - 10
+            if (y < 0)
+                y = 0;
+            fullsizeImage.style.top = y + "px";
+        }
+    }
 }
 
-window.idempiere.hideFullSizeImage = function (event) {
-    try {
-  		if (event.target._fullsize && event.target._fullsize instanceof HTMLImageElement) {
-			document.body.removeChild(event.target._fullsize);
-  			event.target._fullsize = null;
-  		}
-    } catch (error) {}
+window.idempiere.hideFullSizeImage = function () {
+    const fullsizeImage = window.idempiere._fullsizeImage;
+
+    if (fullsizeImage) {
+        fullsizeImage.remove();
+        window.idempiere._fullsizeImage = null;
+    }
 }
