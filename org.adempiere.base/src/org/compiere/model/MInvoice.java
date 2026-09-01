@@ -2541,6 +2541,9 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 				return reverseCorrectIt();
 		}
 
+		if (isCreditMemo())
+			setRelatedInvoice_ID(0);
+
 		// After Void
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_VOID);
 		if (m_processMsg != null)
@@ -2625,6 +2628,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		
 		//
 		reverseAllocations(accrual, getC_Invoice_ID());
+
 		//	Reverse/Delete Matching
 		if (!isSOTrx())
 		{
@@ -2675,6 +2679,9 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		}
 		//
 		load(get_TrxName());	//	reload allocation reversal info
+
+		if (isCreditMemo())
+			setRelatedInvoice_ID(0);
 
 		//	Deep Copy
 		MInvoice reversal = null;
@@ -3636,5 +3643,5 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 
 		return "";
 	}
-	
+
 }	//	MInvoice
