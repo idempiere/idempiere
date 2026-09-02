@@ -30,6 +30,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.idempiere.distributed.ITopic;
 import org.idempiere.distributed.ITopicSubscriber;
+import org.idempiere.redis.service.MessageServiceImpl;
 import org.redisson.api.RTopic;
 
 /**
