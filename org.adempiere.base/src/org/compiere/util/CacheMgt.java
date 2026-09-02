@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
@@ -33,6 +32,7 @@ import org.adempiere.base.Core;
 import org.compiere.Adempiere;
 import org.compiere.model.SystemProperties;
 import org.idempiere.distributed.ICacheService;
+import org.idempiere.distributed.IClusterMember;
 import org.idempiere.distributed.IClusterService;
 
 import com.github.benmanes.caffeine.cache.Cache;
@@ -104,28 +104,38 @@ public class CacheMgt
 	 * skipped. Key = {@link #resetInFlightGuardKey(String, String)}; value = AtomicBoolean flag
 	 * (true = in-flight). Bounded to 2000 entries via Caffeine's size-based eviction to prevent
 	 * unbounded growth from per-record guard keys.
+	 * <p>Under sustained pressure from more than 2000 distinct guard keys in flight at once,
+	 * Caffeine may evict an entry whose flag is still {@code true}; the next reset for that same
+	 * key then creates a fresh flag and runs a duplicate reset. The in-flight task holds its own
+	 * reference to the (evicted) flag and still clears it correctly when done, so nothing gets
+	 * stuck — the only consequence is an occasional extra reset, not a lost or hung one.
 	 */
 	private static final Cache<String, AtomicBoolean> resetInFlight =
 			Caffeine.newBuilder()
 				.maximumSize(2000)
 				.build();
 
+	/** Default value of {@link #RESET_STAGGER_MAX_MS} when {@code Cache.ResetStaggerMaxMs} is not set. */
+	private static final long DEFAULT_RESET_STAGGER_MAX_MS = 500L;
+
 	/**
-	 * Maximum random jitter (ms) applied before a broadcast-triggered local cache reset
-	 * so nodes on the same cluster don't all reload from the DB at the same millisecond.
-	 * Override via {@code Cache.ResetJitterMaxMs} (default: 500).
+	 * Width (ms) of the window over which a broadcast-triggered local cache reset is staggered so
+	 * nodes on the same cluster don't all reload from the DB at the same millisecond. The actual
+	 * per-node delay within this window is deterministic, not random — see
+	 * {@link #computeStaggeredDelayMs()}. Override via {@code Cache.ResetStaggerMaxMs}
+	 * (default {@link #DEFAULT_RESET_STAGGER_MAX_MS}).
 	 */
-	private static final long RESET_JITTER_MAX_MS;
+	private static final long RESET_STAGGER_MAX_MS;
 	static {
-		long jitter = 500L;
+		long stagger = DEFAULT_RESET_STAGGER_MAX_MS;
 		try {
-			String prop = System.getProperty("Cache.ResetJitterMaxMs");
+			String prop = System.getProperty("Cache.ResetStaggerMaxMs");
 			if (prop != null && !prop.trim().isEmpty()) {
 				long parsed = Long.parseLong(prop.trim());
-				if (parsed >= 0) jitter = parsed;
+				if (parsed >= 0) stagger = parsed;
 			}
 		} catch (Throwable t) {}
-		RESET_JITTER_MAX_MS = jitter;
+		RESET_STAGGER_MAX_MS = stagger;
 	}
 
 	/** Fired once to avoid spamming the log when the cluster service is unavailable at startup. */
@@ -224,9 +234,16 @@ public class CacheMgt
 		if (state.trailingScheduled.compareAndSet(false, true)) {
 			long delay = Math.max(0, CLUSTER_RESET_DEBOUNCE_MS - (now - last));
 			Adempiere.getThreadPoolExecutor().schedule(() -> {
-				state.trailingScheduled.set(false);
+				// Update lastBroadcastAtMs and broadcast before clearing trailingScheduled, so a
+				// write arriving mid-flight either observes trailingScheduled still true (piggybacks
+				// on this broadcast) or observes the updated lastBroadcastAtMs (starts a fresh
+				// window) — never the inconsistent combination of both stale.
 				state.lastBroadcastAtMs.set(System.currentTimeMillis());
-				doBroadcastTableReset(tableName);
+				try {
+					doBroadcastTableReset(tableName);
+				} finally {
+					state.trailingScheduled.set(false);
+				}
 			}, delay, TimeUnit.MILLISECONDS);
 		}
 	}
@@ -514,10 +531,11 @@ public class CacheMgt
 	 * Reset the local cache for {@code tableName} with anti-stampede protection.
 	 * Called by the broadcast invalidation subscriber so nodes don't all hammer the DB simultaneously:
 	 * <ul>
-	 *   <li>When {@code Cache.ResetJitterMaxMs} is &gt; 0, the actual reset is deferred onto
-	 *       {@link Adempiere#getThreadPoolExecutor()}'s delay queue by a random 0–{@code
-	 *       Cache.ResetJitterMaxMs} ms so cluster members don't all reload from the DB at the same
-	 *       millisecond — the queued delay costs no worker thread while pending, unlike blocking the
+	 *   <li>When {@code Cache.ResetStaggerMaxMs} is &gt; 0, the actual reset is deferred onto
+	 *       {@link Adempiere#getThreadPoolExecutor()}'s delay queue by a deterministic delay — see
+	 *       {@link #computeStaggeredDelayMs()} — so cluster members take a turn spread across the
+	 *       {@code Cache.ResetStaggerMaxMs} window instead of all reloading from the DB at the same
+	 *       millisecond. The queued delay costs no worker thread while pending, unlike blocking the
 	 *       caller with {@code Thread.sleep}. In that case this method returns {@code 0} immediately;
 	 *       the real reset count is only known once the queued task runs.</li>
 	 *   <li>Uses a per-{@link #resetInFlightGuardKey(String, String) guard key} {@link AtomicBoolean}
@@ -551,12 +569,45 @@ public class CacheMgt
 	}
 
 	/**
+	 * Deterministic per-node position within the current cluster membership, used to derive an
+	 * anti-stampede reset delay: every node independently sorts {@link IClusterService#getMembers()}
+	 * by {@link IClusterMember#getId()} — identical input produces identical ordering on every node,
+	 * with no coordination RPC needed — and uses its own index in that ordering to take a turn
+	 * spread across the {@link #RESET_STAGGER_MAX_MS} window, e.g. member 0 of 4 waits 0 ms, member
+	 * 1 waits a quarter of the window, and so on. This replaces picking an independent random delay
+	 * per node with nodes queuing in a fixed, deterministic order.
+	 *
+	 * @return delay in ms within {@code [0, RESET_STAGGER_MAX_MS)}; {@code 0} if the cluster
+	 *         service or local member isn't available, or there's only one member
+	 */
+	private static long computeStaggeredDelayMs() {
+		IClusterService service = Core.getClusterService();
+		if (service == null)
+			return 0;
+		IClusterMember local = service.getLocalMember();
+		if (local == null || local.getId() == null)
+			return 0;
+		List<String> ids = new ArrayList<>();
+		for (IClusterMember member : service.getMembers()) {
+			if (member != null && member.getId() != null)
+				ids.add(member.getId());
+		}
+		if (!ids.contains(local.getId()))
+			ids.add(local.getId());
+		if (ids.size() <= 1)
+			return 0;
+		ids.sort(null);
+		int index = ids.indexOf(local.getId());
+		return index * RESET_STAGGER_MAX_MS / ids.size();
+	}
+
+	/**
 	 * Shared anti-stampede logic for {@link #resetLocalCacheWithAntiStampede(String, int)} and
 	 * {@link #resetLocalCacheWithAntiStampede(String, String)}: acquires the per-{@code guardKey}
-	 * in-flight flag, then either runs {@code resetAction} immediately (no jitter configured) or
-	 * schedules it on {@link Adempiere#getThreadPoolExecutor()}'s delay queue after a random 0–
-	 * {@link #RESET_JITTER_MAX_MS} ms stagger. The flag is released once {@code resetAction}
-	 * actually completes, whichever path ran it.
+	 * in-flight flag, then either runs {@code resetAction} immediately (no stagger configured) or
+	 * schedules it on {@link Adempiere#getThreadPoolExecutor()}'s delay queue after the deterministic
+	 * delay computed by {@link #computeStaggeredDelayMs()}. The flag is released once
+	 * {@code resetAction} actually completes, whichever path ran it.
 	 *
 	 * @return the reset count when run synchronously; {@code 0} when the caller lost the guard race
 	 *         or the reset was queued for deferred execution
@@ -568,14 +619,14 @@ public class CacheMgt
 				log.fine("Anti-stampede: skipping duplicate local cache reset for " + guardKey);
 			return 0;
 		}
-		if (RESET_JITTER_MAX_MS <= 0) {
+		if (RESET_STAGGER_MAX_MS <= 0) {
 			try {
 				return resetAction.getAsInt();
 			} finally {
 				flag.set(false);
 			}
 		}
-		long jitter = ThreadLocalRandom.current().nextLong(0, RESET_JITTER_MAX_MS + 1);
+		long delay = computeStaggeredDelayMs();
 		Adempiere.getThreadPoolExecutor().schedule(() -> {
 			try {
 				resetAction.getAsInt();
@@ -584,7 +635,7 @@ public class CacheMgt
 			} finally {
 				flag.set(false);
 			}
-		}, jitter, TimeUnit.MILLISECONDS);
+		}, delay, TimeUnit.MILLISECONDS);
 		return 0;
 	}
 
@@ -601,7 +652,7 @@ public class CacheMgt
 
 	/**
 	 * Reset the local cache for {@code tableName} with anti-stampede protection.
-	 * See {@link #resetLocalCacheWithAntiStampede(String, int)} for the jitter/queueing and
+	 * See {@link #resetLocalCacheWithAntiStampede(String, int)} for the stagger/queueing and
 	 * in-flight guard semantics.
 	 * @param tableName table to reset
 	 * @param key       string key; empty string resets all entries for the table
