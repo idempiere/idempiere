@@ -24,7 +24,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.IntSupplier;
 import java.util.logging.Level;
 
@@ -192,10 +191,16 @@ public class CacheMgt
 		CLUSTER_RESET_DEBOUNCE_MS = debounce;
 	}
 
-	/** Per-table debounce bookkeeping for {@link #debouncedResetTables}. */
+	/**
+	 * Per-table debounce bookkeeping for {@link #debouncedResetTables}. All fields are only ever
+	 * read/written while holding the instance's monitor (see {@link #broadcastDebouncedReset(String)}
+	 * / {@link #runDebouncedBroadcast(String, DebounceState, long)}) — the actual network broadcast
+	 * runs outside the lock, only the small bookkeeping decisions are synchronized.
+	 */
 	private static final class DebounceState {
-		final AtomicLong lastBroadcastAtMs = new AtomicLong(0);
-		final AtomicBoolean trailingScheduled = new AtomicBoolean(false);
+		long lastBroadcastAtMs;
+		boolean broadcastPending;
+		boolean dirty;
 	}
 	private static final Map<String, DebounceState> debounceStateByTable = new ConcurrentHashMap<>();
 
@@ -215,37 +220,56 @@ public class CacheMgt
 	 * before calling this — only the cross-node broadcast is throttled, so this node itself is
 	 * never stale for its own writes.
 	 *
-	 * <p>If the debounce window has elapsed, broadcasts immediately (leading edge). Otherwise the
-	 * broadcast is suppressed for now, but exactly one trailing broadcast is scheduled to run when
-	 * the window closes, so remote nodes still catch up even if writes to this table stop mid-burst.
-	 * A single whole-table reset (record id -1) is used for both edges since multiple distinct
+	 * <p>If no broadcast is currently pending for this table, one is scheduled (immediately, or
+	 * after however much of the debounce window remains) and always runs off the caller's thread —
+	 * even the "immediate" case never blocks a writer on network I/O. If a broadcast is already
+	 * pending or actively publishing, this write is instead marked {@code dirty}: the in-flight
+	 * broadcast may already be past the point where it can still cover this write (its message can
+	 * be published, and even reach and be applied by a remote node, while this call is still in
+	 * flight), so rather than assume it's covered, the pending broadcast checks {@code dirty} right
+	 * after it finishes and — if set — immediately schedules one more round instead of going idle.
+	 * A single whole-table reset (record id -1) is used for every round since multiple distinct
 	 * records may have been coalesced into one broadcast.
 	 *
 	 * @param tableName table to broadcast a debounced reset for; must be non-null
 	 */
 	private static void broadcastDebouncedReset(String tableName) {
 		DebounceState state = debounceStateByTable.computeIfAbsent(tableName, k -> new DebounceState());
-		long now = System.currentTimeMillis();
-		long last = state.lastBroadcastAtMs.get();
-		if (now - last >= CLUSTER_RESET_DEBOUNCE_MS && state.lastBroadcastAtMs.compareAndSet(last, now)) {
+		long delay;
+		synchronized (state) {
+			if (state.broadcastPending) {
+				state.dirty = true;
+				return;
+			}
+			delay = Math.max(0, CLUSTER_RESET_DEBOUNCE_MS - (System.currentTimeMillis() - state.lastBroadcastAtMs));
+			state.broadcastPending = true;
+		}
+		runDebouncedBroadcast(tableName, state, delay);
+	}
+
+	/**
+	 * Schedules one debounced broadcast round after {@code delay} ms, then — once it actually
+	 * runs — checks whether a write was marked {@link DebounceState#dirty} while this round was
+	 * pending/publishing. If so, immediately schedules another round instead of going idle, so a
+	 * write that raced the in-flight publish is never silently dropped (see
+	 * {@link #broadcastDebouncedReset(String)}).
+	 */
+	private static void runDebouncedBroadcast(String tableName, DebounceState state, long delay) {
+		Adempiere.getThreadPoolExecutor().schedule(() -> {
+			synchronized (state) {
+				state.lastBroadcastAtMs = System.currentTimeMillis();
+			}
 			doBroadcastTableReset(tableName);
-			return;
-		}
-		if (state.trailingScheduled.compareAndSet(false, true)) {
-			long delay = Math.max(0, CLUSTER_RESET_DEBOUNCE_MS - (now - last));
-			Adempiere.getThreadPoolExecutor().schedule(() -> {
-				// Update lastBroadcastAtMs and broadcast before clearing trailingScheduled, so a
-				// write arriving mid-flight either observes trailingScheduled still true (piggybacks
-				// on this broadcast) or observes the updated lastBroadcastAtMs (starts a fresh
-				// window) — never the inconsistent combination of both stale.
-				state.lastBroadcastAtMs.set(System.currentTimeMillis());
-				try {
-					doBroadcastTableReset(tableName);
-				} finally {
-					state.trailingScheduled.set(false);
-				}
-			}, delay, TimeUnit.MILLISECONDS);
-		}
+			boolean again;
+			synchronized (state) {
+				again = state.dirty;
+				state.dirty = false;
+				state.broadcastPending = again;
+			}
+			if (again) {
+				runDebouncedBroadcast(tableName, state, CLUSTER_RESET_DEBOUNCE_MS);
+			}
+		}, delay, TimeUnit.MILLISECONDS);
 	}
 
 	/** Fire-and-forget cluster-wide whole-table reset broadcast; no-op if no distributed cache service is available. */
