@@ -300,6 +300,7 @@ public class WFEditor extends ADForm {
 
 		//	Add Nodes for Paint
 		MWFNode[] nodes = m_wf.getNodes(true, Env.getAD_Client_ID(Env.getCtx()));
+		nodeContainer.setColumnCount(nodes, true);
 		List<Integer> added = new ArrayList<Integer>();
 		for (int i = 0; i < nodes.length; i++)
 		{
@@ -325,10 +326,11 @@ public class WFEditor extends ADForm {
 
 		try {
 			int row = nodeContainer.getRowCount();
-			for(int i = 0; i < row+1; i++) {
+			int rowsToRender = row + (nodeContainer.canAddRow() ? 1 : 0);
+			for(int i = 0; i < rowsToRender; i++) {
 				Tr tr = new Tr();
 				table.appendChild(tr);
-				for(int c = 0; c < 4; c++) {
+				for(int c = 0; c < nodeContainer.getColumnCount(); c++) {
 					BufferedImage t = new BufferedImage(WFGraphLayout.COLUMN_WIDTH, WFGraphLayout.ROW_HEIGHT, BufferedImage.TYPE_INT_ARGB);
 					Graphics2D tg = t.createGraphics();
 					Td td = new Td();
