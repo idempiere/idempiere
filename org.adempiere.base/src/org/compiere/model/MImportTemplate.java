@@ -442,7 +442,7 @@ public class MImportTemplate extends X_AD_ImportTemplate implements ImmutablePOS
 	 *   Column[ForeignColumn]
 	 *   DetailTableName>Column
 	 *   DetailTableName>Column[ForeignColumn]
-	 *   Any column can end with /K (can be ignored)
+	 *   Any column can end with /K or /KT (can be ignored)
 	 * @return List of expected DisplayType for every column
 	 */
 	private List<Integer> calculateAndValidateColumnTypes() {
