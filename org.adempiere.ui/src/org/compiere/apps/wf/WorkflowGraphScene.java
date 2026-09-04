@@ -7,7 +7,9 @@ package org.compiere.apps.wf;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.compiere.util.Env;
 import org.compiere.wf.MWFNode;
@@ -35,6 +37,11 @@ public class WorkflowGraphScene extends GraphScene<Integer, MWFNodeNext> {
 
 	private LayerWidget mainLayer;
     private LayerWidget connectionLayer;
+
+    /** Self-reference routing index per connection widget (parallel self-references on the same node get separated loops). */
+    private Map<ConnectionWidget, Integer> selfLoopIndex = new HashMap<> ();
+    /** Self-reference counter per node widget. */
+    private Map<Widget, Integer> selfLoopCount = new HashMap<> ();
 
     private WidgetAction selectAction = createSelectAction();
 
@@ -64,6 +71,14 @@ public class WorkflowGraphScene extends GraphScene<Integer, MWFNodeNext> {
 	protected Widget attachEdgeWidget(MWFNodeNext edge) {
 		 ConnectionWidget connection = new ConnectionWidget (this);
 		 connection.setTargetAnchorShape (AnchorShape.TRIANGLE_FILLED);
+		 if (edge.getAD_WF_Node_ID () == edge.getAD_WF_Next_ID ()) {
+			 // nodes are attached before edges, so the node widget is available here
+			 Widget nodeWidget = findWidget (edge.getAD_WF_Node_ID ());
+			 int index = nodeWidget == null
+					 ? selfLoopIndex.size ()
+					 : selfLoopCount.merge (nodeWidget, 1, Integer::sum) - 1;
+			 selfLoopIndex.put (connection, index);
+		 }
 		 Router orthogonalRouter = RouterFactory.createOrthogonalSearchRouter (createCollisionsCollector ());
 		 Router directRouter = RouterFactory.createDirectRouter ();
 		 // The orthogonal router can return no path depending on the node positions.
@@ -95,7 +110,9 @@ public class WorkflowGraphScene extends GraphScene<Integer, MWFNodeNext> {
 	 * Route a self-reference as a compact loop around the bottom-right corner
 	 * of its node. The workflow grid leaves enough space on these two sides to
 	 * keep the loop inside the canvas, including for nodes in the last row or
-	 * column.
+	 * column. Parallel self-references on the same node are separated by
+	 * alternating between the bottom-right and bottom-left corner and by
+	 * shrinking successive loops, so no two loops share the same geometry.
 	 * @param connection connection being routed
 	 * @return loop control points, or null if this is not a self-reference
 	 */
@@ -111,12 +128,24 @@ public class WorkflowGraphScene extends GraphScene<Integer, MWFNodeNext> {
 		Rectangle bounds = source.convertLocalToScene (source.getBounds ());
 		int right = bounds.x + bounds.width;
 		int bottom = bounds.y + bounds.height;
+		int left = bounds.x;
+		int index = selfLoopIndex.getOrDefault (connection, 0);
+		int corner = index % 2;
+		int size = Math.max (SELF_LOOP_SIZE - (index / 2) * 5, 10);
+		if (corner == 0) {
+			return List.of (
+					new Point (right, bottom - SELF_LOOP_INSET),
+					new Point (right + size, bottom - SELF_LOOP_INSET),
+					new Point (right + size, bottom + size),
+					new Point (right - SELF_LOOP_INSET, bottom + size),
+					new Point (right - SELF_LOOP_INSET, bottom));
+		}
 		return List.of (
-				new Point (right, bottom - SELF_LOOP_INSET),
-				new Point (right + SELF_LOOP_SIZE, bottom - SELF_LOOP_INSET),
-				new Point (right + SELF_LOOP_SIZE, bottom + SELF_LOOP_SIZE),
-				new Point (right - SELF_LOOP_INSET, bottom + SELF_LOOP_SIZE),
-				new Point (right - SELF_LOOP_INSET, bottom));
+				new Point (left, bottom - SELF_LOOP_INSET),
+				new Point (left - size, bottom - SELF_LOOP_INSET),
+				new Point (left - size, bottom + size),
+				new Point (left + SELF_LOOP_INSET, bottom + size),
+				new Point (left + SELF_LOOP_INSET, bottom));
 	}
 
 	/**
