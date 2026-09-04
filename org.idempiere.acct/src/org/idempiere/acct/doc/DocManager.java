@@ -691,6 +691,8 @@ public class DocManager {
 				updateSql.append("  SELECT ");
 				updateSql.append("    cd.DateAcct, ");
 				updateSql.append("    cd.M_CostDetail_ID, ");
+				updateSql.append("    cd.M_AttributeSetInstance_ID, ");
+				updateSql.append("    cd.M_CostElement_ID, ");
 				updateSql.append("    CASE ");
 				updateSql.append("      WHEN COALESCE(refcd.DateAcct, cd.DateAcct) = cd.DateAcct ");
 				updateSql.append("      THEN COALESCE(cd.Ref_CostDetail_ID, cd.M_CostDetail_ID) ");
@@ -725,11 +727,21 @@ public class DocManager {
 				updateSql.append("  ) WHEN MATCHED THEN ");
 				updateSql.append("UPDATE SET Processed = 'N' ");
 				updateSql.append("WHERE t.Processed = 'Y' ");
+				updateSql.append("	AND NOT EXISTS ( ");
+				updateSql.append("  	SELECT 1 FROM M_MatchPO mpo ");
+				updateSql.append("  	WHERE mpo.C_OrderLine_ID = t.C_OrderLine_ID ");
+				updateSql.append("  		AND mpo.DateAcct = t.DateAcct ");
+				updateSql.append("  		AND ( mpo.Reversal_ID IS NOT NULL ");
+				updateSql.append("    			OR EXISTS ( SELECT 1 FROM M_MatchPO rev ");
+				updateSql.append("      					WHERE rev.Reversal_ID = mpo.M_MatchPO_ID ) ");
+				updateSql.append("  )  ) ");
 			} else {
 				updateSql.append("WITH base_cd AS (");
 				updateSql.append("  SELECT ");
 				updateSql.append("    cd.DateAcct, ");
 				updateSql.append("    cd.M_CostDetail_ID, ");
+				updateSql.append("    cd.M_AttributeSetInstance_ID, ");
+				updateSql.append("    cd.M_CostElement_ID, ");
 				updateSql.append("    CASE ");
 				updateSql.append("      WHEN COALESCE(refcd.DateAcct, cd.DateAcct) = cd.DateAcct ");
 				updateSql.append("      THEN COALESCE(cd.Ref_CostDetail_ID, cd.M_CostDetail_ID) ");
@@ -764,6 +776,14 @@ public class DocManager {
 				updateSql.append("  ) ");
 				updateSql.append("  AND t.DateAcct >= ? ");
 				updateSql.append("  AND t.Processed = 'Y' ");
+				updateSql.append("  AND NOT EXISTS ( ");
+				updateSql.append("    	SELECT 1 FROM M_MatchPO mpo ");
+				updateSql.append("    	WHERE mpo.C_OrderLine_ID = t.C_OrderLine_ID ");
+				updateSql.append("    		AND mpo.DateAcct = t.DateAcct ");
+				updateSql.append("   		AND ( mpo.Reversal_ID IS NOT NULL ");
+				updateSql.append("      		OR EXISTS ( SELECT 1 FROM M_MatchPO rev ");
+				updateSql.append("        					WHERE rev.Reversal_ID = mpo.M_MatchPO_ID ) ");
+				updateSql.append("    )  ) ");
 			}
 			List<Object> params = new ArrayList<Object>();
 	        params.add(bdcd.getM_CostDetail_ID());
