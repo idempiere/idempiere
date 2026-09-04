@@ -63,9 +63,11 @@ import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
 import org.apache.hc.client5.http.ssl.TrustAllStrategy;
 import org.apache.hc.client5.http.utils.DateUtils;
+import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.config.RegistryBuilder;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.hc.core5.ssl.SSLContextBuilder;
 import org.apache.hc.core5.util.Timeout;
 import org.compiere.util.CLogger;
@@ -201,10 +203,7 @@ public class ServerPushEndPoint {
 				}
 				setMessageIndicator();
 				
-				StringBuilder fullUrl = new StringBuilder(this.baseUrl)
-		        		.append(uri)
-		        		.append("?")
-		        		.append(content);
+				String url = this.baseUrl + uri;
 
 				String sessionId = null;
 		        try {
@@ -221,9 +220,12 @@ public class ServerPushEndPoint {
 	
 		        synchronized (chainLock) {
 			        try {
-				        // Create POST request
-				        HttpPost httpPost = new HttpPost(fullUrl.toString());
-				        httpPost.setHeader("Content-Type", "application/json");
+				        // Create POST request with the AU content in the body instead of the URL.
+				        // Putting the content into the query string caused the Jetty 8192-byte request
+				        // line limit to be exceeded for large AU payloads (e.g. previewing a large CSV
+				        // spreadsheet), resulting in "URI is too large >8192" (HTTP 414).
+				        HttpPost httpPost = new HttpPost(url);
+				        httpPost.setEntity(new StringEntity(content, ContentType.APPLICATION_FORM_URLENCODED));
 				        httpPost.setHeader("ZK-SID", sid);
 				        httpPost.setHeader("Pragma", "no-cache");
 				        httpPost.setHeader("Cache-Control", "no-cache");
