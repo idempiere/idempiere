@@ -2,12 +2,17 @@ package org.idempiere.test.model;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Properties;
 
+import org.compiere.model.CalloutGLJournal;
+import org.compiere.model.GridField;
+import org.compiere.model.GridTab;
+import org.compiere.model.GridWindow;
 import org.compiere.model.MAttributeSetInstance;
 import org.compiere.model.MJournal;
 import org.compiere.model.MJournalBatch;
@@ -109,7 +114,7 @@ public class MJournalLineASITest extends AbstractTestCase
 		MAttributeSetInstance asi = MAttributeSetInstance.get(ctx, MATERIAL_ASI_ID, TEST_PRODUCT_ID);
 
 		MProduct product = new MProduct(ctx, TEST_PRODUCT_ID, getTrxName());
-		assertNotNull(product, "Test product must exist in demo data");
+		assertFalse(product.is_new(), "Test product must exist in demo data");
 
 		MJournalLine line = buildLine(journal);
 		line.setM_AttributeSetInstance_ID(asi.getM_AttributeSetInstance_ID());
@@ -161,9 +166,27 @@ public class MJournalLineASITest extends AbstractTestCase
 		line.setM_Product_ID(product.getM_Product_ID());
 		assertTrue(line.save(), "Initial save with product + ASI must succeed");
 
-		// Step 2: Simulate callout behavior - product changes, callout clears ASI
+		// Step 2: Invoke the actual callout for a product change
+		int windowNo = 100;
+		GridWindow gridWindow = GridWindow.get(ctx, windowNo, DictionaryIDs.AD_Window.GL_JOURNAL.id, false);
+		assertNotNull(gridWindow, "GL Journal window must be available");
+		GridTab gridTab = null;
+		for (int i = 0; i < gridWindow.getTabCount(); i++) {
+			GridTab tab = gridWindow.getTab(i);
+			if (MJournalLine.Table_Name.equals(tab.getTableName())) {
+				gridTab = tab;
+				break;
+			}
+		}
+		assertNotNull(gridTab, "GL Journal Line tab must exist");
+		gridTab.setValue("M_AttributeSetInstance_ID", asi.getM_AttributeSetInstance_ID());
+		gridTab.initTab(true);
+		GridField productField = gridTab.getField("M_Product_ID");
+		new CalloutGLJournal().account(ctx, windowNo, gridTab, productField, 0);
+		assertNull(gridTab.getValue("M_AttributeSetInstance_ID"), "Callout must clear ASI when M_Product_ID changes");
+
 		line.setM_Product_ID(0);
-		line.setM_AttributeSetInstance_ID(0); // Callout clears ASI when product changes
+		line.set_ValueOfColumn("M_AttributeSetInstance_ID", gridTab.getValue("M_AttributeSetInstance_ID"));
 
 		// Step 3: Save after callout - should succeed because ASI is now cleared
 		assertTrue(line.save(), "save() must succeed after callout clears both Product and ASI");

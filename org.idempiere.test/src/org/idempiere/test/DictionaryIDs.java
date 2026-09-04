@@ -820,7 +820,8 @@ public final class DictionaryIDs {
 		SALES_INVOICE(167),
 		ORGANIZATION(110),
 		MESSAGE(104),
-		ROLE(111);
+		ROLE(111),
+		GL_JOURNAL(200005);
 		
 		public final int id;
 
