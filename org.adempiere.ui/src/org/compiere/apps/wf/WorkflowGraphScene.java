@@ -30,7 +30,7 @@ import org.netbeans.api.visual.widget.Widget;
  * @author hengsin
  */
 public class WorkflowGraphScene extends GraphScene<Integer, MWFNodeNext> {
-	private static final int SELF_LOOP_SIZE = 24;
+	private static final int SELF_LOOP_SIZE = 20;
 	private static final int SELF_LOOP_INSET = 28;
 
 	private LayerWidget mainLayer;

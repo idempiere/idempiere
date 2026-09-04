@@ -31,8 +31,11 @@ public class WFGraphLayout extends GraphLayout<Integer, MWFNodeNext> {
 
 		for(Integer node : nodes) {
 			WFNodeWidget widget = (WFNodeWidget) graph.getScene().findWidget(node);
-			int x = (widget.getColumn() - 1) * COLUMN_WIDTH;
-			int y = (widget.getRow() - 1) * ROW_HEIGHT;
+			// Center the node widget inside its grid cell
+			int x = (widget.getColumn() - 1) * COLUMN_WIDTH
+					+ (COLUMN_WIDTH - WFNodeWidget.NODE_WIDTH) / 2;
+			int y = (widget.getRow() - 1) * ROW_HEIGHT
+					+ (ROW_HEIGHT - WFNodeWidget.NODE_HEIGHT) / 2;
 			Point point = new Point(x, y);
 			setResolvedNodeLocation(graph, node, point);
 			widget.setPreferredLocation(point);
