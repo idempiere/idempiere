@@ -341,8 +341,10 @@ public class WFEditor extends ADForm {
 					{
 						int x = c * WFGraphLayout.COLUMN_WIDTH;
 						int y = i * WFGraphLayout.ROW_HEIGHT;
-
-						tg.drawImage(bi.getSubimage(x, y, WFGraphLayout.COLUMN_WIDTH, WFGraphLayout.ROW_HEIGHT), 0, 0, null);
+						int w = Math.min(WFGraphLayout.COLUMN_WIDTH, bi.getWidth() - x);
+						int h = Math.min(WFGraphLayout.ROW_HEIGHT, bi.getHeight() - y);
+						if (w > 0 && h > 0)
+							tg.drawImage(bi.getSubimage(x, y, w, h), 0, 0, null);
 						org.zkoss.zul.Image image = new org.zkoss.zul.Image();
 						image.setContent(t);
 						td.appendChild(image);
