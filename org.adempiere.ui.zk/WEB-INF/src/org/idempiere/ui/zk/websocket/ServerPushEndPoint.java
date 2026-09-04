@@ -201,6 +201,14 @@ public class ServerPushEndPoint {
 					}
 					return;
 				}
+				if (content == null) {
+					try {
+						session.getBasicRemote().sendText(errorResponse("Error: Missing AU content"));
+					} catch (IOException e) {
+						CLogger.getCLogger(getClass()).log(Level.WARNING, e.getMessage(), e);
+					}
+					return;
+				}
 				setMessageIndicator();
 				
 				String url = this.baseUrl + uri;
