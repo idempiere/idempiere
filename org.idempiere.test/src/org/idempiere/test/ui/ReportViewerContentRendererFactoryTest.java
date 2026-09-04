@@ -14,6 +14,7 @@ package org.idempiere.test.ui;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -22,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
@@ -243,7 +245,60 @@ public class ReportViewerContentRendererFactoryTest extends AbstractTestCase {
 		ReportEngine reportEngine = org.mockito.Mockito.mock(ReportEngine.class);
 		ReportContentRequest request = new ReportContentRequest(reportEngine, null, "Test", false);
 
-		assertNotNull(Core.getReportContentRenderer(request));
+		IReportContentRenderer renderer = Core.getReportContentRenderer(request);
+		assertNotNull(renderer);
+		assertTrue(Arrays.stream(renderer.getSupportedContentTypes())
+				.anyMatch(type -> ReportContentType.isInteractiveHTML(type.contentType())));
+		assertNull(renderer.getContent(ReportContentType.HTML_INTERACTIVE_CONTENT_TYPE, "html"));
+	}
+
+	@Test
+	public void testInteractiveHtmlUsesOwnPipelineCacheKey() throws IOException {
+		File content = Files.createTempFile("interactive-report-content-", ".html").toFile();
+		AtomicInteger rendererCalls = new AtomicInteger();
+		IReportContentRenderer renderer = new TestRenderer() {
+			@Override
+			public File getContent(String contentType, String fileExtension) {
+				rendererCalls.incrementAndGet();
+				return content;
+			}
+
+			@Override
+			public ReportContentType[] getSupportedContentTypes() {
+				return new ReportContentType[] { new ReportContentType("Interactive HTML", "html",
+						ReportContentType.HTML_INTERACTIVE_CONTENT_TYPE) };
+			}
+		};
+		List<String> processedContentTypes = new ArrayList<>();
+		IReportContentProcessor processor = new IReportContentProcessor() {
+			@Override
+			public boolean isApplicable(ReportContentRequest request, String contentType, String fileExtension) {
+				return true;
+			}
+
+			@Override
+			public File process(ReportContentRequest request, String contentType, String fileExtension, File input) {
+				processedContentTypes.add(contentType);
+				return input;
+			}
+		};
+		ServiceRegistration<IReportContentRendererFactory> factoryRegistration =
+				registerFactory(request -> renderer, 20);
+		ServiceRegistration<IReportContentProcessor> processorRegistration = registerProcessor(processor, 10);
+		try {
+			IReportContentRenderer cachedRenderer = Core.getReportContentRenderer(emptyRequest());
+			assertNotNull(cachedRenderer);
+			assertSame(content, cachedRenderer.getContent("text/html", "html"));
+			assertSame(content, cachedRenderer.getContent("text/html", "html"));
+			assertSame(content, cachedRenderer.getContent(ReportContentType.HTML_INTERACTIVE_CONTENT_TYPE, "html"));
+			assertSame(content, cachedRenderer.getContent(ReportContentType.HTML_INTERACTIVE_CONTENT_TYPE, "html"));
+			assertEquals(2, rendererCalls.get());
+			assertEquals(List.of("text/html", ReportContentType.HTML_INTERACTIVE_CONTENT_TYPE), processedContentTypes);
+		} finally {
+			content.delete();
+			processorRegistration.unregister();
+			factoryRegistration.unregister();
+		}
 	}
 
 	private ServiceRegistration<IReportContentRendererFactory> registerFactory(

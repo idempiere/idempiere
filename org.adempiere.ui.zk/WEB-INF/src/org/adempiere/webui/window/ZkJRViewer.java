@@ -229,6 +229,8 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 		ZKUpdateUtil.setHeight(toolbar, "32px");
 
 		previewType.setMold("select");
+		if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH - 1))
+			previewType.setStyle("max-width: 40%");
 		ValueNamePair[] previewTypes = JasperPrintRenderer.getPreviewType(isCanExport);
 		for(int i = 0; i < previewTypes.length; i++) {
 			previewType.appendItem(previewTypes[i].getName(), previewTypes[i].getValue());

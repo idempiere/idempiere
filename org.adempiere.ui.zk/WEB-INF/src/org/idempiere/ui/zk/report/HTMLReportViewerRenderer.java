@@ -32,6 +32,8 @@ import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.print.ReportContentRequest;
+import org.idempiere.print.ReportContentType;
 import org.idempiere.print.renderer.HTMLReportRendererConfiguration;
 import org.idempiere.print.renderer.IReportRenderer;
 import org.idempiere.print.renderer.IReportRendererConfiguration;
@@ -99,6 +101,9 @@ public class HTMLReportViewerRenderer implements IReportViewerRenderer {
 					.setExtension(new HTMLExtension(contextPath, "rp", viewer.getUuid()))
 					.setContextPath(contextPath);
 			renderer.renderReport(reportEngine, config);
+			String pipelineContentType = export ? getContentType() : ReportContentType.HTML_INTERACTIVE_CONTENT_TYPE;
+			file = Core.processReportContent(new ReportContentRequest(reportEngine,
+					reportEngine.getProcessInfo(), viewer.getTitle()), pipelineContentType, getFileExtension(), file);
 			return new AMedia(file.getName(), getFileExtension(), getContentType(), file, false);
 		} catch (Exception e) {
 			if (e instanceof RuntimeException)

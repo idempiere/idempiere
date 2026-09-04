@@ -1366,6 +1366,8 @@ public class Core {
 		private static final ReportContentType[] SUPPORTED_CONTENT_TYPES = {
 				new ReportContentType(Msg.getMsg(Env.getCtx(), "FilePDF"), "pdf", "application/pdf"),
 				new ReportContentType(Msg.getMsg(Env.getCtx(), "FileHTML"), "html", "text/html"),
+				new ReportContentType(Msg.getMsg(Env.getCtx(), "FileHTML"), "html",
+						ReportContentType.HTML_INTERACTIVE_CONTENT_TYPE),
 				new ReportContentType(Msg.getMsg(Env.getCtx(), "FileCSV"), "csv", "text/csv"),
 				new ReportContentType(Msg.getMsg(Env.getCtx(), "FileXLS"), "xls", "application/vnd.ms-excel"),
 				new ReportContentType(Msg.getMsg(Env.getCtx(), "FileXLSX"), "xlsx",
@@ -1379,6 +1381,8 @@ public class Core {
 
 		@Override
 		public File getContent(String contentType, String fileExtension) {
+			if (ReportContentType.isInteractiveHTML(contentType))
+				return null;
 			String extension = fileExtension != null ? fileExtension.toLowerCase() : "";
 			if (!List.of("pdf", "html", "csv", "xls", "xlsx").contains(extension))
 				return null;
