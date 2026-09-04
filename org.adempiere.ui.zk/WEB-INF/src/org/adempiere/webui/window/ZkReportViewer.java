@@ -40,8 +40,6 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 
 import javax.activation.FileDataSource;
-import javax.servlet.http.HttpServletRequest;
-
 import org.adempiere.base.Core;
 import org.adempiere.base.upload.IUploadService;
 import org.adempiere.exceptions.AdempiereException;
@@ -57,6 +55,7 @@ import org.adempiere.webui.apps.ProcessModalDialog;
 import org.adempiere.webui.apps.WReport;
 import org.adempiere.webui.apps.form.WReportCustomization;
 import org.adempiere.webui.component.Checkbox;
+import org.adempiere.webui.component.DynamicMediaLink;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
@@ -140,7 +139,6 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.ext.render.DynamicMedia;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.A;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
@@ -233,7 +231,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	protected AMedia media;
 	private int mediaVersion = 0;
 
-	private A reportLink;
+	private DynamicMediaLink reportLink;
 
 	private boolean init;
 	
@@ -375,6 +373,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		ZKUpdateUtil.setWidth(toolBar, "100%");
 		
 		previewType.setMold("select");
+		if (ClientInfo.maxWidth(ClientInfo.SMALL_WIDTH - 1))
+			previewType.setStyle("max-width: 40%");
 		setupPreviewType();
 		
 		toolBar.appendChild(previewType);		
@@ -704,8 +704,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		South south = new South();
 		ZKUpdateUtil.setHeight(south, "50px");
 		layout.appendChild(south);
-		reportLink = new A();
-		reportLink.setTarget("_blank");
+		reportLink = new DynamicMediaLink();
 		Div linkDiv = new Div();
 		linkDiv.setStyle("width:100%; height: 40px; padding: 4px;");
 		linkDiv.appendChild(reportLink);
@@ -793,12 +792,19 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		}
 		List<String> previewRendererIds = new ArrayList<>();
 		if (reportContentRenderer != null) {
-			for (ReportContentType contentType : reportContentRenderer.getSupportedContentTypes()) {
+			ReportContentType[] supportedContentTypes = reportContentRenderer.getSupportedContentTypes();
+			boolean supportsInteractiveHTML = Arrays.stream(supportedContentTypes)
+					.anyMatch(type -> ReportContentType.isInteractiveHTML(type.contentType()));
+			for (ReportContentType contentType : supportedContentTypes) {
+				if (supportsInteractiveHTML && "html".equalsIgnoreCase(contentType.fileExtension())
+						&& !ReportContentType.isInteractiveHTML(contentType.contentType()))
+					continue;
 				IReportViewerRenderer renderer = rendererMap.values().stream()
 						.filter(candidate -> candidate.getFileExtension().equalsIgnoreCase(contentType.fileExtension()))
 						.findFirst()
 						.orElse(null);
-				if (renderer == null || !renderer.isPreview(m_isCanExport))
+				if (renderer == null || !renderer.isPreview(m_isCanExport)
+						|| previewRendererIds.contains(renderer.getId()))
 					continue;
 				ListItem li = previewType.appendItem(IReportViewerExportSource.getFormatLabel(
 						contentType.fileExtension(), contentType.name()), renderer.getId());
@@ -816,7 +822,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 					previewType.setSelectedItem(li);
 			}
 			if (summary != null)
-				summary.setVisible(false);
+				summary.setVisible(supportsInteractiveHTML && m_reportEngine.getPrintData() != null);
 		} else if (m_reportEngine.getPrintFormat().getJasperProcess_ID() > 0) {
 			for (ValueNamePair vnp : JasperPrintRenderer.getPreviewType(m_isCanExport)) {
 				ListItem li = previewType.appendItem(vnp.getName(), vnp.getValue());
@@ -901,7 +907,10 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			if(media == null) {
 				iframe.setSrc(null);
 				iframe.setContent(null);
+				reportLink.setMedia(null);
+				reportLink.setOpenInBrowser(false);
 				reportLink.setHref("");
+				reportLink.setTarget(null);
 				reportLink.setLabel("");
 				if (rowCount != null)
 					rowCount.setText("");
@@ -909,16 +918,25 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			}
 			
 			mediaVersion++;
-			String url = Utils.getDynamicMediaURI(this, mediaVersion, media.getName(), media.getFormat());	
+			String url = Utils.getDynamicMediaURI(this, mediaVersion, media.getName(), media.getFormat());
 			String pdfJsUrl = AEnv.toPdfJsUrl(url);
-			HttpServletRequest request = (HttpServletRequest) Executions.getCurrent().getNativeRequest();
-			if (url.startsWith(request.getContextPath() + "/"))
-				url = url.substring((request.getContextPath() + "/").length());
-			reportLink.setHref(url);
-			reportLink.setLabel(media.getName());			
 			
 			Listitem selected = previewType.getSelectedItem();
 			String outputType = previewType.getSelectedItem().getValue();
+			boolean openInBrowser = HTML_OUTPUT_TYPE.equals(outputType) || PDF_OUTPUT_TYPE.equals(outputType);
+			reportLink.setOpenInBrowser(openInBrowser);
+			if (openInBrowser) {
+				String contextPath = Executions.getCurrent().getContextPath();
+				if (url.startsWith(contextPath + "/"))
+					url = url.substring((contextPath + "/").length());
+				reportLink.setHref(url);
+				reportLink.setTarget("_blank");
+			} else {
+				reportLink.setHref("");
+				reportLink.setTarget(null);
+			}
+			reportLink.setMedia(media);
+			reportLink.setLabel(m_reportEngine.getName());
 			if (ClientInfo.isMobile()) {				
 				if (selected == null || PDF_OUTPUT_TYPE.equals(selected.getValue())) {
 					attachIFrame();
@@ -1998,39 +2016,57 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			if (file == null)
 				return null;
 			try {
-				String fileName = FileUtil.makePrefix(m_reportEngine.getName()) + "." + fileExtension;
-				return new AMedia(fileName, fileExtension, contentType, file, true);
+				String fileName = FileUtil.makeASCIIPrefix(m_reportEngine.getName()) + "." + fileExtension;
+				String mediaContentType = contentType;
+				if (ReportContentType.isInteractiveHTML(contentType)) {
+					IReportViewerRenderer htmlRenderer = rendererMap.get(HTML_OUTPUT_TYPE);
+					if (htmlRenderer != null)
+						mediaContentType = htmlRenderer.getContentType();
+				}
+				return new AMedia(fileName, fileExtension, mediaContentType, file, true);
 			} catch (IOException e) {
 				throw new AdempiereException("Unable to read report content", e);
 			}
 		}
 		
 		IReportViewerRenderer renderer = rendererMap.get(toRendererId(contentType, fileExtension));
-		
+		if (renderer == null)
+			return null;
 		if (renderer.isSameContentForExportAndPreview() && media != null 
 				&& media.getContentType().equals(contentType) && media.getFormat().equals(fileExtension))
 			return media;
 				
-		return renderer != null ? renderer.renderMedia(this, true) : null;
+		return renderer.renderMedia(this, true);
 	}
 
 	public AMedia getMedia(String rendererId) {
+		IReportViewerRenderer renderer = rendererMap.get(rendererId);
+		if (renderer == null)
+			return null;
 		if (reportContentRenderer != null && (PDF_OUTPUT_TYPE.equals(rendererId)
 				|| HTML_OUTPUT_TYPE.equals(rendererId) || XLS_OUTPUT_TYPE.equals(rendererId)
 				|| XLSX_OUTPUT_TYPE.equals(rendererId) || CSV_OUTPUT_TYPE.equals(rendererId))) {
-			return getMedia(JasperPrintRenderer.getMIMEType(rendererId),
-					JasperPrintRenderer.getFileExtension(rendererId));
+			ReportContentType contentType = Arrays.stream(reportContentRenderer.getSupportedContentTypes())
+					.filter(type -> renderer.getFileExtension().equalsIgnoreCase(type.fileExtension()))
+					.sorted((left, right) -> Boolean.compare(
+							ReportContentType.isInteractiveHTML(right.contentType()),
+							ReportContentType.isInteractiveHTML(left.contentType())))
+					.findFirst()
+					.orElse(null);
+			if (contentType != null) {
+				AMedia rendered = getMedia(contentType.contentType(), contentType.fileExtension());
+				if (rendered != null)
+					return rendered;
+			}
 		}
-		IReportViewerRenderer renderer = rendererMap.get(rendererId);
-		if (renderer != null)
-			return renderer.renderMedia(this, false);
-		return null;
+		return renderer.renderMedia(this, false);
 	}
 	
 	@Override
 	public ExportFormat[] getExportFormats() {
 		if (reportContentRenderer != null) {
 			return Arrays.stream(reportContentRenderer.getSupportedContentTypes())
+					.filter(type -> !ReportContentType.isInteractiveHTML(type.contentType()))
 					.map(type -> new ExportFormat(IReportViewerExportSource.getFormatLabel(
 							type.fileExtension(), type.name()), type.fileExtension(), type.contentType()))
 					.toArray(ExportFormat[]::new);
@@ -2088,13 +2124,12 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	 */
 	private void updateRowCount() {
 		if(rowCount != null) {
-			if (reportContentRenderer != null) {
+			int count = reportContentRenderer != null ? reportContentRenderer.getRowCount()
+					: m_reportEngine.getPrintData() != null ? m_reportEngine.getPrintData().getRowCount(false) : -1;
+			if (count >= 0)
+				rowCount.setValue(Msg.getMsg(Env.getCtx(), "RowCount", new Object[] {count}));
+			else
 				rowCount.setValue("");
-			} else if (m_reportEngine.getPrintData() != null) {
-				rowCount.setValue(Msg.getMsg(Env.getCtx(), "RowCount", new Object[] {m_reportEngine.getPrintData().getRowCount(false)}));
-			} else {
-				rowCount.setValue("");
-			}
 		}
 	}
 }
