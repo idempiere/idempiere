@@ -12,7 +12,7 @@
 package org.idempiere.test.ui;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.mockito.ArgumentMatchers.contains;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -24,6 +24,9 @@ import javax.websocket.Session;
 
 import org.idempiere.ui.zk.websocket.ServerPushEndPoint;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.zkoss.json.JSONObject;
+import org.zkoss.json.parser.JSONParser;
 
 /**
  * Test for the WebSocket server push AU request handling.
@@ -44,7 +47,12 @@ public class ServerPushEndPointTest {
 		assertDoesNotThrow(() -> endpoint.onMessage(session,
 				"zkau;{\"sid\":\"1\",\"dt\":\"desktop1\",\"uri\":\"/zkau?dtid=desktop1\"}"));
 
-		verify(basic).sendText(contains("Missing AU content"));
+		ArgumentCaptor<String> response = ArgumentCaptor.forClass(String.class);
+		verify(basic).sendText(response.capture());
+
+		JSONObject jsonResponse = (JSONObject) new JSONParser().parse(response.getValue());
+		assertEquals(500, jsonResponse.get("status"));
+		assertEquals("Error: Missing AU content", jsonResponse.get("statusText"));
 	}
 
 	private static void setField(Object target, String name, Object value) throws Exception {
