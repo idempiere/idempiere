@@ -508,6 +508,8 @@ public class MImportTemplate extends X_AD_ImportTemplate implements ImmutablePOS
 			// first remove the /K mark
 			if (columnHeader.endsWith("/K"))
 				columnHeader = columnHeader.substring(0, columnHeader.length()-2);
+			else if (columnHeader.endsWith("/KT"))
+				columnHeader = columnHeader.substring(0, columnHeader.length()-3);
 			// check if there is a foreign column that defines the type
 			String foreignColumnName = null;
 			int idxOpen = columnHeader.indexOf("[");
