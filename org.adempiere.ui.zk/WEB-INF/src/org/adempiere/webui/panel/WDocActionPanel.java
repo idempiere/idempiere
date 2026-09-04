@@ -55,6 +55,7 @@ import org.compiere.model.MProcess;
 import org.compiere.model.MRefList;
 import org.compiere.model.MTable;
 import org.compiere.model.MUser;
+import org.compiere.model.MUserRoles;
 import org.compiere.model.MValRule;
 import org.compiere.model.MWFActivityApprover;
 import org.compiere.model.PO;
@@ -261,7 +262,7 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 			{
 				// If Approver is not assign then check current user is invoker
 				MWFActivityApprover[] approvers = MWFActivityApprover.getOfActivity(m_activity.getCtx(), m_activity.getAD_WF_Activity_ID(), m_activity.get_TrxName());
-				if ((approvers == null || approvers.length == 0) && m_activity.getAD_User_ID() <= 0 && m_WFProcess != null && m_AD_User_ID != m_activity.getAD_User_ID())
+				if ((approvers == null || approvers.length == 0) && m_activity.getAD_User_ID() <= 0)
 				{
 					return false;
 				}
@@ -294,10 +295,31 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 			}
 			else
 			{
-				// Current User Role is not Approval Role
-				if (MWFResponsible.RESPONSIBLETYPE_Role.equals(respType) && m_AD_Role_ID != resp.getAD_Role_ID())
+				// Current User Role's is Approval Role
+				if (MWFResponsible.RESPONSIBLETYPE_Role.equals(respType))
 				{
-					return false;
+					MUserRoles[] userRoles = MUserRoles.getOfUser(Env.getCtx(), m_AD_User_ID);
+
+					boolean hasResponsibleRole = false;
+
+					for (int i = 0; i < userRoles.length; i++)
+					{
+						MUserRoles role = userRoles[i];
+
+						if (!role.isActive())
+							continue;
+
+						if (role.getAD_Role_ID() == resp.getAD_Role_ID())
+						{
+							hasResponsibleRole = true;
+							break;
+						}
+					}
+
+					if (!hasResponsibleRole)
+					{
+						return false;
+					}
 				}
 			}
 		}
@@ -310,8 +332,8 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 	 */
 	private void loadActivity()
 	{
-		m_activity = MWFActivity.getLast(Env.getCtx(), m_AD_Table_ID, gridTab.getRecord_ID(), true);
-		if (m_activity != null && MWFActivity.WFSTATE_Suspended.equals(m_activity.getWFState()))
+		m_activity = MWFActivity.getLastSuspended(Env.getCtx(), m_AD_Table_ID, gridTab.getRecord_ID(), true);
+		if (m_activity != null)
 		{
 			m_WFProcess = MWFProcess.get(m_activity.getAD_WF_Process_ID());
 
@@ -736,7 +758,7 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 				catch (Exception e)
 				{
 					Throwable error = e.getCause();
-					Dialog.error(0, "Error", error != null ? error.getLocalizedMessage() : e.getLocalizedMessage());
+					Dialog.error(gridTab.getWindowNo(), "Error", error != null ? error.getLocalizedMessage() : e.getLocalizedMessage());
 					logger.log(Level.SEVERE, e.getLocalizedMessage(), e);
 				}
 				finally
@@ -1048,7 +1070,7 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 				}
 
 				if ((value == null || value.length() == 0) && dt > 0)
-					throw new AdempiereException("FillMandatory" + Msg.getMsg(Env.getCtx(), "Answer"));
+					throw new AdempiereException(Msg.parseTranslation(Env.getCtx(), "@FillMandatory@ @Answer@"));
 
 				//
 				if (logger.isLoggable(Level.CONFIG))
@@ -1074,8 +1096,8 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 		}
 		catch (Exception e)
 		{
-			trx.rollback();
-			trx.close();
+			if (trx != null)
+				trx.rollback();
 			throw new AdempiereException(e.getLocalizedMessage(), e);
 		}
 		finally

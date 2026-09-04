@@ -127,10 +127,10 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	 * @param  activeOnly  {@code true} to return only active activities
 	 * @return             the latest matching workflow activity, or {@code null} if none exists
 	 */
-	public static MWFActivity getLast(Properties ctx, int AD_Table_ID, int Record_ID, boolean activeOnly)
+	public static MWFActivity getLastSuspended(Properties ctx, int AD_Table_ID, int Record_ID, boolean activeOnly)
 	{
 		ArrayList<Object> params = new ArrayList<>();
-		StringBuilder whereClause = new StringBuilder("AD_Table_ID=? AND Record_ID=?");
+		StringBuilder whereClause = new StringBuilder("AD_Table_ID=? AND Record_ID=? AND WFState='OS'");
 		params.add(AD_Table_ID);
 		params.add(Record_ID);
 
@@ -164,7 +164,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		{
 			// When activity is Suspended, Allow user to continue workflow on doc action
 			if (WFSTATE_Suspended.compareTo(acts[i].getWFState()) == 0)
-				return null;
+				continue;
 
 			if (i > 0)
 				sb.append("\n");

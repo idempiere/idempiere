@@ -223,8 +223,9 @@ public class MWFProcess extends X_AD_WF_Process implements ImmutablePOSupport
 	 */
 	public MWFProcess(Properties ctx, MWFProcess copy, String trxName)
 	{
-		this(ctx, 0, trxName);
+		super(ctx, 0, trxName);
 		copyPO(copy);
+		this.m_state = new StateEngine(getWFState());
 	}
 
 	/**
