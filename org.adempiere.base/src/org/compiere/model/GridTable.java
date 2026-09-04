@@ -382,8 +382,20 @@ public class GridTable extends AbstractTableModel
 		{
 			if (i > 0)
 				select.append(",");
-			GridField field = (GridField)m_fields.get(i);
-			select.append(field.isVirtualColumn() ? field.getColumnSQL(true) : DB.getDatabase().quoteColumnName(field.getColumnSQL(true)));	//	ColumnName or Virtual Column
+			GridField field = (GridField) m_fields.get(i);
+			String columnPart = field.getColumnSQL(true);
+			if (field.isVirtualColumn())
+			{
+				if (columnPart.contains("@"))
+				{
+					columnPart = Env.parseContext(m_ctx, m_WindowNo, columnPart, false, true);
+				}
+			}
+			else
+			{
+				columnPart = DB.getDatabase().quoteColumnName(columnPart);
+			}
+			select.append(columnPart);
 		}
 		//
 		select.append(" FROM ").append(m_tableName);
