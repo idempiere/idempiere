@@ -13395,6 +13395,148 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		}
 	}
 	
+	@Test
+	public void testLargeMRWithMultiProductLine() {
+		testLargeMRWithMultiProductLine(120);
+	}
+	public void testLargeMRWithMultiProductLine(int noOfProducts) {
+		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), getAD_Client_ID());
+		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
+		MAcctSchema as = ci.getMAcctSchema1();
+
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(today.getTime());
+		cal.add(Calendar.DAY_OF_MONTH, -2);
+		Timestamp backDate1 = new Timestamp(cal.getTimeInMillis());
+		cal.setTimeInMillis(today.getTime());
+		cal.add(Calendar.DAY_OF_MONTH, -1);
+		Timestamp backDate2  = new Timestamp(cal.getTimeInMillis());
+		
+		int[] backDateDays = new int[ass.length];
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
+			backDateDays = configureAcctSchema(ass);
+			
+			long start = System.nanoTime();
+			
+			ArrayList<MProduct> productList = new ArrayList<MProduct>();
+			for (int i=0; i < noOfProducts; i++) {
+				MProduct product = createProduct("testLargeMRWithMultiProductLine." + (i+1), new BigDecimal(10));
+				mockProductGet(productMock, product);
+				productList.add(product);
+			}
+			
+			// Purchase Order
+			MOrder purchaseOrder = new MOrder(Env.getCtx(), 0, getTrxName());
+			purchaseOrder.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id));
+			purchaseOrder.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
+			purchaseOrder.setIsSOTrx(false);
+			purchaseOrder.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+			purchaseOrder.setDocStatus(DocAction.STATUS_Drafted);
+			purchaseOrder.setDocAction(DocAction.ACTION_Complete);
+			purchaseOrder.setDateOrdered(backDate1);
+			purchaseOrder.setDatePromised(backDate1 );
+			purchaseOrder.saveEx();
+			
+			ArrayList<MOrderLine> poLineList = new ArrayList<MOrderLine>();
+			for (int i=0; i < noOfProducts; i++) {
+				MOrderLine poLine = new MOrderLine(purchaseOrder);
+				poLine.setLine(10);
+				poLine.setProduct(productList.get(i));
+				BigDecimal orderQty = new BigDecimal("10");
+				BigDecimal orderPrice = new BigDecimal("10");
+				poLine.setQty(orderQty);
+				poLine.setDatePromised(backDate1);
+				poLine.setPrice(orderPrice);
+				poLine.saveEx();
+				poLineList.add(poLine);
+			}
+			
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(purchaseOrder, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			purchaseOrder.load(getTrxName());
+			assertEquals(DocAction.STATUS_Completed, purchaseOrder.getDocStatus());		
+			
+			// Purchase invoice
+			MInvoice invoice = new MInvoice(purchaseOrder, DictionaryIDs.C_DocType.AP_INVOICE.id, purchaseOrder.getDateOrdered());
+			invoice.setDocStatus(DocAction.STATUS_Drafted);
+			invoice.setDocAction(DocAction.ACTION_Complete);
+			invoice.saveEx();
+			
+			for (int i=0; i < noOfProducts; i++) {
+				MInvoiceLine piLine = new MInvoiceLine(invoice);
+				piLine.setOrderLine(poLineList.get(i));
+				piLine.setLine(10);
+				piLine.setProduct(productList.get(i));
+				piLine.setQty(poLineList.get(i).getQtyOrdered());
+				piLine.saveEx();
+			}
+			
+			info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+			invoice.load(getTrxName());
+			assertFalse(info.isError(), info.getSummary());
+			assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
+			
+			if (!invoice.isPosted()) {
+				String error = DocumentEngine.postImmediate(Env.getCtx(), invoice.getAD_Client_ID(), MInvoice.Table_ID, invoice.get_ID(), false, getTrxName());
+				assertTrue(error == null);
+			}
+			invoice.load(getTrxName());
+			assertTrue(invoice.isPosted());
+			
+			// Material Receipt
+			MInOut receipt = new MInOut(purchaseOrder, DictionaryIDs.C_DocType.MM_RECEIPT.id, backDate2);
+			receipt.setDocStatus(DocAction.STATUS_Drafted);
+			receipt.setDocAction(DocAction.ACTION_Complete);
+			receipt.saveEx();
+			
+			for (int i=0; i < noOfProducts; i++) {
+				MInOutLine mrLine = new MInOutLine(receipt);
+				BigDecimal invoiceQty = poLineList.get(i).getQtyOrdered();
+				mrLine.setOrderLine(poLineList.get(i), 0, invoiceQty);
+				mrLine.setQty(invoiceQty);
+				mrLine.saveEx();
+			}
+			
+			info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			receipt.load(getTrxName());
+			assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
+			if (!receipt.isPosted()) {
+				String error = DocumentEngine.postImmediate(Env.getCtx(), receipt.getAD_Client_ID(), receipt.get_Table_ID(), receipt.get_ID(), false, getTrxName());
+				assertNull(error, error);
+			} 
+			
+			MMatchInv[] miList = MMatchInv.getInvoice(Env.getCtx(), invoice.get_ID(), getTrxName());
+			assertEquals(noOfProducts, miList.length);
+			for (MMatchInv mi : miList) {
+				if (!mi.isPosted()) {
+					String error = DocumentEngine.postImmediate(Env.getCtx(), mi.getAD_Client_ID(), MMatchInv.Table_ID, mi.get_ID(), false, getTrxName());
+					assertTrue(error == null);
+				}
+				mi.load(getTrxName());
+				assertTrue(mi.isPosted());
+			}
+			
+			for (int i=0; i < noOfProducts; i++) {
+				MProduct product = productList.get(i);
+				product.set_TrxName(getTrxName());
+				MCost cost1 = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+				assertNotNull(cost1, "No MCost record found");			
+	 			assertEquals(poLineList.get(i).getQtyOrdered().setScale(2, RoundingMode.HALF_UP), cost1.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+				validateProductCostQty(ass, product);
+			}
+			
+			long elapsedMs = (System.nanoTime() - start) / 1_000_000;
+			System.out.println("testLargeMRWithMultiProductLine(" + noOfProducts + ") took " + elapsedMs + "ms");
+			if (Boolean.getBoolean("idempiere.test.assertTiming"))
+				assertTrue(elapsedMs < 150000, "Expected under 150000ms, took " + elapsedMs + "ms");
+		} finally {
+			rollback();
+			resetAcctSchema(ass, backDateDays);			  
+		}	
+	}
+	
 	private MProduct createProduct(String name, BigDecimal price) {
 		return createProduct(name, price, DictionaryIDs.M_Product_Category.STANDARD.id);
 	}

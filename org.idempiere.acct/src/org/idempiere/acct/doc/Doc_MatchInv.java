@@ -18,18 +18,23 @@ package org.idempiere.acct.doc;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AverageCostingZeroQtyException;
+import org.adempiere.exceptions.DBException;
 import org.compiere.model.ICostInfo;
 import org.compiere.model.I_M_CostDetail;
 import org.compiere.model.MAccount;
@@ -1683,6 +1688,81 @@ public class Doc_MatchInv extends Doc
 		HashMap<Integer, BigDecimal> htMatchInvAccounted = new HashMap<Integer, BigDecimal>();
 		// C_Invoice_ID and the total source amount from M_MatchInv accounting fact lines
 		HashMap<Integer, BigDecimal> htMatchInvAcctDiff = new HashMap<Integer, BigDecimal>();
+		
+		// ---------------------------------------------------------------------------
+		// PERFORMANCE: batch-fetch Fact_Acct rows for ALL sibling MatchInv records
+		// across ALL invoices up front, in 2 queries total, instead of firing 2
+		// queries PER sibling PER invoice (which was O(invoices x siblings) queries).
+		// The per-sibling exclusion/Qty-sign filtering that the original per-row SQL
+		// applied is replicated in memory against the pre-fetched rows below.
+		// ---------------------------------------------------------------------------
+		Set<Integer> allCandidateRecordIds = new HashSet<Integer>();
+		Map<Integer, List<MMatchInv>> candidatesByInvoice = new HashMap<Integer, List<MMatchInv>>();
+		for (MInvoice invoice : invList)
+		{
+			MMatchInv[] matchInvs = MMatchInv.getInvoice(getCtx(), invoice.get_ID(), getTrxName());
+			
+			ArrayList<Integer> skipMatchInvIdList = new ArrayList<Integer>();
+			skipMatchInvIdList.add(m_matchInv.get_ID());
+			for (MMatchInv matchInv : matchInvs)
+			{
+				if (matchInv.isReversal())
+					skipMatchInvIdList.add(matchInv.get_ID());
+			}
+			
+			List<MMatchInv> candidates = new ArrayList<MMatchInv>();
+			for (MMatchInv matchInv : matchInvs)
+			{
+				if (matchInv.get_ID() == m_matchInv.get_ID())
+					continue;
+				if (skipMatchInvIdList.contains(matchInv.get_ID()))
+					continue;
+				candidates.add(matchInv);
+				allCandidateRecordIds.add(matchInv.get_ID());
+				if (matchInv.getRef_MatchInv_ID() > 0)
+					allCandidateRecordIds.add(matchInv.getRef_MatchInv_ID());
+			}
+			candidatesByInvoice.put(invoice.getC_Invoice_ID(), candidates);
+		}
+		
+		// Record_ID -> list of raw rows [Qty, AmtSourceDr, AmtAcctDr, AmtSourceCr, AmtAcctCr]
+		Map<Integer, List<Object[]>> acctRowsByRecord = new HashMap<Integer, List<Object[]>>();
+		// Record_ID -> list of raw rows [Qty, AmtSourceDr, AmtSourceCr] (gain/loss/currency-balancing, 'Invoice%' description)
+		Map<Integer, List<Object[]>> glRowsByRecord = new HashMap<Integer, List<Object[]>>();
+		
+		executeBatchedFactAcctQuery(
+		    "SELECT Record_ID, Qty, AmtSourceDr, AmtAcctDr, AmtSourceCr, AmtAcctCr"
+		        + " FROM Fact_Acct"
+		        + " WHERE AD_Table_ID=? AND Record_ID IN ($$IDS$$)"
+		        + " AND C_AcctSchema_ID=?"
+		        + " AND PostingType='A'"
+		        + " AND Account_ID=?",
+		    java.util.Arrays.asList(MMatchInv.Table_ID),
+		    allCandidateRecordIds,
+		    java.util.Arrays.asList(as.getC_AcctSchema_ID(), acct.getAccount_ID()),
+		    rs -> {
+		        int recId = rs.getInt(1);
+		        Object[] row = new Object[] { rs.getBigDecimal(2), rs.getBigDecimal(3), rs.getBigDecimal(4), rs.getBigDecimal(5), rs.getBigDecimal(6) };
+		        acctRowsByRecord.computeIfAbsent(recId, k -> new ArrayList<Object[]>()).add(row);
+		    });
+
+		executeBatchedFactAcctQuery(
+		    "SELECT Record_ID, Qty, AmtSourceDr, AmtSourceCr"
+		        + " FROM Fact_Acct"
+		        + " WHERE AD_Table_ID=? AND Record_ID IN ($$IDS$$)"
+		        + " AND C_AcctSchema_ID=?"
+		        + " AND PostingType='A'"
+		        + " AND (Account_ID=? OR Account_ID=? OR Account_ID=?)"
+		        + " AND Description LIKE 'Invoice%'",
+		    java.util.Arrays.asList(MMatchInv.Table_ID),
+		    allCandidateRecordIds,
+		    java.util.Arrays.asList(as.getC_AcctSchema_ID(), gain.getAccount_ID(), loss.getAccount_ID(), as.getCurrencyBalancing_Acct().getAccount_ID()),
+		    rs -> {
+		        int recId = rs.getInt(1);
+		        Object[] row = new Object[] { rs.getBigDecimal(2), rs.getBigDecimal(3), rs.getBigDecimal(4) };
+		        glRowsByRecord.computeIfAbsent(recId, k -> new ArrayList<Object[]>()).add(row);
+		    });
+		
 		for (MInvoice invoice : invList)
 		{
 			BigDecimal matchInvSource = Env.ZERO;
@@ -1716,124 +1796,101 @@ public class Doc_MatchInv extends Doc
 			}
 			
 			{
-				MMatchInv[] matchInvs = MMatchInv.getInvoice(getCtx(), invoice.get_ID(), getTrxName());
+				List<MMatchInv> candidates = candidatesByInvoice.get(invoice.getC_Invoice_ID());
 				
-				ArrayList<Integer> skipMatchInvIdList = new ArrayList<Integer>();
-				skipMatchInvIdList.add(m_matchInv.get_ID());
-				for (MMatchInv matchInv : matchInvs)
+				for (MMatchInv matchInv : candidates)
 				{
-					if (matchInv.isReversal())
-						skipMatchInvIdList.add(matchInv.get_ID());
-				}
-				
-				for (MMatchInv matchInv : matchInvs)
-				{
-					if (matchInv.get_ID() == m_matchInv.get_ID())
-						continue;
-					
-					if (skipMatchInvIdList.contains(matchInv.get_ID()))
-						continue;
-					
-					StringBuilder sql = new StringBuilder()
-						.append("SELECT SUM(AmtSourceDr), SUM(AmtAcctDr), SUM(AmtSourceCr), SUM(AmtAcctCr)")
-						.append(" FROM Fact_Acct ")
-						.append("WHERE AD_Table_ID=? AND (Record_ID=? OR Record_ID=?)")	//	match inv
-						.append(" AND C_AcctSchema_ID=?")
-						.append(" AND PostingType='A'")
-						.append(" AND Account_ID=?");
-					
+					// Replicate the original per-sibling SQL exclusion conditions:
+					//   - if the CURRENT match invoice is a reversal: exclude sibling's own record if
+					//     sibling itself is a reversal, and only include records with ID < reversal target
+					//   - else: exclude sibling's own record if it has a reversal
+					boolean excludeSelfRecord = false;
+					Integer reversalBeforeId = null;
 					if (m_matchInv.isReversal())
 					{
 						if (matchInv.isReversal())
-							sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
-						sql.append(" AND Record_ID < ").append(m_matchInv.getReversal_ID());
+							excludeSelfRecord = true;
+						reversalBeforeId = m_matchInv.getReversal_ID();
 					}
 					else
 					{
 						if (matchInv.getReversal_ID() > 0)
-							sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
+							excludeSelfRecord = true;
 					}
 					
+					// Replicate the original Qty > 0 / Qty < 0 filter for Ref_MatchInv_ID > 0
+					Boolean qtyPositive = null; // null = no Qty-sign filter applied
 					if (matchInv.getRef_MatchInv_ID() > 0)
 					{
-						if (invoice.isCreditMemo() && matchInv.getQty().compareTo(BigDecimal.ZERO) < 0)
-							sql.append(" AND Qty > 0");
-						else
-							sql.append(" AND Qty < 0");
+						qtyPositive = invoice.isCreditMemo() && matchInv.getQty().compareTo(BigDecimal.ZERO) < 0;
 					}
 					
-					// For Match Inv
-					List<Object> valuesMatchInv = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
-							MMatchInv.Table_ID, matchInv.get_ID(), matchInv.getRef_MatchInv_ID() > 0 ? matchInv.getRef_MatchInv_ID() : -1, as.getC_AcctSchema_ID(), acct.getAccount_ID());
-					if (valuesMatchInv != null) {
-						totalAmtSourceDr = (BigDecimal) valuesMatchInv.get(0);
-						if (totalAmtSourceDr == null)
-							totalAmtSourceDr = Env.ZERO;
-						totalAmtAcctDr = (BigDecimal) valuesMatchInv.get(1);
-						if (totalAmtAcctDr == null)
-							totalAmtAcctDr = Env.ZERO;
-						totalAmtSourceCr = (BigDecimal) valuesMatchInv.get(2);
-						if (totalAmtSourceCr == null)
-							totalAmtSourceCr = Env.ZERO;
-						totalAmtAcctCr = (BigDecimal) valuesMatchInv.get(3);
-						if (totalAmtAcctCr == null)
-							totalAmtAcctCr = Env.ZERO;
+					int refId = matchInv.getRef_MatchInv_ID() > 0 ? matchInv.getRef_MatchInv_ID() : -1;
+					int[] candidateRecIds = new int[] { matchInv.get_ID(), refId };
+					
+					// --- Account-matched sums (Fact_Acct main aggregate) ---
+					BigDecimal sumSourceDr = Env.ZERO, sumAcctDr = Env.ZERO, sumSourceCr = Env.ZERO, sumAcctCr = Env.ZERO;
+					for (int recId : candidateRecIds)
+					{
+						if (recId == -1)
+							continue;
+						if (excludeSelfRecord && recId == matchInv.get_ID())
+							continue;
+						if (reversalBeforeId != null && recId >= reversalBeforeId)
+							continue;
 						
-						matchInvSource = matchInvSource.add(totalAmtSourceDr).subtract(totalAmtSourceCr);
-						matchInvAccounted = matchInvAccounted.add(totalAmtAcctDr).subtract(totalAmtAcctCr);
+						List<Object[]> rows = acctRowsByRecord.get(recId);
+						if (rows == null)
+							continue;
+						for (Object[] row : rows)
+						{
+							BigDecimal qty = (BigDecimal) row[0];
+							if (qtyPositive != null)
+							{
+							    if (qty == null) continue; // matches SQL: NULL > 0 / NULL < 0 excludes the row
+							    if (qtyPositive && qty.signum() <= 0) continue;
+							    if (!qtyPositive && qty.signum() >= 0) continue;
+							}
+							sumSourceDr = sumSourceDr.add(row[1] != null ? (BigDecimal) row[1] : Env.ZERO);
+							sumAcctDr = sumAcctDr.add(row[2] != null ? (BigDecimal) row[2] : Env.ZERO);
+							sumSourceCr = sumSourceCr.add(row[3] != null ? (BigDecimal) row[3] : Env.ZERO);
+							sumAcctCr = sumAcctCr.add(row[4] != null ? (BigDecimal) row[4] : Env.ZERO);
+						}
+					}
+					
+					matchInvSource = matchInvSource.add(sumSourceDr).subtract(sumSourceCr);
+					matchInvAccounted = matchInvAccounted.add(sumAcctDr).subtract(sumAcctCr);
+					
+					totalInvClrAccounted = totalInvClrAccounted.add(sumAcctDr).subtract(sumAcctCr);
+					
+					// --- Gain/loss/currency-balancing sums ('Invoice%' description) ---
+					BigDecimal glSourceDr = Env.ZERO, glSourceCr = Env.ZERO;
+					for (int recId : candidateRecIds)
+					{
+						if (recId == -1)
+							continue;
+						if (excludeSelfRecord && recId == matchInv.get_ID())
+							continue;
+						if (reversalBeforeId != null && recId >= reversalBeforeId)
+							continue;
 						
-						totalInvClrAccounted = totalInvClrAccounted.add(totalAmtAcctDr).subtract(totalAmtAcctCr);
+						List<Object[]> rows = glRowsByRecord.get(recId);
+						if (rows == null)
+							continue;
+						for (Object[] row : rows)
+						{
+							BigDecimal qty = (BigDecimal) row[0];
+							if (qtyPositive != null)
+							{
+								if (qty == null) continue; // matches SQL: NULL > 0 / NULL < 0 excludes the row
+								if (qtyPositive && qty.signum() <= 0) continue;
+								if (!qtyPositive && qty.signum() >= 0) continue;
+							}
+							glSourceDr = glSourceDr.add(row[1] != null ? (BigDecimal) row[1] : Env.ZERO);
+							glSourceCr = glSourceCr.add(row[2] != null ? (BigDecimal) row[2] : Env.ZERO);
+						}
 					}
-					
-					sql = new StringBuilder()
-						.append("SELECT SUM(AmtSourceDr), SUM(AmtAcctDr), SUM(AmtSourceCr), SUM(AmtAcctCr)")
-						.append(" FROM Fact_Acct ")
-						.append("WHERE AD_Table_ID=? AND (Record_ID=? OR Record_ID=?)")	//	match inv
-						.append(" AND C_AcctSchema_ID=?")
-						.append(" AND PostingType='A'")
-						.append(" AND (Account_ID=? OR Account_ID=? OR Account_ID=?)")
-						.append(" AND Description LIKE 'Invoice%'");
-					
-					if (m_matchInv.isReversal())
-					{
-						if (matchInv.isReversal())
-							sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
-						sql.append(" AND Record_ID < ").append(m_matchInv.getReversal_ID());
-					}
-					else
-					{
-						if (matchInv.getReversal_ID() > 0)
-							sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
-					}
-					
-					if (matchInv.getRef_MatchInv_ID() > 0)
-					{
-						if (invoice.isCreditMemo() && matchInv.getQty().compareTo(BigDecimal.ZERO) < 0)
-							sql.append(" AND Qty > 0");
-						else
-							sql.append(" AND Qty < 0");
-					}
-					
-					// For Match Inv
-					valuesMatchInv = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
-							MMatchInv.Table_ID, matchInv.get_ID(), matchInv.getRef_MatchInv_ID() > 0 ? matchInv.getRef_MatchInv_ID() : -1, as.getC_AcctSchema_ID(), 
-							gain.getAccount_ID(), loss.getAccount_ID(), as.getCurrencyBalancing_Acct().getAccount_ID());
-					if (valuesMatchInv != null) {
-						totalAmtSourceDr = (BigDecimal) valuesMatchInv.get(0);
-						if (totalAmtSourceDr == null)
-							totalAmtSourceDr = Env.ZERO;
-						totalAmtAcctDr = (BigDecimal) valuesMatchInv.get(1);
-						if (totalAmtAcctDr == null)
-							totalAmtAcctDr = Env.ZERO;
-						totalAmtSourceCr = (BigDecimal) valuesMatchInv.get(2);
-						if (totalAmtSourceCr == null)
-							totalAmtSourceCr = Env.ZERO;
-						totalAmtAcctCr = (BigDecimal) valuesMatchInv.get(3);
-						if (totalAmtAcctCr == null)
-							totalAmtAcctCr = Env.ZERO;
-
-						matchInvSource = matchInvSource.add(totalAmtSourceDr).subtract(totalAmtSourceCr);
-					}
+					matchInvSource = matchInvSource.add(glSourceDr).subtract(glSourceCr);
 				}
 				
 				htMatchInvSource.put(invoice.getC_Invoice_ID(), matchInvSource);
@@ -2452,97 +2509,120 @@ public class Doc_MatchInv extends Doc
 				skipMatchInvIdList.add(matchInv.get_ID());
 		}
 		
+		// ---------------------------------------------------------------------------
+		// PERFORMANCE: batch-fetch Fact_Acct rows for ALL sibling MatchInv records in
+		// 2 queries total, instead of firing 2 queries PER sibling (which was
+		// O(siblings) queries per call, and O(siblings^2) across a whole document set).
+		// The per-sibling exclusion filtering that the original per-row SQL applied
+		// (Record_ID <> ? / Record_ID < reversal_id) is replicated in memory below.
+		// ---------------------------------------------------------------------------
+		List<MMatchInv> candidates = new ArrayList<MMatchInv>();
+		Set<Integer> candidateRecordIds = new HashSet<Integer>();
 		for (MMatchInv matchInv : matchInvs)
 		{
 			if (matchInv.get_ID() == m_matchInv.get_ID())
 				continue;
-			
 			if (skipMatchInvIdList.contains(matchInv.get_ID()))
 				continue;
-			
-			StringBuilder sql = new StringBuilder()
-				.append("SELECT SUM(AmtSourceDr), SUM(AmtAcctDr), SUM(AmtSourceCr), SUM(AmtAcctCr)")
-				.append(" FROM Fact_Acct ")
-				.append("WHERE AD_Table_ID=? AND Record_ID=?")	//	match inv
-				.append(" AND C_AcctSchema_ID=?")
-				.append(" AND PostingType='A'")
-				.append(" AND Account_ID=?");
-			
+			candidates.add(matchInv);
+			candidateRecordIds.add(matchInv.get_ID());
+		}
+		
+		// Record_ID -> raw rows [AmtSourceDr, AmtAcctDr, AmtSourceCr, AmtAcctCr] (Account_ID = acct)
+		Map<Integer, Object[]> acctSumByRecord = new HashMap<Integer, Object[]>();
+		// Record_ID -> raw rows [AmtSourceDr, AmtAcctDr, AmtSourceCr, AmtAcctCr] (gain/loss/currency-balancing, 'InOut%' description)
+		Map<Integer, Object[]> glSumByRecord = new HashMap<Integer, Object[]>();
+		
+		executeBatchedFactAcctQuery(
+		    "SELECT Record_ID, SUM(AmtSourceDr), SUM(AmtAcctDr), SUM(AmtSourceCr), SUM(AmtAcctCr)"
+		        + " FROM Fact_Acct"
+		        + " WHERE AD_Table_ID=? AND Record_ID IN ($$IDS$$)"
+		        + " AND C_AcctSchema_ID=?"
+		        + " AND PostingType='A'"
+		        + " AND Account_ID=?"
+		        + " GROUP BY Record_ID",
+		    java.util.Arrays.asList(MMatchInv.Table_ID),
+		    candidateRecordIds,
+		    java.util.Arrays.asList(as.getC_AcctSchema_ID(), acct.getAccount_ID()),
+		    rs -> {
+		        int recId = rs.getInt(1);
+		        Object[] row = new Object[] { rs.getBigDecimal(2), rs.getBigDecimal(3), rs.getBigDecimal(4), rs.getBigDecimal(5) };
+		        acctSumByRecord.put(recId, row);
+		    });
+
+		executeBatchedFactAcctQuery(
+		    "SELECT Record_ID, SUM(AmtSourceDr), SUM(AmtAcctDr), SUM(AmtSourceCr), SUM(AmtAcctCr)"
+		        + " FROM Fact_Acct"
+		        + " WHERE AD_Table_ID=? AND Record_ID IN ($$IDS$$)"
+		        + " AND C_AcctSchema_ID=?"
+		        + " AND PostingType='A'"
+		        + " AND (Account_ID=? OR Account_ID=? OR Account_ID=?)"
+		        + " AND Description LIKE 'InOut%'"
+		        + " GROUP BY Record_ID",
+		    java.util.Arrays.asList(MMatchInv.Table_ID),
+		    candidateRecordIds,
+		    java.util.Arrays.asList(as.getC_AcctSchema_ID(), gain.getAccount_ID(), loss.getAccount_ID(), as.getCurrencyBalancing_Acct().getAccount_ID()),
+		    rs -> {
+		        int recId = rs.getInt(1);
+		        Object[] row = new Object[] { rs.getBigDecimal(2), rs.getBigDecimal(3), rs.getBigDecimal(4), rs.getBigDecimal(5) };
+		        glSumByRecord.put(recId, row);
+		    });
+		
+		for (MMatchInv matchInv : candidates)
+		{
+			// Replicate the original per-sibling SQL exclusion conditions:
+			//   - if the CURRENT match invoice is a reversal: exclude sibling's own record if
+			//     sibling itself is a reversal, and only include records with ID < reversal target
+			//   - else: exclude sibling's own record if it has a reversal
+			boolean excludeSelfRecord = false;
+			Integer reversalBeforeId = null;
 			if (m_matchInv.isReversal())
 			{
 				if (matchInv.isReversal())
-					sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
-				sql.append(" AND Record_ID < ").append(m_matchInv.getReversal_ID());
+					excludeSelfRecord = true;
+				reversalBeforeId = m_matchInv.getReversal_ID();
 			}
 			else
 			{
 				if (matchInv.getReversal_ID() > 0)
-					sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
+					excludeSelfRecord = true;
 			}
 			
-			// For Match Inv
-			List<Object> valuesMatchInv = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
-					MMatchInv.Table_ID, matchInv.get_ID(), as.getC_AcctSchema_ID(), acct.getAccount_ID());
-			if (valuesMatchInv != null) {
-				totalAmtSourceDr = (BigDecimal) valuesMatchInv.get(0);
-				if (totalAmtSourceDr == null)
-					totalAmtSourceDr = Env.ZERO;
-				totalAmtAcctDr = (BigDecimal) valuesMatchInv.get(1);
-				if (totalAmtAcctDr == null)
-					totalAmtAcctDr = Env.ZERO;
-				totalAmtSourceCr = (BigDecimal) valuesMatchInv.get(2);
-				if (totalAmtSourceCr == null)
-					totalAmtSourceCr = Env.ZERO;
-				totalAmtAcctCr = (BigDecimal) valuesMatchInv.get(3);
-				if (totalAmtAcctCr == null)
-					totalAmtAcctCr = Env.ZERO;
-				
-				matchInvSource = matchInvSource.add(totalAmtSourceDr).subtract(totalAmtSourceCr);
-				matchInvAccounted = matchInvAccounted.add(totalAmtAcctDr).subtract(totalAmtAcctCr);
-				
-				totalNIRAccounted = totalNIRAccounted.add(totalAmtAcctDr).subtract(totalAmtAcctCr);
-			}
+			int recId = matchInv.get_ID();
+			boolean skip = (excludeSelfRecord) || (reversalBeforeId != null && recId >= reversalBeforeId);
 			
-			sql = new StringBuilder()
-				.append("SELECT SUM(AmtSourceDr), SUM(AmtAcctDr), SUM(AmtSourceCr), SUM(AmtAcctCr)")
-				.append(" FROM Fact_Acct ")
-				.append("WHERE AD_Table_ID=? AND Record_ID=?")	//	match inv
-				.append(" AND C_AcctSchema_ID=?")
-				.append(" AND PostingType='A'")
-				.append(" AND (Account_ID=? OR Account_ID=? OR Account_ID=?)")
-				.append(" AND Description LIKE 'InOut%'");
-			
-			if (m_matchInv.isReversal())
+			// --- Account-matched sums ---
+			totalAmtSourceDr = Env.ZERO;
+			totalAmtAcctDr = Env.ZERO;
+			totalAmtSourceCr = Env.ZERO;
+			totalAmtAcctCr = Env.ZERO;
+			if (!skip)
 			{
-				if (matchInv.isReversal())
-					sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
-				sql.append(" AND Record_ID < ").append(m_matchInv.getReversal_ID());
-			}
-			else
-			{
-				if (matchInv.getReversal_ID() > 0)
-					sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
+				Object[] row = acctSumByRecord.get(recId);
+				if (row != null)
+				{
+					totalAmtSourceDr = row[0] != null ? (BigDecimal) row[0] : Env.ZERO;
+					totalAmtAcctDr = row[1] != null ? (BigDecimal) row[1] : Env.ZERO;
+					totalAmtSourceCr = row[2] != null ? (BigDecimal) row[2] : Env.ZERO;
+					totalAmtAcctCr = row[3] != null ? (BigDecimal) row[3] : Env.ZERO;
+				}
 			}
 			
-			// For Match Inv
-			valuesMatchInv = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
-					MMatchInv.Table_ID, matchInv.get_ID(), 
-					as.getC_AcctSchema_ID(), gain.getAccount_ID(), loss.getAccount_ID(), as.getCurrencyBalancing_Acct().getAccount_ID());
-			if (valuesMatchInv != null) {
-				totalAmtSourceDr = (BigDecimal) valuesMatchInv.get(0);
-				if (totalAmtSourceDr == null)
-					totalAmtSourceDr = Env.ZERO;
-				totalAmtAcctDr = (BigDecimal) valuesMatchInv.get(1);
-				if (totalAmtAcctDr == null)
-					totalAmtAcctDr = Env.ZERO;
-				totalAmtSourceCr = (BigDecimal) valuesMatchInv.get(2);
-				if (totalAmtSourceCr == null)
-					totalAmtSourceCr = Env.ZERO;
-				totalAmtAcctCr = (BigDecimal) valuesMatchInv.get(3);
-				if (totalAmtAcctCr == null)
-					totalAmtAcctCr = Env.ZERO;
-				
-				matchInvSource = matchInvSource.add(totalAmtSourceDr).subtract(totalAmtSourceCr);
+			matchInvSource = matchInvSource.add(totalAmtSourceDr).subtract(totalAmtSourceCr);
+			matchInvAccounted = matchInvAccounted.add(totalAmtAcctDr).subtract(totalAmtAcctCr);
+			
+			totalNIRAccounted = totalNIRAccounted.add(totalAmtAcctDr).subtract(totalAmtAcctCr);
+			
+			// --- Gain/loss/currency-balancing sums ('InOut%' description) ---
+			if (!skip)
+			{
+				Object[] row = glSumByRecord.get(recId);
+				if (row != null)
+				{
+					BigDecimal glSourceDr = row[0] != null ? (BigDecimal) row[0] : Env.ZERO;
+					BigDecimal glSourceCr = row[2] != null ? (BigDecimal) row[2] : Env.ZERO;
+					matchInvSource = matchInvSource.add(glSourceDr).subtract(glSourceCr);
+				}
 			}
 		}
 		
@@ -2899,6 +2979,74 @@ public class Doc_MatchInv extends Doc
 	        return new AssetVarianceAmounts(asset, ipv.subtract(asset));
 	    } else {
 	        return new AssetVarianceAmounts(ipv, BigDecimal.ZERO);
+	    }
+	}
+	
+	/**
+	 * Functional handler for a single Fact_Acct result row, given the caller's
+	 * choice of column extraction and aggregation target.
+	 */
+	@FunctionalInterface
+	private interface FactAcctRowHandler {
+	    void handle(ResultSet rs) throws SQLException;
+	}
+
+	/**
+	 * Executes a Fact_Acct query whose WHERE clause includes a
+	 * "Record_ID IN (...)" filter over a (potentially large) set of record ids,
+	 * batching the ids into Oracle-safe chunks (max 1000 per IN-list) and binding
+	 * every id as a parameter rather than concatenating it into the SQL text.
+	 *
+	 * @param sqlTemplate SQL text containing the literal marker "$$IDS$$" exactly
+	 *        where the comma-separated bind placeholders for the current batch's
+	 *        ids should be substituted. Using a literal token (rather than
+	 *        String.format's "%s") avoids clashing with '%' wildcards already
+	 *        present in LIKE clauses (e.g. "Description LIKE 'Invoice%'").
+	 * @param leadingParams parameters bound BEFORE the id list, in order
+	 * @param recordIds full set of record ids to filter on (chunked internally)
+	 * @param trailingParams parameters bound AFTER the id list, in order
+	 * @param handler invoked once per result row for the caller to extract
+	 *        columns and update its own aggregation structures
+	 */
+	private void executeBatchedFactAcctQuery(String sqlTemplate, List<Object> leadingParams,
+	        Collection<Integer> recordIds, List<Object> trailingParams, FactAcctRowHandler handler)
+	{
+	    if (recordIds == null || recordIds.isEmpty())
+	        return;
+
+	    List<Integer> recordIdList = new ArrayList<Integer>(recordIds);
+	    final int batchSize = 1000; // stay under Oracle's 1000-item IN-list limit
+	    for (int start = 0; start < recordIdList.size(); start += batchSize)
+	    {
+	        List<Integer> batch = recordIdList.subList(start, Math.min(start + batchSize, recordIdList.size()));
+	        String placeholders = batch.stream().map(id -> "?").collect(java.util.stream.Collectors.joining(","));
+	        String sql = sqlTemplate.replace("$$IDS$$", placeholders);
+
+	        PreparedStatement pstmt = null;
+	        ResultSet rs = null;
+	        try
+	        {
+	            pstmt = DB.prepareStatement(sql, getTrxName());
+	            List<Object> params = new ArrayList<Object>();
+	            params.addAll(leadingParams);
+	            params.addAll(batch);
+	            params.addAll(trailingParams);
+	            DB.setParameters(pstmt, params.toArray());
+	            rs = pstmt.executeQuery();
+	            while (rs.next())
+	            {
+	                handler.handle(rs);
+	            }
+	        }
+	        catch (SQLException e)
+	        {
+	            throw new DBException(e, sql);
+	        }
+	        finally
+	        {
+	            DB.close(rs, pstmt);
+	            rs = null; pstmt = null;
+	        }
 	    }
 	}
 }   //  Doc_MatchInv
