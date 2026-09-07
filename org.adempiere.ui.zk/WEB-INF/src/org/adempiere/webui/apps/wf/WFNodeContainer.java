@@ -243,7 +243,7 @@ public class WFNodeContainer
 	 */
 	public Dimension getDimension()
 	{
-		return new Dimension(noOfColumns * WFGraphLayout.COLUMN_WIDTH, Math.max(1, rowCount) * WFGraphLayout.ROW_HEIGHT);
+		return new Dimension(noOfColumns * WFGraphLayout.COLUMN_WIDTH, Math.max(currentRow, rowCount) * WFGraphLayout.ROW_HEIGHT);
 	}
 
 	/**
@@ -254,6 +254,7 @@ public class WFNodeContainer
 	{
 		GraphLayout<Integer, MWFNodeNext> graphLayout = new WFGraphLayout();
 		graphLayout.setAnimated(false);
+		graphScene.setMaximumBounds(new Rectangle(0, 0, getDimension().width, getDimension().height));
 		SceneLayout sceneGraphLayout = LayoutFactory.createSceneGraphLayout (graphScene, graphLayout);
 		sceneGraphLayout.invokeLayoutImmediately();
 
