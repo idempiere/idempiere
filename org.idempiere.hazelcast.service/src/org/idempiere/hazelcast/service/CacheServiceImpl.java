@@ -13,12 +13,24 @@
  *****************************************************************************/
 package org.idempiere.hazelcast.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
 
+import org.adempiere.base.Core;
+import org.compiere.Adempiere;
+import org.compiere.util.CacheMgt;
+import org.compiere.util.CLogger;
+import org.compiere.util.ResetCacheCallable;
 import org.idempiere.distributed.ICacheService;
+import org.idempiere.distributed.IClusterMember;
+import org.idempiere.distributed.IClusterService;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.condition.Condition;
@@ -34,6 +46,11 @@ import com.hazelcast.map.IMap;
 		immediate = true,
 		enabled = true)
 public class CacheServiceImpl implements ICacheService {
+
+	private static final CLogger log = CLogger.getCLogger(CacheServiceImpl.class);
+
+	/** Upper bound on how long the background observer waits for one remote reset to complete. */
+	private static final long RESET_FUTURE_TIMEOUT_SECONDS = 30L;
 
 	@Reference(target = "(osgi.condition.id=distributed.provider.hazelcast)")
     Condition distributedCondition;
@@ -86,6 +103,74 @@ public class CacheServiceImpl implements ICacheService {
 			IMap<K, V> imap = (IMap<K, V>) map;
 			imap.unlock(key);
 		}
+	}
+
+	/**
+	 * Resets the local cache on this node synchronously first, then dispatches the same reset
+	 * to every other cluster member via {@link IClusterService#execute(Callable, java.util.Collection)}.
+	 * Without this override, {@code ICacheService.broadcastReset}'s default no-op would mean
+	 * {@code CacheMgt}'s cluster-wide reset path (which now only calls this method) never actually
+	 * resets any node's local cache for the Hazelcast backend.
+	 */
+	@Override
+	public void broadcastReset(String tableName, int recordId) {
+		CacheMgt.get().resetLocalCache(tableName, recordId);
+		executeOnOtherMembers(new ResetCacheCallable(tableName, recordId));
+	}
+
+	/** @see #broadcastReset(String, int) */
+	@Override
+	public void broadcastReset(String tableName, String key) {
+		CacheMgt.get().resetLocalCache(tableName, key);
+		executeOnOtherMembers(new ResetCacheCallable(tableName, key));
+	}
+
+	/**
+	 * Dispatches {@code resetCallable} (which itself invokes {@code CacheMgt.get().resetLocalCache(...)})
+	 * to every cluster member other than the local node. The local node's reset is already applied
+	 * synchronously by the caller, so it is excluded here to avoid resetting it twice.
+	 */
+	private void executeOnOtherMembers(Callable<Integer> resetCallable) {
+		IClusterService service = Core.getClusterService();
+		if (service == null)
+			return;
+		IClusterMember local = service.getLocalMember();
+		String localId = local != null ? local.getId() : null;
+		List<IClusterMember> remoteMembers = new ArrayList<>();
+		for (IClusterMember member : service.getMembers()) {
+			if (localId == null || !localId.equals(member.getId()))
+				remoteMembers.add(member);
+		}
+		if (remoteMembers.isEmpty())
+			return;
+		Map<IClusterMember, Future<Integer>> futures = service.execute(resetCallable, remoteMembers);
+		observeResetFutures(futures);
+	}
+
+	/**
+	 * Waits on the per-member reset {@link Future}s off the caller's thread — on a shared
+	 * background pool, not the thread that triggered the broadcast — so the fire-and-forget
+	 * contract towards the caller is preserved while a remote node's failed/timed-out reset is
+	 * still logged instead of silently discarded (it would otherwise leave that node with stale
+	 * cache data and no record of why).
+	 */
+	private void observeResetFutures(Map<IClusterMember, Future<Integer>> futures) {
+		if (futures == null || futures.isEmpty())
+			return;
+		Adempiere.getThreadPoolExecutor().submit(() -> {
+			for (Map.Entry<IClusterMember, Future<Integer>> entry : futures.entrySet()) {
+				try {
+					entry.getValue().get(RESET_FUTURE_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+				} catch (TimeoutException e) {
+					log.log(Level.WARNING, "Remote cache reset on member " + entry.getKey().getId()
+							+ " did not complete within " + RESET_FUTURE_TIMEOUT_SECONDS
+							+ "s; that node may retain stale cache data", e);
+				} catch (Exception e) {
+					log.log(Level.WARNING, "Remote cache reset failed on member " + entry.getKey().getId()
+							+ "; that node may retain stale cache data", e);
+				}
+			}
+		});
 	}
 
 }

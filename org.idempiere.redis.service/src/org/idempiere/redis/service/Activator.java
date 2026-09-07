@@ -135,6 +135,11 @@ public class Activator {
 		return h;
 	}
 
+	/** @return the current {@link RedisHealth}, or {@code null} if the bundle is passive or stopping. */
+	public static RedisHealth getHealthOrNull() {
+		return health;
+	}
+
 	/**
 	 * @return the active keyspace notification subscriber, or {@code null} if
 	 *         the bundle is passive or {@code keyspace.notifications.enabled}
@@ -195,6 +200,8 @@ public class Activator {
 			}
 			RedisHealth h = new RedisHealth(c, cfg.getCircuitFailureThreshold(),
 					cfg.getCircuitProbeInterval().toMillis());
+			// Wire the pool-exhaustion circuit-breaker fast-path.
+			h.setSubscriptionPoolThreshold(cfg.getSubscriptionPoolThreshold());
 			HealthEventPublisher publisher = new HealthEventPublisher(bundleContext, h);
 			h.setStateListener(publisher);
 			config = cfg;

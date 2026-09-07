@@ -29,9 +29,12 @@ import java.time.Duration;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
+import org.idempiere.redis.service.CacheServiceImpl;
 import org.idempiere.redis.service.health.RedisHealth;
 import org.redisson.api.RMap;
+import org.redisson.api.RMapCache;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -112,12 +115,27 @@ public final class CaffeineLayeredMap<K, V> implements Map<K, V> {
 	private final Cache<K, V> nearCache;
 	private final Cache<K, V> fallbackCache;
 	private final RedisHealth health;
+	/** TTL (ms) applied to writes reaching {@link #backing} when it is an {@link RMapCache}; 0 = no TTL. */
+	private final long distributedTtlMs;
 
 	public CaffeineLayeredMap(RMap<K, V> backing, RedisHealth health,
 			int nearMaxSize, Duration nearExpireAfterWrite,
 			int fallbackMaxSize, Duration fallbackExpireAfterWrite) {
+		this(backing, health, nearMaxSize, nearExpireAfterWrite, fallbackMaxSize, fallbackExpireAfterWrite, 0L);
+	}
+
+	/**
+	 * @param distributedTtlMs TTL (ms) to apply to every entry written to {@code backing} when it
+	 *                         is an {@link RMapCache}, matching {@code CacheServiceImpl}'s
+	 *                         {@code distributed.cache.map.ttl} setting. 0 disables per-entry TTL.
+	 */
+	public CaffeineLayeredMap(RMap<K, V> backing, RedisHealth health,
+			int nearMaxSize, Duration nearExpireAfterWrite,
+			int fallbackMaxSize, Duration fallbackExpireAfterWrite,
+			long distributedTtlMs) {
 		this.backing = backing;
 		this.health = health;
+		this.distributedTtlMs = distributedTtlMs;
 		this.nearCache = Caffeine.newBuilder()
 				.maximumSize(nearMaxSize)
 				.expireAfterWrite(nearExpireAfterWrite)
@@ -175,13 +193,22 @@ public final class CaffeineLayeredMap<K, V> implements Map<K, V> {
 			return null;
 		}
 		try {
-			V previous = backing.put(key, value);
+			V previous = putBacking(key, value);
 			health.recordSuccess();
 			return previous;
 		} catch (Exception e) {
 			health.recordFailure(e);
 			return null;
 		}
+	}
+
+	/** Writes to {@link #backing}, applying {@link #distributedTtlMs} when it is an {@link RMapCache}. */
+	@SuppressWarnings("unchecked")
+	private V putBacking(K key, V value) {
+		if (distributedTtlMs > 0 && backing instanceof RMapCache) {
+			return ((RMapCache<K, V>) backing).put(key, value, distributedTtlMs, TimeUnit.MILLISECONDS);
+		}
+		return backing.put(key, value);
 	}
 
 	@Override
@@ -292,7 +319,13 @@ public final class CaffeineLayeredMap<K, V> implements Map<K, V> {
 			return;
 		}
 		try {
-			backing.putAll(m);
+			if (distributedTtlMs > 0 && backing instanceof RMapCache) {
+				for (Map.Entry<? extends K, ? extends V> e : m.entrySet()) {
+					putBacking(e.getKey(), e.getValue());
+				}
+			} else {
+				backing.putAll(m);
+			}
 			health.recordSuccess();
 		} catch (Exception e) {
 			health.recordFailure(e);
