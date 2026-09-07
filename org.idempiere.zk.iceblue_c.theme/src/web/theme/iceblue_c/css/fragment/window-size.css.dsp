@@ -402,5 +402,5 @@
 }
 
 .popup-dialog {
-	max-width: calc(100% - 10px);
+	max-width: 100%;
 }
