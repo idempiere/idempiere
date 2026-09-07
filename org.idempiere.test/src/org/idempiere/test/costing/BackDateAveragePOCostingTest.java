@@ -13395,6 +13395,38 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		}
 	}
 	
+	/**
+	 * Performance and correctness regression test for posting a large multi-line
+	 * Purchase Order, AP Invoice, Material Receipt, Match Invoice
+	 * flow (120 product lines).
+	 * <p>
+	 * This test exists because posting documents with many lines can trigger
+	 * O(N^2) behavior in the accounting engine when a single invoice or receipt
+	 * header has many sibling {@link MMatchInv} records attached to it -- each
+	 * sibling was historically re-queried and re-summed on every post, so total
+	 * cost grew quadratically with the number of lines instead of linearly.
+	 * Running with a realistically large line count (120) is what originally
+	 * surfaced this regression; smaller line counts (e.g. 5-20) don't generate
+	 * enough siblings for the quadratic cost to be visible.
+	 * <p>
+	 * The test asserts two things:
+	 * <ol>
+	 *   <li>Every document in the chain (PO, Invoice, Receipt, and each
+	 *       {@code M_MatchInv}) posts successfully with no accounting error.</li>
+	 *   <li>The resulting {@link MCost} current quantity for each product matches
+	 *       the quantity actually ordered/received, confirming the cost engine's
+	 *       output is correct -- not just fast.</li>
+	 * </ol>
+	 * It does not assert on wall-clock elapsed time by default (timing is only
+	 * logged/printed for manual comparison across code changes); a hard timing
+	 * assertion was deliberately avoided here to keep the test deterministic
+	 * across slower or loaded CI machines.
+	 * <p>
+	 * See also {@code testLargeMRWithMultiProductLine(int)} for running this
+	 * scenario with a different line count, and the invoice/receipt-ordering and
+	 * multi-currency variants used to isolate specific performance and rounding
+	 * behaviors in {@code Doc_MatchInv}.
+	 */
 	@Test
 	public void testLargeMRWithMultiProductLine() {
 		testLargeMRWithMultiProductLine(120);
@@ -13479,7 +13511,7 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			
 			if (!invoice.isPosted()) {
 				String error = DocumentEngine.postImmediate(Env.getCtx(), invoice.getAD_Client_ID(), MInvoice.Table_ID, invoice.get_ID(), false, getTrxName());
-				assertTrue(error == null);
+				assertNull(error, error);
 			}
 			invoice.load(getTrxName());
 			assertTrue(invoice.isPosted());

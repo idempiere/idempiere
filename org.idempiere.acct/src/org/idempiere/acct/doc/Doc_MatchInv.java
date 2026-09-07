@@ -25,6 +25,7 @@ import java.sql.Savepoint;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -1702,7 +1703,7 @@ public class Doc_MatchInv extends Doc
 		{
 			MMatchInv[] matchInvs = MMatchInv.getInvoice(getCtx(), invoice.get_ID(), getTrxName());
 			
-			ArrayList<Integer> skipMatchInvIdList = new ArrayList<Integer>();
+			Set<Integer> skipMatchInvIdList = new HashSet<Integer>();
 			skipMatchInvIdList.add(m_matchInv.get_ID());
 			for (MMatchInv matchInv : matchInvs)
 			{
@@ -1796,27 +1797,13 @@ public class Doc_MatchInv extends Doc
 			}
 			
 			{
-				List<MMatchInv> candidates = candidatesByInvoice.get(invoice.getC_Invoice_ID());
+				List<MMatchInv> candidates = candidatesByInvoice.getOrDefault(invoice.getC_Invoice_ID(), Collections.emptyList());
 				
 				for (MMatchInv matchInv : candidates)
 				{
-					// Replicate the original per-sibling SQL exclusion conditions:
-					//   - if the CURRENT match invoice is a reversal: exclude sibling's own record if
-					//     sibling itself is a reversal, and only include records with ID < reversal target
-					//   - else: exclude sibling's own record if it has a reversal
 					boolean excludeSelfRecord = false;
-					Integer reversalBeforeId = null;
-					if (m_matchInv.isReversal())
-					{
-						if (matchInv.isReversal())
-							excludeSelfRecord = true;
-						reversalBeforeId = m_matchInv.getReversal_ID();
-					}
-					else
-					{
-						if (matchInv.getReversal_ID() > 0)
-							excludeSelfRecord = true;
-					}
+					if (matchInv.getReversal_ID() > 0)
+						excludeSelfRecord = true;
 					
 					// Replicate the original Qty > 0 / Qty < 0 filter for Ref_MatchInv_ID > 0
 					Boolean qtyPositive = null; // null = no Qty-sign filter applied
@@ -1835,8 +1822,6 @@ public class Doc_MatchInv extends Doc
 						if (recId == -1)
 							continue;
 						if (excludeSelfRecord && recId == matchInv.get_ID())
-							continue;
-						if (reversalBeforeId != null && recId >= reversalBeforeId)
 							continue;
 						
 						List<Object[]> rows = acctRowsByRecord.get(recId);
@@ -1870,8 +1855,6 @@ public class Doc_MatchInv extends Doc
 						if (recId == -1)
 							continue;
 						if (excludeSelfRecord && recId == matchInv.get_ID())
-							continue;
-						if (reversalBeforeId != null && recId >= reversalBeforeId)
 							continue;
 						
 						List<Object[]> rows = glRowsByRecord.get(recId);
@@ -2077,7 +2060,7 @@ public class Doc_MatchInv extends Doc
 			{
 				MMatchInv[] matchInvs = MMatchInv.getInvoiceLine(getCtx(), invoiceLine.get_ID(), getTrxName());
 				
-				ArrayList<Integer> skipMatchInvIdList = new ArrayList<Integer>();
+				Set<Integer> skipMatchInvIdList = new HashSet<Integer>();
 				skipMatchInvIdList.add(m_matchInv.get_ID());
 				for (MMatchInv matchInv : matchInvs)
 				{
@@ -2101,17 +2084,8 @@ public class Doc_MatchInv extends Doc
 						.append(" AND PostingType='A'")
 						.append(" AND Account_ID=?");
 					
-					if (m_matchInv.isReversal())
-					{
-						if (matchInv.isReversal())
-							sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
-						sql.append(" AND Record_ID < ").append(m_matchInv.getReversal_ID());
-					}
-					else
-					{
-						if (matchInv.getReversal_ID() > 0)
-							sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
-					}
+					if (matchInv.getReversal_ID() > 0)
+						sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
 					
 					if (matchInv.getRef_MatchInv_ID() > 0)
 					{
@@ -2160,17 +2134,8 @@ public class Doc_MatchInv extends Doc
 						.append(" AND (Account_ID=? OR Account_ID=? OR Account_ID=?)")
 						.append(" AND Description LIKE 'Invoice Line%'");
 					
-					if (m_matchInv.isReversal())
-					{
-						if (matchInv.isReversal())
-							sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
-						sql.append(" AND Record_ID < ").append(m_matchInv.getReversal_ID());
-					}
-					else
-					{
-						if (matchInv.getReversal_ID() > 0)
-							sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
-					}
+					if (matchInv.getReversal_ID() > 0)
+						sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
 					
 					if (matchInv.getRef_MatchInv_ID() > 0)
 					{
@@ -2501,7 +2466,7 @@ public class Doc_MatchInv extends Doc
 		}
 		
 		MMatchInv[] matchInvs = MMatchInv.getInOut(getCtx(), M_InOut_ID, getTrxName());
-		ArrayList<Integer> skipMatchInvIdList = new ArrayList<Integer>();
+		Set<Integer> skipMatchInvIdList = new HashSet<Integer>();
 		skipMatchInvIdList.add(m_matchInv.get_ID());
 		for (MMatchInv matchInv : matchInvs)
 		{
@@ -2570,26 +2535,12 @@ public class Doc_MatchInv extends Doc
 		
 		for (MMatchInv matchInv : candidates)
 		{
-			// Replicate the original per-sibling SQL exclusion conditions:
-			//   - if the CURRENT match invoice is a reversal: exclude sibling's own record if
-			//     sibling itself is a reversal, and only include records with ID < reversal target
-			//   - else: exclude sibling's own record if it has a reversal
 			boolean excludeSelfRecord = false;
-			Integer reversalBeforeId = null;
-			if (m_matchInv.isReversal())
-			{
-				if (matchInv.isReversal())
-					excludeSelfRecord = true;
-				reversalBeforeId = m_matchInv.getReversal_ID();
-			}
-			else
-			{
-				if (matchInv.getReversal_ID() > 0)
-					excludeSelfRecord = true;
-			}
+			if (matchInv.getReversal_ID() > 0)
+				excludeSelfRecord = true;
 			
 			int recId = matchInv.get_ID();
-			boolean skip = (excludeSelfRecord) || (reversalBeforeId != null && recId >= reversalBeforeId);
+			boolean skip = excludeSelfRecord;
 			
 			// --- Account-matched sums ---
 			totalAmtSourceDr = Env.ZERO;
@@ -2759,7 +2710,7 @@ public class Doc_MatchInv extends Doc
 		}
 		
 		MMatchInv[] matchInvs = MMatchInv.getInOutLine(getCtx(), m_receiptLine.get_ID(), getTrxName());
-		ArrayList<Integer> skipMatchInvIdList = new ArrayList<Integer>();
+		Set<Integer> skipMatchInvIdList = new HashSet<Integer>();
 		skipMatchInvIdList.add(m_matchInv.get_ID());
 		for (MMatchInv matchInv : matchInvs)
 		{
@@ -2783,17 +2734,8 @@ public class Doc_MatchInv extends Doc
 				.append(" AND PostingType='A'")
 				.append(" AND Account_ID=?");
 			
-			if (m_matchInv.isReversal())
-			{
-				if (matchInv.isReversal())
-					sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
-				sql.append(" AND Record_ID < ").append(m_matchInv.getReversal_ID());
-			}
-			else
-			{
-				if (matchInv.getReversal_ID() > 0)
-					sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
-			}
+			if (matchInv.getReversal_ID() > 0)
+				sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
 			
 			// For Match Inv
 			List<Object> valuesMatchInv = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
@@ -2825,17 +2767,8 @@ public class Doc_MatchInv extends Doc
 				.append(" AND (Account_ID=? OR Account_ID=? OR Account_ID=?)")
 				.append(" AND Description LIKE 'InOut Line%'");
 			
-			if (m_matchInv.isReversal())
-			{
-				if (matchInv.isReversal())
-					sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
-				sql.append(" AND Record_ID < ").append(m_matchInv.getReversal_ID());
-			}
-			else
-			{
-				if (matchInv.getReversal_ID() > 0)
-					sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
-			}
+			if (matchInv.getReversal_ID() > 0)
+				sql.append(" AND Record_ID <> ").append(matchInv.get_ID());
 			
 			// For Match Inv
 			valuesMatchInv = DB.getSQLValueObjectsEx(getTrxName(), sql.toString(),
@@ -3008,11 +2941,14 @@ public class Doc_MatchInv extends Doc
 	 * @param handler invoked once per result row for the caller to extract
 	 *        columns and update its own aggregation structures
 	 */
-	private void executeBatchedFactAcctQuery(String sqlTemplate, List<Object> leadingParams,
-	        Collection<Integer> recordIds, List<Object> trailingParams, FactAcctRowHandler handler)
+	private void executeBatchedFactAcctQuery(String sqlTemplate, List<?> leadingParams,
+	        Collection<Integer> recordIds, List<?> trailingParams, FactAcctRowHandler handler)
 	{
 	    if (recordIds == null || recordIds.isEmpty())
 	        return;
+	    
+	    List<?> effectiveLeadingParams = leadingParams != null ? leadingParams : Collections.emptyList();
+	    List<?> effectiveTrailingParams = trailingParams != null ? trailingParams : Collections.emptyList();
 
 	    List<Integer> recordIdList = new ArrayList<Integer>(recordIds);
 	    final int batchSize = 1000; // stay under Oracle's 1000-item IN-list limit
@@ -3028,10 +2964,10 @@ public class Doc_MatchInv extends Doc
 	        {
 	            pstmt = DB.prepareStatement(sql, getTrxName());
 	            List<Object> params = new ArrayList<Object>();
-	            params.addAll(leadingParams);
+	            params.addAll(effectiveLeadingParams);
 	            params.addAll(batch);
-	            params.addAll(trailingParams);
-	            DB.setParameters(pstmt, params.toArray());
+	            params.addAll(effectiveTrailingParams);
+	            DB.setParameters(pstmt, params);
 	            rs = pstmt.executeQuery();
 	            while (rs.next())
 	            {
