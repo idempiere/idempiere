@@ -410,6 +410,13 @@
         <setEntry value="wrapped.org.glassfish.jaxb.txw2@default:default"/>
         <setEntry value="wrapped.org.jfree.jcommon@default:default"/>
         <setEntry value="wrapped.org.jfree.jfreechart@default:default"/>
+        <setEntry value="wrapped.org.springframework.spring-aop@default:default"/>
+        <setEntry value="wrapped.org.springframework.spring-beans@default:default"/>
+        <setEntry value="wrapped.org.springframework.spring-context-support@default:default"/>
+        <setEntry value="wrapped.org.springframework.spring-context@default:default"/>
+        <setEntry value="wrapped.org.springframework.spring-core@default:default"/>
+        <setEntry value="wrapped.org.springframework.spring-expression@default:default"/>
+        <setEntry value="wrapped.org.springframework.spring-web@default:default"/>
         <setEntry value="wrapped.xalan.xalan@default:default"/>
         <setEntry value="xstream@default:default"/>
         <setEntry value="zcommon@default:default"/>

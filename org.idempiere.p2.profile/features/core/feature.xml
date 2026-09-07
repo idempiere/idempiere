@@ -559,5 +559,12 @@
    <plugin id="wrapped.com.sun.net.httpserver.http" version="0.0.0"/>
    <plugin id="wrapped.com.sun.org.apache.xml.internal.resolver" version="0.0.0"/>
    <plugin id="wrapped.org.glassfish.jaxb.txw2" version="0.0.0"/>
+   <plugin id="wrapped.org.springframework.spring-aop" version="0.0.0"/>
+   <plugin id="wrapped.org.springframework.spring-beans" version="0.0.0"/>
+   <plugin id="wrapped.org.springframework.spring-context-support" version="0.0.0"/>
+   <plugin id="wrapped.org.springframework.spring-context" version="0.0.0"/>
+   <plugin id="wrapped.org.springframework.spring-core" version="0.0.0"/>
+   <plugin id="wrapped.org.springframework.spring-expression" version="0.0.0"/>
+   <plugin id="wrapped.org.springframework.spring-web" version="0.0.0"/>
     
 </feature>
