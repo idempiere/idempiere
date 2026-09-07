@@ -12,11 +12,6 @@
  *****************************************************************************/
 package org.adempiere.webui.apps.wf;
 
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.webui.LayoutUtils;
@@ -25,18 +20,13 @@ import org.adempiere.webui.panel.IHelpContext;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.compiere.apps.wf.WFGraphLayout;
 import org.compiere.apps.wf.WFNodeWidget;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.wf.MWFNode;
-import org.compiere.wf.MWFNodeNext;
 import org.compiere.wf.MWorkflow;
-import org.zkoss.zhtml.Table;
-import org.zkoss.zhtml.Td;
-import org.zkoss.zhtml.Tr;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -48,7 +38,9 @@ import org.zkoss.zul.Html;
 import org.zkoss.zul.South;
 
 /**
- *	WorkFlow Panel
+ *	WorkFlow Panel.
+ *
+ *	<p>Renders the workflow as client side SVG via {@link WWorkflowGraph}.</p>
  *
  * 	@author Low Heng Sin
  */
@@ -96,11 +88,12 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 	
 	/** Workflow node container */
 	private WFNodeContainer nodeContainer = new WFNodeContainer();
+
+	/** SVG workflow graph */
+	private WWorkflowGraph graph = new WWorkflowGraph();
 	
 	private Html infoTextPane = new Html();
 	private Div contentPanel = new Div();
-	//
-	private Table table;
 		
 	/**
 	 * 	Static Init
@@ -118,8 +111,12 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 		this.setStyle("height: 100%; width: 100%; position: absolute");
 		Center center = new Center();
 		this.appendChild(center);
-		createTable();
-		center.appendChild(table);
+		graph.setEditable(false);
+		graph.setVflex("1");
+		graph.setHflex("1");
+		graph.addEventListener(WWorkflowGraph.ON_NODE_CLICK, this);
+		graph.addEventListener(WWorkflowGraph.ON_NODE_DBL_CLICK, this);
+		center.appendChild(graph);
 		contentPanel.setStyle("width: 100%; height: 100%;");
 		center.setAutoscroll(true);
 		
@@ -136,14 +133,6 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 		ZKUpdateUtil.setVflex(div, "1");
 		ZKUpdateUtil.setHflex(div, "1");
 	}	//	jbInit
-
-	private void createTable() {
-		table = new Table();
-		table.setDynamicProperty("cellpadding", "0");
-		table.setDynamicProperty("cellspacing", "0");
-		table.setDynamicProperty("border", "none");
-		table.setStyle("margin:0;padding:0");
-	}
 		
 	/**
 	 * 	Dispose
@@ -164,83 +153,9 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 			return;
 		//	Get Workflow
 		m_wf = new MWorkflow (Env.getCtx(), AD_Workflow_ID, null);
-		nodeContainer.removeAll();
-		nodeContainer.setWorkflow(m_wf);
-		
-		//	Add Nodes for Paint
-		MWFNode[] nodes = m_wf.getNodes(true, Env.getAD_Client_ID(Env.getCtx()));
-		nodeContainer.setColumnCount(nodes, false);
-		List<Integer> added = new ArrayList<Integer>();
-		for (int i = 0; i < nodes.length; i++)
-		{
-			if (!added.contains(nodes[i].getAD_WF_Node_ID()))
-				nodeContainer.addNode(nodes[i]);
-		}
-		
-		//  Add lines
-		for (int i = 0; i < nodes.length; i++)
-		{
-			MWFNodeNext[] nexts = nodes[i].getTransitions(Env.getAD_Client_ID(Env.getCtx()));
-			for (int j = 0; j < nexts.length; j++)
-			{
-				nodeContainer.addEdge(nexts[j]);
-			}
-		}
-				
-		// render workflow graph as image
-		Dimension dimension = nodeContainer.getDimension();
-		BufferedImage bi = new BufferedImage (dimension.width, dimension.height, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D graphics = bi.createGraphics();
-		nodeContainer.validate(graphics);
-		nodeContainer.paint(graphics);
+		nodeContainer.load(m_wf, false);
+		graph.setModel(nodeContainer.toJson());
 
-		try {
-			int row = nodeContainer.getRowCount();
-			int maxCol = nodeContainer.getMaxColumnWithNode();
-			for(int i = 0; i < row; i++) {
-				Tr tr = new Tr();
-				table.appendChild(tr);
-				
-				// get image for each node and add to html table
-				for(int c = 0; c < maxCol; c++) {
-					BufferedImage t = new BufferedImage(WFGraphLayout.COLUMN_WIDTH, WFGraphLayout.ROW_HEIGHT, BufferedImage.TYPE_INT_ARGB);
-					Graphics2D tg = t.createGraphics();
-					Td td = new Td();
-					td.setSclass("workflow-panel-table");
-					tr.appendChild(td);
-					
-					int x = c * WFGraphLayout.COLUMN_WIDTH;
-					int y = i * WFGraphLayout.ROW_HEIGHT;
-
-					tg.drawImage(bi.getSubimage(x, y, WFGraphLayout.COLUMN_WIDTH, WFGraphLayout.ROW_HEIGHT), 0, 0, null);
-					org.zkoss.zul.Image image = new org.zkoss.zul.Image();
-					image.setContent(t);
-					td.appendChild(image);
-
-					WFNodeWidget widget = nodeContainer.findWidget(i+1, c+1);
-					if (widget != null)
-					{
-						MWFNode node = widget.getModel();
-						if (node.getHelp(true) != null) {
-							image.setTooltiptext(node.getHelp(true));
-						}
-						image.setAttribute("AD_WF_Node_ID", node.getAD_WF_Node_ID());
-						image.addEventListener(Events.ON_CLICK, this);
-						image.setStyle("cursor:pointer;border:none;margin:0;padding:0;");
-					}
-					else
-					{
-						image.setStyle("border:none;margin:0;padding:0;");
-					}
-
-					tg.dispose();
-				}
-			}
-
-		} catch (Exception e) {
-			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-		}
-		
 		//	Info Text
 		StringBuilder msg = new StringBuilder("");
 		msg.append("<H2>").append(m_wf.getName(true)).append("</H2>");
@@ -279,14 +194,21 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 
 	@Override
 	public void onEvent(Event event) throws Exception {
-		if (Events.ON_CLICK.equals(event.getName())) {
-			Integer id = (Integer) event.getTarget().getAttribute("AD_WF_Node_ID");
-			if (id != null) {
-				MWFNode[] nodes = m_wf.getNodes(true, Env.getAD_Client_ID(Env.getCtx()));
-				for(MWFNode node : nodes) {
-					if (node.getAD_WF_Node_ID() == id) {
-						start(node);
-						break;
+		if (event.getTarget() == graph
+				&& (WWorkflowGraph.ON_NODE_CLICK.equals(event.getName())
+					|| WWorkflowGraph.ON_NODE_DBL_CLICK.equals(event.getName()))) {
+			int id = WWorkflowGraph.getNodeId(event);
+			if (id > 0 && m_wf != null) {
+				WFNodeWidget widget = nodeContainer.findNode(id);
+				if (widget != null) {
+					start(widget.getModel());
+				} else {
+					MWFNode[] nodes = m_wf.getNodes(true, Env.getAD_Client_ID(Env.getCtx()));
+					for(MWFNode node : nodes) {
+						if (node.getAD_WF_Node_ID() == id) {
+							start(node);
+							break;
+						}
 					}
 				}
 			}

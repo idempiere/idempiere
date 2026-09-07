@@ -12,11 +12,6 @@
  *****************************************************************************/
 package org.adempiere.webui.apps.wf;
 
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.webui.apps.AEnv;
@@ -32,7 +27,6 @@ import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.compiere.apps.wf.WFGraphLayout;
 import org.compiere.apps.wf.WFNodeWidget;
 import org.compiere.model.MEntityType;
 import org.compiere.model.MSysConfig;
@@ -43,29 +37,27 @@ import org.compiere.util.Util;
 import org.compiere.wf.MWFNode;
 import org.compiere.wf.MWFNodeNext;
 import org.compiere.wf.MWorkflow;
-import org.zkoss.zhtml.Table;
-import org.zkoss.zhtml.Td;
-import org.zkoss.zhtml.Tr;
-import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.Div;
-import org.adempiere.webui.component.FlexHlayout;
-import org.zkoss.zul.Label;
 import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Toolbarbutton;
+import org.adempiere.webui.component.FlexHlayout;
+import org.zkoss.zul.Label;
 import org.adempiere.webui.component.FlexVlayout;
 
 /**
- * Workflow editor form
+ * Workflow editor form.
+ *
+ * <p>Renders the workflow as client side SVG via {@link WWorkflowGraph}.
+ * Nodes are dragged to a new grid cell to change their position.</p>
+ *
  * @author Low Heng Sin
  */
 @org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.wf.WFPanel")
@@ -81,8 +73,8 @@ public class WFEditor extends ADForm {
 	private Toolbarbutton zoomButton;
 	private Toolbarbutton refreshButton;
 	private Toolbarbutton newButton;
-	/** Content of {@link #center} */
-	private Table table;
+	/** SVG workflow graph */
+	private WWorkflowGraph graph;
 	/** Center of form */
 	private Center center;
 	private MWorkflow m_wf;
@@ -139,11 +131,18 @@ public class WFEditor extends ADForm {
 		refreshButton.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Refresh")));
 		ZKUpdateUtil.setHeight(north, "30px");
 
-		createTable();
+		graph = new WWorkflowGraph();
+		graph.setEditable(true);
+		graph.setVflex("1");
+		graph.setHflex("1");
+		graph.addEventListener(WWorkflowGraph.ON_NODE_CLICK, this);
+		graph.addEventListener(WWorkflowGraph.ON_NODE_CONTEXT, this);
+		graph.addEventListener(WWorkflowGraph.ON_NODE_DBL_CLICK, this);
+		graph.addEventListener(WWorkflowGraph.ON_NODE_DROP, this);
 		center = new Center();
 		layout.appendChild(center);
 		center.setAutoscroll(true);
-		center.appendChild(table);
+		center.appendChild(graph);
 
 		ConfirmPanel confirmPanel = new ConfirmPanel(true);
 		confirmPanel.addActionListener(this);
@@ -151,17 +150,6 @@ public class WFEditor extends ADForm {
 		layout.appendChild(south);
 		south.appendChild(confirmPanel);
 		ZKUpdateUtil.setHeight(south, "36px");
-	}
-
-	/**
-	 * Create {@link #table}
-	 */
-	private void createTable() {
-		table = new Table();
-		table.setDynamicProperty("cellpadding", "0");
-		table.setDynamicProperty("cellspacing", "0");
-		table.setDynamicProperty("border", "none");
-		table.setStyle("margin:0;padding:0");
 	}
 
 	@Override
@@ -173,9 +161,6 @@ public class WFEditor extends ADForm {
 		else if (event.getTarget().getId().equals(ConfirmPanel.A_OK))
 			this.detach();
 		else if (event.getTarget() == workflowList) {
-			center.removeChild(table);
-			createTable();
-			center.appendChild(table);
 			ListItem item = workflowList.getSelectedItem();
 			KeyNamePair knp = item != null ? item.toKeyNamePair() : null;
 			if (knp != null && knp.getKey() > 0) {
@@ -198,23 +183,43 @@ public class WFEditor extends ADForm {
 			WFPopupItem item = (WFPopupItem) event.getTarget();
 			item.execute(this);
 		}
-		else if (event.getName().equals(Events.ON_DROP)) {
-			DropEvent dropEvent = (DropEvent) event;
-			Integer AD_WF_Node_ID = (Integer) dropEvent.getDragged().getAttribute("AD_WF_Node_ID");
-			Integer xPosition = (Integer) event.getTarget().getAttribute("Node.XPosition");
-			Integer yPosition = (Integer) event.getTarget().getAttribute("Node.YPosition");
-			if (AD_WF_Node_ID != null) {
-				WFNodeWidget widget = (WFNodeWidget) nodeContainer.getGraphScene().findWidget(AD_WF_Node_ID);
-				if (widget != null) {
-					MWFNode node = widget.getModel();
-					if (node.getAD_Client_ID() == Env.getAD_Client_ID(Env.getCtx())) {
-						node.setXPosition(xPosition);
-						node.setYPosition(yPosition);
-						node.saveEx();
-						reload(m_workflowId, true);
-					}
+		else if (event.getTarget() == graph) {
+			String name = event.getName();
+			if (WWorkflowGraph.ON_NODE_CLICK.equals(name)
+					|| WWorkflowGraph.ON_NODE_CONTEXT.equals(name)
+					|| WWorkflowGraph.ON_NODE_DBL_CLICK.equals(name)) {
+				int nodeId = WWorkflowGraph.getNodeId(event);
+				if (nodeId > 0)
+					showNodeMenu(nodeId);
+			} else if (WWorkflowGraph.ON_NODE_DROP.equals(name)) {
+				onNodeDrop(event);
+			}
+		}
+	}
+
+	/**
+	 * Move a workflow node to the dropped grid cell
+	 * @param event drop event from {@link WWorkflowGraph}
+	 */
+	private void onNodeDrop(Event event) {
+		int nodeId = WWorkflowGraph.getNodeId(event);
+		int row = WWorkflowGraph.getDropRow(event);
+		int col = WWorkflowGraph.getDropColumn(event);
+		if (nodeId <= 0 || row <= 0 || col <= 0 || nodeContainer == null)
+			return;
+		try {
+			WFNodeWidget widget = nodeContainer.findNode(nodeId);
+			if (widget != null) {
+				MWFNode node = widget.getModel();
+				if (node.getAD_Client_ID() == Env.getAD_Client_ID(Env.getCtx())) {
+					node.setXPosition(col);
+					node.setYPosition(row);
+					node.saveEx();
+					reload(m_workflowId, true);
 				}
 			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getLocalizedMessage(), e);
 		}
 	}
 
@@ -276,9 +281,6 @@ public class WFEditor extends ADForm {
 	 * @param reread
 	 */
 	protected void reload(int workflowId, boolean reread) {
-		center.removeChild(table);
-		createTable();
-		center.appendChild(table);
 		load(workflowId, reread);
 	}
 
@@ -292,184 +294,84 @@ public class WFEditor extends ADForm {
 		m_wf = MWorkflow.getCopy(Env.getCtx(), workflowId, (String)null);
 		m_workflowId = workflowId;
 		nodeContainer = new WFNodeContainer();
-		nodeContainer.setWorkflow(m_wf);
-		
+
 		if (reread) {
 			m_wf.reloadNodes();
 		}
-
-		//	Add Nodes for Paint
-		MWFNode[] nodes = m_wf.getNodes(true, Env.getAD_Client_ID(Env.getCtx()));
-		nodeContainer.setColumnCount(nodes, true);
-		List<Integer> added = new ArrayList<Integer>();
-		for (int i = 0; i < nodes.length; i++)
-		{
-			if (!added.contains(nodes[i].getAD_WF_Node_ID()))
-				nodeContainer.addNode(nodes[i]);
-		}
-		
-		//  Add lines
-		for (int i = 0; i < nodes.length; i++)
-		{
-			MWFNodeNext[] nexts = nodes[i].getTransitions(Env.getAD_Client_ID(Env.getCtx()));
-			for (int j = 0; j < nexts.length; j++)
-			{
-				nodeContainer.addEdge(nexts[j]);
-			}
-		}
-
-		Dimension dimension = nodeContainer.getDimension();
-		BufferedImage bi = new BufferedImage (dimension.width, dimension.height, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D graphics = bi.createGraphics();
-		nodeContainer.validate(graphics);
-		nodeContainer.paint(graphics);
-
-		try {
-			int row = nodeContainer.getRowCount();
-			int rowsToRender = row + (nodeContainer.canAddRow() ? 1 : 0);
-			for(int i = 0; i < rowsToRender; i++) {
-				Tr tr = new Tr();
-				table.appendChild(tr);
-				for(int c = 0; c < nodeContainer.getColumnCount(); c++) {
-					BufferedImage t = new BufferedImage(WFGraphLayout.COLUMN_WIDTH, WFGraphLayout.ROW_HEIGHT, BufferedImage.TYPE_INT_ARGB);
-					Graphics2D tg = t.createGraphics();
-					Td td = new Td();
-					td.setStyle("border: 1px dotted lightgray");
-					tr.appendChild(td);
-					
-					if (i < row)
-					{
-						int x = c * WFGraphLayout.COLUMN_WIDTH;
-						int y = i * WFGraphLayout.ROW_HEIGHT;
-						int w = Math.min(WFGraphLayout.COLUMN_WIDTH, bi.getWidth() - x);
-						int h = Math.min(WFGraphLayout.ROW_HEIGHT, bi.getHeight() - y);
-						if (w > 0 && h > 0)
-							tg.drawImage(bi.getSubimage(x, y, w, h), 0, 0, null);
-						org.zkoss.zul.Image image = new org.zkoss.zul.Image();
-						image.setContent(t);
-						td.appendChild(image);
-						String imgStyle = "border:none;margin:0;padding:0";
-
-						WFNodeWidget widget = nodeContainer.findWidget(i+1, c+1);
-						if (widget != null)
-						{
-							MWFNode node = widget.getModel();
-							if (node.getHelp(true) != null) {
-								image.setTooltiptext(node.getHelp(true));
-							}
-							image.setAttribute("AD_WF_Node_ID", node.getAD_WF_Node_ID());
-							image.addEventListener(Events.ON_CLICK, new EventListener<Event>() {
-
-								public void onEvent(Event event) throws Exception {
-									showNodeMenu(event.getTarget());
-								}
-							});
-							image.setDraggable("WFNode");
-							imgStyle = imgStyle + ";cursor:pointer";
-						}
-						else
-						{
-							image.setDroppable("WFNode");
-							image.addEventListener(Events.ON_DROP, this);
-							image.setAttribute("Node.XPosition", c+1);
-							image.setAttribute("Node.YPosition", i+1);
-						}
-						image.setStyle(imgStyle);
-					}
-					else
-					{
-						Div div = new Div();
-						ZKUpdateUtil.setWidth(div, (WFGraphLayout.COLUMN_WIDTH) + "px");
-						ZKUpdateUtil.setHeight(div, (WFGraphLayout.ROW_HEIGHT) + "px");
-						div.setAttribute("Node.XPosition", c+1);
-						div.setAttribute("Node.YPosition", i+1);
-						div.setDroppable("WFNode");
-						div.addEventListener(Events.ON_DROP, this);
-						td.appendChild(div);
-					}
-
-					tg.dispose();
-				}
-			}
-
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, e.getLocalizedMessage(), e);
-		}
-
+		nodeContainer.load(m_wf, true);
+		graph.setModel(nodeContainer.toJson());
 	}
 
 	/**
 	 * Show popup menu for workflow node
-	 * @param target
+	 * @param AD_WF_Node_ID workflow node id
 	 */
-	protected void showNodeMenu(Component target) {
-		Integer AD_WF_Node_ID = (Integer) target.getAttribute("AD_WF_Node_ID");
-		if (AD_WF_Node_ID != null) {
-			WFNodeWidget widget = (WFNodeWidget) nodeContainer.getGraphScene().findWidget(AD_WF_Node_ID);
-			if (widget != null) {
-				MWFNode node = widget.getModel();
-				Menupopup popupMenu = new Menupopup();
-				// Zoom
-				addMenuItem(popupMenu, Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Zoom")), node, WFPopupItem.WFPOPUPITEM_ZOOM);
-				if (node.getAD_Client_ID() == Env.getAD_Client_ID(Env.getCtx()))
-				{
-					// Properties
-					addMenuItem(popupMenu, Msg.getMsg(Env.getCtx(), "Properties"), node, WFPopupItem.WFPOPUPITEM_PROPERTIES);
-					// Delete node
-					String title = Msg.getMsg(Env.getCtx(), "DeleteNode") +
-						": " + node.getName(true);
-					addMenuItem(popupMenu, title, node, WFPopupItem.WFPOPUPITEM_DELETENODE);
-				}
-				MWFNode[] nodes = m_wf.getNodes(true, Env.getAD_Client_ID(Env.getCtx()));
-				MWFNodeNext[] lines = node.getTransitions(Env.getAD_Client_ID(Env.getCtx()));
-				//	Add New Line
-				for (MWFNode nn : nodes)
-				{
-					if (nn.getAD_WF_Node_ID() == node.getAD_WF_Node_ID())
-						continue;	//	same
-					if (nn.getAD_WF_Node_ID() == node.getAD_Workflow().getAD_WF_Node_ID())
-						continue;	//	don't add line to starting node
-					boolean found = false;
-					for (MWFNodeNext line : lines)
-					{
-						if (nn.getAD_WF_Node_ID() == line.getAD_WF_Next_ID())
-						{
-							found = true; // line already exists
-							break;
-						}
-					}
-					if (!found) {
-						// Check that inverse line doesn't exist
-						for (MWFNodeNext revline : nn.getTransitions(Env.getAD_Client_ID(Env.getCtx()))) {
-							if (node.getAD_WF_Node_ID() == revline.getAD_WF_Next_ID())
-							{
-								found = true; // inverse line already exists
-								break;
-							}
-						}
-					}
-					if (!found)
-					{
-						String title = Msg.getMsg(Env.getCtx(), "AddLine")
-							+ ": " + node.getName(true) + " -> " + nn.getName(true);
-						addMenuItem(popupMenu, title, node, nn.getAD_WF_Node_ID());
-					}
-				}
-				//	Delete Lines
-				for (MWFNodeNext line : lines)
-				{
-					if (line.getAD_Client_ID() != Env.getAD_Client_ID(Env.getCtx()))
-						continue;
-					MWFNode next = MWFNode.get(Env.getCtx(), line.getAD_WF_Next_ID());
-					String title = Msg.getMsg(Env.getCtx(), "DeleteLine")
-						+ ": " + node.getName(true) + " -> " + next.getName(true);
-					addMenuItem(popupMenu, title, line);
-				}
-				popupMenu.setPage(target.getPage());
-				popupMenu.open(target);
-			}
-
+	protected void showNodeMenu(int AD_WF_Node_ID) {
+		if (nodeContainer == null)
+			return;
+		WFNodeWidget widget = nodeContainer.findNode(AD_WF_Node_ID);
+		if (widget == null)
+			return;
+		MWFNode node = widget.getModel();
+		Menupopup popupMenu = new Menupopup();
+		// Zoom
+		addMenuItem(popupMenu, Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Zoom")), node, WFPopupItem.WFPOPUPITEM_ZOOM);
+		if (node.getAD_Client_ID() == Env.getAD_Client_ID(Env.getCtx()))
+		{
+			// Properties
+			addMenuItem(popupMenu, Msg.getMsg(Env.getCtx(), "Properties"), node, WFPopupItem.WFPOPUPITEM_PROPERTIES);
+			// Delete node
+			String title = Msg.getMsg(Env.getCtx(), "DeleteNode") +
+				": " + node.getName(true);
+			addMenuItem(popupMenu, title, node, WFPopupItem.WFPOPUPITEM_DELETENODE);
 		}
+		MWFNode[] nodes = m_wf.getNodes(true, Env.getAD_Client_ID(Env.getCtx()));
+		MWFNodeNext[] lines = node.getTransitions(Env.getAD_Client_ID(Env.getCtx()));
+		//	Add New Line
+		for (MWFNode nn : nodes)
+		{
+			if (nn.getAD_WF_Node_ID() == node.getAD_WF_Node_ID())
+				continue;	//	same
+			if (nn.getAD_WF_Node_ID() == node.getAD_Workflow().getAD_WF_Node_ID())
+				continue;	//	don't add line to starting node
+			boolean found = false;
+			for (MWFNodeNext line : lines)
+			{
+				if (nn.getAD_WF_Node_ID() == line.getAD_WF_Next_ID())
+				{
+					found = true; // line already exists
+					break;
+				}
+			}
+			if (!found) {
+				// Check that inverse line doesn't exist
+				for (MWFNodeNext revline : nn.getTransitions(Env.getAD_Client_ID(Env.getCtx()))) {
+					if (node.getAD_WF_Node_ID() == revline.getAD_WF_Next_ID())
+					{
+						found = true; // inverse line already exists
+						break;
+					}
+				}
+			}
+			if (!found)
+			{
+				String title = Msg.getMsg(Env.getCtx(), "AddLine")
+					+ ": " + node.getName(true) + " -> " + nn.getName(true);
+				addMenuItem(popupMenu, title, node, nn.getAD_WF_Node_ID());
+			}
+		}
+		//	Delete Lines
+		for (MWFNodeNext line : lines)
+		{
+			if (line.getAD_Client_ID() != Env.getAD_Client_ID(Env.getCtx()))
+				continue;
+			MWFNode next = MWFNode.get(Env.getCtx(), line.getAD_WF_Next_ID());
+			String title = Msg.getMsg(Env.getCtx(), "DeleteLine")
+				+ ": " + node.getName(true) + " -> " + next.getName(true);
+			addMenuItem(popupMenu, title, line);
+		}
+		popupMenu.setPage(graph.getPage());
+		popupMenu.open(graph);
 	}
 
 	/**
