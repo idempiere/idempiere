@@ -106,53 +106,57 @@ window.idempiere.showFullSizeImage = function (event) {
   if (imageUrl == 'data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAUUAAEALAAAAAABAAEAAAICTAEAOw==')
 	return;
 
-	// Always remove the previous preview
-    window.idempiere.hideFullSizeImage();
+  // Always remove the previous preview
+  window.idempiere.hideFullSizeImage();
 
-  // Get the mouse pointer position relative to the document
-  const mouseX = event.pageX + 10;
-  const mouseY = event.pageY + 10;
-	
-  // Create a new image element to display the original size
+  // Use fixed positioning relative to viewport to avoid scroll desynchronization
+  const mouseX = event.clientX + 10;
+  const mouseY = event.clientY + 10;
+
   const fullsizeImage = new Image();
   fullsizeImage.src = imageUrl;
-	  
-  // Set the position of the original image to the mouse pointer position
-  fullsizeImage.style.position = "absolute";
+  fullsizeImage.style.position = "fixed";
   fullsizeImage.style.left = mouseX + "px";
-  fullsizeImage.style.top = mouseY + "px";  
+  fullsizeImage.style.top = mouseY + "px";
   fullsizeImage.style.display = "block";
   fullsizeImage.style.width = "auto";
   fullsizeImage.style.height = "auto";
-  fullsizeImage.style.maxHeight = "90%";
-  fullsizeImage.style.maxWidth = "90%";
-  fullsizeImage.style.zIndex = 10;
+  fullsizeImage.style.maxHeight = "90vh";
+  fullsizeImage.style.maxWidth = "90vw";
+  fullsizeImage.style.zIndex = typeof zk !== 'undefined' && zk.currentZIndex ? zk.currentZIndex + 10 : 9999;
+  fullsizeImage.style.pointerEvents = "none"; // Prevent hover flicker and event interception
   fullsizeImage.classList.add('fullsize-image');
 
   // Add the original image to the document body
   document.body.appendChild(fullsizeImage);
 
-	window.idempiere._fullsizeImage = fullsizeImage;
+  window.idempiere._fullsizeImage = fullsizeImage;
 
-	const rect = fullsizeImage.getBoundingClientRect();
-	const viewportHeight = jq(window).height();
-	const viewportWidth = jq(window).width();
-    if (rect.bottom > viewportHeight || rect.right > viewportWidth) {
-        if (rect.right > viewportWidth) {
-            const rw = rect.right - rect.left;
-            let x = event.pageX - rw - 10;
-            if (x < 0)
-                x = 0;
-            fullsizeImage.style.left = x + "px";
-        }
-        if (rect.bottom > viewportHeight) {
-            const rh = rect.bottom - rect.top;
-            let y = event.pageY - rh - 10
-            if (y < 0)
-                y = 0;
-            fullsizeImage.style.top = y + "px";
-        }
-    }
+  const adjustPosition = function () {
+            if (!window.idempiere._fullsizeImage || window.idempiere._fullsizeImage !== fullsizeImage)
+                return;
+            const rect = fullsizeImage.getBoundingClientRect();
+            const viewportHeight = jq(window).height();
+            const viewportWidth = jq(window).width();
+            if (rect.bottom > viewportHeight) {
+                const rh = rect.bottom - rect.top;
+                let y = event.clientY - rh - 10;
+                if (y < 0) y = 0;
+                fullsizeImage.style.top = y + "px";
+            }
+            if (rect.right > viewportWidth) {
+                const rw = rect.right - rect.left;
+                let x = event.clientX - rw - 10;
+                if (x < 0) x = 0;
+                fullsizeImage.style.left = x + "px";
+            }
+        };
+
+  if (fullsizeImage.complete) {
+      adjustPosition();
+  } else {
+      fullsizeImage.onload = adjustPosition;
+  }	
 }
 
 window.idempiere.hideFullSizeImage = function () {
@@ -162,4 +166,8 @@ window.idempiere.hideFullSizeImage = function () {
         fullsizeImage.remove();
         window.idempiere._fullsizeImage = null;
     }
+	// ensure all image with class fullsize-image is removed
+	document.querySelectorAll('img.fullsize-image').forEach(function (el) {
+		el.remove();
+    });
 }
