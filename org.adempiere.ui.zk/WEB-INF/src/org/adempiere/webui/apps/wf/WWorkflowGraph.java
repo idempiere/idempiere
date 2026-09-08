@@ -23,6 +23,8 @@ package org.adempiere.webui.apps.wf;
 
 import java.util.Map;
 
+import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.zkoss.json.JSONObject;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
@@ -70,6 +72,11 @@ public class WWorkflowGraph extends Div {
 	public WWorkflowGraph() {
 		setSclass("wf-graph");
 		setStyle("width: 100%; min-height: 300px;");
+		setWidgetOverride("unbind_", "function() {"
+				+ "if(window.idempiere&&idempiere.wfgraph&&idempiere.wfgraph.dispose)"
+				+ " idempiere.wfgraph.dispose(this.uuid);"
+				+ "this.$supers('unbind_',arguments);"
+				+ "}");
 	}
 
 	/**
@@ -125,9 +132,19 @@ public class WWorkflowGraph extends Div {
 		String json = model != null ? model.toJSONString() : "{\"nodes\":[],\"edges\":[],\"cols\":0,\"rows\":0}";
 		// prevent breaking out of the script block
 		json = json.replace("</", "<\\/");
+		JSONObject opts = new JSONObject();
+		opts.put("editable", editable);
+		opts.put("zoomOut", Msg.getMsg(Env.getCtx(), "ZoomOut"));
+		opts.put("zoomIn", Msg.getMsg(Env.getCtx(), "ZoomIn"));
+		opts.put("fitToWidth", Msg.getMsg(Env.getCtx(), "FitToWidth"));
+		opts.put("actualSize", Msg.getMsg(Env.getCtx(), "ActualSize"));
+		opts.put("hint", Msg.getMsg(Env.getCtx(), "WFGraphHint"));
+		opts.put("graphLabel", Msg.getMsg(Env.getCtx(), "WorkflowGraph"));
+		opts.put("emptyText", Msg.getMsg(Env.getCtx(), "NoWorkflowNodes"));
+		String optsJson = opts.toJSONString().replace("</", "<\\/");
 		StringBuilder script = new StringBuilder("if(window.idempiere&&idempiere.wfgraph){idempiere.wfgraph.render('")
 				.append(getUuid()).append("',").append(json)
-				.append(",{editable:").append(editable).append("});}");
+				.append(",").append(optsJson).append(");}");
 		Clients.evalJavaScript(script.toString());
 	}
 

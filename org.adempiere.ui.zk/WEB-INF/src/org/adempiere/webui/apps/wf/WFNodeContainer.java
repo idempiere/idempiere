@@ -230,7 +230,7 @@ public class WFNodeContainer
 	public WFNodeWidget findWidget(int row, int column) {
 		WFNodeWidget widget = null;
 		Integer[] nodeRow = matrix.get(row);
-		if (nodeRow != null && column <= nodeRow.length && nodeRow[column - 1] != null) {
+		if (nodeRow != null && column >= 1 && column <= nodeRow.length && nodeRow[column - 1] != null) {
 			widget = widgets.get(nodeRow[column - 1]);
 		}
 		return widget;

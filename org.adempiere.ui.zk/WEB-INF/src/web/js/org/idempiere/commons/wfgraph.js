@@ -213,7 +213,9 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 		zoomTo(st, root, svg, canvasW, st.canvasH || 0, avail / canvasW);
 	}
 
-	function renderToolbar(root, svg, st, canvasW, canvasH, editable) {
+	function renderToolbar(root, svg, st, canvasW, canvasH, opts) {
+		opts = opts || {};
+		var editable = !!opts.editable;
 		var bar = document.createElement('div');
 		bar.className = 'wf-toolbar';
 		bar.style.cssText = 'display:flex;align-items:center;gap:4px;padding:4px 6px;'
@@ -234,27 +236,27 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 			bar.appendChild(b);
 			return b;
 		}
-		btn('−', 'Zoom out', function () {
+		btn('−', opts.zoomOut || 'Zoom out', function () {
 			zoomTo(st, root, svg, canvasW, canvasH, st.scale - 0.1);
 		});
 		var zl = document.createElement('span');
 		zl.className = 'wf-zoom-label';
 		zl.style.cssText = 'min-width:42px;text-align:center;color:#57606a;';
 		bar.appendChild(zl);
-		btn('+', 'Zoom in', function () {
+		btn('+', opts.zoomIn || 'Zoom in', function () {
 			zoomTo(st, root, svg, canvasW, canvasH, st.scale + 0.1);
 		});
-		btn('⤢', 'Fit to width', function () {
+		btn('⤢', opts.fitToWidth || 'Fit to width', function () {
 			zoomFit(st, root, svg, canvasW);
 		});
-		btn('1:1', 'Actual size', function () {
+		btn('1:1', opts.actualSize || 'Actual size', function () {
 			zoomTo(st, root, svg, canvasW, canvasH, 1);
 		});
 		if (editable) {
 			var hint = document.createElement('span');
 			hint.className = 'wf-hint';
 			hint.style.cssText = 'margin-left:auto;color:#57606a;';
-			hint.textContent = 'Drag nodes to move • Right-click for actions';
+			hint.textContent = opts.hint || 'Drag nodes to move • Right-click for actions';
 			bar.appendChild(hint);
 		}
 		root.appendChild(bar);
@@ -363,15 +365,15 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 				g.classList.remove('dragging');
 				if (!dragging)
 					return;
-				var col = Math.min(model.cols, Math.max(1, Math.floor((node.x + model.nodeW / 2) / model.colW) + 1));
-				var row = Math.min(model.rows, Math.max(1, Math.floor((node.y + model.nodeH / 2) / model.rowH) + 1));
-				if (col !== node.col || row !== node.row) {
-					sendEvent(wgt, 'onNodeDrop', { nodeId: node.id, row: row, col: col });
-				}
+				var col = Math.min((model.cols+1), Math.max(1, Math.floor((node.x + model.nodeW / 2) / model.colW) + 1));
+				var row = Math.min((model.rows+1), Math.max(1, Math.floor((node.y + model.nodeH / 2) / model.rowH) + 1));
 				// snap back to the grid so the node never rests between cells
 				node.x = (col - 1) * model.colW + (model.colW - model.nodeW) / 2;
-				node.y = (row - 1) * model.rowH + (model.rowH - model.nodeH) / 2;
-				rerender();
+				node.y = (row - 1) * model.rowH + (model.rowH - model.nodeH) / 2;	
+				rerender();			
+				if (col !== node.col || row !== node.row) {
+					sendEvent(wgt, 'onNodeDrop', { nodeId: node.id, row: row, col: col });
+				}								
 				uev.stopPropagation();
 			}
 			g.addEventListener('pointermove', onMove);
@@ -430,23 +432,25 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 	}
 
 	function updateEdges(svg, model) {
-		var paths = edgePaths(svg);
-		var selfCount = {};
-		for (var i = 0; i < paths.length; i++) {
-			var p = paths[i];
-			var from = parseInt(p.getAttribute('data-from'), 10);
-			var to = parseInt(p.getAttribute('data-to'), 10);
-			var d;
-			if (from === to) {
-				var key = 's' + from;
-				selfCount[key] = (selfCount[key] || 0);
-				d = edgePath(model, { from: from, to: to }, selfCount[key]);
-				selfCount[key]++;
-			} else {
-				d = edgePath(model, { from: from, to: to });
+		var lists = [svg.querySelectorAll('path.wf-edge'), svg.querySelectorAll('path.wf-edge-hit')];
+		for (var l = 0; l < lists.length; l++) {
+			var selfCount = {};
+			for (var i = 0; i < lists[l].length; i++) {
+				var p = lists[l][i];
+				var from = parseInt(p.getAttribute('data-from'), 10);
+				var to = parseInt(p.getAttribute('data-to'), 10);
+				var d;
+				if (from === to) {
+					var key = 's' + from;
+					selfCount[key] = (selfCount[key] || 0);
+					d = edgePath(model, { from: from, to: to }, selfCount[key]);
+					selfCount[key]++;
+				} else {
+					d = edgePath(model, { from: from, to: to });
+				}
+				if (d)
+					p.setAttribute('d', d);
 			}
-			if (d)
-				p.setAttribute('d', d);
 		}
 	}
 
@@ -537,20 +541,20 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 		while (root.firstChild)
 			root.removeChild(root.firstChild);
 
-		var canvasW = model.cols * model.colW;
-		var canvasH = Math.max(1, model.rows) * model.rowH;
+		var canvasW = (model.cols+1) * model.colW;
+		var canvasH = Math.max(1, (model.rows+1)) * model.rowH;
 
 		var svg = el('svg', {
 			'class': 'wf-canvas',
 			'role': 'img',
-			'aria-label': 'Workflow graph',
+			'aria-label': opts.graphLabel || 'Workflow graph',
 			'viewBox': '0 0 ' + canvasW + ' ' + canvasH
 		}, null);
 		// width/height attributes drive the zoom level via the viewBox;
 		// keep theme CSS from clamping the svg back to container width
 		svg.style.display = 'block';
 		svg.style.maxWidth = 'none';
-		renderToolbar(root, svg, st, canvasW, canvasH, !!opts.editable);
+		renderToolbar(root, svg, st, canvasW, canvasH, opts);
 		st.canvasH = canvasH;
 		root.appendChild(svg);
 
@@ -618,10 +622,13 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 		}, { passive: false });
 
 		if (model.nodes.length === 0) {
-			text(svg, 20, 30, 'No workflow nodes', { 'class': 'wf-empty' });
+			text(svg, 20, 30, opts.emptyText || 'No workflow nodes', { 'class': 'wf-empty' });
 		}
 	}
 
 	window.idempiere.wfgraph.render = render;
 	window.idempiere.wfgraph.edgePath = edgePath;
+	window.idempiere.wfgraph.dispose = function (uuid) {
+		delete stateByUuid[uuid];
+	};
 })();

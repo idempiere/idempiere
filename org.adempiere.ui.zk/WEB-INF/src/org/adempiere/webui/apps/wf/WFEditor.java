@@ -29,6 +29,7 @@ import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.apps.wf.WFNodeWidget;
 import org.compiere.model.MEntityType;
+import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -215,8 +216,10 @@ public class WFEditor extends ADForm {
 					node.setXPosition(col);
 					node.setYPosition(row);
 					node.saveEx();
-					reload(m_workflowId, true);
 				}
+				// reload even for rejected cross-client drops so the client
+				// discards the dropped position and shows the persisted one
+				reload(m_workflowId, true);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getLocalizedMessage(), e);
@@ -299,6 +302,8 @@ public class WFEditor extends ADForm {
 			m_wf.reloadNodes();
 		}
 		nodeContainer.load(m_wf, true);
+		graph.setEditable(m_wf.isActive() && MRole.getDefault().canUpdate(m_wf.getAD_Client_ID(), m_wf.getAD_Org_ID(), 
+			m_wf.get_Table_ID(), workflowId, false));
 		graph.setModel(nodeContainer.toJson());
 	}
 
