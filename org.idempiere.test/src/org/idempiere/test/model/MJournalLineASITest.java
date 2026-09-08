@@ -179,8 +179,8 @@ public class MJournalLineASITest extends AbstractTestCase
 			}
 		}
 		assertNotNull(gridTab, "GL Journal Line tab must exist");
+		gridTab.initTab(false);
 		gridTab.setValue("M_AttributeSetInstance_ID", asi.getM_AttributeSetInstance_ID());
-		gridTab.initTab(true);
 		GridField productField = gridTab.getField("M_Product_ID");
 		new CalloutGLJournal().account(ctx, windowNo, gridTab, productField, 0);
 		assertNull(gridTab.getValue("M_AttributeSetInstance_ID"), "Callout must clear ASI when M_Product_ID changes");
