@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 
 import org.adempiere.exceptions.DBException;
 import org.compiere.model.MColumn;
+import org.compiere.model.MDocType;
 import org.compiere.model.MMenu;
 import org.compiere.model.MProduct;
 import org.compiere.model.MRole;
@@ -51,8 +52,8 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
-import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.ImmutablePOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Extended WorkFlow Model for AD_Workflow
@@ -1003,5 +1004,73 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 		processInfo.setPO(po);
 		ServerProcessCtl.process(processInfo, !Util.isEmpty(processInfo.getTransactionName(), true) ? Trx.get(processInfo.getTransactionName(), false) : null);
 		return processInfo;
+	}
+	
+	/**
+	 * Get workflow ID from document type of given PO
+	 * 
+	 * @param tableID table ID
+	 * @param recordID record ID
+	 * @param trxName transaction name
+	 * @return workflow ID or -1 if not found
+	 */
+	public static int getPODocWorkflow_ID(int tableID, int recordID, String trxName)
+	{
+		s_log.info("Fetching Workflow ID for TableID=" + tableID + ", RecordID=" + recordID);
+
+		if (tableID > 0 && recordID > 0)
+		{
+			PO po = MTable.get(Env.getCtx(), tableID).getPO(recordID, trxName);
+			if (po != null)
+			{
+				int docTypeID = -1;
+				int index = po.get_ColumnIndex("C_DocType_ID");
+
+				if (index != -1)
+				{
+					Integer ii = (Integer) po.get_Value(index);
+
+					// DocType does not exist - get DocTypeTarget
+					if (ii == null || ii.intValue() <= 0)
+					{
+						index = po.get_ColumnIndex("C_DocTypeTarget_ID");
+						if (index != -1)
+							ii = (Integer) po.get_Value(index);
+					}
+
+					if (ii != null)
+						docTypeID = ii;
+				}
+				else
+				{
+					index = po.get_ColumnIndex("C_DocTypeTarget_ID");
+					if (index != -1)
+					{
+						Integer ii = (Integer) po.get_Value(index);
+						if (ii != null)
+							docTypeID = ii;
+					}
+				}
+
+				s_log.info("Resolved DocTypeID=" + docTypeID);
+
+				if (docTypeID > 0)
+				{
+					final MDocType docType = MDocType.get(docTypeID);
+					if (docType != null && docType.getAD_Workflow_ID() > 0)
+					{
+						s_log.info("Found WorkflowID=" + docType.getAD_Workflow_ID());
+						return docType.getAD_Workflow_ID();
+					}
+				}
+			}
+			else
+			{
+				s_log.info("PO not found for RecordID=" + recordID);
+			}
+		}
+
+		s_log.info("No Workflow found, returning -1");
+		return -1;
 	}
 }	//	MWorkflow_ID
