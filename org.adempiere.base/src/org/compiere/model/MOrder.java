@@ -43,7 +43,6 @@ import org.adempiere.util.IReservationTracer;
 import org.adempiere.util.IReservationTracerFactory;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.DocAction;
-import org.idempiere.print.ReportContentRequest;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -53,6 +52,7 @@ import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
 import org.eevolution.model.MPPProductBOM;
 import org.eevolution.model.MPPProductBOMLine;
+import org.idempiere.print.ReportContentRequest;
 
 /**
  *  Order Model.
@@ -1654,8 +1654,10 @@ public class MOrder extends X_C_Order implements DocAction
 		if (explodeBOM())
 			lines = getLines(true, MOrderLine.COLUMNNAME_M_Product_ID);
 
-		// Reserve stock if does not generate shipment on complete
-		if (!evalAutoGenerateInOutRule(dt.getDocSubTypeSO(), dt.isAutoGenerateInout())) {
+		// Skip stock reservation when completing an order that generates the shipment immediately
+		boolean skipReserveStock = ( DOCACTION_Complete.equals(getDocAction()) 
+				&& evalAutoGenerateInOutRule(dt.getDocSubTypeSO(), dt.isAutoGenerateInout()) );
+		if (!skipReserveStock) {
 			if (!reserveStock(dt, lines))
 			{
 				String innerMsg = CLogger.retrieveErrorString("");
