@@ -40,6 +40,7 @@
 				<module>org.adempiere.replication</module>
 				<module>org.adempiere.replication.server</module>
 				<module>org.adempiere.report.jasper.library</module>
+				<module>org.idempiere.webservice.library</module>
 				<module>org.adempiere.report.jasper</module>
 				<module>org.adempiere.server</module>		
 				<module>org.adempiere.ui</module>
@@ -125,6 +126,7 @@
 
 				<!-- Reporting -->
 				<module>org.adempiere.report.jasper.library</module>
+				<module>org.idempiere.webservice.library</module>
 				<module>org.adempiere.report.jasper</module>
 
 				<!-- Database Providers -->
