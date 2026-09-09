@@ -35,6 +35,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.compiere.wf.MWFProcess;
+import org.compiere.wf.MWorkflow;
 
 /**
  * Controller for running of process
@@ -192,6 +193,15 @@ public class ServerProcessCtl implements Runnable {
 				}
 				AD_ReportView_ID = info.AD_ReportView_ID;
 				AD_Workflow_ID = info.AD_Workflow_ID;
+				if (m_pi.isDocActionProcess())
+				{
+					final int poWorkflow_ID = MWorkflow.getPODocWorkflow_ID(m_pi.getTable_ID(), m_pi.getRecord_ID(), m_pi.getTransactionName());
+					if (poWorkflow_ID > 0)
+					{
+						AD_Workflow_ID = poWorkflow_ID;
+						m_pi.setIsDocTypeWorkflow(true);
+					}
+				}
 				//
 				int estimate = info.estimate;
 				if (estimate != 0)

@@ -139,7 +139,8 @@ public abstract class AbstractProcessCtl implements Runnable
 				AD_Workflow_ID = info.AD_Workflow_ID;
 				if (m_pi.isDocActionProcess())
 				{
-					final int poWorkflow_ID = MWorkflow.getPODocWorkflow_ID(m_pi.getTable_ID(), m_pi.getRecord_ID(), null);
+					String trxName = m_trx != null ? m_trx.getTrxName() : m_pi.getTransactionName();
+					int poWorkflow_ID = MWorkflow.getPODocWorkflow_ID(m_pi.getTable_ID(), m_pi.getRecord_ID(), trxName);
 					if (poWorkflow_ID > 0)
 					{
 						AD_Workflow_ID = poWorkflow_ID;
