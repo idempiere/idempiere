@@ -1839,7 +1839,11 @@ public class SalesOrderTest extends AbstractTestCase {
 		    order.load(getTrxName());
 		    assertEquals(DocAction.STATUS_WaitingPayment, order.getDocStatus());
 		    order.saveEx();
-	
+
+		    // There must be reservations here on line1 because we don't know when is going to be paid
+			line1.load(getTrxName());
+			assertEquals(1, line1.getQtyReserved().intValue(), "Azalea Bush not reserved after prepare");
+
 		    // Create the payment
 		    MPayment payment = new MPayment(Env.getCtx(), 0, getTrxName());
 		    payment.setC_Order_ID(order.getC_Order_ID());

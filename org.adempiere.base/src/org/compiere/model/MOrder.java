@@ -1655,8 +1655,12 @@ public class MOrder extends X_C_Order implements DocAction
 			lines = getLines(true, MOrderLine.COLUMNNAME_M_Product_ID);
 
 		// Skip stock reservation when completing an order that generates the shipment immediately
-		boolean skipReserveStock = ( DOCACTION_Complete.equals(getDocAction()) 
-				&& evalAutoGenerateInOutRule(dt.getDocSubTypeSO(), dt.isAutoGenerateInout()) );
+		boolean waitingForPayment = !m_forceCreation
+				&& MDocType.DOCSUBTYPESO_PrepayOrder.equals(dt.getDocSubTypeSO())
+				&& getC_Payment_ID() == 0 && getC_CashLine_ID() == 0;
+		boolean skipReserveStock = (DOCACTION_Complete.equals(getDocAction())
+				&& evalAutoGenerateInOutRule(dt.getDocSubTypeSO(), dt.isAutoGenerateInout())
+				&& !waitingForPayment );
 		if (!skipReserveStock) {
 			if (!reserveStock(dt, lines))
 			{
@@ -2020,19 +2024,19 @@ public class MOrder extends X_C_Order implements DocAction
 	 * @param lines order lines (ordered by M_Product_ID for deadlock prevention)
 	 */
 	protected void calculateVolumeAndWeight(MOrderLine[] lines) {
-		BigDecimal Volume = Env.ZERO;
-		BigDecimal Weight = Env.ZERO;
+		BigDecimal volume = Env.ZERO;
+		BigDecimal weight = Env.ZERO;
 		for (MOrderLine line : lines) {
 			if (line.getM_Product_ID() > 0) {
 				MProduct product = line.getProduct();
 				if (product != null) {
-					Volume = Volume.add(product.getVolume().multiply(line.getQtyOrdered()));
-					Weight = Weight.add(product.getWeight().multiply(line.getQtyOrdered()));
+					volume = volume.add(product.getVolume().multiply(line.getQtyOrdered()));
+					weight = weight.add(product.getWeight().multiply(line.getQtyOrdered()));
 				}
 			}
 		}
-		setVolume(Volume);
-		setWeight(Weight);
+		setVolume(volume);
+		setWeight(weight);
 	} // calculateVolumeAndWeight
 
 	/**
