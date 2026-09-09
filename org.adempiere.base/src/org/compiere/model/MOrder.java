@@ -74,9 +74,9 @@ import org.idempiere.print.ReportContentRequest;
 public class MOrder extends X_C_Order implements DocAction
 {
 	/**
-	 * generated serial id
+	 *
 	 */
-	private static final long serialVersionUID = 9095740800513665542L;
+	private static final long serialVersionUID = -7697599534971299336L;
 
 	/** Matching SELECT SQL template */
 	private static final String BASE_MATCHING_SQL =
@@ -1667,6 +1667,9 @@ public class MOrder extends X_C_Order implements DocAction
 				return DocAction.STATUS_Invalid;
 			}
 		}
+
+		calculateVolumeAndWeight(lines);
+
 		if (!calculateTaxTotal())
 		{
 			m_processMsg = "Error calculating tax";
@@ -1947,10 +1950,7 @@ public class MOrder extends X_C_Order implements DocAction
 		if (MDocType.DOCSUBTYPESO_StandardOrder.equals(dt.getDocSubTypeSO())
 			|| MDocType.DOCBASETYPE_PurchaseOrder.equals(dt.getDocBaseType()))
 			header_M_Warehouse_ID = 0;		//	don't enforce
-		
-		BigDecimal Volume = Env.ZERO;
-		BigDecimal Weight = Env.ZERO;
-		
+
 		//	Always check and (un) Reserve Inventory		
 		for (int i = 0; i < lines.length; i++)
 		{
@@ -1972,12 +1972,6 @@ public class MOrder extends X_C_Order implements DocAction
 			{
 				if (difference.signum() == 0 || line.getQtyReserved().signum() == 0)
 				{
-					MProduct product = line.getProduct();
-					if (product != null)
-					{
-						Volume = Volume.add(product.getVolume().multiply(line.getQtyOrdered()));
-						Weight = Weight.add(product.getWeight().multiply(line.getQtyOrdered()));
-					}
 					continue;
 				}
 				else if (line.getQtyOrdered().signum() < 0 && line.getQtyReserved().signum() > 0)
@@ -2016,16 +2010,30 @@ public class MOrder extends X_C_Order implements DocAction
 				line.setQtyReserved(line.getQtyReserved().add(difference));
 				if (!line.save(get_TrxName()))
 					return false;
-				//
-				Volume = Volume.add(product.getVolume().multiply(line.getQtyOrdered()));
-				Weight = Weight.add(product.getWeight().multiply(line.getQtyOrdered()));
 			}	//	product
 		}	//	reverse inventory
-		
-		setVolume(Volume);
-		setWeight(Weight);
 		return true;
 	}	//	reserveStock
+
+	/**
+	 * Calculate the Volume and Weight of the order
+	 * @param lines order lines (ordered by M_Product_ID for deadlock prevention)
+	 */
+	protected void calculateVolumeAndWeight(MOrderLine[] lines) {
+		BigDecimal Volume = Env.ZERO;
+		BigDecimal Weight = Env.ZERO;
+		for (MOrderLine line : lines) {
+			if (line.getM_Product_ID() > 0) {
+				MProduct product = line.getProduct();
+				if (product != null) {
+					Volume = Volume.add(product.getVolume().multiply(line.getQtyOrdered()));
+					Weight = Weight.add(product.getWeight().multiply(line.getQtyOrdered()));
+				}
+			}
+		}
+		setVolume(Volume);
+		setWeight(Weight);
+	} // calculateVolumeAndWeight
 
 	/**
 	 * 	Calculate Tax and Total (delete and re-create C_OrderTax records).

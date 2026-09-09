@@ -1991,4 +1991,76 @@ public class SalesOrderTest extends AbstractTestCase {
 			}
 	    }
 	}
+
+	@Test
+	public void testPOSOrderReservationAndWeight() {
+		Properties ctx = Env.getCtx();
+		String trxName = getTrxName();
+
+		MOrder order = new MOrder(ctx, 0, trxName);
+		order.setBPartner(MBPartner.get(ctx, DictionaryIDs.C_BPartner.JOE_BLOCK.id));
+		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_POS);
+		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Prepare);
+		order.setPaymentRule(MOrder.PAYMENTRULE_Cash);
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		order.setDateOrdered(today);
+		order.setDatePromised(today);
+		order.saveEx();
+
+		MOrderLine line1 = new MOrderLine(order);
+		line1.setLine(10);
+		line1.setProduct(MProduct.get(ctx, DictionaryIDs.M_Product.AZALEA_BUSH.id));
+		line1.setQty(new BigDecimal("1"));
+		line1.setDatePromised(today);
+		line1.saveEx();
+
+		MOrderLine line2 = new MOrderLine(order);
+		line2.setLine(20);
+		line2.setProduct(MProduct.get(ctx, DictionaryIDs.M_Product.HOE.id));
+		line2.setQty(new BigDecimal("1"));
+		line2.setDatePromised(today);
+		line2.saveEx();
+
+		// Prepare the order
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Prepare);
+		assertFalse(info.isError(), info.getSummary());
+
+		order.load(trxName);
+		line1.load(trxName);
+		line2.load(trxName);
+
+		// After prepare: check reservations are set
+		assertEquals(1, line1.getQtyReserved().intValue(), "Azalea Bush not reserved after prepare");
+		assertEquals(1, line2.getQtyReserved().intValue(), "Hoe not reserved after prepare");
+
+		// Check weight is set
+		assertTrue(order.getWeight().signum() > 0, "Weight not set after prepare");
+
+		// Now complete the order
+		order.setDocAction(DocAction.ACTION_Complete);
+		order.saveEx();
+		info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+
+		order.load(trxName);
+		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+
+		line1.load(trxName);
+		line2.load(trxName);
+
+		// After complete: reservations should be cleared (shipment auto-generated)
+		assertEquals(0, line1.getQtyReserved().intValue(), "Azalea Bush reservation not cleared after complete");
+		assertEquals(0, line2.getQtyReserved().intValue(), "Hoe reservation not cleared after complete");
+
+		assertEquals(1, line1.getQtyDelivered().intValue());
+		assertEquals(1, line2.getQtyDelivered().intValue());
+		assertEquals(1, line1.getQtyInvoiced().intValue());
+		assertEquals(1, line2.getQtyInvoiced().intValue());
+
+		MInOut[] shipments = order.getShipments();
+		assertEquals(1, shipments.length);
+		assertEquals(DocAction.STATUS_Completed, shipments[0].getDocStatus());
+	}
 }
