@@ -1655,10 +1655,18 @@ public class MOrder extends X_C_Order implements DocAction
 			lines = getLines(true, MOrderLine.COLUMNNAME_M_Product_ID);
 
 		// Skip stock reservation when completing an order that generates the shipment immediately
+		boolean hasReservations = false;
+		for (MOrderLine line : lines) {
+			if (line.getQtyReserved().signum() != 0) {
+				hasReservations = true;
+				break;
+			}
+		}
 		boolean waitingForPayment = !m_forceCreation
 				&& MDocType.DOCSUBTYPESO_PrepayOrder.equals(dt.getDocSubTypeSO())
 				&& getC_Payment_ID() == 0 && getC_CashLine_ID() == 0;
-		boolean skipReserveStock = (DOCACTION_Complete.equals(getDocAction())
+		boolean skipReserveStock = !hasReservations
+				&& (DOCACTION_Complete.equals(getDocAction())
 				&& evalAutoGenerateInOutRule(dt.getDocSubTypeSO(), dt.isAutoGenerateInout())
 				&& !waitingForPayment );
 		if (!skipReserveStock) {
