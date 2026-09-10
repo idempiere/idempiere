@@ -21,6 +21,8 @@
  **********************************************************************/
 package org.idempiere.fa.process;
 
+import java.util.List;
+
 import org.compiere.model.MAssetAddition;
 import org.compiere.model.MMatchInv;
 import org.compiere.model.MProcessPara;
@@ -62,8 +64,11 @@ public class A_Asset_CreateFromMatchInv extends SvrProcess {
 		if (match == null || match.get_ID() <= 0) {
 			throw new AssetException("@NotFound@ @M_MatchInv_ID@=" + match + "(ID="+p_M_MatchInv_ID+")");
 		}
-		MAssetAddition assetAdd = MAssetAddition.createAsset(match);
+		if (match.isReversal())
+			throw new AssetException("@Invalid@ @M_MatchInv_ID@=" + match.getM_MatchInv_ID()
+					+ " (@Reversal_ID@)");
+		List<MAssetAddition> assetAdditions = MAssetAddition.createAssetAdditions(match);
 		
-		return "@A_Asset_Addition_ID@ - " + assetAdd;
+		return "@A_Asset_Addition_ID@ - " + assetAdditions;
 	}
 }
