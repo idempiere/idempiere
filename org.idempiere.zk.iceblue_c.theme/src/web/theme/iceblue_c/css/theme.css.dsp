@@ -17,8 +17,8 @@
     --zk-toolbar-button-checked-background-color: #7ac8ff; /* var(--zk-color-primary); */
 
 	/* Custom CSS variables */
-	--zk-body-background-color: #D4E3F4;
-    --zk-body-text-color: #333;
+	--zk-body-background-color: #f4f6f9;
+    --zk-body-text-color: #1e293b;
     --zk-icon-font-family: FontAwesome;
 
 	--zk-screen-font-size-x-large: 14px;
@@ -65,14 +65,14 @@
 	--zk-button-disabled-icon-color: var(--zk-body-text-color);
 	--zk-button-ok-icon-color: white;
 
-	--zk-desktop-header-background-color: #c7e8ff;
-	--zk-desktop-header-border-color: #adddff;
-	--zk-desktop-header-hover-background-color: #e0f2ff;
+	--zk-desktop-header-background-color: #ffffff;
+	--zk-desktop-header-border-color: #e2e8f0;
+	--zk-desktop-header-hover-background-color: #f1f5f9;
 	--zk-desktop-header-hover-color: rgba(0,0,0,0.9);
-	--zk-desktop-tab-toolbar-hover-background-color: #ddd;
-	--zk-desktop-tab-toolbar-hover-shadow-color: #ccc;
-	--zk-desktop-column-border-color: #c5c5c5;
-	--zk-desktop-column-background-color: #f6fafe;
+	--zk-desktop-tab-toolbar-hover-background-color: #e2e8f0;
+	--zk-desktop-tab-toolbar-hover-shadow-color: #cbd5e1;
+	--zk-desktop-column-border-color: #e2e8f0;
+	--zk-desktop-column-background-color: #f8fafc;
 	--zk-desktop-toolbar-icon-color: rgba(0,0,0,0.57);
 
 	--zk-drill-window-field-color: gray;
@@ -119,20 +119,27 @@
 
 	--zk-form-status-border-color: #9CBDFF;
 
-	--zk-gadget-panel-header-border-color: #e4e4e4;
-	--zk-gadget-panel-icon-color: rgb(0 0 0 / 57%);
-	--zk-gadget-panel-icon-hover-color: rgb(0 0 0 / 100%);
-	--zk-gadget-dashboard-widget-border-color: rgba(0, 0, 0, 0.09);
+	--zk-gadget-border-radius: 8px;
+	--zk-gadget-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+	--zk-gadget-box-shadow-hover: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+	--zk-gadget-dashboard-widget-border-color: #e2e8f0;
+	--zk-gadget-panel-body-background-color: #ffffff;
+	--zk-gadget-panel-header-background-color: #ffffff;
+	--zk-gadget-panel-header-border-color: #f1f5f9;
+	--zk-gadget-panel-header-text-color: #1e293b;
+	--zk-gadget-panel-icon-color: #94a3b8;
+	--zk-gadget-panel-icon-hover-color: #1e293b;
+	--zk-gadget-panel-icon-hover-bg: #f1f5f9;
 	--zk-gadget-recent-item-text-color: var(--zk-body-text-color);
-	--zk-gadget-recent-item-hover-background-color: #e0f2ff;
+	--zk-gadget-recent-item-hover-background-color: #f1f5f9;
 	--zk-gadget-views-button-hover-text-color: rgba(0,0,0,0.9);
-	--zk-gadget-mandatory-process-background-color: #C62223;
+	--zk-gadget-mandatory-process-background-color: #ef4444;
 	--zk-gadget-mandatory-process-text-color: white;
-	--zk-gadget-performance-indicator-background-color: #eee;
-	--zk-gadget-performance-indicator-border-color: #d8d8d8;
-	--zk-gadget-performance-title-background-color: #c8c8c8;
-	--zk-gadget-favorite-button-border-color: #6d6d6d;
-	--zk-gadget-help-popup-background-color: black;
+	--zk-gadget-performance-indicator-background-color: #f8fafc;
+	--zk-gadget-performance-indicator-border-color: #e2e8f0;
+	--zk-gadget-performance-title-background-color: #f1f5f9;
+	--zk-gadget-favorite-button-border-color: #cbd5e1;
+	--zk-gadget-help-popup-background-color: #1e293b;
 	--zk-gadget-help-popup-text-color: white;
 
 	--zk-grid-header-background-color: #e0f2ff;

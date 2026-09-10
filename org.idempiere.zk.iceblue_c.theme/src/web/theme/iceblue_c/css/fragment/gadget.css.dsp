@@ -7,28 +7,45 @@
 	height: 100%;
 }
 .z-panel-head {
-	padding-bottom: 1px;
+	padding: 0;
 	border: none;
+	background: var(--zk-gadget-panel-header-background-color, #ffffff);
 }
 .z-panel-head .z-panel-header {
-	margin-top: 2px;
-	padding: 1px 5px 1px 10px;
-    border-bottom: 1px solid var(--zk-gadget-panel-header-border-color);
+	margin: 0;
+	padding: 8px 12px;
+	background: var(--zk-gadget-panel-header-background-color, #ffffff);
+	border-bottom: 1px solid var(--zk-gadget-panel-header-border-color, #f1f5f9);
+}
+.z-caption {
+	display: flex;
+	align-items: center;
+	width: 100%;
 }
 .z-caption .z-caption-content {
 	cursor: move;
 	padding: 0px;
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--zk-gadget-panel-header-text-color, #1e293b);
+	letter-spacing: 0.01em;
 }
 .z-panel-icon {
-	font-size: 10px !important;
-	color: var(--zk-gadget-panel-icon-color) !important;
-    margin: 4px 0 0 0 !important;
-    line-height: 24px !important;
-    border: 0px !important;
-    border-radius: 0px !important;
+	font-size: 12px !important;
+	color: var(--zk-gadget-panel-icon-color, #94a3b8) !important;
+	margin: 0 0 0 4px !important;
+	line-height: 1 !important;
+	border: 0px !important;
+	border-radius: 4px !important;
+	padding: 4px 6px !important;
+	display: inline-flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	transition: background-color 0.15s ease, color 0.15s ease;
 }
 .z-panel-icon:hover {
-	color: var(--zk-gadget-panel-icon-hover-color) !important;
+	color: var(--zk-gadget-panel-icon-hover-color, #1e293b) !important;
+	background-color: var(--zk-gadget-panel-icon-hover-bg, #f1f5f9) !important;
 }
 
 <%-- dashboard widget --%>
@@ -38,31 +55,58 @@
 	position: relative;
 }
 
+.dashboard-column {
+	padding: 2px 4px;
+}
+
 .dashboard-widget.z-panel {
 	display: flex; 
 	flex-direction: column; 
 	justify-content: stretch;
+	background: var(--zk-gadget-panel-body-background-color, #ffffff);
+	border: 1px solid var(--zk-gadget-dashboard-widget-border-color, #e2e8f0);
+	border-radius: var(--zk-gadget-border-radius, 8px);
+	box-shadow: var(--zk-gadget-box-shadow, 0 1px 3px 0 rgba(0, 0, 0, 0.05));
+	transition: box-shadow 0.2s ease, border-color 0.2s ease;
+	overflow: hidden;
+}
+.dashboard-widget.z-panel:hover {
+	box-shadow: var(--zk-gadget-box-shadow-hover, 0 4px 6px -1px rgba(0, 0, 0, 0.07));
 }
 .dashboard-widget > .z-panel-body {
 	flex-grow: 1;
+	background: var(--zk-gadget-panel-body-background-color, #ffffff);
 }
-.dashboard-widget.z-panel {
-	border: 1px solid var(--zk-gadget-dashboard-widget-border-color);
+.dashboard-widget .z-panelchildren {
+	background: var(--zk-gadget-panel-body-background-color, #ffffff);
 }
 .dashboard-widget {
-	margin-top: 1px; 
+	margin-top: 4px;
+	margin-bottom: 8px;
 	margin-left: auto; 
 	margin-right: auto;
 	position: relative;
-	width: 99%;	
+	width: calc(100% - 6px);	
 	height: 100%;
 }
 .dashboard-widget-max {
-	margin: auto;
-	width: auto;	
+	margin: 0;
+	width: 100%;
+	height: 100%;
+	border-radius: 0 !important;
+	box-shadow: none !important;
 }
 .dashboard-widget.dashboard-widget-max > .z-panel-body > .z-panelchildren {
 	overflow: auto;
+}
+
+<%-- side panel (left / right) overrides --%>
+.desktop-left-column .dashboard-widget.z-panel,
+.desktop-right-column .dashboard-widget.z-panel {
+	box-shadow: none;
+	border-radius: 6px;
+	margin: 2px auto 6px auto;
+	width: calc(100% - 8px);
 }
 
 <%-- favourites gadget --%>
