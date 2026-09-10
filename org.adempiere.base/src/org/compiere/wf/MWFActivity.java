@@ -424,6 +424,35 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	}	//	getPO
 
 	/**
+	 * Evaluate the schedule expression of the current workflow node.
+	 * Context variables are resolved against the workflow record and passed as
+	 * prepared statement parameters.
+	 *
+	 * @param trx transaction, may be {@code null}
+	 * @return calculated end wait time, or {@code null} if the expression returns null
+	 */
+	public Timestamp evaluateScheduleEndWaitTime(Trx trx)
+	{
+		String expression = getNode().getScheduleExpression();
+		if (Util.isEmpty(expression, true) || !expression.trim().startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX))
+			throw new AdempiereException("Invalid ScheduleExpression - expected @SQL=SELECT ...");
+
+		String sql = expression.trim().substring(MColumn.VIRTUAL_UI_COLUMN_PREFIX.length()).trim();
+		if (!sql.regionMatches(true, 0, "SELECT", 0, 6))
+			throw new AdempiereException("Invalid ScheduleExpression - expected @SQL=SELECT ...");
+
+		PO po = getPO(trx);
+		if (po == null)
+			throw new AdempiereException("Persistent Object not found - AD_Table_ID="
+					+ getAD_Table_ID() + ", Record_ID=" + getRecord_ID());
+
+		String trxName = trx != null ? trx.getTrxName() : null;
+		List<Object> parameters = new ArrayList<>();
+		sql = Env.parseVariableForSql(sql, po, trxName, false, parameters);
+		return DB.getSQLValueTSEx(trxName, sql, parameters);
+	}	//	evaluateScheduleEndWaitTime
+
+	/**
 	 * 	Get PO AD_Client_ID
 	 *	@return client of PO
 	 */
@@ -1091,6 +1120,15 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			if (m_node.getWaitTime() == -1)
 				prepareCommitEvent();
 			return false;		//	not done
+		}
+
+		/******	Wait until calculated schedule	******/
+		else if (MWFNode.ACTION_WaitSchedule.equals(action))
+		{
+			Timestamp endWaitTime = evaluateScheduleEndWaitTime(trx);
+			setEndWaitTime(endWaitTime);
+			if (log.isLoggable(Level.FINE)) log.fine("Schedule:EndWaitTime=" + endWaitTime);
+			return endWaitTime != null && !endWaitTime.after(new Timestamp(System.currentTimeMillis()));
 		}
 
 		/******	Document Action				******/

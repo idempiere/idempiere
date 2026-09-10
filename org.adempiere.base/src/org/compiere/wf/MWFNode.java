@@ -443,6 +443,8 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 			return "Window:AD_InfoWindow_ID=" + getAD_InfoWindow_ID();
 		else if (ACTION_WaitSleep.equals(action))
 			return "Sleep:WaitTime=" + getWaitTime();
+		else if (ACTION_WaitSchedule.equals(action))
+			return "Schedule:ScheduleExpression=" + getScheduleExpression();
 		return "??";
 	}	//	getActionInfo
 		
@@ -649,6 +651,22 @@ public class MWFNode extends X_AD_WF_Node implements ImmutablePOSupport
 		String action = getAction();
 		if (action.equals(ACTION_WaitSleep))
 			;
+		else if (action.equals(ACTION_WaitSchedule))
+		{
+			String expression = getScheduleExpression();
+			if (Util.isEmpty(expression, true))
+			{
+				log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_ScheduleExpression));
+				return false;
+			}
+			String sql = expression.trim();
+			if (!sql.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)
+					|| !sql.substring(MColumn.VIRTUAL_UI_COLUMN_PREFIX.length()).trim().regionMatches(true, 0, "SELECT", 0, 6))
+			{
+				log.saveError("Invalid", Msg.getElement(getCtx(), COLUMNNAME_ScheduleExpression) + " (@SQL=SELECT ...)");
+				return false;
+			}
+		}
 		else if (action.equals(ACTION_AppsProcess) || action.equals(ACTION_AppsReport)) 
 		{
 			if (getAD_Process_ID() == 0)
