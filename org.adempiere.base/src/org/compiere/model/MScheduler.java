@@ -355,6 +355,12 @@ public class MScheduler extends X_AD_Scheduler
 				setDateNextRun(new Timestamp(nextWork));
 		}
 		
+		MUser supervisor = MUser.get(getSupervisor_ID());
+		if(supervisor.getRoles(getAD_Org_ID()).length == 0) {
+			log.saveError("Error", Msg.getMsg(getCtx(), "SchedulerSupervisorMustHaveRole"));
+			return false;
+		}
+		
 		return true;
 	}	//	beforeSave
 
