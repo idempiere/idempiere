@@ -306,7 +306,9 @@
 	overflow-y: auto;
 }
 @media screen and (max-height: 319px) {
-	max-height: 100%;
+	.notification-popup-layout {
+		max-height: 100%;
+	}
 }
 .notification-popup-header {
 	display: flex;
