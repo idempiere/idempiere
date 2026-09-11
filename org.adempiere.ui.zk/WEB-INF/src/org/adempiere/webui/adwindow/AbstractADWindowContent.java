@@ -4127,6 +4127,7 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 				adtabPanel = findADTabpanel(wButton);
 
 			ProcessInfo pi = new ProcessInfo("", wButton.getProcess_ID(), table_ID, record_ID, record_UU);
+			pi.setIsDocActionProcess(wButton.getColumnName().equalsIgnoreCase("DocAction"));
 			if (adtabPanel != null && adtabPanel.isGridView() && adtabPanel.getGridTab() != null)
 			{
 				int[] indices = adtabPanel.getGridTab().getSelection();
