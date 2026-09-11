@@ -13,35 +13,43 @@
 package org.adempiere.webui.apps.wf;
 
 import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.apps.wf.WFGraphLayout;
 import org.compiere.apps.wf.WFNodeWidget;
-import org.compiere.apps.wf.WorkflowGraphScene;
+import org.compiere.model.MColumn;
 import org.compiere.model.X_AD_Workflow;
 import org.compiere.util.CLogger;
+import org.compiere.util.Env;
 import org.compiere.wf.MWFNode;
 import org.compiere.wf.MWFNodeNext;
+import org.compiere.wf.MWFNextCondition;
 import org.compiere.wf.MWorkflow;
-import org.netbeans.api.visual.graph.GraphScene;
-import org.netbeans.api.visual.graph.layout.GraphLayout;
-import org.netbeans.api.visual.layout.LayoutFactory;
-import org.netbeans.api.visual.layout.SceneLayout;
+import org.zkoss.json.JSONArray;
+import org.zkoss.json.JSONObject;
 
 /**
- * Container for one or more workflow node
+ * Container for one or more workflow node.
+ *
+ * <p>Pure Java layout model, no NetBeans Visual Library and no server side
+ * image rendering. Row/column placement is computed here and exposed as JSON
+ * ({@link #toJson()}) for the client side SVG renderer
+ * ({@code idempiere.wfgraph}).</p>
+ *
  * @author Low Heng Sin
  */
 public class WFNodeContainer
 {
 	private static final int DEFAULT_COLUMN_COUNT = 4;
-	private static final int MAX_COLUMN_COUNT = 20;
-	private static final int MAX_ROW_COUNT = 50;
+	public static final int MAX_COLUMN_COUNT = 20;
+	public static final int MAX_ROW_COUNT = 50;
 
 	/**	Logger			*/
 	private static final CLogger	log = CLogger.getCLogger(WFNodeContainer.class);
@@ -55,7 +63,11 @@ public class WFNodeContainer
 	private int maxColumn = 0;
 	private int rowCount = 0;
 
-	private WorkflowGraphScene graphScene = new WorkflowGraphScene();
+	/** Node id -&gt; widget, insertion ordered */
+	private Map<Integer, WFNodeWidget> widgets = new LinkedHashMap<Integer, WFNodeWidget>();
+
+	/** Edges in insertion order */
+	private List<MWFNodeNext> edges = new ArrayList<MWFNodeNext>();
 
 	private Map<Integer, Integer[]> matrix = null;
 
@@ -82,7 +94,8 @@ public class WFNodeContainer
 	 */
 	public void removeAll ()
 	{
-		graphScene = new WorkflowGraphScene();
+		widgets = new LinkedHashMap<Integer, WFNodeWidget>();
+		edges = new ArrayList<MWFNodeNext>();
 		currentColumn = 0;
 		currentRow = 1;
 		noOfColumns = DEFAULT_COLUMN_COUNT;
@@ -160,7 +173,11 @@ public class WFNodeContainer
 			}
 		}
 
-		WFNodeWidget w = (WFNodeWidget) graphScene.addNode(node.getAD_WF_Node_ID());
+		WFNodeWidget w = widgets.get(node.getAD_WF_Node_ID());
+		if (w == null) {
+			w = new WFNodeWidget(node);
+			widgets.put(node.getAD_WF_Node_ID(), w);
+		}
 		w.setColumn(currentColumn);
 		w.setRow(currentRow);
 
@@ -202,24 +219,32 @@ public class WFNodeContainer
 	 * @param edge
 	 */
 	public void addEdge(MWFNodeNext edge) {
-		graphScene.addEdge(edge);
-		graphScene.setEdgeSource(edge, edge.getAD_WF_Node_ID());
-		graphScene.setEdgeTarget(edge, edge.getAD_WF_Next_ID());
+		if (edge != null)
+			edges.add(edge);
 	}
 
 	/**
 	 * Find workflow node widget via row and column
 	 * @param row row #, starting from 1
 	 * @param column column #, starting from 1
-	 * @return WFNodeWidget
+	 * @return WFNodeWidget or null
 	 */
 	public WFNodeWidget findWidget(int row, int column) {
 		WFNodeWidget widget = null;
 		Integer[] nodeRow = matrix.get(row);
-		if (nodeRow != null && column <= nodeRow.length) {
-			widget = (WFNodeWidget) graphScene.findWidget(nodeRow[column - 1]);
+		if (nodeRow != null && column >= 1 && column <= nodeRow.length && nodeRow[column - 1] != null) {
+			widget = widgets.get(nodeRow[column - 1]);
 		}
 		return widget;
+	}
+
+	/**
+	 * Find workflow node widget via node id
+	 * @param AD_WF_Node_ID node id
+	 * @return WFNodeWidget or null
+	 */
+	public WFNodeWidget findNode(int AD_WF_Node_ID) {
+		return widgets.get(AD_WF_Node_ID);
 	}
 
 	/**
@@ -229,12 +254,11 @@ public class WFNodeContainer
 	 */
 	public Rectangle findBounds (int AD_WF_Node_ID)
 	{
-		WFNodeWidget widget = (WFNodeWidget) graphScene.findWidget(AD_WF_Node_ID);
+		WFNodeWidget widget = widgets.get(AD_WF_Node_ID);
 		if (widget == null)
 			return null;
 
-		Point p = widget.getPreferredLocation();
-		return new Rectangle(p.x, p.y, WFNodeWidget.NODE_WIDTH, WFNodeWidget.NODE_HEIGHT);
+		return WFGraphLayout.nodeBounds(widget.getRow(), widget.getColumn());
 	}	//	findBounds
 
 	/**
@@ -247,26 +271,145 @@ public class WFNodeContainer
 	}
 
 	/**
-	 * Validate layout
-	 * @param graphics
+	 * Get all node widgets in insertion order
+	 * @return node widgets
 	 */
-	public void validate(Graphics2D graphics)
-	{
-		GraphLayout<Integer, MWFNodeNext> graphLayout = new WFGraphLayout();
-		graphLayout.setAnimated(false);
-		graphScene.setMaximumBounds(new Rectangle(0, 0, getDimension().width, getDimension().height));
-		SceneLayout sceneGraphLayout = LayoutFactory.createSceneGraphLayout (graphScene, graphLayout);
-		sceneGraphLayout.invokeLayoutImmediately();
-
-		graphScene.validate(graphics);
+	public Collection<WFNodeWidget> getWidgets() {
+		return widgets.values();
 	}
 
 	/**
-	 * Paint container
-	 * @param graphics
+	 * Get all edges in insertion order
+	 * @return edges
 	 */
-	public void paint(Graphics2D graphics) {
-		graphScene.paint(graphics);
+	public List<MWFNodeNext> getEdges() {
+		return edges;
+	}
+
+	/**
+	 * Build the client side SVG model.
+	 * @return graph model as {@link JSONObject}
+	 */
+	public JSONObject toJson() {
+		JSONObject model = new JSONObject();
+		model.put("colW", WFGraphLayout.COLUMN_WIDTH);
+		model.put("rowH", WFGraphLayout.ROW_HEIGHT);
+		model.put("nodeW", WFGraphLayout.NODE_WIDTH);
+		model.put("nodeH", WFGraphLayout.NODE_HEIGHT);
+		model.put("cols", noOfColumns);
+		model.put("rows", Math.max(currentRow, rowCount));
+		model.put("maxCols", MAX_COLUMN_COUNT);
+		model.put("maxRows", MAX_ROW_COUNT);
+
+		JSONArray nodes = new JSONArray();
+		for (WFNodeWidget widget : widgets.values()) {
+			MWFNode node = widget.getModel();
+			JSONObject o = new JSONObject();
+			o.put("id", node.getAD_WF_Node_ID());
+			o.put("row", widget.getRow());
+			o.put("col", widget.getColumn());
+			Rectangle bounds = WFGraphLayout.nodeBounds(widget.getRow(), widget.getColumn());
+			o.put("x", bounds.x);
+			o.put("y", bounds.y);
+			o.put("name", node.getName(true));
+			String description = node.getDescription(true);
+			o.put("description", description != null ? description : "");
+			String help = node.getHelp(true);
+			o.put("help", help != null ? help : "");
+			o.put("action", node.getAction());
+			o.put("actionLabel", widget.getActionType(node));
+			o.put("actionKey", widget.getActionKey());
+			// a node is only editable by the current client ( Swing editor
+			// behaviour ); others are shown grayed out
+			o.put("editable", node.getAD_Client_ID() == Env.getAD_Client_ID(Env.getCtx()));
+			// pinned means a stored grid cell exists (drag/drop or manual pin)
+			o.put("pinned", node.getXPosition() > 0 && node.getYPosition() > 0);
+			if (node.getAD_Image_ID() > 0)
+				o.put("imageId", node.getAD_Image_ID());
+			nodes.add(o);
+		}
+		model.put("nodes", nodes);
+
+		JSONArray lines = new JSONArray();
+		for (MWFNodeNext edge : edges) {
+			JSONObject o = new JSONObject();
+			o.put("id", edge.getAD_WF_NodeNext_ID());
+			o.put("from", edge.getAD_WF_Node_ID());
+			o.put("to", edge.getAD_WF_Next_ID());
+			// a transition is editable by the current client (per node rule)
+			o.put("editable", edge.getAD_Client_ID() == Env.getAD_Client_ID(Env.getCtx()));
+			// standard user workflow transitions only run when Complete is selected
+			o.put("stdUserWorkflow", edge.isStdUserWorkflow());
+			o.put("seq", edge.getSeqNo());
+			String description = edge.getDescription();
+			o.put("description", description != null ? description : "");
+			MWFNextCondition[] conditions = edge.getConditions(false);
+			o.put("condCount", conditions.length);
+			if (conditions.length > 0)
+				o.put("condTip", buildConditionTip(conditions));
+			lines.add(o);
+		}
+		model.put("edges", lines);
+
+		return model;
+	}
+
+	/**
+	 * Build the tooltip text for the conditions of a transition, one line
+	 * per condition: sequence, AND/OR link, column (or SQL) with operation
+	 * and comparison values.
+	 * @param conditions transition conditions ordered by sequence
+	 * @return multiline tooltip text
+	 */
+	private static String buildConditionTip(MWFNextCondition[] conditions) {
+		StringBuilder tip = new StringBuilder();
+		for (int i = 0; i < conditions.length; i++) {
+			MWFNextCondition cond = conditions[i];
+			if (i > 0)
+				tip.append("\n");
+			tip.append(cond.getSeqNo()).append(": ");
+			if (i > 0)
+				tip.append(cond.isOr() ? "OR " : "AND ");
+			String op = cond.getOperation();
+			if (cond.getAD_Column_ID() > 0) {
+				MColumn col = MColumn.get(Env.getCtx(), cond.getAD_Column_ID());
+				String colName = col != null ? col.getName() : null;
+				if (colName == null || colName.isEmpty())
+					colName = col != null ? col.getColumnName() : ("Column#" + cond.getAD_Column_ID());
+				tip.append(colName).append(" ").append(displayOperation(op));
+				tip.append(" ").append(cond.getValue() != null ? cond.getValue() : "");
+				if (MWFNextCondition.OPERATION_X.equals(op))
+					tip.append(" ... ").append(cond.getValue2() != null ? cond.getValue2() : "");
+			} else if (MWFNextCondition.OPERATION_Sql.equals(op)) {
+				tip.append("SQL: ").append(cond.getSQLStatement() != null ? cond.getSQLStatement() : "");
+			} else {
+				tip.append("(").append(cond.getSQLStatement() != null ? cond.getSQLStatement() : "").append(")");
+				tip.append(" ").append(displayOperation(op));
+				tip.append(" ").append(cond.getValue() != null ? cond.getValue() : "");
+				if (MWFNextCondition.OPERATION_X.equals(op))
+					tip.append(" ... ").append(cond.getValue2() != null ? cond.getValue2() : "");
+			}
+		}
+		return tip.toString();
+	}
+
+	/**
+	 * Map a stored condition operation code to a familiar symbol for display.
+	 * @param op stored operation code
+	 * @return display symbol
+	 */
+	private static String displayOperation(String op) {
+		if (MWFNextCondition.OPERATION_Eq.equals(op))
+			return "=";
+		if (MWFNextCondition.OPERATION_Gt.equals(op))
+			return ">";
+		if (MWFNextCondition.OPERATION_Le.equals(op))
+			return "<";
+		if (MWFNextCondition.OPERATION_X.equals(op))
+			return "between";
+		if (MWFNextCondition.OPERATION_Sql.equals(op))
+			return "SQL";
+		return op != null ? op : "";
 	}
 
 	/**
@@ -318,10 +461,23 @@ public class WFNodeContainer
 	}
 
 	/**
-	 * Get graph scene
-	 * @return graph scene
+	 * Load nodes and transitions of a workflow into this container.
+	 * @param wf workflow
+	 * @param addEmptyColumn whether to add an empty column for editing
 	 */
-	public GraphScene<Integer, MWFNodeNext> getGraphScene() {
-		return graphScene;
+	public void load(MWorkflow wf, boolean addEmptyColumn) {
+		removeAll();
+		setWorkflow(wf);
+		MWFNode[] nodes = wf.getNodes(true, Env.getAD_Client_ID(Env.getCtx()));
+		setColumnCount(nodes, addEmptyColumn);
+		for (MWFNode node : nodes) {
+			addNode(node);
+		}
+		for (MWFNode node : nodes) {
+			MWFNodeNext[] nexts = node.getTransitions(Env.getAD_Client_ID(Env.getCtx()));
+			for (MWFNodeNext next : nexts) {
+				addEdge(next);
+			}
+		}
 	}
 }	//	WFContentPanel
