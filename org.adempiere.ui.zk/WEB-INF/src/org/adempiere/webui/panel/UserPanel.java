@@ -18,6 +18,7 @@
 package org.adempiere.webui.panel;
 
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
 import org.adempiere.webui.ClientInfo;
@@ -45,6 +46,7 @@ import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.model.MWarehouse;
+import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -64,6 +66,7 @@ import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Menuitem;
+import org.zkoss.zul.Menuseparator;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.Span;
@@ -177,7 +180,7 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
     		};
     		EventQueue<Event> queue = EventQueues.lookup(IDesktop.ACTIVITIES_EVENT_QUEUE, true);
     		queue.subscribe(activitiesListener);
-    		updateNotificationBadge(getInitialActivitiesCount());
+    		updateNotificationBadge(getActivitiesCount());
 			if (component instanceof ComponentCtrl) {
     			((ComponentCtrl) component).addCallback(ComponentCtrl.AFTER_PAGE_DETACHED, evt -> {
     				try {
@@ -185,6 +188,7 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
     					if (q != null && activitiesListener != null)
     						q.unsubscribe(activitiesListener);
     				} catch (Exception e) {
+						CLogger.getCLogger(getClass()).log(Level.WARNING, e.getMessage(), e);
     				}
     				if (userPopup != null) {
     					userPopup.detach();
@@ -227,6 +231,11 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
     	}
     	
     	feedbackMenu = new Menupopup();
+
+    	Menuitem titleItem = new Menuitem(Msg.getMsg(Env.getCtx(), "Feedback"));
+    	titleItem.setDisabled(true);
+    	feedbackMenu.appendChild(titleItem);
+    	feedbackMenu.appendChild(new Menuseparator());
 		
     	Menuitem mi = new Menuitem(Msg.getMsg(Env.getCtx(), "RequestNew"));
     	if (ThemeManager.isUseFontIconForImage())
@@ -332,7 +341,7 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 		}
 		else if (feedback != null && feedback == event.getTarget())
 		{
-			onFeedback(feedback);
+			onFeedback();
 		}
 		else if (event.getTarget() instanceof Menuitem)
 		{
@@ -517,7 +526,7 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 		ToolBarButton btnFeedback = new ToolBarButton();
 		btnFeedback.setLabel(Msg.getMsg(ctx, "Feedback"));
 		btnFeedback.setSclass("user-menu-item");
-		btnFeedback.addEventListener(Events.ON_CLICK, evt -> { userPopup.close(); onFeedback(btnFeedback); });
+		btnFeedback.addEventListener(Events.ON_CLICK, evt -> { userPopup.close(); onFeedback(); });
 		layout.appendChild(btnFeedback);
 
 		ToolBarButton btnRoleInfo = new ToolBarButton();
@@ -683,6 +692,7 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 			preferencePopup.detach();
 		}
 		preferencePopup = new WPreference();
+		preferencePopup.setTitle(Msg.getMsg(ctx, "Preference"));
 		preferencePopup.setPage(component.getPage());
 		Component anchor = userProfileChip != null ? userProfileChip : lblUserNameValue;
 		LayoutUtils.openPopupWindow(anchor, preferencePopup, "overlap");
@@ -694,17 +704,19 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 	private void onRoleInfo() {
 		MRole role = MRole.getDefault(ctx, false);
 		String info = role.toStringX(ctx);
-		Messagebox.showDialog(info, Msg.getMsg(ctx, "RoleInfo"), Messagebox.OK, Messagebox.INFORMATION);
+		Messagebox mb = new Messagebox();
+		mb.show(info, Msg.getMsg(ctx, "RoleInfo"), Messagebox.OK, Messagebox.INFORMATION);
+		mb.setPosition("right,top");
 	}
 
 	/**
 	 * Handle feedback action
-	 * @param ref reference component for popup positioning
 	 */
-	private void onFeedback(Component ref) {
+	private void onFeedback() {
 		if (feedbackMenu.getPage() == null)
 			feedbackMenu.setPage(component.getPage());
-		feedbackMenu.open(ref, "after_start");
+		Component anchor = userProfileChip != null ? userProfileChip : lblUserNameValue;
+		feedbackMenu.open(anchor, "after_start");
 	}
 
 	/**
@@ -723,17 +735,16 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 	}
 
 	/**
-	 * Get the initial activities count by evaluating all system-level document status indicators
+	 * Get the activities count by evaluating all document status indicators
 	 * @return total count of activities
 	 */
-	protected int getInitialActivitiesCount() {
+	protected int getActivitiesCount() {
 		int AD_User_ID = Env.getAD_User_ID(ctx);
 		int AD_Role_ID = Env.getAD_Role_ID(ctx);
 		MDocumentStatus[] indicators = MDocumentStatus.getDocumentStatusIndicators(ctx, AD_User_ID, AD_Role_ID);
 		int total = 0;
 		for (MDocumentStatus ind : indicators) {
-			if (ind.getAD_Client_ID() == 0)
-				total += MDocumentStatus.evaluate(ind);
+			total += MDocumentStatus.evaluate(ind);
 		}
 		return total;
 	}

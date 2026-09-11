@@ -302,6 +302,11 @@
 .notification-popup-layout {
 	padding: 0;
 	width: 100%;
+	max-height: 320px;
+	overflow-y: auto;
+}
+@media screen and (max-height: 319px) {
+	max-height: 100%;
 }
 .notification-popup-header {
 	display: flex;
@@ -327,11 +332,6 @@
 .notification-popup-refresh.z-toolbarbutton:hover {
 	background-color: #e2e8f0;
 	color: #0f172a;
-}
-.notification-items-list {
-	padding: 4px 6px;
-	max-height: 320px;
-	overflow-y: auto;
 }
 .notification-item-row {
 	display: flex;

@@ -133,7 +133,7 @@
 	--zk-gadget-recent-item-text-color: var(--zk-body-text-color);
 	--zk-gadget-recent-item-hover-background-color: #f1f5f9;
 	--zk-gadget-views-button-hover-text-color: rgba(0,0,0,0.9);
-	--zk-gadget-mandatory-process-background-color: #ef4444;
+	--zk-gadget-mandatory-process-background-color: #b91c1c;
 	--zk-gadget-mandatory-process-text-color: white;
 	--zk-gadget-performance-indicator-background-color: #f8fafc;
 	--zk-gadget-performance-indicator-border-color: #e2e8f0;

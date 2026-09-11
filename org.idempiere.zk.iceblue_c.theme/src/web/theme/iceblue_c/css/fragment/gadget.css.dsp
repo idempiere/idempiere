@@ -30,6 +30,14 @@
 	color: var(--zk-gadget-panel-header-text-color, #1e293b);
 	letter-spacing: 0.01em;
 }
+.dashboard-widget .z-caption-content {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+.dashboard-widget .z-panel-icons {
+	margin-left: auto;
+	flex-shrink: 0;
+}
 .z-panel-icon {
 	font-size: 12px !important;
 	color: var(--zk-gadget-panel-icon-color, #94a3b8) !important;
@@ -101,8 +109,8 @@
 }
 
 <%-- side panel (left / right) overrides --%>
-.desktop-left-column .dashboard-widget.z-panel,
-.desktop-right-column .dashboard-widget.z-panel {
+.desktop-left-column .dashboard-widget.z-panel:not(.dashboard-widget-max),
+.desktop-right-column .dashboard-widget.z-panel:not(.dashboard-widget-max) {
 	box-shadow: none;
 	border-radius: 6px;
 	margin: 2px auto 6px auto;
