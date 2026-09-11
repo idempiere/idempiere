@@ -18,13 +18,19 @@
 package org.adempiere.webui.panel;
 
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.adempiere.util.Callback;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.component.Messagebox;
+import org.adempiere.webui.component.Tab.DecorateInfo;
+import org.adempiere.webui.component.ToolBarButton;
+import org.adempiere.webui.component.Window;
+import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.FeedbackManager;
@@ -32,11 +38,16 @@ import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.WPreference;
 import org.compiere.model.MClient;
+import org.compiere.model.MDocumentStatus;
+import org.compiere.model.MForm;
 import org.compiere.model.MOrg;
+import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.model.MWarehouse;
+import org.compiere.util.CLogger;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -44,13 +55,21 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.EventQueue;
+import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.event.OpenEvent;
+import org.zkoss.zk.ui.sys.ComponentCtrl;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.Composer;
+import org.zkoss.zul.Div;
+import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Menuitem;
+import org.zkoss.zul.Menuseparator;
 import org.zkoss.zul.Popup;
+import org.zkoss.zul.Separator;
+import org.zkoss.zul.Span;
 import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.impl.LabelImageElement;
 
@@ -78,7 +97,15 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 	
 	protected Component userPanelLinksContainer;
 
-	private Popup popup;
+	protected Component userProfileChip;
+	protected Component userAvatar;
+	protected Label userSubText;
+	protected Component notificationBell;
+	protected Label notificationBadge;
+	private Popup notifPopup;
+	private EventListener<Event> activitiesListener;
+
+	private Popup userPopup;
 
 	private static final String ON_DEFER_CHANGE_ROLE = "onDeferChangeRole";
 	private static final String ON_DEFER_LOGOUT = "onDeferLogout";
@@ -100,34 +127,115 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
     	String s = Msg.getMsg(Env.getCtx(), "CloseTabFromBrowser?").replace("\n", "<br>");
     	Clients.confirmClose(s);
     	lblUserNameValue = (Label) component.getFellowIfAny("loginUserAndRole", true);
-    	if (isMobile())
+    	userProfileChip = component.getFellowIfAny("userProfileChip", true);
+    	userAvatar = component.getFellowIfAny("userAvatar", true);
+    	userSubText = (Label) component.getFellowIfAny("userSubText", true);
+    	notificationBell = component.getFellowIfAny("notificationBell", true);
+    	notificationBadge = (Label) component.getFellowIfAny("notificationBadge", true);
+
+    	if (userProfileChip != null)
     	{
-    		lblUserNameValue.setValue(getUserName());
-    		LayoutUtils.addSclass("mobile", (HtmlBasedComponent) component);
+    		if (userAvatar != null)
+    		{
+    			userAvatar.appendChild(new Label(getInitials(getUserName())));
+    		}
+    		if (lblUserNameValue != null)
+    		{
+    			lblUserNameValue.setValue(getUserName());
+    			lblUserNameValue.addEventListener(Events.ON_CLICK, this);
+    		}
+    		if (userSubText != null)
+    		{
+    			userSubText.setValue(getClientName() + " \u2022 " + getOrgName() + "/" + getRoleName());
+    		}
+    		userProfileChip.addEventListener(Events.ON_CLICK, this);
     	}
-    	else
+    	else if (lblUserNameValue != null)
     	{
-	    	lblUserNameValue.setValue(getUserName() + "@" + getClientName() + "." + getOrgName()+"/"+this.getRoleName());	    	
+    		if (isMobile())
+    		{
+    			lblUserNameValue.setValue(getUserName());
+    			LayoutUtils.addSclass("mobile", (HtmlBasedComponent) component);
+    		}
+    		else
+    		{
+    			lblUserNameValue.setValue(getUserName() + "@" + getClientName() + "." + getOrgName()+"/"+this.getRoleName());	    	
+    		}
+    		lblUserNameValue.addEventListener(Events.ON_CLICK, this);
     	}
-    	lblUserNameValue.addEventListener(Events.ON_CLICK, this);
+
+    	if (notificationBell != null)
+    	{
+			if (notificationBell instanceof HtmlBasedComponent)
+    			((HtmlBasedComponent) notificationBell).setTooltiptext(Util.cleanAmp(Msg.getMsg(ctx, "Activities")));
+    		notificationBell.addEventListener(Events.ON_CLICK, evt -> openNotificationPopup());
+    		activitiesListener = new EventListener<Event>() {
+    			@Override
+    			public void onEvent(Event event) throws Exception {
+    				if (IDesktop.ON_ACTIVITIES_CHANGED_EVENT.equals(event.getName())) {
+    					Integer count = (Integer) event.getData();
+    					updateNotificationBadge(count != null ? count.intValue() : 0);
+    				}
+    			}
+    		};
+    		EventQueue<Event> queue = EventQueues.lookup(IDesktop.ACTIVITIES_EVENT_QUEUE, true);
+    		queue.subscribe(activitiesListener);
+    		updateNotificationBadge(getActivitiesCount());
+			if (component instanceof ComponentCtrl) {
+    			((ComponentCtrl) component).addCallback(ComponentCtrl.AFTER_PAGE_DETACHED, evt -> {
+    				try {
+    					EventQueue<Event> q = EventQueues.lookup(IDesktop.ACTIVITIES_EVENT_QUEUE, false);
+    					if (q != null && activitiesListener != null)
+    						q.unsubscribe(activitiesListener);
+    				} catch (Exception e) {
+						CLogger.getCLogger(getClass()).log(Level.WARNING, e.getMessage(), e);
+    				}
+    				if (userPopup != null) {
+    					userPopup.detach();
+    					userPopup = null;
+    				}
+    				if (notifPopup != null) {
+    					notifPopup.detach();
+    					notifPopup = null;
+    				}
+    			});
+			}
+    	}
 
     	feedback = (LabelImageElement) component.getFellowIfAny("feedback", true);
-    	feedback.setLabel(Msg.getMsg(Env.getCtx(), "Feedback"));
-    	feedback.addEventListener(Events.ON_CLICK, this);
+    	if (feedback != null)
+    	{
+    		feedback.setLabel(Msg.getMsg(Env.getCtx(), "Feedback"));
+    		feedback.addEventListener(Events.ON_CLICK, this);
+    	}
 
     	preference = (LabelImageElement) component.getFellowIfAny("preference", true);
-    	preference.setLabel(Msg.getMsg(Env.getCtx(), "Preference"));
-    	preference.addEventListener(Events.ON_CLICK, this);
+    	if (preference != null)
+    	{
+    		preference.setLabel(Msg.getMsg(Env.getCtx(), "Preference"));
+    		preference.addEventListener(Events.ON_CLICK, this);
+    	}
 
     	changeRole = (LabelImageElement) component.getFellowIfAny("changeRole", true);
-    	changeRole.setLabel(Msg.getMsg(Env.getCtx(), "changeRole"));
-    	changeRole.addEventListener(Events.ON_CLICK, this);
+    	if (changeRole != null)
+    	{
+    		changeRole.setLabel(Msg.getMsg(Env.getCtx(), "changeRole"));
+    		changeRole.addEventListener(Events.ON_CLICK, this);
+    	}
 
     	logout = (LabelImageElement) component.getFellowIfAny("logout", true);
-    	logout.setLabel(Msg.getMsg(Env.getCtx(),"Logout"));
-    	logout.addEventListener(Events.ON_CLICK, this);
+    	if (logout != null)
+    	{
+    		logout.setLabel(Msg.getMsg(Env.getCtx(),"Logout"));
+    		logout.addEventListener(Events.ON_CLICK, this);
+    	}
     	
     	feedbackMenu = new Menupopup();
+
+    	Menuitem titleItem = new Menuitem(Msg.getMsg(Env.getCtx(), "Feedback"));
+    	titleItem.setDisabled(true);
+    	feedbackMenu.appendChild(titleItem);
+    	feedbackMenu.appendChild(new Menuseparator());
 		
     	Menuitem mi = new Menuitem(Msg.getMsg(Env.getCtx(), "RequestNew"));
     	if (ThemeManager.isUseFontIconForImage())
@@ -153,7 +261,7 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
     	component.addEventListener(ON_DEFER_CHANGE_ROLE, this);
     	
     	userPanelLinksContainer = component.getFellowIfAny("userPanelLinksContainer", true);
-    	if (isMobile() && userPanelLinksContainer != null)
+    	if ((isMobile() || userProfileChip != null) && userPanelLinksContainer != null)
     	{
     		userPanelLinksContainer.detach();
     	}
@@ -215,76 +323,25 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 		if (event == null)
 			return;
 
-		if (logout == event.getTarget())
+		if (logout != null && logout == event.getTarget())
         {
-			if (SessionManager.getAppDesktop().isPendingWindow()) {
-				Dialog.ask(0, "ProceedWithTask?", new Callback<Boolean>() {
-
-					@Override
-					public void onCallback(Boolean result)
-					{
-						if (result)
-						{
-							Events.echoEvent(ON_DEFER_LOGOUT, component, null);
-						}
-					}
-				});
-			} else {
-				Events.echoEvent(ON_DEFER_LOGOUT, component, null);
-			}
+			onLogout();
         }
-		else if (lblUserNameValue == event.getTarget())
+		else if (lblUserNameValue == event.getTarget() || (userProfileChip != null && userProfileChip == event.getTarget()))
 		{
-			if (isMobile())
-			{
-				openMobileUserPanelPopup();
-			}
-			else
-			{
-				String roleInfo = MRole.getDefault().toStringX(Env.getCtx());
-				roleInfo = roleInfo.replace(Env.NL, "<br>");
-				Messagebox.showDialog(roleInfo, Msg.getMsg(ctx, "RoleInfo"), Messagebox.OK, Messagebox.INFORMATION);
-			}
+			openUserMenuPopup();
 		}
-		else if (changeRole == event.getTarget())
+		else if (changeRole != null && changeRole == event.getTarget())
 		{
-			if (SessionManager.getAppDesktop().isPendingWindow()) {
-				Dialog.ask(0, "ProceedWithTask?", new Callback<Boolean>() {
-
-					@Override
-					public void onCallback(Boolean result)
-					{
-						if (result)
-						{
-							Events.postEvent(ON_DEFER_CHANGE_ROLE, component, null);
-						}
-					}
-				});
-			} else {
-				Events.postEvent(ON_DEFER_CHANGE_ROLE, component, null);
-			}
+			onChangeRole();
 		}
-		else if (preference == event.getTarget())
+		else if (preference != null && preference == event.getTarget())
 		{
-			if (preferencePopup != null)
-			{
-				preferencePopup.detach();
-			}
-			preferencePopup = new WPreference();
-			preferencePopup.setPage(component.getPage());
-			LayoutUtils.openPopupWindow(preference, preferencePopup, "after_start");
+			onPreference();
 		}
-		else if (feedback == event.getTarget())
+		else if (feedback != null && feedback == event.getTarget())
 		{
-			if (isMobile() && userPanelLinksContainer != null)
-			{
-				userPanelLinksContainer.appendChild(feedbackMenu);
-			}
-			else if (feedbackMenu.getPage() == null)
-			{
-				component.appendChild(feedbackMenu);
-			}
-			feedbackMenu.open(feedback, "after_start");
+			onFeedback();
 		}
 		else if (event.getTarget() instanceof Menuitem)
 		{
@@ -329,24 +386,31 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 	}
 
     /**
-     * Open user panel popup for mobile client
+     * Open user panel popup for mobile client.
+     * Delegates to {@link #openUserMenuPopup()} for themes with the new profile chip;
+     * falls back to legacy popup for older themes.
      */
 	protected void openMobileUserPanelPopup() {
-		if (popup != null) {
-			Object value = popup.removeAttribute(popup.getUuid());
+		if (userProfileChip != null) {
+			openUserMenuPopup();
+			return;
+		}
+		// Legacy popup for themes without the profile chip
+		if (userPopup != null) {
+			Object value = userPopup.removeAttribute(userPopup.getUuid());
 			if (value != null && value instanceof Long) {
 				long ts = ((Long)value).longValue();
 				long since = System.currentTimeMillis() - ts;
 				if (since < 500) {
-					popup.detach();
-					popup = null;
+					userPopup.detach();
+					userPopup = null;
 					return;
 				}
 			}
-			popup.detach();
+			userPopup.detach();
 		}
-		popup = new Popup();
-		popup.setSclass("user-panel-popup");
+		userPopup = new Popup();
+		userPopup.setSclass("user-panel-popup");
 		Vlayout layout = new Vlayout();
 		String email = getUserEmail();
 		if (!Util.isEmpty(email))
@@ -367,19 +431,394 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 		if (!Util.isEmpty(msgValue, true))
 			msgText = Msg.getMsg(Env.getCtx(), msgValue);
 		layout.appendChild(new Label(msgText));
-		layout.appendChild(userPanelLinksContainer);
-		
-		popup.appendChild(layout);
-		popup.setPage(component.getPage());
-		popup.setVflex("min");
-		popup.setHflex("min");
-		popup.setStyle("max-width: " + ClientInfo.get().desktopWidth + "px");
-		popup.addEventListener(Events.ON_OPEN, (OpenEvent oe) -> {
+		if (userPanelLinksContainer != null)
+			layout.appendChild(userPanelLinksContainer);
+
+		userPopup.appendChild(layout);
+		userPopup.setPage(component.getPage());
+		userPopup.setVflex("min");
+		userPopup.setHflex("min");
+		userPopup.setStyle("max-width: " + ClientInfo.get().desktopWidth + "px");
+		userPopup.addEventListener(Events.ON_OPEN, (OpenEvent oe) -> {
 			if (!oe.isOpen())
-				popup.setAttribute(popup.getUuid(), System.currentTimeMillis());
+				userPopup.setAttribute(userPopup.getUuid(), System.currentTimeMillis());
 		});
-		popup.open(lblUserNameValue, "after_start");		
-		
+		userPopup.open(lblUserNameValue, "after_start");
+	}
+
+	/**
+	 * Open the modern user menu popup (profile card + actions)
+	 */
+	protected void openUserMenuPopup() {
+		if (userPopup != null) {
+			Object value = userPopup.removeAttribute(userPopup.getUuid());
+			if (value != null && value instanceof Long) {
+				long ts = ((Long)value).longValue();
+				long since = System.currentTimeMillis() - ts;
+				if (since < 500) {
+					userPopup.detach();
+					userPopup = null;
+					return;
+				}
+			}
+			userPopup.detach();
+		}
+		userPopup = new Popup();
+		userPopup.setSclass("user-panel-popup");
+		Vlayout layout = new Vlayout();
+		layout.setSclass("user-menu-layout");
+
+		// --- Profile card section ---
+		Div profileCard = new Div();
+		profileCard.setSclass("user-menu-profile-card");
+
+		Div avatar = new Div();
+		avatar.setSclass("user-menu-avatar-big");
+		avatar.appendChild(new Label(getInitials(getUserName())));
+		profileCard.appendChild(avatar);
+
+		Div info = new Div();
+		info.setSclass("user-menu-info");
+		Label nameLabel = new Label(getUserName());
+		nameLabel.setSclass("user-menu-name");
+		info.appendChild(nameLabel);
+
+		String email = getUserEmail();
+		if (!Util.isEmpty(email)) {
+			Label emailLabel = new Label(email);
+			emailLabel.setSclass("user-menu-email");
+			info.appendChild(emailLabel);
+		}
+
+		Label contextLabel = new Label(getClientName() + " \u2022 " + getOrgName());
+		contextLabel.setSclass("user-menu-org");
+		info.appendChild(contextLabel);
+
+		String warehouse = getWarehouseName();
+		if (!Util.isEmpty(warehouse)) {
+			Label whLabel = new Label(warehouse);
+			whLabel.setSclass("user-menu-warehouse");
+			info.appendChild(whLabel);
+		}
+
+		profileCard.appendChild(info);
+		layout.appendChild(profileCard);
+
+		// --- Separator ---
+		Separator sep1 = new Separator();
+		sep1.setBar(true);
+		sep1.setSclass("user-menu-separator");
+		layout.appendChild(sep1);
+
+		// --- Action buttons ---
+		ToolBarButton btnChangeRole = new ToolBarButton();
+		btnChangeRole.setLabel(Msg.getMsg(ctx, "changeRole"));
+		btnChangeRole.setSclass("user-menu-item");
+		btnChangeRole.addEventListener(Events.ON_CLICK, evt -> { userPopup.close(); onChangeRole(); });
+		layout.appendChild(btnChangeRole);
+
+		ToolBarButton btnPreference = new ToolBarButton();
+		btnPreference.setLabel(Msg.getMsg(ctx, "Preference"));
+		btnPreference.setSclass("user-menu-item");
+		btnPreference.addEventListener(Events.ON_CLICK, evt -> { userPopup.close(); onPreference(); });
+		layout.appendChild(btnPreference);
+
+		ToolBarButton btnFeedback = new ToolBarButton();
+		btnFeedback.setLabel(Msg.getMsg(ctx, "Feedback"));
+		btnFeedback.setSclass("user-menu-item");
+		btnFeedback.addEventListener(Events.ON_CLICK, evt -> { userPopup.close(); onFeedback(); });
+		layout.appendChild(btnFeedback);
+
+		ToolBarButton btnRoleInfo = new ToolBarButton();
+		btnRoleInfo.setLabel(Msg.getMsg(ctx, "RoleInfo"));
+		btnRoleInfo.setSclass("user-menu-item");
+		btnRoleInfo.addEventListener(Events.ON_CLICK, evt -> { userPopup.close(); onRoleInfo(); });
+		layout.appendChild(btnRoleInfo);
+
+		// --- Separator ---
+		Separator sep2 = new Separator();
+		sep2.setBar(true);
+		sep2.setSclass("user-menu-separator");
+		layout.appendChild(sep2);
+
+		// --- Logout ---
+		ToolBarButton btnLogout = new ToolBarButton();
+		btnLogout.setLabel(Msg.getMsg(ctx, "Logout"));
+		btnLogout.setSclass("user-menu-item user-menu-logout");
+		btnLogout.addEventListener(Events.ON_CLICK, evt -> { userPopup.close(); onLogout(); });
+		layout.appendChild(btnLogout);
+
+		userPopup.appendChild(layout);
+		userPopup.setPage(component.getPage());
+		userPopup.setVflex("min");
+		userPopup.setHflex("min");
+		userPopup.addEventListener(Events.ON_OPEN, (OpenEvent oe) -> {
+			if (!oe.isOpen())
+				userPopup.setAttribute(userPopup.getUuid(), System.currentTimeMillis());
+		});
+		Component anchor = userProfileChip != null ? userProfileChip : lblUserNameValue;
+		userPopup.open(anchor, "after_end");
+	}
+
+	/**
+	 * Open the notification popup showing MDocumentStatus indicators
+	 */
+	protected void openNotificationPopup() {
+		if (notifPopup != null) {
+			Object value = notifPopup.removeAttribute(notifPopup.getUuid());
+			if (value != null && value instanceof Long) {
+				long ts = ((Long)value).longValue();
+				long since = System.currentTimeMillis() - ts;
+				if (since < 500) {
+					notifPopup.detach();
+					notifPopup = null;
+					return;
+				}
+			}
+			notifPopup.detach();
+		}
+		notifPopup = new Popup();
+		notifPopup.setSclass("notification-popup");
+		Vlayout layout = new Vlayout();
+		layout.setSclass("notification-popup-layout");
+
+		// Header
+		Hlayout header = new Hlayout();
+		header.setSclass("notification-popup-header");
+		Label title = new Label(Util.cleanAmp(Msg.getMsg(ctx, "Activities")));
+		title.setSclass("notification-popup-title");
+		header.appendChild(title);
+		layout.appendChild(header);
+
+		// Indicator list
+		int AD_User_ID = Env.getAD_User_ID(ctx);
+		int AD_Role_ID = Env.getAD_Role_ID(ctx);
+		MDocumentStatus[] indicators = MDocumentStatus.getDocumentStatusIndicators(ctx, AD_User_ID, AD_Role_ID);
+		boolean hasItems = false;
+		for (MDocumentStatus ind : indicators) {
+			int count = MDocumentStatus.evaluate(ind);
+			if (ind.isHideWhenZero() && count == 0)
+				continue;
+
+			hasItems = true;
+			Hlayout row = new Hlayout();
+			row.setSclass("notification-item-row");
+			row.setValign("middle");
+
+			// Icon
+			Span icon = new Span();
+			icon.setSclass(getIndicatorIconSclass(ind.getName()));
+			row.appendChild(icon);
+
+			// Name
+			Label indNameLabel = new Label(ind.get_Translation(MDocumentStatus.COLUMNNAME_Name));
+			indNameLabel.setSclass("notification-item-name");
+			row.appendChild(indNameLabel);
+
+			// Count badge
+			Label countLabel = new Label(Integer.toString(count));
+			countLabel.setSclass("notification-item-badge" + (count > 0 ? " unread" : " zero"));
+			row.appendChild(countLabel);
+
+			row.addEventListener(Events.ON_CLICK, evt -> {
+				notifPopup.close();
+				zoomToDocumentStatus(ind);
+			});
+			row.setStyle("cursor: pointer;");
+			layout.appendChild(row);
+		}
+
+		if (!hasItems) {
+			String noActivitiesMsg = Msg.getMsg(ctx, "noActivities");
+			if ("noActivities".equals(noActivitiesMsg))
+				noActivitiesMsg = "No pending activities";
+			Label empty = new Label(noActivitiesMsg);
+			empty.setSclass("notification-empty-text");
+			layout.appendChild(empty);
+		}
+
+		notifPopup.appendChild(layout);
+		notifPopup.setPage(component.getPage());
+		notifPopup.setVflex("min");
+		notifPopup.setHflex("min");
+		notifPopup.addEventListener(Events.ON_OPEN, (OpenEvent oe) -> {
+			if (!oe.isOpen())
+				notifPopup.setAttribute(notifPopup.getUuid(), System.currentTimeMillis());
+		});
+		notifPopup.open(notificationBell, "after_end");
+	}
+
+	/**
+	 * Handle logout action
+	 */
+	private void onLogout() {
+		if (SessionManager.getAppDesktop().isPendingWindow()) {
+			Dialog.ask(0, "ProceedWithTask?", new Callback<Boolean>() {
+				@Override
+				public void onCallback(Boolean result) {
+					if (result) {
+						Events.echoEvent(ON_DEFER_LOGOUT, component, null);
+					}
+				}
+			});
+		} else {
+			Events.echoEvent(ON_DEFER_LOGOUT, component, null);
+		}
+	}
+
+	/**
+	 * Handle change role action
+	 */
+	private void onChangeRole() {
+		if (SessionManager.getAppDesktop().isPendingWindow()) {
+			Dialog.ask(0, "ProceedWithTask?", new Callback<Boolean>() {
+				@Override
+				public void onCallback(Boolean result) {
+					if (result) {
+						Events.postEvent(ON_DEFER_CHANGE_ROLE, component, null);
+					}
+				}
+			});
+		} else {
+			Events.postEvent(ON_DEFER_CHANGE_ROLE, component, null);
+		}
+	}
+
+	/**
+	 * Handle preference action
+	 */
+	private void onPreference() {
+		if (preferencePopup != null) {
+			preferencePopup.detach();
+		}
+		preferencePopup = new WPreference();
+		preferencePopup.setTitle(Msg.getMsg(ctx, "Preference"));
+		preferencePopup.setPage(component.getPage());
+		Component anchor = userProfileChip != null ? userProfileChip : lblUserNameValue;
+		LayoutUtils.openPopupWindow(anchor, preferencePopup, "overlap");
+	}
+
+	/**
+	 * Handle role info action - opens the Role Info window
+	 */
+	private void onRoleInfo() {
+		MRole role = MRole.getDefault(ctx, false);
+		String info = role.toStringX(ctx);
+		Messagebox mb = new Messagebox();
+		mb.show(info, Msg.getMsg(ctx, "RoleInfo"), Messagebox.OK, Messagebox.INFORMATION);
+		mb.setPosition("right,top");
+	}
+
+	/**
+	 * Handle feedback action
+	 */
+	private void onFeedback() {
+		if (feedbackMenu.getPage() == null)
+			feedbackMenu.setPage(component.getPage());
+		Component anchor = userProfileChip != null ? userProfileChip : lblUserNameValue;
+		feedbackMenu.open(anchor, "after_start");
+	}
+
+	/**
+	 * Get user initials from full name (e.g. "John Doe" -&gt; "JD")
+	 * @param name full name
+	 * @return up to 2 character initials, uppercase
+	 */
+	protected String getInitials(String name) {
+		if (Util.isEmpty(name))
+			return "?";
+		String[] parts = name.trim().split("\\s+");
+		if (parts.length >= 2) {
+			return ("" + parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+		}
+		return ("" + parts[0].charAt(0)).toUpperCase();
+	}
+
+	/**
+	 * Get the activities count by evaluating all document status indicators
+	 * @return total count of activities
+	 */
+	protected int getActivitiesCount() {
+		int AD_User_ID = Env.getAD_User_ID(ctx);
+		int AD_Role_ID = Env.getAD_Role_ID(ctx);
+		MDocumentStatus[] indicators = MDocumentStatus.getDocumentStatusIndicators(ctx, AD_User_ID, AD_Role_ID);
+		int total = 0;
+		for (MDocumentStatus ind : indicators) {
+			total += MDocumentStatus.evaluate(ind);
+		}
+		return total;
+	}
+
+	/**
+	 * Update the notification badge with the given count
+	 * @param count number of pending activities
+	 */
+	protected void updateNotificationBadge(int count) {
+		if (notificationBadge == null)
+			return;
+		if (count > 0) {
+			notificationBadge.setValue(count > 99 ? "99+" : Integer.toString(count));
+			notificationBadge.setVisible(true);
+		} else {
+			notificationBadge.setVisible(false);
+		}
+	}
+
+	/**
+	 * Get a Font Awesome icon sclass for a document status indicator based on its name.
+	 * Falls back to a generic icon.
+	 * @param name indicator name
+	 * @return CSS sclass string
+	 */
+	private String getIndicatorIconSclass(String name) {
+		if (name == null)
+			return "z-icon-file-text-o notification-item-icon";
+		String lower = name.toLowerCase();
+		if (lower.contains("order"))
+			return "z-icon-shopping-cart notification-item-icon";
+		if (lower.contains("invoice"))
+			return "z-icon-file-text-o notification-item-icon";
+		if (lower.contains("payment"))
+			return "z-icon-credit-card notification-item-icon";
+		if (lower.contains("shipment") || lower.contains("receipt"))
+			return "z-icon-truck notification-item-icon";
+		if (lower.contains("request"))
+			return "z-icon-ticket notification-item-icon";
+		if (lower.contains("workflow") || lower.contains("wf"))
+			return "z-icon-random notification-item-icon";
+		if (lower.contains("notice"))
+			return "z-icon-bell-o notification-item-icon";
+		return "z-icon-file-text-o notification-item-icon";
+	}
+
+	/**
+	 * Zoom to the window/form/process associated with a document status indicator
+	 * @param ind the document status indicator
+	 */
+	private void zoomToDocumentStatus(MDocumentStatus ind) {
+		int AD_Window_ID = ind.getAD_Window_ID();
+		int AD_Form_ID = ind.getAD_Form_ID();
+		int AD_Process_ID = ind.getAD_Process_ID();
+		int AD_InfoWindow_ID = ind.getAD_InfoWindow_ID();
+		if (AD_Window_ID > 0) {
+			MQuery query = new MQuery(ind.getAD_Table_ID());
+			query.addRestriction(MDocumentStatus.getSQLFilter(ind));
+			AEnv.zoom(AD_Window_ID, query);
+		} else if (AD_Form_ID > 0) {
+			ADForm form = ADForm.openForm(AD_Form_ID);
+			form.setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
+			form.setAttribute(Window.DECORATE_INFO, DecorateInfo.get(MForm.get(AD_Form_ID)));
+			SessionManager.getAppDesktop().showWindow(form);
+		} else if (AD_Process_ID > 0) {
+			SessionManager.getAppDesktop().openProcessDialog(AD_Process_ID,
+					"Y".equals(DB.getSQLValueStringEx(null, "SELECT IsSOTrx FROM AD_Menu WHERE AD_Process_ID=?", AD_Process_ID)));
+		} else if (AD_InfoWindow_ID > 0) {
+			SessionManager.getAppDesktop().openInfo(AD_InfoWindow_ID);
+		} else {
+			Messagebox.showDialog(ind.get_Translation(MDocumentStatus.COLUMNNAME_Help),
+					ind.get_Translation(MDocumentStatus.COLUMNNAME_Description),
+					Messagebox.OK, Messagebox.INFORMATION);
+		}
 	}
 
 	/**
