@@ -3,126 +3,35 @@
  */
 package org.compiere.apps.wf;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Image;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.net.URL;
+import java.awt.Rectangle;
 
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-
-import org.compiere.model.MImage;
-import org.compiere.model.MTreeNode;
-import org.compiere.util.Env;
 import org.compiere.wf.MWFNode;
-import org.netbeans.api.visual.border.Border;
-import org.netbeans.api.visual.border.BorderFactory;
-import org.netbeans.api.visual.layout.LayoutFactory;
-import org.netbeans.api.visual.widget.ImageWidget;
-import org.netbeans.api.visual.widget.LabelWidget;
-import org.netbeans.api.visual.widget.Scene;
-import org.netbeans.api.visual.widget.SeparatorWidget;
-import org.netbeans.api.visual.widget.Widget;
 
 /**
- * Widget for workflow node
+ * Workflow node model for the graph renderer.
+ *
+ * <p>Pure Java POJO, no NetBeans Visual Library dependency. Rendering is done
+ * client side as SVG ({@code idempiere.wfgraph}); this class only carries the
+ * grid position and the {@link MWFNode} model.</p>
+ *
  * @author hengsin
  */
-public class WFNodeWidget extends Widget {
+public class WFNodeWidget {
 
-	public final static int NODE_WIDTH = 150;
-	public final static int NODE_HEIGHT = 100;
-
-	private static final Border EMPTY_BORDER = BorderFactory.createEmptyBorder (4);
+	public final static int NODE_WIDTH = WFGraphLayout.NODE_WIDTH;
+	public final static int NODE_HEIGHT = WFGraphLayout.NODE_HEIGHT;
 
 	private int row = 0;
 	private int column = 0;
 
-	private MWFNode model;
+	private final MWFNode model;
 
 	/**
-	 * @param scene
-	 * @param node
+	 * @param node workflow node model
 	 */
-	public WFNodeWidget(Scene scene, MWFNode node) {
-		super(scene);
-
-		setLayout (LayoutFactory.createVerticalFlowLayout ());
-        setOpaque (true);
-        setCheckClipping (true);
-        if (node.getAD_Client_ID() == Env.getAD_Client_ID(Env.getCtx())) {
-            setBackground(new Color(255, 255, 255, 0));
-        }
-
-        setPreferredSize(new Dimension(NODE_WIDTH, NODE_HEIGHT));
-
-        ImageWidget imageWidget = null;
-        int imageId = node.getAD_Image_ID();
-        if (imageId > 0) {
-        	MImage mImage = MImage.get(Env.getCtx(), imageId);
-        	Image image = null;
-        	byte[] imageData = mImage.getBinaryData();
-        	if (imageData != null && imageData.length > 0) {
-        		try {
-					image = ImageIO.read(new ByteArrayInputStream(imageData));
-				} catch (IOException e) {
-				}
-        	} else {
-        		String url = mImage.getImageURL();
-        		if (url != null && url.trim().length() > 0) {
-        			try {
-    					image = ImageIO.read(new URL(url));
-    				} catch (IOException e) {
-    				}
-        		}
-        	}
-        	if (image != null) {
-        		imageWidget = new ImageWidget(scene, image);
-        		imageWidget.setToolTipText(node.getName(true));
-        		addChild(imageWidget);
-        	}
-        }
-        else {
-        	setBorder (BorderFactory.createLineBorder ());
-	        Widget titleWidget = new Widget (scene);
-	        titleWidget.setLayout (LayoutFactory.createHorizontalFlowLayout ());
-	        titleWidget.setBorder (EMPTY_BORDER);
-
-	        ImageWidget titleIcon = new ImageWidget (scene);
-	        String action = node.getAction();
-	        int index = MTreeNode.getImageIndex(action);
-	        ImageIcon icon = (ImageIcon) MTreeNode.getIcon(index);  // TODO: font icon
-	        if (icon != null)
-	        {
-	        	titleIcon.setImage (icon.getImage());
-	        	titleIcon.setToolTipText(getActionType(node));
-	        	titleWidget.addChild (titleIcon);
-	        }
-
-	        String titleText = node.getName(true);
-	        if (titleText.length() > 20)
-	        	titleText = titleText.substring(0, 20) + "...";
-	        LabelWidget titleTextWidget = new LabelWidget (scene, titleText);
-	        titleTextWidget.setFont (scene.getDefaultFont ().deriveFont (Font.BOLD));
-	        if (titleText.length() > 20)
-	        	titleTextWidget.setToolTipText(node.getName());
-	        titleWidget.addChild (titleTextWidget);
-	        addChild (titleWidget);
-
-	        addChild (new SeparatorWidget (scene, SeparatorWidget.Orientation.HORIZONTAL));
-
-	        String description = node.getDescription(true);
-			if (description != null && description.length() > 0)
-			{
-				MultilineLabelWidget label = new MultilineLabelWidget(scene, description);
-				label.setPreferredSize(new Dimension(NODE_WIDTH - 20, NODE_HEIGHT - 20));
-				addChild(label);
-			}
-        }
-
+	public WFNodeWidget(MWFNode node) {
+		if (node == null)
+			throw new IllegalArgumentException("node is null");
 		model = node;
 	}
 
@@ -158,6 +67,37 @@ public class WFNodeWidget extends Widget {
 		return "";
 	}	//	getActionInfo
 
+	/**
+	 * Single letter key for the client side node glyph.
+	 * @return glyph key derived from the node action
+	 */
+	public String getActionKey() {
+		String action = model.getAction();
+		if (MWFNode.ACTION_UserWindow.equals(action))
+			return "W";
+		else if (MWFNode.ACTION_UserForm.equals(action))
+			return "F";
+		else if (MWFNode.ACTION_UserChoice.equals(action))
+			return "C";
+		else if (MWFNode.ACTION_AppsProcess.equals(action))
+			return "P";
+		else if (MWFNode.ACTION_AppsReport.equals(action))
+			return "R";
+		else if (MWFNode.ACTION_AppsTask.equals(action))
+			return "T";
+		else if (MWFNode.ACTION_SubWorkflow.equals(action))
+			return "S";
+		else if (MWFNode.ACTION_SetVariable.equals(action))
+			return "V";
+		else if (MWFNode.ACTION_DocumentAction.equals(action))
+			return "D";
+		else if (MWFNode.ACTION_WaitSleep.equals(action))
+			return "Z";
+		else if (MWFNode.ACTION_UserInfo.equals(action))
+			return "I";
+		return "";
+	}
+
 	public int getColumn() {
 		return column;
 	}
@@ -176,5 +116,13 @@ public class WFNodeWidget extends Widget {
 
 	public MWFNode getModel() {
 		return model;
+	}
+
+	/**
+	 * Bounds of this node on the canvas.
+	 * @return bounds in canvas coordinates
+	 */
+	public Rectangle getBounds() {
+		return WFGraphLayout.nodeBounds(row, column);
 	}
 }
