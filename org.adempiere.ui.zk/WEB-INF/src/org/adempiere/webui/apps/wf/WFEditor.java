@@ -14,6 +14,7 @@ package org.adempiere.webui.apps.wf;
 
 import java.util.logging.Level;
 
+import org.adempiere.util.Callback;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -28,6 +29,7 @@ import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.Icon;
+import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.apps.wf.WFNodeWidget;
 import org.compiere.model.MEntityType;
@@ -442,8 +444,18 @@ public class WFEditor extends ADForm {
 		int popupAction;
 		if ("properties".equals(action))
 			popupAction = WFPopupItem.WFPOPUPITEM_PROPERTIES;
-		else if ("deleteNode".equals(action))
-			popupAction = WFPopupItem.WFPOPUPITEM_DELETENODE;
+		else if ("deleteNode".equals(action)) {
+			Dialog.ask(getWindowNo(), "DeleteRecord?", new Callback<Boolean>() {
+				@Override
+				public void onCallback(Boolean result) {
+					if (result) {
+						WFPopupItem delItem = new WFPopupItem(node.getName(true), node, WFPopupItem.WFPOPUPITEM_DELETENODE);
+						executePopupItem(delItem);
+					}
+				}
+			});
+			return;
+		}
 		else
 			popupAction = WFPopupItem.WFPOPUPITEM_ZOOM;
 		WFPopupItem item = new WFPopupItem(node.getName(true), node, popupAction);
@@ -483,8 +495,18 @@ public class WFEditor extends ADForm {
 		if (line == null)
 			return;
 		WFPopupItem item;
-		if ("deleteLine".equals(action))
-			item = new WFPopupItem(Msg.getMsg(Env.getCtx(), "DeleteLine"), line);
+		if ("deleteLine".equals(action)) {
+			Dialog.ask(getWindowNo(), "DeleteRecord?", new Callback<Boolean>() {
+				@Override
+				public void onCallback(Boolean result) {
+					if (result) {
+						WFPopupItem delItem = new WFPopupItem(Msg.getMsg(Env.getCtx(), "DeleteLine"), line);
+						executePopupItem(delItem);
+					}
+				}
+			});
+			return;
+		}
 		else if ("properties".equals(action))
 			item = new WFPopupItem(Msg.getMsg(Env.getCtx(), "Properties"), line, WFPopupItem.WFPOPUPITEM_PROPERTIESLINE);
 		else
