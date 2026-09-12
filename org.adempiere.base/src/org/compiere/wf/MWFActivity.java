@@ -28,8 +28,10 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 
@@ -733,11 +735,24 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			+ ", Own=" + ownDocument);
 
 		MUser oldUser = null;
+		Set<Integer> visitedUserIds = new HashSet<>();
 		while (user != null)
 		{
 			if (user.equals(oldUser))
 			{
 				if (log.isLoggable(Level.INFO)) log.info("Loop - " + user.getName());
+				user=null;
+				break;
+			}
+			//	Guard against approval hierarchy cycles longer than one step
+			//	(e.g. user A -> supervisor B -> org supervisor A): the oldUser check
+			//	above only catches immediate self repetition and would loop forever,
+			//	burning CPU while holding the workflow transaction (and its DB locks)
+			//	open. Break out so the caller fails cleanly with NoApprover.
+			if (!visitedUserIds.add(Integer.valueOf(user.getAD_User_ID())))
+			{
+				log.warning("Approval hierarchy cycle detected at user "
+					+ user.getName() + " (" + user.getAD_User_ID() + "), aborting approver search");
 				user=null;
 				break;
 			}
