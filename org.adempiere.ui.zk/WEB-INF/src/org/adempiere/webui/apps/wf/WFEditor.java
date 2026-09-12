@@ -532,18 +532,18 @@ public class WFEditor extends ADForm {
 	 * Create a transition from one node to another (connect by drag).
 	 * Shared core used by drag events and popup menu actions.
 	 * @param node source workflow node
-	 * @param AD_WF_NodeTo_ID target workflow node id
+	 * @param targetNodeId target workflow node id
 	 * @return the new transition, or null if rejected
 	 */
-	protected MWFNodeNext createTransition(MWFNode node, int AD_WF_NodeTo_ID) {
+	protected MWFNodeNext createTransition(MWFNode node, int targetNodeId) {
 		if (nodeContainer == null || node == null)
 			return null;
-		if (!canAddTransition(node, AD_WF_NodeTo_ID)) {
+		if (!canAddTransition(node, targetNodeId)) {
 			logger.warning("Rejected unauthorized workflow transition creation");
 			return null;
 		}
 		int AD_Client_ID = Env.getAD_Client_ID(Env.getCtx());
-		MWFNodeNext newLine = new MWFNodeNext(node, AD_WF_NodeTo_ID);
+		MWFNodeNext newLine = new MWFNodeNext(node, targetNodeId);
 		newLine.setClientOrg(AD_Client_ID, 0);
 		newLine.setSeqNo(0);
 		if (AD_Client_ID > 11)
@@ -557,16 +557,16 @@ public class WFEditor extends ADForm {
 
 	/**
 	 * Create a transition from one node to another (connect by drag).
-	 * @param AD_WF_Node_ID source workflow node id
-	 * @param AD_WF_NodeTo_ID target workflow node id
+	 * @param sourceNodeId source workflow node id
+	 * @param targetNodeId target workflow node id
 	 */
-	protected void createTransition(int AD_WF_Node_ID, int AD_WF_NodeTo_ID) {
+	protected void createTransition(int sourceNodeId, int targetNodeId) {
 		if (nodeContainer == null)
 			return;
-		WFNodeWidget widget = nodeContainer.findNode(AD_WF_Node_ID);
+		WFNodeWidget widget = nodeContainer.findNode(sourceNodeId);
 		if (widget == null)
 			return;
-		createTransition(widget.getModel(), AD_WF_NodeTo_ID);
+		createTransition(widget.getModel(), targetNodeId);
 	}
 
 	/**
