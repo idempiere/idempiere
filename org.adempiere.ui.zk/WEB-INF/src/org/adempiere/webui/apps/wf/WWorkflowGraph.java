@@ -260,20 +260,7 @@ public class WWorkflowGraph extends Div {
 	 * @return node id or -1
 	 */
 	public static int getNodeId(Event event) {
-		Object data = event.getData();
-		if (data instanceof Map) {
-			Object id = ((Map<?, ?>) data).get("nodeId");
-			if (id instanceof Number)
-				return ((Number) id).intValue();
-			if (id instanceof String) {
-				try {
-					return Integer.parseInt((String) id);
-				} catch (NumberFormatException e) {
-					return -1;
-				}
-			}
-		}
-		return -1;
+		return getIntData(event, "nodeId");
 	}
 
 	/**
@@ -378,16 +365,7 @@ public class WWorkflowGraph extends Div {
 	private static int getIntData(Event event, String key) {
 		Object data = event.getData();
 		if (data instanceof Map) {
-			Object value = ((Map<?, ?>) data).get(key);
-			if (value instanceof Number)
-				return ((Number) value).intValue();
-			if (value instanceof String) {
-				try {
-					return Integer.parseInt((String) value);
-				} catch (NumberFormatException e) {
-					return -1;
-				}
-			}
+			return getIntValue(((Map<?, ?>) data).get(key));
 		}
 		return -1;
 	}

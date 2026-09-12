@@ -322,8 +322,11 @@ public class WFNodeContainer
 			// a node is only editable by the current client ( Swing editor
 			// behaviour ); others are shown grayed out
 			o.put("editable", node.getAD_Client_ID() == Env.getAD_Client_ID(Env.getCtx()));
-			// pinned means a stored grid cell exists (drag/drop or manual pin)
-			o.put("pinned", node.getXPosition() > 0 && node.getYPosition() > 0);
+			// pinned means the stored grid cell matches the assigned one;
+			// an out-of-range or colliding stored position is replaced by
+			// automatic layout and must not report pinned
+			o.put("pinned", widget.getColumn() == node.getXPosition()
+					&& widget.getRow() == node.getYPosition());
 			if (node.getAD_Image_ID() > 0)
 				o.put("imageId", node.getAD_Image_ID());
 			nodes.add(o);

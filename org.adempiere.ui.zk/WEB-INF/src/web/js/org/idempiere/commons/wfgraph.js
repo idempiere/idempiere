@@ -1617,8 +1617,12 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 				}
 				node.x = colPos(model, col - 1) + (model.colW - model.nodeW) / 2 + (model._colE[col - 1] || 0);
 				node.y = rowPos(model, row - 1) + (model.rowH - model.nodeH) / 2 + (model._rowE[row - 1] || 0);
+				// assign the cell before rerender: render recomputes x/y
+				// from col/row, otherwise the card snaps back until reload
+				var oldCol = node.col, oldRow = node.row;
+				node.col = col; node.row = row;
 				rerender();
-				if (col !== node.col || row !== node.row) {
+				if (col !== oldCol || row !== oldRow) {
 					sendEvent(wgt, 'onNodeDrop', { nodeId: node.id, row: row, col: col });
 				}
 				uev.stopPropagation();
