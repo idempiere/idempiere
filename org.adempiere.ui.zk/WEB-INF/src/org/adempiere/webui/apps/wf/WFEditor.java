@@ -622,6 +622,7 @@ public class WFEditor extends ADForm {
 		return true;
 	}
 
+	/** Find a transition of this workflow by id, or null. */
 	private MWFNodeNext findTransition(int transitionId) {
 		if (nodeContainer != null) {
 			for (MWFNodeNext line : nodeContainer.getEdges()) {

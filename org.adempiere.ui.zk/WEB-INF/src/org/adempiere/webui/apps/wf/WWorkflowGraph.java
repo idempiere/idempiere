@@ -201,6 +201,9 @@ public class WWorkflowGraph extends Div {
 		render();
 	}
 
+	/**
+	 * Push the model to the client side renderer
+	 */
 	private void render() {
 		if (getPage() == null)
 			return;

@@ -17,6 +17,7 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 	 * border, so corners and arrow heads never sit on the card edge. */
 	var MIN_STUB = 12;
 
+	/* Create an SVG element with attributes and append it to parent. */
 	function el(name, attrs, parent) {
 		var node = document.createElementNS(SVG_NS, name);
 		if (attrs) {
@@ -30,6 +31,7 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 		return node;
 	}
 
+	/* Create an SVG text element at (x, y) with string content. */
 	function text(parent, x, y, str, attrs) {
 		var node = el('text', attrs, parent);
 		node.setAttribute('x', x);
@@ -38,6 +40,7 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 		return node;
 	}
 
+	/* Wrap a string into at most maxLines lines of maxPerLine chars on word boundaries. */
 	function wrapLines(str, maxPerLine, maxLines) {
 		var out = [];
 		if (str == null || str === '')
@@ -76,11 +79,13 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 		return out;
 	}
 
+	/* Shorten a string to max chars with an ellipsis. */
 	function truncate(str, max) {
 		str = str == null ? '' : String(str);
 		return str.length > max ? str.substring(0, max - 1) + '…' : str;
 	}
 
+	/* Find a node by id, or null. */
 	function nodeById(model, id) {
 		for (var i = 0; i < model.nodes.length; i++) {
 			if (model.nodes[i].id === id)
@@ -89,6 +94,7 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 		return null;
 	}
 
+	/* True when two edges share the id, falling back to identity. */
 	function sameEdge(a, b) {
 		if (a && b && a.id !== undefined && b.id !== undefined)
 			return String(a.id) === String(b.id);
@@ -101,6 +107,7 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 		return (model._colX && model._colX[k] !== undefined) ? model._colX[k] : k * model.colW;
 	}
 
+	/* Position of a row grid line, mirroring colPos. */
 	function rowPos(model, k) {
 		return (model._rowY && model._rowY[k] !== undefined) ? model._rowY[k] : k * model.rowH;
 	}
@@ -159,6 +166,7 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 		return Math.min(a.y + nh - 2, Math.max(a.y + 2, y));
 	}
 
+	/* X anchor on a vertical card side, mirroring anchorY. */
 	function anchorX(a, frac, nw, noTie) {
 		var x = a.x + nw * (0.5 + frac) + (noTie ? 0 : a.row * 1.5);
 		return Math.min(a.x + nw - 2, Math.max(a.x + 2, x));
@@ -184,10 +192,12 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 		return 'c' + coordinate;
 	}
 
+	/* Channel key for a row grid line coordinate, mirroring cKey. */
 	function rKey(coordinate) {
 		return 'r' + coordinate;
 	}
 
+	/* Lane offset of an edge in a channel, or 0. */
 	function offOf(edge, key) {
 		return (edge._off && edge._off[key]) || 0;
 	}
@@ -576,6 +586,7 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 		];
 	}
 
+	/* SVG path of a self loop wrapped around its grid lines. */
 	function selfLoopPath(model, a, edge) {
 		return linePath(selfLoopPts(model, a, edge));
 	}
@@ -830,6 +841,7 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 		return { pts: pts, exit: ea.p, entry: eb.p };
 	}
 
+	/* SVG path of a connector including direct jogs and self loops. */
 	function edgePath(model, edge) {
 		var r = edgePoints(model, edge);
 		return r ? linePath(r.pts) : null;
@@ -953,12 +965,14 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 		};
 	}
 
+	/* Forward a client event to the server widget. */
 	function sendEvent(wgt, name, data) {
 		if (!wgt)
 			return;
 		zAu.send(new zk.Event(wgt, name, data, { toServer: true }));
 	}
 
+	/* Per-view render state (scale, selection, model) by widget uuid. */
 	function getState(uuid, model) {
 		var st = stateByUuid[uuid];
 		if (!st) {
@@ -987,6 +1001,7 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 		return out;
 	}
 
+	/* Put back scroll offsets saved by saveScroll. */
 	function restoreScroll(saved) {
 		for (var i = 0; i < saved.length; i++) {
 			try {
@@ -996,6 +1011,7 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 		}
 	}
 
+	/* Apply the state scale to svg size and zoom labels. */
 	function applyZoom(root, svg, st, canvasW, canvasH) {
 		var w = Math.round(canvasW * st.scale);
 		var h = Math.round(canvasH * st.scale);
@@ -1017,16 +1033,19 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 			ext.textContent = pct;
 	}
 
+	/* Zoom to an absolute scale within limits and apply it. */
 	function zoomTo(st, root, svg, canvasW, canvasH, scale) {
 		st.scale = Math.min(2.5, Math.max(0.2, scale));
 		applyZoom(root, svg, st, canvasW, canvasH);
 	}
 
+	/* Zoom so the canvas fits the container width. */
 	function zoomFit(st, root, svg, canvasW) {
 		var avail = root.clientWidth || canvasW;
 		zoomTo(st, root, svg, canvasW, st.canvasH || 0, avail / canvasW);
 	}
 
+	/* Zoom buttons, zoom label and hint row above the canvas. */
 	function renderToolbar(root, svg, st, canvasW, canvasH, opts) {
 		opts = opts || {};
 		var editable = !!opts.editable;
@@ -1085,18 +1104,22 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 	 * they are swallowed for a short window instead of e.g. reopening a
 	 * menu or selecting a dragged node. */
 	var suppressClickUntil = 0;
+	/* Swallow clicks of the current gesture for a short window. */
 	function noteSuppressingGesture() {
 		suppressClickUntil = Date.now() + 800;
 	}
+	/* True while clicks still belong to a finished gesture. */
 	function isClickSuppressed() {
 		return Date.now() < suppressClickUntil;
 	}
 
+	/* Close the menu and send a menu action event to the server. */
 	function menuAction(wgt, kind, id, action) {
 		hideMenu();
 		sendEvent(wgt, 'onMenuAction', { kind: kind, id: id, action: action });
 	}
 
+	/* Client menu entries for a node (zoom, properties, pin, delete). */
 	function nodeMenuItems(node, opts, wgt) {
 		var items = [
 			{ label: opts.menuZoom || 'Zoom', action: 'zoom' },
@@ -1118,6 +1141,7 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 		return items;
 	}
 
+	/* Client menu entries for an edge (zoom, properties, delete). */
 	function edgeMenuItems(edge, opts, wgt) {
 		var items = [
 			{ label: opts.menuZoom || 'Zoom', action: 'zoom' },
@@ -1133,6 +1157,7 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 		return items;
 	}
 
+	/* Open a floating client menu at (x, y), clamped into the viewport. */
 	function showMenu(items, x, y, onPick) {
 		hideMenu();
 		var menu = document.createElement('div');
@@ -1181,6 +1206,7 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 		document.addEventListener('keydown', onMenuKey, true);
 	}
 
+	/* Close the open menu on Escape. */
 	function onMenuKey(ev) {
 		if (ev.key === 'Escape') {
 			ev.stopPropagation();
@@ -1188,6 +1214,7 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 		}
 	}
 
+	/* Close the open menu and detach its listeners. */
 	function hideMenu() {
 		if (!openMenu)
 			return;
@@ -1237,6 +1264,7 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 		target.addEventListener('pointercancel', cancel);
 	}
 
+	/* Open the node menu at the event position. */
 	function showNodeMenuClient(node, ev, opts, wgt) {
 		var x = ev && ev.clientX !== undefined ? ev.clientX : window.innerWidth / 2;
 		var y = ev && ev.clientY !== undefined ? ev.clientY : window.innerHeight / 2;
@@ -1245,6 +1273,7 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 		});
 	}
 
+	/* Open an edge menu below a target rectangle. */
 	function showMenuAt(rect, items) {
 		var x = rect ? rect.left + rect.width / 2 : window.innerWidth / 2;
 		var y = rect ? rect.bottom + 4 : window.innerHeight / 2;
@@ -1253,6 +1282,7 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 		});
 	}
 
+	/* Convert client pixels to svg coordinates. */
 	function clientToSvg(svg, clientX, clientY) {
 		var pt = svg.createSVGPoint();
 		pt.x = clientX;
@@ -1261,6 +1291,7 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 		return ctm ? pt.matrixTransform(ctm.inverse()) : { x: clientX, y: clientY };
 	}
 
+	/* Drag a new transition from a node port to a target node. */
 	function startConnect(g, port, node, layer, svg, model, opts, wgt, pid, portLayer) {
 		var fromX = node.x + model.nodeW;
 		var fromY = node.y + model.nodeH / 2;
@@ -1351,6 +1382,7 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 		window.addEventListener('keydown', onKey, true);
 	}
 
+	/* Draw a node card with image, texts, menu, port and drag. */
 	function renderNode(layer, model, node, st, wgt, opts, rerender, portLayer) {
 		var nw = model.nodeW, nh = model.nodeH;
 		// grayed out cards only in the setup editor (grayLockedNodes): while
@@ -1534,6 +1566,7 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 			attachDrag(g, model, node, st, wgt, opts, rerender, port, halo);
 	}
 
+	/* Make a node card draggable between grid cells. */
 	function attachDrag(g, model, node, st, wgt, opts, rerender, port, halo) {
 		g.style.touchAction = 'none';
 		g.addEventListener('pointerdown', function (ev) {
@@ -1659,6 +1692,7 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 		return out;
 	}
 
+	/* True when a path element belongs to the given edge. */
 	function isEdgePath(p, edge) {
 		return String(p.getAttribute('data-edge-id')) === String(edge.id);
 	}
@@ -1687,6 +1721,7 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 		}
 	}
 
+	/* Highlight edge, label and end nodes while hovered. */
 	function wireEdgeHover(target, svg, nodeLayer, edge) {
 		target.addEventListener('mouseenter', function () {
 			setEdgeHighlight(svg, nodeLayer, edge, true);
@@ -1696,6 +1731,7 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 		});
 	}
 
+	/* Find an edge by id, or null. */
 	function findEdge(model, edgeId) {
 		for (var i = 0; i < model.edges.length; i++) {
 			var edge = model.edges[i];
@@ -1705,6 +1741,7 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 		return null;
 	}
 
+	/* Recompute all routed edge paths after a node move. */
 	function updateEdges(svg, model) {
 		prepareLanes(model);
 		var lists = [svg.querySelectorAll('path.wf-edge'), svg.querySelectorAll('path.wf-edge-hit')];
@@ -1720,6 +1757,7 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 		}
 	}
 
+	/* Draw edges with hit areas, badges, chips and menus. */
 	function renderEdges(layer, model, wgt, nodeLayer, labelLayer, menuOpts) {
 		var svg = layer.ownerSVGElement;
 		for (var i = 0; i < model.edges.length; i++) {
@@ -1995,6 +2033,7 @@ if (typeof window.idempiere.wfgraph === 'undefined')
 		return name + ' \u2013 ' + rule;
 	}
 
+	/* Render the whole graph: lanes, svg, grid, edges, nodes, zoom. */
 	function render(uuid, model, opts) {
 		model = model || {};
 		model.nodes = model.nodes || [];
