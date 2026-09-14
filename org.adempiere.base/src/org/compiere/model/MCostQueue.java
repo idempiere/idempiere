@@ -54,7 +54,7 @@ public class MCostQueue extends X_M_CostQueue
 	 *	@return cost queue or null
 	 */
 	public static MCostQueue get (MProduct product, int M_AttributeSetInstance_ID,
-		MAcctSchema as, int AD_Org_ID, int M_CostElement_ID, String trxName)
+		MAcctSchema as, int AD_Org_ID, int M_CostElement_ID,BigDecimal price,String trxName)
 	{
 		MCostQueue costQ = null;
 		String sql = "SELECT * FROM M_CostQueue "
@@ -62,7 +62,8 @@ public class MCostQueue extends X_M_CostQueue
 			+ " AND M_Product_ID=?"
 			+ " AND M_AttributeSetInstance_ID=?"
 			+ " AND M_CostType_ID=? AND C_AcctSchema_ID=?"
-			+ " AND M_CostElement_ID=?";
+			+ " AND M_CostElement_ID=?"
+			+ " AND CurrentCostPrice=?";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
@@ -75,6 +76,7 @@ public class MCostQueue extends X_M_CostQueue
 			pstmt.setInt (5, as.getM_CostType_ID());
 			pstmt.setInt (6, as.getC_AcctSchema_ID());
 			pstmt.setInt (7, M_CostElement_ID);
+			pstmt.setBigDecimal(8, price);
 			rs = pstmt.executeQuery ();
 			if (rs.next ())
 				costQ = new MCostQueue (product.getCtx(), rs, trxName); 
