@@ -605,6 +605,11 @@ public class WFEditor extends ADForm {
 	 * node only anchors the new transition (it is not modified), so
 	 * transitions may start from locked nodes of another client as well;
 	 * the new line itself belongs to the current client.
+	 *
+	 * <p>Allowed by design (review decision, IDEMPIERE-7097): self
+	 * references, reverse pairs (A to B and B to A) and transitions into
+	 * the workflow start node. Not allowed: duplicate connections between
+	 * the same pair of nodes in the same direction.</p>
 	 * @param node source workflow node
 	 * @param targetNodeId target workflow node id
 	 * @return true if both nodes can be used for the new transition

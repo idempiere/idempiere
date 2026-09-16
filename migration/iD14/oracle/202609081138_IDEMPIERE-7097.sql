@@ -9,7 +9,7 @@ INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,
 ;
 
 -- Sep 8, 2026, 11:38:32 AM MYT
-INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Zoom In',0,0,'Y',TO_TIMESTAMP('2026-09-08 11:38:31','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-09-08 11:38:31','YYYY-MM-DD HH24:MI:SS'),100,201056,'ZoomIn','D','01a07f18-92ff-77fa-88f5-c97aaa506c79')
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Zoom in',0,0,'Y',TO_TIMESTAMP('2026-09-08 11:38:31','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-09-08 11:38:31','YYYY-MM-DD HH24:MI:SS'),100,201056,'ZoomIn','D','01a07f18-92ff-77fa-88f5-c97aaa506c79')
 ;
 
 -- Sep 8, 2026, 11:38:51 AM MYT
@@ -26,4 +26,20 @@ INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,
 
 -- Sep 8, 2026, 11:39:51 AM MYT
 INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','No workflow nodes',0,0,'Y',TO_TIMESTAMP('2026-09-08 11:39:50','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-09-08 11:39:50','YYYY-MM-DD HH24:MI:SS'),100,201061,'NoWorkflowNodes','D','01a07f19-c7e7-77d5-b54a-c7b344886a72')
+;
+
+-- Sep 10, 2026, 12:00:00 PM MYT
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Pin position',0,0,'Y',TO_TIMESTAMP('2026-09-10 12:00:00','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-09-10 12:00:00','YYYY-MM-DD HH24:MI:SS'),100,201064,'WFPinPosition','D','0d4359a3-18ff-4cd9-bc21-bd8a89172ef2')
+;
+
+-- Sep 10, 2026, 12:00:00 PM MYT
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Release position',0,0,'Y',TO_TIMESTAMP('2026-09-10 12:00:00','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-09-10 12:00:00','YYYY-MM-DD HH24:MI:SS'),100,201065,'WFUnpinPosition','D','c57ca155-6855-4ea4-8363-1f39e84c7d3c')
+;
+
+-- Sep 10, 2026, 12:00:00 PM MYT
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Pinned position',0,0,'Y',TO_TIMESTAMP('2026-09-10 12:00:00','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-09-10 12:00:00','YYYY-MM-DD HH24:MI:SS'),100,201066,'WFPinnedPosition','D','ad257302-9702-40d4-8088-46515bcf8981')
+;
+
+-- Sep 11, 2026, 3:00:00 PM CEST
+INSERT INTO AD_Message (MsgType,MsgText,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Message_ID,Value,EntityType,AD_Message_UU) VALUES ('I','Only valid when Complete is selected in the document',0,0,'Y',TO_TIMESTAMP('2026-09-11 15:00:00','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2026-09-11 15:00:00','YYYY-MM-DD HH24:MI:SS'),100,201067,'WFStdUserWorkflowOnly','D','49b1e92d-c272-4a98-b6c4-dfb483f33a06')
 ;
