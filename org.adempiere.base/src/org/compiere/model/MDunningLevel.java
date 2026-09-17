@@ -95,7 +95,7 @@ public class MDunningLevel extends X_C_DunningLevel
 		if (!getParent().isCreateLevelsSequentially ())
 			return null;
 		ArrayList<MDunningLevel> list = new ArrayList<MDunningLevel>();
-		String sql = "SELECT * FROM C_DunningLevel WHERE C_Dunning_ID=? AND DaysAfterDue+DaysBetweenDunning<?";
+		String sql = "SELECT * FROM C_DunningLevel WHERE C_Dunning_ID=? AND DaysAfterDue+DaysBetweenDunning<? AND IsActive='Y'";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
