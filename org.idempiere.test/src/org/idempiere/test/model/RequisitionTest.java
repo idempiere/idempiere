@@ -25,7 +25,9 @@
 package org.idempiere.test.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -70,7 +72,7 @@ public class RequisitionTest extends AbstractTestCase {
 		requisition.setM_PriceList_ID(standardPriceList);
 		requisition.setPriorityRule(MRequisition.PRIORITYRULE_Medium);
 		requisition.saveEx();
-		
+
 		int seeder = DictionaryIDs.M_Product.SEEDER.id;
 		int each = DictionaryIDs.C_UOM.EACH.id;
 		MRequisitionLine line = new MRequisitionLine(requisition);
@@ -79,10 +81,28 @@ public class RequisitionTest extends AbstractTestCase {
 		line.setQty(new BigDecimal("1"));
 		line.setPrice();
 		line.saveEx();
-		
+
+		assertEquals(new BigDecimal("1"), line.getQtyOrdered(), "Conversion from qty to qtyOrder is not working for requisition line with Product.");
+		assertNotNull(line.getPriceEntered(), "PriceEntered was not initialized from PriceActual");
+		assertTrue(line.getPriceEntered().compareTo(BigDecimal.ZERO) > 0, "PriceEntered should be greater than zero.");
+		assertEquals(	0, line.getLineNetAmt().compareTo(line.getQtyOrdered().multiply(line.getPriceActual())),
+		             	"LineNetAmt is inconsistent with the converted QtyOrdered and PriceActual values.");
+
+		line = new MRequisitionLine(requisition);
+		line.setC_BPartner_ID(DictionaryIDs.C_BPartner.SEED_FARM.id);
+		line.setC_Charge_ID(DictionaryIDs.C_Charge.COMMISSIONS.id);
+		line.setQty(new BigDecimal("1"));
+		line.setPriceEntered(new BigDecimal("100"));
+		line.setPriceActual(new BigDecimal("100"));
+		line.saveEx();
+
+		assertEquals(BigDecimal.ONE, line.getQtyOrdered(), "QtyOrdered was not initialized from Qty for requisition line for charge.");
+		assertEquals(new BigDecimal("100"), line.getPriceEntered(), "PriceEntered does not match the expected value.");
+		assertEquals(new BigDecimal("100"), line.getPriceActual(), "PriceActual does not match the expected value.");
+
 		ProcessInfo pi = MWorkflow.runDocumentActionWorkflow(requisition, DocAction.ACTION_Complete);
 		assertFalse(pi.isError(), pi.getSummary());
-		
+
 		requisition.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, requisition.getDocStatus());
 	}
