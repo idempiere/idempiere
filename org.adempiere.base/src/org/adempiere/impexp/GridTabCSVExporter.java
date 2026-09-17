@@ -116,6 +116,8 @@ public class GridTabCSVExporter implements IGridTabExporter
 					procArray.add(new Optional(new FmtDate(DisplayType.DEFAULT_DATE_FORMAT)));
 				} else if (DisplayType.DateTime == field.getDisplayType()) {
 					procArray.add(new Optional(new FmtDate(DisplayType.DEFAULT_TIMESTAMP_FORMAT)));
+				} else if (DisplayType.isTimestampWithTimeZone(field.getDisplayType())) {
+					procArray.add(new Optional(new FmtDate(DisplayType.DEFAULT_TIMESTAMP_WITH_TIMEZONE_FORMAT)));
 				} else if (DisplayType.Time == field.getDisplayType()) {
 					procArray.add(new Optional(new FmtDate(DisplayType.DEFAULT_TIME_FORMAT)));
 				} else if (DisplayType.Integer == field.getDisplayType() || DisplayType.isNumeric(field.getDisplayType())) {
@@ -172,6 +174,8 @@ public class GridTabCSVExporter implements IGridTabExporter
 						 procArray.add(new Optional(new FmtDate(DisplayType.DEFAULT_DATE_FORMAT)));
 					 } else if (DisplayType.DateTime == field.getDisplayType()) {
 						 procArray.add(new Optional(new FmtDate(DisplayType.DEFAULT_TIMESTAMP_FORMAT)));
+					 } else if (DisplayType.isTimestampWithTimeZone(field.getDisplayType())) {
+						 procArray.add(new Optional(new FmtDate(DisplayType.DEFAULT_TIMESTAMP_WITH_TIMEZONE_FORMAT)));
 					 } else if (DisplayType.Time == field.getDisplayType()) {
 						 procArray.add(new Optional(new FmtDate(DisplayType.DEFAULT_TIME_FORMAT)));
 					 } else if (DisplayType.Integer == field.getDisplayType() || DisplayType.isNumeric(field.getDisplayType())) {
