@@ -57,34 +57,37 @@ public class GridTableTest extends AbstractTestCase
 	{
 		int windowNo = 3;
 		Properties ctx = Env.getCtx();
-		Env.setContext(ctx, windowNo, "#AD_User_ID", "100");
-
-		GridTable table = new GridTable(ctx, MInvoice.Table_ID, MInvoice.Table_Name, windowNo, 0, false);
-
-		GridFieldVO vo = GridFieldVO.createParameter(	ctx, windowNo, 0, 0, 0, "IsEligibleForAccess", "IsEligibleForAccess",
-														DisplayType.YesNo, 0, false, false, null);
-		vo.ColumnSQL = "(CASE WHEN @#AD_User_ID@ = 123 THEN 'Y' ELSE 'N' END)";
-
-		GridField field = new GridField(vo);
-		table.addField(field);
-		assertEquals(1, table.getColumnCount(), "Field was not added - check column access");
-
-		assertTrue(table.open(0), "table.open(0) failed for " + MInvoice.Table_Name);
-
-		String sql1 = Env.getContext(ctx, windowNo, 0, GridTab.CTX_SQL);
-		assertNotNull(sql1, "CTX_SQL is null after open() - createSelectSql() returned early");
-		assertTrue(sql1.contains("WHEN 100 = 123"), "Context value '100' not substituted into virtual column. SQL: " + sql1);
-		assertFalse(sql1.contains("WHEN 111 = 123"), "SELECT already has '111' before context change - stale context. SQL: " + sql1);
-
-		Env.setContext(ctx, windowNo, "#AD_User_ID", "111");
-
-		assertTrue(table.dataRequery(new SQLFragment("2=3"), false, 1), "failed to requery");
-
-		String sql2 = Env.getContext(ctx, windowNo, 0, GridTab.CTX_SQL);
-		assertNotNull(sql2, "CTX_SQL is null after requery - createSelectSql() returned early");
-		assertTrue(sql2.contains("WHEN 111 = 123"), "Context value '111' not substituted into virtual column after requery. SQL: " + sql2);
-		assertFalse(sql2.contains("WHEN 100 = 123"), "Requeried SELECT still has stale value '100' - context not refreshed. SQL: " + sql2);
-
-		table.close(true);
+		String previousAdUserId = Env.getContext(ctx, windowNo, "#AD_User_ID");
+		GridTable table = null;
+		try
+		{
+			Env.setContext(ctx, windowNo, "#AD_User_ID", "100");
+			table = new GridTable(ctx, MInvoice.Table_ID, MInvoice.Table_Name, windowNo, 0, false);
+			GridFieldVO vo = GridFieldVO.createParameter(	ctx, windowNo, 0, 0, 0, "IsEligibleForAccess", "IsEligibleForAccess",
+															DisplayType.YesNo, 0, false, false, null);
+			vo.ColumnSQL = "(CASE WHEN @#AD_User_ID@ = 123 THEN 'Y' ELSE 'N' END)";
+			GridField field = new GridField(vo);
+			table.addField(field);
+			assertEquals(1, table.getColumnCount(), "Field was not added - check column access");
+			assertTrue(table.open(0), "table.open(0) failed for " + MInvoice.Table_Name);
+			String sql1 = Env.getContext(ctx, windowNo, 0, GridTab.CTX_SQL);
+			assertNotNull(sql1, "CTX_SQL is null after open() - createSelectSql() returned early");
+			assertTrue(sql1.contains("WHEN 100 = 123"), "Context value '100' not substituted into virtual column. SQL: " + sql1);
+			assertFalse(sql1.contains("WHEN 111 = 123"), "SELECT already has '111' before context change - stale context. SQL: " + sql1);
+			Env.setContext(ctx, windowNo, "#AD_User_ID", "111");
+			assertTrue(table.dataRequery(new SQLFragment("2=3"), false, 1), "failed to requery");
+			String sql2 = Env.getContext(ctx, windowNo, 0, GridTab.CTX_SQL);
+			assertNotNull(sql2, "CTX_SQL is null after requery - createSelectSql() returned early");
+			assertTrue(sql2.contains("WHEN 111 = 123"), "Context value '111' not substituted into virtual column after requery. SQL: " + sql2);
+			assertFalse(sql2.contains("WHEN 100 = 123"), "Requeried SELECT still has stale value '100' - context not refreshed. SQL: " + sql2);
+		}
+		finally
+		{
+			if (table != null)
+			{
+				table.close(true);
+			}
+			Env.setContext(ctx, windowNo, "#AD_User_ID", previousAdUserId);
+		}
 	} // testVirtualColumnContextValueIsRefreshedOnRequery
 }
