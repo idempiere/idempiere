@@ -6765,4 +6765,27 @@ public abstract class PO
 	           " WHERE " + uuCol + " = " + DB.TO_STRING(uuidValue) + ")";
 	}
 
+	/** Set of active AD_Workflow_IDs */
+	private final Set<Integer> activeWorkflows = new HashSet<>();
+
+	/**
+	 * @return the activeWorkflows
+	 */
+	public Set<Integer> getActiveWorkflows() {
+		return activeWorkflows;
+	}
+
+	/**
+	 * @param workflowId the AD_Workflow_ID to set
+	 */
+	public boolean addActiveWorkflow(Integer workflowId) {
+		return activeWorkflows.add(workflowId);
+	}
+
+	/**
+	 * @param workflowId the AD_Workflow_ID to remove
+	 */
+	public boolean removeActiveWorkflow(Integer workflowId) {
+		return activeWorkflows.remove(workflowId);
+	}
 }   //  PO
