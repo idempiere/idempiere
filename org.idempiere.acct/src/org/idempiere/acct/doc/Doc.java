@@ -42,6 +42,7 @@ import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MDocType;
+import org.compiere.model.MFactAcct;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MMatchInv;
@@ -716,7 +717,7 @@ public abstract class Doc implements IDoc
 			.append(" AND C_AcctSchema_ID=?");
 		no = DB.executeUpdate(sql.toString(), new Object[] {get_Table_ID(), p_po.get_ID(), m_as.getC_AcctSchema_ID()}, false, getTrxName());
 		if (no != 0)
-			if (log.isLoggable(Level.INFO)) log.info("deleted=" + no);
+			if (log.isLoggable(Level.INFO))	log.info("deleted=" + no);
 		return no;
 	}	//	deleteAcct
 
@@ -2496,7 +2497,27 @@ public abstract class Doc implements IDoc
 	public boolean isDeferPosting() {
 		return false;
 	}
-	
+
+	/**
+	 * Delete reverse correct posting for the document.
+	 * 
+	 * @param AD_Client_ID
+	 * @param AD_Table_ID
+	 * @param Record_ID
+	 * @param trxName
+	 */
+	public static void deleteReverseCorrectPosting(int AD_Client_ID, int AD_Table_ID, int Record_ID, String trxName)
+	{
+		MAcctSchema[] acctSchemas = MAcctSchema.getClientAcctSchema(Env.getCtx(), AD_Client_ID);
+		for (MAcctSchema as : acctSchemas)
+		{
+			if (as.isDeleteReverseCorrectPosting())
+			{
+				MFactAcct.deleteEx(AD_Table_ID, Record_ID, as.getC_AcctSchema_ID(), trxName);
+			}
+		}
+	} // deleteReverseCorrectPosting
+
 	/** In a Back-Date Posting Process **/
 	private boolean isInBackDatePostingProcess;
 	
