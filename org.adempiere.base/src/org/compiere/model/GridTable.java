@@ -384,14 +384,7 @@ public class GridTable extends AbstractTableModel
 				select.append(",");
 			GridField field = (GridField) m_fields.get(i);
 			String columnPart = field.getColumnSQL(true);
-			if (field.isVirtualColumn())
-			{
-				if (columnPart.contains("@"))
-				{
-					columnPart = Env.parseContext(m_ctx, m_WindowNo, columnPart, false, true);
-				}
-			}
-			else
+			if (!field.isVirtualColumn())
 			{
 				columnPart = DB.getDatabase().quoteColumnName(columnPart);
 			}

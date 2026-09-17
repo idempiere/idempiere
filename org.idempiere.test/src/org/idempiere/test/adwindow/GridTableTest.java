@@ -57,7 +57,8 @@ public class GridTableTest extends AbstractTestCase
 	{
 		int windowNo = 3;
 		Properties ctx = Env.getCtx();
-		String previousAdUserId = Env.getContext(ctx, windowNo, "#AD_User_ID");
+		String previousUserID = Env.getContext(ctx, windowNo, "#AD_User_ID");
+		String previousCtxSql = Env.getContext(ctx, windowNo, 0, GridTab.CTX_SQL, true);
 		GridTable table = null;
 		try
 		{
@@ -87,7 +88,17 @@ public class GridTableTest extends AbstractTestCase
 			{
 				table.close(true);
 			}
-			Env.setContext(ctx, windowNo, "#AD_User_ID", previousAdUserId);
+			// Restore or remove the tab-only CTX_SQL context to prevent state leakage
+			if (previousCtxSql == null || previousCtxSql.isEmpty())
+			{
+				Env.setContext(ctx, windowNo, 0, GridTab.CTX_SQL, (String) null);
+			}
+			else
+			{
+				Env.setContext(ctx, windowNo, 0, GridTab.CTX_SQL, previousCtxSql);
+			}
+			// Restore the original AD_User_ID context
+			Env.setContext(ctx, windowNo, "#AD_User_ID", previousUserID);
 		}
 	} // testVirtualColumnContextValueIsRefreshedOnRequery
 }
