@@ -17,14 +17,14 @@
 package org.compiere.util;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.IntSupplier;
 import java.util.logging.Level;
 
 import org.adempiere.base.Core;
@@ -96,10 +96,190 @@ public class CacheMgt
 			}
 		} catch (Throwable t) {}
 	}
-	
+
+	/**
+	 * Per-table (or per-record) in-flight guard for broadcast-triggered local resets.
+	 * If a local reset for the same guard key is already running on this node, the duplicate is
+	 * skipped. Key = {@link #resetInFlightGuardKey(String, String)}; value = AtomicBoolean flag
+	 * (true = in-flight). Bounded to 2000 entries via Caffeine's size-based eviction to prevent
+	 * unbounded growth from per-record guard keys.
+	 * <p>Under sustained pressure from more than 2000 distinct guard keys in flight at once,
+	 * Caffeine may evict an entry whose flag is still {@code true}; the next reset for that same
+	 * key then creates a fresh flag and runs a duplicate reset. The in-flight task holds its own
+	 * reference to the (evicted) flag and still clears it correctly when done, so nothing gets
+	 * stuck — the only consequence is an occasional extra reset, not a lost or hung one.
+	 */
+	private static final Cache<String, AtomicBoolean> resetInFlight =
+			Caffeine.newBuilder()
+				.maximumSize(2000)
+				.build();
+
+	/** Default value of {@link #RESET_STAGGER_MAX_MS} when {@code Cache.ResetStaggerMaxMs} is not set. */
+	private static final long DEFAULT_RESET_STAGGER_MAX_MS = 500L;
+
+	/**
+	 * Width (ms) of the window over which a broadcast-triggered local cache reset is staggered so
+	 * nodes on the same cluster don't all reload from the DB at the same millisecond. The actual
+	 * per-node delay within this window is deterministic, not random — see
+	 * {@link #computeStaggeredDelayMs()}. Override via {@code Cache.ResetStaggerMaxMs}
+	 * (default {@link #DEFAULT_RESET_STAGGER_MAX_MS}).
+	 */
+	private static final long RESET_STAGGER_MAX_MS;
+	static {
+		long stagger = DEFAULT_RESET_STAGGER_MAX_MS;
+		try {
+			String prop = System.getProperty("Cache.ResetStaggerMaxMs");
+			if (prop != null && !prop.trim().isEmpty()) {
+				long parsed = Long.parseLong(prop.trim());
+				if (parsed >= 0) stagger = parsed;
+			}
+		} catch (Throwable t) {}
+		RESET_STAGGER_MAX_MS = stagger;
+	}
+
+	/** Fired once to avoid spamming the log when the cluster service is unavailable at startup. */
+	private static final AtomicBoolean degradedStartupLogged = new AtomicBoolean(false);
+
 	/** List of tables that have been temporary suspended for cache reset operations, usually for batch update/insert/delete */
 	private final static Set<String> suspendedResetCacheTables = ConcurrentHashMap.newKeySet();
-	
+
+	/**
+	 * Tables whose cache invalidation broadcast to the cluster is rate-limited (debounced) rather
+	 * than sent on every local reset/new-record notification. Loaded once from system property
+	 * {@code Cache.ClusterResetDebounceTables} (comma-separated table names). High-write
+	 * transactional tables (e.g. a message queue table) should be listed here to prevent per-insert
+	 * cluster RPC fan-out from exhausting the distributed cache's pub/sub subscription pool.
+	 * <p>Unlike a hard opt-out, this bounds cross-node staleness to at most
+	 * {@link #CLUSTER_RESET_DEBOUNCE_MS} instead of leaving it unbounded: the local node always
+	 * resets immediately, and the cluster-wide broadcast fires at most once per debounce window
+	 * (leading edge), with a single trailing broadcast scheduled to catch up any writes suppressed
+	 * during that window.
+	 */
+	private static final Set<String> debouncedResetTables;
+	static {
+		Set<String> tables = ConcurrentHashMap.newKeySet();
+		try {
+			String prop = System.getProperty("Cache.ClusterResetDebounceTables");
+			if (prop != null && !prop.trim().isEmpty()) {
+				Arrays.stream(prop.split(","))
+					.map(String::trim)
+					.filter(s -> !s.isEmpty())
+					.forEach(tables::add);
+			}
+		} catch (Throwable t) {}
+		debouncedResetTables = tables;
+	}
+
+	/** Default value of {@link #CLUSTER_RESET_DEBOUNCE_MS} when {@code Cache.ClusterResetDebounceMs} is not set. */
+	private static final long DEFAULT_CLUSTER_RESET_DEBOUNCE_MS = 1000L;
+
+	/**
+	 * Minimum interval between cluster-wide broadcasts for a table listed in
+	 * {@link #debouncedResetTables}. Override via {@code Cache.ClusterResetDebounceMs}
+	 * (default {@link #DEFAULT_CLUSTER_RESET_DEBOUNCE_MS}).
+	 */
+	private static final long CLUSTER_RESET_DEBOUNCE_MS;
+	static {
+		long debounce = DEFAULT_CLUSTER_RESET_DEBOUNCE_MS;
+		try {
+			String prop = System.getProperty("Cache.ClusterResetDebounceMs");
+			if (prop != null && !prop.trim().isEmpty()) {
+				long parsed = Long.parseLong(prop.trim());
+				if (parsed >= 0) debounce = parsed;
+			}
+		} catch (Throwable t) {}
+		CLUSTER_RESET_DEBOUNCE_MS = debounce;
+	}
+
+	/**
+	 * Per-table debounce bookkeeping for {@link #debouncedResetTables}. All fields are only ever
+	 * read/written while holding the instance's monitor (see {@link #broadcastDebouncedReset(String)}
+	 * / {@link #runDebouncedBroadcast(String, DebounceState, long)}) — the actual network broadcast
+	 * runs outside the lock, only the small bookkeeping decisions are synchronized.
+	 */
+	private static final class DebounceState {
+		long lastBroadcastAtMs;
+		boolean broadcastPending;
+		boolean dirty;
+	}
+	private static final Map<String, DebounceState> debounceStateByTable = new ConcurrentHashMap<>();
+
+	/**
+	 * Returns {@code true} if cluster-wide broadcast for this table is debounced rather than sent
+	 * on every local reset.
+	 * @param tableName table name to check; {@code null} is never debounced
+	 */
+	private static boolean isDebouncedResetTable(String tableName) {
+		return tableName != null && debouncedResetTables.contains(tableName);
+	}
+
+	/**
+	 * Broadcasts a cluster-wide whole-table reset for a {@link #debouncedResetTables} table,
+	 * rate-limited to at most one broadcast per {@link #CLUSTER_RESET_DEBOUNCE_MS}. The caller is
+	 * expected to have already applied the local reset/new-record notification synchronously
+	 * before calling this — only the cross-node broadcast is throttled, so this node itself is
+	 * never stale for its own writes.
+	 *
+	 * <p>If no broadcast is currently pending for this table, one is scheduled (immediately, or
+	 * after however much of the debounce window remains) and always runs off the caller's thread —
+	 * even the "immediate" case never blocks a writer on network I/O. If a broadcast is already
+	 * pending or actively publishing, this write is instead marked {@code dirty}: the in-flight
+	 * broadcast may already be past the point where it can still cover this write (its message can
+	 * be published, and even reach and be applied by a remote node, while this call is still in
+	 * flight), so rather than assume it's covered, the pending broadcast checks {@code dirty} right
+	 * after it finishes and — if set — immediately schedules one more round instead of going idle.
+	 * A single whole-table reset (record id -1) is used for every round since multiple distinct
+	 * records may have been coalesced into one broadcast.
+	 *
+	 * @param tableName table to broadcast a debounced reset for; must be non-null
+	 */
+	private static void broadcastDebouncedReset(String tableName) {
+		DebounceState state = debounceStateByTable.computeIfAbsent(tableName, k -> new DebounceState());
+		long delay;
+		synchronized (state) {
+			if (state.broadcastPending) {
+				state.dirty = true;
+				return;
+			}
+			delay = Math.max(0, CLUSTER_RESET_DEBOUNCE_MS - (System.currentTimeMillis() - state.lastBroadcastAtMs));
+			state.broadcastPending = true;
+		}
+		runDebouncedBroadcast(tableName, state, delay);
+	}
+
+	/**
+	 * Schedules one debounced broadcast round after {@code delay} ms, then — once it actually
+	 * runs — checks whether a write was marked {@link DebounceState#dirty} while this round was
+	 * pending/publishing. If so, immediately schedules another round instead of going idle, so a
+	 * write that raced the in-flight publish is never silently dropped (see
+	 * {@link #broadcastDebouncedReset(String)}).
+	 */
+	private static void runDebouncedBroadcast(String tableName, DebounceState state, long delay) {
+		Adempiere.getThreadPoolExecutor().schedule(() -> {
+			synchronized (state) {
+				state.lastBroadcastAtMs = System.currentTimeMillis();
+			}
+			doBroadcastTableReset(tableName);
+			boolean again;
+			synchronized (state) {
+				again = state.dirty;
+				state.dirty = false;
+				state.broadcastPending = again;
+			}
+			if (again) {
+				runDebouncedBroadcast(tableName, state, CLUSTER_RESET_DEBOUNCE_MS);
+			}
+		}, delay, TimeUnit.MILLISECONDS);
+	}
+
+	/** Fire-and-forget cluster-wide whole-table reset broadcast; no-op if no distributed cache service is available. */
+	private static void doBroadcastTableReset(String tableName) {
+		ICacheService cacheService = Core.getCacheService();
+		if (cacheService != null) {
+			cacheService.broadcastReset(tableName, -1);
+		}
+	}
+
 	/**
 	 * 	Register new CCache Instance.<br/>
 	 *  This is use by {@link CCache} and developer usually shouldn't call this directly.
@@ -214,47 +394,39 @@ public class CacheMgt
 	}
 	
 	/**
-	 * Do a cluster wide cache reset for tableName with key
+	 * Do a cluster wide cache reset for tableName with key.
+	 * Uses fire-and-forget broadcast via {@link ICacheService#broadcastReset} so the
+	 * calling thread is never blocked waiting for remote node acknowledgements.
+	 * Falls back to local-only reset when no distributed cache service is available.
+	 *
 	 * @param tableName name of cache
-	 * @param key integer or string cache key   
-	 * @return number of deleted cache entries
+	 * @param key integer or string cache key
+	 * @return number of deleted local cache entries (remote resets happen asynchronously)
 	 */
 	private <K> int clusterResetInternal(String tableName, K key) {
-		IClusterService service = Core.getClusterService();
-		if (service != null) {			
-			ResetCacheCallable callable = key instanceof Integer id
-					? new ResetCacheCallable(tableName, id)
-					: new ResetCacheCallable(tableName, key.toString());
-			Map<IClusterMember, Future<Integer>> futureMap = service.execute(callable, service.getMembers());
-			if (futureMap != null) {
-				int total = 0;
-				try {
-					Collection<Future<Integer>> results = futureMap.values();
-					for(Future<Integer> i : results) 
-					{
-						total += i.get();
-					}
-				} catch (InterruptedException e) {
-					throw new RuntimeException(e);
-				} catch (ExecutionException e) {
-					if (e.getCause() != null)
-						if (e.getCause() instanceof RuntimeException)
-							throw (RuntimeException)e.getCause();
-						else
-							throw new RuntimeException(e.getCause());
-					else
-						throw new RuntimeException(e);
-				}
-				return total;
+		ICacheService cacheService = Core.getCacheService();
+		if (cacheService != null) {
+			// Fire-and-forget: publishes to a durable topic; all nodes (including this one)
+			// apply the reset asynchronously upon receipt. No reply is awaited.
+			if (key instanceof Integer) {
+				cacheService.broadcastReset(tableName, (Integer) key);
 			} else {
-				return key instanceof Integer id
-					? resetLocalCache(tableName, id)
-					: resetLocalCache(tableName, key.toString());
+				cacheService.broadcastReset(tableName, key.toString());
 			}
+			return 0;
 		} else {
-			return key instanceof Integer id
-					? resetLocalCache(tableName, id)
-					: resetLocalCache(tableName, key.toString());
+			// Cache service unavailable — log once so boot-time degradation is visible
+			// rather than silently falling back on every cache reset.
+			if (degradedStartupLogged.compareAndSet(false, true)) {
+				log.warning("Distributed cache service unavailable at cache reset time "
+						+ "(Redis/Hazelcast not yet started or failed to init)"
+						+ " — falling back to local-only cache resets. Further fallbacks will be silent.");
+			}
+			if (key instanceof Integer) {
+				return resetLocalCache(tableName, (Integer) key);
+			} else {
+				return resetLocalCache(tableName, key.toString());
+			}
 		}
 	}
 	
@@ -266,6 +438,11 @@ public class CacheMgt
 	 * @return number of deleted cache entries
 	 */
 	private void clusterNewRecord(String tableName, int recordId) {
+		if (isDebouncedResetTable(tableName)) {
+			localNewRecord(tableName, recordId);
+			broadcastDebouncedReset(tableName);
+			return;
+		}
 		IClusterService service = Core.getClusterService();
 		if (service != null) {			
 			CacheNewRecordCallable callable = new CacheNewRecordCallable(tableName, recordId);
@@ -307,7 +484,11 @@ public class CacheMgt
 	{
 		if (suspendedResetCacheTables.contains(tableName))
 			return 0;
-		
+		if (isDebouncedResetTable(tableName)) {
+			int count = resetLocalCache(tableName, Record_ID);
+			broadcastDebouncedReset(tableName);
+			return count;
+		}
 		return clusterReset(tableName, Record_ID);
 	}
 	
@@ -317,11 +498,15 @@ public class CacheMgt
 	 * @param key cache key
 	 * @return number of deleted cache entries
 	 */
-	public int reset(String tableName, String key) 
+	public int reset(String tableName, String key)
 	{
 		if (suspendedResetCacheTables.contains(tableName))
 			return 0;
-		
+		if (isDebouncedResetTable(tableName)) {
+			int count = resetLocalCache(tableName, key);
+			broadcastDebouncedReset(tableName);
+			return count;
+		}
 		return clusterReset(tableName, key);
 	}
 	
@@ -361,22 +546,150 @@ public class CacheMgt
 	 * @param recordId cache key
 	 * @return number of deleted cache entries
 	 */
-	protected int resetLocalCache (String tableName, Integer recordId)
+	public int resetLocalCache (String tableName, Integer recordId)
 	{
 		return resetLocalCacheInternal(tableName, recordId);
 	}
-	
+
+	/**
+	 * Reset the local cache for {@code tableName} with anti-stampede protection.
+	 * Called by the broadcast invalidation subscriber so nodes don't all hammer the DB simultaneously:
+	 * <ul>
+	 *   <li>When {@code Cache.ResetStaggerMaxMs} is &gt; 0, the actual reset is deferred onto
+	 *       {@link Adempiere#getThreadPoolExecutor()}'s delay queue by a deterministic delay — see
+	 *       {@link #computeStaggeredDelayMs()} — so cluster members take a turn spread across the
+	 *       {@code Cache.ResetStaggerMaxMs} window instead of all reloading from the DB at the same
+	 *       millisecond. The queued delay costs no worker thread while pending, unlike blocking the
+	 *       caller with {@code Thread.sleep}. In that case this method returns {@code 0} immediately;
+	 *       the real reset count is only known once the queued task runs.</li>
+	 *   <li>Uses a per-{@link #resetInFlightGuardKey(String, String) guard key} {@link AtomicBoolean}
+	 *       in-flight guard: if a reset is already in progress (or queued) on this node for the same
+	 *       guard key, the duplicate is skipped.</li>
+	 * </ul>
+	 *
+	 * @param tableName table to reset; when {@code null} resets all caches
+	 * @param recordId  integer key; -1 resets all entries for the table
+	 */
+	// guard scope: whole-table resets (recordId == -1, or tableName == null) share one in-flight
+	// slot per table since they clear every record; a specific recordId gets its own slot so a
+	// reset for one record is never skipped in favor of an unrelated record's in-flight reset.
+	public int resetLocalCacheWithAntiStampede(String tableName, int recordId) {
+		String guardKey = resetInFlightGuardKey(tableName, recordId == -1 ? null : String.valueOf(recordId));
+		return applyWithAntiStampede(guardKey, () -> resetLocalCache(tableName, recordId));
+	}
+
+	/**
+	 * Builds the {@link #resetInFlight} guard key for an anti-stampede local reset.
+	 * @param tableName table to reset; {@code null} means "reset all caches"
+	 * @param scopeKey  the specific record id / string key being reset, or {@code null} for a
+	 *                  whole-table (or whole-cache) reset
+	 * @return {@code "__all__"} for a whole-cache reset, {@code tableName} for a whole-table
+	 *         reset, or {@code tableName + "#" + scopeKey} for a key-specific reset
+	 */
+	private static String resetInFlightGuardKey(String tableName, String scopeKey) {
+		if (tableName == null)
+			return "__all__";
+		return scopeKey == null ? tableName : tableName + "#" + scopeKey;
+	}
+
+	/**
+	 * Deterministic per-node position within the current cluster membership, used to derive an
+	 * anti-stampede reset delay: every node independently sorts {@link IClusterService#getMembers()}
+	 * by {@link IClusterMember#getId()} — identical input produces identical ordering on every node,
+	 * with no coordination RPC needed — and uses its own index in that ordering to take a turn
+	 * spread across the {@link #RESET_STAGGER_MAX_MS} window, e.g. member 0 of 4 waits 0 ms, member
+	 * 1 waits a quarter of the window, and so on. This replaces picking an independent random delay
+	 * per node with nodes queuing in a fixed, deterministic order.
+	 *
+	 * @return delay in ms within {@code [0, RESET_STAGGER_MAX_MS)}; {@code 0} if the cluster
+	 *         service or local member isn't available, or there's only one member
+	 */
+	private static long computeStaggeredDelayMs() {
+		IClusterService service = Core.getClusterService();
+		if (service == null)
+			return 0;
+		IClusterMember local = service.getLocalMember();
+		if (local == null || local.getId() == null)
+			return 0;
+		List<String> ids = new ArrayList<>();
+		for (IClusterMember member : service.getMembers()) {
+			if (member != null && member.getId() != null)
+				ids.add(member.getId());
+		}
+		if (!ids.contains(local.getId()))
+			ids.add(local.getId());
+		if (ids.size() <= 1)
+			return 0;
+		ids.sort(null);
+		int index = ids.indexOf(local.getId());
+		return index * RESET_STAGGER_MAX_MS / ids.size();
+	}
+
+	/**
+	 * Shared anti-stampede logic for {@link #resetLocalCacheWithAntiStampede(String, int)} and
+	 * {@link #resetLocalCacheWithAntiStampede(String, String)}: acquires the per-{@code guardKey}
+	 * in-flight flag, then either runs {@code resetAction} immediately (no stagger configured) or
+	 * schedules it on {@link Adempiere#getThreadPoolExecutor()}'s delay queue after the deterministic
+	 * delay computed by {@link #computeStaggeredDelayMs()}. The flag is released once
+	 * {@code resetAction} actually completes, whichever path ran it.
+	 *
+	 * @return the reset count when run synchronously; {@code 0} when the caller lost the guard race
+	 *         or the reset was queued for deferred execution
+	 */
+	private int applyWithAntiStampede(String guardKey, IntSupplier resetAction) {
+		AtomicBoolean flag = resetInFlight.get(guardKey, k -> new AtomicBoolean(false));
+		if (!flag.compareAndSet(false, true)) {
+			if (log.isLoggable(Level.FINE))
+				log.fine("Anti-stampede: skipping duplicate local cache reset for " + guardKey);
+			return 0;
+		}
+		if (RESET_STAGGER_MAX_MS <= 0) {
+			try {
+				return resetAction.getAsInt();
+			} finally {
+				flag.set(false);
+			}
+		}
+		long delay = computeStaggeredDelayMs();
+		Adempiere.getThreadPoolExecutor().schedule(() -> {
+			try {
+				resetAction.getAsInt();
+			} catch (Throwable t) {
+				log.log(Level.WARNING, "Anti-stampede queued local cache reset failed for " + guardKey, t);
+			} finally {
+				flag.set(false);
+			}
+		}, delay, TimeUnit.MILLISECONDS);
+		return 0;
+	}
+
 	/**
 	 * Reset local Cache
 	 * @param tableName cache name
 	 * @param key cache key
 	 * @return number of deleted cache entries
 	 */
-	protected int resetLocalCache (String tableName, String key)
+	public int resetLocalCache (String tableName, String key)
 	{
 		return resetLocalCacheInternal(tableName, key);
 	}
-	
+
+	/**
+	 * Reset the local cache for {@code tableName} with anti-stampede protection.
+	 * See {@link #resetLocalCacheWithAntiStampede(String, int)} for the stagger/queueing and
+	 * in-flight guard semantics.
+	 * @param tableName table to reset
+	 * @param key       string key; empty string resets all entries for the table
+	 */
+	// guard scope: whole-table resets (key blank, or tableName == null) share one in-flight slot
+	// per table since they clear every record; a specific key gets its own slot so a reset for
+	// one key is never skipped in favor of an unrelated key's in-flight reset.
+	public int resetLocalCacheWithAntiStampede(String tableName, String key) {
+		String guardKey = resetInFlightGuardKey(tableName, (key == null || key.isEmpty()) ? null : key);
+		return applyWithAntiStampede(guardKey, () -> resetLocalCache(tableName, key));
+	}
+
+
 	/**
 	 * 	Reset local Cache
 	 * 	@param tableName table name

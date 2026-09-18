@@ -52,6 +52,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.crypto.Mac;
@@ -65,7 +66,7 @@ import org.idempiere.redis.service.cluster.RpcRequest;
 import org.idempiere.redis.service.cluster.RpcResponse;
 import org.idempiere.redis.service.config.ConfigParser;
 import org.idempiere.redis.service.config.RedisConfig;
-import org.redisson.client.codec.Codec;
+import org.idempiere.redis.service.health.RedisHealth;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -76,6 +77,7 @@ import org.redisson.api.RBuckets;
 import org.redisson.api.RKeys;
 import org.redisson.api.RTopic;
 import org.redisson.api.RedissonClient;
+import org.redisson.client.codec.Codec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -122,6 +124,8 @@ public class ClusterServiceImpl implements IClusterService {
 
 	private final AtomicReference<ClusterMember> localMember = new AtomicReference<>();
 	private final ConcurrentMap<String, PendingRequest> pending = new ConcurrentHashMap<>();
+	/** Tracks currently-open response-topic subscriptions for circuit-breaker pool monitoring. */
+	private final AtomicInteger activeResponseSubscriptions = new AtomicInteger(0);
 
 	private volatile ScheduledExecutorService heartbeatExecutor;
 	private volatile ScheduledExecutorService timeoutExecutor;
@@ -141,6 +145,10 @@ public class ClusterServiceImpl implements IClusterService {
 			rpcHmacSecret = Activator.getConfig().getRpcHmacSecret();
 			startHeartbeat();
 			subscribeToRequestTopic();
+			RedisHealth health = Activator.getHealthOrNull();
+			if (health != null) {
+				health.setSubscriptionUsageSupplier(activeResponseSubscriptions::get);
+			}
 			log.info("Redis cluster service activated; local member: {}", self);
 		} catch (RuntimeException re) {
 			throw re;
@@ -154,6 +162,15 @@ public class ClusterServiceImpl implements IClusterService {
 		stopHeartbeat();
 		unsubscribeFromRequestTopic();
 		failAllPending(new IllegalStateException("Bundle deactivating"));
+		// Reset the supplier only after failAllPending() has unsubscribed every PendingRequest
+		// (which decrements activeResponseSubscriptions) — resetting it first would make the
+		// breaker see usage=0 while real subscriptions are still open, letting a concurrent probe
+		// or recordSuccess() close the breaker and a concurrent execute() call add yet another
+		// subscription mid-shutdown.
+		RedisHealth health = Activator.getHealthOrNull();
+		if (health != null) {
+			health.setSubscriptionUsageSupplier(null);
+		}
 		ClusterMember self = localMember.getAndSet(null);
 		if (self != null) {
 			try {
@@ -258,6 +275,26 @@ public class ClusterServiceImpl implements IClusterService {
 			return result;
 		}
 
+		// Check the breaker BEFORE allocating another response-topic subscription: once OPEN
+		// (typically because the subscription pool is already at/near threshold), every further
+		// call must stop adding listeners too, or the fast-path never actually gates anything —
+		// it would just keep tripping later without ever preventing pool exhaustion. Self-targeted
+		// futures were already completed above and are unaffected; only remote targets fail here.
+		RedisHealth h = Activator.getHealthOrNull();
+		if (h != null && !h.isHealthy()) {
+			IllegalStateException unavailable = new IllegalStateException(
+					"Redis circuit breaker is OPEN (" + h.getLastTripReason()
+							+ "); cluster RPC to remote members is unavailable");
+			for (Map.Entry<IClusterMember, CompletableFuture<V>> e : futures.entrySet()) {
+				if (!self.getId().equals(e.getKey().getId())) {
+					e.getValue().completeExceptionally(unavailable);
+				}
+			}
+			@SuppressWarnings({"rawtypes", "unchecked"})
+			Map<IClusterMember, Future<V>> result = (Map) futures;
+			return result;
+		}
+
 		RedissonClient client = Activator.getRedissonClient();
 		Codec codec = rpcCodec;
 		RTopic responseTopic = (codec != null)
@@ -265,6 +302,11 @@ public class ClusterServiceImpl implements IClusterService {
 				: client.getTopic(responseTopicName);
 		int listenerId = responseTopic.addListener(RpcResponse.class,
 				(channel, response) -> handleResponse(response));
+		// Track pool usage and probe circuit breaker.
+		int active = activeResponseSubscriptions.incrementAndGet();
+		if (h != null) {
+			h.recordSubscriptionPoolUsage(active, Activator.getConfig().getSubscriptionConnectionPoolSize());
+		}
 
 		Map<IClusterMember, CompletableFuture<V>> remoteFutures = new LinkedHashMap<>();
 		for (Map.Entry<IClusterMember, CompletableFuture<V>> e : futures.entrySet()) {
@@ -274,7 +316,8 @@ public class ClusterServiceImpl implements IClusterService {
 		}
 
 		@SuppressWarnings({"rawtypes", "unchecked"})
-		PendingRequest pr = new PendingRequest((Map) remoteFutures, responseTopic, listenerId);
+		PendingRequest pr = new PendingRequest((Map) remoteFutures, responseTopic, listenerId,
+				activeResponseSubscriptions);
 		pending.put(taskId, pr);
 
 		ScheduledExecutorService te = timeoutExecutor;
@@ -437,14 +480,18 @@ public class ClusterServiceImpl implements IClusterService {
 	private void handleResponse(RpcResponse response) {
 		PendingRequest pr = pending.get(response.getTaskId());
 		if (pr == null) {
-			// Late response after timeout — drop silently.
+			// Late response after timeout, or already handled by failAllPending — drop silently.
 			return;
 		}
 		boolean done = pr.deliver(response);
 		if (done) {
-			pending.remove(response.getTaskId());
-			pr.unsubscribe();
-			pr.cancelTimeout();
+			// Atomic remove(key,value) gate prevents failAllPending double-calling
+			// unsubscribe on the same PendingRequest in a race; an unconditional
+			// remove(key) here would not guard against that.
+			if (pending.remove(response.getTaskId(), pr)) {
+				pr.unsubscribe();
+				pr.cancelTimeout();
+			}
 		}
 	}
 
@@ -457,12 +504,17 @@ public class ClusterServiceImpl implements IClusterService {
 	}
 
 	private void failAllPending(Throwable cause) {
-		for (PendingRequest pr : pending.values()) {
-			pr.failRemaining(cause);
-			pr.unsubscribe();
-			pr.cancelTimeout();
-		}
-		pending.clear();
+		// Drain using remove(key,value) so only the thread that removes owns
+		// unsubscribe, preventing double-decrement of activeResponseSubscriptions if
+		// handleResponse races here; an unconditional values()-loop + clear() would
+		// not guard against that.
+		pending.forEach((id, pr) -> {
+			if (pending.remove(id, pr)) {
+				pr.failRemaining(cause);
+				pr.unsubscribe();
+				pr.cancelTimeout();
+			}
+		});
 	}
 
 	// ---------------------------------------------------------- Security helpers
@@ -586,11 +638,13 @@ public class ClusterServiceImpl implements IClusterService {
 		private final RTopic responseTopic;
 		private final int listenerId;
 		private volatile ScheduledFuture<?> timeoutHandle;
+		private final AtomicInteger subscriptionCounter;
 
 		PendingRequest(Map<IClusterMember, CompletableFuture<Object>> futures,
-				RTopic responseTopic, int listenerId) {
+				RTopic responseTopic, int listenerId, AtomicInteger subscriptionCounter) {
 			this.responseTopic = responseTopic;
 			this.listenerId = listenerId;
+			this.subscriptionCounter = subscriptionCounter;
 			this.futuresByUuid = new ConcurrentHashMap<>();
 			for (Map.Entry<IClusterMember, CompletableFuture<Object>> e : futures.entrySet()) {
 				futuresByUuid.put(e.getKey().getId(), e.getValue());
@@ -638,6 +692,10 @@ public class ClusterServiceImpl implements IClusterService {
 				responseTopic.removeListener(listenerId);
 			} catch (Exception ignored) {
 				// best effort
+			}
+			// Decrement the pool-usage counter so RedisHealth gets an accurate count.
+			if (subscriptionCounter != null) {
+				subscriptionCounter.decrementAndGet();
 			}
 		}
 	}
