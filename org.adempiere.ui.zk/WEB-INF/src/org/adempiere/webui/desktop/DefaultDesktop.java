@@ -906,7 +906,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	 * Update home tab title after {@link #ON_ACTIVITIES_CHANGED_EVENT}
 	 */
 	public void updateUI() {
-		windowContainer.setTabTitle(0, Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Home")) + " (" + noCount + ")", null);
+		windowContainer.setTabTitle(0, Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Home")), null);
 	}
 
 	/**
