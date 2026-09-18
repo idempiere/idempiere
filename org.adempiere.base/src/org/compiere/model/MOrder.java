@@ -43,7 +43,6 @@ import org.adempiere.util.IReservationTracer;
 import org.adempiere.util.IReservationTracerFactory;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.DocAction;
-import org.idempiere.print.ReportContentRequest;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -53,6 +52,7 @@ import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
 import org.eevolution.model.MPPProductBOM;
 import org.eevolution.model.MPPProductBOMLine;
+import org.idempiere.print.ReportContentRequest;
 
 /**
  *  Order Model.
@@ -74,9 +74,9 @@ import org.eevolution.model.MPPProductBOMLine;
 public class MOrder extends X_C_Order implements DocAction
 {
 	/**
-	 * generated serial id
+	 *
 	 */
-	private static final long serialVersionUID = 9095740800513665542L;
+	private static final long serialVersionUID = -7697599534971299336L;
 
 	/** Matching SELECT SQL template */
 	private static final String BASE_MATCHING_SQL =
@@ -1654,8 +1654,14 @@ public class MOrder extends X_C_Order implements DocAction
 		if (explodeBOM())
 			lines = getLines(true, MOrderLine.COLUMNNAME_M_Product_ID);
 
-		// Reserve stock if does not generate shipment on complete
-		if (!evalAutoGenerateInOutRule(dt.getDocSubTypeSO(), dt.isAutoGenerateInout())) {
+		// Skip stock reservation when completing an order that generates the shipment immediately
+		boolean waitingForPayment = !m_forceCreation
+				&& MDocType.DOCSUBTYPESO_PrepayOrder.equals(dt.getDocSubTypeSO())
+				&& getC_Payment_ID() == 0 && getC_CashLine_ID() == 0;
+		boolean skipReserveStock = (DOCACTION_Complete.equals(getDocAction())
+				&& evalAutoGenerateInOutRule(dt.getDocSubTypeSO(), dt.isAutoGenerateInout())
+				&& !waitingForPayment );
+		if (!skipReserveStock) {
 			if (!reserveStock(dt, lines))
 			{
 				String innerMsg = CLogger.retrieveErrorString("");
@@ -1665,6 +1671,9 @@ public class MOrder extends X_C_Order implements DocAction
 				return DocAction.STATUS_Invalid;
 			}
 		}
+
+		calculateVolumeAndWeight(lines);
+
 		if (!calculateTaxTotal())
 		{
 			m_processMsg = "Error calculating tax";
@@ -1945,10 +1954,7 @@ public class MOrder extends X_C_Order implements DocAction
 		if (MDocType.DOCSUBTYPESO_StandardOrder.equals(dt.getDocSubTypeSO())
 			|| MDocType.DOCBASETYPE_PurchaseOrder.equals(dt.getDocBaseType()))
 			header_M_Warehouse_ID = 0;		//	don't enforce
-		
-		BigDecimal Volume = Env.ZERO;
-		BigDecimal Weight = Env.ZERO;
-		
+
 		//	Always check and (un) Reserve Inventory		
 		for (int i = 0; i < lines.length; i++)
 		{
@@ -1970,12 +1976,6 @@ public class MOrder extends X_C_Order implements DocAction
 			{
 				if (difference.signum() == 0 || line.getQtyReserved().signum() == 0)
 				{
-					MProduct product = line.getProduct();
-					if (product != null)
-					{
-						Volume = Volume.add(product.getVolume().multiply(line.getQtyOrdered()));
-						Weight = Weight.add(product.getWeight().multiply(line.getQtyOrdered()));
-					}
 					continue;
 				}
 				else if (line.getQtyOrdered().signum() < 0 && line.getQtyReserved().signum() > 0)
@@ -2014,16 +2014,30 @@ public class MOrder extends X_C_Order implements DocAction
 				line.setQtyReserved(line.getQtyReserved().add(difference));
 				if (!line.save(get_TrxName()))
 					return false;
-				//
-				Volume = Volume.add(product.getVolume().multiply(line.getQtyOrdered()));
-				Weight = Weight.add(product.getWeight().multiply(line.getQtyOrdered()));
 			}	//	product
 		}	//	reverse inventory
-		
-		setVolume(Volume);
-		setWeight(Weight);
 		return true;
 	}	//	reserveStock
+
+	/**
+	 * Calculate the Volume and Weight of the order
+	 * @param lines order lines (ordered by M_Product_ID for deadlock prevention)
+	 */
+	protected void calculateVolumeAndWeight(MOrderLine[] lines) {
+		BigDecimal volume = Env.ZERO;
+		BigDecimal weight = Env.ZERO;
+		for (MOrderLine line : lines) {
+			if (line.getM_Product_ID() > 0) {
+				MProduct product = line.getProduct();
+				if (product != null) {
+					volume = volume.add(product.getVolume().multiply(line.getQtyOrdered()));
+					weight = weight.add(product.getWeight().multiply(line.getQtyOrdered()));
+				}
+			}
+		}
+		setVolume(volume);
+		setWeight(weight);
+	} // calculateVolumeAndWeight
 
 	/**
 	 * 	Calculate Tax and Total (delete and re-create C_OrderTax records).
