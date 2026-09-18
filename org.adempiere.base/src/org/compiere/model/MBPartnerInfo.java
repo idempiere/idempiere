@@ -54,43 +54,43 @@ public class MBPartnerInfo extends X_RV_BPartner
 	{
 		StringBuilder sql = new StringBuilder ("SELECT * FROM RV_BPartner WHERE IsActive='Y'");
 		StringBuilder sb = new StringBuilder();
-		Value = getFindParameter (Value);
+		Value = getFindParameterPreserveCase (Value);
 		if (Value != null)
-			sb.append("UPPER(Value) LIKE ?");
-		Name = getFindParameter (Name);
+			sb.append("UPPER(Value) LIKE UPPER(?)");
+		Name = getFindParameterPreserveCase (Name);
 		if (Name != null)
 		{
 			if (sb.length() > 0)
 				sb.append(" OR ");
-			sb.append("UPPER(Name) LIKE ?");
+			sb.append("UPPER(Name) LIKE UPPER(?)");
 		}
-		Contact = getFindParameter (Contact);
+		Contact = getFindParameterPreserveCase (Contact);
 		if (Contact != null)
 		{
 			if (sb.length() > 0)
 				sb.append(" OR ");
-			sb.append("UPPER(ContactName) LIKE ?");
+			sb.append("UPPER(ContactName) LIKE UPPER(?)");
 		}
-		EMail = getFindParameter (EMail);
+		EMail = getFindParameterPreserveCase (EMail);
 		if (EMail != null)
 		{
 			if (sb.length() > 0)
 				sb.append(" OR ");
-			sb.append("UPPER(EMail) LIKE ?");
+			sb.append("UPPER(EMail) LIKE UPPER(?)");
 		}
-		Phone = getFindParameter (Phone);
+		Phone = getFindParameterPreserveCase (Phone);
 		if (Phone != null)
 		{
 			if (sb.length() > 0)
 				sb.append(" OR ");
-			sb.append("UPPER(Phone) LIKE ?");
+			sb.append("UPPER(Phone) LIKE UPPER(?)");
 		}
-		City = getFindParameter (City);
+		City = getFindParameterPreserveCase (City);
 		if (City != null)
 		{
 			if (sb.length() > 0)
 				sb.append(" OR ");
-			sb.append("UPPER(City) LIKE ?");
+			sb.append("UPPER(City) LIKE UPPER(?)");
 		}
 		if (sb.length() > 0)
 			sql.append(" AND (").append(sb).append(")");
