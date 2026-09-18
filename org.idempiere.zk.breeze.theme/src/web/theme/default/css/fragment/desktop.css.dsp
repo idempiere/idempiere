@@ -49,7 +49,47 @@
 	border: none;
 	height: 100% !important;
 }
-
+<%-- User Profile Chip --%>
+.desktop-header-user-chip {
+	display: inline-flex;
+	align-items: center;
+	padding: 3px 8px 3px 4px;
+	border-radius: 20px;
+	cursor: pointer;
+	border: 1px solid transparent;
+	transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+.desktop-header-user-chip:hover {
+	background-color: var(--zk-desktop-header-hover-background-color);
+	border-color: var(--zk-desktop-header-border-color);
+}
+.desktop-header-user-avatar {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+	background-color: #0284c7;
+	color: #ffffff;
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: 0.5px;
+	margin-right: 6px;
+	flex-shrink: 0;
+}
+.desktop-header-user-meta {
+	display: flex;
+	flex-direction: column;
+	text-align: left;
+	margin-right: 6px;
+	max-width: 200px;
+}
+@media screen and (max-width: 600px) {
+	.desktop-header-user-meta {
+		display: none;
+	}
+}
 .desktop-header-username {
 	padding-right: 6px;
 }
@@ -218,17 +258,6 @@
 	font-size: 11px;
 	color: #64748b;
 }
-.user-menu-role-badge {
-	display: inline-block;
-	font-size: 11px;
-	font-weight: 500;
-	color: #0369a1;
-	background-color: #e0f2fe;
-	padding: 1px 6px;
-	border-radius: 4px;
-	margin-top: 2px;
-	width: fit-content;
-}
 .user-menu-org, .user-menu-warehouse {
 	font-size: 11px;
 	color: #64748b;
@@ -301,7 +330,9 @@
 	overflow-y: auto;
 }
 @media screen and (max-height: 319px) {
-	max-height: 100%;
+	.notification-popup-layout {
+		max-height: 100%;
+	}
 }
 .notification-popup-header {
 	display: flex;
@@ -316,16 +347,6 @@
 .notification-popup-title {
 	font-size: 13px;
 	font-weight: 600;
-	color: #0f172a;
-}
-.notification-popup-refresh.z-toolbarbutton {
-	font-size: 12px;
-	color: #64748b;
-	padding: 3px 6px;
-	border-radius: 4px;
-}
-.notification-popup-refresh.z-toolbarbutton:hover {
-	background-color: #e2e8f0;
 	color: #0f172a;
 }
 .notification-item-row {
@@ -370,18 +391,15 @@
 	background-color: #f1f5f9;
 	color: #94a3b8;
 }
-.notification-empty-state {
-	padding: 28px 16px;
-	text-align: center;
-}
-.notification-empty-icon {
-	font-size: 32px;
-	color: #10b981;
-	margin-bottom: 8px;
-}
 .notification-empty-text {
 	font-size: 12px;
 	color: #64748b;
+	display: flex;
+	align-items: center;
+	padding: 8px 10px;
+	border-radius: 6px;
+	margin-bottom: 2px;
+	flex-grow: 1;
 }
 
 <%-- main desktop layout (border layout) --%>

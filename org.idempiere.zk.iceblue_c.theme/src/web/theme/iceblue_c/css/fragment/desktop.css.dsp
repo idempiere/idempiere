@@ -152,6 +152,11 @@
 	margin-right: 6px;
 	max-width: 200px;
 }
+@media screen and (max-width: 600px) {
+	.desktop-header-user-meta {
+		display: none;
+	}
+}
 .desktop-header-username {
 	font-size: 12px;
 	font-weight: 600;
@@ -222,17 +227,6 @@
 .user-menu-email {
 	font-size: 11px;
 	color: #64748b;
-}
-.user-menu-role-badge {
-	display: inline-block;
-	font-size: 11px;
-	font-weight: 500;
-	color: #0369a1;
-	background-color: #e0f2fe;
-	padding: 1px 6px;
-	border-radius: 4px;
-	margin-top: 2px;
-	width: fit-content;
 }
 .user-menu-org, .user-menu-warehouse {
 	font-size: 11px;
@@ -325,16 +319,6 @@
 	font-weight: 600;
 	color: #0f172a;
 }
-.notification-popup-refresh.z-toolbarbutton {
-	font-size: 12px;
-	color: #64748b;
-	padding: 3px 6px;
-	border-radius: 4px;
-}
-.notification-popup-refresh.z-toolbarbutton:hover {
-	background-color: #e2e8f0;
-	color: #0f172a;
-}
 .notification-item-row {
 	display: flex;
 	align-items: center;
@@ -377,18 +361,15 @@
 	background-color: #f1f5f9;
 	color: #94a3b8;
 }
-.notification-empty-state {
-	padding: 28px 16px;
-	text-align: center;
-}
-.notification-empty-icon {
-	font-size: 32px;
-	color: #10b981;
-	margin-bottom: 8px;
-}
 .notification-empty-text {
 	font-size: 12px;
 	color: #64748b;
+	display: flex;
+	align-items: center;
+	padding: 8px 10px;
+	border-radius: 6px;
+	margin-bottom: 2px;
+	flex-grow: 1;
 }
 
 <%-- main desktop layout (border layout) --%>

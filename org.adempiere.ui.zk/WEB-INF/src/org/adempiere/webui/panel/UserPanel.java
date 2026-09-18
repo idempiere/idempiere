@@ -385,67 +385,6 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 
 	}
 
-    /**
-     * Open user panel popup for mobile client.
-     * Delegates to {@link #openUserMenuPopup()} for themes with the new profile chip;
-     * falls back to legacy popup for older themes.
-     */
-	protected void openMobileUserPanelPopup() {
-		if (userProfileChip != null) {
-			openUserMenuPopup();
-			return;
-		}
-		// Legacy popup for themes without the profile chip
-		if (userPopup != null) {
-			Object value = userPopup.removeAttribute(userPopup.getUuid());
-			if (value != null && value instanceof Long) {
-				long ts = ((Long)value).longValue();
-				long since = System.currentTimeMillis() - ts;
-				if (since < 500) {
-					userPopup.detach();
-					userPopup = null;
-					return;
-				}
-			}
-			userPopup.detach();
-		}
-		userPopup = new Popup();
-		userPopup.setSclass("user-panel-popup");
-		Vlayout layout = new Vlayout();
-		String email = getUserEmail();
-		if (!Util.isEmpty(email))
-		{
-			layout.appendChild(new Label(getUserName() + " <" + email  +">"));
-		}
-		else
-		{
-			layout.appendChild(new Label(getUserName()));
-		}
-		layout.appendChild(new Label(getRoleName()));
-		layout.appendChild(new Label(getClientName() + "." + getOrgName()));
-		String warehouse = getWarehouseName();
-		if (!Util.isEmpty(warehouse))
-			layout.appendChild(new Label(warehouse));
-		String msgText = "";
-		String msgValue = MSysConfig.getValue(MSysConfig.ZK_DESKTOP_HEADER_MESSAGE_VALUE);
-		if (!Util.isEmpty(msgValue, true))
-			msgText = Msg.getMsg(Env.getCtx(), msgValue);
-		layout.appendChild(new Label(msgText));
-		if (userPanelLinksContainer != null)
-			layout.appendChild(userPanelLinksContainer);
-
-		userPopup.appendChild(layout);
-		userPopup.setPage(component.getPage());
-		userPopup.setVflex("min");
-		userPopup.setHflex("min");
-		userPopup.setStyle("max-width: " + ClientInfo.get().desktopWidth + "px");
-		userPopup.addEventListener(Events.ON_OPEN, (OpenEvent oe) -> {
-			if (!oe.isOpen())
-				userPopup.setAttribute(userPopup.getUuid(), System.currentTimeMillis());
-		});
-		userPopup.open(lblUserNameValue, "after_start");
-	}
-
 	/**
 	 * Open the modern user menu popup (profile card + actions)
 	 */
@@ -629,9 +568,7 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 		}
 
 		if (!hasItems) {
-			String noActivitiesMsg = Msg.getMsg(ctx, "noActivities");
-			if ("noActivities".equals(noActivitiesMsg))
-				noActivitiesMsg = "No pending activities";
+			String noActivitiesMsg = Msg.getMsg(ctx, "NoPendingActivities");
 			Label empty = new Label(noActivitiesMsg);
 			empty.setSclass("notification-empty-text");
 			layout.appendChild(empty);
