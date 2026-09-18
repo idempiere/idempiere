@@ -561,6 +561,8 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 	public static final String ACTION_AppsProcess = "P";
 	/** Apps Report = R */
 	public static final String ACTION_AppsReport = "R";
+	/** Wait (Schedule) = S */
+	public static final String ACTION_WaitSchedule = "S";
 	/** Apps Task = T */
 	public static final String ACTION_AppsTask = "T";
 	/** Set Variable = V */
@@ -1151,6 +1153,22 @@ public class X_AD_WF_Node extends PO implements I_AD_WF_Node, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Schedule Expression.
+		@param ScheduleExpression SQL expression that determines when a scheduled workflow activity resumes
+	*/
+	public void setScheduleExpression (String ScheduleExpression)
+	{
+		set_Value (COLUMNNAME_ScheduleExpression, ScheduleExpression);
+	}
+
+	/** Get Schedule Expression.
+		@return SQL expression that determines when a scheduled workflow activity resumes
+	  */
+	public String getScheduleExpression()
+	{
+		return (String)get_Value(COLUMNNAME_ScheduleExpression);
 	}
 
 	@Deprecated(since="13") // use better methods with cache
