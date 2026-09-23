@@ -343,6 +343,21 @@ public class EnvTest extends AbstractTestCase {
 		assertEquals("SELECT * FROM C_Charge WHERE Name='MyString'", parsedText, "Unexpected parsed text forSQL=true for "+expr);
 	}
 
+	/**
+	 * windowNo=0 is a legitimate window number - it is used by the ZK home/dashboard
+	 * tab (see DefaultDesktop.registerWindow, and the existing Env.WINDOW_MAIN=0 constant) -
+	 * and must not be treated by DefaultEvaluatee as "no window context".
+	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4827
+	 */
+	@Test
+	public void testDefaultEvaluateeWindowNoZero() {
+		Env.setContext(Env.getCtx(), Env.WINDOW_MAIN, "TestDashboardVar", "WindowZeroValue");
+
+		DefaultEvaluatee evaluatee = new DefaultEvaluatee(null, Env.WINDOW_MAIN, -1, true);
+		assertEquals("WindowZeroValue", evaluatee.get_ValueAsString("TestDashboardVar"),
+				"windowNo=0 (home tab) must not be treated as 'no window'");
+	}
+
 	@Test
 	public void testParseMailText() {
 		String mailText = """
