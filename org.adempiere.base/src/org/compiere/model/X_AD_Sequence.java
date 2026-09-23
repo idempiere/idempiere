@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_Sequence
  *  @author iDempiere (generated)
- *  @version Release 13 - $Id$ */
+ *  @version Release 14 - $Id$ */
 @org.adempiere.base.Model(table="AD_Sequence")
 public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20260309L;
+	private static final long serialVersionUID = 20260923L;
 
     /** Standard Constructor */
     public X_AD_Sequence (Properties ctx, int AD_Sequence_ID, String trxName)
@@ -48,6 +48,8 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 // 1
 			setIsAutoSequence (false);
 			setIsOrgLevelSequence (false);
+// N
+			setIsUUIDSeq (false);
 // N
 			setName (null);
 			setStartNewMonth (false);
@@ -73,6 +75,8 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 			setIsAutoSequence (false);
 			setIsOrgLevelSequence (false);
 // N
+			setIsUUIDSeq (false);
+// N
 			setName (null);
 			setStartNewMonth (false);
 // N
@@ -97,6 +101,8 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 			setIsAutoSequence (false);
 			setIsOrgLevelSequence (false);
 // N
+			setIsUUIDSeq (false);
+// N
 			setName (null);
 			setStartNewMonth (false);
 // N
@@ -120,6 +126,8 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 // 1
 			setIsAutoSequence (false);
 			setIsOrgLevelSequence (false);
+// N
+			setIsUUIDSeq (false);
 // N
 			setName (null);
 			setStartNewMonth (false);
@@ -382,6 +390,29 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	public boolean isTableID()
 	{
 		Object oo = get_Value(COLUMNNAME_IsTableID);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Is UUID.
+		@param IsUUIDSeq Defines if the sequence is UUID based
+	*/
+	public void setIsUUIDSeq (boolean IsUUIDSeq)
+	{
+		set_Value (COLUMNNAME_IsUUIDSeq, Boolean.valueOf(IsUUIDSeq));
+	}
+
+	/** Get Is UUID.
+		@return Defines if the sequence is UUID based
+	  */
+	public boolean isUUIDSeq()
+	{
+		Object oo = get_Value(COLUMNNAME_IsUUIDSeq);
 		if (oo != null)
 		{
 			 if (oo instanceof Boolean)
