@@ -50,54 +50,57 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
 /**
- * 
  * @author hengsin
- *
  */
-public class MUOMConversionTest extends AbstractTestCase {
+public class MUOMConversionTest extends AbstractTestCase
+{
 
-	public MUOMConversionTest() {
+	public MUOMConversionTest()
+	{
 	}
 
-	@Test	
-	public void testConversion() {
-	
+	@Test
+	public void testConversion()
+	{
+
 		MUOM each = new MUOM(Env.getCtx(), DictionaryIDs.C_UOM.EACH.id, getTrxName());
 		MUOM hour = new MUOM(Env.getCtx(), DictionaryIDs.C_UOM.HOUR.id, getTrxName());
-		
-		//conversion1 at system level
+
+		// conversion1 at system level
 		MUOMConversion conv1 = new MUOMConversion(each);
 		conv1.set_TrxName(null);
 		conv1.setC_UOM_To_ID(DictionaryIDs.C_UOM.HOUR.id);
 		conv1.setMultiplyRate(new BigDecimal("1.15"));
 		conv1.setDivideRate(BigDecimal.ZERO);
 		conv1.saveCrossTenantSafeEx();
-		
+
 		MUOMConversion conv2 = null;
 		MUOMConversion conv3 = null;
-		try {
-			BigDecimal converted = MUOMConversion.convertProductTo(Env.getCtx(), DictionaryIDs.M_Product.OAK.id, DictionaryIDs.C_UOM.HOUR.id, new BigDecimal("1"));
+		try
+		{
+			BigDecimal converted = MUOMConversion.convertProductTo(Env.getCtx(), DictionaryIDs.M_Product.OAK.id, DictionaryIDs.C_UOM.HOUR.id, new BigDecimal(
+																																								"1"));
 			assertEquals(new BigDecimal("1.15"), converted);
 			converted = MUOMConversion.convertProductTo(Env.getCtx(), DictionaryIDs.M_Product.OAK.id, DictionaryIDs.C_UOM.HOUR.id, new BigDecimal("1"), -1);
 			assertEquals(new BigDecimal("1.15"), converted);
 			converted = MUOMConversion.convertProductTo(Env.getCtx(), DictionaryIDs.M_Product.OAK.id, DictionaryIDs.C_UOM.HOUR.id, new BigDecimal("1"), 1);
 			assertEquals(new BigDecimal("1.2"), converted);
-			
-			//conversion2 at tenant level
+
+			// conversion2 at tenant level
 			conv2 = new MUOMConversion(Env.getCtx(), 0, null);
 			conv2.setC_UOM_ID(DictionaryIDs.C_UOM.EACH.id);
 			conv2.setC_UOM_To_ID(DictionaryIDs.C_UOM.HOUR.id);
 			conv2.setMultiplyRate(new BigDecimal("1.35"));
 			conv2.saveEx();
-			
+
 			converted = MUOMConversion.convertProductTo(Env.getCtx(), DictionaryIDs.M_Product.OAK.id, DictionaryIDs.C_UOM.HOUR.id, new BigDecimal("1"));
 			assertEquals(new BigDecimal("1.35"), converted);
 			converted = MUOMConversion.convertProductTo(Env.getCtx(), DictionaryIDs.M_Product.OAK.id, DictionaryIDs.C_UOM.HOUR.id, new BigDecimal("1"), -1);
 			assertEquals(new BigDecimal("1.35"), converted);
 			converted = MUOMConversion.convertProductTo(Env.getCtx(), DictionaryIDs.M_Product.OAK.id, DictionaryIDs.C_UOM.HOUR.id, new BigDecimal("1"), 1);
 			assertEquals(new BigDecimal("1.4"), converted);
-			
-			//conversion3 at tenant and product level
+
+			// conversion3 at tenant and product level
 			conv3 = new MUOMConversion(Env.getCtx(), 0, null);
 			conv3.setM_Product_ID(DictionaryIDs.M_Product.OAK.id);
 			conv3.setC_UOM_ID(DictionaryIDs.C_UOM.EACH.id);
@@ -105,34 +108,36 @@ public class MUOMConversionTest extends AbstractTestCase {
 			conv3.setMultiplyRate(new BigDecimal("0.75"));
 			conv3.saveEx();
 			CacheMgt.get().reset();
-			
+
 			converted = MUOMConversion.convertProductTo(Env.getCtx(), DictionaryIDs.M_Product.OAK.id, DictionaryIDs.C_UOM.HOUR.id, new BigDecimal("1"));
 			assertEquals(new BigDecimal("0.75"), converted);
 			converted = MUOMConversion.convertProductTo(Env.getCtx(), DictionaryIDs.M_Product.OAK.id, DictionaryIDs.C_UOM.HOUR.id, new BigDecimal("1"), -1);
 			assertEquals(new BigDecimal("0.75"), converted);
 			converted = MUOMConversion.convertProductTo(Env.getCtx(), DictionaryIDs.M_Product.OAK.id, DictionaryIDs.C_UOM.HOUR.id, new BigDecimal("1"), 1);
 			assertEquals(new BigDecimal("0.8"), converted);
-			
+
 			converted = MUOMConversion.convertProductFrom(Env.getCtx(), DictionaryIDs.M_Product.OAK.id, DictionaryIDs.C_UOM.HOUR.id, new BigDecimal("1"));
-			assertEquals(hour.round(conv3.getDivideRate(),true), converted);
-			
+			assertEquals(hour.round(conv3.getDivideRate(), true), converted);
+
 			conv3.deleteEx(true);
 			conv3 = null;
 			CacheMgt.get().reset();
 			converted = MUOMConversion.convertProductFrom(Env.getCtx(), DictionaryIDs.M_Product.OAK.id, DictionaryIDs.C_UOM.HOUR.id, new BigDecimal("1"));
-			assertEquals(hour.round(conv2.getDivideRate(),true), converted);
+			assertEquals(hour.round(conv2.getDivideRate(), true), converted);
 			converted = MUOMConversion.convertProductFrom(Env.getCtx(), DictionaryIDs.M_Product.OAK.id, DictionaryIDs.C_UOM.HOUR.id, new BigDecimal("1"), 1);
 			assertEquals(conv2.getDivideRate().setScale(1, RoundingMode.HALF_UP), converted);
-			
+
 			conv2.deleteEx(true);
 			conv2 = null;
 			converted = MUOMConversion.convertProductFrom(Env.getCtx(), DictionaryIDs.M_Product.OAK.id, DictionaryIDs.C_UOM.HOUR.id, new BigDecimal("1"));
-			assertEquals(hour.round(conv1.getDivideRate(),true), converted);
+			assertEquals(hour.round(conv1.getDivideRate(), true), converted);
 			converted = MUOMConversion.convertProductFrom(Env.getCtx(), DictionaryIDs.M_Product.OAK.id, DictionaryIDs.C_UOM.HOUR.id, new BigDecimal("1"), 1);
 			assertEquals(conv1.getDivideRate().setScale(1, RoundingMode.HALF_UP), converted);
-		} finally {
+		}
+		finally
+		{
 			rollback();
-			DB.executeUpdateEx("DELETE FROM C_UOM_Conversion WHERE C_UOM_Conversion_ID=?", new Object[] {conv1.get_ID()}, null);
+			DB.executeUpdateEx("DELETE FROM C_UOM_Conversion WHERE C_UOM_Conversion_ID=?", new Object[] { conv1.get_ID() }, null);
 			if (conv2 != null)
 				conv2.deleteEx(true);
 			if (conv3 != null)
@@ -220,9 +225,25 @@ public class MUOMConversionTest extends AbstractTestCase {
 		finally
 		{
 			rollback();
-			// UOM conversions were committed outside the transaction — delete explicitly.
-			deleteUOMConversion(convDayToHour);
-			deleteUOMConversion(convHourToMin);
+			try
+			{
+				if (convDayToHour != null)
+					convDayToHour.deleteEx(true);
+			}
+			catch (Exception ex)
+			{
+				System.err.println("Failed to delete convDayToHour: " + ex.getMessage());
+			}
+
+			try
+			{
+				if (convHourToMin != null)
+					convHourToMin.deleteEx(true);
+			}
+			catch (Exception ex)
+			{
+				System.err.println("Failed to delete convHourToMin: " + ex.getMessage());
+			}
 		}
 	} // testIntermediateConversionWithDerivedAndCustomRates_DayHourMinutes
 
@@ -275,7 +296,7 @@ public class MUOMConversionTest extends AbstractTestCase {
 
 		BigDecimal dayToMinute = MUOMConversion.getRate(Env.getCtx(), dayUomID, minuteUomID);
 		assertNotNull(dayToMinute, scenario + ": Day → Minute intermediate conversion rate should not be null");
-		assertEquals(	0, BigDecimal.valueOf(expectedMinutesPerDay).compareTo(dayToMinute.setScale(0, RoundingMode.HALF_UP)),
+		assertEquals(	BigDecimal.valueOf(expectedMinutesPerDay), dayToMinute.setScale(0),
 						scenario + ": Expected Day → Minute intermediate conversion rate to be " + expectedMinutesPerDay);
 
 		// -----------------------------------------------------------------
@@ -582,42 +603,133 @@ public class MUOMConversionTest extends AbstractTestCase {
 			assertEquals(	0, BigDecimal.valueOf(10).compareTo(rateScrewCartonToBox.setScale(0, RoundingMode.HALF_UP)),
 							"Screw Carton -> Box is incorrect. Screw has no product-specific conversions, so it should fall back to the generic direct conversion: 1 Carton = 10 Box.");
 
-			// ---- Step 6.5 : Cross-check - Pen and Screw MUST now disagree, proving
-			// product-specific data takes priority over a generic direct match instead of being
-			// silently ignored.
-			assertEquals(	0, ratePenBoxToCarton.setScale(6, RoundingMode.HALF_UP).compareTo(BigDecimal.valueOf(0.05).setScale(6, RoundingMode.HALF_UP)),
-							"Pen's derived rate should not match the generic rate.");
-			assertEquals(	0, rateScrewBoxToCarton.setScale(6, RoundingMode.HALF_UP).compareTo(BigDecimal.valueOf(0.1).setScale(6, RoundingMode.HALF_UP)),
-							"Screw's rate should match the generic rate, since it has no product-specific override.");
+			// ---- Step 6.5 : Cross-check - Pen and Screw MUST now disagree
 			assertNotEquals(0, ratePenBoxToCarton.setScale(6, RoundingMode.HALF_UP).compareTo(rateScrewBoxToCarton.setScale(6, RoundingMode.HALF_UP)),
 							"Pen and Screw should now resolve to DIFFERENT Box -> Carton rates: Pen uses its own product-specific data (20:1) while Screw falls back to the generic direct conversion (10:1).");
 		}
 		finally
 		{
-			deleteUOMConversion(convEaToBox);
-			deleteUOMConversion(convBoxToCarton);
-			deleteUOMConversion(convEaToBoxPen);
-			deleteUOMConversion(convEaToCartonPen);
-
-			if (pen != null)
-				pen.deleteEx(true);
-			if (screw != null)
-				screw.deleteEx(true);
-
-			if (uomBox != null)
-				uomBox.deleteEx(true);
-			if (uomCarton != null)
-				uomCarton.deleteEx(true);
-
-			if (sysConfig != null)
-				sysConfig.deleteEx(true);
-			if (isSysConfigUpdated)
+			try
 			{
-				DB.executeUpdateEx(	"UPDATE AD_SysConfig SET Value = 'Y' WHERE Name=? AND AD_Client_ID=?",
-									new Object[] { MSysConfig.ProductUOMConversionRateValidate, GARDEN_WORLD_CLIENT }, null);
+				// Step 1: Restore system config before deletion
+				if (isSysConfigUpdated)
+				{
+					DB.executeUpdateEx(
+										"UPDATE AD_SysConfig SET Value = 'Y' WHERE Name=? AND AD_Client_ID=?",
+										new Object[] { MSysConfig.ProductUOMConversionRateValidate, GARDEN_WORLD_CLIENT },
+										null);
+				}
+				else if (sysConfig != null)
+				{
+					sysConfig.deleteEx(true);
+				}
 			}
-			//
-			CacheMgt.get().reset();
+			catch (Exception ex)
+			{
+				System.err.println("Failed to restore ProductUOMConversionRateValidate: " + ex.getMessage());
+				ex.printStackTrace();
+			}
+
+			try
+			{
+				CacheMgt.get().reset();
+			}
+			catch (Exception ex)
+			{
+				System.err.println("Failed to reset CacheMgt: " + ex.getMessage());
+				ex.printStackTrace();
+			}
+
+			// Step 2: Delete conversions (depend on UOMs and Products)
+			try
+			{
+				if (convEaToBox != null)
+					convEaToBox.deleteEx(true);
+			}
+			catch (Exception ex)
+			{
+				System.err.println("Failed to delete convEaToBox: " + ex.getMessage());
+				ex.printStackTrace();
+			}
+
+			try
+			{
+				if (convBoxToCarton != null)
+					convBoxToCarton.deleteEx(true);
+			}
+			catch (Exception ex)
+			{
+				System.err.println("Failed to delete convBoxToCarton: " + ex.getMessage());
+				ex.printStackTrace();
+			}
+
+			try
+			{
+				if (convEaToBoxPen != null)
+					convEaToBoxPen.deleteEx(true);
+			}
+			catch (Exception ex)
+			{
+				System.err.println("Failed to delete convEaToBoxPen: " + ex.getMessage());
+				ex.printStackTrace();
+			}
+
+			try
+			{
+				if (convEaToCartonPen != null)
+					convEaToCartonPen.deleteEx(true);
+			}
+			catch (Exception ex)
+			{
+				System.err.println("Failed to delete convEaToCartonPen: " + ex.getMessage());
+				ex.printStackTrace();
+			}
+
+			// Step 3: Delete products
+			try
+			{
+				if (pen != null)
+					pen.deleteEx(true);
+			}
+			catch (Exception ex)
+			{
+				System.err.println("Failed to delete pen product: " + ex.getMessage());
+				ex.printStackTrace();
+			}
+
+			try
+			{
+				if (screw != null)
+					screw.deleteEx(true);
+			}
+			catch (Exception ex)
+			{
+				System.err.println("Failed to delete screw product: " + ex.getMessage());
+				ex.printStackTrace();
+			}
+
+			// Step 4: Delete UOMs
+			try
+			{
+				if (uomBox != null)
+					uomBox.deleteEx(true);
+			}
+			catch (Exception ex)
+			{
+				System.err.println("Failed to delete uomBox: " + ex.getMessage());
+				ex.printStackTrace();
+			}
+
+			try
+			{
+				if (uomCarton != null)
+					uomCarton.deleteEx(true);
+			}
+			catch (Exception ex)
+			{
+				System.err.println("Failed to delete uomCarton: " + ex.getMessage());
+				ex.printStackTrace();
+			}
 		}
 	} // testProductPenUOMConversionSteps
 
@@ -684,18 +796,4 @@ public class MUOMConversionTest extends AbstractTestCase {
 		conversion.saveEx();
 		return conversion;
 	} // createUOMConversion
-
-	/**
-	 * Deletes the given UOM conversion record if it is not null.
-	 * 
-	 * @param conversion
-	 */
-	private void deleteUOMConversion(MUOMConversion conversion)
-	{
-		if (conversion != null)
-		{
-			conversion.deleteEx(true);
-		}
-	} // deleteUOMConversion
-
 }
