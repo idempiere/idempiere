@@ -12,43 +12,45 @@
  *****************************************************************************/
 package org.adempiere.webui.apps.wf;
 
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.component.Menupopup;
+import org.adempiere.webui.component.ToolBar;
 import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.panel.IHelpContext;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
-import org.compiere.apps.wf.WFGraphLayout;
 import org.compiere.apps.wf.WFNodeWidget;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
+import org.compiere.util.Util;
 import org.compiere.wf.MWFNode;
-import org.compiere.wf.MWFNodeNext;
 import org.compiere.wf.MWorkflow;
-import org.zkoss.zhtml.Table;
-import org.zkoss.zhtml.Td;
-import org.zkoss.zhtml.Tr;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Html;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.Menuitem;
+import org.zkoss.zul.North;
 import org.zkoss.zul.South;
+import org.zkoss.zul.Toolbarbutton;
 
 /**
- *	WorkFlow Panel
+ *	WorkFlow Panel.
+ *
+ *	<p>Renders the workflow as client side SVG via {@link WWorkflowGraph}.</p>
  *
  * 	@author Low Heng Sin
  */
@@ -96,11 +98,21 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 	
 	/** Workflow node container */
 	private WFNodeContainer nodeContainer = new WFNodeContainer();
+
+	/** SVG workflow graph */
+	private WWorkflowGraph graph = new WWorkflowGraph();
+
+	/** Canvas zoom buttons (desktop) or zoom menu (mobile) */
+	private Toolbarbutton zoomOutButton;
+	private Toolbarbutton zoomInButton;
+	private Toolbarbutton zoomFitButton;
+	private Toolbarbutton zoomActualButton;
+	private Toolbarbutton zoomMenuButton;
+	private Menupopup zoomPopup;
+	private Label zoomLabel;
 	
 	private Html infoTextPane = new Html();
 	private Div contentPanel = new Div();
-	//
-	private Table table;
 		
 	/**
 	 * 	Static Init
@@ -116,10 +128,62 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 	private void jbInit() throws Exception
 	{
 		this.setStyle("height: 100%; width: 100%; position: absolute");
+		North north = new North();
+		this.appendChild(north);
+		ToolBar toolbar = new ToolBar();
+		north.appendChild(toolbar);
+		// canvas zoom only: no workflow picker, no edit actions; mobile
+		// clients get a single zoom menu instead of four buttons
+		if (ClientInfo.isMobile()) {
+			zoomPopup = new Menupopup();
+			addZoomMenuItem("ZoomIn", "in");
+			addZoomMenuItem("ZoomOut", "out");
+			addZoomMenuItem("FitToWidth", "fit");
+			addZoomMenuItem("ActualSize", "actual");
+			zoomMenuButton = new Toolbarbutton();
+			zoomMenuButton.setLabel("\u2922");
+			toolbar.appendChild(zoomMenuButton);
+			zoomMenuButton.addEventListener(Events.ON_CLICK, this);
+			zoomLabel = new Label("100%");
+			zoomLabel.setSclass("wf-zoom-label-host");
+			zoomLabel.setStyle("min-width:42px;text-align:center;color:#57606a;");
+			toolbar.appendChild(zoomLabel);
+		} else {
+			zoomOutButton = new Toolbarbutton();
+			zoomOutButton.setLabel("\u2212");
+			toolbar.appendChild(zoomOutButton);
+			zoomOutButton.addEventListener(Events.ON_CLICK, this);
+			zoomOutButton.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "ZoomOut")));
+			zoomLabel = new Label("100%");
+			zoomLabel.setSclass("wf-zoom-label-host");
+			zoomLabel.setStyle("min-width:42px;text-align:center;color:#57606a;");
+			toolbar.appendChild(zoomLabel);
+			zoomInButton = new Toolbarbutton();
+			zoomInButton.setLabel("+");
+			toolbar.appendChild(zoomInButton);
+			zoomInButton.addEventListener(Events.ON_CLICK, this);
+			zoomInButton.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "ZoomIn")));
+			zoomFitButton = new Toolbarbutton();
+			zoomFitButton.setLabel("\u2922");
+			toolbar.appendChild(zoomFitButton);
+			zoomFitButton.addEventListener(Events.ON_CLICK, this);
+			zoomFitButton.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "FitToWidth")));
+			zoomActualButton = new Toolbarbutton();
+			zoomActualButton.setLabel("1:1");
+			toolbar.appendChild(zoomActualButton);
+			zoomActualButton.addEventListener(Events.ON_CLICK, this);
+			zoomActualButton.setTooltiptext(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "ActualSize")));
+		}
+		ZKUpdateUtil.setHeight(north, "30px");
 		Center center = new Center();
 		this.appendChild(center);
-		createTable();
-		center.appendChild(table);
+		graph.setEditable(false);
+		// the graph's own zoom row stays hidden, zoom runs from the buttons above
+		graph.setShowToolbar(false);
+		graph.setVflex("1");
+		graph.setHflex("1");
+		graph.addEventListener(WWorkflowGraph.ON_NODE_CLICK, this);
+		center.appendChild(graph);
 		contentPanel.setStyle("width: 100%; height: 100%;");
 		center.setAutoscroll(true);
 		
@@ -136,14 +200,6 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 		ZKUpdateUtil.setVflex(div, "1");
 		ZKUpdateUtil.setHflex(div, "1");
 	}	//	jbInit
-
-	private void createTable() {
-		table = new Table();
-		table.setDynamicProperty("cellpadding", "0");
-		table.setDynamicProperty("cellspacing", "0");
-		table.setDynamicProperty("border", "none");
-		table.setStyle("margin:0;padding:0");
-	}
 		
 	/**
 	 * 	Dispose
@@ -164,83 +220,9 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 			return;
 		//	Get Workflow
 		m_wf = new MWorkflow (Env.getCtx(), AD_Workflow_ID, null);
-		nodeContainer.removeAll();
-		nodeContainer.setWorkflow(m_wf);
-		
-		//	Add Nodes for Paint
-		MWFNode[] nodes = m_wf.getNodes(true, Env.getAD_Client_ID(Env.getCtx()));
-		nodeContainer.setColumnCount(nodes, false);
-		List<Integer> added = new ArrayList<Integer>();
-		for (int i = 0; i < nodes.length; i++)
-		{
-			if (!added.contains(nodes[i].getAD_WF_Node_ID()))
-				nodeContainer.addNode(nodes[i]);
-		}
-		
-		//  Add lines
-		for (int i = 0; i < nodes.length; i++)
-		{
-			MWFNodeNext[] nexts = nodes[i].getTransitions(Env.getAD_Client_ID(Env.getCtx()));
-			for (int j = 0; j < nexts.length; j++)
-			{
-				nodeContainer.addEdge(nexts[j]);
-			}
-		}
-				
-		// render workflow graph as image
-		Dimension dimension = nodeContainer.getDimension();
-		BufferedImage bi = new BufferedImage (dimension.width, dimension.height, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D graphics = bi.createGraphics();
-		nodeContainer.validate(graphics);
-		nodeContainer.paint(graphics);
+		nodeContainer.load(m_wf, false);
+		graph.setModel(nodeContainer.toJson());
 
-		try {
-			int row = nodeContainer.getRowCount();
-			int maxCol = nodeContainer.getMaxColumnWithNode();
-			for(int i = 0; i < row; i++) {
-				Tr tr = new Tr();
-				table.appendChild(tr);
-				
-				// get image for each node and add to html table
-				for(int c = 0; c < maxCol; c++) {
-					BufferedImage t = new BufferedImage(WFGraphLayout.COLUMN_WIDTH, WFGraphLayout.ROW_HEIGHT, BufferedImage.TYPE_INT_ARGB);
-					Graphics2D tg = t.createGraphics();
-					Td td = new Td();
-					td.setSclass("workflow-panel-table");
-					tr.appendChild(td);
-					
-					int x = c * WFGraphLayout.COLUMN_WIDTH;
-					int y = i * WFGraphLayout.ROW_HEIGHT;
-
-					tg.drawImage(bi.getSubimage(x, y, WFGraphLayout.COLUMN_WIDTH, WFGraphLayout.ROW_HEIGHT), 0, 0, null);
-					org.zkoss.zul.Image image = new org.zkoss.zul.Image();
-					image.setContent(t);
-					td.appendChild(image);
-
-					WFNodeWidget widget = nodeContainer.findWidget(i+1, c+1);
-					if (widget != null)
-					{
-						MWFNode node = widget.getModel();
-						if (node.getHelp(true) != null) {
-							image.setTooltiptext(node.getHelp(true));
-						}
-						image.setAttribute("AD_WF_Node_ID", node.getAD_WF_Node_ID());
-						image.addEventListener(Events.ON_CLICK, this);
-						image.setStyle("cursor:pointer;border:none;margin:0;padding:0;");
-					}
-					else
-					{
-						image.setStyle("border:none;margin:0;padding:0;");
-					}
-
-					tg.dispose();
-				}
-			}
-
-		} catch (Exception e) {
-			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-		}
-		
 		//	Info Text
 		StringBuilder msg = new StringBuilder("");
 		msg.append("<H2>").append(m_wf.getName(true)).append("</H2>");
@@ -279,17 +261,39 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
 
 	@Override
 	public void onEvent(Event event) throws Exception {
-		if (Events.ON_CLICK.equals(event.getName())) {
-			Integer id = (Integer) event.getTarget().getAttribute("AD_WF_Node_ID");
-			if (id != null) {
-				MWFNode[] nodes = m_wf.getNodes(true, Env.getAD_Client_ID(Env.getCtx()));
-				for(MWFNode node : nodes) {
-					if (node.getAD_WF_Node_ID() == id) {
-						start(node);
-						break;
+		if (event.getTarget() == graph && WWorkflowGraph.ON_NODE_CLICK.equals(event.getName())) {
+			int id = WWorkflowGraph.getNodeId(event);
+			if (id > 0 && m_wf != null) {
+				WFNodeWidget widget = nodeContainer.findNode(id);
+				if (widget != null) {
+					start(widget.getModel());
+				} else {
+					MWFNode[] nodes = m_wf.getNodes(true, Env.getAD_Client_ID(Env.getCtx()));
+					for(MWFNode node : nodes) {
+						if (node.getAD_WF_Node_ID() == id) {
+							start(node);
+							break;
+						}
 					}
 				}
 			}
+		}
+		else if (event.getTarget() == zoomOutButton) {
+			zoomGraph("out");
+		}
+		else if (event.getTarget() == zoomInButton) {
+			zoomGraph("in");
+		}
+		else if (event.getTarget() == zoomFitButton) {
+			zoomGraph("fit");
+		}
+		else if (event.getTarget() == zoomActualButton) {
+			zoomGraph("actual");
+		}
+		else if (event.getTarget() == zoomMenuButton) {
+			if (zoomPopup.getPage() == null)
+				zoomPopup.setPage(getPage());
+			zoomPopup.open(zoomMenuButton, "after_start");
 		}
 		else if (event.getName().equals(WindowContainer.ON_WINDOW_CONTAINER_SELECTION_CHANGED_EVENT)) {
     		SessionManager.getAppDesktop().updateHelpContext(X_AD_CtxHelp.CTXTYPE_Workflow, m_wf.getAD_Workflow_ID());
@@ -306,6 +310,29 @@ public class WFPanel extends Borderlayout implements EventListener<Event>, IHelp
         	else
         		desktop.setCloseTabWithShortcut(true);
         }
+	}
+
+	/**
+	 * Add a canvas zoom entry to the mobile zoom menu.
+	 * @param msgKey message key for the item label
+	 * @param mode zoom mode for idempiere.wfgraph.zoom
+	 */
+	private void addZoomMenuItem(String msgKey, String mode) {
+		Menuitem item = new Menuitem(Util.cleanAmp(Msg.getMsg(Env.getCtx(), msgKey)));
+		item.setValue(mode);
+		item.addEventListener(Events.ON_CLICK, event -> zoomGraph((String) ((Menuitem) event.getTarget()).getValue()));
+		zoomPopup.appendChild(item);
+	}
+
+	/**
+	 * Drive the client side graph zoom from the symbol bar buttons.
+	 * @param mode in, out, fit or actual (see idempiere.wfgraph.zoom)
+	 */
+	private void zoomGraph(String mode) {
+		if (graph == null || graph.getPage() == null)
+			return;
+		Clients.evalJavaScript("if(window.idempiere&&idempiere.wfgraph&&idempiere.wfgraph.zoom)"
+				+ "idempiere.wfgraph.zoom('" + graph.getUuid() + "','" + mode + "');");
 	}
 
 	/**
