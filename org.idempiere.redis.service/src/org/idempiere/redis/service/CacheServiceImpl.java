@@ -413,14 +413,13 @@ public class CacheServiceImpl implements ICacheService {
 	}
 
 	/**
-	 * Resets the local cache on this node synchronously first (no jitter — this is the saving node),
-	 * then publishes a fire-and-forget invalidation to all other cluster nodes.
-	 * The topic listener skips this node since the local reset is already applied.
+	 * Publishes a fire-and-forget invalidation to all other cluster nodes.
+	 * The caller ({@link CacheMgt#clusterResetInternal(String, Object)}) has already reset this
+	 * node's local cache synchronously before calling this method; the topic listener skips this
+	 * node since the local reset is already applied.
 	 */
 	@Override
 	public void broadcastReset(String tableName, int recordId) {
-		// Always reset local cache synchronously first (no jitter — this is the saving node).
-		CacheMgt.get().resetLocalCache(tableName, recordId);
 		RTopic topic = invalidationTopic;
 		if (topic == null) return;
 		try {
@@ -431,12 +430,13 @@ public class CacheServiceImpl implements ICacheService {
 	}
 
 	/**
-	 * Resets the local cache on this node synchronously first, then publishes to other nodes.
+	 * Publishes a fire-and-forget invalidation to all other cluster nodes.
+	 * The caller ({@link CacheMgt#clusterResetInternal(String, Object)}) has already reset this
+	 * node's local cache synchronously before calling this method; the topic listener skips this
+	 * node since the local reset is already applied.
 	 */
 	@Override
 	public void broadcastReset(String tableName, String key) {
-		// Always reset local cache synchronously first (no jitter — this is the saving node).
-		CacheMgt.get().resetLocalCache(tableName, key);
 		RTopic topic = invalidationTopic;
 		if (topic == null) return;
 		try {

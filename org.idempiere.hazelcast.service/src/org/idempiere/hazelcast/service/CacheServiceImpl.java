@@ -106,29 +106,27 @@ public class CacheServiceImpl implements ICacheService {
 	}
 
 	/**
-	 * Resets the local cache on this node synchronously first, then dispatches the same reset
-	 * to every other cluster member via {@link IClusterService#execute(Callable, java.util.Collection)}.
-	 * Without this override, {@code ICacheService.broadcastReset}'s default no-op would mean
-	 * {@code CacheMgt}'s cluster-wide reset path (which now only calls this method) never actually
-	 * resets any node's local cache for the Hazelcast backend.
+	 * Dispatches the reset to every other cluster member via
+	 * {@link IClusterService#execute(Callable, java.util.Collection)}.
+	 * The caller ({@link CacheMgt#clusterResetInternal(String, Object)}) has already reset this
+	 * node's local cache synchronously before calling this method.
 	 */
 	@Override
 	public void broadcastReset(String tableName, int recordId) {
-		CacheMgt.get().resetLocalCache(tableName, recordId);
 		executeOnOtherMembers(new ResetCacheCallable(tableName, recordId));
 	}
 
 	/** @see #broadcastReset(String, int) */
 	@Override
 	public void broadcastReset(String tableName, String key) {
-		CacheMgt.get().resetLocalCache(tableName, key);
 		executeOnOtherMembers(new ResetCacheCallable(tableName, key));
 	}
 
 	/**
-	 * Dispatches {@code resetCallable} (which itself invokes {@code CacheMgt.get().resetLocalCache(...)})
-	 * to every cluster member other than the local node. The local node's reset is already applied
-	 * synchronously by the caller, so it is excluded here to avoid resetting it twice.
+	 * Dispatches {@code resetCallable} (which itself invokes
+	 * {@code CacheMgt.get().resetLocalCacheWithAntiStampede(...)}) to every cluster member other
+	 * than the local node. The local node's reset is already applied synchronously by the caller,
+	 * so it is excluded here to avoid resetting it twice.
 	 */
 	private void executeOnOtherMembers(Callable<Integer> resetCallable) {
 		IClusterService service = Core.getClusterService();

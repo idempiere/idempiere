@@ -4,7 +4,7 @@ Bundle-Name: iDempiere Redis Service
 Bundle-SymbolicName: org.idempiere.redis.service
 Bundle-Version: 14.0.0.qualifier
 Bundle-ActivationPolicy: lazy
-Import-Package: com.github.benmanes.caffeine.cache;version="3.1.8",
+Import-Package: com.github.benmanes.caffeine.cache;version="[3.1,4)",
  org.eclipse.osgi.framework.console;version="1.1.0",
  org.osgi.framework;version="1.10.0",
  org.osgi.service.component;version="1.1.0",

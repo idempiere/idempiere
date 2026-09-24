@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.IntSupplier;
@@ -366,8 +367,9 @@ public class CacheMgt
 	}	//	unregister
 
 	/**
-	 * Do a cluster wide cache reset 
-	 * @return number of deleted cache entries
+	 * Do a cluster wide cache reset
+	 * @return number of deleted local cache entries; {@code 0} when a distributed cache service is
+	 *         active, since the reset is then dispatched fire-and-forget (see {@link #clusterResetInternal(String, Object)})
 	 */
 	private int  clusterReset() {
 		return clusterReset(null, -1);
@@ -377,7 +379,8 @@ public class CacheMgt
 	 * Do a cluster wide cache reset for tableName with recordId key
 	 * @param tableName name of cache
 	 * @param recordId cache key. -1 to reset all cache entries for this table
-	 * @return number of deleted cache entries
+	 * @return number of deleted local cache entries; {@code 0} when a distributed cache service is
+	 *         active, since the reset is then dispatched fire-and-forget (see {@link #clusterResetInternal(String, Object)})
 	 */
 	private int clusterReset(String tableName, int recordId) {
 		return clusterResetInternal(tableName, recordId);
@@ -387,7 +390,8 @@ public class CacheMgt
 	 * Do a cluster wide cache reset for tableName with string key
 	 * @param tableName name of cache
 	 * @param key cache key
-	 * @return number of deleted cache entries
+	 * @return number of deleted local cache entries; {@code 0} when a distributed cache service is
+	 *         active, since the reset is then dispatched fire-and-forget (see {@link #clusterResetInternal(String, Object)})
 	 */
 	private int clusterReset(String tableName, String key) {
 		return clusterResetInternal(tableName, key);
@@ -406,11 +410,15 @@ public class CacheMgt
 	private <K> int clusterResetInternal(String tableName, K key) {
 		ICacheService cacheService = Core.getCacheService();
 		if (cacheService != null) {
-			// Fire-and-forget: publishes to a durable topic; all nodes (including this one)
-			// apply the reset asynchronously upon receipt. No reply is awaited.
+			// Reset local cache synchronously first (no jitter — this is the saving node), then
+			// fire-and-forget broadcast: publishes to a durable topic; other nodes apply the reset
+			// asynchronously upon receipt. No reply is awaited. Done here, once, instead of in each
+			// ICacheService implementation's broadcastReset, so both backends share this behavior.
 			if (key instanceof Integer) {
+				resetLocalCache(tableName, (Integer) key);
 				cacheService.broadcastReset(tableName, (Integer) key);
 			} else {
+				resetLocalCache(tableName, key.toString());
 				cacheService.broadcastReset(tableName, key.toString());
 			}
 			return 0;
@@ -455,8 +463,9 @@ public class CacheMgt
 	}
 	
 	/**
-	 * Do a cluster wide cache reset 
-	 * @return number of deleted cache entries
+	 * Do a cluster wide cache reset
+	 * @return number of deleted local cache entries; {@code 0} when a distributed cache service is
+	 *         active, since the reset is then dispatched fire-and-forget (remote nodes reset asynchronously)
 	 */
 	public int reset() 
 	{
@@ -466,7 +475,8 @@ public class CacheMgt
 	/**
 	 * 	Do a cluster wide cache reset for tableName
 	 * 	@param tableName table name
-	 * 	@return number of deleted cache entries
+	 * 	@return number of deleted local cache entries; {@code 0} when a distributed cache service is
+	 *          active, since the reset is then dispatched fire-and-forget (remote nodes reset asynchronously)
 	 */
 	public int reset (String tableName)
 	{
@@ -478,7 +488,9 @@ public class CacheMgt
 	 * @param tableName
 	 * @param Record_ID record id for the cache entries to delete. pass -1 if you don't want to delete 
 	 * cache entries by record id
-	 * @return number of deleted cache entries
+	 * @return number of deleted local cache entries; {@code 0} when a distributed cache service is
+	 *         active and {@code tableName} isn't {@link #isDebouncedResetTable(String) debounced},
+	 *         since the reset is then dispatched fire-and-forget (remote nodes reset asynchronously)
 	 */
 	public int reset (String tableName, int Record_ID)
 	{
@@ -496,7 +508,9 @@ public class CacheMgt
 	 * Do a cluster wide cache reset for tableName with key
 	 * @param tableName cache name
 	 * @param key cache key
-	 * @return number of deleted cache entries
+	 * @return number of deleted local cache entries; {@code 0} when a distributed cache service is
+	 *         active and {@code tableName} isn't {@link #isDebouncedResetTable(String) debounced},
+	 *         since the reset is then dispatched fire-and-forget (remote nodes reset asynchronously)
 	 */
 	public int reset(String tableName, String key)
 	{
@@ -593,6 +607,17 @@ public class CacheMgt
 	}
 
 	/**
+	 * @param guardKey a {@link #resetInFlightGuardKey(String, String)} value
+	 * @return the whole-table guard key that subsumes {@code guardKey} (i.e. {@code tableName} for
+	 *         a {@code tableName#scopeKey} record-specific key), or {@code null} if {@code guardKey}
+	 *         is already a whole-table (or whole-cache) key with no broader key to check
+	 */
+	private static String tableWideGuardKeyFor(String guardKey) {
+		int idx = guardKey.indexOf('#');
+		return idx < 0 ? null : guardKey.substring(0, idx);
+	}
+
+	/**
 	 * Deterministic per-node position within the current cluster membership, used to derive an
 	 * anti-stampede reset delay: every node independently sorts {@link IClusterService#getMembers()}
 	 * by {@link IClusterMember#getId()} — identical input produces identical ordering on every node,
@@ -633,10 +658,26 @@ public class CacheMgt
 	 * delay computed by {@link #computeStaggeredDelayMs()}. The flag is released once
 	 * {@code resetAction} actually completes, whichever path ran it.
 	 *
-	 * @return the reset count when run synchronously; {@code 0} when the caller lost the guard race
-	 *         or the reset was queued for deferred execution
+	 * A record-specific {@code guardKey} (of the form {@code tableName#scopeKey}) is first checked
+	 * against its whole-table guard key: if a whole-table reset for that table is already in-flight,
+	 * this record-level reset is skipped outright since the whole-table reset already subsumes it,
+	 * avoiding a redundant dual-run.
+	 *
+	 * @return the reset count when run synchronously; {@code 0} when the caller lost the guard race,
+	 *         the reset was subsumed by an in-flight whole-table reset, the reset was queued for
+	 *         deferred execution, or the executor rejected the queued task
 	 */
 	private int applyWithAntiStampede(String guardKey, IntSupplier resetAction) {
+		String tableWideGuardKey = tableWideGuardKeyFor(guardKey);
+		if (tableWideGuardKey != null) {
+			AtomicBoolean tableWideFlag = resetInFlight.getIfPresent(tableWideGuardKey);
+			if (tableWideFlag != null && tableWideFlag.get()) {
+				if (log.isLoggable(Level.FINE))
+					log.fine("Anti-stampede: skipping local cache reset for " + guardKey
+							+ "; subsumed by in-flight whole-table reset " + tableWideGuardKey);
+				return 0;
+			}
+		}
 		AtomicBoolean flag = resetInFlight.get(guardKey, k -> new AtomicBoolean(false));
 		if (!flag.compareAndSet(false, true)) {
 			if (log.isLoggable(Level.FINE))
@@ -651,15 +692,23 @@ public class CacheMgt
 			}
 		}
 		long delay = computeStaggeredDelayMs();
-		Adempiere.getThreadPoolExecutor().schedule(() -> {
-			try {
-				resetAction.getAsInt();
-			} catch (Throwable t) {
-				log.log(Level.WARNING, "Anti-stampede queued local cache reset failed for " + guardKey, t);
-			} finally {
-				flag.set(false);
-			}
-		}, delay, TimeUnit.MILLISECONDS);
+		try {
+			Adempiere.getThreadPoolExecutor().schedule(() -> {
+				try {
+					resetAction.getAsInt();
+				} catch (Throwable t) {
+					log.log(Level.WARNING, "Anti-stampede queued local cache reset failed for " + guardKey, t);
+				} finally {
+					flag.set(false);
+				}
+			}, delay, TimeUnit.MILLISECONDS);
+		} catch (RejectedExecutionException e) {
+			// Executor didn't accept the task (e.g. shutting down) — release the guard now,
+			// otherwise this guardKey would be stuck "in-flight" forever and every future
+			// reset for it would be silently skipped.
+			flag.set(false);
+			log.log(Level.WARNING, "Anti-stampede queued local cache reset rejected for " + guardKey, e);
+		}
 		return 0;
 	}
 
