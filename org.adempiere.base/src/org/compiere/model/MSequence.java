@@ -575,19 +575,17 @@ public class MSequence extends X_AD_Sequence
 		//	Error
 		if (next < 0)
 			return null;
-		nextStr = String.valueOf(next);
+		if (Util.isEmpty(decimalPattern))
+			nextStr = String.valueOf(next);
+		else
+			nextStr = new DecimalFormat(decimalPattern).format(next);
 	  }
 
 		//	create DocumentNo
 		StringBuilder doc = new StringBuilder();
 		if (!Util.isEmpty(prefixValue, true))
 			doc.append(prefixValue);
-
-		if (decimalPattern != null && decimalPattern.length() > 0)
-			doc.append(new DecimalFormat(decimalPattern).format(nextStr));
-		else
-			doc.append(nextStr);
-
+		doc.append(nextStr);
 		if (!Util.isEmpty(suffixValue, true))
 			doc.append(suffixValue);
 		
