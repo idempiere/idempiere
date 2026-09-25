@@ -43,58 +43,37 @@ public class MCostQueue extends X_M_CostQueue
 	private static final long serialVersionUID = -1782836708418500130L;
 
 	/**
-	 * 	Get/Create Cost Queue Record.
-	 * 	CostingLevel is not validated.
-	 *	@param product product
-	 *	@param M_AttributeSetInstance_ID asi
-	 *	@param as accounting schema
-	 *	@param AD_Org_ID org
-	 *	@param M_CostElement_ID cost element
-	 *	@param trxName transaction
-	 *	@return cost queue or null
+	 * Create Cost Queue Record.
+	 *
+	 * Creates a new cost queue record for the stock entry.
+	 *
+	 * CostingLevel is not validated.
+	 *
+	 * @param product product
+	 * @param M_AttributeSetInstance_ID asi
+	 * @param as accounting schema
+	 * @param AD_Org_ID org
+	 * @param M_CostElement_ID cost element
+	 * @param trxName transaction
+	 * @return new cost queue
 	 */
-	public static MCostQueue get (MProduct product, int M_AttributeSetInstance_ID,
-		MAcctSchema as, int AD_Org_ID, int M_CostElement_ID, String trxName)
+	public static MCostQueue get(
+	        MProduct product,
+	        int M_AttributeSetInstance_ID,
+	        MAcctSchema as,
+	        int AD_Org_ID,
+	        int M_CostElement_ID,
+	        BigDecimal price,
+	        String trxName)
 	{
-		MCostQueue costQ = null;
-		String sql = "SELECT * FROM M_CostQueue "
-			+ "WHERE AD_Client_ID=? AND AD_Org_ID=?"
-			+ " AND M_Product_ID=?"
-			+ " AND M_AttributeSetInstance_ID=?"
-			+ " AND M_CostType_ID=? AND C_AcctSchema_ID=?"
-			+ " AND M_CostElement_ID=?";
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement (sql, trxName);
-			pstmt.setInt (1, product.getAD_Client_ID());
-			pstmt.setInt (2, AD_Org_ID);
-			pstmt.setInt (3, product.getM_Product_ID());
-			pstmt.setInt (4, M_AttributeSetInstance_ID);
-			pstmt.setInt (5, as.getM_CostType_ID());
-			pstmt.setInt (6, as.getC_AcctSchema_ID());
-			pstmt.setInt (7, M_CostElement_ID);
-			rs = pstmt.executeQuery ();
-			if (rs.next ())
-				costQ = new MCostQueue (product.getCtx(), rs, trxName); 
-		}
-		catch (Exception e)
-		{
-			s_log.log (Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
-		}
-		//	New
-		if (costQ == null)
-			costQ = new MCostQueue (product, M_AttributeSetInstance_ID,
-				as, AD_Org_ID, M_CostElement_ID, trxName);
-		return costQ;
-	}	//	get
+	    return new MCostQueue(
+	        product,
+	        M_AttributeSetInstance_ID,
+	        as,
+	        AD_Org_ID,
+	        M_CostElement_ID,
+	        trxName);
+	} // get
 
 	/**
 	 * 	Get Cost Queue Records in Lifo/Fifo order
