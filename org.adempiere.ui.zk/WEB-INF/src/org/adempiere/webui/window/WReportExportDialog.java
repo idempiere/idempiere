@@ -48,8 +48,8 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
-import org.zkoss.zul.Hbox;
-import org.zkoss.zul.Vbox;
+import org.adempiere.webui.component.FlexHlayout;
+import org.adempiere.webui.component.FlexVlayout;
 
 /**
  * Dialog to export and download report
@@ -99,10 +99,10 @@ public class WReportExportDialog extends Window implements EventListener<Event> 
 			}
 		}
 		
-		Hbox hb = new Hbox();
+		FlexHlayout hb = new FlexHlayout();
 		hb.setSclass("dialog-content");			
-		hb.setAlign("center");
-		hb.setPack("start");
+		hb.setAlign(FlexHlayout.AlignType.CENTER);
+		hb.setPack(FlexHlayout.PackType.START);
 		Div div = new Div();
 		div.setStyle("text-align: right;");
 		div.appendChild(new Label(Msg.getMsg(Env.getCtx(), "FilesOfType")));
@@ -110,7 +110,7 @@ public class WReportExportDialog extends Window implements EventListener<Event> 
 		hb.appendChild(cboType);
 		ZKUpdateUtil.setWidth(cboType, "100%");
 
-		Vbox vb = new Vbox();
+		FlexVlayout vb = new FlexVlayout();
 		ZKUpdateUtil.setWidth(vb, "100%");
 		appendChild(vb);
 		vb.appendChild(hb);

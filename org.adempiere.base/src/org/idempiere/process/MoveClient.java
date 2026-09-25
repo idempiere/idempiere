@@ -782,6 +782,10 @@ public class MoveClient extends SvrProcess {
 		// validation construct the list of tables and columns to process
 		// NOTE that the whole process will be done in a single transaction, foreign keys will be validated on commit
 
+		int batchFlushSize = MSysConfig.getIntValue(MSysConfig.COPY_TENANT_BATCH_FLUSH_SIZE, 10000);
+		if (batchFlushSize <= 0)
+			batchFlushSize = 10000;
+
 		List<MTable> tables = new Query(getCtx(), MTable.Table_Name,
 				"IsView='N' AND " + p_excludeTablesWhere,
 				get_TrxName())
@@ -789,6 +793,11 @@ public class MoveClient extends SvrProcess {
 				.setOrderBy("TableName")
 				.list();
 
+	  PreparedStatement stmtInsertConv = null;
+	  if (p_IsCopyClient)
+		stmtInsertConv = DB.prepareStatement(insertConversionId, get_TrxName());
+	  try {
+		int batchCount = 0;
 		// create/verify the ID conversions
 		for (MTable table : tables) {
 			String tableName = table.getTableName();
@@ -855,18 +864,43 @@ public class MoveClient extends SvrProcess {
 						}
 					}
 					if (target_Key != null || (target_Key instanceof Number && ((Number)target_Key).intValue() >= 0)) {
-						DB.executeUpdateEx(insertConversionId,
-								new Object[] {getAD_PInstance_ID(), tableName.toUpperCase(), source_Key.toString(), target_Key.toString(), null},
-								get_TrxName());
+						if (p_IsCopyClient) {
+							stmtInsertConv.setInt(1, getAD_PInstance_ID());
+							stmtInsertConv.setString(2, tableName.toUpperCase());
+							stmtInsertConv.setString(3, source_Key.toString());
+							stmtInsertConv.setString(4, target_Key.toString());
+							stmtInsertConv.setString(5, null);
+							stmtInsertConv.addBatch();
+							stmtInsertConv.clearParameters();
+							batchCount++;
+							if (batchCount % batchFlushSize == 0) {
+								if (log.isLoggable(Level.INFO)) log.info("Flushing batch of ID conversions with batch size " + batchFlushSize);
+								stmtInsertConv.executeBatch();
+								batchCount = 0;
+							}
+						} else {
+							DB.executeUpdateEx(insertConversionId,
+									new Object[] {getAD_PInstance_ID(), tableName.toUpperCase(), source_Key.toString(), target_Key.toString(), null},
+									get_TrxName());
+						}
 					}
 				}
 			} catch (SQLException e) {
-				throw new AdempiereException("Could not execute external query: " + selectGetIds + "\nCause = " + e.getLocalizedMessage());
+				throw new AdempiereException("Could not execute query: " + selectGetIds + "\nCause = " + e.getLocalizedMessage());
 			} finally {
 				DB.close(rsGI, stmtGI);
 			}
 
 		}
+		if (p_IsCopyClient && batchCount > 0) {
+			if (log.isLoggable(Level.INFO)) log.info("Flushing last batch of ID conversions with batch size " + batchCount);
+			stmtInsertConv.executeBatch();
+		}
+	  } catch (SQLException e) {
+		throw new AdempiereException("Could not execute insert: " + insertConversionId + "\nCause = " + e.getLocalizedMessage());
+	  } finally {
+		DB.close(null, stmtInsertConv);
+	  }
 
 		try {
 			commitEx(); // commit the T_MoveClient table to analyze potential problems
@@ -938,9 +972,13 @@ public class MoveClient extends SvrProcess {
 			PreparedStatement stmtGD = null;
 			ResultSet rsGD = null;
 			Object[] parameters = new Object[ncols];
+			PreparedStatement stmtIns = null;
 			try {
 				stmtGD = externalConn.prepareStatement(selectGetData, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+				if (p_IsCopyClient)
+					stmtIns = DB.prepareStatement(insertSB.toString(), get_TrxName());
 				rsGD = stmtGD.executeQuery();
+				int batchCount = 0;
 				while (rsGD.next()) {
 					boolean insertRecord = true;
 					for (int i = 0; i < ncols; i++) {
@@ -1163,16 +1201,39 @@ public class MoveClient extends SvrProcess {
 					}
 					if (insertRecord) {
 						try {
-							DB.executeUpdateEx(insertSB.toString(), parameters, get_TrxName());
+							if (p_IsCopyClient) {
+								int paramIndex = 1;
+								for (Object param : parameters)
+									stmtIns.setObject(paramIndex++, param);
+								stmtIns.addBatch();
+								stmtIns.clearParameters();
+								batchCount++;
+								if (batchCount % batchFlushSize == 0) {
+									if (log.isLoggable(Level.INFO)) log.info("Flushing batch of inserts for table " + tableName + " with batch size " + batchFlushSize);
+									stmtIns.executeBatch();
+									batchCount = 0;
+								}
+							} else {
+								DB.executeUpdateEx(insertSB.toString(), parameters, get_TrxName());
+							}
 						} catch (Exception e) {
 							throw new AdempiereException("Could not execute: " + insertSB + "\nCause = " + e.getLocalizedMessage());
 						}
 					}
 				}
+				if (p_IsCopyClient && batchCount > 0) {
+					try {
+						if (log.isLoggable(Level.INFO)) log.info("Flushing last batch of inserts for table " + tableName + " with batch size " + batchCount);
+						stmtIns.executeBatch();
+					} catch (SQLException e) {
+						throw new AdempiereException("Could not execute batch insert: " + insertSB + "\nCause = " + e.getLocalizedMessage());
+					}
+				}
 			} catch (SQLException e) {
-				throw new AdempiereException("Could not execute external query: " + selectGetData + "\nCause = " + e.getLocalizedMessage());
+				throw new AdempiereException("Could not execute query: " + selectGetData + "\nCause = " + e.getLocalizedMessage());
 			} finally {
 				DB.close(rsGD, stmtGD);
+				DB.close(null, stmtIns);
 			}
 
 		}

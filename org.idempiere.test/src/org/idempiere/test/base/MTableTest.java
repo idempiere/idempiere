@@ -60,10 +60,10 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.compiere.util.Trx;
+import org.idempiere.acct.base.model.MFactReconciliation;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.idempiere.test.LoginDetails;
-import org.idempiere.webservices.model.MWebService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
@@ -526,11 +526,11 @@ public class MTableTest extends AbstractTestCase {
 	@Test
 	public void testGetClass() {
 	    try {
-	        Class<?> clazz1 = MTable.getClass(MWebService.Table_Name);
-	        assertEquals(MWebService.class, clazz1, "Should return class from cached factory");
+	        Class<?> clazz1 = MTable.getClass(MFactReconciliation.Table_Name);
+	        assertEquals(MFactReconciliation.class, clazz1, "Should return class from cached factory");
 
-	        Class<?> clazz2 = MTable.getClass(MWebService.Table_Name);
-	        assertEquals(MWebService.class, clazz2, "Should return class from second valid factory");
+	        Class<?> clazz2 = MTable.getClass(MFactReconciliation.Table_Name);
+	        assertEquals(MFactReconciliation.class, clazz2, "Should return class from second valid factory");
 
 	        Class<?> clazz3 = MTable.getClass("DoesNotExist");
 	        assertNull(clazz3, "Should return null when the table does not exist");

@@ -214,6 +214,20 @@ public class MArchive extends X_AD_Archive {
 	} // getInputStream
 
 	/**
+	 * Get a backend-native presigned URL for direct download, if the active storage
+	 * provider supports it. Returns null when the backend does not implement native
+	 * URL signing.
+	 * @param expiresInSeconds lifetime of the URL
+	 * @return presigned URL string, or null if not supported
+	 */
+	public String getPresignedURL(long expiresInSeconds) {
+		IArchiveStore prov = provider.getArchiveStore();
+		if (prov != null)
+			return prov.getPresignedURL(this, provider, expiresInSeconds);
+		return null;
+	}
+
+	/**
 	 * Save Binary Data through storage provider from InputStream
 	 * @param inputStream
 	 */

@@ -1,0 +1,11 @@
+-- IDEMPIERE-6820 Add multi tenant support to SSO (DAD-209)
+SELECT register_migration_script('202603021029_IDEMPIERE-6820.sql') FROM dual;
+
+-- Mar 2, 2026, 10:29:53 AM MYT
+UPDATE AD_Table SET AccessLevel='6',Updated=TO_TIMESTAMP('2026-03-02 10:29:53','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Table_ID=200360
+;
+
+-- Mar 2, 2026, 10:33:03 AM MYT
+UPDATE AD_Tab SET IsAdvancedTab='Y',Updated=TO_TIMESTAMP('2026-03-02 10:33:03','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tab_ID=200328
+;
+

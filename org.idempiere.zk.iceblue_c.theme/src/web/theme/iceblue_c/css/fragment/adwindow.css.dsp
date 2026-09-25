@@ -35,7 +35,7 @@
 .adwindow-status {
 	min-height: 22px;
 	padding-top: 3px;
-	background-color: #f6fafe;
+	background-color: var(--zk-adwindow-status-background-color);
 }
 
 <%-- record info text, east of status bar --%>
@@ -47,7 +47,7 @@
 }
 
 .docstatus-error .z-label {
-	color: red;
+	color: var(--zk-adwindow-docstatus-error-color);
 }
 
 <%-- status text, west of status bar --%>
@@ -64,10 +64,10 @@
 
 .adwindow-breadcrumb {
 	min-height: 32px;
-	background-color: #FFF;
+	background-color: var(--zk-adwindow-breadcrumb-background-color);
 	padding: 0px;
 	padding-left: 5px;
-	border-bottom: 1px solid #C5C5C5 !important;
+	border-bottom: 1px solid var(--zk-adwindow-breadcrumb-border-color) !important;
 	display: flex;
 	align-items: center;
 	flex-wrap: wrap;
@@ -97,7 +97,7 @@
 
 <%-- dropdown menu icon --%>
 .adwindow-breadcrumb-menu::after {
-	font-family: FontAwesome;
+	font-family: var(--zk-icon-font-family);
 	font-weight: 900;
     font-style: normal;
 	font-size: 12px;
@@ -123,7 +123,7 @@
 }
 
 .adwindow-detailpane-tabpanel {
-	background-color: #fff
+	background-color: var(--zk-adwindow-breadcrumb-background-color);
 }
 
 <%-- toolbar of detail panel --%>
@@ -175,7 +175,7 @@
 	padding: 0px !important;
 	height: 2em;
 	border: none;
-	background: #ffffff;
+	background: var(--zk-adwindow-detailpane-grid-south-background-color);
 }
 .adwindow-detailpane-adtab-grid-south .z-paging .z-paging-inp {
 	height: 16px;
@@ -204,7 +204,7 @@
 	top: 6px;
 	left: 4px;
 	border-top: 5px dashed transparent;
-	border-left: 5px dashed #696969;
+	border-left: 5px dashed var(--zk-adwindow-sub-tab-border-color);
 	border-right: 5px dashed transparent;
 	border-bottom: 5px solid transparent;
 	margin-top: 4px;
@@ -251,11 +251,11 @@
 	position: absolute;
 }
 .adtab-form-borderlayout .z-center-body {
-	background-color: #f6fafe;
+	background-color: var(--zk-adwindow-status-background-color);
 }
 
 .adtab-form-borderlayout .z-grid-body {
-	background-color: #f6fafe;
+	background-color: var(--zk-adwindow-status-background-color);
  }
 
 <%-- title text for collapsed detail panel --%>
@@ -304,10 +304,10 @@
 
 <%-- record info --%>
 .activity-card {
-	border: 1px solid #d0cdc8;
+	border: 1px solid var(--zk-adwindow-activity-card-border-color);
 	border-top-left-radius: 2px;
 	border-top-right-radius: 2px;
-	border-bottom: 2px solid #d0cdc8;
+	border-bottom: 2px solid var(--zk-adwindow-activity-card-border-color);
 	border-bottom-left-radius: 4px;
 	border-bottom-right-radius: 4px;
 	margin-left: 3px;
@@ -351,7 +351,7 @@
 	background-position: center;
 }
 .mobile-overflow-link:active {
-	background-color: #ddd;
+	background-color: var(--zk-adwindow-mobile-overflow-active-background-color);
   	background-size: 80%;
 	transition: background 0s;
 }

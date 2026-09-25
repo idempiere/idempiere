@@ -137,5 +137,17 @@ public interface ITaxProvider {
 	 * @throws Exception
 	 */
 	public String validateConnection(MTaxProvider provider, ProcessInfo pi) throws Exception;
+
+	/**
+	 * Does this provider correctly handle a tax-included price combined with a summary tax?<br/>
+	 * The native calculation (StandardTaxProvider) does not, so this combination is forbidden for it (see IDEMPIERE-6749).<br/>
+	 * A custom provider that delegates the whole tax calculation and computes this case correctly
+	 * can override this method to return true, allowing the line to be saved (see IDEMPIERE-7069).
+	 * @return true if the provider computes a tax-included summary tax correctly - false by default
+	 */
+	public default boolean isTaxIncludedSummarySupported()
+	{
+		return false;
+	}
 	
 }

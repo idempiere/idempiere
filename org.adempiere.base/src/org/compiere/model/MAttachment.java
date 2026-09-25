@@ -512,7 +512,7 @@ public class MAttachment extends X_AD_Attachment implements AutoCloseable
 			if (prov != null)
 			{
 				if (prov.deleteEntry(this, provider, index)) {
-					if (!getTitle().equals(MAttachment.TITLE_ListInAttachmentFile))
+					if (!is_new() && getTitle() != null && !getTitle().equals(MAttachment.TITLE_ListInAttachmentFile))
 						set_ValueNoCheck("Updated", new Timestamp(System.currentTimeMillis()));
 					return true;
 				}
@@ -524,6 +524,21 @@ public class MAttachment extends X_AD_Attachment implements AutoCloseable
 		return false;
 	} // deleteEntry
 	
+	/**
+	 * Get a backend-native presigned URL for direct download of a single attachment entry, if the
+	 * active storage provider supports it. Returns null when the backend does not implement native
+	 * URL signing.
+	 * @param entryIndex zero-based index of the attachment entry
+	 * @param expiresInSeconds lifetime of the URL
+	 * @return presigned URL string, or null if not supported
+	 */
+	public String getPresignedURL(int entryIndex, long expiresInSeconds) {
+		IAttachmentStore prov = provider.getAttachmentStore();
+		if (prov != null)
+			return prov.getPresignedURL(this, provider, entryIndex, expiresInSeconds);
+		return null;
+	}
+
 	/**
 	 * 	Get Entry Count
 	 *	@return number of entries

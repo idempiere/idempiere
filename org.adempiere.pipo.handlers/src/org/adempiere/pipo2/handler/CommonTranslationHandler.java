@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.exceptions.DBException;
 import org.adempiere.pipo2.AbstractElementHandler;
@@ -200,7 +201,7 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 	}
 
 
-	public void create(PIPOContext ctx, TransformerHandler document) throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document) throws Exception {
 
 		String parenTableName = Env.getContext(ctx.ctx, CONTEXT_KEY_PARENT_TABLE);
 
@@ -212,7 +213,7 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 
 
 	private void createTranslationTags(PIPOContext ctx, String parentTableName,
-			int parentRecordID, String parentRecordUU, TransformerHandler document) throws SAXException {
+			int parentRecordID, String parentRecordUU, IPackSerializer document) throws Exception {
 
 		ArrayList<String> translatedColumns = getTranslatedColumns(ctx, parentTableName);
 		MTable parentTable = MTable.get(ctx.ctx, parentTableName);
@@ -241,9 +242,9 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 			while(rs.next()){
 				AttributesImpl atts = new AttributesImpl();
 				addTypeName(atts, "translation");
-				document.startElement("", "", elementName, atts);
+				document.startElement(elementName, atts);
 				exportRow(ctx, document, translatedColumns, rs);
-				document.endElement("", "", elementName);
+				document.endElement(elementName);
 			}
 
 		} catch (Exception e) {
@@ -254,7 +255,7 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 		}
 	}
 
-	private void exportRow(PIPOContext ctx, TransformerHandler document, ArrayList<String> columns,
+	private void exportRow(PIPOContext ctx, IPackSerializer document, ArrayList<String> columns,
 			ResultSet rs) throws Exception {
 
 		PoExporter af = new PoExporter(ctx, document, null);
@@ -316,18 +317,18 @@ public class CommonTranslationHandler extends AbstractElementHandler implements 
 			return false;
 	}
 
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler, int recordId) throws Exception
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler, int recordId) throws Exception
 	{
-		packOut(packout, packoutHandler, docHandler, recordId, null);
+		packOut(packout, packoutSerializer, docHandler, recordId, null);
 	}
 
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler, int recordId, String recordUU) throws Exception
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler, int recordId, String recordUU) throws Exception
 	{
 		if("Y".equals(packout.getCtx().ctx.getProperty("isHandleTranslations")) && existTranslated(packout.getCtx().ctx.getProperty("Table_Name"))){
 			Env.setContext(packout.getCtx().ctx, CommonTranslationHandler.CONTEXT_KEY_PARENT_TABLE,packout.getCtx().ctx.getProperty("Table_Name"));
 			Env.setContext(packout.getCtx().ctx, CommonTranslationHandler.CONTEXT_KEY_PARENT_RECORD_ID,recordId);
 			Env.setContext(packout.getCtx().ctx, CommonTranslationHandler.CONTEXT_KEY_PARENT_RECORD_UU,recordUU);
-			this.create(packout.getCtx(), packoutHandler);
+			this.create(packout.getCtx(), packoutSerializer);
 			packout.getCtx().ctx.remove(CommonTranslationHandler.CONTEXT_KEY_PARENT_TABLE);
 			packout.getCtx().ctx.remove(CommonTranslationHandler.CONTEXT_KEY_PARENT_RECORD_ID);
 			packout.getCtx().ctx.remove(CommonTranslationHandler.CONTEXT_KEY_PARENT_RECORD_UU);

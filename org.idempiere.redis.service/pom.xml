@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.idempiere</groupId>
+		<artifactId>org.idempiere.parent</artifactId>
+		<version>${revision}</version>
+		<relativePath>../org.idempiere.parent/pom.xml</relativePath>
+	</parent>
+	<artifactId>org.idempiere.redis.service</artifactId>
+	<packaging>eclipse-plugin</packaging>
+
+	<properties>
+		<redisson.version>3.27.2</redisson.version>
+		<caffeine.version>3.1.8</caffeine.version>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-redisson-and-deps</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>lib</outputDirectory>
+							<stripVersion>true</stripVersion>
+							<overWriteReleases>true</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+							<artifactItems>
+								<!--
+								  redisson-all is the published uber-jar bundling Redisson + every
+								  required transitive (Netty, Kryo, Jackson, JBoss Marshalling,
+								  byte-buddy, RxJava, jodd, etc.) in their original package
+								  namespaces. One artifact instead of ~25 individual jars; one
+								  version pin handles the entire transitive tree on upgrade.
+								-->
+								<artifactItem>
+									<groupId>org.redisson</groupId>
+									<artifactId>redisson-all</artifactId>
+									<version>${redisson.version}</version>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

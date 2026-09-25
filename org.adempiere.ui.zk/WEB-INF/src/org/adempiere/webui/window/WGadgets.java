@@ -58,7 +58,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Hlayout;
-import org.zkoss.zul.Vbox;
+import org.adempiere.webui.component.FlexVlayout;
 import org.zkoss.zul.Vlayout;
 
 /**
@@ -226,7 +226,7 @@ public class WGadgets extends Window implements  EventListener<Event>{
 		ZKUpdateUtil.setHflex(noList, "1");
 		ZKUpdateUtil.setVflex(noList, true);
 		hlayout.appendChild(noList);
-		Vbox vbox = new Vbox();
+		FlexVlayout vbox = new FlexVlayout();
 		vbox.appendChild(bAdd);
 		vbox.appendChild(bRemove);
 		ZKUpdateUtil.setWidth(vbox, "50px");

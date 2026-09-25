@@ -85,6 +85,7 @@ public final class Env
 	public static final String AD_ROLE_ID = "#AD_Role_ID";
 	public static final String AD_ROLE_NAME = "#AD_Role_Name";
 	public static final String AD_ROLE_TYPE = "#AD_Role_Type";
+	public static final String AD_SCHEDULER_ID = "#AD_Scheduler_ID";
 	public static final String AD_SESSION_ID = "#AD_Session_ID";
 	public static final String AD_USER_ID = "#AD_User_ID";
 	public static final String AD_USER_NAME = "#AD_User_Name";
@@ -1728,7 +1729,9 @@ public final class Env
 			else
 			{
 				outStr.append("?"); // replace context with parameter
-				if (token.endsWith("_ID") || "CreatedBy".equalsIgnoreCase(token) || "UpdatedBy".equalsIgnoreCase(token))
+				// Handle ColumnName:0
+				String tokenName = token.lastIndexOf(":") > 0 ? token.substring(0, token.lastIndexOf(":")) : token;
+				if (tokenName.endsWith("_ID") || "CreatedBy".equalsIgnoreCase(tokenName) || "UpdatedBy".equalsIgnoreCase(tokenName))
 					parameters.add(Integer.valueOf(ctxInfo));
 				else
 					parameters.add(ctxInfo);

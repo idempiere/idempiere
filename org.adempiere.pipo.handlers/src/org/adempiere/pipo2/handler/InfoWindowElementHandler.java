@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.AbstractElementHandler;
@@ -44,6 +45,7 @@ import org.compiere.model.I_AD_Process;
 import org.compiere.model.I_AD_Reference;
 import org.compiere.model.I_AD_Table;
 import org.compiere.model.I_AD_Val_Rule;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_InfoColumn;
 import org.compiere.model.X_AD_InfoProcess;
@@ -83,9 +85,9 @@ public class InfoWindowElementHandler extends AbstractElementHandler {
 				String action = null;
 				if (!mInfoWindow.is_new()) {				
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_InfoWindow.Table_Name, mInfoWindow);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				} else {
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}			
 
 				if (mInfoWindow.save(getTrxName(ctx)) == true) {
@@ -105,7 +107,7 @@ public class InfoWindowElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(PIPOContext ctx, TransformerHandler document) throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document) throws Exception {
 		int AD_InfoWindow_ID = Env.getContextAsInt(ctx.ctx, "AD_InfoWindow_ID");
 		if (ctx.packOut.isExported("AD_InfoWindow_ID"+"|"+AD_InfoWindow_ID))
 			return;
@@ -127,7 +129,7 @@ public class InfoWindowElementHandler extends AbstractElementHandler {
 			if (createElement) {
 				verifyPackOutRequirement(m_InfoWindow);
 				addTypeName(atts, "table");
-				document.startElement("", "", I_AD_InfoWindow.Table_Name, atts);
+				document.startElement(I_AD_InfoWindow.Table_Name, atts);
 				createInfoWindowBinding(ctx, document, m_InfoWindow);
 
 				packOut.getCtx().ctx.put("Table_Name",I_AD_InfoWindow.Table_Name);
@@ -181,7 +183,7 @@ public class InfoWindowElementHandler extends AbstractElementHandler {
 			}
 
 			if (createElement) {
-				document.endElement("", "", X_AD_InfoWindow.Table_Name);
+				document.endElement(X_AD_InfoWindow.Table_Name);
 			}
 		} catch (Exception e) {
 			throw new AdempiereException(e);
@@ -189,25 +191,25 @@ public class InfoWindowElementHandler extends AbstractElementHandler {
 
 	}
 
-	private void createInfoColumn(PIPOContext ctx, TransformerHandler document, int AD_InfoColumn_ID) throws SAXException {
+	private void createInfoColumn(PIPOContext ctx, IPackSerializer document, int AD_InfoColumn_ID) throws Exception {
 		Env.setContext(ctx.ctx, X_AD_InfoColumn.COLUMNNAME_AD_InfoColumn_ID, AD_InfoColumn_ID);
 		infoColumnHandler.create(ctx, document);
 		ctx.ctx.remove(X_AD_InfoColumn.COLUMNNAME_AD_InfoColumn_ID);
 	}
 
-	private void createInfoProcess(PIPOContext ctx, TransformerHandler document, int AD_InfoProcess_ID) throws SAXException {
+	private void createInfoProcess(PIPOContext ctx, IPackSerializer document, int AD_InfoProcess_ID) throws Exception {
 		Env.setContext(ctx.ctx, X_AD_InfoProcess.COLUMNNAME_AD_InfoProcess_ID, AD_InfoProcess_ID);
 		infoProcessHandler.create(ctx, document);
 		ctx.ctx.remove(X_AD_InfoProcess.COLUMNNAME_AD_InfoProcess_ID);
 	}
 
-	private void createInfoRelated(PIPOContext ctx, TransformerHandler document, int AD_InfoRelated_ID) throws SAXException {
+	private void createInfoRelated(PIPOContext ctx, IPackSerializer document, int AD_InfoRelated_ID) throws Exception {
 		Env.setContext(ctx.ctx, X_AD_InfoRelated.COLUMNNAME_AD_InfoRelated_ID, AD_InfoRelated_ID);
 		infoRelatedHandler.create(ctx, document);
 		ctx.ctx.remove(X_AD_InfoRelated.COLUMNNAME_AD_InfoRelated_ID);
 	}
 
-	private void createInfoWindowBinding(PIPOContext ctx, TransformerHandler document, X_AD_InfoWindow m_InfoWindow) {
+	private void createInfoWindowBinding(PIPOContext ctx, IPackSerializer document, X_AD_InfoWindow m_InfoWindow) {
 		PoExporter filler = new PoExporter(ctx, document, m_InfoWindow);
 		List<String> excludes = defaultExcludeList(X_AD_InfoWindow.Table_Name);
 
@@ -217,10 +219,10 @@ public class InfoWindowElementHandler extends AbstractElementHandler {
 		filler.export(excludes);
 	}
 
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler,int recordId) throws Exception
 	{
 		Env.setContext(packout.getCtx().ctx, "AD_InfoWindow_ID", recordId);
-		this.create(packout.getCtx(), packoutHandler);
+		this.create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove("AD_InfoWindow_ID");
 	}
 }

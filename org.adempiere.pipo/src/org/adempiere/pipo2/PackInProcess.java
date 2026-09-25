@@ -114,9 +114,13 @@ public class PackInProcess extends SvrProcess {
 		String parentDir = Zipper.getParentDir(zipFilepath);
 		Zipper.unpackFile(zipFilepath, targetDir);
 
-		String dict_file = packageDirectory + File.separator
+		String dictBase = packageDirectory + File.separator
 				+ "packin" + Env.getContext(getCtx(), Env.AD_USER_ID) + File.separator + parentDir + File.separator
-				+ "dict" + File.separator + "PackOut.xml";
+				+ "dict" + File.separator;
+		String dict_file;
+		if      (new File(dictBase + "PackOut.json").exists()) dict_file = dictBase + "PackOut.json";
+		else if (new File(dictBase + "PackOut.yaml").exists()) dict_file = dictBase + "PackOut.yaml";
+		else                                                   dict_file = dictBase + "PackOut.xml";
 
 		if (log.isLoggable(Level.INFO)) log.info("dict file->" + dict_file);
 

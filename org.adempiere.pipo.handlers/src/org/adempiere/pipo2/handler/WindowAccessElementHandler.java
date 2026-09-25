@@ -19,6 +19,7 @@ package org.adempiere.pipo2.handler;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.AbstractElementHandler;
@@ -59,8 +60,8 @@ public class WindowAccessElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(PIPOContext ctx, TransformerHandler document)
-			throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document)
+			throws Exception {
 		int AD_Window_ID = Env.getContextAsInt(ctx.ctx, X_AD_Window.COLUMNNAME_AD_Window_ID);
 		int AD_Role_ID = Env.getContextAsInt(ctx.ctx, X_AD_Role.COLUMNNAME_AD_Role_ID);
 		Query query = new Query(ctx.ctx, "AD_Window_Access", "AD_Role_ID=? and AD_Window_ID=?", getTrxName(ctx));
@@ -71,13 +72,13 @@ public class WindowAccessElementHandler extends AbstractElementHandler {
 			verifyPackOutRequirement(po);
 			AttributesImpl atts = new AttributesImpl();
 			addTypeName(atts, "table");
-			document.startElement("", "", I_AD_Window_Access.Table_Name, atts);
+			document.startElement(I_AD_Window_Access.Table_Name, atts);
 			createWindowAccessBinding(ctx, document, po);
-			document.endElement("", "", I_AD_Window_Access.Table_Name);
+			document.endElement(I_AD_Window_Access.Table_Name);
 		}
 	}
 
-	private void createWindowAccessBinding(PIPOContext ctx, TransformerHandler document,
+	private void createWindowAccessBinding(PIPOContext ctx, IPackSerializer document,
 			X_AD_Window_Access po) {
 		PoExporter filler = new PoExporter(ctx, document, po);
 		List<String> excludes = defaultExcludeList(X_AD_Window_Access.Table_Name);
@@ -86,13 +87,13 @@ public class WindowAccessElementHandler extends AbstractElementHandler {
 	}
 
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler, int recordId)
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler, int recordId)
 			throws Exception {
 		throw new AdempiereException("AD_Window_Access doesn't have ID, use method with UUID");
 	}
 
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer,
 			TransformerHandler docHandler,
 			int recordId, String uuid) throws Exception {
 		MWindowAccess po = new Query(packout.getCtx().ctx, MWindowAccess.Table_Name, "AD_Window_Access_UU=?", getTrxName(packout.getCtx()))
@@ -101,7 +102,7 @@ public class WindowAccessElementHandler extends AbstractElementHandler {
 		if (po != null) {
 			Env.setContext(packout.getCtx().ctx, X_AD_Window.COLUMNNAME_AD_Window_ID, po.getAD_Window_ID());
 			Env.setContext(packout.getCtx().ctx, X_AD_Role.COLUMNNAME_AD_Role_ID, po.getAD_Role_ID());
-			this.create(packout.getCtx(), packoutHandler);
+			this.create(packout.getCtx(), packoutSerializer);
 			packout.getCtx().ctx.remove(X_AD_Window.COLUMNNAME_AD_Window_ID);
 			packout.getCtx().ctx.remove(X_AD_Role.COLUMNNAME_AD_Role_ID);
 		} else {

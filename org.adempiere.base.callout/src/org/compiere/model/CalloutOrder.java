@@ -59,9 +59,10 @@ public class CalloutOrder extends CalloutEngine
 	 *  @param mTab     Model Tab
 	 *  @param mField   Model Field
 	 *  @param value    The new value
+	 *  @param oldValue The old value
 	 *  @return Error message or ""
 	 */
-	public String docType (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
+	public String docType (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value, Object oldValue)
 	{
 		Integer C_DocType_ID = (Integer)value;		//	Actually C_DocTypeTarget_ID
 		if (C_DocType_ID == null || C_DocType_ID.intValue() == 0)
@@ -73,7 +74,9 @@ public class CalloutOrder extends CalloutEngine
 		boolean newDocNo = (oldDocNo == null);
 		if (!newDocNo && oldDocNo.startsWith("<") && oldDocNo.endsWith(">"))
 			newDocNo = true;
-		Integer oldC_DocType_ID = (Integer)mTab.getValue("C_DocType_ID");
+		Integer oldC_DocType_ID = (Integer)oldValue;
+		if (oldC_DocType_ID == null)
+			oldC_DocType_ID = 0;
 
 		String sql = "SELECT d.DocSubTypeSO,d.HasCharges,"			//	1..2
 			+ "d.IsDocNoControlled,"     //  3

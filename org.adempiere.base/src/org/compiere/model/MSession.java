@@ -25,12 +25,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import org.compiere.Adempiere;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
 import org.compiere.util.WebUtil;
 import org.idempiere.cache.ImmutableIntPOCache;
 import org.idempiere.cache.ImmutablePOSupport;
+import org.idempiere.tracking.AuditTraceContext;
 
 /**
  *	Session Model.
@@ -320,6 +322,39 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 	}	//	logout
 
 	/**
+	 * 	Invalidate (mark as processed/logged out) all active sessions of a user.
+	 * 	Used for example after a password reset to force the user to re-login.
+	 * 	@param AD_User_ID user
+	 * 	@param trxName optional transaction name
+	 * 	@return number of sessions invalidated
+	 */
+	public static int invalidateSessionsForUser(int AD_User_ID, String trxName)
+	{
+		if (AD_User_ID <= 0)
+			return 0;
+		// collect the ids first so the UPDATE and the cache eviction act on exactly the same set:
+		// re-running the predicate in the UPDATE could flip a session created after this SELECT
+		// (Processed='Y' in the DB) without evicting it from s_sessions -> stale active cached session
+		int[] ids = DB.getIDsEx(trxName,
+				"SELECT AD_Session_ID FROM AD_Session WHERE CreatedBy=? AND Processed='N'", AD_User_ID);
+		if (ids.length == 0)
+			return 0;
+		StringBuilder inList = new StringBuilder();
+		for (int i = 0; i < ids.length; i++)
+		{
+			if (i > 0)
+				inList.append(",");
+			inList.append(ids[i]);
+		}
+		int no = DB.executeUpdateEx(
+				"UPDATE AD_Session SET Processed='Y' WHERE AD_Session_ID IN (" + inList + ")", trxName);
+		// evict the now-stale cached sessions (s_sessions.reset() is a no-op here) so they reload as processed
+		for (int id : ids)
+			s_sessions.remove(Integer.valueOf(id));
+		return no;
+	}	//	invalidateSessionsForUser
+
+	/**
 	 * 	Preserved for backward compatibility
 	 *  @deprecated
 	 */
@@ -357,7 +392,7 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 	{
 		return changeLog(TrxName, AD_ChangeLog_ID, AD_Table_ID, AD_Column_ID,
 				Record_ID, null, AD_Client_ID, AD_Org_ID, OldValue, NewValue,
-				(String) null);
+				event);
 	}
 
 	/**
@@ -380,6 +415,33 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 		int AD_Table_ID, int AD_Column_ID, int Record_ID, String Record_UU,
 		int AD_Client_ID, int AD_Org_ID,
 		Object OldValue, Object NewValue, String event)
+	{
+		return changeLog(TrxName, AD_ChangeLog_ID, AD_Table_ID, AD_Column_ID,
+				Record_ID, Record_UU, AD_Client_ID, AD_Org_ID, OldValue, NewValue,
+				event, true);
+	}
+
+	/**
+	 * 	Create Change Log (if table is logged)
+	 * 	@param TrxName transaction name
+	 *	@param AD_ChangeLog_ID 0 for new change log
+	 *	@param AD_Table_ID table
+	 *	@param AD_Column_ID column
+	 *	@param Record_ID record
+	 *	@param Record_UU record UUID
+	 *	@param AD_Client_ID client
+	 *	@param AD_Org_ID org
+	 *	@param OldValue old
+	 *	@param NewValue new
+	 *  @param event
+	 *  @param save true to save to DB, false to return change log without save
+	 *	@return saved change log or null
+	 */
+	public MChangeLog changeLog (
+		String TrxName, int AD_ChangeLog_ID,
+		int AD_Table_ID, int AD_Column_ID, int Record_ID, String Record_UU,
+		int AD_Client_ID, int AD_Org_ID,
+		Object OldValue, Object NewValue, String event, boolean save)
 	{
 		// never log change log itself (recursive error)
 		if (AD_Table_ID == MChangeLog.Table_ID)
@@ -411,8 +473,20 @@ public class MSession extends X_AD_Session implements ImmutablePOSupport
 				AD_ChangeLog_ID, TrxName, getAD_Session_ID(),
 				AD_Table_ID, AD_Column_ID, Record_ID, Record_UU, AD_Client_ID, AD_Org_ID,
 				OldValue, NewValue, event);
-			if (cl.saveCrossTenantSafe())
+
+			String externalTraceId = AuditTraceContext.getExternalTraceId();
+	        if (externalTraceId != null)
+	            cl.setExternalTraceId(externalTraceId);
+
+			if (save)
+			{
+				if (cl.saveCrossTenantSafe())
+					return cl;
+			}
+			else
+			{
 				return cl;
+			}
 		}
 		catch (Exception e)
 		{

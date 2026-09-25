@@ -43,12 +43,12 @@ import org.compiere.wf.MWFNodeNext;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.Hbox;
+import org.adempiere.webui.component.FlexHlayout;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.Space;
-import org.zkoss.zul.Vbox;
+import org.adempiere.webui.component.FlexVlayout;
 
 /**
  * Popup menu item for workflow node
@@ -175,12 +175,12 @@ public class WFPopupItem extends Menuitem {
 		String title = Msg.getMsg(Env.getCtx(), "Properties");
 		final Window w = new Window();
 		w.setTitle(title);
-		Vbox vbox = new Vbox();
+		FlexVlayout vbox = new FlexVlayout();
 		w.appendChild(vbox);
 		vbox.appendChild(new Separator());
 		// Name
 		String labelName = Msg.getElement(Env.getCtx(), MWFNode.COLUMNNAME_Name);
-		Hbox hboxName = new Hbox();
+		FlexHlayout hboxName = new FlexHlayout();
 		hboxName.appendChild(new Label(labelName));
 		hboxName.appendChild(new Space());
 		final Textbox textName = new Textbox(m_node.getName());
@@ -188,7 +188,7 @@ public class WFPopupItem extends Menuitem {
 		vbox.appendChild(hboxName);
 		// Description
 		String labelDescription = Msg.getElement(Env.getCtx(), MWFNode.COLUMNNAME_Description);
-		Hbox hboxDescription = new Hbox();
+		FlexHlayout hboxDescription = new FlexHlayout();
 		hboxDescription.appendChild(new Label(labelDescription));
 		hboxDescription.appendChild(new Space());
 		final Textbox textDescription = new Textbox(m_node.getDescription());

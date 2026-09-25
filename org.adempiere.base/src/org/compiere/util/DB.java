@@ -16,10 +16,14 @@
  *****************************************************************************/
 package org.compiere.util;
 
+import static org.compiere.model.MSysConfig.ORACLE_SET_STRING_MAX_LENGTH;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.StringReader;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.sql.CallableStatement;
 import java.sql.Clob;
 import java.sql.Connection;
@@ -99,6 +103,8 @@ public final class DB
 
 	/** SQL Statement Separator "; "	*/
 	public static final String SQLSTATEMENT_SEPARATOR = "; ";
+
+	private static final int DEFAULT_ORACLE_SET_STRING_MAX_LENGTH = 32766;
 
 	/**
 	 * 	Update Mail Settings for System Client and System User (idempiereEnv.properties)
@@ -630,8 +636,14 @@ public final class DB
 	{
 		if (param == null)
 			pstmt.setObject(index, null);
-		else if (param instanceof String)
-			pstmt.setString(index, (String)param);
+		else if (param instanceof String) {
+
+			String s = (String) param;
+			if (isOracle() && s.getBytes(StandardCharsets.UTF_8).length > MSysConfig.getIntValue(ORACLE_SET_STRING_MAX_LENGTH, DEFAULT_ORACLE_SET_STRING_MAX_LENGTH))
+				pstmt.setClob(index, new StringReader(s), s.length());
+			else
+				pstmt.setString(index, s);
+		}
 		else if (param instanceof Integer)
 			pstmt.setInt(index, ((Integer)param).intValue());
 		else if (param instanceof BigDecimal)
@@ -2701,13 +2713,19 @@ public final class DB
 	@Deprecated(since="13", forRemoval=true)
 	public static String inClauseForCSV(String columnName, String csv, boolean isNotClause) 
 	{
+	    
 		StringBuilder builder = new StringBuilder();
-		builder.append(columnName);
 		
-		if(isNotClause)
-			builder.append(" NOT ");
-		
-		builder.append(" IN (");
+	    if (isNotClause) {
+	        // (columnName NOT IN (
+	        builder.append("(")
+	               .append(columnName)
+	               .append(" NOT");
+	    } else {
+	    	builder.append(columnName);
+	    }
+	    
+	    builder.append(" IN (");	    
 		String[] values = csv.split("[,]");
 		for(int i = 0; i < values.length; i++)
 		{
@@ -2728,6 +2746,13 @@ public final class DB
 			}
 		}
 		builder.append(")");
+		
+	    if (isNotClause) {
+	        builder.append(" OR ")
+	               .append(columnName)
+	               .append(" IS NULL)");
+	    }
+	    
 		return builder.toString();
 	}
 	
@@ -2740,46 +2765,61 @@ public final class DB
 	 */
 	public static SQLFragment inFilterForCSV(String columnName, String csv, boolean isNotClause) 
 	{
-		StringBuilder builder = new StringBuilder();
-		builder.append(columnName);
-		List<Object> params = new ArrayList<>();
-		
-		if(isNotClause)
-			builder.append(" NOT");
-		
-		builder.append(" IN (");
-		String[] values = csv.split("[,]");
-		for(int i = 0; i < values.length; i++)
-		{
-			String key = values[i];
-			if (i > 0)
-				builder.append(",");
-			if ("null".equalsIgnoreCase(key.trim())) {
-				builder.append("NULL");
-				continue;
-			}						
-			if (columnName.endsWith("_ID")) 
-			{
-				params.add(Integer.valueOf(key.trim()));
-			}
-			else
-			{
-				if (key.startsWith("\"") && key.endsWith("\"")) 
-				{
-					key = key.substring(1, key.length()-1);
-				}
-				//empty string means NULL in this context
-				if (Util.isEmpty(key)) {
-					builder.append("NULL");
-					continue;
-				} else {
-					params.add(key);
-				}
-			}
-			builder.append("?");
-		}
-		builder.append(")");
-		return new SQLFragment(builder.toString(), params);
+	    StringBuilder builder = new StringBuilder();
+	    List<Object> params = new ArrayList<>();
+	    
+	    if (isNotClause) {
+	        // (columnName NOT IN (
+	        builder.append("(")
+	               .append(columnName)
+	               .append(" NOT");
+	    } else {
+	    	builder.append(columnName);
+	    }
+	    
+	    builder.append(" IN (");
+
+	    String[] values = csv.split("[,]");
+	    for (int i = 0; i < values.length; i++)
+	    {
+	        String key = values[i];
+	        if (i > 0)
+	            builder.append(",");
+
+	        if ("null".equalsIgnoreCase(key.trim())) {
+	            builder.append("NULL");
+	            continue;
+	        }
+
+	        if (columnName.endsWith("_ID")) 
+	        {
+	            params.add(Integer.valueOf(key.trim()));
+	        }
+	        else
+	        {
+	            if (key.startsWith("\"") && key.endsWith("\"")) 
+	            {
+	                key = key.substring(1, key.length()-1);
+	            }
+	            // empty string means NULL in this context
+	            if (Util.isEmpty(key)) {
+	                builder.append("NULL");
+	                continue;
+	            } else {
+	                params.add(key);
+	            }
+	        }
+	        builder.append("?");
+	    }
+	    builder.append(")");
+
+	    if (isNotClause) {
+	        builder.append(" OR ")
+	               .append(columnName)
+	               .append(" IS NULL)");
+	    }
+
+	    return new SQLFragment(builder.toString(), params);
 	}
 	
 	

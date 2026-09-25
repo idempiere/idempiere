@@ -29,11 +29,11 @@ import java.util.List;
 
 import org.adempiere.base.annotation.EventTopicDelegate;
 import org.adempiere.base.annotation.ModelEventTopic;
-import org.adempiere.base.event.FactsEventData;
 import org.adempiere.base.event.annotations.doc.AfterReverseAccrual;
 import org.adempiere.base.event.annotations.doc.BeforeReverseAccrual;
-import org.adempiere.base.event.annotations.doc.FactsValidateDelegate;
 import org.compiere.model.MInvoice;
+import org.idempiere.acct.event.FactsEventData;
+import org.idempiere.acct.event.FactsValidateDelegate;
 import org.osgi.service.event.Event;
 
 @EventTopicDelegate

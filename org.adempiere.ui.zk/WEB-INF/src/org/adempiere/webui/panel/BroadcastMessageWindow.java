@@ -42,7 +42,6 @@ import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
@@ -142,7 +141,8 @@ public class BroadcastMessageWindow extends Window implements IBroadcastMsgPopup
 		
 		South south = new South();
 		layout.appendChild(south);
-		Hbox southHLayout = new Hbox();
+		@SuppressWarnings("deprecation")
+		org.zkoss.zul.Hbox southHLayout = new org.zkoss.zul.Hbox();
 		south.appendChild(southHLayout);
 		southHLayout.setSpacing("30");
 		ZKUpdateUtil.setHflex(southHLayout, "1");

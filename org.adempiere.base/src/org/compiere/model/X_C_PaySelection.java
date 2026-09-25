@@ -34,7 +34,7 @@ public class X_C_PaySelection extends PO implements I_C_PaySelection, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20250805L;
+	private static final long serialVersionUID = 20260309L;
 
     /** Standard Constructor */
     public X_C_PaySelection (Properties ctx, int C_PaySelection_ID, String trxName)
@@ -46,7 +46,7 @@ public class X_C_PaySelection extends PO implements I_C_PaySelection, I_Persiste
 			setC_PaySelection_ID (0);
 			setIsApproved (false);
 			setName (null);
-// @#Date@
+// @SQL=SELECT getDate() FROM Dual
 			setPayDate (new Timestamp( System.currentTimeMillis() ));
 // @#Date@
 			setProcessed (false);
@@ -65,7 +65,7 @@ public class X_C_PaySelection extends PO implements I_C_PaySelection, I_Persiste
 			setC_PaySelection_ID (0);
 			setIsApproved (false);
 			setName (null);
-// @#Date@
+// @SQL=SELECT getDate() FROM Dual
 			setPayDate (new Timestamp( System.currentTimeMillis() ));
 // @#Date@
 			setProcessed (false);
@@ -84,7 +84,7 @@ public class X_C_PaySelection extends PO implements I_C_PaySelection, I_Persiste
 			setC_PaySelection_ID (0);
 			setIsApproved (false);
 			setName (null);
-// @#Date@
+// @SQL=SELECT getDate() FROM Dual
 			setPayDate (new Timestamp( System.currentTimeMillis() ));
 // @#Date@
 			setProcessed (false);
@@ -103,7 +103,7 @@ public class X_C_PaySelection extends PO implements I_C_PaySelection, I_Persiste
 			setC_PaySelection_ID (0);
 			setIsApproved (false);
 			setName (null);
-// @#Date@
+// @SQL=SELECT getDate() FROM Dual
 			setPayDate (new Timestamp( System.currentTimeMillis() ));
 // @#Date@
 			setProcessed (false);

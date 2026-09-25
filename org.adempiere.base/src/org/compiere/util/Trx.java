@@ -21,7 +21,9 @@ import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Savepoint;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
@@ -640,15 +642,15 @@ public class Trx
 	}	//	toString
 
 	/**
-	 * Get register transactions
-	 * @return array of register transactions
+	 * Returns the open transactions sorted by start time in ascending order
+	 * Transactions with a null start time are placed at the beginning of the list
 	 */
 	public static Trx[] getOpenTransactions()
 	{
 		Collection<Trx> collections = s_cache.values();
-		Trx[] trxs = new Trx[collections.size()];
-		collections.toArray(trxs);
-		
+		Trx[] trxs = collections.toArray(new Trx[0]);
+		Arrays.sort(trxs, Comparator.comparing(Trx::getStartTime, Comparator.nullsFirst(Comparator.naturalOrder())));
+
 		return trxs;
 	}
 

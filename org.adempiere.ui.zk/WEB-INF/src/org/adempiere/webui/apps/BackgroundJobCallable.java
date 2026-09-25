@@ -43,6 +43,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.idempiere.tracking.AuditTraceContext;
 
 /**
  * Callable to run process as background job.<br/>
@@ -52,6 +53,7 @@ public class BackgroundJobCallable implements Callable<ProcessInfo>
 {
 	private final ProcessInfo processInfo;	
 	private Properties m_ctx;
+	private String m_externalTraceId;
 	private IProcessUI processUI;
 	
 	private static final CLogger log = CLogger.getCLogger(BackgroundJobCallable.class);
@@ -85,15 +87,20 @@ public class BackgroundJobCallable implements Callable<ProcessInfo>
 		Env.setContext(m_ctx, Env.AD_USER_ID, ctx.getProperty(Env.AD_USER_ID));
 		Env.setContext(m_ctx, Env.DATE, ctx.getProperty(Env.DATE));
 		Env.setContext(m_ctx, Env.AD_SESSION_ID, ctx.getProperty(Env.AD_SESSION_ID));
+		
+		m_externalTraceId = AuditTraceContext.getExternalTraceId();
 	}
 	
 	@Override
 	public ProcessInfo call() {
 		try {
 			ServerContext.setCurrentInstance(m_ctx);
+			if (!Util.isEmpty(m_externalTraceId))
+				AuditTraceContext.setExternalTraceId(m_externalTraceId);
 			return doRun();
 		} finally {
 			ServerContext.dispose();
+			AuditTraceContext.clear();
 		}
 	}
 	

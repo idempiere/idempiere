@@ -28,6 +28,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.I_AD_EntityType;
 import org.compiere.model.I_AD_Form;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.I_AD_ImpFormat;
 import org.compiere.model.I_AD_InfoWindow;
 import org.compiere.model.I_AD_Menu;
@@ -47,6 +48,7 @@ import org.compiere.model.MPackageExpDetail;
 import org.compiere.model.MTable;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Package_Exp_Detail;
+import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
 import org.compiere.util.Env;
 
@@ -67,6 +69,8 @@ public class PackOutProcess extends SvrProcess
 {
 	/** Record ID				*/
 	private int p_PackOut_ID = 0;
+	/** Export format (X=XML, J=JSON, Y=YAML). Default: XML. */
+	private String p_ExportFormat = PackOut.FORMAT_XML;
 
 	private MPackageExp packageExp;
 	private String packoutDirectory;
@@ -77,6 +81,16 @@ public class PackOutProcess extends SvrProcess
 	protected void prepare()
 	{
 		p_PackOut_ID = getRecord_ID();
+		ProcessInfoParameter[] para = getParameter();
+		for (ProcessInfoParameter p : para) {
+			if ("ExportFormat2Pack".equals(p.getParameterName())) {
+				String fmt = p.getParameterAsString();
+				if (fmt != null && !fmt.isEmpty())
+					p_ExportFormat = fmt;
+			} else {
+				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), p);
+			}
+		}
 	}	//	prepare
 
 	/**
@@ -132,6 +146,7 @@ public class PackOutProcess extends SvrProcess
 
 				PackOut packOut = new PackOut();
 				packOut.setCtx(getCtx());
+				packOut.setExportFormat(p_ExportFormat);
 				Timestamp dateFromValue = packageExp.getDateFrom();
 				if (dateFromValue != null) {
 					packOut.setFromDate((Timestamp) dateFromValue);

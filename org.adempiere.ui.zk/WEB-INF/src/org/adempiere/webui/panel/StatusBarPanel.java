@@ -40,7 +40,7 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.East;
-import org.zkoss.zul.Hbox;
+import org.adempiere.webui.component.FlexHlayout;
 import org.zkoss.zul.West;
 import org.zkoss.zul.Borderlayout;
 
@@ -120,7 +120,7 @@ public class StatusBarPanel extends Panel implements EventListener<Event>, IStat
 
         center.appendChild(statusLine);
 
-        Hbox statusDbHbox = new Hbox();
+        FlexHlayout statusDbHbox = new FlexHlayout();
         statusDbHbox.appendChild(infoLine);
         LayoutUtils.addSclass("status-info", infoLine);
         statusDbHbox.appendChild(statusDB);

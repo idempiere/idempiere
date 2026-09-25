@@ -32,6 +32,8 @@ import org.adempiere.webui.panel.InfoPanel;
 import org.compiere.model.GridField;
 import org.compiere.model.Lookup;
 import org.compiere.model.MLookup;
+import org.compiere.model.MSysConfig;
+import org.compiere.util.Env;
 import org.compiere.util.NamePair;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
@@ -112,7 +114,7 @@ public class InfoListSubModel implements ListSubModel<ValueNamePair> {
 			StringBuilder queryBuilder = new StringBuilder(queryText);
 			queryBuilder.append("?autocomplete={");
 			queryBuilder.append("timeout:")
-				.append(AUTO_COMPLETE_QUERY_TIMEOUT)
+				.append(MSysConfig.getIntValue(MSysConfig.ZK_SEARCH_AUTO_COMPLETE_TIMEOUT, AUTO_COMPLETE_QUERY_TIMEOUT, Env.getAD_Client_ID(Env.getCtx())))
 				.append(",")
 				.append("pagesize:")
 				.append(nRows);

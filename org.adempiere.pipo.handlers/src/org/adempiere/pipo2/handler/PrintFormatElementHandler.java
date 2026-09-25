@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.exceptions.DBException;
 import org.adempiere.pipo2.AbstractElementHandler;
@@ -36,6 +37,7 @@ import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_PrintFormat;
 import org.compiere.model.I_AD_PrintPaper;
 import org.compiere.model.I_AD_Table;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_PrintFormat;
@@ -73,9 +75,9 @@ public class PrintFormatElementHandler extends AbstractElementHandler {
 			String action = null;
 			if (!mPrintFormat.is_new()) {
 				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_PrintFormat.Table_Name, mPrintFormat);
-				action = "Update";
+				action = MPackageImpDetail.ACTION_UPDATE;
 			} else {
-				action = "New";
+				action = MPackageImpDetail.ACTION_INSERT;
 			}
 			if (mPrintFormat.save(getTrxName(ctx)) == true) {
 				logImportDetail(ctx, impDetail, 1, mPrintFormat.getName(),
@@ -92,8 +94,8 @@ public class PrintFormatElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(PIPOContext ctx, TransformerHandler document)
-			throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document)
+			throws Exception {
 		int AD_PrintFormat_ID = Env.getContextAsInt(ctx.ctx,
 				X_AD_Package_Exp_Detail.COLUMNNAME_AD_PrintFormat_ID);
 		if (ctx.packOut.isExported(X_AD_Package_Exp_Detail.COLUMNNAME_AD_PrintFormat_ID+"|"+AD_PrintFormat_ID))
@@ -139,7 +141,7 @@ public class PrintFormatElementHandler extends AbstractElementHandler {
 		if (createElement) {
 			verifyPackOutRequirement(m_Printformat);
 			addTypeName(atts, "table");
-			document.startElement("", "", I_AD_PrintFormat.Table_Name, atts);
+			document.startElement(I_AD_PrintFormat.Table_Name, atts);
 			createPrintFormatBinding(ctx, document, m_Printformat);
 			PackOut packOut = ctx.packOut;
 			packOut.getCtx().ctx.put("Table_Name",I_AD_PrintFormat.Table_Name);
@@ -168,12 +170,12 @@ public class PrintFormatElementHandler extends AbstractElementHandler {
 		}
 
 		if (createElement) {
-			document.endElement("", "", X_AD_PrintFormat.Table_Name);
+			document.endElement(I_AD_PrintFormat.Table_Name);
 		}
 	}
 
-	private void createItem(PIPOContext ctx, TransformerHandler document,
-			int AD_PrintFormatItem_ID) throws SAXException {
+	private void createItem(PIPOContext ctx, IPackSerializer document,
+			int AD_PrintFormatItem_ID) throws Exception {
 		try {
 			ctx.packOut.getHandler(X_AD_PrintFormatItem.Table_Name).packOut(ctx.packOut, document, ctx.logDocument, AD_PrintFormatItem_ID);
 		} catch (Exception e) {
@@ -181,7 +183,7 @@ public class PrintFormatElementHandler extends AbstractElementHandler {
 		}
 	}
 
-	private void createPrintFormatBinding(PIPOContext ctx, TransformerHandler document,
+	private void createPrintFormatBinding(PIPOContext ctx, IPackSerializer document,
 			MPrintFormat m_Printformat) {
 
 		PoExporter filler = new PoExporter(ctx, document, m_Printformat);
@@ -193,10 +195,10 @@ public class PrintFormatElementHandler extends AbstractElementHandler {
 		filler.export(excludes);
 	}
 
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler,int recordId) throws Exception
 	{
 		Env.setContext(packout.getCtx().ctx, X_AD_Package_Exp_Detail.COLUMNNAME_AD_PrintFormat_ID, recordId);
-		this.create(packout.getCtx(), packoutHandler);
+		this.create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(X_AD_Package_Exp_Detail.COLUMNNAME_AD_PrintFormat_ID);
 	}
 }

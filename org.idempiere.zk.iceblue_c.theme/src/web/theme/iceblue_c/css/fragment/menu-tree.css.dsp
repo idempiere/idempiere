@@ -28,13 +28,13 @@ div.menu-tree-cell-cnt {
 }
 
 td.menu-tree-cell-disd * {
-	color: #C5CACB !important; cursor: default!important;
+	color: var(--zk-menu-tree-disabled-color) !important; cursor: default!important;
 }
 
 td.menu-tree-cell-disd a:visited, td.menu-tree-cell-disd a:hover {
 	text-decoration: none !important;
 	cursor: default !important;
-	border-color: #D0DEF0 !important;
+	border-color: var(--zk-menu-tree-disabled-border-color) !important;
 }
 
 div.z-dottree-body td.menu-tree-cell {

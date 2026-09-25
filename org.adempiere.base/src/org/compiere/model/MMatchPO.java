@@ -35,7 +35,6 @@ import org.adempiere.base.Core;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.IReservationTracer;
 import org.adempiere.util.IReservationTracerFactory;
-import org.compiere.acct.Doc;
 import org.compiere.process.DocAction;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -43,6 +42,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
+import org.idempiere.acct.IDoc;
 
 /**
  *	Match PO Model.
@@ -1391,7 +1391,7 @@ public class MMatchPO extends X_M_MatchPO
 					IReservationTracerFactory factory = Core.getReservationTracerFactory();
 					if (factory != null) 
 					{
-						int docTypeId = DB.getSQLValue((String)null, Doc.DOC_TYPE_BY_DOC_BASE_TYPE_SQL, getAD_Client_ID(), Doc.DOCTYPE_MatMatchPO);
+						int docTypeId = DB.getSQLValue((String)null, IDoc.DOC_TYPE_BY_DOC_BASE_TYPE_SQL, getAD_Client_ID(), IDoc.DOCTYPE_MatMatchPO);
 						tracer = factory.newTracer(docTypeId, reversal.getDocumentNo(), 10, 
 								reversal.get_Table_ID(), reversal.get_ID(), oLine.getM_Warehouse_ID(), 
 								oLine.getM_Product_ID(), oLine.getM_AttributeSetInstance_ID(), oLine.getParent().isSOTrx(), 
@@ -1469,7 +1469,7 @@ public class MMatchPO extends X_M_MatchPO
 	 */
 	public static MMatchPO getOrCreate(int C_OrderLine_ID, BigDecimal qty, MInOutLine sLine, String trxName) {
 		Query query = new Query(Env.getCtx(), MMatchPO.Table_Name, "C_OrderLine_ID=? AND Qty=? AND Posted IN (?,?) AND M_InOutLine_ID IS NULL", trxName);
-		MMatchPO matchPO = query.setParameters(C_OrderLine_ID, qty, Doc.STATUS_NotPosted, Doc.STATUS_Deferred).first();
+		MMatchPO matchPO = query.setParameters(C_OrderLine_ID, qty, IDoc.STATUS_NotPosted, IDoc.STATUS_Deferred).first();
 		if (matchPO != null) {
 			matchPO.setM_InOutLine_ID(sLine.getM_InOutLine_ID());
 			return matchPO;

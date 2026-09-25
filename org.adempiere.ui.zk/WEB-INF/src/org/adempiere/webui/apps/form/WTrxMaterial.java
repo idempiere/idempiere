@@ -55,7 +55,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.Hbox;
+import org.adempiere.webui.component.FlexHlayout;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 
@@ -227,7 +227,7 @@ public class WTrxMaterial extends TrxMaterial
 				row = rows.newRow();
 		}
 		row.appendCellChild(dateTLabel.rightAlign());
-		Hbox boxTo = new Hbox();
+		FlexHlayout boxTo = new FlexHlayout();
 		boxTo.appendChild(dateTField.getComponent());
 		DateRangeButton drb = (new DateRangeButton(dateFField, dateTField));
 		boxTo.appendChild(drb);
@@ -269,9 +269,16 @@ public class WTrxMaterial extends TrxMaterial
 	private void dynInit()
 	{
 		super.dynInit(statusBar);
-		//		
+		//
+		// m_mTab is level 0 GridTab of Material Transactions (indirect use)
+		if (m_mTab == null) { // no access
+			statusBar.setStatusLine(Msg.getMsg(Env.getCtx(), "AccessTableNoView"), true);
+			confirmPanel.setEnabledAll(false);
+			confirmPanel.getButton(ConfirmPanel.A_CANCEL).setEnabled(true);
+			parameterPanel.setVisible(false);
+			return;
+		}
 		m_gridController = new ADTabpanel();
-		// m_mTab is level 0 GridTab of Material Transactions (indirect use) 
 		m_gridController.init(null, m_mTab);
 		if (!m_gridController.isGridView())
 			m_gridController.switchRowPresentation();

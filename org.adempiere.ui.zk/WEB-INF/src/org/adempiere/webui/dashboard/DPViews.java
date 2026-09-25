@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.component.FlexVlayout;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.panel.ADForm;
@@ -41,8 +42,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.Box;
-import org.zkoss.zul.Vbox;
+import org.zkoss.zul.Layout;
 
 /**
  * Dashboard gadget: List of Info views
@@ -67,11 +67,11 @@ public class DPViews extends DashboardPanel implements EventListener<Event> {
 
 	/**
 	 * Layout panel
-	 * @return {@link Box}
+	 * @return {@link Layout}
 	 */
-	private Box createViewPanel()
+	private Layout createViewPanel()
 	{
-		Vbox vbox = new Vbox();
+		FlexVlayout vbox = new FlexVlayout();
 
 		if (MSysConfig.getBooleanValue(MSysConfig.DPViews_ShowInfoAccount, true, Env.getAD_Client_ID(Env.getCtx()))
 				&& MRole.getDefault().isShowAcct() && MRole.getDefault().isAllow_Info_Account())

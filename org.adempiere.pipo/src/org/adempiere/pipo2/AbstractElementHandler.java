@@ -29,10 +29,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import javax.xml.transform.sax.TransformerHandler;
-
 import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.compiere.model.MColumn;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.POInfo;
@@ -147,7 +146,7 @@ public abstract class AbstractElementHandler implements ElementHandler {
      */
     public void logImportDetail (PIPOContext ctx, X_AD_Package_Imp_Detail detail, int success, String objectName, int objectID, String objectUU,
     		String action, String execCode, String result) throws SAXException{
-		String msgSuccess = success == 1 ? "Success" : "Failure";
+		String msgSuccess = success == 1 ? MPackageImpDetail.ACTION_STATUS_SUCCESS : MPackageImpDetail.ACTION_STATUS_FAILURE;
 
 		// try to figure out the UUID when empty
 		if (Util.isEmpty(objectUU) && objectID > 0 && detail.getAD_Table_ID() > 0) {
@@ -513,30 +512,16 @@ public abstract class AbstractElementHandler implements ElementHandler {
     }
 
     /**
-     *
-     * @param handler
+     * @param serializer
      * @param qName
      * @param text
-     * @throws SAXException
      */
-    protected void addTextProperty(TransformerHandler handler, String qName, String text) throws SAXException {
+    protected void addTextProperty(IPackSerializer serializer, String qName, String text) throws Exception {
     	AttributesImpl atts = new AttributesImpl();
     	atts.addAttribute("", "", qName, "reference", "property");
-		handler.startElement("", "", qName, atts);
-		append(handler, text);
-		handler.endElement("", "", qName);
-	}
-
-    /**
-     *
-     * @param document
-     * @param str
-     * @throws SAXException
-     */
-    protected void append(TransformerHandler document, String str) throws SAXException
-	{
-		char[] contents = str != null ? str.toCharArray() : new char[0];
-		document.characters(contents,0,contents.length);
+		serializer.startElement(qName, atts);
+		serializer.characters(text);
+		serializer.endElement(qName);
 	}
 
     /**

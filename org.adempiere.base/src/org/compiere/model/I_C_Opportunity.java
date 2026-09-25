@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Opportunity
  *  @author iDempiere (generated) 
- *  @version Release 13
+ *  @version Release 14
  */
 public interface I_C_Opportunity 
 {
@@ -159,6 +159,30 @@ public interface I_C_Opportunity
 
 	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_Order getC_Order() throws RuntimeException;
+
+    /** Column name C_SalesPipeline_ID */
+    public static final String COLUMNNAME_C_SalesPipeline_ID = "C_SalesPipeline_ID";
+
+	/** Set Sales Pipeline.
+	  * Defines a sales pipeline (e.g. &quot;
+Standard Sales&quot;
+, &quot;
+Complex Project&quot;
+, etc.)
+	  */
+	public void setC_SalesPipeline_ID (int C_SalesPipeline_ID);
+
+	/** Get Sales Pipeline.
+	  * Defines a sales pipeline (e.g. &quot;
+Standard Sales&quot;
+, &quot;
+Complex Project&quot;
+, etc.)
+	  */
+	public int getC_SalesPipeline_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_SalesPipeline getC_SalesPipeline() throws RuntimeException;
 
     /** Column name C_SalesStage_ID */
     public static final String COLUMNNAME_C_SalesStage_ID = "C_SalesStage_ID";

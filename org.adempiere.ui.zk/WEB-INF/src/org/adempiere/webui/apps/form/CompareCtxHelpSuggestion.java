@@ -40,6 +40,7 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.util.CKEditor;
 import org.compiere.model.GridTab;
 import org.compiere.model.X_AD_CtxHelpMsg;
 import org.compiere.util.Env;
@@ -168,8 +169,8 @@ public class CompareCtxHelpSuggestion extends ADForm {
 		if (changed != null)
 			changed = removeHeaderTag(changed);
 		helpTextbox = new CKeditor();
-		helpTextbox.setCustomConfigurationsPath("/js/ckeditor/config-min.js");
-		helpTextbox.setToolbar("MyToolbar");
+		helpTextbox.setCustomConfigurationsPath(CKEditor.getCustomConfigurationsPath(true));
+		helpTextbox.setToolbar(CKEditor.getToolbar());
 		row.appendCellChild(helpTextbox);
 		helpTextbox.addEventListener(Events.ON_CHANGE, this);
 		helpTextbox.addEventListener(Events.ON_CHANGING, this);

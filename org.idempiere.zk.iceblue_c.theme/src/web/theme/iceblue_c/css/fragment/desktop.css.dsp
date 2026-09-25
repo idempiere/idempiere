@@ -1,8 +1,8 @@
 <%@ taglib uri="http://www.idempiere.org/dsp/web/util" prefix="u" %>
 <%-- header --%>
 .desktop-north {
-	background-color: #C7E8FF;
-	border-bottom: 1px solid #ADDDFF !important;
+	background-color: var(--zk-desktop-header-background-color);
+	border-bottom: 1px solid var(--zk-desktop-header-border-color) !important;
 }
 <%-- left panel for logo and global search --%>
 .desktop-header-left {
@@ -41,7 +41,7 @@
 	right: 1px;
 }
 .desktop-header-popup, .desktop-header-popup > .z-window-content {
-	background-color: #C7E8FF;
+	background-color: var(--zk-desktop-header-background-color);
 }
 
 .desktop-header-popup .desktop-header {
@@ -53,7 +53,11 @@
 .desktop-user-panel {
 	float: right;
 	height: 45px;
-	padding-right: 5px;
+	margin-right: 5px;
+	width: auto;
+}
+.desktop-user-panel .z-hlayout-inner {
+	padding-right: 0 !important;
 }
 .desktop-user-panel tr {
 	vertical-align: middle;
@@ -66,15 +70,19 @@
     height: auto;
 }
 .desktop-user-panel .z-toolbarbutton:hover {
-	background: #e0f2ff;
-	color: rgba(0,0,0,0.9);
+	background: var(--zk-desktop-header-hover-background-color);
+	color: var(--zk-desktop-header-hover-color);
 }
 .desktop-header-username {
 	padding: 0px 4px;
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 .desktop-header-username:hover {
-	background: #e0f2ff;
-	color: rgba(0,0,0,0.9);
+	background: var(--zk-desktop-header-hover-background-color);
+	color: var(--zk-desktop-header-hover-color);
 }
 
 <%-- user panel popup for mobile client --%>
@@ -135,14 +143,14 @@
 }
 .desktop-tabbox .z-tabs .z-toolbar-tabs .z-toolbarbutton-hover .z-toolbarbutton-content {
 	background-image: none !important;
-	background-color:#DDD !important;
+	background-color:var(--zk-desktop-tab-toolbar-hover-background-color) !important;
 	padding: 0px !important;
 	margin: 0px !important;
-	-webkit-box-shadow:inset 0px 0px 3px #CCC;
-	-moz-box-shadow:inset 0px 0px 3px #CCC;	
-	-o-box-shadow:inset 0px 0px 3px #CCC;	
-	-ms-box-shadow:inset 0px 0px 3px #CCC;	
-	box-shadow:inset 0px 0px 3px #CCC;
+	-webkit-box-shadow:inset 0px 0px 3px var(--zk-desktop-tab-toolbar-hover-shadow-color);
+	-moz-box-shadow:inset 0px 0px 3px var(--zk-desktop-tab-toolbar-hover-shadow-color);	
+	-o-box-shadow:inset 0px 0px 3px var(--zk-desktop-tab-toolbar-hover-shadow-color);	
+	-ms-box-shadow:inset 0px 0px 3px var(--zk-desktop-tab-toolbar-hover-shadow-color);	
+	box-shadow:inset 0px 0px 3px var(--zk-desktop-tab-toolbar-hover-shadow-color);
 }
 .desktop-tabbox.z-tabbox > .z-tabbox-icon.z-tabbox-left-scroll,
 .desktop-tabbox.z-tabbox > .z-tabbox-icon.z-tabbox-right-scroll {
@@ -174,8 +182,8 @@
 .desktop-left-column {
 	width: 200px;
 	border: none;
-	border-right: 1px solid #C5C5C5;
-	background-color: #f6fafe;
+	border-right: 1px solid var(--zk-desktop-column-border-color);
+	background-color: var(--zk-desktop-column-background-color);
 	padding-top: 2px; 
 }
 .desktop-left-column + .z-west-splitter,  .desktop-left-column.z-west {
@@ -190,8 +198,8 @@
 .desktop-right-column {
 	width: 200px;
 	border: none;
-	border-left: 1px solid #C5C5C5;
-	background-color: #f6fafe;
+	border-left: 1px solid var(--zk-desktop-column-border-color);
+	background-color: var(--zk-desktop-column-background-color);
 	padding-top: 2px; 
 }
 .desktop-right-column + .z-east-splitter,  .desktop-right-column.z-east {
@@ -223,7 +231,7 @@
 .desktop-menu-toolbar {
 	verticle-align: middle; 
 	padding: 2px;
-	border-top: 1px solid #c5c5c5;
+	border-top: 1px solid var(--zk-desktop-column-border-color);
 }
 
 <%-- desktop window container --%>
@@ -238,7 +246,7 @@
 .window-container-toolbar-btn.z-toolbarbutton .z-toolbarbutton-content [class^="z-icon"] {
 	padding: 3px 3px;
 	font-size: 16px;
-	color: rgba(0, 0, 0, 0.57);
+	color: var(--zk-desktop-toolbar-icon-color);
 }
 .window-container-toolbar > .z-toolbar-content,
 .window-container-toolbar-btn.z-toolbarbutton, 

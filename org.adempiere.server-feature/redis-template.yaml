@@ -1,0 +1,77 @@
+# iDempiere Redis backend — Redisson native YAML configuration
+#
+# Copy this file to $IDEMPIERE_HOME/redis.yaml and edit for your deployment.
+# The org.idempiere.redis.service bundle reads it at startup and uses
+# Redisson's Config.fromYAML to instantiate the client.
+#
+# Pick ONE of the server topologies below (singleServerConfig /
+# sentinelServersConfig / clusterServersConfig); the other two should remain
+# commented out. Full Redisson configuration reference:
+#   https://github.com/redisson/redisson/wiki/2.-Configuration
+
+# -----------------------------------------------------------------------------
+# Single-server topology — single-node Redis (development or non-HA setups)
+# -----------------------------------------------------------------------------
+singleServerConfig:
+  address: "redis://localhost:6379"
+  password: null
+  database: 0
+
+  # Connection pool tuning
+  connectionMinimumIdleSize: 24
+  connectionPoolSize: 64
+  subscriptionConnectionMinimumIdleSize: 1
+  subscriptionConnectionPoolSize: 50
+
+  # Operation timeouts (milliseconds)
+  timeout: 3000
+  retryAttempts: 3
+  retryInterval: 1500
+
+# -----------------------------------------------------------------------------
+# Sentinel topology — high availability with master/replica failover
+# Use for managed services that expose Sentinel (e.g. AWS ElastiCache for Redis
+# in cluster-disabled mode, self-hosted Redis Sentinel deployments).
+# -----------------------------------------------------------------------------
+# sentinelServersConfig:
+#   masterName: "mymaster"
+#   sentinelAddresses:
+#     - "redis://sentinel1:26379"
+#     - "redis://sentinel2:26379"
+#     - "redis://sentinel3:26379"
+#   password: null
+#   database: 0
+
+# -----------------------------------------------------------------------------
+# Cluster topology — sharded across multiple primary nodes
+# Use for AWS ElastiCache for Redis cluster-mode-enabled, GCP Memorystore
+# Cluster, self-hosted Redis Cluster deployments.
+# -----------------------------------------------------------------------------
+# clusterServersConfig:
+#   nodeAddresses:
+#     - "redis://node1:7000"
+#     - "redis://node2:7000"
+#     - "redis://node3:7000"
+#   password: null
+#   scanInterval: 1000
+
+# -----------------------------------------------------------------------------
+# Codec for serializing values stored in Redis.
+# Default if absent: Kryo5Codec. Pick JsonJacksonCodec for human-readable values
+# (useful for debugging; slower than Kryo).
+# -----------------------------------------------------------------------------
+# codec: !<org.redisson.codec.Kryo5Codec> {}
+# codec: !<org.redisson.codec.JsonJacksonCodec> {}
+
+# -----------------------------------------------------------------------------
+# Networking transport.
+# NIO (default) works everywhere. EPOLL is faster on Linux but requires
+# netty-transport-native-epoll on the classpath.
+# -----------------------------------------------------------------------------
+# transportMode: "NIO"
+
+# -----------------------------------------------------------------------------
+# Thread pools — leave defaults unless profiling indicates contention.
+# -----------------------------------------------------------------------------
+# threads: 16
+# nettyThreads: 32

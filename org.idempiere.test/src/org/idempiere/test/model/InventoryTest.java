@@ -274,11 +274,77 @@ public class InventoryTest extends AbstractTestCase {
 		}
 	}
 	
-	private void createPOAndMRForProduct(int productId) {
-		createPOAndMRForProduct(productId, null);
+	/**
+	 * IDEMPIERE-6972
+	 * MR1, Product1, ASI1, Qty=100
+	 * MR2, Product1, ASI2, Qty=100
+	 * Physical Inventory
+	 * 	Line1, Product1, ASI1, QtyBook=1, QtyCount=100
+	 * 	Line2, Product1, ASI2, QtyBook=100, QtyCount=100
+	 */
+	@Test
+	public void testZeroDifferenceInventoryLine() {
+		MClient client = MClient.get(Env.getCtx());
+		MAcctSchema as = client.getAcctSchema();
+		MProduct product = new MProduct(Env.getCtx(), DictionaryIDs.M_Product.FERTILIZER_50.id, getTrxName());
+
+		MAttributeSetInstance asi1 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+		asi1.setM_AttributeSet_ID(product.getM_AttributeSet_ID());
+		asi1.setLot("asi1");
+		asi1.setDescription();
+		asi1.saveEx();
+		
+		MAttributeSetInstance asi2 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+		asi2.setM_AttributeSet_ID(product.getM_AttributeSet_ID());
+		asi2.setLot("asi2");
+		asi2.setDescription();
+		asi2.saveEx();
+		
+		createPOAndMRForProduct(DictionaryIDs.M_Product.FERTILIZER_50.id, asi1, Env.ONEHUNDRED);
+		createPOAndMRForProduct(DictionaryIDs.M_Product.FERTILIZER_50.id, asi2, Env.ONEHUNDRED);
+		
+		MInventory inventory = new MInventory(Env.getCtx(), 0, getTrxName());
+		inventory.setC_DocType_ID(DictionaryIDs.C_DocType.MATERIAL_PHYSICAL_INVENTORY.id);
+		inventory.setCostingMethod(as.getCostingMethod());
+		inventory.saveEx();
+		
+		// Qty Count <> Qty Book
+		MInventoryLine line1 = new MInventoryLine(
+				inventory,
+				DictionaryIDs.M_Locator.HQ.id, 
+				product.getM_Product_ID(),
+				asi1.get_ID(),
+				Env.ONE, // QtyBook
+				Env.ONEHUNDRED); // QtyCount
+		line1.saveEx();
+		
+		// Qty Count = Qty Book
+		MInventoryLine line2 = new MInventoryLine(
+				inventory,
+				DictionaryIDs.M_Locator.HQ.id, 
+				product.getM_Product_ID(),
+				asi2.get_ID(),
+				Env.ONEHUNDRED, // QtyBook
+				Env.ONEHUNDRED); // QtyCount
+		line2.saveEx();
+		
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(inventory, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		inventory.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, inventory.getDocStatus());
+		if (!inventory.isPosted()) {
+			String error = DocumentEngine.postImmediate(Env.getCtx(), inventory.getAD_Client_ID(), inventory.get_Table_ID(), inventory.get_ID(), false, getTrxName());
+			assertNull(error, error);
+			inventory.load(getTrxName());
+		}
+		assertTrue(inventory.isPosted(), "Inventory should be posted successfully");
 	}
 	
-	private void createPOAndMRForProduct(int productId, MAttributeSetInstance asi) {
+	private void createPOAndMRForProduct(int productId) {
+		createPOAndMRForProduct(productId, null, BigDecimal.ONE);
+	}
+	
+	private void createPOAndMRForProduct(int productId, MAttributeSetInstance asi, BigDecimal qty) {
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id));
 		order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
@@ -294,7 +360,7 @@ public class InventoryTest extends AbstractTestCase {
 		MOrderLine line1 = new MOrderLine(order);
 		line1.setLine(10);
 		line1.setProduct(new MProduct(Env.getCtx(), productId, getTrxName()));
-		line1.setQty(new BigDecimal("1"));
+		line1.setQty(qty);
 		line1.setDatePromised(today);
 		line1.saveEx();
 		
@@ -309,8 +375,8 @@ public class InventoryTest extends AbstractTestCase {
 		receipt1.saveEx();
 
 		MInOutLine receiptLine1 = new MInOutLine(receipt1);
-		receiptLine1.setOrderLine(line1, 0, new BigDecimal("1"));
-		receiptLine1.setQty(new BigDecimal("1"));
+		receiptLine1.setOrderLine(line1, 0, qty);
+		receiptLine1.setQty(qty);
 		if (asi != null)
 			receiptLine1.setM_AttributeSetInstance_ID(asi.get_ID());
 		receiptLine1.saveEx();

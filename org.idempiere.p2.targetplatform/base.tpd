@@ -2,7 +2,7 @@ target "idempiere-12"
 
 with source configurePhase allEnvironments
 
-location zk "https://idempiere.github.io/binary.file/p2.zk/10.0.1" {
+location zk "https://idempiere.github.io/binary.file/p2.zk/10.3.0.1" {
 	zcommon
 	zel
 	zhtml
@@ -160,8 +160,6 @@ location "https://download.eclipse.org/tools/orbit/downloads/drops/R202203021722
 	org.w3c.dom.smil
 	org.w3c.dom.svg
 	org.w3c.dom.events
-	// 1.3.4
-	javax.xml	
 }
 
 location jasperstudio "https://idempiere.github.io/binary.file/p2.repackaged/jasperstudio/6.17.0" {

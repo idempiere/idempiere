@@ -31,8 +31,9 @@ import java.util.List;
 
 import org.adempiere.base.IServiceReferenceHolder;
 import org.adempiere.base.Service;
-import org.adempiere.webui.factory.DefaultAnnotationBasedFormFactory;
+import org.adempiere.webui.factory.AnnotationBasedFormFactory;
 import org.adempiere.webui.factory.IFormFactory;
+import org.adempiere.webui.factory.IMappedFormFactory;
 import org.compiere.model.MForm;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
@@ -51,26 +52,41 @@ public class FormTest extends AbstractTestCase {
 
 	@Test
 	public void testCoreFormMapping() {
-		DefaultAnnotationBasedFormFactory formFactory = null;
 		List<IServiceReferenceHolder<IFormFactory>> factories = Service.locator().list(IFormFactory.class).getServiceReferences();
-		if (factories != null) {
-			for(IServiceReferenceHolder<IFormFactory> factory : factories) {
-				IFormFactory service = factory.getService();
-				if (service != null && service instanceof DefaultAnnotationBasedFormFactory) {
-					formFactory = (DefaultAnnotationBasedFormFactory) service;
-					break;
-				}
-			}
-		}
-		
-		assertNotNull(formFactory, "Failed to locate DefaultAnnotationBasedFormFactory");
+		assertNotNull(factories, "Failed to locate any IFormFactory services");
 		
 		Query query = new Query(Env.getCtx(), MForm.Table_Name, "AD_Form_ID < 1000000 AND ClassName IS NOT NULL "
 				+ " AND EXISTS (select 1 from ad_menu where isactive='Y' and ad_form_id=ad_form.ad_form_id)", getTrxName());
 		List<MForm> forms = query.setOnlyActiveRecords(true).list();
 		for (MForm form : forms) {
-			Constructor<?> constructor = formFactory.getConstructor(form.getClassname());
-			assertNotNull(constructor, "Failed to find class for " + form.toString() + ", " + form.getClassname());
+			boolean found = false;
+			// Check all registered form factories
+			for(IServiceReferenceHolder<IFormFactory> factoryRef : factories) {
+				IFormFactory factory = factoryRef.getService();
+				if (factory != null) {
+					// For AnnotationBasedFormFactory, use getConstructor() which only checks if the class exists
+					// without actually instantiating it (avoiding dependency issues in test environment)
+					if (factory instanceof AnnotationBasedFormFactory) {
+						Constructor<?> constructor = ((AnnotationBasedFormFactory) factory).getConstructor(form.getClassname());
+						if (constructor != null) {
+							found = true;
+							break;
+						}
+					} else if (factory instanceof IMappedFormFactory) {
+						// For IMappedFormFactory, use getSupplier() which only checks if the mapping exists
+						// without actually instantiating the form (avoiding dependency issues in test environment)
+						if (((IMappedFormFactory) factory).getSupplier(form.getClassname()) != null) {
+							found = true;
+							break;
+						}
+					} else {
+						// For other factory types, skip them to avoid instantiation issues in test environment
+						// If needed, they should implement a proper check method
+						continue;
+					}
+				}
+			}
+			assertNotNull(found ? form.getClassname() : null, "Failed to find class for " + form.toString() + ", " + form.getClassname());
 		}
 	}		
 }

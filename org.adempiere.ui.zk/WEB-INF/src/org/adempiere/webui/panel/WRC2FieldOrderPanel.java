@@ -40,7 +40,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Hlayout;
-import org.zkoss.zul.Vbox;
+import org.adempiere.webui.component.FlexVlayout;
 
 /**
  * Wizard panel to edit order of printed print format items
@@ -160,7 +160,7 @@ public class WRC2FieldOrderPanel extends WRCTabPanel implements EventListener<Ev
 		bUp.addEventListener(Events.ON_CLICK, actionListener);
 		bDown.addEventListener(Events.ON_CLICK, actionListener);
 
-		Vbox vbox = new Vbox();
+		FlexVlayout vbox = new FlexVlayout();
 		vbox.appendChild(bUp);
 		vbox.appendChild(bDown);
 		ZKUpdateUtil.setWidth(vbox, "50px");

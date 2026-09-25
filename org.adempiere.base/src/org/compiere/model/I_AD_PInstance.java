@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_PInstance
  *  @author iDempiere (generated) 
- *  @version Release 13
+ *  @version Release 14
  */
 public interface I_AD_PInstance 
 {
@@ -200,6 +200,19 @@ public interface I_AD_PInstance
 
 	/** Get Error Msg	  */
 	public String getErrorMsg();
+
+    /** Column name ExternalTraceId */
+    public static final String COLUMNNAME_ExternalTraceId = "ExternalTraceId";
+
+	/** Set External Trace ID.
+	  * External identifier used for audit tracing
+	  */
+	public void setExternalTraceId (String ExternalTraceId);
+
+	/** Get External Trace ID.
+	  * External identifier used for audit tracing
+	  */
+	public String getExternalTraceId();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";

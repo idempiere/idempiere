@@ -220,6 +220,7 @@ public class MUserTest extends AbstractTestCase {
 	public void testGetUserByName()
 	{
 		Properties ctx = Env.getCtx();
+		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
 
 		// 1. Null name → must return null
 		MUser nullNameUser = MUser.get(ctx, (String) null);
@@ -230,7 +231,9 @@ public class MUserTest extends AbstractTestCase {
 		assertNull(emptyNameUser, "Empty user name must return null");
 
 		// 3. Valid user lookup (System user)
-		String systemUserName = DB.getSQLValueString(getTrxName(), "SELECT Name FROM AD_User WHERE AD_User_ID=?", Env.getAD_User_ID(ctx));
+		String systemUserName = DB.getSQLValueString(getTrxName(), "SELECT "
+				+ (email_login ? "EMail" : "Name") + " "
+				+ "FROM AD_User WHERE AD_User_ID=?", Env.getAD_User_ID(ctx));
 		assertNotNull(systemUserName, "System user name must exist in DB");
 
 		MUser systemUser = MUser.get(ctx, systemUserName);
@@ -262,7 +265,10 @@ public class MUserTest extends AbstractTestCase {
 		// 3. Resolve a valid user name for testing (System user)
 		int systemUserId = Env.getAD_User_ID(ctx);
 		assertTrue(systemUserId > 0, "System user ID must be available");
-		String systemUserName = DB.getSQLValueString(getTrxName(), "SELECT Name FROM AD_User WHERE AD_User_ID=?", systemUserId);
+		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
+		String systemUserName = DB.getSQLValueString(getTrxName(), "SELECT "
+				+ (email_login ? "EMail" : "Name") + " "
+				+ "FROM AD_User WHERE AD_User_ID=?", systemUserId);
 		assertNotNull(systemUserName, "System user name must exist");
 
 		// 4. Valid name + WRONG password → must return null
@@ -280,6 +286,9 @@ public class MUserTest extends AbstractTestCase {
 	@Test
 	public void testGetUserByNamePasswordSSO()
 	{
+		MUser systemUser = MUser.get(DictionaryIDs.AD_User.SYSTEM_USER.id);
+		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
+		
 	    Properties ctx = Env.getCtx();
 
 	    // 1. Null name → must return null
@@ -291,37 +300,37 @@ public class MUserTest extends AbstractTestCase {
 	    assertNull(emptyNameUser, "Empty name must return null");
 
 	    // 3. Null password when not SSO → must return null
-	    MUser nullPasswordUser = MUser.get(ctx, "System", null, false);
+	    MUser nullPasswordUser = MUser.get(ctx, email_login ? systemUser.getEMail() : systemUser.getName(), null, false);
 	    assertNull(nullPasswordUser, "Null password (non-SSO) must return null");
 
 	    // 4. Empty password when not SSO → must return null
-	    MUser emptyPasswordUser = MUser.get(ctx, "System", "", false);
+	    MUser emptyPasswordUser = MUser.get(ctx, email_login ? systemUser.getEMail() : systemUser.getName(), "", false);
 	    assertNull(emptyPasswordUser, "Empty password (non-SSO) must return null");
 
 	    // 5. SSO login → password ignored, should return user if exists
-	    MUser ssoUser = MUser.get(ctx, "System", null, true);
+	    MUser ssoUser = MUser.get(ctx, email_login ? systemUser.getEMail() : systemUser.getName(), null, true);
 	    assertNotNull(ssoUser, "SSO login must bypass password and return user");
-	    assertEquals("System", ssoUser.getName(), "SSO user must match requested name");
+	    assertEquals(systemUser.getName(), ssoUser.getName(), "SSO user must match requested name");
 
 	    // 6. Non-existing user → must return null
 	    MUser nonExistingUser = MUser.get(ctx, "___NON_EXISTING_USER___", "anyPassword", false);
 	    assertNull(nonExistingUser, "Non-existing user must return null");
 
 	    // 7. Invalid password → must return null
-	    MUser wrongPasswordUser = MUser.get(ctx, "System", "___WRONG_PASSWORD___", false);
+	    MUser wrongPasswordUser = MUser.get(ctx, email_login ? systemUser.getEMail() : systemUser.getName(), "___WRONG_PASSWORD___", false);
 	    assertNull(wrongPasswordUser, "Wrong password must return null");
 
 	    // 8. Delegation path: plain password
 	    MUser user = new MUser(ctx, Env.getAD_User_ID(ctx), getTrxName());
 	    String password = user.getPassword(); // assume plain text available
 	    if (!Util.isEmpty(password)) {
-	        MUser plainPassUser = MUser.get(ctx, user.getName(), password, false);
+	        MUser plainPassUser = MUser.get(ctx,  email_login ? user.getEMail() : user.getName(), password, false);
 	        assertNotNull(plainPassUser, "Plain password must authenticate user");
 	        assertEquals(user.getAD_User_ID(), plainPassUser.getAD_User_ID(), "Authenticated user ID must match");
 	    }
 
 	    // 9. Delegation path: SSO login bypass
-	    MUser ssoBypass = MUser.get(ctx, user.getName(), "ignored", true);
+	    MUser ssoBypass = MUser.get(ctx,  email_login ? user.getEMail() : user.getName(), "ignored", true);
 	    assertNotNull(ssoBypass, "SSO login bypass must succeed regardless of password");
 	    assertEquals(user.getAD_User_ID(), ssoBypass.getAD_User_ID(), "SSO user ID must match");
 	}

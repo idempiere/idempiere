@@ -46,7 +46,7 @@ import org.zkoss.zul.Center;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Filedownload;
-import org.zkoss.zul.Hbox;
+import org.adempiere.webui.component.FlexHlayout;
 import org.zkoss.zul.Iframe;
 
 
@@ -83,9 +83,9 @@ public class WMediaDialog extends Window implements EventListener<Event>
 	
 	private Borderlayout mainPanel = new Borderlayout();
 
-	private Hbox toolBar = new Hbox();	
+	private FlexHlayout toolBar = new FlexHlayout();	
 	
-	private Hbox confirmPanel = new Hbox();
+	private FlexHlayout confirmPanel = new FlexHlayout();
 
 	private boolean m_cancel;
 	/* SysConfig USE_ESC_FOR_TAB_CLOSING */

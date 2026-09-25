@@ -17,6 +17,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -49,9 +51,9 @@ import org.jfree.chart.encoders.ImageFormat;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.data.general.DefaultPieDataset;
 import org.zkoss.calendar.Calendars;
-import org.zkoss.calendar.api.CalendarEvent;
+import org.zkoss.calendar.api.CalendarItem;
 import org.zkoss.calendar.event.CalendarsEvent;
-import org.zkoss.calendar.impl.SimpleCalendarEvent;
+import org.zkoss.calendar.impl.SimpleCalendarItem;
 import org.zkoss.calendar.impl.SimpleCalendarModel;
 import org.zkoss.image.AImage;
 import org.zkoss.zk.ui.Component;
@@ -85,9 +87,9 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 	private static final String ON_MOVE_DATE_EVENT = "onMoveDate";
 	private static final String ON_UPDATE_VIEW_EVENT = "onUpdateView";
 	private static final String ON_MOUSE_OVER_EVENT = "onMouseOver";
-	private static final String ON_EVENT_UPDATE_EVENT = "onEventUpdate";
-	private static final String ON_EVENT_EDIT_EVENT = "onEventEdit";
-	private static final String ON_EVENT_CREATE_EVENT = "onEventCreate";
+	private static final String ON_ITEM_UPDATE_EVENT = CalendarsEvent.ON_ITEM_UPDATE;
+	private static final String ON_ITEM_EDIT_EVENT = CalendarsEvent.ON_ITEM_EDIT;
+	private static final String ON_ITEM_CREATE_EVENT = CalendarsEvent.ON_ITEM_CREATE;
 	
 	/** Zk Calendar instance. Center of window. */
 	private Calendars calendars;
@@ -141,8 +143,8 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 
 		calendars = (Calendars) component.getFellow("cal");
 		calendars.setModel(scm);
-		if (calendars.getCurrentDate() != null)
-			calendars.setCurrentDate(calendars.getCurrentDate());
+		if (calendars.getCurrentDateTime() != null)
+			calendars.setCurrentDateTime(calendars.getCurrentDateTime());
 		setTimeZone();
 
 		btnRefresh = (Toolbarbutton) component.getFellow("btnRefresh");
@@ -211,9 +213,9 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 		
 		this.appendChild(component);
 
-		calendars.addEventListener(ON_EVENT_CREATE_EVENT, this);
-		calendars.addEventListener(ON_EVENT_EDIT_EVENT, this);
-		calendars.addEventListener(ON_EVENT_UPDATE_EVENT, this);
+		calendars.addEventListener(ON_ITEM_CREATE_EVENT, this);
+		calendars.addEventListener(ON_ITEM_EDIT_EVENT, this);
+		calendars.addEventListener(ON_ITEM_UPDATE_EVENT, this);
 		calendars.addEventListener(ON_MOUSE_OVER_EVENT, this);
 		calendars.addEventListener(ON_DAY_CLICK_EVENT, this);
 
@@ -316,7 +318,7 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 				syncModel();
 			}
 		}
-		else if (type.equals(ON_EVENT_CREATE_EVENT) && !Env.isReadOnlySession()) {
+		else if (type.equals(ON_ITEM_CREATE_EVENT) && !Env.isReadOnlySession()) {
 			if (e instanceof CalendarsEvent) {
 				CalendarsEvent calendarsEvent = (CalendarsEvent) e;
 				RequestWindow requestWin = new RequestWindow(calendarsEvent, this);
@@ -325,15 +327,15 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 		}	
 		else if (type.equals(ON_DAY_CLICK_EVENT) && ! Env.isReadOnlySession()) {
 			if (e.getData() instanceof Date date) {
-				CalendarsEvent calendarsEvent = new CalendarsEvent(ON_EVENT_CREATE_EVENT, e.getTarget(), null, date, date, 0, 0, 0, 0);
+				CalendarsEvent calendarsEvent = new CalendarsEvent(ON_ITEM_CREATE_EVENT, e.getTarget(), null, date, date, 0, 0, 0, 0);
 				RequestWindow requestWin = new RequestWindow(calendarsEvent, this);
 				SessionManager.getAppDesktop().showWindow(requestWin);
 			}
 		}
-		else if (type.equals(ON_EVENT_EDIT_EVENT)) {
+		else if (type.equals(ON_ITEM_EDIT_EVENT)) {
 			if (e instanceof CalendarsEvent) {
 				CalendarsEvent calendarsEvent = (CalendarsEvent) e;
-				CalendarEvent calendarEvent = calendarsEvent.getCalendarEvent();
+				CalendarItem calendarEvent = calendarsEvent.getCalendarItem();
 
 				if (calendarEvent instanceof ADCalendarEvent) {
 					ADCalendarEvent ce = (ADCalendarEvent) calendarEvent;
@@ -345,16 +347,16 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 				}
 			}
 		}
-		else if (type.equals(ON_EVENT_UPDATE_EVENT)) {
+		else if (type.equals(ON_ITEM_UPDATE_EVENT)) {
 			if (e instanceof CalendarsEvent)
 			{
 				CalendarsEvent evt = (CalendarsEvent) e;
-				SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy/MM/d");
-				sdf1.setTimeZone(calendars.getDefaultTimeZone());
+				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/d")
+						.withZone(calendars.getDefaultTimeZone().toZoneId());
 				StringBuilder sb = new StringBuilder("Update... from ");
-				sb.append(sdf1.format(evt.getCalendarEvent().getBeginDate()));
+				sb.append(dtf.format(evt.getCalendarItem().getBegin()));
 				sb.append(" to ");
-				sb.append(sdf1.format(evt.getBeginDate()));
+				sb.append(dtf.format(evt.getBeginDate().toInstant()));
 				popupLabel.setValue(sb.toString());
 				int left = evt.getX();
 				int top = evt.getY();
@@ -366,7 +368,7 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 				timer.start();
 				org.zkoss.calendar.Calendars cal = (org.zkoss.calendar.Calendars) evt.getTarget();
 				SimpleCalendarModel m = (SimpleCalendarModel) cal.getModel();
-				SimpleCalendarEvent sce = (SimpleCalendarEvent) evt.getCalendarEvent();
+				SimpleCalendarItem sce = (SimpleCalendarItem) evt.getCalendarItem();
 				sce.setBeginDate(evt.getBeginDate());
 				sce.setEndDate(evt.getEndDate());
 				m.update(sce);
@@ -379,8 +381,9 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 	 */
 	private void syncModel() {
 		Hashtable<String,BigDecimal> ht = new Hashtable<String,BigDecimal>();
-		
-		List<?> list = calendars.getModel().get(calendars.getBeginDate(), calendars.getEndDate(), null);
+
+		List<?> list = calendars.getModel().get(calendars.getBeginDateTime(), calendars.getEndDateTime(),
+				() -> calendars.getDefaultTimeZone());
 		int size = list.size();
 		for (Iterator<?> it = list.iterator(); it.hasNext();) {
 			String key = ((ADCalendarEvent)it.next()).getR_RequestType_ID() + "";
@@ -486,18 +489,20 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 	 * Update {@link #lblDate}
 	 */
 	private void updateDateLabel() {
-		Date b = calendars.getBeginDate();
-		Date e = calendars.getEndDate();
+		LocalDateTime b = calendars.getBeginDateTime();
+		LocalDateTime e = calendars.getEndDateTime();
 		SimpleDateFormat sdfV = DisplayType.getDateFormat();
-		sdfV.setTimeZone(calendars.getDefaultTimeZone());
-		lblDate.setValue(sdfV.format(b) + " - " + sdfV.format(e));
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern(sdfV.toPattern());
+		lblDate.setValue(dtf.format(b) + " - " + dtf.format(e));
 	}
 	
 	/**
 	 * Set {@link #calendars} to current date
 	 */
 	private void btnCurrentDateClicked() {
-		calendars.setCurrentDate(Calendar.getInstance(calendars.getDefaultTimeZone()).getTime());
+		calendars.setCurrentDateTime(LocalDateTime.ofInstant(
+				Calendar.getInstance(calendars.getDefaultTimeZone()).toInstant(),
+				calendars.getDefaultTimeZone().toZoneId()));
 		updateDateLabel();
 		syncModel();
 	}

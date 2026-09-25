@@ -315,7 +315,7 @@ public class RequestEventHandler extends AbstractEventHandler implements Managed
 		final String sql = "SELECT u.AD_User_ID, u.NotificationType, u.EMail, u.Name, MAX(r.AD_Role_ID) "
 			+ "FROM RV_RequestUpdates_Only ru"
 			+ " INNER JOIN AD_User u ON (ru.AD_User_ID=u.AD_User_ID OR u.AD_User_ID=?)"
-			+ " LEFT OUTER JOIN AD_User_Roles r ON (u.AD_User_ID=r.AD_User_ID) "
+			+ " LEFT OUTER JOIN AD_User_Roles r ON (u.AD_User_ID=r.AD_User_ID AND r.IsActive='Y') "
 			+ "WHERE ru.R_Request_ID=? "
 			+ "GROUP BY u.AD_User_ID, u.NotificationType, u.EMail, u.Name";
 		PreparedStatement pstmt = null;
@@ -376,6 +376,8 @@ public class RequestEventHandler extends AbstractEventHandler implements Managed
 				userList.add(ii);
 				//
 				MUser to = MUser.get (r.getCtx(), AD_User_ID);
+				if (!to.isActive())
+					continue;
 				//	Send Mail
 				if (X_AD_User.NOTIFICATIONTYPE_EMail.equals(NotificationType)
 					|| X_AD_User.NOTIFICATIONTYPE_EMailPlusNotice.equals(NotificationType))

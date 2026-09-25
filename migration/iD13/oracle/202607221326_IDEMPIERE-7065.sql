@@ -1,0 +1,14 @@
+--     IDEMPIERE-7065  Allow requests without initial SalesRep
+SELECT register_migration_script('202607221326_IDEMPIERE-7065.sql') FROM dual;
+
+SET SQLBLANKLINES ON
+SET DEFINE OFF
+
+-- Jul 22, 2026, 1:26:01 PM CEST
+ALTER TABLE R_Request MODIFY SalesRep_ID NUMBER(10) DEFAULT NULL 
+;
+
+-- Jul 22, 2026, 1:26:01 PM CEST
+ALTER TABLE R_Request MODIFY SalesRep_ID NULL
+;
+

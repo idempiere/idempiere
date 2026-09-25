@@ -29,7 +29,6 @@ import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Separator;
 
 /**
@@ -65,7 +64,8 @@ public class WOnlyCurrentDays extends Window implements EventListener<Event>, Di
 		this.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);		
 	}	//	WOnlyCurrentDays
 
-	private Hbox mainPanel = new Hbox();
+	@SuppressWarnings("deprecation")
+	private org.zkoss.zul.Hbox mainPanel = new org.zkoss.zul.Hbox();
 	private Button bShowAll = new Button();
 	private Button bShowMonth = new Button();
 	private Button bShowWeek = new Button();

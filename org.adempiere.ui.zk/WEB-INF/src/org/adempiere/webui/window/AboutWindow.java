@@ -72,14 +72,14 @@ import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
-import org.zkoss.zul.Hbox;
+import org.adempiere.webui.component.FlexHlayout;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
-import org.zkoss.zul.Vbox;
+import org.adempiere.webui.component.FlexVlayout;
 
 /**
  * About dialog for iDempiere
@@ -227,15 +227,15 @@ public class AboutWindow extends Window implements EventListener<Event> {
 	 */
 	protected Tabpanel createTrace() {
 		Tabpanel tabPanel = new Tabpanel();
-		Vbox vbox = new Vbox();
+		FlexVlayout vbox = new FlexVlayout();
 		LayoutUtils.addSclass("about-trace-panel", vbox);
 		vbox.setParent(tabPanel);
 		ZKUpdateUtil.setHflex(vbox, "1");
 		ZKUpdateUtil.setVflex(vbox, "1");
 		
-		Hbox hbox = new Hbox();
-		hbox.setAlign("center");
-		hbox.setPack("start");
+		FlexHlayout hbox = new FlexHlayout();
+		hbox.setAlign(FlexHlayout.AlignType.CENTER);
+		hbox.setPack(FlexHlayout.PackType.START);
 		Label levelLabel = new Label("Trace Level:");
 		ZKUpdateUtil.setHeight(levelLabel, "100%");
 		hbox.appendChild(levelLabel);
@@ -277,9 +277,9 @@ public class AboutWindow extends Window implements EventListener<Event> {
 				ZKUpdateUtil.setHflex(hbox, "1");
 				ZKUpdateUtil.setVflex(hbox, "0");
 				vbox.appendChild(hbox);
-				hbox = new Hbox();
-				hbox.setAlign("center");
-				hbox.setPack("start");
+				hbox = new FlexHlayout();
+				hbox.setAlign(FlexHlayout.AlignType.CENTER);
+				hbox.setPack(FlexHlayout.PackType.START);
 
 				btnReloadLogProps = new Button("Reload Log Props");
 				btnReloadLogProps.setTooltiptext("Reload the configuration of log levels from idempiere.properties file");
@@ -300,9 +300,9 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		ZKUpdateUtil.setVflex(hbox, "0");
 		vbox.appendChild(hbox);
 
-		hbox = new Hbox();
-		hbox.setAlign("center");
-		hbox.setPack("start");
+		hbox = new FlexHlayout();
+		hbox.setAlign(FlexHlayout.AlignType.CENTER);
+		hbox.setPack(FlexHlayout.PackType.START);
 		bErrorsOnly = new Checkbox();
 		bErrorsOnly.setLabel(Msg.getMsg(Env.getCtx(), "ErrorsOnly"));
 		//default only show error
@@ -429,27 +429,27 @@ public class AboutWindow extends Window implements EventListener<Event> {
 	protected Tabpanel createAbout() {
 		Tabpanel tabPanel = new Tabpanel();
 
-		Vbox vb = new Vbox();
+		FlexVlayout vb = new FlexVlayout();
 		LayoutUtils.addSclass("about-main-panel", vb);
 		ZKUpdateUtil.setWidth(vb, "100%");
 		ZKUpdateUtil.setHeight(vb, "100%");
-		vb.setAlign("center");
-		vb.setPack("center");
+		vb.setAlign(FlexVlayout.AlignType.CENTER);
+		vb.setPack(FlexVlayout.PackType.CENTER);
 		vb.setParent(tabPanel);
 
-		Vbox vbox = new Vbox();
+		FlexVlayout vbox = new FlexVlayout();
 		LayoutUtils.addSclass("about-main-panel-logo", vbox);
 		ZKUpdateUtil.setWidth(vbox, "100%");
-		vbox.setAlign("center");
+		vbox.setAlign(FlexVlayout.AlignType.CENTER);
 		vbox.setParent(vb);
 		
 		Image image = new Image(ThemeManager.getLargeLogo());
 		image.setParent(vbox);
 
-		vbox = new Vbox();
+		vbox = new FlexVlayout();
 		LayoutUtils.addSclass("about-main-panel-version", vbox);
 		ZKUpdateUtil.setWidth(vbox, "100%");
-		vbox.setAlign("center");
+		vbox.setAlign(FlexVlayout.AlignType.CENTER);
 		vbox.setParent(vb);
 		
 		Text text = new Text(Adempiere.getSubtitle());
@@ -459,10 +459,10 @@ public class AboutWindow extends Window implements EventListener<Event> {
 		text = new Text(Adempiere.getVersion());
 		text.setParent(vbox);
 		
-		vbox = new Vbox();
+		vbox = new FlexVlayout();
 		LayoutUtils.addSclass("about-main-panel-links", vbox);
-		ZKUpdateUtil.setWidth(vb, "100%");
-		vbox.setAlign("center");
+		ZKUpdateUtil.setWidth(vbox, "100%");
+		vbox.setAlign(FlexVlayout.AlignType.CENTER);
 		vbox.setParent(vb);
 		
 		separator = new Separator();

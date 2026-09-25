@@ -24,11 +24,17 @@
  **********************************************************************/
 package org.idempiere.ui.zk.websocket;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import javax.websocket.HandshakeResponse;
 import javax.websocket.server.HandshakeRequest;
 import javax.websocket.server.ServerEndpointConfig;
+
+import org.apache.hc.client5.http.cookie.BasicCookieStore;
+import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
 
 public class EndpointConfigurator extends ServerEndpointConfig.Configurator {
 
@@ -46,6 +52,30 @@ public class EndpointConfigurator extends ServerEndpointConfig.Configurator {
             sec.getUserProperties().put(HttpSession.class.getName(), httpSession);
             sec.getUserProperties().put(ServletContext.class.getName(), httpSession.getServletContext());
             sec.getUserProperties().put(HandshakeRequest.class.getName(), request);
+
+            //create BasicCookieStore from request
+            Map<String, List<String>> headers = request.getHeaders();
+            List<String> cookieHeaders = headers.get("Cookie");
+            if (cookieHeaders == null)
+            	cookieHeaders = headers.get("cookie");
+            if (cookieHeaders != null && !cookieHeaders.isEmpty()) {
+            	BasicCookieStore cookieStore = new BasicCookieStore();
+            	for(String cookieHeader : cookieHeaders) {
+            		String[] cookies = cookieHeader.split(";");
+                    for (String cookie : cookies) {
+                        String[] pair = cookie.split("=", 2);
+                        if (pair.length == 2) {
+                        	String name = pair[0].trim();
+                        	String value = pair[1].trim();
+                        	BasicClientCookie c = new BasicClientCookie(name, value);
+                            // localhost domain for internal request cookies
+                            c.setDomain("localhost");
+                        	cookieStore.addCookie(c);
+                        }
+                    }
+            	}
+            	sec.getUserProperties().put(BasicCookieStore.class.getName(), cookieStore);
+            }
         }
     }
 }

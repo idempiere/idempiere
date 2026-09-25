@@ -52,7 +52,7 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Hbox;
+import org.adempiere.webui.component.FlexHlayout;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
@@ -204,9 +204,9 @@ public class WImageDialog extends Window implements EventListener<Event>
 		north.setParent(mainLayout);
 		north.appendChild(parameterPanel);
 		
-		Hbox hbox = new Hbox();
-		hbox.setAlign("center");
-		hbox.setPack("start");
+		FlexHlayout hbox = new FlexHlayout();
+		hbox.setAlign(FlexHlayout.AlignType.CENTER);
+		hbox.setPack(FlexHlayout.PackType.START);
 		hbox.appendChild(fileButton);
 		hbox.appendChild(new Space());
 		hbox.appendChild(captureButton);

@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="lib/java10-shim.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/java8-shim.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
-			<attribute name="module" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
@@ -18,6 +15,8 @@
 	<classpathentry exported="true" kind="lib" path="lib/ckez.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/daisydiff.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/owasp-java-html-sanitizer.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/java10-shim.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/java8-shim.jar"/>
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>

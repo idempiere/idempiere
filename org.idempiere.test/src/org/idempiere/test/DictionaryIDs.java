@@ -111,6 +111,7 @@ public final class DictionaryIDs {
 	public enum AD_User {
 		GARDEN_ADMIN(101),
 		GARDEN_USER(102),
+		SYSTEM_USER(10),
 		SUPER_USER(100);
 		
 		public final int id;
@@ -333,7 +334,8 @@ public final class DictionaryIDs {
 
 	public enum C_ElementValue {
 		CHECKING_IN_TRANSFER(509),
-		DEFAULT_ACCOUNT(697);
+		DEFAULT_ACCOUNT(697),
+		SUSPENSE_BALANCING(698);
 		
 		public final int id;
 		
@@ -644,6 +646,16 @@ public final class DictionaryIDs {
 		}
 	}
 
+	public enum M_Replenish {
+		P_CHAIR_IN_HQ("bd5db323-0341-4b29-9fbe-0887b98e7b3b");
+
+		public final String uuid;
+
+		private M_Replenish(String uuid) {
+			this.uuid = uuid;
+		}
+	}
+
 	public enum M_RMAType {
 		DAMAGE_ON_ARRIVAL(100);
 		
@@ -868,6 +880,8 @@ public final class DictionaryIDs {
 	
 	public enum AD_Process {
 		CACHE_RESET(205),
+		STANDARD_COST_UPDATE(182),
+		CREATE_UPDATE_PRODUCTION_LINES(53226),
 		C_ORDER_PROCESS(104),
 		DBA_RECOMPILE(185),
 		AD_COLUMN_SYNC(181),
@@ -875,7 +889,8 @@ public final class DictionaryIDs {
 		CREATE_FOREIGN_KEY(200058),
 		CREATE_TABLE(200134),
 		AD_TABLE_CREATE_PARTITION(200157),
-		DETACH_OR_REATTACH_PARTITION(200158);
+		DETACH_OR_REATTACH_PARTITION(200158),
+		RV_STORAGE(236);
 		
 		public final int id;
 

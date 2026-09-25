@@ -26,9 +26,11 @@ package org.idempiere.test.base;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 import org.compiere.apps.form.Match;
 import org.compiere.minigrid.ColumnInfo;
@@ -50,10 +52,15 @@ import org.compiere.model.MStorageReservation;
 import org.compiere.model.MWarehouse;
 import org.compiere.model.SystemIDs;
 import org.compiere.process.DocAction;
+import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ServerProcessCtl;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
+import org.idempiere.acct.IDoc;
+import org.idempiere.acct.doc.Doc;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
@@ -1048,4 +1055,220 @@ public class MatchPOTest extends AbstractTestCase {
 		qtyOrdered1 = MStorageReservation.getQty(product.get_ID(), order.getM_Warehouse_ID(), 0, false, getTrxName());
 		assertEquals(qtyOrdered.intValue(), qtyOrdered1.intValue(), "Unexpected change in QtyOrdered");
 	}
+	
+	/**
+	 * IDEMPIERE-6828 Matched PO Status "Deferred" not being posted upon MR match
+	 * PO Qty=30
+	 * PI Qty=25 (against PO)
+	 * MR1 Qty=30 (against PO)
+	 */
+	@Test
+	public void testDeferredMatchedPO() {
+		MProduct product = new MProduct(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id, getTrxName());
+		
+		// PO
+		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id));
+		order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
+		order.setIsSOTrx(false);
+		order.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		order.setDateOrdered(today);
+		order.setDatePromised(today);
+		order.saveEx();
+
+		MOrderLine orderLine = new MOrderLine(order);
+		orderLine.setLine(10);
+		orderLine.setProduct(product);
+		orderLine.setQty(new BigDecimal("30"));
+		orderLine.setDatePromised(today);
+		orderLine.saveEx();
+		
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		order.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+		
+		// PI
+		MInvoice invoice = new MInvoice(order, DictionaryIDs.C_DocType.AP_INVOICE.id, today);
+		invoice.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_APInvoice);
+		invoice.setDocStatus(DocAction.STATUS_Drafted);
+		invoice.setDocAction(DocAction.ACTION_Complete);
+		invoice.saveEx();
+		
+		MInvoiceLine invoiceLine = new MInvoiceLine(invoice);
+		invoiceLine.setOrderLine(orderLine);
+		invoiceLine.setLine(10);
+		invoiceLine.setProduct(orderLine.getProduct());
+		invoiceLine.setQty(new BigDecimal("25"));
+		invoiceLine.saveEx();
+		
+		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+		invoice.load(getTrxName());
+		assertFalse(info.isError(), info.getSummary());
+		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
+		if (!invoice.isPosted()) {
+			String error = DocumentEngine.postImmediate(Env.getCtx(), invoice.getAD_Client_ID(), MInvoice.Table_ID, invoice.get_ID(), false, getTrxName());
+			assertNull(error, error);
+		}
+		invoice.load(getTrxName());
+		assertTrue(invoice.isPosted());
+		
+		MMatchPO[] matchPOs = MMatchPO.getOrderLine(Env.getCtx(), orderLine.get_ID(), getTrxName());
+		assertEquals(1, matchPOs.length, "Exactly one Match PO record should be created");
+		String posted = DB.getSQLValueStringEx(getTrxName(), "SELECT Posted FROM M_MatchPO WHERE M_MatchPO_ID=?", matchPOs[0].getM_MatchPO_ID());
+		assertEquals(IDoc.STATUS_Deferred, posted, "Posting status should be 'Deferred'");
+		
+		// MR
+		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered());
+		receipt.setDocStatus(DocAction.STATUS_Drafted);
+		receipt.setDocAction(DocAction.ACTION_Complete);
+		receipt.saveEx();
+
+		MInOutLine receiptLine = new MInOutLine(receipt);
+		receiptLine.setOrderLine(orderLine, 0, new BigDecimal("30"));
+		receiptLine.setQty(new BigDecimal("30"));
+		receiptLine.saveEx();
+
+		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		receipt.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
+		if (!receipt.isPosted()) {
+			String error = DocumentEngine.postImmediate(Env.getCtx(), receipt.getAD_Client_ID(), receipt.get_Table_ID(), receipt.get_ID(), false, getTrxName());
+			assertNull(error, error);
+		}
+		
+		matchPOs = MMatchPO.getOrderLine(Env.getCtx(), orderLine.get_ID(), getTrxName());
+		assertEquals(2, matchPOs.length, "Exactly two Match PO records should be created");
+		for (MMatchPO matchPO : matchPOs) 
+			assertTrue(matchPO.isPosted(), "Match PO record should be posted");
+	}
+	
+	/**
+	 * IDEMPIERE-6828 Matched PO Status "Deferred" not being posted upon MR match
+	 * PO Qty=30
+	 * PI1 Qty=25 (against PO)
+	 * PI2 Qty=5 (against PO)
+	 * MR Qty=30 (against PO)
+	 */
+	@Test
+	public void testDeferredMatchedPO2() {
+		MProduct product = new MProduct(Env.getCtx(), DictionaryIDs.M_Product.MULCH.id, getTrxName());
+		
+		// PO
+		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id));
+		order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
+		order.setIsSOTrx(false);
+		order.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		order.setDateOrdered(today);
+		order.setDatePromised(today);
+		order.saveEx();
+
+		MOrderLine orderLine = new MOrderLine(order);
+		orderLine.setLine(10);
+		orderLine.setProduct(product);
+		orderLine.setQty(new BigDecimal("30"));
+		orderLine.setDatePromised(today);
+		orderLine.saveEx();
+		
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		order.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+		
+		// PI1
+		MInvoice invoice1 = new MInvoice(order, DictionaryIDs.C_DocType.AP_INVOICE.id, today);
+		invoice1.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_APInvoice);
+		invoice1.setDocStatus(DocAction.STATUS_Drafted);
+		invoice1.setDocAction(DocAction.ACTION_Complete);
+		invoice1.saveEx();
+		
+		MInvoiceLine invoiceLine1 = new MInvoiceLine(invoice1);
+		invoiceLine1.setOrderLine(orderLine);
+		invoiceLine1.setLine(10);
+		invoiceLine1.setProduct(orderLine.getProduct());
+		invoiceLine1.setQty(new BigDecimal("25"));
+		invoiceLine1.saveEx();
+		
+		info = MWorkflow.runDocumentActionWorkflow(invoice1, DocAction.ACTION_Complete);
+		invoice1.load(getTrxName());
+		assertFalse(info.isError(), info.getSummary());
+		assertEquals(DocAction.STATUS_Completed, invoice1.getDocStatus());
+		if (!invoice1.isPosted()) {
+			String error = DocumentEngine.postImmediate(Env.getCtx(), invoice1.getAD_Client_ID(), MInvoice.Table_ID, invoice1.get_ID(), false, getTrxName());
+			assertNull(error, error);
+		}
+		invoice1.load(getTrxName());
+		assertTrue(invoice1.isPosted());
+		
+		MMatchPO[] matchPOs = MMatchPO.getOrderLine(Env.getCtx(), orderLine.get_ID(), getTrxName());
+		assertEquals(1, matchPOs.length, "Exactly one Match PO record should be created");
+		String posted = DB.getSQLValueStringEx(getTrxName(), "SELECT Posted FROM M_MatchPO WHERE M_MatchPO_ID=?", matchPOs[0].getM_MatchPO_ID());
+		assertEquals(Doc.STATUS_Deferred, posted, "Posting status should be 'Deferred'");
+		
+		// PI2
+		MInvoice invoice2 = new MInvoice(order, DictionaryIDs.C_DocType.AP_INVOICE.id, today);
+		invoice2.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_APInvoice);
+		invoice2.setDocStatus(DocAction.STATUS_Drafted);
+		invoice2.setDocAction(DocAction.ACTION_Complete);
+		invoice2.saveEx();
+		
+		MInvoiceLine invoiceLine2 = new MInvoiceLine(invoice2);
+		invoiceLine2.setOrderLine(orderLine);
+		invoiceLine2.setLine(10);
+		invoiceLine2.setProduct(orderLine.getProduct());
+		invoiceLine2.setQty(new BigDecimal("5"));
+		invoiceLine2.saveEx();
+		
+		info = MWorkflow.runDocumentActionWorkflow(invoice2, DocAction.ACTION_Complete);
+		invoice2.load(getTrxName());
+		assertFalse(info.isError(), info.getSummary());
+		assertEquals(DocAction.STATUS_Completed, invoice2.getDocStatus());
+		if (!invoice2.isPosted()) {
+			String error = DocumentEngine.postImmediate(Env.getCtx(), invoice2.getAD_Client_ID(), MInvoice.Table_ID, invoice2.get_ID(), false, getTrxName());
+			assertNull(error, error);
+		}
+		invoice2.load(getTrxName());
+		assertTrue(invoice2.isPosted());
+		
+		matchPOs = MMatchPO.getOrderLine(Env.getCtx(), orderLine.get_ID(), getTrxName());
+		assertEquals(2, matchPOs.length, "Exactly two Match PO records should be created");
+		posted = DB.getSQLValueStringEx(getTrxName(), "SELECT Posted FROM M_MatchPO WHERE M_MatchPO_ID=?", matchPOs[0].getM_MatchPO_ID());
+		assertEquals(Doc.STATUS_Deferred, posted, "Posting status should be 'Deferred'");
+		posted = DB.getSQLValueStringEx(getTrxName(), "SELECT Posted FROM M_MatchPO WHERE M_MatchPO_ID=?", matchPOs[1].getM_MatchPO_ID());
+		assertEquals(Doc.STATUS_Deferred, posted, "Posting status should be 'Deferred'");
+		
+		// MR
+		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered());
+		receipt.setDocStatus(DocAction.STATUS_Drafted);
+		receipt.setDocAction(DocAction.ACTION_Complete);
+		receipt.saveEx();
+
+		MInOutLine receiptLine = new MInOutLine(receipt);
+		receiptLine.setOrderLine(orderLine, 0, new BigDecimal("30"));
+		receiptLine.setQty(new BigDecimal("30"));
+		receiptLine.saveEx();
+
+		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		receipt.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
+		if (!receipt.isPosted()) {
+			String error = DocumentEngine.postImmediate(Env.getCtx(), receipt.getAD_Client_ID(), receipt.get_Table_ID(), receipt.get_ID(), false, getTrxName());
+			assertNull(error, error);
+		}
+		
+		matchPOs = MMatchPO.getOrderLine(Env.getCtx(), orderLine.get_ID(), getTrxName());
+		assertEquals(2, matchPOs.length, "Exactly two Match PO records should be created");
+		for (MMatchPO matchPO : matchPOs) 
+			assertTrue(matchPO.isPosted(), "Match PO record should be posted");
+	}
+	
 }

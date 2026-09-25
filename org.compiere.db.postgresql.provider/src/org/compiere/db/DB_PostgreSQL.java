@@ -356,7 +356,14 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	 */
 	public String convertStatement (String oraStatement)
 	{
-		if (!isNativeMode())
+		// IDEMPIERE-7023 hook: apply ISQLStatementRewriter providers BEFORE the
+		// convertCache lookup. Skip the cache entirely when any registered rewriter
+		// declares its output non-cacheable (rewriteIsCacheable=false), i.e. when
+		// rewrite depends on a dynamic context (ThreadLocal, session, etc.).
+		oraStatement = org.compiere.dbPort.SQLStatementRewriterProvider.rewriteStatements(oraStatement);
+		boolean useCache = org.compiere.dbPort.SQLStatementRewriterProvider.isConvertCacheable();
+
+		if (!isNativeMode() && useCache)
 		{
 			String cache = convertCache.get(oraStatement);
 			if (cache != null) {
@@ -392,7 +399,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 			}
 			//end vpj-cd 24/06/2005 e-evolution
 
-		if (!isNativeMode())
+		if (!isNativeMode() && useCache)
 			convertCache.put(oraStatement, retValue[0]);
 
 		//  Diagnostics (show changed, but not if AD_Error
@@ -1172,18 +1179,27 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	
 	@Override
 	public String intersectClauseForCSV(String columnName, String csv, boolean isNotClause) {
-		StringBuilder builder = new StringBuilder();
-		if(isNotClause)
-			builder.append("NOT");
-		builder.append("(string_to_array(")
-			.append(columnName)
-			.append(",',')");
-		builder.append(" && "); //intersect
-		builder.append("string_to_array(")
-			.append(DB.TO_STRING(csv))
-			.append(",','))");
+	    StringBuilder builder = new StringBuilder();
 
-		return builder.toString();
+	    if (isNotClause)
+	        builder.append("(").append("NOT ");
+
+	    builder.append("(string_to_array(")
+	        .append(columnName)
+	        .append(",',')");
+
+	    builder.append(" && "); // intersect
+
+	    builder.append("string_to_array(")
+	        .append(DB.TO_STRING(csv))
+	        .append(",','))");
+
+	    if (isNotClause)
+	        builder.append(" OR ")
+	               .append(columnName)
+	               .append(" IS NULL)");
+
+	    return builder.toString();
 	}
 	
 	@Override
@@ -1193,16 +1209,26 @@ public class DB_PostgreSQL implements AdempiereDatabase
 	
 	@Override
 	public SQLFragment intersectFilterForCSV(String columnName, String csv, boolean isNotClause) {
-		StringBuilder builder = new StringBuilder();
-		if(isNotClause)
-			builder.append("NOT");
-		builder.append("(string_to_array(")
-			.append(columnName)
-			.append(",',')");
-		builder.append(" && "); //intersect
-		builder.append("string_to_array(?,','))");
 
-		return new SQLFragment(builder.toString(), List.of(csv));
+	    StringBuilder builder = new StringBuilder();
+
+	    if (isNotClause) {
+	        builder.append("(").append("NOT ");
+	    }
+
+	    builder.append("(string_to_array(")
+	           .append(columnName)
+	           .append(",',')");
+	    builder.append(" && "); // intersect
+	    builder.append("string_to_array(?,','))");
+
+	    if (isNotClause) {
+	        builder.append(" OR ")
+	               .append(columnName)
+	               .append(" IS NULL)");
+	    }
+
+	    return new SQLFragment(builder.toString(), List.of(csv));
 	}
 	
 	@Override

@@ -13,6 +13,7 @@
  *****************************************************************************/
 package org.idempiere.test.base;
 
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -49,6 +50,7 @@ import org.compiere.model.PO;
 import org.compiere.model.X_Test;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Ini;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Language;
 import org.compiere.util.TimeUtil;
@@ -1197,17 +1199,17 @@ public class DBTest extends AbstractTestCase
 	public void testInClauseForCSV_NotInClause() {
 		// NOT IN with IDs
 		String result = DB.inClauseForCSV("AD_Client_ID", "11,0", true);
-		assertEquals("AD_Client_ID NOT  IN (11,0)", result, 
+		assertEquals("(AD_Client_ID NOT IN (11,0) OR AD_Client_ID IS NULL)", result, 
 				"NOT IN clause should include NOT keyword for IDs");
 		
 		// NOT IN with strings
 		result = DB.inClauseForCSV("Status", "Draft,Invalid", true);
-		assertEquals("Status NOT  IN ('Draft','Invalid')", result, 
+		assertEquals("(Status NOT IN ('Draft','Invalid') OR Status IS NULL)", result, 
 				"NOT IN clause should include NOT keyword for strings");
 		
 		// NOT IN with single value
 		result = DB.inClauseForCSV("DocStatus", "VO", true);
-		assertEquals("DocStatus NOT  IN ('VO')", result, 
+		assertEquals("(DocStatus NOT IN ('VO') OR DocStatus IS NULL)", result, 
 				"NOT IN with single value should work");
 		
 		// Regular IN (false parameter)
@@ -1220,17 +1222,17 @@ public class DBTest extends AbstractTestCase
 	public void testInFilterForCSV_NotInClause() {
 		// NOT IN with IDs
 		SQLFragment result = DB.inFilterForCSV("AD_Client_ID", "11,0", true);
-		assertEquals(new SQLFragment("AD_Client_ID NOT IN (?,?)", List.of(11, 0)), result, 
+		assertEquals(new SQLFragment("(AD_Client_ID NOT IN (?,?) OR AD_Client_ID IS NULL)", List.of(11, 0)), result, 
 				"NOT IN clause should include NOT keyword for IDs");
 		
 		// NOT IN with strings
 		result = DB.inFilterForCSV("Status", "Draft,Invalid", true);
-		assertEquals(new SQLFragment("Status NOT IN (?,?)", List.of("Draft", "Invalid")), result, 
+		assertEquals(new SQLFragment("(Status NOT IN (?,?) OR Status IS NULL)", List.of("Draft", "Invalid")), result, 
 				"NOT IN clause should include NOT keyword for strings");
 		
 		// NOT IN with single value
 		result = DB.inFilterForCSV("DocStatus", "VO", true);
-		assertEquals(new SQLFragment("DocStatus NOT IN (?)", List.of("VO")), result, 
+		assertEquals(new SQLFragment("(DocStatus NOT IN (?) OR DocStatus IS NULL)", List.of("VO")), result, 
 				"NOT IN with single value should work");
 		
 		// Regular IN (false parameter)
@@ -1401,7 +1403,7 @@ public class DBTest extends AbstractTestCase
 		
 		// NOT IN for excluding certain values
 		result = DB.inClauseForCSV("DocStatus", "VO,RE,IN", true);
-		assertEquals("DocStatus NOT  IN ('VO','RE','IN')", result, 
+		assertEquals("(DocStatus NOT IN ('VO','RE','IN') OR DocStatus IS NULL)", result, 
 				"Exclude voided, reversed, and invalid statuses");
 		
 		// Table names with mixed case
@@ -1434,7 +1436,7 @@ public class DBTest extends AbstractTestCase
 		
 		// NOT IN for excluding certain values
 		result = DB.inFilterForCSV("DocStatus", "VO,RE,IN", true);
-		assertEquals(new SQLFragment("DocStatus NOT IN (?,?,?)", List.of("VO", "RE", "IN")), result, 
+		assertEquals(new SQLFragment("(DocStatus NOT IN (?,?,?) OR DocStatus IS NULL)", List.of("VO", "RE", "IN")), result, 
 				"Exclude voided, reversed, and invalid statuses");
 		
 		// Table names with mixed case
@@ -1494,4 +1496,21 @@ public class DBTest extends AbstractTestCase
 		count = DB.getSQLValue(null, sql, inClause.parameters());
 		assertTrue(count >= 2, "NOT IN with non-existent ID should return all clients");
 	}
+
+	@Test
+	public void testQuotedColumnPostgres() {
+		if (DB.isOracle()) return;
+		final String originalLogMigrationScript = Env.getContext(Env.getCtx(), Ini.P_LOGMIGRATIONSCRIPT);
+		// this query as constructed at GridTable.createSelectSql on native mode
+		// on native mode the Limit column is changed to "limit" calling DB_PostgreSQL.quoteColumnName
+		final String sql = "SELECT AD_WF_Node_UU,AD_WF_Node_ID,Value,Name,Description,\"action\",R_MailText_ID,\"limit\" FROM AD_WF_Node WHERE AD_WF_Node_ID=244";
+		assertThatNoException().isThrownBy(() -> DB.getSQLArrayObjectsEx(getTrxName(), sql));
+		try {
+			Env.setContext(Env.getCtx(), Ini.P_LOGMIGRATIONSCRIPT, "Y");
+			assertThatNoException().isThrownBy(() -> DB.getSQLArrayObjectsEx(getTrxName(), sql));
+		} finally {
+			Env.setContext(Env.getCtx(), Ini.P_LOGMIGRATIONSCRIPT, originalLogMigrationScript);
+		}
+	}
+
 }

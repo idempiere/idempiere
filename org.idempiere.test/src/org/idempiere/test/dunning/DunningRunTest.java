@@ -28,6 +28,7 @@ package org.idempiere.test.dunning;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -158,4 +159,76 @@ public class DunningRunTest extends AbstractTestCase {
 		}
 	}
 
+	/**
+	 * Test that getEntries returns active entries.
+	 */
+	@Test
+	public void testGetEntriesReturnsActiveEntries() {
+		Properties ctx = Env.getCtx();
+		String trxName = getTrxName();
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+
+		MDunningRun dr = new MDunningRun(ctx, 0, trxName);
+		dr.setDunningDate(today);
+		dr.setC_Dunning_ID(DictionaryIDs.C_Dunning.DEFAULT.id);
+		dr.setC_DunningLevel_ID(DictionaryIDs.C_DunningLevel.DUN_ALL_DUE_INVOICES.id);
+		dr.saveEx();
+
+		MDunningRunEntry entry = new MDunningRunEntry(dr);
+		entry.setBPartner(MBPartner.get(ctx, DictionaryIDs.C_BPartner.C_AND_W.id), true);
+		entry.setC_DunningLevel_ID(DictionaryIDs.C_DunningLevel.DUN_ALL_DUE_INVOICES.id);
+		entry.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
+		entry.setIsActive(true);
+		entry.saveEx();
+
+		MDunningRunEntry[] entries = dr.getEntries(true);
+		assertNotNull(entries, "getEntries should not return null");
+		assertEquals(1, entries.length, "getEntries should return exactly the one active entry");
+		assertEquals(entry.getC_DunningRunEntry_ID(), entries[0].getC_DunningRunEntry_ID(),
+				"The returned entry ID should match the created active entry");
+	}
+
+	/**
+	 * Test that getEntries excludes inactive entries.
+	 * After the fix, only active entries should be returned.
+	 */
+	@Test
+	public void testGetEntriesExcludesInactiveEntries() {
+		Properties ctx = Env.getCtx();
+		String trxName = getTrxName();
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+
+		MDunningRun dr = new MDunningRun(ctx, 0, trxName);
+		dr.setDunningDate(today);
+		dr.setC_Dunning_ID(DictionaryIDs.C_Dunning.DEFAULT.id);
+		dr.setC_DunningLevel_ID(DictionaryIDs.C_DunningLevel.DUN_ALL_DUE_INVOICES.id);
+		dr.saveEx();
+
+		// Create an active entry
+		MDunningRunEntry activeEntry = new MDunningRunEntry(dr);
+		activeEntry.setBPartner(MBPartner.get(ctx, DictionaryIDs.C_BPartner.C_AND_W.id), true);
+		activeEntry.setC_DunningLevel_ID(DictionaryIDs.C_DunningLevel.DUN_ALL_DUE_INVOICES.id);
+		activeEntry.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
+		activeEntry.setIsActive(true);
+		activeEntry.saveEx();
+
+		// Create an inactive entry
+		MDunningRunEntry inactiveEntry = new MDunningRunEntry(dr);
+		inactiveEntry.setBPartner(MBPartner.get(ctx, DictionaryIDs.C_BPartner.C_AND_W.id), true);
+		inactiveEntry.setC_DunningLevel_ID(DictionaryIDs.C_DunningLevel.DUN_ALL_DUE_INVOICES.id);
+		inactiveEntry.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
+		inactiveEntry.setIsActive(false);
+		inactiveEntry.saveEx();
+
+		MDunningRunEntry[] entries = dr.getEntries(true);
+		assertNotNull(entries, "getEntries should not return null");
+		assertEquals(1, entries.length, "getEntries should return only the active entry, not the inactive one");
+		assertEquals(activeEntry.getC_DunningRunEntry_ID(), entries[0].getC_DunningRunEntry_ID(),
+				"The returned entry should be the active one");
+		for (MDunningRunEntry e : entries) {
+			assertTrue(e.isActive(), "All returned entries must be active");
+			assertFalse(e.getC_DunningRunEntry_ID() == inactiveEntry.getC_DunningRunEntry_ID(),
+					"Inactive entry must not appear in getEntries result");
+		}
+	}
 }

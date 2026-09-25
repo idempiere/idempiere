@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--iDempiere(r) Release 14_2026-03-09 - Smart ERP & CRM -->
+<!--iDempiere Translation file DTD -->
+<!ELEMENT idempiereTrl (row+)>
+<!ATTLIST idempiereTrl
+	table CDATA #REQUIRED
+	language CDATA #REQUIRED
+>
+<!ELEMENT row (value+)>
+<!ATTLIST row
+	trl CDATA #IMPLIED
+	id CDATA #REQUIRED
+>
+<!ELEMENT value (#PCDATA)>
+<!ATTLIST value
+	original CDATA #IMPLIED
+	column CDATA #REQUIRED
+>

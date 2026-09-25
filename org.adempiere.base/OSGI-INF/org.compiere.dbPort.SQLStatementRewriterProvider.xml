@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.compiere.dbPort.SQLStatementRewriterProvider">
+   <implementation class="org.compiere.dbPort.SQLStatementRewriterProvider"/>
+   <reference bind="addISQLStatementRewriter" cardinality="0..n" interface="org.compiere.dbPort.ISQLStatementRewriter" name="ISQLStatementRewriter" policy="dynamic" unbind="removeISQLStatementRewriter"/>
+</scr:component>

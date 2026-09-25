@@ -19,6 +19,7 @@ package org.adempiere.pipo2.handler;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
@@ -28,6 +29,7 @@ import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_ReportView_Col;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.model.X_AD_ReportView_Col;
 import org.compiere.util.Env;
@@ -63,9 +65,9 @@ public class ReportViewColElementHandler extends AbstractElementHandler {
 				if (!mReportviewCol.is_new()) {
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_ReportView_Col.Table_Name,
 							mReportviewCol);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				} else {
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}
 				if (mReportviewCol.save(getTrxName(ctx)) == true) {
 					logImportDetail(ctx, impDetail, 1, "" + mReportviewCol.getAD_ReportView_ID(),
@@ -84,8 +86,8 @@ public class ReportViewColElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(PIPOContext ctx, TransformerHandler document)
-			throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document)
+			throws Exception {
 		int AD_ReportView_Col_ID = Env.getContextAsInt(ctx.ctx,
 				X_AD_ReportView_Col.COLUMNNAME_AD_ReportView_Col_ID);
 		if (ctx.packOut.isExported(X_AD_ReportView_Col.COLUMNNAME_AD_ReportView_Col_ID+"|"+AD_ReportView_Col_ID))
@@ -101,12 +103,12 @@ public class ReportViewColElementHandler extends AbstractElementHandler {
 		
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
-		document.startElement("", "", X_AD_ReportView_Col.Table_Name, atts);
+		document.startElement(X_AD_ReportView_Col.Table_Name, atts);
 		createReportViewColBinding(ctx, document, m_Reportview_Col);
-		document.endElement("", "", X_AD_ReportView_Col.Table_Name);
+		document.endElement(X_AD_ReportView_Col.Table_Name);
 	}
 
-	private void createReportViewColBinding(PIPOContext ctx, TransformerHandler document,
+	private void createReportViewColBinding(PIPOContext ctx, IPackSerializer document,
 			X_AD_ReportView_Col m_Reportview_Col) {
 
 		PoExporter filler = new PoExporter(ctx, document, m_Reportview_Col);
@@ -118,11 +120,11 @@ public class ReportViewColElementHandler extends AbstractElementHandler {
 	}
 
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer,
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
 		Env.setContext(packout.getCtx().ctx, I_AD_ReportView_Col.COLUMNNAME_AD_ReportView_Col_ID, recordId);
-		create(packout.getCtx(), packoutHandler);
+		create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(I_AD_ReportView_Col.COLUMNNAME_AD_ReportView_Col_ID);
 	}
 }

@@ -1,0 +1,21 @@
+-- IDEMPIERE-7059 Scheduler window should be restricted to Advanced Users only
+SELECT register_migration_script('202607060943_IDEMPIERE-7059.sql') FROM dual;
+
+SET SQLBLANKLINES ON
+SET DEFINE OFF
+
+-- Jul 6, 2026, 9:44:13 AM CEST
+UPDATE AD_Tab SET IsAdvancedTab='Y',Updated=TO_TIMESTAMP('2026-07-06 09:44:13','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=10 WHERE AD_Tab_ID=589
+;
+
+-- Jul 6, 2026, 7:32:06 PM CEST
+UPDATE AD_Tab SET IsAdvancedTab='Y',Updated=TO_TIMESTAMP('2026-07-06 19:32:05','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tab_ID=590
+;
+
+-- Jul 6, 2026, 7:32:09 PM CEST
+UPDATE AD_Tab SET IsAdvancedTab='Y',Updated=TO_TIMESTAMP('2026-07-06 19:32:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tab_ID=639
+;
+
+-- Jul 6, 2026, 7:32:16 PM CEST
+UPDATE AD_Tab SET IsAdvancedTab='Y',Updated=TO_TIMESTAMP('2026-07-06 19:32:16','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Tab_ID=591
+;

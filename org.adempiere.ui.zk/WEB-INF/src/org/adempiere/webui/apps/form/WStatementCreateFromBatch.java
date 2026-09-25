@@ -60,7 +60,7 @@ import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.Hbox;
+import org.adempiere.webui.component.FlexHlayout;
 import org.zkoss.zul.Space;
 
 /**
@@ -279,7 +279,7 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 		row.appendChild(tenderTypeField.getComponent());
 
 		row.appendChild(amtFromLabel.rightAlign());
-		Hbox hbox = new Hbox();
+		FlexHlayout hbox = new FlexHlayout();
 		hbox.appendChild(amtFromField.getComponent());
 		hbox.appendChild(amtToLabel.rightAlign());
 		hbox.appendChild(amtToField.getComponent());
@@ -290,7 +290,7 @@ public class WStatementCreateFromBatch extends StatementCreateFromBatch implemen
 		row.appendChild(bPartnerLookup.getComponent());
 		row.appendChild(dateFromLabel.rightAlign());
 		
-		hbox = new Hbox();
+		hbox = new FlexHlayout();
 		hbox.appendChild(dateFromField.getComponent());
 		hbox.appendChild(dateToLabel.rightAlign());
 		hbox.appendChild(dateToField.getComponent());

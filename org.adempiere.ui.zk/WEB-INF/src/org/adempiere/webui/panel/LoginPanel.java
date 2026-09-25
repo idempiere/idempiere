@@ -25,6 +25,7 @@ package org.adempiere.webui.panel;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -48,6 +49,7 @@ import org.adempiere.webui.component.Window;
 import org.adempiere.webui.event.TokenEvent;
 import org.adempiere.webui.exception.ApplicationException;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.sso.filter.SSOWebUIFilter;
 import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.BrowserToken;
@@ -402,7 +404,27 @@ public class LoginPanel extends Window implements EventListener<Event>
 		boolean isSSOEnable = MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false);
 		if (isSSOEnable)
 		{
-			List<MSSOPrincipalConfig> configs = MSSOPrincipalConfig.getAllSSOPrincipalConfig();
+			// if has tenant login prefix, get SSO principal config by tenant login prefix
+			// else get system level SSO principal config
+			Session currSess = Executions.getCurrent().getDesktop().getSession();
+			// always show login page for admin login (admin.zul)
+			var adminLogin = currSess.getAttribute(ISSOPrincipalService.SSO_ADMIN_LOGIN);
+			if (adminLogin != null && adminLogin instanceof Boolean && (Boolean) adminLogin)
+				isShowLoginPage = true;
+        	String tenant = (String) currSess.getAttribute(SSOWebUIFilter.TENANT_PREFIX_PARAMETER);
+			List<MSSOPrincipalConfig> configs = new ArrayList<>();
+			if (!Util.isEmpty(tenant, true))
+			{
+				tenant = tenant.trim();
+				var client = MClient.getByLoginPrefix(tenant);
+				if (client != null)
+					configs = MSSOPrincipalConfig.getSSOPrincipalConfigByClient(client.getAD_Client_ID());
+			}
+			else
+			{
+				configs = MSSOPrincipalConfig.getSSOPrincipalConfigByClient(0);
+			}
+
 			if (configs != null && !configs.isEmpty())
 			{
 				tr = null;
@@ -418,7 +440,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 					tr.appendChild(td);
 					// Apply styles and add button
 					td.setStyle("display: flex; align-items: center;");
-					Button loginButton = createSSOLoginButton(config);
+					Button loginButton = createSSOLoginButton(config, tenant);
 					td.appendChild(loginButton);
 
 					td = new Td();
@@ -712,7 +734,9 @@ public class LoginPanel extends Window implements EventListener<Event>
 
         Session currSess = Executions.getCurrent().getDesktop().getSession();
         
-        KeyNamePair clientsKNPairs[] = login.getClients(userId, userPassword, ROLE_TYPES_WEBUI);
+		// get tenant login prefix from session which is set by filter
+        String tenant = (String) currSess.getAttribute(SSOWebUIFilter.TENANT_PREFIX_PARAMETER);
+        KeyNamePair clientsKNPairs[] = login.getClients(userId, userPassword, ROLE_TYPES_WEBUI, null, tenant);
         
         if (clientsKNPairs == null || clientsKNPairs.length == 0)
         {
@@ -809,6 +833,17 @@ public class LoginPanel extends Window implements EventListener<Event>
 	 */
 	private void btnResetPasswordClicked()
 	{
+		// IDEMPIERE-7060: when logging in by email, use the code-based reset flow
+		if (email_login)
+		{
+			String prefill = Login.getAppUser(txtUserId.getValue());
+			String lang = null;
+			if (lstLanguage.getSelectedItem() != null)
+				lang = (String) lstLanguage.getSelectedItem().getValue();
+			wndLogin.passwordReset(prefill, Env.getAD_Client_ID(ctx), lang);
+			return;
+		}
+
 		String userId = Login.getAppUser(txtUserId.getValue());
 		if (Util.isEmpty(userId))
     		throw new IllegalArgumentException(Msg.getMsg(ctx, "FillMandatory") + " " + lblUserId.getValue());
@@ -882,9 +917,10 @@ public class LoginPanel extends Window implements EventListener<Event>
 	 *
 	 * @param  config the SSO principle configuration used to customize the button and generate the
 	 *                redirect URL
+	 * @param tenant  the tenant identifier used to retrieve tenant-specific SSO configurations, if applicable 
 	 * @return        a configured {@link Button} object for SSO login
 	 */
-	private Button createSSOLoginButton(MSSOPrincipalConfig config)
+	private Button createSSOLoginButton(MSSOPrincipalConfig config, String tenant)
 	{
 		String name = config.getName();
 		String shortName = (!Util.isEmpty(name) && name.length() > 25) ? name.substring(0, 22) + "..." : name;
@@ -895,11 +931,10 @@ public class LoginPanel extends Window implements EventListener<Event>
 		button.addEventListener("onClick", event -> {
 
 			String referrerUrl = null;
-			if (Executions.getCurrent().getNativeRequest() != null && Executions.getCurrent().getNativeRequest() instanceof HttpServletRequest)
+			if (Executions.getCurrent().getNativeRequest() != null && Executions.getCurrent().getNativeRequest() instanceof HttpServletRequest request)
 			{
 				// Pass the current request param along with the selected provider so it can passed
 				// in the redirected URL after login
-				HttpServletRequest request = (HttpServletRequest) Executions.getCurrent().getNativeRequest();
 				referrerUrl = request.getHeader("Referer");
 				if (!Util.isEmpty(referrerUrl) && referrerUrl.indexOf("?") > 0)
 					referrerUrl = referrerUrl.substring(referrerUrl.indexOf("?") + 1);
@@ -907,9 +942,18 @@ public class LoginPanel extends Window implements EventListener<Event>
 					referrerUrl = null;
 			}
 
-			StringBuffer ssoURL = new StringBuffer("?").append(ISSOPrincipalService.SSO_SELECTED_PROVIDER).append("=").append(URLEncoder.encode(config.getSSO_PrincipalConfig_UU(), "UTF-8"));
+			
+			StringBuilder ssoURL = new StringBuilder("index.zul");
+			if (!Util.isEmpty(tenant, true))
+				ssoURL.append("?")
+					  .append(SSOWebUIFilter.TENANT_PREFIX_PARAMETER).append("=")
+					  .append(URLEncoder.encode(tenant, StandardCharsets.UTF_8));
+			
+			Executions.getCurrent().getSession().setAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER, 
+					config.getSSO_PrincipalConfig_UU());
+			
 			if (referrerUrl != null)
-				ssoURL.append("&").append(ISSOPrincipalService.SSO_QUERY_STRING).append("=").append(URLEncoder.encode(referrerUrl, "UTF-8"));
+				Executions.getCurrent().getSession().setAttribute(ISSOPrincipalService.SSO_QUERY_STRING, referrerUrl);
 			Executions.sendRedirect(ssoURL.toString());
 		});
 

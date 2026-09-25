@@ -23,10 +23,9 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
-import org.zkoss.zul.Div;
-import org.zkoss.zul.Vbox;
 
 /**
  * A custom accordion implementation using borderlayout.<br/>
@@ -41,8 +40,10 @@ public class Accordion extends Borderlayout implements EventListener<Event> {
 	 */
 	private static final long serialVersionUID = 5898232602746332810L;
 	
-	private Vbox southBox;
-	private Vbox northBox;
+	@SuppressWarnings("deprecation")
+	private org.zkoss.zul.Vbox southBox;
+	@SuppressWarnings("deprecation")
+	private org.zkoss.zul.Vbox northBox;
 	
 	/** List of label for component in {@link #componentList} */
 	private List<String> labelList = new ArrayList<String>();
@@ -54,10 +55,11 @@ public class Accordion extends Borderlayout implements EventListener<Event> {
 	/**
 	 * default constructor
 	 */
+	@SuppressWarnings("deprecation")
 	public Accordion() {
 		North north = new North();		
 		appendChild(north);
-		northBox = new Vbox();
+		northBox = new org.zkoss.zul.Vbox();
 		ZKUpdateUtil.setWidth(northBox, "100%");
 		north.appendChild(northBox);
 		north.setSplittable(false);
@@ -68,7 +70,7 @@ public class Accordion extends Borderlayout implements EventListener<Event> {
 		
 		South south = new South();
 		appendChild(south);
-		southBox = new Vbox();
+		southBox = new org.zkoss.zul.Vbox();
 		ZKUpdateUtil.setWidth(southBox, "100%");
 		south.appendChild(southBox);
 		south.setSplittable(false);

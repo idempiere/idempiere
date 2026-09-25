@@ -481,7 +481,14 @@ public class GridField
 			if(isAlwaysUpdatable)
 				return true;
 		}
-		
+
+		// IDEMPIERE-7024 hook: placed after always-updateable checks so providers
+		// cannot veto fields that are forced editable by core logic.
+		if (!org.adempiere.base.UIBehaviourProvider.isFieldEditable(ctx, this, checkContext, isGrid)) {
+			if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " NO - UIBehaviourProvider denied");
+			return false;
+		}
+
 		//check tab context
 		if (checkContext && getGridTab() != null &&
 			! "Y".equals(Env.getContext(Env.getCtx(), getWindowNo(), "_QUICK_ENTRY_MODE_")))

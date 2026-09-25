@@ -15,14 +15,14 @@
 	zk.load("adempiere.local.storage");
 ]]>
 </script>
-<window width="60%" mode="highlighted">
-<vbox style="padding: 5px">
+<window width="60%" mode="highlighted" style="padding: 5px; background-color:white;">
+<vlayout use="org.adempiere.webui.component.FlexVlayout">
 <window use="org.adempiere.webui.window.ErrorWindow" id="ErrorWindow"/>
 <div id="errorText"></div>
 <div style="margin-top: 10px">
 	<toolbarbutton id="continueText" href="/index.zul" label="Continue"/>
 </div>
-</vbox>
+</vlayout>
 <script defer="true">
 <![CDATA[
 	var callback = function(ok, val) {

@@ -19,6 +19,7 @@ package org.adempiere.pipo2.handler;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
@@ -28,6 +29,7 @@ import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.I_AD_Preference;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.MPreference;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_Package_Imp_Detail;
@@ -83,9 +85,9 @@ public class PreferenceElementHandler extends AbstractElementHandler {
 			String action = null;
 			if (!mPreference.is_new()) {
 				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Preference.Table_Name, mPreference);
-				action = "Update";
+				action = MPackageImpDetail.ACTION_UPDATE;
 			} else {
-				action = "New";
+				action = MPackageImpDetail.ACTION_INSERT;
 			}
 	
 			if (mPreference.save(getTrxName(ctx)) == true) {
@@ -102,8 +104,8 @@ public class PreferenceElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(PIPOContext ctx, TransformerHandler document)
-			throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document)
+			throws Exception {
 		int AD_Preference_ID = Env.getContextAsInt(ctx.ctx,
 				X_AD_Preference.COLUMNNAME_AD_Preference_ID);
 		if (ctx.packOut.isExported(X_AD_Preference.COLUMNNAME_AD_Preference_ID+"|"+AD_Preference_ID))
@@ -119,12 +121,12 @@ public class PreferenceElementHandler extends AbstractElementHandler {
 		
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
-		document.startElement("", "", X_AD_Preference.Table_Name, atts);
+		document.startElement(X_AD_Preference.Table_Name, atts);
 		createPreferenceBinding(ctx, document, m_Preference);
-		document.endElement("", "", I_AD_Preference.Table_Name);
+		document.endElement(X_AD_Preference.Table_Name);
 	}
 
-	private void createPreferenceBinding(PIPOContext ctx, TransformerHandler document,
+	private void createPreferenceBinding(PIPOContext ctx, IPackSerializer document,
 			X_AD_Preference m_Preference) {
 		PoExporter filler  = new PoExporter(ctx, document, m_Preference);
 		List<String> excludes = defaultExcludeList(X_AD_Preference.Table_Name);
@@ -136,11 +138,11 @@ public class PreferenceElementHandler extends AbstractElementHandler {
 	}
 
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer,
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
 		Env.setContext(packout.getCtx().ctx, I_AD_Preference.COLUMNNAME_AD_Preference_ID, recordId);
-		create(packout.getCtx(), packoutHandler);
+		create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(I_AD_Preference.COLUMNNAME_AD_Preference_ID);
 		
 	}

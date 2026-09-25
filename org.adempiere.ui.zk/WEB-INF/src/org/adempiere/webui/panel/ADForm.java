@@ -30,6 +30,7 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.GridTab;
 import org.compiere.model.MForm;
 import org.compiere.model.MSysConfig;
+import org.compiere.model.MUserDefForm;
 import org.compiere.model.X_AD_CtxHelp;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
@@ -209,6 +210,12 @@ public abstract class ADForm extends Window implements EventListener<Event>, IHe
     	String formName = mform.getClassname();
     	String name = mform.get_Translation(MForm.COLUMNNAME_Name);
 
+    	MUserDefForm userDef = MUserDefForm.getBestMatch(Env.getCtx(), adFormID);
+		if (userDef != null) {
+			if (userDef.getName() != null)
+				name = userDef.getName();
+		}
+    	
     	if (mform.get_ID() == 0 || formName == null)
     	{
 			throw new ApplicationException("There is no form associated with the specified form ID");

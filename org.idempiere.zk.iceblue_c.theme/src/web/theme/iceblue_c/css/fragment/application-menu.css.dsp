@@ -4,14 +4,14 @@
 .menu-href {
 	font-size: 11px;
 	font-weight: normal;
-	color: #333 !important;
+	color: var(--zk-appmenu-link-color) !important;
 	text-decoration: none !important;
 	padding-right: 4px;
 }
 .menu-href:hover, .menu-href:active {
 	text-decoration: none !important;
-	background: #e0f2ff;
-	color: rgba(0,0,0,0.9);
+	background: var(--zk-appmenu-link-hover-background-color);
+	color: var(--zk-appmenu-link-hover-color);
 }
 .menu-href img {
 	padding: 2px;
@@ -39,7 +39,7 @@
 }
 .menu-href [class^="z-icon-"] {
 	font-size: larger;
-	color: #333;	
+	color: var(--zk-appmenu-link-color);	
 	padding-right: 4px;
 	text-align: center;
 }
@@ -48,7 +48,7 @@
 }
 .menu-href-newbtn.z-toolbarbutton [class^="z-icon-"] {
 	font-size: smaller;
-	color: #333;
+	color: var(--zk-appmenu-link-color);
 }
 .menu-href-newbtn.z-toolbarbutton,
 .menu-href-newbtn.z-toolbarbutton .z-toolbarbutton-content {
@@ -81,7 +81,7 @@
 }
 .menu-search-toggle-box {
 	display: inline-block;
-	border: 1px solid #ababab;			
+	border: 1px solid var(--zk-appmenu-search-toggle-border-color);			
 }
 .menu-search-toggle-box .z-toolbarbutton-hover {
 	border: none;
@@ -174,7 +174,7 @@
 	display: inline-block;
 }
 .global-search-tabpanel .highlight {
-  background-color: #FFFF00;
+	background-color: var(--zk-appmenu-highlight-background-color);
 }
 <%-- application menu search result list item --%>
 .menu-search-list-toolbar-cell.z-listcell > div.z-listcell-content {

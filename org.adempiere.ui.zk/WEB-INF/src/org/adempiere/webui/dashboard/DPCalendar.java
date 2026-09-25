@@ -18,6 +18,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -46,12 +48,13 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
 import org.compiere.util.TrxEventListener;
+import org.compiere.util.Util;
 import org.idempiere.distributed.IMessageService;
 import org.idempiere.distributed.ITopic;
 import org.idempiere.distributed.ITopicSubscriber;
 import org.osgi.service.event.EventHandler;
 import org.zkoss.calendar.Calendars;
-import org.zkoss.calendar.api.CalendarEvent;
+import org.zkoss.calendar.api.CalendarItem;
 import org.zkoss.calendar.event.CalendarsEvent;
 import org.zkoss.calendar.impl.SimpleCalendarModel;
 import org.zkoss.zk.ui.Component;
@@ -79,8 +82,8 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 	private static final long serialVersionUID = -224914882522997787L;
 	private static final String ON_MOBILE_SET_SELECTED_TAB_ECHO = "onMobileSetSelectedTabEcho";
 	private static final String ON_DAY_CLICK_EVENT = "onDayClick";
-	private static final String ON_EVENT_EDIT_EVENT = "onEventEdit";
-	private static final String ON_EVENT_CREATE_EVENT = "onEventCreate";
+	private static final String ON_ITEM_EDIT_EVENT = CalendarsEvent.ON_ITEM_EDIT;
+	private static final String ON_ITEM_CREATE_EVENT = CalendarsEvent.ON_ITEM_CREATE;
 	private static final String ON_MOVE_DATE_EVENT = "onMoveDate";
 	private static final String ON_REQUEST_CHANGED_TOPIC = "onRequestChanged";
 	
@@ -141,8 +144,8 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 		
 		this.appendChild(component);
 
-		calendars.addEventListener(ON_EVENT_CREATE_EVENT, this);
-		calendars.addEventListener(ON_EVENT_EDIT_EVENT, this);	
+		calendars.addEventListener(ON_ITEM_CREATE_EVENT, this);
+		calendars.addEventListener(ON_ITEM_EDIT_EVENT, this);
 		calendars.addEventListener(ON_DAY_CLICK_EVENT, this);
 				
 		createStaticListeners();
@@ -224,7 +227,7 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 			else if (e.getTarget() == divArrowRight)
 				divArrowClicked(true);
 		}
-		else if (type.equals(ON_EVENT_CREATE_EVENT) && ! Env.isReadOnlySession()) {
+		else if (type.equals(ON_ITEM_CREATE_EVENT) && ! Env.isReadOnlySession()) {
 			if (e instanceof CalendarsEvent) {
 				CalendarsEvent calendarsEvent = (CalendarsEvent) e;
 				RequestWindow requestWin = new RequestWindow(calendarsEvent, this);
@@ -233,15 +236,15 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 		}	
 		else if (type.equals(ON_DAY_CLICK_EVENT) && ! Env.isReadOnlySession()) {
 			if (e.getData() instanceof Date date) {
-				CalendarsEvent calendarsEvent = new CalendarsEvent(ON_EVENT_CREATE_EVENT, e.getTarget(), null, date, date, 0, 0, 0, 0);
+				CalendarsEvent calendarsEvent = new CalendarsEvent(ON_ITEM_CREATE_EVENT, e.getTarget(), null, date, date, 0, 0, 0, 0);
 				RequestWindow requestWin = new RequestWindow(calendarsEvent, this);
 				SessionManager.getAppDesktop().showWindow(requestWin);
 			}
 		}
-		else if (type.equals(ON_EVENT_EDIT_EVENT)) {
+		else if (type.equals(ON_ITEM_EDIT_EVENT)) {
 			if (e instanceof CalendarsEvent) {
 				CalendarsEvent calendarsEvent = (CalendarsEvent) e;
-				CalendarEvent calendarEvent = calendarsEvent.getCalendarEvent();
+				CalendarItem calendarEvent = calendarsEvent.getCalendarItem();
 
 				if (calendarEvent instanceof ADCalendarEvent) {
 					ADCalendarEvent ce = (ADCalendarEvent) calendarEvent;
@@ -342,8 +345,11 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 					event.setEndDate(cal.getTime());
 
 					event.setContent(summary);
-					event.setHeaderColor(headerColor);
-					event.setContentColor(contentColor);
+					event.setTitle(summary);
+					if (!Util.isEmpty(headerColor, true))
+						event.setHeaderStyle("background-color:" + headerColor);
+					if (!Util.isEmpty(contentColor, true))
+						event.setContentStyle("background-color:" + contentColor);
 					event.setR_RequestType_ID(R_RequestType_ID);
 					event.setLocked(true);
 					events.add(event);
@@ -387,13 +393,16 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 					
 					event.setBeginDate(calBegin.getTime());
 					event.setEndDate(calEnd.getTime());
-					
-					if(event.getBeginDate().compareTo(event.getEndDate()) >= 0)
+
+					if(event.getBegin().compareTo(event.getEnd()) >= 0)
 						continue;
 
 					event.setContent(summary);
-					event.setHeaderColor(headerColor);
-					event.setContentColor(contentColor);
+					event.setTitle(summary);
+					if (!Util.isEmpty(headerColor, true))
+						event.setHeaderStyle("background-color:" + headerColor);
+					if (!Util.isEmpty(contentColor, true))
+						event.setContentStyle("background-color:" + contentColor);
 					event.setR_RequestType_ID(R_RequestType_ID);
 					event.setLocked(true);
 					events.add(event);
@@ -500,18 +509,20 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 	 * Update {@link #lblDate}
 	 */
 	private void updateDateLabel() {
-		Date b = calendars.getBeginDate();
-		Date e = calendars.getEndDate();
+		LocalDateTime b = calendars.getBeginDateTime();
+		LocalDateTime e = calendars.getEndDateTime();
 		SimpleDateFormat sdfV = DisplayType.getDateFormat();
-		sdfV.setTimeZone(calendars.getDefaultTimeZone());
-		lblDate.setValue(sdfV.format(b) + " - " + sdfV.format(e));
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern(sdfV.toPattern());
+		lblDate.setValue(dtf.format(b) + " - " + dtf.format(e));
 	}
 	
 	/**
 	 * Set {@link #calendars} to current date
 	 */
 	private void btnCurrentDateClicked() {
-		calendars.setCurrentDate(Calendar.getInstance(calendars.getDefaultTimeZone()).getTime());
+		calendars.setCurrentDateTime(LocalDateTime.ofInstant(
+				Calendar.getInstance(calendars.getDefaultTimeZone()).toInstant(),
+				calendars.getDefaultTimeZone().toZoneId()));
 		updateDateLabel();
 		updateUI();
 	}

@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,8 +38,11 @@ import javax.servlet.http.HttpSession;
 import org.adempiere.base.sso.ISSOPrincipalService;
 import org.adempiere.base.sso.SSOUtils;
 import org.compiere.model.I_SSO_PrincipalConfig;
+import org.compiere.model.MSSOPrincipalConfig;
 import org.compiere.model.MSysConfig;
+import org.compiere.util.Env;
 import org.compiere.util.Language;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 import com.nimbusds.oauth2.sdk.AuthorizationCode;
@@ -77,7 +82,6 @@ import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
  * @author hengsin
  */
 public class OIDCPrincipalService implements ISSOPrincipalService {
-	
 	/** code parameter from OIDC */
 	private static final String AUTHENTICATION_CODE_PARAMETER = "code";
 	
@@ -111,7 +115,29 @@ public class OIDCPrincipalService implements ISSOPrincipalService {
 
 	@Override
 	public Language getLanguage(Object principalObject) throws ParseException {
-		return Language.getBaseLanguage();
+		if (principalObject instanceof UserInfo userInfo) {
+			String localeClaim = userInfo.getLocale();
+			if (!Util.isEmpty(localeClaim, true)) {
+				Locale locale = Locale.forLanguageTag(localeClaim.trim().replace('_', '-'));
+				if (!Util.isEmpty(locale.getLanguage(), true)) {
+					ArrayList<String> loginLanguages = Env.getLoginLanguages();
+					StringBuilder languageCode = new StringBuilder(locale.getLanguage());
+					if (!Util.isEmpty(locale.getCountry(), true))
+						languageCode.append('_').append(locale.getCountry());
+
+					Language language = Language.getLanguage(languageCode.toString());
+					if (loginLanguages.contains(language.getAD_Language()))
+						return language;
+
+					// Fall back from a regional locale (for example de_DE) to an
+					// active login language with the same ISO language (for example de).
+					language = Language.getLanguage(locale.getLanguage());
+					if (loginLanguages.contains(language.getAD_Language()))
+						return language;
+				}
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -225,7 +251,11 @@ public class OIDCPrincipalService implements ISSOPrincipalService {
 	private OIDCProviderMetadata getMetaData() throws GeneralException, IOException {
 		if (metaData == null) {
 			String discoveryURI = principalConfig.getSSO_ApplicationDiscoveryURI();
-			Issuer issuer = new Issuer(discoveryURI.substring(0, discoveryURI.indexOf("/.well-known/openid-configuration")));			
+			String suffix = MSSOPrincipalConfig.WELL_KNOWN_OPENID_CONFIGURATION_SUFFIX;
+			if (Util.isEmpty(discoveryURI, true) || !discoveryURI.endsWith(suffix)) {
+				throw new GeneralException(Msg.getMsg(Env.getCtx(), "DiscoveryURIMustEndWith"));
+			}
+			Issuer issuer = new Issuer(discoveryURI.substring(0, discoveryURI.length() - suffix.length()));
 			metaData = OIDCProviderMetadata.resolve(issuer);
 		}
 		return metaData;
@@ -275,16 +305,17 @@ public class OIDCPrincipalService implements ISSOPrincipalService {
 			throws IOException {		
 		AuthenticationRequest authRequest = null;
 		try {
-			authRequest = new AuthenticationRequest.Builder(
+			AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(
 					new ResponseType(AUTHENTICATION_CODE_PARAMETER),		      
 					new Scope("openid", "profile", "email"),
 					new ClientID(principalConfig.getSSO_ApplicationClientID()),
 					new URI(getRedirectURL(principalConfig, redirectMode))) 
 			    .state(new State())
 			    .nonce(new Nonce())
-			    .prompt(new Prompt(Prompt.Type.LOGIN)) 
-			    .endpointURI(getMetaData().getAuthorizationEndpointURI())
-			    .build();
+			    .endpointURI(getMetaData().getAuthorizationEndpointURI());
+			if (principalConfig.isForceLogin())
+				builder.prompt(new Prompt(Prompt.Type.LOGIN));
+			authRequest = builder.build();
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(e);
 		} catch (GeneralException e) {

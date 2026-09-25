@@ -31,7 +31,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.compiere.model.FactsValidator;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClient;
 import org.compiere.model.MOrg;
@@ -39,8 +38,9 @@ import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.ModelValidator;
 import org.compiere.model.PO;
 import org.compiere.util.Env;
-
-import org.compiere.acct.Fact;
+import org.idempiere.acct.base.model.FactsValidator;
+import org.idempiere.acct.doc.Fact;
+import org.idempiere.acct.event.FactsValidationEngine;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,12 +51,14 @@ import org.junit.jupiter.api.parallel.Isolated;
 public class ModelValidationEngineTest extends AbstractTestCase {
 
 	private ModelValidationEngine engine;
+	private FactsValidationEngine factsEngine;
 	private TestValidator globalValidator;
 	private TestValidator clientValidator;
 
 	@BeforeEach
 	public void setUp() {
 		engine = ModelValidationEngine.get();
+		factsEngine = FactsValidationEngine.get();
 		globalValidator = new TestValidator();
 		clientValidator = new TestValidator();
 		clientValidator.setClientId(getAD_Client_ID());
@@ -70,6 +72,8 @@ public class ModelValidationEngineTest extends AbstractTestCase {
 		} catch (Exception e) {
 			fail(e.getMessage(), e);
 		}
+
+		factsEngine.addGlobalValidator(globalValidator);
 	}
 	
 	@AfterEach
@@ -79,8 +83,9 @@ public class ModelValidationEngineTest extends AbstractTestCase {
 		engine.removeModelChange("AD_Org", clientValidator);
 		engine.removeDocValidate("AD_Org", globalValidator);
 		engine.removeDocValidate("AD_Org", clientValidator);
-		engine.removeFactsValidate("AD_Org", globalValidator);
-		engine.removeFactsValidate("AD_Org", clientValidator);
+		factsEngine.removeFactsValidate("AD_Org", globalValidator);
+		factsEngine.removeFactsValidate("AD_Org", clientValidator);
+		factsEngine.removeGlobalValidator(globalValidator);
 		
 		try {
 			java.lang.reflect.Field f = ModelValidationEngine.class.getDeclaredField("m_globalValidators");
@@ -147,21 +152,65 @@ public class ModelValidationEngineTest extends AbstractTestCase {
 		MAcctSchema as = MAcctSchema.get(Env.getCtx(), Env.getContextAsInt(Env.getCtx(), "$C_AcctSchema_ID"));
 		List<Fact> facts = new ArrayList<>();
 		
-		engine.addFactsValidate(MOrg.Table_Name, globalValidator);
-		engine.fireFactsValidate(as, facts, org);
+		factsEngine.addFactsValidate(MOrg.Table_Name, globalValidator);
+		factsEngine.fireFactsValidate(as, facts, org);
 		assertEquals(1, globalValidator.factsValidateCount);
 		
-		engine.removeFactsValidate(MOrg.Table_Name, globalValidator);
-		engine.fireFactsValidate(as, facts, org);
+		factsEngine.removeFactsValidate(MOrg.Table_Name, globalValidator);
+		factsEngine.fireFactsValidate(as, facts, org);
 		assertEquals(1, globalValidator.factsValidateCount);
 		
-		engine.addFactsValidate(MOrg.Table_Name, clientValidator);
-		engine.fireFactsValidate(as, facts, org);
+		factsEngine.addFactsValidate(MOrg.Table_Name, clientValidator);
+		factsEngine.fireFactsValidate(as, facts, org);
 		assertEquals(1, clientValidator.factsValidateCount);
 		
-		engine.removeFactsValidate(MOrg.Table_Name, clientValidator);
-		engine.fireFactsValidate(as, facts, org);
+		factsEngine.removeFactsValidate(MOrg.Table_Name, clientValidator);
+		factsEngine.fireFactsValidate(as, facts, org);
 		assertEquals(1, clientValidator.factsValidateCount);
+	}
+
+	@Test
+	public void testFactsValidateIdempotentRegistration() {
+		MOrg org = MOrg.get(Env.getCtx(), getAD_Org_ID());
+		MAcctSchema as = MAcctSchema.get(Env.getCtx(), Env.getContextAsInt(Env.getCtx(), "$C_AcctSchema_ID"));
+		List<Fact> facts = new ArrayList<>();
+
+		// Register the same global listener twice for the same table.
+		factsEngine.addFactsValidate(MOrg.Table_Name, globalValidator);
+		factsEngine.addFactsValidate(MOrg.Table_Name, globalValidator);
+
+		factsEngine.fireFactsValidate(as, facts, org);
+
+		// Despite two add calls, the validator must fire exactly once.
+		assertEquals(1, globalValidator.factsValidateCount,
+				"Duplicate registration must not cause the validator to fire more than once");
+
+		factsEngine.removeFactsValidate(MOrg.Table_Name, globalValidator);
+	}
+
+	@Test
+	public void testFactsValidateScopeStableAfterGlobalRemoval() {
+		MOrg org = MOrg.get(Env.getCtx(), getAD_Org_ID());
+		MAcctSchema as = MAcctSchema.get(Env.getCtx(), Env.getContextAsInt(Env.getCtx(), "$C_AcctSchema_ID"));
+		List<Fact> facts = new ArrayList<>();
+
+		// Register while the validator IS in the global list → bucket key = tableName+"*"
+		factsEngine.addFactsValidate(MOrg.Table_Name, globalValidator);
+		factsEngine.fireFactsValidate(as, facts, org);
+		assertEquals(1, globalValidator.factsValidateCount, "Validator should fire once after registration");
+
+		// Now remove from the global list BEFORE calling removeFactsValidate.
+		// The removal must still find the listener in the original "*" bucket, not the
+		// client-id bucket that would be computed if the key were re-derived now.
+		factsEngine.removeGlobalValidator(globalValidator);
+		factsEngine.removeFactsValidate(MOrg.Table_Name, globalValidator);
+
+		factsEngine.fireFactsValidate(as, facts, org);
+		assertEquals(1, globalValidator.factsValidateCount,
+				"Validator must not fire after removal, even when the global list changed between add and remove");
+
+		// Restore so tearDown finds the validator in a consistent state.
+		factsEngine.addGlobalValidator(globalValidator);
 	}
 
 	static class TestValidator implements ModelValidator, FactsValidator {

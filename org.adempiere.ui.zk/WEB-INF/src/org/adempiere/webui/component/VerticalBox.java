@@ -18,14 +18,15 @@
 package org.adempiere.webui.component;
 
 /**
- * Extend {@link org.zkoss.zul.Vbox}
+ * Extend {@link org.adempiere.webui.component.FlexVlayout}
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
  */
-public class VerticalBox extends org.zkoss.zul.Vbox
+public class VerticalBox extends org.adempiere.webui.component.FlexVlayout
 {
 	/**
 	 * generated serial id
 	 */
 	private static final long serialVersionUID = 5995926218043737398L;
+
 }

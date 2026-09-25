@@ -32,7 +32,7 @@ public class X_AD_Package_Exp extends PO implements I_AD_Package_Exp, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20251027L;
+	private static final long serialVersionUID = 20260309L;
 
     /** Standard Constructor */
     public X_AD_Package_Exp (Properties ctx, int AD_Package_Exp_ID, String trxName)

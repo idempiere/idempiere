@@ -1,0 +1,18 @@
+-- IDEMPIERE-6768 fix wrong reference data types
+SELECT register_migration_script('202603082239_IDEMPIERE-6768.sql') FROM dual;
+
+SET SQLBLANKLINES ON
+SET DEFINE OFF
+
+-- Mar 8, 2026, 10:39:38 PM CET
+UPDATE AD_Column SET AD_Reference_ID=13, FKConstraintType=NULL,Updated=TO_TIMESTAMP('2026-03-08 22:39:38','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217187
+;
+
+-- Mar 8, 2026, 10:39:44 PM CET
+UPDATE AD_Column SET AD_Reference_ID=13, FKConstraintType=NULL,Updated=TO_TIMESTAMP('2026-03-08 22:39:44','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217188
+;
+
+-- Mar 8, 2026, 10:41:06 PM CET
+UPDATE AD_Column SET AD_Reference_ID=13, FKConstraintType=NULL,Updated=TO_TIMESTAMP('2026-03-08 22:41:06','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217206
+;
+

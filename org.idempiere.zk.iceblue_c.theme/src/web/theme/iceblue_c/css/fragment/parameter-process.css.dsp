@@ -56,7 +56,7 @@
 <%-- run history and action buttons --%>
 .bottom-parameter-layout{
 	padding: 4px;
-	border-top: 1px solid rgba(0, 0, 0, 0.2);
+	border-top: 1px solid var(--zk-parameter-process-bottom-border-color);
 	overflow: visible;
 }
 .bottom-container{
@@ -78,17 +78,17 @@
 }
 @media screen and (min-width: 501px) {
 	.save-parameter-container .saved-parameter-list > input::-webkit-input-placeholder {
-		color: white;
+		color: var(--zk-parameter-process-placeholder-color);
 	}
 }
 @media screen and (min-width: 501px) {
 	.save-parameter-container .saved-parameter-list > input::-moz-placeholder {
-		color: white;
+		color: var(--zk-parameter-process-placeholder-color);
 	}
 }
 @media screen and (min-width: 501px) {
 	.save-parameter-container .saved-parameter-list > input::-ms-input-placeholder {
-		color: white;
+		color: var(--zk-parameter-process-placeholder-color);
 	}
 }
 
@@ -140,17 +140,17 @@
 }
 @media screen and (min-width: 501px) {
 	.option-input-parameter.print-format-list > input::-webkit-input-placeholder {
-		color: white;
+		color: var(--zk-parameter-process-placeholder-color);
 	}
 }
 @media screen and (min-width: 501px) {
 	.option-input-parameter.print-format-list > input::-moz-placeholder {
-		color: white;
+		color: var(--zk-parameter-process-placeholder-color);
 	}
 }
 @media screen and (min-width: 501px) {
 	.option-input-parameter.print-format-list > input::-ms-input-placeholder {
-		color: white;
+		color: var(--zk-parameter-process-placeholder-color);
 	}
 }
 @media screen and (max-width: 400px) {

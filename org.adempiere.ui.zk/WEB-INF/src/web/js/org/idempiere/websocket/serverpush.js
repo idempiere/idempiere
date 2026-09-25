@@ -47,9 +47,15 @@
     	  me.active = true;
     	  me.socket.send("__ping__");
       };
-	  this.socket.sendAjaxRequest = function(ajaxReqInf) {
-		  let ajaxMsg = "zkau;"+JSON.stringify(ajaxReqInf);
+	  this.socket.sendAjaxRequest = function(reqInf) {
+		  zAu.sentTime = jq.now(); //used by server-push (cpsp)
+          zk.ausending = true;
+		  zAu.ajaxReq = true; // processing flag
+          zAu.ajaxReqInf = reqInf;
+		  let ajaxMsg = "zkau;"+JSON.stringify(reqInf);
 		  me.socket.send(ajaxMsg);
+		  if (!reqInf.implicit)
+				zk.startProcessing(zk.procDelay, reqInf.sid); //wait a moment to avoid annoying
 	  }
       this.socket.onmessage = function (event) {
 		  if (event.data=="echo") {
@@ -80,6 +86,16 @@
 				//using undocumented, ZK internal api
 				//need verification after every ZK upgrade
 	            zAu._onResponseReady(responseJson);
+				let dt = zk.Desktop.$(me.dtid);
+				if (dt) {
+					let es = zAu.getAuRequests(dt);
+                	if (es.length > 0) setTimeout(() => zAu.sendNow(dt), 0);
+				}
+				// if responseJson.headers has "Set-Cookie", use onPiggyback event to update browser cookie
+				if (responseJson.headers.get("Set-Cookie")) {
+					let evtObj = new zk.Event(dt, 'onPiggyback', null, {ignorable: true, rtags: {isDummy: true}});
+					setTimeout(() => zAu.send(evtObj), 100);
+				}
 	          }
 	      }
       }
@@ -132,6 +148,8 @@
 			var aureq = es[j];
 			if (aureq.file) {
 				return originalSendNow(dt); //fallback to ajax
+			} else if (aureq.name == "onPiggyback") {
+				return originalSendNow(dt); //ajax event to update cookie
 			}
 		}
 
@@ -229,9 +247,7 @@
 				implicit: implicit,
 				ignorable: ignorable, tmout: 0, rtags: rtags, forceAjax: forceAjax
 			}
-			dt._serverpush.socket.sendAjaxRequest(reqInf);
-			if (!reqInf.implicit)
-				zk.startProcessing(zk.procDelay, reqInf.sid); //wait a moment to avoid annoying
+			dt._serverpush.socket.sendAjaxRequest(reqInf);			
 		}
 		return true;
 	  } else {

@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
@@ -24,6 +25,7 @@ import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.X_AD_Modification;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.util.Env;
@@ -71,9 +73,9 @@ public class ModificationElementHandler extends AbstractElementHandler{
 				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Modification.Table_Name, X_AD_Modification.Table_ID);
 				if (!modification.is_new()) {				
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Modification.Table_Name, modification);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				} else {
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}
 	
 				if (modification.save(getTrxName(ctx)) == true) {
@@ -102,7 +104,7 @@ public class ModificationElementHandler extends AbstractElementHandler{
 	}
 	
 	
-	public void create(PIPOContext ctx, TransformerHandler document) throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document) throws Exception {
 		int ad_modification_id = Env.getContextAsInt(ctx.ctx, X_AD_Modification.COLUMNNAME_AD_Modification_ID);
 		if (ctx.packOut.isExported(X_AD_Modification.COLUMNNAME_AD_Modification_ID+"|"+ad_modification_id))
 			return;
@@ -116,13 +118,13 @@ public class ModificationElementHandler extends AbstractElementHandler{
 		
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
-		document.startElement("", "", X_AD_Modification.Table_Name, atts);
+		document.startElement(X_AD_Modification.Table_Name, atts);
 		createADModificationBinding(ctx, document, modification);
 
-		document.endElement("", "", X_AD_Modification.Table_Name);
+		document.endElement(X_AD_Modification.Table_Name);
 	}
 
-	private void createADModificationBinding(PIPOContext ctx, TransformerHandler document, X_AD_Modification modification) {
+	private void createADModificationBinding(PIPOContext ctx, IPackSerializer document, X_AD_Modification modification) {
 		PoExporter filler = new PoExporter(ctx, document, modification);
 		if (modification.getAD_Modification_ID() <= PackOut.MAX_OFFICIAL_ID)
 			filler.add(X_AD_Modification.COLUMNNAME_AD_Modification_ID, new AttributesImpl());
@@ -131,10 +133,10 @@ public class ModificationElementHandler extends AbstractElementHandler{
 	}
 	
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer,
 			TransformerHandler docHandler, int recordId) throws Exception {
 		Env.setContext(packout.getCtx().ctx, X_AD_Modification.COLUMNNAME_AD_Modification_ID, recordId);
-		this.create(packout.getCtx(), packoutHandler);
+		this.create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(X_AD_Modification.COLUMNNAME_AD_Modification_ID);
 	}
 

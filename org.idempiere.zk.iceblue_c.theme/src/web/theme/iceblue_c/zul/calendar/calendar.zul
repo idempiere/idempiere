@@ -32,7 +32,7 @@
 <calendars class="${calendarClass}" firstDayOfWeek="Monday" mold="month" id="cal" xmlns:w="client" w:onBind="try{_overrideMsgCal(); var me=this; setTimeout(function(){me.onSize();},50); }catch(error){} ">
 	<toolbar sclass="calendar-toolbar">
 		<div class="float-left">
-			<hbox sclass="cal-header-filter">
+			<hlayout use="org.adempiere.webui.component.FlexHlayout" sclass="cal-header-filter">
 				<divarrow id="divArrowLeft" type="${leftBtn}" fontClass="${fontClass}"/>
 				<divarrow id="divArrowRight" type="${rightBtn}" fontClass="${fontClass}"/>
 				<div>
@@ -50,15 +50,15 @@
 					<label id="lblDate"/>
 					<toolbarbutton id="btnRefresh" label="${refresh}" class="refresh"/>
 				</div>
-			</hbox>
+			</hlayout>
 		</div>
 		<div class="float-right">
-			<hbox>
+			<hlayout use="org.adempiere.webui.component.FlexHlayout">
 				<divtab id="divTabDay" text="${Day}"/>
 				<divtab id="divTabWeek" text="${Week}"/>
 				<divtab id="divTabWeekdays" text="${Days}"/>
 				<divtab id="divTabMonth" text="${Month}"/>
-			</hbox>
+			</hlayout>
 		</div>
 	</toolbar>
 </calendars>

@@ -28,6 +28,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.SystemProperties;
 import org.compiere.util.CLogger;
+import org.compiere.util.Util;
 import org.idempiere.ui.zk.websocket.WebSocketServerPush;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.DesktopUnavailableException;
@@ -74,11 +75,16 @@ public class DelegatingServerPush implements ServerPush {
 	 */
 	private ServerPush createDelegate() {
 		String pushType = SystemProperties.getZKServerPush();
+		if (pushType != null)
+			pushType = pushType.trim();
 
 		if (ATMOSPHERE.equalsIgnoreCase(pushType)) {
 			if (log.isLoggable(Level.INFO)) log.info("Using AtmosphereServerPush");
 			return new AtmosphereServerPush();
 		}
+
+		if (!Util.isEmpty(pushType) && !WEBSOCKET.equalsIgnoreCase(pushType))
+			log.warning("Unsupported org.idempiere.ui.zk.serverpush value '" + pushType + "', using WebSocketServerPush");
 
 		// Default to WebSocket
 		if (log.isLoggable(Level.INFO)) log.info("Using WebSocketServerPush");

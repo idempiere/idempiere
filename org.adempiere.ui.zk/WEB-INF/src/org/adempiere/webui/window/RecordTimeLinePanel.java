@@ -51,7 +51,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.NamePair;
 import org.zkoss.util.Pair;
-import org.zkoss.zul.Hbox;
+import org.adempiere.webui.component.FlexHlayout;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Vlayout;
 
@@ -429,7 +429,7 @@ public class RecordTimeLinePanel extends Vlayout {
 		sb.append("<strong>").append(user.getName()).append("</strong> ").append(activityMessage);
 		sb.append("<div>&nbsp;</div><div>").append(m_dateTimeFormat.format(activityDate)).append("</div>");		
 		sb.append("</div>");
-		Hbox hlayout = new Hbox();
+		FlexHlayout hlayout = new FlexHlayout();
 		hlayout.setHflex("1");
 		String hlayoutClass= "activity-card";
 		if (getChildren().size() > 0)

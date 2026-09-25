@@ -44,7 +44,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Separator;
 
@@ -141,15 +140,15 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 		Separator sep = new Separator("horizontal");
 		pnlMessage.appendChild(sep);
 
-		Hbox pnlImage = new Hbox();
+		FlexHlayout pnlImage = new FlexHlayout();
 		img.setSrc((pi != null && pi.isError()) ? ERROR:INFORMATION);
 		ZKUpdateUtil.setWidth(pnlImage, "72px");
-		pnlImage.setAlign("center");
-		pnlImage.setPack("center");
+		pnlImage.setAlign(FlexHlayout.AlignType.CENTER);
+		pnlImage.setPack(FlexHlayout.PackType.CENTER);
 		pnlImage.appendChild(img);
 		
-		Hbox north = new Hbox();
-		north.setAlign("center");
+		FlexHlayout north = new FlexHlayout();
+		north.setAlign(FlexHlayout.AlignType.CENTER);
 		north.setStyle("margin: 20pt 10pt 20pt 10pt;"); // trbl
 		this.appendChild(north);
 		north.appendChild(pnlImage);
@@ -158,10 +157,10 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 		pnlMessage.appendChild(new Separator("horizontal"));
 		
 		north.appendChild(pnlMessage);
-		Hbox pnlButtons = new Hbox();
+		FlexHlayout pnlButtons = new FlexHlayout();
 		ZKUpdateUtil.setHeight(pnlButtons, "52px");
-		pnlButtons.setAlign("center");
-		pnlButtons.setPack("end");
+		pnlButtons.setAlign(FlexHlayout.AlignType.CENTER);
+		pnlButtons.setPack(FlexHlayout.PackType.END);
 		btnPrint.setVisible(false);
 		pnlButtons.appendChild(btnPrint);
 		pnlButtons.appendChild(btnOk);
@@ -172,8 +171,8 @@ public class ProcessInfoDialog extends Window implements EventListener<Event> {
 		separator.setBar(true);
 		this.appendChild(separator);
 
-		Hbox south = new Hbox();
-		south.setPack("end");
+		FlexHlayout south = new FlexHlayout();
+		south.setPack(FlexHlayout.PackType.END);
 		ZKUpdateUtil.setWidth(south, "100%");
 		this.appendChild(south);
 		south.appendChild(pnlButtons);

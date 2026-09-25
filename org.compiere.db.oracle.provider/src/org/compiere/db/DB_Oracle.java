@@ -235,8 +235,9 @@ public class DB_Oracle implements AdempiereDatabase
             {
                 //  old: jdbc:oracle:thin:@dev2:1521:sid
                 //  new: jdbc:oracle:thin:@//dev2:1521/serviceName
-                sb.append("//")
-                    .append(connection.getDbHost())
+            	if (! connection.getDbHost().contains("://"))
+            		sb.append("//");
+            	sb.append(connection.getDbHost())
                     .append(":").append(connection.getDbPort())
                     .append("/").append(connection.getDbName());
             }
@@ -261,7 +262,8 @@ public class DB_Oracle implements AdempiereDatabase
         String userName)
     {
         m_userName = userName;
-        m_connectionURL = "jdbc:oracle:thin:@//"
+        m_connectionURL = "jdbc:oracle:thin:@"
+        	+ (dbHost.contains("://") ? "" : "//")
             + dbHost + ":" + dbPort + "/" + dbName;
         return m_connectionURL;
     }   //  getConnectionURL
@@ -372,6 +374,8 @@ public class DB_Oracle implements AdempiereDatabase
      */
     public String convertStatement (String oraStatement)
     {
+    	// IDEMPIERE-7023 hook: apply ISQLStatementRewriter providers (if any)
+    	oraStatement = org.compiere.dbPort.SQLStatementRewriterProvider.rewriteStatements(oraStatement);
     	Convert.logMigrationScript(oraStatement, null);
 		if (SystemProperties.isDBDebug()) {
 			String filterOrDebug = SystemProperties.getDBDebugFilter();
@@ -1011,20 +1015,32 @@ public class DB_Oracle implements AdempiereDatabase
 	
 	@Override
 	public String intersectClauseForCSV(String columnName, String csv, boolean isNotClause) {
-		StringBuilder builder = new StringBuilder();
-		builder.append("toTableOfVarchar2(")
-			.append(columnName)
-			.append(")");
-		builder.append(" MULTISET INTERSECT ")
-			.append("toTableOfVarchar2(")
-			.append(DB.TO_STRING(csv)).append(") IS ");
-		
-		if(!isNotClause)
-			builder.append("NOT "); 
-			
-		builder.append("EMPTY");
-		
-		return builder.toString();
+	    StringBuilder builder = new StringBuilder();
+
+	    if (isNotClause) {
+	        builder.append("(");
+	    }
+
+	    builder.append("toTableOfVarchar2(")
+	        .append(columnName)
+	        .append(")");
+	    builder.append(" MULTISET INTERSECT ")
+	        .append("toTableOfVarchar2(")
+	        .append(DB.TO_STRING(csv))
+	        .append(") IS ");
+
+	    if (!isNotClause)
+	        builder.append("NOT ");
+
+	    builder.append("EMPTY");
+
+	    if (isNotClause) {
+	        builder.append(" OR ")
+	            .append(columnName)
+	            .append(" IS NULL)");
+	    }
+
+	    return builder.toString();
 	}
 
 	@Override
@@ -1034,19 +1050,30 @@ public class DB_Oracle implements AdempiereDatabase
 	
 	@Override
 	public SQLFragment intersectFilterForCSV(String columnName, String csv, boolean isNotClause) {
-		StringBuilder builder = new StringBuilder();
-		builder.append("toTableOfVarchar2(")
-			.append(columnName)
-			.append(")");
-		builder.append(" MULTISET INTERSECT ")
-			.append("toTableOfVarchar2(?) IS ");
-		
-		if(!isNotClause)
-			builder.append("NOT "); 
-			
-		builder.append("EMPTY");
+	    StringBuilder builder = new StringBuilder();
 
-		return new SQLFragment(builder.toString(), List.of(csv));
+	    if (isNotClause) {
+	        builder.append("(");
+	    }
+
+	    builder.append("toTableOfVarchar2(")
+	        .append(columnName)
+	        .append(")");
+	    builder.append(" MULTISET INTERSECT ")
+	        .append("toTableOfVarchar2(?) IS ");
+
+	    if (!isNotClause)
+	        builder.append("NOT ");
+
+	    builder.append("EMPTY");
+
+	    if (isNotClause) {
+	        builder.append(" OR ")
+	            .append(columnName)
+	            .append(" IS NULL)");
+	    }
+
+	    return new SQLFragment(builder.toString(), List.of(csv));
 	}
 	
 	@Override

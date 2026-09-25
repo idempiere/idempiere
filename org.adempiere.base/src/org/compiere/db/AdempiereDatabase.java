@@ -335,7 +335,7 @@ public interface AdempiereDatabase
 	/**
 	 * Lock PO for update
 	 * @param po
-	 * @param timeout
+	 * @param timeout timeout in seconds, 0 for no timeout
 	 * @return true if lock is granted
 	 */
 	public boolean forUpdate(PO po, int timeout);

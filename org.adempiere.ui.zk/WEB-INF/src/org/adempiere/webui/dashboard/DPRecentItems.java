@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.event.EventManager;
+import org.adempiere.webui.component.FlexVlayout;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
@@ -46,13 +47,12 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.DesktopCleanup;
 import org.zkoss.zul.A;
-import org.zkoss.zul.Box;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Layout;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Panelchildren;
 import org.zkoss.zul.Toolbar;
-import org.zkoss.zul.Vbox;
 
 /**
  * Dashboard gadget: Recent Items
@@ -73,7 +73,7 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 
 	private static TopicSubscriber topicSubscriber;
 
-	private Box bxRecentItems;
+	private Layout bxRecentItems;
 	
 	/** Login user id */
 	private int AD_User_ID;
@@ -97,7 +97,7 @@ public class DPRecentItems extends DashboardPanel implements EventListener<Event
 
 		Panelchildren recentItemsContent = new Panelchildren();
 		panel.appendChild(recentItemsContent);
-		bxRecentItems = new Vbox();
+		bxRecentItems = new FlexVlayout();
 		ZKUpdateUtil.setHflex(bxRecentItems, "1");
 		this.setSclass("recentitems-box");
 		recentItemsContent.appendChild(bxRecentItems);

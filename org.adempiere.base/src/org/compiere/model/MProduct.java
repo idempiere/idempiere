@@ -703,6 +703,18 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 			return false; 
 		}
 		
+		// Block change of IsUseDateMaterialPolicy when product has on hand storage
+		if (!newRecord && is_ValueChanged(COLUMNNAME_IsUseDateMaterialPolicy))
+		{
+			BigDecimal qtyOnHand = DB.getSQLValueBDEx(get_TrxName(),
+				"SELECT COALESCE(SUM(QtyOnHand),0) FROM M_StorageOnHand WHERE M_Product_ID=?", getM_Product_ID());
+			if (qtyOnHand.signum() != 0)
+			{
+				log.saveError("Error", Msg.getMsg(getCtx(), "CannotChangeUseDateMaterialPolicy"));
+				return false;
+			}
+		}
+
 		// Reset IsStocked to false if not Item product type
 		if (!PRODUCTTYPE_Item.equals(getProductType()))
 			setIsStocked(false);
@@ -1064,7 +1076,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	public String getCostingLevel(MAcctSchema as)
 	{
 		MProductCategoryAcct pca = MProductCategoryAcct.get(getCtx(), getM_Product_Category_ID(), as.get_ID(), get_TrxName());
-		String costingLevel = pca.getCostingLevel();
+		String costingLevel = pca != null ? pca.getCostingLevel() : null;
 		if (costingLevel == null)
 		{
 			costingLevel = as.getCostingLevel();
@@ -1080,7 +1092,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	public String getCostingMethod(MAcctSchema as)
 	{
 		MProductCategoryAcct pca = MProductCategoryAcct.get(getCtx(), getM_Product_Category_ID(), as.get_ID(), get_TrxName());
-		String costingMethod = pca.getCostingMethod();
+		String costingMethod = pca != null ? pca.getCostingMethod() : null;
 		if (costingMethod == null)
 		{
 			costingMethod = as.getCostingMethod();
@@ -1109,19 +1121,11 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	public MCost getCostingRecord(MAcctSchema as, int AD_Org_ID, int M_ASI_ID, String costingMethod)
 	{
 		String costingLevel = getCostingLevel(as);
-		if (MAcctSchema.COSTINGLEVEL_Client.equals(costingLevel))
-		{
-			AD_Org_ID = 0;
-			M_ASI_ID = 0;
-		}
-		else if (MAcctSchema.COSTINGLEVEL_Organization.equals(costingLevel))
-			M_ASI_ID = 0;
-		else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel))
-		{
-			AD_Org_ID = 0;
-			if (M_ASI_ID == 0)
-				return null;
-		}
+		MCost.CostingKey costKey = MCost.CostingKey.resolve(AD_Org_ID, M_ASI_ID, costingLevel);
+		if (costKey.isSkipCostingProcessing(costingLevel))
+			return null;
+		AD_Org_ID = costKey.AD_Org_ID();
+		M_ASI_ID = costKey.M_AttributeSetInstance_ID();
 		MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), costingMethod, AD_Org_ID);
 		if (ce == null) {
 			return null;
@@ -1141,19 +1145,11 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	public ICostInfo getCostInfo(MAcctSchema as, int AD_Org_ID, int M_ASI_ID, String costingMethod, Timestamp dateAcct)
 	{		
 		String costingLevel = getCostingLevel(as);
-		if (MAcctSchema.COSTINGLEVEL_Client.equals(costingLevel))
-		{
-			AD_Org_ID = 0;
-			M_ASI_ID = 0;
-		}
-		else if (MAcctSchema.COSTINGLEVEL_Organization.equals(costingLevel))
-			M_ASI_ID = 0;
-		else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel))
-		{
-			AD_Org_ID = 0;
-			if (M_ASI_ID == 0)
-				return null;
-		}
+		MCost.CostingKey costKey = MCost.CostingKey.resolve(AD_Org_ID, M_ASI_ID, costingLevel);
+		if (costKey.isSkipCostingProcessing(costingLevel))
+			return null;
+		AD_Org_ID = costKey.AD_Org_ID();
+		M_ASI_ID = costKey.M_AttributeSetInstance_ID();
 		MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), costingMethod, AD_Org_ID);
 		if (ce == null) {
 			return null;

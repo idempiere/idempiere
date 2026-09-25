@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.PIPOContext;
@@ -30,6 +31,7 @@ import org.adempiere.pipo2.Element;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.M_Element;
 import org.compiere.model.X_AD_Element;
 import org.compiere.model.X_AD_Package_Imp_Detail;
@@ -75,9 +77,9 @@ public class AdElementHandler extends AbstractElementHandler {
 				X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Element.Table_Name, X_AD_Element.Table_ID);
 				if (!mElement.is_new()) {				
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), AD_ELEMENT, mElement);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				} else {
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}
 	
 				if (mElement.save(getTrxName(ctx)) == true) {
@@ -101,8 +103,8 @@ public class AdElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	protected void create(PIPOContext ctx, TransformerHandler document)
-			throws SAXException {
+	protected void create(PIPOContext ctx, IPackSerializer document)
+			throws Exception {
 
 
 		int adElement_id = Env.getContextAsInt(ctx.ctx,
@@ -118,7 +120,7 @@ public class AdElementHandler extends AbstractElementHandler {
 
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
-		document.startElement("", "", "AD_Element", atts);
+		document.startElement("AD_Element", atts);
 		createAdElementBinding(ctx, document, mAdElement);
 
 		PackOut packOut = ctx.packOut;
@@ -129,11 +131,11 @@ public class AdElementHandler extends AbstractElementHandler {
 			if (log.isLoggable(Level.INFO)) log.info(e.toString());
 		}
 
-		document.endElement("", "", "AD_Element");
+		document.endElement("AD_Element");
 	}
 
 
-	private void createAdElementBinding(PIPOContext ctx, TransformerHandler document,
+	private void createAdElementBinding(PIPOContext ctx, IPackSerializer document,
 			X_AD_Element m_AdElement) {
 
 		PoExporter filler = new PoExporter(ctx, document, m_AdElement);
@@ -144,10 +146,10 @@ public class AdElementHandler extends AbstractElementHandler {
 		filler.export(excludes);
 	}
 
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler,int recordId) throws Exception
 	{
 		Env.setContext(packout.getCtx().ctx, X_AD_Element.COLUMNNAME_AD_Element_ID, recordId);
-		this.create(packout.getCtx(), packoutHandler);
+		this.create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(X_AD_Element.COLUMNNAME_AD_Element_ID);
 	}
 }

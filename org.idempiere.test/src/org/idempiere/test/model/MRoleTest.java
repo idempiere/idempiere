@@ -67,6 +67,7 @@ import org.compiere.model.X_A_Asset_Change;
 import org.compiere.model.X_C_BankTransfer;
 import org.compiere.model.X_C_Order;
 import org.compiere.process.DocAction;
+import org.compiere.util.CLogger;
 import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -1181,12 +1182,13 @@ public class MRoleTest extends AbstractTestCase {
 			role.setName("Test Role");
 			role.setUserLevel(MRole.USERLEVEL_Client);
 			assertTrue(role.save(), "save should return true");
-			assertTrue(role.delete(false, getTrxName()), "delete should return true");
 			
 			// update user level
 			MRole.setCrossTenantSafe();
 			role.setUserLevel(MRole.USERLEVEL_ClientPlusOrganization);
-			assertTrue(role.save(), "Valid client user level should pass");
+			assertTrue(role.save(), "Valid client user level should pass. " + (CLogger.peekError() != null ? CLogger.retrieveError().toString() : ""));
+
+            assertTrue(role.delete(false, getTrxName()), "delete should return true");			
     	} finally {
     		MRole.clearCrossTenantSafe();
     		rollback();

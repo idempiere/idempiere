@@ -58,7 +58,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.Hbox;
+import org.adempiere.webui.component.FlexHlayout;
 
 /**
  * Form to create Deposit Batch ({@link MDepositBatch} and {@link MDepositBatchLine}) from payment transactions.
@@ -272,13 +272,13 @@ public class WCreateFromDepositBatchUI extends CreateFromDepositBatch implements
 		row.appendChild(tenderTypeLabel.rightAlign());
 		row.appendChild(tenderTypeField.getComponent());
 		row.appendChild(amtFromLabel.rightAlign());
-		Hbox hbox = new Hbox();
+		FlexHlayout hbox = new FlexHlayout();
 		hbox.appendChild(amtFromField.getComponent());
 		hbox.appendChild(amtToLabel.rightAlign());
 		hbox.appendChild(amtToField.getComponent());
 		row.appendChild(hbox);
 		row.appendChild(dateFromLabel.rightAlign());
-		hbox = new Hbox();
+		hbox = new FlexHlayout();
 		hbox.appendChild(dateFromField.getComponent());
 		hbox.appendChild(dateToLabel.rightAlign());
 		hbox.appendChild(dateToField.getComponent());

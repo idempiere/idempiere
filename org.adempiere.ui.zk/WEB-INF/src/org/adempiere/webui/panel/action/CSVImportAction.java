@@ -73,7 +73,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Space;
-import org.zkoss.zul.Vbox;
+import org.adempiere.webui.component.FlexVlayout;
 import org.zkoss.zul.Vlayout;
 
 /**
@@ -151,7 +151,7 @@ public class CSVImportAction implements EventListener<Event>
 			winImportFile.setClientAttribute(AdempiereWebUI.WIDGET_INSTANCE_NAME, "importAction");
 			winImportFile.setSclass("popup-dialog");
 
-			Vbox vb = new Vbox();
+			FlexVlayout vb = new FlexVlayout();
 			ZKUpdateUtil.setWidth(vb, "100%");
 			winImportFile.appendChild(vb);
 

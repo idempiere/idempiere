@@ -42,7 +42,7 @@
 								<artifactItem>
 									<groupId>org.zkoss.calendar</groupId>
 									<artifactId>calendar</artifactId>
-									<version>2.1.5</version>
+									<version>3.2.1</version>
 								</artifactItem>
 								<artifactItem>
 									<groupId>org.zkoss.theme</groupId>

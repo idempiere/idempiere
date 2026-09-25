@@ -286,6 +286,17 @@ public class Core {
 		return null;
 	}
 
+	/**
+	 * Get the password reset service for the current tenant. Delegates to
+	 * {@link PasswordResetServiceFactory}, which honors the {@code PASSWORD_RESET_SERVICE_CLASS}
+	 * config and falls back to the default provider.
+	 * @return {@link IPasswordResetService}, or null if none is registered
+	 */
+	public static IPasswordResetService getPasswordResetService()
+	{
+		return PasswordResetServiceFactory.getService(Env.getAD_Client_ID(Env.getCtx()));
+	}
+
 	private static IServiceReferenceHolder<IKeyStore> s_keystoreServiceReference = null;
 	private static volatile boolean s_legacyKeyWarningLogged = false;
 	
@@ -844,7 +855,8 @@ public class Core {
 
 		return null;
 	}
-	
+
+
 	private final static CCache<String, IServiceReferenceHolder<IDepreciationMethodFactory>> s_depreciationMethodFactoryCache = new CCache<>(IDEPRECIATION_METHOD_FACTORY_CACHE_TABLE_NAME, "IDepreciationMethodFactory", 100, false);
 	
 	/**
@@ -1310,4 +1322,6 @@ public class Core {
 		IServiceReferenceHolder<IMarkdownRenderer> holder = Service.locator().locate(IMarkdownRenderer.class).getServiceReference();
 		return holder != null ? holder.getService() : null; 
 	}
+
+
 }

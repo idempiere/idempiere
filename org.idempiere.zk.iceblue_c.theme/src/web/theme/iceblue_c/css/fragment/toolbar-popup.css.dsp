@@ -1,7 +1,7 @@
 <%-- popup window for toolbar report button --%>
 .toolbar-popup-window {
-	border-left: 1px solid #c5c5c5;
-	border-right: 1px solid #c5c5c5;
+	border-left: 1px solid var(--zk-toolbar-popup-window-border-color);
+	border-right: 1px solid var(--zk-toolbar-popup-window-border-color);
 }
 .toolbar-popup-window .z-window-content {
 	padding: 0px;
@@ -11,9 +11,9 @@
 	padding-bottom: 0px;
 }
 .toolbar-popup-window::before {
-	border-bottom: 7px solid rgba(0, 0, 0, 0.2);
-	border-left: 7px solid transparent;
-	border-right: 7px solid transparent;
+	border-bottom: 7px solid var(--zk-toolbar-popup-arrow-shadow-color);
+	border-left: 7px solid var(--zk-toolbar-popup-arrow-side-border-color);
+	border-right: 7px solid var(--zk-toolbar-popup-arrow-side-border-color);
 	content: "";
 	display: inline-block;
 	left: 9px;
@@ -21,9 +21,9 @@
 	top: -7px;
 }
 .toolbar-popup-window::after {
-	border-bottom: 6px solid #FFFFFF;
-	border-left: 6px solid transparent;
-	border-right: 6px solid transparent;
+	border-bottom: 6px solid var(--zk-toolbar-popup-arrow-background-color);
+	border-left: 6px solid var(--zk-toolbar-popup-arrow-side-border-color);
+	border-right: 6px solid var(--zk-toolbar-popup-arrow-side-border-color);
 	content: "";
 	display: inline-block;
 	left: 10px;

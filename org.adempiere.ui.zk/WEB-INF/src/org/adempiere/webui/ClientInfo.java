@@ -54,6 +54,9 @@ public class ClientInfo implements Serializable {
 	public double devicePixelRatio;
 	
 	//size constants for responsive layout
+	public static final int XXX_LARGE_WIDTH = 2560;
+	public static final int XX_LARGE_WIDTH = 1920;
+	public static final int EXTRA_LARGE_WIDTH = 1366;
 	public static final int LARGE_WIDTH = 1200;
 	public static final int MEDIUM_WIDTH = 1000;
 	public static final int SMALL_WIDTH = 700;

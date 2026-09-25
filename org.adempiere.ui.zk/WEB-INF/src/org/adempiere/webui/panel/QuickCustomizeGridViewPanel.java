@@ -55,11 +55,11 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Hbox;
+import org.adempiere.webui.component.FlexHlayout;
 import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
-import org.zkoss.zul.Vbox;
+import org.adempiere.webui.component.FlexVlayout;
 
 /**
  * Customize grid panel for quick form
@@ -156,7 +156,7 @@ public class QuickCustomizeGridViewPanel extends Panel {
 		span.setStyle("height: 99%; display: inline-block; width: 86%; float: left;");
 		span.appendChild(yesList);
 
-		Vbox vbox = new Vbox();
+		FlexVlayout vbox = new FlexVlayout();
 		vbox.appendChild(bUp);
 		vbox.appendChild(bDown);
 
@@ -181,14 +181,14 @@ public class QuickCustomizeGridViewPanel extends Panel {
 
 		chkSaveWidth.setLabel(Msg.getMsg(Env.getCtx(), "SaveColumnWidth"));
 
-		vbox = new Vbox();
+		vbox = new FlexVlayout();
 
-		Hbox hbox = new Hbox();
+		FlexHlayout hbox = new FlexHlayout();
 		hbox.appendChild(chkSaveWidth);
 		vbox.appendChild(hbox);
 		vbox.appendChild(sep);
 
-		hbox = new Hbox();
+		hbox = new FlexHlayout();
 		vbox.appendChild(hbox);
 
 		southPanel.appendChild(vbox);

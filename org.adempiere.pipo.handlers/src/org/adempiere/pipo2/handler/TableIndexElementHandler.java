@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
@@ -30,6 +31,7 @@ import org.adempiere.pipo2.exception.DatabaseAccessException;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.MIndexColumn;
 import org.compiere.model.MMessage;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTableIndex;
 import org.compiere.model.X_AD_Package_Imp_Detail;
@@ -70,9 +72,9 @@ public class TableIndexElementHandler extends AbstractElementHandler {
 				String action = null;
 				if (!mTableIndex.is_new()) {
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), MTableIndex.Table_Name, mTableIndex);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				} else {
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}
 				if (mTableIndex.save(getTrxName(ctx)) == true) {
 					logImportDetail(ctx, impDetail, 1, mTableIndex.getName(), mTableIndex.get_ID(), action);
@@ -90,14 +92,14 @@ public class TableIndexElementHandler extends AbstractElementHandler {
 	@Override
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 		MTableIndex mTableIndex = findPO(ctx, element);
-		if (element.defer && mTableIndex == null)
+		if (element.skip || (element.defer && mTableIndex == null))
 			return;
 		int success = validateTableIndex(ctx, mTableIndex);
 		X_AD_Package_Imp_Detail dbDetail = createImportDetail(ctx, "dbIndex", MTableIndex.Table_Name, MTableIndex.Table_ID);
 		if (success == 1) {
-			logImportDetail(ctx, dbDetail, 1, mTableIndex.getName(), mTableIndex.get_ID(), "Validate");
+			logImportDetail(ctx, dbDetail, 1, mTableIndex.getName(), mTableIndex.get_ID(), MPackageImpDetail.ACTION_VALIDATE);
 		} else {
-			logImportDetail(ctx, dbDetail, 0, mTableIndex.getName(), mTableIndex.get_ID(), "Validate");
+			logImportDetail(ctx, dbDetail, 0, mTableIndex.getName(), mTableIndex.get_ID(), MPackageImpDetail.ACTION_VALIDATE);
 			throw new DatabaseAccessException("Failed to validate AD_TableIndex for " + mTableIndex.getName());
 		}
 	}
@@ -124,7 +126,7 @@ public class TableIndexElementHandler extends AbstractElementHandler {
 		return 1;
 	}
 	
-	public void create(PIPOContext ctx, TransformerHandler document) throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document) throws Exception {
 		int AD_TableIndex_ID = Env.getContextAsInt(ctx.ctx, MTableIndex.COLUMNNAME_AD_TableIndex_ID);
 		
 		if (tableIndexes.contains(AD_TableIndex_ID))
@@ -147,7 +149,7 @@ public class TableIndexElementHandler extends AbstractElementHandler {
 			
 			verifyPackOutRequirement(m_TableIndex);
 			addTypeName(atts, "table");
-			document.startElement("", "", MTableIndex.Table_Name, atts);
+			document.startElement(MTableIndex.Table_Name, atts);
 			createTableIndexBinding(ctx, document, m_TableIndex);
 		}
 		
@@ -157,11 +159,11 @@ public class TableIndexElementHandler extends AbstractElementHandler {
 		}
 
 		if (createElement) {
-			document.endElement("", "", MTableIndex.Table_Name);
+			document.endElement(MTableIndex.Table_Name);
 		}
 	}
 	
-	private void createIndexColumn(PIPOContext ctx, TransformerHandler document, int AD_IndexColumn_ID) throws SAXException {
+	private void createIndexColumn(PIPOContext ctx, IPackSerializer document, int AD_IndexColumn_ID) throws Exception {
 		try {
 			ctx.packOut.getHandler(MIndexColumn.Table_Name).packOut(ctx.packOut, document, ctx.logDocument, AD_IndexColumn_ID);
 		} catch (Exception e) {
@@ -169,7 +171,7 @@ public class TableIndexElementHandler extends AbstractElementHandler {
 		}
 	}
 
-	private void createTableIndexBinding(PIPOContext ctx, TransformerHandler document, MTableIndex m_TableIndex) {
+	private void createTableIndexBinding(PIPOContext ctx, IPackSerializer document, MTableIndex m_TableIndex) {
 		PoExporter filler = new PoExporter(ctx, document, m_TableIndex);
 		List<String>excludes = defaultExcludeList(MTableIndex.Table_Name);
 
@@ -180,9 +182,9 @@ public class TableIndexElementHandler extends AbstractElementHandler {
 	}
 
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler, int recordId) throws Exception {
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler, int recordId) throws Exception {
 		Env.setContext(packout.getCtx().ctx, MTableIndex.COLUMNNAME_AD_TableIndex_ID, recordId);
-		this.create(packout.getCtx(), packoutHandler);
+		this.create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(MTableIndex.COLUMNNAME_AD_TableIndex_ID);	
 	}
 

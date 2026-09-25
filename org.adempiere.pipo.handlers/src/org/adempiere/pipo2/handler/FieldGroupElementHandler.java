@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.pipo2.AbstractElementHandler;
 import org.adempiere.pipo2.Element;
@@ -31,6 +32,7 @@ import org.adempiere.pipo2.PoExporter;
 import org.adempiere.pipo2.PoFiller;
 import org.adempiere.pipo2.exception.POSaveFailedException;
 import org.compiere.model.MFieldGroup;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.X_AD_Package_Imp_Detail;
 import org.compiere.util.Env;
 import org.xml.sax.SAXException;
@@ -79,9 +81,9 @@ public class FieldGroupElementHandler extends AbstractElementHandler {
 						MFieldGroup.Table_ID);
 				if (!fieldGroup.is_new()) {				
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), MFieldGroup.Table_Name, fieldGroup);
-					action = "Update";				
+					action = MPackageImpDetail.ACTION_UPDATE;				
 				} else {
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}
 				
 				if (fieldGroup.save(getTrxName(ctx)) == true) {
@@ -104,8 +106,8 @@ public class FieldGroupElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	protected void create(PIPOContext ctx, TransformerHandler document)
-			throws SAXException {
+	protected void create(PIPOContext ctx, IPackSerializer document)
+			throws Exception {
 
 
 		int fieldGroup_id = Env.getContextAsInt(ctx.ctx,
@@ -122,7 +124,7 @@ public class FieldGroupElementHandler extends AbstractElementHandler {
 		
 		AttributesImpl atts = new AttributesImpl();
 		addTypeName(atts, "table");
-		document.startElement("", "", MFieldGroup.Table_Name, atts);
+		document.startElement(MFieldGroup.Table_Name, atts);
 		createAdElementBinding(ctx, document, fieldGroup);
 
 		PackOut packOut = ctx.packOut;
@@ -132,11 +134,11 @@ public class FieldGroupElementHandler extends AbstractElementHandler {
 		} catch(Exception e) {
 			if (log.isLoggable(Level.INFO)) log.info(e.toString());
 		}
-		document.endElement("", "", MFieldGroup.Table_Name);
+		document.endElement(MFieldGroup.Table_Name);
 	}
 
 
-	private void createAdElementBinding(PIPOContext ctx, TransformerHandler document,
+	private void createAdElementBinding(PIPOContext ctx, IPackSerializer document,
 			MFieldGroup fieldGroup) {
 
 		PoExporter filler = new PoExporter(ctx, document, fieldGroup);
@@ -148,10 +150,10 @@ public class FieldGroupElementHandler extends AbstractElementHandler {
 		filler.export(excludes);
 	}
 
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler,int recordId) throws Exception
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler,int recordId) throws Exception
 	{
 		Env.setContext(packout.getCtx().ctx, MFieldGroup.COLUMNNAME_AD_FieldGroup_ID, recordId);
-		this.create(packout.getCtx(), packoutHandler);
+		this.create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(MFieldGroup.COLUMNNAME_AD_FieldGroup_ID);
 	}
 }

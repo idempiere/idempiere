@@ -89,6 +89,10 @@ BEGIN
 			  AND M_Warehouse_ID=v_Warehouse_ID
 			  AND IsSOTrx='Y'
 			  AND IsActive='Y';
+			-- Prevent division by zero
+			IF bom.BOMQty = 0 THEN
+				RETURN 0;
+			END IF;
 			--	How much can we make with this product
 			v_ProductQty := v_ProductQty/bom.BOMQty;
 			--	How much can we make overall

@@ -175,6 +175,7 @@ public class MProductionLine extends X_M_ProductionLine {
 			}
 			
 			dateMPolicy = Util.removeTime(dateMPolicy);
+			dateMPolicy = MStorageOnHand.getEffectiveDateMaterialPolicy(getM_Product_ID(), dateMPolicy, get_TrxName());
 			//for reversal, keep the ma copy from original trx
 			if (reversalId <= 0  ) 
 			{
@@ -323,8 +324,9 @@ public class MProductionLine extends X_M_ProductionLine {
 			}
 			else
 			{
+				Timestamp dateMPolicy = MStorageOnHand.getEffectiveDateMaterialPolicy(getM_Product_ID(), date, get_TrxName());
 				MStorageOnHand storage = MStorageOnHand.getCreate(Env.getCtx(), getM_Locator_ID(), getM_Product_ID(),
-						asi.get_ID(), date, get_TrxName(), true);
+						asi.get_ID(), dateMPolicy, get_TrxName(), true);
 				
 				BigDecimal lineQty = qtyToMove;
 				MAttributeSetInstance slASI = storage.getM_AttributeSetInstance_ID() > 0 

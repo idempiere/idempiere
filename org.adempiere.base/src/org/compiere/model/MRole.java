@@ -47,6 +47,7 @@ import org.compiere.util.Trace;
 import org.compiere.util.Util;
 import org.compiere.wf.MWorkflow;
 import org.compiere.wf.MWorkflowAccess;
+import org.idempiere.acct.AcctModelServices;
 import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.POCopyCache;
 
@@ -3528,6 +3529,13 @@ public final class MRole extends X_AD_Role implements ImmutablePOSupport
 			predefinedContextVariables.append(get_Value(COLUMNNAME_PredefinedContextVariables).toString());
 		}
 		return predefinedContextVariables.toString();
+	}
+
+	@Override
+	public boolean isShowAcct() {
+		if (!AcctModelServices.isAccountingAvailable())
+			return false;
+		return super.isShowAcct();
 	}
 
 }	//	MRole

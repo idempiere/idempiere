@@ -36,11 +36,11 @@
 }
 .z-button.editor-button > i,
 .z-button-os.editor-button > i {
-	color: #333;
+	color: var(--zk-field-editor-button-icon-color);
 }
 .z-button.editor-button:hover > i,
 .z-button-os.editor-button:hover > i {
-  color: #fff;
+  color: var(--zk-field-editor-button-hover-icon-color);
 }
 .editor-button :hover {
 	-webkit-filter: contrast(1.5);
@@ -59,13 +59,13 @@
 	background-image: none;
 }
 .z-chosenbox:has(> input:focus) {
-  background: #FFFFCC !important;
-  border-color: #0093F9 !important;
+	background: var(--zk-field-editor-chosenbox-focus-background-color) !important;
+	border-color: var(--zk-field-editor-chosenbox-focus-border-color) !important;
 }
 <%-- include/exclude icon for chosenbox --%>
 .editor-box + .btn-negate.z-button > .z-icon-ExcludeSelected::before,
 .editor-box + .btn-negate.z-button > .z-icon-IncludeSelected::before {
-	color: #333;
+	color: var(--zk-field-editor-button-icon-color);
 }
 .editor-box + .btn-negate.z-button {
 	background: none;
@@ -122,7 +122,7 @@ span.grid-combobox-editor {
 }
 	
 .grid-combobox-editor input:focus + .z-combobox-button {
-	border-left: 1px solid #0000ff;
+	border-left: 1px solid var(--zk-field-editor-grid-combobox-focus-button-border-color);
 }
 
 <%-- payment rule --%>
@@ -166,7 +166,7 @@ span.grid-combobox-editor {
 <%-- image field --%>
 .image-field {
 	cursor: pointer;
-	border: 1px solid #C5C5C5;
+	border: 1px solid var(--zk-field-editor-image-border-color);
 	height: 24px;
 	width: 24px;
 }
@@ -185,14 +185,14 @@ span.grid-combobox-editor {
 .html-field {
 	cursor: pointer;
 	overflow: auto;
-	border: 1px solid #ECECEC;
+	border: 1px solid var(--zk-field-editor-html-border-color);
 	border-radius: 4px;
 }
 .html-field:hover {
-	border-color: #A8A8A8;
+	border-color: var(--zk-field-editor-html-hover-border-color);
 }
 .html-field:focus {
-	border-color: #0093F9;
+	border-color: var(--zk-field-editor-chosenbox-focus-border-color);
 }
 
 <%-- dashboard content editor --%>
@@ -210,11 +210,11 @@ span.grid-combobox-editor {
 }
 
 .idempiere-mandatory, .idempiere-mandatory input, .idempiere-mandatory a {
-    border-color:red;
+	border-color:var(--zk-field-editor-mandatory-border-color);
 }
 
 .idempiere-mandatory-label{
-   color: red!important;
+   color: var(--zk-field-editor-mandatory-label-color)!important;
 }
 
 .idempiere-zoomable-label {
@@ -229,7 +229,7 @@ span.grid-combobox-editor {
     border: none;
 }
 .z-toolbarbutton:has(> span > i.z-icon-History):hover {
-	background-color: #7ac8ff !important;
+	background-color: var(--zk-field-editor-action-hover-background-color) !important;
 }
 .date-picker-calendar-button {
     position: absolute;
@@ -276,17 +276,17 @@ span.grid-combobox-editor {
     flex: auto;
 }
 .recordid-editor .z-toolbarbutton:hover {
-	background-color: #7ac8ff
+	background-color: var(--zk-field-editor-action-hover-background-color);
 }
 
 <%-- font icon for field button --%>
 .z-button [class^="z-icon-"], .z-button-os [class^="z-icon-"] {
-	color: #fff;
+	color: var(--zk-field-editor-button-hover-icon-color);
 }
 
 <%-- full size image hover --%>
 .fullsize-image {
 	padding: 5px;
-  	border: 1px solid #ccc;
-  	background: #e3f4f9;
+  	border: 1px solid var(--zk-field-editor-fullsize-image-border-color);
+  	background: var(--zk-field-editor-fullsize-image-background-color);
 }

@@ -259,7 +259,10 @@ public abstract class AnnotationBasedEventManager extends AnnotationBasedFactory
 			SimpleEventHandler handler = new SimpleEventHandler(delegateClass, supplier);
 			if (!Util.isEmpty(filter, true))
 				handler.setFilter(filter);
-			eventManager.register(handler.getTopics(), handler.getFilter(), handler);
+			String[] topics = handler.getTopics();
+			if (topics == null || topics.length == 0)
+				return null;
+			eventManager.register(topics, handler.getFilter(), handler);
 			return handler;
 		} catch (Exception e) {
 			if (s_log.isLoggable(Level.INFO))
@@ -285,7 +288,10 @@ public abstract class AnnotationBasedEventManager extends AnnotationBasedFactory
 			ProcessEventHandler handler = new ProcessEventHandler(delegateClass, processUUID, supplier);
 			if (!Util.isEmpty(filter, true))
 				handler.setFilter(filter);
-		    eventManager.register(handler.getTopics(), handler.getFilter(), handler);
+			String[] topics = handler.getTopics();
+			if (topics == null || topics.length == 0)
+				return null;
+		    eventManager.register(topics, handler.getFilter(), handler);
 		    return handler;
 		} catch (Exception e) {
 			if (s_log.isLoggable(Level.INFO))
@@ -311,7 +317,10 @@ public abstract class AnnotationBasedEventManager extends AnnotationBasedFactory
 			ImportEventHandler handler = new ImportEventHandler(delegateClass, importTableName, supplier);
 			if (!Util.isEmpty(filter, true))
 				handler.setFilter(filter);
-			eventManager.register(handler.getTopics(), handler.getFilter(), handler);
+			String[] topics = handler.getTopics();
+			if (topics == null || topics.length == 0)
+				return null;
+			eventManager.register(topics, handler.getFilter(), handler);
 			return handler;
 		} catch (Exception e) {
 			if (s_log.isLoggable(Level.INFO))
@@ -340,7 +349,10 @@ public abstract class AnnotationBasedEventManager extends AnnotationBasedFactory
 			ModelEventHandler<?> handler = new ModelEventHandler(modelClass, delegateClass, supplier);
 		    if (!Util.isEmpty(filter, true))
 				handler.setFilter(filter);
-		    eventManager.register(handler.getTopics(), handler.getFilter(), handler);
+			String[] topics = handler.getTopics();
+			if (topics == null || topics.length == 0)
+				return null;
+		    eventManager.register(topics, handler.getFilter(), handler);
 		    return handler;
 		} catch (Exception e) {
 			if (s_log.isLoggable(Level.INFO))

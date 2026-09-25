@@ -437,13 +437,13 @@ public interface I_AD_Role
     /** Column name IsMasterRole */
     public static final String COLUMNNAME_IsMasterRole = "IsMasterRole";
 
-	/** Set Master Role.
-	  * A master role cannot be assigned to users, it is intended to define access to menu option and documents and inherit to other roles
+	/** Set Role Template.
+	  * A role template cannot be assigned to users, it is intended to define access to menu option and documents and inherit to other roles
 	  */
 	public void setIsMasterRole (boolean IsMasterRole);
 
-	/** Get Master Role.
-	  * A master role cannot be assigned to users, it is intended to define access to menu option and documents and inherit to other roles
+	/** Get Role Template.
+	  * A role template cannot be assigned to users, it is intended to define access to menu option and documents and inherit to other roles
 	  */
 	public boolean isMasterRole();
 

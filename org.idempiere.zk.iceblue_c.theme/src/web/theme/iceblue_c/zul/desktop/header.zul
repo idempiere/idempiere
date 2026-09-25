@@ -13,20 +13,20 @@
 		msgText = Msg.getMsg(Env.getCtx(), msgValue);
 </zscript>
 	<div sclass="desktop-header" use="org.adempiere.webui.panel.HeaderPanel" id="header">
-		<hbox vflex="1" hflex="1" align="center">
-			<hbox  height="100%" pack="start" align="center" sclass="desktop-header-left" hflex="1">
+		<hlayout use="org.adempiere.webui.component.FlexHlayout" vflex="1" hflex="1" align="center">
+			<hlayout use="org.adempiere.webui.component.FlexHlayout"  height="100%" pack="start" align="center" sclass="desktop-header-left" hflex="1">
 					<image id="logo"/>
 					<div id="menuLookup"/>
 					<button id="menuButton" sclass="btn-small"/>
 					<span class="systemStatus">${msgText}</span>
-			</hbox>
-			<vbox  hflex="min" apply="org.adempiere.webui.panel.UserPanel" align="end"
+			</hlayout>
+			<vlayout use="org.adempiere.webui.component.FlexVlayout" apply="org.adempiere.webui.panel.UserPanel" pack="center" align="end"
 					sclass="desktop-user-panel">
-					<vbox  align="end">
+					<vlayout use="org.adempiere.webui.component.FlexVlayout"  align="end">
 						<label use="org.adempiere.webui.component.Label" id="loginUserAndRole" 
 							style="cursor: pointer;"
 							sclass="desktop-header-font desktop-header-username"/>
-						<hbox align="center" id="userPanelLinksContainer" hflex="min">
+						<hlayout use="org.adempiere.webui.component.FlexHlayout" align="center" id="userPanelLinksContainer">
 							<toolbarbutton use="org.adempiere.webui.component.ToolBarButton"
 								sclass="desktop-header-font link" id="feedback"/>
 							<separator orient="vertical" bar="true" height="13px"/>
@@ -38,9 +38,9 @@
 							<separator orient="vertical" bar="true" height="13px"/>
 							<toolbarbutton use="org.adempiere.webui.component.ToolBarButton"
 								sclass="desktop-header-font link" id="logout"/>
-						</hbox>
-					</vbox>
-			</vbox>
-		</hbox>
+						</hlayout>
+					</vlayout>
+			</vlayout>
+		</hlayout>
 	</div>
 </zk>

@@ -279,7 +279,8 @@ implements Evaluatee
 	@Override
 	public String get_ValueAsString(String variableName)
 	{
-		DefaultEvaluatee evaluatee = new DefaultEvaluatee(gridTab, windowNo, -1);
+		// Do not use gridTab as data provider since it does not has the row context
+		DefaultEvaluatee evaluatee = new DefaultEvaluatee((GridTab)null, windowNo, gridTab.getTabNo());
 		return evaluatee.get_ValueAsString(this, variableName);
 	}
 }

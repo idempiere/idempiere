@@ -3,11 +3,11 @@
 }
 
 .drill-window-field-name {
-	color: gray;
+	color: var(--zk-drill-window-field-color);
 }
 
 .drill-window-field-header {
-	color: gray;
+	color: var(--zk-drill-window-field-color);
 }
 
 .drill-window-field-header td {

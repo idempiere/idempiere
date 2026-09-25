@@ -254,6 +254,16 @@
 								<id>org.apache.commons.commons-fileupload2-javax</id>
 								<versionRange>0.0.0</versionRange>
 							</requirement>
+							<requirement>
+                                <type>eclipse-plugin</type>
+                                <id>org.eclipse.jetty.servlet-api</id>
+                                <versionRange>0.0.0</versionRange>
+                            </requirement>
+                            <requirement>
+                                <type>eclipse-plugin</type>
+                                <id>org.eclipse.jetty.servlet-api.capability</id>
+                                <versionRange>0.0.0</versionRange>
+                            </requirement>
 						</extraRequirements>
 					</dependency-resolution>
 				</configuration>

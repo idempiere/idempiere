@@ -181,6 +181,7 @@ public class FavoriteSimpleTreeModel extends SimpleTreeModel implements EventLis
 			}
 
 			// default user action for Collapsed/Expanded folder tree
+			ti.setOpen(true); // call open first to load children
 			ti.setOpen(!mNode.isCollapsible());
 			ti.setTooltiptext(mNode.getDescription());
 

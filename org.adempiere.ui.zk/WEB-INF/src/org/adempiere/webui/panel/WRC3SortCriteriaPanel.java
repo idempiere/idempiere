@@ -50,7 +50,7 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
-import org.zkoss.zul.Vbox;
+import org.adempiere.webui.component.FlexVlayout;
 
 /**
  * Wizard panel to edit sorting of print format
@@ -159,7 +159,7 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 		ZKUpdateUtil.setHflex(noList, "1");
 		ZKUpdateUtil.setVflex(noList, true);
 		hlayout.appendChild(noList);
-		Vbox vbox = new Vbox();
+		FlexVlayout vbox = new FlexVlayout();
 		vbox.appendChild(bAdd);
 		vbox.appendChild(bRemove);
 		ZKUpdateUtil.setWidth(vbox, "50px");
@@ -187,7 +187,7 @@ public class WRC3SortCriteriaPanel extends WRCTabPanel implements  EventListener
 		bUp.addEventListener(Events.ON_CLICK, actionListener2);
 		bDown.addEventListener(Events.ON_CLICK, actionListener2);
 		
-		vbox = new Vbox();
+		vbox = new FlexVlayout();
 		vbox.appendChild(bUp);
 		vbox.appendChild(bDown);
 		ZKUpdateUtil.setWidth(vbox, "46px");

@@ -3,5 +3,5 @@
 
 <%-- workaround for ZK-5159 --%>
 .z-frozen-body, .z-frozen-inner {
-	background-color: white;
+	background-color: var(zk-frozen-background-color);
 }

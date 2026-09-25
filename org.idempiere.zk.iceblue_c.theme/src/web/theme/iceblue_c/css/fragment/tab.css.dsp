@@ -17,7 +17,6 @@
 .z-tabbox-icon.z-tabbox-left-scroll, .z-tabbox-icon.z-tabbox-right-scroll {
 	padding: 0px;
     border-radius: 0px;
-    background-color: transparent;
     background: none;
     margin-top: 7px;
 }

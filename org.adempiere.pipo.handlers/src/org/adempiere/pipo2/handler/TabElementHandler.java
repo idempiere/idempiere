@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.AbstractElementHandler;
@@ -38,6 +39,7 @@ import org.compiere.model.I_AD_Process;
 import org.compiere.model.I_AD_Tab;
 import org.compiere.model.I_AD_TableAttribute;
 import org.compiere.model.I_AD_Window;
+import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.MTab;
 import org.compiere.model.X_AD_Field;
 import org.compiere.model.X_AD_Package_Imp_Detail;
@@ -81,10 +83,10 @@ public class TabElementHandler extends AbstractElementHandler {
 				String action = null;
 				if (!mTab.is_new()){
 					backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Tab.Table_Name,mTab);
-					action = "Update";
+					action = MPackageImpDetail.ACTION_UPDATE;
 				}
 				else{
-					action = "New";
+					action = MPackageImpDetail.ACTION_INSERT;
 				}
 				if (mTab.save(getTrxName(ctx)) == true){
 					logImportDetail (ctx, impDetail, 1, mTab.getName(), mTab.get_ID(),action);
@@ -103,8 +105,8 @@ public class TabElementHandler extends AbstractElementHandler {
 	public void endElement(PIPOContext ctx, Element element) throws SAXException {
 	}
 
-	public void create(PIPOContext ctx, TransformerHandler document)
-			throws SAXException {
+	public void create(PIPOContext ctx, IPackSerializer document)
+			throws Exception {
 		PackOut packOut = ctx.packOut;
 		int AD_Tab_ID = Env.getContextAsInt(ctx.ctx, "AD_Tab_ID");
 		if (ctx.packOut.isExported("AD_Tab_ID"+"|"+AD_Tab_ID))
@@ -116,7 +118,7 @@ public class TabElementHandler extends AbstractElementHandler {
 			verifyPackOutRequirement(m_Tab);
 			AttributesImpl atts = new AttributesImpl();
 			addTypeName(atts, "table");
-			document.startElement("","",I_AD_Tab.Table_Name,atts);
+			document.startElement(X_AD_Tab.Table_Name,atts);
 			createTabBinding(ctx,document,m_Tab);
 
 			packOut.getCtx().ctx.put("Table_Name",X_AD_Tab.Table_Name);
@@ -163,7 +165,7 @@ public class TabElementHandler extends AbstractElementHandler {
 		}
 
 		if (createElement) {
-			document.endElement("","",X_AD_Tab.Table_Name);
+			document.endElement(X_AD_Tab.Table_Name);
 		}
 
 		if(m_Tab.getAD_Process_ID() > 0 )
@@ -181,14 +183,14 @@ public class TabElementHandler extends AbstractElementHandler {
 
 	}
 
-	private void createField(PIPOContext ctx, TransformerHandler document,
-			int AD_Field_ID) throws SAXException {
+	private void createField(PIPOContext ctx, IPackSerializer document,
+			int AD_Field_ID) throws Exception {
 		Env.setContext(ctx.ctx, X_AD_Field.COLUMNNAME_AD_Field_ID, AD_Field_ID);
 		fieldHandler.create(ctx, document);
 		ctx.ctx.remove(X_AD_Field.COLUMNNAME_AD_Field_ID);
 	}
 
-	private void createTabBinding(PIPOContext ctx, TransformerHandler document, X_AD_Tab m_Tab)
+	private void createTabBinding(PIPOContext ctx, IPackSerializer document, X_AD_Tab m_Tab)
 	{
 		PoExporter filler = new PoExporter(ctx, document, m_Tab);
 		List<String> excludes = defaultExcludeList(X_AD_Tab.Table_Name);
@@ -200,11 +202,11 @@ public class TabElementHandler extends AbstractElementHandler {
 	}
 
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler,
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer,
 			TransformerHandler docHandler,
 			int recordId) throws Exception {
 		Env.setContext(packout.getCtx().ctx, I_AD_Tab.COLUMNNAME_AD_Tab_ID, recordId);
-		create(packout.getCtx(), packoutHandler);
+		create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(I_AD_Tab.COLUMNNAME_AD_Tab_ID);
 	}
 }

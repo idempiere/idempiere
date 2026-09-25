@@ -18,6 +18,7 @@ import java.sql.Statement;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
+import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.DataElementParameters;
@@ -30,7 +31,6 @@ import org.compiere.model.MTable;
 import org.compiere.model.MTableAttribute;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
-import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class TableAttributeElementHandler extends GenericPOElementHandler
@@ -46,7 +46,7 @@ public class TableAttributeElementHandler extends GenericPOElementHandler
 	
 	@SuppressWarnings("resource")
 	@Override
-	public void create(PIPOContext ctx, TransformerHandler document) throws SAXException
+	public void create(PIPOContext ctx, IPackSerializer document) throws Exception
 	{
 		AttributesImpl atts = new AttributesImpl();
 		int tableId = MTable.getTable_ID(MTableAttribute.Table_Name);
@@ -100,10 +100,10 @@ public class TableAttributeElementHandler extends GenericPOElementHandler
 				{
 					verifyPackOutRequirement(mTableAttribute);
 					addTypeName(atts, "table");
-					document.startElement("", "", MTableAttribute.Table_Name, atts);
+					document.startElement(MTableAttribute.Table_Name, atts);
 					PoExporter filler = new PoExporter(ctx, document, mTableAttribute);
 					filler.export(excludes, ctx.packOut.isIncludeOrganizationId());
-					document.endElement("", "", MTableAttribute.Table_Name);
+					document.endElement(MTableAttribute.Table_Name);
 				}
 			}
 		}
@@ -118,7 +118,7 @@ public class TableAttributeElementHandler extends GenericPOElementHandler
 	}
 
 	@Override
-	public void packOut(PackOut packout, TransformerHandler packoutHandler, TransformerHandler docHandler, int recordId) throws Exception
+	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler, int recordId) throws Exception
 	{
 		if(m_tableName == null)
 			m_tableName = Env.getContext(packout.getCtx().ctx, "Table_Name");
@@ -126,7 +126,7 @@ public class TableAttributeElementHandler extends GenericPOElementHandler
 		StringBuilder sql = new StringBuilder("SELECT * FROM AD_TableAttribute WHERE AD_Table_ID = ").append(tableId)
 				.append(" AND Record_ID = ").append(recordId);
 		packout.getCtx().ctx.put(DataElementParameters.SQL_STATEMENT, sql.toString());
-		this.create(packout.getCtx(), packoutHandler);
+		this.create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(DataElementParameters.SQL_STATEMENT);
 	}
 }

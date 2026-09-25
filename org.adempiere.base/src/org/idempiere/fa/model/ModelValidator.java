@@ -21,12 +21,9 @@
  **********************************************************************/
 package org.idempiere.fa.model;
 
-import java.util.List;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.FillMandatoryException;
-import org.compiere.acct.Fact;
-import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAssetAddition;
 import org.compiere.model.MAssetDisposed;
 import org.compiere.model.MClient;
@@ -46,8 +43,9 @@ import org.idempiere.fa.exceptions.AssetProductStockedException;
  * Fixed Assets Model Validator
  * @author Teo_Sarca, SC ARHIPAC SERVICE SRL
  */
+@Deprecated(since="14", forRemoval=true)
 public class ModelValidator
-implements org.compiere.model.ModelValidator, org.compiere.model.FactsValidator
+implements org.compiere.model.ModelValidator
 {
 	/** Logger */
 	private static CLogger log = CLogger.getCLogger(ModelValidator.class);
@@ -205,10 +203,5 @@ implements org.compiere.model.ModelValidator, org.compiere.model.FactsValidator
 				+" WHERE C_Invoice_ID=?";
 			DB.executeUpdateEx(sql, new Object[]{invoice_id}, m.get_TrxName());
 		}
-	}
-
-	@Override
-	public String factsValidate(MAcctSchema schema, List<Fact> facts, PO po) {
-		return null;
 	}
 }

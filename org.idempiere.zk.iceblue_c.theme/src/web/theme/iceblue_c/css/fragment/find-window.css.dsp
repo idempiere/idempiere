@@ -22,12 +22,12 @@
 
 /* Modern Popup Container */
 .modern-popup-container {
-    background: #ffffff;
+    background: var(--zk-find-window-popup-background-color);
     border: none;
     padding: 0;
     margin: 0;
     border-radius: 4px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 8px 32px var(--zk-find-window-popup-shadow-color);
     min-width: 240px;
     overflow: hidden;
     backdrop-filter: blur(10px);
@@ -39,7 +39,7 @@
         min-width: 280px;
         max-width: 90vw;
 	    border-radius: 4px;
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 12px 40px var(--zk-find-window-popup-mobile-shadow-color);
     }
 }
 
@@ -55,15 +55,16 @@
 .modern-popup.z-popup .z-popup-content {
     padding: 0 !important;
     border: none !important;
-    background: transparent !important;
+    background: var(--zk-find-window-transparent-color) !important;
 }
 
-/* Modern Checkbox Items */
-.modern-checkbox-item {
+/* Modern Checkbox Items and Modern Menu Item (Button styling) */
+.modern-checkbox-item,
+.modern-menu-item {
     padding: 14px 18px;
     margin: 0;
     font-size: 14px;
-    color: #2c3e50;
+    color: var(--zk-find-window-menu-text-color);
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
     width: 100%;
@@ -73,7 +74,7 @@
     display: flex;
     align-items: center;
     border: none;
-    background: transparent;
+    background: var(--zk-find-window-transparent-color);
     min-height: 44px; /* Minimum touch target size */
 }
 
@@ -100,52 +101,37 @@
 @media (max-width: 768px) {
     .modern-checkbox-item:hover,
     .modern-menu-item:hover {
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        background: linear-gradient(135deg, var(--zk-find-window-item-hover-gradient-start-color) 0%, var(--zk-find-window-item-hover-gradient-end-color) 100%);
         transform: none; /* Remove transform on mobile for better performance */
     }
     
     .modern-menu-delete:hover {
-        background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+        background: linear-gradient(135deg, var(--zk-find-window-delete-hover-gradient-start-color) 0%, var(--zk-find-window-delete-hover-gradient-end-color) 100%);
         transform: none;
     }
     
     /* Add active states for touch feedback */
     .modern-checkbox-item:active,
     .modern-menu-item:active {
-        background: #e9ecef;
+        background: var(--zk-find-window-item-active-background-color);
         transform: none;
     }
     
     .modern-menu-delete:active {
-        background: #fecaca;
+        background: var(--zk-find-window-delete-hover-gradient-end-color);
         transform: none;
     }
 }
 
 /* Separator between items */
 .modern-checkbox-item:not(:last-child) {
-    border-bottom: 1px solid #f1f3f4;
+    border-bottom: 1px solid var(--zk-find-window-item-separator-border-color);
 }
 
 /* Modern Menu Item (Button styling) */
 .modern-menu-item {
-    padding: 14px 18px;
-    margin: 0;
-    font-size: 14px;
-    color: #2c3e50;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: pointer;
-    width: 100%;
-    box-sizing: border-box;
-    font-weight: 500;
-    letter-spacing: 0.3px;
-    display: flex;
-    align-items: center;
-    border: none;
-    background: transparent;
     text-align: left;
     outline: none;
-    min-height: 44px; /* Minimum touch target size */
 }
 
 /* Mobile-specific menu item styling */
@@ -168,28 +154,28 @@
 }
 
 .modern-menu-item:hover {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    background: linear-gradient(135deg, var(--zk-find-window-item-hover-gradient-start-color) 0%, var(--zk-find-window-item-hover-gradient-end-color) 100%);
     transform: translateX(2px);
 }
 
 .modern-menu-item:active {
     transform: translateX(1px);
-    background: #e9ecef;
+    background: var(--zk-find-window-item-active-background-color);
 }
 
 /* Delete button specific styling */
 .modern-menu-delete {
-    color: #e74c3c;
+    color: var(--zk-find-window-delete-text-color);
     font-weight: 600;
 }
 
 .modern-menu-delete:hover {
-    background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
-    color: #dc2626;
+    background: linear-gradient(135deg, var(--zk-find-window-delete-hover-gradient-start-color) 0%, var(--zk-find-window-delete-hover-gradient-end-color) 100%);
+    color: var(--zk-find-window-delete-hover-text-color);
 }
 
 .modern-menu-delete:active {
-    background: #fecaca;
+    background: var(--zk-find-window-delete-hover-gradient-end-color);
     transform: translateX(1px);
 }
 
@@ -197,7 +183,7 @@
 .modern-separator {
     border: none;
     height: 1px;
-    background: linear-gradient(90deg, transparent 0%, #dee2e6 50%, transparent 100%);
+    background: linear-gradient(90deg, var(--zk-find-window-transparent-color) 0%, var(--zk-find-window-separator-gradient-mid-color) 50%, var(--zk-find-window-transparent-color) 100%);
     margin: 8px 12px;
 }
 
@@ -228,8 +214,8 @@
 }
 
 .modern-checkbox-item .z-checkbox-input:checked + .z-checkbox-content::before {
-    background: #007bff;
-    border-color: #007bff;
+    background: var(--zk-find-window-checkbox-checked-color);
+    border-color: var(--zk-find-window-checkbox-checked-color);
 }
 
 /* Animation for popup appearance */

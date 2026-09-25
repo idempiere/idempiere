@@ -45,7 +45,7 @@ import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
-import org.zkoss.zul.Hbox;
+import org.adempiere.webui.component.FlexHlayout;
 
 
 /**
@@ -151,9 +151,9 @@ public class WPAttributeInstance extends Window implements EventListener<Event>
 		this.appendChild(mainLayout);
 		
 		//	North
-		Hbox box = new Hbox();
+		FlexHlayout box = new FlexHlayout();
 		box.setParent(northPanel);
-		box.setPack("end");
+		box.setPack(FlexHlayout.PackType.END);
 		box.appendChild(showAll);
 		showAll.addEventListener(Events.ON_CHECK, this);
 		

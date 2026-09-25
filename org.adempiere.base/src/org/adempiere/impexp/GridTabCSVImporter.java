@@ -668,6 +668,7 @@ public class GridTabCSVImporter implements IGridTabImporter
 							currentGridTab.navigateCurrent();
 							if (! isDetail) {
 								for (GridTab child : childs) {
+									child.getTableModel().setImportingMode(true,trxName);
 									child.query(false);
 								}
 							}
@@ -708,6 +709,11 @@ public class GridTabCSVImporter implements IGridTabImporter
 									if (currentGridTab.getTabNo() == 0)
 										Env.setContext(Env.getCtx(), currentGridTab.getWindowNo(), currentGridTab.getKeyColumnName(), recordId);
 									Env.setContext(Env.getCtx(), currentGridTab.getWindowNo(), currentGridTab.getTabNo(), currentGridTab.getKeyColumnName(), Integer.toString(recordId));
+								}
+							}
+							if (! isDetail) {
+								for (GridTab child : childs) {
+									child.query(false);
 								}
 							}
 						} else {
