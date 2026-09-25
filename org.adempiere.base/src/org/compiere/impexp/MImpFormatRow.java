@@ -22,6 +22,7 @@ import java.util.Properties;
 import org.compiere.model.MColumn;
 import org.compiere.model.Query;
 import org.compiere.model.X_AD_ImpFormat_Row;
+import org.compiere.util.Msg;
 import org.compiere.util.Util;
 
 /**
@@ -122,18 +123,18 @@ public class MImpFormatRow extends X_AD_ImpFormat_Row
 					.setParameters(getAD_ImpFormat_ID(), getAD_Column_ID(), get_ID())
 					.match()
 		) {
-			log.saveError("Error", "Disallowed duplicate entry for -> " + MColumn.getColumnName(getCtx(), getAD_Column_ID()));
+			log.saveError("Error", Msg.getMsg(getCtx(), "DuplicateImpFormatRow", new Object[] {MColumn.getColumnName(getCtx(), getAD_Column_ID())}));
 			return false;
 		}
 		//IDEMPIERE-6224: fail also, if there is another non-constant entry of different type, to avoid concating strings to e.g. numbers
 		if (
 			!this.getDataType().equals(DATATYPE_Constant)
-			&& new Query(getCtx(), Table_Name, "ad_impformat_id = ? AND ad_column_id = ? AND datatype NOT IN ('C', ?)", get_TrxName())
+			&& new Query(getCtx(), Table_Name, "ad_impformat_id = ? AND ad_impformat_row_id <> ? AND ad_column_id = ? AND datatype NOT IN ('C', ?)", get_TrxName())
 					.setClient_ID()
-					.setParameters(getAD_ImpFormat_ID(), getAD_Column_ID(), getDataType())
+					.setParameters(getAD_ImpFormat_ID(), getAD_ImpFormat_Row_ID(), getAD_Column_ID(), getDataType())
 					.match()
 		) {
-			log.saveError("Error", "Disallowed duplicate entry for -> " + MColumn.getColumnName(getCtx(), getAD_Column_ID()));
+			log.saveError("Error", Msg.getMsg(getCtx(), "DuplicateImpFormatRow", new Object[] {MColumn.getColumnName(getCtx(), getAD_Column_ID())}));
 			return false;
 		}
 		
