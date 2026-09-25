@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_Product_PO
  *  @author iDempiere (generated) 
- *  @version Release 13
+ *  @version Release 14
  */
 public interface I_M_Product_PO 
 {
@@ -203,6 +203,19 @@ public interface I_M_Product_PO
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsApprovedVendor */
+    public static final String COLUMNNAME_IsApprovedVendor = "IsApprovedVendor";
+
+	/** Set Approved Vendor.
+	  * Indicates that this vendor is approved to supply this product when approved vendor purchasing is required.
+	  */
+	public void setIsApprovedVendor (boolean IsApprovedVendor);
+
+	/** Get Approved Vendor.
+	  * Indicates that this vendor is approved to supply this product when approved vendor purchasing is required.
+	  */
+	public boolean isApprovedVendor();
 
     /** Column name IsCurrentVendor */
     public static final String COLUMNNAME_IsCurrentVendor = "IsCurrentVendor";
