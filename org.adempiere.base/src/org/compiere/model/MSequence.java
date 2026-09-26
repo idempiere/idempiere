@@ -366,6 +366,10 @@ public class MSequence extends X_AD_Sequence
 			keyParts.parseSuffix(seq.getSuffix());
 		}
 
+	  String nextStr = null;
+	  if (seq.isUUIDSeq()) {
+		  nextStr = Util.generateUUIDv7().toString();
+	  } else {
 		StringBuilder selectSQL = new StringBuilder();
 		if (seq.isSequenceNoLevel()) {
 			selectSQL.append("SELECT y.CurrentNext, s.CurrentNextSys ")
@@ -571,23 +575,22 @@ public class MSequence extends X_AD_Sequence
 		//	Error
 		if (next < 0)
 			return null;
+		if (Util.isEmpty(decimalPattern))
+			nextStr = String.valueOf(next);
+		else
+			nextStr = new DecimalFormat(decimalPattern).format(next);
+	  }
 
 		//	create DocumentNo
 		StringBuilder doc = new StringBuilder();
 		if (!Util.isEmpty(prefixValue, true))
 			doc.append(prefixValue);
-
-		if (decimalPattern != null && decimalPattern.length() > 0)
-			doc.append(new DecimalFormat(decimalPattern).format(next));
-		else
-			doc.append(next);
-
+		doc.append(nextStr);
 		if (!Util.isEmpty(suffixValue, true))
 			doc.append(suffixValue);
 		
 		String documentNo = doc.toString();
-		if (s_log.isLoggable(Level.FINER)) s_log.finer (documentNo + " (" + incrementNo + ")"
-				+ " - Sequence=" + AD_Sequence_ID + " [" + trx + "]");
+		if (s_log.isLoggable(Level.FINER)) s_log.finer (documentNo + " (" + incrementNo + ")" + " - Sequence=" + AD_Sequence_ID);
 		return documentNo;
 	}
 	
@@ -1286,6 +1289,13 @@ public class MSequence extends X_AD_Sequence
 	protected boolean beforeSave(boolean newRecord) {
 		if (isStartNewMonth() && !isStartNewYear())
 			setStartNewMonth(false);
+		if (isTableID())
+			setIsUUIDSeq(false);
+		if (isUUIDSeq()) {
+			setIsOrgLevelSequence(false);
+			setStartNewYear(false);
+			setStartNewMonth(false);
+		}
 		return true;
 	}
 
@@ -1299,6 +1309,9 @@ public class MSequence extends X_AD_Sequence
 		String prelim = null;
 		if (AD_Sequence_ID > 0) {
 			MSequence seq = new MSequence(Env.getCtx(), AD_Sequence_ID, null);
+		  if (seq.isUUIDSeq() ) {
+			 prelim = Util.generateUUIDv7().toString();
+		  } else {
 			int currentNext = seq.getCurrentNext();
 			DefaultEvaluatee evaluatee = new DefaultEvaluatee(tab, tab.getWindowNo(), tab.getTabNo());
 			SequenceNoKeyParts keyParts = new SequenceNoKeyParts(seq, evaluatee, null);
@@ -1347,6 +1360,7 @@ public class MSequence extends X_AD_Sequence
 				prelim = new DecimalFormat(decimalPattern).format(currentNext);
 			else
 				prelim = String.valueOf(currentNext);
+		  }
 		}
 		if (prelim == null)
 			prelim = "?";
