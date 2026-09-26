@@ -168,7 +168,7 @@ public class PoExporter {
 	public void addTableReference(String columnName, String tableName, AttributesImpl atts) {
 		if (tableName != null) {
 			MTable table = MTable.get(po.getCtx(), tableName, po.get_TrxName());
-			if (table.isUUIDKeyTable()) {
+			if (table.isUUIDKeyTable() || "Record_UU".equals(columnName)) {
 				String uuid = (String)po.get_Value(columnName);
 				addTableReferenceUUID(columnName, tableName, uuid, atts);
 			} else {
@@ -274,43 +274,31 @@ public class PoExporter {
 			String trxName = ctx.trx == null ? null : ctx.trx.getTrxName();
 			if (DisplayType.YesNo == displayType) {
 				add(columnName, false, new AttributesImpl());
-			} else if (DisplayType.TableDir == displayType || DisplayType.ID == displayType) {
-				String tableName = null;
-				if (("Record_ID".equalsIgnoreCase(columnName) || "Record_UU".equalsIgnoreCase(columnName)) && po.get_ColumnIndex("AD_Table_ID") >= 0) {
-					int AD_Table_ID = po.get_ValueAsInt("AD_Table_ID");
-					if (AD_Table_ID > 0)
-						tableName = MTable.get(ctx.ctx, AD_Table_ID, trxName).getTableName();
-				} else if (po.get_TableName().startsWith("AD_TreeNode") && columnName.equals("Parent_ID")) {
-					int AD_Tree_ID = po.get_ValueAsInt("AD_Tree_ID");
-					MTree tree = new MTree(ctx.ctx, AD_Tree_ID, trxName);
-					tableName = tree.getSourceTableName(true);
-				} else if (po.get_TableName().startsWith("AD_TreeNode") && columnName.equals("Node_ID")) {
-					int AD_Tree_ID = po.get_ValueAsInt("AD_Tree_ID");
-					MTree tree = new MTree(ctx.ctx, AD_Tree_ID, trxName);
-					tableName = tree.getSourceTableName(true);
-				} else {
-					MColumn column = MColumn.get(ctx.ctx, info.getTableName(), columnName, trxName);
-					tableName = column.getReferenceTableName();
+			} else if (DisplayType.TableDir == displayType || DisplayType.ID == displayType || DisplayType.RecordUU == displayType) {
+				String tableName = resolveReferenceTableName(info, columnName, i, trxName);
+				if (tableName == null
+					&& ("Record_ID".equalsIgnoreCase(columnName) || "Record_UU".equalsIgnoreCase(columnName)))
+				{
+					throw new AdempiereException("Could not find the related table for column " + po.get_TableName() + "." + columnName);
 				}
 				addTableReference(columnName, tableName, new AttributesImpl());
 			} else if (DisplayType.isList(displayType)) {
 				add(columnName, "", new AttributesImpl());
 			} else if (DisplayType.isLookup(displayType) || DisplayType.isMultiID(displayType)) {
-				String tableName = null;
-				if (("Record_ID".equalsIgnoreCase(columnName) || "Record_UU".equalsIgnoreCase(columnName)) && po.get_ColumnIndex("AD_Table_ID") >= 0) {
-					int AD_Table_ID = po.get_ValueAsInt("AD_Table_ID");
-					if (AD_Table_ID > 0)
-						tableName = MTable.get(ctx.ctx, AD_Table_ID, trxName).getTableName();
-				} else if (info.getColumnLookup(i) != null){
-					String lookupColumn = info.getColumnLookup(i).getColumnName();
-					tableName = lookupColumn.substring(0, lookupColumn.indexOf("."));
-				}
+				String tableName = resolveReferenceTableName(info, columnName, i, trxName);
+
 				if (tableName == null)
+				{
 					throw new AdempiereException("Could not find the related table for column " + po.get_TableName() + "." + columnName);
-				if (   info.getColumnDisplayType(i) == DisplayType.ChosenMultipleSelectionList
-					|| DisplayType.isMultiID(info.getColumnDisplayType(i))) {
+				}
+
+				if (info.getColumnDisplayType(i) == DisplayType.ChosenMultipleSelectionList
+					|| DisplayType.isMultiID(info.getColumnDisplayType(i)))
+				{
 					addTableReferenceMulti(columnName, tableName, new AttributesImpl());
-				} else {
+				}
+				else
+				{
 					addTableReference(columnName, tableName, new AttributesImpl());
 				}
 			} else if (DisplayType.Account == displayType) {
@@ -393,4 +381,51 @@ public class PoExporter {
 
 		addString(columnName, fileName + "|" + dataType, new AttributesImpl());
 	}
+
+	/**
+	 * Resolve the referenced table name for the given column.
+	 *
+	 * @param  info        PO information
+	 * @param  columnName  column being exported
+	 * @param  columnIndex column index in POInfo
+	 * @param  trxName     transaction name
+	 * @return             referenced table name, or null if it cannot be resolved
+	 */
+	private String resolveReferenceTableName(POInfo info, String columnName, int columnIndex, String trxName)
+	{
+		if (("Record_ID".equalsIgnoreCase(columnName) || "Record_UU".equalsIgnoreCase(columnName))
+			&& po.get_ColumnIndex("AD_Table_ID") >= 0)
+		{
+			int AD_Table_ID = po.get_ValueAsInt("AD_Table_ID");
+			if (AD_Table_ID > 0)
+				return MTable.get(ctx.ctx, AD_Table_ID, trxName).getTableName();
+
+			return null;
+		}
+
+		if (po.get_TableName().startsWith("AD_TreeNode")
+			&& ("Parent_ID".equals(columnName) || "Node_ID".equals(columnName)))
+		{
+			int AD_Tree_ID = po.get_ValueAsInt("AD_Tree_ID");
+			MTree tree = new MTree(ctx.ctx, AD_Tree_ID, trxName);
+			return tree.getSourceTableName(true);
+		}
+
+		MColumn column = MColumn.get(ctx.ctx, info.getTableName(), columnName, trxName);
+		if (column != null)
+		{
+			String referenceTableName = column.getReferenceTableName();
+			if (referenceTableName != null)
+				return referenceTableName;
+		}
+		if (info.getColumnLookup(columnIndex) != null)
+		{
+			String lookupColumn = info.getColumnLookup(columnIndex).getColumnName();
+			int separator = lookupColumn.indexOf('.');
+			if (separator > 0)
+				return lookupColumn.substring(0, separator);
+		}
+
+		return null;
+	} // resolveReferenceTableName
 }
