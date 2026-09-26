@@ -1451,6 +1451,10 @@ public class GridField
 				query = "NULL";
 			else
 				query = m_vo.ColumnSQL;
+
+			if (query.contains("@"))
+				query = Env.parseContext(m_vo.ctx, m_vo.WindowNo, query, false, true);
+
 			if (withAS)
 				return query + " AS " + m_vo.ColumnName;
 			else
