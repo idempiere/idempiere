@@ -449,6 +449,15 @@ public interface I_AD_InfoColumn
 	  */
 	public boolean isReadOnly();
 
+    /** Column name Is_FilterOnlyInfoRelated */
+    public static final String COLUMNNAME_Is_FilterOnlyInfoRelated = "Is_FilterOnlyInfoRelated";
+
+	/** Set Filter Only Related Info	  */
+	public void setIs_FilterOnlyInfoRelated (boolean Is_FilterOnlyInfoRelated);
+
+	/** Get Filter Only Related Info	  */
+	public boolean is_FilterOnlyInfoRelated();
+
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
 
