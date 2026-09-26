@@ -737,8 +737,8 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		if (retValue != null)
 		{
 			if (forUpdate)
-				return retValue;
-			DB.getDatabase().forUpdate(retValue, timeout);
+				DB.getDatabase().forUpdate(retValue, timeout);
+			return retValue;
 		}
 		
 		//	Insert row based on locator
