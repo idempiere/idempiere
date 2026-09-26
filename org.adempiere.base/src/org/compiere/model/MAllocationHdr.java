@@ -677,6 +677,9 @@ public class MAllocationHdr extends X_C_AllocationHdr implements DocAction
 		
 		boolean retValue = reverseIt(false);
 
+		// delete the fact line of the Allocation after reverse Correct
+		DocumentEngine.deleteReverseCorrectPosting(getAD_Client_ID(), MAllocationHdr.Table_ID, getC_AllocationHdr_ID(), get_TrxName());
+
 		// After reverseCorrect
 		m_processMsg = ModelValidationEngine.get().fireDocValidate(this,ModelValidator.TIMING_AFTER_REVERSECORRECT);
 		if (m_processMsg != null)
