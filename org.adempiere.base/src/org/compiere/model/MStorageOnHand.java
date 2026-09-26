@@ -28,8 +28,8 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.base.IStorageValidator;
-import org.adempiere.exceptions.NegativeInventoryDisallowedException;
 import org.adempiere.base.StorageValidatorProvider;
+import org.adempiere.exceptions.NegativeInventoryDisallowedException;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -379,7 +379,8 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		int M_Product_ID, int M_AttributeSetInstance_ID, Timestamp minGuaranteeDate,
 		boolean FiFo, boolean positiveOnly, int M_Locator_ID, String trxName, boolean forUpdate)
 	{
-		return getWarehouse(ctx, M_Warehouse_ID, M_Product_ID, M_AttributeSetInstance_ID, minGuaranteeDate, FiFo, positiveOnly, M_Locator_ID, trxName, forUpdate, 0);
+		int timeout = MSysConfig.getIntValue(MSysConfig.MSTORAGEONHAND_LOCK_TIMEOUT, 120, Env.getAD_Client_ID(Env.getCtx()));
+		return getWarehouse(ctx, M_Warehouse_ID, M_Product_ID, M_AttributeSetInstance_ID, minGuaranteeDate, FiFo, positiveOnly, M_Locator_ID, trxName, forUpdate, timeout);
 	}
 	
 	/**
@@ -561,7 +562,8 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		int M_Product_ID, int M_AttributeSetInstance_ID, Timestamp minGuaranteeDate,
 		boolean FiFo, int M_Locator_ID, String trxName, boolean forUpdate)
 	{
-		return getWarehouseNegative(ctx, M_Warehouse_ID, M_Product_ID, M_AttributeSetInstance_ID, minGuaranteeDate, FiFo, M_Locator_ID, trxName, forUpdate, 0);
+		int timeout = MSysConfig.getIntValue(MSysConfig.MSTORAGEONHAND_LOCK_TIMEOUT, 120, Env.getAD_Client_ID(Env.getCtx()));
+		return getWarehouseNegative(ctx, M_Warehouse_ID, M_Product_ID, M_AttributeSetInstance_ID, minGuaranteeDate, FiFo, M_Locator_ID, trxName, forUpdate, timeout);
 	}
 	
 	/**
@@ -705,7 +707,8 @@ public class MStorageOnHand extends X_M_StorageOnHand
 	public static MStorageOnHand getCreate (Properties ctx, int M_Locator_ID, 
 		int M_Product_ID, int M_AttributeSetInstance_ID,Timestamp dateMPolicy, String trxName, boolean forUpdate)
 	{
-		return getCreate(ctx, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID, dateMPolicy, trxName, forUpdate, 0);
+		int timeout = MSysConfig.getIntValue(MSysConfig.MSTORAGEONHAND_LOCK_TIMEOUT, 120, Env.getAD_Client_ID(Env.getCtx()));
+		return getCreate(ctx, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID, dateMPolicy, trxName, forUpdate, timeout);
 	}
 	
 	/**
@@ -734,8 +737,8 @@ public class MStorageOnHand extends X_M_StorageOnHand
 		if (retValue != null)
 		{
 			if (forUpdate)
-				DB.getDatabase().forUpdate(retValue, timeout);
-			return retValue;
+				return retValue;
+			DB.getDatabase().forUpdate(retValue, timeout);
 		}
 		
 		//	Insert row based on locator
@@ -829,7 +832,8 @@ public class MStorageOnHand extends X_M_StorageOnHand
 			dateMPolicy = Util.removeTime(dateMPolicy);
 
 		//	Get Storage
-		MStorageOnHand storage = getCreate (ctx, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID, dateMPolicy, trxName, true, 120);
+		int timeout = MSysConfig.getIntValue(MSysConfig.MSTORAGEONHAND_LOCK_TIMEOUT, 120, Env.getAD_Client_ID(Env.getCtx()));
+		MStorageOnHand storage = getCreate (ctx, M_Locator_ID, M_Product_ID, M_AttributeSetInstance_ID, dateMPolicy, trxName, true, timeout);
 		//	Verify
 		if (storage.getM_Locator_ID() != M_Locator_ID 
 			&& storage.getM_Product_ID() != M_Product_ID
