@@ -930,7 +930,9 @@ public class DB_Oracle implements AdempiereDatabase
 			}
 			if (timeout <= 0)
 				timeout = MSysConfig.getIntValue(MSysConfig.DB_LOCK_TIMEOUT, DEFAULT_LOCK_TIME_OUT, Env.getAD_Client_ID(Env.getCtx()));
-			sqlBuffer.append(" FOR UPDATE WAIT ").append(timeout);
+			sqlBuffer.append(" FOR UPDATE");
+			if (timeout > 0)
+				sqlBuffer.append(" WAIT ").append(timeout);
 
 			Object[] parameters = new Object[keyColumns.length];
 			for(int i = 0; i < keyColumns.length; i++) {
