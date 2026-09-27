@@ -426,7 +426,7 @@ public class MSequence extends X_AD_Sequence
 		ResultSet rs = null;
 		try
 		{
-			if (trx != null)
+			if (trx != null && !seq.isAllowSequenceGaps())
 				conn = trx.getConnection();
 			else
 				conn = DB.getConnection(false);
@@ -544,7 +544,7 @@ public class MSequence extends X_AD_Sequence
 				}
 			}
 			//	Commit
-			if (trx == null)
+			if (trx == null || seq.isAllowSequenceGaps())
 			{
 				conn.commit();
 			}
@@ -564,7 +564,7 @@ public class MSequence extends X_AD_Sequence
 			//	Finish
 			try
 			{
-				if (trx == null && conn != null) {
+				if ((trx == null || seq.isAllowSequenceGaps()) && conn != null) {
 					conn.close();
 					conn = null;
 				}
@@ -1291,8 +1291,10 @@ public class MSequence extends X_AD_Sequence
 	protected boolean beforeSave(boolean newRecord) {
 		if (isStartNewMonth() && !isStartNewYear())
 			setStartNewMonth(false);
-		if (isTableID())
+		if (isTableID()) {
+			setIsAllowSequenceGaps(true);
 			setIsUUIDSeq(false);
+		}
 		if (isUUIDSeq()) {
 			setIsOrgLevelSequence(false);
 			setStartNewYear(false);

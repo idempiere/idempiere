@@ -191,6 +191,19 @@ public interface I_AD_Sequence
 	  */
 	public boolean isActive();
 
+    /** Column name IsAllowSequenceGaps */
+    public static final String COLUMNNAME_IsAllowSequenceGaps = "IsAllowSequenceGaps";
+
+	/** Set Allow Gaps.
+	  * Allow gaps in the generated sequence numbers
+	  */
+	public void setIsAllowSequenceGaps (boolean IsAllowSequenceGaps);
+
+	/** Get Allow Gaps.
+	  * Allow gaps in the generated sequence numbers
+	  */
+	public boolean isAllowSequenceGaps();
+
     /** Column name IsAudited */
     public static final String COLUMNNAME_IsAudited = "IsAudited";
 

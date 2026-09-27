@@ -31,7 +31,7 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20260923L;
+	private static final long serialVersionUID = 20260927L;
 
     /** Standard Constructor */
     public X_AD_Sequence (Properties ctx, int AD_Sequence_ID, String trxName)
@@ -46,6 +46,8 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 // 100
 			setIncrementNo (0);
 // 1
+			setIsAllowSequenceGaps (false);
+// N
 			setIsAutoSequence (false);
 			setIsOrgLevelSequence (false);
 // N
@@ -72,6 +74,8 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 // 100
 			setIncrementNo (0);
 // 1
+			setIsAllowSequenceGaps (false);
+// N
 			setIsAutoSequence (false);
 			setIsOrgLevelSequence (false);
 // N
@@ -98,6 +102,8 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 // 100
 			setIncrementNo (0);
 // 1
+			setIsAllowSequenceGaps (false);
+// N
 			setIsAutoSequence (false);
 			setIsOrgLevelSequence (false);
 // N
@@ -124,6 +130,8 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 // 100
 			setIncrementNo (0);
 // 1
+			setIsAllowSequenceGaps (false);
+// N
 			setIsAutoSequence (false);
 			setIsOrgLevelSequence (false);
 // N
@@ -305,6 +313,29 @@ public class X_AD_Sequence extends PO implements I_AD_Sequence, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Allow Gaps.
+		@param IsAllowSequenceGaps Allow gaps in the generated sequence numbers
+	*/
+	public void setIsAllowSequenceGaps (boolean IsAllowSequenceGaps)
+	{
+		set_Value (COLUMNNAME_IsAllowSequenceGaps, Boolean.valueOf(IsAllowSequenceGaps));
+	}
+
+	/** Get Allow Gaps.
+		@return Allow gaps in the generated sequence numbers
+	  */
+	public boolean isAllowSequenceGaps()
+	{
+		Object oo = get_Value(COLUMNNAME_IsAllowSequenceGaps);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Activate Audit.
