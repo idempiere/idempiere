@@ -52,6 +52,7 @@ import org.compiere.db.partition.ITablePartitionService;
 import org.compiere.dbPort.Convert;
 import org.compiere.dbPort.Convert_PostgreSQL;
 import org.compiere.model.MColumn;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.model.SystemProperties;
@@ -59,6 +60,7 @@ import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
+import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.Language;
 import org.compiere.util.Trx;
@@ -1039,7 +1041,9 @@ public class DB_PostgreSQL implements AdempiereDatabase
 				for(int i = 0; i < keyColumns.length; i++) {
 					stmt.setObject(i+1, parameters[i]);
 				}
-				stmt.setQueryTimeout(timeout > 0 ? timeout : LOCK_TIME_OUT);
+				if (timeout <= 0)
+					timeout = MSysConfig.getIntValue(MSysConfig.DB_LOCK_TIMEOUT, DEFAULT_LOCK_TIME_OUT, Env.getAD_Client_ID(Env.getCtx()));
+				stmt.setQueryTimeout(timeout);
 				
 				rs = stmt.executeQuery();
 				if (rs.next()) {

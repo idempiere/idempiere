@@ -253,7 +253,8 @@ public class MProductionLine extends X_M_ProductionLine {
 						} else {
 							if (log.isLoggable(Level.FINE))log.log(Level.FINE, "Saved transaction for " + toString());
 						}
-						DB.getDatabase().forUpdate(storages[sl], 120);
+						int timeout = MSysConfig.getIntValue(MSysConfig.MSTORAGEONHAND_LOCK_TIMEOUT, 120, Env.getAD_Client_ID(Env.getCtx()));
+						DB.getDatabase().forUpdate(storages[sl], timeout);
 						storages[sl].addQtyOnHand(lineQty.negate());
 						qtyToMove = qtyToMove.subtract(lineQty);
 						if (log.isLoggable(Level.FINE))log.log(Level.FINE, getLine() + " Qty moved = " + lineQty + ", Remaining = " + qtyToMove );
