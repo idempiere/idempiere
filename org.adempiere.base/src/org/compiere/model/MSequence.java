@@ -530,7 +530,12 @@ public class MSequence extends X_AD_Sequence
 				{	// create sequence (CurrentNo = StartNo + IncrementNo) for this year/month/org and return first number (=StartNo)
 					next = startNo;
 
-					X_AD_Sequence_No seqno = new X_AD_Sequence_No(Env.getCtx(), 0, trxName);
+					String connTrxName;
+					if (seq.isAllowSequenceGaps())
+						connTrxName = null;
+					else
+						connTrxName = trxName;
+					X_AD_Sequence_No seqno = new X_AD_Sequence_No(Env.getCtx(), 0, connTrxName);
 					seqno.setAD_Sequence_ID(AD_Sequence_ID);
 					seqno.setAD_Org_ID(docOrg_ID);
 					seqno.setSequenceKey(keyParts.getKey());
