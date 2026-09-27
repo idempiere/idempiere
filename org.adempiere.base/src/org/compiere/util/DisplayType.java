@@ -235,6 +235,7 @@ public final class DisplayType
 
 	public static final String DEFAULT_TIME_FORMAT = "HH:mm:ss";
 	public static final String DEFAULT_TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss";
+	public static final String DEFAULT_TIMESTAMP_WITH_TIMEZONE_FORMAT = DEFAULT_TIMESTAMP_FORMAT + "XXX";
 	public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
 
 	/**	Logger	*/

@@ -46,7 +46,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2345815648281241687L;
+	private static final long serialVersionUID = -4211803175857427143L;
 
 	/** Constant for Predefine System Configuration Names (in alphabetical order) */
 	
@@ -176,6 +176,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String MONITOR_MAX_WAIT_FOR_CLUSTER_IN_SECONDS = "MONITOR_MAX_WAIT_FOR_CLUSTER_IN_SECONDS";
 	public static final String MROLE_GETDEFAULT_RETURNS_NULL_WHEN_NO_CONTEXT = "MROLE_GETDEFAULT_RETURNS_NULL_WHEN_NO_CONTEXT";
     public static final String MSEQUENCE_GETNEXT_TIMEOUT = "MSEQUENCE_GETNEXT_TIMEOUT";
+    public static final String MSTORAGEONHAND_LOCK_TIMEOUT = "MSTORAGEONHAND_LOCK_TIMEOUT";
     public static final String OAUTH2_USE_ACCESS_TOKEN_UPN_ON_MICROSOFT_PROVIDER = "OAUTH2_USE_ACCESS_TOKEN_UPN_ON_MICROSOFT_PROVIDER";
     public static final String OAUTH2_USE_ID_TOKEN_PREF_USERNAME_ON_MS_PROVIDER = "OAUTH2_USE_ID_TOKEN_PREF_USERNAME_ON_MS_PROVIDER";
     public static final String ORACLE_SET_STRING_MAX_LENGTH = "ORACLE_SET_STRING_MAX_LENGTH";
