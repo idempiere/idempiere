@@ -368,6 +368,8 @@ public class MSequence extends X_AD_Sequence
 
 	  String nextStr = null;
 	  if (seq.isUUIDSeq()) {
+		  if (! seq.isActive())
+			  return null;
 		  nextStr = Util.generateUUIDv7().toString();
 	  } else {
 		StringBuilder selectSQL = new StringBuilder();
