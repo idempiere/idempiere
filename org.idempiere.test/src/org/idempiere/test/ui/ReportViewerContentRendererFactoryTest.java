@@ -27,15 +27,29 @@ import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.adempiere.base.Core;
+import org.adempiere.base.IProcessFactory;
 import org.adempiere.base.IServiceReferenceHolder;
 import org.adempiere.base.ReportContentServiceProvider;
 import org.adempiere.base.Service;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.report.jasper.JasperReportContentRendererFactory;
+import org.adempiere.util.IProcessUI;
+import org.adempiere.util.ProcessUtil;
+import org.compiere.model.MOrder;
+import org.compiere.model.MPInstance;
+import org.compiere.model.PrintInfo;
+import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
+import org.compiere.process.ProcessCall;
+import org.compiere.process.ProcessInfo;
+import org.compiere.util.CacheMgt;
+import org.compiere.util.DB;
+import org.compiere.util.Env;
+import org.compiere.util.Trx;
 import org.idempiere.print.IReportContentProcessor;
 import org.idempiere.print.IReportContentRenderer;
 import org.idempiere.print.IReportContentRendererFactory;
@@ -48,6 +62,9 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
 
 public class ReportViewerContentRendererFactoryTest extends AbstractTestCase {
+
+	/** Rpt C_Order, an AD_Process without class name */
+	private static final int RPT_C_ORDER_PROCESS_ID = 110;
 
 	@Test
 	public void testHigherRankingFactoryTakesPrecedence() throws IOException {
@@ -299,6 +316,90 @@ public class ReportViewerContentRendererFactoryTest extends AbstractTestCase {
 			processorRegistration.unregister();
 			factoryRegistration.unregister();
 		}
+	}
+
+	@Test
+	public void testJasperRendererUsesReportStarterFromProcessFactory() throws IOException {
+		File content = Files.createTempFile("process-factory-report-content-", ".pdf").toFile();
+		AtomicInteger starterCalls = new AtomicInteger();
+		try {
+			File result = renderWithProcessFactoryStarter((ctx, pi, trx) -> {
+				starterCalls.incrementAndGet();
+				pi.setPDFReport(content);
+				return true;
+			});
+			assertSame(content, result);
+			assertEquals(1, starterCalls.get(), "Jasper starter provided by IProcessFactory must be used");
+		} finally {
+			content.delete();
+		}
+	}
+
+	@Test
+	public void testJasperRendererCreatesProcessInstanceForReportStarter() throws IOException {
+		File content = Files.createTempFile("process-instance-report-content-", ".pdf").toFile();
+		AtomicInteger instanceId = new AtomicInteger();
+		AtomicInteger instanceProcessId = new AtomicInteger();
+		try {
+			renderWithProcessFactoryStarter((ctx, pi, trx) -> {
+				instanceId.set(pi.getAD_PInstance_ID());
+				if (pi.getAD_PInstance_ID() > 0)
+					instanceProcessId.set(new MPInstance(ctx, pi.getAD_PInstance_ID(), null).getAD_Process_ID());
+				pi.setPDFReport(content);
+				return true;
+			});
+			assertTrue(instanceId.get() > 0, "Report starter must get an AD_PInstance_ID");
+			assertEquals(RPT_C_ORDER_PROCESS_ID, instanceProcessId.get(), "AD_PInstance must exist for the Jasper process");
+		} finally {
+			content.delete();
+			if (instanceId.get() > 0)
+				DB.executeUpdateEx("DELETE FROM AD_PInstance WHERE AD_PInstance_ID=?", new Object[] { instanceId.get() }, null);
+		}
+	}
+
+	/**
+	 * Render a Jasper print format while the given starter is registered through IProcessFactory
+	 * for the core Jasper starter class.
+	 */
+	private File renderWithProcessFactoryStarter(TestStarter starter) {
+		ProcessCall process = new ProcessCall() {
+			@Override
+			public boolean startProcess(Properties ctx, ProcessInfo pi, Trx trx) {
+				return starter.startProcess(ctx, pi, trx);
+			}
+
+			@Override
+			public void setProcessUI(IProcessUI processUI) {
+			}
+		};
+		IProcessFactory processFactory =
+				className -> ProcessUtil.JASPER_STARTER_CLASS.equals(className) ? process : null;
+		Dictionary<String, Object> properties = new Hashtable<>();
+		properties.put(Constants.SERVICE_RANKING, 1000);
+		ServiceRegistration<IProcessFactory> registration =
+				TestActivator.context.registerService(IProcessFactory.class, processFactory, properties);
+		CacheMgt.get().reset(Core.IPROCESS_FACTORY_CACHE_TABLE_NAME);
+		try {
+			MPrintFormat format = org.mockito.Mockito.mock(MPrintFormat.class);
+			org.mockito.Mockito.when(format.getJasperProcess_ID()).thenReturn(RPT_C_ORDER_PROCESS_ID);
+			ReportEngine reportEngine = org.mockito.Mockito.mock(ReportEngine.class);
+			org.mockito.Mockito.when(reportEngine.getCtx()).thenReturn(Env.getCtx());
+			org.mockito.Mockito.when(reportEngine.getPrintFormat()).thenReturn(format);
+			org.mockito.Mockito.when(reportEngine.getPrintInfo()).thenReturn(new PrintInfo("Test", MOrder.Table_ID, 0));
+			ReportContentRequest request = new ReportContentRequest(reportEngine, null, "Test", false);
+
+			IReportContentRenderer renderer = new JasperReportContentRendererFactory().createRenderer(request);
+			assertNotNull(renderer);
+			return renderer.getContent("application/pdf", "pdf");
+		} finally {
+			registration.unregister();
+			CacheMgt.get().reset(Core.IPROCESS_FACTORY_CACHE_TABLE_NAME);
+		}
+	}
+
+	@FunctionalInterface
+	private interface TestStarter {
+		boolean startProcess(Properties ctx, ProcessInfo pi, Trx trx);
 	}
 
 	private ServiceRegistration<IReportContentRendererFactory> registerFactory(
