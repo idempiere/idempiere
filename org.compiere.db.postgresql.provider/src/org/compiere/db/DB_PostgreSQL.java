@@ -1043,8 +1043,9 @@ public class DB_PostgreSQL implements AdempiereDatabase
 				}
 				if (timeout <= 0)
 					timeout = MSysConfig.getIntValue(MSysConfig.DB_LOCK_TIMEOUT, DEFAULT_LOCK_TIME_OUT, Env.getAD_Client_ID(Env.getCtx()));
-				stmt.setQueryTimeout(timeout);
-				
+				if (timeout >= 0)
+					stmt.setQueryTimeout(timeout);
+
 				rs = stmt.executeQuery();
 				if (rs.next()) {
 					return true;
