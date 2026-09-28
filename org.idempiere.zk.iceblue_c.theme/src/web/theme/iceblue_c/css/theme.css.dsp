@@ -227,6 +227,8 @@
 	--zk-window-dialog-footer-shadow-color: #ffffff;
 	--zk-window-quickform-readonly-color: #252525;
 	--zk-window-quickform-current-row-border-color: #6f97d2;
+
+	--zk-text-color-light: rgba(0,0,0,0.72);
 }
 
 html,body {

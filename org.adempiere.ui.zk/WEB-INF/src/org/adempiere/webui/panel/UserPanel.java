@@ -319,7 +319,7 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
     }
 
     @Override
-	public void onEvent(Event event) throws Exception {
+	public void onEvent(Event event) throws Exception {		
 		if (event == null)
 			return;
 
@@ -338,10 +338,6 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 		else if (preference != null && preference == event.getTarget())
 		{
 			onPreference();
-		}
-		else if (feedback != null && feedback == event.getTarget())
-		{
-			onFeedback();
 		}
 		else if (event.getTarget() instanceof Menuitem)
 		{
@@ -632,7 +628,7 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 		preferencePopup.setTitle(Msg.getMsg(ctx, "Preference"));
 		preferencePopup.setPage(component.getPage());
 		Component anchor = userProfileChip != null ? userProfileChip : lblUserNameValue;
-		LayoutUtils.openPopupWindow(anchor, preferencePopup, "overlap");
+		LayoutUtils.openPopupWindow(anchor, preferencePopup, "after_start");
 	}
 
 	/**
@@ -643,7 +639,6 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 		String info = role.toStringX(ctx);
 		Messagebox mb = new Messagebox();
 		mb.show(info, Msg.getMsg(ctx, "RoleInfo"), Messagebox.OK, Messagebox.INFORMATION);
-		mb.setPosition("right,top");
 	}
 
 	/**
