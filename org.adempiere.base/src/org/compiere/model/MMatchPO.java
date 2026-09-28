@@ -525,6 +525,8 @@ public class MMatchPO extends X_M_MatchPO
 											MMatchPO overflow = new MMatchPO(sLine, dateTrx, take);
 											overflow.setC_OrderLine_ID(C_OrderLine_ID);
 											overflow.setM_AttributeSetInstance_ID(entry.getKey());
+											if (mpo.getC_InvoiceLine_ID() > 0)
+												overflow.setC_InvoiceLine_ID(mpo.getC_InvoiceLine_ID());
 											lotMatches.add(overflow);
 										}
 										remainingToAllocate = remainingToAllocate.subtract(take);
@@ -562,7 +564,7 @@ public class MMatchPO extends X_M_MatchPO
 					// already fully accounted for elsewhere.
 					if (iLine != null && sLine == null && mpo.getC_InvoiceLine_ID() == 0)
 					{
-						int cnt = DB.getSQLValue(iLine.get_TrxName(), "SELECT Count(*) FROM M_MatchInv WHERE M_InOutLine_ID="+mpo.getM_InOutLine_ID()
+						int cnt = DB.getSQLValue(iLine.get_TrxName(), "SELECT Count(1) FROM M_MatchInv WHERE M_InOutLine_ID="+mpo.getM_InOutLine_ID()
 								+" AND C_InvoiceLine_ID != "+iLine.getC_InvoiceLine_ID() + " AND Reversal_ID=0");
 						if (cnt > 0)
 							continue;
@@ -613,17 +615,14 @@ public class MMatchPO extends X_M_MatchPO
 					        int M_InOutLine_ID = ids[0];
 					        int C_InvoiceLine_ID = ids[1];
 
-					        int cnt = DB.getSQLValue(m.get_TrxName(), "SELECT Count(*) FROM M_MatchInv WHERE M_InOutLine_ID="+M_InOutLine_ID
-					                +" AND C_InvoiceLine_ID="+C_InvoiceLine_ID);
+					        int cnt = DB.getSQLValue(m.get_TrxName(), "SELECT Count(1) FROM M_MatchInv WHERE M_InOutLine_ID="+M_InOutLine_ID
+					                +" AND C_InvoiceLine_ID="+C_InvoiceLine_ID+" AND M_AttributeSetInstance_ID=?", m.getM_AttributeSetInstance_ID());
 					        if (cnt <= 0)
 					        {
 					            MMatchInv matchInv = createMatchInv(m, C_InvoiceLine_ID, M_InOutLine_ID, m.getQty(), dateTrx, trxName);
 					            if (matchInv == null)
 					            {
-					                // createMatchInv failed for this slice - abort the whole candidate rather
-					                // than leave some siblings saved and others not.
-					                candidateAborted = true;
-					                break;
+					                throw new AdempiereException("Failed to create match inv for " + m);
 					            }
 					            m.setMatchInvCreated(matchInv);
 					        }
@@ -648,8 +647,6 @@ public class MMatchPO extends X_M_MatchPO
 					    }
 					}
 
-					if (candidateAborted)
-					    continue; // abandon - some slices may already be saved; see caveat below
 					// ---- END per-lot invoice-line linkage + MMatchInv creation + save ----
 
 					qty = qty.subtract(toMatch);					
@@ -983,7 +980,7 @@ public class MMatchPO extends X_M_MatchPO
 		{
 			BigDecimal consumed = DB.getSQLValueBD(trxName,
 				"SELECT COALESCE(SUM(Qty),0) FROM M_MatchPO WHERE M_InOutLine_ID=? AND M_AttributeSetInstance_ID=? "
-				+ "AND M_MatchPO_ID<>? AND Reversal_ID=0",
+				+ "AND M_MatchPO_ID<>? AND Reversal_ID IS NULL",
 				new Object[] { M_InOutLine_ID, entry.getKey(), excludeMatchPO_ID });
 			entry.setValue(entry.getValue().subtract(consumed == null ? BigDecimal.ZERO : consumed));
 		}
@@ -1042,8 +1039,8 @@ public class MMatchPO extends X_M_MatchPO
 				if (matchPO.getC_InvoiceLine_ID() > 0 && matchPO.getM_InOutLine_ID() == 0 && matchPO.getReversal_ID() == 0
 					&& matchPO.getQty().compareTo(retValue.getQty()) >= 0)
 				{
-					int cnt = DB.getSQLValueEx(sLine.get_TrxName(), "SELECT Count(*) FROM M_MatchInv WHERE M_InOutLine_ID="+sLine.getM_InOutLine_ID()
-							+" AND C_InvoiceLine_ID="+ matchPO.getC_InvoiceLine_ID() + " AND Qty != ?", retValue.getQty());
+					int cnt = DB.getSQLValueEx(sLine.get_TrxName(), "SELECT Count(1) FROM M_MatchInv WHERE M_InOutLine_ID="+sLine.getM_InOutLine_ID()
+							+" AND C_InvoiceLine_ID="+ matchPO.getC_InvoiceLine_ID() + " AND M_AttributeSetInstance_ID=? AND Qty != ?", retValue.getM_AttributeSetInstance_ID(), retValue.getQty());
 					if (cnt <= 0)
 					{
 						if (!matchPO.isPosted() && matchPO.getQty().compareTo(retValue.getQty()) >= 0)
@@ -1070,8 +1067,8 @@ public class MMatchPO extends X_M_MatchPO
 			{
 				// Borrowed case: create the M_MatchInv linking this slice's receipt to the
 				// borrowed invoice line, if one doesn't already exist for that pair.
-				int cnt = DB.getSQLValue(retValue.get_TrxName(), "SELECT Count(*) FROM M_MatchInv WHERE M_InOutLine_ID="+retValue.getM_InOutLine_ID()
-						+" AND C_InvoiceLine_ID="+otherMatchPO.getC_InvoiceLine_ID());
+				int cnt = DB.getSQLValue(retValue.get_TrxName(), "SELECT Count(1) FROM M_MatchInv WHERE M_InOutLine_ID="+retValue.getM_InOutLine_ID()
+						+" AND C_InvoiceLine_ID="+otherMatchPO.getC_InvoiceLine_ID()+" AND M_AttributeSetInstance_ID=?", retValue.getM_AttributeSetInstance_ID());
 				if (cnt <= 0)
 				{
 					MMatchInv matchInv = createMatchInv(retValue, otherMatchPO.getC_InvoiceLine_ID(), retValue.getM_InOutLine_ID(), retValue.getQty(), dateTrx, trxName);
@@ -1418,7 +1415,7 @@ public class MMatchPO extends X_M_MatchPO
 						mpi[i].getM_AttributeSetInstance_ID() == getM_AttributeSetInstance_ID()) 
 				{
 					// skip if m_matchpo have been created
-					int cnt = DB.getSQLValue(get_TrxName(), "SELECT Count(*) FROM M_MatchPO WHERE M_InOutLine_ID="+getM_InOutLine_ID()
+					int cnt = DB.getSQLValue(get_TrxName(), "SELECT Count(1) FROM M_MatchPO WHERE M_InOutLine_ID="+getM_InOutLine_ID()
 							+" AND C_InvoiceLine_ID="+mpi[i].getC_InvoiceLine_ID());
 					if (cnt > 0)
 						continue;
@@ -1511,8 +1508,8 @@ public class MMatchPO extends X_M_MatchPO
 			// Validate existence of corresponding invoice matching record.
 			if (getM_InOutLine_ID() > 0 && getC_InvoiceLine_ID() > 0)
 			{
-				int cnt = DB.getSQLValue(get_TrxName(), "SELECT Count(*) FROM M_MatchInv WHERE M_InOutLine_ID="+getM_InOutLine_ID()
-						+" AND C_InvoiceLine_ID="+getC_InvoiceLine_ID());
+				int cnt = DB.getSQLValue(get_TrxName(), "SELECT Count(1) FROM M_MatchInv WHERE M_InOutLine_ID="+getM_InOutLine_ID()
+						+" AND C_InvoiceLine_ID="+getC_InvoiceLine_ID()+" AND M_AttributeSetInstance_ID=?", getM_AttributeSetInstance_ID());
 				if (cnt <= 0)
 				{
 					MInvoiceLine invoiceLine = new MInvoiceLine(getCtx(), getC_InvoiceLine_ID(), get_TrxName());

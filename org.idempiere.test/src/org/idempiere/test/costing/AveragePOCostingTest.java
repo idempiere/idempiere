@@ -8547,8 +8547,9 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			assertEquals(new BigDecimal("120.00"), costB.getCumulatedAmt().setScale(2, RoundingMode.HALF_UP));
 
 			// Verify no fallback ASI=0 cost record exists
-			MCost costASI0 = product.getCostingRecord(as, 0, 0, MClient.MMPOLICY_FiFo);
-			assertTrue(costASI0 == null || costASI0.getCurrentQty().signum() == 0, "Fallback ASI=0 Cost should not exist");
+			MCostElement costElement = MCostElement.getMaterialCostElement(product, product.getCostingMethod(as));
+			MCost costASI0 = MCost.get(product, 0, as, 0, costElement.getM_CostElement_ID(), getTrxName());
+			assertTrue(costASI0.is_new() || costASI0.getCurrentQty().signum() == 0, "Fallback ASI=0 Cost should not exist");
 
 			cdA = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", poLine.getC_OrderLine_ID(), asiA.get_ID(), as.get_ID(), getTrxName());
 			assertNotNull(cdA, "MCostDetail not found for asiA");
