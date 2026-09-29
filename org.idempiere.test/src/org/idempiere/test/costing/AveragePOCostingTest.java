@@ -8131,9 +8131,6 @@ public class AveragePOCostingTest extends AbstractTestCase {
 			{
 				postDocument(mpo, mpo.isPosted());
 			}
-			
-			System.out.println("asi1=" + asi1.get_ID());
-			System.out.println("asi2=" + asi2.get_ID());
 
 			// =====================
 			// 6. CD VALIDATIONS

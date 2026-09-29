@@ -72,6 +72,16 @@ import org.idempiere.acct.IDoc;
  */
 public class MMatchPO extends X_M_MatchPO
 {
+
+	/**
+	 * Get matched qty for a given receipt line, invoice line and ASI.
+	 * Consider only non-reversed matches (Reversal_ID IS NULL).
+	 * Includes ASI=0 records alongside the specific ASI: a MMatchInv with ASI=0 was created
+	 * against the full receipt line (e.g. via matchToInvoiceLine) and already covers that qty.
+	 */
+	private static final String	SQL_GET_MATCHINV_QTY	= "SELECT COALESCE(SUM(Qty), 0) FROM M_MatchInv WHERE M_InOutLine_ID=? AND C_InvoiceLine_ID=? "
+														+ " AND (M_AttributeSetInstance_ID=? OR M_AttributeSetInstance_ID=0) AND Reversal_ID IS NULL";
+
 	/**
 	 * generated serial id
 	 */
@@ -564,8 +574,7 @@ public class MMatchPO extends X_M_MatchPO
 					// already fully accounted for elsewhere.
 					if (iLine != null && sLine == null && mpo.getC_InvoiceLine_ID() == 0)
 					{
-						int cnt = DB.getSQLValue(iLine.get_TrxName(), "SELECT Count(1) FROM M_MatchInv WHERE M_InOutLine_ID="+mpo.getM_InOutLine_ID()
-								+" AND C_InvoiceLine_ID != "+iLine.getC_InvoiceLine_ID() + " AND Reversal_ID=0");
+						int cnt = DB.getSQLValue(iLine.get_TrxName(), "SELECT COUNT(1) FROM M_MatchInv WHERE M_InOutLine_ID=? AND C_InvoiceLine_ID != ? AND Reversal_ID IS NULL", mpo.getM_InOutLine_ID(), iLine.getC_InvoiceLine_ID());
 						if (cnt > 0)
 							continue;
 					}
@@ -587,7 +596,7 @@ public class MMatchPO extends X_M_MatchPO
 					        int M_InOutLine_ID = sLine != null ? sLine.getM_InOutLine_ID() : m.getM_InOutLine_ID();
 					        int C_InvoiceLine_ID = iLine != null ? iLine.getC_InvoiceLine_ID() : m.getC_InvoiceLine_ID();
 
-					        int tmpInOutLineId = DB.getSQLValue(m.get_TrxName(), "SELECT M_InOutLine_ID FROM C_InvoiceLine WHERE C_InvoiceLine_ID="+C_InvoiceLine_ID);
+					        int tmpInOutLineId = DB.getSQLValue(m.get_TrxName(), "SELECT M_InOutLine_ID FROM C_InvoiceLine WHERE C_InvoiceLine_ID=?", C_InvoiceLine_ID);
 					        if (tmpInOutLineId > 0 && tmpInOutLineId != M_InOutLine_ID)
 					        {
 					            // This invoice line is already tied to a DIFFERENT receipt line - the whole
@@ -615,12 +624,15 @@ public class MMatchPO extends X_M_MatchPO
 					        int M_InOutLine_ID = ids[0];
 					        int C_InvoiceLine_ID = ids[1];
 
-					        int cnt = DB.getSQLValue(m.get_TrxName(), "SELECT Count(1) FROM M_MatchInv WHERE M_InOutLine_ID="+M_InOutLine_ID
-					                +" AND C_InvoiceLine_ID="+C_InvoiceLine_ID+" AND M_AttributeSetInstance_ID=?", m.getM_AttributeSetInstance_ID());
-					        if (cnt <= 0)
+							BigDecimal matchedQty = DB.getSQLValueBD(	m.get_TrxName(), SQL_GET_MATCHINV_QTY, M_InOutLine_ID, C_InvoiceLine_ID,
+																		m.getM_AttributeSetInstance_ID());
+							if (matchedQty == null)
+								matchedQty = BigDecimal.ZERO;
+							BigDecimal qtyToMatch = m.getQty().subtract(matchedQty);
+							if (qtyToMatch.signum() > 0)
 					        {
-					            MMatchInv matchInv = createMatchInv(m, C_InvoiceLine_ID, M_InOutLine_ID, m.getQty(), dateTrx, trxName);
-					            if (matchInv == null)
+    				        	MMatchInv matchInv = createMatchInv(m, C_InvoiceLine_ID, M_InOutLine_ID, qtyToMatch, dateTrx, trxName);
+     				            if (matchInv == null)
 					            {
 					                throw new AdempiereException("Failed to create match inv for " + m);
 					            }
@@ -672,7 +684,7 @@ public class MMatchPO extends X_M_MatchPO
 			BigDecimal sLineMatchedQty = null; 
 			if (sLine != null && iLine != null)
 			{
-				sLineMatchedQty = DB.getSQLValueBD(sLine.get_TrxName(), "SELECT Sum(Qty) FROM M_MatchPO WHERE C_OrderLine_ID="+C_OrderLine_ID+" AND M_InOutLine_ID=?", sLine.getM_InOutLine_ID());
+				sLineMatchedQty = DB.getSQLValueBD(sLine.get_TrxName(), "SELECT Sum(Qty) FROM M_MatchPO WHERE C_OrderLine_ID=? AND M_InOutLine_ID=?", C_OrderLine_ID, sLine.getM_InOutLine_ID());
 			}
 			
 			// --- Branch A: receipt-first creation ---
@@ -886,11 +898,15 @@ public class MMatchPO extends X_M_MatchPO
 							{
 								// Guard against creating a duplicate M_MatchInv if one already
 								// exists between this receipt and retValue's invoice line.
-								MMatchInv[] matchInvoices = MMatchInv.get(Env.getCtx(), matchPO.getM_InOutLine_ID(), retValue.getC_InvoiceLine_ID(), trxName);
-								if (matchInvoices == null || matchInvoices.length == 0)
+								BigDecimal matchedQty = DB.getSQLValueBD(	trxName, SQL_GET_MATCHINV_QTY, matchPO.getM_InOutLine_ID(),
+																			retValue.getC_InvoiceLine_ID(), retValue.getM_AttributeSetInstance_ID());
+								if (matchedQty == null)
+									matchedQty = BigDecimal.ZERO;
+								BigDecimal qtyToMatch = autoMatchQty.subtract(matchedQty);
+								if (qtyToMatch.signum() > 0)
 								{
-									MMatchInv matchInv = createMatchInv(retValue, retValue.getC_InvoiceLine_ID(), matchPO.getM_InOutLine_ID(), autoMatchQty, dateTrx, trxName);
-									retValue.setMatchInvCreated(matchInv);
+									MMatchInv matchInv = createMatchInv(retValue, retValue.getC_InvoiceLine_ID(), matchPO.getM_InOutLine_ID(), qtyToMatch, dateTrx, trxName);
+	 								retValue.setMatchInvCreated(matchInv);
 									if (matchInv == null)
 										break; // stop trying further receipts on failure
 								}
@@ -1039,9 +1055,11 @@ public class MMatchPO extends X_M_MatchPO
 				if (matchPO.getC_InvoiceLine_ID() > 0 && matchPO.getM_InOutLine_ID() == 0 && matchPO.getReversal_ID() == 0
 					&& matchPO.getQty().compareTo(retValue.getQty()) >= 0)
 				{
-					int cnt = DB.getSQLValueEx(sLine.get_TrxName(), "SELECT Count(1) FROM M_MatchInv WHERE M_InOutLine_ID="+sLine.getM_InOutLine_ID()
-							+" AND C_InvoiceLine_ID="+ matchPO.getC_InvoiceLine_ID() + " AND M_AttributeSetInstance_ID=? AND Qty != ?", retValue.getM_AttributeSetInstance_ID(), retValue.getQty());
-					if (cnt <= 0)
+					BigDecimal matchedQty = DB.getSQLValueBD(	sLine.get_TrxName(), SQL_GET_MATCHINV_QTY, sLine.getM_InOutLine_ID(), matchPO.getC_InvoiceLine_ID(),
+																retValue.getM_AttributeSetInstance_ID());
+					if (matchedQty == null)
+						matchedQty = BigDecimal.ZERO;
+					if (matchedQty.signum() == 0 || matchedQty.compareTo(retValue.getQty()) == 0)
 					{
 						if (!matchPO.isPosted() && matchPO.getQty().compareTo(retValue.getQty()) >= 0)
 						{
@@ -1067,12 +1085,15 @@ public class MMatchPO extends X_M_MatchPO
 			{
 				// Borrowed case: create the M_MatchInv linking this slice's receipt to the
 				// borrowed invoice line, if one doesn't already exist for that pair.
-				int cnt = DB.getSQLValue(retValue.get_TrxName(), "SELECT Count(1) FROM M_MatchInv WHERE M_InOutLine_ID="+retValue.getM_InOutLine_ID()
-						+" AND C_InvoiceLine_ID="+otherMatchPO.getC_InvoiceLine_ID()+" AND M_AttributeSetInstance_ID=?", retValue.getM_AttributeSetInstance_ID());
-				if (cnt <= 0)
+				BigDecimal matchedQty = DB.getSQLValueBD(	retValue.get_TrxName(), SQL_GET_MATCHINV_QTY, retValue.getM_InOutLine_ID(),
+															otherMatchPO.getC_InvoiceLine_ID(), retValue.getM_AttributeSetInstance_ID());
+				if (matchedQty == null)
+					matchedQty = BigDecimal.ZERO;
+				BigDecimal qtyToMatch = retValue.getQty().subtract(matchedQty);
+				if (qtyToMatch.signum() > 0)
 				{
-					MMatchInv matchInv = createMatchInv(retValue, otherMatchPO.getC_InvoiceLine_ID(), retValue.getM_InOutLine_ID(), retValue.getQty(), dateTrx, trxName);
-					if (matchInv == null)
+					MMatchInv matchInv = createMatchInv(retValue, otherMatchPO.getC_InvoiceLine_ID(), retValue.getM_InOutLine_ID(), qtyToMatch, dateTrx, trxName);
+	 				if (matchInv == null)
 					{
 						String msg = "Failed to create match inv.";
 						ValueNamePair error = CLogger.retrieveError();
@@ -1415,8 +1436,7 @@ public class MMatchPO extends X_M_MatchPO
 						mpi[i].getM_AttributeSetInstance_ID() == getM_AttributeSetInstance_ID()) 
 				{
 					// skip if m_matchpo have been created
-					int cnt = DB.getSQLValue(get_TrxName(), "SELECT Count(1) FROM M_MatchPO WHERE M_InOutLine_ID="+getM_InOutLine_ID()
-							+" AND C_InvoiceLine_ID="+mpi[i].getC_InvoiceLine_ID());
+					int cnt = DB.getSQLValue(get_TrxName(), "SELECT COUNT(1) FROM M_MatchPO WHERE M_InOutLine_ID=? AND C_InvoiceLine_ID=?", getM_InOutLine_ID(), mpi[i].getC_InvoiceLine_ID());
 					if (cnt > 0)
 						continue;
 					
@@ -1473,8 +1493,7 @@ public class MMatchPO extends X_M_MatchPO
 		//	Set PriceMatchDifference to difference between PO price and Invoice price
 		if (getC_OrderLine_ID() != 0 
 			&& getC_InvoiceLine_ID() != 0
-			&& (newRecord || 
-				is_ValueChanged("C_OrderLine_ID") || is_ValueChanged("C_InvoiceLine_ID")))
+			&& (newRecord || is_ValueChanged("C_OrderLine_ID") || is_ValueChanged("C_InvoiceLine_ID")))
 		{
 			BigDecimal poPrice = getOrderLine().getPriceActual();
 			BigDecimal invPrice = getInvoicePriceActual();
@@ -1490,8 +1509,7 @@ public class MMatchPO extends X_M_MatchPO
 				{
 					BigDecimal poAmt = poPrice.multiply(getQty());
 					BigDecimal maxTolerance = poAmt.multiply(mt);
-					maxTolerance = maxTolerance.abs()
-						.divide(Env.ONEHUNDRED, 2, RoundingMode.HALF_UP);
+					maxTolerance = maxTolerance.abs().divide(Env.ONEHUNDRED, 2, RoundingMode.HALF_UP);
 					difference = difference.abs();
 					boolean ok = difference.compareTo(maxTolerance) <= 0;
 					if (log.isLoggable(Level.CONFIG)) log.config("Difference=" + getPriceMatchDifference() 
@@ -1506,16 +1524,21 @@ public class MMatchPO extends X_M_MatchPO
 			}
 			
 			// Validate existence of corresponding invoice matching record.
-			if (getM_InOutLine_ID() > 0 && getC_InvoiceLine_ID() > 0)
+			// Skip for reversal records: their paired MMatchInv reversal is created separately
+			// (with Reversal_ID IS NOT NULL), so SQL_GET_MATCHED_QTY (which filters Reversal_ID IS NULL)
+			// would return 0 even though the reversal is perfectly valid.
+			// Note: isReversal() is not reliable for a brand-new record (getM_MatchPO_ID()==0),
+			// so check getReversal_ID() > 0 directly — the reversal record always has it set
+			// before saveEx() is called, while a fresh non-reversal record has Reversal_ID == 0.
+			if (getM_InOutLine_ID() > 0 && getC_InvoiceLine_ID() > 0 && getReversal_ID() == 0)
 			{
-				int cnt = DB.getSQLValue(get_TrxName(), "SELECT Count(1) FROM M_MatchInv WHERE M_InOutLine_ID="+getM_InOutLine_ID()
-						+" AND C_InvoiceLine_ID="+getC_InvoiceLine_ID()+" AND M_AttributeSetInstance_ID=?", getM_AttributeSetInstance_ID());
-				if (cnt <= 0)
+				BigDecimal matchedQty = DB.getSQLValueBD(	get_TrxName(), SQL_GET_MATCHINV_QTY, getM_InOutLine_ID(), getC_InvoiceLine_ID(), getM_AttributeSetInstance_ID());
+				if (matchedQty == null || matchedQty.signum() <= 0)
 				{
 					MInvoiceLine invoiceLine = new MInvoiceLine(getCtx(), getC_InvoiceLine_ID(), get_TrxName());
 					MInOutLine inoutLine = new MInOutLine(getCtx(), getM_InOutLine_ID(), get_TrxName());
-					throw new IllegalStateException("[MatchPO] Missing corresponding invoice matching record for invoice line "
-							+ invoiceLine + " and receipt line " + inoutLine);
+					throw new IllegalStateException("[MatchPO] Missing corresponding invoice matching record for invoice line " + invoiceLine
+													+ " and receipt line " + inoutLine);
 				}
 			}
 		}
