@@ -86,12 +86,13 @@ public interface ICacheService {
 	 * Fire-and-forget: does NOT wait for acknowledgement. Each receiving node calls its local
 	 * {@code resetLocalCache(tableName, recordId)} on receipt.
 	 *
-	 * <p>Default no-op keeps this binary-compatible with implementations that predate this method.</p>
+	 * <p>Intentionally abstract: implementations must provide this, otherwise cache invalidation
+	 * would silently not propagate in a cluster environment.</p>
 	 *
 	 * @param tableName table whose cache must be invalidated
 	 * @param recordId  record key; -1 invalidates all entries for the table
 	 */
-	public default void broadcastReset(String tableName, int recordId) {}
+	public void broadcastReset(String tableName, int recordId);
 
 	/**
 	 * Broadcast a cache invalidation for the given table and string key to all cluster nodes.
@@ -100,5 +101,5 @@ public interface ICacheService {
 	 * @param tableName table whose cache must be invalidated
 	 * @param key       string cache key; empty string invalidates all entries for the table
 	 */
-	public default void broadcastReset(String tableName, String key) {}
+	public void broadcastReset(String tableName, String key);
 }
