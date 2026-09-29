@@ -203,7 +203,6 @@ public final class CaffeineLayeredMap<K, V> implements Map<K, V> {
 	}
 
 	/** Writes to {@link #backing}, applying {@link #distributedTtlMs} when it is an {@link RMapCache}. */
-	@SuppressWarnings("unchecked")
 	private V putBacking(K key, V value) {
 		if (distributedTtlMs > 0 && backing instanceof RMapCache) {
 			return ((RMapCache<K, V>) backing).put(key, value, distributedTtlMs, TimeUnit.MILLISECONDS);
