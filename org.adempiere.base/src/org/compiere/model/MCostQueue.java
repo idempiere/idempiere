@@ -63,7 +63,6 @@ public class MCostQueue extends X_M_CostQueue
 	        MAcctSchema as,
 	        int AD_Org_ID,
 	        int M_CostElement_ID,
-	        BigDecimal price,
 	        String trxName)
 	{
 	    return new MCostQueue(
