@@ -472,16 +472,11 @@ public class MRelationType extends X_AD_RelationType implements IZoomProvider {
 			final int tableId = refTable.getAD_Table_ID();
 			table = MTable.get(po.getCtx(), tableId);
 			if (po.get_ColumnIndex("IsSOTrx") >= 0) {
-				if (isSoTrx = po.get_ValueAsBoolean("IsSOTrx")) {
-					windowId = table.getAD_Window_ID();
-				} else {
-					windowId = table.getPO_Window_ID();
-				}
-			} else if ( isSoTrx = Env.isSOTrx(po.getCtx())) {
-				windowId = table.getAD_Window_ID();
+				isSoTrx = po.get_ValueAsBoolean("IsSOTrx");
 			} else {
-				windowId = table.getPO_Window_ID();
+				isSoTrx = Env.isSOTrx(po.getCtx());
 			}
+			windowId = table.getZoomWindowID(isSoTrx);
 		}
 
 		if (windowId == 0) {

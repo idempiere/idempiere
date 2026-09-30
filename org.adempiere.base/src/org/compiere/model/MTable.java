@@ -1060,6 +1060,17 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	}
 
 	/**
+	 * Get the window to zoom/open to for this table, given a sales vs purchase context.
+	 * Falls back to {@link #getAD_Window_ID()} when {@link #getPO_Window_ID()} is not defined
+	 * (e.g. tables like C_BPartner that have no distinct purchase-side window).
+	 * @param isSOTrx whether the current context/record is sales-side
+	 * @return AD_Window_ID or PO_Window_ID, per {@link Env#resolveZoomWindowID(int, int, boolean)}
+	 */
+	public int getZoomWindowID(boolean isSOTrx) {
+		return Env.resolveZoomWindowID(getAD_Window_ID(), getPO_Window_ID(), isSOTrx);
+	}
+
+	/**
 	 * Get the UUID of Zero ID record
 	 * @return UUID or null
 	 */
