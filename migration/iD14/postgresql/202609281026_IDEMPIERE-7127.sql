@@ -1,7 +1,0 @@
--- IDEMPIERE-7127
-SELECT register_migration_script('202609281026_IDEMPIERE-7127.sql') FROM dual;
-
--- Sep 28, 2026, 10:26:47 AM CEST
-UPDATE AD_Ref_Table SET AD_Window_ID=123,Updated=TO_TIMESTAMP('2026-09-28 10:26:47','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Reference_ID=53352
-;
-
