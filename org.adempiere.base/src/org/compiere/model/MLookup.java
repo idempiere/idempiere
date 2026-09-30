@@ -788,10 +788,7 @@ public final class MLookup extends Lookup implements Serializable
 	@Override
 	public int getZoom(boolean isSOTrx)
 	{
-		if (m_info.ZoomWindowPO == 0)
-			return m_info.ZoomWindow;
-		
-		return isSOTrx ? m_info.ZoomWindow : m_info.ZoomWindowPO;
+		return Env.resolveZoomWindowID(m_info.ZoomWindow, m_info.ZoomWindowPO, isSOTrx);
 	}
 	
 	/**

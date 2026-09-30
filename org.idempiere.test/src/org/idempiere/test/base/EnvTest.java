@@ -1449,6 +1449,43 @@ public class EnvTest extends AbstractTestCase {
 		}
 	}
 
+	/**
+	 * Direct coverage of {@link Env#resolveZoomWindowID(int, int, boolean)}, the helper
+	 * introduced to unify the sales/purchase window decision that used to be duplicated
+	 * (and inconsistently implemented - see IDEMPIERE-7127) across Env, MRelationType and MLookup.
+	 */
+	@Test
+	public void testResolveZoomWindowID() {
+		// no PO window defined at all -> always the default window, regardless of isSOTrx
+		assertEquals(SystemIDs.WINDOW_BUSINESS_PARTNER,
+				Env.resolveZoomWindowID(SystemIDs.WINDOW_BUSINESS_PARTNER, 0, true));
+		assertEquals(SystemIDs.WINDOW_BUSINESS_PARTNER,
+				Env.resolveZoomWindowID(SystemIDs.WINDOW_BUSINESS_PARTNER, 0, false),
+				"Should fall back to the default window instead of returning 0 when there is no dedicated PO window");
+
+		// PO window defined -> only used when isSOTrx is false
+		assertEquals(SystemIDs.WINDOW_INVOICE_CUSTOMER,
+				Env.resolveZoomWindowID(SystemIDs.WINDOW_INVOICE_CUSTOMER, SystemIDs.WINDOW_INVOICE_VENDOR, true));
+		assertEquals(SystemIDs.WINDOW_INVOICE_VENDOR,
+				Env.resolveZoomWindowID(SystemIDs.WINDOW_INVOICE_CUSTOMER, SystemIDs.WINDOW_INVOICE_VENDOR, false));
+	}
+
+	/**
+	 * Coverage for {@link MTable#getZoomWindowID(boolean)}, used by MRelationType.retrieveWindowID().
+	 */
+	@Test
+	public void testMTableGetZoomWindowID() {
+		MTable bpartnerTable = MTable.get(Env.getCtx(), MTable.getTable_ID("C_BPartner"));
+		assertEquals(0, bpartnerTable.getPO_Window_ID(), "Fixture assumption: C_BPartner has no dedicated PO window");
+		assertEquals(SystemIDs.WINDOW_BUSINESS_PARTNER, bpartnerTable.getZoomWindowID(true));
+		assertEquals(SystemIDs.WINDOW_BUSINESS_PARTNER, bpartnerTable.getZoomWindowID(false),
+				"Should fall back to AD_Window_ID when PO_Window_ID is not defined");
+
+		MTable invoiceTable = MTable.get(Env.getCtx(), MTable.getTable_ID("C_Invoice"));
+		assertEquals(SystemIDs.WINDOW_INVOICE_CUSTOMER, invoiceTable.getZoomWindowID(true));
+		assertEquals(SystemIDs.WINDOW_INVOICE_VENDOR, invoiceTable.getZoomWindowID(false));
+	}
+
 	@Test
 	public void testSetPredefinedVariablesGlobalLevel() {
 		Properties ctx = new Properties();

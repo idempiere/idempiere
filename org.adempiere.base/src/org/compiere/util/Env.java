@@ -2366,6 +2366,20 @@ public final class Env
 	}
 	
 	/**
+	 * Resolve which window to zoom/open to, given a table's default and purchase-side windows.
+	 * @param adWindowId table's default (sales) window
+	 * @param poWindowId table's purchase-side window override, or 0/negative if none defined
+	 * @param isSOTrx whether the current context/record is sales-side
+	 * @return adWindowId, unless a PO window is defined and the context is purchase-side, in which case poWindowId
+	 */
+	public static int resolveZoomWindowID(int adWindowId, int poWindowId, boolean isSOTrx)
+	{
+		if (poWindowId <= 0 || isSOTrx)
+			return adWindowId;
+		return poWindowId;
+	}
+
+	/**
 	 * Get zoom AD_Window_ID
 	 * @param query
 	 * @return zoom AD_Window_ID
@@ -2411,8 +2425,7 @@ public final class Env
 			{
 				SQLFragment filter = query.getSQLFilter(true);
 				isSOTrx = DB.isSOTrx(TableName, filter.sqlClause(), filter.parameters());
-				if (!isSOTrx)
-					AD_Window_ID = PO_Window_ID;
+				AD_Window_ID = resolveZoomWindowID(AD_Window_ID, PO_Window_ID, isSOTrx);
 			}
 
 			if (log.isLoggable(Level.CONFIG)) log.config(query + " (IsSOTrx=" + isSOTrx + ")");
@@ -2497,8 +2510,7 @@ public final class Env
 				else
 					whereClause = table.getTableName() + "_ID=" + Record_ID;
 				isSOTrx = DB.isSOTrx(table.getTableName(), whereClause, windowNo);
-				if (!isSOTrx)
-					AD_Window_ID = table.getPO_Window_ID();
+				AD_Window_ID = resolveZoomWindowID(AD_Window_ID, table.getPO_Window_ID(), isSOTrx);
 			}
 
 			if (log.isLoggable(Level.CONFIG)) log.config(table.getTableName() + " - Record_ID=" + Record_ID + " - Record_UU=" + Record_UU + " (IsSOTrx=" + isSOTrx + ")");
