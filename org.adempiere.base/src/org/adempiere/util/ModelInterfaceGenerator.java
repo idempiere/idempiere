@@ -39,6 +39,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 import java.util.logging.Level;
@@ -496,6 +498,20 @@ public class ModelInterfaceGenerator
 	 */
 	public static Class<?> getClass(String columnName, int displayType, int AD_Reference_ID)
 	{
+		return getClass(columnName, displayType, AD_Reference_ID, new HashSet<Integer>());
+	}
+
+	/**
+	 * Get class for given display type and reference
+	 * @param displayType
+	 * @param AD_Reference_ID
+	 * @param visitedReferenceIds AD_Reference_ID already resolved earlier in this call chain, to detect
+	 * a Table/Search reference whose key column is validated by a reference that (directly or through
+	 * further columns) resolves back to itself
+	 * @return class
+	 */
+	private static Class<?> getClass(String columnName, int displayType, int AD_Reference_ID, Set<Integer> visitedReferenceIds)
+	{
 		// Handle Posted
 		if (columnName.equalsIgnoreCase("Posted")
 				|| columnName.equalsIgnoreCase("Processed")
@@ -512,6 +528,9 @@ public class ModelInterfaceGenerator
 		else if ((DisplayType.Table == displayType || DisplayType.Search == displayType)
 				&& AD_Reference_ID > 0)
 		{
+			if (!visitedReferenceIds.add(AD_Reference_ID))
+				throw new IllegalStateException("Cyclic Table/Search reference detected for column " + columnName
+						+ " - AD_Reference_ID=" + AD_Reference_ID + " is reached again while resolving its own key column's reference");
 			String sql = "SELECT c.AD_Reference_ID, c.AD_Reference_Value_ID"
 						+" FROM AD_Ref_Table rt"
 						+" INNER JOIN AD_Column c ON (c.AD_Column_ID=rt.AD_Key)"
@@ -543,7 +562,7 @@ public class ModelInterfaceGenerator
 				rs = null; pstmt = null;
 			}
 			//
-			return getClass(columnName, displayType, AD_Reference_ID); // recursive call with new parameters
+			return getClass(columnName, displayType, AD_Reference_ID, visitedReferenceIds); // recursive call with new parameters
 		}
 		else if (displayType == DisplayType.Button && columnName.endsWith("_ID"))
 		{
