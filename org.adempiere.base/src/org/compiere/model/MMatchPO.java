@@ -1675,7 +1675,7 @@ public class MMatchPO extends X_M_MatchPO
 			// before saveEx() is called, while a fresh non-reversal record has Reversal_ID == 0.
 			if (getM_InOutLine_ID() > 0 && getC_InvoiceLine_ID() > 0 && getReversal_ID() == 0)
 			{
-				BigDecimal matchedQty = DB.getSQLValueBD(	get_TrxName(), "SELECT COALESCE(SUM(Qty), 0) FROM M_MatchInv WHERE M_InOutLine_ID=? AND C_InvoiceLine_ID=? AND (Reversal_ID IS NULL OR Reversal_ID=0)", getM_InOutLine_ID(), getC_InvoiceLine_ID());
+				BigDecimal matchedQty = DB.getSQLValueBD(	get_TrxName(), SQL_GET_MATCHINV_QTY, getM_InOutLine_ID(), getC_InvoiceLine_ID(), getM_AttributeSetInstance_ID());
 				if (matchedQty == null || matchedQty.signum() == 0)
 				{
 					MInvoiceLine invoiceLine = new MInvoiceLine(getCtx(), getC_InvoiceLine_ID(), get_TrxName());
