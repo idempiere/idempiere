@@ -31,6 +31,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.IntSupplier;
 
 import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
@@ -66,9 +67,24 @@ public final class RedisHealth implements AutoCloseable {
 	private final RedissonClient client;
 	private final int failureThreshold;
 	private final long probeIntervalMs;
+	/**
+	 * Absolute subscription count at which the breaker trips due to pool exhaustion.
+	 * 0 means the pool-exhaustion check is disabled (default when not configured).
+	 */
+	private volatile int subscriptionPoolThreshold;
+	/**
+	 * Live active-subscription count, consulted by {@link #transitionToClosed()} so a probe
+	 * success or an unrelated successful Redis call cannot close the breaker while the
+	 * subscription pool is still saturated. A pushed snapshot (last value reported to
+	 * {@link #recordSubscriptionPoolUsage}) would go stale the moment {@code execute()} stops
+	 * calling it because the breaker is OPEN — pulling on demand avoids that.
+	 */
+	private volatile IntSupplier subscriptionUsageSupplier = () -> 0;
 
 	private final AtomicInteger consecutiveFailures = new AtomicInteger(0);
 	private final AtomicReference<State> state = new AtomicReference<>(State.CLOSED);
+	/** Description of why the breaker last tripped, for console display. */
+	private volatile String lastTripReason = "failure-threshold";
 	private final ScheduledExecutorService prober;
 	private volatile ScheduledFuture<?> probeFuture;
 	private volatile StateListener listener = (p, c) -> { /* no-op default */ };
@@ -84,6 +100,34 @@ public final class RedisHealth implements AutoCloseable {
 			t.setDaemon(true);
 			return t;
 		});
+	}
+
+	/**
+	 * Sets the absolute subscription-count threshold at which the breaker trips to OPEN.
+	 * Call from Activator after reading the pool configuration.
+	 * Pass 0 to disable the pool-exhaustion check.
+	 */
+	public void setSubscriptionPoolThreshold(int threshold) {
+		this.subscriptionPoolThreshold = Math.max(0, threshold);
+	}
+
+	public int getSubscriptionPoolThreshold() {
+		return subscriptionPoolThreshold;
+	}
+
+	/**
+	 * Supplies the current active-subscription count on demand. Call once from whichever
+	 * component owns the counter (e.g. {@code ClusterServiceImpl}) after it activates, so
+	 * {@link #transitionToClosed()} can verify the pool has actually drained before letting
+	 * the breaker close. Pass {@code null} to reset to "always 0" (no gating).
+	 */
+	public void setSubscriptionUsageSupplier(IntSupplier supplier) {
+		this.subscriptionUsageSupplier = supplier != null ? supplier : () -> 0;
+	}
+
+	/** @return human-readable reason the breaker last tripped, for console display. */
+	public String getLastTripReason() {
+		return lastTripReason;
 	}
 
 	/**
@@ -131,8 +175,36 @@ public final class RedisHealth implements AutoCloseable {
 		int n = consecutiveFailures.incrementAndGet();
 		if (n >= failureThreshold && state.compareAndSet(State.CLOSED, State.OPEN)) {
 			lastTrippedCount = n;
+			lastTripReason = "failure-threshold " + n + "/" + failureThreshold;
 			startProbing();
 			log.warn("Redis circuit breaker tripped to OPEN after {} consecutive failures", n, cause);
+			fire(State.CLOSED, State.OPEN);
+		}
+	}
+
+	/**
+	 * Checks whether the active subscription count has exceeded the configured threshold.
+	 * If so, trips the breaker to OPEN immediately (pool-exhaustion fast-path).
+	 *
+	 * <p>Call this every time an RPC subscription is added or removed. No-op when
+	 * {@link #setSubscriptionPoolThreshold(int)} was not configured (threshold == 0).</p>
+	 *
+	 * @param activeSubscriptions current number of open pub/sub subscriptions
+	 * @param poolSize            configured Redisson subscriptionConnectionPoolSize
+	 */
+	public void recordSubscriptionPoolUsage(int activeSubscriptions, int poolSize) {
+		int threshold = subscriptionPoolThreshold;
+		if (threshold <= 0 || state.get() == State.OPEN) {
+			return;
+		}
+		if (activeSubscriptions >= threshold && state.compareAndSet(State.CLOSED, State.OPEN)) {
+			lastTrippedCount = activeSubscriptions;
+			lastTripReason = "subscription-pool " + activeSubscriptions + "/" + poolSize;
+			startProbing();
+			log.warn("Redis circuit breaker tripped to OPEN: subscription pool usage {}/{} "
+					+ "reached threshold {} ({}% of pool)",
+					activeSubscriptions, poolSize, threshold,
+					poolSize > 0 ? (threshold * 100 / poolSize) : 0);
 			fire(State.CLOSED, State.OPEN);
 		}
 	}
@@ -160,14 +232,44 @@ public final class RedisHealth implements AutoCloseable {
 		}
 		try {
 			client.getKeys().count();
-			transitionToClosed();
-			log.info("Redis circuit breaker recovered to CLOSED after probe");
+			switch (transitionToClosed()) {
+				case CLOSED:
+					log.info("Redis circuit breaker recovered to CLOSED after probe");
+					break;
+				case BLOCKED_BY_POOL_USAGE:
+					// Genuine saturation, distinct from a concurrent transition below — only this
+					// case actually means the probe succeeded but closing was refused.
+					log.warn("Redis circuit breaker probe succeeded but subscription pool usage ({}) "
+							+ "is still at or above threshold ({}); remaining OPEN",
+							subscriptionUsageSupplier.getAsInt(), subscriptionPoolThreshold);
+					break;
+				case ALREADY_TRANSITIONED:
+					// Another thread (a concurrent recordSuccess()/probe()) already closed the
+					// breaker, or raced our CAS — nothing to log, this isn't a saturation case.
+					break;
+			}
 		} catch (Exception e) {
 			log.warn("Redis circuit breaker probe failed; remaining OPEN", e);
 		}
 	}
 
-	private void transitionToClosed() {
+	/** Outcome of an OPEN -&gt; CLOSED attempt; lets callers tell genuine pool saturation apart from a benign concurrent transition. */
+	private enum CloseAttempt { CLOSED, BLOCKED_BY_POOL_USAGE, ALREADY_TRANSITIONED }
+
+	/**
+	 * Attempts OPEN -&gt; CLOSED. Refuses while subscription-pool usage is still at or above
+	 * the configured threshold — closing on an unrelated success (a probe, or any other Redis
+	 * call routed through {@link #recordSuccess()}) would just let {@code execute()} resume
+	 * allocating subscriptions and immediately re-trip the pool-exhaustion fast-path.
+	 */
+	private CloseAttempt transitionToClosed() {
+		if (state.get() != State.OPEN) {
+			return CloseAttempt.ALREADY_TRANSITIONED;
+		}
+		int threshold = subscriptionPoolThreshold;
+		if (threshold > 0 && subscriptionUsageSupplier.getAsInt() >= threshold) {
+			return CloseAttempt.BLOCKED_BY_POOL_USAGE;
+		}
 		if (state.compareAndSet(State.OPEN, State.CLOSED)) {
 			ScheduledFuture<?> f = probeFuture;
 			probeFuture = null;
@@ -176,7 +278,9 @@ public final class RedisHealth implements AutoCloseable {
 			}
 			lastTrippedCount = consecutiveFailures.getAndSet(0); // snapshot before reset so CONNECTED event carries outage severity
 			fire(State.OPEN, State.CLOSED);
+			return CloseAttempt.CLOSED;
 		}
+		return CloseAttempt.ALREADY_TRANSITIONED;
 	}
 
 	private void fire(State previous, State current) {
