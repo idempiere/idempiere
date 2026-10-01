@@ -1591,7 +1591,13 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		 	        	}
 		            }	           
 		        }
-		        if(!selected) listTable.setSelectedIndex(0);
+		        if (!selected) {
+		        	listTable.setSelectedIndex(0);
+		        	// don't keep the tab left behind by an earlier query or table selection
+		        	GridTab defaultTab = m_windowPanel.getGridWindow().getGridTab(m_AD_Tab_ID);
+		        	if (defaultTab != null)
+		        		m_gridTab = defaultTab;
+		        }
         	}
         }
         
@@ -3158,9 +3164,12 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     		else
         		table = MTable.get(Env.getCtx(), m_tableName);
     		MColumn col = table.getColumn(columnName);
-    		referenceType = col.getAD_Reference_ID();
     		GridField field = getTargetMField(columnName);
-    		isEncrypted = (col.isEncrypted() || field.isEncrypted());
+    		if (col != null)
+    			referenceType = col.getAD_Reference_ID();
+    		else if (field != null)
+    			referenceType = field.getDisplayType();
+    		isEncrypted = (col != null && col.isEncrypted()) || (field != null && field.isEncrypted());
     	}
     	if (isEncrypted)
     	{
