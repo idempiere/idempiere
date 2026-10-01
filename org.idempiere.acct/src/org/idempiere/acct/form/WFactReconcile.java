@@ -497,7 +497,7 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		bGenerate.setEnabled(m_noSelected != 0 && Env.ZERO.compareTo(m_selectedAmt) == 0 && !isReconciled.isSelected());
 		bReset.setEnabled(m_noSelected > 0 && isReconciled.isSelected());
 
-		if (m_selectedAmt.signum() != 0 && !isReconciled.isSelected()) {
+		if (m_selectedAmt.signum() != 0 && !isReconciled.isSelected() && m_maxAmtToCreateJournal != null) {
 			cbCreateJournal.setVisible(m_maxAmtToCreateJournal.signum() == 0 || m_selectedAmt.abs().compareTo(m_maxAmtToCreateJournal.abs()) <= 0);
 			cbCreateJournal.setChecked(false);
 		}
@@ -525,7 +525,11 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 			int baseCurrencyID = MClientInfo.get(Env.getCtx()).getC_Currency_ID();
 			int acCurrencyID = MAcctSchema.get(m_C_AcctSchema_ID).getC_Currency_ID();
 			BigDecimal amtInSchemaCurrency = MConversionRate.convert(Env.getCtx(), getMaxAmtInBaseCurrency(), baseCurrencyID, acCurrencyID, Env.getAD_Client_ID(Env.getCtx()), 0);
-			m_maxAmtToCreateJournal = amtInSchemaCurrency != null ? amtInSchemaCurrency : Env.ZERO;
+			m_maxAmtToCreateJournal = amtInSchemaCurrency;
+			if (m_maxAmtToCreateJournal == null) {
+				cbCreateJournal.setChecked(false);
+				cbCreateJournal.setVisible(false);
+			}
 
 			fieldAccount.actionRefresh();
 		}
