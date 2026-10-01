@@ -111,7 +111,7 @@
 	font-weight: 700;
 	text-align: center;
 	color: #ffffff;
-	background-color: #ef4444;
+	background-color: #e0f2fe;
 	border-radius: 8px;
 	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
 }
