@@ -17,6 +17,7 @@
 
 package org.adempiere.webui.panel;
 
+import java.io.Serializable;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -24,6 +25,7 @@ import org.adempiere.util.Callback;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
+import org.adempiere.webui.apps.DesktopRunnable;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Menupopup;
 import org.adempiere.webui.component.Messagebox;
@@ -35,15 +37,17 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.FeedbackManager;
 import org.adempiere.webui.util.Icon;
+import org.adempiere.webui.util.ServerPushTemplate;
+import org.adempiere.webui.util.ZkContextRunnable;
 import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.WPreference;
+import org.compiere.Adempiere;
 import org.compiere.model.MClient;
 import org.compiere.model.MDocumentStatus;
 import org.compiere.model.MForm;
 import org.compiere.model.MOrg;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
-import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.model.MWarehouse;
 import org.compiere.util.CLogger;
@@ -71,22 +75,17 @@ import org.zkoss.zul.Popup;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.Span;
 import org.zkoss.zul.Vlayout;
-import org.zkoss.zul.impl.LabelImageElement;
 
 /**
  * Desktop header panel for user info
  * @author  <a href="mailto:agramdass@gmail.com">Ashley G Ramdass</a>
  * @date    Feb 25, 2007
  */
-public class UserPanel implements EventListener<Event>, Composer<Component>
+public class UserPanel implements EventListener<Event>, Composer<Component>, Serializable
 {
+	private static final long serialVersionUID = -5330748308L;
 
 	protected Properties ctx;
-
-	protected LabelImageElement logout;
-    protected LabelImageElement changeRole;
-    protected LabelImageElement preference;
-    protected LabelImageElement feedback;
 
     protected Label lblUserNameValue = new Label();
     protected WPreference preferencePopup;
@@ -180,54 +179,19 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
     		};
     		EventQueue<Event> queue = EventQueues.lookup(IDesktop.ACTIVITIES_EVENT_QUEUE, true);
     		queue.subscribe(activitiesListener);
-    		updateNotificationBadge(getActivitiesCount());
-			if (component instanceof ComponentCtrl) {
-    			((ComponentCtrl) component).addCallback(ComponentCtrl.AFTER_PAGE_DETACHED, evt -> {
-    				try {
-    					EventQueue<Event> q = EventQueues.lookup(IDesktop.ACTIVITIES_EVENT_QUEUE, false);
-    					if (q != null && activitiesListener != null)
-    						q.unsubscribe(activitiesListener);
-    				} catch (Exception e) {
-						CLogger.getCLogger(getClass()).log(Level.WARNING, e.getMessage(), e);
-    				}
-    				if (userPopup != null) {
-    					userPopup.detach();
-    					userPopup = null;
-    				}
-    				if (notifPopup != null) {
-    					notifPopup.detach();
-    					notifPopup = null;
-    				}
-    			});
-			}
-    	}
 
-    	feedback = (LabelImageElement) component.getFellowIfAny("feedback", true);
-    	if (feedback != null)
-    	{
-    		feedback.setLabel(Msg.getMsg(Env.getCtx(), "Feedback"));
-    		feedback.addEventListener(Events.ON_CLICK, this);
-    	}
+			ServerPushTemplate template = new ServerPushTemplate(component.getDesktop());
+			ZkContextRunnable cr = new ZkContextRunnable() {
 
-    	preference = (LabelImageElement) component.getFellowIfAny("preference", true);
-    	if (preference != null)
-    	{
-    		preference.setLabel(Msg.getMsg(Env.getCtx(), "Preference"));
-    		preference.addEventListener(Events.ON_CLICK, this);
-    	}
-
-    	changeRole = (LabelImageElement) component.getFellowIfAny("changeRole", true);
-    	if (changeRole != null)
-    	{
-    		changeRole.setLabel(Msg.getMsg(Env.getCtx(), "changeRole"));
-    		changeRole.addEventListener(Events.ON_CLICK, this);
-    	}
-
-    	logout = (LabelImageElement) component.getFellowIfAny("logout", true);
-    	if (logout != null)
-    	{
-    		logout.setLabel(Msg.getMsg(Env.getCtx(),"Logout"));
-    		logout.addEventListener(Events.ON_CLICK, this);
+				@Override
+				protected void doRun() {
+					int count = getActivitiesCount();
+					template.executeAsync(() -> {
+						updateNotificationBadge(count);
+					});
+				}
+			};
+    		Adempiere.getThreadPoolExecutor().submit(new DesktopRunnable(cr, component.getDesktop()));
     	}
     	
     	feedbackMenu = new Menupopup();
@@ -259,7 +223,30 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 
     	component.addEventListener(ON_DEFER_LOGOUT, this);
     	component.addEventListener(ON_DEFER_CHANGE_ROLE, this);
-    	
+
+		if (component instanceof ComponentCtrl cc) {
+    		cc.addCallback(ComponentCtrl.AFTER_PAGE_DETACHED, evt -> {
+    			try {
+					EventQueue<Event> q = EventQueues.lookup(IDesktop.ACTIVITIES_EVENT_QUEUE, false);
+					if (q != null && activitiesListener != null)
+						q.unsubscribe(activitiesListener);
+				} catch (Exception e) {
+					CLogger.getCLogger(getClass()).log(Level.WARNING, e.getMessage(), e);
+				}
+				if (userPopup != null) {
+					userPopup.detach();
+					userPopup = null;
+				}
+				if (notifPopup != null) {
+					notifPopup.detach();
+					notifPopup = null;
+				}
+				if (SessionManager.getSessionApplication() != null &&
+					SessionManager.getSessionApplication().getKeylistener() != null)
+					SessionManager.getSessionApplication().getKeylistener().removeEventListener(Events.ON_CTRL_KEY, UserPanel.this);
+    		});
+		}
+
     	userPanelLinksContainer = component.getFellowIfAny("userPanelLinksContainer", true);
     	if ((isMobile() || userProfileChip != null) && userPanelLinksContainer != null)
     	{
@@ -323,21 +310,9 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 		if (event == null)
 			return;
 
-		if (logout != null && logout == event.getTarget())
-        {
-			onLogout();
-        }
-		else if (lblUserNameValue == event.getTarget() || (userProfileChip != null && userProfileChip == event.getTarget()))
+		if (lblUserNameValue == event.getTarget() || (userProfileChip != null && userProfileChip == event.getTarget()))
 		{
 			openUserMenuPopup();
-		}
-		else if (changeRole != null && changeRole == event.getTarget())
-		{
-			onChangeRole();
-		}
-		else if (preference != null && preference == event.getTarget())
-		{
-			onPreference();
 		}
 		else if (event.getTarget() instanceof Menuitem)
 		{
@@ -530,12 +505,14 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 		int AD_Role_ID = Env.getAD_Role_ID(ctx);
 		MDocumentStatus[] indicators = MDocumentStatus.getDocumentStatusIndicators(ctx, AD_User_ID, AD_Role_ID);
 		boolean hasItems = false;
+		int total = 0;
 		for (MDocumentStatus ind : indicators) {
 			int count = MDocumentStatus.evaluate(ind);
 			if (ind.isHideWhenZero() && count == 0)
 				continue;
 
 			hasItems = true;
+			total += count;
 			Hlayout row = new Hlayout();
 			row.setSclass("notification-item-row");
 			row.setValign("middle");
@@ -562,6 +539,8 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 			row.setStyle("cursor: pointer;");
 			layout.appendChild(row);
 		}
+
+		updateNotificationBadge(total);
 
 		if (!hasItems) {
 			String noActivitiesMsg = Msg.getMsg(ctx, "NoPendingActivities");
@@ -637,8 +616,7 @@ public class UserPanel implements EventListener<Event>, Composer<Component>
 	private void onRoleInfo() {
 		MRole role = MRole.getDefault(ctx, false);
 		String info = role.toStringX(ctx);
-		Messagebox mb = new Messagebox();
-		mb.show(info, Msg.getMsg(ctx, "RoleInfo"), Messagebox.OK, Messagebox.INFORMATION);
+		Messagebox.showDialog(info, Msg.getMsg(ctx, "RoleInfo"), Messagebox.OK, Messagebox.INFORMATION);
 	}
 
 	/**

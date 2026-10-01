@@ -49,55 +49,6 @@
 	border: none;
 	height: 100% !important;
 }
-<%-- User Profile Chip --%>
-.desktop-header-user-chip {
-	display: inline-flex;
-	align-items: center;
-	padding: 3px 8px 3px 4px;
-	border-radius: 20px;
-	cursor: pointer;
-	border: 1px solid transparent;
-	transition: background-color 0.15s ease, border-color 0.15s ease;
-}
-.desktop-header-user-chip:hover {
-	background-color: var(--zk-desktop-header-hover-background-color);
-	border-color: var(--zk-desktop-header-border-color);
-}
-.desktop-header-user-avatar {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	width: 28px;
-	height: 28px;
-	border-radius: 50%;
-	background-color: #0284c7;
-	color: #ffffff;
-	font-size: 11px;
-	font-weight: 600;
-	letter-spacing: 0.5px;
-	margin-right: 6px;
-	flex-shrink: 0;
-}
-.desktop-header-user-meta {
-	display: flex;
-	flex-direction: column;
-	text-align: left;
-	margin-right: 6px;
-	max-width: 200px;
-}
-@media screen and (max-width: 600px) {
-	.desktop-header-user-meta {
-		display: none;
-	}
-}
-.desktop-header-username {
-	padding-right: 6px;
-}
-
-.desktop-header-username:hover {
-	color: blue;
-	text-decoration: underline;
-}
 
 <%-- right panel for user name, notifications, and links --%>
 .desktop-user-panel {
@@ -186,6 +137,11 @@
 	text-align: left;
 	margin-right: 6px;
 	max-width: 200px;
+}
+@media screen and (max-width: 600px) {
+	.desktop-header-user-meta {
+		display: none;
+	}
 }
 .desktop-header-username {
 	font-size: 12px;

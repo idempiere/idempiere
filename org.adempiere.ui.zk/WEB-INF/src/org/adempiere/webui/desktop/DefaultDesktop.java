@@ -139,8 +139,6 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	/** Main layout. With id "layout" in desktop.zul */
 	private Borderlayout layout;
 
-	private int noCount;
-
 	/** Panel of home tab */
 	private Tabpanel homeTab;
 
@@ -758,17 +756,6 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
             	}
             }
         }
-        else if (eventName.equals(ON_ACTIVITIES_CHANGED_EVENT))
-        {
-        	Integer count = (Integer) event.getData();
-        	boolean change = false;
-        	if (count != null && count.intValue() != noCount) 
-        	{
-        		noCount = count.intValue(); change = true;
-        	}
-        	if (change)
-        		updateUI();
-        }
     }
 
 	/**
@@ -900,13 +887,6 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		pnlHead = null;
 		max = null;
 		m_desktop = null;
-	}
-
-	/**
-	 * Update home tab title after {@link #ON_ACTIVITIES_CHANGED_EVENT}
-	 */
-	public void updateUI() {
-		windowContainer.setTabTitle(0, Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Home")), null);
 	}
 
 	/**
