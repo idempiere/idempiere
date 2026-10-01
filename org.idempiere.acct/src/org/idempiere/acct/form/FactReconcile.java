@@ -332,14 +332,10 @@ public class FactReconcile {
 
 				if (generatedIndexes != null)
 					generatedIndexes.add(r);
-				if (balanceFactAcctID > 0) {
-					try {
-						generate(balanceFactAcctID, time);
-					}
-					catch(Exception e) {
-						throw new AdempiereUserError("Can't generate reconciliation for the newly created journal line ", e);
-					}
-				}
+
+				if (balanceFactAcctID > 0 && generatedIndexes != null && !generatedIndexes.isEmpty()
+						&& !generate(balanceFactAcctID, time))
+					throw new AdempiereUserError("Can't generate reconciliation for the newly created journal line");
 			}
 		}
 	}

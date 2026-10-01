@@ -48,6 +48,7 @@ import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.DocumentLink;
+import org.adempiere.webui.component.FlexVlayout;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Label;
@@ -113,7 +114,6 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
-import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
@@ -302,7 +302,7 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		row.appendCellChild(labelDateAcct.rightAlign());
 		row.appendCellChild(fieldDateAcct.getComponent(), 2);
 		row.appendCellChild(labelDateAcct2.rightAlign());
-		Hbox boxTo = new Hbox();
+		FlexVlayout boxTo = new FlexVlayout();
 		boxTo.appendChild(fieldDateAcct2.getComponent());
 		DateRangeButton drb = (new DateRangeButton(fieldDateAcct, fieldDateAcct2));
 		boxTo.appendChild(drb);
@@ -497,7 +497,7 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 		bGenerate.setEnabled(m_noSelected != 0 && Env.ZERO.compareTo(m_selectedAmt) == 0 && !isReconciled.isSelected());
 		bReset.setEnabled(m_noSelected > 0 && isReconciled.isSelected());
 
-		if (m_selectedAmt.signum() != 0) {
+		if (m_selectedAmt.signum() != 0 && !isReconciled.isSelected()) {
 			cbCreateJournal.setVisible(m_maxAmtToCreateJournal.signum() == 0 || m_selectedAmt.abs().compareTo(m_maxAmtToCreateJournal.abs()) <= 0);
 			cbCreateJournal.setChecked(false);
 		}
@@ -583,9 +583,14 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 									}
 								}
 
-								int balanceFactAcctID = new Query(Env.getCtx(), MFactAcct.Table_Name, "AD_Table_ID = ? AND Record_ID = ? AND Account_ID = ?", null)
-										.setParameters(MJournal.Table_ID, journal.getGL_Journal_ID(), m_Account_ID)
+								int balanceFactAcctID = new Query(Env.getCtx(), MFactAcct.Table_Name, "AD_Table_ID = ? AND Record_ID = ? AND Account_ID = ? AND C_AcctSchema_ID = ?", null)
+										.setParameters(MJournal.Table_ID, journal.getGL_Journal_ID(), m_Account_ID, m_C_AcctSchema_ID)
 										.firstIdOnly();
+
+								if (balanceFactAcctID <= 0) {
+									Dialog.error(form.getWindowNo(), "Error", journal.getDocumentInfo());
+									return;
+								}
 
 								generateReconciliation(balanceFactAcctID);
 
@@ -632,7 +637,7 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 			onbSelect();
 		
 		else if (event.getTarget().equals(cbCreateJournal))
-			bGenerate.setEnabled(cbCreateJournal.isChecked());
+			bGenerate.setEnabled(m_noSelected != 0 && !isReconciled.isSelected() && (cbCreateJournal.isChecked() || m_selectedAmt.signum() == 0));
 	}
 	
 	/**
