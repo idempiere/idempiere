@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_Location
  *  @author iDempiere (generated)
- *  @version Release 13 - $Id$ */
+ *  @version Release 14 - $Id$ */
 @org.adempiere.base.Model(table="C_Location")
 public class X_C_Location extends PO implements I_C_Location, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_Location extends PO implements I_C_Location, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20260309L;
+	private static final long serialVersionUID = 20261001L;
 
     /** Standard Constructor */
     public X_C_Location (Properties ctx, int C_Location_ID, String trxName)
@@ -398,6 +398,36 @@ public class X_C_Location extends PO implements I_C_Location, I_Persistent
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** Set Latitude.
+		@param Latitude Latitude
+	*/
+	public void setLatitude (String Latitude)
+	{
+		set_Value (COLUMNNAME_Latitude, Latitude);
+	}
+
+	/** Get Latitude.
+		@return Latitude	  */
+	public String getLatitude()
+	{
+		return (String)get_Value(COLUMNNAME_Latitude);
+	}
+
+	/** Set Longitude.
+		@param Longitude Longitude
+	*/
+	public void setLongitude (String Longitude)
+	{
+		set_Value (COLUMNNAME_Longitude, Longitude);
+	}
+
+	/** Get Longitude.
+		@return Longitude	  */
+	public String getLongitude()
+	{
+		return (String)get_Value(COLUMNNAME_Longitude);
 	}
 
 	/** Set ZIP.
