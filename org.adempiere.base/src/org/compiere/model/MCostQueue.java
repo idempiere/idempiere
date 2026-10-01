@@ -96,9 +96,15 @@ public class MCostQueue extends X_M_CostQueue
 		if (M_ASI_ID != 0)
 			sql.append(" AND M_AttributeSetInstance_ID=?");
 		sql.append(" AND CurrentQty<>0 ")
-			.append("ORDER BY M_AttributeSetInstance_ID ");
+		   .append(" ORDER BY M_AttributeSetInstance_ID, Created ");
+
 		if (!ce.isFifo())
-			sql.append("DESC");
+		    sql.append(" DESC ");
+
+		sql.append(", M_CostQueue_ID ");
+
+		if (!ce.isFifo())
+		    sql.append(" DESC");
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
