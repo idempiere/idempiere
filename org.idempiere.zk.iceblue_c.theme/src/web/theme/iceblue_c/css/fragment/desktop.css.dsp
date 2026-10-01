@@ -283,7 +283,6 @@
 <%-- Notification Popup --%>
 .notification-popup {
 	width: 320px;
-	max-height: 420px;
 	padding: 0 !important;
 	border-radius: 8px !important;
 	box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1) !important;
@@ -296,10 +295,10 @@
 .notification-popup-layout {
 	padding: 0;
 	width: 100%;
-	max-height: 320px;
+	max-height: 420px;
 	overflow-y: auto;
 }
-@media screen and (max-height: 319px) {
+@media screen and (max-height: 419px) {
 	.notification-popup-layout {
 		max-height: 100%;
 	}
