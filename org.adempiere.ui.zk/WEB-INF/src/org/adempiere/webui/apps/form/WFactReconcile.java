@@ -919,6 +919,7 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 				catch (Exception e) {
 					trx.rollback();
 					log.log(Level.SEVERE, "Error creating reconciliation journal", e);
+					journal = null;
 				} finally {
 					trx.close();
 				}
