@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Field
  *  @author iDempiere (generated) 
- *  @version Release 13
+ *  @version Release 14
  */
 public interface I_AD_Field 
 {
@@ -159,6 +159,22 @@ public interface I_AD_Field
 	  * Organizational entity within tenant
 	  */
 	public int getAD_Org_ID();
+
+    /** Column name AD_Process_ID */
+    public static final String COLUMNNAME_AD_Process_ID = "AD_Process_ID";
+
+	/** Set Process.
+	  * Process or Report
+	  */
+	public void setAD_Process_ID (int AD_Process_ID);
+
+	/** Get Process.
+	  * Process or Report
+	  */
+	public int getAD_Process_ID();
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_AD_Process getAD_Process() throws RuntimeException;
 
     /** Column name AD_Reference_ID */
     public static final String COLUMNNAME_AD_Reference_ID = "AD_Reference_ID";
