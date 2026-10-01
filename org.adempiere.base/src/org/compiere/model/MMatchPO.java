@@ -76,29 +76,29 @@ public class MMatchPO extends X_M_MatchPO
 	/**
 	 * Get matched qty for a given receipt line, invoice line and a specific non-zero ASI.
 	 * Considers only records with that exact ASI; does not include ASI=0 records.
-	 * Only non-reversed matches (Reversal_ID IS NULL).
+	 * Only non-reversed matches (Reversal_ID IS NULL OR Reversal_ID=0).
 	 */
 	private static final String	SQL_GET_MATCHINV_QTY_ASI	= "SELECT COALESCE(SUM(Qty), 0) FROM M_MatchInv WHERE M_InOutLine_ID=? AND C_InvoiceLine_ID=? "
-																+ " AND M_AttributeSetInstance_ID=? AND Reversal_ID IS NULL";
+																+ " AND M_AttributeSetInstance_ID=? AND (Reversal_ID IS NULL OR Reversal_ID=0)";
 
 	/**
 	 * Get the ASI=0 (line-level, non-lot-specific) matched qty for a receipt line + invoice line pair.
 	 * Records created by matchToInvoiceLine() carry ASI=0 and cover the full line qty.
-	 * Only non-reversed matches (Reversal_ID IS NULL).
+	 * Only non-reversed matches (Reversal_ID IS NULL OR Reversal_ID=0).
 	 */
 	private static final String	SQL_GET_MATCHINV_QTY_ASI0	= "SELECT COALESCE(SUM(Qty), 0) FROM M_MatchInv WHERE M_InOutLine_ID=? AND C_InvoiceLine_ID=? "
-																+ " AND M_AttributeSetInstance_ID=0 AND Reversal_ID IS NULL";
+																+ " AND M_AttributeSetInstance_ID=0 AND (Reversal_ID IS NULL OR Reversal_ID=0)";
 
 	/**
 	 * Get matched qty for a given receipt line, invoice line and ASI.
-	 * Consider only non-reversed matches (Reversal_ID IS NULL).
+	 * Consider only non-reversed matches (Reversal_ID IS NULL OR Reversal_ID=0).
 	 * Includes ASI=0 records alongside the specific ASI: a MMatchInv with ASI=0 was created
 	 * against the full receipt line (e.g. via matchToInvoiceLine) and already covers that qty.
 	 * Used for single-slice lookups and the beforeSave validation where the ASI=0 pool is not
 	 * being distributed across multiple slices.
 	 */
 	private static final String	SQL_GET_MATCHINV_QTY		= "SELECT COALESCE(SUM(Qty), 0) FROM M_MatchInv WHERE M_InOutLine_ID=? AND C_InvoiceLine_ID=? "
-																+ " AND (M_AttributeSetInstance_ID=? OR M_AttributeSetInstance_ID=0) AND Reversal_ID IS NULL";
+																+ " AND (M_AttributeSetInstance_ID=? OR M_AttributeSetInstance_ID=0) AND (Reversal_ID IS NULL OR Reversal_ID=0)";
 
 	/**
 	 * generated serial id
@@ -592,7 +592,7 @@ public class MMatchPO extends X_M_MatchPO
 					// already fully accounted for elsewhere.
 					if (iLine != null && sLine == null && mpo.getC_InvoiceLine_ID() == 0)
 					{
-						int cnt = DB.getSQLValue(iLine.get_TrxName(), "SELECT COUNT(1) FROM M_MatchInv WHERE M_InOutLine_ID=? AND C_InvoiceLine_ID != ? AND Reversal_ID IS NULL", mpo.getM_InOutLine_ID(), iLine.getC_InvoiceLine_ID());
+						int cnt = DB.getSQLValue(iLine.get_TrxName(), "SELECT COUNT(1) FROM M_MatchInv WHERE M_InOutLine_ID=? AND C_InvoiceLine_ID != ? AND (Reversal_ID IS NULL OR Reversal_ID=0)", mpo.getM_InOutLine_ID(), iLine.getC_InvoiceLine_ID());
 						if (cnt > 0)
 							continue;
 					}
@@ -660,15 +660,19 @@ public class MMatchPO extends X_M_MatchPO
 					        int C_InvoiceLine_ID = ids[1];
 
 							// ASI-specific already-matched qty (exact ASI only, no ASI=0 included)
-							BigDecimal asiMatchedQty = DB.getSQLValueBD(m.get_TrxName(), SQL_GET_MATCHINV_QTY_ASI, M_InOutLine_ID, C_InvoiceLine_ID, m.getM_AttributeSetInstance_ID());
-							if (asiMatchedQty == null)
-								asiMatchedQty = BigDecimal.ZERO;
+							BigDecimal asiMatchedQty = BigDecimal.ZERO;
+							if (m.getM_AttributeSetInstance_ID() != 0)
+							{
+								asiMatchedQty = DB.getSQLValueBD(m.get_TrxName(), SQL_GET_MATCHINV_QTY_ASI, M_InOutLine_ID, C_InvoiceLine_ID, m.getM_AttributeSetInstance_ID());
+								if (asiMatchedQty == null)
+									asiMatchedQty = BigDecimal.ZERO;
+							}
 							// Consume the ASI=0 budget for this slice (min of budget and slice qty)
-							BigDecimal asi0Consumed = asi0Budget.min(m.getQty());
+							BigDecimal asi0Consumed = asi0Budget.signum() != 0 ? (m.getQty().signum() < 0 ? asi0Budget.max(m.getQty()) : asi0Budget.min(m.getQty())) : BigDecimal.ZERO;
 							asi0Budget = asi0Budget.subtract(asi0Consumed);
 							BigDecimal matchedQty = asiMatchedQty.add(asi0Consumed);
 							BigDecimal qtyToMatch = m.getQty().subtract(matchedQty);
-							if (qtyToMatch.signum() > 0)
+							if (qtyToMatch.signum() != 0)
 					        {
     				        	MMatchInv matchInv = createMatchInv(m, C_InvoiceLine_ID, M_InOutLine_ID, qtyToMatch, dateTrx, trxName);
      				            if (matchInv == null)
@@ -942,7 +946,7 @@ public class MMatchPO extends X_M_MatchPO
 								if (matchedQty == null)
 									matchedQty = BigDecimal.ZERO;
 								BigDecimal qtyToMatch = autoMatchQty.subtract(matchedQty);
-								if (qtyToMatch.signum() > 0)
+								if (qtyToMatch.signum() != 0)
 								{
 									MMatchInv matchInv = createMatchInv(retValue, retValue.getC_InvoiceLine_ID(), matchPO.getM_InOutLine_ID(), qtyToMatch, dateTrx, trxName);
 	 								retValue.setMatchInvCreated(matchInv);
@@ -1035,7 +1039,7 @@ public class MMatchPO extends X_M_MatchPO
 		{
 			BigDecimal consumed = DB.getSQLValueBD(trxName,
 				"SELECT COALESCE(SUM(Qty),0) FROM M_MatchPO WHERE M_InOutLine_ID=? AND M_AttributeSetInstance_ID=? "
-				+ "AND M_MatchPO_ID<>? AND Reversal_ID IS NULL",
+				+ "AND M_MatchPO_ID<>? AND (Reversal_ID IS NULL OR Reversal_ID=0)",
 				new Object[] { M_InOutLine_ID, entry.getKey(), excludeMatchPO_ID });
 			entry.setValue(entry.getValue().subtract(consumed == null ? BigDecimal.ZERO : consumed));
 		}
@@ -1115,20 +1119,43 @@ public class MMatchPO extends X_M_MatchPO
 						// current one; a stub with a non-zero ASI but no existing MMatchInv for
 						// that ASI is either newly created or a reversal relic and is safe to reuse.
 						BigDecimal stubCommitted = DB.getSQLValueBD(sLine.get_TrxName(),
-								"SELECT COALESCE(SUM(Qty),0) FROM M_MatchInv WHERE C_InvoiceLine_ID=? AND M_AttributeSetInstance_ID=? AND Reversal_ID IS NULL",
+								"SELECT COALESCE(SUM(Qty),0) FROM M_MatchInv WHERE C_InvoiceLine_ID=? AND M_AttributeSetInstance_ID=? AND (Reversal_ID IS NULL OR Reversal_ID=0)",
 								matchPO.getC_InvoiceLine_ID(), stubASI);
 						if (stubCommitted != null && stubCommitted.signum() > 0)
 							continue; // stub's ASI is already tied to a different lot's receipt — skip
 					}
-					BigDecimal matchedQty = DB.getSQLValueBD(	sLine.get_TrxName(), SQL_GET_MATCHINV_QTY, sLine.getM_InOutLine_ID(), matchPO.getC_InvoiceLine_ID(),
-																retValue.getM_AttributeSetInstance_ID());
-					if (matchedQty == null)
-						matchedQty = BigDecimal.ZERO;
-					if (matchedQty.signum() == 0 || matchedQty.compareTo(retValue.getQty()) == 0)
+					// ASI-aware already-matched qty (same model as Phase 1):
+					// - exact-ASI MatchInv for this lot
+					// - plus ASI=0 line-level MatchInv, capped at this slice's usable qty so a
+					//   full-line ASI=0 match does not over-reject a partial lot stub
+					BigDecimal usableQty = matchPO.getQty().min(retValue.getQty());
+					BigDecimal matchedQty = BigDecimal.ZERO;
+					if (sliceASI == 0)
+					{
+						matchedQty = DB.getSQLValueBD(sLine.get_TrxName(), SQL_GET_MATCHINV_QTY_ASI0,
+								sLine.getM_InOutLine_ID(), matchPO.getC_InvoiceLine_ID());
+						if (matchedQty == null)
+							matchedQty = BigDecimal.ZERO;
+					}
+					else
+					{
+						BigDecimal asiMatchedQty = DB.getSQLValueBD(sLine.get_TrxName(), SQL_GET_MATCHINV_QTY_ASI,
+								sLine.getM_InOutLine_ID(), matchPO.getC_InvoiceLine_ID(), sliceASI);
+						if (asiMatchedQty == null)
+							asiMatchedQty = BigDecimal.ZERO;
+						matchedQty = asiMatchedQty;
+						BigDecimal asi0Matched = DB.getSQLValueBD(sLine.get_TrxName(), SQL_GET_MATCHINV_QTY_ASI0,
+								sLine.getM_InOutLine_ID(), matchPO.getC_InvoiceLine_ID());
+						if (asi0Matched != null && asi0Matched.signum() != 0)
+							matchedQty = matchedQty.add(usableQty.signum() < 0 ? asi0Matched.max(usableQty) : asi0Matched.min(usableQty));
+					}
+					// Validate matchedQty against the borrowed quantity (not the full slice qty)
+					// so a partial stub is accepted when MatchInv already covers exactly the
+					// borrowed portion, or when nothing is matched yet.
+					if (matchedQty.signum() == 0 || matchedQty.compareTo(usableQty) == 0)
 					{
 						// Usable stub: prefer the one that covers the full slice (ideal), otherwise
 						// keep the largest partial one found so far.
-						BigDecimal usableQty = matchPO.getQty().min(retValue.getQty());
 						if (usableQty.compareTo(retValue.getQty()) >= 0)
 						{
 							// Full coverage — use immediately, no need to keep searching.
@@ -1148,23 +1175,10 @@ public class MMatchPO extends X_M_MatchPO
 
 			if (bestStub != null)
 			{
-				if (bestStubQty.compareTo(retValue.getQty()) < 0)
-				{
-					// Partial borrow: split retValue into two records.
-					// - retValue shrinks to bestStubQty and will be linked to the invoice below.
-					// - A new receipt-only sibling carries the unmatched remainder.
-					BigDecimal remainder = retValue.getQty().subtract(bestStubQty);
-					MMatchPO receiptOnlySibling = new MMatchPO(sLine, dateTrx, remainder);
-					receiptOnlySibling.setC_OrderLine_ID(C_OrderLine_ID);
-					receiptOnlySibling.setM_AttributeSetInstance_ID(retValue.getM_AttributeSetInstance_ID());
-					receiptOnlySibling.saveEx();
-					// Resize retValue to just the borrowed portion.
-					retValue.setQty(bestStubQty);
-				}
+				// Defer mutating/saving bestStub and creating a receipt-only sibling until
+				// createMatchInv succeeds below, so a failed MatchInv leaves both records unchanged.
 				otherMatchPO = bestStub;
 				sliceILine = new MInvoiceLine(retValue.getCtx(), bestStub.getC_InvoiceLine_ID(), retValue.get_TrxName());
-				bestStub.setQty(bestStub.getQty().subtract(bestStubQty));
-				bestStub.saveEx();
 			}
 		}
 
@@ -1177,12 +1191,30 @@ public class MMatchPO extends X_M_MatchPO
 			{
 				// Borrowed case: create the M_MatchInv linking this slice's receipt to the
 				// borrowed invoice line, if one doesn't already exist for that pair.
-				BigDecimal matchedQty = DB.getSQLValueBD(	retValue.get_TrxName(), SQL_GET_MATCHINV_QTY, retValue.getM_InOutLine_ID(),
-															otherMatchPO.getC_InvoiceLine_ID(), retValue.getM_AttributeSetInstance_ID());
-				if (matchedQty == null)
-					matchedQty = BigDecimal.ZERO;
-				BigDecimal qtyToMatch = retValue.getQty().subtract(matchedQty);
-				if (qtyToMatch.signum() > 0)
+				// Use the borrowed qty, not the original full slice qty.
+				BigDecimal borrowQty = otherMatchPO.getQty().min(retValue.getQty());
+				// ASI-aware already-matched qty (aligned with Phase 1):
+				// exact-ASI MatchInv + ASI=0 line-level MatchInv capped at this slice's borrowQty.
+				int sliceASI = retValue.getM_AttributeSetInstance_ID();
+				BigDecimal matchedQty = BigDecimal.ZERO;
+				if (sliceASI == 0)
+				{
+					matchedQty = DB.getSQLValueBD(retValue.get_TrxName(), SQL_GET_MATCHINV_QTY_ASI0, retValue.getM_InOutLine_ID(), otherMatchPO.getC_InvoiceLine_ID());
+					if (matchedQty == null)
+						matchedQty = BigDecimal.ZERO;
+				}
+				else
+				{
+					BigDecimal asiMatchedQty = DB.getSQLValueBD(retValue.get_TrxName(), SQL_GET_MATCHINV_QTY_ASI, retValue.getM_InOutLine_ID(), otherMatchPO.getC_InvoiceLine_ID(), sliceASI);
+					if (asiMatchedQty == null)
+						asiMatchedQty = BigDecimal.ZERO;
+					matchedQty = asiMatchedQty;
+					BigDecimal asi0Matched = DB.getSQLValueBD(retValue.get_TrxName(), SQL_GET_MATCHINV_QTY_ASI0, retValue.getM_InOutLine_ID(), otherMatchPO.getC_InvoiceLine_ID());
+					if (asi0Matched != null && asi0Matched.signum() != 0)
+						matchedQty = matchedQty.add(borrowQty.signum() < 0 ? asi0Matched.max(borrowQty) : asi0Matched.min(borrowQty));
+				}
+				BigDecimal qtyToMatch = borrowQty.subtract(matchedQty);
+				if (qtyToMatch.signum() != 0)
 				{
 					MMatchInv matchInv = createMatchInv(retValue, otherMatchPO.getC_InvoiceLine_ID(), retValue.getM_InOutLine_ID(), qtyToMatch, dateTrx, trxName);
 	 				if (matchInv == null)
@@ -1194,6 +1226,25 @@ public class MMatchPO extends X_M_MatchPO
 					}
 					retValue.setMatchInvCreated(matchInv);
 				}
+				// Explicitly attach the borrowed invoice line so beforeSave does not have to
+				// reverse-engineer it from MatchInv (and does not spawn a duplicate MatchPO
+				// when MatchInv qty differs from this slice's qty).
+				retValue.setC_InvoiceLine_ID(otherMatchPO.getC_InvoiceLine_ID());
+				// MatchInv succeeded (or was unnecessary) — now apply the borrow mutations.
+				if (borrowQty.compareTo(retValue.getQty()) < 0)
+				{
+					// Partial borrow: split retValue into two records.
+					// - retValue shrinks to borrowQty and is linked via MatchInv above.
+					// - A new receipt-only sibling carries the unmatched remainder.
+					BigDecimal remainder = retValue.getQty().subtract(borrowQty);
+					MMatchPO receiptOnlySibling = new MMatchPO(sLine, dateTrx, remainder);
+					receiptOnlySibling.setC_OrderLine_ID(C_OrderLine_ID);
+					receiptOnlySibling.setM_AttributeSetInstance_ID(retValue.getM_AttributeSetInstance_ID());
+					receiptOnlySibling.saveEx();
+					retValue.setQty(borrowQty);
+				}
+				otherMatchPO.setQty(otherMatchPO.getQty().subtract(borrowQty));
+				otherMatchPO.saveEx();
 				// If borrowing fully drained the stub's qty, it no longer represents anything -
 				// remove it rather than leaving a zero-qty orphan record around.
 				if (otherMatchPO.getQty().signum() == 0)
@@ -1617,15 +1668,15 @@ public class MMatchPO extends X_M_MatchPO
 			
 			// Validate existence of corresponding invoice matching record.
 			// Skip for reversal records: their paired MMatchInv reversal is created separately
-			// (with Reversal_ID IS NOT NULL), so SQL_GET_MATCHED_QTY (which filters Reversal_ID IS NULL)
+			// (with Reversal_ID IS NOT NULL), so active record filters (which filter Reversal_ID IS NULL OR Reversal_ID=0)
 			// would return 0 even though the reversal is perfectly valid.
 			// Note: isReversal() is not reliable for a brand-new record (getM_MatchPO_ID()==0),
 			// so check getReversal_ID() > 0 directly — the reversal record always has it set
 			// before saveEx() is called, while a fresh non-reversal record has Reversal_ID == 0.
 			if (getM_InOutLine_ID() > 0 && getC_InvoiceLine_ID() > 0 && getReversal_ID() == 0)
 			{
-				BigDecimal matchedQty = DB.getSQLValueBD(	get_TrxName(), SQL_GET_MATCHINV_QTY, getM_InOutLine_ID(), getC_InvoiceLine_ID(), getM_AttributeSetInstance_ID());
-				if (matchedQty == null || matchedQty.signum() <= 0)
+				BigDecimal matchedQty = DB.getSQLValueBD(	get_TrxName(), "SELECT COALESCE(SUM(Qty), 0) FROM M_MatchInv WHERE M_InOutLine_ID=? AND C_InvoiceLine_ID=? AND (Reversal_ID IS NULL OR Reversal_ID=0)", getM_InOutLine_ID(), getC_InvoiceLine_ID());
+				if (matchedQty == null || matchedQty.signum() == 0)
 				{
 					MInvoiceLine invoiceLine = new MInvoiceLine(getCtx(), getC_InvoiceLine_ID(), get_TrxName());
 					MInOutLine inoutLine = new MInOutLine(getCtx(), getM_InOutLine_ID(), get_TrxName());
@@ -1659,7 +1710,7 @@ public class MMatchPO extends X_M_MatchPO
 			if (getC_InvoiceLine_ID() > 0)
 			{
 				MInvoiceLine line = new MInvoiceLine(getCtx(), getC_InvoiceLine_ID(), get_TrxName());				
-				BigDecimal matchedQty = DB.getSQLValueBD(get_TrxName(), "SELECT Coalesce(SUM(Qty),0) FROM M_MatchPO WHERE C_InvoiceLine_ID=?  AND Reversal_ID IS NULL " , getC_InvoiceLine_ID() );
+				BigDecimal matchedQty = DB.getSQLValueBD(get_TrxName(), "SELECT Coalesce(SUM(Qty),0) FROM M_MatchPO WHERE C_InvoiceLine_ID=? AND (Reversal_ID IS NULL OR Reversal_ID=0) " , getC_InvoiceLine_ID() );
 				if (matchedQty != null && matchedQty.compareTo(line.getQtyInvoiced()) > 0)
 				{
 					throw new IllegalStateException("Total matched qty > invoiced qty. MatchedQty="+matchedQty+", InvoicedQty="+line.getQtyInvoiced()+", Line="+line);
@@ -1675,7 +1726,7 @@ public class MMatchPO extends X_M_MatchPO
 					// Validate total M_MatchPO.Qty (with C_InvoiceLine) for C_OrderLine_ID against C_OrderLine.QtyOrdered
 					MOrderLine line = new MOrderLine(getCtx(), getC_OrderLine_ID(), get_TrxName());
 					BigDecimal qtyOrdered = line.getQtyOrdered();
-					BigDecimal invoicedQty = DB.getSQLValueBD(get_TrxName(), "SELECT Coalesce(SUM(Qty),0) FROM M_MatchPO WHERE C_InvoiceLine_ID > 0 and C_OrderLine_ID=? AND Reversal_ID IS NULL" , getC_OrderLine_ID());
+					BigDecimal invoicedQty = DB.getSQLValueBD(get_TrxName(), "SELECT Coalesce(SUM(Qty),0) FROM M_MatchPO WHERE C_InvoiceLine_ID > 0 and C_OrderLine_ID=? AND (Reversal_ID IS NULL OR Reversal_ID=0)" , getC_OrderLine_ID());
 					if (    invoicedQty != null
 						&& (   (qtyOrdered.signum() > 0 && invoicedQty.compareTo(qtyOrdered) > 0)
 						    || (qtyOrdered.signum() < 0 && invoicedQty.compareTo(qtyOrdered) < 0)
@@ -1685,7 +1736,7 @@ public class MMatchPO extends X_M_MatchPO
 						throw new IllegalStateException("Total matched invoiced qty > ordered qty. MatchedInvoicedQty="+invoicedQty+", OrderedQty="+qtyOrdered+", Line="+line);
 					}
 					// Validate total M_MatchPO.Qty (with M_InOutLine) for C_OrderLine_ID against C_OrderLine.QtyOrdered
-					BigDecimal deliveredQty = DB.getSQLValueBD(get_TrxName(), "SELECT Coalesce(SUM(Qty),0) FROM M_MatchPO WHERE M_InOutLine_ID > 0 and C_OrderLine_ID=? AND Reversal_ID IS NULL" , getC_OrderLine_ID());
+					BigDecimal deliveredQty = DB.getSQLValueBD(get_TrxName(), "SELECT Coalesce(SUM(Qty),0) FROM M_MatchPO WHERE M_InOutLine_ID > 0 and C_OrderLine_ID=? AND (Reversal_ID IS NULL OR Reversal_ID=0)" , getC_OrderLine_ID());
 					if (   deliveredQty != null
 						&& (   (qtyOrdered.signum() > 0 && deliveredQty.compareTo(qtyOrdered) > 0)
 						    || (qtyOrdered.signum() < 0 && deliveredQty.compareTo(qtyOrdered) < 0)
