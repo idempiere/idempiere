@@ -46,6 +46,7 @@ import org.adempiere.webui.window.FindWindow;
 import org.compiere.model.GridTab;
 import org.compiere.model.GridWindow;
 import org.compiere.model.GridWindowVO;
+import org.compiere.model.MQuery;
 import org.compiere.model.MUserQuery;
 import org.compiere.model.SystemIDs;
 import org.compiere.util.Env;
@@ -78,6 +79,7 @@ import org.zkoss.zk.ui.util.Configuration;
 public class FindWindowSavedQueryTest extends AbstractTestCase {
 
 	private static final int WINDOW_NO = 1;
+	private static final String QUERY_NAME = "FindWindowSavedQueryTest";
 	private static final int AD_TAB_ID_ORDER = 186;
 	private static final int AD_TAB_ID_ORDER_LINE = 187;
 	/** C_DocType_ID is not read while parsing, any value will do */
@@ -210,7 +212,7 @@ public class FindWindowSavedQueryTest extends AbstractTestCase {
 		MUserQuery query = new MUserQuery(Env.getCtx(), 0, getTrxName());
 		query.setAD_Table_ID(orderTab.getAD_Table_ID());
 		query.setAD_Tab_ID(orderTab.getAD_Tab_ID());
-		query.setName("FindWindowSavedQueryTest-" + System.nanoTime());
+		query.setName(QUERY_NAME);
 		query.setCode(column + "<^>=<^>" + DOCTYPE_VALUE + "<^><^>AND<^><^><^>" + tableSegment);
 		query.saveEx();
 		return query;
@@ -260,6 +262,14 @@ public class FindWindowSavedQueryTest extends AbstractTestCase {
 	public void unknownColumnOperators() {
 		ComboItem unknown = new ComboItem("unknown", new ValueNamePair("NoSuchColumn", "unknown"));
 
-		assertDoesNotThrow(() -> findWindow.operators(unknown, new Combobox()));
+		Combobox listOperator = new Combobox();
+
+		assertDoesNotThrow(() -> findWindow.operators(unknown, listOperator));
+		assertEquals(MQuery.OPERATORS_STRINGS.length, listOperator.getItemCount(), "Text operators not loaded");
+		for (int i = 0; i < MQuery.OPERATORS_STRINGS.length; i++) {
+			String operator = listOperator.getItemAtIndex(i).getValue();
+			assertEquals(MQuery.OPERATORS_STRINGS[i].getValue(), operator);
+		}
+		assertEquals(0, listOperator.getSelectedIndex(), "First operator not selected");
 	}
 }
