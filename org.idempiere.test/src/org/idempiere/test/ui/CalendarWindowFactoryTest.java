@@ -64,7 +64,8 @@ public class CalendarWindowFactoryTest {
 		ICalendarWindowFactory custom = model -> received[0] = model;
 
 		Dictionary<String, Object> properties = new Hashtable<>();
-		properties.put(Constants.SERVICE_RANKING, 100);
+		// highest possible ranking so that no other registered factory can win or tie
+		properties.put(Constants.SERVICE_RANKING, Integer.MAX_VALUE);
 		ServiceRegistration<ICalendarWindowFactory> registration = TestActivator.context
 				.registerService(ICalendarWindowFactory.class, custom, properties);
 		try {
