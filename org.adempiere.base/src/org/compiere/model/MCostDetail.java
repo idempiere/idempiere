@@ -1579,7 +1579,7 @@ public class MCostDetail extends X_M_CostDetail
 			cost.setCumulatedAmt(costInfo.getCumulatedAmt());
 		}
 		
-		DB.getDatabase().forUpdate(cost, 120);
+		DB.getDatabase().forUpdate(cost, 0);
 		
 		//save history for m_cost
 		MCostHistory history = new MCostHistory(this, cost, ce);

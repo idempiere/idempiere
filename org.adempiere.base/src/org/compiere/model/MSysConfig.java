@@ -46,7 +46,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4211803175857427143L;
+	private static final long serialVersionUID = 2364221904009516648L;
 
 	/** Constant for Predefine System Configuration Names (in alphabetical order) */
 	
@@ -99,6 +99,7 @@ public class MSysConfig extends X_AD_SysConfig
 	public static final String COPY_TENANT_BATCH_FLUSH_SIZE = "COPY_TENANT_BATCH_FLUSH_SIZE";
     public static final String CSV_EXPORT_SANITIZATION = "CSV_EXPORT_SANITIZATION";
     public static final String DASHBOARD_LAYOUT_ORIENTATION = "DASHBOARD_LAYOUT_ORIENTATION";
+    public static final String DB_LOCK_TIMEOUT = "DB_LOCK_TIMEOUT";
     public static final String DB_READ_REPLICA_NORMAL_MAX_ITERATIONS = "DB_READ_REPLICA_NORMAL_MAX_ITERATIONS";
     public static final String DB_READ_REPLICA_NORMAL_TIMEOUT_IN_MILLISECONDS = "DB_READ_REPLICA_NORMAL_TIMEOUT_IN_MILLISECONDS";
     public static final String DB_READ_REPLICA_URLS = "DB_READ_REPLICA_URLS";

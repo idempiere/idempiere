@@ -23,8 +23,8 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.base.IStorageValidator;
-import org.adempiere.util.IReservationTracer;
 import org.adempiere.base.StorageValidatorProvider;
+import org.adempiere.util.IReservationTracer;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -279,7 +279,8 @@ public class MStorageReservation extends X_M_StorageReservation {
 		//	Get Storage
 		MStorageReservation storage = getCreate (ctx, M_Warehouse_ID,
 				M_Product_ID, M_AttributeSetInstance_ID, isSOTrx, trxName);
-		DB.getDatabase().forUpdate(storage, 120);
+		int timeout = MSysConfig.getIntValue(MSysConfig.MSTORAGEONHAND_LOCK_TIMEOUT, 120, Env.getAD_Client_ID(Env.getCtx()));
+		DB.getDatabase().forUpdate(storage, timeout);
 		//	Verify
 		if (storage.getM_Warehouse_ID() != M_Warehouse_ID 
 			&& storage.getM_Product_ID() != M_Product_ID
