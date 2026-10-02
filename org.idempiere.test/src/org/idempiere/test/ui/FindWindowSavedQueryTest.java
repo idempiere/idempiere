@@ -24,12 +24,16 @@ package org.idempiere.test.ui;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
@@ -72,8 +76,8 @@ import org.zkoss.zk.ui.util.Configuration;
 /**
  * Tests applying saved user queries (AD_UserQuery) in {@link FindWindow} on the Sales Order window.
  * <p>
- * Covers queries whose table segment matches none of the tabs of the FindWindow, for example a number saved by
- * older versions instead of an AD_Tab_UU, and a FindWindow that was left pointing at a child tab.
+ * Covers queries saved without table segment (before IDEMPIERE-4472), queries whose table segment matches none of
+ * the tabs of the FindWindow (data error, rejected), and a FindWindow that was left pointing at a child tab.
  */
 @Isolated
 public class FindWindowSavedQueryTest extends AbstractTestCase {
@@ -213,23 +217,39 @@ public class FindWindowSavedQueryTest extends AbstractTestCase {
 		query.setAD_Table_ID(orderTab.getAD_Table_ID());
 		query.setAD_Tab_ID(orderTab.getAD_Tab_ID());
 		query.setName(QUERY_NAME);
-		query.setCode(column + "<^>=<^>" + DOCTYPE_VALUE + "<^><^>AND<^><^><^>" + tableSegment);
+		String code = column + "<^>=<^>" + DOCTYPE_VALUE + "<^><^>AND<^><^>";
+		// null: query saved before IDEMPIERE-4472, without table segment
+		query.setCode(tableSegment != null ? code + "<^>" + tableSegment : code);
 		query.saveEx();
 		return query;
 	}
 
 	/**
-	 * Query with a table segment that matches no tab (AD_Tab_ID saved by older versions) applied while the
-	 * FindWindow was left on a child tab. The Order column is looked up in C_OrderLine and addOperators fails
-	 * with a NullPointerException.
+	 * Query saved before IDEMPIERE-4472 has no table segment and belongs to the tab of the FindWindow, also when the
+	 * FindWindow was left on a child tab: the Order column is looked up in C_OrderLine and addOperators fails with a
+	 * NullPointerException.
 	 */
 	@Test
-	public void unmatchedTableSegmentWithStaleGridTab() {
-		MUserQuery query = createQuery("C_DocTypeTarget_ID", String.valueOf(AD_TAB_ID_ORDER));
+	public void legacyQueryWithStaleGridTab() {
+		MUserQuery query = createQuery("C_DocTypeTarget_ID", null);
 		findWindow.setStaleTab(orderLineTab);
 
 		assertDoesNotThrow(() -> findWindow.parse(query));
 		assertEquals(orderTab, findWindow.currentTab(), "Grid tab not restored to the FindWindow tab");
+		dialogMock.verify(() -> Dialog.error(anyInt(), anyString(), anyString()), never());
+	}
+
+	/**
+	 * Query with a table segment that matches no tab is a data error: it is rejected and the FindWindow is left as is.
+	 */
+	@Test
+	public void unmatchedTableSegmentIsRejected() {
+		MUserQuery query = createQuery("C_DocTypeTarget_ID", String.valueOf(AD_TAB_ID_ORDER));
+		findWindow.setStaleTab(orderLineTab);
+
+		assertDoesNotThrow(() -> findWindow.parse(query));
+		assertSame(orderLineTab, findWindow.currentTab(), "Rejected query must not change the grid tab");
+		dialogMock.verify(() -> Dialog.error(anyInt(), eq("Error"), anyString()), times(1));
 	}
 
 	/**
@@ -242,6 +262,7 @@ public class FindWindowSavedQueryTest extends AbstractTestCase {
 
 		assertDoesNotThrow(() -> findWindow.parse(query));
 		assertEquals(orderTab, findWindow.currentTab());
+		dialogMock.verify(() -> Dialog.error(anyInt(), anyString(), anyString()), never());
 	}
 
 	/**

@@ -1593,7 +1593,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		        }
 		        if (!selected) {
 		        	listTable.setSelectedIndex(0);
-		        	// don't keep the tab left behind by an earlier query or table selection
+		        	// query without tab: use the calling tab
 		        	GridTab defaultTab = m_windowPanel.getGridWindow().getGridTab(m_AD_Tab_ID);
 		        	if (defaultTab != null)
 		        		m_gridTab = defaultTab;
@@ -2376,8 +2376,18 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 				log.log(Level.INFO, m_whereUserQuery);
 			hideAdvanced();
     	} else {
-			winMain.getComponent().getTabpanel(1) .getLinkedTab().setLabel(Msg.getMsg(Env.getCtx(), "Advanced"));
         	String[] segments = code.split(Pattern.quote(SEGMENT_SEPARATOR));
+
+        	// invalid tab reference is a data error, don't apply the query
+        	String invalidTab = getInvalidTab(segments);
+        	if (invalidTab != null) {
+        		log.warning("Saved query " + userQuery.getName() + " (AD_UserQuery_ID=" + userQuery.getAD_UserQuery_ID()
+        				+ ") has invalid tab reference " + invalidTab);
+        		Dialog.error(m_targetWindowNo, "Error",
+        				Msg.getMsg(Env.getCtx(), "SavedQueryInvalidTab", new Object[] {userQuery.getName(), invalidTab}));
+        		return;
+        	}
+			winMain.getComponent().getTabpanel(1) .getLinkedTab().setLabel(Msg.getMsg(Env.getCtx(), "Advanced"));
 
             List<?> rowList = advancedPanel.getChildren();
             for (int rowIndex = rowList.size() - 1; rowIndex >= 1; rowIndex--)
@@ -2403,6 +2413,39 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		winAdvanced.invalidate();
 	}
     
+    /**
+     * Find a tab reference in the segments of a saved query that is not the AD_Tab_UU of one of the tabs.
+     * A segment without tab (saved before IDEMPIERE-4472) is valid and belongs to the target tab.
+     * @param segments segments of {@link MUserQuery#getCode()}
+     * @return the invalid tab reference, null if all are valid
+     */
+    protected String getInvalidTab(String[] segments)
+    {
+    	if (m_tabs == null)
+    		initTabs();
+    	for (String segment : segments)
+    	{
+    		String[] fields = segment.split(Pattern.quote(FIELD_SEPARATOR));
+    		if (fields.length == 0 || fields[0].contains(HISTORY_SEPARATOR) || fields.length <= INDEX_TABLE)
+    			continue;
+    		String tab = fields[INDEX_TABLE];
+    		if (tab.isEmpty() || (MAttribute.COLUMNNAME_M_Attribute_ID.equals(tab) && isAttributeTable()))
+    			continue;
+    		boolean found = false;
+    		for (MTab mTab : m_tabs)
+    		{
+    			if (tab.equals(mTab.getAD_Tab_UU()))
+    			{
+    				found = true;
+    				break;
+    			}
+    		}
+    		if (!found)
+    			return tab;
+    	}
+    	return null;
+    }
+
     protected int getHistoryIndex(String value)
     {
     	int myIndex = 0;
