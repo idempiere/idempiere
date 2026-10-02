@@ -32,10 +32,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 
 import org.compiere.model.MBPartner;
 import org.compiere.model.MDocType;
+import org.compiere.model.MDunning;
 import org.compiere.model.MDunningLevel;
 import org.compiere.model.MDunningRun;
 import org.compiere.model.MDunningRunEntry;
@@ -158,6 +161,196 @@ public class DunningRunTest extends AbstractTestCase {
 			}
 		}
 	}
+	
+	/**
+	 * Test sequential dunning with independent invoices.
+	 * <p>
+	 * Scenario: dunning with at least three levels and "create levels sequentially".
+	 * Dun one invoice up to the last level, then dun a new independent invoice:
+	 * first run must place it in the first level, second run must place it in the
+	 * second level - not in the last level just because another invoice was already
+	 * dunned at the last level.
+	 */
+	@Test
+	public void testSequentialDunningIndependentInvoices() {
+		Properties ctx = Env.getCtx();
+		String trxName = getTrxName();
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+
+		// 1. Create a dunning with three levels and "create levels sequentially"
+		MDunning dunning = new MDunning(ctx, 0, trxName);
+		dunning.setName("SeqDun_" + System.currentTimeMillis());
+		dunning.setCreateLevelsSequentially(true);
+		dunning.saveEx();
+
+		MDunningLevel level1 = createDunningLevel(ctx, trxName, dunning.getC_Dunning_ID(), "Level 1", 7);
+		MDunningLevel level2 = createDunningLevel(ctx, trxName, dunning.getC_Dunning_ID(), "Level 2", 14);
+		MDunningLevel level3 = createDunningLevel(ctx, trxName, dunning.getC_Dunning_ID(), "Level 3", 21);
+
+		// Assign the dunning to the test business partner so that
+		// DunningRunCreate picks up its invoices
+		MBPartner bp = new MBPartner(ctx, DictionaryIDs.C_BPartner.C_AND_W.id, trxName);
+		bp.setC_Dunning_ID(dunning.getC_Dunning_ID());
+		bp.saveEx();
+
+		int bpartnerId = bp.getC_BPartner_ID();
+
+		// 2. Create first invoice some days in the past and dun it up to the last level
+		MInvoice invoice1 = createCompletedInvoice(ctx, trxName, bpartnerId, TimeUtil.addDays(today, -35));
+
+		MDunningRun runL1 = createAndRunDunning(ctx, trxName, today, dunning.getC_Dunning_ID(),
+				level1.getC_DunningLevel_ID(), bpartnerId);
+		assertTrue(getInvoiceDunnedLevels(runL1, invoice1.getC_Invoice_ID()).contains(level1.getC_DunningLevel_ID()),
+				"Invoice1 should be dunned at level 1 in first run");
+		markRunProcessed(runL1);
+
+		MDunningRun runL2 = createAndRunDunning(ctx, trxName, today, dunning.getC_Dunning_ID(),
+				level2.getC_DunningLevel_ID(), bpartnerId);
+		assertTrue(getInvoiceDunnedLevels(runL2, invoice1.getC_Invoice_ID()).contains(level2.getC_DunningLevel_ID()),
+				"Invoice1 should be dunned at level 2 in second run");
+		markRunProcessed(runL2);
+
+		MDunningRun runL3 = createAndRunDunning(ctx, trxName, today, dunning.getC_Dunning_ID(),
+				level3.getC_DunningLevel_ID(), bpartnerId);
+		assertTrue(getInvoiceDunnedLevels(runL3, invoice1.getC_Invoice_ID()).contains(level3.getC_DunningLevel_ID()),
+				"Invoice1 should be dunned at last level after three runs");
+		markRunProcessed(runL3);
+
+		// 3. Create another invoice some days in the past and let it run in the first dunning
+		// Use a whole-dunning run (no level) so levels are assigned by the process
+		MInvoice invoice2 = createCompletedInvoice(ctx, trxName, bpartnerId, TimeUtil.addDays(today, -35));
+
+		MDunningRun runFirst = createAndRunDunning(ctx, trxName, today, dunning.getC_Dunning_ID(),
+				0, bpartnerId);
+		Set<Integer> firstLevels = getInvoiceDunnedLevels(runFirst, invoice2.getC_Invoice_ID());
+		assertTrue(firstLevels.contains(level1.getC_DunningLevel_ID()),
+				"New invoice should be dunned with the first level on its first dunning run, got levels: " + firstLevels);
+		markRunProcessed(runFirst);
+
+		// 4. Let it run again - it should be dunned with the second level, not the last.
+		// Wrong behaviour (bug): it ends up in the last level because another unrelated
+		// invoice was already dunned at the last level.
+		MDunningRun runSecond = createAndRunDunning(ctx, trxName, today, dunning.getC_Dunning_ID(),
+				0, bpartnerId);
+		Set<Integer> secondLevels = getInvoiceDunnedLevels(runSecond, invoice2.getC_Invoice_ID());
+		assertTrue(secondLevels.contains(level2.getC_DunningLevel_ID()),
+				"New invoice should be dunned with the second level on its second dunning run, got levels: " + secondLevels);
+		assertFalse(secondLevels.contains(level3.getC_DunningLevel_ID()),
+				"New invoice must not be dunned with the last level on its second dunning run, got levels: " + secondLevels);
+	}
+
+	private MDunningLevel createDunningLevel(Properties ctx, String trxName, int dunningId, String name, int daysAfterDue) {
+		MDunningLevel level = new MDunningLevel(ctx, 0, trxName);
+		level.setC_Dunning_ID(dunningId);
+		level.setName(name + "_" + System.nanoTime());
+		level.setPrintName(name);
+		level.setDaysAfterDue(BigDecimal.valueOf(daysAfterDue));
+		level.setDaysBetweenDunning(0);
+		level.setChargeFee(false);
+		level.setChargeInterest(false);
+		level.setIsShowAllDue(false);
+		level.setIsShowNotDue(false);
+		level.setIsStatement(false);
+		level.setIsSetCreditStop(false);
+		level.setIsSetPaymentTerm(false);
+		level.saveEx();
+		return level;
+	}
+
+	private MInvoice createCompletedInvoice(Properties ctx, String trxName, int bpartnerId, Timestamp dateInvoiced) {
+		MInvoice invoice = new MInvoice(ctx, 0, trxName);
+		invoice.setBPartner(MBPartner.get(ctx, bpartnerId));
+		invoice.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_ARInvoice);
+		invoice.setC_DocType_ID(invoice.getC_DocTypeTarget_ID()); // required to avoid runDocumentActionWorkflow exception
+		invoice.setPaymentRule(MInvoice.PAYMENTRULE_Check);
+		invoice.setC_PaymentTerm_ID(DictionaryIDs.C_PaymentTerm.IMMEDIATE.id);
+		invoice.setDateInvoiced(dateInvoiced);
+		invoice.setDateAcct(dateInvoiced);
+		invoice.setDocStatus(DocAction.STATUS_Drafted);
+		invoice.setDocAction(DocAction.ACTION_Complete);
+		invoice.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_USER.id);
+		invoice.saveEx();
+
+		MInvoiceLine line = new MInvoiceLine(invoice);
+		line.setLine(10);
+		line.setM_Product_ID(DictionaryIDs.M_Product.AZALEA_BUSH.id);
+		line.setQty(new BigDecimal("7"));
+		line.setPrice(BigDecimal.valueOf(23.75));
+		line.saveEx();
+
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+		invoice.load(trxName);
+		assertFalse(info.isError(), "Error processing invoice: " + info.getSummary());
+		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus(), "Invoice document status is not completed: " + invoice.getDocStatus());
+		return invoice;
+	}
+
+	private MDunningRun createAndRunDunning(Properties ctx, String trxName, Timestamp dunningDate, int dunningId,
+			int dunningLevelId, int bpartnerId) {
+		MDunningRun dr = new MDunningRun(ctx, 0, trxName);
+		dr.setDunningDate(dunningDate);
+		dr.setC_Dunning_ID(dunningId);
+		if (dunningLevelId > 0)
+			dr.setC_DunningLevel_ID(dunningLevelId);
+		dr.saveEx();
+
+		// Run the process Dunning Run Create
+		MProcess process = MProcess.get(PROCESS_DUNNING_RUN_CREATE);
+		MPInstance pinstance = new MPInstance(process, 0, 0, null);
+		MPInstancePara[] paras = pinstance.getParameters();
+		for (MPInstancePara para : paras) {
+			if (para.getParameterName().equals("AD_Org_ID")) {
+				para.setP_Number(DictionaryIDs.AD_Org.GLOBAL.id);
+				para.saveEx();
+			} else if (para.getParameterName().equals("IncludeInDispute")) {
+				para.setP_String("N");
+				para.saveEx();
+			} else if (para.getParameterName().equals("OnlySOTrx")) {
+				para.setP_String("Y");
+				para.saveEx();
+			} else if (para.getParameterName().equals("SalesRep_ID")) {
+				para.setP_Number(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+				para.saveEx();
+			} else if (para.getParameterName().equals("C_Currency_ID")) {
+				para.setP_Number(DictionaryIDs.C_Currency.USD.id);
+				para.saveEx();
+			} else if (para.getParameterName().equals("IsAllCurrencies")) {
+				para.setP_String("Y");
+				para.saveEx();
+			} else if (para.getParameterName().equals("C_BPartner_ID")) {
+				para.setP_Number(bpartnerId);
+				para.saveEx();
+			}
+		}
+		ProcessInfo pi = new ProcessInfo(process.getName(), PROCESS_DUNNING_RUN_CREATE);
+		pi.setAD_PInstance_ID(pinstance.getAD_PInstance_ID());
+		pi.setRecord_ID(dr.getC_DunningRun_ID());
+		process.processIt(pi, Trx.get(getTrxName(), false), false);
+		assertTrue(!pi.isError(), pi.getSummary());
+		return dr;
+	}
+
+	private void markRunProcessed(MDunningRun run) {
+		for (MDunningRunEntry entry : run.getEntries(true)) {
+			entry.setProcessed(true);
+			entry.saveEx();
+		}
+		run.setProcessed(true);
+		run.saveEx();
+	}
+
+	private Set<Integer> getInvoiceDunnedLevels(MDunningRun run, int invoiceId) {
+		Set<Integer> levels = new HashSet<>();
+		for (MDunningRunEntry entry : run.getEntries(true)) {
+			for (MDunningRunLine line : entry.getLines()) {
+				if (line.getC_Invoice_ID() == invoiceId) {
+					levels.add(entry.getC_DunningLevel_ID());
+				}
+			}
+		}
+		return levels;
+	}
+
 
 	/**
 	 * Test that getEntries returns active entries.
