@@ -20,41 +20,6 @@
 					<compilerArgument>-warn:+forbidden</compilerArgument>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>validate</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>org.netbeans.api</groupId>
-									<artifactId>org-netbeans-api-visual</artifactId>
-									<version>${netbeans.lib.version}</version>
-								</artifactItem>
-								<artifactItem>
-									<groupId>org.netbeans.api</groupId>
-									<artifactId>org-openide-util</artifactId>
-									<version>${netbeans.lib.version}</version>
-								</artifactItem>
-								<artifactItem>
-									<groupId>org.netbeans.api</groupId>
-									<artifactId>org-openide-util-lookup</artifactId>
-									<version>${netbeans.lib.version}</version>
-								</artifactItem>
-							</artifactItems>
-							<outputDirectory>lib</outputDirectory>
-							<stripVersion>true</stripVersion>
-							<overWriteReleases>true</overWriteReleases>
-							<overWriteSnapshots>true</overWriteSnapshots>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
 </project>

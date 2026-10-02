@@ -12,9 +12,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="lib" path="lib/org-netbeans-api-visual.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/org-openide-util.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/org-openide-util-lookup.jar"/>
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
