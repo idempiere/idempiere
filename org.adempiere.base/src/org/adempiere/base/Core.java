@@ -1231,6 +1231,15 @@ public class Core {
 
 		return myCreditManager;
 	} // getCreditManager
+
+	/**
+	 * Get document header defaults, asking the {@link IDocumentDefaultsProvider}s registered
+	 * for the document's table in service ranking order
+	 * @return document defaults, never null
+	 */
+	public static DocumentDefaults getDocumentDefaults() {
+		return DocumentDefaults.getInstance();
+	}
 	
 	@SuppressWarnings("unchecked")
 	public static IReportRenderer<IReportRendererConfiguration> getReportRenderer(String id) {

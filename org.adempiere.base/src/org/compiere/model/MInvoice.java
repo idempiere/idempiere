@@ -35,7 +35,9 @@ import java.util.logging.Level;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.CreditStatus;
+import org.adempiere.base.DocumentDefaults;
 import org.adempiere.base.ICreditManager;
+import org.adempiere.base.IDocumentDefaultsProvider;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.BPartnerNoAddressException;
 import org.adempiere.exceptions.BackDateTrxNotAllowedException;
@@ -460,6 +462,8 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		setPosted(false);
 		super.setProcessed (false);
 		setProcessing(false);
+
+		Core.getDocumentDefaults().initDefaults(this);
 	}
 
 	/**
@@ -1146,23 +1150,30 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		if (getC_BPartner_Location_ID() == 0)
 			setBPartner(new MBPartner(getCtx(), getC_BPartner_ID(), null));
 
+		DocumentDefaults defaults = Core.getDocumentDefaults();
 		//	Set default Price List
 		if (getM_PriceList_ID() == 0)
 		{
-			int ii = Env.getContextAsInt(getCtx(), Env.M_PRICELIST_ID);
-			if (ii != 0)
+			int ii = defaults.getM_PriceList_ID(this);
+			if (ii > 0)
+				setM_PriceList_ID(ii);
+			else if (ii == IDocumentDefaultsProvider.USE_FALLBACK)
 			{
-				MPriceList pl = new MPriceList(getCtx(), ii, null);
-				if (isSOTrx() == pl.isSOPriceList())
-					setM_PriceList_ID(ii);
-			}
-			
-			if (getM_PriceList_ID() == 0)
-			{
-				String sql = "SELECT M_PriceList_ID FROM M_PriceList WHERE AD_Client_ID=? AND IsSOPriceList=? AND IsActive='Y' ORDER BY IsDefault DESC";
-				ii = DB.getSQLValue (null, sql, getAD_Client_ID(), isSOTrx());
+				ii = Env.getContextAsInt(getCtx(), Env.M_PRICELIST_ID);
 				if (ii != 0)
-					setM_PriceList_ID (ii);
+				{
+					MPriceList pl = new MPriceList(getCtx(), ii, null);
+					if (isSOTrx() == pl.isSOPriceList())
+						setM_PriceList_ID(ii);
+				}
+
+				if (getM_PriceList_ID() == 0)
+				{
+					String sql = "SELECT M_PriceList_ID FROM M_PriceList WHERE AD_Client_ID=? AND IsSOPriceList=? AND IsActive='Y' ORDER BY IsDefault DESC";
+					ii = DB.getSQLValue (null, sql, getAD_Client_ID(), isSOTrx());
+					if (ii != 0)
+						setM_PriceList_ID (ii);
+				}
 			}
 		}
 
@@ -1177,11 +1188,13 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 				setC_Currency_ID(Env.getContextAsInt(getCtx(), Env.C_CURRENCY_ID));
 		}
 
-		//	Set Sales Rep from environment context
+		//	Set Sales Rep from provider or environment context
 		if (getSalesRep_ID() == 0)
 		{
-			int ii = Env.getContextAsInt(getCtx(), Env.SALESREP_ID);
-			if (ii != 0)
+			int ii = defaults.getSalesRep_ID(this);
+			if (ii == IDocumentDefaultsProvider.USE_FALLBACK)
+				ii = Env.getContextAsInt(getCtx(), Env.SALESREP_ID);
+			if (ii > 0)
 				setSalesRep_ID (ii);
 		}
 
@@ -1194,16 +1207,18 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		//	Set default Payment Term
 		if (getC_PaymentTerm_ID() == 0)
 		{
-			int ii = Env.getContextAsInt(getCtx(), Env.C_PAYMENTTERM_ID);
-			if (ii != 0)
-				setC_PaymentTerm_ID (ii);
-			else
+			int ii = defaults.getC_PaymentTerm_ID(this);
+			if (ii == IDocumentDefaultsProvider.USE_FALLBACK)
 			{
-				String sql = "SELECT C_PaymentTerm_ID FROM C_PaymentTerm WHERE AD_Client_ID=? AND IsDefault='Y' AND IsActive='Y'";
-				ii = DB.getSQLValue(null, sql, getAD_Client_ID());
-				if (ii != 0)
-					setC_PaymentTerm_ID (ii);
+				ii = Env.getContextAsInt(getCtx(), Env.C_PAYMENTTERM_ID);
+				if (ii == 0)
+				{
+					String sql = "SELECT C_PaymentTerm_ID FROM C_PaymentTerm WHERE AD_Client_ID=? AND IsDefault='Y' AND IsActive='Y'";
+					ii = DB.getSQLValue(null, sql, getAD_Client_ID());
+				}
 			}
+			if (ii > 0)
+				setC_PaymentTerm_ID (ii);
 		}
 		
 		// Set cash plan line from order
