@@ -1433,15 +1433,14 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		boolean change = false;
 
 		if ( isProcessed() || beingCompleted) {
-			BigDecimal alloc = getAllocatedAmt();	//	absolute
-			if (alloc == null)
-				alloc = Env.ZERO;
+			BigDecimal alloc = getAllocatedAmt();	//	absolute, null if the invoice has no allocation line
 			BigDecimal total = getGrandTotal();
 			if (!isSOTrx())
 				total = total.negate();
 			if (isCreditMemo())
 				total = total.negate();
-			boolean test = total.compareTo(alloc) == 0;
+			// no allocation line means nothing was settled, so the invoice is not paid, even if the total is zero
+			boolean test = alloc != null && total.compareTo(alloc) == 0;
 			change = test != isPaid();
 			if (change)
 				setIsPaid(test);
