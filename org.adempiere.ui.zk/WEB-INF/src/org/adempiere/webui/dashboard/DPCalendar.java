@@ -33,6 +33,7 @@ import org.adempiere.base.event.AbstractEventHandler;
 import org.adempiere.base.event.EventManager;
 import org.adempiere.base.event.IEventTopics;
 import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.Extensions;
 import org.adempiere.webui.component.Tabpanel;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
@@ -211,7 +212,7 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 
 		if (type.equals(Events.ON_CLICK)) {
 			if (e.getTarget() == btnCal)
-				new CalendarWindow(scm);
+				Extensions.openCalendarWindow(scm);
 			else if (e.getTarget() == btnRefresh)
 				btnRefreshClicked();
 			else if (e.getTarget() == btnCurrentDate)

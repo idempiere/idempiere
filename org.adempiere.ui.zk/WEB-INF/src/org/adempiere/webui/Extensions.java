@@ -33,6 +33,7 @@ import org.adempiere.webui.adwindow.IADTabpanel;
 import org.adempiere.webui.apps.IProcessParameterListener;
 import org.adempiere.webui.apps.graph.IChartRendererService;
 import org.adempiere.webui.factory.IADTabPanelFactory;
+import org.adempiere.webui.factory.ICalendarWindowFactory;
 import org.adempiere.webui.factory.IDashboardGadgetFactory;
 import org.adempiere.webui.factory.IFindWindowFactory;
 import org.adempiere.webui.factory.IFormFactory;
@@ -54,6 +55,7 @@ import org.idempiere.db.util.SQLFragment;
 import org.idempiere.ui.zk.media.IMediaView;
 import org.idempiere.ui.zk.media.IMediaViewProvider;
 import org.idempiere.ui.zk.report.IReportViewerRenderer;
+import org.zkoss.calendar.impl.SimpleCalendarModel;
 import org.zkoss.zk.ui.Component;
 
 /**
@@ -465,6 +467,15 @@ public class Extensions {
 		IFindWindowFactory findWindowFactory = Service.locator().locate(IFindWindowFactory.class).getService();
 	    return findWindowFactory.getInstance(targetWindowNo, targetTabNo, title, AD_Table_ID, tableName, filterExtended, findFields, minRecords, adTabId, windowPanel);
 		
+	}
+
+	/**
+	 * Open the calendar window of the calendar dashboard gadget, using the highest ranking {@link ICalendarWindowFactory}.
+	 * @param scm calendar model shared with the caller
+	 */
+	public static void openCalendarWindow(SimpleCalendarModel scm) {
+		ICalendarWindowFactory calendarWindowFactory = Service.locator().locate(ICalendarWindowFactory.class).getService();
+		calendarWindowFactory.openCalendarWindow(scm);
 	}
 
 	private static IServiceReferenceHolder<IPostingService> s_postingServiceReference = null;
