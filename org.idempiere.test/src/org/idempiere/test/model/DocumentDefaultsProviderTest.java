@@ -19,6 +19,7 @@ import java.util.Hashtable;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.IDocumentDefaultsProvider;
+import org.compiere.model.MDocType;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MOrder;
 import org.compiere.process.DocAction;
@@ -73,6 +74,43 @@ public class DocumentDefaultsProviderTest extends AbstractTestCase {
 			assertEquals(DictionaryIDs.AD_User.GARDEN_USER.id, order.getSalesRep_ID());
 			assertEquals(DictionaryIDs.C_PaymentTerm.TWO_PERCENT_10_NET_30.id, order.getC_PaymentTerm_ID());
 			assertEquals(DictionaryIDs.M_PriceList.EXPORT.id, order.getM_PriceList_ID());
+		} finally {
+			registration.unregister();
+		}
+	}
+
+	@Test
+	public void testInvoiceProviderOverridesFallbacks() {
+		IDocumentDefaultsProvider<MInvoice> provider = new IDocumentDefaultsProvider<MInvoice>() {
+			@Override
+			public int getSalesRep_ID(MInvoice document) {
+				return DictionaryIDs.AD_User.GARDEN_USER.id;
+			}
+			@Override
+			public int getC_PaymentTerm_ID(MInvoice document) {
+				return DictionaryIDs.C_PaymentTerm.TWO_PERCENT_10_NET_30.id;
+			}
+			@Override
+			public int getM_PriceList_ID(MInvoice document) {
+				return DictionaryIDs.M_PriceList.EXPORT.id;
+			}
+		};
+		ServiceRegistration<?> registration = register(provider, MInvoice.Table_Name, 10);
+		try {
+			MInvoice invoice = new MInvoice(Env.getCtx(), 0, getTrxName());
+			invoice.setIsSOTrx(true);
+			invoice.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_ARInvoice);
+			invoice.setC_BPartner_ID(DictionaryIDs.C_BPartner.C_AND_W.id);
+			invoice.setC_BPartner_Location_ID(DictionaryIDs.C_BPartner_Location.C_AND_W_STAMFORD.id);
+			invoice.setDateInvoiced(TimeUtil.getDay(System.currentTimeMillis()));
+			invoice.setDocStatus(DocAction.STATUS_Drafted);
+			invoice.setDocAction(DocAction.ACTION_Complete);
+			invoice.saveEx();
+
+			invoice = new MInvoice(Env.getCtx(), invoice.getC_Invoice_ID(), getTrxName());
+			assertEquals(DictionaryIDs.AD_User.GARDEN_USER.id, invoice.getSalesRep_ID());
+			assertEquals(DictionaryIDs.C_PaymentTerm.TWO_PERCENT_10_NET_30.id, invoice.getC_PaymentTerm_ID());
+			assertEquals(DictionaryIDs.M_PriceList.EXPORT.id, invoice.getM_PriceList_ID());
 		} finally {
 			registration.unregister();
 		}
