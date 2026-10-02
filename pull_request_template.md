@@ -17,8 +17,8 @@
 - [ ] I have added unit tests that prove my fix is effective or that my feature works
 ### Documentation
 - [ ] I have made corresponding changes to the documentation as follows:
-- - [ ] New feature (non-breaking change which adds functionality): I have created the New Feature page in the project wiki explaining the functionality and how to use it. If relevant, I have committed sample data to the core seed to have usable examples in GardenWorld.
+- - [ ] New feature (non-breaking change which adds functionality): I have created the New Feature page in the [project documentation](https://github.com/idempiere/idempiere.github.io) explaining the functionality and how to use it. If relevant, I have committed sample data to the core seed to have usable examples in GardenWorld.
 - - [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected): I have documented the change in a clear way that everyone in the community can understand the impact of the change.
 - - [ ] Improvement (improves and existing functionality): This documentation is needed if the improvement changes the way the user interacts with the system or the outcome of a process/task changes. If it is just, for instance, a performance improvement, documentation might not be needed. 
-- [ ] The changed/added documentation is in the project wiki (not privately-hosted pdf files or links pointing to a company website) and is complete and self-explanatory.
+- [ ] The changed/added documentation is in the [project documentation](https://github.com/idempiere/idempiere.github.io) (not privately-hosted pdf files or links pointing to a company website) and is complete and self-explanatory.
 
