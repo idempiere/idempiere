@@ -26,6 +26,7 @@ package org.idempiere.test.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
@@ -195,6 +196,45 @@ public class InvoiceCustomerTest extends AbstractTestCase {
 		if (errorLogs != null)
 			assertEquals(severeCount, errorLogs.length, "Severe errors recorded in log: " + errorLogs.length);
 		
+		rollback();
+	}
+
+	/**
+	 * An invoice without any allocation line must not be flagged as paid by {@link MInvoice#testAllocation()},
+	 * even when its grand total is zero (a null allocated amount was previously treated as zero).
+	 */
+	@Test
+	public void testZeroTotalInvoiceWithoutAllocationIsNotPaid() {
+		MInvoice invoice = new MInvoice(Env.getCtx(), 0, getTrxName());
+		invoice.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id));  // C&W
+		invoice.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_ARInvoice);
+		invoice.setC_DocType_ID(invoice.getC_DocTypeTarget_ID()); // required to avoid runDocumentActionWorkflow exception
+		invoice.setPaymentRule(MInvoice.PAYMENTRULE_Check);
+		invoice.setC_PaymentTerm_ID(DictionaryIDs.C_PaymentTerm.IMMEDIATE.id);  // Immediate
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		invoice.setDateInvoiced(today);
+		invoice.setDateAcct(today);
+		invoice.setDocStatus(DocAction.STATUS_Drafted);
+		invoice.setDocAction(DocAction.ACTION_Complete);
+		invoice.saveEx();
+
+		MInvoiceLine line = new MInvoiceLine(invoice);
+		line.setLine(10);
+		line.setC_Charge_ID(DictionaryIDs.C_Charge.BANK.id);  // Bank Charge
+		line.setQty(Env.ONE);
+		line.setPrice(Env.ZERO);
+		line.saveEx();
+
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+		invoice.load(getTrxName());
+		assertFalse(info.isError(), "Error processing invoice: " + info.getSummary());
+		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus(), "Invoice document status is not completed: " + invoice.getDocStatus());
+		assertTrue(Env.ZERO.compareTo(invoice.getGrandTotal()) == 0, "Invoice grand total not zero: " + invoice.getGrandTotal().toPlainString());
+		assertNull(invoice.getAllocatedAmt(), "Invoice should not have any allocation line");
+
+		assertFalse(invoice.testAllocation(), "testAllocation() must not change IsPaid for an invoice without allocation");
+		assertFalse(invoice.isPaid(), "Invoice without allocation must not be paid");
+
 		rollback();
 	}
 
