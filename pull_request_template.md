@@ -3,7 +3,7 @@
 
 # Pull Request Checklist
 
-- [ ] My code follows the [code guidelines](https://wiki.idempiere.org/en/Contributing_to_Trunk) of this project
+- [ ] My code follows the [code guidelines](https://docs.idempiere.org/docs/basic-development/contributing-to-core/contributing-to-idempiere) of this project
 - [ ] My code follows the best practices of this project
 - [ ] I have performed a self-review of my own code
 - [ ] My code is easy to understand and review. 
