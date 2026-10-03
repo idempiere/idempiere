@@ -85,14 +85,12 @@ implements org.compiere.model.ModelValidator
 						|| (TYPE_AFTER_CHANGE == type && po.is_ValueChanged(MMatchInv.COLUMNNAME_Processed))))
 		{
 			MMatchInv mi = (MMatchInv)po;
-			if (mi.isProcessed())
+			if (mi.isProcessed() && !mi.isReversal())
 			{
 				MInvoiceLine invoiceLine = new MInvoiceLine(mi.getCtx(), mi.getC_InvoiceLine_ID(), mi.get_TrxName());
-				if (invoiceLine.isA_CreateAsset()
-						&& !invoiceLine.isA_Processed()
-					)
+				if (invoiceLine.isA_CreateAsset())
 				{
-					MAssetAddition.createAsset(mi);
+					MAssetAddition.createAssetAdditions(mi);
 				}
 			}
 		}
