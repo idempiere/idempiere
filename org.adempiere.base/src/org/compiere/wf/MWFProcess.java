@@ -36,6 +36,8 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
+import org.idempiere.cache.ImmutablePOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Extended Workflow Process model for AD_WF_Process
@@ -45,7 +47,7 @@ import org.compiere.util.Util;
  *  			<li>IDEMPIERE-3209 changed fucntions to public to improve integration support
  *  @version $Id: MWFProcess.java,v 1.2 2006/07/30 00:51:05 jjanke Exp $
  */
-public class MWFProcess extends X_AD_WF_Process
+public class MWFProcess extends X_AD_WF_Process implements ImmutablePOSupport
 {
 	/**
 	 * generated serial id
@@ -161,7 +163,87 @@ public class MWFProcess extends X_AD_WF_Process
 	private PO					m_po = null;
 	/** Message from Activity		*/
 	private String				m_processMsg = null;
-	
+
+	/**
+	 * Immutable cache for workflow process records.
+	 */
+	private static ImmutablePOCache<String, MWFProcess>	s_cache			= new ImmutablePOCache<String, MWFProcess>(Table_Name,
+					Table_Name, 20, 0, false, 0);
+
+	/**
+	 * Returns the workflow process from the cache.
+	 *
+	 * @param  AD_Workflow_ID workflow process ID
+	 * @return                cached workflow process, or {@code null} if not found
+	 */
+	public static MWFProcess get(int AD_Workflow_ID)
+	{
+		return get(Env.getCtx(), AD_Workflow_ID);
+	}
+
+	/**
+	 * Returns the workflow process from the cache for the given context.
+	 *
+	 * @param  ctx              application context
+	 * @param  AD_WF_Process_ID workflow process ID
+	 * @return                  cached workflow process, or {@code null} if not found
+	 */
+	public static MWFProcess get(Properties ctx, int AD_WF_Process_ID)
+	{
+		String key = Env.getAD_Language(ctx) + "_" + Env.getAD_Client_ID(ctx) + "_" + AD_WF_Process_ID;
+		MWFProcess retValue = s_cache.get(ctx, key, e -> new MWFProcess(ctx, e));
+		if (retValue != null)
+			return retValue;
+		retValue = new MWFProcess(ctx, AD_WF_Process_ID, (String) null);
+		if (retValue.get_ID() == AD_WF_Process_ID)
+		{
+			s_cache.put(key, retValue, e -> new MWFProcess(Env.getCtx(), e));
+			return retValue;
+		}
+		return null;
+	} // get
+
+	/**
+	 * Creates a copy of the specified workflow process.
+	 *
+	 * @param ctx  application context
+	 * @param copy workflow process to copy
+	 */
+	public MWFProcess(Properties ctx, MWFProcess copy)
+	{
+		this(ctx, copy, (String) null);
+	}
+
+	/**
+	 * Creates a copy of the specified workflow process using the given transaction.
+	 *
+	 * @param ctx     application context
+	 * @param copy    workflow process to copy
+	 * @param trxName transaction name
+	 */
+	public MWFProcess(Properties ctx, MWFProcess copy, String trxName)
+	{
+		super(ctx, 0, trxName);
+		copyPO(copy);
+		this.m_state = new StateEngine(getWFState());
+	}
+
+	/**
+	 * Returns an updateable copy of the cached workflow process.
+	 *
+	 * @param  ctx              application context
+	 * @param  AD_WF_Process_ID workflow process ID
+	 * @param  trxName          transaction name
+	 * @return                  updateable workflow process copy, or {@code null} if not found
+	 */
+	public static MWFProcess getCopy(Properties ctx, int AD_WF_Process_ID, String trxName)
+	{
+		MWFProcess wf = get(AD_WF_Process_ID);
+		if (wf != null)
+			wf = new MWFProcess(ctx, wf, trxName);
+		return wf;
+	}
+
 	/**
 	 * 	Get active Activities of Process
 	 *	@param requery true to reload from DB
@@ -754,5 +836,15 @@ public class MWFProcess extends X_AD_WF_Process
 	{
 		return m_processMsg;
 	}	//	getProcessMsg
+
+	@Override
+	public MWFProcess markImmutable() 
+	{
+		if (is_Immutable())
+			return this;
+		
+		makeImmutable();
+		return this;
+	}
 	
 }	//	MWFProcess
