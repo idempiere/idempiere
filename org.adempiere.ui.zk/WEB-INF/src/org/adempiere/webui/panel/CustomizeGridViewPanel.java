@@ -126,6 +126,8 @@ public class CustomizeGridViewPanel extends Panel
 	private Checkbox chkSaveWidth = new Checkbox();
 	private Label lblGridMode = new Label();
 	private Listbox lstGridMode = new Listbox();
+	private Label lblDetailGridMode = new Label();
+	private Listbox lstDetailGridMode = new Listbox();
 	private Checkbox chkAutoHideEmptyColumn = new Checkbox();
 
 	//
@@ -286,7 +288,15 @@ public class CustomizeGridViewPanel extends Panel
 		southPanel.appendChild(sep);
 		chkAutoHideEmptyColumn.setLabel(Msg.getElement(Env.getCtx(), "IsAutoHideEmptyColumn"));
 		southPanel.appendChild(chkAutoHideEmptyColumn);
-		
+
+		sep = new Separator();
+		southPanel.appendChild(sep);
+		lblDetailGridMode.setValue(Msg.getElement(Env.getCtx(), MTabCustomization.COLUMNNAME_IsDisplayedGridInDetail));
+		southPanel.appendChild(lblDetailGridMode);
+		lstDetailGridMode.setMold("select");
+		lstDetailGridMode.setStyle("margin-left: 2px");
+		southPanel.appendChild(lstDetailGridMode);
+
 		sep = new Separator();
 		sep.setSpacing("2px");
 		southPanel.appendChild(sep);
@@ -428,11 +438,16 @@ public class CustomizeGridViewPanel extends Panel
 
 		ValueNamePair pp = new ValueNamePair(null, null);
 		lstGridMode.addItem(pp);
+		lstDetailGridMode.addItem(pp);
+		
 		ValueNamePair[]  list = MRefList.getList(Env.getCtx(), X_AD_Tab_Customization.ISDISPLAYEDGRID_AD_Reference_ID, false);
 		for (int i = 0;i < list.length; i++ ) { 
 			lstGridMode.addItem(list[i]);
+			lstDetailGridMode.addItem(list[i]);
 			if (m_tabcust != null && list[i].getValue().equals(m_tabcust.getIsDisplayedGrid()))
 				lstGridMode.setSelectedValueNamePair(list[i]);
+			if (m_tabcust != null && list[i].getValue().equals(m_tabcust.getIsDisplayedGridInDetail()))
+				lstDetailGridMode.setSelectedValueNamePair(list[i]);
 		}
 
 		if (m_tabcust != null && m_tabcust.getCustom().indexOf("px") > 0)
@@ -626,13 +641,18 @@ public class CustomizeGridViewPanel extends Panel
 			gridview = lstGridMode.getSelectedItem().toString();
 		final String dView = gridview;
 
+		String gridDetailView = null;
+		if (lstDetailGridMode.getSelectedItem() != null && lstDetailGridMode.getSelectedItem().toString().length() > 0)
+			gridDetailView = lstDetailGridMode.getSelectedItem().toString();
+		final String dDetailView = gridDetailView;
+
 		String isAutoHide = null;
 		if (chkAutoHideEmptyColumn.isChecked() != MSysConfig.getBooleanValue(MSysConfig.ZK_GRID_AUTO_HIDE_EMPTY_COLUMNS, false, Env.getAD_Client_ID(Env.getCtx()))) {
 			isAutoHide = chkAutoHideEmptyColumn.isChecked() ? "Y" : "N";
 		} else if (chkAutoHideEmptyColumn.getAttribute("ad_tab_customization.value") != null) {
 			isAutoHide = chkAutoHideEmptyColumn.isChecked() ? "Y" : "N";
 		}
-		ok = MTabCustomization.saveData(Env.getCtx(), m_AD_Tab_ID, m_AD_User_ID, custom.toString(), dView, null, false, isAutoHide);
+		ok = MTabCustomization.saveData(Env.getCtx(), m_AD_Tab_ID, m_AD_User_ID, custom.toString(), dView, null, false, isAutoHide, dDetailView);
 		if(ok) {
 			m_saved = true;
 			getParent().detach();
