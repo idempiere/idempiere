@@ -36,7 +36,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.stream.Stream;
 
+import org.compiere.model.MMessage;
 import org.compiere.model.MProcess;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MQuery;
@@ -46,9 +48,14 @@ import org.compiere.model.MClient;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
 import org.compiere.util.DisplayType;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.idempiere.db.util.SQLFragment;
 import org.idempiere.test.AbstractTestCase;
 
@@ -163,6 +170,47 @@ public class MQueryTest extends AbstractTestCase {
 		assertEquals("C_BPartner_ID", q.getColumnName(1));
 		assertEquals(MQuery.EQUAL, q.getOperator(1));
 		assertEquals(100, q.getCode(1));
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { "Großformat", "Straße", "Änderung", "Österreich", "İstanbul", "Standard" })
+	void testCaseInsensitiveRestrictionPreservesSearchValue(String searchValue) {
+		String searchPattern = searchValue + "%";
+		MQuery query = new MQuery("M_Product");
+		query.addRestriction("UPPER(Name)", MQuery.ILIKE, searchPattern);
+
+		SQLFragment sqlFilter = query.getSQLFilter(0, true);
+		assertEquals("UPPER(M_Product.Name) LIKE UPPER(?)", sqlFilter.sqlClause());
+		assertEquals(List.of(searchPattern), sqlFilter.parameters());
+	}
+
+	@ParameterizedTest
+	@MethodSource("caseInsensitiveSearchValues")
+	void testCaseInsensitiveRestrictionAgainstDatabase(String recordValue, String searchValue) {
+		MMessage message = new MMessage(Env.getCtx(), 0, getTrxName());
+		message.setValue(recordValue);
+		message.setMsgText(recordValue);
+		message.setMsgType(MMessage.MSGTYPE_Information);
+		message.saveEx();
+
+		MQuery query = new MQuery(MMessage.Table_Name);
+		query.addRestriction("UPPER(Value)", MQuery.ILIKE, searchValue + "%");
+		query.addRestriction(MMessage.COLUMNNAME_AD_Message_ID, MQuery.EQUAL, message.getAD_Message_ID());
+		SQLFragment sqlFilter = query.getSQLFilter(true);
+		int count = DB.getSQLValueEx(getTrxName(), "SELECT COUNT(*) FROM AD_Message WHERE "
+				+ sqlFilter.sqlClause(), sqlFilter.parameters().toArray());
+
+		assertEquals(1, count, () -> searchValue + " should find " + recordValue);
+	}
+
+	private static Stream<Arguments> caseInsensitiveSearchValues() {
+		return Stream.of(
+				Arguments.of("Großformatpapier", "Großformat"),
+				Arguments.of("Straßenbahn", "straße"),
+				Arguments.of("Änderungsprotokoll", "änderung"),
+				Arguments.of("Österreichischer Lieferant", "österreich"),
+				Arguments.of("İstanbul Niederlassung", "İSTANBUL"),
+				Arguments.of("Standard Product", "standard"));
 	}
 	
 	@Test

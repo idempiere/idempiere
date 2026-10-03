@@ -856,7 +856,7 @@ public final class WAccountDialog extends Window
 		//	Alias
 		if (includeAliasCombination && f_Alias != null && !isEmpty(f_Alias.getValue()))
 		{
-			String value = f_Alias.getValue().toString().toUpperCase();
+			String value = f_Alias.getValue().toString();
 			if (!value.endsWith("%"))
 				value += "%";
 			query.addRestriction("UPPER(Alias)", MQuery.LIKE, value);
@@ -864,7 +864,7 @@ public final class WAccountDialog extends Window
 		//	Combination (mandatory)
 		if (includeAliasCombination && !isEmpty(f_Combination.getValue()))
 		{
-			String value = f_Combination.getValue().toString().toUpperCase();
+			String value = f_Combination.getValue().toString();
 			if (!value.endsWith("%"))
 				value += "%";
 			query.addRestriction("UPPER(Combination)", MQuery.LIKE, value);

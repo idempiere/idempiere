@@ -104,9 +104,9 @@ public abstract class CreateFromBatch extends CreateFrom
 			sql.append(" AND p.C_Currency_ID=?");
 		
 		if(DocumentNo != null && DocumentNo.length() > 0)
-			sql.append(" AND UPPER(p.DocumentNo) LIKE ?");
+			sql.append(" AND UPPER(p.DocumentNo) LIKE UPPER(?)");
 		if(AuthCode != null && AuthCode.length() > 0)
-			sql.append(" AND UPPER(p.R_AuthCode) LIKE ?");
+			sql.append(" AND UPPER(p.R_AuthCode) LIKE UPPER(?)");
 		
 		if(AmtFrom != null || AmtTo != null)
 		{
@@ -228,7 +228,7 @@ public abstract class CreateFromBatch extends CreateFrom
 	
 	private String getSQLText(String text)
 	{
-		String s = text.toUpperCase();
+		String s = text;
 		if(!s.endsWith("%"))
 			s += "%";
 		if (log.isLoggable(Level.FINE)) log.fine( "String=" + s);

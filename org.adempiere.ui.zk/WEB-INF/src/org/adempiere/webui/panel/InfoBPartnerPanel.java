@@ -378,7 +378,7 @@ public class InfoBPartnerPanel extends InfoPanel implements EventListener<Event>
 	{
 		int index = 1;
 		//	=> Value
-		String value = fieldValue.getText().toUpperCase();
+		String value = fieldValue.getText();
 		if (!(value.equals("") || value.equals("%")))
 		{
 			if (!value.endsWith("%"))
@@ -387,7 +387,7 @@ public class InfoBPartnerPanel extends InfoPanel implements EventListener<Event>
 			if (log.isLoggable(Level.FINE)) log.fine("Value: " + value);
 		}
 		//	=> Name
-		String name = fieldName.getText().toUpperCase();
+		String name = fieldName.getText();
 		if (!(name.equals("") || name.equals("%")))
 		{
 			if (!name.endsWith("%"))
@@ -396,7 +396,7 @@ public class InfoBPartnerPanel extends InfoPanel implements EventListener<Event>
 			if (log.isLoggable(Level.FINE)) log.fine("Name: " + name);
 		}
 		//	=> Contact
-		String contact = fieldContact.getText().toUpperCase();
+		String contact = fieldContact.getText();
 		if (!(contact.equals("") || contact.equals("%")))
 		{
 			if (!contact.endsWith("%"))
@@ -405,7 +405,7 @@ public class InfoBPartnerPanel extends InfoPanel implements EventListener<Event>
 			if (log.isLoggable(Level.FINE)) log.fine("Contact: " + contact);
 		}
 		//	=> EMail
-		String email = fieldEMail.getText().toUpperCase();
+		String email = fieldEMail.getText();
 		if (!(email.equals("") || email.equals("%")))
 		{
 			if (!email.endsWith("%"))
@@ -414,7 +414,7 @@ public class InfoBPartnerPanel extends InfoPanel implements EventListener<Event>
 			if (log.isLoggable(Level.FINE)) log.fine("EMail: " + email);
 		}
 		//	=> Phone
-		String phone = fieldPhone.getText().toUpperCase();
+		String phone = fieldPhone.getText();
 		if (!(phone.equals("") || phone.equals("%")))
 		{
 			if (!phone.endsWith("%"))
@@ -423,7 +423,7 @@ public class InfoBPartnerPanel extends InfoPanel implements EventListener<Event>
 			if (log.isLoggable(Level.FINE)) log.fine("Phone: " + phone);
 		}
 		//	=> Postal
-		String postal = fieldPostal.getText().toUpperCase();
+		String postal = fieldPostal.getText();
 		if (!(postal.equals("") || postal.equals("%")))
 		{
 			if (!postal.endsWith("%"))
@@ -445,29 +445,29 @@ public class InfoBPartnerPanel extends InfoPanel implements EventListener<Event>
 	{
 		ArrayList<String> list = new ArrayList<String>();
 		//	=> Value
-		String value = fieldValue.getText().toUpperCase();
+		String value = fieldValue.getText();
 		if (!(value.equals("") || value.equals("%")))
-			list.add ("UPPER(C_BPartner.Value) LIKE ?");
+			list.add ("UPPER(C_BPartner.Value) LIKE UPPER(?)");
 		//	=> Name
-		String name = fieldName.getText().toUpperCase();
+		String name = fieldName.getText();
 		if (!(name.equals("") || name.equals("%")))
-			list.add ("UPPER(C_BPartner.Name) LIKE ?");
+			list.add ("UPPER(C_BPartner.Name) LIKE UPPER(?)");
 		//	=> Contact
-		String contact = fieldContact.getText().toUpperCase();
+		String contact = fieldContact.getText();
 		if (!(contact.equals("") || contact.equals("%")))
-			list.add ("UPPER(c.Name) LIKE ?");
+			list.add ("UPPER(c.Name) LIKE UPPER(?)");
 		//	=> EMail
-		String email = fieldEMail.getText().toUpperCase();
+		String email = fieldEMail.getText();
 		if (!(email.equals("") || email.equals("%")))
-			list.add ("UPPER(c.EMail) LIKE ?");
+			list.add ("UPPER(c.EMail) LIKE UPPER(?)");
 		//	=> Phone
-		String phone = fieldPhone.getText().toUpperCase();
+		String phone = fieldPhone.getText();
 		if (!(phone.equals("") || phone.equals("%")))
-			list.add ("UPPER(c.Phone) LIKE ?");
+			list.add ("UPPER(c.Phone) LIKE UPPER(?)");
 		//	=> Postal
-		String postal = fieldPostal.getText().toUpperCase();
+		String postal = fieldPostal.getText();
 		if (!(postal.equals("") || postal.equals("%")))
-			list.add ("UPPER(a.Postal) LIKE ?");
+			list.add ("UPPER(a.Postal) LIKE UPPER(?)");
 		StringBuilder sql = new StringBuilder();
 		int size = list.size();
 		//	Just one
