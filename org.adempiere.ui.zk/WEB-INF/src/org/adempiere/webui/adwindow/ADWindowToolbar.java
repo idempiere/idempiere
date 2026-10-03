@@ -1569,9 +1569,13 @@ public class ADWindowToolbar extends ToolBar implements EventListener<Event>
 	 */
 	public boolean initDefaultQuery() {
 		if(userQueries != null) {
+    		int currentUserId = Env.getAD_User_ID(Env.getCtx());
 	        for (int i = 0; i < userQueries.length; i++) {
-	        	if(userQueries[i].isDefault()) {
-		       		fQueryName.setSelectedIndex(i);		       		
+	        	if (   userQueries[i].isDefault()
+	        		&& (   userQueries[i].getAD_User_ID() == currentUserId
+	        			|| (   userQueries[i].getAD_User_ID() == 0
+	        				&& userQueries[i].getCreatedBy() == currentUserId))) {
+		       		fQueryName.setSelectedIndex(i);
 		       		setSelectedUserQuery(userQueries[i]);
 		       		return true;		       		
 	        	}
