@@ -1416,7 +1416,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			} else if (editor.getGridField() != null && (editor.getValue() != null && editor.getValue().toString().trim().length() > 0)
 					|| (isRange && editor2.getValue() != null && editor2.getValue().toString().trim().length() > 0)) {
 				InfoColumnVO InfoColumnVO = findInfoColumnParameter(editor.getGridField());
-				if (InfoColumnVO == null || InfoColumnVO.getSelectClause().equals("0")) {
+				if (InfoColumnVO == null || InfoColumnVO.getSelectClause().equals("0") || InfoColumnVO.getIsFilterOnlyInfoRelated()) {
 					continue;
 				}
 				String columnName = InfoColumnVO.getSelectClause();
