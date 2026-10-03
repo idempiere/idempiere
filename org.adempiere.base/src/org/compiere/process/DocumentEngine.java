@@ -1453,6 +1453,24 @@ public class DocumentEngine implements DocAction
 	}	//	postImmediate
 
 	/**
+	 * Perform posting deletion for reverse correct action
+	 * 
+	 * @param AD_Client_ID
+	 * @param AD_Table_ID
+	 * @param Record_ID
+	 * @param trxName
+	 */
+	public static void deleteReverseCorrectPosting(int AD_Client_ID, int AD_Table_ID, int Record_ID, String trxName)
+	{
+		if (AcctModelServices.isDocPostingAvailable())
+		{
+			IDocPostingService docPostingService = AcctModelServices.getDocPostingService();
+			if (docPostingService != null)
+				docPostingService.deleteReverseCorrectPosting(AD_Client_ID, AD_Table_ID, Record_ID, trxName);
+		}
+	} // deleteReverseCorrectPosting
+
+	/**
 	 * Process document action.  This replaces DocAction.processIt().
 	 * @param doc
 	 * @param processAction 
