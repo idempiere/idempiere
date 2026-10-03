@@ -207,21 +207,27 @@ public class StandardTaxProvider implements ITaxProvider {
 				for (int j = 0; j < cTaxes.length; j++)
 				{
 					MTax cTax = cTaxes[j];
+					MInvoiceTax newITax = MInvoiceTax.get(invoice.getC_Invoice_ID(), cTax.getC_Tax_ID(), invoice.get_TrxName());
+					//
 					BigDecimal taxAmt = cTax.calculateTax(iTax.getTaxBaseAmt(), false, invoice.getPrecision());
 					//
-					MInvoiceTax newITax = new MInvoiceTax(invoice.getCtx(), 0, invoice.get_TrxName());
-					newITax.setClientOrg(invoice);
-					newITax.setAD_Org_ID(invoice.getAD_Org_ID());
-					newITax.setC_Invoice_ID(invoice.getC_Invoice_ID());
-					newITax.setC_Tax_ID(cTax.getC_Tax_ID());
-					newITax.setPrecision(invoice.getPrecision());
-					newITax.setIsTaxIncluded(invoice.isTaxIncluded());
-					newITax.setTaxBaseAmt(iTax.getTaxBaseAmt());
-					newITax.setTaxAmt(taxAmt);
-					newITax.saveEx(invoice.get_TrxName());
+					if (newITax == null)
+					{
+						newITax = new MInvoiceTax(invoice.getCtx(), 0, invoice.get_TrxName());
+						newITax.setClientOrg(invoice);
+						newITax.setAD_Org_ID(invoice.getAD_Org_ID());
+						newITax.setC_Invoice_ID(invoice.getC_Invoice_ID());
+						newITax.setC_Tax_ID(cTax.getC_Tax_ID());
+						newITax.setPrecision(invoice.getPrecision());
+						newITax.setIsTaxIncluded(invoice.isTaxIncluded());
+						newITax.setTaxBaseAmt(iTax.getTaxBaseAmt());
+						newITax.setTaxAmt(taxAmt);
+						newITax.saveEx(invoice.get_TrxName());
+						//
+						if (!invoice.isTaxIncluded())
+							grandTotal = grandTotal.add(taxAmt);
+					}
 					//
-					if (!invoice.isTaxIncluded())
-						grandTotal = grandTotal.add(taxAmt);
 				}
 				iTax.deleteEx(true, invoice.get_TrxName());
 			}
