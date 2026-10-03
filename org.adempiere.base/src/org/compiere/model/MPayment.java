@@ -1958,12 +1958,8 @@ public class MPayment extends X_C_Payment
 			if (DOCSTATUS_WaitingPayment.equals(order.getDocStatus()))
 			{
 				order.setC_Payment_ID(getC_Payment_ID());
-				order.setDocAction(X_C_Order.DOCACTION_WaitComplete);
 				order.set_TrxName(get_TrxName());
-				// added AdempiereException by zuhri 
-				if (!order.processIt (X_C_Order.DOCACTION_WaitComplete))
-					throw new AdempiereException(Msg.getMsg(getCtx(), "FailedProcessingDocument") + " - " + order.getProcessMsg());
-				// end added
+				
 				m_processMsg = order.getProcessMsg();
 				order.saveEx(get_TrxName());
 				//	Set Invoice
@@ -2156,6 +2152,15 @@ public class MPayment extends X_C_Payment
 				ord.setC_Payment_ID(getC_Payment_ID());
 				ord.saveEx();
 			}
+			
+			if (MOrder.DOCSTATUS_WaitingPayment.equals(ord.getDocStatus())) {
+				ord.setDocAction(MOrder.DOCACTION_WaitComplete);
+				if (!ord.processIt(MOrder.DOCACTION_WaitComplete)) {
+					throw new AdempiereException(Msg.getMsg(getCtx(), "FailedProcessingDocument") + " - " + ord.getProcessMsg());
+				}
+				ord.saveEx();
+			}
+			
 		}
 		
 		//	User Validation
