@@ -1789,6 +1789,8 @@ public final class DB
         		try
         		{
         			pstmt2 = DB.prepareStatement (sql, null);
+        			if (params != null && !params.isEmpty())
+    					setParameters(pstmt2, params);
         			rs2 = pstmt2.executeQuery ();
         			if (rs2.next ())
         				isSOTrx = Boolean.valueOf("Y".equals(rs2.getString(1)));
