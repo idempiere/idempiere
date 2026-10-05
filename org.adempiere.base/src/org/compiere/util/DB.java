@@ -1782,8 +1782,8 @@ public final class DB
         	} else {
         		// use IN instead of EXISTS as the subquery should be highly selective
         		String sql = "SELECT IsSOTrx FROM " + hdr
-        		+ " h WHERE h." + hdr + "_ID IN (SELECT l." + hdr + "_ID FROM " + TableName
-        		+ " l WHERE " + whereClause + ")";
+        		+ " h WHERE h." + hdr + "_ID IN (SELECT " + TableName + "." + hdr + "_ID FROM " + TableName
+        		+ " WHERE " + whereClause + ")";
         		PreparedStatement pstmt2 = null;
         		ResultSet rs2 = null;
         		try
