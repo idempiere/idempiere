@@ -21,7 +21,10 @@ import org.adempiere.base.Core;
 import org.adempiere.base.IDocumentDefaultsProvider;
 import org.compiere.model.MDocType;
 import org.compiere.model.MInvoice;
+import org.compiere.model.MBPartner;
 import org.compiere.model.MOrder;
+import org.compiere.model.MOrderLine;
+import org.compiere.model.MProduct;
 import org.compiere.process.DocAction;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
@@ -189,8 +192,8 @@ public class DocumentDefaultsProviderTest extends AbstractTestCase {
 		IDocumentDefaultsProvider<MOrder> provider = new IDocumentDefaultsProvider<MOrder>() {
 			@Override
 			public void initDefaults(MOrder document) {
-				document.setDeliveryRule(null);
-				document.setInvoiceRule(null);
+				document.set_ValueNoCheck(MOrder.COLUMNNAME_DeliveryRule, null);
+				document.set_ValueNoCheck(MOrder.COLUMNNAME_InvoiceRule, null);
 			}
 			@Override
 			public String getDeliveryRule(MOrder document) {
@@ -209,6 +212,75 @@ public class DocumentDefaultsProviderTest extends AbstractTestCase {
 			explicitRule.setDeliveryRule(MOrder.DELIVERYRULE_Force);
 			explicitRule.saveEx();
 			assertEquals(MOrder.DELIVERYRULE_Force, explicitRule.getDeliveryRule());
+		} finally {
+			registration.unregister();
+		}
+	}
+
+	/**
+	 * Provider that clears both rules at construction and leaves the decision to the built-in fallback
+	 */
+	private IDocumentDefaultsProvider<MOrder> clearingProvider() {
+		return new IDocumentDefaultsProvider<MOrder>() {
+			@Override
+			public void initDefaults(MOrder document) {
+				document.set_ValueNoCheck(MOrder.COLUMNNAME_DeliveryRule, null);
+				document.set_ValueNoCheck(MOrder.COLUMNNAME_InvoiceRule, null);
+			}
+		};
+	}
+
+	@Test
+	public void testClearedRulesSaveForOrderCreatedInCode() {
+		ServiceRegistration<?> registration = register(clearingProvider(), MOrder.Table_Name, 10);
+		try {
+			MOrder order = newOrder();
+			order.saveEx();
+			assertEquals(MOrder.DELIVERYRULE_Availability, order.getDeliveryRule());
+			assertEquals(MOrder.INVOICERULE_Immediate, order.getInvoiceRule());
+		} finally {
+			registration.unregister();
+		}
+	}
+
+	@Test
+	public void testClearedRulesSaveWithSetBPartner() {
+		ServiceRegistration<?> registration = register(clearingProvider(), MOrder.Table_Name, 10);
+		try {
+			MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+			MBPartner bp = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id);
+			order.setBPartner(bp);
+			order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
+			order.saveEx();
+			String expectedDelivery = bp.getDeliveryRule() != null ? bp.getDeliveryRule() : MOrder.DELIVERYRULE_Availability;
+			String expectedInvoice = bp.getInvoiceRule() != null ? bp.getInvoiceRule() : MOrder.INVOICERULE_Immediate;
+			assertEquals(expectedDelivery, order.getDeliveryRule());
+			assertEquals(expectedInvoice, order.getInvoiceRule());
+		} finally {
+			registration.unregister();
+		}
+	}
+
+	@Test
+	public void testCopyFromKeepsSourceRules() {
+		ServiceRegistration<?> registration = register(clearingProvider(), MOrder.Table_Name, 10);
+		try {
+			MOrder source = newOrder();
+			source.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
+			source.setInvoiceRule(MOrder.INVOICERULE_AfterDelivery);
+			source.saveEx();
+			MOrderLine line = new MOrderLine(source);
+			line.setLine(10);
+			line.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.PLANTING.id));
+			line.setQty(Env.ONE);
+			line.setDatePromised(source.getDatePromised());
+			line.saveEx();
+
+			// copyFrom writes the values with PO.copyValues, which does not clear set errors
+			MOrder copy = MOrder.copyFrom(source, source.getDateOrdered(), source.getC_DocTypeTarget_ID(),
+					true, false, false, getTrxName());
+			assertEquals(MOrder.DELIVERYRULE_CompleteOrder, copy.getDeliveryRule());
+			assertEquals(MOrder.INVOICERULE_AfterDelivery, copy.getInvoiceRule());
 		} finally {
 			registration.unregister();
 		}

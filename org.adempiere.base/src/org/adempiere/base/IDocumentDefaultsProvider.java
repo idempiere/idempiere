@@ -85,6 +85,9 @@ public interface IDocumentDefaultsProvider<T extends PO> {
 	 * built-in initial values are set. Only the context (client, org, user) is known here.
 	 * A provider may overwrite initial values, or clear one so that it is resolved in
 	 * {@code beforeSave} (see {@link #getDeliveryRule(PO)}, {@link #getInvoiceRule(PO)}).
+	 * DeliveryRule and InvoiceRule are mandatory: clear them with
+	 * {@code document.set_ValueNoCheck(columnName, null)}. The generated setters refuse null on a
+	 * mandatory column and leave a FillMandatory error that fails the save.
 	 * <p>
 	 * Runs inside the model constructor: a subclass of the model is not yet initialized, so
 	 * only call setters on {@code document}. All providers for the table are called, in
