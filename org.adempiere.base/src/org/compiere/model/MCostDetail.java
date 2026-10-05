@@ -1495,51 +1495,82 @@ public class MCostDetail extends X_M_CostDetail
 		}
 		
 		BigDecimal matchInvAdjAmt = null;
+		int firstMatchInvCD_ID = 0;
+		MCostHistory matchInvBaseline = null;
 		if (ce.isAveragePO() && getM_MatchInv_ID() > 0 && getM_CostElement_ID() == 0) {
-			// get total amount of previous match invoice cost details for the same order line and account date
-			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT COALESCE(SUM(Amt),0) ");
-			sql.append("FROM M_CostDetail ");
-			sql.append("WHERE M_MatchInv_ID IN (");
-			sql.append(" SELECT M_MatchInv_ID ");
-			sql.append(" FROM M_MatchInv ");
-			sql.append(" WHERE M_InOutLine_ID IN (");
-			sql.append("  SELECT M_InOutLine_ID ");
-			sql.append("  FROM M_MatchPO ");
-			sql.append("  WHERE C_OrderLine_ID IN ( ");
-			sql.append("   SELECT mpo.C_OrderLine_ID");
-			sql.append("   FROM M_MatchInv mi");
-			sql.append("   JOIN M_MatchPO mpo ON mpo.C_InvoiceLine_ID = mi.C_InvoiceLine_ID");
-			sql.append("   WHERE mi.M_MatchInv_ID = ?");
-			sql.append("  )");
-			sql.append(" )");
-			sql.append(")");
-			sql.append(" AND TRUNC(DateAcct) = "+DB.TO_DATE(getDateAcct(), true));
-			sql.append(" AND M_Product_ID = ?");
-			sql.append(" AND M_AttributeSetInstance_ID = ?");
-			sql.append(" AND C_AcctSchema_ID = ?");
-			sql.append(" AND M_CostDetail_ID < ?");
-			sql.append(" AND COALESCE(Ref_CostDetail_ID,0) = 0"); // not reversal
-			matchInvAdjAmt = DB.getSQLValueBD(get_TrxName(), sql.toString(), getM_MatchInv_ID(), product.get_ID(), M_ASI_ID, as.get_ID(), this.get_ID());
-			
+			StringBuilder prevMatchInvWhere = new StringBuilder();
+			prevMatchInvWhere.append("M_MatchInv_ID IN (");
+			prevMatchInvWhere.append(" SELECT M_MatchInv_ID ");
+			prevMatchInvWhere.append(" FROM M_MatchInv ");
+			prevMatchInvWhere.append(" WHERE M_InOutLine_ID IN (");
+			prevMatchInvWhere.append("  SELECT M_InOutLine_ID ");
+			prevMatchInvWhere.append("  FROM M_MatchPO ");
+			prevMatchInvWhere.append("  WHERE C_OrderLine_ID IN ( ");
+			prevMatchInvWhere.append("   SELECT mpo.C_OrderLine_ID");
+			prevMatchInvWhere.append("   FROM M_MatchInv mi");
+			prevMatchInvWhere.append("   JOIN M_MatchPO mpo ON mpo.C_InvoiceLine_ID = mi.C_InvoiceLine_ID");
+			prevMatchInvWhere.append("   WHERE mi.M_MatchInv_ID = ?");
+			prevMatchInvWhere.append("  )");
+			prevMatchInvWhere.append(" )");
+			prevMatchInvWhere.append(")");
+			prevMatchInvWhere.append(" AND TRUNC(DateAcct) = " + DB.TO_DATE(getDateAcct(), true));
+			prevMatchInvWhere.append(" AND M_Product_ID = ?");
+			prevMatchInvWhere.append(" AND M_AttributeSetInstance_ID = ?");
+			prevMatchInvWhere.append(" AND C_AcctSchema_ID = ?");
+			prevMatchInvWhere.append(" AND M_CostDetail_ID < ?");
+			prevMatchInvWhere.append(" AND COALESCE(Ref_CostDetail_ID,0) = 0"); // not reversal
+
+			StringBuilder sumMinSql = new StringBuilder();
+			sumMinSql.append("SELECT COALESCE(SUM(Amt),0), COALESCE(MIN(M_CostDetail_ID),0) ");
+			sumMinSql.append("FROM M_CostDetail WHERE ").append(prevMatchInvWhere);
+
+			List<Object> sumMinResult = DB.getSQLValueObjectsEx(get_TrxName(), sumMinSql.toString(),
+					getM_MatchInv_ID(), product.get_ID(), M_ASI_ID, as.get_ID(), this.get_ID());
+			if (sumMinResult != null) {
+				matchInvAdjAmt = (BigDecimal) sumMinResult.get(0);
+				firstMatchInvCD_ID = ((Number) sumMinResult.get(1)).intValue();
+			}
+
 			if (matchInvAdjAmt != null && matchInvAdjAmt.signum() != 0) {
-				// get the cost info from order cost detail
+				// cost info from the latest order cost detail
 				StringBuilder whereClause = new StringBuilder();
 				whereClause.append("(C_OrderLine_ID, M_AttributeSetInstance_ID) IN ( ");
 				whereClause.append(" SELECT mpo.C_OrderLine_ID, mpo.M_AttributeSetInstance_ID");
 				whereClause.append(" FROM M_MatchInv mi");
 				// Don't join with M_MatchPO.C_InvoiceLine_ID, it is not mandatory
-				whereClause.append(" JOIN M_MatchPO mpo ON mpo.M_InOutLine_ID = mi.M_InOutLine_ID"); 
+				whereClause.append(" JOIN M_MatchPO mpo ON mpo.M_InOutLine_ID = mi.M_InOutLine_ID");
 				whereClause.append("  AND mpo.M_AttributeSetInstance_ID = mi.M_AttributeSetInstance_ID");
 				whereClause.append(" WHERE mi.M_MatchInv_ID = ?");
 				whereClause.append(") ");
 				whereClause.append(" AND M_Product_ID = ?");
-		    	whereClause.append(" AND C_AcctSchema_ID = ?");
+				whereClause.append(" AND C_AcctSchema_ID = ?");
 				whereClause.append(" AND M_CostDetail_ID < ?");
 				cd = new Query(as.getCtx(), I_M_CostDetail.Table_Name, whereClause.toString(), get_TrxName())
 						.setParameters(getM_MatchInv_ID(), product.getM_Product_ID(), as.get_ID(), this.get_ID())
 						.setOrderBy("M_CostDetail_ID DESC")
 						.first();
+
+				if (firstMatchInvCD_ID > 0) {
+					MCostHistory firstMatchInvHist = new Query(as.getCtx(), I_M_CostHistory.Table_Name,
+							"M_CostDetail_ID=? AND M_CostElement_ID=?", get_TrxName())
+							.setParameters(firstMatchInvCD_ID, ce.getM_CostElement_ID())
+							.setOrderBy("M_CostHistory_ID ASC")
+							.first();
+
+					MCostHistory orderHist = null;
+					if (cd != null) {
+						// last time the order cost detail was applied (it may have been reprocessed as a delta)
+						orderHist = new Query(as.getCtx(), I_M_CostHistory.Table_Name,
+								"M_CostDetail_ID=? AND M_CostElement_ID=?", get_TrxName())
+								.setParameters(cd.get_ID(), ce.getM_CostElement_ID())
+								.setOrderBy("M_CostHistory_ID DESC")
+								.first();
+					}
+
+					// order cost detail last applied before the first previous match invoice => stale snapshot
+					if (firstMatchInvHist != null && (orderHist == null || orderHist.get_ID() < firstMatchInvHist.get_ID()))
+						matchInvBaseline = firstMatchInvHist;
+				}
 			}
 		}
 		
@@ -1568,15 +1599,26 @@ public class MCostDetail extends X_M_CostDetail
 			cost.setSkipAverageCostingQtyCheck(i.getReversal_ID() > 0);
 		}
 		
-		ICostInfo costInfo = MCost.getCostInfo(product.getCtx(), product.getAD_Client_ID(), Org_ID, product.getM_Product_ID(), 
-					as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(), M_ASI_ID, getDateAcct(), 
-					cd != null ? cd : this, get_TrxName());
-		if (costInfo != null)
+		
+		if (matchInvBaseline != null) {
+			// rewind to the state before the first match invoice adjustment on this account date
+			cost.setCurrentQty(matchInvBaseline.getOldQty());
+			cost.setCurrentCostPrice(matchInvBaseline.getOldCostPrice());
+			cost.setCumulatedQty(matchInvBaseline.getOldCQty());
+			cost.setCumulatedAmt(matchInvBaseline.getOldCAmt());
+		}
+		else
 		{
-			cost.setCurrentQty(costInfo.getCurrentQty());
-			cost.setCurrentCostPrice(costInfo.getCurrentCostPrice());
-			cost.setCumulatedQty(costInfo.getCumulatedQty());
-			cost.setCumulatedAmt(costInfo.getCumulatedAmt());
+			ICostInfo costInfo = MCost.getCostInfo(product.getCtx(), product.getAD_Client_ID(), Org_ID, product.getM_Product_ID(), 
+						as.getM_CostType_ID(), as.getC_AcctSchema_ID(), ce.getM_CostElement_ID(), M_ASI_ID, getDateAcct(), 
+						cd != null ? cd : this, get_TrxName());
+			if (costInfo != null)
+			{
+				cost.setCurrentQty(costInfo.getCurrentQty());
+				cost.setCurrentCostPrice(costInfo.getCurrentCostPrice());
+				cost.setCumulatedQty(costInfo.getCumulatedQty());
+				cost.setCumulatedAmt(costInfo.getCumulatedAmt());
+			}
 		}
 		
 		DB.getDatabase().forUpdate(cost, 120);
