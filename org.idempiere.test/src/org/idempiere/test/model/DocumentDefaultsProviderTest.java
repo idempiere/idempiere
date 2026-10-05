@@ -299,7 +299,7 @@ public class DocumentDefaultsProviderTest extends AbstractTestCase {
 			MOrder order = newOrder();
 			// M_PriceList_ID is mandatory, so the insert fails; beforeSave has already set the currency.
 			// DB.getSQLValue returns -1 for the missing price list, which must not be taken as a currency
-			order.save();
+			assertFalse(order.save());
 			assertEquals(0, order.getM_PriceList_ID());
 			assertEquals(Env.getContextAsInt(Env.getCtx(), Env.C_CURRENCY_ID), order.getC_Currency_ID());
 		} finally {
