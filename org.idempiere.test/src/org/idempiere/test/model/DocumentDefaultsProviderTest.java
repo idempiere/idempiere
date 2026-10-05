@@ -214,6 +214,27 @@ public class DocumentDefaultsProviderTest extends AbstractTestCase {
 		}
 	}
 
+	@Test
+	public void testNoDefaultPriceListFallsBackToContextCurrency() {
+		IDocumentDefaultsProvider<MOrder> provider = new IDocumentDefaultsProvider<MOrder>() {
+			@Override
+			public int getM_PriceList_ID(MOrder document) {
+				return NO_DEFAULT;
+			}
+		};
+		ServiceRegistration<?> registration = register(provider, MOrder.Table_Name, 10);
+		try {
+			MOrder order = newOrder();
+			// M_PriceList_ID is mandatory, so the insert fails; beforeSave has already set the currency.
+			// DB.getSQLValue returns -1 for the missing price list, which must not be taken as a currency
+			order.save();
+			assertEquals(0, order.getM_PriceList_ID());
+			assertEquals(Env.getContextAsInt(Env.getCtx(), Env.C_CURRENCY_ID), order.getC_Currency_ID());
+		} finally {
+			registration.unregister();
+		}
+	}
+
 	/**
 	 * Sales order with partner and location set by id, so MOrder.setBPartner is not involved
 	 */

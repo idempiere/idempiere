@@ -1182,7 +1182,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		{
 			String sql = "SELECT C_Currency_ID FROM M_PriceList WHERE M_PriceList_ID=?";
 			int ii = DB.getSQLValue (null, sql, getM_PriceList_ID());
-			if (ii != 0)
+			if (ii > 0)
 				setC_Currency_ID (ii);
 			else
 				setC_Currency_ID(Env.getContextAsInt(getCtx(), Env.C_CURRENCY_ID));
