@@ -532,6 +532,8 @@ implements IFormController, EventListener<Event>, WTableModelListener, ValueChan
 			}
 
 			fieldAccount.actionRefresh();
+			bGenerate.setDisabled(true);
+			miniTable.clear();
 		}
 	}
 
