@@ -46,10 +46,12 @@ Use a disposable branch so `master` stays clean:
 ```bash
 git checkout master
 git pull upstream master
-git checkout -b review-IDEMPIERE-1848
+git checkout -b review-IDEMPIERE-<ticket>
 git pull --no-commit https://github.com/<pr-author>/idempiere.git <pr-branch>
 # or: gh pr checkout <number> --repo idempiere/idempiere
 ```
+
+Replace `<ticket>`, `<pr-author>`, `<pr-branch>` and `<number>` with the values of the pull request under review.
 
 Then:
 

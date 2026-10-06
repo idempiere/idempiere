@@ -1,7 +1,7 @@
 # AGENTS.md — iDempiere core
 
 Guidance for AI coding agents (Claude Code, Gemini CLI, Qwen Code, Codex, OpenCode, …) working on the iDempiere core repository.
-iDempiere is an open source ERP/CRM/SCM (Java 17, OSGi/Equinox, Maven + Tycho, ZK web UI, PostgreSQL and Oracle).
+iDempiere is an open-source ERP/CRM/SCM (Java 17, OSGi/Equinox, Maven + Tycho, ZK web UI, PostgreSQL and Oracle).
 
 The human-facing source of truth is the documentation site: https://docs.idempiere.org/docs/basic-development/contributing-to-core/contributing-to-idempiere
 If this file and the documentation disagree, the documentation wins.

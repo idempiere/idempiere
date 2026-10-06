@@ -44,7 +44,7 @@ See `references/data-access-examples.md` for the canonical patterns.
 
 - **Never change or remove a public or protected method signature.** Add an overload and have the old one delegate to it. Plugins compile against core.
 - Deprecate with `@Deprecated` plus javadoc pointing to the replacement, instead of deleting.
-- If you change the structure of a `Serializable` class, regenerate its `serialVersionUID`.
+- If you change the signature of a class or interface (e.g. add, remove or change public methods or fields), regenerate its `serialVersionUID` if it has one. This is the project convention (see How to Contribute), even for changes Java considers serialization-compatible.
 - Columns and fields that look "unused" may be used by implementers. Don't remove them or change their meaning.
 - Changing default behavior needs a strong reason. Prefer an opt-in (e.g. an `AD_SysConfig` key, which the developer creates) and mention it in the PR.
 
