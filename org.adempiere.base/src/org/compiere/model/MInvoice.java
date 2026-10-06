@@ -1424,6 +1424,20 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 	}	//	getAllocatedAmt
 
 	/**
+	 * Check if this invoice has at least one active allocation line whose allocation is neither reversed nor voided
+	 * @return true if there is an effective allocation line
+	 */
+	private boolean hasEffectiveAllocation()
+	{
+		for (MAllocationHdr allocation : MAllocationHdr.getOfInvoice(getCtx(), getC_Invoice_ID(), get_TrxName()))
+		{
+			if (!DOCSTATUS_Reversed.equals(allocation.getDocStatus()) && !DOCSTATUS_Voided.equals(allocation.getDocStatus()))
+				return true;
+		}
+		return false;
+	}	//	hasEffectiveAllocation
+
+	/**
 	 * 	Test Allocation (and set paid flag)
 	 *  @param beingCompleted true if call during processing of Complete document action
 	 *	@return true if updated IsPaid
@@ -1434,12 +1448,28 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 
 		if ( isProcessed() || beingCompleted) {
 			BigDecimal alloc = getAllocatedAmt();	//	absolute, null if the invoice has no allocation line
+			boolean requireAllocation = MSysConfig.getBooleanValue(MSysConfig.INVOICE_ISPAID_REQUIRES_ALLOCATION, false, getAD_Client_ID());
+			if (!requireAllocation)
+			{
+				// open balance 0 means paid, even without allocation line (e.g. zero total invoice)
+				if (alloc == null)
+					alloc = Env.ZERO;
+			}
+			else if (!DOCSTATUS_Voided.equals(getDocStatus()) && !DOCSTATUS_Reversed.equals(getDocStatus()))
+			{
+				// IsPaid requires at least one effective (not reversed/voided) allocation line, voided/reversed invoices are exempt
+				if (!hasEffectiveAllocation())
+					alloc = null;
+			}
+			else if (alloc == null)
+			{
+				alloc = Env.ZERO;
+			}
 			BigDecimal total = getGrandTotal();
 			if (!isSOTrx())
 				total = total.negate();
 			if (isCreditMemo())
 				total = total.negate();
-			// no allocation line means nothing was settled, so the invoice is not paid, even if the total is zero
 			boolean test = alloc != null && total.compareTo(alloc) == 0;
 			change = test != isPaid();
 			if (change)
