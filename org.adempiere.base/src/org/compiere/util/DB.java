@@ -1782,13 +1782,15 @@ public final class DB
         	} else {
         		// use IN instead of EXISTS as the subquery should be highly selective
         		String sql = "SELECT IsSOTrx FROM " + hdr
-        		+ " h WHERE h." + hdr + "_ID IN (SELECT l." + hdr + "_ID FROM " + TableName
-        		+ " l WHERE " + whereClause + ")";
+        		+ " h WHERE h." + hdr + "_ID IN (SELECT " + TableName + "." + hdr + "_ID FROM " + TableName
+        		+ " WHERE " + whereClause + ")";
         		PreparedStatement pstmt2 = null;
         		ResultSet rs2 = null;
         		try
         		{
         			pstmt2 = DB.prepareStatement (sql, null);
+        			if (params != null && !params.isEmpty())
+    					setParameters(pstmt2, params);
         			rs2 = pstmt2.executeQuery ();
         			if (rs2.next ())
         				isSOTrx = Boolean.valueOf("Y".equals(rs2.getString(1)));
