@@ -212,7 +212,7 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 
 		if (type.equals(Events.ON_CLICK)) {
 			if (e.getTarget() == btnCal)
-				Extensions.openCalendarWindow(scm);
+				Extensions.newCalendarWindow(scm);
 			else if (e.getTarget() == btnRefresh)
 				btnRefreshClicked();
 			else if (e.getTarget() == btnCurrentDate)

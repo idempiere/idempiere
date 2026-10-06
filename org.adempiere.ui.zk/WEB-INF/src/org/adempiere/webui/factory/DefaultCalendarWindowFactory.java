@@ -25,17 +25,21 @@ package org.adempiere.webui.factory;
 
 import org.adempiere.webui.dashboard.CalendarWindow;
 import org.osgi.service.component.annotations.Component;
+import org.zkoss.calendar.api.CalendarModel;
 import org.zkoss.calendar.impl.SimpleCalendarModel;
 
 /**
  * Default implementation of {@link ICalendarWindowFactory}
+ * @author Peter Takács
  */
 @Component(immediate = true, service = ICalendarWindowFactory.class, property = {"service.ranking:Integer=0"})
 public class DefaultCalendarWindowFactory implements ICalendarWindowFactory
 {
 	@Override
-	public void openCalendarWindow(SimpleCalendarModel scm)
+	public org.zkoss.zk.ui.Component newCalendarWindow(CalendarModel model)
 	{
-		new CalendarWindow(scm);
+		if (!(model instanceof SimpleCalendarModel))
+			throw new IllegalArgumentException("CalendarWindow requires a SimpleCalendarModel: " + model);
+		return new CalendarWindow((SimpleCalendarModel) model);
 	}
 }

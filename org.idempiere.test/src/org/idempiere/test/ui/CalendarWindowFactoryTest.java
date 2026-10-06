@@ -54,6 +54,8 @@ public class CalendarWindowFactoryTest {
 				.findFirst()
 				.orElseThrow();
 
+		assertSame(DefaultCalendarWindowFactory.class, Service.locator().locate(ICalendarWindowFactory.class)
+				.getService().getClass(), "Default ICalendarWindowFactory must be selected when nothing overrides it");
 		assertEquals(0, defaultReference.getServiceReference().getProperty(Constants.SERVICE_RANKING));
 	}
 
@@ -61,7 +63,10 @@ public class CalendarWindowFactoryTest {
 	public void testHigherRankingFactoryReplacesDefault() {
 		SimpleCalendarModel scm = new SimpleCalendarModel();
 		SimpleCalendarModel[] received = new SimpleCalendarModel[1];
-		ICalendarWindowFactory custom = model -> received[0] = model;
+		ICalendarWindowFactory custom = model -> {
+			received[0] = (SimpleCalendarModel) model;
+			return null;
+		};
 
 		Dictionary<String, Object> properties = new Hashtable<>();
 		// highest possible ranking so that no other registered factory can win or tie
@@ -71,7 +76,7 @@ public class CalendarWindowFactoryTest {
 		try {
 			assertSame(custom, Service.locator().locate(ICalendarWindowFactory.class).getService(),
 					"Highest ranking ICalendarWindowFactory must be selected");
-			Extensions.openCalendarWindow(scm);
+			Extensions.newCalendarWindow(scm);
 			assertSame(scm, received[0]);
 		} finally {
 			registration.unregister();

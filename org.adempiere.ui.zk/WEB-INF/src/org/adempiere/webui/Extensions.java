@@ -55,7 +55,7 @@ import org.idempiere.db.util.SQLFragment;
 import org.idempiere.ui.zk.media.IMediaView;
 import org.idempiere.ui.zk.media.IMediaViewProvider;
 import org.idempiere.ui.zk.report.IReportViewerRenderer;
-import org.zkoss.calendar.impl.SimpleCalendarModel;
+import org.zkoss.calendar.api.CalendarModel;
 import org.zkoss.zk.ui.Component;
 
 /**
@@ -471,11 +471,12 @@ public class Extensions {
 
 	/**
 	 * Open the calendar window of the calendar dashboard gadget, using the highest ranking {@link ICalendarWindowFactory}.
-	 * @param scm calendar model shared with the caller
+	 * @param model calendar model shared with the caller
+	 * @return the calendar window component
 	 */
-	public static void openCalendarWindow(SimpleCalendarModel scm) {
+	public static Component newCalendarWindow(CalendarModel model) {
 		ICalendarWindowFactory calendarWindowFactory = Service.locator().locate(ICalendarWindowFactory.class).getService();
-		calendarWindowFactory.openCalendarWindow(scm);
+		return calendarWindowFactory.newCalendarWindow(model);
 	}
 
 	private static IServiceReferenceHolder<IPostingService> s_postingServiceReference = null;
