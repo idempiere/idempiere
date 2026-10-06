@@ -65,7 +65,7 @@ BEGIN
             -- 3) truncated-name match (27 char convention used to build *_UU columns)
             (SELECT t3.tablename
                FROM ad_table t3
-              WHERE substr(t3.tablename, 0, 27) = left(c.columnname, length(c.columnname) - 3)
+              WHERE substr(t3.tablename, 1, 27) = left(c.columnname, length(c.columnname) - 3)
               LIMIT 1) AS truncated_target_table
         FROM
             ad_column c
@@ -147,6 +147,7 @@ BEGIN
              WHERE tc.constraint_type = 'FOREIGN KEY'
                AND LOWER(tc.table_name) = LOWER(r_column.tablename)
                AND LOWER(kcu.column_name) = LOWER(r_column.columnname)
+               AND kcu.table_name = tc.table_name
         ) INTO v_fk_exists;
 
         IF v_fk_exists THEN
@@ -157,7 +158,7 @@ BEGIN
 
         v_constraint_name := COALESCE(
             r_column.fkconstraintname,
-            LOWER(r_column.tablename) || '_' || LOWER(r_column.columnname) || '_fkey'
+            LOWER(r_column.tablename) || '_' || LOWER(r_column.columnname) || '_fkey' -- not expected to happen
         );
 
         -- ON DELETE behavior per AD_Column.FKConstraintType:
