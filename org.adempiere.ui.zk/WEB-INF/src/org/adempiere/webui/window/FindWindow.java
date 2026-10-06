@@ -2575,11 +2575,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		            isProductCategoryField = isProductCategoryField(field.getColumnName());
 		            ColumnSQL = field.getSearchColumnSQL() != null ? field.getSearchColumnSQL() : field.getColumnSQL(false);
 		            if (table.getSelectedItem() != null && !table.getSelectedItem().getValue().equals(m_AD_Tab_UU))
-					{       
+					{
+						// Each EXISTS has its own scope; reuse a stable alias on every rebuild.
+						String relatedAlias = getRelatedSearchAlias(m_tableName, m_gridTab.getTableName());
+						ColumnSQL = getRelatedSearchColumnSQL(field, m_gridTab, relatedAlias);
 						if (!isCompositeExists) {
 							MTable refTable = MTable.get(Env.getCtx(), m_tableName);
-							exists.append("SELECT 1 FROM ").append(m_gridTab.getTableName())
-							.append(" WHERE ").append(m_gridTab.getTableName()).append(".").append(m_gridTab.getLinkColumnName())
+							exists.append("SELECT 1 FROM ").append(m_gridTab.getTableName()).append(" ").append(relatedAlias)
+							.append(" WHERE ").append(relatedAlias).append(".").append(m_gridTab.getLinkColumnName())
 							.append(" = ").append(m_tableName).append(".");
 							if (refTable.isUUIDKeyTable())
 								exists.append(PO.getUUIDColumnName(m_tableName));
@@ -3321,6 +3324,38 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
     {
 		WEditor editor = getEditor(row, to);
 		return editor != null ? editor.getComponent() : new Label("");
+    }
+
+    /** Return a stable alias distinct from both table names. */
+    private static String getRelatedSearchAlias(String sourceTable, String relatedTable)
+    {
+        String alias = "find_related";
+        for (int suffix = 0; alias.equalsIgnoreCase(sourceTable) || alias.equalsIgnoreCase(relatedTable); suffix++)
+            alias = "find_related_" + suffix;
+        return alias;
+    }
+
+    /**
+     * Qualify a related-tab criterion without changing the field's SQL metadata.
+     * Virtual expressions retain their original table scope, including correlated
+     * subqueries and literals, by evaluating them against the related record's key.
+     *
+     * @param field search field
+     * @param tab related tab
+     * @param alias alias of the related table in the EXISTS query
+     * @return SQL expression for the criterion
+     */
+    private static String getRelatedSearchColumnSQL(GridField field, GridTab tab, String alias)
+    {
+        if (!field.isVirtualColumn())
+            return alias + "." + field.getColumnName();
+
+        String keyColumn = tab.getKeyColumnName();
+        if (Util.isEmpty(keyColumn))
+            keyColumn = tab.getUUIDColumnName();
+        String tableName = tab.getTableName();
+        return "(SELECT " + field.getSearchColumnSQL() + " FROM " + tableName
+            + " WHERE " + tableName + "." + keyColumn + " = " + alias + "." + keyColumn + ")";
     }
 
     /**
