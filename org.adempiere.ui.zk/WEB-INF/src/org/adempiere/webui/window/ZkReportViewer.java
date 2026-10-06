@@ -40,6 +40,7 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 
 import javax.activation.FileDataSource;
+
 import org.adempiere.base.Core;
 import org.adempiere.base.upload.IUploadService;
 import org.adempiere.exceptions.AdempiereException;
@@ -96,14 +97,12 @@ import org.compiere.model.MTable;
 import org.compiere.model.MToolBarButtonRestrict;
 import org.compiere.model.MUser;
 import org.compiere.model.PO;
-import org.compiere.model.PrintInfo;
 import org.compiere.model.SystemIDs;
 import org.compiere.model.X_AD_ToolBarButton;
 import org.compiere.print.ArchiveEngine;
 import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.ProcessInfo;
-import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.ProcessInfoUtil;
 import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
@@ -114,6 +113,9 @@ import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
+import org.idempiere.print.IReportContentRenderer;
+import org.idempiere.print.ReportContentRequest;
+import org.idempiere.print.ReportContentType;
 import org.idempiere.print.renderer.CSVReportRendererConfiguration;
 import org.idempiere.print.renderer.HTMLReportRendererConfiguration;
 import org.idempiere.print.renderer.PDFReportRendererConfiguration;
@@ -122,9 +124,6 @@ import org.idempiere.print.renderer.XLSXReportRendererConfiguration;
 import org.idempiere.ui.zk.media.IMediaView;
 import org.idempiere.ui.zk.media.WMediaOptions;
 import org.idempiere.ui.zk.report.IReportViewerRenderer;
-import org.idempiere.print.IReportContentRenderer;
-import org.idempiere.print.ReportContentRequest;
-import org.idempiere.print.ReportContentType;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.au.out.AuScript;
@@ -962,7 +961,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 					if (showOptions && (view != null || uploadServicesMap.size() > 0)) {
 						detachIFrame();
 						final IMediaView fview = view;
-						WMediaOptions options = new WMediaOptions(media, fview != null ? () -> fview.renderMediaView(center, media, true) : null, uploadServicesMap);
+						boolean readonly = MSysConfig.getBooleanValue(MSysConfig.XLS_VIEWER_READONLY_REPORT, true, Env.getAD_Client_ID(Env.getCtx()));
+						WMediaOptions options = new WMediaOptions(media, fview != null ? () -> fview.renderMediaView(center, media, readonly) : null, uploadServicesMap);
 						options.setPage(getPage());
 						options.doHighlighted();
 					} else {
@@ -995,7 +995,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 					if (showOptions && (view != null || uploadServicesMap.size() > 0)) {
 						detachIFrame();
 						final IMediaView fview = view;
-						WMediaOptions options = new WMediaOptions(media, fview != null ? () -> fview.renderMediaView(center, media, true) : null, uploadServicesMap);
+						boolean readonly = MSysConfig.getBooleanValue(MSysConfig.XLS_VIEWER_READONLY_REPORT, true, Env.getAD_Client_ID(Env.getCtx()));
+						WMediaOptions options = new WMediaOptions(media, fview != null ? () -> fview.renderMediaView(center, media, readonly) : null, uploadServicesMap);
 						options.setPage(getPage());
 						options.doHighlighted();
 					} else {

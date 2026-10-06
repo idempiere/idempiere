@@ -46,7 +46,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4211803175857427143L;
+	private static final long serialVersionUID = 7735685513127827231L;
 
 	/** Constant for Predefine System Configuration Names (in alphabetical order) */
 	
@@ -236,6 +236,9 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String VALIDATE_MATCHING_PRODUCT_ON_SHIPMENT = "VALIDATE_MATCHING_PRODUCT_ON_SHIPMENT";
     public static final String VALIDATE_MATCHING_TO_ORDERED_QTY = "VALIDATE_MATCHING_TO_ORDERED_QTY";
     public static final String WEBUI_LOGOURL = "WEBUI_LOGOURL";
+    public static final String XLS_VIEWER_READONLY_ATTACHMENT = "XLS_VIEWER_READONLY_ATTACHMENT";
+    public static final String XLS_VIEWER_READONLY_INFOWINDOW = "XLS_VIEWER_READONLY_INFOWINDOW";
+    public static final String XLS_VIEWER_READONLY_REPORT = "XLS_VIEWER_READONLY_REPORT";
     public static final String XLSX_EXPORT_USE_FAST_METHOD = "XLSX_EXPORT_USE_FAST_METHOD";
     public static final String ZK_ADVANCE_FIND_FILTER_COLUMN_LIST = "ZK_ADVANCE_FIND_FILTER_COLUMN_LIST";
     public static final String ZK_AUTO_SAVE_CHANGES = "ZK_AUTO_SAVE_CHANGES";

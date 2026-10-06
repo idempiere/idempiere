@@ -839,7 +839,8 @@ public class WAcctViewer extends ADForm implements EventListener<Event>
 						viewWindow.setTitle(media.getName());
 						viewWindow.setAttribute(Window.MODE_KEY, Mode.EMBEDDED);
 						AEnv.showWindow(viewWindow);
-						view.renderMediaView(viewWindow, media, false);
+						boolean readonly = MSysConfig.getBooleanValue(MSysConfig.XLS_VIEWER_READONLY_INFOWINDOW, false, Env.getAD_Client_ID(Env.getCtx()));
+						view.renderMediaView(viewWindow, media, readonly);
 					} : null, uploadServicesMap);
 					options.setPage(getPage());
 					options.doHighlighted();

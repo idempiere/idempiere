@@ -37,6 +37,7 @@ import org.adempiere.webui.Extensions;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ConfirmPanel;
+import org.adempiere.webui.component.FlexHlayout;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
@@ -77,7 +78,6 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Filedownload;
-import org.adempiere.webui.component.FlexHlayout;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.North;
@@ -544,7 +544,8 @@ public class WAttachment extends Window implements EventListener<Event>
 					if (entrySize <= maxPreviewSize) {
 						media = new AMedia(entry.getName(), null, mimeType, RepeatableInputStream.getInstance(entry.getInputStream()));
 						try {
-							customPreviewComponent = view.renderMediaView(previewPanel, media, true);
+							boolean readonly = MSysConfig.getBooleanValue(MSysConfig.XLS_VIEWER_READONLY_ATTACHMENT, true, Env.getAD_Client_ID(Env.getCtx()));
+							customPreviewComponent = view.renderMediaView(previewPanel, media, readonly);
 						} catch (Exception e) {
 							log.warning("Error previewing file in attachment entry " + entry.getName() + " -> " + e.getLocalizedMessage());
 							e.printStackTrace();
