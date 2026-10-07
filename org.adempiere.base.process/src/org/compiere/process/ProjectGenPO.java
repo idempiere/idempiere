@@ -30,6 +30,7 @@ import org.compiere.model.MProcessPara;
 import org.compiere.model.MProductPO;
 import org.compiere.model.MProject;
 import org.compiere.model.MProjectLine;
+import org.compiere.util.AdempiereUserError;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
@@ -205,7 +206,7 @@ public class ProjectGenPO extends SvrProcess
 				if (poPrice == null) {
 					MCurrency fromCurrency = MCurrency.get(getCtx(), C_Currency_ID);
 					MCurrency toCurrency = MCurrency.get(getCtx(), order.getC_Currency_ID());
-					throw new AdempiereException("No currency conversion rate found for " + fromCurrency.getISO_Code()
+					throw new AdempiereUserError("No currency conversion rate found for " + fromCurrency.getISO_Code()
 							+ " to " + toCurrency.getISO_Code() + " on "+order.getDateAcct()+".");
 				}
 				//end 
