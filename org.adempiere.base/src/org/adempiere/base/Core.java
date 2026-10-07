@@ -1233,12 +1233,21 @@ public class Core {
 	} // getCreditManager
 
 	/**
-	 * Get document header defaults, asking the {@link IDocumentDefaultsProvider}s registered
-	 * for the document's table in service ranking order
-	 * @return document defaults, never null
+	 * Get order header defaults from the registered {@link IOrderDefaultsProvider}s.
+	 * The providers are looked up once: call this once per save.
+	 * @return order defaults, never null
 	 */
-	public static DocumentDefaults getDocumentDefaults() {
-		return DocumentDefaults.getInstance();
+	public static DocumentDefaults<IOrderDefaultsProvider> getOrderDefaults() {
+		return DocumentDefaults.of(IOrderDefaultsProvider.class);
+	}
+
+	/**
+	 * Get invoice header defaults from the registered {@link IInvoiceDefaultsProvider}s.
+	 * The providers are looked up once: call this once per save.
+	 * @return invoice defaults, never null
+	 */
+	public static DocumentDefaults<IInvoiceDefaultsProvider> getInvoiceDefaults() {
+		return DocumentDefaults.of(IInvoiceDefaultsProvider.class);
 	}
 	
 	@SuppressWarnings("unchecked")

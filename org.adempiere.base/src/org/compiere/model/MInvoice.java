@@ -35,9 +35,10 @@ import java.util.logging.Level;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.CreditStatus;
+import org.adempiere.base.DefaultValue;
 import org.adempiere.base.DocumentDefaults;
 import org.adempiere.base.ICreditManager;
-import org.adempiere.base.IDocumentDefaultsProvider;
+import org.adempiere.base.IInvoiceDefaultsProvider;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.BPartnerNoAddressException;
 import org.adempiere.exceptions.BackDateTrxNotAllowedException;
@@ -463,7 +464,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		super.setProcessed (false);
 		setProcessing(false);
 
-		Core.getDocumentDefaults().initDefaults(this);
+		Core.getInvoiceDefaults().forEach(provider -> provider.initDefaults(this));
 	}
 
 	/**
@@ -1150,16 +1151,16 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		if (getC_BPartner_Location_ID() == 0)
 			setBPartner(new MBPartner(getCtx(), getC_BPartner_ID(), null));
 
-		DocumentDefaults defaults = Core.getDocumentDefaults();
+		DocumentDefaults<IInvoiceDefaultsProvider> defaults = Core.getInvoiceDefaults();
 		//	Set default Price List
 		if (getM_PriceList_ID() == 0)
 		{
-			int ii = defaults.getM_PriceList_ID(this);
-			if (ii > 0)
-				setM_PriceList_ID(ii);
-			else if (ii == IDocumentDefaultsProvider.USE_FALLBACK)
+			DefaultValue<Integer> priceList = defaults.get(provider -> provider.getM_PriceList_ID(this));
+			if (priceList.getValue() != null && priceList.getValue() > 0)
+				setM_PriceList_ID(priceList.getValue());
+			else if (priceList.isUseFallback())
 			{
-				ii = Env.getContextAsInt(getCtx(), Env.M_PRICELIST_ID);
+				int ii = Env.getContextAsInt(getCtx(), Env.M_PRICELIST_ID);
 				if (ii != 0)
 				{
 					MPriceList pl = new MPriceList(getCtx(), ii, null);
@@ -1171,7 +1172,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 				{
 					String sql = "SELECT M_PriceList_ID FROM M_PriceList WHERE AD_Client_ID=? AND IsSOPriceList=? AND IsActive='Y' ORDER BY IsDefault DESC";
 					ii = DB.getSQLValue (null, sql, getAD_Client_ID(), isSOTrx());
-					if (ii != 0)
+					if (ii > 0)
 						setM_PriceList_ID (ii);
 				}
 			}
@@ -1180,8 +1181,12 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		//	Set Currency from price list or environment context
 		if (getC_Currency_ID() == 0)
 		{
-			String sql = "SELECT C_Currency_ID FROM M_PriceList WHERE M_PriceList_ID=?";
-			int ii = DB.getSQLValue (null, sql, getM_PriceList_ID());
+			int ii = 0;
+			if (getM_PriceList_ID() > 0)
+			{
+				String sql = "SELECT C_Currency_ID FROM M_PriceList WHERE M_PriceList_ID=?";
+				ii = DB.getSQLValue (null, sql, getM_PriceList_ID());
+			}
 			if (ii > 0)
 				setC_Currency_ID (ii);
 			else
@@ -1191,10 +1196,9 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		//	Set Sales Rep from provider or environment context
 		if (getSalesRep_ID() == 0)
 		{
-			int ii = defaults.getSalesRep_ID(this);
-			if (ii == IDocumentDefaultsProvider.USE_FALLBACK)
-				ii = Env.getContextAsInt(getCtx(), Env.SALESREP_ID);
-			if (ii > 0)
+			Integer ii = defaults.get(provider -> provider.getSalesRep_ID(this))
+					.resolve(() -> Env.getContextAsInt(getCtx(), Env.SALESREP_ID));
+			if (ii != null && ii > 0)
 				setSalesRep_ID (ii);
 		}
 
@@ -1207,8 +1211,9 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		//	Set default Payment Term
 		if (getC_PaymentTerm_ID() == 0)
 		{
-			int ii = defaults.getC_PaymentTerm_ID(this);
-			if (ii == IDocumentDefaultsProvider.USE_FALLBACK)
+			DefaultValue<Integer> paymentTerm = defaults.get(provider -> provider.getC_PaymentTerm_ID(this));
+			int ii = 0;
+			if (paymentTerm.isUseFallback())
 			{
 				ii = Env.getContextAsInt(getCtx(), Env.C_PAYMENTTERM_ID);
 				if (ii == 0)
@@ -1217,6 +1222,8 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 					ii = DB.getSQLValue(null, sql, getAD_Client_ID());
 				}
 			}
+			else if (paymentTerm.getValue() != null)
+				ii = paymentTerm.getValue();
 			if (ii > 0)
 				setC_PaymentTerm_ID (ii);
 		}

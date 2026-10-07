@@ -21,117 +21,72 @@
  **********************************************************************/
 package org.adempiere.base;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.ToIntBiFunction;
-
-import org.compiere.model.PO;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
- * Asks the {@link IDocumentDefaultsProvider}s registered for the document's table
- * ({@code tableName} service property) in service ranking order, and returns the first answer
- * other than {@link IDocumentDefaultsProvider#USE_FALLBACK}.
- * With no provider registered every method returns USE_FALLBACK.
+ * Asks the document defaults providers ({@link IOrderDefaultsProvider},
+ * {@link IInvoiceDefaultsProvider}) in service ranking order, highest first, and returns the
+ * first answer other than {@link DefaultValue#useFallback()}.
+ * <p>
+ * The providers are looked up once, when the instance is created: get a new instance from
+ * {@link Core#getOrderDefaults()} or {@link Core#getInvoiceDefaults()} for each save.
+ * With no provider registered every question returns useFallback.
+ * @param <P> provider type
  */
-public final class DocumentDefaults {
+public final class DocumentDefaults<P> {
 
-	private static final DocumentDefaults INSTANCE = new DocumentDefaults();
+	/** Service holders by provider type; a holder tracks providers registered later */
+	private static final Map<Class<?>, IServicesHolder<?>> s_holders = new ConcurrentHashMap<>();
 
-	private DocumentDefaults() {
+	private final List<P> providers;
+
+	private DocumentDefaults(List<P> providers) {
+		this.providers = providers;
 	}
 
 	/**
-	 * @return shared instance
+	 * @param type provider type
+	 * @return defaults asking the providers registered now, highest service ranking first
 	 */
-	public static DocumentDefaults getInstance() {
-		return INSTANCE;
+	@SuppressWarnings("unchecked")
+	static <P> DocumentDefaults<P> of(Class<P> type) {
+		IServicesHolder<P> holder = (IServicesHolder<P>) s_holders.computeIfAbsent(type, t -> Service.locator().list(t));
+		List<P> providers = new ArrayList<>();
+		List<P> services = holder.getServices();
+		if (services != null) {
+			for (P service : services) {
+				// null if the provider was unregistered meanwhile
+				if (service != null)
+					providers.add(service);
+			}
+		}
+		return new DocumentDefaults<>(providers);
 	}
 
 	/**
-	 * @param document document being saved
-	 * @return SalesRep_ID, USE_FALLBACK or NO_DEFAULT
+	 * @param question asks one provider for a field value
+	 * @return first answer other than useFallback, or useFallback
 	 */
-	public <T extends PO> int getSalesRep_ID(T document) {
-		return ask(document, IDocumentDefaultsProvider::getSalesRep_ID);
-	}
-
-	/**
-	 * @param document document being saved
-	 * @return C_PaymentTerm_ID, USE_FALLBACK or NO_DEFAULT
-	 */
-	public <T extends PO> int getC_PaymentTerm_ID(T document) {
-		return ask(document, IDocumentDefaultsProvider::getC_PaymentTerm_ID);
-	}
-
-	/**
-	 * @param document document being saved
-	 * @return M_PriceList_ID, USE_FALLBACK or NO_DEFAULT
-	 */
-	public <T extends PO> int getM_PriceList_ID(T document) {
-		return ask(document, IDocumentDefaultsProvider::getM_PriceList_ID);
-	}
-
-	/**
-	 * @param document document being saved
-	 * @return Bill_Location_ID, USE_FALLBACK or NO_DEFAULT
-	 */
-	public <T extends PO> int getBill_Location_ID(T document) {
-		return ask(document, IDocumentDefaultsProvider::getBill_Location_ID);
-	}
-
-	/**
-	 * Let every provider for the table adjust the initial values of a new record
-	 * @param document new record, at the end of setInitialDefaults()
-	 */
-	public <T extends PO> void initDefaults(T document) {
-		for (IDocumentDefaultsProvider<T> provider : getProviders(document))
-			provider.initDefaults(document);
-	}
-
-	/**
-	 * @param document document being saved
-	 * @return DeliveryRule, or null for the built-in fallback
-	 */
-	public <T extends PO> String getDeliveryRule(T document) {
-		return askString(document, IDocumentDefaultsProvider::getDeliveryRule);
-	}
-
-	/**
-	 * @param document document being saved
-	 * @return InvoiceRule, or null for the built-in fallback
-	 */
-	public <T extends PO> String getInvoiceRule(T document) {
-		return askString(document, IDocumentDefaultsProvider::getInvoiceRule);
-	}
-
-	private <T extends PO> int ask(T document, ToIntBiFunction<IDocumentDefaultsProvider<T>, T> question) {
-		for (IDocumentDefaultsProvider<T> provider : getProviders(document)) {
-			int answer = question.applyAsInt(provider, document);
-			if (answer != IDocumentDefaultsProvider.USE_FALLBACK)
+	public <V> DefaultValue<V> get(Function<P, DefaultValue<V>> question) {
+		for (P provider : providers) {
+			DefaultValue<V> answer = question.apply(provider);
+			if (answer != null && !answer.isUseFallback())
 				return answer;
 		}
-		return IDocumentDefaultsProvider.USE_FALLBACK;
-	}
-
-	private <T extends PO> String askString(T document, BiFunction<IDocumentDefaultsProvider<T>, T, String> question) {
-		for (IDocumentDefaultsProvider<T> provider : getProviders(document)) {
-			String answer = question.apply(provider, document);
-			if (answer != null)
-				return answer;
-		}
-		return null;
+		return DefaultValue.useFallback();
 	}
 
 	/**
-	 * @return providers registered for the document's table, in service ranking order
+	 * Call every provider, in service ranking order
+	 * @param action call on one provider
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private <T extends PO> List<IDocumentDefaultsProvider<T>> getProviders(T document) {
-		ServiceQuery query = new ServiceQuery();
-		query.put("tableName", document.get_TableName());
-		List<IDocumentDefaultsProvider> providers = Service.locator().list(IDocumentDefaultsProvider.class, query).getServices();
-		// the tableName filter guarantees provider and document type match
-		return providers != null ? (List) providers : Collections.emptyList();
+	public void forEach(Consumer<P> action) {
+		for (P provider : providers)
+			action.accept(provider);
 	}
 }

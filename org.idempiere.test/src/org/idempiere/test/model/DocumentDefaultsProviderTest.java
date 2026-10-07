@@ -12,13 +12,19 @@
 package org.idempiere.test.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.Timestamp;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
 import org.adempiere.base.Core;
-import org.adempiere.base.IDocumentDefaultsProvider;
+import org.adempiere.base.DefaultValue;
+import org.adempiere.base.IInvoiceDefaultsProvider;
+import org.adempiere.base.IOrderDefaultsProvider;
 import org.compiere.model.MDocType;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MBPartner;
@@ -36,7 +42,7 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
 
 /**
- * Tests for {@link IDocumentDefaultsProvider}: header defaults applied in
+ * Tests for {@link IOrderDefaultsProvider} and {@link IInvoiceDefaultsProvider}: header defaults applied in
  * MOrder/MInvoice.beforeSave and initial defaults applied in the constructor.
  */
 public class DocumentDefaultsProviderTest extends AbstractTestCase {
@@ -51,26 +57,26 @@ public class DocumentDefaultsProviderTest extends AbstractTestCase {
 		int contextSalesRep = Env.getContextAsInt(Env.getCtx(), Env.SALESREP_ID);
 		if (contextSalesRep > 0)
 			assertEquals(contextSalesRep, order.getSalesRep_ID());
-		assertEquals(IDocumentDefaultsProvider.USE_FALLBACK, Core.getDocumentDefaults().getSalesRep_ID(order));
+		assertTrue(Core.getOrderDefaults().get(provider -> provider.getSalesRep_ID(order)).isUseFallback());
 	}
 
 	@Test
 	public void testProviderOverridesFallbacks() {
-		IDocumentDefaultsProvider<MOrder> provider = new IDocumentDefaultsProvider<MOrder>() {
+		IOrderDefaultsProvider provider = new IOrderDefaultsProvider() {
 			@Override
-			public int getSalesRep_ID(MOrder document) {
-				return DictionaryIDs.AD_User.GARDEN_USER.id;
+			public DefaultValue<Integer> getSalesRep_ID(MOrder document) {
+				return DefaultValue.of(DictionaryIDs.AD_User.GARDEN_USER.id);
 			}
 			@Override
-			public int getC_PaymentTerm_ID(MOrder document) {
-				return DictionaryIDs.C_PaymentTerm.TWO_PERCENT_10_NET_30.id;
+			public DefaultValue<Integer> getC_PaymentTerm_ID(MOrder document) {
+				return DefaultValue.of(DictionaryIDs.C_PaymentTerm.TWO_PERCENT_10_NET_30.id);
 			}
 			@Override
-			public int getM_PriceList_ID(MOrder document) {
-				return DictionaryIDs.M_PriceList.EXPORT.id;
+			public DefaultValue<Integer> getM_PriceList_ID(MOrder document) {
+				return DefaultValue.of(DictionaryIDs.M_PriceList.EXPORT.id);
 			}
 		};
-		ServiceRegistration<?> registration = register(provider, MOrder.Table_Name, 10);
+		ServiceRegistration<?> registration = register(IOrderDefaultsProvider.class, provider, 10);
 		try {
 			MOrder order = newOrder();
 			order.saveEx();
@@ -84,21 +90,21 @@ public class DocumentDefaultsProviderTest extends AbstractTestCase {
 
 	@Test
 	public void testInvoiceProviderOverridesFallbacks() {
-		IDocumentDefaultsProvider<MInvoice> provider = new IDocumentDefaultsProvider<MInvoice>() {
+		IInvoiceDefaultsProvider provider = new IInvoiceDefaultsProvider() {
 			@Override
-			public int getSalesRep_ID(MInvoice document) {
-				return DictionaryIDs.AD_User.GARDEN_USER.id;
+			public DefaultValue<Integer> getSalesRep_ID(MInvoice document) {
+				return DefaultValue.of(DictionaryIDs.AD_User.GARDEN_USER.id);
 			}
 			@Override
-			public int getC_PaymentTerm_ID(MInvoice document) {
-				return DictionaryIDs.C_PaymentTerm.TWO_PERCENT_10_NET_30.id;
+			public DefaultValue<Integer> getC_PaymentTerm_ID(MInvoice document) {
+				return DefaultValue.of(DictionaryIDs.C_PaymentTerm.TWO_PERCENT_10_NET_30.id);
 			}
 			@Override
-			public int getM_PriceList_ID(MInvoice document) {
-				return DictionaryIDs.M_PriceList.EXPORT.id;
+			public DefaultValue<Integer> getM_PriceList_ID(MInvoice document) {
+				return DefaultValue.of(DictionaryIDs.M_PriceList.EXPORT.id);
 			}
 		};
-		ServiceRegistration<?> registration = register(provider, MInvoice.Table_Name, 10);
+		ServiceRegistration<?> registration = register(IInvoiceDefaultsProvider.class, provider, 10);
 		try {
 			MInvoice invoice = new MInvoice(Env.getCtx(), 0, getTrxName());
 			invoice.setIsSOTrx(true);
@@ -121,13 +127,13 @@ public class DocumentDefaultsProviderTest extends AbstractTestCase {
 
 	@Test
 	public void testValueSetByCallerIsKept() {
-		IDocumentDefaultsProvider<MOrder> provider = new IDocumentDefaultsProvider<MOrder>() {
+		IOrderDefaultsProvider provider = new IOrderDefaultsProvider() {
 			@Override
-			public int getC_PaymentTerm_ID(MOrder document) {
-				return DictionaryIDs.C_PaymentTerm.TWO_PERCENT_10_NET_30.id;
+			public DefaultValue<Integer> getC_PaymentTerm_ID(MOrder document) {
+				return DefaultValue.of(DictionaryIDs.C_PaymentTerm.TWO_PERCENT_10_NET_30.id);
 			}
 		};
-		ServiceRegistration<?> registration = register(provider, MOrder.Table_Name, 10);
+		ServiceRegistration<?> registration = register(IOrderDefaultsProvider.class, provider, 10);
 		try {
 			MOrder order = newOrder();
 			order.setC_PaymentTerm_ID(DictionaryIDs.C_PaymentTerm.IMMEDIATE.id);
@@ -140,24 +146,24 @@ public class DocumentDefaultsProviderTest extends AbstractTestCase {
 
 	@Test
 	public void testHigherRankingProviderWinsAndFallbackPassesOn() {
-		IDocumentDefaultsProvider<MOrder> high = new IDocumentDefaultsProvider<MOrder>() {
+		IOrderDefaultsProvider high = new IOrderDefaultsProvider() {
 			@Override
-			public int getSalesRep_ID(MOrder document) {
-				return DictionaryIDs.AD_User.GARDEN_USER.id;
+			public DefaultValue<Integer> getSalesRep_ID(MOrder document) {
+				return DefaultValue.of(DictionaryIDs.AD_User.GARDEN_USER.id);
 			}
 		};
-		IDocumentDefaultsProvider<MOrder> low = new IDocumentDefaultsProvider<MOrder>() {
+		IOrderDefaultsProvider low = new IOrderDefaultsProvider() {
 			@Override
-			public int getSalesRep_ID(MOrder document) {
-				return DictionaryIDs.AD_User.GARDEN_ADMIN.id;
+			public DefaultValue<Integer> getSalesRep_ID(MOrder document) {
+				return DefaultValue.of(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
 			}
 			@Override
-			public int getC_PaymentTerm_ID(MOrder document) {
-				return DictionaryIDs.C_PaymentTerm.TWO_PERCENT_10_NET_30.id;
+			public DefaultValue<Integer> getC_PaymentTerm_ID(MOrder document) {
+				return DefaultValue.of(DictionaryIDs.C_PaymentTerm.TWO_PERCENT_10_NET_30.id);
 			}
 		};
-		ServiceRegistration<?> highRegistration = register(high, MOrder.Table_Name, 20);
-		ServiceRegistration<?> lowRegistration = register(low, MOrder.Table_Name, 10);
+		ServiceRegistration<?> highRegistration = register(IOrderDefaultsProvider.class, high, 20);
+		ServiceRegistration<?> lowRegistration = register(IOrderDefaultsProvider.class, low, 10);
 		try {
 			MOrder order = newOrder();
 			order.saveEx();
@@ -171,36 +177,86 @@ public class DocumentDefaultsProviderTest extends AbstractTestCase {
 	}
 
 	@Test
-	public void testProviderForOtherTableIsNotAsked() {
-		IDocumentDefaultsProvider<MInvoice> invoiceProvider = new IDocumentDefaultsProvider<MInvoice>() {
+	public void testRankingDecidesNotRegistrationOrder() {
+		IOrderDefaultsProvider low = new IOrderDefaultsProvider() {
 			@Override
-			public int getC_PaymentTerm_ID(MInvoice document) {
-				return DictionaryIDs.C_PaymentTerm.TWO_PERCENT_10_NET_30.id;
+			public DefaultValue<Integer> getSalesRep_ID(MOrder document) {
+				return DefaultValue.of(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
 			}
 		};
-		ServiceRegistration<?> registration = register(invoiceProvider, MInvoice.Table_Name, 10);
+		IOrderDefaultsProvider high = new IOrderDefaultsProvider() {
+			@Override
+			public DefaultValue<Integer> getSalesRep_ID(MOrder document) {
+				return DefaultValue.of(DictionaryIDs.AD_User.GARDEN_USER.id);
+			}
+		};
+		// low registered first: it gets the lower service.id, so only service.ranking can put high first
+		ServiceRegistration<?> lowRegistration = register(IOrderDefaultsProvider.class, low, 10);
+		ServiceRegistration<?> highRegistration = register(IOrderDefaultsProvider.class, high, 20);
 		try {
 			MOrder order = newOrder();
-			assertEquals(IDocumentDefaultsProvider.USE_FALLBACK, Core.getDocumentDefaults().getC_PaymentTerm_ID(order));
+			assertEquals(DictionaryIDs.AD_User.GARDEN_USER.id, Core.getOrderDefaults().get(provider -> provider.getSalesRep_ID(order)).getValue());
 		} finally {
+			lowRegistration.unregister();
+			highRegistration.unregister();
+		}
+	}
+
+	@Test
+	public void testProviderRegisteredAfterLookupIsAsked() {
+		MOrder order = newOrder();
+		// first lookup caches the service holder for the provider type
+		assertTrue(Core.getOrderDefaults().get(provider -> provider.getC_PaymentTerm_ID(order)).isUseFallback());
+		IOrderDefaultsProvider provider = new IOrderDefaultsProvider() {
+			@Override
+			public DefaultValue<Integer> getC_PaymentTerm_ID(MOrder document) {
+				return DefaultValue.of(DictionaryIDs.C_PaymentTerm.TWO_PERCENT_10_NET_30.id);
+			}
+		};
+		ServiceRegistration<?> registration = register(IOrderDefaultsProvider.class, provider, 10);
+		try {
+			assertEquals(DictionaryIDs.C_PaymentTerm.TWO_PERCENT_10_NET_30.id, Core.getOrderDefaults().get(p -> p.getC_PaymentTerm_ID(order)).getValue());
+		} finally {
+			registration.unregister();
+		}
+		assertTrue(Core.getOrderDefaults().get(p -> p.getC_PaymentTerm_ID(order)).isUseFallback());
+	}
+
+	@Test
+	public void testNoDefaultSkipsBuiltInFallback() {
+		IOrderDefaultsProvider provider = new IOrderDefaultsProvider() {
+			@Override
+			public DefaultValue<Integer> getSalesRep_ID(MOrder document) {
+				return DefaultValue.noDefault();
+			}
+		};
+		ServiceRegistration<?> registration = register(IOrderDefaultsProvider.class, provider, 10);
+		int contextSalesRep = Env.getContextAsInt(Env.getCtx(), Env.SALESREP_ID);
+		Env.setContext(Env.getCtx(), Env.SALESREP_ID, DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+		try {
+			MOrder order = newOrder();
+			order.saveEx();
+			assertEquals(0, order.getSalesRep_ID());
+		} finally {
+			Env.setContext(Env.getCtx(), Env.SALESREP_ID, contextSalesRep);
 			registration.unregister();
 		}
 	}
 
 	@Test
 	public void testInitDefaultsClearedRuleIsResolvedOnSave() {
-		IDocumentDefaultsProvider<MOrder> provider = new IDocumentDefaultsProvider<MOrder>() {
+		IOrderDefaultsProvider provider = new IOrderDefaultsProvider() {
 			@Override
 			public void initDefaults(MOrder document) {
 				document.set_ValueNoCheck(MOrder.COLUMNNAME_DeliveryRule, null);
 				document.set_ValueNoCheck(MOrder.COLUMNNAME_InvoiceRule, null);
 			}
 			@Override
-			public String getDeliveryRule(MOrder document) {
-				return MOrder.DELIVERYRULE_CompleteOrder;
+			public DefaultValue<String> getDeliveryRule(MOrder document) {
+				return DefaultValue.of(MOrder.DELIVERYRULE_CompleteOrder);
 			}
 		};
-		ServiceRegistration<?> registration = register(provider, MOrder.Table_Name, 10);
+		ServiceRegistration<?> registration = register(IOrderDefaultsProvider.class, provider, 10);
 		try {
 			MOrder order = newOrder();
 			order.saveEx();
@@ -220,8 +276,8 @@ public class DocumentDefaultsProviderTest extends AbstractTestCase {
 	/**
 	 * Provider that clears both rules at construction and leaves the decision to the built-in fallback
 	 */
-	private IDocumentDefaultsProvider<MOrder> clearingProvider() {
-		return new IDocumentDefaultsProvider<MOrder>() {
+	private IOrderDefaultsProvider clearingProvider() {
+		return new IOrderDefaultsProvider() {
 			@Override
 			public void initDefaults(MOrder document) {
 				document.set_ValueNoCheck(MOrder.COLUMNNAME_DeliveryRule, null);
@@ -232,7 +288,7 @@ public class DocumentDefaultsProviderTest extends AbstractTestCase {
 
 	@Test
 	public void testClearedRulesSaveForOrderCreatedInCode() {
-		ServiceRegistration<?> registration = register(clearingProvider(), MOrder.Table_Name, 10);
+		ServiceRegistration<?> registration = register(IOrderDefaultsProvider.class, clearingProvider(), 10);
 		try {
 			MOrder order = newOrder();
 			order.saveEx();
@@ -245,7 +301,7 @@ public class DocumentDefaultsProviderTest extends AbstractTestCase {
 
 	@Test
 	public void testClearedRulesSaveWithSetBPartner() {
-		ServiceRegistration<?> registration = register(clearingProvider(), MOrder.Table_Name, 10);
+		ServiceRegistration<?> registration = register(IOrderDefaultsProvider.class, clearingProvider(), 10);
 		try {
 			MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 			MBPartner bp = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id);
@@ -263,7 +319,7 @@ public class DocumentDefaultsProviderTest extends AbstractTestCase {
 
 	@Test
 	public void testCopyFromKeepsSourceRules() {
-		ServiceRegistration<?> registration = register(clearingProvider(), MOrder.Table_Name, 10);
+		ServiceRegistration<?> registration = register(IOrderDefaultsProvider.class, clearingProvider(), 10);
 		try {
 			MOrder source = newOrder();
 			source.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
@@ -288,13 +344,13 @@ public class DocumentDefaultsProviderTest extends AbstractTestCase {
 
 	@Test
 	public void testNoDefaultPriceListFallsBackToContextCurrency() {
-		IDocumentDefaultsProvider<MOrder> provider = new IDocumentDefaultsProvider<MOrder>() {
+		IOrderDefaultsProvider provider = new IOrderDefaultsProvider() {
 			@Override
-			public int getM_PriceList_ID(MOrder document) {
-				return NO_DEFAULT;
+			public DefaultValue<Integer> getM_PriceList_ID(MOrder document) {
+				return DefaultValue.noDefault();
 			}
 		};
-		ServiceRegistration<?> registration = register(provider, MOrder.Table_Name, 10);
+		ServiceRegistration<?> registration = register(IOrderDefaultsProvider.class, provider, 10);
 		try {
 			MOrder order = newOrder();
 			// M_PriceList_ID is mandatory, so the insert fails; beforeSave has already set the currency.
@@ -323,10 +379,9 @@ public class DocumentDefaultsProviderTest extends AbstractTestCase {
 		return order;
 	}
 
-	private ServiceRegistration<?> register(IDocumentDefaultsProvider<?> provider, String tableName, int ranking) {
+	private <P> ServiceRegistration<P> register(Class<P> type, P provider, int ranking) {
 		Dictionary<String, Object> properties = new Hashtable<>();
 		properties.put(Constants.SERVICE_RANKING, ranking);
-		properties.put("tableName", tableName);
-		return TestActivator.context.registerService(IDocumentDefaultsProvider.class.getName(), provider, properties);
+		return TestActivator.context.registerService(type, provider, properties);
 	}
 }
