@@ -24,10 +24,10 @@
 package org.adempiere.webui.factory;
 
 import org.zkoss.calendar.api.CalendarModel;
-import org.zkoss.zk.ui.Component;
+import org.adempiere.webui.component.Window;
 
 /**
- * Factory to open the calendar window of the calendar dashboard gadget.<br/>
+ * Factory to create the calendar window of the calendar dashboard gadget.<br/>
  * Implement this interface and register it as an OSGi service with a {@code service.ranking}
  * higher than the default implementation to replace the calendar window.
  * @author Peter Takács
@@ -36,9 +36,9 @@ import org.zkoss.zk.ui.Component;
 public interface ICalendarWindowFactory
 {
 	/**
-	 * Create the calendar window and show it (as a tab of the desktop).
+	 * Create a new calendar window. The window is not shown, it is the responsibility of the caller to show it.
 	 * @param model calendar model shared with the caller
-	 * @return the calendar window component
+	 * @return the new calendar window
 	 */
-	public Component newCalendarWindow(CalendarModel model);
+	public Window newCalendarWindow(CalendarModel model);
 }

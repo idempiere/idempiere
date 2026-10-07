@@ -35,6 +35,8 @@ import org.adempiere.base.event.IEventTopics;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.Extensions;
 import org.adempiere.webui.component.Tabpanel;
+import org.adempiere.webui.component.Window;
+import org.adempiere.webui.panel.ITabOnCloseHandler;
 import org.adempiere.webui.part.WindowContainer;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
@@ -206,13 +208,27 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 		}
 	}
 
+	/**
+	 * Create the calendar window (see {@link Extensions#newCalendarWindow}) and show it as a tab of the desktop.
+	 */
+	private void showCalendarWindow() {
+		Window win = Extensions.newCalendarWindow(scm);
+		SessionManager.getAppDesktop().showWindow(win);
+		// IDEMPIERE-1457: when shown on tab, handle event close to remove calendars away scm
+		if (win instanceof ITabOnCloseHandler handler) {
+			Component parentTab = win.getParent();
+			if (parentTab != null && parentTab.getClass().equals(Tabpanel.class))
+				((Tabpanel) parentTab).setOnCloseHandler(handler);
+		}
+	}
+
 	@Override
 	public void onEvent(Event e) throws Exception {
 		String type = e.getName();
 
 		if (type.equals(Events.ON_CLICK)) {
 			if (e.getTarget() == btnCal)
-				Extensions.newCalendarWindow(scm);
+				showCalendarWindow();
 			else if (e.getTarget() == btnRefresh)
 				btnRefreshClicked();
 			else if (e.getTarget() == btnCurrentDate)

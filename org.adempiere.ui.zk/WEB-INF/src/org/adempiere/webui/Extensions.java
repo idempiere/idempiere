@@ -32,6 +32,7 @@ import org.adempiere.webui.adwindow.AbstractADWindowContent;
 import org.adempiere.webui.adwindow.IADTabpanel;
 import org.adempiere.webui.apps.IProcessParameterListener;
 import org.adempiere.webui.apps.graph.IChartRendererService;
+import org.adempiere.webui.component.Window;
 import org.adempiere.webui.factory.IADTabPanelFactory;
 import org.adempiere.webui.factory.ICalendarWindowFactory;
 import org.adempiere.webui.factory.IDashboardGadgetFactory;
@@ -470,11 +471,12 @@ public class Extensions {
 	}
 
 	/**
-	 * Open the calendar window of the calendar dashboard gadget, using the highest ranking {@link ICalendarWindowFactory}.
+	 * Create the calendar window of the calendar dashboard gadget, using the highest ranking {@link ICalendarWindowFactory}.
+	 * The window is not shown, it is the responsibility of the caller to show it.
 	 * @param model calendar model shared with the caller
-	 * @return the calendar window component
+	 * @return the new calendar window
 	 */
-	public static Component newCalendarWindow(CalendarModel model) {
+	public static Window newCalendarWindow(CalendarModel model) {
 		ICalendarWindowFactory calendarWindowFactory = Service.locator().locate(ICalendarWindowFactory.class).getService();
 		return calendarWindowFactory.newCalendarWindow(model);
 	}

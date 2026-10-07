@@ -22,6 +22,7 @@
 package org.idempiere.test.ui;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.util.Dictionary;
@@ -31,6 +32,7 @@ import java.util.List;
 import org.adempiere.base.IServiceReferenceHolder;
 import org.adempiere.base.Service;
 import org.adempiere.webui.Extensions;
+import org.adempiere.webui.component.Window;
 import org.adempiere.webui.factory.DefaultCalendarWindowFactory;
 import org.adempiere.webui.factory.ICalendarWindowFactory;
 import org.idempiere.test.TestActivator;
@@ -63,9 +65,10 @@ public class CalendarWindowFactoryTest {
 	public void testHigherRankingFactoryReplacesDefault() {
 		SimpleCalendarModel scm = new SimpleCalendarModel();
 		SimpleCalendarModel[] received = new SimpleCalendarModel[1];
+		Window created = new Window();
 		ICalendarWindowFactory custom = model -> {
 			received[0] = (SimpleCalendarModel) model;
-			return null;
+			return created;
 		};
 
 		Dictionary<String, Object> properties = new Hashtable<>();
@@ -76,8 +79,10 @@ public class CalendarWindowFactoryTest {
 		try {
 			assertSame(custom, Service.locator().locate(ICalendarWindowFactory.class).getService(),
 					"Highest ranking ICalendarWindowFactory must be selected");
-			Extensions.newCalendarWindow(scm);
+			Window window = Extensions.newCalendarWindow(scm);
 			assertSame(scm, received[0]);
+			assertSame(created, window);
+			assertNull(window.getParent(), "Factory must only create the window, showing it is up to the caller");
 		} finally {
 			registration.unregister();
 		}
