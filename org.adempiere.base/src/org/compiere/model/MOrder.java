@@ -1569,6 +1569,23 @@ public class MOrder extends X_C_Order implements DocAction
 			m_processMsg = "@NoLines@";
 			return DocAction.STATUS_Invalid;
 		}
+
+		if (!isSOTrx())
+		{
+			for (MOrderLine line : lines)
+			{
+				if (line.getM_Product_ID() <= 0)
+					continue;
+				MProduct product = line.getProduct();
+				if (product != null && product.isApprovedVendorRequired()
+						&& !MProductPO.isApprovedVendor(getCtx(), product.getM_Product_ID(), getC_BPartner_ID(), get_TrxName()))
+				{
+					m_processMsg = Msg.getMsg(getCtx(), "ProductNotApprovedForVendor",
+							new Object[] { product.getName(), MBPartner.get(getCtx(), getC_BPartner_ID()).getName() });
+					return DocAction.STATUS_Invalid;
+				}
+			}
+		}
 				
 		// Bug 1564431
 		if (MOrder.DELIVERYRULE_CompleteOrder.equals(getDeliveryRule()) )

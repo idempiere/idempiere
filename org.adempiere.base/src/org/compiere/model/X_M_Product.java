@@ -34,7 +34,7 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20260406L;
+	private static final long serialVersionUID = 20260827L;
 
     /** Standard Constructor */
     public X_M_Product (Properties ctx, int M_Product_ID, String trxName)
@@ -42,6 +42,8 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
       super (ctx, M_Product_ID, trxName);
       /** if (M_Product_ID == 0)
         {
+			setApprovedVendorRequirement (null);
+// C
 			setC_TaxCategory_ID (0);
 			setC_UOM_ID (0);
 			setIsAutoProduce (false);
@@ -95,6 +97,8 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
       super (ctx, M_Product_ID, trxName, virtualColumns);
       /** if (M_Product_ID == 0)
         {
+			setApprovedVendorRequirement (null);
+// C
 			setC_TaxCategory_ID (0);
 			setC_UOM_ID (0);
 			setIsAutoProduce (false);
@@ -148,6 +152,8 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
       super (ctx, M_Product_UU, trxName);
       /** if (M_Product_UU == null)
         {
+			setApprovedVendorRequirement (null);
+// C
 			setC_TaxCategory_ID (0);
 			setC_UOM_ID (0);
 			setIsAutoProduce (false);
@@ -201,6 +207,8 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
       super (ctx, M_Product_UU, trxName, virtualColumns);
       /** if (M_Product_UU == null)
         {
+			setApprovedVendorRequirement (null);
+// C
 			setC_TaxCategory_ID (0);
 			setC_UOM_ID (0);
 			setIsAutoProduce (false);
@@ -275,6 +283,31 @@ public class X_M_Product extends PO implements I_M_Product, I_Persistent
         .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
+
+	/** ApprovedVendorRequirement AD_Reference_ID=200289 */
+	public static final int APPROVEDVENDORREQUIREMENT_AD_Reference_ID=200289;
+	/** Use Product Category = C */
+	public static final String APPROVEDVENDORREQUIREMENT_UseProductCategory = "C";
+	/** Not Required = N */
+	public static final String APPROVEDVENDORREQUIREMENT_NotRequired = "N";
+	/** Required = Y */
+	public static final String APPROVEDVENDORREQUIREMENT_Required = "Y";
+	/** Set Approved Vendor Requirement.
+		@param ApprovedVendorRequirement Defines whether an approved vendor is required for purchasing this product.
+	*/
+	public void setApprovedVendorRequirement (String ApprovedVendorRequirement)
+	{
+
+		set_Value (COLUMNNAME_ApprovedVendorRequirement, ApprovedVendorRequirement);
+	}
+
+	/** Get Approved Vendor Requirement.
+		@return Defines whether an approved vendor is required for purchasing this product.
+	  */
+	public String getApprovedVendorRequirement()
+	{
+		return (String)get_Value(COLUMNNAME_ApprovedVendorRequirement);
+	}
 
 	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_C_RevenueRecognition getC_RevenueRecognition() throws RuntimeException
