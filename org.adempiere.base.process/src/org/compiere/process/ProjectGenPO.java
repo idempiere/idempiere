@@ -206,7 +206,7 @@ public class ProjectGenPO extends SvrProcess
 					MCurrency fromCurrency = MCurrency.get(getCtx(), C_Currency_ID);
 					MCurrency toCurrency = MCurrency.get(getCtx(), order.getC_Currency_ID());
 					throw new AdempiereException("No currency conversion rate found for " + fromCurrency.getISO_Code()
-							+ " to " + toCurrency.getISO_Code() + " on 2026-10-07.");
+							+ " to " + toCurrency.getISO_Code() + " on "+order.getDateAcct()+".");
 				}
 				//end 
 				 
