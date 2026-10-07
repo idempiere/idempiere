@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 
+
 import org.adempiere.exceptions.NoVendorForProductException;
 import org.apache.commons.collections.keyvalue.MultiKey;
 import org.compiere.model.MBPartner;
@@ -433,6 +434,28 @@ public class RequisitionPOCreate extends SvrProcess
 			{
 				if (ppos[i].isCurrentVendor() && ppos[i].getC_BPartner_ID() != 0)
 				{
+					
+					/*
+					 IDEMPIERE-6941 : Create PO from Requisition Generates Purchase Order Using Customer 
+					 			Due to Missing Vendor Role Validation in Product Purchasing
+					  A Product Purchasing record may reference a Business Partner without a Vendor role
+				     Validate the role before using it to create a Purchase Order
+					 @author Ayesha Siddika Suchi
+				     */
+					MBPartner bp = new MBPartner(
+					        getCtx(),
+					        ppos[i].getC_BPartner_ID(),
+					        null
+					    );
+
+				    if (!bp.isVendor())
+				    {
+				        throw new AdempiereException(
+				        		"Business Partner \"" + bp.getName() + "\" is not configured as a Vendor."
+				        );
+				    }
+				    //end
+					    
 					C_BPartner_ID = ppos[i].getC_BPartner_ID();
 					break;
 				}
