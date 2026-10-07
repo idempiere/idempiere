@@ -442,11 +442,8 @@ public class RequisitionPOCreate extends SvrProcess
 				     Validate the role before using it to create a Purchase Order
 					 @author Ayesha Siddika Suchi
 				     */
-					MBPartner bp = new MBPartner(
-					        getCtx(),
-					        ppos[i].getC_BPartner_ID(),
-					        null
-					    );
+					MBPartner bp = MBPartner.get(getCtx(), ppos[i].getC_BPartner_ID());
+
 
 				    if (!bp.isVendor())
 				    {
@@ -462,6 +459,23 @@ public class RequisitionPOCreate extends SvrProcess
 			}
 			if (C_BPartner_ID == 0 && ppos.length > 0)
 			{
+				/*
+				 IDEMPIERE-6941 : Create PO from Requisition Generates Purchase Order Using Customer 
+				 			Due to Missing Vendor Role Validation in Product Purchasing
+				  A Product Purchasing record may reference a Business Partner without a Vendor role
+			     Validate the role before using it to create a Purchase Order
+				 @author Ayesha Siddika Suchi
+			     */
+				MBPartner bp = MBPartner.get(getCtx(), ppos[0].getC_BPartner_ID());
+
+			    if (!bp.isVendor())
+			    {
+			        throw new AdempiereException(
+			        		"Business Partner \"" + bp.getName() + "\" is not configured as a Vendor."
+			        );
+			    }
+			    //end
+			    
 				C_BPartner_ID = ppos[0].getC_BPartner_ID();
 			}
 			if (C_BPartner_ID == 0)
