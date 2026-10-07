@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 
-
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.NoVendorForProductException;
 import org.apache.commons.collections.keyvalue.MultiKey;
 import org.compiere.model.MBPartner;
