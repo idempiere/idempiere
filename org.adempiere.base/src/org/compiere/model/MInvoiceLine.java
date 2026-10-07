@@ -1428,7 +1428,9 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	}	//	copyLinesFrom
 
 	/**
-	 * @param rmaLine
+	 * Set the line from an RMA line (credit memo only).<br/>
+	 * The line tax amount is calculated by the tax provider of the line's tax.
+	 * @param rmaLine RMA line
 	 */
 	public void setRMALine(MRMALine rmaLine)
 	{

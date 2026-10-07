@@ -35,17 +35,12 @@ import org.compiere.model.MBPartner;
 import org.compiere.model.MDocType;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
-import org.compiere.model.MOrder;
-import org.compiere.model.MOrderLine;
-import org.compiere.model.MRMA;
-import org.compiere.model.MRMALine;
 import org.compiere.model.MTax;
 import org.compiere.model.MTaxCategory;
 import org.compiere.model.MTaxProvider;
 import org.compiere.model.MTaxProviderCfg;
 import org.compiere.model.StandardTaxProvider;
 import org.compiere.process.DocAction;
-import org.compiere.process.ProcessInfo;
 import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
@@ -67,11 +62,8 @@ public class TaxProviderLineTaxTest extends AbstractTestCase {
 	private static final BigDecimal PROVIDER_TAX_AMT = new BigDecimal("1.23");
 	private static final String PROVIDER_CLASS = "TaxProviderLineTaxTest.LineTaxProvider";
 
-	public TaxProviderLineTaxTest() {
-	}
-
 	/**
-	 * A provider implementing only the abstract methods calculates the line tax with the tax rate, as before.
+	 * A provider that does not override updateLineTax (StandardTaxProvider) calculates the line tax with the tax rate, as before.
 	 */
 	@Test
 	public void testDefaultLineTax() {
@@ -83,7 +75,7 @@ public class TaxProviderLineTaxTest extends AbstractTestCase {
 		line.setC_Tax_ID(DictionaryIDs.C_Tax.CT_SALES.id);
 		line.setTaxAmt(Env.ZERO);
 
-		assertTrue(new MinimalTaxProvider().updateLineTax(null, line));
+		assertTrue(new StandardTaxProvider().updateLineTax(null, line));
 
 		MTax tax = MTax.get(Env.getCtx(), DictionaryIDs.C_Tax.CT_SALES.id);
 		BigDecimal expected = tax.calculateTax(line.getLineNetAmt(), line.isTaxIncluded(), line.getPrecision());
@@ -157,6 +149,10 @@ public class TaxProviderLineTaxTest extends AbstractTestCase {
 		}
 	}
 
+	/**
+	 * Create a drafted AR invoice for C&W.
+	 * @return saved invoice
+	 */
 	private MInvoice createInvoice() {
 		MInvoice invoice = new MInvoice(Env.getCtx(), 0, getTrxName());
 		invoice.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id));
@@ -174,6 +170,9 @@ public class TaxProviderLineTaxTest extends AbstractTestCase {
 
 	/** Calculates the line tax itself: a fixed amount */
 	private static final class LineTaxProvider extends StandardTaxProvider {
+		/**
+		 * Set the fixed {@link #PROVIDER_TAX_AMT} as line tax amount.
+		 */
 		@Override
 		public boolean updateLineTax(MTaxProvider provider, MInvoiceLine line) {
 			line.setTaxAmt(PROVIDER_TAX_AMT);
@@ -182,31 +181,22 @@ public class TaxProviderLineTaxTest extends AbstractTestCase {
 		}
 	}
 
+	/** Creates {@link LineTaxProvider} for {@link #PROVIDER_CLASS} */
 	private static final class LineTaxProviderFactory extends MappedByNameFactory<ITaxProvider> implements ITaxProviderFactory {
+		/**
+		 * Register the mapping of {@link #PROVIDER_CLASS} to {@link LineTaxProvider}.
+		 */
 		public LineTaxProviderFactory() {
 			addMapping(PROVIDER_CLASS, () -> new LineTaxProvider());
 		}
 
+		/**
+		 * @param className tax provider class name
+		 * @return new tax provider instance, or null if className is not mapped
+		 */
 		@Override
 		public ITaxProvider newTaxProviderInstance(String className) {
 			return newInstance(className);
 		}
-	}
-
-	/** Implements only the abstract methods */
-	private static final class MinimalTaxProvider implements ITaxProvider {
-		@Override public boolean calculateOrderTaxTotal(MTaxProvider provider, MOrder order) { return true; }
-		@Override public boolean updateOrderTax(MTaxProvider provider, MOrderLine line) { return true; }
-		@Override public boolean recalculateTax(MTaxProvider provider, MOrderLine line, boolean newRecord) { return true; }
-		@Override public boolean updateHeaderTax(MTaxProvider provider, MOrderLine line) { return true; }
-		@Override public boolean calculateInvoiceTaxTotal(MTaxProvider provider, MInvoice invoice) { return true; }
-		@Override public boolean updateInvoiceTax(MTaxProvider provider, MInvoiceLine line) { return true; }
-		@Override public boolean recalculateTax(MTaxProvider provider, MInvoiceLine line, boolean newRecord) { return true; }
-		@Override public boolean updateHeaderTax(MTaxProvider provider, MInvoiceLine line) { return true; }
-		@Override public boolean calculateRMATaxTotal(MTaxProvider provider, MRMA rma) { return true; }
-		@Override public boolean updateRMATax(MTaxProvider provider, MRMALine line) { return true; }
-		@Override public boolean recalculateTax(MTaxProvider provider, MRMALine line, boolean newRecord) { return true; }
-		@Override public boolean updateHeaderTax(MTaxProvider provider, MRMALine line) { return true; }
-		@Override public String validateConnection(MTaxProvider provider, ProcessInfo pi) throws Exception { return null; }
 	}
 }
