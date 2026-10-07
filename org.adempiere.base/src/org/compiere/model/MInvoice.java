@@ -1424,17 +1424,16 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 	}	//	getAllocatedAmt
 
 	/**
-	 * Check if this invoice has at least one active allocation line whose allocation is neither reversed nor voided
+	 * Check if this invoice has at least one active allocation line whose allocation is active and not reversed or voided
 	 * @return true if there is an effective allocation line
 	 */
 	private boolean hasEffectiveAllocation()
 	{
-		for (MAllocationHdr allocation : MAllocationHdr.getOfInvoice(getCtx(), getC_Invoice_ID(), get_TrxName()))
-		{
-			if (!DOCSTATUS_Reversed.equals(allocation.getDocStatus()) && !DOCSTATUS_Voided.equals(allocation.getDocStatus()))
-				return true;
-		}
-		return false;
+		final String sql = "SELECT 1 FROM C_AllocationLine al"
+			+ " INNER JOIN C_AllocationHdr ah ON (al.C_AllocationHdr_ID=ah.C_AllocationHdr_ID) "
+			+ "WHERE al.C_Invoice_ID=? AND al.IsActive='Y' AND ah.IsActive='Y'"
+			+ " AND ah.DocStatus IN ('CO','CL','IP')";
+		return DB.getSQLValueEx(get_TrxName(), sql, getC_Invoice_ID()) > 0;
 	}	//	hasEffectiveAllocation
 
 	/**
@@ -1448,29 +1447,20 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 
 		if ( isProcessed() || beingCompleted) {
 			BigDecimal alloc = getAllocatedAmt();	//	absolute, null if the invoice has no allocation line
-			boolean requireAllocation = MSysConfig.getBooleanValue(MSysConfig.INVOICE_ISPAID_REQUIRES_ALLOCATION, false, getAD_Client_ID());
-			if (!requireAllocation)
-			{
-				// open balance 0 means paid, even without allocation line (e.g. zero total invoice)
-				if (alloc == null)
-					alloc = Env.ZERO;
-			}
-			else if (!DOCSTATUS_Voided.equals(getDocStatus()) && !DOCSTATUS_Reversed.equals(getDocStatus()))
-			{
-				// IsPaid requires at least one effective (not reversed/voided) allocation line, voided/reversed invoices are exempt
-				if (!hasEffectiveAllocation())
-					alloc = null;
-			}
-			else if (alloc == null)
-			{
+			if (alloc == null)
 				alloc = Env.ZERO;
-			}
+			// With the config set, IsPaid requires at least one effective (not reversed/voided) allocation line,
+			// voided/reversed invoices are exempt. Only check when the allocated amount is 0, otherwise allocation lines exist.
+			boolean missingAllocation = alloc.signum() == 0
+					&& !DOCSTATUS_Voided.equals(getDocStatus()) && !DOCSTATUS_Reversed.equals(getDocStatus())
+					&& MSysConfig.getBooleanValue(MSysConfig.INVOICE_ISPAID_REQUIRES_ALLOCATION, false, getAD_Client_ID())
+					&& !hasEffectiveAllocation();
 			BigDecimal total = getGrandTotal();
 			if (!isSOTrx())
 				total = total.negate();
 			if (isCreditMemo())
 				total = total.negate();
-			boolean test = alloc != null && total.compareTo(alloc) == 0;
+			boolean test = !missingAllocation && total.compareTo(alloc) == 0;
 			change = test != isPaid();
 			if (change)
 				setIsPaid(test);

@@ -1,4 +1,7 @@
 -- IDEMPIERE-7132
+-- Purpose: add client-level AD_SysConfig INVOICE_ISPAID_REQUIRES_ALLOCATION to control when an invoice is marked as paid.
+-- Impact: default N keeps the current behavior (invoice is paid whenever its open balance is 0, even without allocation line);
+--         Y requires at least one effective allocation line, so a zero total invoice with no allocation is no longer marked as paid.
 SELECT register_migration_script('202610061155_IDEMPIERE-7132.sql') FROM dual;
 
 SET SQLBLANKLINES ON
