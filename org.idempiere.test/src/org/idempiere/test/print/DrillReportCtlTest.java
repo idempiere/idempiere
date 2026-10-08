@@ -111,6 +111,17 @@ public class DrillReportCtlTest {
 	}
 
 	@Test
+	public void testUnpaddedFullTimestampForDateParameterKeepsTheDay() {
+		Timestamp ts = ctl.toTimestamp(DisplayType.Date, "2026-1-2 10:30:15");
+		assertEquals(LocalDateTime.of(2026, 1, 2, 0, 0, 0), ts.toLocalDateTime());
+	}
+
+	@Test
+	public void testInvalidCalendarDateIsRejected() {
+		assertThrows(IllegalArgumentException.class, () -> ctl.toTimestamp(DisplayType.Date, "2026-02-30"));
+	}
+
+	@Test
 	public void testTimestampValueIsReturnedUnchanged() {
 		Timestamp value = Timestamp.valueOf("2026-03-04 05:06:07");
 		assertSame(value, ctl.toTimestamp(DisplayType.Date, value));

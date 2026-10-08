@@ -692,7 +692,7 @@ public class DrillReportCtl {
 		try {
 			ts = Timestamp.valueOf(text);
 			if (displayType == DisplayType.Date)
-				ts = new Timestamp(parseFully(DisplayType.getDateFormat_JDBC(), text.substring(0, 10)).getTime());
+				ts = Timestamp.valueOf(ts.toLocalDateTime().toLocalDate().atStartOfDay());
 			return ts;
 		} catch (IllegalArgumentException e) {
 			// not a full timestamp, try the date only format
@@ -710,6 +710,7 @@ public class DrillReportCtl {
 	 * @return timestamp, or null if the text is not fully matched by the format
 	 */
 	private Timestamp parseFully(SimpleDateFormat format, String text) {
+		format.setLenient(false);
 		ParsePosition pos = new ParsePosition(0);
 		java.util.Date date = format.parse(text, pos);
 		if (date == null || pos.getIndex() != text.length())
