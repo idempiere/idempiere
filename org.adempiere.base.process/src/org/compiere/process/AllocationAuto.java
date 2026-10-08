@@ -282,11 +282,9 @@ public class AllocationAuto extends SvrProcess
 				}
 				else
 				{
-					// IsPaid requires an allocation, let MInvoice decide; invoice stays a candidate if it is not paid
+					// IsPaid requires an allocation, let MInvoice decide; nothing is open so it is not a candidate either way
 					if (invoice.testAllocation())
 						invoice.saveEx();
-					if (!invoice.isPaid())
-						list.add (invoice);
 				}
 			}
 			else
