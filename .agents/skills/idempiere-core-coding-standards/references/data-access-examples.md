@@ -12,7 +12,17 @@ for (MOrderLine line : order.getLines()) {
 
 ### Many records: PO batch API
 
-`BatchUpdate`, `BatchInsert` and `BatchDelete` (`org.compiere.model`) process many POs efficiently while still running `beforeSave`, model validators, event handlers and the change log. See `org.idempiere.test/src/org/idempiere/test/model/BatchOperationTest.java`.
+`BatchInsert`, `BatchUpdate` and `BatchDelete` (`org.compiere.model`) process many POs efficiently. They don't all run the same hooks as a single `save()` / `delete()`:
+
+| API | Runs | Skips |
+|---|---|---|
+| `BatchInsert` | `beforeSave(true)`, before-new validators and event handlers (`TYPE_NEW`), change log | `afterSave`, after-new validators and event handlers (`TYPE_AFTER_NEW`), translation (`*_Trl`) rows, tree nodes |
+| `BatchUpdate` | `beforeSave(false)`, `afterSave`, validators and event handlers (`TYPE_CHANGE`, `TYPE_AFTER_CHANGE`), change log | nothing relevant |
+| `BatchDelete` | `beforeDelete()`, `afterDelete`, validators and event handlers (`TYPE_DELETE`, `TYPE_AFTER_DELETE`), translation delete, change log | nothing relevant |
+
+Use a normal `saveEx()` instead of `BatchInsert` for tables that are translated, have a tree, or rely on `afterSave` or after-new event handlers.
+
+See `org.idempiere.test/src/org/idempiere/test/model/BatchOperationTest.java`.
 
 ```java
 BatchUpdate<MOrderLine> batch = new BatchUpdate<>(MOrderLine.class);

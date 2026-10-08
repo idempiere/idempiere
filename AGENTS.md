@@ -13,7 +13,7 @@ If this file and the documentation disagree, the documentation wins.
 3. **Never write migration scripts or Application Dictionary IDs.** Do not hand-write `INSERT`/`UPDATE` on `AD_*` tables, do not invent `*_ID` or `*_UU` values, do not create files under `migration/`. The developer generates these from the iDempiere UI with Centralized IDs. Your job is to tell them what to create and to review what they generated. See `idempiere-database-changes`.
 4. **PostgreSQL and Oracle.** Every SQL statement and every migration must work on both databases.
 5. **Data access order:** model classes (`M*`) → `Query` → `DB.*` helpers → raw JDBC only when unavoidable (and always close resources).
-6. **Backward compatibility.** Do not change or remove public or protected method signatures; add an overload instead. Plugins depend on core APIs and on columns that look unused.
+6. **Backward compatibility.** Prefer overloads over changing or removing public or protected method signatures; plugins depend on core APIs and on columns that look unused. Change a signature only when the developer explicitly decides on a breaking change, and then document it as one (PR template "Breaking change" and the migration notes in the docs).
 7. **English only** for code, identifiers and comments. New Java files get the GPLv2 license header.
 8. **Minimal, focused diffs.** Touch only what the ticket needs. No drive-by reformatting, no unrelated cleanups.
 9. **Honest testing.** Never claim a test passed if you did not run it. Say what was and was not verified.

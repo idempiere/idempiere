@@ -32,7 +32,7 @@ Go through `references/review-checklist.md`. The points core maintainers care ab
 - **PostgreSQL and Oracle**: SQL and migrations work on both.
 - **Migrations present** when the dictionary or schema changed: both DB folders, correct naming, generated (not hand-written). Review them with the checklist in `idempiere-database-changes`.
 - **Data access order**: model → `Query` → `DB` → JDBC, with resources closed and bind parameters used.
-- **Backward compatibility**: no removed or changed public signatures. Overloads used.
+- **Backward compatibility**: no removed or changed public or protected signatures (overloads used), unless it is a documented, intentional breaking change.
 - **Transactions**: `trxName` propagated, no stray commits.
 - **Security**: no SQL injection, no cross-client data exposure, no role bypass, no secrets in logs.
 - **English**, GPLv2 header on new files, no new warnings, readable code.
@@ -73,6 +73,8 @@ Only after gates 1 and 2 pass:
 ```bash
 bash .agents/skills/idempiere-pr-review/scripts/review-pr.sh --cleanup <pr-number>
 ```
+
+Cleanup refuses if the review branch has commits of its own besides the review merge (for example a fix you prepared for the author), and lists them. Keep them first, or confirm with the developer before running `--cleanup --force <pr-number>`.
 
 Manual fallback without the script (replace `<pr-number>`):
 

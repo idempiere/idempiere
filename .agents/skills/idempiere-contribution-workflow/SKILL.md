@@ -49,7 +49,7 @@ Run the checklist in `idempiere-pr-review` against your own diff. At minimum:
 - Code builds (`./mvnw verify`, or a targeted build, see `idempiere-headless-build-run`).
 - Existing unit tests still pass, and new logic or bug fixes have a test where feasible (`idempiere-unit-tests`).
 - PostgreSQL and Oracle migration files are both present if there are DB changes.
-- No public API signature was changed or removed without an overload.
+- No public or protected signature was changed or removed without an overload, unless the developer decided on a breaking change and it is documented as one.
 
 ## 5. Push and open the pull request
 

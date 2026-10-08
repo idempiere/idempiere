@@ -13,7 +13,7 @@ Before writing new code, read the surrounding code and match its style (tabs, br
 
 ## 1. Data access: use this order of preference
 
-1. **Model classes (`M*`)**: e.g. `MBPartner.get(ctx, id)`, `MOrder#getLines()`. Many have cached static getters; use them. For bulk changes on many POs, use `BatchUpdate` / `BatchInsert` / `BatchDelete` (`org.compiere.model`). They still run `beforeSave`, model validators and the change log.
+1. **Model classes (`M*`)**: e.g. `MBPartner.get(ctx, id)`, `MOrder#getLines()`. Many have cached static getters; use them. For bulk changes on many POs, use `BatchUpdate` / `BatchInsert` / `BatchDelete` (`org.compiere.model`). They run the applicable save or delete hooks, validators and the change log, but `BatchInsert` skips `afterSave`, translations and tree nodes. See `references/data-access-examples.md`.
 2. **`Query`**: `new Query(ctx, MOrder.Table_Name, whereClause, trxName)` with `.setParameters(...)`, `.setClient_ID()`, `.setOnlyActiveRecords(true)`, `.setOrderBy(...)`, then `.list()`, `.first()`, `.firstOnly()`, `.count()`.
 3. **`DB` helpers**: `DB.getSQLValueEx(trxName, sql, params...)`, `DB.getSQLValueStringEx(...)`, `DB.executeUpdateEx(sql, params, trxName)`. A raw `UPDATE` bypasses `beforeSave`, model validators, event handlers and the change log, so use it only when that is intended.
 4. **Raw JDBC** (`DB.prepareStatement`): only when nothing above fits, e.g. large streaming reads. Always close resources in `finally` with `DB.close(rs, pstmt)`.
@@ -42,7 +42,7 @@ See `references/data-access-examples.md` for the canonical patterns.
 
 ## 4. Backward compatibility
 
-- **Never change or remove a public or protected method signature.** Add an overload and have the old one delegate to it. Plugins compile against core.
+- **Prefer overloads over changing or removing a public or protected method signature.** Add the new signature and have the old one delegate to it. Plugins compile against core. Change or remove a signature only when the developer explicitly decides on a breaking change; then it must be documented as one (PR template "Breaking change" and the migration notes in the docs).
 - Deprecate with `@Deprecated` plus javadoc pointing to the replacement, instead of deleting.
 - If you change the signature of a class or interface (e.g. add, remove or change public methods or fields), regenerate its `serialVersionUID` if it has one. This is the project convention (see How to Contribute), even for changes Java considers serialization-compatible.
 - Columns and fields that look "unused" may be used by implementers. Don't remove them or change their meaning.

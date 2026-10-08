@@ -20,8 +20,8 @@
 - [ ] No N+1 queries in loops over large sets. Caches (`MXxx.get`) used where appropriate.
 
 ## API and compatibility
-- [ ] No public or protected signature removed or changed. New overloads delegate correctly.
-- [ ] `serialVersionUID` regenerated if a serializable class structure changed.
+- [ ] No public or protected signature removed or changed, unless it is an intentional breaking change documented in the PR and the migration notes. New overloads delegate correctly.
+- [ ] `serialVersionUID` regenerated if the signature of a serializable class changed (project convention, see How to Contribute).
 - [ ] Default behavior unchanged, or the change is justified and documented (opt-in via SysConfig preferred).
 - [ ] No removal or repurposing of columns that look "unused".
 
