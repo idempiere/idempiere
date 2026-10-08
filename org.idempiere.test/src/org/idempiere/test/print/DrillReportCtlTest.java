@@ -92,6 +92,25 @@ public class DrillReportCtlTest {
 	}
 
 	@Test
+	public void testFractionalSecondsArePreserved() {
+		Timestamp ts = ctl.toTimestamp(DisplayType.DateTime, "2026-01-01 10:30:15.123");
+		assertEquals(LocalDateTime.of(2026, 1, 1, 10, 30, 15, 123000000), ts.toLocalDateTime());
+	}
+
+	@Test
+	public void testFullTimestampValueForTimeParameterKeepsTheTime() {
+		Timestamp ts = ctl.toTimestamp(DisplayType.Time, "2026-01-01 10:30:15");
+		assertEquals(LocalDateTime.of(2026, 1, 1, 10, 30, 15), ts.toLocalDateTime());
+	}
+
+	@Test
+	public void testTrailingTextIsRejected() {
+		assertThrows(IllegalArgumentException.class, () -> ctl.toTimestamp(DisplayType.DateTime, "2026-01-01 10:30:15 junk"));
+		assertThrows(IllegalArgumentException.class, () -> ctl.toTimestamp(DisplayType.Date, "2026-01-01 junk"));
+		assertThrows(IllegalArgumentException.class, () -> ctl.toTimestamp(DisplayType.Time, "10:30:15 junk"));
+	}
+
+	@Test
 	public void testTimestampValueIsReturnedUnchanged() {
 		Timestamp value = Timestamp.valueOf("2026-03-04 05:06:07");
 		assertSame(value, ctl.toTimestamp(DisplayType.Date, value));

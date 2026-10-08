@@ -31,7 +31,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
-import java.text.ParseException;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -667,7 +667,9 @@ public class DrillReportCtl {
 
 	/**
 	 * Parse a text value using the format that matches the display type.
-	 * Falls back to the JDBC date format (yyyy-mm-dd).
+	 * The whole text must be consumed. Falls back to a full JDBC timestamp
+	 * (yyyy-mm-dd hh:mm:ss[.fffffffff], keeps the time and fractional seconds,
+	 * except for {@link DisplayType#Date} where it is truncated to the day) and then to the JDBC date format (yyyy-mm-dd).
 	 * @param displayType {@link DisplayType#Date}, {@link DisplayType#Time} or any other date type
 	 * @param value text to parse
 	 * @return timestamp, or null if value is empty
@@ -676,6 +678,7 @@ public class DrillReportCtl {
 	protected Timestamp getDateTimeParsed(int displayType, String value) {
 		if (Util.isEmpty(value, true))
 			return null;
+		String text = value.trim();
 		SimpleDateFormat format;
 		if (displayType == DisplayType.Date)
 			format = DisplayType.getDateFormat_JDBC();
@@ -683,15 +686,35 @@ public class DrillReportCtl {
 			format = DisplayType.getTimeFormat_Default();
 		else
 			format = DisplayType.getTimestampFormat_Default();
+		Timestamp ts = parseFully(format, text);
+		if (ts != null)
+			return ts;
 		try {
-			return new Timestamp(format.parse(value).getTime());
-		} catch (ParseException e) {
-			try {
-				return new Timestamp(DisplayType.getDateFormat_JDBC().parse(value).getTime());
-			} catch (ParseException e1) {
-				throw new IllegalArgumentException("Cannot parse date/time value: " + value, e1);
-			}
+			ts = Timestamp.valueOf(text);
+			if (displayType == DisplayType.Date)
+				ts = new Timestamp(parseFully(DisplayType.getDateFormat_JDBC(), text.substring(0, 10)).getTime());
+			return ts;
+		} catch (IllegalArgumentException e) {
+			// not a full timestamp, try the date only format
 		}
+		ts = parseFully(DisplayType.getDateFormat_JDBC(), text);
+		if (ts == null)
+			throw new IllegalArgumentException("Cannot parse date/time value: " + value);
+		return ts;
+	}
+
+	/**
+	 * Parse text with a format, requiring that the whole text is consumed
+	 * @param format format to use
+	 * @param text text to parse
+	 * @return timestamp, or null if the text is not fully matched by the format
+	 */
+	private Timestamp parseFully(SimpleDateFormat format, String text) {
+		ParsePosition pos = new ParsePosition(0);
+		java.util.Date date = format.parse(text, pos);
+		if (date == null || pos.getIndex() != text.length())
+			return null;
+		return new Timestamp(date.getTime());
 	}
 
 	protected BigDecimal toBigDecimal(Object value) {
