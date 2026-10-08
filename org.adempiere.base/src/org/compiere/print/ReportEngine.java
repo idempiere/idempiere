@@ -437,7 +437,16 @@ public class ReportEngine implements PrintServiceAttributeListener
 	{
 		return m_info;
 	}	//	getPrintInfo
-	
+
+	/**
+	 * 	Get transaction name
+	 *	@return transaction name, null if none
+	 */
+	public String getTrxName()
+	{
+		return m_trxName;
+	}	//	getTrxName
+
 	/**
 	 * 	Get PrintLayout (Report) Context
 	 * 	@return context
@@ -1732,6 +1741,18 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	 */
 	public static void printConfirm (int type, int Record_ID)
 	{
+		printConfirm(type, Record_ID, null);
+	}	//	printConfirm
+
+	/**
+	 * 	Print Confirm.<br/>
+	 *  Update Date Printed.
+	 * 	@param type report engine document type ({@link #ORDER}, {@link #SHIPMENT}, etc)
+	 * 	@param Record_ID record id
+	 * 	@param trxName transaction name, null for no transaction
+	 */
+	public static void printConfirm (int type, int Record_ID, String trxName)
+	{
 		StringBuilder sql = new StringBuilder();
 		if (type == ORDER || type == SHIPMENT || type == INVOICE)
 			sql.append("UPDATE ").append(DOC_BASETABLES[type])
@@ -1740,7 +1761,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		//
 		if (sql.length() > 0)
 		{
-			int no = DB.executeUpdate(sql.toString(), null);
+			int no = DB.executeUpdate(sql.toString(), trxName);
 			if (no != 1)
 				log.log(Level.SEVERE, "Updated records=" + no + " - should be just one");
 		}

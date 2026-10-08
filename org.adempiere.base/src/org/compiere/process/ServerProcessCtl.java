@@ -290,6 +290,8 @@ public class ServerProcessCtl implements Runnable {
 		if (IsReport)
 		{
 			m_pi.setReportingProcess(true);
+			if (m_trx != null)
+				m_pi.setTransactionName(m_trx.getTrxName());
 			//	Start Report	-----------------------------------------------
 			boolean ok = ServerReportCtl.start(m_pi);
 			String summ = Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Report"));

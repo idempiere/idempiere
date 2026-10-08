@@ -94,6 +94,17 @@ public class ArchiveEngine
 	 */ 
 	public void archive (File pdfFile, PrintInfo info)
 	{
+		archive(pdfFile, info, null);
+	}	//	archive
+
+	/**
+	 * 	Create Archive.
+	 * 	@param pdfFile
+	 * 	@param info print info
+	 * 	@param trxName transaction name, null for no transaction
+	 */ 
+	public void archive (File pdfFile, PrintInfo info, String trxName)
+	{
 		//	Do we need to Archive ?
 		MClient client = MClient.get(Env.getCtx());
 		String aaClient = client.getAutoArchive();
@@ -116,7 +127,7 @@ public class ArchiveEngine
 				return;
 		}
 		
-		MArchive archive = new MArchive (Env.getCtx(),info, null);
+		MArchive archive = new MArchive (Env.getCtx(),info, trxName);
 		try (FileInputStream fis = new FileInputStream(pdfFile)){
 			archive.setInputStream(fis);
 			archive.saveEx();
