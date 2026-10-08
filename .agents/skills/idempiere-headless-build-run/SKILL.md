@@ -12,6 +12,16 @@ References:
 
 Requirements: JDK 17 and git. Maven comes through the wrapper `./mvnw`. A PostgreSQL (or Oracle) database with the iDempiere seed is needed for tests and for running the server.
 
+The commands below use Linux/macOS syntax. On Windows, run the `.sh` scripts (including `RUN_SyncDBDev.sh`) from Git Bash, use `mvnw.cmd` in `cmd`/PowerShell, and use the `.bat` server scripts listed below.
+
+## Credentials
+
+`idempiere.properties` and `idempiereEnv.properties` usually contain the database password, often unencrypted (`RUN_SyncDBDev.sh` requires an unencrypted connection).
+
+- Never print, `cat`, log or paste their contents, not even in a summary or an error report.
+- Never commit them. They are gitignored; never bypass that with `git add -f`.
+- If you need connection details (host, port, database name), ask the developer.
+
 ## Build
 
 From the repo root:
@@ -24,6 +34,7 @@ From the repo root:
 
 - The parent POM is `org.idempiere.parent/pom.xml`. It's a Tycho (OSGi) build, so bundles resolve against the target platform in `org.idempiere.p2.targetplatform`.
 - The first build downloads many dependencies and is slow. Later builds are faster.
+- After switching branches (e.g. between pull requests), use `./mvnw clean verify`. Leftover `target/` output from the previous branch can hide compile errors.
 - A full build is the reliable way to check compilation across all bundles. Tycho doesn't handle partial `-pl` builds as well as plain Maven does.
 - Run long builds in the background if your environment allows, and read the tail of the output for `BUILD SUCCESS` / `BUILD FAILURE`.
 
@@ -50,19 +61,28 @@ bash RUN_SyncDBDev.sh -h              # usage
 
 ## Build and start the server product
 
-After `./mvnw verify`, the server product is at:
+After `./mvnw verify`, the server product for each platform is under `org.idempiere.p2/target/products/org.adempiere.server.product/`:
 
-```
-org.idempiere.p2/target/products/org.adempiere.server.product/linux/gtk/x86_64/
-```
+| OS | Folder | Scripts |
+|---|---|---|
+| Linux | `linux/gtk/x86_64/` | `.sh` |
+| Windows | `win32/win32/x86_64/` | `.bat` |
+| macOS | `macosx/cocoa/x86_64/Eclipse.app/Contents/Eclipse/` | `.sh` |
 
-In that directory:
+In that folder:
 
 ```bash
+# Linux / macOS
 bash console-setup.sh          # interactive configuration (DB, ports, keystore)
-# or, non-interactive, using an idempiereEnv.properties prepared by the developer:
-bash silent-setup-alt.sh
+bash silent-setup-alt.sh       # or non-interactive, using an idempiereEnv.properties prepared by the developer
 bash idempiere-server.sh       # start (add "debug" to open the JDWP port 4554)
+```
+
+```bat
+REM Windows
+console-setup.bat
+silent-setup-alt.bat
+idempiere-server.bat
 ```
 
 - The web UI is at `http://localhost:8080/webui/` by default (port as configured).

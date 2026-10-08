@@ -39,27 +39,49 @@ Go through `references/review-checklist.md`. The points core maintainers care ab
 - **Tests**: a unit test for logic changes where feasible, and existing tests unaffected.
 - **Collateral impact**: search for callers of every changed method or class and judge whether their behavior changes.
 
-## 3. Functional review (local)
+## 3. Local verification, in gates
 
-Use a disposable branch so `master` stays clean:
+Run the cheap checks first. Go to the next gate only if the previous one passed. Otherwise report the findings (section 4) and stop.
+
+### Gate 1: code review
+Sections 1 and 2 above. Stop if there are blocking findings.
+
+### Gate 2: build and tests
+
+Check out the PR on a disposable branch with the bundled script. It needs a clean working tree and an `upstream` remote. On Windows, run it from Git Bash.
 
 ```bash
-git checkout master
-git pull upstream master
-git checkout -b review-IDEMPIERE-<ticket>
-git pull --no-commit https://github.com/<pr-author>/idempiere.git <pr-branch>
-# or: gh pr checkout <number> --repo idempiere/idempiere
+bash .agents/skills/idempiere-pr-review/scripts/review-pr.sh <pr-number>
 ```
 
-Replace `<ticket>`, `<pr-author>`, `<pr-branch>` and `<number>` with the values of the pull request under review.
+It creates `review-pr-<pr-number>` from `upstream/master` with the PR merged in, so you test the code as it would be after merging. It prints the PR's commits, changed files and added migration scripts. If the PR doesn't merge cleanly, it says so and leaves nothing behind.
 
 Then:
 
-1. Apply the PR's migration scripts: `bash RUN_SyncDBDev.sh` (tell the developer, since it modifies their DB).
-2. Build (`./mvnw verify`) and run the relevant tests (`idempiere-unit-tests`).
-3. Test the ticket scenario in the running application, if possible on GardenWorld.
-4. Test beyond the happy path and check related areas that might be affected. The system should behave exactly as before except for the intended change.
-5. Afterwards: `git checkout master` and delete the review branch if you no longer need it.
+1. If the PR adds migration scripts, apply them with `bash RUN_SyncDBDev.sh`. This modifies the developer's database, so tell them first. A disposable database is better for reviews.
+2. Do a clean build with the tests: `./mvnw clean verify -DskipTests=false`. Always use `clean` when moving between PRs, because leftover `target/` output can hide compile errors. While iterating, you can limit it to the affected test classes (see `idempiere-unit-tests`).
+3. Stop and report if the build or any test fails. Mention tests that also fail on `master`.
+
+### Gate 3: application test
+Only after gates 1 and 2 pass:
+
+1. Test the ticket scenario in the running application, preferably on GardenWorld (see `idempiere-headless-build-run`).
+2. Test beyond the happy path and check related areas that might be affected. The system should behave exactly as before except for the intended change.
+
+### Cleanup
+
+```bash
+bash .agents/skills/idempiere-pr-review/scripts/review-pr.sh --cleanup <pr-number>
+```
+
+Manual fallback without the script (replace `<pr-number>`):
+
+```bash
+git fetch upstream master
+git checkout --no-track -b review-pr-<pr-number> upstream/master
+git fetch upstream pull/<pr-number>/head
+git merge --no-ff FETCH_HEAD
+```
 
 ## 4. Report findings
 

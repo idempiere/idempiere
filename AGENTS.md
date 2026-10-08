@@ -13,14 +13,17 @@ If this file and the documentation disagree, the documentation wins.
 3. **Never write migration scripts or Application Dictionary IDs.** Do not hand-write `INSERT`/`UPDATE` on `AD_*` tables, do not invent `*_ID` or `*_UU` values, do not create files under `migration/`. The developer generates these from the iDempiere UI with Centralized IDs. Your job is to tell them what to create and to review what they generated. See `idempiere-database-changes`.
 4. **PostgreSQL and Oracle.** Every SQL statement and every migration must work on both databases.
 5. **Data access order:** model classes (`M*`) → `Query` → `DB.*` helpers → raw JDBC only when unavoidable (and always close resources).
-6. **Backward compatibility.** Do not change or remove public method signatures; add an overload instead. Plugins depend on core APIs and on columns that look unused.
+6. **Backward compatibility.** Do not change or remove public or protected method signatures; add an overload instead. Plugins depend on core APIs and on columns that look unused.
 7. **English only** for code, identifiers and comments. New Java files get the GPLv2 license header.
 8. **Minimal, focused diffs.** Touch only what the ticket needs. No drive-by reformatting, no unrelated cleanups.
 9. **Honest testing.** Never claim a test passed if you did not run it. Say what was and was not verified.
+10. **No credentials in output, commits or PRs.** Never print, log, paste or commit `idempiere.properties`, `idempiereEnv.properties` or any file with connection strings or passwords. Never `git add -f` them. Ask the developer if you need connection details.
 
 ## Skills
 
 Detailed, task-specific instructions live in `.agents/skills/<name>/SKILL.md`. Read the matching skill **before** starting the task.
+
+`.claude/skills` is a symlink to `.agents/skills`. On Windows, git checks symlinks out as plain files unless they are enabled (Developer Mode, then `git clone -c core.symlinks=true ...` or `git config core.symlinks true` followed by a fresh checkout). Without it, automatic skill loading may not work; the table below still points to every skill.
 
 | When you are… | Read |
 |---|---|

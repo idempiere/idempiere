@@ -10,6 +10,21 @@ for (MOrderLine line : order.getLines()) {
 }
 ```
 
+### Many records: PO batch API
+
+`BatchUpdate`, `BatchInsert` and `BatchDelete` (`org.compiere.model`) process many POs efficiently while still running `beforeSave`, model validators, event handlers and the change log. See `org.idempiere.test/src/org/idempiere/test/model/BatchOperationTest.java`.
+
+```java
+BatchUpdate<MOrderLine> batch = new BatchUpdate<>(MOrderLine.class);
+for (MOrderLine line : lines) {
+	line.setDescription("...");
+	batch.add(line);
+}
+batch.executeBatch(get_TrxName());
+```
+
+Unlike a single `save()`, the POs are not reloaded after the batch runs.
+
 ## 2. Query
 
 ```java
@@ -37,6 +52,8 @@ int id = DB.getSQLValueEx(get_TrxName(),
 String name = DB.getSQLValueStringEx(get_TrxName(),
 		"SELECT Name FROM C_BPartner WHERE C_BPartner_ID=?", C_BPartner_ID);
 
+// Bypasses beforeSave, model validators, event handlers and the change log.
+// Use only when that is intended; otherwise use BatchUpdate (section 1).
 int updated = DB.executeUpdateEx(
 		"UPDATE C_OrderLine SET Processed='Y' WHERE C_Order_ID=?",
 		new Object[] {C_Order_ID}, get_TrxName());

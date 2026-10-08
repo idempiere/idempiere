@@ -41,6 +41,8 @@ See `references/test-template.java` for a skeleton.
 
 Guidelines:
 - Make tests deterministic: no dependency on the current date unless set explicitly, no reliance on test order.
+- Complete or void documents with `MWorkflow.runDocumentActionWorkflow(po, DocAction.ACTION_Complete)`, as the UI does. Assert `assertFalse(info.isError(), info.getSummary())` on the returned `ProcessInfo`, then `po.load(getTrxName())` before checking the status.
+- Read existing records with the cached getters (`MBPartner.get(Env.getCtx(), id)`) when the test only reads them.
 - Avoid `commit()` unless the code under test truly needs committed data. If you commit, clean up afterwards.
 - Assert the specific outcome with a helpful message: `assertEquals(expected, actual, "why")`.
 - Use the GPLv2 header on new test files.

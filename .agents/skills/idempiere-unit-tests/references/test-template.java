@@ -25,6 +25,7 @@
 package org.idempiere.test.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.math.BigDecimal;
 
@@ -32,7 +33,9 @@ import org.compiere.model.MBPartner;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.process.DocAction;
+import org.compiere.process.ProcessInfo;
 import org.compiere.util.Env;
+import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
@@ -46,7 +49,7 @@ public class SampleOrderTest extends AbstractTestCase {
 	public void testCompleteSalesOrder() {
 		// Arrange: always pass getTrxName(), it is rolled back after the test
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
-		order.setBPartner(new MBPartner(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName()));
+		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
 		order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.STANDARD_ORDER.id);
 		order.setIsSOTrx(true);
 		order.setDateOrdered(getLoginDate());
@@ -59,11 +62,12 @@ public class SampleOrderTest extends AbstractTestCase {
 		line.setQty(BigDecimal.ONE);
 		line.saveEx();
 
-		// Act
-		order.processIt(DocAction.ACTION_Complete);
-		order.saveEx();
+		// Act: run the document workflow, as the UI does
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
 
 		// Assert
+		assertFalse(info.isError(), info.getSummary());
+		order.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, order.getDocStatus(), "Order should be completed");
 	}
 }
