@@ -66,6 +66,9 @@ public class TaxSpiDefaultsTest extends AbstractTestCase {
 
 	private static final String LOOKUP_NAME = "TaxSpiDefaultsTest.RecordingTaxLookup";
 
+	/**
+	 * Default constructor
+	 */
 	public TaxSpiDefaultsTest() {
 	}
 
@@ -217,14 +220,22 @@ public class TaxSpiDefaultsTest extends AbstractTestCase {
 
 	/** Records the document type and payment rule, then looks up the tax as the default lookup does */
 	private static final class RecordingTaxLookup extends DefaultTaxLookup {
+		/** Document type received by the last lookup, -1 if none */
 		private static int docTypeId;
+		/** Payment rule received by the last lookup, null if none */
 		private static String paymentRule;
 
+		/**
+		 * Clear the recorded document type and payment rule
+		 */
 		private static void reset() {
 			docTypeId = -1;
 			paymentRule = null;
 		}
 
+		/**
+		 * Record the document type and payment rule, then find C_Tax_ID as {@link DefaultTaxLookup} does
+		 */
 		@Override
 		public int get(Properties ctx, int M_Product_ID, int C_Charge_ID, Timestamp billDate, Timestamp shipDate,
 				int AD_Org_ID, int M_Warehouse_ID, int billC_BPartner_Location_ID, int shipC_BPartner_Location_ID,
@@ -240,9 +251,15 @@ public class TaxSpiDefaultsTest extends AbstractTestCase {
 
 	/** Implements only the abstract methods */
 	private static final class MinimalTaxLookup implements ITaxLookup {
+		/** C_Tax_ID returned by the lookup */
 		private static final int RESULT = 4711;
+		/** Arguments received by the last lookup, separated by "/" */
 		private String called;
 
+		/**
+		 * Record the arguments
+		 * @return {@link #RESULT}
+		 */
 		@Override
 		public int get(Properties ctx, int M_Product_ID, int C_Charge_ID, Timestamp billDate, Timestamp shipDate,
 				int AD_Org_ID, int M_Warehouse_ID, int billC_BPartner_Location_ID, int shipC_BPartner_Location_ID,
@@ -253,6 +270,10 @@ public class TaxSpiDefaultsTest extends AbstractTestCase {
 			return RESULT;
 		}
 
+		/**
+		 * Not used by the test
+		 * @return 0
+		 */
 		@Override
 		public int get(Properties ctx, int C_TaxCategory_ID, boolean IsSOTrx, Timestamp shipDate,
 				int shipFromC_Location_ID, int shipToC_Location_ID, Timestamp billDate, int billFromC_Location_ID,
