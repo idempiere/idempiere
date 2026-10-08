@@ -101,7 +101,7 @@ public class GroupedReportFormatSelector implements IReportFormatSelector {
 
 	@Override
 	public boolean isLimitedToReportView() {
-		return false;
+		return true;
 	}
 
 	@Override

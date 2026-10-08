@@ -4,5 +4,5 @@
       <provide interface="org.idempiere.ui.zk.report.ReportFormatSelectorProvider"/>
    </service>
    <implementation class="org.idempiere.ui.zk.report.ReportFormatSelectorProvider"/>
-   <reference bind="bindFactory" cardinality="0..n" interface="org.idempiere.ui.zk.report.IReportFormatSelectorFactory" name="IReportFormatSelectorFactory" policy="dynamic" unbind="unbindFactory"/>
+   <reference bind="bindFactory" cardinality="0..n" interface="org.idempiere.ui.zk.report.IReportFormatSelectorFactory" name="IReportFormatSelectorFactory" policy="dynamic" unbind="unbindFactory" updated="updatedFactory"/>
 </scr:component>

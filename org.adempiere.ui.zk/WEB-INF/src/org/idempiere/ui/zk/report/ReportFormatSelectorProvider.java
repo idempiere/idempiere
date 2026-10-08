@@ -70,6 +70,7 @@ public class ReportFormatSelectorProvider {
 		service = IReportFormatSelectorFactory.class,
 		cardinality = ReferenceCardinality.MULTIPLE,
 		policy = ReferencePolicy.DYNAMIC,
+		updated = "updatedFactory",
 		unbind = "unbindFactory"
 	)
 	public synchronized void bindFactory(IReportFormatSelectorFactory factory, Map<String, Object> properties) {
@@ -78,6 +79,22 @@ public class ReportFormatSelectorProvider {
 		holders.add(new RankedFactory(factory, properties));
 		holders.sort(null);
 		factories = holders.stream().map(h -> h.factory).toArray(IReportFormatSelectorFactory[]::new);
+	}
+
+	/**
+	 * Service properties of a bound factory changed, refresh its ranking
+	 * @param factory updated factory
+	 * @param properties new service properties
+	 */
+	public synchronized void updatedFactory(IReportFormatSelectorFactory factory, Map<String, Object> properties) {
+		for (int i = 0; i < holders.size(); i++) {
+			if (holders.get(i).factory == factory) {
+				holders.set(i, new RankedFactory(factory, properties));
+				holders.sort(null);
+				factories = holders.stream().map(h -> h.factory).toArray(IReportFormatSelectorFactory[]::new);
+				return;
+			}
+		}
 	}
 
 	/**
