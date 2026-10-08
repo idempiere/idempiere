@@ -108,13 +108,16 @@ public class ServerReportCtlTest extends AbstractTestCase {
 			MOrder order = prepareOrderInTransaction();
 			ProcessInfo pi = newOrderPrintInfo(order);
 			String archiveSql = "SELECT COUNT(*) FROM AD_Archive WHERE AD_Table_ID=? AND Record_ID=?";
-			int before = DB.getSQLValueEx(getTrxName(), archiveSql, order.get_Table_ID(), order.get_ID());
+			int before = DB.getSQLValueEx(null, archiveSql, order.get_Table_ID(), order.get_ID());
 
 			assertTrue(ServerReportCtl.startDocumentPrint(ReportEngine.ORDER, MPrintFormat.get(100), order.get_ID(), null, pi),
 					"ServerReportCtl.startDocumentPrint failed");
 
 			int after = DB.getSQLValueEx(getTrxName(), archiveSql, order.get_Table_ID(), order.get_ID());
 			assertEquals(before + 1, after, "Archive not created in the transaction");
+			// null trxName uses an independent connection: the archive must not be committed yet
+			int outside = DB.getSQLValueEx(null, archiveSql, order.get_Table_ID(), order.get_ID());
+			assertEquals(before, outside, "Archive visible outside the caller's transaction");
 		} finally {
 			setAutoArchive(clientId, autoArchive);
 		}
@@ -140,6 +143,7 @@ public class ServerReportCtlTest extends AbstractTestCase {
 		MOrder order = new MOrder(Env.getCtx(), 102, getTrxName());
 		assertEquals(102, order.get_ID(), "Order 102 not found");
 		order.setDescription("print in trx");
+		order.setIsPrinted(false);
 		order.saveEx();
 		return order;
 	}

@@ -52,6 +52,19 @@ public class ArchiveEngine
 	 */ 
 	public byte[] archive (LayoutEngine layout, PrintInfo info)
 	{
+		return archive(layout, info, null);
+	}	//	archive
+
+	/**
+	 * 	Get/Create Archive.
+	 * 	@param layout layout
+	 * 	@param info print info
+	 * 	@param trxName transaction name, null for no transaction
+	 * 	@return existing document or newly created if Client enabled archiving. 
+	 * 	Will return NULL if archiving not enabled
+	 */ 
+	public byte[] archive (LayoutEngine layout, PrintInfo info, String trxName)
+	{
 		//	Do we need to Archive ?
 		MClient client = MClient.get(layout.getCtx());
 		String aaClient = client.getAutoArchive();
@@ -80,7 +93,7 @@ public class ArchiveEngine
 			return null;
 
 		//	TODO to be done async
-		MArchive archive = new MArchive (layout.getCtx(),info, null);
+		MArchive archive = new MArchive (layout.getCtx(),info, trxName);
 		archive.setBinaryData(data);
 		archive.saveEx();
 		
