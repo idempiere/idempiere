@@ -1083,6 +1083,8 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 				getReportWindowID(), AD_PrintFormat_ID,
 				formatSelector.isLimitedToReportView());
 		offeredFormatKeys = entries.stream().map(ReportFormatEntry::key).collect(Collectors.toUnmodifiableSet());
+		if (entries.stream().anyMatch(entry -> entry.key() == AD_PrintFormat_ID))
+			previousSelectedKey = AD_PrintFormat_ID;
 		formatSelector.setFormats(entries, AD_PrintFormat_ID);
 	}	//	fillComboReport
 
@@ -1411,6 +1413,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		int AD_PrintFormat_ID = formatSelector.getSelectedKey();
 		if (!offeredFormatKeys.contains(AD_PrintFormat_ID))
 			return;
+		
+		if (AD_PrintFormat_ID > 0)
+			previousSelectedKey = AD_PrintFormat_ID;
 		
 		reportContentRenderer = null;
 		setTabOnCloseHandler();
