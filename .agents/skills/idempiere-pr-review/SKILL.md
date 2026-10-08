@@ -32,7 +32,7 @@ Go through `references/review-checklist.md`. The points core maintainers care ab
 - **PostgreSQL and Oracle**: SQL and migrations work on both.
 - **Migrations present** when the dictionary or schema changed: both DB folders, correct naming, generated (not hand-written). Review them with the checklist in `idempiere-database-changes`.
 - **Data access order**: model → `Query` → `DB` → JDBC, with resources closed and bind parameters used.
-- **Backward compatibility**: no removed or changed public or protected signatures (overloads used), unless it is a documented, intentional breaking change.
+- **Backward compatibility**: no removed or changed public or protected signatures (overloads used). A breaking change is acceptable only if the PR author explicitly declares it (the "Breaking change" box in the PR template) and documents it. Even then, report it as a finding for the human reviewer or maintainers to accept. Never approve it on your own.
 - **Transactions**: `trxName` propagated, no stray commits.
 - **Security**: no SQL injection, no cross-client data exposure, no role bypass, no secrets in logs.
 - **English**, GPLv2 header on new files, no new warnings, readable code.
