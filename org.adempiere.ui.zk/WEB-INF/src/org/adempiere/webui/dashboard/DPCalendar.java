@@ -216,9 +216,8 @@ public class DPCalendar extends DashboardPanel implements EventListener<Event>, 
 		SessionManager.getAppDesktop().showWindow(win);
 		// IDEMPIERE-1457: when shown on tab, handle event close to remove calendars away scm
 		if (win instanceof ITabOnCloseHandler handler) {
-			Component parentTab = win.getParent();
-			if (parentTab != null && parentTab.getClass().equals(Tabpanel.class))
-				((Tabpanel) parentTab).setOnCloseHandler(handler);
+			if (win.getParent() instanceof Tabpanel panel)
+				panel.setOnCloseHandler(handler);
 		}
 	}
 
