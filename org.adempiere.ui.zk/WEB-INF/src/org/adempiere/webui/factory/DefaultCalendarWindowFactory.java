@@ -26,7 +26,6 @@ package org.adempiere.webui.factory;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.dashboard.CalendarWindow;
 import org.osgi.service.component.annotations.Component;
-import org.zkoss.calendar.api.CalendarModel;
 import org.zkoss.calendar.impl.SimpleCalendarModel;
 
 /**
@@ -37,10 +36,8 @@ import org.zkoss.calendar.impl.SimpleCalendarModel;
 public class DefaultCalendarWindowFactory implements ICalendarWindowFactory
 {
 	@Override
-	public Window newCalendarWindow(CalendarModel model)
+	public Window newCalendarWindow(SimpleCalendarModel model)
 	{
-		if (!(model instanceof SimpleCalendarModel))
-			throw new IllegalArgumentException("CalendarWindow requires a SimpleCalendarModel: " + model);
-		return new CalendarWindow((SimpleCalendarModel) model);
+		return new CalendarWindow(model);
 	}
 }

@@ -56,7 +56,7 @@ import org.idempiere.db.util.SQLFragment;
 import org.idempiere.ui.zk.media.IMediaView;
 import org.idempiere.ui.zk.media.IMediaViewProvider;
 import org.idempiere.ui.zk.report.IReportViewerRenderer;
-import org.zkoss.calendar.api.CalendarModel;
+import org.zkoss.calendar.impl.SimpleCalendarModel;
 import org.zkoss.zk.ui.Component;
 
 /**
@@ -476,7 +476,7 @@ public class Extensions {
 	 * @param model calendar model shared with the caller
 	 * @return the new calendar window
 	 */
-	public static Window newCalendarWindow(CalendarModel model) {
+	public static Window newCalendarWindow(SimpleCalendarModel model) {
 		ICalendarWindowFactory calendarWindowFactory = Service.locator().locate(ICalendarWindowFactory.class).getService();
 		return calendarWindowFactory.newCalendarWindow(model);
 	}

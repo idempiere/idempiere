@@ -23,7 +23,7 @@
 
 package org.adempiere.webui.factory;
 
-import org.zkoss.calendar.api.CalendarModel;
+import org.zkoss.calendar.impl.SimpleCalendarModel;
 import org.adempiere.webui.component.Window;
 
 /**
@@ -37,8 +37,8 @@ public interface ICalendarWindowFactory
 {
 	/**
 	 * Create a new calendar window. The window is not shown, it is the responsibility of the caller to show it.
-	 * @param model calendar model shared with the caller
+	 * @param model calendar model shared with the caller, the window adds, updates and clears its items
 	 * @return the new calendar window
 	 */
-	public Window newCalendarWindow(CalendarModel model);
+	public Window newCalendarWindow(SimpleCalendarModel model);
 }

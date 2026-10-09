@@ -67,7 +67,7 @@ public class CalendarWindowFactoryTest {
 		SimpleCalendarModel[] received = new SimpleCalendarModel[1];
 		Window created = new Window();
 		ICalendarWindowFactory custom = model -> {
-			received[0] = (SimpleCalendarModel) model;
+			received[0] = model;
 			return created;
 		};
 
