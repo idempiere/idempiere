@@ -259,9 +259,6 @@ public class ProductionTest extends AbstractTestCase {
 
 	private void runNestedAutoProduceTest(String sysConfigFlag, boolean subAssemblyAutoProduce, boolean expectNestedProduction) {
 		// use standard costing only to avoid negative qty exception when sub-assembly is not auto-produced
-//		DB.executeUpdateEx("UPDATE M_CostElement SET IsActive = 'N' WHERE AD_Client_ID=? AND CostingMethod IS NOT NULL AND CostingMethod != ?", 
-//				new Object[] {getAD_Client_ID(), MCostElement.COSTINGMETHOD_StandardCosting}, getTrxName());
-		
 		MProductCategory category = new MProductCategory(Env.getCtx(), 0, getTrxName());
 		category.setName("Standard Costing " + sysConfigFlag + "_" + subAssemblyAutoProduce);
 		category.saveEx();
