@@ -68,7 +68,8 @@ public interface IInvoiceDefaultsProvider {
 	 * built-in initial values are set. Only the context (client, org, user) is known here.
 	 * <p>
 	 * Runs inside the model constructor: a subclass of the model is not yet initialized, so
-	 * only call setters on {@code invoice}. All providers are called, in service ranking order.
+	 * only call setters on {@code invoice}. All providers are called, lowest service ranking first,
+	 * so the highest ranking provider runs last and its values are kept.
 	 * @param invoice new record
 	 */
 	default void initDefaults(MInvoice invoice) {

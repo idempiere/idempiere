@@ -14,8 +14,6 @@ package org.idempiere.test.model;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.Timestamp;
 import java.util.Dictionary;
@@ -25,9 +23,9 @@ import org.adempiere.base.Core;
 import org.adempiere.base.DefaultValue;
 import org.adempiere.base.IInvoiceDefaultsProvider;
 import org.adempiere.base.IOrderDefaultsProvider;
+import org.compiere.model.MBPartner;
 import org.compiere.model.MDocType;
 import org.compiere.model.MInvoice;
-import org.compiere.model.MBPartner;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MProduct;
@@ -199,6 +197,34 @@ public class DocumentDefaultsProviderTest extends AbstractTestCase {
 		} finally {
 			lowRegistration.unregister();
 			highRegistration.unregister();
+		}
+	}
+
+	@Test
+	public void testInitDefaultsHigherRankingProviderWins() {
+		IInvoiceDefaultsProvider high = new IInvoiceDefaultsProvider() {
+			@Override
+			public void initDefaults(MInvoice invoice) {
+				invoice.setDescription("high");
+			}
+		};
+		IInvoiceDefaultsProvider low = new IInvoiceDefaultsProvider() {
+			@Override
+			public void initDefaults(MInvoice invoice) {
+				invoice.setDescription("low");
+				invoice.setPaymentRule(MInvoice.PAYMENTRULE_Cash);
+			}
+		};
+		ServiceRegistration<?> highRegistration = register(IInvoiceDefaultsProvider.class, high, 20);
+		ServiceRegistration<?> lowRegistration = register(IInvoiceDefaultsProvider.class, low, 10);
+		try {
+			MInvoice invoice = new MInvoice(Env.getCtx(), 0, getTrxName());
+			// both providers run: low sets its own fields, high overrides the field they share
+			assertEquals("high", invoice.getDescription());
+			assertEquals(MInvoice.PAYMENTRULE_Cash, invoice.getPaymentRule());
+		} finally {
+			highRegistration.unregister();
+			lowRegistration.unregister();
 		}
 	}
 

@@ -54,7 +54,7 @@ public final class DocumentDefaults<P> {
 	 * @return defaults asking the providers registered now, highest service ranking first
 	 */
 	@SuppressWarnings("unchecked")
-	static <P> DocumentDefaults<P> of(Class<P> type) {
+	public static <P> DocumentDefaults<P> of(Class<P> type) {
 		IServicesHolder<P> holder = (IServicesHolder<P>) s_holders.computeIfAbsent(type, t -> Service.locator().list(t));
 		List<P> providers = new ArrayList<>();
 		List<P> services = holder.getServices();
@@ -82,11 +82,12 @@ public final class DocumentDefaults<P> {
 	}
 
 	/**
-	 * Call every provider, in service ranking order
+	 * Call every provider, lowest service ranking first, so that when two providers set the same
+	 * field the value of the highest ranking provider is kept
 	 * @param action call on one provider
 	 */
 	public void forEach(Consumer<P> action) {
-		for (P provider : providers)
-			action.accept(provider);
+		for (int i = providers.size() - 1; i >= 0; i--)
+			action.accept(providers.get(i));
 	}
 }

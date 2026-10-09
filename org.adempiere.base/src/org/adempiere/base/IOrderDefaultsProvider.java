@@ -81,7 +81,8 @@ public interface IOrderDefaultsProvider {
 	 * mandatory column and leave a FillMandatory error that fails the save.
 	 * <p>
 	 * Runs inside the model constructor: a subclass of the model is not yet initialized, so
-	 * only call setters on {@code order}. All providers are called, in service ranking order.
+	 * only call setters on {@code order}. All providers are called, lowest service ranking first,
+	 * so the highest ranking provider runs last and its values are kept.
 	 * @param order new record
 	 */
 	default void initDefaults(MOrder order) {
