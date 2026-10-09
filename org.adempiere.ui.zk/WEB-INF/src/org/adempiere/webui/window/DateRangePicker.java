@@ -34,10 +34,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.ClientInfo;
+import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.ComboItem;
 import org.adempiere.webui.component.Combobox;
@@ -56,6 +58,9 @@ import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.factory.ButtonFactory;
 import org.compiere.model.MChart;
+import org.compiere.model.MDateRange;
+import org.compiere.model.MDateRangeGroup;
+import org.compiere.model.MProcessPara;
 import org.compiere.model.MRefList;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
@@ -69,8 +74,11 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.InputEvent;
+import org.zkoss.zul.Caption;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Groupbox;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Spinner;
 
@@ -95,6 +103,7 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
     private static final String DATESELECTIONMODE_ON = "07";
 	private static final String DATESELECTIONMODE_BETWEEN = "08";
 	private static final String DATESELECTIONMODE_QUICK = "09";
+	private static final String DATESELECTIONMODE_PRESETS = "10";
 	
 	/** UI elements */
 	private Button okBtn;
@@ -105,6 +114,9 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 	private org.zkoss.zul.Calendar cal;
 	private org.zkoss.zul.Calendar cal2;
 	private Div quickListBoxes;
+	private Div presetsDiv;
+	/** holds the calendars next to the presets list on 'Presets' mode **/
+	private Div calDiv;
 	private Tabbox tabbox;
 	private Tabs tabs;
 	private Tabpanels tabpanels;
@@ -137,6 +149,12 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 	private ArrayList<Listbox> quickListBoxesArray = new ArrayList<Listbox>();
 	/** selected list item from the list boxes on 'Quick' mode **/
 	private ListItem selectedQuickListItem;
+	/** rendered list boxes on 'Presets' mode: one for the ranges without group, one for each group **/
+	private ArrayList<Listbox> presetListBoxes = new ArrayList<Listbox>();
+	/** selected list item from the list boxes on 'Presets' mode **/
+	private ListItem selectedPresetListItem;
+	/** option of the process parameter, see {@link MProcessPara#DATERANGEOPTION_RangePicker_Presets_WithTextEditor} **/
+	private String dateRangeOption;
 	
     /**
      * Constructor
@@ -144,10 +162,22 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
      * @param editor2
      */
 	public DateRangePicker(WEditor editor, WEditor editor2) {
+		this(editor, editor2, null);
+	}
+
+	/**
+	 * Constructor
+	 * @param editor
+	 * @param editor2
+	 * @param dateRangeOption {@link MProcessPara#COLUMNNAME_DateRangeOption} of the parameter, 
+	 * 			with {@link MProcessPara#DATERANGEOPTION_RangePicker_Presets_WithTextEditor} the picker offers the presets only
+	 */
+	public DateRangePicker(WEditor editor, WEditor editor2, String dateRangeOption) {
 		super();
 		
 		this.editor = editor;
 		this.editor2 = editor2;
+		this.dateRangeOption = dateRangeOption;
 		init();
 	}
 
@@ -231,15 +261,19 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 		quickListBoxes = new Div();
 		quickListBoxes.appendChild(getQuickModeContent());
 		
+		presetsDiv = getPresetsModeContent();
+		
 		// Load Modes to ListBox
 		ValueNamePair[] modes = MRefList.getList(Env.getCtx(), REFERENCE_DATESELECTIONMODE, false, "Value");
 		for(ValueNamePair mode : modes) {
+			// "Presets" mode is offered only if there are presets to select
+			if(DATESELECTIONMODE_PRESETS.equals(mode.getValue()) && presetListBoxes.isEmpty())
+				continue;
+			// disable "Quick" mode on mobile
+			if(DATESELECTIONMODE_QUICK.equals(mode.getValue()) && isMobile)
+				continue;
 			ComboItem item = new ComboItem(mode.getName(), mode.getValue());
 			modeCombobox.appendChild(item);
-		}
-		if(isMobile) {
-			// disable "Quick" mode
-			modeCombobox.removeItemAt(modeCombobox.getItemCount()-1);
 		}
 		modeCombobox.setSelectedIndex(0);
 		
@@ -269,6 +303,9 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 		midDiv.appendChild(cal);
 		midDiv.appendChild(cal2);
 		midDiv.appendChild(quickListBoxes);
+		midDiv.appendChild(presetsDiv);
+		calDiv = new Div();
+		midDiv.appendChild(calDiv);
 		this.appendChild(midDiv);
 		
 		div = new Div();
@@ -294,7 +331,16 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 		
 		dateFrom = (Date) editor.getValue();
 		dateTo = (Date) editor2.getValue();
- 		if(dateFrom != null || dateTo != null) { // Set the picker to defined Default Logic
+ 		if(isPresetsOnly()) {
+			// only the presets are offered, the selected preset is the one with the dates of the editors
+			modeCombobox.setVisible(false);
+			setPickerSelection(DATESELECTIONMODE_PRESETS, MChart.TIMEUNIT_Month, 0);
+			Date[] dates = setTimesOnDates(dateFrom, dateTo);
+			dateFrom = dates[0];
+			dateTo = dates[1];
+			selectPresetOfDates();
+ 		}
+		else if(dateFrom != null || dateTo != null) { // Set the picker to defined Default Logic
 			Date[] dates = setTimesOnDates(dateFrom, dateTo);
 			dateFrom = dates[0];
 			dateTo = dates[1];
@@ -338,7 +384,24 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 		
 		String selectedMode = modeCombobox.getSelectedItem().getValue().toString();
 		
-		if(selectedMode.equalsIgnoreCase(DATESELECTIONMODE_BETWEEN) && isMobile) {
+		boolean presetsMode = DATESELECTIONMODE_PRESETS.equals(selectedMode);
+		presetsDiv.setVisible(presetsMode);
+		calDiv.setVisible(presetsMode);
+		midDiv.setStyle(presetsMode ? "Margin-top: 10px; display: flex; align-items: flex-start;" : "Margin-top: 10px;");
+		if(presetsMode) {
+			presetsDiv.setStyle("max-height: 405px; overflow: auto; margin-right: 5px; width: " + (isMobile ? "100%;" : "210px;"));
+			calDiv.setStyle("display: flex; flex-direction: column;");
+		}
+		
+		if(presetsMode) {
+			// the presets list and the calendars side by side, the calendars show the dates of the selected preset
+			updateCal1AndCal2();
+			cal.detach();
+			calDiv.appendChild(cal);
+			cal2.detach();
+			calDiv.appendChild(cal2);
+		}
+		else if(selectedMode.equalsIgnoreCase(DATESELECTIONMODE_BETWEEN) && isMobile) {
 			updateCal1AndCal2();
 			cal.detach();
 			fromTabPanel.appendChild(cal);
@@ -397,6 +460,14 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 			cal2.setVisible(false);
 			quickListBoxes.setVisible(true);
 			break;
+		case DATESELECTIONMODE_PRESETS:
+			tabbox.setVisible(false);
+			numberBox.setVisible(false);
+			unitCombobox.setVisible(false);
+			cal.setVisible(!isMobile);
+			cal2.setVisible(!isMobile);
+			quickListBoxes.setVisible(false);
+			break;
 		default:
 			break;
 		}
@@ -408,12 +479,26 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 		if(target.equals(modeCombobox))
 			updateUI();
 		if(target instanceof Listbox) {
-			for(Listbox listBox : quickListBoxesArray) {
-				if(!target.equals(listBox))
-					listBox.setSelectedItem(null);
-				else
-					selectedQuickListItem = listBox.getSelectedItem();
+			if(presetListBoxes.contains(target)) {
+				for(Listbox listBox : presetListBoxes) {
+					if(!target.equals(listBox))
+						listBox.setSelectedItem(null);
+					else
+						selectedPresetListItem = listBox.getSelectedItem();
+				}
 			}
+			else {
+				for(Listbox listBox : quickListBoxesArray) {
+					if(!target.equals(listBox))
+						listBox.setSelectedItem(null);
+					else
+						selectedQuickListItem = listBox.getSelectedItem();
+				}
+			}
+		}
+		if(DATESELECTIONMODE_PRESETS.equals(modeCombobox.getSelectedItem().getValue()) && (target.equals(cal) || target.equals(cal2))) {
+			// the calendars only show the range of the selected preset
+			updateCal1AndCal2();
 		}
 		if(target instanceof Spinner) {
 			String actValue = String.valueOf(((InputEvent)event).getValue());
@@ -485,6 +570,18 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 					this.dateTo = dates[1];
 					returnVal = DisplayType.getDateFormat().format(this.dateFrom) + " - " + DisplayType.getDateFormat().format(this.dateTo);
 				}
+				break;
+			case DATESELECTIONMODE_PRESETS:
+				if(selectedPresetListItem != null) {
+					this.dateFrom = (Date) selectedPresetListItem.getAttribute("DateFrom");
+					this.dateTo = (Date) selectedPresetListItem.getAttribute("DateTo");
+					this.displayValue = selectedPresetListItem.getLabel();
+				}
+				if(this.dateFrom != null || this.dateTo != null) {
+					returnVal = (this.dateFrom != null ? DisplayType.getDateFormat().format(this.dateFrom) : "")
+							+ " - " + (this.dateTo != null ? DisplayType.getDateFormat().format(this.dateTo) : "");
+				}
+				updateCal1AndCal2();
 				break;
 			default:
 				throw new AdempiereException("InvalidDateSelectionMode");
@@ -1012,6 +1109,95 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 		return item;
 	} // createItem
 	
+	/**
+	 * Is the picker restricted to the presets (parameter option "Presets - with Text editor")
+	 * @return true if only the presets are offered
+	 */
+	private boolean isPresetsOnly() {
+		return MProcessPara.DATERANGEOPTION_RangePicker_Presets_WithTextEditor.equals(dateRangeOption) && !presetListBoxes.isEmpty();
+	}
+	
+	/**
+	 * Create the content of 'Presets' mode: the date ranges of the tenant and the system that are not in a group,
+	 * and a collapsed group box with the date ranges for each date range group.
+	 * @return Div
+	 */
+	private Div getPresetsModeContent() {
+		Div wrapper = new Div();
+		presetListBoxes.clear();
+		Timestamp today = new Timestamp(System.currentTimeMillis());
+		
+		Listbox listBox = newPresetListbox(MDateRange.getOfComparisonType(Env.getCtx(), MDateRange.RANGECOMPARISONTYPE_StandardRange, null), today);
+		if(listBox != null)
+			wrapper.appendChild(listBox);
+		
+		for(MDateRangeGroup group : MDateRangeGroup.getOfClient(Env.getCtx(), null)) {
+			listBox = newPresetListbox(group.getDateRanges(MDateRange.RANGECOMPARISONTYPE_StandardRange), today);
+			if(listBox == null)
+				continue;
+			Groupbox groupbox = new Groupbox();
+			groupbox.setMold("3d");
+			groupbox.setClosable(true);
+			groupbox.setOpen(false);
+			groupbox.setSclass("date-picker-group");
+			groupbox.addEventListener(Events.ON_OPEN, e -> {
+				if(groupbox.isOpen())
+					LayoutUtils.addSclass("date-picker-group-open", groupbox);
+				else
+					LayoutUtils.removeSclass("date-picker-group-open", groupbox);
+			});
+			groupbox.appendChild(new Caption(group.get_Translation(MDateRangeGroup.COLUMNNAME_Name)));
+			groupbox.appendChild(listBox);
+			wrapper.appendChild(groupbox);
+		}
+		return wrapper;
+	} // getPresetsModeContent
+	
+	/**
+	 * Create a list box with the date ranges that can be resolved to dates, and register it as preset list box
+	 * @param dateRanges
+	 * @param today date the relative ranges are counted from
+	 * @return list box, or null if none of the date ranges can be resolved
+	 */
+	private Listbox newPresetListbox(MDateRange[] dateRanges, Timestamp today) {
+		Listbox listBox = new Listbox();
+		for(MDateRange dateRange : dateRanges) {
+			Timestamp[] interval = dateRange.getInterval(today);
+			if(interval == null)
+				continue;
+			String label = dateRange.get_Translation(MDateRange.COLUMNNAME_Name);
+			ListItem item = new ListItem(label, label);
+			Date[] dates = setTimesOnDates(interval[0], interval[1]);
+			item.setAttribute("DateFrom", dates[0]);
+			item.setAttribute("DateTo", dates[1]);
+			listBox.appendChild(item);
+		}
+		if(listBox.getItemCount() == 0)
+			return null;
+		listBox.setCheckmark(true);
+		listBox.addEventListener(Events.ON_SELECT, this);
+		presetListBoxes.add(listBox);
+		return listBox;
+	} // newPresetListbox
+	
+	/**
+	 * Select the preset that has the dates of the editors, if any
+	 */
+	private void selectPresetOfDates() {
+		if(dateFrom == null && dateTo == null)
+			return;
+		for(Listbox listBox : presetListBoxes) {
+			for(Listitem item : listBox.getItems()) {
+				if(Objects.equals(dateFrom, item.getAttribute("DateFrom")) 
+						&& Objects.equals(dateTo, item.getAttribute("DateTo"))) {
+					listBox.setSelectedItem(item);
+					selectedPresetListItem = (ListItem) item;
+					return;
+				}
+			}
+		}
+	} // selectPresetOfDates
+
 	/**
 	 * Initialize Quick mode content
 	 * @return Div

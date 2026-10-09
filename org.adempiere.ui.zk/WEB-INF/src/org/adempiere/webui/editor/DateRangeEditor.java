@@ -27,15 +27,15 @@ package org.adempiere.webui.editor;
 import java.util.Objects;
 
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.component.Button;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Textbox;
-import org.adempiere.webui.component.ToolBarButton;
-import org.adempiere.webui.component.ZkCssHelper;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.window.DateRangePicker;
+import org.compiere.model.MProcessPara;
 import org.compiere.util.Util;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Events;
@@ -58,11 +58,12 @@ public class DateRangeEditor extends Div implements ValueChangeListener {
 	private static final String IMAGES_CONTEXT_CALENDAR_PNG = "images/Calendar16.png";
 
 	private Textbox textbox;
-	private ToolBarButton popupBtn;
+	private Button popupBtn;
 	private DateRangePicker popup;
 	private WEditor editor;
 	private WEditor editor2;
 	private Label dateRangeText;
+	private String dateRangeOption;
 
 	/**
 	 * Constructor
@@ -70,34 +71,48 @@ public class DateRangeEditor extends Div implements ValueChangeListener {
 	 * @param editor2
 	 */
 	public DateRangeEditor(WEditor editor, WEditor editor2) {
+		this(editor, editor2, null);
+	}
+
+	/**
+	 * Constructor
+	 * @param editor
+	 * @param editor2
+	 * @param dateRangeOption {@link MProcessPara#COLUMNNAME_DateRangeOption} of the parameter
+	 */
+	public DateRangeEditor(WEditor editor, WEditor editor2, String dateRangeOption) {
 		super();
 		this.editor = editor;
 		this.editor2 = editor2;
+		this.dateRangeOption = dateRangeOption;
 		init();
 	}
 
 	/**
 	 * Layout UI.
-	 * Horizontal layout of Textbox and ToolBarButton.
+	 * Horizontal layout of Textbox and Button.
 	 */
 	private void init() {
 
+		// same layout and styles as the other editors with a button: text box with the button at its right end
 		this.setWidth("100%");
-		ZkCssHelper.appendStyle(this, "display: inline-block; position: relative;");
+		LayoutUtils.addSclass("editor-box", this);
 		textbox = new Textbox();
-		textbox.setStyle("width: 100%; background: white !important");
+		textbox.setSclass("editor-input");
+		textbox.setStyle("background: white !important");
 		textbox.setReadonly(true);
 		this.appendChild(textbox);
 
-		popupBtn = new ToolBarButton();
-		popupBtn.addSclass("date-picker-calendar-button");
+		popupBtn = new Button();
+		popupBtn.setTabindex(-1);
+		popupBtn.setSclass("editor-button");
 		if (ThemeManager.isUseFontIconForImage())
 			popupBtn.setIconSclass(Icon.getIconSclass(Icon.CALENDAR));
 		else
 			popupBtn.setImage(ThemeManager.getThemeResource(IMAGES_CONTEXT_CALENDAR_PNG));
 		this.appendChild(popupBtn);
 
-		popup = new DateRangePicker(editor, editor2);
+		popup = new DateRangePicker(editor, editor2, dateRangeOption);
 		popupBtn.addEventListener(Events.ON_CLICK, event -> {
 			popup.setPage(popupBtn.getPage());
 			popup.open(popupBtn, "after_center");
@@ -157,9 +172,9 @@ public class DateRangeEditor extends Div implements ValueChangeListener {
 	public void setReadOnly(boolean readOnly) {
 		popupBtn.setDisabled(readOnly);
 		if(readOnly)
-			textbox.setStyle("width: 100%;");
+			textbox.setStyle("");
 		else
-			textbox.setStyle("width: 100%; background: white !important");
+			textbox.setStyle("background: white !important");
 	}
 
 	@Override
