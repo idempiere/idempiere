@@ -53,7 +53,12 @@ import org.compiere.util.CCache;
 import org.idempiere.db.util.SQLFragment;
 import org.idempiere.ui.zk.media.IMediaView;
 import org.idempiere.ui.zk.media.IMediaViewProvider;
+import org.idempiere.ui.zk.report.ComboboxReportFormatSelector;
+import org.idempiere.ui.zk.report.IReportFormatSelector;
+import org.idempiere.ui.zk.report.IReportFormatSelectorFactory;
 import org.idempiere.ui.zk.report.IReportViewerRenderer;
+import org.idempiere.ui.zk.report.ReportFormatRequest;
+import org.idempiere.ui.zk.report.ReportFormatSelectorProvider;
 import org.zkoss.zk.ui.Component;
 
 /**
@@ -412,6 +417,21 @@ public class Extensions {
 		return null;
 	} // getADTabPanel
 	
+	/**
+	 * Get the report viewer format selector from the highest ranking {@link IReportFormatSelectorFactory}
+	 * that applies, or the default drop-down list.
+	 * @param request report and role context
+	 * @return selector, never null
+	 */
+	public static IReportFormatSelector getReportFormatSelector(ReportFormatRequest request) {
+		for (IReportFormatSelectorFactory factory : ReportFormatSelectorProvider.getFactories()) {
+			IReportFormatSelector selector = factory.createSelector(request);
+			if (selector != null)
+				return selector;
+		}
+		return new ComboboxReportFormatSelector();
+	}
+
 	/**
 	 * Get report viewer renderers
 	 * @return list of {@link IReportViewerRenderer}

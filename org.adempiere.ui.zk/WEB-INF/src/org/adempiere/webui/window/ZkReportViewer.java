@@ -36,8 +36,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import javax.activation.FileDataSource;
 
@@ -108,7 +110,6 @@ import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
-import org.compiere.util.KeyNamePair;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -123,7 +124,11 @@ import org.idempiere.print.renderer.XLSReportRendererConfiguration;
 import org.idempiere.print.renderer.XLSXReportRendererConfiguration;
 import org.idempiere.ui.zk.media.IMediaView;
 import org.idempiere.ui.zk.media.WMediaOptions;
+import org.idempiere.ui.zk.report.IReportFormatSelector;
 import org.idempiere.ui.zk.report.IReportViewerRenderer;
+import org.idempiere.ui.zk.report.ReportFormatEntry;
+import org.idempiere.ui.zk.report.ReportFormatLoader;
+import org.idempiere.ui.zk.report.ReportFormatRequest;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.au.out.AuScript;
@@ -215,8 +220,9 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	private ToolBarButton bFind = new ToolBarButton();
 	private ToolBarButton bExport = new ToolBarButton();
 	private ToolBarButton bWizard = new ToolBarButton();
-	private Listbox comboReport = new Listbox();
-	private Listitem previousSelected = new Listitem();
+	private IReportFormatSelector formatSelector;
+	private int previousSelectedKey = ReportFormatEntry.KEY_NONE;
+	private Set<Integer> offeredFormatKeys = Set.of();
 	private WTableDirEditor wLanguage;
 	/** List box for preview type (pdf, html, etc) */
 	protected Listbox previewType = new Listbox();
@@ -420,16 +426,20 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		if (toolbarPopup == null)
 			toolBar.appendChild(new Separator("vertical"));
 		
-		comboReport.setMold("select");
-		comboReport.setTooltiptext(Msg.translate(Env.getCtx(), "AD_PrintFormat_ID"));
+		formatSelector = Extensions.getReportFormatSelector(
+				new ReportFormatRequest(m_reportEngine, getReportWindowID(), toolbarPopup != null));
+		formatSelector.setSelectionListener(() -> {
+			if (!m_setting)
+				cmd_report();
+		});
 		
 		if (toolbarPopup != null)
 		{
-			toolbarPopupLayout.appendChild(comboReport);
+			toolbarPopupLayout.appendChild(formatSelector.getComponent());
 		}
 		else
 		{
-			toolBar.appendChild(comboReport);		
+			toolBar.appendChild(formatSelector.getComponent());
 			toolBar.appendChild(new Separator("vertical"));
 		}
 		
@@ -1064,85 +1074,30 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	}
 	
 	/**
-	 * 	Fill ComboBox comboReport with print formats available and option to create new print format.
+	 * 	Fill the report format selector with print formats available and option to create new print format.
 	 *  @param AD_PrintFormat_ID item to be selected
 	 */
 	private void fillComboReport(int AD_PrintFormat_ID)
 	{
-		comboReport.removeEventListener(Events.ON_SELECT, this);
-		comboReport.getItems().clear();
-		KeyNamePair selectValue = null;
-		
+		List<ReportFormatEntry> entries = ReportFormatLoader.load(MRole.getDefault(), m_reportEngine.getPrintFormat(),
+				getReportWindowID(), AD_PrintFormat_ID,
+				formatSelector.isLimitedToReportView());
+		offeredFormatKeys = entries.stream().map(ReportFormatEntry::key).collect(Collectors.toUnmodifiableSet());
+		if (entries.stream().anyMatch(entry -> entry.key() == AD_PrintFormat_ID))
+			previousSelectedKey = AD_PrintFormat_ID;
+		formatSelector.setFormats(entries, AD_PrintFormat_ID);
+	}	//	fillComboReport
+
+	/**
+	 * @return AD_Window_ID the report was started from, 0 if none
+	 */
+	private int getReportWindowID()
+	{
 		int AD_Window_ID = Env.getContextAsInt(Env.getCtx(), m_reportEngine.getWindowNo(), "_WinInfo_AD_Window_ID", true);
 		if (AD_Window_ID == 0)
 			AD_Window_ID = Env.getZoomWindowID(m_reportEngine.getQuery());
-
-		int reportViewID = m_reportEngine.getPrintFormat().getAD_ReportView_ID();
-
-		//	fill Report Options
-		String sql = MRole.getDefault().addAccessSQL(
-			"SELECT * "
-				+ "FROM AD_PrintFormat "
-				+ "WHERE AD_Table_ID=? "
-				//Added Lines by Armen
-				+ "AND IsActive='Y' "
-				//End of Added Lines
-				+ (AD_Window_ID > 0 ? "AND (AD_Window_ID=? OR AD_Window_ID IS NULL) " : "")
-				+ (reportViewID > 0 ? "AND AD_ReportView_ID=? " : "")
-				+ "ORDER BY Name",
-			"AD_PrintFormat", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
-		int AD_Table_ID = m_reportEngine.getPrintFormat().getAD_Table_ID();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try
-		{
-			pstmt = DB.prepareStatement(sql, null);
-			int idx = 1;
-			pstmt.setInt(idx++, AD_Table_ID);
-			if (AD_Window_ID > 0)
-				pstmt.setInt(idx++, AD_Window_ID);
-			if (reportViewID > 0)
-				pstmt.setInt(idx++, reportViewID);
-			rs = pstmt.executeQuery();
-			while (rs.next())
-			{
-				MPrintFormat printFormat = new MPrintFormat (Env.getCtx(), rs, null);
-				
-				KeyNamePair pp = new KeyNamePair(printFormat.get_ID(), printFormat.get_Translation(MPrintFormat.COLUMNNAME_Name, Env.getAD_Language(Env.getCtx()), true));
-				Listitem li = comboReport.appendItem(pp.getName(), pp.getKey());
-				if (rs.getInt(1) == AD_PrintFormat_ID)
-				{
-					selectValue = pp;
-					if(selectValue != null)
-						previousSelected = comboReport.getSelectedItem();
-						comboReport.setSelectedItem(li);
-				}
-			}
-		}
-		catch (SQLException e)
-		{
-			log.log(Level.SEVERE, sql, e);
-		}
-		finally
-		{
-			DB.close(rs, pstmt);
-			rs = null;
-			pstmt = null;
-		}
-		// IDEMPIERE-297 - Check for Table Access and Window Access for New Report
-		int pfAD_Window_ID = MPrintFormat.getZoomWindowID(AD_PrintFormat_ID);
-		if (   MRole.getDefault().isTableAccess(MPrintFormat.Table_ID, false) 
-			&& Boolean.TRUE.equals(MRole.getDefault().getWindowAccess(pfAD_Window_ID)))
-		{
-			StringBuffer sb = new StringBuffer("** ").append(Msg.getMsg(Env.getCtx(), "NewReport")).append(" **");
-			KeyNamePair pp = new KeyNamePair(-1, sb.toString());
-			comboReport.appendItem(pp.getName(), pp.getKey());
-			sb = new StringBuffer("** ").append(Msg.getMsg(m_ctx, "CopyReport")).append(" **");
-			pp = new KeyNamePair(-2, sb.toString());
-			comboReport.addItem(pp);
-		}
-		comboReport.addEventListener(Events.ON_SELECT, this);
-	}	//	fillComboReport
+		return AD_Window_ID;
+	}
 
 	/**
 	 * Update title, status text and state of {@link #bWizard}
@@ -1271,9 +1226,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	{
 		if (m_setting)
 			return;
-		if (e.getTarget() == comboReport)
-			cmd_report();
-		else if (MClient.get(m_ctx).isMultiLingualDocument() && e.getTarget() == wLanguage.getComponent()){
+		if (MClient.get(m_ctx).isMultiLingualDocument() && e.getTarget() == wLanguage.getComponent()){
 			cmd_report();
 		}else if (e.getTarget() == bFind)
 			cmd_find();
@@ -1457,18 +1410,17 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	 */
 	private void cmd_report()
 	{
-		ListItem li = comboReport.getSelectedItem();
-		if(li == null || li.getValue() == null) return;
-		
-		Object pp = li.getValue();
-		if (pp == null)
+		int AD_PrintFormat_ID = formatSelector.getSelectedKey();
+		if (!offeredFormatKeys.contains(AD_PrintFormat_ID))
 			return;
+		
+		if (AD_PrintFormat_ID > 0)
+			previousSelectedKey = AD_PrintFormat_ID;
 		
 		reportContentRenderer = null;
 		setTabOnCloseHandler();
 		//
 		MPrintFormat pf = null;
-		int AD_PrintFormat_ID = Integer.valueOf(pp.toString());
 
 		//	create new
 		if (AD_PrintFormat_ID == -1)
@@ -1478,7 +1430,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			Dialog.askForInputWithCancel(m_WindowNo, editor, "CreateNewPrintFormat",  Msg.getMsg(m_ctx, "CreateNewPrintFormatTitle"), new Callback<Map.Entry<Boolean, Object>>() {
 				public void onCallback(Map.Entry<Boolean, Object> result) {
 					if((result == null) || (!(result.getValue() instanceof String)) || (!result.getKey())) {
-						comboReport.setSelectedItem(previousSelected);
+						formatSelector.setSelectedKey(previousSelectedKey);
 						return;
 					}
 					MPrintFormat pf = null;
@@ -1521,7 +1473,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 						postRenderReportEvent();
 					}
 					else {
-						comboReport.setSelectedItem(previousSelected);
+						formatSelector.setSelectedKey(previousSelectedKey);
 					}
 				}
 			});
@@ -1531,7 +1483,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 			Dialog.askForInputWithCancel(m_WindowNo, editor, "CreatePrintFormatCopy", Msg.getMsg(m_ctx, "CreatePrintFormatCopyTitle"), new Callback<Map.Entry<Boolean, Object>>() {
 				public void onCallback(Map.Entry<Boolean, Object> result) {
 					if((result == null) || (!(result.getValue() instanceof String)) || (!result.getKey())) {
-						comboReport.setSelectedItem(previousSelected);
+						formatSelector.setSelectedKey(previousSelectedKey);
 						return;
 					}
 					MPrintFormat pf = null;
@@ -1570,7 +1522,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 						postRenderReportEvent();
 					}
 					else {
-						comboReport.setSelectedItem(previousSelected);
+						formatSelector.setSelectedKey(previousSelectedKey);
 					}
 				}
 			});
