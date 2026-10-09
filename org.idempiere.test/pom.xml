@@ -181,6 +181,11 @@
 							</requirement>
 							<requirement>
 								<type>eclipse-plugin</type>
+								<id>org.owasp.encoder</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
 								<id>org.idempiere.tablepartition</id>
 								<versionRange>0.0.0</versionRange>
 							</requirement>
