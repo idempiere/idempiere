@@ -30,6 +30,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mockStatic;
 
@@ -56,6 +58,7 @@ import org.compiere.model.MProductPrice;
 import org.compiere.model.MProduction;
 import org.compiere.model.MProductionLine;
 import org.compiere.model.MStorageOnHand;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.Query;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
@@ -63,6 +66,7 @@ import org.compiere.process.ProcessInfo;
 import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
 import org.eevolution.model.MPPProductBOM;
@@ -226,6 +230,205 @@ public class ProductionTest extends AbstractTestCase {
 			assertTrue(productionLines[0].getMovementQty().equals(shipmentLine.getMovementQty()), "Production Line Qty <> Shipment Line Qty");
 			assertTrue(productionLines[1].getM_Product_ID()==DictionaryIDs.M_Product.MULCH.id,"Production Line 2 Product is not the expected component product");
 			assertTrue(productionLines[1].getMovementQty().intValue()==-2,"Production Line 2 Qty is not the expected component qty");
+		}
+	}
+	
+	@Test
+	public void testAutoProduceNestedBOM_Y() {
+		// When AUTO_PRODUCE_NESTED_BOM is Y, nested BOM is auto-produced even if isAutoProduce is false
+		runNestedAutoProduceTest("Y", false, true);
+	}
+
+	@Test
+	public void testAutoProduceNestedBOM_N() {
+		// When AUTO_PRODUCE_NESTED_BOM is N, nested BOM is not auto-produced even if isAutoProduce is true
+		runNestedAutoProduceTest("N", true, false);
+	}
+
+	@Test
+	public void testAutoProduceNestedBOM_F_AutoProduceTrue() {
+		// When AUTO_PRODUCE_NESTED_BOM is F, nested BOM is auto-produced if isAutoProduce is true
+		runNestedAutoProduceTest("F", true, true);
+	}
+
+	@Test
+	public void testAutoProduceNestedBOM_F_AutoProduceFalse() {
+		// When AUTO_PRODUCE_NESTED_BOM is F, nested BOM is not auto-produced if isAutoProduce is false
+		runNestedAutoProduceTest("F", false, false);
+	}
+
+	private void runNestedAutoProduceTest(String sysConfigFlag, boolean subAssemblyAutoProduce, boolean expectNestedProduction) {
+		// use standard costing only to avoid negative qty exception when sub-assembly is not auto-produced
+//		DB.executeUpdateEx("UPDATE M_CostElement SET IsActive = 'N' WHERE AD_Client_ID=? AND CostingMethod IS NOT NULL AND CostingMethod != ?", 
+//				new Object[] {getAD_Client_ID(), MCostElement.COSTINGMETHOD_StandardCosting}, getTrxName());
+		
+		MProductCategory category = new MProductCategory(Env.getCtx(), 0, getTrxName());
+		category.setName("Standard Costing " + sysConfigFlag + "_" + subAssemblyAutoProduce);
+		category.saveEx();
+		
+		String whereClause = "M_Product_Category_ID=?";
+		List<MProductCategoryAcct> categoryAccts = new Query(Env.getCtx(), MProductCategoryAcct.Table_Name, whereClause, null)
+									.setParameters(category.get_ID())
+									.list();
+		for (MProductCategoryAcct categoryAcct : categoryAccts) {
+			categoryAcct.setCostingMethod(MAcctSchema.COSTINGMETHOD_StandardCosting);
+			categoryAcct.saveEx();
+		}
+		
+		createPOAndMRForProduct(DictionaryIDs.M_Product.MULCH.id);  // create some stock to avoid negative qty average cost exception
+		MProduct mulch = MProduct.get(DictionaryIDs.M_Product.MULCH.id);
+		
+		MProduct subAssembly = new MProduct(Env.getCtx(), 0, getTrxName());
+		subAssembly.setName("SubAssembly_" + sysConfigFlag + "_" + subAssemblyAutoProduce);
+		subAssembly.setIsBOM(true);
+		subAssembly.setIsStocked(true);
+		subAssembly.setC_UOM_ID(mulch.getC_UOM_ID());
+		subAssembly.setM_Product_Category_ID(category.get_ID());
+		subAssembly.setProductType(mulch.getProductType());
+		subAssembly.setM_AttributeSet_ID(mulch.getM_AttributeSet_ID());
+		subAssembly.setC_TaxCategory_ID(mulch.getC_TaxCategory_ID());
+		subAssembly.setIsAutoProduce(subAssemblyAutoProduce);
+		subAssembly.saveEx();
+		
+		MPPProductBOM bomSub = new MPPProductBOM(Env.getCtx(), 0, getTrxName());
+		bomSub.setM_Product_ID(subAssembly.get_ID());		
+		bomSub.setBOMType(MPPProductBOM.BOMTYPE_CurrentActive);
+		bomSub.setBOMUse(MPPProductBOM.BOMUSE_Master);
+		bomSub.setName(subAssembly.getName());
+		bomSub.saveEx();
+		
+		MPPProductBOMLine subLine = new MPPProductBOMLine(bomSub);
+		subLine.setM_Product_ID(DictionaryIDs.M_Product.MULCH.id);
+		subLine.setQtyBOM(new BigDecimal("2"));
+		subLine.saveEx();
+
+		subAssembly.load(getTrxName());
+		subAssembly.setIsVerified(true);
+		subAssembly.saveEx();
+		
+		MProduct topProduct = new MProduct(Env.getCtx(), 0, getTrxName());
+		topProduct.setName("TopProduct_" + sysConfigFlag + "_" + subAssemblyAutoProduce);
+		topProduct.setIsBOM(true);
+		topProduct.setIsStocked(true);
+		topProduct.setC_UOM_ID(mulch.getC_UOM_ID());
+		topProduct.setM_Product_Category_ID(category.get_ID());
+		topProduct.setProductType(mulch.getProductType());
+		topProduct.setM_AttributeSet_ID(mulch.getM_AttributeSet_ID());
+		topProduct.setC_TaxCategory_ID(mulch.getC_TaxCategory_ID());
+		topProduct.setIsAutoProduce(true);
+		topProduct.saveEx();
+		
+		MPPProductBOM bomTop = new MPPProductBOM(Env.getCtx(), 0, getTrxName());
+		bomTop.setM_Product_ID(topProduct.get_ID());		
+		bomTop.setBOMType(MPPProductBOM.BOMTYPE_CurrentActive);
+		bomTop.setBOMUse(MPPProductBOM.BOMUSE_Master);
+		bomTop.setName(topProduct.getName());
+		bomTop.saveEx();
+		
+		MPPProductBOMLine topLine = new MPPProductBOMLine(bomTop);
+		topLine.setM_Product_ID(subAssembly.get_ID());
+		topLine.setQtyBOM(new BigDecimal("1"));
+		topLine.saveEx();
+
+		topProduct.load(getTrxName());
+		topProduct.setIsVerified(true);
+		topProduct.saveEx();
+		
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MProductCategory> categoryMock = mockStatic(MProductCategory.class);
+			 MockedStatic<MSysConfig> configMock = mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
+			mockProductGet(productMock, topProduct);
+			mockProductGet(productMock, subAssembly);
+			categoryMock.when(() -> MProductCategory.get(any(Properties.class), eq(category.get_ID()))).thenReturn(category);
+			configMock.when(() -> MSysConfig.getValue(eq(MSysConfig.AUTO_PRODUCE_NESTED_BOM), anyString(), anyInt()))
+				.thenReturn(sysConfigFlag);
+			configMock.when(() -> MSysConfig.getValue(eq(MSysConfig.AUTO_PRODUCE_NESTED_BOM), anyString(), anyInt(), anyInt()))
+				.thenReturn(sysConfigFlag);
+
+			MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+			order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
+			order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
+			order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
+			order.setDocStatus(DocAction.STATUS_Drafted);
+			order.setDocAction(DocAction.ACTION_Complete);
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			order.setDateOrdered(today);
+			order.setDatePromised(today);
+			order.saveEx();
+			
+			MPriceList priceList = MPriceList.get(order.getM_PriceList_ID());
+			MPriceListVersion priceListVersion = priceList.getPriceListVersion(null);
+			MProductPrice productPrice = new MProductPrice(Env.getCtx(), 0, getTrxName());
+			productPrice.setM_PriceList_Version_ID(priceListVersion.get_ID());
+			productPrice.setM_Product_ID(topProduct.get_ID());
+			productPrice.setPriceLimit(new BigDecimal("10.00"));
+			productPrice.setPriceStd(new BigDecimal("10.00"));
+			productPrice.saveEx();
+			MOrderLine line1 = new MOrderLine(order);
+			line1.setLine(10);
+			line1.setProduct(topProduct);
+			line1.setQty(new BigDecimal("1"));
+			line1.setDatePromised(today);
+			line1.saveEx();		
+			
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			order.load(getTrxName());		
+			assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+			line1.load(getTrxName());
+			assertEquals(1, line1.getQtyReserved().intValue());
+			
+			MInOut shipment = new MInOut(order, DictionaryIDs.C_DocType.MM_SHIPMENT.id, order.getDateOrdered());
+			shipment.setDocStatus(DocAction.STATUS_Drafted);
+			shipment.setDocAction(DocAction.ACTION_Complete);
+			shipment.saveEx();
+			
+			MInOutLine shipmentLine = new MInOutLine(shipment);
+			shipmentLine.setOrderLine(line1, 0, new BigDecimal("1"));
+			shipmentLine.setQty(new BigDecimal("1"));
+			shipmentLine.saveEx();
+			
+			info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			shipment.load(getTrxName());
+			assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus());
+			
+			shipmentLine.load(getTrxName());
+			assertTrue(shipmentLine.isAutoProduce(), "Shipment Line Auto Produce is False");
+			
+			Query query = new Query(Env.getCtx(), MProduction.Table_Name, "M_InOutLine_ID=?", getTrxName());
+			MProduction topProduction  = query.setParameters(shipmentLine.get_ID()).first();
+			assertNotNull(topProduction, "Can't find production for auto produce shipment line");
+			assertEquals(DocAction.STATUS_Completed, topProduction.getDocStatus());
+			assertEquals(topProduct.get_ID(), topProduction.getM_Product_ID());
+			
+			String description = Msg.getElement(Env.getCtx(), "M_InOut_ID", true) + " " + shipment.getDocumentNo();
+			List<MProduction> productions = new Query(Env.getCtx(), MProduction.Table_Name, "Description=?", getTrxName())
+					.setParameters(description)
+					.setOrderBy(MProduction.COLUMNNAME_M_Production_ID)
+					.list();
+			
+			if (expectNestedProduction) {
+				assertEquals(2, productions.size(), "Expected 2 productions (parent and nested child)");
+				MProduction nestedProduction = null;
+				for (MProduction prod : productions) {
+					if (prod.getM_Product_ID() == subAssembly.get_ID()) {
+						nestedProduction = prod;
+						break;
+					}
+				}
+				assertNotNull(nestedProduction, "Can't find nested production for subAssembly");
+				assertEquals(DocAction.STATUS_Completed, nestedProduction.getDocStatus());
+				MProductionLine[] childLines = nestedProduction.getLines();
+				assertNotNull(childLines);
+				assertEquals(2, childLines.length, "Nested production should have 2 lines");
+				assertEquals(subAssembly.get_ID(), childLines[0].getM_Product_ID());
+				assertEquals(new BigDecimal("1"), childLines[0].getMovementQty());
+				assertEquals(DictionaryIDs.M_Product.MULCH.id, childLines[1].getM_Product_ID());
+				assertEquals(-2, childLines[1].getMovementQty().intValue());
+			} else {
+				assertEquals(1, productions.size(), "Expected only 1 production (parent only, no nested)");
+			}
 		}
 	}
 	
