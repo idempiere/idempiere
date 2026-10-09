@@ -122,7 +122,8 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 	private EventWindow eventWin;
 	
 	/**
-	 * Create window content from "zul/calendar/calendar.zul"
+	 * Create window content from "zul/calendar/calendar.zul".<br/>
+	 * The window is not shown, it is the responsibility of the caller to show it.
 	 * @param scm SimpleCalendarModel
 	 */
 	public CalendarWindow(SimpleCalendarModel scm) {
@@ -223,14 +224,6 @@ public class CalendarWindow extends Window implements EventListener<Event>, ITab
 			addCallback(AFTER_PAGE_ATTACHED, t -> afterPageAttached());
 			addEventListener(ON_MOBILE_SET_SELECTED_TAB_ECHO, evt -> calendars.invalidate());
 		}
-		
-		SessionManager.getAppDesktop().showWindow(this);
-
-		// IDEMPIERE-1457: when show this window on tab, handle event close to remove calendars away scm
-		Component parentTab = this.getParent();
-		if (parentTab != null && parentTab.getClass().equals(Tabpanel.class)) {
-			((Tabpanel)parentTab).setOnCloseHandler(this);
-		}				
 	}
 
 	/**
