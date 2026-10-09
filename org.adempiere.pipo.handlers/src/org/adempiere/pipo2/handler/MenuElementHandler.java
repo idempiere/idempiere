@@ -109,8 +109,9 @@ public class MenuElementHandler extends AbstractElementHandler {
 		}
 
 			String strSeqNo = getStringValue(element, "SeqNo");
+			boolean hasSeqNo = strSeqNo != null;
 			int seqNo = 0;
-			if (strSeqNo != null)
+			if (hasSeqNo)
 				seqNo = Integer.valueOf(strSeqNo);
 
 			int AD_Tree_ID = getDefaultMenuTreeId();
@@ -155,6 +156,8 @@ public class MenuElementHandler extends AbstractElementHandler {
 						oldseqNo = rs.getInt("SeqNo");
 						if (rs.wasNull())
 							oldseqNo = seqNo;
+						if (parentElement == null)
+							parentId = rs.getInt("Parent_ID");
 					}
 	
 				} catch (SQLException e) {
@@ -162,6 +165,8 @@ public class MenuElementHandler extends AbstractElementHandler {
 				} finally {
 					DB.close(rs, pstmt);
 				}
+				if (!hasSeqNo)
+					seqNo = oldseqNo;
 				if (seqNo != oldseqNo) {
 					String updateSeqNo = "UPDATE AD_TREENODEMM SET SeqNo=SeqNo+1 WHERE Parent_ID=" + parentId + " AND SeqNo>=" + seqNo + " AND AD_Tree_ID=" + AD_Tree_ID;
 					DB.executeUpdateEx(updateSeqNo, getTrxName(ctx));
@@ -226,9 +231,11 @@ public class MenuElementHandler extends AbstractElementHandler {
 		if (id > 0) {
 			filler.addTableReference("Parent_ID", "AD_Menu", id, new AttributesImpl());
 		}
-		final String sql2 = "SELECT SeqNo FROM AD_TreeNoDemm WHERE AD_Tree_ID=? AND Node_ID=?";
-		int seqNo = DB.getSQLValueEx(null, sql2, AD_Tree_ID, m_Menu.getAD_Menu_ID());
-		filler.addString("SeqNo", Integer.toString(seqNo), new AttributesImpl());
+		if (!filler.isIncremental() || filler.isExportColumn("SeqNo")) {
+			final String sql2 = "SELECT SeqNo FROM AD_TreeNoDemm WHERE AD_Tree_ID=? AND Node_ID=?";
+			int seqNo = DB.getSQLValueEx(null, sql2, AD_Tree_ID, m_Menu.getAD_Menu_ID());
+			filler.addString("SeqNo", Integer.toString(seqNo), new AttributesImpl());
+		}
 		if (m_Menu.getAD_Menu_ID() <= PackOut.MAX_OFFICIAL_ID)
 			filler.addString("AD_Menu_ID", Integer.toString(m_Menu.getAD_Menu_ID()), new AttributesImpl());
 
