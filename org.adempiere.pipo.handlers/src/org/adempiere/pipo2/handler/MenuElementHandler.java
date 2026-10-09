@@ -42,6 +42,7 @@ import org.compiere.model.I_AD_Process;
 import org.compiere.model.I_AD_Task;
 import org.compiere.model.I_AD_Window;
 import org.compiere.model.I_AD_Workflow;
+import org.compiere.model.MColumn;
 import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.X_AD_Menu;
 import org.compiere.model.X_AD_Package_Exp_Detail;
@@ -231,7 +232,7 @@ public class MenuElementHandler extends AbstractElementHandler {
 		if (id > 0) {
 			filler.addTableReference("Parent_ID", "AD_Menu", id, new AttributesImpl());
 		}
-		if (!filler.isIncremental() || filler.isExportColumn("SeqNo")) {
+		if (isSeqNoExportColumn(ctx, m_Menu, filler)) {
 			final String sql2 = "SELECT SeqNo FROM AD_TreeNoDemm WHERE AD_Tree_ID=? AND Node_ID=?";
 			int seqNo = DB.getSQLValueEx(null, sql2, AD_Tree_ID, m_Menu.getAD_Menu_ID());
 			filler.addString("SeqNo", Integer.toString(seqNo), new AttributesImpl());
@@ -240,6 +241,25 @@ public class MenuElementHandler extends AbstractElementHandler {
 			filler.addString("AD_Menu_ID", Integer.toString(m_Menu.getAD_Menu_ID()), new AttributesImpl());
 
 		filler.export(excludes);
+	}
+
+	private boolean isSeqNoExportColumn(PIPOContext ctx, X_AD_Menu m_Menu, PoExporter filler) {
+		if (!filler.isIncremental())
+			return true;
+		if (m_Menu.is_new())
+			return true;
+		if (filler.isExportColumn("SeqNo"))
+			return true;
+
+		if (ctx.packOut != null && ctx.packOut.getFromDate() != null) {
+			int tableId = X_AD_TreeNodeMM.Table_ID;
+			int columnId = MColumn.getColumn_ID(X_AD_TreeNodeMM.Table_Name, "SeqNo");
+			String sql = "SELECT 1 FROM AD_ChangeLog WHERE AD_Table_ID=? AND Record_ID=? AND AD_Column_ID=? AND Created>=?";
+			int count = DB.getSQLValueEx(getTrxName(ctx), sql, tableId, m_Menu.getAD_Menu_ID(), columnId, ctx.packOut.getFromDate());
+			if (count > 0)
+				return true;
+		}
+		return false;
 	}
 
 	private void createApplication(PIPOContext ctx, IPackSerializer document,
