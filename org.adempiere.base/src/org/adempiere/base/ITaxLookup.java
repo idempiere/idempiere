@@ -87,6 +87,73 @@ public interface ITaxLookup {
 	}
 
 	/**
+	 * Find C_Tax_ID by Product/Charge + Warehouse Location + BPartner Location + DeliveryViaRule + Document Type + Payment Rule
+	 * @param ctx
+	 * @param M_Product_ID
+	 * @param C_Charge_ID
+	 * @param billDate Billing Date
+	 * @param shipDate Shipment Date
+	 * @param AD_Org_ID
+	 * @param M_Warehouse_ID
+	 * @param billC_BPartner_Location_ID Bill to location
+	 * @param shipC_BPartner_Location_ID Ship to location
+	 * @param IsSOTrx
+	 * @param deliveryViaRule Order/Invoice's Delivery Via Rule
+	 * @param C_DocType_ID Order/Invoice's Target Document Type (ignored if not implemented)
+	 * @param paymentRule Order/Invoice's Payment Rule (ignored if not implemented)
+	 * @param trxName
+	 * @return C_Tax_ID
+	 */
+	public default int get (Properties ctx, int M_Product_ID, int C_Charge_ID,
+			Timestamp billDate, Timestamp shipDate,
+			int AD_Org_ID, int M_Warehouse_ID,
+			int billC_BPartner_Location_ID, int shipC_BPartner_Location_ID,
+			boolean IsSOTrx, String deliveryViaRule,
+			int C_DocType_ID, String paymentRule, String trxName) {
+		// fallback to default method without C_DocType_ID and paymentRule if not implemented
+		return get(ctx, M_Product_ID, C_Charge_ID,
+				billDate, shipDate,
+				AD_Org_ID, M_Warehouse_ID,
+				billC_BPartner_Location_ID, shipC_BPartner_Location_ID,
+				IsSOTrx, deliveryViaRule, trxName);
+	}
+
+	/**
+	 * Find C_Tax_ID by Product/Charge + Warehouse Location + BPartner Location + DeliveryViaRule + Document Type + Payment Rule
+	 * @param ctx
+	 * @param M_Product_ID
+	 * @param C_Charge_ID
+	 * @param billDate Billing Date
+	 * @param shipDate Shipment Date
+	 * @param AD_Org_ID
+	 * @param M_Warehouse_ID
+	 * @param billC_BPartner_Location_ID Bill to location
+	 * @param shipC_BPartner_Location_ID Ship to location
+	 * @param dropshipC_BPartner_Location_ID Drop Ship to location (ignored if not implemented)
+	 * @param IsSOTrx
+	 * @param deliveryViaRule Order/Invoice's Delivery Via Rule
+	 * @param C_DocType_ID Order/Invoice's Target Document Type (ignored if not implemented)
+	 * @param paymentRule Order/Invoice's Payment Rule (ignored if not implemented)
+	 * @param trxName
+	 * @return C_Tax_ID
+	 */
+	public default int get (Properties ctx, int M_Product_ID, int C_Charge_ID,
+			Timestamp billDate, Timestamp shipDate,
+			int AD_Org_ID, int M_Warehouse_ID,
+			int billC_BPartner_Location_ID, int shipC_BPartner_Location_ID,
+			int dropshipC_BPartner_Location_ID,
+			boolean IsSOTrx, String deliveryViaRule,
+			int C_DocType_ID, String paymentRule, String trxName) {
+		// fallback to default method without C_DocType_ID and paymentRule if not implemented
+		return get(ctx, M_Product_ID, C_Charge_ID,
+				billDate, shipDate,
+				AD_Org_ID, M_Warehouse_ID,
+				billC_BPartner_Location_ID, shipC_BPartner_Location_ID,
+				dropshipC_BPartner_Location_ID,
+				IsSOTrx, deliveryViaRule, trxName);
+	}
+
+	/**
 	 * Find C_Tax_ID
 	 * @param ctx
 	 * @param C_TaxCategory_ID

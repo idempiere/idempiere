@@ -517,7 +517,8 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		int C_Tax_ID = Core.getTaxLookup().get(getCtx(), getM_Product_ID(), getC_Charge_ID() , m_DateInvoiced, m_DateInvoiced,
 			getAD_Org_ID(), M_Warehouse_ID,
 			m_C_BPartner_Location_ID,		//	should be bill to
-			m_C_BPartner_Location_ID, dropShipLocationId, m_IsSOTrx, deliveryViaRule, get_TrxName());
+			m_C_BPartner_Location_ID, dropShipLocationId, m_IsSOTrx, deliveryViaRule,
+			getParent().getC_DocTypeTarget_ID(), getParent().getPaymentRule(), get_TrxName());
 		if (C_Tax_ID == 0)
 		{
 			log.log(Level.SEVERE, "No Tax found");
