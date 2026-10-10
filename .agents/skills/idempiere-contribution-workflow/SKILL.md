@@ -19,9 +19,10 @@ Reference: https://docs.idempiere.org/docs/basic-development/contributing-to-cor
 - Sync `master` with upstream:
   ```bash
   git checkout master
-  git pull upstream master
+  git pull --ff-only upstream master
   git push origin master
   ```
+  If the fast-forward fails, local `master` has commits of its own, which hard rule 1 forbids. Stop and tell the developer instead of merging.
   After pulling, suggest that the developer run `bash RUN_SyncDBDev.sh` to apply new migration scripts to the local database (see `idempiere-headless-build-run`).
 - If the ticket needs dictionary or database changes, read `idempiere-database-changes` **before** coding. The developer must request Centralized IDs and generate scripts from the UI.
 

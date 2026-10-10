@@ -13,7 +13,7 @@ Before writing new code, read the surrounding code and match its style (tabs, br
 
 ## 1. Data access: use this order of preference
 
-1. **Model classes (`M*`)**: e.g. `MBPartner.get(ctx, id)`, `MOrder#getLines()`. Many have cached static getters; use them. For bulk changes on many POs, use `BatchUpdate` / `BatchInsert` / `BatchDelete` (`org.compiere.model`). They run the applicable save or delete hooks, validators and the change log, but `BatchInsert` skips `afterSave`, after-new validators and event handlers, translations and tree nodes. Use `saveEx()` for tables that depend on any of those. See `references/data-access-examples.md`.
+1. **Model classes (`M*`)**: e.g. `MBPartner.get(ctx, id)`, `MOrder#getLines()`. Many have cached static getters; use them. For bulk changes on many POs, use `BatchUpdate` / `BatchInsert` / `BatchDelete` (`org.compiere.model`). They run the same hooks, validators and change log as a single `save()` / `delete()`, but don't reload the POs afterwards. See `references/data-access-examples.md`.
 2. **`Query`**: `new Query(ctx, MOrder.Table_Name, whereClause, trxName)` with `.setParameters(...)`, `.setClient_ID()`, `.setOnlyActiveRecords(true)`, `.setOrderBy(...)`, then `.list()`, `.first()`, `.firstOnly()`, `.count()`.
 3. **`DB` helpers**: `DB.getSQLValueEx(trxName, sql, params...)`, `DB.getSQLValueStringEx(...)`, `DB.executeUpdateEx(sql, params, trxName)`. A raw `UPDATE` bypasses `beforeSave`, model validators, event handlers and the change log, so use it only when that is intended.
 4. **Raw JDBC** (`DB.prepareStatement`): only when nothing above fits, e.g. large streaming reads. Always close resources in `finally` with `DB.close(rs, pstmt)`.

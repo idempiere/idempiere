@@ -46,7 +46,15 @@ Guidelines:
 - Avoid `commit()` unless the code under test truly needs committed data. If you commit, clean up afterwards.
 - Assert the specific outcome with a helpful message: `assertEquals(expected, actual, "why")`.
 - Use the GPLv2 header on new test files.
-- Mockito (`mockStatic`, etc.) is available and used in existing tests when needed.
+- Don't update shared GardenWorld seed records (SysConfig, client info, products, conversion rates…) to set up a scenario. Updates lock rows, slow the suite and break parallel runs (`idempiere.unit.test.parallel.launch`). Wherever possible, mock the static getters with Mockito instead, and create any records you need as new rows in the test transaction:
+  ```java
+  try (MockedStatic<MSysConfig> mocked = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
+  	mocked.when(() -> MSysConfig.getBooleanValue(MSysConfig.EXPORT_BLOB_COLUMN_FOR_INSERT, true, Env.getAD_Client_ID(Env.getCtx())))
+  		.thenReturn(true);
+  	// code under test
+  }
+  ```
+  Examples: `org.idempiere.test/src/org/idempiere/test/base/POInsertSQLTest.java` (`MSysConfig`), `ConversionRateHelper.mockStatic()` as used in `org.idempiere.test/src/org/idempiere/test/base/MatchInvTestIsolated.java` (conversion rates).
 
 ## Running tests from the terminal
 
