@@ -26,6 +26,7 @@ package org.adempiere.webui.editor;
 
 import java.util.Objects;
 
+import org.adempiere.webui.Extensions;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Textbox;
@@ -97,7 +98,7 @@ public class DateRangeEditor extends Div implements ValueChangeListener {
 			popupBtn.setImage(ThemeManager.getThemeResource(IMAGES_CONTEXT_CALENDAR_PNG));
 		this.appendChild(popupBtn);
 
-		popup = new DateRangePicker(editor, editor2);
+		popup = Extensions.getDateRangePicker(editor, editor2);
 		popupBtn.addEventListener(Events.ON_CLICK, event -> {
 			popup.setPage(popupBtn.getPage());
 			popup.open(popupBtn, "after_center");
