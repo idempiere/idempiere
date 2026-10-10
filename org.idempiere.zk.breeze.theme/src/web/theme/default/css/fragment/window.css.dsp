@@ -154,6 +154,29 @@ input[type="checkbox"]:focus
 	margin: 5px;
 }
 
+.date-picker-group .z-caption {
+	cursor: pointer;
+	position: relative;
+	padding-right: 20px;
+}
+.date-picker-group .z-caption * {
+	cursor: pointer;
+}
+.date-picker-group .z-caption:after {
+	content: "";
+	position: absolute;
+	right: 8px;
+	top: 50%;
+	margin-top: -2px;
+	border-left: 4px solid transparent;
+	border-right: 4px solid transparent;
+	border-top: 5px solid #666;
+}
+.date-picker-group-open .z-caption:after {
+	border-top: 0;
+	border-bottom: 5px solid #666;
+}
+
 .recordid-editor {
 	display: inline-block;
 	position: relative;
