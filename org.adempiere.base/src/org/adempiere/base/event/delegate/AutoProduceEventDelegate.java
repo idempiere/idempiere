@@ -56,6 +56,8 @@ import org.osgi.service.event.Event;
 @EventTopicDelegate
 @ModelEventTopic(modelClass = MInOut.class)
 public class AutoProduceEventDelegate extends ModelEventDelegate<MInOut> {
+	private static final CLogger s_log = CLogger.getCLogger(AutoProduceEventDelegate.class);
+	
 	/**
 	 * @param po
 	 * @param event
@@ -230,7 +232,7 @@ public class AutoProduceEventDelegate extends ModelEventDelegate<MInOut> {
 					else if ("F".equalsIgnoreCase(flag))
 						produceNestedBOM = component.isAutoProduce();
 					else
-						CLogger.getCLogger(getClass()).warning("Invalid value for AUTO_PRODUCE_NESTED_BOM SysConfig flag. (" + flag + ")");
+						s_log.warning("Invalid value for AUTO_PRODUCE_NESTED_BOM SysConfig flag. (" + flag + ")");
 					if (produceNestedBOM) {
 						productionCount[0] = productionCount[0]+1;
 						String error = createProduction(mInOut,mInOutLine,productionQty.multiply(bomQty),onHandComponent,bomLine.getM_Product_ID(),productionCount,qtyUsedMap);
