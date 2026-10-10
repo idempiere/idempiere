@@ -31,6 +31,7 @@ import org.compiere.model.MPaySelectionCheck;
 import org.compiere.model.MPaySelectionLine;
 import org.compiere.model.MPayment;
 import org.compiere.model.MProcessPara;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.Query;
 import org.compiere.util.AdempiereSystemError;
 import org.compiere.util.Env;
@@ -274,8 +275,17 @@ public class AllocationAuto extends SvrProcess
 		{
 			if (invoice.getOpenAmt(false, null).signum() == 0)
 			{
-				invoice.setIsPaid(true);
-				invoice.saveEx();
+				if (!MSysConfig.getBooleanValue(MSysConfig.INVOICE_ISPAID_REQUIRES_ALLOCATION, false, invoice.getAD_Client_ID()))
+				{
+					invoice.setIsPaid(true);
+					invoice.saveEx();
+				}
+				else
+				{
+					// IsPaid requires an allocation, let MInvoice decide; nothing is open so it is not a candidate either way
+					if (invoice.testAllocation())
+						invoice.saveEx();
+				}
 			}
 			else
 				list.add (invoice);
