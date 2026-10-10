@@ -149,5 +149,22 @@ public interface ITaxProvider {
 	{
 		return false;
 	}
+
+	/**
+	 * Update the tax amount of an invoice line.<br/>
+	 * Called when the line's tax amount must be calculated (before save, and when the line is created from an RMA line).<br/>
+	 * The default calculates it with the rate of the line's tax ({@link MInvoiceLine#setTaxAmt()}).
+	 * A provider that calculates the tax itself can override this method, so that the line shows
+	 * the same tax as the provider's document tax lines (see IDEMPIERE-7145).
+	 * A provider returning false should log the reason with log.saveError.
+	 * @param provider
+	 * @param line
+	 * @return true if success, false otherwise
+	 */
+	public default boolean updateLineTax(MTaxProvider provider, MInvoiceLine line)
+	{
+		line.setTaxAmt();
+		return true;
+	}
 	
 }
