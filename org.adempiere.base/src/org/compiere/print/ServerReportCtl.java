@@ -89,7 +89,8 @@ public class ServerReportCtl {
 	 */
 	public static boolean startDocumentPrint (int type, MPrintFormat customPrintFormat, int Record_ID, String printerName, ProcessInfo pi)
 	{
-		ReportEngine re = ReportEngine.get (Env.getCtx(), type, Record_ID);
+		String trxName = pi != null ? pi.getTransactionName() : null;
+		ReportEngine re = ReportEngine.get (Env.getCtx(), type, Record_ID, trxName);
 		if (re == null)
 		{
 			CLogger log = CLogger.getCLogger(ServerReportCtl.class);
@@ -120,7 +121,7 @@ public class ServerReportCtl {
 			// ==================================
 			{
 				exportReportContent(re, pi, printerName);
-				ReportEngine.printConfirm (type, Record_ID);
+				ReportEngine.printConfirm (type, Record_ID, trxName);
 			}
 		}
 		return true;

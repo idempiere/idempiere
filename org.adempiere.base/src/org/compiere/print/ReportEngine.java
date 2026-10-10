@@ -437,7 +437,16 @@ public class ReportEngine implements PrintServiceAttributeListener
 	{
 		return m_info;
 	}	//	getPrintInfo
-	
+
+	/**
+	 * 	Get transaction name
+	 *	@return transaction name, null if none
+	 */
+	public String getTrxName()
+	{
+		return m_trxName;
+	}	//	getTrxName
+
 	/**
 	 * 	Get PrintLayout (Report) Context
 	 * 	@return context
@@ -506,7 +515,7 @@ public class ReportEngine implements PrintServiceAttributeListener
 
 		//	submit
 			boolean printCopy = m_info.isDocumentCopy() && m_info.getCopies() > 1;
-			ArchiveEngine.get().archive(m_layout, m_info);
+			ArchiveEngine.get().archive(m_layout, m_info, m_trxName);
 			PrintUtil.print(job, prats, false, printCopy);
 
 			//	Document: Print Copies
@@ -1407,7 +1416,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		//	Order - Print Shipment or Invoice
 		if (type == ORDER)
 		{
-			int[] what = getDocumentWhat (Record_ID);
+			int[] what = getDocumentWhat (Record_ID, trxName);
 			if (what != null)
 			{
 				type = what[0];
@@ -1631,9 +1640,10 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	/**
 	 *	Determine what Order document to print.
 	 *  @param C_Order_ID id
+	 *  @param trxName transaction name, null for no transaction
 	 *	@return int Array with [ReportEngine constant for type of print(INVOICE, ORDER, etc), record id]
 	 */
-	private static int[] getDocumentWhat (int C_Order_ID)
+	private static int[] getDocumentWhat (int C_Order_ID, String trxName)
 	{
 		int[] what = new int[2];
 		what[0] = ORDER;
@@ -1648,7 +1658,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement(sql.toString(), null);
+			pstmt = DB.prepareStatement(sql.toString(), trxName);
 			pstmt.setInt(1, C_Order_ID);
 			rs = pstmt.executeQuery();
 			if (rs.next())
@@ -1663,7 +1673,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 					.append(" AND o.C_Order_ID=?");
 				DB.close(rs, pstmt);
 				rs = null; pstmt = null;
-				pstmt = DB.prepareStatement(sql.toString(), null);
+				pstmt = DB.prepareStatement(sql.toString(), trxName);
 				pstmt.setInt(1, C_Order_ID);
 				rs = pstmt.executeQuery();
 				if (rs.next()) {
@@ -1701,7 +1711,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 				.append(" ORDER BY M_InOut_ID DESC");
 		try
 		{
-			pstmt = DB.prepareStatement(sql.toString(), null);
+			pstmt = DB.prepareStatement(sql.toString(), trxName);
 			pstmt.setInt(1, C_Order_ID);
 			rs = pstmt.executeQuery();
 			if (rs.next())
@@ -1732,6 +1742,18 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 	 */
 	public static void printConfirm (int type, int Record_ID)
 	{
+		printConfirm(type, Record_ID, null);
+	}	//	printConfirm
+
+	/**
+	 * 	Print Confirm.<br/>
+	 *  Update Date Printed.
+	 * 	@param type report engine document type ({@link #ORDER}, {@link #SHIPMENT}, etc)
+	 * 	@param Record_ID record id
+	 * 	@param trxName transaction name, null for no transaction
+	 */
+	public static void printConfirm (int type, int Record_ID, String trxName)
+	{
 		StringBuilder sql = new StringBuilder();
 		if (type == ORDER || type == SHIPMENT || type == INVOICE)
 			sql.append("UPDATE ").append(DOC_BASETABLES[type])
@@ -1740,7 +1762,7 @@ queued-job-count = 0  (class javax.print.attribute.standard.QueuedJobCount)
 		//
 		if (sql.length() > 0)
 		{
-			int no = DB.executeUpdate(sql.toString(), null);
+			int no = DB.executeUpdate(sql.toString(), trxName);
 			if (no != 1)
 				log.log(Level.SEVERE, "Updated records=" + no + " - should be just one");
 		}
