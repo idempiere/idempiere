@@ -31,7 +31,10 @@ import java.util.logging.Level;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.CreditStatus;
+import org.adempiere.base.DefaultValue;
+import org.adempiere.base.DocumentDefaults;
 import org.adempiere.base.ICreditManager;
+import org.adempiere.base.IOrderDefaultsProvider;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.BPartnerNoBillToAddressException;
 import org.adempiere.exceptions.BPartnerNoShipToAddressException;
@@ -477,6 +480,8 @@ public class MOrder extends X_C_Order implements DocAction
 		setChargeAmt (Env.ZERO);
 		setTotalLines (Env.ZERO);
 		setGrandTotal (Env.ZERO);
+
+		Core.getOrderDefaults().forEach(provider -> provider.initDefaults(this));
 	}
 
 	/**
@@ -1270,32 +1275,43 @@ public class MOrder extends X_C_Order implements DocAction
 		
 		if (getC_BPartner_Location_ID() == 0)
 			setBPartner(new MBPartner(getCtx(), getC_BPartner_ID(), get_TrxName()));
+		DocumentDefaults<IOrderDefaultsProvider> defaults = Core.getOrderDefaults();
 		//	Default Bill_BPartner_ID to C_BPartner_ID
 		if (getBill_BPartner_ID() == 0)
 		{
 			setBill_BPartner_ID(getC_BPartner_ID());
-			setBill_Location_ID(getC_BPartner_Location_ID());
+			setBill_Location_ID(0);
 		}
 		//	Default Bill_Location_ID to C_BPartner_Location_ID
 		if (getBill_Location_ID() == 0)
-			setBill_Location_ID(getC_BPartner_Location_ID());
+		{
+			Integer ii = defaults.get(provider -> provider.getBill_Location_ID(this))
+					.resolve(this::getC_BPartner_Location_ID);
+			if (ii != null && ii > 0)
+				setBill_Location_ID(ii);
+		}
 
 		//	Default Price List
 		if (getM_PriceList_ID() == 0)
 		{
-			int ii = DB.getSQLValueEx(null,
-				"SELECT M_PriceList_ID FROM M_PriceList "
-				+ "WHERE AD_Client_ID=? AND IsSOPriceList=? AND IsActive=? "
-				+ "ORDER BY IsDefault DESC", getAD_Client_ID(), isSOTrx(), true);
-			if (ii != 0)
+			Integer ii = defaults.get(provider -> provider.getM_PriceList_ID(this))
+					.resolve(() -> DB.getSQLValueEx(null,
+						"SELECT M_PriceList_ID FROM M_PriceList "
+						+ "WHERE AD_Client_ID=? AND IsSOPriceList=? AND IsActive=? "
+						+ "ORDER BY IsDefault DESC", getAD_Client_ID(), isSOTrx(), true));
+			if (ii != null && ii > 0)
 				setM_PriceList_ID (ii);
 		}
 		//	Default Currency
 		if (getC_Currency_ID() == 0)
 		{
-			String sql = "SELECT C_Currency_ID FROM M_PriceList WHERE M_PriceList_ID=?";
-			int ii = DB.getSQLValue (null, sql, getM_PriceList_ID());
-			if (ii != 0)
+			int ii = 0;
+			if (getM_PriceList_ID() > 0)
+			{
+				String sql = "SELECT C_Currency_ID FROM M_PriceList WHERE M_PriceList_ID=?";
+				ii = DB.getSQLValue (null, sql, getM_PriceList_ID());
+			}
+			if (ii > 0)
 				setC_Currency_ID (ii);
 			else
 				setC_Currency_ID(Env.getContextAsInt(getCtx(), Env.C_CURRENCY_ID));
@@ -1304,8 +1320,9 @@ public class MOrder extends X_C_Order implements DocAction
 		//	Default Sales Rep
 		if (getSalesRep_ID() == 0)
 		{
-			int ii = Env.getContextAsInt(getCtx(), Env.SALESREP_ID);
-			if (ii != 0)
+			Integer ii = defaults.get(provider -> provider.getSalesRep_ID(this))
+					.resolve(() -> Env.getContextAsInt(getCtx(), Env.SALESREP_ID));
+			if (ii != null && ii > 0)
 				setSalesRep_ID (ii);
 		}
 
@@ -1316,16 +1333,39 @@ public class MOrder extends X_C_Order implements DocAction
 		//	Default Payment Term
 		if (getC_PaymentTerm_ID() == 0)
 		{
-			int ii = Env.getContextAsInt(getCtx(), Env.C_PAYMENTTERM_ID);
-			if (ii != 0)
-				setC_PaymentTerm_ID(ii);
-			else
+			DefaultValue<Integer> paymentTerm = defaults.get(provider -> provider.getC_PaymentTerm_ID(this));
+			int ii = 0;
+			if (paymentTerm.isUseFallback())
 			{
-				String sql = "SELECT C_PaymentTerm_ID FROM C_PaymentTerm WHERE AD_Client_ID=? AND IsDefault='Y' AND IsActive='Y'";
-				ii = DB.getSQLValue(null, sql, getAD_Client_ID());
-				if (ii != 0)
-					setC_PaymentTerm_ID (ii);
+				ii = Env.getContextAsInt(getCtx(), Env.C_PAYMENTTERM_ID);
+				if (ii == 0)
+				{
+					String sql = "SELECT C_PaymentTerm_ID FROM C_PaymentTerm WHERE AD_Client_ID=? AND IsDefault='Y' AND IsActive='Y'";
+					ii = DB.getSQLValue(null, sql, getAD_Client_ID());
+				}
 			}
+			else if (paymentTerm.getValue() != null)
+				ii = paymentTerm.getValue();
+			if (ii > 0)
+				setC_PaymentTerm_ID (ii);
+		}
+
+		//	Default Delivery Rule (empty only if a provider cleared the initial default)
+		if (getDeliveryRule() == null)
+		{
+			String rule = defaults.get(provider -> provider.getDeliveryRule(this))
+					.resolve(() -> DELIVERYRULE_Availability);
+			if (rule != null)
+				setDeliveryRule(rule);
+		}
+
+		//	Default Invoice Rule (empty only if a provider cleared the initial default)
+		if (getInvoiceRule() == null)
+		{
+			String rule = defaults.get(provider -> provider.getInvoiceRule(this))
+					.resolve(() -> INVOICERULE_Immediate);
+			if (rule != null)
+				setInvoiceRule(rule);
 		}
 
 		// IDEMPIERE-63
