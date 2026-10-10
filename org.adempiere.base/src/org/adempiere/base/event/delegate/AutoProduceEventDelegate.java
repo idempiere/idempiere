@@ -38,7 +38,9 @@ import org.compiere.model.MProduct;
 import org.compiere.model.MProduction;
 import org.compiere.model.MProductionLine;
 import org.compiere.model.MStorageOnHand;
+import org.compiere.model.MSysConfig;
 import org.compiere.process.ProcessInfo;
+import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -54,6 +56,8 @@ import org.osgi.service.event.Event;
 @EventTopicDelegate
 @ModelEventTopic(modelClass = MInOut.class)
 public class AutoProduceEventDelegate extends ModelEventDelegate<MInOut> {
+	private static final CLogger s_log = CLogger.getCLogger(AutoProduceEventDelegate.class);
+	
 	/**
 	 * @param po
 	 * @param event
@@ -219,7 +223,16 @@ public class AutoProduceEventDelegate extends ModelEventDelegate<MInOut> {
 					 
 				// insufficient on hand for component
 				if (onHandComponent.compareTo(productionQty.multiply(bomQty)) < 0) {
-					boolean produceNestedBOM = component.isBOM() && component.isVerified() && component.isAutoProduce();
+					String flag = MSysConfig.getValue(MSysConfig.AUTO_PRODUCE_NESTED_BOM, "F", Env.getAD_Client_ID(Env.getCtx()));
+					boolean produceNestedBOM = false;
+					if ("Y".equalsIgnoreCase(flag))
+						produceNestedBOM = true;
+					else if ("N".equalsIgnoreCase(flag))
+						produceNestedBOM = false;
+					else if ("F".equalsIgnoreCase(flag))
+						produceNestedBOM = component.isAutoProduce();
+					else
+						s_log.warning("Invalid value for AUTO_PRODUCE_NESTED_BOM SysConfig flag. (" + flag + ")");
 					if (produceNestedBOM) {
 						productionCount[0] = productionCount[0]+1;
 						String error = createProduction(mInOut,mInOutLine,productionQty.multiply(bomQty),onHandComponent,bomLine.getM_Product_ID(),productionCount,qtyUsedMap);
