@@ -25,7 +25,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_PaymentAllocate
  *  @author iDempiere (generated)
- *  @version Release 13 - $Id$ */
+ *  @version Release 14 - $Id$ */
 @org.adempiere.base.Model(table="C_PaymentAllocate")
 public class X_C_PaymentAllocate extends PO implements I_C_PaymentAllocate, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_C_PaymentAllocate extends PO implements I_C_PaymentAllocate, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20260309L;
+	private static final long serialVersionUID = 20260611L;
 
     /** Standard Constructor */
     public X_C_PaymentAllocate (Properties ctx, int C_PaymentAllocate_ID, String trxName)
@@ -42,7 +42,6 @@ public class X_C_PaymentAllocate extends PO implements I_C_PaymentAllocate, I_Pe
       /** if (C_PaymentAllocate_ID == 0)
         {
 			setAmount (Env.ZERO);
-			setC_Invoice_ID (0);
 			setC_PaymentAllocate_ID (0);
 			setC_Payment_ID (0);
 			setDiscountAmt (Env.ZERO);
@@ -58,7 +57,6 @@ public class X_C_PaymentAllocate extends PO implements I_C_PaymentAllocate, I_Pe
       /** if (C_PaymentAllocate_ID == 0)
         {
 			setAmount (Env.ZERO);
-			setC_Invoice_ID (0);
 			setC_PaymentAllocate_ID (0);
 			setC_Payment_ID (0);
 			setDiscountAmt (Env.ZERO);
@@ -74,7 +72,6 @@ public class X_C_PaymentAllocate extends PO implements I_C_PaymentAllocate, I_Pe
       /** if (C_PaymentAllocate_UU == null)
         {
 			setAmount (Env.ZERO);
-			setC_Invoice_ID (0);
 			setC_PaymentAllocate_ID (0);
 			setC_Payment_ID (0);
 			setDiscountAmt (Env.ZERO);
@@ -90,7 +87,6 @@ public class X_C_PaymentAllocate extends PO implements I_C_PaymentAllocate, I_Pe
       /** if (C_PaymentAllocate_UU == null)
         {
 			setAmount (Env.ZERO);
-			setC_Invoice_ID (0);
 			setC_PaymentAllocate_ID (0);
 			setC_Payment_ID (0);
 			setDiscountAmt (Env.ZERO);
@@ -170,6 +166,35 @@ public class X_C_PaymentAllocate extends PO implements I_C_PaymentAllocate, I_Pe
 	public int getC_AllocationLine_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_AllocationLine_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	@Deprecated(since="13") // use better methods with cache
+	public org.compiere.model.I_C_Charge getC_Charge() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_Charge)MTable.get(getCtx(), org.compiere.model.I_C_Charge.Table_ID)
+			.getPO(getC_Charge_ID(), get_TrxName());
+	}
+
+	/** Set Charge.
+		@param C_Charge_ID Additional document charges
+	*/
+	public void setC_Charge_ID (int C_Charge_ID)
+	{
+		if (C_Charge_ID < 1)
+			set_Value (COLUMNNAME_C_Charge_ID, null);
+		else
+			set_Value (COLUMNNAME_C_Charge_ID, Integer.valueOf(C_Charge_ID));
+	}
+
+	/** Get Charge.
+		@return Additional document charges
+	  */
+	public int getC_Charge_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Charge_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
