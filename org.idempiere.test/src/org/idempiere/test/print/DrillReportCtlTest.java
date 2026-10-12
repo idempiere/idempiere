@@ -122,6 +122,19 @@ public class DrillReportCtlTest {
 	}
 
 	@Test
+	public void testInvalidTimestampIsRejected() {
+		// valid format but non-existing calendar date, must not roll over to another day
+		assertThrows(IllegalArgumentException.class, () -> ctl.toTimestamp(DisplayType.DateTime, "2024-02-30 10:00:00"));
+		assertThrows(IllegalArgumentException.class, () -> ctl.toTimestamp(DisplayType.Date, "2024-02-30 10:00:00"));
+		assertThrows(IllegalArgumentException.class, () -> ctl.toTimestamp(DisplayType.Time, "2024-02-30 10:00:00"));
+	}
+
+	@Test
+	public void testNullValueGivesNull() {
+		assertNull(ctl.toTimestamp(DisplayType.Date, null));
+	}
+
+	@Test
 	public void testTimestampValueIsReturnedUnchanged() {
 		Timestamp value = Timestamp.valueOf("2026-03-04 05:06:07");
 		assertSame(value, ctl.toTimestamp(DisplayType.Date, value));

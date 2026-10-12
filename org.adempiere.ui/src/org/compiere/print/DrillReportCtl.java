@@ -654,10 +654,12 @@ public class DrillReportCtl {
 	 * Convert a drill rule parameter value to a timestamp
 	 * @param displayType display type of the parameter (Date, Time or DateTime)
 	 * @param value Timestamp or text value
-	 * @return timestamp, or null if value is empty
+	 * @return timestamp, or null if value is null or empty
 	 */
 	protected Timestamp toTimestamp(int displayType, Object value) {
 		Timestamp ts = null;
+		if (value == null)
+			return null;
 		if (value instanceof Timestamp)
 			ts = (Timestamp)value;
 		else
@@ -667,7 +669,7 @@ public class DrillReportCtl {
 
 	/**
 	 * Parse a text value using the format that matches the display type.
-	 * The whole text must be consumed. Falls back to a full JDBC timestamp
+	 * The whole text must be a valid date/time. Falls back to a full JDBC timestamp
 	 * (yyyy-mm-dd hh:mm:ss[.fffffffff], keeps the time and fractional seconds,
 	 * except for {@link DisplayType#Date} where it is truncated to the day) and then to the JDBC date format (yyyy-mm-dd).
 	 * @param displayType {@link DisplayType#Date}, {@link DisplayType#Time} or any other date type
@@ -686,36 +688,41 @@ public class DrillReportCtl {
 			format = DisplayType.getTimeFormat_Default();
 		else
 			format = DisplayType.getTimestampFormat_Default();
-		Timestamp ts = parseFully(format, text);
-		if (ts != null)
-			return ts;
-		try {
-			ts = Timestamp.valueOf(text);
-			if (displayType == DisplayType.Date)
+		Timestamp ts = parseFully(format, text, false);
+		if (ts == null) {
+			ts = parseFully(DisplayType.getTimestampFormat_Default(), text, true);
+			if (ts != null && displayType == DisplayType.Date)
 				ts = Timestamp.valueOf(ts.toLocalDateTime().toLocalDate().atStartOfDay());
-			return ts;
-		} catch (IllegalArgumentException e) {
-			// not a full timestamp, try the date only format
 		}
-		ts = parseFully(DisplayType.getDateFormat_JDBC(), text);
+		if (ts == null)
+			ts = parseFully(DisplayType.getDateFormat_JDBC(), text, false);
 		if (ts == null)
 			throw new IllegalArgumentException("Cannot parse date/time value: " + value);
 		return ts;
 	}
 
 	/**
-	 * Parse text with a format, requiring that the whole text is consumed
+	 * Parse text with a non-lenient format, requiring that the whole text is consumed
 	 * @param format format to use
 	 * @param text text to parse
+	 * @param allowFraction true to accept fractional seconds (.f to .fffffffff) after the parsed text
 	 * @return timestamp, or null if the text is not fully matched by the format
 	 */
-	private Timestamp parseFully(SimpleDateFormat format, String text) {
+	private Timestamp parseFully(SimpleDateFormat format, String text, boolean allowFraction) {
 		format.setLenient(false);
 		ParsePosition pos = new ParsePosition(0);
 		java.util.Date date = format.parse(text, pos);
-		if (date == null || pos.getIndex() != text.length())
+		if (date == null)
 			return null;
-		return new Timestamp(date.getTime());
+		Timestamp ts = new Timestamp(date.getTime());
+		String rest = text.substring(pos.getIndex());
+		if (rest.isEmpty())
+			return ts;
+		if (allowFraction && rest.matches("\\.\\d{1,9}")) {
+			ts.setNanos(Integer.parseInt((rest.substring(1) + "00000000").substring(0, 9)));
+			return ts;
+		}
+		return null;
 	}
 
 	protected BigDecimal toBigDecimal(Object value) {
