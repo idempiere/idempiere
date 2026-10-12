@@ -173,7 +173,8 @@ public class ReportFormatSelectorTest extends AbstractTestCase {
 			ReportFormatLoader.load(allowAllRole(), current, 0, current.get_ID());
 		}
 
-		assertTrue(sql.get(0).contains("AD_ReportView_ID"));
+		assertFalse(sql.isEmpty(), "access filter must be applied to the print format query");
+		assertTrue(sql.get(0).contains("AD_ReportView_ID"), "query must be limited to the current report view");
 	}
 
 	/** Make {@link MRole#getDefault(java.util.Properties, boolean)}, used by the {@link org.compiere.model.Query} access filter, return the role */
