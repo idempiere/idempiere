@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.Set;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.I_AD_Org;
@@ -37,6 +38,10 @@ public class PoExporter {
 	private PIPOContext ctx;
 
 	private IPackSerializer serializer;
+
+	/** Upper case names of the columns changed since From Date. null to export all columns */
+	private Set<String> changedColumns = null;
+	private boolean changedColumnsLoaded = false;
 
 	public static final String POEXPORTER_BLOB_TYPE_STRING = "string";
 	public static final String POEXPORTER_BLOB_TYPE_BYTEARRAY = "byte[]";
@@ -204,6 +209,37 @@ public class PoExporter {
 		addString(columnName, target_values, atts);
 	}
 
+	/**
+	 * Is the export limited to the columns changed since From Date of the pack out (IDEMPIERE-7134)
+	 * @return true if only changed columns are exported, false if the full record is exported
+	 */
+	public boolean isIncremental() {
+		if (!changedColumnsLoaded) {
+			changedColumns = (po != null && ctx != null && ctx.packOut != null) ? ctx.packOut.getChangedColumnNames(po) : null;
+			changedColumnsLoaded = true;
+		}
+		return changedColumns != null;
+	}
+
+	/**
+	 * Is the column part of the export.<br/>
+	 * For an incremental export only the columns changed since From Date are exported, plus the
+	 * columns needed to identify the record at pack in (key, UUID, parent link and entity type).
+	 * @param columnName
+	 * @return true if the column must be exported
+	 */
+	public boolean isExportColumn(String columnName) {
+		if (!isIncremental())
+			return true;
+		if (changedColumns.contains(columnName.toUpperCase()))
+			return true;
+		if (columnName.equals(po.getUUIDColumnName()) || "EntityType".equals(columnName))
+			return true;
+		POInfo info = POInfo.getPOInfo(po.getCtx(), po.get_Table_ID());
+		int index = info.getColumnIndex(columnName);
+		return index >= 0 && (info.isKey(index) || info.isColumnParent(index));
+	}
+
 	public void export(List<String> excludes) {
 		export(excludes, ctx.packOut.isIncludeOrganizationId());
 	}
@@ -221,7 +257,7 @@ public class PoExporter {
 		}
 		else
 		{
-			if (excludes == null || !excludes.contains("ad_org_id"))
+			if ((excludes == null || !excludes.contains("ad_org_id")) && isExportColumn("AD_Org_ID"))
 			{
 				int AD_Org_ID = po.getAD_Org_ID();
 				if (AD_Org_ID == 0)
@@ -269,6 +305,10 @@ public class PoExporter {
 				}
 				continue;
 			}
+
+			//only export changed value when From Date is set and change log is available
+			if (!isExportColumn(columnName))
+				continue;
 
 			int displayType = info.getColumnDisplayType(i);
 			String trxName = ctx.trx == null ? null : ctx.trx.getTrxName();
