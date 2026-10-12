@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.idempiere.ui.zk.report.sample.RoleGroupedReportFormatSelector.Factory">
-   <service>
-      <provide interface="org.idempiere.ui.zk.report.IReportFormatSelectorFactory"/>
-   </service>
-   <implementation class="org.idempiere.ui.zk.report.sample.RoleGroupedReportFormatSelector$Factory"/>
-</scr:component>
