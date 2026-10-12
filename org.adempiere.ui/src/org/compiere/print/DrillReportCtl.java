@@ -709,6 +709,9 @@ public class DrillReportCtl {
 	 * @return timestamp, or null if the text is not fully matched by the format
 	 */
 	private Timestamp parseFully(SimpleDateFormat format, String text, boolean allowFraction) {
+		// SimpleDateFormat accepts a year with fewer than 4 digits (26-01-01 is year 26 AD), require 4 digits
+		if (format.toPattern().startsWith("yyyy") && !text.matches("\\d{4}-.*"))
+			return null;
 		format.setLenient(false);
 		ParsePosition pos = new ParsePosition(0);
 		java.util.Date date = format.parse(text, pos);

@@ -135,6 +135,13 @@ public class DrillReportCtlTest {
 	}
 
 	@Test
+	public void testShortYearIsRejected() {
+		assertThrows(IllegalArgumentException.class, () -> ctl.toTimestamp(DisplayType.Date, "26-01-01"));
+		assertThrows(IllegalArgumentException.class, () -> ctl.toTimestamp(DisplayType.DateTime, "26-01-01 10:30:15"));
+		assertThrows(IllegalArgumentException.class, () -> ctl.toTimestamp(DisplayType.Time, "26-01-01 10:30:15"));
+	}
+
+	@Test
 	public void testTimestampValueIsReturnedUnchanged() {
 		Timestamp value = Timestamp.valueOf("2026-03-04 05:06:07");
 		assertSame(value, ctl.toTimestamp(DisplayType.Date, value));
