@@ -33,17 +33,6 @@ import org.zkoss.zk.ui.Component;
 public interface IReportFormatSelector {
 
 	/**
-	 * Whether the viewer lists only the print formats of the current report view.
-	 * A selector can return false to list every print format of the table. The viewer still applies the
-	 * role checks to the list. Switching to a print format of another report view is then the selector's
-	 * responsibility.
-	 * @return true by default
-	 */
-	default boolean isLimitedToReportView() {
-		return true;
-	}
-
-	/**
 	 * @return component the viewer adds to its toolbar or toolbar popup
 	 */
 	Component getComponent();

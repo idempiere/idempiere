@@ -1080,8 +1080,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	private void fillComboReport(int AD_PrintFormat_ID)
 	{
 		List<ReportFormatEntry> entries = ReportFormatLoader.load(MRole.getDefault(), m_reportEngine.getPrintFormat(),
-				getReportWindowID(), AD_PrintFormat_ID,
-				formatSelector.isLimitedToReportView());
+				getReportWindowID(), AD_PrintFormat_ID);
 		offeredFormatKeys = entries.stream().map(ReportFormatEntry::key).collect(Collectors.toUnmodifiableSet());
 		if (entries.stream().anyMatch(entry -> entry.key() == AD_PrintFormat_ID))
 			previousSelectedKey = AD_PrintFormat_ID;

@@ -27,10 +27,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -87,8 +90,6 @@ public class ReportFormatSelectorTest extends AbstractTestCase {
 	/** Role that sees every print format and may create new ones */
 	private MRole allowAllRole() {
 		MRole role = mock(MRole.class);
-		when(role.addAccessSQL(anyString(), anyString(), anyBoolean(), anyBoolean()))
-				.thenAnswer(invocation -> invocation.getArgument(0));
 		when(role.isTableAccess(anyInt(), anyBoolean())).thenReturn(true);
 		when(role.getWindowAccess(anyInt())).thenReturn(Boolean.TRUE);
 		return role;
@@ -104,7 +105,7 @@ public class ReportFormatSelectorTest extends AbstractTestCase {
 	@Test
 	public void testRoleWithAllAccessGetsFormatsAndCreateActions() {
 		MPrintFormat current = currentFormat();
-		List<ReportFormatEntry> entries = ReportFormatLoader.load(allowAllRole(), current, 0, current.get_ID(), true);
+		List<ReportFormatEntry> entries = ReportFormatLoader.load(allowAllRole(), current, 0, current.get_ID());
 
 		assertTrue(entries.stream().anyMatch(e -> e.key() == current.get_ID() && e.isFormat()));
 		int size = entries.size();
@@ -121,7 +122,7 @@ public class ReportFormatSelectorTest extends AbstractTestCase {
 		when(role.isTableAccess(anyInt(), anyBoolean())).thenReturn(false);
 		MPrintFormat current = currentFormat();
 
-		List<ReportFormatEntry> entries = ReportFormatLoader.load(role, current, 0, current.get_ID(), true);
+		List<ReportFormatEntry> entries = ReportFormatLoader.load(role, current, 0, current.get_ID());
 
 		assertFalse(entries.isEmpty());
 		assertTrue(entries.stream().allMatch(ReportFormatEntry::isFormat));
@@ -132,20 +133,23 @@ public class ReportFormatSelectorTest extends AbstractTestCase {
 		MRole role = allowAllRole();
 		when(role.getWindowAccess(anyInt())).thenReturn(null);
 		MPrintFormat current = currentFormat();
-		assertTrue(ReportFormatLoader.load(role, current, 0, current.get_ID(), true).stream().allMatch(ReportFormatEntry::isFormat));
+		assertTrue(ReportFormatLoader.load(role, current, 0, current.get_ID()).stream().allMatch(ReportFormatEntry::isFormat));
 
 		when(role.getWindowAccess(anyInt())).thenReturn(Boolean.FALSE);
-		assertTrue(ReportFormatLoader.load(role, current, 0, current.get_ID(), true).stream().allMatch(ReportFormatEntry::isFormat));
+		assertTrue(ReportFormatLoader.load(role, current, 0, current.get_ID()).stream().allMatch(ReportFormatEntry::isFormat));
 	}
 
 	@Test
 	public void testFormatsComeFromRoleAccessSql() {
-		MRole role = allowAllRole();
-		when(role.addAccessSQL(anyString(), anyString(), anyBoolean(), anyBoolean()))
+		MRole defaultRole = mock(MRole.class);
+		when(defaultRole.addAccessSQL(anyString(), anyString(), anyBoolean(), anyBoolean()))
 				.thenAnswer(invocation -> ((String) invocation.getArgument(0)).replace(" ORDER BY", " AND 1=0 ORDER BY"));
 		MPrintFormat current = currentFormat();
 
-		List<ReportFormatEntry> entries = ReportFormatLoader.load(role, current, 0, current.get_ID(), true);
+		List<ReportFormatEntry> entries;
+		try (MockedStatic<MRole> roles = mockDefaultRole(defaultRole)) {
+			entries = ReportFormatLoader.load(allowAllRole(), current, 0, current.get_ID());
+		}
 
 		// the role sees no print format but may still create one
 		assertEquals(List.of(ReportFormatEntry.KEY_NEW, ReportFormatEntry.KEY_COPY),
@@ -153,34 +157,36 @@ public class ReportFormatSelectorTest extends AbstractTestCase {
 	}
 
 	@Test
-	public void testReportViewFilterIsAppliedOnlyWhenRequested() {
+	public void testReportViewFilterIsAlwaysApplied() {
 		int reportViewId = DB.getSQLValue(null, "SELECT MIN(AD_PrintFormat_ID) FROM AD_PrintFormat WHERE AD_ReportView_ID>0 AND IsActive='Y' AND AD_Client_ID IN (0,?)",
 				getAD_Client_ID());
 		assertTrue(reportViewId > 0, "Garden World needs a print format of a report view");
 		MPrintFormat current = MPrintFormat.get(Env.getCtx(), reportViewId, false);
 		List<String> sql = new ArrayList<>();
-		MRole role = allowAllRole();
-		when(role.addAccessSQL(anyString(), anyString(), anyBoolean(), anyBoolean())).thenAnswer(invocation -> {
+		MRole defaultRole = mock(MRole.class);
+		when(defaultRole.addAccessSQL(anyString(), anyString(), anyBoolean(), anyBoolean())).thenAnswer(invocation -> {
 			sql.add(invocation.getArgument(0));
 			return invocation.getArgument(0);
 		});
 
-		ReportFormatLoader.load(role, current, 0, current.get_ID(), true);
-		ReportFormatLoader.load(role, current, 0, current.get_ID(), false);
+		try (MockedStatic<MRole> roles = mockDefaultRole(defaultRole)) {
+			ReportFormatLoader.load(allowAllRole(), current, 0, current.get_ID());
+		}
 
 		assertTrue(sql.get(0).contains("AD_ReportView_ID"));
-		assertFalse(sql.get(1).contains("AD_ReportView_ID"));
 	}
 
-	@Test
-	public void testSelectorIsLimitedToReportViewByDefault() {
-		assertTrue(new ComboboxReportFormatSelector().isLimitedToReportView());
+	/** Make {@link MRole#getDefault(java.util.Properties, boolean)}, used by the {@link org.compiere.model.Query} access filter, return the role */
+	private MockedStatic<MRole> mockDefaultRole(MRole role) {
+		MockedStatic<MRole> roles = mockStatic(MRole.class, CALLS_REAL_METHODS);
+		roles.when(() -> MRole.getDefault(any(), anyBoolean())).thenReturn(role);
+		return roles;
 	}
 
 	@Test
 	public void testEntryListIsImmutable() {
 		MPrintFormat current = currentFormat();
-		List<ReportFormatEntry> entries = ReportFormatLoader.load(allowAllRole(), current, 0, current.get_ID(), true);
+		List<ReportFormatEntry> entries = ReportFormatLoader.load(allowAllRole(), current, 0, current.get_ID());
 		assertThrows(UnsupportedOperationException.class,
 				() -> entries.add(new ReportFormatEntry(1, "x", null, 0, ReportFormatEntry.Kind.FORMAT)));
 	}
