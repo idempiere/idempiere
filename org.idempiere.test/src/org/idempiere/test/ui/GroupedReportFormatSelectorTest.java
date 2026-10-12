@@ -65,14 +65,14 @@ public class GroupedReportFormatSelectorTest extends AbstractTestCase {
 	}
 
 	private static ReportFormatEntry format(int key, String name, int clientId) {
-		return new ReportFormatEntry(key, name, clientId, ReportFormatEntry.Kind.FORMAT);
+		return new ReportFormatEntry(key, name, null, clientId, ReportFormatEntry.Kind.FORMAT);
 	}
 
 	private final List<ReportFormatEntry> entries = List.of(
 			format(20, "Order", 0),
 			format(30, "Client layout", 11),
 			format(10, "Detail", 0),
-			new ReportFormatEntry(ReportFormatEntry.KEY_NEW, "New", 0, ReportFormatEntry.Kind.NEW));
+			new ReportFormatEntry(ReportFormatEntry.KEY_NEW, "New", null, 0, ReportFormatEntry.Kind.NEW));
 
 	private Combobox combobox(GroupedReportFormatSelector selector) {
 		return (Combobox) selector.getComponent();

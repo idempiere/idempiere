@@ -43,8 +43,8 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Comboitem;
 
 /**
- * Sample report format selector that groups the print formats by client: the formats of the user's client first,
- * then the formats of the System client, each group headed by the client name, with a description under each name.
+ * Sample report format selector that groups the print formats by who owns them: the formats of the user's own client
+ * first, then the shared formats of the System client, each group headed by the client name, with a description under each name.
  * The group headers are disabled items, so they cannot be picked. The create actions come last.
  * The groups and descriptions belong to the selector. The viewer only supplies key, name, client and kind,
  * and only for print formats the role may use.
@@ -58,8 +58,7 @@ public class GroupedReportFormatSelector implements IReportFormatSelector {
 	 * Supplies {@link GroupedReportFormatSelector} for clients that turned on {@link #SYSCONFIG_NAME}.
 	 * It declines otherwise, so the viewer keeps its default drop-down.
 	 */
-	@org.osgi.service.component.annotations.Component(immediate = true, service = IReportFormatSelectorFactory.class,
-			property = { "service.ranking:Integer=100" })
+	@org.osgi.service.component.annotations.Component(immediate = true, service = IReportFormatSelectorFactory.class)
 	public static class Factory implements IReportFormatSelectorFactory {
 		@Override
 		public IReportFormatSelector createSelector(ReportFormatRequest request) {
@@ -71,6 +70,9 @@ public class GroupedReportFormatSelector implements IReportFormatSelector {
 	}
 
 	private final Combobox combobox = new Combobox();
+	/** Marks that no group header was added yet */
+	private static final int KEY_NO_GROUP = -1;
+
 	private final IntFunction<String> descriptions;
 	private final Map<Integer, String> descriptionCache = new HashMap<>();
 	private int selectedKey = ReportFormatEntry.KEY_NONE;
@@ -110,15 +112,11 @@ public class GroupedReportFormatSelector implements IReportFormatSelector {
 		loadDescriptions(entries);
 		List<ReportFormatEntry> formats = new ArrayList<>(entries.stream().filter(ReportFormatEntry::isFormat).toList());
 		formats.sort(Comparator.comparing((ReportFormatEntry e) -> e.clientId() == 0).thenComparing(ReportFormatEntry::name));
-		boolean mine = false;
-		boolean system = false;
+		int headerClientId = KEY_NO_GROUP;
 		for (ReportFormatEntry entry : formats) {
-			if (entry.clientId() != 0 && !mine) {
-				addHeader(MClient.get(Env.getCtx(), entry.clientId()).getName());
-				mine = true;
-			} else if (entry.clientId() == 0 && !system) {
-				addHeader(MClient.get(Env.getCtx(), 0).getName());
-				system = true;
+			if (entry.clientId() != headerClientId) {
+				headerClientId = entry.clientId();
+				addHeader(MClient.get(Env.getCtx(), headerClientId).getName());
 			}
 			addItem(entry);
 		}

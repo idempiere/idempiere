@@ -27,10 +27,11 @@ package org.idempiere.ui.zk.report;
  * but cannot add one.
  * @param key AD_PrintFormat_ID, or {@link #KEY_NEW} / {@link #KEY_COPY} for the create actions
  * @param name translated display name
+ * @param description translated description of the print format, null if none or for the create actions
  * @param clientId AD_Client_ID of the print format, 0 for System and for the create actions
  * @param kind what the entry stands for
  */
-public record ReportFormatEntry(int key, String name, int clientId, Kind kind) {
+public record ReportFormatEntry(int key, String name, String description, int clientId, Kind kind) {
 
 	/** Key reported when no entry is selected */
 	public static final int KEY_NONE = Integer.MIN_VALUE;

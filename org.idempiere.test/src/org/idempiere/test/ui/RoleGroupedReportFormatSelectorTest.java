@@ -65,11 +65,11 @@ public class RoleGroupedReportFormatSelectorTest extends AbstractTestCase {
 	}
 
 	private final List<ReportFormatEntry> entries = List.of(
-			new ReportFormatEntry(10, "Detail", 0, ReportFormatEntry.Kind.FORMAT),
-			new ReportFormatEntry(20, "Standard", 0, ReportFormatEntry.Kind.FORMAT),
-			new ReportFormatEntry(30, "Margin", 11, ReportFormatEntry.Kind.FORMAT),
-			new ReportFormatEntry(ReportFormatEntry.KEY_NEW, "New", 0, ReportFormatEntry.Kind.NEW),
-			new ReportFormatEntry(ReportFormatEntry.KEY_COPY, "Copy", 0, ReportFormatEntry.Kind.COPY));
+			new ReportFormatEntry(10, "Detail", null, 0, ReportFormatEntry.Kind.FORMAT),
+			new ReportFormatEntry(20, "Standard", null, 0, ReportFormatEntry.Kind.FORMAT),
+			new ReportFormatEntry(30, "Margin", null, 11, ReportFormatEntry.Kind.FORMAT),
+			new ReportFormatEntry(ReportFormatEntry.KEY_NEW, "New", null, 0, ReportFormatEntry.Kind.NEW),
+			new ReportFormatEntry(ReportFormatEntry.KEY_COPY, "Copy", null, 0, ReportFormatEntry.Kind.COPY));
 
 	private RoleGroupedReportFormatSelector selector() {
 		RoleGroupedReportFormatSelector selector = new RoleGroupedReportFormatSelector("Sales Manager", Set.of(20, 30),

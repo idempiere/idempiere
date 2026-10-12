@@ -65,8 +65,7 @@ public class RoleGroupedReportFormatSelector implements IReportFormatSelector {
 	 * Supplies {@link RoleGroupedReportFormatSelector} for clients where the AD_SysConfig
 	 * {@link GroupedReportFormatSelector#SYSCONFIG_NAME} is set to ROLE. It declines otherwise.
 	 */
-	@org.osgi.service.component.annotations.Component(immediate = true, service = IReportFormatSelectorFactory.class,
-			property = { "service.ranking:Integer=100" })
+	@org.osgi.service.component.annotations.Component(immediate = true, service = IReportFormatSelectorFactory.class)
 	public static class Factory implements IReportFormatSelectorFactory {
 		@Override
 		public IReportFormatSelector createSelector(ReportFormatRequest request) {
@@ -180,9 +179,6 @@ public class RoleGroupedReportFormatSelector implements IReportFormatSelector {
 		boolean selected = entry.key() == selectedKey;
 		Div row = new Div();
 		row.setSclass(selected ? "report-format-row selected" : "report-format-row");
-		Label icon = new Label("##");
-		icon.setSclass("report-format-icon");
-		row.appendChild(icon);
 		Div text = new Div();
 		text.setSclass("report-format-text");
 		Label name = new Label(entry.name());

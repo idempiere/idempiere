@@ -86,6 +86,7 @@ public final class ReportFormatLoader {
 				MPrintFormat printFormat = new MPrintFormat(Env.getCtx(), rs, null);
 				entries.add(new ReportFormatEntry(printFormat.get_ID(),
 						printFormat.get_Translation(MPrintFormat.COLUMNNAME_Name, Env.getAD_Language(Env.getCtx()), true),
+						printFormat.get_Translation(MPrintFormat.COLUMNNAME_Description, Env.getAD_Language(Env.getCtx()), true),
 						printFormat.getAD_Client_ID(), ReportFormatEntry.Kind.FORMAT));
 			}
 		} catch (SQLException e) {
@@ -98,9 +99,9 @@ public final class ReportFormatLoader {
 		if (role.isTableAccess(MPrintFormat.Table_ID, false)
 			&& Boolean.TRUE.equals(role.getWindowAccess(pfAD_Window_ID))) {
 			entries.add(new ReportFormatEntry(ReportFormatEntry.KEY_NEW,
-					"** " + Msg.getMsg(Env.getCtx(), "NewReport") + " **", 0, ReportFormatEntry.Kind.NEW));
+					"** " + Msg.getMsg(Env.getCtx(), "NewReport") + " **", null, 0, ReportFormatEntry.Kind.NEW));
 			entries.add(new ReportFormatEntry(ReportFormatEntry.KEY_COPY,
-					"** " + Msg.getMsg(Env.getCtx(), "CopyReport") + " **", 0, ReportFormatEntry.Kind.COPY));
+					"** " + Msg.getMsg(Env.getCtx(), "CopyReport") + " **", null, 0, ReportFormatEntry.Kind.COPY));
 		}
 		return Collections.unmodifiableList(entries);
 	}

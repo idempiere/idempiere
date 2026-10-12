@@ -30,18 +30,6 @@
 .report-format-row.selected {
 	background: rgba(47, 111, 237, .14);
 }
-.report-format-icon {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 30px;
-	height: 30px;
-	border: 1px solid #d8dce3;
-	border-radius: 6px;
-	font-size: 11px;
-	color: #6b7280;
-	flex: none;
-}
 .report-format-text {
 	flex: 1;
 }

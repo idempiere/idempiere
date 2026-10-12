@@ -182,7 +182,7 @@ public class ReportFormatSelectorTest extends AbstractTestCase {
 		MPrintFormat current = currentFormat();
 		List<ReportFormatEntry> entries = ReportFormatLoader.load(allowAllRole(), current, 0, current.get_ID(), true);
 		assertThrows(UnsupportedOperationException.class,
-				() -> entries.add(new ReportFormatEntry(1, "x", 0, ReportFormatEntry.Kind.FORMAT)));
+				() -> entries.add(new ReportFormatEntry(1, "x", null, 0, ReportFormatEntry.Kind.FORMAT)));
 	}
 
 	@Test
@@ -268,7 +268,7 @@ public class ReportFormatSelectorTest extends AbstractTestCase {
 	}
 
 	private ReportFormatEntry entry(int key, String name) {
-		return new ReportFormatEntry(key, name, 0, key > 0 ? ReportFormatEntry.Kind.FORMAT : ReportFormatEntry.Kind.NEW);
+		return new ReportFormatEntry(key, name, null, 0, key > 0 ? ReportFormatEntry.Kind.FORMAT : ReportFormatEntry.Kind.NEW);
 	}
 
 	private ServiceRegistration<IReportFormatSelectorFactory> register(IReportFormatSelectorFactory factory, int ranking) {
