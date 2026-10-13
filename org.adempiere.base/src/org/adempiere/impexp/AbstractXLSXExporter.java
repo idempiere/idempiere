@@ -538,6 +538,38 @@ public abstract class AbstractXLSXExporter
 	}
 
 	/**
+	 * Check if given row is a function row
+	 * @param row row index
+	 * @return true if row is a function row
+	 */
+	public boolean isFunctionRow(int row) {
+		return false;
+	}
+
+	public Character getFunctionType(int row) {
+		return null;
+	}
+	
+	/**
+	 * Check if given row is a total row (grand total / total of document)
+	 * @param row row index
+	 * @return true if row is a total row
+	 */
+	public boolean isTotalRow(int row) {
+		return false;
+	}
+
+	/**
+	 * Get function code for cell (see {@link ExcelSubtotalFunction})
+	 * @param row row index
+	 * @param col column index
+	 * @return function code or 0 if not a function cell
+	 */
+	public int getFunction(int row, int col) {
+		return 0;
+	}
+
+	/**
 	 * Export to given stream
 	 * 
 	 * @param out
@@ -574,6 +606,16 @@ public abstract class AbstractXLSXExporter
 		else 
 			initxls_rownum = Math.max(noOfParameter+1, sheet.getLastRowNum()+1);
 		
+		// Function cells
+		final boolean exportExcelFunction = !isForm()
+				&& MSysConfig.getBooleanValue(MSysConfig.EXPORT_EXCEL_FUNCTION, false, Env.getAD_Client_ID(getCtx()));
+		int begRange = initxls_rownum;
+		int initfunc_rownum = initxls_rownum;
+		int endfunc_rownum = initxls_rownum;
+		boolean isPreviousRowFunction = false;
+		boolean isPreviousRowTotal = false;
+		boolean hasPageBreak = false;
+
 		for (int xls_rownum = initxls_rownum; rownum < lastRowNum; rownum++, xls_rownum++)
 		{
 			if (!isCurrentRowOnly())
@@ -582,6 +624,17 @@ public abstract class AbstractXLSXExporter
 			boolean isPageBreak = false;
 			Row row = sheet.createRow(xls_rownum);
 			printColIndex = -1;
+
+			boolean isFunctionRow = exportExcelFunction && isFunctionRow(rownum) && (getFunctionType(rownum) != null);
+			boolean isTotalRow = isFunctionRow && isTotalRow(rownum);			
+
+			if (isFunctionRow) {
+				boolean isNewFunctionBlock = !isPreviousRowFunction || (isTotalRow && !isPreviousRowTotal);
+				if (isNewFunctionBlock) {
+					initfunc_rownum = isTotalRow ? initxls_rownum : begRange;
+					endfunc_rownum = xls_rownum - 1;
+				}
+			}
 			// for all columns
 			int colnum = 0;
 			for (int col = 0; col < getColumnCount(); col++)
@@ -646,13 +699,20 @@ public abstract class AbstractXLSXExporter
 						cell.setCellValue(value);
 					}
 					else if (DisplayType.isNumeric(displayType))
-					{
+					{			
 						double value = 0;
 						if (obj instanceof Number)
 						{
 							value = ((Number) obj).doubleValue();
 						}
+						
+						// For function cell, this will served as cache value
 						cell.setCellValue(value);
+						
+						int functionCode = exportExcelFunction && (!isTotalRow || !hasPageBreak) ? getFunction(rownum, col) : 0;
+						if (isFunctionCell(functionCode) && endfunc_rownum >= initfunc_rownum) {
+							setFunctionCell(cell, initfunc_rownum, endfunc_rownum, cell.getColumnIndex(), functionCode);
+						}
 					}
 					else if (DisplayType.YesNo == displayType)
 					{
@@ -690,13 +750,25 @@ public abstract class AbstractXLSXExporter
 						preValues[printColIndex] = obj;
 				} // printed
 			} // for all columns
-				//
-				// Page Break
+			//
+			if (isFunctionRow) {
+				begRange = xls_rownum + 1;
+			}
+			isPreviousRowFunction = isFunctionRow;
+			isPreviousRowTotal = isTotalRow;
+			// Page Break
 			if (isPageBreak)
 			{
+				hasPageBreak = true;
 				closeTableSheet(sheet, sheetName, colnumMax);
 				sheet = createTableSheet();
-				xls_rownum = 0;
+				initxls_rownum = Math.max(getNoOfParameter() + 1, 1);
+				xls_rownum = initxls_rownum - 1;
+				begRange = initxls_rownum;
+				initfunc_rownum = initxls_rownum;
+				endfunc_rownum = initxls_rownum;
+				isPreviousRowFunction = false;
+				isPreviousRowTotal = false;
 				isPageBreak = false;
 			}
 		} // for all rows
@@ -719,6 +791,14 @@ public abstract class AbstractXLSXExporter
 			log.fine("Sheets #" + m_sheetCount);
 			log.fine("Styles used #" + m_styles.size());
 		}
+	}
+
+	private boolean isFunctionCell(int functionCode) {
+		return ExcelSubtotalFunction.isFunction(functionCode);
+	}
+
+	private void setFunctionCell(Cell cell, int initRow, int endRow, int col, int functionCode) {
+		cell.setCellFormula(ExcelSubtotalFunction.getSubtotalFormula(functionCode, initRow, endRow, col));
 	}
 
 	/**

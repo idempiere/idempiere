@@ -72,6 +72,9 @@ public class PrintDataExcelExporter extends AbstractExcelExporter
 	private int m_previousFormCol = -1;
 	private String m_previousAreaType = null;
 	
+	private PrintDataExcelFunctionHelper m_functionHelper = null;
+	private boolean m_summary;
+	
 	/**
 	 * @param printData
 	 * @param printFormat
@@ -104,6 +107,8 @@ public class PrintDataExcelExporter extends AbstractExcelExporter
 		this.childPrintFormatDetails = childPrintFormatDetails;
 		this.colSuppressRepeats = colSuppressRepeats;
 		this.m_query = query;
+		if (printData != null)
+			this.m_summary = printData.isSummary();
 	}
 
 	@Override
@@ -217,6 +222,7 @@ public class PrintDataExcelExporter extends AbstractExcelExporter
 				}
 			}
 		}
+		
 		return value;
 	}
 
@@ -267,7 +273,12 @@ public class PrintDataExcelExporter extends AbstractExcelExporter
 	public boolean isFunctionRow() {
 		return m_printData.isFunctionRow();
 	}
-
+	
+	@Override
+	public Character getFunctionType(int row) {
+		return getFunctionHelper().getFunctionType(row);
+	}
+	
 	@Override
 	protected void formatPage(HSSFSheet sheet) {
 		super.formatPage(sheet);
@@ -608,5 +619,38 @@ public class PrintDataExcelExporter extends AbstractExcelExporter
 			return true;
 
 		return Evaluator.evaluateLogic(new PrintDataEvaluatee(null, m_printData), item.getDisplayLogic());
+	}
+	
+	/**
+	 * Get if this is a summary report
+	 * @return true if this is a summary report, false otherwise
+	 */
+	public boolean isSummary() {
+		return m_summary;
+	}
+	
+	/**
+	 * @return helper to resolve Excel function of function rows
+	 */
+	private PrintDataExcelFunctionHelper getFunctionHelper() {
+		if (m_functionHelper == null)
+			m_functionHelper = new PrintDataExcelFunctionHelper(m_printData, m_printFormat);
+		return m_functionHelper;
+	}
+
+	@Override
+	public boolean isFunctionRow(int row) {
+		return getFunctionHelper().isFunctionRow(row);
+	}
+
+	@Override
+	public boolean isTotalRow(int row) {
+		return getFunctionHelper().isTotalRow(row);
+	}
+
+	@Override
+	public int getFunction(int row, int col) {
+		Object colObj = columns != null && col >= 0 && col < columns.size() ? columns.get(col) : null;
+		return getFunctionHelper().getFunction(row, colObj, isSummary());
 	}
 }

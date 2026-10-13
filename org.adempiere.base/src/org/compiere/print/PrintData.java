@@ -19,8 +19,11 @@ package org.compiere.print;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.logging.Level;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -60,7 +63,7 @@ public class PrintData implements Serializable
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = 3493453909439452289L;
+	private static final long serialVersionUID = 8493453909439452290L;
 
 	/**
 	 * 	@param ctx context
@@ -98,10 +101,16 @@ public class PrintData implements Serializable
 	/**	Data Structure Name			*/
 	private String 		m_name;
 	/**	List of Function Rows		*/
-	private ArrayList<Integer>	m_functionRows = new ArrayList<Integer>();
+	private Set<Integer>	m_functionRows = new HashSet<Integer>();
+	/**	Map of rows and type of function		*/
+	private HashMap<Integer, Character>	m_dataFunction = new HashMap<Integer,Character>();
+	/**	List of Total Rows			*/
+	private Set<Integer>	m_totalRows = new HashSet<Integer>();
 
 	/**	Table has LevelNo			*/
 	private boolean		m_hasLevelNo = false;
+	/** Summary Report				*/
+	private boolean		m_summary = false;
 	/**	Level Number Indicator		*/
 	private static final String	LEVEL_NO = "LEVELNO";
 
@@ -260,6 +269,32 @@ public class PrintData implements Serializable
 	}	//	getNodeCount
 
 	/**
+	 * Add data row with function type
+	 * @param functionRow
+	 * @param levelNo
+	 * @param functionType
+	 */
+	public void addRow (boolean functionRow, int levelNo, char functionType)
+	{
+		addRow(functionRow, levelNo, functionType, false);
+	}
+
+	/**
+	 * Add data row with function type and total row indicator
+	 * @param functionRow
+	 * @param levelNo
+	 * @param functionType
+	 * @param totalRow true if total (grand total) row
+	 */
+	public void addRow (boolean functionRow, int levelNo, char functionType, boolean totalRow)
+	{
+		addRow(functionRow, levelNo, new ArrayList<Serializable>());
+		m_dataFunction.put(Integer.valueOf(m_matrix.getRowIndex()), functionType);
+		if (totalRow)
+			m_totalRows.add(Integer.valueOf(m_matrix.getRowIndex()));
+	}
+	
+	/**
 	 * Add data row
 	 * @param functionRow
 	 * @param levelNo
@@ -349,6 +384,42 @@ public class PrintData implements Serializable
 	}	//	isFunctionRow
 
 	/**
+	 * Get function type of given row
+	 * @param row row no
+	 * @return function type or null
+	 */
+	public Character getFunctionType(int row) {
+		if (isFunctionRow(row))
+			return m_dataFunction.get(Integer.valueOf(row));
+		return null;
+	}
+
+	/**
+	 * Get function type of current row
+	 * @return function type or null
+	 */
+	public Character getFunctionType() {
+		return getFunctionType(m_matrix.getRowIndex());
+	}
+
+	/**
+	 * Is current Row a Total Row
+	 * @return true if total row
+	 */
+	public boolean isTotalRow () {
+		return isTotalRow(m_matrix.getRowIndex());
+	}
+
+	/**
+	 * Is the Row a Total Row
+	 * @param row row no
+	 * @return true if total row
+	 */
+	public boolean isTotalRow (int row) {
+		return m_totalRows.contains(Integer.valueOf(row));
+	}
+	
+	/**
 	 * 	Is current Row a page break row
 	 * 	@return true if current row is a page break row
 	 */
@@ -389,6 +460,24 @@ public class PrintData implements Serializable
 	{
 		return m_hasLevelNo;
 	}	//	hasLevelNo
+
+	/**
+	 * 	Set PrintData is Summary
+	 * 	@param summary true if summary report
+	 */
+	public void setSummary (boolean summary)
+	{
+		m_summary = summary;
+	}	//	setSummary
+
+	/**
+	 * 	Is PrintData Summary
+	 * 	@return true if summary report
+	 */
+	public boolean isSummary()
+	{
+		return m_summary;
+	}	//	isSummary
 
 	/**
 	 * 	Get Line Level Number for current row

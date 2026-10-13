@@ -957,6 +957,7 @@ public class DataEngine
 		pd.setTableName(tableName);
 		pd.setSQLClause(new SQLFragment(finalSQL.toString(), params));
 		pd.setHasLevelNo(hasLevelNo);
+		pd.setSummary(m_summary);
 
 		if (log.isLoggable(Level.FINEST))
 		{
@@ -1168,7 +1169,7 @@ public class DataEngine
 							for (int f = 0; f < functions.length; f++)
 							{
 								printRunningTotal(pd, levelNo, rowNo++);
-								pd.addRow(true, levelNo);
+								pd.addRow(true, levelNo, functions[f]);
 								//	get columns
 								for (int c = 0; c < pd.getColumnInfo().length; c++)
 								{
@@ -1411,7 +1412,7 @@ public class DataEngine
 					for (int f = 0; f < functions.length; f++)
 					{
 						printRunningTotal(pd, levelNo, rowNo++);
-						pd.addRow(true, levelNo);
+						pd.addRow(true, levelNo, functions[f]);
 						//	get columns
 						for (int c = 0; c < pd.getColumnInfo().length; c++)
 						{
@@ -1448,7 +1449,7 @@ public class DataEngine
 			for (int f = 0; f < functions.length; f++)
 			{
 				printRunningTotal(pd, levelNo, rowNo++);
-				pd.addRow(true, levelNo);
+				pd.addRow(true, levelNo, functions[f], true);
 				//	get columns
 				for (int c = 0; c < pd.getColumnInfo().length; c++)
 				{
