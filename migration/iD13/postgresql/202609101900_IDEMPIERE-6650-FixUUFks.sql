@@ -102,7 +102,7 @@ BEGIN
             CONTINUE;
         END IF;
 
-        v_target_column := substr(v_target_table, 0, 27) || '_UU';
+        v_target_column := substr(v_target_table, 1, 27) || '_UU';
 
         -- Make sure source column exists and is already uuid
         SELECT pg_catalog.format_type(a.atttypid, a.atttypmod)
@@ -110,8 +110,9 @@ BEGIN
           FROM pg_catalog.pg_class pc
           JOIN pg_catalog.pg_attribute a ON pc.oid = a.attrelid
          WHERE LOWER(pc.relname) = LOWER(r_column.tablename)
-           AND LOWER(a.attname) = LOWER(r_column.columnname)
+           AND LOWER(a.attname) IN (LOWER(v_target_table || '_UU'), LOWER(substr(v_target_table, 1, 27) || '_UU'))
            AND a.attnum > 0
+           AND pc.relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA)
            AND NOT a.attisdropped;
 
         IF v_source_type IS DISTINCT FROM 'uuid' THEN
@@ -148,6 +149,7 @@ BEGIN
                AND LOWER(tc.table_name) = LOWER(r_column.tablename)
                AND LOWER(kcu.column_name) = LOWER(r_column.columnname)
                AND kcu.table_name = tc.table_name
+               AND tc.table_schema = CURRENT_SCHEMA
         ) INTO v_fk_exists;
 
         IF v_fk_exists THEN
@@ -169,12 +171,13 @@ BEGIN
                           ELSE ''
                       END;
 
-        v_sql := 'ALTER TABLE ' || r_column.tablename
-               || ' ADD CONSTRAINT ' || v_constraint_name
-               || ' FOREIGN KEY (' || r_column.columnname || ')'
-               || ' REFERENCES ' || v_target_table || ' (' || v_target_column || ')'
-               || v_ondelete
-               || ' DEFERRABLE INITIALLY DEFERRED;';
+        v_sql := format('ALTER TABLE %s ADD CONSTRAINT %s FOREIGN KEY (%s) REFERENCES %s (%s)%s DEFERRABLE INITIALLY DEFERRED;',
+                    r_column.tablename,
+                    v_constraint_name,
+                    r_column.columnname,
+                    v_target_table,
+                    v_target_column,
+                    v_ondelete);
 
         RAISE NOTICE '%', v_sql;
 
