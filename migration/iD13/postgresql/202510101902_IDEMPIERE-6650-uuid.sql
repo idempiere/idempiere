@@ -100,6 +100,7 @@ WHERE
                 WHERE
                     tc.constraint_type = 'FOREIGN KEY'
                     AND tc.table_name = r_column.relname
+                    AND kcu.table_name = tc.table_name
                     AND kcu.column_name = r_column.attname LOOP
                         -- Drop foreign key constraint
                         RAISE NOTICE '%', r_fk.dropfksql;
