@@ -71,7 +71,7 @@ public abstract class AttachmentDataServlet extends HttpServlet {
 			String id = req.getParameter("recordid").trim();
 			Object key = id.length() == 36 ? id : Integer.parseInt(id);
 			AttachmentData imageData = MAttachment.getAttachmentData(path, key);
-			if (imageData != null)
+			if (imageData != null && imageData.data() != null)
 				writeAttachmentData(resp, imageData);
 		} finally {
 			ServerContext.dispose();
