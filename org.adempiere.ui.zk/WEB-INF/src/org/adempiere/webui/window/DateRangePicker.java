@@ -1114,7 +1114,7 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 	 * @return true if only the presets are offered
 	 */
 	private boolean isPresetsOnly() {
-		return MProcessPara.DATERANGEOPTION_RangePicker_Presets_WithTextEditor.equals(dateRangeOption) && !presetListBoxes.isEmpty();
+		return MProcessPara.DATERANGEOPTION_RangePicker_Presets_WithTextEditor.equalsIgnoreCase(dateRangeOption) && !presetListBoxes.isEmpty();
 	}
 	
 	/**
@@ -1152,6 +1152,25 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 		}
 		return wrapper;
 	} // getPresetsModeContent
+	
+	/**
+	 * Re-resolve the relative date ranges of the presets against the current date.
+	 * Call before the picker is opened again, as the picker is retained by its editor and
+	 * the relative presets (e.g. "Today") would otherwise keep the date of the first creation.
+	 */
+	public void refreshPresets() {
+		Div oldDiv = presetsDiv;
+		Div newDiv = getPresetsModeContent();
+		newDiv.setVisible(oldDiv.isVisible());
+		newDiv.setStyle(oldDiv.getStyle());
+		if(oldDiv.getParent() != null)
+			oldDiv.getParent().insertBefore(newDiv, oldDiv);
+		oldDiv.detach();
+		presetsDiv = newDiv;
+		selectedPresetListItem = null;
+		if(newDiv.isVisible())
+			selectPresetOfDates();
+	} // refreshPresets
 	
 	/**
 	 * Create a list box with the date ranges that can be resolved to dates, and register it as preset list box
@@ -1359,7 +1378,15 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 		if(enableValueChange) {
 			dateFrom = (Date) editor.getValue();
 			dateTo = (Date) editor2.getValue();
-			if(dateFrom != null || dateTo != null) { // Set the picker to defined Default Logic
+			if(isPresetsOnly()) {
+				// keep the presets mode, the mode selection is hidden
+				setPickerSelection(DATESELECTIONMODE_PRESETS, MChart.TIMEUNIT_Month, 0);
+				Date[] dates = setTimesOnDates(dateFrom, dateTo);
+				dateFrom = dates[0];
+				dateTo = dates[1];
+				selectPresetOfDates();
+			}
+			else if(dateFrom != null || dateTo != null) { // Set the picker to defined Default Logic
 				Date[] dates = setTimesOnDates(dateFrom, dateTo);
 				dateFrom = dates[0];
 				dateTo = dates[1];
