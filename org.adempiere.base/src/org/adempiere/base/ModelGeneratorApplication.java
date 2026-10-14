@@ -176,7 +176,7 @@ public class ModelGeneratorApplication implements IApplication {
 			return Result.OK;
 		}
 		try {
-			return check(options) ? Result.OK : Result.DIFFERS;
+			return check(options);
 		} catch (IllegalArgumentException e) {
 			System.out.println("REFUSED " + e.getMessage());
 			return Result.REFUSED;
@@ -224,7 +224,7 @@ public class ModelGeneratorApplication implements IApplication {
 	 * The serialVersionUID and @version lines are ignored: they change with the date and the release, not with the dictionary.
 	 * @return true when every generated file exists and is equal
 	 */
-	private static boolean check(ModelGeneratorOptions options) throws IOException {
+	private static Result check(ModelGeneratorOptions options) throws IOException {
 		Path temp = Files.createTempDirectory("modelgen-check");
 		try {
 			// the generators print a line per file; only the differences and the summary belong to the check
@@ -255,7 +255,12 @@ public class ModelGeneratorApplication implements IApplication {
 			for (String line : differ)
 				System.out.println(line);
 			System.out.println("check: " + count + " generated, " + differ.size() + " out of date");
-			return differ.isEmpty();
+			if (count == 0) {
+				System.out.println("check: no table matches --tables=" + options.getTableName() + " with table entity type "
+						+ (options.getTableEntityType() == null ? "U,A (default)" : options.getTableEntityType()));
+				return Result.ERROR;
+			}
+			return ModelGeneratorOptions.isCheckPassed(count, differ.size()) ? Result.OK : Result.DIFFERS;
 		} finally {
 			try (Stream<Path> walk = Files.walk(temp)) {
 				walk.sorted(Comparator.reverseOrder()).forEach(p -> p.toFile().delete());

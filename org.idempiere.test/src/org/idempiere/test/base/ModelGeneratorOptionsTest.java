@@ -264,4 +264,28 @@ public class ModelGeneratorOptionsTest {
 		assertEquals(List.of("--folder=F", "--package=p", "--tables=C_Order", "--table-entity-type=D", "--column-entity-type=XYZ",
 				"--columns=A,B", "--output=accessor", "--suffix=XYZ"), o.toNamedArgs("F"), "--write-launch is not repeated");
 	}
+
+	@Test
+	public void testLaunchKeepsQuotedPlatformArgument() {
+		String template = "<launchConfiguration>\n<stringAttribute key=\"org.eclipse.jdt.launching.PROGRAM_ARGUMENTS\" "
+				+ "value=\"-os ${target.os} -data &quot;/workspace/my project&quot; -consoleLog -noSplash /tmp/x --folder=/old\"/>\n</launchConfiguration>";
+		String xml = ModelGeneratorLaunch.create(template, List.of("--folder=/src", "--package=x y"));
+		assertTrue(xml.contains("-data &quot;/workspace/my project&quot; -consoleLog -noSplash --folder=/src &quot;--package=x y&quot;"), xml);
+		assertFalse(xml.contains("/tmp/x"), "positional leftover is dropped");
+	}
+
+	@Test
+	public void testLaunchDropsQuotedGeneratorArgumentOfAnEarlierCall() {
+		String template = "<launchConfiguration>\n<stringAttribute key=\"org.eclipse.jdt.launching.PROGRAM_ARGUMENTS\" "
+				+ "value=\"-consoleLog -noSplash --folder=/old &quot;--package=x y&quot; --suffix=OLD\"/>\n</launchConfiguration>";
+		String xml = ModelGeneratorLaunch.create(template, List.of("--folder=/new"));
+		assertTrue(xml.contains("value=\"-consoleLog -noSplash --folder=/new\""), xml);
+	}
+
+	@Test
+	public void testCheckNeedsGeneratedFiles() {
+		assertFalse(ModelGeneratorOptions.isCheckPassed(0, 0), "a check that generated nothing has checked nothing");
+		assertTrue(ModelGeneratorOptions.isCheckPassed(2, 0));
+		assertFalse(ModelGeneratorOptions.isCheckPassed(2, 1));
+	}
 }

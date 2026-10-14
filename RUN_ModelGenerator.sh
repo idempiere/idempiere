@@ -141,7 +141,7 @@ else
     awk '
         /^usage:/ { usage = 1 }
         usage { print; if ($0 ~ /^  Exit code/) usage = 0; next }
-        /^(REFUSED|WARNING|ERROR|differs|missing|check:|launch written|result:|Launch template|Generate Model Template|Unknown argument|Missing:|Positional form|--[a-z=-]+ (writes|needs|may|takes))/ { print; next }
+        /^(REFUSED|WARNING|ERROR|No data found|differs|missing|check:|launch written|result:|Launch template|Generate Model Template|Unknown argument|Missing:|Positional form|--[a-z=-]+ (writes|needs|may|takes))/ { print; next }
         /\.java - / { print }
     ' "$LOG"
     if ! grep -q "^result:" "$LOG" && [ "$RC" -ne 0 ]; then

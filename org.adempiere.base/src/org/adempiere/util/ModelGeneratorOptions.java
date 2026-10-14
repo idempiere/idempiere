@@ -285,7 +285,7 @@ public class ModelGeneratorOptions {
 			+ "  --columns             only these columns (comma separated), on top of --column-entity-type; not with class\n"
 			+ "  --suffix              owner of the columns: interface I_C_Order_XYZ, accessor C_Order_XYZ; not with class\n"
 			+ "  --template            read the values not given from the Generate Model Template with this name\n"
-			+ "  --check               generate into a temporary folder and compare with --folder; writes nothing, needs the same\n"
+			+ "  --check               generate into a temporary folder and compare with --folder; writes nothing, fails when no table matches, needs the same\n"
 			+ "                        arguments as the generate call, ignores files that exist only in --folder; not with --write-launch\n"
 			+ "  --write-launch        after generating, write an Eclipse launch file that repeats this call\n"
 			+ "  --launch-template     template for --write-launch (default: org.adempiere.base-feature/model.generator.launch)\n"
@@ -333,6 +333,16 @@ public class ModelGeneratorOptions {
 	}
 	public String getTemplate() { return template; }
 	public boolean isCheck() { return check; }
+
+	/**
+	 * A check that generated no file has not checked anything, so it must not pass.
+	 * @param generated number of files the call generated
+	 * @param outOfDate number of generated files that are missing or differ in the target folder
+	 * @return true when files were generated and all of them are up to date
+	 */
+	public static boolean isCheckPassed(int generated, int outOfDate) {
+		return generated > 0 && outOfDate == 0;
+	}
 	/** @return true for the named form; safety problems are then refused, in the positional form only reported */
 	public boolean isNamed() { return named; }
 }

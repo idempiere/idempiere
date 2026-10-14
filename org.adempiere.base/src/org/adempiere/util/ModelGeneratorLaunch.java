@@ -26,6 +26,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -65,17 +66,18 @@ public final class ModelGeneratorLaunch {
 		// keep the Eclipse platform arguments (-os ... -noSplash), drop generator arguments of an earlier call
 		// (--x options and positional values)
 		StringBuilder args = new StringBuilder();
-		String[] parts = unescape(m.group(2)).trim().split("\\s+");
-		for (int i = 0; i < parts.length; i++) {
-			String part = parts[i];
-			if (part.isEmpty() || part.startsWith("--") || !part.startsWith("-"))
+		List<String> parts = split(unescape(m.group(2)));
+		for (int i = 0; i < parts.size(); i++) {
+			String part = parts.get(i);
+			String plain = unquote(part);
+			if (plain.startsWith("--") || !plain.startsWith("-"))
 				continue;
 			if (args.length() > 0)
 				args.append(' ');
 			args.append(part);
 			// a single-dash option takes the next token as value, unless it is a known flag
-			if (!PLATFORM_FLAGS.contains(part) && i + 1 < parts.length && !parts[i + 1].startsWith("-")) {
-				args.append(' ').append(parts[i + 1]);
+			if (!PLATFORM_FLAGS.contains(plain) && i + 1 < parts.size() && !unquote(parts.get(i + 1)).startsWith("-")) {
+				args.append(' ').append(parts.get(i + 1));
 				i++;
 			}
 		}
@@ -117,6 +119,34 @@ public final class ModelGeneratorLaunch {
 				return p.resolve(TEMPLATE);
 		}
 		return null;
+	}
+
+	/**
+	 * @param arguments program arguments of a launch file
+	 * @return the arguments separated by blanks; a value in double quotes stays one argument, quotes included
+	 */
+	private static List<String> split(String arguments) {
+		List<String> parts = new ArrayList<>();
+		StringBuilder current = new StringBuilder();
+		boolean quoted = false;
+		for (char c : arguments.toCharArray()) {
+			if (c == '"')
+				quoted = !quoted;
+			if (Character.isWhitespace(c) && !quoted) {
+				if (current.length() > 0)
+					parts.add(current.toString());
+				current.setLength(0);
+			} else {
+				current.append(c);
+			}
+		}
+		if (current.length() > 0)
+			parts.add(current.toString());
+		return parts;
+	}
+
+	private static String unquote(String part) {
+		return part.startsWith("\"") ? part.substring(1) : part;
 	}
 
 	private static String quote(String arg) {
