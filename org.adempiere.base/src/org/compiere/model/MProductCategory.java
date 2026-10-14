@@ -164,6 +164,7 @@ public class MProductCategory extends X_M_Product_Category implements ImmutableP
 	 * Set the initial defaults for a new record
 	 */
 	private void setInitialDefaults() {
+		setIsApprovedVendorRequired(false);
 		setMMPolicy (MMPOLICY_FiFo);	// F
 		setPlannedMargin (Env.ZERO);
 		setIsDefault (false);

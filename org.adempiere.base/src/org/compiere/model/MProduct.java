@@ -254,6 +254,7 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 	 * Set the initial defaults for a new record
 	 */
 	private void setInitialDefaults() {
+		setApprovedVendorRequirement(APPROVEDVENDORREQUIREMENT_UseProductCategory);
 		setProductType (PRODUCTTYPE_Item);	// I
 		setIsBOM (false);	// N
 		setIsInvoicePrintDetails (false);
@@ -268,6 +269,24 @@ public class MProduct extends X_M_Product implements ImmutablePOSupport
 		setIsExcludeAutoDelivery(false);
 		setProcessing (false);	// N
 		setLowLevel(0);
+	}
+
+	/**
+	 * Determine whether purchases of this product require an approved vendor.
+	 * The product setting overrides the product category default.
+	 *
+	 * @return {@code true} if an approved vendor is required
+	 */
+	public boolean isApprovedVendorRequired()
+	{
+		String requirement = getApprovedVendorRequirement();
+		if (APPROVEDVENDORREQUIREMENT_Required.equals(requirement))
+			return true;
+		if (APPROVEDVENDORREQUIREMENT_NotRequired.equals(requirement))
+			return false;
+
+		MProductCategory category = new MProductCategory(getCtx(), getM_Product_Category_ID(), get_TrxName());
+		return category.get_ID() > 0 && category.isApprovedVendorRequired();
 	}
 
 	/**
