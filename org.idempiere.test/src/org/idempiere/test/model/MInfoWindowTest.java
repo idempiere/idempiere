@@ -40,6 +40,7 @@ import org.compiere.model.MInfoWindow;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MOrder;
 import org.compiere.model.MRole;
+import org.compiere.model.MTab;
 import org.compiere.model.MTable;
 import org.compiere.model.MTest;
 import org.compiere.model.PO;
@@ -160,9 +161,12 @@ public class MInfoWindowTest extends AbstractTestCase {
 		}
 	}
 
-	/** Columns of the complex info window that must not be displayed by the simplified one */
-	private static final List<String> BP_CONTACT_AND_LOCATION_COLUMNS = List.of("AD_User_ID", "C_BPartner_Location_ID",
-			"ContactName", "EMail", "Phone", "Address1", "Address2", "City", "Postal", "RegionName", "CountryName");
+	/** Contact columns of the complex info window, they must not be displayed by the simplified one */
+	private static final List<String> BP_CONTACT_COLUMNS = List.of("AD_User_ID", "ContactName", "EMail", "Phone");
+
+	/** Location columns of the complex info window, they must not be displayed by the simplified one */
+	private static final List<String> BP_LOCATION_COLUMNS = List.of("C_BPartner_Location_ID", "Address1", "Address2",
+			"City", "Postal", "RegionName", "CountryName");
 
 	/**
 	 * IDEMPIERE-7074 The simplified info window is the table default of C_BPartner and returns
@@ -178,18 +182,24 @@ public class MInfoWindowTest extends AbstractTestCase {
 
 		StringBuilder select = new StringBuilder();
 		boolean hasContactCriteria = false;
+		boolean hasLocationCriteria = false;
 		for (MInfoColumn infoColumn : infoWindow.getInfoColumns()) {
+			String columnName = infoColumn.getColumnName();
+			assertFalse(infoColumn.isDisplayed() && BP_CONTACT_COLUMNS.contains(columnName),
+					columnName + " is a contact column and must not be displayed by the simplified info window");
+			assertFalse(infoColumn.isDisplayed() && BP_LOCATION_COLUMNS.contains(columnName),
+					columnName + " is a location column and must not be displayed by the simplified info window");
 			if (infoColumn.isDisplayed()) {
-				assertFalse(BP_CONTACT_AND_LOCATION_COLUMNS.contains(infoColumn.getColumnName()),
-						infoColumn.getColumnName() + " must not be displayed by the simplified info window");
 				if (select.length() > 0)
 					select.append(", ");
 				select.append(infoColumn.getSelectClause());
-			} else if (infoColumn.isQueryCriteria() && BP_CONTACT_AND_LOCATION_COLUMNS.contains(infoColumn.getColumnName())) {
-				hasContactCriteria = true;
+			} else if (infoColumn.isQueryCriteria()) {
+				hasContactCriteria |= BP_CONTACT_COLUMNS.contains(columnName);
+				hasLocationCriteria |= BP_LOCATION_COLUMNS.contains(columnName);
 			}
 		}
-		assertTrue(hasContactCriteria, "the contact and the location must remain query criteria");
+		assertTrue(hasContactCriteria, "the contact must remain a query criterion");
+		assertTrue(hasLocationCriteria, "the location must remain a query criterion");
 		assertTrue(select.length() > 0, "the simplified info window must display business partner columns");
 
 		String sql = "SELECT COUNT(*) FROM (SELECT DISTINCT " + select + " FROM " + infoWindow.getFromClause()
@@ -205,7 +215,8 @@ public class MInfoWindowTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testFieldLevelInfoWindowOverride() {
-		MColumn column = MTable.get(Env.getCtx(), MOrder.Table_Name).getColumn(MOrder.COLUMNNAME_C_BPartner_ID);
+		MTable orderTable = MTable.get(Env.getCtx(), MOrder.Table_Name);
+		MColumn column = orderTable.getColumn(MOrder.COLUMNNAME_C_BPartner_ID);
 		assertNotNull(column, "no column " + MOrder.Table_Name + "." + MOrder.COLUMNNAME_C_BPartner_ID);
 		assertEquals(DictionaryIDs.AD_InfoWindow.BUSINESS_PARTNER_INFO.id, column.getAD_InfoWindow_ID(),
 				"the business partner column of the order must keep the complex info window");
@@ -215,17 +226,38 @@ public class MInfoWindowTest extends AbstractTestCase {
 				column.getAD_Column_ID(), DictionaryIDs.AD_InfoWindow.BUSINESS_PARTNER_INFO.id);
 		assertEquals(0, notInherited, "the fields of the column must inherit the info window of the column");
 
-		int adFieldId = DB.getSQLValueEx(getTrxName(), "SELECT MIN(AD_Field_ID) FROM AD_Field_v WHERE AD_Column_ID=?",
-				column.getAD_Column_ID());
-		assertTrue(adFieldId > 0, "no field for the column");
+		MTab tab = new MTab(Env.getCtx(), 0, getTrxName());
+		tab.setAD_Window_ID(DictionaryIDs.AD_Window.TEST.id);
+		tab.setAD_Table_ID(orderTable.get_ID());
+		tab.setName("IDEMPIERE-7074");
+		tab.setSeqNo(999);
+		try {
+			tab.saveCrossTenantSafeEx();
 
-		MField field = new MField(Env.getCtx(), adFieldId, getTrxName());
-		field.setAD_InfoWindow_ID(DictionaryIDs.AD_InfoWindow.BUSINESS_PARTNER_INFO_SIMPLE.id);
-		field.saveCrossTenantSafeEx();
+			MField field = new MField(tab);
+			field.setAD_Column_ID(column.get_ID());
+			field.setSeqNo(10);
+			field.saveCrossTenantSafeEx();
 
-		int effective = DB.getSQLValueEx(getTrxName(), "SELECT COALESCE(AD_InfoWindow_ID, 0) FROM AD_Field_v WHERE AD_Field_ID=?",
-				adFieldId);
-		assertEquals(DictionaryIDs.AD_InfoWindow.BUSINESS_PARTNER_INFO_SIMPLE.id, effective,
-				"the info window of the field must override the info window of the column");
+			assertEquals(DictionaryIDs.AD_InfoWindow.BUSINESS_PARTNER_INFO.id, getEffectiveInfoWindowId(field.get_ID()),
+					"a field without an info window must use the one of its column");
+
+			field.setAD_InfoWindow_ID(DictionaryIDs.AD_InfoWindow.BUSINESS_PARTNER_INFO_SIMPLE.id);
+			field.saveCrossTenantSafeEx();
+
+			assertEquals(DictionaryIDs.AD_InfoWindow.BUSINESS_PARTNER_INFO_SIMPLE.id, getEffectiveInfoWindowId(field.get_ID()),
+					"the info window of the field must override the one of its column");
+		} finally {
+			rollback();
+		}
+	}
+
+	/**
+	 * @param AD_Field_ID field
+	 * @return the effective info window of the field, 0 if none is configured
+	 */
+	private int getEffectiveInfoWindowId(int AD_Field_ID) {
+		return DB.getSQLValueEx(getTrxName(), "SELECT COALESCE(AD_InfoWindow_ID, 0) FROM AD_Field_v WHERE AD_Field_ID=?",
+				AD_Field_ID);
 	}
 }
