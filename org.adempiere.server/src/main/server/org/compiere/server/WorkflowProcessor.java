@@ -74,6 +74,7 @@ public class WorkflowProcessor extends AdempiereServer
 	{
 		m_summary = new StringBuffer();
 		//
+		recalculateScheduledActivities();
 		wakeup();
 		dynamicPriority();
 		sendAlerts();
@@ -88,6 +89,74 @@ public class WorkflowProcessor extends AdempiereServer
 	}	//	doWork
 
 	/**
+	 * Recalculate the end wait time for suspended schedule activities. This makes
+	 * changes to the source record effective without restarting the workflow.
+	 */
+	protected void recalculateScheduledActivities()
+	{
+		String sql = "SELECT * "
+			+ "FROM AD_WF_Activity a "
+			+ "WHERE Processed='N' AND WFState='OS'"
+			+ " AND AD_Client_ID=?"
+			+ " AND EXISTS (SELECT * FROM AD_Workflow wf "
+				+ " INNER JOIN AD_WF_Node wfn ON (wf.AD_Workflow_ID=wfn.AD_Workflow_ID) "
+				+ "WHERE a.AD_WF_Node_ID=wfn.AD_WF_Node_ID"
+				+ " AND wfn.Action=?"
+				+ " AND (wf.AD_WorkflowProcessor_ID IS NULL OR wf.AD_WorkflowProcessor_ID=?))";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int count = 0;
+		int errors = 0;
+		try
+		{
+			pstmt = DB.prepareStatement(sql, null);
+			pstmt.setInt(1, m_model.getAD_Client_ID());
+			pstmt.setString(2, MWFNode.ACTION_WaitSchedule);
+			pstmt.setInt(3, m_model.getAD_WorkflowProcessor_ID());
+			rs = pstmt.executeQuery();
+			while (rs.next())
+			{
+				MWFActivity activity = new MWFActivity(getCtx(), rs, null);
+				try
+				{
+					Timestamp oldEndWaitTime = activity.getEndWaitTime();
+					Timestamp newEndWaitTime = activity.evaluateScheduleEndWaitTime(null);
+					if (oldEndWaitTime == null ? newEndWaitTime != null : !oldEndWaitTime.equals(newEndWaitTime))
+					{
+						activity.setEndWaitTime(newEndWaitTime);
+						activity.saveEx();
+					}
+					count++;
+				}
+				catch (Exception e)
+				{
+					errors++;
+					// Never wake an activity using a stale date after recalculation failed.
+					if (activity.getEndWaitTime() != null)
+					{
+						activity.setEndWaitTime(null);
+						activity.saveEx();
+					}
+					log.log(Level.WARNING, "recalculateScheduledActivities - AD_WF_Activity_ID="
+							+ activity.getAD_WF_Activity_ID(), e);
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			log.log(Level.SEVERE, "recalculateScheduledActivities", e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+		}
+		m_summary.append("Schedule #").append(count);
+		if (errors > 0)
+			m_summary.append(" (Errors=").append(errors).append(")");
+		m_summary.append(" - ");
+	}	//	recalculateScheduledActivities
+
+	/**
 	 * 	Continue Workflow After Sleep
 	 */
 	protected void wakeup()
@@ -100,7 +169,7 @@ public class WorkflowProcessor extends AdempiereServer
 			+ " AND EXISTS (SELECT * FROM AD_Workflow wf "
 				+ " INNER JOIN AD_WF_Node wfn ON (wf.AD_Workflow_ID=wfn.AD_Workflow_ID) "
 				+ "WHERE a.AD_WF_Node_ID=wfn.AD_WF_Node_ID"
-				+ " AND wfn.Action='Z'"		//	sleeping
+				+ " AND wfn.Action IN (?,?)"		//	sleeping or scheduled
 				+ " AND (wf.AD_WorkflowProcessor_ID IS NULL OR wf.AD_WorkflowProcessor_ID=?))";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -109,7 +178,9 @@ public class WorkflowProcessor extends AdempiereServer
 		{
 			pstmt = DB.prepareStatement (sql, null);
 			pstmt.setInt (1, m_model.getAD_Client_ID());
-			pstmt.setInt (2, m_model.getAD_WorkflowProcessor_ID());
+			pstmt.setString(2, MWFNode.ACTION_WaitSleep);
+			pstmt.setString(3, MWFNode.ACTION_WaitSchedule);
+			pstmt.setInt (4, m_model.getAD_WorkflowProcessor_ID());
 			rs = pstmt.executeQuery ();
 			while (rs.next ())
 			{
