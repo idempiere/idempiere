@@ -269,26 +269,24 @@ public class PrintData implements Serializable
 	}	//	getNodeCount
 
 	/**
-	 * Add data row with function type
-	 * @param functionRow
+	 * Add function row with function type
 	 * @param levelNo
 	 * @param functionType
 	 */
-	public void addRow (boolean functionRow, int levelNo, char functionType)
+	public void addRow (int levelNo, char functionType)
 	{
-		addRow(functionRow, levelNo, functionType, false);
+		addRow(levelNo, functionType, false);
 	}
 
 	/**
-	 * Add data row with function type and total row indicator
-	 * @param functionRow
+	 * Add function row with function type and total row indicator
 	 * @param levelNo
 	 * @param functionType
 	 * @param totalRow true if total (grand total) row
 	 */
-	public void addRow (boolean functionRow, int levelNo, char functionType, boolean totalRow)
+	public void addRow (int levelNo, char functionType, boolean totalRow)
 	{
-		addRow(functionRow, levelNo, new ArrayList<Serializable>());
+		addRow(true, levelNo, new ArrayList<Serializable>());
 		m_dataFunction.put(Integer.valueOf(m_matrix.getRowIndex()), functionType);
 		if (totalRow)
 			m_totalRows.add(Integer.valueOf(m_matrix.getRowIndex()));

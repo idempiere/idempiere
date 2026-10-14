@@ -34,7 +34,7 @@ public final class ExcelSubtotalFunction
 {
 	/** SUBTOTAL function code for SUM */
 	public static final int SUM_FUNCTION   = 9;
-	/** SUBTOTAL function code for COUNT */
+	/** SUBTOTAL function code for COUNTA (non-empty count) */
 	public static final int COUNT_FUNCTION = 3;
 	/** SUBTOTAL function code for MIN */
 	public static final int MIN_FUNCTION   = 5;

@@ -546,6 +546,11 @@ public abstract class AbstractXLSXExporter
 		return false;
 	}
 
+	/**
+	 * Get function type character for row
+	 * @param row
+	 * @return function type character or null
+	 */
 	public Character getFunctionType(int row) {
 		return null;
 	}
@@ -612,6 +617,7 @@ public abstract class AbstractXLSXExporter
 		int begRange = initxls_rownum;
 		int initfunc_rownum = initxls_rownum;
 		int endfunc_rownum = initxls_rownum;
+		int firstDataXlsRowNum = -1;
 		boolean isPreviousRowFunction = false;
 		boolean isPreviousRowTotal = false;
 		boolean hasPageBreak = false;
@@ -625,15 +631,17 @@ public abstract class AbstractXLSXExporter
 			Row row = sheet.createRow(xls_rownum);
 			printColIndex = -1;
 
-			boolean isFunctionRow = exportExcelFunction && isFunctionRow(rownum) && (getFunctionType(rownum) != null);
-			boolean isTotalRow = isFunctionRow && isTotalRow(rownum);			
+			boolean isFunctionRow = exportExcelFunction && isFunctionRow(rownum);
+			boolean isTotalRow = isFunctionRow && isTotalRow(rownum);
 
 			if (isFunctionRow) {
 				boolean isNewFunctionBlock = !isPreviousRowFunction || (isTotalRow && !isPreviousRowTotal);
 				if (isNewFunctionBlock) {
-					initfunc_rownum = isTotalRow ? initxls_rownum : begRange;
+					initfunc_rownum = isTotalRow ? (firstDataXlsRowNum >= 0 ? firstDataXlsRowNum : initxls_rownum) : begRange;
 					endfunc_rownum = xls_rownum - 1;
 				}
+			} else if (firstDataXlsRowNum < 0) {
+				firstDataXlsRowNum = xls_rownum;
 			}
 			// for all columns
 			int colnum = 0;
@@ -706,7 +714,7 @@ public abstract class AbstractXLSXExporter
 							value = ((Number) obj).doubleValue();
 						}
 						
-						// For function cell, this will served as cache value
+						// For function cell, serves as the cached value
 						cell.setCellValue(value);
 						
 						int functionCode = exportExcelFunction && (!isTotalRow || !hasPageBreak) ? getFunction(rownum, col) : 0;
@@ -767,6 +775,7 @@ public abstract class AbstractXLSXExporter
 				begRange = initxls_rownum;
 				initfunc_rownum = initxls_rownum;
 				endfunc_rownum = initxls_rownum;
+				firstDataXlsRowNum = -1;
 				isPreviousRowFunction = false;
 				isPreviousRowTotal = false;
 				isPageBreak = false;

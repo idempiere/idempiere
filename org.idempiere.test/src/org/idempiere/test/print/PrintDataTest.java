@@ -48,7 +48,7 @@ import org.junit.jupiter.api.Test;
 public class PrintDataTest extends AbstractTestCase
 {
 	/**
-	 * Test {@link PrintData#addRow(boolean, int, char)}, {@link PrintData#addRow(boolean, int, char, boolean)},
+	 * Test {@link PrintData#addRow(int, char)}, {@link PrintData#addRow(int, char, boolean)},
 	 * {@link PrintData#getFunctionType(int)}, {@link PrintData#getFunctionType()},
 	 * {@link PrintData#isTotalRow(int)}, {@link PrintData#isTotalRow()},
 	 * {@link PrintData#isFunctionRow(int)}, and {@link PrintData#isSummary()}.
@@ -82,18 +82,18 @@ public class PrintDataTest extends AbstractTestCase
 		pd.addNode(new PrintDataElement(1, "Name", "Product B", DisplayType.String, null));
 		pd.addNode(new PrintDataElement(2, "Amount", new BigDecimal("200.00"), DisplayType.Amount, null));
 
-		// Row 2: Subtotal function row using 3-arg overload (default totalRow = false)
-		pd.addRow(true, 0, PrintDataFunction.F_SUM);
+		// Row 2: Subtotal function row using 2-arg overload (default totalRow = false)
+		pd.addRow(0, PrintDataFunction.F_SUM);
 		pd.addNode(new PrintDataElement(1, "Name", "Subtotal", DisplayType.String, null));
 		pd.addNode(new PrintDataElement(2, "Amount", new BigDecimal("300.00"), DisplayType.Amount, null));
 
-		// Row 3: Grand Total function row using 4-arg overload (totalRow = true)
-		pd.addRow(true, 0, PrintDataFunction.F_SUM, true);
+		// Row 3: Grand Total function row using 3-arg overload (totalRow = true)
+		pd.addRow(0, PrintDataFunction.F_SUM, true);
 		pd.addNode(new PrintDataElement(1, "Name", "Grand Total", DisplayType.String, null));
 		pd.addNode(new PrintDataElement(2, "Amount", new BigDecimal("300.00"), DisplayType.Amount, null));
 
 		// Row 4: Grand Total Count row
-		pd.addRow(true, 0, PrintDataFunction.F_COUNT, true);
+		pd.addRow(0, PrintDataFunction.F_COUNT, true);
 		pd.addNode(new PrintDataElement(1, "Name", "Count", DisplayType.String, null));
 		pd.addNode(new PrintDataElement(2, "Amount", new BigDecimal("2"), DisplayType.Quantity, null));
 
@@ -166,7 +166,7 @@ public class PrintDataTest extends AbstractTestCase
 
 		// Verify function codes match Excel SUBTOTAL function numbers
 		assertEquals(9, ExcelSubtotalFunction.SUM_FUNCTION);
-		assertEquals(2, ExcelSubtotalFunction.COUNT_FUNCTION);
+		assertEquals(3, ExcelSubtotalFunction.COUNT_FUNCTION);
 		assertEquals(1, ExcelSubtotalFunction.AVG_FUNCTION);
 		assertEquals(4, ExcelSubtotalFunction.MAX_FUNCTION);
 		assertEquals(5, ExcelSubtotalFunction.MIN_FUNCTION);
@@ -190,7 +190,7 @@ public class PrintDataTest extends AbstractTestCase
 		assertEquals("SUBTOTAL(9,B2:B8)", grandTotalFormula, "Grand total formula mismatch");
 
 		// Test formulas with other SUBTOTAL functions on column C (col = 2), rows 1..10 (Excel C2:C11)
-		assertEquals("SUBTOTAL(2,C2:C11)",
+		assertEquals("SUBTOTAL(3,C2:C11)",
 			ExcelSubtotalFunction.getSubtotalFormula(ExcelSubtotalFunction.COUNT_FUNCTION, 1, 10, 2));
 		assertEquals("SUBTOTAL(1,C2:C11)",
 			ExcelSubtotalFunction.getSubtotalFormula(ExcelSubtotalFunction.AVG_FUNCTION, 1, 10, 2));

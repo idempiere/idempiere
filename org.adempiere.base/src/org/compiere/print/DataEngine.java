@@ -1169,7 +1169,7 @@ public class DataEngine
 							for (int f = 0; f < functions.length; f++)
 							{
 								printRunningTotal(pd, levelNo, rowNo++);
-								pd.addRow(true, levelNo, functions[f]);
+								pd.addRow(levelNo, functions[f]);
 								//	get columns
 								for (int c = 0; c < pd.getColumnInfo().length; c++)
 								{
@@ -1412,7 +1412,7 @@ public class DataEngine
 					for (int f = 0; f < functions.length; f++)
 					{
 						printRunningTotal(pd, levelNo, rowNo++);
-						pd.addRow(true, levelNo, functions[f]);
+						pd.addRow(levelNo, functions[f]);
 						//	get columns
 						for (int c = 0; c < pd.getColumnInfo().length; c++)
 						{
@@ -1449,7 +1449,7 @@ public class DataEngine
 			for (int f = 0; f < functions.length; f++)
 			{
 				printRunningTotal(pd, levelNo, rowNo++);
-				pd.addRow(true, levelNo, functions[f], true);
+				pd.addRow(levelNo, functions[f], true);
 				//	get columns
 				for (int c = 0; c < pd.getColumnInfo().length; c++)
 				{

@@ -30,6 +30,7 @@ import org.compiere.print.MPrintFormatItem;
 import org.compiere.print.PrintData;
 import org.compiere.print.PrintDataFunction;
 import org.compiere.print.layout.InstanceAttributeColumn;
+import org.compiere.util.Util;
 
 /**
  * Resolve Excel SUBTOTAL function of {@link PrintData} function rows.<br/>
@@ -112,8 +113,9 @@ class PrintDataExcelFunctionHelper
 		if (getNumberOfGroupByItem() > 1 || !isFunctionRow(row) || printData.getRowCount() <= 1)
 			return 0;
 
-		// When there are no groups and isSummary - the detail rows are hidden, can't work with the formulas
-		if (summary && (getNumberOfGroupByItem() < 1 || !isTotalRow(row)))
+		// Summary report - detail rows are not included, only static group function rows.
+		// A formula range would mix rows of different function types (e.g. Sum and Count), so formulas are not supported.
+		if (summary)
 			return 0;
 
 		MPrintFormatItem item = null;
@@ -123,6 +125,10 @@ class PrintDataExcelFunctionHelper
 			item = ((InstanceAttributeColumn) colObj).getPrintFormatItem();
 
 		if (item == null)
+			return 0;
+
+		// Suppress Repeats or display logic hides detail values, causing Excel SUBTOTAL to diverge from the printed total
+		if (item.isSuppressRepeats() || !Util.isEmpty(item.getDisplayLogic()))
 			return 0;
 
 		Character functionType = printData.getFunctionType(row);
