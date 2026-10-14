@@ -19,17 +19,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library" exported="">
-      <library name="Partial-Runtime">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/org-netbeans-api-visual.jar!/" />
-          <root url="jar://$MODULE_DIR$/lib/org-openide-util.jar!/" />
-          <root url="jar://$MODULE_DIR$/lib/org-openide-util-lookup.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="library" name="Partial: assertj-core-3.22.0" level="project" />
     <orderEntry type="library" name="Partial: bcmail-1.78.1" level="project" />
     <orderEntry type="library" name="Partial: bcpg-1.78.1" level="project" />
