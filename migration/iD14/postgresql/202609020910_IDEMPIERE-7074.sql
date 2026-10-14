@@ -3,11 +3,15 @@ SELECT register_migration_script('202609020910_IDEMPIERE-7074.sql') FROM dual;
 
 -- Sep 2, 2026, 9:10:00 AM
 -- IDEMPIERE-7074
--- Generic: all existing (old) Business Partner reference columns point to the complex window.
--- Covers TableDir references by column name (C_BPartner_ID direct and Bill_BPartner_ID
--- resolved via the hardcoded zoom mapping in MQuery.getZoomColumnName) and Table references
--- via AD_Ref_Table pointing to the C_BPartner table (DropShip_BPartner_ID, Pay_BPartner_ID,
--- ReturnBPartner_ID, C_BPartnerSR_ID, C_Employee_ID and user-created custom columns).
+-- Generic: every existing Business Partner reference column keeps the complex window,
+-- this is what makes the change of the table default below backward compatible.
+-- The references are resolved through AD_Ref_Table for Search, Table and Table Direct
+-- references pointing to C_BPartner (DropShip_BPartner_ID, Pay_BPartner_ID,
+-- ReturnBPartner_ID, C_BPartnerSR_ID, C_Employee_ID, ...), references without
+-- AD_Reference_Value_ID take the lookup table from the column name and are covered by
+-- name (C_BPartner_ID, Bill_BPartner_ID, e.g. Fact_Reconciliation.C_BPartner_ID).
+-- There is no AD_Client_ID filter, so columns of windows created by customers are
+-- pinned to the complex window as well.
 -- The "AD_InfoWindow_ID IS NULL" condition ensures columns created after this script
 -- (new fields) are not touched - they resolve to the table default (simplified window).
 UPDATE AD_Column SET AD_InfoWindow_ID = 200001
@@ -21,9 +25,15 @@ WHERE AD_InfoWindow_ID IS NULL
 
 -- Sep 2, 2026, 9:10:01 AM
 -- IDEMPIERE-7074
--- Explicit: CORE Business Partner fields without User/Location companion fields
--- are reset to NULL, so they follow the table default info window
+-- Explicit: the CORE Business Partner columns that can not use the selection are
+-- reset to NULL, so they follow the table default info window
 -- (the simplified window - one row per partner, no contact/location columns).
+-- The criterion is not "no callout" but "no callout that consumes the selection":
+-- the only core callouts reading AD_User_ID or C_BPartner_Location_ID from the info
+-- selection are CalloutOrder.bPartner, CalloutOrder.bPartnerBill,
+-- CalloutInvoice.bPartner and CalloutInvoiceBatch.bPartner, and their columns
+-- (C_Order.C_BPartner_ID, C_Order.Bill_BPartner_ID, C_Invoice.C_BPartner_ID and
+-- C_InvoiceBatchLine.C_BPartner_ID) stay on the complex window pinned above.
 -- NULL instead of a pinned window id keeps them on the current table default
 -- if the default is changed later.
 UPDATE AD_Column SET AD_InfoWindow_ID = NULL
