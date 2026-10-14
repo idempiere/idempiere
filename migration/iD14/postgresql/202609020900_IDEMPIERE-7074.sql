@@ -2,10 +2,10 @@
 SELECT register_migration_script('202609020900_IDEMPIERE-7074.sql') FROM dual;
 
 -- Sep 2, 2026, 9:00:00 AM
-INSERT INTO AD_InfoWindow (Processing,FromClause,AD_InfoWindow_UU,AD_InfoWindow_ID,AD_Table_ID,EntityType,Name,Description,AD_Client_ID,AD_Org_ID,Created,Updated,UpdatedBy,CreatedBy,IsActive,IsDefault,IsDistinct,OrderByClause,IsValid,ImageURL) VALUES ('N','C_BPartner bp
+INSERT INTO AD_InfoWindow (Processing,FromClause,AD_InfoWindow_UU,AD_InfoWindow_ID,AD_Table_ID,EntityType,Name,Description,AD_Client_ID,AD_Org_ID,Created,Updated,UpdatedBy,CreatedBy,IsActive,IsDefault,IsDistinct,OrderByClause,IsValid,ImageURL,IsShowInDashboard) VALUES ('N','C_BPartner bp
 LEFT OUTER JOIN C_BPartner_Location l ON (bp.C_BPartner_ID=l.C_BPartner_ID AND l.IsActive=''Y'')
 LEFT OUTER JOIN AD_User c ON (bp.C_BPartner_ID=c.C_BPartner_ID AND (c.C_BPartner_Location_ID IS NULL OR c.C_BPartner_Location_ID=l.C_BPartner_Location_ID) AND c.IsActive=''Y'')
-LEFT OUTER JOIN C_Location a ON (l.C_Location_ID=a.C_Location_ID)','6a7f7db9-ec0b-4620-95dd-937d48c55c4f',200025,291,'D','Business Partner Info (Simple)','Business Partner lookup showing one row per partner, without contact and location columns. Contacts and locations are joined for search criteria only.',0,0,TO_TIMESTAMP('2026-09-02 09:00:00','YYYY-MM-DD HH24:MI:SS'),TO_TIMESTAMP('2026-09-02 09:00:00','YYYY-MM-DD HH24:MI:SS'),100,100,'Y','Y','Y','bp.Value','N','InfoBPartner16.png')
+LEFT OUTER JOIN C_Location a ON (l.C_Location_ID=a.C_Location_ID)','6a7f7db9-ec0b-4620-95dd-937d48c55c4f',200025,291,'D','Business Partner Info (Simple)','Business Partner lookup showing one row per partner, without contact and location columns. Contacts and locations are joined for search criteria only.',0,0,TO_TIMESTAMP('2026-09-02 09:00:00','YYYY-MM-DD HH24:MI:SS'),TO_TIMESTAMP('2026-09-02 09:00:00','YYYY-MM-DD HH24:MI:SS'),100,100,'Y','Y','Y','bp.Value','N','InfoBPartner16.png','N')
 ;
 
 -- Sep 2, 2026, 9:00:01 AM
@@ -84,13 +84,10 @@ UPDATE AD_InfoWindow SET IsValid='Y',Updated=TO_TIMESTAMP('2026-09-02 09:00:15',
 ;
 
 -- Sep 2, 2026, 9:00:16 AM
--- IDEMPIERE-7074
-INSERT INTO AD_InfoWindow_Access (AD_InfoWindow_Access_UU,Updated,UpdatedBy,AD_Role_ID,AD_InfoWindow_ID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,IsActive) VALUES ('d887f25d-3eaf-41dc-9031-d36e016de388',TO_TIMESTAMP('2026-09-02 09:00:16','YYYY-MM-DD HH24:MI:SS'),100,50004,200025,11,0,TO_TIMESTAMP('2026-09-02 09:00:16','YYYY-MM-DD HH24:MI:SS'),100,'Y')
-;
-
--- Sep 2, 2026, 9:00:17 AM
--- IDEMPIERE-7074
-INSERT INTO AD_InfoWindow_Access (AD_InfoWindow_Access_UU,Updated,UpdatedBy,AD_Role_ID,AD_InfoWindow_ID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,IsActive) VALUES ('939add50-c52a-4682-829d-de5347d19ac2',TO_TIMESTAMP('2026-09-02 09:00:17','YYYY-MM-DD HH24:MI:SS'),100,0,200025,0,0,TO_TIMESTAMP('2026-09-02 09:00:17','YYYY-MM-DD HH24:MI:SS'),100,'Y')
+-- IDEMPIERE-7074 role access mirrors the complex window 200001:
+-- roles 102/103/200001 granted, role 50004 excluded (IsActive='N'),
+-- role 0 (System Administrator) has no AD_InfoWindow_Access rows in core and is not added
+INSERT INTO AD_InfoWindow_Access (AD_InfoWindow_Access_UU,Updated,UpdatedBy,AD_Role_ID,AD_InfoWindow_ID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,IsActive) VALUES ('d887f25d-3eaf-41dc-9031-d36e016de388',TO_TIMESTAMP('2026-09-02 09:00:16','YYYY-MM-DD HH24:MI:SS'),100,50004,200025,11,0,TO_TIMESTAMP('2026-09-02 09:00:16','YYYY-MM-DD HH24:MI:SS'),100,'N')
 ;
 
 -- Sep 2, 2026, 9:00:18 AM

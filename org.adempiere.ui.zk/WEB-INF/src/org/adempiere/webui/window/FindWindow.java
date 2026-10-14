@@ -1083,7 +1083,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		        			mLookup.getLookupInfo().IsValidated = false;
 		        		}
 		        		// IDEMPIERE-7074 record search criteria always resolve to the table
-		        		// default info window (not to a per-column or per-reference pinned one)
+		        		// default info window (not to a field, column or reference specific one)
 		        		// - for filtering records the default window (one row per record) is used
 		        		mLookup.getLookupInfo().InfoWindowId = 0;
 		        		findField.getVO().AD_InfoWindow_ID = 0;

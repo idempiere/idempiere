@@ -88,9 +88,11 @@ public class InfoManager
 	}
 
 	/**
-	 * Resolve the info window id for a lookup: explicit id from the lookup
-	 * (AD_Ref_Table.AD_InfoWindow_ID) has priority, then the per-field
-	 * override from the column definition (AD_Column.AD_InfoWindow_ID).
+	 * Resolve the info window id for a lookup: the explicit id of the lookup
+	 * (AD_Ref_Table.AD_InfoWindow_ID) has priority, then the value of the field,
+	 * that is AD_Field.AD_InfoWindow_ID with fall back to AD_Column.AD_InfoWindow_ID
+	 * (see AD_Field_v). IDEMPIERE-7074: the value was previously only evaluated for
+	 * buttons, it is now also used for search and table dir fields.
 	 * @param lookup
 	 * @param field
 	 * @return resolved AD_InfoWindow_ID (0 = resolve by table default)

@@ -921,7 +921,10 @@ public final class DictionaryIDs {
 	}
 	
 	public enum AD_InfoWindow {
-		PRODUCT_INFO(200000);
+		PRODUCT_INFO(200000),
+		BUSINESS_PARTNER_INFO(200001),
+		/** IDEMPIERE-7074, one row per business partner */
+		BUSINESS_PARTNER_INFO_SIMPLE(200025);
 		
 		public final int id;
 
