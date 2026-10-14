@@ -1380,10 +1380,14 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 			dateTo = (Date) editor2.getValue();
 			if(isPresetsOnly()) {
 				// keep the presets mode, the mode selection is hidden
-				setPickerSelection(DATESELECTIONMODE_PRESETS, MChart.TIMEUNIT_Month, 0);
 				Date[] dates = setTimesOnDates(dateFrom, dateTo);
 				dateFrom = dates[0];
 				dateTo = dates[1];
+				// forget the previous preset, otherwise it would overwrite the new dates when the selection is parsed
+				selectedPresetListItem = null;
+				for(Listbox listBox : presetListBoxes)
+					listBox.setSelectedItem(null);
+				setPickerSelection(DATESELECTIONMODE_PRESETS, MChart.TIMEUNIT_Month, 0);
 				selectPresetOfDates();
 			}
 			else if(dateFrom != null || dateTo != null) { // Set the picker to defined Default Logic
