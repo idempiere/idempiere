@@ -873,9 +873,10 @@ public class MInOutLine extends X_M_InOutLine
 			BigDecimal matchedQty = DB.getSQLValueBD(iLine.get_TrxName(), "SELECT Coalesce(SUM(Qty),0) FROM M_MatchPO WHERE C_InvoiceLine_ID=?" , iLine.getC_InvoiceLine_ID());
 			if (matchedQty.add(qty).compareTo(iLine.getQtyInvoiced()) <= 0) 
 			{
-				MMatchPO matchPO = MMatchPO.create(iLine, this, null, qty);
-				if (matchPO != null)
+				List<MMatchPO> matchPOs = MMatchPO.createList(iLine, this, null, qty);
+				for (MMatchPO matchPO : matchPOs)
 				{
+
 					matchPO.saveEx();
 					if (MClient.isClientAccountingImmediate()) {
 						String ignoreError = DocumentEngine.postImmediate(matchPO.getCtx(), matchPO.getAD_Client_ID(), matchPO.get_Table_ID(), matchPO.get_ID(), true, matchPO.get_TrxName());						
