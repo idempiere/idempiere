@@ -34,8 +34,8 @@ import java.util.function.Predicate;
  * <ul>
  * <li>positional, unchanged: {@code folder packageName tableEntityType tableName [columnEntityType]}</li>
  * <li>named: {@code --folder= --package= --tables= --table-entity-type= --column-entity-type=
- * --output=interface,class,accessor --suffix= --columns= --template= --check
- * --allow-all-columns}; {@code --help} prints the usage</li>
+ * --output=interface,class,accessor --suffix= --columns= --template= --check};
+ * {@code --help} prints the usage</li>
  * </ul>
  * The class has no database access, so it can be tested on its own; the caller supplies what needs the
  * dictionary (template values, system entity types).
@@ -58,7 +58,6 @@ public class ModelGeneratorOptions {
 	private String columns;
 	private String template;
 	private boolean check = false;
-	private boolean allowAllColumns = false;
 	private boolean named = false;
 
 	private ModelGeneratorOptions() {
@@ -114,7 +113,6 @@ public class ModelGeneratorOptions {
 			case "suffix": o.suffix = required(key, value); break;
 			case "columns": o.columns = required(key, value); break;
 			case "check": o.check = flag(key, value); break;
-			case "allow-all-columns": o.allowAllColumns = flag(key, value); break;
 			default: throw new IllegalArgumentException("Unknown argument: --" + key);
 			}
 		}
@@ -198,10 +196,10 @@ public class ModelGeneratorOptions {
 		boolean systemTables = false;
 		for (String et : entityTypes(tableEntityType))
 			if (isSystemEntityType.test(et)) systemTables = true;
-		if (systemTables && isEmpty(columnEntityType) && !allowAllColumns)
+		if (systemTables && isEmpty(columnEntityType))
 			problems.add("S1: table entity type " + tableEntityType + " is system maintained and no column entity type is set; "
 					+ "every column of the dictionary, custom columns included, would be written. "
-					+ "Set --column-entity-type, or --allow-all-columns on a vanilla seed database.");
+					+ "Set --column-entity-type, for example --column-entity-type=D to regenerate the core classes.");
 		if (!isEmpty(columnEntityType) && generateClass) {
 			List<String> tableTypes = isEmpty(tableEntityType) ? List.of("U", "A") : entityTypes(tableEntityType);
 			List<String> columnTypes = entityTypes(columnEntityType);
@@ -266,7 +264,7 @@ public class ModelGeneratorOptions {
 	public static String usage() {
 		return "usage: ModelGenerator folder packageName tableEntityType tableName [columnEntityType]\n"
 			+ "   or: ModelGenerator --folder=DIR --package=PKG --tables=NAMES [--table-entity-type=ET,..] [--column-entity-type=ET,..]\n"
-			+ "         [--output=interface,class,accessor] [--suffix=XYZ] [--columns=A,B] [--template=NAME] [--allow-all-columns]\n"
+			+ "         [--output=interface,class,accessor] [--suffix=XYZ] [--columns=A,B] [--template=NAME]\n"
 			+ "         [--check]      (or --help)\n"
 			+ "  Named options are --key=value; \"--key value\" is not supported. Files go to <folder>/<package with dots as folders>/.\n"
 			+ "  --folder              source folder, must exist\n"
@@ -281,7 +279,6 @@ public class ModelGeneratorOptions {
 			+ "  --template            read the values not given from the Generate Model Template with this name\n"
 			+ "  --check               generate into a temporary folder and compare with --folder; writes nothing, fails when no table matches, needs the same\n"
 			+ "                        arguments as the generate call, ignores files that exist only in --folder\n"
-			+ "  --allow-all-columns   allow a system table entity type without a column entity type (vanilla seed only)\n"
 			+ "  Safety rules S1, S2, S4 REFUSE a named call; the positional form only warns.\n"
 			+ "  Exit code 0 = ok, 1 = refused, error or --check difference; the last output line is result: ok|refused|error|differs";
 	}

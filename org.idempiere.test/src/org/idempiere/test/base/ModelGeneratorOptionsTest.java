@@ -124,7 +124,7 @@ public class ModelGeneratorOptionsTest {
 		assertTrue(o.safetyProblems(SYSTEM).stream().anyMatch(p -> p.startsWith("S1")));
 
 		o = ModelGeneratorOptions.parse(new String[] {"--folder=/src", "--package=org.compiere.model",
-				"--tables=C_Invoice", "--table-entity-type=D", "--allow-all-columns"});
+				"--tables=C_Invoice", "--table-entity-type=D", "--column-entity-type=D"});
 		assertTrue(o.safetyProblems(SYSTEM).isEmpty(), "release procedure on a vanilla seed");
 	}
 
