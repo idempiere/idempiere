@@ -33,6 +33,8 @@ import java.util.Locale;
 import java.util.Properties;
 
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  * Model class of AD_DateRange, a named date range (absolute or relative) for date range pickers.
@@ -78,8 +80,8 @@ public class MDateRange extends X_AD_DateRange {
 	 * @return
 	 */
 	public static MDateRange[] getOfComparisonType(Properties ctx, String comparisonType, String trxName) {
-		List<MDateRange> list = new Query(ctx, I_AD_DateRange.Table_Name, "AD_Client_ID IN (?,0) AND AD_DateRangeGroup_ID IS NULL AND RangeComparisonType IN(?,'"+RANGECOMPARISONTYPE_StandardAndComparisonRange+"')", trxName)
-				.setParameters(Env.getAD_Client_ID(ctx), comparisonType)
+		List<MDateRange> list = new Query(ctx, I_AD_DateRange.Table_Name, "AD_Client_ID IN (?,0) AND AD_DateRangeGroup_ID IS NULL AND RangeComparisonType IN(?,?)", trxName)
+				.setParameters(Env.getAD_Client_ID(ctx), comparisonType, RANGECOMPARISONTYPE_StandardAndComparisonRange)
 				.setOnlyActiveRecords(true)
 				.setOrderBy(COLUMNNAME_SeqNo)
 				.list();
@@ -91,15 +93,21 @@ public class MDateRange extends X_AD_DateRange {
 	 * An absolute range returns its own dates (an open end stays null).
 	 * A relative range is resolved against the reference date, see {@link #getInterval(String, int, int, LocalDate, Locale)}.
 	 * Previous period ranges depend on a main range and are not resolved here.
-	 * @param reference date the relative range is counted from
-	 * @return {dateFrom, dateTo}, or null if the range type cannot be resolved without a main range
+	 * @param reference date the relative range is counted from, today if null
+	 * @return {dateFrom, dateTo}, or null if the range cannot be resolved (previous period range without a main range,
+	 * absolute range without dates, relative range without time unit)
 	 */
 	public Timestamp[] getInterval(Timestamp reference) {
 		String rangeType = getRangeType();
-		if (RANGETYPE_Absolute.equals(rangeType))
+		if (RANGETYPE_Absolute.equals(rangeType)) {
+			if (getDateFrom() == null && getDateTo() == null)
+				return null;
 			return new Timestamp[] {getDateFrom(), getDateTo()};
-		if (RANGETYPE_Relative.equals(rangeType) && getTimeUnit() != null)
-			return getInterval(getTimeUnit(), getTimeOffset(), getTimeScope(), reference.toLocalDateTime().toLocalDate(), Env.getLocale(getCtx()));
+		}
+		if (RANGETYPE_Relative.equals(rangeType) && getTimeUnit() != null) {
+			LocalDate refDate = reference != null ? reference.toLocalDateTime().toLocalDate() : LocalDate.now();
+			return getInterval(getTimeUnit(), getTimeOffset(), getTimeScope(), refDate, Env.getLocale(getCtx()));
+		}
 		return null;
 	}
 
@@ -145,5 +153,32 @@ public class MDateRange extends X_AD_DateRange {
 		}
 		return new Timestamp[] {Timestamp.valueOf(first.atStartOfDay()), Timestamp.valueOf(last.atTime(LocalTime.MAX).withNano(999_000_000))};
 	}
+
+	@Override
+	protected boolean beforeSave(boolean newRecord) {
+		// complements CalloutDateRange
+		if (RANGETYPE_PreviousPeriod.equals(getRangeType()) || RANGETYPE_PreviousPeriodWithOffset.equals(getRangeType()))
+			setRangeComparisonType(RANGECOMPARISONTYPE_ComparisonRange);
+		
+		if (RANGETYPE_Absolute.equals(getRangeType())) {
+			if (getDateFrom() == null && getDateTo() == null) {
+				log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_DateFrom));
+				return false;
+			}
+			if (getDateFrom() != null && getDateTo() != null && getDateTo().before(getDateFrom())) {
+				log.saveError("Error", Msg.getMsg(getCtx(), "EndDateAfterStartDate"));
+				return false;
+			}
+		}
+		else if (RANGETYPE_Relative.equals(getRangeType())) {
+			if (Util.isEmpty(getTimeUnit())) {
+				log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_TimeUnit));
+				return false;
+			}
+			if (getTimeScope() <= 0)
+				setTimeScope(1);
+		}
+		return true;
+	} // beforeSave
 
 }

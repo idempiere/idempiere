@@ -74,6 +74,7 @@ public class MDateRangeGroup extends X_AD_DateRangeGroup {
 		List<MDateRangeGroup> list = new Query(ctx, I_AD_DateRangeGroup.Table_Name, "AD_Client_ID IN (?,0)", trxName)
 				.setParameters(Env.getAD_Client_ID(ctx))
 				.setOnlyActiveRecords(true)
+				.setOrderBy(COLUMNNAME_Name)
 				.list();
 		return list.toArray(new MDateRangeGroup[list.size()]);
 	}
@@ -84,8 +85,8 @@ public class MDateRangeGroup extends X_AD_DateRangeGroup {
 	 * @return
 	 */
 	public MDateRange[] getDateRanges(String comparisonType) {
-		List<MDateRange> list = new Query(getCtx(), I_AD_DateRange.Table_Name, "AD_DateRangeGroup_ID=? AND RangeComparisonType IN (?,'"+MDateRange.RANGECOMPARISONTYPE_StandardAndComparisonRange+"') AND AD_Client_ID IN (?,0)", get_TrxName())
-				.setParameters(getAD_DateRangeGroup_ID(), comparisonType, Env.getAD_Client_ID(getCtx()))
+		List<MDateRange> list = new Query(getCtx(), I_AD_DateRange.Table_Name, "AD_DateRangeGroup_ID=? AND RangeComparisonType IN (?,?) AND AD_Client_ID IN (?,0)", get_TrxName())
+				.setParameters(getAD_DateRangeGroup_ID(), comparisonType, MDateRange.RANGECOMPARISONTYPE_StandardAndComparisonRange, Env.getAD_Client_ID(getCtx()))
 				.setOnlyActiveRecords(true)
 				.setOrderBy(MDateRange.COLUMNNAME_SeqNo)
 				.list();

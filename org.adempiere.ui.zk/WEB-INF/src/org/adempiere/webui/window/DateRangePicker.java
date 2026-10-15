@@ -334,11 +334,7 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
  		if(isPresetsOnly()) {
 			// only the presets are offered, the selected preset is the one with the dates of the editors
 			modeCombobox.setVisible(false);
-			setPickerSelection(DATESELECTIONMODE_PRESETS, MChart.TIMEUNIT_Month, 0);
-			Date[] dates = setTimesOnDates(dateFrom, dateTo);
-			dateFrom = dates[0];
-			dateTo = dates[1];
-			selectPresetOfDates();
+			loadPresetsOnlySelection();
  		}
 		else if(dateFrom != null || dateTo != null) { // Set the picker to defined Default Logic
 			Date[] dates = setTimesOnDates(dateFrom, dateTo);
@@ -576,6 +572,11 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 					this.dateFrom = (Date) selectedPresetListItem.getAttribute("DateFrom");
 					this.dateTo = (Date) selectedPresetListItem.getAttribute("DateTo");
 					this.displayValue = selectedPresetListItem.getLabel();
+				}
+				else {
+					this.dateFrom = null;
+					this.dateTo = null;
+					this.displayValue = "";
 				}
 				if(this.dateFrom != null || this.dateTo != null) {
 					returnVal = (this.dateFrom != null ? DisplayType.getDateFormat().format(this.dateFrom) : "")
@@ -1200,6 +1201,25 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 	} // newPresetListbox
 	
 	/**
+	 * Presets-only mode: show the presets and select the one that has the dates of the editors, if any.
+	 * The previous selection is forgotten first, as parsing the 'Presets' mode takes the dates from the selected preset
+	 * (and clears them if none is selected), so the dates of the editors are set after the mode.
+	 */
+	private void loadPresetsOnlySelection() {
+		Date[] dates = setTimesOnDates((Date) editor.getValue(), (Date) editor2.getValue());
+		selectedPresetListItem = null;
+		for(Listbox listBox : presetListBoxes)
+			listBox.setSelectedItem(null);
+		setPickerSelection(DATESELECTIONMODE_PRESETS, MChart.TIMEUNIT_Month, 0);
+		dateFrom = dates[0];
+		dateTo = dates[1];
+		selectPresetOfDates();
+		// show the label of the selected preset
+		if(selectedPresetListItem != null)
+			setDateTextBoxAndDisplayValue();
+	} // loadPresetsOnlySelection
+	
+	/**
 	 * Select the preset that has the dates of the editors, if any
 	 */
 	private void selectPresetOfDates() {
@@ -1211,6 +1231,11 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 						&& Objects.equals(dateTo, item.getAttribute("DateTo"))) {
 					listBox.setSelectedItem(item);
 					selectedPresetListItem = (ListItem) item;
+					// make sure the selected preset is not hidden in a collapsed group
+					if(listBox.getParent() instanceof Groupbox groupbox && !groupbox.isOpen()) {
+						groupbox.setOpen(true);
+						LayoutUtils.addSclass("date-picker-group-open", groupbox);
+					}
 					return;
 				}
 			}
@@ -1380,15 +1405,7 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 			dateTo = (Date) editor2.getValue();
 			if(isPresetsOnly()) {
 				// keep the presets mode, the mode selection is hidden
-				Date[] dates = setTimesOnDates(dateFrom, dateTo);
-				dateFrom = dates[0];
-				dateTo = dates[1];
-				// forget the previous preset, otherwise it would overwrite the new dates when the selection is parsed
-				selectedPresetListItem = null;
-				for(Listbox listBox : presetListBoxes)
-					listBox.setSelectedItem(null);
-				setPickerSelection(DATESELECTIONMODE_PRESETS, MChart.TIMEUNIT_Month, 0);
-				selectPresetOfDates();
+				loadPresetsOnlySelection();
 			}
 			else if(dateFrom != null || dateTo != null) { // Set the picker to defined Default Logic
 				Date[] dates = setTimesOnDates(dateFrom, dateTo);

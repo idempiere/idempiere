@@ -30,6 +30,7 @@ import org.adempiere.base.annotation.Callout;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.I_AD_DateRange;
+import org.compiere.model.MDateRange;
 
 /**
  * Callout of {@link I_AD_DateRange}, fired by {@link I_AD_DateRange#COLUMNNAME_RangeType}.
@@ -42,8 +43,8 @@ public class CalloutDateRange implements IColumnCallout {
 	@Override
 	public String start(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value, Object oldValue) {
 		String rangeType = Objects.toString(value, "");
-		if ("P".equals(rangeType) || "O".equals(rangeType))
-			mTab.setValue(I_AD_DateRange.COLUMNNAME_RangeComparisonType, "C");
+		if (MDateRange.RANGETYPE_PreviousPeriod.equals(rangeType) || MDateRange.RANGETYPE_PreviousPeriodWithOffset.equals(rangeType))
+			mTab.setValue(I_AD_DateRange.COLUMNNAME_RangeComparisonType, MDateRange.RANGECOMPARISONTYPE_ComparisonRange);
 		return null;
 	}
 }

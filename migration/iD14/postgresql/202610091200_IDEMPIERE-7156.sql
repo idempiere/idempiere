@@ -17,10 +17,6 @@ INSERT INTO AD_Ref_List (AD_Ref_List_ID,Name,AD_Reference_ID,Value,AD_Client_ID,
 INSERT INTO AD_Ref_List (AD_Ref_List_ID,Name,AD_Reference_ID,Value,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,AD_Ref_List_UU) VALUES (800226,'Shortcuts',200217,'10',0,0,'Y',TO_TIMESTAMP('2025-05-12 15:54:33','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-05-12 15:54:33','YYYY-MM-DD HH24:MI:SS'),100,'D','e57de8c0-f460-56ec-8856-1fc1f6e71c53')
 ;
 
--- May 12, 2025, 4:24:23 PM CEST
-INSERT INTO AD_Reference (AD_Reference_ID,Name,Description,ValidationType,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,IsOrderByValue,AD_Reference_UU,ShowInactive) VALUES (800101,'Date Range Shortcuts',NULL,'L',0,0,'Y',TO_TIMESTAMP('2025-05-12 16:24:23','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-05-12 16:24:23','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','5a6264ae-f96f-5208-8bc0-efcdb5854328','N')
-;
-
 -- May 13, 2025, 9:43:57 AM CEST
 INSERT INTO AD_Table (AD_Table_ID,Name,TableName,LoadSeq,AccessLevel,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSecurityEnabled,IsDeleteable,IsHighVolume,IsView,EntityType,ImportTable,IsChangeLog,ReplicationType,CopyColumnsFromTable,IsCentrallyMaintained,AD_Table_UU,Processing,DatabaseViewDrop,CopyComponentsFromView,CreateWindowFromTable,IsShowInDrillOptions,IsPartition,CreatePartition) VALUES (800173,'Date Range','AD_DateRange',0,'6',0,0,'Y',TO_TIMESTAMP('2025-05-13 09:43:57','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-05-13 09:43:57','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','N','N','D','N','Y','L','N','Y','c9b39c1c-8874-5737-91bc-a4066ec65d81','N','N','N','N','N','N','N')
 ;
@@ -914,7 +910,7 @@ DELETE FROM AD_Reference WHERE AD_Reference_UU='5a6264ae-f96f-5208-8bc0-efcdb585
 ;
 
 -- May 13, 2025, 4:12:35 PM CEST
-INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,Description,PrintName,EntityType,AD_Element_UU) VALUES (800588,0,0,'Y',TO_TIMESTAMP('2025-05-13 16:12:35','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-05-13 16:12:35','YYYY-MM-DD HH24:MI:SS'),100,'RangeComparisonType','Range Comparison Type','Comparison type of the date range, e.g. comparision or standard range.','Range Comparison Type','D','1a45f4a8-561c-546a-9974-9b11f5ba6ccc')
+INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,ColumnName,Name,Description,PrintName,EntityType,AD_Element_UU) VALUES (800588,0,0,'Y',TO_TIMESTAMP('2025-05-13 16:12:35','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-05-13 16:12:35','YYYY-MM-DD HH24:MI:SS'),100,'RangeComparisonType','Range Comparison Type','Comparison type of the date range, e.g. comparison or standard range.','Range Comparison Type','D','1a45f4a8-561c-546a-9974-9b11f5ba6ccc')
 ;
 
 -- May 13, 2025, 4:13:14 PM CEST
@@ -930,7 +926,7 @@ INSERT INTO AD_Ref_List (AD_Ref_List_ID,Name,AD_Reference_ID,Value,AD_Client_ID,
 ;
 
 -- May 13, 2025, 4:14:20 PM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,AD_Table_ID,ColumnName,DefaultValue,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Reference_Value_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,IsHtml,IsPartitionKey) VALUES (803018,0,'Range Comparison Type','Comparison type of the date range, e.g. comparision or standard range.',800173,'RangeComparisonType','S',1,'N','N','Y','N','N',0,'N',17,800103,0,0,'Y',TO_TIMESTAMP('2025-05-13 16:14:20','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-05-13 16:14:20','YYYY-MM-DD HH24:MI:SS'),100,800588,'Y','N','D','N','N','N','Y','cb3bb573-6ee1-5332-b39b-8491a1be4c5a','Y',0,'N','N','N','N')
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,AD_Table_ID,ColumnName,DefaultValue,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Reference_Value_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,IsHtml,IsPartitionKey) VALUES (803018,0,'Range Comparison Type','Comparison type of the date range, e.g. comparison or standard range.',800173,'RangeComparisonType','S',1,'N','N','Y','N','N',0,'N',17,800103,0,0,'Y',TO_TIMESTAMP('2025-05-13 16:14:20','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-05-13 16:14:20','YYYY-MM-DD HH24:MI:SS'),100,800588,'Y','N','D','N','N','N','Y','cb3bb573-6ee1-5332-b39b-8491a1be4c5a','Y',0,'N','N','N','N')
 ;
 
 -- May 13, 2025, 4:15:11 PM CEST
@@ -938,7 +934,7 @@ INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,Co
 ;
 
 -- May 13, 2025, 4:15:39 PM CEST
-INSERT INTO AD_Field (AD_Field_ID,Name,Description,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (802484,'Range Comparison Type','Comparison type of the date range, e.g. comparision or standard range.',800182,803018,'Y',1,120,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2025-05-13 16:15:39','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-05-13 16:15:39','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','f87fc110-a7c2-5beb-942c-edf26a294bab','Y',110,2)
+INSERT INTO AD_Field (AD_Field_ID,Name,Description,AD_Tab_ID,AD_Column_ID,IsDisplayed,DisplayLength,SeqNo,IsSameLine,IsHeading,IsFieldOnly,IsEncrypted,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsReadOnly,IsCentrallyMaintained,EntityType,AD_Field_UU,IsDisplayedGrid,SeqNoGrid,ColumnSpan) VALUES (802484,'Range Comparison Type','Comparison type of the date range, e.g. comparison or standard range.',800182,803018,'Y',1,120,'N','N','N','N',0,0,'Y',TO_TIMESTAMP('2025-05-13 16:15:39','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-05-13 16:15:39','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','D','f87fc110-a7c2-5beb-942c-edf26a294bab','Y',110,2)
 ;
 
 -- May 13, 2025, 4:15:40 PM CEST
@@ -946,7 +942,7 @@ INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,I
 ;
 
 -- May 13, 2025, 4:16:23 PM CEST
-UPDATE AD_Field SET Name='Range Comparison Type', Description='Comparison type of the date range, e.g. comparision or standard range.', Help=NULL, IsDisplayed='Y', SeqNo=80, XPosition=4, Placeholder=NULL,Updated=TO_TIMESTAMP('2025-05-13 16:16:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=802484
+UPDATE AD_Field SET Name='Range Comparison Type', Description='Comparison type of the date range, e.g. comparison or standard range.', Help=NULL, IsDisplayed='Y', SeqNo=80, XPosition=4, Placeholder=NULL,Updated=TO_TIMESTAMP('2025-05-13 16:16:23','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=802484
 ;
 
 -- May 13, 2025, 4:16:23 PM CEST
@@ -1010,7 +1006,7 @@ UPDATE AD_Column SET IsUpdateable='N',Updated=TO_TIMESTAMP('2025-05-14 12:03:44'
 ;
 
 -- May 14, 2025, 12:05:51 PM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,DefaultValue,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml,IsPartitionKey) VALUES (803021,0,'Sequence','Method of ordering records; lowest number comes first','The Sequence indicates the order of records',800173,'SeqNo','@SQL=SELECT COALESCE(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_DateRange WHERE AD_DateRangeGroup_ID=@AD_DateRangeGroup_ID@',10,'N','N','N','N','N',0,'N',11,0,0,'Y',TO_TIMESTAMP('2025-05-14 12:05:51','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-05-14 12:05:51','YYYY-MM-DD HH24:MI:SS'),100,566,'Y','N','D','N','N','N','Y','3e9ce25e-7707-50df-aaa2-4f2732b7d4e5','Y',0,'N','N','N','N','N')
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,DefaultValue,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,SeqNo,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsSyncDatabase,IsAlwaysUpdateable,IsAutocomplete,IsAllowLogging,AD_Column_UU,IsAllowCopy,SeqNoSelection,IsToolbarButton,IsSecure,FKConstraintType,IsHtml,IsPartitionKey) VALUES (803021,0,'Sequence','Method of ordering records; lowest number comes first','The Sequence indicates the order of records',800173,'SeqNo','@SQL=SELECT COALESCE(MAX(SeqNo),0)+10 AS DefaultValue FROM AD_DateRange WHERE AD_DateRangeGroup_ID=@AD_DateRangeGroup_ID:0@',10,'N','N','N','N','N',0,'N',11,0,0,'Y',TO_TIMESTAMP('2025-05-14 12:05:51','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-05-14 12:05:51','YYYY-MM-DD HH24:MI:SS'),100,566,'Y','N','D','N','N','N','Y','3e9ce25e-7707-50df-aaa2-4f2732b7d4e5','Y',0,'N','N','N','N','N')
 ;
 
 -- May 14, 2025, 12:06:11 PM CEST
