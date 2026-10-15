@@ -76,7 +76,8 @@ public class MStyleTest extends AbstractTestCase {
 	public void testReferenceVariableWithoutForeignKeyValue() {
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		MStyle style = createStyle("background-color: @C_BPartner_ID.Name@");
-		assertEquals("background-color: ", style.buildStyle("", new DefaultEvaluatee(order)));
+		// unresolved variable is kept, the browser ignores the invalid declaration
+		assertEquals("background-color: @C_BPartner_ID.Name@", style.buildStyle("", new DefaultEvaluatee(order)));
 	}
 
 	@Test
@@ -97,6 +98,13 @@ public class MStyleTest extends AbstractTestCase {
 		String text = "background-image: url(img@2x.png)";
 		MStyle style = createStyle(text);
 		assertEquals(text, style.buildStyle("", new DefaultEvaluatee()));
+	}
+
+	@Test
+	public void testLiteralAtPairKeptWithValidVariable() {
+		Evaluatee evaluatee = name -> "Color".equals(name) ? "#FF0000" : "";
+		MStyle style = createStyle("content: 'a@b c@d'; color: @Color@");
+		assertEquals("content: 'a@b c@d'; color: #FF0000", style.buildStyle("", evaluatee));
 	}
 
 	@Test
