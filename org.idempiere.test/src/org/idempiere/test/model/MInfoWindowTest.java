@@ -253,6 +253,69 @@ public class MInfoWindowTest extends AbstractTestCase {
 	}
 
 	/**
+	 * IDEMPIERE-7074 The complex info window is pinned on the columns whose code can consume the contact or
+	 * the location of the info selection, every other column follows the table default and shows one row per
+	 * business partner.
+	 */
+	@Test
+	public void testBusinessPartnerColumnInfoWindow() {
+		// CalloutOrder and CalloutInvoice read C_BPartner_Location_ID and AD_User_ID from the selection
+		assertColumnInfoWindow("C_Order", "C_BPartner_ID", DictionaryIDs.AD_InfoWindow.BUSINESS_PARTNER_INFO.id);
+		assertColumnInfoWindow("C_Order", "Bill_BPartner_ID", DictionaryIDs.AD_InfoWindow.BUSINESS_PARTNER_INFO.id);
+		assertColumnInfoWindow("C_Invoice", "C_BPartner_ID", DictionaryIDs.AD_InfoWindow.BUSINESS_PARTNER_INFO.id);
+		assertColumnInfoWindow("C_InvoiceBatchLine", "C_BPartner_ID", DictionaryIDs.AD_InfoWindow.BUSINESS_PARTNER_INFO.id);
+
+		// CalloutInOut derives the contact and the location from the partner itself
+		assertColumnInfoWindow("M_InOut", "C_BPartner_ID", 0);
+		// the contact is an own field, restricted to the partner by the rule "AD_User BPartner"
+		assertColumnInfoWindow("R_Request", "C_BPartner_ID", 0);
+		// no companion field is used at all
+		assertColumnInfoWindow("C_Payment", "C_BPartner_ID", 0);
+
+		// the criterion of the migration over the whole dictionary - the samples above are only a part of it
+		assertEquals(0, countBPColumns("x.EntityType = 'D' AND x.Callout IN (" + BP_UNCHECKED_CALLOUTS
+				+ ") AND x.AD_InfoWindow_ID IS NOT NULL"),
+				"a core column without a callout that reads the selection must follow the table default");
+		assertEquals(0, countBPColumns("x.EntityType <> 'D' AND x.AD_InfoWindow_ID IS NULL"),
+				"the columns of modules and customizations must keep the complex window, their callouts and"
+				+ " scripts are not part of the dictionary");
+	}
+
+	/**
+	 * IDEMPIERE-7074 the empty callout and the core callouts verified not to read the contact or the
+	 * location of the info selection
+	 */
+	private static final String BP_UNCHECKED_CALLOUTS = "'','org.compiere.model.CalloutInOut.bpartner',"
+			+ "'org.compiere.model.CalloutGLJournal.account'";
+
+	/**
+	 * @param criterion additional condition on the columns of a Business Partner reference
+	 * @return number of Business Partner columns of the dictionary matching the criterion
+	 */
+	private int countBPColumns(String criterion) {
+		return DB.getSQLValueEx(getTrxName(),
+				"SELECT COUNT(*) FROM (SELECT c.EntityType, COALESCE(c.Callout, '') AS Callout, c.AD_InfoWindow_ID"
+				+ " FROM AD_Column c JOIN AD_Table t ON t.AD_Table_ID = c.AD_Table_ID WHERE c.IsActive = 'Y' AND ("
+				+ " c.ColumnName IN ('C_BPartner_ID','Bill_BPartner_ID') OR EXISTS (SELECT 1 FROM AD_Ref_Table rt"
+				+ " JOIN AD_Table rt2 ON rt2.AD_Table_ID = rt.AD_Table_ID"
+				+ " WHERE rt.AD_Reference_ID = c.AD_Reference_Value_ID AND rt2.TableName = 'C_BPartner'))) x WHERE "
+				+ criterion);
+	}
+
+	/**
+	 * @param tableName table of the column
+	 * @param columnName name of the column
+	 * @param expectedAD_InfoWindow_ID configured info window, 0 if the column follows the table default
+	 */
+	private void assertColumnInfoWindow(String tableName, String columnName, int expectedAD_InfoWindow_ID) {
+		int actual = DB.getSQLValueEx(getTrxName(),
+				"SELECT COALESCE(c.AD_InfoWindow_ID, 0) FROM AD_Column c JOIN AD_Table t ON t.AD_Table_ID = c.AD_Table_ID"
+				+ " WHERE t.TableName = ? AND c.ColumnName = ?", tableName, columnName);
+		assertEquals(expectedAD_InfoWindow_ID, actual,
+				"unexpected info window of " + tableName + "." + columnName);
+	}
+
+	/**
 	 * @param AD_Field_ID field
 	 * @return the effective info window of the field, 0 if none is configured
 	 */
