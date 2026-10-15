@@ -26,7 +26,7 @@ The generator arguments are the ones of the command line of the model generator,
   folder packageName tableEntityType tableName [columnEntityType]
 or the named form
   --folder=DIR --package=PKG --tables=NAMES [--table-entity-type=ET] [--column-entity-type=ET] [--output=interface,class,accessor]
-  [--suffix=XYZ] [--columns=A,B] [--template=NAME] [--check] [--write-launch=FILE] ...
+  [--suffix=XYZ] [--columns=A,B] [--template=NAME] [--check] ...
 Call it with --help to see the full description of the generator arguments.
 Relative folders are relative to the folder you call the script from.
 
@@ -141,7 +141,7 @@ else
     awk '
         /^usage:/ { usage = 1 }
         usage { print; if ($0 ~ /^  Exit code/) usage = 0; next }
-        /^(REFUSED|WARNING|ERROR|No data found|differs|missing|check:|launch written|result:|Launch template|Generate Model Template|Unknown argument|Missing:|Positional form|--[a-z=-]+ (writes|needs|may|takes))/ { print; next }
+        /^(REFUSED|WARNING|ERROR|No data found|differs|missing|check:|result:|Generate Model Template|Unknown argument|Missing:|Positional form|--[a-z=-]+ (writes|needs|may|takes))/ { print; next }
         /\.java - / { print }
     ' "$LOG"
     if ! grep -q "^result:" "$LOG" && [ "$RC" -ne 0 ]; then

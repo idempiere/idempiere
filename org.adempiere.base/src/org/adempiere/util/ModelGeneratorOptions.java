@@ -34,7 +34,7 @@ import java.util.function.Predicate;
  * <ul>
  * <li>positional, unchanged: {@code folder packageName tableEntityType tableName [columnEntityType]}</li>
  * <li>named: {@code --folder= --package= --tables= --table-entity-type= --column-entity-type=
- * --output=interface,class,accessor --suffix= --columns= --template= --check --write-launch= --launch-template=
+ * --output=interface,class,accessor --suffix= --columns= --template= --check
  * --allow-all-columns}; {@code --help} prints the usage</li>
  * </ul>
  * The class has no database access, so it can be tested on its own; the caller supplies what needs the
@@ -56,8 +56,6 @@ public class ModelGeneratorOptions {
 	private boolean generateAccessor = false;
 	private String suffix;
 	private String columns;
-	private String writeLaunch;
-	private String launchTemplate;
 	private String template;
 	private boolean check = false;
 	private boolean allowAllColumns = false;
@@ -115,15 +113,11 @@ public class ModelGeneratorOptions {
 			case "output": o.setOutput(required(key, value)); break;
 			case "suffix": o.suffix = required(key, value); break;
 			case "columns": o.columns = required(key, value); break;
-			case "write-launch": o.writeLaunch = required(key, value); break;
-			case "launch-template": o.launchTemplate = required(key, value); break;
 			case "check": o.check = flag(key, value); break;
 			case "allow-all-columns": o.allowAllColumns = flag(key, value); break;
 			default: throw new IllegalArgumentException("Unknown argument: --" + key);
 			}
 		}
-		if (o.check && o.writeLaunch != null)
-			throw new IllegalArgumentException("--check writes nothing and cannot be combined with --write-launch");
 		if (o.suffix != null && o.generateClass)
 			throw new IllegalArgumentException("--suffix needs --output without class: the X_ class always implements the unsuffixed I_ interface");
 		if (o.columns != null && o.generateClass)
@@ -273,7 +267,7 @@ public class ModelGeneratorOptions {
 		return "usage: ModelGenerator folder packageName tableEntityType tableName [columnEntityType]\n"
 			+ "   or: ModelGenerator --folder=DIR --package=PKG --tables=NAMES [--table-entity-type=ET,..] [--column-entity-type=ET,..]\n"
 			+ "         [--output=interface,class,accessor] [--suffix=XYZ] [--columns=A,B] [--template=NAME] [--allow-all-columns]\n"
-			+ "         [--launch-template=FILE] [--write-launch=FILE | --check]      (or --help)\n"
+			+ "         [--check]      (or --help)\n"
 			+ "  Named options are --key=value; \"--key value\" is not supported. Files go to <folder>/<package with dots as folders>/.\n"
 			+ "  --folder              source folder, must exist\n"
 			+ "  --package             Java package of the generated files\n"
@@ -286,9 +280,7 @@ public class ModelGeneratorOptions {
 			+ "  --suffix              owner of the columns: interface I_C_Order_XYZ, accessor C_Order_XYZ; not with class\n"
 			+ "  --template            read the values not given from the Generate Model Template with this name\n"
 			+ "  --check               generate into a temporary folder and compare with --folder; writes nothing, fails when no table matches, needs the same\n"
-			+ "                        arguments as the generate call, ignores files that exist only in --folder; not with --write-launch\n"
-			+ "  --write-launch        after generating, write an Eclipse launch file that repeats this call\n"
-			+ "  --launch-template     template for --write-launch (default: org.adempiere.base-feature/model.generator.launch)\n"
+			+ "                        arguments as the generate call, ignores files that exist only in --folder\n"
 			+ "  --allow-all-columns   allow a system table entity type without a column entity type (vanilla seed only)\n"
 			+ "  Safety rules S1, S2, S4 REFUSE a named call; the positional form only warns.\n"
 			+ "  Exit code 0 = ok, 1 = refused, error or --check difference; the last output line is result: ok|refused|error|differs";
@@ -305,32 +297,6 @@ public class ModelGeneratorOptions {
 	public String getSuffix() { return suffix; }
 	/** @return comma separated column names, or null for all columns of the column entity types */
 	public String getColumns() { return columns; }
-
-	public String getWriteLaunch() { return writeLaunch; }
-	public String getLaunchTemplate() { return launchTemplate; }
-
-	/**
-	 * @param folderAsWritten the folder as it should appear, for example with ${workspace_loc:...}
-	 * @return this call in the named form, without --check, --write-launch and --launch-template
-	 */
-	public List<String> toNamedArgs(String folderAsWritten) {
-		List<String> a = new ArrayList<>();
-		if (template != null) a.add("--template=" + template);
-		a.add("--folder=" + folderAsWritten);
-		a.add("--package=" + packageName);
-		a.add("--tables=" + tableName);
-		if (!isEmpty(tableEntityType)) a.add("--table-entity-type=" + tableEntityType);
-		if (!isEmpty(columnEntityType)) a.add("--column-entity-type=" + columnEntityType);
-		if (columns != null) a.add("--columns=" + columns);
-		List<String> out = new ArrayList<>();
-		if (generateInterface) out.add(OUTPUT_INTERFACE);
-		if (generateClass) out.add(OUTPUT_CLASS);
-		if (generateAccessor) out.add(OUTPUT_ACCESSOR);
-		a.add("--output=" + String.join(",", out));
-		if (suffix != null) a.add("--suffix=" + suffix);
-		if (allowAllColumns) a.add("--allow-all-columns");
-		return a;
-	}
 	public String getTemplate() { return template; }
 	public boolean isCheck() { return check; }
 

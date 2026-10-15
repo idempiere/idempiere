@@ -33,7 +33,6 @@ import javax.swing.JFrame;
 
 import org.adempiere.util.ModelClassGenerator;
 import org.adempiere.util.ModelGeneratorDialog;
-import org.adempiere.util.ModelGeneratorLaunch;
 import org.adempiere.util.ModelGeneratorOptions;
 import org.adempiere.util.ModelInterfaceGenerator;
 import org.compiere.Adempiere;
@@ -171,8 +170,6 @@ public class ModelGeneratorApplication implements IApplication {
 				System.out.println("REFUSED " + e.getMessage());
 				return Result.REFUSED;
 			}
-			if (options.getWriteLaunch() != null)
-				return writeLaunch(options) ? Result.OK : Result.ERROR;
 			return Result.OK;
 		}
 		try {
@@ -181,25 +178,6 @@ public class ModelGeneratorApplication implements IApplication {
 			System.out.println("REFUSED " + e.getMessage());
 			return Result.REFUSED;
 		}
-	}
-
-	/**
-	 * Write an Eclipse launch file that repeats this call, from the shipped model.generator.launch.
-	 * @return false when no template was found
-	 */
-	private static boolean writeLaunch(ModelGeneratorOptions options) throws IOException {
-		Path template = options.getLaunchTemplate() != null ? Paths.get(options.getLaunchTemplate())
-				: ModelGeneratorLaunch.findTemplate(options.getFolder());
-		if (template == null || !Files.isRegularFile(template)) {
-			System.out.println("Launch template not found: give --launch-template=<path to " + ModelGeneratorLaunch.TEMPLATE + ">");
-			return false;
-		}
-		String xml = ModelGeneratorLaunch.create(Files.readString(template, StandardCharsets.UTF_8),
-				options.toNamedArgs(ModelGeneratorLaunch.workspacePath(options.getFolder())));
-		Path target = Paths.get(options.getWriteLaunch());
-		Files.writeString(target, xml, StandardCharsets.UTF_8);
-		System.out.println("launch written: " + target.toAbsolutePath());
-		return true;
 	}
 
 	/**

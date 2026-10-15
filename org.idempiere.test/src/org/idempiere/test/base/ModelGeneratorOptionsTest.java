@@ -27,16 +27,11 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Predicate;
 
-import org.adempiere.util.ModelGeneratorLaunch;
 import org.adempiere.util.ModelGeneratorOptions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Command line options of the model generator. No database needed.
@@ -88,7 +83,6 @@ public class ModelGeneratorOptionsTest {
 		assertTrue(o.isGenerateAccessor());
 		assertTrue(o.isGenerateInterface());
 		assertFalse(o.isGenerateClass());
-		assertTrue(o.toNamedArgs("F").contains("--output=interface,accessor"));
 		assertFalse(ModelGeneratorOptions.parse(new String[] {"--folder=/src", "--package=p", "--tables=C_Order"}).isGenerateAccessor(),
 				"not in the default output");
 		assertThrows(IllegalArgumentException.class, () -> ModelGeneratorOptions.parse(new String[] {"--folder=/src", "--package=p",
@@ -211,25 +205,6 @@ public class ModelGeneratorOptionsTest {
 	}
 
 	@Test
-	public void testLaunchKeepsPlatformArgumentsAndReplacesGeneratorArguments() {
-		String template = "<launchConfiguration>\n<stringAttribute key=\"org.eclipse.jdt.launching.PROGRAM_ARGUMENTS\" "
-				+ "value=\"-os ${target.os} -consoleLog -noSplash --folder=/old\"/>\n</launchConfiguration>";
-		String xml = ModelGeneratorLaunch.create(template, List.of("--folder=${workspace_loc:p}/src", "--tables=A&B", "--package=x y"));
-		assertTrue(xml.contains("value=\"-os ${target.os} -consoleLog -noSplash --folder=${workspace_loc:p}/src --tables=A&amp;B &quot;--package=x y&quot;\""), xml);
-		assertFalse(xml.contains("/old"), "an earlier generator call is replaced");
-	}
-
-	@Test
-	public void testLaunchDropsPositionalLeftovers() {
-		String template = "<launchConfiguration>\n<stringAttribute key=\"org.eclipse.jdt.launching.PROGRAM_ARGUMENTS\" "
-				+ "value=\"-os ${target.os} -ws ${target.ws} -consoleLog -noSplash /tmp/x com.xyz.model D C_Order --folder=/old\"/>\n</launchConfiguration>";
-		String xml = ModelGeneratorLaunch.create(template, List.of("--folder=F", "--tables=C_Order"));
-		assertTrue(xml.contains("value=\"-os ${target.os} -ws ${target.ws} -consoleLog -noSplash --folder=F --tables=C_Order\""), xml);
-		assertFalse(xml.contains("/tmp/x") || xml.contains("com.xyz.model") || xml.contains("C_Order --"), "positional leftovers are dropped");
-		assertFalse(xml.contains("/old"));
-	}
-
-	@Test
 	public void testHelp() {
 		assertTrue(ModelGeneratorOptions.isHelp(new String[] {"--help"}));
 		assertTrue(ModelGeneratorOptions.isHelp(new String[] {"--folder=/src", "--help"}));
@@ -237,49 +212,6 @@ public class ModelGeneratorOptionsTest {
 		assertFalse(ModelGeneratorOptions.isHelp(new String[] {"/src", "p", "D", "C_Order"}));
 		assertFalse(ModelGeneratorOptions.isHelp(null));
 		assertTrue(ModelGeneratorOptions.usage().contains("--folder") && ModelGeneratorOptions.usage().contains("--check"));
-	}
-
-	@Test
-	public void testCheckRefusedWithWriteLaunch() {
-		assertThrows(IllegalArgumentException.class, () -> ModelGeneratorOptions.parse(new String[] {"--folder=/src", "--package=p",
-				"--tables=C_Order", "--output=interface", "--check", "--write-launch=x.launch"}));
-	}
-
-	@Test
-	public void testWorkspacePath(@TempDir Path dir) throws IOException {
-		Path project = dir.resolve("org.idempiere.XYZ");
-		Files.createDirectories(project.resolve("src"));
-		Files.writeString(project.resolve(".project"), "<projectDescription><name>org.idempiere.XYZ</name></projectDescription>");
-		assertEquals("${workspace_loc:org.idempiere.XYZ}/src", ModelGeneratorLaunch.workspacePath(project.resolve("src").toString()));
-		assertEquals(dir.toString(), ModelGeneratorLaunch.workspacePath(dir.toString()), "outside a project: unchanged");
-	}
-
-	@Test
-	public void testNamedArgsOfAPositionalCall() {
-		ModelGeneratorOptions o = ModelGeneratorOptions.parse(new String[] {"/src", "com.xyz.model", "XYZ", "XYZ_%"});
-		assertEquals(List.of("--folder=F", "--package=com.xyz.model", "--tables=XYZ_%", "--table-entity-type=XYZ",
-				"--output=interface,class"), o.toNamedArgs("F"));
-		o = ModelGeneratorOptions.parse(new String[] {"--folder=/s", "--package=p", "--tables=C_Order", "--table-entity-type=D",
-				"--column-entity-type=XYZ", "--columns=A,B", "--output=accessor", "--suffix=XYZ", "--write-launch=x.launch"});
-		assertEquals(List.of("--folder=F", "--package=p", "--tables=C_Order", "--table-entity-type=D", "--column-entity-type=XYZ",
-				"--columns=A,B", "--output=accessor", "--suffix=XYZ"), o.toNamedArgs("F"), "--write-launch is not repeated");
-	}
-
-	@Test
-	public void testLaunchKeepsQuotedPlatformArgument() {
-		String template = "<launchConfiguration>\n<stringAttribute key=\"org.eclipse.jdt.launching.PROGRAM_ARGUMENTS\" "
-				+ "value=\"-os ${target.os} -data &quot;/workspace/my project&quot; -consoleLog -noSplash /tmp/x --folder=/old\"/>\n</launchConfiguration>";
-		String xml = ModelGeneratorLaunch.create(template, List.of("--folder=/src", "--package=x y"));
-		assertTrue(xml.contains("-data &quot;/workspace/my project&quot; -consoleLog -noSplash --folder=/src &quot;--package=x y&quot;"), xml);
-		assertFalse(xml.contains("/tmp/x"), "positional leftover is dropped");
-	}
-
-	@Test
-	public void testLaunchDropsQuotedGeneratorArgumentOfAnEarlierCall() {
-		String template = "<launchConfiguration>\n<stringAttribute key=\"org.eclipse.jdt.launching.PROGRAM_ARGUMENTS\" "
-				+ "value=\"-consoleLog -noSplash --folder=/old &quot;--package=x y&quot; --suffix=OLD\"/>\n</launchConfiguration>";
-		String xml = ModelGeneratorLaunch.create(template, List.of("--folder=/new"));
-		assertTrue(xml.contains("value=\"-consoleLog -noSplash --folder=/new\""), xml);
 	}
 
 	@Test
