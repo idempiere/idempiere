@@ -151,7 +151,7 @@ public class MStyle extends X_AD_Style implements ImmutablePOSupport {
 	/**
 	 * Build CSS style text from lines
 	 * @param defaultTheme
-	 * @param evaluatee evaluatee for display logic
+	 * @param evaluatee evaluatee for display logic and for the substitution of @variable@ in inline style text (use '@@' for a literal '@')
 	 * @param inline true for inline (for style="..." use), false for css (for class="..." use) 
 	 * @return CSS style text
 	 */
@@ -179,6 +179,14 @@ public class MStyle extends X_AD_Style implements ImmutablePOSupport {
 					styleBuilder.append("; ");
 			} else if (styleBuilder.length() > 0) {
 				styleBuilder.append("\n");
+			}
+			// substitute @variable@ (inline style only, css blocks may legitimately contain @media, @import ...)
+			if (inline && evaluatee != null && styleText.indexOf(Evaluator.VARIABLE_START_END_MARKER) >= 0)
+			{
+				String parsed = Env.parseVariable(styleText, evaluatee, false, false);
+				// parse failure (e.g. a single literal @ in existing style text) returns empty, keep the original text
+				if (!Util.isEmpty(parsed))
+					styleText = parsed;
 			}
 			styleBuilder.append(styleText);
 		}
