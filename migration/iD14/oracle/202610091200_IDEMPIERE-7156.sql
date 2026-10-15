@@ -13,6 +13,10 @@ ALTER TABLE AD_Process_Para MODIFY DateRangeOption VARCHAR2(2 CHAR) DEFAULT 'D'
 INSERT INTO AD_Ref_List (AD_Ref_List_ID,Name,AD_Reference_ID,Value,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,AD_Ref_List_UU) VALUES (800225,'Range Picker - Shortcuts - with Text editor',200228,'ST',0,0,'Y',TO_TIMESTAMP('2025-05-12 14:58:31','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-05-12 14:58:31','YYYY-MM-DD HH24:MI:SS'),100,'D','817931f1-5f50-5e51-bcc3-6a300dadc08c')
 ;
 
+-- May 12, 2025, 3:54:34 PM CEST
+INSERT INTO AD_Ref_List (AD_Ref_List_ID,Name,AD_Reference_ID,Value,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,AD_Ref_List_UU) VALUES (800226,'Shortcuts',200217,'10',0,0,'Y',TO_TIMESTAMP('2025-05-12 15:54:33','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-05-12 15:54:33','YYYY-MM-DD HH24:MI:SS'),100,'D','e57de8c0-f460-56ec-8856-1fc1f6e71c53')
+;
+
 -- May 13, 2025, 9:43:57 AM CEST
 INSERT INTO AD_Table (AD_Table_ID,Name,TableName,LoadSeq,AccessLevel,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,IsSecurityEnabled,IsDeleteable,IsHighVolume,IsView,EntityType,ImportTable,IsChangeLog,ReplicationType,CopyColumnsFromTable,IsCentrallyMaintained,AD_Table_UU,Processing,DatabaseViewDrop,CopyComponentsFromView,CreateWindowFromTable,IsShowInDrillOptions,IsPartition,CreatePartition) VALUES (800173,'Date Range','AD_DateRange',0,'6',0,0,'Y',TO_TIMESTAMP('2025-05-13 09:43:57','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-05-13 09:43:57','YYYY-MM-DD HH24:MI:SS'),100,'N','Y','N','N','D','N','Y','L','N','Y','c9b39c1c-8874-5737-91bc-a4066ec65d81','N','N','N','N','N','N','N')
 ;
@@ -125,7 +129,7 @@ UPDATE AD_Column SET IsAllowCopy='N', FKConstraintName='UpdatedBy_ADDateRange', 
 ;
 
 -- May 13, 2025, 10:30:25 AM CEST
-CREATE TABLE AD_DateRange (AD_Client_ID NUMBER(10) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, AD_DateRange_ID NUMBER(10) NOT NULL, AD_DateRange_UU VARCHAR2(36 CHAR) DEFAULT NULL , Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, DateFrom DATE DEFAULT NULL , DateTo DATE DEFAULT NULL , Description VARCHAR2(255 CHAR) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, Name VARCHAR2(60 CHAR) NOT NULL, RangeType CHAR(1) NOT NULL, TimeScope NUMBER(10) DEFAULT NULL , TimeUnit CHAR(1) DEFAULT NULL , Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, AD_DateRangeGroup_ID NUMBER(10) DEFAULT NULL, RangeComparisonType VARCHAR2(2 CHAR) DEFAULT 'S' NOT NULL, TimeOffset NUMBER(10) DEFAULT 0, SeqNo NUMBER(10) DEFAULT NULL, CONSTRAINT AD_DateRange_Key PRIMARY KEY (AD_DateRange_ID), CONSTRAINT AD_DateRange_UU_idx UNIQUE (AD_DateRange_UU))
+CREATE TABLE AD_DateRange (AD_Client_ID NUMBER(10) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, AD_DateRange_ID NUMBER(10) NOT NULL, AD_DateRange_UU VARCHAR2/*UUID*/(36) NOT NULL, Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, DateFrom DATE DEFAULT NULL , DateTo DATE DEFAULT NULL , Description VARCHAR2(255 CHAR) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, Name VARCHAR2(60 CHAR) NOT NULL, RangeType CHAR(1) NOT NULL, TimeScope NUMBER(10) DEFAULT NULL , TimeUnit CHAR(1) DEFAULT NULL , Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, AD_DateRangeGroup_ID NUMBER(10) DEFAULT NULL, RangeComparisonType VARCHAR2(2 CHAR) DEFAULT 'S' NOT NULL, TimeOffset NUMBER(10) DEFAULT 0, SeqNo NUMBER(10) DEFAULT NULL, CONSTRAINT AD_DateRange_Key PRIMARY KEY (AD_DateRange_ID), CONSTRAINT AD_DateRange_UU_idx UNIQUE (AD_DateRange_UU))
 ;
 
 -- May 13, 2025, 10:30:25 AM CEST
@@ -255,15 +259,7 @@ INSERT INTO AD_Sequence (Name,CurrentNext,IsAudited,StartNewYear,Description,IsA
 ;
 
 -- May 13, 2025, 10:37:11 AM CEST
-CREATE SEQUENCE AD_DATERANGEGROUP_SQ INCREMENT BY 1 MINVALUE 1000000 MAXVALUE 2147483647 START WITH 1000000
-;
-
--- May 13, 2025, 10:37:11 AM CEST
 INSERT INTO AD_Sequence (Name,CurrentNext,IsAudited,StartNewYear,Description,IsActive,IsTableID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,AD_Sequence_ID,IsAutoSequence,StartNo,IncrementNo,CurrentNextSys,AD_Sequence_UU) VALUES ('AD_DateRange',1000000,'N','N','Table AD_DateRange','Y','Y',0,0,TO_TIMESTAMP('2025-05-13 10:37:10','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-05-13 10:37:10','YYYY-MM-DD HH24:MI:SS'),100,800227,'Y',1000000,1,200015,'0e49b37b-b0c3-5c2b-96a1-1cb708fffb7c')
-;
-
--- May 13, 2025, 10:37:11 AM CEST
-CREATE SEQUENCE AD_DATERANGE_SQ INCREMENT BY 1 MINVALUE 1000000 MAXVALUE 2147483647 START WITH 1000000
 ;
 
 -- May 13, 2025, 10:37:37 AM CEST
@@ -338,7 +334,7 @@ UPDATE AD_Column SET IsAllowCopy='N', FKConstraintName='UpdatedBy_ADDateRangeGro
 ;
 
 -- May 13, 2025, 10:38:42 AM CEST
-CREATE TABLE AD_DateRangeGroup (AD_Client_ID NUMBER(10) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, AD_DateRangeGroup_ID NUMBER(10) NOT NULL, AD_DateRangeGroup_UU VARCHAR2(36 CHAR) DEFAULT NULL , Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, Description VARCHAR2(255 CHAR) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, Name VARCHAR2(60 CHAR) NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT AD_DateRangeGroup_Key PRIMARY KEY (AD_DateRangeGroup_ID), CONSTRAINT AD_DateRangeGroup_UU_idx UNIQUE (AD_DateRangeGroup_UU))
+CREATE TABLE AD_DateRangeGroup (AD_Client_ID NUMBER(10) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, AD_DateRangeGroup_ID NUMBER(10) NOT NULL, AD_DateRangeGroup_UU VARCHAR2/*UUID*/(36) NOT NULL, Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, Description VARCHAR2(255 CHAR) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, Name VARCHAR2(60 CHAR) NOT NULL, Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT AD_DateRangeGroup_Key PRIMARY KEY (AD_DateRangeGroup_ID), CONSTRAINT AD_DateRangeGroup_UU_idx UNIQUE (AD_DateRangeGroup_UU))
 ;
 
 -- May 13, 2025, 10:38:42 AM CEST
@@ -418,10 +414,6 @@ INSERT INTO AD_Table (AD_Table_ID,Name,Description,TableName,AccessLevel,AD_Clie
 
 -- May 13, 2025, 10:51:16 AM CEST
 INSERT INTO AD_Sequence (Name,CurrentNext,IsAudited,StartNewYear,Description,IsActive,IsTableID,AD_Client_ID,AD_Org_ID,Created,CreatedBy,Updated,UpdatedBy,AD_Sequence_ID,IsAutoSequence,StartNo,IncrementNo,CurrentNextSys,AD_Sequence_UU) VALUES ('AD_DateRangeGroup_Trl',1000000,'N','N','Table AD_DateRangeGroup_Trl','Y','Y',0,0,TO_TIMESTAMP('2025-05-13 10:51:16','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-05-13 10:51:16','YYYY-MM-DD HH24:MI:SS'),100,800225,'Y',1000000,1,200000,'a8c2e822-4c92-55ce-bf0d-e2648f895e7c')
-;
-
--- May 13, 2025, 10:51:16 AM CEST
-CREATE SEQUENCE AD_DATERANGEGROUP_TRL_SQ INCREMENT BY 1 MINVALUE 1000000 MAXVALUE 2147483647 START WITH 1000000
 ;
 
 -- May 13, 2025, 10:51:16 AM CEST
@@ -520,7 +512,7 @@ UPDATE AD_Column SET IsAllowCopy='N', FKConstraintName='UpdatedBy_ADDateRangeGro
 ;
 
 -- May 13, 2025, 10:52:46 AM CEST
-CREATE TABLE AD_DateRangeGroup_Trl (AD_Client_ID NUMBER(10) NOT NULL, AD_Language VARCHAR2(6 CHAR) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, AD_DateRangeGroup_ID NUMBER(10) NOT NULL, AD_DateRangeGroup_Trl_UU VARCHAR2(36 CHAR) DEFAULT NULL , Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) DEFAULT 'N' CHECK (IsTranslated IN ('Y','N')) NOT NULL, Name VARCHAR2(60 CHAR) DEFAULT NULL , Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, Description VARCHAR2(255 CHAR) DEFAULT NULL, CONSTRAINT AD_DateRangeGroup_Trl_UU_idx UNIQUE (AD_DateRangeGroup_Trl_UU))
+CREATE TABLE AD_DateRangeGroup_Trl (AD_Client_ID NUMBER(10) NOT NULL, AD_Language VARCHAR2(6 CHAR) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, AD_DateRangeGroup_ID NUMBER(10) NOT NULL, AD_DateRangeGroup_Trl_UU VARCHAR2/*UUID*/(36) NOT NULL, Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) DEFAULT 'N' CHECK (IsTranslated IN ('Y','N')) NOT NULL, Name VARCHAR2(60 CHAR) DEFAULT NULL , Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, Description VARCHAR2(255 CHAR) DEFAULT NULL, CONSTRAINT AD_DateRangeGroup_Trl_UU_idx UNIQUE (AD_DateRangeGroup_Trl_UU))
 ;
 
 -- May 13, 2025, 10:52:46 AM CEST
@@ -677,10 +669,6 @@ INSERT INTO AD_Sequence (Name,CurrentNext,IsAudited,StartNewYear,Description,IsA
 ;
 
 -- May 13, 2025, 10:56:32 AM CEST
-CREATE SEQUENCE AD_DATERANGE_TRL_SQ INCREMENT BY 1 MINVALUE 1000000 MAXVALUE 2147483647 START WITH 1000000
-;
-
--- May 13, 2025, 10:56:32 AM CEST
 INSERT INTO AD_Column (AD_Column_ID,Version,Name,Description,Help,AD_Table_ID,ColumnName,DefaultValue,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,ReadOnlyLogic,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (803004,0.0,'Tenant','Tenant for this installation.','A Tenant is a company or a legal entity. You cannot share data between Tenants.',800176,'AD_Client_ID','@#AD_Client_ID@',10,'N','N','Y','N','N','N',30,0,0,'Y',TO_TIMESTAMP('2025-05-13 10:56:32','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-05-13 10:56:32','YYYY-MM-DD HH24:MI:SS'),100,102,'N','N','1=1','D','N','22cd5d0a-7db2-5412-882f-507772230b64','N')
 ;
 
@@ -784,7 +772,7 @@ UPDATE AD_Column SET IsAllowCopy='N', FKConstraintName='UpdatedBy_ADDateRangeTrl
 ;
 
 -- May 13, 2025, 10:58:00 AM CEST
-CREATE TABLE AD_DateRange_Trl (AD_Client_ID NUMBER(10) NOT NULL, AD_Language VARCHAR2(6 CHAR) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, AD_DateRange_ID NUMBER(10) NOT NULL, AD_DateRange_Trl_UU VARCHAR2(36 CHAR) DEFAULT NULL , Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, Description VARCHAR2(255 CHAR) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) DEFAULT 'N' CHECK (IsTranslated IN ('Y','N')) NOT NULL, Name VARCHAR2(60 CHAR) DEFAULT NULL , Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT AD_DateRange_Trl_UU_idx UNIQUE (AD_DateRange_Trl_UU))
+CREATE TABLE AD_DateRange_Trl (AD_Client_ID NUMBER(10) NOT NULL, AD_Language VARCHAR2(6 CHAR) NOT NULL, AD_Org_ID NUMBER(10) NOT NULL, AD_DateRange_ID NUMBER(10) NOT NULL, AD_DateRange_Trl_UU VARCHAR2/*UUID*/(36) NOT NULL, Created DATE NOT NULL, CreatedBy NUMBER(10) NOT NULL, Description VARCHAR2(255 CHAR) DEFAULT NULL , IsActive CHAR(1) DEFAULT 'Y' CHECK (IsActive IN ('Y','N')) NOT NULL, IsTranslated CHAR(1) DEFAULT 'N' CHECK (IsTranslated IN ('Y','N')) NOT NULL, Name VARCHAR2(60 CHAR) DEFAULT NULL , Updated DATE NOT NULL, UpdatedBy NUMBER(10) NOT NULL, CONSTRAINT AD_DateRange_Trl_UU_idx UNIQUE (AD_DateRange_Trl_UU))
 ;
 
 -- May 13, 2025, 10:58:00 AM CEST
@@ -967,10 +955,6 @@ UPDATE AD_Column SET IsUpdateable='N',Updated=TO_TIMESTAMP('2025-05-13 16:16:50'
 
 -- May 13, 2025, 4:17:08 PM CEST
 UPDATE AD_Column SET MandatoryLogic='@RangeType@ = R',Updated=TO_TIMESTAMP('2025-05-13 16:17:08','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=803019
-;
-
--- May 12, 2025, 3:54:34 PM CEST
-INSERT INTO AD_Ref_List (AD_Ref_List_ID,Name,AD_Reference_ID,Value,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,EntityType,AD_Ref_List_UU) VALUES (800226,'Shortcuts',200217,'10',0,0,'Y',TO_TIMESTAMP('2025-05-12 15:54:33','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-05-12 15:54:33','YYYY-MM-DD HH24:MI:SS'),100,'D','e57de8c0-f460-56ec-8856-1fc1f6e71c53')
 ;
 
 -- May 14, 2025, 8:46:30 AM CEST
