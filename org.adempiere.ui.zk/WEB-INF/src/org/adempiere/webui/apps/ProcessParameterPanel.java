@@ -436,6 +436,17 @@ public class ProcessParameterPanel extends Panel implements
 	} // initDialog
 
 	/**
+	 * Is the date range parameter shown as text with a range picker (options "Text and Range Picker" and "Presets - with Text editor")
+	 * @param mField
+	 * @return true if shown with {@link DateRangeEditor}
+	 */
+	private boolean isTextAndRangePicker(GridField mField) {
+		String option = mField.getDateRangeOption();
+		return MProcessPara.DATERANGEOPTION_TextAndRangePicker.equalsIgnoreCase(option)
+				|| MProcessPara.DATERANGEOPTION_RangePicker_Presets_WithTextEditor.equalsIgnoreCase(option);
+	}
+
+	/**
 	 * Create editor and adds it to {@link #m_wEditors}.
 	 * <br/>
 	 * For range type field, create the to field and add it to {@link #m_mFields2} and
@@ -540,10 +551,10 @@ public class ProcessParameterPanel extends Panel implements
 			row.appendChild(box);
 			if (((mField.getDisplayType() == DisplayType.Date) || (mField.getDisplayType() == DisplayType.DateTime)) 
 					&& ((mField2.getDisplayType() == DisplayType.Date) || (mField2.getDisplayType() == DisplayType.DateTime))) {
-				if(MProcessPara.DATERANGEOPTION_TextAndRangePicker.equalsIgnoreCase(mField.getDateRangeOption())) {
+				if(isTextAndRangePicker(mField)) {
 					editor.setVisible(false, true);
 					editor2.setVisible(false, true);
-					DateRangeEditor dateRangeEditor = new DateRangeEditor(editor, editor2);
+					DateRangeEditor dateRangeEditor = new DateRangeEditor(editor, editor2, mField.getDateRangeOption());
 					box.appendChild(dateRangeEditor);
 					dateRangeEditor.setVisible(mField.isDisplayed(true));
 					label.setVisible(dateRangeEditor.isVisible());
@@ -1311,7 +1322,7 @@ public class ProcessParameterPanel extends Panel implements
 			if (((mField.getDisplayType() == DisplayType.Date) || (mField.getDisplayType() == DisplayType.DateTime))
 					&& mField2 != null
 					&& ((mField2.getDisplayType() == DisplayType.Date) || (mField2.getDisplayType() == DisplayType.DateTime))
-					&& MProcessPara.DATERANGEOPTION_TextAndRangePicker.equalsIgnoreCase(mField.getDateRangeOption())) {
+					&& isTextAndRangePicker(mField)) {
 				DateRangeEditor dateRangeEditor = m_dateRangeEditors.get(i);
 				if(dateRangeEditor != null) {
 					dateRangeEditor.setVisible(editor.isVisible());
