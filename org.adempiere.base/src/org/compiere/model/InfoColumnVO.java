@@ -138,7 +138,7 @@ public class InfoColumnVO implements Serializable, Cloneable {
 		isMandatory = infoColumn.isMandatory();
 		isQueryCriteria = infoColumn.isQueryCriteria();
 		isQueryAfterChange = infoColumn.isQueryAfterChange();
-		isShowNegateButton = infoColumn.get_ValueAsBoolean("IsShowNegateButton");
+		isShowNegateButton = infoColumn.isShowNegateButton();
 		NameTrl = infoColumn.get_Translation("Name");
 		Name = infoColumn.getName();
 		AD_Reference_ID = infoColumn.getAD_Reference_ID();
