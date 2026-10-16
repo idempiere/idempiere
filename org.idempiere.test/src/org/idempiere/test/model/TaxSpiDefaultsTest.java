@@ -25,13 +25,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 import java.sql.Timestamp;
-import java.util.Dictionary;
-import java.util.Hashtable;
 import java.util.Properties;
+import java.util.function.Consumer;
 
+import org.adempiere.base.Core;
 import org.adempiere.base.DefaultTaxLookup;
 import org.adempiere.base.ITaxLookup;
 import org.compiere.model.CalloutInvoice;
@@ -45,26 +46,19 @@ import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MProduct;
-import org.compiere.model.MSysConfig;
 import org.compiere.process.DocAction;
-import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
-import org.idempiere.test.TestActivator;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.Isolated;
-import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.component.ComponentConstants;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 /**
  * IDEMPIERE-7146 - document type and payment rule passed to {@link ITaxLookup}.
  */
-@Isolated
 public class TaxSpiDefaultsTest extends AbstractTestCase {
-
-	private static final String LOOKUP_NAME = "TaxSpiDefaultsTest.RecordingTaxLookup";
 
 	/**
 	 * Default constructor
@@ -99,11 +93,29 @@ public class TaxSpiDefaultsTest extends AbstractTestCase {
 	}
 
 	/**
-	 * Order and invoice lines pass the header's target document type and payment rule to the tax lookup.
+	 * A lookup implementing only the document type and payment rule overload with drop ship location
+	 * is called by the overload without drop ship location, with -1 as drop ship location.
+	 */
+	@Test
+	public void testTaxLookupDocTypeOverloadWithoutDropShip() {
+		RecordingTaxLookup lookup = new RecordingTaxLookup();
+		Timestamp today = TimeUtil.getDay(null);
+		int locationId = DictionaryIDs.C_BPartner_Location.C_AND_W_STAMFORD.id;
+
+		lookup.get(Env.getCtx(), 0, DictionaryIDs.C_Charge.BANK.id, today, today,
+				DictionaryIDs.AD_Org.HQ.id, DictionaryIDs.M_Warehouse.HQ.id, locationId, locationId,
+				true, null, DictionaryIDs.C_DocType.STANDARD_ORDER.id, MOrder.PAYMENTRULE_Cash, getTrxName());
+		assertEquals(-1, lookup.dropshipLocationId, "Unexpected drop ship location");
+		assertEquals(DictionaryIDs.C_DocType.STANDARD_ORDER.id, lookup.docTypeId, "Unexpected document type");
+		assertEquals(MOrder.PAYMENTRULE_Cash, lookup.paymentRule, "Unexpected payment rule");
+	}
+
+	/**
+	 * Order and invoice lines pass the header's document type and payment rule to the tax lookup.
 	 */
 	@Test
 	public void testDocTypeAndPaymentRulePassedToTaxLookup() {
-		withRecordingTaxLookup(() -> {
+		withRecordingTaxLookup(lookup -> {
 			MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 			order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id));
 			order.setIsSOTrx(true);
@@ -115,11 +127,10 @@ public class TaxSpiDefaultsTest extends AbstractTestCase {
 
 			MOrderLine orderLine = new MOrderLine(order);
 			orderLine.setProduct(MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id));
-			RecordingTaxLookup.reset();
 			assertTrue(orderLine.setTax(), "No tax found for order line");
-			assertTrue(order.getC_DocTypeTarget_ID() > 0, "Order has no target document type");
-			assertEquals(order.getC_DocTypeTarget_ID(), RecordingTaxLookup.docTypeId, "Unexpected document type passed by order line");
-			assertEquals(MOrder.PAYMENTRULE_Cash, RecordingTaxLookup.paymentRule, "Unexpected payment rule passed by order line");
+			assertTrue(order.getDocTypeID() > 0, "Order has no document type");
+			assertEquals(order.getDocTypeID(), lookup.docTypeId, "Unexpected document type passed by order line");
+			assertEquals(MOrder.PAYMENTRULE_Cash, lookup.paymentRule, "Unexpected payment rule passed by order line");
 
 			MInvoice invoice = new MInvoice(Env.getCtx(), 0, getTrxName());
 			invoice.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id));
@@ -135,11 +146,11 @@ public class TaxSpiDefaultsTest extends AbstractTestCase {
 
 			MInvoiceLine invoiceLine = new MInvoiceLine(invoice);
 			invoiceLine.setC_Charge_ID(DictionaryIDs.C_Charge.BANK.id);
-			RecordingTaxLookup.reset();
+			lookup.reset();
 			assertTrue(invoiceLine.setTax(), "No tax found for invoice line");
-			assertTrue(invoice.getC_DocTypeTarget_ID() > 0, "Invoice has no target document type");
-			assertEquals(invoice.getC_DocTypeTarget_ID(), RecordingTaxLookup.docTypeId, "Unexpected document type passed by invoice line");
-			assertEquals(MInvoice.PAYMENTRULE_OnCredit, RecordingTaxLookup.paymentRule, "Unexpected payment rule passed by invoice line");
+			assertTrue(invoice.getDocTypeID() > 0, "Invoice has no document type");
+			assertEquals(invoice.getDocTypeID(), lookup.docTypeId, "Unexpected document type passed by invoice line");
+			assertEquals(MInvoice.PAYMENTRULE_OnCredit, lookup.paymentRule, "Unexpected payment rule passed by invoice line");
 		});
 	}
 
@@ -163,7 +174,7 @@ public class TaxSpiDefaultsTest extends AbstractTestCase {
 		when(mField.getColumnName()).thenReturn(MOrderLine.COLUMNNAME_C_Charge_ID);
 		Integer chargeId = Integer.valueOf(DictionaryIDs.C_Charge.BANK.id);
 
-		withRecordingTaxLookup(() -> {
+		withRecordingTaxLookup(lookup -> {
 			try {
 				Env.setContext(ctx, windowNo, "IsSOTrx", true);
 				Env.setContext(ctx, windowNo, "AD_Org_ID", DictionaryIDs.AD_Org.HQ.id);
@@ -175,17 +186,16 @@ public class TaxSpiDefaultsTest extends AbstractTestCase {
 
 				Env.setContext(ctx, windowNo, MOrder.COLUMNNAME_C_DocTypeTarget_ID, DictionaryIDs.C_DocType.STANDARD_ORDER.id);
 				Env.setContext(ctx, windowNo, MOrder.COLUMNNAME_PaymentRule, MOrder.PAYMENTRULE_Cash);
-				RecordingTaxLookup.reset();
 				new CalloutOrder().tax(ctx, windowNo, mTab, mField, chargeId);
-				assertEquals(DictionaryIDs.C_DocType.STANDARD_ORDER.id, RecordingTaxLookup.docTypeId, "Unexpected document type passed by CalloutOrder.tax");
-				assertEquals(MOrder.PAYMENTRULE_Cash, RecordingTaxLookup.paymentRule, "Unexpected payment rule passed by CalloutOrder.tax");
+				assertEquals(DictionaryIDs.C_DocType.STANDARD_ORDER.id, lookup.docTypeId, "Unexpected document type passed by CalloutOrder.tax");
+				assertEquals(MOrder.PAYMENTRULE_Cash, lookup.paymentRule, "Unexpected payment rule passed by CalloutOrder.tax");
 
 				Env.setContext(ctx, windowNo, MInvoice.COLUMNNAME_C_DocTypeTarget_ID, DictionaryIDs.C_DocType.AR_INVOICE.id);
 				Env.setContext(ctx, windowNo, MInvoice.COLUMNNAME_PaymentRule, MInvoice.PAYMENTRULE_OnCredit);
-				RecordingTaxLookup.reset();
+				lookup.reset();
 				new CalloutInvoice().tax(ctx, windowNo, mTab, mField, chargeId);
-				assertEquals(DictionaryIDs.C_DocType.AR_INVOICE.id, RecordingTaxLookup.docTypeId, "Unexpected document type passed by CalloutInvoice.tax");
-				assertEquals(MInvoice.PAYMENTRULE_OnCredit, RecordingTaxLookup.paymentRule, "Unexpected payment rule passed by CalloutInvoice.tax");
+				assertEquals(DictionaryIDs.C_DocType.AR_INVOICE.id, lookup.docTypeId, "Unexpected document type passed by CalloutInvoice.tax");
+				assertEquals(MInvoice.PAYMENTRULE_OnCredit, lookup.paymentRule, "Unexpected payment rule passed by CalloutInvoice.tax");
 			} finally {
 				Env.clearWinContext(ctx, windowNo);
 			}
@@ -193,56 +203,53 @@ public class TaxSpiDefaultsTest extends AbstractTestCase {
 	}
 
 	/**
-	 * Run the test with {@link RecordingTaxLookup} as the tax lookup service
-	 * @param test test to run
+	 * Run the test with a static mock of {@link Core} returning a {@link RecordingTaxLookup}
+	 * @param test test to run, with the recording lookup
 	 */
-	private void withRecordingTaxLookup(Runnable test) {
-		Dictionary<String, Object> properties = new Hashtable<String, Object>();
-		properties.put(ComponentConstants.COMPONENT_NAME, LOOKUP_NAME);
-		ServiceRegistration<ITaxLookup> sr = TestActivator.context.registerService(ITaxLookup.class, new RecordingTaxLookup(), properties);
-
-		MSysConfig sysCfgTaxLookup = new MSysConfig(Env.getCtx(), DictionaryIDs.AD_SysConfig.TAX_LOOKUP_SERVICE.id, null);
-		String oldValue = sysCfgTaxLookup.getValue();
-		try {
-			sysCfgTaxLookup.setValue(LOOKUP_NAME);
-			sysCfgTaxLookup.saveCrossTenantSafeEx();
-			CacheMgt.get().reset(MSysConfig.Table_Name);
-
-			test.run();
-		} finally {
-			rollback();
-			sysCfgTaxLookup.setValue(oldValue);
-			sysCfgTaxLookup.saveCrossTenantSafeEx();
-			CacheMgt.get().reset(MSysConfig.Table_Name);
-			sr.unregister();
+	private void withRecordingTaxLookup(Consumer<RecordingTaxLookup> test) {
+		RecordingTaxLookup lookup = new RecordingTaxLookup();
+		try (MockedStatic<Core> coreMock = mockStatic(Core.class, Mockito.CALLS_REAL_METHODS)) {
+			coreMock.when(Core::getTaxLookup).thenReturn(lookup);
+			test.accept(lookup);
 		}
 	}
 
-	/** Records the document type and payment rule, then looks up the tax as the default lookup does */
+	/** Records the drop ship location, document type and payment rule, then looks up the tax as the default lookup does */
 	private static final class RecordingTaxLookup extends DefaultTaxLookup {
+		/** Drop ship location received by the last lookup, 0 if none */
+		private int dropshipLocationId;
 		/** Document type received by the last lookup, -1 if none */
-		private static int docTypeId;
+		private int docTypeId;
 		/** Payment rule received by the last lookup, null if none */
-		private static String paymentRule;
+		private String paymentRule;
 
 		/**
-		 * Clear the recorded document type and payment rule
+		 * Create a lookup with nothing recorded
 		 */
-		private static void reset() {
+		private RecordingTaxLookup() {
+			reset();
+		}
+
+		/**
+		 * Clear the recorded values
+		 */
+		private void reset() {
+			dropshipLocationId = 0;
 			docTypeId = -1;
 			paymentRule = null;
 		}
 
 		/**
-		 * Record the document type and payment rule, then find C_Tax_ID as {@link DefaultTaxLookup} does
+		 * Record the drop ship location, document type and payment rule, then find C_Tax_ID as {@link DefaultTaxLookup} does
 		 */
 		@Override
 		public int get(Properties ctx, int M_Product_ID, int C_Charge_ID, Timestamp billDate, Timestamp shipDate,
 				int AD_Org_ID, int M_Warehouse_ID, int billC_BPartner_Location_ID, int shipC_BPartner_Location_ID,
 				int dropshipC_BPartner_Location_ID, boolean IsSOTrx, String deliveryViaRule,
 				int C_DocType_ID, String paymentRule, String trxName) {
-			RecordingTaxLookup.docTypeId = C_DocType_ID;
-			RecordingTaxLookup.paymentRule = paymentRule;
+			this.dropshipLocationId = dropshipC_BPartner_Location_ID;
+			this.docTypeId = C_DocType_ID;
+			this.paymentRule = paymentRule;
 			return super.get(ctx, M_Product_ID, C_Charge_ID, billDate, shipDate, AD_Org_ID, M_Warehouse_ID,
 					billC_BPartner_Location_ID, shipC_BPartner_Location_ID, dropshipC_BPartner_Location_ID,
 					IsSOTrx, deliveryViaRule, C_DocType_ID, paymentRule, trxName);

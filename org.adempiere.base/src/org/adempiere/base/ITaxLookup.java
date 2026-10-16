@@ -99,7 +99,7 @@ public interface ITaxLookup {
 	 * @param shipC_BPartner_Location_ID Ship to location
 	 * @param IsSOTrx
 	 * @param deliveryViaRule Order/Invoice's Delivery Via Rule
-	 * @param C_DocType_ID Order/Invoice's Target Document Type (ignored if not implemented)
+	 * @param C_DocType_ID Order/Invoice's Document Type (ignored if not implemented)
 	 * @param paymentRule Order/Invoice's Payment Rule (ignored if not implemented)
 	 * @param trxName
 	 * @return C_Tax_ID
@@ -110,12 +110,13 @@ public interface ITaxLookup {
 			int billC_BPartner_Location_ID, int shipC_BPartner_Location_ID,
 			boolean IsSOTrx, String deliveryViaRule,
 			int C_DocType_ID, String paymentRule, String trxName) {
-		// fallback to default method without C_DocType_ID and paymentRule if not implemented
+		// default to the method with dropshipC_BPartner_Location_ID (-1 = no drop ship location)
 		return get(ctx, M_Product_ID, C_Charge_ID,
 				billDate, shipDate,
 				AD_Org_ID, M_Warehouse_ID,
 				billC_BPartner_Location_ID, shipC_BPartner_Location_ID,
-				IsSOTrx, deliveryViaRule, trxName);
+				-1,
+				IsSOTrx, deliveryViaRule, C_DocType_ID, paymentRule, trxName);
 	}
 
 	/**
@@ -132,7 +133,7 @@ public interface ITaxLookup {
 	 * @param dropshipC_BPartner_Location_ID Drop Ship to location (ignored if not implemented)
 	 * @param IsSOTrx
 	 * @param deliveryViaRule Order/Invoice's Delivery Via Rule
-	 * @param C_DocType_ID Order/Invoice's Target Document Type (ignored if not implemented)
+	 * @param C_DocType_ID Order/Invoice's Document Type (ignored if not implemented)
 	 * @param paymentRule Order/Invoice's Payment Rule (ignored if not implemented)
 	 * @param trxName
 	 * @return C_Tax_ID

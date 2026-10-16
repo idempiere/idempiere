@@ -349,7 +349,7 @@ public class MOrderLine extends X_C_OrderLine
 			getAD_Org_ID(), getM_Warehouse_ID(),
 			getC_BPartner_Location_ID(),		//	should be bill to
 			getC_BPartner_Location_ID(), getParent().getDropShip_Location_ID(), m_IsSOTrx, getParent().getDeliveryViaRule(),
-			getParent().getC_DocTypeTarget_ID(), getParent().getPaymentRule(), get_TrxName());
+			getParent().getDocTypeID(), getParent().getPaymentRule(), get_TrxName());
 		if (ii == 0)
 		{
 			log.log(Level.SEVERE, "No Tax found");
