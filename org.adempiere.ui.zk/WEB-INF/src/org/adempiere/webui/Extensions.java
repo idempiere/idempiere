@@ -33,8 +33,10 @@ import org.adempiere.webui.adwindow.IADTabpanel;
 import org.adempiere.webui.apps.IProcessParameterListener;
 import org.adempiere.webui.apps.graph.IChartRendererService;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.editor.WEditor;
 import org.adempiere.webui.factory.IADTabPanelFactory;
 import org.adempiere.webui.factory.ICalendarWindowFactory;
+import org.adempiere.webui.factory.IDateRangePickerFactory;
 import org.adempiere.webui.factory.IDashboardGadgetFactory;
 import org.adempiere.webui.factory.IFindWindowFactory;
 import org.adempiere.webui.factory.IFormFactory;
@@ -43,6 +45,7 @@ import org.adempiere.webui.factory.IPostingService;
 import org.adempiere.webui.factory.IQuickEntryFactory;
 import org.adempiere.webui.grid.AbstractWQuickEntry;
 import org.adempiere.webui.panel.ADForm;
+import org.adempiere.webui.window.DateRangePicker;
 import org.adempiere.webui.window.FindWindow;
 import org.compiere.grid.ICreateFrom;
 import org.compiere.grid.ICreateFromFactory;
@@ -468,6 +471,28 @@ public class Extensions {
 		IFindWindowFactory findWindowFactory = Service.locator().locate(IFindWindowFactory.class).getService();
 	    return findWindowFactory.getInstance(targetWindowNo, targetTabNo, title, AD_Table_ID, tableName, filterExtended, findFields, minRecords, adTabId, windowPanel);
 		
+	}
+
+	/**
+	 * Get the date range picker popup for a pair of date editors.
+	 * Factories are asked in <code>service.ranking</code> order, the first non-null picker wins.
+	 * @param editor editor of the range start
+	 * @param editor2 editor of the range end
+	 * @return {@link DateRangePicker} instance
+	 */
+	public static DateRangePicker getDateRangePicker(WEditor editor, WEditor editor2) {
+		List<IServiceReferenceHolder<IDateRangePickerFactory>> factories = Service.locator().list(IDateRangePickerFactory.class).getServiceReferences();
+		if (factories != null) {
+			for (IServiceReferenceHolder<IDateRangePickerFactory> factory : factories) {
+				IDateRangePickerFactory service = factory.getService();
+				if (service != null) {
+					DateRangePicker picker = service.newDateRangePicker(editor, editor2);
+					if (picker != null)
+						return picker;
+				}
+			}
+		}
+		return new DateRangePicker(editor, editor2);
 	}
 
 	/**
