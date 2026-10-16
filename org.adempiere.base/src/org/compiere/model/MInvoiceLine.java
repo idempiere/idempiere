@@ -943,7 +943,10 @@ public class MInvoiceLine extends X_C_InvoiceLine
 			// TaxAmt recalculations should be done if the TaxAmt is zero
 			// or this is an Invoice(Customer)
 			if (m_IsSOTrx || getTaxAmt().compareTo(Env.ZERO) == 0)
-				setTaxAmt();
+			{
+				if (!updateLineTax())
+					return false;
+			}
 			
 			/* Carlos Ruiz - globalqss
 			 * IDEMPIERE-178 Orders and Invoices must disallow amount lines without product/charge
@@ -982,6 +985,24 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		MTaxProvider provider = MTaxProvider.get(getCtx(), tax.getC_TaxProvider_ID());
 		ITaxProvider calculator = Core.getTaxProvider(provider);
 		return calculator != null && calculator.isTaxIncludedSummarySupported();
+	}
+
+	/**
+	 * Calculate the line tax amount with the Tax Provider of the line's tax (see IDEMPIERE-7145).
+	 * @return true if success, false otherwise
+	 */
+	private boolean updateLineTax()
+	{
+		if (getC_Tax_ID() == 0)
+			return true;
+		MTax tax = MTax.get(getCtx(), getC_Tax_ID());
+		MTaxProvider provider = tax.getC_TaxProvider_ID() > 0
+				? MTaxProvider.get(getCtx(), tax.getC_TaxProvider_ID())
+				: new MTaxProvider(getCtx(), 0, get_TrxName());
+		ITaxProvider calculator = Core.getTaxProvider(provider);
+		if (calculator == null)
+			throw new AdempiereException(Msg.getMsg(getCtx(), "TaxNoProvider"));
+		return calculator.updateLineTax(provider, this);
 	}
 
 	/**
@@ -1407,7 +1428,9 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	}	//	copyLinesFrom
 
 	/**
-	 * @param rmaLine
+	 * Set the line from an RMA line (credit memo only).<br/>
+	 * The line tax amount is calculated by the tax provider of the line's tax.
+	 * @param rmaLine RMA line
 	 */
 	public void setRMALine(MRMALine rmaLine)
 	{
@@ -1430,7 +1453,8 @@ public class MInvoiceLine extends X_C_InvoiceLine
         	qty = qty.subtract(rmaLine.getQtyInvoiced());
         setQty(qty);
         setLineNetAmt();
-        setTaxAmt();
+        if (!updateLineTax())
+        	throw new AdempiereException(CLogger.retrieveErrorString("Failed to update line tax"));
         setLineTotalAmt(rmaLine.getLineNetAmt());
         setC_Project_ID(rmaLine.getC_Project_ID());
         setC_Activity_ID(rmaLine.getC_Activity_ID());
