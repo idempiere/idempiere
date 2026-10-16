@@ -78,7 +78,7 @@ public class PDFReportRenderer implements IReportRenderer<PDFReportRendererConfi
 				os = configuration.getOutputStream();
 			Document.writePDF(reportEngine.getLayout().getPageable(false), os);
 			if (configuration.getOutputFile() != null)
-				ArchiveEngine.get().archive(configuration.getOutputFile(), reportEngine.getPrintInfo());
+				ArchiveEngine.get().archive(configuration.getOutputFile(), reportEngine.getPrintInfo(), reportEngine.getTrxName());
 		}
 		catch (Exception e)
 		{
