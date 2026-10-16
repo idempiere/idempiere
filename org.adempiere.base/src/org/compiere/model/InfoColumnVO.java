@@ -53,6 +53,7 @@ public class InfoColumnVO implements Serializable, Cloneable {
 	private boolean isQueryCriteria;
 	
 	private boolean isQueryAfterChange;
+	private boolean isShowNegateButton;
 	
 	private boolean isReadOnly;
 	
@@ -137,6 +138,7 @@ public class InfoColumnVO implements Serializable, Cloneable {
 		isMandatory = infoColumn.isMandatory();
 		isQueryCriteria = infoColumn.isQueryCriteria();
 		isQueryAfterChange = infoColumn.isQueryAfterChange();
+		isShowNegateButton = infoColumn.get_ValueAsBoolean("IsShowNegateButton");
 		NameTrl = infoColumn.get_Translation("Name");
 		Name = infoColumn.getName();
 		AD_Reference_ID = infoColumn.getAD_Reference_ID();
@@ -323,6 +325,14 @@ public class InfoColumnVO implements Serializable, Cloneable {
 	 */
 	public boolean isQueryAfterChange() {
 		return isQueryAfterChange;
+	}
+
+	/**
+	 * @return true if the info window should show the include/exclude (negate) button for this info column.
+	 * Only applicable to the chosen multiple selection reference types.
+	 */
+	public boolean isShowNegateButton() {
+		return isShowNegateButton;
 	}
 	
 	/**
