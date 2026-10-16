@@ -320,9 +320,11 @@ public class CalloutInvoiceBatch extends CalloutEngine
 		//
 		String deliveryViaRule = getLineDeliveryViaRule(ctx, WindowNo, mTab);
 		int dropshipLocationId = getDropShipLocationId(ctx, WindowNo, mTab);
+		int C_DocType_ID = Env.getContextAsInt(ctx, WindowNo, I_C_InvoiceBatchLine.COLUMNNAME_C_DocType_ID);
+		//	Invoice batch has no payment rule
 		int C_Tax_ID = Core.getTaxLookup().get(ctx, 0, C_Charge_ID, billDate, shipDate,
 			AD_Org_ID, M_Warehouse_ID, C_BPartner_Location_ID, C_BPartner_Location_ID, dropshipLocationId,
-			Env.getContext(ctx, WindowNo, "IsSOTrx").equals("Y"), deliveryViaRule, null);
+			Env.getContext(ctx, WindowNo, "IsSOTrx").equals("Y"), deliveryViaRule, C_DocType_ID, null, null);
 		if (log.isLoggable(Level.INFO)) log.info("Tax ID=" + C_Tax_ID);
 		//
 		if (C_Tax_ID == 0)

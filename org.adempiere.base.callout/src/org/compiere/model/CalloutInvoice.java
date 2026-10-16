@@ -489,9 +489,11 @@ public class CalloutInvoice extends CalloutEngine
 		//
 		String deliveryViaRule = getLineDeliveryViaRule(ctx, WindowNo, mTab);
 		int dropshipLocationId = getDropShipLocationId(ctx, WindowNo, mTab);
+		int C_DocType_ID = Env.getContextAsInt(ctx, WindowNo, I_C_Invoice.COLUMNNAME_C_DocTypeTarget_ID, true);
+		String paymentRule = Env.getContext(ctx, WindowNo, I_C_Invoice.COLUMNNAME_PaymentRule, true);
 		int C_Tax_ID = Core.getTaxLookup().get(ctx, M_Product_ID, C_Charge_ID, billDate, shipDate,
 			AD_Org_ID, M_Warehouse_ID, billC_BPartner_Location_ID, shipC_BPartner_Location_ID, dropshipLocationId,
-			Env.getContext(ctx, WindowNo, "IsSOTrx").equals("Y"), deliveryViaRule, null);
+			Env.getContext(ctx, WindowNo, "IsSOTrx").equals("Y"), deliveryViaRule, C_DocType_ID, paymentRule, null);
 		if (log.isLoggable(Level.INFO)) log.info("Tax ID=" + C_Tax_ID);
 		//
 		if (C_Tax_ID == 0)
