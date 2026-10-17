@@ -83,6 +83,7 @@ public class FixedAssetsTest extends AbstractTestCase {
 		aa.setAssetAmtEntered(new BigDecimal("12000.0"));
 		aa.setAssetSourceAmt(aa.getAssetAmtEntered());
 		aa.setA_Salvage_Value(new BigDecimal("2000.0"));
+		aa.setC_DocType_ID(DictionaryIDs.C_DocType.ASSET_ADDITION.id);
 		aa.saveEx();
 
 		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(aa, DocAction.ACTION_Complete);
@@ -105,6 +106,38 @@ public class FixedAssetsTest extends AbstractTestCase {
 		BigDecimal sumExp = DB.getSQLValueBDEx(trxName, sqlSumExp, a.getA_Asset_ID(), DictionaryIDs.C_AcctSchema.DOLLAR.id);
 		assertTrue( ( new BigDecimal("10000.0").compareTo(sumExp) == 0 ) );
 
+	}
+
+	/**
+	 * IDEMPIERE-7049 - document type is mandatory on asset addition
+	 */
+	@Test
+	public void testAssetAdditionRequiresDocType() {
+		Properties ctx = Env.getCtx();
+		String trxName = getTrxName();
+
+		MAsset a = new MAsset(ctx, 0, trxName);
+		a.setValue("test_no_doctype");
+		a.setName("test_no_doctype");
+		a.setA_Asset_Group_ID(DictionaryIDs.A_Asset_Group.EQUIPMENT.id);
+		a.setM_Product_ID(DictionaryIDs.M_Product.ASSET_VEHICLE.id);
+		a.setIsOwned(true);
+		a.setIsDepreciated(true);
+		assertTrue(a.save(trxName), "Asset must save");
+
+		MAssetAddition aa = new MAssetAddition(ctx, 0, trxName);
+		aa.setA_Asset_ID(a.getA_Asset_ID());
+		aa.setDateDoc(new Timestamp(System.currentTimeMillis()));
+		aa.setA_SourceType(MAssetAddition.A_SOURCETYPE_Manual);
+		aa.setAssetAmtEntered(new BigDecimal("1000.0"));
+		aa.setAssetSourceAmt(aa.getAssetAmtEntered());
+		aa.setA_Salvage_Value(Env.ZERO);
+		assertTrue(aa.save(trxName), "Asset addition must save");
+
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(aa, DocAction.ACTION_Complete);
+		aa.load(trxName);
+		assertTrue(info.isError(), "Asset addition without document type should not complete");
+		assertEquals(DocAction.STATUS_Drafted, aa.getDocStatus(), "Asset addition status should remain drafted");
 	}
 
 }

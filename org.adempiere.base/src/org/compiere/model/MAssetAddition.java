@@ -567,6 +567,11 @@ public class MAssetAddition extends X_A_Asset_Addition
 			return DocAction.STATUS_Invalid;
 		}
 		
+		if (getC_DocType_ID() <= 0)
+		{
+			throw new FillMandatoryException(COLUMNNAME_C_DocType_ID);
+		}
+
 		MPeriod.testPeriodOpen(getCtx(), getDateAcct(), MDocType.DOCBASETYPE_GLJournal, getAD_Org_ID());
 		
 		// Check AssetValueAmt != 0
