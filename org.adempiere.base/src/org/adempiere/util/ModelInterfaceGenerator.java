@@ -1025,7 +1025,11 @@ public class ModelInterfaceGenerator
 					throw new IllegalArgumentException("No table matches " + String.join(", ", unknown)
 							+ " among the active tables of the table entity types (" + entityTypeFilter + ")");
 			}
-			// a column name that exists in none of the selected tables is a mistake: refuse it instead of generating without it
+			// first, so that a core column is reported as S7 even when the column entity type filter would drop it
+			if (!Util.isEmpty(columnNames, true) && (type.equals(GEN_SOURCE_ACCESSOR) || type.equals(GEN_SOURCE_ACCESSOR_INTERFACE)))
+				for (int AD_Table_ID : tableIds)
+					ModelAccessorGenerator.checkNotDictionaryColumns(AD_Table_ID, columnNames);
+			// exact names, checked against the same filter as the generators, so none is dropped silently
 			if (!Util.isEmpty(columnNames, true) && !tableIds.isEmpty())
 			{
 				List<String> unknownColumns = new ArrayList<>();
@@ -1036,16 +1040,16 @@ public class ModelInterfaceGenerator
 						continue;
 					boolean exists = false;
 					for (int AD_Table_ID : tableIds)
-						if (MTable.get(AD_Table_ID).getColumn(name) != null)
-						{
-							exists = true;
-							break;
-						}
+						exists |= DB.getSQLValue(null, "SELECT COUNT(*) FROM AD_Column c WHERE c.AD_Table_ID=? AND c.ColumnName=?"
+								+ " AND c.IsActive='Y' AND (c.ColumnSQL IS NULL OR c.ColumnSQL NOT LIKE '@SQL%') AND c." + columnFilter,
+								AD_Table_ID, name) > 0;
 					if (!exists)
 						unknownColumns.add(name);
 				}
 				if (!unknownColumns.isEmpty())
-					throw new IllegalArgumentException("No column matches " + String.join(", ", unknownColumns) + " in the selected tables");
+					throw new IllegalArgumentException("No column matches " + String.join(", ", unknownColumns)
+							+ " among the active columns of the selected tables"
+							+ (Util.isEmpty(columnEntityType, true) ? "" : " with column entity type " + columnEntityType.trim()));
 			}
 			// check every table before writing any file, so a refusal leaves no partial output
 			for (int AD_Table_ID : tableIds)
@@ -1059,11 +1063,7 @@ public class ModelInterfaceGenerator
 								+ "; its generated classes would clash. Use another suffix.");
 				}
 				if (type.equals(GEN_SOURCE_ACCESSOR) || type.equals(GEN_SOURCE_ACCESSOR_INTERFACE))
-				{
 					ModelAccessorGenerator.checkColumns(AD_Table_ID, columnFilter);
-					if (!Util.isEmpty(columnNames, true))
-						ModelAccessorGenerator.checkNotDictionaryColumns(AD_Table_ID, columnNames);
-				}
 			}
 			for (int AD_Table_ID : tableIds)
 			{

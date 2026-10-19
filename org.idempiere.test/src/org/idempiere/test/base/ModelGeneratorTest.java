@@ -160,6 +160,24 @@ public class ModelGeneratorTest extends AbstractTestCase {
 	}
 
 	@Test
+	public void testColumnNamesAreComparedExactlyAndWithTheColumnEntityType(@TempDir Path folder) throws IOException {
+		// the column filter is an exact match, so a name in another case would be dropped without a word
+		IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> ModelInterfaceGenerator.generateSource(
+				ModelInterfaceGenerator.GEN_SOURCE_INTERFACE, folder.toString(), PACKAGE, "D", "C_Order", "D", "Test", "documentno"));
+		assertTrue(e.getMessage().contains("No column matches documentno"), e.getMessage());
+		// DocumentNo exists, but not as a column of entity type U, which is what the filter selects
+		e = assertThrows(IllegalArgumentException.class, () -> ModelInterfaceGenerator.generateSource(
+				ModelInterfaceGenerator.GEN_SOURCE_INTERFACE, folder.toString(), PACKAGE, "D", "C_Order", "U", "Test", "DocumentNo"));
+		assertTrue(e.getMessage().contains("No column matches DocumentNo") && e.getMessage().contains("entity type U"), e.getMessage());
+		try (Stream<Path> files = Files.walk(folder)) {
+			assertEquals(0, files.filter(f -> f.toString().endsWith(".java")).count(), "nothing is written");
+		}
+		// the exact name of a column of the entity type is accepted
+		ModelInterfaceGenerator.generateSource(ModelInterfaceGenerator.GEN_SOURCE_INTERFACE, folder.toString(), PACKAGE, "D", "C_Order", "D", "Test", "DocumentNo");
+		assertTrue(Files.exists(folder.resolve("org/idempiere/test/generated/I_C_Order_Test.java")));
+	}
+
+	@Test
 	public void testClassRefusesColumnNames(@TempDir Path folder) throws IOException {
 		assertThrows(IllegalArgumentException.class, () -> ModelInterfaceGenerator.generateSource(ModelInterfaceGenerator.GEN_SOURCE_CLASS,
 				folder.toString(), PACKAGE, "D", "C_Order", "D", null, "DocumentNo"));
