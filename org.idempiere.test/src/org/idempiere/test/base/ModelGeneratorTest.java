@@ -150,6 +150,16 @@ public class ModelGeneratorTest extends AbstractTestCase {
 	}
 
 	@Test
+	public void testUnknownColumnNameIsRefused(@TempDir Path folder) throws IOException {
+		IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> ModelInterfaceGenerator.generateSource(
+				ModelInterfaceGenerator.GEN_SOURCE_INTERFACE, folder.toString(), PACKAGE, "D", "C_Order", "D", "Test", "DocumentNo,NoSuchColumn"));
+		assertTrue(e.getMessage().contains("NoSuchColumn"), e.getMessage());
+		try (Stream<Path> files = Files.walk(folder)) {
+			assertEquals(0, files.filter(f -> f.toString().endsWith(".java")).count(), "nothing is written");
+		}
+	}
+
+	@Test
 	public void testClassRefusesColumnNames(@TempDir Path folder) throws IOException {
 		assertThrows(IllegalArgumentException.class, () -> ModelInterfaceGenerator.generateSource(ModelInterfaceGenerator.GEN_SOURCE_CLASS,
 				folder.toString(), PACKAGE, "D", "C_Order", "D", null, "DocumentNo"));
@@ -162,6 +172,22 @@ public class ModelGeneratorTest extends AbstractTestCase {
 	public void testAccessorClassName() {
 		assertEquals("C_Order_XYZ", ModelAccessorGenerator.className("C_Order", "XYZ"));
 		assertThrows(IllegalArgumentException.class, () -> ModelAccessorGenerator.className("C_Order", null));
+	}
+
+	@Test
+	public void testUnknownTableInListIsRefused(@TempDir Path folder) throws IOException {
+		// a typo in a list of exact names must not pass silently, neither when generating nor in --check
+		IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> ModelInterfaceGenerator.generateSource(
+				ModelInterfaceGenerator.GEN_SOURCE_INTERFACE, folder.toString(), PACKAGE, "D", "C_Order,NonExistentTable", "D"));
+		assertTrue(e.getMessage().contains("NONEXISTENTTABLE"), e.getMessage());
+		try (Stream<Path> files = Files.walk(folder)) {
+			assertEquals(0, files.filter(f -> f.toString().endsWith(".java")).count(), "C_Order is not written either");
+		}
+		// every name exists
+		ModelInterfaceGenerator.generateSource(ModelInterfaceGenerator.GEN_SOURCE_INTERFACE, folder.toString(), PACKAGE,
+				"D", "C_Order,C_Invoice", "D");
+		assertTrue(Files.exists(folder.resolve("org/idempiere/test/generated/I_C_Order.java")));
+		assertTrue(Files.exists(folder.resolve("org/idempiere/test/generated/I_C_Invoice.java")));
 	}
 
 	@Test

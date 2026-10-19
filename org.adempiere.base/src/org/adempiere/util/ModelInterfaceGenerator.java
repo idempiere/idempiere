@@ -1008,6 +1008,45 @@ public class ModelInterfaceGenerator
 			while (rs.next())
 				tableIds.add(rs.getInt(1));
 			boolean isEmpty = tableIds.isEmpty();
+			// a comma separated list holds exact names: a name that matches no table is a mistake, refuse before any file is written
+			if (tableLike.indexOf(",") != -1)
+			{
+				Set<String> found = new HashSet<>();
+				for (int AD_Table_ID : tableIds)
+					found.add(MTable.get(AD_Table_ID).getTableName().toUpperCase());
+				List<String> unknown = new ArrayList<>();
+				for (String table : tableLike.toString().split(","))
+				{
+					String name = table.replace("'", "").trim();
+					if (!name.isEmpty() && !found.contains(name))
+						unknown.add(name);
+				}
+				if (!unknown.isEmpty())
+					throw new IllegalArgumentException("No table matches " + String.join(", ", unknown)
+							+ " among the active tables of the table entity types (" + entityTypeFilter + ")");
+			}
+			// a column name that exists in none of the selected tables is a mistake: refuse it instead of generating without it
+			if (!Util.isEmpty(columnNames, true) && !tableIds.isEmpty())
+			{
+				List<String> unknownColumns = new ArrayList<>();
+				for (String column : columnNames.split(","))
+				{
+					String name = column.replace("'", "").trim();
+					if (name.isEmpty())
+						continue;
+					boolean exists = false;
+					for (int AD_Table_ID : tableIds)
+						if (MTable.get(AD_Table_ID).getColumn(name) != null)
+						{
+							exists = true;
+							break;
+						}
+					if (!exists)
+						unknownColumns.add(name);
+				}
+				if (!unknownColumns.isEmpty())
+					throw new IllegalArgumentException("No column matches " + String.join(", ", unknownColumns) + " in the selected tables");
+			}
 			// check every table before writing any file, so a refusal leaves no partial output
 			for (int AD_Table_ID : tableIds)
 			{
