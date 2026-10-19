@@ -239,6 +239,31 @@ public class ModelGeneratorOptionsTest {
 	}
 
 	@Test
+	public void testS7AccessorOverDictionaryColumns() {
+		ModelGeneratorOptions o = ModelGeneratorOptions.parse(new String[] {"--folder=/src", "--package=com.xyz.model",
+				"--tables=C_Order", "--table-entity-type=D", "--column-entity-type=D", "--output=interface,accessor", "--suffix=XYZ"});
+		assertTrue(o.safetyProblems(SYSTEM).stream().anyMatch(p -> p.startsWith("S7")));
+		assertTrue(o.safetyProblems(SYSTEM).stream().filter(p -> p.startsWith("S7")).allMatch(o::isRefused), "refused: nothing is written");
+
+		o = ModelGeneratorOptions.parse(new String[] {"--folder=/src", "--package=com.xyz.model",
+				"--tables=C_Order", "--table-entity-type=D", "--column-entity-type=D,XYZ", "--output=accessor", "--suffix=XYZ"});
+		assertTrue(o.safetyProblems(SYSTEM).stream().anyMatch(p -> p.startsWith("S7")), "one core entity type is enough");
+
+		o = ModelGeneratorOptions.parse(new String[] {"--folder=/src", "--package=com.xyz.model",
+				"--tables=C_Order", "--table-entity-type=D", "--column-entity-type=XYZ", "--output=interface,accessor", "--suffix=XYZ"});
+		assertTrue(o.safetyProblems(SYSTEM).isEmpty(), "the columns of a plug-in");
+
+		o = ModelGeneratorOptions.parse(new String[] {"--folder=/src", "--package=com.xyz.model",
+				"--tables=C_Order", "--table-entity-type=D", "--column-entity-type=D", "--output=interface", "--suffix=XYZ"});
+		assertTrue(o.safetyProblems(SYSTEM).stream().noneMatch(p -> p.startsWith("S7")), "S7 is about the accessor only");
+
+		o = ModelGeneratorOptions.parse(new String[] {"--folder=/src", "--package=com.xyz.model",
+				"--tables=C_Order", "--table-entity-type=D", "--column-entity-type=EE1", "--output=interface,accessor", "--suffix=XYZ"});
+		assertTrue(o.safetyProblems(SYSTEM).stream().noneMatch(p -> p.startsWith("S7")),
+				"a system maintained entity type other than D, for example one of a company, is not refused by S7");
+	}
+
+	@Test
 	public void testS6InterfaceWithoutSuffix() {
 		ModelGeneratorOptions o = ModelGeneratorOptions.parse(new String[] {"--folder=/src", "--package=com.xyz.model",
 				"--tables=C_Order", "--table-entity-type=D", "--column-entity-type=XYZ", "--output=interface"});

@@ -1020,7 +1020,11 @@ public class ModelInterfaceGenerator
 								+ "; its generated classes would clash. Use another suffix.");
 				}
 				if (type.equals(GEN_SOURCE_ACCESSOR) || type.equals(GEN_SOURCE_ACCESSOR_INTERFACE))
+				{
 					ModelAccessorGenerator.checkColumns(AD_Table_ID, columnFilter);
+					if (!Util.isEmpty(columnNames, true))
+						ModelAccessorGenerator.checkNotDictionaryColumns(AD_Table_ID, columnNames);
+				}
 			}
 			for (int AD_Table_ID : tableIds)
 			{

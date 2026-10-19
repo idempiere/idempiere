@@ -24,38 +24,27 @@ package org.idempiere.test.base;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
-
 import org.adempiere.util.ModelAccessorGenerator;
 import org.adempiere.util.ModelInterfaceGenerator;
-import org.compiere.model.GridTab;
-import org.compiere.model.GridWindow;
-import org.compiere.model.MOrder;
-import org.compiere.model.MQuery;
-import org.compiere.model.PO;
-import org.compiere.model.SystemIDs;
-import org.compiere.model.MProduct;
 import org.compiere.util.DB;
-import org.compiere.util.Env;
 import org.idempiere.test.AbstractTestCase;
-import org.idempiere.test.DictionaryIDs;
-import org.idempiere.test.generated.C_Order_Test;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Model generator outputs for a plug-in's columns on a core table: the suffixed interface and the accessor.
- * {@link C_Order_Test} is a generated accessor over some core columns of C_Order, standing in for a plug-in's columns. Reads the dictionary only.
+ * GardenWorld has no plug-in columns, so the generator is called through its class API on C_Order (entity type D) and the
+ * generated source is checked as text. The command line refuses an accessor over core columns (S7), see ModelGeneratorOptionsTest.
+ * Reads the dictionary only.
  */
 public class ModelGeneratorTest extends AbstractTestCase {
 
@@ -175,99 +164,14 @@ public class ModelGeneratorTest extends AbstractTestCase {
 		assertThrows(IllegalArgumentException.class, () -> ModelAccessorGenerator.className("C_Order", null));
 	}
 
-
 	@Test
-	public void testGeneratedAccessorBehavesAsX() {
-		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
-		C_Order_Test acc = C_Order_Test.of(order);
-		assertEquals(order, acc.getPO());
-
-		// a foreign key below 1 is stored as null and read as 0, as in X_C_Order
-		acc.setC_BPartner_ID(0);
-		assertNull(order.get_Value("C_BPartner_ID"));
-		assertEquals(0, acc.getC_BPartner_ID());
-		acc.setC_BPartner_ID(DictionaryIDs.C_BPartner.JOE_BLOCK.id);
-		assertEquals(order.getC_BPartner_ID(), acc.getC_BPartner_ID());
-		assertEquals(DictionaryIDs.C_BPartner.JOE_BLOCK.id, acc.getC_BPartner().getC_BPartner_ID());
-
-		// 0 is a valid document type, as in X_C_Order
-		acc.setC_DocType_ID(0);
-		assertEquals(Integer.valueOf(0), order.get_Value("C_DocType_ID"));
-
-		acc.setIsSOTrx(false);
-		assertFalse(order.isSOTrx());
-		acc.setIsSOTrx(true);
-		assertEquals(order.isSOTrx(), acc.isSOTrx());
-
-		acc.setDeliveryRule(C_Order_Test.DELIVERYRULE_Force);
-		assertEquals(MOrder.DELIVERYRULE_Force, order.getDeliveryRule());
-
-		acc.setDescription("typed");
-		assertEquals("typed", order.getDescription());
-
-		order.set_ValueNoCheck("GrandTotal", null);
-		assertEquals(Env.ZERO, acc.getGrandTotal(), "empty amount reads as zero, like getGrandTotal()");
-		acc.setGrandTotal(BigDecimal.TEN);
-		assertEquals(BigDecimal.TEN, order.getGrandTotal());
-
-		// works on an object core created, without a model factory
-		assertThrows(IllegalArgumentException.class, () -> C_Order_Test.of(new MProduct(Env.getCtx(), 0, getTrxName())),
-				"another table is refused");
-		assertThrows(IllegalArgumentException.class, () -> C_Order_Test.of((PO) null));
-	}
-
-	@Test
-	public void testGeneratedAccessorSaves() {
-		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
-		order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.STANDARD_ORDER.id);
-		order.setBPartner(new org.compiere.model.MBPartner(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName()));
-		order.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.HQ.id);
-		C_Order_Test.of(order).setDescription("saved through the accessor");
-		order.saveEx();
-
-		MOrder reread = new MOrder(Env.getCtx(), order.getC_Order_ID(), getTrxName());
-		assertEquals("saved through the accessor", C_Order_Test.of(reread).getDescription());
-		assertEquals(order.getDocumentNo(), C_Order_Test.of(reread).getDocumentNo());
-	}
-
-
-	@Test
-	public void testGeneratedAccessorOnGridTab() {
-		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
-		order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.STANDARD_ORDER.id);
-		order.setBPartner(new org.compiere.model.MBPartner(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName()));
-		order.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.HQ.id);
-		order.setDescription("before");
-		order.saveEx();
-
-		GridWindow gridWindow = GridWindow.get(Env.getCtx(), 1, SystemIDs.WINDOW_SALES_ORDER);
-		gridWindow.initTab(0);
-		GridTab tab = gridWindow.getTab(0);
-		MQuery query = new MQuery(MOrder.Table_Name);
-		query.addRestriction(MOrder.COLUMNNAME_C_Order_ID, "=", order.get_ID());
-		tab.setQuery(query);
-		tab.getTableModel().setImportingMode(false, getTrxName());
-		tab.query(false);
-		assertEquals(1, tab.getRowCount());
-
-		// the same accessor as on the model object, now over the fields of the tab (as in a callout)
-		C_Order_Test acc = C_Order_Test.of(tab);
-		assertEquals(tab, acc.getGridTab());
-		assertNull(acc.getPO());
-		assertEquals(order.getDocumentNo(), acc.getDocumentNo());
-		assertEquals("before", acc.getDescription());
-		assertEquals(order.isSOTrx(), acc.isSOTrx());
-
-		acc.setDescription("set in a callout");
-		assertEquals("set in a callout", tab.getValue(MOrder.COLUMNNAME_Description));
-		acc.setDeliveryRule(C_Order_Test.DELIVERYRULE_Force);
-		assertEquals(MOrder.DELIVERYRULE_Force, tab.getValue(MOrder.COLUMNNAME_DeliveryRule));
-
-		// the referenced record is read in the transaction of the tab
-		assertEquals(DictionaryIDs.C_BPartner.JOE_BLOCK.id, acc.getC_BPartner().getC_BPartner_ID());
-
-		// another table is refused
-		assertThrows(IllegalArgumentException.class, () -> C_Order_Test.of((GridTab) null));
-		tab.dataIgnore();
+	public void testAccessorRefusesCoreColumnNamedWithColumns(@TempDir Path folder) throws IOException {
+		// --columns names a column of the dictionary entity type D: the accessor would skip the logic of MOrder
+		IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> ModelInterfaceGenerator.generateSource(
+				ModelInterfaceGenerator.GEN_SOURCE_ACCESSOR_INTERFACE, folder.toString(), PACKAGE, "D", "C_Order", null, "Test", "DocumentNo,C_BPartner_ID"));
+		assertTrue(e.getMessage().startsWith("S7"), e.getMessage());
+		try (Stream<Path> files = Files.walk(folder)) {
+			assertEquals(0, files.filter(f -> f.toString().endsWith(".java")).count(), "nothing is written");
+		}
 	}
 }

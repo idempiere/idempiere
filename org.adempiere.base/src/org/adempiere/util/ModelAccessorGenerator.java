@@ -33,7 +33,9 @@ import java.util.TreeSet;
 
 import org.adempiere.exceptions.DBException;
 import org.compiere.Adempiere;
+import org.compiere.model.MColumn;
 import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Util;
@@ -42,10 +44,10 @@ import org.compiere.util.Util;
  * Generate an accessor class for the columns of a table selected by the column entity type filter: typed getters and
  * setters over any {@link org.compiere.model.PO} of that table, with the behaviour of the generated X_ accessors.
  * <p>
- * Example: {@code C_OrderSource_XYZ.of(orderSource).getShippingRule()}. The class needs no model factory and works
- * on any object of the table, also one that core created with {@code new MOrderSource(...)}. In a callout,
- * {@code C_OrderSource_XYZ.of(mTab)} reads and writes the fields of the tab. With the interface generated in the same
- * run, the class implements it ({@code I_C_OrderSource_XYZ}).
+ * Example: {@code C_Order_XYZ.of(order).getXYZ_Carrier_ID()}. The class needs no model factory and works
+ * on any object of the table, also one that core created with {@code new MOrder(...)}. In a callout,
+ * {@code C_Order_XYZ.of(mTab)} reads and writes the fields of the tab. With the interface generated in the same
+ * run, the class implements it ({@code I_C_Order_XYZ}).
  * <ul>
  * <li>int getter: 0 when empty; boolean getter: Boolean, "Y" true, otherwise false; BigDecimal getter: zero when empty</li>
  * <li>_ID setter: null below 1 (below 0 for the columns where 0 is valid, as in {@link ModelClassGenerator})</li>
@@ -273,6 +275,26 @@ public class ModelAccessorGenerator {
 			throw new RuntimeException(fileName, e);
 		}
 		System.out.println(new File(fileName).getAbsolutePath() + " - " + count + " columns");
+	}
+
+	/**
+	 * Refuse columns of the dictionary entity type {@code D} that are named one by one ({@code --columns=}): the accessor
+	 * only gets and sets values, so it would skip the logic of the model classes.
+	 * @param AD_Table_ID table
+	 * @param columnNames comma separated column names
+	 * @throws IllegalArgumentException for a column of entity type D (rule S7)
+	 */
+	public static void checkNotDictionaryColumns(int AD_Table_ID, String columnNames) {
+		MTable table = MTable.get(AD_Table_ID);
+		for (String name : columnNames.split(",")) {
+			MColumn column = table.getColumn(name.trim().replace("'", ""));
+			if (column == null)
+				continue;
+			if (PO.ENTITYTYPE_Dictionary.equals(column.getEntityType()))
+				throw new IllegalArgumentException("S7: column " + table.getTableName() + "." + column.getColumnName()
+						+ " belongs to the core dictionary (entity type D). The accessor only gets and sets values "
+						+ "and skips the logic of the model classes (for example MOrder.setC_BPartner_ID); use it for the columns of a plug-in only.");
+		}
 	}
 
 	/**
