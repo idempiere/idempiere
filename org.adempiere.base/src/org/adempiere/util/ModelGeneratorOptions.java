@@ -79,13 +79,19 @@ public class ModelGeneratorOptions {
 	 * Parse command line arguments.
 	 * @param args arguments, positional or named (a first argument starting with {@code --} selects the named form)
 	 * @return options
-	 * @throws IllegalArgumentException for an unknown argument, a missing value or a wrong number of positional arguments
+	 * @throws IllegalArgumentException for an unknown argument, a missing value, a wrong number of positional arguments
+	 * or a named argument mixed into positional ones
 	 */
 	public static ModelGeneratorOptions parse(String[] args) {
 		ModelGeneratorOptions o = new ModelGeneratorOptions();
 		if (args == null || args.length == 0)
 			throw new IllegalArgumentException("No arguments");
 		if (!args[0].startsWith("--")) {
+			// a named argument after a positional one would silently become a value, for example the column entity type
+			for (String arg : args)
+				if (arg.startsWith("--"))
+					throw new IllegalArgumentException("Named and positional arguments cannot be mixed: " + arg
+							+ ". Use the named form for every argument, for example " + namedEquivalent(args));
 			if (args.length < 4 || args.length > 5)
 				throw new IllegalArgumentException("Positional form needs 4 or 5 arguments, got " + args.length);
 			o.folder = args[0];
@@ -125,6 +131,27 @@ public class ModelGeneratorOptions {
 		if (o.suffix != null && !o.suffix.matches("[A-Za-z0-9_]+"))
 			throw new IllegalArgumentException("--suffix may contain only letters, digits and _: " + o.suffix);
 		return o;
+	}
+
+	/**
+	 * @param args positional arguments, possibly with named ones mixed in
+	 * @return the same call in the named form: folder, package, table entity type and table name first, then the named ones
+	 */
+	private static String namedEquivalent(String[] args) {
+		String[] keys = {"folder", "package", "table-entity-type", "tables", "column-entity-type"};
+		StringBuilder sb = new StringBuilder();
+		int position = 0;
+		for (String arg : args) {
+			if (sb.length() > 0)
+				sb.append(' ');
+			if (arg.startsWith("--"))
+				sb.append(arg);
+			else if (position < keys.length)
+				sb.append("--").append(keys[position++]).append('=').append(arg);
+			else
+				sb.append(arg);
+		}
+		return sb.toString();
 	}
 
 	private static String required(String key, String value) {
@@ -216,6 +243,16 @@ public class ModelGeneratorOptions {
 	}
 
 	/**
+	 * @param problem a problem returned by {@link #safetyProblems(Predicate)}
+	 * @return true when the call must be refused: every problem in the named form, and S4 also in the positional form,
+	 * because it writes plug-in columns into core sources; the other problems only warn in the positional form,
+	 * so existing scripts keep working
+	 */
+	public boolean isRefused(String problem) {
+		return named || problem.startsWith("S4");
+	}
+
+	/**
 	 * Warnings that never refuse a call.
 	 * <ul>
 	 * <li>S6: an interface for a column subset of a table of another entity type, without a suffix, has the same
@@ -279,7 +316,8 @@ public class ModelGeneratorOptions {
 			+ "  --template            read the values not given from the Generate Model Template with this name\n"
 			+ "  --check               generate into a temporary folder and compare with --folder; writes nothing, fails when no table matches, needs the same\n"
 			+ "                        arguments as the generate call, ignores files that exist only in --folder\n"
-			+ "  Safety rules S1, S2, S4 REFUSE a named call; the positional form only warns.\n"
+			+ "  Named and positional arguments cannot be mixed.\n"
+			+ "  Safety rules S1, S2, S4 REFUSE a named call; the positional form only warns, except S4 which refuses in both forms.\n"
 			+ "  Exit code 0 = ok, 1 = refused, error or --check difference; the last output line is result: ok|refused|error|differs";
 	}
 

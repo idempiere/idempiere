@@ -64,6 +64,18 @@ public class ModelGeneratorOptionsTest {
 	}
 
 	@Test
+	public void testNamedArgumentMixedIntoPositionalIsRefused() {
+		// the call that overwrote I_C_Order and X_C_Order: --output=accessor was taken as the column entity type
+		IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> ModelGeneratorOptions.parse(
+				new String[] {"/path/org.adempiere.base/src/", "org.compiere.model", "D", "C_Order", "--output=accessor"}));
+		assertTrue(e.getMessage().contains("cannot be mixed") && e.getMessage().contains("--output=accessor"), e.getMessage());
+		assertThrows(IllegalArgumentException.class, () -> ModelGeneratorOptions.parse(
+				new String[] {"/src", "com.xyz.model", "XYZ", "XYZ_%", "--check"}));
+		assertThrows(IllegalArgumentException.class, () -> ModelGeneratorOptions.parse(
+				new String[] {"/src", "com.xyz.model", "--check"}), "also when the count is wrong");
+	}
+
+	@Test
 	public void testNamedForm() {
 		ModelGeneratorOptions o = ModelGeneratorOptions.parse(new String[] {"--folder=/src", "--package=com.xyz.model",
 				"--tables=C_Invoice", "--table-entity-type=D", "--column-entity-type=XYZ", "--output=interface", "--check"});
@@ -159,6 +171,35 @@ public class ModelGeneratorOptionsTest {
 		ModelGeneratorOptions o = ModelGeneratorOptions.parse(new String[] {"/src", "com.xyz.model", "D", "C_Invoice", "XYZ"});
 		assertFalse(o.isNamed(), "the caller warns instead of refusing for the positional form");
 		assertFalse(o.safetyProblems(SYSTEM).isEmpty());
+	}
+
+	@Test
+	public void testS4RefusedAlsoInPositionalForm() {
+		ModelGeneratorOptions o = ModelGeneratorOptions.parse(new String[] {"/src", "org.compiere.model", "D", "C_Order", "XYZ"});
+		assertFalse(o.isNamed());
+		List<String> problems = o.safetyProblems(SYSTEM);
+		assertTrue(problems.stream().anyMatch(p -> p.startsWith("S4")));
+		assertTrue(problems.stream().filter(p -> p.startsWith("S4")).allMatch(o::isRefused), "writes plug-in columns into core sources");
+		assertTrue(problems.stream().filter(p -> !p.startsWith("S4")).noneMatch(o::isRefused), "the other problems only warn");
+	}
+
+	@Test
+	public void testPlainPositionalCallsStillWork() {
+		// core development, as before: core columns into the core package
+		ModelGeneratorOptions o = ModelGeneratorOptions.parse(new String[] {"/src", "org.compiere.model", "D", "C_Order", "D"});
+		assertTrue(o.safetyProblems(SYSTEM).isEmpty());
+		// no column entity type: all columns, only a warning (S1)
+		o = ModelGeneratorOptions.parse(new String[] {"/src", "org.compiere.model", "D", "C_Order"});
+		List<String> problems = o.safetyProblems(SYSTEM);
+		assertTrue(problems.stream().anyMatch(p -> p.startsWith("S1")));
+		assertTrue(problems.stream().noneMatch(o::isRefused));
+	}
+
+	@Test
+	public void testNamedFormRefusesEveryProblem() {
+		ModelGeneratorOptions o = ModelGeneratorOptions.parse(new String[] {"--folder=/src", "--package=org.compiere.model",
+				"--tables=C_Order", "--table-entity-type=D"});
+		assertTrue(o.safetyProblems(SYSTEM).stream().allMatch(o::isRefused));
 	}
 
 	@Test

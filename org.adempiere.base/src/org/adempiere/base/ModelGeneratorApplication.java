@@ -156,9 +156,13 @@ public class ModelGeneratorApplication implements IApplication {
 			MEntityType entityType = MEntityType.get(Env.getCtx(), et);
 			return entityType != null && entityType.isSystemMaintained();
 		});
-		for (String problem : problems)
-			System.out.println((options.isNamed() ? "REFUSED " : "WARNING ") + problem);
-		if (options.isNamed() && !problems.isEmpty())
+		boolean refused = false;
+		for (String problem : problems) {
+			boolean refuse = options.isRefused(problem);
+			System.out.println((refuse ? "REFUSED " : "WARNING ") + problem);
+			refused |= refuse;
+		}
+		if (refused)
 			return Result.REFUSED;
 		for (String warning : options.warnings())
 			System.out.println("WARNING " + warning);

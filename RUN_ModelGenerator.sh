@@ -27,6 +27,7 @@ The generator arguments are the ones of the command line of the model generator,
 or the named form
   --folder=DIR --package=PKG --tables=NAMES [--table-entity-type=ET] [--column-entity-type=ET] [--output=interface,class,accessor]
   [--suffix=XYZ] [--columns=A,B] [--template=NAME] [--check] ...
+Positional and named arguments cannot be mixed.
 Call it with --help to see the full description of the generator arguments.
 Relative folders are relative to the folder you call the script from.
 
