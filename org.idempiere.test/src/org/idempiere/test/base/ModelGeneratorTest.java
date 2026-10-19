@@ -23,6 +23,7 @@ package org.idempiere.test.base;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -49,7 +50,6 @@ import org.compiere.util.Env;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.idempiere.test.generated.C_Order_Test;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -141,7 +141,7 @@ public class ModelGeneratorTest extends AbstractTestCase {
 		String table = DB.getSQLValueString(null, "SELECT t.TableName FROM AD_Column c JOIN AD_Table t ON t.AD_Table_ID=c.AD_Table_ID "
 				+ "WHERE c.IsEncrypted='Y' AND c.IsActive='Y' AND c.EntityType='D' AND t.EntityType='D' AND t.IsView='N' "
 				+ "AND (c.ColumnSQL IS NULL OR c.ColumnSQL NOT LIKE '@SQL%') ORDER BY t.TableName");
-		Assumptions.assumeTrue(table != null, "no encrypted column of entity type D in the dictionary");
+		assertNotNull(table, "no encrypted column of entity type D in the dictionary");
 		IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> ModelInterfaceGenerator.generateSource(
 				ModelInterfaceGenerator.GEN_SOURCE_ACCESSOR, folder.toString(), PACKAGE, "D", table, "D", "Test"));
 		assertTrue(e.getMessage().contains("encrypted"), e.getMessage());
@@ -152,7 +152,7 @@ public class ModelGeneratorTest extends AbstractTestCase {
 		String table = DB.getSQLValueString(null, "SELECT t.TableName FROM AD_Column c JOIN AD_Table t ON t.AD_Table_ID=c.AD_Table_ID "
 				+ "WHERE c.IsEncrypted='Y' AND c.IsActive='Y' AND c.EntityType='D' AND t.EntityType='D' AND t.IsView='N' "
 				+ "AND (c.ColumnSQL IS NULL OR c.ColumnSQL NOT LIKE '@SQL%') ORDER BY t.TableName");
-		Assumptions.assumeTrue(table != null, "no encrypted column of entity type D in the dictionary");
+		assertNotNull(table, "no encrypted column of entity type D in the dictionary");
 		assertThrows(IllegalArgumentException.class, () -> ModelInterfaceGenerator.generateSource(
 				ModelInterfaceGenerator.GEN_SOURCE_ACCESSOR_INTERFACE, folder.toString(), PACKAGE, "D", table, "D", "Test"));
 		try (Stream<Path> files = Files.walk(folder)) {
