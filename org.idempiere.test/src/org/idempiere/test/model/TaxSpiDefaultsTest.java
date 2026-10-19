@@ -190,12 +190,25 @@ public class TaxSpiDefaultsTest extends AbstractTestCase {
 				assertEquals(DictionaryIDs.C_DocType.STANDARD_ORDER.id, lookup.docTypeId, "Unexpected document type passed by CalloutOrder.tax");
 				assertEquals(MOrder.PAYMENTRULE_Cash, lookup.paymentRule, "Unexpected payment rule passed by CalloutOrder.tax");
 
+				// a saved order: its document type wins over the target, as in MOrder.getDocTypeID()
+				Env.setContext(ctx, windowNo, MOrder.COLUMNNAME_C_DocType_ID, DictionaryIDs.C_DocType.POS_ORDER.id);
+				lookup.reset();
+				new CalloutOrder().tax(ctx, windowNo, mTab, mField, chargeId);
+				assertEquals(DictionaryIDs.C_DocType.POS_ORDER.id, lookup.docTypeId, "CalloutOrder.tax should pass C_DocType_ID when it is set");
+				Env.setContext(ctx, windowNo, MOrder.COLUMNNAME_C_DocType_ID, "");
+
 				Env.setContext(ctx, windowNo, MInvoice.COLUMNNAME_C_DocTypeTarget_ID, DictionaryIDs.C_DocType.AR_INVOICE.id);
 				Env.setContext(ctx, windowNo, MInvoice.COLUMNNAME_PaymentRule, MInvoice.PAYMENTRULE_OnCredit);
 				lookup.reset();
 				new CalloutInvoice().tax(ctx, windowNo, mTab, mField, chargeId);
 				assertEquals(DictionaryIDs.C_DocType.AR_INVOICE.id, lookup.docTypeId, "Unexpected document type passed by CalloutInvoice.tax");
 				assertEquals(MInvoice.PAYMENTRULE_OnCredit, lookup.paymentRule, "Unexpected payment rule passed by CalloutInvoice.tax");
+
+				// a saved invoice: its document type wins over the target, as in MInvoice.getDocTypeID()
+				Env.setContext(ctx, windowNo, MInvoice.COLUMNNAME_C_DocType_ID, DictionaryIDs.C_DocType.AR_INVOICE_INDIRECT.id);
+				lookup.reset();
+				new CalloutInvoice().tax(ctx, windowNo, mTab, mField, chargeId);
+				assertEquals(DictionaryIDs.C_DocType.AR_INVOICE_INDIRECT.id, lookup.docTypeId, "CalloutInvoice.tax should pass C_DocType_ID when it is set");
 			} finally {
 				Env.clearWinContext(ctx, windowNo);
 			}

@@ -978,7 +978,9 @@ public class CalloutOrder extends CalloutEngine
 		//
 		String deliveryViaRule = Env.getContext(ctx, WindowNo, I_C_Order.COLUMNNAME_DeliveryViaRule, true);
 		int dropshipLocationId = Env.getContextAsInt(ctx, WindowNo, I_C_Order.COLUMNNAME_DropShip_Location_ID, true);
-		int C_DocType_ID = Env.getContextAsInt(ctx, WindowNo, I_C_Order.COLUMNNAME_C_DocTypeTarget_ID, true);
+		int C_DocType_ID = Env.getContextAsInt(ctx, WindowNo, I_C_Order.COLUMNNAME_C_DocType_ID, true);
+		if (C_DocType_ID <= 0)
+			C_DocType_ID = Env.getContextAsInt(ctx, WindowNo, I_C_Order.COLUMNNAME_C_DocTypeTarget_ID, true);
 		String paymentRule = Env.getContext(ctx, WindowNo, I_C_Order.COLUMNNAME_PaymentRule, true);
 		int C_Tax_ID = Core.getTaxLookup().get(ctx, M_Product_ID, C_Charge_ID, billDate, shipDate,
 			AD_Org_ID, M_Warehouse_ID, billC_BPartner_Location_ID, shipC_BPartner_Location_ID, dropshipLocationId,
