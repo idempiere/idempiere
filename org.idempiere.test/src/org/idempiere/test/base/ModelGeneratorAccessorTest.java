@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import javax.tools.JavaCompiler;
+import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 
 import org.adempiere.util.ModelInterfaceGenerator;
@@ -82,14 +83,26 @@ public class ModelGeneratorAccessorTest extends AbstractTestCase {
 		if (accessor != null)
 			return;
 		folder = Files.createTempDirectory("accessor-test");
+		try {
+			compileAccessor();
+		} catch (Exception | AssertionError e) {
+			cleanUp(); // a failed setup must not leave the folder behind
+			throw e;
+		}
+	}
+
+	private static void compileAccessor() throws Exception {
 		ModelInterfaceGenerator.generateSource(ModelInterfaceGenerator.GEN_SOURCE_ACCESSOR, folder.toString(), PACKAGE,
 				"D", "C_Order", "D", "Test");
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 		assertNotNull(compiler, "the tests need a JDK, not a JRE");
 		Path source = folder.resolve(CLASS_NAME.replace('.', '/') + ".java");
 		java.io.StringWriter errors = new java.io.StringWriter();
-		boolean compiled = compiler.getTask(errors, null, null, List.of("-proc:none", "-nowarn", "-classpath", classPath(), "-d", folder.toString()),
-				null, compiler.getStandardFileManager(null, null, null).getJavaFileObjects(source)).call();
+		boolean compiled;
+		try (StandardJavaFileManager files = compiler.getStandardFileManager(null, null, null)) {
+			compiled = compiler.getTask(errors, files, null, List.of("-proc:none", "-nowarn", "-classpath", classPath(), "-d", folder.toString()),
+					null, files.getJavaFileObjects(source)).call();
+		}
 		assertTrue(compiled, "the generated accessor compiles: " + errors + "\nclasspath: " + classPath().replace(java.io.File.pathSeparator, "\n"));
 		loader = new URLClassLoader(new URL[] {folder.toUri().toURL()}, PO.class.getClassLoader());
 		accessor = loader.loadClass(CLASS_NAME);
@@ -135,12 +148,16 @@ public class ModelGeneratorAccessorTest extends AbstractTestCase {
 	@AfterAll
 	public static void cleanUp() throws IOException {
 		accessor = null;
-		if (loader != null)
+		if (loader != null) {
 			loader.close();
-		if (folder != null)
+			loader = null;
+		}
+		if (folder != null) {
 			try (Stream<Path> files = Files.walk(folder)) {
 				files.sorted(Comparator.reverseOrder()).forEach(f -> f.toFile().delete());
 			}
+			folder = null;
+		}
 	}
 
 	private static Object of(Class<?> parameter, Object po) throws Exception {
@@ -275,7 +292,7 @@ public class ModelGeneratorAccessorTest extends AbstractTestCase {
 		// the referenced record is read in the transaction of the tab
 		assertEquals(DictionaryIDs.C_BPartner.JOE_BLOCK.id, ((MBPartner) call(acc, "getC_BPartner")).getC_BPartner_ID());
 
-		// another table is refused
+		// no tab is refused
 		assertThrows(IllegalArgumentException.class, () -> of(GridTab.class, null));
 		tab.dataIgnore();
 	}

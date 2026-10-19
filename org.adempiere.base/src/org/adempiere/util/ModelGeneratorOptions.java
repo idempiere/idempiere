@@ -21,12 +21,13 @@
  **********************************************************************/
 package org.adempiere.util;
 
-import org.compiere.model.PO;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Predicate;
+
+import org.compiere.model.PO;
 
 /**
  * Command line options of the model generator ({@code ModelGeneratorApplication}).
@@ -215,7 +216,8 @@ public class ModelGeneratorOptions {
 	 * <li>S2: a column entity type filter together with class output writes an {@code X_} class that has
 	 * only some columns of the table but is annotated for the whole table</li>
 	 * <li>S4: a core package with a column entity type other than {@code D} writes plug-in columns into core files</li>
-	 * <li>S7: accessor output for the columns of the dictionary entity type {@code D}; the accessor only gets and sets
+	 * <li>S7: accessor output for the columns of the dictionary entity type {@code D}, or with no column entity type and no
+	 * {@code --columns} (every column); the accessor only gets and sets
 	 * values and skips the logic of the model classes ({@code MOrder.setC_BPartner_ID} also sets the bill-to partner).
 	 * Columns named with {@code --columns} are checked by the generator, which reads their entity types</li>
 	 * </ul>
@@ -243,6 +245,10 @@ public class ModelGeneratorOptions {
 				&& entityTypes(columnEntityType).stream().anyMatch(et -> !PO.ENTITYTYPE_Dictionary.equals(et)))
 			problems.add("S4: package " + packageName + " is a core package but column entity type " + columnEntityType
 					+ " is not D; plug-in columns would be written into core files.");
+		if (generateAccessor && isEmpty(columnEntityType) && isEmpty(columns))
+			problems.add("S7: no --column-entity-type and no --columns, so the accessor would cover every column of the table, core columns "
+					+ "included; it only gets and sets values and skips the logic of the model classes. Set --column-entity-type to the "
+					+ "entity type of the plug-in.");
 		if (generateAccessor)
 			if (entityTypes(columnEntityType).contains(PO.ENTITYTYPE_Dictionary))
 				problems.add("S7: column entity type D is the core dictionary; the accessor only gets and sets values and skips "
@@ -326,6 +332,7 @@ public class ModelGeneratorOptions {
 			+ "  --check               generate into a temporary folder and compare with --folder; writes nothing, fails when no table matches, needs the same\n"
 			+ "                        arguments as the generate call, ignores files that exist only in --folder\n"
 			+ "  Named and positional arguments cannot be mixed.\n"
+			+ "  A table in a comma separated --tables list, or a --columns name, that matches nothing is refused (both forms).\n"
 			+ "  Safety rules S1, S2, S4, S7 REFUSE a named call; the positional form only warns, except S4 which refuses in both forms.\n"
 			+ "  Exit code 0 = ok, 1 = refused, error or --check difference; the last output line is result: ok|refused|error|differs";
 	}

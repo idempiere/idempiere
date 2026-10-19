@@ -261,6 +261,15 @@ public class ModelGeneratorOptionsTest {
 				"--tables=C_Order", "--table-entity-type=D", "--column-entity-type=EE1", "--output=interface,accessor", "--suffix=XYZ"});
 		assertTrue(o.safetyProblems(SYSTEM).stream().noneMatch(p -> p.startsWith("S7")),
 				"a system maintained entity type other than D, for example one of a company, is not refused by S7");
+
+		// no column entity type: every column of the table, core columns included
+		o = ModelGeneratorOptions.parse(new String[] {"--folder=/src", "--package=com.xyz.model",
+				"--tables=XYZ_Shipment", "--table-entity-type=XYZ", "--output=accessor", "--suffix=KLM"});
+		assertTrue(o.safetyProblems(SYSTEM).stream().filter(p -> p.startsWith("S7")).allMatch(o::isRefused));
+		assertTrue(o.safetyProblems(SYSTEM).stream().anyMatch(p -> p.startsWith("S7")), "no column entity type and no --columns");
+		o = ModelGeneratorOptions.parse(new String[] {"--folder=/src", "--package=com.xyz.model",
+				"--tables=XYZ_Shipment", "--table-entity-type=XYZ", "--output=accessor", "--suffix=KLM", "--columns=KLM_Note"});
+		assertTrue(o.safetyProblems(SYSTEM).stream().noneMatch(p -> p.startsWith("S7")), "named columns are checked by the generator");
 	}
 
 	@Test
