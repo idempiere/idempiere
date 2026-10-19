@@ -99,8 +99,8 @@ public interface ITaxLookup {
 	 * @param shipC_BPartner_Location_ID Ship to location
 	 * @param IsSOTrx
 	 * @param deliveryViaRule Order/Invoice's Delivery Via Rule
-	 * @param C_DocType_ID Order/Invoice's Document Type (ignored if not implemented)
-	 * @param paymentRule Order/Invoice's Payment Rule (ignored if not implemented)
+	 * @param C_DocType_ID Order/Invoice's Document Type (ignored if not implemented); for an RMA line, of the original invoice or order
+	 * @param paymentRule Order/Invoice's Payment Rule (ignored if not implemented); for an RMA line, of the original invoice or order
 	 * @param trxName
 	 * @return C_Tax_ID
 	 */
@@ -133,8 +133,8 @@ public interface ITaxLookup {
 	 * @param dropshipC_BPartner_Location_ID Drop Ship to location (ignored if not implemented)
 	 * @param IsSOTrx
 	 * @param deliveryViaRule Order/Invoice's Delivery Via Rule
-	 * @param C_DocType_ID Order/Invoice's Document Type (ignored if not implemented)
-	 * @param paymentRule Order/Invoice's Payment Rule (ignored if not implemented)
+	 * @param C_DocType_ID Order/Invoice's Document Type (ignored if not implemented); for an RMA line, of the original invoice or order
+	 * @param paymentRule Order/Invoice's Payment Rule (ignored if not implemented); for an RMA line, of the original invoice or order
 	 * @param trxName
 	 * @return C_Tax_ID
 	 */

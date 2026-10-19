@@ -22,9 +22,12 @@
 package org.idempiere.test.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockConstruction;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
@@ -35,23 +38,30 @@ import java.util.function.Consumer;
 import org.adempiere.base.Core;
 import org.adempiere.base.DefaultTaxLookup;
 import org.adempiere.base.ITaxLookup;
+import org.compiere.model.Callout;
 import org.compiere.model.CalloutInvoice;
+import org.compiere.model.CalloutInvoiceBatch;
 import org.compiere.model.CalloutOrder;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.MBPartner;
+import org.compiere.model.I_C_InvoiceBatchLine;
 import org.compiere.model.MDocType;
+import org.compiere.model.MInOut;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MProduct;
+import org.compiere.model.MRMA;
+import org.compiere.model.MRMALine;
 import org.compiere.process.DocAction;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
@@ -213,6 +223,147 @@ public class TaxSpiDefaultsTest extends AbstractTestCase {
 				Env.clearWinContext(ctx, windowNo);
 			}
 		});
+	}
+
+	/**
+	 * The invoice batch line tax callout passes the batch line's document type from the window context
+	 * and no payment rule (the invoice batch has none).
+	 */
+	@Test
+	public void testDocTypePassedByInvoiceBatchTaxCallout() {
+		Properties ctx = Env.getCtx();
+		int windowNo = 9147;
+		GridTab mTab = mock(GridTab.class);
+		when(mTab.getTabNo()).thenReturn(1);
+		GridField mField = mock(GridField.class);
+		when(mField.getColumnName()).thenReturn(I_C_InvoiceBatchLine.COLUMNNAME_C_Charge_ID);
+
+		withRecordingTaxLookup(lookup -> {
+			try {
+				Env.setContext(ctx, windowNo, "IsSOTrx", true);
+				Env.setContext(ctx, windowNo, "AD_Org_ID", DictionaryIDs.AD_Org.HQ.id);
+				Env.setContext(ctx, windowNo, "C_BPartner_Location_ID", DictionaryIDs.C_BPartner_Location.C_AND_W_STAMFORD.id);
+				Env.setContext(ctx, windowNo, "DateInvoiced", TimeUtil.getDay(null));
+				Env.setContext(ctx, windowNo, I_C_InvoiceBatchLine.COLUMNNAME_C_DocType_ID, DictionaryIDs.C_DocType.AR_INVOICE.id);
+				new CalloutInvoiceBatch().tax(ctx, windowNo, mTab, mField, Integer.valueOf(DictionaryIDs.C_Charge.BANK.id));
+				assertEquals(DictionaryIDs.C_DocType.AR_INVOICE.id, lookup.docTypeId, "Unexpected document type passed by CalloutInvoiceBatch.tax");
+				assertNull(lookup.paymentRule, "CalloutInvoiceBatch.tax should pass no payment rule");
+			} finally {
+				Env.clearWinContext(ctx, windowNo);
+			}
+		});
+	}
+
+	/**
+	 * RMA line tax lookups (MRMALine on save, CalloutRMA.product in the window) pass the document type and
+	 * payment rule of the original document: the order while the shipment's order has no invoice, then the invoice.
+	 */
+	@Test
+	public void testRMALineTaxLookupPassesOriginalDocument() {
+		Properties ctx = Env.getCtx();
+		Timestamp today = TimeUtil.getDay(null);
+		int productId = DictionaryIDs.M_Product.AZALEA_BUSH.id;
+
+		MOrder order = new MOrder(ctx, 0, getTrxName());
+		order.setBPartner(MBPartner.get(ctx, DictionaryIDs.C_BPartner.C_AND_W.id));
+		order.setIsSOTrx(true);
+		order.setC_DocTypeTarget_ID();
+		order.setPaymentRule(MOrder.PAYMENTRULE_Cash);
+		order.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.HQ.id);
+		order.setDateOrdered(today);
+		order.setDatePromised(today);
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		order.saveEx();
+
+		MInOut shipment = new MInOut(order, DictionaryIDs.C_DocType.MM_SHIPMENT.id, today);
+		shipment.setDocStatus(DocAction.STATUS_Drafted);
+		shipment.setDocAction(DocAction.ACTION_Complete);
+		shipment.saveEx();
+
+		MRMA rma = new MRMA(ctx, 0, getTrxName());
+		rma.setM_InOut_ID(shipment.getM_InOut_ID());
+		rma.setC_BPartner_ID(order.getC_BPartner_ID());
+		rma.setC_Currency_ID(order.getC_Currency_ID());
+		rma.setIsSOTrx(true);
+		rma.setName("IDEMPIERE-7146");
+		rma.setC_DocType_ID(DictionaryIDs.C_DocType.CUSTOMER_RETURN_MATERIAL.id);
+		rma.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+		rma.setM_RMAType_ID(DictionaryIDs.M_RMAType.DAMAGE_ON_ARRIVAL.id);
+		rma.saveEx();
+
+		withRecordingTaxLookup(lookup -> {
+			// no invoice for the shipment's order: the order's document type and payment rule
+			newRMALine(rma, productId);
+			assertEquals(order.getDocTypeID(), lookup.docTypeId, "Unexpected document type passed by MRMALine (order)");
+			assertEquals(MOrder.PAYMENTRULE_Cash, lookup.paymentRule, "Unexpected payment rule passed by MRMALine (order)");
+
+			lookup.reset();
+			runCalloutRMAProduct(rma, order, null, shipment, productId);
+			assertEquals(order.getDocTypeID(), lookup.docTypeId, "Unexpected document type passed by CalloutRMA (order)");
+			assertEquals(MOrder.PAYMENTRULE_Cash, lookup.paymentRule, "Unexpected payment rule passed by CalloutRMA (order)");
+
+			// the order is invoiced: the invoice's document type and payment rule
+			MInvoice invoice = new MInvoice(order, DictionaryIDs.C_DocType.AR_INVOICE.id, today);
+			invoice.setPaymentRule(MInvoice.PAYMENTRULE_OnCredit);
+			invoice.setDocStatus(DocAction.STATUS_Drafted);
+			invoice.setDocAction(DocAction.ACTION_Complete);
+			invoice.saveEx();
+
+			lookup.reset();
+			newRMALine(rma, productId);
+			assertEquals(invoice.getDocTypeID(), lookup.docTypeId, "Unexpected document type passed by MRMALine (invoice)");
+			assertEquals(MInvoice.PAYMENTRULE_OnCredit, lookup.paymentRule, "Unexpected payment rule passed by MRMALine (invoice)");
+
+			lookup.reset();
+			runCalloutRMAProduct(rma, order, invoice, shipment, productId);
+			assertEquals(invoice.getDocTypeID(), lookup.docTypeId, "Unexpected document type passed by CalloutRMA (invoice)");
+			assertEquals(MInvoice.PAYMENTRULE_OnCredit, lookup.paymentRule, "Unexpected payment rule passed by CalloutRMA (invoice)");
+		});
+	}
+
+	/**
+	 * Run the RMA line product callout ({@code org.adempiere.model.CalloutRMA.product}, resolved as the AD column does);
+	 * it reads the RMA outside the test transaction, so every RMA it creates answers with the test documents.
+	 * @param rma RMA of the line
+	 * @param order original order
+	 * @param invoice original invoice, null if none
+	 * @param shipment shipment of the RMA
+	 * @param productId product entered on the line
+	 */
+	private void runCalloutRMAProduct(MRMA rma, MOrder order, MInvoice invoice, MInOut shipment, int productId) {
+		GridTab mTab = mock(GridTab.class);
+		when(mTab.getValue(MRMALine.COLUMNNAME_M_RMA_ID)).thenReturn(Integer.valueOf(rma.getM_RMA_ID()));
+		when(mTab.getValue(MRMALine.COLUMNNAME_AD_Org_ID)).thenReturn(Integer.valueOf(rma.getAD_Org_ID()));
+		when(mTab.getActiveCallouts()).thenReturn(new String[0]);
+		GridField mField = mock(GridField.class);
+		when(mField.getColumnName()).thenReturn(MRMALine.COLUMNNAME_M_Product_ID);
+		try (MockedConstruction<MRMA> rmaMock = mockConstruction(MRMA.class, (mock, context) -> {
+			when(mock.getOriginalInvoice()).thenReturn(invoice);
+			when(mock.getOriginalOrder()).thenReturn(order);
+			when(mock.getShipment()).thenReturn(shipment);
+			when(mock.getC_BPartner_ID()).thenReturn(rma.getC_BPartner_ID());
+			when(mock.isSOTrx()).thenReturn(rma.isSOTrx());
+		})) {
+			Callout callout = Core.getCallout("org.adempiere.model.CalloutRMA", "product");
+			assertNotNull(callout, "CalloutRMA not found");
+			String error = callout.start(Env.getCtx(), "product", 9148, mTab, mField, Integer.valueOf(productId), null);
+			assertEquals("", error, "CalloutRMA.product failed");
+		}
+	}
+
+	/**
+	 * Save a new RMA line with a product and no shipment line, so its tax is looked up
+	 * @param rma RMA
+	 * @param productId product
+	 */
+	private void newRMALine(MRMA rma, int productId) {
+		MRMALine line = new MRMALine(Env.getCtx(), 0, getTrxName());
+		line.setM_RMA_ID(rma.getM_RMA_ID());
+		line.setAD_Org_ID(rma.getAD_Org_ID());
+		line.setM_Product_ID(productId);
+		line.setQty(Env.ONE);
+		line.saveEx();
 	}
 
 	/**
