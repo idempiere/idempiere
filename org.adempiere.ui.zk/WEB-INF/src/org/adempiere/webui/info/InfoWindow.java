@@ -2205,6 +2205,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         			editor2.getComponent().setVisible(false);
         		if (editor.getLabel() != null)
         			editor.getLabel().setVisible(false);
+        		updateNegateButton(editor, editor.getValue());
         	}
         	else if (!editor.getComponent().isVisible()) {
         		editor.getComponent().setVisible(true);
@@ -2212,6 +2213,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         			editor2.getComponent().setVisible(true);
         		if (editor.getLabel() != null)
         			editor.getLabel().setVisible(true);
+        		updateNegateButton(editor, editor.getValue());
         	}
         	idx++;
         }
@@ -2285,12 +2287,6 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         }
 
         addSearchParameter(editor, editor2);
-        if (infoColumn.isShowNegateButton() && DisplayType.isChosenMultipleSelection(infoColumn.getAD_Reference_ID())
-        	&& fieldEditor.getParent() instanceof HtmlBasedComponent parent) {
-        	// the theme positions .btn-negate absolutely, relative to its parent
-        	parent.setStyle(parent.getStyle() + "; position: relative;");
-        	parent.appendChild(createNegateButton(editor));
-        }
         
         editors.add(editor);
         editors2.add(editor2);
@@ -2385,6 +2381,21 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         		((NumberBox)fieldEditor).getDecimalbox().setPlaceholder(Msg.getMsg(Env.getCtx(), "From"));
         		((NumberBox)fieldEditor2).getDecimalbox().setPlaceholder(Msg.getMsg(Env.getCtx(), "To"));
         	}
+        }
+        // include/exclude button of chosen multiple selection, created once and re-attached when the grid is laid out again
+        Button bNegate = null;
+        if (editor.getComponent() != null)
+        	bNegate = (Button) editor.getComponent().getAttribute(ATT_NOT_CLAUSE);
+        if (bNegate == null && editor.getGridField() != null) {
+        	InfoColumnVO infoColumn = findInfoColumnParameter(editor.getGridField());
+        	if (infoColumn != null && infoColumn.isShowNegateButton()
+        		&& DisplayType.isChosenMultipleSelection(infoColumn.getAD_Reference_ID()))
+        		bNegate = createNegateButton(editor);
+        }
+        if (bNegate != null) {
+        	// the theme positions .btn-negate absolutely, relative to its parent
+        	outerParent.setStyle(outerParent.getStyle() + "; position: relative;");
+        	outerParent.appendChild(bNegate);
         }
         panel.appendChild(outerParent);
 	}
@@ -2665,7 +2676,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		if (bNegate == null)
 			return;
 		boolean hasValue = value != null && value.toString().trim().length() > 0;
-		bNegate.setVisible(hasValue);
+		// follow the editor: hidden together with it by display logic
+		bNegate.setVisible(hasValue && editor.getComponent().isVisible());
 		if (!hasValue)
 			setNegateButtonState(bNegate, false);
 	}
@@ -2678,7 +2690,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		if (editor.getComponent() == null)
 			return false;
 		Button bNegate = (Button) editor.getComponent().getAttribute(ATT_NOT_CLAUSE);
-		return bNegate != null && bNegate.isVisible() && (boolean) bNegate.getAttribute(ATT_IS_SELECTED);
+		return bNegate != null && (boolean) bNegate.getAttribute(ATT_IS_SELECTED);
 	}
 
 	@Override
