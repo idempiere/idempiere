@@ -70,9 +70,9 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
+import org.idempiere.print.ReportContentRequest;
 import org.idempiere.ui.zk.media.IMediaView;
 import org.idempiere.ui.zk.media.WMediaOptions;
-import org.idempiere.print.ReportContentRequest;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Component;
@@ -532,7 +532,8 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 				if (showOptions && (view != null || uploadServicesMap.size() > 0)) {
 					clearPreviewContainer();
 					final IMediaView fview = view;
-					WMediaOptions options = new WMediaOptions(media, fview != null ? () -> fview.renderMediaView(center, media, true) : null, uploadServicesMap);
+					boolean readonly = MSysConfig.getBooleanValue(MSysConfig.XLS_VIEWER_READONLY_REPORT, true, Env.getAD_Client_ID(Env.getCtx()));
+					WMediaOptions options = new WMediaOptions(media, fview != null ? () -> fview.renderMediaView(center, media, readonly) : null, uploadServicesMap);
 					options.setPage(getPage());
 					options.doHighlighted();
 				} else {
@@ -561,7 +562,8 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 				if (showOptions && (view != null || uploadServicesMap.size() > 0)) {
 					clearPreviewContainer();
 					final IMediaView fview = view;
-					WMediaOptions options = new WMediaOptions(media, fview != null ? () -> fview.renderMediaView(center, media, true) : null, uploadServicesMap);
+					boolean readonly = MSysConfig.getBooleanValue(MSysConfig.XLS_VIEWER_READONLY_REPORT, true, Env.getAD_Client_ID(Env.getCtx()));
+					WMediaOptions options = new WMediaOptions(media, fview != null ? () -> fview.renderMediaView(center, media, readonly) : null, uploadServicesMap);
 					options.setPage(getPage());
 					options.doHighlighted();
 				} else {
