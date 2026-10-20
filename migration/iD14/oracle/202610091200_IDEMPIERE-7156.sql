@@ -65,7 +65,7 @@ INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,Cr
 ;
 
 -- May 13, 2025, 9:46:05 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (802972,0.0,'AD_DateRange_UU',800173,'AD_DateRange_UU',36,'N','N','N','N','N','N',10,0,0,'Y',TO_TIMESTAMP('2025-05-13 09:46:05','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-05-13 09:46:05','YYYY-MM-DD HH24:MI:SS'),100,800582,'Y','N','D','N','bb271fa6-715a-5754-bd81-a8938b7aa95b','N')
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (802972,0.0,'AD_DateRange_UU',800173,'AD_DateRange_UU',36,'N','N','Y','N','N','N',200231,0,0,'Y',TO_TIMESTAMP('2025-05-13 09:46:05','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-05-13 09:46:05','YYYY-MM-DD HH24:MI:SS'),100,800582,'Y','N','D','N','bb271fa6-715a-5754-bd81-a8938b7aa95b','N')
 ;
 
 -- May 13, 2025, 9:46:06 AM CEST
@@ -306,7 +306,7 @@ INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,Cr
 ;
 
 -- May 13, 2025, 10:37:38 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (802988,0.0,'AD_DateRangeGroup_UU',800174,'AD_DateRangeGroup_UU',36,'N','N','N','N','N','N',10,0,0,'Y',TO_TIMESTAMP('2025-05-13 10:37:38','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-05-13 10:37:38','YYYY-MM-DD HH24:MI:SS'),100,800585,'Y','N','D','N','838cffde-19ba-5c7a-9335-13b57fa6e0c6','N')
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (802988,0.0,'AD_DateRangeGroup_UU',800174,'AD_DateRangeGroup_UU',36,'N','N','Y','N','N','N',200231,0,0,'Y',TO_TIMESTAMP('2025-05-13 10:37:38','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-05-13 10:37:38','YYYY-MM-DD HH24:MI:SS'),100,800585,'Y','N','D','N','838cffde-19ba-5c7a-9335-13b57fa6e0c6','N')
 ;
 
 -- May 13, 2025, 10:37:38 AM CEST
@@ -456,7 +456,7 @@ INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,Cr
 ;
 
 -- May 13, 2025, 10:51:17 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (803000,0.0,'AD_DateRangeGroup_Trl_UU',800175,'AD_DateRangeGroup_Trl_UU',36,'N','N','N','N','N','N',10,0,0,'Y',TO_TIMESTAMP('2025-05-13 10:51:17','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-05-13 10:51:17','YYYY-MM-DD HH24:MI:SS'),100,800586,'Y','N','D','N','51269192-37e2-56dc-a7d8-9f60c5205e01','N')
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (803000,0.0,'AD_DateRangeGroup_Trl_UU',800175,'AD_DateRangeGroup_Trl_UU',36,'N','N','Y','N','N','N',200231,0,0,'Y',TO_TIMESTAMP('2025-05-13 10:51:17','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-05-13 10:51:17','YYYY-MM-DD HH24:MI:SS'),100,800586,'Y','N','D','N','51269192-37e2-56dc-a7d8-9f60c5205e01','N')
 ;
 
 -- May 13, 2025, 10:51:17 AM CEST
@@ -708,7 +708,7 @@ INSERT INTO AD_Element (AD_Element_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,Cr
 ;
 
 -- May 13, 2025, 10:56:34 AM CEST
-INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (803012,0.0,'AD_DateRange_Trl_UU',800176,'AD_DateRange_Trl_UU',36,'N','N','N','N','N','N',10,0,0,'Y',TO_TIMESTAMP('2025-05-13 10:56:34','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-05-13 10:56:34','YYYY-MM-DD HH24:MI:SS'),100,800587,'Y','N','D','N','3391da04-7290-5334-90eb-c217a1b5eab5','N')
+INSERT INTO AD_Column (AD_Column_ID,Version,Name,AD_Table_ID,ColumnName,FieldLength,IsKey,IsParent,IsMandatory,IsTranslated,IsIdentifier,IsEncrypted,AD_Reference_ID,AD_Client_ID,AD_Org_ID,IsActive,Created,CreatedBy,Updated,UpdatedBy,AD_Element_ID,IsUpdateable,IsSelectionColumn,EntityType,IsAlwaysUpdateable,AD_Column_UU,IsToolbarButton) VALUES (803012,0.0,'AD_DateRange_Trl_UU',800176,'AD_DateRange_Trl_UU',36,'N','N','Y','N','N','N',200231,0,0,'Y',TO_TIMESTAMP('2025-05-13 10:56:34','YYYY-MM-DD HH24:MI:SS'),100,TO_TIMESTAMP('2025-05-13 10:56:34','YYYY-MM-DD HH24:MI:SS'),100,800587,'Y','N','D','N','3391da04-7290-5334-90eb-c217a1b5eab5','N')
 ;
 
 -- May 13, 2025, 10:56:34 AM CEST
