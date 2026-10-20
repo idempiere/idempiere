@@ -183,10 +183,19 @@ public class MStyle extends X_AD_Style implements ImmutablePOSupport {
 			// substitute @variable@ (inline style only, css blocks may legitimately contain @media, @import ...)
 			if (inline && evaluatee != null && styleText.indexOf(Evaluator.VARIABLE_START_END_MARKER) >= 0)
 			{
-				String parsed = Env.parseVariable(styleText, evaluatee, true, false);
+				// @sclass= and @zclass= prefix is not a variable, keep it out of the parsing
+				String prefix = "";
+				String body = styleText;
+				if (styleText.regionMatches(true, 0, SCLASS_PREFIX, 0, SCLASS_PREFIX.length())
+					|| styleText.regionMatches(true, 0, ZCLASS_PREFIX, 0, ZCLASS_PREFIX.length()))
+				{
+					prefix = styleText.substring(0, SCLASS_PREFIX.length());
+					body = styleText.substring(prefix.length());
+				}
+				String parsed = Env.parseVariable(body, evaluatee, true, false);
 				// unresolved @tag@ is kept as is; a parse failure (e.g. a single literal @ in existing style text) returns empty, keep the original text
 				if (!Util.isEmpty(parsed))
-					styleText = parsed;
+					styleText = prefix + parsed;
 			}
 			styleBuilder.append(styleText);
 		}

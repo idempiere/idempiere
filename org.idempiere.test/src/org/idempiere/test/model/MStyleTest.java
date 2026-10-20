@@ -108,6 +108,15 @@ public class MStyleTest extends AbstractTestCase {
 	}
 
 	@Test
+	public void testSclassAndZclassPrefixKept() {
+		Evaluatee evaluatee = name -> "Color".equals(name) ? "red" : "";
+		assertEquals(MStyle.SCLASS_PREFIX + "my-class", createStyle(MStyle.SCLASS_PREFIX + "my-class").buildStyle("", evaluatee));
+		assertEquals(MStyle.ZCLASS_PREFIX + "my-class", createStyle(MStyle.ZCLASS_PREFIX + "my-class").buildStyle("", evaluatee));
+		assertEquals(MStyle.SCLASS_PREFIX + "my-red", createStyle(MStyle.SCLASS_PREFIX + "my-@Color@").buildStyle("", evaluatee));
+		assertEquals(MStyle.ZCLASS_PREFIX + "my-red", createStyle(MStyle.ZCLASS_PREFIX + "my-@Color@").buildStyle("", evaluatee));
+	}
+
+	@Test
 	public void testNoSubstitutionForCss() {
 		String css = "@media print { span { color: red; } }";
 		MStyle style = createStyle(css);
