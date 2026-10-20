@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -27,6 +28,7 @@ import java.util.logging.Level;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
 
 /**
@@ -43,36 +45,90 @@ public class MCostQueue extends X_M_CostQueue
 	private static final long serialVersionUID = -1782836708418500130L;
 
 	/**
-	 * Create Cost Queue Record.
-	 *
-	 * Creates a new cost queue record for the stock entry.
-	 *
-	 * CostingLevel is not validated.
-	 *
-	 * @param product product
-	 * @param M_AttributeSetInstance_ID asi
-	 * @param as accounting schema
-	 * @param AD_Org_ID org
-	 * @param M_CostElement_ID cost element
-	 * @param trxName transaction
-	 * @return new cost queue
+	 * 	Get/Create Cost Queue Record.
+	 * 	CostingLevel is not validated.
+	 *	@param product product
+	 *	@param M_AttributeSetInstance_ID asi
+	 *	@param as accounting schema
+	 *	@param AD_Org_ID org
+	 *	@param M_CostElement_ID cost element
+	 *	@param trxName transaction
+	 *	@return cost queue or null
+	 *	@deprecated use {@link #get(MProduct, int, MAcctSchema, int, int, Timestamp, String)}
 	 */
-	public static MCostQueue get(
-	        MProduct product,
-	        int M_AttributeSetInstance_ID,
-	        MAcctSchema as,
-	        int AD_Org_ID,
-	        int M_CostElement_ID,
-	        String trxName)
+	@Deprecated
+	public static MCostQueue get (MProduct product, int M_AttributeSetInstance_ID,
+		MAcctSchema as, int AD_Org_ID, int M_CostElement_ID, String trxName)
 	{
-	    return new MCostQueue(
-	        product,
-	        M_AttributeSetInstance_ID,
-	        as,
-	        AD_Org_ID,
-	        M_CostElement_ID,
-	        trxName);
-	} // get
+		return get(product, M_AttributeSetInstance_ID, as, AD_Org_ID, M_CostElement_ID, null, trxName);
+	}	//	get
+
+	/**
+	 * 	Get/Create Cost Queue Record.
+	 * 	Without attribute set instance, the account date is the cost layer,
+	 * 	i.e. each account date has its own queue record.
+	 * 	CostingLevel is not validated.
+	 *	@param product product
+	 *	@param M_AttributeSetInstance_ID asi
+	 *	@param as accounting schema
+	 *	@param AD_Org_ID org
+	 *	@param M_CostElement_ID cost element
+	 *	@param dateAcct account date (cost layer if M_AttributeSetInstance_ID is 0)
+	 *	@param trxName transaction
+	 *	@return cost queue or null
+	 */
+	public static MCostQueue get (MProduct product, int M_AttributeSetInstance_ID,
+		MAcctSchema as, int AD_Org_ID, int M_CostElement_ID, Timestamp dateAcct, String trxName)
+	{
+		Timestamp layerDate = dateAcct != null ? TimeUtil.getDay(dateAcct) : null;
+		boolean isDateLayer = M_AttributeSetInstance_ID == 0 && layerDate != null;
+		MCostQueue costQ = null;
+		String sql = "SELECT * FROM M_CostQueue "
+			+ "WHERE AD_Client_ID=? AND AD_Org_ID=?"
+			+ " AND M_Product_ID=?"
+			+ " AND M_AttributeSetInstance_ID=?"
+			+ " AND M_CostType_ID=? AND C_AcctSchema_ID=?"
+			+ " AND M_CostElement_ID=?";
+		if (isDateLayer)
+			sql += " AND DateAcct=?";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement (sql, trxName);
+			pstmt.setInt (1, product.getAD_Client_ID());
+			pstmt.setInt (2, AD_Org_ID);
+			pstmt.setInt (3, product.getM_Product_ID());
+			pstmt.setInt (4, M_AttributeSetInstance_ID);
+			pstmt.setInt (5, as.getM_CostType_ID());
+			pstmt.setInt (6, as.getC_AcctSchema_ID());
+			pstmt.setInt (7, M_CostElement_ID);
+			if (isDateLayer)
+				pstmt.setTimestamp (8, layerDate);
+			rs = pstmt.executeQuery ();
+			if (rs.next ())
+				costQ = new MCostQueue (product.getCtx(), rs, trxName); 
+		}
+		catch (Exception e)
+		{
+			s_log.log (Level.SEVERE, sql, e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
+		}
+		//	New
+		if (costQ == null)
+		{
+			costQ = new MCostQueue (product, M_AttributeSetInstance_ID,
+				as, AD_Org_ID, M_CostElement_ID, trxName);
+			if (layerDate != null)
+				costQ.setDateAcct(layerDate);
+		}
+		return costQ;
+	}	//	get
 
 	/**
 	 * 	Get Cost Queue Records in Lifo/Fifo order
@@ -95,16 +151,11 @@ public class MCostQueue extends X_M_CostQueue
 			.append(" AND M_CostElement_ID=?");
 		if (M_ASI_ID != 0)
 			sql.append(" AND M_AttributeSetInstance_ID=?");
+		String direction = ce.isFifo() ? "" : " DESC";
 		sql.append(" AND CurrentQty<>0 ")
-		   .append(" ORDER BY M_AttributeSetInstance_ID, Created ");
-
-		if (!ce.isFifo())
-		    sql.append(" DESC ");
-
-		sql.append(", M_CostQueue_ID ");
-
-		if (!ce.isFifo())
-		    sql.append(" DESC");
+			.append("ORDER BY M_AttributeSetInstance_ID").append(direction)
+			.append(", DateAcct").append(direction)
+			.append(", M_CostQueue_ID").append(direction);
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
@@ -327,6 +378,7 @@ public class MCostQueue extends X_M_CostQueue
 	private void setInitialDefaults() {
 		setCurrentCostPrice (Env.ZERO);
 		setCurrentQty (Env.ZERO);
+		setDateAcct (TimeUtil.getDay(System.currentTimeMillis()));
 	}
 
 	/**

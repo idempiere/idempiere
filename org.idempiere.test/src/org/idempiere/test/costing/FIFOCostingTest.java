@@ -65,86 +65,36 @@ public class FIFOCostingTest extends AbstractTestCase {
 
 			mockProductGet(productMock, product);
 			mockCategoryGet(categoryMock, category);
-			
-			MPriceListVersion plv = MPriceList.get(DictionaryIDs.M_PriceList.PURCHASE.id).getPriceListVersion(null);
-			MProductPrice pp = new MProductPrice(Env.getCtx(), 0, getTrxName());
-			pp.setM_PriceList_Version_ID(plv.getM_PriceList_Version_ID());
-			pp.setM_Product_ID(product.get_ID());
-			pp.setPriceStd(new BigDecimal("2"));
-			pp.setPriceList(new BigDecimal("2"));
-			pp.saveEx();
+			createPurchasePrice(product);
 
 			MAcctSchema as = getAccountingSchema();
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
 
 			/*
-			 * First receipt
+			 * First purchase (2 days ago)
 			 *
 			 * 100 units @ 10.00
 			 */
-			MInOutLine receipt1 = createPOAndMRForProduct(
-					product,
-					QTY_100,
-					COST_10);
-			
-			MInvoice invoice = new MInvoice(receipt1.getParent(), receipt1.getParent().getMovementDate());
-			invoice.setDocStatus(DocAction.STATUS_Drafted);
-			invoice.setDocAction(DocAction.ACTION_Complete);
-			invoice.saveEx();
-			
-			MOrderLine oLine = new MOrderLine(receipt1.getCtx(), receipt1.getC_OrderLine_ID(), receipt1.get_TrxName());
-			MInvoiceLine iLine = new MInvoiceLine(invoice);
-			iLine.setOrderLine(oLine);
-			iLine.setLine(10);
-			iLine.setProduct(new MProduct(Env.getCtx(), product, getTrxName()));
-			iLine.setQty(QTY_100);
-			iLine.saveEx();
+			createPurchaseForProduct(product, QTY_100, COST_10, TimeUtil.addDays(today, -2));
 
-			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
-			assertFalse(info.isError(), info.getSummary());
-			invoice.load(getTrxName());
-			assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
-			invoice.getDocsPostProcess().clear();
-			
 			MCost cost = product.getCostingRecord(
 					as,
 					getAD_Org_ID(),
 					0,
 					MCostElement.COSTINGMETHOD_Fifo);
-			
+
 			assertEquals(
 					QTY_100.setScale(2, RoundingMode.HALF_UP),
 					cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP),
 					"Unexpected quantity after first receipt");
-			
+
 			/*
-			 * Second receipt
+			 * Second purchase (yesterday)
 			 *
 			 * 100 units @ 20.00
 			 */
-			MInOutLine receipt2 = createPOAndMRForProduct(
-					product,
-					QTY_100,
-					COST_20);
+			createPurchaseForProduct(product, QTY_100, COST_20, TimeUtil.addDays(today, -1));
 
-			MInvoice invoice2 = new MInvoice(receipt2.getParent(), receipt2.getParent().getMovementDate());
-			invoice2.setDocStatus(DocAction.STATUS_Drafted);
-			invoice2.setDocAction(DocAction.ACTION_Complete);
-			invoice2.saveEx();
-			
-			MOrderLine oLine2 = new MOrderLine(receipt2.getCtx(), receipt2.getC_OrderLine_ID(), receipt2.get_TrxName());
-			MInvoiceLine iLine2 = new MInvoiceLine(invoice2);
-			iLine2.setOrderLine(oLine2);
-			iLine2.setLine(10);
-			iLine2.setProduct(new MProduct(Env.getCtx(), product, getTrxName()));
-			iLine2.setQty(QTY_100);
-			iLine2.saveEx();
-
-			ProcessInfo info2 = MWorkflow.runDocumentActionWorkflow(invoice2, DocAction.ACTION_Complete);
-			assertFalse(info2.isError(), info2.getSummary());
-			invoice2.load(getTrxName());
-			assertEquals(DocAction.STATUS_Completed, invoice2.getDocStatus());
-			invoice2.getDocsPostProcess().clear();
-			
 			cost.load(getTrxName());
 
 			assertEquals(
@@ -153,13 +103,17 @@ public class FIFOCostingTest extends AbstractTestCase {
 					"Unexpected quantity after second receipt");
 
 			/*
-			 * FIFO should now have:
+			 * FIFO should now have one layer per account date:
 			 *
 			 * 100 @ 10.00
 			 * 100 @ 20.00
 			 */
-			
-			assertEquals(MCostQueue.getQueue(product, 0, as, 0, MCostElement.get(cost.getM_CostElement_ID()), getTrxName()).length,2);
+			MCostQueue[] queue = MCostQueue.getQueue(product, 0, as, 0, MCostElement.get(cost.getM_CostElement_ID()), getTrxName());
+			assertEquals(2, queue.length, "Unexpected number of cost layers");
+			assertEquals(COST_10.setScale(2, RoundingMode.HALF_UP),
+					queue[0].getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected cost of oldest layer");
+			assertEquals(COST_20.setScale(2, RoundingMode.HALF_UP),
+					queue[1].getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected cost of newest layer");
 
 			/*
 			 * Shipment of 150 units.
@@ -189,6 +143,85 @@ public class FIFOCostingTest extends AbstractTestCase {
 					cost.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP),
 					"Unexpected current cost price");
 		}
+	}
+
+	@Test
+	public void testFIFOSameAccountDate() {
+		MProductCategory category = createProductCategory();
+		MProduct product = createProduct(category.get_ID());
+
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class);
+			 MockedStatic<MProductCategory> categoryMock = mockStatic(MProductCategory.class)) {
+
+			mockProductGet(productMock, product);
+			mockCategoryGet(categoryMock, category);
+			createPurchasePrice(product);
+
+			MAcctSchema as = getAccountingSchema();
+			Timestamp yesterday = TimeUtil.addDays(TimeUtil.getDay(System.currentTimeMillis()), -1);
+
+			/*
+			 * Two purchases with the same account date share the same cost layer:
+			 *
+			 * 100 @ 10.00 + 100 @ 20.00 = 200 @ 15.00
+			 */
+			createPurchaseForProduct(product, QTY_100, COST_10, yesterday);
+			createPurchaseForProduct(product, QTY_100, COST_20, yesterday);
+
+			MCost cost = product.getCostingRecord(
+					as,
+					getAD_Org_ID(),
+					0,
+					MCostElement.COSTINGMETHOD_Fifo);
+
+			MCostQueue[] queue = MCostQueue.getQueue(product, 0, as, 0, MCostElement.get(cost.getM_CostElement_ID()), getTrxName());
+			assertEquals(1, queue.length, "Unexpected number of cost layers");
+			assertEquals(new BigDecimal("200.00"),
+					queue[0].getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected layer quantity");
+			assertEquals(new BigDecimal("15.00"),
+					queue[0].getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "Unexpected layer cost");
+		}
+	}
+
+	private void createPurchasePrice(MProduct product) {
+		MPriceListVersion plv = MPriceList.get(DictionaryIDs.M_PriceList.PURCHASE.id).getPriceListVersion(null);
+		MProductPrice pp = new MProductPrice(Env.getCtx(), 0, getTrxName());
+		pp.setM_PriceList_Version_ID(plv.getM_PriceList_Version_ID());
+		pp.setM_Product_ID(product.get_ID());
+		pp.setPriceStd(new BigDecimal("2"));
+		pp.setPriceList(new BigDecimal("2"));
+		pp.saveEx();
+	}
+
+	/**
+	 * Create PO, MR and matching invoice for the product
+	 *
+	 * @param product
+	 * @param qty
+	 * @param price
+	 * @param date document and account date
+	 */
+	private void createPurchaseForProduct(MProduct product, BigDecimal qty, BigDecimal price, Timestamp date) {
+		MInOutLine receiptLine = createPOAndMRForProduct(product, qty, price, date);
+
+		MInvoice invoice = new MInvoice(receiptLine.getParent(), date);
+		invoice.setDocStatus(DocAction.STATUS_Drafted);
+		invoice.setDocAction(DocAction.ACTION_Complete);
+		invoice.saveEx();
+
+		MOrderLine oLine = new MOrderLine(receiptLine.getCtx(), receiptLine.getC_OrderLine_ID(), receiptLine.get_TrxName());
+		MInvoiceLine iLine = new MInvoiceLine(invoice);
+		iLine.setOrderLine(oLine);
+		iLine.setLine(10);
+		iLine.setProduct(new MProduct(Env.getCtx(), product, getTrxName()));
+		iLine.setQty(qty);
+		iLine.saveEx();
+
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		invoice.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
+		invoice.getDocsPostProcess().clear();
 	}
 
 	private MProduct createProduct(int category_ID) {
@@ -271,12 +304,13 @@ public class FIFOCostingTest extends AbstractTestCase {
 	}
 	
 	/**
-	 * Create PO And MR for the expense type product
+	 * Create PO And MR for the product
 	 * 
 	 * @param  product
+	 * @param  date order and receipt date
 	 * @return
 	 */
-	private MInOutLine createPOAndMRForProduct(MProduct product,BigDecimal qtd,BigDecimal price)
+	private MInOutLine createPOAndMRForProduct(MProduct product, BigDecimal qtd, BigDecimal price, Timestamp date)
 	{
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id));
@@ -285,16 +319,16 @@ public class FIFOCostingTest extends AbstractTestCase {
 		order.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
 		order.setDocStatus(DocAction.STATUS_Drafted);
 		order.setDocAction(DocAction.ACTION_Complete);
-		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
-		order.setDateOrdered(today);
-		order.setDatePromised(today);
+		order.setDateOrdered(date);
+		order.setDateAcct(date);
+		order.setDatePromised(date);
 		order.saveEx();
 
 		MOrderLine oLine = new MOrderLine(order);
 		oLine.setLine(10);
 		oLine.setProduct(product);
 		oLine.setQty(qtd);
-		oLine.setDatePromised(today);
+		oLine.setDatePromised(date);
 		oLine.setPrice(price);
 		oLine.saveEx();
 
