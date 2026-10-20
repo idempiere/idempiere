@@ -2064,6 +2064,18 @@ public final class Env
 	
 	/**
 	 * Parse expression, replaces global or PO properties @tag@ with actual value.
+	 * @param expression
+	 * @param evaluatee
+	 * @param keepUnparseable true to keep original context variable tag that can't be resolved
+	 * @param keepEscapeSequence if true, keeps the escape sequence '@@' in the parsed string. Otherwise, the '@@' escape sequence is used to keep '@' character in the string.
+	 * @return Parsed expression
+	 */
+	public static String parseVariable(String expression, DefaultEvaluatee evaluatee, boolean keepUnparseable, boolean keepEscapeSequence) {
+		return parseVariable(expression, (Evaluatee) evaluatee, keepUnparseable, keepEscapeSequence);
+	}
+
+	/**
+	 * Parse expression, replaces @tag@ with the value provided by the evaluatee.
 	 * If evaluatee is a {@link DefaultEvaluatee}, the context of its PO (if any) is used to resolve the tag.
 	 * @param expression
 	 * @param evaluatee
