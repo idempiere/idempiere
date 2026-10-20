@@ -26,7 +26,7 @@ package org.idempiere.ui.zk.report;
  * The viewer asks the factories in service ranking order, highest first, and uses the first selector returned.
  * If several factories apply, the one with the highest ranking wins. Register a factory with
  * {@code service.ranking} and return {@code null} for reports it should not change.
- * If none returns a selector the viewer uses its default drop-down list.
+ * If none returns a selector the viewer uses its default combo box.
  */
 public interface IReportFormatSelectorFactory {
 

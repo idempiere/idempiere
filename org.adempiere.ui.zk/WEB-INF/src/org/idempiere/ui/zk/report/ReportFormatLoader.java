@@ -41,17 +41,15 @@ public final class ReportFormatLoader {
 	}
 
 	/**
-	 * Load the print formats of the current table that the current user's role may read, followed by the create actions
-	 * if the given role may create print formats.
-	 * The print formats are read with a {@link Query} that applies the access filter of the default role
-	 * ({@link MRole#getDefault()}), the role the viewer passes in.
-	 * @param role role to check the table and window access of the create actions for
+	 * Load the print formats of the current table that the login role ({@link MRole#getDefault()}) may read,
+	 * followed by the create actions if that role may create print formats.
 	 * @param current print format shown in the viewer
 	 * @param windowId AD_Window_ID the report was started from, 0 if none
 	 * @param selectedFormatId AD_PrintFormat_ID that will be selected, used for the window access check of the create actions
 	 * @return immutable list, formats ordered by name
 	 */
-	public static List<ReportFormatEntry> load(MRole role, MPrintFormat current, int windowId, int selectedFormatId) {
+	public static List<ReportFormatEntry> load(MPrintFormat current, int windowId, int selectedFormatId) {
+		MRole role = MRole.getDefault();
 		List<ReportFormatEntry> entries = new ArrayList<>();
 		int reportViewID = current.getAD_ReportView_ID();
 		StringBuilder where = new StringBuilder(MPrintFormat.COLUMNNAME_AD_Table_ID).append("=?");
@@ -75,8 +73,8 @@ public final class ReportFormatLoader {
 		String language = Env.getAD_Language(Env.getCtx());
 		for (MPrintFormat printFormat : printFormats) {
 			entries.add(new ReportFormatEntry(printFormat.get_ID(),
-					printFormat.get_Translation(MPrintFormat.COLUMNNAME_Name, language, true),
-					printFormat.get_Translation(MPrintFormat.COLUMNNAME_Description, language, true),
+					printFormat.get_Translation(MPrintFormat.COLUMNNAME_Name, language, false),
+					printFormat.get_Translation(MPrintFormat.COLUMNNAME_Description, language, false),
 					printFormat.getAD_Client_ID(), ReportFormatEntry.Kind.FORMAT));
 		}
 		// IDEMPIERE-297 - Check for Table Access and Window Access for New Report

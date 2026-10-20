@@ -192,8 +192,6 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	protected int                 m_WindowNo = -1;
 	/**	Print Context				*/
 	private Properties			m_ctx;
-	/**	Setting Values				*/
-	private boolean				m_setting = false;
 	/**	Report Engine				*/
 	protected ReportEngine 		m_reportEngine;
 	/** Table ID					*/
@@ -429,8 +427,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		formatSelector = Extensions.getReportFormatSelector(
 				new ReportFormatRequest(m_reportEngine, getReportWindowID(), toolbarPopup != null));
 		formatSelector.setSelectionListener(() -> {
-			if (!m_setting)
-				cmd_report();
+			cmd_report();
 		});
 		
 		if (toolbarPopup != null)
@@ -726,10 +723,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		
 		south.appendChild(linkDiv);		
 		
-		//m_WindowNo
-		int AD_Window_ID = Env.getContextAsInt(Env.getCtx(), m_reportEngine.getWindowNo(), "_WinInfo_AD_Window_ID", true);
-		if (AD_Window_ID == 0)
-			AD_Window_ID = Env.getZoomWindowID(m_reportEngine.getQuery());
+		int AD_Window_ID = getReportWindowID();
 		m_AD_Process_ID = m_reportEngine.getPrintInfo() != null ? m_reportEngine.getPrintInfo().getAD_Process_ID() : 0;
 		updateToolbarAccess(AD_Window_ID, m_AD_Process_ID);
 
@@ -1079,7 +1073,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	 */
 	private void fillComboReport(int AD_PrintFormat_ID)
 	{
-		List<ReportFormatEntry> entries = ReportFormatLoader.load(MRole.getDefault(), m_reportEngine.getPrintFormat(),
+		List<ReportFormatEntry> entries = ReportFormatLoader.load(m_reportEngine.getPrintFormat(),
 				getReportWindowID(), AD_PrintFormat_ID);
 		offeredFormatKeys = entries.stream().map(ReportFormatEntry::key).collect(Collectors.toUnmodifiableSet());
 		if (entries.stream().anyMatch(entry -> entry.key() == AD_PrintFormat_ID))
@@ -1223,8 +1217,6 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	 */
 	public void actionPerformed (Event e)
 	{
-		if (m_setting)
-			return;
 		if (MClient.get(m_ctx).isMultiLingualDocument() && e.getTarget() == wLanguage.getComponent()){
 			cmd_report();
 		}else if (e.getTarget() == bFind)
@@ -1457,8 +1449,10 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 							resetPrintFormatTrl(pf);
 							fillComboReport(pf.get_ID());
 						}
-						else
+						else {
+							formatSelector.setSelectedKey(previousSelectedKey);
 							return;
+						}
 						//	Get Language from previous - thanks Gunther Hoppe 
 						if (m_reportEngine.getPrintFormat() != null)
 						{
@@ -1505,10 +1499,14 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 								resetPrintFormatTrl(pf);
 								fillComboReport(pf.get_ID());
 							}
-							else
+							else {
+								formatSelector.setSelectedKey(previousSelectedKey);
 								return;
-						} else
+							}
+						} else {
+							formatSelector.setSelectedKey(previousSelectedKey);
 							return;
+						}
 						//	Get Language from previous - thanks Gunther Hoppe 
 						if (m_reportEngine.getPrintFormat() != null)
 						{

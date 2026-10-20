@@ -23,6 +23,7 @@ package org.adempiere.webui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import org.adempiere.base.IServiceReferenceHolder;
@@ -52,6 +53,7 @@ import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.MDashboardContent;
 import org.compiere.util.CCache;
+import org.compiere.util.CLogger;
 import org.idempiere.db.util.SQLFragment;
 import org.idempiere.ui.zk.media.IMediaView;
 import org.idempiere.ui.zk.media.IMediaViewProvider;
@@ -74,6 +76,8 @@ import org.zkoss.zk.ui.Component;
  * 
  */
 public class Extensions {
+
+	private static final CLogger s_logger = CLogger.getCLogger(Extensions.class);
 
 	/** FormId:IFormFactory Reference. FormId is Java class name, OSGi component name or Equinox extension Id */
 	private final static CCache<String, IServiceReferenceHolder<IFormFactory>> s_formFactoryCache = new CCache<>(null, "IFormFactory", 100, false);
@@ -422,15 +426,20 @@ public class Extensions {
 	
 	/**
 	 * Get the report viewer format selector from the highest ranking {@link IReportFormatSelectorFactory}
-	 * that applies, or the default drop-down list.
+	 * that applies, or the default combo box.
 	 * @param request report and role context
 	 * @return selector, never null
 	 */
 	public static IReportFormatSelector getReportFormatSelector(ReportFormatRequest request) {
 		for (IReportFormatSelectorFactory factory : ReportFormatSelectorProvider.getFactories()) {
-			IReportFormatSelector selector = factory.createSelector(request);
-			if (selector != null)
-				return selector;
+			try {
+				IReportFormatSelector selector = factory.createSelector(request);
+				if (selector != null)
+					return selector;
+			} catch (RuntimeException e) {
+				// a failing factory must not crash the viewer
+				s_logger.log(Level.WARNING, "Report format selector factory " + factory.getClass().getName() + " failed", e);
+			}
 		}
 		return new ComboboxReportFormatSelector();
 	}

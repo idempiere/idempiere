@@ -37,6 +37,7 @@ public class ComboboxReportFormatSelector implements IReportFormatSelector {
 
 	private final Combobox combobox = new Combobox();
 	private Runnable selectionListener;
+	private int selectedKey = ReportFormatEntry.KEY_NONE;
 
 	/**
 	 * Create the combo box
@@ -46,9 +47,42 @@ public class ComboboxReportFormatSelector implements IReportFormatSelector {
 		combobox.setAutodrop(true);
 		combobox.setTooltiptext(Msg.translate(Env.getCtx(), "AD_PrintFormat_ID"));
 		combobox.addEventListener(Events.ON_SELECT, event -> {
+			Comboitem item = combobox.getSelectedItem();
+			if (item != null && item.getValue() != null)
+				selectedKey = (Integer) item.getValue();
 			if (selectionListener != null)
 				selectionListener.run();
 		});
+		combobox.addEventListener(Events.ON_CHANGE, event -> onTextChanged());
+	}
+
+	/**
+	 * The user typed a text. Select the print format with that name, or put back the current selection
+	 * if there is none, so the box never shows a name the viewer is not displaying.
+	 * Does nothing if the item was picked from the list, that is reported by the select event.
+	 */
+	private void onTextChanged() {
+		String text = combobox.getValue();
+		Comboitem match = null;
+		for (Comboitem item : combobox.getItems()) {
+			if (item.getValue() != null && item.getLabel().equalsIgnoreCase(text != null ? text.trim() : "")) {
+				match = item;
+				break;
+			}
+		}
+		if (match == null) {
+			setSelectedKey(selectedKey);
+		} else if (match == combobox.getSelectedItem()) {
+			// picked from the list: onSelect handles it, notifying here as well would reload the report twice
+			return;
+		} else if (((Integer) match.getValue()).intValue() != selectedKey) {
+			combobox.setSelectedItem(match);
+			selectedKey = (Integer) match.getValue();
+			if (selectionListener != null)
+				selectionListener.run();
+		} else {
+			combobox.setSelectedItem(match);
+		}
 	}
 
 	@Override
@@ -66,8 +100,7 @@ public class ComboboxReportFormatSelector implements IReportFormatSelector {
 
 	@Override
 	public int getSelectedKey() {
-		Comboitem item = combobox.getSelectedItem();
-		return item != null && item.getValue() != null ? (Integer) item.getValue() : ReportFormatEntry.KEY_NONE;
+		return selectedKey;
 	}
 
 	@Override
@@ -80,6 +113,9 @@ public class ComboboxReportFormatSelector implements IReportFormatSelector {
 			}
 		}
 		combobox.setSelectedItem(selected);
+		selectedKey = selected != null ? (Integer) selected.getValue() : ReportFormatEntry.KEY_NONE;
+		// setSelectedItem does not reset the text when the item is already selected
+		combobox.setValue(selected != null ? selected.getLabel() : "");
 	}
 
 	@Override

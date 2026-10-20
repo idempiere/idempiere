@@ -90,6 +90,8 @@ public class ReportFormatSelectorTest extends AbstractTestCase {
 	/** Role that sees every print format and may create new ones */
 	private MRole allowAllRole() {
 		MRole role = mock(MRole.class);
+		when(role.addAccessSQL(anyString(), anyString(), anyBoolean(), anyBoolean()))
+				.thenAnswer(invocation -> invocation.getArgument(0));
 		when(role.isTableAccess(anyInt(), anyBoolean())).thenReturn(true);
 		when(role.getWindowAccess(anyInt())).thenReturn(Boolean.TRUE);
 		return role;
@@ -105,7 +107,7 @@ public class ReportFormatSelectorTest extends AbstractTestCase {
 	@Test
 	public void testRoleWithAllAccessGetsFormatsAndCreateActions() {
 		MPrintFormat current = currentFormat();
-		List<ReportFormatEntry> entries = ReportFormatLoader.load(allowAllRole(), current, 0, current.get_ID());
+		List<ReportFormatEntry> entries = load(allowAllRole(), current);
 
 		assertTrue(entries.stream().anyMatch(e -> e.key() == current.get_ID() && e.isFormat()));
 		int size = entries.size();
@@ -122,7 +124,7 @@ public class ReportFormatSelectorTest extends AbstractTestCase {
 		when(role.isTableAccess(anyInt(), anyBoolean())).thenReturn(false);
 		MPrintFormat current = currentFormat();
 
-		List<ReportFormatEntry> entries = ReportFormatLoader.load(role, current, 0, current.get_ID());
+		List<ReportFormatEntry> entries = load(role, current);
 
 		assertFalse(entries.isEmpty());
 		assertTrue(entries.stream().allMatch(ReportFormatEntry::isFormat));
@@ -133,23 +135,20 @@ public class ReportFormatSelectorTest extends AbstractTestCase {
 		MRole role = allowAllRole();
 		when(role.getWindowAccess(anyInt())).thenReturn(null);
 		MPrintFormat current = currentFormat();
-		assertTrue(ReportFormatLoader.load(role, current, 0, current.get_ID()).stream().allMatch(ReportFormatEntry::isFormat));
+		assertTrue(load(role, current).stream().allMatch(ReportFormatEntry::isFormat));
 
 		when(role.getWindowAccess(anyInt())).thenReturn(Boolean.FALSE);
-		assertTrue(ReportFormatLoader.load(role, current, 0, current.get_ID()).stream().allMatch(ReportFormatEntry::isFormat));
+		assertTrue(load(role, current).stream().allMatch(ReportFormatEntry::isFormat));
 	}
 
 	@Test
 	public void testFormatsComeFromRoleAccessSql() {
-		MRole defaultRole = mock(MRole.class);
-		when(defaultRole.addAccessSQL(anyString(), anyString(), anyBoolean(), anyBoolean()))
+		MRole role = allowAllRole();
+		when(role.addAccessSQL(anyString(), anyString(), anyBoolean(), anyBoolean()))
 				.thenAnswer(invocation -> ((String) invocation.getArgument(0)).replace(" ORDER BY", " AND 1=0 ORDER BY"));
 		MPrintFormat current = currentFormat();
 
-		List<ReportFormatEntry> entries;
-		try (MockedStatic<MRole> roles = mockDefaultRole(defaultRole)) {
-			entries = ReportFormatLoader.load(allowAllRole(), current, 0, current.get_ID());
-		}
+		List<ReportFormatEntry> entries = load(role, current);
 
 		// the role sees no print format but may still create one
 		assertEquals(List.of(ReportFormatEntry.KEY_NEW, ReportFormatEntry.KEY_COPY),
@@ -163,18 +162,23 @@ public class ReportFormatSelectorTest extends AbstractTestCase {
 		assertTrue(reportViewId > 0, "Garden World needs a print format of a report view");
 		MPrintFormat current = MPrintFormat.get(Env.getCtx(), reportViewId, false);
 		List<String> sql = new ArrayList<>();
-		MRole defaultRole = mock(MRole.class);
-		when(defaultRole.addAccessSQL(anyString(), anyString(), anyBoolean(), anyBoolean())).thenAnswer(invocation -> {
+		MRole role = allowAllRole();
+		when(role.addAccessSQL(anyString(), anyString(), anyBoolean(), anyBoolean())).thenAnswer(invocation -> {
 			sql.add(invocation.getArgument(0));
 			return invocation.getArgument(0);
 		});
 
-		try (MockedStatic<MRole> roles = mockDefaultRole(defaultRole)) {
-			ReportFormatLoader.load(allowAllRole(), current, 0, current.get_ID());
-		}
+		load(role, current);
 
 		assertFalse(sql.isEmpty(), "access filter must be applied to the print format query");
 		assertTrue(sql.get(0).contains("AD_ReportView_ID"), "query must be limited to the current report view");
+	}
+
+	/** Load the print formats with the role as the login role */
+	private List<ReportFormatEntry> load(MRole loginRole, MPrintFormat current) {
+		try (MockedStatic<MRole> roles = mockDefaultRole(loginRole)) {
+			return ReportFormatLoader.load(current, 0, current.get_ID());
+		}
 	}
 
 	/** Make {@link MRole#getDefault(java.util.Properties, boolean)}, used by the {@link org.compiere.model.Query} access filter, return the role */
@@ -187,7 +191,7 @@ public class ReportFormatSelectorTest extends AbstractTestCase {
 	@Test
 	public void testEntryListIsImmutable() {
 		MPrintFormat current = currentFormat();
-		List<ReportFormatEntry> entries = ReportFormatLoader.load(allowAllRole(), current, 0, current.get_ID());
+		List<ReportFormatEntry> entries = load(allowAllRole(), current);
 		assertThrows(UnsupportedOperationException.class,
 				() -> entries.add(new ReportFormatEntry(1, "x", null, 0, ReportFormatEntry.Kind.FORMAT)));
 	}
@@ -235,6 +239,55 @@ public class ReportFormatSelectorTest extends AbstractTestCase {
 	}
 
 	@Test
+	public void testDefaultSelectorRestoresSelectionForUnknownName() throws Exception {
+		ComboboxReportFormatSelector selector = new ComboboxReportFormatSelector();
+		AtomicInteger picks = new AtomicInteger();
+		selector.setSelectionListener(picks::incrementAndGet);
+		selector.setFormats(List.of(entry(10, "A"), entry(20, "B")), 10);
+		Combobox combobox = (Combobox) selector.getComponent();
+
+		combobox.setValue("no such format");
+		fireEvent(selector, Events.ON_CHANGE);
+
+		assertEquals(10, selector.getSelectedKey());
+		assertEquals("A", combobox.getValue());
+		assertEquals(0, picks.get());
+	}
+
+	@Test
+	public void testDefaultSelectorSelectsTypedName() throws Exception {
+		ComboboxReportFormatSelector selector = new ComboboxReportFormatSelector();
+		AtomicInteger picks = new AtomicInteger();
+		selector.setSelectionListener(picks::incrementAndGet);
+		selector.setFormats(List.of(entry(10, "A"), entry(20, "B")), 10);
+		Combobox combobox = (Combobox) selector.getComponent();
+
+		combobox.setValue("b");
+		fireEvent(selector, Events.ON_CHANGE);
+
+		assertEquals(20, selector.getSelectedKey());
+		assertEquals(1, picks.get());
+	}
+
+	@Test
+	public void testDefaultSelectorDoesNotNotifyTwiceForPickedItem() throws Exception {
+		ComboboxReportFormatSelector selector = new ComboboxReportFormatSelector();
+		AtomicInteger picks = new AtomicInteger();
+		selector.setSelectionListener(picks::incrementAndGet);
+		selector.setFormats(List.of(entry(10, "A"), entry(20, "B")), 10);
+		Combobox combobox = (Combobox) selector.getComponent();
+
+		// the browser picks B: the item is selected and both events arrive, in either order
+		combobox.setSelectedItem(combobox.getItemAtIndex(1));
+		combobox.setValue("B");
+		fireEvent(selector, Events.ON_CHANGE);
+		fireEvent(selector, Events.ON_SELECT);
+
+		assertEquals(20, selector.getSelectedKey());
+		assertEquals(1, picks.get());
+	}
+
+	@Test
 	public void testHigherRankingFactoryWins() {
 		IReportFormatSelector high = new ComboboxReportFormatSelector();
 		IReportFormatSelector low = new ComboboxReportFormatSelector();
@@ -263,10 +316,14 @@ public class ReportFormatSelectorTest extends AbstractTestCase {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private void fireSelect(IReportFormatSelector selector) throws Exception {
-		Event event = new Event(Events.ON_SELECT, selector.getComponent());
-		for (EventListener<? extends Event> listener : selector.getComponent().getEventListeners(Events.ON_SELECT))
+		fireEvent(selector, Events.ON_SELECT);
+	}
+
+	@SuppressWarnings("unchecked")
+	private void fireEvent(IReportFormatSelector selector, String eventName) throws Exception {
+		Event event = new Event(eventName, selector.getComponent());
+		for (EventListener<? extends Event> listener : selector.getComponent().getEventListeners(eventName))
 			((EventListener<Event>) listener).onEvent(event);
 	}
 
