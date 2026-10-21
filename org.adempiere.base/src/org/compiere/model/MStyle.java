@@ -181,25 +181,55 @@ public class MStyle extends X_AD_Style implements ImmutablePOSupport {
 				styleBuilder.append("\n");
 			}
 			// substitute @variable@ (inline style only, css blocks may legitimately contain @media, @import ...)
-			if (inline && evaluatee != null && styleText.indexOf(Evaluator.VARIABLE_START_END_MARKER) >= 0)
-			{
-				// @sclass= and @zclass= prefix is not a variable, keep it out of the parsing
-				String prefix = "";
-				String body = styleText;
-				if (styleText.regionMatches(true, 0, SCLASS_PREFIX, 0, SCLASS_PREFIX.length())
-					|| styleText.regionMatches(true, 0, ZCLASS_PREFIX, 0, ZCLASS_PREFIX.length()))
-				{
-					prefix = styleText.substring(0, SCLASS_PREFIX.length());
-					body = styleText.substring(prefix.length());
-				}
-				String parsed = Env.parseVariable(body, evaluatee, true, false);
-				// unresolved @tag@ is kept as is; a parse failure (e.g. a single literal @ in existing style text) returns empty, keep the original text
-				if (!Util.isEmpty(parsed))
-					styleText = prefix + parsed;
-			}
+			if (inline && evaluatee != null)
+				styleText = parseVariables(styleText, evaluatee);
 			styleBuilder.append(styleText);
 		}
 		return styleBuilder.toString();
+	}
+
+	/**
+	 * Replace @variable@ in style text with the value provided by the evaluatee.
+	 * <ul>
+	 * <li>The {@link #SCLASS_PREFIX} and {@link #ZCLASS_PREFIX} prefix is not parsed.
+	 * <li>'@' characters must be paired, '@@' is the escape for a literal '@'.
+	 * Text with an odd number of '@' is returned as is.
+	 * <li>Variable that can't be resolved is kept as is.
+	 * </ul>
+	 * @param styleText
+	 * @param evaluatee
+	 * @return style text with variables replaced
+	 */
+	public static String parseVariables(String styleText, Evaluatee evaluatee) {
+		if (styleText == null || evaluatee == null)
+			return styleText;
+		String prefix = "";
+		String body = styleText;
+		if (isSClass(styleText) || isZClass(styleText)) {
+			prefix = styleText.substring(0, SCLASS_PREFIX.length());
+			body = styleText.substring(prefix.length());
+		}
+		// Env.parseVariable fails (and log an error) for unpaired '@'
+		long count = body.chars().filter(c -> c == Evaluator.VARIABLE_START_END_MARKER.charAt(0)).count();
+		if (count == 0 || count % 2 != 0)
+			return styleText;
+		return prefix + Env.parseVariable(body, evaluatee, true, false);
+	}
+
+	/**
+	 * @param style
+	 * @return true if style start with {@link #SCLASS_PREFIX} (case insensitive)
+	 */
+	public static boolean isSClass(String style) {
+		return style != null && style.regionMatches(true, 0, SCLASS_PREFIX, 0, SCLASS_PREFIX.length());
+	}
+
+	/**
+	 * @param style
+	 * @return true if style start with {@link #ZCLASS_PREFIX} (case insensitive)
+	 */
+	public static boolean isZClass(String style) {
+		return style != null && style.regionMatches(true, 0, ZCLASS_PREFIX, 0, ZCLASS_PREFIX.length());
 	}
 
 	/**

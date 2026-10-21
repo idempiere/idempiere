@@ -22,6 +22,7 @@
 package org.idempiere.test.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
@@ -114,6 +115,29 @@ public class MStyleTest extends AbstractTestCase {
 		assertEquals(MStyle.ZCLASS_PREFIX + "my-class", createStyle(MStyle.ZCLASS_PREFIX + "my-class").buildStyle("", evaluatee));
 		assertEquals(MStyle.SCLASS_PREFIX + "my-red", createStyle(MStyle.SCLASS_PREFIX + "my-@Color@").buildStyle("", evaluatee));
 		assertEquals(MStyle.ZCLASS_PREFIX + "my-red", createStyle(MStyle.ZCLASS_PREFIX + "my-@Color@").buildStyle("", evaluatee));
+	}
+
+	@Test
+	public void testOddNumberOfAtLeavesTextUnchanged() {
+		Evaluatee evaluatee = name -> "Color".equals(name) ? "#FF0000" : "";
+		// one @ and three @ (valid variable included): nothing is substituted
+		for (String text : new String[] {"background-image: url(img@2x.png)", "color: @Color@; background-image: url(a@b.png)"})
+			assertEquals(text, createStyle(text).buildStyle("", evaluatee));
+	}
+
+	@Test
+	public void testEscapedAtCountsAsPair() {
+		Evaluatee evaluatee = name -> "Color".equals(name) ? "#FF0000" : "";
+		assertEquals("content: '@'; color: #FF0000", createStyle("content: '@@'; color: @Color@").buildStyle("", evaluatee));
+	}
+
+	@Test
+	public void testPrefixIsCaseInsensitive() {
+		Evaluatee evaluatee = name -> "Color".equals(name) ? "red" : "";
+		assertEquals("@SClass=my-red", createStyle("@SClass=my-@Color@").buildStyle("", evaluatee));
+		assertEquals("@ZCLASS=my-red", createStyle("@ZCLASS=my-@Color@").buildStyle("", evaluatee));
+		assertTrue(MStyle.isSClass("@SCLASS=a") && MStyle.isSClass("@sclass=a") && !MStyle.isSClass("@zclass=a") && !MStyle.isSClass(null));
+		assertTrue(MStyle.isZClass("@Zclass=a") && !MStyle.isZClass("color: red") && !MStyle.isZClass(null));
 	}
 
 	@Test
