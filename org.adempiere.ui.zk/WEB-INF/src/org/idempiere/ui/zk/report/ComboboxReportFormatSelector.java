@@ -59,29 +59,30 @@ public class ComboboxReportFormatSelector implements IReportFormatSelector {
 	/**
 	 * The user typed a text. Select the print format with that name, or put back the current selection
 	 * if there is none, so the box never shows a name the viewer is not displaying.
-	 * Does nothing if the item was picked from the list, that is reported by the select event.
+	 * Does nothing if the text is the name of the selected item, for example after the item was picked from
+	 * the list. That is reported by the select event, and notifying here as well would reload the report twice.
 	 */
 	private void onTextChanged() {
-		String text = combobox.getValue();
+		String trimmed = combobox.getValue() != null ? combobox.getValue().trim() : "";
+		Comboitem currentSelected = combobox.getSelectedItem();
+		// checked first, the name is not unique: a system and a tenant print format can share it
+		if (currentSelected != null && currentSelected.getValue() != null
+				&& currentSelected.getLabel().equalsIgnoreCase(trimmed))
+			return;
 		Comboitem match = null;
 		for (Comboitem item : combobox.getItems()) {
-			if (item.getValue() != null && item.getLabel().equalsIgnoreCase(text != null ? text.trim() : "")) {
+			if (item.getValue() != null && item.getLabel().equalsIgnoreCase(trimmed)) {
 				match = item;
 				break;
 			}
 		}
 		if (match == null) {
 			setSelectedKey(selectedKey);
-		} else if (match == combobox.getSelectedItem()) {
-			// picked from the list: onSelect handles it, notifying here as well would reload the report twice
-			return;
-		} else if (((Integer) match.getValue()).intValue() != selectedKey) {
+		} else {
 			combobox.setSelectedItem(match);
 			selectedKey = (Integer) match.getValue();
 			if (selectionListener != null)
 				selectionListener.run();
-		} else {
-			combobox.setSelectedItem(match);
 		}
 	}
 
