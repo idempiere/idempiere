@@ -1292,7 +1292,7 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 			styleBuilder.append(inlineStyle);
 		}
 		if(styleBuilder.length() > 0)
-			element.setStyle(styleBuilder.toString());
+			element.setStyle(Util.maskHTML(styleBuilder.toString())); // ECS does not escape attribute values, style may contain @variable@ values
 		//
 	}
 	
