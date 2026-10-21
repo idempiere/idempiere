@@ -7,7 +7,9 @@ import java.sql.ResultSet;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
+import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.Evaluator;
@@ -24,6 +26,8 @@ public class MStyle extends X_AD_Style implements ImmutablePOSupport {
 	 * generated serial id
 	 */
 	private static final long serialVersionUID = 5409686715292148171L;
+	/** Logger for static methods */
+	private static final CLogger s_log = CLogger.getCLogger(MStyle.class);
 	/**	Cache					*/
 	private static  ImmutableIntPOCache<Integer,MStyle> s_cache = new ImmutableIntPOCache<Integer,MStyle>(Table_Name, 30, 60);
 	private MStyleLine[] m_lines = null;
@@ -151,7 +155,7 @@ public class MStyle extends X_AD_Style implements ImmutablePOSupport {
 	/**
 	 * Build CSS style text from lines
 	 * @param defaultTheme
-	 * @param evaluatee evaluatee for display logic
+	 * @param evaluatee evaluatee for display logic and for the substitution of @variable@ in inline style text (use '@@' for a literal '@')
 	 * @param inline true for inline (for style="..." use), false for css (for class="..." use) 
 	 * @return CSS style text
 	 */
@@ -180,9 +184,61 @@ public class MStyle extends X_AD_Style implements ImmutablePOSupport {
 			} else if (styleBuilder.length() > 0) {
 				styleBuilder.append("\n");
 			}
+			// substitute @variable@ (inline style only, css blocks may legitimately contain @media, @import ...)
+			if (inline && evaluatee != null)
+				styleText = parseVariables(styleText, evaluatee);
 			styleBuilder.append(styleText);
 		}
 		return styleBuilder.toString();
+	}
+
+	/**
+	 * Replace @variable@ in style text with the value provided by the evaluatee.
+	 * <ul>
+	 * <li>The {@link #SCLASS_PREFIX} and {@link #ZCLASS_PREFIX} prefix is not parsed.
+	 * <li>'@' characters must be paired, '@@' is the escape for a literal '@'.
+	 * Text with an odd number of '@' is returned as is (logged at FINE level).
+	 * <li>Variable that can't be resolved is kept as is.
+	 * </ul>
+	 * @param styleText
+	 * @param evaluatee
+	 * @return style text with variables replaced
+	 */
+	public static String parseVariables(String styleText, Evaluatee evaluatee) {
+		if (styleText == null || evaluatee == null)
+			return styleText;
+		String prefix = "";
+		String body = styleText;
+		if (isSClass(styleText) || isZClass(styleText)) {
+			prefix = styleText.substring(0, SCLASS_PREFIX.length());
+			body = styleText.substring(prefix.length());
+		}
+		// Env.parseVariable fails (and log an error) for unpaired '@'
+		long count = body.chars().filter(c -> c == Evaluator.VARIABLE_START_END_MARKER.charAt(0)).count();
+		if (count == 0)
+			return styleText;
+		if (count % 2 != 0) {
+			if (s_log.isLoggable(Level.FINE))
+				s_log.fine("Style text not parsed, '@' characters are not paired: " + styleText);
+			return styleText;
+		}
+		return prefix + Env.parseVariable(body, evaluatee, true, false);
+	}
+
+	/**
+	 * @param style
+	 * @return true if style start with {@link #SCLASS_PREFIX} (case insensitive)
+	 */
+	public static boolean isSClass(String style) {
+		return style != null && style.regionMatches(true, 0, SCLASS_PREFIX, 0, SCLASS_PREFIX.length());
+	}
+
+	/**
+	 * @param style
+	 * @return true if style start with {@link #ZCLASS_PREFIX} (case insensitive)
+	 */
+	public static boolean isZClass(String style) {
+		return style != null && style.regionMatches(true, 0, ZCLASS_PREFIX, 0, ZCLASS_PREFIX.length());
 	}
 
 	/**
