@@ -879,7 +879,7 @@ public class InvoiceCustomerTest extends AbstractTestCase {
 	 */
 	@Test
 	public void testInvoiceReactivateAllocatedMessage() {
-		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
 
 		MInvoice invoice = new MInvoice(Env.getCtx(), 0, getTrxName());
 		invoice.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id));
@@ -887,8 +887,8 @@ public class InvoiceCustomerTest extends AbstractTestCase {
 		invoice.setC_DocType_ID(invoice.getC_DocTypeTarget_ID());
 		invoice.setPaymentRule(MInvoice.PAYMENTRULE_Check);
 		invoice.setC_PaymentTerm_ID(DictionaryIDs.C_PaymentTerm.IMMEDIATE.id);
-		invoice.setDateInvoiced(today);
-		invoice.setDateAcct(today);
+		invoice.setDateInvoiced(currentDate);
+		invoice.setDateAcct(currentDate);
 		invoice.setDocStatus(DocAction.STATUS_Drafted);
 		invoice.setDocAction(DocAction.ACTION_Complete);
 		invoice.saveEx();
@@ -916,8 +916,8 @@ public class InvoiceCustomerTest extends AbstractTestCase {
 		payment.setTenderType(MPayment.TENDERTYPE_Check);
 		payment.setC_BankAccount_ID(DictionaryIDs.C_BankAccount.ACCOUNT_1234.id);
 		payment.setC_Currency_ID(invoice.getC_Currency_ID());
-		payment.setDateTrx(today);
-		payment.setDateAcct(today);
+		payment.setDateTrx(currentDate);
+		payment.setDateAcct(currentDate);
 		payment.saveEx();
 
 		info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Complete);
