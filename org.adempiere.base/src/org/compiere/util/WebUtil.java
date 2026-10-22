@@ -24,11 +24,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
@@ -1112,25 +1110,6 @@ public final class WebUtil
 			}
 		}
 		return retVal;
-	}
-
-	/**
-	 * returns true if the URL exists and answer with a 200 code 
-	 * @param urlString
-	 * @return boolean
-	 */
-	public static boolean isUrlOk(String urlString) {
-		int responseCode = 0;
-		URL url;
-		try {
-			url = new URL(urlString);
-			HttpURLConnection huc = (HttpURLConnection) url.openConnection();
-			huc.setRequestMethod("HEAD");
-			responseCode = huc.getResponseCode();
-		} catch (IOException e) {
-			responseCode = -1;
-		} 
-		return responseCode == HttpURLConnection.HTTP_OK;
 	}
 
 }   //  WebUtil
