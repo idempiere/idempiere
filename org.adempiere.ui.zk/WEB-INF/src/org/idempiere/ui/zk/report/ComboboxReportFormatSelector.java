@@ -45,6 +45,7 @@ public class ComboboxReportFormatSelector implements IReportFormatSelector {
 	public ComboboxReportFormatSelector() {
 		combobox.setAutocomplete(true);
 		combobox.setAutodrop(true);
+		combobox.setInstantSelect(false);
 		combobox.setTooltiptext(Msg.translate(Env.getCtx(), "AD_PrintFormat_ID"));
 		combobox.addEventListener(Events.ON_SELECT, event -> {
 			Comboitem item = combobox.getSelectedItem();
