@@ -634,39 +634,39 @@ public class ProductionTestIsolated extends AbstractTestCase {
 			CacheMgt.get().reset();
 			if (line1 != null && line1.get_ID() > 0) {
 				line1.set_TrxName(null);
-				line1.deleteEx(true);
+				line1.delete(true);
 			}
 			if (line2 != null && line2.get_ID() > 0) {
 				line2.set_TrxName(null);
-				line2.deleteEx(true);
+				line2.delete(true);
 			}
 			if (bom != null && bom.get_ID() > 0) {
 				bom.set_TrxName(null);
-				bom.deleteEx(true);
+				bom.delete(true);
 			}
 			if (cost1 != null && cost1.get_ID() > 0) {
 				cost1.set_TrxName(null);
-				cost1.deleteEx(true);
+				cost1.delete(true);
 			}
 			if (cost2 != null && cost2.get_ID() > 0) {
 				cost2.set_TrxName(null);
-				cost2.deleteEx(true);
+				cost2.delete(true);
 			}
 			if (cost3 != null && cost3.get_ID() > 0) {
 				cost3.set_TrxName(null);
-				cost3.deleteEx(true);
+				cost3.delete(true);
 			}
 			if (component1 != null && component1.get_ID() > 0) {
 				component1.set_TrxName(null);
-				component1.deleteEx(true);
+				component1.delete(true);
 			}
 			if (component2 != null && component2.get_ID() > 0) {
 				component2.set_TrxName(null);
-				component2.deleteEx(true);
+				component2.delete(true);
 			}
 			if (endProduct != null && endProduct.get_ID() > 0) {
 				endProduct.set_TrxName(null);
-				endProduct.deleteEx(true);
+				endProduct.delete(true);
 			}
 		}
 	}
