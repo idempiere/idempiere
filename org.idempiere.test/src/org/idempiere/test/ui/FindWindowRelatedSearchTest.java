@@ -22,6 +22,9 @@ package org.idempiere.test.ui;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -37,6 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.ListCell;
 import org.adempiere.webui.component.ListItem;
@@ -46,9 +50,11 @@ import org.compiere.db.AdempiereDatabase;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.MTable;
+import org.compiere.model.MQuery;
 import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.ValueNamePair;
 import org.idempiere.db.util.SQLFragment;
 import org.junit.jupiter.api.Test;
@@ -142,6 +148,8 @@ public class FindWindowRelatedSearchTest
     {
         private static final long serialVersionUID = 1L;
         private Map<String, GridField> fields;
+        private int savedQueries;
+        private int recordCounts;
 
         private SearchWindow()
         {
@@ -171,7 +179,35 @@ public class FindWindowRelatedSearchTest
         @Override
         protected void saveQuery(boolean saveQuery, StringBuilder code)
         {
-            // Saving a named query and refreshing its UI are outside this test.
+            // Observe the persistence boundary without writing a named query.
+            savedQueries++;
+        }
+
+        @Override
+        protected int getNoOfRecords(MQuery query, boolean alertRecords)
+        {
+            recordCounts++;
+            return 0;
+        }
+
+        MQuery currentQuery()
+        {
+            return m_query;
+        }
+
+        void cancel()
+        {
+            m_isCancel = true;
+        }
+
+        void accept()
+        {
+            cmd_ok_Advanced();
+        }
+
+        void save(boolean save)
+        {
+            cmd_saveAdvanced(save);
         }
 
         SQLFragment build()
@@ -377,6 +413,69 @@ public class FindWindowRelatedSearchTest
             fixture.criterion("Amount", ">", BigDecimal.ZERO, null, "AND", "", "", true);
             assertFilter("(EXISTS(SELECT 1 FROM find_related_0 find_related_1 WHERE "
                 + "find_related_1.Parent_ID = find_related.find_related_ID AND find_related_1.Amount > ?))",
+                List.of(BigDecimal.ZERO), fixture.build());
+        }
+    }
+
+    /** A failed virtual criterion must never publish or persist a partial filter. */
+    @Test
+    public void keylessVirtualCriteriaAbortBuildSaveAndAccept()
+    {
+        for (String action : List.of("build", "save", "accept"))
+        {
+            for (String conjunction : List.of("AND", "OR"))
+            {
+                try (MockedStatic<Msg> messages = mockStatic(Msg.class);
+                     SearchFixture fixture = new SearchFixture("C_Invoice", "C_Invoice", "RelatedInvoice_ID", false))
+                {
+                    messages.when(() -> Msg.getMsg(Env.getCtx(), "TableHasNoKeyColumn"))
+                        .thenReturn("Translated missing key message");
+                    fixture.criterion("GrandTotal", ">", BigDecimal.ZERO, null, "AND", "", "", false);
+                    fixture.build();
+                    MQuery previous = fixture.window.currentQuery();
+                    int savedQueries = fixture.window.savedQueries;
+                    fixture.criterion("VirtualTotal", ">", BigDecimal.ZERO, null, conjunction, "(", "", true);
+                    when(fixture.fields.get("VirtualTotal").isVirtualColumn()).thenReturn(true);
+                    fixture.criterion("Name", "=", "credit", null, "AND", "", ")", true);
+                    when(fixture.relatedTab.getKeyColumnName()).thenReturn("");
+                    when(fixture.relatedTab.getUUIDColumnName()).thenReturn("");
+                    fixture.window.cancel();
+                    fixture.window.configure(fixture.sourceTable, fixture.relatedTab, fixture.rows, fixture.fields);
+                    AdempiereException error = assertThrows(AdempiereException.class, () -> {
+                        if ("accept".equals(action))
+                            fixture.window.accept();
+                        else
+                            fixture.window.save("save".equals(action));
+                    });
+                    assertEquals("Translated missing key message C_Invoice: VirtualTotal", error.getMessage());
+                    messages.verify(() -> Msg.getMsg(Env.getCtx(), "TableHasNoKeyColumn"));
+                    assertSame(previous, fixture.window.currentQuery());
+                    assertEquals(savedQueries, fixture.window.savedQueries);
+                    assertEquals(0, fixture.window.recordCounts);
+                    assertTrue(fixture.window.isCancel());
+
+                    // Repairing the metadata must allow the unchanged rows to rebuild.
+                    when(fixture.relatedTab.getUUIDColumnName()).thenReturn("C_Invoice_UU");
+                    SQLFragment recovered = fixture.build();
+                    assertTrue(recovered.sqlClause().contains("C_Invoice.C_Invoice_UU = find_related.C_Invoice_UU"));
+                    assertEquals(List.of(BigDecimal.ZERO, BigDecimal.ZERO, "credit"), recovered.parameters());
+                    assertEquals(recovered, fixture.build());
+                }
+            }
+        }
+    }
+
+    /** Physical criteria do not require the related record's own key. */
+    @Test
+    public void keylessPhysicalCriteriaRemainSupported()
+    {
+        try (SearchFixture fixture = new SearchFixture("C_Invoice", "C_Invoice", "RelatedInvoice_ID", false))
+        {
+            when(fixture.relatedTab.getKeyColumnName()).thenReturn("");
+            when(fixture.relatedTab.getUUIDColumnName()).thenReturn("");
+            fixture.criterion("GrandTotal", ">", BigDecimal.ZERO, null, "AND", "", "", true);
+            assertFilter("(EXISTS(SELECT 1 FROM C_Invoice find_related WHERE "
+                + "find_related.RelatedInvoice_ID = C_Invoice.C_Invoice_ID AND find_related.GrandTotal > ?))",
                 List.of(BigDecimal.ZERO), fixture.build());
         }
     }
