@@ -463,6 +463,23 @@ public class ProductionTestIsolated extends AbstractTestCase {
 	
 	@Test
 	public void testBOMCostingDoesNotPostToSuspenseBalancing() {
+		// Case 1 - decimals in components
+		testBOMCostingDoesNotPostToSuspenseBalancing(
+				BigDecimal.valueOf(15.60), BigDecimal.valueOf(43.84), BigDecimal.valueOf(3.7),
+				BigDecimal.valueOf(0.23), BigDecimal.valueOf(0.001), BigDecimal.valueOf(68));
+	}
+
+	@Test
+	public void testBOMCostingDoesNotPostToSuspenseBalancingRV() {
+		// Case 2 - decimals in end product
+		testBOMCostingDoesNotPostToSuspenseBalancing(
+				BigDecimal.valueOf(604.5), BigDecimal.valueOf(190.37), BigDecimal.valueOf(794.685),
+				Env.ONE, Env.ONE, Env.ONE);
+	}
+
+	private void testBOMCostingDoesNotPostToSuspenseBalancing(
+			BigDecimal component1Cost, BigDecimal component2Cost, BigDecimal endProductCost, 
+			BigDecimal component1Qty, BigDecimal component2Qty, BigDecimal endProductQty) {
 
 		MAcctSchema acctSchema = new MAcctSchema(Env.getCtx(), DictionaryIDs.C_AcctSchema.DOLLAR.id, getTrxName());
 		String originalCostingMethod = acctSchema.getCostingMethod();
@@ -472,6 +489,12 @@ public class ProductionTestIsolated extends AbstractTestCase {
 		MProduct component1 = null;
 		MProduct component2 = null;
 		MProduct endProduct = null;
+		MCost cost1 = null;
+		MCost cost2 = null;
+		MCost cost3 = null;
+		MPPProductBOM bom = null;
+		MPPProductBOMLine line1 = null;
+		MPPProductBOMLine line2 = null;
 		try {
 			acctSchema.setCostingMethod(MAcctSchema.COSTINGMETHOD_StandardCosting);
 			acctSchema.saveEx();
@@ -491,8 +514,8 @@ public class ProductionTestIsolated extends AbstractTestCase {
 			component1.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.STANDARD.id);
 			component1.saveEx();
 
-			MCost cost1 = MCost.get(component1, 0, acctSchema, component1.getAD_Org_ID(), DictionaryIDs.M_CostElement.MATERIAL.id, getTrxName());
-			cost1.setFutureCostPrice(BigDecimal.valueOf(15.60));
+			cost1 = MCost.get(component1, 0, acctSchema, component1.getAD_Org_ID(), DictionaryIDs.M_CostElement.MATERIAL.id, getTrxName());
+			cost1.setFutureCostPrice(component1Cost);
 			cost1.saveEx();
 
 			component2 = new MProduct(Env.getCtx(), 0, getTrxName());
@@ -504,8 +527,8 @@ public class ProductionTestIsolated extends AbstractTestCase {
 			component2.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.STANDARD.id);
 			component2.saveEx();
 
-			MCost cost2 = MCost.get(component2, 0, acctSchema, component2.getAD_Org_ID(), DictionaryIDs.M_CostElement.MATERIAL.id, getTrxName());
-			cost2.setFutureCostPrice(BigDecimal.valueOf(43.84));
+			cost2 = MCost.get(component2, 0, acctSchema, component2.getAD_Org_ID(), DictionaryIDs.M_CostElement.MATERIAL.id, getTrxName());
+			cost2.setFutureCostPrice(component2Cost);
 			cost2.saveEx();
 
 			endProduct = new MProduct(Env.getCtx(), 0, getTrxName());
@@ -518,25 +541,25 @@ public class ProductionTestIsolated extends AbstractTestCase {
 			endProduct.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.STANDARD.id);
 			endProduct.saveEx();
 
-			MCost cost3 = MCost.get(endProduct, 0, acctSchema, endProduct.getAD_Org_ID(), DictionaryIDs.M_CostElement.MATERIAL.id, getTrxName());
-			cost3.setFutureCostPrice(BigDecimal.valueOf(3.7));
+			cost3 = MCost.get(endProduct, 0, acctSchema, endProduct.getAD_Org_ID(), DictionaryIDs.M_CostElement.MATERIAL.id, getTrxName());
+			cost3.setFutureCostPrice(endProductCost);
 			cost3.saveEx();
 
-			MPPProductBOM bom = new MPPProductBOM(Env.getCtx(), 0, getTrxName());
+			bom = new MPPProductBOM(Env.getCtx(), 0, getTrxName());
 			bom.setM_Product_ID(endProduct.get_ID());
 			bom.setBOMType(MPPProductBOM.BOMTYPE_CurrentActive);
 			bom.setBOMUse(MPPProductBOM.BOMUSE_Master);
 			bom.setName(endProduct.getName());
 			bom.saveEx();
 
-			MPPProductBOMLine line1 = new MPPProductBOMLine(bom);
+			line1 = new MPPProductBOMLine(bom);
 			line1.setM_Product_ID(component1.get_ID());
-			line1.setQtyBOM(new BigDecimal("0.23"));
+			line1.setQtyBOM(component1Qty);
 			line1.saveEx();
 
-			MPPProductBOMLine line2 = new MPPProductBOMLine(bom);
+			line2 = new MPPProductBOMLine(bom);
 			line2.setM_Product_ID(component2.get_ID());
-			line2.setQtyBOM(new BigDecimal("0.001"));
+			line2.setQtyBOM(component2Qty);
 			line2.saveEx();
 
 			endProduct.load(getTrxName());
@@ -564,7 +587,7 @@ public class ProductionTestIsolated extends AbstractTestCase {
 			production.setDocAction(DocAction.ACTION_Complete);
 			production.setDocStatus(DocAction.STATUS_Drafted);
 			production.setIsComplete(false);
-			production.setProductionQty(new BigDecimal("68"));
+			production.setProductionQty(endProductQty);
 			production.setPP_Product_BOM_ID(bom.getPP_Product_BOM_ID());
 			production.saveEx();
 	
@@ -609,12 +632,43 @@ public class ProductionTestIsolated extends AbstractTestCase {
 			averagePOElementRestore.saveEx();
 
 			CacheMgt.get().reset();
-			if (component1 != null && component1.get_ID() > 0)
+			if (line1 != null && line1.get_ID() > 0) {
+				line1.set_TrxName(null);
+				line1.deleteEx(true);
+			}
+			if (line2 != null && line2.get_ID() > 0) {
+				line2.set_TrxName(null);
+				line2.deleteEx(true);
+			}
+			if (bom != null && bom.get_ID() > 0) {
+				bom.set_TrxName(null);
+				bom.deleteEx(true);
+			}
+			if (cost1 != null && cost1.get_ID() > 0) {
+				cost1.set_TrxName(null);
+				cost1.deleteEx(true);
+			}
+			if (cost2 != null && cost2.get_ID() > 0) {
+				cost2.set_TrxName(null);
+				cost2.deleteEx(true);
+			}
+			if (cost3 != null && cost3.get_ID() > 0) {
+				cost3.set_TrxName(null);
+				cost3.deleteEx(true);
+			}
+			if (component1 != null && component1.get_ID() > 0) {
+				component1.set_TrxName(null);
 				component1.deleteEx(true);
-			if (component2 != null && component2.get_ID() > 0)
+			}
+			if (component2 != null && component2.get_ID() > 0) {
+				component2.set_TrxName(null);
 				component2.deleteEx(true);
-			if (endProduct != null && endProduct.get_ID() > 0)
+			}
+			if (endProduct != null && endProduct.get_ID() > 0) {
+				endProduct.set_TrxName(null);
 				endProduct.deleteEx(true);
+			}
 		}
 	}
+
 }
