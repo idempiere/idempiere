@@ -26,7 +26,11 @@ package org.idempiere.test.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mockStatic;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -35,6 +39,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.logging.LogRecord;
 
+import org.compiere.model.MAllocationHdr;
+import org.compiere.model.MAllocationLine;
 import org.compiere.model.MBPRelation;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MDocType;
@@ -53,6 +59,7 @@ import org.compiere.model.MPayment;
 import org.compiere.model.MProduct;
 import org.compiere.model.MRMA;
 import org.compiere.model.MRMALine;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTax;
 import org.compiere.model.MWarehouse;
 import org.compiere.model.PO;
@@ -69,6 +76,8 @@ import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 /**
  * @author Carlos Ruiz - globalqss
@@ -196,6 +205,154 @@ public class InvoiceCustomerTest extends AbstractTestCase {
 			assertEquals(severeCount, errorLogs.length, "Severe errors recorded in log: " + errorLogs.length);
 		
 		rollback();
+	}
+
+	/**
+	 * Complete a zero total invoice that has no allocation line.
+	 */
+	private MInvoice completeZeroTotalInvoice() {
+		MInvoice invoice = createDraftARInvoice(Env.ZERO);
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+		invoice.load(getTrxName());
+		assertFalse(info.isError(), "Error processing invoice: " + info.getSummary());
+		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus(), "Invoice document status is not completed: " + invoice.getDocStatus());
+		assertTrue(Env.ZERO.compareTo(invoice.getGrandTotal()) == 0, "Invoice grand total not zero: " + invoice.getGrandTotal().toPlainString());
+		assertNull(invoice.getAllocatedAmt(), "Invoice should not have any allocation line");
+		return invoice;
+	}
+
+	/**
+	 * Default (INVOICE_ISPAID_REQUIRES_ALLOCATION=N): open balance 0 means paid, even without allocation line.
+	 */
+	@Test
+	public void testZeroTotalInvoiceWithoutAllocationIsPaidByDefault() {
+		MInvoice invoice = completeZeroTotalInvoice();
+		// completing the invoice does not set IsPaid for this payment rule, testAllocation() (e.g. from BPartnerValidate) does
+		assertTrue(invoice.testAllocation(), "testAllocation() must mark a zero total invoice as paid when allocation is not required");
+		assertTrue(invoice.isPaid(), "Zero total invoice must be paid when allocation is not required");
+		assertFalse(invoice.testAllocation(), "testAllocation() must not change IsPaid again");
+
+		rollback();
+	}
+
+	/**
+	 * INVOICE_ISPAID_REQUIRES_ALLOCATION=Y: an invoice without any allocation line is not paid, even when its grand total is zero.
+	 */
+	@Test
+	public void testZeroTotalInvoiceWithoutAllocationIsNotPaidWhenAllocationRequired() {
+		try (MockedStatic<MSysConfig> msysConfigMock = mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
+			msysConfigMock.when(() -> MSysConfig.getBooleanValue(eq(MSysConfig.INVOICE_ISPAID_REQUIRES_ALLOCATION), anyBoolean(), eq(getAD_Client_ID()))).thenReturn(true);
+
+			MInvoice invoice = completeZeroTotalInvoice();
+			assertFalse(invoice.isPaid(), "Invoice without allocation must not be paid when allocation is required");
+			assertFalse(invoice.testAllocation(), "testAllocation() must not change IsPaid for an invoice without allocation");
+			assertFalse(invoice.isPaid());
+		}
+
+		rollback();
+	}
+
+	/**
+	 * INVOICE_ISPAID_REQUIRES_ALLOCATION=Y: voiding a not yet processed (drafted) invoice zeroes its lines and marks it as paid without
+	 * creating an allocation. A later {@link MInvoice#testAllocation()} call (e.g. from BPartnerValidate or Merge) must not flip IsPaid back to N.
+	 */
+	@Test
+	public void testVoidedDraftInvoiceRemainsPaid() {
+		try (MockedStatic<MSysConfig> msysConfigMock = mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
+			msysConfigMock.when(() -> MSysConfig.getBooleanValue(eq(MSysConfig.INVOICE_ISPAID_REQUIRES_ALLOCATION), anyBoolean(), eq(getAD_Client_ID()))).thenReturn(true);
+
+			MInvoice invoice = createDraftARInvoice(Env.ONEHUNDRED);
+
+			assertTrue(invoice.processIt(DocAction.ACTION_Void), "Error voiding invoice: " + invoice.getProcessMsg());
+			invoice.saveEx();
+			invoice.load(getTrxName());
+			assertEquals(DocAction.STATUS_Voided, invoice.getDocStatus(), "Invoice document status is not voided: " + invoice.getDocStatus());
+			assertTrue(invoice.isProcessed(), "Voided invoice must be processed");
+			assertEquals(0, invoice.getGrandTotal().signum(), "Voided invoice grand total not zero: " + invoice.getGrandTotal().toPlainString());
+			assertNull(invoice.getAllocatedAmt(), "Voided draft invoice should not have any allocation line");
+			assertTrue(invoice.isPaid(), "Voided invoice must be paid");
+
+			assertFalse(invoice.testAllocation(), "testAllocation() must not change IsPaid of a voided invoice");
+			assertTrue(invoice.isPaid(), "Voided invoice must stay paid after testAllocation()");
+		}
+
+		rollback();
+	}
+
+	/**
+	 * INVOICE_ISPAID_REQUIRES_ALLOCATION=Y: a zero total invoice settled by a zero amount allocation is paid. Once that allocation is reversed
+	 * (accrual, which creates an offsetting allocation instead of deactivating the original), nothing is settled anymore and the invoice
+	 * must be back to the same state as an invoice without allocation, i.e. not paid.
+	 */
+	@Test
+	public void testZeroTotalInvoiceWithReversedAllocationIsNotPaid() {
+		try (MockedStatic<MSysConfig> msysConfigMock = mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
+			msysConfigMock.when(() -> MSysConfig.getBooleanValue(eq(MSysConfig.INVOICE_ISPAID_REQUIRES_ALLOCATION), anyBoolean(), eq(getAD_Client_ID()))).thenReturn(true);
+
+			MInvoice invoice = createDraftARInvoice(Env.ZERO);
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+			invoice.load(getTrxName());
+			assertFalse(info.isError(), "Error processing invoice: " + info.getSummary());
+			assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus(), "Invoice document status is not completed: " + invoice.getDocStatus());
+			assertEquals(0, invoice.getGrandTotal().signum(), "Invoice grand total not zero: " + invoice.getGrandTotal().toPlainString());
+			assertFalse(invoice.isPaid(), "Invoice without allocation must not be paid");
+
+			// settle the zero total invoice with a zero amount allocation
+			MAllocationHdr alloc = new MAllocationHdr(Env.getCtx(), true, invoice.getDateAcct(), invoice.getC_Currency_ID(),
+					"Zero allocation " + invoice.getDocumentNo(), getTrxName());
+			alloc.setAD_Org_ID(invoice.getAD_Org_ID());
+			alloc.saveEx();
+			MAllocationLine aLine = new MAllocationLine(alloc, Env.ZERO, Env.ZERO, Env.ZERO, Env.ZERO);
+			aLine.setC_Invoice_ID(invoice.getC_Invoice_ID());
+			aLine.saveEx();
+			assertTrue(alloc.processIt(DocAction.ACTION_Complete), "Error completing allocation: " + alloc.getProcessMsg());
+			alloc.saveEx();
+
+			invoice.load(getTrxName());
+			assertEquals(0, invoice.getAllocatedAmt().signum(), "Invoice allocated amount not zero: " + invoice.getAllocatedAmt());
+			assertTrue(invoice.isPaid(), "Zero total invoice with a zero allocation must be paid");
+
+			// reverse the allocation (accrual): the original allocation stays active and an offsetting allocation is created
+			alloc.load(getTrxName());
+			assertTrue(alloc.processIt(DocAction.ACTION_Reverse_Accrual), "Error reversing allocation: " + alloc.getProcessMsg());
+			alloc.saveEx();
+
+			invoice.load(getTrxName());
+			invoice.testAllocation();
+			assertFalse(invoice.isPaid(), "Zero total invoice whose only allocation was reversed must not be paid");
+		}
+
+		rollback();
+	}
+
+	/**
+	 * Create a drafted AR invoice for C&amp;W with a single bank charge line
+	 * @param price line price
+	 * @return drafted invoice
+	 */
+	private MInvoice createDraftARInvoice(BigDecimal price) {
+		MInvoice invoice = new MInvoice(Env.getCtx(), 0, getTrxName());
+		invoice.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id));  // C&W
+		invoice.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_ARInvoice);
+		invoice.setC_DocType_ID(invoice.getC_DocTypeTarget_ID()); // required to avoid runDocumentActionWorkflow exception
+		invoice.setPaymentRule(MInvoice.PAYMENTRULE_Check);
+		invoice.setC_PaymentTerm_ID(DictionaryIDs.C_PaymentTerm.IMMEDIATE.id);  // Immediate
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		invoice.setDateInvoiced(today);
+		invoice.setDateAcct(today);
+		invoice.setDocStatus(DocAction.STATUS_Drafted);
+		invoice.setDocAction(DocAction.ACTION_Complete);
+		invoice.saveEx();
+
+		MInvoiceLine line = new MInvoiceLine(invoice);
+		line.setLine(10);
+		line.setC_Charge_ID(DictionaryIDs.C_Charge.BANK.id);  // Bank Charge
+		line.setQty(Env.ONE);
+		line.setPrice(price);
+		line.saveEx();
+
+		invoice.load(getTrxName());
+		return invoice;
 	}
 
 	@Test
