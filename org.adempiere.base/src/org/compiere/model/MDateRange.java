@@ -154,11 +154,23 @@ public class MDateRange extends X_AD_DateRange {
 		return new Timestamp[] {Timestamp.valueOf(first.atStartOfDay()), Timestamp.valueOf(last.atTime(LocalTime.MAX).withNano(999_000_000))};
 	}
 
+	/**
+	 * Previous period ranges depend on a main range, so they are always comparison ranges
+	 * @param rangeType
+	 * @return true for range types "Previous Period" and "Previous Period with Offset"
+	 */
+	public static boolean isPreviousPeriod(String rangeType) {
+		return RANGETYPE_PreviousPeriod.equals(rangeType) || RANGETYPE_PreviousPeriodWithOffset.equals(rangeType);
+	}
+
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		// complements CalloutDateRange
-		if (RANGETYPE_PreviousPeriod.equals(getRangeType()) || RANGETYPE_PreviousPeriodWithOffset.equals(getRangeType()))
+		if (isPreviousPeriod(getRangeType()))
 			setRangeComparisonType(RANGECOMPARISONTYPE_ComparisonRange);
+		else if (is_ValueChanged(COLUMNNAME_RangeType) && !is_ValueChanged(COLUMNNAME_RangeComparisonType)
+				&& isPreviousPeriod((String) get_ValueOld(COLUMNNAME_RangeType)))
+			setRangeComparisonType(RANGECOMPARISONTYPE_StandardRange); // not a previous period range any more
 		
 		if (RANGETYPE_Absolute.equals(getRangeType())) {
 			if (getDateFrom() == null && getDateTo() == null) {

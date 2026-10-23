@@ -43,8 +43,10 @@ public class CalloutDateRange implements IColumnCallout {
 	@Override
 	public String start(Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value, Object oldValue) {
 		String rangeType = Objects.toString(value, "");
-		if (MDateRange.RANGETYPE_PreviousPeriod.equals(rangeType) || MDateRange.RANGETYPE_PreviousPeriodWithOffset.equals(rangeType))
+		if (MDateRange.isPreviousPeriod(rangeType))
 			mTab.setValue(I_AD_DateRange.COLUMNNAME_RangeComparisonType, MDateRange.RANGECOMPARISONTYPE_ComparisonRange);
+		else if (MDateRange.isPreviousPeriod(Objects.toString(oldValue, "")))
+			mTab.setValue(I_AD_DateRange.COLUMNNAME_RangeComparisonType, MDateRange.RANGECOMPARISONTYPE_StandardRange); // not a previous period range any more
 		return null;
 	}
 }

@@ -30,10 +30,10 @@ import static org.compiere.model.SystemIDs.REFERENCE_QUARTERS;
 import static org.compiere.model.SystemIDs.REFERENCE_TIMEUNIT;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -558,7 +558,7 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 					String unit = (String) selectedQuickListItem.getAttribute("TimeUnit");
 					int offset = (int) selectedQuickListItem.getAttribute("Offset");
 					Date dateFromAttr = (Date) selectedQuickListItem.getAttribute("DateFrom");
-					dates = getInterval(unit, unit, offset, false, false, dateFromAttr);
+					dates = getInterval(unit, offset, 1, dateFromAttr);
 					this.dateFrom = new Timestamp(dates[0].getTime());
 					this.dateTo = new Timestamp(dates[1].getTime());
 					dates = setTimesOnDates(this.dateFrom, this.dateTo);
@@ -573,11 +573,12 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 					this.dateTo = (Date) selectedPresetListItem.getAttribute("DateTo");
 					this.displayValue = selectedPresetListItem.getLabel();
 				}
-				else {
+				else if(!isPresetsOnly()) {
 					this.dateFrom = null;
 					this.dateTo = null;
 					this.displayValue = "";
 				}
+				// presets only: dates that no preset has are kept, they are those of the editors
 				if(this.dateFrom != null || this.dateTo != null) {
 					returnVal = (this.dateFrom != null ? DisplayType.getDateFormat().format(this.dateFrom) : "")
 							+ " - " + (this.dateTo != null ? DisplayType.getDateFormat().format(this.dateTo) : "");
@@ -858,11 +859,13 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 			numBoxValue = -numBoxValue;
 		
 		if(mode.equalsIgnoreCase(DATESELECTIONMODE_CURRENT))
-			dates = getInterval(unit, 0);
+			dates = getInterval(unit, 0, 1, null);
 		else if(mode.equalsIgnoreCase(DATESELECTIONMODE_AGO))
-			dates = getInterval(unit, unit, numBoxValue.intValue(), false, false, null);
+			dates = getInterval(unit, numBoxValue.intValue(), 1, null);
+		else if(mode.equalsIgnoreCase(DATESELECTIONMODE_PREVIOUS))
+			dates = getInterval(unit, numBoxValue.intValue(), -numBoxValue.intValue(), null);
 		else
-			dates = getInterval(unit, numBoxValue.intValue());
+			dates = getInterval(unit, 1, numBoxValue.intValue(), null);
 
 		dateFrom = new Timestamp(dates[0].getTime());
 		dateTo = new Timestamp(dates[1].getTime());
@@ -875,141 +878,22 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 	} // getIntervalAsString
 
 	/**
-	 * Calls {@link #getInterval(String, String, int, boolean, boolean, Date) getInterval} method
-	 * @param timeUnit
-	 * @param offset
-	 * @return array of dates: {DateFrom, DateTo}
-	 */
-	private Date[] getInterval(String timeUnit, int offset) {
-		return getInterval(timeUnit, null, offset, false, false, null);
-	} // getInterval
-
-	/**
-	 * Calculate time interval based on the selected parameters.
-	 * @param timeUnit - used with the offset parameter to set an exact date-time (e.g. current date-time 1 year ago)
-	 * @param timeUnitForRange - after an exact date-time is set with timeUnit and offset, timeUnitForRange defines what time
-	 * 			range should be defined around the exact date-time ((e.g. current day/week/month/year 1 year ago))
-	 * @param offset -  used with the timeUnit parameter to set an exact date-time (e.g. current date-time 1 year ago)
-	 * @param isToDate - if false, set date from and to to the beginning and end of the given time interval
-	 * @param includeThis - if true, it will include the current date (e.g. return from the beginning of last month until today/until end of last month)
-	 * @param dateFrom - define date from (default now)
+	 * Calculate the time interval with {@link MDateRange#getInterval(String, int, int, LocalDate, java.util.Locale)},
+	 * the method that resolves the presets, so that the modes and the presets cannot be inconsistent.
+	 * @param timeUnit {@link MChart#TIMEUNIT_Day} and the other time units of a chart
+	 * @param timeOffset units from the unit that contains the reference date, negative for the past
+	 * @param timeScope number of units, at least 1
+	 * @param reference date the interval is counted from, today if null
 	 * @return array of dates: [DateFrom, DateTo]
 	 */
-	private Date[] getInterval(String timeUnit, String timeUnitForRange, int offset, boolean isToDate, boolean includeThis, Date dateFrom) {
-
-		if(dateFrom == null)
-			dateFrom = new Date(System.currentTimeMillis());
-		
-		Calendar cal1 = Calendar.getInstance(Env.getLocale(Env.getCtx()));
-		Calendar cal2 = Calendar.getInstance(Env.getLocale(Env.getCtx()));
-		cal1.setTime(dateFrom);
-		cal2.setTime(dateFrom);
-		
-		int iUnit;
-		int iDayUnit;
-		
-		// Transform Time Unit
-		switch (timeUnit) {
-			case MChart.TIMEUNIT_Day:
-				iUnit = Calendar.DAY_OF_YEAR;
-				iDayUnit = Calendar.DAY_OF_YEAR;
-				break;
-			case MChart.TIMEUNIT_Month:
-				iUnit = Calendar.MONTH;
-				iDayUnit = Calendar.DAY_OF_MONTH;
-				break;
-			case MChart.TIMEUNIT_Quarter:
-				iUnit = Calendar.MONTH;
-				iDayUnit = Calendar.DAY_OF_MONTH;
-				offset = offset * 3;
-				break;
-			case MChart.TIMEUNIT_Week:
-				iUnit = Calendar.WEEK_OF_YEAR;
-				iDayUnit = Calendar.DAY_OF_WEEK;
-				break;
-			case MChart.TIMEUNIT_Year:
-				iUnit = Calendar.YEAR;
-				iDayUnit = Calendar.DAY_OF_YEAR;
-				break;
-			default:
-				throw new AdempiereException("TimeUnitNotSupported");
-		}
-
-		if(!Util.isEmpty(timeUnitForRange) || !isToDate){
-			boolean hasTimeUnitForRange = true;
-			
-			if(Util.isEmpty(timeUnitForRange)) {
-				timeUnitForRange = timeUnit;
-				hasTimeUnitForRange = false;
-			}
-			// Add the offset
-			if(hasTimeUnitForRange && offset != 0) {
-				cal1.add(iUnit, offset);
-				cal2.add(iUnit, offset);
-			}
-			else if(!hasTimeUnitForRange && !isToDate) {
-				if(offset < 0) {
-					cal1.add(iUnit, offset);
-					if(!includeThis) {
-						if(timeUnitForRange.equalsIgnoreCase(MChart.TIMEUNIT_Quarter))
-							cal2.add(iUnit, -3);
-						else
-							cal2.add(iUnit, -1);
-					}
-				}
-				else if (offset > 0) {
-					if(!includeThis) {
-						if(timeUnitForRange.equalsIgnoreCase(MChart.TIMEUNIT_Quarter))
-							cal1.add(iUnit, 3);
-						else
-							cal1.add(iUnit, 1);
-					}
-					cal2.add(iUnit, offset);
-				}
-			}
-			
-			// Set first and last Day of the given time period
-			if(timeUnitForRange.equalsIgnoreCase(MChart.TIMEUNIT_Week)) {
-				cal1.set(iDayUnit, cal1.getFirstDayOfWeek());
-				cal2.set(iDayUnit, cal2.getFirstDayOfWeek());
-				cal2.add(iDayUnit, 6);
-			}
-			else if(timeUnitForRange.equalsIgnoreCase(MChart.TIMEUNIT_Quarter)){
-				if(cal1.after(new GregorianCalendar(cal1.get(Calendar.YEAR), Calendar.OCTOBER, 1))) {
-					cal1.set(Calendar.MONTH, Calendar.OCTOBER);
-					cal2.set(Calendar.MONTH, Calendar.DECEMBER);
-				}
-				else if(cal1.after(new GregorianCalendar(cal1.get(Calendar.YEAR), Calendar.JULY, 1))) {
-					cal1.set(Calendar.MONTH, Calendar.JULY);
-					cal2.set(Calendar.MONTH, Calendar.SEPTEMBER);
-				}
-				else if(cal1.after(new GregorianCalendar(cal1.get(Calendar.YEAR), Calendar.APRIL, 1))) {
-					cal1.set(Calendar.MONTH, Calendar.APRIL);
-					cal2.set(Calendar.MONTH, Calendar.JUNE);
-				}
-				else {
-					cal1.set(Calendar.MONTH, Calendar.JANUARY);
-					cal2.set(Calendar.MONTH, Calendar.MARCH);
-				}
-				cal1.set(Calendar.DAY_OF_MONTH, cal1.getActualMinimum(iDayUnit));
-				cal2.set(Calendar.DAY_OF_MONTH, cal2.getActualMaximum(Calendar.DAY_OF_MONTH));
-			}
-			else if (!timeUnitForRange.equalsIgnoreCase(MChart.TIMEUNIT_Day)) {
-				cal1.set(iDayUnit, cal1.getActualMinimum(iDayUnit));
-				cal2.set(iDayUnit, cal2.getActualMaximum(iDayUnit));
-			}
-		}
-		else if(isToDate) {
-			if(offset < 0)
-				cal1.add(iUnit, offset);
-			else if (offset > 0)
-				cal2.add(iUnit, offset);
-		}
-
-		Date date1 = cal1.getTime();
-		Date date2 = cal2.getTime();
-		
-		return new Date[] {date1, date2};
+	private Date[] getInterval(String timeUnit, int timeOffset, int timeScope, Date reference) {
+		LocalDate referenceDate = reference != null
+				? new Timestamp(reference.getTime()).toLocalDateTime().toLocalDate()
+				: LocalDate.now();
+		Timestamp[] interval = MDateRange.getInterval(timeUnit, timeOffset, timeScope, referenceDate, Env.getLocale(Env.getCtx()));
+		if(interval == null)
+			throw new AdempiereException("TimeUnitNotSupported");
+		return new Date[] {interval[0], interval[1]};
 	} // getInterval
 
 	/**
@@ -1214,9 +1098,8 @@ public class DateRangePicker extends Popup implements EventListener<Event>, Valu
 		dateFrom = dates[0];
 		dateTo = dates[1];
 		selectPresetOfDates();
-		// show the label of the selected preset
-		if(selectedPresetListItem != null)
-			setDateTextBoxAndDisplayValue();
+		// show the label of the selected preset, or the dates if no preset has them
+		setDateTextBoxAndDisplayValue();
 	} // loadPresetsOnlySelection
 	
 	/**
