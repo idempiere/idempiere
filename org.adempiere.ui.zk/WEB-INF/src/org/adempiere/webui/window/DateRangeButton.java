@@ -26,6 +26,7 @@ package org.adempiere.webui.window;
 
 import java.util.Properties;
 
+import org.adempiere.webui.Extensions;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.component.Window;
@@ -76,7 +77,7 @@ public class DateRangeButton extends ToolBarButton implements WEditor.DynamicDis
 		else
 			setImage(ThemeManager.getThemeResource(IMAGES_CONTEXT_HISTORY_PNG));
 		
-		DateRangePicker popup = new DateRangePicker(editor, editor2);
+		DateRangePicker popup = Extensions.getDateRangePicker(editor, editor2);
 		this.addEventListener(Events.ON_CLICK, event -> {
 			Window window = null;
 			Component component = this.getParent();
