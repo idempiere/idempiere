@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import org.compiere.model.MProcessPara;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.SvrProcess;
+import org.compiere.report.MReportSource;
 import org.idempiere.acct.base.model.MReportColumn;
 import org.idempiere.acct.base.model.MReportColumnSet;
 
@@ -82,6 +83,15 @@ public class ReportColumnSet_Copy extends SvrProcess
 		{
 			MReportColumn rc = MReportColumn.copy (getCtx(), to.getAD_Client_ID(), to.getAD_Org_ID(), to_ID, rcs[i], get_TrxName());
 			rc.saveEx();
+			MReportSource[] rss = rcs[i].getSources();
+			if (rss != null)
+			{
+				for (int ii = 0; ii < rss.length; ii++)
+				{
+					MReportSource rs = MReportSource.copy (getCtx(), to.getAD_Client_ID(), to.getAD_Org_ID(), rc.get_ID(), rss[ii], get_TrxName(), false);
+					rs.saveEx();
+				}
+			}
 		}
 		//	Oper 1/2 were set to Null !
 		StringBuilder msgreturn = new StringBuilder("@Copied@=").append(rcs.length);
