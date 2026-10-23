@@ -298,10 +298,6 @@ public class DrillReportCtl {
 	 */
 	protected void initDrillProcessRulePrintFormatMap() {
 
-		int AD_Window_ID = Env.getContextAsInt(Env.getCtx(), this.m_WindowNo, "_WinInfo_AD_Window_ID", true);
-		if (AD_Window_ID == 0 && m_Query != null)
-			AD_Window_ID = Env.getZoomWindowID(m_Query);
-
 		for( KeyNamePair[] drilProcessRuleList : drillProcesRules.values() ) {
 			for( KeyNamePair drillProcessRule : drilProcessRuleList ) {
 				//
