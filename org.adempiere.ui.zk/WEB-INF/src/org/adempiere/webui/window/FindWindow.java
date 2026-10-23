@@ -38,6 +38,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.AdempiereWebUI;
@@ -2506,8 +2507,8 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	 */
     protected void cmd_saveAdvanced(boolean saveQuery)
 	{
-		//
-		m_query = new MQuery(m_tableName);
+		// Publish the query only after every criterion has been validated.
+		MQuery query = new MQuery(m_tableName);
 		List<Object> params = new ArrayList<Object>();
 		if (m_filterExtended != null && !Util.isEmpty(m_filterExtended.sqlClause(), true)) {
 			String whereExtended = Env.parseContextForSql(Env.getCtx(), m_targetWindowNo, m_filterExtended.sqlClause(), false, params);
@@ -2517,7 +2518,7 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 				else
 					params.addAll(m_filterExtended.parameters());
 			}
-			m_query.addRestriction(new SQLFragment(whereExtended, params));
+            query.addRestriction(new SQLFragment(whereExtended, params));
 		}
 		
 		if (m_whereUserQuery == null) {
@@ -2575,11 +2576,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		            isProductCategoryField = isProductCategoryField(field.getColumnName());
 		            ColumnSQL = field.getSearchColumnSQL() != null ? field.getSearchColumnSQL() : field.getColumnSQL(false);
 		            if (table.getSelectedItem() != null && !table.getSelectedItem().getValue().equals(m_AD_Tab_UU))
-					{       
+					{
+						// Each EXISTS has its own scope; reuse a stable alias on every rebuild.
+						String relatedAlias = getRelatedSearchAlias(m_tableName, m_gridTab.getTableName());
+						ColumnSQL = getRelatedSearchColumnSQL(field, m_gridTab, relatedAlias);
 						if (!isCompositeExists) {
 							MTable refTable = MTable.get(Env.getCtx(), m_tableName);
-							exists.append("SELECT 1 FROM ").append(m_gridTab.getTableName())
-							.append(" WHERE ").append(m_gridTab.getTableName()).append(".").append(m_gridTab.getLinkColumnName())
+							exists.append("SELECT 1 FROM ").append(m_gridTab.getTableName()).append(" ").append(relatedAlias)
+							.append(" WHERE ").append(relatedAlias).append(".").append(m_gridTab.getLinkColumnName())
 							.append(" = ").append(m_tableName).append(".");
 							if (refTable.isUUIDKeyTable())
 								exists.append(PO.getUUIDColumnName(m_tableName));
@@ -2674,9 +2678,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	    					if(!isCompositeExists)
 	    						where += ")";
 
-	    					m_query.addRestriction(new SQLFragment(where), and, not, isExistCondition, openBrackets);
+                            query.addRestriction(new SQLFragment(where), and, not, isExistCondition, openBrackets);
 	            		} else {
-		            		m_query.addRestriction(ColumnSQL, Operator, null,
+                            query.addRestriction(ColumnSQL, Operator, null,
 		            				infoName, null, andOr, openBrackets);
 	            		}
 	            		appendCode(code, ColumnName, Operator, "", "", andOr, lBrackets, rBrackets, tableUID);
@@ -2760,9 +2764,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	                	if(!isCompositeExists)
 							where += ")";
 
-	               	 	m_query.addRestriction(new SQLFragment(where, existsFilter.parameters()), and, not, isExistCondition, openBrackets);
+                        query.addRestriction(new SQLFragment(where, existsFilter.parameters()), and, not, isExistCondition, openBrackets);
 	                } else {
-		                m_query.addRangeRestriction(ColumnSQL, parsedValue, parsedValue2,
+                        query.addRangeRestriction(ColumnSQL, parsedValue, parsedValue2,
 		                    infoName, infoDisplay, infoDisplay_to, andOr, openBrackets);
 	                }
 	            } else if (isProductCategoryField && MQuery.OPERATORS[MQuery.EQUAL_INDEX].getValue().equals(Operator)) {
@@ -2772,14 +2776,14 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	                String where_rest= getSubCategoryWhereClause(field, ((Integer) parsedValue).intValue());
 	                if (isExists && !isCompositeExists)
 	                	where_rest="EXISTS("+where_rest+")";
-	                m_query.addRestriction(new SQLFragment(where_rest), and, not, isExistCondition, openBrackets);
+                    query.addRestriction(new SQLFragment(where_rest), and, not, isExistCondition, openBrackets);
 	            }
 	            else if (field != null && (field.getDisplayType()==DisplayType.ChosenMultipleSelectionList||field.getDisplayType()==DisplayType.ChosenMultipleSelectionSearch||field.getDisplayType()==DisplayType.ChosenMultipleSelectionTable) &&
 	            		(MQuery.OPERATORS[MQuery.EQUAL_INDEX].getValue().equals(Operator) || MQuery.OPERATORS[MQuery.NOT_EQUAL_INDEX].getValue().equals(Operator)))
 	            {
 	            	boolean notIntersect = !(MQuery.OPERATORS[MQuery.EQUAL_INDEX].getValue().equals(Operator));
 	            	SQLFragment clause = DB.intersectFilterForCSV(ColumnSQL, parsedValue.toString(), notIntersect);
-	            	m_query.addRestriction(clause, openBrackets, andOr);
+                    query.addRestriction(clause, openBrackets, andOr);
 	            } else {
 	            	if (table.getSelectedItem() != null && table.getSelectedItem().getValue().toString().equals(MAttribute.COLUMNNAME_M_Attribute_ID)
 	               			|| isExists) {
@@ -2798,9 +2802,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	                	
 	                	where += getRightBracketValue(row);
 
-						m_query.addRestriction(new SQLFragment(where, filter.parameters()), and, not, isExistCondition, openBrackets);
+                        query.addRestriction(new SQLFragment(where, filter.parameters()), and, not, isExistCondition, openBrackets);
 					} else {
-						m_query.addRestriction  (ColumnSQL, Operator, parsedValue,
+                        query.addRestriction  (ColumnSQL, Operator, parsedValue,
 								infoName, infoDisplay, and, not, openBrackets);
 					}
 	            }
@@ -2812,11 +2816,13 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 	            appendCode(code, ColumnName, Operator, value.toString(), value2 != null ? value2.toString() : "", andOr, lBrackets, rBrackets, tableUID);
 	        }
 	        
+	        m_query = query;
 	        saveQuery(saveQuery, code);			
 		} else {
 			List<Object> paramsUserQuery = new ArrayList<Object>();
 			String where = Env.parseContextForSql(Env.getCtx(), m_targetWindowNo, m_whereUserQuery, false, paramsUserQuery);
-			m_query.addRestriction(new SQLFragment(where, paramsUserQuery));
+            query.addRestriction(new SQLFragment(where, paramsUserQuery));
+			m_query = query;
 		}
 
 	}	//	cmd_saveAdvanced
@@ -3323,6 +3329,42 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
 		return editor != null ? editor.getComponent() : new Label("");
     }
 
+    /** Return a stable alias distinct from both table names. */
+    private static String getRelatedSearchAlias(String sourceTable, String relatedTable)
+    {
+        String alias = "find_related";
+        for (int suffix = 0; alias.equalsIgnoreCase(sourceTable) || alias.equalsIgnoreCase(relatedTable); suffix++)
+            alias = "find_related_" + suffix;
+        return alias;
+    }
+
+    /**
+     * Qualify a related-tab criterion without changing the field's SQL metadata.
+     * Virtual expressions retain their original table scope, including correlated
+     * subqueries and literals, by evaluating them against the related record's key.
+     *
+     * @param field search field
+     * @param tab related tab
+     * @param alias alias of the related table in the EXISTS query
+     * @return SQL expression for the criterion
+     * @throws AdempiereException if a virtual criterion has no record key or UUID
+     */
+    private static String getRelatedSearchColumnSQL(GridField field, GridTab tab, String alias)
+    {
+        if (!field.isVirtualColumn())
+            return alias + "." + field.getColumnName();
+
+        String keyColumn = tab.getKeyColumnName();
+        if (Util.isEmpty(keyColumn))
+            keyColumn = tab.getUUIDColumnName();
+        if (Util.isEmpty(keyColumn))
+            throw new AdempiereException(Msg.getMsg(Env.getCtx(), "TableHasNoKeyColumn") + " " + tab.getTableName()
+                + ": " + field.getColumnName());
+        String tableName = tab.getTableName();
+        return "(SELECT " + field.getSearchColumnSQL() + " FROM " + tableName
+            + " WHERE " + tableName + "." + keyColumn + " = " + alias + "." + keyColumn + ")";
+    }
+
     /**
      *  Find grid field from column name
      *  @param columnName column name
@@ -3423,9 +3465,9 @@ public class FindWindow extends Window implements EventListener<Event>, ValueCha
      */
     protected void cmd_ok_Advanced()
     {
-        m_isCancel = false; // teo_sarca [ 1708717 ]
-        //  save pending
+        // Validate every criterion before accepting or counting the query.
         cmd_saveAdvanced(false);
+        m_isCancel = false; // teo_sarca [ 1708717 ]
         
         if(historyCombo.getSelectedItem()!=null)
         {
