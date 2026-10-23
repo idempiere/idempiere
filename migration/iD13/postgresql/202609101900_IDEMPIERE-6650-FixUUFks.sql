@@ -73,6 +73,7 @@ BEGIN
         WHERE
             c.ad_reference_id IN (200233, /*TableUU*/ 200234, /*TableDirUU*/ 200235 /*SearchUU*/)
             AND right(c.columnname, 3) = '_UU'
+            AND t.isview = 'N'
         ORDER BY
             t.tablename,
             c.columnname
@@ -102,7 +103,17 @@ BEGIN
             CONTINUE;
         END IF;
 
-        v_target_column := substr(v_target_table, 1, 27) || '_UU';
+        SELECT a.attname, pg_catalog.format_type(a.atttypid, a.atttypmod)
+          INTO v_target_column
+          FROM pg_catalog.pg_class pc
+          JOIN pg_catalog.pg_attribute a ON pc.oid = a.attrelid
+        WHERE LOWER(pc.relname) = LOWER(v_target_table)
+          AND LOWER(a.attname) IN (LOWER(v_target_table || '_UU'), LOWER(substr(v_target_table, 1, 27) || '_UU'))
+          AND a.attnum > 0
+          AND pc.relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA)
+          AND NOT a.attisdropped
+        ORDER BY (LOWER(a.attname) = LOWER(v_target_table || '_UU')) DESC
+        LIMIT 1;
 
         -- Make sure source column exists and is already uuid
         SELECT pg_catalog.format_type(a.atttypid, a.atttypmod)

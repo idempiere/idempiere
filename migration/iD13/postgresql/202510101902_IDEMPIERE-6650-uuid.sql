@@ -12,7 +12,7 @@ WHERE ad_column_id IN (
     FROM ad_column c
       JOIN ad_table t USING (ad_table_id)
     WHERE AD_Reference_ID != 200231 AND 
-      ColumnName = substr(t.tablename, 0, 27) || '_UU'
+      ColumnName = substr(t.tablename, 1, 27) || '_UU'
 );
 
 DO $$
