@@ -360,7 +360,9 @@ public abstract class AbstractExcelExporter
 		HSSFSheet sheet= m_workbook.createSheet();
 		formatPage(sheet);
 		createHeaderFooter(sheet);
-		createParameter(sheet);
+		boolean showParameter = MSysConfig.getBooleanValue(MSysConfig.SHOW_REPORT_PARAMETER_IN_XLS_REPORT, true, Env.getAD_Client_ID(Env.getCtx()));
+		if (showParameter)
+			createParameter(sheet);
 		if (!isForm())
 		{
 			createTableHeader(sheet);
