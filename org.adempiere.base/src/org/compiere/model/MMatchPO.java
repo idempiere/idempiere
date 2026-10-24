@@ -20,12 +20,14 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -70,6 +72,34 @@ import org.idempiere.acct.IDoc;
  */
 public class MMatchPO extends X_M_MatchPO
 {
+
+	/**
+	 * Get matched qty for a given receipt line, invoice line and a specific non-zero ASI.
+	 * Considers only records with that exact ASI; does not include ASI=0 records.
+	 * Only non-reversed matches (Reversal_ID IS NULL OR Reversal_ID=0).
+	 */
+	private static final String	SQL_GET_MATCHINV_QTY_ASI	= "SELECT COALESCE(SUM(Qty), 0) FROM M_MatchInv WHERE M_InOutLine_ID=? AND C_InvoiceLine_ID=? "
+																+ " AND M_AttributeSetInstance_ID=? AND (Reversal_ID IS NULL OR Reversal_ID=0)";
+
+	/**
+	 * Get the ASI=0 (line-level, non-lot-specific) matched qty for a receipt line + invoice line pair.
+	 * Records created by matchToInvoiceLine() carry ASI=0 and cover the full line qty.
+	 * Only non-reversed matches (Reversal_ID IS NULL OR Reversal_ID=0).
+	 */
+	private static final String	SQL_GET_MATCHINV_QTY_ASI0	= "SELECT COALESCE(SUM(Qty), 0) FROM M_MatchInv WHERE M_InOutLine_ID=? AND C_InvoiceLine_ID=? "
+																+ " AND M_AttributeSetInstance_ID=0 AND (Reversal_ID IS NULL OR Reversal_ID=0)";
+
+	/**
+	 * Get matched qty for a given receipt line, invoice line and ASI.
+	 * Consider only non-reversed matches (Reversal_ID IS NULL OR Reversal_ID=0).
+	 * Includes ASI=0 records alongside the specific ASI: a MMatchInv with ASI=0 was created
+	 * against the full receipt line (e.g. via matchToInvoiceLine) and already covers that qty.
+	 * Used for single-slice lookups and the beforeSave validation where the ASI=0 pool is not
+	 * being distributed across multiple slices.
+	 */
+	private static final String	SQL_GET_MATCHINV_QTY		= "SELECT COALESCE(SUM(Qty), 0) FROM M_MatchInv WHERE M_InOutLine_ID=? AND C_InvoiceLine_ID=? "
+																+ " AND (M_AttributeSetInstance_ID=? OR M_AttributeSetInstance_ID=0) AND (Reversal_ID IS NULL OR Reversal_ID=0)";
+
 	/**
 	 * generated serial id
 	 */
@@ -291,8 +321,7 @@ public class MMatchPO extends X_M_MatchPO
 	 *	@param qty qty to match
 	 *	@return Match PO Record
 	 */
-	public static MMatchPO create (MInvoiceLine iLine, MInOutLine sLine,  
-		Timestamp dateTrx, BigDecimal qty)
+	public static List<MMatchPO> createList (MInvoiceLine iLine, MInOutLine sLine, Timestamp dateTrx, BigDecimal qty)
 	{
 		String trxName = null;
 		Properties ctx = null;
@@ -312,10 +341,11 @@ public class MMatchPO extends X_M_MatchPO
 		
 		if (C_OrderLine_ID > 0)
 		{
-			return create(ctx, iLine, sLine, C_OrderLine_ID, dateTrx, qty, trxName);
+			return createList(ctx, iLine, sLine, C_OrderLine_ID, dateTrx, qty, trxName);
 		}
 		else
 		{
+			List<MMatchPO> resultList = new ArrayList<MMatchPO>();
 			if (sLine != null && iLine != null)
 			{
 				MMatchPO[] matchpos = MMatchPO.get(ctx, sLine.getM_InOutLine_ID(), trxName);
@@ -333,227 +363,176 @@ public class MMatchPO extends X_M_MatchPO
 					if (matchQty.signum() <= 0)
 						continue;
 					
-					MMatchPO newMatchPO = create(ctx, iLine, sLine, C_OrderLine_ID, dateTrx, matchQty, trxName);
-					if (!newMatchPO.save())
+					List<MMatchPO> newMatchPOs = createList(ctx, iLine, sLine, C_OrderLine_ID, dateTrx, matchQty, trxName);
+					for (MMatchPO newMatchPO : newMatchPOs)
 					{
-						String msg = "Failed to update match po.";
-						ValueNamePair error = CLogger.retrieveError();
-						if (error != null)
+						if (!newMatchPO.save())
 						{
-							msg = msg + " " + error.getName();
+							String msg = "Failed to update match po.";
+							ValueNamePair error = CLogger.retrieveError();
+							if (error != null)
+							{
+								msg = msg + " " + error.getName();
+							}
+							throw new RuntimeException(msg);
 						}
-						throw new RuntimeException(msg);
+						resultList.add(newMatchPO);
 					}
 					qty = qty.subtract(matchQty);
 					if (qty.signum() <= 0)
-						return newMatchPO;
+						return resultList;
 				}
 			}
-			return null;
+			return resultList;
 		}
+	}
+
+	public static MMatchPO create (MInvoiceLine iLine, MInOutLine sLine,  
+		Timestamp dateTrx, BigDecimal qty)
+	{
+		List<MMatchPO> list = createList(iLine, sLine, dateTrx, qty);
+		return (list == null || list.isEmpty()) ? null : list.get(0);
 	}
 	
 	/**
-	 * Update or create MatchPO record (if needed, create MatchInv too). 
-	 * @param ctx
-	 * @param iLine
-	 * @param sLine
-	 * @param C_OrderLine_ID
-	 * @param dateTrx
-	 * @param qty
-	 * @param trxName
-	 * @return Match PO record
+	 * Update existing M_MatchPO record(s) or create new one(s) to match qty between an invoice
+	 * line, a receipt line, or both, against a given order line.
+	 * <p>
+	 * This method handles the standard PO matching cases plus lot/serial-aware ("ASI-aware")
+	 * splitting: when a receipt line's own M_AttributeSetInstance_ID is 0 (because its quantity
+	 * was received across multiple lots/serials, tracked individually in M_InOutLineMA), a single
+	 * matching request may need to be fulfilled by MULTIPLE M_MatchPO records - one per distinct
+	 * lot/ASI - rather than one M_MatchPO carrying an ambiguous or blank ASI. This matters for
+	 * costing: M_CostDetail lookups key off (C_OrderLine_ID, M_AttributeSetInstance_ID), so an
+	 * M_MatchPO with the wrong or missing ASI can silently attach to the wrong cost layer.
+	 * <p>
+	 * Overall flow:
+	 * <ol>
+	 *   <li>Phase 1: try to satisfy {@code qty} by completing existing "half-matched" M_MatchPO
+	 *       stubs (records that already have either an invoice line or a receipt line linked,
+	 *       but not both) via {@link MatchPOAutoMatch#getNotMatchedMatchPOList}.</li>
+	 *   <li>Phase 2 ("Create New"): if Phase 1 didn't fully satisfy {@code qty}, create brand-new
+	 *       M_MatchPO record(s) from whichever of iLine/sLine was passed in.</li>
+	 * </ol>
+	 *
+	 * @param ctx context
+	 * @param iLine invoice line to match, or null if matching a receipt line without an invoice yet
+	 * @param sLine receipt line to match, or null if matching an invoice line without a receipt yet
+	 * @param C_OrderLine_ID the order line both sides are being reconciled against
+	 * @param dateTrx transaction date to stamp on new/updated records
+	 * @param qty quantity still needing to be matched (mutated/reduced as candidates are consumed)
+	 * @param trxName transaction
+	 * @return list of M_MatchPO records created/updated to satisfy the match
 	 */
-	protected static MMatchPO create(Properties ctx, MInvoiceLine iLine,
+	protected static List<MMatchPO> createList(Properties ctx, MInvoiceLine iLine,
 			MInOutLine sLine, int C_OrderLine_ID, Timestamp dateTrx,
 			BigDecimal qty, String trxName) {
 		MMatchPO retValue = null;
+		List<MMatchPO> resultList = new ArrayList<MMatchPO>();
+
+		// ============================================================================
+		// PHASE 1: Try to satisfy qty using existing "not fully matched" M_MatchPO stubs
+		// (records missing either their invoice-line or receipt-line link) for this order line.
+		// This reuses partially-matched records instead of always creating brand-new ones -
+		// e.g. an invoice was already recorded against this order line, and now the matching
+		// receipt has arrived, so we complete the existing stub rather than duplicate it.
+		// ============================================================================
 		List<MMatchPO> matchPOList = MatchPOAutoMatch.getNotMatchedMatchPOList(ctx, C_OrderLine_ID, trxName);
 		if (!matchPOList.isEmpty())
 		{
 			for (MMatchPO mpo : matchPOList)
 			{
+				// Only consider this candidate if the requested qty is large enough to fully
+				// absorb it. This method never splits mpo's OWN qty down to a partial slice here -
+				// it either fully consumes mpo (matching toMatch = mpo.getQty()) or skips it.
+				// (Lot/ASI-based splitting below is a different kind of split: it may turn ONE
+				// mpo into several sibling M_MatchPO records, each still summing to mpo's qty.)
 				if (qty.compareTo(mpo.getQty()) >= 0)
 				{
 					BigDecimal toMatch = qty;
 					BigDecimal matchQty = mpo.getQty();
 					if (toMatch.compareTo(matchQty) > 0)
 						toMatch = matchQty;
-					if (iLine != null)
-					{
-						if ((mpo.getC_InvoiceLine_ID() == 0)
-							|| (mpo.getC_InvoiceLine_ID() == iLine.getC_InvoiceLine_ID()))
-						{
-							if (iLine.getM_AttributeSetInstance_ID() != 0)
-							{
-								if (mpo.getM_AttributeSetInstance_ID() == 0)
-									mpo.setM_AttributeSetInstance_ID(iLine.getM_AttributeSetInstance_ID());
-								else if (mpo.getM_AttributeSetInstance_ID() != iLine.getM_AttributeSetInstance_ID())
-									continue;
-							}
-						}
-						else
-							continue;
-					}
-					if (sLine != null)
-					{
-						if ((mpo.getM_InOutLine_ID() == 0)
-							|| (mpo.getM_InOutLine_ID() == sLine.getM_InOutLine_ID()))
-						{
-							
-							if (sLine.getM_AttributeSetInstance_ID() != 0)
-							{
-								if (mpo.getM_AttributeSetInstance_ID() == 0)
-									mpo.setM_AttributeSetInstance_ID(sLine.getM_AttributeSetInstance_ID());
-								else if (mpo.getM_AttributeSetInstance_ID() != sLine.getM_AttributeSetInstance_ID())
-									continue;
-							}
-						}						
-						else
-							continue;
-						if (iLine == null && mpo.isPosted())
-							continue;
-					}
-					if (iLine != null && sLine == null && mpo.getC_InvoiceLine_ID() == 0)
-					{
-						//verify m_matchinv not created for other invoice
-						int cnt = DB.getSQLValue(iLine.get_TrxName(), "SELECT Count(*) FROM M_MatchInv WHERE M_InOutLine_ID="+mpo.getM_InOutLine_ID()
-								+" AND C_InvoiceLine_ID != "+iLine.getC_InvoiceLine_ID() + " AND Reversal_ID=0");
-						if (cnt > 0)
-							continue;
-					}
-					if ((iLine != null || mpo.getC_InvoiceLine_ID() > 0) && (sLine != null || mpo.getM_InOutLine_ID() > 0))
-					{
-						int M_InOutLine_ID = sLine != null ? sLine.getM_InOutLine_ID() : mpo.getM_InOutLine_ID();
-						int C_InvoiceLine_ID = iLine != null ? iLine.getC_InvoiceLine_ID() : mpo.getC_InvoiceLine_ID();
-						
-						//verify invoiceline not already linked to another inoutline
-						int tmpInOutLineId = DB.getSQLValue(mpo.get_TrxName(), "SELECT M_InOutLine_ID FROM C_InvoiceLine WHERE C_InvoiceLine_ID="+C_InvoiceLine_ID);
-						if (tmpInOutLineId > 0 && tmpInOutLineId != M_InOutLine_ID) 
-						{
-							continue;
-						}
-						
-						//verify m_matchinv not created yet
-						int cnt = DB.getSQLValue(mpo.get_TrxName(), "SELECT Count(*) FROM M_MatchInv WHERE M_InOutLine_ID="+M_InOutLine_ID
-								+" AND C_InvoiceLine_ID="+C_InvoiceLine_ID);
-						if (cnt <= 0)
-						{
-							MMatchInv matchInv = createMatchInv(mpo, C_InvoiceLine_ID, M_InOutLine_ID, mpo.getQty(), dateTrx, trxName);
-							if (matchInv == null)
-								continue;
-							mpo.setMatchInvCreated(matchInv);
-						}
-					}
-					if (iLine != null)
-						mpo.setC_InvoiceLine_ID(iLine);
-					if (sLine != null){
-						mpo.setM_InOutLine_ID(sLine.getM_InOutLine_ID());
-						if (!mpo.isPosted())
-							mpo.setDateAcct(sLine.getParent().getDateAcct());
-					}
-					
-					if (!mpo.save())
-					{
-						String msg = "Failed to update match po.";
-						ValueNamePair error = CLogger.retrieveError();
-						if (error != null)
-						{
-							msg = msg + " " + error.getName();
-						}
-						throw new RuntimeException(msg);
-					}
-					
+
+					// Verify invoice compatibility
+					if (!isInvoiceCompatible(mpo, iLine))
+						continue;
+
+					// Resolve and split across lot ASIs if needed (Option A)
+					List<MMatchPO> lotMatches = resolveCandidateLots(mpo, iLine, sLine, C_OrderLine_ID, dateTrx, trxName);
+					if (lotMatches == null || lotMatches.isEmpty())
+						continue;
+
+					// Link to invoice/receipt, create MMatchInv records, save, and collect in resultList
+					if (!linkAndSaveCandidate(lotMatches, iLine, sLine, dateTrx, trxName, resultList))
+						continue;
+
 					qty = qty.subtract(toMatch);					
 					if (qty.signum() <= 0)
 					{
-						retValue = mpo;
-						break;
+					    retValue = mpo;
+					    break;
 					}
 				}
 			}
 		}
 		
-		//	Create New
+		// ============================================================================
+		// PHASE 2 ("Create New"): only runs if Phase 1 didn't fully satisfy qty
+		// (retValue is still null). Two mutually-exclusive branches depending on whether
+		// a receipt line or only an invoice line is available to originate a new record from.
+		// ============================================================================
 		if (retValue == null)
 		{
+			// If both iLine and sLine are given, check whether this receipt line has already
+			// been (partially) matched against this order line before - if so, we should not
+			// create ANOTHER brand-new record from it here (branch below is skipped in that case).
 			BigDecimal sLineMatchedQty = null; 
 			if (sLine != null && iLine != null)
 			{
-				sLineMatchedQty = DB.getSQLValueBD(sLine.get_TrxName(), "SELECT Sum(Qty) FROM M_MatchPO WHERE C_OrderLine_ID="+C_OrderLine_ID+" AND M_InOutLine_ID=?", sLine.getM_InOutLine_ID());
+				sLineMatchedQty = DB.getSQLValueBD(sLine.get_TrxName(), "SELECT Sum(Qty) FROM M_MatchPO WHERE C_OrderLine_ID=? AND M_InOutLine_ID=?", C_OrderLine_ID, sLine.getM_InOutLine_ID());
 			}
 			
-			if (sLine != null && (sLine.getC_OrderLine_ID() == C_OrderLine_ID || iLine == null)
+			// --- Branch A: receipt-first creation ---
+			// Taken when sLine belongs to this same order line (or there's no invoice context
+			// at all), and this receipt line hasn't already been matched here.
+			if (sLine != null
+				&& (sLine.getC_OrderLine_ID() == C_OrderLine_ID || iLine == null)
 				&& (sLineMatchedQty == null || sLineMatchedQty.signum() <= 0))
-			{				
+			{
 				if (qty.signum() != 0)
 				{
-					retValue = new MMatchPO (sLine, dateTrx, qty);
-					retValue.setC_OrderLine_ID(C_OrderLine_ID);
-					MMatchPO otherMatchPO = null;
-					if (iLine == null) {
-						MMatchPO[] matchPOs = MMatchPO.getOrderLine(retValue.getCtx(), sLine.getC_OrderLine_ID(), retValue.get_TrxName());
-						for (MMatchPO matchPO : matchPOs)
-						{
-							if (matchPO.getC_InvoiceLine_ID() > 0 && matchPO.getM_InOutLine_ID() == 0 && matchPO.getReversal_ID() == 0 && matchPO.getQty().compareTo(retValue.getQty()) >=0 )
-							{
-								//check m_matchinv not created with different qty
-								int cnt = DB.getSQLValueEx(sLine.get_TrxName(), "SELECT Count(*) FROM M_MatchInv WHERE M_InOutLine_ID="+sLine.getM_InOutLine_ID()
-										+" AND C_InvoiceLine_ID="+ matchPO.getC_InvoiceLine_ID() + " AND Qty != ?", retValue.getQty());
-								if (cnt <= 0) {
-									if (!matchPO.isPosted() && matchPO.getQty().compareTo(retValue.getQty()) >=0 )  // greater than or equal quantity
-									{
-										otherMatchPO = matchPO;
-										iLine = new MInvoiceLine(retValue.getCtx(), matchPO.getC_InvoiceLine_ID(), retValue.get_TrxName());
-										matchPO.setQty(matchPO.getQty().subtract(retValue.getQty()));										
-										matchPO.saveEx();
-										break;
-									}
-									
-								}
-							}
-						}
-					}
-					if (iLine != null) { 
-						if (otherMatchPO == null)
-							retValue.setC_InvoiceLine_ID(iLine);
-						//auto create matchinv
-						if (otherMatchPO != null)
-						{
-							//verify m_matchinv not created yet
-							int cnt = DB.getSQLValue(retValue.get_TrxName(), "SELECT Count(*) FROM M_MatchInv WHERE M_InOutLine_ID="+retValue.getM_InOutLine_ID()
-									+" AND C_InvoiceLine_ID="+otherMatchPO.getC_InvoiceLine_ID());
-							if (cnt <= 0)
-							{
-								MMatchInv matchInv = createMatchInv(retValue, otherMatchPO.getC_InvoiceLine_ID(), retValue.getM_InOutLine_ID(), retValue.getQty(), dateTrx, trxName);
-								if (matchInv == null)
-								{
-									String msg = "Failed to create match inv.";
-									ValueNamePair error = CLogger.retrieveError();
-									if (error != null)
-									{
-										msg = msg + " " + error.getName();
-									}
-									throw new RuntimeException(msg);
-								}
-								retValue.setMatchInvCreated(matchInv);
-							}
-							if (otherMatchPO.getQty().signum() == 0 )
-								otherMatchPO.deleteEx(true);
-						}
-					}
-					if (!retValue.save())
+					// Option A (Dynamic Lot Slicing with Fallback)
+					Map<Integer, BigDecimal> availableByASI = null;
+					if (sLine.getM_AttributeSetInstance_ID() == 0)
+						availableByASI = getAvailableQtyByASI(trxName, sLine.getM_InOutLine_ID(), 0);
+
+					List<LotSlice> slices = allocateLotSlices(qty, availableByASI, -1);
+					List<MMatchPO> newMatches = new ArrayList<MMatchPO>();
+					for (LotSlice slice : slices)
 					{
-						String msg = "Failed to update match po.";
-						ValueNamePair error = CLogger.retrieveError();
-						if (error != null)
+						List<MMatchPO> createdSlices = createNewMatchPOFromReceiptSlice(iLine, sLine, C_OrderLine_ID, dateTrx, slice.qty, slice.asi, trxName);
+						newMatches.addAll(createdSlices);
+					}
+
+					// retValue is the first slice created; used as representative record for
+					// MatchPOAutoMatch.match() and return value. All slices are saved and collected in resultList.
+					if (!newMatches.isEmpty())
+					{
+						retValue = newMatches.get(0);
+						for (MMatchPO newMatch : newMatches)
 						{
-							msg = msg + " " + error.getName();
+							if (!resultList.contains(newMatch))
+								resultList.add(newMatch);
 						}
-						throw new RuntimeException(msg);
 					}
 				}
 			}
+			// --- Branch B: invoice-only creation ---
+			// Taken when Branch A's conditions don't apply (no usable sLine) but iLine is present.
+			// Creates a new M_MatchPO with no receipt link yet, then tries to auto-attach it to
+			// existing un-invoiced receipts on this order line (handles "invoice arrived before/
+			// separately from receipt, possibly split across multiple receipts" scenarios).
 			else if (iLine != null)
 			{
 				if (qty.signum() != 0)
@@ -570,8 +549,17 @@ public class MMatchPO extends X_M_MatchPO
 						}
 						throw new RuntimeException(msg);
 					}
+					if (!resultList.contains(retValue))
+						resultList.add(retValue);
 					
-					//auto create m_matchinv
+					// --- Auto-match this new invoice-only record against un-invoiced receipts ---
+					// noInvoiceLines: M_MatchPO_ID -> remaining un-invoiced qty (as a 1-element
+					//   array so it can be mutated in place inside the loops below).
+					// invoiceMatched: M_InOutLine_ID -> list of M_MatchPO rows already linking
+					//   that receipt line to SOME invoice (used to compute how much of each
+					//   receipt's qty is already claimed by other invoices).
+					// noInvoiceList: candidate M_MatchPO rows (receipt-linked, no invoice yet,
+					//   from a completed/closed shipment) that this new record might attach to.
 					Map<Integer, BigDecimal[]> noInvoiceLines = new HashMap<>();
 					Map<Integer, List<MMatchPO>> invoiceMatched = new HashMap<Integer, List<MMatchPO>>();
 					List<MMatchPO> noInvoiceList = new ArrayList<MMatchPO>();
@@ -580,12 +568,16 @@ public class MMatchPO extends X_M_MatchPO
 					for (MMatchPO matchPO : matchPOs)
 					{
 						if (matchPO.getM_MatchPO_ID() == retValue.getM_MatchPO_ID())
-							continue;
-						
+							continue; // skip the record we just created
+
+						// Only consider "real" receipt-linked matches: not reversals, not
+						// overflow siblings created by another match (Ref_MatchPO_ID == 0).
 						if (matchPO.getM_InOutLine_ID() > 0 && matchPO.getReversal_ID() == 0 && matchPO.getRef_MatchPO_ID() == 0)
 						{
 							if (matchPO.getC_InvoiceLine_ID() == 0)
 							{
+								// Candidate: receipt-linked, no invoice yet. Only eligible if the
+								// underlying shipment is Completed/Closed (not still in-progress).
 								MInOutLine iol = new MInOutLine(iLine.getCtx(), matchPO.getM_InOutLine_ID(), iLine.get_TrxName());
 								String docStatus = iol.getParent().getDocStatus();
 								if (docStatus.equals(DocAction.STATUS_Completed) || docStatus.equals(DocAction.STATUS_Closed)) 
@@ -596,6 +588,9 @@ public class MMatchPO extends X_M_MatchPO
 							}
 							else
 							{
+								// This receipt line is already claimed (fully or partially) by
+								// some OTHER invoice line - track it so we can compute how much of
+								// the receipt's total qty is still free below.
 								List<MMatchPO> invoices = invoiceMatched.get(matchPO.getM_InOutLine_ID());
 								if (invoices == null) 
 								{
@@ -607,7 +602,8 @@ public class MMatchPO extends X_M_MatchPO
 						} 
 					}
 					
-					//sort in created sequence
+					// Process candidates in creation order (oldest M_MatchPO_ID first), so
+					// earlier receipts get matched before later ones - a simple FIFO tie-break.
 					Collections.sort(noInvoiceList, new Comparator<MMatchPO>() {
 						@Override
 						public int compare(MMatchPO arg0, MMatchPO arg1) {
@@ -617,8 +613,11 @@ public class MMatchPO extends X_M_MatchPO
 						}
 					});
 					
-					//goes through all matchpo that potentially have not been matched to any invoice yet
-					//calculate balance that have not been matched to invoice line 
+					// For each candidate receipt, work out how much of its qty is genuinely
+					// still un-invoiced: start from matchPO.getQty() (the full receipt-matched
+					// qty) and subtract any M_MatchInv amounts already recorded against it where
+					// the corresponding invoice is Completed/Closed (i.e. genuinely committed,
+					// not just a draft).
 					for (MMatchPO matchPO : noInvoiceList)
 					{
 						BigDecimal[] qtyHolder = noInvoiceLines.get(matchPO.getM_MatchPO_ID());
@@ -627,7 +626,7 @@ public class MMatchPO extends X_M_MatchPO
 						for (MMatchInv matchInv : matchInvoices)
 						{
 							if (matchInv.getReversal_ID() > 0)
-								continue;
+								continue; // ignore reversed match-inv records
 							BigDecimal alreadyMatch = BigDecimal.ZERO;
 							if (matchedInvoices != null)
 							{
@@ -650,7 +649,10 @@ public class MMatchPO extends X_M_MatchPO
 						}							
 					}
 					
-					//do matching
+					// Greedily consume retValue's qty (toMatch) against the still-free balance of
+					// each candidate receipt, in the sorted order above, creating an M_MatchInv for
+					// each slice actually needed until either retValue's qty or the candidate list
+					// is exhausted.
 					BigDecimal toMatch = retValue.getQty();
 					for (MMatchPO matchPO : noInvoiceList)
 					{
@@ -660,38 +662,661 @@ public class MMatchPO extends X_M_MatchPO
 							BigDecimal autoMatchQty = null;
 							if (qtyHolder[0].compareTo(toMatch) >= 0)
 							{
+								// this receipt alone can cover the rest of retValue's qty
 								autoMatchQty = toMatch;
 								toMatch = BigDecimal.ZERO;
 							}
 							else
 							{
+								// this receipt only partially covers it; move to the next one after
 								autoMatchQty = qtyHolder[0];
 								toMatch = toMatch.subtract(autoMatchQty);
 							}
 							if (autoMatchQty != null && autoMatchQty.signum() > 0)
 							{
-								MMatchInv[] matchInvoices = MMatchInv.get(Env.getCtx(), matchPO.getM_InOutLine_ID(), retValue.getC_InvoiceLine_ID(), trxName);
-								if (matchInvoices == null || matchInvoices.length == 0)
+								// Guard against creating a duplicate M_MatchInv if one already
+								// exists between this receipt and retValue's invoice line.
+								BigDecimal matchedQty = DB.getSQLValueBD(	trxName, SQL_GET_MATCHINV_QTY, matchPO.getM_InOutLine_ID(),
+																			retValue.getC_InvoiceLine_ID(), retValue.getM_AttributeSetInstance_ID());
+								if (matchedQty == null)
+									matchedQty = BigDecimal.ZERO;
+								BigDecimal qtyToMatch = autoMatchQty.subtract(matchedQty);
+								if (qtyToMatch.signum() != 0)
 								{
-									MMatchInv matchInv = createMatchInv(retValue, retValue.getC_InvoiceLine_ID(), matchPO.getM_InOutLine_ID(), autoMatchQty, dateTrx, trxName);
-									retValue.setMatchInvCreated(matchInv);
+									MMatchInv matchInv = createMatchInv(retValue, retValue.getC_InvoiceLine_ID(), matchPO.getM_InOutLine_ID(), qtyToMatch, dateTrx, trxName);
+	 								retValue.setMatchInvCreated(matchInv);
 									if (matchInv == null)
-										break;
+										break; // stop trying further receipts on failure
 								}
 							}
 						}
 						if (toMatch.signum() <= 0)
-							break;
+							break; // retValue's qty is fully accounted for
 					}
 				}
 			}
 		}
 		
+		// Run any further order-line-level auto-matching/consistency pass (e.g. reconciling
+		// sibling M_MatchPO records created above) now that this order line's state has changed.
 		if (C_OrderLine_ID > 0 && retValue != null)
 			MatchPOAutoMatch.match(ctx, C_OrderLine_ID, retValue, trxName);
 				
-		return retValue;
-	}	//	create
+		return resultList;
+	}	//	createList
+
+	protected static MMatchPO create(Properties ctx, MInvoiceLine iLine,
+			MInOutLine sLine, int C_OrderLine_ID, Timestamp dateTrx,
+			BigDecimal qty, String trxName) {
+		List<MMatchPO> list = createList(ctx, iLine, sLine, C_OrderLine_ID, dateTrx, qty, trxName);
+		return (list == null || list.isEmpty()) ? null : list.get(0);
+	}
+
+	/**
+	 * Represents an allocated quantity slice for an Attribute Set Instance.
+	 */
+	private static class LotSlice
+	{
+		final int asi;
+		final BigDecimal qty;
+
+		LotSlice(int asi, BigDecimal qty)
+		{
+			this.asi = asi;
+			this.qty = qty;
+		}
+	}
+
+	/**
+	 * Checks whether an M_MatchPO stub's non-zero ASI is actively committed to a specific lot
+	 * (either explicitly specified on the invoice line itself, or committed via an active M_MatchInv).
+	 * If neither is true, the stub's non-zero ASI is an uncommitted reversal relic.
+	 *
+	 * @param stub the match stub
+	 * @param trxName transaction
+	 * @return true if stub is committed to its ASI, false otherwise
+	 */
+	private static boolean isStubASICommitted(MMatchPO stub, String trxName)
+	{
+		if (stub == null || stub.getM_AttributeSetInstance_ID() == 0)
+			return false;
+		if (stub.getC_InvoiceLine_ID() > 0)
+		{
+			MInvoiceLine invLine = new MInvoiceLine(stub.getCtx(), stub.getC_InvoiceLine_ID(), trxName);
+			if (invLine.getM_AttributeSetInstance_ID() != 0)
+				return true;
+			BigDecimal committed = DB.getSQLValueBD(trxName,
+					"SELECT COALESCE(SUM(Qty),0) FROM M_MatchInv WHERE C_InvoiceLine_ID=? AND M_AttributeSetInstance_ID=? AND (Reversal_ID IS NULL OR Reversal_ID=0)",
+					stub.getC_InvoiceLine_ID(), stub.getM_AttributeSetInstance_ID());
+			if (committed != null && committed.signum() > 0)
+				return true;
+		}
+		return false;
+	} // isStubASICommitted
+
+	/**
+	 * Allocates a requested total quantity across available ASI lots (oldest-lot-first).
+	 * Implements Option A (Dynamic Lot Slicing with Fallback):
+	 * <ul>
+	 *   <li>Iterates through available ASIs consuming available qty.</li>
+	 *   <li>If available lots do not fully cover totalQty (or if availableByASI is empty),
+	 *       allocates the remaining unallocated balance to ASI 0 (or defaultASI)
+	 *       so the total matched quantity reconciles with the receipt's MovementQty.</li>
+	 * </ul>
+	 *
+	 * @param totalQty quantity to allocate
+	 * @param availableByASI available qty per ASI, ordered oldest-lot-first (may be null or empty)
+	 * @param defaultASI fallback ASI if no lot data is available (-1 to preserve original receipt ASI, or 0)
+	 * @return list of {@link LotSlice} instances summing up to totalQty
+	 */
+	private static List<LotSlice> allocateLotSlices(BigDecimal totalQty, Map<Integer, BigDecimal> availableByASI, int defaultASI)
+	{
+		List<LotSlice> slices = new ArrayList<LotSlice>();
+		if (totalQty == null || totalQty.signum() == 0)
+			return slices;
+
+		if (availableByASI == null || availableByASI.isEmpty())
+		{
+			slices.add(new LotSlice(defaultASI, totalQty));
+			return slices;
+		}
+
+		BigDecimal remaining = totalQty;
+		for (Map.Entry<Integer, BigDecimal> entry : availableByASI.entrySet())
+		{
+			if (remaining.signum() <= 0)
+				break;
+
+			BigDecimal avail = entry.getValue();
+			BigDecimal take = avail.compareTo(remaining) >= 0 ? remaining : avail;
+			if (take.signum() <= 0)
+				continue;
+
+			slices.add(new LotSlice(entry.getKey(), take));
+			remaining = remaining.subtract(take);
+		}
+
+		if (remaining.signum() > 0)
+		{
+			// Option A fallback: assign remaining balance to ASI 0
+			slices.add(new LotSlice(0, remaining));
+		}
+
+		return slices;
+	}
+
+	/**
+	 * Verifies whether an existing M_MatchPO stub is compatible with the given invoice line.
+	 *
+	 * @param mpo match stub candidate
+	 * @param iLine invoice line
+	 * @return true if compatible (or if iLine is null), false otherwise
+	 */
+	private static boolean isInvoiceCompatible(MMatchPO mpo, MInvoiceLine iLine)
+	{
+		if (iLine == null)
+			return true;
+
+		if (mpo.getC_InvoiceLine_ID() != 0 && mpo.getC_InvoiceLine_ID() != iLine.getC_InvoiceLine_ID())
+			return false; // already linked to a different invoice line entirely
+
+		if (iLine.getM_AttributeSetInstance_ID() != 0)
+		{
+			if (mpo.getM_AttributeSetInstance_ID() == 0)
+				mpo.setM_AttributeSetInstance_ID(iLine.getM_AttributeSetInstance_ID());
+			else if (mpo.getM_AttributeSetInstance_ID() != iLine.getM_AttributeSetInstance_ID())
+				return false; // ASI conflict
+		}
+		return true;
+	}
+
+	/**
+	 * Resolves lot ASIs for an existing M_MatchPO candidate.
+	 * If the candidate matches a multi-lot receipt line, this splits the candidate
+	 * into the resized candidate plus any overflow sibling records.
+	 *
+	 * @param mpo candidate stub
+	 * @param iLine invoice line
+	 * @param sLine receipt line
+	 * @param C_OrderLine_ID order line ID
+	 * @param dateTrx transaction date
+	 * @param trxName transaction
+	 * @return list of MMatchPO records to satisfy candidate, or null if candidate cannot be used
+	 */
+	private static List<MMatchPO> resolveCandidateLots(MMatchPO mpo, MInvoiceLine iLine, MInOutLine sLine,
+			int C_OrderLine_ID, Timestamp dateTrx, String trxName)
+	{
+		List<MMatchPO> lotMatches = new ArrayList<MMatchPO>();
+		if (sLine == null)
+		{
+			lotMatches.add(mpo);
+			return lotMatches;
+		}
+
+		if (mpo.getM_InOutLine_ID() != 0 && mpo.getM_InOutLine_ID() != sLine.getM_InOutLine_ID())
+			return null; // tied to a different receipt line
+
+		if (iLine == null && mpo.isPosted())
+			return null; // can't attach a new receipt to an already-posted match
+
+		boolean mpoASICommitted = isStubASICommitted(mpo, trxName);
+
+		if (sLine.getM_AttributeSetInstance_ID() != 0)
+		{
+			// Simple case: single-ASI receipt line
+			if (mpo.getM_AttributeSetInstance_ID() == 0 || !mpoASICommitted)
+				mpo.setM_AttributeSetInstance_ID(sLine.getM_AttributeSetInstance_ID());
+			else if (mpo.getM_AttributeSetInstance_ID() != sLine.getM_AttributeSetInstance_ID())
+				return null; // ASI conflict with committed ASI
+			lotMatches.add(mpo);
+		}
+		else
+		{
+			// Multi-lot receipt line: allocate across available ASIs (Option A)
+			Map<Integer, BigDecimal> availableByASI = getAvailableQtyByASI(trxName, sLine.getM_InOutLine_ID(), mpo.getM_MatchPO_ID());
+			if (mpoASICommitted)
+			{
+				BigDecimal avail = availableByASI.get(mpo.getM_AttributeSetInstance_ID());
+				if (avail == null || avail.signum() <= 0)
+					return null; // committed lot not available on this receipt line
+				Map<Integer, BigDecimal> singleLot = new LinkedHashMap<Integer, BigDecimal>();
+				singleLot.put(mpo.getM_AttributeSetInstance_ID(), avail);
+				availableByASI = singleLot;
+			}
+			List<LotSlice> slices = allocateLotSlices(mpo.getQty(), availableByASI, 0);
+			for (int i = 0; i < slices.size(); i++)
+			{
+				LotSlice slice = slices.get(i);
+				if (i == 0)
+				{
+					mpo.setM_AttributeSetInstance_ID(slice.asi);
+					if (slice.qty.compareTo(mpo.getQty()) < 0)
+						mpo.setQty(slice.qty);
+					lotMatches.add(mpo);
+				}
+				else
+				{
+					MMatchPO overflow = new MMatchPO(sLine, dateTrx, slice.qty);
+					overflow.setC_OrderLine_ID(C_OrderLine_ID);
+					overflow.setM_AttributeSetInstance_ID(slice.asi);
+					if (mpo.getC_InvoiceLine_ID() > 0)
+						overflow.setC_InvoiceLine_ID(mpo.getC_InvoiceLine_ID());
+					lotMatches.add(overflow);
+				}
+			}
+		}
+
+		return lotMatches;
+	}
+
+	/**
+	 * Validates, links to invoice/receipt, creates MMatchInv records, and saves candidate matches.
+	 *
+	 * @param lotMatches candidate records (mpo and any overflow siblings)
+	 * @param iLine invoice line
+	 * @param sLine receipt line
+	 * @param dateTrx transaction date
+	 * @param trxName transaction
+	 * @param resultList list to accumulate saved records into
+	 * @return true if candidate was saved successfully, false if aborted due to validation
+	 */
+	private static boolean linkAndSaveCandidate(List<MMatchPO> lotMatches, MInvoiceLine iLine, MInOutLine sLine,
+			Timestamp dateTrx, String trxName, List<MMatchPO> resultList)
+	{
+		MMatchPO firstPO = lotMatches.get(0);
+		// Guard: if matching a receipt-less invoice line against a stub that has no invoice link yet,
+		// ensure no M_MatchInv already exists for this receipt against some other invoice.
+		if (iLine != null && sLine == null && firstPO.getC_InvoiceLine_ID() == 0)
+		{
+			int cnt = DB.getSQLValue(iLine.get_TrxName(),
+					"SELECT COUNT(1) FROM M_MatchInv WHERE M_InOutLine_ID=? AND C_InvoiceLine_ID != ? AND (Reversal_ID IS NULL OR Reversal_ID=0)",
+					firstPO.getM_InOutLine_ID(), iLine.getC_InvoiceLine_ID());
+			if (cnt > 0)
+				return false;
+		}
+
+		// Pre-resolve invoice-line/M_MatchInv target IDs per slice to validate before mutating/saving
+		Map<MMatchPO, int[]> resolvedIds = new LinkedHashMap<MMatchPO, int[]>();
+		for (MMatchPO m : lotMatches)
+		{
+			if ((iLine != null || m.getC_InvoiceLine_ID() > 0) && (sLine != null || m.getM_InOutLine_ID() > 0))
+			{
+				int M_InOutLine_ID = sLine != null ? sLine.getM_InOutLine_ID() : m.getM_InOutLine_ID();
+				int C_InvoiceLine_ID = iLine != null ? iLine.getC_InvoiceLine_ID() : m.getC_InvoiceLine_ID();
+
+				int tmpInOutLineId = DB.getSQLValue(m.get_TrxName(), "SELECT M_InOutLine_ID FROM C_InvoiceLine WHERE C_InvoiceLine_ID=?", C_InvoiceLine_ID);
+				if (tmpInOutLineId > 0 && tmpInOutLineId != M_InOutLine_ID)
+				{
+					return false; // invoice line tied to different receipt line - abort
+				}
+				resolvedIds.put(m, new int[]{M_InOutLine_ID, C_InvoiceLine_ID});
+			}
+			else
+			{
+				resolvedIds.put(m, null);
+			}
+		}
+
+		// Pre-fetch line-level (ASI=0) matched qty shared across lot slices
+		int firstM_InOutLine_ID = -1;
+		int firstC_InvoiceLine_ID = -1;
+		for (MMatchPO m : lotMatches)
+		{
+			int[] ids = resolvedIds.get(m);
+			if (ids != null)
+			{
+				firstM_InOutLine_ID = ids[0];
+				firstC_InvoiceLine_ID = ids[1];
+				break;
+			}
+		}
+		BigDecimal asi0Budget = BigDecimal.ZERO;
+		if (firstM_InOutLine_ID > 0 && firstC_InvoiceLine_ID > 0)
+		{
+			BigDecimal asi0Matched = DB.getSQLValueBD(trxName, SQL_GET_MATCHINV_QTY_ASI0, firstM_InOutLine_ID, firstC_InvoiceLine_ID);
+			if (asi0Matched != null && asi0Matched.signum() > 0)
+				asi0Budget = asi0Matched;
+		}
+
+		for (MMatchPO m : lotMatches)
+		{
+			int[] ids = resolvedIds.get(m);
+			if (ids != null)
+			{
+				int M_InOutLine_ID = ids[0];
+				int C_InvoiceLine_ID = ids[1];
+
+				BigDecimal asiMatchedQty = BigDecimal.ZERO;
+				if (m.getM_AttributeSetInstance_ID() != 0)
+				{
+					asiMatchedQty = DB.getSQLValueBD(m.get_TrxName(), SQL_GET_MATCHINV_QTY_ASI, M_InOutLine_ID, C_InvoiceLine_ID, m.getM_AttributeSetInstance_ID());
+					if (asiMatchedQty == null)
+						asiMatchedQty = BigDecimal.ZERO;
+				}
+				BigDecimal asi0Consumed = asi0Budget.signum() != 0
+						? (m.getQty().signum() < 0 ? asi0Budget.max(m.getQty()) : asi0Budget.min(m.getQty()))
+						: BigDecimal.ZERO;
+				asi0Budget = asi0Budget.subtract(asi0Consumed);
+				BigDecimal matchedQty = asiMatchedQty.add(asi0Consumed);
+				BigDecimal qtyToMatch = m.getQty().subtract(matchedQty);
+				if (qtyToMatch.signum() != 0)
+				{
+					MMatchInv matchInv = createMatchInv(m, C_InvoiceLine_ID, M_InOutLine_ID, qtyToMatch, dateTrx, trxName);
+					if (matchInv == null)
+					{
+						throw new AdempiereException("Failed to create match inv for " + m);
+					}
+					m.setMatchInvCreated(matchInv);
+				}
+			}
+			if (iLine != null)
+				m.setC_InvoiceLine_ID(iLine);
+			if (sLine != null)
+			{
+				m.setM_InOutLine_ID(sLine.getM_InOutLine_ID());
+				if (!m.isPosted())
+					m.setDateAcct(sLine.getParent().getDateAcct());
+			}
+
+			if (!m.save())
+			{
+				String msg = "Failed to update match po.";
+				ValueNamePair error = CLogger.retrieveError();
+				if (error != null)
+					msg = msg + " " + error.getName();
+				throw new RuntimeException(msg);
+			}
+			if (!resultList.contains(m))
+				resultList.add(m);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Computes, for a given receipt line, how much quantity is still available to allocate
+	 * per distinct {@code M_AttributeSetInstance_ID} (lot/serial).
+	 * <p>
+	 * A single receipt line can have MULTIPLE {@code M_InOutLineMA} rows sharing the same ASI
+	 * (e.g. the same lot received/consumed across different {@code DateMaterialPolicy} cost-layer
+	 * buckets for FIFO/LIFO costing) - see {@link MInOutLineMA#addOrCreate} which de-duplicates on
+	 * {@code (M_InOutLine_ID, M_AttributeSetInstance_ID, DateMaterialPolicy)}, not on ASI alone.
+	 * This method sums those rows together PER ASI, so each distinct lot/serial is represented
+	 * exactly once regardless of how many date-buckets it's spread across underneath.
+	 * <p>
+	 * The result is further reduced by quantity already claimed by other saved, non-reversed
+	 * {@code M_MatchPO} rows against the same receipt line + ASI combination, so callers get a
+	 * true "still free to allocate" number rather than the raw received quantity.
+	 * <p>
+	 * Rows with {@code M_AttributeSetInstance_ID = 0} are excluded entirely - there is no lot/ASI
+	 * to assign from them, so they're not useful input to the M_MatchPO ASI-splitting logic above.
+	 * <p>
+	 * Ordering: results are ordered oldest-lot-first (by earliest {@code DateMaterialPolicy} per
+	 * ASI), which assumes FIFO-style consumption. If the product/organization uses a different
+	 * costing/valuation method, this ordering should be revisited - it currently doesn't consult
+	 * {@code MStorageOnHand}'s own policy resolution.
+	 *
+	 * @param trxName transaction
+	 * @param M_InOutLine_ID the receipt line to inspect
+	 * @param excludeMatchPO_ID an M_MatchPO_ID to exclude from the "already consumed" calculation
+	 *        (typically the record currently being resolved, so its own prior qty doesn't count
+	 *        against itself)
+	 * @return ordered map of M_AttributeSetInstance_ID -> remaining available qty; ASIs with
+	 *         nothing left available are omitted entirely
+	 */
+	private static Map<Integer, BigDecimal> getAvailableQtyByASI(String trxName, int M_InOutLine_ID, int excludeMatchPO_ID)
+	{
+		Map<Integer, BigDecimal> byASI = new LinkedHashMap<Integer, BigDecimal>();
+
+		// Group by ASI and sum MovementQty across all DateMaterialPolicy buckets for that ASI.
+		// NULLS LAST keeps rows with a null DateMaterialPolicy (shouldn't normally happen once
+		// M_InOutLineMA.beforeSave() resolves it, but defensive ordering costs nothing) sorted
+		// after dated rows rather than unpredictably first. Compatible with both PostgreSQL and
+		// Oracle syntax.
+		String sql = "SELECT M_AttributeSetInstance_ID, SUM(MovementQty) "
+				+ "FROM M_InOutLineMA WHERE M_InOutLine_ID=? AND M_AttributeSetInstance_ID<>0 "
+				+ "GROUP BY M_AttributeSetInstance_ID "
+				+ "ORDER BY MIN(DateMaterialPolicy) ASC NULLS LAST, M_AttributeSetInstance_ID";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement(sql, trxName);
+			pstmt.setInt(1, M_InOutLine_ID);
+			rs = pstmt.executeQuery();
+			while (rs.next())
+				byASI.put(rs.getInt(1), rs.getBigDecimal(2));
+		}
+		catch (SQLException e)
+		{
+			throw new RuntimeException(e);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+		}
+
+		// Subtract qty already claimed by OTHER M_MatchPO rows for this line+ASI, so the caller
+		// sees genuinely free quantity rather than the raw total ever received under that ASI.
+		for (Map.Entry<Integer, BigDecimal> entry : byASI.entrySet())
+		{
+			BigDecimal consumed = DB.getSQLValueBD(trxName,
+				"SELECT COALESCE(SUM(Qty),0) FROM M_MatchPO WHERE M_InOutLine_ID=? AND M_AttributeSetInstance_ID=? "
+				+ "AND M_MatchPO_ID<>? AND (Reversal_ID IS NULL OR Reversal_ID=0)",
+				new Object[] { M_InOutLine_ID, entry.getKey(), excludeMatchPO_ID });
+			entry.setValue(entry.getValue().subtract(consumed == null ? BigDecimal.ZERO : consumed));
+		}
+		// Drop any ASI with nothing left to allocate - callers shouldn't see zero/negative entries.
+		byASI.values().removeIf(v -> v.signum() <= 0);
+		return byASI;
+	}
+
+	/**
+	 * Creates a single new {@code M_MatchPO} record representing one lot/ASI "slice" of a
+	 * receipt line's quantity, and attempts to auto-attach it to an existing invoice.
+	 * <p>
+	 * This factors out the body of the original single-record "Create New" (receipt-first)
+	 * logic so it can be invoked once per lot when a receipt line's qty is split across multiple
+	 * ASIs (see the caller in {@link #create}), while still behaving identically to the original
+	 * single-shot code path when {@code forceASI = -1} and only one slice is ever created.
+	 * <p>
+	 * If {@code iLine} is null, this method searches for an existing invoice-only M_MatchPO stub
+	 * (already linked to an invoice, not yet to any receipt) large enough to cover this slice's
+	 * qty, and "borrows" it: the stub's qty is reduced by this slice's qty (or deleted if it
+	 * reaches zero), and this slice adopts that stub's invoice line instead of remaining
+	 * receipt-only. This handles the case where an invoice was recorded before this particular
+	 * lot's receipt arrived.
+	 *
+	 * @param iLine invoice line to attach directly, or null to search for a borrowable stub
+	 * @param sLine the receipt line this slice originates from
+	 * @param C_OrderLine_ID order line to attribute this match to
+	 * @param dateTrx transaction date
+	 * @param qty the qty for JUST this slice/lot (not necessarily the receipt line's full qty)
+	 * @param forceASI the M_AttributeSetInstance_ID to assign to this slice, or -1 to leave
+	 *        whatever the {@code MMatchPO(MInOutLine, ...)} constructor derives from sLine itself
+	 *        (used for the "no lot-splitting needed" single-ASI case)
+	 * @param trxName transaction
+	 * @return list of newly created and saved M_MatchPO records for this slice
+	 */
+	private static List<MMatchPO> createNewMatchPOFromReceiptSlice(MInvoiceLine iLine, MInOutLine sLine,
+			int C_OrderLine_ID, Timestamp dateTrx, BigDecimal qty, int forceASI, String trxName)
+	{
+		List<MMatchPO> result = new ArrayList<MMatchPO>();
+		MMatchPO retValue = new MMatchPO(sLine, dateTrx, qty);
+		retValue.setC_OrderLine_ID(C_OrderLine_ID);
+		if (forceASI >= 0)
+			retValue.setM_AttributeSetInstance_ID(forceASI);
+
+		MMatchPO otherMatchPO = null;   // an existing invoice-only stub we may borrow, if found
+		MInvoiceLine sliceILine = iLine; // the invoice line this slice will ultimately attach to
+
+		if (sliceILine == null)
+		{
+			// Search this order line's other M_MatchPO records for an invoice-only stub
+			// (has an invoice, no receipt yet, not a reversal, not already posted).
+			// A stub covering the full slice qty is preferred; if none does, the largest
+			// partial stub is used — the slice is split: one record takes the stub's qty
+			// (linked to the invoice), a second receipt-only record carries the remainder.
+			MMatchPO[] matchPOs = MMatchPO.getOrderLine(retValue.getCtx(), sLine.getC_OrderLine_ID(), retValue.get_TrxName());
+			MMatchPO bestStub = null;       // best (largest usable) stub found so far
+			BigDecimal bestStubQty = null;  // its usable qty
+			for (MMatchPO matchPO : matchPOs)
+			{
+				if (matchPO.getC_InvoiceLine_ID() > 0 && matchPO.getM_InOutLine_ID() == 0 && matchPO.getReversal_ID() == 0
+					&& !matchPO.isPosted())
+				{
+					// Only borrow a stub whose ASI is either unset (0 = not lot-specific)
+					// or exactly matches this receipt slice's lot ASI — but only when the stub
+					// already has an active MMatchInv proving its ASI is committed to a specific lot.
+					// A stub with a non-zero ASI but no existing MMatchInv is either newly created
+					// or a reversal relic whose ASI is stale metadata; it is safe to reuse for any lot.
+					int stubASI = matchPO.getM_AttributeSetInstance_ID();
+					int sliceASI = retValue.getM_AttributeSetInstance_ID();
+					if (stubASI != 0 && stubASI != sliceASI)
+					{
+						if (isStubASICommitted(matchPO, sLine.get_TrxName()))
+							continue; // stub's ASI is already tied to a different lot's receipt — skip
+					}
+					// ASI-aware already-matched qty (same model as Phase 1):
+					// - exact-ASI MatchInv for this lot
+					// - plus ASI=0 line-level MatchInv, capped at this slice's usable qty so a
+					//   full-line ASI=0 match does not over-reject a partial lot stub
+					BigDecimal usableQty = matchPO.getQty().min(retValue.getQty());
+					BigDecimal matchedQty = BigDecimal.ZERO;
+					if (sliceASI == 0)
+					{
+						matchedQty = DB.getSQLValueBD(sLine.get_TrxName(), SQL_GET_MATCHINV_QTY_ASI0,
+								sLine.getM_InOutLine_ID(), matchPO.getC_InvoiceLine_ID());
+						if (matchedQty == null)
+							matchedQty = BigDecimal.ZERO;
+					}
+					else
+					{
+						BigDecimal asiMatchedQty = DB.getSQLValueBD(sLine.get_TrxName(), SQL_GET_MATCHINV_QTY_ASI,
+								sLine.getM_InOutLine_ID(), matchPO.getC_InvoiceLine_ID(), sliceASI);
+						if (asiMatchedQty == null)
+							asiMatchedQty = BigDecimal.ZERO;
+						matchedQty = asiMatchedQty;
+						BigDecimal asi0Matched = DB.getSQLValueBD(sLine.get_TrxName(), SQL_GET_MATCHINV_QTY_ASI0,
+								sLine.getM_InOutLine_ID(), matchPO.getC_InvoiceLine_ID());
+						if (asi0Matched != null && asi0Matched.signum() != 0)
+							matchedQty = matchedQty.add(usableQty.signum() < 0 ? asi0Matched.max(usableQty) : asi0Matched.min(usableQty));
+					}
+					// Validate matchedQty against the borrowed quantity (not the full slice qty)
+					// so a partial stub is accepted when MatchInv already covers exactly the
+					// borrowed portion, or when nothing is matched yet.
+					if (matchedQty.signum() == 0 || matchedQty.compareTo(usableQty) == 0)
+					{
+						// Usable stub: prefer the one that covers the full slice (ideal), otherwise
+						// keep the largest partial one found so far.
+						if (usableQty.compareTo(retValue.getQty()) >= 0)
+						{
+							// Full coverage — use immediately, no need to keep searching.
+							bestStub = matchPO;
+							bestStubQty = usableQty;
+							break;
+						}
+						else if (bestStubQty == null || usableQty.compareTo(bestStubQty) > 0)
+						{
+							// Partial coverage but better than what we've seen so far — remember it.
+							bestStub = matchPO;
+							bestStubQty = usableQty;
+						}
+					}
+				}
+			}
+
+			if (bestStub != null)
+			{
+				// Defer mutating/saving bestStub and creating a receipt-only sibling until
+				// createMatchInv succeeds below, so a failed MatchInv leaves both records unchanged.
+				otherMatchPO = bestStub;
+				sliceILine = new MInvoiceLine(retValue.getCtx(), bestStub.getC_InvoiceLine_ID(), retValue.get_TrxName());
+			}
+		}
+
+		if (sliceILine != null)
+		{
+			if (otherMatchPO == null)
+				// Simple case: iLine was passed in directly - just attach it.
+				retValue.setC_InvoiceLine_ID(sliceILine);
+			if (otherMatchPO != null)
+			{
+				// Borrowed case: create the M_MatchInv linking this slice's receipt to the
+				// borrowed invoice line, if one doesn't already exist for that pair.
+				// Use the borrowed qty, not the original full slice qty.
+				BigDecimal borrowQty = otherMatchPO.getQty().min(retValue.getQty());
+				// ASI-aware already-matched qty (aligned with Phase 1):
+				// exact-ASI MatchInv + ASI=0 line-level MatchInv capped at this slice's borrowQty.
+				int sliceASI = retValue.getM_AttributeSetInstance_ID();
+				BigDecimal matchedQty = BigDecimal.ZERO;
+				if (sliceASI == 0)
+				{
+					matchedQty = DB.getSQLValueBD(retValue.get_TrxName(), SQL_GET_MATCHINV_QTY_ASI0, retValue.getM_InOutLine_ID(), otherMatchPO.getC_InvoiceLine_ID());
+					if (matchedQty == null)
+						matchedQty = BigDecimal.ZERO;
+				}
+				else
+				{
+					BigDecimal asiMatchedQty = DB.getSQLValueBD(retValue.get_TrxName(), SQL_GET_MATCHINV_QTY_ASI, retValue.getM_InOutLine_ID(), otherMatchPO.getC_InvoiceLine_ID(), sliceASI);
+					if (asiMatchedQty == null)
+						asiMatchedQty = BigDecimal.ZERO;
+					matchedQty = asiMatchedQty;
+					BigDecimal asi0Matched = DB.getSQLValueBD(retValue.get_TrxName(), SQL_GET_MATCHINV_QTY_ASI0, retValue.getM_InOutLine_ID(), otherMatchPO.getC_InvoiceLine_ID());
+					if (asi0Matched != null && asi0Matched.signum() != 0)
+						matchedQty = matchedQty.add(borrowQty.signum() < 0 ? asi0Matched.max(borrowQty) : asi0Matched.min(borrowQty));
+				}
+				BigDecimal qtyToMatch = borrowQty.subtract(matchedQty);
+				if (qtyToMatch.signum() != 0)
+				{
+					MMatchInv matchInv = createMatchInv(retValue, otherMatchPO.getC_InvoiceLine_ID(), retValue.getM_InOutLine_ID(), qtyToMatch, dateTrx, trxName);
+	 				if (matchInv == null)
+					{
+						String msg = "Failed to create match inv.";
+						ValueNamePair error = CLogger.retrieveError();
+						if (error != null) msg = msg + " " + error.getName();
+						throw new RuntimeException(msg);
+					}
+					retValue.setMatchInvCreated(matchInv);
+				}
+				// Explicitly attach the borrowed invoice line so beforeSave does not have to
+				// reverse-engineer it from MatchInv (and does not spawn a duplicate MatchPO
+				// when MatchInv qty differs from this slice's qty).
+				retValue.setC_InvoiceLine_ID(otherMatchPO.getC_InvoiceLine_ID());
+				// MatchInv succeeded (or was unnecessary) — now apply the borrow mutations.
+				if (borrowQty.compareTo(retValue.getQty()) < 0)
+				{
+					// Partial borrow: split retValue into two records.
+					// - retValue shrinks to borrowQty and is linked via MatchInv above.
+					// - A new receipt-only sibling carries the unmatched remainder.
+					BigDecimal remainder = retValue.getQty().subtract(borrowQty);
+					MMatchPO receiptOnlySibling = new MMatchPO(sLine, dateTrx, remainder);
+					receiptOnlySibling.setC_OrderLine_ID(C_OrderLine_ID);
+					receiptOnlySibling.setM_AttributeSetInstance_ID(retValue.getM_AttributeSetInstance_ID());
+					receiptOnlySibling.saveEx();
+					result.add(receiptOnlySibling);
+					retValue.setQty(borrowQty);
+				}
+				otherMatchPO.setQty(otherMatchPO.getQty().subtract(borrowQty));
+				if (!isStubASICommitted(otherMatchPO, sLine.get_TrxName()))
+					otherMatchPO.setM_AttributeSetInstance_ID(0);
+				otherMatchPO.saveEx();
+				// If borrowing fully drained the stub's qty, it no longer represents anything -
+				// remove it rather than leaving a zero-qty orphan record around.
+				if (otherMatchPO.getQty().signum() == 0)
+					otherMatchPO.deleteEx(true);
+			}
+		}
+		if (!retValue.save())
+		{
+			String msg = "Failed to update match po.";
+			ValueNamePair error = CLogger.retrieveError();
+			if (error != null) msg = msg + " " + error.getName();
+			throw new RuntimeException(msg);
+		}
+		result.add(0, retValue);
+		return result;
+	}
 	
 	/**
 	 * Create MatchInv record
@@ -1011,8 +1636,7 @@ public class MMatchPO extends X_M_MatchPO
 						mpi[i].getM_AttributeSetInstance_ID() == getM_AttributeSetInstance_ID()) 
 				{
 					// skip if m_matchpo have been created
-					int cnt = DB.getSQLValue(get_TrxName(), "SELECT Count(*) FROM M_MatchPO WHERE M_InOutLine_ID="+getM_InOutLine_ID()
-							+" AND C_InvoiceLine_ID="+mpi[i].getC_InvoiceLine_ID());
+					int cnt = DB.getSQLValue(get_TrxName(), "SELECT COUNT(1) FROM M_MatchPO WHERE M_InOutLine_ID=? AND C_InvoiceLine_ID=?", getM_InOutLine_ID(), mpi[i].getC_InvoiceLine_ID());
 					if (cnt > 0)
 						continue;
 					
@@ -1069,8 +1693,7 @@ public class MMatchPO extends X_M_MatchPO
 		//	Set PriceMatchDifference to difference between PO price and Invoice price
 		if (getC_OrderLine_ID() != 0 
 			&& getC_InvoiceLine_ID() != 0
-			&& (newRecord || 
-				is_ValueChanged("C_OrderLine_ID") || is_ValueChanged("C_InvoiceLine_ID")))
+			&& (newRecord || is_ValueChanged("C_OrderLine_ID") || is_ValueChanged("C_InvoiceLine_ID")))
 		{
 			BigDecimal poPrice = getOrderLine().getPriceActual();
 			BigDecimal invPrice = getInvoicePriceActual();
@@ -1086,8 +1709,7 @@ public class MMatchPO extends X_M_MatchPO
 				{
 					BigDecimal poAmt = poPrice.multiply(getQty());
 					BigDecimal maxTolerance = poAmt.multiply(mt);
-					maxTolerance = maxTolerance.abs()
-						.divide(Env.ONEHUNDRED, 2, RoundingMode.HALF_UP);
+					maxTolerance = maxTolerance.abs().divide(Env.ONEHUNDRED, 2, RoundingMode.HALF_UP);
 					difference = difference.abs();
 					boolean ok = difference.compareTo(maxTolerance) <= 0;
 					if (log.isLoggable(Level.CONFIG)) log.config("Difference=" + getPriceMatchDifference() 
@@ -1102,16 +1724,21 @@ public class MMatchPO extends X_M_MatchPO
 			}
 			
 			// Validate existence of corresponding invoice matching record.
-			if (getM_InOutLine_ID() > 0 && getC_InvoiceLine_ID() > 0)
+			// Skip for reversal records: their paired MMatchInv reversal is created separately
+			// (with Reversal_ID IS NOT NULL), so active record filters (which filter Reversal_ID IS NULL OR Reversal_ID=0)
+			// would return 0 even though the reversal is perfectly valid.
+			// Note: isReversal() is not reliable for a brand-new record (getM_MatchPO_ID()==0),
+			// so check getReversal_ID() > 0 directly — the reversal record always has it set
+			// before saveEx() is called, while a fresh non-reversal record has Reversal_ID == 0.
+			if (getM_InOutLine_ID() > 0 && getC_InvoiceLine_ID() > 0 && getReversal_ID() == 0)
 			{
-				int cnt = DB.getSQLValue(get_TrxName(), "SELECT Count(*) FROM M_MatchInv WHERE M_InOutLine_ID="+getM_InOutLine_ID()
-						+" AND C_InvoiceLine_ID="+getC_InvoiceLine_ID());
-				if (cnt <= 0)
+				BigDecimal matchedQty = DB.getSQLValueBD(	get_TrxName(), SQL_GET_MATCHINV_QTY, getM_InOutLine_ID(), getC_InvoiceLine_ID(), getM_AttributeSetInstance_ID());
+				if (matchedQty == null || matchedQty.signum() == 0)
 				{
 					MInvoiceLine invoiceLine = new MInvoiceLine(getCtx(), getC_InvoiceLine_ID(), get_TrxName());
 					MInOutLine inoutLine = new MInOutLine(getCtx(), getM_InOutLine_ID(), get_TrxName());
-					throw new IllegalStateException("[MatchPO] Missing corresponding invoice matching record for invoice line "
-							+ invoiceLine + " and receipt line " + inoutLine);
+					throw new IllegalStateException("[MatchPO] Missing corresponding invoice matching record for invoice line " + invoiceLine
+													+ " and receipt line " + inoutLine);
 				}
 			}
 		}
@@ -1140,7 +1767,7 @@ public class MMatchPO extends X_M_MatchPO
 			if (getC_InvoiceLine_ID() > 0)
 			{
 				MInvoiceLine line = new MInvoiceLine(getCtx(), getC_InvoiceLine_ID(), get_TrxName());				
-				BigDecimal matchedQty = DB.getSQLValueBD(get_TrxName(), "SELECT Coalesce(SUM(Qty),0) FROM M_MatchPO WHERE C_InvoiceLine_ID=?  AND Reversal_ID IS NULL " , getC_InvoiceLine_ID() );
+				BigDecimal matchedQty = DB.getSQLValueBD(get_TrxName(), "SELECT Coalesce(SUM(Qty),0) FROM M_MatchPO WHERE C_InvoiceLine_ID=? AND (Reversal_ID IS NULL OR Reversal_ID=0) " , getC_InvoiceLine_ID() );
 				if (matchedQty != null && matchedQty.compareTo(line.getQtyInvoiced()) > 0)
 				{
 					throw new IllegalStateException("Total matched qty > invoiced qty. MatchedQty="+matchedQty+", InvoicedQty="+line.getQtyInvoiced()+", Line="+line);
@@ -1156,7 +1783,7 @@ public class MMatchPO extends X_M_MatchPO
 					// Validate total M_MatchPO.Qty (with C_InvoiceLine) for C_OrderLine_ID against C_OrderLine.QtyOrdered
 					MOrderLine line = new MOrderLine(getCtx(), getC_OrderLine_ID(), get_TrxName());
 					BigDecimal qtyOrdered = line.getQtyOrdered();
-					BigDecimal invoicedQty = DB.getSQLValueBD(get_TrxName(), "SELECT Coalesce(SUM(Qty),0) FROM M_MatchPO WHERE C_InvoiceLine_ID > 0 and C_OrderLine_ID=? AND Reversal_ID IS NULL" , getC_OrderLine_ID());
+					BigDecimal invoicedQty = DB.getSQLValueBD(get_TrxName(), "SELECT Coalesce(SUM(Qty),0) FROM M_MatchPO WHERE C_InvoiceLine_ID > 0 and C_OrderLine_ID=? AND (Reversal_ID IS NULL OR Reversal_ID=0)" , getC_OrderLine_ID());
 					if (    invoicedQty != null
 						&& (   (qtyOrdered.signum() > 0 && invoicedQty.compareTo(qtyOrdered) > 0)
 						    || (qtyOrdered.signum() < 0 && invoicedQty.compareTo(qtyOrdered) < 0)
@@ -1166,7 +1793,7 @@ public class MMatchPO extends X_M_MatchPO
 						throw new IllegalStateException("Total matched invoiced qty > ordered qty. MatchedInvoicedQty="+invoicedQty+", OrderedQty="+qtyOrdered+", Line="+line);
 					}
 					// Validate total M_MatchPO.Qty (with M_InOutLine) for C_OrderLine_ID against C_OrderLine.QtyOrdered
-					BigDecimal deliveredQty = DB.getSQLValueBD(get_TrxName(), "SELECT Coalesce(SUM(Qty),0) FROM M_MatchPO WHERE M_InOutLine_ID > 0 and C_OrderLine_ID=? AND Reversal_ID IS NULL" , getC_OrderLine_ID());
+					BigDecimal deliveredQty = DB.getSQLValueBD(get_TrxName(), "SELECT Coalesce(SUM(Qty),0) FROM M_MatchPO WHERE M_InOutLine_ID > 0 and C_OrderLine_ID=? AND (Reversal_ID IS NULL OR Reversal_ID=0)" , getC_OrderLine_ID());
 					if (   deliveredQty != null
 						&& (   (qtyOrdered.signum() > 0 && deliveredQty.compareTo(qtyOrdered) > 0)
 						    || (qtyOrdered.signum() < 0 && deliveredQty.compareTo(qtyOrdered) < 0)
@@ -1434,7 +2061,13 @@ public class MMatchPO extends X_M_MatchPO
 					matchPO.setQty(getQty());
 					matchPO.setDateAcct(getDateAcct());
 					matchPO.setDateTrx(getDateTrx());
-					matchPO.setM_AttributeSetInstance_ID(getM_AttributeSetInstance_ID());
+					int invASI = 0;
+					if (getC_InvoiceLine_ID() > 0)
+					{
+						MInvoiceLine invLine = new MInvoiceLine(getCtx(), getC_InvoiceLine_ID(), get_TrxName());
+						invASI = invLine.getM_AttributeSetInstance_ID();
+					}
+					matchPO.setM_AttributeSetInstance_ID(invASI);
 					matchPO.setM_Product_ID(getM_Product_ID());
 					matchPO.setDescription(null);
 					matchPO.setProcessed(true);
