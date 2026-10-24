@@ -1231,6 +1231,24 @@ public class Core {
 
 		return myCreditManager;
 	} // getCreditManager
+
+	/**
+	 * Get order header defaults from the registered {@link IOrderDefaultsProvider}s.
+	 * The providers are looked up once: call this once per save.
+	 * @return order defaults, never null
+	 */
+	public static DocumentDefaults<IOrderDefaultsProvider> getOrderDefaults() {
+		return DocumentDefaults.of(IOrderDefaultsProvider.class);
+	}
+
+	/**
+	 * Get invoice header defaults from the registered {@link IInvoiceDefaultsProvider}s.
+	 * The providers are looked up once: call this once per save.
+	 * @return invoice defaults, never null
+	 */
+	public static DocumentDefaults<IInvoiceDefaultsProvider> getInvoiceDefaults() {
+		return DocumentDefaults.of(IInvoiceDefaultsProvider.class);
+	}
 	
 	@SuppressWarnings("unchecked")
 	public static IReportRenderer<IReportRendererConfiguration> getReportRenderer(String id) {
