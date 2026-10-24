@@ -417,6 +417,8 @@ public class X_AD_Process_Para extends PO implements I_AD_Process_Para, I_Persis
 	public static final String DATERANGEOPTION_DateEditorAndRangePicker = "D";
 	/** Text and Range Picker = T */
 	public static final String DATERANGEOPTION_TextAndRangePicker = "T";
+	/** Range Picker - Presets - with Text editor = ST */
+	public static final String DATERANGEOPTION_RangePicker_Presets_WithTextEditor = "ST";
 	/** Set Date Range Option.
 		@param DateRangeOption Options, how the date editor will be displayed.
 	*/
