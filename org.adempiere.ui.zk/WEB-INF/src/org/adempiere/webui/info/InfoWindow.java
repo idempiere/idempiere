@@ -93,6 +93,7 @@ import org.adempiere.webui.grid.AbstractWQuickEntry;
 import org.adempiere.webui.panel.InfoPanel;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
+import org.adempiere.webui.util.Icon;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.DateRangeButton;
 import org.adempiere.webui.window.Dialog;
@@ -1440,6 +1441,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					builder.append(checkAND.isChecked() ? " AND " : " OR ");
 				}
 								
+				boolean isNotClause = isNegated(editor);
 				if (InfoColumnVO.getAD_Reference_ID() == DisplayType.ChosenMultipleSelectionList)
 				{
 					String pString = editor.getValue().toString();
@@ -1449,12 +1451,12 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					int cnt = DB.getSQLValueEx(null, "SELECT Count(*) From AD_Column WHERE IsActive='Y' AND AD_Client_ID=0 AND Upper(ColumnName)=? AND AD_Reference_ID=?", column.toUpperCase(), DisplayType.ChosenMultipleSelectionList);
 					if (cnt > 0)
 					{
-						SQLFragment filter = DB.intersectFilterForCSV(columnName, pString);
+						SQLFragment filter = DB.intersectFilterForCSV(columnName, pString, isNotClause);
 						builder.append(filter.toSQLWithParameters());
 					}
 					else
 					{
-						SQLFragment filter = DB.inFilterForCSV(columnName, pString);
+						SQLFragment filter = DB.inFilterForCSV(columnName, pString, isNotClause);
 						builder.append(filter.toSQLWithParameters());
 					}
 				} 
@@ -1463,12 +1465,12 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 					String pString = editor.getValue().toString();
 					if (columnName.endsWith("_ID"))
 					{						
-						SQLFragment filter = DB.inFilterForCSV(columnName, pString);
+						SQLFragment filter = DB.inFilterForCSV(columnName, pString, isNotClause);
 						builder.append(filter.toSQLWithParameters());
 					}
 					else
 					{
-						SQLFragment filter = DB.intersectFilterForCSV(columnName, pString);
+						SQLFragment filter = DB.intersectFilterForCSV(columnName, pString, isNotClause);
 						builder.append(filter.toSQLWithParameters());
 					}
 				}
@@ -2203,6 +2205,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         			editor2.getComponent().setVisible(false);
         		if (editor.getLabel() != null)
         			editor.getLabel().setVisible(false);
+        		updateNegateButton(editor, editor.getValue());
         	}
         	else if (!editor.getComponent().isVisible()) {
         		editor.getComponent().setVisible(true);
@@ -2210,6 +2213,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         			editor2.getComponent().setVisible(true);
         		if (editor.getLabel() != null)
         			editor.getLabel().setVisible(true);
+        		updateNegateButton(editor, editor.getValue());
         	}
         	idx++;
         }
@@ -2377,6 +2381,21 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
         		((NumberBox)fieldEditor).getDecimalbox().setPlaceholder(Msg.getMsg(Env.getCtx(), "From"));
         		((NumberBox)fieldEditor2).getDecimalbox().setPlaceholder(Msg.getMsg(Env.getCtx(), "To"));
         	}
+        }
+        // include/exclude button of chosen multiple selection, created once and re-attached when the grid is laid out again
+        Button bNegate = null;
+        if (editor.getComponent() != null)
+        	bNegate = (Button) editor.getComponent().getAttribute(ATT_NOT_CLAUSE);
+        if (bNegate == null && editor.getGridField() != null) {
+        	InfoColumnVO infoColumn = findInfoColumnParameter(editor.getGridField());
+        	if (infoColumn != null && infoColumn.isShowNegateButton()
+        		&& DisplayType.isChosenMultipleSelection(infoColumn.getAD_Reference_ID()))
+        		bNegate = createNegateButton(editor);
+        }
+        if (bNegate != null) {
+        	// the theme positions .btn-negate absolutely, relative to its parent
+        	outerParent.setStyle(outerParent.getStyle() + "; position: relative;");
+        	outerParent.appendChild(bNegate);
         }
         panel.appendChild(outerParent);
 	}
@@ -2606,6 +2625,74 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		return !isLookup() && infoWindow != null && !MTable.get(Env.getCtx(), infoWindow.getAD_Table_ID()).isView();
 	}
 
+	/** Client attribute of the editor component that holds the include/exclude button, same as ProcessParameterPanel */
+	private static final String ATT_NOT_CLAUSE = "isNotClause";
+	/** Attribute of the include/exclude button, true if the selected values are excluded */
+	private static final String ATT_IS_SELECTED = "isSelected";
+
+	/**
+	 * Create the include/exclude (negate) button of a chosen multiple selection editor.
+	 * The button is hidden until the editor has a value.
+	 * @param editor
+	 * @return button
+	 */
+	private Button createNegateButton(WEditor editor) {
+		Button bNegate = ButtonFactory.createButton("", null, null);
+		setNegateButtonState(bNegate, false);
+		bNegate.setVisible(false);
+		// theme fixes the top offset, center it vertically instead
+		bNegate.setStyle("top: 50%; transform: translateY(-50%);");
+		bNegate.addEventListener(Events.ON_CLICK, e -> {
+			setNegateButtonState(bNegate, !(boolean) bNegate.getAttribute(ATT_IS_SELECTED));
+			if (queryAfterChangeEditors != null && queryAfterChangeEditors.contains(editor))
+				Events.postEvent(ON_QUERY_AFTER_CHANGE, this, null);
+		});
+		editor.getComponent().setAttribute(ATT_NOT_CLAUSE, bNegate);
+		return bNegate;
+	}
+
+	/**
+	 * Set include (false) or exclude (true) state of the negate button
+	 * @param bNegate
+	 * @param exclude
+	 */
+	private void setNegateButtonState(Button bNegate, boolean exclude) {
+		bNegate.setTooltiptext(Msg.translate(Env.getCtx(), exclude ? "ExcludeSelectedValues" : "IncludeSelectedValues"));
+		bNegate.setIconSclass(Icon.getIconSclass(exclude ? Icon.EXCLUDE_SELECTED : Icon.INCLUDE_SELECTED));
+		bNegate.setSclass(exclude ? "btn-negate btn-negate-exclude" : "btn-negate btn-negate-include");
+		bNegate.setAttribute(ATT_IS_SELECTED, exclude);
+	}
+
+	/**
+	 * Show the negate button of the editor (if any) when the editor has a value,
+	 * otherwise hide it and reset it to include.
+	 * @param editor
+	 * @param value new value of the editor, the editor itself may not have it yet when the value change event is fired
+	 */
+	private void updateNegateButton(WEditor editor, Object value) {
+		if (editor.getComponent() == null)
+			return;
+		Button bNegate = (Button) editor.getComponent().getAttribute(ATT_NOT_CLAUSE);
+		if (bNegate == null)
+			return;
+		boolean hasValue = value != null && value.toString().trim().length() > 0;
+		// follow the editor: hidden together with it by display logic
+		bNegate.setVisible(hasValue && editor.getComponent().isVisible());
+		if (!hasValue)
+			setNegateButtonState(bNegate, false);
+	}
+
+	/**
+	 * @param editor
+	 * @return true if the editor has a negate button that is set to exclude the selected values
+	 */
+	private boolean isNegated(WEditor editor) {
+		if (editor.getComponent() == null)
+			return false;
+		Button bNegate = (Button) editor.getComponent().getAttribute(ATT_NOT_CLAUSE);
+		return bNegate != null && (boolean) bNegate.getAttribute(ATT_IS_SELECTED);
+	}
+
 	@Override
 	public void valueChange(ValueChangeEvent evt) {
 		if (evt != null && evt.getSource() instanceof WEditor)
@@ -2628,6 +2715,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
             	Env.setContext(infoContext, p_WindowNo, Env.TAB_INFO, editor.getColumnName(), evt.getNewValue().toString());
             	paraCtxValues.put(editor.getColumnName(), evt.getNewValue().toString());
             }
+            updateNegateButton(editor, evt.getNewValue());
             dynamicDisplay(editor);
             
             if (queryAfterChangeEditors != null && queryAfterChangeEditors.contains(editor)) {            	
