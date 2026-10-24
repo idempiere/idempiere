@@ -42,6 +42,8 @@ import org.compiere.model.I_AD_Process;
 import org.compiere.model.I_AD_Task;
 import org.compiere.model.I_AD_Window;
 import org.compiere.model.I_AD_Workflow;
+import org.compiere.model.MChangeLog;
+import org.compiere.model.MColumn;
 import org.compiere.model.MPackageImpDetail;
 import org.compiere.model.X_AD_Menu;
 import org.compiere.model.X_AD_Package_Exp_Detail;
@@ -73,66 +75,83 @@ public class MenuElementHandler extends AbstractElementHandler {
 			return;
 		}
 		element.recordId = mMenu.get_ID();
-		if (!mMenu.is_new() && !mMenu.is_Changed())
-			return;
-
-		X_AD_Package_Imp_Detail impDetail = createImportDetail(ctx, element.qName, X_AD_Menu.Table_Name,
-				X_AD_Menu.Table_ID);
-		String action = null;
-		if (!mMenu.is_new()) {
-			backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Menu.Table_Name, mMenu);
-			action = MPackageImpDetail.ACTION_UPDATE;
-		} else {
-			action = MPackageImpDetail.ACTION_INSERT;
-		}
-		if (mMenu.save(getTrxName(ctx)) == true) {
-			try {
-				logImportDetail(ctx, impDetail, 1, mMenu.getName(), mMenu
-						.get_ID(), action);
-				element.recordId = mMenu.get_ID();
-			} catch (SAXException e) {
-				if (log.isLoggable(Level.INFO)) log.info("setmenu:" + e);
-			}
-		} else {
-			try {
-				logImportDetail(ctx, impDetail, 0, mMenu.getName(), mMenu
-						.get_ID(), action);
-			} catch (SAXException e) {
-				if (log.isLoggable(Level.INFO)) log.info("setmenu:" + e);
-			}
-		}
 
 		Element parentElement = element.properties.get("Parent_ID");
+		String strSeqNo = getStringValue(element, "SeqNo");
+		boolean hasSeqNo = strSeqNo != null;
+		boolean hasTreeNodeProp = parentElement != null || hasSeqNo;
+
+		if (!mMenu.is_new() && !mMenu.is_Changed() && !hasTreeNodeProp)
+			return;
+
+		X_AD_Package_Imp_Detail impDetail = null;
+		if (mMenu.is_new() || mMenu.is_Changed()) {
+			impDetail = createImportDetail(ctx, element.qName, X_AD_Menu.Table_Name,
+					X_AD_Menu.Table_ID);
+			String action = null;
+			if (!mMenu.is_new()) {
+				backupRecord(ctx, impDetail.getAD_Package_Imp_Detail_ID(), X_AD_Menu.Table_Name, mMenu);
+				action = MPackageImpDetail.ACTION_UPDATE;
+			} else {
+				action = MPackageImpDetail.ACTION_INSERT;
+			}
+			if (mMenu.save(getTrxName(ctx)) == true) {
+				try {
+					logImportDetail(ctx, impDetail, 1, mMenu.getName(), mMenu
+							.get_ID(), action);
+					element.recordId = mMenu.get_ID();
+				} catch (SAXException e) {
+					if (log.isLoggable(Level.INFO)) log.info("setmenu:" + e);
+				}
+			} else {
+				try {
+					logImportDetail(ctx, impDetail, 0, mMenu.getName(), mMenu
+							.get_ID(), action);
+				} catch (SAXException e) {
+					if (log.isLoggable(Level.INFO)) log.info("setmenu:" + e);
+				}
+			}
+		}
+
 		int parentId = 0;
 		if (parentElement != null) {
 			parentId = ReferenceUtils.resolveReferenceAsInt(ctx.ctx, parentElement, getTrxName(ctx));
 		}
 
-			String strSeqNo = getStringValue(element, "SeqNo");
-			int seqNo = 0;
-			if (strSeqNo != null)
-				seqNo = Integer.valueOf(strSeqNo);
+		int seqNo = 0;
+		if (hasSeqNo)
+			seqNo = Integer.valueOf(strSeqNo);
 
-			int AD_Tree_ID = getDefaultMenuTreeId();
+		int AD_Tree_ID = getDefaultMenuTreeId();
 
-			final String sql1 = "SELECT COUNT(Node_ID) FROM AD_TREENODEMM WHERE AD_Tree_ID=? AND Node_ID=?";
-			int countRecords = DB.getSQLValueEx(getTrxName(ctx), sql1, AD_Tree_ID, mMenu.getAD_Menu_ID());
-			if (countRecords > 0) {
-				int oldseqNo = 0;
-				final String sql2 = "SELECT * FROM AD_TREENODEMM WHERE AD_Tree_ID=? AND Node_ID=?";
-				PreparedStatement pstmt = null;
-				ResultSet rs = null;
-				try {
-					pstmt = DB.prepareStatement(sql2, getTrxName(ctx));
-					pstmt.setInt(1, AD_Tree_ID);
-					pstmt.setInt(2, mMenu.getAD_Menu_ID());
-					rs = pstmt.executeQuery();
-					if (rs.next()) {
-	
-						String colValue = null;
-						ResultSetMetaData meta = rs.getMetaData();
-						int columns = meta.getColumnCount();
-						int tableID = X_AD_TreeNodeMM.Table_ID;
+		final String sql1 = "SELECT COUNT(Node_ID) FROM AD_TREENODEMM WHERE AD_Tree_ID=? AND Node_ID=?";
+		int countRecords = DB.getSQLValueEx(getTrxName(ctx), sql1, AD_Tree_ID, mMenu.getAD_Menu_ID());
+		if (countRecords > 0) {
+			int oldseqNo = 0;
+			final String sql2 = "SELECT * FROM AD_TREENODEMM WHERE AD_Tree_ID=? AND Node_ID=?";
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			try {
+				pstmt = DB.prepareStatement(sql2, getTrxName(ctx));
+				pstmt.setInt(1, AD_Tree_ID);
+				pstmt.setInt(2, mMenu.getAD_Menu_ID());
+				rs = pstmt.executeQuery();
+				if (rs.next()) {
+					if (impDetail == null) {
+						impDetail = createImportDetail(ctx, element.qName, X_AD_Menu.Table_Name,
+								X_AD_Menu.Table_ID);
+						try {
+							logImportDetail(ctx, impDetail, 1, mMenu.getName(), mMenu
+									.get_ID(), MPackageImpDetail.ACTION_UPDATE);
+						} catch (SAXException e) {
+							if (log.isLoggable(Level.INFO)) log.info("setmenu:" + e);
+						}
+					}
+
+					String colValue = null;
+					ResultSetMetaData meta = rs.getMetaData();
+					int columns = meta.getColumnCount();
+					int tableID = X_AD_TreeNodeMM.Table_ID;
 	
 						for (int q = 1; q <= columns; q++) {
 	
@@ -155,6 +174,8 @@ public class MenuElementHandler extends AbstractElementHandler {
 						oldseqNo = rs.getInt("SeqNo");
 						if (rs.wasNull())
 							oldseqNo = seqNo;
+						if (parentElement == null)
+							parentId = rs.getInt("Parent_ID");
 					}
 	
 				} catch (SQLException e) {
@@ -162,6 +183,8 @@ public class MenuElementHandler extends AbstractElementHandler {
 				} finally {
 					DB.close(rs, pstmt);
 				}
+				if (!hasSeqNo)
+					seqNo = oldseqNo;
 				if (seqNo != oldseqNo) {
 					String updateSeqNo = "UPDATE AD_TREENODEMM SET SeqNo=SeqNo+1 WHERE Parent_ID=" + parentId + " AND SeqNo>=" + seqNo + " AND AD_Tree_ID=" + AD_Tree_ID;
 					DB.executeUpdateEx(updateSeqNo, getTrxName(ctx));
@@ -221,18 +244,51 @@ public class MenuElementHandler extends AbstractElementHandler {
 		PoExporter filler = new PoExporter(ctx, document, m_Menu);
 		List<String> excludes = defaultExcludeList(X_AD_Menu.Table_Name);
 		int AD_Tree_ID = getDefaultMenuTreeId();
-		final String sql1 = "SELECT Parent_ID FROM AD_TreeNoDemm WHERE AD_Tree_ID=? AND Node_ID=?";
+		final String sql1 = "SELECT Parent_ID FROM AD_TreeNodeMM WHERE AD_Tree_ID=? AND Node_ID=?";
 		int id = DB.getSQLValueEx(null, sql1, AD_Tree_ID, m_Menu.getAD_Menu_ID());
 		if (id > 0) {
 			filler.addTableReference("Parent_ID", "AD_Menu", id, new AttributesImpl());
 		}
-		final String sql2 = "SELECT SeqNo FROM AD_TreeNoDemm WHERE AD_Tree_ID=? AND Node_ID=?";
-		int seqNo = DB.getSQLValueEx(null, sql2, AD_Tree_ID, m_Menu.getAD_Menu_ID());
-		filler.addString("SeqNo", Integer.toString(seqNo), new AttributesImpl());
+		if (isSeqNoExportColumn(ctx, m_Menu, filler)) {
+			final String sql2 = "SELECT SeqNo FROM AD_TreeNodeMM WHERE AD_Tree_ID=? AND Node_ID=?";
+			int seqNo = DB.getSQLValueEx(null, sql2, AD_Tree_ID, m_Menu.getAD_Menu_ID());
+			filler.addString("SeqNo", Integer.toString(seqNo), new AttributesImpl());
+		}
 		if (m_Menu.getAD_Menu_ID() <= PackOut.MAX_OFFICIAL_ID)
 			filler.addString("AD_Menu_ID", Integer.toString(m_Menu.getAD_Menu_ID()), new AttributesImpl());
 
 		filler.export(excludes);
+	}
+
+	private boolean isSeqNoExportColumn(PIPOContext ctx, X_AD_Menu m_Menu, PoExporter filler) {
+		if (!filler.isIncremental())
+			return true;
+		if (m_Menu.is_new())
+			return true;
+		if (filler.isExportColumn("SeqNo"))
+			return true;
+
+		int tableID = X_AD_TreeNodeMM.Table_ID;
+		if (!MChangeLog.isLogged(tableID))
+			return true;
+
+		if (ctx.packOut != null && ctx.packOut.getFromDate() != null) {
+			int AD_Tree_ID = getDefaultMenuTreeId();
+			String sqlTree = "SELECT 1 FROM AD_TreeNodeMM WHERE AD_Tree_ID=? AND Node_ID=? AND (Updated>=? OR Created>=?)";
+			int countTree = DB.getSQLValueEx(getTrxName(ctx), sqlTree, AD_Tree_ID, m_Menu.getAD_Menu_ID(), ctx.packOut.getFromDate(), ctx.packOut.getFromDate());
+			if (countTree > 0)
+				return true;
+
+			int columnID = MColumn.getColumn_ID(X_AD_TreeNodeMM.Table_Name, "SeqNo");
+			String sql = "SELECT 1 FROM AD_ChangeLog cl "
+					+ "JOIN AD_TreeNodeMM t ON (t.AD_TreeNodeMM_UU = cl.Record_UU) "
+					+ "WHERE cl.AD_Table_ID=? AND cl.AD_Column_ID=? AND cl.Created>=? "
+					+ "AND t.AD_Tree_ID=? AND t.Node_ID=?";
+			int count = DB.getSQLValueEx(getTrxName(ctx), sql, tableID, columnID, ctx.packOut.getFromDate(), AD_Tree_ID, m_Menu.getAD_Menu_ID());
+			if (count > 0)
+				return true;
+		}
+		return false;
 	}
 
 	private void createApplication(PIPOContext ctx, IPackSerializer document,
