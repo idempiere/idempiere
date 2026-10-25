@@ -66,10 +66,10 @@ import org.mockito.Mockito;
 
 @Isolated
 public class AuditTraceContextTest extends AbstractTestCase {
-	
+
 	public AuditTraceContextTest() {
 	}
-	
+
 	@Test
 	public void testChangeLog() {
 		MSession.create(Env.getCtx());
@@ -80,7 +80,7 @@ public class AuditTraceContextTest extends AbstractTestCase {
 				.thenReturn("K");
 			MTest t1 = new MTest(Env.getCtx(), "t1_"+System.currentTimeMillis(), 10, getTrxName());
 			t1.saveEx();
-			Query query = new Query(Env.getCtx(), MChangeLog.Table_Name, 
+			Query query = new Query(Env.getCtx(), MChangeLog.Table_Name,
 				MChangeLog.COLUMNNAME_AD_Table_ID + "=? AND " + MChangeLog.COLUMNNAME_Record_ID + "=?", getTrxName());
 			MChangeLog changeLog = query.setParameters(MTest.Table_ID, t1.get_ID()).first();
 			assertNotNull(changeLog, "No change log found for inserted record");
@@ -95,11 +95,12 @@ public class AuditTraceContextTest extends AbstractTestCase {
 	public void testProcess() {
 		String externalTraceId = UUID.randomUUID().toString();
 		AuditTraceContext.setExternalTraceId(externalTraceId);
+		MPInstance pinstance = null;
 		try {
 	        Trx trx = Trx.get(getTrxName(), false);
 	        MProcess process = MProcess.get(Env.getCtx(), SystemIDs.PROCESS_RPT_C_ORDER);
 	        MOrder order = new MOrder(Env.getCtx(), 108, getTrxName()); // Garden Order 60000
-	        MPInstance pinstance = new MPInstance(process, order.get_Table_ID(), order.getC_Order_ID(), order.getC_Order_UU());
+	        pinstance = new MPInstance(process, order.get_Table_ID(), order.getC_Order_ID(), order.getC_Order_UU());
 	        ProcessInfo pi = new ProcessInfo(process.getName(), process.getAD_Process_ID());
 			pi.setAD_PInstance_ID(pinstance.getAD_PInstance_ID());
 			pi.setTable_ID(pinstance.getAD_Table_ID());
@@ -110,15 +111,18 @@ public class AuditTraceContextTest extends AbstractTestCase {
 	        assertEquals(externalTraceId, pinstance.getExternalTraceId(), "Unexpected ExternalTraceId");
 		} finally {
 			AuditTraceContext.clear();
+			if (pinstance != null && pinstance.get_ID() > 0) {
+				pinstance.deleteEx(true);
+            }
 		}
     }
-	
+
 	@Test
 	public void testBackgroundJob() {
-		MSession.create(Env.getCtx());
+		MSession session = MSession.create(Env.getCtx());
 		String externalTraceId = UUID.randomUUID().toString();
 		AuditTraceContext.setExternalTraceId(externalTraceId);
-		
+
 		MProcess process = null;
 		ProcessInfo pi = null;
 		MPInstance pinstance = null;
@@ -131,7 +135,7 @@ public class AuditTraceContextTest extends AbstractTestCase {
 			pi.setReportType("PDF");
 			pi.setAD_Client_ID(getAD_Client_ID());
 			pi.setAD_User_ID(getAD_User_ID());
-			
+
 			Callback<Integer> createParaCallback = id -> {
 				if (id > 0) {
 					MPInstancePara para = new MPInstancePara(Env.getCtx(), id, 10);
@@ -139,14 +143,14 @@ public class AuditTraceContextTest extends AbstractTestCase {
 					para.saveEx();
 				}
 			};
-			
+
 			ScheduledFuture<ProcessInfo> future = BackgroundJob.create(pi)
 				.withNotificationType(MUser.NOTIFICATIONTYPE_Notice)
 				.withInitialDelay(10)
 				.run(createParaCallback);
-			
+
 			assertNotNull(future, "Failed to schedule background job");
-			
+
 			try {
 				pi = future.get(10, TimeUnit.SECONDS);
 			} catch (ExecutionException | TimeoutException e) {
@@ -155,7 +159,7 @@ public class AuditTraceContextTest extends AbstractTestCase {
 			    Thread.currentThread().interrupt();
 			    fail("Interrupted while waiting for background job to complete", e);
 			}
-			
+
 			assertTrue(pi.getAD_PInstance_ID() > 0, "Failed to create background process instance");
 	        assertFalse(pi.isError(), "Error running background job: " + pi.getSummary());
 
@@ -164,7 +168,7 @@ public class AuditTraceContextTest extends AbstractTestCase {
 
 	        pinstance.load((String) null);
 	        assertFalse(pinstance.isProcessing(), "Background job still processing after completion");
-			
+
 			Query query = new Query(Env.getCtx(), MNote.Table_Name, "AD_Table_ID=? AND Record_ID=?", null);
 			note = query.setParameters(MPInstance.Table_ID, pinstance.getAD_PInstance_ID()).first();
 			assertNotNull(note, "Failed to retrieve notice");
@@ -174,7 +178,7 @@ public class AuditTraceContextTest extends AbstractTestCase {
 			MAttachmentEntry entry = attachment.getEntry(0);
 			assertNotNull(entry, "Failed to retrieve attachment entry");
 			assertTrue(entry.getName() != null && entry.getName().toUpperCase().contains(".PDF"), "No PDF report attach to notice");
-						
+
 			pinstance.load((String) null);
 			assertEquals(externalTraceId, pinstance.getExternalTraceId(), "Unexpected ExternalTraceId");
 		} finally {
@@ -190,29 +194,30 @@ public class AuditTraceContextTest extends AbstractTestCase {
 				}
 				note.deleteEx(true);
 			}
-			
+
 			if (pinstance != null) {
 				pinstance.deleteEx(true);
 			}
-			
+
 			AuditTraceContext.clear();
 		}
-		
+
 		Query query = new Query(Env.getCtx(), MChangeLog.Table_Name,
-				MChangeLog.COLUMNNAME_AD_Table_ID + "=? AND "
+				MChangeLog.COLUMNNAME_AD_Session_ID + "=? AND "
+				+ MChangeLog.COLUMNNAME_AD_Table_ID + "=? AND "
 				+ MChangeLog.COLUMNNAME_Record_ID + "=? AND "
 				+ MChangeLog.COLUMNNAME_EventChangeLog + "=?", null);
 		if (AD_Note_ID > 0) {
 			List<MChangeLog> changeLogs = query.setParameters(
-					MNote.Table_ID, AD_Note_ID, MChangeLog.EVENTCHANGELOG_Delete).list();
+					session.getAD_Session_ID(), MNote.Table_ID, AD_Note_ID, MChangeLog.EVENTCHANGELOG_Delete).list();
 			assertFalse(changeLogs.isEmpty(), "No change log found");
 			for (MChangeLog changeLog : changeLogs)
 				assertEquals(externalTraceId, changeLog.getExternalTraceId(), "Unexpected ExternalTraceId");
 		}
-		
+
 		if (AD_Attachment_ID > 0) {
 			List<MChangeLog> changeLogs = query.setParameters(
-					MAttachment.Table_ID, AD_Attachment_ID, MChangeLog.EVENTCHANGELOG_Delete).list();
+					session.getAD_Session_ID(), MAttachment.Table_ID, AD_Attachment_ID, MChangeLog.EVENTCHANGELOG_Delete).list();
 			assertFalse(changeLogs.isEmpty(), "No change log found");
 			for (MChangeLog changeLog : changeLogs)
 				assertEquals(externalTraceId, changeLog.getExternalTraceId(), "Unexpected ExternalTraceId");
