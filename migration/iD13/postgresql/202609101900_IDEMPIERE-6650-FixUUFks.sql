@@ -103,8 +103,9 @@ BEGIN
             CONTINUE;
         END IF;
 
+        -- Get target column and type and ensure target type is already uuid
         SELECT a.attname, pg_catalog.format_type(a.atttypid, a.atttypmod)
-          INTO v_target_column
+          INTO v_target_column, v_target_type
           FROM pg_catalog.pg_class pc
           JOIN pg_catalog.pg_attribute a ON pc.oid = a.attrelid
         WHERE LOWER(pc.relname) = LOWER(v_target_table)
@@ -115,36 +116,26 @@ BEGIN
         ORDER BY (LOWER(a.attname) = LOWER(v_target_table || '_UU')) DESC
         LIMIT 1;
 
+        IF v_target_type IS DISTINCT FROM 'uuid' THEN
+            RAISE WARNING '-- Skipping %.% -> %.%: target column is % (not uuid yet)',
+                r_column.tablename, r_column.columnname, v_target_table, v_target_column, COALESCE(v_target_type, 'MISSING');
+            v_count_skipped := v_count_skipped + 1;
+            CONTINUE;
+        END IF;
+
         -- Make sure source column exists and is already uuid
         SELECT pg_catalog.format_type(a.atttypid, a.atttypmod)
           INTO v_source_type
           FROM pg_catalog.pg_class pc
           JOIN pg_catalog.pg_attribute a ON pc.oid = a.attrelid
          WHERE LOWER(pc.relname) = LOWER(r_column.tablename)
-           AND LOWER(a.attname) IN (LOWER(v_target_table || '_UU'), LOWER(substr(v_target_table, 1, 27) || '_UU'))
+           AND LOWER(a.attname) = LOWER(r_column.columnname)
            AND a.attnum > 0
            AND pc.relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA)
            AND NOT a.attisdropped;
 
         IF v_source_type IS DISTINCT FROM 'uuid' THEN
             RAISE WARNING '-- Skipping %.%: column is % (not uuid yet)', r_column.tablename, r_column.columnname, COALESCE(v_source_type, 'MISSING');
-            v_count_skipped := v_count_skipped + 1;
-            CONTINUE;
-        END IF;
-
-        -- Make sure target column exists and is already uuid
-        SELECT pg_catalog.format_type(a.atttypid, a.atttypmod)
-          INTO v_target_type
-          FROM pg_catalog.pg_class pc
-          JOIN pg_catalog.pg_attribute a ON pc.oid = a.attrelid
-         WHERE LOWER(pc.relname) = LOWER(v_target_table)
-           AND LOWER(a.attname) = LOWER(v_target_column)
-           AND a.attnum > 0
-           AND NOT a.attisdropped;
-
-        IF v_target_type IS DISTINCT FROM 'uuid' THEN
-            RAISE WARNING '-- Skipping %.% -> %.%: target column is % (not uuid yet)',
-                r_column.tablename, r_column.columnname, v_target_table, v_target_column, COALESCE(v_target_type, 'MISSING');
             v_count_skipped := v_count_skipped + 1;
             CONTINUE;
         END IF;
