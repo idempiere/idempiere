@@ -2116,9 +2116,9 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 				{
 					//	MatchPO is created also from MInOut when Invoice exists before Shipment
 					BigDecimal matchQty = isCreditMemo() ? line.getQtyInvoiced().negate() : line.getQtyInvoiced();					
-					MMatchPO po = MMatchPO.create (line, null,
+					List<MMatchPO> pos = MMatchPO.createList (line, null,
 						getDateInvoiced(), matchQty);
-					if (po != null) 
+					for (MMatchPO po : pos) 
 					{
 						if (!po.save(get_TrxName()))
 						{
