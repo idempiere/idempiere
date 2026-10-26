@@ -123,7 +123,8 @@ public class MWFProcess extends X_AD_WF_Process
 		super.setWFState (WFSTATE_NotStarted);
 		
 		//	Document
-		setAD_Table_ID(wf.getAD_Table_ID());
+		setAD_Table_ID(m_pi.isDocTypeWorkflow() ? pi.getTable_ID() : wf.getAD_Table_ID());
+
 		setRecord_ID(pi.getRecord_ID());
 		if (pi.getPO() != null)
 			m_po = pi.getPO();
@@ -134,7 +135,10 @@ public class MWFProcess extends X_AD_WF_Process
 			super.setWFState (WFSTATE_Terminated);
 		}
 		else
+		{
 			setTextMsg(getPO());
+			setAD_Org_ID(m_po.getAD_Org_ID());// Add by Hideaki Hagiwara
+		}
 		//	Responsible/User
 		if (wf.getAD_WF_Responsible_ID() == 0)
 			setAD_WF_Responsible_ID();
@@ -144,9 +148,6 @@ public class MWFProcess extends X_AD_WF_Process
 		//
 		m_state = new StateEngine (getWFState());
 		setProcessed (false);
-		//	Lock Entity
-		getPO();
-		setAD_Org_ID(m_po.getAD_Org_ID());//Add by Hideaki Hagiwara
 	}	//	MWFProcess
 
 	/**	State Machine				*/
