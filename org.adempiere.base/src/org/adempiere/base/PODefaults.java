@@ -29,6 +29,7 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 
 import org.compiere.model.PO;
+import org.compiere.model.POInfo;
 import org.compiere.util.CLogger;
 
 /**
@@ -80,19 +81,27 @@ public final class PODefaults {
 	/**
 	 * @param po record being saved
 	 * @param columnName column to default
-	 * @param type value type of the column
 	 * @return first answer other than useFallback, or useFallback.
-	 * An answer of another type is logged and skipped.
+	 * The value type V must be the column's class ({@link POInfo#getColumnClass(int)}): an answer
+	 * whose value is not of that class is logged and skipped. A value is also skipped when the class
+	 * cannot be checked (unknown column, or a column class of Object).
 	 */
 	@SuppressWarnings("unchecked")
-	public <V> DefaultValue<V> get(PO po, String columnName, Class<V> type) {
+	public <V> DefaultValue<V> get(PO po, String columnName) {
+		if (providers.isEmpty())
+			return DefaultValue.useFallback();
+		POInfo info = POInfo.getPOInfo(po.getCtx(), po.get_Table_ID());
+		Class<?> columnClass = info.getColumnClass(info.getColumnIndex(columnName));
+		// Object accepts any value, so it cannot guard the cast to V
+		boolean checkable = columnClass != null && columnClass != Object.class;
 		for (IPODefaultsProvider provider : providers) {
 			DefaultValue<?> answer = provider.getDefault(po, columnName);
 			if (answer == null || answer.isUseFallback())
 				continue;
-			if (answer.getValue() != null && !type.isInstance(answer.getValue())) {
+			if (answer.getValue() != null && (!checkable || !columnClass.isInstance(answer.getValue()))) {
 				s_log.log(Level.WARNING, provider.getClass().getName() + " returned " + answer.getValue().getClass().getName()
-						+ " for " + po.get_TableName() + "." + columnName + ", expected " + type.getName());
+						+ " for " + po.get_TableName() + "." + columnName + ", expected "
+						+ (checkable ? columnClass.getName() : "a column with a known class"));
 				continue;
 			}
 			return (DefaultValue<V>) answer;

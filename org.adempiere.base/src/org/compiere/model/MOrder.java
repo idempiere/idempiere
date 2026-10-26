@@ -1284,8 +1284,8 @@ public class MOrder extends X_C_Order implements DocAction
 		//	Default Bill_Location_ID to C_BPartner_Location_ID
 		if (getBill_Location_ID() == 0)
 		{
-			Integer ii = defaults.get(this, COLUMNNAME_Bill_Location_ID, Integer.class)
-					.resolve(this::getC_BPartner_Location_ID);
+			DefaultValue<Integer> billLocation = defaults.get(this, COLUMNNAME_Bill_Location_ID);
+			Integer ii = billLocation.resolve(this::getC_BPartner_Location_ID);
 			if (ii != null && ii > 0)
 				setBill_Location_ID(ii);
 		}
@@ -1293,8 +1293,8 @@ public class MOrder extends X_C_Order implements DocAction
 		//	Default Price List
 		if (getM_PriceList_ID() == 0)
 		{
-			Integer ii = defaults.get(this, COLUMNNAME_M_PriceList_ID, Integer.class)
-					.resolve(() -> DB.getSQLValueEx(null,
+			DefaultValue<Integer> priceList = defaults.get(this, COLUMNNAME_M_PriceList_ID);
+			Integer ii = priceList.resolve(() -> DB.getSQLValueEx(null,
 						"SELECT M_PriceList_ID FROM M_PriceList "
 						+ "WHERE AD_Client_ID=? AND IsSOPriceList=? AND IsActive=? "
 						+ "ORDER BY IsDefault DESC", getAD_Client_ID(), isSOTrx(), true));
@@ -1319,8 +1319,8 @@ public class MOrder extends X_C_Order implements DocAction
 		//	Default Sales Rep
 		if (getSalesRep_ID() == 0)
 		{
-			Integer ii = defaults.get(this, COLUMNNAME_SalesRep_ID, Integer.class)
-					.resolve(() -> Env.getContextAsInt(getCtx(), Env.SALESREP_ID));
+			DefaultValue<Integer> salesRep = defaults.get(this, COLUMNNAME_SalesRep_ID);
+			Integer ii = salesRep.resolve(() -> Env.getContextAsInt(getCtx(), Env.SALESREP_ID));
 			if (ii != null && ii > 0)
 				setSalesRep_ID (ii);
 		}
@@ -1332,7 +1332,7 @@ public class MOrder extends X_C_Order implements DocAction
 		//	Default Payment Term
 		if (getC_PaymentTerm_ID() == 0)
 		{
-			DefaultValue<Integer> paymentTerm = defaults.get(this, COLUMNNAME_C_PaymentTerm_ID, Integer.class);
+			DefaultValue<Integer> paymentTerm = defaults.get(this, COLUMNNAME_C_PaymentTerm_ID);
 			int ii = 0;
 			if (paymentTerm.isUseFallback())
 			{
@@ -1352,8 +1352,8 @@ public class MOrder extends X_C_Order implements DocAction
 		//	Default Delivery Rule (empty only if a provider cleared the initial default)
 		if (getDeliveryRule() == null)
 		{
-			String rule = defaults.get(this, COLUMNNAME_DeliveryRule, String.class)
-					.resolve(() -> DELIVERYRULE_Availability);
+			DefaultValue<String> deliveryRule = defaults.get(this, COLUMNNAME_DeliveryRule);
+			String rule = deliveryRule.resolve(() -> DELIVERYRULE_Availability);
 			if (rule != null)
 				setDeliveryRule(rule);
 		}
@@ -1361,8 +1361,8 @@ public class MOrder extends X_C_Order implements DocAction
 		//	Default Invoice Rule (empty only if a provider cleared the initial default)
 		if (getInvoiceRule() == null)
 		{
-			String rule = defaults.get(this, COLUMNNAME_InvoiceRule, String.class)
-					.resolve(() -> INVOICERULE_Immediate);
+			DefaultValue<String> invoiceRule = defaults.get(this, COLUMNNAME_InvoiceRule);
+			String rule = invoiceRule.resolve(() -> INVOICERULE_Immediate);
 			if (rule != null)
 				setInvoiceRule(rule);
 		}

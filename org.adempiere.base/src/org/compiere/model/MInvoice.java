@@ -1154,7 +1154,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		//	Set default Price List
 		if (getM_PriceList_ID() == 0)
 		{
-			DefaultValue<Integer> priceList = defaults.get(this, COLUMNNAME_M_PriceList_ID, Integer.class);
+			DefaultValue<Integer> priceList = defaults.get(this, COLUMNNAME_M_PriceList_ID);
 			if (priceList.getValue() != null && priceList.getValue() > 0)
 				setM_PriceList_ID(priceList.getValue());
 			else if (priceList.isUseFallback())
@@ -1195,8 +1195,8 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		//	Set Sales Rep from provider or environment context
 		if (getSalesRep_ID() == 0)
 		{
-			Integer ii = defaults.get(this, COLUMNNAME_SalesRep_ID, Integer.class)
-					.resolve(() -> Env.getContextAsInt(getCtx(), Env.SALESREP_ID));
+			DefaultValue<Integer> salesRep = defaults.get(this, COLUMNNAME_SalesRep_ID);
+			Integer ii = salesRep.resolve(() -> Env.getContextAsInt(getCtx(), Env.SALESREP_ID));
 			if (ii != null && ii > 0)
 				setSalesRep_ID (ii);
 		}
@@ -1210,7 +1210,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		//	Set default Payment Term
 		if (getC_PaymentTerm_ID() == 0)
 		{
-			DefaultValue<Integer> paymentTerm = defaults.get(this, COLUMNNAME_C_PaymentTerm_ID, Integer.class);
+			DefaultValue<Integer> paymentTerm = defaults.get(this, COLUMNNAME_C_PaymentTerm_ID);
 			int ii = 0;
 			if (paymentTerm.isUseFallback())
 			{

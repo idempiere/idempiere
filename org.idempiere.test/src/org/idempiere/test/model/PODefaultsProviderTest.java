@@ -14,6 +14,8 @@ package org.idempiere.test.model;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 
 import java.sql.Timestamp;
 import java.util.Dictionary;
@@ -33,6 +35,7 @@ import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MProduct;
 import org.compiere.model.PO;
+import org.compiere.model.POInfo;
 import org.compiere.process.DocAction;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
@@ -40,6 +43,8 @@ import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.idempiere.test.TestActivator;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
 
@@ -59,7 +64,7 @@ public class PODefaultsProviderTest extends AbstractTestCase {
 		int contextSalesRep = Env.getContextAsInt(Env.getCtx(), Env.SALESREP_ID);
 		if (contextSalesRep > 0)
 			assertEquals(contextSalesRep, order.getSalesRep_ID());
-		assertTrue(Core.getPODefaults(MOrder.Table_Name).get(order, MOrder.COLUMNNAME_SalesRep_ID, Integer.class).isUseFallback());
+		assertTrue(Core.getPODefaults(MOrder.Table_Name).get(order, MOrder.COLUMNNAME_SalesRep_ID).isUseFallback());
 	}
 
 	@Test
@@ -146,6 +151,44 @@ public class PODefaultsProviderTest extends AbstractTestCase {
 	}
 
 	@Test
+	public void testAnswerForUnknownColumnIsSkipped() {
+		IPODefaultsProvider provider = provider(Map.of("NoSuchColumn", DefaultValue.of(1)));
+		ServiceRegistration<?> registration = register(MOrder.Table_Name, provider, 10);
+		try {
+			MOrder order = newOrder();
+			assertTrue(Core.getPODefaults(MOrder.Table_Name).get(order, "NoSuchColumn").isUseFallback());
+		} finally {
+			registration.unregister();
+		}
+	}
+
+	@Test
+	public void testAnswerForColumnOfClassObjectIsSkipped() {
+		IPODefaultsProvider provider = provider(Map.of(
+				MOrder.COLUMNNAME_SalesRep_ID, DefaultValue.of(DictionaryIDs.AD_User.GARDEN_USER.id)));
+		ServiceRegistration<?> registration = register(MOrder.Table_Name, provider, 10);
+		try {
+			MOrder order = newOrder();
+			// control: with the real dictionary (Integer) the answer is used
+			DefaultValue<Integer> salesRep = Core.getPODefaults(MOrder.Table_Name).get(order, MOrder.COLUMNNAME_SalesRep_ID);
+			assertEquals(DictionaryIDs.AD_User.GARDEN_USER.id, salesRep.getValue());
+
+			// a column class of Object (e.g. a custom display type) accepts any value, so it cannot guard the cast
+			POInfo objectColumnInfo = Mockito.mock(POInfo.class);
+			Mockito.doReturn(1).when(objectColumnInfo).getColumnIndex(MOrder.COLUMNNAME_SalesRep_ID);
+			Mockito.doReturn(Object.class).when(objectColumnInfo).getColumnClass(1);
+			try (MockedStatic<POInfo> poInfoMock = Mockito.mockStatic(POInfo.class, Mockito.CALLS_REAL_METHODS)) {
+				poInfoMock.when(() -> POInfo.getPOInfo(any(), eq(MOrder.Table_ID))).thenReturn(objectColumnInfo);
+				salesRep = Core.getPODefaults(MOrder.Table_Name).get(order, MOrder.COLUMNNAME_SalesRep_ID);
+				assertTrue(salesRep.isUseFallback());
+				poInfoMock.verify(() -> POInfo.getPOInfo(any(), eq(MOrder.Table_ID)));
+			}
+		} finally {
+			registration.unregister();
+		}
+	}
+
+	@Test
 	public void testValueSetByCallerIsKept() {
 		IPODefaultsProvider provider = provider(Map.of(
 				MOrder.COLUMNNAME_C_PaymentTerm_ID, DefaultValue.of(DictionaryIDs.C_PaymentTerm.TWO_PERCENT_10_NET_30.id)));
@@ -189,8 +232,8 @@ public class PODefaultsProviderTest extends AbstractTestCase {
 		ServiceRegistration<?> highRegistration = register(MOrder.Table_Name, high, 20);
 		try {
 			MOrder order = newOrder();
-			assertEquals(DictionaryIDs.AD_User.GARDEN_USER.id,
-					Core.getPODefaults(MOrder.Table_Name).get(order, MOrder.COLUMNNAME_SalesRep_ID, Integer.class).getValue());
+			DefaultValue<Integer> salesRep = Core.getPODefaults(MOrder.Table_Name).get(order, MOrder.COLUMNNAME_SalesRep_ID);
+			assertEquals(DictionaryIDs.AD_User.GARDEN_USER.id, salesRep.getValue());
 		} finally {
 			lowRegistration.unregister();
 			highRegistration.unregister();
@@ -361,7 +404,7 @@ public class PODefaultsProviderTest extends AbstractTestCase {
 
 	private DefaultValue<Integer> paymentTerm(MOrder order) {
 		PODefaults defaults = Core.getPODefaults(MOrder.Table_Name);
-		return defaults.get(order, MOrder.COLUMNNAME_C_PaymentTerm_ID, Integer.class);
+		return defaults.get(order, MOrder.COLUMNNAME_C_PaymentTerm_ID);
 	}
 
 	/**
