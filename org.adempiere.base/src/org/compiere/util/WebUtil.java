@@ -24,9 +24,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
@@ -1110,6 +1112,43 @@ public final class WebUtil
 			}
 		}
 		return retVal;
+	}
+
+	/**
+	 * @param urlString URL to request
+	 * @return HTTP response code, or -1 if the request failed
+	 */
+	public static int getUrlHttpResponseCode(String urlString) {
+		int responseCode = -1;
+		try {
+			URL url = new URL(urlString);
+			HttpURLConnection huc = (HttpURLConnection) url.openConnection();
+			huc.setRequestMethod("GET");
+			huc.setConnectTimeout(5000);
+			huc.setReadTimeout(5000);
+			huc.setInstanceFollowRedirects(true);
+			responseCode = huc.getResponseCode();
+			huc.disconnect();
+		} catch (IOException e) {
+			responseCode = -1;
+		}
+		return responseCode;
+	}
+
+	/**
+	 * @param urlString URL to request
+	 * @return true if the URL exists and answers with HTTP 200
+	 */
+	public static boolean isUrlOk(String urlString) {
+		return getUrlHttpResponseCode(urlString) == HttpURLConnection.HTTP_OK;
+	}
+
+	/**
+	 * @param urlString URL to request
+	 * @return true if the URL answers with HTTP 404
+	 */
+	public static boolean isUrlNotFound(String urlString) {
+		return getUrlHttpResponseCode(urlString) == HttpURLConnection.HTTP_NOT_FOUND;
 	}
 
 }   //  WebUtil

@@ -58,6 +58,7 @@ import org.compiere.util.Language;
 import org.compiere.util.Login;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.compiere.util.WebUtil;
 import org.zkoss.util.Locales;
 import org.zkoss.web.Attributes;
 import org.zkoss.zhtml.Table;
@@ -826,8 +827,12 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 		String lang = Env.getContext(Env.getCtx(), Env.LANGUAGE);
 		lang = lang.substring(0, 2);
 		String helpURL = MSysConfig.getValue(MSysConfig.LOGIN_SELECT_ROLE_HELP_URL, "https://wiki.idempiere.org/{lang}/Login_Select_Role_Help");
-		if (helpURL.contains("{lang}"))
-			helpURL = Util.replace(helpURL, "{lang}", lang);
+		if (helpURL.contains("{lang}")) {
+			String rawURL = helpURL;
+			helpURL = Util.replace(rawURL, "{lang}", lang);
+			if (!"en".equals(lang) && WebUtil.isUrlNotFound(helpURL))
+				helpURL = Util.replace(rawURL, "{lang}", "en"); // default to English
+		}
 		try {
 			Executions.getCurrent().sendRedirect(helpURL, "_blank");
 		}
