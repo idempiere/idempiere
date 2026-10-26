@@ -1276,14 +1276,15 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 			return;
 
 		X_AD_StyleLine[] lines = style.getStyleLines();
+		PrintDataEvaluatee evaluatee = new PrintDataEvaluatee(null, printData);
 		StringBuilder styleBuilder = new StringBuilder();
 		for (X_AD_StyleLine line : lines)
 		{
-			String inlineStyle = line.getInlineStyle().trim();
+			String inlineStyle = MStyle.parseVariables(line.getInlineStyle().trim(), evaluatee);
 			String displayLogic = line.getDisplayLogic();
 			if (!Util.isEmpty(displayLogic))
 			{
-				if (!Evaluator.evaluateLogic(new PrintDataEvaluatee(null, printData), displayLogic))
+				if (!Evaluator.evaluateLogic(evaluatee, displayLogic))
 					continue;
 			}
 			if (styleBuilder.length() > 0 && !(styleBuilder.charAt(styleBuilder.length()-1)==';'))
@@ -1291,7 +1292,7 @@ public class HTMLReportRenderer implements IReportRenderer<HTMLReportRendererCon
 			styleBuilder.append(inlineStyle);
 		}
 		if(styleBuilder.length() > 0)
-			element.setStyle(styleBuilder.toString());
+			element.setStyle(Util.maskHTML(styleBuilder.toString())); // ECS does not escape attribute values, style may contain @variable@ values
 		//
 	}
 	

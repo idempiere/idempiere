@@ -2863,19 +2863,19 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 
 		MAllocationHdr[] allocations = MAllocationHdr.getOfInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
 		if (allocations.length > 0) {
-			setProcessMessage(Msg.parseTranslation(getCtx(), "InvoiceReactivationFailedAllocationLine"));
+			setProcessMessage(Msg.getMsg(getCtx(), "InvoiceReactivationFailedAllocationLine"));
 			return false;
 		}
 
 		MMatchInv[] matchInvs = MMatchInv.getInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
 		if (matchInvs.length > 0) {
-			setProcessMessage(Msg.parseTranslation(getCtx(), "InvoiceReactivationFailedMatchInvoice"));
+			setProcessMessage(Msg.getMsg(getCtx(), "InvoiceReactivationFailedMatchInvoice"));
 			return false;
 		}
 
 		MMatchPO[] matchPos = MMatchPO.getInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
 		if (matchPos.length > 0) {
-			setProcessMessage(Msg.parseTranslation(getCtx(), "InvoiceReactivationFailedMatchPO"));
+			setProcessMessage(Msg.getMsg(getCtx(), "InvoiceReactivationFailedMatchPO"));
 			return false;
 		}
 
