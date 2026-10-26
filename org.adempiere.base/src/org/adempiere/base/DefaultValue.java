@@ -25,9 +25,8 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 /**
- * Answer of a document defaults provider ({@link IOrderDefaultsProvider},
- * {@link IInvoiceDefaultsProvider}) for one field: a value, {@link #useFallback()} to let the
- * next provider or the built-in fallback decide, or {@link #noDefault()} to leave the field empty.
+ * Answer of an {@link IPODefaultsProvider} for one column: a value, {@link #useFallback()} to let
+ * the next provider or the built-in fallback decide, or {@link #noDefault()} to leave the column empty.
  * @param <V> field value type
  */
 public final class DefaultValue<V> {

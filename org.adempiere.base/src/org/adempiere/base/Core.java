@@ -1233,21 +1233,13 @@ public class Core {
 	} // getCreditManager
 
 	/**
-	 * Get order header defaults from the registered {@link IOrderDefaultsProvider}s.
+	 * Get the defaults from the {@link IPODefaultsProvider}s registered for a table.
 	 * The providers are looked up once: call this once per save.
-	 * @return order defaults, never null
+	 * @param tableName table name
+	 * @return defaults, never null
 	 */
-	public static DocumentDefaults<IOrderDefaultsProvider> getOrderDefaults() {
-		return DocumentDefaults.of(IOrderDefaultsProvider.class);
-	}
-
-	/**
-	 * Get invoice header defaults from the registered {@link IInvoiceDefaultsProvider}s.
-	 * The providers are looked up once: call this once per save.
-	 * @return invoice defaults, never null
-	 */
-	public static DocumentDefaults<IInvoiceDefaultsProvider> getInvoiceDefaults() {
-		return DocumentDefaults.of(IInvoiceDefaultsProvider.class);
+	public static PODefaults getPODefaults(String tableName) {
+		return PODefaults.of(tableName);
 	}
 	
 	@SuppressWarnings("unchecked")

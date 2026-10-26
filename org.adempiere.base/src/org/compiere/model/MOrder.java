@@ -32,9 +32,8 @@ import java.util.logging.Level;
 import org.adempiere.base.Core;
 import org.adempiere.base.CreditStatus;
 import org.adempiere.base.DefaultValue;
-import org.adempiere.base.DocumentDefaults;
 import org.adempiere.base.ICreditManager;
-import org.adempiere.base.IOrderDefaultsProvider;
+import org.adempiere.base.PODefaults;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.BPartnerNoBillToAddressException;
 import org.adempiere.exceptions.BPartnerNoShipToAddressException;
@@ -481,7 +480,7 @@ public class MOrder extends X_C_Order implements DocAction
 		setTotalLines (Env.ZERO);
 		setGrandTotal (Env.ZERO);
 
-		Core.getOrderDefaults().forEach(provider -> provider.initDefaults(this));
+		Core.getPODefaults(Table_Name).forEach(provider -> provider.initDefaults(this));
 	}
 
 	/**
@@ -1275,7 +1274,7 @@ public class MOrder extends X_C_Order implements DocAction
 		
 		if (getC_BPartner_Location_ID() == 0)
 			setBPartner(new MBPartner(getCtx(), getC_BPartner_ID(), get_TrxName()));
-		DocumentDefaults<IOrderDefaultsProvider> defaults = Core.getOrderDefaults();
+		PODefaults defaults = Core.getPODefaults(Table_Name);
 		//	Default Bill_BPartner_ID to C_BPartner_ID
 		if (getBill_BPartner_ID() == 0)
 		{
@@ -1285,7 +1284,7 @@ public class MOrder extends X_C_Order implements DocAction
 		//	Default Bill_Location_ID to C_BPartner_Location_ID
 		if (getBill_Location_ID() == 0)
 		{
-			Integer ii = defaults.get(provider -> provider.getBill_Location_ID(this))
+			Integer ii = defaults.get(this, COLUMNNAME_Bill_Location_ID, Integer.class)
 					.resolve(this::getC_BPartner_Location_ID);
 			if (ii != null && ii > 0)
 				setBill_Location_ID(ii);
@@ -1294,7 +1293,7 @@ public class MOrder extends X_C_Order implements DocAction
 		//	Default Price List
 		if (getM_PriceList_ID() == 0)
 		{
-			Integer ii = defaults.get(provider -> provider.getM_PriceList_ID(this))
+			Integer ii = defaults.get(this, COLUMNNAME_M_PriceList_ID, Integer.class)
 					.resolve(() -> DB.getSQLValueEx(null,
 						"SELECT M_PriceList_ID FROM M_PriceList "
 						+ "WHERE AD_Client_ID=? AND IsSOPriceList=? AND IsActive=? "
@@ -1320,7 +1319,7 @@ public class MOrder extends X_C_Order implements DocAction
 		//	Default Sales Rep
 		if (getSalesRep_ID() == 0)
 		{
-			Integer ii = defaults.get(provider -> provider.getSalesRep_ID(this))
+			Integer ii = defaults.get(this, COLUMNNAME_SalesRep_ID, Integer.class)
 					.resolve(() -> Env.getContextAsInt(getCtx(), Env.SALESREP_ID));
 			if (ii != null && ii > 0)
 				setSalesRep_ID (ii);
@@ -1333,7 +1332,7 @@ public class MOrder extends X_C_Order implements DocAction
 		//	Default Payment Term
 		if (getC_PaymentTerm_ID() == 0)
 		{
-			DefaultValue<Integer> paymentTerm = defaults.get(provider -> provider.getC_PaymentTerm_ID(this));
+			DefaultValue<Integer> paymentTerm = defaults.get(this, COLUMNNAME_C_PaymentTerm_ID, Integer.class);
 			int ii = 0;
 			if (paymentTerm.isUseFallback())
 			{
@@ -1353,7 +1352,7 @@ public class MOrder extends X_C_Order implements DocAction
 		//	Default Delivery Rule (empty only if a provider cleared the initial default)
 		if (getDeliveryRule() == null)
 		{
-			String rule = defaults.get(provider -> provider.getDeliveryRule(this))
+			String rule = defaults.get(this, COLUMNNAME_DeliveryRule, String.class)
 					.resolve(() -> DELIVERYRULE_Availability);
 			if (rule != null)
 				setDeliveryRule(rule);
@@ -1362,7 +1361,7 @@ public class MOrder extends X_C_Order implements DocAction
 		//	Default Invoice Rule (empty only if a provider cleared the initial default)
 		if (getInvoiceRule() == null)
 		{
-			String rule = defaults.get(provider -> provider.getInvoiceRule(this))
+			String rule = defaults.get(this, COLUMNNAME_InvoiceRule, String.class)
 					.resolve(() -> INVOICERULE_Immediate);
 			if (rule != null)
 				setInvoiceRule(rule);

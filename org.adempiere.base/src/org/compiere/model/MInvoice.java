@@ -36,9 +36,8 @@ import java.util.logging.Level;
 import org.adempiere.base.Core;
 import org.adempiere.base.CreditStatus;
 import org.adempiere.base.DefaultValue;
-import org.adempiere.base.DocumentDefaults;
 import org.adempiere.base.ICreditManager;
-import org.adempiere.base.IInvoiceDefaultsProvider;
+import org.adempiere.base.PODefaults;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.BPartnerNoAddressException;
 import org.adempiere.exceptions.BackDateTrxNotAllowedException;
@@ -464,7 +463,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		super.setProcessed (false);
 		setProcessing(false);
 
-		Core.getInvoiceDefaults().forEach(provider -> provider.initDefaults(this));
+		Core.getPODefaults(Table_Name).forEach(provider -> provider.initDefaults(this));
 	}
 
 	/**
@@ -1151,11 +1150,11 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		if (getC_BPartner_Location_ID() == 0)
 			setBPartner(new MBPartner(getCtx(), getC_BPartner_ID(), null));
 
-		DocumentDefaults<IInvoiceDefaultsProvider> defaults = Core.getInvoiceDefaults();
+		PODefaults defaults = Core.getPODefaults(Table_Name);
 		//	Set default Price List
 		if (getM_PriceList_ID() == 0)
 		{
-			DefaultValue<Integer> priceList = defaults.get(provider -> provider.getM_PriceList_ID(this));
+			DefaultValue<Integer> priceList = defaults.get(this, COLUMNNAME_M_PriceList_ID, Integer.class);
 			if (priceList.getValue() != null && priceList.getValue() > 0)
 				setM_PriceList_ID(priceList.getValue());
 			else if (priceList.isUseFallback())
@@ -1196,7 +1195,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		//	Set Sales Rep from provider or environment context
 		if (getSalesRep_ID() == 0)
 		{
-			Integer ii = defaults.get(provider -> provider.getSalesRep_ID(this))
+			Integer ii = defaults.get(this, COLUMNNAME_SalesRep_ID, Integer.class)
 					.resolve(() -> Env.getContextAsInt(getCtx(), Env.SALESREP_ID));
 			if (ii != null && ii > 0)
 				setSalesRep_ID (ii);
@@ -1211,7 +1210,7 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		//	Set default Payment Term
 		if (getC_PaymentTerm_ID() == 0)
 		{
-			DefaultValue<Integer> paymentTerm = defaults.get(provider -> provider.getC_PaymentTerm_ID(this));
+			DefaultValue<Integer> paymentTerm = defaults.get(this, COLUMNNAME_C_PaymentTerm_ID, Integer.class);
 			int ii = 0;
 			if (paymentTerm.isUseFallback())
 			{
