@@ -24,6 +24,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -38,6 +39,7 @@ import org.compiere.minigrid.UUIDColumn;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
@@ -124,6 +126,10 @@ public class RelatedInfoWindow implements EventListener<Event>, Sortable<Object>
 
 	private void testCount() {
 		m_count = 0;
+		Properties ctx = Env.getCtx();
+		int windowNo = parentInfoWindow != null ? parentInfoWindow.getWindowNo() : 0;
+		String parsedInfoSqlCount = Env.parseContext(ctx, windowNo, m_infoSqlCount, false, false);
+		
 		Object linkPara = null;
 		if (parentId != null && parentId instanceof IDColumn){
 			IDColumn ID = (IDColumn) parentId;
@@ -136,11 +142,11 @@ public class RelatedInfoWindow implements EventListener<Event>, Sortable<Object>
 		}
 		if (linkPara != null) {
 			if (info.getTypeDataOfLink().equals(String.class)){
-				m_count = DB.getSQLValue((String)null, m_infoSqlCount, (String)linkPara);
+				m_count = DB.getSQLValue((String)null, parsedInfoSqlCount, (String)linkPara);
 			}else if (info.getTypeDataOfLink().equals(int.class)){
-				m_count = DB.getSQLValue((String)null, m_infoSqlCount, Integer.parseInt(linkPara.toString()));
+				m_count = DB.getSQLValue((String)null, parsedInfoSqlCount, Integer.parseInt(linkPara.toString()));
 			}else{
-				m_count = DB.getSQLValue((String)null, m_infoSqlCount, linkPara);
+				m_count = DB.getSQLValue((String)null, parsedInfoSqlCount, linkPara);
 			}
 		}
 	}
@@ -362,6 +368,9 @@ public class RelatedInfoWindow implements EventListener<Event>, Sortable<Object>
         else if(!Util.isEmpty(orderByClause)) {
         	dataSql = dataSql + " ORDER BY " + orderByClause;
         }
+        
+        int windowNo = parentInfoWindow != null ? parentInfoWindow.getWindowNo() : 0;
+		dataSql = Env.parseContext(Env.getCtx(), windowNo, dataSql, true, false);
         //
         isHasNextPage = false;
         if (log.isLoggable(Level.FINER))
