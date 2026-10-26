@@ -176,13 +176,13 @@ public class InventoryCountCreate extends SvrProcess
 			(p_LocatorValue.trim().length() == 0 || p_LocatorValue.equals("%")))
 			p_LocatorValue = null;
 		if (p_LocatorValue != null)
-			sql.append(" AND UPPER(l.Value) LIKE ?");
+			sql.append(" AND UPPER(l.Value) LIKE UPPER(?)");
 		//
 		if (p_ProductValue != null && 
 			(p_ProductValue.trim().length() == 0 || p_ProductValue.equals("%")))
 			p_ProductValue = null;
 		if (p_ProductValue != null)
-			sql.append(" AND UPPER(p.Value) LIKE ?");
+			sql.append(" AND UPPER(p.Value) LIKE UPPER(?)");
 		//
 		if (p_M_Product_Category_ID != 0)
 			sql.append(" AND p.M_Product_Category_ID IN (")
@@ -210,9 +210,9 @@ public class InventoryCountCreate extends SvrProcess
 			if (p_M_Locator_ID != 0)
 				pstmt.setInt(index++, p_M_Locator_ID);
 			if (p_LocatorValue != null) 
-				pstmt.setString(index++, p_LocatorValue.toUpperCase());
+				pstmt.setString(index++, p_LocatorValue);
 			if (p_ProductValue != null) 
-				pstmt.setString(index++, p_ProductValue.toUpperCase());
+				pstmt.setString(index++, p_ProductValue);
 			if (!p_DeleteOld)
 				pstmt.setInt(index++, p_M_Inventory_ID);
 			rs = pstmt.executeQuery ();
