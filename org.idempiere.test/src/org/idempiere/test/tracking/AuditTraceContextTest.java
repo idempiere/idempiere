@@ -95,27 +95,31 @@ public class AuditTraceContextTest extends AbstractTestCase {
 	public void testProcess() {
 		String externalTraceId = UUID.randomUUID().toString();
 		AuditTraceContext.setExternalTraceId(externalTraceId);
+		MPInstance pinstance = null;
 		try {
 	        Trx trx = Trx.get(getTrxName(), false);
 	        MProcess process = MProcess.get(Env.getCtx(), SystemIDs.PROCESS_RPT_C_ORDER);
 	        MOrder order = new MOrder(Env.getCtx(), 108, getTrxName()); // Garden Order 60000
-	        MPInstance pinstance = new MPInstance(process, order.get_Table_ID(), order.getC_Order_ID(), order.getC_Order_UU());
+	        pinstance = new MPInstance(process, order.get_Table_ID(), order.getC_Order_ID(), order.getC_Order_UU());
 	        ProcessInfo pi = new ProcessInfo(process.getName(), process.getAD_Process_ID());
 			pi.setAD_PInstance_ID(pinstance.getAD_PInstance_ID());
 			pi.setTable_ID(pinstance.getAD_Table_ID());
 			pi.setRecord_ID(pinstance.getRecord_ID());
 	        boolean ok = process.processIt(pi, trx);
 	        assertTrue(ok, "Report process must return true");
-	        pinstance.load(getTrxName());
+	        pinstance.load(null);
 	        assertEquals(externalTraceId, pinstance.getExternalTraceId(), "Unexpected ExternalTraceId");
 		} finally {
 			AuditTraceContext.clear();
+			if (pinstance != null && pinstance.get_ID() > 0) {
+				pinstance.deleteEx(true);
+            }
 		}
     }
 	
 	@Test
 	public void testBackgroundJob() {
-		MSession.create(Env.getCtx());
+		MSession session = MSession.create(Env.getCtx());
 		String externalTraceId = UUID.randomUUID().toString();
 		AuditTraceContext.setExternalTraceId(externalTraceId);
 		
@@ -199,12 +203,13 @@ public class AuditTraceContextTest extends AbstractTestCase {
 		}
 		
 		Query query = new Query(Env.getCtx(), MChangeLog.Table_Name,
-				MChangeLog.COLUMNNAME_AD_Table_ID + "=? AND "
+				MChangeLog.COLUMNNAME_AD_Session_ID + "=? AND "
+				+ MChangeLog.COLUMNNAME_AD_Table_ID + "=? AND "
 				+ MChangeLog.COLUMNNAME_Record_ID + "=? AND "
 				+ MChangeLog.COLUMNNAME_EventChangeLog + "=?", null);
 		if (AD_Note_ID > 0) {
 			List<MChangeLog> changeLogs = query.setParameters(
-					MNote.Table_ID, AD_Note_ID, MChangeLog.EVENTCHANGELOG_Delete).list();
+					session.getAD_Session_ID(), MNote.Table_ID, AD_Note_ID, MChangeLog.EVENTCHANGELOG_Delete).list();
 			assertFalse(changeLogs.isEmpty(), "No change log found");
 			for (MChangeLog changeLog : changeLogs)
 				assertEquals(externalTraceId, changeLog.getExternalTraceId(), "Unexpected ExternalTraceId");
@@ -212,7 +217,7 @@ public class AuditTraceContextTest extends AbstractTestCase {
 		
 		if (AD_Attachment_ID > 0) {
 			List<MChangeLog> changeLogs = query.setParameters(
-					MAttachment.Table_ID, AD_Attachment_ID, MChangeLog.EVENTCHANGELOG_Delete).list();
+					session.getAD_Session_ID(), MAttachment.Table_ID, AD_Attachment_ID, MChangeLog.EVENTCHANGELOG_Delete).list();
 			assertFalse(changeLogs.isEmpty(), "No change log found");
 			for (MChangeLog changeLog : changeLogs)
 				assertEquals(externalTraceId, changeLog.getExternalTraceId(), "Unexpected ExternalTraceId");
