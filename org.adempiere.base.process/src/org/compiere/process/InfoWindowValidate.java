@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import org.compiere.model.MInfoWindow;
 import org.compiere.model.MUserDefInfo;
 import org.compiere.util.DB;
+import org.compiere.util.Util;
 
 /**
  * 	Validate Info Window SQL
@@ -70,6 +71,10 @@ public class InfoWindowValidate extends SvrProcess
 			MUserDefInfo udi = new MUserDefInfo(getCtx(), p_AD_UserDefInfo_ID, get_TrxName());
 
 			String sql = MInfoWindow.getSqlForValidation(getCtx(), iw, udi);
+
+			if (Util.isEmpty(sql))
+				return "@NotValid@";
+
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			try {
