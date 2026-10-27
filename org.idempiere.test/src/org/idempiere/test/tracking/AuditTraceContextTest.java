@@ -107,7 +107,7 @@ public class AuditTraceContextTest extends AbstractTestCase {
 			pi.setRecord_ID(pinstance.getRecord_ID());
 	        boolean ok = process.processIt(pi, trx);
 	        assertTrue(ok, "Report process must return true");
-	        pinstance.load(getTrxName());
+	        pinstance.load(null);
 	        assertEquals(externalTraceId, pinstance.getExternalTraceId(), "Unexpected ExternalTraceId");
 		} finally {
 			AuditTraceContext.clear();
