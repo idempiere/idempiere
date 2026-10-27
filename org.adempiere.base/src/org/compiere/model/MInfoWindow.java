@@ -464,6 +464,9 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 		this.setIsValid(false);		
 
 		String builder = getSqlForValidation(getCtx(), this, null);
+		// none column make this invalid
+		if (Util.isEmpty(builder))
+			return;
 
 		// try run sql
 		PreparedStatement pstmt = null;
@@ -551,8 +554,7 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	}
 
 	/**
-	 * Retrieves the effective columns to include in the validation query,
-	 * based on System and user-defined column visibility.
+	 * Retrieves the effective columns to include in the validation query (System and user-defined)
 	 *
 	 * @param ctx the context
 	 * @param iw the System InfoWindow
@@ -578,7 +580,7 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 				if (infoColumn.isDisplayed())
 					effectiveColumns.add(infoColumn);
 			}
-			else if (Util.isEmpty(userDefColumn.getIsDisplayed()) || userDefColumn.getIsDisplayed().equals(MUserDefInfoColumn.ISDISPLAYED_Yes)) {
+			else if (userDefColumn.getIsDisplayed() == null ? infoColumn.isDisplayed() : MUserDefInfoColumn.ISDISPLAYED_Yes.equals(userDefColumn.getIsDisplayed())) {
 				effectiveColumns.add(infoColumn);
 			}
 		}
