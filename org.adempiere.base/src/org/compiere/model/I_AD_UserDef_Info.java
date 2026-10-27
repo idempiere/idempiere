@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_UserDef_Info
  *  @author iDempiere (generated) 
- *  @version Release 13
+ *  @version Release 14
  */
 public interface I_AD_UserDef_Info 
 {
@@ -185,6 +185,19 @@ public interface I_AD_UserDef_Info
 	  * Optional short description of the record
 	  */
 	public String getDescription();
+
+    /** Column name FromClause */
+    public static final String COLUMNNAME_FromClause = "FromClause";
+
+	/** Set Sql FROM.
+	  * SQL FROM clause
+	  */
+	public void setFromClause (String FromClause);
+
+	/** Get Sql FROM.
+	  * SQL FROM clause
+	  */
+	public String getFromClause();
 
     /** Column name Help */
     public static final String COLUMNNAME_Help = "Help";
