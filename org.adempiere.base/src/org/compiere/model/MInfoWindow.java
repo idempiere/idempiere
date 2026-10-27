@@ -574,7 +574,7 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 		List<MInfoColumn> effectiveColumns = new ArrayList<>();
 
 		for (MInfoColumn infoColumn : infoColumns) {
-			MUserDefInfoColumn userDefColumn = MUserDefInfoColumn.get(ctx, infoColumn.getAD_InfoColumn_ID(), iw.getAD_InfoWindow_ID());
+			MUserDefInfoColumn userDefColumn = MUserDefInfoColumn.getForUserDefInfo(ctx, infoColumn.getAD_InfoColumn_ID(), udi.getAD_UserDef_Info_ID());
 
 			if (userDefColumn == null) {
 				if (infoColumn.isDisplayed())
