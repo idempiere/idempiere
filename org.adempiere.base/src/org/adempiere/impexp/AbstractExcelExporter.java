@@ -360,7 +360,9 @@ public abstract class AbstractExcelExporter
 		HSSFSheet sheet= m_workbook.createSheet();
 		formatPage(sheet);
 		createHeaderFooter(sheet);
-		createParameter(sheet);
+		boolean showParameter = Env.IsExcelExportWithParameters(getCtx());
+		if (showParameter)
+			createParameter(sheet);
 		if (!isForm())
 		{
 			createTableHeader(sheet);

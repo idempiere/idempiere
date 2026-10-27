@@ -46,6 +46,7 @@ import org.compiere.Adempiere;
 import org.compiere.db.CConnection;
 import org.compiere.dbPort.Convert;
 import org.compiere.model.GridWindowVO;
+import org.compiere.model.I_AD_UserPreference;
 import org.compiere.model.MClient;
 import org.compiere.model.MQuery;
 import org.compiere.model.MRole;
@@ -897,6 +898,26 @@ public final class Env
 		}
 		return false;
 	}	//	IsShowTechnicalInfOnHelp
+
+	/**
+	 * Is Excel Export with Parameters
+	 * @param ctx context
+	 * @return true if export with parameters
+	 */
+	public static boolean IsExcelExportWithParameters(Properties ctx)
+	{
+		if (ctx == null)
+			throw new IllegalArgumentException ("Require Context");
+		String s = getContext(ctx, "P|" + I_AD_UserPreference.COLUMNNAME_IsExcelExportWithParameters);
+		if (!Util.isEmpty(s))
+		{
+			if (s.equals("Y"))
+				return true;
+			else if (s.equals("N"))
+				return false;
+		}
+		return MSysConfig.getBooleanValue(MSysConfig.SHOW_REPORT_PARAMETER_IN_XLS_REPORT, true, Env.getAD_Client_ID(ctx));
+	}	//	IsExcelExportWithParameters
 
 	/**
 	 *	Is Auto New Record
