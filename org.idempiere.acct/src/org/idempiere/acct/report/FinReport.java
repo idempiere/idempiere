@@ -1402,8 +1402,9 @@ public class FinReport extends SvrProcess
 		if (log.isLoggable(Level.FINE)) log.fine("Variable=" + variable);
 
 		MReportSource[] sources = m_lines[line].getSources();
-		boolean isCombination = sources[0].getElementType().equals("CO");
-		for (int lsIdx = 0; lsIdx < sources.length; lsIdx++)
+		boolean isCombination = MReportSource.ELEMENTTYPE_Combination.equals(sources[0].getElementType());
+		int loopCount = isCombination ? sources.length : 1;
+		for (int lsIdx = 0; lsIdx < loopCount; lsIdx++)
 		{
 			//	Insert
 			StringBuilder insert = new StringBuilder("INSERT INTO T_Report "
@@ -1448,14 +1449,14 @@ public class FinReport extends SvrProcess
 			int combinationID = 0;
 			if (isCombination)
 			{
-				MAccount account = MAccount.get(getCtx(), getAD_Client_ID(), sources[lsIdx].getOrg_ID(), Env.getContextAsInt(getCtx(), "$C_AcctSchema_ID"),
+				MAccount account = MAccount.get(getCtx(), getAD_Client_ID(), sources[lsIdx].getOrg_ID(), m_report.getC_AcctSchema_ID(),
 						sources[lsIdx].getC_ElementValue_ID(), 0, sources[lsIdx].getM_Product_ID(), sources[lsIdx].getC_BPartner_ID(), sources[lsIdx].getAD_OrgTrx_ID(),
 						sources[lsIdx].getC_Location_ID(), 0, sources[lsIdx].getC_SalesRegion_ID(), sources[lsIdx].getC_Project_ID(), sources[lsIdx].getC_Campaign_ID(),
 						sources[lsIdx].getC_Activity_ID(), sources[lsIdx].getUser1_ID(), sources[lsIdx].getUser2_ID(), sources[lsIdx].getUserElement1_ID(),
 						sources[lsIdx].getUserElement2_ID(), get_TrxName());
 
 				if (account == null)
-					throw new AdempiereUserError("`@NotFound`@ `@C_ValidCombination_ID`@");
+					throw new AdempiereUserError("@NotFound@ @C_ValidCombination_ID@");
 				combinationID = account.getC_ValidCombination_ID();
 				insert.append("," + combinationID + " ");
 			}
@@ -1643,9 +1644,11 @@ public class FinReport extends SvrProcess
 					unionWhere.append(s);
 				}
 			}
-			if (where.length() > 0 && !isCombination)
+			if (where.length() > 0)
 				where.append(" AND ");
-			if (!isCombination)
+			if (isCombination)
+				where.append("Account_ID IS NOT NULL");
+			else
 				where.append(variable).append(" IS NOT NULL");
 
 			if (p_PA_ReportCube_ID > 0)
@@ -1660,6 +1663,8 @@ public class FinReport extends SvrProcess
 			if (isCombination)
 			{
 				List<String> colNames = m_lines[line].getCombinationGroupByColumns(sources[lsIdx]);
+				if (!colNames.contains("Account_ID"))
+					colNames.add(0, "Account_ID");
 				StringBuilder groupBy = new StringBuilder("");
 				for (int j = 0; j < colNames.size(); j++)
 				{
@@ -1691,7 +1696,7 @@ public class FinReport extends SvrProcess
 			int no = DB.executeUpdateEx(insert.toString(), get_TrxName());
 			if (log.isLoggable(Level.FINE)) log.fine("Source #=" + no + " - " + insert);
 			if (no == 0)
-				return;
+				continue;
 
 			//	Set Name,Description
 			StringBuilder sql = new StringBuilder ("UPDATE T_Report SET (Name,Description)=(")
@@ -1719,8 +1724,6 @@ public class FinReport extends SvrProcess
 				else
 					insertLineTrx(line, variable, null);
 			}
-			if (!isCombination)
-				break;
 		}
 	}	//	insertLineSource
 
@@ -2172,7 +2175,7 @@ public class FinReport extends SvrProcess
 	 */
 	private FinReportPeriod getPeriodTo(BigDecimal relativeOffsetTo)
 	{
-		if (relativeOffsetTo != null && relativeOffsetTo.signum() != 0)
+		if (relativeOffsetTo != null)
 			return getPeriod(relativeOffsetTo);
 		return null;
 	} // getPeriodTo

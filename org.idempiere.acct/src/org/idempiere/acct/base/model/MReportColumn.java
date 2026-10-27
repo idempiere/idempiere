@@ -52,8 +52,6 @@ public class MReportColumn extends X_PA_ReportColumn
         super(ctx, PA_ReportColumn_UU, trxName);
 		if (Util.isEmpty(PA_ReportColumn_UU))
 			setInitialDefaults();
-		else
-			loadSources();
     }
 
 	/**
@@ -67,8 +65,6 @@ public class MReportColumn extends X_PA_ReportColumn
 		super (ctx, PA_ReportColumn_ID, trxName);
 		if (PA_ReportColumn_ID == 0)
 			setInitialDefaults();
-		else
-			loadSources();
 	}	//	MReportColumn
 
 	/**
@@ -81,8 +77,6 @@ public class MReportColumn extends X_PA_ReportColumn
 
 	/**	Contained Sources				*/
 	private MReportSource[]		m_sources = null;
-	/** Cache result					*/
-	private String				m_whereClause = null;
 
 	/**
 	 * 	Constructor
@@ -93,14 +87,16 @@ public class MReportColumn extends X_PA_ReportColumn
 	public MReportColumn (Properties ctx, ResultSet rs, String trxName)
 	{
 		super(ctx, rs, trxName);
-		loadSources();
 	}	//	MReportColumn
 
 	/**
 	 * Load contained Sources
 	 */
-	private void loadSources()
+	private synchronized void loadSources()
 	{
+		if (m_sources != null)
+			return;
+
 		ArrayList<MReportSource> list = new ArrayList<MReportSource>();
 		String sql = "SELECT * FROM PA_ReportSource WHERE PA_ReportColumn_ID = ? AND IsActive = 'Y' ";
 		PreparedStatement pstmt = null;
@@ -137,6 +133,8 @@ public class MReportColumn extends X_PA_ReportColumn
 	 */
 	public MReportSource[] getSources()
 	{
+		if (m_sources == null)
+			loadSources();
 		return m_sources;
 	} // getSources
 
@@ -147,7 +145,7 @@ public class MReportColumn extends X_PA_ReportColumn
 	 */
 	public boolean isWithSources()
 	{
-		return m_sources != null && m_sources.length > 0;
+		return getSources().length > 0;
 	}
 
 	/**
@@ -156,10 +154,9 @@ public class MReportColumn extends X_PA_ReportColumn
 	public void list()
 	{
 		if (log.isLoggable(Level.INFO)) log.info("- " + toString());
-		if (m_sources == null)
-			return;
-		for (int i = 0; i < m_sources.length; i++)
-			if (log.isLoggable(Level.INFO)) log.info("  - " + m_sources[i].toString());
+		MReportSource[] sources = getSources();
+		for (int i = 0; i < sources.length; i++)
+			if (log.isLoggable(Level.INFO)) log.info("  - " + sources[i].toString());
 	} // list
 
 	/**
@@ -170,9 +167,10 @@ public class MReportColumn extends X_PA_ReportColumn
 	public String getSourceColumnName()
 	{
 		String ColumnName = null;
-		for (int i = 0; i < m_sources.length; i++)
+		MReportSource[] sources = getSources();
+		for (int i = 0; i < sources.length; i++)
 		{
-			String col = MAcctSchemaElement.getColumnName(m_sources[i].getElementType());
+			String col = MAcctSchemaElement.getColumnName(sources[i].getElementType());
 			if (ColumnName == null || ColumnName.length() == 0)
 				ColumnName = col;
 			else if (!ColumnName.equals(col))
@@ -191,8 +189,9 @@ public class MReportColumn extends X_PA_ReportColumn
 	 */
 	public String getSourceValueQuery()
 	{
-		if (m_sources != null && m_sources.length > 0)
-			return MAcctSchemaElement.getValueQuery(m_sources[0].getElementType());
+		MReportSource[] sources = getSources();
+		if (sources.length > 0)
+			return MAcctSchemaElement.getValueQuery(sources[0].getElementType());
 		return null;
 	} // getSourceValueQuery
 
@@ -284,32 +283,27 @@ public class MReportColumn extends X_PA_ReportColumn
 	 */
 	public String getWhereClause(int PA_Hierarchy_ID)
 	{
-		if (m_sources == null && !isColumnTypeSegmentValue())
+		MReportSource[] sources = getSources();
+		if (sources.length == 0 && !isColumnTypeSegmentValue())
 			return "";
 
-		if (m_whereClause == null)
+		StringBuilder whereClause = new StringBuilder();
+		if (sources.length > 0)
 		{
-			// Only one
-			if (m_sources == null || m_sources.length == 0)
-				m_whereClause = "";
-			else if (m_sources.length == 1)
-				m_whereClause = " AND " + m_sources[0].getWhereClause(PA_Hierarchy_ID);
+			if (sources.length == 1)
+				whereClause.append(" AND ").append(sources[0].getWhereClause(PA_Hierarchy_ID));
 			else
 			{
-				// Multiple
-				StringBuffer sb = new StringBuffer(" AND (");
-				for (int i = 0; i < m_sources.length; i++)
+				whereClause.append(" AND (");
+				for (int i = 0; i < sources.length; i++)
 				{
 					if (i > 0)
-						sb.append(" OR ");
-					sb.append(m_sources[i].getWhereClause(PA_Hierarchy_ID));
+						whereClause.append(" OR ");
+					whereClause.append(sources[i].getWhereClause(PA_Hierarchy_ID));
 				}
-				sb.append(")");
-				m_whereClause = sb.toString();
+				whereClause.append(")");
 			}
 		}
-
-		String whereClause = m_whereClause;
 
 		if (isColumnTypeSegmentValue())
 		{
@@ -344,25 +338,25 @@ public class MReportColumn extends X_PA_ReportColumn
 			else if (MReportColumn.ELEMENTTYPE_UserElementList2.equals(et))
 				ID = getC_ElementValue_ID();
 			else if (MReportColumn.ELEMENTTYPE_UserColumn1.equals(et))
-				return whereClause + " AND UserElement1_ID="+getUserElement1_ID(); // Not Tree
+				return whereClause.append(" AND UserElement1_ID=").append(getUserElement1_ID()).toString(); // Not Tree
 			else if (MReportColumn.ELEMENTTYPE_UserColumn2.equals(et))
-				return whereClause + " AND UserElement2_ID="+getUserElement2_ID(); // Not Tree
+				return whereClause.append(" AND UserElement2_ID=").append(getUserElement2_ID()).toString(); // Not Tree
 			// Financial Report Source with Type Combination
 			else if (MReportColumn.ELEMENTTYPE_Combination.equals(et))
-				return whereClause + getWhereCombination(PA_Hierarchy_ID);
+				return whereClause.append(getWhereCombination(PA_Hierarchy_ID)).toString();
 			else
 				log.warning("Unsupported Element Type=" + et);
 
 			if (ID == 0)
 			{
 				if (log.isLoggable(Level.FINE)) log.fine("No Restrictions - No ID for EntityType=" + et);
-				return whereClause;
+				return whereClause.toString();
 			}
 
-			whereClause += " AND " + MReportTree.getWhereClause(getCtx(), PA_Hierarchy_ID, et, ID);
+			whereClause.append(" AND ").append(MReportTree.getWhereClause(getCtx(), PA_Hierarchy_ID, et, ID));
 		}
 
-		return whereClause;
+		return whereClause.toString();
 	}	//	getWhereClause
 	
 	/**
@@ -623,7 +617,7 @@ public class MReportColumn extends X_PA_ReportColumn
 	@Override
 	public String getElementType()
 	{
-		if (getColumnType().equals(COLUMNTYPE_SegmentValue))
+		if (COLUMNTYPE_SegmentValue.equals(getColumnType()))
 			return super.getElementType();
 		return null;
 	}	//	getElementType
@@ -634,7 +628,7 @@ public class MReportColumn extends X_PA_ReportColumn
 	@Override
 	public String getCalculationType()
 	{
-		if (getColumnType().equals(COLUMNTYPE_Calculation))
+		if (COLUMNTYPE_Calculation.equals(getColumnType()))
 			return super.getCalculationType();
 		return null;
 	}	//	getCalculationType

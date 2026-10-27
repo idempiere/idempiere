@@ -217,7 +217,7 @@ public class MAcctSchemaElement extends X_C_AcctSchema_Element implements Immuta
 				   || elementType.equals(ELEMENTTYPE_CustomField4)) {
 			return null;
 		}
-		else if (elementType.equals("CO")) {
+		else if (elementType.equals(X_PA_ReportSource.ELEMENTTYPE_Combination)) {
 			return "SELECT Combination, Description FROM C_ValidCombination WHERE C_ValidCombination_ID=";
 		}
 
