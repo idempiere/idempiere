@@ -92,7 +92,7 @@ public class MOrder extends X_C_Order implements DocAction
 				 INNER JOIN C_OrderLine lin ON (hdr.C_Order_ID=lin.C_Order_ID)
 				 INNER JOIN M_Product p ON (lin.M_Product_ID=p.M_Product_ID)
 				 INNER JOIN C_DocType dt ON (hdr.C_DocType_ID=dt.C_DocType_ID AND dt.DocBaseType='POO')
-				 FULL JOIN M_MatchPO mo ON (lin.C_OrderLine_ID=mo.C_OrderLine_ID)  
+				 FULL JOIN M_MatchPO mo ON (lin.C_OrderLine_ID=mo.C_OrderLine_ID %s)  
 				 WHERE %s
 				 AND hdr.DocStatus IN ('CO','CL')
 			""";
@@ -107,6 +107,7 @@ public class MOrder extends X_C_Order implements DocAction
 	
 	public static final String NOT_FULLY_MATCHED_TO_RECEIPT = BASE_MATCHING_SQL
 			.formatted("SUM(CASE WHEN (mo.M_InOutLine_ID IS NOT NULL) THEN COALESCE(mo.Qty,0) ELSE 0 END)",
+					" AND mo.C_InvoiceLine_ID>0",
 					" ( mo.M_InOutLine_ID IS NULL OR "
 							+ " (lin.QtyOrdered <>  (SELECT sum(mo1.Qty) AS Qty" 
 							+ " FROM m_matchpo mo1 WHERE "
@@ -119,13 +120,16 @@ public class MOrder extends X_C_Order implements DocAction
 			.formatted("lin.QtyOrdered", "SUM(CASE WHEN (mo.M_InOutLine_ID IS NOT NULL) THEN COALESCE(mo.Qty,0) ELSE 0 END) ");
 	
 	public static final String FULL_OR_PARTIALLY_MATCHED_TO_RECEIPT = BASE_MATCHING_SQL
-			.formatted("SUM(CASE WHEN (mo.M_InOutLine_ID IS NOT NULL) THEN COALESCE(mo.Qty,0) ELSE 0 END)", " mo.M_InOutLine_ID IS NOT NULL ");
+			.formatted("SUM(CASE WHEN (mo.M_InOutLine_ID IS NOT NULL) THEN COALESCE(mo.Qty,0) ELSE 0 END)",
+					" AND mo.C_InvoiceLine_ID>0",
+					" mo.M_InOutLine_ID IS NOT NULL ");
 	
 	public static final String FULL_OR_PARTIALLY_MATCHED_TO_RECEIPT_GROUP_BY = BASE_MATCHING_GROUP_BY_SQL
 			.formatted("0", "SUM(CASE WHEN (mo.M_InOutLine_ID IS NOT NULL) THEN COALESCE(mo.Qty,0) ELSE 0 END) ");
 	
 	public static final String NOT_FULLY_MATCHED_TO_INVOICE = BASE_MATCHING_SQL
 			.formatted("SUM(CASE WHEN (mo.C_InvoiceLine_ID IS NOT NULL) THEN COALESCE(mo.Qty,0) ELSE 0 END)",
+					" AND mo.M_InOutLine_ID>0",
 					" ( mo.C_InvoiceLine_ID IS NULL OR "
 							+ " (lin.QtyOrdered <>  (SELECT sum(mo1.Qty) AS Qty" 
 							+ " FROM m_matchpo mo1 WHERE "
@@ -138,7 +142,9 @@ public class MOrder extends X_C_Order implements DocAction
 			.formatted("lin.QtyOrdered", "SUM(CASE WHEN (mo.C_InvoiceLine_ID IS NOT NULL) THEN COALESCE(mo.Qty,0) ELSE 0 END) ");
 			
 	public static final String FULL_OR_PARTIALLY_MATCHED_TO_INVOICE = BASE_MATCHING_SQL
-			.formatted("SUM(CASE WHEN (mo.C_InvoiceLine_ID IS NOT NULL) THEN COALESCE(mo.Qty,0) ELSE 0 END)", " mo.C_InvoiceLine_ID IS NOT NULL ");
+			.formatted("SUM(CASE WHEN (mo.C_InvoiceLine_ID IS NOT NULL) THEN COALESCE(mo.Qty,0) ELSE 0 END)",
+					" AND mo.M_InOutLine_ID>0",
+					" mo.C_InvoiceLine_ID IS NOT NULL ");
 	
 	public static final String FULL_OR_PARTIALLY_MATCHED_TO_INVOICE_GROUP_BY = BASE_MATCHING_GROUP_BY_SQL
 			.formatted("0", "SUM(CASE WHEN (mo.C_InvoiceLine_ID IS NOT NULL) THEN COALESCE(mo.Qty,0) ELSE 0 END) ");
@@ -241,7 +247,7 @@ public class MOrder extends X_C_Order implements DocAction
 	 * @return list of orders not fully matched to invoice
 	 */
 	public static List<MatchingRecord> getNotFullyMatchedToInvoice(int C_BPartner_ID, int M_Product_ID, int C_InvoiceLine_ID, Timestamp from, Timestamp to, String trxName) {
-		StringBuilder builder = new StringBuilder(NOT_FULLY_MATCHED_TO_RECEIPT);
+		StringBuilder builder = new StringBuilder(NOT_FULLY_MATCHED_TO_INVOICE);
 		if (C_InvoiceLine_ID > 0) {
 			builder.append(" AND mo.C_InvoiceLine_ID = ").append(C_InvoiceLine_ID);
 		}
