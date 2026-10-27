@@ -146,6 +146,7 @@ public class UserPanel implements EventListener<Event>, Composer<Component>, Ser
     		if (userSubText != null)
     		{
     			userSubText.setValue(getClientName() + " \u2022 " + getOrgName() + "/" + getRoleName());
+    			userSubText.setTooltiptext(userSubText.getValue());
     		}
     		userProfileChip.addEventListener(Events.ON_CLICK, this);
     	}
@@ -409,6 +410,13 @@ public class UserPanel implements EventListener<Event>, Composer<Component>, Ser
 			Label whLabel = new Label(warehouse);
 			whLabel.setSclass("user-menu-warehouse");
 			info.appendChild(whLabel);
+		}
+
+		String role = getRoleName();
+		if (!Util.isEmpty(role)) {
+			Label roleLabel = new Label(role);
+			roleLabel.setSclass("user-menu-role");
+			info.appendChild(roleLabel);
 		}
 
 		profileCard.appendChild(info);

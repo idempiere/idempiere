@@ -233,7 +233,7 @@ public class ServerPushEndPoint {
 				        // line limit to be exceeded for large AU payloads (e.g. previewing a large CSV
 				        // spreadsheet), resulting in "URI is too large >8192" (HTTP 414).
 				        HttpPost httpPost = new HttpPost(url);
-				        httpPost.setEntity(new StringEntity(content, ContentType.APPLICATION_FORM_URLENCODED));
+				        httpPost.setEntity(new StringEntity(content, ContentType.APPLICATION_FORM_URLENCODED.withCharset(StandardCharsets.UTF_8)));
 				        httpPost.setHeader("ZK-SID", sid);
 				        httpPost.setHeader("Pragma", "no-cache");
 				        httpPost.setHeader("Cache-Control", "no-cache");
