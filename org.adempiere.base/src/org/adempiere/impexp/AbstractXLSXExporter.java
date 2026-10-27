@@ -432,7 +432,7 @@ public abstract class AbstractXLSXExporter
 		Sheet sheet = m_workbook.createSheet();
 		formatPage(sheet);
 		createHeaderFooter(sheet);
-		boolean showParameter = MSysConfig.getBooleanValue(MSysConfig.SHOW_REPORT_PARAMETER_IN_XLS_REPORT, true, Env.getAD_Client_ID(Env.getCtx()));
+		boolean showParameter = Env.IsExcelExportWithParameters(getCtx());
 		if (showParameter)
 			createParameter(sheet);
 		if (!isForm())
