@@ -16,7 +16,14 @@
  *****************************************************************************/
 package org.compiere.process;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.logging.Level;
+
 import org.compiere.model.MInfoWindow;
+import org.compiere.model.MUserDefInfo;
+import org.compiere.util.DB;
+import org.compiere.util.Util;
 
 /**
  * 	Validate Info Window SQL
@@ -29,13 +36,19 @@ public class InfoWindowValidate extends SvrProcess
 {
 	/**	Info Window			*/
 	private int p_AD_InfoWindow_ID = 0;
+	private int p_AD_UserDefInfo_ID = 0;
 	
 	/**
 	 * 	Prepare
 	 */
 	protected void prepare ()
 	{
-		p_AD_InfoWindow_ID = getRecord_ID();
+		if (getProcessInfo().getTable_ID() == MInfoWindow.Table_ID)
+			p_AD_InfoWindow_ID = getRecord_ID();
+		else if (getProcessInfo().getTable_ID() == MUserDefInfo.Table_ID) {
+			p_AD_UserDefInfo_ID = getRecord_ID();
+			p_AD_InfoWindow_ID = new MUserDefInfo(getCtx(), p_AD_UserDefInfo_ID, get_TrxName()).getAD_InfoWindow_ID();
+		}
 	}	//	prepare
 
 	/**
@@ -44,13 +57,40 @@ public class InfoWindowValidate extends SvrProcess
 	 *	@throws Exception
 	 */
 	protected String doIt ()
-		throws Exception
+			throws Exception
 	{
-		MInfoWindow infoWindow = new MInfoWindow(getCtx(), p_AD_InfoWindow_ID, (String)null);
-		infoWindow.validate();
-		infoWindow.saveEx();
+		if (p_AD_UserDefInfo_ID == 0) {
+			MInfoWindow infoWindow = new MInfoWindow(getCtx(), p_AD_InfoWindow_ID, (String)null);
+			infoWindow.validate();
+			infoWindow.saveEx();
+			return infoWindow.isValid() ? "@OK@" : "@NotValid@";
+		}
+		else {
 
-		return infoWindow.isValid() ? "@OK@" : "@NotValid@";
+			MInfoWindow iw = new MInfoWindow(getCtx(), p_AD_InfoWindow_ID, get_TrxName());
+			MUserDefInfo udi = new MUserDefInfo(getCtx(), p_AD_UserDefInfo_ID, get_TrxName());
+
+			String sql = MInfoWindow.getSqlForValidation(getCtx(), iw, udi);
+
+			if (Util.isEmpty(sql))
+				return "@NotValid@";
+
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			try {
+				pstmt = DB.prepareStatement(sql, get_TrxName());
+				rs = pstmt.executeQuery();
+			}
+			catch (Exception ex) {
+				log.log(Level.WARNING, ex.getMessage());
+				return "@Error@ @NotValid@: "+ ex;
+			}
+			finally {
+				DB.close(rs, pstmt);
+			}
+			return "@OK@";
+		}
+
 	}	//	doIt
-	
+
 }	//	InfoWindowValidate

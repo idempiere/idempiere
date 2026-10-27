@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_UserDef_Info
  *  @author iDempiere (generated)
- *  @version Release 13 - $Id$ */
+ *  @version Release 14 - $Id$ */
 @org.adempiere.base.Model(table="AD_UserDef_Info")
 public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20260309L;
+	private static final long serialVersionUID = 20261027L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Info (Properties ctx, int AD_UserDef_Info_ID, String trxName)
@@ -297,6 +297,22 @@ public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persis
 	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
+	}
+
+	/** Set Sql FROM.
+		@param FromClause SQL FROM clause
+	*/
+	public void setFromClause (String FromClause)
+	{
+		set_Value (COLUMNNAME_FromClause, FromClause);
+	}
+
+	/** Get Sql FROM.
+		@return SQL FROM clause
+	  */
+	public String getFromClause()
+	{
+		return (String)get_Value(COLUMNNAME_FromClause);
 	}
 
 	/** Set Comment/Help.
