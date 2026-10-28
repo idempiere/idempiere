@@ -136,7 +136,7 @@ public class UserPanel implements EventListener<Event>, Composer<Component>, Ser
     	{
     		if (userAvatar != null)
     		{
-    			userAvatar.appendChild(new Label(getInitials(getUserName())));
+    			userAvatar.appendChild(new Label(getInitials()));
     		}
     		if (lblUserNameValue != null)
     		{
@@ -385,7 +385,7 @@ public class UserPanel implements EventListener<Event>, Composer<Component>, Ser
 
 		Div avatar = new Div();
 		avatar.setSclass("user-menu-avatar-big");
-		avatar.appendChild(new Label(getInitials(getUserName())));
+		avatar.appendChild(new Label(getInitials()));
 		profileCard.appendChild(avatar);
 
 		Div info = new Div();
@@ -638,18 +638,11 @@ public class UserPanel implements EventListener<Event>, Composer<Component>, Ser
 	}
 
 	/**
-	 * Get user initials from full name (e.g. "John Doe" -&gt; "JD")
-	 * @param name full name
-	 * @return up to 2 character initials, uppercase
+	 * @return initials of the user
 	 */
-	protected String getInitials(String name) {
-		if (Util.isEmpty(name))
-			return "?";
-		String[] parts = name.trim().split("\\s+");
-		if (parts.length >= 2) {
-			return ("" + parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
-		}
-		return ("" + parts[0].charAt(0)).toUpperCase();
+	protected String getInitials() {
+        MUser user = MUser.get(ctx);
+        return user.getInitials();
 	}
 
 	/**
