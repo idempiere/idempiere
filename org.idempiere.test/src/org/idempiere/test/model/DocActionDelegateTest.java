@@ -166,6 +166,10 @@ public class DocActionDelegateTest extends AbstractTestCase {
 			calls = new ArrayList<>();
 		}
 
+		/**
+		 * Record a call to an overridden method, ignoring the calls made by the constructor of MInventory
+		 * @param call
+		 */
 		private void addCall(String call) {
 			if (calls != null)
 				calls.add(call);

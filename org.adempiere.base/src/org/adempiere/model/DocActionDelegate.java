@@ -206,6 +206,12 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 		return true;
 	}
 
+	/**
+	 * Fire the before prepare validators, test the period, run the {@link DocAction#ACTION_Prepare} callable
+	 * and the {@link ActionStage#PREPARE_MAIN} steps, fire the after prepare validators and run the
+	 * {@link ActionStage#PREPARE_AFTER_VALIDATION} steps.
+	 * @return {@link DocAction#STATUS_InProgress} if prepared, else the status that ended the action
+	 */
 	@Override
 	public String prepareIt() {
 		if (log.isLoggable(Level.INFO)) log.info(po.toString());
@@ -282,6 +288,14 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 		return true;
 	}
 
+	/**
+	 * Prepare the document if needed, set the definite document number, fire the before complete validators,
+	 * run the {@link ActionStage#COMPLETE_BEFORE_APPROVAL} steps, approve the document if needed, run the
+	 * {@link DocAction#ACTION_Complete} callable and the {@link ActionStage#COMPLETE_MAIN} steps, fire the
+	 * after complete validators, run the {@link ActionStage#COMPLETE_AFTER_VALIDATION} steps and set the
+	 * document as processed.
+	 * @return {@link DocAction#STATUS_Completed} if completed, else the status that ended the action
+	 */
 	@Override
 	public String completeIt() {
 		//	Re-Check
