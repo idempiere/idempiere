@@ -28,10 +28,14 @@ package org.adempiere.model;
 import java.io.File;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -53,10 +57,33 @@ import org.compiere.util.Util;
 
 /**
  * Helper class to simplify the implementation of {@link DocAction} interface.
+ * <p>
+ * A document class with a simple life cycle registers one {@link Callable} per action with
+ * {@link #setActionCallable(String, Callable)}. A document class that needs to run code at more
+ * than one point of {@link #prepareIt()} or {@link #completeIt()} registers steps with
+ * {@link #addActionStep(ActionStage, Supplier)}, and can override the protected methods to keep
+ * its own period check, document number logic and process message.
  * @see {@link MProjectIssue} for example usage.
  * @author hengsin
  */
 public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
+
+	/**
+	 * Points of {@link DocActionDelegate#prepareIt()} and {@link DocActionDelegate#completeIt()}
+	 * where steps can run.
+	 */
+	public enum ActionStage {
+		/** After the period check and the callable of {@link DocAction#ACTION_Prepare}, before the after prepare validators */
+		PREPARE_MAIN,
+		/** After the after prepare validators */
+		PREPARE_AFTER_VALIDATION,
+		/** After the before complete validators, before the implicit approval */
+		COMPLETE_BEFORE_APPROVAL,
+		/** After the implicit approval and the callable of {@link DocAction#ACTION_Complete}, before the after complete validators */
+		COMPLETE_MAIN,
+		/** After the after complete validators, before the document is set as processed */
+		COMPLETE_AFTER_VALIDATION
+	}
 
 	private T po;
 	/**	Process Message 			*/
@@ -65,6 +92,8 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 	private boolean		m_justPrepared = false;
 	
 	private Map<String, Callable<String>> actionCallables = new HashMap<String, Callable<String>>();
+
+	private Map<ActionStage, List<Supplier<String>>> actionSteps = new EnumMap<>(ActionStage.class);
 
 	/**	Logger							*/
 	protected transient CLogger	log = CLogger.getCLogger (getClass());
@@ -83,6 +112,65 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 	 */
 	public void setActionCallable(String docAction, Callable<String> callable) {
 		actionCallables.put(docAction, callable);
+	}
+	
+	/**
+	 * Add a step to run at stage, after the steps already added to that stage.<br/>
+	 * Unlike the callable of {@link #setActionCallable(String, Callable)}, a step returns a document status
+	 * instead of a process message, so it can end the action with a status other than Invalid or with
+	 * no process message, and its runtime exceptions reach the caller unchanged.<br/>
+	 * A step sets the process message itself, if there is one.
+	 * @param stage
+	 * @param step returns null to continue, or the document status that ends the action
+	 */
+	public void addActionStep(ActionStage stage, Supplier<String> step) {
+		actionSteps.computeIfAbsent(stage, k -> new ArrayList<>()).add(step);
+	}
+	
+	/**
+	 * Run the steps of stage, in the order they were added
+	 * @param stage
+	 * @return null if all steps have been executed, else the status returned by the step that ended the action
+	 */
+	private String runActionSteps(ActionStage stage) {
+		for (Supplier<String> step : actionSteps.getOrDefault(stage, List.of())) {
+			String status = step.get();
+			if (status != null)
+				return status;
+		}
+		return null;
+	}
+	
+	/**
+	 * Set the process message of {@link #prepareIt()} and {@link #completeIt()}
+	 * @param processMsg
+	 */
+	protected void setProcessMsg(String processMsg) {
+		m_processMsg = processMsg;
+	}
+	
+	/**
+	 * Get the just prepared flag of {@link #prepareIt()} and {@link #completeIt()}
+	 * @return true if {@link #completeIt()} doesn't have to prepare the document again
+	 */
+	protected boolean isJustPrepared() {
+		return m_justPrepared;
+	}
+	
+	/**
+	 * Set the just prepared flag of {@link #prepareIt()} and {@link #completeIt()}
+	 * @param justPrepared
+	 */
+	protected void setJustPrepared(boolean justPrepared) {
+		m_justPrepared = justPrepared;
+	}
+	
+	/**
+	 * Prepare the document when {@link #completeIt()} is called without a preceding {@link #prepareIt()}
+	 * @return new status
+	 */
+	protected String prepareForComplete() {
+		return prepareIt();
 	}
 	
 	@Override
@@ -121,10 +209,45 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 	@Override
 	public String prepareIt() {
 		if (log.isLoggable(Level.INFO)) log.info(po.toString());
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(po, ModelValidator.TIMING_BEFORE_PREPARE);
-		if (m_processMsg != null)
+		setProcessMsg(ModelValidationEngine.get().fireDocValidate(po, ModelValidator.TIMING_BEFORE_PREPARE));
+		if (getProcessMsg() != null)
 			return DocAction.STATUS_Invalid;
 
+		testPeriodOpen();
+
+		Callable<String> callable = actionCallables.get(DocAction.ACTION_Prepare);
+		if (callable != null) {
+			try {
+				setProcessMsg(callable.call());
+				if (getProcessMsg() != null)
+					return DocAction.STATUS_Invalid;
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+		
+		String stepStatus = runActionSteps(ActionStage.PREPARE_MAIN);
+		if (stepStatus != null)
+			return stepStatus;
+		
+		setProcessMsg(ModelValidationEngine.get().fireDocValidate(po, ModelValidator.TIMING_AFTER_PREPARE));
+		if (getProcessMsg() != null)
+			return DocAction.STATUS_Invalid;
+
+		stepStatus = runActionSteps(ActionStage.PREPARE_AFTER_VALIDATION);
+		if (stepStatus != null)
+			return stepStatus;
+		
+		setJustPrepared(true);
+		if (!DocAction.ACTION_Complete.equals(getDocAction()))
+			setDocAction(DocAction.ACTION_Complete);
+		return DocAction.STATUS_InProgress;
+	}
+
+	/**
+	 * Test that the period is open and that back date transaction is allowed for {@link #prepareIt()}
+	 */
+	protected void testPeriodOpen() {
 		int doctype = -1;
 		if (po.columnExists(DOC_COLUMNNAME_C_DocTypeTarget_ID)) {
 			doctype = po.get_ValueAsInt(DOC_COLUMNNAME_C_DocTypeTarget_ID);
@@ -143,26 +266,6 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 			MPeriod.testPeriodOpen(getCtx(), date, doctype, getAD_Org_ID());
 			MAcctSchema.testBackDateTrxAllowed(getCtx(), date, get_TrxName());
 		}
-
-		Callable<String> callable = actionCallables.get(DocAction.ACTION_Prepare);
-		if (callable != null) {
-			try {
-				m_processMsg = callable.call();
-				if (m_processMsg != null)
-					return DocAction.STATUS_Invalid;
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}
-		
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(po, ModelValidator.TIMING_AFTER_PREPARE);
-		if (m_processMsg != null)
-			return DocAction.STATUS_Invalid;
-
-		m_justPrepared = true;
-		if (!DocAction.ACTION_Complete.equals(getDocAction()))
-			setDocAction(DocAction.ACTION_Complete);
-		return DocAction.STATUS_InProgress;
 	}
 
 	@Override
@@ -182,25 +285,24 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 	@Override
 	public String completeIt() {
 		//	Re-Check
-		if (!m_justPrepared)
+		if (!isJustPrepared())
 		{
-			String status = prepareIt();
-			m_justPrepared = false;
+			String status = prepareForComplete();
+			setJustPrepared(false);
 			if (!DocAction.STATUS_InProgress.equals(status))
 				return status;
-		}
-
-		if (   po.columnExists(DOC_COLUMNNAME_C_DocTypeTarget_ID)
-			&& po.columnExists(DOC_COLUMNNAME_C_DocType_ID)) {
-			po.set_ValueOfColumn(DOC_COLUMNNAME_C_DocType_ID, po.get_ValueAsInt(DOC_COLUMNNAME_C_DocTypeTarget_ID));
 		}
 
 		// Set the definite document number after completed (if needed)
 		setDefiniteDocumentNo();
 
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(po, ModelValidator.TIMING_BEFORE_COMPLETE);
-		if (m_processMsg != null)
+		setProcessMsg(ModelValidationEngine.get().fireDocValidate(po, ModelValidator.TIMING_BEFORE_COMPLETE));
+		if (getProcessMsg() != null)
 			return DocAction.STATUS_Invalid;
+
+		String stepStatus = runActionSteps(ActionStage.COMPLETE_BEFORE_APPROVAL);
+		if (stepStatus != null)
+			return stepStatus;
 
 		//	Implicit Approval
 		if (!isApproved())
@@ -210,21 +312,29 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 		Callable<String> callable = actionCallables.get(DocAction.ACTION_Complete);
 		if (callable != null) {
 			try {
-				m_processMsg = callable.call();
-				if (m_processMsg != null)
+				setProcessMsg(callable.call());
+				if (getProcessMsg() != null)
 					return DocAction.STATUS_Invalid;
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 		}
 		
+		stepStatus = runActionSteps(ActionStage.COMPLETE_MAIN);
+		if (stepStatus != null)
+			return stepStatus;
+		
 		//	User Validation
 		String valid = ModelValidationEngine.get().fireDocValidate(po, ModelValidator.TIMING_AFTER_COMPLETE);
 		if (valid != null)
 		{
-			m_processMsg = valid;
+			setProcessMsg(valid);
 			return DocAction.STATUS_Invalid;
 		}
+
+		stepStatus = runActionSteps(ActionStage.COMPLETE_AFTER_VALIDATION);
+		if (stepStatus != null)
+			return stepStatus;
 
 		setProcessed(true);
 		setDocAction(DocAction.ACTION_Close);
@@ -603,9 +713,14 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 	}
 	
 	/**
-	 * 	Set the definite document number after completed
+	 * 	Set the target document type and the definite document number after completed
 	 */
-	private void setDefiniteDocumentNo() {
+	protected void setDefiniteDocumentNo() {
+		if (   po.columnExists(DOC_COLUMNNAME_C_DocTypeTarget_ID)
+			&& po.columnExists(DOC_COLUMNNAME_C_DocType_ID)) {
+			po.set_ValueOfColumn(DOC_COLUMNNAME_C_DocType_ID, po.get_ValueAsInt(DOC_COLUMNNAME_C_DocTypeTarget_ID));
+		}
+
 		int doctype = -1;
 		if (po.columnExists(DOC_COLUMNNAME_C_DocType_ID)) {
 			doctype = po.get_ValueAsInt(DOC_COLUMNNAME_C_DocType_ID);
