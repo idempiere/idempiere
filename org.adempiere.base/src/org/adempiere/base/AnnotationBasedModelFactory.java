@@ -54,7 +54,7 @@ public class AnnotationBasedModelFactory extends AnnotationBasedFactory implemen
 	private final static String[] CORE_PACKAGES = new String[] {
 		"org.compiere.model",  "compiere.model", "adempiere.model", "org.adempiere.model",
 		"org.compiere.wf", "org.compiere.print", "org.compiere.impexp",
-		"org.eevolution.model"
+		"org.eevolution.model", "org.compiere.report"
 	};
 	
 	/**

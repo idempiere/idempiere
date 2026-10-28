@@ -250,7 +250,7 @@ public class FinReport extends SvrProcess
 			m_parameterWhere.append(" AND UserElement2_ID=").append(p_UserElement2_ID);	
 
 		//	Load Report Definition
-		m_report = new MReport (getCtx(), getRecord_ID(), null);
+		m_report = new MReport (getCtx(), getRecord_ID(), get_TrxName());
 		sb.append(" - ").append(m_report);
 
 		setPeriods();
@@ -1547,7 +1547,11 @@ public class FinReport extends SvrProcess
 				}
 				//	Link
 				if (isCombination)
+				{
 					select.append(m_lines[line].getSelectClauseCombination(sources[lsIdx]));
+					if (!m_lines[line].getCombinationGroupByColumns(sources[lsIdx]).contains("Account_ID"))
+						select.append(" AND fb.Account_ID=x.Account_ID");
+				}
 				else
 					select.append(" AND fb.").append(variable).append("=x.").append(variable);
 				//	PostingType

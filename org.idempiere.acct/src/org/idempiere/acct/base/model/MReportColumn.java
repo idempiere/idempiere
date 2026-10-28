@@ -290,19 +290,22 @@ public class MReportColumn extends X_PA_ReportColumn
 		StringBuilder whereClause = new StringBuilder();
 		if (sources.length > 0)
 		{
-			if (sources.length == 1)
-				whereClause.append(" AND ").append(sources[0].getWhereClause(PA_Hierarchy_ID));
-			else
+			boolean unrestricted = false;
+			StringBuilder sourceClause = new StringBuilder();
+			for (int i = 0; i < sources.length; i++)
 			{
-				whereClause.append(" AND (");
-				for (int i = 0; i < sources.length; i++)
+				String clause = sources[i].getWhereClause(PA_Hierarchy_ID);
+				if (clause.length() == 0)
 				{
-					if (i > 0)
-						whereClause.append(" OR ");
-					whereClause.append(sources[i].getWhereClause(PA_Hierarchy_ID));
+					unrestricted = true;
+					break;
 				}
-				whereClause.append(")");
+				if (sourceClause.length() > 0)
+					sourceClause.append(" OR ");
+				sourceClause.append(clause);
 			}
+			if (!unrestricted)
+				whereClause.append(" AND (").append(sourceClause).append(")");
 		}
 
 		if (isColumnTypeSegmentValue())

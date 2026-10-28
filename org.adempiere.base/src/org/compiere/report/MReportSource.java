@@ -20,6 +20,8 @@ import java.sql.ResultSet;
 import java.util.Properties;
 
 import org.compiere.model.X_PA_ReportSource;
+import org.compiere.util.Msg;
+import org.compiere.util.Util;
 
 /**
  *	Financial Report Line Source Model
@@ -394,5 +396,24 @@ public class MReportSource extends X_PA_ReportSource
 
 		return s.toString();
 	} // getCombinationKey
+
+	/**
+	 * 	Before Save
+	 *	@param newRecord new
+	 *	@return true if it can be saved
+	 */
+	@Override
+	protected boolean beforeSave (boolean newRecord)
+	{
+		if (ELEMENTTYPE_Combination.equals(getElementType()))
+		{
+			if (Util.isEmpty(getCombinationKey()))
+			{
+				log.saveError("FillMandatory", Msg.getElement(getCtx(), "C_ValidCombination_ID"));
+				return false;
+			}
+		}
+		return true;
+	}	//	beforeSave
 
 }	//	MReportSource
