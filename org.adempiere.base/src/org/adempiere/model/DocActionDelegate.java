@@ -171,6 +171,13 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 		return true;
 	}
 
+	/**
+	 * Prepare the document.<br/>
+	 * Order: {@link StepTiming#START} steps, BEFORE_PREPARE model validator event, {@link StepTiming#VALIDATE} steps,
+	 * {@link #testPeriodOpen()}, prepare action callable, {@link StepTiming#PROCESS} steps, AFTER_PREPARE model validator event,
+	 * {@link StepTiming#END} steps.
+	 * @return new status (In Progress or Invalid, or the status returned by a step)
+	 */
 	@Override
 	public String prepareIt() {
 		if (log.isLoggable(Level.INFO)) log.info(po.toString());
@@ -256,6 +263,14 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 		return true;
 	}
 
+	/**
+	 * Complete the document.<br/>
+	 * Order: {@link StepTiming#START} steps, re-check with {@link #prepareBeforeComplete()} (if not just prepared),
+	 * {@link #setDocTypeFromTarget()}, {@link #setDefiniteDocumentNo()}, BEFORE_COMPLETE model validator event,
+	 * {@link StepTiming#VALIDATE} steps, implicit approval, complete action callable, {@link StepTiming#PROCESS} steps,
+	 * AFTER_COMPLETE model validator event, {@link StepTiming#END} steps.
+	 * @return new status (Completed, In Progress or Invalid, or the status returned by a step)
+	 */
 	@Override
 	public String completeIt() {
 		String status = runActionSteps(DocAction.ACTION_Complete, StepTiming.START);
@@ -341,6 +356,11 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 		return prepareIt();
 	}
 
+	/**
+	 * Void the document. A document that is not processed yet is voided with the void action callable,
+	 * a processed document is reversed with {@link #reverseCorrectIt()} or {@link #reverseAccrualIt()} (period closed).
+	 * @return true if success
+	 */
 	@Override
 	public boolean voidIt() {
 
@@ -419,6 +439,10 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 		return true;
 	}
 
+	/**
+	 * Close the document, executing the close action callable between the BEFORE_CLOSE and AFTER_CLOSE model validator events.
+	 * @return true if success
+	 */
 	@Override
 	public boolean closeIt() {
 		if (log.isLoggable(Level.INFO)) log.info(po.toString());
@@ -448,6 +472,10 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 		return true;	
 	}
 
+	/**
+	 * Reverse correct the document with the reverse correct action callable.
+	 * @return true if success, always false if no callable is set
+	 */
 	@Override
 	public boolean reverseCorrectIt() {
 		if (log.isLoggable(Level.INFO)) log.info(po.toString());
@@ -476,6 +504,10 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 			return false; // reverse needs to be implemented to create a negative document	
 	}
 
+	/**
+	 * Reverse accrual the document with the reverse accrual action callable.
+	 * @return true if success, always false if no callable is set
+	 */
 	@Override
 	public boolean reverseAccrualIt() {
 		if (log.isLoggable(Level.INFO)) log.info(po.toString());
@@ -504,6 +536,10 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 			return false; // reverse needs to be implemented to create a negative document	
 	}
 
+	/**
+	 * Re-activate the document with the re-activate action callable.
+	 * @return true if success, always false if no callable is set
+	 */
 	@Override
 	public boolean reActivateIt() {
 		if (log.isLoggable(Level.INFO)) log.info(po.toString());
