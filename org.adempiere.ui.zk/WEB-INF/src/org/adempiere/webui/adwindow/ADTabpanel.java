@@ -958,10 +958,10 @@ DataStatusListener, IADTabpanel, IdSpace, IFieldEditorContainer
         		if (field.getAD_LabelStyle_ID() > 0) {
             		MStyle style = MStyle.get(Env.getCtx(), field.getAD_LabelStyle_ID());
             		String cssStyle = style.buildStyle(ThemeManager.getTheme(), field);
-            		if (cssStyle != null && cssStyle.startsWith(MStyle.SCLASS_PREFIX)) {
+            		if (MStyle.isSClass(cssStyle)) {
     					String sclass = cssStyle.substring(MStyle.SCLASS_PREFIX.length());
     					div.setSclass(sclass);
-    				} else if (style != null && cssStyle.startsWith(MStyle.ZCLASS_PREFIX)) {
+    				} else if (MStyle.isZClass(cssStyle)) {
     					String zclass = cssStyle.substring(MStyle.ZCLASS_PREFIX.length());
     					div.setZclass(zclass);
     				} else {

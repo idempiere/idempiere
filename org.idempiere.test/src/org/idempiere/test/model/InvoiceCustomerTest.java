@@ -58,17 +58,21 @@ import org.compiere.model.MWarehouse;
 import org.compiere.model.PO;
 import org.compiere.model.SystemIDs;
 import org.compiere.process.DocAction;
+import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.CLogErrorBuffer;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 /**
  * @author Carlos Ruiz - globalqss
@@ -868,5 +872,66 @@ public class InvoiceCustomerTest extends AbstractTestCase {
 				docType.saveEx();
 			}
 		}
+	}
+
+	/**
+	 * https://idempiere.atlassian.net/browse/IDEMPIERE-7166
+	 */
+	@Test
+	public void testInvoiceReactivateAllocatedMessage() {
+		Timestamp currentDate = Env.getContextAsDate(Env.getCtx(), "#Date");
+
+		MInvoice invoice = new MInvoice(Env.getCtx(), 0, getTrxName());
+		invoice.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.C_AND_W.id));
+		invoice.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_ARInvoice);
+		invoice.setC_DocType_ID(invoice.getC_DocTypeTarget_ID());
+		invoice.setPaymentRule(MInvoice.PAYMENTRULE_Check);
+		invoice.setC_PaymentTerm_ID(DictionaryIDs.C_PaymentTerm.IMMEDIATE.id);
+		invoice.setDateInvoiced(currentDate);
+		invoice.setDateAcct(currentDate);
+		invoice.setDocStatus(DocAction.STATUS_Drafted);
+		invoice.setDocAction(DocAction.ACTION_Complete);
+		invoice.saveEx();
+
+		MInvoiceLine line1 = new MInvoiceLine(invoice);
+		line1.setLine(10);
+		line1.setC_Charge_ID(DictionaryIDs.C_Charge.BANK.id);
+		line1.setQty(Env.ONE);
+		line1.setPrice(Env.ONEHUNDRED);
+		line1.saveEx();
+
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		invoice.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
+
+		// Pay the invoice, so it is allocated
+		MPayment payment = new MPayment(Env.getCtx(), 0, getTrxName());
+		payment.setC_Invoice_ID(invoice.getC_Invoice_ID());
+		payment.setC_BPartner_ID(invoice.getC_BPartner_ID());
+		payment.setC_DocType_ID(true); // Receipt
+		payment.setDocStatus(DocAction.STATUS_Drafted);
+		payment.setDocAction(DocAction.ACTION_Complete);
+		payment.setPayAmt(invoice.getGrandTotal());
+		payment.setTenderType(MPayment.TENDERTYPE_Check);
+		payment.setC_BankAccount_ID(DictionaryIDs.C_BankAccount.ACCOUNT_1234.id);
+		payment.setC_Currency_ID(invoice.getC_Currency_ID());
+		payment.setDateTrx(currentDate);
+		payment.setDateAcct(currentDate);
+		payment.saveEx();
+
+		info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		payment.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, payment.getDocStatus());
+
+		// Reactivating an allocated invoice is refused with the translated message, not the AD_Message key
+		invoice.load(getTrxName());
+		try (MockedStatic<DocumentEngine> mocked = Mockito.mockStatic(DocumentEngine.class, Mockito.CALLS_REAL_METHODS)) {
+			mocked.when(() -> DocumentEngine.canReactivateThisDocType(invoice.getC_DocType_ID())).thenReturn(true);
+			assertFalse(invoice.processIt(DocAction.ACTION_ReActivate), "Allocated invoice must not be reactivated");
+		}
+		assertEquals(Msg.getMsg(Env.getCtx(), "InvoiceReactivationFailedAllocationLine"), invoice.getProcessMsg());
+		assertFalse(invoice.getProcessMsg().contains("InvoiceReactivationFailedAllocationLine"), invoice.getProcessMsg());
 	}
 }

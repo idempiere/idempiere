@@ -94,7 +94,6 @@ import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.impl.Utils;
 import org.zkoss.zul.impl.XulElement;
 
-import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 
@@ -490,16 +489,6 @@ public class ZkJRViewer extends Window implements EventListener<Event>, ITabOnCl
 
 		iframe.setSrc(null);
 		Events.echoEvent("onRenderReport", this, null);
-	}
-
-	/**
-	 * Create PDF output
-	 * @return PDF file
-	 * @throws IOException
-	 * @throws JRException
-	 */
-	private File createPDF() throws IOException, JRException {
-		return jasperRenderer.createPDF();
 	}
 
 	/**
