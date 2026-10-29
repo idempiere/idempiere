@@ -570,6 +570,11 @@ public class MSequence extends X_AD_Sequence
 			try
 			{
 				if ((trx == null || seq.isAllowSequenceGaps()) && conn != null) {
+					try {
+						conn.rollback();
+					} catch (SQLException e1) {
+						s_log.log(Level.SEVERE, "(DocType) - rollback", e1);
+					}
 					conn.close();
 					conn = null;
 				}
@@ -1304,6 +1309,7 @@ public class MSequence extends X_AD_Sequence
 			setIsOrgLevelSequence(false);
 			setStartNewYear(false);
 			setStartNewMonth(false);
+			setIsAllowSequenceGaps(true);
 		}
 		return true;
 	}
@@ -1318,9 +1324,7 @@ public class MSequence extends X_AD_Sequence
 		String prelim = null;
 		if (AD_Sequence_ID > 0) {
 			MSequence seq = new MSequence(Env.getCtx(), AD_Sequence_ID, null);
-		  if (seq.isUUIDSeq() ) {
-			 prelim = Util.generateUUIDv7().toString();
-		  } else {
+		  if (!seq.isUUIDSeq() ) {
 			int currentNext = seq.getCurrentNext();
 			DefaultEvaluatee evaluatee = new DefaultEvaluatee(tab, tab.getWindowNo(), tab.getTabNo());
 			SequenceNoKeyParts keyParts = new SequenceNoKeyParts(seq, evaluatee, null);
