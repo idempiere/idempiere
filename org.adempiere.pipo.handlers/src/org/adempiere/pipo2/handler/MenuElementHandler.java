@@ -45,6 +45,7 @@ import org.compiere.model.I_AD_Workflow;
 import org.compiere.model.MChangeLog;
 import org.compiere.model.MColumn;
 import org.compiere.model.MPackageImpDetail;
+import org.compiere.model.MTable;
 import org.compiere.model.X_AD_Menu;
 import org.compiere.model.X_AD_Package_Exp_Detail;
 import org.compiere.model.X_AD_Package_Imp_Backup;
@@ -186,14 +187,14 @@ public class MenuElementHandler extends AbstractElementHandler {
 				if (!hasSeqNo)
 					seqNo = oldseqNo;
 				if (seqNo != oldseqNo) {
-					String updateSeqNo = "UPDATE AD_TREENODEMM SET SeqNo=SeqNo+1 WHERE Parent_ID=" + parentId + " AND SeqNo>=" + seqNo + " AND AD_Tree_ID=" + AD_Tree_ID;
-					DB.executeUpdateEx(updateSeqNo, getTrxName(ctx));
+					final String updateSeqNo = "UPDATE AD_TREENODEMM SET SeqNo=SeqNo+1 WHERE Parent_ID=? AND SeqNo>=? AND AD_Tree_ID=?";
+					DB.executeUpdateEx(updateSeqNo, new Object[] {parentId, seqNo, AD_Tree_ID}, getTrxName(ctx));
 				}
 				final String updateSQL = "UPDATE AD_TREENODEMM SET Parent_ID=?, SeqNo=? WHERE AD_Tree_ID=? AND Node_ID=?";
 				DB.executeUpdateEx(updateSQL, new Object[] {parentId, seqNo, AD_Tree_ID, mMenu.getAD_Menu_ID()}, getTrxName(ctx));
 			} else {
-				String updateSeqNo = "UPDATE AD_TREENODEMM SET SeqNo=SeqNo+1 WHERE Parent_ID=" + parentId + " AND SeqNo>=" + seqNo + " AND AD_Tree_ID=" + AD_Tree_ID;
-				DB.executeUpdateEx(updateSeqNo, getTrxName(ctx));
+				final String updateSeqNo = "UPDATE AD_TREENODEMM SET SeqNo=SeqNo+1 WHERE Parent_ID=? AND SeqNo>=? AND AD_Tree_ID=?";
+				DB.executeUpdateEx(updateSeqNo, new Object[] {parentId, seqNo, AD_Tree_ID}, getTrxName(ctx));
 				X_AD_TreeNodeMM nmm = new X_AD_TreeNodeMM(ctx.ctx, 0, getTrxName(ctx));
 				nmm.set_ValueOfColumn(X_AD_TreeNodeMM.COLUMNNAME_Parent_ID, parentId);
 				nmm.setSeqNo(seqNo);
@@ -268,14 +269,20 @@ public class MenuElementHandler extends AbstractElementHandler {
 		if (filler.isExportColumn("SeqNo"))
 			return true;
 
-		int tableID = X_AD_TreeNodeMM.Table_ID;
-		if (!MChangeLog.isLogged(tableID))
-			return true;
-
 		if (ctx.packOut != null && ctx.packOut.getFromDate() != null) {
 			int AD_Tree_ID = getDefaultMenuTreeId();
-			String sqlTree = "SELECT 1 FROM AD_TreeNodeMM WHERE AD_Tree_ID=? AND Node_ID=? AND (Updated>=? OR Created>=?)";
-			int countTree = DB.getSQLValueEx(getTrxName(ctx), sqlTree, AD_Tree_ID, m_Menu.getAD_Menu_ID(), ctx.packOut.getFromDate(), ctx.packOut.getFromDate());
+			int tableID = X_AD_TreeNodeMM.Table_ID;
+			MTable table = MTable.get(ctx.ctx, tableID);
+			boolean isChangeLog = (table != null && table.isChangeLog()) || MChangeLog.isLogged(tableID);
+
+			if (!isChangeLog) {
+				String sqlTree = "SELECT 1 FROM AD_TreeNodeMM WHERE AD_Tree_ID=? AND Node_ID=? AND (Updated>=? OR Created>=?)";
+				int countTree = DB.getSQLValueEx(getTrxName(ctx), sqlTree, AD_Tree_ID, m_Menu.getAD_Menu_ID(), ctx.packOut.getFromDate(), ctx.packOut.getFromDate());
+				return countTree > 0;
+			}
+
+			String sqlTree = "SELECT 1 FROM AD_TreeNodeMM WHERE AD_Tree_ID=? AND Node_ID=? AND Created>=?";
+			int countTree = DB.getSQLValueEx(getTrxName(ctx), sqlTree, AD_Tree_ID, m_Menu.getAD_Menu_ID(), ctx.packOut.getFromDate());
 			if (countTree > 0)
 				return true;
 
