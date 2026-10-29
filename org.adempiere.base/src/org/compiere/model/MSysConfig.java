@@ -46,7 +46,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7735685513127827231L;
+	private static final long serialVersionUID = 517698929022059878L;
 
 	/** Constant for Predefine System Configuration Names (in alphabetical order) */
 	
@@ -313,6 +313,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZK_THUMBNAIL_IMAGE_WIDTH = "ZK_THUMBNAIL_IMAGE_WIDTH";
     public static final String ZK_TOOLBAR_SHOW_MORE_VERTICAL = "ZK_TOOLBAR_SHOW_MORE_VERTICAL";
     public static final String ZK_USE_PDF_JS_VIEWER = "ZK_USE_PDF_JS_VIEWER";
+    public static final String ZK_USER_INITIALS_LENGTH = "ZK_USER_INITIALS_LENGTH";
     public static final String ZOOM_ACROSS_QUERY_TIMEOUT = "ZOOM_ACROSS_QUERY_TIMEOUT";
 
     /**

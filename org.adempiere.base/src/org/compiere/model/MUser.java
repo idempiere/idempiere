@@ -64,7 +64,7 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 9139076628293770170L;
+	private static final long serialVersionUID = -6859245449962102174L;
 
 	public static final String SAVING_MIGRATE_USER_PASSWORD_IF_NEEDED = "SavingMigrateUserPasswordIfNeeded";
 
@@ -1188,6 +1188,23 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 			Arrays.stream(m_bpAccess).forEach(e -> e.markImmutable());
 		
 		return this;
+	}
+
+	/**
+	 * Get user initials from full name (e.g. "John Doe" -&gt; "JD")
+	 * @param name full name
+	 * @return up to 2 character initials, uppercase
+	 */
+	public String getInitials() {
+		if (Util.isEmpty(getName()))
+			return "?";
+		String[] parts = getName().trim().split("\\s+");
+		if (parts.length >= 2) {
+			int initialsLength = MSysConfig.getIntValue(MSysConfig.ZK_USER_INITIALS_LENGTH, 2, getAD_Client_ID());
+			if (initialsLength > 1)
+				return ("" + parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+		}
+		return ("" + parts[0].charAt(0)).toUpperCase();
 	}
 
 }	//	MUser
