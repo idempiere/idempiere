@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
+import java.sql.Savepoint;
 import java.sql.Timestamp;
 import java.util.Map;
 import java.util.Properties;
@@ -48,6 +49,8 @@ import org.compiere.process.SvrProcess;
 import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Trx;
+import org.compiere.wf.MWFActivity;
 import org.compiere.wf.MWFNode;
 import org.compiere.wf.MWFNodeNext;
 import org.compiere.wf.MWorkflow;
@@ -74,6 +77,7 @@ public class WFWaitForCommitTest extends AbstractTestCase {
 
 	private static final String DESCRIPTION = "WFWaitForCommitTest";
 	private static final String DESCRIPTION_NESTED = DESCRIPTION + " nested ";
+	private static final String DESCRIPTION_FAIL = DESCRIPTION + " fail";
 
 	/** M_InOut_ID -> receipt committed when the probe behind its Wait (-1) ran */
 	private static final Map<Integer, Boolean> committedAtProbe = new ConcurrentHashMap<>();
@@ -209,6 +213,54 @@ public class WFWaitForCommitTest extends AbstractTestCase {
 		assertDoesNotThrow(() -> commit(), "the commit after the rollback continued the workflow of the rolled back receipt");
 		assertFalse(committedAtProbe.containsKey(rolledBack.getM_InOut_ID()),
 				"the workflow of the rolled back receipt continued on the next commit");
+		assertEquals(0, countActivities(rolledBack.getM_InOut_ID()), "the next commit recreated a workflow activity of the rolled back receipt");
+	}
+
+	/**
+	 * A document completed and rolled back to a savepoint must not continue its workflow on the next commit.
+	 * Trx.rollback(Savepoint) does not call afterRollback.
+	 */
+	@Test
+	public void testWaitOfDocumentRolledBackToSavepoint() throws Exception {
+		Trx trx = Trx.get(getTrxName(), false);
+		Savepoint savepoint = trx.setSavepoint(null);
+		MInOut rolledBack = createReceipt(Env.getCtx(), DESCRIPTION, getLoginDate(), getTrxName());
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(rolledBack, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		trx.rollback(savepoint);
+		trx.setLastWFSavepoint(null);
+
+		// the next work of the same transaction
+		createReceipt(Env.getCtx(), DESCRIPTION, getLoginDate(), getTrxName());
+		assertDoesNotThrow(() -> commit(), "the commit after the rollback to savepoint continued the workflow of the rolled back receipt");
+		assertFalse(committedAtProbe.containsKey(rolledBack.getM_InOut_ID()),
+				"the workflow of the receipt rolled back to a savepoint continued on the next commit");
+		assertEquals(0, countActivities(rolledBack.getM_InOut_ID()), "the next commit recreated a workflow activity of the receipt rolled back to a savepoint");
+	}
+
+	/**
+	 * A node behind the Wait (-1) fails: the document stays committed and the failing activity is suspended.
+	 */
+	@Test
+	public void testFailingNodeBehindTheWait() {
+		MInOut receipt = createReceipt(Env.getCtx(), DESCRIPTION_FAIL, getLoginDate(), getTrxName());
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+
+		commit();
+
+		assertEquals(Boolean.TRUE, committedAtProbe.get(receipt.getM_InOut_ID()), "the probe of the receipt did not run after its commit");
+		String docStatus = DB.getSQLValueStringEx(null, "SELECT DocStatus FROM M_InOut WHERE M_InOut_ID=?", receipt.getM_InOut_ID());
+		assertEquals(DocAction.STATUS_Completed, docStatus, "the completed receipt was not committed");
+		String wfState = DB.getSQLValueStringEx(null, "SELECT a.WFState FROM AD_WF_Activity a"
+				+ " WHERE a.AD_Table_ID=? AND a.Record_ID=? AND a.AD_WF_Node_ID=?",
+				MInOut.Table_ID, receipt.getM_InOut_ID(), nodeProbe.getAD_WF_Node_ID());
+		assertEquals(MWFActivity.WFSTATE_Suspended, wfState, "the failing node behind the Wait (-1) is not suspended");
+	}
+
+	/** Workflow activities of the receipt, read from another connection */
+	private static int countActivities(int receiptId) {
+		return DB.getSQLValueEx(null, "SELECT COUNT(*) FROM AD_WF_Activity WHERE AD_Table_ID=? AND Record_ID=?", MInOut.Table_ID, receiptId);
 	}
 
 	private static MInOut createReceipt(Properties ctx, String description, Timestamp dateOrdered, String trxName) {
@@ -248,10 +300,12 @@ public class WFWaitForCommitTest extends AbstractTestCase {
 		protected String doIt() throws Exception {
 			int receiptId = getRecord_ID();
 			// null: read from another connection, which sees only committed data
-			int committed = DB.getSQLValueEx(null,"SELECT COUNT(*) FROM M_InOut WHERE M_InOut_ID=?", receiptId);
+			int committed = DB.getSQLValueEx(null, "SELECT COUNT(*) FROM M_InOut WHERE M_InOut_ID=?", receiptId);
 			committedAtProbe.put(receiptId, committed > 0);
 
 			MInOut receipt = new MInOut(getCtx(), receiptId, get_TrxName());
+			if (DESCRIPTION_FAIL.equals(receipt.getDescription()))
+				throw new AdempiereException("node behind the Wait (-1) fails");
 			if (DESCRIPTION.equals(receipt.getDescription())) {
 				MInOut second = createReceipt(getCtx(), DESCRIPTION_NESTED + receiptId, receipt.getDateOrdered(), get_TrxName());
 				ProcessInfo info = MWorkflow.runDocumentActionWorkflow(second, DocAction.ACTION_Complete);

@@ -2123,6 +2123,10 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		public void afterCommit(Trx trx, boolean success) {
 			if (success) {
 				trx.removeTrxEventListener(this);
+				// an activity rolled back to a savepoint (which does not call afterRollback) is not committed
+				String wfState = DB.getSQLValueStringEx(null, "SELECT WFState FROM AD_WF_Activity WHERE AD_WF_Activity_ID=?", activity.getAD_WF_Activity_ID());
+				if (!StateEngine.STATE_Running.equals(wfState) && !StateEngine.STATE_Suspended.equals(wfState))
+					return;
 				// the transaction is committed: continue the workflow in transactions of its own
 				activity.set_TrxName(null);
 				activity.setWFState (StateEngine.STATE_Completed);
