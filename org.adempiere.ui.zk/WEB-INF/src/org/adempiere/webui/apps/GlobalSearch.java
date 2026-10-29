@@ -27,7 +27,6 @@ import org.compiere.model.MSearchDefinition;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
-import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -51,9 +50,6 @@ public class GlobalSearch extends Div implements EventListener<Event> {
 
 	/** Event echo from ON_ENTER_KEY_EVENT to allow showing of in progress dialog before execution of search **/
 	private static final String ON_POST_ENTER_KEY_EVENT = "onPostEnterKey";
-
-	/** Event echo from {@link #onPageAttached(Page, Page)} **/
-	private static final String ON_CREATE_ECHO_EVENT = "onCreateEcho";
 
 	/** Event to execute search. **/
 	private static final String ON_SEARCH_EVENT = "onSearch";
@@ -100,6 +96,10 @@ public class GlobalSearch extends Div implements EventListener<Event> {
 		bandbox.addEventListener(Events.ON_CHANGE, this);
 		bandbox.setCtrlKeys("#up#down");
 		bandbox.addEventListener(Events.ON_CTRL_KEY, this);
+		//client side listener for enter key, part of widget definition so it survives re-rendering of the bandbox
+		bandbox.setWidgetOverride("doKeyDown_", "function(evt){this.$doKeyDown_(evt);"
+				+ "if(evt.keyCode==13&&evt.domTarget==this.getInputNode()){"
+				+ "zAu.send(new zk.Event(this,'" + ON_ENTER_KEY_EVENT + "',{},{toServer:true}));}}");
 		bandbox.addEventListener(Events.ON_FOCUS, e -> {
 			bandbox.setOpen(true);
 			if (tabbox.getSelectedIndex() == 0)
@@ -136,7 +136,6 @@ public class GlobalSearch extends Div implements EventListener<Event> {
 		docController.create(tabPanel);
 		
 		addEventListener(ON_SEARCH_EVENT, this);
-		addEventListener(ON_CREATE_ECHO_EVENT, this);
 		bandbox.addEventListener(ON_ENTER_KEY_EVENT, this);
 		addEventListener(ON_POST_ENTER_KEY_EVENT, this);				
 	}
@@ -197,18 +196,6 @@ public class GlobalSearch extends Div implements EventListener<Event> {
         		docController.search(value);
         	}
 			bandbox.focus();
-        } else if (event.getName().equals(ON_CREATE_ECHO_EVENT)) {
-        	//setup client side listener for enter key
-    		StringBuilder script = new StringBuilder("jq('#")
-    			.append(bandbox.getUuid())
-    			.append("').bind('keydown', function(e) {let code=e.keyCode||e.which;if(code==13){")
-    			.append("let widget=zk.Widget.$(this);")
-    			.append("let event=new zk.Event(widget,'")
-    			.append(ON_ENTER_KEY_EVENT)
-    			.append("',{},{toServer:true});")
-    			.append("zAu.send(event);")
-    			.append("}});");
-    		Clients.evalJavaScript(script.toString());
         } else if (event.getName().equals(ON_ENTER_KEY_EVENT)) {
         	Clients.showBusy(bandbox, null);
         	Events.echoEvent(ON_POST_ENTER_KEY_EVENT, this, null);        	
@@ -237,15 +224,6 @@ public class GlobalSearch extends Div implements EventListener<Event> {
         }
 	}
 
-	/* (non-Javadoc)
-	 * @see org.zkoss.zk.ui.AbstractComponent#onPageAttached(org.zkoss.zk.ui.Page, org.zkoss.zk.ui.Page)
-	 */
-	@Override
-	public void onPageAttached(Page newpage, Page oldpage) {
-		super.onPageAttached(newpage, oldpage);
-		Events.echoEvent(ON_CREATE_ECHO_EVENT, this, null);		
-	}
-	
 	/**
 	 * Close {@link #bandbox} popup.
 	 */
