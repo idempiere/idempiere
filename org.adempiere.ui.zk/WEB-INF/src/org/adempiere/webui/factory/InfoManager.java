@@ -79,20 +79,31 @@ public class InfoManager
 			String keyColumn, String queryValue, boolean multiSelection,
 			SQLFragment sqlFilter)
 	{
-		Function<IInfoFactory, InfoPanel> funcGetInfoFromService = null;
-		
-		if (lookup instanceof MLookup){
-			final int AD_InfoWindow_ID  = ((MLookup)lookup).getAD_InfoWindow_ID();
-			funcGetInfoFromService = (service) -> {
-				return service.create(lookup, field, tableName, keyColumn, queryValue, multiSelection, AD_InfoWindow_ID, sqlFilter);
-			};
-		}else {
-			funcGetInfoFromService = (service) -> {
-				return service.create(lookup, field, tableName, keyColumn, queryValue, multiSelection, 0, sqlFilter);
-			};
-		}
-		
+		final int adInfoWindowId = getADInfoWindowId(lookup, field);
+		Function<IInfoFactory, InfoPanel> funcGetInfoFromService = (service) -> {
+			return service.create(lookup, field, tableName, keyColumn, queryValue, multiSelection, adInfoWindowId, sqlFilter);
+		};
+
 		return create(funcGetInfoFromService);
+	}
+
+	/**
+	 * Resolve the info window id for a lookup: the explicit id of the lookup
+	 * (AD_Ref_Table.AD_InfoWindow_ID) has priority, then the value of the field,
+	 * that is AD_Field.AD_InfoWindow_ID with fall back to AD_Column.AD_InfoWindow_ID
+	 * (see AD_Field_v). IDEMPIERE-7074: the value was previously only evaluated for
+	 * buttons, it is now also used for search and table dir fields.
+	 * @param lookup
+	 * @param field
+	 * @return resolved AD_InfoWindow_ID (0 = resolve by table default)
+	 */
+	private static int getADInfoWindowId(Lookup lookup, GridField field) {
+		int adInfoWindowId = (lookup instanceof MLookup)
+				? ((MLookup)lookup).getAD_InfoWindow_ID()
+				: 0;
+		if (adInfoWindowId <= 0 && field != null && field.getAD_InfoWindow_ID() > 0)
+			adInfoWindowId = field.getAD_InfoWindow_ID();
+		return adInfoWindowId;
 	}
 	
 	/**
@@ -110,19 +121,11 @@ public class InfoManager
 			String keyColumn, String queryValue, boolean multiSelection,
 			String whereClause)
 	{
-		Function<IInfoFactory, InfoPanel> funcGetInfoFromService = null;
-		
-		if (lookup instanceof MLookup){
-			final int AD_InfoWindow_ID  = ((MLookup)lookup).getAD_InfoWindow_ID();
-			funcGetInfoFromService = (service) -> {
-				return service.create(lookup, field, tableName, keyColumn, queryValue, multiSelection, whereClause, AD_InfoWindow_ID);
-			};
-		}else {
-			funcGetInfoFromService = (service) -> {
-				return service.create(lookup, field, tableName, keyColumn, queryValue, multiSelection, whereClause, 0);
-			};
-		}
-		
+		final int adInfoWindowId = getADInfoWindowId(lookup, field);
+		Function<IInfoFactory, InfoPanel> funcGetInfoFromService = (service) -> {
+			return service.create(lookup, field, tableName, keyColumn, queryValue, multiSelection, whereClause, adInfoWindowId);
+		};
+
 		return create(funcGetInfoFromService);
 	}
 	
