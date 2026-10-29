@@ -2090,8 +2090,8 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	}	//	getSummary
 
 	/**
-	 * Set up transaction event listener to set workflow state to StateEngine.STATE_Completed in the transaction
-	 * after commit event. 
+	 * Set up transaction event listener to set workflow state to StateEngine.STATE_Completed after the commit
+	 * of the transaction. The workflow then continues in transactions of its own.
 	 */
 	private void prepareCommitEvent()
 	{
@@ -2116,12 +2116,15 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		
 		@Override
 		public void afterRollback(Trx trx, boolean success) {
+			trx.removeTrxEventListener(this);
 		}
 		
 		@Override
 		public void afterCommit(Trx trx, boolean success) {
 			if (success) {
 				trx.removeTrxEventListener(this);
+				// the transaction is committed: continue the workflow in transactions of its own
+				activity.set_TrxName(null);
 				activity.setWFState (StateEngine.STATE_Completed);
 			}
 		}
