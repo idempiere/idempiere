@@ -1262,8 +1262,14 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 				} finally {
 					trx.removeTrxEventListener(trxEndListener);
 				}
-				if (!success && nodeSavepoint != null && !trxEndListener.ended)
-					trx.rollback(nodeSavepoint);
+				if (!success && nodeSavepoint != null)
+				{
+					// the process committed: undo its work after the last commit, as SvrProcess does in its own transaction
+					if (trxEndListener.ended)
+						trx.rollback();
+					else
+						trx.rollback(nodeSavepoint);
+				}
 				setTextMsgBefore(pi.getSummary());
 				return success;
 			}

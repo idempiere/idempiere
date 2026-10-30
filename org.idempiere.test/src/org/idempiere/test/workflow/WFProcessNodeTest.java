@@ -70,6 +70,7 @@ public class WFProcessNodeTest extends AbstractTestCase {
 	private static final int COLUMN_M_INOUT_ISSOTRX = 3790;
 
 	private static final String MARKER = "IDEMPIERE-7179";
+	private static final String MARKER_AFTER_COMMIT = MARKER + "-2";
 
 	public WFProcessNodeTest() {
 	}
@@ -225,9 +226,10 @@ public class WFProcessNodeTest extends AbstractTestCase {
 			MWFProcess wfProcess = ProcessUtil.startWorkFlow(ctx, pi, wf.getAD_Workflow_ID());
 			assertNotNull(wfProcess, pi.getSummary());
 
-			// the transaction must still be usable
-			assertEquals(MARKER, DB.getSQLValueStringEx(trxName, "SELECT TextMsg FROM AD_Note WHERE AD_Note_ID=?", note.getAD_Note_ID()),
-					"Changes committed by the process node are lost");
+			// the transaction must still be usable; a failed process keeps only what it committed
+			assertEquals(fail ? MARKER : MARKER_AFTER_COMMIT,
+					DB.getSQLValueStringEx(trxName, "SELECT TextMsg FROM AD_Note WHERE AD_Note_ID=?", note.getAD_Note_ID()),
+					fail ? "Changes of the failed process node after its commit were not rolled back" : "Changes of the process node are lost");
 			MWFActivity activity = getActivity(node, MNote.Table_ID, note.getAD_Note_ID());
 			assertEquals(fail ? StateEngine.STATE_Suspended : StateEngine.STATE_Completed, activity.getWFState(), activity.getTextMsg());
 		} finally {
@@ -292,7 +294,7 @@ public class WFProcessNodeTest extends AbstractTestCase {
 		return activity;
 	}
 
-	/** Writes {@link #MARKER} into the record, optionally commits, then fails or succeeds */
+	/** Writes {@link #MARKER} into the record, optionally commits and writes {@link #MARKER_AFTER_COMMIT}, then fails or succeeds */
 	private static final class TestProcess extends SvrProcess {
 
 		private final boolean commits;
@@ -309,24 +311,24 @@ public class WFProcessNodeTest extends AbstractTestCase {
 
 		@Override
 		protected String doIt() throws Exception {
-			writeMarker();
+			writeMarker(MARKER);
 			if (commits) {
 				commitEx();
 				// like a process committing per document: work goes on in a new transaction
-				writeMarker();
+				writeMarker(MARKER_AFTER_COMMIT);
 			}
 			if (fails)
 				return "@Error@" + MARKER;
 			return MARKER;
 		}
 
-		private void writeMarker() {
+		private void writeMarker(String marker) {
 			if (getTable_ID() == MNote.Table_ID)
 				DB.executeUpdateEx("UPDATE AD_Note SET TextMsg=? WHERE AD_Note_ID=?",
-						new Object[] {MARKER, getRecord_ID()}, get_TrxName());
+						new Object[] {marker, getRecord_ID()}, get_TrxName());
 			else
 				DB.executeUpdateEx("UPDATE M_InOut SET Description=? WHERE M_InOut_ID=?",
-						new Object[] {MARKER, getRecord_ID()}, get_TrxName());
+						new Object[] {marker, getRecord_ID()}, get_TrxName());
 		}
 	}
 }
