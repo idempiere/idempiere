@@ -1231,6 +1231,16 @@ public class Core {
 
 		return myCreditManager;
 	} // getCreditManager
+
+	/**
+	 * Get the defaults from the {@link IPODefaultsProvider}s registered for a table.
+	 * The providers are looked up once: call this once per save.
+	 * @param tableName table name
+	 * @return defaults, never null
+	 */
+	public static PODefaults getPODefaults(String tableName) {
+		return PODefaults.of(tableName);
+	}
 	
 	@SuppressWarnings("unchecked")
 	public static IReportRenderer<IReportRendererConfiguration> getReportRenderer(String id) {
