@@ -24,10 +24,10 @@ import org.adempiere.webui.component.Tabs;
 import org.adempiere.webui.util.DocumentSearch;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.compiere.model.MSearchDefinition;
+import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
-import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -52,14 +52,17 @@ public class GlobalSearch extends Div implements EventListener<Event> {
 	/** Event echo from ON_ENTER_KEY_EVENT to allow showing of in progress dialog before execution of search **/
 	private static final String ON_POST_ENTER_KEY_EVENT = "onPostEnterKey";
 
-	/** Event echo from {@link #onPageAttached(Page, Page)} **/
-	private static final String ON_CREATE_ECHO_EVENT = "onCreateEcho";
-
 	/** Event to execute search. **/
 	private static final String ON_SEARCH_EVENT = "onSearch";
 
 	/** Prefix to start document search using definition from {@link MSearchDefinition} **/
 	private static final String PREFIX_DOCUMENT_SEARCH = "/";
+
+	/** Period (in ms) after which a pending search is considered lost and no longer waited for **/
+	private static final long PENDING_SEARCH_TIMEOUT = 60000;
+
+	/** Logger **/
+	private static final CLogger log = CLogger.getCLogger(GlobalSearch.class);
 	
 	/**
 	 * generated serial id
@@ -77,6 +80,15 @@ public class GlobalSearch extends Div implements EventListener<Event> {
 
 	/** tabbox to host menu and document search tab **/
 	private Tabbox tabbox;
+
+	/** count of posted search events that haven't completed yet **/
+	private int pendingSearches = 0;
+
+	/** time stamp of the oldest pending search, 0 if there is none **/
+	private long pendingSearchesSince = 0;
+
+	/** true if Enter key is pressed and waiting for pending searches to complete **/
+	private boolean postEnterKeyPending = false;
 
 	/**
 	 * @param menuController
@@ -100,6 +112,17 @@ public class GlobalSearch extends Div implements EventListener<Event> {
 		bandbox.addEventListener(Events.ON_CHANGE, this);
 		bandbox.setCtrlKeys("#up#down");
 		bandbox.addEventListener(Events.ON_CTRL_KEY, this);
+		//client side listener for enter key, part of widget definition so it survives re-rendering of the bandbox
+		//InputWidget._stopOnChanging(this, true) flushes the delayed onChanging event, so the server has the last
+		//typed text before onEnterKey is processed. updateChange_() is only done by ComboWidget.enterPressed_()
+		//while the popup is open, call it here as well to cover the popup closed case.
+		bandbox.setWidgetOverride("doKeyDown_", "function(evt){"
+				+ "if(evt.keyCode==13&&evt.domTarget==this.getInputNode()){"
+				+ "zul.inp.InputWidget._stopOnChanging(this,true);}"
+				+ "this.$doKeyDown_(evt);"
+				+ "if(evt.keyCode==13&&evt.domTarget==this.getInputNode()){"
+				+ "this.updateChange_();"
+				+ "zAu.send(new zk.Event(this,'" + ON_ENTER_KEY_EVENT + "',{},{toServer:true}));}}");
 		bandbox.addEventListener(Events.ON_FOCUS, e -> {
 			bandbox.setOpen(true);
 			if (tabbox.getSelectedIndex() == 0)
@@ -136,7 +159,6 @@ public class GlobalSearch extends Div implements EventListener<Event> {
 		docController.create(tabPanel);
 		
 		addEventListener(ON_SEARCH_EVENT, this);
-		addEventListener(ON_CREATE_ECHO_EVENT, this);
 		bandbox.addEventListener(ON_ENTER_KEY_EVENT, this);
 		addEventListener(ON_POST_ENTER_KEY_EVENT, this);				
 	}
@@ -153,7 +175,7 @@ public class GlobalSearch extends Div implements EventListener<Event> {
 			if (value != null)
 				value = value.trim();
 			bandbox.setAttribute(LAST_ONCHANGING_ATTR, value);
-			Events.postEvent(ON_SEARCH_EVENT, this, value);		
+			postSearchEvent(value);		
 		} else if (Events.ON_CHANGE.equals(event.getName())) {
 			bandbox.removeAttribute(LAST_ONCHANGING_ATTR);
         } else if (Events.ON_CTRL_KEY.equals(event.getName())) {
@@ -190,42 +212,38 @@ public class GlobalSearch extends Div implements EventListener<Event> {
         	}
         } else if (event.getName().equals(ON_SEARCH_EVENT)) {
         	String value = (String) event.getData();
-        	if (tabbox.getSelectedIndex()==0) {
-        		menuController.setHighlightText(value);
-        		menuController.search(value);
-        	} else {        		
-        		docController.search(value);
+        	boolean echoed = false;
+        	try {
+        		if (tabbox.getSelectedIndex()==0) {
+        			menuController.setHighlightText(value);
+        			menuController.search(value, this::onSearchCompleted);
+        		} else {
+        			docController.search(value, this::onSearchCompleted);
+        		}
+        		echoed = true;
+        		bandbox.focus();
+        	} finally {
+        		//the controller echoes the search event, release the matching pending
+        		//count here if it failed before doing so
+        		if (!echoed)
+        			onSearchCompleted();
         	}
-			bandbox.focus();
-        } else if (event.getName().equals(ON_CREATE_ECHO_EVENT)) {
-        	//setup client side listener for enter key
-    		StringBuilder script = new StringBuilder("jq('#")
-    			.append(bandbox.getUuid())
-    			.append("').bind('keydown', function(e) {let code=e.keyCode||e.which;if(code==13){")
-    			.append("let widget=zk.Widget.$(this);")
-    			.append("let event=new zk.Event(widget,'")
-    			.append(ON_ENTER_KEY_EVENT)
-    			.append("',{},{toServer:true});")
-    			.append("zAu.send(event);")
-    			.append("}});");
-    		Clients.evalJavaScript(script.toString());
         } else if (event.getName().equals(ON_ENTER_KEY_EVENT)) {
+        	if (pendingSearches > 0 && isPendingSearchStale()) {
+        		//recover from a pending search that will never complete
+        		log.warning("Pending search not completed after " + PENDING_SEARCH_TIMEOUT + " ms, continue with enter key handling");
+        		resetPendingSearches();
+        	}
         	Clients.showBusy(bandbox, null);
+        	postEnterKeyPending = true;
         	Events.echoEvent(ON_POST_ENTER_KEY_EVENT, this, null);        	
         } else if (event.getName().equals(ON_POST_ENTER_KEY_EVENT)) {
+        	if (!postEnterKeyPending)
+        		return; //stale echo, the enter key has been handled already
+        	if (pendingSearches > 0)
+        		return; //resumed by the echo from onSearchCompleted
         	//execute search trigger by press of enter key
-        	Clients.clearBusy(bandbox);
-        	if (bandbox.getValue() != null && bandbox.getValue().startsWith(PREFIX_DOCUMENT_SEARCH)) {
-        		DocumentSearch search = new DocumentSearch();
-            	if (search.openDocumentsByDocumentNo(bandbox.getValue().substring(1)))
-    				bandbox.setText(null);
-        	} else {        	
-	        	if (tabbox.getSelectedIndex()==0) {
-	        		menuController.onOk(bandbox);
-	        	} else {
-	        		docController.onOk(bandbox);
-	        	}
-        	}
+        	postEnterKey();
         } else if (event.getName().equals(Events.ON_SELECT)) {
         	if (tabbox.getSelectedIndex() == 0)
         		menuController.updateRecentItems();
@@ -233,19 +251,77 @@ public class GlobalSearch extends Div implements EventListener<Event> {
         	if (value == null) {
         		value = bandbox.getValue();
         	}
-        	Events.postEvent(ON_SEARCH_EVENT, this, value);
+        	postSearchEvent(value);
         }
 	}
-
-	/* (non-Javadoc)
-	 * @see org.zkoss.zk.ui.AbstractComponent#onPageAttached(org.zkoss.zk.ui.Page, org.zkoss.zk.ui.Page)
+	
+	/**
+	 * Post {@link #ON_SEARCH_EVENT} to execute search with value.<br/>
+	 * Increase {@link #pendingSearches} so that {@link #ON_ENTER_KEY_EVENT} processing can wait for the search to complete.
+	 * @param value search text
 	 */
-	@Override
-	public void onPageAttached(Page newpage, Page oldpage) {
-		super.onPageAttached(newpage, oldpage);
-		Events.echoEvent(ON_CREATE_ECHO_EVENT, this, null);		
+	private void postSearchEvent(String value) {
+		//Events.postEvent is processed after the current event, the count is
+		//updated before ON_SEARCH_EVENT is handled
+		Events.postEvent(ON_SEARCH_EVENT, this, value);
+		if (pendingSearches++ == 0)
+			pendingSearchesSince = System.currentTimeMillis();
 	}
 	
+	/**
+	 * Callback from {@link MenuSearchController#search(String, Runnable)} and
+	 * {@link DocumentSearchController#search(String, Runnable)} after a search has completed.<br/>
+	 * Resume the deferred {@link #ON_ENTER_KEY_EVENT} processing when no search is pending anymore.
+	 */
+	private void onSearchCompleted() {
+		if (pendingSearches > 0)
+			pendingSearches--;
+		if (pendingSearches == 0) {
+			pendingSearchesSince = 0;
+			if (postEnterKeyPending) {
+				//don't run the enter key action in this execution: the search result items are
+				//rendered at the end of it and MenuSearchController.onOk needs the rendered items
+				Events.echoEvent(ON_POST_ENTER_KEY_EVENT, this, null);
+			}
+		}
+	}
+	
+	/**
+	 * @return true if the oldest pending search has been outstanding for longer than {@link #PENDING_SEARCH_TIMEOUT}
+	 */
+	private boolean isPendingSearchStale() {
+		return pendingSearchesSince > 0
+				&& System.currentTimeMillis() - pendingSearchesSince > PENDING_SEARCH_TIMEOUT;
+	}
+	
+	/**
+	 * Discard pending search state, used when a pending search is considered lost
+	 */
+	private void resetPendingSearches() {
+		pendingSearches = 0;
+		pendingSearchesSince = 0;
+	}
+	
+	/**
+	 * Execute the action of {@link #ON_ENTER_KEY_EVENT}, once all pending searches have completed
+	 */
+	private void postEnterKey() {
+		postEnterKeyPending = false;
+		resetPendingSearches();
+		Clients.clearBusy(bandbox);
+		if (bandbox.getValue() != null && bandbox.getValue().startsWith(PREFIX_DOCUMENT_SEARCH)) {
+			DocumentSearch search = new DocumentSearch();
+			if (search.openDocumentsByDocumentNo(bandbox.getValue().substring(1)))
+				bandbox.setText(null);
+		} else {
+			if (tabbox.getSelectedIndex()==0) {
+				menuController.onOk(bandbox);
+			} else {
+				docController.onOk(bandbox);
+			}
+		}
+	}
+
 	/**
 	 * Close {@link #bandbox} popup.
 	 */
