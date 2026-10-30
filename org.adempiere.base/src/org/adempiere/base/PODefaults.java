@@ -50,7 +50,13 @@ public final class PODefaults {
 	/** Service holders by table name; a holder tracks providers registered later */
 	private static final Map<String, IServicesHolder<IPODefaultsProvider>> s_holders = new ConcurrentHashMap<>();
 
+	/** Shared instance for a table with no provider registered */
+	private static final PODefaults NONE = new PODefaults(List.of());
+
 	private final List<IPODefaultsProvider> providers;
+
+	/** Dictionary of the table, looked up when a first answer has to be checked */
+	private POInfo poInfo;
 
 	private PODefaults(List<IPODefaultsProvider> providers) {
 		this.providers = providers;
@@ -66,16 +72,16 @@ public final class PODefaults {
 			query.put(TABLE_NAME_PROPERTY, t);
 			return Service.locator().list(IPODefaultsProvider.class, query);
 		});
-		List<IPODefaultsProvider> providers = new ArrayList<>();
 		List<IPODefaultsProvider> services = holder.getServices();
-		if (services != null) {
-			for (IPODefaultsProvider service : services) {
-				// null if the provider was unregistered meanwhile
-				if (service != null)
-					providers.add(service);
-			}
+		if (services == null || services.isEmpty())
+			return NONE;
+		List<IPODefaultsProvider> providers = new ArrayList<>(services.size());
+		for (IPODefaultsProvider service : services) {
+			// null if the provider was unregistered meanwhile
+			if (service != null)
+				providers.add(service);
 		}
-		return new PODefaults(providers);
+		return providers.isEmpty() ? NONE : new PODefaults(providers);
 	}
 
 	/**
@@ -85,19 +91,31 @@ public final class PODefaults {
 	 * The value type V must be the column's class ({@link POInfo#getColumnClass(int)}): an answer
 	 * whose value is not of that class is logged and skipped. A value is also skipped when the class
 	 * cannot be checked (unknown column, or a column class of Object).
+	 * A provider that throws is logged and skipped.
 	 */
 	@SuppressWarnings("unchecked")
 	public <V> DefaultValue<V> get(PO po, String columnName) {
-		if (providers.isEmpty())
-			return DefaultValue.useFallback();
-		POInfo info = POInfo.getPOInfo(po.getCtx(), po.get_Table_ID());
-		Class<?> columnClass = info.getColumnClass(info.getColumnIndex(columnName));
-		// Object accepts any value, so it cannot guard the cast to V
-		boolean checkable = columnClass != null && columnClass != Object.class;
+		Class<?> columnClass = null;
+		boolean checkable = false;
+		boolean classLookedUp = false;
 		for (IPODefaultsProvider provider : providers) {
-			DefaultValue<?> answer = provider.getDefault(po, columnName);
+			DefaultValue<?> answer;
+			try {
+				answer = provider.getDefault(po, columnName);
+			} catch (RuntimeException e) {
+				s_log.log(Level.WARNING, provider.getClass().getName() + " failed for " + po.get_TableName() + "." + columnName, e);
+				continue;
+			}
 			if (answer == null || answer.isUseFallback())
 				continue;
+			if (answer.getValue() != null && !classLookedUp) {
+				if (poInfo == null)
+					poInfo = POInfo.getPOInfo(po.getCtx(), po.get_Table_ID());
+				columnClass = poInfo.getColumnClass(poInfo.getColumnIndex(columnName));
+				// Object accepts any value, so it cannot guard the cast to V
+				checkable = columnClass != null && columnClass != Object.class;
+				classLookedUp = true;
+			}
 			if (answer.getValue() != null && (!checkable || !columnClass.isInstance(answer.getValue()))) {
 				s_log.log(Level.WARNING, provider.getClass().getName() + " returned " + answer.getValue().getClass().getName()
 						+ " for " + po.get_TableName() + "." + columnName + ", expected "
@@ -111,11 +129,18 @@ public final class PODefaults {
 
 	/**
 	 * Call every provider, lowest service ranking first, so that when two providers set the same
-	 * column the value of the highest ranking provider is kept
+	 * column the value of the highest ranking provider is kept.
+	 * A provider that throws is logged and skipped.
 	 * @param action call on one provider
 	 */
 	public void forEach(Consumer<IPODefaultsProvider> action) {
-		for (int i = providers.size() - 1; i >= 0; i--)
-			action.accept(providers.get(i));
+		for (int i = providers.size() - 1; i >= 0; i--) {
+			IPODefaultsProvider provider = providers.get(i);
+			try {
+				action.accept(provider);
+			} catch (RuntimeException e) {
+				s_log.log(Level.WARNING, provider.getClass().getName() + " failed", e);
+			}
+		}
 	}
 }

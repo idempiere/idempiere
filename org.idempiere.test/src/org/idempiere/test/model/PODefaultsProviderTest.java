@@ -13,8 +13,10 @@ package org.idempiere.test.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 
 import java.sql.Timestamp;
@@ -185,6 +187,72 @@ public class PODefaultsProviderTest extends AbstractTestCase {
 			}
 		} finally {
 			registration.unregister();
+		}
+	}
+
+	@Test
+	public void testFallbackAnswerDoesNotLookUpDictionary() {
+		ServiceRegistration<?> registration = register(MOrder.Table_Name, provider(Map.of()), 10);
+		try {
+			MOrder order = newOrder();
+			PODefaults defaults = Core.getPODefaults(MOrder.Table_Name);
+			try (MockedStatic<POInfo> poInfoMock = Mockito.mockStatic(POInfo.class, Mockito.CALLS_REAL_METHODS)) {
+				assertTrue(defaults.get(order, MOrder.COLUMNNAME_SalesRep_ID).isUseFallback());
+				assertTrue(defaults.get(order, MOrder.COLUMNNAME_C_PaymentTerm_ID).isUseFallback());
+				poInfoMock.verify(() -> POInfo.getPOInfo(any(), eq(MOrder.Table_ID)), Mockito.never());
+				poInfoMock.verify(() -> POInfo.getPOInfo(any(), eq(MOrder.Table_ID), anyString()), Mockito.never());
+			}
+		} finally {
+			registration.unregister();
+		}
+	}
+
+	@Test
+	public void testDictionaryLookedUpOncePerInstance() {
+		IPODefaultsProvider provider = provider(Map.of(
+				MOrder.COLUMNNAME_SalesRep_ID, DefaultValue.of(DictionaryIDs.AD_User.GARDEN_USER.id),
+				MOrder.COLUMNNAME_C_PaymentTerm_ID, DefaultValue.of(DictionaryIDs.C_PaymentTerm.TWO_PERCENT_10_NET_30.id)));
+		ServiceRegistration<?> registration = register(MOrder.Table_Name, provider, 10);
+		try {
+			MOrder order = newOrder();
+			PODefaults defaults = Core.getPODefaults(MOrder.Table_Name);
+			try (MockedStatic<POInfo> poInfoMock = Mockito.mockStatic(POInfo.class, Mockito.CALLS_REAL_METHODS)) {
+				assertEquals(DictionaryIDs.AD_User.GARDEN_USER.id, defaults.get(order, MOrder.COLUMNNAME_SalesRep_ID).getValue());
+				assertEquals(DictionaryIDs.C_PaymentTerm.TWO_PERCENT_10_NET_30.id, defaults.get(order, MOrder.COLUMNNAME_C_PaymentTerm_ID).getValue());
+				poInfoMock.verify(() -> POInfo.getPOInfo(any(), eq(MOrder.Table_ID)), Mockito.times(1));
+			}
+		} finally {
+			registration.unregister();
+		}
+	}
+
+	@Test
+	public void testTableWithNoProviderSharesInstance() {
+		assertSame(Core.getPODefaults(MOrder.Table_Name), Core.getPODefaults(MOrder.Table_Name));
+	}
+
+	@Test
+	public void testThrowingProviderIsSkipped() {
+		IPODefaultsProvider rogue = new IPODefaultsProvider() {
+			@Override
+			public void initDefaults(PO po) {
+				throw new IllegalStateException("rogue initDefaults");
+			}
+			@Override
+			public DefaultValue<?> getDefault(PO po, String columnName) {
+				throw new IllegalStateException("rogue getDefault");
+			}
+		};
+		IPODefaultsProvider low = provider(Map.of(MOrder.COLUMNNAME_SalesRep_ID, DefaultValue.of(DictionaryIDs.AD_User.GARDEN_USER.id)));
+		ServiceRegistration<?> rogueRegistration = register(MOrder.Table_Name, rogue, 20);
+		ServiceRegistration<?> lowRegistration = register(MOrder.Table_Name, low, 10);
+		try {
+			MOrder order = newOrder();
+			order.saveEx();
+			assertEquals(DictionaryIDs.AD_User.GARDEN_USER.id, order.getSalesRep_ID());
+		} finally {
+			rogueRegistration.unregister();
+			lowRegistration.unregister();
 		}
 	}
 
