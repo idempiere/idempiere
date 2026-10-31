@@ -67,13 +67,16 @@ public class ReferenceTableElementHandler extends AbstractElementHandler {
 				return;
 			}
 			Element displayElement = element.properties.get("AD_Display");
-			int displayColumnId = ReferenceUtils.resolveReferenceAsInt(ctx.ctx, displayElement, getTrxName(ctx));
-			refTable.setAD_Display(displayColumnId);
-
+			if (displayElement != null) {
+				int displayColumnId = ReferenceUtils.resolveReferenceAsInt(ctx.ctx, displayElement, getTrxName(ctx));
+				refTable.setAD_Display(displayColumnId);
+			}
 
 			Element keyElement = element.properties.get("AD_Key");
-			int keyColumnId = ReferenceUtils.resolveReferenceAsInt(ctx.ctx, keyElement, getTrxName(ctx));
-			refTable.setAD_Key(keyColumnId);
+			if (keyElement != null) {
+				int keyColumnId = ReferenceUtils.resolveReferenceAsInt(ctx.ctx, keyElement, getTrxName(ctx));
+				refTable.setAD_Key(keyColumnId);
+			}
 
 			if (refTable.is_new() || refTable.is_Changed()) {
 				refTable.saveEx();
@@ -124,8 +127,10 @@ public class ReferenceTableElementHandler extends AbstractElementHandler {
 			excludes.add("ad_display");
 			excludes.add("ad_key");
 			filler.export(excludes);
-			filler.addTableReference("AD_Display", "AD_Column", new AttributesImpl());
-			filler.addTableReference("AD_Key", "AD_Column", new AttributesImpl());
+			if (filler.isExportColumn("AD_Display"))
+				filler.addTableReference("AD_Display", "AD_Column", new AttributesImpl());
+			if (filler.isExportColumn("AD_Key"))
+				filler.addTableReference("AD_Key", "AD_Column", new AttributesImpl());
 
 			document.endElement(X_AD_Ref_Table.Table_Name);
 		} catch (Exception e) {
