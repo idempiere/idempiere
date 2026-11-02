@@ -560,6 +560,10 @@ public class MTree extends MTree_Base
 		if (!m_editable)	//	editable = menu/etc. window
 			sql = MRole.getDefault(getCtx(), false).addAccessSQL(sql, 
 				sourceTable, MRole.SQL_FULLYQUALIFIED, m_editable);
+		else	//	no access filter, read only the nodes of this tree
+			sql += (sql.indexOf(" WHERE ") != -1 ? " AND " : " WHERE ")
+				+ sourceTable + "." + columnNameX + "_ID IN (SELECT Node_ID FROM " + getNodeTableName()
+				+ " WHERE AD_Tree_ID=" + getAD_Tree_ID() + ")";
 		log.fine(sql);
 		m_nodeRowSet = DB.getRowSet (sql, get_TrxName());
 		m_nodeIdMap = new HashMap<Integer, ArrayList<Integer>>(50);
