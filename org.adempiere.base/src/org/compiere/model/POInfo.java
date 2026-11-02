@@ -73,24 +73,32 @@ public class POInfo implements Serializable
 	 *  @param trxName Transaction name
 	 *  @return POInfo instance
 	 */
-	public static synchronized POInfo getPOInfo (Properties ctx, int AD_Table_ID, String trxName)
+	public static POInfo getPOInfo (Properties ctx, int AD_Table_ID, String trxName)
 	{
 		Integer key = Integer.valueOf(AD_Table_ID);
 		POInfo retValue = (POInfo)s_cache.get(key);
-		if (retValue == null)
+		if (retValue != null)
+			return retValue; // Lock-free fast path for 99.9% of calls
+		synchronized (s_cacheLock)
 		{
-			retValue = new POInfo(ctx, AD_Table_ID, false, trxName);
-			if (retValue.getColumnCount() == 0)
-				//	May be run before Language verification
-				retValue = new POInfo(ctx, AD_Table_ID, true, trxName);
-			else
-				s_cache.put(key, retValue);
+			retValue = (POInfo)s_cache.get(key);
+			if (retValue == null)
+			{
+				retValue = new POInfo(ctx, AD_Table_ID, false, trxName);
+				if (retValue.getColumnCount() == 0)
+					//	May be run before Language verification
+					retValue = new POInfo(ctx, AD_Table_ID, true, trxName);
+				else
+					s_cache.put(key, retValue);
+			}
 		}
 		return retValue;
 	}   //  getPOInfo
 
 	/** Cache of POInfo     */
 	private static CCache<Integer,POInfo>  s_cache = new CCache<Integer,POInfo>(I_AD_Table.Table_Name, "POInfo", 200, 0, false, 0);
+	/** Lock for loading POInfo on a cache miss */
+	private static final Object s_cacheLock = new Object();
 	
 	/**
 	 *  Create Persistent Info
@@ -136,7 +144,7 @@ public class POInfo implements Serializable
 	private Map<String, Integer> m_columnNameMap;
 	/** ad_column_id to index map **/
 	private Map<Integer, Integer> m_columnIdMap;
-	private Boolean m_IsTranslated = null;
+	private volatile Boolean m_IsTranslated = null;
 
 	/**
 	 *  Load Table and Column Info
@@ -638,19 +646,21 @@ public class POInfo implements Serializable
 	 *  Is Table Translated
 	 *  @return true if table is translated
 	 */
-	public synchronized boolean isTranslated ()
+	public boolean isTranslated ()
 	{
-		if (m_IsTranslated  == null) {
-			m_IsTranslated = Boolean.FALSE;
+		Boolean translated = m_IsTranslated;
+		if (translated == null) {
+			translated = Boolean.FALSE;
 			for (int i = 0; i < m_columns.length; i++)
 			{
 				if (m_columns[i].IsTranslated) {
-					m_IsTranslated = Boolean.TRUE;
+					translated = Boolean.TRUE;
 					break;
 				}
 			}
+			m_IsTranslated = translated;
 		}
-		return m_IsTranslated.booleanValue();
+		return translated.booleanValue();
 	}   //  isTranslated
 
 	/**
