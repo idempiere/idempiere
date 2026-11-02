@@ -73,3 +73,7 @@ ALTER TABLE C_PaymentAllocate ADD CONSTRAINT CPaymentAllocate_InvOrCharge_CHK
 	CHECK (	(C_Invoice_ID IS NOT NULL AND C_Charge_ID IS NULL)
 		OR 	(C_Invoice_ID IS NULL AND C_Charge_ID IS NOT NULL) )
 ;
+
+-- Index foreign key to optimize MPaymentAllocate.get(payment) lookups
+CREATE INDEX C_PaymentAllocate_Payment ON C_PaymentAllocate (C_Payment_ID)
+;

@@ -26,11 +26,16 @@ package org.idempiere.test.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
+
+import org.adempiere.exceptions.AdempiereException;
 
 import org.compiere.model.MAllocationHdr;
 import org.compiere.model.MAllocationLine;
@@ -46,6 +51,7 @@ import org.compiere.model.MPaymentAllocate;
 import org.compiere.model.MProduct;
 import org.compiere.model.Query;
 import org.compiere.process.DocAction;
+import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -346,8 +352,8 @@ public class PaymentTest extends AbstractTestCase {
 		payment.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, payment.getDocStatus(), "Payment failed to complete");
 
-		// Verify all payment allocation records are retained
-		assertPaymentAllocations(payment, 3, 4, "Allocation Lines missing for payment and charge allocations");
+		// IDEMPIERE-6590: Verify all payment allocation records are retained (1:1 matching: 3 allocations produce 3 allocation lines)
+		assertPaymentAllocations(payment, 3, 3, "Allocation Lines missing for payment and charge allocations");
 	}
 
 	/**
@@ -365,6 +371,7 @@ public class PaymentTest extends AbstractTestCase {
 		invoice.setC_BPartner_ID(DictionaryIDs.C_BPartner.JOE_BLOCK.id);
 		invoice.setAD_Org_ID(DictionaryIDs.AD_Org.HQ.id);
 		invoice.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.AP_INVOICE.id);
+		invoice.setIsSOTrx(false);
 		invoice.setDateInvoiced(today);
 		invoice.setDateAcct(today);
 		invoice.setPaymentRule(MInvoice.PAYMENTRULE_Check);
@@ -383,6 +390,8 @@ public class PaymentTest extends AbstractTestCase {
 		assertFalse(info.isError(), "Invoice completion failed: " + info.getSummary());
 		invoice.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus(), "Invoice failed to complete");
+		String postInvoiceError = DocumentEngine.postImmediate(Env.getCtx(), invoice.getAD_Client_ID(), invoice.get_Table_ID(), invoice.get_ID(), false, getTrxName());
+		assertNull(postInvoiceError, "Invoice posting failed: " + postInvoiceError);
 
 		// Create a payment that will be allocated to one invoice and two charges
 		MPayment payment = createTestPayment(bp.getC_BPartner_ID(), today, new BigDecimal("500"));
@@ -404,9 +413,278 @@ public class PaymentTest extends AbstractTestCase {
 		assertFalse(info.isError(), "Payment completion failed: " + info.getSummary());
 		payment.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, payment.getDocStatus(), "Payment failed to complete");
+		String postPaymentError = DocumentEngine.postImmediate(Env.getCtx(), payment.getAD_Client_ID(), payment.get_Table_ID(), payment.get_ID(), false, getTrxName());
+		assertNull(postPaymentError, "Payment posting failed: " + postPaymentError);
 
-		// Verify all payment allocation records are retained for both invoice and charges
-		assertPaymentAllocations(payment, 3, 4, "Allocation Lines missing for payment, invoice and charge allocations");
+		// IDEMPIERE-6590: Verify all payment allocation records are retained (1:1 matching: 1 invoice + 2 charges produce 3 allocation lines)
+		assertPaymentAllocations(payment, 3, 3, "Allocation Lines missing for payment, invoice and charge allocations");
+
+		// Verify posting of allocation header
+		MAllocationHdr[] hdrs = MAllocationHdr.getOfPayment(payment.getCtx(), payment.getC_Payment_ID(), getTrxName());
+		assertEquals(1, hdrs.length, "Allocation Header was not created for the payment");
+		String postError = DocumentEngine.postImmediate(Env.getCtx(), hdrs[0].getAD_Client_ID(), hdrs[0].get_Table_ID(), hdrs[0].get_ID(), false, getTrxName());
+		assertNull(postError, "Allocation document posting failed: " + postError);
+	}
+
+	/**
+
+	 * IDEMPIERE-6590: Verify that a customer receipt (AR) can be allocated to multiple charges
+	 * and completed successfully.
+	 */
+	@Test
+	public void testAllocateCustomerReceiptToMultipleCharges()
+	{
+		MBPartner bp = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.STANDARD.id, getTrxName());
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+
+		// Create a customer AR receipt that will be allocated to two charges
+		MPayment payment = createTestPayment(bp.getC_BPartner_ID(), today, new BigDecimal("200"), true);
+
+		// Allocate receipt to two different charges
+		createPaymentAllocate(payment, DictionaryIDs.C_Charge.BANK.id, new BigDecimal("100"), getTrxName());
+		createPaymentAllocate(payment, DictionaryIDs.C_Charge.COMMISSIONS.id, new BigDecimal("100"), getTrxName());
+
+		// Complete the receipt
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), "Receipt completion failed: " + info.getSummary());
+		payment.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, payment.getDocStatus(), "Receipt failed to complete");
+		String postPaymentError = DocumentEngine.postImmediate(Env.getCtx(), payment.getAD_Client_ID(), payment.get_Table_ID(), payment.get_ID(), false, getTrxName());
+		assertNull(postPaymentError, "Receipt posting failed: " + postPaymentError);
+
+		// Verify all payment allocation records are retained for customer receipt charges
+		assertPaymentAllocations(payment, 2, 2, "Allocation Lines missing for customer receipt charge allocations");
+
+		// Verify posting of allocation header
+		MAllocationHdr[] hdrs = MAllocationHdr.getOfPayment(payment.getCtx(), payment.getC_Payment_ID(), getTrxName());
+		assertEquals(1, hdrs.length, "Allocation Header was not created for the customer receipt");
+		String postError = DocumentEngine.postImmediate(Env.getCtx(), hdrs[0].getAD_Client_ID(), hdrs[0].get_Table_ID(), hdrs[0].get_ID(), false, getTrxName());
+		assertNull(postError, "Allocation document posting failed: " + postError);
+	}
+
+	/**
+	 * IDEMPIERE-6590: Verify that a customer receipt (AR) can be allocated to both a sales invoice
+	 * and multiple charges in the same payment allocation and complete successfully.
+	 */
+	@Test
+	public void testAllocateCustomerReceiptTogetherWithInvoice()
+	{
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		MBPartner bp = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.STANDARD.id, getTrxName());
+
+		// Create a completed AR sales invoice
+		MInvoice invoice = new MInvoice(Env.getCtx(), 0, getTrxName());
+		invoice.setC_BPartner_ID(bp.getC_BPartner_ID());
+		invoice.setAD_Org_ID(DictionaryIDs.AD_Org.HQ.id);
+		invoice.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.AR_INVOICE.id);
+		invoice.setIsSOTrx(true);
+		invoice.setDateInvoiced(today);
+		invoice.setDateAcct(today);
+		invoice.setPaymentRule(MInvoice.PAYMENTRULE_Check);
+		invoice.setC_PaymentTerm_ID(DictionaryIDs.C_PaymentTerm.IMMEDIATE.id);
+		invoice.saveEx();
+
+		// Add a charge line to create an invoice amount of 300
+		MInvoiceLine invoiceLine = new MInvoiceLine(invoice);
+		invoiceLine.setLine(10);
+		invoiceLine.setC_Charge_ID(DictionaryIDs.C_Charge.COMMISSIONS.id);
+		invoiceLine.setQty(BigDecimal.ONE);
+		invoiceLine.setPrice(new BigDecimal("300"));
+		invoiceLine.saveEx();
+
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), "Invoice completion failed: " + info.getSummary());
+		invoice.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus(), "Invoice failed to complete");
+		String postInvoiceError = DocumentEngine.postImmediate(Env.getCtx(), invoice.getAD_Client_ID(), invoice.get_Table_ID(), invoice.get_ID(), false, getTrxName());
+		assertNull(postInvoiceError, "Invoice posting failed: " + postInvoiceError);
+
+		// Create a customer receipt (AR) that will be allocated to one invoice and two charges
+		MPayment payment = createTestPayment(bp.getC_BPartner_ID(), today, new BigDecimal("500"), true);
+
+		// Allocate part of the receipt to the sales invoice
+		MPaymentAllocate pa = new MPaymentAllocate(Env.getCtx(), 0, getTrxName());
+		pa.setC_Payment_ID(payment.getC_Payment_ID());
+		pa.setC_Invoice_ID(invoice.getC_Invoice_ID());
+		pa.setAmount(new BigDecimal("300"));
+		pa.setInvoiceAmt(new BigDecimal("300"));
+		pa.saveEx();
+
+		// Allocate the remaining receipt amount to two different charges
+		createPaymentAllocate(payment, DictionaryIDs.C_Charge.BANK.id, new BigDecimal("100"), getTrxName());
+		createPaymentAllocate(payment, DictionaryIDs.C_Charge.COMMISSIONS.id, new BigDecimal("100"), getTrxName());
+
+		// Complete the receipt and verify both invoice and charge allocations are processed
+		info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), "Receipt completion failed: " + info.getSummary());
+		payment.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, payment.getDocStatus(), "Receipt failed to complete");
+		String postPaymentError = DocumentEngine.postImmediate(Env.getCtx(), payment.getAD_Client_ID(), payment.get_Table_ID(), payment.get_ID(), false, getTrxName());
+		assertNull(postPaymentError, "Receipt posting failed: " + postPaymentError);
+
+		// Verify all payment allocation records are retained (1:1 matching: 1 invoice + 2 charges produce 3 allocation lines)
+		assertPaymentAllocations(payment, 3, 3, "Allocation Lines missing for receipt, invoice and charge allocations");
+
+		// Verify posting of allocation header
+		MAllocationHdr[] hdrs = MAllocationHdr.getOfPayment(payment.getCtx(), payment.getC_Payment_ID(), getTrxName());
+		assertEquals(1, hdrs.length, "Allocation Header was not created for the receipt");
+		String postError = DocumentEngine.postImmediate(Env.getCtx(), hdrs[0].getAD_Client_ID(), hdrs[0].get_Table_ID(), hdrs[0].get_ID(), false, getTrxName());
+		assertNull(postError, "Allocation document posting failed: " + postError);
+	}
+
+	/**
+
+	 * IDEMPIERE-6590: Verify that a payment already allocated to a charge on the header cannot
+	 * have payment allocation lines added (PaymentIsAllocated).
+	 * This guarantees that payments with allocation lines always have payment.C_Charge_ID == 0,
+	 * ensuring getPaymentAcct() in Doc_AllocationHdr never collides with the allocation line's charge account.
+	 */
+	@Test
+	public void testPaymentWithHeaderChargeCannotHavePaymentAllocate()
+	{
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		MBPartner bp = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName());
+
+		// Create a payment allocated to a charge on the header
+		MPayment payment = createTestPayment(bp.getC_BPartner_ID(), today, new BigDecimal("100"));
+		payment.setC_Charge_ID(DictionaryIDs.C_Charge.BANK.id);
+		payment.saveEx();
+
+		// Attempting to add a payment allocate record to this payment must fail
+		MPaymentAllocate pa = new MPaymentAllocate(Env.getCtx(), 0, getTrxName());
+		pa.setC_Payment_ID(payment.getC_Payment_ID());
+		pa.setC_Charge_ID(DictionaryIDs.C_Charge.COMMISSIONS.id);
+		pa.setAmount(new BigDecimal("100"));
+		assertThrows(AdempiereException.class, () -> pa.saveEx(), "Expected PaymentIsAllocated exception when payment header already has a charge");
+	}
+
+	/**
+	 * Model validation of mutual exclusivity between Invoice and Charge
+	 * IDEMPIERE-6590: Verify that MPaymentAllocate enforces:
+	 * 1. Setting neither C_Invoice_ID nor C_Charge_ID fails validation (FillMandatory).
+	 * 2. Setting both C_Invoice_ID and C_Charge_ID fails validation (Error).
+	 * 3. Setting a charge resets non-applicable invoice amounts to zero.
+	 */
+	@Test
+	public void testPaymentAllocateMutualExclusivity()
+	{
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		MBPartner bp = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName());
+		MPayment payment = createTestPayment(bp.getC_BPartner_ID(), today, new BigDecimal("100"));
+
+		// Case 1: Neither invoice nor charge set -> must fail
+		MPaymentAllocate paEmpty = new MPaymentAllocate(Env.getCtx(), 0, getTrxName());
+		paEmpty.setC_Payment_ID(payment.getC_Payment_ID());
+		paEmpty.setAmount(new BigDecimal("50"));
+		assertThrows(AdempiereException.class, () -> paEmpty.saveEx(),
+			"Expected validation exception when neither Invoice nor Charge is specified");
+
+		// Case 2: Both invoice and charge set -> must fail
+		MInvoice invoice = new MInvoice(Env.getCtx(), 0, getTrxName());
+		invoice.setC_BPartner_ID(bp.getC_BPartner_ID());
+		invoice.setAD_Org_ID(DictionaryIDs.AD_Org.HQ.id);
+		invoice.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.AP_INVOICE.id);
+		invoice.setDateInvoiced(today);
+		invoice.setDateAcct(today);
+		invoice.setPaymentRule(MInvoice.PAYMENTRULE_Check);
+		invoice.setC_PaymentTerm_ID(DictionaryIDs.C_PaymentTerm.IMMEDIATE.id);
+		invoice.saveEx();
+
+		MPaymentAllocate paBoth = new MPaymentAllocate(Env.getCtx(), 0, getTrxName());
+		paBoth.setC_Payment_ID(payment.getC_Payment_ID());
+		paBoth.setC_Invoice_ID(invoice.getC_Invoice_ID());
+		paBoth.setC_Charge_ID(DictionaryIDs.C_Charge.BANK.id);
+		paBoth.setAmount(new BigDecimal("50"));
+		assertThrows(AdempiereException.class, () -> paBoth.saveEx(),
+			"Expected validation exception when both Invoice and Charge are specified");
+
+		// Case 3: Setting charge resets any invoice-specific amounts
+		MPaymentAllocate paCharge = new MPaymentAllocate(Env.getCtx(), 0, getTrxName());
+		paCharge.setC_Payment_ID(payment.getC_Payment_ID());
+		paCharge.setC_Charge_ID(DictionaryIDs.C_Charge.BANK.id);
+		paCharge.setAmount(new BigDecimal("50"));
+		paCharge.setInvoiceAmt(new BigDecimal("100"));
+		paCharge.setDiscountAmt(new BigDecimal("10"));
+		paCharge.setWriteOffAmt(new BigDecimal("5"));
+		paCharge.setOverUnderAmt(new BigDecimal("2"));
+		paCharge.saveEx();
+		assertEquals(Env.ZERO, paCharge.getInvoiceAmt(), "InvoiceAmt should be reset to zero for charge allocation");
+		assertEquals(Env.ZERO, paCharge.getDiscountAmt(), "DiscountAmt should be reset to zero for charge allocation");
+		assertEquals(Env.ZERO, paCharge.getWriteOffAmt(), "WriteOffAmt should be reset to zero for charge allocation");
+		assertEquals(Env.ZERO, paCharge.getOverUnderAmt(), "OverUnderAmt should be reset to zero for charge allocation");
+	}
+
+	/**
+	 * Multi-currency mixed scenario (Foreign Currency Payment -> Invoice + Charge)
+	 * IDEMPIERE-6590: Verify that when a foreign currency payment (e.g. EUR in USD base schema)
+	 * is allocated to both an invoice and a charge:
+	 * 1. Single-line allocation lines are created with 1:1 matching and line-by-line amount verification.
+	 * 2. Posting Doc_AllocationHdr completes cleanly without imbalance.
+	 * 3. Charge allocation uses the payment currency rate and does not trigger exchange gain/loss.
+	 */
+	@Test
+	public void testAllocateForeignCurrencyPaymentToInvoiceAndCharge()
+	{
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		MBPartner bp = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id, getTrxName());
+
+		// Create an invoice in foreign currency (EUR)
+		MInvoice invoice = new MInvoice(Env.getCtx(), 0, getTrxName());
+		invoice.setC_BPartner_ID(bp.getC_BPartner_ID());
+		invoice.setAD_Org_ID(DictionaryIDs.AD_Org.HQ.id);
+		invoice.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.AP_INVOICE.id);
+		invoice.setIsSOTrx(false);
+		invoice.setC_Currency_ID(DictionaryIDs.C_Currency.EUR.id);
+		invoice.setDateInvoiced(today);
+		invoice.setDateAcct(today);
+		invoice.setPaymentRule(MInvoice.PAYMENTRULE_Check);
+		invoice.setC_PaymentTerm_ID(DictionaryIDs.C_PaymentTerm.IMMEDIATE.id);
+		invoice.saveEx();
+
+		MInvoiceLine invoiceLine = new MInvoiceLine(invoice);
+		invoiceLine.setLine(10);
+		invoiceLine.setC_Charge_ID(DictionaryIDs.C_Charge.COMMISSIONS.id);
+		invoiceLine.setQty(BigDecimal.ONE);
+		invoiceLine.setPrice(new BigDecimal("300"));
+		invoiceLine.saveEx();
+
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), "Invoice completion failed: " + info.getSummary());
+		invoice.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus(), "Invoice failed to complete");
+		String postInvoiceError = DocumentEngine.postImmediate(Env.getCtx(), invoice.getAD_Client_ID(), invoice.get_Table_ID(), invoice.get_ID(), false, getTrxName());
+		assertNull(postInvoiceError, "Invoice posting failed: " + postInvoiceError);
+
+		// Create a foreign currency payment (EUR)
+		MPayment payment = createTestPayment(bp.getC_BPartner_ID(), today, new BigDecimal("400"), false, DictionaryIDs.C_Currency.EUR.id);
+
+		// Allocate 300 EUR to the EUR invoice
+		MPaymentAllocate pa = new MPaymentAllocate(Env.getCtx(), 0, getTrxName());
+		pa.setC_Payment_ID(payment.getC_Payment_ID());
+		pa.setC_Invoice_ID(invoice.getC_Invoice_ID());
+		pa.setAmount(new BigDecimal("300"));
+		pa.setInvoiceAmt(new BigDecimal("300"));
+		pa.saveEx();
+
+		// Allocate remaining 100 EUR to a charge
+		createPaymentAllocate(payment, DictionaryIDs.C_Charge.BANK.id, new BigDecimal("100"), getTrxName());
+
+		// Complete the payment
+		info = MWorkflow.runDocumentActionWorkflow(payment, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), "Payment completion failed: " + info.getSummary());
+		payment.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, payment.getDocStatus(), "Payment failed to complete");
+		String postPaymentError = DocumentEngine.postImmediate(Env.getCtx(), payment.getAD_Client_ID(), payment.get_Table_ID(), payment.get_ID(), false, getTrxName());
+		assertNull(postPaymentError, "Payment posting failed: " + postPaymentError);
+
+		// Verify 1:1 allocations and line-by-line amount verification
+		assertPaymentAllocations(payment, 2, 2, "Allocation Lines missing for foreign currency payment, invoice and charge");
+
+		// Verify posting of the allocation document
+		MAllocationHdr[] hdrs = MAllocationHdr.getOfPayment(payment.getCtx(), payment.getC_Payment_ID(), getTrxName());
+		assertEquals(1, hdrs.length, "Allocation Header was not created for the foreign currency payment");
+		String postError = DocumentEngine.postImmediate(Env.getCtx(), hdrs[0].getAD_Client_ID(), hdrs[0].get_Table_ID(), hdrs[0].get_ID(), false, getTrxName());
+		assertNull(postError, "Foreign currency allocation document posting failed: " + postError);
 	}
 
 	public void createPaymentAllocate(MPayment payment, int chargeID, BigDecimal chargeAmt, String trxName)
@@ -420,12 +698,26 @@ public class PaymentTest extends AbstractTestCase {
 
 	private MPayment createTestPayment(int bPartnerId, Timestamp date, BigDecimal payAmt)
 	{
+		return createTestPayment(bPartnerId, date, payAmt, false);
+	}
+
+	/**
+
+	 * IDEMPIERE-6590: Helper to create AP payment or AR customer receipt for testing
+	 */
+	private MPayment createTestPayment(int bPartnerId, Timestamp date, BigDecimal payAmt, boolean isReceipt)
+	{
+		return createTestPayment(bPartnerId, date, payAmt, isReceipt, DictionaryIDs.C_Currency.USD.id);
+	}
+
+	private MPayment createTestPayment(int bPartnerId, Timestamp date, BigDecimal payAmt, boolean isReceipt, int currencyId)
+	{
 		MPayment payment = new MPayment(Env.getCtx(), 0, getTrxName());
 		payment.setC_BPartner_ID(bPartnerId);
 		payment.setC_BankAccount_ID(DictionaryIDs.C_BankAccount.HQ_POS_CASH.id);
-		payment.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
+		payment.setC_Currency_ID(currencyId);
 		payment.setAD_Org_ID(DictionaryIDs.AD_Org.HQ.id);
-		payment.setC_DocType_ID(false);
+		payment.setC_DocType_ID(isReceipt);
 		payment.setDateTrx(date);
 		payment.setDateAcct(date);
 		payment.setPayAmt(payAmt);
@@ -443,7 +735,12 @@ public class PaymentTest extends AbstractTestCase {
 			allocatedAmt = allocatedAmt.add(allocation.getAmount());
 
 		assertEquals(0, allocatedAmt.compareTo(payment.getPayAmt()), "Allocated amount does not match payment amount");
-		assertEquals(0, payment.getPayAmt().add(payment.getAllocatedAmt()).compareTo(BigDecimal.ZERO), "Payment has an unallocated remaining amount");
+
+		// Match allocated amount sign: positive for AR customer receipts, negative for AP vendor payments
+		BigDecimal expectedAllocatedAmt = payment.isReceipt() ? payment.getPayAmt() : payment.getPayAmt().negate();
+		BigDecimal actualAllocatedAmt = payment.getAllocatedAmt();
+		assertNotNull(actualAllocatedAmt, "Payment allocated amount should not be null");
+		assertEquals(0, expectedAllocatedAmt.compareTo(actualAllocatedAmt), "Payment has an unallocated remaining amount");
 		assertTrue(payment.isAllocated(), "Payment is not marked as fully allocated");
 
 		MAllocationHdr[] hdrs = MAllocationHdr.getOfPayment(payment.getCtx(), payment.getC_Payment_ID(), getTrxName());
@@ -453,5 +750,32 @@ public class PaymentTest extends AbstractTestCase {
 		query.setParameters(hdrs[0].getC_AllocationHdr_ID());
 		List<MAllocationLine> lines = query.list();
 		assertEquals(expectedLines, lines.size(), linesAssertMsg);
+
+		// Line-by-line amount validation matching MPaymentAllocate to MAllocationLine
+		for (MPaymentAllocate pa : allocations)
+		{
+			boolean matched = false;
+			for (MAllocationLine aLine : lines)
+			{
+				if (pa.getC_Invoice_ID() > 0 && aLine.getC_Invoice_ID() == pa.getC_Invoice_ID())
+				{
+					if (aLine.getAmount().abs().compareTo(pa.getAmount()) == 0)
+					{
+						matched = true;
+						break;
+					}
+				}
+				else if (pa.getC_Charge_ID() > 0 && aLine.getC_Charge_ID() == pa.getC_Charge_ID())
+				{
+					if (aLine.getAmount().abs().compareTo(pa.getAmount()) == 0)
+					{
+						matched = true;
+						break;
+					}
+				}
+			}
+			assertTrue(matched, "No matching MAllocationLine found for MPaymentAllocate ID=" + pa.getC_PaymentAllocate_ID()
+				+ ", invoice=" + pa.getC_Invoice_ID() + ", charge=" + pa.getC_Charge_ID() + ", amt=" + pa.getAmount());
+		}
 	}
 }

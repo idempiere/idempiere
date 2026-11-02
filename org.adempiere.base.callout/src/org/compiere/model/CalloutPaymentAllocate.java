@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
  * Product: Adempiere ERP & CRM Smart Business Solution                       *
  * Copyright (C) 1999-2006 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software; you can redistribute it and/or modify it    *
@@ -63,8 +63,9 @@ public class CalloutPaymentAllocate extends CalloutEngine
 		if (payment.getC_Charge_ID() != 0 || payment.getC_Invoice_ID() != 0 
 			|| payment.getC_Order_ID() != 0)
 			return Msg.getMsg(ctx, "PaymentIsAllocated");
-		
+
 		//
+		mTab.setValue("C_Charge_ID", null);
 		mTab.setValue("DiscountAmt", Env.ZERO);
 		mTab.setValue("WriteOffAmt", Env.ZERO);
 		mTab.setValue("OverUnderAmt", Env.ZERO);
@@ -199,12 +200,27 @@ public class CalloutPaymentAllocate extends CalloutEngine
 		if (isCalloutActive() || C_Charge_ID == null || C_Charge_ID.intValue() == 0)
 			return "";
 
+		//	Check Payment
+		int C_Payment_ID = Env.getContextAsInt(ctx, WindowNo, "C_Payment_ID");
+		if (C_Payment_ID == 0) {
+			Integer id = (Integer) mTab.getValue("C_Payment_ID");
+			if (id != null)
+				C_Payment_ID = id.intValue();
+		}
+		if (C_Payment_ID > 0) {
+			MPayment payment = new MPayment(ctx, C_Payment_ID, null);
+			if (payment.getC_Charge_ID() != 0 || payment.getC_Invoice_ID() != 0 || payment.getC_Order_ID() != 0)
+				return Msg.getMsg(ctx, "PaymentIsAllocated");
+		}
+
 		mTab.setValue("C_Invoice_ID", null);
 		mTab.setValue("InvoiceAmt", Env.ZERO);
 		mTab.setValue("DiscountAmt", Env.ZERO);
 		mTab.setValue("WriteOffAmt", Env.ZERO);
 		mTab.setValue("OverUnderAmt", Env.ZERO);
-		mTab.setValue("Amount", Env.ZERO);
+
+		// Clear stale C_Invoice_ID from tab context
+		Env.setContext(ctx, WindowNo, mTab.getTabNo(), "C_Invoice_ID", "0");
 
 		return "";
 	} // charge

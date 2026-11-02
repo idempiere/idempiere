@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
  * Product: Adempiere ERP & CRM Smart Business Solution                       *
  * Copyright (C) 1999-2006 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software; you can redistribute it and/or modify it    *
@@ -1129,7 +1129,6 @@ public class MPayment extends X_C_Payment
 		return m_mBankAccountProcessor != null;
 	}   //  setPaymentProcessor
 
-
 	/**
 	 * 	Get Accepted Credit Cards for PayAmt (default 0)
 	 *	@return credit cards
@@ -1138,7 +1137,6 @@ public class MPayment extends X_C_Payment
 	{
 		return getCreditCards(getPayAmt());
 	}	//	getCreditCards
-
 
 	/**
 	 * 	Get Accepted Credit Cards for amount
@@ -1259,7 +1257,6 @@ public class MPayment extends X_C_Payment
 		return true;
 	}   //  setCreditCardExp
 
-
 	/**
 	 *  CreditCard Exp  MMYY
 	 *  @param delimiter / - or null
@@ -1324,7 +1321,6 @@ public class MPayment extends X_C_Payment
 	{
 		super.setCheckNo(MPaymentValidate.checkNumeric(CheckNo));
 	}	//	setBankCheckNo
-
 
 	/**
 	 *  Derive DocumentNo from Payment info.
@@ -1677,6 +1673,10 @@ public class MPayment extends X_C_Payment
 		{
 			if (pAllocs.length > 0) {
 				for (MPaymentAllocate pAlloc : pAllocs) {
+
+					if (pAlloc.getC_Invoice_ID() <= 0)
+						continue;
+
 					String sql = "SELECT idt.IsSOTrx "
 						+ "FROM C_Invoice i"
 						+ " INNER JOIN C_DocType idt ON (i.C_DocType_ID=idt.C_DocType_ID) "
@@ -2339,13 +2339,13 @@ public class MPayment extends X_C_Payment
 				get_TrxName());
 		alloc.setAD_Org_ID(getAD_Org_ID());
 		alloc.setDateAcct(getDateAcct()); // in case date acct is different from datetrx in payment; IDEMPIERE-1532 tbayen
-		if (!alloc.save())
+
+		if (!alloc.save(get_TrxName()))
 		{
 			log.severe("P.Allocations not created");
 			return false;
 		}
 
-		BigDecimal chargeAmt = Env.ZERO;
 		//	Lines
 		for (int i = 0; i < pAllocs.length; i++)
 		{
@@ -2356,53 +2356,28 @@ public class MPayment extends X_C_Payment
 				allocationAmt = allocationAmt.add(pa.getOverUnderAmt());	//	overpayment (negative)
 
 			MAllocationLine aLine = null;
-			int bpartnerID = pa.getC_BPartner_ID();
+			if (isReceipt())
+				aLine = new MAllocationLine(alloc, allocationAmt, pa.getDiscountAmt(), pa.getWriteOffAmt(), pa.getOverUnderAmt());
+			else
+				aLine = new MAllocationLine(alloc, allocationAmt.negate(), pa.getDiscountAmt().negate(), pa.getWriteOffAmt().negate(),
+											pa.getOverUnderAmt().negate());
 
-			// Create Charge Allocation line
-			if (pa.getC_Charge_ID() > 0 && pa.getC_Invoice_ID() == 0)
+			int bpartnerID = 0;
+			if (pa.getC_Charge_ID() > 0)
 			{
-				if (isReceipt())
-					aLine = new MAllocationLine(alloc, allocationAmt.negate(), Env.ZERO, Env.ZERO, Env.ZERO);
-				else
-					aLine = new MAllocationLine(alloc, allocationAmt, Env.ZERO, Env.ZERO, Env.ZERO);
-
-				bpartnerID = pa.getC_Payment().getC_BPartner_ID();
+				bpartnerID = getC_BPartner_ID();
 				aLine.setC_Charge_ID(pa.getC_Charge_ID());
-				chargeAmt = chargeAmt.add(allocationAmt);
 			}
 			else
 			{
-				if (isReceipt())
-					aLine = new MAllocationLine(alloc, allocationAmt, pa.getDiscountAmt(), pa.getWriteOffAmt(), pa.getOverUnderAmt());
-				else
-					aLine = new MAllocationLine(alloc, allocationAmt.negate(), pa.getDiscountAmt().negate(), pa.getWriteOffAmt().negate(),
-												pa.getOverUnderAmt().negate());
+				bpartnerID = pa.getC_BPartner_ID();
 			}
 			aLine.setDocInfo(bpartnerID, 0, pa.getC_Invoice_ID());
-			if (pa.getC_Invoice_ID() > 0)
-				aLine.setPaymentInfo(getC_Payment_ID(), 0, getC_BankTransfer_ID());
-			if (!aLine.save(get_TrxName()))
-				log.warning("P.Allocations - line not saved");
-			else
-			{
-				pa.setC_AllocationLine_ID(aLine.getC_AllocationLine_ID());
-				pa.saveEx();
-			}
-		}
-
-		// Create Payment Line With Total Charge Amounts if Charge Allocation amount exist.
-		if (chargeAmt.compareTo(Env.ZERO) != 0)
-		{
-			MAllocationLine aPayLine = null;
-			if (isReceipt())
-				aPayLine = new MAllocationLine(alloc, chargeAmt, Env.ZERO, Env.ZERO, Env.ZERO);
-			else
-				aPayLine = new MAllocationLine(alloc, chargeAmt.negate(), Env.ZERO, Env.ZERO, Env.ZERO);
-
-			aPayLine.setDocInfo(getC_BPartner_ID(), 0, getC_Invoice_ID());
-			aPayLine.setPaymentInfo(getC_Payment_ID(), 0, getC_BankTransfer_ID());
-			if (!aPayLine.save(get_TrxName()))
-				log.warning("P.Allocations - line not saved");
+			aLine.setPaymentInfo(getC_Payment_ID(), 0, getC_BankTransfer_ID());
+			aLine.saveEx(get_TrxName());
+			//
+			pa.setC_AllocationLine_ID(aLine.getC_AllocationLine_ID());
+			pa.saveEx(get_TrxName());
 		}
 
 		//do not post immediate alloc, alloc should post after payment
@@ -3146,7 +3121,6 @@ public class MPayment extends X_C_Payment
 			return getWriteOffAmt();
 		return getPayAmt();
 	}	//	getApprovalAmt
-
 
 	@Override
 	public void setProcessUI(IProcessUI processMonitor) {
