@@ -83,7 +83,10 @@ import org.zkoss.zul.Vlayout;
  */
 public class UserPanel implements EventListener<Event>, Composer<Component>, Serializable
 {
-	private static final long serialVersionUID = -5330748308L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6622345753692895879L;
 
 	protected Properties ctx;
 

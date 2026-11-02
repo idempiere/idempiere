@@ -1192,7 +1192,6 @@ public class MUser extends X_AD_User implements ImmutablePOSupport
 
 	/**
 	 * Get user initials from full name (e.g. "John Doe" -&gt; "JD")
-	 * @param name full name
 	 * @return up to 2 character initials, uppercase
 	 */
 	public String getInitials() {
