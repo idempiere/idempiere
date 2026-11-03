@@ -1114,10 +1114,6 @@ public final class FactLine extends X_Fact_Acct
 				setC_Campaign_ID (m_acct.getC_Campaign_ID());
 			if (getC_Activity_ID() == 0)
 				setC_Activity_ID (m_acct.getC_Activity_ID());
-			if (getUser1_ID() == 0)
-				setUser1_ID (m_acct.getUser1_ID());
-			if (getUser2_ID() == 0)
-				setUser2_ID (m_acct.getUser2_ID());
 			
 			//  Create Revenue Recognition for AR/AP Invoices
 			if ((m_doc.getDocumentType().equals(Doc.DOCTYPE_ARInvoice) || m_doc.getDocumentType().equals(Doc.DOCTYPE_APInvoice)) 
