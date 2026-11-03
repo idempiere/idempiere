@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.compiere.util.Msg;
 import org.idempiere.fa.feature.UseLife;
 import org.idempiere.fa.feature.UseLifeImpl;
 
@@ -165,6 +166,26 @@ public class MAssetGroupAcct extends X_A_Asset_Group_Acct
 		if (! UseLifeImpl.get(this, true).validate())
 		{
 			return false;
+		}
+		if (getParent().isDepreciated())
+		{
+			if (getA_Depreciation_ID() <= 0)
+			{
+				log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_A_Depreciation_ID));
+				return false;
+			}
+			if (getA_Depreciation_F_ID() <= 0)
+			{
+				log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_A_Depreciation_F_ID));
+				return false;
+			}
+		}
+		else
+		{
+			if (getA_Depreciation_ID() > 0)
+				setA_Depreciation_ID(0);
+			if (getA_Depreciation_F_ID() > 0)
+				setA_Depreciation_F_ID(0);
 		}
 		return true;
 	}
