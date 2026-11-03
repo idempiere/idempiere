@@ -41,6 +41,7 @@ import java.util.regex.Pattern;
 import org.adempiere.base.GeneratedCodeCoverageExclusion;
 import org.adempiere.base.LookupFactoryHelper;
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.util.GridRowCtx;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -1391,7 +1392,9 @@ public class GridField
 			if (value != null)
 				return value;
 		}
-		return new DefaultEvaluatee(getGridTab(), m_vo.WindowNo, m_vo.TabNo).get_ValueAsString(ctx, variableName);
+		// a GridRowCtx carries the values of the row being rendered (grid view), the GridTab only those of the current row
+		GridTab gridTab = ctx instanceof GridRowCtx ? null : getGridTab();
+		return new DefaultEvaluatee(gridTab, m_vo.WindowNo, m_vo.TabNo).get_ValueAsString(ctx, variableName);
 	}	//	get_ValueAsString
 
 	/**
