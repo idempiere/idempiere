@@ -557,6 +557,11 @@ public class MSequence extends X_AD_Sequence
 		catch (Exception e)
 		{
 			s_log.log(Level.SEVERE, "(DocType) [" + trxName + "]", e);
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				s_log.log(Level.SEVERE, "(DocType) - rollback", e1);
+			}
 			if (DBException.isTimeout(e))
 				throw new AdempiereException("GenerateDocumentNoTimeOut", e);
 			else
@@ -570,11 +575,6 @@ public class MSequence extends X_AD_Sequence
 			try
 			{
 				if ((trx == null || seq.isAllowSequenceGaps()) && conn != null) {
-					try {
-						conn.rollback();
-					} catch (SQLException e1) {
-						s_log.log(Level.SEVERE, "(DocType) - rollback", e1);
-					}
 					conn.close();
 					conn = null;
 				}
