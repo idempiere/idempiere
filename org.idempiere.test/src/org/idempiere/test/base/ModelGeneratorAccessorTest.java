@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -39,6 +40,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Stream;
 
 import javax.tools.JavaCompiler;
@@ -61,6 +63,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 
 /**
@@ -98,51 +101,108 @@ public class ModelGeneratorAccessorTest extends AbstractTestCase {
 		assertNotNull(compiler, "the tests need a JDK, not a JRE");
 		Path source = folder.resolve(CLASS_NAME.replace('.', '/') + ".java");
 		java.io.StringWriter errors = new java.io.StringWriter();
+		String classPath = classPath();
 		boolean compiled;
 		try (StandardJavaFileManager files = compiler.getStandardFileManager(null, null, null)) {
-			compiled = compiler.getTask(errors, files, null, List.of("-proc:none", "-nowarn", "-classpath", classPath(), "-d", folder.toString()),
+			compiled = compiler.getTask(errors, files, null, List.of("-proc:none", "-nowarn", "-classpath", classPath, "-d", folder.toString()),
 					null, files.getJavaFileObjects(source)).call();
 		}
-		assertTrue(compiled, "the generated accessor compiles: " + errors + "\nclasspath: " + classPath().replace(java.io.File.pathSeparator, "\n"));
+		assertTrue(compiled, "the generated accessor compiles: " + errors + "\nclasspath: " + classPath.replace(java.io.File.pathSeparator, "\n"));
 		loader = new URLClassLoader(new URL[] {folder.toUri().toURL()}, PO.class.getClassLoader());
 		accessor = loader.loadClass(CLASS_NAME);
 	}
 
-	/** the jar of every installed bundle; a location is like initial@reference:file:../../../org.adempiere.base/target/x.jar, relative to an OSGi area */
+	/**
+	 * The class path of every installed bundle. Maven installs the bundles as jars or class folders. Eclipse installs the
+	 * bundles of the workspace as project folders whose classes are in the output folders of the dev properties
+	 * (osgi.dev) of the launch; a bundle location is like initial@reference:file:../../../org.adempiere.base/target/x.jar,
+	 * relative to an OSGi area.
+	 */
 	private static String classPath() {
+		BundleContext context = FrameworkUtil.getBundle(PO.class).getBundleContext();
 		List<Path> bases = new ArrayList<>();
 		for (String key : new String[] {"user.dir", "osgi.install.area", "osgi.configuration.area", "osgi.syspath", "osgi.framework"}) {
 			String value = System.getProperty(key);
 			if (value == null)
-				continue;
-			try {
-				bases.add(value.startsWith("file:") ? Path.of(java.net.URI.create(value.replace(" ", "%20"))) : Path.of(value));
-			} catch (RuntimeException e) {
-				// not a usable location: try the next area
-			}
+				value = context.getProperty(key); // framework property, not a system property in Eclipse
+			Path base = toPath(value);
+			if (base != null)
+				bases.add(base);
 		}
+		Properties dev = devProperties(context);
 		List<String> entries = new ArrayList<>();
-		Bundle bundle = FrameworkUtil.getBundle(PO.class);
-		for (Bundle b : bundle.getBundleContext().getBundles()) {
-			String location = b.getLocation();
-			if (location == null)
+		for (Bundle b : context.getBundles()) {
+			Path path = bundlePath(b, bases);
+			if (path == null)
 				continue;
-			location = location.replaceFirst("^initial@", "").replaceFirst("^reference:", "").replaceFirst("^file:", "");
-			Path path = Path.of(location);
-			if (path.isAbsolute()) {
-				if (Files.exists(path))
-					entries.add(path.toString());
+			String[] devClassPath = devClassPath(b, dev);
+			if (!Files.isDirectory(path) || devClassPath == null) {
+				entries.add(path.toString());
 				continue;
 			}
-			for (Path base : bases) {
-				Path candidate = (Files.isDirectory(base) ? base : base.getParent()).resolve(path).normalize();
-				if (Files.exists(candidate)) {
-					entries.add(candidate.toString());
-					break;
-				}
+			// a project folder of Eclipse: the classes and the jars are the output folders of dev.properties
+			for (String entry : devClassPath) {
+				Path output = path.resolve(entry.trim()).normalize();
+				if (Files.exists(output))
+					entries.add(output.toString());
 			}
 		}
 		return String.join(java.io.File.pathSeparator, entries);
+	}
+
+	/** the location of a bundle, resolved against the OSGi areas when it is relative, null when it does not exist */
+	private static Path bundlePath(Bundle bundle, List<Path> bases) {
+		Path path = toPath(bundle.getLocation());
+		if (path == null)
+			return null;
+		if (path.isAbsolute())
+			return Files.exists(path) ? path : null;
+		for (Path base : bases) {
+			Path candidate = (Files.isDirectory(base) ? base : base.getParent()).resolve(path).normalize();
+			if (Files.exists(candidate))
+				return candidate;
+		}
+		return null;
+	}
+
+	/** a location like file:/x, file:../x or a plain path, null when it is not a usable location */
+	private static Path toPath(String location) {
+		if (location == null)
+			return null;
+		String value = location.replaceFirst("^initial@", "").replaceFirst("^reference:", "");
+		try {
+			if (value.startsWith("file:")) {
+				try {
+					return Path.of(java.net.URI.create(value.replace(" ", "%20")));
+				} catch (RuntimeException e) {
+					value = value.substring("file:".length()); // a relative location, not a hierarchical URI
+				}
+			}
+			return Path.of(value);
+		} catch (RuntimeException e) {
+			return null;
+		}
+	}
+
+	/** the dev properties of an Eclipse launch: bundle=output folder,jar per line, empty outside a launch in development mode */
+	private static Properties devProperties(BundleContext context) {
+		Properties properties = new Properties();
+		Path location = toPath(context.getProperty("osgi.dev"));
+		if (location == null || !Files.isRegularFile(location))
+			return properties;
+		try (InputStream in = Files.newInputStream(location)) {
+			properties.load(in);
+		} catch (IOException e) {
+			// not in development mode: the bundles are jars or class folders
+		}
+		return properties;
+	}
+
+	/** the output folders of a bundle in development mode, null when the bundle is not built in the workspace */
+	private static String[] devClassPath(Bundle bundle, Properties dev) {
+		String key = bundle.getSymbolicName() + ";" + bundle.getVersion();
+		String value = dev.getProperty(key, dev.getProperty(bundle.getSymbolicName()));
+		return value == null ? null : value.split(",");
 	}
 
 	@AfterAll
