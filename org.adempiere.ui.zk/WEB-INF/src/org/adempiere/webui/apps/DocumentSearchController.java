@@ -121,16 +121,26 @@ public class DocumentSearchController implements EventListener<Event> {
 	/**
 	 * Echo {@link #ON_SEARCH_DOCUMENTS_EVENT} with value as event data.
 	 * 
-	 * @param value
+	 * @param value search text
 	 */
 	public void search(String value) {
+		search(value, null);
+	}
+
+	/**
+	 * Echo {@link #ON_SEARCH_DOCUMENTS_EVENT} with value as event data.
+	 * 
+	 * @param value search text
+	 * @param completedCallback callback invoked after the search has completed, null if not needed
+	 */
+	public void search(String value, Runnable completedCallback) {
 		if (Util.isEmpty(value) || (value.startsWith("/") && value.indexOf(" ") < 0)) {
 			if (!showingGuide)
 				layout.getChildren().clear();
 		} else {
 			layout.getChildren().clear();
 		}
-		Events.echoEvent(ON_SEARCH_DOCUMENTS_EVENT, layout, value);
+		Events.echoEvent(ON_SEARCH_DOCUMENTS_EVENT, layout, new SearchEventData(value, completedCallback));
 	}
 
 	/**
@@ -707,7 +717,16 @@ public class DocumentSearchController implements EventListener<Event> {
 				doZoom(result);
 			}
 		} else if (event.getName().equals(ON_SEARCH_DOCUMENTS_EVENT)) {
-			onSearchDocuments((String) event.getData());
+			if (event.getData() instanceof SearchEventData searchEventData) {
+				try {
+					onSearchDocuments(searchEventData.value());
+				} finally {
+					if (searchEventData.completedCallback() != null)
+						searchEventData.completedCallback().run();
+				}
+			} else {
+				onSearchDocuments((String) event.getData());
+			}
 		}
 	}
 
