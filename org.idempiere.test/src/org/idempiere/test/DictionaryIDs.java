@@ -335,7 +335,8 @@ public final class DictionaryIDs {
 	public enum C_ElementValue {
 		CHECKING_IN_TRANSFER(509),
 		DEFAULT_ACCOUNT(697),
-		SUSPENSE_BALANCING(698);
+		SUSPENSE_BALANCING(698),
+		PRODUCT_ASSET(742);
 		
 		public final int id;
 		
@@ -364,6 +365,16 @@ public final class DictionaryIDs {
 		public final int id;
 
 		private C_PaymentTerm(int id) {
+			this.id = id;
+		}
+	}
+	
+	public enum C_Period {
+		JAN_03(160);
+
+		public final int id;
+
+		private C_Period(int id) {
 			this.id = id;
 		}
 	}
