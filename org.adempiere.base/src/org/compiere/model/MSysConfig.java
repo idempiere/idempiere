@@ -146,6 +146,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String JASPER_SWAP_MAX_PAGES = "JASPER_SWAP_MAX_PAGES";
     public static final String LABEL_AUTOMATIC_COLOR = "LABEL_AUTOMATIC_COLOR";
     public static final String LASTRUN_RECORD_COUNT = "LASTRUN_RECORD_COUNT";
+    public static final String LAZY_GENERATE_DOCUMENTNO_FROM_SEQUENCE = "LAZY_GENERATE_DOCUMENTNO_FROM_SEQUENCE";
     public static final String LDAP_TYPE = "LDAP_TYPE";
     public static final String LOCATION_MAPS_DESTINATION_ADDRESS = "LOCATION_MAPS_DESTINATION_ADDRESS";
     public static final String LOCATION_MAPS_ROUTE_PREFIX = "LOCATION_MAPS_ROUTE_PREFIX";
