@@ -352,4 +352,157 @@ public class MatchingTest extends AbstractTestCase {
 		MMatchInv[] matchInvs = MMatchInv.getInvoiceLine(Env.getCtx(), invoiceLine.get_ID(), getTrxName());
 		assertEquals(1, matchInvs.length, "Unexpected number of MatchInv for invoice line");
 	}
+
+	/**
+	 * Test that an order fully matched to both receipt and invoice does not appear
+	 * in not-fully-matched lists (IDEMPIERE-7174).
+	 * <p>
+	 * When an invoice is processed and posted before receipt, two distinct {@link MMatchPO}
+	 * records are created for the order line (one for invoice with M_InOutLine_ID == 0,
+	 * and one for receipt with C_InvoiceLine_ID == 0). IDEMPIERE-7174 fixed the SQL join
+	 * condition so that the existence of both records does not falsely trigger the
+	 * unmatched check on the order.
+	 */
+	@Test
+	public void testOrderFullyMatchedToReceiptAndInvoice() {
+		MBPartner bpartner = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.TREE_FARM.id);
+		MProduct product = MProduct.get(Env.getCtx(), DictionaryIDs.M_Product.AZALEA_BUSH.id);
+		
+		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+		order.setBPartner(bpartner);
+		order.setIsSOTrx(false);
+		order.setC_DocTypeTarget_ID();
+		order.setDocStatus(DocAction.STATUS_Drafted);
+		order.setDocAction(DocAction.ACTION_Complete);
+		order.saveEx();
+		
+		BigDecimal orderQty = new BigDecimal("1");
+		MOrderLine orderLine = new MOrderLine(order);
+		orderLine.setLine(10);
+		orderLine.setProduct(product);
+		orderLine.setQty(orderQty);
+		orderLine.saveEx();
+		
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		order.load(getTrxName());		
+		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+		
+		// 1. Verify order appears in both not-fully-matched lists before invoice and receipt
+		List<MOrder.MatchingRecord> notMatchReceipts = MOrder.getNotFullyMatchedToReceipt(bpartner.get_ID(), product.get_ID(), 0, null, null, getTrxName());
+		assertTrue(notMatchReceipts.stream().anyMatch(m -> order.getDocumentNo().equals(m.documentNo())), 
+				"PO line should be in not-fully-matched-to-receipt before receipt is created");
+
+		List<MOrder.MatchingRecord> notMatchInvoices = MOrder.getNotFullyMatchedToInvoice(bpartner.get_ID(), product.get_ID(), 0, null, null, getTrxName());
+		assertTrue(notMatchInvoices.stream().anyMatch(m -> order.getDocumentNo().equals(m.documentNo())), 
+				"PO line should be in not-fully-matched-to-invoice before invoice is created");
+		
+		// 2. Create and complete AP invoice for the order first
+		MInvoice invoice = new MInvoice(order, DictionaryIDs.C_DocType.AP_INVOICE.id, order.getDateOrdered());
+		invoice.setDocStatus(DocAction.STATUS_Drafted);
+		invoice.setDocAction(DocAction.ACTION_Complete);
+		invoice.saveEx();
+		
+		MInvoiceLine invoiceLine = new MInvoiceLine(invoice);
+		invoiceLine.setOrderLine(orderLine);
+		invoiceLine.setLine(10);
+		invoiceLine.setQty(orderQty);
+		invoiceLine.saveEx();
+		
+		info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		invoice.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
+		
+		// Order is fully matched to invoice, but not yet to receipt
+		notMatchInvoices = MOrder.getNotFullyMatchedToInvoice(bpartner.get_ID(), product.get_ID(), 0, null, null, getTrxName());
+		assertFalse(notMatchInvoices.stream().anyMatch(m -> order.getDocumentNo().equals(m.documentNo())), 
+				"PO line should not be in not-fully-matched-to-invoice after invoice is completed");
+
+		List<MOrder.MatchingRecord> fullOrPartialInvoices = MOrder.getFullOrPartiallyMatchedToInvoice(bpartner.get_ID(), product.get_ID(), 0, null, null, getTrxName());
+		assertTrue(fullOrPartialInvoices.stream().anyMatch(m -> order.getDocumentNo().equals(m.documentNo())), 
+				"PO line should be in full-or-partially-matched-to-invoice after invoice is completed");
+
+		notMatchReceipts = MOrder.getNotFullyMatchedToReceipt(bpartner.get_ID(), product.get_ID(), 0, null, null, getTrxName());
+		assertTrue(notMatchReceipts.stream().anyMatch(m -> order.getDocumentNo().equals(m.documentNo())), 
+				"PO line should still be in not-fully-matched-to-receipt before receipt is created");
+
+		// Post the invoice MatchPO so subsequent receipt matching does not combine with it,
+		// producing two distinct MatchPO records (one for invoice, one for receipt) to reproduce IDEMPIERE-7174
+		MMatchPO[] invoiceMatchPOs = MMatchPO.getOrderLine(Env.getCtx(), orderLine.get_ID(), getTrxName());
+		assertEquals(1, invoiceMatchPOs.length, "Order line should have 1 MatchPO record for invoice");
+		assertEquals(invoiceLine.getC_InvoiceLine_ID(), invoiceMatchPOs[0].getC_InvoiceLine_ID());
+		assertEquals(0, invoiceMatchPOs[0].getM_InOutLine_ID());
+		invoiceMatchPOs[0].setPosted(true);
+		invoiceMatchPOs[0].saveEx();
+
+		// 3. Create and complete material receipt for the order
+		MInOut receipt = new MInOut(order, DictionaryIDs.C_DocType.MM_RECEIPT.id, order.getDateOrdered());
+		receipt.saveEx();
+		
+		MWarehouse wh = MWarehouse.get(Env.getCtx(), receipt.getM_Warehouse_ID());
+		int M_Locator_ID = wh.getDefaultLocator().getM_Locator_ID();
+		
+		MInOutLine receiptLine = new MInOutLine(receipt);
+		receiptLine.setOrderLine(orderLine, M_Locator_ID, orderQty);
+		receiptLine.setLine(10);
+		receiptLine.setQty(orderQty);
+		receiptLine.saveEx();
+		
+		info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		receipt.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
+		
+		// Order line should now have 2 distinct MatchPO records (one for invoice, one for receipt)
+		MMatchPO[] matchPOs = MMatchPO.getOrderLine(Env.getCtx(), orderLine.get_ID(), getTrxName());
+		assertEquals(2, matchPOs.length, "Order line should have 2 distinct MatchPO records (one for invoice, one for receipt)");
+		boolean hasReceiptMatch = false;
+		boolean hasInvoiceMatch = false;
+		for (MMatchPO mpo : matchPOs) {
+			if (mpo.getM_InOutLine_ID() == receiptLine.getM_InOutLine_ID() && mpo.getC_InvoiceLine_ID() == 0) {
+				hasReceiptMatch = true;
+			}
+			if (mpo.getC_InvoiceLine_ID() == invoiceLine.getC_InvoiceLine_ID() && mpo.getM_InOutLine_ID() == 0) {
+				hasInvoiceMatch = true;
+			}
+		}
+		assertTrue(hasReceiptMatch, "Order line should have a MatchPO record specifically for the receipt");
+		assertTrue(hasInvoiceMatch, "Order line should have a MatchPO record specifically for the invoice");
+
+		// 4. Verify order does NOT appear in either not-fully-matched list (IDEMPIERE-7174 fix validation)
+		notMatchReceipts = MOrder.getNotFullyMatchedToReceipt(bpartner.get_ID(), product.get_ID(), 0, null, null, getTrxName());
+		assertFalse(notMatchReceipts.stream().anyMatch(m -> order.getDocumentNo().equals(m.documentNo())), 
+				"PO fully matched to both receipt and invoice must not appear in not-fully-matched-to-receipt");
+
+		notMatchInvoices = MOrder.getNotFullyMatchedToInvoice(bpartner.get_ID(), product.get_ID(), 0, null, null, getTrxName());
+		assertFalse(notMatchInvoices.stream().anyMatch(m -> order.getDocumentNo().equals(m.documentNo())), 
+				"PO fully matched to both receipt and invoice must not appear in not-fully-matched-to-invoice");
+
+		// 5. Verify order DOES appear in both full-or-partially-matched lists
+		List<MOrder.MatchingRecord> fullOrPartialReceipts = MOrder.getFullOrPartiallyMatchedToReceipt(bpartner.get_ID(), product.get_ID(), 0, null, null, getTrxName());
+		assertTrue(fullOrPartialReceipts.stream().anyMatch(m -> order.getDocumentNo().equals(m.documentNo())), 
+				"PO fully matched to both receipt and invoice must appear in full-or-partially-matched-to-receipt");
+
+		fullOrPartialInvoices = MOrder.getFullOrPartiallyMatchedToInvoice(bpartner.get_ID(), product.get_ID(), 0, null, null, getTrxName());
+		assertTrue(fullOrPartialInvoices.stream().anyMatch(m -> order.getDocumentNo().equals(m.documentNo())), 
+				"PO fully matched to both receipt and invoice must appear in full-or-partially-matched-to-invoice");
+
+		// 6. Also verify filtering by specific line ID
+		List<MOrder.MatchingRecord> lineMatchReceipts = MOrder.getFullOrPartiallyMatchedToReceipt(bpartner.get_ID(), product.get_ID(), receiptLine.get_ID(), null, null, getTrxName());
+		assertTrue(lineMatchReceipts.stream().anyMatch(m -> order.getDocumentNo().equals(m.documentNo())),
+				"PO fully matched should appear in full-or-partially-matched-to-receipt when filtering by M_InOutLine_ID");
+
+		List<MOrder.MatchingRecord> lineMatchInvoices = MOrder.getFullOrPartiallyMatchedToInvoice(bpartner.get_ID(), product.get_ID(), invoiceLine.get_ID(), null, null, getTrxName());
+		assertTrue(lineMatchInvoices.stream().anyMatch(m -> order.getDocumentNo().equals(m.documentNo())),
+				"PO fully matched should appear in full-or-partially-matched-to-invoice when filtering by C_InvoiceLine_ID");
+
+		List<MOrder.MatchingRecord> notMatchReceiptsWithLine = MOrder.getNotFullyMatchedToReceipt(bpartner.get_ID(), product.get_ID(), receiptLine.get_ID(), null, null, getTrxName());
+		assertFalse(notMatchReceiptsWithLine.stream().anyMatch(m -> order.getDocumentNo().equals(m.documentNo())),
+				"PO fully matched must not appear in not-fully-matched-to-receipt when filtering by M_InOutLine_ID");
+
+		List<MOrder.MatchingRecord> notMatchInvoicesWithLine = MOrder.getNotFullyMatchedToInvoice(bpartner.get_ID(), product.get_ID(), invoiceLine.get_ID(), null, null, getTrxName());
+		assertFalse(notMatchInvoicesWithLine.stream().anyMatch(m -> order.getDocumentNo().equals(m.documentNo())),
+				"PO fully matched must not appear in not-fully-matched-to-invoice when filtering by C_InvoiceLine_ID");
+	}
 }
