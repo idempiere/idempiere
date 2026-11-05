@@ -561,6 +561,7 @@ public class MTree extends MTree_Base
 			sql = MRole.getDefault(getCtx(), false).addAccessSQL(sql, 
 				sourceTable, MRole.SQL_FULLYQUALIFIED, m_editable);
 		else	//	no access filter, read only the nodes of this tree
+			//	columnNameX is also the table name of the AD_Table_ID branch: getSourceTableName(true) falls back to it
 			sql += (sql.indexOf(" WHERE ") != -1 ? " AND " : " WHERE ")
 				+ sourceTable + "." + columnNameX + "_ID IN (SELECT Node_ID FROM " + getNodeTableName()
 				+ " WHERE AD_Tree_ID=" + getAD_Tree_ID() + ")";

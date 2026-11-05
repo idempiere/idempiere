@@ -89,6 +89,8 @@ public class MTreeTest extends AbstractTestCase {
 		bpartner.setIsActive(false);
 		bpartner.saveEx();
 
+		// the GardenWorld business partner tree has IsAllNodes=Y: a new business partner becomes one of its nodes
+
 		int treeId = DictionaryIDs.AD_Tree.GARDENWORLD_BUS_PARTNER.id;
 		MTree editable = new MTree(Env.getCtx(), treeId, true, true, getTrxName());
 		assertNotNull(editable.getRoot().findNode(bpartner.getC_BPartner_ID()), "Editable tree lost an inactive node");
@@ -127,7 +129,7 @@ public class MTreeTest extends AbstractTestCase {
 			logger.setLevel(level);
 			logger.removeHandler(handler);
 		}
-		assertEquals(1, statements.size(), "Node details SQL was not logged");
+		assertEquals(1, statements.size(), "Expected one node details SQL log entry, got " + statements.size());
 		return statements.get(0);
 	}
 }
