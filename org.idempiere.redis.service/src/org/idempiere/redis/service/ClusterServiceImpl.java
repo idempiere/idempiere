@@ -629,7 +629,15 @@ public class ClusterServiceImpl implements IClusterService {
 	private static Codec buildRpcCodec(RedisConfig cfg) {
 		Set<String> allowlist = cfg.getRpcCallableAllowlist();
 		if (allowlist.isEmpty()) {
-			return null; // no restriction — existing Redisson default codec
+			// No restriction. The client's default codec cannot send java.util.logging.Level
+			// (SystemInfo.logLevel): Kryo reflects on its private fields and the java.logging module
+			// refuses. When that default is Kryo5Codec, use the same codec, unrestricted, with the
+			// Level serializer; any other configured codec is left as it is.
+			Codec clientCodec = Activator.getRedissonClient().getConfig().getCodec();
+			if (clientCodec == null || clientCodec.getClass() == org.redisson.codec.Kryo5Codec.class) {
+				return new AllowlistKryo5Codec(null, Set.of());
+			}
+			return null;
 		}
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();
 		log.info("RPC codec: allow-list active ({} class(es))", allowlist.size());
