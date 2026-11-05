@@ -43,6 +43,7 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -52,12 +53,15 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.compiere.util.CacheMgt;
+import org.compiere.util.CacheNewRecordCallable;
 import org.idempiere.distributed.IClusterMember;
 import org.idempiere.distributed.IClusterService;
 import org.idempiere.redis.service.cluster.AllowlistKryo5Codec;
@@ -134,6 +138,20 @@ public class ClusterServiceImpl implements IClusterService {
 	private volatile long rpcTimeoutSeconds = DEFAULT_RPC_TIMEOUT_SECONDS;
 	private volatile Codec rpcCodec;
 	private volatile String rpcHmacSecret;
+
+	/** How often {@link #retryFailedNotifications()} re-publishes notifications that could not be published. */
+	private static final long NOTIFICATION_RETRY_SECONDS = 30L;
+	/** Upper bound of {@link #failedNotifications}; beyond it one cluster-wide cache reset is owed instead. */
+	private static final int MAX_FAILED_NOTIFICATIONS = 10_000;
+
+	/**
+	 * Fire-and-forget notifications ({@link #isNotification(Callable)}) whose publish failed, so the other
+	 * nodes never received them. Re-published by {@link #retryFailedNotifications()}.
+	 */
+	private final ConcurrentLinkedQueue<RpcRequest> failedNotifications = new ConcurrentLinkedQueue<>();
+	private final AtomicInteger failedNotificationCount = new AtomicInteger(0);
+	/** Set when {@link #failedNotifications} overflowed: one cluster-wide cache reset replaces the dropped ones. */
+	private final AtomicBoolean fullResetOwed = new AtomicBoolean(false);
 
 	@Activate
 	void activate() {
@@ -275,6 +293,22 @@ public class ClusterServiceImpl implements IClusterService {
 			return result;
 		}
 
+		// Cache notifications nobody reads a result of: send them without a reply topic. No
+		// response subscription is opened and nothing waits, so a burst of new records cannot
+		// exhaust the subscription pool, trip the breaker and get the notices dropped. Not gated by
+		// the breaker: it guards the subscription pool, which this path does not use.
+		if (isNotification(task)) {
+			publishNotification(new RpcRequest(taskId, self.getId(), remoteUuids.toArray(new String[0]), null, task));
+			for (Map.Entry<IClusterMember, CompletableFuture<V>> e : futures.entrySet()) {
+				if (!self.getId().equals(e.getKey().getId())) {
+					e.getValue().complete(null);
+				}
+			}
+			@SuppressWarnings({"rawtypes", "unchecked"})
+			Map<IClusterMember, Future<V>> result = (Map) futures;
+			return result;
+		}
+
 		// Check the breaker BEFORE allocating another response-topic subscription: once OPEN
 		// (typically because the subscription pool is already at/near threshold), every further
 		// call must stop adding listeners too, or the fast-path never actually gates anything —
@@ -362,6 +396,70 @@ public class ClusterServiceImpl implements IClusterService {
 		}
 	}
 
+	/**
+	 * A callable whose result no caller reads, sent fire-and-forget: the new record notification of
+	 * {@code CacheMgt}, which ignores the futures of {@code execute}.
+	 */
+	private static boolean isNotification(Callable<?> task) {
+		return task instanceof CacheNewRecordCallable;
+	}
+
+	/** Publishes a notification without a reply topic; a failed publish is kept for {@link #retryFailedNotifications()}. */
+	private void publishNotification(RpcRequest request) {
+		String secret = rpcHmacSecret;
+		if (secret != null) {
+			request.setHmac(computeHmac(secret, request.getTaskId(), request.getOriginatorUuid()));
+		}
+		RTopic topic = requestTopic;
+		try {
+			if (topic == null) {
+				throw new IllegalStateException("RPC request topic not subscribed");
+			}
+			topic.publish(request);
+		} catch (Exception e) {
+			keepFailedNotification(request);
+			log.warn("Failed to publish cache notification {}; retried within {}s",
+					request.getTaskId(), NOTIFICATION_RETRY_SECONDS, e);
+		}
+	}
+
+	private void keepFailedNotification(RpcRequest request) {
+		if (failedNotificationCount.incrementAndGet() > MAX_FAILED_NOTIFICATIONS) {
+			failedNotificationCount.decrementAndGet();
+			fullResetOwed.set(true);
+			return;
+		}
+		failedNotifications.add(request);
+	}
+
+	/**
+	 * Re-publishes the notifications that could not be published, oldest first; stops at the first
+	 * failure and keeps the rest. After an overflow, one cluster-wide cache reset is sent once all
+	 * kept notifications are out. Runs on {@link #timeoutExecutor}; catches everything so the task
+	 * keeps its schedule.
+	 */
+	private void retryFailedNotifications() {
+		try {
+			RTopic topic = requestTopic;
+			if (topic == null) {
+				return;
+			}
+			RpcRequest request;
+			while ((request = failedNotifications.peek()) != null) {
+				topic.publish(request);
+				failedNotifications.poll();
+				failedNotificationCount.decrementAndGet();
+			}
+			if (fullResetOwed.compareAndSet(true, false)) {
+				CacheMgt.get().reset();
+				log.warn("Cluster-wide cache reset sent: more than {} cache notifications could not be published",
+						MAX_FAILED_NOTIFICATIONS);
+			}
+		} catch (Throwable t) {
+			log.warn("Re-publishing failed cache notifications failed; will retry in {}s", NOTIFICATION_RETRY_SECONDS, t);
+		}
+	}
+
 	// ---------------------------------------------------------------- Internals
 
 	private void startHeartbeat() {
@@ -396,6 +494,8 @@ public class ClusterServiceImpl implements IClusterService {
 		// the DS component as failed. Better that than swallowing here and letting
 		// execute() NPE later with a misleading "Callable may not be Serializable".
 		timeoutExecutor = Executors.newSingleThreadScheduledExecutor(daemonThreadFactory("redis-cluster-rpc-timeout"));
+		timeoutExecutor.scheduleWithFixedDelay(this::retryFailedNotifications,
+				NOTIFICATION_RETRY_SECONDS, NOTIFICATION_RETRY_SECONDS, TimeUnit.SECONDS);
 		Codec codec = rpcCodec;
 		String topicName = rpcRequestTopicName();
 		requestTopic = (codec != null)
@@ -442,6 +542,13 @@ public class ClusterServiceImpl implements IClusterService {
 			result = request.getCallable().call();
 		} catch (Throwable t) {
 			error = t;
+		}
+		if (request.getResponseTopic() == null) {
+			// Fire-and-forget notification: nobody waits for a reply.
+			if (error != null) {
+				log.warn("Cache notification {} failed on {}", request.getTaskId(), self.getId(), error);
+			}
+			return;
 		}
 		Throwable safeError = toSerializable(error);
 		Codec codec = rpcCodec;
