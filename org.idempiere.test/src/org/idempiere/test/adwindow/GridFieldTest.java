@@ -60,6 +60,7 @@ import org.compiere.model.GridTable;
 import org.compiere.model.Lookup;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MColumn;
+import org.compiere.model.MDocType;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupInfo;
 import org.compiere.model.MQuery;
@@ -903,6 +904,52 @@ public class GridFieldTest extends AbstractTestCase {
 		} finally {
 			Env.setContext(ctx, vo.WindowNo, vo.TabNo, "IsActive", (String)null);
 		}
+	}
+
+	@Test
+	void testDisplayLogicReferenceWithGridRowCtx() {
+		Properties ctx = Env.getCtx();
+		GridFieldVO vo = mock(GridFieldVO.class);
+		vo.ctx = ctx;
+		vo.WindowNo = 100;
+		vo.TabNo = 0;
+		vo.ColumnName = "Description";
+		vo.IsDisplayed = true;
+		vo.IsDisplayedGrid = true;
+		// C_DocTypeTarget_ID references C_DocType: the table name cannot be derived from the column name
+		vo.DisplayLogic = "@C_DocTypeTarget_ID.DocBaseType@='ARC'";
+		GridField gridField = new GridField(vo);
+
+		int creditMemoId = MDocType.getDocType(MDocType.DOCBASETYPE_ARCreditMemo);
+		int invoiceId = MDocType.getDocType(MDocType.DOCBASETYPE_ARInvoice);
+		assertTrue(creditMemoId > 0 && invoiceId > 0, "GardenWorld must have an AR credit memo and an AR invoice document type");
+		// grid view: row 0 is a credit memo, row 1 an invoice
+		GridTab gridTab = mock(GridTab.class);
+		GridTable gridTable = mock(GridTable.class);
+		gridField.setGridTab(gridTab);
+		when(gridTab.getWindowNo()).thenReturn(vo.WindowNo);
+		when(gridTab.getTableModel()).thenReturn(gridTable);
+		lenient().when(gridTable.findColumn(anyString())).thenReturn(-1);
+		when(gridTable.findColumn("C_DocTypeTarget_ID")).thenReturn(1);
+		when(gridTable.getValueAt(0, 1)).thenReturn(Integer.valueOf(creditMemoId));
+		when(gridTable.getValueAt(1, 1)).thenReturn(Integer.valueOf(invoiceId));
+		// the current (selected) row is row 1, it must not decide for row 0
+		lenient().when(gridTab.getTableName()).thenReturn("C_Invoice");
+		lenient().when(gridTab.getField("C_DocTypeTarget_ID")).thenReturn(mock(GridField.class));
+		lenient().when(gridTab.getValue("C_DocTypeTarget_ID")).thenReturn(Integer.valueOf(invoiceId));
+
+		GridRowCtx row0 = new GridRowCtx(ctx, gridTab, 0);
+		GridRowCtx row1 = new GridRowCtx(ctx, gridTab, 1);
+		assertTrue(gridField.isDisplayed(row0, true), "Display logic must resolve the reference with the values of row 0");
+		assertFalse(gridField.isDisplayed(row1, true), "Display logic must resolve the reference with the values of row 1");
+		assertTrue(gridField.isDisplayedGrid(row0, true), "Display logic must resolve the reference with the values of row 0");
+		assertFalse(gridField.isDisplayedGrid(row1, true), "Display logic must resolve the reference with the values of row 1");
+		// an empty cell stays empty: the selected row (now a credit memo) must not fill it in
+		lenient().when(gridTab.getValue("C_DocTypeTarget_ID")).thenReturn(Integer.valueOf(creditMemoId));
+		when(gridTable.getValueAt(2, 1)).thenReturn(null);
+		GridRowCtx row2 = new GridRowCtx(ctx, gridTab, 2);
+		assertFalse(gridField.isDisplayed(row2, true), "An empty cell must not take the value of the selected row");
+		assertFalse(gridField.isDisplayedGrid(row2, true), "An empty cell must not take the value of the selected row");
 	}
 
 	@Test

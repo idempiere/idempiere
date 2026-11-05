@@ -46,6 +46,8 @@ import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DefaultEvaluatee;
+import org.compiere.util.DefaultEvaluatee.DataProvider;
+import org.compiere.util.DefaultEvaluatee.GridTabDataProvider;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
@@ -1392,9 +1394,18 @@ public class GridField
 			if (value != null)
 				return value;
 		}
-		// a GridRowCtx carries the values of the row being rendered (grid view), the GridTab only those of the current row
-		GridTab gridTab = ctx instanceof GridRowCtx ? null : getGridTab();
-		return new DefaultEvaluatee(gridTab, m_vo.WindowNo, m_vo.TabNo).get_ValueAsString(ctx, variableName);
+		if (ctx instanceof GridRowCtx) {
+			// a GridRowCtx carries the values of the row being rendered (grid view), the GridTab only those of the current row:
+			// read the values from the context, keep the GridTab for the column metadata (e.g. @C_DocTypeTarget_ID.DocBaseType@)
+			DataProvider dataProvider = new GridTabDataProvider(getGridTab()) {
+				@Override
+				public Object getValue(String columnName) {
+					return null;
+				}
+			};
+			return new DefaultEvaluatee(dataProvider, m_vo.WindowNo, m_vo.TabNo).get_ValueAsString(ctx, variableName);
+		}
+		return new DefaultEvaluatee(getGridTab(), m_vo.WindowNo, m_vo.TabNo).get_ValueAsString(ctx, variableName);
 	}	//	get_ValueAsString
 
 	/**
