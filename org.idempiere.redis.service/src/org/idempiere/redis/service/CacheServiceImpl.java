@@ -137,6 +137,16 @@ public class CacheServiceImpl implements ICacheService {
 	private final AtomicBoolean pendingRecoveryReset = new AtomicBoolean(false);
 	private volatile ScheduledFuture<?> recoveryRetryTask;
 
+	/** Stands for a {@code null} table name (whole-cache reset) in {@link #failedPublishTables}. */
+	private static final String ALL_TABLES = "";
+
+	/**
+	 * Tables whose invalidation could not be published (Redis unreachable): the other nodes never
+	 * heard of the change. Coalesced per table and retried as one whole-table reset by
+	 * {@link #retryFailedPublishes()}, so a failed publish cannot leave other nodes stale.
+	 */
+	private final Set<String> failedPublishTables = ConcurrentHashMap.newKeySet();
+
 	@Activate
 	// getNodesGroup()/ConnectionListener's InetSocketAddress-only overloads are deprecated in
 	// Redisson 3.27.2 in favor of getRedisNodes(...), but that newer API (BaseRedisNodes) exposes
@@ -184,7 +194,7 @@ public class CacheServiceImpl implements ICacheService {
 				});
 
 		recoveryRetryTask = Adempiere.getThreadPoolExecutor().scheduleWithFixedDelay(
-				this::retryPendingRecoveryReset,
+				this::runScheduledRecovery,
 				RECOVERY_RETRY_INTERVAL_SECONDS, RECOVERY_RETRY_INTERVAL_SECONDS, TimeUnit.SECONDS);
 
 		// Subscribe once to the durable invalidation topic using JSON codec to prevent
@@ -291,6 +301,66 @@ public class CacheServiceImpl implements ICacheService {
 		}
 	}
 
+	/** Runs on iDempiere's shared scheduled pool: both recoveries, each guarded on its own. */
+	private void runScheduledRecovery() {
+		// Each step catches everything: an exception escaping a scheduleWithFixedDelay task cancels it
+		// for good, and recovery would stop without a trace.
+		try {
+			retryPendingRecoveryReset();
+		} catch (Throwable t) {
+			log.warn("Coalesced recovery reset step failed", t);
+		}
+		try {
+			retryFailedPublishes();
+		} catch (Throwable t) {
+			log.warn("Catch-up publish step failed", t);
+		}
+	}
+
+	/**
+	 * Re-publishes one whole-table reset for every table whose invalidation could not be published.
+	 * Stops at the first failure and keeps the remaining tables for the next run.
+	 */
+	private void retryFailedPublishes() {
+		RTopic topic = invalidationTopic;
+		if (topic == null || failedPublishTables.isEmpty()) {
+			return;
+		}
+		for (String key : failedPublishTables) {
+			String tableName = ALL_TABLES.equals(key) ? null : key;
+			// Remove before publishing: a failure marked while this publish is in flight then stays in
+			// the set for the next run instead of being erased by a remove after the publish.
+			if (!failedPublishTables.remove(key)) {
+				continue;
+			}
+			try {
+				topic.publish(new CacheResetMessage(tableName, -1, localNodeId));
+				log.info("Published catch-up reset for {} after an earlier failed invalidation publish",
+						tableName == null ? "all tables" : tableName);
+			} catch (Exception e) {
+				failedPublishTables.add(key);
+				log.warn("Catch-up reset publish failed for {}; will retry in {}s",
+						tableName == null ? "all tables" : tableName, RECOVERY_RETRY_INTERVAL_SECONDS);
+				return;
+			}
+		}
+	}
+
+	/**
+	 * The invalidation topic is not subscribed (component not yet activated): the other nodes would
+	 * not hear of the change, so remember the table for a catch-up reset once the topic exists.
+	 */
+	private void markTopicUnavailable(String tableName) {
+		markPublishFailed(tableName);
+		log.warn("Cache invalidation topic not available; {} remembered for a catch-up reset",
+				tableName == null ? "all tables" : tableName);
+	}
+
+	/** Remembers a table whose invalidation could not be published, for {@link #retryFailedPublishes()}. */
+	private void markPublishFailed(String tableName) {
+		failedPublishTables.add(tableName == null ? ALL_TABLES : tableName);
+	}
+
 	/** Runs on iDempiere's shared scheduled pool, independent of {@link #resetExecutor}. */
 	private void retryPendingRecoveryReset() {
 		if (!pendingRecoveryReset.compareAndSet(true, false)) {
@@ -323,6 +393,7 @@ public class CacheServiceImpl implements ICacheService {
 			retryTask.cancel(false);
 		}
 		pendingRecoveryReset.set(false);
+		failedPublishTables.clear();
 		RTopic topic = invalidationTopic;
 		int listenerId = invalidationListenerId;
 		invalidationTopic = null;
@@ -421,13 +492,19 @@ public class CacheServiceImpl implements ICacheService {
 	@Override
 	public void broadcastReset(String tableName, int recordId) {
 		RTopic topic = invalidationTopic;
-		if (topic == null) return;
+		if (topic == null) {
+			markTopicUnavailable(tableName);
+			return;
+		}
 		try {
 			topic.publish(new CacheResetMessage(tableName, recordId, localNodeId));
 		} catch (Exception e) {
-			log.warn("broadcastReset publish failed for table {}; local reset already applied", tableName, e);
+			markPublishFailed(tableName);
+			log.warn("broadcastReset publish failed for table {}; local reset already applied, "
+					+ "a catch-up reset is retried in {}s", tableName, RECOVERY_RETRY_INTERVAL_SECONDS, e);
 		}
 	}
+
 
 	/**
 	 * Publishes a fire-and-forget invalidation to all other cluster nodes.
@@ -438,11 +515,16 @@ public class CacheServiceImpl implements ICacheService {
 	@Override
 	public void broadcastReset(String tableName, String key) {
 		RTopic topic = invalidationTopic;
-		if (topic == null) return;
+		if (topic == null) {
+			markTopicUnavailable(tableName);
+			return;
+		}
 		try {
 			topic.publish(new CacheResetMessage(tableName, key, localNodeId));
 		} catch (Exception e) {
-			log.warn("broadcastReset publish failed for table {}; local reset already applied", tableName, e);
+			markPublishFailed(tableName);
+			log.warn("broadcastReset publish failed for table {}; local reset already applied, "
+					+ "a catch-up reset is retried in {}s", tableName, RECOVERY_RETRY_INTERVAL_SECONDS, e);
 		}
 	}
 
