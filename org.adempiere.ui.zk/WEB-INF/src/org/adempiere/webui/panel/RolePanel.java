@@ -830,7 +830,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 		if (helpURL.contains("{lang}")) {
 			String rawURL = helpURL;
 			helpURL = Util.replace(rawURL, "{lang}", lang);
-			if (!"en".equals(lang) && !WebUtil.isUrlOk(helpURL))
+			if (!"en".equals(lang) && WebUtil.isUrlNotFound(helpURL))
 				helpURL = Util.replace(rawURL, "{lang}", "en"); // default to English
 		}
 		try {
