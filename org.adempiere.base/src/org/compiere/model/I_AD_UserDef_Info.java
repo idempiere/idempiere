@@ -264,6 +264,32 @@ public interface I_AD_UserDef_Info
 	  */
 	public String getName();
 
+    /** Column name OrderByClause */
+    public static final String COLUMNNAME_OrderByClause = "OrderByClause";
+
+	/** Set Sql ORDER BY.
+	  * Fully qualified ORDER BY clause
+	  */
+	public void setOrderByClause (String OrderByClause);
+
+	/** Get Sql ORDER BY.
+	  * Fully qualified ORDER BY clause
+	  */
+	public String getOrderByClause();
+
+    /** Column name OtherClause */
+    public static final String COLUMNNAME_OtherClause = "OtherClause";
+
+	/** Set Other SQL Clause.
+	  * Other SQL Clause
+	  */
+	public void setOtherClause (String OtherClause);
+
+	/** Get Other SQL Clause.
+	  * Other SQL Clause
+	  */
+	public String getOtherClause();
+
     /** Column name PO_Window_ID */
     public static final String COLUMNNAME_PO_Window_ID = "PO_Window_ID";
 
@@ -310,4 +336,17 @@ public interface I_AD_UserDef_Info
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
+
+    /** Column name WhereClause */
+    public static final String COLUMNNAME_WhereClause = "WhereClause";
+
+	/** Set Sql WHERE.
+	  * Fully qualified SQL WHERE clause
+	  */
+	public void setWhereClause (String WhereClause);
+
+	/** Get Sql WHERE.
+	  * Fully qualified SQL WHERE clause
+	  */
+	public String getWhereClause();
 }

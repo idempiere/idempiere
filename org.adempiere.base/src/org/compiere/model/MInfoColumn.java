@@ -220,7 +220,7 @@ public class MInfoColumn extends X_AD_InfoColumn implements IInfoColumn, Immutab
 		
 		// Validate info window
 		if (isNeedValid){
-			getParent().validate();
+			getParent().setIsValid(false);
 			getParent().saveEx(get_TrxName());
 		}
 				
@@ -236,7 +236,7 @@ public class MInfoColumn extends X_AD_InfoColumn implements IInfoColumn, Immutab
 	 */
 	@Override
 	protected boolean afterDelete(boolean success) {
-		getParent().validate();
+		getParent().setIsValid(false);
 		getParent().saveEx(get_TrxName());
 		return super.afterDelete(success);
 	}

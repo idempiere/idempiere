@@ -243,6 +243,8 @@ public class InfoColumnVO implements Serializable, Cloneable {
 				vo.QueryOperator= userDef.getQueryOperator();
 			if (userDef.getIsAutocomplete() != null)
 				vo.isAutocomplete = "Y".equals(userDef.getIsAutocomplete());
+			if (userDef.getSelectClause() != null)
+				vo.SelectClause = userDef.getSelectClause();
 		}
 		//
 		return vo;
