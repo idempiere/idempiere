@@ -202,6 +202,8 @@ public class GridFieldVO implements Serializable, Cloneable
 				vo.AD_Chart_ID = userDef.getAD_Chart_ID();
 			if (userDef.getIsHtml() != null)
 				vo.IsHtml = "Y".equals(userDef.getIsHtml());
+			if (userDef.getAD_Process_ID() > 0)
+				vo.AD_Process_ID = userDef.getAD_Process_ID();
 		}
 		//
 		vo.initFinish();
