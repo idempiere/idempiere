@@ -66,4 +66,11 @@ public class MStorageReservationLog extends X_M_StorageReservationLog {
 		super(ctx, rs, trxName);
 	}
 
+	/**
+	 * DocumentNo column in M_StorageReservationLog is for reference to other table
+	 */
+	@Override
+	protected void set_DocumentNoForNewRecord() {		
+	}
 }
+

@@ -2006,7 +2006,8 @@ public class MOrder extends X_C_Order implements DocAction
 					IReservationTracer tracer = null;
 					IReservationTracerFactory factory = Core.getReservationTracerFactory();
 					if (factory != null) {
-						tracer = factory.newTracer(getC_DocType_ID(), getDocumentNo(), line.getLine(), 
+						String docNo = is_UsingTemporaryDocumentNo() ? get_TemporaryDocumentNo() : getDocumentNo();
+						tracer = factory.newTracer(getC_DocType_ID(), docNo, line.getLine(), 
 								line.get_Table_ID(), line.get_ID(), line.getM_Warehouse_ID(), 
 								line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(), isSOTrx(), 
 								get_TrxName());

@@ -475,4 +475,16 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 		return this;
 	}
 
+	/**
+	 * Is lazy generation of document number enable.
+	 * @return true if lazy generation of document number enable, false otherwise
+	 */
+	public boolean isLazyGenerateDocNo() {
+        String isLazy = getIsLazyGenerateDocNo(); // returns "Y", "N", or null
+        if (isLazy != null) {
+            return "Y".equals(isLazy);
+        }
+        return MSysConfig.getBooleanValue(
+            MSysConfig.LAZY_GENERATE_DOCUMENTNO_FROM_SEQUENCE, false, Env.getAD_Client_ID(Env.getCtx()));
+    }
 }	//	MDocType

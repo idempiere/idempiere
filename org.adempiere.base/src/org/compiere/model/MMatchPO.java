@@ -1392,7 +1392,8 @@ public class MMatchPO extends X_M_MatchPO
 					if (factory != null) 
 					{
 						int docTypeId = DB.getSQLValue((String)null, IDoc.DOC_TYPE_BY_DOC_BASE_TYPE_SQL, getAD_Client_ID(), IDoc.DOCTYPE_MatMatchPO);
-						tracer = factory.newTracer(docTypeId, reversal.getDocumentNo(), 10, 
+						String docNo = reversal.is_UsingTemporaryDocumentNo() ? reversal.get_TemporaryDocumentNo() : reversal.getDocumentNo();
+						tracer = factory.newTracer(docTypeId, docNo, 10, 
 								reversal.get_Table_ID(), reversal.get_ID(), oLine.getM_Warehouse_ID(), 
 								oLine.getM_Product_ID(), oLine.getM_AttributeSetInstance_ID(), oLine.getParent().isSOTrx(), 
 								get_TrxName());
