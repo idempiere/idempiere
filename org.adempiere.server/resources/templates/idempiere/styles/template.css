@@ -45,7 +45,25 @@ body {
 }
 .secondary-button span {
     color: var(--theme-text-muted) !important;
-    font-size: 1.5em;
+    font-size: 1.1rem;
+    line-height: 1.2;
+}
+
+.secondary-button .theme-icon {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+}
+@media (max-width: 767.98px) {
+    .secondary-button .theme-icon {
+        width: 48px;
+        height: 48px;
+        margin-bottom: 0.4rem !important;
+    }
+    .secondary-button span {
+        font-size: 0.9rem;
+        line-height: 1.15;
+    }
 }
 .navbar-toggler {
     border-color: var(--theme-border);
@@ -57,12 +75,75 @@ body {
 [data-theme="dark"] .navbar-toggler-icon {
     filter: invert(1);
 }
+/* Compact toggler to sit inline with the brand */
+.navbar-toggler-sm {
+    width: 3rem;
+    height: 3rem;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+.navbar-toggler-sm:focus {
+    box-shadow: none;
+}
+.navbar-toggler-sm:focus-visible {
+    outline: 2px solid var(--theme-accent);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--theme-accent) 35%, transparent);
+}
+.navbar-toggler-sm .navbar-toggler-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+}
 .navbar-brand {
     color: var(--theme-text-muted) !important;
     font-size: 1.5em;
 }
 .navbar-brand .fs-6 {
     color: var(--theme-text-muted) !important;
+}
+/* Responsive (fluid) brand title / subtitle */
+.brand-block {
+    min-width: 0;
+    flex: 1 1 auto;
+    line-height: 1.2;
+}
+.brand-title {
+    font-size: clamp(1.05rem, 4.2vw, 1.75rem);
+    font-weight: 500;
+    color: var(--theme-text-muted) !important;
+    overflow-wrap: break-word;
+}
+.brand-subtitle {
+    font-size: clamp(0.8rem, 2.8vw, 1rem);
+    color: var(--theme-text-muted) !important;
+    overflow-wrap: break-word;
+}
+
+/* Keep title/subtitle inline; reserve space for mobile controls */
+.nav-inline-row {
+    position: relative;
+}
+
+@media (max-width: 991.98px) {
+    .nav-inline-row {
+        padding-right: 0;
+    }
+    .nav-inline-row .brand-block {
+        width: 100%;
+        max-width: 100%;
+        padding-right: 5rem;
+    }
+    .nav-inline-row .nav-controls {
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 3;
+        margin-left: 0 !important;
+        align-self: flex-start;
+    }
 }
 .nav-link {
     color: var(--theme-accent) !important;
@@ -71,6 +152,18 @@ body {
 .nav-link:hover {
     color: var(--theme-text-muted) !important;
     text-decoration: underline;
+}
+@media (min-width: 992px) {
+	.nav-link {
+        white-space: nowrap;
+    }
+    .navbar-expand-lg .navbar-collapse {
+        flex-grow: 0;
+        flex-shrink: 0;
+    }
+    .navbar-expand-lg .navbar-nav .nav-item {
+        flex-shrink: 0;
+    }
 }
 .content {
     min-height: calc(100vh - 250px);
@@ -104,6 +197,16 @@ body {
 [data-theme="dark"] .theme-toggle .icon-dark { display: inline-block; }
 [data-theme="dark"] .theme-toggle .icon-light { display: none; }
 
+/* Small variant used inline with the brand on mobile */
+.theme-toggle-sm {
+    width: 2rem;
+    height: 2rem;
+}
+.theme-toggle-sm svg {
+    width: 1rem;
+    height: 1rem;
+}
+
 /* Footer and links in theme colors */
 footer p, footer a {
     color: var(--theme-text-muted) !important;
@@ -113,4 +216,14 @@ footer a:hover {
 }
 .main-button {
     border-color: var(--theme-border);
+}
+@media (min-width: 768px) {
+    .main-button .fs-3 {
+        font-size: calc(1.375rem + 1.5vw) !important;
+    }
+}
+@media (min-width: 1200px) {
+    .main-button .fs-3 {
+        font-size: 2.5rem !important;
+    }
 }
