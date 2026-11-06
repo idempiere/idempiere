@@ -433,11 +433,11 @@ public abstract class PO
 	private transient Trx m_deferredDocumentNoTrx = null;
 	private transient TrxEventListener m_deferredDocumentNoListener = null;
 	private transient String m_deferredDocumentNoTemp = null;
-	private transient boolean m_skipTriggerDeferredDocumentNo = false;
 
 	/**
-	 * Register the listener and runnable used to generate the actual DocumentNo of a deferred DocumentNo generation.
-	 * Any previously registered deferred DocumentNo listener is removed to ensure the DocumentNo is generated only once.
+	 * Register the listener and runnable used to generate the actual DocumentNo of a deferred DocumentNo generation.<br/>
+	 * Any previously registered deferred DocumentNo listener is removed to ensure the DocumentNo is generated only once.<br/>
+	 * Internal method that should not be called directly by developer.
 	 * @param trx transaction
 	 * @param listener transaction listener
 	 * @param tempDocumentNo temporary DocumentNo value
@@ -455,7 +455,8 @@ public abstract class PO
 	}
 
 	/**
-	 * Remove the registered deferred DocumentNo listener (if any) and clear the deferred DocumentNo state.
+	 * Remove the registered deferred DocumentNo listener (if any) and clear the deferred DocumentNo state.<br/>
+	 * Internal method that should not be called directly by developer.
 	 */
 	void removeDeferredDocumentNoListener() {
 		Trx trx = m_deferredDocumentNoTrx;
@@ -474,7 +475,8 @@ public abstract class PO
 	/**
 	 * Discard a pending deferred DocumentNo generation (i.e. after a rollback or close).<br/>
 	 * The temporary DocumentNo value is reset to null so that the next save generate a new DocumentNo
-	 * from the sequence instead of persisting the temporary value.
+	 * from the sequence instead of persisting the temporary value.<br/>
+	 * Internal method that should not be called directly by developer.
 	 */
 	void clearDeferredDocumentNo() {
 		String tempDocumentNo = m_deferredDocumentNoTemp;
@@ -491,7 +493,8 @@ public abstract class PO
 	}
 
 	/**
-	 * Update m_oldValues and m_newValues after deferred DocumentNo has been generated and updated in DB.
+	 * Update m_oldValues and m_newValues after deferred DocumentNo has been generated and updated in DB.<br/>
+	 * Internal method that should not be called directly by developer.
 	 * @param docNo
 	 */
 	void updateAfterDeferredDocumentNoGenerated(String docNo) {
@@ -512,7 +515,7 @@ public abstract class PO
 		int index = get_ColumnIndex("DocumentNo");
 		if (index < 0)
 			return false;
-		Object rawValue = m_newValues[index] != null ? m_newValues[index] : m_oldValues[index];
+		Object rawValue = get_Value(index, false);
 		return rawValue instanceof String strValue
 				&& MSequence.isTemporaryDocumentNo(strValue)
 				&& s_deferredDocumentNoPOs.containsKey(strValue);
@@ -529,7 +532,7 @@ public abstract class PO
 		int index = get_ColumnIndex("DocumentNo");
 		if (index < 0)
 			return null;
-		Object rawValue = m_newValues[index] != null ? m_newValues[index] : m_oldValues[index];
+		Object rawValue = get_Value(index, false);
 		if (rawValue instanceof String strValue
 				&& MSequence.isTemporaryDocumentNo(strValue)
 				&& s_deferredDocumentNoPOs.containsKey(strValue))
@@ -736,33 +739,25 @@ public abstract class PO
 	 */
 	public final Object get_Value (int index)
 	{
+		return get_Value(index, true);
+	}
+
+	/**
+	 *  Get Value
+	 *  @param index column index
+	 *  @param triggerDeferred if true, trigger deferred DocumentNo generation if pending
+	 *  @return column value
+	 */
+	private final Object get_Value (int index, boolean triggerDeferred)
+	{
 		if (index < 0 || index >= get_ColumnCount())
 		{
 			log.log(Level.WARNING, "Index invalid - " + index);
 			return null;
 		}
-		if (!m_skipTriggerDeferredDocumentNo && "DocumentNo".equals(p_info.getColumnName(index)))
+		if (triggerDeferred && "DocumentNo".equals(p_info.getColumnName(index)))
 		{
-			if (m_deferredDocumentNoRunnable != null)
-			{
-				Runnable r = m_deferredDocumentNoRunnable;
-				m_deferredDocumentNoRunnable = null;
-				r.run();
-			}
-			else
-			{
-				Object rawValue = m_newValues[index] != null ? m_newValues[index] : m_oldValues[index];
-				if (rawValue instanceof String strValue && strValue.startsWith(MSequence.TEMP_DOCUMENTNO_PREFIX))
-				{
-					PO deferredPO = s_deferredDocumentNoPOs.get(strValue);
-					if (deferredPO != null && deferredPO != this)
-					{
-						String actualDocNo = (String) deferredPO.get_Value(index);
-						if (actualDocNo != null && !actualDocNo.equals(strValue))
-							updateAfterDeferredDocumentNoGenerated(actualDocNo);
-					}
-				}
-			}
+			triggerDeferredDocumentNo(index);
 		}
 		if (m_newValues[index] != null)
 		{
@@ -774,6 +769,63 @@ public abstract class PO
 			loadVirtualColumn(index);
 		return m_oldValues[index];
 	}   //  get_Value
+
+	/**
+	 * Trigger deferred DocumentNo generation if pending.
+	 * @param index column index
+	 */
+	private void triggerDeferredDocumentNo(int index)
+	{
+		if (m_deferredDocumentNoRunnable != null)
+		{
+			Runnable r = m_deferredDocumentNoRunnable;
+			m_deferredDocumentNoRunnable = null;
+			r.run();
+		}
+		else
+		{
+			Object rawValue = get_Value(index, false);
+			if (rawValue instanceof String strValue && strValue.startsWith(MSequence.TEMP_DOCUMENTNO_PREFIX))
+			{
+				PO deferredPO = s_deferredDocumentNoPOs.get(strValue);
+				if (deferredPO != null && deferredPO != this && deferredPO.getClass().equals(this.getClass()))
+				{
+					String actualDocNo = (String) deferredPO.get_Value(index);
+					if (actualDocNo != null && !actualDocNo.equals(strValue))
+						updateAfterDeferredDocumentNoGenerated(actualDocNo);
+				}
+				else if (!is_new())
+				{
+					String keyColumnName = null;
+					Object keyValue = null;
+					if (get_KeyColumns() != null && get_KeyColumns().length == 1 && get_KeyColumns()[0].endsWith("_ID"))
+					{
+						int id = get_ID();
+						if (id > 0)
+						{
+							keyColumnName = get_KeyColumns()[0];
+							keyValue = Integer.valueOf(id);
+						}
+					}
+					else
+					{
+						keyColumnName = getUUIDColumnName();
+						if (keyColumnName != null && get_ColumnIndex(keyColumnName) >= 0)
+							keyValue = get_UUID();
+					}
+					if (keyColumnName != null && keyValue != null)
+					{
+						String sql = "SELECT " + DB.getDatabase().quoteColumnName("DocumentNo")
+								+ " FROM " + get_TableName()
+								+ " WHERE " + DB.getDatabase().quoteColumnName(keyColumnName) + "=?";
+						String actualDocNo = DB.getSQLValueStringEx(get_TrxName(), sql, keyValue);
+						if (!Util.isEmpty(actualDocNo, true) && !actualDocNo.equals(strValue))
+							updateAfterDeferredDocumentNoGenerated(actualDocNo);
+					}
+				}
+			}
+		}
+	}
 
 	/**
 	 *  Get Value as int
@@ -3796,7 +3848,7 @@ public abstract class PO
 	/**
 	 * Set DocumentNo for new record
 	 */
-	protected final void set_DocumentNoForNewRecord() {
+	protected void set_DocumentNoForNewRecord() {
 		//	Set new DocumentNo
 		String columnName = "DocumentNo";
 
@@ -4029,20 +4081,7 @@ public abstract class PO
 		for (int i = 0; i < size; i++)
 		{
 			String columnName = p_info.getColumnName(i);
-			Object value;
-			if (!generateScriptOnly && "DocumentNo".equals(columnName))
-			{
-				m_skipTriggerDeferredDocumentNo = true;
-				try {
-					value = get_Value(i);
-				} finally {
-					m_skipTriggerDeferredDocumentNo = false;
-				}
-			}
-			else
-			{
-				value = get_Value(i);
-			}
+			Object value = get_Value(i, false);
 			//	Don't insert NULL values (allows Database defaults)
 			if (value == null
 				|| p_info.isVirtualColumn(i))
