@@ -52,6 +52,7 @@ public class IndexColumnElementHandler extends AbstractElementHandler {
 			}
 
 			List<String> excludes = defaultExcludeList(MIndexColumn.Table_Name);
+			excludes.add(MIndexColumn.COLUMNNAME_AD_TableIndex_ID);
 
 			MIndexColumn mIndexColumn = findPO(ctx, element);
 			if (mIndexColumn == null) {
@@ -70,7 +71,6 @@ public class IndexColumnElementHandler extends AbstractElementHandler {
 				
 				mIndexColumn = new MIndexColumn(ctx.ctx, 0, getTrxName(ctx));
 				mIndexColumn.setAD_TableIndex_ID(parentId);
-				excludes.add(MIndexColumn.COLUMNNAME_AD_TableIndex_ID);
 			}
 
 			PoFiller filler = new PoFiller(ctx, mIndexColumn, element, this);
@@ -81,7 +81,7 @@ public class IndexColumnElementHandler extends AbstractElementHandler {
 			excludes.add("AD_Column_ID");
 			int columnId = 0;
 			Element columnElement = element.properties.get("AD_Column_ID");
-			if (ReferenceUtils.isIDLookup(columnElement) || ReferenceUtils.isUUIDLookup(columnElement)) {
+			if (columnElement != null && (ReferenceUtils.isIDLookup(columnElement) || ReferenceUtils.isUUIDLookup(columnElement))) {
 				columnId = ReferenceUtils.resolveReferenceAsInt(ctx.ctx, columnElement, getTrxName(ctx));
 			}
 			if (columnId > 0)

@@ -73,7 +73,9 @@ public class ColumnElementHandler extends AbstractElementHandler {
 				mColumn = new MColumn(ctx.ctx, 0, getTrxName(ctx));
 			}
 
-			mColumn.setColumnName(columnName);
+			// column name is not part of an incremental 2pack when it has not been changed
+			if (columnName != null || mColumn.is_new())
+				mColumn.setColumnName(columnName);
 			mColumn.setIsSyncDatabase(getStringValue(element, "IsSyncDatabase", excludes));
 
 			PoFiller filler = new PoFiller(ctx, mColumn, element, this);
@@ -388,7 +390,8 @@ public class ColumnElementHandler extends AbstractElementHandler {
 
 		filler.addString("IsSyncDatabase", "Y", new AttributesImpl());
 		filler.addTableReference("AD_Table_ID", "AD_Table", new AttributesImpl());
-		filler.addTableReference("AD_Reference_Value_ID", "AD_Reference", new AttributesImpl());
+		if (filler.isExportColumn("AD_Reference_Value_ID"))
+			filler.addTableReference("AD_Reference_Value_ID", "AD_Reference", new AttributesImpl());
 
 		excludes.add("IsSyncDatabase");
 		excludes.add("AD_Table_ID");
