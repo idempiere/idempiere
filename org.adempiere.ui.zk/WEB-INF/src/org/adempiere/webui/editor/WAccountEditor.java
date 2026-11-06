@@ -180,7 +180,7 @@ public class WAccountEditor extends WEditor implements ContextMenuListener
 		//
 		String sql = "SELECT C_ValidCombination_ID FROM C_ValidCombination "
 			+ "WHERE C_AcctSchema_ID=?"
-			+ " AND (UPPER(Alias) LIKE ? OR UPPER(Combination) LIKE ?)";
+			+ " AND (UPPER(Alias) LIKE UPPER(?) OR UPPER(Combination) LIKE UPPER(?))";
 		sql = MRole.getDefault().addAccessSQL(sql,
 			"C_ValidCombination", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
 		int C_AcctSchema_ID = Env.getContextAsInt(Env.getCtx(), gridField.getWindowNo(), "C_AcctSchema_ID");
@@ -195,8 +195,8 @@ public class WAccountEditor extends WEditor implements ContextMenuListener
 			boolean useSimilarTo = "Y".equals(Env.getContext(Env.getCtx(), "P|IsUseSimilarTo"));
 			if (useSimilarTo && text.contains("*"))
 				text = text.replaceAll("\\*", "\\\\*");
-			pstmt.setString(2, text.toUpperCase());
-			pstmt.setString(3, text.toUpperCase());
+			pstmt.setString(2, text);
+			pstmt.setString(3, text);
 			rs = pstmt.executeQuery();
 			if (rs.next())
 			{

@@ -319,13 +319,13 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 		StringBuilder sql = new StringBuilder();
 
 		if (fDocumentNo.getText().length() > 0)
-			sql.append(" AND UPPER(i.DocumentNo) LIKE ?");
+			sql.append(" AND UPPER(i.DocumentNo) LIKE UPPER(?)");
 
 		if (fDescription.getText().length() > 0)
-			sql.append(" AND UPPER(i.Description) LIKE ?");
+			sql.append(" AND UPPER(i.Description) LIKE UPPER(?)");
 
 		if (fPOReference.getText().length() > 0)
-			sql.append(" AND UPPER(i.POReference) LIKE ?");
+			sql.append(" AND UPPER(i.POReference) LIKE UPPER(?)");
 
 		if (!"".equals(fBPartner_ID.getDisplay()))
 			sql.append(" AND i.C_BPartner_ID=?");
@@ -417,7 +417,7 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 
 	private String getSQLText (Textbox f)
 	{
-		String s = f.getText().toUpperCase();
+		String s = f.getText();
 
 		if (!s.endsWith("%"))
 			s += "%";
