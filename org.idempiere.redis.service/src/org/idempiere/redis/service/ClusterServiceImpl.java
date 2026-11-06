@@ -451,7 +451,13 @@ public class ClusterServiceImpl implements IClusterService {
 				failedNotificationCount.decrementAndGet();
 			}
 			if (fullResetOwed.compareAndSet(true, false)) {
-				CacheMgt.get().reset();
+				try {
+					CacheMgt.get().reset();
+				} catch (RuntimeException | Error e) {
+					// Still owed: the next run retries it.
+					fullResetOwed.set(true);
+					throw e;
+				}
 				log.warn("Cluster-wide cache reset sent: more than {} cache notifications could not be published",
 						MAX_FAILED_NOTIFICATIONS);
 			}
