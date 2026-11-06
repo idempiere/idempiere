@@ -105,7 +105,7 @@ public class MTabCustomization extends X_AD_Tab_Customization {
 	 * @return True if save successfully
 	 */
 	public static boolean saveData(Properties ctx, int AD_Tab_ID, int AD_User_ID, String Custom, String DisplayedGrid, String trxName, boolean isQuickForm) {
-		return saveData(ctx, AD_Tab_ID, AD_User_ID, Custom, DisplayedGrid, trxName, isQuickForm, null);
+		return saveData(ctx, AD_Tab_ID, AD_User_ID, Custom, DisplayedGrid, trxName, isQuickForm, null, null);
 	}
 	
 	/**
@@ -121,25 +121,21 @@ public class MTabCustomization extends X_AD_Tab_Customization {
 	 * @param isAutoHide - is auto hide empty column
 	 * @return True if save successfully
 	 */
-	public static boolean saveData(Properties ctx, int AD_Tab_ID, int AD_User_ID, String Custom, String DisplayedGrid, String trxName, boolean isQuickForm, String isAutoHide) {
+	public static boolean saveData(Properties ctx, int AD_Tab_ID, int AD_User_ID, String Custom, String DisplayedGrid, String trxName, boolean isQuickForm, String isAutoHide, String displayedDetailGrid) {
 		MTabCustomization tabCust = get(ctx, AD_User_ID, AD_Tab_ID, trxName, isQuickForm);
 
-		if (tabCust != null && tabCust.getAD_Tab_Customization_ID() > 0)
-		{
-			tabCust.setCustom(Custom);
-			tabCust.setIsDisplayedGrid(DisplayedGrid);
-			tabCust.setIsAutoHideEmptyColumn(isAutoHide);
-		}
-		else
+		if (tabCust == null || tabCust.getAD_Tab_Customization_ID() == 0)
 		{
 			tabCust = new MTabCustomization(ctx, 0, trxName);
 			tabCust.setAD_Tab_ID(AD_Tab_ID);
 			tabCust.setAD_User_ID(AD_User_ID);
-			tabCust.setCustom(Custom);
-			tabCust.setIsDisplayedGrid(DisplayedGrid);
 			tabCust.setIsQuickForm(isQuickForm);
-			tabCust.setIsAutoHideEmptyColumn(isAutoHide);
 		}
+
+		tabCust.setCustom(Custom);
+		tabCust.setIsDisplayedGrid(DisplayedGrid);
+		tabCust.setIsAutoHideEmptyColumn(isAutoHide);
+		tabCust.setIsDisplayedGridInDetail(displayedDetailGrid);
 
 		if (Util.isEmpty(tabCust.getCustom(), true))
 			return tabCust.delete(true);
