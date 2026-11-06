@@ -215,79 +215,42 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
 				return null;
 		}
 		
-		StringBuilder sql = new StringBuilder();
-		sql.append("(");
-		
-		sql.append("SELECT c.* ");
-		sql.append("FROM M_CostHistory c ");
-		sql.append("JOIN M_CostDetail cd ON (cd.M_CostDetail_ID = c.M_CostDetail_ID AND cd.Processed='Y') ");
-		sql.append("LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=cd.Ref_CostDetail_ID) ");
-		sql.append("LEFT OUTER JOIN M_CostElement ce ON (c.M_CostElement_ID=ce.M_CostElement_ID) ");
-		sql.append("WHERE c.AD_Client_ID=? AND c.AD_Org_ID=? ");
-		sql.append(" AND c.M_Product_ID=? ");
-		sql.append(" AND (c.M_AttributeSetInstance_ID=? OR c.M_AttributeSetInstance_ID=0) ");
-		sql.append(" AND c.M_CostType_ID=? AND cd.C_AcctSchema_ID=? ");
-		sql.append(" AND (ce.CostingMethod IS NULL OR ce.CostingMethod=?) ");
+		// Key values in the SQL text, not as parameters: a cached generic plan cannot use the index for one product
+		// (all are int record ids, the account date goes through DB.TO_DATE: no user input reaches the SQL)
+		StringBuilder from = new StringBuilder();
+		from.append("FROM M_CostHistory c ");
+		from.append("JOIN M_CostDetail cd ON (cd.M_CostDetail_ID = c.M_CostDetail_ID AND cd.Processed='Y') ");
+		from.append("LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=cd.Ref_CostDetail_ID) ");
+		from.append("LEFT OUTER JOIN M_CostElement ce ON (c.M_CostElement_ID=ce.M_CostElement_ID) ");
+		from.append("WHERE c.AD_Client_ID=").append(AD_Client_ID).append(" AND c.AD_Org_ID=").append(AD_Org_ID);
+		from.append(" AND c.M_Product_ID=").append(M_Product_ID);
+		if (M_AttributeSetInstance_ID > 0)
+			from.append(" AND c.M_AttributeSetInstance_ID IN (").append(M_AttributeSetInstance_ID).append(",0)");
+		else
+			from.append(" AND c.M_AttributeSetInstance_ID=0");
+		from.append(" AND c.M_CostType_ID=").append(M_CostType_ID).append(" AND cd.C_AcctSchema_ID=").append(C_AcctSchema_ID);
+		from.append(" AND (ce.CostingMethod IS NULL OR ce.CostingMethod=?) ");
 		if (M_CostElement_ID > 0)
-			sql.append(" AND c.M_CostElement_ID=? ");
-		sql.append(" AND c.DateAcct<=? ");
+			from.append(" AND c.M_CostElement_ID=").append(M_CostElement_ID).append(" ");
+
+		// the last cost history record on or before the account date
+		StringBuilder sql = new StringBuilder("SELECT c.* ").append(from);
+		sql.append(" AND c.DateAcct<=").append(DB.TO_DATE(dateAcct, false)).append(" ");
 		sql.append("ORDER BY c.M_CostHistory_ID DESC ");
-		sql = new StringBuilder(DB.getDatabase().addPagingSQL(sql.toString(), 1, 1));
-		
-		sql.append(") UNION ALL (");
-		
-		sql.append("SELECT c.* "); // get the first cost history record
-		sql.append("FROM M_CostHistory c ");
-		sql.append("JOIN M_CostDetail cd ON (cd.M_CostDetail_ID = c.M_CostDetail_ID AND cd.Processed='Y') ");
-		sql.append("LEFT JOIN M_CostDetail refcd ON (refcd.M_CostDetail_ID=cd.Ref_CostDetail_ID) ");
-		sql.append("LEFT OUTER JOIN M_CostElement ce ON (c.M_CostElement_ID=ce.M_CostElement_ID) ");
-		sql.append("WHERE c.AD_Client_ID=? AND c.AD_Org_ID=? ");
-		sql.append(" AND c.M_Product_ID=? ");
-		sql.append(" AND (c.M_AttributeSetInstance_ID=? OR c.M_AttributeSetInstance_ID=0) ");
-		sql.append(" AND c.M_CostType_ID=? AND cd.C_AcctSchema_ID=? ");
-		sql.append(" AND (ce.CostingMethod IS NULL OR ce.CostingMethod=?) ");
-		if (M_CostElement_ID > 0)
-			sql.append(" AND c.M_CostElement_ID=? ");
-		sql.append("ORDER BY c.DateAcct ASC, ");
-		sql.append("CASE WHEN COALESCE(refcd.DateAcct,cd.DateAcct) = cd.DateAcct THEN COALESCE(cd.Ref_CostDetail_ID, c.M_CostDetail_ID) ELSE c.M_CostDetail_ID END ASC, ");
-		sql.append("c.M_CostHistory_ID ASC");
-		sql = new StringBuilder(DB.getDatabase().addPagingSQL(sql.toString(), 1, 1));
-		
-		sql.append(")");
-		
-		List<Object> params = new ArrayList<Object>();
-		params.add(AD_Client_ID);
-		params.add(AD_Org_ID);
-		params.add(M_Product_ID);
-		params.add(M_AttributeSetInstance_ID);
-		params.add(M_CostType_ID);
-		params.add(C_AcctSchema_ID);
-		params.add(costingMethod);
-		if (M_CostElement_ID > 0)
-			params.add(M_CostElement_ID);
-		params.add(dateAcct);
-		params.add(AD_Client_ID);
-		params.add(AD_Org_ID);
-		params.add(M_Product_ID);
-		params.add(M_AttributeSetInstance_ID);
-		params.add(M_CostType_ID);
-		params.add(C_AcctSchema_ID);
-		params.add(costingMethod);
-		if (M_CostElement_ID > 0)
-			params.add(M_CostElement_ID);
-		
-		MCostHistory costHistory = null;
-		PreparedStatement pstmt = null;
-    	ResultSet rs = null;
-    	try
-    	{
-    		pstmt = DB.prepareStatement(sql.toString(), trxName);
-    		DB.setParameters(pstmt, params);
-    		rs = pstmt.executeQuery();
-    		if (rs.next())
-    		{
-    			costHistory = new MCostHistory(ctx, rs, trxName);
-    			
+		MCostHistory costHistory = getFirst(ctx, DB.getDatabase().addPagingSQL(sql.toString(), 1, 1), costingMethod, trxName);
+
+		if (costHistory == null)
+		{
+			// none: the first cost history record, after the account date
+			sql = new StringBuilder("SELECT c.* ").append(from);
+			sql.append("ORDER BY c.DateAcct ASC, ");
+			sql.append("CASE WHEN COALESCE(refcd.DateAcct,cd.DateAcct) = cd.DateAcct THEN COALESCE(cd.Ref_CostDetail_ID, c.M_CostDetail_ID) ELSE c.M_CostDetail_ID END ASC, ");
+			sql.append("c.M_CostHistory_ID ASC");
+			costHistory = getFirst(ctx, DB.getDatabase().addPagingSQL(sql.toString(), 1, 1), costingMethod, trxName);
+		}
+
+		if (costHistory != null)
+		{
     			// it is the first cost history record 
     			// if the account date of the cost history record is after the account date parameter
     			if (costHistory.getDateAcct().after(dateAcct)) {
@@ -298,18 +261,39 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
     			}
     			
     			costHistory.makeImmutable();
-    		}
-    	}
-    	catch (SQLException e)
+		}
+		return costHistory;
+	}
+
+	/**
+	 * Get the first cost history record of a query
+	 * @param ctx context
+	 * @param sql query with one parameter, the costing method
+	 * @param costingMethod costing method
+	 * @param trxName transaction name
+	 * @return MCostHistory or null
+	 */
+	private static MCostHistory getFirst(Properties ctx, String sql, String costingMethod, String trxName)
+	{
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
 		{
-			throw new DBException(e, sql.toString());
+			pstmt = DB.prepareStatement(sql, trxName);
+			pstmt.setString(1, costingMethod);
+			rs = pstmt.executeQuery();
+			if (rs.next())
+				return new MCostHistory(ctx, rs, trxName);
+			return null;
+		}
+		catch (SQLException e)
+		{
+			throw new DBException(e, sql);
 		}
 		finally
 		{
 			DB.close(rs, pstmt);
-			rs = null; pstmt = null;
 		}
-		return costHistory;
 	}
 
 	@Override
