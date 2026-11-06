@@ -25,7 +25,7 @@ import org.compiere.util.Env;
 
 /** Generated Model for M_Product_PO
  *  @author iDempiere (generated)
- *  @version Release 13 - $Id$ */
+ *  @version Release 14 - $Id$ */
 @org.adempiere.base.Model(table="M_Product_PO")
 public class X_M_Product_PO extends PO implements I_M_Product_PO, I_Persistent
 {
@@ -33,7 +33,7 @@ public class X_M_Product_PO extends PO implements I_M_Product_PO, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20260309L;
+	private static final long serialVersionUID = 20260827L;
 
     /** Standard Constructor */
     public X_M_Product_PO (Properties ctx, int M_Product_PO_ID, String trxName)
@@ -42,6 +42,8 @@ public class X_M_Product_PO extends PO implements I_M_Product_PO, I_Persistent
       /** if (M_Product_PO_ID == 0)
         {
 			setC_BPartner_ID (0);
+			setIsApprovedVendor (false);
+// N
 			setIsCurrentVendor (true);
 // Y
 			setM_Product_ID (0);
@@ -58,6 +60,8 @@ public class X_M_Product_PO extends PO implements I_M_Product_PO, I_Persistent
       /** if (M_Product_PO_ID == 0)
         {
 			setC_BPartner_ID (0);
+			setIsApprovedVendor (false);
+// N
 			setIsCurrentVendor (true);
 // Y
 			setM_Product_ID (0);
@@ -74,6 +78,8 @@ public class X_M_Product_PO extends PO implements I_M_Product_PO, I_Persistent
       /** if (M_Product_PO_UU == null)
         {
 			setC_BPartner_ID (0);
+			setIsApprovedVendor (false);
+// N
 			setIsCurrentVendor (true);
 // Y
 			setM_Product_ID (0);
@@ -90,6 +96,8 @@ public class X_M_Product_PO extends PO implements I_M_Product_PO, I_Persistent
       /** if (M_Product_PO_UU == null)
         {
 			setC_BPartner_ID (0);
+			setIsApprovedVendor (false);
+// N
 			setIsCurrentVendor (true);
 // Y
 			setM_Product_ID (0);
@@ -308,6 +316,29 @@ public class X_M_Product_PO extends PO implements I_M_Product_PO, I_Persistent
 	public Timestamp getDiscontinuedAt()
 	{
 		return (Timestamp)get_Value(COLUMNNAME_DiscontinuedAt);
+	}
+
+	/** Set Approved Vendor.
+		@param IsApprovedVendor Indicates that this vendor is approved to supply this product when approved vendor purchasing is required.
+	*/
+	public void setIsApprovedVendor (boolean IsApprovedVendor)
+	{
+		set_Value (COLUMNNAME_IsApprovedVendor, Boolean.valueOf(IsApprovedVendor));
+	}
+
+	/** Get Approved Vendor.
+		@return Indicates that this vendor is approved to supply this product when approved vendor purchasing is required.
+	  */
+	public boolean isApprovedVendor()
+	{
+		Object oo = get_Value(COLUMNNAME_IsApprovedVendor);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Current vendor.
