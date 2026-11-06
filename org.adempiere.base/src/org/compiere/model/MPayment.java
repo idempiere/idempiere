@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
  * Product: Adempiere ERP & CRM Smart Business Solution                       *
  * Copyright (C) 1999-2006 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software; you can redistribute it and/or modify it    *
@@ -1129,7 +1129,6 @@ public class MPayment extends X_C_Payment
 		return m_mBankAccountProcessor != null;
 	}   //  setPaymentProcessor
 
-
 	/**
 	 * 	Get Accepted Credit Cards for PayAmt (default 0)
 	 *	@return credit cards
@@ -1138,7 +1137,6 @@ public class MPayment extends X_C_Payment
 	{
 		return getCreditCards(getPayAmt());
 	}	//	getCreditCards
-
 
 	/**
 	 * 	Get Accepted Credit Cards for amount
@@ -1259,7 +1257,6 @@ public class MPayment extends X_C_Payment
 		return true;
 	}   //  setCreditCardExp
 
-
 	/**
 	 *  CreditCard Exp  MMYY
 	 *  @param delimiter / - or null
@@ -1324,7 +1321,6 @@ public class MPayment extends X_C_Payment
 	{
 		super.setCheckNo(MPaymentValidate.checkNumeric(CheckNo));
 	}	//	setBankCheckNo
-
 
 	/**
 	 *  Derive DocumentNo from Payment info.
@@ -1677,6 +1673,10 @@ public class MPayment extends X_C_Payment
 		{
 			if (pAllocs.length > 0) {
 				for (MPaymentAllocate pAlloc : pAllocs) {
+
+					if (pAlloc.getC_Invoice_ID() <= 0)
+						continue;
+
 					String sql = "SELECT idt.IsSOTrx "
 						+ "FROM C_Invoice i"
 						+ " INNER JOIN C_DocType idt ON (i.C_DocType_ID=idt.C_DocType_ID) "
@@ -2300,7 +2300,7 @@ public class MPayment extends X_C_Payment
 				counter.setDocAction(counterDT.getDocAction());
 				// added AdempiereException by zuhri
 				if (!counter.processIt(counterDT.getDocAction()))
-					throw new AdempiereException("Failed when rocessing document - " + counter.getProcessMsg());
+					throw new AdempiereException("Failed when processing document - " + counter.getProcessMsg());
 				// end added
 				counter.saveEx(get_TrxName());
 			}
@@ -2339,11 +2339,13 @@ public class MPayment extends X_C_Payment
 				get_TrxName());
 		alloc.setAD_Org_ID(getAD_Org_ID());
 		alloc.setDateAcct(getDateAcct()); // in case date acct is different from datetrx in payment; IDEMPIERE-1532 tbayen
-		if (!alloc.save())
+
+		if (!alloc.save(get_TrxName()))
 		{
 			log.severe("P.Allocations not created");
 			return false;
 		}
+
 		//	Lines
 		for (int i = 0; i < pAllocs.length; i++)
 		{
@@ -2355,21 +2357,29 @@ public class MPayment extends X_C_Payment
 
 			MAllocationLine aLine = null;
 			if (isReceipt())
-				aLine = new MAllocationLine (alloc, allocationAmt,
-					pa.getDiscountAmt(), pa.getWriteOffAmt(), pa.getOverUnderAmt());
+				aLine = new MAllocationLine(alloc, allocationAmt, pa.getDiscountAmt(), pa.getWriteOffAmt(), pa.getOverUnderAmt());
 			else
-				aLine = new MAllocationLine (alloc, allocationAmt.negate(),
-					pa.getDiscountAmt().negate(), pa.getWriteOffAmt().negate(), pa.getOverUnderAmt().negate());
-			aLine.setDocInfo(getC_BPartner_ID(), 0, pa.getC_Invoice_ID());
-			aLine.setPaymentInfo(getC_Payment_ID(), 0, getC_BankTransfer_ID());
-			if (!aLine.save(get_TrxName()))
-				log.warning("P.Allocations - line not saved");
+				aLine = new MAllocationLine(alloc, allocationAmt.negate(), pa.getDiscountAmt().negate(), pa.getWriteOffAmt().negate(),
+											pa.getOverUnderAmt().negate());
+
+			int bpartnerID = 0;
+			if (pa.getC_Charge_ID() > 0)
+			{
+				bpartnerID = getC_BPartner_ID();
+				aLine.setC_Charge_ID(pa.getC_Charge_ID());
+			}
 			else
 			{
-				pa.setC_AllocationLine_ID(aLine.getC_AllocationLine_ID());
-				pa.saveEx();
+				bpartnerID = pa.getC_BPartner_ID();
 			}
+			aLine.setDocInfo(bpartnerID, 0, pa.getC_Invoice_ID());
+			aLine.setPaymentInfo(getC_Payment_ID(), 0, getC_BankTransfer_ID());
+			aLine.saveEx(get_TrxName());
+			//
+			pa.setC_AllocationLine_ID(aLine.getC_AllocationLine_ID());
+			pa.saveEx(get_TrxName());
 		}
+
 		//do not post immediate alloc, alloc should post after payment
 		alloc.set_Attribute(DocumentEngine.DOCUMENT_POST_IMMEDIATE_AFTER_COMPLETE, Boolean.FALSE);
 		// added AdempiereException by zuhri
@@ -3111,7 +3121,6 @@ public class MPayment extends X_C_Payment
 			return getWriteOffAmt();
 		return getPayAmt();
 	}	//	getApprovalAmt
-
 
 	@Override
 	public void setProcessUI(IProcessUI processMonitor) {
