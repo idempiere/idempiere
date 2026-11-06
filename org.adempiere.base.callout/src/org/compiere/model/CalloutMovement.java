@@ -57,6 +57,7 @@ public class CalloutMovement extends CalloutEngine
 			mTab.setValue("M_AttributeSetInstance_ID", Env.getContextAsInt(ctx, WindowNo, Env.TAB_INFO, "M_AttributeSetInstance_ID"));
 		else
 			mTab.setValue("M_AttributeSetInstance_ID", 0);
+			mTab.setValue("M_AttributeSetInstanceTo_ID", 0);
 		
 		MProduct product = MProduct.get (ctx, M_Product_ID.intValue());
 		mTab.setValue("C_UOM_ID", product.getC_UOM_ID());
