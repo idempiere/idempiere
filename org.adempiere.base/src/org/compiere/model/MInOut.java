@@ -36,6 +36,8 @@ import org.adempiere.exceptions.BackDateTrxNotAllowedException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.exceptions.NegativeInventoryDisallowedException;
 import org.adempiere.exceptions.PeriodClosedException;
+import org.adempiere.model.DocActionDelegate;
+import org.adempiere.model.DocActionDelegate.StepTiming;
 import org.adempiere.util.IReservationTracer;
 import org.adempiere.util.IReservationTracerFactory;
 import org.adempiere.util.ShippingUtil;
@@ -1389,6 +1391,81 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	protected String		m_processMsg = null;
 	/**	Just Prepared Flag			*/
 	protected boolean		m_justPrepared = false;
+	/**	Info of {@link #doComplete()}, set as process message by {@link #afterComplete()}	*/
+	private transient StringBuilder m_completeInfo = null;
+
+	/**
+	 * 	Create the delegate implementing the prepareIt and completeIt workflow of this document.<br/>
+	 * 	The delegate works on the process message, the just prepared flag and the (overridable) methods of this document,
+	 * 	it is created for each call so that it is always bound to this instance.
+	 * 	@return document action delegate
+	 */
+	private DocActionDelegate<MInOut> createDocActionDelegate()
+	{
+		DocActionDelegate<MInOut> docActionDelegate = new DocActionDelegate<MInOut>(this) {
+			{
+				log = MInOut.this.log;
+			}
+			@Override
+			public String getProcessMsg() {
+				return MInOut.this.m_processMsg;
+			}
+			@Override
+			public void setProcessMsg(String processMsg) {
+				MInOut.this.m_processMsg = processMsg;
+			}
+			@Override
+			protected boolean isJustPrepared() {
+				return MInOut.this.m_justPrepared;
+			}
+			@Override
+			protected void setJustPrepared(boolean justPrepared) {
+				MInOut.this.m_justPrepared = justPrepared;
+			}
+			@Override
+			protected void testPeriodOpen() {
+				//	checked by the document
+			}
+			@Override
+			protected void setDocTypeFromTarget() {
+				//	no target document type
+			}
+			@Override
+			protected void setDefiniteDocumentNo() {
+				MInOut.this.setDefiniteDocumentNo();
+			}
+			@Override
+			protected String prepareBeforeComplete() {
+				return MInOut.this.prepareIt();
+			}
+			@Override
+			public boolean approveIt() {
+				return MInOut.this.approveIt();
+			}
+			@Override
+			public boolean isApproved() {
+				return MInOut.this.isApproved();
+			}
+			@Override
+			public String getDocAction() {
+				return MInOut.this.getDocAction();
+			}
+			@Override
+			public void setDocAction(String DocAction) {
+				MInOut.this.setDocAction(DocAction);
+			}
+			@Override
+			public void setProcessed(boolean Processed) {
+				MInOut.this.setProcessed(Processed);
+			}
+		};
+		docActionDelegate.addActionStep(DocAction.ACTION_Prepare, StepTiming.PROCESS, this::doPrepare);
+		docActionDelegate.addActionStep(DocAction.ACTION_Prepare, StepTiming.END, this::afterPrepare);
+		docActionDelegate.addActionStep(DocAction.ACTION_Complete, StepTiming.VALIDATE, this::validateComplete);
+		docActionDelegate.addActionStep(DocAction.ACTION_Complete, StepTiming.PROCESS, this::doComplete);
+		docActionDelegate.addActionStep(DocAction.ACTION_Complete, StepTiming.END, this::afterComplete);
+		return docActionDelegate;
+	}	//	createDocActionDelegate
 
 	/**
 	 * 	Unlock Document.
@@ -1421,11 +1498,15 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	@Override
 	public String prepareIt()
 	{
-		if (log.isLoggable(Level.INFO)) log.info(toString());
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE);
-		if (m_processMsg != null)
-			return DocAction.STATUS_Invalid;
+		return createDocActionDelegate().prepareIt();
+	}	//	prepareIt
 
+	/**
+	 * 	Prepare document, executed by {@link DocActionDelegate#prepareIt()} after the BEFORE_PREPARE model validator event
+	 * 	@return null to continue, or the new document status (Invalid)
+	 */
+	private String doPrepare()
+	{
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 
 		//  Order OR RMA can be processed on a shipment/receipt
@@ -1536,10 +1617,15 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 			createConfirmation();
 		}
 
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE);
-		if (m_processMsg != null)
-			return DocAction.STATUS_Invalid;
+		return null;
+	}	//	doPrepare
 
+	/**
+	 * 	Finish preparing the document, executed by {@link DocActionDelegate#prepareIt()} after the AFTER_PREPARE model validator event
+	 * 	@return null to continue
+	 */
+	private String afterPrepare()
+	{
 		// Check if Order is Valid - load all C_Order_ID and replace/remove C_Order_ID if not valid
 		if (getC_Order_ID() > 0) {
 		    int[] orderIds = DB.getIDsEx(get_TrxName(), 
@@ -1565,12 +1651,9 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		    else if (rmaIds.length > 1)
 		        setM_RMA_ID(0);
 		}
-		
-		m_justPrepared = true;
-		if (!DOCACTION_Complete.equals(getDocAction()))
-			setDocAction(DOCACTION_Complete);
-		return DocAction.STATUS_InProgress;
-	}	//	prepareIt
+
+		return null;
+	}	//	afterPrepare
 
 	/**
 	 * Check if Document is Customer Return.
@@ -1614,32 +1697,29 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	@Override
 	public String completeIt()
 	{
-		//	Re-Check
-		if (!m_justPrepared)
-		{
-			String status = prepareIt();
-			m_justPrepared = false;
-			if (!DocAction.STATUS_InProgress.equals(status))
-				return status;
-		}
+		return createDocActionDelegate().completeIt();
+	}	//	completeIt
 
-		// Set the definite document number after completed (if needed)
-		setDefiniteDocumentNo();
-
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_COMPLETE);
-		if (m_processMsg != null)
-			return DocAction.STATUS_Invalid;
-
+	/**
+	 * 	Check the document can be completed, executed by {@link DocActionDelegate#completeIt()} after the BEFORE_COMPLETE model validator event, before the implicit approval
+	 * 	@return null to continue, or the new document status (In Progress)
+	 */
+	private String validateComplete()
+	{
 		if (pendingCustomerConfirmations()) {
 			m_processMsg = "@Open@: @M_InOutConfirm_ID@";
 			return DocAction.STATUS_InProgress;
 		}
 
-		//	Implicit Approval
-		if (!isApproved())
-			approveIt();
-		if (log.isLoggable(Level.INFO)) log.info(toString());
-		
+		return null;
+	}	//	validateComplete
+
+	/**
+	 * 	Complete document, executed by {@link DocActionDelegate#completeIt()} after the implicit approval
+	 * 	@return null to continue, or the new document status (Invalid)
+	 */
+	private String doComplete()
+	{
 		if (!isReversal())
 		{
 			try {
@@ -2164,19 +2244,22 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		}
 		if (dropShipment != null)
 			addDocsPostProcess(dropShipment);
-		//	User Validation
-		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);
-		if (valid != null)
-		{
-			m_processMsg = valid;
-			return DocAction.STATUS_Invalid;
-		}
+		m_completeInfo = info;
 
-		m_processMsg = info.toString();
-		setProcessed(true);
-		setDocAction(DOCACTION_Close);
-		return DocAction.STATUS_Completed;
-	}	//	completeIt
+		return null;
+	}	//	doComplete
+
+	/**
+	 * 	Finish completing the document, executed by {@link DocActionDelegate#completeIt()} after the AFTER_COMPLETE model validator event
+	 * 	@return null to continue
+	 */
+	private String afterComplete()
+	{
+		m_processMsg = m_completeInfo.toString();
+		m_completeInfo = null;
+
+		return null;
+	}	//	afterComplete
 
 	/**
 	 * Outstanding (not processed) Customer Confirmations ?
