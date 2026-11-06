@@ -61,6 +61,7 @@ public class MInOutLineMA extends X_M_InOutLineMA
 		Query query = MTable.get(ctx, MInOutLineMA.Table_Name)
 							.createQuery(I_M_InOutLineMA.COLUMNNAME_M_InOutLine_ID+"=?", trxName);
 		query.setParameters(M_InOutLine_ID);
+		query.setOrderBy(COLUMNNAME_DateMaterialPolicy + ", " + COLUMNNAME_M_AttributeSetInstance_ID);
 		List<MInOutLineMA> list = query.list();
 		MInOutLineMA[] retValue = new MInOutLineMA[list.size ()];
 		list.toArray (retValue);

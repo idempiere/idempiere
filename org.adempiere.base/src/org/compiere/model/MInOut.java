@@ -2051,8 +2051,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 					{
 						log.fine("PO Matching");
 						//	Ship - PO
-						MMatchPO po = MMatchPO.create (null, sLine, getMovementDate(), matchQty);
-						if (po != null) {
+						List<MMatchPO> pos = MMatchPO.createList (null, sLine, getMovementDate(), matchQty);
+						for (MMatchPO po : pos) {
 							if (!po.save(get_TrxName()))
 							{
 								m_processMsg = "Could not create PO Matching";
@@ -2092,9 +2092,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 							//	Invoice is created before  Shipment
 							log.fine("PO(Inv) Matching");
 							//	Ship - Invoice
-							MMatchPO po = MMatchPO.create (iLine, sLine,
-								getMovementDate(), matchQty);
-							if (po != null) {
+							List<MMatchPO> pos = MMatchPO.createList (iLine, sLine, getMovementDate(), matchQty);
+							for (MMatchPO po : pos) {
 								if (!po.save(get_TrxName()))
 								{
 									m_processMsg = "Could not create PO(Inv) Matching";
