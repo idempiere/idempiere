@@ -632,6 +632,19 @@ public interface I_AD_WF_Node
 	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_R_MailText getR_MailText() throws RuntimeException;
 
+    /** Column name ScheduleExpression */
+    public static final String COLUMNNAME_ScheduleExpression = "ScheduleExpression";
+
+	/** Set Schedule Expression.
+	  * SQL expression that determines when a scheduled workflow activity resumes
+	  */
+	public void setScheduleExpression (String ScheduleExpression);
+
+	/** Get Schedule Expression.
+	  * SQL expression that determines when a scheduled workflow activity resumes
+	  */
+	public String getScheduleExpression();
+
     /** Column name S_Resource_ID */
     public static final String COLUMNNAME_S_Resource_ID = "S_Resource_ID";
 
