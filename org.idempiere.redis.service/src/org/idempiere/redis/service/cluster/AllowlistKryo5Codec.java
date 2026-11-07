@@ -25,6 +25,7 @@
 **********************************************************************/
 package org.idempiere.redis.service.cluster;
 
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -60,11 +61,19 @@ import com.esotericsoftware.kryo.util.DefaultInstantiatorStrategy;
  *
  * <p>The allow-list does not replace {@code rpc.hmac.secret}: the frame HMAC, checked before the
  * payload is decoded, is what keeps clients without the secret out. All nodes of a cluster must
- * share the same allow-list: entries are registered alphabetically, so the Kryo class IDs match.</p>
+ * share the same allow-list: each entry gets a fixed Kryo ID from its position in the sorted list,
+ * so a class that is missing on one node leaves a gap and does not shift the IDs of the others.</p>
  */
 public class AllowlistKryo5Codec extends Kryo5Codec {
 
 	private static final Logger log = LoggerFactory.getLogger(AllowlistKryo5Codec.class);
+
+	/** Fixed Kryo IDs, well above Kryo's own default registrations (0 to 9). */
+	static final int LEVEL_ID = 100;
+	static final int VALUE_TYPES_FIRST_ID = 101;
+	static final int ALLOWLIST_FIRST_ID = 200;
+	private static final List<Class<?>> VALUE_TYPES = List.of(byte[].class, String[].class,
+			java.util.ArrayList.class, java.sql.Timestamp.class, java.util.Date.class);
 
 	private final Set<String> allowedClassNames;
 
@@ -93,26 +102,32 @@ public class AllowlistKryo5Codec extends Kryo5Codec {
 
 		if (!allowedClassNames.isEmpty()) {
 			// Value types returned by the core callables (log blocks, cache info lists, start times).
-			kryo.register(byte[].class);
-			kryo.register(String[].class);
-			kryo.register(java.util.ArrayList.class);
-			kryo.register(java.sql.Timestamp.class);
-			kryo.register(java.util.Date.class);
+			int id = VALUE_TYPES_FIRST_ID;
+			for (Class<?> type : VALUE_TYPES) {
+				kryo.register(type, id++);
+			}
 
-			// Operator-configured Callable (and result) types.
-			// Sort for deterministic Kryo ID assignment across nodes.
-			allowedClassNames.stream().sorted().forEach(name -> {
+			// Operator-configured Callable (and result) types, sorted. Each gets a fixed ID from its
+			// position, so a class missing on one node leaves a gap instead of shifting later IDs.
+			List<String> sorted = allowedClassNames.stream().sorted().toList();
+			ClassLoader loader = classLoader != null ? classLoader : getClass().getClassLoader();
+			for (int i = 0; i < sorted.size(); i++) {
+				String name = sorted.get(i);
 				try {
-					kryo.register(Class.forName(name, false, classLoader != null ? classLoader : getClass().getClassLoader()));
+					Class<?> type = Class.forName(name, false, loader);
+					if (kryo.getClassResolver().getRegistration(type) != null) {
+						continue; // already registered above (a value type or a Kryo default)
+					}
+					kryo.register(type, ALLOWLIST_FIRST_ID + i);
 				} catch (ClassNotFoundException e) {
 					log.warn("rpc.callable.allowlist: class '{}' not found; skipping registration", name);
 				}
-			});
+			}
 		}
 
 		// java.util.logging.Level travels inside SystemInfo (its logLevel field). Level has no no-arg
 		// constructor and is resolved by name, so it needs its own serializer.
-		kryo.register(Level.class, new LevelSerializer());
+		kryo.register(Level.class, new LevelSerializer(), LEVEL_ID);
 
 		if (!allowedClassNames.isEmpty()) {
 			kryo.setRegistrationRequired(true);

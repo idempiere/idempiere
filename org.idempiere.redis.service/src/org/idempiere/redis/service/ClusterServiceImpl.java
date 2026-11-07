@@ -408,12 +408,22 @@ public class ClusterServiceImpl implements IClusterService {
 
 	/** Publishes a notification without a reply topic; a failed publish is kept for {@link #retryFailedNotifications()}. */
 	private void publishNotification(RpcRequest request) {
+		byte[] frame;
+		try {
+			frame = encodeRequest(request);
+		} catch (RuntimeException e) {
+			// Retrying cannot help and would block the notifications queued behind it.
+			fullResetOwed.set(true);
+			log.warn("Cannot encode cache notification {}; a cluster-wide cache reset is sent instead",
+					request.getTaskId(), e);
+			return;
+		}
 		RTopic topic = requestTopic;
 		try {
 			if (topic == null) {
 				throw new IllegalStateException("RPC request topic not subscribed");
 			}
-			topic.publish(encodeRequest(request));
+			topic.publish(frame);
 		} catch (Exception e) {
 			keepFailedNotification(request);
 			log.warn("Failed to publish cache notification {}; retried within {}s",
@@ -445,7 +455,19 @@ public class ClusterServiceImpl implements IClusterService {
 			RpcRequest request;
 			while ((request = failedNotifications.peek()) != null) {
 				// Encoded again: a fresh timestamp, so receivers do not refuse it as too old.
-				topic.publish(encodeRequest(request));
+				byte[] frame;
+				try {
+					frame = encodeRequest(request);
+				} catch (RuntimeException e) {
+					// Dropped, not retried, so it cannot block the rest; the reset below covers it.
+					failedNotifications.poll();
+					failedNotificationCount.decrementAndGet();
+					fullResetOwed.set(true);
+					log.warn("Cannot encode cache notification {}; dropped, a cluster-wide cache reset is sent instead",
+							request.getTaskId(), e);
+					continue;
+				}
+				topic.publish(frame);
 				failedNotifications.poll();
 				failedNotificationCount.decrementAndGet();
 			}

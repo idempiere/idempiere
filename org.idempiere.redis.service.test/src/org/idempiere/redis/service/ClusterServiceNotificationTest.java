@@ -139,6 +139,51 @@ public class ClusterServiceNotificationTest {
 		assertEquals(1, ((AtomicInteger) field(service, "failedNotificationCount")).get(), "still kept");
 	}
 
+	/** Another notification class, for a notification that the codec cannot encode. */
+	private static class OtherRecord extends CacheNewRecordCallable {
+		private static final long serialVersionUID = 1L;
+
+		OtherRecord(String tableName, int recordId) {
+			super(tableName, recordId);
+		}
+	}
+
+	private static AllowlistKryo5Codec allowing(Class<?> type) {
+		return new AllowlistKryo5Codec(ClusterServiceNotificationTest.class.getClassLoader(), Set.of(type.getName()));
+	}
+
+	@Test
+	public void testNotificationThatCannotBeEncodedIsNotQueued() throws Exception {
+		ClusterServiceImpl service = service();
+		set(service, "rpcCodec", allowing(NewRecord.class));
+		IClusterMember other = new ClusterMember(OTHER, null, 0);
+
+		service.execute(new OtherRecord("CacheNotificationTest", 1), List.of(other));
+
+		assertEquals(0, published.size());
+		assertEquals(0, ((AtomicInteger) field(service, "failedNotificationCount")).get(), "not queued");
+		assertTrue(((AtomicBoolean) field(service, "fullResetOwed")).get(), "a cluster-wide reset is owed instead");
+	}
+
+	@Test
+	public void testQueuedNotificationThatCannotBeEncodedDoesNotBlockTheRest() throws Exception {
+		ClusterServiceImpl service = service();
+		IClusterMember other = new ClusterMember(OTHER, null, 0);
+
+		failPublish.set(true);
+		service.execute(new OtherRecord("CacheNotificationTest", 1), List.of(other));
+		service.execute(new NewRecord("CacheNotificationTest", 2), List.of(other));
+		assertEquals(2, ((AtomicInteger) field(service, "failedNotificationCount")).get());
+
+		// The first one can no longer be encoded (for example the allow-list changed).
+		set(service, "rpcCodec", allowing(NewRecord.class));
+		failPublish.set(false);
+		invoke(service, "retryFailedNotifications");
+
+		assertEquals(1, published.size(), "the second notification is sent");
+		assertEquals(0, ((AtomicInteger) field(service, "failedNotificationCount")).get(), "queue drained");
+	}
+
 	private static Object field(Object target, String name) throws Exception {
 		Field f = ClusterServiceImpl.class.getDeclaredField(name);
 		f.setAccessible(true);
