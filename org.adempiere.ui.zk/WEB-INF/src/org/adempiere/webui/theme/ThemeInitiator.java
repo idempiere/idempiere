@@ -79,6 +79,9 @@ public class ThemeInitiator implements Initiator, InitiatorExt {
 	public ThemeInitiator() {
 	}
 
+	/**
+	 * Set the theme variables as page attributes.
+	 */
 	@Override
 	public void doInit(Page page, Map<String, Object> args) throws Exception {
 		page.setAttribute(THEME_STYLE_SHEET, ThemeManager.getStyleSheet());
@@ -112,11 +115,18 @@ public class ThemeInitiator implements Initiator, InitiatorExt {
 			execution.sendRedirect(null);
 	}
 
+	/**
+	 * Exceptions are not handled here.
+	 * @return false, so the exception is thrown again
+	 */
 	@Override
 	public boolean doCatch(Throwable ex) throws Exception {
 		return false;
 	}
 
+	/**
+	 * Nothing to clean up.
+	 */
 	@Override
 	public void doFinally() throws Exception {
 	}

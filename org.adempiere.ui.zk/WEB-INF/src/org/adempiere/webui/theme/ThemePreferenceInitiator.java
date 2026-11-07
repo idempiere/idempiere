@@ -72,6 +72,9 @@ public class ThemePreferenceInitiator implements Initiator {
 	public ThemePreferenceInitiator() {
 	}
 
+	/**
+	 * Set the theme context variables and the ZK theme from the initiator arguments.
+	 */
 	@Override
 	public void doInit(Page page, Map<String, Object> args) throws Exception {
 		String zkTheme = getArgument(args, ARG_ZK_THEME, null);
