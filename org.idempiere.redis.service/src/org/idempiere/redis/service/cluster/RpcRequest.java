@@ -25,79 +25,40 @@
 **********************************************************************/
 package org.idempiere.redis.service.cluster;
 
-import java.io.Serializable;
 import java.util.concurrent.Callable;
 
 /**
- * Envelope published on the cluster-wide RPC request topic. Carries the serialized
- * Callable along with target identification so receiving nodes can decide whether
- * to execute it.
+ * A cluster RPC request on the sending node, before it is put into an {@link RpcFrame}.
  *
- * <h3>Security considerations — read before extending or deploying</h3>
- *
- * <p>This class carries an arbitrary {@link Callable} that every targeted cluster
- * node will deserialize and execute. The attack surface is therefore:
- * <ul>
- *   <li><b>Deserialization RCE</b> — Kryo gadget-chain attacks (see CVE-2023-42809):
- *       any principal that can publish to the Redis RPC topic can inject a Callable
- *       that executes arbitrary code on every node. Mitigate by:
- *       <ol>
- *         <li>Setting {@code rpc.callable.allowlist} in {@code redis.properties} to the
- *             fully-qualified class names of every legitimate Callable implementation.
- *             The bundle then uses {@link AllowlistKryo5Codec} with
- *             {@code setRegistrationRequired(true)}, rejecting all other types.</li>
- *         <li>Locking Redis network access with TLS and Redis ACLs so only iDempiere
- *             cluster nodes can connect and publish to the topic.</li>
- *       </ol>
- *   </li>
- *   <li><b>Message forgery</b> — without authentication, any node with Redis credentials
- *       can impersonate the originator. Mitigate by setting {@code rpc.hmac.secret} in
- *       {@code redis.properties}. All nodes sharing the secret will reject envelopes
- *       with a missing or invalid {@link #hmac} field before deserializing the Callable.</li>
- * </ul>
- *
- * <p><b>Production checklist:</b> set {@code rpc.callable.allowlist},
- * {@code rpc.hmac.secret}, enforce Redis TLS + ACLs, and do not expose Redis
- * ports on a flat network. Omitting any of these in a multi-tenant or internet-adjacent
- * deployment is a critical risk.</p>
+ * <p>On the wire the routing data (task id, originator, targets, reply flag) is in the frame
+ * header and the callable is the frame payload. When {@code rpc.hmac.secret} is set, the HMAC
+ * covers all of it and is checked before the callable is decoded; see {@link RpcFrame}.</p>
  *
  * @since iDempiere 11 / IDEMPIERE-6989
  */
-public class RpcRequest implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class RpcRequest {
 
 	/** Random UUID identifying this request; used to route responses back. */
-	private String taskId;
+	private final String taskId;
 
-	/** UUID of the node that issued the request — informational, useful for logging. */
-	private String originatorUuid;
+	/** UUID of the node that issued the request; responses go to a topic derived from it. */
+	private final String originatorUuid;
 
 	/** Target node UUIDs. Receivers execute only if their own UUID is in this set. */
-	private String[] targetUuids;
+	private final String[] targetUuids;
 
-	/** Per-request response topic name; receivers publish their {@link RpcResponse} here. */
-	private String responseTopic;
+	/** {@code false} for a fire-and-forget notification: the receivers send no response. */
+	private final boolean replyExpected;
 
-	/** The unit of work to execute on each target node. Must be Serializable. */
-	private Callable<?> callable;
+	/** The unit of work to execute on each target node. */
+	private final Callable<?> callable;
 
-	/**
-	 * HMAC-SHA256 of {@code taskId + "|" + originatorUuid}, base64-encoded.
-	 * {@code null} when HMAC is not configured ({@code rpc.hmac.secret} unset).
-	 */
-	private String hmac;
-
-	/** Required by serialization codecs. Do not call directly. */
-	public RpcRequest() {
-	}
-
-	public RpcRequest(String taskId, String originatorUuid, String[] targetUuids,
-			String responseTopic, Callable<?> callable) {
+	public RpcRequest(String taskId, String originatorUuid, String[] targetUuids, boolean replyExpected,
+			Callable<?> callable) {
 		this.taskId = taskId;
 		this.originatorUuid = originatorUuid;
-		this.targetUuids = targetUuids;
-		this.responseTopic = responseTopic;
+		this.targetUuids = targetUuids.clone();
+		this.replyExpected = replyExpected;
 		this.callable = callable;
 	}
 
@@ -110,22 +71,14 @@ public class RpcRequest implements Serializable {
 	}
 
 	public String[] getTargetUuids() {
-		return targetUuids;
+		return targetUuids.clone();
 	}
 
-	public String getResponseTopic() {
-		return responseTopic;
+	public boolean isReplyExpected() {
+		return replyExpected;
 	}
 
 	public Callable<?> getCallable() {
 		return callable;
-	}
-
-	public String getHmac() {
-		return hmac;
-	}
-
-	public void setHmac(String hmac) {
-		this.hmac = hmac;
 	}
 }
