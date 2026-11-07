@@ -180,7 +180,7 @@ public class DatatableReportRenderer implements IReportRenderer<DatatableReportR
 		Map<HTMLReportRenderer.CSSInfo, List<HTMLReportRenderer.ColumnInfo>> mapCssInfo = new HashMap<>();
 		try
 		{
-			DataTableOptions dataTableOptions = new DataTableOptions(language.getLocale().toLanguageTag());
+			DataTableOptions dataTableOptions = new DataTableOptions(language.getLocale().toLanguageTag(), language.getAD_Language());
 			//collect column to print
 			List<Object> columns = new ArrayList<>();
 			List<InstanceAttributeData> asiElements = new ArrayList<>();

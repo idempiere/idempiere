@@ -59,14 +59,27 @@ public class DataTableOptions {
 	
 	private String locale;
 
+	/** AD_Language used for messages (e.g. en_US) */
+	private String adLanguage;
+
 	private boolean ordering = true;
-	
+
 	/**
-	 * @param locale
+	 * @param locale BCP 47 language tag (e.g. en-US), used for the datatables i18n resource
 	 */
 	public DataTableOptions(String locale) {
+		this(locale, null);
+	}
+
+	/**
+	 * @param locale BCP 47 language tag (e.g. en-US), used for the datatables i18n resource
+	 * @param adLanguage AD_Language (e.g. en_US), used for messages. If null, it is derived from locale.
+	 */
+	public DataTableOptions(String locale, String adLanguage) {
 		functionMap = new HashMap<>();
 		this.locale = locale;
+		this.adLanguage = adLanguage != null ? adLanguage
+				: Language.getAD_Language(locale != null ? locale.replace('-', '_') : null);
 	}
 	
 	/**
@@ -79,7 +92,7 @@ public class DataTableOptions {
 		StringBuilder dataOptions = new StringBuilder();
 		dataOptions.append(" { ");
 		dataOptions.append(" pageLength: ").append(250);
-		dataOptions.append(", lengthMenu: [ [250, 500, 1000, -1], [250, 500, 1000,\"").append(Msg.getMsg( Language.getAD_Language(locale), "All")).append("\" ] ] ");
+		dataOptions.append(", lengthMenu: [ [250, 500, 1000, -1], [250, 500, 1000,\"").append(Msg.getMsg(adLanguage, "All")).append("\" ] ] ");
 		dataOptions.append(", colReorder: true");
 		dataOptions.append(", responsive: false");
 		dataOptions.append(", ordering: ").append(ordering ? "true " : "false ");
