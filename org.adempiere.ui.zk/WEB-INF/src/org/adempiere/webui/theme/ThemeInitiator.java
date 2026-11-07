@@ -49,23 +49,23 @@ import org.zkoss.zul.theme.Themes;
 public class ThemeInitiator implements Initiator, InitiatorExt {
 
 	/** Page attribute: URL of the theme style sheet */
-	public static final String THEME_STYLE_SHEET = "themeStyleSheet";
+	private static final String THEME_STYLE_SHEET = "themeStyleSheet";
 	/** Page attribute: URL of the browser specific theme style sheet */
-	public static final String THEME_STYLE_SHEET_BY_BROWSER = "themeStyleSheetByBrowser";
+	private static final String THEME_STYLE_SHEET_BY_BROWSER = "themeStyleSheetByBrowser";
 	/** Page attribute: URL of the browser icon */
-	public static final String BROWSER_ICON = "browserIcon";
+	private static final String BROWSER_ICON = "browserIcon";
 	/** Page attribute: URL of the theme preference zul */
-	public static final String THEME_PREFERENCE = "themePreference";
+	private static final String THEME_PREFERENCE = "themePreference";
 	/** Page attribute: medium font size, as CSS declaration (font-size:...;) */
-	public static final String FONT_SIZE_M = "fontSizeM";
+	private static final String FONT_SIZE_M = "fontSizeM";
 	/** Page attribute: small font size */
-	public static final String FONT_SIZE_S = "fontSizeS";
+	private static final String FONT_SIZE_S = "fontSizeS";
 	/** Page attribute: extra small font size */
-	public static final String FONT_SIZE_XS = "fontSizeXS";
+	private static final String FONT_SIZE_XS = "fontSizeXS";
 	/** Page attribute: medium small font size */
-	public static final String FONT_SIZE_MS = "fontSizeMS";
+	private static final String FONT_SIZE_MS = "fontSizeMS";
 	/** Page attribute: font family, as CSS declaration (font-family:...;) */
-	public static final String FONT_FAMILY_C = "fontFamilyC";
+	private static final String FONT_FAMILY_C = "fontFamilyC";
 
 	/** Execution attribute set by the theme preference zul with the ZK theme to use */
 	public static final String ZK_THEME_ATTRIBUTE = "Themes.setTheme";
@@ -105,7 +105,7 @@ public class ThemeInitiator implements Initiator, InitiatorExt {
 	@Override
 	public void doAfterCompose(Page page, Component[] comps) throws Exception {
 		Execution execution = Executions.getCurrent();
-		if (execution == null || execution.isVoided())
+		if (execution.isVoided())
 			return;
 		Object setZkTheme = execution.getAttribute(ZK_THEME_ATTRIBUTE);
 		if (setZkTheme != null && !setZkTheme.equals(Themes.getTheme(execution)))

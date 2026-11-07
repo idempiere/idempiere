@@ -46,6 +46,7 @@ import org.zkoss.zul.theme.Themes;
  * <li>toolbarButtonSize: value for {@link ITheme#ZK_TOOLBAR_BUTTON_SIZE}, default 24</li>
  * <li>useCSSForWindowSize: value for {@link ITheme#USE_CSS_FOR_WINDOW_SIZE}, default Y</li>
  * </ul>
+ * The optional arguments let a custom theme with other values use this initiator instead of a zscript.<br/>
  * {@link ITheme#USE_FONT_ICON_FOR_IMAGE} is set from the SysConfig {@link MSysConfig#ZK_THEME_USE_FONT_ICON_FOR_IMAGE}.<br/>
  * The selected ZK theme is stored in the execution attribute {@link ThemeInitiator#ZK_THEME_ATTRIBUTE},
  * which {@link ThemeInitiator} checks to redirect when the ZK theme changed.<br/>
