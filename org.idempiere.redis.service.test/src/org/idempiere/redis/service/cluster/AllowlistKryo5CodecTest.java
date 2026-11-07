@@ -68,12 +68,48 @@ public class AllowlistKryo5CodecTest {
 	}
 
 	@Test
-	public void testLevelIsRegisteredAfterTheAllowList() {
+	public void testFixedIds() {
 		Kryo kryo = codec.createKryo(AllowlistKryo5CodecTest.class.getClassLoader());
 
-		int levelId = kryo.getRegistration(Level.class).getId();
-		assertTrue(levelId > kryo.getRegistration(java.util.ArrayList.class).getId(),
-				"Level after the allow-list, so the allow-list IDs match nodes without it");
+		assertEquals(AllowlistKryo5Codec.LEVEL_ID, kryo.getRegistration(Level.class).getId());
+		assertEquals(AllowlistKryo5Codec.VALUE_TYPES_FIRST_ID + 2, kryo.getRegistration(java.util.ArrayList.class).getId(),
+				"an allow-list entry that is already a value type keeps the value-type ID");
+	}
+
+	/** Hides one class, the way a node without a plugin cannot load it. */
+	private static ClassLoader hiding(String hidden) {
+		return new ClassLoader(AllowlistKryo5CodecTest.class.getClassLoader()) {
+			@Override
+			protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+				if (name.equals(hidden)) {
+					throw new ClassNotFoundException(name);
+				}
+				return super.loadClass(name, resolve);
+			}
+		};
+	}
+
+	@Test
+	public void testMissingClassOnOneNodeDoesNotShiftTheOthers() throws Exception {
+		// Same allow-list on both nodes; NotListed sorts before WithLevel and is missing on node B.
+		Set<String> list = Set.of(NotListed.class.getName(), WithLevel.class.getName());
+		AllowlistKryo5Codec nodeA = new AllowlistKryo5Codec(AllowlistKryo5CodecTest.class.getClassLoader(), list);
+		AllowlistKryo5Codec nodeB = new AllowlistKryo5Codec(hiding(NotListed.class.getName()), list);
+		assertEquals(AllowlistKryo5Codec.ALLOWLIST_FIRST_ID + 1,
+				nodeB.createKryo(hiding(NotListed.class.getName())).getRegistration(WithLevel.class).getId(),
+				"a gap, not a shifted ID");
+
+		WithLevel value = new WithLevel();
+		value.level = Level.FINE;
+		value.name = "from-a";
+		ByteBuf buf = nodeA.getValueEncoder().encode(value);
+		try {
+			WithLevel copy = (WithLevel) nodeB.getValueDecoder().decode(buf, null);
+			assertEquals("from-a", copy.name);
+			assertSame(Level.FINE, copy.level);
+		} finally {
+			buf.release();
+		}
 	}
 
 	/** An allow-listed class that carries an exception. */
