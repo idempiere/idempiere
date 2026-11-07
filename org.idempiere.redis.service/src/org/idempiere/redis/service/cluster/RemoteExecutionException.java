@@ -21,59 +21,33 @@
 *                                                                     *
 * Contributors:                                                       *
 * - Norbert Bede, Cloudempiere                                        *
-* - Peter Takacs, Cloudempiere                                        *
 **********************************************************************/
 package org.idempiere.redis.service.cluster;
 
-import java.io.Serializable;
-
 /**
- * Envelope published on a per-request response topic. Carries either a
- * successful {@code result} or a propagated {@code error}; never both.
+ * A callable failed on another cluster member. Only the class name and the message of the
+ * original exception cross the wire, never the exception object itself.
  */
-public class RpcResponse implements Serializable {
+public class RemoteExecutionException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
-	/** Matches {@link RpcRequest#getTaskId()} on the originator side. */
-	private String taskId;
+	private final String memberUuid;
+	private final String remoteClassName;
 
-	/** UUID of the node that produced this response. */
-	private String memberUuid;
-
-	/** Successful result, or {@code null} if the Callable returned null or threw. */
-	private Object result;
-
-	/** Exception thrown by the Callable, or {@code null} on success. */
-	private Throwable error;
-
-	/** Required by serialization codecs. Do not call directly. */
-	public RpcResponse() {
-	}
-
-	public RpcResponse(String taskId, String memberUuid, Object result, Throwable error) {
-		if (result != null && error != null) {
-			throw new IllegalArgumentException("RpcResponse cannot carry both result and error");
-		}
-		this.taskId = taskId;
+	public RemoteExecutionException(String memberUuid, String remoteClassName, String message) {
+		super(remoteClassName + ": " + message + " (on cluster member " + memberUuid + ")");
 		this.memberUuid = memberUuid;
-		this.result = result;
-		this.error = error;
+		this.remoteClassName = remoteClassName;
 	}
 
-	public String getTaskId() {
-		return taskId;
-	}
-
+	/** UUID of the member the callable failed on. */
 	public String getMemberUuid() {
 		return memberUuid;
 	}
 
-	public Object getResult() {
-		return result;
-	}
-
-	public Throwable getError() {
-		return error;
+	/** Class name of the exception thrown on that member. */
+	public String getRemoteClassName() {
+		return remoteClassName;
 	}
 }
