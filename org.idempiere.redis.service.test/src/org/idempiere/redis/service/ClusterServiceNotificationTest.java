@@ -24,7 +24,7 @@
 package org.idempiere.redis.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Field;
@@ -32,6 +32,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -40,8 +41,9 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.compiere.util.CacheNewRecordCallable;
 import org.idempiere.distributed.IClusterMember;
+import org.idempiere.redis.service.cluster.AllowlistKryo5Codec;
 import org.idempiere.redis.service.cluster.ClusterMember;
-import org.idempiere.redis.service.cluster.RpcRequest;
+import org.idempiere.redis.service.cluster.RpcFrame;
 import org.junit.jupiter.api.Test;
 import org.redisson.api.RTopic;
 
@@ -87,6 +89,7 @@ public class ClusterServiceNotificationTest {
 		AtomicReference<ClusterMember> localMember = (AtomicReference<ClusterMember>) field(service, "localMember");
 		localMember.set(new ClusterMember(SELF, null, 0));
 		set(service, "requestTopic", recordingTopic());
+		set(service, "rpcCodec", new AllowlistKryo5Codec(null, Set.of()));
 		return service;
 	}
 
@@ -99,12 +102,11 @@ public class ClusterServiceNotificationTest {
 				service.execute(new NewRecord("CacheNotificationTest", 4711), List.of(other));
 
 		assertEquals(1, published.size(), "one request on the request topic");
-		RpcRequest request = (RpcRequest) published.get(0);
-		assertNull(request.getResponseTopic(), "no reply topic");
+		RpcFrame request = RpcFrame.decode((byte[]) published.get(0), null, "");
+		assertFalse(request.isReplyExpected(), "no reply expected");
 		assertEquals(List.of(OTHER), List.of(request.getTargetUuids()));
 		assertTrue(futures.get(other).isDone(), "future completed without waiting");
-		assertEquals(0, ((AtomicInteger) field(service, "activeResponseSubscriptions")).get(),
-				"no response subscription opened");
+		assertTrue(((Map<?, ?>) field(service, "pending")).isEmpty(), "nothing waits for a reply");
 	}
 
 	@Test

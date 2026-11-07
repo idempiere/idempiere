@@ -25,13 +25,11 @@
 **********************************************************************/
 package org.idempiere.redis.service;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -40,6 +38,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -51,14 +50,13 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 
 import org.compiere.util.CacheMgt;
 import org.compiere.util.CacheNewRecordCallable;
@@ -66,8 +64,11 @@ import org.idempiere.distributed.IClusterMember;
 import org.idempiere.distributed.IClusterService;
 import org.idempiere.redis.service.cluster.AllowlistKryo5Codec;
 import org.idempiere.redis.service.cluster.ClusterMember;
+import org.idempiere.redis.service.cluster.RemoteExecutionException;
+import org.idempiere.redis.service.cluster.RpcFrame;
+import org.idempiere.redis.service.cluster.RpcFrame.RejectedFrameException;
+import org.idempiere.redis.service.cluster.RpcReplayGuard;
 import org.idempiere.redis.service.cluster.RpcRequest;
-import org.idempiere.redis.service.cluster.RpcResponse;
 import org.idempiere.redis.service.config.ConfigParser;
 import org.idempiere.redis.service.config.RedisConfig;
 import org.idempiere.redis.service.health.RedisHealth;
@@ -81,9 +82,15 @@ import org.redisson.api.RBuckets;
 import org.redisson.api.RKeys;
 import org.redisson.api.RTopic;
 import org.redisson.api.RedissonClient;
+import org.redisson.client.codec.ByteArrayCodec;
 import org.redisson.client.codec.Codec;
+import org.redisson.client.handler.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
+import io.netty.buffer.Unpooled;
 
 /**
  * Redis-backed implementation of {@link IClusterService}.
@@ -95,9 +102,11 @@ import org.slf4j.LoggerFactory;
  * trip.</p>
  *
  * <p><b>Distributed compute</b> ({@link #execute}) uses topic-RPC on Redis pub/sub.
- * Originators publish an {@link RpcRequest} on a global request topic, target
- * members execute and publish an {@link RpcResponse} on a per-request response
- * topic, and each {@link Future} resolves as its node responds. A configurable
+ * Originators publish an {@link RpcFrame} request on a global request topic, target
+ * members execute it on a bounded worker pool and publish a response frame on the
+ * response topic of the originator, and each {@link Future} resolves as its node
+ * responds. Every node subscribes to its own response topic once, at activation,
+ * so a call opens no subscription of its own. A configurable
  * timeout (default 60 s, override via {@code idempiere.cluster.rpc.timeout})
  * fails any unfilled futures. RPC to self is short-circuited to a direct local
  * Callable invocation rather than a Redis round trip.</p>
@@ -106,6 +115,11 @@ import org.slf4j.LoggerFactory;
  * {@link java.io.Serializable}. The bundle's {@code DynamicImport-Package} entry
  * provides classloader access to whichever bundle defines the Callable's class
  * so deserialization on receiving nodes succeeds.</p>
+ *
+ * <p><b>Security</b>: with {@code rpc.hmac.secret} set, every frame is signed and a receiver
+ * checks the signature, the timestamp and that it has not seen the frame before, all before
+ * the callable or result is decoded. Without it, any client that can publish to Redis can run
+ * callables on every node; a warning is logged at startup.</p>
  */
 @Component(
 		service = IClusterService.class,
@@ -119,25 +133,40 @@ public class ClusterServiceImpl implements IClusterService {
 	private static final Logger log = LoggerFactory.getLogger(ClusterServiceImpl.class);
 
 	private static final String MEMBERS_KEY_SUFFIX = "cluster:members:";
-	private static final String RPC_REQUEST_TOPIC_SUFFIX = "cluster:rpc:request";
-	private static final String RPC_RESPONSE_TOPIC_PREFIX = "cluster:rpc:response:";
+	// v2: signed RpcFrame bytes. Nodes of an older version use other topics and do not read these.
+	private static final String RPC_REQUEST_TOPIC_SUFFIX = "cluster:rpc:v2:request";
+	private static final String RPC_RESPONSE_TOPIC_PREFIX = "cluster:rpc:v2:response:";
 
 	private static final long HEARTBEAT_TTL_SECONDS = 30L;
 	private static final long HEARTBEAT_PERIOD_SECONDS = 10L;
 	private static final long DEFAULT_RPC_TIMEOUT_SECONDS = 60L;
+	/** Largest accepted difference between the timestamp of a signed frame and the local clock. */
+	private static final long DEFAULT_RPC_MAX_CLOCK_SKEW_SECONDS = 120L;
+	/** Worker threads and queue length for incoming requests; a full queue refuses the request. */
+	private static final int RPC_WORKER_THREADS = 4;
+	private static final int RPC_WORKER_QUEUE = 1_000;
+	/** At most one warning per this period about refused frames; the others are counted. */
+	private static final long REFUSED_WARN_PERIOD_MILLIS = 60_000L;
 
 	private final AtomicReference<ClusterMember> localMember = new AtomicReference<>();
 	private final ConcurrentMap<String, PendingRequest> pending = new ConcurrentHashMap<>();
-	/** Tracks currently-open response-topic subscriptions for circuit-breaker pool monitoring. */
-	private final AtomicInteger activeResponseSubscriptions = new AtomicInteger(0);
 
 	private volatile ScheduledExecutorService heartbeatExecutor;
 	private volatile ScheduledExecutorService timeoutExecutor;
 	private volatile RTopic requestTopic;
 	private volatile int requestListenerId = -1;
+	/** This node's response topic, subscribed once at activation. */
+	private volatile RTopic responseTopic;
+	private volatile int responseListenerId = -1;
 	private volatile long rpcTimeoutSeconds = DEFAULT_RPC_TIMEOUT_SECONDS;
 	private volatile Codec rpcCodec;
 	private volatile String rpcHmacSecret;
+	/** Key prefix, bound into every frame HMAC so a frame is only valid in its own namespace. */
+	private volatile String rpcContext = "";
+	private volatile RpcReplayGuard replayGuard = new RpcReplayGuard(DEFAULT_RPC_MAX_CLOCK_SKEW_SECONDS * 1000L);
+	private volatile ThreadPoolExecutor rpcWorkers;
+	private final AtomicLong lastRefusedWarn = new AtomicLong(0L);
+	private final AtomicInteger refusedSinceWarn = new AtomicInteger(0);
 
 	/** How often {@link #retryFailedNotifications()} re-publishes notifications that could not be published. */
 	private static final long NOTIFICATION_RETRY_SECONDS = 30L;
@@ -161,12 +190,14 @@ public class ClusterServiceImpl implements IClusterService {
 			rpcTimeoutSeconds = resolveRpcTimeout();
 			rpcCodec = buildRpcCodec(Activator.getConfig());
 			rpcHmacSecret = Activator.getConfig().getRpcHmacSecret();
+			rpcContext = Activator.getKeyPrefix();
+			replayGuard = new RpcReplayGuard(resolveMaxClockSkewSeconds() * 1000L);
+			if (rpcHmacSecret == null) {
+				log.warn("rpc.hmac.secret is not set: any client that can publish to this Redis server can run "
+						+ "cluster commands on every node. Set the same random rpc.hmac.secret on all nodes.");
+			}
 			startHeartbeat();
 			subscribeToRequestTopic();
-			RedisHealth health = Activator.getHealthOrNull();
-			if (health != null) {
-				health.setSubscriptionUsageSupplier(activeResponseSubscriptions::get);
-			}
 			log.info("Redis cluster service activated; local member: {}", self);
 		} catch (RuntimeException re) {
 			throw re;
@@ -180,15 +211,6 @@ public class ClusterServiceImpl implements IClusterService {
 		stopHeartbeat();
 		unsubscribeFromRequestTopic();
 		failAllPending(new IllegalStateException("Bundle deactivating"));
-		// Reset the supplier only after failAllPending() has unsubscribed every PendingRequest
-		// (which decrements activeResponseSubscriptions) — resetting it first would make the
-		// breaker see usage=0 while real subscriptions are still open, letting a concurrent probe
-		// or recordSuccess() close the breaker and a concurrent execute() call add yet another
-		// subscription mid-shutdown.
-		RedisHealth health = Activator.getHealthOrNull();
-		if (health != null) {
-			health.setSubscriptionUsageSupplier(null);
-		}
 		ClusterMember self = localMember.getAndSet(null);
 		if (self != null) {
 			try {
@@ -265,7 +287,6 @@ public class ClusterServiceImpl implements IClusterService {
 		}
 
 		String taskId = UUID.randomUUID().toString();
-		String responseTopicName = rpcResponseTopicName(taskId);
 
 		Map<IClusterMember, CompletableFuture<V>> futures = new LinkedHashMap<>();
 		List<String> remoteUuids = new ArrayList<>(members.size());
@@ -298,7 +319,7 @@ public class ClusterServiceImpl implements IClusterService {
 		// exhaust the subscription pool, trip the breaker and get the notices dropped. Not gated by
 		// the breaker: it guards the subscription pool, which this path does not use.
 		if (isNotification(task)) {
-			publishNotification(new RpcRequest(taskId, self.getId(), remoteUuids.toArray(new String[0]), null, task));
+			publishNotification(new RpcRequest(taskId, self.getId(), remoteUuids.toArray(new String[0]), false, task));
 			for (Map.Entry<IClusterMember, CompletableFuture<V>> e : futures.entrySet()) {
 				if (!self.getId().equals(e.getKey().getId())) {
 					e.getValue().complete(null);
@@ -329,19 +350,6 @@ public class ClusterServiceImpl implements IClusterService {
 			return result;
 		}
 
-		RedissonClient client = Activator.getRedissonClient();
-		Codec codec = rpcCodec;
-		RTopic responseTopic = (codec != null)
-				? client.getTopic(responseTopicName, codec)
-				: client.getTopic(responseTopicName);
-		int listenerId = responseTopic.addListener(RpcResponse.class,
-				(channel, response) -> handleResponse(response));
-		// Track pool usage and probe circuit breaker.
-		int active = activeResponseSubscriptions.incrementAndGet();
-		if (h != null) {
-			h.recordSubscriptionPoolUsage(active, Activator.getConfig().getSubscriptionConnectionPoolSize());
-		}
-
 		Map<IClusterMember, CompletableFuture<V>> remoteFutures = new LinkedHashMap<>();
 		for (Map.Entry<IClusterMember, CompletableFuture<V>> e : futures.entrySet()) {
 			if (!self.getId().equals(e.getKey().getId())) {
@@ -350,8 +358,7 @@ public class ClusterServiceImpl implements IClusterService {
 		}
 
 		@SuppressWarnings({"rawtypes", "unchecked"})
-		PendingRequest pr = new PendingRequest((Map) remoteFutures, responseTopic, listenerId,
-				activeResponseSubscriptions);
+		PendingRequest pr = new PendingRequest((Map) remoteFutures);
 		pending.put(taskId, pr);
 
 		ScheduledExecutorService te = timeoutExecutor;
@@ -366,15 +373,10 @@ public class ClusterServiceImpl implements IClusterService {
 
 		try {
 			RpcRequest request = new RpcRequest(taskId, self.getId(),
-					remoteUuids.toArray(new String[0]), responseTopicName, task);
-			String secret = rpcHmacSecret;
-			if (secret != null) {
-				request.setHmac(computeHmac(secret, taskId, self.getId()));
-			}
-			requestTopic.publish(request);
+					remoteUuids.toArray(new String[0]), true, task);
+			requestTopic.publish(encodeRequest(request));
 		} catch (Exception e) {
 			pending.remove(taskId);
-			pr.unsubscribe();
 			pr.cancelTimeout();
 			IllegalStateException wrap = new IllegalStateException(
 					"Failed to publish RPC request — Callable may not be Serializable, or Redis is unavailable", e);
@@ -406,16 +408,12 @@ public class ClusterServiceImpl implements IClusterService {
 
 	/** Publishes a notification without a reply topic; a failed publish is kept for {@link #retryFailedNotifications()}. */
 	private void publishNotification(RpcRequest request) {
-		String secret = rpcHmacSecret;
-		if (secret != null) {
-			request.setHmac(computeHmac(secret, request.getTaskId(), request.getOriginatorUuid()));
-		}
 		RTopic topic = requestTopic;
 		try {
 			if (topic == null) {
 				throw new IllegalStateException("RPC request topic not subscribed");
 			}
-			topic.publish(request);
+			topic.publish(encodeRequest(request));
 		} catch (Exception e) {
 			keepFailedNotification(request);
 			log.warn("Failed to publish cache notification {}; retried within {}s",
@@ -446,7 +444,8 @@ public class ClusterServiceImpl implements IClusterService {
 			}
 			RpcRequest request;
 			while ((request = failedNotifications.peek()) != null) {
-				topic.publish(request);
+				// Encoded again: a fresh timestamp, so receivers do not refuse it as too old.
+				topic.publish(encodeRequest(request));
 				failedNotifications.poll();
 				failedNotificationCount.decrementAndGet();
 			}
@@ -461,6 +460,7 @@ public class ClusterServiceImpl implements IClusterService {
 				log.warn("Cluster-wide cache reset sent: more than {} cache notifications could not be published",
 						MAX_FAILED_NOTIFICATIONS);
 			}
+			replayGuard.purge(System.currentTimeMillis());
 		} catch (Throwable t) {
 			log.warn("Re-publishing failed cache notifications failed; will retry in {}s", NOTIFICATION_RETRY_SECONDS, t);
 		}
@@ -502,13 +502,20 @@ public class ClusterServiceImpl implements IClusterService {
 		timeoutExecutor = Executors.newSingleThreadScheduledExecutor(daemonThreadFactory("redis-cluster-rpc-timeout"));
 		timeoutExecutor.scheduleWithFixedDelay(this::retryFailedNotifications,
 				NOTIFICATION_RETRY_SECONDS, NOTIFICATION_RETRY_SECONDS, TimeUnit.SECONDS);
-		Codec codec = rpcCodec;
-		String topicName = rpcRequestTopicName();
-		requestTopic = (codec != null)
-				? Activator.getRedissonClient().getTopic(topicName, codec)
-				: Activator.getRedissonClient().getTopic(topicName);
-		requestListenerId = requestTopic.addListener(RpcRequest.class,
-				(channel, request) -> handleRequest(request));
+		// Callables run here, not on the Redisson listener thread, so a slow one does not hold up
+		// every other topic listener. A full queue refuses further requests.
+		rpcWorkers = new ThreadPoolExecutor(RPC_WORKER_THREADS, RPC_WORKER_THREADS, 60L, TimeUnit.SECONDS,
+				new ArrayBlockingQueue<>(RPC_WORKER_QUEUE), daemonThreadFactory("redis-cluster-rpc-worker"),
+				new ThreadPoolExecutor.AbortPolicy());
+		rpcWorkers.allowCoreThreadTimeOut(true);
+		RedissonClient client = Activator.getRedissonClient();
+		// Response topic first, so no reply to an early request of this node is missed.
+		responseTopic = client.getTopic(rpcResponseTopicName(localMember.get().getId()), ByteArrayCodec.INSTANCE);
+		responseListenerId = responseTopic.addListener(byte[].class,
+				(channel, frame) -> handleResponse(frame));
+		requestTopic = client.getTopic(rpcRequestTopicName(), ByteArrayCodec.INSTANCE);
+		requestListenerId = requestTopic.addListener(byte[].class,
+				(channel, frame) -> handleRequest(frame));
 	}
 
 	private void unsubscribeFromRequestTopic() {
@@ -516,6 +523,25 @@ public class ClusterServiceImpl implements IClusterService {
 		int id = requestListenerId;
 		requestTopic = null;
 		requestListenerId = -1;
+		removeListener(topic, id);
+		RTopic responses = responseTopic;
+		int responsesId = responseListenerId;
+		responseTopic = null;
+		responseListenerId = -1;
+		removeListener(responses, responsesId);
+		ScheduledExecutorService te = timeoutExecutor;
+		timeoutExecutor = null;
+		if (te != null) {
+			te.shutdownNow();
+		}
+		ThreadPoolExecutor workers = rpcWorkers;
+		rpcWorkers = null;
+		if (workers != null) {
+			workers.shutdownNow();
+		}
+	}
+
+	private static void removeListener(RTopic topic, int id) {
 		if (topic != null && id != -1) {
 			try {
 				topic.removeListener(id);
@@ -523,62 +549,106 @@ public class ClusterServiceImpl implements IClusterService {
 				// best effort
 			}
 		}
-		ScheduledExecutorService te = timeoutExecutor;
-		timeoutExecutor = null;
-		if (te != null) {
-			te.shutdownNow();
-		}
 	}
 
-	private void handleRequest(RpcRequest request) {
+	/**
+	 * Runs on the Redisson listener thread: checks the frame (HMAC, kind, target, timestamp, replay)
+	 * without decoding the callable, then hands it to {@link #rpcWorkers}.
+	 */
+	private void handleRequest(byte[] bytes) {
 		ClusterMember self = localMember.get();
 		if (self == null) {
 			return;
 		}
-		if (!isTargeted(request, self)) {
-			return;
-		}
 		String secret = rpcHmacSecret;
-		if (secret != null && !verifyHmac(secret, request)) {
+		RpcFrame frame;
+		try {
+			frame = RpcFrame.decode(bytes, secret, rpcContext);
+		} catch (RejectedFrameException e) {
+			refused("request", e.getMessage());
 			return;
 		}
-		Object result = null;
-		Throwable error = null;
-		try {
-			result = request.getCallable().call();
-		} catch (Throwable t) {
-			error = t;
+		if (frame.getKind() != RpcFrame.KIND_REQUEST) {
+			refused("request", "not a request frame");
+			return;
 		}
-		if (request.getResponseTopic() == null) {
-			// Fire-and-forget notification: nobody waits for a reply.
-			if (error != null) {
-				log.warn("Cache notification {} failed on {}", request.getTaskId(), self.getId(), error);
+		if (!isTargeted(frame, self)) {
+			return;
+		}
+		if (secret != null) {
+			String reason = replayGuard.check(frame, System.currentTimeMillis());
+			if (reason != null) {
+				refused("request " + frame.getTaskId(), reason);
+				return;
 			}
-			return;
 		}
-		Throwable safeError = toSerializable(error);
-		Codec codec = rpcCodec;
-		RTopic responseTopic = (codec != null)
-				? Activator.getRedissonClient().getTopic(request.getResponseTopic(), codec)
-				: Activator.getRedissonClient().getTopic(request.getResponseTopic());
+		ThreadPoolExecutor workers = rpcWorkers;
 		try {
-			RpcResponse response = new RpcResponse(request.getTaskId(), self.getId(), result, safeError);
-			responseTopic.publish(response);
-		} catch (Exception e) {
-			log.warn("Failed to publish RPC response for task {} from {}; retrying with sanitised error",
-					request.getTaskId(), self.getId(), e);
-			try {
-				RpcResponse fallback = new RpcResponse(request.getTaskId(), self.getId(), null,
-						new RuntimeException("Response serialization failed: " + e));
-				responseTopic.publish(fallback);
-			} catch (Exception ee) {
-				log.error("Sanitised RPC response also failed for task {}", request.getTaskId(), ee);
+			if (workers == null) {
+				throw new RejectedExecutionException("cluster service is stopping");
+			}
+			workers.execute(() -> runRequest(frame, self));
+		} catch (RejectedExecutionException e) {
+			log.warn("RPC request {} from {} refused: worker queue full or stopping", frame.getTaskId(),
+					frame.getSenderUuid());
+			if (frame.isReplyExpected()) {
+				publishResponse(frame, RpcFrame.error(System.currentTimeMillis(), frame.getTaskId(), self.getId(),
+						RejectedExecutionException.class.getName(), "cluster member busy"));
 			}
 		}
 	}
 
-	private static boolean isTargeted(RpcRequest request, ClusterMember self) {
-		String[] uuids = request.getTargetUuids();
+	/** Runs on {@link #rpcWorkers}: decodes the callable, runs it and sends the response, if one is expected. */
+	private void runRequest(RpcFrame frame, ClusterMember self) {
+		Object result = null;
+		Throwable error = null;
+		try {
+			Object decoded = decodePayload(rpcCodec, frame.getPayload());
+			if (!(decoded instanceof Callable)) {
+				throw new IllegalArgumentException("RPC payload is not a Callable: "
+						+ (decoded == null ? "null" : decoded.getClass().getName()));
+			}
+			result = ((Callable<?>) decoded).call();
+		} catch (Throwable t) {
+			error = t;
+		}
+		if (!frame.isReplyExpected()) {
+			// Fire-and-forget notification: nobody waits for a reply.
+			if (error != null) {
+				log.warn("Cache notification {} failed on {}", frame.getTaskId(), self.getId(), error);
+			}
+			return;
+		}
+		long now = System.currentTimeMillis();
+		RpcFrame response;
+		if (error != null) {
+			response = RpcFrame.error(now, frame.getTaskId(), self.getId(), error.getClass().getName(),
+					error.getMessage());
+		} else {
+			try {
+				response = RpcFrame.result(now, frame.getTaskId(), self.getId(), encodePayload(rpcCodec, result));
+			} catch (Exception e) {
+				log.warn("Failed to encode RPC response for task {} from {}", frame.getTaskId(), self.getId(), e);
+				response = RpcFrame.error(now, frame.getTaskId(), self.getId(), e.getClass().getName(),
+						"Response serialization failed: " + e.getMessage());
+			}
+		}
+		publishResponse(frame, response);
+	}
+
+	/** Publishes on the response topic of the originator of {@code request}; the topic name never comes from the sender. */
+	private void publishResponse(RpcFrame request, RpcFrame response) {
+		try {
+			RTopic topic = Activator.getRedissonClient().getTopic(
+					rpcResponseTopicName(request.getSenderUuid()), ByteArrayCodec.INSTANCE);
+			topic.publish(response.encode(rpcHmacSecret, rpcContext));
+		} catch (Exception e) {
+			log.warn("Failed to publish RPC response for task {}", request.getTaskId(), e);
+		}
+	}
+
+	private static boolean isTargeted(RpcFrame frame, ClusterMember self) {
+		String[] uuids = frame.getTargetUuids();
 		if (uuids == null) {
 			return false;
 		}
@@ -590,21 +660,72 @@ public class ClusterServiceImpl implements IClusterService {
 		return false;
 	}
 
-	private void handleResponse(RpcResponse response) {
-		PendingRequest pr = pending.get(response.getTaskId());
-		if (pr == null) {
-			// Late response after timeout, or already handled by failAllPending — drop silently.
+	private void handleResponse(byte[] bytes) {
+		String secret = rpcHmacSecret;
+		RpcFrame frame;
+		try {
+			frame = RpcFrame.decode(bytes, secret, rpcContext);
+		} catch (RejectedFrameException e) {
+			refused("response", e.getMessage());
 			return;
 		}
-		boolean done = pr.deliver(response);
+		if (frame.getKind() != RpcFrame.KIND_RESPONSE) {
+			refused("response", "not a response frame");
+			return;
+		}
+		String taskId = frame.getTaskId();
+		PendingRequest pr = pending.get(taskId);
+		if (pr == null || !pr.isWaitingFor(frame.getSenderUuid())) {
+			// Late response after timeout, already handled, or from a member that was not asked.
+			return;
+		}
+		if (secret != null) {
+			String reason = replayGuard.check(frame, System.currentTimeMillis());
+			if (reason != null) {
+				refused("response to " + taskId, reason);
+				return;
+			}
+		}
+		boolean done;
+		if (frame.isError()) {
+			done = pr.deliver(frame.getSenderUuid(), null, new RemoteExecutionException(frame.getSenderUuid(),
+					frame.getErrorClass(), frame.getErrorMessage()));
+		} else {
+			Object result;
+			try {
+				result = decodePayload(rpcCodec, frame.getPayload());
+			} catch (Exception e) {
+				done = pr.deliver(frame.getSenderUuid(), null,
+						new IllegalStateException("Failed to decode RPC response for task " + taskId, e));
+				finishIfDone(taskId, pr, done);
+				return;
+			}
+			done = pr.deliver(frame.getSenderUuid(), result, null);
+		}
+		finishIfDone(taskId, pr, done);
+	}
+
+	private void finishIfDone(String taskId, PendingRequest pr, boolean done) {
 		if (done) {
 			// Atomic remove(key,value) gate prevents failAllPending double-calling
 			// unsubscribe on the same PendingRequest in a race; an unconditional
 			// remove(key) here would not guard against that.
-			if (pending.remove(response.getTaskId(), pr)) {
-				pr.unsubscribe();
+			if (pending.remove(taskId, pr)) {
 				pr.cancelTimeout();
 			}
+		}
+	}
+
+	/** Logs a refused frame, at most once per {@link #REFUSED_WARN_PERIOD_MILLIS}, with the number refused since. */
+	private void refused(String what, String reason) {
+		int count = refusedSinceWarn.incrementAndGet();
+		long now = System.currentTimeMillis();
+		long last = lastRefusedWarn.get();
+		if (now - last >= REFUSED_WARN_PERIOD_MILLIS && lastRefusedWarn.compareAndSet(last, now)) {
+			refusedSinceWarn.addAndGet(-count);
+			log.warn("Cluster RPC {} refused: {} ({} refused in the last period)", what, reason, count);
+		} else if (log.isDebugEnabled()) {
+			log.debug("Cluster RPC {} refused: {}", what, reason);
 		}
 	}
 
@@ -612,19 +733,15 @@ public class ClusterServiceImpl implements IClusterService {
 		PendingRequest pr = pending.remove(taskId);
 		if (pr != null) {
 			pr.failRemaining(new TimeoutException("RPC timed out after " + rpcTimeoutSeconds + " s"));
-			pr.unsubscribe();
 		}
 	}
 
 	private void failAllPending(Throwable cause) {
-		// Drain using remove(key,value) so only the thread that removes owns
-		// unsubscribe, preventing double-decrement of activeResponseSubscriptions if
-		// handleResponse races here; an unconditional values()-loop + clear() would
-		// not guard against that.
+		// Drain using remove(key,value) so only the thread that removes completes the
+		// request when handleResponse races here.
 		pending.forEach((id, pr) -> {
 			if (pending.remove(id, pr)) {
 				pr.failRemaining(cause);
-				pr.unsubscribe();
 				pr.cancelTimeout();
 			}
 		});
@@ -632,62 +749,47 @@ public class ClusterServiceImpl implements IClusterService {
 
 	// ---------------------------------------------------------- Security helpers
 
+	/**
+	 * The codec of frame payloads. Always {@link AllowlistKryo5Codec}, whatever codec the Redisson
+	 * client uses: it never decodes exceptions, and it applies {@code rpc.callable.allowlist} when set.
+	 */
 	private static Codec buildRpcCodec(RedisConfig cfg) {
 		Set<String> allowlist = cfg.getRpcCallableAllowlist();
 		if (allowlist.isEmpty()) {
-			// No restriction. The client's default codec cannot send java.util.logging.Level
-			// (SystemInfo.logLevel): Kryo reflects on its private fields and the java.logging module
-			// refuses. When that default is Kryo5Codec, use the same codec, unrestricted, with the
-			// Level serializer; any other configured codec is left as it is.
-			Codec clientCodec = Activator.getRedissonClient().getConfig().getCodec();
-			if (clientCodec == null || clientCodec.getClass() == org.redisson.codec.Kryo5Codec.class) {
-				return new AllowlistKryo5Codec(null, Set.of());
-			}
-			return null;
+			return new AllowlistKryo5Codec(null, Set.of());
 		}
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();
 		log.info("RPC codec: allow-list active ({} class(es))", allowlist.size());
 		return new AllowlistKryo5Codec(cl, allowlist);
 	}
 
-	private static String computeHmac(String secret, String taskId, String originatorUuid) {
+	/** Encodes {@code request} into a frame with the current time, signed when a secret is set. */
+	private byte[] encodeRequest(RpcRequest request) {
 		try {
-			Mac mac = Mac.getInstance("HmacSHA256");
-			mac.init(new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
-			mac.update(taskId.getBytes(StandardCharsets.UTF_8));
-			mac.update((byte) '|');
-			mac.update(originatorUuid.getBytes(StandardCharsets.UTF_8));
-			return Base64.getEncoder().encodeToString(mac.doFinal());
-		} catch (Exception e) {
-			throw new IllegalStateException("HMAC computation failed", e);
+			byte[] payload = encodePayload(rpcCodec, request.getCallable());
+			return RpcFrame.request(System.currentTimeMillis(), request.getTaskId(), request.getOriginatorUuid(),
+					request.getTargetUuids(), request.isReplyExpected(), payload).encode(rpcHmacSecret, rpcContext);
+		} catch (IOException e) {
+			throw new IllegalStateException("Failed to encode RPC request " + request.getTaskId(), e);
 		}
 	}
 
-	private boolean verifyHmac(String secret, RpcRequest request) {
-		String provided = request.getHmac();
-		if (provided == null || provided.isEmpty()) {
-			log.warn("RPC request {} rejected: HMAC required but missing", request.getTaskId());
-			return false;
+	static byte[] encodePayload(Codec codec, Object value) throws IOException {
+		ByteBuf buf = codec.getValueEncoder().encode(value);
+		try {
+			return ByteBufUtil.getBytes(buf);
+		} finally {
+			buf.release();
 		}
-		String expected = computeHmac(secret, request.getTaskId(), request.getOriginatorUuid());
-		if (!MessageDigest.isEqual(
-				expected.getBytes(StandardCharsets.UTF_8),
-				provided.getBytes(StandardCharsets.UTF_8))) {
-			log.warn("RPC request {} rejected: HMAC mismatch (possible forgery)", request.getTaskId());
-			return false;
-		}
-		return true;
 	}
 
-	/**
-	 * Returns {@code error} if it is {@link java.io.Serializable}; otherwise wraps
-	 * it in a plain {@link RuntimeException} so the response can always be published.
-	 */
-	private static Throwable toSerializable(Throwable error) {
-		if (error == null || error instanceof java.io.Serializable) {
-			return error;
+	static Object decodePayload(Codec codec, byte[] bytes) throws IOException {
+		ByteBuf buf = Unpooled.wrappedBuffer(bytes);
+		try {
+			return codec.getValueDecoder().decode(buf, new State());
+		} finally {
+			buf.release();
 		}
-		return new RuntimeException(error.getClass().getName() + ": " + error.getMessage());
 	}
 
 	// ----------------------------------------------------- Local member helpers
@@ -709,6 +811,17 @@ public class ClusterServiceImpl implements IClusterService {
 
 	private static int resolveLocalPort() {
 		return ConfigParser.systemProp("idempiere.cluster.port", 0, Integer::parseInt);
+	}
+
+	private static long resolveMaxClockSkewSeconds() {
+		long parsed = ConfigParser.systemProp("idempiere.cluster.rpc.maxClockSkew",
+				DEFAULT_RPC_MAX_CLOCK_SKEW_SECONDS, Long::parseLong);
+		if (parsed <= 0) {
+			log.warn("idempiere.cluster.rpc.maxClockSkew must be positive; defaulting to {} s",
+					DEFAULT_RPC_MAX_CLOCK_SKEW_SECONDS);
+			return DEFAULT_RPC_MAX_CLOCK_SKEW_SECONDS;
+		}
+		return parsed;
 	}
 
 	private static long resolveRpcTimeout() {
@@ -743,29 +856,22 @@ public class ClusterServiceImpl implements IClusterService {
 		return Activator.getKeyPrefix() + RPC_REQUEST_TOPIC_SUFFIX;
 	}
 
-	private static String rpcResponseTopicName(String taskId) {
-		return Activator.getKeyPrefix() + RPC_RESPONSE_TOPIC_PREFIX + taskId;
+	/** One per node: the receiver derives it from the originator, which is covered by the frame HMAC. */
+	private static String rpcResponseTopicName(String originatorUuid) {
+		return Activator.getKeyPrefix() + RPC_RESPONSE_TOPIC_PREFIX + originatorUuid;
 	}
 
 	// ------------------------------------------------------------ Inner state
 
 	/**
-	 * Per-request state: pending Future per target member + the response topic
-	 * subscription that needs to be torn down on completion or timeout, plus the
-	 * scheduled timeout handle so an early completion can cancel the wakeup.
+	 * Per-request state: pending Future per target member, plus the scheduled
+	 * timeout handle so an early completion can cancel the wakeup.
 	 */
 	private static final class PendingRequest {
 		private final ConcurrentMap<String, CompletableFuture<Object>> futuresByUuid;
-		private final RTopic responseTopic;
-		private final int listenerId;
 		private volatile ScheduledFuture<?> timeoutHandle;
-		private final AtomicInteger subscriptionCounter;
 
-		PendingRequest(Map<IClusterMember, CompletableFuture<Object>> futures,
-				RTopic responseTopic, int listenerId, AtomicInteger subscriptionCounter) {
-			this.responseTopic = responseTopic;
-			this.listenerId = listenerId;
-			this.subscriptionCounter = subscriptionCounter;
+		PendingRequest(Map<IClusterMember, CompletableFuture<Object>> futures) {
 			this.futuresByUuid = new ConcurrentHashMap<>();
 			for (Map.Entry<IClusterMember, CompletableFuture<Object>> e : futures.entrySet()) {
 				futuresByUuid.put(e.getKey().getId(), e.getValue());
@@ -784,16 +890,20 @@ public class ClusterServiceImpl implements IClusterService {
 			}
 		}
 
+		boolean isWaitingFor(String memberUuid) {
+			return memberUuid != null && futuresByUuid.containsKey(memberUuid);
+		}
+
 		/** @return true if all expected responses have arrived. */
-		boolean deliver(RpcResponse response) {
-			CompletableFuture<Object> f = futuresByUuid.remove(response.getMemberUuid());
+		boolean deliver(String memberUuid, Object result, Throwable error) {
+			CompletableFuture<Object> f = futuresByUuid.remove(memberUuid);
 			if (f == null) {
 				return futuresByUuid.isEmpty();
 			}
-			if (response.getError() != null) {
-				f.completeExceptionally(response.getError());
+			if (error != null) {
+				f.completeExceptionally(error);
 			} else {
-				f.complete(response.getResult());
+				f.complete(result);
 			}
 			return futuresByUuid.isEmpty();
 		}
@@ -806,18 +916,6 @@ public class ClusterServiceImpl implements IClusterService {
 				}
 			}
 			futuresByUuid.clear();
-		}
-
-		void unsubscribe() {
-			try {
-				responseTopic.removeListener(listenerId);
-			} catch (Exception ignored) {
-				// best effort
-			}
-			// Decrement the pool-usage counter so RedisHealth gets an accurate count.
-			if (subscriptionCounter != null) {
-				subscriptionCounter.decrementAndGet();
-			}
 		}
 	}
 }

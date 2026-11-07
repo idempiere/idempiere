@@ -28,33 +28,39 @@ package org.idempiere.redis.service.cluster;
 import java.util.Set;
 import java.util.logging.Level;
 
+import org.objenesis.strategy.StdInstantiatorStrategy;
 import org.redisson.codec.Kryo5Codec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.KryoException;
 import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.serializers.DefaultSerializers;
+import com.esotericsoftware.kryo.util.DefaultInstantiatorStrategy;
 
 /**
- * Kryo5Codec variant that enforces a class allow-list on the RPC topics.
+ * Kryo codec for the payloads of cluster RPC frames (the callable of a request, the result of a
+ * response), with an optional class allow-list.
  *
- * <p>Extends {@link Kryo5Codec} and overrides {@link #createKryo} to:
+ * <p>Built like Redisson's {@link Kryo5Codec} (same instantiator strategy, no references, UUID,
+ * URI and Pattern serializers), with two differences:</p>
  * <ol>
- *   <li>Register the RPC envelope types ({@link RpcRequest}, {@link RpcResponse},
- *       {@code String[]}) and a small set of common exception types.</li>
- *   <li>Register each class name from {@code allowedClassNames}.</li>
- *   <li>Call {@code setRegistrationRequired(true)} so Kryo rejects any class
- *       not in the combined set — preventing gadget-chain deserialization attacks
- *       (CVE-2023-42809) even when an attacker can publish to the Redis topic.</li>
+ *   <li>Exceptions are never decoded. Redisson's codec decodes every {@link Throwable} with Java
+ *       serialization ({@code ObjectInputStream}); here any {@code Throwable} is refused in both
+ *       directions. A failed callable travels as class name and message in the frame header, see
+ *       {@link RpcFrame#error}.</li>
+ *   <li>With a non-empty {@code allowedClassNames}, {@code setRegistrationRequired(true)} is set
+ *       and only these classes, a few JDK value types and {@link Level} can be decoded
+ *       (CVE-2023-42809 is the same class of bug). With an empty set any class can be decoded,
+ *       as with Redisson's codec.</li>
  * </ol>
  *
- * <p>All nodes in a cluster <b>must</b> share the same allow-list and the same
- * ordering (entries are registered alphabetically) so that Kryo class IDs are
- * consistent across JVMs. Add every class that can appear as a Callable
- * implementation or as a Callable return / exception type to
- * {@code rpc.callable.allowlist} in {@code redis.properties}.</p>
+ * <p>The allow-list does not replace {@code rpc.hmac.secret}: the frame HMAC, checked before the
+ * payload is decoded, is what keeps clients without the secret out. All nodes of a cluster must
+ * share the same allow-list: entries are registered alphabetically, so the Kryo class IDs match.</p>
  */
 public class AllowlistKryo5Codec extends Kryo5Codec {
 
@@ -69,41 +75,63 @@ public class AllowlistKryo5Codec extends Kryo5Codec {
 
 	@Override
 	protected Kryo createKryo(ClassLoader classLoader) {
-		Kryo kryo = super.createKryo(classLoader);
+		// Not super.createKryo: it registers Java serialization as the default serializer for
+		// Throwable, and Kryo uses the first matching default serializer.
+		Kryo kryo = new Kryo();
+		if (classLoader != null) {
+			kryo.setClassLoader(classLoader);
+		}
+		kryo.setInstantiatorStrategy(new DefaultInstantiatorStrategy(new StdInstantiatorStrategy()));
+		// Kryo 5 requires registration by default; Redisson's codec turns it off, and so does this one
+		// unless an allow-list is configured (set at the end).
+		kryo.setRegistrationRequired(false);
+		kryo.setReferences(false);
+		kryo.addDefaultSerializer(Throwable.class, new RefusedThrowableSerializer());
+		kryo.addDefaultSerializer(java.util.UUID.class, new DefaultSerializers.UUIDSerializer());
+		kryo.addDefaultSerializer(java.net.URI.class, new DefaultSerializers.URISerializer());
+		kryo.addDefaultSerializer(java.util.regex.Pattern.class, new DefaultSerializers.PatternSerializer());
 
-		// Always register RPC envelope types and the common types they need.
-		kryo.register(RpcRequest.class);
-		kryo.register(RpcResponse.class);
-		kryo.register(String[].class);
-		kryo.register(Throwable.class);
-		kryo.register(Exception.class);
-		kryo.register(RuntimeException.class);
-		kryo.register(IllegalStateException.class);
-		kryo.register(IllegalArgumentException.class);
-		kryo.register(java.util.concurrent.TimeoutException.class);
-		kryo.register(java.io.IOException.class);
+		if (!allowedClassNames.isEmpty()) {
+			// Value types returned by the core callables (log blocks, cache info lists, start times).
+			kryo.register(byte[].class);
+			kryo.register(String[].class);
+			kryo.register(java.util.ArrayList.class);
+			kryo.register(java.sql.Timestamp.class);
+			kryo.register(java.util.Date.class);
 
-		// Register operator-configured Callable (and result/error) types.
-		// Sort for deterministic Kryo ID assignment across nodes.
-		allowedClassNames.stream().sorted().forEach(name -> {
-			try {
-				kryo.register(Class.forName(name, true, classLoader));
-			} catch (ClassNotFoundException e) {
-				log.warn("rpc.callable.allowlist: class '{}' not found; skipping registration", name);
-			}
-		});
+			// Operator-configured Callable (and result) types.
+			// Sort for deterministic Kryo ID assignment across nodes.
+			allowedClassNames.stream().sorted().forEach(name -> {
+				try {
+					kryo.register(Class.forName(name, false, classLoader != null ? classLoader : getClass().getClassLoader()));
+				} catch (ClassNotFoundException e) {
+					log.warn("rpc.callable.allowlist: class '{}' not found; skipping registration", name);
+				}
+			});
+		}
 
-		// java.util.logging.Level travels inside SystemInfo (its logLevel field). Registered after the
-		// allow-list so the IDs of the classes above stay the same as on nodes without this line.
-		// Level has no no-arg constructor and is resolved by name, so it needs its own serializer.
+		// java.util.logging.Level travels inside SystemInfo (its logLevel field). Level has no no-arg
+		// constructor and is resolved by name, so it needs its own serializer.
 		kryo.register(Level.class, new LevelSerializer());
 
-		// An empty allow-list means unrestricted, like Redisson's default Kryo5Codec: the codec is then
-		// used only for the Level serializer (see ClusterServiceImpl.buildRpcCodec).
 		if (!allowedClassNames.isEmpty()) {
 			kryo.setRegistrationRequired(true);
 		}
 		return kryo;
+	}
+
+	/** Refuses to write or read any {@link Throwable}. */
+	static final class RefusedThrowableSerializer extends Serializer<Throwable> {
+
+		@Override
+		public void write(Kryo kryo, Output output, Throwable object) {
+			throw new KryoException("Exceptions are not sent over cluster RPC: " + object.getClass().getName());
+		}
+
+		@Override
+		public Throwable read(Kryo kryo, Input input, Class<? extends Throwable> type) {
+			throw new KryoException("Exceptions are not accepted over cluster RPC: " + type.getName());
+		}
 	}
 
 	/**
