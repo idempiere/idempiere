@@ -1136,6 +1136,8 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 							{
 								String updatedText = currentText.replace(tempDocNo, summary);
 								super.setTextMsg(updatedText);
+								//in case TextMsg is truncated due to max field length
+								updatedText = getTextMsg();
 								if (!is_new() && getAD_WF_Activity_ID() > 0)
 								{
 									String sql = "UPDATE " + Table_Name

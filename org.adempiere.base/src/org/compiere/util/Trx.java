@@ -423,14 +423,17 @@ public class Trx
 					// a before commit listener has failed, the transaction must not be committed
 					log.log(Level.SEVERE, m_trxName, e);
 					m_active = false;
+					boolean rolledBack = false;
 					try
 					{
 						m_connection.rollback();
+						rolledBack = true;
 					}
 					catch (SQLException ex)
 					{
 						log.log(Level.SEVERE, m_trxName, ex);
 					}
+					fireAfterRollbackEvent(rolledBack);
 					String msg = DBException.getDefaultDBExceptionMessage(e);
 					if (throwException)
 					{

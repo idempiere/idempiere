@@ -874,6 +874,11 @@ public class MSequence extends X_AD_Sequence
 					+ " SET " + DB.getDatabase().quoteColumnName("DocumentNo") + "=?"
 					+ " WHERE " + DB.getDatabase().quoteColumnName(keyColumnName) + "=?";
 			int no = DB.executeUpdateEx(sql, new Object[] {docNo, keyValue}, trx.getTrxName());
+			if (no == 0) {
+				// record was rolled back to a savepoint or deleted in this transaction
+				s_log.warning("Deferred DocumentNo skipped, record not found: " + po.get_TableName() + " (" + keyColumnName + "=" + keyValue + ")");
+				return;
+			}
 			if (no != 1)
 				throw new IllegalStateException("Failed to update document no for " + po.get_TableName()
 						+ " (" + keyColumnName + "=" + keyValue + "), update count=" + no);
