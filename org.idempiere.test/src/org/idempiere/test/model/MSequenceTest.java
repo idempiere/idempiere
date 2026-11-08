@@ -7,21 +7,41 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.UUID;
 
 import org.compiere.model.MBPartner;
+import org.compiere.model.MChangeLog;
+import org.compiere.model.MClient;
+import org.compiere.model.MColumn;
 import org.compiere.model.MDocType;
+import org.compiere.model.MInvoice;
+import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MOrder;
+import org.compiere.model.MOrderLine;
+import org.compiere.model.MProduct;
 import org.compiere.model.MSequence;
+import org.compiere.model.MSession;
+import org.compiere.model.MStorageReservationLog;
+import org.compiere.model.MSysConfig;
+import org.compiere.model.MUser;
+import org.compiere.model.Query;
 import org.compiere.process.DocAction;
+import org.compiere.process.ProcessInfo;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.TimeUtil;
 import org.compiere.util.Trx;
+import org.compiere.wf.MWFActivity;
+import org.compiere.wf.MWFEventAudit;
+import org.compiere.wf.MWFProcess;
+import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
@@ -31,6 +51,7 @@ import org.mockito.Mockito;
  * context variable keys feature (/K flag), UUID sequences,
  * sequences allowing gaps and decimal patterns.
  */
+@Isolated
 public class MSequenceTest extends AbstractTestCase {
 
     private static final String TEST_PREFIX = "TestSeq-";
@@ -493,5 +514,199 @@ public class MSequenceTest extends AbstractTestCase {
         DB.executeUpdateEx("DELETE FROM AD_Sequence_No WHERE AD_Sequence_ID=?", new Object[] {seqID}, getTrxName());
         DB.executeUpdateEx("DELETE FROM AD_Sequence WHERE AD_Sequence_ID=?", new Object[] {seqID}, getTrxName());
         commit();
+    }
+
+    @Test
+    public void testDeferredDocumentNoUpdatesStorageReservationLog() {
+        Properties ctx = Env.getCtx();
+        String trxName = getTrxName();
+
+        if (MSession.get(ctx) == null)
+        	MSession.create(ctx);
+        
+        MSequence seq = new MSequence(ctx, 0, null);
+        seq.setName("Test Lazy DocNo Sequence");
+        seq.setPrefix("LAZY-");
+        seq.setStartNo(5000);
+        seq.setCurrentNext(5000);
+        seq.setIncrementNo(1);
+        seq.setIsActive(true);
+        seq.setIsAutoSequence(true);
+        seq.setIsTableID(false);
+        seq.setIsAllowSequenceGaps(false);
+        seq.saveEx();
+
+        MDocType docType = new MDocType(ctx, 0, null);
+        docType.setName("Test Lazy SO DocType");
+        docType.setPrintName("Test Lazy SO");
+        docType.setDocNoSequence_ID(seq.get_ID());
+        docType.setIsActive(true);
+        docType.setDocBaseType(MDocType.DOCBASETYPE_SalesOrder);
+        docType.setDocSubTypeSO(MDocType.DOCSUBTYPESO_StandardOrder);
+        docType.setGL_Category_ID();
+        docType.setIsDocNoControlled(true);
+        docType.setIsLazyGenerateDocNo(MDocType.ISLAZYGENERATEDOCNO_Yes);        
+
+        MDocType invDocType = null;
+        
+        try (MockedStatic<MSysConfig> mockedSysConfig = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
+            mockedSysConfig.when(() -> MSysConfig.getValue(MSysConfig.SYSTEM_INSERT_CHANGELOG, "N", getAD_Client_ID()))
+                .thenReturn("Y");
+
+            docType.saveEx();
+            
+            Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+            MOrder order = new MOrder(ctx, 0, trxName);
+            order.setBPartner(MBPartner.get(ctx, DictionaryIDs.C_BPartner.C_AND_W.id));
+            order.setC_DocTypeTarget_ID(docType.getC_DocType_ID());
+            order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
+            order.setDocStatus(DocAction.STATUS_Drafted);
+            order.setDocAction(DocAction.ACTION_Complete);
+            order.setDateOrdered(today);
+            order.setDatePromised(today);
+            order.saveEx();
+
+            assertTrue(order.is_UsingTemporaryDocumentNo(), "Order should hold a temporary DocumentNo after save");
+            String tempDocNo = order.get_TemporaryDocumentNo();
+            assertNotNull(tempDocNo, "Temporary DocumentNo should not be null");
+            assertTrue(MSequence.isTemporaryDocumentNo(tempDocNo), "Should be a temporary DocumentNo: " + tempDocNo);
+
+            int docNoColumnId = MColumn.getColumn_ID(MOrder.Table_Name, MOrder.COLUMNNAME_DocumentNo);
+            MChangeLog changeLogBefore = new Query(ctx, MChangeLog.Table_Name, "AD_Table_ID=? AND Record_ID=? AND AD_Column_ID=? AND EventChangeLog=?", trxName)
+                    .setParameters(MOrder.Table_ID, order.get_ID(), docNoColumnId, MChangeLog.EVENTCHANGELOG_Insert)
+                    .first();
+            assertNotNull(changeLogBefore, "Insert MChangeLog for DocumentNo should exist");
+            assertEquals(tempDocNo, changeLogBefore.getNewValue(), "Insert MChangeLog should initially hold temporary DocumentNo");
+
+            MOrderLine line1 = new MOrderLine(order);
+            line1.setLine(10);
+            line1.setProduct(MProduct.get(ctx, DictionaryIDs.M_Product.AZALEA_BUSH.id));
+            line1.setQty(new BigDecimal("1"));
+            line1.setDatePromised(today);
+            line1.saveEx();
+
+            MOrderLine line2 = new MOrderLine(order);
+            line2.setLine(20);
+            line2.setProduct(MProduct.get(ctx, DictionaryIDs.M_Product.OAK.id));
+            line2.setQty(new BigDecimal("2"));
+            line2.setDatePromised(today);
+            line2.saveEx();
+
+            ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+            assertFalse(info.isError(), info.getSummary());
+            assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+            assertTrue(order.is_UsingTemporaryDocumentNo(), "Order should still hold a temporary DocumentNo after workflow completion");
+
+            // Reading getDocumentNo() triggers deferred sequence generation and updates M_StorageReservationLog, AD_ChangeLog, and WF records
+            String actualDocNo = order.getDocumentNo();
+            assertEquals("LAZY-5000", actualDocNo);
+            assertFalse(order.is_UsingTemporaryDocumentNo(), "Order should no longer hold a temporary DocumentNo");
+
+            MWFProcess wfProcess = new Query(ctx, MWFProcess.Table_Name, "AD_Table_ID=? AND Record_ID=?", trxName)
+                    .setParameters(MOrder.Table_ID, order.get_ID())
+                    .first();
+            assertNotNull(wfProcess, "MWFProcess should exist for order");
+            assertTrue(wfProcess.getTextMsg().contains(actualDocNo), "MWFProcess TextMsg should be updated with actual DocumentNo: " + wfProcess.getTextMsg());
+            assertFalse(wfProcess.getTextMsg().contains(tempDocNo), "MWFProcess TextMsg should not contain temporary DocumentNo");
+
+            MWFActivity wfActivity = new Query(ctx, MWFActivity.Table_Name, "AD_WF_Process_ID=? AND TextMsg IS NOT NULL", trxName)
+                    .setParameters(wfProcess.getAD_WF_Process_ID())
+                    .setOrderBy(MWFActivity.COLUMNNAME_AD_WF_Activity_ID + " DESC")
+                    .first();
+            assertNotNull(wfActivity, "MWFActivity with TextMsg should exist for order");
+            assertTrue(wfActivity.getTextMsg().contains(actualDocNo), "MWFActivity TextMsg should be updated with actual DocumentNo: " + wfActivity.getTextMsg());
+            assertFalse(wfActivity.getTextMsg().contains(tempDocNo), "MWFActivity TextMsg should not contain temporary DocumentNo");
+
+            MWFEventAudit wfAudit = new Query(ctx, MWFEventAudit.Table_Name, "AD_WF_Process_ID=? AND AD_WF_Node_ID=?", trxName)
+                    .setParameters(wfProcess.getAD_WF_Process_ID(), wfActivity.getAD_WF_Node_ID())
+                    .setOrderBy(MWFEventAudit.COLUMNNAME_AD_WF_EventAudit_ID + " DESC")
+                    .first();
+            assertNotNull(wfAudit, "MWFEventAudit should exist for order activity");
+            assertTrue(wfAudit.getTextMsg().contains(actualDocNo), "MWFEventAudit TextMsg should be updated with actual DocumentNo: " + wfAudit.getTextMsg());
+            assertFalse(wfAudit.getTextMsg().contains(tempDocNo), "MWFEventAudit TextMsg should not contain temporary DocumentNo");
+
+            MChangeLog changeLogAfter = new Query(ctx, MChangeLog.Table_Name, "AD_Table_ID=? AND Record_ID=? AND AD_Column_ID=? AND EventChangeLog=?", trxName)
+                    .setParameters(MOrder.Table_ID, order.get_ID(), docNoColumnId, MChangeLog.EVENTCHANGELOG_Insert)
+                    .first();
+            assertNotNull(changeLogAfter, "Insert MChangeLog for DocumentNo should exist");
+            assertEquals(actualDocNo, changeLogAfter.getNewValue(), "Insert MChangeLog should be updated with actual DocumentNo");
+
+            MStorageReservationLog log1 = new Query(ctx, MStorageReservationLog.Table_Name, "AD_Table_ID=? AND Record_ID=?", trxName)
+                    .setParameters(MOrderLine.Table_ID, line1.get_ID())
+                    .first();
+            assertNotNull(log1, "MStorageReservationLog should exist for line 1");
+            assertEquals(actualDocNo, log1.getDocumentNo(), "MStorageReservationLog for line 1 should be updated with actual DocumentNo");
+
+            MStorageReservationLog log2 = new Query(ctx, MStorageReservationLog.Table_Name, "AD_Table_ID=? AND Record_ID=?", trxName)
+                    .setParameters(MOrderLine.Table_ID, line2.get_ID())
+                    .first();
+            assertNotNull(log2, "MStorageReservationLog should exist for line 2");
+            assertEquals(actualDocNo, log2.getDocumentNo(), "MStorageReservationLog for line 2 should be updated with actual DocumentNo");
+
+            rollback();
+            
+            try (MockedStatic<MClient> mockedClient = Mockito.mockStatic(MClient.class, Mockito.CALLS_REAL_METHODS)) {
+            	mockedClient.when(() -> MClient.isClientAccountingImmediate())
+                    .thenReturn(false);
+	            // Also verify MInvoice completion with AD_User_ID keeps DocumentNo deferred and updates MUser.LastResult
+	            invDocType = new MDocType(ctx, 0, null);
+	            invDocType.setName("Test Lazy ARI DocType");
+	            invDocType.setPrintName("Test Lazy ARI");
+	            invDocType.setDocNoSequence_ID(seq.get_ID());
+	            invDocType.setIsActive(true);
+	            invDocType.setDocBaseType(MDocType.DOCBASETYPE_ARInvoice);
+	            invDocType.setGL_Category_ID();
+	            invDocType.setIsDocNoControlled(true);
+	            invDocType.setIsLazyGenerateDocNo(MDocType.ISLAZYGENERATEDOCNO_Yes);
+	            invDocType.saveEx();
+	
+	            MBPartner bp = MBPartner.get(ctx, DictionaryIDs.C_BPartner.C_AND_W.id);
+	            MUser[] users = MUser.getOfBPartner(ctx, bp.getC_BPartner_ID(), trxName);
+	            assertTrue(users.length > 0, "Joe Block should have at least one user contact");
+	            int bpUserId = users[0].getAD_User_ID();
+	
+	            MInvoice invoice = new MInvoice(ctx, 0, trxName);
+	            invoice.setBPartner(bp);
+	            invoice.setAD_User_ID(bpUserId);
+	            invoice.setC_DocTypeTarget_ID(invDocType.getC_DocType_ID());
+	            invoice.setDateInvoiced(today);
+	            invoice.setDateAcct(today);
+	            invoice.saveEx();
+	
+	            assertTrue(invoice.is_UsingTemporaryDocumentNo(), "Invoice should hold a temporary DocumentNo after save");
+	            String invTempDocNo = invoice.get_TemporaryDocumentNo();
+	            assertNotNull(invTempDocNo);
+	
+	            MInvoiceLine invLine = new MInvoiceLine(invoice);
+	            invLine.setLine(10);
+	            invLine.setProduct(MProduct.get(ctx, DictionaryIDs.M_Product.AZALEA_BUSH.id));
+	            invLine.setQty(new BigDecimal("1"));
+	            invLine.saveEx();
+	
+	            assertTrue(invoice.is_UsingTemporaryDocumentNo(), "Invoice should hold a temporary DocumentNo after create of new invoice line");
+	            
+	            ProcessInfo invInfo = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+	            assertFalse(invInfo.isError(), invInfo.getSummary());
+	            assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
+	            assertTrue(invoice.is_UsingTemporaryDocumentNo(), "Invoice should still hold a temporary DocumentNo after workflow completion");
+            
+	            String invActualDocNo = invoice.getDocumentNo();
+	            assertEquals("LAZY-5000", invActualDocNo);
+	            assertFalse(invoice.is_UsingTemporaryDocumentNo(), "Invoice should no longer hold a temporary DocumentNo");
+	
+	            MUser bpUserAfter = new MUser(ctx, bpUserId, trxName);
+	            assertNotNull(bpUserAfter.getLastResult(), "User LastResult should be set");
+	            assertTrue(bpUserAfter.getLastResult().contains(invActualDocNo), "User LastResult should be updated with actual DocumentNo: " + bpUserAfter.getLastResult());
+	            assertFalse(bpUserAfter.getLastResult().contains(invTempDocNo), "User LastResult should not contain temporary DocumentNo");
+            }
+        } finally {
+        	rollback();
+        	if (docType.get_ID() > 0)
+        		docType.delete(true);
+        	if (invDocType != null && invDocType.get_ID() > 0)
+        		invDocType.delete(true);
+        	if (seq.get_ID() > 0)
+        		seq.delete(true);
+        }
     }
 }

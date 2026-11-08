@@ -877,82 +877,16 @@ public class MSequence extends X_AD_Sequence
 			if (no != 1)
 				throw new IllegalStateException("Failed to update document no for " + po.get_TableName()
 						+ " (" + keyColumnName + "=" + keyValue + "), update count=" + no);
-			updateDeferredDocumentNoChangeLog(po, docNo, trx);
-			updateDeferredDocumentNoReservationLog(po, tempDocumentNo, docNo, trx);
+			MChangeLog.updateDeferredDocumentNoChangeLog(tempDocumentNo, docNo, trx);
+			MStorageReservationLog.updateDeferredDocumentNoReservationLog(tempDocumentNo, docNo, trx);
 			po.updateAfterDeferredDocumentNoGenerated(docNo);
+			po.runDeferredDocumentNoCallbacks(tempDocumentNo, docNo);
 		} else {
+			MChangeLog.removeDeferredDocumentNoChangeLog(tempDocumentNo);
+			MStorageReservationLog.removeDeferredDocumentNoReservationLogIds(tempDocumentNo);
 			po.set_ValueNoCheck("DocumentNo", docNo);
+			po.runDeferredDocumentNoCallbacks(tempDocumentNo, docNo);
 		}
-	}
-
-	/**
-	 * Update M_StorageReservationLog entries (if any) that were recorded with the temporary DocumentNo
-	 * with the actual document no generated from the sequence.
-	 * @param po
-	 * @param tempDocumentNo temporary document no
-	 * @param docNo generated document no
-	 * @param trx
-	 */
-	private static void updateDeferredDocumentNoReservationLog(PO po, String tempDocumentNo, String docNo, Trx trx) {
-		if (Util.isEmpty(tempDocumentNo, true))
-			return;
-		StringBuilder sql = new StringBuilder("UPDATE ").append(I_M_StorageReservationLog.Table_Name)
-				.append(" SET ").append(DB.getDatabase().quoteColumnName(I_M_StorageReservationLog.COLUMNNAME_DocumentNo)).append("=?")
-				.append(" WHERE ").append(DB.getDatabase().quoteColumnName(I_M_StorageReservationLog.COLUMNNAME_DocumentNo)).append("=?")
-				.append(" AND ").append(DB.getDatabase().quoteColumnName(I_M_StorageReservationLog.COLUMNNAME_AD_Client_ID)).append("=?");
-		DB.executeUpdateEx(sql.toString(), new Object[] {docNo, tempDocumentNo, Integer.valueOf(po.getAD_Client_ID())}, trx.getTrxName());
-	}
-
-	/**
-	 * Update the AD_ChangeLog insert entry of the DocumentNo column (if any) with the document no
-	 * that has been generated from the sequence.<br>
-	 * The insert change log is captured while the record still holds the temporary DocumentNo,
-	 * this replaces that value with the actual document no.
-	 * @param po
-	 * @param docNo generated document no
-	 * @param trx
-	 */
-	private static void updateDeferredDocumentNoChangeLog(PO po, String docNo, Trx trx) {
-		int index = po.p_info.getColumnIndex("DocumentNo");
-		if (index < 0 || !po.p_info.isAllowLogging(index) || po.p_info.isEncrypted(index) || po.p_info.isVirtualColumn(index))
-			return;
-		String insertLog = MSysConfig.getValue(MSysConfig.SYSTEM_INSERT_CHANGELOG, "N", po.getAD_Client_ID());
-		if (!insertLog.equalsIgnoreCase("Y") && !(insertLog.equalsIgnoreCase("K") && po.p_info.getColumn(index).IsKey))
-			return;
-		int AD_Column_ID = po.p_info.getColumn(index).AD_Column_ID;
-		if (AD_Column_ID <= 0)
-			return;
-		StringBuilder sql = new StringBuilder("UPDATE ").append(I_AD_ChangeLog.Table_Name)
-				.append(" SET ").append(DB.getDatabase().quoteColumnName(I_AD_ChangeLog.COLUMNNAME_NewValue)).append("=?")
-				.append(" WHERE ").append(DB.getDatabase().quoteColumnName(I_AD_ChangeLog.COLUMNNAME_AD_Table_ID)).append("=?")
-				.append(" AND ").append(DB.getDatabase().quoteColumnName(I_AD_ChangeLog.COLUMNNAME_AD_Column_ID)).append("=?")
-				.append(" AND ").append(DB.getDatabase().quoteColumnName(I_AD_ChangeLog.COLUMNNAME_EventChangeLog)).append("=?")
-				.append(" AND ").append(DB.getDatabase().quoteColumnName(I_AD_ChangeLog.COLUMNNAME_AD_Client_ID)).append("=?");
-		List<Object> params = new ArrayList<>(7);
-		params.add(docNo);
-		params.add(Integer.valueOf(po.get_Table_ID()));
-		params.add(Integer.valueOf(AD_Column_ID));
-		params.add(MChangeLog.EVENTCHANGELOG_Insert);
-		params.add(Integer.valueOf(po.getAD_Client_ID()));
-		// the change log record is identified by Record_ID and/or Record_UU (see MChangeLog constructor)
-		int id = po.get_ID();
-		String uuid = po.get_UUID();
-		String recordIdColumn = DB.getDatabase().quoteColumnName(I_AD_ChangeLog.COLUMNNAME_Record_ID);
-		String recordUuColumn = DB.getDatabase().quoteColumnName(I_AD_ChangeLog.COLUMNNAME_Record_UU);
-		if (id > 0 && uuid != null) {
-			sql.append(" AND (").append(recordIdColumn).append("=? OR ").append(recordUuColumn).append("=?)");
-			params.add(Integer.valueOf(id));
-			params.add(uuid);
-		} else if (id > 0) {
-			sql.append(" AND ").append(recordIdColumn).append("=?");
-			params.add(Integer.valueOf(id));
-		} else if (uuid != null) {
-			sql.append(" AND ").append(recordUuColumn).append("=?");
-			params.add(uuid);
-		} else {
-			return;
-		}
-		DB.executeUpdateEx(sql.toString(), params.toArray(), trx.getTrxName());
 	}
 
 	/**

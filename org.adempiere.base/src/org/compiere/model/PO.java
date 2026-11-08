@@ -42,6 +42,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiConsumer;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -433,6 +434,7 @@ public abstract class PO
 	private transient Trx m_deferredDocumentNoTrx = null;
 	private transient TrxEventListener m_deferredDocumentNoListener = null;
 	private transient String m_deferredDocumentNoTemp = null;
+	private transient List<BiConsumer<String, String>> m_deferredDocumentNoCallbacks = null;
 
 	/**
 	 * Register the listener and runnable used to generate the actual DocumentNo of a deferred DocumentNo generation.<br/>
@@ -452,6 +454,48 @@ public abstract class PO
 		m_deferredDocumentNoRunnable = runnable;
 		if (tempDocumentNo != null)
 			s_deferredDocumentNoPOs.put(tempDocumentNo, this);
+	}
+
+	/**
+	 * Register a callback to be invoked after the deferred DocumentNo has been generated from sequence.<br/>
+	 * The callback receives {@code (tempDocumentNo, actualDocumentNo)}.
+	 * @param callback callback to invoke when the deferred DocumentNo is generated
+	 */
+	public final void addDeferredDocumentNoCallback(BiConsumer<String, String> callback) {
+		if (callback == null)
+			return;
+		if (m_deferredDocumentNoTemp != null && m_deferredDocumentNoRunnable != null) {
+			if (m_deferredDocumentNoCallbacks == null)
+				m_deferredDocumentNoCallbacks = new ArrayList<>();
+			m_deferredDocumentNoCallbacks.add(callback);
+			return;
+		}
+		int index = get_ColumnIndex("DocumentNo");
+		if (index >= 0) {
+			Object rawValue = get_Value(index, false);
+			if (rawValue instanceof String strValue && MSequence.isTemporaryDocumentNo(strValue)) {
+				PO deferredPO = s_deferredDocumentNoPOs.get(strValue);
+				if (deferredPO != null && deferredPO != this) {
+					deferredPO.addDeferredDocumentNoCallback(callback);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Run and clear registered deferred DocumentNo callbacks.<br/>
+	 * Internal method that should not be called directly by developer.
+	 * @param tempDocumentNo temporary DocumentNo value
+	 * @param docNo generated DocumentNo value
+	 */
+	void runDeferredDocumentNoCallbacks(String tempDocumentNo, String docNo) {
+		List<BiConsumer<String, String>> callbacks = m_deferredDocumentNoCallbacks;
+		m_deferredDocumentNoCallbacks = null;
+		if (callbacks != null) {
+			for (BiConsumer<String, String> callback : callbacks) {
+				callback.accept(tempDocumentNo, docNo);
+			}
+		}
 	}
 
 	/**
@@ -480,6 +524,11 @@ public abstract class PO
 	 */
 	void clearDeferredDocumentNo() {
 		String tempDocumentNo = m_deferredDocumentNoTemp;
+		m_deferredDocumentNoCallbacks = null;
+		if (tempDocumentNo != null) {
+			MChangeLog.removeDeferredDocumentNoChangeLog(tempDocumentNo);
+			MStorageReservationLog.removeDeferredDocumentNoReservationLogIds(tempDocumentNo);
+		}
 		removeDeferredDocumentNoListener();
 		if (tempDocumentNo == null)
 			return;

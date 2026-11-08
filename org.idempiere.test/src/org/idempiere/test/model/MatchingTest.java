@@ -122,6 +122,8 @@ public class MatchingTest extends AbstractTestCase {
 		Optional<MInOut.MatchingRecord> optionalReceipt = notMatchList.stream().filter(m -> receipt.getDocumentNo().equals(m.documentNo())).findFirst();
 		assertTrue(optionalReceipt.isPresent(), "Can't find not matched Material Receipt line");
 
+		if (order.is_UsingTemporaryDocumentNo())
+			order.getDocumentNo();
 		List<MOrder.MatchingRecord> notMatchOrders = MOrder.getNotFullyMatchedToReceipt(bpartner.get_ID(), product.get_ID(), 0, null, null, getTrxName());
 		assertTrue(notMatchOrders.size() > 0, "Fail to retrieve orders not fully matched to material receipt");
 		Optional<MOrder.MatchingRecord> optionalOrder = notMatchOrders.stream().filter(m -> order.getDocumentNo().equals(m.documentNo())).findFirst();

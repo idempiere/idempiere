@@ -1125,7 +1125,47 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 				//
 				try {
 					success = doc.processIt (m_node.getDocAction());	//	** Do the work
-					setTextMsg(doc.getSummary());
+					if (m_po.is_UsingTemporaryDocumentNo())
+					{
+						setTextMsg(m_po.get_TemporaryDocumentNo());
+						final DocAction docRef = doc;
+						m_po.addDeferredDocumentNoCallback((tempDocNo, actualDocNo) -> {
+							String summary = docRef.getSummary();
+							String currentText = getTextMsg();
+							if (currentText != null && currentText.contains(tempDocNo))
+							{
+								String updatedText = currentText.replace(tempDocNo, summary);
+								super.setTextMsg(updatedText);
+								if (!is_new() && getAD_WF_Activity_ID() > 0)
+								{
+									String sql = "UPDATE " + Table_Name
+											+ " SET " + DB.getDatabase().quoteColumnName(COLUMNNAME_TextMsg) + "=?"
+											+ " WHERE " + DB.getDatabase().quoteColumnName(COLUMNNAME_AD_WF_Activity_ID) + "=?";
+									DB.executeUpdateEx(sql, new Object[] {updatedText, getAD_WF_Activity_ID()}, get_TrxName());
+								}
+							}
+							if (m_audit != null)
+							{
+								String auditText = m_audit.getTextMsg();
+								if (auditText != null && auditText.contains(tempDocNo))
+								{
+									String updatedAuditText = auditText.replace(tempDocNo, summary);
+									m_audit.setTextMsg(updatedAuditText);
+									if (!m_audit.is_new() && m_audit.getAD_WF_EventAudit_ID() > 0)
+									{
+										String sql = "UPDATE " + MWFEventAudit.Table_Name
+												+ " SET " + DB.getDatabase().quoteColumnName(MWFEventAudit.COLUMNNAME_TextMsg) + "=?"
+												+ " WHERE " + DB.getDatabase().quoteColumnName(MWFEventAudit.COLUMNNAME_AD_WF_EventAudit_ID) + "=?";
+										DB.executeUpdateEx(sql, new Object[] {updatedAuditText, m_audit.getAD_WF_EventAudit_ID()}, get_TrxName());
+									}
+								}
+							}
+						});
+					}
+					else
+					{
+						setTextMsg(doc.getSummary());
+					}
 					processMsg = doc.getProcessMsg();
 					// Bug 1904717 - Invoice reversing has incorrect doc status
 					// Just prepare and complete return a doc status to take into account

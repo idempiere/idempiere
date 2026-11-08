@@ -55,11 +55,13 @@ import org.compiere.wf.MWorkflow;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 
 /**
  * @author hengsin
  *
  */
+@Isolated
 public class AllocationFormTest extends AbstractTestCase {
 
 	/**
