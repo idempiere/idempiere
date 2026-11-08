@@ -169,7 +169,7 @@
 .desktop-header-usersub {
 	font-size: 10px;
 	color: #64748b;
-	line-height: 12px;
+	line-height: 14px;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -228,7 +228,7 @@
 	font-size: 11px;
 	color: #64748b;
 }
-.user-menu-org, .user-menu-warehouse {
+.user-menu-org, .user-menu-warehouse, .user-menu-role {
 	font-size: 11px;
 	color: #64748b;
 	margin-top: 2px;

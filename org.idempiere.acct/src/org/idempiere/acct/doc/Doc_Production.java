@@ -211,6 +211,7 @@ public class Doc_Production extends Doc
 		FactLine fl = null;
 		X_M_Production prod = (X_M_Production)getPO();
 		HashMap<String, BigDecimal> costMap =  new HashMap<String, BigDecimal>();
+		int stdPrecision = as.getStdPrecision();
 
 		for (int i = 0; i < p_lines.length; i++)
 		{
@@ -242,6 +243,7 @@ public class Doc_Production extends Doc
 							pc.setM_M_AttributeSetInstance_ID(ma.getM_AttributeSetInstance_ID());
 							costs = costs.add(line.getProductCosts(as, line.getAD_Org_ID(), false));
 						}
+						costs = costs.setScale(stdPrecision, RoundingMode.HALF_UP);
 						costMap.put(line.get_ID()+ "_"+ ma.getM_AttributeSetInstance_ID(), costs);
 					}
 				} 
@@ -257,6 +259,7 @@ public class Doc_Production extends Doc
 					{
 						costs = line.getProductCosts(as, line.getAD_Org_ID(), false);
 					}
+					costs = costs.setScale(stdPrecision, RoundingMode.HALF_UP);
 					costMap.put(line.get_ID()+ "_"+ line.getM_AttributeSetInstance_ID(), costs);
 				}
 			
@@ -276,11 +279,11 @@ public class Doc_Production extends Doc
 				{
 					costs = line.getProductCosts(as, line.getAD_Org_ID(), false);
 				}
+				costs = costs.setScale(stdPrecision, RoundingMode.HALF_UP);
 				costMap.put(line.get_ID()+ "_"+ line.getM_AttributeSetInstance_ID(), costs);
 
 			}
 			
-			int stdPrecision = as.getStdPrecision();
 			BigDecimal bomCost = Env.ZERO;	
 			BigDecimal qtyProduced = null;
 			if (line.isProductionBOM())
@@ -325,10 +328,11 @@ public class Doc_Production extends Doc
 											pc.setM_M_AttributeSetInstance_ID(ma.getM_AttributeSetInstance_ID());
 											maCost = line0.getProductCosts(as, line0.getAD_Org_ID(), false);
 										}
+										maCost = maCost.setScale(stdPrecision, RoundingMode.HALF_UP);
 										costMap.put(line0.get_ID()+ "_"+ ma.getM_AttributeSetInstance_ID(),maCost);
 										costs0 = costs0.add(maCost);
 									}						
-									bomCost = bomCost.add(costs0.setScale(stdPrecision, RoundingMode.HALF_UP));
+									bomCost = bomCost.add(costs0);
 								} 
 								else
 									p_Error = "Failed to post - No Attribute Set for line";
@@ -348,8 +352,9 @@ public class Doc_Production extends Doc
 								{
 									costs0 = line0.getProductCosts(as, line0.getAD_Org_ID(), false);
 								}
+								costs0 = costs0.setScale(stdPrecision, RoundingMode.HALF_UP);
 								costMap.put(line0.get_ID()+ "_"+ line0.getM_AttributeSetInstance_ID(),costs0);
-								bomCost = bomCost.add(costs0.setScale(stdPrecision, RoundingMode.HALF_UP));
+								bomCost = bomCost.add(costs0);
 							}
 							
 						}  
@@ -367,8 +372,9 @@ public class Doc_Production extends Doc
 							{
 								costs0 = line0.getProductCosts(as, line0.getAD_Org_ID(), false);
 							}
+							costs0 = costs0.setScale(stdPrecision, RoundingMode.HALF_UP);
 							costMap.put(line0.get_ID()+ "_"+ line0.getM_AttributeSetInstance_ID(),costs0);
-							bomCost = bomCost.add(costs0.setScale(stdPrecision, RoundingMode.HALF_UP));
+							bomCost = bomCost.add(costs0);
 						}
 					}
 				}

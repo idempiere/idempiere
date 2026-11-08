@@ -46,7 +46,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7735685513127827231L;
+	private static final long serialVersionUID = 517698929022059878L;
 
 	/** Constant for Predefine System Configuration Names (in alphabetical order) */
 	
@@ -74,6 +74,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ATTACHMENT_SAVE_LIST_IN_AD_ATTACHMENTFILE = "ATTACHMENT_SAVE_LIST_IN_AD_ATTACHMENTFILE";
     public static final String ATTACH_NOTIFY_2PACK = "ATTACH_NOTIFY_2PACK";
     public static final String AUTO_ASSIGN_ROLE_TO_CREATOR_USER = "AUTO_ASSIGN_ROLE_TO_CREATOR_USER";
+    public static final String AUTO_PRODUCE_NESTED_BOM = "AUTO_PRODUCE_NESTED_BOM";
     public static final String AUTOMATIC_PACKIN_FOLDERS = "AUTOMATIC_PACKIN_FOLDERS";
     public static final String AUTOMATIC_PACKIN_INITIAL_DELAY = "AUTOMATIC_PACKIN_INITIAL_DELAY";
     public static final String AUTOMATIC_PACKIN_PROCESSING = "AUTOMATIC_PACKIN_PROCESSING";
@@ -122,6 +123,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ENABLE_SSO_IDEMPIERE_MONITOR = "ENABLE_SSO_IDEMPIERE_MONITOR";
 	public static final String SSO_SHOW_LOGINPAGE = "SSO_SHOW_LOGINPAGE";
     public static final String EXPORT_BLOB_COLUMN_FOR_INSERT = "EXPORT_BLOB_COLUMN_FOR_INSERT";
+    public static final String EXPORT_EXCEL_FUNCTION = "EXPORT_EXCEL_FUNCTION";
     public static final String FEEDBACK_EMAIL_CC = "FEEDBACK_EMAIL_CC";
     public static final String FEEDBACK_EMAIL_TO = "FEEDBACK_EMAIL_TO";
     public static final String FORCE_POSTING_PRIOR_TO_PERIOD_CLOSE = "FORCE_POSTING_PRIOR_TO_PERIOD_CLOSE";
@@ -209,6 +211,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String REPORT_SWAP_MAX_ROWS = "REPORT_SWAP_MAX_ROWS";
     public static final String SECURITY_DASHBOARD_LEGACY_KEY_WARNING = "SECURITY_DASHBOARD_LEGACY_KEY_WARNING";
     public static final String SHIPPING_DEFAULT_WEIGHT_PER_PACKAGE = "SHIPPING_DEFAULT_WEIGHT_PER_PACKAGE";
+    public static final String SHOW_REPORT_PARAMETER_IN_XLS_REPORT = "SHOW_REPORT_PARAMETER_IN_XLS_REPORT";
     public static final String STANDARD_REPORT_FOOTER_TRADEMARK_TEXT = "STANDARD_REPORT_FOOTER_TRADEMARK_TEXT";
     public static final String START_VALUE_BPLOCATION_NAME = "START_VALUE_BPLOCATION_NAME";
     public static final String SWING_LOGIN_ALLOW_REMEMBER_ME = "SWING_LOGIN_ALLOW_REMEMBER_ME";
@@ -311,6 +314,7 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String ZK_THUMBNAIL_IMAGE_WIDTH = "ZK_THUMBNAIL_IMAGE_WIDTH";
     public static final String ZK_TOOLBAR_SHOW_MORE_VERTICAL = "ZK_TOOLBAR_SHOW_MORE_VERTICAL";
     public static final String ZK_USE_PDF_JS_VIEWER = "ZK_USE_PDF_JS_VIEWER";
+    public static final String ZK_USER_INITIALS_LENGTH = "ZK_USER_INITIALS_LENGTH";
     public static final String ZOOM_ACROSS_QUERY_TIMEOUT = "ZOOM_ACROSS_QUERY_TIMEOUT";
 
     /**

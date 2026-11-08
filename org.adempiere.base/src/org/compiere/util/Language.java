@@ -22,6 +22,7 @@ import java.text.DateFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -292,13 +293,14 @@ public class Language implements Serializable
 
 	/**
 	 *  Get Display names of supported languages
-	 *  @return Array of Language names
+	 *  @return Array of Language names sorted alphabetically, ignoring case
 	 */
 	public static String[] getNames()
 	{
 		String[] retValue = new String[s_languages.size()];
 		for (int i = 0; i < s_languages.size(); i++)
 			retValue[i] = s_languages.get(i).getName();
+		Arrays.sort(retValue, String.CASE_INSENSITIVE_ORDER);
 		return retValue;
 	}   //  getNames
 	

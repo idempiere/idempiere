@@ -177,10 +177,10 @@ public class WInfoWindowListItemRenderer extends WListItemRenderer
 	}
 	
 	private void setStyle(HtmlBasedComponent component, String style) {
-		if (style != null && style.startsWith(MStyle.SCLASS_PREFIX)) {
+		if (MStyle.isSClass(style)) {
 			String sclass = style.substring(MStyle.SCLASS_PREFIX.length());
 			component.setSclass(sclass);
-		} else if (style != null && style.startsWith(MStyle.ZCLASS_PREFIX)) {
+		} else if (MStyle.isZClass(style)) {
 			String zclass = style.substring(MStyle.ZCLASS_PREFIX.length());
 			component.setZclass(zclass);
 		} else {

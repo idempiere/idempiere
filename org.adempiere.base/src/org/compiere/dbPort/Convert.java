@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
@@ -89,6 +90,12 @@ public abstract class Convert
     private static File filePg = null;
     private static FileOutputStream fosScriptPg = null;
     private static Writer writerPg = null;
+
+	/** Context key for explicitly specifying or passing migration script file name */
+	public static final String CONTEXT_MIGRATION_SCRIPT_FILE_NAME = "MigrationScriptFileName";
+	private static String s_currentFileName = null;
+	private static String s_currentComment = null;
+	private static String s_lastGeneratedFileName = null;
 
     /**
 	 *  Set Verbose
@@ -463,23 +470,43 @@ public abstract class Convert
 			String folderPg = null;
 			String prm_COMMENT = null;
 			try {
+				prm_COMMENT = Env.getContext(Env.getCtx(), I_AD_UserPreference.COLUMNNAME_MigrationScriptComment);
+				String contextFileName = Env.getContext(Env.getCtx(), CONTEXT_MIGRATION_SCRIPT_FILE_NAME);
+				if (!Util.isEmpty(contextFileName, true)) {
+					String candidate = Paths.get(contextFileName.trim()).getFileName().toString();
+					if (candidate.equals(contextFileName.trim()) && candidate.endsWith(".sql"))
+						fileName = candidate;
+				}
+
+				if (fosScriptOr != null || fosScriptPg != null) {
+					if (fileName != null ? !fileName.equals(s_currentFileName) : !Objects.equals(prm_COMMENT, s_currentComment)) {
+						closeLogMigrationScript();
+					}
+				}
+
 				if (fosScriptOr == null || fosScriptPg == null) {
-					prm_COMMENT = Env.getContext(Env.getCtx(), I_AD_UserPreference.COLUMNNAME_MigrationScriptComment);
-					fileName = getMigrationScriptFileName(prm_COMMENT);
+					if (Util.isEmpty(fileName))
+						fileName = getMigrationScriptFileName(prm_COMMENT);
 					folderOr = getMigrationScriptFolder("oracle");
 					folderPg = getMigrationScriptFolder("postgresql");
 					Files.createDirectories(Paths.get(folderOr));
 					Files.createDirectories(Paths.get(folderPg));
+					s_currentFileName = fileName;
+					s_currentComment = prm_COMMENT;
+					s_lastGeneratedFileName = fileName;
 				}
 				if (fosScriptOr == null) {
 					fileOr = new File(folderOr + fileName);
+					boolean isNewFile = !fileOr.exists() || fileOr.length() == 0;
 					fosScriptOr = new FileOutputStream(fileOr, true);
 					writerOr = new BufferedWriter(new OutputStreamWriter(fosScriptOr, "UTF8"));
-					writerOr.append("-- ");
-					writerOr.append(prm_COMMENT);
-					writerOr.append("\nSELECT register_migration_script('").append(fileName).append("') FROM dual;\n\n");
-					// adding these in prevention because some oracle scripts have multiline strings or @ that are misinterpreted by sqlplus
-					writerOr.append("SET SQLBLANKLINES ON\nSET DEFINE OFF\n\n");
+					if (isNewFile) {
+						writerOr.append("-- ");
+						writerOr.append(prm_COMMENT);
+						writerOr.append("\nSELECT register_migration_script('").append(fileName).append("') FROM dual;\n\n");
+						// adding these in prevention because some oracle scripts have multiline strings or @ that are misinterpreted by sqlplus
+						writerOr.append("SET SQLBLANKLINES ON\nSET DEFINE OFF\n\n");
+					}
 				}
 				writeLogMigrationScript(writerOr, oraStatement);
 				if (pgStatement == null) {
@@ -490,11 +517,14 @@ public abstract class Convert
 				}
 				if (fosScriptPg == null) {
 					filePg = new File(folderPg + fileName);
+					boolean isNewFile = !filePg.exists() || filePg.length() == 0;
 					fosScriptPg = new FileOutputStream(filePg, true);
 					writerPg = new BufferedWriter(new OutputStreamWriter(fosScriptPg, "UTF8"));
-					writerPg.append("-- ");
-					writerPg.append(prm_COMMENT);
-					writerPg.append("\nSELECT register_migration_script('").append(fileName).append("') FROM dual;\n\n");
+					if (isNewFile) {
+						writerPg.append("-- ");
+						writerPg.append(prm_COMMENT);
+						writerPg.append("\nSELECT register_migration_script('").append(fileName).append("') FROM dual;\n\n");
+					}
 				}
 				writeLogMigrationScript(writerPg, pgStatement);
 			} catch (IOException e) {
@@ -511,12 +541,14 @@ public abstract class Convert
 		// [timestamp]_[ticket].sql
 		String fileName;
 		String now = new SimpleDateFormat("yyyyMMddHHmm").format(new Date());					
-		String pattern = "(IDEMPIERE-[0-9]*)";
-		Pattern p = Pattern.compile(pattern);
-		Matcher m = p.matcher(ticketComment);
 		String ticket = null;
-		if (m.find())
-			ticket = m.group(1);
+		if (ticketComment != null) {
+			String pattern = "(IDEMPIERE-[0-9]*)";
+			Pattern p = Pattern.compile(pattern);
+			Matcher m = p.matcher(ticketComment);
+			if (m.find())
+				ticket = m.group(1);
+		}
 		if (ticket == null)
 			ticket = "PlaceholderForTicket";
 		fileName = now + "_" + ticket + ".sql";
@@ -714,8 +746,12 @@ public abstract class Convert
 				fosScriptPg.close();
 				fosScriptPg = null;
 			}
+			if (filePg != null)
+				s_lastGeneratedFileName = filePg.getName();
 			fileOr = null;
 			filePg = null;
+			s_currentFileName = null;
+			s_currentComment = null;
 		} catch (IOException e) {
 			// ignore
 			e.printStackTrace();
@@ -730,7 +766,7 @@ public abstract class Convert
 		if (filePg != null) {
 			return filePg.getName();
 		}
-		return null;
+		return s_lastGeneratedFileName;
 	}
 
 }   //  Convert

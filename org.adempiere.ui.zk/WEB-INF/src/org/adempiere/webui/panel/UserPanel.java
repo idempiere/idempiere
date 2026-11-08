@@ -83,7 +83,10 @@ import org.zkoss.zul.Vlayout;
  */
 public class UserPanel implements EventListener<Event>, Composer<Component>, Serializable
 {
-	private static final long serialVersionUID = -5330748308L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6622345753692895879L;
 
 	protected Properties ctx;
 
@@ -136,7 +139,7 @@ public class UserPanel implements EventListener<Event>, Composer<Component>, Ser
     	{
     		if (userAvatar != null)
     		{
-    			userAvatar.appendChild(new Label(getInitials(getUserName())));
+    			userAvatar.appendChild(new Label(getInitials()));
     		}
     		if (lblUserNameValue != null)
     		{
@@ -146,6 +149,7 @@ public class UserPanel implements EventListener<Event>, Composer<Component>, Ser
     		if (userSubText != null)
     		{
     			userSubText.setValue(getClientName() + " \u2022 " + getOrgName() + "/" + getRoleName());
+    			userSubText.setTooltiptext(userSubText.getValue());
     		}
     		userProfileChip.addEventListener(Events.ON_CLICK, this);
     	}
@@ -384,7 +388,7 @@ public class UserPanel implements EventListener<Event>, Composer<Component>, Ser
 
 		Div avatar = new Div();
 		avatar.setSclass("user-menu-avatar-big");
-		avatar.appendChild(new Label(getInitials(getUserName())));
+		avatar.appendChild(new Label(getInitials()));
 		profileCard.appendChild(avatar);
 
 		Div info = new Div();
@@ -409,6 +413,13 @@ public class UserPanel implements EventListener<Event>, Composer<Component>, Ser
 			Label whLabel = new Label(warehouse);
 			whLabel.setSclass("user-menu-warehouse");
 			info.appendChild(whLabel);
+		}
+
+		String role = getRoleName();
+		if (!Util.isEmpty(role)) {
+			Label roleLabel = new Label(role);
+			roleLabel.setSclass("user-menu-role");
+			info.appendChild(roleLabel);
 		}
 
 		profileCard.appendChild(info);
@@ -630,18 +641,11 @@ public class UserPanel implements EventListener<Event>, Composer<Component>, Ser
 	}
 
 	/**
-	 * Get user initials from full name (e.g. "John Doe" -&gt; "JD")
-	 * @param name full name
-	 * @return up to 2 character initials, uppercase
+	 * @return initials of the user
 	 */
-	protected String getInitials(String name) {
-		if (Util.isEmpty(name))
-			return "?";
-		String[] parts = name.trim().split("\\s+");
-		if (parts.length >= 2) {
-			return ("" + parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
-		}
-		return ("" + parts[0].charAt(0)).toUpperCase();
+	protected String getInitials() {
+        MUser user = MUser.get(ctx);
+        return user.getInitials();
 	}
 
 	/**

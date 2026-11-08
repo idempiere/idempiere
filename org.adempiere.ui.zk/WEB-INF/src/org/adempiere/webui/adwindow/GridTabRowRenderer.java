@@ -404,13 +404,13 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 	 * @param style "@sclass=" for sclass for "@zclass=" for zclass. default to style if there's no prefix. 
 	 */
 	protected  void setComponentStyle(HtmlBasedComponent component, String style) {
-		if (style != null && style.startsWith(MStyle.SCLASS_PREFIX)) {
+		if (MStyle.isSClass(style)) {
 			String sclass = style.substring(MStyle.SCLASS_PREFIX.length());
 			if (component instanceof EditorBox)
 				((EditorBox)component).getTextbox().setSclass(sclass);
 			else
 				component.setSclass(sclass);
-		} else if (style != null && style.startsWith(MStyle.ZCLASS_PREFIX)) {
+		} else if (MStyle.isZClass(style)) {
 			String zclass = style.substring(MStyle.ZCLASS_PREFIX.length());
 			if (component instanceof EditorBox)
 				((EditorBox)component).getTextbox().setZclass(zclass);

@@ -31,6 +31,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -89,10 +90,10 @@ public class DrillReportCtl {
 	private KeyNamePair[] drillTables;
 
 	/** Drill Process Map */
-	private KeyNamePair[] drillProcessList;
+	protected KeyNamePair[] drillProcessList;
 
 	/** Drill Process Rule Map */
-	private HashMap<Integer, KeyNamePair[]> drillProcesRules;
+	protected HashMap<Integer, KeyNamePair[]> drillProcesRules;
 
 	/** Drill Process Rule PrintFormats */
 	private HashMap<Integer, KeyNamePair[]> drillProcessRulesPrintFormatMap = new HashMap<>();
@@ -118,6 +119,13 @@ public class DrillReportCtl {
 		m_Query = query;
 
 		this.initProcessDrillRuleMaps();
+	}
+
+	/**
+	 * Constructor for subclasses that are not bound to a record.
+	 * The subclass must call {@link #initProcessDrillRuleMaps()} at the end of its own constructor.
+	 */
+	protected DrillReportCtl() {
 	}
 
 	/**
@@ -164,7 +172,7 @@ public class DrillReportCtl {
 	/**
 	 * Init Process Drill Rule Maps for Window
 	 */
-	private void initProcessDrillRuleMaps() {
+	protected void initProcessDrillRuleMaps() {
 		// Init Table Name
 		this.m_AD_Table_ID = MTable.getTable_ID(m_TableName);
 
@@ -176,9 +184,10 @@ public class DrillReportCtl {
 	}
 
 	/**
-	 * Initialize Drill Process Rules Map
+	 * Initialize Drill Process Rules Map.
+	 * Subclasses override this to select other drill rules; it must set {@link #drillProcessList} and {@link #drillProcesRules}.
 	 */
-	private void initProcessDrillRuleMap() {
+	protected void initProcessDrillRuleMap() {
 		HashMap<Integer, String> drillProcessMap = new HashMap<>();
 		HashMap<Integer, ArrayList<KeyNamePair>> drillProcessRuleMap = new HashMap<>();
 		if(!Util.isEmpty(m_ColumnName)) {
@@ -287,11 +296,7 @@ public class DrillReportCtl {
 	/**
 	 * Initialize Print Formats for Table Name
 	 */
-	private void initDrillProcessRulePrintFormatMap() {
-
-		int AD_Window_ID = Env.getContextAsInt(Env.getCtx(), this.m_WindowNo, "_WinInfo_AD_Window_ID", true);
-		if (AD_Window_ID == 0)
-			AD_Window_ID = Env.getZoomWindowID(m_Query);
+	protected void initDrillProcessRulePrintFormatMap() {
 
 		for( KeyNamePair[] drilProcessRuleList : drillProcesRules.values() ) {
 			for( KeyNamePair drillProcessRule : drilProcessRuleList ) {
@@ -325,7 +330,7 @@ public class DrillReportCtl {
 	}
 
 
-	private KeyNamePair[] getPrintFormats(int table_ID, int reportView_ID) {
+	protected KeyNamePair[] getPrintFormats(int table_ID, int reportView_ID) {
 		ArrayList<KeyNamePair> printFormatList = new ArrayList<>();
 
 		//	fill Report Options
@@ -570,10 +575,10 @@ public class DrillReportCtl {
 				else if (DisplayType.isDate(sPara.getDisplayType()))
 				{
 					SimpleDateFormat dateFormat = DisplayType.getDateFormat(sPara.getDisplayType());
-					Timestamp ts = toTimestamp(value);
+					Timestamp ts = toTimestamp(sPara.getDisplayType(), value);
 					iPara.setParameter(ts);
 					if (toValue != null) {
-						ts = toTimestamp(toValue);
+						ts = toTimestamp(sPara.getDisplayType(), toValue);
 						iPara.setParameter_To(ts);
 					}
 					if (Util.isEmpty(paraDesc))
@@ -641,16 +646,85 @@ public class DrillReportCtl {
 		}
 	}	//	fillParameter
 
-	private Timestamp toTimestamp(Object value) {
+	/**
+	 * Convert a drill rule parameter value to a timestamp
+	 * @param displayType display type of the parameter (Date, Time or DateTime)
+	 * @param value Timestamp or text value
+	 * @return timestamp, or null if value is null or empty
+	 */
+	protected Timestamp toTimestamp(int displayType, Object value) {
 		Timestamp ts = null;
+		if (value == null)
+			return null;
 		if (value instanceof Timestamp)
 			ts = (Timestamp)value;
 		else
-			ts = Timestamp.valueOf(value.toString());
+			ts = getDateTimeParsed(displayType, value.toString());
 		return ts;
 	}
 
-	private BigDecimal toBigDecimal(Object value) {
+	/**
+	 * Parse a text value using the format that matches the display type.
+	 * The whole text must be a valid date/time. Falls back to a full JDBC timestamp
+	 * (yyyy-mm-dd hh:mm:ss[.fffffffff], keeps the time and fractional seconds,
+	 * except for {@link DisplayType#Date} where it is truncated to the day) and then to the JDBC date format (yyyy-mm-dd).
+	 * @param displayType {@link DisplayType#Date}, {@link DisplayType#Time} or any other date type
+	 * @param value text to parse
+	 * @return timestamp, or null if value is empty
+	 * @throws IllegalArgumentException if value matches none of the formats
+	 */
+	protected Timestamp getDateTimeParsed(int displayType, String value) {
+		if (Util.isEmpty(value, true))
+			return null;
+		String text = value.trim();
+		SimpleDateFormat format;
+		if (displayType == DisplayType.Date)
+			format = DisplayType.getDateFormat_JDBC();
+		else if (displayType == DisplayType.Time)
+			format = DisplayType.getTimeFormat_Default();
+		else
+			format = DisplayType.getTimestampFormat_Default();
+		Timestamp ts = parseFully(format, text, false);
+		if (ts == null) {
+			ts = parseFully(DisplayType.getTimestampFormat_Default(), text, true);
+			if (ts != null && displayType == DisplayType.Date)
+				ts = Timestamp.valueOf(ts.toLocalDateTime().toLocalDate().atStartOfDay());
+		}
+		if (ts == null)
+			ts = parseFully(DisplayType.getDateFormat_JDBC(), text, false);
+		if (ts == null)
+			throw new IllegalArgumentException("Cannot parse date/time value: " + value);
+		return ts;
+	}
+
+	/**
+	 * Parse text with a non-lenient format, requiring that the whole text is consumed
+	 * @param format format to use
+	 * @param text text to parse
+	 * @param allowFraction true to accept fractional seconds (.f to .fffffffff) after the parsed text
+	 * @return timestamp, or null if the text is not fully matched by the format
+	 */
+	private Timestamp parseFully(SimpleDateFormat format, String text, boolean allowFraction) {
+		// SimpleDateFormat accepts a year with fewer than 4 digits (26-01-01 is year 26 AD), require 4 digits
+		if (format.toPattern().startsWith("yyyy") && !text.matches("\\d{4}-.*"))
+			return null;
+		format.setLenient(false);
+		ParsePosition pos = new ParsePosition(0);
+		java.util.Date date = format.parse(text, pos);
+		if (date == null)
+			return null;
+		Timestamp ts = new Timestamp(date.getTime());
+		String rest = text.substring(pos.getIndex());
+		if (rest.isEmpty())
+			return ts;
+		if (allowFraction && rest.matches("\\.\\d{1,9}")) {
+			ts.setNanos(Integer.parseInt((rest.substring(1) + "00000000").substring(0, 9)));
+			return ts;
+		}
+		return null;
+	}
+
+	protected BigDecimal toBigDecimal(Object value) {
 		BigDecimal bd = null;
 		if (value instanceof BigDecimal)
 			bd = (BigDecimal)value;
@@ -661,7 +735,7 @@ public class DrillReportCtl {
 		return bd;
 	}
 
-	private Object parseVariable(MProcessDrillRulePara sPara, String variable) {
+	protected Object parseVariable(MProcessDrillRulePara sPara, String variable) {
 		Object value = variable;
 		if (variable == null
 			|| (variable != null && variable.length() == 0))
@@ -764,7 +838,7 @@ public class DrillReportCtl {
 					if (toApply > 0)
 					{
 						if (negate) toApply = toApply * -1;
-						Timestamp ts = toTimestamp(value);
+						Timestamp ts = toTimestamp(sPara.getDisplayType(), value);
 						Calendar cal = Calendar.getInstance();
 						cal.setTimeInMillis(ts.getTime());
 						cal.add(type, toApply);

@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_UserPreference
  *  @author iDempiere (generated)
- *  @version Release 13 - $Id$ */
+ *  @version Release 14 - $Id$ */
 @org.adempiere.base.Model(table="AD_UserPreference")
 public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20260309L;
+	private static final long serialVersionUID = 20261027L;
 
     /** Standard Constructor */
     public X_AD_UserPreference (Properties ctx, int AD_UserPreference_ID, String trxName)
@@ -296,6 +296,29 @@ public class X_AD_UserPreference extends PO implements I_AD_UserPreference, I_Pe
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** IsExcelExportWithParameters AD_Reference_ID=319 */
+	public static final int ISEXCELEXPORTWITHPARAMETERS_AD_Reference_ID=319;
+	/** No = N */
+	public static final String ISEXCELEXPORTWITHPARAMETERS_No = "N";
+	/** Yes = Y */
+	public static final String ISEXCELEXPORTWITHPARAMETERS_Yes = "Y";
+	/** Set Excel Export with Parameters.
+		@param IsExcelExportWithParameters Flag (Y/N) to include or exclude report parameters in the Excel export header.
+	*/
+	public void setIsExcelExportWithParameters (String IsExcelExportWithParameters)
+	{
+
+		set_Value (COLUMNNAME_IsExcelExportWithParameters, IsExcelExportWithParameters);
+	}
+
+	/** Get Excel Export with Parameters.
+		@return Flag (Y/N) to include or exclude report parameters in the Excel export header.
+	  */
+	public String getIsExcelExportWithParameters()
+	{
+		return (String)get_Value(COLUMNNAME_IsExcelExportWithParameters);
 	}
 
 	/** Set Read Only Session.

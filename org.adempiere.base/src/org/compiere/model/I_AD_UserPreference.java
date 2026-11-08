@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_UserPreference
  *  @author iDempiere (generated) 
- *  @version Release 13
+ *  @version Release 14
  */
 public interface I_AD_UserPreference 
 {
@@ -181,6 +181,19 @@ public interface I_AD_UserPreference
 
 	/** Get Detailed Zoom Across	  */
 	public boolean isDetailedZoomAcross();
+
+    /** Column name IsExcelExportWithParameters */
+    public static final String COLUMNNAME_IsExcelExportWithParameters = "IsExcelExportWithParameters";
+
+	/** Set Excel Export with Parameters.
+	  * Flag (Y/N) to include or exclude report parameters in the Excel export header.
+	  */
+	public void setIsExcelExportWithParameters (String IsExcelExportWithParameters);
+
+	/** Get Excel Export with Parameters.
+	  * Flag (Y/N) to include or exclude report parameters in the Excel export header.
+	  */
+	public String getIsExcelExportWithParameters();
 
     /** Column name IsReadOnlySession */
     public static final String COLUMNNAME_IsReadOnlySession = "IsReadOnlySession";

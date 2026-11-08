@@ -87,7 +87,19 @@ public class MUserDefInfoColumn extends X_AD_UserDef_Info_Column {
 		MUserDefInfo userdefInfo = MUserDefInfo.getBestMatch(ctx, AD_InfoWindow_ID);
 		if (userdefInfo == null)
 			return null;
-		
+
+		return getForUserDefInfo(ctx, AD_InfoColumn_ID, userdefInfo.getAD_UserDef_Info_ID());
+	}
+
+	/**
+	 * Get MUserDefInfoColumn for a specific user-defined InfoWindow and info column
+	 * @param ctx
+	 * @param AD_InfoColumn_ID
+	 * @param AD_UserDefInfo_ID
+	 * @return MUserDefInfoColumn or null
+	 */
+	public static MUserDefInfoColumn getForUserDefInfo(Properties ctx, int AD_InfoColumn_ID, int AD_UserDefInfo_ID) {
+
 		MUserDefInfoColumn retValue = null;
 
 		StringBuilder sql = new StringBuilder("SELECT * "
@@ -102,7 +114,7 @@ public class MUserDefInfoColumn extends X_AD_UserDef_Info_Column {
 			//	create statement
 			pstmt = DB.prepareStatement(sql.toString(), null);
 			pstmt.setInt(1, AD_InfoColumn_ID);
-			pstmt.setInt(2, userdefInfo.getAD_UserDef_Info_ID());
+			pstmt.setInt(2, AD_UserDefInfo_ID);
 			// 	get data
 			rs = pstmt.executeQuery();
 			if (rs.next())

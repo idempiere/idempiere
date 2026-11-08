@@ -745,10 +745,10 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	 */
 	protected void setLabelStyle(String style) {
 		if (label != null) {
-			if (style != null && style.toLowerCase().startsWith(MStyle.SCLASS_PREFIX)) {
+			if (MStyle.isSClass(style)) {
 				String sclass = style.substring(MStyle.SCLASS_PREFIX.length());
 				label.setSclass(sclass);
-			} else if (style != null && style.toLowerCase().startsWith(MStyle.ZCLASS_PREFIX)) {
+			} else if (MStyle.isZClass(style)) {
 				String zclass = style.substring(MStyle.ZCLASS_PREFIX.length());
 				label.setZclass(zclass);
 			} else {
@@ -791,7 +791,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	 */
 	protected void setFieldStyle(String style) {
 		HtmlBasedComponent component = (HtmlBasedComponent) getComponent();
-		if (style != null && style.startsWith(MStyle.SCLASS_PREFIX)) {
+		if (MStyle.isSClass(style)) {
 			String sclass = style.substring(MStyle.SCLASS_PREFIX.length());
 			if (component instanceof EditorBox)
 				((EditorBox)component).getTextbox().setSclass(sclass);
@@ -799,7 +799,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 				((ComboEditorBox)component).getCombobox().setSclass(sclass);
 			else
 				component.setSclass(sclass);
-		} else if (style != null && style.startsWith(MStyle.ZCLASS_PREFIX)) {
+		} else if (MStyle.isZClass(style)) {
 			String zclass = style.substring(MStyle.ZCLASS_PREFIX.length());
 			if (component instanceof EditorBox)
 				((EditorBox)component).getTextbox().setZclass(zclass);

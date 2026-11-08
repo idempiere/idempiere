@@ -40,3 +40,6 @@ out/
 */.maven.run/**
 **/.idea/*
 partial-runtime/
+
+idempiere-ks.properties
+idempiere.ks

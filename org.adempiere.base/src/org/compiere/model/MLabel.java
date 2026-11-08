@@ -30,6 +30,7 @@ import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.UUID;
 
+import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.Env;
 
 /**
@@ -141,10 +142,11 @@ public class MLabel extends X_AD_Label {
 		if (AD_Style_ID > 0) {
 			MStyle style = new MStyle(getCtx(), AD_Style_ID, get_TrxName());
 			MStyleLine[] lines = style.getStyleLines();
+			DefaultEvaluatee evaluatee = new DefaultEvaluatee(this);
 
 			for (MStyleLine line : lines) 
 			{
-				String inlineStyle = line.getInlineStyle().trim();
+				String inlineStyle = MStyle.parseVariables(line.getInlineStyle().trim(), evaluatee);
 
 				if (result.length() > 0 && !(result.charAt(result.length()-1)==';'))
 					result.append("; ");

@@ -38,8 +38,10 @@ import java.io.Writer;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
@@ -83,6 +85,8 @@ import org.compiere.util.Util;
 public class ModelInterfaceGenerator
 {
 	private String packageName = "";
+	/** appended to the interface name: I_C_Order + _XYZ */
+	private String suffix = null;
 
 	public static final String NL = "\n";
 
@@ -110,7 +114,11 @@ public class ModelInterfaceGenerator
 
 	public final static String GEN_SOURCE_INTERFACE = "I";
 	public final static String GEN_SOURCE_CLASS = "C";
-	
+	/** accessor class over any PO of the table, see {@link ModelAccessorGenerator} */
+	public final static String GEN_SOURCE_ACCESSOR = "A";
+	/** accessor class that implements the interface generated in the same run */
+	public final static String GEN_SOURCE_ACCESSOR_INTERFACE = "AI";
+
 	/**
 	 * @param AD_Table_ID
 	 * @param directory
@@ -118,7 +126,19 @@ public class ModelInterfaceGenerator
 	 * @param entityTypeFilter entity type filter for column
 	 */
 	public ModelInterfaceGenerator(int AD_Table_ID, String directory, String packageName, String entityTypeFilter) {
+		this(AD_Table_ID, directory, packageName, entityTypeFilter, null);
+	}
+
+	/**
+	 * @param AD_Table_ID
+	 * @param directory
+	 * @param packageName
+	 * @param entityTypeFilter entity type filter for column
+	 * @param suffix appended to the interface name ({@code I_C_Order_XYZ}), null for none
+	 */
+	public ModelInterfaceGenerator(int AD_Table_ID, String directory, String packageName, String entityTypeFilter, String suffix) {
 		this.packageName = packageName;
+		this.suffix = Util.isEmpty(suffix, true) ? null : suffix.trim();
 		// create column access methods
 		StringBuilder mandatory = new StringBuilder();
 		StringBuilder sb = createColumns(AD_Table_ID, mandatory, entityTypeFilter);
@@ -183,6 +203,8 @@ public class ModelInterfaceGenerator
 
 		//
 		StringBuilder className = new StringBuilder("I_").append(tableName);
+		if (suffix != null)
+			className.append("_").append(suffix);
 		//
 		StringBuilder start = new StringBuilder()
 			.append (COPY)
@@ -818,6 +840,37 @@ public class ModelInterfaceGenerator
 	 */
 	public static void generateSource(String type, String sourceFolder, String packageName, String entityType, String tableName, String columnEntityType)
 	{
+		generateSource(type, sourceFolder, packageName, entityType, tableName, columnEntityType, null);
+	}
+
+	/**
+	 * @param type {@link #GEN_SOURCE_INTERFACE}, {@link #GEN_SOURCE_CLASS},
+	 *        {@link #GEN_SOURCE_ACCESSOR} or {@link #GEN_SOURCE_ACCESSOR_INTERFACE}
+	 * @param sourceFolder
+	 * @param packageName
+	 * @param entityType
+	 * @param tableName table Like
+	 * @param columnEntityType
+	 * @param suffix appended to the interface or accessor class name, null for none (not used for classes)
+	 */
+	public static void generateSource(String type, String sourceFolder, String packageName, String entityType, String tableName, String columnEntityType, String suffix)
+	{
+		generateSource(type, sourceFolder, packageName, entityType, tableName, columnEntityType, suffix, null);
+	}
+
+	/**
+	 * @param type {@link #GEN_SOURCE_INTERFACE}, {@link #GEN_SOURCE_CLASS},
+	 *        {@link #GEN_SOURCE_ACCESSOR} or {@link #GEN_SOURCE_ACCESSOR_INTERFACE}
+	 * @param sourceFolder
+	 * @param packageName
+	 * @param entityType
+	 * @param tableName table Like
+	 * @param columnEntityType
+	 * @param suffix appended to the interface or accessor class name, null for none (not used for classes)
+	 * @param columnNames comma separated column names to generate, null for all columns of the column entity types
+	 */
+	public static void generateSource(String type, String sourceFolder, String packageName, String entityType, String tableName, String columnEntityType, String suffix, String columnNames)
+	{
 		if (sourceFolder == null || sourceFolder.trim().length() == 0)
 			throw new IllegalArgumentException("Must specify source folder");
 
@@ -830,6 +883,10 @@ public class ModelInterfaceGenerator
 
 		if (tableName == null || tableName.trim().length() == 0)
 			throw new IllegalArgumentException("Must specify table name");
+
+		// the X_ class always has every column of the table
+		if (GEN_SOURCE_CLASS.equals(type) && !Util.isEmpty(columnNames, true))
+			throw new IllegalArgumentException("Column names cannot be used with the class source: the X_ class always has every column of the table");
 
 		StringBuilder tableLike = new StringBuilder().append(tableName.trim().toUpperCase().replace("'", ""));
 
@@ -921,6 +978,23 @@ public class ModelInterfaceGenerator
 			}
 			columnFilterBuilder.append(")");
 		}
+		if (!Util.isEmpty(columnNames, true))
+		{
+			StringBuilder names = new StringBuilder();
+			for (String name : columnNames.split(","))
+			{
+				String n = name.trim().replace("'", "");
+				if (n.isEmpty())
+					continue;
+				if (names.length() > 0)
+					names.append(",");
+				names.append(DB.TO_STRING(n));
+			}
+			// the generators prefix the filter with "c."
+			if (columnFilterBuilder.length() > 0)
+				columnFilterBuilder.append(" AND c.");
+			columnFilterBuilder.append("ColumnName IN (").append(names).append(")");
+		}
 		String columnFilter = columnFilterBuilder.length() > 0 ? columnFilterBuilder.toString() : null;
 		
 		PreparedStatement pstmt = null;
@@ -930,14 +1004,76 @@ public class ModelInterfaceGenerator
 			pstmt = DB.prepareStatement(sql.toString(), null);
 			rs = pstmt.executeQuery();
 
-			boolean isEmpty = true;
+			List<Integer> tableIds = new ArrayList<>();
 			while (rs.next())
+				tableIds.add(rs.getInt(1));
+			boolean isEmpty = tableIds.isEmpty();
+			// a comma separated list holds exact names: a name that matches no table is a mistake, refuse before any file is written
+			if (tableLike.indexOf(",") != -1)
 			{
-				isEmpty = false;
+				Set<String> found = new HashSet<>();
+				for (int AD_Table_ID : tableIds)
+					found.add(MTable.get(AD_Table_ID).getTableName().toUpperCase());
+				List<String> unknown = new ArrayList<>();
+				for (String table : tableLike.toString().split(","))
+				{
+					String name = table.replace("'", "").trim();
+					if (!name.isEmpty() && !found.contains(name))
+						unknown.add(name);
+				}
+				if (!unknown.isEmpty())
+					throw new IllegalArgumentException("No table matches " + String.join(", ", unknown)
+							+ " among the active tables of the table entity types (" + entityTypeFilter + ")");
+			}
+			// first, so that a core column is reported as S7 even when the column entity type filter would drop it
+			if (!Util.isEmpty(columnNames, true) && (type.equals(GEN_SOURCE_ACCESSOR) || type.equals(GEN_SOURCE_ACCESSOR_INTERFACE)))
+				for (int AD_Table_ID : tableIds)
+					ModelAccessorGenerator.checkNotDictionaryColumns(AD_Table_ID, columnNames);
+			// exact names, checked against the same filter as the generators, so none is dropped silently
+			if (!Util.isEmpty(columnNames, true) && !tableIds.isEmpty())
+			{
+				List<String> unknownColumns = new ArrayList<>();
+				for (String column : columnNames.split(","))
+				{
+					String name = column.replace("'", "").trim();
+					if (name.isEmpty())
+						continue;
+					boolean exists = false;
+					for (int AD_Table_ID : tableIds)
+						exists |= DB.getSQLValue(null, "SELECT COUNT(*) FROM AD_Column c WHERE c.AD_Table_ID=? AND c.ColumnName=?"
+								+ " AND c.IsActive='Y' AND (c.ColumnSQL IS NULL OR c.ColumnSQL NOT LIKE '@SQL%') AND c." + columnFilter,
+								AD_Table_ID, name) > 0;
+					if (!exists)
+						unknownColumns.add(name);
+				}
+				if (!unknownColumns.isEmpty())
+					throw new IllegalArgumentException("No column matches " + String.join(", ", unknownColumns)
+							+ " among the active columns of the selected tables"
+							+ (Util.isEmpty(columnEntityType, true) ? "" : " with column entity type " + columnEntityType.trim()));
+			}
+			// check every table before writing any file, so a refusal leaves no partial output
+			for (int AD_Table_ID : tableIds)
+			{
+				// a suffixed name must not be the name of another table: I_M_Product + _PO is the interface of M_Product_PO
+				if (!Util.isEmpty(suffix, true) && !type.equals(GEN_SOURCE_CLASS))
+				{
+					String suffixed = MTable.get(AD_Table_ID).getTableName() + "_" + suffix.trim();
+					if (MTable.getTable_ID(suffixed) > 0)
+						throw new IllegalArgumentException("Suffix " + suffix.trim() + " gives the name of table " + suffixed
+								+ "; its generated classes would clash. Use another suffix.");
+				}
+				if (type.equals(GEN_SOURCE_ACCESSOR) || type.equals(GEN_SOURCE_ACCESSOR_INTERFACE))
+					ModelAccessorGenerator.checkColumns(AD_Table_ID, columnFilter);
+			}
+			for (int AD_Table_ID : tableIds)
+			{
 				if (type.equals(GEN_SOURCE_INTERFACE))
-					new ModelInterfaceGenerator(rs.getInt(1), directory.toString(), packageName, columnFilter);
+					new ModelInterfaceGenerator(AD_Table_ID, directory.toString(), packageName, columnFilter, suffix);
 				else if (type.equals(GEN_SOURCE_CLASS))
-					new ModelClassGenerator(rs.getInt(1), directory.toString(), packageName, columnFilter);
+					new ModelClassGenerator(AD_Table_ID, directory.toString(), packageName, columnFilter);
+				else if (type.equals(GEN_SOURCE_ACCESSOR) || type.equals(GEN_SOURCE_ACCESSOR_INTERFACE))
+					new ModelAccessorGenerator(AD_Table_ID, directory.toString(), packageName, columnFilter, suffix,
+							type.equals(GEN_SOURCE_ACCESSOR_INTERFACE));
 			}
 			
 			if (isEmpty)

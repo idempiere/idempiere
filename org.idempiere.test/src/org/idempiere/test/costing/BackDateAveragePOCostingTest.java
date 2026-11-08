@@ -859,6 +859,74 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	}
 	
 	/**
+	 * Back-date process of a vendor invoice runs only after every product line is matched and posted.
+	 * MR1
+	 * SH (today)
+	 * MR2 (Back-Date)
+	 * AP invoice with two lines (Back-Date) - second line has no receipt, back-date process is deferred
+	 */
+	@Test
+	public void testBackDateInvoiceWithUnmatchedLine() {
+		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), getAD_Client_ID());
+		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null);
+		MAcctSchema as = ci.getMAcctSchema1();
+
+		int[] backDateDays = new int[ass.length];
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
+			backDateDays = configureAcctSchema(ass);
+			MProduct product1 = createProduct("testBackDateInvoiceWithUnmatchedLine1", new BigDecimal(10));
+			mockProductGet(productMock, product1);
+			MProduct product2 = createProduct("testBackDateInvoiceWithUnmatchedLine2", new BigDecimal(20));
+			mockProductGet(productMock, product2);
+
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -2);
+			Timestamp backDate1 = new Timestamp(cal.getTimeInMillis());
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -1);
+			Timestamp backDate2  = new Timestamp(cal.getTimeInMillis());
+
+			// MR1
+			MInOutLine receiptLine1 = createPOAndMRForProduct(backDate1, product1.getM_Product_ID(), new BigDecimal(2), new BigDecimal(10));
+			createInvoiceForMR(receiptLine1, new BigDecimal(10));
+
+			// SH
+			MInOutLine shipmentLine = createSOAndSHForProduct(today, product1.getM_Product_ID(), new BigDecimal(1), new BigDecimal(10));
+			MCostDetail cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetail(cd, shipmentLine.getParent().getDateAcct(), false, new BigDecimal("10.00"));
+
+			// MR2 (Back-Date)
+			MInOutLine receiptLine2 = createPOAndMRForProduct(backDate2, product1.getM_Product_ID(), new BigDecimal(1), new BigDecimal(13));
+			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetail(cd, receiptLine2.getParent().getDateAcct(), true, new BigDecimal("11.00"));
+
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetail(cd, shipmentLine.getParent().getDateAcct(), false, new BigDecimal("11.00"));
+
+			// AP invoice with two lines (Back-Date), second line has no receipt
+			MInvoiceLine invoiceLine = createInvoiceForMRAndProduct(receiptLine2, new BigDecimal(16), product2.getM_Product_ID(), new BigDecimal(20));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			assertTrue(cd.isBackDate(), "Unexpected MCostDetail IsBackDate");
+			assertNull(cd.getBackDateProcessedOn(), "Back-date process must wait until all invoice lines are matched");
+
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetail(cd, shipmentLine.getParent().getDateAcct(), false, new BigDecimal("11.00"));
+
+			validateProductCostQty(ass, product1);
+		} finally {
+			rollback();
+			resetAcctSchema(ass, backDateDays);
+		}
+	}
+
+	/**
 	 * Scenarios 4 Back-Date material receipt to the date before landed cost transaction
 	 * 4.1 Stock as of landed cost account date changed from zero to not sufficient coverage. Landed cost posting in expense before performing back-date MR.
 	 * MR1
@@ -14091,6 +14159,59 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		return invoiceLine;
 	}
 	
+	/**
+	 * Create AP invoice with a line for the receipt line and a second line for a product that is not received
+	 * @return invoice line of the receipt line
+	 */
+	private MInvoiceLine createInvoiceForMRAndProduct(MInOutLine receiptLine, BigDecimal price, int unreceivedProductId, BigDecimal unreceivedPrice) {
+		MInOut receipt = receiptLine.getParent();
+		MInvoice invoice = new MInvoice(receipt, receipt.getMovementDate());
+		invoice.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_APInvoice);
+		invoice.setDocStatus(DocAction.STATUS_Drafted);
+		invoice.setDocAction(DocAction.ACTION_Complete);
+		invoice.saveEx();
+
+		MInvoiceLine invoiceLine = new MInvoiceLine(invoice);
+		invoiceLine.setM_InOutLine_ID(receiptLine.get_ID());
+		invoiceLine.setLine(10);
+		invoiceLine.setProduct(receiptLine.getProduct());
+		invoiceLine.setQty(receiptLine.getMovementQty());
+		invoiceLine.setPrice(price);
+		invoiceLine.saveEx();
+
+		MInvoiceLine unreceivedLine = new MInvoiceLine(invoice);
+		unreceivedLine.setLine(20);
+		unreceivedLine.setProduct(new MProduct(Env.getCtx(), unreceivedProductId, getTrxName()));
+		unreceivedLine.setQty(BigDecimal.ONE);
+		unreceivedLine.setPrice(unreceivedPrice);
+		unreceivedLine.saveEx();
+
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+		invoice.load(getTrxName());
+		assertFalse(info.isError(), info.getSummary());
+		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
+		if (!invoice.isPosted()) {
+			String error = DocumentEngine.postImmediate(Env.getCtx(), invoice.getAD_Client_ID(), MInvoice.Table_ID, invoice.get_ID(), false, getTrxName());
+			assertTrue(error == null, error);
+		}
+		invoice.load(getTrxName());
+		assertTrue(invoice.isPosted());
+
+		MMatchInv[] miList = MMatchInv.getInvoiceLine(Env.getCtx(), invoiceLine.get_ID(), getTrxName());
+		assertEquals(1, miList.length, "Unexpected number of MMatchInv for invoice line");
+		for (MMatchInv mi : miList) {
+			if (!mi.isPosted()) {
+				String error = DocumentEngine.postImmediate(Env.getCtx(), mi.getAD_Client_ID(), MMatchInv.Table_ID, mi.get_ID(), false, getTrxName());
+				assertTrue(error == null, error);
+			}
+			mi.load(getTrxName());
+			assertTrue(mi.isPosted());
+		}
+		assertEquals(0, MMatchInv.getInvoiceLine(Env.getCtx(), unreceivedLine.get_ID(), getTrxName()).length, "Unexpected MMatchInv for invoice line without receipt");
+
+		return invoiceLine;
+	}
+
 	private MInvoiceLine createInvoiceForPO(MOrderLine orderLine, Timestamp invoiceDate, BigDecimal qty) {
 		MOrder order = orderLine.getParent();
 		MInvoice invoice = new MInvoice(order, DictionaryIDs.C_DocType.AP_INVOICE.id, invoiceDate);

@@ -12,7 +12,7 @@ WHERE ad_column_id IN (
     FROM ad_column c
       JOIN ad_table t USING (ad_table_id)
     WHERE AD_Reference_ID != 200231 AND 
-      ColumnName = substr(t.tablename, 0, 27) || '_UU'
+      ColumnName = substr(t.tablename, 1, 27) || '_UU'
 );
 
 DO $$
@@ -23,6 +23,7 @@ DECLARE
     v_execute boolean := TRUE;
     v_count integer := 0;
 BEGIN
+    v_createallfksql := '';
     -- Loop through all VARCHAR(36) columns that appear to be UUIDs
     FOR r_column IN
     SELECT
@@ -74,7 +75,6 @@ WHERE
         hasforeignkey DESC,
         pc.relname,
         a.attname LOOP
-            v_createallfksql := '';
             RAISE NOTICE '-- Processing: %.% (FK: %)', r_column.relname, r_column.attname, r_column.hasforeignkey;
             IF r_column.hasforeignkey THEN
                 -- Handle first foreign keys
@@ -88,7 +88,7 @@ WHERE
                     rc.update_rule,
                     rc.delete_rule,
                     'ALTER TABLE ' || tc.table_name || ' DROP CONSTRAINT ' || tc.constraint_name || ';' AS dropfksql,
-                    'ALTER TABLE ' || tc.table_name || ' ADD CONSTRAINT ' || tc.constraint_name || ' FOREIGN KEY (' || kcu.column_name || ')' || ' REFERENCES ' || ccu.table_name || ' (' || ccu.column_name || ')' || ' ON UPDATE ' || rc.update_rule || ' ON DELETE ' || rc.delete_rule || ';' AS createfksql
+                    'ALTER TABLE ' || tc.table_name || ' ADD CONSTRAINT ' || tc.constraint_name || ' FOREIGN KEY (' || kcu.column_name || ')' || ' REFERENCES ' || ccu.table_name || ' (' || ccu.column_name || ')' || ' ON UPDATE ' || rc.update_rule || ' ON DELETE ' || rc.delete_rule || ' DEFERRABLE INITIALLY DEFERRED;' AS createfksql
                 FROM
                     information_schema.table_constraints AS tc
                     JOIN information_schema.key_column_usage AS kcu ON tc.constraint_name = kcu.constraint_name
@@ -100,6 +100,7 @@ WHERE
                 WHERE
                     tc.constraint_type = 'FOREIGN KEY'
                     AND tc.table_name = r_column.relname
+                    AND kcu.table_name = tc.table_name
                     AND kcu.column_name = r_column.attname LOOP
                         -- Drop foreign key constraint
                         RAISE NOTICE '%', r_fk.dropfksql;
@@ -126,11 +127,15 @@ WHERE
                 END IF;
             END IF;
             v_count := v_count + 1;
-            IF LENGTH(v_createallfksql) > 0 THEN
-                RAISE NOTICE '%', v_createallfksql;
-            END IF;
             COMMIT;
         END LOOP;
+        IF LENGTH(v_createallfksql) > 0 THEN
+            RAISE NOTICE '%', v_createallfksql;
+            IF v_execute THEN
+                EXECUTE v_createallfksql;
+            END IF;
+        END IF;
+        COMMIT;
     RAISE NOTICE '-- Processed % UUID columns', v_count;
 END
 $$;

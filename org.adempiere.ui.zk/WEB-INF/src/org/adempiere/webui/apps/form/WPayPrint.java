@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
@@ -519,8 +520,7 @@ public class WPayPrint extends PayPrint implements IFormController, EventListene
 		}
 		catch (Exception e)
 		{
-			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-			return;
+			throw new AdempiereException(e);
 		}
 
 		SimplePDFViewer chequeViewer = null;

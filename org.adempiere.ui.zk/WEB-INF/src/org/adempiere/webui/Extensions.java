@@ -23,6 +23,7 @@ package org.adempiere.webui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import org.adempiere.base.IServiceReferenceHolder;
@@ -32,7 +33,9 @@ import org.adempiere.webui.adwindow.AbstractADWindowContent;
 import org.adempiere.webui.adwindow.IADTabpanel;
 import org.adempiere.webui.apps.IProcessParameterListener;
 import org.adempiere.webui.apps.graph.IChartRendererService;
+import org.adempiere.webui.component.Window;
 import org.adempiere.webui.factory.IADTabPanelFactory;
+import org.adempiere.webui.factory.ICalendarWindowFactory;
 import org.adempiere.webui.factory.IDashboardGadgetFactory;
 import org.adempiere.webui.factory.IFindWindowFactory;
 import org.adempiere.webui.factory.IFormFactory;
@@ -50,10 +53,17 @@ import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
 import org.compiere.model.MDashboardContent;
 import org.compiere.util.CCache;
+import org.compiere.util.CLogger;
 import org.idempiere.db.util.SQLFragment;
 import org.idempiere.ui.zk.media.IMediaView;
 import org.idempiere.ui.zk.media.IMediaViewProvider;
+import org.idempiere.ui.zk.report.ComboboxReportFormatSelector;
+import org.idempiere.ui.zk.report.IReportFormatSelector;
+import org.idempiere.ui.zk.report.IReportFormatSelectorFactory;
 import org.idempiere.ui.zk.report.IReportViewerRenderer;
+import org.idempiere.ui.zk.report.ReportFormatRequest;
+import org.idempiere.ui.zk.report.ReportFormatSelectorProvider;
+import org.zkoss.calendar.impl.SimpleCalendarModel;
 import org.zkoss.zk.ui.Component;
 
 /**
@@ -66,6 +76,8 @@ import org.zkoss.zk.ui.Component;
  * 
  */
 public class Extensions {
+
+	private static final CLogger s_logger = CLogger.getCLogger(Extensions.class);
 
 	/** FormId:IFormFactory Reference. FormId is Java class name, OSGi component name or Equinox extension Id */
 	private final static CCache<String, IServiceReferenceHolder<IFormFactory>> s_formFactoryCache = new CCache<>(null, "IFormFactory", 100, false);
@@ -413,6 +425,26 @@ public class Extensions {
 	} // getADTabPanel
 	
 	/**
+	 * Get the report viewer format selector from the highest ranking {@link IReportFormatSelectorFactory}
+	 * that applies, or the default combo box.
+	 * @param request report and role context
+	 * @return selector, never null
+	 */
+	public static IReportFormatSelector getReportFormatSelector(ReportFormatRequest request) {
+		for (IReportFormatSelectorFactory factory : ReportFormatSelectorProvider.getFactories()) {
+			try {
+				IReportFormatSelector selector = factory.createSelector(request);
+				if (selector != null)
+					return selector;
+			} catch (RuntimeException e) {
+				// a failing factory must not crash the viewer
+				s_logger.log(Level.WARNING, "Report format selector factory " + factory.getClass().getName() + " failed", e);
+			}
+		}
+		return new ComboboxReportFormatSelector();
+	}
+
+	/**
 	 * Get report viewer renderers
 	 * @return list of {@link IReportViewerRenderer}
 	 */
@@ -465,6 +497,17 @@ public class Extensions {
 		IFindWindowFactory findWindowFactory = Service.locator().locate(IFindWindowFactory.class).getService();
 	    return findWindowFactory.getInstance(targetWindowNo, targetTabNo, title, AD_Table_ID, tableName, filterExtended, findFields, minRecords, adTabId, windowPanel);
 		
+	}
+
+	/**
+	 * Create the calendar window of the calendar dashboard gadget, using the highest ranking {@link ICalendarWindowFactory}.
+	 * The window is not shown, it is the responsibility of the caller to show it.
+	 * @param model calendar model shared with the caller
+	 * @return the new calendar window
+	 */
+	public static Window newCalendarWindow(SimpleCalendarModel model) {
+		ICalendarWindowFactory calendarWindowFactory = Service.locator().locate(ICalendarWindowFactory.class).getService();
+		return calendarWindowFactory.newCalendarWindow(model);
 	}
 
 	private static IServiceReferenceHolder<IPostingService> s_postingServiceReference = null;
