@@ -446,13 +446,12 @@ public class RequisitionPOCreate extends SvrProcess
 				throw new NoVendorForProductException(product.getName());
 			}
 		}
-		validateVendor(C_BPartner_ID);
-
 		if (!isGenerateForVendor(C_BPartner_ID))
 		{
 			if (log.isLoggable(Level.INFO)) log.info("Skip for partner "+C_BPartner_ID);
 			return;
 		}
+		validateVendor(C_BPartner_ID);
 
 		//	New Order - Different Vendor
 		if (m_order == null 
