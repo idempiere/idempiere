@@ -992,7 +992,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		}
 		catch (Exception e)
 		{
-			log.log(Level.WARNING, "" + getNode(), e);
+			log.log(Level.SEVERE, "" + getNode(), e);
 			/****	Trx Rollback	****/
 			if (localTrx)
 			{
@@ -1009,7 +1009,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 
 			//
 			if (e.getCause() != null)
-				log.log(Level.WARNING, "Cause", e.getCause());
+				log.log(Level.SEVERE, "Cause", e.getCause());
 
 			String processMsg = e.getLocalizedMessage();
 			if (processMsg == null || processMsg.length() == 0)

@@ -112,14 +112,14 @@ public class ServerProcessCtl implements Runnable {
 			{ 
 				pi.setSummary (e.getLocalizedMessage()); 
 				pi.setError (true); 
-				log.warning(pi.toString()); 
+				log.log(Level.WARNING, pi.toString(), e); 
 				return null; 
 			} 
 			catch (Error e) 
 			{ 
 				pi.setSummary (e.getLocalizedMessage()); 
 				pi.setError (true); 
-				log.warning(pi.toString()); 
+				log.log(Level.WARNING, pi.toString(), e); 
 				return null; 
 			}
 			if (!instance.save())
