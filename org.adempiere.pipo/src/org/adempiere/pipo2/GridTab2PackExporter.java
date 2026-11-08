@@ -27,6 +27,7 @@ import org.adempiere.exceptions.AdempiereException;
 import org.compiere.Adempiere;
 import org.compiere.model.GridTab;
 import org.compiere.model.MUser;
+import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -174,7 +175,7 @@ public class GridTab2PackExporter implements IGridTabExporter {
 
 	@Override
 	public String getSuggestedFileName(GridTab gridTab) {
-		return gridTab.getName() + "." + getFileExtension();
+		return FileUtil.makeASCIIPrefix(gridTab.getName()) + "." + getFileExtension();
 	}
 
 	/**
