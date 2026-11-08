@@ -32,6 +32,7 @@ import org.adempiere.base.IGridTabExporter;
 import org.adempiere.impexp.GridTabExcelExporter;
 import org.adempiere.impexp.GridTabSQLInsertExporter;
 import org.adempiere.impexp.GridTabXLSXExporter;
+import org.adempiere.pipo2.GridTab2PackExporter;
 import org.compiere.model.GridTab;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
@@ -45,6 +46,7 @@ public class GridTabExporterFileNameTest extends AbstractTestCase {
 	private static GridTab tab(String name) {
 		GridTab gridTab = mock(GridTab.class);
 		when(gridTab.getName()).thenReturn(name);
+		when(gridTab.getTableName()).thenReturn("C_OrderLine");
 		return gridTab;
 	}
 
@@ -57,6 +59,13 @@ public class GridTabExporterFileNameTest extends AbstractTestCase {
 		assertName(new GridTabExcelExporter(), "Print Header/Footer", "Print_Header_Footer");
 		assertName(new GridTabXLSXExporter(), "Print Header/Footer", "Print_Header_Footer");
 		assertName(new GridTabSQLInsertExporter(), "Print Header/Footer", "Print_Header_Footer");
+		assertName(new GridTab2PackExporter(), "Print Header/Footer", "Print_Header_Footer");
+	}
+
+	@Test
+	public void testNonLatinTabNameUsesTableName() {
+		assertName(new GridTabExcelExporter(), "\u8ba2\u5355\u884c", "C_OrderLine");
+		assertName(new GridTabXLSXExporter(), "\u0421\u0442\u0440\u043e\u043a\u0430 \u0437\u0430\u043a\u0430\u0437\u0430", "C_OrderLine");
 	}
 
 	@Test

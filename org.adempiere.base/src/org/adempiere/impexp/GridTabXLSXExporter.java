@@ -196,7 +196,7 @@ public class GridTabXLSXExporter extends AbstractXLSXExporter implements IGridTa
 	@Override
 	public String getSuggestedFileName(GridTab gridTab)
 	{
-		return FileUtil.makeASCIIPrefix(gridTab.getName()) + "." + getFileExtension();
+		return FileUtil.makeASCIIPrefix(gridTab.getName(), gridTab.getTableName()) + "." + getFileExtension();
 	}
 
 	/**
