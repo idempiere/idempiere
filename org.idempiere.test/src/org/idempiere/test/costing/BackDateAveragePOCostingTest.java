@@ -101,9 +101,11 @@ import org.idempiere.test.FactAcct;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
+@Isolated
 public class BackDateAveragePOCostingTest extends AbstractTestCase {
 
 	private MockedStatic<MClientInfo> clientInfoMock;
