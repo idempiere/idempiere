@@ -433,28 +433,21 @@ public class RequisitionPOCreate extends SvrProcess
 			{
 				if (ppos[i].isCurrentVendor() && ppos[i].getC_BPartner_ID() != 0)
 				{
-					
 					C_BPartner_ID = ppos[i].getC_BPartner_ID();
-					validateVendor(C_BPartner_ID);
-
 					break;
 				}
 			}
 			if (C_BPartner_ID == 0 && ppos.length > 0)
 			{
 				C_BPartner_ID = ppos[0].getC_BPartner_ID();
-				if (C_BPartner_ID > 0)
-				    validateVendor(C_BPartner_ID);
-			    //end
-			    
-				
 			}
 			if (C_BPartner_ID == 0)
 			{
 				throw new NoVendorForProductException(product.getName());
 			}
 		}
-		
+		validateVendor(C_BPartner_ID);
+
 		if (!isGenerateForVendor(C_BPartner_ID))
 		{
 			if (log.isLoggable(Level.INFO)) log.info("Skip for partner "+C_BPartner_ID);
@@ -516,22 +509,17 @@ public class RequisitionPOCreate extends SvrProcess
 		return match;
 	}
 	private List<Integer> m_excludedVendors = new ArrayList<Integer>();
-	
-	
+
 	private void validateVendor(int C_BPartner_ID)
 	{
-	    MBPartner bp = MBPartner.get(getCtx(), C_BPartner_ID, get_TrxName());
+		MBPartner bp = MBPartner.get(getCtx(), C_BPartner_ID, get_TrxName());
 
-	    if (bp == null || !bp.isVendor())
-	    {
-	        throw new AdempiereUserError(
-	            Msg.getMsg(
-	                getCtx(),
-	                "NotVendor",
-	                new Object[] { bp != null ? bp.getName() : "" }
-	            )
-	        );
-	    }
+		if (bp == null || !bp.isVendor())
+		{
+			throw new AdempiereUserError(
+				Msg.getMsg(getCtx(), "NotVendor", new Object[] { bp != null ? bp.getName() : String.valueOf(C_BPartner_ID) })
+			);
+		}
 	}
-	
+
 }	//	RequisitionPOCreate
