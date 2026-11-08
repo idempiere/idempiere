@@ -641,7 +641,7 @@ public class DocManager {
 		Timestamp today = TimeUtil.trunc(new Timestamp(System.currentTimeMillis()), TimeUtil.TRUNC_DAY);
 		for (int x = bdcds.size() - 1; x >= 0; x--) {
 			MCostDetail bdcd = bdcds.get(x);
-			MAcctSchema as = new MAcctSchema(Env.getCtx(), bdcd.getC_AcctSchema_ID(), trxName);
+			MAcctSchema as = MAcctSchema.get(Env.getCtx(), bdcd.getC_AcctSchema_ID());
 			Timestamp allowedBackDate = TimeUtil.addDays(today, - as.getBackDateDay());
 			// Do not skip when MAcctSchema.getBackDateDay() == 0, as some documents with the current account date 
 			// still require reposting (e.g. MR reversal and related MatchPOs)
