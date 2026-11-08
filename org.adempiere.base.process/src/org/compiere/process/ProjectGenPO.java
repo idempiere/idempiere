@@ -17,13 +17,13 @@
 package org.compiere.process;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
-import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MConversionRate;
-import org.compiere.model.MCurrency;
+import org.compiere.model.MConversionRateUtil;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MProcessPara;
@@ -194,23 +194,20 @@ public class ProjectGenPO extends SvrProcess
 			if (poPrice != null && poPrice.signum() != 0)
 			{
 				if (order.getC_Currency_ID() != C_Currency_ID)
+				{
+					Timestamp conversionDate = order.getDateAcct();
 					poPrice = MConversionRate.convert(getCtx(), poPrice, 
 						C_Currency_ID, order.getC_Currency_ID(), 
-						order.getDateAcct(), order.getC_ConversionType_ID(), 
+						conversionDate, order.getC_ConversionType_ID(),
 						order.getAD_Client_ID(), order.getAD_Org_ID());
-				
-				/*
-				 IDEMPIERE-7031:Missing Currency Conversion Validation Leads to Misleading “PriceActual is Mandatory” Error During PO Generation
-				 @author Ayesha Siddika Suchi
-				 */
-				if (poPrice == null) {
-					MCurrency fromCurrency = MCurrency.get(getCtx(), C_Currency_ID);
-					MCurrency toCurrency = MCurrency.get(getCtx(), order.getC_Currency_ID());
-					throw new AdempiereUserError("No currency conversion rate found for " + fromCurrency.getISO_Code()
-							+ " to " + toCurrency.getISO_Code() + " on "+order.getDateAcct()+".");
+					if (poPrice == null)
+					{
+						throw new AdempiereUserError(MConversionRateUtil.getErrorMessage(getCtx(),
+								"ErrorConvertingCurrencyToBaseCurrency", C_Currency_ID, order.getC_Currency_ID(),
+								order.getC_ConversionType_ID(), conversionDate, get_TrxName()));
+					}
 				}
-				//end 
-				 
+
 				orderLine.setPrice(poPrice);
 			}
 		}
