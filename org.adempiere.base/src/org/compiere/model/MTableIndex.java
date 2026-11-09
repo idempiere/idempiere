@@ -28,9 +28,9 @@ import org.compiere.util.Util;
 public class MTableIndex extends X_AD_TableIndex {
 	/**
 	 * generated serial id
-	 */
-	private static final long serialVersionUID = 1433937879086456196L;
-
+	 */	
+	private static final long serialVersionUID = 7892676760480902452L;
+	
 	/**
 	 * Get active indexes of table
 	 * @param table table
@@ -53,13 +53,14 @@ public class MTableIndex extends X_AD_TableIndex {
 	 * @param ctx context
 	 * @param tableId table id
 	 * @param indexName index name
+	 * @param trxName
 	 * @return table index or null
 	 */
-	public static MTableIndex get(Properties ctx, int tableId, String indexName)
+	public static MTableIndex get(Properties ctx, int tableId, String indexName, String trxName)
 	{
 		if (Util.isEmpty(indexName))
 			return null;
-		return new Query(ctx, Table_Name, "AD_Table_ID=? AND UPPER(Name)=UPPER(?)", null)
+		return new Query(ctx, Table_Name, "AD_Table_ID=? AND UPPER(Name)=UPPER(?)", trxName)
 				.setParameters(tableId, indexName)
 				.setOnlyActiveRecords(true)
 				.first();

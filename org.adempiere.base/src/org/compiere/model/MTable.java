@@ -358,7 +358,8 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		this.m_columnNameMap = copy.m_columnNameMap != null ? new ConcurrentHashMap<String, Integer>(copy.m_columnNameMap) : null;
 		this.m_columnIdMap = copy.m_columnIdMap != null ? new ConcurrentHashMap<Integer, Integer>(copy.m_columnIdMap) : null;
 		this.m_viewComponents = copy.m_viewComponents != null ? Arrays.stream(copy.m_viewComponents).map(e -> {return new MViewComponent(ctx, e, trxName);}).toArray(MViewComponent[]::new) : null;
-		this.hasCustomTree = copy.hasCustomTree;
+		if (Util.isEmpty(trxName, true))
+			this.hasCustomTree = copy.hasCustomTree;
 	}
 
 	/**	Columns				*/

@@ -3840,13 +3840,10 @@ public abstract class PO
 		if (m_IDs.length == 1 && p_info.hasKeyColumn()
 				&& m_KeyColumns[0].endsWith("_ID") && !Env.isUseCentralizedId(p_info.getTableName()))
 		{
-			if (get_ID() <= 0)
-			{
-				StringBuilder sql = new StringBuilder("SELECT ").append(m_KeyColumns[0]).append(" FROM ").append(p_info.getTableName()).append(" WHERE ").append(getUUIDColumnName()).append("=?");
-				int id = DB.getSQLValueEx(get_TrxName(), sql.toString(), get_ValueAsString(getUUIDColumnName()));
-				m_IDs[0] = Integer.valueOf(id);
-				set_ValueNoCheck(m_KeyColumns[0], m_IDs[0]);
-			}
+			StringBuilder sql = new StringBuilder("SELECT ").append(m_KeyColumns[0]).append(" FROM ").append(p_info.getTableName()).append(" WHERE ").append(getUUIDColumnName()).append("=?");
+			int id = DB.getSQLValueEx(get_TrxName(), sql.toString(), get_ValueAsString(getUUIDColumnName()));
+			m_IDs[0] = Integer.valueOf(id);
+			set_ValueNoCheck(m_KeyColumns[0], m_IDs[0]);
 		}
 
 		if (!Env.isUseCentralizedId(p_info.getTableName()))
@@ -6279,7 +6276,7 @@ public abstract class PO
 				boolean found = false;
 				String dbIndexName = DB.getDatabase().getNameOfUniqueConstraintError(e);
 				if (log.isLoggable(Level.FINE)) log.fine("dbIndexName=" + dbIndexName);
-				MTableIndex index = MTableIndex.get(getCtx(), get_Table_ID(), dbIndexName);
+				MTableIndex index = MTableIndex.get(getCtx(), get_Table_ID(), dbIndexName, get_TrxName());
 				if (index != null && index.getAD_Message_ID() > 0)
 				{
 					MMessage message = MMessage.get(getCtx(), index.getAD_Message_ID());

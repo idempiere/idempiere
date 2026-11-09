@@ -120,6 +120,8 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 		return wf;
 	}
 	
+	private static final Object s_docValueCacheLock = new Object();
+	
 	/**
 	 * 	Get Doc Value Workflows
 	 *	@param ctx context
@@ -135,37 +137,39 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 		Map<Integer, MWorkflow[]> cachedMap = s_cacheDocValue.get(AD_Client_ID);
 		if (cachedMap == null)
 		{
-			final String whereClause = "WorkflowType=? AND IsValid=? AND AD_Client_ID=?";
-			List<MWorkflow> workflows;
-			workflows = new Query(ctx, Table_Name, whereClause, trxName)
-					.setParameters(new Object[]{WORKFLOWTYPE_DocumentValue, true, AD_Client_ID})
-					.setOnlyActiveRecords(true)
-					.setOrderBy("AD_Table_ID")
-					.list();
-			cachedMap = new HashMap<Integer, MWorkflow[]>();
-			ArrayList<MWorkflow> list = new ArrayList<MWorkflow>();
-			int previousTableId = -1;
-			int currentTableId = -1;
-			for (MWorkflow wf : workflows)
-			{
-				currentTableId = wf.getAD_Table_ID();
-				if (currentTableId !=  previousTableId && list.size() > 0)
+			synchronized (s_docValueCacheLock) {
+				final String whereClause = "WorkflowType=? AND IsValid=? AND AD_Client_ID=?";
+				List<MWorkflow> workflows;
+				workflows = new Query(ctx, Table_Name, whereClause, trxName)
+						.setParameters(new Object[]{WORKFLOWTYPE_DocumentValue, true, AD_Client_ID})
+						.setOnlyActiveRecords(true)
+						.setOrderBy("AD_Table_ID")
+						.list();
+				cachedMap = new HashMap<Integer, MWorkflow[]>();
+				ArrayList<MWorkflow> list = new ArrayList<MWorkflow>();
+				int previousTableId = -1;
+				int currentTableId = -1;
+				for (MWorkflow wf : workflows)
+				{
+					currentTableId = wf.getAD_Table_ID();
+					if (currentTableId !=  previousTableId && list.size() > 0)
+					{
+						cachedMap.put (previousTableId, list.stream().map(e -> {return new MWorkflow(Env.getCtx(), e);}).toArray(MWorkflow[]::new));
+						list = new ArrayList<MWorkflow>();
+					}
+					previousTableId = currentTableId;
+					list.add(wf);
+				}
+				
+				//	Last one
+				if (list.size() > 0)
 				{
 					cachedMap.put (previousTableId, list.stream().map(e -> {return new MWorkflow(Env.getCtx(), e);}).toArray(MWorkflow[]::new));
-					list = new ArrayList<MWorkflow>();
 				}
-				previousTableId = currentTableId;
-				list.add(wf);
+				cachedMap = Collections.unmodifiableMap(cachedMap);
+				s_cacheDocValue.put(AD_Client_ID, cachedMap);
+				if (s_log.isLoggable(Level.CONFIG)) s_log.config("#" + cachedMap.size());
 			}
-			
-			//	Last one
-			if (list.size() > 0)
-			{
-				cachedMap.put (previousTableId, list.stream().map(e -> {return new MWorkflow(Env.getCtx(), e);}).toArray(MWorkflow[]::new));
-			}
-			cachedMap = Collections.unmodifiableMap(cachedMap);
-			s_cacheDocValue.put(AD_Client_ID, cachedMap);
-			if (s_log.isLoggable(Level.CONFIG)) s_log.config("#" + cachedMap.size());
 		}
 		//	Look for Entry
 		MWorkflow[] retValue = (MWorkflow[])cachedMap.get(AD_Table_ID);
