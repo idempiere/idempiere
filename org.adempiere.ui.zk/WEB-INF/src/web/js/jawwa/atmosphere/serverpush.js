@@ -66,10 +66,12 @@
       };
     },
     _schedule: function() {
-      if (this.failures < 3) {
+      if (this.failures < 5) {
 		let d = this.delay;
-		if (this._req && (this._req.status == 0 || this._req.status == 400))
-			d = 500;
+		// exponential backoff (1, 2, 4, 8 s: about 15 s in total) so that a short outage, e.g. a proxy reload
+		// or a load balancer returning 502/503 during a deployment, does not end the session
+		if (this._req && (this._req.status == 0 || this._req.status >= 400))
+			d = Math.min(500 * Math.pow(2, this.failures), 10000);
     	this._req = null;
         setTimeout(this.proxy(this._send), d);
       } else {
@@ -106,15 +108,11 @@
     }
   });
   jawwa.atmosphere.serverNotAvailable = function() {
-    	zk.confirmClose = false;    	
-    	adempiere.get("zkTimeoutText", function(ok, val) {
-			if (ok && !!val)
-			{
-				zk.errorDismiss();
-				alert(val);
-			}
-			window.location.href="index.zul";
-		});
+    	zk.confirmClose = false;
+    	zk.errorDismiss();
+    	// no blocking alert: reload with a full page request, which shows the login page
+    	// or the maintenance page of a proxy / load balancer in front of the server
+    	window.location.href="index.zul";
    };
    jawwa.atmosphere.sessionTimeout = function() {
    		jawwa.atmosphere.serverNotAvailable();
