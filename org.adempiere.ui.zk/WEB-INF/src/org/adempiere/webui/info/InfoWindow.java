@@ -1046,9 +1046,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 
 			List<Object> infoWhereClauseParams = new ArrayList<>();
 			if (infoWhereClause != null && infoWhereClause.indexOf("@") >= 0) {
+				String originalInfoWhereClause = infoWhereClause;
 				infoWhereClause = Env.parseContextForSql(Env.getCtx(), p_WindowNo, infoWhereClause, true, false, infoWhereClauseParams);
 				if (infoWhereClause.length() == 0)
-					log.log(Level.SEVERE, "Cannot parse context= " + infoWhereClause);
+					log.log(Level.SEVERE, "Cannot parse context= " + originalInfoWhereClause);
 			}
 			if (infoWhereClause != null && infoWhereClause.trim().length() > 0) {								
 				if (builder.length() > 0) {

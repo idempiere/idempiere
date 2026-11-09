@@ -220,7 +220,7 @@ public class MInfoColumn extends X_AD_InfoColumn implements IInfoColumn, Immutab
 		
 		// Validate info window
 		if (isNeedValid){
-			getParent().setIsValid(false);
+			getParent().validate();
 			getParent().saveEx(get_TrxName());
 		}
 				

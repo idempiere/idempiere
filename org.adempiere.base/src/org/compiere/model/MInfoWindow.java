@@ -375,7 +375,7 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	/**
 	 * Validate FromClause can be parsed by {@link AccessSqlParser}.<br/>
 	 * Validate only one default per table.<br/>
-	 * Call {@link #validate()}.
+	 * Mark the info window invalid when its configuration changes.
 	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
