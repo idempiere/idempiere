@@ -47,6 +47,23 @@ public class MTableIndex extends X_AD_TableIndex {
 		list.toArray(retValue);
 		return retValue;
 	}
+
+	/**
+	 * Get table index by name
+	 * @param ctx context
+	 * @param tableId table id
+	 * @param indexName index name
+	 * @return table index or null
+	 */
+	public static MTableIndex get(Properties ctx, int tableId, String indexName)
+	{
+		if (Util.isEmpty(indexName))
+			return null;
+		return new Query(ctx, Table_Name, "AD_Table_ID=? AND UPPER(Name)=UPPER(?)", null)
+				.setParameters(tableId, indexName)
+				.setOnlyActiveRecords(true)
+				.first();
+	}
 	
 	/**
 	 * Get table indexes with where clause

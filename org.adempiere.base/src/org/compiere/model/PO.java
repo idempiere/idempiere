@@ -3191,7 +3191,7 @@ public abstract class PO
 		//params for insert statement
 		List<Object> params = new ArrayList<Object>();
 
-		String where = withValues && get_ID() > MTable.MAX_OFFICIAL_ID ? get_WhereClause(true, get_ValueAsString(getUUIDColumnName())) : get_WhereClause(true);
+		String where = withValues && get_ID() > MTable.MAX_OFFICIAL_ID ? get_WhereClause(true, get_ValueAsString(getUUIDColumnName())) : get_WhereClause(withValues);		
 		
 		List<Object> optimisticLockingParams = new ArrayList<Object>();
 		if (is_UseOptimisticLocking() && m_optimisticLockingColumns != null && m_optimisticLockingColumns.length > 0)
@@ -3494,6 +3494,12 @@ public abstract class PO
 
 			if (log.isLoggable(Level.FINEST)) log.finest(sql.toString());
 			
+			if (!withValues) {
+				for (Object id : m_IDs) {
+					params.add(id);
+				}
+			}
+			
 			if (is_UseOptimisticLocking() && optimisticLockingParams.size() > 0)
 				params.addAll(optimisticLockingParams);
 
@@ -3763,24 +3769,54 @@ public abstract class PO
 			changeLogBatch.executeBatch(m_trxName);
 		}
 		//
-		int no = withValues ? DB.executeUpdate(sqlInsert.toString(), m_trxName) 
-							: DB.executeUpdate(sqlInsert.toString(), params.toArray(), false, m_trxName);
-		boolean ok = no == 1;
-		if (ok)
+		boolean ok;
+		if (!withValues && is_UseInsertReturning())
 		{
-			if (withValues)
-				afterInsertWithValues(session);
-			ok = lobSave();
-			if (!load(m_trxName))		//	re-read Info
+			sqlInsert.append(" RETURNING *");
+			ok = DB.executeInsertReturning(sqlInsert.toString(), params.toArray(), m_trxName, rs -> {
+				m_newValues = new Object[get_ColumnCount()];
+				m_is_Partial = false;
+				m_ColumnsLoaded = null;
+				return load(rs);
+			});
+			if (ok)
 			{
-				if (m_trxName == null)
-					log.log(Level.SEVERE, "reloading");
-				else
-					log.log(Level.SEVERE, "[" + m_trxName + "] - reloading");
-				ok = false;
+				boolean hasLob = m_lobInfo != null && !m_lobInfo.isEmpty();
+				ok = lobSave();
+				if (ok && hasLob)
+				{
+					if (!load(m_trxName))		//	re-read Info
+					{
+						if (m_trxName == null)
+							log.log(Level.SEVERE, "reloading");
+						else
+							log.log(Level.SEVERE, "[" + m_trxName + "] - reloading");
+						ok = false;
+					}
+				}
 			}
 		}
 		else
+		{
+			int no = withValues ? DB.executeUpdate(sqlInsert.toString(), m_trxName) 
+								: DB.executeUpdate(sqlInsert.toString(), params.toArray(), false, m_trxName);
+			ok = no == 1;
+			if (ok)
+			{
+				if (withValues)
+					afterInsertWithValues(session);
+				ok = lobSave();
+				if (!load(m_trxName))		//	re-read Info
+				{
+					if (m_trxName == null)
+						log.log(Level.SEVERE, "reloading");
+					else
+						log.log(Level.SEVERE, "[" + m_trxName + "] - reloading");
+					ok = false;
+				}
+			}
+		}
+		if (!ok)
 		{
 			String msg = "Not inserted - ";
 			if (CLogMgt.isLevelFiner())
@@ -3804,10 +3840,13 @@ public abstract class PO
 		if (m_IDs.length == 1 && p_info.hasKeyColumn()
 				&& m_KeyColumns[0].endsWith("_ID") && !Env.isUseCentralizedId(p_info.getTableName()))
 		{
-			StringBuilder sql = new StringBuilder("SELECT ").append(m_KeyColumns[0]).append(" FROM ").append(p_info.getTableName()).append(" WHERE ").append(getUUIDColumnName()).append("=?");
-			int id = DB.getSQLValueEx(get_TrxName(), sql.toString(), get_ValueAsString(getUUIDColumnName()));
-			m_IDs[0] = Integer.valueOf(id);
-			set_ValueNoCheck(m_KeyColumns[0], m_IDs[0]);
+			if (get_ID() <= 0)
+			{
+				StringBuilder sql = new StringBuilder("SELECT ").append(m_KeyColumns[0]).append(" FROM ").append(p_info.getTableName()).append(" WHERE ").append(getUUIDColumnName()).append("=?");
+				int id = DB.getSQLValueEx(get_TrxName(), sql.toString(), get_ValueAsString(getUUIDColumnName()));
+				m_IDs[0] = Integer.valueOf(id);
+				set_ValueNoCheck(m_KeyColumns[0], m_IDs[0]);
+			}
 		}
 
 		if (!Env.isUseCentralizedId(p_info.getTableName()))
@@ -3891,6 +3930,7 @@ public abstract class PO
 		int size = get_ColumnCount();
 		boolean doComma = false;
 		OracleBlobSQL oracleBlobSQL = new OracleBlobSQL(this);
+		String insertLog = MSysConfig.getValue(MSysConfig.SYSTEM_INSERT_CHANGELOG, "N", getAD_Client_ID());
 		for (int i = 0; i < size; i++)
 		{
 			String columnName = p_info.getColumnName(i);
@@ -4130,8 +4170,7 @@ public abstract class PO
 
 			if (session != null && (!withValues || Env.isUseCentralizedId(tableName)))
 			{
-				//	Change Log	- Only
-				String insertLog = MSysConfig.getValue(MSysConfig.SYSTEM_INSERT_CHANGELOG, "N", getAD_Client_ID());
+				//	Change Log	- Only				
 				if (!generateScriptOnly && session != null
 					&& p_info.isAllowLogging(i)		//	logging allowed
 					&& !p_info.isEncrypted(i)		//	not encrypted
@@ -6240,10 +6279,7 @@ public abstract class PO
 				boolean found = false;
 				String dbIndexName = DB.getDatabase().getNameOfUniqueConstraintError(e);
 				if (log.isLoggable(Level.FINE)) log.fine("dbIndexName=" + dbIndexName);
-				MTableIndex index = new Query(getCtx(), MTableIndex.Table_Name, "AD_Table_ID=? AND UPPER(Name)=UPPER(?)", null)
-						.setParameters(get_Table_ID(), dbIndexName)
-						.setOnlyActiveRecords(true)
-						.first();
+				MTableIndex index = MTableIndex.get(getCtx(), get_Table_ID(), dbIndexName);
 				if (index != null && index.getAD_Message_ID() > 0)
 				{
 					MMessage message = MMessage.get(getCtx(), index.getAD_Message_ID());
@@ -6765,4 +6801,13 @@ public abstract class PO
 	           " WHERE " + uuCol + " = " + DB.TO_STRING(uuidValue) + ")";
 	}
 
+	/**
+	 * Check whether this PO instance should use INSERT ... RETURNING * when saving new records.
+	 * Subclasses can override this to disable RETURNING * for specific tables 
+	 * (e.g. tables with custom AFTER INSERT triggers, INSTEAD OF rules, or views).
+	 * @return true if RETURNING * is enabled and supported
+	 */
+	protected boolean is_UseInsertReturning() {
+	    return DB.isInsertReturningSupported();
+	}
 }   //  PO

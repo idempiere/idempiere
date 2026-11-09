@@ -23,6 +23,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -127,7 +128,7 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 	 *  @param trxName
 	 *	@return document value workflow array or null
 	 */
-	public static synchronized MWorkflow[] getDocValue (Properties ctx, int AD_Client_ID, int AD_Table_ID
+	public static MWorkflow[] getDocValue (Properties ctx, int AD_Client_ID, int AD_Table_ID
 			, String trxName)
 	{
 		//	Reload
@@ -137,12 +138,11 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 			final String whereClause = "WorkflowType=? AND IsValid=? AND AD_Client_ID=?";
 			List<MWorkflow> workflows;
 			workflows = new Query(ctx, Table_Name, whereClause, trxName)
-					.setParameters(new Object[]{WORKFLOWTYPE_DocumentValue, true, Env.getAD_Client_ID(ctx)})
+					.setParameters(new Object[]{WORKFLOWTYPE_DocumentValue, true, AD_Client_ID})
 					.setOnlyActiveRecords(true)
 					.setOrderBy("AD_Table_ID")
 					.list();
 			cachedMap = new HashMap<Integer, MWorkflow[]>();
-			s_cacheDocValue.put(AD_Client_ID, cachedMap);
 			ArrayList<MWorkflow> list = new ArrayList<MWorkflow>();
 			int previousTableId = -1;
 			int currentTableId = -1;
@@ -163,6 +163,8 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 			{
 				cachedMap.put (previousTableId, list.stream().map(e -> {return new MWorkflow(Env.getCtx(), e);}).toArray(MWorkflow[]::new));
 			}
+			cachedMap = Collections.unmodifiableMap(cachedMap);
+			s_cacheDocValue.put(AD_Client_ID, cachedMap);
 			if (s_log.isLoggable(Level.CONFIG)) s_log.config("#" + cachedMap.size());
 		}
 		//	Look for Entry
