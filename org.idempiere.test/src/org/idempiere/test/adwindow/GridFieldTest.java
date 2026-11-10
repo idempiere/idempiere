@@ -46,6 +46,7 @@ import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -950,6 +951,66 @@ public class GridFieldTest extends AbstractTestCase {
 		GridRowCtx row2 = new GridRowCtx(ctx, gridTab, 2);
 		assertFalse(gridField.isDisplayed(row2, true), "An empty cell must not take the value of the selected row");
 		assertFalse(gridField.isDisplayedGrid(row2, true), "An empty cell must not take the value of the selected row");
+	}
+
+	@Test
+	void testDisplayLogicFormattedVariableWithGridRowCtx() {
+		Properties ctx = Env.getCtx();
+		GridFieldVO vo = mock(GridFieldVO.class);
+		vo.ctx = ctx;
+		vo.WindowNo = 100;
+		vo.TabNo = 0;
+		vo.ColumnName = "Description";
+		vo.IsDisplayed = true;
+		vo.IsDisplayedGrid = true;
+		GridField gridField = new GridField(vo);
+
+		// grid view: row 0 = 1.5 in November, row 1 = 0.4 in December
+		Timestamp november = Timestamp.valueOf("2026-11-10 00:00:00");
+		Timestamp december = Timestamp.valueOf("2026-12-10 00:00:00");
+		GridTab gridTab = mock(GridTab.class);
+		GridTable gridTable = mock(GridTable.class);
+		gridField.setGridTab(gridTab);
+		when(gridTab.getWindowNo()).thenReturn(vo.WindowNo);
+		lenient().when(gridTab.getTableModel()).thenReturn(gridTable);
+		lenient().when(gridTable.findColumn(anyString())).thenReturn(-1);
+		lenient().when(gridTable.findColumn("GrandTotal")).thenReturn(1);
+		lenient().when(gridTable.findColumn("DateInvoiced")).thenReturn(2);
+		lenient().when(gridTable.getValueAt(0, 1)).thenReturn(new BigDecimal("1.5"));
+		lenient().when(gridTable.getValueAt(1, 1)).thenReturn(new BigDecimal("0.4"));
+		lenient().when(gridTable.getValueAt(0, 2)).thenReturn(november);
+		lenient().when(gridTable.getValueAt(1, 2)).thenReturn(december);
+		lenient().when(gridTab.getTableName()).thenReturn("C_Invoice");
+		lenient().when(gridTab.getField("GrandTotal")).thenReturn(mock(GridField.class));
+		lenient().when(gridTab.getField("DateInvoiced")).thenReturn(mock(GridField.class));
+		lenient().when(gridTab.getValue(0, "GrandTotal")).thenReturn(new BigDecimal("1.5"));
+		lenient().when(gridTab.getValue(1, "GrandTotal")).thenReturn(new BigDecimal("0.4"));
+		lenient().when(gridTab.getValue(0, "DateInvoiced")).thenReturn(november);
+		lenient().when(gridTab.getValue(1, "DateInvoiced")).thenReturn(december);
+		// the current (selected) row is row 1, it must not decide for row 0
+		lenient().when(gridTab.getValue("GrandTotal")).thenReturn(new BigDecimal("0.4"));
+		lenient().when(gridTab.getValue("DateInvoiced")).thenReturn(december);
+
+		GridRowCtx row0 = new GridRowCtx(ctx, gridTab, 0);
+		GridRowCtx row1 = new GridRowCtx(ctx, gridTab, 1);
+		// a number format: 1.5 formats to 2, the unformatted 1.5 would not match
+		vo.DisplayLogic = "@GrandTotal<#0>@=2";
+		assertTrue(gridField.isDisplayed(row0, true), "A number format must be applied to the typed value of row 0");
+		assertFalse(gridField.isDisplayed(row1, true), "A number format must be applied to the typed value of row 1");
+		assertTrue(gridField.isDisplayedGrid(row0, true), "A number format must be applied to the typed value of row 0");
+		assertFalse(gridField.isDisplayedGrid(row1, true), "A number format must be applied to the typed value of row 1");
+		// a date format: the unformatted timestamp would not match
+		vo.DisplayLogic = "@DateInvoiced<yyyy-MM>@='2026-11'";
+		assertTrue(gridField.isDisplayed(row0, true), "A date format must be applied to the typed value of row 0");
+		assertFalse(gridField.isDisplayed(row1, true), "A date format must be applied to the typed value of row 1");
+		assertTrue(gridField.isDisplayedGrid(row0, true), "A date format must be applied to the typed value of row 0");
+		assertFalse(gridField.isDisplayedGrid(row1, true), "A date format must be applied to the typed value of row 1");
+		// the formatted value itself, per row
+		DecimalFormat amountFormat = new DecimalFormat("#0.00");
+		assertEquals(amountFormat.format(1.5), gridField.get_ValueAsString(row0, "GrandTotal<#0.00>"), "Formatted amount of row 0");
+		assertEquals(amountFormat.format(0.4), gridField.get_ValueAsString(row1, "GrandTotal<#0.00>"), "Formatted amount of row 1");
+		assertEquals("2026-11", gridField.get_ValueAsString(row0, "DateInvoiced<yyyy-MM>"), "Formatted date of row 0");
+		assertEquals("2026-12", gridField.get_ValueAsString(row1, "DateInvoiced<yyyy-MM>"), "Formatted date of row 1");
 	}
 
 	@Test

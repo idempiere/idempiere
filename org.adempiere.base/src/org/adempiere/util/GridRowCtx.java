@@ -119,6 +119,18 @@ implements Evaluatee
 	}
 
 	/**
+	 * Get the typed value of a column in the row of this context
+	 * @param columnName column name
+	 * @return value of the column in the row of this context, null if the tab has no field for the column
+	 */
+	public Object getValue(String columnName)
+	{
+		if (gridTab.getField(columnName) == null)
+			return null;
+		return gridTab.getValue(getRow(), columnName);
+	}
+
+	/**
 	 * @return current row
 	 */
 	private int getRow() {

@@ -1394,13 +1394,14 @@ public class GridField
 			if (value != null)
 				return value;
 		}
-		if (ctx instanceof GridRowCtx) {
-			// a GridRowCtx carries the values of the row being rendered (grid view), the GridTab only those of the current row:
-			// read the values from the context, keep the GridTab for the column metadata (e.g. @C_DocTypeTarget_ID.DocBaseType@)
+		if (ctx instanceof GridRowCtx gridRowCtx) {
+			// a GridRowCtx renders one row of the grid view, the GridTab values are those of the current row:
+			// read the typed value of the rendered row (keeps formatting like @GrandTotal<#0.00>@),
+			// keep the GridTab for the column metadata (e.g. @C_DocTypeTarget_ID.DocBaseType@)
 			DataProvider dataProvider = new GridTabDataProvider(getGridTab()) {
 				@Override
 				public Object getValue(String columnName) {
-					return null;
+					return gridRowCtx.getValue(columnName);
 				}
 			};
 			return new DefaultEvaluatee(dataProvider, m_vo.WindowNo, m_vo.TabNo).get_ValueAsString(ctx, variableName);
