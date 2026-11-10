@@ -206,10 +206,18 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 		private static final long serialVersionUID = 2548097748351277269L;
 
 		@Override
-		public int reset(int recordId) {
-			return reset();
-		}		
+		public int reset(int recordId) {			
+			return reset();		
+		}
+
+		@Override
+		public int reset() {
+			synchronized (s_docValueCacheLock) {
+				return super.reset();
+			}
+		}				
 	};
+	
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MWorkflow.class);
 		
