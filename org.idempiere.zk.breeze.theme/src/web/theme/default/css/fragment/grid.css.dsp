@@ -129,3 +129,49 @@ div.grid-view-color-fieldtype-display > div {
 	width: 95%;
 	height: 80%;
 }
+
+<%-- frozen scrolling --%>
+.z-grid-header th.z-frozen-sticky,
+.z-listbox-header th.z-frozen-sticky {
+	position: sticky !important;
+	z-index: 3 !important;
+	background-clip: padding-box;
+	box-sizing: border-box;
+}
+.z-grid-body td.z-frozen-sticky,
+.z-listbox-body td.z-frozen-sticky,
+.z-grid-footer td.z-frozen-sticky,
+.z-listbox-footer td.z-frozen-sticky {
+	position: sticky !important;
+	z-index: 2 !important;
+	background-clip: padding-box;
+	box-sizing: border-box;
+}
+<%-- those cells are already opaque from the theme, so no background is set here: the content
+     scrolling underneath them stays hidden, while the hover and selection backgrounds that the
+     theme paints on the cell itself keep working --%>
+<%-- the theme makes the row indicator transparent in highlighted rows, which would show the
+     content scrolling underneath the frozen copy of it --%>
+.z-grid tbody tr.highlight td.row-indicator.z-frozen-sticky {
+	background-color: var(--zk-grid-highlight-background-color, #FFFFCC);
+}
+.z-frozen-sticky-last {
+	border-right: 1px solid var(--zk-grid-header-border-color, #CFCFCF) !important;
+	box-shadow: 2px 0 4px -2px rgba(0, 0, 0, 0.12);
+}
+.z-frozen-sticky-next,
+.z-grid-header th.z-frozen-sticky-last + th,
+.z-listbox-header th.z-frozen-sticky-last + th,
+.z-grid-body td.z-frozen-sticky-last + td,
+.z-listbox-body td.z-frozen-sticky-last + td,
+.z-grid-footer td.z-frozen-sticky-last + td,
+.z-listbox-footer td.z-frozen-sticky-last + td {
+	border-left: none !important;
+}
+<%-- only the horizontal scrollbar is hidden (ZK already sets overflow-x: hidden on desktop,
+     this covers mobile where it does not). scrollbar-width would hide both axes. --%>
+.z-grid:has(> .z-frozen) > .z-grid-body::-webkit-scrollbar:horizontal,
+.z-listbox:has(> .z-frozen) > .z-listbox-body::-webkit-scrollbar:horizontal {
+	display: none;
+	height: 0;
+}
