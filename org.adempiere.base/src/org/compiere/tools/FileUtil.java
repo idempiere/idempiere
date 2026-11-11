@@ -558,6 +558,21 @@ public class FileUtil
 	}
 	
 	/**
+	 * Creates a valid file name prefix from "name", see {@link #makeASCIIPrefix(String)}.
+	 * If "name" has no letter or digit in the US-ASCII range (for example a name
+	 * in Chinese or Cyrillic script), the prefix is created from "fallback" instead.
+	 * @param name
+	 * @param fallback name to use when "name" gives no letter or digit, e.g. a table name
+	 * @return ASCII-safe file name prefix
+	 */
+	public static String makeASCIIPrefix(String name, String fallback) {
+		String prefix = makeASCIIPrefix(name);
+		if (!Util.isEmpty(fallback) && prefix.chars().noneMatch(Character::isLetterOrDigit))
+			prefix = makeASCIIPrefix(fallback);
+		return prefix;
+	}
+
+	/**
 	 * 
 	 * @param path
 	 * @return true if deleted
