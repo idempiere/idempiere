@@ -24,6 +24,7 @@ import org.compiere.model.GridTab;
 import org.compiere.model.Lookup;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
+import org.compiere.tools.FileUtil;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -189,7 +190,7 @@ public class GridTabExcelExporter extends AbstractExcelExporter implements IGrid
 
 	@Override
 	public String getSuggestedFileName(GridTab gridTab) {
-		return gridTab.getName() + "." + getFileExtension();
+		return FileUtil.makeASCIIPrefix(gridTab.getName(), gridTab.getTableName()) + "." + getFileExtension();
 	}
 
 	/**

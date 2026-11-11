@@ -38,6 +38,7 @@ import org.compiere.db.Database;
 import org.compiere.model.GridTab;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
+import org.compiere.tools.FileUtil;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
@@ -204,7 +205,7 @@ public class GridTabSQLInsertExporter implements IGridTabExporter {
 
 	@Override
 	public String getSuggestedFileName(GridTab gridTab) {
-		return gridTab.getName() + "." + getFileExtension();
+		return FileUtil.makeASCIIPrefix(gridTab.getName(), gridTab.getTableName()) + "." + getFileExtension();
 	}
 
 	@Override
