@@ -3,7 +3,7 @@
 Copyright (C) 2007 Ashley G Ramdass.
 -->
 <?page style="height:100%"?>
-<?init zscript="theme.zs" ?>
+<?init class="org.adempiere.webui.theme.ThemeInitiator" ?>
 <?meta http-equiv="X-UA-Compatible" content="IE=edge" ?>
 <?meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" ?>
 <?meta name="apple-mobile-web-app-capable" content="yes"?>
@@ -44,14 +44,5 @@ else {
 ]]>
 </script>
 <include src="${themePreference}" if="${execution.getScheme() == 'https'}"/>
-<zscript>
-<![CDATA[
-var currentZkTheme = org.zkoss.zul.theme.Themes.getTheme(org.zkoss.zk.ui.Executions.getCurrent());
-var setZkTheme = org.zkoss.zk.ui.Executions.getCurrent().getAttribute("Themes.setTheme");
-if (setZkTheme != null && !setZkTheme.equals(currentZkTheme)) {
-	org.zkoss.zk.ui.Executions.sendRedirect(null);
-}
-]]>
-</zscript>
 <window use="org.adempiere.webui.AdempiereWebUI" if="${execution.getScheme() == 'https'}"/>
 </zk>
