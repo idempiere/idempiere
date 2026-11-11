@@ -91,6 +91,8 @@ public class MCostQueue extends X_M_CostQueue
 			+ " AND M_CostElement_ID=?";
 		if (isDateLayer)
 			sql += " AND DateAcct=?";
+		else if (M_AttributeSetInstance_ID == 0)
+			sql += " ORDER BY DateAcct DESC, M_CostQueue_ID DESC";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try
@@ -153,8 +155,8 @@ public class MCostQueue extends X_M_CostQueue
 			sql.append(" AND M_AttributeSetInstance_ID=?");
 		String direction = ce.isFifo() ? "" : " DESC";
 		sql.append(" AND CurrentQty<>0 ")
-			.append("ORDER BY M_AttributeSetInstance_ID").append(direction)
-			.append(", DateAcct").append(direction)
+			.append("ORDER BY DateAcct").append(direction)
+			.append(", M_AttributeSetInstance_ID").append(direction)
 			.append(", M_CostQueue_ID").append(direction);
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
