@@ -144,14 +144,27 @@ div.grid-view-color-fieldtype-display > div {
 .z-listbox-footer td.z-frozen-sticky {
 	position: sticky !important;
 	z-index: 2 !important;
+	background-color: var(--zk-grid-background-color, #FFFFFF);
 	background-clip: padding-box;
 	box-sizing: border-box;
 }
-<%-- those cells are already opaque from the theme, so no background is set here: the content
-     scrolling underneath them stays hidden, while the hover and selection backgrounds that the
-     theme paints on the cell itself keep working --%>
-<%-- the theme makes the row indicator transparent in highlighted rows, which would show the
-     content scrolling underneath the frozen copy of it --%>
+<%-- Ensure sticky cells always carry an opaque background matching their row state
+     (odd, selected, hovered, highlighted) so scrolled cells underneath never bleed through --%>
+.z-grid-body tr.z-grid-odd > td.z-frozen-sticky,
+.z-listbox-body tr.z-listbox-odd > td.z-frozen-sticky {
+	background-color: var(--zk-grid-odd-background-color, #F7F7F7);
+}
+.z-listbox-body tr.z-listitem.z-listitem-selected > td.z-frozen-sticky {
+	background-color: var(--zk-listitem-selected-background-color, #E8F6FD);
+}
+.z-grid-body tr.z-row:hover > td.z-frozen-sticky,
+.z-listbox-body tr.z-listitem:hover > td.z-frozen-sticky {
+	background-color: var(--zk-row-hover-background-color, #F0F9FF);
+}
+.z-listbox-body tr.z-listitem.z-listitem-selected:hover > td.z-frozen-sticky {
+	background-color: var(--zk-listitem-selected-hover-background-color, var(--zk-listitem-selected-background-color, #DCF0FA));
+}
+.z-grid tbody tr.highlight > td.z-frozen-sticky,
 .z-grid tbody tr.highlight td.row-indicator.z-frozen-sticky {
 	background-color: var(--zk-grid-highlight-background-color, #FFFFCC);
 }

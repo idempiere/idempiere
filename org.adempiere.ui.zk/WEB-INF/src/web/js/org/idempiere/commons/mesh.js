@@ -32,7 +32,27 @@ zk.afterLoad('zul.mesh', function() {
       _currentLeft: 0,
 
       setSmooth: function(smooth) {
+        let wasEnabled = this._smoothFrozenEnabled();
         this._smooth = smooth;
+        let nowEnabled = this._smoothFrozenEnabled();
+        if (this.desktop && wasEnabled !== nowEnabled) {
+          let p = this.parent;
+          if (nowEnabled) {
+            if (p && p.$n()) {
+              p.$n().querySelectorAll('.hiddencol').forEach(function(el) {
+                el.classList.remove('hiddencol');
+              });
+            }
+            this._bindSmoothListeners();
+            this._applyStickyColumns();
+            this._onSizeLaterSticky();
+          } else {
+            this._unbindSmoothListeners();
+            this._clearTimers();
+            this._clearStickyColumns();
+            this.onSize();
+          }
+        }
         return this;
       },
 
@@ -56,6 +76,39 @@ zk.afterLoad('zul.mesh', function() {
           this._setScrollLeft(left);
         }
         return this;
+      },
+
+      _bindSmoothListeners: function() {
+        let p = this.parent;
+        if (!p || this._colSizeHandler) return;
+        let self = this;
+        this._colSizeHandler = function() {
+          if (self.desktop && self._smoothFrozenEnabled()) {
+            self._requestStickySize();
+          }
+        };
+        /* No body scroll listener here: MeshWidget already registers one and calls
+           frozen.syncScrollByParentBody(), which is overridden below. */
+        p.listen({ onColSize: this._colSizeHandler });
+      },
+
+      _unbindSmoothListeners: function() {
+        let p = this.parent;
+        if (p && this._colSizeHandler) {
+          p.unlisten({ onColSize: this._colSizeHandler });
+        }
+        this._colSizeHandler = null;
+      },
+
+      _requestStickySize: function() {
+        if (this._delayedStickySize) return;
+        let self = this;
+        this._delayedStickySize = setTimeout(function() {
+          self._delayedStickySize = null;
+          if (!self.desktop || !self._smoothFrozenEnabled()) return;
+          self._applyStickyColumns();
+          self._onSizeLaterSticky();
+        }, 0);
       },
 
       bind_: function() {
@@ -83,30 +136,13 @@ zk.afterLoad('zul.mesh', function() {
         }
 
         if (this._smoothFrozenEnabled()) {
-          let self = this;
-          this._colSizeHandler = function() {
-            setTimeout(function() {
-              if (self.desktop) {
-                self._applyStickyColumns();
-                self._onSizeLaterSticky();
-              }
-            }, 0);
-          };
-
-          /* No body scroll listener here: MeshWidget already registers one and calls
-             frozen.syncScrollByParentBody(), which is overridden below. */
-          p.listen({ onColSize: this._colSizeHandler });
-
+          this._bindSmoothListeners();
           this._applyStickyColumns();
         }
       },
 
       unbind_: function() {
-        let p = this.parent;
-        if (p && this._colSizeHandler) {
-          p.unlisten({ onColSize: this._colSizeHandler });
-        }
-        this._colSizeHandler = null;
+        this._unbindSmoothListeners();
         this._clearTimers();
         this._clearStickyColumns();
 
@@ -121,6 +157,10 @@ zk.afterLoad('zul.mesh', function() {
         if (this._delayedStartSync) {
           clearTimeout(this._delayedStartSync);
           this._delayedStartSync = null;
+        }
+        if (this._delayedStickySize) {
+          clearTimeout(this._delayedStickySize);
+          this._delayedStickySize = null;
         }
       },
 
@@ -143,12 +183,7 @@ zk.afterLoad('zul.mesh', function() {
           }
         }
 
-        let self = this;
-        setTimeout(function() {
-          if (!self.desktop) return;
-          self._applyStickyColumns();
-          self._onSizeLaterSticky();
-        }, 0);
+        this._requestStickySize();
       },
 
       onResponse: function() {
@@ -206,13 +241,12 @@ zk.afterLoad('zul.mesh', function() {
         if (targetLeft == null) {
           targetLeft = 0;
           if (this._start > 0 && p.eheadrows) {
-            let cells = p._getFirstRowCells(p.eheadrows),
+            let colWidths = this._measureHeaderColumnWidths(p),
               columns = this._columns || 0,
-              endCol = Math.min(cells ? cells.length : 0, columns + this._start);
+              endCol = Math.min(colWidths.length, columns + this._start);
             for (let i = columns; i < endCol; i++) {
-              let hdWgt = zk.Widget.$(cells[i]);
-              if (!hdWgt || hdWgt.isVisible()) {
-                targetLeft += cells[i].offsetWidth;
+              if (colWidths[i].visible) {
+                targetLeft += colWidths[i].width;
               }
             }
           }
@@ -243,18 +277,27 @@ zk.afterLoad('zul.mesh', function() {
         if (p && p.ebody) {
           let cf = zk.currentFocus,
             td = cf ? p.getFocusCell(cf.$n()) : null;
-          if (td) {
+          if (td && !td.classList.contains('z-frozen-sticky')) {
             let index = td.cellIndex - (this._columns || 0);
             if (index >= 0) {
               let frozenWidth = this._frozenWidth || 0,
                 tdLeft = td.offsetLeft,
                 tdWidth = td.offsetWidth,
-                curLeft = p.ebody.scrollLeft;
+                curLeft = p.ebody.scrollLeft,
+                viewWidth = p.ebody.clientWidth,
+                availableWidth = Math.max(0, viewWidth - frozenWidth);
               if (tdLeft < curLeft + frozenWidth) {
                 let target = Math.max(0, tdLeft - frozenWidth);
                 this._setScrollLeft(target);
-              } else if (tdLeft + tdWidth > curLeft + p.ebody.clientWidth) {
-                let target = tdLeft + tdWidth - p.ebody.clientWidth;
+              } else if (tdLeft + tdWidth > curLeft + viewWidth) {
+                let target;
+                if (tdWidth > availableWidth) {
+                  /* Wide cell exceeds scrollable viewport: anchor its left edge at the
+                     frozen boundary so the input cursor is not pushed under frozen columns. */
+                  target = Math.max(0, tdLeft - frozenWidth);
+                } else {
+                  target = Math.max(0, tdLeft + tdWidth - viewWidth);
+                }
                 this._setScrollLeft(target);
               } else {
                 this._setScrollLeft(curLeft, 'body');
@@ -287,7 +330,7 @@ zk.afterLoad('zul.mesh', function() {
         let self = this;
         this._delayedScrollSync = setTimeout(function() {
           self._delayedScrollSync = null;
-          if (!self.desktop) return;
+          if (!self.desktop || !self._smoothFrozenEnabled()) return;
           self._doScrollSmooth(n);
         }, 0);
       },
@@ -321,9 +364,9 @@ zk.afterLoad('zul.mesh', function() {
               let wgt = zk.$(hdcol);
               if (wgt && wgt.$n()) {
                 if (hdcol.style.width.indexOf('0.001px') != -1 || hdcol.style.width.indexOf('0px') != -1) {
-                  jq(wgt.$n()).addClass("hiddencol");
+                  wgt.$n().classList.add("hiddencol");
                 } else {
-                  jq(wgt.$n()).removeClass("hiddencol");
+                  wgt.$n().classList.remove("hiddencol");
                 }
               }
             }
@@ -335,7 +378,11 @@ zk.afterLoad('zul.mesh', function() {
         if (!p) return;
 
         /* Ensure no legacy hiddencol class remains when in smooth mode */
-        jq(p.$n()).find('.hiddencol').removeClass('hiddencol');
+        if (p.$n()) {
+          p.$n().querySelectorAll('.hiddencol').forEach(function(el) {
+            el.classList.remove('hiddencol');
+          });
+        }
 
         if (this._currentLeft == null) {
           /* No pixel position yet (e.g. after columns were hidden/shown): rebuild it from
@@ -385,7 +432,7 @@ zk.afterLoad('zul.mesh', function() {
         let self = this;
         this._delayedStartSync = setTimeout(function() {
           self._delayedStartSync = null;
-          if (!self.desktop) return;
+          if (!self.desktop || !self._smoothFrozenEnabled()) return;
           self._syncStartFromPixelNow();
         }, 50);
       },
@@ -393,22 +440,108 @@ zk.afterLoad('zul.mesh', function() {
       _syncStartFromPixelNow: function() {
         let p = this.parent;
         if (!p || !p.eheadrows) return;
-        let cells = p._getFirstRowCells(p.eheadrows);
-        if (!cells) return;
+        let colWidths = this._measureHeaderColumnWidths(p);
+        if (!colWidths.length) return;
 
         let start = 0,
           rem = this._currentLeft || 0,
           columns = this._columns || 0;
-        for (let i = columns; i < cells.length; i++) {
-          let hdWgt = zk.Widget.$(cells[i]);
-          if (hdWgt && !hdWgt.isVisible()) continue;
-          rem -= cells[i].offsetWidth;
+        for (let i = columns; i < colWidths.length; i++) {
+          if (!colWidths[i].visible) continue;
+          rem -= colWidths[i].width;
           if (rem < 0) break;
           start++;
         }
         if (start !== this._start) {
           this._start = start;
           this.smartUpdate('start', start);
+        }
+      },
+
+      /* Resolves per-logical-column visibility and width, accounting for header cells
+         with colSpan (e.g. Auxhead) and falling back to head widget / ehdfaker <col>
+         elements when available. */
+      _measureHeaderColumnWidths: function(p) {
+        let result = [];
+        if (p.head && p.head.nChildren) {
+          let idx = 0;
+          for (let w = p.head.firstChild; w; w = w.nextSibling, idx++) {
+            let n = w.$n(),
+              vis = w.isVisible(),
+              width = 0;
+            if (vis) {
+              width = n ? this._getCellWidth(n, w) : 0;
+              if (!width && p.ehdfaker && p.ehdfaker.children && p.ehdfaker.children[idx]) {
+                width = this._getCellWidth(p.ehdfaker.children[idx], w);
+              }
+            }
+            result.push({ visible: vis, width: width });
+          }
+          if (result.length > 0) {
+            return result;
+          }
+        }
+
+        let headCells = p.eheadrows ? p._getFirstRowCells(p.eheadrows) : null;
+        if (!headCells || headCells.length === 0) return result;
+
+        let fakerCols = p.ehdfaker ? p.ehdfaker.children : null,
+          colIdx = 0;
+        for (let c = 0; c < headCells.length; c++) {
+          let cell = headCells[c],
+            hdWgt = zk.Widget.$(cell),
+            vis = !hdWgt || hdWgt.isVisible(),
+            span = cell.colSpan || 1;
+          if (span === 1) {
+            let w = vis ? this._getCellWidth(cell, hdWgt) : 0;
+            result[colIdx] = { visible: vis, width: w };
+            colIdx++;
+          } else {
+            let totalW = vis ? this._getCellWidth(cell, hdWgt) : 0,
+              evenW = span > 0 ? Math.floor(totalW / span) : 0,
+              remW = totalW - evenW * span;
+            for (let s = 0; s < span; s++) {
+              let fk = fakerCols && fakerCols[colIdx] ? fakerCols[colIdx] : null,
+                fkWgt = fk ? zk.Widget.$(fk) : null,
+                colVis = fkWgt ? fkWgt.isVisible() : vis,
+                colW = 0;
+              if (colVis) {
+                colW = fk ? this._getCellWidth(fk, fkWgt) : 0;
+                if (!colW) {
+                  colW = evenW + (s === span - 1 ? remW : 0);
+                }
+              }
+              result[colIdx] = { visible: colVis, width: colW };
+              colIdx++;
+            }
+          }
+        }
+        return result;
+      },
+
+      _restoreCellWidth: function(n, hdWgt) {
+        if (!n) return;
+        let isVisible = !hdWgt || hdWgt.isVisible();
+        if (!isVisible) return;
+        if (n.offsetWidth === 0) {
+          let colWd = hdWgt && hdWgt.getWidth && hdWgt.getWidth(),
+            restoredWd = null;
+          if (colWd && colWd.indexOf('px') > 0) {
+            restoredWd = colWd;
+          } else if (hdWgt && hdWgt._origWd && hdWgt._origWd.indexOf('px') > 0) {
+            restoredWd = hdWgt._origWd;
+          } else if (hdWgt && hdWgt._hflexWidth && hdWgt._hflexWidth > 0) {
+            restoredWd = jq.px(hdWgt._hflexWidth);
+          }
+          if (restoredWd) {
+            n.style.width = restoredWd;
+            if (n.id) {
+              let faker;
+              if ((faker = document.getElementById(n.id + '-hdfaker'))) faker.style.width = restoredWd;
+              if ((faker = document.getElementById(n.id + '-bdfaker'))) faker.style.width = restoredWd;
+              if ((faker = document.getElementById(n.id + '-ftfaker'))) faker.style.width = restoredWd;
+            }
+          }
         }
       },
 
@@ -420,37 +553,23 @@ zk.afterLoad('zul.mesh', function() {
           columns = this._columns || 0;
         if (!cells || cells.length <= 0) return;
 
-        /* Restore any column width that may have been zeroed */
-        for (let i = columns; i < cells.length; i++) {
-          let n = cells[i],
-            hdWgt = zk.Widget.$(n),
-            isVisible = !hdWgt || hdWgt.isVisible();
-          if (!isVisible) continue;
-          if (n.offsetWidth === 0) {
-            let colWd = hdWgt && hdWgt.getWidth && hdWgt.getWidth(),
-              restoredWd = null;
-            if (colWd && colWd.indexOf('px') > 0) {
-              restoredWd = colWd;
-            } else if (hdWgt && hdWgt._origWd && hdWgt._origWd.indexOf('px') > 0) {
-              restoredWd = hdWgt._origWd;
-            } else if (hdWgt && hdWgt._hflexWidth && hdWgt._hflexWidth > 0) {
-              restoredWd = jq.px(hdWgt._hflexWidth);
-            }
-            if (restoredWd) {
-              n.style.width = restoredWd;
-              let faker;
-              if ((faker = jq('#' + n.id + '-hdfaker')[0])) faker.style.width = restoredWd;
-              if ((faker = jq('#' + n.id + '-bdfaker')[0])) faker.style.width = restoredWd;
-              if ((faker = jq('#' + n.id + '-ftfaker')[0])) faker.style.width = restoredWd;
-            }
+        /* Restore any column width (including frozen ones) that may have been zeroed */
+        if (p.head && p.head.nChildren) {
+          for (let w = p.head.firstChild; w; w = w.nextSibling) {
+            this._restoreCellWidth(w.$n(), w);
+          }
+        } else {
+          for (let i = 0; i < cells.length; i++) {
+            let n = cells[i];
+            this._restoreCellWidth(n, zk.Widget.$(n));
           }
         }
 
-        let leftWidth = 0;
-        for (let i = 0; i < columns && i < cells.length; i++) {
-          let hdWgt = zk.Widget.$(cells[i]);
-          if (!hdWgt || hdWgt.isVisible()) {
-            leftWidth += cells[i].offsetWidth;
+        let colWidths = this._measureHeaderColumnWidths(p),
+          leftWidth = 0;
+        for (let i = 0; i < columns && i < colWidths.length; i++) {
+          if (colWidths[i].visible) {
+            leftWidth += colWidths[i].width;
           }
         }
 
@@ -490,32 +609,29 @@ zk.afterLoad('zul.mesh', function() {
           frozenCols = this._columns || 0;
         if (!p || !frozenCols) return;
 
-        let headCells = p.eheadrows ? p._getFirstRowCells(p.eheadrows) : null;
-        if (!headCells || headCells.length === 0) return;
+        let colWidths = this._measureHeaderColumnWidths(p);
+        if (!colWidths.length) return;
 
-        /* Measure the horizontal offset of every frozen column from the header row */
+        /* Measure the horizontal offset of every frozen column */
         let colOffsets = [],
           colVisible = [],
           accLeft = 0,
           lastFrozenIdx = -1,
           firstScrollableIdx = -1;
 
-        for (let i = 0; i < frozenCols && i < headCells.length; i++) {
-          let cell = headCells[i],
-            hdWgt = zk.Widget.$(cell),
-            vis = !hdWgt || hdWgt.isVisible();
+        for (let i = 0; i < frozenCols && i < colWidths.length; i++) {
+          let vis = colWidths[i].visible;
           colVisible[i] = vis;
           colOffsets[i] = accLeft;
           if (vis) {
-            accLeft += this._getCellWidth(cell, hdWgt);
+            accLeft += colWidths[i].width;
             lastFrozenIdx = i;
           }
         }
         this._frozenWidth = accLeft;
 
-        for (let i = frozenCols; i < headCells.length; i++) {
-          let hdWgt = zk.Widget.$(headCells[i]);
-          if (!hdWgt || hdWgt.isVisible()) {
+        for (let i = frozenCols; i < colWidths.length; i++) {
+          if (colWidths[i].visible) {
             firstScrollableIdx = i;
             break;
           }
@@ -540,13 +656,15 @@ zk.afterLoad('zul.mesh', function() {
             let cells = row.cells || row.children;
             if (!cells) continue;
 
-            let colIdx = 0;
+            let colIdx = 0,
+              nextAfterStickyIdx = firstScrollableIdx;
             for (let c = 0; c < cells.length; c++) {
               let cell = cells[c];
               while (covered[r + '/' + colIdx]) colIdx++;
 
               let colSpan = cell.colSpan || 1,
-                rowSpan = cell.rowSpan || 1;
+                rowSpan = cell.rowSpan || 1,
+                endColIdx = colIdx + colSpan - 1;
               if (rowSpan > 1) {
                 for (let rr = 1; rr < rowSpan; rr++) {
                   for (let cc = 0; cc < colSpan; cc++) {
@@ -555,25 +673,43 @@ zk.afterLoad('zul.mesh', function() {
                 }
               }
 
-              let offset = colOffsets[colIdx];
+              let cl = cell.classList,
+                offset = colOffsets[colIdx];
               if (colIdx < frozenCols && colVisible[colIdx] !== false && offset != null) {
-                cell.style.position = 'sticky';
-                cell.style.left = offset + 'px';
-                jq(cell).addClass('z-frozen-sticky');
-                if (colIdx + colSpan - 1 === lastFrozenIdx) {
-                  jq(cell).addClass('z-frozen-sticky-last');
-                } else {
-                  jq(cell).removeClass('z-frozen-sticky-last');
+                let leftPx = offset + 'px';
+                if (cell.style.position !== 'sticky') cell.style.position = 'sticky';
+                if (cell.style.left !== leftPx) cell.style.left = leftPx;
+                if (!cl.contains('z-frozen-sticky')) cl.add('z-frozen-sticky');
+
+                if (lastFrozenIdx >= 0 && endColIdx >= lastFrozenIdx) {
+                  if (!cl.contains('z-frozen-sticky-last')) cl.add('z-frozen-sticky-last');
+                  /* If this cell straddles across frozenCols, push the border-stripping
+                     target to the column immediately following the span */
+                  if (endColIdx + 1 > nextAfterStickyIdx) {
+                    nextAfterStickyIdx = endColIdx + 1;
+                    while (nextAfterStickyIdx < colWidths.length && !colWidths[nextAfterStickyIdx].visible) {
+                      nextAfterStickyIdx++;
+                    }
+                  }
+                } else if (cl.contains('z-frozen-sticky-last')) {
+                  cl.remove('z-frozen-sticky-last');
                 }
-                jq(cell).removeClass('z-frozen-sticky-next');
+                if (cl.contains('z-frozen-sticky-next')) {
+                  cl.remove('z-frozen-sticky-next');
+                }
               } else {
-                cell.style.position = '';
-                cell.style.left = '';
-                jq(cell).removeClass('z-frozen-sticky z-frozen-sticky-last');
-                if (colIdx === firstScrollableIdx) {
-                  jq(cell).addClass('z-frozen-sticky-next');
-                } else {
-                  jq(cell).removeClass('z-frozen-sticky-next');
+                if (cl.contains('z-frozen-sticky') || cell.style.position === 'sticky') {
+                  cell.style.position = '';
+                  cell.style.left = '';
+                  cl.remove('z-frozen-sticky', 'z-frozen-sticky-last');
+                } else if (cl.contains('z-frozen-sticky-last')) {
+                  cl.remove('z-frozen-sticky-last');
+                }
+
+                if (colIdx === nextAfterStickyIdx) {
+                  if (!cl.contains('z-frozen-sticky-next')) cl.add('z-frozen-sticky-next');
+                } else if (cl.contains('z-frozen-sticky-next')) {
+                  cl.remove('z-frozen-sticky-next');
                 }
               }
               colIdx += colSpan;
@@ -604,15 +740,19 @@ zk.afterLoad('zul.mesh', function() {
 
       _clearStickyColumns: function() {
         this._frozenWidth = 0;
-        let p = this.parent;
-        if (!p || !p.$n()) return;
-        jq(p.$n()).find('.z-frozen-sticky').each(function() {
-          this.style.position = '';
-          this.style.left = '';
-          jq(this).removeClass('z-frozen-sticky z-frozen-sticky-last');
-        });
-        jq(p.$n()).find('.z-frozen-sticky-last').removeClass('z-frozen-sticky-last');
-        jq(p.$n()).find('.z-frozen-sticky-next').removeClass('z-frozen-sticky-next');
+        let p = this.parent,
+          root = p ? p.$n() : null;
+        if (!root) return;
+        let els = root.querySelectorAll('.z-frozen-sticky, .z-frozen-sticky-last, .z-frozen-sticky-next');
+        for (let i = 0; i < els.length; i++) {
+          let el = els[i],
+            cl = el.classList;
+          if (cl.contains('z-frozen-sticky') || el.style.position === 'sticky') {
+            el.style.position = '';
+            el.style.left = '';
+          }
+          cl.remove('z-frozen-sticky', 'z-frozen-sticky-last', 'z-frozen-sticky-next');
+        }
       }
     });
 
