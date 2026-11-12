@@ -626,9 +626,9 @@ public class Scheduler extends AdempiereServer
 							}
 							if (Util.isEmpty(paraDesc)) 
 							{
-								if (iPara.getP_Number() != null)
+								if (value != null)
 									iPara.setInfo(decimalFormat.format(iPara.getP_Number()));
-								if (iPara.getP_Number_To() != null)
+								if (toValue != null)
 									iPara.setInfo_To(decimalFormat.format(iPara.getP_Number_To()));
 							}
 							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
@@ -645,9 +645,9 @@ public class Scheduler extends AdempiereServer
 							}
 							if (Util.isEmpty(paraDesc)) 
 							{
-								if (iPara.getP_Date() != null)
+								if (value != null)
 									iPara.setInfo(dateFormat.format(iPara.getP_Date()));
-								if (iPara.getP_Date_To() != null)
+								if (toValue != null)
 									iPara.setInfo_To(dateFormat.format(iPara.getP_Date_To()));
 							}
 							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
@@ -662,9 +662,9 @@ public class Scheduler extends AdempiereServer
 							}
 							if (Util.isEmpty(paraDesc))
 							{
-								if (iPara.getP_String() != null)
+								if (value != null)
 									iPara.setInfo(iPara.getP_String());
-								if (iPara.getP_String_To() != null)
+								if (toValue != null)
 									iPara.setInfo_To(iPara.getP_String_To());
 							}
 							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
