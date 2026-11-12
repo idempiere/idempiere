@@ -446,6 +446,7 @@ public class RequisitionPOCreate extends SvrProcess
 				throw new NoVendorForProductException(product.getName());
 			}
 		}
+		
 		if (!isGenerateForVendor(C_BPartner_ID))
 		{
 			if (log.isLoggable(Level.INFO)) log.info("Skip for partner "+C_BPartner_ID);
@@ -511,7 +512,7 @@ public class RequisitionPOCreate extends SvrProcess
 
 	private void validateVendor(int C_BPartner_ID)
 	{
-		MBPartner bp = MBPartner.get(getCtx(), C_BPartner_ID, get_TrxName());
+		MBPartner bp = MBPartner.get(getCtx(), C_BPartner_ID);
 
 		if (bp == null || !bp.isVendor())
 		{
