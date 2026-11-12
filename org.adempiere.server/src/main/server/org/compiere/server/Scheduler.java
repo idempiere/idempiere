@@ -626,13 +626,10 @@ public class Scheduler extends AdempiereServer
 							}
 							if (Util.isEmpty(paraDesc)) 
 							{
-								String info = decimalFormat.format(iPara.getP_Number());
-								iPara.setInfo(info);
+								if (iPara.getP_Number() != null)
+									iPara.setInfo(decimalFormat.format(iPara.getP_Number()));
 								if (iPara.getP_Number_To() != null)
-								{
-									info = decimalFormat.format(iPara.getP_Number_To());
-									iPara.setInfo_To(info);
-								}
+									iPara.setInfo_To(decimalFormat.format(iPara.getP_Number_To()));
 							}
 							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
 								+ " = " + variable + " (=" + bd + "=)");
@@ -648,13 +645,10 @@ public class Scheduler extends AdempiereServer
 							}
 							if (Util.isEmpty(paraDesc)) 
 							{
-								String info = dateFormat.format(iPara.getP_Date());
-								iPara.setInfo(info);
+								if (iPara.getP_Date() != null)
+									iPara.setInfo(dateFormat.format(iPara.getP_Date()));
 								if (iPara.getP_Date_To() != null)
-								{
-									info = dateFormat.format(iPara.getP_Date_To());
-									iPara.setInfo_To(info);
-								}
+									iPara.setInfo_To(dateFormat.format(iPara.getP_Date_To()));
 							}
 							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
 								+ " = " + variable + " (=" + ts + "=)");
@@ -668,13 +662,10 @@ public class Scheduler extends AdempiereServer
 							}
 							if (Util.isEmpty(paraDesc))
 							{
-								String info = iPara.getP_String();
-								iPara.setInfo(info);
+								if (iPara.getP_String() != null)
+									iPara.setInfo(iPara.getP_String());
 								if (iPara.getP_String_To() != null)
-								{
-									info = iPara.getP_String_To();
-									iPara.setInfo_To(info);
-								}
+									iPara.setInfo_To(iPara.getP_String_To());
 							}
 							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
 								+ " = " + variable
