@@ -34,34 +34,36 @@
       this.desktop = desktop;
       this.timeout = timeout;
       this.ajaxOptions.data = { dtid: this.desktop.id };
-      this.ajaxOptions.timeout = this.timeout;
+      // Server suspends for `timeout` ms and resumes with HTTP 200 on idle timeout;
+	  // add 30s grace period so XHR timeout only fires when the server/network is unresponsive
+	  this.ajaxOptions.timeout = this.timeout + 30000;
       this.ajaxOptions.url = zk.ajaxURI("/comet", {au: true,desktop:this.desktop.id,ignoreSession:true}),
       this.trace = trace;
       let me = this;
       this.ajaxOptions.error = function(jqxhr, textStatus, errorThrown) {
+		  let errorCode = jqxhr.getResponseHeader("X-Atmosphere-Error") || errorThrown;
     	  if (me.trace)
-    		  console.log("error: " + textStatus + " dtid: " + me.desktop.id + " errorThrown: " + errorThrown + " status: " + jqxhr.status);
-    	  if (textStatus == "timeout") {
-    		  // normal idle long-poll timeout: the server is reachable
-    		  me.failures = 0;
-    	  } else if (textStatus != "abort" && errorThrown != "SessionNotFound") {
-	          console.error("error: " + textStatus + " errorThrown: " + errorThrown + " status: " + jqxhr.status);
+    		  console.log("error: " + textStatus + " dtid: " + me.desktop.id + " errorThrown: " + errorCode + " status: " + jqxhr.status);
+		  if (textStatus != "abort" && errorCode != "SessionNotFound" && errorCode != "DesktopNotFound") {
+	          console.error("error: " + textStatus + " errorThrown: " + errorCode + " status: " + jqxhr.status);
 	          me.failures += 1;
     	  }
       };
       this.ajaxOptions.success = function() {
     	  if (me.trace)
     		  console.log("success" + " dtid: " + me.desktop.id);
-          zAu.cmd0.echo(this.desktop);
+          zAu.cmd0.echo(me.desktop);
           me.failures = 0;
       };
-      this.ajaxOptions.complete = function() {
+      this.ajaxOptions.complete = function(jqxhr) {
+		  let req = jqxhr || me._req;
+		  let errorCode = req ? (req.getResponseHeader("X-Atmosphere-Error") || req.statusText) : null;
     	  if (me.trace) {
     		  console.log("complete"+ " dtid: " + me.desktop.id);
-    		  if (me._req)
-    		  	console.log(me._req.status + " " + me._req.statusText);
+			  if (req)
+			    console.log(req.status + " " + errorCode);
     	  }
-    	  if (me._req && (me._req.statusText == "SessionNotFound" || me._req.statusText == "DesktopNotFound") && me._req.status == 400) {
+		  if (req && req.status == 400 && (errorCode == "SessionNotFound" || errorCode == "DesktopNotFound")) {
     		  ;
     	  } else {
     		  me._schedule();

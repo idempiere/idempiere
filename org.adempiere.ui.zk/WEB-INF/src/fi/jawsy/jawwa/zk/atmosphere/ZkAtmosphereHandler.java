@@ -161,7 +161,8 @@ public class ZkAtmosphereHandler implements AtmosphereHandler {
         if (error != null && serverPushEither.getRightValue() == null) {
         	if (log.isDebugEnabled())
         		log.warn("Bad Request. Error="+error+", Request="+resource.getRequest().getRequestURI());
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST, error);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setHeader("X-Atmosphere-Error", error);
             response.getWriter().write("");
             response.getWriter().flush();
             return;

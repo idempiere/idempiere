@@ -316,8 +316,7 @@ public class AtmosphereServerPush implements ServerPush {
 
         //suspend request for server push event
 	  	if (!resource.isSuspended()) {
-	  		//browser default timeout is 2 minutes
-	  		resource.suspend(5, TimeUnit.MINUTES); 
+	  		resource.suspend(timeout > 0 ? timeout : DEFAULT_TIMEOUT, TimeUnit.MILLISECONDS); 
 	  	}
 	  	AtmosphereResource oldResource = this.resource.getAndSet(resource);
 	  	if (oldResource != null) {
