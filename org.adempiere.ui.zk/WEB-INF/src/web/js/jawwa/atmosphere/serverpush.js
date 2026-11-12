@@ -41,7 +41,10 @@
       this.ajaxOptions.error = function(jqxhr, textStatus, errorThrown) {
     	  if (me.trace)
     		  console.log("error: " + textStatus + " dtid: " + me.desktop.id + " errorThrown: " + errorThrown + " status: " + jqxhr.status);
-    	  if (textStatus != "timeout" && textStatus != "abort" && errorThrown != "SessionNotFound") {
+    	  if (textStatus == "timeout") {
+    		  // normal idle long-poll timeout: the server is reachable
+    		  me.failures = 0;
+    	  } else if (textStatus != "abort" && errorThrown != "SessionNotFound") {
 	          console.error("error: " + textStatus + " errorThrown: " + errorThrown + " status: " + jqxhr.status);
 	          me.failures += 1;
     	  }
@@ -68,9 +71,10 @@
     _schedule: function() {
       if (this.failures < 5) {
 		let d = this.delay;
-		// exponential backoff (1, 2, 4, 8 s: about 15 s in total) so that a short outage, e.g. a proxy reload
-		// or a load balancer returning 502/503 during a deployment, does not end the session
-		if (this._req && (this._req.status == 0 || this._req.status >= 400))
+		// exponential backoff (1, 2, 4, 8 s: about 15 s in total) for connectivity and proxy/upstream errors,
+		// so that a short outage, e.g. a proxy reload or a load balancer returning 502/503 during a deployment,
+		// does not end the session
+		if (this._req && (this._req.status == 0 || this._req.status >= 500))
 			d = Math.min(500 * Math.pow(2, this.failures), 10000);
     	this._req = null;
         setTimeout(this.proxy(this._send), d);
@@ -115,6 +119,14 @@
     	window.location.href="index.zul";
    };
    jawwa.atmosphere.sessionTimeout = function() {
-   		jawwa.atmosphere.serverNotAvailable();
+    	zk.confirmClose = false;
+    	adempiere.get("zkTimeoutText", function(ok, val) {
+			if (ok && !!val)
+			{
+				zk.errorDismiss();
+				alert(val);
+			}
+			window.location.href="index.zul";
+		});
    };
 })();
