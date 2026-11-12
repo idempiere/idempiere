@@ -3365,12 +3365,11 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	 */
 	private boolean stockCoverageCheckForBackDateTrx(Timestamp reversalDate)
 	{
-		MClientInfo info = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName()); 
+		MClientInfo info = MClientInfo.get(getCtx(), getAD_Client_ID()); 
 		MAcctSchema as = info.getMAcctSchema1();
 		if (!MAcctSchema.COSTINGMETHOD_AveragePO.equals(as.getCostingMethod()) 
 				&& !MAcctSchema.COSTINGMETHOD_AverageInvoice.equals(as.getCostingMethod()))
 			return true;
-		as.load(get_TrxName());
 		if (as.getBackDateDay() == 0)
 			return true;
 		
