@@ -46,6 +46,7 @@ import org.adempiere.webui.desktop.FavouriteController;
 import org.adempiere.webui.desktop.IDesktop;
 import org.adempiere.webui.session.SessionContextListener;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.session.SessionTimeoutMonitor;
 import org.adempiere.webui.sso.filter.SSOWebUIFilter;
 import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
@@ -405,6 +406,9 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
 		FavouriteController.getInstance(currSess);
 		
 		processParameters();			
+
+		//idle session timeout warning
+		SessionTimeoutMonitor.start(getPage().getDesktop());
     }
 
     /**
