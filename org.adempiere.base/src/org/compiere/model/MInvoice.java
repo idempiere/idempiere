@@ -2188,12 +2188,27 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		{
 			MUser user = new MUser (getCtx(), getAD_User_ID(), get_TrxName());
 			user.setLastContact(new Timestamp(System.currentTimeMillis()));
-			StringBuilder msgset = new StringBuilder().append(Msg.translate(getCtx(), "C_Invoice_ID")).append(": ").append(getDocumentNo());
+			String docNo = is_UsingTemporaryDocumentNo() ? get_TemporaryDocumentNo() : getDocumentNo();
+			StringBuilder msgset = new StringBuilder().append(Msg.translate(getCtx(), "C_Invoice_ID")).append(": ").append(docNo);
 			user.setLastResult(msgset.toString());
 			if (!user.save(get_TrxName()))
 			{
 				m_processMsg = "Could not update Business Partner User";
 				return DocAction.STATUS_Invalid;
+			}
+			if (MSequence.isTemporaryDocumentNo(docNo))
+			{
+				int userId = user.getAD_User_ID();
+				String oldResult = msgset.toString();
+				addDeferredDocumentNoCallback((tempDocNo, actualDocNo) -> {
+					String newResult = oldResult.replace(tempDocNo, actualDocNo);
+					user.setLastResult(newResult);
+					String sql = "UPDATE " + MUser.Table_Name
+							+ " SET " + DB.getDatabase().quoteColumnName(MUser.COLUMNNAME_LastResult) + "=?"
+							+ " WHERE " + DB.getDatabase().quoteColumnName(MUser.COLUMNNAME_AD_User_ID) + "=?"
+							+ " AND " + DB.getDatabase().quoteColumnName(MUser.COLUMNNAME_LastResult) + "=?";
+					DB.executeUpdateEx(sql, new Object[] {newResult, userId, oldResult}, get_TrxName());
+				});
 			}
 		}	//	user
 

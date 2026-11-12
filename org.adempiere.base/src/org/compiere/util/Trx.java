@@ -110,7 +110,7 @@ public class Trx
 	/** Transaction timeout monitor */
 	private static final Trx.TrxMonitor s_monitor = new Trx.TrxMonitor();
 	/** Transaction event listeners */
-	private ConcurrentLinkedQueue<TrxEventListener> listeners = new ConcurrentLinkedQueue<TrxEventListener>();
+	private final ConcurrentLinkedQueue<TrxEventListener> listeners = new ConcurrentLinkedQueue<TrxEventListener>();
 	
 	protected Exception trace;
 	
@@ -414,6 +414,43 @@ public class Trx
 		{
 			if (m_connection != null)
 			{
+				try
+				{
+					fireBeforeCommitEvent();
+				}
+				catch (RuntimeException e)
+				{
+					// a before commit listener has failed, the transaction must not be committed
+					log.log(Level.SEVERE, m_trxName, e);
+					m_active = false;
+					boolean rolledBack = false;
+					try
+					{
+						m_connection.rollback();
+						rolledBack = true;
+					}
+					catch (SQLException ex)
+					{
+						log.log(Level.SEVERE, m_trxName, ex);
+					}
+					fireAfterRollbackEvent(rolledBack);
+					String msg = DBException.getDefaultDBExceptionMessage(e);
+					if (throwException)
+					{
+						if (e instanceof AdempiereException)
+							throw e;
+						if (msg != null)
+							msg = Msg.getMsg(Env.getCtx(), msg);
+						else
+							msg = e.getLocalizedMessage();
+						throw new AdempiereException(msg, e);
+					}
+					else
+					{
+						log.saveError(msg != null ? msg : e.getLocalizedMessage(), e);
+						return false;
+					}
+				}
 				m_connection.commit();
 				if (log.isLoggable(Level.INFO)) log.info ("**** " + m_trxName);
 				m_active = false;
@@ -455,6 +492,15 @@ public class Trx
 		}
 	}
 
+	/**
+	 * Fire before commit event
+	 */
+	private void fireBeforeCommitEvent() {
+		for(TrxEventListener l : listeners) {
+			l.beforeCommit(this);
+		}
+	}
+	
 	/**
 	 * Commit transaction
 	 * @return true if success
@@ -499,54 +545,58 @@ public class Trx
 	 */
 	public synchronized boolean close()
 	{
-		s_cache.remove(getTrxName());
-		
 		//local
-		if (m_connection == null)
+		if (m_connection == null) {
+			s_cache.remove(getTrxName());
 			return true;
+		}
 		
 		try {
 			if (isActive() && !m_connection.isReadOnly())
 				commit();
 		} catch (SQLException e) {			
-		}
+		} finally {
+			// ensure the transaction is removed from the cache and the connection is released
+			// even when commit fails (i.e. a before commit listener has thrown an exception)
+			s_cache.remove(getTrxName());
 			
-		//	Close Connection
-		try
-		{
-			m_connection.setAutoCommit(true);
-		}
-		catch (SQLException e)
-		{
-		}
-		finally
-		{
-			//ensure connection return to pool with readonly=false
-			try 
-			{
-				if (m_connection.isReadOnly())
-				{
-					m_connection.setReadOnly(false);
-				}
-			}
-			catch (SQLException e)
-			{
-				log.log(Level.SEVERE, m_trxName, e);
-			}	
+			//	Close Connection
 			try
 			{
-				m_connection.close();
+				m_connection.setAutoCommit(true);
 			}
 			catch (SQLException e)
 			{
-				log.log(Level.SEVERE, m_trxName, e);
 			}
+			finally
+			{
+				//ensure connection return to pool with readonly=false
+				try 
+				{
+					if (m_connection.isReadOnly())
+					{
+						m_connection.setReadOnly(false);
+					}
+				}
+				catch (SQLException e)
+				{
+					log.log(Level.SEVERE, m_trxName, e);
+				}	
+				try
+				{
+					m_connection.close();
+				}
+				catch (SQLException e)
+				{
+					log.log(Level.SEVERE, m_trxName, e);
+				}
+			}
+			m_connection = null;
+			trace = null;
+			m_active = false;
+			fireAfterCloseEvent();
+			if (log.isLoggable(Level.CONFIG)) log.config(m_trxName);
 		}
-		m_connection = null;
-		trace = null;
-		m_active = false;
-		fireAfterCloseEvent();
-		if (log.isLoggable(Level.CONFIG)) log.config(m_trxName);
 		return true;
 	}	//	close
 	

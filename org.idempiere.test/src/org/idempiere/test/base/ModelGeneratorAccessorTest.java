@@ -325,6 +325,9 @@ public class ModelGeneratorAccessorTest extends AbstractTestCase {
 		MOrder order = newOrder();
 		order.setDescription("before");
 		order.saveEx();
+		// trigger generation of documentno from sequence so the gridtab accessor comparison below will work
+		if (order.is_UsingTemporaryDocumentNo())
+			order.getDocumentNo();
 
 		GridWindow gridWindow = GridWindow.get(Env.getCtx(), 1, SystemIDs.WINDOW_SALES_ORDER);
 		gridWindow.initTab(0);

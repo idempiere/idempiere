@@ -1336,7 +1336,7 @@ public class MPayment extends X_C_Payment
 		if ("X".equals(getTenderType()))
 			return;
 		//	Current Document No
-		String documentNo = getDocumentNo();
+		String documentNo = is_UsingTemporaryDocumentNo() ? get_TemporaryDocumentNo() : getDocumentNo();
 		//	Existing reversal
 		if (documentNo != null 
 			&& documentNo.indexOf(REVERSE_INDICATOR) >= 0)
@@ -1345,8 +1345,10 @@ public class MPayment extends X_C_Payment
 		//	If external number exists - enforce it 
 		if (getR_PnRef() != null && getR_PnRef().length() > 0)
 		{
-			if (!getR_PnRef().equals(documentNo))
+			if (!getR_PnRef().equals(documentNo)) {
 				setDocumentNo(getR_PnRef());
+				clearDeferredDocumentNo();
+			}
 			return;
 		}
 		
@@ -1391,8 +1393,10 @@ public class MPayment extends X_C_Payment
 
 		//	Set Document No
 		documentNo = documentNo.trim();
-		if (documentNo.length() > 0)
+		if (documentNo.length() > 0) {
 			setDocumentNo(documentNo);
+			clearDeferredDocumentNo();
+		}
 	}	//	setDocumentNo
 
 	/**
@@ -2392,9 +2396,11 @@ public class MPayment extends X_C_Payment
 		if (getOverUnderAmt().signum() < 0 && getPayAmt().signum() > 0)
 			allocationAmt = allocationAmt.add(getOverUnderAmt());	//	overpayment (negative)
 
+		String docNo = is_UsingTemporaryDocumentNo() ? get_TemporaryDocumentNo() : getDocumentNo();
+		String description = Msg.translate(getCtx(), "C_Payment_ID") + ": " + docNo + " [1]";
 		MAllocationHdr alloc = new MAllocationHdr(getCtx(), false, 
 			getDateTrx(), getC_Currency_ID(),
-			Msg.translate(getCtx(), "C_Payment_ID") + ": " + getDocumentNo() + " [1]", get_TrxName());
+			description, get_TrxName());
 		alloc.setAD_Org_ID(getAD_Org_ID());
 		alloc.setDateAcct(getDateAcct()); // in case date acct is different from datetrx in payment
 		MInvoice invoice = new MInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
@@ -2420,8 +2426,33 @@ public class MPayment extends X_C_Payment
 		addDocsPostProcess(alloc);
 		// end added
 		alloc.saveEx(get_TrxName());
+		if (MSequence.isTemporaryDocumentNo(docNo))
+		{
+			int allocId = alloc.getC_AllocationHdr_ID();
+			addDeferredDocumentNoCallback((tempDocNo, actualDocNo) -> {
+				String currentDesc = alloc.getDescription();
+				if (currentDesc != null && currentDesc.contains(tempDocNo))
+				{
+					String updatedDesc = currentDesc.replace(tempDocNo, actualDocNo);
+					alloc.setDescription(updatedDesc);
+					String updateSql = "UPDATE " + MAllocationHdr.Table_Name
+							+ " SET " + DB.getDatabase().quoteColumnName(MAllocationHdr.COLUMNNAME_Description) + "=?"
+							+ " WHERE " + DB.getDatabase().quoteColumnName(MAllocationHdr.COLUMNNAME_C_AllocationHdr_ID) + "=?"
+							+ " AND " + DB.getDatabase().quoteColumnName(MAllocationHdr.COLUMNNAME_Description) + "=?";
+					DB.executeUpdateEx(updateSql, new Object[] {updatedDesc, allocId, currentDesc}, get_TrxName());
+				}
+			});
+		}
 		m_justCreatedAllocInv = alloc;
-		m_processMsg = "@C_AllocationHdr_ID@: " + alloc.getDocumentNo();
+		String allocDocNo = alloc.is_UsingTemporaryDocumentNo() ? alloc.get_TemporaryDocumentNo() : alloc.getDocumentNo();
+		m_processMsg = "@C_AllocationHdr_ID@: " + allocDocNo;
+		if (MSequence.isTemporaryDocumentNo(allocDocNo))
+		{
+			alloc.addDeferredDocumentNoCallback((tempDocNo, actualDocNo) -> {
+				if (m_processMsg != null && m_processMsg.contains(tempDocNo))
+					m_processMsg = m_processMsg.replace(tempDocNo, actualDocNo);
+			});
+		}
 			
 		//	Get Project from Invoice
 		int C_Project_ID = DB.getSQLValue(get_TrxName(), 
@@ -2440,9 +2471,11 @@ public class MPayment extends X_C_Payment
 	 */
 	protected boolean allocatePaySelection()
 	{
+		String docNo = is_UsingTemporaryDocumentNo() ? get_TemporaryDocumentNo() : getDocumentNo();
+		String description = Msg.translate(getCtx(), "C_Payment_ID") + ": " + docNo + " [n]";
 		MAllocationHdr alloc = new MAllocationHdr(getCtx(), false, 
 			getDateTrx(), getC_Currency_ID(),
-			Msg.translate(getCtx(), "C_Payment_ID")	+ ": " + getDocumentNo() + " [n]", get_TrxName());
+			description, get_TrxName());
 		alloc.setAD_Org_ID(getAD_Org_ID());
 		alloc.setDateAcct(getDateAcct()); // in case date acct is different from datetrx in payment
 		
@@ -2521,7 +2554,32 @@ public class MPayment extends X_C_Payment
 				throw new AdempiereException(Msg.getMsg(getCtx(), "FailedProcessingDocument") + " - " + alloc.getProcessMsg());
 			}
 			// end added by zuhri
-			m_processMsg = "@C_AllocationHdr_ID@: " + alloc.getDocumentNo();
+			if (ok && MSequence.isTemporaryDocumentNo(docNo))
+			{
+				int allocId = alloc.getC_AllocationHdr_ID();
+				addDeferredDocumentNoCallback((tempDocNo, actualDocNo) -> {
+					String currentDesc = alloc.getDescription();
+					if (currentDesc != null && currentDesc.contains(tempDocNo))
+					{
+						String updatedDesc = currentDesc.replace(tempDocNo, actualDocNo);
+						alloc.setDescription(updatedDesc);
+						String updateSql = "UPDATE " + MAllocationHdr.Table_Name
+								+ " SET " + DB.getDatabase().quoteColumnName(MAllocationHdr.COLUMNNAME_Description) + "=?"
+								+ " WHERE " + DB.getDatabase().quoteColumnName(MAllocationHdr.COLUMNNAME_C_AllocationHdr_ID) + "=?"
+								+ " AND " + DB.getDatabase().quoteColumnName(MAllocationHdr.COLUMNNAME_Description) + "=?";
+						DB.executeUpdateEx(updateSql, new Object[] {updatedDesc, allocId, currentDesc}, get_TrxName());
+					}
+				});
+			}
+			String allocDocNo = alloc.is_UsingTemporaryDocumentNo() ? alloc.get_TemporaryDocumentNo() : alloc.getDocumentNo();
+			m_processMsg = "@C_AllocationHdr_ID@: " + allocDocNo;
+			if (MSequence.isTemporaryDocumentNo(allocDocNo))
+			{
+				alloc.addDeferredDocumentNoCallback((tempDocNo, actualDocNo) -> {
+					if (m_processMsg != null && m_processMsg.contains(tempDocNo))
+						m_processMsg = m_processMsg.replace(tempDocNo, actualDocNo);
+				});
+			}
 		}
 		return ok;
 	}	//	allocatePaySelection

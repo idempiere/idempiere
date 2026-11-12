@@ -667,8 +667,32 @@ public class MWFProcess extends X_AD_WF_Process
 	 */
 	public void setTextMsg (PO po)
 	{
-		if (po != null && po instanceof DocAction)
-			setTextMsg(((DocAction)po).getSummary());
+		if (po != null && po instanceof DocAction doc)
+		{
+			if (po.is_UsingTemporaryDocumentNo())
+			{
+				setTextMsg(po.get_TemporaryDocumentNo());
+				po.addDeferredDocumentNoCallback((tempDocNo, actualDocNo) -> {
+					String currentText = getTextMsg();
+					if (currentText != null && currentText.contains(tempDocNo))
+					{
+						String updatedText = currentText.replace(tempDocNo, doc.getSummary());
+						super.setTextMsg(updatedText);
+						if (!is_new() && getAD_WF_Process_ID() > 0)
+						{
+							String sql = "UPDATE " + Table_Name
+									+ " SET " + DB.getDatabase().quoteColumnName(COLUMNNAME_TextMsg) + "=?"
+									+ " WHERE " + DB.getDatabase().quoteColumnName(COLUMNNAME_AD_WF_Process_ID) + "=?";
+							DB.executeUpdateEx(sql, new Object[] {updatedText, getAD_WF_Process_ID()}, get_TrxName());
+						}
+					}
+				});
+			}
+			else
+			{
+				setTextMsg(doc.getSummary());
+			}
+		}
 	}	//	setTextMsg	
 
 	/**

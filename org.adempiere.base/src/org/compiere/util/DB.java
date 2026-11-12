@@ -1987,7 +1987,22 @@ public final class DB
 	 */
 	public static String getDocumentNo(int C_DocType_ID, String trxName, boolean definite, PO po)
 	{
-		return MSequence.getDocumentNo (C_DocType_ID, trxName, definite, po);
+		return getDocumentNo(C_DocType_ID, trxName, definite, po, false);
+	}
+	
+	/**
+	 * 	Get Document No based on Document Type
+	 *	@param C_DocType_ID document type
+	 * 	@param trxName optional Transaction Name
+	 *  @param definite asking for a definitive or temporary sequence
+	 *  @param po PO
+	 *  @param deferToPreCommit
+	 *	@return document no or null
+	 *  @see {@link MSequence#getDocumentNo(int, String, boolean, PO)}
+	 */
+	public static String getDocumentNo(int C_DocType_ID, String trxName, boolean definite, PO po, boolean deferToPreCommit)
+	{
+		return MSequence.getDocumentNo (C_DocType_ID, trxName, definite, po, deferToPreCommit);
 	}	//	getDocumentNo
 
 	/**
@@ -2013,7 +2028,22 @@ public final class DB
 	 */
 	public static String getDocumentNo (int AD_Client_ID, String TableName, String trxName, PO po)
 	{
-		String dn = MSequence.getDocumentNo (AD_Client_ID, TableName, trxName, po);
+		return getDocumentNo(AD_Client_ID, TableName, trxName, po, false);
+	}
+	
+	/**
+	 * 	Get Document No for table
+	 *	@param AD_Client_ID client
+	 *	@param TableName table name
+	 * 	@param trxName optional Transaction Name
+	 *  @param po
+	 *  @param deferToPreCommit
+	 *	@return document no or null
+	 *  @see {@link MSequence#getDocumentNo(int, String, String, PO)}
+	 */
+	public static String getDocumentNo (int AD_Client_ID, String TableName, String trxName, PO po, boolean deferToPreCommit)
+	{
+		String dn = MSequence.getDocumentNo (AD_Client_ID, TableName, trxName, po, deferToPreCommit);
 		if (dn == null)
 			throw new DBException ("No DocumentNo");
 		return dn;

@@ -19,6 +19,12 @@ package org.compiere.util;
  */
 public interface TrxEventListener {
 	/**
+	 * Before commit event
+	 * @param trx
+	 */
+	default void beforeCommit(Trx trx) {}
+	
+	/**
 	 * After commit event
 	 * @param trx
 	 * @param success
