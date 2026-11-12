@@ -510,14 +510,14 @@ public class RequisitionPOCreate extends SvrProcess
 	}
 	private List<Integer> m_excludedVendors = new ArrayList<Integer>();
 
-	private void validateVendor(int C_BPartner_ID)
+	private void validateVendor(int cBPartnerId)
 	{
-		MBPartner bp = MBPartner.get(getCtx(), C_BPartner_ID);
+		MBPartner bp = MBPartner.get(getCtx(), cBPartnerId);
 
 		if (bp == null || !bp.isVendor())
 		{
 			throw new AdempiereUserError(
-				Msg.getMsg(getCtx(), "NotVendor", new Object[] { bp != null ? bp.getName() : String.valueOf(C_BPartner_ID) })
+				Msg.getMsg(getCtx(), "NotVendor", new Object[] { bp != null ? bp.getName() : String.valueOf(cBPartnerId) })
 			);
 		}
 	}
