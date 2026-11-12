@@ -452,6 +452,7 @@ public class RequisitionPOCreate extends SvrProcess
 			if (log.isLoggable(Level.INFO)) log.info("Skip for partner "+C_BPartner_ID);
 			return;
 		}
+		validateVendor(C_BPartner_ID);
 
 		//	New Order - Different Vendor
 		if (m_order == null 
@@ -508,5 +509,17 @@ public class RequisitionPOCreate extends SvrProcess
 		return match;
 	}
 	private List<Integer> m_excludedVendors = new ArrayList<Integer>();
-	
+
+	private void validateVendor(int C_BPartner_ID)
+	{
+		MBPartner bp = MBPartner.get(getCtx(), C_BPartner_ID);
+
+		if (bp == null || !bp.isVendor())
+		{
+			throw new AdempiereUserError(
+				Msg.getMsg(getCtx(), "NotVendor", new Object[] { bp != null ? bp.getName() : String.valueOf(C_BPartner_ID) })
+			);
+		}
+	}
+
 }	//	RequisitionPOCreate
