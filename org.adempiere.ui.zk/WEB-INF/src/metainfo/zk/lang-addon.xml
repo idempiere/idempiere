@@ -44,7 +44,7 @@ Copyright (C) 2007 Ashley G Ramdass (ADempiere WebUI).
 	</component>
 
 	<javascript-module name="org.idempiere.websocket" version="202604152040"/>
-	<javascript-module name="jawwa.atmosphere" version="202205100600"/>
+	<javascript-module name="jawwa.atmosphere" version="202611120800"/>
 	<javascript-module name="adempiere.local.storage" version="202205100600"/>
 	<javascript-module name="html2canvaspro" version="1.5.8"/>
 	<javascript-module name="org.idempiere.commons" version="202610301100"/>
