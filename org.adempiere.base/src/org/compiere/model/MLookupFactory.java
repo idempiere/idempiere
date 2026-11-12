@@ -533,7 +533,7 @@ public class MLookupFactory
 					}
 				}
 			}
-			realSQL.append(",").append(TableName).append(".IsActive");
+			realSQL.append(",").append(getIsActiveColumnSQL(ctx, TableName));
 
 			String realKeyColumn = KeyColumn.endsWith("_ID") || KeyColumn.endsWith("_UU") ? KeyColumn : (MTable.get(ctx, TableName).isUUIDKeyTable() ? PO.getUUIDColumnName(TableName) : TableName + "_ID");
 
@@ -568,7 +568,7 @@ public class MLookupFactory
 					}
 				}
 			}
-			realSQL.append(",").append(TableName).append(".IsActive");
+			realSQL.append(",").append(getIsActiveColumnSQL(ctx, TableName));
 			realSQL.append(" FROM ").append(TableName);
 		}
 
@@ -871,7 +871,7 @@ public class MLookupFactory
 
 		StringBuilder displayColumn = getDisplayColumn(language, TableName, list);
 		realSQL.append(displayColumn.toString());
-		realSQL.append(",").append(TableName).append(".IsActive");
+		realSQL.append(",").append(getIsActiveColumnSQL(ctx, TableName));
 
 		//  Translation
 		if (isTranslated && !Env.isBaseLanguage(language, TableName))
@@ -914,6 +914,18 @@ public class MLookupFactory
 		s_cacheRefTable.put(cacheKey.toString(), lInfo.cloneIt());
 		return lInfo;
 	}	//	getLookup_TableDir
+
+	/**
+	 * Get the SQL for the IsActive column of a lookup.<br/>
+	 * Some tables have no IsActive column (for example C_LandedCost and C_LandedCostAllocation); their records are always active.
+	 * @param ctx
+	 * @param tableName
+	 * @return tableName.IsActive, or 'Y' if the table has no IsActive column
+	 */
+	private static String getIsActiveColumnSQL(Properties ctx, String tableName)
+	{
+		return MColumn.get(ctx, tableName, "IsActive") != null ? tableName + ".IsActive" : "'Y'";
+	}
 
 	/**
 	 * @param language
