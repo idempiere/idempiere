@@ -1412,6 +1412,32 @@ public class MCostDetail extends X_M_CostDetail
 	}	//	process
 	
 	/**
+	 * 	Get the Fifo/Lifo cost queue record (cost layer) to update for this cost detail.<br/>
+	 * 	- Cost adjustment (qty = 0): the amount is applied to the first open cost queue record in Fifo/Lifo order
+	 * 	  of the costing level ASI. No new cost queue record is created. Returns null if there's no open cost queue record.<br/>
+	 * 	- Otherwise: the cost queue record of the real ASI (costing level Org); without ASI, the account date is the cost layer.
+	 *	@param as accounting schema
+	 *	@param product product
+	 *	@param ce Fifo or Lifo cost element
+	 *	@param Org_ID org - corrected for costing level
+	 *	@param M_ASI_ID asi - corrected for costing level
+	 *	@param qty quantity
+	 *	@return cost queue record or null
+	 */
+	private MCostQueue getCostQueueLayer (MAcctSchema as, MProduct product, MCostElement ce,
+		int Org_ID, int M_ASI_ID, BigDecimal qty)
+	{
+		if (qty.signum() == 0)
+		{
+			MCostQueue[] cQueue = MCostQueue.getQueue(product, M_ASI_ID, as, Org_ID, ce, get_TrxName());
+			return cQueue != null && cQueue.length > 0 ? cQueue[0] : null;
+		}
+		//	Real ASI - costing level Org
+		return MCostQueue.get(product, getM_AttributeSetInstance_ID(),
+			as, Org_ID, ce.getM_CostElement_ID(), getDateAcct(), get_TrxName());
+	}	//	getCostQueueLayer
+
+	/**
 	 * 	Process cost detail record
 	 *	@param as accounting schema
 	 *	@param product product
@@ -1744,11 +1770,12 @@ public class MCostDetail extends X_M_CostDetail
 			}
 			else if ((ce.isFifo() || ce.isLifo()))
 			{
-				//	Real ASI - costing level Org
-				MCostQueue cq = MCostQueue.get(product, getM_AttributeSetInstance_ID(), 
-					as, Org_ID, ce.getM_CostElement_ID(), get_TrxName());
-				cq.setCosts(amt, qty, precision);
-				cq.saveEx();
+				MCostQueue cq = getCostQueueLayer(as, product, ce, Org_ID, M_ASI_ID, qty);
+				if (cq != null)
+				{
+					cq.setCosts(amt, qty, precision);
+					cq.saveEx();
+				}
 				//	Get Costs - costing level Org/ASI
 				MCostQueue[] cQueue = MCostQueue.getQueue(product, M_ASI_ID, 
 					as, Org_ID, ce, get_TrxName());
@@ -1906,11 +1933,12 @@ public class MCostDetail extends X_M_CostDetail
 				{
 					if (addition)
 					{
-						//	Real ASI - costing level Org
-						MCostQueue cq = MCostQueue.get(product, getM_AttributeSetInstance_ID(), 
-							as, Org_ID, ce.getM_CostElement_ID(), get_TrxName());
-						cq.setCosts(amt, qty, precision);
-						cq.saveEx();
+						MCostQueue cq = getCostQueueLayer(as, product, ce, Org_ID, M_ASI_ID, qty);
+						if (cq != null)
+						{
+							cq.setCosts(amt, qty, precision);
+							cq.saveEx();
+						}
 					}
 					else
 					{
