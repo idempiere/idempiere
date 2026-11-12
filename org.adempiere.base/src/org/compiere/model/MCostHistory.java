@@ -116,7 +116,7 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
 		if (cd == null)
 			return null;
 		
-		MAcctSchema as = new MAcctSchema(ctx, C_AcctSchema_ID, trxName);
+		MAcctSchema as = MAcctSchema.get(ctx, C_AcctSchema_ID);
 		if (as.getBackDateDay() == 0) {
 			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
 			if (cd.getDateAcct().before(today))
@@ -208,7 +208,7 @@ public class MCostHistory extends X_M_CostHistory implements ICostInfo {
 		if (dateAcct == null)
 			return null;
 		
-		MAcctSchema as = new MAcctSchema(ctx, C_AcctSchema_ID, trxName);
+		MAcctSchema as = MAcctSchema.get(ctx, C_AcctSchema_ID);
 		if (as.getBackDateDay() == 0) {
 			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
 			if (dateAcct.before(today))
