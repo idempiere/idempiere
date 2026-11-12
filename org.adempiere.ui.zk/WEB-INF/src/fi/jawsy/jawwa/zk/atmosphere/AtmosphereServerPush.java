@@ -74,11 +74,12 @@ public class AtmosphereServerPush implements ServerPush {
      */
     public AtmosphereServerPush() {
         String timeoutString = Library.getProperty("fi.jawsy.jawwa.zk.atmosphere.timeout");
-        if (timeoutString == null || timeoutString.trim().length() == 0) {
-            timeout = DEFAULT_TIMEOUT;
-        } else {
-            timeout = Integer.valueOf(timeoutString);
+        int configured = DEFAULT_TIMEOUT;
+        if (timeoutString != null && timeoutString.trim().length() > 0) {
+            configured = Integer.valueOf(timeoutString);
         }
+        // the same effective value is used for the server suspend and the client XHR timeout
+        timeout = configured > 0 ? configured : DEFAULT_TIMEOUT;
     }
 
     @Override
