@@ -89,6 +89,7 @@ public class PackInTest extends AbstractTestCase {
 
 			assertImportFailed(packIn, "zzzTestPackInUnresolved");
 		} finally {
+			rollback();
 			cleanup("zzzTestPackInUnresolved", packIn.getAD_Package_Imp_ID());
 		}
 	}
@@ -119,6 +120,7 @@ public class PackInTest extends AbstractTestCase {
 
 			assertImportFailed(packIn, "zzzTestPackInParseError");
 		} finally {
+			rollback();
 			cleanup("zzzTestPackInParseError", packIn.getAD_Package_Imp_ID());
 		}
 	}
@@ -140,19 +142,19 @@ public class PackInTest extends AbstractTestCase {
 				+ "</idempiere>\n");
 
 		PackIn packIn = newPackIn(file, "zzzTestPackInSuccess");
-		try (MockedStatic<MSysConfig> mocked = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
-			stubNotifierSettings(mocked);
-
-			String msg = packIn.importXML(file.toString(), Env.getCtx(), getTrxName());
-			assertTrue(msg.startsWith("Processed="), msg);
-
-			packIn.getNotifier().notifyRecipient();
-		}
-
-		// commit the import to persist the Completed status, as the pack in entry points do
-		commit();
-
 		try {
+			try (MockedStatic<MSysConfig> mocked = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
+				stubNotifierSettings(mocked);
+
+				String msg = packIn.importXML(file.toString(), Env.getCtx(), getTrxName());
+				assertTrue(msg.startsWith("Processed="), msg);
+
+				packIn.getNotifier().notifyRecipient();
+			}
+
+			// commit the import to persist the Completed status, as the pack in entry points do
+			commit();
+
 			MPackageImp packageImp = new MPackageImp(Env.getCtx(), packIn.getAD_Package_Imp_ID(), null);
 			assertEquals(MPackageImp.PACKAGE_STATUS_COMPLETED, packageImp.getPK_Status(),
 					"PK_Status must be Completed successfully on success");
@@ -167,6 +169,7 @@ public class PackInTest extends AbstractTestCase {
 			assertTrue(content.contains("AD_Message=zzzTestPackInSuccess"),
 					"The log must contain the successful objects list:\n" + content);
 		} finally {
+			rollback();
 			cleanup("zzzTestPackInSuccess", packIn.getAD_Package_Imp_ID());
 		}
 	}
