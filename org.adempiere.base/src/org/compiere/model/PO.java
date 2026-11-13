@@ -1267,6 +1267,9 @@ public abstract class PO
 			else if (value.getClass() == Integer.class
 					&& p_info.getColumnClass(index) == String.class)
 					m_newValues[index] = value;
+			else if (value.getClass() == Integer.class
+					&& p_info.getColumnClass(index) == BigDecimal.class)
+					m_newValues[index] = BigDecimal.valueOf((Integer) value);
 			else if (value.getClass() == String.class
 					&& p_info.getColumnClass(index) == Integer.class)
 				try
