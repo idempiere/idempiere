@@ -611,6 +611,8 @@ public class Scheduler extends AdempiereServer
 					//	Convert to Type
 					try
 					{
+						// TODO: DashboardController.fillParameter implements much better filling the Info and Info_To fields,
+						// but it is not available here. It should be refactored to a common place.
 						if (DisplayType.isNumeric(sPara.getDisplayType())
 							|| DisplayType.isID(sPara.getDisplayType()))
 						{
@@ -624,10 +626,10 @@ public class Scheduler extends AdempiereServer
 							}
 							if (Util.isEmpty(paraDesc)) 
 							{
-								String info = decimalFormat.format(iPara.getP_Number());
-								if (iPara.getP_Number_To() != null)
-									info = info + " - " + decimalFormat.format(iPara.getP_Number_To());
-								iPara.setInfo(info);
+								if (value != null)
+									iPara.setInfo(decimalFormat.format(iPara.getP_Number()));
+								if (toValue != null)
+									iPara.setInfo_To(decimalFormat.format(iPara.getP_Number_To()));
 							}
 							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
 								+ " = " + variable + " (=" + bd + "=)");
@@ -643,12 +645,10 @@ public class Scheduler extends AdempiereServer
 							}
 							if (Util.isEmpty(paraDesc)) 
 							{
-								String info = dateFormat.format(iPara.getP_Date());
-								if (iPara.getP_Date_To() != null)
-								{
-									info = info + " - " + dateFormat.format(iPara.getP_Date_To());
-								}
-								iPara.setInfo(info);
+								if (value != null)
+									iPara.setInfo(dateFormat.format(iPara.getP_Date()));
+								if (toValue != null)
+									iPara.setInfo_To(dateFormat.format(iPara.getP_Date_To()));
 							}
 							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
 								+ " = " + variable + " (=" + ts + "=)");
@@ -662,12 +662,10 @@ public class Scheduler extends AdempiereServer
 							}
 							if (Util.isEmpty(paraDesc))
 							{
-								String info = iPara.getP_String();
-								if (iPara.getP_String_To() != null)
-								{
-									info = info + " - " + iPara.getP_String_To();
-								}
-								iPara.setInfo(info);
+								if (value != null)
+									iPara.setInfo(iPara.getP_String());
+								if (toValue != null)
+									iPara.setInfo_To(iPara.getP_String_To());
 							}
 							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
 								+ " = " + variable
