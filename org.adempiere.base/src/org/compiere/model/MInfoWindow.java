@@ -513,7 +513,7 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 
 			MInfoColumn infoColumn = infoColumns[columnIndex];
 			MUserDefInfoColumn userDefColumn = udi != null ? MUserDefInfoColumn.getForUserDefInfo(ctx, infoColumn.getAD_InfoColumn_ID(), udi.getAD_UserDef_Info_ID()) : null;
-			String selectClause = userDefColumn != null && !Util.isEmpty(userDefColumn.getSelectClause()) ? userDefColumn.getSelectClause() : infoColumn.getSelectClause();
+			String selectClause = userDefColumn != null && !Util.isEmpty(userDefColumn.getSelectClause(), true) ? userDefColumn.getSelectClause() : infoColumn.getSelectClause();
 			builder.append(selectClause);
 		}
 
@@ -521,7 +521,7 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 		builder.append( " FROM ").append(udi != null && !Util.isEmpty(udi.getFromClause()) ? udi.getFromClause() :  iw.getFromClause());
 
 		// build where clause add (1=2) because not need get result, decrease load 
-		String whereClause = udi != null && !Util.isEmpty(udi.getWhereClause()) ? udi.getWhereClause() : iw.getWhereClause();
+		String whereClause = udi != null && !Util.isEmpty(udi.getWhereClause(), true) ? udi.getWhereClause() : iw.getWhereClause();
 		
 		
 		if (!Util.isEmpty(whereClause)) {
@@ -531,13 +531,13 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 		}
 
 		// build other (having) clause
-		String otherClause = udi != null && !Util.isEmpty(udi.getOtherClause()) ? udi.getOtherClause() : iw.getOtherClause();
+		String otherClause = udi != null && !Util.isEmpty(udi.getOtherClause(), true) ? udi.getOtherClause() : iw.getOtherClause();
 		if (!Util.isEmpty(otherClause)) {
 			builder.append(" ").append(otherClause);
 		}
 
 		// build order (having) clause
-		String orderByClause = udi != null && !Util.isEmpty(udi.getOrderByClause()) ? udi.getOrderByClause() : iw.getOrderByClause();
+		String orderByClause = udi != null && !Util.isEmpty(udi.getOrderByClause(), true) ? udi.getOrderByClause() : iw.getOrderByClause();
 		if (!Util.isEmpty(orderByClause)) {
 			builder.append(" ORDER BY ").append(orderByClause);
 		}
