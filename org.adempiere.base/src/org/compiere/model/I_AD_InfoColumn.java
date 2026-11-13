@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_InfoColumn
  *  @author iDempiere (generated) 
- *  @version Release 13
+ *  @version Release 14
  */
 public interface I_AD_InfoColumn 
 {
@@ -448,6 +448,19 @@ public interface I_AD_InfoColumn
 	  * Field is read only
 	  */
 	public boolean isReadOnly();
+
+    /** Column name IsShowNegateButton */
+    public static final String COLUMNNAME_IsShowNegateButton = "IsShowNegateButton";
+
+	/** Set Show Negate Button.
+	  * Show Negate Button for Chosen Multiple editors
+	  */
+	public void setIsShowNegateButton (boolean IsShowNegateButton);
+
+	/** Get Show Negate Button.
+	  * Show Negate Button for Chosen Multiple editors
+	  */
+	public boolean isShowNegateButton();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
