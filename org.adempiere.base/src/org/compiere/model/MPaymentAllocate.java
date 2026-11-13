@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
  * Product: Adempiere ERP & CRM Smart Business Solution                       *
  * Copyright (C) 1999-2006 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software; you can redistribute it and/or modify it    *
@@ -142,7 +142,7 @@ public class MPaymentAllocate extends X_C_PaymentAllocate
 	{
 		// Check is payment already allocated to charge or invoice or order
 		MPayment payment = new MPayment (getCtx(), getC_Payment_ID(), get_TrxName());
-		if ((newRecord || is_ValueChanged("C_Invoice_ID"))
+		if ((newRecord || is_ValueChanged("C_Invoice_ID") || is_ValueChanged("C_Charge_ID"))
 			&& (payment.getC_Charge_ID() != 0 
 				|| payment.getC_Invoice_ID() != 0 
 				|| payment.getC_Order_ID() != 0))
@@ -150,13 +150,38 @@ public class MPaymentAllocate extends X_C_PaymentAllocate
 			log.saveError("PaymentIsAllocated", "");
 			return false;
 		}
+
+		// Validate Invoice or Charge mandatory
+		if (getC_Invoice_ID() <= 0 && getC_Charge_ID() <= 0)
+		{
+			log.saveError("FillMandatory", Msg.translate(getCtx(), "C_Invoice_ID") + " / " + Msg.translate(getCtx(), "C_Charge_ID"));
+			return false;
+		}
+		if (getC_Invoice_ID() > 0 && getC_Charge_ID() > 0)
+		{
+			log.saveError("Error", Msg.translate(getCtx(), "C_Invoice_ID") + " & " + Msg.translate(getCtx(), "C_Charge_ID"));
+			return false;
+		}
+
+		// Reset non-applicable invoice amounts for charge allocation
+		if (getC_Charge_ID() > 0)
+		{
+			setDiscountAmt(Env.ZERO);
+			setWriteOffAmt(Env.ZERO);
+			setOverUnderAmt(Env.ZERO);
+			setInvoiceAmt(Env.ZERO);
+		}
 		
+		if (getAmount() == null)
+			setAmount(Env.ZERO);
+
 		// Validate allocation amount = invoice amount
 		BigDecimal check = getAmount()
 			.add(getDiscountAmt())
 			.add(getWriteOffAmt())
 			.add(getOverUnderAmt());
-		if (check.compareTo(getInvoiceAmt()) != 0)
+		// If Allocate with Charge then don't required to validate
+		if (getC_Charge_ID() == 0 && check.compareTo(getInvoiceAmt()) != 0)
 		{
 			log.saveError("Error", Msg.parseTranslation(getCtx(), 
 				"@InvoiceAmt@(" + getInvoiceAmt()
@@ -164,12 +189,18 @@ public class MPaymentAllocate extends X_C_PaymentAllocate
 			return false;
 		}
 		
-		//	Set organization from invoice
-		if (newRecord || is_ValueChanged("C_Invoice_ID"))
+		// Set organization from invoice
+		if (getC_Invoice_ID() > 0 && (newRecord || is_ValueChanged("C_Invoice_ID")))
 		{
 			getInvoice();
 			if (m_invoice != null)
 				setAD_Org_ID(m_invoice.getAD_Org_ID());
+		}
+
+		// Set organization from payment
+		if (getC_Charge_ID() > 0 && (newRecord || is_ValueChanged("C_Charge_ID")))
+		{
+			setAD_Org_ID(payment.getAD_Org_ID());
 		}
 		
 		return true;

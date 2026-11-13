@@ -266,14 +266,24 @@ public class Doc_AllocationHdr extends Doc
 					fl = fact.createLine (line, line.getChargeAccount(as, line.getAmtSource()),
 						getC_Currency_ID(), line.getAmtSource());
 				}
-				//	Payment Only
+				//	Payment Only or Payment to Charge
 				else if (line.getC_Invoice_ID() == 0 && line.getC_Payment_ID() != 0)
 				{
 					fl = fact.createLine (line, getPaymentAcct(as, line.getC_Payment_ID()),
 						getC_Currency_ID(), line.getAmtSource(), null);
 					if (fl != null && payment != null) {
 						fl.setAD_Org_ID(payment.getAD_Org_ID());
-						allocPayAccounted = allocPayAccounted.add(fl.getAcctBalance());
+						if (line.getC_Charge_ID() == 0)
+							allocPayAccounted = allocPayAccounted.add(fl.getAcctBalance());
+					}
+					// IDEMPIERE-6590: Create offsetting charge line
+					if (line.getC_Charge_ID() != 0)
+					{
+						FactLine flCharge = fact.createLine (line, line.getChargeAccount(as, line.getAmtSource().negate()),
+							getC_Currency_ID(), line.getAmtSource().negate());
+						if (flCharge != null && payment != null) {
+							flCharge.setAD_Org_ID(payment.getAD_Org_ID());
+						}
 					}
 				}
 				else
@@ -504,13 +514,17 @@ public class Doc_AllocationHdr extends Doc
 					return null;
 			}
 			
-			allocPaySource = allocPaySource.add(line.getAmtSource());
-			if (payment != null && getC_Currency_ID() != as.getC_Currency_ID())
+			// IDEMPIERE-6590: Skip payment gain/loss for charge allocations
+			if (line.getC_Charge_ID() == 0)
 			{
-				p_Error = createPaymentGainLoss (line, as, fact,  getPaymentAcct(as, payment.get_ID()), payment,
-						allocPaySource, allocPayAccounted);
-				if (p_Error != null)
-					return null;				
+				allocPaySource = allocPaySource.add(line.getAmtSource());
+				if (payment != null && getC_Currency_ID() != as.getC_Currency_ID())
+				{
+					p_Error = createPaymentGainLoss (line, as, fact,  getPaymentAcct(as, payment.get_ID()), payment,
+							allocPaySource, allocPayAccounted);
+					if (p_Error != null)
+						return null;
+				}
 			}			
 		}	//	for all lines
 		
