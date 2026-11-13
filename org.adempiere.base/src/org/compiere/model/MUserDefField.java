@@ -22,6 +22,7 @@ import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
+import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -201,7 +202,10 @@ public class MUserDefField extends X_AD_UserDef_Field implements ImmutablePOSupp
 			setAD_Val_Rule_ID(0);
 			setIsToolbarButton(null);
 		}
-		
+
+		if (getAD_Process_ID() > 0 && getAD_Reference_ID() != DisplayType.Button)
+		    setAD_Process_ID(0);
+
 		// Validate read only, display and mandatory logic expression
 		if (newRecord || is_ValueChanged(COLUMNNAME_ReadOnlyLogic)) {
 			if (isActive() && !Util.isEmpty(getReadOnlyLogic(), true) && !getReadOnlyLogic().startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
