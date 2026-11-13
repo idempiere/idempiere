@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for M_Product_Category
  *  @author iDempiere (generated) 
- *  @version Release 13
+ *  @version Release 14
  */
 public interface I_M_Product_Category 
 {
@@ -135,6 +135,19 @@ public interface I_M_Product_Category
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsApprovedVendorRequired */
+    public static final String COLUMNNAME_IsApprovedVendorRequired = "IsApprovedVendorRequired";
+
+	/** Set Approved Vendor Required.
+	  * Products in this category must normally be purchased from an approved vendor.
+	  */
+	public void setIsApprovedVendorRequired (boolean IsApprovedVendorRequired);
+
+	/** Get Approved Vendor Required.
+	  * Products in this category must normally be purchased from an approved vendor.
+	  */
+	public boolean isApprovedVendorRequired();
 
     /** Column name IsDefault */
     public static final String COLUMNNAME_IsDefault = "IsDefault";
