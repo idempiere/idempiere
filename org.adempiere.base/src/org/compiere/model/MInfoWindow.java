@@ -500,7 +500,7 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 		if (iw.isDistinct())
 			builder.append("DISTINCT ");
 
-		MInfoColumn[] infoColumns = MInfoWindow.getEffectiveInfoColumnsForValidation(ctx, iw, udi);
+		EffectiveInfoColumn[] infoColumns = getEffectiveInfoColumnsForValidation(ctx, iw, udi);
 		// none column make this invalid
 		if (infoColumns.length == 0){
 			return "";
@@ -511,8 +511,10 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 			if (columnIndex > 0)
 				builder.append(", ");
 
-			MInfoColumn infoColumn = infoColumns[columnIndex];
-			MUserDefInfoColumn userDefColumn = udi != null ? MUserDefInfoColumn.getForUserDefInfo(ctx, infoColumn.getAD_InfoColumn_ID(), udi.getAD_UserDef_Info_ID()) : null;
+			EffectiveInfoColumn effectiveColumn = infoColumns[columnIndex];
+		    MInfoColumn infoColumn = effectiveColumn.infoColumn;
+		    MUserDefInfoColumn userDefColumn = effectiveColumn.userDefColumn;
+
 			String selectClause = userDefColumn != null && !Util.isEmpty(userDefColumn.getSelectClause(), true) ? userDefColumn.getSelectClause() : infoColumn.getSelectClause();
 			builder.append(selectClause);
 		}
@@ -568,32 +570,24 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	 * @param udi the user-defined InfoWindow, or {@code null} for System validation
 	 * @return the effective columns
 	 */
-	public static MInfoColumn[] getEffectiveInfoColumnsForValidation(Properties ctx, MInfoWindow iw, MUserDefInfo udi) {
+	private static EffectiveInfoColumn[] getEffectiveInfoColumnsForValidation(Properties ctx, MInfoWindow iw, MUserDefInfo udi) {
 
-		MInfoColumn[] infoColumns = iw.getInfoColumns();
+	    MInfoColumn[] infoColumns = iw.getInfoColumns();
+	    List<EffectiveInfoColumn> effectiveColumns = new ArrayList<>();
 
-		// System validation: return all active columns
-		if (udi == null)
-			return Arrays.stream(infoColumns)
-					.filter(MInfoColumn::isActive)
-					.filter(MInfoColumn::isDisplayed)
-					.toArray(MInfoColumn[]::new);
+	    for (MInfoColumn infoColumn : infoColumns) {
+	        if (!infoColumn.isActive())
+	            continue;
 
-		List<MInfoColumn> effectiveColumns = new ArrayList<>();
+	        MUserDefInfoColumn userDefColumn = udi != null ? MUserDefInfoColumn.getForUserDefInfo(ctx, infoColumn.getAD_InfoColumn_ID(), udi.getAD_UserDef_Info_ID()) : null;
 
-		for (MInfoColumn infoColumn : infoColumns) {
-			MUserDefInfoColumn userDefColumn = MUserDefInfoColumn.getForUserDefInfo(ctx, infoColumn.getAD_InfoColumn_ID(), udi.getAD_UserDef_Info_ID());
+	        boolean isDisplayed = userDefColumn == null || userDefColumn.getIsDisplayed() == null ? infoColumn.isDisplayed() : MUserDefInfoColumn.ISDISPLAYED_Yes.equals(userDefColumn.getIsDisplayed());
 
-			if (userDefColumn == null) {
-				if (infoColumn.isDisplayed())
-					effectiveColumns.add(infoColumn);
-			}
-			else if (userDefColumn.getIsDisplayed() == null ? infoColumn.isDisplayed() : MUserDefInfoColumn.ISDISPLAYED_Yes.equals(userDefColumn.getIsDisplayed())) {
-				effectiveColumns.add(infoColumn);
-			}
-		}
+	        if (isDisplayed)
+	            effectiveColumns.add(new EffectiveInfoColumn(infoColumn, userDefColumn));
+	    }
 
-		return effectiveColumns.toArray(new MInfoColumn[0]);
+	    return effectiveColumns.toArray(new EffectiveInfoColumn[0]);
 	}
 	
 	/**
@@ -644,4 +638,23 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 		AccessSqlParser sqlParser = new AccessSqlParser("SELECT * FROM " + getFromClause());
 		return sqlParser.getTableInfo(0);
 	}
+
+	/**
+	 * Holds an InfoWindow column and its optional user-defined configuration.
+	 * Used to determine the effective column properties during validation.
+	 */
+	private static class EffectiveInfoColumn {
+	    private final MInfoColumn infoColumn;
+	    private final MUserDefInfoColumn userDefColumn;
+
+	    /**
+	     * @param infoColumn the System InfoWindow column
+	     * @param userDefColumn the user-defined column configuration, or {@code null} if not customized
+	     */
+	    private EffectiveInfoColumn(MInfoColumn infoColumn, MUserDefInfoColumn userDefColumn) {
+	        this.infoColumn = infoColumn;
+	        this.userDefColumn = userDefColumn;
+	    }
+	}
+
 }	//	MInfoWindow
