@@ -6021,7 +6021,9 @@ public abstract class PO
 	 * 	Convert to upper case and add % at the end.
 	 *	@param query in string
 	 *	@return converted query value
+	 *	@deprecated use {@link #getFindParameterPreserveCase(String)} instead
 	 */
+	@Deprecated (since="14")
 	protected static String getFindParameter (String query)
 	{
 		if (query == null)
@@ -6032,6 +6034,23 @@ public abstract class PO
 			query += "%";
 		return query.toUpperCase();
 	}	//	getFindParameter
+
+	/**
+	 * 	Convert query value.<br/>
+	 * 	Preserve case and add % at the end.
+	 *	@param query in string
+	 *	@return converted query value
+	 */
+	protected static String getFindParameterPreserveCase (String query)
+	{
+		if (query == null)
+			return null;
+		if (query.length() == 0 || query.equals("%"))
+			return null;
+		if (!query.endsWith("%"))
+			query += "%";
+		return query;
+	}	//	getFindParameterPreserveCase
 
 	/**
 	 * 	Load LOB
