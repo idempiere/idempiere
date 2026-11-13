@@ -27,6 +27,7 @@ Detailed, task-specific instructions live in `.agents/skills/<name>/SKILL.md`. R
 
 | When you are… | Read |
 |---|---|
+| Asked to implement a feature or change that may be design-level (AD content, public API, defaults, dependencies, config, removals) | `.agents/skills/idempiere-design-level-changes/SKILL.md` |
 | Starting work on a ticket, branching, committing, opening or updating a pull request | `.agents/skills/idempiere-contribution-workflow/SKILL.md` |
 | Writing or changing Java code in core | `.agents/skills/idempiere-core-coding-standards/SKILL.md` |
 | Facing a change that needs new/changed tables, columns, windows, messages, references, processes or any `AD_*` record | `.agents/skills/idempiere-database-changes/SKILL.md` |
