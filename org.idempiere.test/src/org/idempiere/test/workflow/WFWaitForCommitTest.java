@@ -78,6 +78,7 @@ public class WFWaitForCommitTest extends AbstractTestCase {
 	private static final String DESCRIPTION = "WFWaitForCommitTest";
 	private static final String DESCRIPTION_NESTED = DESCRIPTION + " nested ";
 	private static final String DESCRIPTION_FAIL = DESCRIPTION + " fail";
+	private static final String DESCRIPTION_COMMIT_FAIL = DESCRIPTION + " commit fail";
 
 	/** M_InOut_ID -> receipt committed when the probe behind its Wait (-1) ran */
 	private static final Map<Integer, Boolean> committedAtProbe = new ConcurrentHashMap<>();
@@ -258,6 +259,33 @@ public class WFWaitForCommitTest extends AbstractTestCase {
 		assertEquals(MWFActivity.WFSTATE_Suspended, wfState, "the failing node behind the Wait (-1) is not suspended");
 	}
 
+	/**
+	 * A node behind the Wait (-1) completes a second document, commits, then fails.<br/>
+	 * The commit releases the Wait (-1) of the second document. The failed node rolls back its work after
+	 * that commit, which must not undo the workflow of the second document.
+	 */
+	@Test
+	public void testNodeThatCommitsAndFailsKeepsWorkReleasedByItsCommit() {
+		MInOut receipt = createReceipt(Env.getCtx(), DESCRIPTION_COMMIT_FAIL, getLoginDate(), getTrxName());
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+
+		commit();
+
+		assertEquals(Boolean.TRUE, committedAtProbe.get(receipt.getM_InOut_ID()), "the probe of the receipt did not run after its commit");
+		int secondId = DB.getSQLValueEx(null, "SELECT M_InOut_ID FROM M_InOut WHERE Description=?", DESCRIPTION_NESTED + receipt.getM_InOut_ID());
+		assertTrue(secondId > 0, "the second receipt committed by the failed node was rolled back");
+		assertEquals(Boolean.TRUE, committedAtProbe.get(secondId), "the Wait (-1) of the second receipt was not released by the commit");
+		String secondWfState = DB.getSQLValueStringEx(null, "SELECT WFState FROM AD_WF_Activity WHERE AD_Table_ID=? AND Record_ID=? AND AD_WF_Node_ID=?",
+				MInOut.Table_ID, secondId, nodeProbe.getAD_WF_Node_ID());
+		assertEquals(MWFActivity.WFSTATE_Completed, secondWfState,
+				"the rollback of the failed node undid the workflow of the second receipt released by its commit");
+
+		String wfState = DB.getSQLValueStringEx(null, "SELECT WFState FROM AD_WF_Activity WHERE AD_Table_ID=? AND Record_ID=? AND AD_WF_Node_ID=?",
+				MInOut.Table_ID, receipt.getM_InOut_ID(), nodeProbe.getAD_WF_Node_ID());
+		assertEquals(MWFActivity.WFSTATE_Suspended, wfState, "the failed node behind the Wait (-1) is not suspended");
+	}
+
 	/** Workflow activities of the receipt, read from another connection */
 	private static int countActivities(int receiptId) {
 		return DB.getSQLValueEx(null, "SELECT COUNT(*) FROM AD_WF_Activity WHERE AD_Table_ID=? AND Record_ID=?", MInOut.Table_ID, receiptId);
@@ -306,11 +334,17 @@ public class WFWaitForCommitTest extends AbstractTestCase {
 			MInOut receipt = new MInOut(getCtx(), receiptId, get_TrxName());
 			if (DESCRIPTION_FAIL.equals(receipt.getDescription()))
 				throw new AdempiereException("node behind the Wait (-1) fails");
-			if (DESCRIPTION.equals(receipt.getDescription())) {
+			boolean commitAndFail = DESCRIPTION_COMMIT_FAIL.equals(receipt.getDescription());
+			if (DESCRIPTION.equals(receipt.getDescription()) || commitAndFail) {
 				MInOut second = createReceipt(getCtx(), DESCRIPTION_NESTED + receiptId, receipt.getDateOrdered(), get_TrxName());
 				ProcessInfo info = MWorkflow.runDocumentActionWorkflow(second, DocAction.ACTION_Complete);
 				if (info.isError())
 					throw new AdempiereException(info.getSummary());
+			}
+			if (commitAndFail) {
+				// the commit releases the Wait (-1) of the second receipt
+				commitEx();
+				return "@Error@node behind the Wait (-1) fails after its commit";
 			}
 			return "@OK@";
 		}

@@ -1264,9 +1264,10 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 				}
 				if (!success && nodeSavepoint != null)
 				{
-					// the process committed: undo its work after the last commit, as SvrProcess does in its own transaction
+					// the process committed: undo its work after the last commit, as SvrProcess does in its own transaction;
+					// a failed rollback throws, so that run() does not commit the work of the failed process
 					if (trxEndListener.ended)
-						trx.rollback();
+						trx.rollback(true);
 					else
 						trx.rollback(nodeSavepoint);
 				}
