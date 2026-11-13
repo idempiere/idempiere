@@ -153,6 +153,7 @@ public class PackInProcess extends SvrProcess {
 			packIn.getNotifier().addFailureLine(e.getLocalizedMessage());
 			packIn.getNotifier().addException(e);
 			packIn.setSuccess(false);
+			packIn.markImportFailed();
 			log.log(Level.SEVERE, "importXML:", e);
 			throw e;
 		} finally {

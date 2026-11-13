@@ -25,7 +25,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.Stack;
 import java.util.logging.Level;
 
@@ -77,6 +76,8 @@ public class PackInHandler extends DefaultHandler {
 	private boolean isInit = false;
 	private String packageStatus = MPackageImp.PACKAGE_STATUS_INSTALLING;
 	private PIPOContext m_ctx = null;
+	private boolean importFailed = false;
+	private boolean packageStatusUpdateInTrx = false;
 
 	private IHandlerRegistry handlerRegistry = null;
 	private List<DeferEntry> defer = new ArrayList<DeferEntry>();
@@ -186,6 +187,7 @@ public class PackInHandler extends DefaultHandler {
 
 			packageImp.saveEx();
 			AD_Package_Imp_ID = packageImp.getAD_Package_Imp_ID();
+			packIn.setAD_Package_Imp_ID(AD_Package_Imp_ID);
 
 			if ( PK_preInstalled <= 0){
 				//Insert Package into package install log
@@ -316,6 +318,8 @@ public class PackInHandler extends DefaultHandler {
     		}
     		packIn.getNotifier().addStatusLine(packageStatus);
 
+    		// from this point the import transaction can hold the lock on the AD_Package_Imp and AD_Package_Imp_Inst rows
+    		packageStatusUpdateInTrx = true;
     		updPackageImp(m_ctx.trx.getTrxName()); // do not set success until commit on PackInProcess, still can fail
     		updPackageImpInst(m_ctx.trx.getTrxName());
 
@@ -328,14 +332,10 @@ public class PackInHandler extends DefaultHandler {
     			try {
     				processElement(e);
     			} catch (RuntimeException re) {
-    				packageStatus = MPackageImp.PACKAGE_STATUS_IMPORT_FAILED;
-    				packIn.getNotifier().addStatusLine(packageStatus);
-    	    		updPackageImp(null);
+    				markImportFailed();
     	    		throw re;
     			} catch (SAXException se) {
-    				packageStatus = MPackageImp.PACKAGE_STATUS_IMPORT_FAILED;
-    				packIn.getNotifier().addStatusLine(packageStatus);
-    	    		updPackageImp(null);
+    				markImportFailed();
     	    		throw se;
     			}
     		}
@@ -381,6 +381,58 @@ public class PackInHandler extends DefaultHandler {
     	DB.executeUpdateEx("UPDATE AD_Package_Imp_Inst SET PK_Status=?, UpdatedBy=?, Updated=getDate() WHERE AD_Package_Imp_Inst_ID=?",
     			new Object[] {packageStatus, Env.getAD_User_ID(m_ctx.ctx), AD_Package_Imp_Inst_ID},
     			trxName);
+	}
+
+	/**
+	 * Mark the package import as failed, setting PK_Status of the AD_Package_Imp and AD_Package_Imp_Inst
+	 * records to {@link MPackageImp#PACKAGE_STATUS_IMPORT_FAILED} and adding the unresolved elements
+	 * to the notifier to be included in the error log attached to the AD_Package_Imp record.<br/>
+	 * The status is persisted out of transaction to survive the rollback of the import transaction.
+	 * If the import transaction can still hold the lock on the records (the status was already updated
+	 * in transaction), the status update is deferred to the rollback event of the import transaction.
+	 */
+	public void markImportFailed() {
+		if (importFailed)
+			return;
+		importFailed = true;
+		if (m_ctx == null || packIn == null)
+			return;
+		packageStatus = MPackageImp.PACKAGE_STATUS_IMPORT_FAILED;
+		packIn.setSuccess(false);
+		packIn.getNotifier().addStatusLine(packageStatus);
+		dumpUnresolvedElements();
+		if (AD_Package_Imp_ID <= 0 && AD_Package_Imp_Inst_ID <= 0)
+			return;
+		Trx trx = m_ctx.trx;
+		if (packageStatusUpdateInTrx && trx != null && trx.getConnection() != null) {
+			// the import transaction is not rolled back yet, so it can hold the lock on the
+			// AD_Package_Imp rows, defer the status update to the rollback event
+			trx.addTrxEventListener(new TrxEventListener() {
+
+				@Override
+				public void afterCommit(Trx trx, boolean success) {
+				}
+
+				@Override
+				public void afterRollback(Trx trx, boolean success) {
+					persistPackageStatus();
+				}
+
+				@Override
+				public void afterClose(Trx trx) {
+					trx.removeTrxEventListener(this);
+				}
+			});
+		} else {
+			persistPackageStatus();
+		}
+	}
+
+	private void persistPackageStatus() {
+		if (AD_Package_Imp_ID > 0)
+			updPackageImp(null);
+		if (AD_Package_Imp_Inst_ID > 0)
+			updPackageImpInst(null);
 	}
 
 	private void processDeferElements() throws SAXException {
@@ -515,12 +567,12 @@ public class PackInHandler extends DefaultHandler {
 					Element e = entry.element;
 					if (e.unresolved == null || e.unresolved.length() == 0)
 						continue;
-					
+
+					// full element dump, reported in the Unresolved Elements section of the notification
 					StringBuilder s = new StringBuilder(e.qName);
 					s.append(" [");
-					Set<String> keys = e.properties.keySet();
 					int i = 0;
-					for(String key : keys) 
+					for (String key : e.properties.keySet())
 					{
 						Element value = e.properties.get(key);
 						if (i > 0)
@@ -533,10 +585,71 @@ public class PackInHandler extends DefaultHandler {
 					s.append("]");
 					s.append(" unresolved ").append(e.unresolved);
 					log.warning(s.toString());
-					packIn.getNotifier().addFailureLine(s.toString());
+					packIn.getNotifier().addUnresolvedLine(s.toString());
+					// readable version for the Failed Objects section of the notification
+					packIn.getNotifier().addFailureLine(getReadableUnresolvedLine(e));
 				}
 			}
 		}
+	}
+
+	/**
+	 * Build a readable description of the unresolved references of an element, e.g.<br/>
+	 * {@code Missing AD_FieldStyle record with AD_FieldStyle_UU=091900a5-..., referenced in AD_Field_UU=0b02ca24-...}
+	 * @param e unresolved element
+	 * @return readable line
+	 */
+	private String getReadableUnresolvedLine(Element e) {
+		StringBuilder s = new StringBuilder();
+		String unresolved = e.unresolved.trim();
+		// identify the element holding the unresolved reference
+		String uuid = getPropertyValue(e, e.qName + "_UU");
+		String id = getPropertyValue(e, e.qName + "_ID");
+		String name = getPropertyValue(e, "Name");
+		String value = getPropertyValue(e, "Value");
+		String identity = null;
+		if (!Util.isEmpty(uuid))
+			identity = e.qName + "_UU=" + uuid;
+		else if (!Util.isEmpty(id) && !"0".equals(id))
+			identity = e.qName + "_ID=" + id;
+		else if (!Util.isEmpty(name))
+			identity = e.qName + " Name=" + name;
+		else if (!Util.isEmpty(value))
+			identity = e.qName + " Value=" + value;
+		if (unresolved.startsWith("[") && unresolved.endsWith("]")) {
+			String[] keys = unresolved.substring(1, unresolved.length() - 1).split(",");
+			for (int i = 0; i < keys.length; i++) {
+				if (i > 0)
+					s.append("\n");
+				String key = keys[i].trim();
+				Element property = e.properties.get(key);
+				String valueElem = property != null && property.contents != null ? property.contents.toString() : null;
+				String referencedTable = property != null ? property.attributes.getValue("reference-key") : null;
+				if (Util.isEmpty(referencedTable)) {
+					referencedTable = key;
+					if (referencedTable.endsWith("_ID") || referencedTable.endsWith("_UU"))
+						referencedTable = referencedTable.substring(0, referencedTable.length() - 3);
+				}
+				String reference = property != null ? property.attributes.getValue("reference") : null;
+				if (Util.isEmpty(reference))
+					reference = !Util.isEmpty(valueElem) && valueElem.length() == 36 ? "uuid" : "id";
+				s.append("Missing ").append(referencedTable).append(" record with ")
+					.append(referencedTable).append("uuid".equals(reference) ? "_UU=" : "_ID=")
+					.append(valueElem != null ? valueElem : "");
+				if (identity != null)
+					s.append(", referenced in ").append(identity);
+			}
+		} else {
+			s.append(e.qName).append(" unresolved ").append(e.unresolved);
+		}
+		return s.toString();
+	}
+
+	private String getPropertyValue(Element e, String key) {
+		Element value = e.properties.get(key);
+		if (value == null || value.contents == null)
+			return null;
+		return value.contents.toString();
 	}
 
 	static class DeferEntry {
