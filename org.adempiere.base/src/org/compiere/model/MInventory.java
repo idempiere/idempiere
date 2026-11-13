@@ -28,6 +28,8 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.BackDateTrxNotAllowedException;
 import org.adempiere.exceptions.NegativeInventoryDisallowedException;
 import org.adempiere.exceptions.PeriodClosedException;
+import org.adempiere.model.DocActionDelegate;
+import org.adempiere.model.DocActionDelegate.StepTiming;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.CLogger;
@@ -357,6 +359,79 @@ public class MInventory extends X_M_Inventory implements DocAction
 	protected String		m_processMsg = null;
 	/**	Just Prepared Flag			*/
 	protected boolean		m_justPrepared = false;
+	/**	Inventory document sub type, set by {@link #beforeComplete()} for {@link #doComplete()}	*/
+	private transient String m_docSubTypeInv = null;
+
+	/**
+	 * 	Create the delegate implementing the prepareIt and completeIt workflow of this document.<br/>
+	 * 	The delegate works on the process message, the just prepared flag and the (overridable) methods of this document,
+	 * 	it is created for each call so that it is always bound to this instance.
+	 * 	@return document action delegate
+	 */
+	private DocActionDelegate<MInventory> createDocActionDelegate()
+	{
+		DocActionDelegate<MInventory> docActionDelegate = new DocActionDelegate<MInventory>(this) {
+			{
+				log = MInventory.this.log;
+			}
+			@Override
+			public String getProcessMsg() {
+				return MInventory.this.m_processMsg;
+			}
+			@Override
+			public void setProcessMsg(String processMsg) {
+				MInventory.this.m_processMsg = processMsg;
+			}
+			@Override
+			protected boolean isJustPrepared() {
+				return MInventory.this.m_justPrepared;
+			}
+			@Override
+			protected void setJustPrepared(boolean justPrepared) {
+				MInventory.this.m_justPrepared = justPrepared;
+			}
+			@Override
+			protected void testPeriodOpen() {
+				//	checked by the document
+			}
+			@Override
+			protected void setDocTypeFromTarget() {
+				//	no target document type
+			}
+			@Override
+			protected void setDefiniteDocumentNo() {
+				MInventory.this.setDefiniteDocumentNo();
+			}
+			@Override
+			protected String prepareBeforeComplete() {
+				return MInventory.this.prepareIt();
+			}
+			@Override
+			public boolean approveIt() {
+				return MInventory.this.approveIt();
+			}
+			@Override
+			public boolean isApproved() {
+				return MInventory.this.isApproved();
+			}
+			@Override
+			public String getDocAction() {
+				return MInventory.this.getDocAction();
+			}
+			@Override
+			public void setDocAction(String DocAction) {
+				MInventory.this.setDocAction(DocAction);
+			}
+			@Override
+			public void setProcessed(boolean Processed) {
+				MInventory.this.setProcessed(Processed);
+			}
+		};
+		docActionDelegate.addActionStep(DocAction.ACTION_Prepare, StepTiming.PROCESS, this::doPrepare);
+		docActionDelegate.addActionStep(DocAction.ACTION_Complete, StepTiming.START, this::beforeComplete);
+		docActionDelegate.addActionStep(DocAction.ACTION_Complete, StepTiming.PROCESS, this::doComplete);
+		return docActionDelegate;
+	}	//	createDocActionDelegate
 
 	/**
 	 * 	Unlock Document.
@@ -389,11 +464,15 @@ public class MInventory extends X_M_Inventory implements DocAction
 	@Override
 	public String prepareIt()
 	{
-		if (log.isLoggable(Level.INFO)) log.info(toString());
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE);
-		if (m_processMsg != null)
-			return DocAction.STATUS_Invalid;
+		return createDocActionDelegate().prepareIt();
+	}	//	prepareIt
 
+	/**
+	 * 	Prepare document, executed by {@link DocActionDelegate#prepareIt()} after the BEFORE_PREPARE model validator event
+	 * 	@return null to continue, or the new document status (Invalid)
+	 */
+	private String doPrepare()
+	{
 		//	Std Period open?
 		MPeriod.testPeriodOpen(getCtx(), getMovementDate(), MDocType.DOCBASETYPE_MaterialPhysicalInventory, getAD_Org_ID());
 		MAcctSchema.testBackDateTrxAllowed(getCtx(), getMovementDate(), get_TrxName());
@@ -438,16 +517,9 @@ public class MInventory extends X_M_Inventory implements DocAction
 		}
 
 		//	TODO: Add up Amounts
-		
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE);
-		if (m_processMsg != null)
-			return DocAction.STATUS_Invalid;
 
-		m_justPrepared = true;
-		if (!DOCACTION_Complete.equals(getDocAction()))
-			setDocAction(DOCACTION_Complete);
-		return DocAction.STATUS_InProgress;
-	}	//	prepareIt
+		return null;
+	}	//	doPrepare
 	
 	/**
 	 * 	Approve Document
@@ -480,34 +552,33 @@ public class MInventory extends X_M_Inventory implements DocAction
 	@Override
 	public String completeIt()
 	{
+		return createDocActionDelegate().completeIt();
+	}	//	completeIt
+
+	/**
+	 * 	Check the document can be completed, executed by {@link DocActionDelegate#completeIt()} before the re-check with {@link #prepareIt()}
+	 * 	@return null to continue, or the new document status (Invalid)
+	 */
+	private String beforeComplete()
+	{
 		MDocType dt = MDocType.get(getC_DocType_ID());
 		String docSubTypeInv = dt.getDocSubTypeInv();
 		if (Util.isEmpty(docSubTypeInv)) {
 			m_processMsg = "Document inventory subtype not configured, cannot complete";
 			return DocAction.STATUS_Invalid;
 		}
+		m_docSubTypeInv = docSubTypeInv;
 
-		//	Re-Check
-		if (!m_justPrepared)
-		{
-			String status = prepareIt();
-			m_justPrepared = false;
-			if (!DocAction.STATUS_InProgress.equals(status))
-				return status;
-		}
+		return null;
+	}	//	beforeComplete
 
-		// Set the definite document number after completed (if needed)
-		setDefiniteDocumentNo();
-
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_COMPLETE);
-		if (m_processMsg != null)
-			return DocAction.STATUS_Invalid;
-
-		//	Implicit Approval
-		if (!isApproved())
-			approveIt();
-		if (log.isLoggable(Level.INFO)) log.info(toString());
-		
+	/**
+	 * 	Complete document, executed by {@link DocActionDelegate#completeIt()} after the implicit approval
+	 * 	@return null to continue, or the new document status (Invalid)
+	 */
+	private String doComplete()
+	{
+		String docSubTypeInv = m_docSubTypeInv;
 		if (!isReversal())
 		{
 			try {
@@ -724,20 +795,9 @@ public class MInventory extends X_M_Inventory implements DocAction
 			m_processMsg = errors.toString();
 			return DocAction.STATUS_Invalid;
 		}
-		
-		//	User Validation
-		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);
-		if (valid != null)
-		{
-			m_processMsg = valid;
-			return DocAction.STATUS_Invalid;
-		}
 
-		//
-		setProcessed(true);
-		setDocAction(DOCACTION_Close);
-		return DocAction.STATUS_Completed;
-	}	//	completeIt
+		return null;
+	}	//	doComplete
 	
 	/**
 	 * 	Set the definite document number after completed
