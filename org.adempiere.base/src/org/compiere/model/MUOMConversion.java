@@ -36,6 +36,7 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.DBException;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Ini;
@@ -954,6 +955,8 @@ public class MUOMConversion extends X_C_UOM_Conversion implements ImmutablePOSup
 		if (success)
 		{
 			resetCache();
+			if (newRecord)
+				CacheMgt.scheduleCacheReset(Table_Name, -1, false, get_TrxName());
 		}
 		return success;
 	} // afterSave
