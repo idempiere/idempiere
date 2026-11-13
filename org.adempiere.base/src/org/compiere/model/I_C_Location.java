@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_Location
  *  @author iDempiere (generated) 
- *  @version Release 13
+ *  @version Release 14
  */
 public interface I_C_Location 
 {
@@ -276,6 +276,24 @@ public interface I_C_Location
 	  * Element is valid
 	  */
 	public boolean isValid();
+
+    /** Column name Latitude */
+    public static final String COLUMNNAME_Latitude = "Latitude";
+
+	/** Set Latitude	  */
+	public void setLatitude (String Latitude);
+
+	/** Get Latitude	  */
+	public String getLatitude();
+
+    /** Column name Longitude */
+    public static final String COLUMNNAME_Longitude = "Longitude";
+
+	/** Set Longitude	  */
+	public void setLongitude (String Longitude);
+
+	/** Get Longitude	  */
+	public String getLongitude();
 
     /** Column name Postal */
     public static final String COLUMNNAME_Postal = "Postal";
