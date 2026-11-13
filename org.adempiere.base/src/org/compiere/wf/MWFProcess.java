@@ -420,6 +420,8 @@ public class MWFProcess extends X_AD_WF_Process
 				continue;
 			
 			//	Start new Activity...
+			// a previous branch can have run in a transaction of its own, which changed and closed the process transaction
+			set_TrxName(trxName);
 			MWFActivity activity = new MWFActivity (this, transitions[i].getAD_WF_Next_ID(), lastPO);
 			/**
 			 * IDEMPIERE-3942

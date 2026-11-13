@@ -30,6 +30,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.math.BigDecimal;
 import java.sql.Savepoint;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
@@ -76,6 +78,8 @@ public class WFWaitForCommitTest extends AbstractTestCase {
 	private static final String DESCRIPTION_NESTED = DESCRIPTION + " nested ";
 	private static final String DESCRIPTION_FAIL = DESCRIPTION + " fail";
 	private static final String DESCRIPTION_COMMIT_FAIL = DESCRIPTION + " commit fail";
+	private static final String DESCRIPTION_CONSECUTIVE = DESCRIPTION + " consecutive";
+	private static final String DESCRIPTION_SPLIT = DESCRIPTION + " split";
 
 	/** M_InOut_ID -> receipt committed when the probe behind its Wait (-1) ran */
 	private static final Map<Integer, Boolean> committedAtProbe = new ConcurrentHashMap<>();
@@ -85,6 +89,8 @@ public class WFWaitForCommitTest extends AbstractTestCase {
 	private MWFNodeNext fromCompleteToWait;
 	private MWFNode nodeProbe;
 	private MWFNodeNext fromWaitToProbe;
+	/** nodes and transitions added by a test, deleted in reverse order */
+	private final List<PO> addedRecords = new ArrayList<>();
 
 	public WFWaitForCommitTest() {
 	}
@@ -144,8 +150,12 @@ public class WFWaitForCommitTest extends AbstractTestCase {
 		DB.executeUpdateEx("DELETE FROM M_InOutLine WHERE M_InOut_ID IN (" + receipts + ")", params, trxName);
 		DB.executeUpdateEx("DELETE FROM M_InOut WHERE M_InOut_ID IN (" + receipts + ")", params, trxName);
 
+		// fromWaitToProbe can point to an added node
 		if (fromWaitToProbe != null)
 			fromWaitToProbe.deleteEx(true);
+		for (int i = addedRecords.size() - 1; i >= 0; i--)
+			addedRecords.get(i).deleteEx(true);
+		addedRecords.clear();
 		if (nodeProbe != null)
 			nodeProbe.deleteEx(true);
 		if (fromCompleteToWait != null)
@@ -290,6 +300,76 @@ public class WFWaitForCommitTest extends AbstractTestCase {
 				.firstOnly();
 		assertNotNull(node, "Process_Shipment has no (DocComplete) node");
 		return node;
+	}
+
+	/**
+	 * Wait (-1) -> Wait (-1) -> probe: the second Wait runs in a transaction of its own, which its commit releases.
+	 * Both Waits and the probe must end Completed.
+	 */
+	@Test
+	public void testConsecutiveWaitNodes() {
+		Properties ctx = Env.getCtx();
+		MWorkflow wf = new MWorkflow(ctx, DictionaryIDs.AD_Workflow.PROCESS_SHIPMENT.id, getTrxName());
+		MWFNode secondWait = new MWFNode(wf, "WaitForCommit2", "WaitForCommit2");
+		secondWait.setClientOrg(Env.getAD_Client_ID(ctx), 0);
+		secondWait.setAction(MWFNode.ACTION_WaitSleep);
+		secondWait.setWaitTime(-1);
+		secondWait.saveEx();
+		addedRecords.add(secondWait);
+		fromWaitToProbe.setAD_WF_Next_ID(secondWait.getAD_WF_Node_ID());
+		fromWaitToProbe.saveEx();
+		MWFNodeNext fromSecondWaitToProbe = new MWFNodeNext(secondWait, nodeProbe.getAD_WF_Node_ID());
+		fromSecondWaitToProbe.saveEx();
+		addedRecords.add(fromSecondWaitToProbe);
+		commit();
+		CacheMgt.get().reset();
+
+		MInOut receipt = createReceipt(ctx, DESCRIPTION_CONSECUTIVE, getLoginDate(), getTrxName());
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		commit();
+
+		assertEquals(Boolean.TRUE, committedAtProbe.get(receipt.getM_InOut_ID()), "the probe behind the second Wait (-1) did not run");
+		assertEquals(MWFActivity.WFSTATE_Completed, getWFState(receipt, nodeWait), "the first Wait (-1) is not completed");
+		assertEquals(MWFActivity.WFSTATE_Completed, getWFState(receipt, secondWait), "the second Wait (-1) is not completed");
+		assertEquals(MWFActivity.WFSTATE_Completed, getWFState(receipt, nodeProbe), "the probe behind the second Wait (-1) is not completed");
+	}
+
+	/**
+	 * Wait (-1) with an AND split to two probes: both branches must run and end Completed.
+	 */
+	@Test
+	public void testAndSplitBehindWait() {
+		Properties ctx = Env.getCtx();
+		nodeWait.setSplitElement(MWFNode.SPLITELEMENT_AND);
+		nodeWait.saveEx();
+		MWorkflow wf = new MWorkflow(ctx, DictionaryIDs.AD_Workflow.PROCESS_SHIPMENT.id, getTrxName());
+		MWFNode secondProbe = new MWFNode(wf, "WaitProbe2", "WaitProbe2");
+		secondProbe.setClientOrg(Env.getAD_Client_ID(ctx), 0);
+		secondProbe.setAction(MWFNode.ACTION_AppsProcess);
+		secondProbe.setAD_Process_ID(probeProcess.getAD_Process_ID());
+		secondProbe.saveEx();
+		addedRecords.add(secondProbe);
+		MWFNodeNext fromWaitToSecondProbe = new MWFNodeNext(nodeWait, secondProbe.getAD_WF_Node_ID());
+		fromWaitToSecondProbe.saveEx();
+		addedRecords.add(fromWaitToSecondProbe);
+		commit();
+		CacheMgt.get().reset();
+
+		MInOut receipt = createReceipt(ctx, DESCRIPTION_SPLIT, getLoginDate(), getTrxName());
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		commit();
+
+		assertEquals(MWFActivity.WFSTATE_Completed, getWFState(receipt, nodeWait), "the Wait (-1) is not completed");
+		assertEquals(MWFActivity.WFSTATE_Completed, getWFState(receipt, nodeProbe), "the first branch behind the Wait (-1) is not completed");
+		assertEquals(MWFActivity.WFSTATE_Completed, getWFState(receipt, secondProbe), "the second branch behind the Wait (-1) is not completed");
+	}
+
+	/** State of the activity of the node for the receipt, read from another connection */
+	private static String getWFState(MInOut receipt, MWFNode node) {
+		return DB.getSQLValueStringEx(null, "SELECT WFState FROM AD_WF_Activity WHERE AD_Table_ID=? AND Record_ID=? AND AD_WF_Node_ID=?",
+				MInOut.Table_ID, receipt.getM_InOut_ID(), node.getAD_WF_Node_ID());
 	}
 
 	/** Workflow activities of the receipt, read from another connection */

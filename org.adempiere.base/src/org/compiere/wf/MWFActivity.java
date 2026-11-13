@@ -274,6 +274,8 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	private String				m_newValue = null;
 	/** Process						*/
 	private MWFProcess 			m_process = null;
+	/** The activity runs in a transaction of its own, which run() commits after the work */
+	private boolean				m_localTrx = false;
 	/** List of email recipients	*/
 	private ArrayList<String> 	m_emails = new ArrayList<String>();
 
@@ -930,6 +932,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			this.set_TrxName(Trx.createTrxName("WFA"));
 			localTrx = true;
 		}
+		m_localTrx = localTrx;
 
 		trx = Trx.get(get_TrxName(), true);
 		if (localTrx)
@@ -1104,7 +1107,13 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			cal.add(Calendar.MINUTE, m_node.getWaitTime());
 			setEndWaitTime(new Timestamp(cal.getTimeInMillis()));
 			if (m_node.getWaitTime() == -1)
+			{
+				// in a transaction of its own there is nothing else to wait for: run() commits it right after this node;
+				// a commit listener would complete the activity in that commit, before run() sets it to suspended
+				if (m_localTrx)
+					return true;
 				prepareCommitEvent();
+			}
 			return false;		//	not done
 		}
 
