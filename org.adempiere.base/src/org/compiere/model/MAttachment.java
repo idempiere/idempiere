@@ -239,6 +239,8 @@ public class MAttachment extends X_AD_Attachment implements AutoCloseable
 	 * @return
 	 */
 	public boolean isReadOnly(boolean isDelete) {
+		if (isDelete && get_Attribute(PO_Record.ON_DELETE_RECORD_CASCADE) != null && get_Attribute(PO_Record.ON_DELETE_RECORD_CASCADE).toString().equals("Y"))
+			return false;
 		if (isReadOnly == null) {
 			isReadOnly = true;
 			MTable table = MTable.get(getAD_Table_ID());
@@ -734,6 +736,16 @@ public class MAttachment extends X_AD_Attachment implements AutoCloseable
 	protected boolean beforeDelete() {
 		if (isReadOnly(true))
 			throw new AdempiereException(Msg.getMsg(getCtx(), "R/O"));
+
+		// clear the ON_DELETE_CASCADE attribute  as it doesn't need to be used after this
+		set_Attribute(PO_Record.ON_DELETE_RECORD_CASCADE, null);
+
+		// first force load the items, so that we can delete the files in the postDelete
+		// the loadLOBData cannot be called after the delete because the AD_AttachmentFile records are gone
+		//   and the provider will not be able to load the data
+		if (m_items == null)
+			loadLOBData();
+
 		deleteAttachmentFiles();
 		return true;
 	}
