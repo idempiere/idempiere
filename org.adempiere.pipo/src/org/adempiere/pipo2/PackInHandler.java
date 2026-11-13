@@ -398,6 +398,7 @@ public class PackInHandler extends DefaultHandler {
 		if (m_ctx == null || packIn == null)
 			return;
 		packageStatus = MPackageImp.PACKAGE_STATUS_IMPORT_FAILED;
+		packIn.setSuccess(false);
 		packIn.getNotifier().addStatusLine(packageStatus);
 		dumpUnresolvedElements();
 		if (AD_Package_Imp_ID <= 0 && AD_Package_Imp_Inst_ID <= 0)

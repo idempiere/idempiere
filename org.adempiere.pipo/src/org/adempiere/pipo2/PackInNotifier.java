@@ -40,6 +40,7 @@ import org.compiere.model.MAttachment;
 import org.compiere.model.MClient;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.X_AD_Package_Imp;
+import org.compiere.model.X_AD_Package_Imp_Proc;
 import org.compiere.util.EMail;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
@@ -239,9 +240,19 @@ public class PackInNotifier {
 	        if (! mailOK)
 	        	fullContent.append("Email notification failed");
 
-	        MAttachment attachment = MAttachment.get(Env.getCtx(), X_AD_Package_Imp.Table_ID, packIn.getAD_Package_Imp_ID());
+	        // attach to the AD_Package_Imp record when available, otherwise to the process record
+	        int attachmentTableId;
+	        int attachmentRecordId;
+	        if (packIn.getAD_Package_Imp_ID() > 0) {
+	        	attachmentTableId = X_AD_Package_Imp.Table_ID;
+	        	attachmentRecordId = packIn.getAD_Package_Imp_ID();
+	        } else {
+	        	attachmentTableId = X_AD_Package_Imp_Proc.Table_ID;
+	        	attachmentRecordId = packIn.getAD_Package_Imp_Proc().getAD_Package_Imp_Proc_ID();
+	        }
+	        MAttachment attachment = MAttachment.get(Env.getCtx(), attachmentTableId, attachmentRecordId);
 			if (attachment == null)
-				attachment = new MAttachment(Env.getCtx(), X_AD_Package_Imp.Table_ID, packIn.getAD_Package_Imp_ID(), null, null);
+				attachment = new MAttachment(Env.getCtx(), attachmentTableId, attachmentRecordId, null, null);
 			attachment.addEntry(attachFileName.toString(), fullContent.toString().getBytes(StandardCharsets.UTF_8));
 			attachment.saveEx();
 			attachment.close();
