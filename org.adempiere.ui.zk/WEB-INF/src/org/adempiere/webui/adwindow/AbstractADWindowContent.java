@@ -1707,13 +1707,13 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 						@Override
 						public void onCallback(Boolean result)
 						{
-							if (result && adTabbox.getSelectedGridTab().hasChangedCurrentTabAndParents())
+							if (callback != null)
+								callback.onCallback(result);
+							if (Boolean.TRUE.equals(result) && adTabbox.getSelectedGridTab() != null && adTabbox.getSelectedGridTab().hasChangedCurrentTabAndParents())
 							{
 								adTabbox.getSelectedGridTab().dataRefreshAll(true, true);
 								adTabbox.getSelectedGridTab().refreshParentTabs();
 							}
-							if (callback != null)
-								callback.onCallback(result);
 						}
 					});
 				}
