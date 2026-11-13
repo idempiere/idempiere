@@ -153,3 +153,62 @@ div.grid-view-color-fieldtype-display > div {
 	width: 95%;
 	height: 80%;
 }
+
+<%-- frozen scrolling --%>
+.z-grid-header th.z-frozen-sticky,
+.z-listbox-header th.z-frozen-sticky {
+	position: sticky !important;
+	z-index: 3 !important;
+	background-clip: padding-box;
+	box-sizing: border-box;
+}
+.z-grid-body td.z-frozen-sticky,
+.z-listbox-body td.z-frozen-sticky,
+.z-grid-footer td.z-frozen-sticky,
+.z-listbox-footer td.z-frozen-sticky {
+	position: sticky !important;
+	z-index: 2 !important;
+	background-color: var(--zk-grid-background-color, #FFFFFF);
+	background-clip: padding-box;
+	box-sizing: border-box;
+}
+<%-- Ensure sticky cells always carry an opaque background matching their row state
+     (odd, selected, hovered, highlighted) so scrolled cells underneath never bleed through --%>
+.z-grid-body tr.z-grid-odd > td.z-frozen-sticky,
+.z-listbox-body tr.z-listbox-odd > td.z-frozen-sticky {
+	background-color: var(--zk-grid-odd-background-color, #F7F7F7);
+}
+.z-listbox-body tr.z-listitem.z-listitem-selected > td.z-frozen-sticky {
+	background-color: var(--zk-listitem-selected-background-color, #E8F6FD);
+}
+.z-grid-body tr.z-row:hover > td.z-frozen-sticky,
+.z-listbox-body tr.z-listitem:hover > td.z-frozen-sticky {
+	background-color: var(--zk-row-hover-background-color, #F0F9FF);
+}
+.z-listbox-body tr.z-listitem.z-listitem-selected:hover > td.z-frozen-sticky {
+	background-color: var(--zk-listitem-selected-hover-background-color, var(--zk-listitem-selected-background-color, #DCF0FA));
+}
+.z-grid tbody tr.highlight > td.z-frozen-sticky,
+.z-grid tbody tr.highlight td.row-indicator.z-frozen-sticky {
+	background-color: var(--zk-grid-highlight-background-color, #FFFFCC);
+}
+.z-frozen-sticky-last {
+	border-right: 1px solid var(--zk-grid-header-border-color, #CFCFCF) !important;
+	box-shadow: 2px 0 4px -2px rgba(0, 0, 0, 0.12);
+}
+.z-frozen-sticky-next,
+.z-grid-header th.z-frozen-sticky-last + th,
+.z-listbox-header th.z-frozen-sticky-last + th,
+.z-grid-body td.z-frozen-sticky-last + td,
+.z-listbox-body td.z-frozen-sticky-last + td,
+.z-grid-footer td.z-frozen-sticky-last + td,
+.z-listbox-footer td.z-frozen-sticky-last + td {
+	border-left: none !important;
+}
+<%-- only the horizontal scrollbar is hidden (ZK already sets overflow-x: hidden on desktop,
+     this covers mobile where it does not). scrollbar-width would hide both axes. --%>
+.z-grid:has(> .z-frozen) > .z-grid-body::-webkit-scrollbar:horizontal,
+.z-listbox:has(> .z-frozen) > .z-listbox-body::-webkit-scrollbar:horizontal {
+	display: none;
+	height: 0;
+}
