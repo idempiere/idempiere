@@ -184,6 +184,15 @@ public interface I_AD_Package_Exp
 	/** Get Export Dictionary Entity	  */
 	public boolean isExportDictionaryEntity();
 
+    /** Column name IsExportOnlyChangedValue */
+    public static final String COLUMNNAME_IsExportOnlyChangedValue = "IsExportOnlyChangedValue";
+
+	/** Set Only Value Changed	  */
+	public void setIsExportOnlyChangedValue (boolean IsExportOnlyChangedValue);
+
+	/** Get Only Value Changed	  */
+	public boolean isExportOnlyChangedValue();
+
     /** Column name IsIncludeOrganizationId */
     public static final String COLUMNNAME_IsIncludeOrganizationId = "IsIncludeOrganizationId";
 
