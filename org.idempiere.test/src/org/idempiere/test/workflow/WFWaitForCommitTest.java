@@ -72,9 +72,6 @@ import org.junit.jupiter.api.parallel.Isolated;
 @Isolated
 public class WFWaitForCommitTest extends AbstractTestCase {
 
-	private static final int WF_PROCESS_SHIPMENT_NODE_COMPLETE = 190;
-	private static final int LOCATION_FROM_PATIO = 115;
-
 	private static final String DESCRIPTION = "WFWaitForCommitTest";
 	private static final String DESCRIPTION_NESTED = DESCRIPTION + " nested ";
 	private static final String DESCRIPTION_FAIL = DESCRIPTION + " fail";
@@ -113,7 +110,7 @@ public class WFWaitForCommitTest extends AbstractTestCase {
 		nodeWait.setAction(MWFNode.ACTION_WaitSleep);
 		nodeWait.setWaitTime(-1);
 		nodeWait.saveEx();
-		MWFNode nodeComplete = new MWFNode(ctx, WF_PROCESS_SHIPMENT_NODE_COMPLETE, trxName);
+		MWFNode nodeComplete = getDocCompleteNode(ctx, trxName);
 		fromCompleteToWait = new MWFNodeNext(nodeComplete, nodeWait.getAD_WF_Node_ID());
 		fromCompleteToWait.setClientOrg(Env.getAD_Client_ID(ctx), 0);
 		fromCompleteToWait.saveEx();
@@ -286,6 +283,15 @@ public class WFWaitForCommitTest extends AbstractTestCase {
 		assertEquals(MWFActivity.WFSTATE_Suspended, wfState, "the failed node behind the Wait (-1) is not suspended");
 	}
 
+	/** The (DocComplete) node of workflow Process_Shipment */
+	private static MWFNode getDocCompleteNode(Properties ctx, String trxName) {
+		MWFNode node = new Query(ctx, MWFNode.Table_Name, "AD_Workflow_ID=? AND Value=?", trxName)
+				.setParameters(DictionaryIDs.AD_Workflow.PROCESS_SHIPMENT.id, "(DocComplete)")
+				.firstOnly();
+		assertNotNull(node, "Process_Shipment has no (DocComplete) node");
+		return node;
+	}
+
 	/** Workflow activities of the receipt, read from another connection */
 	private static int countActivities(int receiptId) {
 		return DB.getSQLValueEx(null, "SELECT COUNT(*) FROM AD_WF_Activity WHERE AD_Table_ID=? AND Record_ID=?", MInOut.Table_ID, receiptId);
@@ -294,7 +300,6 @@ public class WFWaitForCommitTest extends AbstractTestCase {
 	private static MInOut createReceipt(Properties ctx, String description, Timestamp dateOrdered, String trxName) {
 		MInOut receipt = new MInOut(ctx, 0, trxName);
 		receipt.setBPartner(MBPartner.get(ctx, DictionaryIDs.C_BPartner.PATIO.id));
-		receipt.setC_BPartner_Location_ID(LOCATION_FROM_PATIO);
 		receipt.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.HQ.id);
 		receipt.setC_DocType_ID(DictionaryIDs.C_DocType.MM_RECEIPT.id);
 		receipt.setIsSOTrx(false);

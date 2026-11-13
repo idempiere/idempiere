@@ -32,6 +32,7 @@ import java.util.Properties;
 import org.adempiere.base.Core;
 import org.adempiere.util.ProcessUtil;
 import org.compiere.model.MBPartner;
+import org.compiere.model.MColumn;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
 import org.compiere.model.MNote;
@@ -63,11 +64,6 @@ import org.junit.jupiter.api.parallel.Isolated;
  */
 @Isolated
 public class WFProcessNodeTest extends AbstractTestCase {
-
-	private static final int LOCATION_FROM_PATIO = 115;
-	private static final int WF_PROCESS_SHIPMENT = 117;
-	private static final int WF_PROCESS_SHIPMENT_NODE_COMPLETE = 190;
-	private static final int COLUMN_M_INOUT_ISSOTRX = 3790;
 
 	private static final String MARKER = "IDEMPIERE-7179";
 	private static final String MARKER_AFTER_COMMIT = MARKER + "-2";
@@ -112,13 +108,13 @@ public class WFProcessNodeTest extends AbstractTestCase {
 		try {
 			process = createProcess(ctx, false, fail);
 
-			MWorkflow wf = new MWorkflow(ctx, WF_PROCESS_SHIPMENT, trxName);
+			MWorkflow wf = new MWorkflow(ctx, DictionaryIDs.AD_Workflow.PROCESS_SHIPMENT.id, trxName);
 			node = new MWFNode(wf, MARKER, MARKER);
 			node.setClientOrg(Env.getAD_Client_ID(ctx), 0);
 			node.setAction(MWFNode.ACTION_AppsProcess);
 			node.setAD_Process_ID(process.getAD_Process_ID());
 			node.saveEx();
-			MWFNode nodeComplete = new MWFNode(ctx, WF_PROCESS_SHIPMENT_NODE_COMPLETE, trxName);
+			MWFNode nodeComplete = getDocCompleteNode(ctx, trxName);
 			transition = new MWFNodeNext(nodeComplete, node.getAD_WF_Node_ID());
 			transition.setClientOrg(Env.getAD_Client_ID(ctx), 0);
 			transition.setDescription("IsSOTrx=N");
@@ -127,7 +123,7 @@ public class WFProcessNodeTest extends AbstractTestCase {
 			condition = new MWFNextCondition(ctx, 0, trxName);
 			condition.setAD_WF_NodeNext_ID(transition.getAD_WF_NodeNext_ID());
 			condition.setOperation(MWFNextCondition.OPERATION_Eq);
-			condition.setAD_Column_ID(COLUMN_M_INOUT_ISSOTRX);
+			condition.setAD_Column_ID(MColumn.getColumn_ID(MInOut.Table_Name, MInOut.COLUMNNAME_IsSOTrx));
 			condition.setValue("N");
 			condition.setSeqNo(10);
 			condition.setAndOr(MWFNextCondition.ANDOR_Or);
@@ -139,7 +135,6 @@ public class WFProcessNodeTest extends AbstractTestCase {
 
 			MInOut mr = new MInOut(ctx, 0, trxName);
 			mr.setBPartner(MBPartner.get(ctx, DictionaryIDs.C_BPartner.PATIO.id));
-			mr.setC_BPartner_Location_ID(LOCATION_FROM_PATIO);
 			mr.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.HQ.id);
 			mr.setC_DocType_ID(DictionaryIDs.C_DocType.MM_RECEIPT.id);
 			mr.setIsSOTrx(false);
@@ -284,6 +279,15 @@ public class WFProcessNodeTest extends AbstractTestCase {
 			Env.setContext(ctx, Env.AD_ROLE_ID, oldRole);
 			PO.clearCrossTenantSafe();
 		}
+	}
+
+	/** The (DocComplete) node of workflow Process_Shipment */
+	private static MWFNode getDocCompleteNode(Properties ctx, String trxName) {
+		MWFNode node = new Query(ctx, MWFNode.Table_Name, "AD_Workflow_ID=? AND Value=?", trxName)
+				.setParameters(DictionaryIDs.AD_Workflow.PROCESS_SHIPMENT.id, "(DocComplete)")
+				.firstOnly();
+		assertNotNull(node, "Process_Shipment has no (DocComplete) node");
+		return node;
 	}
 
 	private MWFActivity getActivity(MWFNode node, int tableId, int recordId) {
