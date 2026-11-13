@@ -945,6 +945,15 @@ public class GridFieldTest extends AbstractTestCase {
 		assertFalse(gridField.isDisplayed(row1, true), "Display logic must resolve the reference with the values of row 1");
 		assertTrue(gridField.isDisplayedGrid(row0, true), "Display logic must resolve the reference with the values of row 0");
 		assertFalse(gridField.isDisplayedGrid(row1, true), "Display logic must resolve the reference with the values of row 1");
+		// the typed value of the row is read first: the table model values below must not decide
+		lenient().when(gridTab.getValue(0, "C_DocTypeTarget_ID")).thenReturn(Integer.valueOf(creditMemoId));
+		lenient().when(gridTab.getValue(1, "C_DocTypeTarget_ID")).thenReturn(Integer.valueOf(invoiceId));
+		lenient().when(gridTable.getValueAt(0, 1)).thenReturn(null);
+		lenient().when(gridTable.getValueAt(1, 1)).thenReturn(Integer.valueOf(creditMemoId));
+		assertTrue(gridField.isDisplayed(row0, true), "Display logic must resolve the typed reference ID of row 0");
+		assertFalse(gridField.isDisplayed(row1, true), "Display logic must resolve the typed reference ID of row 1");
+		assertTrue(gridField.isDisplayedGrid(row0, true), "Display logic must resolve the typed reference ID of row 0");
+		assertFalse(gridField.isDisplayedGrid(row1, true), "Display logic must resolve the typed reference ID of row 1");
 		// an empty cell stays empty: the selected row (now a credit memo) must not fill it in
 		lenient().when(gridTab.getValue("C_DocTypeTarget_ID")).thenReturn(Integer.valueOf(creditMemoId));
 		when(gridTable.getValueAt(2, 1)).thenReturn(null);
@@ -1011,6 +1020,88 @@ public class GridFieldTest extends AbstractTestCase {
 		assertEquals(amountFormat.format(0.4), gridField.get_ValueAsString(row1, "GrandTotal<#0.00>"), "Formatted amount of row 1");
 		assertEquals("2026-11", gridField.get_ValueAsString(row0, "DateInvoiced<yyyy-MM>"), "Formatted date of row 0");
 		assertEquals("2026-12", gridField.get_ValueAsString(row1, "DateInvoiced<yyyy-MM>"), "Formatted date of row 1");
+	}
+
+	@Test
+	void testProcessedWithGridRowCtx() {
+		Properties ctx = Env.getCtx();
+		GridFieldVO vo = mock(GridFieldVO.class);
+		vo.ctx = ctx;
+		vo.WindowNo = 100;
+		vo.TabNo = 0;
+		vo.ColumnName = "Description";
+		vo.IsDisplayed = true;
+		vo.DisplayLogic = "";
+		vo.IsUpdateable = true;
+		vo.AlwaysUpdatableLogic = "";
+		vo.ReadOnlyLogic = "";
+		GridField gridField = new GridField(vo);
+
+		// grid view: row 0 is processed, row 1 is not
+		GridTab gridTab = mock(GridTab.class);
+		GridTable gridTable = mock(GridTable.class);
+		gridField.setGridTab(gridTab);
+		when(gridTab.getWindowNo()).thenReturn(vo.WindowNo);
+		when(gridTab.getTableModel()).thenReturn(gridTable);
+		lenient().when(gridTable.findColumn(anyString())).thenReturn(-1);
+		when(gridTable.findColumn("Processed")).thenReturn(1);
+		when(gridTable.getValueAt(0, 1)).thenReturn(Boolean.TRUE);
+		when(gridTable.getValueAt(1, 1)).thenReturn(Boolean.FALSE);
+		// the current (selected) row is row 1, it must not decide for row 0
+		lenient().when(gridTab.getTableName()).thenReturn("C_Invoice");
+		lenient().when(gridTab.getField("Processed")).thenReturn(mock(GridField.class));
+		lenient().when(gridTab.getValue("Processed")).thenReturn(Boolean.FALSE);
+		Env.setContext(ctx, vo.WindowNo, vo.TabNo, "IsActive", "Y");
+
+		try (MockedStatic<MRole> mrole = Mockito.mockStatic(MRole.class)) {
+			MRole role = mock(MRole.class);
+			mrole.when(() -> MRole.getDefault(any(), anyBoolean())).thenReturn(role);
+			when(role.canUpdate(anyInt(), anyInt(), anyInt(), anyInt(), anyBoolean())).thenReturn(true);
+			when(role.isColumnAccess(anyInt(), anyInt(), anyBoolean())).thenReturn(true);
+
+			assertFalse(gridField.isEditable(new GridRowCtx(ctx, gridTab, 0), true, true), "A processed row 0 must be read only");
+			assertTrue(gridField.isEditable(new GridRowCtx(ctx, gridTab, 1), true, true), "A row 1 that is not processed must be editable");
+		} finally {
+			Env.setContext(ctx, vo.WindowNo, vo.TabNo, "IsActive", (String)null);
+		}
+	}
+
+	@Test
+	void testSQLDisplayLogicWithGridRowCtx() {
+		Properties ctx = Env.getCtx();
+		GridFieldVO vo = mock(GridFieldVO.class);
+		vo.ctx = ctx;
+		vo.WindowNo = 100;
+		vo.TabNo = 0;
+		vo.ColumnName = "Description";
+		vo.IsDisplayed = true;
+		vo.IsDisplayedGrid = true;
+		vo.DisplayLogic = MColumn.VIRTUAL_UI_COLUMN_PREFIX + "SELECT 1 FROM Dual WHERE '@DocStatus@'='CO'";
+		GridField gridField = new GridField(vo);
+
+		// grid view: row 0 is completed, row 1 is a draft
+		GridTab gridTab = mock(GridTab.class);
+		GridTable gridTable = mock(GridTable.class);
+		gridField.setGridTab(gridTab);
+		when(gridTab.getWindowNo()).thenReturn(vo.WindowNo);
+		when(gridTab.getTableModel()).thenReturn(gridTable);
+		lenient().when(gridTable.findColumn(anyString())).thenReturn(-1);
+		when(gridTable.findColumn("DocStatus")).thenReturn(1);
+		when(gridTable.getValueAt(0, 1)).thenReturn("CO");
+		when(gridTable.getValueAt(1, 1)).thenReturn("DR");
+		// the current (selected) row is row 1, it must not decide for row 0
+		Env.setContext(ctx, vo.WindowNo, vo.TabNo, "DocStatus", "DR");
+
+		try {
+			GridRowCtx row0 = new GridRowCtx(ctx, gridTab, 0);
+			GridRowCtx row1 = new GridRowCtx(ctx, gridTab, 1);
+			assertTrue(gridField.isDisplayed(row0, true), "SQL display logic must be evaluated with the values of row 0");
+			assertFalse(gridField.isDisplayed(row1, true), "SQL display logic must be evaluated with the values of row 1");
+			assertTrue(gridField.isDisplayedGrid(row0, true), "SQL display logic must be evaluated with the values of row 0");
+			assertFalse(gridField.isDisplayedGrid(row1, true), "SQL display logic must be evaluated with the values of row 1");
+		} finally {
+			Env.setContext(ctx, vo.WindowNo, vo.TabNo, "DocStatus", (String)null);
+		}
 	}
 
 	@Test

@@ -581,7 +581,7 @@ public class GridField
 
 		//  Record is Processed	***	
 		if (checkContext 
-			&& ("Y".equals(get_ValueAsString("Processed")) || "Y".equals(get_ValueAsString("Processing"))) )
+			&& ("Y".equals(get_ValueAsString(ctx, "Processed")) || "Y".equals(get_ValueAsString(ctx, "Processing"))) )
 			return false;
 
 		//  IsActive field is editable, if record not processed
@@ -1318,7 +1318,7 @@ public class GridField
 		if (checkContext)
 		{
 			if (m_vo.DisplayLogic.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
-				return Evaluator.parseSQLLogic(m_vo.DisplayLogic, m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName);
+				return Evaluator.parseSQLLogic(m_vo.DisplayLogic, ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName);
 			}
 			Evaluatee evaluatee = (variableName) -> {return get_ValueAsString(ctx, variableName);};
 			boolean retValue = Evaluator.evaluateLogic(evaluatee, m_vo.DisplayLogic);
