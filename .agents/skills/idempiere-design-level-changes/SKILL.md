@@ -23,7 +23,7 @@ A change is design-level if it does **any** of the following:
 
 **If unsure, treat it as design-level.**
 
-Not design-level, proceed normally: bug fixes, tests, refactors with no behaviour change, translations.
+Not design-level, proceed normally: bug fixes that match none of the criteria above (a fix that changes default behaviour or migrates existing data is still design-level), tests, refactors with no behaviour change, translations.
 
 ## Workflow
 
