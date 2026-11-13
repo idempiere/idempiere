@@ -1,0 +1,76 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.idempiere</groupId>
+		<artifactId>org.idempiere.parent</artifactId>
+		<version>${revision}</version>
+		<relativePath>../org.idempiere.parent/pom.xml</relativePath>
+	</parent>
+	<artifactId>org.idempiere.redis.service.test</artifactId>
+	<packaging>eclipse-test-plugin</packaging>
+	<name>iDempiere Redis Service Tests</name>
+	<description>Unit tests for org.idempiere.redis.service (fragment host): message and codec wire formats. No Redis
+		server and no database needed. Skipped by default like org.idempiere.test: mvn verify -DskipTests=false</description>
+	<properties>
+		<skipTests>true</skipTests>
+		<sonar.skip>true</sonar.skip>
+	</properties>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-surefire-plugin</artifactId>
+				<configuration>
+					<skipTests>${skipTests}</skipTests>
+					<providerHint>junit59</providerHint>
+					<useUIHarness>false</useUIHarness>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tycho.version}</version>
+				<configuration>
+					<dependency-resolution>
+						<!-- The tests load org.compiere.util classes, which activates org.adempiere.base; its
+						     activator needs bundles the minimal test runtime does not bring (poi-ooxml needs
+						     xmlbeans, commons-io ...). The list is org.idempiere.test's; keep them in step. -->
+						<extraRequirements combine.children="append">
+							<requirement><type>eclipse-plugin</type><id>org.eclipse.core.runtime</id><versionRange>0.0.0</versionRange></requirement>
+							<requirement><type>eclipse-plugin</type><id>org.eclipse.equinox.common</id><versionRange>0.0.0</versionRange></requirement>
+							<requirement><type>eclipse-plugin</type><id>org.eclipse.equinox.event</id><versionRange>0.0.0</versionRange></requirement>
+							<requirement><type>eclipse-plugin</type><id>org.adempiere.install</id><versionRange>0.0.0</versionRange></requirement>
+							<requirement><type>eclipse-plugin</type><id>org.compiere.db.oracle.provider</id><versionRange>0.0.0</versionRange></requirement>
+							<requirement><type>eclipse-plugin</type><id>org.compiere.db.postgresql.provider</id><versionRange>0.0.0</versionRange></requirement>
+							<requirement><type>eclipse-plugin</type><id>org.adempiere.server</id><versionRange>0.0.0</versionRange></requirement>
+							<requirement><type>eclipse-plugin</type><id>org.adempiere.replication</id><versionRange>0.0.0</versionRange></requirement>
+							<requirement><type>eclipse-plugin</type><id>org.adempiere.pipo</id><versionRange>0.0.0</versionRange></requirement>
+							<requirement><type>eclipse-plugin</type><id>org.idempiere.hazelcast.service</id><versionRange>0.0.0</versionRange></requirement>
+							<requirement><type>eclipse-plugin</type><id>org.adempiere.ui.zk</id><versionRange>0.0.0</versionRange></requirement>
+							<requirement><type>eclipse-plugin</type><id>org.idempiere.zk.extra</id><versionRange>0.0.0</versionRange></requirement>
+							<requirement><type>eclipse-plugin</type><id>org.idempiere.tablepartition</id><versionRange>0.0.0</versionRange></requirement>
+							<requirement><type>eclipse-plugin</type><id>wrapped.org.apache.xmlbeans.xmlbeans</id><versionRange>0.0.0</versionRange></requirement>
+							<requirement><type>eclipse-plugin</type><id>groovy</id><versionRange>0.0.0</versionRange></requirement>
+							<requirement><type>eclipse-plugin</type><id>groovy-jsr223</id><versionRange>0.0.0</versionRange></requirement>
+							<requirement><type>eclipse-plugin</type><id>zcommon</id><versionRange>0.0.0</versionRange></requirement>
+							<requirement><type>eclipse-plugin</type><id>zel</id><versionRange>0.0.0</versionRange></requirement>
+							<requirement><type>eclipse-plugin</type><id>zhtml</id><versionRange>0.0.0</versionRange></requirement>
+							<requirement><type>eclipse-plugin</type><id>zk</id><versionRange>0.0.0</versionRange></requirement>
+							<requirement><type>eclipse-plugin</type><id>zkbind</id><versionRange>0.0.0</versionRange></requirement>
+							<requirement><type>eclipse-plugin</type><id>zkplus</id><versionRange>0.0.0</versionRange></requirement>
+							<requirement><type>eclipse-plugin</type><id>zkwebfragment</id><versionRange>0.0.0</versionRange></requirement>
+							<requirement><type>eclipse-plugin</type><id>zul</id><versionRange>0.0.0</versionRange></requirement>
+							<requirement><type>eclipse-plugin</type><id>zweb</id><versionRange>0.0.0</versionRange></requirement>
+							<requirement><type>eclipse-plugin</type><id>org.apache.commons.commons-fileupload2-core</id><versionRange>0.0.0</versionRange></requirement>
+							<requirement><type>eclipse-plugin</type><id>org.apache.commons.commons-fileupload2-javax</id><versionRange>0.0.0</versionRange></requirement>
+							<requirement><type>eclipse-plugin</type><id>org.eclipse.jetty.servlet-api</id><versionRange>0.0.0</versionRange></requirement>
+							<requirement><type>eclipse-plugin</type><id>org.eclipse.jetty.servlet-api.capability</id><versionRange>0.0.0</versionRange></requirement>
+						</extraRequirements>
+					</dependency-resolution>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
