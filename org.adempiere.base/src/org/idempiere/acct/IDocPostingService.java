@@ -50,4 +50,14 @@ public interface IDocPostingService {
 	String manualPosting(int WindowNo, int AD_Client_ID, 
 			int AD_Table_ID, int Record_ID, boolean force);
 
+	/**
+	 * Delete Reverse Correct Posting
+	 * 
+	 * @param AD_Client_ID
+	 * @param AD_Table_ID
+	 * @param Record_ID
+	 * @param trxName
+	 */
+	void deleteReverseCorrectPosting(int AD_Client_ID, int AD_Table_ID, int Record_ID, String trxName);
+
 }
