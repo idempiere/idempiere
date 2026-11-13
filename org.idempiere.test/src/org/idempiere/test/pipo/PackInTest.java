@@ -72,21 +72,25 @@ public class PackInTest extends AbstractTestCase {
 				+ "</idempiere>\n");
 
 		PackIn packIn = newPackIn(file, "zzzTestPackInUnresolved");
-		try (MockedStatic<MSysConfig> mocked = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
-			stubNotifierSettings(mocked);
+		try {
+			try (MockedStatic<MSysConfig> mocked = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
+				stubNotifierSettings(mocked);
 
-			// the AD_Workflow_ID reference does not exist, so the AD_Process element stays unresolved
-			// and the import must fail with "Unresolved elements"
-			RuntimeException ex = assertThrows(RuntimeException.class, () -> packIn.importXML(file.toString(), Env.getCtx(), getTrxName()));
-			assertEquals("Unresolved elements", ex.getMessage());
+				// the AD_Workflow_ID reference does not exist, so the AD_Process element stays unresolved
+				// and the import must fail with "Unresolved elements"
+				RuntimeException ex = assertThrows(RuntimeException.class, () -> packIn.importXML(file.toString(), Env.getCtx(), getTrxName()));
+				assertEquals("Unresolved elements", ex.getMessage());
 
-			packIn.getNotifier().notifyRecipient();
+				packIn.getNotifier().notifyRecipient();
+			}
+
+			// the import transaction rolled back, the Import Failed status must have been persisted on rollback
+			rollback();
+
+			assertImportFailed(packIn, "zzzTestPackInUnresolved");
+		} finally {
+			cleanup("zzzTestPackInUnresolved", packIn.getAD_Package_Imp_ID());
 		}
-
-		// the import transaction rolled back, the Import Failed status must have been persisted on rollback
-		rollback();
-
-		assertImportFailed(packIn, "zzzTestPackInUnresolved");
 	}
 
 	@Test
@@ -101,16 +105,22 @@ public class PackInTest extends AbstractTestCase {
 				+ "</idempiere>\n");
 
 		PackIn packIn = newPackIn(file, "zzzTestPackInParseError");
-		try (MockedStatic<MSysConfig> mocked = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
-			stubNotifierSettings(mocked);
+		try {
+			try (MockedStatic<MSysConfig> mocked = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
+				stubNotifierSettings(mocked);
 
-			// the unclosed AD_Process element makes the parsing fail after the AD_Package_Imp record was created
-			assertThrows(RuntimeException.class, () -> packIn.importXML(file.toString(), Env.getCtx(), getTrxName()));
+				// the unclosed AD_Process element makes the parsing fail after the AD_Package_Imp record was created
+				assertThrows(RuntimeException.class, () -> packIn.importXML(file.toString(), Env.getCtx(), getTrxName()));
 
-			packIn.getNotifier().notifyRecipient();
+				packIn.getNotifier().notifyRecipient();
+			}
+
+			rollback();
+
+			assertImportFailed(packIn, "zzzTestPackInParseError");
+		} finally {
+			cleanup("zzzTestPackInParseError", packIn.getAD_Package_Imp_ID());
 		}
-
-		assertImportFailed(packIn, "zzzTestPackInParseError");
 	}
 
 	@Test
@@ -184,30 +194,32 @@ public class PackInTest extends AbstractTestCase {
 		int adPackageImpId = packIn.getAD_Package_Imp_ID();
 		assertTrue(adPackageImpId > 0, "The import must have created an AD_Package_Imp record");
 
-		try {
-			MPackageImp packageImp = new MPackageImp(Env.getCtx(), adPackageImpId, null);
-			assertEquals(MPackageImp.PACKAGE_STATUS_IMPORT_FAILED, packageImp.getPK_Status(),
-					"PK_Status must be set to Import Failed on failure");
+		MPackageImp packageImp = new MPackageImp(Env.getCtx(), adPackageImpId, null);
+		assertEquals(MPackageImp.PACKAGE_STATUS_IMPORT_FAILED, packageImp.getPK_Status(),
+				"PK_Status must be set to Import Failed on failure");
 
-			int adPackageImpInstId = DB.getSQLValueEx(null, "SELECT AD_Package_Imp_Inst_ID FROM AD_Package_Imp_Inst WHERE Name=?", packageName);
-			if (adPackageImpInstId > 0) {
-				String pkStatusInst = DB.getSQLValueStringEx(null, "SELECT PK_Status FROM AD_Package_Imp_Inst WHERE AD_Package_Imp_Inst_ID=?", adPackageImpInstId);
-				assertEquals(MPackageImp.PACKAGE_STATUS_IMPORT_FAILED, pkStatusInst,
-						"PK_Status must be set to Import Failed on failure for AD_Package_Imp_Inst");
-			}
+		int adPackageImpInstId = DB.getSQLValueEx(null, "SELECT AD_Package_Imp_Inst_ID FROM AD_Package_Imp_Inst WHERE Name=?", packageName);
+		assertTrue(adPackageImpInstId > 0, "The import must have created an AD_Package_Imp_Inst record for " + packageName);
+		String pkStatusInst = DB.getSQLValueStringEx(null, "SELECT PK_Status FROM AD_Package_Imp_Inst WHERE AD_Package_Imp_Inst_ID=?", adPackageImpInstId);
+		assertEquals(MPackageImp.PACKAGE_STATUS_IMPORT_FAILED, pkStatusInst,
+				"PK_Status must be set to Import Failed on failure for AD_Package_Imp_Inst");
 
-			MAttachment attachment = MAttachment.get(Env.getCtx(), X_AD_Package_Imp.Table_ID, adPackageImpId);
-			assertNotNull(attachment, "The log must be attached to the AD_Package_Imp record");
-			MAttachmentEntry errorLog = findAttachmentEntry(attachment, "error_");
-			assertNotNull(errorLog, "The attachment must contain an error_*.log entry on failure");
-			String content = new String(errorLog.getData(), StandardCharsets.UTF_8);
-			assertTrue(content.contains(MPackageImp.PACKAGE_STATUS_IMPORT_FAILED),
-					"The log must contain the failed status:\n" + content);
-			if ("zzzTestPackInUnresolved".equals(packageName))
-				assertTrue(content.contains("unresolved [AD_Workflow_ID]"),
-						"The log must contain the unresolved elements list:\n" + content);
-		} finally {
-			cleanup(packageName, adPackageImpId);
+		MAttachment attachment = MAttachment.get(Env.getCtx(), X_AD_Package_Imp.Table_ID, adPackageImpId);
+		assertNotNull(attachment, "The log must be attached to the AD_Package_Imp record");
+		MAttachmentEntry errorLog = findAttachmentEntry(attachment, "error_");
+		assertNotNull(errorLog, "The attachment must contain an error_*.log entry on failure");
+		String content = new String(errorLog.getData(), StandardCharsets.UTF_8);
+		assertTrue(content.contains(MPackageImp.PACKAGE_STATUS_IMPORT_FAILED),
+				"The log must contain the failed status:\n" + content);
+		if ("zzzTestPackInUnresolved".equals(packageName)) {
+			assertTrue(content.contains("Unresolved Elements:"),
+					"The log must contain the Unresolved Elements section:\n" + content);
+			assertTrue(content.contains("unresolved [AD_Workflow_ID]"),
+					"The Unresolved Elements section must contain the full element dump:\n" + content);
+			assertTrue(content.contains("Missing AD_Workflow record with AD_Workflow_UU=00000000-0000-0000-0000-00000000abcd"),
+					"The Failed Objects section must contain the readable unresolved element:\n" + content);
+			assertTrue(content.contains("referenced in AD_Process Name=zzzTestPackInUnresolved"),
+					"The log must identify the element holding the unresolved reference:\n" + content);
 		}
 	}
 
