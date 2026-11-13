@@ -17,17 +17,20 @@
 package org.compiere.process;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
 import org.compiere.model.MBPartner;
 import org.compiere.model.MConversionRate;
+import org.compiere.model.MConversionRateUtil;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MProductPO;
 import org.compiere.model.MProject;
 import org.compiere.model.MProjectLine;
+import org.compiere.util.AdempiereUserError;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
@@ -191,10 +194,20 @@ public class ProjectGenPO extends SvrProcess
 			if (poPrice != null && poPrice.signum() != 0)
 			{
 				if (order.getC_Currency_ID() != C_Currency_ID)
+				{
+					Timestamp conversionDate = order.getDateAcct();
 					poPrice = MConversionRate.convert(getCtx(), poPrice, 
 						C_Currency_ID, order.getC_Currency_ID(), 
-						order.getDateAcct(), order.getC_ConversionType_ID(), 
+						conversionDate, order.getC_ConversionType_ID(),
 						order.getAD_Client_ID(), order.getAD_Org_ID());
+					if (poPrice == null)
+					{
+						throw new AdempiereUserError(MConversionRateUtil.getErrorMessage(getCtx(),
+								"ErrorConvertingCurrencyToBaseCurrency", C_Currency_ID, order.getC_Currency_ID(),
+								order.getC_ConversionType_ID(), conversionDate, get_TrxName()));
+					}
+				}
+
 				orderLine.setPrice(poPrice);
 			}
 		}
