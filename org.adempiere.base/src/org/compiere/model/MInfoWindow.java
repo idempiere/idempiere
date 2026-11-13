@@ -576,6 +576,7 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 		if (udi == null)
 			return Arrays.stream(infoColumns)
 					.filter(MInfoColumn::isActive)
+					.filter(MInfoColumn::isDisplayed)
 					.toArray(MInfoColumn[]::new);
 
 		List<MInfoColumn> effectiveColumns = new ArrayList<>();
