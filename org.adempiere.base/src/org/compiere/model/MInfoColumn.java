@@ -236,7 +236,7 @@ public class MInfoColumn extends X_AD_InfoColumn implements IInfoColumn, Immutab
 	 */
 	@Override
 	protected boolean afterDelete(boolean success) {
-		getParent().setIsValid(false);
+		getParent().validate();
 		getParent().saveEx(get_TrxName());
 		return super.afterDelete(success);
 	}
