@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: iDempiere Redis Service Tests
+Bundle-SymbolicName: org.idempiere.redis.service.test
+Bundle-Version: 14.0.0.qualifier
+Bundle-Vendor: iDempiere Community
+Fragment-Host: org.idempiere.redis.service;bundle-version="[14.0.0,15.0.0)"
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Automatic-Module-Name: org.idempiere.redis.service.test
+Import-Package: org.junit.jupiter.api;version="5.9.0"

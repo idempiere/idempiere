@@ -26,12 +26,16 @@
 package org.idempiere.redis.service.cluster;
 
 import java.util.Set;
+import java.util.logging.Level;
 
 import org.redisson.codec.Kryo5Codec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.Serializer;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 
 /**
  * Kryo5Codec variant that enforces a class allow-list on the RPC topics.
@@ -89,7 +93,47 @@ public class AllowlistKryo5Codec extends Kryo5Codec {
 			}
 		});
 
-		kryo.setRegistrationRequired(true);
+		// java.util.logging.Level travels inside SystemInfo (its logLevel field). Registered after the
+		// allow-list so the IDs of the classes above stay the same as on nodes without this line.
+		// Level has no no-arg constructor and is resolved by name, so it needs its own serializer.
+		kryo.register(Level.class, new LevelSerializer());
+
+		// An empty allow-list means unrestricted, like Redisson's default Kryo5Codec: the codec is then
+		// used only for the Level serializer (see ClusterServiceImpl.buildRpcCodec).
+		if (!allowedClassNames.isEmpty()) {
+			kryo.setRegistrationRequired(true);
+		}
 		return kryo;
+	}
+
+	/**
+	 * Writes a {@link Level} as its name and value and reads it back with {@link Level#parse(String)},
+	 * by name, or by value when the receiving node does not know the name.
+	 */
+	static final class LevelSerializer extends Serializer<Level> {
+
+		LevelSerializer() {
+			setImmutable(true);
+		}
+
+		@Override
+		public void write(Kryo kryo, Output output, Level level) {
+			output.writeString(level.getName());
+			output.writeInt(level.intValue());
+		}
+
+		@Override
+		public Level read(Kryo kryo, Input input, Class<? extends Level> type) {
+			String name = input.readString();
+			int value = input.readInt();
+			if (name == null) {
+				return Level.parse(Integer.toString(value));
+			}
+			try {
+				return Level.parse(name);
+			} catch (IllegalArgumentException e) {
+				return Level.parse(Integer.toString(value));
+			}
+		}
 	}
 }
