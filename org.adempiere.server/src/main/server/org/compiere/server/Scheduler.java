@@ -579,15 +579,11 @@ public class Scheduler extends AdempiereServer
 		{
 			MPInstancePara iPara = new MPInstancePara (pInstance, processParams[pi].getSeqNo());
 			iPara.setParameterName(processParams[pi].getColumnName());
-			iPara.setInfo(processParams[pi].getName());
 			for (int np = 0; np < sParams.length; np++)
 			{
 				MSchedulerPara sPara = sParams[np];
 				if (iPara.getParameterName().equals(sPara.getColumnName()))
 				{
-					String paraDesc = sPara.getDescription();
-					if (paraDesc != null && paraDesc.trim().length() > 0)
-						iPara.setInfo(sPara.getDescription());
 					String variable = sPara.getParameterDefault();
 					String toVariable = sPara.getParameterToDefault();
 					if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName() + " = " + variable);
@@ -619,17 +615,13 @@ public class Scheduler extends AdempiereServer
 							DecimalFormat decimalFormat = DisplayType.getNumberFormat(sPara.getDisplayType());
 							BigDecimal bd = toBigDecimal(value);
 							iPara.setP_Number(bd);							
+							if (value != null)
+								iPara.setInfo(decimalFormat.format(iPara.getP_Number()));
 							if (toValue != null)
 							{
 								bd = toBigDecimal(toValue);
 								iPara.setP_Number_To(bd);
-							}
-							if (Util.isEmpty(paraDesc)) 
-							{
-								if (value != null)
-									iPara.setInfo(decimalFormat.format(iPara.getP_Number()));
-								if (toValue != null)
-									iPara.setInfo_To(decimalFormat.format(iPara.getP_Number_To()));
+								iPara.setInfo_To(decimalFormat.format(iPara.getP_Number_To()));
 							}
 							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
 								+ " = " + variable + " (=" + bd + "=)");
@@ -639,16 +631,13 @@ public class Scheduler extends AdempiereServer
 							SimpleDateFormat dateFormat = DisplayType.getDateFormat(sPara.getDisplayType());
 							Timestamp ts = toTimestamp(value);
 							iPara.setP_Date(ts);
-							if (toValue != null) {
+							if (value != null)
+								iPara.setInfo(dateFormat.format(iPara.getP_Date()));
+							if (toValue != null)
+							{
 								ts = toTimestamp(toValue);
 								iPara.setP_Date_To(ts);
-							}
-							if (Util.isEmpty(paraDesc)) 
-							{
-								if (value != null)
-									iPara.setInfo(dateFormat.format(iPara.getP_Date()));
-								if (toValue != null)
-									iPara.setInfo_To(dateFormat.format(iPara.getP_Date_To()));
+								iPara.setInfo_To(dateFormat.format(iPara.getP_Date_To()));
 							}
 							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
 								+ " = " + variable + " (=" + ts + "=)");
@@ -656,16 +645,12 @@ public class Scheduler extends AdempiereServer
 						else
 						{
 							iPara.setP_String(value.toString());
+							if (value != null)
+								iPara.setInfo(iPara.getP_String());
 							if (toValue != null) 
 							{
 								iPara.setP_String_To(toValue.toString());
-							}
-							if (Util.isEmpty(paraDesc))
-							{
-								if (value != null)
-									iPara.setInfo(iPara.getP_String());
-								if (toValue != null)
-									iPara.setInfo_To(iPara.getP_String_To());
+								iPara.setInfo_To(iPara.getP_String_To());
 							}
 							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
 								+ " = " + variable
