@@ -375,7 +375,7 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	/**
 	 * Validate FromClause can be parsed by {@link AccessSqlParser}.<br/>
 	 * Validate only one default per table.<br/>
-	 * Call {@link #validate()}.
+	 * Mark the info window invalid when its configuration changes.
 	 */
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
@@ -417,7 +417,7 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 		
 		// Validate info window configuration 
 		if (isNeedValid){
-			validate();
+			setIsValid(false);
 		}
 		
 		return true;
@@ -500,7 +500,7 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 		if (iw.isDistinct())
 			builder.append("DISTINCT ");
 
-		MInfoColumn[] infoColumns = MInfoWindow.getEffectiveInfoColumnsForValidation(ctx, iw, udi);
+		EffectiveInfoColumn[] infoColumns = getEffectiveInfoColumnsForValidation(ctx, iw, udi);
 		// none column make this invalid
 		if (infoColumns.length == 0){
 			return "";
@@ -509,30 +509,39 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 		// build select clause
 		for (int columnIndex = 0; columnIndex < infoColumns.length; columnIndex++) {
 			if (columnIndex > 0)
-			{
 				builder.append(", ");
-			}
-			builder.append(infoColumns[columnIndex].getSelectClause());
+
+			EffectiveInfoColumn effectiveColumn = infoColumns[columnIndex];
+		    MInfoColumn infoColumn = effectiveColumn.infoColumn;
+		    MUserDefInfoColumn userDefColumn = effectiveColumn.userDefColumn;
+
+			String selectClause = userDefColumn != null && !Util.isEmpty(userDefColumn.getSelectClause(), true) ? userDefColumn.getSelectClause() : infoColumn.getSelectClause();
+			builder.append(selectClause);
 		}
 
 		// build from clause
 		builder.append( " FROM ").append(udi != null && !Util.isEmpty(udi.getFromClause()) ? udi.getFromClause() :  iw.getFromClause());
 
 		// build where clause add (1=2) because not need get result, decrease load 
-		if (iw.getWhereClause() != null && iw.getWhereClause().trim().length() > 0) {
-			builder.append(" WHERE (1=2) AND (").append(iw.getWhereClause()).append(")");
+		String whereClause = udi != null && !Util.isEmpty(udi.getWhereClause(), true) ? udi.getWhereClause() : iw.getWhereClause();
+		
+		
+		if (!Util.isEmpty(whereClause)) {
+			builder.append(" WHERE (1=2) AND (").append(whereClause).append(")");
 		} else {
 			builder.append(" WHERE 1=2");
 		}
 
 		// build other (having) clause
-		if (iw.getOtherClause() != null && iw.getOtherClause().trim().length() > 0) {
-			builder.append(" ").append(iw.getOtherClause());
+		String otherClause = udi != null && !Util.isEmpty(udi.getOtherClause(), true) ? udi.getOtherClause() : iw.getOtherClause();
+		if (!Util.isEmpty(otherClause)) {
+			builder.append(" ").append(otherClause);
 		}
 
 		// build order (having) clause
-		if (iw.getOrderByClause() != null && iw.getOrderByClause().trim().length() > 0) {
-			builder.append(" ORDER BY ").append(iw.getOrderByClause());
+		String orderByClause = udi != null && !Util.isEmpty(udi.getOrderByClause(), true) ? udi.getOrderByClause() : iw.getOrderByClause();
+		if (!Util.isEmpty(orderByClause)) {
+			builder.append(" ORDER BY ").append(orderByClause);
 		}
 
 		// replace env value by dummy value
@@ -561,31 +570,24 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	 * @param udi the user-defined InfoWindow, or {@code null} for System validation
 	 * @return the effective columns
 	 */
-	public static MInfoColumn[] getEffectiveInfoColumnsForValidation(Properties ctx, MInfoWindow iw, MUserDefInfo udi) {
+	private static EffectiveInfoColumn[] getEffectiveInfoColumnsForValidation(Properties ctx, MInfoWindow iw, MUserDefInfo udi) {
 
-		MInfoColumn[] infoColumns = iw.getInfoColumns();
+	    MInfoColumn[] infoColumns = iw.getInfoColumns();
+	    List<EffectiveInfoColumn> effectiveColumns = new ArrayList<>();
 
-		// System validation: return all active columns
-		if (udi == null)
-			return Arrays.stream(infoColumns)
-					.filter(MInfoColumn::isActive)
-					.toArray(MInfoColumn[]::new);
+	    for (MInfoColumn infoColumn : infoColumns) {
+	        if (!infoColumn.isActive())
+	            continue;
 
-		List<MInfoColumn> effectiveColumns = new ArrayList<>();
+	        MUserDefInfoColumn userDefColumn = udi != null ? MUserDefInfoColumn.getForUserDefInfo(ctx, infoColumn.getAD_InfoColumn_ID(), udi.getAD_UserDef_Info_ID()) : null;
 
-		for (MInfoColumn infoColumn : infoColumns) {
-			MUserDefInfoColumn userDefColumn = MUserDefInfoColumn.getForUserDefInfo(ctx, infoColumn.getAD_InfoColumn_ID(), udi.getAD_UserDef_Info_ID());
+	        boolean isDisplayed = userDefColumn == null || userDefColumn.getIsDisplayed() == null ? infoColumn.isDisplayed() : MUserDefInfoColumn.ISDISPLAYED_Yes.equals(userDefColumn.getIsDisplayed());
 
-			if (userDefColumn == null) {
-				if (infoColumn.isDisplayed())
-					effectiveColumns.add(infoColumn);
-			}
-			else if (userDefColumn.getIsDisplayed() == null ? infoColumn.isDisplayed() : MUserDefInfoColumn.ISDISPLAYED_Yes.equals(userDefColumn.getIsDisplayed())) {
-				effectiveColumns.add(infoColumn);
-			}
-		}
+	        if (isDisplayed)
+	            effectiveColumns.add(new EffectiveInfoColumn(infoColumn, userDefColumn));
+	    }
 
-		return effectiveColumns.toArray(new MInfoColumn[0]);
+	    return effectiveColumns.toArray(new EffectiveInfoColumn[0]);
 	}
 	
 	/**
@@ -636,4 +638,23 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 		AccessSqlParser sqlParser = new AccessSqlParser("SELECT * FROM " + getFromClause());
 		return sqlParser.getTableInfo(0);
 	}
+
+	/**
+	 * Holds an InfoWindow column and its optional user-defined configuration.
+	 * Used to determine the effective column properties during validation.
+	 */
+	private static class EffectiveInfoColumn {
+	    private final MInfoColumn infoColumn;
+	    private final MUserDefInfoColumn userDefColumn;
+
+	    /**
+	     * @param infoColumn the System InfoWindow column
+	     * @param userDefColumn the user-defined column configuration, or {@code null} if not customized
+	     */
+	    private EffectiveInfoColumn(MInfoColumn infoColumn, MUserDefInfoColumn userDefColumn) {
+	        this.infoColumn = infoColumn;
+	        this.userDefColumn = userDefColumn;
+	    }
+	}
+
 }	//	MInfoWindow
