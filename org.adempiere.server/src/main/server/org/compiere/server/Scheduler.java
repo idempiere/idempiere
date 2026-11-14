@@ -613,49 +613,46 @@ public class Scheduler extends AdempiereServer
 							|| DisplayType.isID(sPara.getDisplayType()))
 						{
 							DecimalFormat decimalFormat = DisplayType.getNumberFormat(sPara.getDisplayType());
-							BigDecimal bd = toBigDecimal(value);
-							iPara.setP_Number(bd);							
 							if (value != null)
+							{
+								iPara.setP_Number(toBigDecimal(value));							
 								iPara.setInfo(decimalFormat.format(iPara.getP_Number()));
+							}
 							if (toValue != null)
 							{
-								bd = toBigDecimal(toValue);
-								iPara.setP_Number_To(bd);
+								iPara.setP_Number_To(toBigDecimal(toValue));
 								iPara.setInfo_To(decimalFormat.format(iPara.getP_Number_To()));
 							}
-							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
-								+ " = " + variable + " (=" + bd + "=)");
 						}
 						else if (DisplayType.isDate(sPara.getDisplayType()))
 						{
 							SimpleDateFormat dateFormat = DisplayType.getDateFormat(sPara.getDisplayType());
-							Timestamp ts = toTimestamp(value);
-							iPara.setP_Date(ts);
 							if (value != null)
+							{
+								iPara.setP_Date(toTimestamp(value));
 								iPara.setInfo(dateFormat.format(iPara.getP_Date()));
+							}
 							if (toValue != null)
 							{
-								ts = toTimestamp(toValue);
-								iPara.setP_Date_To(ts);
+								iPara.setP_Date_To(toTimestamp(toValue));
 								iPara.setInfo_To(dateFormat.format(iPara.getP_Date_To()));
 							}
-							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
-								+ " = " + variable + " (=" + ts + "=)");
 						}
 						else
 						{
-							iPara.setP_String(value.toString());
 							if (value != null)
+							{
+								iPara.setP_String(value.toString());
 								iPara.setInfo(iPara.getP_String());
+							}
 							if (toValue != null) 
 							{
 								iPara.setP_String_To(toValue.toString());
 								iPara.setInfo_To(iPara.getP_String_To());
 							}
-							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
-								+ " = " + variable
-								+ " (=" + value + "=) " + value.getClass().getName());
 						}
+						if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
+								+ " = " + variable + " (=" + iPara.getInfo() + " - " + iPara.getInfo_To() + "=)");
 						if (!iPara.save())
 							log.warning("Not Saved - " + sPara.getColumnName());
 					}
