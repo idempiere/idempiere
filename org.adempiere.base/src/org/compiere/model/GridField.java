@@ -41,10 +41,13 @@ import java.util.regex.Pattern;
 import org.adempiere.base.GeneratedCodeCoverageExclusion;
 import org.adempiere.base.LookupFactoryHelper;
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.util.GridRowCtx;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DefaultEvaluatee;
+import org.compiere.util.DefaultEvaluatee.DataProvider;
+import org.compiere.util.DefaultEvaluatee.GridTabDataProvider;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
@@ -578,7 +581,7 @@ public class GridField
 
 		//  Record is Processed	***	
 		if (checkContext 
-			&& ("Y".equals(get_ValueAsString("Processed")) || "Y".equals(get_ValueAsString("Processing"))) )
+			&& ("Y".equals(get_ValueAsString(ctx, "Processed")) || "Y".equals(get_ValueAsString(ctx, "Processing"))) )
 			return false;
 
 		//  IsActive field is editable, if record not processed
@@ -1315,7 +1318,7 @@ public class GridField
 		if (checkContext)
 		{
 			if (m_vo.DisplayLogic.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
-				return Evaluator.parseSQLLogic(m_vo.DisplayLogic, m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName);
+				return Evaluator.parseSQLLogic(m_vo.DisplayLogic, ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName);
 			}
 			Evaluatee evaluatee = (variableName) -> {return get_ValueAsString(ctx, variableName);};
 			boolean retValue = Evaluator.evaluateLogic(evaluatee, m_vo.DisplayLogic);
@@ -1390,6 +1393,18 @@ public class GridField
 			String value = m_parentEvaluatee.get_ValueAsString(variableName);
 			if (value != null)
 				return value;
+		}
+		if (ctx instanceof GridRowCtx gridRowCtx) {
+			// a GridRowCtx renders one row of the grid view, the GridTab values are those of the current row:
+			// read the typed value of the rendered row (keeps formatting like @GrandTotal<#0.00>@),
+			// keep the GridTab for the column metadata (e.g. @C_DocTypeTarget_ID.DocBaseType@)
+			DataProvider dataProvider = new GridTabDataProvider(getGridTab()) {
+				@Override
+				public Object getValue(String columnName) {
+					return gridRowCtx.getValue(columnName);
+				}
+			};
+			return new DefaultEvaluatee(dataProvider, m_vo.WindowNo, m_vo.TabNo).get_ValueAsString(ctx, variableName);
 		}
 		return new DefaultEvaluatee(getGridTab(), m_vo.WindowNo, m_vo.TabNo).get_ValueAsString(ctx, variableName);
 	}	//	get_ValueAsString
