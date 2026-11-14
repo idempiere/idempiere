@@ -6512,7 +6512,8 @@ public abstract class PO
 				boolean found = false;
 				String dbIndexName = DB.getDatabase().getNameOfUniqueConstraintError(e);
 				if (log.isLoggable(Level.FINE)) log.fine("dbIndexName=" + dbIndexName);
-				MTableIndex index = MTableIndex.get(getCtx(), get_Table_ID(), dbIndexName, get_TrxName());
+				// can't use get_trxName() here as it might have been rollback
+				MTableIndex index = MTableIndex.get(getCtx(), get_Table_ID(), dbIndexName, null);
 				if (index != null && index.getAD_Message_ID() > 0)
 				{
 					MMessage message = MMessage.get(getCtx(), index.getAD_Message_ID());
