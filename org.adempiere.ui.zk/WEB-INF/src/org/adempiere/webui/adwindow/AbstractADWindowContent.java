@@ -1108,7 +1108,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 			public void onCallback(Boolean result) {
 				if (result) {
 					adTabbox.getSelectedGridTab().navigate(adTabbox.getSelectedGridTab().getRowCount() - 1);
-			        focusToActivePanel();
+		        	adTabbox.getSelectedGridTab().refreshParentTabs();
+		        	focusToActivePanel();
 				}
 			}
 		};
@@ -1700,7 +1701,19 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		    {
 		    	if (adTabbox.needSave(true, true))
 				{
-		    		onSave(false, true, callback);
+					onSave(false, true, new Callback <Boolean>() {
+						@Override
+						public void onCallback(Boolean result)
+						{
+							if (callback != null)
+								callback.onCallback(result);
+							if (Boolean.TRUE.equals(result) && adTabbox.getSelectedGridTab() != null && adTabbox.getSelectedGridTab().hasChangedCurrentTabAndParents())
+							{
+								adTabbox.getSelectedGridTab().dataRefreshAll(true, true);
+								adTabbox.getSelectedGridTab().refreshParentTabs();
+							}
+						}
+					});
 				}
 				else
 				{
