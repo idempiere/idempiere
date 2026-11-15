@@ -54,7 +54,7 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 	private static CLogger s_log = CLogger.getCLogger(MRecentItem.class);
 
 	/* Recent Item cached Label */
-	private String m_label;
+	private volatile String m_label;
 
     /**
      * UUID based Constructor
@@ -412,14 +412,13 @@ public class MRecentItem extends X_AD_RecentItem implements ImmutablePOSupport
 	 * @param Record_ID
 	 * @param Record_UU
 	 */
-	public static synchronized void clearLabel(int AD_Table_ID, int Record_ID, String Record_UU) {
-		Iterator<MRecentItem> it = s_cache.values().iterator();
-		while (it.hasNext()) {
-			MRecentItem retValue = it.next();
-			if (   retValue.getAD_Table_ID() == AD_Table_ID
-				&& (   (Record_ID > 0 && retValue.getRecord_ID() == Record_ID)
-				    || (retValue.getRecord_UU() != null && retValue.getRecord_UU().equals(Record_UU)))) {
-				retValue.clearLabel();
+	public static void clearLabel(int AD_Table_ID, int Record_ID, String Record_UU) {
+		MRecentItem[] items = s_cache.values().toArray(new MRecentItem[0]);
+		for (var item : items) {
+			if (   item.getAD_Table_ID() == AD_Table_ID
+				&& (   (Record_ID > 0 && item.getRecord_ID() == Record_ID)
+				    || (item.getRecord_UU() != null && item.getRecord_UU().equals(Record_UU)))) {
+				item.clearLabel();
 			}
 		}
 	}

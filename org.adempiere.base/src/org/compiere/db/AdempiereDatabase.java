@@ -565,5 +565,13 @@ public interface AdempiereDatabase
 	public default ITablePartitionService getTablePartitionService() {
 		return null;
 	}
+
+	/**
+	 * Check if database supports INSERT INTO ... RETURNING *
+	 * @return true if supported
+	 */
+	public default boolean isInsertReturningSupported() {
+		return false;
+	}
 }   //  AdempiereDatabase
 

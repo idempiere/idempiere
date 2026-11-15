@@ -949,7 +949,9 @@ public class MInOutLine extends X_M_InOutLine
 					IReservationTracer tracer = null;
 					IReservationTracerFactory factory = Core.getReservationTracerFactory();
 					if (factory != null) {
-						tracer = factory.newTracer(getParent().getC_DocType_ID(), getParent().getDocumentNo(), getLine(), 
+						MInOut parent = getParent();
+						String docNo = parent.is_UsingTemporaryDocumentNo() ? parent.get_TemporaryDocumentNo() : parent.getDocumentNo();
+						tracer = factory.newTracer(parent.getC_DocType_ID(), docNo, getLine(), 
 								get_Table_ID(), get_ID(), oLine.getM_Warehouse_ID(), 
 								oLine.getM_Product_ID(), oLine.getM_AttributeSetInstance_ID(), oLine.getParent().isSOTrx(), 
 								get_TrxName());

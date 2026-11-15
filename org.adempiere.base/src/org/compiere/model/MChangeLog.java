@@ -18,12 +18,15 @@ package org.compiere.model;
 
 import java.sql.ResultSet;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Trx;
 import org.compiere.util.Util;
 
 /**
@@ -38,6 +41,64 @@ public class MChangeLog extends X_AD_ChangeLog
 	 * generated serial id
 	 */
 	private static final long serialVersionUID = 3082084206319959526L;
+
+	private record ChangeLogKey(int AD_Session_ID, int AD_Column_ID, int AD_ChangeLog_ID) {}
+
+	/** Map of temporary DocumentNo to ChangeLogKey of the insert change log entry */
+	private static final Map<String, ChangeLogKey> s_deferredDocumentNoChangeLogKeys = new ConcurrentHashMap<>();
+
+	/**
+	 * Track the AD_ChangeLog primary key for an insert change log entry created with a temporary DocumentNo.<br/>
+	 * Internal method that should not be called directly by developer.
+	 * @param tempDocumentNo temporary DocumentNo value
+	 * @param AD_Session_ID session id
+	 * @param AD_Column_ID column id
+	 * @param AD_ChangeLog_ID change log id
+	 */
+	private static void addDeferredDocumentNoChangeLog(String tempDocumentNo, int AD_Session_ID, int AD_Column_ID, int AD_ChangeLog_ID)
+	{
+		if (tempDocumentNo == null || AD_Session_ID <= 0 || AD_Column_ID <= 0 || AD_ChangeLog_ID <= 0)
+			return;
+		s_deferredDocumentNoChangeLogKeys.put(tempDocumentNo, new ChangeLogKey(AD_Session_ID, AD_Column_ID, AD_ChangeLog_ID));
+	}
+
+	/**
+	 * Remove the tracked AD_ChangeLog primary key for the given temporary DocumentNo.<br/>
+	 * Internal method that should not be called directly by developer.
+	 * @param tempDocumentNo temporary DocumentNo value
+	 */
+	static void removeDeferredDocumentNoChangeLog(String tempDocumentNo)
+	{
+		if (tempDocumentNo != null)
+			s_deferredDocumentNoChangeLogKeys.remove(tempDocumentNo);
+	}
+
+	/**
+	 * Update the AD_ChangeLog insert entry of the DocumentNo column (if any) with the document no
+	 * that has been generated from the sequence.<br/>
+	 * The insert change log is captured while the record still holds the temporary DocumentNo,
+	 * this replaces that value with the actual document no.<br/>
+	 * Internal method that should not be called directly by developer.
+	 * @param tempDocumentNo temporary document no
+	 * @param docNo generated document no
+	 * @param trx
+	 */
+	static void updateDeferredDocumentNoChangeLog(String tempDocumentNo, String docNo, Trx trx)
+	{
+		if (tempDocumentNo == null)
+			return;
+		ChangeLogKey key = s_deferredDocumentNoChangeLogKeys.remove(tempDocumentNo);
+		if (key == null)
+			return;
+		StringBuilder sql = new StringBuilder("UPDATE ").append(Table_Name)
+				.append(" SET ").append(DB.getDatabase().quoteColumnName(COLUMNNAME_NewValue)).append("=?")
+				.append(" WHERE ").append(DB.getDatabase().quoteColumnName(COLUMNNAME_AD_Session_ID)).append("=?")
+				.append(" AND ").append(DB.getDatabase().quoteColumnName(COLUMNNAME_AD_Column_ID)).append("=?")
+				.append(" AND ").append(DB.getDatabase().quoteColumnName(COLUMNNAME_AD_ChangeLog_ID)).append("=?");
+		DB.executeUpdateEx(sql.toString(),
+				new Object[] {docNo, Integer.valueOf(key.AD_Session_ID()), Integer.valueOf(key.AD_Column_ID()), Integer.valueOf(key.AD_ChangeLog_ID())},
+				trx.getTrxName());
+	}
 
 	/**
 	 * 	Do we track changes for this table
@@ -248,5 +309,17 @@ public class MChangeLog extends X_AD_ChangeLog
 		String value = getNewValue();
 		return value == null || value.equals(NULL);
 	}	//	isNewNull
+
+	@Override
+	protected boolean afterSave(boolean newRecord, boolean success)
+	{
+		if (!success)
+			return false;
+		if (newRecord && EVENTCHANGELOG_Insert.equals(getEventChangeLog()) && MSequence.isTemporaryDocumentNo(getNewValue()))
+		{
+			addDeferredDocumentNoChangeLog(getNewValue(), getAD_Session_ID(), getAD_Column_ID(), getAD_ChangeLog_ID());
+		}
+		return super.afterSave(newRecord, success);
+	}
 	
 }	//	MChangeLog

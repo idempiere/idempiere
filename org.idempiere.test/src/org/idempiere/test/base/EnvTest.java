@@ -39,6 +39,7 @@ import java.util.Locale;
 import java.util.Properties;
 
 import org.adempiere.model.MRelationType;
+import org.compiere.model.I_AD_UserPreference;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MClient;
 import org.compiere.model.MInOut;
@@ -978,6 +979,28 @@ public class EnvTest extends AbstractTestCase {
 		// Test with null context throws exception
 		assertThrows(IllegalArgumentException.class, () -> {
 			Env.IsShowTechnicalInfOnHelp(null);
+		}, "Should throw IllegalArgumentException for null context");
+	}
+
+	@Test
+	public void testIsExcelExportWithParameters() {
+		Properties ctx = new Properties();
+		
+		// Test default (fallback to MSysConfig SHOW_REPORT_PARAMETER_IN_XLS_REPORT when not set)
+		boolean sysConfigDefault = MSysConfig.getBooleanValue(MSysConfig.SHOW_REPORT_PARAMETER_IN_XLS_REPORT, true, Env.getAD_Client_ID(ctx));
+		assertEquals(sysConfigDefault, Env.IsExcelExportWithParameters(ctx), "Default should match sysconfig");
+		
+		// Test setting to true
+		Env.setContext(ctx, "P|" + I_AD_UserPreference.COLUMNNAME_IsExcelExportWithParameters, "Y");
+		assertTrue(Env.IsExcelExportWithParameters(ctx), "Should return true when set to Y");
+		
+		// Test setting to false
+		Env.setContext(ctx, "P|" + I_AD_UserPreference.COLUMNNAME_IsExcelExportWithParameters, "N");
+		assertFalse(Env.IsExcelExportWithParameters(ctx), "Should return false when set to N");
+		
+		// Test with null context throws exception
+		assertThrows(IllegalArgumentException.class, () -> {
+			Env.IsExcelExportWithParameters(null);
 		}, "Should throw IllegalArgumentException for null context");
 	}
 
