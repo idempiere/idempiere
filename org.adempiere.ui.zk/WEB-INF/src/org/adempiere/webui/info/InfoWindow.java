@@ -193,6 +193,15 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
     protected List<WEditor> identifiers;
     protected Properties infoContext;
 
+	/**
+	 * Override a context value for this info window without changing the caller context.
+	 * @param name context variable name
+	 * @param value context variable value
+	 */
+	public void setInfoContextValue(String name, String value) {
+		Env.setContext(infoContext, p_WindowNo, name, value);
+	}
+
     /** embedded Panel (AD_InfoRelated) **/
     protected Tabbox embeddedPane = new Tabbox();
     protected ArrayList <EmbedWinInfo> embeddedWinList = new ArrayList <EmbedWinInfo>();

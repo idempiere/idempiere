@@ -211,6 +211,7 @@ public class DefaultInfoFactory implements IInfoFactory {
 		else if (col.equals("C_BPartner_ID"))
 		{
 			String originalIsSOTrx = null;
+			String tempIsSOTrx = null;
 			try {
 				if (   field != null
 					&& I_C_Order.COLUMNNAME_DropShip_BPartner_ID.equals(field.getColumnName())
@@ -218,10 +219,12 @@ public class DefaultInfoFactory implements IInfoFactory {
 					&& (   field.getGridTab().getTableName().equals(I_C_Order.Table_Name)
 					    || field.getGridTab().getTableName().equals(I_M_InOut.Table_Name))) {
 					originalIsSOTrx = Env.getContext(Env.getCtx(), lookup.getWindowNo(), "IsSOTrx");
-					String tempIsSOTrx = ("Y".equals(originalIsSOTrx) ? "N" : "Y");
+					tempIsSOTrx = ("Y".equals(originalIsSOTrx) ? "N" : "Y");
 					Env.setContext(Env.getCtx(), lookup.getWindowNo(), "IsSOTrx", tempIsSOTrx);
 				}
 				InfoWindow infoWindow = new InfoBPartnerWindow(lookup.getWindowNo(), tableName, keyColumn, queryValue, multiSelection, AD_InfoWindow_ID, true, field, sqlFilter);
+				if (tempIsSOTrx != null)
+					infoWindow.setInfoContextValue("IsSOTrx", tempIsSOTrx);
 				if (infoWindow.loadedOK())
 					return infoWindow;
 			} finally {
