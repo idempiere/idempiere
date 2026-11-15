@@ -23,16 +23,15 @@ import java.util.logging.Level;
 
 import org.compiere.model.MBPartner;
 import org.compiere.model.MConversionRate;
-import org.compiere.model.MConversionRateUtil;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MProcessPara;
 import org.compiere.model.MProductPO;
 import org.compiere.model.MProject;
 import org.compiere.model.MProjectLine;
-import org.compiere.util.AdempiereUserError;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.exceptions.NoCurrencyConversionException;
 
 /**
  *  Generate Purchase Order from Project.
@@ -202,9 +201,8 @@ public class ProjectGenPO extends SvrProcess
 						order.getAD_Client_ID(), order.getAD_Org_ID());
 					if (poPrice == null)
 					{
-						throw new AdempiereUserError(MConversionRateUtil.getErrorMessage(getCtx(),
-								"ErrorConvertingCurrencyToBaseCurrency", C_Currency_ID, order.getC_Currency_ID(),
-								order.getC_ConversionType_ID(), conversionDate, get_TrxName()));
+						throw new NoCurrencyConversionException(C_Currency_ID, order.getC_Currency_ID(),
+								conversionDate, order.getC_ConversionType_ID(), order.getAD_Client_ID(), order.getAD_Org_ID());
 					}
 				}
 
