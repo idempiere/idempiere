@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.compiere.model.AccessSqlParser.TableInfo;
 import org.compiere.util.CCache;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
@@ -223,11 +224,22 @@ public class MUserDefInfo extends X_AD_UserDef_Info {
 
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
-		m_fullMap.remove(getAD_Client_ID());
-		s_cache.clear();
-		return true;
+
+	    if (!Util.isEmpty(getFromClause(), true)) { // Validate FromClause only when customized
+	        AccessSqlParser parser = new AccessSqlParser("SELECT * FROM " + getFromClause());
+	        TableInfo[] tableInfos = parser.getTableInfo(0);
+	        if (tableInfos == null || tableInfos.length == 0) {
+	            log.saveError("ParseFromClauseError", "Failed to parse from clause");
+	            return false;
+	        }
+	    }
+
+	    m_fullMap.remove(getAD_Client_ID());
+	    s_cache.clear();
+
+	    return true;
 	}
-	
+
 	@Override
 	protected boolean beforeDelete() {
 		m_fullMap.remove(getAD_Client_ID());
