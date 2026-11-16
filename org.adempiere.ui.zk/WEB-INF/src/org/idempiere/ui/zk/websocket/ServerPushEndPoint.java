@@ -70,6 +70,7 @@ import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.hc.core5.ssl.SSLContextBuilder;
 import org.apache.hc.core5.util.Timeout;
+import org.adempiere.webui.session.SessionTimeoutMonitor;
 import org.compiere.util.CLogger;
 import org.compiere.util.Util;
 import org.zkoss.json.JSONObject;
@@ -182,6 +183,12 @@ public class ServerPushEndPoint {
 			if (message.equals("__ping__")) {
 				try {
 					session.getBasicRemote().sendText("__pong__");
+				} catch (IllegalArgumentException | IOException e) {
+					CLogger.getCLogger(getClass()).log(Level.WARNING, e.getMessage(), e);
+				}
+			} else if (message.equals(SessionTimeoutMonitor.STATUS_MESSAGE)) {
+				try {
+					session.getBasicRemote().sendText(SessionTimeoutMonitor.getStatusReply(httpSession));
 				} catch (IllegalArgumentException | IOException e) {
 					CLogger.getCLogger(getClass()).log(Level.WARNING, e.getMessage(), e);
 				}

@@ -73,6 +73,9 @@
 			  me.stop();
 		  } else if (event.data=="__pong__") {
 			  setTimeout(() => {if (me.socket) me.socket.send("__ping__");}, 10000);	  
+		  } else if (event.data.startsWith("__session__:")) {
+			  if (org.idempiere.session && org.idempiere.session.onStatus)
+				  org.idempiere.session.onStatus(parseInt(event.data.substring(12), 10));
 		  } else if (event.data) {
 	          let data = event.data.trim();
 	          if (data.startsWith("{") && data.endsWith("}")) {
