@@ -210,20 +210,28 @@ public class DefaultInfoFactory implements IInfoFactory {
 		}
 		else if (col.equals("C_BPartner_ID"))
 		{
+			String originalWindowIsSOTrx = null;
 			String tempIsSOTrx = null;
-			if (   field != null
-				&& I_C_Order.COLUMNNAME_DropShip_BPartner_ID.equals(field.getColumnName())
-				&& field.getGridTab() != null
-				&& (   field.getGridTab().getTableName().equals(I_C_Order.Table_Name)
-				    || field.getGridTab().getTableName().equals(I_M_InOut.Table_Name))) {
-				String originalIsSOTrx = Env.getContext(Env.getCtx(), lookup.getWindowNo(), "IsSOTrx");
-				tempIsSOTrx = ("Y".equals(originalIsSOTrx) ? "N" : "Y");
+			try {
+				if (   field != null
+					&& I_C_Order.COLUMNNAME_DropShip_BPartner_ID.equals(field.getColumnName())
+					&& field.getGridTab() != null
+					&& (   field.getGridTab().getTableName().equals(I_C_Order.Table_Name)
+					    || field.getGridTab().getTableName().equals(I_M_InOut.Table_Name))) {
+					originalWindowIsSOTrx = Env.getCtx().getProperty(lookup.getWindowNo() + "|IsSOTrx");
+					String originalIsSOTrx = Env.getContext(Env.getCtx(), lookup.getWindowNo(), "IsSOTrx");
+					tempIsSOTrx = ("Y".equals(originalIsSOTrx) ? "N" : "Y");
+					Env.setContext(Env.getCtx(), lookup.getWindowNo(), "IsSOTrx", tempIsSOTrx);
+				}
+				InfoWindow infoWindow = new InfoBPartnerWindow(lookup.getWindowNo(), tableName, keyColumn, queryValue, multiSelection, AD_InfoWindow_ID, true, field, sqlFilter);
+				if (tempIsSOTrx != null)
+					infoWindow.setInfoContextValue("IsSOTrx", tempIsSOTrx);
+				if (infoWindow.loadedOK())
+					return infoWindow;
+			} finally {
+				if (tempIsSOTrx != null)
+					Env.setContext(Env.getCtx(), lookup.getWindowNo(), "IsSOTrx", originalWindowIsSOTrx);
 			}
-			InfoWindow infoWindow = new InfoBPartnerWindow(lookup.getWindowNo(), tableName, keyColumn, queryValue, multiSelection, AD_InfoWindow_ID, true, field, sqlFilter);
-			if (tempIsSOTrx != null)
-				infoWindow.setInfoContextValue("IsSOTrx", tempIsSOTrx);
-			if (infoWindow.loadedOK())
-				return infoWindow;
 
 			boolean isSOTrx = true;     //  default
 
