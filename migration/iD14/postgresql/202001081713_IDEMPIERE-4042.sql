@@ -119,7 +119,7 @@ INSERT INTO AD_Field (AD_Field_ID,Name,Description,Help,AD_Tab_ID,AD_Column_ID,I
 ;
 
 -- Oct 10, 2019 3:48:19 PM IST
-UPDATE AD_Field SET SeqNo=105, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_DATE('2019-10-10 15:48:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206211
+UPDATE AD_Field SET SeqNo=105, AD_Reference_Value_ID=NULL, AD_Val_Rule_ID=NULL, IsToolbarButton=NULL,Updated=TO_TIMESTAMP('2019-10-10 15:48:19','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Field_ID=206211
 ;
 
 -- Oct 10, 2019 3:48:25 PM IST
@@ -147,11 +147,11 @@ UPDATE AD_Column SET Callout='org.compiere.model.CalloutRequisition.qty;org.comp
 ;
 
 -- Oct 21, 2019 5:51:34 PM IST
-UPDATE AD_Column SET Callout='org.compiere.model.CalloutRequisition.qty;org.compiere.model.CalloutRequisition.amt',Updated=TO_DATE('2019-10-21 17:51:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214086
+UPDATE AD_Column SET Callout='org.compiere.model.CalloutRequisition.qty;org.compiere.model.CalloutRequisition.amt',Updated=TO_TIMESTAMP('2019-10-21 17:51:34','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214086
 ;
 
 -- Oct 21, 2019 5:53:22 PM IST
-UPDATE AD_Column SET Callout='org.compiere.model.CalloutRequisition.amt',Updated=TO_DATE('2019-10-21 17:53:22','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214082
+UPDATE AD_Column SET Callout='org.compiere.model.CalloutRequisition.amt',Updated=TO_TIMESTAMP('2019-10-21 17:53:22','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=214082
 ;
 
 -- Oct 21, 2019 6:31:50 PM IST

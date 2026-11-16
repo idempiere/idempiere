@@ -244,6 +244,8 @@ public class MRequisitionLine extends X_M_RequisitionLine
 		{
 			MCharge charge = MCharge.get(getCtx(), getC_Charge_ID());
 			setPriceActual(charge.getChargeAmt());
+			setPriceEntered(charge.getChargeAmt());
+			setLineNetAmt();
 		}
 		if (getM_Product_ID() == 0)
 			return;
@@ -291,7 +293,15 @@ public class MRequisitionLine extends X_M_RequisitionLine
 	 */
 	public void setLineNetAmt ()
 	{
-		BigDecimal lineNetAmt = getQtyOrdered().multiply(getPriceActual());
+		BigDecimal qty = getQtyOrdered();
+		if (qty == null)
+			qty = getQty();
+		if (qty == null)
+			qty = Env.ZERO;
+		BigDecimal price = getPriceActual();
+		if (price == null)
+			price = Env.ZERO;
+		BigDecimal lineNetAmt = qty.multiply(price);
 		super.setLineNetAmt (lineNetAmt);
 	}	//	setLineNetAmt
 		
@@ -321,7 +331,7 @@ public class MRequisitionLine extends X_M_RequisitionLine
 			setC_UOM_ID(getM_Product().getC_UOM_ID());
 		}
 		// Set price actual
-		if (getPriceActual().signum() == 0)
+		if (getPriceActual() == null || getPriceActual().signum() == 0)
 			setPrice();
 		setLineNetAmt();
 

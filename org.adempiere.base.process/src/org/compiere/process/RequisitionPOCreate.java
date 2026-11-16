@@ -544,6 +544,14 @@ public class RequisitionPOCreate extends SvrProcess
 		if (C_Campaign_ID <= 0)
 			C_Campaign_ID = rLine.getParent().getC_Campaign_ID();
 
+		int user1ID = rLine.getUser1_ID();
+		if (user1ID <= 0)
+			user1ID = rLine.getParent().getUser1_ID();
+
+		int user2ID = rLine.getUser2_ID();
+		if (user2ID <= 0)
+			user2ID = rLine.getParent().getUser2_ID();
+
 		m_orderLine.setC_Project_ID(C_Project_ID);
 		m_orderLine.setC_Campaign_ID(C_Campaign_ID);
 		m_orderLine.setDescription(rLine.getDescription());
@@ -551,8 +559,8 @@ public class RequisitionPOCreate extends SvrProcess
 		m_orderLine.setPrice((BigDecimal) rLine.getPriceEntered());
 		m_orderLine.setPriceActual(rLine.getPriceActual());
 		m_orderLine.setLineNetAmt();
-		m_orderLine.setUser1_ID(rLine.getUser1_ID());
-		m_orderLine.setUser2_ID(rLine.getUser2_ID());
+		m_orderLine.setUser1_ID(user1ID);
+		m_orderLine.setUser2_ID(user2ID);
 		m_orderLine.saveEx();
 	}	//	newLine
 
