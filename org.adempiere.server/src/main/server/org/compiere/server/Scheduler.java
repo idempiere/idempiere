@@ -36,6 +36,7 @@ import org.adempiere.base.upload.IUploadHandler;
 import org.adempiere.base.upload.IUploadService;
 import org.adempiere.base.upload.UploadMedia;
 import org.adempiere.base.upload.UploadResponse;
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MClient;
@@ -597,9 +598,10 @@ public class Scheduler extends AdempiereServer
 						if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName() + " - empty");
 						break;
 					}
-					if( DisplayType.isText(sPara.getDisplayType())
-							&& Util.isEmpty(String.valueOf(value)) 
-							&& Util.isEmpty(String.valueOf(toValue))) {
+					if ( DisplayType.isText(sPara.getDisplayType())
+					    && (value == null || value.toString().length() == 0)
+					    && (toValue == null || toValue.toString().length() == 0))
+					{
 						if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName() + " - empty string");
 							break;
 					}
@@ -653,15 +655,11 @@ public class Scheduler extends AdempiereServer
 						}
 						if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
 								+ " = " + variable + " (=" + iPara.getInfo() + " - " + iPara.getInfo_To() + "=)");
-						if (!iPara.save())
-							log.warning("Not Saved - " + sPara.getColumnName());
+						iPara.saveEx();
 					}
 					catch (Exception e)
 					{
-						log.warning(sPara.getColumnName()
-							+ " = " + variable + " (" + value
-							+ ") " + value.getClass().getName()
-							+ " - " + e.getLocalizedMessage());
+						throw new AdempiereException(e);
 					}
 					break;
 				}	//	parameter match
