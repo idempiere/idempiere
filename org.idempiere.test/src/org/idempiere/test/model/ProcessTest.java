@@ -25,15 +25,22 @@
 package org.idempiere.test.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Properties;
 
 import org.adempiere.base.Core;
+import org.adempiere.util.IProcessUI;
+import org.adempiere.util.ProcessUtil;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutConfirm;
@@ -54,16 +61,21 @@ import org.compiere.process.ProcessCall;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.compiere.wf.MWFNode;
 import org.compiere.wf.MWFNodeNext;
 import org.compiere.wf.MWFNodePara;
 import org.compiere.wf.MWorkflow;
+import org.idempiere.process.IMappedProcessFactory;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 /**
  * @author hengsin
@@ -326,5 +338,115 @@ public class ProcessTest extends AbstractTestCase {
 		assertEquals(pinstance.getAD_PInstance_ID(), logs[0].getAD_PInstance_ID(), "Invalid MPInstanceLog.AD_PInstance_ID value");
 		assertTrue(logs[0].getAD_PInstance_Log_UU() != null && logs[0].getAD_PInstance_Log_UU().length() == 36, "Invalid MPInstanceLog.AD_PInstance_Log_UU value");
 		assertEquals(X_AD_PInstance_Log.PINSTANCELOGTYPE_Result, logs[0].getPInstanceLogType(), "Invalid MPInstanceLog.PInstanceLogType value");
+	}
+
+	@Test
+	public void testJavaProcessExceptionMsg() {
+		String processClassName = FailingProcess.class.getName();
+		IMappedProcessFactory mappedFactory = Core.getMappedProcessFactory();
+		try {
+			String exceptionClass = IllegalStateException.class.getName();
+			String runtimeExceptionClass = RuntimeException.class.getName();
+			String throwableClass = Throwable.class.getName();
+			String detail = "Test Failure Detail";
+			String processErrorPrefix = Msg.getMsg(Env.getCtx(), "ProcessError") + " ";
+
+			// 1. No AD_Message for exception class or any of its super classes (assumes none exists in the test database):
+			// fallback to exception localized message without calling Msg.getMsg
+			try (MockedStatic<Msg> mockedMsg = Mockito.mockStatic(Msg.class, Mockito.CALLS_REAL_METHODS)) {
+				ProcessInfo pi = runFailingProcess(mappedFactory, new IllegalStateException(detail));
+				assertEquals(processErrorPrefix + detail, pi.getSummary());
+				mockedMsg.verify(() -> Msg.getMsg(any(Properties.class), eq(exceptionClass)), never());
+				mockedMsg.verify(() -> Msg.getMsg(any(Properties.class), eq(throwableClass)), never());
+			}
+
+			// 2. AD_Message exists for specific exception class: format with exception localized message
+			try (MockedStatic<Msg> mockedMsg = Mockito.mockStatic(Msg.class, Mockito.CALLS_REAL_METHODS)) {
+				stubMsg(mockedMsg, exceptionClass, "Custom IllegalState: {0}");
+				ProcessInfo pi = runFailingProcess(mappedFactory, new IllegalStateException(detail));
+				assertEquals(processErrorPrefix + "Custom IllegalState: " + detail, pi.getSummary());
+				mockedMsg.verify(() -> Msg.getMsg(any(Properties.class), eq(throwableClass)), never());
+			}
+
+			// 3. No AD_Message for specific exception class, but AD_Message exists for a super class
+			try (MockedStatic<Msg> mockedMsg = Mockito.mockStatic(Msg.class, Mockito.CALLS_REAL_METHODS)) {
+				stubMsg(mockedMsg, runtimeExceptionClass, "Runtime: {0}");
+				stubMsg(mockedMsg, throwableClass, "Fallback Throwable: {0}");
+				ProcessInfo pi = runFailingProcess(mappedFactory, new IllegalStateException(detail));
+				assertEquals(processErrorPrefix + "Runtime: " + detail, pi.getSummary());
+				mockedMsg.verify(() -> Msg.getMsg(any(Properties.class), eq(throwableClass)), never());
+			}
+
+			// 4. No AD_Message for exception class hierarchy, but AD_Message exists for java.lang.Throwable fallback
+			try (MockedStatic<Msg> mockedMsg = Mockito.mockStatic(Msg.class, Mockito.CALLS_REAL_METHODS)) {
+				stubMsg(mockedMsg, throwableClass, "Fallback Throwable: {0}");
+				ProcessInfo pi = runFailingProcess(mappedFactory, new IllegalStateException(detail));
+				assertEquals(processErrorPrefix + "Fallback Throwable: " + detail, pi.getSummary());
+				mockedMsg.verify(() -> Msg.getMsg(any(Properties.class), eq(exceptionClass)), never());
+			}
+
+			// 5. Single quote in message is kept as is
+			try (MockedStatic<Msg> mockedMsg = Mockito.mockStatic(Msg.class, Mockito.CALLS_REAL_METHODS)) {
+				stubMsg(mockedMsg, exceptionClass, "Can't complete: {0}");
+				ProcessInfo pi = runFailingProcess(mappedFactory, new IllegalStateException(detail));
+				assertEquals(processErrorPrefix + "Can't complete: " + detail, pi.getSummary());
+			}
+
+			// 6. Message without {0} placeholder: exception localized message is appended
+			try (MockedStatic<Msg> mockedMsg = Mockito.mockStatic(Msg.class, Mockito.CALLS_REAL_METHODS)) {
+				stubMsg(mockedMsg, exceptionClass, "Custom IllegalState");
+				ProcessInfo pi = runFailingProcess(mappedFactory, new IllegalStateException(detail));
+				assertEquals(processErrorPrefix + "Custom IllegalState " + detail, pi.getSummary());
+			}
+
+			// 7. Invalid message format: exception localized message is appended to the message
+			try (MockedStatic<Msg> mockedMsg = Mockito.mockStatic(Msg.class, Mockito.CALLS_REAL_METHODS)) {
+				stubMsg(mockedMsg, exceptionClass, "Invalid {0} {");
+				ProcessInfo pi = runFailingProcess(mappedFactory, new IllegalStateException(detail));
+				assertEquals(processErrorPrefix + "Invalid {0} { " + detail, pi.getSummary());
+			}
+
+			// 8. Exception without message: no "null" text in summary
+			try (MockedStatic<Msg> mockedMsg = Mockito.mockStatic(Msg.class, Mockito.CALLS_REAL_METHODS)) {
+				stubMsg(mockedMsg, exceptionClass, "Custom IllegalState: {0}");
+				ProcessInfo pi = runFailingProcess(mappedFactory, new IllegalStateException());
+				assertEquals(processErrorPrefix + "Custom IllegalState:", pi.getSummary());
+			}
+		} finally {
+			mappedFactory.removeMapping(processClassName);
+		}
+	}
+
+	private void stubMsg(MockedStatic<Msg> mockedMsg, String key, String text) {
+		mockedMsg.when(() -> Msg.hasMsg(any(Properties.class), eq(key))).thenReturn(true);
+		mockedMsg.when(() -> Msg.getMsg(any(Properties.class), eq(key))).thenReturn(text);
+	}
+
+	private ProcessInfo runFailingProcess(IMappedProcessFactory mappedFactory, RuntimeException exception) {
+		String processClassName = FailingProcess.class.getName();
+		mappedFactory.addMapping(processClassName, () -> new FailingProcess(exception));
+		ProcessInfo pi = new ProcessInfo("TestExceptionMsg", 0);
+		pi.setClassName(processClassName);
+		boolean ok = ProcessUtil.startJavaProcess(Env.getCtx(), pi, getTrx(), false);
+		assertFalse(ok, "Process should fail when exception is thrown");
+		assertTrue(pi.isError(), "ProcessInfo should be marked as error");
+		return pi;
+	}
+
+	private static class FailingProcess implements ProcessCall {
+		private final RuntimeException exception;
+
+		private FailingProcess(RuntimeException exception) {
+			this.exception = exception;
+		}
+
+		@Override
+		public boolean startProcess(Properties ctx, ProcessInfo pi, Trx trx) {
+			throw exception;
+		}
+
+		@Override
+		public void setProcessUI(IProcessUI processUI) {
+		}
 	}
 }

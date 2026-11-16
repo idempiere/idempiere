@@ -23,6 +23,7 @@ package org.adempiere.util;
 import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
+import java.text.MessageFormat;
 import java.util.Properties;
 import java.util.function.BiConsumer;
 import java.util.logging.Level;
@@ -184,7 +185,7 @@ public final class ProcessUtil {
 		}
 		catch (Throwable e)
 		{
-			pi.setSummary (Msg.getMsg(Env.getCtx(), "ProcessError") + " " + e.getLocalizedMessage(), true);
+			pi.setSummary (Msg.getMsg(ctx, "ProcessError") + " " + getExceptionMessage(ctx, e), true);
 			log.log(Level.SEVERE, pi.getClassName(), e);
 			success = false;
 			return false;
@@ -202,6 +203,43 @@ public final class ProcessUtil {
 			Thread.currentThread().setContextClassLoader(cl);
 		}
 		return success;
+	}
+
+	/**
+	 * Get the message for an exception thrown by a java process.<br/>
+	 * Search AD_Message using the fully qualified class name of the exception, then of each of its super classes
+	 * up to {@link Throwable}. If found, the {0} placeholder of the message is replaced with the localized message
+	 * of the exception (the localized message is appended if the message has no {0} placeholder).
+	 * If no AD_Message is found, the localized message of the exception is returned.
+	 * @param ctx context
+	 * @param e exception
+	 * @return exception message
+	 */
+	private static String getExceptionMessage(Properties ctx, Throwable e) {
+		String detail = e.getLocalizedMessage();
+		String template = null;
+		for (Class<?> c = e.getClass(); c != null && Throwable.class.isAssignableFrom(c); c = c.getSuperclass()) {
+			if (Msg.hasMsg(ctx, c.getName())) {
+				template = Msg.getMsg(ctx, c.getName());
+				break;
+			}
+		}
+		if (template == null)
+			return detail;
+
+		if (detail == null)
+			detail = "";
+		if (!template.contains("{0}"))
+			return (template + " " + detail).trim();
+
+		try {
+			// escape single quotes so that they are not treated as MessageFormat quoting characters
+			return MessageFormat.format(template.replace("'", "''"), detail).trim();
+		} catch (IllegalArgumentException ex) {
+			if (log.isLoggable(Level.FINE))
+				log.log(Level.FINE, "Invalid message format: " + template, ex);
+			return (template + " " + detail).trim();
+		}
 	}
 
 	/**
