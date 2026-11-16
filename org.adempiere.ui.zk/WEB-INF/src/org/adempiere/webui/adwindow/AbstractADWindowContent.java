@@ -1106,17 +1106,18 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     @Override
     public void onLast()
     {
+    	final GridTab selectedGridTab = adTabbox.getSelectedGridTab();
         Callback<Boolean> callback = new Callback<Boolean>() {
 			@Override
 			public void onCallback(Boolean result) {
 				if (result) {
-					adTabbox.getSelectedGridTab().navigate(adTabbox.getSelectedGridTab().getRowCount() - 1);
-		        	adTabbox.getSelectedGridTab().refreshParentTabs();
-		        	focusToActivePanel();
+					if (selectedGridTab != null)
+						selectedGridTab.navigate(selectedGridTab.getRowCount() - 1);
+			        focusToActivePanel();
 				}
 			}
 		};
-		onSave(false, true, callback);
+		saveAndNavigate(callback);
     }
 
     /**
@@ -1704,19 +1705,23 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		    {
 		    	if (adTabbox.needSave(true, true))
 				{
+					final GridTab selectedGridTab = adTabbox.getSelectedGridTab();
 					onSave(false, true, new Callback <Boolean>() {
 						@Override
 						public void onCallback(Boolean result)
 						{
 							if (callback != null)
 								callback.onCallback(result);
-							GridTab selectedGridTab = adTabbox.getSelectedGridTab();
-							if (Boolean.TRUE.equals(result) && selectedGridTab != null && selectedGridTab.hasChangedCurrentTabAndParents())
+							if (Boolean.TRUE.equals(result) && selectedGridTab != null)
 							{
-								if (!selectedGridTab.isNew())
-									selectedGridTab.dataRefreshAll(true, true);
-								selectedGridTab.refreshParentTabs();
-								CLogger.retrieveError();
+								if (selectedGridTab.hasChangedCurrentTabAndParents())
+								{
+									if (!selectedGridTab.isNew())
+										selectedGridTab.dataRefreshAll(true, true);
+									CLogger.retrieveError();
+								}
+								if (selectedGridTab.isDetail())
+									selectedGridTab.refreshParentTabs();
 							}
 						}
 					});
