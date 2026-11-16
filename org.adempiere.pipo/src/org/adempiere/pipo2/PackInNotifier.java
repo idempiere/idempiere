@@ -115,8 +115,7 @@ public class PackInNotifier {
 		String emailSys = MSysConfig.getValue(MSysConfig.EMAIL_NOTIFY_2PACK, "", 0).trim();
 		if (!emailSys.isEmpty() && !emailList.equals(emailSys))
 			emailList += "," + emailSys;
-		boolean attachNotify = MSysConfig.getBooleanValue(MSysConfig.ATTACH_NOTIFY_2PACK, false, Env.getAD_Client_ID(Env.getCtx()))
-				&& packIn.getAD_Package_Imp_ID() > 0;
+		boolean attachNotify = MSysConfig.getBooleanValue(MSysConfig.ATTACH_NOTIFY_2PACK, false, Env.getAD_Client_ID(Env.getCtx()));
 		if (emailList.isEmpty() && !attachNotify)
 			return;
 
@@ -250,12 +249,17 @@ public class PackInNotifier {
 	        	attachmentTableId = X_AD_Package_Imp_Proc.Table_ID;
 	        	attachmentRecordId = packIn.getAD_Package_Imp_Proc().getAD_Package_Imp_Proc_ID();
 	        }
-	        MAttachment attachment = MAttachment.get(Env.getCtx(), attachmentTableId, attachmentRecordId);
-			if (attachment == null)
-				attachment = new MAttachment(Env.getCtx(), attachmentTableId, attachmentRecordId, null, null);
-			attachment.addEntry(attachFileName.toString(), fullContent.toString().getBytes(StandardCharsets.UTF_8));
-			attachment.saveEx();
-			attachment.close();
+	        MAttachment attachment = null;
+	        try {
+	        	attachment = MAttachment.get(Env.getCtx(), attachmentTableId, attachmentRecordId);
+	        	if (attachment == null)
+	        		attachment = new MAttachment(Env.getCtx(), attachmentTableId, attachmentRecordId, null, null);
+	        	attachment.addEntry(attachFileName.toString(), fullContent.toString().getBytes(StandardCharsets.UTF_8));
+	        	attachment.saveEx();
+	        } finally {
+	        	if (attachment != null)
+	        		attachment.close();
+	        }
 		}
 
 	}

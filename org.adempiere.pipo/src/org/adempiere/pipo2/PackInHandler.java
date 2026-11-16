@@ -404,7 +404,7 @@ public class PackInHandler extends DefaultHandler {
 		if (AD_Package_Imp_ID <= 0 && AD_Package_Imp_Inst_ID <= 0)
 			return;
 		Trx trx = m_ctx.trx;
-		if (packageStatusUpdateInTrx && trx != null && trx.getConnection() != null) {
+		if (packageStatusUpdateInTrx && trx != null && trx.getConnection(false) != null) {
 			// the import transaction is not rolled back yet, so it can hold the lock on the
 			// AD_Package_Imp rows, defer the status update to the rollback event
 			trx.addTrxEventListener(new TrxEventListener() {
@@ -416,6 +416,7 @@ public class PackInHandler extends DefaultHandler {
 				@Override
 				public void afterRollback(Trx trx, boolean success) {
 					persistPackageStatus();
+					trx.removeTrxEventListener(this);
 				}
 
 				@Override
