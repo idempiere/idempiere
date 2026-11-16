@@ -98,6 +98,18 @@ public class ModelClassGenerator
 	/**	Logger			*/
 	private static final CLogger	log	= CLogger.getCLogger (ModelClassGenerator.class);
 
+	/**
+	 * @param columnName _ID column
+	 * @return true when 0 is a valid value of the column, so the setter stores null only below 0
+	 */
+	static boolean isZeroValidIdColumn(String columnName)
+	{
+		return columnName.equals("AD_Client_ID") || columnName.equals("AD_Org_ID")
+			|| columnName.equals("Record_ID") || columnName.equals("C_DocType_ID")
+			|| columnName.equals("Node_ID") || columnName.equals("AD_Role_ID")
+			|| columnName.equals("M_AttributeSet_ID") || columnName.equals("M_AttributeSetInstance_ID");
+	}
+
 	/** Package Name */
 	private String packageName = "";
 
@@ -486,10 +498,7 @@ public class ModelClassGenerator
 			{
 				int firstOK = 1;
 				//	check special column
-				if (columnName.equals("AD_Client_ID") || columnName.equals("AD_Org_ID")
-					|| columnName.equals("Record_ID") || columnName.equals("C_DocType_ID")
-					|| columnName.equals("Node_ID") || columnName.equals("AD_Role_ID")
-					|| columnName.equals("M_AttributeSet_ID") || columnName.equals("M_AttributeSetInstance_ID"))
+				if (isZeroValidIdColumn(columnName))
 					firstOK = 0;
 				//	set _ID to null if < 0 for special column or < 1 for others
 				sb.append("\t\tif (").append (columnName).append (" < ").append(firstOK).append(")").append(NL)
@@ -647,7 +656,7 @@ public class ModelClassGenerator
 		public static final String NEXTACTION_None = "N";
 		public static final String NEXTACTION_FollowUp = "F";
 	 */
-	private String addListValidation (StringBuilder sb, int AD_Reference_ID,
+	static String addListValidation (StringBuilder sb, int AD_Reference_ID,
 		String columnName)
 	{
 		StringBuilder retValue = new StringBuilder();

@@ -46,6 +46,7 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.idempiere.cache.ImmutableIntPOCache;
+import org.idempiere.cache.ImmutablePOCache;
 import org.idempiere.cache.ImmutablePOSupport;
 
 /**
@@ -101,7 +102,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	 *	@param trxName transaction
 	 *	@return MTable
 	 */
-	public static synchronized MTable get (Properties ctx, int AD_Table_ID, String trxName)
+	public static MTable get (Properties ctx, int AD_Table_ID, String trxName)
 	{
 		Integer key = Integer.valueOf(AD_Table_ID);
 		MTable retValue = s_cache.get (ctx, key, e -> new MTable(ctx, e));
@@ -111,7 +112,11 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		retValue = new MTable (ctx, AD_Table_ID, trxName);
 		if (retValue.get_ID () == AD_Table_ID) 
 		{
-			s_cache.put (key, retValue, e -> new MTable(Env.getCtx(), e));
+			if (retValue.getTableName() != null) {
+				s_cache.put (key, retValue, e -> new MTable(Env.getCtx(), e));
+				s_cacheByName.put (retValue.getTableName().toUpperCase(), retValue, e -> new MTable(Env.getCtx(), e));
+			}
+			//maintain backward compatibility that MTable.get(0) should return a new instance of MTable
 			return retValue;
 		}
 		return null;
@@ -138,7 +143,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	 *	@param tableName case insensitive table name
 	 *	@return MTable
 	 */
-	public static synchronized MTable get (Properties ctx, String tableName)
+	public static MTable get (Properties ctx, String tableName)
 	{
 		return get(ctx, tableName, null);
 	}	//	get
@@ -150,20 +155,15 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 	 *  @param trxName
 	 *	@return MTable
 	 */
-	public static synchronized MTable get (Properties ctx, String tableName, String trxName)
+	public static MTable get (Properties ctx, String tableName, String trxName)
 	{
 		if (tableName == null)
 			return null;
-		MTable[] tables = s_cache.values().toArray(new MTable[0]);
-		for (MTable retValue : tables)
-		{
-			if (tableName.equalsIgnoreCase(retValue.getTableName()))
-			{
-				return s_cache.get (ctx, retValue.get_ID(), e -> new MTable(ctx, e));
-			}
-		}
-		//
-		MTable retValue = null;
+		
+		MTable retValue = s_cacheByName.get (ctx, tableName.toUpperCase(), e -> new MTable(ctx, e));
+		if (retValue != null) 
+			return retValue;
+		
 		String sql = "SELECT * FROM AD_Table WHERE UPPER(TableName)=?";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -189,6 +189,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		{
 			Integer key = Integer.valueOf(retValue.getAD_Table_ID());
 			s_cache.put (key, retValue, e -> new MTable(Env.getCtx(), e));
+			s_cacheByName.put (tableName.toUpperCase(), retValue, e -> new MTable(Env.getCtx(), e));
 		}
 		return retValue;
 	}	//	get
@@ -226,8 +227,10 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		return DB.getKeyNamePairsEx(trxName, sql, withEmptyElement);			
 	}
 	
-	/**	Cache						*/
+	/**	AD_Table_ID:MTable						*/
 	private static ImmutableIntPOCache<Integer,MTable> s_cache = new ImmutableIntPOCache<Integer,MTable>(Table_Name, Table_Name, 20, 0, false, 0);
+	/** TableName:MTable */
+	private static ImmutablePOCache<String,MTable> s_cacheByName = new ImmutablePOCache<String,MTable>(Table_Name, Table_Name, 20, 0, false, 0);
 
 	/**	Static Logger	*/
 	private static CLogger	s_log	= CLogger.getCLogger (MTable.class);
@@ -355,6 +358,8 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		this.m_columnNameMap = copy.m_columnNameMap != null ? new ConcurrentHashMap<String, Integer>(copy.m_columnNameMap) : null;
 		this.m_columnIdMap = copy.m_columnIdMap != null ? new ConcurrentHashMap<Integer, Integer>(copy.m_columnIdMap) : null;
 		this.m_viewComponents = copy.m_viewComponents != null ? Arrays.stream(copy.m_viewComponents).map(e -> {return new MViewComponent(ctx, e, trxName);}).toArray(MViewComponent[]::new) : null;
+		if (Util.isEmpty(trxName, true))
+			this.hasCustomTree = copy.hasCustomTree;
 	}
 
 	/**	Columns				*/
@@ -1231,7 +1236,7 @@ public class MTable extends X_AD_Table implements ImmutablePOSupport
 		return indexName.toString();
 	}
 
-	private Boolean hasCustomTree = null;
+	private volatile Boolean hasCustomTree = null;
 
 	/**
 	 * If the table has a custom tree defined

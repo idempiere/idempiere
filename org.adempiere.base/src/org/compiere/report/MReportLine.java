@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -149,11 +150,11 @@ public class MReportLine extends X_PA_ReportLine
 	 */
 	public void list()
 	{
-		System.out.println("- " + toString());
+		if (log.isLoggable(Level.INFO)) log.info("- " + toString());
 		if (m_sources == null)
 			return;
 		for (int i = 0; i < m_sources.length; i++)
-			System.out.println("  - " + m_sources[i].toString());
+			if (log.isLoggable(Level.INFO)) log.info("  - " + m_sources[i].toString());
 	}	//	list
 
 	/**
@@ -165,7 +166,15 @@ public class MReportLine extends X_PA_ReportLine
 		String ColumnName = null;
 		for (int i = 0; i < m_sources.length; i++)
 		{
-			String col = MAcctSchemaElement.getColumnName (m_sources[i].getElementType());
+			String col = null;
+			if (m_sources[i].getElementType().equals(MReportSource.ELEMENTTYPE_Combination))
+			{
+				col = m_sources[i].getCombinationKey();
+			}
+			else
+			{
+				col = MAcctSchemaElement.getColumnName(m_sources[i].getElementType());
+			}
 			if (ColumnName == null || ColumnName.length() == 0)
 				ColumnName = col;
 			else if (!ColumnName.equals(col))
@@ -550,4 +559,133 @@ public class MReportLine extends X_PA_ReportLine
 		return new float[] { 10 * width, 4 * width };
 	} // getPatternDashed
 
+	/**
+	 * Get Select Clause for Combination
+	 *
+	 * @param  source current report source
+	 * @return        select clause
+	 */
+	public String getSelectClauseCombination(MReportSource source)
+	{
+		StringBuilder select = new StringBuilder();
+
+		for (CombinationDimension dimension : getCombinationDimensions(source))
+		{
+			if (dimension.enabled)
+				appendCombinationLink(select, dimension.columnName, dimension.includeNulls);
+		}
+
+		log.fine(select.toString());
+
+		return select.toString();
+	} // getSelectClauseCombination
+
+	/**
+	 * Get GROUP BY columns for combination query.
+	 *
+	 * @param  source current report source
+	 * @return        GROUP BY columns
+	 */
+	public List<String> getCombinationGroupByColumns(MReportSource source)
+	{
+		List<String> groupBy = new ArrayList<>();
+
+		for (CombinationDimension dimension : getCombinationDimensions(source))
+		{
+			if (dimension.enabled)
+				groupBy.add(dimension.columnName);
+		}
+
+		return groupBy;
+	} // getCombinationGroupByColumns
+
+	/**
+	 * Get combination dimensions for the given report source.
+	 * 
+	 * @param  source
+	 * @return
+	 */
+	private List<CombinationDimension> getCombinationDimensions(MReportSource source)
+	{
+		List<CombinationDimension> dimensions = new ArrayList<>();
+
+		if (source == null)
+			return dimensions;
+
+		dimensions.add(new CombinationDimension(source.getOrg_ID() != 0 || source.isIncludeNullsOrg(),
+												source.isIncludeNullsOrg(), MReportSource.COLUMNNAME_AD_Org_ID));
+
+		dimensions.add(new CombinationDimension(source.getAD_OrgTrx_ID() != 0	|| source.isIncludeNullsOrgTrx(),
+												source.isIncludeNullsOrgTrx(), MReportSource.COLUMNNAME_AD_OrgTrx_ID));
+
+		dimensions.add(new CombinationDimension(source.getC_ElementValue_ID() != 0	|| source.isIncludeNullsElementValue(),
+												source.isIncludeNullsElementValue(), "Account_ID"));
+
+		dimensions.add(new CombinationDimension(source.getC_BPartner_ID() != 0	|| source.isIncludeNullsBPartner(),
+												source.isIncludeNullsBPartner(), MReportSource.COLUMNNAME_C_BPartner_ID));
+
+		dimensions.add(new CombinationDimension(source.getM_Product_ID() != 0	|| source.isIncludeNullsProduct(),
+												source.isIncludeNullsProduct(), MReportSource.COLUMNNAME_M_Product_ID));
+
+		dimensions.add(new CombinationDimension(source.getC_Location_ID() != 0	|| source.isIncludeNullsLocation(),
+												source.isIncludeNullsLocation(), "C_LocFrom_ID"));
+
+		dimensions.add(new CombinationDimension(source.getC_Project_ID() != 0	|| source.isIncludeNullsProject(),
+												source.isIncludeNullsProject(), MReportSource.COLUMNNAME_C_Project_ID));
+
+		dimensions.add(new CombinationDimension(source.getC_SalesRegion_ID() != 0	|| source.isIncludeNullsSalesRegion(),
+												source.isIncludeNullsSalesRegion(), MReportSource.COLUMNNAME_C_SalesRegion_ID));
+
+		dimensions.add(new CombinationDimension(source.getC_Activity_ID() != 0	|| source.isIncludeNullsActivity(),
+												source.isIncludeNullsActivity(), MReportSource.COLUMNNAME_C_Activity_ID));
+
+		dimensions.add(new CombinationDimension(source.getC_Campaign_ID() != 0	|| source.isIncludeNullsCampaign(),
+												source.isIncludeNullsCampaign(), MReportSource.COLUMNNAME_C_Campaign_ID));
+
+		dimensions.add(new CombinationDimension(source.getUserElement1_ID() != 0	|| source.isIncludeNullsUserElement1(),
+												source.isIncludeNullsUserElement1(), MReportSource.COLUMNNAME_UserElement1_ID));
+
+		dimensions.add(new CombinationDimension(source.getUserElement2_ID() != 0	|| source.isIncludeNullsUserElement2(),
+												source.isIncludeNullsUserElement2(), MReportSource.COLUMNNAME_UserElement2_ID));
+
+		dimensions.add(new CombinationDimension(source.getUser1_ID() != 0	|| source.isIncludeNullsUserList1(),
+												source.isIncludeNullsUserList1(), MReportSource.COLUMNNAME_User1_ID));
+
+		dimensions.add(new CombinationDimension(source.getUser2_ID() != 0	|| source.isIncludeNullsUserList2(),
+												source.isIncludeNullsUserList2(), MReportSource.COLUMNNAME_User2_ID));
+		return dimensions;
+	}
+
+	/**
+	 * Append combination link to the select clause.
+	 * 
+	 * @param select
+	 * @param columnName
+	 * @param includeNulls
+	 */
+	private void appendCombinationLink(StringBuilder select, String columnName, boolean includeNulls)
+	{
+		select.append(" AND (fb.").append(columnName).append("=x.").append(columnName);
+		if (includeNulls)
+			select.append(" OR (fb.").append(columnName).append(" IS NULL AND x.").append(columnName).append(" IS NULL)");
+		select.append(")");
+	} // appendCombinationLink
+
+	/**
+	 * Class to hold information about a combination dimension, including whether it is enabled,
+	 * whether to include nulls, and the column name.
+	 */
+	private static final class CombinationDimension
+	{
+		private final boolean	enabled;
+		private final boolean	includeNulls;
+		private final String	columnName;
+
+		private CombinationDimension(boolean enabled, boolean includeNulls, String columnName)
+		{
+			this.enabled = enabled;
+			this.includeNulls = includeNulls;
+			this.columnName = columnName;
+		}
+	}
 }	//	MReportLine

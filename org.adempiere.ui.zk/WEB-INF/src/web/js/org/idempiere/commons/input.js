@@ -182,3 +182,17 @@ zk.afterLoad('zul.inp', function() {
 
     });
 });
+
+zk.afterLoad('zul.wgt', function() {
+
+    // zul.wgt.Checkbox ignore all click (include right click) when disabled,
+    // so read only Yes/No field show browser context menu instead of field context menu
+
+    zk.override(zul.wgt.Checkbox.prototype, "shallIgnoreClick_", function(evt) {
+
+      if (evt && evt.name == 'onRightClick' && this.getContext())
+        return false;
+      return this.$shallIgnoreClick_(evt);
+    });
+
+});

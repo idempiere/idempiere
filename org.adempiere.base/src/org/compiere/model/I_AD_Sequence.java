@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_Sequence
  *  @author iDempiere (generated) 
- *  @version Release 13
+ *  @version Release 14
  */
 public interface I_AD_Sequence 
 {
@@ -191,6 +191,19 @@ public interface I_AD_Sequence
 	  */
 	public boolean isActive();
 
+    /** Column name IsAllowSequenceGaps */
+    public static final String COLUMNNAME_IsAllowSequenceGaps = "IsAllowSequenceGaps";
+
+	/** Set Allow Gaps.
+	  * Allow gaps in the generated sequence numbers
+	  */
+	public void setIsAllowSequenceGaps (boolean IsAllowSequenceGaps);
+
+	/** Get Allow Gaps.
+	  * Allow gaps in the generated sequence numbers
+	  */
+	public boolean isAllowSequenceGaps();
+
     /** Column name IsAudited */
     public static final String COLUMNNAME_IsAudited = "IsAudited";
 
@@ -242,6 +255,19 @@ public interface I_AD_Sequence
 	  * The document number  will be used as the record key
 	  */
 	public boolean isTableID();
+
+    /** Column name IsUUIDSeq */
+    public static final String COLUMNNAME_IsUUIDSeq = "IsUUIDSeq";
+
+	/** Set Is UUID.
+	  * Defines if the sequence is UUID based
+	  */
+	public void setIsUUIDSeq (boolean IsUUIDSeq);
+
+	/** Get Is UUID.
+	  * Defines if the sequence is UUID based
+	  */
+	public boolean isUUIDSeq();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

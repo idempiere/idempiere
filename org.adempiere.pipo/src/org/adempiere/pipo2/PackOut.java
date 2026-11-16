@@ -28,12 +28,16 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.logging.Level;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,12 +51,16 @@ import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.MChangeLog;
 import org.compiere.model.MClient;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
+import org.compiere.model.PO;
 import org.compiere.tools.FileUtil;
 import org.compiere.util.CLogger;
+import org.compiere.util.DB;
 import org.compiere.util.Trx;
+import org.compiere.util.Util;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -93,6 +101,7 @@ public class PackOut
 	private PIPOContext pipoContext = new PIPOContext();
 	private Timestamp fromDate;
 	private boolean isExportDictionaryEntity = false;
+	private boolean isExportOnlyChangedValue = false;
 	private String exportFormat = FORMAT_XML;
 
 	public static final int MAX_OFFICIAL_ID = MTable.MAX_OFFICIAL_ID;
@@ -538,6 +547,82 @@ public class PackOut
 	}
 
 	/**
+	 * Get the columns changed since From Date according to the change log (IDEMPIERE-7134).<br/>
+	 * The full record must be exported (null is returned) when:
+	 * <ul>
+	 * <li>Only Value Changed is not set</li>
+	 * <li>From Date is not set</li>
+	 * <li>change log is not enabled for the table</li>
+	 * <li>the record has been created since From Date</li>
+	 * <li>the record has no change log since From Date</li>
+	 * </ul>
+	 * @param po record to export
+	 * @return upper case column names changed since From Date, or null to export the full record
+	 */
+	public Set<String> getChangedColumnNames(PO po) {
+		if (!isExportOnlyChangedValue || fromDate == null || po == null || po.is_new())
+			return null;
+		if (!MChangeLog.isLogged(po.get_Table_ID()))
+			return null;
+		Timestamp created = po.getCreated();
+		if (created == null || !created.before(fromDate))
+			return null;
+
+		String[] keyColumns = po.get_KeyColumns();
+		int recordId = keyColumns != null && keyColumns.length == 1 ? po.get_ID() : 0;
+		String recordUU = po.get_UUID();
+		if (recordId <= 0 && Util.isEmpty(recordUU))
+			return null;
+
+		List<Object> params = new ArrayList<Object>();
+		StringBuilder sql = new StringBuilder("SELECT DISTINCT c.ColumnName, cl.EventChangeLog")
+				.append(" FROM AD_ChangeLog cl")
+				.append(" JOIN AD_Column c ON (c.AD_Column_ID=cl.AD_Column_ID)")
+				.append(" WHERE cl.AD_Table_ID=? AND cl.Created>=? AND (");
+		params.add(po.get_Table_ID());
+		params.add(fromDate);
+		if (recordId > 0) {
+			sql.append("cl.Record_ID=?");
+			params.add(recordId);
+		}
+		if (!Util.isEmpty(recordUU)) {
+			if (recordId > 0)
+				sql.append(" OR ");
+			sql.append("cl.Record_UU=?");
+			params.add(recordUU);
+		}
+		sql.append(")");
+
+		Set<String> changedColumns = new HashSet<String>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			pstmt = DB.prepareStatement(sql.toString(), null);
+			DB.setParameters(pstmt, params);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				String event = rs.getString(2);
+				// record (re)created since from date
+				if (MChangeLog.EVENTCHANGELOG_Insert.equals(event))
+					return null;
+				if (MChangeLog.EVENTCHANGELOG_Delete.equals(event))
+					continue;
+				changedColumns.add(rs.getString(1).toUpperCase());
+			}
+		} catch (Exception e) {
+			throw new AdempiereException(e.getLocalizedMessage(), e);
+		} finally {
+			DB.close(rs, pstmt);
+		}
+
+		// updated without change log
+		if (changedColumns.isEmpty())
+			return null;
+
+		return changedColumns;
+	}
+
+	/**
 	 * @param ctx
 	 */
 	public void setCtx(Properties ctx) {
@@ -559,6 +644,20 @@ public class PackOut
 
 	public void setExportDictionaryEntity(boolean isExportDictionaryEntity) {
 		this.isExportDictionaryEntity = isExportDictionaryEntity;
+	}
+
+	/**
+	 * @return true to export only the values changed since From Date (IDEMPIERE-7134)
+	 */
+	public boolean isExportOnlyChangedValue() {
+		return isExportOnlyChangedValue;
+	}
+
+	/**
+	 * @param isExportOnlyChangedValue true to export only the values changed since From Date
+	 */
+	public void setExportOnlyChangedValue(boolean isExportOnlyChangedValue) {
+		this.isExportOnlyChangedValue = isExportOnlyChangedValue;
 	}
 
 	public void setIncludeOrganizationId(boolean includeOrganizationId) {

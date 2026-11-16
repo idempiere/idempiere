@@ -149,5 +149,29 @@ public interface ITaxProvider {
 	{
 		return false;
 	}
+
+	/**
+	 * Update the line net amount, tax amount and line total amount of an invoice line.<br/>
+	 * Called when the line's tax amount must be calculated (before save, and when the line is created from an RMA line).<br/>
+	 * The default calls {@link MInvoiceLine#setTaxAmt()}, which:
+	 * <ul>
+	 * <li>recalculates LineNetAmt ({@link MInvoiceLine#setLineNetAmt()})</li>
+	 * <li>stops there if the tax is document level and the invoice is a sales transaction</li>
+	 * <li>calculates TaxAmt with the rate of the line's tax</li>
+	 * <li>sets LineTotalAmt to LineNetAmt if the price includes tax, otherwise to LineNetAmt + TaxAmt</li>
+	 * </ul>
+	 * A provider that calculates the tax itself can override this method, so that the line shows
+	 * the same tax as the provider's document tax lines (see IDEMPIERE-7145).
+	 * An overriding method must update LineNetAmt, TaxAmt and LineTotalAmt in the same way.
+	 * A provider returning false should log the reason with log.saveError.
+	 * @param provider tax provider of the line's tax
+	 * @param line invoice line
+	 * @return true if success, false otherwise
+	 */
+	public default boolean updateLineTax(MTaxProvider provider, MInvoiceLine line)
+	{
+		line.setTaxAmt();
+		return true;
+	}
 	
 }

@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for C_DocType
  *  @author iDempiere (generated) 
- *  @version Release 13
+ *  @version Release 14
  */
 public interface I_C_DocType 
 {
@@ -483,6 +483,19 @@ AlwaysPosted&quot;
 	  * Index the document for the internal search engine
 	  */
 	public boolean isIndexed();
+
+    /** Column name IsLazyGenerateDocNo */
+    public static final String COLUMNNAME_IsLazyGenerateDocNo = "IsLazyGenerateDocNo";
+
+	/** Set Lazy Generate Document No.
+	  * Defer generation of Document No from sequence until transaction pre-commit
+	  */
+	public void setIsLazyGenerateDocNo (String IsLazyGenerateDocNo);
+
+	/** Get Lazy Generate Document No.
+	  * Defer generation of Document No from sequence until transaction pre-commit
+	  */
+	public String getIsLazyGenerateDocNo();
 
     /** Column name IsNoPriceListCheck */
     public static final String COLUMNNAME_IsNoPriceListCheck = "IsNoPriceListCheck";

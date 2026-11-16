@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_DocType
  *  @author iDempiere (generated)
- *  @version Release 13 - $Id$ */
+ *  @version Release 14 - $Id$ */
 @org.adempiere.base.Model(table="C_DocType")
 public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20260309L;
+	private static final long serialVersionUID = 20261105L;
 
     /** Standard Constructor */
     public X_C_DocType (Properties ctx, int C_DocType_ID, String trxName)
@@ -979,6 +979,29 @@ public class X_C_DocType extends PO implements I_C_DocType, I_Persistent
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	/** IsLazyGenerateDocNo AD_Reference_ID=319 */
+	public static final int ISLAZYGENERATEDOCNO_AD_Reference_ID=319;
+	/** No = N */
+	public static final String ISLAZYGENERATEDOCNO_No = "N";
+	/** Yes = Y */
+	public static final String ISLAZYGENERATEDOCNO_Yes = "Y";
+	/** Set Lazy Generate Document No.
+		@param IsLazyGenerateDocNo Defer generation of Document No from sequence until transaction pre-commit
+	*/
+	public void setIsLazyGenerateDocNo (String IsLazyGenerateDocNo)
+	{
+
+		set_Value (COLUMNNAME_IsLazyGenerateDocNo, IsLazyGenerateDocNo);
+	}
+
+	/** Get Lazy Generate Document No.
+		@return Defer generation of Document No from sequence until transaction pre-commit
+	  */
+	public String getIsLazyGenerateDocNo()
+	{
+		return (String)get_Value(COLUMNNAME_IsLazyGenerateDocNo);
 	}
 
 	/** Set Allow Product Without Price List.

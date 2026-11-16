@@ -1243,8 +1243,13 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		
 		if(infoWindowListItemRenderer != null)
 			infoWindowListItemRenderer.setGridDisplaydInfoColumns(gridDisplayedInfoColumns,columnInfos);
-		
-		prepareTable(columnInfos, infoWindow.getFromClause(), infoWindow.getOrderByClause(), p_sqlFilter);		
+
+		String fromClause = infoWindow.getFromClause();
+		MUserDefInfo userdefInfo = MUserDefInfo.getBestMatch(Env.getCtx(), infoWindow.getAD_InfoWindow_ID());
+		if (userdefInfo != null && !Util.isEmpty(userdefInfo.getFromClause()))
+			fromClause = userdefInfo.getFromClause();
+
+		prepareTable(columnInfos, fromClause, infoWindow.getOrderByClause(), p_sqlFilter);		
 	}
 
 	/**

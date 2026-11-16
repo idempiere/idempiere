@@ -224,12 +224,14 @@ public class MUserDefInfo extends X_AD_UserDef_Info {
 	@Override
 	protected boolean beforeSave(boolean newRecord) {
 		m_fullMap.remove(getAD_Client_ID());
+		s_cache.clear();
 		return true;
 	}
 	
 	@Override
 	protected boolean beforeDelete() {
 		m_fullMap.remove(getAD_Client_ID());
+		s_cache.clear();
 		return true;
 	}
 
