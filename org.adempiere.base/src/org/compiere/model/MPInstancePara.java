@@ -17,10 +17,18 @@
 package org.compiere.model;
 
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.logging.Level;
+
+import org.compiere.util.CLogger;
+import org.compiere.util.DB;
+import org.compiere.util.DisplayType;
+import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  *  Process Instance Parameter Model
@@ -29,11 +37,17 @@ import java.util.Properties;
  *  @version $Id: MPInstancePara.java,v 1.3 2006/07/30 00:58:05 jjanke Exp $
  */
 public class MPInstancePara extends X_AD_PInstance_Para
-{	
+{
 	/**
-	 * generated serial id 
+	 * 
 	 */
-	private static final long serialVersionUID = -8407658637240252680L;
+	private static final long serialVersionUID = -2932783104949141712L;
+
+	/** Logger */
+	private static final CLogger s_log = CLogger.getCLogger(MPInstancePara.class);
+
+	/** Parent					*/
+	protected MPInstance		m_parent = null;
 
     /**
      * UUID based Constructor
@@ -80,6 +94,7 @@ public class MPInstancePara extends X_AD_PInstance_Para
 		super (instance.getCtx(), 0, instance.get_TrxName());
 		setAD_PInstance_ID (instance.getAD_PInstance_ID());
 		setSeqNo (SeqNo);
+		m_parent = instance;
 	}	//	MPInstance_Para
 
 	/**
@@ -290,4 +305,115 @@ public class MPInstancePara extends X_AD_PInstance_Para
 			para = new MPInstancePara(ctx, AD_PInstance_ID, SeqNo);
 		return para;
 	}
+
+	/**
+	 * Get display text for CSV values
+	 * @param i process instance (optional)
+	 * @param ip instance parameter
+	 * @param values comma separated value
+	 * @return display text
+	 */
+	public String getMultiSelectionDisplay(String values) {
+		if (Util.isEmpty(values))
+			return "";
+		String returnValue = "";
+		String[] splittedValues = values.split("[,]");
+		for(String value : splittedValues) {
+			String trimmed = value.trim();
+			if (trimmed.isEmpty())
+				continue;
+			if(!Util.isEmpty(returnValue))
+				returnValue += ", ";
+			Object displayVal = trimmed;
+			if (DisplayType.ChosenMultipleSelectionList != getDisplayType()) {
+				try {
+					displayVal = Integer.parseInt(trimmed);
+				} catch (NumberFormatException e) {
+					// fallback to string if not an integer
+				}
+			}
+			returnValue += getDisplay(displayVal);
+		}
+		return returnValue;
+	}
+
+	/**
+	 * Get display text for value
+	 * @param i process instance (optional)
+	 * @param ip instance parameter
+	 * @param value value to display
+	 * @return display text
+	 */
+	public String getDisplay(Object value) {
+		if (value == null)
+			return Objects.toString(value, "");
+		MPInstance i = getParent();
+		try {
+
+			MProcess process = MProcess.get(getCtx(), i.getAD_Process_ID());
+			MProcessPara pp = process != null ? process.getParameter(getParameterName()) : null;
+
+			if (pp != null) {
+				MLookupInfo mli = MLookupFactory.getLookupInfo(getCtx(), 0, 0, pp.getAD_Reference_ID(), Env.getLanguage(getCtx()), pp.getColumnName(), pp.getAD_Reference_Value_ID(), false, "");
+
+				if (mli != null && !Util.isEmpty(mli.QueryDirect))
+				{
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+					StringBuilder name = new StringBuilder("");
+					try
+					{
+						pstmt = DB.prepareStatement(mli.QueryDirect, get_TrxName());
+						if (value instanceof Integer)
+							pstmt.setInt(1, (Integer)value);
+						else if (value instanceof Number)
+							pstmt.setInt(1, ((Number)value).intValue());
+						else
+							pstmt.setString(1, Objects.toString(value, ""));
+
+						rs = pstmt.executeQuery();
+						if (rs.next()) {
+							String str = rs.getString(3);
+							if (str != null)
+								name.append(str);
+							boolean isActive = "Y".equals(rs.getString(4));
+							if (!isActive)
+								name.insert(0, MLookup.INACTIVE_S).append(MLookup.INACTIVE_E);
+
+							if (rs.next())
+								s_log.log(Level.SEVERE, "Error while displaying parameter - Not unique (first returned) for SQL=" + mli.QueryDirect);
+						}
+					}
+					catch (Exception e) {
+						s_log.log(Level.SEVERE, "Error while displaying parameter - " + mli.KeyColumn + ": SQL=" + mli.QueryDirect + " : " + e);
+					}
+					finally {
+						DB.close(rs, pstmt);
+						rs = null;
+						pstmt = null;
+					}
+
+					if (name.length() > 0)
+						return name.toString();
+				}
+			}
+		}
+		catch (Exception e) {
+			s_log.log(Level.WARNING, "Failed to retrieve data to display for process " + (i != null ? i.getAD_Process_ID() : "") + " : " + getParameterName(), e);
+		}
+
+		return Objects.toString(value, "");
+	}
+
+	/**
+	 * 	Get Parent
+	 *	@return parent
+	 */
+	public MPInstance getParent()
+	{
+		if (m_parent == null || getAD_PInstance_ID() != m_parent.getAD_PInstance_ID())
+			m_parent = new MPInstance(getCtx(), getAD_PInstance_ID(), get_TrxName());
+		return m_parent;
+	}	//	getParent
+
 }	//	MPInstance_Para
