@@ -39,6 +39,7 @@ import java.util.StringTokenizer;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MClient;
 import org.compiere.model.MSysConfig;
+import org.compiere.model.X_AD_Package_Imp;
 import org.compiere.model.X_AD_Package_Imp_Proc;
 import org.compiere.util.EMail;
 import org.compiere.util.Env;
@@ -66,6 +67,7 @@ public class PackInNotifier {
 	private static final int LEVEL_STATUS = 0;
 	private static final int LEVEL_FAILURE = 1;
 	private static final int LEVEL_SUCCESS = 2;
+	private static final int LEVEL_UNRESOLVED = 3;
 
 	public void addStatusLine(String msg) {
 		addLine(LEVEL_STATUS, msg);
@@ -73,6 +75,10 @@ public class PackInNotifier {
 
 	public void addFailureLine(String msg) {
 		addLine(LEVEL_FAILURE, msg);
+	}
+
+	public void addUnresolvedLine(String msg) {
+		addLine(LEVEL_UNRESOLVED, msg);
 	}
 
 	public void addException(Exception e) {
@@ -165,6 +171,15 @@ public class PackInNotifier {
 			message.append("===========================\n");
 		}
 
+		List<String> uLines = getLines(LEVEL_UNRESOLVED);
+		if (!uLines.isEmpty()) {
+			message.append("Unresolved Elements:").append("\n");
+			for (String line : uLines) {
+				message.append(line).append("\n");
+			}
+			message.append("===========================\n");
+		}
+
 		if (packInException != null) {
 			message.append("StackTrace:").append("\n");
 	        StringWriter sw = new StringWriter();
@@ -224,11 +239,27 @@ public class PackInNotifier {
 	        if (! mailOK)
 	        	fullContent.append("Email notification failed");
 
-	        try (MAttachment attachment = MAttachment.get(Env.getCtx(), X_AD_Package_Imp_Proc.Table_ID, packIn.getAD_Package_Imp_Proc().getAD_Package_Imp_Proc_ID());) {
-	        if (attachment != null) {
-		        attachment.addEntry(attachFileName.toString(), fullContent.toString().getBytes(StandardCharsets.UTF_8));
-		        attachment.saveEx();
-	        }}
+	        // attach to the AD_Package_Imp record when available, otherwise to the process record
+	        int attachmentTableId;
+	        int attachmentRecordId;
+	        if (packIn.getAD_Package_Imp_ID() > 0) {
+	        	attachmentTableId = X_AD_Package_Imp.Table_ID;
+	        	attachmentRecordId = packIn.getAD_Package_Imp_ID();
+	        } else {
+	        	attachmentTableId = X_AD_Package_Imp_Proc.Table_ID;
+	        	attachmentRecordId = packIn.getAD_Package_Imp_Proc().getAD_Package_Imp_Proc_ID();
+	        }
+	        MAttachment attachment = null;
+	        try {
+	        	attachment = MAttachment.get(Env.getCtx(), attachmentTableId, attachmentRecordId);
+	        	if (attachment == null)
+	        		attachment = new MAttachment(Env.getCtx(), attachmentTableId, attachmentRecordId, null, null);
+	        	attachment.addEntry(attachFileName.toString(), fullContent.toString().getBytes(StandardCharsets.UTF_8));
+	        	attachment.saveEx();
+	        } finally {
+	        	if (attachment != null)
+	        		attachment.close();
+	        }
 		}
 
 	}

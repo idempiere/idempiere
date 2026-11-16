@@ -64,6 +64,8 @@ public class PackIn {
 	private String packageVersion = null;
 	private PackInNotifier notifier = new PackInNotifier(this);
 	private X_AD_Package_Imp_Proc packinProc;
+	private PackInHandler handler;
+	private int adPackageImpId = 0;
 
 	private List<X_AD_Package_Imp_Detail> importDetails;
 	private boolean success = false;
@@ -155,13 +157,14 @@ public class PackIn {
 	 * @return status message
 	 */
 	public String importXML(InputStream input, Properties ctx, String trxName) {
+		PackInHandler handler = new PackInHandler();
+		this.handler = handler;
 		try {
 			log.info("starting");
 			// clear cache of previous runs
 			IDFinder.clearIDCache();
 			importDetails = new ArrayList<X_AD_Package_Imp_Detail>();
 
-			PackInHandler handler = new PackInHandler();
 			PIPOContext context = new PIPOContext();
 			context.trx = Trx.get(trxName, true);
 			context.packIn = this;
@@ -181,13 +184,13 @@ public class PackIn {
 			log.info(msg);
 			msg = "Processed="+handler.getElementsProcessed()+" Un-Resolved="+handler.getUnresolvedCount();
 			getNotifier().addStatusLine(msg);
-			if (handler.getUnresolvedCount() > 0) {
-				handler.dumpUnresolvedElements();
+			if (handler.getUnresolvedCount() > 0)
 				throw new AdempiereException("Unresolved elements");
-			}
 			return msg;
 		} catch (Exception e) {
 			log.log(Level.SEVERE, "importXML:", e);
+			getNotifier().addException(e);
+			handler.markImportFailed();
 			throw new RuntimeException(e.getLocalizedMessage(), e);
 		}
 	}
@@ -199,12 +202,13 @@ public class PackIn {
 	 * @param format "json" or "yaml"
 	 */
 	public String importDataPack(InputStream input, Properties ctx, String trxName, String format) {
+		PackInHandler handler = new PackInHandler();
+		this.handler = handler;
 		try {
 			log.info("starting data pack import, format=" + format);
 			IDFinder.clearIDCache();
 			importDetails = new ArrayList<X_AD_Package_Imp_Detail>();
 
-			PackInHandler handler = new PackInHandler();
 			PIPOContext context = new PIPOContext();
 			context.trx = Trx.get(trxName, true);
 			context.packIn = this;
@@ -222,13 +226,13 @@ public class PackIn {
 			String msg = "Processed=" + handler.getElementsProcessed()
 					+ " Un-Resolved=" + handler.getUnresolvedCount();
 			getNotifier().addStatusLine(msg);
-			if (handler.getUnresolvedCount() > 0) {
-				handler.dumpUnresolvedElements();
+			if (handler.getUnresolvedCount() > 0)
 				throw new AdempiereException("Unresolved elements");
-			}
 			return msg;
 		} catch (Exception e) {
 			log.log(Level.SEVERE, "importDataPack:", e);
+			getNotifier().addException(e);
+			handler.markImportFailed();
 			throw new RuntimeException(e.getLocalizedMessage(), e);
 		}
 	}
@@ -351,6 +355,30 @@ public class PackIn {
 
 	public void setAD_Package_Imp_Proc(X_AD_Package_Imp_Proc packinProc) {
 		this.packinProc = packinProc;
+	}
+
+	/**
+	 * @return AD_Package_Imp_ID of the record created for the current import
+	 */
+	public int getAD_Package_Imp_ID() {
+		return adPackageImpId;
+	}
+
+	/**
+	 * @param adPackageImpId AD_Package_Imp_ID of the record created for the current import
+	 */
+	public void setAD_Package_Imp_ID(int adPackageImpId) {
+		this.adPackageImpId = adPackageImpId;
+	}
+
+	/**
+	 * Mark the import as failed, the PK_Status of the AD_Package_Imp and AD_Package_Imp_Inst
+	 * records is set to Import Failed. To be called by the import entry points when the
+	 * import or the commit of the import transaction fails.
+	 */
+	public void markImportFailed() {
+		if (handler != null)
+			handler.markImportFailed();
 	}
 
 	public void setSuccess(boolean success) {

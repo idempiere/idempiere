@@ -166,6 +166,11 @@
 							</requirement>
 							<requirement>
 								<type>eclipse-plugin</type>
+								<id>org.adempiere.pipo.handlers</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
 								<id>org.idempiere.hazelcast.service</id>
 								<versionRange>0.0.0</versionRange>
 							</requirement>

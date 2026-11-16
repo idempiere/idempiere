@@ -117,9 +117,11 @@ public class PipoDictionaryService implements IDictionaryService {
 			Trx.get(trxName, false).commit(true);
 			if (logger.isLoggable(Level.INFO)) logger.info("commit " + trxName);
 		} catch (Exception e) {
+			packIn.markImportFailed(); // before the rollback, to allow deferring the status update to the rollback event
 			Trx.get(trxName, false).rollback();
 			adPackageImp.setP_Msg(e.getLocalizedMessage());
 			packIn.getNotifier().addFailureLine(e.getLocalizedMessage());
+			packIn.getNotifier().addException(e);
 			packIn.setSuccess(false);
 			logger.log(Level.SEVERE, "importXML:", e);
 			throw e;
