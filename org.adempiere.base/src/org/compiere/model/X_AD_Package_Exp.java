@@ -32,7 +32,7 @@ public class X_AD_Package_Exp extends PO implements I_AD_Package_Exp, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20260309L;
+	private static final long serialVersionUID = 20261006L;
 
     /** Standard Constructor */
     public X_AD_Package_Exp (Properties ctx, int AD_Package_Exp_ID, String trxName)
@@ -42,6 +42,8 @@ public class X_AD_Package_Exp extends PO implements I_AD_Package_Exp, I_Persiste
         {
 			setAD_Package_Exp_ID (0);
 			setIsExportDictionaryEntity (false);
+// N
+			setIsExportOnlyChangedValue (false);
 // N
 			setIsIncludeOrganizationId (true);
 // Y
@@ -60,6 +62,8 @@ public class X_AD_Package_Exp extends PO implements I_AD_Package_Exp, I_Persiste
 			setAD_Package_Exp_ID (0);
 			setIsExportDictionaryEntity (false);
 // N
+			setIsExportOnlyChangedValue (false);
+// N
 			setIsIncludeOrganizationId (true);
 // Y
 			setName (null);
@@ -77,6 +81,8 @@ public class X_AD_Package_Exp extends PO implements I_AD_Package_Exp, I_Persiste
 			setAD_Package_Exp_ID (0);
 			setIsExportDictionaryEntity (false);
 // N
+			setIsExportOnlyChangedValue (false);
+// N
 			setIsIncludeOrganizationId (true);
 // Y
 			setName (null);
@@ -93,6 +99,8 @@ public class X_AD_Package_Exp extends PO implements I_AD_Package_Exp, I_Persiste
         {
 			setAD_Package_Exp_ID (0);
 			setIsExportDictionaryEntity (false);
+// N
+			setIsExportOnlyChangedValue (false);
 // N
 			setIsIncludeOrganizationId (true);
 // Y
@@ -281,6 +289,28 @@ public class X_AD_Package_Exp extends PO implements I_AD_Package_Exp, I_Persiste
 	public boolean isExportDictionaryEntity()
 	{
 		Object oo = get_Value(COLUMNNAME_IsExportDictionaryEntity);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Only Value Changed.
+		@param IsExportOnlyChangedValue Only Value Changed
+	*/
+	public void setIsExportOnlyChangedValue (boolean IsExportOnlyChangedValue)
+	{
+		set_Value (COLUMNNAME_IsExportOnlyChangedValue, Boolean.valueOf(IsExportOnlyChangedValue));
+	}
+
+	/** Get Only Value Changed.
+		@return Only Value Changed	  */
+	public boolean isExportOnlyChangedValue()
+	{
+		Object oo = get_Value(COLUMNNAME_IsExportOnlyChangedValue);
 		if (oo != null)
 		{
 			 if (oo instanceof Boolean)

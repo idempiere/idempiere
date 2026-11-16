@@ -1801,7 +1801,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 								IReservationTracer tracer = null;
 								IReservationTracerFactory factory = Core.getReservationTracerFactory();
 								if (factory != null) {
-									tracer = factory.newTracer(getC_DocType_ID(), getDocumentNo(), sLine.getLine(), 
+									String docNo = is_UsingTemporaryDocumentNo() ? get_TemporaryDocumentNo() : getDocumentNo();
+									tracer = factory.newTracer(getC_DocType_ID(), docNo, sLine.getLine(), 
 											sLine.get_Table_ID(), sLine.get_ID(), oLine.getM_Warehouse_ID(), 
 											oLine.getM_Product_ID(), oLine.getM_AttributeSetInstance_ID(), isSOTrx(), 
 											get_TrxName());
@@ -1896,7 +1897,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 							IReservationTracer tracer = null;
 							IReservationTracerFactory factory = Core.getReservationTracerFactory();
 							if (factory != null) {
-								tracer = factory.newTracer(getC_DocType_ID(), getDocumentNo(), sLine.getLine(), 
+								String docNo = is_UsingTemporaryDocumentNo() ? get_TemporaryDocumentNo() : getDocumentNo();
+								tracer = factory.newTracer(getC_DocType_ID(), docNo, sLine.getLine(), 
 										sLine.get_Table_ID(), sLine.get_ID(), oLine.getM_Warehouse_ID(), 
 										oLine.getM_Product_ID(), oLine.getM_AttributeSetInstance_ID(), isSOTrx(), 
 										get_TrxName());
@@ -3365,12 +3367,11 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 	 */
 	private boolean stockCoverageCheckForBackDateTrx(Timestamp reversalDate)
 	{
-		MClientInfo info = MClientInfo.get(getCtx(), getAD_Client_ID(), get_TrxName()); 
+		MClientInfo info = MClientInfo.get(getCtx(), getAD_Client_ID()); 
 		MAcctSchema as = info.getMAcctSchema1();
 		if (!MAcctSchema.COSTINGMETHOD_AveragePO.equals(as.getCostingMethod()) 
 				&& !MAcctSchema.COSTINGMETHOD_AverageInvoice.equals(as.getCostingMethod()))
 			return true;
-		as.load(get_TrxName());
 		if (as.getBackDateDay() == 0)
 			return true;
 		

@@ -112,22 +112,25 @@ public class EventHandlerTest extends AbstractTestCase {
 		//test1 - activator approach 
 		ModelEventHandler<MBPartner> handler = new ModelEventHandler<MBPartner>(MBPartner.class, MyBPBeforeNewDelegate.class, (bp, event) -> new MyBPBeforeNewDelegate(bp, event));
 		Core.getEventManager().register(handler);
-		
-		MBPartner bpartner = new MBPartner(Env.getCtx(), 0, getTrxName());
-		String name  = "BP_"+System.currentTimeMillis();
-		bpartner.setName(name);
-		bpartner.setC_BP_Group_ID(103);
-		bpartner.saveEx();
-		
-		String test = Env.getContext(Env.getCtx(), MyBPBeforeNewDelegate.class.getName());
-		assertTrue(bpartner.getName().equals(test), "MyBPBeforeNewDelegate not called");
-		
-		//test2 - MyComponent.MyBpBeforeChangeDelegate using osgi component mechanism
-		bpartner.setDescription("");
-		bpartner.saveEx();
-		
-		test = Env.getContext(Env.getCtx(), MyComponent.MyBpBeforeChangeDelegate.class.getName());
-		assertTrue(bpartner.toString().equals(test), "MyComponent.MyBpBeforeChangeDelegate not called");
+		try {
+			MBPartner bpartner = new MBPartner(Env.getCtx(), 0, getTrxName());
+			String name  = "BP_"+System.currentTimeMillis();
+			bpartner.setName(name);
+			bpartner.setC_BP_Group_ID(103);
+			bpartner.saveEx();
+			
+			String test = Env.getContext(Env.getCtx(), MyBPBeforeNewDelegate.class.getName());
+			assertTrue(bpartner.getName().equals(test), "MyBPBeforeNewDelegate not called");
+			
+			//test2 - MyComponent.MyBpBeforeChangeDelegate using osgi component mechanism
+			bpartner.setDescription("");
+			bpartner.saveEx();
+			
+			test = Env.getContext(Env.getCtx(), MyComponent.MyBpBeforeChangeDelegate.class.getName());
+			assertTrue(bpartner.toString().equals(test), "MyComponent.MyBpBeforeChangeDelegate not called");
+		} finally {
+			Core.getEventManager().unregister(handler);
+		}
 	}
 	
 	@Test
@@ -136,39 +139,40 @@ public class EventHandlerTest extends AbstractTestCase {
 		ModelEventHandler<MOrder> handler = new ModelEventHandler<MOrder>(MOrder.class, MyOrderBeforeCompleteDelegate.class, 
 				(po, event) -> new MyOrderBeforeCompleteDelegate(po, event));
 		Core.getEventManager().register(handler);
-		
-		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
-		//Joe Block
-		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
-		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
-		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
-		order.setDocStatus(DocAction.STATUS_Drafted);
-		order.setDocAction(DocAction.ACTION_Complete);
-		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
-		order.setDateOrdered(today);
-		order.setDatePromised(today);
-		order.setDescription(null);
-		order.saveEx();
-		
-		MOrderLine line1 = new MOrderLine(order);
-		line1.setLine(10);
-		//Azalea Bush
-		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_PLANTING_SERVICE));
-		line1.setQty(new BigDecimal("1"));
-		line1.setDatePromised(today);
-		line1.saveEx();		
-		
-		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError(), info.getSummary());
-		order.load(getTrxName());		
-		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
-		line1.load(getTrxName());
-		assertEquals(1, line1.getQtyReserved().intValue());
-		
-		Core.getEventManager().unregister(handler);
-		
-		String test = Env.getContext(Env.getCtx(), MyOrderBeforeCompleteDelegate.class.getName());
-		assertEquals(order.toString(), test, "MyOrderBeforeCompleteDelegate not called");
+		try {
+			MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+			//Joe Block
+			order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
+			order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
+			order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
+			order.setDocStatus(DocAction.STATUS_Drafted);
+			order.setDocAction(DocAction.ACTION_Complete);
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			order.setDateOrdered(today);
+			order.setDatePromised(today);
+			order.setDescription(null);
+			order.saveEx();
+			
+			MOrderLine line1 = new MOrderLine(order);
+			line1.setLine(10);
+			//Azalea Bush
+			line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_PLANTING_SERVICE));
+			line1.setQty(new BigDecimal("1"));
+			line1.setDatePromised(today);
+			line1.saveEx();		
+			
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			order.load(getTrxName());		
+			assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+			line1.load(getTrxName());
+			assertEquals(1, line1.getQtyReserved().intValue());
+			
+			String test = Env.getContext(Env.getCtx(), MyOrderBeforeCompleteDelegate.class.getName());
+			assertEquals(order.toString(), test, "MyOrderBeforeCompleteDelegate not called");
+		} finally {
+			Core.getEventManager().unregister(handler);
+		}
 	}
 	
 	@Test
@@ -177,35 +181,38 @@ public class EventHandlerTest extends AbstractTestCase {
 		ModelEventHandler<MOrder> handler = new ModelEventHandler<MOrder>(MOrder.class, MyOrderBeforeCompleteDelegate.class, 
 				(po, event) -> new MyOrderBeforeCompleteDelegate(po, event));
 		Core.getEventManager().register(handler);
-		
-		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
-		//Joe Block
-		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
-		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
-		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
-		order.setDocStatus(DocAction.STATUS_Drafted);
-		order.setDocAction(DocAction.ACTION_Complete);
-		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
-		order.setDateOrdered(today);
-		order.setDatePromised(today);
-		order.setDescription(MyOrderBeforeCompleteDelegate.class.getName());
-		order.saveEx();
-		
-		MOrderLine line1 = new MOrderLine(order);
-		line1.setLine(10);
-		//Azalea Bush
-		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_PLANTING_SERVICE));
-		line1.setQty(new BigDecimal("1"));
-		line1.setDatePromised(today);
-		line1.saveEx();		
-		
-		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertTrue(info.isError(), "DocAction Complete doesn't fail as expected");
-		order.load(getTrxName());		
-		assertEquals(DocAction.STATUS_Invalid, order.getDocStatus(), "DocStatus Expected=Invalid. DocStatus Actual="+order.getDocStatus());
-		line1.load(getTrxName());
-		assertEquals(0, line1.getQtyReserved().intValue());
-		assertTrue(info.getSummary() != null && info.getSummary().contains("Test Runtime Exception"), "Error message not as expected=" + info.getSummary());
+		try {
+			MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+			//Joe Block
+			order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
+			order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
+			order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
+			order.setDocStatus(DocAction.STATUS_Drafted);
+			order.setDocAction(DocAction.ACTION_Complete);
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			order.setDateOrdered(today);
+			order.setDatePromised(today);
+			order.setDescription(MyOrderBeforeCompleteDelegate.class.getName());
+			order.saveEx();
+			
+			MOrderLine line1 = new MOrderLine(order);
+			line1.setLine(10);
+			//Azalea Bush
+			line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_PLANTING_SERVICE));
+			line1.setQty(new BigDecimal("1"));
+			line1.setDatePromised(today);
+			line1.saveEx();		
+			
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+			assertTrue(info.isError(), "DocAction Complete doesn't fail as expected");
+			order.load(getTrxName());		
+			assertEquals(DocAction.STATUS_Invalid, order.getDocStatus(), "DocStatus Expected=Invalid. DocStatus Actual="+order.getDocStatus());
+			line1.load(getTrxName());
+			assertEquals(0, line1.getQtyReserved().intValue());
+			assertTrue(info.getSummary() != null && info.getSummary().contains("Test Runtime Exception"), "Error message not as expected=" + info.getSummary());
+		} finally {
+			Core.getEventManager().unregister(handler);
+		}
 	}
 	
 	@Test
@@ -213,13 +220,16 @@ public class EventHandlerTest extends AbstractTestCase {
 	public void testAfterLogin() {
 		SimpleEventHandler handler = new SimpleEventHandler(MyAfterLoginDelegate.class, (event) -> new MyAfterLoginDelegate(event));
 		Core.getEventManager().register(handler);
-		
-		KeyNamePair org = new KeyNamePair(getAD_Org_ID(), MOrg.get(getAD_Org_ID()).getName());
-		Login login = new Login(Env.getCtx());
-		login.validateLogin(org);
-		
-		assertTrue("y".equalsIgnoreCase(Env.getContext(Env.getCtx(), MyAfterLoginDelegate.class.getName())), 
-				"MyAfterLoginDelegate not call. context="+Env.getContext(Env.getCtx(), MyAfterLoginDelegate.class.getName()));
+		try {
+			KeyNamePair org = new KeyNamePair(getAD_Org_ID(), MOrg.get(getAD_Org_ID()).getName());
+			Login login = new Login(Env.getCtx());
+			login.validateLogin(org);
+			
+			assertTrue("y".equalsIgnoreCase(Env.getContext(Env.getCtx(), MyAfterLoginDelegate.class.getName())), 
+					"MyAfterLoginDelegate not call. context="+Env.getContext(Env.getCtx(), MyAfterLoginDelegate.class.getName()));
+		} finally {
+			Core.getEventManager().unregister(handler);
+		}
 	}
 	
 	@Test
@@ -230,23 +240,26 @@ public class EventHandlerTest extends AbstractTestCase {
 				
 		ProcessEventHandler handler = new ProcessEventHandler(MyAfterProcessDelegate.class, MProcess.get(Verify_BOM).getAD_Process_UU(), (event) -> new MyAfterProcessDelegate(event));
 		Core.getEventManager().register(handler);
-		
-		MProcess process = MProcess.get(Env.getCtx(), Verify_BOM);
-		ProcessInfo pi = new ProcessInfo(process.getName(), process.get_ID());
-		pi.setAD_Client_ID(getAD_Client_ID());
-		pi.setAD_User_ID(getAD_User_ID());
-		pi.setRecord_ID(Patio_Chair);
-		pi.setTransactionName(getTrxName());
-		if(process.getAD_PrintFormat_ID() > 0)
-			pi.setTransientObject(MPrintFormat.get(process.getAD_PrintFormat_ID()));
-		
-		ServerProcessCtl.process(pi, getTrx());
-		if (pi.isError()) {
-			fail("Error running Verify BOM process" + (Util.isEmpty(pi.getSummary()) ? "" : " : "+pi.getSummary()));
-			return;
+		try {
+			MProcess process = MProcess.get(Env.getCtx(), Verify_BOM);
+			ProcessInfo pi = new ProcessInfo(process.getName(), process.get_ID());
+			pi.setAD_Client_ID(getAD_Client_ID());
+			pi.setAD_User_ID(getAD_User_ID());
+			pi.setRecord_ID(Patio_Chair);
+			pi.setTransactionName(getTrxName());
+			if(process.getAD_PrintFormat_ID() > 0)
+				pi.setTransientObject(MPrintFormat.get(process.getAD_PrintFormat_ID()));
+			
+			ServerProcessCtl.process(pi, getTrx());
+			if (pi.isError()) {
+				fail("Error running Verify BOM process" + (Util.isEmpty(pi.getSummary()) ? "" : " : "+pi.getSummary()));
+				return;
+			}
+			
+			assertTrue(pi.getTitle() != null && pi.getTitle().contains(MyAfterProcessDelegate.class.getName()), "MyAfterProcessDelegate not call. Title="+pi.getTitle());
+		} finally {
+			Core.getEventManager().unregister(handler);
 		}
-		
-		assertTrue(pi.getTitle() != null && pi.getTitle().contains(MyAfterProcessDelegate.class.getName()), "MyAfterProcessDelegate not call. Title="+pi.getTitle());
 	}
 	
 	@Test
@@ -256,59 +269,62 @@ public class EventHandlerTest extends AbstractTestCase {
 		ModelEventHandler<MInOut> handler = new ModelEventHandler<MInOut>(MInOut.class, MyFactValidateDelegate.class, 
 				(po, event) -> new MyFactValidateDelegate(po, event));
 		Core.getEventManager().register(handler);
-		
-		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
-		//Joe Block
-		order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
-		order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
-		order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
-		order.setDocStatus(DocAction.STATUS_Drafted);
-		order.setDocAction(DocAction.ACTION_Complete);
-		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
-		order.setDateOrdered(today);
-		order.setDatePromised(today);
-		order.saveEx();
-		
-		MOrderLine line1 = new MOrderLine(order);
-		line1.setLine(10);
-		//Azalea Bush
-		line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_PLANTING_SERVICE));
-		line1.setQty(new BigDecimal("1"));
-		line1.setDatePromised(today);
-		line1.saveEx();		
-		
-		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
-		assertFalse(info.isError(), info.getSummary());
-		order.load(getTrxName());		
-		assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
-		line1.load(getTrxName());
-		assertEquals(1, line1.getQtyReserved().intValue());
-		
-		MInOut shipment = new MInOut(order, 120, order.getDateOrdered());
-		shipment.setDocStatus(DocAction.STATUS_Drafted);
-		shipment.setDocAction(DocAction.ACTION_Complete);
-		shipment.saveEx();
-		
-		MInOutLine shipmentLine = new MInOutLine(shipment);
-		shipmentLine.setOrderLine(line1, 0, new BigDecimal("1"));
-		shipmentLine.setQty(new BigDecimal("1"));
-		shipmentLine.saveEx();
-		
-		info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
-		assertFalse(info.isError(), info.getSummary());
-		shipment.load(getTrxName());
-		assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus());
-						
-		line1.load(getTrxName());
-		assertEquals(0, line1.getQtyReserved().intValue());
-		
-		if (!shipment.isPosted()) {
-			String error = DocumentEngine.postImmediate(Env.getCtx(), shipment.getAD_Client_ID(), MInOut.Table_ID, shipment.get_ID(), false, getTrxName());
-			assertTrue(error == null, error);
+		try {
+			MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+			//Joe Block
+			order.setBPartner(MBPartner.get(Env.getCtx(), BP_JOE_BLOCK));
+			order.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
+			order.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
+			order.setDocStatus(DocAction.STATUS_Drafted);
+			order.setDocAction(DocAction.ACTION_Complete);
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			order.setDateOrdered(today);
+			order.setDatePromised(today);
+			order.saveEx();
+			
+			MOrderLine line1 = new MOrderLine(order);
+			line1.setLine(10);
+			//Azalea Bush
+			line1.setProduct(MProduct.get(Env.getCtx(), PRODUCT_PLANTING_SERVICE));
+			line1.setQty(new BigDecimal("1"));
+			line1.setDatePromised(today);
+			line1.saveEx();		
+			
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			order.load(getTrxName());		
+			assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+			line1.load(getTrxName());
+			assertEquals(1, line1.getQtyReserved().intValue());
+			
+			MInOut shipment = new MInOut(order, 120, order.getDateOrdered());
+			shipment.setDocStatus(DocAction.STATUS_Drafted);
+			shipment.setDocAction(DocAction.ACTION_Complete);
+			shipment.saveEx();
+			
+			MInOutLine shipmentLine = new MInOutLine(shipment);
+			shipmentLine.setOrderLine(line1, 0, new BigDecimal("1"));
+			shipmentLine.setQty(new BigDecimal("1"));
+			shipmentLine.saveEx();
+			
+			info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			shipment.load(getTrxName());
+			assertEquals(DocAction.STATUS_Completed, shipment.getDocStatus());
+							
+			line1.load(getTrxName());
+			assertEquals(0, line1.getQtyReserved().intValue());
+			
+			if (!shipment.isPosted()) {
+				String error = DocumentEngine.postImmediate(Env.getCtx(), shipment.getAD_Client_ID(), MInOut.Table_ID, shipment.get_ID(), false, getTrxName());
+				assertTrue(error == null, error);
+			}
+			
+			assertTrue("y".equalsIgnoreCase(Env.getContext(Env.getCtx(), MyFactValidateDelegate.class.getName())), 
+					"MyFactValidateDelegate not call. context="+Env.getContext(Env.getCtx(), MyFactValidateDelegate.class.getName()));
+		} finally {
+			Core.getEventManager().unregister(handler);
 		}
-		
-		assertTrue("y".equalsIgnoreCase(Env.getContext(Env.getCtx(), MyFactValidateDelegate.class.getName())), 
-				"MyFactValidateDelegate not call. context="+Env.getContext(Env.getCtx(), MyFactValidateDelegate.class.getName()));
 	}
 	
 	@Test
@@ -316,17 +332,20 @@ public class EventHandlerTest extends AbstractTestCase {
 	public void testAfterImport() {
 		ImportEventHandler handler = new ImportEventHandler(MyAfterImportDelegate.class, X_I_BPartner.Table_Name, (event) -> new MyAfterImportDelegate(event));
 		Core.getEventManager().register(handler);
-		
-		ImportProduct ip = new ImportProduct();
-		ModelValidationEngine.get().fireImportValidate(ip, new X_I_Product(Env.getCtx(), 0, getTrxName()), new MProduct(Env.getCtx(), 0, getTrxName()), ImportValidator.TIMING_AFTER_IMPORT);
-		assertTrue(Util.isEmpty(Env.getContext(Env.getCtx(), MyAfterImportDelegate.class.getName())), 
-				"MyAfterImportDelegate call for different import table name. context="+Env.getContext(Env.getCtx(), MyAfterImportDelegate.class.getName()));
-		
-		ImportBPartner ibp = new ImportBPartner();
-		ModelValidationEngine.get().fireImportValidate(ibp, new X_I_BPartner(Env.getCtx(), 0, getTrxName()), new MBPartner(Env.getCtx(), 0, getTrxName()), ImportValidator.TIMING_AFTER_IMPORT);
-		
-		assertTrue("y".equalsIgnoreCase(Env.getContext(Env.getCtx(), MyAfterImportDelegate.class.getName())), 
-				"MyAfterImportDelegate not call. context="+Env.getContext(Env.getCtx(), MyAfterImportDelegate.class.getName()));		
+		try {
+			ImportProduct ip = new ImportProduct();
+			ModelValidationEngine.get().fireImportValidate(ip, new X_I_Product(Env.getCtx(), 0, getTrxName()), new MProduct(Env.getCtx(), 0, getTrxName()), ImportValidator.TIMING_AFTER_IMPORT);
+			assertTrue(Util.isEmpty(Env.getContext(Env.getCtx(), MyAfterImportDelegate.class.getName())), 
+					"MyAfterImportDelegate call for different import table name. context="+Env.getContext(Env.getCtx(), MyAfterImportDelegate.class.getName()));
+			
+			ImportBPartner ibp = new ImportBPartner();
+			ModelValidationEngine.get().fireImportValidate(ibp, new X_I_BPartner(Env.getCtx(), 0, getTrxName()), new MBPartner(Env.getCtx(), 0, getTrxName()), ImportValidator.TIMING_AFTER_IMPORT);
+			
+			assertTrue("y".equalsIgnoreCase(Env.getContext(Env.getCtx(), MyAfterImportDelegate.class.getName())), 
+					"MyAfterImportDelegate not call. context="+Env.getContext(Env.getCtx(), MyAfterImportDelegate.class.getName()));		
+		} finally {
+			Core.getEventManager().unregister(handler);
+		}
 	}
 	
 	@Test

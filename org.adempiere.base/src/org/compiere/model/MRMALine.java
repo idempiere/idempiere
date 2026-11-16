@@ -198,7 +198,8 @@ public class MRMALine extends X_M_RMALine
         		taxId = Core.getTaxLookup().get(getCtx(), getM_Product_ID(), getC_Charge_ID(), invoice.getDateInvoiced(), invoice.getDateInvoiced(),
             			getAD_Org_ID(), getParent().getShipment().getM_Warehouse_ID(),
             			invoice.getC_BPartner_Location_ID(),		//	should be bill to
-            			invoice.getC_BPartner_Location_ID(), dropshipLocationId, getParent().isSOTrx(), deliveryViaRule, get_TrxName());
+            			invoice.getC_BPartner_Location_ID(), dropshipLocationId, getParent().isSOTrx(), deliveryViaRule,
+            			invoice.getDocTypeID(), invoice.getPaymentRule(), get_TrxName());
         	}
         	else 
         	{
@@ -212,7 +213,8 @@ public class MRMALine extends X_M_RMALine
         			taxId = Core.getTaxLookup().get(getCtx(), getM_Product_ID(), getC_Charge_ID(), order.getDateOrdered(), order.getDateOrdered(),
                 			getAD_Org_ID(), order.getM_Warehouse_ID(),
                 			order.getC_BPartner_Location_ID(),		//	should be bill to
-                			order.getC_BPartner_Location_ID(), order.getDropShip_Location_ID(), getParent().isSOTrx(), order.getDeliveryViaRule(), get_TrxName());
+                			order.getC_BPartner_Location_ID(), order.getDropShip_Location_ID(), getParent().isSOTrx(), order.getDeliveryViaRule(),
+                			order.getDocTypeID(), order.getPaymentRule(), get_TrxName());
         		}
             	else
             		throw new IllegalStateException("No Invoice/Order found the Shipment/Receipt associated");

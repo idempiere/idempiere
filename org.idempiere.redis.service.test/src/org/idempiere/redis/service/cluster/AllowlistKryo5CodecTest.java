@@ -1,0 +1,134 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ *                                                                     *
+ * Contributors:                                                       *
+ **********************************************************************/
+package org.idempiere.redis.service.cluster;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Set;
+import java.util.logging.Level;
+
+import org.junit.jupiter.api.Test;
+
+import com.esotericsoftware.kryo.Kryo;
+
+import io.netty.buffer.ByteBuf;
+
+/**
+ * {@link AllowlistKryo5Codec} must carry {@link Level} (SystemInfo.logLevel travels in cluster RPC
+ * replies) without changing the IDs of the classes registered before it.
+ */
+public class AllowlistKryo5CodecTest {
+
+	private final AllowlistKryo5Codec codec =
+			new AllowlistKryo5Codec(AllowlistKryo5CodecTest.class.getClassLoader(), Set.of("java.util.ArrayList"));
+
+	private Object roundTrip(Object value) throws Exception {
+		ByteBuf buf = codec.getValueEncoder().encode(value);
+		try {
+			return codec.getValueDecoder().decode(buf, null);
+		} finally {
+			buf.release();
+		}
+	}
+
+	@Test
+	public void testStandardLevelsRoundTripToTheSameInstance() throws Exception {
+		for (Level level : new Level[] { Level.SEVERE, Level.WARNING, Level.INFO, Level.CONFIG, Level.FINE,
+				Level.FINER, Level.FINEST, Level.ALL, Level.OFF }) {
+			assertSame(level, roundTrip(level), level.getName());
+		}
+	}
+
+	@Test
+	public void testLevelIsRegisteredAfterTheAllowList() {
+		Kryo kryo = codec.createKryo(AllowlistKryo5CodecTest.class.getClassLoader());
+
+		int levelId = kryo.getRegistration(Level.class).getId();
+		assertTrue(levelId > kryo.getRegistration(java.util.ArrayList.class).getId(),
+				"Level after the allow-list, so the allow-list IDs match nodes without it");
+		assertTrue(levelId > kryo.getRegistration(RpcResponse.class).getId());
+	}
+
+	/** An allow-listed class with a Level field, the way SystemInfo carries logLevel. */
+	public static class WithLevel {
+		Level level;
+		String name;
+	}
+
+	@Test
+	public void testLevelInsideAnAllowListedClass() throws Exception {
+		// SystemInfo case: the allow-listed class is registered before Level, and its field must
+		// still use the Level serializer, not reflection on java.util.logging.Level's private fields.
+		AllowlistKryo5Codec codec = new AllowlistKryo5Codec(AllowlistKryo5CodecTest.class.getClassLoader(),
+				Set.of(WithLevel.class.getName()));
+		WithLevel value = new WithLevel();
+		value.level = Level.WARNING;
+		value.name = "node-a";
+
+		Kryo kryo = codec.createKryo(AllowlistKryo5CodecTest.class.getClassLoader());
+		com.esotericsoftware.kryo.io.Output out = new com.esotericsoftware.kryo.io.Output(256, -1);
+		kryo.writeClassAndObject(out, value);
+		WithLevel copy = (WithLevel) kryo.readClassAndObject(new com.esotericsoftware.kryo.io.Input(out.toBytes()));
+
+		assertSame(Level.WARNING, copy.level);
+		assertEquals("node-a", copy.name);
+	}
+
+	/** A class nobody allow-listed, the way an unrestricted cluster sends SystemInfo. */
+	public static class NotListed {
+		Level level;
+	}
+
+	@Test
+	public void testEmptyAllowListIsUnrestrictedAndStillSendsLevel() {
+		// No rpc.callable.allowlist (staging today): any class may travel, as with Redisson's default
+		// Kryo5Codec, but Level must use its serializer instead of reflection on java.logging.
+		AllowlistKryo5Codec open = new AllowlistKryo5Codec(null, Set.of());
+		Kryo kryo = open.createKryo(null);
+		NotListed value = new NotListed();
+		value.level = Level.INFO;
+
+		com.esotericsoftware.kryo.io.Output out = new com.esotericsoftware.kryo.io.Output(256, -1);
+		kryo.writeClassAndObject(out, value);
+		NotListed copy = (NotListed) kryo.readClassAndObject(new com.esotericsoftware.kryo.io.Input(out.toBytes()));
+
+		assertSame(Level.INFO, copy.level);
+	}
+
+	@Test
+	public void testUnknownLevelNameFallsBackToValue() {
+		Level level = new AllowlistKryo5Codec.LevelSerializer().read(null, input("NO_SUCH_LEVEL", 900), Level.class);
+
+		assertEquals(Level.WARNING.intValue(), level.intValue());
+	}
+
+	private static com.esotericsoftware.kryo.io.Input input(String name, int value) {
+		com.esotericsoftware.kryo.io.Output out = new com.esotericsoftware.kryo.io.Output(64);
+		out.writeString(name);
+		out.writeInt(value);
+		return new com.esotericsoftware.kryo.io.Input(out.toBytes());
+	}
+}

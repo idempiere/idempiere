@@ -40,6 +40,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.logging.Level;
 
 import javax.sql.RowSet;
@@ -372,6 +373,16 @@ public final class DB
 		log.severe("No Database");
 		return false;
 	}	//	isPostgreSQL
+
+	/**
+	 * 	Check if connected database supports INSERT INTO ... RETURNING *
+	 *	@return true if supported
+	 */
+	public static boolean isInsertReturningSupported()
+	{
+		AdempiereDatabase db = getDatabase();
+		return db != null && db.isInsertReturningSupported();
+	}	//	isInsertReturningSupported
 
 	/**
 	 * 	Get Database Info
@@ -975,6 +986,76 @@ public final class DB
 	{
 		return executeUpdateEx(sql, null, trxName, timeOut);
 	}	//	executeUpdateEx
+
+	/**
+	 * Execute an insert statement with RETURNING clause and load the returned row.
+	 * @param sql insert statement with RETURNING clause
+	 * @param params statement parameters (array or null)
+	 * @param trxName transaction name
+	 * @param loader loader function that processes the ResultSet, returns true on success
+	 * @return true if 1 row was inserted and loaded successfully
+	 */
+	public static boolean executeInsertReturning (String sql, Object[] params, String trxName, Function<ResultSet, Boolean> loader)
+	{
+		return executeInsertReturning(sql, params, trxName, loader, 0);
+	}
+
+	/**
+	 * Execute an insert statement with RETURNING clause and load the returned row.
+	 * @param sql insert statement with RETURNING clause
+	 * @param params statement parameters (array or null)
+	 * @param trxName transaction name
+	 * @param loader loader function that processes the ResultSet, returns true on success
+	 * @param timeOut optional statement timeout in seconds
+	 * @return true if 1 row was inserted and loaded successfully
+	 */
+	public static boolean executeInsertReturning (String sql, Object[] params, String trxName, Function<ResultSet, Boolean> loader, int timeOut)
+	{
+		if (sql == null || sql.length() == 0)
+			throw new IllegalArgumentException("Required parameter missing - " + sql);
+		verifyTrx(trxName);
+
+		CPreparedStatement cs = ProxyFactory.newCPreparedStatement(ResultSet.TYPE_FORWARD_ONLY,
+				ResultSet.CONCUR_READ_ONLY, sql, trxName);
+		ResultSet rs = null;
+		boolean ok = false;
+		try
+		{
+			setParameters(cs, params);
+			if (timeOut > 0)
+			{
+				cs.setQueryTimeout(timeOut);
+			}
+			rs = cs.executeQuery();
+			if (rs.next())
+			{
+				if (loader != null)
+				{
+					Boolean loaded = loader.apply(rs);
+					ok = loaded != null && loaded.booleanValue();
+				}
+				else
+				{
+					ok = true;
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			e = getSQLException(e);
+			log.log(Level.SEVERE, (cs != null ? cs.getSql() : sql) + " [" + trxName + "]", e);
+			String msg = DBException.getDefaultDBExceptionMessage(e);
+			log.saveError (msg != null ? msg : "DBExecuteError", e);
+			ok = false;
+		}
+		finally
+		{
+			close(rs, cs);
+			rs = null;
+			cs = null;
+		}
+		return ok;
+	}
 
 	/**
 	 *	Commit transaction
@@ -1906,7 +1987,22 @@ public final class DB
 	 */
 	public static String getDocumentNo(int C_DocType_ID, String trxName, boolean definite, PO po)
 	{
-		return MSequence.getDocumentNo (C_DocType_ID, trxName, definite, po);
+		return getDocumentNo(C_DocType_ID, trxName, definite, po, false);
+	}
+	
+	/**
+	 * 	Get Document No based on Document Type
+	 *	@param C_DocType_ID document type
+	 * 	@param trxName optional Transaction Name
+	 *  @param definite asking for a definitive or temporary sequence
+	 *  @param po PO
+	 *  @param deferToPreCommit
+	 *	@return document no or null
+	 *  @see {@link MSequence#getDocumentNo(int, String, boolean, PO)}
+	 */
+	public static String getDocumentNo(int C_DocType_ID, String trxName, boolean definite, PO po, boolean deferToPreCommit)
+	{
+		return MSequence.getDocumentNo (C_DocType_ID, trxName, definite, po, deferToPreCommit);
 	}	//	getDocumentNo
 
 	/**
@@ -1932,7 +2028,22 @@ public final class DB
 	 */
 	public static String getDocumentNo (int AD_Client_ID, String TableName, String trxName, PO po)
 	{
-		String dn = MSequence.getDocumentNo (AD_Client_ID, TableName, trxName, po);
+		return getDocumentNo(AD_Client_ID, TableName, trxName, po, false);
+	}
+	
+	/**
+	 * 	Get Document No for table
+	 *	@param AD_Client_ID client
+	 *	@param TableName table name
+	 * 	@param trxName optional Transaction Name
+	 *  @param po
+	 *  @param deferToPreCommit
+	 *	@return document no or null
+	 *  @see {@link MSequence#getDocumentNo(int, String, String, PO)}
+	 */
+	public static String getDocumentNo (int AD_Client_ID, String TableName, String trxName, PO po, boolean deferToPreCommit)
+	{
+		String dn = MSequence.getDocumentNo (AD_Client_ID, TableName, trxName, po, deferToPreCommit);
 		if (dn == null)
 			throw new DBException ("No DocumentNo");
 		return dn;

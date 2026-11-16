@@ -45,6 +45,7 @@ public class DefaultModelFactory extends AbstractModelFactory {
 
 		"org.compiere.model", "org.compiere.wf",
 		"org.compiere.print", "org.compiere.impexp",
+		"org.compiere.report",
 		"compiere.model",			//	globalqss allow compatibility with other plugins
 		"adempiere.model",			//	Extensions
 		"org.adempiere.model"

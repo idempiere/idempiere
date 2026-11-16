@@ -102,7 +102,7 @@ public class DefaultDocumentFactory implements IDocFactory {
 		}
 		catch (Exception e)
 		{
-			s_log.log(Level.SEVERE, "Doc Class invalid: " + className + " (" + e.toString() + ")");
+			s_log.log(Level.SEVERE, "Doc Class invalid: " + className + " (" + e.toString() + ")", e);
 			throw new AdempiereUserError("Doc Class invalid: " + className + " (" + e.toString() + ")");
 		}
 

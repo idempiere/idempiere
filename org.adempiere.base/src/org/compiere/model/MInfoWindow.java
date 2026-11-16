@@ -462,67 +462,17 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	{		
 		// default, before complete check is invalid
 		this.setIsValid(false);		
-		
-		// add DISTINCT clause
-		StringBuilder builder = new StringBuilder("SELECT ");
-		if (this.isDistinct())
-			builder.append("DISTINCT ");
-		
-		MInfoColumn[] infoColumns = this.getInfoColumns();
+
+		String builder = getSqlForValidation(getCtx(), this, null);
 		// none column make this invalid
-		if (infoColumns.length == 0){
+		if (Util.isEmpty(builder))
 			return;
-		}
-		
-		// build select clause
-		for (int columnIndex = 0; columnIndex < infoColumns.length; columnIndex++) {
-			if (columnIndex > 0)
-            {
-                builder.append(", ");
-            }
-			builder.append(infoColumns[columnIndex].getSelectClause());
-		}
-		
-		// build from clause
-		builder.append( " FROM ").append(this.getFromClause());
-		
-		// build where clause add (1=2) because not need get result, decrease load 
-		if (this.getWhereClause() != null && this.getWhereClause().trim().length() > 0) {
-			builder.append(" WHERE (1=2) AND (").append(this.getWhereClause()).append(")");
-		} else {
-			builder.append(" WHERE 1=2");
-		}
-		
-		// build other (having) clause
-		if (this.getOtherClause() != null && this.getOtherClause().trim().length() > 0) {
-			builder.append(" ").append(this.getOtherClause());
-		}
-		
-		// build order (having) clause
-		if (this.getOrderByClause() != null && this.getOrderByClause().trim().length() > 0) {
-			builder.append(" ORDER BY ").append(this.getOrderByClause());
-		}
-		
-		// replace env value by dummy value
-		while(builder.indexOf("@") >= 0) {
-			int start = builder.indexOf("@");
-			int end = builder.indexOf("@", start+1);
-			if (start >=0 && end > start) {
-				String variable = builder.substring(start, end+1);
-				String replaced = Env.parseContext(getCtx(), 0, variable, false);
-				if (Util.isEmpty(replaced))
-					replaced = "0";
-				builder.replace(start, end+1, replaced);
-			} else {
-				break;
-			}
-		}
-		
+
 		// try run sql
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
-			pstmt = DB.prepareStatement(builder.toString(), get_TrxName());
+			pstmt = DB.prepareStatement(builder, get_TrxName());
 			rs = pstmt.executeQuery();
 		}catch (Exception ex){
 			log.log(Level.WARNING, ex.getMessage());
@@ -535,6 +485,109 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 		this.setIsValid(true);		
 	}
 
+	/**
+	 * Builds the SQL query used to validate an InfoWindow configuration.
+	 *
+	 * @param ctx the context
+	 * @param iw the System InfoWindow
+	 * @param udi the user-defined InfoWindow (should be null if System validation)
+	 * @return the SQL query
+	 */
+	public static String getSqlForValidation(Properties ctx, MInfoWindow iw, MUserDefInfo udi) {
+
+		// add DISTINCT clause
+		StringBuilder builder = new StringBuilder("SELECT ");
+		if (iw.isDistinct())
+			builder.append("DISTINCT ");
+
+		MInfoColumn[] infoColumns = MInfoWindow.getEffectiveInfoColumnsForValidation(ctx, iw, udi);
+		// none column make this invalid
+		if (infoColumns.length == 0){
+			return "";
+		}
+
+		// build select clause
+		for (int columnIndex = 0; columnIndex < infoColumns.length; columnIndex++) {
+			if (columnIndex > 0)
+			{
+				builder.append(", ");
+			}
+			builder.append(infoColumns[columnIndex].getSelectClause());
+		}
+
+		// build from clause
+		builder.append( " FROM ").append(udi != null && !Util.isEmpty(udi.getFromClause()) ? udi.getFromClause() :  iw.getFromClause());
+
+		// build where clause add (1=2) because not need get result, decrease load 
+		if (iw.getWhereClause() != null && iw.getWhereClause().trim().length() > 0) {
+			builder.append(" WHERE (1=2) AND (").append(iw.getWhereClause()).append(")");
+		} else {
+			builder.append(" WHERE 1=2");
+		}
+
+		// build other (having) clause
+		if (iw.getOtherClause() != null && iw.getOtherClause().trim().length() > 0) {
+			builder.append(" ").append(iw.getOtherClause());
+		}
+
+		// build order (having) clause
+		if (iw.getOrderByClause() != null && iw.getOrderByClause().trim().length() > 0) {
+			builder.append(" ORDER BY ").append(iw.getOrderByClause());
+		}
+
+		// replace env value by dummy value
+		while(builder.indexOf("@") >= 0) {
+			int start = builder.indexOf("@");
+			int end = builder.indexOf("@", start+1);
+			if (start >=0 && end > start) {
+				String variable = builder.substring(start, end+1);
+				String replaced = Env.parseContext(ctx, 0, variable, false);
+				if (Util.isEmpty(replaced))
+					replaced = "0";
+				builder.replace(start, end+1, replaced);
+			} else {
+				break;
+			}
+		}
+
+		return builder.toString();
+	}
+
+	/**
+	 * Retrieves the effective columns to include in the validation query (System and user-defined)
+	 *
+	 * @param ctx the context
+	 * @param iw the System InfoWindow
+	 * @param udi the user-defined InfoWindow, or {@code null} for System validation
+	 * @return the effective columns
+	 */
+	public static MInfoColumn[] getEffectiveInfoColumnsForValidation(Properties ctx, MInfoWindow iw, MUserDefInfo udi) {
+
+		MInfoColumn[] infoColumns = iw.getInfoColumns();
+
+		// System validation: return all active columns
+		if (udi == null)
+			return Arrays.stream(infoColumns)
+					.filter(MInfoColumn::isActive)
+					.toArray(MInfoColumn[]::new);
+
+		List<MInfoColumn> effectiveColumns = new ArrayList<>();
+
+		for (MInfoColumn infoColumn : infoColumns) {
+			MUserDefInfoColumn userDefColumn = MUserDefInfoColumn.getForUserDefInfo(ctx, infoColumn.getAD_InfoColumn_ID(), udi.getAD_UserDef_Info_ID());
+
+			if (userDefColumn == null) {
+				if (infoColumn.isDisplayed())
+					effectiveColumns.add(infoColumn);
+			}
+			else if (userDefColumn.getIsDisplayed() == null ? infoColumn.isDisplayed() : MUserDefInfoColumn.ISDISPLAYED_Yes.equals(userDefColumn.getIsDisplayed())) {
+				effectiveColumns.add(infoColumn);
+			}
+		}
+
+		return effectiveColumns.toArray(new MInfoColumn[0]);
+	}
+	
 	/**
 	 * IDEMPIERE-4167
 	 **/

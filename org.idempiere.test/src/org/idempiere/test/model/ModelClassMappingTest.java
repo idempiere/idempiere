@@ -57,6 +57,7 @@ public class ModelClassMappingTest extends AbstractTestCase {
 	private static final String[]	s_packages = new String[] {
 		"org.compiere.model", "org.compiere.wf",
 		"org.compiere.print", "org.compiere.impexp",
+		"org.compiere.report",
 		"compiere.model",			//	globalqss allow compatibility with other plugins
 		"adempiere.model",			//	Extensions
 		"org.adempiere.model"

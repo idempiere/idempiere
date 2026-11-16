@@ -120,3 +120,8 @@ input[type="checkbox"]:focus {
 .z-label {
 	color: var(--zk-input-element-label-color);
 }
+
+<%-- disabled input doesn't fire mouse events, let right click reach the z-checkbox span to open the field context menu --%>
+.z-checkbox-disabled > input[type="checkbox"] {
+	pointer-events: none;
+} 
