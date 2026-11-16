@@ -348,7 +348,8 @@ public class MOrderLine extends X_C_OrderLine
 		int ii = Core.getTaxLookup().get(getCtx(), getM_Product_ID(), getC_Charge_ID(), getDateOrdered(), getDateOrdered(),
 			getAD_Org_ID(), getM_Warehouse_ID(),
 			getC_BPartner_Location_ID(),		//	should be bill to
-			getC_BPartner_Location_ID(), getParent().getDropShip_Location_ID(), m_IsSOTrx, getParent().getDeliveryViaRule(), get_TrxName());
+			getC_BPartner_Location_ID(), getParent().getDropShip_Location_ID(), m_IsSOTrx, getParent().getDeliveryViaRule(),
+			getParent().getDocTypeID(), getParent().getPaymentRule(), get_TrxName());
 		if (ii == 0)
 		{
 			log.log(Level.SEVERE, "No Tax found");
@@ -914,14 +915,31 @@ public class MOrderLine extends X_C_OrderLine
 		}
 
 		// See IDEMPIERE-6749 - price list including taxes combined with summary taxes are wrongly calculated
-		// forbid this operation until solved
-		if (isTaxIncluded() && getTax().isSummary()) {
+		// forbid this operation until solved, unless a custom tax provider handles this case (IDEMPIERE-7069)
+		if (isTaxIncluded() && getTax().isSummary() && !isTaxIncludedSummarySupportedByProvider()) {
 			log.saveError("Error", Msg.getMsg(getCtx(), "PriceListIncludingTaxWithSummaryTaxNotAllowed"));
 			return false;
 		}
 
 		return true;
 	}	//	beforeSave
+
+	/**
+	 * See IDEMPIERE-6749 / IDEMPIERE-7069.<br/>
+	 * Check whether the line's tax is delegated to a custom Tax Provider that declares support for
+	 * a tax-included price combined with a summary tax. When there is no custom provider, or it
+	 * cannot be resolved (e.g. inactive), the native calculation applies and the case is not supported.
+	 * @return true if a resolvable custom Tax Provider handles this case
+	 */
+	private boolean isTaxIncludedSummarySupportedByProvider()
+	{
+		MTax tax = getTax();
+		if (tax.getC_TaxProvider_ID() <= 0)
+			return false;
+		MTaxProvider provider = MTaxProvider.get(getCtx(), tax.getC_TaxProvider_ID());
+		ITaxProvider calculator = Core.getTaxProvider(provider);
+		return calculator != null && calculator.isTaxIncludedSummarySupported();
+	}
 	
 	/***
 	 * Set default unit of measurement.<br/>

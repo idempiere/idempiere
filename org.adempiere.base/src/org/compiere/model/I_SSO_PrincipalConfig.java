@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for SSO_PrincipalConfig
  *  @author iDempiere (generated) 
- *  @version Release 13
+ *  @version Release 14
  */
 public interface I_SSO_PrincipalConfig 
 {
@@ -103,6 +103,19 @@ public interface I_SSO_PrincipalConfig
 	  * Default value
 	  */
 	public boolean isDefault();
+
+    /** Column name IsForceLogin */
+    public static final String COLUMNNAME_IsForceLogin = "IsForceLogin";
+
+	/** Set Force Login.
+	  * Require the OpenID Connect provider to reauthenticate the user
+	  */
+	public void setIsForceLogin (boolean IsForceLogin);
+
+	/** Get Force Login.
+	  * Require the OpenID Connect provider to reauthenticate the user
+	  */
+	public boolean isForceLogin();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

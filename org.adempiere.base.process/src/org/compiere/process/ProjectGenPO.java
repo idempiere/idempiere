@@ -17,6 +17,7 @@
 package org.compiere.process;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
@@ -30,6 +31,7 @@ import org.compiere.model.MProject;
 import org.compiere.model.MProjectLine;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.exceptions.NoCurrencyConversionException;
 
 /**
  *  Generate Purchase Order from Project.
@@ -191,10 +193,19 @@ public class ProjectGenPO extends SvrProcess
 			if (poPrice != null && poPrice.signum() != 0)
 			{
 				if (order.getC_Currency_ID() != C_Currency_ID)
-					poPrice = MConversionRate.convert(getCtx(), poPrice, 
-						C_Currency_ID, order.getC_Currency_ID(), 
-						order.getDateAcct(), order.getC_ConversionType_ID(), 
+				{
+					Timestamp conversionDate = order.getDateAcct();
+					poPrice = MConversionRate.convert(getCtx(), poPrice,
+						C_Currency_ID, order.getC_Currency_ID(),
+						conversionDate, order.getC_ConversionType_ID(),
 						order.getAD_Client_ID(), order.getAD_Org_ID());
+					if (poPrice == null)
+					{
+						throw new NoCurrencyConversionException(C_Currency_ID, order.getC_Currency_ID(),
+								conversionDate, order.getC_ConversionType_ID(), order.getAD_Client_ID(), order.getAD_Org_ID());
+					}
+				}
+
 				orderLine.setPrice(poPrice);
 			}
 		}

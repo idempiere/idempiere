@@ -282,13 +282,7 @@ public class GridFieldVO implements Serializable, Cloneable
 			vo.ValidationCode = rs.getString("ValidationCode");
 			vo.ValidationCodeLookup = rs.getString("ValidationCodeLookup");
 			vo.IsQuickForm = "Y".equals(rs.getString ("IsQuickForm"));
-			{
-				vo.ColumnSQL = rs.getString("ColumnSQL");
-				if (vo.ColumnSQL != null && !vo.ColumnSQL.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX) && !vo.ColumnSQL.startsWith(MColumn.VIRTUAL_SEARCH_COLUMN_PREFIX) && vo.ColumnSQL.contains("@")) {
-					// NOTE: cannot use window context because this is set globally on the query, not per record
-					vo.ColumnSQL = Env.parseContext(ctx, -1, vo.ColumnSQL, false, true);
-				}			
-			} 
+			vo.ColumnSQL = rs.getString("ColumnSQL");
 			//Feature Request FR [ 1757088 ]
 			vo.Included_Tab_ID = rs.getInt("Included_Tab_ID");
 			// Collapse Default State

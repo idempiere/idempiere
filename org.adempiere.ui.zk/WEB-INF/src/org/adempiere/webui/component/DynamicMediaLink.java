@@ -33,6 +33,7 @@ public class DynamicMediaLink extends A {
 	private static final long serialVersionUID = 5017833977652241179L;
 	
 	private AMedia media;
+	private boolean openInBrowser;
 
 	/**
 	 * Default constructor
@@ -43,7 +44,11 @@ public class DynamicMediaLink extends A {
 
 			@Override
 			public void onEvent(Event event) throws Exception {
-				Filedownload.save(media);
+				if (media == null)
+					return;
+				//in open-in-browser mode the anchor href/target handled natively by the browser
+				if (!openInBrowser)
+					Filedownload.save(media);
 			}
 		});
 	}
@@ -70,4 +75,14 @@ public class DynamicMediaLink extends A {
 	public void setMedia(AMedia media) {
 		this.media = media;
 	}	
+	
+	/**
+	 * Set whether clicking the link opens the link href (requires href and
+	 * target to be set) in a new browser tab instead of forcing a download
+	 * of the media.
+	 * @param openInBrowser
+	 */
+	public void setOpenInBrowser(boolean openInBrowser) {
+		this.openInBrowser = openInBrowser;
+	}
 }

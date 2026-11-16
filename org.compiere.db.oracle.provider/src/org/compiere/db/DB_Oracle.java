@@ -909,6 +909,11 @@ public class DB_Oracle implements AdempiereDatabase
 	}							
 
 	@Override
+	public boolean isInsertReturningSupported() {
+		return false;
+	}
+
+	@Override
 	public boolean forUpdate(PO po, int timeout) {
     	//only can lock for update if using trx
     	if (po.get_TrxName() == null)

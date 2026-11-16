@@ -400,11 +400,6 @@ public class WRecordInfo extends Window implements EventListener<Event>
 				m_copySelect.setVisible(true);
 			}
 		}
-		if (gridTab != null)
-		{
-			timeLinePanel.render(gridTab);
-		}
-		
 		//	Title
 		if (tabName == null && dse.AD_Table_ID != 0)
 		{
@@ -412,9 +407,13 @@ public class WRecordInfo extends Window implements EventListener<Event>
 		}
 		setTitle(title + " - " + tabName);
 
-		//	Only Client Preference can view Change Log
-		if (!MRole.PREFERENCETYPE_Client.equals(MRole.getDefault().getPreferenceType()))
+		if (!MRole.getDefault().isShowChangeLog())
 			return false;
+
+		if (gridTab != null)
+		{
+			timeLinePanel.render(gridTab);
+		}
 		
 		if (Record_ID <= 0 && Util.isEmpty(Record_UU))
 			return false;

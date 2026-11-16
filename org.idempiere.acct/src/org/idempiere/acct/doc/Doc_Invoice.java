@@ -47,6 +47,7 @@ import org.compiere.model.MLandedCostAllocation;
 import org.compiere.model.MOrderLandedCost;
 import org.compiere.model.MOrderLandedCostAllocation;
 import org.compiere.model.MOrderLine;
+import org.compiere.model.MProduct;
 import org.compiere.model.MTax;
 import org.compiere.model.ProductCost;
 import org.compiere.model.Query;
@@ -1170,16 +1171,11 @@ public class Doc_Invoice extends Doc
 						{
 							int AD_Org_ID = lca.getAD_Org_ID();
 							int M_AttributeSetInstance_ID = lca.getM_AttributeSetInstance_ID();
-
-							if (MAcctSchema.COSTINGLEVEL_Client.equals(as.getCostingLevel()))
-							{
-								AD_Org_ID = 0;
-								M_AttributeSetInstance_ID = 0;
-							}
-							else if (MAcctSchema.COSTINGLEVEL_Organization.equals(as.getCostingLevel()))
-								M_AttributeSetInstance_ID = 0;
-							else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(as.getCostingLevel()))
-								AD_Org_ID = 0;
+							MProduct product = new MProduct(lca.getCtx(), lca.getM_Product_ID(), lca.get_TrxName());
+							String costingLevel = product.getCostingLevel(as);
+							MCost.CostingKey costKey = MCost.CostingKey.resolve(AD_Org_ID, M_AttributeSetInstance_ID, costingLevel);
+							AD_Org_ID = costKey.AD_Org_ID();
+							M_AttributeSetInstance_ID = costKey.M_AttributeSetInstance_ID();
 							
 							MCostDetail cd = MCostDetail.getInvoice(as, lca.getM_Product_ID(), M_AttributeSetInstance_ID, 
 									C_InvoiceLine_ID, lca.getM_CostElement_ID(), getDateAcct(), getTrxName());
@@ -1269,16 +1265,11 @@ public class Doc_Invoice extends Doc
 					costDetailQty = BigDecimal.ZERO;
 					int AD_Org_ID = lca.getAD_Org_ID();
 					int M_AttributeSetInstance_ID = lca.getM_AttributeSetInstance_ID();
-
-					if (MAcctSchema.COSTINGLEVEL_Client.equals(as.getCostingLevel()))
-					{
-						AD_Org_ID = 0;
-						M_AttributeSetInstance_ID = 0;
-					}
-					else if (MAcctSchema.COSTINGLEVEL_Organization.equals(as.getCostingLevel()))
-						M_AttributeSetInstance_ID = 0;
-					else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(as.getCostingLevel()))
-						AD_Org_ID = 0;
+					MProduct product = new MProduct(lca.getCtx(), lca.getM_Product_ID(), lca.get_TrxName());
+					String costingLevel = product.getCostingLevel(as);
+					MCost.CostingKey costKey = MCost.CostingKey.resolve(AD_Org_ID, M_AttributeSetInstance_ID, costingLevel);
+					AD_Org_ID = costKey.AD_Org_ID();
+					M_AttributeSetInstance_ID = costKey.M_AttributeSetInstance_ID();
 					String key = lca.getM_Product_ID()+"_"+M_AttributeSetInstance_ID;
 					if (!costDetailAmtMap.containsKey(key)) {
 						costDetailAmtMap.put(key, BigDecimal.ZERO);

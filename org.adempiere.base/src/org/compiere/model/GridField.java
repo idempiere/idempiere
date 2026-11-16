@@ -41,10 +41,13 @@ import java.util.regex.Pattern;
 import org.adempiere.base.GeneratedCodeCoverageExclusion;
 import org.adempiere.base.LookupFactoryHelper;
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.util.GridRowCtx;
 import org.compiere.util.CLogMgt;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.DefaultEvaluatee;
+import org.compiere.util.DefaultEvaluatee.DataProvider;
+import org.compiere.util.DefaultEvaluatee.GridTabDataProvider;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
@@ -481,7 +484,14 @@ public class GridField
 			if(isAlwaysUpdatable)
 				return true;
 		}
-		
+
+		// IDEMPIERE-7024 hook: placed after always-updateable checks so providers
+		// cannot veto fields that are forced editable by core logic.
+		if (!org.adempiere.base.UIBehaviourProvider.isFieldEditable(ctx, this, checkContext, isGrid)) {
+			if (log.isLoggable(Level.FINEST)) log.finest(m_vo.ColumnName + " NO - UIBehaviourProvider denied");
+			return false;
+		}
+
 		//check tab context
 		if (checkContext && getGridTab() != null &&
 			! "Y".equals(Env.getContext(Env.getCtx(), getWindowNo(), "_QUICK_ENTRY_MODE_")))
@@ -571,7 +581,7 @@ public class GridField
 
 		//  Record is Processed	***	
 		if (checkContext 
-			&& ("Y".equals(get_ValueAsString("Processed")) || "Y".equals(get_ValueAsString("Processing"))) )
+			&& ("Y".equals(get_ValueAsString(ctx, "Processed")) || "Y".equals(get_ValueAsString(ctx, "Processing"))) )
 			return false;
 
 		//  IsActive field is editable, if record not processed
@@ -1308,7 +1318,7 @@ public class GridField
 		if (checkContext)
 		{
 			if (m_vo.DisplayLogic.startsWith(MColumn.VIRTUAL_UI_COLUMN_PREFIX)) {
-				return Evaluator.parseSQLLogic(m_vo.DisplayLogic, m_vo.ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName);
+				return Evaluator.parseSQLLogic(m_vo.DisplayLogic, ctx, m_vo.WindowNo, m_vo.TabNo, m_vo.ColumnName);
 			}
 			Evaluatee evaluatee = (variableName) -> {return get_ValueAsString(ctx, variableName);};
 			boolean retValue = Evaluator.evaluateLogic(evaluatee, m_vo.DisplayLogic);
@@ -1384,6 +1394,18 @@ public class GridField
 			if (value != null)
 				return value;
 		}
+		if (ctx instanceof GridRowCtx gridRowCtx) {
+			// a GridRowCtx renders one row of the grid view, the GridTab values are those of the current row:
+			// read the typed value of the rendered row (keeps formatting like @GrandTotal<#0.00>@),
+			// keep the GridTab for the column metadata (e.g. @C_DocTypeTarget_ID.DocBaseType@)
+			DataProvider dataProvider = new GridTabDataProvider(getGridTab()) {
+				@Override
+				public Object getValue(String columnName) {
+					return gridRowCtx.getValue(columnName);
+				}
+			};
+			return new DefaultEvaluatee(dataProvider, m_vo.WindowNo, m_vo.TabNo).get_ValueAsString(ctx, variableName);
+		}
 		return new DefaultEvaluatee(getGridTab(), m_vo.WindowNo, m_vo.TabNo).get_ValueAsString(ctx, variableName);
 	}	//	get_ValueAsString
 
@@ -1444,6 +1466,10 @@ public class GridField
 				query = "NULL";
 			else
 				query = m_vo.ColumnSQL;
+
+			if (query.contains("@"))
+				query = Env.parseContext(m_vo.ctx, m_vo.WindowNo, query, false, true);
+
 			if (withAS)
 				return query + " AS " + m_vo.ColumnName;
 			else
@@ -1467,6 +1493,10 @@ public class GridField
 				query = m_vo.ColumnSQL.substring(9);
 			else
 				query = m_vo.ColumnSQL;
+
+			if (query.contains("@"))
+				query = Env.parseContext(m_vo.ctx, m_vo.WindowNo, query, false, true);
+
 			return query;
 		}
 		return m_vo.ColumnName;

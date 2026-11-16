@@ -52,8 +52,10 @@ import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.WFieldRecordInfo;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
+import org.compiere.model.MField;
 import org.compiere.model.MRole;
 import org.compiere.model.MStyle;
+import org.idempiere.ui.zk.field.FieldDynamicDisplayListenerProvider;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Evaluatee;
@@ -354,6 +356,22 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
         		adwindow.getADWindowContent().setLastFocusEditor(component);
         	}
         });
+        
+        if (gridField != null) {
+        	int fieldId = gridField.getAD_Field_ID();
+        	if (fieldId > 0) {
+        		MField mField = MField.get(Env.getCtx(), fieldId);
+        		if (mField != null) {
+        			String uu = mField.getAD_Field_UU();
+        			if (uu != null) {
+        				WEditor.DynamicDisplayListener[] list = FieldDynamicDisplayListenerProvider.getListeners(uu);
+        				for (WEditor.DynamicDisplayListener listener : list) {
+        					addDynamicDisplayListener(listener);
+        				}
+        			}
+        		}
+        	}
+        }
     }
 
     /**
@@ -727,10 +745,10 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	 */
 	protected void setLabelStyle(String style) {
 		if (label != null) {
-			if (style != null && style.toLowerCase().startsWith(MStyle.SCLASS_PREFIX)) {
+			if (MStyle.isSClass(style)) {
 				String sclass = style.substring(MStyle.SCLASS_PREFIX.length());
 				label.setSclass(sclass);
-			} else if (style != null && style.toLowerCase().startsWith(MStyle.ZCLASS_PREFIX)) {
+			} else if (MStyle.isZClass(style)) {
 				String zclass = style.substring(MStyle.ZCLASS_PREFIX.length());
 				label.setZclass(zclass);
 			} else {
@@ -773,7 +791,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 	 */
 	protected void setFieldStyle(String style) {
 		HtmlBasedComponent component = (HtmlBasedComponent) getComponent();
-		if (style != null && style.startsWith(MStyle.SCLASS_PREFIX)) {
+		if (MStyle.isSClass(style)) {
 			String sclass = style.substring(MStyle.SCLASS_PREFIX.length());
 			if (component instanceof EditorBox)
 				((EditorBox)component).getTextbox().setSclass(sclass);
@@ -781,7 +799,7 @@ public abstract class WEditor implements EventListener<Event>, PropertyChangeLis
 				((ComboEditorBox)component).getCombobox().setSclass(sclass);
 			else
 				component.setSclass(sclass);
-		} else if (style != null && style.startsWith(MStyle.ZCLASS_PREFIX)) {
+		} else if (MStyle.isZClass(style)) {
 			String zclass = style.substring(MStyle.ZCLASS_PREFIX.length());
 			if (component instanceof EditorBox)
 				((EditorBox)component).getTextbox().setZclass(zclass);

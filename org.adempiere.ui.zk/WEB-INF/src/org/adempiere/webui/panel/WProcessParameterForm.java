@@ -178,7 +178,6 @@ public class WProcessParameterForm extends ADForm
 		ZKUpdateUtil.setHflex(dialogBody, "1");
 		Vlayout dialogContent = new Vlayout();
 		ZKUpdateUtil.setHflex(dialogContent, "1");
-		ZKUpdateUtil.setVflex(dialogContent, "1");
 		dialogContent.setSclass("dialog-content");
 		dialogBody.appendChild(dialogContent);
 		Div div = new Div();

@@ -30,7 +30,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.junit.jupiter.api.parallel.ResourceAccessMode.READ_WRITE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
@@ -50,6 +49,7 @@ import java.util.stream.Stream;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAllocationHdr;
+import org.compiere.model.MAttributeSet;
 import org.compiere.model.MAttributeSetInstance;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MCharge;
@@ -86,6 +86,7 @@ import org.compiere.model.Query;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
+import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
@@ -97,17 +98,68 @@ import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.ConversionRateHelper;
 import org.idempiere.test.DictionaryIDs;
 import org.idempiere.test.FactAcct;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
-import org.junit.jupiter.api.parallel.ResourceLock;
-import org.junit.jupiter.api.parallel.Resources;
 import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 @Isolated
-@ResourceLock(value = Resources.GLOBAL, mode = READ_WRITE) // ensure no other tests running at the same time as this changes AcctSchema
 public class BackDateAveragePOCostingTest extends AbstractTestCase {
 
+	private MockedStatic<MClientInfo> clientInfoMock;
+	private MockedStatic<MAcctSchema> acctSchemaMock;
+
 	public BackDateAveragePOCostingTest() {
+	}
+
+	@BeforeEach
+	public void setUpMocks() {
+		final int MIN_BACK_DATE_DAY = 7;
+		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), getAD_Client_ID());
+		MAcctSchema[] spiedAss = new MAcctSchema[ass.length];
+		for (int i = 0; i < ass.length; i++) {
+			MAcctSchema spyAs = Mockito.spy(new MAcctSchema(Env.getCtx(), ass[i]));
+			if (spyAs.getBackDateDay() < MIN_BACK_DATE_DAY) {
+				Mockito.doReturn(MIN_BACK_DATE_DAY).when(spyAs).getBackDateDay();
+			}
+			spiedAss[i] = spyAs;
+		}
+		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null);
+		MClientInfo spyCi = Mockito.spy(new MClientInfo(Env.getCtx(), ci));
+		Mockito.doReturn(spiedAss[0]).when(spyCi).getMAcctSchema1();
+		Mockito.doReturn(spiedAss[0].getC_Currency_ID()).when(spyCi).getC_Currency_ID();
+
+		int clientId = getAD_Client_ID();
+		clientInfoMock = Mockito.mockStatic(MClientInfo.class, Mockito.CALLS_REAL_METHODS);
+		clientInfoMock.when(() -> MClientInfo.get(any(Properties.class), eq(clientId), any())).thenReturn(spyCi);
+		clientInfoMock.when(() -> MClientInfo.get(any(Properties.class), eq(clientId))).thenReturn(spyCi);
+		clientInfoMock.when(() -> MClientInfo.get(eq(clientId))).thenReturn(spyCi);
+		clientInfoMock.when(() -> MClientInfo.getCopy(any(Properties.class), eq(clientId), any())).thenReturn(spyCi);
+
+		acctSchemaMock = Mockito.mockStatic(MAcctSchema.class, Mockito.CALLS_REAL_METHODS);
+		acctSchemaMock.when(() -> MAcctSchema.getClientAcctSchema(any(Properties.class), eq(clientId), any())).thenReturn(spiedAss);
+		acctSchemaMock.when(() -> MAcctSchema.getClientAcctSchema(any(Properties.class), eq(clientId))).thenReturn(spiedAss);
+		for (MAcctSchema spyAs : spiedAss) {
+			int acctSchemaId = spyAs.getC_AcctSchema_ID();
+			acctSchemaMock.when(() -> MAcctSchema.get(any(Properties.class), eq(acctSchemaId), any())).thenReturn(spyAs);
+			acctSchemaMock.when(() -> MAcctSchema.get(any(Properties.class), eq(acctSchemaId))).thenReturn(spyAs);
+			acctSchemaMock.when(() -> MAcctSchema.get(eq(acctSchemaId))).thenReturn(spyAs);
+			acctSchemaMock.when(() -> MAcctSchema.getCopy(any(Properties.class), eq(acctSchemaId), any())).thenReturn(spyAs);
+		}
+	}
+
+	@AfterEach
+	public void tearDownMocks() {
+		if (acctSchemaMock != null) {
+			acctSchemaMock.close();
+			acctSchemaMock = null;
+		}
+		if (clientInfoMock != null) {
+			clientInfoMock.close();
+			clientInfoMock = null;
+		}
 	}
 
 	/**
@@ -129,9 +181,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 		
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testBackDateLandedCostZeroStock", new BigDecimal(5));
 			mockProductGet(productMock, product);
 			
@@ -207,21 +258,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);			
 		}
 	}
-
-	private void resetAcctSchema(MAcctSchema[] ass, int[] backDateDays) {
-		for (int i = 0; i < ass.length; i++) {
-			MAcctSchema as = ass[i];
-			int backDateDay = backDateDays[i];
-			if (backDateDay > -1) {
-				String sql = "UPDATE C_AcctSchema SET BackDateDay=? WHERE C_AcctSchema_ID=?";
-				DB.executeUpdate(sql, new Object[] {backDateDay, as.getC_AcctSchema_ID()}, false, null);
-			}
-			as.load(null);
-		}
-	} 
 	
 	/**
 	 * Scenarios 1 Back-Date Landed Cost
@@ -242,9 +280,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testBackDateLandedCostInsufficientStock", new BigDecimal(5));
 			mockProductGet(productMock, product);
 			
@@ -333,7 +370,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);			
 		}
 	}
 	
@@ -356,9 +392,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testBackDateLandedCostSufficientStock", new BigDecimal(5));
 			mockProductGet(productMock, product);
 			
@@ -456,7 +491,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);			
 		}
 	}
 	
@@ -479,9 +513,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 		
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testBackDateLandedCostZeroStock", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -546,7 +579,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	} 
 	
@@ -569,9 +601,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testBackDateLandedCostInsufficientStock", new BigDecimal(5));
 			mockProductGet(productMock, product);
 			
@@ -639,7 +670,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);			
 		}
 	}
 	
@@ -662,9 +692,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testBackDateLandedCostSufficientStock", new BigDecimal(5));
 			mockProductGet(productMock, product);
 			 
@@ -736,7 +765,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -754,9 +782,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testBackDateReceiptAfterShipmentInventory", new BigDecimal(10));
 			mockProductGet(productMock, product);
 
@@ -852,10 +879,75 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
+	/**
+	 * Back-date process of a vendor invoice runs only after every product line is matched and posted.
+	 * MR1
+	 * SH (today)
+	 * MR2 (Back-Date)
+	 * AP invoice with two lines (Back-Date) - second line has no receipt, back-date process is deferred
+	 */
+	@Test
+	public void testBackDateInvoiceWithUnmatchedLine() {
+		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), getAD_Client_ID());
+		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null);
+		MAcctSchema as = ci.getMAcctSchema1();
+
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
+			validateAcctSchema(ass);
+			MProduct product1 = createProduct("testBackDateInvoiceWithUnmatchedLine1", new BigDecimal(10));
+			mockProductGet(productMock, product1);
+			MProduct product2 = createProduct("testBackDateInvoiceWithUnmatchedLine2", new BigDecimal(20));
+			mockProductGet(productMock, product2);
+
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -2);
+			Timestamp backDate1 = new Timestamp(cal.getTimeInMillis());
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -1);
+			Timestamp backDate2  = new Timestamp(cal.getTimeInMillis());
+
+			// MR1
+			MInOutLine receiptLine1 = createPOAndMRForProduct(backDate1, product1.getM_Product_ID(), new BigDecimal(2), new BigDecimal(10));
+			createInvoiceForMR(receiptLine1, new BigDecimal(10));
+
+			// SH
+			MInOutLine shipmentLine = createSOAndSHForProduct(today, product1.getM_Product_ID(), new BigDecimal(1), new BigDecimal(10));
+			MCostDetail cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetail(cd, shipmentLine.getParent().getDateAcct(), false, new BigDecimal("10.00"));
+
+			// MR2 (Back-Date)
+			MInOutLine receiptLine2 = createPOAndMRForProduct(backDate2, product1.getM_Product_ID(), new BigDecimal(1), new BigDecimal(13));
+			cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine2.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for receipt line");
+			validateCostDetail(cd, receiptLine2.getParent().getDateAcct(), true, new BigDecimal("11.00"));
+
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetail(cd, shipmentLine.getParent().getDateAcct(), false, new BigDecimal("11.00"));
+
+			// AP invoice with two lines (Back-Date), second line has no receipt
+			MInvoiceLine invoiceLine = createInvoiceForMRAndProduct(receiptLine2, new BigDecimal(16), product2.getM_Product_ID(), new BigDecimal(20));
+			cd = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invoiceLine.getC_InvoiceLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for invoice line");
+			assertTrue(cd.isBackDate(), "Unexpected MCostDetail IsBackDate");
+			assertNull(cd.getBackDateProcessedOn(), "Back-date process must wait until all invoice lines are matched");
+
+			cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipmentLine.getM_InOutLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(cd, "MCostDetail not found for shipment line");
+			validateCostDetail(cd, shipmentLine.getParent().getDateAcct(), false, new BigDecimal("11.00"));
+
+			validateProductCostQty(ass, product1);
+		} finally {
+			rollback();
+		}
+	}
+
 	/**
 	 * Scenarios 4 Back-Date material receipt to the date before landed cost transaction
 	 * 4.1 Stock as of landed cost account date changed from zero to not sufficient coverage. Landed cost posting in expense before performing back-date MR.
@@ -876,9 +968,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testBackDateReceiptBeforeLandedCostZero2InsufficientStock", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -979,7 +1070,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -1003,9 +1093,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testBackDateReceiptBeforeLandedCostZero2InsufficientStock", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -1106,7 +1195,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -1130,9 +1218,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testBackDateReceiptBeforeLandedCostZero2SufficientStock", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -1234,7 +1321,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -1258,9 +1344,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) { 
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testBackDateReceiptBeforeLandedCostInsufficient2SufficientStock", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -1362,7 +1447,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -1386,9 +1470,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testBackDateReceiptBeforeLandedCostZero2InsufficientStock", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -1468,7 +1551,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -1492,9 +1574,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testBackDateReceiptBeforeLandedCostZero2SufficientStock", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -1577,7 +1658,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -1601,9 +1681,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) { 
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testBackDateReceiptBeforeLandedCostInsufficient2SufficientStock", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -1686,7 +1765,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);			
 		}
 	}
 	
@@ -1703,9 +1781,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testBackDateShipmentBeforeReceiptShipment", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -1784,7 +1861,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -1807,9 +1883,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testBackDateShipmentBeforeLandedCostSufficient2ZeroStock", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -1908,7 +1983,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -1931,9 +2005,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testBackDateShipmentBeforeLandedCostInsufficient2ZeroStock", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -2032,7 +2105,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -2055,9 +2127,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testBackDateShipmentBeforeLandedCostSufficient2InsufficientStock", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -2157,7 +2228,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -2180,9 +2250,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testBackDateShipmentBeforeLandedCostSufficient2ZeroStock", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -2254,7 +2323,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -2277,9 +2345,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testBackDateShipmentBeforeLandedCostInsufficient2ZeroStock", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -2351,7 +2418,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -2374,9 +2440,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testBackDateShipmentBeforeLandedCostSufficient2InsufficientStock", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -2448,7 +2513,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -2464,9 +2528,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testPostDateShipment", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -2521,7 +2584,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -2537,9 +2599,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testPostDateShipment", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -2594,7 +2655,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -2617,9 +2677,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testReverseCorrectReceiptAfterShipment", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -2708,7 +2767,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -2731,9 +2789,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testReverseCorrectReceiptAfterShipment21", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -2822,7 +2879,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);			
 		}
 	}
 	
@@ -2841,9 +2897,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testReverseCorrectShipmentAfterAVGCostMoved", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -2927,7 +2982,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -2946,9 +3000,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testReverseCorrectShipmentAfterAVGCostMoved", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -3032,7 +3085,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}	
 	
@@ -3054,9 +3106,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testReverseCorrectShipmentAfterAVGCostMoved", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -3115,7 +3166,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 		
@@ -3137,9 +3187,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testReverseCorrectLandedCost", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -3206,7 +3255,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -3228,9 +3276,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testReverseCorrectLandedCost", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -3297,7 +3344,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -3315,9 +3361,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testReverseCorrectProductInvoice", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -3369,7 +3414,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -3387,9 +3431,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testReverseCorrectProductInvoice", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -3441,7 +3484,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -3463,9 +3505,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testReverseCorrectInternalUseAfterAVGCostMoved", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -3524,7 +3565,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -3546,9 +3586,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testReverseCorrectInternalUseAfterAVGCostMoved2", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -3607,7 +3646,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);			
 		}
 	}
 	
@@ -3630,9 +3668,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testReverseCorrectReceiptAfterLandedCost", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -3721,7 +3758,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -3744,9 +3780,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testReverseAccrualShipmentAfterShipment", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -3827,7 +3862,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -3850,9 +3884,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testReverseAccrualReceiptAfterShipment", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -3927,7 +3960,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -3943,9 +3975,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 		
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			 
 			BigDecimal p1price = new BigDecimal("30.00");
 			MProduct p1 = createProduct("testUnplannedLandedCostReversalAfterShipment1.1", p1price);
@@ -4271,7 +4302,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
  			validateProductCostQty(ass, p2);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);			
 		}
 	}
 	
@@ -4287,9 +4317,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testBackDateShipmentBeforeReceipt", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -4351,7 +4380,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertTrue(info.isError(), info.getSummary());
 		} finally { 
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -4368,9 +4396,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testBackDateShipmentBeforeMultipleMR", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -4441,7 +4468,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertTrue(info.isError(), info.getSummary());
 		} finally { 
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -4495,13 +4521,12 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		plv.setValidFrom(date1);
 		plv.saveEx();
 		
-		int[] backDateDays = new int[ass.length];
 		MProductPrice pp1 = null;
 		MProductPrice pp2 = null;
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class);
 			 MockedStatic<MPriceList> priceListMock = mockStatic(MPriceList.class);
 			 MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			priceListMock.when(() -> MPriceList.get(any(Properties.class), anyInt(), any())).thenCallRealMethod();
 			priceListMock.when(() -> MPriceList.get(any(Properties.class), eq(priceList.get_ID()), any())).thenReturn(priceList);
 			mockGetRate(conversionRateMock, usd, thb, 0, date1, usdToThb1);
@@ -4896,7 +4921,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product2);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);			
 		}
 	}
 	
@@ -4912,9 +4936,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testBackDateInventoryBeforeReceiptShipment", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -4985,7 +5008,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product); 
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -5001,9 +5023,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testBackDateShipmentBeforeShipment", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -5098,7 +5119,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);			
 		}
 	}
 	
@@ -5131,11 +5151,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		BigDecimal crate5 = new BigDecimal("34.061888748762");
 		BigDecimal crate6 = new BigDecimal("33.676559212063");
 				
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class);
 			 MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic();
 		     MockedStatic<MPriceList> priceListMock = mockStatic(MPriceList.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			mockGetRate(conversionRateMock, pound, usd, 0, backDate1, crate1);
 			mockGetRate(conversionRateMock, pound, usd, 0, backDate2, crate2);
 			mockGetRate(conversionRateMock, pound, euro, 0, backDate1, crate3);
@@ -5367,7 +5386,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, p2); 
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);			  
 		}	
 	}
 	
@@ -5413,11 +5431,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		BigDecimal crate5 = new BigDecimal("34.061888748762");
 		BigDecimal crate6 = new BigDecimal("33.676559212063");
 				
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class);
 			 MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic();
 		     MockedStatic<MPriceList> priceListMock = mockStatic(MPriceList.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			mockGetRate(conversionRateMock, pound, usd, 0, backDate1, crate1);
 			mockGetRate(conversionRateMock, pound, usd, 0, backDate2, crate2);
 			mockGetRate(conversionRateMock, pound, euro, 0, backDate1, crate3);
@@ -5623,7 +5640,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, p2); 
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);			  
 		}	
 	}
 	
@@ -5644,9 +5660,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testBackDateMultiReceiptShipmentInvoice", new BigDecimal(10));
 			mockProductGet(productMock, product);
 
@@ -5810,7 +5825,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -5829,9 +5843,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testBackDateInvoiceWithMultiReceipt", new BigDecimal(10));
 			mockProductGet(productMock, product);
 
@@ -5995,7 +6008,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
  			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -6015,9 +6027,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testBackDateInvoiceWithMultiReceipt2", new BigDecimal(10));
 			mockProductGet(productMock, product);
 
@@ -6201,7 +6212,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
  			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -6219,9 +6229,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testReverseCorrectShipmentReceipt", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -6270,7 +6279,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -6287,9 +6295,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testPurchaseInvoiceWithMultiReceipt", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -6409,7 +6416,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -6426,9 +6432,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testPurchaseInvoiceWithMultiReceipt2", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -6548,7 +6553,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -6565,9 +6569,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testPurchaseInvoiceWithMultiReceipt3", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -6620,7 +6623,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -6637,9 +6639,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testPurchaseInvoiceWithMultiReceipt4", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -6692,7 +6693,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -6709,9 +6709,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testMRWithMultiPurchaseInvoice", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -6796,7 +6795,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -6813,9 +6811,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testMRWithMultiPurchaseInvoice2", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -6900,7 +6897,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -6917,9 +6913,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testMRWithMultiPurchaseInvoice3", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -6947,7 +6942,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -6964,9 +6958,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testMRWithMultiPurchaseInvoice4", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -6994,7 +6987,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -7027,9 +7019,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			categoryAcct.saveEx();
 		}
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product1 = createProduct("testBackDateShipmentAfterCostAdjustment1", new BigDecimal(28.94), category.get_ID());
 			mockProductGet(productMock, product1);
 			MProduct product2 = createProduct("testBackDateShipmentAfterCostAdjustment2", new BigDecimal(30), category.get_ID());
@@ -7198,7 +7189,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		} finally {
 			rollback();
 			category.deleteEx(true);
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -7232,9 +7222,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			categoryAcct.saveEx();
 		}
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product1 = createProduct("testBackDateShipmentAfterCostAdjustment21", new BigDecimal(28.94), category.get_ID());
 			mockProductGet(productMock, product1);
 			MProduct product2 = createProduct("testBackDateShipmentAfterCostAdjustment22", new BigDecimal(30), category.get_ID());
@@ -7450,7 +7439,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		} finally {
 			rollback();
 			category.deleteEx(true);
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -7485,9 +7473,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testMultiReceiptShipmentForPO", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -7628,7 +7615,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			}
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -7663,9 +7649,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testMultiReceiptShipmentForPO2", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -7789,7 +7774,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			}
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 
@@ -7809,9 +7793,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testMultiReceiptShipmentForPO3", new BigDecimal(10));
 			mockProductGet(productMock, product);
 
@@ -7905,7 +7888,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -7921,9 +7903,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testPurchaseInvoiceAfterInternalUseInventory", new BigDecimal(40.5));
 			mockProductGet(productMock, product);
 
@@ -7954,7 +7935,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -7970,9 +7950,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testPurchaseInvoiceAfterInternalUseInventory2", new BigDecimal(40.5));
 			mockProductGet(productMock, product);
 
@@ -8004,7 +7983,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -8039,10 +8017,9 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		BigDecimal crate2 = new BigDecimal("31.621653243275");
 		BigDecimal crate3 = new BigDecimal("32.573724925968");
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class);
 				MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			
 			mockGetRate(conversionRateMock, usd, euro, 0, backDate1, crate1);
 			mockGetRate(conversionRateMock, usd, euro, 0, backDate2, crate2);
@@ -8109,7 +8086,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -8144,10 +8120,9 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		BigDecimal crate2 = new BigDecimal("31.621653243275");
 		BigDecimal crate3 = new BigDecimal("32.573724925968");
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class);
 				MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			
 			mockGetRate(conversionRateMock, usd, euro, 0, backDate1, crate1);
 			mockGetRate(conversionRateMock, usd, euro, 0, backDate2, crate2);
@@ -8215,7 +8190,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -8231,9 +8205,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testPurchaseInvoiceAfterShipment", new BigDecimal(40.5));
 			mockProductGet(productMock, product);
 
@@ -8264,7 +8237,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -8280,9 +8252,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testPurchaseInvoiceAfterShipment2", new BigDecimal(40.5));
 			mockProductGet(productMock, product);
 
@@ -8314,7 +8285,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -8335,9 +8305,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testDropShipment", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -8436,7 +8405,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -8453,9 +8421,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testReverseCorrectInventory", new BigDecimal(5));
 			mockProductGet(productMock, product);
 
@@ -8503,7 +8470,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -8521,9 +8487,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testPartialMRShipment", new BigDecimal(3.15));
 			mockProductGet(productMock, product);
 
@@ -8594,7 +8559,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -8613,9 +8577,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testPartialMultiMRShipment", new BigDecimal(3.15));
 			mockProductGet(productMock, product);
 
@@ -8693,7 +8656,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -8711,9 +8673,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product1 = createProduct("testPartialMRShipmentWithMultiProductLine1", new BigDecimal(3.15));
 			mockProductGet(productMock, product1);
 			MProduct product2 = createProduct("testPartialMRShipmentWithMultiProductLine2", new BigDecimal(3));
@@ -8949,7 +8910,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product2);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -8968,9 +8928,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product1 = createProduct("testPartialMultiMRShipmentWithMultiProductLine1", new BigDecimal(3.15));
 			mockProductGet(productMock, product1);
 			MProduct product2 = createProduct("testPartialMultiMRShipmentWithMultiProductLine2", new BigDecimal(3));
@@ -9255,7 +9214,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product2);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -9273,9 +9231,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testPartialMRInventory", new BigDecimal(3.15));
 			mockProductGet(productMock, product);
 
@@ -9346,7 +9303,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -9365,9 +9321,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testPartialMultiMRShipment", new BigDecimal(3.15));
 			mockProductGet(productMock, product);
 
@@ -9445,7 +9400,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -9463,9 +9417,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product1 = createProduct("testPartialMRInventoryWithMultiProductLine1", new BigDecimal(3.15));
 			mockProductGet(productMock, product1);
 			MProduct product2 = createProduct("testPartialMRInventoryWithMultiProductLine2", new BigDecimal(3));
@@ -9674,7 +9627,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product2);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -9693,9 +9645,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product1 = createProduct("testPartialMultiMRInventoryWithMultiProductLine1", new BigDecimal(3.15));
 			mockProductGet(productMock, product1);
 			MProduct product2 = createProduct("testPartialMultiMRInventoryWithMultiProductLine2", new BigDecimal(3));
@@ -9980,7 +9931,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product2);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -10003,9 +9953,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = createProduct("testPartialMRShipment", new BigDecimal(3.15));
 			mockProductGet(productMock, product);
 
@@ -10083,7 +10032,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -10101,9 +10049,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			
 			MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
 			product.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.STANDARD.id);
@@ -10194,7 +10141,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -10231,11 +10177,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		BigDecimal crate5 = new BigDecimal("35.5391046");
 		BigDecimal crate6 = new BigDecimal("35.7936");
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class);
 				MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic();
 				MockedStatic<MPriceList> priceListMock = mockStatic(MPriceList.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			
 			mockGetRate(conversionRateMock, pound, usd, 0, backDate, crate1);
 			mockGetRate(conversionRateMock, pound, usd, 0, today, crate2);
@@ -10349,7 +10294,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -10389,11 +10333,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		BigDecimal crate5 = new BigDecimal("35.5391046");
 		BigDecimal crate6 = new BigDecimal("35.7936");
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class);
 				MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic();
 				MockedStatic<MPriceList> priceListMock = mockStatic(MPriceList.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			
 			mockGetRate(conversionRateMock, pound, usd, 0, backDate1, crate1);
 			mockGetRate(conversionRateMock, pound, usd, 0, backDate2, crate2);
@@ -10507,7 +10450,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -10548,11 +10490,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		BigDecimal crate5 = new BigDecimal("35.5391046");
 		BigDecimal crate6 = new BigDecimal("35.7936");
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class);
 				MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic();
 				MockedStatic<MPriceList> priceListMock = mockStatic(MPriceList.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			
 			mockGetRate(conversionRateMock, pound, usd, 0, backDate1, crate1);
 			mockGetRate(conversionRateMock, pound, usd, 0, backDate2, crate2);
@@ -10672,7 +10613,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -10716,11 +10656,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		BigDecimal crate5 = new BigDecimal("35.5391046");
 		BigDecimal crate6 = new BigDecimal("35.7936");
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class);
 				MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic();
 				MockedStatic<MPriceList> priceListMock = mockStatic(MPriceList.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			
 			mockGetRate(conversionRateMock, pound, usd, 0, backDate1, crate1);
 			mockGetRate(conversionRateMock, pound, usd, 0, backDate2, crate2);
@@ -10840,7 +10779,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -10881,11 +10819,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		BigDecimal crate5 = new BigDecimal("35.5391046");
 		BigDecimal crate6 = new BigDecimal("35.7936");
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class);
 				MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic();
 				MockedStatic<MPriceList> priceListMock = mockStatic(MPriceList.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			
 			mockGetRate(conversionRateMock, pound, usd, 0, backDate1, crate1);
 			mockGetRate(conversionRateMock, pound, usd, 0, backDate2, crate1);
@@ -11005,7 +10942,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -11049,11 +10985,10 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		BigDecimal crate5 = new BigDecimal("35.5391046");
 		BigDecimal crate6 = new BigDecimal("35.7936");
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class);
 				MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic();
 				MockedStatic<MPriceList> priceListMock = mockStatic(MPriceList.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			
 			mockGetRate(conversionRateMock, pound, usd, 0, backDate1, crate1);
 			mockGetRate(conversionRateMock, pound, usd, 0, backDate2, crate1);
@@ -11173,7 +11108,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -11194,9 +11128,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 		
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
 			product.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.STANDARD.id);
 			product.setName("testReverseCorrectMultiUnplannedLandedCost");
@@ -11410,7 +11343,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -11437,9 +11369,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
 		MAcctSchema as = ci.getMAcctSchema1();
 		
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 	        MProduct productA = new MProduct(Env.getCtx(), 0, getTrxName());
 	        productA.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.STANDARD.id);
 	        productA.setName("testReverseCorrectMultiMRUnplannedLandedCostA");
@@ -11690,7 +11621,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 	        assertEquals(new BigDecimal("10.00"), costB3.getCurrentCostPrice().setScale(2, RoundingMode.HALF_UP), "productB cost must revert to baseline after reversal");
 	    } finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -11722,9 +11652,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		cal.add(Calendar.DAY_OF_MONTH, -1);
 		Timestamp date3  = new Timestamp(cal.getTimeInMillis());
 		
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
 			product.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.STANDARD.id);
 			product.setName("testReverseCorrectMRWithMultiASILines1");
@@ -12037,7 +11966,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -12066,9 +11994,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		cal.add(Calendar.DAY_OF_MONTH, -1);
 		Timestamp date2  = new Timestamp(cal.getTimeInMillis());
 		
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
 			product.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.STANDARD.id);
 			product.setName("testReverseCorrectMRWithMultiASILines2");
@@ -12382,7 +12309,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -12416,10 +12342,9 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		BigDecimal crate1 = new BigDecimal("31.346223109251");
 		BigDecimal crate2 = new BigDecimal("32.573724925968");
 
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class);
 				MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			
 			mockGetRate(conversionRateMock, usd, euro, 0, date1, crate1);
 			mockGetRate(conversionRateMock, usd, euro, 0, today, crate2);
@@ -12699,7 +12624,6 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, product);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}
 	}
 	
@@ -12725,10 +12649,9 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		BigDecimal crate1 = new BigDecimal("1.05");
 		BigDecimal crate2 = new BigDecimal("1.12");
 		
-		int[] backDateDays = new int[ass.length];
 		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class);
 			 MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic()) {
-			backDateDays = configureAcctSchema(ass);
+			validateAcctSchema(ass);
 			mockGetRate(conversionRateMock, euro, usd, 0, today, crate1);
 			mockGetRate(conversionRateMock, euro, usd, 0, tomorrow, crate2);
 			
@@ -13231,8 +13154,502 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			validateProductCostQty(ass, p2);
 		} finally {
 			rollback();
-			resetAcctSchema(ass, backDateDays);
 		}		
+	}
+	
+	/**
+	 * IDEMPIERE-6960
+	 * MR1 Product1, ASI1, Qty=7500, Price=0.814 (Date2)
+	 * MR2 Product1, ASI2, Qty=18000, Price=0.814 (Date3)
+	 * MR3 Product1, ASI3, Qty=1, Price=1 (Date1) - Back Date
+	 */
+	@Test
+	public void testBatchLotCostingLevel() {
+		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), getAD_Client_ID());
+		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
+		MAcctSchema as = ci.getMAcctSchema1();
+		
+		MAttributeSet mas = new MAttributeSet(Env.getCtx(), DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id, getTrxName());
+		mas.setMandatoryType(MAttributeSet.MANDATORYTYPE_NotMandatory);
+		mas.saveEx();
+
+		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class);
+				MockedStatic<MProductCategory> mockedCategory = mockStatic(MProductCategory.class)) {	
+			validateAcctSchema(ass);
+			
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -3);
+			Timestamp backDate1 = new Timestamp(cal.getTimeInMillis());
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -2);
+			Timestamp backDate2  = new Timestamp(cal.getTimeInMillis());
+			cal.setTimeInMillis(today.getTime());
+			cal.add(Calendar.DAY_OF_MONTH, -1);
+			Timestamp backDate3  = new Timestamp(cal.getTimeInMillis());
+			
+			MProductCategory lotLevel = new MProductCategory(Env.getCtx(), 0, getTrxName());
+			lotLevel.setName("testBatchLotCostingLevel");
+			lotLevel.saveEx();
+			
+			mockedCategory.when(() -> MProductCategory.get(any(Properties.class), anyInt())).thenCallRealMethod();
+			mockedCategory.when(() -> MProductCategory.get(any(Properties.class), eq(lotLevel.get_ID()))).thenReturn(lotLevel);
+			
+			for (MAcctSchema as0 : ass) {						
+				MProductCategoryAcct lotLevelAcct = MProductCategoryAcct.get(lotLevel.get_ID(), as0.get_ID(), getTrxName());
+				lotLevelAcct = new MProductCategoryAcct(Env.getCtx(), lotLevelAcct, getTrxName());
+				lotLevelAcct.setCostingLevel(MAcctSchema.COSTINGLEVEL_BatchLot);
+				lotLevelAcct.saveEx();
+			}
+			CacheMgt.get().reset(MProductCategoryAcct.Table_Name);
+			for (MAcctSchema as0 : ass) {
+				MProductCategoryAcct lotLevelAcct = MProductCategoryAcct.get(lotLevel.get_ID(), as0.get_ID(), getTrxName());
+				assertEquals(MAcctSchema.COSTINGLEVEL_BatchLot, lotLevelAcct.getCostingLevel());
+			}
+			
+			MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
+			product.setM_Product_Category_ID(lotLevel.get_ID());
+			product.setName("testBatchLotCostingLevel");
+			product.setProductType(MProduct.PRODUCTTYPE_Item);
+			product.setIsStocked(true);
+			product.setIsSold(true);
+			product.setIsPurchased(true);
+			product.setC_UOM_ID(DictionaryIDs.C_UOM.EACH.id);
+			product.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
+			product.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id);
+			product.saveEx();
+			
+			mockedProduct.when(() -> MProduct.getCopy(any(Properties.class), anyInt(), any())).thenCallRealMethod();
+			mockedProduct.when(() -> MProduct.get(anyInt())).thenCallRealMethod();
+			mockedProduct.when(() -> MProduct.get(any(Properties.class), anyInt(), any())).thenCallRealMethod();
+			mockedProduct.when(() -> MProduct.get(any(Properties.class), anyInt())).thenCallRealMethod();
+			mockProductGet(mockedProduct, product);
+			
+			MPriceListVersion plv = MPriceList.get(DictionaryIDs.M_PriceList.PURCHASE.id).getPriceListVersion(null);
+			MProductPrice pp = new MProductPrice(Env.getCtx(), 0, getTrxName());
+			pp.setM_PriceList_Version_ID(plv.getM_PriceList_Version_ID());
+			pp.setM_Product_ID(product.get_ID());
+			pp.setPriceStd(new BigDecimal("0.814"));
+			pp.setPriceList(new BigDecimal("0.814"));
+			pp.saveEx();
+			
+			// MR1
+			MAttributeSetInstance asi1 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+			asi1.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id);
+			asi1.setLot("Lot1");
+			asi1.saveEx();
+			createPOAndMRForProduct(backDate2, product.get_ID(), asi1.get_ID(), new BigDecimal("7500"), new BigDecimal("0.814"));
+			MCost cost1 = product.getCostingRecord(as, getAD_Org_ID(), asi1.get_ID(), as.getCostingMethod());
+			assertNotNull(cost1, "No MCost record found");
+ 			assertEquals(new BigDecimal("7500").setScale(2, RoundingMode.HALF_UP), cost1.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+			
+			// MR2
+			MAttributeSetInstance asi2 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+			asi2.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id);
+			asi2.setLot("Lot2");
+			asi2.saveEx();
+			createPOAndMRForProduct(backDate3, product.get_ID(), asi2.get_ID(), new BigDecimal("18000"), new BigDecimal("0.814"));
+			MCost cost2 = product.getCostingRecord(as, getAD_Org_ID(), asi2.get_ID(), as.getCostingMethod());
+			assertNotNull(cost2, "No MCost record found");
+ 			assertEquals(new BigDecimal("18000").setScale(2, RoundingMode.HALF_UP), cost2.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+
+			// MR3
+			MAttributeSetInstance asi3 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+			asi3.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id);
+			asi3.setLot("Lot3");
+			asi3.saveEx();
+			createPOAndMRForProduct(backDate1, product.get_ID(), asi3.get_ID(), new BigDecimal("1"), new BigDecimal("1"));
+			MCost cost3 = product.getCostingRecord(as, getAD_Org_ID(), asi3.get_ID(), as.getCostingMethod());
+			assertNotNull(cost3, "No MCost record found");
+ 			assertEquals(new BigDecimal("1").setScale(2, RoundingMode.HALF_UP), cost3.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+ 			
+ 			cost1.load(getTrxName());
+ 			assertEquals(new BigDecimal("7500").setScale(2, RoundingMode.HALF_UP), cost1.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity"); 			
+ 			cost2.load(getTrxName());
+ 			assertEquals(new BigDecimal("18000").setScale(2, RoundingMode.HALF_UP), cost2.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+ 			
+ 			BigDecimal currentQty1 = null;
+ 			BigDecimal currentQty2 = null;
+ 			BigDecimal currentQty3 = null;
+ 			for (MAcctSchema as0 : ass) {
+ 				MCost cost1a = product.getCostingRecord(as0, getAD_Org_ID(), asi1.get_ID(), MCostElement.COSTINGMETHOD_AveragePO);
+ 				MCost cost2a = product.getCostingRecord(as0, getAD_Org_ID(), asi2.get_ID(), MCostElement.COSTINGMETHOD_AveragePO);
+ 				MCost cost3a = product.getCostingRecord(as0, getAD_Org_ID(), asi3.get_ID(), MCostElement.COSTINGMETHOD_AveragePO);
+ 				MCost cost1b = product.getCostingRecord(as0, getAD_Org_ID(), asi1.get_ID(), MCostElement.COSTINGMETHOD_StandardCosting);
+ 				MCost cost2b = product.getCostingRecord(as0, getAD_Org_ID(), asi2.get_ID(), MCostElement.COSTINGMETHOD_StandardCosting);
+ 				MCost cost3b = product.getCostingRecord(as0, getAD_Org_ID(), asi3.get_ID(), MCostElement.COSTINGMETHOD_StandardCosting);
+ 				assertNotNull(cost1a, "No MCost record found");
+ 				assertNotNull(cost2a, "No MCost record found");
+ 				assertNotNull(cost3a, "No MCost record found");
+ 				assertNotNull(cost1b, "No MCost record found");
+ 				assertNotNull(cost2b, "No MCost record found");
+ 				assertNotNull(cost3b, "No MCost record found");
+ 				assertEquals(cost1a.getCurrentQty().setScale(2, RoundingMode.HALF_UP), cost1b.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+ 				assertEquals(cost2a.getCurrentQty().setScale(2, RoundingMode.HALF_UP), cost2b.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+ 				assertEquals(cost3a.getCurrentQty().setScale(2, RoundingMode.HALF_UP), cost3b.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+ 				
+ 				if (currentQty1 == null)
+ 					currentQty1 = cost1a.getCurrentQty();
+ 				else
+ 					assertEquals(currentQty1.setScale(2, RoundingMode.HALF_UP), cost1a.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity across accounting schemas");
+ 				if (currentQty2 == null)
+ 					currentQty2 = cost2a.getCurrentQty();
+ 				else
+ 					assertEquals(currentQty2.setScale(2, RoundingMode.HALF_UP), cost2a.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity across accounting schemas");
+ 				if (currentQty3 == null)
+ 					currentQty3 = cost3a.getCurrentQty();
+ 				else
+ 					assertEquals(currentQty3.setScale(2, RoundingMode.HALF_UP), cost3a.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity across accounting schemas");
+ 				
+ 				for (int asiId : new int[] {asi1.get_ID(), asi2.get_ID(), asi3.get_ID()}) {
+ 					List<MCostDetail> cds = MCostDetail.list(Env.getCtx(), "M_Product_ID=? AND Processed='N'", product.get_ID(), asiId, as0.getC_AcctSchema_ID(), getTrxName());
+ 					assertTrue(cds.isEmpty(), "Found unprocessed MCostDetail rows for product=" + product.get_ID()
+ 						+ ", M_AttributeSetInstance_ID=" + asiId + ", acctSchema=" + as0.getC_AcctSchema_ID());
+ 					}
+ 			}
+		} finally {
+			rollback();
+		}
+	}
+	
+	/**
+	 * Performance and correctness regression test for posting a large multi-line
+	 * Purchase Order, AP Invoice, Material Receipt, Match Invoice
+	 * flow (120 product lines).
+	 * <p>
+	 * This test exists because posting documents with many lines can trigger
+	 * O(N^2) behavior in the accounting engine when a single invoice or receipt
+	 * header has many sibling {@link MMatchInv} records attached to it -- each
+	 * sibling was historically re-queried and re-summed on every post, so total
+	 * cost grew quadratically with the number of lines instead of linearly.
+	 * Running with a realistically large line count (120) is what originally
+	 * surfaced this regression; smaller line counts (e.g. 5-20) don't generate
+	 * enough siblings for the quadratic cost to be visible.
+	 * <p>
+	 * The test asserts two things:
+	 * <ol>
+	 *   <li>Every document in the chain (PO, Invoice, Receipt, and each
+	 *       {@code M_MatchInv}) posts successfully with no accounting error.</li>
+	 *   <li>The resulting {@link MCost} current quantity for each product matches
+	 *       the quantity actually ordered/received, confirming the cost engine's
+	 *       output is correct -- not just fast.</li>
+	 * </ol>
+	 * It does not assert on wall-clock elapsed time by default (timing is only
+	 * logged/printed for manual comparison across code changes); a hard timing
+	 * assertion was deliberately avoided here to keep the test deterministic
+	 * across slower or loaded CI machines.
+	 * <p>
+	 * See also {@code testLargeMRWithMultiProductLine(int)} for running this
+	 * scenario with a different line count, and the invoice/receipt-ordering and
+	 * multi-currency variants used to isolate specific performance and rounding
+	 * behaviors in {@code Doc_MatchInv}.
+	 */
+	@Test
+	public void testLargeMRWithMultiProductLine() {
+		testLargeMRWithMultiProductLine(120);
+	}
+	public void testLargeMRWithMultiProductLine(int noOfProducts) {
+		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), getAD_Client_ID());
+		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
+		MAcctSchema as = ci.getMAcctSchema1();
+
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(today.getTime());
+		cal.add(Calendar.DAY_OF_MONTH, -2);
+		Timestamp backDate1 = new Timestamp(cal.getTimeInMillis());
+		cal.setTimeInMillis(today.getTime());
+		cal.add(Calendar.DAY_OF_MONTH, -1);
+		Timestamp backDate2  = new Timestamp(cal.getTimeInMillis());
+		
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class)) {
+			validateAcctSchema(ass);
+			
+			long start = System.nanoTime();
+			
+			ArrayList<MProduct> productList = new ArrayList<MProduct>();
+			for (int i=0; i < noOfProducts; i++) {
+				MProduct product = createProduct("testLargeMRWithMultiProductLine." + (i+1), new BigDecimal(10));
+				mockProductGet(productMock, product);
+				productList.add(product);
+			}
+			
+			// Purchase Order
+			MOrder purchaseOrder = new MOrder(Env.getCtx(), 0, getTrxName());
+			purchaseOrder.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id));
+			purchaseOrder.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
+			purchaseOrder.setIsSOTrx(false);
+			purchaseOrder.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+			purchaseOrder.setDocStatus(DocAction.STATUS_Drafted);
+			purchaseOrder.setDocAction(DocAction.ACTION_Complete);
+			purchaseOrder.setDateOrdered(backDate1);
+			purchaseOrder.setDatePromised(backDate1 );
+			purchaseOrder.saveEx();
+			
+			ArrayList<MOrderLine> poLineList = new ArrayList<MOrderLine>();
+			for (int i=0; i < noOfProducts; i++) {
+				MOrderLine poLine = new MOrderLine(purchaseOrder);
+				poLine.setLine(10);
+				poLine.setProduct(productList.get(i));
+				BigDecimal orderQty = new BigDecimal("10");
+				BigDecimal orderPrice = new BigDecimal("10");
+				poLine.setQty(orderQty);
+				poLine.setDatePromised(backDate1);
+				poLine.setPrice(orderPrice);
+				poLine.saveEx();
+				poLineList.add(poLine);
+			}
+			
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(purchaseOrder, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			purchaseOrder.load(getTrxName());
+			assertEquals(DocAction.STATUS_Completed, purchaseOrder.getDocStatus());		
+			
+			// Purchase invoice
+			MInvoice invoice = new MInvoice(purchaseOrder, DictionaryIDs.C_DocType.AP_INVOICE.id, purchaseOrder.getDateOrdered());
+			invoice.setDocStatus(DocAction.STATUS_Drafted);
+			invoice.setDocAction(DocAction.ACTION_Complete);
+			invoice.saveEx();
+			
+			for (int i=0; i < noOfProducts; i++) {
+				MInvoiceLine piLine = new MInvoiceLine(invoice);
+				piLine.setOrderLine(poLineList.get(i));
+				piLine.setLine(10);
+				piLine.setProduct(productList.get(i));
+				piLine.setQty(poLineList.get(i).getQtyOrdered());
+				piLine.saveEx();
+			}
+			
+			info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+			invoice.load(getTrxName());
+			assertFalse(info.isError(), info.getSummary());
+			assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
+			
+			if (!invoice.isPosted()) {
+				String error = DocumentEngine.postImmediate(Env.getCtx(), invoice.getAD_Client_ID(), MInvoice.Table_ID, invoice.get_ID(), false, getTrxName());
+				assertNull(error, error);
+			}
+			invoice.load(getTrxName());
+			assertTrue(invoice.isPosted());
+			
+			// Material Receipt
+			MInOut receipt = new MInOut(purchaseOrder, DictionaryIDs.C_DocType.MM_RECEIPT.id, backDate2);
+			receipt.setDocStatus(DocAction.STATUS_Drafted);
+			receipt.setDocAction(DocAction.ACTION_Complete);
+			receipt.saveEx();
+			
+			for (int i=0; i < noOfProducts; i++) {
+				MInOutLine mrLine = new MInOutLine(receipt);
+				BigDecimal invoiceQty = poLineList.get(i).getQtyOrdered();
+				mrLine.setOrderLine(poLineList.get(i), 0, invoiceQty);
+				mrLine.setQty(invoiceQty);
+				mrLine.saveEx();
+			}
+			
+			info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			receipt.load(getTrxName());
+			assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus());
+			if (!receipt.isPosted()) {
+				String error = DocumentEngine.postImmediate(Env.getCtx(), receipt.getAD_Client_ID(), receipt.get_Table_ID(), receipt.get_ID(), false, getTrxName());
+				assertNull(error, error);
+			} 
+			
+			MMatchInv[] miList = MMatchInv.getInvoice(Env.getCtx(), invoice.get_ID(), getTrxName());
+			assertEquals(noOfProducts, miList.length);
+			for (MMatchInv mi : miList) {
+				if (!mi.isPosted()) {
+					String error = DocumentEngine.postImmediate(Env.getCtx(), mi.getAD_Client_ID(), MMatchInv.Table_ID, mi.get_ID(), false, getTrxName());
+					assertTrue(error == null);
+				}
+				mi.load(getTrxName());
+				assertTrue(mi.isPosted());
+			}
+			
+			for (int i=0; i < noOfProducts; i++) {
+				MProduct product = productList.get(i);
+				product.set_TrxName(getTrxName());
+				MCost cost1 = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+				assertNotNull(cost1, "No MCost record found");			
+	 			assertEquals(poLineList.get(i).getQtyOrdered().setScale(2, RoundingMode.HALF_UP), cost1.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+				validateProductCostQty(ass, product);
+			}
+			
+			long elapsedMs = (System.nanoTime() - start) / 1_000_000;
+			System.out.println("testLargeMRWithMultiProductLine(" + noOfProducts + ") took " + elapsedMs + "ms");
+			if (Boolean.getBoolean("idempiere.test.assertTiming"))
+				assertTrue(elapsedMs < 150000, "Expected under 150000ms, took " + elapsedMs + "ms");
+		} finally {
+			rollback();
+		}	
+	}
+	
+	/**
+	 * IDEMPIERE-7099 
+	 * Multiple invoice in same account date but different exchange rates of MR and invoice
+	 * PO Qty=2000, Price=100,000, Date1, Period1 (JPY)
+	 * MR Qty=2000, Price=100,000, Date1, Period1 - Stock/Cost Qty=2000
+	 * SH Qty=300, Date2, Period2 - Stock/Cost Qty=1700
+	 * PI1 Qty=200, Price=100,000, Date3, Period2 - Stock/Cost Qty=1700
+	 * PI2 Qty=1800, Price=100,000, Date3, Period2 - Stock/Cost Qty=1700
+	 */
+	@Test
+	public void testMultiInvoiceMRInDiffCurrency5() {
+		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), getAD_Client_ID());
+		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null); 
+		MAcctSchema as = ci.getMAcctSchema1();
+		
+		MCurrency usd = MCurrency.get(DictionaryIDs.C_Currency.USD.id);
+		MCurrency euro = MCurrency.get(DictionaryIDs.C_Currency.EUR.id);
+		MCurrency yen = MCurrency.get(DictionaryIDs.C_Currency.JPY.id);
+		int C_ConversionType_ID = DictionaryIDs.C_ConversionType.COMPANY.id;
+
+		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(today.getTime());
+		cal.add(Calendar.DAY_OF_MONTH, -3);
+		Timestamp backDate1 = new Timestamp(cal.getTimeInMillis());
+		cal.setTimeInMillis(today.getTime());
+		cal.add(Calendar.DAY_OF_MONTH, -2);
+		Timestamp backDate2 = new Timestamp(cal.getTimeInMillis());
+		cal.setTimeInMillis(today.getTime());
+		cal.add(Calendar.DAY_OF_MONTH, -1);
+		Timestamp backDate3 = new Timestamp(cal.getTimeInMillis());
+		
+		BigDecimal crate1 = new BigDecimal("0.000041344079"); // divide rate=24187.26
+		BigDecimal crate2 = new BigDecimal("0.000041487957"); // divide rate=24103.38
+
+		BigDecimal crate3 = new BigDecimal("0.000048283567"); // divide rate=20710.98
+		BigDecimal crate4 = new BigDecimal("0.000048455575"); // divide rate=20637.46
+ 
+		BigDecimal crate5 = new BigDecimal("0.85");
+		BigDecimal crate6 = new BigDecimal("0.85");
+
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class);
+				MockedStatic<MConversionRate> conversionRateMock = ConversionRateHelper.mockStatic();
+				MockedStatic<MPriceList> priceListMock = mockStatic(MPriceList.class)) {
+			validateAcctSchema(ass);
+			
+			mockGetRate(conversionRateMock, yen, usd, C_ConversionType_ID, backDate1, crate1);
+			mockGetRate(conversionRateMock, yen, usd, C_ConversionType_ID, backDate2, crate1);
+			mockGetRate(conversionRateMock, yen, usd, C_ConversionType_ID, backDate3, crate2);
+			mockGetRate(conversionRateMock, yen, euro, C_ConversionType_ID, backDate1, crate3);
+			mockGetRate(conversionRateMock, yen, euro, C_ConversionType_ID, backDate2, crate3);
+			mockGetRate(conversionRateMock, yen, euro, C_ConversionType_ID, backDate3, crate4);
+			mockGetRate(conversionRateMock, euro, usd, 0, backDate1, crate5);
+			mockGetRate(conversionRateMock, euro, usd, 0, backDate2, crate5);
+			mockGetRate(conversionRateMock, euro, usd, 0, backDate3, crate6);
+			
+			MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
+			product.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.STANDARD.id);
+			product.setName("testMultiInvoiceMRInDiffCurrency5");
+			product.setProductType(MProduct.PRODUCTTYPE_Item);
+			product.setIsStocked(true);
+			product.setIsSold(true);
+			product.setIsPurchased(true);
+			product.setC_UOM_ID(DictionaryIDs.C_UOM.EACH.id);
+			product.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
+			product.saveEx();
+			product.set_TrxName(getTrxName());
+			mockProductGet(productMock, product);
+			
+			MPriceList priceList = new MPriceList(Env.getCtx(), 0, getTrxName());
+			priceList.setName("Purchase JPY " + System.currentTimeMillis());
+			priceList.setC_Currency_ID(yen.getC_Currency_ID());
+			priceList.setPricePrecision(yen.getStdPrecision());
+			priceList.saveEx();
+			priceListMock.when(() -> MPriceList.get(any(Properties.class), anyInt(), any())).thenCallRealMethod();
+			priceListMock.when(() -> MPriceList.get(any(Properties.class), eq(priceList.get_ID()), any())).thenReturn(priceList);
+			
+			MPriceListVersion plv = new MPriceListVersion(priceList);
+			plv.setM_DiscountSchema_ID(DictionaryIDs.M_DiscountSchema.PURCHASE_2001.id); // Purchase 2001
+			plv.setValidFrom(backDate1);
+			plv.saveEx();
+			
+			MProductPrice pp = new MProductPrice(Env.getCtx(), 0, getTrxName());
+			pp.setM_PriceList_Version_ID(plv.getM_PriceList_Version_ID());
+			pp.setM_Product_ID(product.get_ID());
+			BigDecimal purchasePrice = new BigDecimal("100000");
+			pp.setPriceStd(purchasePrice);
+			pp.setPriceList(purchasePrice);
+			pp.saveEx();
+						
+			pp = new MProductPrice(Env.getCtx(), 0, getTrxName());
+			pp.setM_PriceList_Version_ID(DictionaryIDs.M_PriceList_Version.STANDARD_2003.id);
+			pp.setM_Product_ID(product.get_ID());
+			BigDecimal salesPrice = new BigDecimal("20");
+			pp.setPriceStd(salesPrice);
+			pp.setPriceList(salesPrice);
+			pp.saveEx();
+			
+			// Purchase Order
+			MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
+			order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.SEED_FARM.id));
+			order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
+			order.setM_PriceList_ID(priceList.getM_PriceList_ID());
+			order.setC_Currency_ID(priceList.getC_Currency_ID());
+			order.setC_ConversionType_ID(C_ConversionType_ID);
+			order.setIsSOTrx(false);
+			order.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+			order.setDocStatus(DocAction.STATUS_Drafted);
+			order.setDocAction(DocAction.ACTION_Complete);
+			order.setDateAcct(backDate1);
+			order.setDateOrdered(backDate1);
+			order.setDatePromised(backDate1);		
+			order.saveEx();
+
+			MOrderLine orderLine = new MOrderLine(order);
+			orderLine.setLine(10);
+			orderLine.setProduct(product);
+			BigDecimal purchaseQty = new BigDecimal(2000);
+			orderLine.setQty(purchaseQty);
+			orderLine.setDatePromised(backDate1);
+			orderLine.setPrice(purchasePrice);
+			orderLine.saveEx();
+			
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+			order.load(getTrxName());
+			assertFalse(info.isError(), info.getSummary());
+			assertEquals(DocAction.STATUS_Completed, order.getDocStatus());
+			
+			// MR
+			createMRForPO(orderLine, backDate1, purchaseQty);
+			product.set_TrxName(getTrxName());
+			MCost cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			assertNotNull(cost, "No MCost record found");
+ 			assertEquals(purchaseQty.setScale(2, RoundingMode.HALF_UP), cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+			validateProductCostQty(ass, product);
+			
+			// SH
+			BigDecimal salesQty = new BigDecimal(300);
+			createSOAndSHForProduct(backDate2, product.get_ID(), salesQty, salesPrice);
+			product.set_TrxName(getTrxName());
+			cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			assertNotNull(cost, "No MCost record found");
+ 			assertEquals(purchaseQty.subtract(salesQty).setScale(2, RoundingMode.HALF_UP), cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+			validateProductCostQty(ass, product);
+			
+			// PI1
+			BigDecimal invoiceQty1 = new BigDecimal(200);
+			createInvoiceForPO(orderLine, backDate3, invoiceQty1);
+			product.set_TrxName(getTrxName());
+			cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			assertNotNull(cost, "No MCost record found");
+ 			assertEquals(purchaseQty.subtract(salesQty).setScale(2, RoundingMode.HALF_UP), cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+			validateProductCostQty(ass, product);
+
+			// PI2
+			BigDecimal invoiceQty2 = new BigDecimal(1800);
+			createInvoiceForPO(orderLine, backDate3, invoiceQty2);
+			product.set_TrxName(getTrxName());
+			cost = product.getCostingRecord(as, getAD_Org_ID(), 0, as.getCostingMethod());
+			assertNotNull(cost, "No MCost record found");
+ 			assertEquals(purchaseQty.subtract(salesQty).setScale(2, RoundingMode.HALF_UP), cost.getCurrentQty().setScale(2, RoundingMode.HALF_UP), "Unexpected current quantity");
+			validateProductCostQty(ass, product);
+		} finally {
+			rollback();
+		}
 	}
 	
 	private MProduct createProduct(String name, BigDecimal price) {
@@ -13270,8 +13687,12 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		
 		return product;		
 	}
-		
+	
 	private MInOutLine createPOAndMRForProduct(Timestamp acctDate, int productId, BigDecimal qty, BigDecimal price) {
+		return createPOAndMRForProduct(acctDate, productId, 0, qty, price);
+	}
+		
+	private MInOutLine createPOAndMRForProduct(Timestamp acctDate, int productId, int asiId, BigDecimal qty, BigDecimal price) {
 		MOrder order = new MOrder(Env.getCtx(), 0, getTrxName());
 		order.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id));
 		order.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
@@ -13287,6 +13708,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		MOrderLine orderLine = new MOrderLine(order);
 		orderLine.setLine(10);
 		orderLine.setProduct(new MProduct(Env.getCtx(), productId, getTrxName()));
+		if (asiId > 0)
+			orderLine.setM_AttributeSetInstance_ID(asiId);
 		orderLine.setQty(qty);
 		orderLine.setDatePromised(acctDate);
 		if (price != null)
@@ -13305,6 +13728,8 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 
 		MInOutLine receiptLine = new MInOutLine(receipt);
 		receiptLine.setOrderLine(orderLine, 0, qty);
+		if (asiId > 0)
+			receiptLine.setM_AttributeSetInstance_ID(asiId);
 		receiptLine.setQty(qty);
 		receiptLine.saveEx();
 
@@ -13580,6 +14005,59 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 		return invoiceLine;
 	}
 	
+	/**
+	 * Create AP invoice with a line for the receipt line and a second line for a product that is not received
+	 * @return invoice line of the receipt line
+	 */
+	private MInvoiceLine createInvoiceForMRAndProduct(MInOutLine receiptLine, BigDecimal price, int unreceivedProductId, BigDecimal unreceivedPrice) {
+		MInOut receipt = receiptLine.getParent();
+		MInvoice invoice = new MInvoice(receipt, receipt.getMovementDate());
+		invoice.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_APInvoice);
+		invoice.setDocStatus(DocAction.STATUS_Drafted);
+		invoice.setDocAction(DocAction.ACTION_Complete);
+		invoice.saveEx();
+
+		MInvoiceLine invoiceLine = new MInvoiceLine(invoice);
+		invoiceLine.setM_InOutLine_ID(receiptLine.get_ID());
+		invoiceLine.setLine(10);
+		invoiceLine.setProduct(receiptLine.getProduct());
+		invoiceLine.setQty(receiptLine.getMovementQty());
+		invoiceLine.setPrice(price);
+		invoiceLine.saveEx();
+
+		MInvoiceLine unreceivedLine = new MInvoiceLine(invoice);
+		unreceivedLine.setLine(20);
+		unreceivedLine.setProduct(new MProduct(Env.getCtx(), unreceivedProductId, getTrxName()));
+		unreceivedLine.setQty(BigDecimal.ONE);
+		unreceivedLine.setPrice(unreceivedPrice);
+		unreceivedLine.saveEx();
+
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+		invoice.load(getTrxName());
+		assertFalse(info.isError(), info.getSummary());
+		assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus());
+		if (!invoice.isPosted()) {
+			String error = DocumentEngine.postImmediate(Env.getCtx(), invoice.getAD_Client_ID(), MInvoice.Table_ID, invoice.get_ID(), false, getTrxName());
+			assertTrue(error == null, error);
+		}
+		invoice.load(getTrxName());
+		assertTrue(invoice.isPosted());
+
+		MMatchInv[] miList = MMatchInv.getInvoiceLine(Env.getCtx(), invoiceLine.get_ID(), getTrxName());
+		assertEquals(1, miList.length, "Unexpected number of MMatchInv for invoice line");
+		for (MMatchInv mi : miList) {
+			if (!mi.isPosted()) {
+				String error = DocumentEngine.postImmediate(Env.getCtx(), mi.getAD_Client_ID(), MMatchInv.Table_ID, mi.get_ID(), false, getTrxName());
+				assertTrue(error == null, error);
+			}
+			mi.load(getTrxName());
+			assertTrue(mi.isPosted());
+		}
+		assertEquals(0, MMatchInv.getInvoiceLine(Env.getCtx(), unreceivedLine.get_ID(), getTrxName()).length, "Unexpected MMatchInv for invoice line without receipt");
+
+		return invoiceLine;
+	}
+
 	private MInvoiceLine createInvoiceForPO(MOrderLine orderLine, Timestamp invoiceDate, BigDecimal qty) {
 		MOrder order = orderLine.getParent();
 		MInvoice invoice = new MInvoice(order, DictionaryIDs.C_DocType.AP_INVOICE.id, invoiceDate);
@@ -13696,24 +14174,13 @@ public class BackDateAveragePOCostingTest extends AbstractTestCase {
 			assertNotNull(cd.getBackDateProcessedOn(), "Unexpected MCostDetail DateBackDateProcess");
 	}
 	
-	private int[] configureAcctSchema(MAcctSchema[] ass) {
+	private void validateAcctSchema(MAcctSchema[] ass) {
 		final int MIN_BACK_DATE_DAY = 7;
-		int[] backDateDays = new int[ass.length];
 		for (int i = 0; i < ass.length; i++) {
 			MAcctSchema as = ass[i];
-			assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
-			
-			int backDateDay = as.getBackDateDay();
-			if (backDateDay < MIN_BACK_DATE_DAY) {
-				String sql = "UPDATE C_AcctSchema SET BackDateDay=? WHERE C_AcctSchema_ID=?";
-				DB.executeUpdate(sql, new Object[] {MIN_BACK_DATE_DAY, as.getC_AcctSchema_ID()}, false, null);
-				as.load(null);
-			}
-			
+			assertEquals(MCostElement.COSTINGMETHOD_AveragePO, as.getCostingMethod(), "Default costing method not Average PO");
 			assertTrue(as.getBackDateDay() >= MIN_BACK_DATE_DAY, "Unexpected MAcctSchema BackDateDay");
-			backDateDays[i] = backDateDay < MIN_BACK_DATE_DAY ? backDateDay : -1;
 		}
-		return backDateDays;
 	}
 	
 	private void validateProductCostQty(MAcctSchema[] ass, MProduct product) {

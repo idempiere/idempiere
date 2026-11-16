@@ -517,7 +517,8 @@ public class MInvoiceLine extends X_C_InvoiceLine
 		int C_Tax_ID = Core.getTaxLookup().get(getCtx(), getM_Product_ID(), getC_Charge_ID() , m_DateInvoiced, m_DateInvoiced,
 			getAD_Org_ID(), M_Warehouse_ID,
 			m_C_BPartner_Location_ID,		//	should be bill to
-			m_C_BPartner_Location_ID, dropShipLocationId, m_IsSOTrx, deliveryViaRule, get_TrxName());
+			m_C_BPartner_Location_ID, dropShipLocationId, m_IsSOTrx, deliveryViaRule,
+			getParent().getDocTypeID(), getParent().getPaymentRule(), get_TrxName());
 		if (C_Tax_ID == 0)
 		{
 			log.log(Level.SEVERE, "No Tax found");
@@ -943,7 +944,10 @@ public class MInvoiceLine extends X_C_InvoiceLine
 			// TaxAmt recalculations should be done if the TaxAmt is zero
 			// or this is an Invoice(Customer)
 			if (m_IsSOTrx || getTaxAmt().compareTo(Env.ZERO) == 0)
-				setTaxAmt();
+			{
+				if (!updateLineTax())
+					return false;
+			}
 			
 			/* Carlos Ruiz - globalqss
 			 * IDEMPIERE-178 Orders and Invoices must disallow amount lines without product/charge
@@ -958,14 +962,49 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	    }
 
 	    // See IDEMPIERE-6749 - price list including taxes combined with summary taxes are wrongly calculated
-		// forbid this operation until solved
-		if (isTaxIncluded() && getTax().isSummary()) {
+		// forbid this operation until solved, unless a custom tax provider handles this case (IDEMPIERE-7069)
+		if (isTaxIncluded() && getTax().isSummary() && !isTaxIncludedSummarySupportedByProvider()) {
 			log.saveError("Error", Msg.getMsg(getCtx(), "PriceListIncludingTaxWithSummaryTaxNotAllowed"));
 			return false;
 		}
 
 		return true;
 	}	//	beforeSave
+
+	/**
+	 * See IDEMPIERE-6749 / IDEMPIERE-7069.<br/>
+	 * Check whether the line's tax is delegated to a custom Tax Provider that declares support for
+	 * a tax-included price combined with a summary tax. When there is no custom provider, or it
+	 * cannot be resolved (e.g. inactive), the native calculation applies and the case is not supported.
+	 * @return true if a resolvable custom Tax Provider handles this case
+	 */
+	private boolean isTaxIncludedSummarySupportedByProvider()
+	{
+		MTax tax = getTax();
+		if (tax.getC_TaxProvider_ID() <= 0)
+			return false;
+		MTaxProvider provider = MTaxProvider.get(getCtx(), tax.getC_TaxProvider_ID());
+		ITaxProvider calculator = Core.getTaxProvider(provider);
+		return calculator != null && calculator.isTaxIncludedSummarySupported();
+	}
+
+	/**
+	 * Calculate the line tax amount with the Tax Provider of the line's tax (see IDEMPIERE-7145).
+	 * @return true if success, false otherwise
+	 */
+	private boolean updateLineTax()
+	{
+		if (getC_Tax_ID() == 0)
+			return true;
+		MTax tax = MTax.get(getCtx(), getC_Tax_ID());
+		MTaxProvider provider = tax.getC_TaxProvider_ID() > 0
+				? MTaxProvider.get(getCtx(), tax.getC_TaxProvider_ID())
+				: new MTaxProvider(getCtx(), 0, get_TrxName());
+		ITaxProvider calculator = Core.getTaxProvider(provider);
+		if (calculator == null)
+			throw new AdempiereException(Msg.getMsg(getCtx(), "TaxNoProvider"));
+		return calculator.updateLineTax(provider, this);
+	}
 
 	/**
 	 * Recalculate invoice tax
@@ -1390,7 +1429,9 @@ public class MInvoiceLine extends X_C_InvoiceLine
 	}	//	copyLinesFrom
 
 	/**
-	 * @param rmaLine
+	 * Set the line from an RMA line (credit memo only).<br/>
+	 * The line tax amount is calculated by the tax provider of the line's tax.
+	 * @param rmaLine RMA line
 	 */
 	public void setRMALine(MRMALine rmaLine)
 	{
@@ -1413,7 +1454,8 @@ public class MInvoiceLine extends X_C_InvoiceLine
         	qty = qty.subtract(rmaLine.getQtyInvoiced());
         setQty(qty);
         setLineNetAmt();
-        setTaxAmt();
+        if (!updateLineTax())
+        	throw new AdempiereException(CLogger.retrieveErrorString("Failed to update line tax"));
         setLineTotalAmt(rmaLine.getLineNetAmt());
         setC_Project_ID(rmaLine.getC_Project_ID());
         setC_Activity_ID(rmaLine.getC_Activity_ID());

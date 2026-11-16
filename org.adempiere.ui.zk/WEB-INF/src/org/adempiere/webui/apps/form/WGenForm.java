@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.Callback;
 import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
@@ -59,6 +61,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.idempiere.print.ReportContentRequest;
 import org.zkoss.zhtml.Table;
 import org.zkoss.zhtml.Td;
 import org.zkoss.zhtml.Text;
@@ -456,7 +459,11 @@ public class WGenForm extends ADForm implements EventListener<Event>, WTableMode
 				re = ReportEngine.get (Env.getCtx(), genForm.getReportEngineType(), RecordID, m_WindowNo);
 			}	
 			
-			pdfList.add(re.getPDF());				
+			File content = Core.getReportContent(new ReportContentRequest(re, genForm.getProcessInfo(), re.getName()),
+					"application/pdf", "pdf");
+			if (content == null)
+				throw new AdempiereException("No PDF content generated for record " + RecordID);
+			pdfList.add(content);
 		}
 		
 		if (pdfList.size() > 1) {

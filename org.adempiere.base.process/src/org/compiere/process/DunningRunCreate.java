@@ -181,12 +181,12 @@ public class DunningRunCreate extends SvrProcess
 			if (previousLevels!=null && previousLevels.length>0) {
 				StringBuilder sqlAppend = new StringBuilder();
 				for (MDunningLevel element : previousLevels) {
-					sqlAppend.append(" AND i.C_Invoice_ID IN (SELECT C_Invoice_ID FROM C_DunningRunLine WHERE ");
-					sqlAppend.append("C_DunningRunEntry_ID IN (SELECT C_DunningRunEntry_ID FROM C_DunningRunEntry WHERE ");
-					sqlAppend.append("C_DunningRun_ID IN (SELECT C_DunningRun_ID FROM C_DunningRunEntry WHERE ");
-					sqlAppend.append("C_DunningLevel_ID="); 
+					sqlAppend.append(" AND i.C_Invoice_ID IN (SELECT C_Invoice_ID FROM C_DunningRunLine drl"
+							+ " JOIN C_DunningRunEntry dre ON drl.C_DunningRunEntry_ID = dre.C_DunningRunEntry_ID"
+							+ " WHERE drl.Processed <> 'N'"
+							+ " AND dre.C_DunningLevel_ID = ");
 					sqlAppend.append(element.get_ID ());
-					sqlAppend.append(")) AND Processed<>'N')");
+					sqlAppend.append(")");
 				}
 				sql.append(sqlAppend.toString());
 			}

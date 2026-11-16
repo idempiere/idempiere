@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" immediate="true" name="org.idempiere.ui.zk.field.FieldDynamicDisplayListenerProvider">
+   <service>
+      <provide interface="org.idempiere.ui.zk.field.FieldDynamicDisplayListenerProvider"/>
+   </service>
+   <implementation class="org.idempiere.ui.zk.field.FieldDynamicDisplayListenerProvider"/>
+   <reference bind="bindDynamicDisplayListener" cardinality="0..n" interface="org.adempiere.webui.editor.WEditor$DynamicDisplayListener" name="DynamicDisplayListener" policy="dynamic" unbind="unbindDynamicDisplayListener"/>
+</scr:component>

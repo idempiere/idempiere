@@ -36,6 +36,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -47,10 +48,12 @@ import java.sql.Savepoint;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.util.DB;
 import org.compiere.util.Trx;
+import org.compiere.util.TrxEventListener;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
@@ -821,6 +824,174 @@ public class TrxTest extends AbstractTestCase {
 	    	if (trx != null)
 	    		trx.close();
 	    }
+	}
+
+	/**
+	 * Test beforeCommit event listener success, failure rollback, and close cleanup.
+	 * @throws Exception
+	 */
+	@Test
+	public void testBeforeCommitEventListener() throws Exception {
+		Field connField = Trx.class.getDeclaredField("m_connection");
+		connField.setAccessible(true);
+		Field activeField = Trx.class.getDeclaredField("m_active");
+		activeField.setAccessible(true);
+
+		// 1. Normal beforeCommit execution before commit
+		String trxName1 = Trx.createTrxName("TestBeforeCommitOk");
+		Trx trx1 = Trx.get(trxName1, true);
+		try {
+			Connection mockConn = mock(Connection.class);
+			connField.set(trx1, mockConn);
+			activeField.set(trx1, true);
+
+			AtomicBoolean beforeCommitFired = new AtomicBoolean(false);
+			AtomicBoolean afterCommitFired = new AtomicBoolean(false);
+			trx1.addTrxEventListener(new TrxEventListener() {
+				@Override
+				public void beforeCommit(Trx trx) {
+					beforeCommitFired.set(true);
+				}
+
+				@Override
+				public void afterCommit(Trx trx, boolean success) {
+					afterCommitFired.set(success);
+				}
+
+				@Override
+				public void afterRollback(Trx trx, boolean success) {
+				}
+
+				@Override
+				public void afterClose(Trx trx) {
+				}
+			});
+
+			assertTrue(trx1.commit(true), "commit(true) should return true when beforeCommit succeeds");
+			assertTrue(beforeCommitFired.get(), "beforeCommit should be fired");
+			assertTrue(afterCommitFired.get(), "afterCommit should be fired with true");
+			verify(mockConn).commit();
+			verify(mockConn, never()).rollback();
+		} finally {
+			connField.set(trx1, null);
+			trx1.close();
+		}
+
+		// 2. beforeCommit throws RuntimeException -> commit(true) rolls back and throws AdempiereException
+		String trxName2 = Trx.createTrxName("TestBeforeCommitThrowTrue");
+		Trx trx2 = Trx.get(trxName2, true);
+		try {
+			Connection mockConn = mock(Connection.class);
+			connField.set(trx2, mockConn);
+			activeField.set(trx2, true);
+
+			AtomicBoolean afterCommitFired = new AtomicBoolean(false);
+			trx2.addTrxEventListener(new TrxEventListener() {
+				@Override
+				public void beforeCommit(Trx trx) {
+					throw new IllegalStateException("Simulated beforeCommit failure");
+				}
+
+				@Override
+				public void afterCommit(Trx trx, boolean success) {
+					afterCommitFired.set(true);
+				}
+
+				@Override
+				public void afterRollback(Trx trx, boolean success) {
+				}
+
+				@Override
+				public void afterClose(Trx trx) {
+				}
+			});
+
+			AdempiereException ex = assertThrows(AdempiereException.class, () -> trx2.commit(true),
+					"commit(true) should throw AdempiereException when beforeCommit fails");
+			assertTrue(ex.getMessage().contains("Simulated beforeCommit failure"), "Exception message should preserve cause message");
+			verify(mockConn).rollback();
+			verify(mockConn, never()).commit();
+			assertFalse(trx2.isActive(), "Transaction should be marked inactive after failed beforeCommit");
+			assertFalse(afterCommitFired.get(), "afterCommit must not be fired when beforeCommit fails");
+		} finally {
+			connField.set(trx2, null);
+			trx2.close();
+		}
+
+		// 3. beforeCommit throws RuntimeException -> commit(false) rolls back and returns false without throwing
+		String trxName3 = Trx.createTrxName("TestBeforeCommitThrowFalse");
+		Trx trx3 = Trx.get(trxName3, true);
+		try {
+			Connection mockConn = mock(Connection.class);
+			connField.set(trx3, mockConn);
+			activeField.set(trx3, true);
+
+			trx3.addTrxEventListener(new TrxEventListener() {
+				@Override
+				public void beforeCommit(Trx trx) {
+					throw new RuntimeException("Simulated beforeCommit failure false");
+				}
+
+				@Override
+				public void afterCommit(Trx trx, boolean success) {
+				}
+
+				@Override
+				public void afterRollback(Trx trx, boolean success) {
+				}
+
+				@Override
+				public void afterClose(Trx trx) {
+				}
+			});
+
+			assertFalse(trx3.commit(false), "commit(false) should return false when beforeCommit throws");
+			verify(mockConn).rollback();
+			verify(mockConn, never()).commit();
+			assertFalse(trx3.isActive(), "Transaction should be marked inactive after failed beforeCommit");
+		} finally {
+			connField.set(trx3, null);
+			trx3.close();
+		}
+
+		// 4. close() on an active transaction where commit() fails in beforeCommit still releases connection and removes from cache
+		String trxName4 = Trx.createTrxName("TestCloseWithFailingBeforeCommit");
+		Trx trx4 = Trx.get(trxName4, true);
+		Connection mockConn4 = mock(Connection.class);
+		when(mockConn4.isReadOnly()).thenReturn(false);
+		connField.set(trx4, mockConn4);
+		activeField.set(trx4, true);
+
+		AtomicBoolean afterCloseFired = new AtomicBoolean(false);
+		trx4.addTrxEventListener(new TrxEventListener() {
+			@Override
+			public void beforeCommit(Trx trx) {
+				throw new RuntimeException("Simulated failure during close commit");
+			}
+
+			@Override
+			public void afterCommit(Trx trx, boolean success) {
+			}
+
+			@Override
+			public void afterRollback(Trx trx, boolean success) {
+			}
+
+			@Override
+			public void afterClose(Trx trx) {
+				afterCloseFired.set(true);
+			}
+		});
+
+		assertTrue(trx4.close(), "close() should complete and return true");
+		verify(mockConn4).rollback();
+		verify(mockConn4, never()).commit();
+		verify(mockConn4).setAutoCommit(true);
+		verify(mockConn4).close();
+		assertNull(Trx.get(trxName4, false), "Transaction must be removed from cache even when commit fails during close");
+		assertNull(connField.get(trx4), "m_connection must be cleared after close");
+		assertFalse(trx4.isActive(), "m_active must be false after close");
+		assertTrue(afterCloseFired.get(), "afterClose must be fired even when commit fails during close");
 	}
 
 }

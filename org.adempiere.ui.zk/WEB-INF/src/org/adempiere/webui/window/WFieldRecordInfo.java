@@ -217,8 +217,7 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 			setTitle(title + " - " + table1.getName());
 		}
 
-		//	Only Client Preference can view Change Log
-		if (!MRole.PREFERENCETYPE_Client.equals(MRole.getDefault().getPreferenceType()))
+		if (!MRole.getDefault().isShowChangeLog())
 			return false;
 		
 		if (Record_ID == 0 && Util.isEmpty(Record_UU))
@@ -430,6 +429,9 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 	 * @param popupMenu
 	 */
 	public static void addMenu(WEditorPopupMenu popupMenu) {
+		if (MRole.getDefault() == null || !MRole.getDefault().isShowChangeLog())
+			return;
+
 		Menuitem changeLogItem = new Menuitem();
         changeLogItem.setLabel(Msg.getElement(Env.getCtx(), "AD_ChangeLog_ID"));
         if (ThemeManager.isUseFontIconForImage())

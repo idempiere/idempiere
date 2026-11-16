@@ -58,6 +58,7 @@ import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.EditorBox;
+import org.adempiere.webui.component.FlexVlayout;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Label;
@@ -162,7 +163,6 @@ import org.zkoss.zul.Paging;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Space;
-import org.adempiere.webui.component.FlexVlayout;
 import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.event.ZulEvents;
 import org.zkoss.zul.impl.InputElement;
@@ -1243,8 +1243,13 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		
 		if(infoWindowListItemRenderer != null)
 			infoWindowListItemRenderer.setGridDisplaydInfoColumns(gridDisplayedInfoColumns,columnInfos);
-		
-		prepareTable(columnInfos, infoWindow.getFromClause(), infoWindow.getOrderByClause(), p_sqlFilter);		
+
+		String fromClause = infoWindow.getFromClause();
+		MUserDefInfo userdefInfo = MUserDefInfo.getBestMatch(Env.getCtx(), infoWindow.getAD_InfoWindow_ID());
+		if (userdefInfo != null && !Util.isEmpty(userdefInfo.getFromClause()))
+			fromClause = userdefInfo.getFromClause();
+
+		prepareTable(columnInfos, fromClause, infoWindow.getOrderByClause(), p_sqlFilter);		
 	}
 
 	/**
@@ -3684,7 +3689,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 						viewWindow.setTitle(media.getName());
 						viewWindow.setAttribute(Window.MODE_KEY, Mode.EMBEDDED);
 						AEnv.showWindow(viewWindow);
-						view.renderMediaView(viewWindow, media, false);
+						boolean readonly = MSysConfig.getBooleanValue(MSysConfig.XLS_VIEWER_READONLY_INFOWINDOW, false, Env.getAD_Client_ID(Env.getCtx()));
+						view.renderMediaView(viewWindow, media, readonly);
 					} : null, uploadServicesMap);
 					options.setPage(getPage());
 					options.doHighlighted();

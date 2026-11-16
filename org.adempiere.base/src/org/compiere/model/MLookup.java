@@ -546,6 +546,10 @@ public final class MLookup extends Lookup implements Serializable
 				+ ", SaveInCache=" + saveInCache + ",Local=" + cacheLocal);
 		
 		String cacheKey = m_info.TableName+"|"+m_info.KeyColumn+"|"+m_info.AD_Reference_Value_ID+"|"+Env.getAD_Language(Env.getCtx());
+		// IDEMPIERE-7024: suffix partitions cache by provider key (e.g. history date)
+		String ckSuffix = org.adempiere.base.UIBehaviourProvider.getLookupCacheKeySuffix(this, m_info);
+		if (ckSuffix != null && !ckSuffix.isEmpty())
+			cacheKey = cacheKey + "|" + ckSuffix;
 		boolean isNumber = m_info.KeyColumn.endsWith("_ID");
 		CCache<Integer, KeyNamePair> knpCache = null;
 		CCache<String, ValueNamePair> vnpCache = null;
@@ -652,6 +656,10 @@ public final class MLookup extends Lookup implements Serializable
 	{
 		List<NamePair> list = new ArrayList<NamePair>();
 		String cacheKey = m_info.TableName+"|"+m_info.KeyColumn+"|"+m_info.AD_Reference_Value_ID+"|"+Env.getAD_Language(Env.getCtx());
+		// IDEMPIERE-7024: suffix partitions cache by provider key (e.g. history date)
+		String ckSuffix = org.adempiere.base.UIBehaviourProvider.getLookupCacheKeySuffix(this, m_info);
+		if (ckSuffix != null && !ckSuffix.isEmpty())
+			cacheKey = cacheKey + "|" + ckSuffix;
 		boolean isNumber = m_info.KeyColumn.endsWith("_ID");
 		CCache<Integer, KeyNamePair> knpCache = null;
 		CCache<String, ValueNamePair> vnpCache = null;
@@ -788,10 +796,7 @@ public final class MLookup extends Lookup implements Serializable
 	@Override
 	public int getZoom(boolean isSOTrx)
 	{
-		if (m_info.ZoomWindowPO == 0)
-			return m_info.ZoomWindow;
-		
-		return isSOTrx ? m_info.ZoomWindow : m_info.ZoomWindowPO;
+		return Env.resolveZoomWindowID(m_info.ZoomWindow, m_info.ZoomWindowPO, isSOTrx);
 	}
 	
 	/**

@@ -52,13 +52,15 @@ public class ResetCacheCallable implements Callable<Integer>, Serializable
 	}
 
 	/**
-	 * Reset cache of local cache nodes 
+	 * Reset cache of local cache nodes, with the same anti-stampede/stagger protection used by
+	 * the Redis {@code ICacheService} implementation's invalidation topic listener, so a burst of
+	 * cluster-wide resets doesn't have every member reload from the DB at the same time.
 	 */
 	@Override
 	public Integer call() throws Exception {
 		return Record_ID != null
-			? CacheMgt.get().resetLocalCache(tableName, Record_ID)
-			: CacheMgt.get().resetLocalCache(tableName, key);
+			? CacheMgt.get().resetLocalCacheWithAntiStampede(tableName, Record_ID)
+			: CacheMgt.get().resetLocalCacheWithAntiStampede(tableName, key);
 	}
 	
 }

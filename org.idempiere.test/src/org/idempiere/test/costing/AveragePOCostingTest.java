@@ -8020,4 +8020,143 @@ public class AveragePOCostingTest extends AbstractTestCase {
 		ConversionRateHelper.mockGetRate(conversionRateMock, toCurrency, fromCurrency, C_ConversionType_ID, 
 				conversionDate, BigDecimal.valueOf(1d/multiplyRate.doubleValue()), getAD_Client_ID(), getAD_Org_ID());
 	}
+
+	/**
+	 * Verify that under Average PO Costing, the purchase price difference is posted to the Product
+	 * Asset account with the correct DR amount and that the corresponding Product Asset accounting
+	 * entry has zero quantity.
+	 */
+	@Test
+	public void testAveragePOCostingPostsPriceDifferenceToProductAssetAndZeroQuantity()
+	{
+		MClient client = MClient.get(Env.getCtx());
+		MAcctSchema as = client.getAcctSchema();
+		assertEquals(as.getCostingMethod(), MCostElement.COSTINGMETHOD_AveragePO, "Default costing method not Average PO");
+		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class))
+		{
+			MProduct product = new MProduct(Env.getCtx(), 0, getTrxName());
+			product.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.STANDARD.id);
+			product.setName("Product300");
+			product.setProductType(MProduct.PRODUCTTYPE_Item);
+			product.setIsStocked(true);
+			product.setIsSold(true);
+			product.setIsPurchased(true);
+			product.setC_UOM_ID(DictionaryIDs.C_UOM.EACH.id);
+			product.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
+			product.saveEx();
+
+			BigDecimal price = new BigDecimal("10");
+			BigDecimal orderQty = new BigDecimal("100");
+			Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+
+			MPriceListVersion plv = MPriceList.get(DictionaryIDs.M_PriceList.PURCHASE.id).getPriceListVersion(null);
+			MProductPrice pp = new MProductPrice(Env.getCtx(), 0, getTrxName());
+			pp.setM_PriceList_Version_ID(plv.getM_PriceList_Version_ID());
+			pp.setM_Product_ID(product.get_ID());
+			pp.setPriceStd(price);
+			pp.setPriceList(price);
+			pp.saveEx();
+
+			mockProductGet(mockedProduct, product);
+
+			// create purchase order
+			MOrder po = new MOrder(Env.getCtx(), 0, getTrxName());
+			po.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id));
+			po.setIsSOTrx(false);
+			po.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.PURCHASE_ORDER.id);
+			po.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+			po.setDocStatus(DocAction.STATUS_Drafted);
+			po.setDocAction(DocAction.ACTION_Complete);
+			po.setDateOrdered(today);
+			po.setDatePromised(today);
+			po.saveEx();
+
+			MOrderLine poLine = new MOrderLine(po);
+			poLine.setLine(10);
+			poLine.setProduct(new MProduct(Env.getCtx(), product.get_ID(), getTrxName()));
+			poLine.setQty(orderQty);
+			poLine.setDatePromised(today);
+			poLine.setPrice(price);
+			poLine.saveEx();
+
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(po, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			po.load(getTrxName());
+			assertEquals(DocAction.STATUS_Completed, po.getDocStatus(), "Purchase Order failed to complete");
+
+			// create receipt and invoice with price difference
+			MInOut receipt = new MInOut(po, DictionaryIDs.C_DocType.MM_RECEIPT.id, po.getDateOrdered());
+			receipt.setDocStatus(DocAction.STATUS_Drafted);
+			receipt.setDocAction(DocAction.ACTION_Complete);
+			receipt.saveEx();
+
+			MInOutLine receiptLine = new MInOutLine(receipt);
+			receiptLine.setOrderLine(poLine, 0, orderQty);
+			receiptLine.setQty(orderQty);
+			receiptLine.saveEx();
+
+			info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			receipt.load(getTrxName());
+			assertEquals(DocAction.STATUS_Completed, receipt.getDocStatus(), "Receipt failed to complete");
+			if (!receipt.isPosted())
+			{
+				String error = DocumentEngine.postImmediate(Env.getCtx(), receipt.getAD_Client_ID(), receipt.get_Table_ID(),
+															receipt.get_ID(), false, getTrxName());
+				assertNull(error, "Unexpected error when posting Receipt: " + error);
+			}
+
+			MInvoice invoice = new MInvoice(Env.getCtx(), 0, getTrxName());
+			invoice.setBPartner(MBPartner.get(Env.getCtx(), po.getC_BPartner_ID()));
+			invoice.setIsSOTrx(false);
+			invoice.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_APInvoice);
+			invoice.setC_DocType_ID(invoice.getC_DocTypeTarget_ID());
+			invoice.setDateInvoiced(today);
+			invoice.setDateAcct(today);
+			invoice.setDocStatus(DocAction.STATUS_Drafted);
+			invoice.setDocAction(DocAction.ACTION_Complete);
+			invoice.saveEx();
+
+			MInvoiceLine invLine = new MInvoiceLine(invoice);
+			invLine.setLine(10);
+			invLine.setOrderLine(poLine);
+			invLine.setProduct(product);
+			invLine.setQty(orderQty);
+			invLine.setPrice(new BigDecimal("12")); // price difference of 2 each
+			invLine.saveEx();
+
+			info = MWorkflow.runDocumentActionWorkflow(invoice, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			invoice.load(getTrxName());
+			assertEquals(DocAction.STATUS_Completed, invoice.getDocStatus(), "Invoice failed to complete");
+			if (!invoice.isPosted())
+			{
+				String error = DocumentEngine.postImmediate(Env.getCtx(), invoice.getAD_Client_ID(), invoice.get_Table_ID(),
+															invoice.get_ID(), false, getTrxName());
+				assertNull(error, "Unexpected error when posting Invoice: " + error);
+			}
+
+			// check match invoice
+			MMatchInv[] matchInvs = MMatchInv.getInvoiceLine(Env.getCtx(), invLine.get_ID(), getTrxName());
+			assertEquals(1, matchInvs.length, "Unexpected number of MatchInv for invoice line");
+			// check product asset accounting entry for the price difference
+			ProductCost pc = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
+			MAccount account = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+			Query query = MFactAcct.createRecordIdQuery(MMatchInv.Table_ID, matchInvs[0].get_ID(), as.get_ID(), getTrxName());
+
+			boolean found = false;
+			List<MFactAcct> factAccts = query.list();
+			for (MFactAcct factAcct : factAccts)
+			{
+				if (account.getAccount_ID() == factAcct.getAccount_ID())
+				{
+					found = true;
+					assertEquals(0, BigDecimal.ZERO.compareTo(factAcct.getQty()), "Product Asset posting has a non-zero quantity.");
+					assertEquals(	0, new BigDecimal("200").compareTo(factAcct.getAmtAcctDr()),
+									"Product Asset posting debit amount does not match the expected price difference of 200.00");
+				}
+			}
+			assertTrue(found, "No Product Asset accounting entry was generated.");
+		}
+	} // testAveragePOCostingPostsPriceDifferenceToProductAssetAndZeroQuantity
 }

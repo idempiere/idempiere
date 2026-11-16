@@ -147,7 +147,7 @@ public class MInventoryLine extends X_M_InventoryLine
 		setM_AttributeSetInstance_ID (M_AttributeSetInstance_ID);
 		// Set UOM from product
 		if (M_Product_ID != 0) {
-			MProduct product = MProduct.get(inventory.getCtx(), M_Product_ID);
+			MProduct product = MProduct.get(inventory.getCtx(), M_Product_ID, get_TrxName());
 			if (product != null)
 				setC_UOM_ID(product.getC_UOM_ID());
 		}
@@ -486,15 +486,7 @@ public class MInventoryLine extends X_M_InventoryLine
 			int M_ASI_ID = getM_AttributeSetInstance_ID();
 			MProduct product = new MProduct(getCtx(), getM_Product_ID(), get_TrxName());
 			MClient client = MClient.get(getCtx());
-			MAcctSchema as = client.getAcctSchema();
-			String costingLevel = product.getCostingLevel(as);
-			// M_AttributeSetInstance_ID is mandatory for COSTINGLEVEL_BatchLot 
-			if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel)) {				
-				if (M_ASI_ID == 0) {
-					log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_M_AttributeSetInstance_ID));
-					return false;
-				}
-			}
+			MAcctSchema as = client.getAcctSchema();			
 			
 			// Find accounting schema via currency
 			int C_Currency_ID = getParent().getC_Currency_ID();
@@ -507,6 +499,18 @@ public class MInventoryLine extends X_M_InventoryLine
 					if (a.getC_Currency_ID() ==  C_Currency_ID) 
 						as = a ; 
 				}
+			}
+
+			String costingLevel = product.getCostingLevel(as);
+			// M_AttributeSetInstance_ID is mandatory for COSTINGLEVEL_BatchLot 
+			if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel)) {				
+				if (M_ASI_ID == 0) {
+					log.saveError("FillMandatory", Msg.getElement(getCtx(), COLUMNNAME_M_AttributeSetInstance_ID));
+					return false;
+				}
+			} else if (M_ASI_ID > 0) {
+				//Clear if not needed
+				setM_AttributeSetInstance_ID(0);
 			}
 			
 			// Set current cost price
@@ -593,15 +597,11 @@ public class MInventoryLine extends X_M_InventoryLine
 		}
 		int AD_Org_ID = getAD_Org_ID();
 		int M_AttributeSetInstance_ID = getM_AttributeSetInstance_ID();
-		if (MAcctSchema.COSTINGLEVEL_Client.equals(as.getCostingLevel()))
-		{
-			AD_Org_ID = 0;
-			M_AttributeSetInstance_ID = 0;
-		}
-		else if (MAcctSchema.COSTINGLEVEL_Organization.equals(as.getCostingLevel()))
-			M_AttributeSetInstance_ID = 0;
-		else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(as.getCostingLevel()))
-			AD_Org_ID = 0;
+		MProduct product = new MProduct(getCtx(), getM_Product_ID(), get_TrxName());
+		String costingLevel = product.getCostingLevel(as);
+		MCost.CostingKey costKey = MCost.CostingKey.resolve(AD_Org_ID, M_AttributeSetInstance_ID, costingLevel);
+		AD_Org_ID = costKey.AD_Org_ID();
+		M_AttributeSetInstance_ID = costKey.M_AttributeSetInstance_ID();
 		MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), inventory.getCostingMethod(), AD_Org_ID);
 		
 		MCostHistory history = null;

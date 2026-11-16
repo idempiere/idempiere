@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.Set;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.I_AD_Org;
@@ -37,6 +38,10 @@ public class PoExporter {
 	private PIPOContext ctx;
 
 	private IPackSerializer serializer;
+
+	/** Upper case names of the columns changed since From Date. null to export all columns */
+	private Set<String> changedColumns = null;
+	private boolean changedColumnsLoaded = false;
 
 	public static final String POEXPORTER_BLOB_TYPE_STRING = "string";
 	public static final String POEXPORTER_BLOB_TYPE_BYTEARRAY = "byte[]";
@@ -168,7 +173,7 @@ public class PoExporter {
 	public void addTableReference(String columnName, String tableName, AttributesImpl atts) {
 		if (tableName != null) {
 			MTable table = MTable.get(po.getCtx(), tableName, po.get_TrxName());
-			if (table.isUUIDKeyTable()) {
+			if (table.isUUIDKeyTable() || "Record_UU".equals(columnName)) {
 				String uuid = (String)po.get_Value(columnName);
 				addTableReferenceUUID(columnName, tableName, uuid, atts);
 			} else {
@@ -204,6 +209,37 @@ public class PoExporter {
 		addString(columnName, target_values, atts);
 	}
 
+	/**
+	 * Is the export limited to the columns changed since From Date of the pack out (IDEMPIERE-7134)
+	 * @return true if only changed columns are exported, false if the full record is exported
+	 */
+	public boolean isIncremental() {
+		if (!changedColumnsLoaded) {
+			changedColumns = (po != null && ctx != null && ctx.packOut != null) ? ctx.packOut.getChangedColumnNames(po) : null;
+			changedColumnsLoaded = true;
+		}
+		return changedColumns != null;
+	}
+
+	/**
+	 * Is the column part of the export.<br/>
+	 * For an incremental export only the columns changed since From Date are exported, plus the
+	 * columns needed to identify the record at pack in (key, UUID, parent link and entity type).
+	 * @param columnName
+	 * @return true if the column must be exported
+	 */
+	public boolean isExportColumn(String columnName) {
+		if (!isIncremental())
+			return true;
+		if (changedColumns.contains(columnName.toUpperCase()))
+			return true;
+		if (columnName.equals(po.getUUIDColumnName()) || "EntityType".equals(columnName))
+			return true;
+		POInfo info = POInfo.getPOInfo(po.getCtx(), po.get_Table_ID());
+		int index = info.getColumnIndex(columnName);
+		return index >= 0 && (info.isKey(index) || info.isColumnParent(index));
+	}
+
 	public void export(List<String> excludes) {
 		export(excludes, ctx.packOut.isIncludeOrganizationId());
 	}
@@ -221,7 +257,7 @@ public class PoExporter {
 		}
 		else
 		{
-			if (excludes == null || !excludes.contains("ad_org_id"))
+			if ((excludes == null || !excludes.contains("ad_org_id")) && isExportColumn("AD_Org_ID"))
 			{
 				int AD_Org_ID = po.getAD_Org_ID();
 				if (AD_Org_ID == 0)
@@ -270,47 +306,39 @@ public class PoExporter {
 				continue;
 			}
 
+			//only export changed value when From Date is set and change log is available
+			if (!isExportColumn(columnName))
+				continue;
+
 			int displayType = info.getColumnDisplayType(i);
 			String trxName = ctx.trx == null ? null : ctx.trx.getTrxName();
 			if (DisplayType.YesNo == displayType) {
 				add(columnName, false, new AttributesImpl());
-			} else if (DisplayType.TableDir == displayType || DisplayType.ID == displayType) {
-				String tableName = null;
-				if (("Record_ID".equalsIgnoreCase(columnName) || "Record_UU".equalsIgnoreCase(columnName)) && po.get_ColumnIndex("AD_Table_ID") >= 0) {
-					int AD_Table_ID = po.get_ValueAsInt("AD_Table_ID");
-					if (AD_Table_ID > 0)
-						tableName = MTable.get(ctx.ctx, AD_Table_ID, trxName).getTableName();
-				} else if (po.get_TableName().startsWith("AD_TreeNode") && columnName.equals("Parent_ID")) {
-					int AD_Tree_ID = po.get_ValueAsInt("AD_Tree_ID");
-					MTree tree = new MTree(ctx.ctx, AD_Tree_ID, trxName);
-					tableName = tree.getSourceTableName(true);
-				} else if (po.get_TableName().startsWith("AD_TreeNode") && columnName.equals("Node_ID")) {
-					int AD_Tree_ID = po.get_ValueAsInt("AD_Tree_ID");
-					MTree tree = new MTree(ctx.ctx, AD_Tree_ID, trxName);
-					tableName = tree.getSourceTableName(true);
-				} else {
-					MColumn column = MColumn.get(ctx.ctx, info.getTableName(), columnName, trxName);
-					tableName = column.getReferenceTableName();
+			} else if (DisplayType.TableDir == displayType || DisplayType.ID == displayType || DisplayType.RecordUU == displayType) {
+				String tableName = resolveReferenceTableName(info, columnName, i, trxName);
+				if (tableName == null
+					&& ("Record_ID".equalsIgnoreCase(columnName) || "Record_UU".equalsIgnoreCase(columnName)))
+				{
+					throw new AdempiereException("Could not find the related table for column " + po.get_TableName() + "." + columnName);
 				}
 				addTableReference(columnName, tableName, new AttributesImpl());
 			} else if (DisplayType.isList(displayType)) {
 				add(columnName, "", new AttributesImpl());
 			} else if (DisplayType.isLookup(displayType) || DisplayType.isMultiID(displayType)) {
-				String tableName = null;
-				if (("Record_ID".equalsIgnoreCase(columnName) || "Record_UU".equalsIgnoreCase(columnName)) && po.get_ColumnIndex("AD_Table_ID") >= 0) {
-					int AD_Table_ID = po.get_ValueAsInt("AD_Table_ID");
-					if (AD_Table_ID > 0)
-						tableName = MTable.get(ctx.ctx, AD_Table_ID, trxName).getTableName();
-				} else if (info.getColumnLookup(i) != null){
-					String lookupColumn = info.getColumnLookup(i).getColumnName();
-					tableName = lookupColumn.substring(0, lookupColumn.indexOf("."));
-				}
+				String tableName = resolveReferenceTableName(info, columnName, i, trxName);
+
 				if (tableName == null)
+				{
 					throw new AdempiereException("Could not find the related table for column " + po.get_TableName() + "." + columnName);
-				if (   info.getColumnDisplayType(i) == DisplayType.ChosenMultipleSelectionList
-					|| DisplayType.isMultiID(info.getColumnDisplayType(i))) {
+				}
+
+				if (info.getColumnDisplayType(i) == DisplayType.ChosenMultipleSelectionList
+					|| DisplayType.isMultiID(info.getColumnDisplayType(i)))
+				{
 					addTableReferenceMulti(columnName, tableName, new AttributesImpl());
-				} else {
+				}
+				else
+				{
 					addTableReference(columnName, tableName, new AttributesImpl());
 				}
 			} else if (DisplayType.Account == displayType) {
@@ -393,4 +421,51 @@ public class PoExporter {
 
 		addString(columnName, fileName + "|" + dataType, new AttributesImpl());
 	}
+
+	/**
+	 * Resolve the referenced table name for the given column.
+	 *
+	 * @param  info        PO information
+	 * @param  columnName  column being exported
+	 * @param  columnIndex column index in POInfo
+	 * @param  trxName     transaction name
+	 * @return             referenced table name, or null if it cannot be resolved
+	 */
+	private String resolveReferenceTableName(POInfo info, String columnName, int columnIndex, String trxName)
+	{
+		if (("Record_ID".equalsIgnoreCase(columnName) || "Record_UU".equalsIgnoreCase(columnName))
+			&& po.get_ColumnIndex("AD_Table_ID") >= 0)
+		{
+			int AD_Table_ID = po.get_ValueAsInt("AD_Table_ID");
+			if (AD_Table_ID > 0)
+				return MTable.get(ctx.ctx, AD_Table_ID, trxName).getTableName();
+
+			return null;
+		}
+
+		if (po.get_TableName().startsWith("AD_TreeNode")
+			&& ("Parent_ID".equals(columnName) || "Node_ID".equals(columnName)))
+		{
+			int AD_Tree_ID = po.get_ValueAsInt("AD_Tree_ID");
+			MTree tree = new MTree(ctx.ctx, AD_Tree_ID, trxName);
+			return tree.getSourceTableName(true);
+		}
+
+		MColumn column = MColumn.get(ctx.ctx, info.getTableName(), columnName, trxName);
+		if (column != null)
+		{
+			String referenceTableName = column.getReferenceTableName();
+			if (referenceTableName != null)
+				return referenceTableName;
+		}
+		if (info.getColumnLookup(columnIndex) != null)
+		{
+			String lookupColumn = info.getColumnLookup(columnIndex).getColumnName();
+			int separator = lookupColumn.indexOf('.');
+			if (separator > 0)
+				return lookupColumn.substring(0, separator);
+		}
+
+		return null;
+	} // resolveReferenceTableName
 }

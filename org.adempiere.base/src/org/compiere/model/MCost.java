@@ -60,7 +60,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = 7669971447038015333L;
+	private static final long serialVersionUID = -1554882384162646674L;
 
 	/**
 	 * @param product
@@ -123,15 +123,9 @@ public class MCost extends X_M_Cost implements ICostInfo
 			String trxName)
 	{
 		String CostingLevel = product.getCostingLevel(as);
-		if (MAcctSchema.COSTINGLEVEL_Client.equals(CostingLevel))
-		{
-			AD_Org_ID = 0;
-			M_AttributeSetInstance_ID = 0;
-		}
-		else if (MAcctSchema.COSTINGLEVEL_Organization.equals(CostingLevel))
-			M_AttributeSetInstance_ID = 0;
-		else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel))
-			AD_Org_ID = 0;
+		MCost.CostingKey costKey = MCost.CostingKey.resolve(AD_Org_ID, M_AttributeSetInstance_ID, CostingLevel);
+		AD_Org_ID = costKey.AD_Org_ID();
+		M_AttributeSetInstance_ID = costKey.M_AttributeSetInstance_ID();
 		//	Costing Method
 		if (costingMethod == null)
 		{
@@ -1943,4 +1937,75 @@ public class MCost extends X_M_Cost implements ICostInfo
 		this.isSkipAverageCostingQtyCheck = isSkipAverageCostingQtyCheck;
 	}
 	
+	/**
+	 * Represents a resolved (AD_Org_ID, M_AttributeSetInstance_ID) key pair, derived by applying
+	 * costing-level normalization rules, used to look up or create {@code MCost}/{@code MCostHistory}
+	 * records. Depending on the product's costing level ({@link MAcctSchema#COSTINGLEVEL_Client},
+	 * {@link MAcctSchema#COSTINGLEVEL_Organization}, or {@link MAcctSchema#COSTINGLEVEL_BatchLot}),
+	 * one or both of the raw org/ASI values supplied by the caller are zeroed out to match the
+	 * granularity at which cost is tracked.
+	 * <p>
+	 * Callers should always obtain instances via {@link #resolve(int, int, String)} rather
+	 * than constructing this record directly, to ensure the normalization rules are applied
+	 * consistently.
+	 *
+	 * @param AD_Org_ID                 the resolved org ID (zeroed for Client and BatchLot costing levels)
+	 * @param M_AttributeSetInstance_ID the resolved ASI ID (zeroed for Client and Organization costing levels)
+	 */
+	public record CostingKey(int AD_Org_ID, int M_AttributeSetInstance_ID)
+	{
+		/**
+		 * Resolves the org/ASI key pair for the given costing level, zeroing out
+		 * whichever fields are not significant at that costing granularity:
+		 * <ul>
+		 *   <li>{@code Client} - both AD_Org_ID and M_AttributeSetInstance_ID are zeroed</li>
+		 *   <li>{@code Organization} - only M_AttributeSetInstance_ID is zeroed</li>
+		 *   <li>{@code BatchLot} - only AD_Org_ID is zeroed; ASI is preserved since cost
+		 *       is tracked per lot</li>
+		 * </ul>
+		 * Any other costing level is passed through unchanged.
+		 *
+		 * @param AD_Org_ID                 the raw org ID before normalization
+		 * @param M_AttributeSetInstance_ID the raw ASI ID before normalization
+		 * @param costingLevel              one of the {@code MAcctSchema.COSTINGLEVEL_*} constants
+		 * @return a new {@code CostingKey} with fields normalized per the costing level
+		 */
+		public static CostingKey resolve(int AD_Org_ID, int M_AttributeSetInstance_ID, String costingLevel)
+		{
+			if (MAcctSchema.COSTINGLEVEL_Client.equals(costingLevel))
+			{
+				AD_Org_ID = 0;
+				M_AttributeSetInstance_ID = 0;
+			}
+			else if (MAcctSchema.COSTINGLEVEL_Organization.equals(costingLevel))
+				M_AttributeSetInstance_ID = 0;
+			else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel))
+				AD_Org_ID = 0;
+
+			return new CostingKey(AD_Org_ID, M_AttributeSetInstance_ID);
+		}
+
+		/**
+		 * Indicates whether cost lookup/processing should be skipped entirely for this key,
+		 * because BatchLot-level costing requires a specific attribute set instance (lot) to
+		 * associate cost with, and none could be resolved (M_AttributeSetInstance_ID is 0).
+		 * <p>
+		 * When this returns {@code true}, callers should abort the current cost lookup or
+		 * costing-record retrieval and return {@code null} (or otherwise skip processing),
+		 * rather than falling back to a client- or organization-level cost record — no
+		 * BatchLot-level cost record can exist without a lot to key it against.
+		 * <p>
+		 * Used by {@link MProduct#getCostInfo(MAcctSchema, int, int, String, Timestamp)} and
+		 * {@link MProduct#getCostingRecord(MAcctSchema, int, int, String)} as an early-exit
+		 * guard before resolving cost elements or cost records.
+		 *
+		 * @param costingLevel one of the {@code MAcctSchema.COSTINGLEVEL_*} constants
+		 * @return {@code true} if costingLevel is BatchLot and no ASI (lot) could be resolved,
+		 *         meaning the caller should skip cost processing and return {@code null}
+		 */
+		public boolean isSkipCostingProcessing(String costingLevel)
+		{
+			return MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel) && M_AttributeSetInstance_ID == 0;
+		}
+	}
 }	//	MCost

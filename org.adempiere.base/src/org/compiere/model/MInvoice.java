@@ -35,20 +35,19 @@ import java.util.logging.Level;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.CreditStatus;
+import org.adempiere.base.DefaultValue;
 import org.adempiere.base.ICreditManager;
+import org.adempiere.base.PODefaults;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.BPartnerNoAddressException;
 import org.adempiere.exceptions.BackDateTrxNotAllowedException;
 import org.adempiere.exceptions.DBException;
 import org.adempiere.exceptions.PeriodClosedException;
 import org.adempiere.model.ITaxProvider;
-import org.compiere.print.MPrintFormat;
 import org.compiere.print.ReportEngine;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.IDocsPostProcess;
-import org.compiere.process.ProcessInfo;
-import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -56,6 +55,7 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
+import org.idempiere.print.ReportContentRequest;
 import org.eevolution.model.MPPProductBOM;
 import org.eevolution.model.MPPProductBOMLine;
 
@@ -462,6 +462,8 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		setPosted(false);
 		super.setProcessed (false);
 		setProcessing(false);
+
+		Core.getPODefaults(Table_Name).forEach(provider -> provider.initDefaults(this));
 	}
 
 	/**
@@ -1148,42 +1150,54 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		if (getC_BPartner_Location_ID() == 0)
 			setBPartner(new MBPartner(getCtx(), getC_BPartner_ID(), null));
 
+		PODefaults defaults = Core.getPODefaults(Table_Name);
 		//	Set default Price List
 		if (getM_PriceList_ID() == 0)
 		{
-			int ii = Env.getContextAsInt(getCtx(), Env.M_PRICELIST_ID);
-			if (ii != 0)
+			DefaultValue<Integer> priceList = defaults.get(this, COLUMNNAME_M_PriceList_ID);
+			if (priceList.getValue() != null && priceList.getValue() > 0)
+				setM_PriceList_ID(priceList.getValue());
+			else if (priceList.isUseFallback())
 			{
-				MPriceList pl = new MPriceList(getCtx(), ii, null);
-				if (isSOTrx() == pl.isSOPriceList())
-					setM_PriceList_ID(ii);
-			}
-			
-			if (getM_PriceList_ID() == 0)
-			{
-				String sql = "SELECT M_PriceList_ID FROM M_PriceList WHERE AD_Client_ID=? AND IsSOPriceList=? AND IsActive='Y' ORDER BY IsDefault DESC";
-				ii = DB.getSQLValue (null, sql, getAD_Client_ID(), isSOTrx());
+				int ii = Env.getContextAsInt(getCtx(), Env.M_PRICELIST_ID);
 				if (ii != 0)
-					setM_PriceList_ID (ii);
+				{
+					MPriceList pl = new MPriceList(getCtx(), ii, null);
+					if (isSOTrx() == pl.isSOPriceList())
+						setM_PriceList_ID(ii);
+				}
+
+				if (getM_PriceList_ID() == 0)
+				{
+					String sql = "SELECT M_PriceList_ID FROM M_PriceList WHERE AD_Client_ID=? AND IsSOPriceList=? AND IsActive='Y' ORDER BY IsDefault DESC";
+					ii = DB.getSQLValue (null, sql, getAD_Client_ID(), isSOTrx());
+					if (ii > 0)
+						setM_PriceList_ID (ii);
+				}
 			}
 		}
 
 		//	Set Currency from price list or environment context
 		if (getC_Currency_ID() == 0)
 		{
-			String sql = "SELECT C_Currency_ID FROM M_PriceList WHERE M_PriceList_ID=?";
-			int ii = DB.getSQLValue (null, sql, getM_PriceList_ID());
-			if (ii != 0)
+			int ii = 0;
+			if (getM_PriceList_ID() > 0)
+			{
+				String sql = "SELECT C_Currency_ID FROM M_PriceList WHERE M_PriceList_ID=?";
+				ii = DB.getSQLValue (null, sql, getM_PriceList_ID());
+			}
+			if (ii > 0)
 				setC_Currency_ID (ii);
 			else
 				setC_Currency_ID(Env.getContextAsInt(getCtx(), Env.C_CURRENCY_ID));
 		}
 
-		//	Set Sales Rep from environment context
+		//	Set Sales Rep from provider or environment context
 		if (getSalesRep_ID() == 0)
 		{
-			int ii = Env.getContextAsInt(getCtx(), Env.SALESREP_ID);
-			if (ii != 0)
+			DefaultValue<Integer> salesRep = defaults.get(this, COLUMNNAME_SalesRep_ID);
+			Integer ii = salesRep.resolve(() -> Env.getContextAsInt(getCtx(), Env.SALESREP_ID));
+			if (ii != null && ii > 0)
 				setSalesRep_ID (ii);
 		}
 
@@ -1196,16 +1210,21 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		//	Set default Payment Term
 		if (getC_PaymentTerm_ID() == 0)
 		{
-			int ii = Env.getContextAsInt(getCtx(), Env.C_PAYMENTTERM_ID);
-			if (ii != 0)
-				setC_PaymentTerm_ID (ii);
-			else
+			DefaultValue<Integer> paymentTerm = defaults.get(this, COLUMNNAME_C_PaymentTerm_ID);
+			int ii = 0;
+			if (paymentTerm.isUseFallback())
 			{
-				String sql = "SELECT C_PaymentTerm_ID FROM C_PaymentTerm WHERE AD_Client_ID=? AND IsDefault='Y' AND IsActive='Y'";
-				ii = DB.getSQLValue(null, sql, getAD_Client_ID());
-				if (ii != 0)
-					setC_PaymentTerm_ID (ii);
+				ii = Env.getContextAsInt(getCtx(), Env.C_PAYMENTTERM_ID);
+				if (ii == 0)
+				{
+					String sql = "SELECT C_PaymentTerm_ID FROM C_PaymentTerm WHERE AD_Client_ID=? AND IsDefault='Y' AND IsActive='Y'";
+					ii = DB.getSQLValue(null, sql, getAD_Client_ID());
+				}
 			}
+			else if (paymentTerm.getValue() != null)
+				ii = paymentTerm.getValue();
+			if (ii > 0)
+				setC_PaymentTerm_ID (ii);
 		}
 		
 		// Set cash plan line from order
@@ -1619,23 +1638,8 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		ReportEngine re = ReportEngine.get (getCtx(), ReportEngine.INVOICE, getC_Invoice_ID(), get_TrxName());
 		if (re == null)
 			return null;
-		MPrintFormat format = re.getPrintFormat();
-		// We have a Jasper Print Format
-		// ==============================
-		if(format.getJasperProcess_ID() > 0)	
-		{
-			ProcessInfo pi = new ProcessInfo ("", format.getJasperProcess_ID());
-			pi.setRecord_ID ( getC_Invoice_ID() );
-			pi.setIsBatch(true);
-			pi.setTransientObject(format);
-			
-			ServerProcessCtl.process(pi, null);
-			
-			return pi.getPDFReport();
-		}
-		// Standard Print Format (Non-Jasper)
-		// ==================================
-		return re.getPDF(file);
+		return Core.getReportContent(new ReportContentRequest(re, null, getDocumentInfo()),
+				"application/pdf", "pdf", file);
 	}	//	createPDF
 
 	/**
@@ -2205,12 +2209,27 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 		{
 			MUser user = new MUser (getCtx(), getAD_User_ID(), get_TrxName());
 			user.setLastContact(new Timestamp(System.currentTimeMillis()));
-			StringBuilder msgset = new StringBuilder().append(Msg.translate(getCtx(), "C_Invoice_ID")).append(": ").append(getDocumentNo());
+			String docNo = is_UsingTemporaryDocumentNo() ? get_TemporaryDocumentNo() : getDocumentNo();
+			StringBuilder msgset = new StringBuilder().append(Msg.translate(getCtx(), "C_Invoice_ID")).append(": ").append(docNo);
 			user.setLastResult(msgset.toString());
 			if (!user.save(get_TrxName()))
 			{
 				m_processMsg = "Could not update Business Partner User";
 				return DocAction.STATUS_Invalid;
+			}
+			if (MSequence.isTemporaryDocumentNo(docNo))
+			{
+				int userId = user.getAD_User_ID();
+				String oldResult = msgset.toString();
+				addDeferredDocumentNoCallback((tempDocNo, actualDocNo) -> {
+					String newResult = oldResult.replace(tempDocNo, actualDocNo);
+					user.setLastResult(newResult);
+					String sql = "UPDATE " + MUser.Table_Name
+							+ " SET " + DB.getDatabase().quoteColumnName(MUser.COLUMNNAME_LastResult) + "=?"
+							+ " WHERE " + DB.getDatabase().quoteColumnName(MUser.COLUMNNAME_AD_User_ID) + "=?"
+							+ " AND " + DB.getDatabase().quoteColumnName(MUser.COLUMNNAME_LastResult) + "=?";
+					DB.executeUpdateEx(sql, new Object[] {newResult, userId, oldResult}, get_TrxName());
+				});
 			}
 		}	//	user
 
@@ -2880,19 +2899,19 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 
 		MAllocationHdr[] allocations = MAllocationHdr.getOfInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
 		if (allocations.length > 0) {
-			setProcessMessage(Msg.parseTranslation(getCtx(), "InvoiceReactivationFailedAllocationLine"));
+			setProcessMessage(Msg.getMsg(getCtx(), "InvoiceReactivationFailedAllocationLine"));
 			return false;
 		}
 
 		MMatchInv[] matchInvs = MMatchInv.getInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
 		if (matchInvs.length > 0) {
-			setProcessMessage(Msg.parseTranslation(getCtx(), "InvoiceReactivationFailedMatchInvoice"));
+			setProcessMessage(Msg.getMsg(getCtx(), "InvoiceReactivationFailedMatchInvoice"));
 			return false;
 		}
 
 		MMatchPO[] matchPos = MMatchPO.getInvoice(getCtx(), getC_Invoice_ID(), get_TrxName());
 		if (matchPos.length > 0) {
-			setProcessMessage(Msg.parseTranslation(getCtx(), "InvoiceReactivationFailedMatchPO"));
+			setProcessMessage(Msg.getMsg(getCtx(), "InvoiceReactivationFailedMatchPO"));
 			return false;
 		}
 
@@ -3559,16 +3578,11 @@ public class MInvoice extends X_C_Invoice implements DocAction, IDocsPostProcess
 			
 			int AD_Org_ID = iLine.getAD_Org_ID();
 			int M_AttributeSetInstance_ID = iLine.getM_AttributeSetInstance_ID();
-
-			if (MAcctSchema.COSTINGLEVEL_Client.equals(as.getCostingLevel()))
-			{
-				AD_Org_ID = 0;
-				M_AttributeSetInstance_ID = 0;
-			}
-			else if (MAcctSchema.COSTINGLEVEL_Organization.equals(as.getCostingLevel()))
-				M_AttributeSetInstance_ID = 0;
-			else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(as.getCostingLevel()))
-				AD_Org_ID = 0;
+			MProduct product = new MProduct(iLine.getCtx(), iLine.getM_Product_ID(), iLine.get_TrxName());
+			String costingLevel = product.getCostingLevel(as);
+			MCost.CostingKey costKey = MCost.CostingKey.resolve(AD_Org_ID, M_AttributeSetInstance_ID, costingLevel);
+			AD_Org_ID = costKey.AD_Org_ID();
+			M_AttributeSetInstance_ID = costKey.M_AttributeSetInstance_ID();
 			
 			MCostElement ce = MCostElement.getMaterialCostElement(getCtx(), as.getCostingMethod(), AD_Org_ID);
 			

@@ -9,6 +9,6 @@
 
 ## Reporting a Vulnerability
 
-To report a vulnerability please follow the procedure described in [How to report a vulnerability](https://wiki.idempiere.org/en/How_to_report_a_vulnerability)
+To report a vulnerability please follow the procedure described in [How to report a vulnerability](https://docs.idempiere.org/docs/basic-development/contributing-to-core/how-to-report-a-vulnerability)
 
-Our management of this process is described in our wiki page [Vulnerability Management](https://wiki.idempiere.org/en/Vulnerability_Management)
+Our management of this process is described in our documentation page [Vulnerability Management](https://docs.idempiere.org/docs/basic-development/contributing-to-core/how-to-report-a-vulnerability)

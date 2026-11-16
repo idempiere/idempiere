@@ -28,6 +28,7 @@
 package org.adempiere.report.jasper;
 
 import org.compiere.model.PrintInfo;
+import org.compiere.process.ProcessInfo;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -47,6 +48,11 @@ public interface JRViewerProvider {
 	 * @throws JRException
 	 */
 	public void openViewer(JasperPrint jasperPrint, String title, PrintInfo printInfo) throws JRException;
+
+	public default void openViewer(JasperPrint jasperPrint, String title, PrintInfo printInfo,
+			ProcessInfo processInfo) throws JRException {
+		openViewer(jasperPrint, title, printInfo);
+	}
 
 	/**
 	 * 

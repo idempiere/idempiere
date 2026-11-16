@@ -335,7 +335,8 @@ public final class DictionaryIDs {
 	public enum C_ElementValue {
 		CHECKING_IN_TRANSFER(509),
 		DEFAULT_ACCOUNT(697),
-		SUSPENSE_BALANCING(698);
+		SUSPENSE_BALANCING(698),
+		PRODUCT_ASSET(742);
 		
 		public final int id;
 		
@@ -364,6 +365,16 @@ public final class DictionaryIDs {
 		public final int id;
 
 		private C_PaymentTerm(int id) {
+			this.id = id;
+		}
+	}
+	
+	public enum C_Period {
+		JAN_03(160);
+
+		public final int id;
+
+		private C_Period(int id) {
 			this.id = id;
 		}
 	}
@@ -847,7 +858,8 @@ public final class DictionaryIDs {
 		SALES_INVOICE(167),
 		ORGANIZATION(110),
 		MESSAGE(104),
-		ROLE(111);
+		ROLE(111),
+		GL_JOURNAL(200005);
 		
 		public final int id;
 
@@ -890,7 +902,8 @@ public final class DictionaryIDs {
 		CREATE_TABLE(200134),
 		AD_TABLE_CREATE_PARTITION(200157),
 		DETACH_OR_REATTACH_PARTITION(200158),
-		RV_STORAGE(236);
+		RV_STORAGE(236),
+		C_PROJECT_GENERATE_PO(225);
 		
 		public final int id;
 

@@ -39,6 +39,7 @@ import org.compiere.model.MInvoice;
 import org.compiere.model.MInvoiceLine;
 import org.compiere.model.MMatchInv;
 import org.compiere.model.MMatchPO;
+import org.compiere.model.MProduct;
 import org.compiere.model.MTable;
 import org.compiere.model.Query;
 import org.compiere.util.AdempiereUserError;
@@ -550,31 +551,20 @@ public class DocManager {
 			if (!isSOTrx) {
 				StringBuilder selectSql = new StringBuilder();
 				selectSql.append("SELECT COUNT(iol.M_InOutLine_ID) ");
-				selectSql.append("FROM M_InOut io ");
-				selectSql.append("JOIN M_InOutLine iol ON (io.M_InOut_ID = iol.M_InOut_ID) ");
-				selectSql.append("LEFT JOIN ( ");
-				selectSql.append(" SELECT M_InOutLine_ID, COALESCE(SUM(Qty),0) AS Qty ");
-				selectSql.append(" FROM M_MatchPO ");
-				selectSql.append(" WHERE Posted='Y' ");
-				selectSql.append(" GROUP BY M_InOutLine_ID ");
-				selectSql.append(") mpo ON (mpo.M_InOutLine_ID = iol.M_InOutLine_ID) ");
-				selectSql.append("LEFT JOIN ( ");
-				selectSql.append(" SELECT M_InOutLine_ID, COALESCE(SUM(Qty),0) AS Qty ");
-				selectSql.append(" FROM M_MatchInv ");
-				selectSql.append(" WHERE Posted='Y' ");
-				selectSql.append(" GROUP BY M_InOutLine_ID ");
-				selectSql.append(") mi ON (mi.M_InOutLine_ID = iol.M_InOutLine_ID) ");
+				selectSql.append("FROM M_InOutLine iol ");
 				selectSql.append("WHERE iol.M_Product_ID IS NOT NULL ");
-				selectSql.append("AND mpo.Qty IS NULL ");
-				selectSql.append("AND mi.Qty IS NULL ");
+				selectSql.append("AND NOT EXISTS (SELECT 1 FROM M_MatchPO mpo ");
+				selectSql.append(" WHERE mpo.M_InOutLine_ID = iol.M_InOutLine_ID AND mpo.Posted='Y') ");
+				selectSql.append("AND NOT EXISTS (SELECT 1 FROM M_MatchInv mi ");
+				selectSql.append(" WHERE mi.M_InOutLine_ID = iol.M_InOutLine_ID AND mi.Posted='Y') ");
 				if (table.getAD_Table_ID() == MInOut.Table_ID)
-					selectSql.append("AND io.M_InOut_ID = ? ");
+					selectSql.append("AND iol.M_InOut_ID = ? ");
 				else {
-					selectSql.append("AND io.M_InOut_ID IN (");
-					selectSql.append(" SELECT iol.M_InOut_ID ");
-					selectSql.append(" FROM M_MatchPO mpo ");
-				 	selectSql.append(" JOIN M_InOutLine iol ON (mpo.M_InOutLine_ID = iol.M_InOutLine_ID) ");
-					selectSql.append(" WHERE mpo.M_MatchPO_ID = ?) ");
+					selectSql.append("AND iol.M_InOut_ID IN (");
+					selectSql.append(" SELECT iol2.M_InOut_ID ");
+					selectSql.append(" FROM M_MatchPO mpo2 ");
+					selectSql.append(" JOIN M_InOutLine iol2 ON (mpo2.M_InOutLine_ID = iol2.M_InOutLine_ID) ");
+					selectSql.append(" WHERE mpo2.M_MatchPO_ID = ?) ");
 				}
 				int count = DB.getSQLValueEx(trxName, selectSql.toString(), Record_ID);
 				if (count > 0)
@@ -587,31 +577,20 @@ public class DocManager {
 			if (!isSOTrx) {
 				StringBuilder selectSql = new StringBuilder();
 				selectSql.append("SELECT COUNT(il.C_InvoiceLine_ID) ");
-				selectSql.append("FROM C_Invoice i ");
-				selectSql.append("JOIN C_InvoiceLine il ON (i.C_Invoice_ID = il.C_Invoice_ID) ");
-				selectSql.append("LEFT JOIN ( ");
-				selectSql.append(" SELECT C_InvoiceLine_ID, COALESCE(SUM(Qty),0) AS Qty ");
-				selectSql.append(" FROM M_MatchPO ");
-				selectSql.append(" WHERE Posted='Y' ");
-				selectSql.append(" GROUP BY C_InvoiceLine_ID ");
-				selectSql.append(") mpo ON (mpo.C_InvoiceLine_ID = il.C_InvoiceLine_ID) ");
-				selectSql.append("LEFT JOIN ( ");
-				selectSql.append(" SELECT C_InvoiceLine_ID, COALESCE(SUM(Qty),0) AS Qty ");
-				selectSql.append(" FROM M_MatchInv ");
-				selectSql.append(" WHERE Posted='Y' ");
-				selectSql.append(" GROUP BY C_InvoiceLine_ID ");
-				selectSql.append(") mi ON (mi.C_InvoiceLine_ID = il.C_InvoiceLine_ID) ");
+				selectSql.append("FROM C_InvoiceLine il ");
 				selectSql.append("WHERE il.M_Product_ID IS NOT NULL ");
-				selectSql.append("AND mpo.Qty IS NULL ");
-				selectSql.append("AND mi.Qty IS NULL ");
+				selectSql.append("AND NOT EXISTS (SELECT 1 FROM M_MatchPO mpo ");
+				selectSql.append(" WHERE mpo.C_InvoiceLine_ID = il.C_InvoiceLine_ID AND mpo.Posted='Y') ");
+				selectSql.append("AND NOT EXISTS (SELECT 1 FROM M_MatchInv mi ");
+				selectSql.append(" WHERE mi.C_InvoiceLine_ID = il.C_InvoiceLine_ID AND mi.Posted='Y') ");
 				if (table.getAD_Table_ID() == MInvoice.Table_ID)
-					selectSql.append("AND i.C_Invoice_ID = ? ");
+					selectSql.append("AND il.C_Invoice_ID = ? ");
 				else {
-					selectSql.append("AND i.C_Invoice_ID IN (");
-					selectSql.append(" SELECT il.C_Invoice_ID ");
-					selectSql.append(" FROM M_MatchInv mi ");
-					selectSql.append(" JOIN C_InvoiceLine il ON (mi.C_InvoiceLine_ID = il.C_InvoiceLine_ID) ");
-					selectSql.append(" WHERE mi.M_MatchInv_ID = ?) ");
+					selectSql.append("AND il.C_Invoice_ID IN (");
+					selectSql.append(" SELECT il2.C_Invoice_ID ");
+					selectSql.append(" FROM M_MatchInv mi2 ");
+					selectSql.append(" JOIN C_InvoiceLine il2 ON (mi2.C_InvoiceLine_ID = il2.C_InvoiceLine_ID) ");
+					selectSql.append(" WHERE mi2.M_MatchInv_ID = ?) ");
 				}
 				int count = DB.getSQLValueEx(trxName, selectSql.toString(), Record_ID);
 				if (count > 0)
@@ -662,7 +641,7 @@ public class DocManager {
 		Timestamp today = TimeUtil.trunc(new Timestamp(System.currentTimeMillis()), TimeUtil.TRUNC_DAY);
 		for (int x = bdcds.size() - 1; x >= 0; x--) {
 			MCostDetail bdcd = bdcds.get(x);
-			MAcctSchema as = new MAcctSchema(Env.getCtx(), bdcd.getC_AcctSchema_ID(), trxName);
+			MAcctSchema as = MAcctSchema.get(Env.getCtx(), bdcd.getC_AcctSchema_ID());
 			Timestamp allowedBackDate = TimeUtil.addDays(today, - as.getBackDateDay());
 			// Do not skip when MAcctSchema.getBackDateDay() == 0, as some documents with the current account date 
 			// still require reposting (e.g. MR reversal and related MatchPOs)
@@ -676,6 +655,13 @@ public class DocManager {
 		// set all the cost detail records after the back-date transaction to unprocessed
 		int noUpdate = 0;
 		for (MCostDetail bdcd : bdcds) {
+			// get costing level for product
+			MAcctSchema as = MAcctSchema.get(Env.getCtx(), bdcd.getC_AcctSchema_ID());
+			MProduct product = new MProduct(Env.getCtx(), bdcd.getM_Product_ID(), trxName);
+			String costingLevel = product.getCostingLevel(as);	        
+			boolean isBatchLot = MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel);
+			boolean isOrgLevel = MAcctSchema.COSTINGLEVEL_Organization.equals(costingLevel);
+						
 			StringBuilder updateSql = new StringBuilder();
 			if (DB.isOracle()) {
 				updateSql.append("MERGE INTO M_CostDetail t ");
@@ -696,6 +682,11 @@ public class DocManager {
 				updateSql.append("  t.AD_Client_ID = ? ");
 				updateSql.append("  AND t.C_AcctSchema_ID = ? ");
 				updateSql.append("  AND t.M_Product_ID = ? ");
+				if (isBatchLot) {
+	                updateSql.append("  AND t.M_AttributeSetInstance_ID = ? ");
+	            } else if (isOrgLevel) {
+	            	updateSql.append("  AND t.AD_Org_ID = ? ");
+	            }
 				updateSql.append("  AND ( ");
 				updateSql.append("    t.DateAcct > base_cd.DateAcct ");
 				updateSql.append("    OR ( ");
@@ -732,6 +723,11 @@ public class DocManager {
 				updateSql.append("  t.AD_Client_ID = ? ");
 				updateSql.append("  AND t.C_AcctSchema_ID = ? ");
 				updateSql.append("  AND t.M_Product_ID = ? ");
+				if (isBatchLot) {
+	                updateSql.append("  AND t.M_AttributeSetInstance_ID = ? ");
+	            } else if (isOrgLevel) {
+	            	updateSql.append("  AND t.AD_Org_ID = ? ");
+	            }
 				updateSql.append("  AND ( ");
 				updateSql.append("    t.DateAcct > (SELECT DateAcct FROM base_cd) ");
 				updateSql.append("    OR ( ");
@@ -747,9 +743,18 @@ public class DocManager {
 				updateSql.append("  AND t.DateAcct >= ? ");
 				updateSql.append("  AND t.Processed = 'Y' ");
 			}
-			noUpdate += DB.executeUpdateEx(updateSql.toString(), 
-					new Object[] {bdcd.getM_CostDetail_ID(), bdcd.getAD_Client_ID(), bdcd.getC_AcctSchema_ID(), bdcd.getM_Product_ID(), bdcd.getDateAcct()}, 
-					trxName);
+			List<Object> params = new ArrayList<Object>();
+	        params.add(bdcd.getM_CostDetail_ID());
+	        params.add(bdcd.getAD_Client_ID());
+	        params.add(bdcd.getC_AcctSchema_ID());
+	        params.add(bdcd.getM_Product_ID());
+	        if (isBatchLot) {
+	            params.add(bdcd.getM_AttributeSetInstance_ID());
+	        } else if (isOrgLevel) {
+	        	params.add(bdcd.getAD_Org_ID());
+	        }
+	        params.add(bdcd.getDateAcct());
+			noUpdate += DB.executeUpdateEx(updateSql.toString(), params.toArray(), trxName);
 			if (s_log.isLoggable(Level.INFO))
 				s_log.info("Update cost detail to unprocessed: " + noUpdate);
 		}

@@ -11,4 +11,4 @@
 * Select Show all variables, check all the variable is fill with correct values (If there are error with setting of JDK, select a JRE installation instead).
 * Click Next and then Finish to proceed
 * Select Restart automatically if needed
-* See also https://wiki.idempiere.org/en/NF11_OOMPH_Import_Projects
+* See also https://docs.idempiere.org/docs/new-features/v11/oomph-import-projects

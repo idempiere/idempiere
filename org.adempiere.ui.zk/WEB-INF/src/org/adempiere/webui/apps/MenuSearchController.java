@@ -408,7 +408,16 @@ public class MenuSearchController implements EventListener<Event>{
         		}
         	}
         } else if (event.getName().equals(ON_SEARCH_ECHO_EVENT)) {
-        	onSearchEcho((String) event.getData());
+        	if (event.getData() instanceof SearchEventData searchEventData) {
+        		try {
+        			onSearchEcho(searchEventData.value());
+        		} finally {
+        			if (searchEventData.completedCallback() != null)
+        				searchEventData.completedCallback().run();
+        		}
+        	} else {
+        		onSearchEcho((String) event.getData());
+        	}
         } else if (event.getName().equals(ON_LOAD_MORE_EVENT)) {
         	loadMore();
         }	
@@ -532,11 +541,20 @@ public class MenuSearchController implements EventListener<Event>{
 	
 	/**
 	 * Echo {@link #ON_SEARCH_ECHO_EVENT} to initial search with value.
-	 * @param value
+	 * @param value search text
 	 */
 	public void search(String value) {
+		search(value, null);
+	}
+
+	/**
+	 * Echo {@link #ON_SEARCH_ECHO_EVENT} to initial search with value.
+	 * @param value search text
+	 * @param completedCallback callback invoked after the search has completed, null if not needed
+	 */
+	public void search(String value, Runnable completedCallback) {
 		listbox.setModel((ListModel<?>)null);
-		Events.echoEvent(ON_SEARCH_ECHO_EVENT, layout, value);
+		Events.echoEvent(ON_SEARCH_ECHO_EVENT, layout, new SearchEventData(value, completedCallback));
 	}
 	
 	/**

@@ -52,6 +52,8 @@ import org.compiere.model.PO;
 public class DefaultEvaluatee implements Evaluatee {
 
 	private static final String REPLACEMENT_VALUE_FOR_SECURE_CONTENT = "********";
+	/** Sentinel for "no window context" - distinct from any real window number (0 is the ZK home/dashboard tab, -1 is used by Import CSV Process) */
+	private static final int NO_WINDOW = Integer.MIN_VALUE;
 	private DataProvider m_dataProvider;
 	private int m_windowNo;
 	private int m_tabNo;
@@ -132,7 +134,7 @@ public class DefaultEvaluatee implements Evaluatee {
 	 */
 	public DefaultEvaluatee(DataProvider dataProvider) {
 		this.m_dataProvider = dataProvider;
-		this.m_windowNo = 0;
+		this.m_windowNo = NO_WINDOW;
 		this.m_tabNo = -1;
 		this.m_onlyWindow = false;
 		this.m_onlyTab = null;
@@ -143,7 +145,7 @@ public class DefaultEvaluatee implements Evaluatee {
 	 */
 	public DefaultEvaluatee() {
 		this.m_dataProvider = null;
-		this.m_windowNo = 0;
+		this.m_windowNo = NO_WINDOW;
 		this.m_tabNo = -1;
 		this.m_onlyWindow = false;
 		this.m_onlyTab = null;
@@ -206,7 +208,7 @@ public class DefaultEvaluatee implements Evaluatee {
 		}
 
 		// get value from window context or global
-		if (value == null && m_windowNo != 0)
+		if (value == null && m_windowNo != NO_WINDOW)
 		{
 			if (variableName.equalsIgnoreCase(GridTab.CTX_Record_ID))			
 			{
@@ -256,7 +258,7 @@ public class DefaultEvaluatee implements Evaluatee {
 		}
 		
 		//try window context again after removal of tab no
-		if (!globalVariable && Util.isEmpty(value) && m_windowNo != 0 && withTabNo && !tabOnly) {
+		if (!globalVariable && Util.isEmpty(value) && m_windowNo != NO_WINDOW && withTabNo && !tabOnly) {
 			value = Env.getContext(ctx, m_windowNo, variableName);
 		}
 		

@@ -665,31 +665,6 @@ Export-Package:        *;version="${version}";-noimport:=true
       <version>1.10.0</version>
       <type>jar</type>
 	</location>
-	<!-- org.apache.cxf -->
-	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-      <version>3.6.5</version>
-      <type>jar</type>
-	</location>
-	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-security</artifactId>
-      <version>3.6.5</version>
-      <type>jar</type>
-	</location>
-	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-transports-http</artifactId>
-      <version>3.6.5</version>
-      <type>jar</type>
-	</location>
-	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-frontend-jaxws</artifactId>
-      <version>3.6.5</version>
-      <type>jar</type>
-	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>com.sun.activation</groupId>
       <artifactId>jakarta.activation</artifactId>
@@ -701,73 +676,6 @@ Export-Package:        *;version="${version}";-noimport:=true
       <artifactId>saaj-impl</artifactId>
       <version>1.5.3</version>
       <type>jar</type>
-	</location>
-	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-core</artifactId>
-      <version>3.6.5</version>
-      <type>jar</type>
-	</location>
-	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-bindings-soap</artifactId>
-      <version>3.6.5</version>
-      <type>jar</type>
-	</location>
-	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-bindings-xml</artifactId>
-      <version>3.6.5</version>
-      <type>jar</type>
-	</location>
-	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-frontend-simple</artifactId>
-      <version>3.6.5</version>
-      <type>jar</type>
-	</location>
-	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-ws-addr</artifactId>
-      <version>3.6.5</version>
-      <type>jar</type>
-	</location>
-	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-wsdl</artifactId>
-      <version>3.6.5</version>
-      <type>jar</type>
-	</location>
-	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-ws-policy</artifactId>
-      <version>3.6.5</version>
-      <type>jar</type>
-	</location>
-	<location includeSource="true" missingManifest="generate" type="Maven">
-	  <groupId>org.apache.ws.xmlschema</groupId>
-      <artifactId>xmlschema-core</artifactId>
-      <version>2.3.1</version>
-      <type>jar</type>
-	</location>
-	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.apache.neethi</groupId>
-      <artifactId>neethi</artifactId>
-      <version>3.2.0</version>
-      <type>jar</type>
-	</location>
-	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>wsdl4j</groupId>
-      <artifactId>wsdl4j</artifactId>
-      <version>1.6.3</version>
-      <type>jar</type>
-      <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
-version:               ${version_cleanup;${mvnVersion}}
-Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
-Bundle-Version:        ${version}
-Import-Package:        *;resolution:=optional
-Export-Package:        *;version="${version}";-noimport:=true
-]]></instructions>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.jboss.spec.javax.rmi</groupId>
@@ -788,43 +696,6 @@ Import-Package:        *;resolution:=optional
 Export-Package:        *;version="${version}";-noimport:=true
 Require-Capability:    osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 ]]></instructions>
-	</location>
-	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-rs-service-description</artifactId>
-      <version>3.6.5</version>
-      <type>jar</type>
-	</location>
-	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-ws-transfer</artifactId>
-      <version>3.6.5</version>
-      <type>jar</type>
-      <instructions><![CDATA[Bundle-Name:           Bundle derived from maven artifact ${mvnGroupId}:${mvnArtifactId}:${mvnVersion}
-version:               ${version_cleanup;${mvnVersion}}
-Bundle-SymbolicName:   wrapped.${mvnGroupId}.${mvnArtifactId}
-Bundle-Version:        ${version}
-Import-Package:        *;resolution:=optional
-Export-Package:        *;version="${version}";-noimport:=true
-]]></instructions>
-	</location>
-	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-transports-local</artifactId>
-      <version>3.6.5</version>
-      <type>jar</type>
-	</location>
-	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-databinding-jaxb</artifactId>
-      <version>3.6.5</version>
-      <type>jar</type>
-	</location>
-	<location includeSource="true" missingManifest="generate" type="Maven">
-      <groupId>org.apache.ws.xmlschema</groupId>
-      <artifactId>xmlschema-core</artifactId>
-      <version>2.2.5</version>
-	  <type>jar</type>
 	</location>
 	<location includeSource="true" missingManifest="generate" type="Maven">
       <groupId>org.codehaus.woodstox</groupId>

@@ -28,11 +28,14 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 
+import org.adempiere.base.Core;
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MBPartner;
@@ -70,6 +73,7 @@ import org.compiere.util.Trx;
 import org.compiere.util.TrxEventListener;
 import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
+import org.idempiere.print.ReportContentRequest;
 
 /**
  *	Extended Workflow Activity Model for AD_WF_Activity. <br/>
@@ -731,11 +735,24 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			+ ", Own=" + ownDocument);
 
 		MUser oldUser = null;
+		Set<Integer> visitedUserIds = new HashSet<>();
 		while (user != null)
 		{
 			if (user.equals(oldUser))
 			{
 				if (log.isLoggable(Level.INFO)) log.info("Loop - " + user.getName());
+				user=null;
+				break;
+			}
+			//	Guard against approval hierarchy cycles longer than one step
+			//	(e.g. user A -> supervisor B -> org supervisor A): the oldUser check
+			//	above only catches immediate self repetition and would loop forever,
+			//	burning CPU while holding the workflow transaction (and its DB locks)
+			//	open. Break out so the caller fails cleanly with NoApprover.
+			if (!visitedUserIds.add(Integer.valueOf(user.getAD_User_ID())))
+			{
+				log.warning("Approval hierarchy cycle detected at user "
+					+ user.getName() + " (" + user.getAD_User_ID() + "), aborting approver search");
 				user=null;
 				break;
 			}
@@ -975,7 +992,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		}
 		catch (Exception e)
 		{
-			log.log(Level.WARNING, "" + getNode(), e);
+			log.log(Level.SEVERE, "" + getNode(), e);
 			/****	Trx Rollback	****/
 			if (localTrx)
 			{
@@ -992,7 +1009,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 
 			//
 			if (e.getCause() != null)
-				log.log(Level.WARNING, "Cause", e.getCause());
+				log.log(Level.SEVERE, "Cause", e.getCause());
 
 			String processMsg = e.getLocalizedMessage();
 			if (processMsg == null || processMsg.length() == 0)
@@ -1108,7 +1125,49 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 				//
 				try {
 					success = doc.processIt (m_node.getDocAction());	//	** Do the work
-					setTextMsg(doc.getSummary());
+					if (m_po.is_UsingTemporaryDocumentNo())
+					{
+						setTextMsg(m_po.get_TemporaryDocumentNo());
+						final DocAction docRef = doc;
+						m_po.addDeferredDocumentNoCallback((tempDocNo, actualDocNo) -> {
+							String summary = docRef.getSummary();
+							String currentText = getTextMsg();
+							if (currentText != null && currentText.contains(tempDocNo))
+							{
+								String updatedText = currentText.replace(tempDocNo, summary);
+								super.setTextMsg(updatedText);
+								//in case TextMsg is truncated due to max field length
+								updatedText = getTextMsg();
+								if (!is_new() && getAD_WF_Activity_ID() > 0)
+								{
+									String sql = "UPDATE " + Table_Name
+											+ " SET " + DB.getDatabase().quoteColumnName(COLUMNNAME_TextMsg) + "=?"
+											+ " WHERE " + DB.getDatabase().quoteColumnName(COLUMNNAME_AD_WF_Activity_ID) + "=?";
+									DB.executeUpdateEx(sql, new Object[] {updatedText, getAD_WF_Activity_ID()}, get_TrxName());
+								}
+							}
+							if (m_audit != null)
+							{
+								String auditText = m_audit.getTextMsg();
+								if (auditText != null && auditText.contains(tempDocNo))
+								{
+									String updatedAuditText = auditText.replace(tempDocNo, summary);
+									m_audit.setTextMsg(updatedAuditText);
+									if (!m_audit.is_new() && m_audit.getAD_WF_EventAudit_ID() > 0)
+									{
+										String sql = "UPDATE " + MWFEventAudit.Table_Name
+												+ " SET " + DB.getDatabase().quoteColumnName(MWFEventAudit.COLUMNNAME_TextMsg) + "=?"
+												+ " WHERE " + DB.getDatabase().quoteColumnName(MWFEventAudit.COLUMNNAME_AD_WF_EventAudit_ID) + "=?";
+										DB.executeUpdateEx(sql, new Object[] {updatedAuditText, m_audit.getAD_WF_EventAudit_ID()}, get_TrxName());
+									}
+								}
+							}
+						});
+					}
+					else
+					{
+						setTextMsg(doc.getSummary());
+					}
 					processMsg = doc.getProcessMsg();
 					// Bug 1904717 - Invoice reversing has incorrect doc status
 					// Just prepare and complete return a doc status to take into account
@@ -1172,7 +1231,11 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			ReportEngine re = ReportEngine.get(getCtx(), pi);
 			if (re == null)
 				throw new IllegalStateException("Cannot create Report AD_Process_ID=" + m_node.getAD_Process_ID());
-			File report = re.getPDF();
+			re.setProcessInfo(pi);
+			File report = Core.getReportContent(new ReportContentRequest(re, pi, pi.getTitle()),
+					"application/pdf", "pdf");
+			if (report == null)
+				throw new IllegalStateException("Cannot create PDF report AD_Process_ID=" + m_node.getAD_Process_ID());
 			//	Notice
 			int AD_Message_ID = MESSAGE_WORKFLOWRESULT;		//	HARDCODED WorkflowResult
 			MNote note = new MNote(getCtx(), AD_Message_ID, getAD_User_ID(), trx.getTrxName());

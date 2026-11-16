@@ -31,7 +31,9 @@ import java.util.logging.Level;
 
 import org.adempiere.base.Core;
 import org.adempiere.base.CreditStatus;
+import org.adempiere.base.DefaultValue;
 import org.adempiere.base.ICreditManager;
+import org.adempiere.base.PODefaults;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.exceptions.BPartnerNoBillToAddressException;
 import org.adempiere.exceptions.BPartnerNoShipToAddressException;
@@ -52,6 +54,7 @@ import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
 import org.eevolution.model.MPPProductBOM;
 import org.eevolution.model.MPPProductBOMLine;
+import org.idempiere.print.ReportContentRequest;
 
 /**
  *  Order Model.
@@ -73,9 +76,9 @@ import org.eevolution.model.MPPProductBOMLine;
 public class MOrder extends X_C_Order implements DocAction
 {
 	/**
-	 * generated serial id
+	 *
 	 */
-	private static final long serialVersionUID = 9095740800513665542L;
+	private static final long serialVersionUID = -7697599534971299336L;
 
 	/** Matching SELECT SQL template */
 	private static final String BASE_MATCHING_SQL =
@@ -91,7 +94,7 @@ public class MOrder extends X_C_Order implements DocAction
 				 INNER JOIN C_OrderLine lin ON (hdr.C_Order_ID=lin.C_Order_ID)
 				 INNER JOIN M_Product p ON (lin.M_Product_ID=p.M_Product_ID)
 				 INNER JOIN C_DocType dt ON (hdr.C_DocType_ID=dt.C_DocType_ID AND dt.DocBaseType='POO')
-				 FULL JOIN M_MatchPO mo ON (lin.C_OrderLine_ID=mo.C_OrderLine_ID)  
+				 FULL JOIN M_MatchPO mo ON (lin.C_OrderLine_ID=mo.C_OrderLine_ID %s)  
 				 WHERE %s
 				 AND hdr.DocStatus IN ('CO','CL')
 			""";
@@ -106,6 +109,7 @@ public class MOrder extends X_C_Order implements DocAction
 	
 	public static final String NOT_FULLY_MATCHED_TO_RECEIPT = BASE_MATCHING_SQL
 			.formatted("SUM(CASE WHEN (mo.M_InOutLine_ID IS NOT NULL) THEN COALESCE(mo.Qty,0) ELSE 0 END)",
+					" AND mo.M_InOutLine_ID>0",
 					" ( mo.M_InOutLine_ID IS NULL OR "
 							+ " (lin.QtyOrdered <>  (SELECT sum(mo1.Qty) AS Qty" 
 							+ " FROM m_matchpo mo1 WHERE "
@@ -118,13 +122,16 @@ public class MOrder extends X_C_Order implements DocAction
 			.formatted("lin.QtyOrdered", "SUM(CASE WHEN (mo.M_InOutLine_ID IS NOT NULL) THEN COALESCE(mo.Qty,0) ELSE 0 END) ");
 	
 	public static final String FULL_OR_PARTIALLY_MATCHED_TO_RECEIPT = BASE_MATCHING_SQL
-			.formatted("SUM(CASE WHEN (mo.M_InOutLine_ID IS NOT NULL) THEN COALESCE(mo.Qty,0) ELSE 0 END)", " mo.M_InOutLine_ID IS NOT NULL ");
+			.formatted("SUM(CASE WHEN (mo.M_InOutLine_ID IS NOT NULL) THEN COALESCE(mo.Qty,0) ELSE 0 END)",
+					" AND mo.M_InOutLine_ID>0",
+					" mo.M_InOutLine_ID IS NOT NULL ");
 	
 	public static final String FULL_OR_PARTIALLY_MATCHED_TO_RECEIPT_GROUP_BY = BASE_MATCHING_GROUP_BY_SQL
 			.formatted("0", "SUM(CASE WHEN (mo.M_InOutLine_ID IS NOT NULL) THEN COALESCE(mo.Qty,0) ELSE 0 END) ");
 	
 	public static final String NOT_FULLY_MATCHED_TO_INVOICE = BASE_MATCHING_SQL
 			.formatted("SUM(CASE WHEN (mo.C_InvoiceLine_ID IS NOT NULL) THEN COALESCE(mo.Qty,0) ELSE 0 END)",
+					" AND mo.C_InvoiceLine_ID>0",
 					" ( mo.C_InvoiceLine_ID IS NULL OR "
 							+ " (lin.QtyOrdered <>  (SELECT sum(mo1.Qty) AS Qty" 
 							+ " FROM m_matchpo mo1 WHERE "
@@ -137,7 +144,9 @@ public class MOrder extends X_C_Order implements DocAction
 			.formatted("lin.QtyOrdered", "SUM(CASE WHEN (mo.C_InvoiceLine_ID IS NOT NULL) THEN COALESCE(mo.Qty,0) ELSE 0 END) ");
 			
 	public static final String FULL_OR_PARTIALLY_MATCHED_TO_INVOICE = BASE_MATCHING_SQL
-			.formatted("SUM(CASE WHEN (mo.C_InvoiceLine_ID IS NOT NULL) THEN COALESCE(mo.Qty,0) ELSE 0 END)", " mo.C_InvoiceLine_ID IS NOT NULL ");
+			.formatted("SUM(CASE WHEN (mo.C_InvoiceLine_ID IS NOT NULL) THEN COALESCE(mo.Qty,0) ELSE 0 END)",
+					" AND mo.C_InvoiceLine_ID>0",
+					" mo.C_InvoiceLine_ID IS NOT NULL ");
 	
 	public static final String FULL_OR_PARTIALLY_MATCHED_TO_INVOICE_GROUP_BY = BASE_MATCHING_GROUP_BY_SQL
 			.formatted("0", "SUM(CASE WHEN (mo.C_InvoiceLine_ID IS NOT NULL) THEN COALESCE(mo.Qty,0) ELSE 0 END) ");
@@ -240,7 +249,7 @@ public class MOrder extends X_C_Order implements DocAction
 	 * @return list of orders not fully matched to invoice
 	 */
 	public static List<MatchingRecord> getNotFullyMatchedToInvoice(int C_BPartner_ID, int M_Product_ID, int C_InvoiceLine_ID, Timestamp from, Timestamp to, String trxName) {
-		StringBuilder builder = new StringBuilder(NOT_FULLY_MATCHED_TO_RECEIPT);
+		StringBuilder builder = new StringBuilder(NOT_FULLY_MATCHED_TO_INVOICE);
 		if (C_InvoiceLine_ID > 0) {
 			builder.append(" AND mo.C_InvoiceLine_ID = ").append(C_InvoiceLine_ID);
 		}
@@ -476,6 +485,8 @@ public class MOrder extends X_C_Order implements DocAction
 		setChargeAmt (Env.ZERO);
 		setTotalLines (Env.ZERO);
 		setGrandTotal (Env.ZERO);
+
+		Core.getPODefaults(Table_Name).forEach(provider -> provider.initDefaults(this));
 	}
 
 	/**
@@ -897,7 +908,8 @@ public class MOrder extends X_C_Order implements DocAction
 		ReportEngine re = ReportEngine.get (getCtx(), ReportEngine.ORDER, getC_Order_ID(), get_TrxName());
 		if (re == null)
 			return null;
-		return re.getPDF(file);
+		return Core.getReportContent(new ReportContentRequest(re, null, getDocumentInfo()),
+				"application/pdf", "pdf", file);
 	}	//	createPDF
 	
 	/**
@@ -1268,32 +1280,43 @@ public class MOrder extends X_C_Order implements DocAction
 		
 		if (getC_BPartner_Location_ID() == 0)
 			setBPartner(new MBPartner(getCtx(), getC_BPartner_ID(), get_TrxName()));
+		PODefaults defaults = Core.getPODefaults(Table_Name);
 		//	Default Bill_BPartner_ID to C_BPartner_ID
 		if (getBill_BPartner_ID() == 0)
 		{
 			setBill_BPartner_ID(getC_BPartner_ID());
-			setBill_Location_ID(getC_BPartner_Location_ID());
+			setBill_Location_ID(0);
 		}
 		//	Default Bill_Location_ID to C_BPartner_Location_ID
 		if (getBill_Location_ID() == 0)
-			setBill_Location_ID(getC_BPartner_Location_ID());
+		{
+			DefaultValue<Integer> billLocation = defaults.get(this, COLUMNNAME_Bill_Location_ID);
+			Integer ii = billLocation.resolve(this::getC_BPartner_Location_ID);
+			if (ii != null && ii > 0)
+				setBill_Location_ID(ii);
+		}
 
 		//	Default Price List
 		if (getM_PriceList_ID() == 0)
 		{
-			int ii = DB.getSQLValueEx(null,
-				"SELECT M_PriceList_ID FROM M_PriceList "
-				+ "WHERE AD_Client_ID=? AND IsSOPriceList=? AND IsActive=? "
-				+ "ORDER BY IsDefault DESC", getAD_Client_ID(), isSOTrx(), true);
-			if (ii != 0)
+			DefaultValue<Integer> priceList = defaults.get(this, COLUMNNAME_M_PriceList_ID);
+			Integer ii = priceList.resolve(() -> DB.getSQLValueEx(null,
+						"SELECT M_PriceList_ID FROM M_PriceList "
+						+ "WHERE AD_Client_ID=? AND IsSOPriceList=? AND IsActive=? "
+						+ "ORDER BY IsDefault DESC", getAD_Client_ID(), isSOTrx(), true));
+			if (ii != null && ii > 0)
 				setM_PriceList_ID (ii);
 		}
 		//	Default Currency
 		if (getC_Currency_ID() == 0)
 		{
-			String sql = "SELECT C_Currency_ID FROM M_PriceList WHERE M_PriceList_ID=?";
-			int ii = DB.getSQLValue (null, sql, getM_PriceList_ID());
-			if (ii != 0)
+			int ii = 0;
+			if (getM_PriceList_ID() > 0)
+			{
+				String sql = "SELECT C_Currency_ID FROM M_PriceList WHERE M_PriceList_ID=?";
+				ii = DB.getSQLValue (null, sql, getM_PriceList_ID());
+			}
+			if (ii > 0)
 				setC_Currency_ID (ii);
 			else
 				setC_Currency_ID(Env.getContextAsInt(getCtx(), Env.C_CURRENCY_ID));
@@ -1302,8 +1325,9 @@ public class MOrder extends X_C_Order implements DocAction
 		//	Default Sales Rep
 		if (getSalesRep_ID() == 0)
 		{
-			int ii = Env.getContextAsInt(getCtx(), Env.SALESREP_ID);
-			if (ii != 0)
+			DefaultValue<Integer> salesRep = defaults.get(this, COLUMNNAME_SalesRep_ID);
+			Integer ii = salesRep.resolve(() -> Env.getContextAsInt(getCtx(), Env.SALESREP_ID));
+			if (ii != null && ii > 0)
 				setSalesRep_ID (ii);
 		}
 
@@ -1314,16 +1338,39 @@ public class MOrder extends X_C_Order implements DocAction
 		//	Default Payment Term
 		if (getC_PaymentTerm_ID() == 0)
 		{
-			int ii = Env.getContextAsInt(getCtx(), Env.C_PAYMENTTERM_ID);
-			if (ii != 0)
-				setC_PaymentTerm_ID(ii);
-			else
+			DefaultValue<Integer> paymentTerm = defaults.get(this, COLUMNNAME_C_PaymentTerm_ID);
+			int ii = 0;
+			if (paymentTerm.isUseFallback())
 			{
-				String sql = "SELECT C_PaymentTerm_ID FROM C_PaymentTerm WHERE AD_Client_ID=? AND IsDefault='Y' AND IsActive='Y'";
-				ii = DB.getSQLValue(null, sql, getAD_Client_ID());
-				if (ii != 0)
-					setC_PaymentTerm_ID (ii);
+				ii = Env.getContextAsInt(getCtx(), Env.C_PAYMENTTERM_ID);
+				if (ii == 0)
+				{
+					String sql = "SELECT C_PaymentTerm_ID FROM C_PaymentTerm WHERE AD_Client_ID=? AND IsDefault='Y' AND IsActive='Y'";
+					ii = DB.getSQLValue(null, sql, getAD_Client_ID());
+				}
 			}
+			else if (paymentTerm.getValue() != null)
+				ii = paymentTerm.getValue();
+			if (ii > 0)
+				setC_PaymentTerm_ID (ii);
+		}
+
+		//	Default Delivery Rule (empty only if a provider cleared the initial default)
+		if (getDeliveryRule() == null)
+		{
+			DefaultValue<String> deliveryRule = defaults.get(this, COLUMNNAME_DeliveryRule);
+			String rule = deliveryRule.resolve(() -> DELIVERYRULE_Availability);
+			if (rule != null)
+				setDeliveryRule(rule);
+		}
+
+		//	Default Invoice Rule (empty only if a provider cleared the initial default)
+		if (getInvoiceRule() == null)
+		{
+			DefaultValue<String> invoiceRule = defaults.get(this, COLUMNNAME_InvoiceRule);
+			String rule = invoiceRule.resolve(() -> INVOICERULE_Immediate);
+			if (rule != null)
+				setInvoiceRule(rule);
 		}
 
 		// IDEMPIERE-63
@@ -1652,8 +1699,22 @@ public class MOrder extends X_C_Order implements DocAction
 		if (explodeBOM())
 			lines = getLines(true, MOrderLine.COLUMNNAME_M_Product_ID);
 
-		// Reserve stock if does not generate shipment on complete
-		if (!evalAutoGenerateInOutRule(dt.getDocSubTypeSO(), dt.isAutoGenerateInout())) {
+		// Skip stock reservation when completing an order that generates the shipment immediately
+		boolean hasReservations = false;
+		for (MOrderLine line : lines) {
+			if (line.getQtyReserved().signum() != 0) {
+				hasReservations = true;
+				break;
+			}
+		}
+		boolean waitingForPayment = !m_forceCreation
+				&& MDocType.DOCSUBTYPESO_PrepayOrder.equals(dt.getDocSubTypeSO())
+				&& getC_Payment_ID() == 0 && getC_CashLine_ID() == 0;
+		boolean skipReserveStock = !hasReservations
+				&& (DOCACTION_Complete.equals(getDocAction())
+				&& evalAutoGenerateInOutRule(dt.getDocSubTypeSO(), dt.isAutoGenerateInout())
+				&& !waitingForPayment );
+		if (!skipReserveStock) {
 			if (!reserveStock(dt, lines))
 			{
 				String innerMsg = CLogger.retrieveErrorString("");
@@ -1663,6 +1724,9 @@ public class MOrder extends X_C_Order implements DocAction
 				return DocAction.STATUS_Invalid;
 			}
 		}
+
+		calculateVolumeAndWeight(lines);
+
 		if (!calculateTaxTotal())
 		{
 			m_processMsg = "Error calculating tax";
@@ -1943,10 +2007,7 @@ public class MOrder extends X_C_Order implements DocAction
 		if (MDocType.DOCSUBTYPESO_StandardOrder.equals(dt.getDocSubTypeSO())
 			|| MDocType.DOCBASETYPE_PurchaseOrder.equals(dt.getDocBaseType()))
 			header_M_Warehouse_ID = 0;		//	don't enforce
-		
-		BigDecimal Volume = Env.ZERO;
-		BigDecimal Weight = Env.ZERO;
-		
+
 		//	Always check and (un) Reserve Inventory		
 		for (int i = 0; i < lines.length; i++)
 		{
@@ -1968,12 +2029,6 @@ public class MOrder extends X_C_Order implements DocAction
 			{
 				if (difference.signum() == 0 || line.getQtyReserved().signum() == 0)
 				{
-					MProduct product = line.getProduct();
-					if (product != null)
-					{
-						Volume = Volume.add(product.getVolume().multiply(line.getQtyOrdered()));
-						Weight = Weight.add(product.getWeight().multiply(line.getQtyOrdered()));
-					}
 					continue;
 				}
 				else if (line.getQtyOrdered().signum() < 0 && line.getQtyReserved().signum() > 0)
@@ -1996,7 +2051,8 @@ public class MOrder extends X_C_Order implements DocAction
 					IReservationTracer tracer = null;
 					IReservationTracerFactory factory = Core.getReservationTracerFactory();
 					if (factory != null) {
-						tracer = factory.newTracer(getC_DocType_ID(), getDocumentNo(), line.getLine(), 
+						String docNo = is_UsingTemporaryDocumentNo() ? get_TemporaryDocumentNo() : getDocumentNo();
+						tracer = factory.newTracer(getC_DocType_ID(), docNo, line.getLine(), 
 								line.get_Table_ID(), line.get_ID(), line.getM_Warehouse_ID(), 
 								line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(), isSOTrx(), 
 								get_TrxName());
@@ -2012,16 +2068,30 @@ public class MOrder extends X_C_Order implements DocAction
 				line.setQtyReserved(line.getQtyReserved().add(difference));
 				if (!line.save(get_TrxName()))
 					return false;
-				//
-				Volume = Volume.add(product.getVolume().multiply(line.getQtyOrdered()));
-				Weight = Weight.add(product.getWeight().multiply(line.getQtyOrdered()));
 			}	//	product
 		}	//	reverse inventory
-		
-		setVolume(Volume);
-		setWeight(Weight);
 		return true;
 	}	//	reserveStock
+
+	/**
+	 * Calculate the Volume and Weight of the order
+	 * @param lines order lines (ordered by M_Product_ID for deadlock prevention)
+	 */
+	protected void calculateVolumeAndWeight(MOrderLine[] lines) {
+		BigDecimal volume = Env.ZERO;
+		BigDecimal weight = Env.ZERO;
+		for (MOrderLine line : lines) {
+			if (line.getM_Product_ID() > 0) {
+				MProduct product = line.getProduct();
+				if (product != null) {
+					volume = volume.add(product.getVolume().multiply(line.getQtyOrdered()));
+					weight = weight.add(product.getWeight().multiply(line.getQtyOrdered()));
+				}
+			}
+		}
+		setVolume(volume);
+		setWeight(weight);
+	} // calculateVolumeAndWeight
 
 	/**
 	 * 	Calculate Tax and Total (delete and re-create C_OrderTax records).

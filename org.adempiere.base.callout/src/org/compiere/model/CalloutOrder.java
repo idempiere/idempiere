@@ -59,9 +59,10 @@ public class CalloutOrder extends CalloutEngine
 	 *  @param mTab     Model Tab
 	 *  @param mField   Model Field
 	 *  @param value    The new value
+	 *  @param oldValue The old value
 	 *  @return Error message or ""
 	 */
-	public String docType (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value)
+	public String docType (Properties ctx, int WindowNo, GridTab mTab, GridField mField, Object value, Object oldValue)
 	{
 		Integer C_DocType_ID = (Integer)value;		//	Actually C_DocTypeTarget_ID
 		if (C_DocType_ID == null || C_DocType_ID.intValue() == 0)
@@ -73,7 +74,9 @@ public class CalloutOrder extends CalloutEngine
 		boolean newDocNo = (oldDocNo == null);
 		if (!newDocNo && oldDocNo.startsWith("<") && oldDocNo.endsWith(">"))
 			newDocNo = true;
-		Integer oldC_DocType_ID = (Integer)mTab.getValue("C_DocType_ID");
+		Integer oldC_DocType_ID = (Integer)oldValue;
+		if (oldC_DocType_ID == null)
+			oldC_DocType_ID = 0;
 
 		String sql = "SELECT d.DocSubTypeSO,d.HasCharges,"			//	1..2
 			+ "d.IsDocNoControlled,"     //  3
@@ -975,9 +978,13 @@ public class CalloutOrder extends CalloutEngine
 		//
 		String deliveryViaRule = Env.getContext(ctx, WindowNo, I_C_Order.COLUMNNAME_DeliveryViaRule, true);
 		int dropshipLocationId = Env.getContextAsInt(ctx, WindowNo, I_C_Order.COLUMNNAME_DropShip_Location_ID, true);
+		int C_DocType_ID = Env.getContextAsInt(ctx, WindowNo, I_C_Order.COLUMNNAME_C_DocType_ID, true);
+		if (C_DocType_ID <= 0)
+			C_DocType_ID = Env.getContextAsInt(ctx, WindowNo, I_C_Order.COLUMNNAME_C_DocTypeTarget_ID, true);
+		String paymentRule = Env.getContext(ctx, WindowNo, I_C_Order.COLUMNNAME_PaymentRule, true);
 		int C_Tax_ID = Core.getTaxLookup().get(ctx, M_Product_ID, C_Charge_ID, billDate, shipDate,
 			AD_Org_ID, M_Warehouse_ID, billC_BPartner_Location_ID, shipC_BPartner_Location_ID, dropshipLocationId,
-			"Y".equals(Env.getContext(ctx, WindowNo, "IsSOTrx")), deliveryViaRule, null);
+			"Y".equals(Env.getContext(ctx, WindowNo, "IsSOTrx")), deliveryViaRule, C_DocType_ID, paymentRule, null);
 		if (log.isLoggable(Level.INFO)) log.info("Tax ID=" + C_Tax_ID);
 		//
 		if (C_Tax_ID == 0)

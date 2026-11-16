@@ -217,8 +217,9 @@ public class MToolBarButtonRestrict extends X_AD_ToolBarButtonRestrict
 	 */
 	public static boolean isNewButtonRestricted(int windowID, int tabID)
 	{
-		boolean isReadWrite = MRole.getDefault().getWindowAccess(windowID);
-		if (!isReadWrite)
+		//	getWindowAccess returns null when the role has no access to the window at all
+		Boolean isReadWrite = MRole.getDefault().getWindowAccess(windowID);
+		if (!Boolean.TRUE.equals(isReadWrite))
 			return true;
 
 		return isToolbarButtonRestricted(windowID, tabID, SystemIDs.TOOLBAR_BTN_ID_WINDOW_NEW);

@@ -400,3 +400,7 @@
 		height: 100%;
 	}
 }
+
+.popup-dialog {
+	max-width: 100%;
+}

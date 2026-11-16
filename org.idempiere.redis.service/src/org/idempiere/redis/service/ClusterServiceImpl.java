@@ -43,6 +43,7 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -52,11 +53,15 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.compiere.util.CacheMgt;
+import org.compiere.util.CacheNewRecordCallable;
 import org.idempiere.distributed.IClusterMember;
 import org.idempiere.distributed.IClusterService;
 import org.idempiere.redis.service.cluster.AllowlistKryo5Codec;
@@ -65,7 +70,7 @@ import org.idempiere.redis.service.cluster.RpcRequest;
 import org.idempiere.redis.service.cluster.RpcResponse;
 import org.idempiere.redis.service.config.ConfigParser;
 import org.idempiere.redis.service.config.RedisConfig;
-import org.redisson.client.codec.Codec;
+import org.idempiere.redis.service.health.RedisHealth;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -76,6 +81,7 @@ import org.redisson.api.RBuckets;
 import org.redisson.api.RKeys;
 import org.redisson.api.RTopic;
 import org.redisson.api.RedissonClient;
+import org.redisson.client.codec.Codec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -122,6 +128,8 @@ public class ClusterServiceImpl implements IClusterService {
 
 	private final AtomicReference<ClusterMember> localMember = new AtomicReference<>();
 	private final ConcurrentMap<String, PendingRequest> pending = new ConcurrentHashMap<>();
+	/** Tracks currently-open response-topic subscriptions for circuit-breaker pool monitoring. */
+	private final AtomicInteger activeResponseSubscriptions = new AtomicInteger(0);
 
 	private volatile ScheduledExecutorService heartbeatExecutor;
 	private volatile ScheduledExecutorService timeoutExecutor;
@@ -130,6 +138,20 @@ public class ClusterServiceImpl implements IClusterService {
 	private volatile long rpcTimeoutSeconds = DEFAULT_RPC_TIMEOUT_SECONDS;
 	private volatile Codec rpcCodec;
 	private volatile String rpcHmacSecret;
+
+	/** How often {@link #retryFailedNotifications()} re-publishes notifications that could not be published. */
+	private static final long NOTIFICATION_RETRY_SECONDS = 30L;
+	/** Upper bound of {@link #failedNotifications}; beyond it one cluster-wide cache reset is owed instead. */
+	private static final int MAX_FAILED_NOTIFICATIONS = 10_000;
+
+	/**
+	 * Fire-and-forget notifications ({@link #isNotification(Callable)}) whose publish failed, so the other
+	 * nodes never received them. Re-published by {@link #retryFailedNotifications()}.
+	 */
+	private final ConcurrentLinkedQueue<RpcRequest> failedNotifications = new ConcurrentLinkedQueue<>();
+	private final AtomicInteger failedNotificationCount = new AtomicInteger(0);
+	/** Set when {@link #failedNotifications} overflowed: one cluster-wide cache reset replaces the dropped ones. */
+	private final AtomicBoolean fullResetOwed = new AtomicBoolean(false);
 
 	@Activate
 	void activate() {
@@ -141,6 +163,10 @@ public class ClusterServiceImpl implements IClusterService {
 			rpcHmacSecret = Activator.getConfig().getRpcHmacSecret();
 			startHeartbeat();
 			subscribeToRequestTopic();
+			RedisHealth health = Activator.getHealthOrNull();
+			if (health != null) {
+				health.setSubscriptionUsageSupplier(activeResponseSubscriptions::get);
+			}
 			log.info("Redis cluster service activated; local member: {}", self);
 		} catch (RuntimeException re) {
 			throw re;
@@ -154,6 +180,15 @@ public class ClusterServiceImpl implements IClusterService {
 		stopHeartbeat();
 		unsubscribeFromRequestTopic();
 		failAllPending(new IllegalStateException("Bundle deactivating"));
+		// Reset the supplier only after failAllPending() has unsubscribed every PendingRequest
+		// (which decrements activeResponseSubscriptions) — resetting it first would make the
+		// breaker see usage=0 while real subscriptions are still open, letting a concurrent probe
+		// or recordSuccess() close the breaker and a concurrent execute() call add yet another
+		// subscription mid-shutdown.
+		RedisHealth health = Activator.getHealthOrNull();
+		if (health != null) {
+			health.setSubscriptionUsageSupplier(null);
+		}
 		ClusterMember self = localMember.getAndSet(null);
 		if (self != null) {
 			try {
@@ -258,6 +293,42 @@ public class ClusterServiceImpl implements IClusterService {
 			return result;
 		}
 
+		// Cache notifications nobody reads a result of: send them without a reply topic. No
+		// response subscription is opened and nothing waits, so a burst of new records cannot
+		// exhaust the subscription pool, trip the breaker and get the notices dropped. Not gated by
+		// the breaker: it guards the subscription pool, which this path does not use.
+		if (isNotification(task)) {
+			publishNotification(new RpcRequest(taskId, self.getId(), remoteUuids.toArray(new String[0]), null, task));
+			for (Map.Entry<IClusterMember, CompletableFuture<V>> e : futures.entrySet()) {
+				if (!self.getId().equals(e.getKey().getId())) {
+					e.getValue().complete(null);
+				}
+			}
+			@SuppressWarnings({"rawtypes", "unchecked"})
+			Map<IClusterMember, Future<V>> result = (Map) futures;
+			return result;
+		}
+
+		// Check the breaker BEFORE allocating another response-topic subscription: once OPEN
+		// (typically because the subscription pool is already at/near threshold), every further
+		// call must stop adding listeners too, or the fast-path never actually gates anything —
+		// it would just keep tripping later without ever preventing pool exhaustion. Self-targeted
+		// futures were already completed above and are unaffected; only remote targets fail here.
+		RedisHealth h = Activator.getHealthOrNull();
+		if (h != null && !h.isHealthy()) {
+			IllegalStateException unavailable = new IllegalStateException(
+					"Redis circuit breaker is OPEN (" + h.getLastTripReason()
+							+ "); cluster RPC to remote members is unavailable");
+			for (Map.Entry<IClusterMember, CompletableFuture<V>> e : futures.entrySet()) {
+				if (!self.getId().equals(e.getKey().getId())) {
+					e.getValue().completeExceptionally(unavailable);
+				}
+			}
+			@SuppressWarnings({"rawtypes", "unchecked"})
+			Map<IClusterMember, Future<V>> result = (Map) futures;
+			return result;
+		}
+
 		RedissonClient client = Activator.getRedissonClient();
 		Codec codec = rpcCodec;
 		RTopic responseTopic = (codec != null)
@@ -265,6 +336,11 @@ public class ClusterServiceImpl implements IClusterService {
 				: client.getTopic(responseTopicName);
 		int listenerId = responseTopic.addListener(RpcResponse.class,
 				(channel, response) -> handleResponse(response));
+		// Track pool usage and probe circuit breaker.
+		int active = activeResponseSubscriptions.incrementAndGet();
+		if (h != null) {
+			h.recordSubscriptionPoolUsage(active, Activator.getConfig().getSubscriptionConnectionPoolSize());
+		}
 
 		Map<IClusterMember, CompletableFuture<V>> remoteFutures = new LinkedHashMap<>();
 		for (Map.Entry<IClusterMember, CompletableFuture<V>> e : futures.entrySet()) {
@@ -274,7 +350,8 @@ public class ClusterServiceImpl implements IClusterService {
 		}
 
 		@SuppressWarnings({"rawtypes", "unchecked"})
-		PendingRequest pr = new PendingRequest((Map) remoteFutures, responseTopic, listenerId);
+		PendingRequest pr = new PendingRequest((Map) remoteFutures, responseTopic, listenerId,
+				activeResponseSubscriptions);
 		pending.put(taskId, pr);
 
 		ScheduledExecutorService te = timeoutExecutor;
@@ -319,6 +396,76 @@ public class ClusterServiceImpl implements IClusterService {
 		}
 	}
 
+	/**
+	 * A callable whose result no caller reads, sent fire-and-forget: the new record notification of
+	 * {@code CacheMgt}, which ignores the futures of {@code execute}.
+	 */
+	private static boolean isNotification(Callable<?> task) {
+		return task instanceof CacheNewRecordCallable;
+	}
+
+	/** Publishes a notification without a reply topic; a failed publish is kept for {@link #retryFailedNotifications()}. */
+	private void publishNotification(RpcRequest request) {
+		String secret = rpcHmacSecret;
+		if (secret != null) {
+			request.setHmac(computeHmac(secret, request.getTaskId(), request.getOriginatorUuid()));
+		}
+		RTopic topic = requestTopic;
+		try {
+			if (topic == null) {
+				throw new IllegalStateException("RPC request topic not subscribed");
+			}
+			topic.publish(request);
+		} catch (Exception e) {
+			keepFailedNotification(request);
+			log.warn("Failed to publish cache notification {}; retried within {}s",
+					request.getTaskId(), NOTIFICATION_RETRY_SECONDS, e);
+		}
+	}
+
+	private void keepFailedNotification(RpcRequest request) {
+		if (failedNotificationCount.incrementAndGet() > MAX_FAILED_NOTIFICATIONS) {
+			failedNotificationCount.decrementAndGet();
+			fullResetOwed.set(true);
+			return;
+		}
+		failedNotifications.add(request);
+	}
+
+	/**
+	 * Re-publishes the notifications that could not be published, oldest first; stops at the first
+	 * failure and keeps the rest. After an overflow, one cluster-wide cache reset is sent once all
+	 * kept notifications are out. Runs on {@link #timeoutExecutor}; catches everything so the task
+	 * keeps its schedule.
+	 */
+	private void retryFailedNotifications() {
+		try {
+			RTopic topic = requestTopic;
+			if (topic == null) {
+				return;
+			}
+			RpcRequest request;
+			while ((request = failedNotifications.peek()) != null) {
+				topic.publish(request);
+				failedNotifications.poll();
+				failedNotificationCount.decrementAndGet();
+			}
+			if (fullResetOwed.compareAndSet(true, false)) {
+				try {
+					CacheMgt.get().reset();
+				} catch (RuntimeException | Error e) {
+					// Still owed: the next run retries it.
+					fullResetOwed.set(true);
+					throw e;
+				}
+				log.warn("Cluster-wide cache reset sent: more than {} cache notifications could not be published",
+						MAX_FAILED_NOTIFICATIONS);
+			}
+		} catch (Throwable t) {
+			log.warn("Re-publishing failed cache notifications failed; will retry in {}s", NOTIFICATION_RETRY_SECONDS, t);
+		}
+	}
+
 	// ---------------------------------------------------------------- Internals
 
 	private void startHeartbeat() {
@@ -353,6 +500,8 @@ public class ClusterServiceImpl implements IClusterService {
 		// the DS component as failed. Better that than swallowing here and letting
 		// execute() NPE later with a misleading "Callable may not be Serializable".
 		timeoutExecutor = Executors.newSingleThreadScheduledExecutor(daemonThreadFactory("redis-cluster-rpc-timeout"));
+		timeoutExecutor.scheduleWithFixedDelay(this::retryFailedNotifications,
+				NOTIFICATION_RETRY_SECONDS, NOTIFICATION_RETRY_SECONDS, TimeUnit.SECONDS);
 		Codec codec = rpcCodec;
 		String topicName = rpcRequestTopicName();
 		requestTopic = (codec != null)
@@ -400,6 +549,13 @@ public class ClusterServiceImpl implements IClusterService {
 		} catch (Throwable t) {
 			error = t;
 		}
+		if (request.getResponseTopic() == null) {
+			// Fire-and-forget notification: nobody waits for a reply.
+			if (error != null) {
+				log.warn("Cache notification {} failed on {}", request.getTaskId(), self.getId(), error);
+			}
+			return;
+		}
 		Throwable safeError = toSerializable(error);
 		Codec codec = rpcCodec;
 		RTopic responseTopic = (codec != null)
@@ -437,14 +593,18 @@ public class ClusterServiceImpl implements IClusterService {
 	private void handleResponse(RpcResponse response) {
 		PendingRequest pr = pending.get(response.getTaskId());
 		if (pr == null) {
-			// Late response after timeout — drop silently.
+			// Late response after timeout, or already handled by failAllPending — drop silently.
 			return;
 		}
 		boolean done = pr.deliver(response);
 		if (done) {
-			pending.remove(response.getTaskId());
-			pr.unsubscribe();
-			pr.cancelTimeout();
+			// Atomic remove(key,value) gate prevents failAllPending double-calling
+			// unsubscribe on the same PendingRequest in a race; an unconditional
+			// remove(key) here would not guard against that.
+			if (pending.remove(response.getTaskId(), pr)) {
+				pr.unsubscribe();
+				pr.cancelTimeout();
+			}
 		}
 	}
 
@@ -457,12 +617,17 @@ public class ClusterServiceImpl implements IClusterService {
 	}
 
 	private void failAllPending(Throwable cause) {
-		for (PendingRequest pr : pending.values()) {
-			pr.failRemaining(cause);
-			pr.unsubscribe();
-			pr.cancelTimeout();
-		}
-		pending.clear();
+		// Drain using remove(key,value) so only the thread that removes owns
+		// unsubscribe, preventing double-decrement of activeResponseSubscriptions if
+		// handleResponse races here; an unconditional values()-loop + clear() would
+		// not guard against that.
+		pending.forEach((id, pr) -> {
+			if (pending.remove(id, pr)) {
+				pr.failRemaining(cause);
+				pr.unsubscribe();
+				pr.cancelTimeout();
+			}
+		});
 	}
 
 	// ---------------------------------------------------------- Security helpers
@@ -470,7 +635,15 @@ public class ClusterServiceImpl implements IClusterService {
 	private static Codec buildRpcCodec(RedisConfig cfg) {
 		Set<String> allowlist = cfg.getRpcCallableAllowlist();
 		if (allowlist.isEmpty()) {
-			return null; // no restriction — existing Redisson default codec
+			// No restriction. The client's default codec cannot send java.util.logging.Level
+			// (SystemInfo.logLevel): Kryo reflects on its private fields and the java.logging module
+			// refuses. When that default is Kryo5Codec, use the same codec, unrestricted, with the
+			// Level serializer; any other configured codec is left as it is.
+			Codec clientCodec = Activator.getRedissonClient().getConfig().getCodec();
+			if (clientCodec == null || clientCodec.getClass() == org.redisson.codec.Kryo5Codec.class) {
+				return new AllowlistKryo5Codec(null, Set.of());
+			}
+			return null;
 		}
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();
 		log.info("RPC codec: allow-list active ({} class(es))", allowlist.size());
@@ -586,11 +759,13 @@ public class ClusterServiceImpl implements IClusterService {
 		private final RTopic responseTopic;
 		private final int listenerId;
 		private volatile ScheduledFuture<?> timeoutHandle;
+		private final AtomicInteger subscriptionCounter;
 
 		PendingRequest(Map<IClusterMember, CompletableFuture<Object>> futures,
-				RTopic responseTopic, int listenerId) {
+				RTopic responseTopic, int listenerId, AtomicInteger subscriptionCounter) {
 			this.responseTopic = responseTopic;
 			this.listenerId = listenerId;
+			this.subscriptionCounter = subscriptionCounter;
 			this.futuresByUuid = new ConcurrentHashMap<>();
 			for (Map.Entry<IClusterMember, CompletableFuture<Object>> e : futures.entrySet()) {
 				futuresByUuid.put(e.getKey().getId(), e.getValue());
@@ -638,6 +813,10 @@ public class ClusterServiceImpl implements IClusterService {
 				responseTopic.removeListener(listenerId);
 			} catch (Exception ignored) {
 				// best effort
+			}
+			// Decrement the pool-usage counter so RedisHealth gets an accurate count.
+			if (subscriptionCounter != null) {
+				subscriptionCounter.decrementAndGet();
 			}
 		}
 	}

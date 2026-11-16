@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -113,7 +115,29 @@ public class OIDCPrincipalService implements ISSOPrincipalService {
 
 	@Override
 	public Language getLanguage(Object principalObject) throws ParseException {
-		return Language.getBaseLanguage();
+		if (principalObject instanceof UserInfo userInfo) {
+			String localeClaim = userInfo.getLocale();
+			if (!Util.isEmpty(localeClaim, true)) {
+				Locale locale = Locale.forLanguageTag(localeClaim.trim().replace('_', '-'));
+				if (!Util.isEmpty(locale.getLanguage(), true)) {
+					ArrayList<String> loginLanguages = Env.getLoginLanguages();
+					StringBuilder languageCode = new StringBuilder(locale.getLanguage());
+					if (!Util.isEmpty(locale.getCountry(), true))
+						languageCode.append('_').append(locale.getCountry());
+
+					Language language = Language.getLanguage(languageCode.toString());
+					if (loginLanguages.contains(language.getAD_Language()))
+						return language;
+
+					// Fall back from a regional locale (for example de_DE) to an
+					// active login language with the same ISO language (for example de).
+					language = Language.getLanguage(locale.getLanguage());
+					if (loginLanguages.contains(language.getAD_Language()))
+						return language;
+				}
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -281,16 +305,17 @@ public class OIDCPrincipalService implements ISSOPrincipalService {
 			throws IOException {		
 		AuthenticationRequest authRequest = null;
 		try {
-			authRequest = new AuthenticationRequest.Builder(
+			AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(
 					new ResponseType(AUTHENTICATION_CODE_PARAMETER),		      
 					new Scope("openid", "profile", "email"),
 					new ClientID(principalConfig.getSSO_ApplicationClientID()),
 					new URI(getRedirectURL(principalConfig, redirectMode))) 
 			    .state(new State())
 			    .nonce(new Nonce())
-			    .prompt(new Prompt(Prompt.Type.LOGIN)) 
-			    .endpointURI(getMetaData().getAuthorizationEndpointURI())
-			    .build();
+			    .endpointURI(getMetaData().getAuthorizationEndpointURI());
+			if (principalConfig.isForceLogin())
+				builder.prompt(new Prompt(Prompt.Type.LOGIN));
+			authRequest = builder.build();
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(e);
 		} catch (GeneralException e) {

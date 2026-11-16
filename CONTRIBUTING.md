@@ -23,7 +23,7 @@ Here are some important resources:
 
 ### **Did you find a bug?**
 * **Do not open up a JIRA ticket if the bug is a security vulnerability in iDempiere**, 
-and instead refer to our [security policy](https://wiki.idempiere.org/en/How_to_report_a_vulnerability) page.
+and instead refer to our [security policy](https://docs.idempiere.org/docs/basic-development/contributing-to-core/how-to-report-a-vulnerability) page.
 * **Ensure the bug was not already reported** by searching on JIRA under [Issues](https://idempiere.atlassian.net/issues/).
 **Note:** If you find a **Closed** issue that seems like it is the same thing that you're experiencing, open a new issue and include a link to the original issue in the body of your new one.
 * If you're unable to find an open issue addressing the problem, open a new one. Be sure to include a 
@@ -85,9 +85,9 @@ Enhancement suggestions are tracked as [JIRA issues](https://idempiere.atlassian
 
 ### **Do you want to contribute code by fixing a bug or adding an enhancement?**
 
-Before integrating any code change, please read the [Contributing to iDempiere's core](https://wiki.idempiere.org/en/Contributing_to_Trunk) guide to know more about coding conventions, guidelines and benchmarks.
+Before integrating any code change, please read the [Contributing to iDempiere's core](https://docs.idempiere.org/docs/basic-development/contributing-to-core/contributing-to-idempiere) guide to know more about coding conventions, guidelines and benchmarks.
 
-iDempiere uses a forking workflow for code contributions. To have a detailed explanation of how to create a pull request, please read [the Fork and Branch Git Workflow page](https://wiki.idempiere.org/en/Fork_and_Branch_Git_Workflow).
+iDempiere uses a forking workflow for code contributions. To have a detailed explanation of how to create a pull request, please read [the Fork and Branch Git Workflow page](https://docs.idempiere.org/docs/basic-development/contributing-to-core/git-workflow).
 
 In summary, here are the steps to follow:
 
@@ -101,11 +101,11 @@ In summary, here are the steps to follow:
 * Push your commit to your own fork.
 * Navigate to GitHub in the web browser.
 * Create a Pull request.
-* If the change is big and adds new functionality, please document the modifications and new features and add this documentation to [the new features wiki](https://wiki.idempiere.org/en/Category:New_Features).
+* If the change is big and adds new functionality, please document the modifications and new features and add this documentation to [the new features documentation](https://docs.idempiere.org/docs/category/new-features).
 
 ### **Did you write a plugin that is valuable for the community?**
 
-* Read our [Plugin guidelines](https://wiki.idempiere.org/en/Plugin_Guidelines).
+* Read our [Plugin guidelines](https://docs.idempiere.org/docs/basic-development/contributing-to-core/plugin-guidelines).
 * Add your plugin to the [available plugins site](https://wiki.idempiere.org/en/Category:Available_Plugins).
 **Note:** If the community or its leaders find that your plugin do not follow the guidelines, it's disrupting or needs further support from a specific implementing company to use it. The project leaders are entitled to remove the plugin from the Available plugins list.
 
