@@ -1098,7 +1098,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 
 			MInfoWindow embedInfo = new MInfoWindow(Env.getCtx(), infoRelatedID, null);
 
-			TableInfo[] tableInfos = embedInfo.getTableInfos();
+			String fromClause = getEffectiveFromClause(embedInfo);
+			TableInfo[] tableInfos = embedInfo.getTableInfos(fromClause);
 			if (tableInfos[0].getSynonym() != null && tableInfos[0].getSynonym().trim().length() > 0){
 				tableName = tableInfos[0].getSynonym().trim();
 			}
@@ -1114,7 +1115,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				list.toArray(s_layoutEmbedded);
 
 				/**	From Clause							*/
-				String s_sqlFrom = embedInfo.getFromClause();
+				String s_sqlFrom = fromClause;
 				/** Where Clause						*/
 				String s_sqlWhere = relatedInfo.getLinkColumnName() + "=?";
 				String infoWhere = embedInfo.getWhereClause(); 
@@ -2986,7 +2987,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 */
 	public ArrayList<ColumnInfo> getInfoColumnslayout(MInfoWindow info){
 
-		TableInfo[] tableInfos = info.getTableInfos();
+		TableInfo[] tableInfos = info.getTableInfos(getEffectiveFromClause(info));
 
 		MInfoColumn[] p_infoColumns = info.getInfoColumns(tableInfos);
 		InfoColumnVO[] infoColumns = InfoColumnVO.create(Env.getCtx(), p_infoColumns);
@@ -3864,4 +3865,14 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		}
 	}
 
+	/**
+	 * Get the effective FromClause, taking User Defined InfoWindow configuration into account.
+	 *
+	 * @param info the InfoWindow
+	 * @return effective FromClause
+	 */
+	private String getEffectiveFromClause(MInfoWindow info) {
+	    MUserDefInfo userDefInfo = MUserDefInfo.getBestMatch(Env.getCtx(), info.getAD_InfoWindow_ID());
+	    return userDefInfo != null && !Util.isEmpty(userDefInfo.getFromClause()) ? userDefInfo.getFromClause() : info.getFromClause();
+	}
 }

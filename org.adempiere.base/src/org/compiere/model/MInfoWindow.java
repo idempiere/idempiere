@@ -635,8 +635,18 @@ public class MInfoWindow extends X_AD_InfoWindow implements ImmutablePOSupport
 	 * @return array of {@link TableInfo}
 	 */
 	public TableInfo[] getTableInfos() {
-		AccessSqlParser sqlParser = new AccessSqlParser("SELECT * FROM " + getFromClause());
-		return sqlParser.getTableInfo(0);
+	    return getTableInfos(getFromClause());
+	}
+
+	/**
+	 * Retrieves table information from the specified FromClause.
+	 *
+	 * @param fromClause the SQL FROM clause
+	 * @return array of {@link TableInfo}
+	 */
+	public TableInfo[] getTableInfos(String fromClause) {
+	    AccessSqlParser sqlParser = new AccessSqlParser("SELECT * FROM " + fromClause);
+	    return sqlParser.getTableInfo(0);
 	}
 
 	/**
