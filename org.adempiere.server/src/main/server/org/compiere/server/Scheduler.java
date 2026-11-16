@@ -36,6 +36,7 @@ import org.adempiere.base.upload.IUploadHandler;
 import org.adempiere.base.upload.IUploadService;
 import org.adempiere.base.upload.UploadMedia;
 import org.adempiere.base.upload.UploadResponse;
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MAttachment;
 import org.compiere.model.MAuthorizationAccount;
 import org.compiere.model.MClient;
@@ -533,15 +534,11 @@ public class Scheduler extends AdempiereServer
 		{
 			MPInstancePara iPara = new MPInstancePara (pInstance, processParams[pi].getSeqNo());
 			iPara.setParameterName(processParams[pi].getColumnName());
-			iPara.setInfo(processParams[pi].getName());
 			for (int np = 0; np < sParams.length; np++)
 			{
 				MSchedulerPara sPara = sParams[np];
 				if (iPara.getParameterName().equals(sPara.getColumnName()))
 				{
-					String paraDesc = sPara.getDescription();
-					if (paraDesc != null && paraDesc.trim().length() > 0)
-						iPara.setInfo(sPara.getDescription());
 					String variable = sPara.getParameterDefault();
 					String toVariable = sPara.getParameterToDefault();
 					if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName() + " = " + variable);
@@ -555,9 +552,10 @@ public class Scheduler extends AdempiereServer
 						if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName() + " - empty");
 						break;
 					}
-					if( DisplayType.isText(sPara.getDisplayType())
-							&& Util.isEmpty(String.valueOf(value)) 
-							&& Util.isEmpty(String.valueOf(toValue))) {
+					if ( DisplayType.isText(sPara.getDisplayType())
+					    && (value == null || value.toString().length() == 0)
+					    && (toValue == null || toValue.toString().length() == 0))
+					{
 						if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName() + " - empty string");
 							break;
 					}
@@ -565,77 +563,57 @@ public class Scheduler extends AdempiereServer
 					//	Convert to Type
 					try
 					{
+						// TODO: DashboardController.fillParameter implements much better filling the Info and Info_To fields,
+						// but it is not available here. It should be refactored to a common place.
 						if (DisplayType.isNumeric(sPara.getDisplayType())
 							|| DisplayType.isID(sPara.getDisplayType()))
 						{
 							DecimalFormat decimalFormat = DisplayType.getNumberFormat(sPara.getDisplayType());
-							BigDecimal bd = toBigDecimal(value);
-							iPara.setP_Number(bd);							
+							if (value != null)
+							{
+								iPara.setP_Number(toBigDecimal(value));							
+								iPara.setInfo(decimalFormat.format(iPara.getP_Number()));
+							}
 							if (toValue != null)
 							{
-								bd = toBigDecimal(toValue);
-								iPara.setP_Number_To(bd);
+								iPara.setP_Number_To(toBigDecimal(toValue));
+								iPara.setInfo_To(decimalFormat.format(iPara.getP_Number_To()));
 							}
-							if (Util.isEmpty(paraDesc)) 
-							{
-								String info = decimalFormat.format(iPara.getP_Number());
-								if (iPara.getP_Number_To() != null)
-									info = info + " - " + decimalFormat.format(iPara.getP_Number_To());
-								iPara.setInfo(info);
-							}
-							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
-								+ " = " + variable + " (=" + bd + "=)");
 						}
 						else if (DisplayType.isDate(sPara.getDisplayType()))
 						{
 							SimpleDateFormat dateFormat = DisplayType.getDateFormat(sPara.getDisplayType());
-							Timestamp ts = toTimestamp(value);
-							iPara.setP_Date(ts);
-							if (toValue != null) {
-								ts = toTimestamp(toValue);
-								iPara.setP_Date_To(ts);
-							}
-							if (Util.isEmpty(paraDesc)) 
+							if (value != null)
 							{
-								String info = dateFormat.format(iPara.getP_Date());
-								if (iPara.getP_Date_To() != null)
-								{
-									info = info + " - " + dateFormat.format(iPara.getP_Date_To());
-								}
-								iPara.setInfo(info);
+								iPara.setP_Date(toTimestamp(value));
+								iPara.setInfo(dateFormat.format(iPara.getP_Date()));
 							}
-							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
-								+ " = " + variable + " (=" + ts + "=)");
+							if (toValue != null)
+							{
+								iPara.setP_Date_To(toTimestamp(toValue));
+								iPara.setInfo_To(dateFormat.format(iPara.getP_Date_To()));
+							}
 						}
 						else
 						{
-							iPara.setP_String(value.toString());
+							if (value != null)
+							{
+								iPara.setP_String(value.toString());
+								iPara.setInfo(iPara.getP_String());
+							}
 							if (toValue != null) 
 							{
 								iPara.setP_String_To(toValue.toString());
+								iPara.setInfo_To(iPara.getP_String_To());
 							}
-							if (Util.isEmpty(paraDesc))
-							{
-								String info = iPara.getP_String();
-								if (iPara.getP_String_To() != null)
-								{
-									info = info + " - " + iPara.getP_String_To();
-								}
-								iPara.setInfo(info);
-							}
-							if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
-								+ " = " + variable
-								+ " (=" + value + "=) " + value.getClass().getName());
 						}
-						if (!iPara.save())
-							log.warning("Not Saved - " + sPara.getColumnName());
+						if (log.isLoggable(Level.FINE)) log.fine(sPara.getColumnName()
+								+ " = " + variable + " (=" + iPara.getInfo() + " - " + iPara.getInfo_To() + "=)");
+						iPara.saveEx();
 					}
 					catch (Exception e)
 					{
-						log.warning(sPara.getColumnName()
-							+ " = " + variable + " (" + value
-							+ ") " + value.getClass().getName()
-							+ " - " + e.getLocalizedMessage());
+						throw new AdempiereException(e);
 					}
 					break;
 				}	//	parameter match
