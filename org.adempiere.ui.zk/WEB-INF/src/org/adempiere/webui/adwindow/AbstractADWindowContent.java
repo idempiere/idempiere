@@ -1710,10 +1710,13 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 						{
 							if (callback != null)
 								callback.onCallback(result);
-							if (Boolean.TRUE.equals(result) && adTabbox.getSelectedGridTab() != null && adTabbox.getSelectedGridTab().hasChangedCurrentTabAndParents())
+							GridTab selectedGridTab = adTabbox.getSelectedGridTab();
+							if (Boolean.TRUE.equals(result) && selectedGridTab != null && selectedGridTab.hasChangedCurrentTabAndParents())
 							{
-								adTabbox.getSelectedGridTab().dataRefreshAll(true, true);
-								adTabbox.getSelectedGridTab().refreshParentTabs();
+								if (!selectedGridTab.isNew())
+									selectedGridTab.dataRefreshAll(true, true);
+								selectedGridTab.refreshParentTabs();
+								CLogger.retrieveError();
 							}
 						}
 					});
