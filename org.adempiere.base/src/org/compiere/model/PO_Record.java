@@ -38,6 +38,8 @@ import org.compiere.util.Util;
  */
 public class PO_Record
 {
+	public static final String ON_DELETE_RECORD_CASCADE = "ON_DELETE_RECORD_CASCADE";
+
 	/** Cache for arrays of KeyNamePair<AD_Table_ID, TableName> for types of deletion: Cascade, Set Null, No Action */
 	private static final CCache<String, KeyNamePair[]> s_po_record_tables_cache = new CCache<>(null, "PORecordTables", 100, 120, false);
 
@@ -109,6 +111,7 @@ public class PO_Record
 					   )
 					)
 					continue;
+				po.set_Attribute(ON_DELETE_RECORD_CASCADE, "Y");
 				if (deletes != null) {
 					deletes.add(po);
 				} else {
