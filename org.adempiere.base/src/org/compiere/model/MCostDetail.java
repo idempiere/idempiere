@@ -1412,30 +1412,53 @@ public class MCostDetail extends X_M_CostDetail
 	}	//	process
 	
 	/**
-	 * 	Get the Fifo/Lifo cost queue record (cost layer) to update for this cost detail.<br/>
-	 * 	- Cost adjustment (qty = 0): the amount is applied to the first open cost queue record in Fifo/Lifo order
-	 * 	  of the costing level ASI. No new cost queue record is created. Returns null if there's no open cost queue record.<br/>
+	 * 	Update the Fifo/Lifo cost queue (cost layers) for this cost detail.<br/>
+	 * 	- Cost adjustment (qty = 0): the amount is applied to the first cost queue record with CurrentQty &gt; 0
+	 * 	  in Fifo/Lifo order of the costing level ASI. No new cost queue record is created.<br/>
+	 * 	- Reduction (qty &lt; 0, e.g. vendor return or reversal of invoice matching) without ASI: if the cost layer of the
+	 * 	  account date has enough quantity, the quantity and amount are removed from it; otherwise the quantity is
+	 * 	  reduced from the open cost layers in Fifo/Lifo order, so that no cost layer with negative quantity is created.<br/>
 	 * 	- Otherwise: the cost queue record of the real ASI (costing level Org); without ASI, the account date is the cost layer.
 	 *	@param as accounting schema
 	 *	@param product product
 	 *	@param ce Fifo or Lifo cost element
 	 *	@param Org_ID org - corrected for costing level
 	 *	@param M_ASI_ID asi - corrected for costing level
+	 *	@param amt total amount
 	 *	@param qty quantity
-	 *	@return cost queue record or null
+	 *	@param precision costing precision
 	 */
-	private MCostQueue getCostQueueLayer (MAcctSchema as, MProduct product, MCostElement ce,
-		int Org_ID, int M_ASI_ID, BigDecimal qty)
+	private void updateCostQueue (MAcctSchema as, MProduct product, MCostElement ce,
+		int Org_ID, int M_ASI_ID, BigDecimal amt, BigDecimal qty, int precision)
 	{
 		if (qty.signum() == 0)
 		{
 			MCostQueue[] cQueue = MCostQueue.getQueue(product, M_ASI_ID, as, Org_ID, ce, get_TrxName());
-			return cQueue != null && cQueue.length > 0 ? cQueue[0] : null;
+			for (MCostQueue cq : cQueue)
+			{
+				if (cq.getCurrentQty().signum() > 0)
+				{
+					cq.setCosts(amt, qty, precision);
+					cq.saveEx();
+					return;
+				}
+			}
+			if (log.isLoggable(Level.WARNING)) log.warning("No open cost queue record for cost adjustment - " + toString());
+			return;
 		}
 		//	Real ASI - costing level Org
-		return MCostQueue.get(product, getM_AttributeSetInstance_ID(),
+		MCostQueue cq = MCostQueue.get(product, getM_AttributeSetInstance_ID(),
 			as, Org_ID, ce.getM_CostElement_ID(), getDateAcct(), get_TrxName());
-	}	//	getCostQueueLayer
+		if (qty.signum() < 0 && getM_AttributeSetInstance_ID() == 0
+			&& (cq.get_ID() <= 0 || cq.getCurrentQty().compareTo(qty.negate()) < 0))
+		{
+			//	Reduce the open cost layers - costing level Org/ASI
+			MCostQueue.adjustQty(product, M_ASI_ID, as, Org_ID, ce, qty.negate(), get_TrxName());
+			return;
+		}
+		cq.setCosts(amt, qty, precision);
+		cq.saveEx();
+	}	//	updateCostQueue
 
 	/**
 	 * 	Process cost detail record
@@ -1728,12 +1751,7 @@ public class MCostDetail extends X_M_CostDetail
 			}
 			else if ((ce.isFifo() || ce.isLifo()))
 			{
-				MCostQueue cq = getCostQueueLayer(as, product, ce, Org_ID, M_ASI_ID, qty);
-				if (cq != null)
-				{
-					cq.setCosts(amt, qty, precision);
-					cq.saveEx();
-				}
+				updateCostQueue(as, product, ce, Org_ID, M_ASI_ID, amt, qty, precision);
 				//	Get Costs - costing level Org/ASI
 				MCostQueue[] cQueue = MCostQueue.getQueue(product, M_ASI_ID, 
 					as, Org_ID, ce, get_TrxName());
@@ -1891,12 +1909,7 @@ public class MCostDetail extends X_M_CostDetail
 				{
 					if (addition)
 					{
-						MCostQueue cq = getCostQueueLayer(as, product, ce, Org_ID, M_ASI_ID, qty);
-						if (cq != null)
-						{
-							cq.setCosts(amt, qty, precision);
-							cq.saveEx();
-						}
+						updateCostQueue(as, product, ce, Org_ID, M_ASI_ID, amt, qty, precision);
 					}
 					else
 					{
