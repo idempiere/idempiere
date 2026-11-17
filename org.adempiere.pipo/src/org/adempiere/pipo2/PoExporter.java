@@ -321,6 +321,7 @@ public class PoExporter {
 				{
 					if (hasRecordReferenceValue(columnName))
 						throw new AdempiereException("Could not find the related table for column " + po.get_TableName() + "." + columnName);
+					add(columnName, "", new AttributesImpl());
 					continue;
 				}
 				addTableReference(columnName, tableName, new AttributesImpl());
