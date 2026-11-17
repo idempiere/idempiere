@@ -1716,23 +1716,25 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 							{
 								if (selectedGridTab.hasChangedCurrentTabAndParents())
 								{
-									if (!selectedGridTab.isNew())
-						try
-						{
-							selectedGridTab.dataRefreshAll(true, true);
-						}
-						catch (Exception e)
-						{
-							if (DBException.isTimeout(e))
-								Dialog.error(getWindowNo(), "GridTabLoadTimeoutError");
-							else
-							{
-								Dialog.error(getWindowNo(), "Error", e.getMessage());
-								logger.log(Level.SEVERE, e.getMessage(), e);
-							}
-							selectedGridTab.reset();
-						}
 									CLogger.retrieveError();
+									if (!selectedGridTab.isNew())
+									{
+										try
+										{
+											selectedGridTab.dataRefreshAll(true, true);
+										}
+										catch (Exception e)
+										{
+											if (DBException.isTimeout(e))
+												Dialog.error(getWindowNo(), "GridTabLoadTimeoutError");
+											else
+											{
+												Dialog.error(getWindowNo(), "Error", e.getMessage());
+												logger.log(Level.SEVERE, e.getMessage(), e);
+											}
+											selectedGridTab.reset();
+										}
+									}
 								}
 								if (selectedGridTab.isDetail())
 									selectedGridTab.refreshParentTabs();
