@@ -122,7 +122,9 @@ public class DatabaseViewImport extends SvrProcess {
 		ResultSet rs2 = null;
 		try 
 		{
-			rs = md.getTables(null, null, tableName, new String[] {"VIEW"});
+			String catalog = DB.getDatabase().getCatalog();
+			String schema = DB.getDatabase().getSchema();
+			rs = md.getTables(catalog, schema, tableName, new String[] {"VIEW"});
 			while (rs.next())
 			{
 				String name = rs.getString("TABLE_NAME");
