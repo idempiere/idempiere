@@ -1103,16 +1103,18 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
     @Override
     public void onLast()
     {
+    	final GridTab selectedGridTab = adTabbox.getSelectedGridTab();
         Callback<Boolean> callback = new Callback<Boolean>() {
 			@Override
 			public void onCallback(Boolean result) {
 				if (result) {
-					adTabbox.getSelectedGridTab().navigate(adTabbox.getSelectedGridTab().getRowCount() - 1);
+					if (selectedGridTab != null)
+						selectedGridTab.navigate(selectedGridTab.getRowCount() - 1);
 			        focusToActivePanel();
 				}
 			}
 		};
-		onSave(false, true, callback);
+		saveAndNavigate(callback);
     }
 
     /**
@@ -1700,7 +1702,42 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 		    {
 		    	if (adTabbox.needSave(true, true))
 				{
-		    		onSave(false, true, callback);
+					final GridTab selectedGridTab = adTabbox.getSelectedGridTab();
+					onSave(false, true, new Callback <Boolean>() {
+						@Override
+						public void onCallback(Boolean result)
+						{
+							if (callback != null)
+								callback.onCallback(result);
+							if (Boolean.TRUE.equals(result) && selectedGridTab != null)
+							{
+								if (selectedGridTab.hasChangedCurrentTabAndParents())
+								{
+									CLogger.retrieveError();
+									if (!selectedGridTab.isNew())
+									{
+										try
+										{
+											selectedGridTab.dataRefreshAll(true, true);
+										}
+										catch (Exception e)
+										{
+											if (DBException.isTimeout(e))
+												Dialog.error(getWindowNo(), "GridTabLoadTimeoutError");
+											else
+											{
+												Dialog.error(getWindowNo(), "Error", e.getMessage());
+												logger.log(Level.SEVERE, e.getMessage(), e);
+											}
+											selectedGridTab.reset();
+										}
+									}
+								}
+								if (selectedGridTab.isDetail())
+									selectedGridTab.refreshParentTabs();
+							}
+						}
+					});
 				}
 				else
 				{
