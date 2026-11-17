@@ -178,6 +178,26 @@ public class ViewDefinitionParserTest {
 	}
 
 	@Test
+	public void testIsDistinctFrom() {
+		List<Component> components = ViewDefinitionParser.parse(
+				"SELECT t.a IS DISTINCT FROM t.b AS flag, t.c IS NOT DISTINCT FROM 1 AS same, t.d FROM t WHERE t.a IS DISTINCT FROM t.c");
+		assertEquals(1, components.size(), "Number of components");
+		Component component = components.get(0);
+		List<SelectItem> items = component.getItems();
+		assertEquals(3, items.size(), "FROM of IS DISTINCT FROM is not the from clause");
+		assertEquals("t.a IS DISTINCT FROM t.b", items.get(0).getExpression());
+		assertEquals("flag", items.get(0).getAlias());
+		assertEquals("t.c IS NOT DISTINCT FROM 1", items.get(1).getExpression());
+		assertEquals("same", items.get(1).getAlias());
+		assertEquals("t.d", items.get(2).getExpression());
+		assertEquals("FROM t", component.getFromClause());
+		assertEquals("WHERE t.a IS DISTINCT FROM t.c", component.getWhereClause());
+
+		assertTrue(ViewDefinitionParser.parse("SELECT DISTINCT a FROM t").get(0).isDistinct(), "SELECT DISTINCT is not affected");
+		assertEquals("FROM t", ViewDefinitionParser.parse("SELECT DISTINCT a FROM t").get(0).getFromClause());
+	}
+
+	@Test
 	public void testUnsupportedDefinitions() {
 		assertUnsupported("WITH x AS (SELECT a FROM t) SELECT a FROM x");
 		assertUnsupported("SELECT a FROM t INTERSECT SELECT a FROM u");

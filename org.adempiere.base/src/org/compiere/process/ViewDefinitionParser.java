@@ -51,6 +51,8 @@ public final class ViewDefinitionParser {
 	private static final Pattern SELECT = Pattern.compile("\\s*SELECT(?!\\w)");
 	private static final Pattern ON = Pattern.compile("\\s*ON(?!\\w)");
 	private static final Pattern FROM = Pattern.compile("(?<![.\\w])FROM(?![.\\w])");
+	/** DISTINCT right before a FROM, as in IS [NOT] DISTINCT FROM */
+	private static final Pattern DISTINCT_BEFORE = Pattern.compile("(?<![.\\w])DISTINCT\\s+$");
 	private static final Pattern WHERE = Pattern.compile("(?<![.\\w])WHERE(?![.\\w])");
 	private static final Pattern OTHER = Pattern.compile(
 			"(?<![.\\w])(GROUP\\s+BY|HAVING|ORDER\\s+BY|CONNECT\\s+BY|START\\s+WITH|WINDOW|LIMIT|OFFSET|FETCH|FOR\\s+UPDATE)(?![.\\w])");
@@ -239,8 +241,12 @@ public final class ViewDefinitionParser {
 			}
 		}
 
+		// skip the FROM of IS [NOT] DISTINCT FROM in the select list
 		Matcher from = FROM.matcher(mask);
-		if (!from.find(pos))
+		boolean found = from.find(pos);
+		while (found && DISTINCT_BEFORE.matcher(mask.substring(pos, from.start())).find())
+			found = from.find();
+		if (!found)
 			throw new AdempiereException("SELECT without FROM");
 		int fromStart = from.start();
 		parseSelectList(component, sql.substring(pos, fromStart), mask.substring(pos, fromStart));
