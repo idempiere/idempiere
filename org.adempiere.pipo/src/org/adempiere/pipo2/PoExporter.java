@@ -27,6 +27,7 @@ import org.compiere.model.X_M_AttributeSetInstance;
 import org.compiere.model.X_M_Locator;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
+import org.compiere.util.Util;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class PoExporter {
@@ -316,10 +317,12 @@ public class PoExporter {
 				add(columnName, false, new AttributesImpl());
 			} else if (DisplayType.TableDir == displayType || DisplayType.ID == displayType || DisplayType.RecordUU == displayType) {
 				String tableName = resolveReferenceTableName(info, columnName, i, trxName);
-				if (tableName == null
-					&& ("Record_ID".equalsIgnoreCase(columnName) || "Record_UU".equalsIgnoreCase(columnName)))
+				if (tableName == null && isRecordReferenceColumn(columnName))
 				{
-					throw new AdempiereException("Could not find the related table for column " + po.get_TableName() + "." + columnName);
+					if (hasRecordReferenceValue(columnName))
+						throw new AdempiereException("Could not find the related table for column " + po.get_TableName() + "." + columnName);
+					add(columnName, "", new AttributesImpl());
+					continue;
 				}
 				addTableReference(columnName, tableName, new AttributesImpl());
 			} else if (DisplayType.isList(displayType)) {
@@ -329,6 +332,8 @@ public class PoExporter {
 
 				if (tableName == null)
 				{
+					if (isRecordReferenceColumn(columnName) && !hasRecordReferenceValue(columnName))
+						continue;
 					throw new AdempiereException("Could not find the related table for column " + po.get_TableName() + "." + columnName);
 				}
 
@@ -422,6 +427,18 @@ public class PoExporter {
 		addString(columnName, fileName + "|" + dataType, new AttributesImpl());
 	}
 
+	private boolean isRecordReferenceColumn(String columnName)
+	{
+		return "Record_ID".equalsIgnoreCase(columnName) || "Record_UU".equalsIgnoreCase(columnName);
+	}
+
+	private boolean hasRecordReferenceValue(String columnName)
+	{
+		if ("Record_UU".equalsIgnoreCase(columnName))
+			return !Util.isEmpty(po.get_ValueAsString(columnName), true);
+		return po.get_ValueAsInt(columnName) > 0;
+	}
+
 	/**
 	 * Resolve the referenced table name for the given column.
 	 *
@@ -433,7 +450,7 @@ public class PoExporter {
 	 */
 	private String resolveReferenceTableName(POInfo info, String columnName, int columnIndex, String trxName)
 	{
-		if (("Record_ID".equalsIgnoreCase(columnName) || "Record_UU".equalsIgnoreCase(columnName))
+		if (isRecordReferenceColumn(columnName)
 			&& po.get_ColumnIndex("AD_Table_ID") >= 0)
 		{
 			int AD_Table_ID = po.get_ValueAsInt("AD_Table_ID");
