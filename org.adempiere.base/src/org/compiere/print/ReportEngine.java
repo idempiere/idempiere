@@ -47,6 +47,7 @@ import javax.print.event.PrintServiceAttributeEvent;
 import javax.print.event.PrintServiceAttributeListener;
 
 import org.adempiere.exceptions.AdempiereException;
+import org.adempiere.pdf.Document;
 import org.compiere.model.MClient;
 import org.compiere.model.MColumn;
 import org.compiere.model.MDunningRunEntry;
@@ -374,6 +375,7 @@ public class ReportEngine implements PrintServiceAttributeListener
 			return;
 		if (m_printData == null)
 			throw new IllegalStateException ("No print data (Delete Print Format and restart)");
+		Document.registerCustomAwtFonts();
 		m_layout = new LayoutEngine (m_printFormat, m_printData, m_query, m_info, m_trxName, m_windowNo);
 	}	//	layout
 
