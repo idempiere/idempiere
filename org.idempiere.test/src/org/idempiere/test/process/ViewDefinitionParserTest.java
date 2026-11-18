@@ -77,9 +77,9 @@ public class ViewDefinitionParserTest {
 		assertEquals(7, items.size(), "Number of columns");
 		assertEquals("bp.c_bpartner_id", items.get(0).getExpression());
 		assertNull(items.get(0).getAlias(), "Plain column has no alias");
-		assertEquals("'C'", items.get(2).getExpression(), "Cast of string literal to text is removed");
+		assertEquals("'C'::text", items.get(2).getExpression(), "Casts are kept by the parser");
 		assertEquals("bptype", items.get(2).getAlias());
-		assertEquals("COALESCE(bp.value, 'a,b FROM x')", items.get(3).getExpression(), "Comma and FROM inside a literal are not separators");
+		assertEquals("COALESCE(bp.value, 'a,b FROM x'::character varying)", items.get(3).getExpression(), "Comma and FROM inside a literal are not separators");
 		assertEquals("searchkey", items.get(3).getAlias());
 		assertTrue(items.get(4).isNullLiteral(), "NULL with cast is a null literal");
 		assertEquals("bp.created::date", items.get(5).getExpression(), "Cast of a column is kept");
@@ -87,7 +87,7 @@ public class ViewDefinitionParserTest {
 		assertEquals("(bp.so_creditlimit)::integer", items.get(6).getExpression());
 		assertEquals("\"limit\"", items.get(6).getAlias(), "Quoted alias is kept quoted");
 		assertEquals("FROM c_bpartner bp\n     JOIN ad_org o ON o.ad_org_id = bp.ad_org_id", first.getFromClause());
-		assertEquals("WHERE bp.iscustomer = 'Y' AND bp.name::text ~~ '%::%'", first.getWhereClause());
+		assertEquals("WHERE bp.iscustomer = 'Y'::bpchar AND bp.name::text ~~ '%::%'::text", first.getWhereClause());
 		assertEquals("GROUP BY bp.c_bpartner_id", first.getOtherClause());
 
 		Component second = components.get(1);
@@ -164,17 +164,29 @@ public class ViewDefinitionParserTest {
 	@Test
 	public void testCasts() {
 		List<SelectItem> items = ViewDefinitionParser.parse(
-				"SELECT 'it''s'::text AS a, 'x'::character varying(60) AS b, '{}'::text[] AS c, '2020-01-01'::date AS d, "
-				+ "t.x::integer AS e, 'a::text' AS f, 'Y'::bpchar AS g, NULL AS h, 'v'::character varying AS i FROM t").get(0).getItems();
-		assertEquals("'it''s'", items.get(0).getExpression(), "Cast of literal with escaped quote is removed");
-		assertEquals("'x'::character varying(60)", items.get(1).getExpression(), "Cast with length is kept");
-		assertEquals("'{}'::text[]", items.get(2).getExpression(), "Cast to array is kept");
-		assertEquals("'2020-01-01'::date", items.get(3).getExpression(), "Cast to date is kept");
-		assertEquals("t.x::integer", items.get(4).getExpression(), "Cast of column is kept");
-		assertEquals("'a::text'", items.get(5).getExpression(), "Text inside a literal is not a cast");
-		assertEquals("'Y'", items.get(6).getExpression(), "Cast of literal to bpchar is removed");
-		assertTrue(items.get(7).isNullLiteral(), "NULL without cast is a null literal");
-		assertEquals("'v'", items.get(8).getExpression(), "Cast of literal to character varying is removed");
+				"SELECT 'Y'::bpchar AS a, NULL::character varying AS b, NULL AS c FROM t").get(0).getItems();
+		assertEquals("'Y'::bpchar", items.get(0).getExpression(), "The parser keeps the casts");
+		assertTrue(items.get(1).isNullLiteral(), "NULL with cast is a null literal");
+		assertTrue(items.get(2).isNullLiteral(), "NULL without cast is a null literal");
+
+		assertEquals("'it''s'", ViewDefinitionParser.removeCasts("'it''s'::text"), "Literal with escaped quote");
+		assertEquals("'Y'", ViewDefinitionParser.removeCasts("'Y'::bpchar"));
+		assertEquals("lpad(jahre.j, 2, '0')", ViewDefinitionParser.removeCasts("lpad(jahre.j::text, 2, '0')"));
+		assertEquals("date_part('year', CURRENT_DATE) - 2000", ViewDefinitionParser.removeCasts("date_part('year'::text, CURRENT_DATE)::integer - 2000"));
+		assertEquals("(('20' || x) || '-01-01')", ViewDefinitionParser.removeCasts("(('20'::text || x) || '-01-01'::text)::date"));
+		assertEquals("x", ViewDefinitionParser.removeCasts("x::character varying(60)"));
+		assertEquals("x + 1", ViewDefinitionParser.removeCasts("x::numeric(10,2) + 1"));
+		assertEquals("x + 1", ViewDefinitionParser.removeCasts("x::numeric(10, 2) + 1"));
+		assertEquals("ts", ViewDefinitionParser.removeCasts("ts::timestamp without time zone"));
+		assertEquals("ts", ViewDefinitionParser.removeCasts("ts::timestamp(6) with time zone"));
+		assertEquals("d * 2", ViewDefinitionParser.removeCasts("d::double precision * 2"));
+		assertEquals("'{}'", ViewDefinitionParser.removeCasts("'{}'::text[]"));
+		assertEquals("o.oid", ViewDefinitionParser.removeCasts("o.oid::pg_catalog.regclass"));
+		assertEquals("t.\"a::b\"", ViewDefinitionParser.removeCasts("t.\"a::b\"::integer"), "Text inside a quoted identifier is not a cast");
+		assertEquals("'a::text'", ViewDefinitionParser.removeCasts("'a::text'"), "Text inside a literal is not a cast");
+		assertEquals("WHERE sp.statistiktyp = 'MD' AND sp.startdate >= '2009-01-01'",
+				ViewDefinitionParser.removeCasts("WHERE sp.statistiktyp::text = 'MD'::text AND sp.startdate >= '2009-01-01'::date"));
+		assertEquals("a AND b", ViewDefinitionParser.removeCasts("a AND b"), "Text without cast is not changed");
 	}
 
 	@Test

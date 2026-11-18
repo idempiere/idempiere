@@ -28,10 +28,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MColumn;
@@ -42,6 +46,7 @@ import org.compiere.model.MViewComponent;
 import org.compiere.model.Query;
 import org.compiere.process.DatabaseViewImport;
 import org.compiere.process.ProcessInfo;
+import org.compiere.process.ProcessInfoLog;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.DB;
@@ -109,7 +114,7 @@ public class DatabaseViewImportTest extends AbstractTestCase {
 	@Test
 	public void testImportView() throws Exception {
 		MTable table = createTable(VIEW_NAME);
-		DatabaseViewImport.importDatabaseView(Env.getCtx(), table, false, false, getTrxName(), null);
+		DatabaseViewImport.importDatabaseView(Env.getCtx(), table, false, false, true, getTrxName(), null);
 
 		MViewComponent[] components = table.getViewComponent(true);
 		assertNotNull(components, "View components");
@@ -168,15 +173,15 @@ public class DatabaseViewImportTest extends AbstractTestCase {
 	@Test
 	public void testExistingViewComponents() throws Exception {
 		MTable table = createTable(VIEW_NAME);
-		DatabaseViewImport.importDatabaseView(Env.getCtx(), table, false, false, getTrxName(), null);
+		DatabaseViewImport.importDatabaseView(Env.getCtx(), table, false, false, true, getTrxName(), null);
 		int firstId = table.getViewComponent(true)[0].getAD_ViewComponent_ID();
 
 		assertThrows(AdempiereException.class,
-				() -> DatabaseViewImport.importDatabaseView(Env.getCtx(), table, false, false, getTrxName(), null),
+				() -> DatabaseViewImport.importDatabaseView(Env.getCtx(), table, false, false, true, getTrxName(), null),
 				"Should fail when the table has view components and they are not deleted");
 		assertEquals(2, table.getViewComponent(true).length, "View components are not changed");
 
-		DatabaseViewImport.importDatabaseView(Env.getCtx(), table, true, false, getTrxName(), null);
+		DatabaseViewImport.importDatabaseView(Env.getCtx(), table, true, false, true, getTrxName(), null);
 		MViewComponent[] components = table.getViewComponent(true);
 		assertEquals(2, components.length, "View components are replaced, not added");
 		assertNotEquals(firstId, components[0].getAD_ViewComponent_ID(), "View component is a new record");
@@ -190,7 +195,7 @@ public class DatabaseViewImportTest extends AbstractTestCase {
 	@Test
 	public void testCreateColumns() throws Exception {
 		MTable table = createTable(VIEW_NAME);
-		DatabaseViewImport.importDatabaseView(Env.getCtx(), table, false, true, getTrxName(), null);
+		DatabaseViewImport.importDatabaseView(Env.getCtx(), table, false, true, true, getTrxName(), null);
 
 		assertEquals(2, table.getViewComponent(true).length, "Number of view components");
 		assertEquals(COLUMN_NAMES.length, countColumns(table), "Dictionary columns are created");
@@ -221,26 +226,88 @@ public class DatabaseViewImportTest extends AbstractTestCase {
 		assertEquals(2, table.getViewComponent(true).length, "View components are replaced, not added");
 	}
 
+	@Test
+	public void testRunProcessRemoveCasts() {
+		assumeTrue(DB.isPostgreSQL(), "PostgreSQL adds the casts to the view definition");
+		MTable table = createTable(VIEW_NAME);
+
+		ProcessInfo pi = runProcess(table, false, false, Boolean.FALSE);
+		assertFalse(pi.isError(), pi.getSummary());
+		MViewComponent component = table.getViewComponent(true)[0];
+		assertTrue(component.getColumns(true)[3].getColumnSQL().contains("::"),
+				"IsRemoveCasts=N keeps the cast: " + component.getColumns(true)[3].getColumnSQL());
+		assertTrue(component.getWhereClause().contains("::"), "IsRemoveCasts=N keeps the cast: " + component.getWhereClause());
+
+		pi = runProcess(table, true, false, null);
+		assertFalse(pi.isError(), pi.getSummary());
+		component = table.getViewComponent(true)[0];
+		assertEquals("'C'", component.getColumns(true)[3].getColumnSQL(), "Casts are removed when the parameter is not passed");
+		assertFalse(component.getWhereClause().contains("::"), "Casts are removed when the parameter is not passed: " + component.getWhereClause());
+	}
+
 	private ProcessInfo runProcess(MTable table, boolean deleteOld, boolean createColumns) {
+		return runProcess(table, deleteOld, createColumns, Boolean.TRUE);
+	}
+
+	/**
+	 * @param removeCasts value of IsRemoveCasts, null to not pass the parameter
+	 */
+	private ProcessInfo runProcess(MTable table, boolean deleteOld, boolean createColumns, Boolean removeCasts) {
 		MProcess process = MProcess.get(Env.getCtx(), DictionaryIDs.AD_Process.DATABASE_VIEW_IMPORT.id);
 		ProcessInfo pi = new ProcessInfo(process.getName(), process.get_ID(), MTable.Table_ID, table.getAD_Table_ID());
 		pi.setClassName(process.getClassname());
 		pi.setAD_Client_ID(getAD_Client_ID());
 		pi.setAD_User_ID(getAD_User_ID());
 		pi.setTransactionName(getTrxName());
-		pi.setParameter(new ProcessInfoParameter[] {
-			new ProcessInfoParameter("DeleteOld", deleteOld ? "Y" : "N", null, null, null),
-			new ProcessInfoParameter("IsCreateColumns", createColumns ? "Y" : "N", null, null, null)
-		});
+		List<ProcessInfoParameter> params = new ArrayList<ProcessInfoParameter>();
+		params.add(new ProcessInfoParameter("DeleteOld", deleteOld ? "Y" : "N", null, null, null));
+		params.add(new ProcessInfoParameter("IsCreateColumns", createColumns ? "Y" : "N", null, null, null));
+		if (removeCasts != null)
+			params.add(new ProcessInfoParameter("IsRemoveCasts", removeCasts ? "Y" : "N", null, null, null));
+		pi.setParameter(params.toArray(new ProcessInfoParameter[0]));
 		ServerProcessCtl.process(pi, getTrx(), false);
 		return pi;
+	}
+
+	@Test
+	public void testRemoveCasts() throws Exception {
+		assumeTrue(DB.isPostgreSQL(), "PostgreSQL adds the casts to the view definition");
+		String viewName = "Test_ViewImportCast_V";
+		DB.executeUpdateEx("CREATE OR REPLACE VIEW " + viewName + " AS SELECT bp.C_BPartner_ID, bp.Name || 'x' AS NameX,"
+				+ " CAST(NULL AS VARCHAR(10)) AS Note FROM C_BPartner bp WHERE bp.IsCustomer='Y'", null);
+		try {
+			MTable table = createTable(viewName);
+			ProcessInfo pi = new ProcessInfo("Test", 0);
+			DatabaseViewImport.importDatabaseView(Env.getCtx(), table, false, false, true, getTrxName(), pi);
+			MViewComponent component = table.getViewComponent(true)[0];
+			assertFalse(component.getWhereClause().contains("::"), "Where clause without cast: " + component.getWhereClause());
+			MViewColumn[] columns = component.getColumns(true);
+			for (MViewColumn column : columns)
+				assertFalse(column.getColumnSQL().contains("::"), "Column SQL without cast: " + column.getColumnSQL());
+			assertEquals("NULL", columns[2].getColumnSQL(), "Typed NULL");
+			assertEquals(MViewColumn.DBDATATYPE_CharacterVariable, columns[2].getDBDataType(), "Data type of the typed NULL");
+			boolean logged = false;
+			for (ProcessInfoLog log : pi.getLogs())
+				logged = logged || (log.getP_Msg() != null && log.getP_Msg().startsWith(component.getName() + ": "));
+			assertTrue(logged, "Removed casts are logged");
+
+			DatabaseViewImport.importDatabaseView(Env.getCtx(), table, true, false, false, getTrxName(), null);
+			component = table.getViewComponent(true)[0];
+			assertTrue(component.getWhereClause().contains("::"), "Where clause keeps the cast: " + component.getWhereClause());
+			columns = component.getColumns(true);
+			assertTrue(columns[2].getColumnSQL().toUpperCase().startsWith("NULL::"), "Typed NULL is kept: " + columns[2].getColumnSQL());
+			assertNull(columns[2].getDBDataType(), "No data type when the cast is kept");
+		} finally {
+			rollback();
+			DB.executeUpdateEx("DROP VIEW " + viewName, null);
+		}
 	}
 
 	@Test
 	public void testViewNotInDatabase() {
 		MTable table = createTable("Test_ViewImportNone_V");
 		assertThrows(AdempiereException.class,
-				() -> DatabaseViewImport.importDatabaseView(Env.getCtx(), table, false, false, getTrxName(), null),
+				() -> DatabaseViewImport.importDatabaseView(Env.getCtx(), table, false, false, true, getTrxName(), null),
 				"Should fail when the view doesn't exist in the database");
 		assertEquals(0, table.getViewComponent(true).length, "No view components are created");
 	}

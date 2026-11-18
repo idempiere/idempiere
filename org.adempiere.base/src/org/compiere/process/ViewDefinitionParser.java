@@ -59,9 +59,11 @@ public final class ViewDefinitionParser {
 	private static final Pattern EXPLICIT_ALIAS = Pattern.compile("^(.*\\S)\\s+AS\\s+" + IDENTIFIER + "\\s*$", Pattern.DOTALL);
 	private static final Pattern IMPLICIT_ALIAS = Pattern.compile("^(.*\\S)\\s+" + IDENTIFIER + "\\s*$", Pattern.DOTALL);
 	private static final Pattern LAST_WORD = Pattern.compile("(?<![\\w$#])([A-Z_][A-Z0-9_$#]*)$");
-	/** Cast of a string literal to a character type without length, e.g. 'Y'::bpchar */
-	private static final Pattern LITERAL_CHAR_CAST = Pattern.compile(
-			"\\G::(character varying|character(?!\\s+varying)|varchar|bpchar|text|char)(?!\\w)(?!\\s*[\\[(])", Pattern.CASE_INSENSITIVE);
+	/** PostgreSQL type cast, e.g. ::text, ::character varying(60), ::numeric(10,2), ::timestamp without time zone, ::text[] */
+	private static final Pattern POSTGRESQL_CAST = Pattern.compile(
+			"\\G::\\s*(\"[^\"]*\"|\\w+)(\\.(\"[^\"]*\"|\\w+))?(\\s+(varying|precision)(?!\\w))?"
+			+ "(\\s*\\(\\s*\\d+(\\s*,\\s*\\d+)?\\s*\\))?(\\s+with(out)?\\s+time\\s+zone(?!\\w))?(\\s*\\[\\s*\\d*\\s*\\])*",
+			Pattern.CASE_INSENSITIVE);
 	private static final Pattern NULL_LITERAL = Pattern.compile(
 			"^NULL(\\s*::\\s*[\\w \"]+(\\(\\s*\\d+(\\s*,\\s*\\d+)?\\s*\\))?)?$", Pattern.CASE_INSENSITIVE);
 	private static final Pattern NULL_CAST = Pattern.compile(
@@ -261,11 +263,11 @@ public final class ViewDefinitionParser {
 			whereStart = where.start();
 
 		int fromEnd = whereStart >= 0 ? whereStart : (otherStart >= 0 ? otherStart : sql.length());
-		component.fromClause = removeLiteralCharCasts(sql.substring(fromStart, fromEnd).trim());
+		component.fromClause = sql.substring(fromStart, fromEnd).trim();
 		if (whereStart >= 0)
-			component.whereClause = removeLiteralCharCasts(sql.substring(whereStart, otherStart >= 0 ? otherStart : sql.length()).trim());
+			component.whereClause = sql.substring(whereStart, otherStart >= 0 ? otherStart : sql.length()).trim();
 		if (otherStart >= 0)
-			component.otherClause = removeLiteralCharCasts(sql.substring(otherStart).trim());
+			component.otherClause = sql.substring(otherStart).trim();
 		return component;
 	}
 
@@ -312,7 +314,7 @@ public final class ViewDefinitionParser {
 			}
 		}
 
-		expression = removeLiteralCharCasts(expression.trim());
+		expression = expression.trim();
 		boolean nullLiteral = NULL_LITERAL.matcher(expression).matches() || NULL_CAST.matcher(expression).matches();
 		return new SelectItem(expression, alias, nullLiteral);
 	}
@@ -330,41 +332,29 @@ public final class ViewDefinitionParser {
 	}
 
 	/**
-	 * Remove the type cast that PostgreSQL adds to string literals, e.g. 'Y'::bpchar or 'abc'::text.<br/>
-	 * Other casts are kept, removing them can change the result or the data type of the expression.
+	 * Remove all the PostgreSQL type casts (::type), outside string literals and quoted identifiers.<br/>
+	 * Some casts are needed by PostgreSQL (e.g. lpad(integer::text, ...)) or define the data type of a column,
+	 * so the result must be reviewed.
 	 * @param sql
-	 * @return sql without casts of string literals to character types
+	 * @return sql without ::type casts
 	 */
-	private static String removeLiteralCharCasts(String sql) {
-		if (sql.indexOf("'::") < 0)
+	public static String removeCasts(String sql) {
+		if (sql == null || sql.indexOf("::") < 0)
 			return sql;
 		StringBuilder sb = new StringBuilder(sql.length());
-		Matcher cast = LITERAL_CHAR_CAST.matcher(sql);
-		boolean inLiteral = false;
-		boolean inQuotedIdentifier = false;
+		Matcher cast = POSTGRESQL_CAST.matcher(sql);
 		int i = 0;
 		while (i < sql.length()) {
 			char c = sql.charAt(i);
-			sb.append(c);
-			i++;
-			if (inLiteral) {
-				if (c == '\'') {
-					if (i < sql.length() && sql.charAt(i) == '\'') {
-						sb.append('\'');
-						i++;
-					} else {
-						inLiteral = false;
-						if (cast.find(i) && cast.start() == i)
-							i = cast.end();
-					}
-				}
-			} else if (inQuotedIdentifier) {
-				if (c == '"')
-					inQuotedIdentifier = false;
-			} else if (c == '\'') {
-				inLiteral = true;
-			} else if (c == '"') {
-				inQuotedIdentifier = true;
+			if (c == '\'' || c == '"') {
+				int end = endOfQuoted(sql, i);
+				sb.append(sql, i, end);
+				i = end;
+			} else if (c == ':' && sql.startsWith("::", i) && cast.find(i) && cast.start() == i) {
+				i = cast.end();
+			} else {
+				sb.append(c);
+				i++;
 			}
 		}
 		return sb.toString();

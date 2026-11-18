@@ -62,6 +62,8 @@ public class DatabaseViewImport extends SvrProcess {
 	private boolean	p_DeleteOld = false;
 	/** Create the dictionary columns that are missing in the table */
 	private boolean	p_IsCreateColumns = true;
+	/** Remove the PostgreSQL type casts (::type) */
+	private boolean	p_IsRemoveCasts = true;
 
 	@Override
 	protected void prepare()
@@ -75,6 +77,8 @@ public class DatabaseViewImport extends SvrProcess {
 				p_DeleteOld = para.getParameterAsBoolean();
 			else if (name.equals("IsCreateColumns"))
 				p_IsCreateColumns = para.getParameterAsBoolean();
+			else if (name.equals("IsRemoveCasts"))
+				p_IsRemoveCasts = para.getParameterAsBoolean();
 			else
 				MProcessPara.validateUnknownParameter(getProcessInfo().getAD_Process_ID(), para);
 		}
@@ -88,7 +92,7 @@ public class DatabaseViewImport extends SvrProcess {
 		if (!table.isView() || !table.isActive())
 			throw new AdempiereException(Msg.getMsg(getCtx(), "NotActiveDatabaseView"));
 
-		return importDatabaseView(getCtx(), table, p_DeleteOld, p_IsCreateColumns, get_TrxName(), getProcessInfo());
+		return importDatabaseView(getCtx(), table, p_DeleteOld, p_IsCreateColumns, p_IsRemoveCasts, get_TrxName(), getProcessInfo());
 	}
 
 	/**
@@ -98,12 +102,14 @@ public class DatabaseViewImport extends SvrProcess {
 	 * @param table table that is a view
 	 * @param deleteOld true to delete the existing view components of the table, false to fail if the table has view components
 	 * @param createColumns true to also create the dictionary columns (AD_Column) that are missing in the table
+	 * @param removeCasts true to remove the PostgreSQL type casts (::type), so the definition can be used in Oracle,
+	 * the process log lists where they were removed; false to keep the definition as the database returns it
 	 * @param trxName
 	 * @param pi optional process info to add log
 	 * @return info message
 	 * @throws Exception if the view doesn't exist in the database or its definition can't be represented as view components
 	 */
-	public static String importDatabaseView(Properties ctx, MTable table, boolean deleteOld, boolean createColumns, String trxName, ProcessInfo pi) throws Exception
+	public static String importDatabaseView(Properties ctx, MTable table, boolean deleteOld, boolean createColumns, boolean removeCasts, String trxName, ProcessInfo pi) throws Exception
 	{
 		Trx trx = Trx.get(trxName, true);
 		DatabaseMetaData md = trx.getConnection().getMetaData();
@@ -209,9 +215,10 @@ public class DatabaseViewImport extends SvrProcess {
 			setValue(ctx, vc, MViewComponent.COLUMNNAME_Name, table.getTableName() + "-" + String.format("%03d", seqNo));
 			vc.setIsDistinct(component.isDistinct());
 			vc.setIsUnionAll(component.isUnionAll());
-			setValue(ctx, vc, MViewComponent.COLUMNNAME_FromClause, component.getFromClause());
-			setValue(ctx, vc, MViewComponent.COLUMNNAME_WhereClause, component.getWhereClause());
-			setValue(ctx, vc, MViewComponent.COLUMNNAME_OtherClause, component.getOtherClause());
+			List<String> castsRemoved = new ArrayList<String>();
+			setValue(ctx, vc, MViewComponent.COLUMNNAME_FromClause, getSQL(ctx, component.getFromClause(), removeCasts, MViewComponent.COLUMNNAME_FromClause, castsRemoved));
+			setValue(ctx, vc, MViewComponent.COLUMNNAME_WhereClause, getSQL(ctx, component.getWhereClause(), removeCasts, MViewComponent.COLUMNNAME_WhereClause, castsRemoved));
+			setValue(ctx, vc, MViewComponent.COLUMNNAME_OtherClause, getSQL(ctx, component.getOtherClause(), removeCasts, MViewComponent.COLUMNNAME_OtherClause, castsRemoved));
 			vc.saveEx();
 
 			for (int j = 0; j < columnNames.length; j++)
@@ -221,7 +228,7 @@ public class DatabaseViewImport extends SvrProcess {
 				vcol.setEntityType(table.getEntityType());
 				vcol.setSeqNo((j + 1) * 10);
 				setValue(ctx, vcol, MViewColumn.COLUMNNAME_ColumnName, columnNames[j]);
-				String dbDataType = item.isNullLiteral() ? getDBDataType(dbColumnTypes.get(j)) : null;
+				String dbDataType = removeCasts && item.isNullLiteral() ? getDBDataType(dbColumnTypes.get(j)) : null;
 				if (dbDataType != null)
 				{
 					// MViewComponent.getSelect creates a NULL of the data type that works in all databases
@@ -230,13 +237,21 @@ public class DatabaseViewImport extends SvrProcess {
 				}
 				else
 				{
-					setValue(ctx, vcol, MViewColumn.COLUMNNAME_ColumnSQL, item.getExpression());
+					String columnSQL = removeCasts ? ViewDefinitionParser.removeCasts(item.getExpression()) : item.getExpression();
+					if (!columnSQL.equals(item.getExpression()) && !item.isNullLiteral())
+						castsRemoved.add(columnNames[j]);
+					setValue(ctx, vcol, MViewColumn.COLUMNNAME_ColumnSQL, columnSQL);
 				}
 				vcol.saveEx();
 				columnCount++;
 			}
 			if (pi != null)
+			{
 				pi.addLog(0, null, null, vc.getName(), MViewComponent.Table_ID, vc.getAD_ViewComponent_ID());
+				if (!castsRemoved.isEmpty())
+					pi.addLog(0, null, null, vc.getName() + ": " + Msg.getMsg(ctx, "ViewCastsRemoved", new Object[] {String.join(", ", castsRemoved)}),
+							MViewComponent.Table_ID, vc.getAD_ViewComponent_ID());
+			}
 		}
 
 		StringBuilder msg = new StringBuilder("@Created@ @AD_ViewComponent_ID@ #").append(components.size())
@@ -289,6 +304,25 @@ public class DatabaseViewImport extends SvrProcess {
 		if (alias != null && alias.equalsIgnoreCase(dbColumnName))
 			return alias;
 		return dbColumnName;
+	}
+
+	/**
+	 * Get the SQL of a clause, without the PostgreSQL type casts if requested
+	 * @param ctx
+	 * @param sql clause
+	 * @param removeCasts true to remove the ::type casts
+	 * @param columnName column of the clause
+	 * @param castsRemoved list where the name of the clause is added when casts were removed
+	 * @return sql
+	 */
+	private static String getSQL(Properties ctx, String sql, boolean removeCasts, String columnName, List<String> castsRemoved)
+	{
+		if (!removeCasts || sql == null)
+			return sql;
+		String result = ViewDefinitionParser.removeCasts(sql);
+		if (!result.equals(sql))
+			castsRemoved.add(Msg.getElement(ctx, columnName));
+		return result;
 	}
 
 	/**
