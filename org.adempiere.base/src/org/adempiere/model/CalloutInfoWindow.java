@@ -32,6 +32,7 @@ import org.compiere.model.M_Element;
 import org.compiere.model.X_AD_InfoColumn;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  * Callout for AD_InfoWindow and AD_InfoColumn
@@ -150,6 +151,8 @@ public class CalloutInfoWindow implements IColumnCallout {
 					for(TableInfo ti : tableInfos) {
 						String alias = ti.getSynonym();
 						String tableName = ti.getTableName();
+						if (Util.isEmpty(alias, true))
+							alias = tableName;
 						
 						MTable table = map.get(tableName);
 						if (table == null) {

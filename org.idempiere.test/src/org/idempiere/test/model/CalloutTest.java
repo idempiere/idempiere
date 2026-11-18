@@ -24,11 +24,20 @@
  **********************************************************************/
 package org.idempiere.test.model;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.CALLS_REAL_METHODS;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.adempiere.base.ColumnCalloutManager;
@@ -37,14 +46,21 @@ import org.adempiere.base.IColumnCallout;
 import org.adempiere.model.CalloutInfoWindow;
 import org.compiere.Adempiere;
 import org.compiere.model.Callout;
+import org.compiere.model.GridField;
+import org.compiere.model.GridTab;
+import org.compiere.model.I_AD_InfoColumn;
 import org.compiere.model.I_M_InventoryLine;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MColumn;
+import org.compiere.model.MInfoWindow;
+import org.compiere.model.MOrder;
 import org.compiere.model.MRule;
+import org.compiere.model.M_Element;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 
 /**
  * 
@@ -184,5 +200,47 @@ public class CalloutTest extends AbstractTestCase {
 			}
 		}
 		assertTrue(calloutCount > 0, "Zero callout loaded");
+	}
+
+	@Test
+	public void testCalloutInfoWindowElement() {
+		assertInfoColumnSelectClause("noAlias", "C_Order", "DocumentNo", "C_Order.DocumentNo");
+		assertInfoColumnSelectClause("withAlias", "C_Order o", "DocumentNo", "o.DocumentNo");
+		assertInfoColumnSelectClause("joinNoAlias", "C_Order o JOIN C_OrderLine ON (o.C_Order_ID=C_OrderLine.C_Order_ID)", "QtyOrdered", "C_OrderLine.QtyOrdered");
+	}
+
+	private void assertInfoColumnSelectClause(String caseName, String fromClause, String columnName, String expectedSelectClause) {
+		MInfoWindow infoWindow = new MInfoWindow(Env.getCtx(), 0, getTrxName());
+		infoWindow.setAD_Table_ID(MOrder.Table_ID);
+		infoWindow.setName("testCalloutInfoWindowElement_" + caseName);
+		infoWindow.setFromClause(fromClause);
+		infoWindow.saveCrossTenantSafeEx();
+
+		M_Element element = M_Element.get(Env.getCtx(), columnName);
+		assertNotNull(element, "AD_Element not found for " + columnName);
+
+		Map<String, Object> values = new HashMap<>();
+		values.put(I_AD_InfoColumn.COLUMNNAME_AD_InfoWindow_ID, infoWindow.getAD_InfoWindow_ID());
+
+		GridTab mTab = mock(GridTab.class);
+		when(mTab.getTableName()).thenReturn(I_AD_InfoColumn.Table_Name);
+		when(mTab.getValue(anyString())).thenAnswer(invocation -> values.get(invocation.getArgument(0)));
+		when(mTab.setValue(anyString(), any())).thenAnswer(invocation -> {
+			values.put(invocation.getArgument(0), invocation.getArgument(1));
+			return "";
+		});
+
+		GridField mField = mock(GridField.class);
+		when(mField.getColumnName()).thenReturn(I_AD_InfoColumn.COLUMNNAME_AD_Element_ID);
+
+		try (MockedStatic<MInfoWindow> mocked = mockStatic(MInfoWindow.class, CALLS_REAL_METHODS)) {
+			mocked.when(() -> MInfoWindow.getInfoWindow(infoWindow.getAD_InfoWindow_ID())).thenReturn(infoWindow);
+			String err = new CalloutInfoWindow().start(Env.getCtx(), 0, mTab, mField, element.getAD_Element_ID(), null);
+			assertEquals("", err);
+		}
+
+		assertEquals(columnName, values.get(I_AD_InfoColumn.COLUMNNAME_ColumnName));
+		assertEquals(expectedSelectClause, values.get(I_AD_InfoColumn.COLUMNNAME_SelectClause),
+				"Unexpected SelectClause for FromClause: " + fromClause);
 	}
 }
