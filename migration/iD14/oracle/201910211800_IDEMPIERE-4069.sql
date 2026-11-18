@@ -331,8 +331,9 @@ ALTER TABLE T_Report ADD C_ValidCombination_ID NUMBER(10) DEFAULT 0
 ;
 
 -- Oct 21, 2019 4:58:37 PM IST
-ALTER TABLE T_Report DROP CONSTRAINT T_Report_Pkey
+ALTER TABLE T_Report DROP CONSTRAINT T_Report_Key
 ;
+
 -- Oct 21, 2019 4:58:37 PM IST
 ALTER TABLE T_Report ADD CONSTRAINT T_Report_Pkey PRIMARY KEY(AD_PInstance_ID, PA_ReportLine_ID, Record_ID, Fact_Acct_ID, C_Validcombination_ID)
 ;
