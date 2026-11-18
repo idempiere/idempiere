@@ -366,6 +366,23 @@ public final class Msg
 	}   //  getMeg
 
 	/**
+	 *  Check if a translated text message exists for AD_Message.<br/>
+	 *  Unlike {@link #getMsg(Properties, String)}, no warning is logged if the message is not found.
+	 *  @param  ctx Context to retrieve language
+	 *  @param	AD_Message - Message Key
+	 *  @return true if a message exists for AD_Message
+	 */
+	public static boolean hasMsg (Properties ctx, String AD_Message)
+	{
+		if (Util.isEmpty(AD_Message))
+			return false;
+		String AD_Language = Env.getAD_Language(ctx);
+		if (Util.isEmpty(AD_Language))
+			AD_Language = Language.getBaseAD_Language();
+		return !Util.isEmpty(get().lookup(AD_Language, AD_Message));
+	}	//	hasMsg
+
+	/**
 	 * Text returned by the getMsg/translator function is usually in the format message + SEPARATOR + tip.<br/>
 	 * This function is used for separating these parts <br/>
 	 * This function help to separate it 
