@@ -64,10 +64,14 @@ public class PoExporterTest extends AbstractTestCase {
 		test.saveEx();
 
 		RecordingSerializer serializer = export(test);
-		assertFalse(serializer.values.containsKey(I_Test.COLUMNNAME_Record_ID),
-				"Empty Record_ID without AD_Table_ID should not be exported");
-		assertFalse(serializer.values.containsKey(I_Test.COLUMNNAME_Record_UU),
-				"Empty Record_UU without AD_Table_ID should not be exported");
+		assertEquals("", serializer.values.get(I_Test.COLUMNNAME_Record_ID),
+				"Empty Record_ID without AD_Table_ID should be exported as empty value");
+		assertFalse(serializer.referenceKeys.containsKey(I_Test.COLUMNNAME_Record_ID),
+				"Empty Record_ID without AD_Table_ID should not have reference-key");
+		assertEquals("", serializer.values.get(I_Test.COLUMNNAME_Record_UU),
+				"Empty Record_UU without AD_Table_ID should be exported as empty value");
+		assertFalse(serializer.referenceKeys.containsKey(I_Test.COLUMNNAME_Record_UU),
+				"Empty Record_UU without AD_Table_ID should not have reference-key");
 	}
 
 	@Test
