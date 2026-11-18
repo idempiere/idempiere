@@ -184,6 +184,8 @@ public class ViewDefinitionParserTest {
 		assertEquals("o.oid", ViewDefinitionParser.removeCasts("o.oid::pg_catalog.regclass"));
 		assertEquals("t.\"a::b\"", ViewDefinitionParser.removeCasts("t.\"a::b\"::integer"), "Text inside a quoted identifier is not a cast");
 		assertEquals("'a::text'", ViewDefinitionParser.removeCasts("'a::text'"), "Text inside a literal is not a cast");
+		assertEquals("x + 1", ViewDefinitionParser.removeCasts("x::\"my\"\"type\" + 1"), "Quoted type with doubled quote");
+		assertEquals("x + 1", ViewDefinitionParser.removeCasts("x::\"my\"\"schema\".\"my\"\"type\" + 1"), "Quoted schema and type with doubled quotes");
 		assertEquals("WHERE sp.statistiktyp = 'MD' AND sp.startdate >= '2009-01-01'",
 				ViewDefinitionParser.removeCasts("WHERE sp.statistiktyp::text = 'MD'::text AND sp.startdate >= '2009-01-01'::date"));
 		assertEquals("a AND b", ViewDefinitionParser.removeCasts("a AND b"), "Text without cast is not changed");

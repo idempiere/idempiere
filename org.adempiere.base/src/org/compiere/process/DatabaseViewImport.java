@@ -238,7 +238,8 @@ public class DatabaseViewImport extends SvrProcess {
 				else
 				{
 					String columnSQL = removeCasts ? ViewDefinitionParser.removeCasts(item.getExpression()) : item.getExpression();
-					if (!columnSQL.equals(item.getExpression()) && !item.isNullLiteral())
+					// also a typed NULL without data type mapping, it loses its type
+					if (!columnSQL.equals(item.getExpression()))
 						castsRemoved.add(columnNames[j]);
 					setValue(ctx, vcol, MViewColumn.COLUMNNAME_ColumnSQL, columnSQL);
 				}

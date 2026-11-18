@@ -61,7 +61,7 @@ public final class ViewDefinitionParser {
 	private static final Pattern LAST_WORD = Pattern.compile("(?<![\\w$#])([A-Z_][A-Z0-9_$#]*)$");
 	/** PostgreSQL type cast, e.g. ::text, ::character varying(60), ::numeric(10,2), ::timestamp without time zone, ::text[] */
 	private static final Pattern POSTGRESQL_CAST = Pattern.compile(
-			"\\G::\\s*(\"[^\"]*\"|\\w+)(\\.(\"[^\"]*\"|\\w+))?(\\s+(varying|precision)(?!\\w))?"
+			"\\G::\\s*(\"(?:[^\"]|\"\")*\"|\\w+)(\\.(\"(?:[^\"]|\"\")*\"|\\w+))?(\\s+(varying|precision)(?!\\w))?"
 			+ "(\\s*\\(\\s*\\d+(\\s*,\\s*\\d+)?\\s*\\))?(\\s+with(out)?\\s+time\\s+zone(?!\\w))?(\\s*\\[\\s*\\d*\\s*\\])*",
 			Pattern.CASE_INSENSITIVE);
 	private static final Pattern NULL_LITERAL = Pattern.compile(
