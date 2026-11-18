@@ -211,7 +211,7 @@ public class TrialBalance extends SvrProcess
 			m_parameterWhere.append(" AND ").append(MReportTree.getWhereClause(getCtx(), 
 				p_PA_Hierarchy_ID, MAcctSchemaElement.ELEMENTTYPE_SalesRegion, p_C_SalesRegion_ID));
 		//	Mandatory Posting Type
-		m_parameterWhere.append(" AND PostingType='").append(p_PostingType).append("'");
+		m_parameterWhere.append(" AND PostingType=").append(DB.TO_STRING(p_PostingType));
 		//
 		setDateAcct();
 		sb.append(" - DateAcct ").append(p_DateAcct_From).append("-").append(p_DateAcct_To);
@@ -331,7 +331,7 @@ public class TrialBalance extends SvrProcess
 		//	AD_Table_ID, Record_ID, Line_ID,
 		sql.append("null,null,null,");
 		//	GL_Category_ID, GL_Budget_ID, C_Tax_ID, M_Locator_ID, PostingType,
-		sql.append("null,null,null,null,'").append(p_PostingType).append("',");
+		sql.append("null,null,null,null,").append(DB.TO_STRING(p_PostingType)).append(",");
 		//	C_Currency_ID, AmtSourceDr, AmtSourceCr, AmtSourceBalance,
 		sql.append("null,null,null,null,");
 		//	AmtAcctDr, AmtAcctCr, AmtAcctBalance, C_UOM_ID, Qty,

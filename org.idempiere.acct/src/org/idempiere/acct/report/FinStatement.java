@@ -194,7 +194,7 @@ public class FinStatement extends SvrProcess
 		}
 		//	Mandatory C_AcctSchema_ID, PostingType
 		m_parameterWhere.append("C_AcctSchema_ID=").append(p_C_AcctSchema_ID)
-			.append(" AND PostingType='").append(p_PostingType).append("'");
+			.append(" AND PostingType=").append(DB.TO_STRING(p_PostingType));
 		//	Optional Account_ID
 		if (p_Account_ID != 0)
 			m_parameterWhere.append(" AND ").append(MReportTree.getWhereClause(getCtx(), 
