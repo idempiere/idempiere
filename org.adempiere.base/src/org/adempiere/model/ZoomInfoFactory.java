@@ -62,6 +62,13 @@ public class ZoomInfoFactory {
 			sb.append("]");
 			return sb.toString();
 		}
+
+		/**
+		 * @return record count from query, or 0 if query is null
+		 */
+		public int getRecordCount() {
+			return query == null ? 0 : query.getRecordCount();
+		}
 	}
 
 	private static final CLogger logger = CLogger
