@@ -13,16 +13,24 @@
  *****************************************************************************/
 package org.adempiere.pdf;
 
+import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.print.PageFormat;
 import java.awt.print.Pageable;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.Locale;
+import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MSysConfig;
+import org.compiere.util.CCache;
+import org.compiere.util.CLogger;
+import org.compiere.util.Ini;
+import org.compiere.util.Util;
 
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.Rectangle;
@@ -38,10 +46,89 @@ import com.lowagie.text.pdf.PdfWriter;
  */
 public class Document {
 
-	static {
-		FontFactory.registerDirectories();
+	private static final CLogger log = CLogger.getCLogger(Document.class);
+
+	private static final Object FONT_MAPPER_LOCK = new Object();
+	private static final Object AWT_FONT_LOCK = new Object();
+	private static final CCache<String, DefaultFontMapper> s_fontMapperCache =
+			new CCache<>(MSysConfig.Table_Name, "Document_DefaultFontMapper", 5, 0, false, 0);
+	private static final CCache<String, Boolean> s_registeredAwtFontDirs =
+			new CCache<>(MSysConfig.Table_Name, "Document_AwtFonts", 5, 0, false, 0);
+	private static boolean s_fontDirectoriesRegistered = false;
+
+	private static String getPdfFontDir() {
+		String pdfFontDir = MSysConfig.getValue(MSysConfig.PDF_FONT_DIR, "");
+		if (Util.isEmpty(pdfFontDir, true)) {
+			return new File(Ini.getAdempiereHome().trim(), "fonts").getPath();
+		}
+		return pdfFontDir.trim();
 	}
-	
+
+	/**
+	 * Register custom fonts (.ttf, .otf, .ttc) from PDF_FONT_DIR or IDEMPIERE_HOME/fonts with AWT GraphicsEnvironment
+	 */
+	public static void registerCustomAwtFonts() {
+		String pdfFontDir = getPdfFontDir();
+		if (Util.isEmpty(pdfFontDir, true) || Boolean.TRUE.equals(s_registeredAwtFontDirs.get(pdfFontDir))) {
+			return;
+		}
+		synchronized (AWT_FONT_LOCK) {
+			if (Boolean.TRUE.equals(s_registeredAwtFontDirs.get(pdfFontDir))) {
+				return;
+			}
+			File dir = new File(pdfFontDir);
+			if (dir.exists() && dir.isDirectory()) {
+				File[] files = dir.listFiles();
+				if (files != null) {
+					GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+					for (File file : files) {
+						if (!file.isFile()) {
+							continue;
+						}
+						String name = file.getName().toLowerCase(Locale.ROOT);
+						if (name.endsWith(".ttf") || name.endsWith(".otf") || name.endsWith(".ttc")) {
+							try {
+								for (Font font : Font.createFonts(file)) {
+									ge.registerFont(font);
+								}
+							} catch (Exception e) {
+								log.log(Level.WARNING, file.getPath(), e);
+							}
+						}
+					}
+				}
+			}
+			s_registeredAwtFontDirs.put(pdfFontDir, Boolean.TRUE);
+		}
+	}
+
+	private static DefaultFontMapper getDefaultFontMapper() {
+		String pdfFontDir = getPdfFontDir();
+		DefaultFontMapper mapper = s_fontMapperCache.get(pdfFontDir);
+		if (mapper != null) {
+			return mapper;
+		}
+		synchronized (FONT_MAPPER_LOCK) {
+			mapper = s_fontMapperCache.get(pdfFontDir);
+			if (mapper != null) {
+				return mapper;
+			}
+			if (!s_fontDirectoriesRegistered) {
+				FontFactory.registerDirectories();
+				s_fontDirectoriesRegistered = true;
+			}
+			mapper = new DefaultFontMapper();
+			if (!Util.isEmpty(pdfFontDir, true)) {
+				File dir = new File(pdfFontDir);
+				if (dir.exists() && dir.isDirectory()) {
+					mapper.insertDirectory(pdfFontDir);
+				}
+			}
+			s_fontMapperCache.put(pdfFontDir, mapper);
+			return mapper;
+		}
+	}
+
 	/**
 	 * write pageable to output
 	 * @param pageable
@@ -59,18 +146,7 @@ public class Document {
                     document, output);
             writer.setPdfVersion(PdfWriter.VERSION_1_2);
             document.open();
-            final DefaultFontMapper mapper = new DefaultFontMapper();     
-            
-            //Elaine 2009/02/17 - load additional font from directory set in PDF_FONT_DIR of System Configurator 
-            String pdfFontDir = MSysConfig.getValue(MSysConfig.PDF_FONT_DIR, ""); 
-            if(pdfFontDir != null && pdfFontDir.trim().length() > 0)
-            {
-            	pdfFontDir = pdfFontDir.trim();
-	            File dir = new File(pdfFontDir);
-	            if(dir.exists() && dir.isDirectory())
-	            	mapper.insertDirectory(pdfFontDir);
-            }
-            //
+            final DefaultFontMapper mapper = getDefaultFontMapper();
             
             final float w = (float) pf.getWidth();
             final float h = (float) pf.getHeight();

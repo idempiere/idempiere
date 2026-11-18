@@ -611,7 +611,7 @@ public final class Ini implements Serializable
 
 	/**
 	 *  Get iDempiere Home from Environment
-	 *  @return idempiereHome or null
+	 *  @return idempiereHome
 	 */
 	public static String getAdempiereHome()
 	{
