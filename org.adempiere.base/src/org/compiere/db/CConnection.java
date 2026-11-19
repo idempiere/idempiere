@@ -1146,7 +1146,11 @@ public class CConnection implements Serializable, Cloneable
 			//	Verify Connection
 			if (conn != null)
 			{
-				if (conn.getTransactionIsolation() != transactionIsolation)
+				if (transactionIsolation == Connection.TRANSACTION_READ_COMMITTED && isPoolIsolationTrusted(conn))
+				{
+					// the pool delivers READ_COMMITTED connections, no round trip to the database needed
+				}
+				else if (conn.getTransactionIsolation() != transactionIsolation)
 					conn.setTransactionIsolation (transactionIsolation);
 				if (conn.getAutoCommit() != autoCommit)
 					conn.setAutoCommit (autoCommit);
@@ -1206,6 +1210,31 @@ public class CConnection implements Serializable, Cloneable
 		}
 		return conn;
 	}	//  getConnection
+
+	/** Result of the one time check that the pool delivers READ_COMMITTED connections, null = not checked yet */
+	private static volatile Boolean s_poolIsolationTrusted = null;
+
+	/**
+	 * Check once (first checkout) that the connection pool delivers READ_COMMITTED connections.<br/>
+	 * The pool sets the level when it creates a connection and resets it when a changed connection is returned,
+	 * so asking the database on every checkout is not needed. If the pool does not deliver READ_COMMITTED
+	 * (for example a pool configured with another level), a warning is logged and the level is verified on every checkout.
+	 * @param conn connection just taken from the pool
+	 * @return true if the pool delivers READ_COMMITTED connections
+	 * @throws SQLException
+	 */
+	private boolean isPoolIsolationTrusted(Connection conn) throws SQLException
+	{
+		Boolean trusted = s_poolIsolationTrusted;
+		if (trusted == null)
+		{
+			trusted = conn.getTransactionIsolation() == Connection.TRANSACTION_READ_COMMITTED;
+			s_poolIsolationTrusted = trusted;
+			if (!trusted)
+				log.warning("The connection pool does not deliver READ_COMMITTED connections, the transaction isolation level is verified on every checkout");
+		}
+		return trusted;
+	}
 
 	/**
 	 *  Get Database Exception of last connection attempt
