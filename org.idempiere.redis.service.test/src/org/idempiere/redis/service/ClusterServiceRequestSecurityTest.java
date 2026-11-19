@@ -25,6 +25,7 @@
 package org.idempiere.redis.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -131,6 +132,17 @@ public class ClusterServiceRequestSecurityTest {
 		// Documents the default: without rpc.hmac.secret any publisher is trusted (a warning is logged at startup).
 		field("rpcHmacSecret").set(service, null);
 		assertEquals(1, deliver(notification(System.currentTimeMillis(), "t", SELF, new Counting(), null)));
+	}
+
+	@Test
+	public void testNotificationRefusedWhileBusyOwesLocalReset() throws Exception {
+		// A full worker pool: every task is refused, as when the queue is full.
+		workers.shutdown();
+		byte[] frame = notification(System.currentTimeMillis(), "busy", SELF, new Counting(), SECRET);
+
+		assertEquals(0, deliver(frame), "the callable did not run");
+		assertTrue(((java.util.concurrent.atomic.AtomicBoolean) field("localResetOwed").get(service)).get(),
+				"a local cache reset is owed instead");
 	}
 
 	private static Field field(String name) throws Exception {

@@ -181,6 +181,11 @@ public class ClusterServiceImpl implements IClusterService {
 	private final AtomicInteger failedNotificationCount = new AtomicInteger(0);
 	/** Set when {@link #failedNotifications} overflowed: one cluster-wide cache reset replaces the dropped ones. */
 	private final AtomicBoolean fullResetOwed = new AtomicBoolean(false);
+	/**
+	 * Set when a cache notification was refused because the worker pool was full: this node owes
+	 * itself a local cache reset, run on {@link #timeoutExecutor}, outside the saturated pool.
+	 */
+	private final AtomicBoolean localResetOwed = new AtomicBoolean(false);
 
 	@Activate
 	void activate() {
@@ -200,10 +205,19 @@ public class ClusterServiceImpl implements IClusterService {
 			subscribeToRequestTopic();
 			log.info("Redis cluster service activated; local member: {}", self);
 		} catch (RuntimeException re) {
+			releaseAfterFailedActivation();
 			throw re;
 		} catch (Exception e) {
+			releaseAfterFailedActivation();
 			throw new IllegalStateException("Failed to activate Redis cluster service", e);
 		}
+	}
+
+	/** Declarative Services does not call deactivate() after a failed activate(); stop what was started. */
+	private void releaseAfterFailedActivation() {
+		stopHeartbeat();
+		unsubscribeFromRequestTopic();
+		localMember.set(null);
 	}
 
 	@Deactivate
@@ -482,6 +496,7 @@ public class ClusterServiceImpl implements IClusterService {
 				log.warn("Cluster-wide cache reset sent: more than {} cache notifications could not be published",
 						MAX_FAILED_NOTIFICATIONS);
 			}
+			runOwedLocalReset();
 			replayGuard.purge(System.currentTimeMillis());
 		} catch (Throwable t) {
 			log.warn("Re-publishing failed cache notifications failed; will retry in {}s", NOTIFICATION_RETRY_SECONDS, t);
@@ -613,9 +628,40 @@ public class ClusterServiceImpl implements IClusterService {
 		} catch (RejectedExecutionException e) {
 			log.warn("RPC request {} from {} refused: worker queue full or stopping", frame.getTaskId(),
 					frame.getSenderUuid());
+			if (!frame.isReplyExpected() && workers != null) {
+				// A cache notification that never ran: reset the local caches instead.
+				oweLocalReset();
+			}
 			if (frame.isReplyExpected()) {
 				publishResponse(frame, RpcFrame.error(System.currentTimeMillis(), frame.getTaskId(), self.getId(),
 						RejectedExecutionException.class.getName(), "cluster member busy"));
+			}
+		}
+	}
+
+	private void oweLocalReset() {
+		if (localResetOwed.compareAndSet(false, true)) {
+			ScheduledExecutorService te = timeoutExecutor;
+			if (te != null) {
+				try {
+					te.execute(this::runOwedLocalReset);
+				} catch (RejectedExecutionException ignored) {
+					// Stopping; nothing left to keep in sync.
+				}
+			}
+		}
+	}
+
+	/** Runs the owed local cache reset; on failure it stays owed for the next {@link #retryFailedNotifications()}. */
+	private void runOwedLocalReset() {
+		if (localResetOwed.compareAndSet(true, false)) {
+			try {
+				int count = CacheMgt.get().resetLocalCache();
+				log.warn("Local cache reset ({} entries): cache notifications were refused while the worker pool was full",
+						count);
+			} catch (RuntimeException | Error e) {
+				localResetOwed.set(true);
+				log.warn("Owed local cache reset failed; will retry in {}s", NOTIFICATION_RETRY_SECONDS, e);
 			}
 		}
 	}
