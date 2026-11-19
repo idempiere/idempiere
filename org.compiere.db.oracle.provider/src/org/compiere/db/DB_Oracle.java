@@ -634,15 +634,8 @@ public class DB_Oracle implements AdempiereDatabase
 		// reached (after which a SQLException is thrown).
 		conn = m_ds.getConnection();
 
-		if (conn.getTransactionIsolation() != transactionIsolation)
-		{
-			conn.setTransactionIsolation(transactionIsolation);
-		}
-		if (conn.getAutoCommit() != autoCommit) 
-		{
-			conn.setAutoCommit(autoCommit);
-		}
-
+		// transaction isolation and auto commit are verified/applied by the caller,
+		// CConnection.getConnection(boolean, int), to avoid duplicated round trips to the database.
 		return conn;
 	}	//	getCachedConnection
 

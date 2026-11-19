@@ -1185,6 +1185,19 @@ public class CConnection implements Serializable, Cloneable
 							+ " - " + ex.getMessage());
 				}
 			}
+			// the state of this connection is unknown: do not hand it to the caller
+			if (conn != null)
+			{
+				try
+				{
+					conn.close();
+				}
+				catch (SQLException e)
+				{
+					// ignore, the original exception is kept in m_dbException
+				}
+				conn = null;
+			}
 		}
 		catch (Exception ex)
 		{
