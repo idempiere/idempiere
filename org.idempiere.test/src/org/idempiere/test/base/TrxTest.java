@@ -611,13 +611,19 @@ public class TrxTest extends AbstractTestCase {
 		    // Inject mock connection
 		    connField.set(trx, mockConn);
 
-		    // Should throw SQLException
 		    Savepoint spMock = mock(Savepoint.class);
-		    try {
-		        trx.releaseSavepoint(spMock);
-		        fail("releaseSavepoint should throw SQLException");
-		    } catch (SQLException e) {
-		        // expected exception, test passes
+		    if (DB.isOracle()) {
+		    	// Oracle doesn't support releaseSavepoint, Trx.releaseSavepoint must not call the connection
+		    	trx.releaseSavepoint(spMock);
+		    	verify(mockConn, never()).releaseSavepoint(any(Savepoint.class));
+		    } else {
+			    // Should throw SQLException
+			    try {
+			        trx.releaseSavepoint(spMock);
+			        fail("releaseSavepoint should throw SQLException");
+			    } catch (SQLException e) {
+			        // expected exception, test passes
+			    }
 		    }
 	    } finally {
 	    	if (trx != null) {

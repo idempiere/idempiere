@@ -85,6 +85,7 @@ import org.compiere.model.X_AD_Package_Exp;
 import org.compiere.model.X_AD_Package_Imp;
 import org.compiere.model.X_AD_Package_Imp_Inst;
 import org.compiere.model.X_AD_Package_Imp_Proc;
+import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.idempiere.test.AbstractTestCase;
@@ -633,7 +634,9 @@ public class PackOutIncrementalTest extends AbstractTestCase {
 	 * @return from date, before the change log of the changes done after this call
 	 */
 	private Timestamp fromDateAfter(PO po) throws InterruptedException {
-		Timestamp fromDate = new Timestamp(po.getUpdated().getTime() + 5);
+		long updated = po.getUpdated().getTime();
+		// Oracle DATE columns keep whole seconds only, so the from date must be on the next second
+		Timestamp fromDate = new Timestamp(DB.isOracle() ? (updated / 1000 + 1) * 1000 : updated + 5);
 		while (System.currentTimeMillis() <= fromDate.getTime() + 5)
 			Thread.sleep(5);
 		return fromDate;
