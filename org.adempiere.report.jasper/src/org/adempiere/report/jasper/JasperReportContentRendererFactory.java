@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.adempiere.base.Core;
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.util.ProcessUtil;
 import org.compiere.model.MPInstance;
@@ -23,7 +24,9 @@ import org.compiere.model.MProcess;
 import org.compiere.model.MRule;
 import org.compiere.model.PrintInfo;
 import org.compiere.print.MPrintFormat;
+import org.compiere.print.ReportEngine;
 import org.compiere.print.ServerReportCtl;
+import org.compiere.process.ProcessCall;
 import org.compiere.process.ProcessInfo;
 import org.compiere.process.ProcessInfoParameter;
 import org.compiere.util.Msg;
@@ -100,17 +103,51 @@ public class JasperReportContentRendererFactory implements IReportContentRendere
 			parameters.add(new ProcessInfoParameter(ServerReportCtl.PARAM_PRINT_FORMAT, format, null, null, null));
 			parameters.add(new ProcessInfoParameter(ServerReportCtl.PARAM_PRINT_INFO, printInfo, null, null, null));
 			pi.setParameter(parameters.toArray(new ProcessInfoParameter[0]));
+			MPInstance instance = createInstance(format, pi);
 			runPreProcess(format, pi);
 			pi.setExport(true);
 			pi.setExportFileExtension(fileExtension);
 			Trx trx = pi.getTransactionName() != null ? Trx.get(pi.getTransactionName(), false) : null;
-			if (!new ReportStarter().startProcess(request.reportEngine().getCtx(), pi, trx) || pi.isError())
+			if (!getReportStarter().startProcess(request.reportEngine().getCtx(), pi, trx) || pi.isError()) {
+				instance.setErrorMsg(pi.getSummary());
+				instance.setJsonData(pi.getJsonData());
+				instance.saveEx();
 				throwProcessError(pi);
+			}
 			rowCount = pi.getRowCount();
 			File file = pi.getPDFReport() != null ? pi.getPDFReport() : pi.getExportFile();
 			if (file == null || !file.isFile())
 				throw new AdempiereException("Jasper report process did not return " + fileExtension + " content");
 			return file;
+		}
+
+		/**
+		 * Get the Jasper report starter through IProcessFactory, so that a plug-in can
+		 * replace it as it can for Jasper reports started as a process.
+		 * @return report starter
+		 */
+		private ProcessCall getReportStarter() {
+			ProcessCall starter = Core.getProcess(ProcessUtil.JASPER_STARTER_CLASS);
+			return starter != null ? starter : new ReportStarter();
+		}
+
+		/**
+		 * Create the AD_PInstance record for the Jasper process, as ServerProcessCtl does
+		 * for a Jasper process. Report starters provided by plug-ins read the report
+		 * definition through it.
+		 * @param format print format
+		 * @param pi process info, AD_PInstance_ID is set
+		 * @return process instance
+		 */
+		private MPInstance createInstance(MPrintFormat format, ProcessInfo pi) {
+			MPInstance instance = new MPInstance(request.reportEngine().getCtx(), pi.getAD_Process_ID(),
+					pi.getTable_ID(), pi.getRecord_ID(), pi.getRecord_UU());
+			instance.updatePrintFormatAndLanguageIfEmpty(format);
+			ReportEngine.setDefaultReportTypeToPInstance(request.reportEngine().getCtx(), instance,
+					instance.getAD_PrintFormat_ID());
+			instance.saveEx();
+			pi.setAD_PInstance_ID(instance.getAD_PInstance_ID());
+			return instance;
 		}
 
 		private void runPreProcess(MPrintFormat format, ProcessInfo pi) {
@@ -121,10 +158,6 @@ public class JasperReportContentRendererFactory implements IReportContentRendere
 				return;
 			pi.setClassName(process.getClassname());
 			pi.setAD_Process_UU(process.getAD_Process_UU());
-			MPInstance instance = new MPInstance(request.reportEngine().getCtx(), pi.getAD_Process_ID(),
-					pi.getTable_ID(), pi.getRecord_ID(), pi.getRecord_UU());
-			instance.saveEx();
-			pi.setAD_PInstance_ID(instance.getAD_PInstance_ID());
 			Trx trx = pi.getTransactionName() != null ? Trx.get(pi.getTransactionName(), false) : null;
 			boolean ok = process.getClassname().toLowerCase().startsWith(MRule.SCRIPT_PREFIX)
 					? ProcessUtil.startScriptProcess(request.reportEngine().getCtx(), pi, trx)
