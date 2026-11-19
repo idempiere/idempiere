@@ -184,6 +184,21 @@ public class ClusterServiceNotificationTest {
 		assertEquals(0, ((AtomicInteger) field(service, "failedNotificationCount")).get(), "queue drained");
 	}
 
+	@Test
+	public void testOwedLocalResetRunsWhilePublishingStillFails() throws Exception {
+		ClusterServiceImpl service = service();
+		IClusterMember other = new ClusterMember(OTHER, null, 0);
+		failPublish.set(true);
+		service.execute(new NewRecord("CacheNotificationTest", 1), List.of(other));
+		AtomicBoolean localResetOwed = (AtomicBoolean) field(service, "localResetOwed");
+		localResetOwed.set(true);
+
+		invoke(service, "retryFailedNotifications");
+
+		assertFalse(localResetOwed.get(), "the owed local reset ran although the publish failed again");
+		assertEquals(1, ((AtomicInteger) field(service, "failedNotificationCount")).get(), "notification still kept");
+	}
+
 	private static Object field(Object target, String name) throws Exception {
 		Field f = ClusterServiceImpl.class.getDeclaredField(name);
 		f.setAccessible(true);

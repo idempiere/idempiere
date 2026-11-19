@@ -461,6 +461,8 @@ public class ClusterServiceImpl implements IClusterService {
 	 * keeps its schedule.
 	 */
 	private void retryFailedNotifications() {
+		// First, and independent of outgoing publishes, which may keep failing.
+		runOwedLocalReset();
 		try {
 			RTopic topic = requestTopic;
 			if (topic == null) {
@@ -496,7 +498,6 @@ public class ClusterServiceImpl implements IClusterService {
 				log.warn("Cluster-wide cache reset sent: more than {} cache notifications could not be published",
 						MAX_FAILED_NOTIFICATIONS);
 			}
-			runOwedLocalReset();
 			replayGuard.purge(System.currentTimeMillis());
 		} catch (Throwable t) {
 			log.warn("Re-publishing failed cache notifications failed; will retry in {}s", NOTIFICATION_RETRY_SECONDS, t);
