@@ -123,7 +123,7 @@ public class POAccountingServiceImpl implements IPOAccountingService {
 			sb.append(",").append(PO.getUUIDColumnName(acctTableName));
 		//	..	SELECT
 		sb.append(") SELECT ").append(po.get_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(po.get_TableName()) 
-				? "toRecordId("+DB.TO_STRING(po.get_TableName())+","+DB.TO_STRING(po.get_UUID())+")" 
+				? PO.buildUUIDSubquery(po.get_TableName(), po.get_UUID())
 						: po.get_ID())
 		.append(", p.C_AcctSchema_ID, p.AD_Client_ID,0,'Y', getDate(),")
 		.append(po.getUpdatedBy()).append(",getDate(),").append(po.getUpdatedBy());
@@ -135,7 +135,7 @@ public class POAccountingServiceImpl implements IPOAccountingService {
 		sb.append(" FROM ").append(acctBaseTable)
 		.append(" p WHERE p.AD_Client_ID=")
 		.append(po.getAD_Client_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(po.get_TableName()) 
-				? "toRecordId('AD_Client',"+DB.TO_STRING(MClient.get(po.getAD_Client_ID()).getAD_Client_UU())+")" 
+				? PO.buildUUIDSubquery("AD_Client", MClient.get(po.getAD_Client_ID()).getAD_Client_UU())
 						: po.getAD_Client_ID());
 		if (whereClause != null && !Util.isEmpty(whereClause.sqlClause()))
 			sb.append(" AND ").append(whereClause.sqlClause());
@@ -143,7 +143,7 @@ public class POAccountingServiceImpl implements IPOAccountingService {
 		.append(" e WHERE e.C_AcctSchema_ID=p.C_AcctSchema_ID AND e.")
 		.append(po.get_TableName()).append("_ID=");
 		if (po.get_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(po.get_TableName()))
-			sb.append("toRecordId(").append(DB.TO_STRING(po.get_TableName())).append(",").append(DB.TO_STRING(po.get_UUID())).append("))");
+			sb.append(PO.buildUUIDSubquery(po.get_TableName(), po.get_UUID())).append(")");
 		else
 			sb.append(po.get_ID()).append(")");
 		//
