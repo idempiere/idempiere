@@ -16,13 +16,13 @@ package org.adempiere.impexp;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Properties;
+import java.util.TimeZone;
 import java.util.logging.Level;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -37,6 +37,8 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.compiere.model.MLanguage;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
@@ -281,7 +283,7 @@ public abstract class AbstractExcelExporter
 		String cellFormat = null;
 		
 		if (DisplayType.isDate(displayType)) {
-			cellFormat = DisplayType.getDateFormat(getLanguage()).toPattern();
+			cellFormat = getDateCellFormat(displayType, getLanguage(), getCtx());
 		} else if (DisplayType.isNumeric(displayType)) {
 			DecimalFormat df = DisplayType.getNumberFormat(displayType, getLanguage());
 			cellFormat = getFormatString(df, isHighlightNegativeNumbers);
@@ -642,12 +644,7 @@ public abstract class AbstractExcelExporter
 					} else if (!isVisible(rownum, col)) {
 						;
 					} else if (DisplayType.isDate(displayType)) {
-						Timestamp value = null;
-						if (obj instanceof Date)
-							value = new Timestamp(((Date)obj).getTime());
-						else
-							value = (Timestamp)obj;
-						cell.setCellValue(value);
+						setDateCellValue(cell, obj, displayType, getCtx());
 					}
 					else if (DisplayType.isNumeric(displayType)) {
 						double value = 0;
@@ -839,5 +836,104 @@ public abstract class AbstractExcelExporter
 	 */
 	protected HSSFRow getFormRow(HSSFSheet sheet, int colnum) {
 		return null;
+	}
+
+	/**
+	 * Set date/timestamp value on Excel cell, converting {@link DisplayType#TimestampWithTimeZone}
+	 * values to the client time zone when configured.
+	 * @param cell
+	 * @param obj
+	 * @param displayType
+	 * @param ctx
+	 */
+	static void setDateCellValue(Cell cell, Object obj, int displayType, Properties ctx)
+	{
+		Timestamp value = null;
+		if (obj instanceof Timestamp)
+			value = (Timestamp)obj;
+		else if (obj instanceof java.util.Date)
+			value = new Timestamp(((java.util.Date)obj).getTime());
+		if (value != null && DisplayType.isTimestampWithTimeZone(displayType))
+		{
+			String timezoneId = Env.getContext(ctx, Env.CLIENT_INFO_TIME_ZONE);
+			if (!Util.isEmpty(timezoneId, true))
+			{
+				TimeZone tz = TimeZone.getTimeZone(timezoneId);
+				if (timezoneId.equals(tz.getID()))
+				{
+					cell.setCellValue(value.toInstant().atZone(tz.toZoneId()).toLocalDateTime());
+					return;
+				}
+			}
+		}
+		cell.setCellValue(value);
+	}
+
+	/**
+	 * Get Excel-compatible date/time cell format pattern for a date display type.
+	 * @param displayType DisplayType constant (Date, DateTime, Time, TimestampWithTimeZone)
+	 * @param language reporting language
+	 * @param ctx context
+	 * @return Excel format pattern
+	 */
+	static String getDateCellFormat(int displayType, Language language, Properties ctx)
+	{
+		if (displayType == DisplayType.DateTime || DisplayType.isTimestampWithTimeZone(displayType) || displayType == DisplayType.Time)
+		{
+			MLanguage lang = MLanguage.get(ctx, language != null ? language : Env.getLanguage(ctx));
+			String timePattern = toExcelTimePattern(lang != null ? lang.getTimePattern() : null);
+			if (displayType == DisplayType.Time)
+				return timePattern;
+			return DisplayType.getDateFormat(language).toPattern() + " " + timePattern;
+		}
+		return DisplayType.getDateFormat(language).toPattern();
+	}
+
+	/**
+	 * Convert a Java {@link SimpleDateFormat} time pattern to an Excel-compatible time format pattern,
+	 * stripping unsupported timezone tokens ({@code z}, {@code Z}, {@code X}) and mapping {@code a} to {@code AM/PM}.
+	 * @param pattern Java time format pattern
+	 * @return Excel-compatible time format pattern
+	 */
+	static String toExcelTimePattern(String pattern)
+	{
+		if (Util.isEmpty(pattern, true))
+			return DisplayType.DEFAULT_TIME_FORMAT;
+
+		StringBuilder sb = new StringBuilder(pattern.length());
+		boolean inQuote = false;
+		for (int i = 0; i < pattern.length(); i++)
+		{
+			char c = pattern.charAt(i);
+			if (c == '\'')
+			{
+				sb.append(c);
+				if (i + 1 < pattern.length() && pattern.charAt(i + 1) == '\'')
+				{
+					sb.append('\'');
+					i++;
+				}
+				else
+				{
+					inQuote = !inQuote;
+				}
+			}
+			else if (!inQuote && (c == 'z' || c == 'Z' || c == 'X'))
+			{
+				// Excel number formats do not support timezone pattern letters
+			}
+			else if (!inQuote && c == 'a')
+			{
+				while (i + 1 < pattern.length() && pattern.charAt(i + 1) == 'a')
+					i++;
+				sb.append("AM/PM");
+			}
+			else
+			{
+				sb.append(c);
+			}
+		}
+		String result = sb.toString().trim().replaceAll("\\s{2,}", " ");
+		return Util.isEmpty(result, true) ? DisplayType.DEFAULT_TIME_FORMAT : result;
 	}
 }

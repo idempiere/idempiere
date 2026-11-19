@@ -831,10 +831,10 @@ public final class DisplayType
 		//
 		if ( pattern != null && pattern.length() > 0)
 		{
-			SimpleDateFormat format = (SimpleDateFormat)DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, language.getLocale());
+			SimpleDateFormat format = (SimpleDateFormat)DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, myLanguage.getLocale());
 			try {
 				format.applyPattern(pattern);
-				return displayType==TimeZoneId ? setTimeZone(format) : format;
+				return isTimestampWithTimeZone(displayType) ? setTimeZone(format) : format;
 			}
 			catch (IllegalArgumentException e) {
 				s_log.log(Level.WARNING, "Invalid date pattern: " + pattern);
@@ -906,7 +906,7 @@ public final class DisplayType
 			TimeZone tz = TimeZone.getTimeZone(timezoneId);
 			if (tz != null && timezoneId.equals(tz.getID()))
 			{
-				dateFormat = new SimpleDateFormat(dateFormat.toPattern());
+				dateFormat = new SimpleDateFormat(dateFormat.toPattern(), dateFormat.getDateFormatSymbols());
 				dateFormat.setTimeZone(tz);
 			}
 		}

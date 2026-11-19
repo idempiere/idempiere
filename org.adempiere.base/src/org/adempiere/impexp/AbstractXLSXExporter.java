@@ -15,7 +15,6 @@ package org.adempiere.impexp;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -323,7 +322,7 @@ public abstract class AbstractXLSXExporter
 		String cellFormat = null;
 		
 		if (DisplayType.isDate(displayType)) {
-			cellFormat = DisplayType.getDateFormat(getLanguage()).toPattern();
+			cellFormat = AbstractExcelExporter.getDateCellFormat(displayType, getLanguage(), getCtx());
 		} else if (DisplayType.isNumeric(displayType)) {
 			DecimalFormat df = DisplayType.getNumberFormat(displayType, getLanguage());
 			cellFormat = getFormatString(df, isHighlightNegativeNumbers);
@@ -701,12 +700,7 @@ public abstract class AbstractXLSXExporter
 					}
 					else if (DisplayType.isDate(displayType))
 					{
-						Timestamp value = null;
-						if (obj instanceof Date)
-							value = new Timestamp(((Date)obj).getTime());
-						else
-							value = (Timestamp)obj;
-						cell.setCellValue(value);
+						AbstractExcelExporter.setDateCellValue(cell, obj, displayType, getCtx());
 					}
 					else if (DisplayType.isNumeric(displayType))
 					{			
