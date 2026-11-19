@@ -23,6 +23,7 @@ import java.util.logging.Level;
 
 import javax.print.attribute.standard.MediaSizeName;
 
+import org.adempiere.impexp.AbstractExcelExporter;
 import org.adempiere.impexp.AbstractXLSXExporter;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -381,7 +382,10 @@ public class PrintDataXLSXExporter extends AbstractXLSXExporter
 			String formatPattern = pde.getM_formatPattern();
 			int displayType = pde.getDisplayType();
 			if (DisplayType.isDate(displayType)) {
-				cellFormat = DisplayType.getDateFormat(displayType, getLanguage(), formatPattern).toPattern();
+				String pattern = DisplayType.getDateFormat(displayType, getLanguage(), formatPattern).toPattern();
+				cellFormat = AbstractExcelExporter.toExcelDatePattern(pattern);
+				if (Util.isEmpty(cellFormat, true))
+					cellFormat = super.getCellFormat(row, col);
 			} else if (DisplayType.isNumeric(displayType)) {
 				cellFormat = DisplayType.getNumberFormat(displayType, getLanguage(), formatPattern).toPattern();
 			}

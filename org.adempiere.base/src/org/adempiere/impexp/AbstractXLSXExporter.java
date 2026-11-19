@@ -20,7 +20,9 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 import java.util.logging.Level;
 
 import org.apache.commons.compress.archivers.zip.Zip64Mode;
@@ -367,6 +369,8 @@ public abstract class AbstractXLSXExporter
 			// so, we need to figure a default size depending on the display type
 			//  default here to:
 			//     10 characters for date fields
+			//     14 characters for time fields
+			//     22 characters for datetime / timestamp with timezone fields
 			//     12 for numeric
 			//      5 for boolean
 			//     20 for all others
@@ -375,8 +379,12 @@ public abstract class AbstractXLSXExporter
 				if (isColumnPrinted(col)) {
 					int dt = getDisplayType(0, col);
 					int width = 20*256;
-					if (DisplayType.isDate(dt))
+					if (dt == DisplayType.Date)
 						width = 10*256;
+					else if (dt == DisplayType.Time)
+						width = 14*256;
+					else if (DisplayType.isDate(dt))
+						width = 22*256;
 					else if (DisplayType.isNumeric(dt))
 						width = 12*256;
 					else if (dt == DisplayType.YesNo)
@@ -622,6 +630,7 @@ public abstract class AbstractXLSXExporter
 		boolean isPreviousRowFunction = false;
 		boolean isPreviousRowTotal = false;
 		boolean hasPageBreak = false;
+		Set<Class<?>> warnedDateTypes = new HashSet<>();
 
 		for (int xls_rownum = initxls_rownum; rownum < lastRowNum; rownum++, xls_rownum++)
 		{
@@ -700,7 +709,7 @@ public abstract class AbstractXLSXExporter
 					}
 					else if (DisplayType.isDate(displayType))
 					{
-						AbstractExcelExporter.setDateCellValue(cell, obj, displayType, getCtx());
+						AbstractExcelExporter.setDateCellValue(cell, obj, displayType, getCtx(), warnedDateTypes);
 					}
 					else if (DisplayType.isNumeric(displayType))
 					{			

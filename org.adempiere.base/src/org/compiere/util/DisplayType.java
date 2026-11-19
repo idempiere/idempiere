@@ -844,19 +844,19 @@ public final class DisplayType
 		MLanguage lang = MLanguage.get(Env.getCtx(), myLanguage);
 
 		if (displayType == DateTime) {
-			if (!Util.isEmpty(lang.getDatePattern()) && !Util.isEmpty(lang.getTimePattern()))
-				return new SimpleDateFormat(lang.getDatePattern() + " " + lang.getTimePattern());
+			if (lang != null && !Util.isEmpty(lang.getDatePattern()) && !Util.isEmpty(lang.getTimePattern()))
+				return new SimpleDateFormat(lang.getDatePattern() + " " + lang.getTimePattern(), myLanguage.getLocale());
 			return myLanguage.getDateTimeFormat();
 		}
 		else if (displayType == Time) {
-			if (!Util.isEmpty(lang.getTimePattern()))
-				return new SimpleDateFormat(lang.getTimePattern());
+			if (lang != null && !Util.isEmpty(lang.getTimePattern()))
+				return new SimpleDateFormat(lang.getTimePattern(), myLanguage.getLocale());
 			return myLanguage.getTimeFormat();
 		}
 		else if ( displayType == TimestampWithTimeZone) {
 			SimpleDateFormat format = null;
-			if (!Util.isEmpty(lang.getDatePattern()) && !Util.isEmpty(lang.getTimePattern()))
-				format = new SimpleDateFormat(lang.getDatePattern() + " " + lang.getTimePattern());
+			if (lang != null && !Util.isEmpty(lang.getDatePattern()) && !Util.isEmpty(lang.getTimePattern()))
+				format = new SimpleDateFormat(lang.getDatePattern() + " " + lang.getTimePattern(), myLanguage.getLocale());
 			else
 				format = myLanguage.getDateTimeFormat();
 			return setTimeZone(format);
@@ -888,8 +888,8 @@ public final class DisplayType
 		}
 
 		//	Date
-		if (!Util.isEmpty(lang.getDatePattern()))
-			return new SimpleDateFormat(lang.getDatePattern());
+		if (lang != null && !Util.isEmpty(lang.getDatePattern()))
+			return new SimpleDateFormat(lang.getDatePattern(), myLanguage.getLocale());
 
 		return myLanguage.getDateFormat();		//	default
 	}	//	getDateFormat

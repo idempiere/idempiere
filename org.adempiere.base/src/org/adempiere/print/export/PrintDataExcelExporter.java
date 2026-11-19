@@ -332,7 +332,10 @@ public class PrintDataExcelExporter extends AbstractExcelExporter
 			String formatPattern = pde.getM_formatPattern();
 			int displayType = pde.getDisplayType();
 			if (DisplayType.isDate(displayType)) {
-				cellFormat = DisplayType.getDateFormat(displayType, getLanguage(), formatPattern).toPattern();
+				String pattern = DisplayType.getDateFormat(displayType, getLanguage(), formatPattern).toPattern();
+				cellFormat = AbstractExcelExporter.toExcelDatePattern(pattern);
+				if (Util.isEmpty(cellFormat, true))
+					cellFormat = super.getCellFormat(row, col);
 			} else if (DisplayType.isNumeric(displayType)) {
 				cellFormat = DisplayType.getNumberFormat(displayType, getLanguage(), formatPattern).toPattern();
 			}
