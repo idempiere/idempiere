@@ -609,9 +609,22 @@ public class Scheduler extends AdempiereServer
 					//	Convert to Type
 					try
 					{
-						// TODO: DashboardController.fillParameter implements much better filling the Info and Info_To fields,
-						// but it is not available here. It should be refactored to a common place.
-						if (DisplayType.isNumeric(sPara.getDisplayType())
+						if (sPara.getDisplayType() == DisplayType.Search || sPara.getDisplayType() == DisplayType.Table || sPara.getDisplayType() == DisplayType.TableDir)
+						{
+							if (value != null)
+							{
+								BigDecimal bd = toBigDecimal(value);
+								iPara.setP_Number(bd);
+								iPara.setInfo(iPara.getDisplay(bd.intValue()));
+							}
+							if (toValue != null)
+							{
+								BigDecimal bd = toBigDecimal(toValue);
+								iPara.setP_Number_To(bd);
+								iPara.setInfo_To(iPara.getDisplay(bd.intValue()));
+							}
+						}
+						else if (DisplayType.isNumeric(sPara.getDisplayType())
 							|| DisplayType.isID(sPara.getDisplayType()))
 						{
 							DecimalFormat decimalFormat = DisplayType.getNumberFormat(sPara.getDisplayType());
@@ -638,6 +651,19 @@ public class Scheduler extends AdempiereServer
 							{
 								iPara.setP_Date_To(toTimestamp(toValue));
 								iPara.setInfo_To(dateFormat.format(iPara.getP_Date_To()));
+							}
+						}
+						else if (DisplayType.isChosenMultipleSelection(sPara.getDisplayType()))
+						{
+							if (value != null)
+							{
+								iPara.setP_String(value.toString());
+								iPara.setInfo(iPara.getMultiSelectionDisplay(value.toString()));
+							}
+							if (toValue != null)
+							{
+								iPara.setP_String_To(toValue.toString());
+								iPara.setInfo_To(iPara.getMultiSelectionDisplay(toValue.toString()));
 							}
 						}
 						else

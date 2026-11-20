@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -73,9 +72,6 @@ import org.compiere.model.MDashboardContent;
 import org.compiere.model.MDashboardContentAccess;
 import org.compiere.model.MDashboardPreference;
 import org.compiere.model.MGoal;
-import org.compiere.model.MLookup;
-import org.compiere.model.MLookupFactory;
-import org.compiere.model.MLookupInfo;
 import org.compiere.model.MMenu;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MPInstancePara;
@@ -1838,11 +1834,11 @@ public class DashboardController implements EventListener<Event> {
 						 int id = new BigDecimal (value.toString()).intValue();
 						 if (isTo) {
 							 iPara.setP_Number_To(new BigDecimal (value.toString()));
-							 iPara.setInfo_To(getDisplay(pInstance, iPara, id));
+							 iPara.setInfo_To(iPara.getDisplay(id));
 						 }
 						 else {
 							 iPara.setP_Number(new BigDecimal (value.toString()));
-							 iPara.setInfo(getDisplay(pInstance, iPara, id));
+							 iPara.setInfo(iPara.getDisplay(id));
 						 }
 					 }
 					 else if (DisplayType.isDate(iPara.getDisplayType()))
@@ -1871,7 +1867,7 @@ public class DashboardController implements EventListener<Event> {
 						 }
 						 else if(DisplayType.isChosenMultipleSelection(iPara.getDisplayType())) {
 							 iPara.setP_String(value.toString());
-							 iPara.setInfo(getMultiSelectionDisplay(pInstance, iPara, value.toString()));
+							 iPara.setInfo(iPara.getMultiSelectionDisplay(value.toString()));
 						 }
 						 else {
 							 iPara.setP_String(value.toString());
@@ -1892,79 +1888,6 @@ public class DashboardController implements EventListener<Event> {
 			}
 		}
 		return true;
-	}
-
-	/**
-	 * Get display text for CSV values
-	 * @param i
-	 * @param ip
-	 * @param values comma separated value
-	 * @return display text
-	 */
-	private String getMultiSelectionDisplay(MPInstance i, MPInstancePara ip, String values) {
-		String returnValue = "";
-		String[] splittedValues = values.split("[,]");
-		for(String value : splittedValues) {
-			if(!Util.isEmpty(returnValue))
-				returnValue += ", ";
-			returnValue += getDisplay(i, ip, DisplayType.ChosenMultipleSelectionList == ip.getDisplayType() ? value : Integer.parseInt(value));
-		}
-		return returnValue;
-	}
-	
-	/**
-	 * Get display text for value
-	 * @param i
-	 * @param ip
-	 * @param value
-	 * @return display text
-	 */
-	private String getDisplay(MPInstance i, MPInstancePara ip, Object value) {
-		try {
-			MProcessPara pp = MProcess.get(i.getAD_Process_ID()).getParameter(ip.getParameterName());
-
-			if (pp != null) {
-				MLookupInfo mli = MLookupFactory.getLookupInfo(Env.getCtx(), 0, 0, pp.getAD_Reference_ID(), Env.getLanguage(Env.getCtx()), pp.getColumnName(), pp.getAD_Reference_Value_ID(), false, "");
-
-				PreparedStatement pstmt = null;
-				ResultSet rs = null;
-				StringBuilder name = new StringBuilder("");
-				try
-				{
-					pstmt = DB.prepareStatement(mli.QueryDirect, null);
-					if(value instanceof Integer)
-						pstmt.setInt(1, (Integer)value);
-					else
-						pstmt.setString(1, Objects.toString(value, ""));
-
-					rs = pstmt.executeQuery();
-					if (rs.next()) {
-						name.append(rs.getString(3));
-						boolean isActive = rs.getString(4).equals("Y");
-						if (!isActive)
-							name.insert(0, MLookup.INACTIVE_S).append(MLookup.INACTIVE_E);
-
-						if (rs.next())
-							logger.log(Level.SEVERE, "Error while displaying parameter for embedded report - Not unique (first returned) for SQL=" + mli.QueryDirect);
-					}
-				}
-				catch (Exception e) {
-					logger.log(Level.SEVERE, "Error while displaying parameter for embedded report - " + mli.KeyColumn + ": SQL=" + mli.QueryDirect + " : " + e);
-				}
-				finally {
-					DB.close(rs, pstmt);
-					rs = null;
-					pstmt = null;
-				}
-
-				return name.toString();
-			}
-		}
-		catch (Exception e) {
-			logger.log(Level.WARNING, "Failed to retrieve data to display for embedded report " + MProcess.get(i.getAD_Process_ID()).getName() + " : " + ip.getParameterName(), e);
-		}
-
-		return Objects.toString(value, "");
 	}
 
 	/**
