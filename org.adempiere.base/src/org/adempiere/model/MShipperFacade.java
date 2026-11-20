@@ -190,12 +190,12 @@ public class MShipperFacade
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT sa.").append(columnName).append(" ")
 		  .append("FROM ").append(I_C_BP_ShippingAcct.Table_Name).append(" sa ")
-		  .append("WHERE (sa.M_ShippingProcessor_ID IS NULL OR sa.M_ShippingProcessor_ID IN (SELECT M_ShippingProcessor_ID FROM M_Shipper WHERE M_Shipper_ID = ?)) ")
+		  .append("WHERE (sa.M_ShippingProcessor_ID IS NULL OR sa.M_ShippingProcessor_ID = ?) ")
 		  .append("AND sa.IsActive = 'Y' ")
 		  .append("AND sa.C_BPartner_ID = ? ")
 		  .append("AND sa.AD_Org_ID IN (0, ?) ")
 		  .append("ORDER BY sa.AD_Org_ID DESC, sa.M_ShippingProcessor_ID NULLS LAST ");
-		return DB.getSQLValueStringEx(m_shipper.get_TrxName(), sb.toString(), m_shipper.getM_Shipper_ID(), m_shipper.getC_BPartner_ID(), AD_Org_ID);
+		return DB.getSQLValueStringEx(m_shipper.get_TrxName(), sb.toString(), m_shipper.getM_ShippingProcessor_ID(), m_shipper.getC_BPartner_ID(), AD_Org_ID);
 	}
 
 	private static String stripAccountFormatting(String account)

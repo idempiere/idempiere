@@ -138,5 +138,11 @@ public class MShipperFacadeTest extends AbstractTestCase {
 		assertEquals("666777888", facade1.getDutiesShipperAccount(DictionaryIDs.AD_Org.HQ.id));
 		assertEquals("METER-HQ", facade1.getShipperMeter(DictionaryIDs.AD_Org.HQ.id));
 		assertEquals("222333444", facade1.getShipperAccount(DictionaryIDs.AD_Org.STORE_CENTRAL.id));
+
+		// Uses the wrapped shipper's M_ShippingProcessor_ID directly (even if unsaved)
+		shipperNoProc.setM_ShippingProcessor_ID(proc2.get_ID());
+		assertEquals("999999", facadeNoProc.getShipperAccount(DictionaryIDs.AD_Org.HQ.id));
+		assertEquals("888888", facadeNoProc.getDutiesShipperAccount(DictionaryIDs.AD_Org.HQ.id));
+		assertEquals("METER-999", facadeNoProc.getShipperMeter(DictionaryIDs.AD_Org.HQ.id));
 	}
 }
