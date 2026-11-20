@@ -439,7 +439,7 @@ public class DataEngine
 							script = Env.parseContext(Env.getCtx(), m_windowNo, script, false);
 						}
 						else
-							script = DB.TO_STRING("@SCRIPT" + script);
+							script = "'@SCRIPT" + script + "'";
 					}
 					else
 						script = "";
@@ -447,6 +447,10 @@ public class DataEngine
 					if (ColumnName == null && script.isEmpty())
 						continue;
 
+					// IDEMPIERE-7316 NOTE:
+					// here is OK to have String concatenation (potential SQL injection)
+					// script is an advanced field that must be available just for IT, not for end users
+					// it must be treated like part of the Dictionary - as a System field
 					sqlSELECT.append(script).append(" AS \"").append(m_synonym).append(pfiName).append("\",")
 					// Warning here: Oracle treats empty strings '' as NULL and the code below checks for wasNull on this column
 					.append("' '").append(" AS \"").append(pfiName).append("\",");

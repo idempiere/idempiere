@@ -33,6 +33,7 @@ import org.compiere.model.MUserDefField;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Util;
 
 /**
  * AD_Tab editor form
@@ -380,32 +381,32 @@ public class TabEditor
 		}
 		
 		// nothing to do if all fields are not changed
-		if (name == null && description == null && help == null && placeholder == null)
+		if (Util.isEmpty(name) && Util.isEmpty(description) && Util.isEmpty(help) && Util.isEmpty(placeholder))
 			return;
 		
 		StringBuilder mainSQL = new StringBuilder("UPDATE ").append(field.get_TableName()).append("_Trl SET ");
 		
 		StringBuilder setSQL = new StringBuilder();
-		if (name != null)
+		if (!Util.isEmpty(name))
 		{
 			setSQL.append(I_AD_Field.COLUMNNAME_Name).append("=").append(DB.TO_STRING(name));
 		}
 		
-		if(description != null)
+		if(!Util.isEmpty(description))
 		{
 			if (setSQL.length() > 0)
 				setSQL.append(",");		
 			setSQL.append(I_AD_Field.COLUMNNAME_Description).append("=").append(DB.TO_STRING(description));
 		}
 
-		if(help != null)
+		if(!Util.isEmpty(help))
 		{
 			if (setSQL.length() > 0)
 				setSQL.append(",");		
 			setSQL.append(I_AD_Field.COLUMNNAME_Help).append("=").append(DB.TO_STRING(help));
 		}
 
-		if(placeholder != null)
+		if(!Util.isEmpty(placeholder))
 		{
 			if (setSQL.length() > 0)
 				setSQL.append(",");		

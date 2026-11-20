@@ -171,7 +171,7 @@ public class WFieldRecordInfo extends Window implements EventListener<Event>
 		north.setParent(layout);
 
 		StringBuffer label = new StringBuffer();
-		label.append(column.getAD_Table().getTableName()).append(".").append(column.getColumnName()).append("=").append(DB.TO_STRING(value == null ? "" : value.toString()));
+		label.append(column.getAD_Table().getTableName()).append(".").append(column.getColumnName()).append("='").append(value).append("'");
 
 		if (Env.IsShowTechnicalInfOnHelp(Env.getCtx()))
 		{

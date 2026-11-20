@@ -331,7 +331,7 @@ public class TrialBalance extends SvrProcess
 		//	AD_Table_ID, Record_ID, Line_ID,
 		sql.append("null,null,null,");
 		//	GL_Category_ID, GL_Budget_ID, C_Tax_ID, M_Locator_ID, PostingType,
-		sql.append("null,null,null,null,'").append(p_PostingType).append("',");
+		sql.append("null,null,null,null,").append(DB.TO_STRING(p_PostingType)).append(",");
 		//	C_Currency_ID, AmtSourceDr, AmtSourceCr, AmtSourceBalance,
 		sql.append("null,null,null,null,");
 		//	AmtAcctDr, AmtAcctCr, AmtAcctBalance, C_UOM_ID, Qty,
