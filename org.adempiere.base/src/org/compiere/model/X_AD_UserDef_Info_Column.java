@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_UserDef_Info_Column
  *  @author iDempiere (generated)
- *  @version Release 13 - $Id$ */
+ *  @version Release 14 - $Id$ */
 @org.adempiere.base.Model(table="AD_UserDef_Info_Column")
 public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Column, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20260309L;
+	private static final long serialVersionUID = 20261106L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Info_Column (Properties ctx, int AD_UserDef_Info_Column_ID, String trxName)
@@ -619,6 +619,22 @@ public class X_AD_UserDef_Info_Column extends PO implements I_AD_UserDef_Info_Co
 	public String getQueryOperator()
 	{
 		return (String)get_Value(COLUMNNAME_QueryOperator);
+	}
+
+	/** Set Sql SELECT.
+		@param SelectClause SQL SELECT clause
+	*/
+	public void setSelectClause (String SelectClause)
+	{
+		set_Value (COLUMNNAME_SelectClause, SelectClause);
+	}
+
+	/** Get Sql SELECT.
+		@return SQL SELECT clause
+	  */
+	public String getSelectClause()
+	{
+		return (String)get_Value(COLUMNNAME_SelectClause);
 	}
 
 	/** Set Sequence.

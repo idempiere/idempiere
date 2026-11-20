@@ -33,6 +33,7 @@ import org.compiere.util.DefaultEvaluatee;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Evaluatee;
 import org.compiere.util.Evaluator;
+import org.compiere.util.Util;
 
 /**
  * Info Column Value Object
@@ -243,6 +244,8 @@ public class InfoColumnVO implements Serializable, Cloneable {
 				vo.QueryOperator= userDef.getQueryOperator();
 			if (userDef.getIsAutocomplete() != null)
 				vo.isAutocomplete = "Y".equals(userDef.getIsAutocomplete());
+			if (!Util.isEmpty(userDef.getSelectClause(), true))
+				vo.SelectClause = userDef.getSelectClause();
 		}
 		//
 		return vo;

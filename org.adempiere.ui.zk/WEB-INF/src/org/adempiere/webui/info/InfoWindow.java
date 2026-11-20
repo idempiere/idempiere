@@ -1039,11 +1039,17 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			
 			StringBuilder builder = new StringBuilder(p_sqlFilter != null && p_sqlFilter.sqlClause() != null ? p_sqlFilter.sqlClause().trim() : "");
 			String infoWhereClause = infoWindow.getWhereClause();
+			
+			MUserDefInfo userdefInfo = MUserDefInfo.getBestMatch(Env.getCtx(), infoWindow.getAD_InfoWindow_ID());
+			if (userdefInfo != null && !Util.isEmpty(userdefInfo.getWhereClause()))
+				 infoWhereClause = userdefInfo.getWhereClause();
+
 			List<Object> infoWhereClauseParams = new ArrayList<>();
 			if (infoWhereClause != null && infoWhereClause.indexOf("@") >= 0) {
+				String originalInfoWhereClause = infoWhereClause;
 				infoWhereClause = Env.parseContextForSql(Env.getCtx(), p_WindowNo, infoWhereClause, true, false, infoWhereClauseParams);
 				if (infoWhereClause.length() == 0)
-					log.log(Level.SEVERE, "Cannot parse context= " + infoWindow.getWhereClause());
+					log.log(Level.SEVERE, "Cannot parse context= " + originalInfoWhereClause);
 			}
 			if (infoWhereClause != null && infoWhereClause.trim().length() > 0) {								
 				if (builder.length() > 0) {
@@ -1092,7 +1098,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 
 			MInfoWindow embedInfo = new MInfoWindow(Env.getCtx(), infoRelatedID, null);
 
-			TableInfo[] tableInfos = embedInfo.getTableInfos();
+			String fromClause = getEffectiveFromClause(embedInfo);
+			TableInfo[] tableInfos = embedInfo.getTableInfos(fromClause);
 			if (tableInfos[0].getSynonym() != null && tableInfos[0].getSynonym().trim().length() > 0){
 				tableName = tableInfos[0].getSynonym().trim();
 			}
@@ -1108,7 +1115,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 				list.toArray(s_layoutEmbedded);
 
 				/**	From Clause							*/
-				String s_sqlFrom = embedInfo.getFromClause();
+				String s_sqlFrom = fromClause;
 				/** Where Clause						*/
 				String s_sqlWhere = relatedInfo.getLinkColumnName() + "=?";
 				String infoWhere = embedInfo.getWhereClause(); 
@@ -1245,11 +1252,18 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 			infoWindowListItemRenderer.setGridDisplaydInfoColumns(gridDisplayedInfoColumns,columnInfos);
 
 		String fromClause = infoWindow.getFromClause();
-		MUserDefInfo userdefInfo = MUserDefInfo.getBestMatch(Env.getCtx(), infoWindow.getAD_InfoWindow_ID());
-		if (userdefInfo != null && !Util.isEmpty(userdefInfo.getFromClause()))
-			fromClause = userdefInfo.getFromClause();
+		String orderByClause = infoWindow.getOrderByClause();
 
-		prepareTable(columnInfos, fromClause, infoWindow.getOrderByClause(), p_sqlFilter);		
+		MUserDefInfo userdefInfo = MUserDefInfo.getBestMatch(Env.getCtx(), infoWindow.getAD_InfoWindow_ID());
+		if (userdefInfo != null) {
+			 if (!Util.isEmpty(userdefInfo.getFromClause()))
+				 fromClause = userdefInfo.getFromClause();
+			 if (!Util.isEmpty(userdefInfo.getOrderByClause()))
+				 orderByClause = userdefInfo.getOrderByClause();
+			
+		}
+
+		prepareTable(columnInfos, fromClause, orderByClause, p_sqlFilter);		
 	}
 
 	/**
@@ -2576,19 +2590,27 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 
     private String getOtherClauseParsed() {
     	String otherClause = "";
-        if (infoWindow != null && infoWindow.getOtherClause() != null && infoWindow.getOtherClause().trim().length() > 0) {
-        	otherClause = infoWindow.getOtherClause();
-        	if (otherClause.indexOf("@") >= 0) {
-        		String s = Env.parseContext(infoContext, p_WindowNo, otherClause, true, false);
-        		if (s.length() == 0) {
-        			log.severe("Failed to parse other clause. " + otherClause);
-        		} else {
-        			otherClause = s;
-        		}
-        	}
-        }
+    	if (infoWindow != null) {
+
+    		if (infoWindow.getOtherClause() != null && infoWindow.getOtherClause().trim().length() > 0)
+    			otherClause = infoWindow.getOtherClause();
+
+    		MUserDefInfo userdefInfo = MUserDefInfo.getBestMatch(Env.getCtx(), infoWindow.getAD_InfoWindow_ID());
+    		if (userdefInfo != null) {
+    			if (!Util.isEmpty(userdefInfo.getOtherClause()))
+    				otherClause = userdefInfo.getOtherClause();
+    		}
+    		if (otherClause.indexOf("@") >= 0) {
+    			String s = Env.parseContext(infoContext, p_WindowNo, otherClause, true, false);
+    			if (s.length() == 0) {
+    				log.severe("Failed to parse other clause. " + otherClause);
+    			} else {
+    				otherClause = s;
+    			}
+    		}
+    	}
     	return otherClause;
-	}
+    }
 
 	@Override
     protected void executeQuery() {
@@ -2965,7 +2987,7 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 	 */
 	public ArrayList<ColumnInfo> getInfoColumnslayout(MInfoWindow info){
 
-		TableInfo[] tableInfos = info.getTableInfos();
+		TableInfo[] tableInfos = info.getTableInfos(getEffectiveFromClause(info));
 
 		MInfoColumn[] p_infoColumns = info.getInfoColumns(tableInfos);
 		InfoColumnVO[] infoColumns = InfoColumnVO.create(Env.getCtx(), p_infoColumns);
@@ -3843,4 +3865,14 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 		}
 	}
 
+	/**
+	 * Get the effective FromClause, taking User Defined InfoWindow configuration into account.
+	 *
+	 * @param info the InfoWindow
+	 * @return effective FromClause
+	 */
+	private String getEffectiveFromClause(MInfoWindow info) {
+	    MUserDefInfo userDefInfo = MUserDefInfo.getBestMatch(Env.getCtx(), info.getAD_InfoWindow_ID());
+	    return userDefInfo != null && !Util.isEmpty(userDefInfo.getFromClause()) ? userDefInfo.getFromClause() : info.getFromClause();
+	}
 }

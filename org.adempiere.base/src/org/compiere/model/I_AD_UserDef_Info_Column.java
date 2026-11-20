@@ -22,7 +22,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for AD_UserDef_Info_Column
  *  @author iDempiere (generated) 
- *  @version Release 13
+ *  @version Release 14
  */
 public interface I_AD_UserDef_Info_Column 
 {
@@ -393,6 +393,19 @@ public interface I_AD_UserDef_Info_Column
 	  * Operator for database query
 	  */
 	public String getQueryOperator();
+
+    /** Column name SelectClause */
+    public static final String COLUMNNAME_SelectClause = "SelectClause";
+
+	/** Set Sql SELECT.
+	  * SQL SELECT clause
+	  */
+	public void setSelectClause (String SelectClause);
+
+	/** Get Sql SELECT.
+	  * SQL SELECT clause
+	  */
+	public String getSelectClause();
 
     /** Column name SeqNo */
     public static final String COLUMNNAME_SeqNo = "SeqNo";
