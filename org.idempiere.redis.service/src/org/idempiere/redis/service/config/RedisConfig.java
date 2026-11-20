@@ -265,20 +265,23 @@ public final class RedisConfig {
 
 	/**
 	 * Returns the set of fully-qualified class names that may appear as
-	 * {@code Callable} implementations in RPC requests. When non-empty, the
-	 * bundle uses a Kryo codec with {@code registrationRequired=true} for both
-	 * RPC topics, rejecting deserialization of any class not in this set.
-	 * Empty set (default) = unrestricted (development only; see security note
-	 * on {@code RpcRequest}).
+	 * {@code Callable} implementations, or inside their results, in RPC frames.
+	 * When non-empty, the payload codec uses {@code registrationRequired=true},
+	 * rejecting deserialization of any class not in this set. Empty set
+	 * (default) = any class. Exceptions are never decoded either way. This is
+	 * defence in depth; {@link #getRpcHmacSecret()} is what keeps clients
+	 * without the secret out.
 	 */
 	public Set<String> getRpcCallableAllowlist() {
 		return rpcCallableAllowlist;
 	}
 
 	/**
-	 * Returns the shared HMAC-SHA256 secret used to authenticate RPC envelopes,
-	 * or {@code null} when HMAC is disabled. All cluster nodes must share the
-	 * same secret.
+	 * Returns the shared HMAC-SHA256 secret that signs every RPC request and
+	 * response frame, or {@code null} when frames are not signed (a warning is
+	 * logged at startup). Receivers check the signature, the timestamp and
+	 * replays before decoding anything. All cluster nodes must share the same
+	 * secret.
 	 */
 	public String getRpcHmacSecret() {
 		return rpcHmacSecret;
