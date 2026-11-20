@@ -18,11 +18,11 @@ import java.sql.Statement;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
-import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.DataElementParameters;
 import org.adempiere.pipo2.ElementHandler;
+import org.adempiere.pipo2.IPackSerializer;
 import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoExporter;
@@ -122,7 +122,7 @@ public class AttributeUseElementHandler extends GenericPOElementHandler
 	@Override
 	public void packOut(PackOut packout, IPackSerializer packoutSerializer, TransformerHandler docHandler, int recordId, String uuid) throws Exception
 	{
-		StringBuilder sql = new StringBuilder("SELECT * FROM M_AttributeUse WHERE M_AttributeUse_UU = '").append(uuid).append("'");
+		StringBuilder sql = new StringBuilder("SELECT * FROM M_AttributeUse WHERE M_AttributeUse_UU=").append(DB.TO_STRING(uuid));
 		packout.getCtx().ctx.put(DataElementParameters.SQL_STATEMENT, sql.toString());
 		this.create(packout.getCtx(), packoutSerializer);
 		packout.getCtx().ctx.remove(DataElementParameters.SQL_STATEMENT);

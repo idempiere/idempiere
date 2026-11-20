@@ -912,7 +912,7 @@ public class DB_PostgreSQL implements AdempiereDatabase
 				trxName = Trx.createTrxName("getNextval");
 				trx = Trx.get(trxName, true);
 			}
-			m_sequence_id = DB.getSQLValueEx(trxName, "SELECT nextval('"+name.toLowerCase()+"')");
+			m_sequence_id = DB.getSQLValueEx(trxName, "SELECT nextval("+DB.TO_STRING(name.toLowerCase())+")");
 		} catch (Exception e) {
 			if (trx != null) {
 				trx.rollback();
@@ -1468,6 +1468,6 @@ public class DB_PostgreSQL implements AdempiereDatabase
 
 	@Override
 	public String TO_Blob(byte[] blob) {
-		return "decode('"+HexFormat.of().formatHex(blob)+"','hex')";
+		return "decode("+(blob.length == 0 ? "''" : DB.TO_STRING(HexFormat.of().formatHex(blob)))+",'hex')";
 	}
 }   //  DB_PostgreSQL

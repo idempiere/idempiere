@@ -202,54 +202,54 @@ public class FactAcctReset extends SvrProcess
 		//
 		String docBaseType = null;
 		if (AD_Table_ID == MInvoice.Table_ID)
-			docBaseType = "IN ('" + MPeriodControl.DOCBASETYPE_APInvoice 
-				+ "','" + MPeriodControl.DOCBASETYPE_APCreditMemo
-				+ "','" + MPeriodControl.DOCBASETYPE_ARInvoice
-				+ "','" + MPeriodControl.DOCBASETYPE_ARCreditMemo
-				+ "','" + MPeriodControl.DOCBASETYPE_ARProFormaInvoice + "')";
+			docBaseType = "IN (" + DB.TO_STRING(MPeriodControl.DOCBASETYPE_APInvoice)
+				+ "," + DB.TO_STRING(MPeriodControl.DOCBASETYPE_APCreditMemo)
+				+ "," + DB.TO_STRING(MPeriodControl.DOCBASETYPE_ARInvoice)
+				+ "," + DB.TO_STRING(MPeriodControl.DOCBASETYPE_ARCreditMemo)
+				+ "," + DB.TO_STRING(MPeriodControl.DOCBASETYPE_ARProFormaInvoice) + ")";
 		else if (AD_Table_ID == MInOut.Table_ID)
-			docBaseType = "IN ('" + MPeriodControl.DOCBASETYPE_MaterialDelivery
-				+ "','" + MPeriodControl.DOCBASETYPE_MaterialReceipt + "')";
+			docBaseType = "IN (" + DB.TO_STRING(MPeriodControl.DOCBASETYPE_MaterialDelivery)
+				+ "," + DB.TO_STRING(MPeriodControl.DOCBASETYPE_MaterialReceipt) + ")";
 		else if (AD_Table_ID == MPayment.Table_ID)
-			docBaseType = "IN ('" + MPeriodControl.DOCBASETYPE_APPayment
-				+ "','" + MPeriodControl.DOCBASETYPE_ARReceipt + "')";
+			docBaseType = "IN (" + DB.TO_STRING(MPeriodControl.DOCBASETYPE_APPayment)
+				+ "," + DB.TO_STRING(MPeriodControl.DOCBASETYPE_ARReceipt) + ")";
 		else if (AD_Table_ID == MOrder.Table_ID)
-			docBaseType = "IN ('" + MPeriodControl.DOCBASETYPE_SalesOrder
-				+ "','" + MPeriodControl.DOCBASETYPE_PurchaseOrder + "')";
+			docBaseType = "IN (" + DB.TO_STRING(MPeriodControl.DOCBASETYPE_SalesOrder)
+				+ "," + DB.TO_STRING(MPeriodControl.DOCBASETYPE_PurchaseOrder) + ")";
 		else if (AD_Table_ID == MProjectIssue.Table_ID)
-			docBaseType = "= '" + MPeriodControl.DOCBASETYPE_ProjectIssue + "'";
+			docBaseType = "=" + DB.TO_STRING(MPeriodControl.DOCBASETYPE_ProjectIssue);
 		else if (AD_Table_ID == MBankStatement.Table_ID)
-			docBaseType = "= '" + MPeriodControl.DOCBASETYPE_BankStatement + "'";
+			docBaseType = "=" + DB.TO_STRING(MPeriodControl.DOCBASETYPE_BankStatement);
 		else if (AD_Table_ID == MCash.Table_ID)
-			docBaseType = "= '" + MPeriodControl.DOCBASETYPE_CashJournal + "'";
+			docBaseType = "=" + DB.TO_STRING(MPeriodControl.DOCBASETYPE_CashJournal);
 		else if (AD_Table_ID == MAllocationHdr.Table_ID)
-			docBaseType = "= '" + MPeriodControl.DOCBASETYPE_PaymentAllocation + "'";
+			docBaseType = "=" + DB.TO_STRING(MPeriodControl.DOCBASETYPE_PaymentAllocation);
 		else if (AD_Table_ID == MJournal.Table_ID || AD_Table_ID == MAssetReval.Table_ID || AD_Table_ID == MAssetTransfer.Table_ID)
-			docBaseType = "= '" + MPeriodControl.DOCBASETYPE_GLJournal + "'";
+			docBaseType = "=" + DB.TO_STRING(MPeriodControl.DOCBASETYPE_GLJournal);
 		else if (AD_Table_ID == MMovement.Table_ID)
-			docBaseType = "= '" + MPeriodControl.DOCBASETYPE_MaterialMovement + "'";
+			docBaseType = "=" + DB.TO_STRING(MPeriodControl.DOCBASETYPE_MaterialMovement);
 		else if (AD_Table_ID == MRequisition.Table_ID)
-			docBaseType = "= '" + MPeriodControl.DOCBASETYPE_PurchaseRequisition + "'";
+			docBaseType = "=" + DB.TO_STRING(MPeriodControl.DOCBASETYPE_PurchaseRequisition);
 		else if (AD_Table_ID == MInventory.Table_ID)
-			docBaseType = "= '" + MPeriodControl.DOCBASETYPE_MaterialPhysicalInventory + "'";
+			docBaseType = "=" + DB.TO_STRING(MPeriodControl.DOCBASETYPE_MaterialPhysicalInventory);
 		else if (AD_Table_ID == X_M_Production.Table_ID)
-			docBaseType = "= '" + MPeriodControl.DOCBASETYPE_MaterialProduction + "'";
+			docBaseType = "=" + DB.TO_STRING(MPeriodControl.DOCBASETYPE_MaterialProduction);
 		else if (AD_Table_ID == MMatchInv.Table_ID)
-			docBaseType = "= '" + MPeriodControl.DOCBASETYPE_MatchInvoice + "'";
+			docBaseType = "=" + DB.TO_STRING(MPeriodControl.DOCBASETYPE_MatchInvoice);
 		else if (AD_Table_ID == MMatchPO.Table_ID)
-			docBaseType = "= '" + MPeriodControl.DOCBASETYPE_MatchPO + "'";
+			docBaseType = "=" + DB.TO_STRING(MPeriodControl.DOCBASETYPE_MatchPO);
 		else if (AD_Table_ID == X_PP_Order.Table_ID)
-			docBaseType = "IN ('" + MPeriodControl.DOCBASETYPE_ManufacturingOrder 
-				+ "','" + MPeriodControl.DOCBASETYPE_MaintenanceOrder
-				+ "','" + MPeriodControl.DOCBASETYPE_QualityOrder + "')";
+			docBaseType = "IN (" + DB.TO_STRING(MPeriodControl.DOCBASETYPE_ManufacturingOrder) 
+				+ "," + DB.TO_STRING(MPeriodControl.DOCBASETYPE_MaintenanceOrder)
+				+ "," + DB.TO_STRING(MPeriodControl.DOCBASETYPE_QualityOrder) + ")";
 		else if (AD_Table_ID == X_DD_Order.Table_ID)
-			docBaseType = "= '" + MPeriodControl.DOCBASETYPE_DistributionOrder+ "'";
+			docBaseType = "=" + DB.TO_STRING(MPeriodControl.DOCBASETYPE_DistributionOrder);
 		else if (AD_Table_ID == X_HR_Process.Table_ID)
-			docBaseType = "= '" + MPeriodControl.DOCBASETYPE_Payroll+ "'";
+			docBaseType = "=" + DB.TO_STRING(MPeriodControl.DOCBASETYPE_Payroll);
 		else if (AD_Table_ID == X_PP_Cost_Collector.Table_ID)
-			docBaseType = "= '" + MPeriodControl.DOCBASETYPE_ManufacturingCostCollector+ "'";
+			docBaseType = "=" + DB.TO_STRING(MPeriodControl.DOCBASETYPE_ManufacturingCostCollector);
 		else if (AD_Table_ID == MAssetAddition.Table_ID || AD_Table_ID == MAssetDisposed.Table_ID)
-			docBaseType = "= '" + MPeriodControl.DOCBASETYPE_GLDocument+ "'";
+			docBaseType = "=" + DB.TO_STRING(MPeriodControl.DOCBASETYPE_GLDocument);
 		//
 		if (docBaseType == null)
 		{

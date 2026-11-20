@@ -70,8 +70,8 @@ public class TreeMaintenance {
 			&& ! Env.isBaseLanguage(Env.getCtx(), "AD_Menu")) {
 			fieldName = "trl.Name";
 			fieldDescription ="trl.Description";
-			join = " LEFT JOIN AD_Menu_Trl trl ON (t.AD_Menu_ID = trl.AD_Menu_ID AND trl.AD_Language='"
-				+ Env.getAD_Language(Env.getCtx()) + "')";
+			join = " LEFT JOIN AD_Menu_Trl trl ON (t.AD_Menu_ID = trl.AD_Menu_ID AND trl.AD_Language="
+				+ DB.TO_STRING(Env.getAD_Language(Env.getCtx())) + ")";
 		} else {
 			fieldName ="t.Name";
 			fieldDescription ="t.Description";

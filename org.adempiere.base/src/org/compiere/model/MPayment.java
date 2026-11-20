@@ -3241,10 +3241,10 @@ public class MPayment extends X_C_Payment
 	public static int[] getCompletedPaymentIDs(int C_Order_ID, int C_Invoice_ID, String trxName)
 	{
 		StringBuilder whereClause = new StringBuilder();
-		whereClause.append("TenderType='").append(MPayment.TENDERTYPE_CreditCard).append("' ");
-		whereClause.append("AND TrxType IN ('").append(MPayment.TRXTYPE_DelayedCapture).append("', ");
-		whereClause.append("'").append(MPayment.TRXTYPE_Sales).append("', ");
-		whereClause.append("'").append(MPayment.TRXTYPE_CreditPayment).append("') ");
+		whereClause.append("TenderType=").append(DB.TO_STRING(MPayment.TENDERTYPE_CreditCard));
+		whereClause.append(" AND TrxType IN (").append(DB.TO_STRING(MPayment.TRXTYPE_DelayedCapture)).append(", ");
+		whereClause.append(DB.TO_STRING(MPayment.TRXTYPE_Sales)).append(", ");
+		whereClause.append(DB.TO_STRING(MPayment.TRXTYPE_CreditPayment)).append(") ");
 		if (C_Order_ID > 0 && C_Invoice_ID > 0)
 			whereClause.append(" AND (C_Order_ID=").append(C_Order_ID).append(" OR C_Invoice_ID=").append(C_Invoice_ID).append(")");
 		else if (C_Order_ID > 0)

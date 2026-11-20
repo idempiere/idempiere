@@ -515,8 +515,8 @@ public class DocManager {
 	{
 		MTable table = MTable.get(Env.getCtx(), AD_Table_ID);
 		StringBuilder sql = new StringBuilder("UPDATE ");
-		sql.append(table.getTableName()).append(" SET Posted='").append(status)
-			.append("',Processing='N' ")
+		sql.append(table.getTableName()).append(" SET Posted=").append(DB.TO_STRING(status))
+			.append(",Processing='N' ")
 			.append("WHERE ")
 			.append(table.getTableName()).append("_ID=").append(Record_ID);
 		CLogger.resetLast();

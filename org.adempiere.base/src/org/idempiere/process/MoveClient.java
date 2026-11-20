@@ -619,8 +619,8 @@ public class MoveClient extends SvrProcess {
 				sqlForeignClientSB.append(" AND AD_Ref_List.AD_Reference_ID=")
 				.append(" (SELECT AD_Column.AD_Reference_Value_ID FROM AD_Column")
 				.append(" JOIN AD_Table ON (AD_Column.AD_Table_ID=AD_Table.AD_Table_ID)")
-				.append(" WHERE UPPER(AD_Table.TableName)='").append(tableName.toUpperCase())
-				.append("' AND UPPER(AD_Column.ColumnName)='").append(columnName.toUpperCase()).append("'))")
+				.append(" WHERE UPPER(AD_Table.TableName)=").append(DB.TO_STRING(tableName.toUpperCase()))
+				.append(" AND UPPER(AD_Column.ColumnName)=").append(DB.TO_STRING(columnName.toUpperCase())).append("))")
 				.append(" WHERE ").append(p_whereClient)
 				.append(" AND ").append(foreignTableName).append(".AD_Client_ID!=").append(tableName).append(".AD_Client_ID")
 				.append(" ORDER BY 2");

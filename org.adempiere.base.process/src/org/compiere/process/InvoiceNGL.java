@@ -140,9 +140,9 @@ public class InvoiceNGL extends SvrProcess
 		    .append(" currencyConvert(fa.AmtSourceCr, i.C_Currency_ID, a.C_Currency_ID, ").append(dateStr).append(", ").append(p_C_ConversionTypeReval_ID).append(", i.AD_Client_ID, i.AD_Org_ID),")
 		    .append((p_C_DocTypeReval_ID==0 ? "" : String.valueOf(p_C_DocTypeReval_ID)+","))
 		    .append((p_IsAllCurrencies ? "'Y'," : "'N',"))
-		    .append(dateStr).append(", ").append(p_C_ConversionTypeReval_ID).append(", 0, 0, '").append(p_APAR).append("' ")
+		    .append(dateStr).append(", ").append(p_C_ConversionTypeReval_ID).append(", 0, 0, ").append(DB.TO_STRING(p_APAR))
 		    //
-		    .append("FROM C_Invoice_v i JOIN C_Invoice ii ON (i.C_Invoice_ID=ii.C_Invoice_ID)")
+		    .append(" FROM C_Invoice_v i JOIN C_Invoice ii ON (i.C_Invoice_ID=ii.C_Invoice_ID)")
 		    .append(" INNER JOIN Fact_Acct fa ON (fa.AD_Table_ID=318 AND fa.Record_ID=i.C_Invoice_ID")
 		    	.append(" AND (ii.GrandTotal=fa.AmtSourceDr OR ii.GrandTotal=fa.AmtSourceCr))")
 		    .append(" INNER JOIN C_AcctSchema a ON (fa.C_AcctSchema_ID=a.C_AcctSchema_ID) ")

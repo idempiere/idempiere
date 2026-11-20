@@ -167,7 +167,7 @@ public class TranslationHandler extends DefaultHandler
 			{
 				if (m_trl != null 
 					&& ("Y".equals(m_trl) || "N".equals(m_trl)))
-					m_sql.append(",IsTranslated='").append(m_trl).append("'");
+					m_sql.append(",IsTranslated=").append(DB.TO_STRING(m_trl));
 				else
 					m_sql.append(",IsTranslated='Y'");
 			}
@@ -187,7 +187,7 @@ public class TranslationHandler extends DefaultHandler
 				m_sql.append(m_TableName).append("_ID=").append(m_curID);
 			}
 			if (!m_isBaseLanguage)
-				m_sql.append(" AND AD_Language='").append(m_AD_Language).append("'");
+				m_sql.append(" AND AD_Language=").append(DB.TO_STRING(m_AD_Language));
 			if (m_AD_Client_ID >= 0)
 				m_sql.append(" AND AD_Client_ID=").append(m_AD_Client_ID);
 			//	Update section

@@ -218,7 +218,7 @@ public class ReplenishReport extends SvrProcess
 		if (p_ReplenishmentCreate == null)
 			sql.append("null");
 		else
-			sql.append("'").append(p_ReplenishmentCreate).append("'");
+			sql.append(DB.TO_STRING(p_ReplenishmentCreate));
 		sql.append(" FROM M_Replenish r");
 			sql.append(" INNER JOIN M_Product_PO po ON (r.M_Product_ID=po.M_Product_ID) ");
 			sql.append("WHERE po.IsCurrentVendor='Y'");	//	Only Current Vendor
@@ -244,7 +244,7 @@ public class ReplenishReport extends SvrProcess
 			if (p_ReplenishmentCreate == null)
 				sql.append("null");
 			else
-				sql.append("'").append(p_ReplenishmentCreate).append("'");
+				sql.append(DB.TO_STRING(p_ReplenishmentCreate));
 			sql.append(" FROM M_Replenish r ");
 				sql.append("WHERE r.ReplenishType<>'0' AND r.IsActive='Y'");
 				sql.append(" AND r.M_Warehouse_ID=").append(p_M_Warehouse_ID);

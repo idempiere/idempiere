@@ -195,8 +195,8 @@ public abstract class CreateFromInvoice extends CreateFrom
 		if (Env.isBaseLanguage(Env.getCtx(), "C_UOM"))
 			sql.append(" LEFT OUTER JOIN C_UOM uom ON (l.C_UOM_ID=uom.C_UOM_ID)");
 		else
-			sql.append(" LEFT OUTER JOIN C_UOM_Trl uom ON (l.C_UOM_ID=uom.C_UOM_ID AND uom.AD_Language='")
-				.append(Env.getAD_Language(Env.getCtx())).append("')");
+			sql.append(" LEFT OUTER JOIN C_UOM_Trl uom ON (l.C_UOM_ID=uom.C_UOM_ID AND uom.AD_Language=")
+				.append(DB.TO_STRING(Env.getAD_Language(Env.getCtx()))).append(")");
 
 		sql.append(" LEFT OUTER JOIN M_Product p ON (l.M_Product_ID=p.M_Product_ID)")
 			.append(" INNER JOIN M_InOut io ON (l.M_InOut_ID=io.M_InOut_ID)");
@@ -280,8 +280,8 @@ public abstract class CreateFromInvoice extends CreateFrom
         }
 	    else
         {
-	        sqlStmt.append("LEFT OUTER JOIN C_UOM_Trl uom ON (uom.C_UOM_ID=iol.C_UOM_ID AND uom.AD_Language='");
-	        sqlStmt.append(Env.getAD_Language(Env.getCtx())).append("') ");
+	        sqlStmt.append("LEFT OUTER JOIN C_UOM_Trl uom ON (uom.C_UOM_ID=iol.C_UOM_ID AND uom.AD_Language=");
+	        sqlStmt.append(DB.TO_STRING(Env.getAD_Language(Env.getCtx()))).append(") ");
         }
 	    sqlStmt.append("LEFT OUTER JOIN M_Product p ON p.M_Product_ID=iol.M_Product_ID ");
 	    sqlStmt.append("WHERE rl.M_RMA_ID=? ");
@@ -297,8 +297,8 @@ public abstract class CreateFromInvoice extends CreateFrom
         }
 	    else
         {
-	        sqlStmt.append("LEFT OUTER JOIN C_UOM_Trl uom ON (uom.C_UOM_ID=100 AND uom.AD_Language='");
-	        sqlStmt.append(Env.getAD_Language(Env.getCtx())).append("') ");
+	        sqlStmt.append("LEFT OUTER JOIN C_UOM_Trl uom ON (uom.C_UOM_ID=100 AND uom.AD_Language=");
+	        sqlStmt.append(DB.TO_STRING(Env.getAD_Language(Env.getCtx()))).append(") ");
         }
 	    sqlStmt.append("WHERE rl.M_RMA_ID=? ");
 	    sqlStmt.append("AND rl.C_Charge_ID IS NOT NULL");

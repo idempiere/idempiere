@@ -96,7 +96,7 @@ public class RequestProcessor extends AdempiereServer
 		 *  Due Requests
 		 */
 		String sql = "SELECT * FROM R_Request "
-			+ "WHERE DueType='" + MRequest.DUETYPE_Scheduled + "' AND Processed='N'"
+			+ "WHERE DueType=" + DB.TO_STRING(MRequest.DUETYPE_Scheduled) + " AND Processed='N'"
 			+ " AND DateNextAction < getDate()"
 			+ " AND AD_Client_ID=?"; 
 		if (m_model.getR_RequestType_ID() != 0)
@@ -151,7 +151,7 @@ public class RequestProcessor extends AdempiereServer
 		 *  Due Requests - are they overdue?
 		 */
 		sql = "SELECT * FROM R_Request r "
-			+ "WHERE r.DueType='" + MRequest.DUETYPE_Due + "' AND r.Processed='N'"
+			+ "WHERE r.DueType=" + DB.TO_STRING(MRequest.DUETYPE_Due) + " AND r.Processed='N'"
 			+ " AND AD_Client_ID=?"
 			+ " AND EXISTS (SELECT * FROM R_RequestType rt "
 				+ "WHERE r.R_RequestType_ID=rt.R_RequestType_ID"

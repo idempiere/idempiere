@@ -27,6 +27,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 import org.compiere.util.CLogger;
+import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 
@@ -61,7 +62,7 @@ public class GridFieldVO implements Serializable, Cloneable
 		StringBuilder sql;
 		if (!Env.isBaseLanguage(ctx, "AD_Tab")){
 			sql = new StringBuilder("SELECT * FROM AD_Field_vt WHERE AD_Tab_ID=?")
-				.append(" AND AD_Language='" + Env.getAD_Language(ctx) + "'");
+				.append(" AND AD_Language=" + DB.TO_STRING(Env.getAD_Language(ctx)));
 			if (!role.isAccessAdvanced()) {
 				sql.append(advancedFilter);
 			}

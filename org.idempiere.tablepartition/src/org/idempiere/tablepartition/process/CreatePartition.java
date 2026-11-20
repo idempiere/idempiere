@@ -86,7 +86,7 @@ public class CreatePartition extends SvrProcess {
 		{
 			String whereClause = MTable.COLUMNNAME_IsPartition + "='Y' AND " + MTable.COLUMNNAME_IsView + "='N'";
 			if (p_tableName != null)
-				whereClause += " AND " + MTable.COLUMNNAME_TableName + " LIKE '" + p_tableName + "'";
+				whereClause += " AND " + MTable.COLUMNNAME_TableName + " LIKE " + DB.TO_STRING(p_tableName);
 			List<MTable> tables = new Query(getCtx(), MTable.Table_Name, whereClause, null)
 					.setOnlyActiveRecords(true)
 					.setOrderBy(MTable.COLUMNNAME_TableName)

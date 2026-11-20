@@ -432,7 +432,7 @@ public class MAsset extends X_A_Asset {
 			String isOwned = (assetgroup.isOwned()) ? "Y" : "N";
 			setIsDepreciated(assetgroup.isDepreciated());
 			setIsOwned(assetgroup.isOwned());
-			DB.executeUpdateEx("UPDATE A_Asset SET IsDepreciated='" + isDepreciated + "', isOwned ='" + isOwned + "' WHERE A_Asset_ID=" + getA_Asset_ID(), get_TrxName());
+			DB.executeUpdateEx("UPDATE A_Asset SET IsDepreciated=" + DB.TO_STRING(isDepreciated) + ", isOwned=" + DB.TO_STRING(isOwned) + " WHERE A_Asset_ID=" + getA_Asset_ID(), get_TrxName());
 			
 			// for each asset group accounting record, create a new asset accounting and depreciation work file record
 			for (MAssetGroupAcct assetgrpacct :  MAssetGroupAcct.forA_Asset_Group_ID(getCtx(), getA_Asset_Group_ID(), null, get_TrxName()))

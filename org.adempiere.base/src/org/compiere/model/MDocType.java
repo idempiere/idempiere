@@ -438,10 +438,10 @@ public class MDocType extends X_C_DocType implements ImmutablePOSupport
 			if (relatedDocBaseType != null)
 			{
 			    StringBuilder whereClause = new StringBuilder(30);
-			    whereClause.append("DocBaseType='").append(relatedDocBaseType).append("' ");
-			    whereClause.append("AND AD_Client_ID=").append(Env.getAD_Client_ID(Env.getCtx()));
+			    whereClause.append("DocBaseType=").append(DB.TO_STRING(relatedDocBaseType));
+			    whereClause.append(" AND AD_Client_ID=").append(Env.getAD_Client_ID(Env.getCtx()));
 			    whereClause.append(" AND IsActive='Y'");
-			    whereClause.append(" AND IsSOTrx='").append(isSOTrx).append("'");
+			    whereClause.append(" AND IsSOTrx=").append(DB.TO_STRING(isSOTrx));
 			    whereClause.append(" Order By C_DocType_ID ASC ");
 
 			    int relDocTypeIds[] = MDocType.getAllIDs(MDocType.Table_Name, whereClause.toString(), null);

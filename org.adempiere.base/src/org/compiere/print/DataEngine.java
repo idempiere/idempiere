@@ -314,15 +314,15 @@ public class DataEngine
 			.append(" AND pfi.IsActive='Y' AND (pfi.IsPrinted='Y' OR c.IsKey='Y' OR pfi.SortNo > 0 ")
 			.append(" OR EXISTS(select 1 from AD_PrintFormatItem x where x.AD_PrintFormat_ID=pf.AD_PrintFormat_ID and x.DisplayLogic is not null and ")
 			.append("(x.DisplayLogic Like '%@'||c.ColumnName||'@%' OR x.DisplayLogic Like '%@'||c.ColumnName||':%@%' OR x.DisplayLogic Like '%@'||c.ColumnName||'.%@%'))) ")
-			.append(" AND pfi.PrintFormatType IN ('"
-				+ MPrintFormatItem.PRINTFORMATTYPE_Field
-				+ "','"
-				+ MPrintFormatItem.PRINTFORMATTYPE_Image
-				+ "','"
-				+ MPrintFormatItem.PRINTFORMATTYPE_PrintFormat
-				+ "','" 
-				+ MPrintFormatItem.PRINTFORMATTYPE_Script 
-				+ "') ")
+			.append(" AND pfi.PrintFormatType IN ("
+				+ DB.TO_STRING(MPrintFormatItem.PRINTFORMATTYPE_Field)
+				+ ","
+				+ DB.TO_STRING(MPrintFormatItem.PRINTFORMATTYPE_Image)
+				+ ","
+				+ DB.TO_STRING(MPrintFormatItem.PRINTFORMATTYPE_PrintFormat)
+				+ "," 
+				+ DB.TO_STRING(MPrintFormatItem.PRINTFORMATTYPE_Script) 
+				+ ") ")
 			.append(" ORDER BY pfi.IsPrinted DESC, pfi.SeqNo");			//	Functions are put in first column
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -447,6 +447,10 @@ public class DataEngine
 					if (ColumnName == null && script.isEmpty())
 						continue;
 
+					// IDEMPIERE-7316 NOTE:
+					// here is OK to have String concatenation (potential SQL injection)
+					// script is an advanced field that must be available just for IT, not for end users
+					// it must be treated like part of the Dictionary - as a System field
 					sqlSELECT.append(script).append(" AS \"").append(m_synonym).append(pfiName).append("\",")
 					// Warning here: Oracle treats empty strings '' as NULL and the code below checks for wasNull on this column
 					.append("' '").append(" AS \"").append(pfiName).append("\",");
@@ -552,7 +556,7 @@ public class DataEngine
 						sqlFROM.append(" LEFT OUTER JOIN ");
 						sqlFROM.append(" AD_Ref_List_Trl ").append(m_synonym).append(" ON (X")
 							.append(m_synonym).append(".AD_Ref_List_ID=").append(m_synonym).append(".AD_Ref_List_ID")
-							.append(" AND ").append(m_synonym).append(".AD_Language='").append(m_language.getAD_Language()).append("')");
+							.append(" AND ").append(m_synonym).append(".AD_Language=").append(DB.TO_STRING(m_language.getAD_Language())).append(")");
 					}
 					// 	TableName.ColumnName,
 					sqlSELECT.append(lookupSQL).append(" AS ").append(ColumnName).append(",");

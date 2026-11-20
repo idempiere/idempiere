@@ -1291,6 +1291,6 @@ public class DB_Oracle implements AdempiereDatabase
 
 	@Override
 	public String TO_Blob(byte[] blob) {
-		return "HEXTORAW('"+HexFormat.of().formatHex(blob)+"')";
+		return "HEXTORAW("+(blob.length == 0 ? "''" : DB.TO_STRING(HexFormat.of().formatHex(blob)))+")";
 	}
 }   //  DB_Oracle
