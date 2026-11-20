@@ -1217,9 +1217,9 @@ public class MSequence extends X_AD_Sequence
 		int AD_Column_ID = DB.getSQLValue(trxName, "SELECT MAX(c.AD_Column_ID) "
 			+ "FROM AD_Table t"
 			+ " INNER JOIN AD_Column c ON (t.AD_Table_ID=c.AD_Table_ID) "
-			+ "WHERE t.TableName='" + tableName + "'"
+			+ "WHERE t.TableName=" + DB.TO_STRING(tableName)
 			+ " AND t.IsView='N'" // ignore for views -- IDEMPIERE-2513
-			+ " AND c.ColumnName='" + tableName + "_ID'");
+			+ " AND c.ColumnName=" + DB.TO_STRING(tableName + "_ID"));
 		if (AD_Column_ID <= 0)
 			return null;
 		//

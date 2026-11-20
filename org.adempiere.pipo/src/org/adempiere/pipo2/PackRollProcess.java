@@ -178,12 +178,9 @@ public class PackRollProcess extends SvrProcess {
 								// Update "UpdatedBy" field with current user
 								else if (columnName.equals("UpdatedBy")) {
 
-									sqlC = new StringBuffer("UPDATE "
-											+ tableName + " SET " + columnName
-											+ " = '"
-											+ Env.getAD_User_ID(Env.getCtx())
-											+ "' WHERE " + columnIDName + " = "
-											+ recordID);
+									sqlC = new StringBuffer("UPDATE " + tableName
+											+ " SET " + columnName + "=" + Env.getAD_User_ID(Env.getCtx())
+											+ " WHERE " + columnIDName + "=" + recordID);
 									DB.executeUpdateEx(sqlC.toString(), get_TrxName());
 									backup.setUninstall(true);
 									backup.saveEx();

@@ -371,8 +371,8 @@ public class FinReport extends SvrProcess
 			+ "(AD_PInstance_ID, PA_ReportLine_ID, Record_ID,Fact_Acct_ID, SeqNo,LevelNo, Name,Description) "
 			+ "SELECT ").append(getAD_PInstance_ID()).append(", rl.PA_ReportLine_ID, 0,0, rl.SeqNo,0, CASE WHEN LineType='B' THEN '' ELSE NVL(trl.Name, rl.Name) END as Name, NVL(trl.Description,rl.Description) as Description "
 			+ "FROM PA_ReportLine rl "
-			+ "LEFT JOIN PA_ReportLine_Trl trl ON trl.PA_ReportLine_ID = rl.PA_ReportLine_ID AND trl.AD_Language = '" + Env.getAD_Language(Env.getCtx()) + "' "
-			+ "WHERE rl.IsActive='Y' AND rl.PA_ReportLineSet_ID=").append(PA_ReportLineSet_ID);
+			+ "LEFT JOIN PA_ReportLine_Trl trl ON trl.PA_ReportLine_ID = rl.PA_ReportLine_ID AND trl.AD_Language = " + DB.TO_STRING(Env.getAD_Language(Env.getCtx()))
+			+ " WHERE rl.IsActive='Y' AND rl.PA_ReportLineSet_ID=").append(PA_ReportLineSet_ID);
 
 		int no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 		if (log.isLoggable(Level.FINE)) log.fine("Report Lines = " + no);
@@ -571,7 +571,7 @@ public class FinReport extends SvrProcess
 			{
 				String PostingType = m_columns[col].getPostingType();
 				if (PostingType != null && PostingType.length() > 0)
-					select.append(" AND PostingType='").append(PostingType).append("'");
+					select.append(" AND PostingType=").append(DB.TO_STRING(PostingType));
 				// globalqss - CarlosRuiz
 				if (MReportColumn.POSTINGTYPE_Budget.equals(PostingType)) {
 					if (m_columns[col].getGL_Budget_ID() > 0)
@@ -1559,7 +1559,7 @@ public class FinReport extends SvrProcess
 				{
 					String PostingType = m_columns[col].getPostingType();
 					if (PostingType != null && PostingType.length() > 0)
-						select.append(" AND fb.PostingType='").append(PostingType).append("'");
+						select.append(" AND fb.PostingType=").append(DB.TO_STRING(PostingType));
 					// globalqss - CarlosRuiz
 					if (MReportColumn.POSTINGTYPE_Budget.equals(PostingType)) {
 						if (m_columns[col].getGL_Budget_ID() > 0)
@@ -1595,7 +1595,7 @@ public class FinReport extends SvrProcess
 				{
 					if (whereComb.length() > 0)
 						whereComb.append(" AND ");
-					whereComb.append("PostingType='").append(PostingType).append("'");
+					whereComb.append("PostingType=").append(DB.TO_STRING(PostingType));
 					// globalqss - CarlosRuiz
 					if (MReportLine.POSTINGTYPE_Budget.equals(PostingType))
 					{
@@ -1857,7 +1857,7 @@ public class FinReport extends SvrProcess
 			{
 				String PostingType = m_columns[col].getPostingType();
 				if (PostingType != null && PostingType.length() > 0)
-					select.append(" AND fb.PostingType='").append(PostingType).append("'");
+					select.append(" AND fb.PostingType=").append(DB.TO_STRING(PostingType));
 				// globalqss - CarlosRuiz
 				if (MReportColumn.POSTINGTYPE_Budget.equals(PostingType)) {
 					if (m_columns[col].getGL_Budget_ID() > 0)

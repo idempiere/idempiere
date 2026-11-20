@@ -486,8 +486,8 @@ public class MTree extends MTree_Base
 					+ "m.AD_Window_ID, m.AD_Process_ID, m.AD_Form_ID, m.AD_Workflow_ID, m.AD_Task_ID, m.AD_InfoWindow_ID "
 					+ "FROM AD_Menu m, AD_Menu_Trl t");
 			if (!base)
-				sqlNode.append(" WHERE m.AD_Menu_ID=t.AD_Menu_ID AND t.AD_Language='")
-					.append(Env.getAD_Language(p_ctx)).append("'");
+				sqlNode.append(" WHERE m.AD_Menu_ID=t.AD_Menu_ID AND t.AD_Language=")
+					.append(DB.TO_STRING(Env.getAD_Language(p_ctx)));
 			if (!m_editable)
 			{
 				boolean hasWhere = sqlNode.indexOf(" WHERE ") != -1;

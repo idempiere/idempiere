@@ -17,6 +17,8 @@
 
 package org.adempiere.webui.panel;
 
+import static org.adempiere.webui.LayoutUtils.isLabelAboveInputForSmallWidth;
+
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,6 +30,7 @@ import java.util.logging.Level;
 import org.adempiere.webui.AdempiereWebUI;
 import org.adempiere.webui.ClientInfo;
 import org.adempiere.webui.LayoutUtils;
+import org.adempiere.webui.component.FlexVlayout;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
 import org.adempiere.webui.component.Label;
@@ -65,9 +68,6 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.North;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.South;
-import org.adempiere.webui.component.FlexVlayout;
-
-import static org.adempiere.webui.LayoutUtils.isLabelAboveInputForSmallWidth;
 
 /**
  * Zk Port
@@ -623,8 +623,8 @@ public class InfoGeneralPanel extends InfoPanel implements EventListener<Event>
 						colSql = new StringBuffer("(SELECT t.Name FROM AD_Ref_List l, AD_Ref_List_Trl t "
 							+ "WHERE l.AD_Ref_List_ID=t.AD_Ref_List_ID AND l.AD_Reference_ID=")
 							.append(AD_Reference_Value_ID).append(" AND l.Value=").append(columnSql)
-							.append(" AND t.AD_Language='").append(Env.getAD_Language(Env.getCtx()))
-							.append("') AS ").append(columnName);
+							.append(" AND t.AD_Language=").append(DB.TO_STRING(Env.getAD_Language(Env.getCtx())))
+							.append(") AS ").append(columnName);
 					colClass = String.class;
 				}
 

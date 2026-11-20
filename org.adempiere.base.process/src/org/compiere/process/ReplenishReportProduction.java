@@ -1,5 +1,4 @@
 /******************************************************************************
-
  * Product: Adempiere ERP & CRM Smart Business Solution                       *
  * Copyright (C) 1999-2006 ComPiere, Inc. All Rights Reserved.                *
  * This program is free software; you can redistribute it and/or modify it    *
@@ -228,7 +227,7 @@ public class ReplenishReportProduction extends SvrProcess
 		if (p_ReplenishmentCreate == null)
 			sql.append("null");
 		else
-			sql.append("'").append(p_ReplenishmentCreate).append("'");
+			sql.append(DB.TO_STRING(p_ReplenishmentCreate));
 		sql.append(" FROM M_Replenish r");
 			sql.append(" INNER JOIN M_Product_PO po ON (r.M_Product_ID=po.M_Product_ID) ");
 			sql.append(" INNER JOIN M_Product p ON (p.M_Product_ID=po.M_Product_ID) ");
@@ -259,7 +258,7 @@ public class ReplenishReportProduction extends SvrProcess
 			if (p_ReplenishmentCreate == null)
 				sql.append("null");
 			else
-				sql.append("'").append(p_ReplenishmentCreate).append("'");
+				sql.append(DB.TO_STRING(p_ReplenishmentCreate));
 			sql.append(" FROM M_Replenish r ");
 				sql.append(" INNER JOIN M_Product p ON (p.M_Product_ID=r.M_Product_ID) ");
 				sql.append("WHERE r.ReplenishType<>'0' AND r.IsActive='Y'");
@@ -270,7 +269,7 @@ public class ReplenishReportProduction extends SvrProcess
 			if ( p_M_Product_Category_ID != 0 )
 				sql.append(" AND p.M_Product_Category_ID=").append(p_M_Product_Category_ID);
 			if ( isKanban != null )
-				sql.append(" AND p.IsKanban = '").append(isKanban).append("' ");
+				sql.append(" AND p.IsKanban=").append(DB.TO_STRING(isKanban));
 			no = DB.executeUpdateEx(sql.toString(), get_TrxName());
 			if (log.isLoggable(Level.FINE)) log.fine("Insert (BP) #" + no);
 		}

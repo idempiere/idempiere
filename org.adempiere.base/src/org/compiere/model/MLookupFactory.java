@@ -321,8 +321,8 @@ public class MLookupFactory
 		else
 			realSQL.append("trl.Name, AD_Ref_List.IsActive ")
 				.append("FROM AD_Ref_List  INNER JOIN AD_Ref_List_Trl trl ")
-				.append(" ON (AD_Ref_List.AD_Ref_List_ID=trl.AD_Ref_List_ID AND trl.AD_Language='")
-					.append(language.getAD_Language()).append("')");
+				.append(" ON (AD_Ref_List.AD_Ref_List_ID=trl.AD_Ref_List_ID AND trl.AD_Language=")
+					.append(DB.TO_STRING(language.getAD_Language())).append(")");
 		realSQL.append(" WHERE AD_Ref_List.AD_Reference_ID=").append(AD_Reference_Value_ID);
 		
 		String directSql = realSQL.toString() + " AND AD_Ref_List.Value=?";
@@ -358,8 +358,8 @@ public class MLookupFactory
 		else
 			realSQL.append("trl.Name ")
 				.append("FROM AD_Ref_List  INNER JOIN AD_Ref_List_Trl trl ")
-				.append(" ON (AD_Ref_List.AD_Ref_List_ID=trl.AD_Ref_List_ID AND trl.AD_Language='")
-					.append(language.getAD_Language()).append("')");
+				.append(" ON (AD_Ref_List.AD_Ref_List_ID=trl.AD_Ref_List_ID AND trl.AD_Language=")
+					.append(DB.TO_STRING(language.getAD_Language())).append(")");
 		realSQL.append(" WHERE AD_Ref_List.AD_Reference_ID=").append(AD_Reference_Value_ID)
 			.append(" AND AD_Ref_List.Value=").append(linkColumnName);
 
@@ -541,8 +541,8 @@ public class MLookupFactory
 				.append(" INNER JOIN ").append(TableName).append("_TRL ON (")
 				.append(TableName).append(".").append(realKeyColumn)
 				.append("=").append(TableName).append("_Trl.").append(realKeyColumn)
-				.append(" AND ").append(TableName).append("_Trl.AD_Language='")
-				.append(language.getAD_Language()).append("')");
+				.append(" AND ").append(TableName).append("_Trl.AD_Language=")
+				.append(DB.TO_STRING(language.getAD_Language())).append(")");
 		}
 		//	Not Translated
 		else
@@ -769,8 +769,8 @@ public class MLookupFactory
 				.append(" INNER JOIN ").append(TableName).append("_TRL ON (")
 				.append(TableNameAlias).append(".").append(KeyColumn)
 				.append("=").append(TableName).append("_Trl.").append(KeyColumn)
-				.append(" AND ").append(TableName).append("_Trl.AD_Language='")
-				.append(language.getAD_Language()).append("')");
+				.append(" AND ").append(TableName).append("_Trl.AD_Language=")
+				.append(DB.TO_STRING(language.getAD_Language())).append(")");
 		}
 		//	Not Translated
 		else
@@ -880,8 +880,8 @@ public class MLookupFactory
 				.append(" INNER JOIN ").append(TableName).append("_TRL ON (")
 				.append(TableName).append(".").append(KeyColumn)
 				.append("=").append(TableName).append("_Trl.").append(KeyColumn)
-				.append(" AND ").append(TableName).append("_Trl.AD_Language='")
-				.append(language.getAD_Language()).append("')");
+				.append(" AND ").append(TableName).append("_Trl.AD_Language=")
+				.append(DB.TO_STRING(language.getAD_Language())).append(")");
 		}
 		else	//	no translation
 		{

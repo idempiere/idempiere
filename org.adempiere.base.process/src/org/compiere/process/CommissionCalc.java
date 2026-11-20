@@ -336,7 +336,7 @@ public class CommissionCalc extends SvrProcess
 			.append("(SELECT M_Product_ID FROM M_Product WHERE M_Product_Category_ID=").append(commissionLine.getM_Product_Category_ID()).append(")");
 		//	Payment Rule
 		if (commissionLine.getPaymentRule() != null)
-			sql.append(" AND h.PaymentRule='").append(commissionLine.getPaymentRule()).append("'");
+			sql.append(" AND h.PaymentRule=").append(DB.TO_STRING(commissionLine.getPaymentRule()));
 
 		return sql.toString();
 	}

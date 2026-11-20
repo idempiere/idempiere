@@ -465,13 +465,13 @@ public class MLanguage extends X_AD_Language implements ImmutablePOSupport
 							.append("(AD_Language,IsTranslated, AD_Client_ID,AD_Org_ID, ")
 							.append("Createdby,UpdatedBy,Created,Updated, ")
 							.append(keyColumn).append(cols).append(") ")
-							.append("SELECT '").append(getAD_Language()).append("','N', AD_Client_ID,AD_Org_ID, ")
+							.append("SELECT ").append(DB.TO_STRING(getAD_Language())).append(",'N', AD_Client_ID,AD_Org_ID, ")
 							.append(AD_User_ID).append(",").append(AD_User_ID).append(", getDate(), getDate(), ")
 							.append(keyColumn).append(cols)
 							.append(" FROM ").append(baseTableName)
 							.append(" WHERE ").append(keyColumn).append(" NOT IN (SELECT ").append(keyColumn)
 							.append(" FROM ").append(tableName)
-							.append(" WHERE AD_Language='").append(getAD_Language()).append("')");
+							.append(" WHERE AD_Language=").append(DB.TO_STRING(getAD_Language())).append(")");
 		int no = DB.executeUpdateEx(insert.toString(), null, get_TrxName());
 		// IDEMPIERE-99 Language Maintenance does not create UUIDs
 		String uucolname = PO.getUUIDColumnName(tableName);
