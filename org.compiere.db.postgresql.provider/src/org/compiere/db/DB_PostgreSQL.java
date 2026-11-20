@@ -641,15 +641,8 @@ public class DB_PostgreSQL implements AdempiereDatabase
 		// reached (after which a SQLException is thrown).
 		conn = m_ds.getConnection();
 
-		if (conn.getTransactionIsolation() != transactionIsolation)
-		{
-			conn.setTransactionIsolation(transactionIsolation);
-		}
-		if (conn.getAutoCommit() != autoCommit) 
-		{
-			conn.setAutoCommit(autoCommit);
-		}
-
+		// transaction isolation and auto commit are verified/applied by the caller,
+		// CConnection.getConnection(boolean, int), to avoid duplicated round trips to the database.
 		return conn;
 	}	//	getCachedConnection
 
@@ -799,6 +792,11 @@ public class DB_PostgreSQL implements AdempiereDatabase
 
     		HikariConfig hikariConfig = new HikariConfig(poolProperties);
     		hikariConfig.setDriverClassName(DRIVER);
+    		if (hikariConfig.getTransactionIsolation() == null)
+    		{
+    			// the pool sets the level once per physical connection and resets it when a changed connection is returned
+    			hikariConfig.setTransactionIsolation("TRANSACTION_READ_COMMITTED");
+    		}
     		m_ds = new HikariDataSource(hikariConfig);
 
             m_connectionURL = m_ds.getJdbcUrl();
