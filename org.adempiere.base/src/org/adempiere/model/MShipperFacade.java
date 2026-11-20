@@ -14,6 +14,7 @@
  *****************************************************************************/
 package org.adempiere.model;
 
+import org.compiere.model.I_C_BP_ShippingAcct;
 import org.compiere.model.MShipper;
 import org.compiere.model.MShippingProcessor;
 import org.compiere.util.DB;
@@ -156,17 +157,7 @@ public class MShipperFacade
 	 */
 	public String getShipperAccount(int AD_Org_ID) 
 	{
-		StringBuilder sql = new StringBuilder();
-		sql.append("Select ShipperAccount From C_BP_ShippingAcct ")
-		   .append("Where C_BPartner_ID = ? ")
-		   .append(" AND AD_Org_ID In (0, ").append(AD_Org_ID).append(") ")
-		   .append(" Order By AD_Org_ID Desc ");
-		String ac = DB.getSQLValueString(null, sql.toString(), m_shipper.getC_BPartner_ID());
-		if (ac != null) {
-			ac = ac.replaceAll("[-]", "");
-			ac = ac.replace(" ", "");
-		}
-		return ac;
+		return stripAccountFormatting(getShippingAcctValue(I_C_BP_ShippingAcct.COLUMNNAME_ShipperAccount, AD_Org_ID));
 	}
 	
 	/**
@@ -175,17 +166,7 @@ public class MShipperFacade
 	 */
 	public String getDutiesShipperAccount(int AD_Org_ID) 
 	{
-		StringBuilder sql = new StringBuilder();
-		sql.append("Select DutiesShipperAccount From C_BP_ShippingAcct ")
-		   .append("Where C_BPartner_ID = ? ")
-		   .append(" AND AD_Org_ID In (0, ").append(AD_Org_ID).append(") ")
-		   .append(" Order By AD_Org_ID Desc ");
-		String ac = DB.getSQLValueString(null, sql.toString(), m_shipper.getC_BPartner_ID());
-		if (ac != null) {
-			ac = ac.replaceAll("[-]", "");
-			ac = ac.replace(" ", "");
-		}
-		return ac;
+		return stripAccountFormatting(getShippingAcctValue(I_C_BP_ShippingAcct.COLUMNNAME_DutiesShipperAccount, AD_Org_ID));
 	}
 	
 	/**
@@ -195,12 +176,33 @@ public class MShipperFacade
 	 */
 	public String getShipperMeter(int AD_Org_ID) 
 	{
-		StringBuilder sql = new StringBuilder();
-		sql.append("Select ShipperMeter From C_BP_ShippingAcct ")
-		   .append("Where C_BPartner_ID = ? ")
-		   .append(" AND AD_Org_ID In (0, ").append(AD_Org_ID).append(") ")
-		   .append(" Order By AD_Org_ID Desc ");
-		return DB.getSQLValueString(null, sql.toString(), m_shipper.getC_BPartner_ID());
+		return getShippingAcctValue(I_C_BP_ShippingAcct.COLUMNNAME_ShipperMeter, AD_Org_ID);
+	}
+
+	/**
+	 * Fetch a shipping account column value for the wrapped shipper and organization.
+	 * @param columnName C_BP_ShippingAcct column to select
+	 * @param AD_Org_ID organization ID (matches AD_Org_ID or 0, preferring specific org)
+	 * @return column value or null if not found
+	 */
+	private String getShippingAcctValue(String columnName, int AD_Org_ID)
+	{
+		StringBuilder sb = new StringBuilder();
+		sb.append("SELECT sa.").append(columnName).append(" ")
+		  .append("FROM ").append(I_C_BP_ShippingAcct.Table_Name).append(" sa ")
+		  .append("WHERE (sa.M_ShippingProcessor_ID IS NULL OR sa.M_ShippingProcessor_ID IN (SELECT M_ShippingProcessor_ID FROM M_Shipper WHERE M_Shipper_ID = ?)) ")
+		  .append("AND sa.IsActive = 'Y' ")
+		  .append("AND sa.C_BPartner_ID = ? ")
+		  .append("AND sa.AD_Org_ID IN (0, ?) ")
+		  .append("ORDER BY sa.AD_Org_ID DESC, sa.M_ShippingProcessor_ID NULLS LAST ");
+		return DB.getSQLValueStringEx(m_shipper.get_TrxName(), sb.toString(), m_shipper.getM_Shipper_ID(), m_shipper.getC_BPartner_ID(), AD_Org_ID);
+	}
+
+	private static String stripAccountFormatting(String account)
+	{
+		if (account == null)
+			return null;
+		return account.replace("-", "").replace(" ", "");
 	}
 	
 	/**
