@@ -57,6 +57,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.IntSupplier;
 
 import org.compiere.util.CacheMgt;
 import org.compiere.util.CacheNewRecordCallable;
@@ -186,6 +187,8 @@ public class ClusterServiceImpl implements IClusterService {
 	 * itself a local cache reset, run on {@link #timeoutExecutor}, outside the saturated pool.
 	 */
 	private final AtomicBoolean localResetOwed = new AtomicBoolean(false);
+	/** Resets this node's caches; returns the number of entries removed. Replaced in tests. */
+	IntSupplier localCacheReset = () -> CacheMgt.get().resetLocalCache();
 
 	@Activate
 	void activate() {
@@ -657,7 +660,7 @@ public class ClusterServiceImpl implements IClusterService {
 	private void runOwedLocalReset() {
 		if (localResetOwed.compareAndSet(true, false)) {
 			try {
-				int count = CacheMgt.get().resetLocalCache();
+				int count = localCacheReset.getAsInt();
 				log.warn("Local cache reset ({} entries): cache notifications were refused while the worker pool was full",
 						count);
 			} catch (RuntimeException | Error e) {

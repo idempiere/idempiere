@@ -199,6 +199,31 @@ public class ClusterServiceNotificationTest {
 		assertEquals(1, ((AtomicInteger) field(service, "failedNotificationCount")).get(), "notification still kept");
 	}
 
+	@Test
+	public void testFailedLocalResetIsRetriedWhilePublishingStillFails() throws Exception {
+		ClusterServiceImpl service = service();
+		IClusterMember other = new ClusterMember(OTHER, null, 0);
+		failPublish.set(true);
+		service.execute(new NewRecord("CacheNotificationTest", 1), List.of(other));
+		AtomicBoolean localResetOwed = (AtomicBoolean) field(service, "localResetOwed");
+		localResetOwed.set(true);
+		AtomicInteger attempts = new AtomicInteger();
+		service.localCacheReset = () -> {
+			if (attempts.incrementAndGet() == 1) {
+				throw new IllegalStateException("reset failed (test)");
+			}
+			return 0;
+		};
+
+		invoke(service, "retryFailedNotifications");
+		assertTrue(localResetOwed.get(), "still owed after the failed attempt");
+
+		invoke(service, "retryFailedNotifications");
+		assertFalse(localResetOwed.get(), "the next run retried it although the publish failed again");
+		assertEquals(2, attempts.get());
+		assertEquals(1, ((AtomicInteger) field(service, "failedNotificationCount")).get(), "notification still kept");
+	}
+
 	private static Object field(Object target, String name) throws Exception {
 		Field f = ClusterServiceImpl.class.getDeclaredField(name);
 		f.setAccessible(true);
