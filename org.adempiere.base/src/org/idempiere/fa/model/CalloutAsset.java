@@ -105,9 +105,8 @@ public class CalloutAsset extends CalloutEngine {
 			  if (A_Depreciation_Table_Header_ID != null){
 				String SQL = "SELECT A_Term "
 					+ "FROM A_Depreciation_Table_Header "
-					+ "WHERE A_Depreciation_Table_Header_ID='"
-					+A_Depreciation_Table_Header_ID
-					+"'";
+					+ "WHERE A_Depreciation_Table_Header_ID="
+					+A_Depreciation_Table_Header_ID;
 				
 				pstmt = DB.prepareStatement(SQL, null);				// arhipac: compatibility
 				rs = pstmt.executeQuery();

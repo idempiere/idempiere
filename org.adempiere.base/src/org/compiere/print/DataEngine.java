@@ -314,15 +314,15 @@ public class DataEngine
 			.append(" AND pfi.IsActive='Y' AND (pfi.IsPrinted='Y' OR c.IsKey='Y' OR pfi.SortNo > 0 ")
 			.append(" OR EXISTS(select 1 from AD_PrintFormatItem x where x.AD_PrintFormat_ID=pf.AD_PrintFormat_ID and x.DisplayLogic is not null and ")
 			.append("(x.DisplayLogic Like '%@'||c.ColumnName||'@%' OR x.DisplayLogic Like '%@'||c.ColumnName||':%@%' OR x.DisplayLogic Like '%@'||c.ColumnName||'.%@%'))) ")
-			.append(" AND pfi.PrintFormatType IN ('"
-				+ MPrintFormatItem.PRINTFORMATTYPE_Field
-				+ "','"
-				+ MPrintFormatItem.PRINTFORMATTYPE_Image
-				+ "','"
-				+ MPrintFormatItem.PRINTFORMATTYPE_PrintFormat
-				+ "','" 
-				+ MPrintFormatItem.PRINTFORMATTYPE_Script 
-				+ "') ")
+			.append(" AND pfi.PrintFormatType IN ("
+				+ DB.TO_STRING(MPrintFormatItem.PRINTFORMATTYPE_Field)
+				+ ","
+				+ DB.TO_STRING(MPrintFormatItem.PRINTFORMATTYPE_Image)
+				+ ","
+				+ DB.TO_STRING(MPrintFormatItem.PRINTFORMATTYPE_PrintFormat)
+				+ "," 
+				+ DB.TO_STRING(MPrintFormatItem.PRINTFORMATTYPE_Script) 
+				+ ") ")
 			.append(" ORDER BY pfi.IsPrinted DESC, pfi.SeqNo");			//	Functions are put in first column
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -439,7 +439,7 @@ public class DataEngine
 							script = Env.parseContext(Env.getCtx(), m_windowNo, script, false);
 						}
 						else
-							script = "'@SCRIPT" + script + "'";
+							script = DB.TO_STRING("@SCRIPT" + script);
 					}
 					else
 						script = "";
@@ -565,7 +565,7 @@ public class DataEngine
 									"   from AD_Ref_List rl " +
 									"   left join AD_Ref_List_Trl trl " +
 									"     on trl.AD_Ref_List_ID = rl.AD_Ref_List_ID " +
-									"    and trl.AD_Language = '" + m_language.getAD_Language() + "' " +
+									"    and trl.AD_Language = " + DB.TO_STRING(m_language.getAD_Language()) +
 									"  where rl.AD_Reference_ID = " + AD_Reference_Value_ID +
 									"    and rl.Value in " + csvValuesSql +
 									")";
@@ -575,7 +575,7 @@ public class DataEngine
 									"   from AD_Ref_List rl " +
 									"   left join AD_Ref_List_Trl trl " +
 									"     on trl.AD_Ref_List_ID = rl.AD_Ref_List_ID " +
-									"    and trl.AD_Language = '" + m_language.getAD_Language() + "' " +
+									"    and trl.AD_Language = " + DB.TO_STRING(m_language.getAD_Language()) +
 									"  where rl.AD_Reference_ID = " + AD_Reference_Value_ID +
 									"    and rl.Value = any(" + csvValuesSql + ")" +
 									")";
@@ -692,7 +692,7 @@ public class DataEngine
 						sqlFROM.append(" LEFT OUTER JOIN ");
 						sqlFROM.append(" AD_Ref_List_Trl ").append(m_synonym).append(" ON (X")
 							.append(m_synonym).append(".AD_Ref_List_ID=").append(m_synonym).append(".AD_Ref_List_ID")
-							.append(" AND ").append(m_synonym).append(".AD_Language='").append(m_language.getAD_Language()).append("')");
+							.append(" AND ").append(m_synonym).append(".AD_Language=").append(DB.TO_STRING(m_language.getAD_Language())).append(")");
 					}
 					// 	TableName.ColumnName,
 					sqlSELECT.append(lookupSQL).append(" AS ").append(ColumnName).append(",");

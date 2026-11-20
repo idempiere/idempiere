@@ -521,7 +521,7 @@ public class GridTabVO implements Evaluatee, Serializable
 		StringBuilder sql;
 		if (!Env.isBaseLanguage(ctx, "AD_Window")) {
 			sql = new StringBuilder( "SELECT * FROM AD_Tab_vt WHERE AD_Window_ID=?");
-			sql.append(" AND AD_Language='" + Env.getAD_Language(ctx) + "'")
+			sql.append(" AND AD_Language=" + DB.TO_STRING(Env.getAD_Language(ctx)))
 				.append(ASPFilter);
 			if (!role.isAccessAdvanced()) {
 				sql.append(advancedFilter);

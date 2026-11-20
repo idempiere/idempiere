@@ -250,8 +250,8 @@ public abstract class CreateFrom implements ICreateFrom
 		if (Env.isBaseLanguage(Env.getCtx(), "C_UOM"))
 			sql.append(" LEFT OUTER JOIN C_UOM uom ON (l.C_UOM_ID=uom.C_UOM_ID)");
 		else
-			sql.append(" LEFT OUTER JOIN C_UOM_Trl uom ON (l.C_UOM_ID=uom.C_UOM_ID AND uom.AD_Language='")
-				.append(Env.getAD_Language(Env.getCtx())).append("')");
+			sql.append(" LEFT OUTER JOIN C_UOM_Trl uom ON (l.C_UOM_ID=uom.C_UOM_ID AND uom.AD_Language=")
+				.append(DB.TO_STRING(Env.getAD_Language(Env.getCtx()))).append(")");
 		//
 		sql.append(" WHERE l.C_Order_ID=? "			//	#1
 			+ "GROUP BY l.QtyOrdered,CASE WHEN l.QtyOrdered=0 THEN 0 ELSE l.QtyEntered/l.QtyOrdered END, "

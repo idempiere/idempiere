@@ -25,6 +25,7 @@ import org.adempiere.util.PaymentUtil;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessCall;
 import org.compiere.process.ProcessInfo;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.IBAN;
 import org.compiere.util.Msg;
@@ -727,8 +728,8 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 	public static int[] getAuthorizationPaymentTransactionIDs(int C_Order_ID, int C_Invoice_ID, String trxName)
 	{
 		StringBuilder whereClause = new StringBuilder();
-		whereClause.append("TenderType='").append(MPaymentTransaction.TENDERTYPE_CreditCard).append("' ");
-		whereClause.append("AND TrxType='").append(MPaymentTransaction.TRXTYPE_Authorization).append("' ");
+		whereClause.append("TenderType=").append(DB.TO_STRING(MPaymentTransaction.TENDERTYPE_CreditCard));
+		whereClause.append(" AND TrxType=").append(DB.TO_STRING(MPaymentTransaction.TRXTYPE_Authorization));
 		if (C_Order_ID > 0 && C_Invoice_ID > 0)
 			whereClause.append(" AND (C_Order_ID=").append(C_Order_ID).append(" OR C_Invoice_ID=").append(C_Invoice_ID).append(")");
 		else if (C_Order_ID > 0)
@@ -762,8 +763,8 @@ public class MPaymentTransaction extends X_C_PaymentTransaction implements Proce
 			orderIDs = orderIDs.substring(0, orderIDs.length() - 1);
 		
 		StringBuilder whereClause = new StringBuilder();
-		whereClause.append("TenderType='").append(MPaymentTransaction.TENDERTYPE_CreditCard).append("' ");
-		whereClause.append("AND TrxType='").append(MPaymentTransaction.TRXTYPE_Authorization).append("' ");
+		whereClause.append("TenderType=").append(DB.TO_STRING(MPaymentTransaction.TENDERTYPE_CreditCard));
+		whereClause.append(" AND TrxType=").append(DB.TO_STRING(MPaymentTransaction.TRXTYPE_Authorization));
 		if (orderIDs.length() > 0 && C_Invoice_ID > 0)
 			whereClause.append(" AND (C_Order_ID IN (").append(orderIDs).append(") OR C_Invoice_ID=").append(C_Invoice_ID).append(")");
 		else if (orderIDs.length() > 0)

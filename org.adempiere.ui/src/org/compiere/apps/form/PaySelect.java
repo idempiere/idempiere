@@ -343,7 +343,7 @@ public class PaySelect
 		if (paymentRule != null && X_C_Order.PAYMENTRULE_DirectDebit.equals(paymentRule.getValue()))
 		{
 			isSOTrx = "Y";
-			sql += " AND i.PaymentRule='" + X_C_Order.PAYMENTRULE_DirectDebit + "'";
+			sql += " AND i.PaymentRule=" + DB.TO_STRING(X_C_Order.PAYMENTRULE_DirectDebit);
 		}
 		//
 		if (onlyDue)

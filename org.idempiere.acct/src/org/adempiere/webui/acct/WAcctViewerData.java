@@ -383,7 +383,7 @@ public class WAcctViewerData
 				whereClause.append(" AND ");
 		
 			whereClause.append(RModel.TABLE_ALIAS)
-				.append(".PostingType='").append(PostingType).append("'");
+				.append(".PostingType=").append(DB.TO_STRING(PostingType));
 		}
 		
 		if (documentQuery)

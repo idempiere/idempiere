@@ -316,7 +316,7 @@ public class MReportLine extends X_PA_ReportLine
 			{
 				if (m_whereClause.length() > 0)
 					m_whereClause += " AND ";
-				m_whereClause += "PostingType='" + PostingType + "'";
+				m_whereClause += "PostingType=" + DB.TO_STRING(PostingType);
 				// globalqss - CarlosRuiz
 				if (PostingType.equals(MReportLine.POSTINGTYPE_Budget)) {
 					if (getGL_Budget_ID() > 0)

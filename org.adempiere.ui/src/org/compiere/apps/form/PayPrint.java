@@ -356,7 +356,7 @@ public class PayPrint {
 			StringBuilder sb = new StringBuilder();
 			sb.append("UPDATE C_BankAccountDoc SET CurrentNext=").append(lastDocumentNo)
 				.append(" WHERE C_BankAccount_ID=").append(m_C_BankAccount_ID)
-				.append(" AND PaymentRule='").append(paymentRule).append("'");
+				.append(" AND PaymentRule=").append(DB.TO_STRING(paymentRule));
 			DB.executeUpdate(sb.toString(), null);
 		}
 		

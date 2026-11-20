@@ -1593,7 +1593,7 @@ public abstract class InfoPanel extends Window implements EventListener<Event>, 
 				fromClause += tableNameTrl + "." + keyCol + " = ";
 				
 				if("AD_Language".equalsIgnoreCase(keyCol))
-					fromClause += " '" + Env.getAD_Language(Env.getCtx()) + "' ";
+					fromClause += " " + DB.TO_STRING(Env.getAD_Language(Env.getCtx())) + " ";
 				else
 					fromClause += sqlSelect;
 			}

@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 import org.compiere.db.DB_PostgreSQL;
 import org.compiere.model.SystemProperties;
 import org.compiere.util.CLogger;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Util;
 
@@ -1146,8 +1147,9 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 									+ " ADD COLUMN "
 									+ column
 									+ " " + beforeDefault.trim()
-									+ " DEFAULT '"
-									+ defaultvalue.trim() + "' " + rest.trim();
+									+ " DEFAULT "
+									+ (defaultvalue.trim().length() == 0 ? "''" : DB.TO_STRING(defaultvalue.trim()))
+									+ " " + rest.trim();
 							}
 						}
 					} else {
@@ -1208,21 +1210,21 @@ public class Convert_PostgreSQL extends Convert_SQL92 {
 						
 					}
 
-					DDL = "INSERT INTO t_alter_column values('";
+					DDL = "INSERT INTO t_alter_column values(";
 					String tableName = sqlStatement.substring(0, begin_col - action.length());
 					tableName = tableName.toUpperCase().replace("ALTER TABLE", "");
 					tableName = tableName.trim().toLowerCase();
-					DDL = DDL + tableName + "','" + column + "',";
+					DDL = DDL + DB.TO_STRING(tableName) + "," + DB.TO_STRING(column) + ",";
 					if (type != null)
-						DDL = DDL + "'" + type +"',";
+						DDL = DDL + DB.TO_STRING(type) +",";
 					else
 						DDL = DDL + "null,";
 					if (nullclause != null)
-						DDL = DDL + "'" + nullclause + "',";
+						DDL = DDL + DB.TO_STRING(nullclause) + ",";
 					else
 						DDL = DDL + "null,";
 					if (defaultvalue != null)
-						DDL = DDL + "'" + defaultvalue + "'";
+						DDL = DDL + (defaultvalue.length() == 0 ? "''" : DB.TO_STRING(defaultvalue));
 					else
 						DDL = DDL + "null";
 					DDL = DDL + ")";					

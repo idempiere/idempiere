@@ -51,11 +51,11 @@ import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Trx;
 import org.compiere.util.TrxEventListener;
-import org.idempiere.print.ReportContentRequest;
 import org.compiere.util.Util;
 import org.compiere.wf.MWFActivity;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.acct.IDoc;
+import org.idempiere.print.ReportContentRequest;
 
 /**
  *  Shipment/Receipt Model
@@ -1094,8 +1094,8 @@ public class MInOut extends X_M_InOut implements DocAction, IDocsPostProcess
 		String sql = "SELECT C_DocType_ID FROM C_DocType "
 			+ "WHERE AD_Client_ID=? AND DocBaseType=?"
 			+ " AND IsActive='Y'"
-			+ " AND IsSOTrx='" + (isSOTrx() ? "Y" : "N") + "' "
-			+ "ORDER BY IsDefault DESC";
+			+ " AND IsSOTrx=" + (isSOTrx() ? "'Y'" : "'N'")
+			+ " ORDER BY IsDefault DESC";
 		int C_DocType_ID = DB.getSQLValue(null, sql, getAD_Client_ID(), DocBaseType);
 		if (C_DocType_ID <= 0)
 			log.log(Level.SEVERE, "Not found for AC_Client_ID="

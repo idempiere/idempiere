@@ -5537,7 +5537,7 @@ public abstract class PO
 					  : C_Element_ID)
 			  .append(" AND t.AD_Tree_ID=ae.AD_Tree_ID)");
 		else	//	std trees
-			sb.append(" AND t.IsAllNodes='Y' AND t.TreeType='").append(treeType).append("'");
+			sb.append(" AND t.IsAllNodes='Y' AND t.TreeType=").append(DB.TO_STRING(treeType));
 		if (MTree_Base.TREETYPE_CustomTable.equals(treeType))
 			sb.append(" AND t.AD_Table_ID=")
 			  .append(get_Table_ID() > MTable.MAX_OFFICIAL_ID && Env.isLogMigrationScript(get_TableName()) 
@@ -5722,8 +5722,8 @@ public abstract class PO
 			.append(MTree_Base.getNodeTableName(treeType))
 			.append(" n WHERE Node_ID=").append(id)
 			.append(" AND EXISTS (SELECT * FROM AD_Tree t "
-				+ "WHERE t.AD_Tree_ID=n.AD_Tree_ID AND t.TreeType='")
-			.append(treeType).append("'");
+				+ "WHERE t.AD_Tree_ID=n.AD_Tree_ID AND t.TreeType=")
+			.append(DB.TO_STRING(treeType));
 		if (MTree_Base.TREETYPE_CustomTable.equals(treeType))
 			sb.append(" AND t.AD_Table_ID=").append(get_Table_ID());
 		sb.append(")");	

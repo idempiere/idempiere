@@ -209,8 +209,8 @@ public abstract class CreateFromShipment extends CreateFrom
 		if (Env.isBaseLanguage(Env.getCtx(), "C_UOM"))
 			sql.append(" LEFT OUTER JOIN C_UOM uom ON (l.C_UOM_ID=uom.C_UOM_ID)");
 		else
-			sql.append(" LEFT OUTER JOIN C_UOM_Trl uom ON (l.C_UOM_ID=uom.C_UOM_ID AND uom.AD_Language='")
-			.append(Env.getAD_Language(Env.getCtx())).append("')");
+			sql.append(" LEFT OUTER JOIN C_UOM_Trl uom ON (l.C_UOM_ID=uom.C_UOM_ID AND uom.AD_Language=")
+			.append(DB.TO_STRING(Env.getAD_Language(Env.getCtx()))).append(")");
 		//
 		sql.append(" WHERE l.C_Order_ID=? "			//	#1
 				+ "GROUP BY l.QtyOrdered,CASE WHEN l.QtyOrdered=0 THEN 0 ELSE l.QtyEntered/l.QtyOrdered END, "
@@ -284,8 +284,8 @@ public abstract class CreateFromShipment extends CreateFrom
         }
 	    else
         {
-	        sqlStmt.append("LEFT OUTER JOIN C_UOM_Trl uom ON (uom.C_UOM_ID=COALESCE(p.C_UOM_ID,iol.C_UOM_ID) AND uom.AD_Language='");
-	        sqlStmt.append(Env.getAD_Language(Env.getCtx())).append("') ");
+	        sqlStmt.append("LEFT OUTER JOIN C_UOM_Trl uom ON (uom.C_UOM_ID=COALESCE(p.C_UOM_ID,iol.C_UOM_ID) AND uom.AD_Language=");
+	        sqlStmt.append(DB.TO_STRING(Env.getAD_Language(Env.getCtx()))).append(") ");
         }
 	    sqlStmt.append("LEFT OUTER JOIN C_Charge c ON c.C_Charge_ID=iol.C_Charge_ID ");
 	    sqlStmt.append("WHERE rl.M_RMA_ID=? ");
@@ -301,8 +301,8 @@ public abstract class CreateFromShipment extends CreateFrom
         }
 	    else
         {
-	        sqlStmt.append("LEFT OUTER JOIN C_UOM_Trl uom ON (uom.C_UOM_ID=100 AND uom.AD_Language='");
-	        sqlStmt.append(Env.getAD_Language(Env.getCtx())).append("') ");
+	        sqlStmt.append("LEFT OUTER JOIN C_UOM_Trl uom ON (uom.C_UOM_ID=100 AND uom.AD_Language=");
+	        sqlStmt.append(DB.TO_STRING(Env.getAD_Language(Env.getCtx()))).append(") ");
         }
 	    sqlStmt.append("WHERE rl.M_RMA_ID=? ");
 	    sqlStmt.append("AND rl.M_Product_ID IS NOT NULL AND rl.M_InOutLine_ID IS NULL");
@@ -317,8 +317,8 @@ public abstract class CreateFromShipment extends CreateFrom
         }
 	    else
         {
-	        sqlStmt.append("LEFT OUTER JOIN C_UOM_Trl uom ON (uom.C_UOM_ID=100 AND uom.AD_Language='");
-	        sqlStmt.append(Env.getAD_Language(Env.getCtx())).append("') ");
+	        sqlStmt.append("LEFT OUTER JOIN C_UOM_Trl uom ON (uom.C_UOM_ID=100 AND uom.AD_Language=");
+	        sqlStmt.append(DB.TO_STRING(Env.getAD_Language(Env.getCtx()))).append(") ");
         }
 	    sqlStmt.append("WHERE rl.M_RMA_ID=? ");
 	    sqlStmt.append("AND rl.C_Charge_ID IS NOT NULL AND rl.M_InOutLine_ID IS NULL");
@@ -387,8 +387,8 @@ public abstract class CreateFromShipment extends CreateFrom
 		if (Env.isBaseLanguage(Env.getCtx(), "C_UOM"))
 			sql.append(" LEFT OUTER JOIN C_UOM uom ON (l.C_UOM_ID=uom.C_UOM_ID)");
 		else
-			sql.append(" LEFT OUTER JOIN C_UOM_Trl uom ON (l.C_UOM_ID=uom.C_UOM_ID AND uom.AD_Language='")
-			.append(Env.getAD_Language(Env.getCtx())).append("')");
+			sql.append(" LEFT OUTER JOIN C_UOM_Trl uom ON (l.C_UOM_ID=uom.C_UOM_ID AND uom.AD_Language=")
+			.append(DB.TO_STRING(Env.getAD_Language(Env.getCtx()))).append(")");
 
 		sql.append(" LEFT OUTER JOIN M_Product p ON (l.M_Product_ID=p.M_Product_ID)")
 		.append(" LEFT OUTER JOIN M_Locator loc on (p.M_Locator_ID=loc.M_Locator_ID)")

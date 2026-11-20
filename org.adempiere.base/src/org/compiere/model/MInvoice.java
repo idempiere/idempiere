@@ -55,9 +55,9 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 import org.compiere.util.Util;
-import org.idempiere.print.ReportContentRequest;
 import org.eevolution.model.MPPProductBOM;
 import org.eevolution.model.MPPProductBOMLine;
+import org.idempiere.print.ReportContentRequest;
 
 /**
  *  <pre>

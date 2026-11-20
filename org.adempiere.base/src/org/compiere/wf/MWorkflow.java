@@ -52,8 +52,8 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
-import org.idempiere.cache.ImmutablePOSupport;
 import org.idempiere.cache.ImmutablePOCache;
+import org.idempiere.cache.ImmutablePOSupport;
 
 /**
  *	Extended WorkFlow Model for AD_Workflow
@@ -191,7 +191,7 @@ public class MWorkflow extends X_AD_Workflow implements ImmutablePOSupport
 		else
 			sql = MRole.getDefault().addAccessSQL(
 					"SELECT AD_Workflow.AD_Workflow_ID, AD_Workflow_Trl.Name FROM AD_Workflow INNER JOIN AD_Workflow_Trl ON (AD_Workflow.AD_Workflow_ID=AD_Workflow_Trl.AD_Workflow_ID) "
-					+ " WHERE AD_Workflow.IsActive='Y' AND AD_Workflow_Trl.AD_Language='"+Env.getAD_Language(Env.getCtx())+"' ORDER BY 2","AD_Workflow", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);	//	all
+					+ " WHERE AD_Workflow.IsActive='Y' AND AD_Workflow_Trl.AD_Language="+DB.TO_STRING(Env.getAD_Language(Env.getCtx()))+" ORDER BY 2","AD_Workflow", MRole.SQL_FULLYQUALIFIED, MRole.SQL_RO);	//	all
 		KeyNamePair[] pp = DB.getKeyNamePairsEx(sql, withEmptyElement);
 		return pp;
 	}

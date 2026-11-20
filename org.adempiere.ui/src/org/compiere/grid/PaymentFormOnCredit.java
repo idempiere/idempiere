@@ -22,8 +22,8 @@ import java.util.logging.Level;
 import org.compiere.model.GridTab;
 import org.compiere.model.MRole;
 import org.compiere.util.DB;
-import org.compiere.util.KeyNamePair;
 import org.compiere.util.Env;
+import org.compiere.util.KeyNamePair;
 
 /**
  * Payment form for on credit tender type
@@ -70,8 +70,8 @@ public abstract class PaymentFormOnCredit extends PaymentForm {
 			  .append(" WHERE p.IsActive='Y' ORDER BY p.Name");
 		} else {
 			sb.append("SELECT p.C_PaymentTerm_ID, pt.Name FROM C_PaymentTerm p")
-			  .append(" JOIN C_PaymentTerm_Trl pt ON (p.C_PaymentTerm_ID=pt.C_PaymentTerm_ID AND pt.AD_Language='")
-			  .append(ad_language).append("')")
+			  .append(" JOIN C_PaymentTerm_Trl pt ON (p.C_PaymentTerm_ID=pt.C_PaymentTerm_ID AND pt.AD_Language=")
+			  .append(DB.TO_STRING(ad_language)).append(")")
 			  .append(" WHERE p.IsActive='Y' ORDER BY p.Name");
 		}
 

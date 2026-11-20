@@ -18,10 +18,10 @@ import java.sql.Statement;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
-import org.adempiere.pipo2.IPackSerializer;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.pipo2.DataElementParameters;
+import org.adempiere.pipo2.IPackSerializer;
 import org.adempiere.pipo2.PIPOContext;
 import org.adempiere.pipo2.PackOut;
 import org.adempiere.pipo2.PoExporter;
@@ -128,7 +128,7 @@ public class AttributeElementHandler extends GenericPOElementHandler
 			m_tableName = MAttribute.Table_Name;
 		int tableId = MTable.get(packout.getCtx().ctx, m_tableName).getAD_Table_ID();
 		String sql = !Util.isEmpty(uuid) 
-				? "SELECT * FROM M_Attribute WHERE M_Attribute_UU = '" + uuid + "'"
+				? "SELECT * FROM M_Attribute WHERE M_Attribute_UU=" + DB.TO_STRING(uuid)
 				: "SELECT * FROM M_Attribute WHERE M_Attribute_ID=" + recordId;
 		packout.getCtx().ctx.put(DataElementParameters.AD_TABLE_ID, Integer.toString(tableId));
 		packout.getCtx().ctx.put(DataElementParameters.SQL_STATEMENT, sql);

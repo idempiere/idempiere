@@ -640,7 +640,7 @@ public class MPInstance extends X_AD_PInstance
 				+ "FROM AD_Process p"
 				+ " INNER JOIN AD_PInstance i ON (p.AD_Process_ID=i.AD_Process_ID) "
 				+ " INNER JOIN AD_Process_Trl t ON (p.AD_Process_ID=t.AD_Process_ID"
-					+ " AND t.AD_Language='" + Env.getAD_Language(Env.getCtx()) + "') "
+					+ " AND t.AD_Language=" + DB.TO_STRING(Env.getAD_Language(Env.getCtx())) + ") "
 				+ "WHERE p.IsActive='Y'"
 				+ " AND i.AD_PInstance_ID=?";
 		//

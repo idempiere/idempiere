@@ -575,7 +575,7 @@ public class ValuePreference extends Window implements EventListener<Event>
 			sql.append(" AND PreferenceFor = 'W'");
 		}
 		
-		sql.append(" AND Attribute='").append(m_Attribute).append("'");
+		sql.append(" AND Attribute=").append(DB.TO_STRING(m_Attribute));
 		//
 		if (log.isLoggable(Level.FINE)) log.fine( sql.toString());
 		int no = DB.executeUpdate(sql.toString(), null);

@@ -413,7 +413,7 @@ public class FinStatement extends SvrProcess
 					+ "FROM Fact_Acct fa"
 					+ " INNER JOIN AD_Table t ON (fa.AD_Table_ID=t.AD_Table_ID)"
 					+ " INNER JOIN AD_Element e ON (t.TableName||'_ID'=e.ColumnName) "
-					+ " INNER JOIN AD_Element_Trl et ON (e.AD_Element_ID=et.AD_Element_ID AND et.AD_Language='"+lang.getAD_Language()+"') "
+					+ " INNER JOIN AD_Element_Trl et ON (e.AD_Element_ID=et.AD_Element_ID AND et.AD_Language="+DB.TO_STRING(lang.getAD_Language())+") "
 					+ "WHERE r.Fact_Acct_ID=fa.Fact_Acct_ID";
 		}
 		//	Translated Version ...

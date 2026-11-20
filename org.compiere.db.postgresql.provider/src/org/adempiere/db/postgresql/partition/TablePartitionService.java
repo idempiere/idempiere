@@ -861,7 +861,7 @@ public class TablePartitionService implements ITablePartitionService {
 	private List<X_AD_TablePartition> generateListPartition(MTable table, String partitionNamePrefix, String fromPartitionTable, MColumn partitionKeyColumn, HashMap<String, Object> columnValues, 
 			X_AD_TablePartition parentPartition, String trxName) {
 		List<X_AD_TablePartition> partitions = new ArrayList<X_AD_TablePartition>();
-		String nameColumn = "'" + partitionNamePrefix + "_' || " + partitionKeyColumn.getColumnName();
+		String nameColumn = DB.TO_STRING(partitionNamePrefix + "_" ) + " || " + partitionKeyColumn.getColumnName();
 		String expressionColumn = "'FOR VALUES IN (''' || " + partitionKeyColumn.getColumnName() + " || ''')'";
 		
 		StringBuilder sql = new StringBuilder();

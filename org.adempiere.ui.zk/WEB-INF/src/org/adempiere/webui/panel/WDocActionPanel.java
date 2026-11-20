@@ -262,7 +262,7 @@ public class WDocActionPanel extends Window implements EventListener<Event>, Dia
 	{
 		String sql = "SELECT 2 FROM " + TableName
 			+ " WHERE " + TableName + "_ID=" + Record_ID
-			+ " AND DocStatus='" + DocStatus + "'";
+			+ " AND DocStatus=" + DB.TO_STRING(DocStatus);
 		int result = DB.getSQLValue(null, sql);
 		return result == 2;
 	}

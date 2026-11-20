@@ -331,7 +331,7 @@ public class TrialBalance extends SvrProcess
 		//	AD_Table_ID, Record_ID, Line_ID,
 		sql.append("null,null,null,");
 		//	GL_Category_ID, GL_Budget_ID, C_Tax_ID, M_Locator_ID, PostingType,
-		sql.append("null,null,null,null,").append(DB.TO_STRING(p_PostingType)).append(",");
+		sql.append("null,null,null,null,'").append(p_PostingType).append("',");
 		//	C_Currency_ID, AmtSourceDr, AmtSourceCr, AmtSourceBalance,
 		sql.append("null,null,null,null,");
 		//	AmtAcctDr, AmtAcctCr, AmtAcctBalance, C_UOM_ID, Qty,
@@ -395,8 +395,8 @@ public class TrialBalance extends SvrProcess
 			sql.append ("null");
 		else
 			sql.append (p_User2_ID);
-		sql.append(", null, '");
-		sql.append(Msg.getMsg(getCtx(), "opening.balance") + "', 0, generate_uuid() ");
+		sql.append(", null, ");
+		sql.append(DB.TO_STRING(Msg.getMsg(getCtx(), "opening.balance")) + ", 0, generate_uuid() ");
 		//
 		sql.append(" FROM Fact_Acct WHERE AD_Client_ID=").append(getAD_Client_ID())
 			.append (" AND ").append(m_parameterWhere)

@@ -14,6 +14,8 @@
 
 package org.adempiere.webui.apps;
 
+import static org.adempiere.webui.LayoutUtils.isLabelAboveInputForSmallWidth;
+
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -92,8 +94,6 @@ import org.zkoss.zul.Separator;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.impl.InputElement;
 import org.zkoss.zul.impl.XulElement;
-
-import static org.adempiere.webui.LayoutUtils.isLabelAboveInputForSmallWidth;
 
 /**
  * Process Parameter Panel.<br/>
@@ -302,10 +302,10 @@ public class ProcessParameterPanel extends Panel implements
 					+ " INNER JOIN AD_Process_Para_Trl t ON (p.AD_Process_Para_ID=t.AD_Process_Para_ID)"
 					+ " LEFT OUTER JOIN AD_Val_Rule vr ON (p.AD_Val_Rule_ID=vr.AD_Val_Rule_ID) "
 					+ " LEFT OUTER JOIN AD_FieldGroup fg ON (p.AD_FieldGroup_ID=fg.AD_FieldGroup_ID) "
-					+ " LEFT OUTER JOIN AD_FieldGroup_Trl fgt ON (p.AD_FieldGroup_ID=fgt.AD_FieldGroup_ID AND fgt.AD_Language='" + Env.getAD_Language(Env.getCtx()) + "') "
+					+ " LEFT OUTER JOIN AD_FieldGroup_Trl fgt ON (p.AD_FieldGroup_ID=fgt.AD_FieldGroup_ID AND fgt.AD_Language=" + DB.TO_STRING(Env.getAD_Language(Env.getCtx())) + ") "
 					+ "WHERE p.AD_Process_ID=?" // 1
-					+ " AND t.AD_Language='" + Env.getAD_Language(Env.getCtx())
-					+ "'" + " AND p.IsActive='Y' " + ASPFilter
+					+ " AND t.AD_Language=" + DB.TO_STRING(Env.getAD_Language(Env.getCtx()))
+					+ " AND p.IsActive='Y' " + ASPFilter
 					+ " ORDER BY SeqNo";
 
 		// Create Fields

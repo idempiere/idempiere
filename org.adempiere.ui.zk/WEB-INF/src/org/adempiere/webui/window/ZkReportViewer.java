@@ -1391,7 +1391,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 	 */
 	private void resetPrintFormatTrl(MPrintFormat pf) {
 		String sql = "UPDATE AD_PrintFormat_Trl pf "
-				+ " SET Name = '" + pf.getName() + "' "
+				+ " SET Name = " + DB.TO_STRING(pf.getName())
 				+ " WHERE pf.AD_PrintFormat_ID = " + pf.getAD_PrintFormat_ID();
 		DB.executeUpdate(sql, null);
 	}
@@ -1688,7 +1688,7 @@ public class ZkReportViewer extends Window implements EventListener<Event>, IRep
 		String sql = null;
 		if (!Env.isBaseLanguage(Env.getCtx(), "AD_Tab")) {
 			sql = "SELECT Name, TableName FROM AD_Tab_vt WHERE AD_Tab_ID=?"
-					+ " AND AD_Language='" + Env.getAD_Language(Env.getCtx()) + "' " + ASPFilter;
+					+ " AND AD_Language=" + DB.TO_STRING(Env.getAD_Language(Env.getCtx())) + " " + ASPFilter;
 		} else {
 			sql = "SELECT Name, TableName FROM AD_Tab_v WHERE AD_Tab_ID=? " + ASPFilter;
 		}
