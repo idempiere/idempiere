@@ -39,6 +39,7 @@ import org.compiere.model.MOrderLine;
 import org.compiere.model.MProduct;
 import org.compiere.model.MRMA;
 import org.compiere.model.MRMALine;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTax;
 import org.compiere.model.ProductCost;
 import org.compiere.util.DB;
@@ -245,10 +246,7 @@ public class Doc_InOut extends Doc
 					{
 						if (product.isStocked())
 						{
-							//ok if we have purchased zero cost item from vendor before
-							int count = DB.getSQLValue(null, "SELECT Count(*) FROM M_CostDetail WHERE M_Product_ID=? AND Processed='Y' AND Amt=0.00 AND Qty > 0 AND (C_OrderLine_ID > 0 OR C_InvoiceLine_ID > 0)", 
-									product.getM_Product_ID());
-							if (count > 0)
+							if (DocCostHelper.isWithZeroCost(this, product, as, line.getAD_Org_ID()))
 							{
 								costs = BigDecimal.ZERO;
 							}
@@ -798,9 +796,16 @@ public class Doc_InOut extends Doc
 					{
 						//ok if purchase price is actually zero 
 						if (orderLine != null && orderLine.getPriceActual().signum() == 0)
-                    	{
+						{
 							costs = BigDecimal.ZERO;
-                    	}
+						}
+						else if (orderLine == null
+								&& MSysConfig.getBooleanValue(MSysConfig.CHECK_PURCHASE_PRICE_LIST_FOR_ZERO_COST_POSTING, false, getAD_Client_ID())
+								&& DocCostHelper.isWithFreePurchasePriceList(this, product.getM_Product_ID()))
+						{
+							//ok, if no PO line and purchase price list is zero
+							costs = BigDecimal.ZERO;
+						}
 						else
 						{
 							p_Error = Msg.getMsg(getCtx(),"Resubmit - No Costs for") + " " + product.getName();
