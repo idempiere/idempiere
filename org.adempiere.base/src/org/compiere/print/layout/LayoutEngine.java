@@ -1774,7 +1774,7 @@ public class LayoutEngine implements Pageable, Printable, Doc
 					Font base = printFont.getFont();
 					if (levelNo == 1)
 						rowColFont.put(new Point(row, TableElement.ALL),
-								new Font(base.getName(), Font.ITALIC, base.getSize() - levelNo));
+								MPrintTableFormat.deriveFont(base, Font.ITALIC, base.getSize() - levelNo));
 					else if (levelNo == 2)
 						rowColFont.put(new Point(row, TableElement.ALL),
 								new Font(base.getName(), Font.PLAIN, base.getSize() - levelNo));
