@@ -54,7 +54,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = -1608017405401341288L;
+	private static final long serialVersionUID = -1140073305887924693L;
 
     /**
      * UUID based Constructor
@@ -221,9 +221,17 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 	public static Font deriveFont(Font base, int style, int size)
 	{
 		Font font = new Font (base.getName(), style, size);
+		String family = base.getFamily();
 		if (style != Font.PLAIN && font.getFontName().equals(base.getFontName())
-			&& base.getFamily() != null && !base.getFamily().equals(base.getName()))
-			font = new Font (base.getFamily(), style, size);
+			&& family != null && !family.equals(base.getName()))
+		{
+			//	use the family only when it is found and has a face with the requested style
+			Font familyFont = new Font (family, style, size);
+			Font familyPlain = new Font (family, Font.PLAIN, size);
+			if (family.equalsIgnoreCase(familyFont.getFamily())
+				&& !familyFont.getFontName().equals(familyPlain.getFontName()))
+				font = familyFont;
+		}
 		return font;
 	}	//	deriveFont
 

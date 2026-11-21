@@ -28,6 +28,7 @@ import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Arrays;
 
 import org.compiere.print.MPrintTableFormat;
 import org.compiere.util.Env;
@@ -52,18 +53,21 @@ public class MPrintTableFormatFontTest extends AbstractTestCase {
 	/** Registers the Liberation Sans faces the way a plug-in registers its print fonts. */
 	@BeforeAll
 	public static void registerFaces() throws Exception {
+		for (String face : FACES)
+			registerFace(face);
+	}
+
+	private static void registerFace(String face) throws Exception {
 		Bundle fonts = null;
 		for (Bundle bundle : FrameworkUtil.getBundle(MPrintTableFormatFontTest.class).getBundleContext().getBundles()) {
 			if (FONTS_BUNDLE.equals(bundle.getSymbolicName()))
 				fonts = bundle;
 		}
 		assertNotNull(fonts, FONTS_BUNDLE + " not found");
-		for (String face : FACES) {
-			URL url = fonts.getEntry("liberation/" + face);
-			assertNotNull(url, face + " not found in " + FONTS_BUNDLE);
-			try (InputStream in = url.openStream()) {
-				GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(Font.createFont(Font.TRUETYPE_FONT, in));
-			}
+		URL url = fonts.getEntry("liberation/" + face);
+		assertNotNull(url, face + " not found in " + FONTS_BUNDLE);
+		try (InputStream in = url.openStream()) {
+			GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(Font.createFont(Font.TRUETYPE_FONT, in));
 		}
 	}
 
@@ -90,6 +94,21 @@ public class MPrintTableFormatFontTest extends AbstractTestCase {
 
 		Font logical = new Font("SansSerif", Font.PLAIN, 10);
 		assertEquals(new Font("SansSerif", Font.BOLD, 10), MPrintTableFormat.deriveFont(logical, Font.BOLD, 10));
+	}
+
+	/** When the family has no face with the requested style, the face is kept instead of the plain family face. */
+	@Test
+	public void testFamilyWithoutStyleKeepsFace() throws Exception {
+		// an installed Liberation Mono has all faces, the case cannot be set up
+		if (Arrays.asList(GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames())
+				.contains("Liberation Mono"))
+			return;
+		// only the bold face of the family, no italic
+		registerFace("LiberationMono-Bold.ttf");
+		Font bold = new Font("Liberation Mono Bold", Font.PLAIN, 10);
+		assertEquals("Liberation Mono Bold", bold.getFontName(), "Liberation Mono Bold not registered");
+
+		assertEquals("Liberation Mono Bold", MPrintTableFormat.deriveFont(bold, Font.ITALIC, 10).getFontName());
 	}
 
 	@Test
