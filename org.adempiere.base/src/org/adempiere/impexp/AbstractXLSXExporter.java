@@ -15,13 +15,14 @@ package org.adempiere.impexp;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 import java.util.logging.Level;
 
 import org.apache.commons.compress.archivers.zip.Zip64Mode;
@@ -323,7 +324,7 @@ public abstract class AbstractXLSXExporter
 		String cellFormat = null;
 		
 		if (DisplayType.isDate(displayType)) {
-			cellFormat = DisplayType.getDateFormat(getLanguage()).toPattern();
+			cellFormat = AbstractExcelExporter.getDateCellFormat(displayType, getLanguage(), getCtx());
 		} else if (DisplayType.isNumeric(displayType)) {
 			DecimalFormat df = DisplayType.getNumberFormat(displayType, getLanguage());
 			cellFormat = getFormatString(df, isHighlightNegativeNumbers);
@@ -368,6 +369,8 @@ public abstract class AbstractXLSXExporter
 			// so, we need to figure a default size depending on the display type
 			//  default here to:
 			//     10 characters for date fields
+			//     14 characters for time fields
+			//     22 characters for datetime / timestamp with timezone fields
 			//     12 for numeric
 			//      5 for boolean
 			//     20 for all others
@@ -376,8 +379,12 @@ public abstract class AbstractXLSXExporter
 				if (isColumnPrinted(col)) {
 					int dt = getDisplayType(0, col);
 					int width = 20*256;
-					if (DisplayType.isDate(dt))
+					if (dt == DisplayType.Date)
 						width = 10*256;
+					else if (dt == DisplayType.Time)
+						width = 14*256;
+					else if (DisplayType.isDate(dt))
+						width = 22*256;
 					else if (DisplayType.isNumeric(dt))
 						width = 12*256;
 					else if (dt == DisplayType.YesNo)
@@ -623,6 +630,7 @@ public abstract class AbstractXLSXExporter
 		boolean isPreviousRowFunction = false;
 		boolean isPreviousRowTotal = false;
 		boolean hasPageBreak = false;
+		Set<Class<?>> warnedDateTypes = new HashSet<>();
 
 		for (int xls_rownum = initxls_rownum; rownum < lastRowNum; rownum++, xls_rownum++)
 		{
@@ -701,12 +709,7 @@ public abstract class AbstractXLSXExporter
 					}
 					else if (DisplayType.isDate(displayType))
 					{
-						Timestamp value = null;
-						if (obj instanceof Date)
-							value = new Timestamp(((Date)obj).getTime());
-						else
-							value = (Timestamp)obj;
-						cell.setCellValue(value);
+						AbstractExcelExporter.setDateCellValue(cell, obj, displayType, getCtx(), warnedDateTypes);
 					}
 					else if (DisplayType.isNumeric(displayType))
 					{			
