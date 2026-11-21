@@ -13,6 +13,9 @@
 package org.adempiere.webui.sso.filter;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.logging.Level;
 
 import javax.servlet.Filter;
@@ -24,10 +27,10 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.adempiere.base.sso.ISSOPrincipalService;
 import org.adempiere.base.sso.SSOUtils;
-import org.compiere.model.MClient;
 import org.compiere.model.MSSOPrincipalConfig;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
@@ -70,22 +73,28 @@ public class SSOWebUIFilter implements Filter
 		HttpServletRequest httpRequest = null;
 		if (request instanceof HttpServletRequest hsr)
 		{
-			if (hsr.getRequestURI().endsWith("index.zul"))
+			String servletPath = hsr.getServletPath();
+			String requestURI = hsr.getRequestURI();
+			String tenantParam = hsr.getParameter(TENANT_PREFIX_PARAMETER);
+			boolean isIndexZulUri = requestURI != null && requestURI.endsWith("index.zul");
+			boolean isRootOrIndexPath = isIndexZulUri
+					|| "/index.zul".equalsIgnoreCase(servletPath)
+					|| "/".equals(servletPath);
+			if (isIndexZulUri || (isRootOrIndexPath && tenantParam != null))
 			{
-				String tenant = hsr.getParameter(TENANT_PREFIX_PARAMETER);
-				if (tenant != null)
+				HttpSession session = hsr.getSession();
+				String previousTenant = (String) session.getAttribute(TENANT_PREFIX_PARAMETER);
+				String newTenant = (tenantParam != null && !tenantParam.trim().isEmpty()) ? tenantParam.trim() : null;
+				if (!Objects.equals(previousTenant, newTenant))
 				{
-					tenant = tenant.trim();
-					if (tenant.isEmpty())
-						hsr.getSession().removeAttribute(TENANT_PREFIX_PARAMETER);
-					else
-						hsr.getSession().setAttribute(TENANT_PREFIX_PARAMETER, tenant);
+					SSOUtils.clearSSOSessionToken(session);
+					session.removeAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
+					session.removeAttribute(ISSOPrincipalService.SSO_QUERY_STRING);
 				}
+				if (newTenant == null)
+					session.removeAttribute(TENANT_PREFIX_PARAMETER);
 				else
-				{
-					if (hsr.getSession().getAttribute(TENANT_PREFIX_PARAMETER) != null)
-						hsr.getSession().removeAttribute(TENANT_PREFIX_PARAMETER);
-				}
+					session.setAttribute(TENANT_PREFIX_PARAMETER, newTenant);
 			}
 			httpRequest = hsr;
 
@@ -109,16 +118,24 @@ public class SSOWebUIFilter implements Filter
 				return;
 			}
 
+			// Allow error page without triggering SSO redirect
+			if (SSOUtils.ERROR_VALIDATION_URL.equalsIgnoreCase(httpRequest.getServletPath()))
+			{
+				chain.doFilter(request, response);
+				return;
+			}
+
+			HttpSession session = httpRequest.getSession();
 			boolean isAdminResRequest = false;
-			if (httpRequest.getSession().getAttribute(ISSOPrincipalService.SSO_ADMIN_LOGIN) != null)
-				isAdminResRequest = (boolean) httpRequest.getSession().getAttribute(ISSOPrincipalService.SSO_ADMIN_LOGIN);
+			if (session.getAttribute(ISSOPrincipalService.SSO_ADMIN_LOGIN) != null)
+				isAdminResRequest = (boolean) session.getAttribute(ISSOPrincipalService.SSO_ADMIN_LOGIN);
 			isAdminResRequest = isAdminResRequest || httpRequest.getServletPath().toLowerCase().startsWith("/admin");
 
 			// work as default log in
 			if (httpRequest.getServletPath().toLowerCase().startsWith("/index") || httpRequest.getServletPath().equalsIgnoreCase("/"))
 				isAdminResRequest = false;
 
-			httpRequest.getSession().setAttribute(ISSOPrincipalService.SSO_ADMIN_LOGIN, isAdminResRequest);
+			session.setAttribute(ISSOPrincipalService.SSO_ADMIN_LOGIN, isAdminResRequest);
 			// redirect to admin zul file
 			if (isAdminResRequest && httpRequest.getServletPath().toLowerCase().endsWith("admin"))
 			{
@@ -127,12 +144,14 @@ public class SSOWebUIFilter implements Filter
 			}
 
 			String provider = httpRequest.getParameter(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
+			if (provider != null)
+				provider = provider.trim();
 			boolean providerFromCookie = false;
-			if (Util.isEmpty(provider))
+			if (Util.isEmpty(provider, true))
 			{
-				if (httpRequest.getSession().getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER) != null)
+				if (session.getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER) != null)
 				{
-					provider = (String) httpRequest.getSession().getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
+					provider = (String) session.getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
 					removeProviderCookie(httpRequest, httpResponse, provider);
 				}
 				else
@@ -145,10 +164,11 @@ public class SSOWebUIFilter implements Filter
 						{
 							if (ISSOPrincipalService.SSO_SELECTED_PROVIDER.equals(cookie.getName()))
 							{
-								provider = cookie.getValue();
-								if (!Util.isEmpty(provider))
+								String cookieVal = cookie.getValue();
+								if (!Util.isEmpty(cookieVal, true))
 								{
-									httpRequest.getSession().setAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider);
+									provider = cookieVal.trim();
+									session.setAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider);
 									providerFromCookie = true;
 								}
 								break;
@@ -160,82 +180,87 @@ public class SSOWebUIFilter implements Filter
 			else
 			{
 				removeProviderCookie(httpRequest, httpResponse, provider);
-				
-				httpRequest.getSession().setAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider);
+				Object previousProvider = session.getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
+				Object authenticatedProvider = session.getAttribute(ISSOPrincipalService.SSO_AUTHENTICATED_PROVIDER);
+				if (!provider.equals(previousProvider) || !provider.equals(authenticatedProvider))
+				{
+					SSOUtils.clearSSOSessionToken(session);
+				}
+				session.setAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider);
 			}
 
-			String tenant = (String) httpRequest.getSession().getAttribute(TENANT_PREFIX_PARAMETER);
+			String tenant = (String) session.getAttribute(TENANT_PREFIX_PARAMETER);
+			MSSOPrincipalConfig principalConfig = null;
 			ISSOPrincipalService m_SSOPrincipal = null;
 			try
 			{
 				if (!isAdminResRequest)
 				{
-					m_SSOPrincipal =  SSOUtils.getSSOPrincipalService(provider, tenant);
+					principalConfig = SSOUtils.getSSOPrincipalConfig(provider, tenant);
 					// if cause by invalid cookie, try to get default SSO provider by tenant
-					if (m_SSOPrincipal== null && !Util.isEmpty(provider, true) && !Util.isEmpty(tenant, true) && providerFromCookie)
+					if (principalConfig == null && !Util.isEmpty(provider, true) && !Util.isEmpty(tenant, true) && providerFromCookie)
 					{
-						httpRequest.getSession().removeAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
-						MClient client = MClient.getByLoginPrefix(tenant);
-						if (client != null)
+						session.removeAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
+						principalConfig = SSOUtils.getSSOPrincipalConfig(null, tenant);
+						if (principalConfig != null)
 						{
-							var configs = MSSOPrincipalConfig.getSSOPrincipalConfigByClient(client.getAD_Client_ID());
-							if (configs != null && configs.size() == 1)
-							{
-								provider= configs.get(0).getSSO_PrincipalConfig_UU();
-								m_SSOPrincipal =  SSOUtils.getSSOPrincipalService(provider, tenant);
-								if (m_SSOPrincipal != null)
-								{
-									httpRequest.getSession().setAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider);
-								}
-							}
-						}
-					} else if (m_SSOPrincipal != null && Util.isEmpty(provider, true)) 
-					{
-						// update provider to session if it's not set and can get SSOPrincipalService by tenant login prefix
-						MClient client = null;
-						if (!Util.isEmpty(tenant, true)) 
-						{
-							client = MClient.getByLoginPrefix(tenant);
-						}
-						var configs = MSSOPrincipalConfig.getSSOPrincipalConfigByClient(client != null ? client.getAD_Client_ID() : 0);
-						if (configs != null && configs.size() == 1)
-						{
-							provider= configs.get(0).getSSO_PrincipalConfig_UU();
-							httpRequest.getSession().setAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider);
+							provider = principalConfig.getSSO_PrincipalConfig_UU();
+							session.setAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider);
 						}
 					}
+					else if (principalConfig != null && Util.isEmpty(provider, true))
+					{
+						// update provider to session if it's not set and can get SSOPrincipalConfig by tenant login prefix
+						provider = principalConfig.getSSO_PrincipalConfig_UU();
+						session.setAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider);
+					}
+					m_SSOPrincipal = SSOUtils.getSSOPrincipalService(principalConfig);
 				}
 			
-				if (m_SSOPrincipal != null)
+				if (m_SSOPrincipal != null && principalConfig != null)
 				{
+					String configUU = principalConfig.getSSO_PrincipalConfig_UU();
 					if (m_SSOPrincipal.hasAuthenticationCode(httpRequest, httpResponse))
 					{
+						// Clear any prior SSO token before exchanging the callback code
+						SSOUtils.clearSSOSessionToken(session);
+
 						// Use authentication code to get token
 						String currentUri = httpRequest.getRequestURL().toString();
 						m_SSOPrincipal.getAuthenticationToken(httpRequest, httpResponse, SSOUtils.SSO_MODE_WEBUI);
 
 						if (!httpResponse.isCommitted())
 						{
+							if (session.getAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN) != null)
+								session.setAttribute(ISSOPrincipalService.SSO_AUTHENTICATED_PROVIDER, configUU);
+
 							// Redirect to default request URL after authentication and handle query
 							// string.
-							Object queryString = httpRequest.getSession().getAttribute(ISSOPrincipalService.SSO_QUERY_STRING);
+							Object queryString = session.getAttribute(ISSOPrincipalService.SSO_QUERY_STRING);
 							if (queryString != null && queryString instanceof String && !Util.isEmpty((String) queryString))
 								currentUri += "?" + (String) queryString;
-							httpRequest.getSession().removeAttribute(ISSOPrincipalService.SSO_QUERY_STRING);
+							session.removeAttribute(ISSOPrincipalService.SSO_QUERY_STRING);
 							if (request.getParameter(TENANT_PREFIX_PARAMETER) != null && (queryString == null || !queryString.toString().contains(TENANT_PREFIX_PARAMETER+"=")))
 							{
-								currentUri += (currentUri.contains("?") ? "&" : "?") + TENANT_PREFIX_PARAMETER + "=" + request.getParameter(TENANT_PREFIX_PARAMETER);
+								currentUri += (currentUri.contains("?") ? "&" : "?") + TENANT_PREFIX_PARAMETER + "="
+										+ URLEncoder.encode(request.getParameter(TENANT_PREFIX_PARAMETER), StandardCharsets.UTF_8);
 							}
 							httpResponse.sendRedirect(currentUri);
 						}
 						return;
 					}
-					else if (!m_SSOPrincipal.isAuthenticated(httpRequest, httpResponse))
+					else if (!SSOUtils.isTokenValidForProvider(session, configUU)
+							|| !m_SSOPrincipal.isAuthenticated(httpRequest, httpResponse))
 					{
-						httpRequest.getSession().setAttribute(ISSOPrincipalService.SSO_QUERY_STRING, httpRequest.getQueryString());
+						if (session.getAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN) != null)
+						{
+							m_SSOPrincipal.removePrincipalFromSession(httpRequest);
+							SSOUtils.clearSSOSessionToken(session);
+						}
+						session.setAttribute(ISSOPrincipalService.SSO_QUERY_STRING, httpRequest.getQueryString());
 						// Redirect to SSO sign in page for authentication
 						m_SSOPrincipal.redirectForAuthentication(httpRequest, httpResponse, SSOUtils.SSO_MODE_WEBUI);
-						httpRequest.getSession().setAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider);
+						session.setAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER, configUU);
 						return;
 					}
 				}
@@ -245,6 +270,7 @@ public class SSOWebUIFilter implements Filter
 				log.log(Level.SEVERE, "Exception while authenticating: ", exc);
 				if (m_SSOPrincipal != null)
 					m_SSOPrincipal.removePrincipalFromSession(httpRequest);
+				SSOUtils.clearSSOSessionToken(httpRequest.getSession(false));
 				httpResponse.setStatus(500);
 				response.setContentType("text/html");
 				response.getWriter().append(SSOUtils.getCreateErrorResponce(exc.getLocalizedMessage()));

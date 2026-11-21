@@ -19,9 +19,11 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.adempiere.base.sso.ISSOPrincipalService;
 import org.adempiere.base.sso.SSOUtils;
+import org.compiere.model.MSSOPrincipalConfig;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.util.CLogger;
@@ -77,21 +79,26 @@ public class ServletRegistration extends Registration {
 		try {
 			Thread.currentThread().setContextClassLoader(registeredContextClassLoader);
 			boolean isSSOEnable  = MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO_OSGI_CONSOLE, false);
-			if (isSSOEnable && SSOUtils.getSSOPrincipalService() != null)
+			MSSOPrincipalConfig config = isSSOEnable ? MSSOPrincipalConfig.getDefaultSSOPrincipalConfig(0) : null;
+			ISSOPrincipalService ssoPrincipal = config != null ? SSOUtils.getSSOPrincipalService(config) : null;
+			if (isSSOEnable && ssoPrincipal != null)
 			{
-				Object token = req.getSession().getAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN);
-				if (checkSSOAuthorization(token))
+				HttpSession session = req.getSession(false);
+				Object token = (session != null && SSOUtils.isTokenValidForProvider(session, config.getSSO_PrincipalConfig_UU()))
+						? session.getAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN)
+						: null;
+				if (checkSSOAuthorization(ssoPrincipal, token))
 				{
 					servlet.service(req, resp);
 					if (req.getPathInfo().endsWith("logout"))
 					{
-						req.getSession().removeAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN);
+						SSOUtils.clearSSOSessionToken(req.getSession(false));
 						resp.sendRedirect("osgi/system/console/bundles");
 					}
 				}
 				else
 				{
-					req.getSession().removeAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN);
+					SSOUtils.clearSSOSessionToken(req.getSession(false));
 				}
 			}
 			else if (httpContext.handleSecurity(req, resp))
@@ -111,13 +118,13 @@ public class ServletRegistration extends Registration {
 		return httpContext;
 	}
 	
-	private boolean checkSSOAuthorization(Object token)
+	private boolean checkSSOAuthorization(ISSOPrincipalService ssoPrincipal, Object token)
 	{
-		if (token == null)
+		if (ssoPrincipal == null || token == null)
 			return false;
 		try
 		{
-			String username = SSOUtils.getSSOPrincipalService().getUserName(token);
+			String username = ssoPrincipal.getUserName(token);
 			return validateUser(username, null, true);
 		}
 		catch (Exception e)

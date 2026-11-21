@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.adempiere.base.Service;
 import org.compiere.model.I_SSO_PrincipalConfig;
@@ -69,8 +70,15 @@ public class SSOUtils
 		return getSSOPrincipalService(config);
 	}
 
-	private static ISSOPrincipalService getSSOPrincipalService(MSSOPrincipalConfig config)
+	/**
+	 * Get SSO Principal Service for a configuration
+	 * @param config SSO Principal Configuration
+	 * @return SSO Principal Service or null
+	 */
+	public static ISSOPrincipalService getSSOPrincipalService(MSSOPrincipalConfig config)
 	{
+		if (config == null)
+			return null;
 		if (s_SSOPrincipalServicecache.containsKey(config.getSSO_PrincipalConfig_ID()))
 			return s_SSOPrincipalServicecache.get(config.getSSO_PrincipalConfig_ID());
 
@@ -156,19 +164,19 @@ public class SSOUtils
 	}
 
 	/**
-	 * Get SSO Principal Service by UUID and tenant login prefix
+	 * Get SSO Principal Configuration by UUID and tenant login prefix
 	 * @param uuID
 	 * @param tenant tenant login prefix
-	 * @return
+	 * @return {@link MSSOPrincipalConfig} or null
 	 */
-	public static ISSOPrincipalService getSSOPrincipalService(String uuID, String tenant)
+	public static MSSOPrincipalConfig getSSOPrincipalConfig(String uuID, String tenant)
 	{
 		if (Util.isEmpty(uuID, true))
 		{
 			List<MSSOPrincipalConfig> configList = null;
 			if (!Util.isEmpty(tenant, true))
 			{
-				MClient client = MClient.getByLoginPrefix(tenant);
+				MClient client = MClient.getByLoginPrefix(tenant.trim());
 				if (client != null)
 				{
 					configList = MSSOPrincipalConfig.getSSOPrincipalConfigByClient(client.getAD_Client_ID());
@@ -183,30 +191,69 @@ public class SSOUtils
 				configList = MSSOPrincipalConfig.getSSOPrincipalConfigByClient(0);
 			}
 
-			if (configList == null || configList.size() != 1  || MSysConfig.getBooleanValue(MSysConfig.SSO_SHOW_LOGINPAGE, false))
+			if (configList == null || configList.size() != 1 || MSysConfig.getBooleanValue(MSysConfig.SSO_SHOW_LOGINPAGE, false))
 				return null;
 			else
-				return getSSOPrincipalService(configList.get(0));
+				return configList.get(0);
 		}
 
-		MSSOPrincipalConfig config = MSSOPrincipalConfig.getSSOPrincipalConfig(uuID);
+		MSSOPrincipalConfig config = MSSOPrincipalConfig.getSSOPrincipalConfig(uuID.trim());
 		if (config == null)
 			return null;
 		
 		// validate config is valid for tenant login prefix argument
 		if (!Util.isEmpty(tenant, true)) 
 		{
-			MClient client = MClient.getByLoginPrefix(tenant);
+			MClient client = MClient.getByLoginPrefix(tenant.trim());
 			if (client == null || config.getAD_Client_ID() != client.getAD_Client_ID())
 				return null;
-			
 		}
 		else if (config.getAD_Client_ID() != 0)
 		{
 			return null;
 		}
 		
-		return getSSOPrincipalService(config);
-	
+		return config;
+	}
+
+	/**
+	 * Get SSO Principal Service by UUID and tenant login prefix
+	 * @param uuID
+	 * @param tenant tenant login prefix
+	 * @return
+	 */
+	public static ISSOPrincipalService getSSOPrincipalService(String uuID, String tenant)
+	{
+		return getSSOPrincipalService(getSSOPrincipalConfig(uuID, tenant));
+	}
+
+	/**
+	 * Check whether the session's SSO token was authenticated by the expected SSO configuration UUID.
+	 * @param session HTTP session
+	 * @param expectedProviderUU expected SSO_PrincipalConfig_UU
+	 * @return true if session has both an SSO token and matching authenticated provider UUID
+	 */
+	public static boolean isTokenValidForProvider(HttpSession session, String expectedProviderUU)
+	{
+		if (session == null || Util.isEmpty(expectedProviderUU, true))
+			return false;
+		Object token = session.getAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN);
+		Object authProvider = session.getAttribute(ISSOPrincipalService.SSO_AUTHENTICATED_PROVIDER);
+		return token != null
+				&& authProvider instanceof String authenticatedProviderUU
+				&& expectedProviderUU.trim().equals(authenticatedProviderUU);
+	}
+
+	/**
+	 * Clear SSO token and authenticated provider binding from HTTP session.
+	 * @param session HTTP session
+	 */
+	public static void clearSSOSessionToken(HttpSession session)
+	{
+		if (session != null)
+		{
+			session.removeAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN);
+			session.removeAttribute(ISSOPrincipalService.SSO_AUTHENTICATED_PROVIDER);
+		}
 	}
 }

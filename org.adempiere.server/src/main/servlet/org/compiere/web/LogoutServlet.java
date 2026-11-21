@@ -33,7 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.adempiere.base.sso.ISSOPrincipalService;
+import org.adempiere.base.sso.SSOUtils;
 import org.compiere.util.CLogger;
 
 /**
@@ -78,10 +78,7 @@ public class LogoutServlet extends HttpServlet {
 			
 			try {
 				// Clean up SSO session if present
-				Object ssoToken = session.getAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN);
-				if (ssoToken != null) {
-					session.removeAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN);
-				}
+				SSOUtils.clearSSOSessionToken(session);
 				
 				// Invalidate session
 				session.invalidate();

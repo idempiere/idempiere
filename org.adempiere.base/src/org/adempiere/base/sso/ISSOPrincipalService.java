@@ -34,6 +34,12 @@ public interface ISSOPrincipalService
 	 */
 	public static final String	SSO_SELECTED_PROVIDER		= "sso.selected.provider";
 
+	/**
+	 * Session attribute storing the {@code SSO_PrincipalConfig_UU} of the provider that produced
+	 * {@link #SSO_PRINCIPAL_SESSION_TOKEN}.
+	 */
+	public static final String	SSO_AUTHENTICATED_PROVIDER	= "sso.authenticated.provider";
+
 	public static final String	SSO_QUERY_STRING				= "sso.query.string";
 	public static final String	SSO_ADMIN_LOGIN				= "sso.admin.login";
 
