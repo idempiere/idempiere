@@ -47,5 +47,6 @@ public class ErrorWindow extends Window implements EventListener<Event>
 	public void onEvent(Event event) throws Exception
 	{
 		Executions.getCurrent().getSession().removeAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN);
+		Executions.getCurrent().getSession().removeAttribute(ISSOPrincipalService.SSO_AUTHENTICATED_PROVIDER);
 	}
 }

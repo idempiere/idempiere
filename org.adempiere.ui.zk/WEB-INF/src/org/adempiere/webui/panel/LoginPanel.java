@@ -949,11 +949,14 @@ public class LoginPanel extends Window implements EventListener<Event>
 					  .append(SSOWebUIFilter.TENANT_PREFIX_PARAMETER).append("=")
 					  .append(URLEncoder.encode(tenant, StandardCharsets.UTF_8));
 			
-			Executions.getCurrent().getSession().setAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER, 
+			Session session = Executions.getCurrent().getSession();
+			session.removeAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN);
+			session.removeAttribute(ISSOPrincipalService.SSO_AUTHENTICATED_PROVIDER);
+			session.setAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER,
 					config.getSSO_PrincipalConfig_UU());
 			
 			if (referrerUrl != null)
-				Executions.getCurrent().getSession().setAttribute(ISSOPrincipalService.SSO_QUERY_STRING, referrerUrl);
+				session.setAttribute(ISSOPrincipalService.SSO_QUERY_STRING, referrerUrl);
 			Executions.sendRedirect(ssoURL.toString());
 		});
 

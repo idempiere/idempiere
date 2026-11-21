@@ -1062,13 +1062,20 @@ public class Login
 				.append("         WHERE c.AD_Client_ID=AD_User.AD_Client_ID")
 				.append("         AND c.IsActive='Y') AND ")
 				.append(" AD_User.IsActive='Y'");
-		if (client != null)
-			where.append(" AND AD_Client_ID IN (0,").append(client.getAD_Client_ID()).append(")");
+		List<Object> params = new ArrayList<Object>();
+		params.add(app_user);
+		if (client != null) {
+			if (isSSOLogin)
+				where.append(" AND AD_Client_ID=?");
+			else
+				where.append(" AND AD_Client_ID IN (0,?)");
+			params.add(client.getAD_Client_ID());
+		}
 		List<MUser> users = null;
 		try {
 			PO.setCrossTenantSafe();
 			users = new Query(m_ctx, MUser.Table_Name, where.toString(), null)
-					.setParameters(app_user)
+					.setParameters(params)
 					.setOrderBy(MUser.COLUMNNAME_AD_User_ID)
 					.list();
 		} finally {
@@ -1380,11 +1387,26 @@ public class Login
 	 *  Get Roles.
 	 *  <p>
 	 *  Sets Client info in context and loads its roles.
+	 *  @param  app_user  user id
 	 *  @param  client    client information
 	 *  @param roleTypes comma separated list of the role types allowed to login (NULL can be added)
 	 *  @return list of valid roles KeyNodePairs or null if in error
 	 */
 	public KeyNamePair[] getRoles(String app_user, KeyNamePair client, String roleTypes) {
+		return getRoles(app_user, client, roleTypes, false);
+	}
+
+	/**
+	 *  Get Roles.
+	 *  <p>
+	 *  Sets Client info in context and loads its roles.
+	 *  @param app_user user id
+	 *  @param client client information
+	 *  @param roleTypes comma separated list of the role types allowed to login (NULL can be added)
+	 *  @param restrictToClientUser true to restrict user match to {@code u.AD_Client_ID=client.getKey()}
+	 *  @return list of valid roles KeyNodePairs or null if in error
+	 */
+	public KeyNamePair[] getRoles(String app_user, KeyNamePair client, String roleTypes, boolean restrictToClientUser) {
 		if (client == null)
 			throw new IllegalArgumentException("Tenant missing");
 
@@ -1396,6 +1418,8 @@ public class Login
 			.append(" INNER JOIN AD_User_Roles ur ON (u.AD_User_ID=ur.AD_User_ID AND ur.IsActive='Y')")
 			.append(" INNER JOIN AD_Role r ON (ur.AD_Role_ID=r.AD_Role_ID AND r.IsActive='Y') ");
 		sql.append("WHERE u.Password IS NOT NULL AND ur.AD_Client_ID=? AND ");		
+		if (restrictToClientUser)
+			sql.append("u.AD_Client_ID=? AND ");
 		boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
 		if (email_login)
 			sql.append("u.EMail=?");
@@ -1421,8 +1445,11 @@ public class Login
 		try
 		{
 			pstmt = DB.prepareStatement(sql.toString(), null);
-			pstmt.setInt(1, client.getKey());
-			pstmt.setString(2, getAppUser(app_user));
+			int paramIndex = 1;
+			pstmt.setInt(paramIndex++, client.getKey());
+			if (restrictToClientUser)
+				pstmt.setInt(paramIndex++, client.getKey());
+			pstmt.setString(paramIndex++, getAppUser(app_user));
 			rs = pstmt.executeQuery();
 
 			if (!rs.next())
@@ -1466,13 +1493,32 @@ public class Login
 	 * Get clients (AD_Client)
 	 * @return clients
 	 */
-    public KeyNamePair[] getClients() {		
+    public KeyNamePair[] getClients() {
+		return getClients(null, isSSOLogin);
+	}
+
+	/**
+	 * Get clients (AD_Client) for an already-authenticated user (e.g. change role).
+	 * @param tenant optional tenant login prefix to restrict clients
+	 * @param isSSOLogin true if authenticated via SSO
+	 * @return clients
+	 */
+    public KeyNamePair[] getClients(String tenant, boolean isSSOLogin) {
 		if (Env.getContext(m_ctx,Env.AD_USER_ID).length() == 0){
 			throw new UnsupportedOperationException("Missing Context #AD_User_ID");
 		}
 		
 		loginErrMsg = null;
 		isPasswordExpired = false;
+		MClient tenantClient = null;
+		if (!Util.isEmpty(tenant, true)) {
+			tenantClient = MClient.getByLoginPrefix(tenant.trim());
+			if (tenantClient == null) {
+				loginErrMsg = Msg.getMsg(m_ctx, "FailedLogin");
+				return new KeyNamePair[0];
+			}
+		}
+
 		int AD_User_ID = Env.getContextAsInt(m_ctx, Env.AD_USER_ID);
 		KeyNamePair[] retValue = null;
 		ArrayList<KeyNamePair> clientList = new ArrayList<KeyNamePair>();
@@ -1484,13 +1530,17 @@ public class Login
                          .append(" AND cli.IsActive='Y'")
                          .append(" AND u.IsActive='Y'")
                          .append(" AND u.AD_User_ID=? ")
-						 .append(" AND cli.AuthenticationType IN ").append(isSSOLogin ? " ('SSO', 'AAS') " : " ('APO', 'AAS') ")
-						 .append(" ORDER BY cli.Name");
+						 .append(" AND cli.AuthenticationType IN ").append(isSSOLogin ? " ('SSO', 'AAS') " : " ('APO', 'AAS') ");
+		if (tenantClient != null)
+			sql.append(" AND cli.AD_Client_ID=? ");
+		sql.append(" ORDER BY cli.Name");
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try {
 			pstmt = DB.prepareStatement(sql.toString(),null);
 			pstmt.setInt(1, AD_User_ID);
+			if (tenantClient != null)
+				pstmt.setInt(2, tenantClient.getAD_Client_ID());
 			rs = pstmt.executeQuery();
 			
 			while (rs.next() && rs != null) {
