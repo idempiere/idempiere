@@ -702,11 +702,14 @@ public class Doc_InOut extends Doc
 						}
 					}
 															
-					//get costing method for product					
+					//get costing method for product
+					//	Fifo/Lifo: the cost layer is created by the invoice matching, the receipt of a purchase order uses the order price
+					//	(without order line, the current costs are used)
 					if (MAcctSchema.COSTINGMETHOD_AveragePO.equals(costingMethod) ||
 						MAcctSchema.COSTINGMETHOD_AverageInvoice.equals(costingMethod) ||
 						MAcctSchema.COSTINGMETHOD_LastPOPrice.equals(costingMethod)  ||
-						( MAcctSchema.COSTINGMETHOD_StandardCosting.equals(costingMethod) &&  MAcctSchema.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as))))
+						( MAcctSchema.COSTINGMETHOD_StandardCosting.equals(costingMethod) &&  MAcctSchema.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as))) ||
+						( orderLine != null && (MAcctSchema.COSTINGMETHOD_Fifo.equals(costingMethod) || MAcctSchema.COSTINGMETHOD_Lifo.equals(costingMethod))))
 					{
 						// Low - check if c_orderline_id is valid
 						if (orderLine != null)

@@ -301,6 +301,9 @@ public class MCost extends X_M_Cost implements ICostInfo
 			MCostElement ce = MCostElement.getMaterialCostElement(as, costingMethod);
 			materialCost = MCostQueue.getCosts(product, M_ASI_ID,
 				as, Org_ID, ce, qty, trxName);
+			//	no cost layer and no seed costs
+			if (materialCost == null)
+				return null;
 		}
 
 		//	Other Costs
