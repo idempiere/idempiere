@@ -28,10 +28,14 @@ package org.adempiere.model;
 import java.io.File;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AdempiereException;
@@ -65,6 +69,22 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 	private boolean		m_justPrepared = false;
 	
 	private Map<String, Callable<String>> actionCallables = new HashMap<String, Callable<String>>();
+	
+	/**
+	 * Point of {@link #prepareIt()} or {@link #completeIt()} at which an action step is executed
+	 */
+	public enum StepTiming {
+		/** At the start of the action, before the BEFORE model validator event (completeIt: before the re-check with prepareIt) */
+		START,
+		/** After the BEFORE model validator event (prepareIt: before the period check, completeIt: before the implicit approval) */
+		VALIDATE,
+		/** Main processing (prepareIt: after the period check, completeIt: after the implicit approval), after the action callable */
+		PROCESS,
+		/** After the AFTER model validator event, before the document is marked as prepared or completed */
+		END
+	}
+	
+	private Map<String, Map<StepTiming, List<Supplier<String>>>> actionSteps = new HashMap<String, Map<StepTiming, List<Supplier<String>>>>();
 
 	/**	Logger							*/
 	protected transient CLogger	log = CLogger.getCLogger (getClass());
@@ -85,6 +105,39 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 		actionCallables.put(docAction, callable);
 	}
 	
+	/**
+	 * Add a step to {@link DocAction#ACTION_Prepare} or {@link DocAction#ACTION_Complete}.<br/>
+	 * Steps of the same action and timing are executed in the order they are added.
+	 * A step returns null to continue, or the document status the action must return (e.g. {@link DocAction#STATUS_Invalid}),
+	 * in which case the remaining steps are skipped. A step that stops the action is responsible for setting the process message.
+	 * @param docAction {@link DocAction#ACTION_Prepare} or {@link DocAction#ACTION_Complete}
+	 * @param timing point of the action at which the step is executed
+	 * @param step step to execute
+	 */
+	public void addActionStep(String docAction, StepTiming timing, Supplier<String> step) {
+		actionSteps.computeIfAbsent(docAction, k -> new EnumMap<StepTiming, List<Supplier<String>>>(StepTiming.class))
+			.computeIfAbsent(timing, k -> new ArrayList<Supplier<String>>())
+			.add(step);
+	}
+	
+	/**
+	 * Execute the steps of an action for a timing
+	 * @param docAction
+	 * @param timing
+	 * @return null to continue, or the document status the action must return
+	 */
+	private String runActionSteps(String docAction, StepTiming timing) {
+		Map<StepTiming, List<Supplier<String>>> steps = actionSteps.get(docAction);
+		if (steps == null || !steps.containsKey(timing))
+			return null;
+		for (Supplier<String> step : steps.get(timing)) {
+			String status = step.get();
+			if (status != null)
+				return status;
+		}
+		return null;
+	}
+	
 	@Override
 	public void setDocStatus(String DocStatus) {
 		po.columnExists(DOC_COLUMNNAME_DocStatus, true);
@@ -99,7 +152,7 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 
 	@Override
 	public boolean processIt(String action) {
-		m_processMsg = null;
+		setProcessMsg(null);
 		DocumentEngine engine = new DocumentEngine (po, getDocStatus());
 		return engine.processIt (action, getDocAction());
 	}
@@ -118,13 +171,64 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 		return true;
 	}
 
+	/**
+	 * Prepare the document.<br/>
+	 * Order: {@link StepTiming#START} steps, BEFORE_PREPARE model validator event, {@link StepTiming#VALIDATE} steps,
+	 * {@link #testPeriodOpen()}, prepare action callable, {@link StepTiming#PROCESS} steps, AFTER_PREPARE model validator event,
+	 * {@link StepTiming#END} steps.
+	 * @return new status (In Progress or Invalid, or the status returned by a step)
+	 */
 	@Override
 	public String prepareIt() {
 		if (log.isLoggable(Level.INFO)) log.info(po.toString());
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(po, ModelValidator.TIMING_BEFORE_PREPARE);
-		if (m_processMsg != null)
+		String status = runActionSteps(DocAction.ACTION_Prepare, StepTiming.START);
+		if (status != null)
+			return status;
+
+		setProcessMsg(ModelValidationEngine.get().fireDocValidate(po, ModelValidator.TIMING_BEFORE_PREPARE));
+		if (getProcessMsg() != null)
 			return DocAction.STATUS_Invalid;
 
+		status = runActionSteps(DocAction.ACTION_Prepare, StepTiming.VALIDATE);
+		if (status != null)
+			return status;
+
+		testPeriodOpen();
+
+		Callable<String> callable = actionCallables.get(DocAction.ACTION_Prepare);
+		if (callable != null) {
+			try {
+				setProcessMsg(callable.call());
+				if (getProcessMsg() != null)
+					return DocAction.STATUS_Invalid;
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+		
+		status = runActionSteps(DocAction.ACTION_Prepare, StepTiming.PROCESS);
+		if (status != null)
+			return status;
+
+		setProcessMsg(ModelValidationEngine.get().fireDocValidate(po, ModelValidator.TIMING_AFTER_PREPARE));
+		if (getProcessMsg() != null)
+			return DocAction.STATUS_Invalid;
+
+		status = runActionSteps(DocAction.ACTION_Prepare, StepTiming.END);
+		if (status != null)
+			return status;
+
+		setJustPrepared(true);
+		if (!DocAction.ACTION_Complete.equals(getDocAction()))
+			setDocAction(DocAction.ACTION_Complete);
+		return DocAction.STATUS_InProgress;
+	}
+
+	/**
+	 * Check that the period is open and back date transactions are allowed for the document date, called by {@link #prepareIt()}.<br/>
+	 * Override to implement a different check, the default implementation throws an exception if the check fails.
+	 */
+	protected void testPeriodOpen() {
 		int doctype = -1;
 		if (po.columnExists(DOC_COLUMNNAME_C_DocTypeTarget_ID)) {
 			doctype = po.get_ValueAsInt(DOC_COLUMNNAME_C_DocTypeTarget_ID);
@@ -143,26 +247,6 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 			MPeriod.testPeriodOpen(getCtx(), date, doctype, getAD_Org_ID());
 			MAcctSchema.testBackDateTrxAllowed(getCtx(), date, get_TrxName());
 		}
-
-		Callable<String> callable = actionCallables.get(DocAction.ACTION_Prepare);
-		if (callable != null) {
-			try {
-				m_processMsg = callable.call();
-				if (m_processMsg != null)
-					return DocAction.STATUS_Invalid;
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}
-		
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(po, ModelValidator.TIMING_AFTER_PREPARE);
-		if (m_processMsg != null)
-			return DocAction.STATUS_Invalid;
-
-		m_justPrepared = true;
-		if (!DocAction.ACTION_Complete.equals(getDocAction()))
-			setDocAction(DocAction.ACTION_Complete);
-		return DocAction.STATUS_InProgress;
 	}
 
 	@Override
@@ -179,28 +263,41 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 		return true;
 	}
 
+	/**
+	 * Complete the document.<br/>
+	 * Order: {@link StepTiming#START} steps, re-check with {@link #prepareBeforeComplete()} (if not just prepared),
+	 * {@link #setDocTypeFromTarget()}, {@link #setDefiniteDocumentNo()}, BEFORE_COMPLETE model validator event,
+	 * {@link StepTiming#VALIDATE} steps, implicit approval, complete action callable, {@link StepTiming#PROCESS} steps,
+	 * AFTER_COMPLETE model validator event, {@link StepTiming#END} steps.
+	 * @return new status (Completed, In Progress or Invalid, or the status returned by a step)
+	 */
 	@Override
 	public String completeIt() {
+		String status = runActionSteps(DocAction.ACTION_Complete, StepTiming.START);
+		if (status != null)
+			return status;
+
 		//	Re-Check
-		if (!m_justPrepared)
+		if (!isJustPrepared())
 		{
-			String status = prepareIt();
-			m_justPrepared = false;
+			status = prepareBeforeComplete();
+			setJustPrepared(false);
 			if (!DocAction.STATUS_InProgress.equals(status))
 				return status;
 		}
 
-		if (   po.columnExists(DOC_COLUMNNAME_C_DocTypeTarget_ID)
-			&& po.columnExists(DOC_COLUMNNAME_C_DocType_ID)) {
-			po.set_ValueOfColumn(DOC_COLUMNNAME_C_DocType_ID, po.get_ValueAsInt(DOC_COLUMNNAME_C_DocTypeTarget_ID));
-		}
+		setDocTypeFromTarget();
 
 		// Set the definite document number after completed (if needed)
 		setDefiniteDocumentNo();
 
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(po, ModelValidator.TIMING_BEFORE_COMPLETE);
-		if (m_processMsg != null)
+		setProcessMsg(ModelValidationEngine.get().fireDocValidate(po, ModelValidator.TIMING_BEFORE_COMPLETE));
+		if (getProcessMsg() != null)
 			return DocAction.STATUS_Invalid;
+
+		status = runActionSteps(DocAction.ACTION_Complete, StepTiming.VALIDATE);
+		if (status != null)
+			return status;
 
 		//	Implicit Approval
 		if (!isApproved())
@@ -210,27 +307,60 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 		Callable<String> callable = actionCallables.get(DocAction.ACTION_Complete);
 		if (callable != null) {
 			try {
-				m_processMsg = callable.call();
-				if (m_processMsg != null)
+				setProcessMsg(callable.call());
+				if (getProcessMsg() != null)
 					return DocAction.STATUS_Invalid;
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 		}
 		
+		status = runActionSteps(DocAction.ACTION_Complete, StepTiming.PROCESS);
+		if (status != null)
+			return status;
+
 		//	User Validation
 		String valid = ModelValidationEngine.get().fireDocValidate(po, ModelValidator.TIMING_AFTER_COMPLETE);
 		if (valid != null)
 		{
-			m_processMsg = valid;
+			setProcessMsg(valid);
 			return DocAction.STATUS_Invalid;
 		}
+
+		status = runActionSteps(DocAction.ACTION_Complete, StepTiming.END);
+		if (status != null)
+			return status;
 
 		setProcessed(true);
 		setDocAction(DocAction.ACTION_Close);
 		return DocAction.STATUS_Completed;
 	}
 
+	/**
+	 * Set the document type from the target document type, called by {@link #completeIt()}.<br/>
+	 * Override to implement a different behavior.
+	 */
+	protected void setDocTypeFromTarget() {
+		if (   po.columnExists(DOC_COLUMNNAME_C_DocTypeTarget_ID)
+			&& po.columnExists(DOC_COLUMNNAME_C_DocType_ID)) {
+			po.set_ValueOfColumn(DOC_COLUMNNAME_C_DocType_ID, po.get_ValueAsInt(DOC_COLUMNNAME_C_DocTypeTarget_ID));
+		}
+	}
+
+	/**
+	 * Prepare the document again when {@link #completeIt()} is called without a preceding successful {@link #prepareIt()}.<br/>
+	 * Override to call the prepareIt method of the document, so that overrides of prepareIt are honored.
+	 * @return new status (In Progress or Invalid)
+	 */
+	protected String prepareBeforeComplete() {
+		return prepareIt();
+	}
+
+	/**
+	 * Void the document. A document that is not processed yet is voided with the void action callable,
+	 * a processed document is reversed with {@link #reverseCorrectIt()} or {@link #reverseAccrualIt()} (period closed).
+	 * @return true if success
+	 */
 	@Override
 	public boolean voidIt() {
 
@@ -239,7 +369,7 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 		if (   DocAction.STATUS_Closed.equals(getDocStatus())
 			|| DocAction.STATUS_Reversed.equals(getDocStatus())
 			|| DocAction.STATUS_Voided.equals(getDocStatus())) {
-			m_processMsg = "Document Closed: " + getDocStatus();
+			setProcessMsg("Document Closed: " + getDocStatus());
 			setDocAction(DocAction.ACTION_None);
 			return false;
 		}
@@ -251,14 +381,14 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 			|| DocAction.STATUS_Approved.equals(getDocStatus())
 			|| DocAction.STATUS_NotApproved.equals(getDocStatus())) {
 			// Before Void
-			m_processMsg = ModelValidationEngine.get().fireDocValidate(po,ModelValidator.TIMING_BEFORE_VOID);
-			if (m_processMsg != null)
+			setProcessMsg(ModelValidationEngine.get().fireDocValidate(po,ModelValidator.TIMING_BEFORE_VOID));
+			if (getProcessMsg() != null)
 				return false;
 			Callable<String> callable = actionCallables.get(DocAction.ACTION_Void);
 			if (callable != null) {
 				try {
-					m_processMsg = callable.call();
-					if (m_processMsg != null)
+					setProcessMsg(callable.call());
+					if (getProcessMsg() != null)
 						return false;
 				} catch (Exception e) {
 					throw new RuntimeException(e);
@@ -300,8 +430,8 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 		}
 
 		// After Void
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(po,ModelValidator.TIMING_AFTER_VOID);
-		if (m_processMsg != null)
+		setProcessMsg(ModelValidationEngine.get().fireDocValidate(po,ModelValidator.TIMING_AFTER_VOID));
+		if (getProcessMsg() != null)
 			return false;
 
 		setProcessed(true);
@@ -309,19 +439,23 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 		return true;
 	}
 
+	/**
+	 * Close the document, executing the close action callable between the BEFORE_CLOSE and AFTER_CLOSE model validator events.
+	 * @return true if success
+	 */
 	@Override
 	public boolean closeIt() {
 		if (log.isLoggable(Level.INFO)) log.info(po.toString());
 		// Before Close
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(po,ModelValidator.TIMING_BEFORE_CLOSE);
-		if (m_processMsg != null)
+		setProcessMsg(ModelValidationEngine.get().fireDocValidate(po,ModelValidator.TIMING_BEFORE_CLOSE));
+		if (getProcessMsg() != null)
 			return false;
 
 		Callable<String> callable = actionCallables.get(DocAction.ACTION_Close);
 		if (callable != null) {
 			try {
-				m_processMsg = callable.call();
-				if (m_processMsg != null)
+				setProcessMsg(callable.call());
+				if (getProcessMsg() != null)
 					return false;
 			} catch (Exception e) {
 				throw new RuntimeException(e);
@@ -332,95 +466,107 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 		setDocAction(DocAction.ACTION_None);
 
 		// After Close
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(po,ModelValidator.TIMING_AFTER_CLOSE);
-		if (m_processMsg != null)
+		setProcessMsg(ModelValidationEngine.get().fireDocValidate(po,ModelValidator.TIMING_AFTER_CLOSE));
+		if (getProcessMsg() != null)
 			return false;
 		return true;	
 	}
 
+	/**
+	 * Reverse correct the document with the reverse correct action callable.
+	 * @return true if success, always false if no callable is set
+	 */
 	@Override
 	public boolean reverseCorrectIt() {
 		if (log.isLoggable(Level.INFO)) log.info(po.toString());
 		// Before reverseCorrect
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(po,ModelValidator.TIMING_BEFORE_REVERSECORRECT);
-		if (m_processMsg != null)
+		setProcessMsg(ModelValidationEngine.get().fireDocValidate(po,ModelValidator.TIMING_BEFORE_REVERSECORRECT));
+		if (getProcessMsg() != null)
 			return false;
 
 		Callable<String> callable = actionCallables.get(DocAction.ACTION_Reverse_Correct);
 		if (callable != null) {
 			try {
-				m_processMsg = callable.call();
+				setProcessMsg(callable.call());
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 		}
 		
 		// After reverseCorrect
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(po,ModelValidator.TIMING_AFTER_REVERSECORRECT);
-		if (m_processMsg != null)
+		setProcessMsg(ModelValidationEngine.get().fireDocValidate(po,ModelValidator.TIMING_AFTER_REVERSECORRECT));
+		if (getProcessMsg() != null)
 			return false;
 
 		if (callable != null)
-			return m_processMsg == null;
+			return getProcessMsg() == null;
 		else
 			return false; // reverse needs to be implemented to create a negative document	
 	}
 
+	/**
+	 * Reverse accrual the document with the reverse accrual action callable.
+	 * @return true if success, always false if no callable is set
+	 */
 	@Override
 	public boolean reverseAccrualIt() {
 		if (log.isLoggable(Level.INFO)) log.info(po.toString());
 		// Before reverseAccrual
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(po,ModelValidator.TIMING_BEFORE_REVERSEACCRUAL);
-		if (m_processMsg != null)
+		setProcessMsg(ModelValidationEngine.get().fireDocValidate(po,ModelValidator.TIMING_BEFORE_REVERSEACCRUAL));
+		if (getProcessMsg() != null)
 			return false;
 
 		Callable<String> callable = actionCallables.get(DocAction.ACTION_Reverse_Accrual);
 		if (callable != null) {
 			try {
-				m_processMsg = callable.call();
+				setProcessMsg(callable.call());
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 		}
 		
 		// After reverseAccrual
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(po,ModelValidator.TIMING_AFTER_REVERSEACCRUAL);
-		if (m_processMsg != null)
+		setProcessMsg(ModelValidationEngine.get().fireDocValidate(po,ModelValidator.TIMING_AFTER_REVERSEACCRUAL));
+		if (getProcessMsg() != null)
 			return false;
 
 		if (callable != null)
-			return m_processMsg == null;
+			return getProcessMsg() == null;
 		else
 			return false; // reverse needs to be implemented to create a negative document	
 	}
 
+	/**
+	 * Re-activate the document with the re-activate action callable.
+	 * @return true if success, always false if no callable is set
+	 */
 	@Override
 	public boolean reActivateIt() {
 		if (log.isLoggable(Level.INFO)) log.info(po.toString());
 		// Before reActivate
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(po,ModelValidator.TIMING_BEFORE_REACTIVATE);
-		if (m_processMsg != null)
+		setProcessMsg(ModelValidationEngine.get().fireDocValidate(po,ModelValidator.TIMING_BEFORE_REACTIVATE));
+		if (getProcessMsg() != null)
 			return false;	
 
 		Callable<String> callable = actionCallables.get(DocAction.ACTION_ReActivate);
 		if (callable != null) {
 			try {
-				m_processMsg = callable.call();
+				setProcessMsg(callable.call());
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 		}
 		
 		// After reActivate
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(po,ModelValidator.TIMING_AFTER_REACTIVATE);
-		if (m_processMsg != null)
+		setProcessMsg(ModelValidationEngine.get().fireDocValidate(po,ModelValidator.TIMING_AFTER_REACTIVATE));
+		if (getProcessMsg() != null)
 			return false;
 
 		setDocAction(DocAction.ACTION_Complete);
 		setProcessed(false);
 		
 		if (callable != null)
-			return m_processMsg == null;
+			return getProcessMsg() == null;
 		else
 			return false; // reactivate needs to be implemented to reverse the effect of complete and post	
 	}
@@ -469,6 +615,30 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 	@Override
 	public String getProcessMsg() {
 		return m_processMsg;
+	}
+
+	/**
+	 * Set Process Message
+	 * @param processMsg
+	 */
+	public void setProcessMsg(String processMsg) {
+		m_processMsg = processMsg;
+	}
+
+	/**
+	 * Get Just Prepared Flag
+	 * @return true if the document has just been prepared
+	 */
+	protected boolean isJustPrepared() {
+		return m_justPrepared;
+	}
+
+	/**
+	 * Set Just Prepared Flag
+	 * @param justPrepared
+	 */
+	protected void setJustPrepared(boolean justPrepared) {
+		m_justPrepared = justPrepared;
 	}
 
 	@Override
@@ -605,7 +775,7 @@ public class DocActionDelegate<T extends PO & DocAction> implements DocAction {
 	/**
 	 * 	Set the definite document number after completed
 	 */
-	private void setDefiniteDocumentNo() {
+	protected void setDefiniteDocumentNo() {
 		int doctype = -1;
 		if (po.columnExists(DOC_COLUMNNAME_C_DocType_ID)) {
 			doctype = po.get_ValueAsInt(DOC_COLUMNNAME_C_DocType_ID);
