@@ -553,10 +553,6 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 			email.setSubject(header);
 			email.setMessageText(message);
 		}
-		if (!email.isValid() && !email.isValid(true)) {
-			logger.warning("NOT VALID - " + email);
-			return Boolean.FALSE;
-		}
 		return EMail.SENT_OK.equals(email.send());
 	}
 
