@@ -26,10 +26,12 @@
 package org.adempiere.webui.panel;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.logging.Level;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -49,14 +51,21 @@ import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.util.ZkContextRunnable;
 import org.adempiere.webui.window.LoginWindow;
+import org.compiere.Adempiere;
+import org.compiere.model.MClient;
 import org.compiere.model.MMFAMethod;
 import org.compiere.model.MMFARegisteredDevice;
 import org.compiere.model.MMFARegistration;
+import org.compiere.model.MMailText;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
+import org.compiere.model.Query;
 import org.compiere.model.SystemProperties;
 import org.compiere.util.CLogger;
+import org.compiere.util.DisplayType;
+import org.compiere.util.EMail;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Login;
@@ -80,11 +89,13 @@ import org.zkoss.zul.Image;
  */
 public class ValidateMFAPanel extends Window implements EventListener<Event> {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = 4777197666886479162L;
+	private static final long serialVersionUID = -1399888532908616563L;
 
 	private static final CLogger logger = CLogger.getCLogger(ValidateMFAPanel.class);
+
+	protected static final String MFA_VALIDATION_FAILED_MAIL_TEXT_NAME = "MFA Validation Failed";
 
 	protected LoginWindow wndLogin;
 	protected Login login;
@@ -360,12 +371,13 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 					String msg = reg.validateCode(reg, txtValidationCode.getText(), chkSetPreferred.isChecked());
 					if (msg != null) {
 
-						String x_Forward_IP = Executions.getCurrent().getHeader("X-Forwarded-For");
-						if (x_Forward_IP == null)
-							x_Forward_IP = Executions.getCurrent().getRemoteAddr();
+						String x_Forward_IP = getClientIP();
 						MUser user = MUser.get(m_ctx);
 						boolean email_login = MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false);
 						logAuthFailure.log(x_Forward_IP, "/webui", email_login ? user.getEMail() : user.getName(), msg);
+
+						if (user != null && !Util.isEmpty(user.getEMail()))
+							sendEmailAsync(user, x_Forward_IP, msg);
 
 						// Incremental delay to avoid brute-force attack on testing codes
 						try {
@@ -407,6 +419,25 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 		}
 	}
 
+	private static final Pattern IP_PATTERN = Pattern.compile(
+			"^(([0-9]{1,3}\\.){3}[0-9]{1,3}|(\\[?[0-9a-fA-F:]+\\]?)(:[0-9]{1,5})?)$"
+			);
+	/**
+	 * Get the client IP address, considering possible reverse proxy headers
+	 * @return
+	 */
+	private String getClientIP() {
+		String x_Forward_IP = Executions.getCurrent().getHeader("X-Forwarded-For");
+		if (!Util.isEmpty(x_Forward_IP, true) && !"unknown".equalsIgnoreCase(x_Forward_IP)) {
+			int commaIndex = x_Forward_IP.indexOf(',');
+			if (commaIndex > 0)
+				x_Forward_IP = x_Forward_IP.substring(0, commaIndex).trim();
+			if (IP_PATTERN.matcher(x_Forward_IP).matches())
+				return x_Forward_IP;
+		}
+		return Executions.getCurrent().getRemoteAddr();
+	}
+	
 	/**
 	 * The cookie name for the MFA registered device
 	 * @return
@@ -452,6 +483,77 @@ public class ValidateMFAPanel extends Window implements EventListener<Event> {
 	 */
 	public boolean show() {
 		return m_showMFAPanel;
+	}
+
+	/**
+	 * Send MFA validation failure email to user asynchronously
+	 * @param to recipient user
+	 * @param ipAddress client IP address
+	 * @param failureReason validation error message
+	 */
+	protected void sendEmailAsync(MUser to, String ipAddress, String failureReason) {
+		int clientId = Env.getAD_Client_ID(m_ctx);
+		Adempiere.getThreadPoolExecutor().execute(new ZkContextRunnable() {
+			@Override
+			protected void doRun() {
+				if (!sendEmail(to, ipAddress, failureReason, clientId)) {
+					if (clientId != 0)
+						sendEmail(to, ipAddress, failureReason, 0); // fallback to send EMail from System tenant in case it failed
+				}
+			}
+		});
+	}
+
+	/**
+	 * Send MFA validation failure email to user
+	 * @param to recipient user
+	 * @param ipAddress client IP address
+	 * @param failureReason validation error message
+	 * @param clientId AD_Client_ID to try sending the email from
+	 * @return true if email was sent
+	 */
+	protected boolean sendEmail(MUser to, String ipAddress, String failureReason, int clientId) {
+		MClient client = MClient.get(m_ctx, clientId);
+
+		MMailText mailText = new Query(m_ctx, MMailText.Table_Name, "Name=? AND AD_Client_ID IN (0, ?)", null)
+				.setOnlyActiveRecords(true)
+				.setOrderBy("AD_Client_ID DESC")
+				.setParameters(MFA_VALIDATION_FAILED_MAIL_TEXT_NAME, Env.getAD_Client_ID(m_ctx))
+				.first();
+		if (mailText == null)
+			return false;
+
+		String language = Env.getContext(m_ctx, Env.LANGUAGE);
+		mailText.setLanguage(language);
+		mailText.setUser(to);
+
+		SimpleDateFormat format = DisplayType.getTimestampFormat_Default();
+		String dateTimeText = format.format(new Timestamp(System.currentTimeMillis()));
+
+		String message = "";
+		String header = "";
+		Env.setContext(m_ctx, "#_MFA_Failed_IPAddress_", mailText.isHtml() ? Util.maskHTML(ipAddress) : ipAddress);
+		Env.setContext(m_ctx, "#_MFA_Failed_Date_", dateTimeText);
+		Env.setContext(m_ctx, "#_MFA_Failed_FailureReason_", mailText.isHtml() ? Util.maskHTML(failureReason) : failureReason);
+		try {
+			message = mailText.getMailText(true, true, true);
+			message = Env.parseVariable(message, to, to.get_TrxName(), true);
+			header = mailText.getMailHeader();
+			header = Env.parseVariable(header, to, to.get_TrxName(), true);
+		} finally {
+			Env.setContext(m_ctx, "#_MFA_Failed_IPAddress_", "");
+			Env.setContext(m_ctx, "#_MFA_Failed_Date_", "");
+			Env.setContext(m_ctx, "#_MFA_Failed_FailureReason_", "");
+		}
+
+		EMail email = client.createEMail(to.getEMail(), header, message, mailText.isHtml());
+		if (mailText.isHtml()) {
+			email.setMessageHTML(header, message);
+		} else {
+			email.setSubject(header);
+			email.setMessageText(message);
+		}
+		return EMail.SENT_OK.equals(email.send());
 	}
 
 }
