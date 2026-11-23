@@ -183,8 +183,6 @@ public class Archive {
 		{
 			if (C_BPartner_ID != null)
 				sql.append(" AND C_BPartner_ID=").append(C_BPartner_ID);
-			else
-				sql.append(" AND C_BPartner_ID IS NOT NULL");
 		}
 		
 		//	Name
