@@ -30,7 +30,7 @@ public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persis
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20261027L;
+	private static final long serialVersionUID = 20261106L;
 
     /** Standard Constructor */
     public X_AD_UserDef_Info (Properties ctx, int AD_UserDef_Info_ID, String trxName)
@@ -386,6 +386,38 @@ public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persis
 		return (String)get_Value(COLUMNNAME_Name);
 	}
 
+	/** Set Sql ORDER BY.
+		@param OrderByClause Fully qualified ORDER BY clause
+	*/
+	public void setOrderByClause (String OrderByClause)
+	{
+		set_Value (COLUMNNAME_OrderByClause, OrderByClause);
+	}
+
+	/** Get Sql ORDER BY.
+		@return Fully qualified ORDER BY clause
+	  */
+	public String getOrderByClause()
+	{
+		return (String)get_Value(COLUMNNAME_OrderByClause);
+	}
+
+	/** Set Other SQL Clause.
+		@param OtherClause Other SQL Clause
+	*/
+	public void setOtherClause (String OtherClause)
+	{
+		set_Value (COLUMNNAME_OtherClause, OtherClause);
+	}
+
+	/** Get Other SQL Clause.
+		@return Other SQL Clause
+	  */
+	public String getOtherClause()
+	{
+		return (String)get_Value(COLUMNNAME_OtherClause);
+	}
+
 	@Deprecated(since="13") // use better methods with cache
 	public org.compiere.model.I_AD_Window getPO_Window() throws RuntimeException
 	{
@@ -432,5 +464,21 @@ public class X_AD_UserDef_Info extends PO implements I_AD_UserDef_Info, I_Persis
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Sql WHERE.
+		@param WhereClause Fully qualified SQL WHERE clause
+	*/
+	public void setWhereClause (String WhereClause)
+	{
+		set_Value (COLUMNNAME_WhereClause, WhereClause);
+	}
+
+	/** Get Sql WHERE.
+		@return Fully qualified SQL WHERE clause
+	  */
+	public String getWhereClause()
+	{
+		return (String)get_Value(COLUMNNAME_WhereClause);
 	}
 }
