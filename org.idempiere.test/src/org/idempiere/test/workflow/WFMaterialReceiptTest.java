@@ -26,6 +26,9 @@ package org.idempiere.test.workflow;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -42,6 +45,7 @@ import org.compiere.process.ProcessInfo;
 import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
+import org.compiere.util.Trx;
 import org.compiere.wf.MWFActivity;
 import org.compiere.wf.MWFNextCondition;
 import org.compiere.wf.MWFNode;
@@ -65,6 +69,51 @@ public class WFMaterialReceiptTest extends AbstractTestCase {
 	private static final int WF_PROCESS_SHIPMENT_NODE_COMPLETE = 190;
 	private static final int PROCESS_SYNC_DOC_TRL = 321;
 	private static final int COLUMN_M_INOUT_ISSOTRX = 3790;
+
+	/**
+	 * https://idempiere.atlassian.net/browse/IDEMPIERE-2022
+	 */
+	@Test
+	public void testScheduledWaitRecalculation() throws Exception {
+		try {
+			Properties ctx = Env.getCtx();
+			String trxName = getTrxName();
+			MWorkflow wf = new MWorkflow(ctx, WF_PROCESS_SHIPMENT, trxName);
+
+			MWFNode scheduleNode = new MWFNode(wf, "WaitSchedule", "Wait until DateOrdered");
+			scheduleNode.setClientOrg(Env.getAD_Client_ID(ctx), 0);
+			scheduleNode.setAction(MWFNode.ACTION_WaitSchedule);
+			scheduleNode.setScheduleExpression("@SQL=SELECT DateOrdered FROM M_InOut WHERE M_InOut_ID=@M_InOut_ID@");
+			scheduleNode.saveEx();
+
+			MInOut shipment = new MInOut(ctx, 0, trxName);
+			shipment.setBPartner(MBPartner.get(ctx, DictionaryIDs.C_BPartner.PATIO.id));
+			shipment.setC_BPartner_Location_ID(LOCATION_FROM_PATIO);
+			shipment.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.HQ.id);
+			shipment.setC_DocType_ID(DictionaryIDs.C_DocType.MM_RECEIPT.id);
+			shipment.setIsSOTrx(false);
+			shipment.setMovementType(MInOut.MOVEMENTTYPE_VendorReceipts);
+			Timestamp initialSchedule = TimeUtil.addDays(TimeUtil.getDay(System.currentTimeMillis()), 1);
+			shipment.setDateOrdered(initialSchedule);
+			shipment.saveEx();
+
+			Trx trx = Trx.get(trxName, false);
+			MWFActivity activity = mock(MWFActivity.class);
+			doReturn(scheduleNode).when(activity).getNode();
+			doReturn(shipment).when(activity).getPO(trx);
+			doCallRealMethod().when(activity).evaluateScheduleEndWaitTime(trx);
+
+			assertEquals(initialSchedule, activity.evaluateScheduleEndWaitTime(trx));
+
+			Timestamp changedSchedule = TimeUtil.addDays(initialSchedule, 1);
+			shipment.setDateOrdered(changedSchedule);
+			shipment.saveEx();
+			assertEquals(changedSchedule, activity.evaluateScheduleEndWaitTime(trx));
+		} finally {
+			rollback();
+			CacheMgt.get().reset();
+		}
+	}
 
 	/**
 	 * https://idempiere.atlassian.net/browse/IDEMPIERE-4186
