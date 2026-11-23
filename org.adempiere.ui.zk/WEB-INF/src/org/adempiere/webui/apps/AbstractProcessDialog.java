@@ -51,6 +51,7 @@ import org.adempiere.webui.util.ZkContextRunnable;
 import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.MultiFileDownloadDialog;
 import org.adempiere.webui.window.SimplePDFViewer;
+import org.adempiere.webui.window.WTextEditorDialog;
 import org.compiere.Adempiere;
 import org.compiere.model.Lookup;
 import org.compiere.model.MClient;
@@ -229,11 +230,11 @@ public abstract class AbstractProcessDialog extends Window implements IProcessUI
 		}
 
 		buildMsg.append("<p><b>");
-		buildMsg.append(Util.isEmpty(m_Description) ? Msg.getMsg(m_ctx, "StartProcess?") : m_Description);
+		buildMsg.append(Util.isEmpty(m_Description) ? Msg.getMsg(m_ctx, "StartProcess?") : WTextEditorDialog.sanitize(m_Description));
 		buildMsg.append("</b></p>");
 
 		if (!Util.isEmpty(m_Help))
-			buildMsg.append("<p>").append(m_Help).append("</p>");
+			buildMsg.append("<p>").append(WTextEditorDialog.sanitize(m_Help)).append("</p>");
 		m_AD_Process_UU = process.getAD_Process_UU();
 	
 		initialMessage = buildMsg.toString();
