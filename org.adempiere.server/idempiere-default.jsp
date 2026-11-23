@@ -20,32 +20,32 @@ Author URI: https://zuhriutama.com
 <body>
     <div class="col-lg-12 mx-auto p-2 px-md-5">
         <nav class="navbar navbar-expand-lg">
-            <div class="container-fluid">
-              <div class="navbar-brand d-flex flex-column">
-                <span class="fs-4"><%=Prop.getPropertyEscaped(Prop.CLIENT_NAME)%></span>
-                <span class="fs-6"><%=Prop.getPropertyEscaped(Prop.CREDITS_TXT)%></span>
+            <div class="container-fluid gap-2 nav-inline-row">
+              <div class="navbar-brand d-flex flex-column brand-block me-0">
+                <span class="brand-title"><%=Prop.getPropertyEscaped(Prop.CLIENT_NAME)%></span>
+                <span class="brand-subtitle"><%=Prop.getPropertyEscaped(Prop.CREDITS_TXT)%></span>
               </div>
-              <div class="d-lg-none ms-auto me-2">
-                <button type="button" class="theme-toggle btn btn-link p-2" aria-label="Toggle light/dark theme" title="Toggle theme">
-                  <span class="icon-light" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" width="1.5em" height="1.5em"><path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/></svg></span>
-                  <span class="icon-dark" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" width="1.5em" height="1.5em"><path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/></svg></span>
+              <div class="d-flex align-items-center gap-2 flex-shrink-0 ms-auto nav-controls">
+                <button class="navbar-toggler navbar-toggler-sm" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
                 </button>
               </div>
-              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-              </button>
               <div class="collapse navbar-collapse" id="menu">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center flex-lg-nowrap">
+                  <%if(!Prop.getPropertyEscaped(Prop.OPTION_LINK).equals("") && !Prop.getPropertyEscaped(Prop.OPTION_LINK).equals("NONE")){%>
                   <li class="nav-item">
                     <a class="nav-link" aria-current="page" href="<%=Prop.getPropertyEscaped(Prop.OPTION_LINK)%>"><%=Prop.getPropertyEscaped(Prop.OPTION_TEXT)%></a>
                   </li>
+                  <%} if(!Prop.getPropertyEscaped(Prop.FELIX_LINK).equals("") && !Prop.getPropertyEscaped(Prop.FELIX_LINK).equals("NONE")){%>
                   <li class="nav-item">
                     <a class="nav-link" href="<%=Prop.getPropertyEscaped(Prop.FELIX_LINK)%>"><%=Prop.getPropertyEscaped(Prop.FELIX_TEXT)%></a>
                   </li>
+                  <%} if(!Prop.getPropertyEscaped(Prop.MONITOR_LINK).equals("") && !Prop.getPropertyEscaped(Prop.MONITOR_LINK).equals("NONE")){%>
                   <li class="nav-item">
                     <a class="nav-link" href="<%=Prop.getPropertyEscaped(Prop.MONITOR_LINK)%>"><%=Prop.getPropertyEscaped(Prop.MONITOR_TEXT)%></a>
                   </li>
-                  <li class="nav-item d-none d-lg-block ms-2">
+                  <%}%>
+                  <li class="nav-item ms-2">
                     <button type="button" class="theme-toggle btn btn-link p-2" aria-label="Toggle light/dark theme" title="Toggle theme">
                       <span class="icon-light" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/></svg></span>
                       <span class="icon-dark" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/></svg></span>
@@ -58,41 +58,47 @@ Author URI: https://zuhriutama.com
         <main class="content">
             <div class="row">
                 <div class="col-12 text-center">
-                    <a href="<%=Prop.getPropertyEscaped(Prop.WEBUI_LINK)%>" target="_self" class="btn bg-button p-4 rounded-3 d-flex flex-column justify-content-center align-items-center main-button">
+                    <a href="<%=Prop.getPropertyEscaped(Prop.WEBUI_LINK)%>" target="_self" class="btn bg-button p-3 p-md-4 rounded-3 d-flex flex-column justify-content-center align-items-center main-button">
                         <img id="mainLogo" src="<%=Prop.getImage("idempiere-logo.png")%>" alt="iDempiere" style="min-height: 300px;" class="d-none d-md-block"
                             data-src-light="<%=Prop.getImage("idempiere-logo.png")%>" data-src-dark="<%=Prop.getImage("idempiere-logo-dark.png")%>">
                         <img id="squareLogo" src="<%=Prop.getImage("idempiere-square.png")%>" alt="iDempiere" class="d-block d-md-none img-fluid"
                             data-src-light="<%=Prop.getImage("idempiere-square.png")%>" data-src-dark="<%=Prop.getImage("idempiere-square-dark.png")%>">
-                        <span class="fs-1 fs-md-2 mt-2"><%=Prop.getPropertyEscaped(Prop.WEBUI_TEXT)%></span>
+                        <span class="fs-3 mt-2"><%=Prop.getPropertyEscaped(Prop.WEBUI_TEXT)%></span>
                     </a>
                 </div>
                 <div class="col-12 text-center">
                     <div class="d-flex justify-content-between flex-wrap gap-3 my-4">
-                        <a href="<%=Prop.getPropertyEscaped(Prop.SUPPORT_LINK)%>" target="_blank" rel="noopener noreferrer" class="btn bg-button secondary-button d-flex flex-column align-items-center px-4 py-3 flex-fill">
+                        <%if(!Prop.getPropertyEscaped(Prop.SUPPORT_LINK).equals("") && !Prop.getPropertyEscaped(Prop.SUPPORT_LINK).equals("NONE")){%>
+                        <a href="<%=Prop.getPropertyEscaped(Prop.SUPPORT_LINK)%>" target="_blank" rel="noopener noreferrer" class="btn bg-button secondary-button d-flex flex-column align-items-center px-3 px-md-4 py-2 py-md-3 flex-fill">
                             <img class="theme-icon mb-2" src="<%=Prop.getImage("support.png")%>" alt="<%=Prop.getPropertyEscaped(Prop.LOCAL_TEXT)%>"
                                 data-src-light="<%=Prop.getImage("support.png")%>" data-src-dark="<%=Prop.getImage("support-dark.png")%>">
                             <span><%=Prop.getPropertyEscaped(Prop.LOCAL_TEXT)%></span>
                         </a>
-                        <a href="<%=Prop.getPropertyEscaped(Prop.RESOURCE_LINK)%>" target="_blank" rel="noopener noreferrer" class="btn bg-button secondary-button d-flex flex-column align-items-center px-4 py-3 flex-fill">
+                        <%} if(!Prop.getPropertyEscaped(Prop.RESOURCE_LINK).equals("") && !Prop.getPropertyEscaped(Prop.RESOURCE_LINK).equals("NONE")){%>
+                        <a href="<%=Prop.getPropertyEscaped(Prop.RESOURCE_LINK)%>" target="_blank" rel="noopener noreferrer" class="btn bg-button secondary-button d-flex flex-column align-items-center px-3 px-md-4 py-2 py-md-3 flex-fill">
                             <img class="theme-icon mb-2" src="<%=Prop.getImage("resource.png")%>" alt="<%=Prop.getPropertyEscaped(Prop.RESOURCE_TEXT)%>"
                                 data-src-light="<%=Prop.getImage("resource.png")%>" data-src-dark="<%=Prop.getImage("resource-dark.png")%>">
                             <span><%=Prop.getPropertyEscaped(Prop.RESOURCE_TEXT)%></span>
                         </a>
-                        <a href="<%=Prop.getPropertyEscaped(Prop.WIKI_LINK)%>" target="_blank" rel="noopener noreferrer" class="btn bg-button secondary-button d-flex flex-column align-items-center px-4 py-3 flex-fill">
+                        <%} if(!Prop.getPropertyEscaped(Prop.WIKI_LINK).equals("") && !Prop.getPropertyEscaped(Prop.WIKI_LINK).equals("NONE")){%>
+                        <a href="<%=Prop.getPropertyEscaped(Prop.WIKI_LINK)%>" target="_blank" rel="noopener noreferrer" class="btn bg-button secondary-button d-flex flex-column align-items-center px-3 px-md-4 py-2 py-md-3 flex-fill">
                             <img class="theme-icon mb-2" src="<%=Prop.getImage("wiki.png")%>" alt="<%=Prop.getPropertyEscaped(Prop.WIKI_TEXT)%>"
                                 data-src-light="<%=Prop.getImage("wiki.png")%>" data-src-dark="<%=Prop.getImage("wiki-dark.png")%>">
                             <span><%=Prop.getPropertyEscaped(Prop.WIKI_TEXT)%></span>
                         </a>
-                        <a href="<%=Prop.getPropertyEscaped(Prop.FORUMS_LINK)%>" target="_blank" rel="noopener noreferrer" class="btn bg-button secondary-button d-flex flex-column align-items-center px-4 py-3 flex-fill">
+                        <%} if(!Prop.getPropertyEscaped(Prop.FORUMS_LINK).equals("") && !Prop.getPropertyEscaped(Prop.FORUMS_LINK).equals("NONE")){%>
+                        <a href="<%=Prop.getPropertyEscaped(Prop.FORUMS_LINK)%>" target="_blank" rel="noopener noreferrer" class="btn bg-button secondary-button d-flex flex-column align-items-center px-3 px-md-4 py-2 py-md-3 flex-fill">
                             <img class="theme-icon mb-2" src="<%=Prop.getImage("forum.png")%>" alt="<%=Prop.getPropertyEscaped(Prop.FORUMS_TEXT)%>"
                                 data-src-light="<%=Prop.getImage("forum.png")%>" data-src-dark="<%=Prop.getImage("forum-dark.png")%>">
                             <span><%=Prop.getPropertyEscaped(Prop.FORUMS_TEXT)%></span>
                         </a>
-                        <a href="<%=Prop.getPropertyEscaped(Prop.SUPPORTREQ_LINK)%>" target="_blank" rel="noopener noreferrer" class="btn bg-button secondary-button d-flex flex-column align-items-center px-4 py-3 flex-fill">
+                        <%} if(!Prop.getPropertyEscaped(Prop.SUPPORTREQ_LINK).equals("") && !Prop.getPropertyEscaped(Prop.SUPPORTREQ_LINK).equals("NONE")){%>
+                        <a href="<%=Prop.getPropertyEscaped(Prop.SUPPORTREQ_LINK)%>" target="_blank" rel="noopener noreferrer" class="btn bg-button secondary-button d-flex flex-column align-items-center px-3 px-md-4 py-2 py-md-3 flex-fill">
                             <img class="theme-icon mb-2" src="<%=Prop.getImage("issue.png")%>" alt="<%=Prop.getPropertyEscaped(Prop.SUPPORTREQUEST_TEXT)%>"
                                 data-src-light="<%=Prop.getImage("issue.png")%>" data-src-dark="<%=Prop.getImage("issue-dark.png")%>">
                             <span><%=Prop.getPropertyEscaped(Prop.SUPPORTREQUEST_TEXT)%></span>
                         </a>
+                        <%}%>
                     </div>
                 </div>
             </div>
