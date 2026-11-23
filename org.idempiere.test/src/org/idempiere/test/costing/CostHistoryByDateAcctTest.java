@@ -154,9 +154,15 @@ public class CostHistoryByDateAcctTest extends AbstractTestCase {
 
 	/** Cost of one unit as posting reads it: MCost.getCost without a cost element, by account date */
 	private BigDecimal productCost(Timestamp dateAcct) {
+		// ProductCost reads the product from the cache, outside this test's transaction where the product is not
+		// committed: load it into the cache in the test transaction first
+		assertNotNull(MProduct.get(Env.getCtx(), product.getM_Product_ID(), getTrxName()));
 		ProductCost pc = new ProductCost(Env.getCtx(), product.getM_Product_ID(), 0, getTrxName());
+		assertNotNull(pc.getProduct(), "product of ProductCost");
 		pc.setQty(BigDecimal.ONE);
-		return pc.getProductCosts(as, 0, MCostElement.COSTINGMETHOD_AveragePO, 0, true, dateAcct, null, false);
+		BigDecimal cost = pc.getProductCosts(as, 0, MCostElement.COSTINGMETHOD_AveragePO, 0, true, dateAcct, null, false);
+		assertNotNull(cost, "product cost at " + dateAcct);
+		return cost;
 	}
 
 	private MCostHistory lookup(Timestamp dateAcct) {
