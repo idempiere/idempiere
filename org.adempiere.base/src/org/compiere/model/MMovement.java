@@ -27,6 +27,8 @@ import java.util.logging.Level;
 import org.adempiere.exceptions.BackDateTrxNotAllowedException;
 import org.adempiere.exceptions.NegativeInventoryDisallowedException;
 import org.adempiere.exceptions.PeriodClosedException;
+import org.adempiere.model.DocActionDelegate;
+import org.adempiere.model.DocActionDelegate.ActionStage;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.CLogger;
@@ -259,6 +261,95 @@ public class MMovement extends X_M_Movement implements DocAction
 	protected boolean		m_justPrepared = false;
 
 	/**
+	 * Create the delegate of {@link #prepareIt()} and {@link #completeIt()}.<br/>
+	 * It is created per call so that it doesn't hold a reference to this instance through
+	 * clone and serialization. The state remains in {@link #m_processMsg} and {@link #m_justPrepared}
+	 * and the overrides go through this class, so sub classes keep working as before.
+	 * @return new delegate
+	 */
+	private DocActionDelegate<MMovement> newDocActionDelegate()
+	{
+		return new DocActionDelegate<>(this)
+		{
+			{
+				log = get_Logger();
+			}
+
+			@Override
+			public String getProcessMsg()
+			{
+				return m_processMsg;
+			}
+
+			@Override
+			protected void setProcessMsg(String processMsg)
+			{
+				m_processMsg = processMsg;
+			}
+
+			@Override
+			protected boolean isJustPrepared()
+			{
+				return m_justPrepared;
+			}
+
+			@Override
+			protected void setJustPrepared(boolean justPrepared)
+			{
+				m_justPrepared = justPrepared;
+			}
+
+			@Override
+			protected String prepareForComplete()
+			{
+				return MMovement.this.prepareIt();
+			}
+
+			@Override
+			protected void testPeriodOpen()
+			{
+				//	done by doPrepare, its checks and messages are specific to this document
+			}
+
+			@Override
+			protected void setDefiniteDocumentNo()
+			{
+				MMovement.this.setDefiniteDocumentNo();
+			}
+
+			@Override
+			public boolean isApproved()
+			{
+				return MMovement.this.isApproved();
+			}
+
+			@Override
+			public boolean approveIt()
+			{
+				return MMovement.this.approveIt();
+			}
+
+			@Override
+			public String getDocAction()
+			{
+				return MMovement.this.getDocAction();
+			}
+
+			@Override
+			public void setDocAction(String docAction)
+			{
+				MMovement.this.setDocAction(docAction);
+			}
+
+			@Override
+			public void setProcessed(boolean processed)
+			{
+				MMovement.this.setProcessed(processed);
+			}
+		};
+	}	//	newDocActionDelegate
+
+	/**
 	 * 	Unlock Document.
 	 * 	@return true if success 
 	 */
@@ -289,10 +380,17 @@ public class MMovement extends X_M_Movement implements DocAction
 	@Override
 	public String prepareIt()
 	{
-		if (log.isLoggable(Level.INFO)) log.info(toString());
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_PREPARE);
-		if (m_processMsg != null)
-			return DocAction.STATUS_Invalid;
+		DocActionDelegate<MMovement> delegate = newDocActionDelegate();
+		delegate.addActionStep(ActionStage.PREPARE_MAIN, this::doPrepare);
+		return delegate.prepareIt();
+	}	//	prepareIt
+
+	/**
+	 * 	Validate the document, between the before and after prepare validators
+	 * 	@return null if valid, else the new status
+	 */
+	private String doPrepare()
+	{
 		MDocType dt = MDocType.get(getCtx(), getC_DocType_ID());
 
 		//	Std Period open?
@@ -355,15 +453,8 @@ public class MMovement extends X_M_Movement implements DocAction
 		if (dt.isInTransit() && !isReversal())
 			createConfirmation();
 
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_PREPARE);
-		if (m_processMsg != null)
-			return DocAction.STATUS_Invalid;
-		
-		m_justPrepared = true;
-		if (!DOCACTION_Complete.equals(getDocAction()))
-			setDocAction(DOCACTION_Complete);
-		return DocAction.STATUS_InProgress;
-	}	//	prepareIt
+		return null;
+	}	//	doPrepare
 	
 	/**
 	 * 	Create Movement Confirmation
@@ -408,32 +499,24 @@ public class MMovement extends X_M_Movement implements DocAction
 	@Override
 	public String completeIt()
 	{
-		//	Re-Check
-		if (!m_justPrepared)
-		{
-			String status = prepareIt();
-			m_justPrepared = false;
-			if (!DocAction.STATUS_InProgress.equals(status))
-				return status;
-		}
+		DocActionDelegate<MMovement> delegate = newDocActionDelegate();
+		delegate.addActionStep(ActionStage.COMPLETE_BEFORE_APPROVAL, () -> {
+			if (pendingConfirmations()) {
+				m_processMsg = "@Open@: @M_MovementConfirm_ID@";
+				return DocAction.STATUS_InProgress;
+			}
+			return null;
+		});
+		delegate.addActionStep(ActionStage.COMPLETE_MAIN, this::doComplete);
+		return delegate.completeIt();
+	}	//	completeIt
 
-		// Set the definite document number after completed (if needed)
-		setDefiniteDocumentNo();
-
-		m_processMsg = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_BEFORE_COMPLETE);
-		if (m_processMsg != null)
-			return DocAction.STATUS_Invalid;
-
-		if (pendingConfirmations()) {
-			m_processMsg = "@Open@: @M_MovementConfirm_ID@";
-			return DocAction.STATUS_InProgress;
-		}
-
-		//	Implicit Approval
-		if (!isApproved())
-			approveIt();
-		if (log.isLoggable(Level.INFO)) log.info(toString());
-		
+	/**
+	 * 	Process the lines, between the implicit approval and the after complete validators
+	 * 	@return null if success, else the new status
+	 */
+	private String doComplete()
+	{
 		if (!isReversal())
 		{
 			try {
@@ -685,19 +768,8 @@ public class MMovement extends X_M_Movement implements DocAction
 			return DocAction.STATUS_Invalid;
 		}
 		
-		//	User Validation
-		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);
-		if (valid != null)
-		{
-			m_processMsg = valid;
-			return DocAction.STATUS_Invalid;
-		}
-
-		//
-		setProcessed(true);
-		setDocAction(DOCACTION_Close);
-		return DocAction.STATUS_Completed;
-	}	//	completeIt
+		return null;
+	}	//	doComplete
 
 	/**
 	 * Outstanding (not processed) movement Confirmations ?
