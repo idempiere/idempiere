@@ -31,7 +31,7 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20260309L;
+	private static final long serialVersionUID = 20260316L;
 
     /** Standard Constructor */
     public X_AD_InfoColumn (Properties ctx, int AD_InfoColumn_ID, String trxName)
@@ -62,6 +62,8 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 // N
 			setIsReadOnly (true);
 // Y
+			setIs_FilterOnlyInfoRelated (false);
+// N
 			setName (null);
 			setSelectClause (null);
 			setSeqNo (0);
@@ -98,6 +100,8 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 // N
 			setIsReadOnly (true);
 // Y
+			setIs_FilterOnlyInfoRelated (false);
+// N
 			setName (null);
 			setSelectClause (null);
 			setSeqNo (0);
@@ -134,6 +138,8 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 // N
 			setIsReadOnly (true);
 // Y
+			setIs_FilterOnlyInfoRelated (false);
+// N
 			setName (null);
 			setSelectClause (null);
 			setSeqNo (0);
@@ -170,6 +176,8 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 // N
 			setIsReadOnly (true);
 // Y
+			setIs_FilterOnlyInfoRelated (false);
+// N
 			setName (null);
 			setSelectClause (null);
 			setSeqNo (0);
@@ -768,6 +776,28 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	public boolean isReadOnly()
 	{
 		Object oo = get_Value(COLUMNNAME_IsReadOnly);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Filter Only Related Info.
+		@param Is_FilterOnlyInfoRelated Filter Only Related Info
+	*/
+	public void setIs_FilterOnlyInfoRelated (boolean Is_FilterOnlyInfoRelated)
+	{
+		set_Value (COLUMNNAME_Is_FilterOnlyInfoRelated, Boolean.valueOf(Is_FilterOnlyInfoRelated));
+	}
+
+	/** Get Filter Only Related Info.
+		@return Filter Only Related Info	  */
+	public boolean is_FilterOnlyInfoRelated()
+	{
+		Object oo = get_Value(COLUMNNAME_Is_FilterOnlyInfoRelated);
 		if (oo != null)
 		{
 			 if (oo instanceof Boolean)
