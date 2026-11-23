@@ -341,9 +341,9 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
     {
         StringBuilder sql = new StringBuilder();
         if (txtDocumentNo.getText().length() > 0)
-            sql.append(" AND UPPER(i.DocumentNo) LIKE ?");
+            sql.append(" AND UPPER(i.DocumentNo) LIKE UPPER(?)");
         if (txtDescription.getText().length() > 0)
-            sql.append(" AND UPPER(i.Description) LIKE ?");
+            sql.append(" AND UPPER(i.Description) LIKE UPPER(?)");
         //
         if (editorBPartner.getValue() != null)
             sql.append(" AND i.C_BPartner_ID=?");
@@ -547,7 +547,7 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
      */
     private String getSQLText (Textbox f)
     {
-        String s = f.getText().toUpperCase();
+        String s = f.getText();
         if (!s.endsWith("%"))
             s += "%";
         if (log.isLoggable(Level.FINE)) log.fine("String=" + s);
