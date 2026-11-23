@@ -41,4 +41,10 @@ public class DocPostingService implements IDocPostingService {
 		return Doc.manualPosting(WindowNo, AD_Client_ID, AD_Table_ID, Record_ID, force);
 	}
 
+	@Override
+	public void deleteReverseCorrectPosting(int AD_Client_ID, int AD_Table_ID, int Record_ID, String trxName)
+	{
+		Doc.deleteReverseCorrectPosting(AD_Client_ID, AD_Table_ID, Record_ID, trxName);
+	}
+
 }
