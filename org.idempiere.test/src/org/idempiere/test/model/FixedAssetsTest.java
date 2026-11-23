@@ -34,7 +34,9 @@ import java.util.Properties;
 
 import org.compiere.model.MAsset;
 import org.compiere.model.MAssetAddition;
+import org.compiere.model.MAssetGroup;
 import org.compiere.model.MAssetGroupAcct;
+import org.compiere.model.PO;
 import org.compiere.process.DocAction;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.DB;
@@ -47,6 +49,31 @@ import org.junit.jupiter.api.Test;
 public class FixedAssetsTest extends AbstractTestCase {
 
 	public FixedAssetsTest() {
+	}
+
+	/**
+	 * IDEMPIERE-7035 - save group account when asset group is not depreciated
+	 */
+	@Test
+	public void testSaveAssetGroupAcctWhenNotDepreciated() {
+		Properties ctx = Env.getCtx();
+		String trxName = getTrxName();
+
+		MAssetGroup group = new MAssetGroup(ctx, 0, trxName);
+		group.setAD_Org_ID(GARDEN_WORLD_HQ_ORG);
+		group.setName("test_nd_grp_" + System.currentTimeMillis());
+		group.setIsDepreciated(false);
+		group.save(trxName);
+
+		MAssetGroupAcct template = new MAssetGroupAcct(ctx, DictionaryIDs.A_Asset_Group_Acct.EQUIPMENT_DOLLAR.id, trxName);
+		MAssetGroupAcct acct = new MAssetGroupAcct(ctx, 0, trxName);
+		PO.copyValues(template, acct);
+		acct.setA_Asset_Group_ID(group.getA_Asset_Group_ID());
+		acct.save(trxName);
+		acct.load(trxName);
+
+		assertEquals(0, acct.getA_Depreciation_ID());
+		assertEquals(0, acct.getA_Depreciation_F_ID());
 	}
 
 	/**
