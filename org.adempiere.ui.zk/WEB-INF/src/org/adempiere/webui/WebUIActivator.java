@@ -14,6 +14,7 @@
 package org.adempiere.webui;
 
 import org.adempiere.webui.adwindow.validator.WindowValidatorManager;
+import org.idempiere.ui.zk.websocket.ServerPushEndPoint;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -43,6 +44,7 @@ public class WebUIActivator implements BundleActivator {
 	public void stop(BundleContext context) throws Exception {
 		bundleContext = null;
 		WindowValidatorManager.getInstance().stop(context);
+		ServerPushEndPoint.shutdown();
 	}
 
 	/**

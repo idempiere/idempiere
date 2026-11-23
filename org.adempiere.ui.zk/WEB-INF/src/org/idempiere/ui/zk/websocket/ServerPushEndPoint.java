@@ -26,19 +26,34 @@ package org.idempiere.ui.zk.websocket;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
 import javax.net.ssl.SSLContext;
+import javax.servlet.ServletContext;
+import javax.servlet.SessionCookieConfig;
 import javax.servlet.http.HttpSession;
+import javax.websocket.CloseReason;
 import javax.websocket.EndpointConfig;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
@@ -50,12 +65,14 @@ import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
 import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.cookie.BasicCookieStore;
+import org.apache.hc.client5.http.cookie.Cookie;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.client5.http.impl.cookie.BasicClientCookie;
-import org.apache.hc.client5.http.impl.io.BasicHttpClientConnectionManager;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
 import org.apache.hc.client5.http.socket.ConnectionSocketFactory;
 import org.apache.hc.client5.http.socket.PlainConnectionSocketFactory;
 import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
@@ -65,13 +82,16 @@ import org.apache.hc.client5.http.ssl.TrustAllStrategy;
 import org.apache.hc.client5.http.utils.DateUtils;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.config.RegistryBuilder;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.hc.core5.ssl.SSLContextBuilder;
+import org.apache.hc.core5.util.TimeValue;
 import org.apache.hc.core5.util.Timeout;
 import org.compiere.util.CLogger;
 import org.compiere.util.Util;
+import org.idempiere.ui.zk.websocket.WebSocketServerPush.PendingBrowserCookie;
 import org.zkoss.json.JSONObject;
 import org.zkoss.json.parser.JSONParser;
 
@@ -82,20 +102,211 @@ import org.zkoss.json.parser.JSONParser;
 @ServerEndpoint(value="/serverpush/{dtid}", configurator = EndpointConfigurator.class)
 public class ServerPushEndPoint {
 
-	private Session session;
+	private static final CLogger log = CLogger.getCLogger(ServerPushEndPoint.class);
+
+	private static final int MAX_CONNECTIONS = Math.max(16,
+			Integer.getInteger("org.idempiere.ui.zk.websocket.maxConnections", 200));
+	private static final int MAX_THREADS = Math.max(16,
+			Integer.getInteger("org.idempiere.ui.zk.websocket.maxThreads", 200));
+	private static final int MAX_PENDING_REQUESTS = Math.max(5,
+			Integer.getInteger("org.idempiere.ui.zk.websocket.maxPendingRequests", 50));
+	private static final int MAX_TEXT_MESSAGE_SIZE = Math.max(64 * 1024,
+			Integer.getInteger("org.idempiere.ui.zk.websocket.maxTextMessageSize", 4 * 1024 * 1024));
+	private static final long MAX_IDLE_TIMEOUT_MS = Math.max(30_000L,
+			Long.getLong("org.idempiere.ui.zk.websocket.maxIdleTimeout", 90_000L));
+
+	/** Allowlist of handshake headers safe to forward to the internal /zkau servlet. */
+	private static final Set<String> ALLOWED_FORWARD_HEADERS = Set.of(
+			"user-agent",
+			"accept-language",
+			"origin",
+			"x-forwarded-for",
+			"x-real-ip",
+			"x-forwarded-proto",
+			"x-forwarded-host"
+	);
+
+	private static final RequestConfig AU_REQUEST_CONFIG = RequestConfig.custom()
+			.setConnectTimeout(Timeout.ofSeconds(10))
+			.setConnectionRequestTimeout(Timeout.ofSeconds(30))
+			.setResponseTimeout(Timeout.ofSeconds(0))
+			.build();
+
+	private static final Object SHARED_RESOURCE_LOCK = new Object();
+	private static volatile ExecutorService executorService;
+	private static volatile CloseableHttpClient sharedHttpClient;
+	private static final AtomicInteger WORKER_THREAD_COUNTER = new AtomicInteger(0);
+
+	private volatile Session session;
+	private final Object sendLock = new Object();
 	private String dtid;
 	private HttpSession httpSession;
-	private String baseUrl;
+	private URI internalBaseUri;
+	private String contextPath = "";
+	private String sessionCookieName = "WEBUI_SESSIONID";
 	private String requestHost;
-	private Map<String, List<String>> requestHeaders;
+	private Map<String, List<String>> forwardedHeaders = Collections.emptyMap();
 	private BasicCookieStore cookieStore;
-
-	private static final ExecutorService executorService = Executors.newCachedThreadPool();
+	private volatile String lastSessionId;
+	private final AtomicInteger pendingRequests = new AtomicInteger(0);
+	private volatile boolean closeRequested = false;
 
 	/**
 	 * default constructor
 	 */
 	public ServerPushEndPoint() {
+	}
+
+	private static ExecutorService getExecutorService() {
+		ExecutorService current = executorService;
+		if (current == null || current.isShutdown()) {
+			synchronized (SHARED_RESOURCE_LOCK) {
+				current = executorService;
+				if (current == null || current.isShutdown()) {
+					int coreThreads = Math.min(MAX_THREADS,
+							Math.max(8, Runtime.getRuntime().availableProcessors() * 2));
+					ThreadFactory factory = r -> {
+						Thread t = new Thread(r, "ws-au-worker-" + WORKER_THREAD_COUNTER.incrementAndGet());
+						t.setDaemon(true);
+						return t;
+					};
+					ThreadPoolExecutor pool = new ThreadPoolExecutor(
+							coreThreads,
+							MAX_THREADS,
+							60L,
+							TimeUnit.SECONDS,
+							new LinkedBlockingQueue<>(1000),
+							factory);
+					pool.allowCoreThreadTimeOut(true);
+					executorService = pool;
+					current = pool;
+				}
+			}
+		}
+		return current;
+	}
+
+	private static CloseableHttpClient getHttpClient() {
+		CloseableHttpClient current = sharedHttpClient;
+		if (current == null) {
+			synchronized (SHARED_RESOURCE_LOCK) {
+				current = sharedHttpClient;
+				if (current == null) {
+					PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(
+							RegistryBuilder.<ConnectionSocketFactory>create()
+									.register("http", PlainConnectionSocketFactory.getSocketFactory())
+									.register("https", sslSocketFactory)
+									.build());
+					connectionManager.setMaxTotal(MAX_CONNECTIONS);
+					connectionManager.setDefaultMaxPerRoute(MAX_CONNECTIONS);
+					connectionManager.setValidateAfterInactivity(TimeValue.ofSeconds(5));
+
+					current = HttpClients.custom()
+							.setConnectionManager(connectionManager)
+							.disableCookieManagement()
+							.disableRedirectHandling()
+							.disableContentCompression()
+							.evictExpiredConnections()
+							.evictIdleConnections(TimeValue.ofSeconds(30))
+							.build();
+					sharedHttpClient = current;
+				}
+			}
+		}
+		return current;
+	}
+
+	/**
+	 * Shut down shared worker threads and HTTP connection pool when the bundle stops.
+	 */
+	public static void shutdown() {
+		synchronized (SHARED_RESOURCE_LOCK) {
+			if (executorService != null) {
+				executorService.shutdown();
+				executorService = null;
+			}
+			if (sharedHttpClient != null) {
+				try {
+					sharedHttpClient.close();
+				} catch (IOException e) {
+					log.log(Level.WARNING, "Error closing shared WebSocket HttpClient", e);
+				}
+				sharedHttpClient = null;
+			}
+		}
+	}
+
+	/**
+	 * Send a text frame on the WebSocket session using a per-endpoint lock so concurrent
+	 * sends from I/O, AU worker, and server-push threads never violate JSR-356 threading rules.
+	 *
+	 * @param targetSession expected WebSocket session
+	 * @param text payload to send
+	 * @return {@code true} if the message was sent
+	 */
+	private boolean sendText(Session targetSession, String text) {
+		if (targetSession == null || text == null)
+			return false;
+		synchronized (sendLock) {
+			if (targetSession != this.session)
+				return false;
+			try {
+				targetSession.getBasicRemote().sendText(text);
+				return true;
+			} catch (IOException | IllegalStateException | IllegalArgumentException e) {
+				log.log(Level.WARNING, "Error sending response to client", e);
+				return false;
+			}
+		}
+	}
+
+	/**
+	 * Close the underlying WebSocket session once any in-flight AU requests finish
+	 * delivering their responses (for example, a logout redirect response). Closes
+	 * immediately when no AU requests are in flight.
+	 */
+	public void close() {
+		closeRequested = true;
+		if (pendingRequests.get() == 0) {
+			closeNow();
+		}
+	}
+
+	private void closeNow() {
+		Session current;
+		synchronized (sendLock) {
+			current = this.session;
+			this.session = null;
+		}
+		if (current != null) {
+			try {
+				if (current.isOpen()) {
+					current.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "Server push stopped"));
+				}
+			} catch (IOException | IllegalStateException e) {
+				log.log(Level.FINE, "Error closing WebSocket session", e);
+			}
+		}
+	}
+
+	private void closeWithReason(Session targetSession, CloseReason.CloseCode code, String reason) {
+		Session current;
+		synchronized (sendLock) {
+			if (targetSession != this.session)
+				return;
+			current = this.session;
+			this.session = null;
+		}
+		if (current != null) {
+			WebSocketServerPush.unregisterEndPoint(dtid, this);
+			try {
+				if (current.isOpen()) {
+					current.close(new CloseReason(code, reason));
+				}
+			} catch (IOException | IllegalStateException e) {
+				log.log(Level.FINE, "Error closing WebSocket session", e);
+			}
+		}
 	}
 	
 	/**
@@ -106,9 +317,15 @@ public class ServerPushEndPoint {
 	 */
 	@OnClose
 	public void onClose(Session sess) throws IOException {
-		if (this.session != null) {
-			this.session = null;
-			WebSocketServerPush.unregisterEndPoint(dtid);
+		boolean shouldUnregister = false;
+		synchronized (sendLock) {
+			if (this.session != null && (sess == null || this.session == sess)) {
+				this.session = null;
+				shouldUnregister = true;
+			}
+		}
+		if (shouldUnregister) {
+			WebSocketServerPush.unregisterEndPoint(dtid, this);
 		}
 	}
 
@@ -122,37 +339,178 @@ public class ServerPushEndPoint {
 	 */
 	@OnOpen
 	public void onOpen(Session sess, EndpointConfig config, @PathParam("dtid") String dtid) throws IOException {
-		if (!Util.isEmpty(dtid, true) && WebSocketServerPush.isValidDesktopId(dtid)) {			
-			session = sess;
-			this.dtid = dtid;
-			this.httpSession = (HttpSession) config.getUserProperties().get(HttpSession.class.getName());
-			WebSocketServerPush.registerEndPoint(dtid, this);
-			this.cookieStore = (BasicCookieStore) config.getUserProperties().get(BasicCookieStore.class.getName());
-			if (this.cookieStore == null) {
-				this.cookieStore = new BasicCookieStore();
-			}
-			
-			HandshakeRequest handshakeRequest = (HandshakeRequest) config.getUserProperties().get(HandshakeRequest.class.getName());
+		Map<String, Object> userProps = config != null ? config.getUserProperties() : Collections.emptyMap();
+		Object originValid = userProps.get(EndpointConfigurator.WS_ORIGIN_VALID);
+		HttpSession handshakeHttpSession = (HttpSession) userProps.get(HttpSession.class.getName());
 
-			// Use the actual connector address captured on this node when server push started.
-	        if (handshakeRequest != null) {
-				URI internalBaseUri = (URI) config.getUserProperties().get(WebSocketServerPush.WS_LOCAL_BASE_URL);
-				if (internalBaseUri == null)
-					internalBaseUri = EndpointConfigurator.getInternalBaseUri(httpSession, handshakeRequest);
-	            this.baseUrl = internalBaseUri.toASCIIString();
-	            this.requestHost = internalBaseUri.getHost();
-	            this.requestHeaders = handshakeRequest.getHeaders();
-	            if (!this.requestHeaders.containsKey("X-Forwarded-For")) {
-	            	Object ipAttr = config.getUserProperties().get(WebSocketServerPush.WS_CLIENT_IP);
-	            	if (ipAttr != null) {
-	            		String clientIp = ipAttr.toString();
-	            		// handshakeRequest.getHeaders() might return unmodifiable map
-	            		this.requestHeaders = new HashMap<>(this.requestHeaders);
-	            		this.requestHeaders.put("X-Forwarded-For", List.of(clientIp));
-	            	}
-	            }
-	        }
+		if (Util.isEmpty(dtid, true)
+				|| !Boolean.TRUE.equals(originValid)
+				|| !WebSocketServerPush.isValidDesktopId(dtid, handshakeHttpSession)) {
+			log.warning("Rejecting unauthorized WebSocket server push connection");
+			if (sess != null) {
+				try {
+					sess.close(new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY, "Unauthorized WebSocket connection"));
+				} catch (IOException | IllegalStateException e) {
+					log.log(Level.FINE, "Error closing rejected WebSocket session", e);
+				}
+			}
+			return;
 		}
+
+		sess.setMaxTextMessageBufferSize(MAX_TEXT_MESSAGE_SIZE);
+		sess.setMaxIdleTimeout(MAX_IDLE_TIMEOUT_MS);
+
+		this.dtid = dtid;
+		this.httpSession = handshakeHttpSession;
+		this.cookieStore = (BasicCookieStore) userProps.get(BasicCookieStore.class.getName());
+		if (this.cookieStore == null) {
+			this.cookieStore = new BasicCookieStore();
+		}
+
+		ServletContext servletContext = (ServletContext) userProps.get(ServletContext.class.getName());
+		if (servletContext != null) {
+			String ctxPath = servletContext.getContextPath();
+			this.contextPath = ctxPath != null ? ctxPath : "";
+			this.sessionCookieName = resolveSessionCookieName(servletContext);
+		}
+
+		HandshakeRequest handshakeRequest = (HandshakeRequest) userProps.get(HandshakeRequest.class.getName());
+		if (Util.isEmpty(this.contextPath, true) && handshakeRequest != null && handshakeRequest.getRequestURI() != null) {
+			String reqPath = handshakeRequest.getRequestURI().getPath();
+			int spIdx = reqPath != null ? reqPath.indexOf("/serverpush/") : -1;
+			if (spIdx > 0) {
+				this.contextPath = reqPath.substring(0, spIdx);
+			}
+		}
+		URI resolvedBaseUri = (URI) userProps.get(WebSocketServerPush.WS_LOCAL_BASE_URL);
+		if (resolvedBaseUri == null && handshakeRequest != null) {
+			resolvedBaseUri = EndpointConfigurator.getInternalBaseUri(httpSession, handshakeRequest);
+		}
+		if (resolvedBaseUri != null) {
+			this.internalBaseUri = resolvedBaseUri;
+			this.requestHost = resolvedBaseUri.getHost();
+		}
+
+		if (handshakeRequest != null) {
+			Map<String, List<String>> filtered = new LinkedHashMap<>();
+			Map<String, List<String>> rawHeaders = handshakeRequest.getHeaders();
+			boolean hasForwardedFor = false;
+			if (rawHeaders != null) {
+				for (Map.Entry<String, List<String>> entry : rawHeaders.entrySet()) {
+					String key = entry.getKey();
+					List<String> values = entry.getValue();
+					if (key == null || values == null || values.isEmpty())
+						continue;
+					String lower = key.toLowerCase(Locale.ROOT);
+					if (ALLOWED_FORWARD_HEADERS.contains(lower)) {
+						filtered.put(key, List.copyOf(values));
+						if ("x-forwarded-for".equals(lower)) {
+							hasForwardedFor = true;
+						}
+					}
+				}
+			}
+			if (!hasForwardedFor) {
+				Object ipAttr = userProps.get(WebSocketServerPush.WS_CLIENT_IP);
+				if (ipAttr != null && !ipAttr.toString().isBlank()) {
+					filtered.put("X-Forwarded-For", List.of(ipAttr.toString()));
+				}
+			}
+			this.forwardedHeaders = Collections.unmodifiableMap(filtered);
+		}
+
+		this.session = sess;
+		WebSocketServerPush.registerEndPoint(dtid, this);
+	}
+
+	private static String resolveSessionCookieName(ServletContext servletContext) {
+		SessionCookieConfig cookieConfig = servletContext.getSessionCookieConfig();
+		if (cookieConfig != null && !Util.isEmpty(cookieConfig.getName(), true))
+			return cookieConfig.getName().trim();
+		String jetty12Cookie = servletContext.getInitParameter("org.eclipse.jetty.session.SessionCookie");
+		if (!Util.isEmpty(jetty12Cookie, true))
+			return jetty12Cookie.trim();
+		String jettyLegacyCookie = servletContext.getInitParameter("org.eclipse.jetty.servlet.SessionCookie");
+		if (!Util.isEmpty(jettyLegacyCookie, true))
+			return jettyLegacyCookie.trim();
+		return "WEBUI_SESSIONID";
+	}
+
+	/**
+	 * Validate and resolve the client-supplied AU URI against {@link #internalBaseUri}
+	 * and the web application's {@code /zkau} servlet path to prevent SSRF and internal
+	 * path traversal.
+	 *
+	 * @param uri client-supplied URI string
+	 * @return validated absolute target URI on the node-local connector, or {@code null} if invalid
+	 */
+	URI resolveAuUri(String uri) {
+		if (internalBaseUri == null || Util.isEmpty(uri, true))
+			return null;
+		if (uri.indexOf('\r') >= 0 || uri.indexOf('\n') >= 0)
+			return null;
+		if (!uri.startsWith("/") || uri.startsWith("//"))
+			return null;
+
+		URI parsed;
+		try {
+			parsed = new URI(uri);
+		} catch (URISyntaxException e) {
+			return null;
+		}
+		if (parsed.getScheme() != null || parsed.getRawAuthority() != null
+				|| parsed.getHost() != null || parsed.getRawUserInfo() != null) {
+			return null;
+		}
+		String rawPath = parsed.getRawPath();
+		if (rawPath == null)
+			return null;
+		String lowerRawPath = rawPath.toLowerCase(Locale.ROOT);
+		if (lowerRawPath.contains("%2e") || lowerRawPath.contains("%2f") || lowerRawPath.contains("%5c")
+				|| lowerRawPath.contains("%3b") || rawPath.indexOf('\\') >= 0) {
+			return null;
+		}
+
+		// Validate every path segment after stripping servlet matrix parameters (e.g. ;jsessionid=...)
+		// so container-level traversal tricks like /..;foo=/ are rejected while allowing standard
+		// URL-encoded session parameters such as /webui/zkau;jsessionid=...
+		String[] segments = rawPath.split("/", -1);
+		StringBuilder canonicalPathBuilder = new StringBuilder();
+		for (int i = 1; i < segments.length; i++) {
+			String segment = segments[i];
+			int semicolon = segment.indexOf(';');
+			if (semicolon >= 0 && i < segments.length - 1) {
+				// Matrix parameters are only expected on the final path segment.
+				return null;
+			}
+			String segmentName = semicolon >= 0 ? segment.substring(0, semicolon) : segment;
+			if (".".equals(segmentName) || "..".equals(segmentName)) {
+				return null;
+			}
+			canonicalPathBuilder.append('/').append(segmentName);
+		}
+		String canonicalPath = canonicalPathBuilder.toString();
+
+		URI resolved = internalBaseUri.resolve(parsed).normalize();
+		if (!Objects.equals(internalBaseUri.getScheme(), resolved.getScheme())
+				|| !Objects.equals(internalBaseUri.getHost(), resolved.getHost())
+				|| internalBaseUri.getPort() != resolved.getPort()
+				|| resolved.getRawUserInfo() != null) {
+			return null;
+		}
+
+		String baseCtx = contextPath != null ? contextPath.trim() : "";
+		if (!baseCtx.isEmpty() && !baseCtx.startsWith("/")) {
+			baseCtx = "/" + baseCtx;
+		}
+		while (baseCtx.endsWith("/")) {
+			baseCtx = baseCtx.substring(0, baseCtx.length() - 1);
+		}
+		String expectedAuPath = baseCtx + "/zkau";
+		if (!canonicalPath.equals(expectedAuPath) && !canonicalPath.startsWith(expectedAuPath + "/"))
+			return null;
+
+		return resolved;
 	}
 
 	/**
@@ -163,7 +521,7 @@ public class ServerPushEndPoint {
 	 */
 	@OnError
 	public void onError(Session sess, Throwable throwable) {
-		CLogger.getCLogger(getClass()).log(Level.WARNING, throwable.getMessage(), throwable);	
+		log.log(Level.WARNING, throwable.getMessage(), throwable);	
 	}
 
 	// Track the "tail" of the execution chain. Start with a completed future.
@@ -172,205 +530,335 @@ public class ServerPushEndPoint {
 	private final Object chainLock = new Object();
 		
 	/**
-	 * Handle ping from client
-	 * @param session
-	 * @param message
+	 * Handle ping and AU messages from client
+	 * @param session WebSocket session
+	 * @param message text message payload
 	 */
 	@OnMessage
 	public void onMessage(Session session, String message) { 
 		if (session == this.session && !Util.isEmpty(message)) {
 			if (message.equals("__ping__")) {
-				try {
-					session.getBasicRemote().sendText("__pong__");
-				} catch (IllegalArgumentException | IOException e) {
-					CLogger.getCLogger(getClass()).log(Level.WARNING, e.getMessage(), e);
-				}
+				setMessageIndicator();
+				sendText(session, "__pong__");
 			} else if (message.startsWith("zkau;")) {
 				String jsonMessage = message.substring(5);
-				JSONParser parser = new JSONParser();
-				JSONObject jsonRequest = (JSONObject) parser.parse(jsonMessage);
-				String sid = jsonRequest.get("sid").toString();
-				String uri = (String) jsonRequest.get("uri");
-				String content = (String) jsonRequest.get("content");
-				String dtid = jsonRequest.get("dt").toString();
-				if (dtid == null || !dtid.equals(this.dtid)) {
-					try {
-						session.getBasicRemote().sendText(errorResponse("Error: Invalid desktop id"));
-					} catch (IOException e) {
-						CLogger.getCLogger(getClass()).log(Level.WARNING, e.getMessage(), e);
+				JSONObject jsonRequest;
+				try {
+					Object parsed = new JSONParser().parse(jsonMessage);
+					if (!(parsed instanceof JSONObject obj)) {
+						sendText(session, errorResponse(400, "Error: Invalid AU message", null));
+						return;
 					}
+					jsonRequest = obj;
+				} catch (RuntimeException e) {
+					log.log(Level.WARNING, "Invalid JSON in WebSocket AU message", e);
+					sendText(session, errorResponse(400, "Error: Invalid AU message", null));
+					return;
+				}
+
+				Object sidObj = jsonRequest.get("sid");
+				String sid = sidObj != null ? sidObj.toString() : null;
+				Object uriObj = jsonRequest.get("uri");
+				String uri = uriObj instanceof String s ? s : null;
+				Object contentObj = jsonRequest.get("content");
+				String content = contentObj instanceof String s ? s : null;
+				Object dtObj = jsonRequest.get("dt");
+				String dtid = dtObj != null ? dtObj.toString() : null;
+
+				if (dtid == null || !dtid.equals(this.dtid)) {
+					sendText(session, errorResponse(500, "Error: Invalid desktop id", sid));
 					return;
 				}
 				if (content == null) {
-					try {
-						session.getBasicRemote().sendText(errorResponse("Error: Missing AU content"));
-					} catch (IOException e) {
-						CLogger.getCLogger(getClass()).log(Level.WARNING, e.getMessage(), e);
-					}
+					sendText(session, errorResponse(500, "Error: Missing AU content", sid));
 					return;
 				}
-				setMessageIndicator();
-				
-				String url = this.baseUrl + uri;
+				if (sid == null || sid.isBlank()) {
+					sendText(session, errorResponse(400, "Error: Missing AU sid", null));
+					return;
+				}
 
-				String sessionId = null;
+				URI targetUri = resolveAuUri(uri);
+				if (targetUri == null) {
+					String safePath = uri != null ? uri.split("[;?]", 2)[0] : "null";
+					log.warning("Rejected WebSocket AU request with invalid URI path: " + safePath
+							+ " (contextPath=" + contextPath + ")");
+					sendText(session, errorResponse(400, "Error: Invalid AU URI", sid));
+					return;
+				}
+
+				setMessageIndicator();
+
+				if (httpSession == null) {
+					closeWithReason(session, CloseReason.CloseCodes.VIOLATED_POLICY, "Session invalidated");
+					return;
+				}
+				String sessionId;
 		        try {
 					sessionId = httpSession.getId();
 				} catch (IllegalStateException e) {
-					CLogger.getCLogger(getClass()).log(Level.WARNING, "HTTP Session already invalidated", e);
-					try {
-						session.getBasicRemote().sendText(errorResponse("Error: Session invalidated"));
-					} catch (IOException ioe) {
-						CLogger.getCLogger(getClass()).log(Level.WARNING, "Error sending response to client", ioe);
-					}
+					log.log(Level.WARNING, "HTTP Session already invalidated", e);
+					closeWithReason(session, CloseReason.CloseCodes.VIOLATED_POLICY, "Session invalidated");
 					return;
 				}
-	
+
+		        if (closeRequested) {
+		        	return;
+		        }
+
+		        if (pendingRequests.incrementAndGet() > MAX_PENDING_REQUESTS) {
+		        	if (pendingRequests.decrementAndGet() == 0 && closeRequested) {
+		        		closeNow();
+		        	}
+		        	log.warning("Too many pending WebSocket AU requests for desktop " + this.dtid);
+		        	sendText(session, errorResponse(503, "Error: Too many pending requests", sid));
+		        	return;
+		        }
+
+		        if (closeRequested) {
+		        	if (pendingRequests.decrementAndGet() == 0) {
+		        		closeNow();
+		        	}
+		        	return;
+		        }
+
 		        synchronized (chainLock) {
 			        try {
 				        // Create POST request with the AU content in the body instead of the URL.
 				        // Putting the content into the query string caused the Jetty 8192-byte request
 				        // line limit to be exceeded for large AU payloads (e.g. previewing a large CSV
 				        // spreadsheet), resulting in "URI is too large >8192" (HTTP 414).
-				        HttpPost httpPost = new HttpPost(url);
+				        HttpPost httpPost = new HttpPost(targetUri);
 				        httpPost.setEntity(new StringEntity(content, ContentType.APPLICATION_FORM_URLENCODED.withCharset(StandardCharsets.UTF_8)));
 				        httpPost.setHeader("ZK-SID", sid);
 				        httpPost.setHeader("Pragma", "no-cache");
 				        httpPost.setHeader("Cache-Control", "no-cache");
-						if (cookieStore != null) {
-							BasicClientCookie cookie = new BasicClientCookie("JSESSIONID", sessionId);
-							cookie.setDomain(requestHost);
-							cookieStore.addCookie(cookie);
-						}
-				        requestHeaders.forEach((key, values) -> {
-				        	// Forward selected headers
-				        	if ("User-Agent".equalsIgnoreCase(key) || "Accept-Language".equalsIgnoreCase(key) 
-				        		|| "Accept-Encoding".equalsIgnoreCase(key)
-				        		|| key.startsWith("X-")
-				        		|| "Origin".equalsIgnoreCase(key)) {
-				        		for (String value : values) {
-				        			httpPost.addHeader(key, value);
-				        		}
+				        httpPost.setHeader(WebSocketServerPush.WS_LOOPBACK_HEADER, "true");
+				        forwardedHeaders.forEach((key, values) -> {
+				        	for (String value : values) {
+				        		httpPost.addHeader(key, value);
 				        	}
 				        });
-				        httpPost.setConfig(org.apache.hc.client5.http.config.RequestConfig.custom()
-				            .setResponseTimeout(Timeout.ofSeconds(0))
-				            .build());
+				        httpPost.setConfig(AU_REQUEST_CONFIG);
 		
-				        // Execute request asynchronously
+				        // Execute request asynchronously in order
 				        executionChain = executionChain.thenRunAsync(() -> {
-				        	try (var httpClient = createHttpClient(); CloseableHttpResponse response = httpClient.execute(httpPost)) {
-					            String servletResponse = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
-					            
-								BasicCookieStore responseCookieStore = null;
-					            // Send servletResponse back to the client
-								if (servletResponse != null && !servletResponse.isEmpty()) {
-									if (response.getCode() >= 400) {
-										CLogger.getCLogger(getClass()).log(Level.WARNING, "Bad Request to /zkau: " + servletResponse);
-									}
-									Map<String, String> headersMap = new HashMap<>();
-									for (Header header : response.getHeaders()) {
-										String name = header.getName();
-										String value = header.getValue();
-										if ("Set-Cookie".equalsIgnoreCase(name)) {
-											String[] cookieElements = value.split(";");
-											String[] pair = cookieElements[0].split("=", 2);
-											if (pair.length == 2) {
-												// Internal request cookie uses the node-local host; browser cookie has no domain.
-												BasicClientCookie cookie = new BasicClientCookie(pair[0].trim(), pair[1].trim());
-												cookie.setDomain(requestHost);
-												
-												if (responseCookieStore == null) {
-													responseCookieStore = new BasicCookieStore();
-												}
-												BasicClientCookie responseCookie = new BasicClientCookie(pair[0].trim(), pair[1].trim());
-												
-												Date expiryDate = null;
-												// process max-age and other attributes
-												for (int i = 1; i < cookieElements.length; i++) {
-													String attr = cookieElements[i].trim();
-													String lowerAttr = attr.toLowerCase();
-													if (lowerAttr.startsWith("max-age=")) {
-														try {
-															long maxAge = Long.parseLong(attr.substring(8));
-															expiryDate = new Date(System.currentTimeMillis() + maxAge * 1000L);
-														} catch (Exception e) {}
-													} else if (lowerAttr.startsWith("expires=") && expiryDate == null) {
-														try {
-															String expiresValue = attr.substring(8);
-															expiryDate = DateUtils.parseDate(expiresValue);
-														} catch (Exception e) {}
-													} else if (lowerAttr.startsWith("path=")) {
-														String path = attr.substring(5);
-														cookie.setPath(path);
-														responseCookie.setPath(path);
-													}
-												}
-												if (expiryDate != null) {
-													cookie.setExpiryDate(expiryDate);
-													responseCookie.setExpiryDate(expiryDate);
-												}
-												
-												cookieStore.addCookie(cookie);
-												responseCookieStore.addCookie(responseCookie);
-											}
-										}
-										headersMap.merge(name, value, (existing, replacement) -> existing + ", " + replacement);										
-									}
-									JSONObject jsonResponse = new JSONObject();
-									jsonResponse.put("headers", headersMap);
-									jsonResponse.put("status", response.getCode());
-									jsonResponse.put("responseText", servletResponse);
-									jsonResponse.put("ajaxReqInf", jsonRequest);
-									try {
-										session.getBasicRemote().sendText(jsonResponse.toString());
-										//store cookie in http session for piggyback event in WebSocketServerPush
-										if (responseCookieStore != null && httpSession != null) {
-											synchronized (httpSession) {
-												Object existing = httpSession.getAttribute(WebSocketServerPush.WEBSOCKET_EVENT_COOKIE_STORE);
-												if (existing instanceof BasicCookieStore existingStore) {
-													responseCookieStore.getCookies().forEach(existingStore::addCookie);
-												} else {
-													httpSession.setAttribute(WebSocketServerPush.WEBSOCKET_EVENT_COOKIE_STORE, responseCookieStore);
-												}
-											}
-										}
-									} catch (IOException e) {
-										CLogger.getCLogger(getClass()).log(Level.WARNING, "Error sending response to client", e);
-									}
-								} else {
-									try {
-										session.getBasicRemote().sendText(errorResponse("Error: No response from /zkau"));
-									} catch (IOException e) {
-										CLogger.getCLogger(getClass()).log(Level.WARNING, "Error sending response to client", e);
-									}
-								}
-					        } catch (Throwable e) {
-					        	CLogger.getCLogger(getClass()).log(Level.WARNING, "Error processing /zkau request", e);
-					        	//notify client about the error
-								try {
-									session.getBasicRemote().sendText(errorResponse("Error processing /zkau request"));
-								} catch (Throwable e1) {
-									CLogger.getCLogger(getClass()).log(Level.WARNING, "Error sending response to client", e1);
-								}
-					        }
-				        }, executorService);
+				        	try {
+				        		if (session != this.session || closeRequested) {
+				        			return;
+				        		}
+				        		if (cookieStore != null) {
+				        			if (sessionId != null && !sessionId.equals(lastSessionId)) {
+				        				BasicClientCookie cookie = new BasicClientCookie(sessionCookieName, sessionId);
+				        				cookie.setDomain(requestHost);
+				        				cookie.setPath("/");
+				        				cookieStore.addCookie(cookie);
+				        				lastSessionId = sessionId;
+				        			}
+				        			cookieStore.clearExpired(new Date());
+				        			String cookieHeader = buildCookieHeader(cookieStore);
+				        			if (!cookieHeader.isEmpty()) {
+				        				httpPost.setHeader("Cookie", cookieHeader);
+				        			}
+				        		}
+				        		try (CloseableHttpResponse response = getHttpClient().execute(httpPost)) {
+				        			HttpEntity entity = response.getEntity();
+				        			String servletResponse = entity != null
+				        					? EntityUtils.toString(entity, StandardCharsets.UTF_8)
+				        					: "";
+
+				        			if (servletResponse != null && !servletResponse.isEmpty()) {
+				        				if (response.getCode() >= 400) {
+				        					log.log(Level.WARNING, "Bad Request to /zkau (status=" + response.getCode() + ")");
+				        				}
+				        				List<PendingBrowserCookie> pendingCookies = null;
+				        				Map<String, String> headersMap = new HashMap<>();
+				        				String targetPath = targetUri.getRawPath();
+				        				for (Header header : response.getHeaders()) {
+				        					String name = header.getName();
+				        					String value = header.getValue();
+				        					if ("Set-Cookie".equalsIgnoreCase(name)) {
+				        						PendingBrowserCookie parsedCookie = parseAndStoreSetCookie(value, targetPath);
+				        						if (parsedCookie != null) {
+				        							if (pendingCookies == null) {
+				        								pendingCookies = new ArrayList<>();
+				        							}
+				        							pendingCookies.add(parsedCookie);
+				        						}
+				        						// Do not expose raw Set-Cookie values (including HttpOnly cookies) to JS.
+				        						continue;
+				        					}
+				        					headersMap.merge(name, value, (existing, replacement) -> existing + ", " + replacement);
+				        				}
+				        				if (pendingCookies != null && httpSession != null) {
+				        					storePendingBrowserCookies(pendingCookies);
+				        				}
+				        				JSONObject jsonResponse = new JSONObject();
+				        				jsonResponse.put("headers", headersMap);
+				        				jsonResponse.put("status", response.getCode());
+				        				jsonResponse.put("responseText", servletResponse);
+				        				jsonResponse.put("sid", sid);
+				        				if (pendingCookies != null && !pendingCookies.isEmpty()) {
+				        					jsonResponse.put("syncCookies", Boolean.TRUE);
+				        				}
+				        				sendText(session, jsonResponse.toString());
+				        			} else {
+				        				sendText(session, errorResponse(500, "Error: No response from /zkau", sid));
+				        			}
+				        		}
+				        	} catch (Throwable e) {
+				        		log.log(Level.WARNING, "Error processing /zkau request", e);
+				        		sendText(session, errorResponse(500, "Error processing /zkau request", sid));
+				        	} finally {
+				        		if (pendingRequests.decrementAndGet() == 0 && closeRequested) {
+				        			closeNow();
+				        		}
+				        	}
+				        }, getExecutorService());
+			        } catch (RejectedExecutionException e) {
+			        	if (pendingRequests.decrementAndGet() == 0 && closeRequested) {
+			        		closeNow();
+			        	}
+			        	log.log(Level.WARNING, "WebSocket AU worker pool saturated", e);
+			        	sendText(session, errorResponse(503, "Error: Server busy", sid));
 			        } catch (Throwable e) {
-			        	CLogger.getCLogger(getClass()).log(Level.WARNING, "Error processing /zkau request", e);
+			        	if (pendingRequests.decrementAndGet() == 0 && closeRequested) {
+			        		closeNow();
+			        	}
+			        	log.log(Level.WARNING, "Error processing /zkau request", e);
+			        	sendText(session, errorResponse(500, "Error processing /zkau request", sid));
 			        }
 		        }
 			}
 		}
 	}
 
-	private String errorResponse(String text) {
+	private static String buildCookieHeader(BasicCookieStore store) {
+		List<Cookie> cookies = store.getCookies();
+		if (cookies == null || cookies.isEmpty())
+			return "";
+		StringBuilder sb = new StringBuilder();
+		for (Cookie cookie : cookies) {
+			String name = cookie.getName();
+			if (name == null || name.isEmpty())
+				continue;
+			if (sb.length() > 0)
+				sb.append("; ");
+			sb.append(name).append('=').append(cookie.getValue() != null ? cookie.getValue() : "");
+		}
+		return sb.toString();
+	}
+
+	private static boolean matchesCookiePath(String cookiePath, String targetPath) {
+		if (cookiePath == null || cookiePath.isEmpty() || "/".equals(cookiePath))
+			return true;
+		if (targetPath == null || targetPath.isEmpty())
+			return false;
+		if (targetPath.equals(cookiePath))
+			return true;
+		return targetPath.startsWith(cookiePath)
+				&& (cookiePath.endsWith("/") || targetPath.charAt(cookiePath.length()) == '/');
+	}
+
+	private PendingBrowserCookie parseAndStoreSetCookie(String setCookieHeader, String targetPath) {
+		if (setCookieHeader == null || setCookieHeader.isBlank())
+			return null;
+		String[] cookieElements = setCookieHeader.split(";");
+		String[] pair = cookieElements[0].split("=", 2);
+		if (pair.length != 2)
+			return null;
+		String cookieName = pair[0].trim();
+		String cookieValue = pair[1].trim();
+		if (cookieName.isEmpty())
+			return null;
+
+		String path = null;
+		Integer maxAgeSeconds = null;
+		Date expiryDate = null;
+		boolean secure = false;
+		boolean httpOnly = false;
+
+		for (int i = 1; i < cookieElements.length; i++) {
+			String attr = cookieElements[i].trim();
+			String lowerAttr = attr.toLowerCase(Locale.ROOT);
+			if (lowerAttr.startsWith("max-age=")) {
+				try {
+					long parsedMaxAge = Long.parseLong(attr.substring(8).trim());
+					if (parsedMaxAge <= 0L) {
+						maxAgeSeconds = 0;
+						expiryDate = new Date(0L);
+					} else {
+						maxAgeSeconds = (int) Math.min(Integer.MAX_VALUE, parsedMaxAge);
+						expiryDate = new Date(System.currentTimeMillis() + parsedMaxAge * 1000L);
+					}
+				} catch (NumberFormatException e) {
+					// Ignore invalid max-age attribute
+				}
+			} else if (lowerAttr.startsWith("expires=") && maxAgeSeconds == null) {
+				try {
+					expiryDate = DateUtils.parseDate(attr.substring(8).trim());
+				} catch (Exception e) {
+					// Ignore invalid expires attribute
+				}
+			} else if (lowerAttr.startsWith("path=")) {
+				path = attr.substring(5).trim();
+			} else if (lowerAttr.equals("secure")) {
+				secure = true;
+			} else if (lowerAttr.equals("httponly")) {
+				httpOnly = true;
+			}
+		}
+
+		// Update internal loopback cookie store using normalized "/" path so updates and Max-Age=0
+		// deletions replace handshake cookies, and do not mark internal loopback cookies Secure
+		// (the local connector may be plain HTTP behind a TLS-terminating reverse proxy).
+		if (cookieStore != null && matchesCookiePath(path, targetPath)) {
+			BasicClientCookie internalCookie = new BasicClientCookie(cookieName, cookieValue);
+			internalCookie.setDomain(requestHost);
+			internalCookie.setPath("/");
+			if (expiryDate != null) {
+				internalCookie.setExpiryDate(expiryDate);
+			}
+			cookieStore.addCookie(internalCookie);
+		}
+
+		return new PendingBrowserCookie(cookieName, cookieValue, path, maxAgeSeconds, expiryDate, secure, httpOnly);
+	}
+
+	@SuppressWarnings("unchecked")
+	private void storePendingBrowserCookies(List<PendingBrowserCookie> newCookies) {
+		try {
+			synchronized (httpSession) {
+				Object existing = httpSession.getAttribute(WebSocketServerPush.WEBSOCKET_EVENT_COOKIE_STORE);
+				List<PendingBrowserCookie> target;
+				if (existing instanceof List<?>) {
+					target = (List<PendingBrowserCookie>) existing;
+				} else {
+					target = new ArrayList<>();
+					httpSession.setAttribute(WebSocketServerPush.WEBSOCKET_EVENT_COOKIE_STORE, target);
+				}
+				target.addAll(newCookies);
+			}
+		} catch (IllegalStateException e) {
+			log.log(Level.FINE, "HTTP session invalidated while storing response cookies", e);
+		}
+	}
+
+	private String errorResponse(int status, String text, String sid) {
 		JSONObject jsonResponse = new JSONObject();
-		jsonResponse.put("status", 500);
+		jsonResponse.put("status", status);
 		jsonResponse.put("statusText", text);
+		if (sid != null) {
+			jsonResponse.put("sid", sid);
+			Map<String, String> headers = new HashMap<>();
+			headers.put("ZK-SID", sid);
+			jsonResponse.put("headers", headers);
+		}
 		return jsonResponse.toString();
 	}
 
-	// Disable SSL verification and host name verification for internal request
+	// Disable SSL verification and host name verification for node-local loopback requests
+	// (self-signed certs or IP-based local connectors). Target URI is strictly validated to internalBaseUri.
 	private static final SSLContext sslContext = createSSLContext();
 
 	private static SSLContext createSSLContext() {
@@ -379,51 +867,29 @@ public class ServerPushEndPoint {
 					.loadTrustMaterial(TrustAllStrategy.INSTANCE)
 					.build();
 		} catch (Exception e) {
-			CLogger.getCLogger(ServerPushEndPoint.class).log(Level.SEVERE, "Failed to create SSLContext", e);
+			log.log(Level.SEVERE, "Failed to create SSLContext", e);
 			return null;
 		}
 	}
 	
 	private static final SSLConnectionSocketFactory sslSocketFactory = createSSLSocketFactory();
 	private static SSLConnectionSocketFactory createSSLSocketFactory() {
+		if (sslContext == null) {
+			return SSLConnectionSocketFactory.getSocketFactory();
+		}
 		return SSLConnectionSocketFactoryBuilder.create()
 				.setSslContext(sslContext)
 				.setHostnameVerifier(NoopHostnameVerifier.INSTANCE)
 				.build();
 	}
-	
-	/**
-	 * Create the HTTP client used to forward AU requests to the local connector.
-	 *
-	 * @return configured HTTP client
-	 */
-	private CloseableHttpClient createHttpClient() {
-		try {
-			//use basic instead of pooling connection manager to avoid connection leak, as http client instance is created per each au request
-			BasicHttpClientConnectionManager connectionManager = new BasicHttpClientConnectionManager(
-					RegistryBuilder.<ConnectionSocketFactory>create()
-							.register("http", PlainConnectionSocketFactory.getSocketFactory())
-							.register("https", sslSocketFactory)
-							.build());
 
-			return HttpClients.custom()
-					.setConnectionManager(connectionManager)
-					.setDefaultCookieStore(cookieStore)
-					.build();
-		} catch (Exception e) {
-			throw new RuntimeException("Failed to initialize ServerPushEndPoint HttpClient", e);
-		}
-	}
 	/**
 	 * Message client to send echo event to server
 	 */
 	public void echo() {
-		if (session != null) {
-			try {				
-				session.getBasicRemote().sendText("echo");
-			} catch (IOException e) {
-				CLogger.getCLogger(getClass()).log(Level.WARNING, e.getMessage(), e);
-			}
+		Session current = this.session;
+		if (!closeRequested && current != null) {
+			sendText(current, "echo");
 		}
 	}
 

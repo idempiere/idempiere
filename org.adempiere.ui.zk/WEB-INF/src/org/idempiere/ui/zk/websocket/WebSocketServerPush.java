@@ -27,19 +27,23 @@ package org.idempiere.ui.zk.websocket;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.hc.client5.http.cookie.BasicCookieStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.json.JSONValue;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.AbstractComponent;
 import org.zkoss.zk.ui.Desktop;
@@ -78,14 +82,18 @@ public class WebSocketServerPush implements ServerPush {
     
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     
-    private ThreadInfo _active;
-    private ExecutionCarryOver _carryOver;
+    private volatile ThreadInfo _active;
+    private volatile ThreadInfo _waiting;
+    private volatile ExecutionCarryOver _carryOver;
     private final Object _mutex = new Object();
+    private final Object _activateLock = new Object();
     
     private final static Map<String, ServerPushEndPoint> endPointMap = new ConcurrentHashMap<>();
     private final static Map<String, Boolean> unregisterMap = new ConcurrentHashMap<>();
     private final static ServerPushEndPoint STUB = new ServerPushEndPoint();
-    private List<Schedule<Event>> schedules = new ArrayList<>();
+    private final List<Schedule<Event>> schedules = new ArrayList<>();
+    private final AtomicBoolean echoPending = new AtomicBoolean(false);
+    private final AtomicBoolean cookieHandlerRegistered = new AtomicBoolean(false);
 
     private AbstractComponent dummyTarget;
     
@@ -93,7 +101,32 @@ public class WebSocketServerPush implements ServerPush {
 
     protected static final String WS_LOCAL_BASE_URL = "ws-local-base-url";
 
+    protected static final String WS_DESKTOP_OWNER = "ws-desktop-owner";
+
+    protected static final String WS_LOOPBACK_HEADER = "X-iDempiere-WS-AU";
+
     private static final String SSL_CIPHER_SUITE_ATTRIBUTE = "javax.servlet.request.cipher_suite";
+
+    static final class PendingBrowserCookie {
+		final String name;
+		final String value;
+		final String path;
+		final Integer maxAgeSeconds;
+		final Date expiryDate;
+		final boolean secure;
+		final boolean httpOnly;
+
+		PendingBrowserCookie(String name, String value, String path, Integer maxAgeSeconds,
+				Date expiryDate, boolean secure, boolean httpOnly) {
+			this.name = name;
+			this.value = value;
+			this.path = path;
+			this.maxAgeSeconds = maxAgeSeconds;
+			this.expiryDate = expiryDate;
+			this.secure = secure;
+			this.httpOnly = httpOnly;
+		}
+	}
 
     private static class OnScheduleEvent extends Event {
 		private static final long serialVersionUID = 1L;
@@ -125,13 +158,17 @@ public class WebSocketServerPush implements ServerPush {
 			}
     	});
     	dummyTarget.addEventListener(ON_ECHO, e -> {
+    		String dtidJson = JSONValue.toJSONString(e.getData().toString());
     		StringBuilder script = new StringBuilder();
-    		String dtid = e.getData().toString();
-    		script.append("setTimeout(function() {let dt = zk.Desktop.$('").append(dtid).append("');\n");
-    		script.append("if (dt._serverpush && dt._serverpush.socket) {");
-    		script.append("  let evt = new Object(); evt.data = 'echo';\n");
-    		script.append("  dt._serverpush.socket.onmessage(evt);\n");
-    		script.append("}}, 300);");
+    		script.append("setTimeout(function() {");
+    		script.append("if (org.idempiere.websocket && org.idempiere.websocket.echoServerPush) {");
+    		script.append("  org.idempiere.websocket.echoServerPush(").append(dtidJson).append(");");
+    		script.append("} else {");
+    		script.append("  let dt = zk.Desktop.$(").append(dtidJson).append(");");
+    		script.append("  if (dt && dt._serverpush && dt._serverpush.socket) {");
+    		script.append("    dt._serverpush.socket.onmessage({data: 'echo'});");
+    		script.append("  }");
+    		script.append("}}, 0);");
     		Clients.response(new AuScript(null, script.toString()));
     	});
     }
@@ -139,46 +176,82 @@ public class WebSocketServerPush implements ServerPush {
     @Override
     public boolean activate(long timeout) throws InterruptedException, DesktopUnavailableException {
     	final Thread curr = Thread.currentThread();
-    	if (_active != null && _active.thread.equals(curr)) { //re-activate
-			++_active.nActive;
+    	ThreadInfo active = _active;
+    	if (active != null && active.thread.equals(curr)) { //re-activate
+			++active.nActive;
 			return true;
 		}
-    	
-		final ThreadInfo info = new ThreadInfo(curr);
 
-		EventListener<Event> task = new EventListener<Event>() {
-			@Override
-			public void onEvent(Event event) throws Exception {
-				if (event.getName().equals(ON_ACTIVATE_DESKTOP))
-				{
-					synchronized (_mutex) {
-						_carryOver = new ExecutionCarryOver(desktop.get());
-						
-						synchronized (info) {
-							info.nActive = 1; //granted
-							info.notifyAll();
-						}
-						
-						try {
-							_mutex.wait(); //wait until the server push is done
-						} catch (InterruptedException ex) {
-							throw UiException.Aide.wrap(ex);
+    	synchronized (_activateLock) {
+	    	Desktop dt = desktop.get();
+	    	if (dt == null || !dt.isAlive()) {
+	    		throw new DesktopUnavailableException("Desktop is not available");
+	    	}
+
+			final ThreadInfo info = new ThreadInfo(curr);
+
+			EventListener<Event> task = new EventListener<Event>() {
+				@Override
+				public void onEvent(Event event) throws Exception {
+					if (event.getName().equals(ON_ACTIVATE_DESKTOP)) {
+						synchronized (_mutex) {
+							synchronized (info) {
+								Desktop currentDesktop = desktop.get();
+								if (info.timedOut || info.cancelled || currentDesktop == null || !currentDesktop.isAlive()) {
+									return;
+								}
+								_carryOver = new ExecutionCarryOver(currentDesktop);
+								info.nActive = 1; //granted
+								info.notifyAll();
+							}
+
+							while (_carryOver != null && desktop.get() != null) {
+								try {
+									_mutex.wait(); //wait until the server push is done
+								} catch (InterruptedException ex) {
+									Thread.currentThread().interrupt();
+									throw UiException.Aide.wrap(ex);
+								}
+							}
 						}
 					}
 				}
+			};
+
+			long waitMs = timeout <= 0 ? 10L * 60L * 1000L : timeout;
+			long deadlineNanos = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(waitMs);
+			_waiting = info;
+			try {
+				synchronized (info) {
+					Executions.schedule(dt, task, new Event(ON_ACTIVATE_DESKTOP));
+					while (info.nActive == 0 && !info.cancelled) {
+						long remainingNanos = deadlineNanos - System.nanoTime();
+						if (remainingNanos <= 0L) {
+							info.timedOut = true;
+							return false;
+						}
+						long remainingMs = remainingNanos / 1_000_000L;
+						int remainingNs = (int) (remainingNanos % 1_000_000L);
+						info.wait(remainingMs, remainingNs);
+					}
+					if (info.nActive == 0) {
+						throw new DesktopUnavailableException("Server push stopped while activating desktop");
+					}
+				}
+			} finally {
+				if (_waiting == info) {
+					_waiting = null;
+				}
 			}
-		};
-		
-		synchronized (info) {
-			Executions.schedule(desktop.get(), task, new Event(ON_ACTIVATE_DESKTOP));
-			if (info.nActive == 0)
-				info.wait(timeout <= 0 ? 10*60*1000: timeout);
-		}
-    	
-    	_carryOver.carryOver();
-    	_active = info;
-    	
-    	return true;
+
+			ExecutionCarryOver carryOver = _carryOver;
+			if (carryOver == null) {
+				return false;
+			}
+	    	carryOver.carryOver();
+	    	_active = info;
+	    	return true;
+    	}
     }
 
     private boolean echo() {
@@ -190,6 +263,8 @@ public class WebSocketServerPush implements ServerPush {
         			try {
 						Thread.sleep(300);
 					} catch (InterruptedException e) {
+						Thread.currentThread().interrupt();
+						return false;
 					}
         			endPoint = getEndPoint(dt.getId());
         		}
@@ -205,20 +280,22 @@ public class WebSocketServerPush implements ServerPush {
     @Override
     public boolean deactivate(boolean stop) {
     	boolean stopped = false;
-		if (_active != null && Thread.currentThread().equals(_active.thread)) {
-			if (--_active.nActive <= 0) {
-				if (stop)
-				{
+    	ThreadInfo active = _active;
+		if (active != null && Thread.currentThread().equals(active.thread)) {
+			if (--active.nActive <= 0) {
+				if (stop) {
 					stop();
 					stopped = true;
 				}
 
-				_carryOver.cleanup();
-				_carryOver = null;
-				_active.nActive = 0; //just in case
-				_active = null;
-								
 				synchronized (_mutex) {
+					ExecutionCarryOver carryOver = _carryOver;
+					if (carryOver != null) {
+						carryOver.cleanup();
+						_carryOver = null;
+					}
+					active.nActive = 0; //just in case
+					_active = null;
 					_mutex.notifyAll();
 				}
 			}
@@ -228,12 +305,15 @@ public class WebSocketServerPush implements ServerPush {
 
     @Override
     public boolean isActive() {
-    	return _active != null && _active.nActive > 0;
+    	ThreadInfo active = _active;
+    	return active != null && active.nActive > 0;
     }
 
     @SuppressWarnings("unchecked")
 	@Override
     public void onPiggyback() {
+    	// Clear before draining so concurrent schedule() calls after drain starts will still trigger an echo.
+    	echoPending.set(false);
 
     	//Process pending schedule event
     	Schedule<Event>[] pendings = null;
@@ -285,13 +365,19 @@ public class WebSocketServerPush implements ServerPush {
 	@Override
 	public <T extends Event> void schedule(EventListener<T> task, T event,
 			Scheduler<T> scheduler) {
+    	if (desktop.get() == null)
+    		return;
     	EventListenerWrapper<T> wrapper = new EventListenerWrapper<T>(task);
     	if (Executions.getCurrent() == null) {
     		//schedule and execute in onPiggyBack
     		synchronized (schedules) {
 				schedules.add(new Schedule(wrapper, event));
 			}
-	        echo();
+    		if (echoPending.compareAndSet(false, true)) {
+    			if (!echo()) {
+    				echoPending.set(false);
+    			}
+    		}
     	} else {
     		// in event listener thread, process this asynchronously in onPiggyback
     		synchronized (schedules) {
@@ -325,14 +411,18 @@ public class WebSocketServerPush implements ServerPush {
 
         if (log.isDebugEnabled())
         	log.debug("Starting server push for " + desktop);
+        unregisterMap.remove(desktop.getId());
         registerEndPoint(desktop.getId(), STUB);
 
         // Store connection details in session attributes for later use in EndpointConfigurator
+        var session = desktop.getSession();
+        if (session != null) {
+        	session.setAttribute(getDesktopOwnerAttribute(desktop.getId()), Boolean.TRUE);
+        }
         var execution = Executions.getCurrent();
         if (execution != null) {
         	var request = execution.getNativeRequest();
         	if (request instanceof HttpServletRequest httpRequest) {
-				var session = desktop.getSession();
 				if (session != null) {
 					var clientIp = httpRequest.getRemoteAddr();
 					if (clientIp != null)
@@ -347,29 +437,73 @@ public class WebSocketServerPush implements ServerPush {
         }
         startServerPushAtClient(desktop);
 
-		ExecutionInit cookieHandler = (Execution exec, Execution parent) -> {
-			var responseObject = exec.getNativeResponse();
-			if (responseObject instanceof HttpServletResponse servletResponse) {
-				var session = desktop.getSession();
-				var cookieStore = session != null ? session.removeAttribute(WEBSOCKET_EVENT_COOKIE_STORE) : null;
-				if (cookieStore instanceof BasicCookieStore basicCookieStore) {
-					//add cookies from ServerPushEndPoint response to browser
-					basicCookieStore.getCookies().forEach(cookie -> {
-						Cookie browserCookie = new Cookie(cookie.getName(), cookie.getValue());
-						browserCookie.setSecure(true);
-						browserCookie.setHttpOnly(true);
-						if (cookie.getExpiryDate() != null) {
+        if (cookieHandlerRegistered.compareAndSet(false, true)) {
+			ExecutionInit cookieHandler = (Execution exec, Execution parent) -> flushPendingBrowserCookies(desktop, exec);
+			desktop.addListener(cookieHandler);
+        }
+    }
+
+	static void flushPendingBrowserCookies(Desktop desktop, Execution exec) {
+		var requestObject = exec.getNativeRequest();
+		if (requestObject instanceof HttpServletRequest req
+				&& "true".equals(req.getHeader(WS_LOOPBACK_HEADER))) {
+			// Do not drain pending browser cookies on internal WebSocket loopback /zkau requests.
+			return;
+		}
+		var responseObject = exec.getNativeResponse();
+		if (responseObject instanceof HttpServletResponse servletResponse) {
+			var currentSession = desktop.getSession();
+			if (currentSession == null)
+				return;
+			Object pendingCookies;
+			Object nativeSession = currentSession.getNativeSession();
+			if (nativeSession != null) {
+				synchronized (nativeSession) {
+					pendingCookies = currentSession.removeAttribute(WEBSOCKET_EVENT_COOKIE_STORE);
+				}
+			} else {
+				pendingCookies = currentSession.removeAttribute(WEBSOCKET_EVENT_COOKIE_STORE);
+			}
+
+			boolean requestSecure = requestObject instanceof HttpServletRequest req && req.isSecure();
+			if (pendingCookies instanceof List<?> list) {
+				for (Object item : list) {
+					if (item instanceof PendingBrowserCookie cookie) {
+						Cookie browserCookie = new Cookie(cookie.name, cookie.value);
+						if (cookie.path != null && !cookie.path.isBlank()) {
+							browserCookie.setPath(cookie.path);
+						}
+						browserCookie.setSecure(cookie.secure || requestSecure);
+						browserCookie.setHttpOnly(cookie.httpOnly);
+						if (cookie.maxAgeSeconds != null) {
+							browserCookie.setMaxAge(Math.max(0, cookie.maxAgeSeconds));
+						} else if (cookie.expiryDate != null) {
 							long maxAgeSeconds = Math.max(0L,
-									(cookie.getExpiryDate().getTime() - System.currentTimeMillis()) / 1000L);
+									(cookie.expiryDate.getTime() - System.currentTimeMillis()) / 1000L);
 							browserCookie.setMaxAge((int) Math.min(Integer.MAX_VALUE, maxAgeSeconds));
 						}
 						servletResponse.addCookie(browserCookie);
-					});
+					}
 				}
+			} else if (pendingCookies instanceof BasicCookieStore basicCookieStore) {
+				// Backward compatibility if a BasicCookieStore was stored directly.
+				basicCookieStore.getCookies().forEach(cookie -> {
+					Cookie browserCookie = new Cookie(cookie.getName(), cookie.getValue());
+					if (cookie.getPath() != null && !cookie.getPath().isBlank()) {
+						browserCookie.setPath(cookie.getPath());
+					}
+					browserCookie.setSecure(cookie.isSecure() || requestSecure);
+					browserCookie.setHttpOnly(true);
+					if (cookie.getExpiryDate() != null) {
+						long maxAgeSeconds = Math.max(0L,
+								(cookie.getExpiryDate().getTime() - System.currentTimeMillis()) / 1000L);
+						browserCookie.setMaxAge((int) Math.min(Integer.MAX_VALUE, maxAgeSeconds));
+					}
+					servletResponse.addCookie(browserCookie);
+				});
 			}
-		};			
-		desktop.addListener(cookieHandler);
-    }
+		}
+	}
 
 	/**
 	 * Build the base URL of the local servlet connector that accepted the request.
@@ -405,12 +539,23 @@ public class WebSocketServerPush implements ServerPush {
 	}
 
 	/**
+	 * Build the session attribute name recording ownership of a desktop by its HTTP session.
+	 *
+	 * @param desktopId ZK desktop identifier
+	 * @return session attribute name
+	 */
+	protected static String getDesktopOwnerAttribute(String desktopId) {
+		return WS_DESKTOP_OWNER + "." + desktopId;
+	}
+
+	/**
 	 * Notify the browser to open the WebSocket server-push connection.
 	 *
 	 * @param desktop ZK desktop to connect
 	 */
 	private void startServerPushAtClient(Desktop desktop) {
-		Clients.response("org.idempiere.websocket.serverpush.start", new AuScript(null, "org.idempiere.websocket.startServerPush('" + desktop.getId() + "');"));
+		Clients.response("org.idempiere.websocket.serverpush.start",
+				new AuScript(null, "org.idempiere.websocket.startServerPush(" + JSONValue.toJSONString(desktop.getId()) + ");"));
 	}
 
 	/** {@inheritDoc} */
@@ -424,16 +569,53 @@ public class WebSocketServerPush implements ServerPush {
 
         if (log.isDebugEnabled())
         	log.debug("Stopping server push for " + desktop);
+
+        echoPending.set(false);
+        synchronized (schedules) {
+        	schedules.clear();
+        }
+
+        // Remove from static registries so closed/abandoned desktops never leak entries.
+        String dtid = desktop.getId();
+        ServerPushEndPoint endpoint = endPointMap.remove(dtid);
+        unregisterMap.remove(dtid);
+        if (endpoint != null && endpoint != STUB) {
+        	endpoint.close();
+        }
+
+        // Unblock any threads waiting in activate() or holding _mutex.
+        ThreadInfo waiting = _waiting;
+        if (waiting != null) {
+        	synchronized (waiting) {
+        		waiting.cancelled = true;
+        		waiting.notifyAll();
+        	}
+        }
+        synchronized (_mutex) {
+        	_mutex.notifyAll();
+        }
+
 		var session = desktop.getSession();
-		if (session instanceof SessionCtrl sessionCtrl && !sessionCtrl.isInvalidated())
-			session.removeAttribute(getLocalBaseUrlAttribute(desktop.getId()));
-        Clients.response("org.idempiere.websocket.serverpush.stop", new AuScript(null, "org.idempiere.websocket.stopServerPush('" + desktop.getId() + "');"));
+		if (session instanceof SessionCtrl sessionCtrl && !sessionCtrl.isInvalidated()) {
+			try {
+				session.removeAttribute(getLocalBaseUrlAttribute(dtid));
+				session.removeAttribute(getDesktopOwnerAttribute(dtid));
+			} catch (IllegalStateException e) {
+				// Session invalidated concurrently
+			}
+		}
+        if (Executions.getCurrent() != null) {
+        	Clients.response("org.idempiere.websocket.serverpush.stop",
+        			new AuScript(null, "org.idempiere.websocket.stopServerPush(" + JSONValue.toJSONString(dtid) + ");"));
+        }
     }
 
 	private static class ThreadInfo {
 		private final Thread thread;
 		/** # of activate() was called. */
 		private int nActive;
+		private boolean timedOut;
+		private boolean cancelled;
 		private ThreadInfo(Thread thread) {
 			this.thread = thread;
 		}
@@ -444,9 +626,9 @@ public class WebSocketServerPush implements ServerPush {
 
 	@Override
 	public void resume() {
-		if (this.desktop.get() != null) {
-			Desktop desktop = this.desktop.getAndSet(null);
-			start(desktop);
+		Desktop current = this.desktop.getAndSet(null);
+		if (current != null) {
+			start(current);
 		}
 	}
 	
@@ -456,7 +638,9 @@ public class WebSocketServerPush implements ServerPush {
 	 * @param endpoint Connected web socket end point
 	 */
 	public static void registerEndPoint(String dtid, ServerPushEndPoint endpoint) {
-		endPointMap.put(dtid, endpoint);
+		if (dtid != null && endpoint != null) {
+			endPointMap.put(dtid, endpoint);
+		}
 	}
 	
 	/**
@@ -465,11 +649,31 @@ public class WebSocketServerPush implements ServerPush {
 	 * @return true if there's end point register previously for desktop, false otherwise
 	 */
 	public static boolean unregisterEndPoint(String dtid) {
+		if (dtid == null)
+			return false;
 		ServerPushEndPoint endpoint = endPointMap.remove(dtid);
-		if (endpoint != null) {
+		if (endpoint != null && endpoint != STUB) {
 			unregisterMap.put(dtid, Boolean.TRUE);
 		}
 		return endpoint != null;
+	}
+
+	/**
+	 * Remove web socket end point for desktop only if it matches the given endpoint instance.
+	 * Prevents a stale socket's {@code onClose} from removing a newer reconnected endpoint.
+	 *
+	 * @param dtid Desktop id
+	 * @param endpoint Endpoint instance closing
+	 * @return true if the matching endpoint was removed, false otherwise
+	 */
+	public static boolean unregisterEndPoint(String dtid, ServerPushEndPoint endpoint) {
+		if (dtid == null || endpoint == null)
+			return false;
+		boolean removed = endPointMap.remove(dtid, endpoint);
+		if (removed && endpoint != STUB) {
+			unregisterMap.put(dtid, Boolean.TRUE);
+		}
+		return removed;
 	}
 	
 	/**
@@ -478,6 +682,8 @@ public class WebSocketServerPush implements ServerPush {
 	 * @return Web socket end point
 	 */
 	public static ServerPushEndPoint getEndPoint(String dtid) {
+		if (dtid == null)
+			return null;
 		ServerPushEndPoint endpoint = endPointMap.get(dtid);
 		if (endpoint == STUB)
 			return null;
@@ -490,6 +696,23 @@ public class WebSocketServerPush implements ServerPush {
 	 * @return true if serverpush started for dtid, false otherwise
 	 */
 	public static boolean isValidDesktopId(String dtid) {
-		return endPointMap.containsKey(dtid);
+		return dtid != null && endPointMap.containsKey(dtid);
+	}
+
+	/**
+	 * Validate that {@code dtid} is an active server-push desktop owned by {@code httpSession}.
+	 *
+	 * @param dtid desktop id
+	 * @param httpSession HTTP session from the WebSocket handshake
+	 * @return true if serverpush is active for {@code dtid} and owned by {@code httpSession}
+	 */
+	public static boolean isValidDesktopId(String dtid, HttpSession httpSession) {
+		if (dtid == null || httpSession == null || !endPointMap.containsKey(dtid))
+			return false;
+		try {
+			return Boolean.TRUE.equals(httpSession.getAttribute(getDesktopOwnerAttribute(dtid)));
+		} catch (IllegalStateException e) {
+			return false;
+		}
 	}
 }
