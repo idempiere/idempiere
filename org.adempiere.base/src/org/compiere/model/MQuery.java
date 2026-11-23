@@ -256,9 +256,10 @@ public class MQuery implements Serializable, Cloneable
 				//	Date
 				else if (P_Date != null || P_Date_To != null)
 				{
-					String paramName = (Reference_ID == DisplayType.DateTime) ? ParameterName
-							: "TRUNC(" + ParameterName + ")";
-
+					boolean truncDate = MSysConfig.getBooleanValue(MSysConfig.TRUNC_REPORT_DATE_FIELD, true);
+					String paramName = (Reference_ID == DisplayType.Date && truncDate) ?
+						"TRUNC(" + ParameterName + ")" : ParameterName;
+					
 					if (P_Date_To == null)
 					{
 						parameterMap.put(ParameterName, DisplayType.getDateFormat().format(P_Date));
