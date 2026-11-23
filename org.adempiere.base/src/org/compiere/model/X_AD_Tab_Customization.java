@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /** Generated Model for AD_Tab_Customization
  *  @author iDempiere (generated)
- *  @version Release 13 - $Id$ */
+ *  @version Release 14 - $Id$ */
 @org.adempiere.base.Model(table="AD_Tab_Customization")
 public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization, I_Persistent
 {
@@ -30,7 +30,7 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20260309L;
+	private static final long serialVersionUID = 20260717L;
 
     /** Standard Constructor */
     public X_AD_Tab_Customization (Properties ctx, int AD_Tab_Customization_ID, String trxName)
@@ -255,6 +255,28 @@ public class X_AD_Tab_Customization extends PO implements I_AD_Tab_Customization
 	public String getIsDisplayedGrid()
 	{
 		return (String)get_Value(COLUMNNAME_IsDisplayedGrid);
+	}
+
+	/** IsDisplayedGridInDetail AD_Reference_ID=319 */
+	public static final int ISDISPLAYEDGRIDINDETAIL_AD_Reference_ID=319;
+	/** No = N */
+	public static final String ISDISPLAYEDGRIDINDETAIL_No = "N";
+	/** Yes = Y */
+	public static final String ISDISPLAYEDGRIDINDETAIL_Yes = "Y";
+	/** Set Open in Grid Mode when tab is detail.
+		@param IsDisplayedGridInDetail Open in Grid Mode when tab is detail
+	*/
+	public void setIsDisplayedGridInDetail (String IsDisplayedGridInDetail)
+	{
+
+		set_Value (COLUMNNAME_IsDisplayedGridInDetail, IsDisplayedGridInDetail);
+	}
+
+	/** Get Open in Grid Mode when tab is detail.
+		@return Open in Grid Mode when tab is detail	  */
+	public String getIsDisplayedGridInDetail()
+	{
+		return (String)get_Value(COLUMNNAME_IsDisplayedGridInDetail);
 	}
 
 	/** Set Quick Form.
