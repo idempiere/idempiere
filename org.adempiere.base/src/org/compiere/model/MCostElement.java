@@ -360,6 +360,13 @@ public class MCostElement extends X_M_CostElement implements ImmutablePOSupport
 		
 		if (getAD_Org_ID() != 0)
 			setAD_Org_ID(0);
+
+		// C_Charge_ID is only applicable for non-material manual cost elements without a costing method
+		if (!Util.isEmpty(getCostingMethod()) || COSTELEMENTTYPE_Material.equals(getCostElementType()))
+		{
+			if (getC_Charge_ID() != 0)
+				setC_Charge_ID(0);
+		}
 		return true;
 	}	//	beforeSave
 	

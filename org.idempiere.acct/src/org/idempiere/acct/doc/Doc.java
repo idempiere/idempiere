@@ -18,6 +18,7 @@ package org.idempiere.acct.doc;
 
 import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,9 +26,11 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -40,8 +43,11 @@ import org.compiere.model.I_M_MatchInv;
 import org.compiere.model.I_M_MatchPO;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
+import org.compiere.model.MCharge;
 import org.compiere.model.MConversionRate;
+import org.compiere.model.MCost.ManualCost;
 import org.compiere.model.MDocType;
+import org.compiere.model.MFactAcct;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MMatchInv;
@@ -52,6 +58,7 @@ import org.compiere.model.MRefList;
 import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.ModelValidator;
 import org.compiere.model.PO;
+import org.compiere.model.Query;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CLogger;
@@ -2506,5 +2513,143 @@ public abstract class Doc implements IDoc
 	 */
 	public boolean isInBackDatePostingProcess() {
 		return isInBackDatePostingProcess;
+	}
+
+	/**
+	 * Accumulate manual (non-material, charge-mapped) costs into a map keyed by M_CostElement_ID.
+	 * @param map target accumulation map
+	 * @param manualCosts manual costs to accumulate
+	 */
+	protected void accumulateManualCosts(Map<Integer, ManualCost> map, ManualCost[] manualCosts)
+	{
+		if (manualCosts == null)
+			return;
+		for (ManualCost mc : manualCosts)
+		{
+			if (mc == null || mc.getAmount() == null || mc.getAmount().signum() == 0)
+				continue;
+			int ceId = mc.getCostElement().getM_CostElement_ID();
+			ManualCost existing = map.get(ceId);
+			if (existing == null)
+				map.put(ceId, mc);
+			else
+				map.put(ceId, new ManualCost(existing.getCostElement(), existing.getAmount().add(mc.getAmount())));
+		}
+	}
+
+	/**
+	 * Round manual cost amounts to standard accounting precision and retain non-zero entries.
+	 * @param manualCosts manual cost array
+	 * @param stdPrecision standard accounting currency precision
+	 * @return list of rounded non-zero manual costs
+	 */
+	protected List<ManualCost> roundManualCosts(ManualCost[] manualCosts, int stdPrecision)
+	{
+		if (manualCosts == null || manualCosts.length == 0)
+			return new ArrayList<>();
+		return roundManualCosts(Arrays.asList(manualCosts), stdPrecision);
+	}
+
+	/**
+	 * Round manual cost amounts to standard accounting precision and retain non-zero entries.
+	 * @param manualCosts manual cost entries
+	 * @param stdPrecision standard accounting currency precision
+	 * @return list of rounded non-zero manual costs
+	 */
+	protected List<ManualCost> roundManualCosts(Iterable<ManualCost> manualCosts, int stdPrecision)
+	{
+		List<ManualCost> result = new ArrayList<>();
+		if (manualCosts == null)
+			return result;
+		for (ManualCost mc : manualCosts)
+		{
+			if (mc != null && mc.getAmount() != null)
+			{
+				BigDecimal amt = mc.getAmount().setScale(stdPrecision, RoundingMode.HALF_UP);
+				if (amt.signum() != 0)
+					result.add(new ManualCost(mc.getCostElement(), amt));
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Check whether actual Fact_Acct entries already exist for the specified document and accounting schema.
+	 * @param as accounting schema
+	 * @param AD_Table_ID document table ID
+	 * @param Record_ID document record ID
+	 * @return true if at least one actual Fact_Acct record exists
+	 */
+	protected boolean hasPostedFacts(MAcctSchema as, int AD_Table_ID, int Record_ID)
+	{
+		String sql = "SELECT COUNT(*) FROM Fact_Acct WHERE C_AcctSchema_ID=? AND AD_Table_ID=? AND Record_ID=? AND PostingType=?";
+		return DB.getSQLValueEx(getTrxName(), sql, as.getC_AcctSchema_ID(), AD_Table_ID, Record_ID, Fact.POST_Actual) > 0;
+	}
+
+	/**
+	 * Query posted actual Fact_Acct rows with C_Charge_ID &gt; 0 for an original document line.
+	 * @param as accounting schema
+	 * @param AD_Table_ID document table ID
+	 * @param Record_ID original document record ID
+	 * @param Line_ID original document line ID
+	 * @param excludeFactAcctIds optional Fact_Acct_IDs already reversed (e.g. primary DR/CR lines)
+	 * @return matching Fact_Acct records ordered by Fact_Acct_ID
+	 */
+	protected List<MFactAcct> getPostedChargeFacts(MAcctSchema as, int AD_Table_ID, int Record_ID, int Line_ID,
+			int... excludeFactAcctIds)
+	{
+		StringBuilder where = new StringBuilder(
+				"C_AcctSchema_ID=? AND AD_Table_ID=? AND Record_ID=? AND Line_ID=? AND PostingType=? AND C_Charge_ID > 0");
+		List<Object> params = new ArrayList<>();
+		params.add(as.getC_AcctSchema_ID());
+		params.add(AD_Table_ID);
+		params.add(Record_ID);
+		params.add(Line_ID);
+		params.add(Fact.POST_Actual);
+		if (excludeFactAcctIds != null && excludeFactAcctIds.length > 0)
+		{
+			List<Integer> excludeIds = new ArrayList<>();
+			for (int id : excludeFactAcctIds)
+			{
+				if (id > 0)
+					excludeIds.add(id);
+			}
+			if (!excludeIds.isEmpty())
+			{
+				where.append(" AND Fact_Acct_ID NOT IN (");
+				for (int i = 0; i < excludeIds.size(); i++)
+				{
+					if (i > 0)
+						where.append(',');
+					where.append('?');
+					params.add(excludeIds.get(i));
+				}
+				where.append(')');
+			}
+		}
+		return new Query(getCtx(), MFactAcct.Table_Name, where.toString(), getTrxName())
+				.setParameters(params)
+				.setOrderBy(MFactAcct.COLUMNNAME_Fact_Acct_ID)
+				.list();
+	}
+
+	/**
+	 * Create a reversal FactLine for a previously posted manual-cost Charge Fact_Acct record.
+	 * @param fact target Fact
+	 * @param as accounting schema
+	 * @param line reversal DocLine
+	 * @param origFact original posted Charge MFactAcct record
+	 * @return created FactLine, or null if creation failed
+	 */
+	protected FactLine createReversedChargeFactLine(Fact fact, MAcctSchema as, DocLine line, MFactAcct origFact)
+	{
+		MAccount chargeAcct = MCharge.getAccount(origFact.getC_Charge_ID(), as, getTrxName());
+		if (chargeAcct == null || chargeAcct.getAccount_ID() != origFact.getAccount_ID())
+			chargeAcct = origFact.getMAccount();
+		FactLine chargeLine = fact.createLine(line, chargeAcct, origFact.getC_Currency_ID(), null, Env.ONE);
+		if (chargeLine == null)
+			return null;
+		chargeLine.updateReverseLine(origFact, Env.ONE, true);
+		return chargeLine;
 	}
 }   //  Doc

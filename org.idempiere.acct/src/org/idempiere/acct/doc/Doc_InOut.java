@@ -20,16 +20,21 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
+import org.compiere.model.MCharge;
 import org.compiere.model.MConversionRate;
+import org.compiere.model.MCost.ManualCost;
 import org.compiere.model.MCostDetail;
 import org.compiere.model.MCurrency;
+import org.compiere.model.MFactAcct;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
 import org.compiere.model.MInOutLineMA;
@@ -200,6 +205,7 @@ public class Doc_InOut extends Doc
 			for (int i = 0; i < p_lines.length; i++)
 			{
 				Map<String, BigDecimal> batchLotCostMap = null;
+				List<ManualCost> manualCosts = new ArrayList<>();
 				DocLine_InOut line = (DocLine_InOut) p_lines[i];				
 				MProduct product = line.getProduct();
 				BigDecimal costs = null;
@@ -214,6 +220,7 @@ public class Doc_InOut extends Doc
 							if (mas != null && mas.length > 0 )
 							{
 								batchLotCostMap = new HashMap<>();
+								Map<Integer, ManualCost> maManualCostMap = new LinkedHashMap<>();
 								costs  = BigDecimal.ZERO;
 								for (int j = 0; j < mas.length; j++)
 								{
@@ -225,12 +232,15 @@ public class Doc_InOut extends Doc
 									BigDecimal maCosts = line.getProductCosts(as, line.getAD_Org_ID(), true, "M_InOutLine_ID=?");
 									batchLotCostMap.put(ma.getM_InOutLineMA_UU(), maCosts);
 									costs = costs.add(maCosts);
-								}						
+									accumulateManualCosts(maManualCostMap, line.getManualCosts(as, line.getAD_Org_ID(), maCosts));
+								}
+								manualCosts.addAll(maManualCostMap.values());
 							}
 						} 
 						else 
 						{							
 							costs = line.getProductCosts(as, line.getAD_Org_ID(), true, "M_InOutLine_ID=?");				
+							Collections.addAll(manualCosts, line.getManualCosts(as, line.getAD_Org_ID(), costs));
 						}
 					} 
 					else
@@ -238,6 +248,7 @@ public class Doc_InOut extends Doc
 						// MZ Goodwill
 						// if Shipment CostDetail exist then get Cost from Cost Detail
 						costs = line.getProductCosts(as, line.getAD_Org_ID(), true, "M_InOutLine_ID=?");			
+						Collections.addAll(manualCosts, line.getManualCosts(as, line.getAD_Org_ID(), costs));
 					}
 			
 					// end MZ
@@ -269,10 +280,20 @@ public class Doc_InOut extends Doc
 					costs = BigDecimal.ZERO;
 				}
 				
+				int stdPrecision = as.getStdPrecision();
+				BigDecimal cogs = costs;
+				List<ManualCost> postedManualCosts = !isReversal(line)
+						? roundManualCosts(manualCosts, stdPrecision) : Collections.emptyList();
+				if (!postedManualCosts.isEmpty())
+				{
+					cogs = costs.setScale(stdPrecision, RoundingMode.HALF_UP);
+					for (ManualCost manualCost : postedManualCosts)
+						cogs = cogs.add(manualCost.getAmount());
+				}
 				//  CoGS            DR
 				dr = fact.createLine(line,
 					line.getAccount(ProductCost.ACCTTYPE_P_Cogs, as),
-					as.getC_Currency_ID(), costs, null);
+					as.getC_Currency_ID(), cogs, null);
 				if (dr == null)
 				{
 					p_Error = Msg.getMsg(getCtx(),"FactLine DR not created:" + " ") + line;
@@ -324,6 +345,38 @@ public class Doc_InOut extends Doc
 						return null;
 					}
 					costs = cr.getAcctBalance(); //get original cost
+					//	Reverse any manual-cost Charge lines from the original shipment line
+					List<MFactAcct> chargeFacts = getPostedChargeFacts(as, MInOut.Table_ID, m_Reversal_ID,
+							line.getReversalLine_ID(), dr.getReversedFactAcct_ID(), cr.getReversedFactAcct_ID());
+					for (MFactAcct origFact : chargeFacts)
+					{
+						FactLine chargeCr = createReversedChargeFactLine(fact, as, line, origFact);
+						if (chargeCr == null)
+						{
+							p_Error = Msg.getMsg(getCtx(),"FactLine CR not created:") + " " + line;
+							log.log(Level.WARNING, p_Error);
+							return null;
+						}
+					}
+				}
+				else
+				{
+					for (ManualCost manualCost : postedManualCosts)
+					{
+						MAccount chargeAcct = MCharge.getAccount(manualCost.getCostElement().getC_Charge_ID(), as, getTrxName());
+						FactLine chargeCr = fact.createLine(line, chargeAcct,
+								as.getC_Currency_ID(), null, manualCost.getAmount());
+						if (chargeCr == null)
+						{
+							p_Error = Msg.getMsg(getCtx(),"FactLine CR not created:") + " " + line;
+							log.log(Level.WARNING, p_Error);
+							return null;
+						}
+						chargeCr.setC_Charge_ID(manualCost.getCostElement().getC_Charge_ID());
+						chargeCr.setM_Locator_ID(line.getM_Locator_ID());
+						chargeCr.setLocationFromLocator(line.getM_Locator_ID(), true);    // from Loc
+						chargeCr.setLocationFromBPartner(getC_BPartner_Location_ID(), false);  // to Loc
+					}
 				}
 				if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as)) ) 
 				{	
@@ -457,6 +510,7 @@ public class Doc_InOut extends Doc
 				MProduct product = line.getProduct();
 				BigDecimal costs = null;
 				Map<String, BigDecimal> batchLotCostMap = null;
+				List<ManualCost> manualCosts = new ArrayList<>();
 				if (!isReversal(line)) 
 				{
 					if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as)) ) 
@@ -469,6 +523,7 @@ public class Doc_InOut extends Doc
 							if (mas != null && mas.length > 0 )
 							{
 								batchLotCostMap = new HashMap<>();
+								Map<Integer, ManualCost> maManualCostMap = new LinkedHashMap<>();
 								for (int j = 0; j < mas.length; j++)
 								{
 									MInOutLineMA ma = mas[j];
@@ -479,12 +534,15 @@ public class Doc_InOut extends Doc
 									BigDecimal maCosts = line.getProductCosts(as, line.getAD_Org_ID(), true, "M_InOutLine_ID=?");
 									batchLotCostMap.put(ma.getM_InOutLineMA_UU(), maCosts);
 									costs = costs.add(maCosts);
+									accumulateManualCosts(maManualCostMap, line.getManualCosts(as, line.getAD_Org_ID(), maCosts));
 								}
+								manualCosts.addAll(maManualCostMap.values());
 							}
 						} 
 						else
 						{
 							costs = line.getProductCosts(as, line.getAD_Org_ID(), true, "M_InOutLine_ID=?");
+							Collections.addAll(manualCosts, line.getManualCosts(as, line.getAD_Org_ID(), costs));
 						}
 					}
 					else
@@ -492,6 +550,7 @@ public class Doc_InOut extends Doc
 						// MZ Goodwill
 						// if Shipment CostDetail exist then get Cost from Cost Detail
 						costs = line.getProductCosts(as, line.getAD_Org_ID(), true, "M_InOutLine_ID=?");
+						Collections.addAll(manualCosts, line.getManualCosts(as, line.getAD_Org_ID(), costs));
 						// end MZ
 					}
 					if (costs == null || costs.signum() == 0)	//	zero costs OK
@@ -509,6 +568,16 @@ public class Doc_InOut extends Doc
 				else
 				{
 					costs = BigDecimal.ZERO;
+				}
+				int stdPrecision = as.getStdPrecision();
+				BigDecimal cogs = costs;
+				List<ManualCost> postedManualCosts = !isReversal(line)
+						? roundManualCosts(manualCosts, stdPrecision) : Collections.emptyList();
+				if (!postedManualCosts.isEmpty())
+				{
+					cogs = costs.setScale(stdPrecision, RoundingMode.HALF_UP);
+					for (ManualCost manualCost : postedManualCosts)
+						cogs = cogs.add(manualCost.getAmount());
 				}
 				//  Inventory               DR
 				dr = fact.createLine(line,
@@ -647,7 +716,7 @@ public class Doc_InOut extends Doc
 				//  CoGS            CR
 				cr = fact.createLine(line,
 					line.getAccount(ProductCost.ACCTTYPE_P_Cogs, as),
-					as.getC_Currency_ID(), null, costs);
+					as.getC_Currency_ID(), null, cogs);
 				if (cr == null)
 				{
 					p_Error = Msg.getMsg(getCtx(),"FactLine CR not created:") + " " + line;
@@ -667,6 +736,38 @@ public class Doc_InOut extends Doc
 					{
 						p_Error = Msg.getMsg(getCtx(),"Original Shipment/Receipt not posted yet");
 						return null;
+					}
+					//	Reverse any manual-cost Charge lines from the original return line
+					List<MFactAcct> chargeFacts = getPostedChargeFacts(as, MInOut.Table_ID, m_Reversal_ID,
+							line.getReversalLine_ID(), dr.getReversedFactAcct_ID(), cr.getReversedFactAcct_ID());
+					for (MFactAcct origFact : chargeFacts)
+					{
+						FactLine chargeDr = createReversedChargeFactLine(fact, as, line, origFact);
+						if (chargeDr == null)
+						{
+							p_Error = Msg.getMsg(getCtx(),"FactLine DR not created:" + " ") + line;
+							log.log(Level.WARNING, p_Error);
+							return null;
+						}
+					}
+				}
+				else
+				{
+					for (ManualCost manualCost : postedManualCosts)
+					{
+						MAccount chargeAcct = MCharge.getAccount(manualCost.getCostElement().getC_Charge_ID(), as, getTrxName());
+						FactLine chargeDr = fact.createLine(line, chargeAcct,
+								as.getC_Currency_ID(), manualCost.getAmount(), null);
+						if (chargeDr == null)
+						{
+							p_Error = Msg.getMsg(getCtx(),"FactLine DR not created:" + " ") + line;
+							log.log(Level.WARNING, p_Error);
+							return null;
+						}
+						chargeDr.setC_Charge_ID(manualCost.getCostElement().getC_Charge_ID());
+						chargeDr.setM_Locator_ID(line.getM_Locator_ID());
+						chargeDr.setLocationFromLocator(line.getM_Locator_ID(), true);    // from Loc
+						chargeDr.setLocationFromBPartner(getC_BPartner_Location_ID(), false);  // to Loc
 					}
 				}
 			}	//	for all lines

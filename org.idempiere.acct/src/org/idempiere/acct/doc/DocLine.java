@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MCharge;
+import org.compiere.model.MCost.ManualCost;
 import org.compiere.model.MCostDetail;
 import org.compiere.model.MProduct;
 import org.compiere.model.PO;
@@ -850,6 +851,38 @@ public class DocLine
 			return costs;
 		return Env.ZERO;
 	}   //  getProductCosts
+
+	/**
+	 * Get Total Product Costs including manual (non-material, charge-mapped) costs
+	 * @param as accounting schema
+	 * @param AD_Org_ID trx org
+	 * @param zeroCostsOK zero/no costs are OK
+	 * @return total costs
+	 */
+	public BigDecimal getTotalProductCosts (MAcctSchema as, int AD_Org_ID, boolean zeroCostsOK)
+	{
+		BigDecimal costs = getProductCosts(as, AD_Org_ID, zeroCostsOK);
+		ManualCost[] manualCosts = getManualCosts(as, AD_Org_ID, costs);
+		for (ManualCost manualCost : manualCosts)
+		{
+			if (manualCost.getAmount() != null)
+				costs = costs.add(manualCost.getAmount());
+		}
+		return costs;
+	}   //  getTotalProductCosts
+
+	/**
+	 * Get manual (non-material, charge-mapped) costs for this line
+	 * @param as accounting schema
+	 * @param AD_Org_ID trx org
+	 * @param productCost Total material cost (unit material cost * qty)
+	 * @return ManualCost[]
+	 */
+	public ManualCost[] getManualCosts(MAcctSchema as, int AD_Org_ID, BigDecimal productCost)
+	{
+		ProductCost pc = getProductCost();
+		return pc.getManualCosts(as, AD_Org_ID, productCost);
+	}   //  getManualCosts
 
 	/**
 	 * 	Get Product 

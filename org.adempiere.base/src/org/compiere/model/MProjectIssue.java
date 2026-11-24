@@ -18,6 +18,7 @@ package org.compiere.model;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
@@ -557,7 +558,24 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		BigDecimal cost = null;
 		MAcctSchema as = MAcctSchema.getClientAcctSchema(getCtx(), getAD_Client_ID(), get_TrxName())[0];
 		MProduct product = new MProduct(getCtx(), getM_Product_ID(), get_TrxName());
-		if (getM_InOutLine_ID() > 0)
+		if (isReversal())
+		{
+			MFactAcct origWipFact = new Query(getCtx(), MFactAcct.Table_Name,
+					"C_AcctSchema_ID=? AND AD_Table_ID=? AND Record_ID=? AND PostingType=?", get_TrxName())
+					.setParameters(as.getC_AcctSchema_ID(), MProjectIssue.Table_ID, getReversal_ID(), MFactAcct.POSTINGTYPE_Actual)
+					.setOrderBy(MFactAcct.COLUMNNAME_Fact_Acct_ID)
+					.first();
+			if (origWipFact != null)
+			{
+				// First Fact_Acct line of Doc_ProjectIssue is the Project WIP/Asset line (DR on normal issue).
+				cost = origWipFact.getAmtAcctCr().subtract(origWipFact.getAmtAcctDr());
+			}
+		}
+		if (cost != null)
+		{
+			// already resolved from original posted Fact_Acct
+		}
+		else if (getM_InOutLine_ID() > 0)
 		{
 			MInOutLine inOutLine = new MInOutLine(getCtx(), getM_InOutLine_ID(), get_TrxName());
 			cost = inOutLine.getPOCost(as, getMovementQty());
@@ -571,6 +589,25 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		{
  			cost = MCost.getCost(	product, getM_AttributeSetInstance_ID(), as, getAD_Org_ID(), as.getCostingMethod(), getMovementQty(), 0, true, getMovementDate(), null,
 									false, get_TrxName());
+			if (cost != null)
+			{
+				MCost.ManualCost[] manualCosts = MCost.getManualCosts(product, getM_AttributeSetInstance_ID(), as, getAD_Org_ID(), cost, getMovementQty(), get_TrxName());
+				if (manualCosts.length > 0)
+				{
+					int stdPrecision = as.getStdPrecision();
+					BigDecimal totalCost = cost.setScale(stdPrecision, RoundingMode.HALF_UP);
+					for (MCost.ManualCost manualCost : manualCosts)
+					{
+						if (manualCost.getAmount() != null)
+						{
+							BigDecimal amt = manualCost.getAmount().setScale(stdPrecision, RoundingMode.HALF_UP);
+							if (amt.signum() != 0)
+								totalCost = totalCost.add(amt);
+						}
+					}
+					cost = totalCost;
+				}
+			}
 		}
 		if (cost != null)
 		{
