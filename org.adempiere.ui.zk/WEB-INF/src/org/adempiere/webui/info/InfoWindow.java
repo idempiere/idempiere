@@ -3785,7 +3785,10 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
 
 			try
 			{
-				val = m_rs.getObject(columnIndex);
+				if (DisplayType.isDate(getDisplayType(row, col)))
+					val = m_rs.getTimestamp(columnIndex);
+				else
+					val = m_rs.getObject(columnIndex);
 				if (columnInfos[col].isKeyPairCol()) {
 					m_rs.getObject(columnIndex+1);
 					if (m_rs.wasNull()) {
