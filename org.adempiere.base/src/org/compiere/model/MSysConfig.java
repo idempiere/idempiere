@@ -46,7 +46,7 @@ public class MSysConfig extends X_AD_SysConfig
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 517698929022059878L;
+	private static final long serialVersionUID = -7248672831062232473L;
 
 	/** Constant for Predefine System Configuration Names (in alphabetical order) */
 	
@@ -94,6 +94,9 @@ public class MSysConfig extends X_AD_SysConfig
     public static final String CHART_MIN_WIDTH_6_PERIOD = "CHART_MIN_WIDTH_6_PERIOD";
     public static final String CHECK_CREDIT_ON_CASH_POS_ORDER = "CHECK_CREDIT_ON_CASH_POS_ORDER";
     public static final String CHECK_CREDIT_ON_PREPAY_ORDER = "CHECK_CREDIT_ON_PREPAY_ORDER";
+    public static final String CHECK_PURCHASE_PRICE_LIST_FOR_ZERO_COST_POSTING = "CHECK_PURCHASE_PRICE_LIST_FOR_ZERO_COST_POSTING";
+    public static final String CHECK_ZERO_COST_PO_FOR_ZERO_COST_POSTING = "CHECK_ZERO_COST_PO_FOR_ZERO_COST_POSTING";
+    public static final String CHECK_ZERO_COST_PRODUCTION_FOR_ZERO_COST_POSTING = "CHECK_ZERO_COST_PRODUCTION_FOR_ZERO_COST_POSTING";
     public static final String CKEDITOR_FILE_CONFIG = "CKEDITOR_FILE_CONFIG";
     public static final String CKEDITOR_FILE_CONFIG_MIN = "CKEDITOR_FILE_CONFIG_MIN";
     public static final String CLIENT_ACCOUNTING = "CLIENT_ACCOUNTING";

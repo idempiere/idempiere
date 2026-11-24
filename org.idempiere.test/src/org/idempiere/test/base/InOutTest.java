@@ -26,6 +26,8 @@ package org.idempiere.test.base;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -44,21 +46,31 @@ import org.compiere.model.MAcctSchema;
 import org.compiere.model.MBPartner;
 import org.compiere.model.MClient;
 import org.compiere.model.MConversionRate;
+import org.compiere.model.MCostDetail;
 import org.compiere.model.MCurrency;
 import org.compiere.model.MFactAcct;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
+import org.compiere.model.MInventory;
+import org.compiere.model.MInventoryLine;
+import org.compiere.model.MInvoice;
+import org.compiere.model.MInvoiceLine;
+import org.compiere.model.MMatchPO;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MPriceList;
 import org.compiere.model.MPriceListVersion;
+import org.compiere.model.MProcess;
 import org.compiere.model.MProduct;
+import org.compiere.model.MProductCategory;
 import org.compiere.model.MProductPrice;
+import org.compiere.model.MProduction;
 import org.compiere.model.MRMA;
 import org.compiere.model.MRMALine;
 import org.compiere.model.MShipper;
 import org.compiere.model.MShippingProcessor;
 import org.compiere.model.MShippingProcessorCfg;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MWarehouse;
 import org.compiere.model.PO;
 import org.compiere.model.ProductCost;
@@ -68,17 +80,22 @@ import org.compiere.model.X_C_BP_ShippingAcct;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.ProcessInfo;
+import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.Env;
 import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
+import org.eevolution.model.MPPProductBOM;
+import org.eevolution.model.MPPProductBOMLine;
 import org.idempiere.acct.doc.Doc;
 import org.idempiere.acct.doc.DocManager;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.ConversionRateHelper;
 import org.idempiere.test.DictionaryIDs;
 import org.idempiere.test.FactAcct;
+import org.idempiere.test.ZeroCostPostingTestHelper;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 /**
  * @author etantg
@@ -607,7 +624,624 @@ public class InOutTest extends AbstractTestCase {
 		assertTrue(cogsFound, "No COGS posting found");
 		assertTrue(assetFound, "No Product Asset posting found");
 	}
-	
+
+	@Test
+	public void testShipmentZeroCostPostingByPO() {
+		MBPartner vendor = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id);
+		MBPartner customer = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id);
+		Timestamp today = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
+
+		MProduct product = ZeroCostPostingTestHelper.createStockedProduct(Env.getCtx(), "TestZeroCostPO_" + System.currentTimeMillis(), DictionaryIDs.M_Product_Category.STANDARD.id, getTrxName());
+		MPriceList purchasePL = ZeroCostPostingTestHelper.createPurchasePriceList(Env.getCtx(), "Purchase ZeroCostPO " + System.currentTimeMillis(), today, product.get_ID(), BigDecimal.ONE, getTrxName());
+		ZeroCostPostingTestHelper.addSalesPriceListEntry(Env.getCtx(), product.get_ID(), BigDecimal.TEN, getTrxName());
+
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MPriceList> priceListMock = mockStatic(MPriceList.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MSysConfig> sysConfigMock = mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
+			ZeroCostPostingTestHelper.mockProductGet(productMock, product);
+			ZeroCostPostingTestHelper.mockPriceListGet(priceListMock, purchasePL);
+
+			// Create & complete zero-price Purchase Order and Material Receipt
+			MOrder po = createPurchaseOrder(vendor, today, purchasePL.get_ID(), DictionaryIDs.C_ConversionType.SPOT.id);
+			MOrderLine poLine = new MOrderLine(po);
+			poLine.setLine(10);
+			poLine.setProduct(product);
+			poLine.setQty(BigDecimal.TEN);
+			poLine.setPriceList(BigDecimal.ONE);
+			poLine.setPrice(BigDecimal.ZERO);
+			poLine.saveEx();
+			assertEquals(0, poLine.getPriceActual().signum(), "Expected zero price on PO line");
+			completeDocument(po);
+
+			MInOut receipt = createMMReceipt(po, today);
+			createInOutLine(receipt, poLine, BigDecimal.TEN);
+			completeDocument(receipt);
+			postDocument(receipt);
+			for (MMatchPO matchPO : MMatchPO.getInOut(Env.getCtx(), receipt.get_ID(), getTrxName())) {
+				postDocument(matchPO);
+			}
+			MCostDetail cd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", poLine.get_ID(), 0,
+					MClient.get(Env.getCtx()).getAcctSchema().get_ID(), getTrxName());
+			assertNotNull(cd, "Expected processed zero-cost MCostDetail for PO line");
+			assertEquals(0, cd.getAmt().signum(), "Expected zero amount on MCostDetail");
+
+			// Disable all zero-cost checks before completing shipment
+			ZeroCostPostingTestHelper.mockZeroCostSysConfig(sysConfigMock, getAD_Client_ID(), false, false, false);
+
+			MOrder so = createSalseOrder(customer, today, DictionaryIDs.M_PriceList.STANDARD.id, DictionaryIDs.C_ConversionType.SPOT.id);
+			MOrderLine soLine = createOrderLine(so, 10, product, BigDecimal.ONE, BigDecimal.TEN);
+			completeDocument(so);
+
+			MInOut shipment = createShipment(so, today);
+			createInOutLine(shipment, soLine, BigDecimal.ONE);
+			completeDocument(shipment);
+			shipment.load(getTrxName());
+			assertFalse(shipment.isPosted(), "Shipment should not post when zero-cost SysConfig checks are disabled");
+
+			// With CHECK_ZERO_COST_PO_FOR_ZERO_COST_POSTING=false, posting must fail even if other checks are true
+			ZeroCostPostingTestHelper.mockZeroCostSysConfig(sysConfigMock, getAD_Client_ID(), false, true, true);
+			String error = DocumentEngine.postImmediate(Env.getCtx(), shipment.getAD_Client_ID(), shipment.get_Table_ID(), shipment.get_ID(), true, getTrxName());
+			assertNotNull(error, "Expected posting error when CHECK_ZERO_COST_PO_FOR_ZERO_COST_POSTING is false");
+			shipment.load(getTrxName());
+			assertFalse(shipment.isPosted(), "Shipment must remain unposted when PO zero-cost check is disabled");
+
+			// With CHECK_ZERO_COST_PO_FOR_ZERO_COST_POSTING=true (others false), posting must succeed
+			ZeroCostPostingTestHelper.mockZeroCostSysConfig(sysConfigMock, getAD_Client_ID(), true, false, false);
+			error = DocumentEngine.postImmediate(Env.getCtx(), shipment.getAD_Client_ID(), shipment.get_Table_ID(), shipment.get_ID(), true, getTrxName());
+			assertNull(error, error);
+			shipment.load(getTrxName());
+			assertTrue(shipment.isPosted(), "Shipment should post when CHECK_ZERO_COST_PO_FOR_ZERO_COST_POSTING is true");
+		}
+	}
+
+	@Test
+	public void testShipmentZeroCostPostingByInvoiceAndAcctSchemaScope() {
+		MBPartner vendor = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id);
+		MBPartner customer = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id);
+		Timestamp today = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
+		long ts = System.currentTimeMillis();
+
+		MAcctSchema[] schemas = MAcctSchema.getClientAcctSchema(Env.getCtx(), getAD_Client_ID(), getTrxName());
+		assertTrue(schemas.length >= 2, "Expected at least 2 active accounting schemas in GardenWorld");
+
+		MProductCategory category = ZeroCostPostingTestHelper.createStandardCostingCategory(Env.getCtx(), "StdCost ZeroInv " + ts, getTrxName());
+		MProduct product = ZeroCostPostingTestHelper.createStockedProduct(Env.getCtx(), "ZeroCostInv_" + ts, category.get_ID(), getTrxName());
+		MPriceList purchasePL = ZeroCostPostingTestHelper.createPurchasePriceList(Env.getCtx(), "Purchase ZeroCostInv " + ts, today, product.get_ID(), BigDecimal.ZERO, getTrxName());
+		MProductPrice purchasePP = MProductPrice.get(Env.getCtx(), purchasePL.getPriceListVersion(today).get_ID(), product.get_ID(), getTrxName());
+		assertNotNull(purchasePP);
+		ZeroCostPostingTestHelper.addSalesPriceListEntry(Env.getCtx(), product.get_ID(), BigDecimal.TEN, getTrxName());
+
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MProductCategory> categoryMock = mockStatic(MProductCategory.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MPriceList> priceListMock = mockStatic(MPriceList.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MSysConfig> sysConfigMock = mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
+			ZeroCostPostingTestHelper.mockProductGet(productMock, product);
+			ZeroCostPostingTestHelper.mockProductCategoryGet(categoryMock, category);
+			ZeroCostPostingTestHelper.mockPriceListGet(priceListMock, purchasePL);
+
+			// Seed MCost quantity via Physical Inventory (M_InventoryLine_ID > 0 only, not PO/Invoice/Production)
+			ZeroCostPostingTestHelper.mockZeroCostSysConfig(sysConfigMock, getAD_Client_ID(), false, false, true);
+			MInventory seedInventory = new MInventory(Env.getCtx(), 0, getTrxName());
+			seedInventory.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.HQ.id);
+			seedInventory.setC_DocType_ID(DictionaryIDs.C_DocType.MATERIAL_PHYSICAL_INVENTORY.id);
+			seedInventory.setCostingMethod(schemas[0].getCostingMethod());
+			seedInventory.saveEx();
+			MInventoryLine seedLine = new MInventoryLine(seedInventory, DictionaryIDs.M_Locator.HQ.id, product.get_ID(), 0, BigDecimal.ZERO, new BigDecimal("5"));
+			seedLine.saveEx();
+			completeDocument(seedInventory);
+			postDocument(seedInventory);
+
+			// Switch purchase price list to positive so free purchase price list check does not match
+			purchasePP.setPrices(BigDecimal.ONE, BigDecimal.ONE, BigDecimal.ZERO);
+			purchasePP.saveEx();
+			ZeroCostPostingTestHelper.mockZeroCostSysConfig(sysConfigMock, getAD_Client_ID(), false, false, false);
+
+			// Create & complete a zero-price AP Vendor Invoice without a Purchase Order
+			MInvoice invoice = new MInvoice(Env.getCtx(), 0, getTrxName());
+			invoice.setBPartner(vendor);
+			invoice.setIsSOTrx(false);
+			invoice.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.AP_INVOICE.id);
+			invoice.setM_PriceList_ID(purchasePL.get_ID());
+			invoice.setC_ConversionType_ID(DictionaryIDs.C_ConversionType.SPOT.id);
+			invoice.setDateInvoiced(today);
+			invoice.setDateAcct(today);
+			invoice.saveEx();
+
+			MInvoiceLine invLine = new MInvoiceLine(invoice);
+			invLine.setLine(10);
+			invLine.setProduct(product);
+			invLine.setQty(new BigDecimal("5"));
+			invLine.setPriceList(BigDecimal.ONE);
+			invLine.setPrice(BigDecimal.ZERO);
+			invLine.saveEx();
+			assertEquals(0, invLine.getPriceActual().signum(), "Expected zero price on AP Invoice line");
+			completeDocument(invoice);
+
+			// Create processed zero-cost M_CostDetail (C_InvoiceLine_ID > 0, C_OrderLine_ID = 0) ONLY for the first accounting schema
+			assertTrue(MCostDetail.createInvoice(schemas[0], DictionaryIDs.AD_Org.HQ.id,
+					product.get_ID(), 0, invLine.get_ID(), 0,
+					BigDecimal.ZERO, new BigDecimal("5"), "Zero cost vendor invoice", today, 0, getTrxName()));
+			MCostDetail cd0 = MCostDetail.get(Env.getCtx(), "C_InvoiceLine_ID=?", invLine.get_ID(), 0,
+					schemas[0].getC_AcctSchema_ID(), getTrxName());
+			assertNotNull(cd0, "Expected processed zero-cost MCostDetail for invoice line in first schema");
+			assertEquals(0, cd0.getC_OrderLine_ID(), "Expected no C_OrderLine_ID on invoice-only MCostDetail");
+			assertTrue(cd0.isProcessed(), "Expected processed MCostDetail");
+
+			MOrder so = createSalseOrder(customer, today, DictionaryIDs.M_PriceList.STANDARD.id, DictionaryIDs.C_ConversionType.SPOT.id);
+			MOrderLine soLine = createOrderLine(so, 10, product, BigDecimal.ONE, BigDecimal.TEN);
+			completeDocument(so);
+
+			MInOut shipment = createShipment(so, today);
+			createInOutLine(shipment, soLine, BigDecimal.ONE);
+			completeDocument(shipment);
+			shipment.load(getTrxName());
+			assertFalse(shipment.isPosted(), "Shipment should not post when zero-cost SysConfig checks are disabled");
+
+			// With zero-cost M_CostDetail in only the first schema, posting must fail for the second schema
+			ZeroCostPostingTestHelper.mockZeroCostSysConfig(sysConfigMock, getAD_Client_ID(), true, false, false);
+			String error = DocumentEngine.postImmediate(Env.getCtx(), shipment.getAD_Client_ID(), shipment.get_Table_ID(), shipment.get_ID(), true, getTrxName());
+			assertNotNull(error, "Expected posting error when second accounting schema has no zero-cost M_CostDetail");
+			assertTrue(error.contains("No Costs for"), "Expected No Costs error for unscoped schema, got: " + error);
+			shipment.load(getTrxName());
+			assertFalse(shipment.isPosted(), "Shipment must not post when another accounting schema lacks zero-cost M_CostDetail");
+
+			// Create processed zero-cost M_CostDetail (C_InvoiceLine_ID > 0) for the remaining accounting schema(s)
+			for (int i = 1; i < schemas.length; i++) {
+				assertTrue(MCostDetail.createInvoice(schemas[i], DictionaryIDs.AD_Org.HQ.id,
+						product.get_ID(), 0, invLine.get_ID(), 0,
+						BigDecimal.ZERO, new BigDecimal("5"), "Zero cost vendor invoice", today, 0, getTrxName()));
+			}
+
+			// With CHECK_ZERO_COST_PO_FOR_ZERO_COST_POSTING=false, posting must fail even if other checks are true
+			ZeroCostPostingTestHelper.mockZeroCostSysConfig(sysConfigMock, getAD_Client_ID(), false, true, true);
+			error = DocumentEngine.postImmediate(Env.getCtx(), shipment.getAD_Client_ID(), shipment.get_Table_ID(), shipment.get_ID(), true, getTrxName());
+			assertNotNull(error, "Expected posting error when CHECK_ZERO_COST_PO_FOR_ZERO_COST_POSTING is false");
+			assertTrue(error.contains("No Costs for"), "Expected No Costs error when PO/invoice check disabled, got: " + error);
+			shipment.load(getTrxName());
+			assertFalse(shipment.isPosted());
+
+			// With CHECK_ZERO_COST_PO_FOR_ZERO_COST_POSTING=true and zero-cost invoice detail in all schemas, posting must succeed
+			ZeroCostPostingTestHelper.mockZeroCostSysConfig(sysConfigMock, getAD_Client_ID(), true, false, false);
+			error = DocumentEngine.postImmediate(Env.getCtx(), shipment.getAD_Client_ID(), shipment.get_Table_ID(), shipment.get_ID(), true, getTrxName());
+			assertNull(error, error);
+			shipment.load(getTrxName());
+			assertTrue(shipment.isPosted(), "Shipment should post via C_InvoiceLine_ID zero-cost MCostDetail across all schemas");
+		}
+	}
+
+	@Test
+	public void testShipmentZeroCostPostingByProduction() {
+		MBPartner vendor = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id);
+		MBPartner customer = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id);
+		Timestamp today = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
+		long ts = System.currentTimeMillis();
+
+		MProduct component = ZeroCostPostingTestHelper.createStockedProduct(Env.getCtx(), "ZeroCostComp_" + ts, DictionaryIDs.M_Product_Category.STANDARD.id, getTrxName());
+		MProduct parent = ZeroCostPostingTestHelper.createStockedProduct(Env.getCtx(), "ZeroCostBOM_" + ts, DictionaryIDs.M_Product_Category.STANDARD.id, getTrxName());
+		parent.setIsBOM(true);
+		parent.setIsPurchased(false);
+		parent.saveEx();
+
+		MPriceList purchasePL = ZeroCostPostingTestHelper.createPurchasePriceList(Env.getCtx(), "Purchase ZeroCostComp " + ts, today, component.get_ID(), BigDecimal.ONE, getTrxName());
+		ZeroCostPostingTestHelper.addSalesPriceListEntry(Env.getCtx(), parent.get_ID(), BigDecimal.TEN, getTrxName());
+
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MPriceList> priceListMock = mockStatic(MPriceList.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MSysConfig> sysConfigMock = mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
+			ZeroCostPostingTestHelper.mockProductGet(productMock, component);
+			ZeroCostPostingTestHelper.mockProductGet(productMock, parent);
+			ZeroCostPostingTestHelper.mockPriceListGet(priceListMock, purchasePL);
+
+			// Receive component at zero cost so component has stock and zero cost
+			MOrder po = createPurchaseOrder(vendor, today, purchasePL.get_ID(), DictionaryIDs.C_ConversionType.SPOT.id);
+			MOrderLine poLine = new MOrderLine(po);
+			poLine.setLine(10);
+			poLine.setProduct(component);
+			poLine.setQty(BigDecimal.TEN);
+			poLine.setPriceList(BigDecimal.ONE);
+			poLine.setPrice(BigDecimal.ZERO);
+			poLine.saveEx();
+			completeDocument(po);
+
+			MInOut receipt = createMMReceipt(po, today);
+			createInOutLine(receipt, poLine, BigDecimal.TEN);
+			completeDocument(receipt);
+			postDocument(receipt);
+			for (MMatchPO matchPO : MMatchPO.getInOut(Env.getCtx(), receipt.get_ID(), getTrxName())) {
+				postDocument(matchPO);
+			}
+
+			// Create BOM & complete/post zero-cost production for parent
+			MPPProductBOM bom = new MPPProductBOM(Env.getCtx(), 0, getTrxName());
+			bom.setM_Product_ID(parent.get_ID());
+			bom.setBOMType(MPPProductBOM.BOMTYPE_CurrentActive);
+			bom.setBOMUse(MPPProductBOM.BOMUSE_Master);
+			bom.setName(parent.getName());
+			bom.saveEx();
+
+			MPPProductBOMLine bomLine = new MPPProductBOMLine(bom);
+			bomLine.setM_Product_ID(component.get_ID());
+			bomLine.setQtyBOM(BigDecimal.ONE);
+			bomLine.saveEx();
+
+			parent.load(getTrxName());
+			parent.setIsVerified(true);
+			parent.saveEx();
+
+			MProduction production = new MProduction(Env.getCtx(), 0, getTrxName());
+			production.setM_Product_ID(parent.get_ID());
+			production.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+			production.setIsUseProductionPlan(false);
+			production.setMovementDate(today);
+			production.setDocAction(DocAction.ACTION_Complete);
+			production.setDocStatus(DocAction.STATUS_Drafted);
+			production.setIsComplete(false);
+			production.setProductionQty(new BigDecimal("5"));
+			production.setPP_Product_BOM_ID(bom.getPP_Product_BOM_ID());
+			production.saveEx();
+
+			MProcess process = MProcess.get(Env.getCtx(), DictionaryIDs.AD_Process.CREATE_UPDATE_PRODUCTION_LINES.id);
+			ProcessInfo pi = new ProcessInfo(process.getName(), process.get_ID());
+			pi.setAD_Client_ID(getAD_Client_ID());
+			pi.setAD_User_ID(getAD_User_ID());
+			pi.setRecord_ID(production.get_ID());
+			pi.setTransactionName(getTrxName());
+			ServerProcessCtl.process(pi, getTrx(), false);
+			assertFalse(pi.isError(), pi.getSummary());
+
+			production.load(getTrxName());
+			completeDocument(production);
+			postDocument(production);
+
+			// Disable all zero-cost checks before completing shipment
+			ZeroCostPostingTestHelper.mockZeroCostSysConfig(sysConfigMock, getAD_Client_ID(), false, false, false);
+
+			MOrder so = createSalseOrder(customer, today, DictionaryIDs.M_PriceList.STANDARD.id, DictionaryIDs.C_ConversionType.SPOT.id);
+			MOrderLine soLine = createOrderLine(so, 10, parent, BigDecimal.ONE, BigDecimal.TEN);
+			completeDocument(so);
+
+			MInOut shipment = createShipment(so, today);
+			createInOutLine(shipment, soLine, BigDecimal.ONE);
+			completeDocument(shipment);
+			shipment.load(getTrxName());
+			assertFalse(shipment.isPosted(), "Shipment should not post when zero-cost SysConfig checks are disabled");
+
+			// With CHECK_ZERO_COST_PRODUCTION_FOR_ZERO_COST_POSTING=false, posting must fail even if PO and PriceList checks are true
+			ZeroCostPostingTestHelper.mockZeroCostSysConfig(sysConfigMock, getAD_Client_ID(), true, false, true);
+			String error = DocumentEngine.postImmediate(Env.getCtx(), shipment.getAD_Client_ID(), shipment.get_Table_ID(), shipment.get_ID(), true, getTrxName());
+			assertNotNull(error, "Expected posting error when CHECK_ZERO_COST_PRODUCTION_FOR_ZERO_COST_POSTING is false");
+			shipment.load(getTrxName());
+			assertFalse(shipment.isPosted(), "Shipment must remain unposted when production zero-cost check is disabled");
+
+			// With CHECK_ZERO_COST_PRODUCTION_FOR_ZERO_COST_POSTING=true (others false), posting must succeed
+			ZeroCostPostingTestHelper.mockZeroCostSysConfig(sysConfigMock, getAD_Client_ID(), false, true, false);
+			error = DocumentEngine.postImmediate(Env.getCtx(), shipment.getAD_Client_ID(), shipment.get_Table_ID(), shipment.get_ID(), true, getTrxName());
+			assertNull(error, error);
+			shipment.load(getTrxName());
+			assertTrue(shipment.isPosted(), "Shipment should post when CHECK_ZERO_COST_PRODUCTION_FOR_ZERO_COST_POSTING is true");
+		}
+	}
+
+	@Test
+	public void testZeroCostPostingByFreePurchasePriceList() {
+		MBPartner vendor = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id);
+		MBPartner customer = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id);
+		Timestamp today = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
+		long ts = System.currentTimeMillis();
+
+		MProductCategory category = ZeroCostPostingTestHelper.createStandardCostingCategory(Env.getCtx(), "Standard Costing ZeroPriceList " + ts, getTrxName());
+		MProduct product = ZeroCostPostingTestHelper.createStockedProduct(Env.getCtx(), "ZeroCostPL_" + ts, category.get_ID(), getTrxName());
+		ZeroCostPostingTestHelper.createPurchasePriceList(Env.getCtx(), "Free Purchase PL " + ts, today, product.get_ID(), BigDecimal.ZERO, getTrxName());
+		ZeroCostPostingTestHelper.addSalesPriceListEntry(Env.getCtx(), product.get_ID(), BigDecimal.TEN, getTrxName());
+
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MProductCategory> categoryMock = mockStatic(MProductCategory.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MSysConfig> sysConfigMock = mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
+			ZeroCostPostingTestHelper.mockProductGet(productMock, product);
+			ZeroCostPostingTestHelper.mockProductCategoryGet(categoryMock, category);
+
+			// 1. Direct Material Receipt without PO (tests Doc_InOut Purchasing Receipt path)
+			ZeroCostPostingTestHelper.mockZeroCostSysConfig(sysConfigMock, getAD_Client_ID(), false, false, false);
+
+			MInOut receipt = new MInOut(Env.getCtx(), 0, getTrxName());
+			receipt.setAD_Org_ID(DictionaryIDs.AD_Org.HQ.id);
+			receipt.setBPartner(vendor);
+			receipt.setIsSOTrx(false);
+			receipt.setMovementType(MInOut.MOVEMENTTYPE_VendorReceipts);
+			receipt.setC_DocType_ID(DictionaryIDs.C_DocType.MM_RECEIPT.id);
+			receipt.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.HQ.id);
+			receipt.setMovementDate(today);
+			receipt.setDateAcct(today);
+			receipt.saveEx();
+
+			MInOutLine receiptLine = new MInOutLine(receipt);
+			receiptLine.setLine(10);
+			receiptLine.setProduct(product);
+			receiptLine.setQty(new BigDecimal("5"));
+			receiptLine.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+			receiptLine.saveEx();
+
+			completeDocument(receipt);
+			receipt.load(getTrxName());
+			assertFalse(receipt.isPosted(), "Receipt without PO should not post when CHECK_PURCHASE_PRICE_LIST_FOR_ZERO_COST_POSTING is false");
+
+			String error = DocumentEngine.postImmediate(Env.getCtx(), receipt.getAD_Client_ID(), receipt.get_Table_ID(), receipt.get_ID(), true, getTrxName());
+			assertNotNull(error, "Expected posting error on receipt when CHECK_PURCHASE_PRICE_LIST_FOR_ZERO_COST_POSTING is false");
+			receipt.load(getTrxName());
+			assertFalse(receipt.isPosted());
+
+			ZeroCostPostingTestHelper.mockZeroCostSysConfig(sysConfigMock, getAD_Client_ID(), false, false, true);
+			error = DocumentEngine.postImmediate(Env.getCtx(), receipt.getAD_Client_ID(), receipt.get_Table_ID(), receipt.get_ID(), true, getTrxName());
+			assertNull(error, error);
+			receipt.load(getTrxName());
+			assertTrue(receipt.isPosted(), "Receipt without PO should post when free purchase price list check is enabled");
+
+			// Seed MCost quantity via Physical Inventory (creates M_CostDetail with M_InventoryLine_ID > 0, not PO/Production)
+			MInventory seedInventory = new MInventory(Env.getCtx(), 0, getTrxName());
+			seedInventory.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.HQ.id);
+			seedInventory.setC_DocType_ID(DictionaryIDs.C_DocType.MATERIAL_PHYSICAL_INVENTORY.id);
+			seedInventory.setCostingMethod(MClient.get(Env.getCtx()).getAcctSchema().getCostingMethod());
+			seedInventory.saveEx();
+
+			MInventoryLine seedLine = new MInventoryLine(seedInventory, DictionaryIDs.M_Locator.HQ.id, product.get_ID(), 0, BigDecimal.ZERO, new BigDecimal("5"));
+			seedLine.saveEx();
+			completeDocument(seedInventory);
+			postDocument(seedInventory);
+
+			// 2. Sales Shipment + positive purchase price list guard
+			ZeroCostPostingTestHelper.mockZeroCostSysConfig(sysConfigMock, getAD_Client_ID(), false, false, false);
+
+			MOrder so = createSalseOrder(customer, today, DictionaryIDs.M_PriceList.STANDARD.id, DictionaryIDs.C_ConversionType.SPOT.id);
+			MOrderLine soLine = createOrderLine(so, 10, product, BigDecimal.ONE, BigDecimal.TEN);
+			completeDocument(so);
+
+			MInOut shipment = createShipment(so, today);
+			createInOutLine(shipment, soLine, BigDecimal.ONE);
+			completeDocument(shipment);
+			shipment.load(getTrxName());
+			assertFalse(shipment.isPosted(), "Shipment should not post when CHECK_PURCHASE_PRICE_LIST_FOR_ZERO_COST_POSTING is false");
+
+			error = DocumentEngine.postImmediate(Env.getCtx(), shipment.getAD_Client_ID(), shipment.get_Table_ID(), shipment.get_ID(), true, getTrxName());
+			assertNotNull(error, "Expected posting error on shipment when CHECK_PURCHASE_PRICE_LIST_FOR_ZERO_COST_POSTING is false");
+
+			// Add an active positive purchase price list entry -> posting must still fail even with flag=true
+			MPriceList positivePL = ZeroCostPostingTestHelper.createPurchasePriceList(Env.getCtx(), "Positive Purchase PL " + ts, today, product.get_ID(), new BigDecimal("5"), getTrxName());
+			MPriceListVersion positivePLV = positivePL.getPriceListVersion(today);
+			MProductPrice positivePP = MProductPrice.get(Env.getCtx(), positivePLV.get_ID(), product.get_ID(), getTrxName());
+			assertNotNull(positivePP);
+
+			ZeroCostPostingTestHelper.mockZeroCostSysConfig(sysConfigMock, getAD_Client_ID(), true, true, true);
+			error = DocumentEngine.postImmediate(Env.getCtx(), shipment.getAD_Client_ID(), shipment.get_Table_ID(), shipment.get_ID(), true, getTrxName());
+			assertNotNull(error, "Expected posting error when an active positive purchase price list exists");
+			shipment.load(getTrxName());
+			assertFalse(shipment.isPosted(), "Shipment must remain unposted when an active positive purchase price list exists");
+
+			// Deactivate positive price list entry -> posting must now succeed with CHECK_PURCHASE_PRICE_LIST_FOR_ZERO_COST_POSTING=true
+			positivePP.setIsActive(false);
+			positivePP.saveEx();
+
+			ZeroCostPostingTestHelper.mockZeroCostSysConfig(sysConfigMock, getAD_Client_ID(), false, false, true);
+			error = DocumentEngine.postImmediate(Env.getCtx(), shipment.getAD_Client_ID(), shipment.get_Table_ID(), shipment.get_ID(), true, getTrxName());
+			assertNull(error, error);
+			shipment.load(getTrxName());
+			assertTrue(shipment.isPosted(), "Shipment should post once only zero purchase price list is active");
+		}
+	}
+
+	@Test
+	public void testZeroCostPostingByPurchasePriceListVersionValidity() {
+		MBPartner vendor = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id);
+		Timestamp today = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
+		Timestamp past = TimeUtil.addDays(today, -10);
+		Timestamp future = TimeUtil.addDays(today, 10);
+		long ts = System.currentTimeMillis();
+
+		MProductCategory category = ZeroCostPostingTestHelper.createStandardCostingCategory(Env.getCtx(), "StdCost PLV Validity " + ts, getTrxName());
+		MProduct product = ZeroCostPostingTestHelper.createStockedProduct(Env.getCtx(), "ZeroCostPLV_" + ts, category.get_ID(), getTrxName());
+
+		// Start with ONLY a future-dated zero-price version (not effective on today)
+		MPriceList purchasePL = ZeroCostPostingTestHelper.createPurchasePriceList(Env.getCtx(), "Purchase PLV Validity " + ts, future, product.get_ID(), BigDecimal.ZERO, getTrxName());
+		MPriceListVersion futurePLV = new Query(Env.getCtx(), MPriceListVersion.Table_Name, "M_PriceList_ID=?", getTrxName())
+				.setParameters(purchasePL.get_ID())
+				.first();
+		assertNotNull(futurePLV);
+		MProductPrice futurePP = MProductPrice.get(Env.getCtx(), futurePLV.get_ID(), product.get_ID(), getTrxName());
+		assertNotNull(futurePP);
+
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MProductCategory> categoryMock = mockStatic(MProductCategory.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MSysConfig> sysConfigMock = mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
+			ZeroCostPostingTestHelper.mockProductGet(productMock, product);
+			ZeroCostPostingTestHelper.mockProductCategoryGet(categoryMock, category);
+			ZeroCostPostingTestHelper.mockZeroCostSysConfig(sysConfigMock, getAD_Client_ID(), false, false, false);
+
+			MInOut receipt = new MInOut(Env.getCtx(), 0, getTrxName());
+			receipt.setAD_Org_ID(DictionaryIDs.AD_Org.HQ.id);
+			receipt.setBPartner(vendor);
+			receipt.setIsSOTrx(false);
+			receipt.setMovementType(MInOut.MOVEMENTTYPE_VendorReceipts);
+			receipt.setC_DocType_ID(DictionaryIDs.C_DocType.MM_RECEIPT.id);
+			receipt.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.HQ.id);
+			receipt.setMovementDate(today);
+			receipt.setDateAcct(today);
+			receipt.saveEx();
+
+			MInOutLine receiptLine = new MInOutLine(receipt);
+			receiptLine.setLine(10);
+			receiptLine.setProduct(product);
+			receiptLine.setQty(new BigDecimal("5"));
+			receiptLine.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+			receiptLine.saveEx();
+			completeDocument(receipt);
+
+			// 1. Future-only zero-price version must NOT allow posting on today
+			ZeroCostPostingTestHelper.mockZeroCostSysConfig(sysConfigMock, getAD_Client_ID(), false, false, true);
+			String error = DocumentEngine.postImmediate(Env.getCtx(), receipt.getAD_Client_ID(), receipt.get_Table_ID(), receipt.get_ID(), true, getTrxName());
+			assertNotNull(error, "Expected posting error when only a future-dated zero purchase price list version exists");
+			receipt.load(getTrxName());
+			assertFalse(receipt.isPosted());
+
+			// 2. Add a superseded past positive version (past, price=5), an effective current zero version (today, price=0),
+			//    and turn the future version into a future positive version (future, price=5) — all active on the same price list.
+			futurePP.setPrices(new BigDecimal("5"), new BigDecimal("5"), BigDecimal.ZERO);
+			futurePP.saveEx();
+			ZeroCostPostingTestHelper.addPriceListVersion(purchasePL, past, product.get_ID(), new BigDecimal("5"));
+			ZeroCostPostingTestHelper.addPriceListVersion(purchasePL, today, product.get_ID(), BigDecimal.ZERO);
+
+			// Posting on today must succeed: superseded past positive version and future positive version must be ignored
+			error = DocumentEngine.postImmediate(Env.getCtx(), receipt.getAD_Client_ID(), receipt.get_Table_ID(), receipt.get_ID(), true, getTrxName());
+			assertNull(error, error);
+			receipt.load(getTrxName());
+			assertTrue(receipt.isPosted(), "Receipt should post when current effective purchase price list version is zero despite superseded past and future positive versions");
+		}
+	}
+
+	@Test
+	public void testShipmentZeroCostPostingOrgCostingLevelScope() {
+		MBPartner vendor = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id);
+		MBPartner customer = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id);
+		Timestamp today = TimeUtil.getDay(Env.getContextAsDate(Env.getCtx(), "#Date"));
+		long ts = System.currentTimeMillis();
+
+		MAcctSchema[] schemas = MAcctSchema.getClientAcctSchema(Env.getCtx(), getAD_Client_ID(), getTrxName());
+		assertTrue(schemas.length >= 1, "Expected at least 1 active accounting schema");
+
+		MProductCategory category = ZeroCostPostingTestHelper.createStandardCostingCategory(
+				Env.getCtx(), "OrgCostLevel ZeroCost " + ts, MAcctSchema.COSTINGLEVEL_Organization, getTrxName());
+		MProduct product = ZeroCostPostingTestHelper.createStockedProduct(Env.getCtx(), "ZeroCostOrg_" + ts, category.get_ID(), getTrxName());
+		MPriceList purchasePL = ZeroCostPostingTestHelper.createPurchasePriceList(Env.getCtx(), "Purchase ZeroCostOrg " + ts, today, product.get_ID(), BigDecimal.ZERO, getTrxName());
+		MProductPrice purchasePP = MProductPrice.get(Env.getCtx(), purchasePL.getPriceListVersion(today).get_ID(), product.get_ID(), getTrxName());
+		assertNotNull(purchasePP);
+		ZeroCostPostingTestHelper.addSalesPriceListEntry(Env.getCtx(), product.get_ID(), BigDecimal.TEN, getTrxName());
+
+		try (MockedStatic<MProduct> productMock = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MProductCategory> categoryMock = mockStatic(MProductCategory.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MPriceList> priceListMock = mockStatic(MPriceList.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MSysConfig> sysConfigMock = mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS)) {
+			ZeroCostPostingTestHelper.mockProductGet(productMock, product);
+			ZeroCostPostingTestHelper.mockProductCategoryGet(categoryMock, category);
+			ZeroCostPostingTestHelper.mockPriceListGet(priceListMock, purchasePL);
+
+			assertEquals(MAcctSchema.COSTINGLEVEL_Organization, product.getCostingLevel(schemas[0]),
+					"Expected Organization costing level on product");
+
+			// Seed MCost quantity in STORE_CENTRAL via Physical Inventory (M_InventoryLine_ID > 0 only)
+			ZeroCostPostingTestHelper.mockZeroCostSysConfig(sysConfigMock, getAD_Client_ID(), false, false, true);
+			MInventory seedInventory = new MInventory(Env.getCtx(), 0, getTrxName());
+			seedInventory.setAD_Org_ID(DictionaryIDs.AD_Org.STORE_CENTRAL.id);
+			seedInventory.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.STORE_CENTRAL.id);
+			seedInventory.setC_DocType_ID(DictionaryIDs.C_DocType.MATERIAL_PHYSICAL_INVENTORY.id);
+			seedInventory.setCostingMethod(schemas[0].getCostingMethod());
+			seedInventory.saveEx();
+			MInventoryLine seedLine = new MInventoryLine(seedInventory, DictionaryIDs.M_Locator.STORE.id, product.get_ID(), 0, BigDecimal.ZERO, new BigDecimal("5"));
+			seedLine.saveEx();
+			completeDocument(seedInventory);
+			postDocument(seedInventory);
+
+			// Switch purchase price list to positive so free purchase price list check does not match
+			purchasePP.setPrices(BigDecimal.ONE, BigDecimal.ONE, BigDecimal.ZERO);
+			purchasePP.saveEx();
+			ZeroCostPostingTestHelper.mockZeroCostSysConfig(sysConfigMock, getAD_Client_ID(), false, false, false);
+
+			// Create zero-price AP Vendor Invoice in HQ and zero-cost M_CostDetail ONLY for AD_Org.HQ
+			MInvoice hqInvoice = new MInvoice(Env.getCtx(), 0, getTrxName());
+			hqInvoice.setAD_Org_ID(DictionaryIDs.AD_Org.HQ.id);
+			hqInvoice.setBPartner(vendor);
+			hqInvoice.setIsSOTrx(false);
+			hqInvoice.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.AP_INVOICE.id);
+			hqInvoice.setM_PriceList_ID(purchasePL.get_ID());
+			hqInvoice.setC_ConversionType_ID(DictionaryIDs.C_ConversionType.SPOT.id);
+			hqInvoice.setDateInvoiced(today);
+			hqInvoice.setDateAcct(today);
+			hqInvoice.saveEx();
+
+			MInvoiceLine hqInvLine = new MInvoiceLine(hqInvoice);
+			hqInvLine.setLine(10);
+			hqInvLine.setProduct(product);
+			hqInvLine.setQty(new BigDecimal("5"));
+			hqInvLine.setPriceList(BigDecimal.ONE);
+			hqInvLine.setPrice(BigDecimal.ZERO);
+			hqInvLine.saveEx();
+			completeDocument(hqInvoice);
+
+			for (MAcctSchema as : schemas) {
+				assertTrue(MCostDetail.createInvoice(as, DictionaryIDs.AD_Org.HQ.id,
+						product.get_ID(), 0, hqInvLine.get_ID(), 0,
+						BigDecimal.ZERO, new BigDecimal("5"), "Zero cost invoice HQ", today, 0, getTrxName()));
+			}
+
+			// Create & complete Sales Order + Shipment in AD_Org.STORE_CENTRAL
+			MOrder so = new MOrder(Env.getCtx(), 0, getTrxName());
+			so.setAD_Org_ID(DictionaryIDs.AD_Org.STORE_CENTRAL.id);
+			so.setBPartner(customer);
+			so.setIsSOTrx(true);
+			so.setC_DocTypeTarget_ID(MOrder.DocSubTypeSO_Standard);
+			so.setDeliveryRule(MOrder.DELIVERYRULE_CompleteOrder);
+			so.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.STORE_CENTRAL.id);
+			so.setM_PriceList_ID(DictionaryIDs.M_PriceList.STANDARD.id);
+			so.setC_ConversionType_ID(DictionaryIDs.C_ConversionType.SPOT.id);
+			so.setDateOrdered(today);
+			so.setDatePromised(today);
+			so.saveEx();
+
+			MOrderLine soLine = createOrderLine(so, 10, product, BigDecimal.ONE, BigDecimal.TEN);
+			completeDocument(so);
+
+			MInOut shipment = new MInOut(so, DictionaryIDs.C_DocType.MM_SHIPMENT.id, today);
+			shipment.setAD_Org_ID(DictionaryIDs.AD_Org.STORE_CENTRAL.id);
+			shipment.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.STORE_CENTRAL.id);
+			shipment.saveEx();
+
+			MInOutLine shipmentLine = new MInOutLine(shipment);
+			shipmentLine.setOrderLine(soLine, DictionaryIDs.M_Locator.STORE.id, BigDecimal.ONE);
+			shipmentLine.setQty(BigDecimal.ONE);
+			shipmentLine.saveEx();
+			completeDocument(shipment);
+			shipment.load(getTrxName());
+			assertFalse(shipment.isPosted());
+
+			// Zero-cost M_CostDetail in HQ must NOT authorize zero-cost shipment in STORE_CENTRAL under Organization costing level
+			ZeroCostPostingTestHelper.mockZeroCostSysConfig(sysConfigMock, getAD_Client_ID(), true, false, false);
+			String error = DocumentEngine.postImmediate(Env.getCtx(), shipment.getAD_Client_ID(), shipment.get_Table_ID(), shipment.get_ID(), true, getTrxName());
+			assertNotNull(error, "Expected posting error when zero-cost M_CostDetail only exists for another organization");
+			assertTrue(error.contains("No Costs for"), "Expected No Costs error for unscoped org, got: " + error);
+			shipment.load(getTrxName());
+			assertFalse(shipment.isPosted(), "Shipment in STORE_CENTRAL must not post using HQ zero-cost M_CostDetail");
+
+			// Create zero-cost M_CostDetail for AD_Org.STORE_CENTRAL -> posting must now succeed
+			MInvoice storeInvoice = new MInvoice(Env.getCtx(), 0, getTrxName());
+			storeInvoice.setAD_Org_ID(DictionaryIDs.AD_Org.STORE_CENTRAL.id);
+			storeInvoice.setBPartner(vendor);
+			storeInvoice.setIsSOTrx(false);
+			storeInvoice.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.AP_INVOICE.id);
+			storeInvoice.setM_PriceList_ID(purchasePL.get_ID());
+			storeInvoice.setC_ConversionType_ID(DictionaryIDs.C_ConversionType.SPOT.id);
+			storeInvoice.setDateInvoiced(today);
+			storeInvoice.setDateAcct(today);
+			storeInvoice.saveEx();
+
+			MInvoiceLine storeInvLine = new MInvoiceLine(storeInvoice);
+			storeInvLine.setLine(10);
+			storeInvLine.setProduct(product);
+			storeInvLine.setQty(new BigDecimal("5"));
+			storeInvLine.setPriceList(BigDecimal.ONE);
+			storeInvLine.setPrice(BigDecimal.ZERO);
+			storeInvLine.saveEx();
+			completeDocument(storeInvoice);
+
+			for (MAcctSchema as : schemas) {
+				assertTrue(MCostDetail.createInvoice(as, DictionaryIDs.AD_Org.STORE_CENTRAL.id,
+						product.get_ID(), 0, storeInvLine.get_ID(), 0,
+						BigDecimal.ZERO, new BigDecimal("5"), "Zero cost invoice STORE_CENTRAL", today, 0, getTrxName()));
+			}
+
+			error = DocumentEngine.postImmediate(Env.getCtx(), shipment.getAD_Client_ID(), shipment.get_Table_ID(), shipment.get_ID(), true, getTrxName());
+			assertNull(error, error);
+			shipment.load(getTrxName());
+			assertTrue(shipment.isPosted(), "Shipment in STORE_CENTRAL should post once STORE_CENTRAL has a zero-cost M_CostDetail");
+		}
+	}
+
 	private void mockGetRate(MockedStatic<MConversionRate> conversionRateMock, MCurrency fromCurrency,
 			MCurrency toCurrency, int C_ConversionType_ID, Timestamp conversionDate, BigDecimal multiplyRate) {
 		ConversionRateHelper.mockGetRate(conversionRateMock, fromCurrency, toCurrency, C_ConversionType_ID, 
