@@ -271,14 +271,40 @@ public class DefaultInfoFactory implements IInfoFactory {
 	}
 
 	/**
-	 * Set IsSOTrx context variable base on C_DocType_ID context value.
+	 * Set IsSOTrx context variable base on C_DocType_ID context value.<br/>
+	 * C_DocType_ID can be a single ID or a comma separated list of IDs (multiple selection parameters).
+	 * IsSOTrx is only set when all document types are on the same side (sales or purchase).
 	 * @param WindowNo
 	 */
 	private void setSOTrxBasedOnDocType(int WindowNo) {
-		int C_DocType_ID = Env.getContextAsInt(Env.getCtx(), WindowNo, "C_DocType_ID");
-		if (C_DocType_ID != 0) {
-			MDocType dt = MDocType.get (Env.getCtx(), C_DocType_ID);
-			Env.setContext(Env.getCtx(), WindowNo, "IsSOTrx", dt.isSOTrx () ? "Y": "N");
-		}
+		String docTypeIds = Env.getContext(Env.getCtx(), WindowNo, "C_DocType_ID");
+		if (Util.isEmpty(docTypeIds, true))
+			return;
+
+		Boolean isSOTrx = null;
+		for (String token : docTypeIds.split(",")) {
+			token = token.trim();
+			if (token.isEmpty())
+				continue;
+			int C_DocType_ID;
+			try {
+				C_DocType_ID = Integer.parseInt(token);
+			} catch (NumberFormatException e) {
+				return;
+			}
+			if (C_DocType_ID <= 0)
+				continue;
+			MDocType dt = MDocType.get(Env.getCtx(), C_DocType_ID);
+			if (dt == null || dt.get_ID() != C_DocType_ID)
+				continue;
+			if (isSOTrx == null)
+				isSOTrx = dt.isSOTrx();
+			else if (isSOTrx.booleanValue() != dt.isSOTrx())
+				return; // mixed sales and purchase document types, keep IsSOTrx unchanged
+	}
+		
+		if (isSOTrx != null)
+			Env.setContext(Env.getCtx(), WindowNo, "IsSOTrx", isSOTrx.booleanValue() ? "Y" : "N");
+		
 	}
 }
