@@ -41,7 +41,7 @@ VMOPTS="-Dorg.osgi.framework.bootdelegation=sun.security.ssl
 -Dmail.mime.encodeparameters=true
 -Dmail.mime.decodeparameters=true
 -DIDEMPIERE_EXTENSION_REPOSITORY=$IDEMPIERE_EXTENSION_REPOSITORY
--Djava.util.logging.config.file=jul-startup.properties
+-Djava.util.logging.config.file=$BASE/jul-startup.properties
 --add-exports java.desktop/sun.awt=ALL-UNNAMED
 --add-exports java.sql.rowset/com.sun.rowset=ALL-UNNAMED
 --add-exports java.naming/com.sun.jndi.ldap=ALL-UNNAMED
