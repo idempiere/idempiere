@@ -175,7 +175,10 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 	{
 		saveEx();
 		
-		return doComplete() == null;
+		boolean ok = doComplete() == null;
+		if (ok)
+			saveEx();
+		return ok;
 	}	//	process
 
 	/**
@@ -560,20 +563,29 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		MProduct product = new MProduct(getCtx(), getM_Product_ID(), get_TrxName());
 		if (isReversal())
 		{
-			MFactAcct origWipFact = new Query(getCtx(), MFactAcct.Table_Name,
-					"C_AcctSchema_ID=? AND AD_Table_ID=? AND Record_ID=? AND PostingType=?", get_TrxName())
-					.setParameters(as.getC_AcctSchema_ID(), MProjectIssue.Table_ID, getReversal_ID(), MFactAcct.POSTINGTYPE_Actual)
-					.setOrderBy(MFactAcct.COLUMNNAME_Fact_Acct_ID)
-					.first();
-			if (origWipFact != null)
+			MProjectIssue origIssue = new MProjectIssue(getCtx(), getReversal_ID(), get_TrxName());
+			Object origCostAmt = origIssue.get_Value(COLUMNNAME_CostAmt);
+			if (origCostAmt != null)
 			{
-				// First Fact_Acct line of Doc_ProjectIssue is the Project WIP/Asset line (DR on normal issue).
-				cost = origWipFact.getAmtAcctCr().subtract(origWipFact.getAmtAcctDr());
+				cost = ((BigDecimal) origCostAmt).negate();
+			}
+			else
+			{
+				MFactAcct origWipFact = new Query(getCtx(), MFactAcct.Table_Name,
+						"C_AcctSchema_ID=? AND AD_Table_ID=? AND Record_ID=? AND PostingType=?", get_TrxName())
+						.setParameters(as.getC_AcctSchema_ID(), MProjectIssue.Table_ID, getReversal_ID(), MFactAcct.POSTINGTYPE_Actual)
+						.setOrderBy(MFactAcct.COLUMNNAME_Fact_Acct_ID)
+						.first();
+				if (origWipFact != null)
+				{
+					// First Fact_Acct line of Doc_ProjectIssue is the Project WIP/Asset line (DR on normal issue).
+					cost = origWipFact.getAmtAcctCr().subtract(origWipFact.getAmtAcctDr());
+				}
 			}
 		}
 		if (cost != null)
 		{
-			// already resolved from original posted Fact_Acct
+			// already resolved from original Project Issue or posted Fact_Acct
 		}
 		else if (getM_InOutLine_ID() > 0)
 		{
@@ -587,11 +599,12 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		}
 		else
 		{
- 			cost = MCost.getCost(	product, getM_AttributeSetInstance_ID(), as, getAD_Org_ID(), as.getCostingMethod(), getMovementQty(), 0, true, getMovementDate(), null,
+			String costingMethod = product.getCostingMethod(as);
+			cost = MCost.getCost(	product, getM_AttributeSetInstance_ID(), as, getAD_Org_ID(), costingMethod, getMovementQty(), 0, true, getMovementDate(), null,
 									false, get_TrxName());
 			if (cost != null)
 			{
-				MCost.ManualCost[] manualCosts = MCost.getManualCosts(product, getM_AttributeSetInstance_ID(), as, getAD_Org_ID(), cost, getMovementQty(), get_TrxName());
+				MCost.ManualCost[] manualCosts = MCost.getManualCosts(product, getM_AttributeSetInstance_ID(), as, getAD_Org_ID(), costingMethod, cost, getMovementQty(), get_TrxName());
 				if (manualCosts.length > 0)
 				{
 					int stdPrecision = as.getStdPrecision();
@@ -611,6 +624,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		}
 		if (cost != null)
 		{
+			setCostAmt(cost);
 			MProject proj = new MProject(getCtx(), getC_Project_ID(), get_TrxName());
 			proj.setProjectBalanceAmt(proj.getProjectBalanceAmt().add(cost));
 			proj.saveEx(get_TrxName());

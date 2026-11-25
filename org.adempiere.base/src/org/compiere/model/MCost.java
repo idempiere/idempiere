@@ -345,10 +345,29 @@ public class MCost extends X_M_Cost implements ICostInfo
 	public static ManualCost[] getManualCosts(MProduct product, int M_AttributeSetInstance_ID,
 			MAcctSchema as, int AD_Org_ID, BigDecimal currentMaterialCost, BigDecimal qty, String trxName)
 	{
+		return getManualCosts(product, M_AttributeSetInstance_ID, as, AD_Org_ID, null, currentMaterialCost, qty, trxName);
+	}
+
+	/**
+	 * Get manual (non-material, charge-mapped) costs for a product.
+	 * @param product product
+	 * @param M_AttributeSetInstance_ID asi for batchlot costing level
+	 * @param as accounting schema
+	 * @param AD_Org_ID org for organization costing level
+	 * @param costingMethod AcctSchema.COSTINGMETHOD_* (if null, uses product.getCostingMethod(as))
+	 * @param currentMaterialCost Total material cost (unit material cost * qty)
+	 * @param qty transaction quantity
+	 * @param trxName trx
+	 * @return array of non-zero ManualCost records
+	 */
+	public static ManualCost[] getManualCosts(MProduct product, int M_AttributeSetInstance_ID,
+			MAcctSchema as, int AD_Org_ID, String costingMethod, BigDecimal currentMaterialCost, BigDecimal qty, String trxName)
+	{
 		if (product == null || as == null || qty == null || qty.signum() == 0)
 			return new ManualCost[0];
 
-		String costingMethod = product.getCostingMethod(as);
+		if (Util.isEmpty(costingMethod))
+			costingMethod = product.getCostingMethod(as);
 		if (MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod))
 			return new ManualCost[0];
 

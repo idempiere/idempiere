@@ -35,6 +35,7 @@ import org.compiere.model.MProject;
 import org.compiere.model.MProjectIssue;
 import org.compiere.model.MTimeExpenseLine;
 import org.compiere.model.ProductCost;
+import org.compiere.model.Query;
 import org.compiere.util.Env;
 
 /**
@@ -148,40 +149,42 @@ public class Doc_ProjectIssue extends Doc
 
 		if (isPostedReversal)
 		{
-			//  Project         DR (reversed from original Project Issue)
-			int acctType = ACCTTYPE_ProjectWIP;
-			if (MProject.PROJECTCATEGORY_AssetProject.equals(ProjectCategory))
-				acctType = ACCTTYPE_ProjectAsset;
-			dr = fact.createLine(m_line, getAccount(acctType, as), as.getC_Currency_ID(), Env.ONE, null);
-			if (dr == null || !dr.updateReverseLine(MProjectIssue.Table_ID,
-					m_issue.getReversal_ID(), m_issue.getReversal_ID(), Env.ONE))
+			List<MFactAcct> origFacts = new Query(getCtx(), MFactAcct.Table_Name,
+					"C_AcctSchema_ID=? AND AD_Table_ID=? AND Record_ID=? AND Line_ID=? AND PostingType=?", getTrxName())
+					.setParameters(as.getC_AcctSchema_ID(), MProjectIssue.Table_ID, m_issue.getReversal_ID(),
+							m_issue.getReversal_ID(), Fact.POST_Actual)
+					.setOrderBy(MFactAcct.COLUMNNAME_Fact_Acct_ID)
+					.list();
+			if (origFacts.size() < 2)
 			{
 				p_Error = "Original Project Issue not posted yet";
+				log.log(Level.WARNING, p_Error);
+				return null;
+			}
+
+			//  Project         DR (reversed from original Project Issue)
+			dr = createReversedChargeFactLine(fact, as, m_line, origFacts.get(0));
+			if (dr == null)
+			{
+				p_Error = "FactLine DR not created: " + m_line;
 				log.log(Level.WARNING, p_Error);
 				return null;
 			}
 
 			//  Inventory               CR (reversed from original Project Issue)
-			acctType = ProductCost.ACCTTYPE_P_Asset;
-			if (product.isService())
-				acctType = ProductCost.ACCTTYPE_P_Expense;
-			cr = fact.createLine(m_line, m_line.getAccount(acctType, as), as.getC_Currency_ID(), null, Env.ONE);
-			if (cr == null || !cr.updateReverseLine(MProjectIssue.Table_ID,
-					m_issue.getReversal_ID(), m_issue.getReversal_ID(), Env.ONE, dr))
+			cr = createReversedChargeFactLine(fact, as, m_line, origFacts.get(1));
+			if (cr == null)
 			{
-				p_Error = "Original Project Issue not posted yet";
+				p_Error = "FactLine CR not created: " + m_line;
 				log.log(Level.WARNING, p_Error);
 				return null;
 			}
 			cost = cr.getAcctBalance().negate();
 
-			//  Reverse any manual-cost Charge lines from the original Project Issue
-			List<MFactAcct> chargeFacts = getPostedChargeFacts(as, MProjectIssue.Table_ID,
-					m_issue.getReversal_ID(), m_issue.getReversal_ID(),
-					dr.getReversedFactAcct_ID(), cr.getReversedFactAcct_ID());
-			for (MFactAcct origFact : chargeFacts)
+			//  Reverse any remaining lines (e.g. manual-cost Charge lines) from the original Project Issue
+			for (int i = 2; i < origFacts.size(); i++)
 			{
-				FactLine chargeCr = createReversedChargeFactLine(fact, as, m_line, origFact);
+				FactLine chargeCr = createReversedChargeFactLine(fact, as, m_line, origFacts.get(i));
 				if (chargeCr == null)
 				{
 					p_Error = "FactLine CR not created: " + m_line;
@@ -263,10 +266,14 @@ public class Doc_ProjectIssue extends Doc
 			int Ref_CostDetail_ID = 0;
 			if (m_line.getReversalLine_ID() > 0 && m_line.get_ID() > m_line.getReversalLine_ID())
 			{
-				MCostDetail cd = MCostDetail.getProduction(as, m_line.getM_Product_ID(), m_line.getM_AttributeSetInstance_ID(),
+				MCostDetail cd = MCostDetail.getProjectIssue(as, m_line.getM_Product_ID(), m_line.getM_AttributeSetInstance_ID(),
 						m_line.getReversalLine_ID(), 0, getTrxName());
 				if (cd != null)
+				{
 					Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+					if (isPostedReversal)
+						costDetailAmt = cd.getAmt().negate();
+				}
 			}
 			if (!MCostDetail.createProjectIssue(as, m_line.getAD_Org_ID(),
 				m_line.getM_Product_ID(), m_line.getM_AttributeSetInstance_ID(),

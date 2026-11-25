@@ -1365,7 +1365,9 @@ public final class FactLine extends X_Fact_Acct
 		// end MZ
 		if (otherLine != null) 
 		{
-			if (otherLine.getAmtAcctDr().signum() == 0 && otherLine.getAmtAcctCr().signum() != 0)
+			if (otherLine.getReversedFactAcct_ID() > 0)
+				sql.append(" AND Fact_Acct_ID<>? ");
+			else if (otherLine.getAmtAcctDr().signum() == 0 && otherLine.getAmtAcctCr().signum() != 0)
 				sql.append(" AND AmtAcctDr = 0 AND AmtAcctCr != 0 ");
 			else if (otherLine.getAmtAcctDr().signum() != 0 && otherLine.getAmtAcctCr().signum() == 0)
 				sql.append(" AND AmtAcctCr = 0 AND AmtAcctDr != 0 ");
@@ -1392,6 +1394,8 @@ public final class FactLine extends X_Fact_Acct
 			if (MMovement.Table_ID == AD_Table_ID)
 				pstmt.setInt(pindex++, getM_Locator_ID());
 			// end MZ
+			if (otherLine != null && otherLine.getReversedFactAcct_ID() > 0)
+				pstmt.setInt(pindex++, otherLine.getReversedFactAcct_ID());
 			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
@@ -1467,6 +1471,8 @@ public final class FactLine extends X_Fact_Acct
 		setC_Employee_ID(fact.getC_Employee_ID());
 		setUser1_ID(fact.getUser1_ID());
 		setUser2_ID(fact.getUser2_ID());
+		setUserElement1_ID(fact.getUserElement1_ID());
+		setUserElement2_ID(fact.getUserElement2_ID());
 		setC_UOM_ID(fact.getC_UOM_ID());
 		setM_AttributeSetInstance_ID(fact.getM_AttributeSetInstance_ID());
 		setCustomFieldText1(fact.getCustomFieldText1());

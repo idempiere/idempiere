@@ -43,7 +43,6 @@ import org.compiere.model.I_M_MatchInv;
 import org.compiere.model.I_M_MatchPO;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
-import org.compiere.model.MCharge;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MCost.ManualCost;
 import org.compiere.model.MDocType;
@@ -2643,13 +2642,12 @@ public abstract class Doc implements IDoc
 	 */
 	protected FactLine createReversedChargeFactLine(Fact fact, MAcctSchema as, DocLine line, MFactAcct origFact)
 	{
-		MAccount chargeAcct = MCharge.getAccount(origFact.getC_Charge_ID(), as, getTrxName());
-		if (chargeAcct == null || chargeAcct.getAccount_ID() != origFact.getAccount_ID())
-			chargeAcct = origFact.getMAccount();
-		FactLine chargeLine = fact.createLine(line, chargeAcct, origFact.getC_Currency_ID(), null, Env.ONE);
+		FactLine chargeLine = fact.createLine(line, origFact.getMAccount(), origFact.getC_Currency_ID(), null, Env.ONE);
 		if (chargeLine == null)
 			return null;
 		chargeLine.updateReverseLine(origFact, Env.ONE, true);
+		chargeLine.setC_SubAcct_ID(origFact.getC_SubAcct_ID());
+		chargeLine.setC_BPartner_ID(origFact.getC_BPartner_ID());
 		return chargeLine;
 	}
 }   //  Doc

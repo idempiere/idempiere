@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,6 +31,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.DBException;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MCharge;
@@ -212,9 +214,9 @@ public class Doc_Production extends Doc
 					origLines.add(origLine);
 			}
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
-			log.log(Level.SEVERE, sql, e);
+			throw new DBException(e, sql);
 		}
 		finally
 		{
