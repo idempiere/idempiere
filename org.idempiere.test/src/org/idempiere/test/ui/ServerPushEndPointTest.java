@@ -1352,7 +1352,6 @@ public class ServerPushEndPointTest {
 
 		AtomicReference<Thread> piggybackThreadRef = new AtomicReference<>();
 		org.mockito.Mockito.doAnswer(inv -> {
-			@SuppressWarnings("unchecked")
 			org.zkoss.zk.ui.event.EventListener<org.zkoss.zk.ui.event.Event> listener = inv.getArgument(0);
 			org.zkoss.zk.ui.event.Event evt = inv.getArgument(1);
 			Thread piggyback = new Thread(() -> {
