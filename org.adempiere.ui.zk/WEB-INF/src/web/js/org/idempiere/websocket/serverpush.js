@@ -2,19 +2,20 @@
   const PING_INTERVAL_MS = 25000;
   const RECONNECT_INITIAL_MS = 1000;
   const RECONNECT_MAX_MS = 15000;
-  const MAX_WS_PAYLOAD_CHARS = 2 * 1024 * 1024;
+  const DEFAULT_MAX_WS_PAYLOAD_SIZE = 4 * 1024 * 1024;
 
-  org.idempiere.websocket.startServerPush = function(dtid) {
+  org.idempiere.websocket.startServerPush = function(dtid, maxTextMessageSize) {
     let dt = zk.Desktop.$(dtid);
     if (!dt)
       return;
     if (dt._serverpush) {
+      dt._serverpush.setMaxPayloadSize(maxTextMessageSize);
       if (dt._serverpush._reconnectId) {
         return;
       }
       dt._serverpush.restart();
     } else {
-      let spush = new org.idempiere.websocket.ServerPush(dtid);
+      let spush = new org.idempiere.websocket.ServerPush(dtid, maxTextMessageSize);
       spush.start();
     }
   };
@@ -31,7 +32,7 @@
     }
   };
   org.idempiere.websocket.ServerPush = zk.$extends(zk.Object, {
-    $init: function(dtid) {
+    $init: function(dtid, maxTextMessageSize) {
       this.dtid = dtid;
       this.socket = null;
       this.active = false;
@@ -41,9 +42,17 @@
       this._reconnectAttempts = 0;
       this._inflightReqInf = null;
       this._pendingReqs = new Map();
+      this._replayCookieWatcher = null;
+      this.maxPayloadSize = DEFAULT_MAX_WS_PAYLOAD_SIZE;
+      this.setMaxPayloadSize(maxTextMessageSize);
       let desktop = zk.Desktop.$(this.dtid);
       if (desktop)
         desktop._serverpush = this;
+    },
+    setMaxPayloadSize: function(maxSize) {
+      if (typeof maxSize === 'number' && isFinite(maxSize) && maxSize > 0) {
+        this.maxPayloadSize = Math.floor(maxSize);
+      }
     },
     _clearTimers: function() {
       if (this._pingTimerId) {
@@ -75,6 +84,38 @@
         }
       }, PING_INTERVAL_MS);
     },
+    _clearReplayCookieSync: function() {
+      if (this._replayCookieWatcher) {
+        if (typeof zWatch !== 'undefined') {
+          zWatch.unlisten({onResponse: this._replayCookieWatcher});
+        }
+        this._replayCookieWatcher = null;
+      }
+    },
+    _scheduleReplayCookieSync: function() {
+      this._clearReplayCookieSync();
+      if (typeof zWatch === 'undefined')
+        return;
+      let me = this;
+      let watcher = {
+        onResponse: function() {
+          if (me._replayCookieWatcher === watcher) {
+            me._clearReplayCookieSync();
+          } else {
+            zWatch.unlisten({onResponse: watcher});
+          }
+          if (zk.unloading)
+            return;
+          let dt = zk.Desktop.$(me.dtid);
+          if (dt && !dt.obsolete) {
+            let evtObj = new zk.Event(dt, 'onPiggyback', null, {ignorable: true, rtags: {isDummy: true}});
+            zAu.send(evtObj);
+          }
+        }
+      };
+      this._replayCookieWatcher = watcher;
+      zWatch.listen({onResponse: watcher});
+    },
     _recoverInflightRequest: function() {
       let reqInf = this._inflightReqInf;
       this._inflightReqInf = null;
@@ -83,11 +124,12 @@
         if (zAu.ajaxReq) {
           zAu.ajaxReq = zAu.ajaxReqInf = undefined;
           zk.endProcessing(reqInf.sid);
-          if (!reqInf.ignorable && !zk.unloading) {
-            zAu.ajaxReqResend(reqInf, 200);
-          } else {
-            let dt = zk.Desktop.$(this.dtid);
-            if (dt) {
+          let dt = zk.Desktop.$(this.dtid);
+          if (!zk.unloading && dt && !dt.obsolete) {
+            if (zAu.seqId == reqInf.sid) {
+              this._scheduleReplayCookieSync();
+              zAu.ajaxReqResend(reqInf, 200);
+            } else {
               let es = zAu.getAuRequests(dt);
               if (es.length > 0) setTimeout(() => zAu.sendNow(dt), 0);
             }
@@ -264,6 +306,7 @@
       this._stopped = true;
       this.active = false;
       this._clearTimers();
+      this._clearReplayCookieSync();
       this._recoverInflightRequest();
       let desktop = zk.Desktop.$(this.dtid);
       if (desktop && desktop._serverpush === this)
@@ -304,9 +347,23 @@
   });
   zk.afterLoad(function() {
     let originalSendNow = zAu.sendNow;
-    let hasBinaryData = function(data, depth) {
-      if (!data || (depth || 0) > 16)
+    let exceedsMaxPayload = function(msg, limit) {
+      if (!limit || limit <= 0)
         return false;
+      if (msg.length > limit)
+        return true;
+      if (msg.length * 3 > limit) {
+        if (typeof TextEncoder !== 'undefined')
+          return new TextEncoder().encode(msg).length > limit;
+        return true;
+      }
+      return false;
+    };
+    let hasBinaryData = function(data, depth) {
+      if (!data || typeof data !== 'object')
+        return false;
+      if ((depth || 0) > 16)
+        return true;
       if (zAu._isBinary && zAu._isBinary(data))
         return true;
       if (typeof FileList !== 'undefined' && data instanceof FileList)
@@ -318,7 +375,7 @@
         }
         return false;
       }
-      if (typeof data === 'object' && !(data instanceof Date) && !(data instanceof zk.Object)) {
+      if (!(data instanceof Date) && !(data instanceof zk.Object)) {
         for (let key in data) {
           if (Object.prototype.hasOwnProperty.call(data, key) && hasBinaryData(data[key], (depth || 0) + 1))
             return true;
@@ -453,7 +510,7 @@
             implicit: reqInf.implicit, ignorable: reqInf.ignorable, tmout: reqInf.tmout,
             rtags: reqInf.rtags, forceAjax: reqInf.forceAjax
           });
-          if (ajaxMsg.length > MAX_WS_PAYLOAD_CHARS || !dt._serverpush.socket.sendAjaxRequest(reqInf, ajaxMsg)) {
+          if (exceedsMaxPayload(ajaxMsg, dt._serverpush.maxPayloadSize) || !dt._serverpush.socket.sendAjaxRequest(reqInf, ajaxMsg)) {
             // Re-queue events and fall back to HTTP AJAX when payload is too large or WS send fails.
             for (let k = shifted.length - 1; k >= 0; --k)
               es.unshift(shifted[k]);

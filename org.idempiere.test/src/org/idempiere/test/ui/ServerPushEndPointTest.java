@@ -1293,6 +1293,440 @@ public class ServerPushEndPointTest {
 		}
 	}
 
+	@Test
+	void activateCountsLockWaitAgainstTimeoutAndPreservesInBudgetActivation() throws Exception {
+		// Part 1: Second worker calling activate(120) must time out promptly instead of waiting behind first worker.
+		org.zkoss.zk.ui.Desktop desktop1 = mock(org.zkoss.zk.ui.Desktop.class,
+				org.mockito.Mockito.withSettings().extraInterfaces(org.zkoss.zk.ui.sys.DesktopCtrl.class));
+		when(desktop1.getId()).thenReturn("dt-activate-timeout");
+		when(desktop1.isAlive()).thenReturn(true);
+		when(desktop1.getSession()).thenReturn(null);
+
+		CountDownLatch firstWorkerWaiting = new CountDownLatch(1);
+		org.mockito.Mockito.doAnswer(inv -> {
+			firstWorkerWaiting.countDown();
+			return null;
+		}).when((org.zkoss.zk.ui.sys.DesktopCtrl) desktop1).scheduleServerPush(any(), any());
+
+		WebSocketServerPush spush1 = new WebSocketServerPush();
+		Field desktopField = WebSocketServerPush.class.getDeclaredField("desktop");
+		desktopField.setAccessible(true);
+		@SuppressWarnings("unchecked")
+		java.util.concurrent.atomic.AtomicReference<org.zkoss.zk.ui.Desktop> dtRef1 =
+				(java.util.concurrent.atomic.AtomicReference<org.zkoss.zk.ui.Desktop>) desktopField.get(spush1);
+		dtRef1.set(desktop1);
+
+		Thread firstWorker = new Thread(() -> {
+			try {
+				spush1.activate(5_000L);
+			} catch (Exception ignored) {
+			}
+		}, "ws-test-activate-holder");
+		firstWorker.setDaemon(true);
+		firstWorker.start();
+
+		try {
+			assertTrue(firstWorkerWaiting.await(3, TimeUnit.SECONDS), "First worker should hold _activateLock and wait");
+
+			long startNanos = System.nanoTime();
+			boolean activated = spush1.activate(120L);
+			long elapsedMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNanos);
+
+			assertFalse(activated, "Second worker must time out when _activateLock is held longer than its budget");
+			assertTrue(elapsedMs < 1_500L, "Second worker waited too long behind first worker: " + elapsedMs + "ms");
+		} finally {
+			spush1.stop();
+			firstWorker.join(2000);
+		}
+
+		// Part 2: Worker that waits briefly for _activateLock and completes handoff within budget must succeed.
+		org.zkoss.zk.ui.Desktop desktop2 = mock(org.zkoss.zk.ui.Desktop.class,
+				org.mockito.Mockito.withSettings().extraInterfaces(org.zkoss.zk.ui.sys.DesktopCtrl.class));
+		when(desktop2.getId()).thenReturn("dt-activate-success");
+		when(desktop2.isAlive()).thenReturn(true);
+		when(desktop2.getSession()).thenReturn(null);
+
+		org.zkoss.zk.ui.Execution mockExec = mock(org.zkoss.zk.ui.Execution.class,
+				org.mockito.Mockito.withSettings().extraInterfaces(org.zkoss.zk.ui.sys.ExecutionCtrl.class));
+		when(mockExec.getDesktop()).thenReturn(desktop2);
+
+		AtomicReference<Thread> piggybackThreadRef = new AtomicReference<>();
+		org.mockito.Mockito.doAnswer(inv -> {
+			@SuppressWarnings("unchecked")
+			org.zkoss.zk.ui.event.EventListener<org.zkoss.zk.ui.event.Event> listener = inv.getArgument(0);
+			org.zkoss.zk.ui.event.Event evt = inv.getArgument(1);
+			Thread piggyback = new Thread(() -> {
+				org.zkoss.zk.ui.sys.ExecutionsCtrl.setCurrent(mockExec);
+				try {
+					listener.onEvent(evt);
+				} catch (Exception ignored) {
+				} finally {
+					org.zkoss.zk.ui.sys.ExecutionsCtrl.setCurrent(null);
+				}
+			}, "ws-test-activate-piggyback");
+			piggyback.setDaemon(true);
+			piggybackThreadRef.set(piggyback);
+			piggyback.start();
+			return null;
+		}).when((org.zkoss.zk.ui.sys.DesktopCtrl) desktop2).scheduleServerPush(any(), any());
+
+		WebSocketServerPush spush2 = new WebSocketServerPush();
+		@SuppressWarnings("unchecked")
+		java.util.concurrent.atomic.AtomicReference<org.zkoss.zk.ui.Desktop> dtRef2 =
+				(java.util.concurrent.atomic.AtomicReference<org.zkoss.zk.ui.Desktop>) desktopField.get(spush2);
+		dtRef2.set(desktop2);
+
+		Field lockField = WebSocketServerPush.class.getDeclaredField("_activateLock");
+		lockField.setAccessible(true);
+		java.util.concurrent.locks.ReentrantLock activateLock =
+				(java.util.concurrent.locks.ReentrantLock) lockField.get(spush2);
+
+		CountDownLatch lockAcquiredByOther = new CountDownLatch(1);
+		Thread briefHolder = new Thread(() -> {
+			activateLock.lock();
+			try {
+				lockAcquiredByOther.countDown();
+				Thread.sleep(60);
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			} finally {
+				activateLock.unlock();
+			}
+		}, "ws-test-activate-brief-holder");
+		briefHolder.setDaemon(true);
+		briefHolder.start();
+
+		try {
+			assertTrue(lockAcquiredByOther.await(2, TimeUnit.SECONDS));
+			boolean activated = spush2.activate(2_000L);
+			assertTrue(activated, "Activation completing within remaining budget after lock wait must succeed");
+			assertTrue(spush2.isActive());
+		} finally {
+			spush2.deactivate(false);
+			spush2.stop();
+			briefHolder.join(2000);
+			Thread piggyback = piggybackThreadRef.get();
+			if (piggyback != null) {
+				piggyback.join(2000);
+			}
+		}
+	}
+
+	@Test
+	void activateInterruptBeforeAndAfterGrantDoesNotBlockDesktopExecution() throws Exception {
+		Field desktopField = WebSocketServerPush.class.getDeclaredField("desktop");
+		desktopField.setAccessible(true);
+		Field carryOverField = WebSocketServerPush.class.getDeclaredField("_carryOver");
+		carryOverField.setAccessible(true);
+		Field waitingField = WebSocketServerPush.class.getDeclaredField("_waiting");
+		waitingField.setAccessible(true);
+
+		// Part 1: Interrupt before callback runs cancels activation so later piggyback does not grant or block.
+		org.zkoss.zk.ui.Desktop desktop1 = mock(org.zkoss.zk.ui.Desktop.class,
+				org.mockito.Mockito.withSettings().extraInterfaces(org.zkoss.zk.ui.sys.DesktopCtrl.class));
+		when(desktop1.getId()).thenReturn("dt-interrupt-pre-grant");
+		when(desktop1.isAlive()).thenReturn(true);
+		when(desktop1.getSession()).thenReturn(null);
+
+		AtomicReference<org.zkoss.zk.ui.event.EventListener<org.zkoss.zk.ui.event.Event>> listener1Ref = new AtomicReference<>();
+		AtomicReference<org.zkoss.zk.ui.event.Event> event1Ref = new AtomicReference<>();
+		CountDownLatch scheduled1 = new CountDownLatch(1);
+		org.mockito.Mockito.doAnswer(inv -> {
+			listener1Ref.set(inv.getArgument(0));
+			event1Ref.set(inv.getArgument(1));
+			scheduled1.countDown();
+			return null;
+		}).when((org.zkoss.zk.ui.sys.DesktopCtrl) desktop1).scheduleServerPush(any(), any());
+
+		WebSocketServerPush spush1 = new WebSocketServerPush();
+		@SuppressWarnings("unchecked")
+		java.util.concurrent.atomic.AtomicReference<org.zkoss.zk.ui.Desktop> dtRef1 =
+				(java.util.concurrent.atomic.AtomicReference<org.zkoss.zk.ui.Desktop>) desktopField.get(spush1);
+		dtRef1.set(desktop1);
+
+		AtomicReference<Throwable> worker1Error = new AtomicReference<>();
+		Thread worker1 = new Thread(() -> {
+			try {
+				spush1.activate(5_000L);
+			} catch (Throwable t) {
+				worker1Error.set(t);
+			}
+		}, "ws-test-interrupt-pre-grant");
+		worker1.setDaemon(true);
+		worker1.start();
+
+		try {
+			assertTrue(scheduled1.await(3, TimeUnit.SECONDS));
+			Object info1 = waitingField.get(spush1);
+			assertNotNull(info1);
+			// Acquiring info1 guarantees worker1 has entered info.wait() and released the monitor.
+			synchronized (info1) {
+				worker1.interrupt();
+			}
+			worker1.join(3000);
+			assertFalse(worker1.isAlive(), "Interrupted worker should exit activate()");
+			assertTrue(worker1Error.get() instanceof InterruptedException, "Expected InterruptedException, got: " + worker1Error.get());
+
+			// Now run the late piggyback callback; it must see info.cancelled == true and return immediately.
+			org.zkoss.zk.ui.Execution mockExec1 = mock(org.zkoss.zk.ui.Execution.class,
+					org.mockito.Mockito.withSettings().extraInterfaces(org.zkoss.zk.ui.sys.ExecutionCtrl.class));
+			when(mockExec1.getDesktop()).thenReturn(desktop1);
+			CountDownLatch callback1Done = new CountDownLatch(1);
+			Thread piggyback1 = new Thread(() -> {
+				org.zkoss.zk.ui.sys.ExecutionsCtrl.setCurrent(mockExec1);
+				try {
+					listener1Ref.get().onEvent(event1Ref.get());
+				} catch (Exception ignored) {
+				} finally {
+					org.zkoss.zk.ui.sys.ExecutionsCtrl.setCurrent(null);
+					callback1Done.countDown();
+				}
+			}, "ws-test-late-piggyback");
+			piggyback1.setDaemon(true);
+			piggyback1.start();
+
+			assertTrue(callback1Done.await(2, TimeUnit.SECONDS), "Late piggyback must not block after pre-grant interrupt");
+			assertNull(carryOverField.get(spush1), "Cancelled activation must not leave _carryOver set");
+			assertFalse(spush1.isActive());
+		} finally {
+			spush1.stop();
+			worker1.join(1000);
+		}
+
+		// Part 2: Interrupt concurrent with grant (before worker accepts it) must release handoff and wake desktop.
+		org.zkoss.zk.ui.Desktop desktop2 = mock(org.zkoss.zk.ui.Desktop.class,
+				org.mockito.Mockito.withSettings().extraInterfaces(org.zkoss.zk.ui.sys.DesktopCtrl.class));
+		when(desktop2.getId()).thenReturn("dt-interrupt-post-grant");
+		when(desktop2.isAlive()).thenReturn(true);
+		when(desktop2.getSession()).thenReturn(null);
+
+		AtomicReference<org.zkoss.zk.ui.event.EventListener<org.zkoss.zk.ui.event.Event>> listener2Ref = new AtomicReference<>();
+		AtomicReference<org.zkoss.zk.ui.event.Event> event2Ref = new AtomicReference<>();
+		CountDownLatch scheduled2 = new CountDownLatch(1);
+		org.mockito.Mockito.doAnswer(inv -> {
+			listener2Ref.set(inv.getArgument(0));
+			event2Ref.set(inv.getArgument(1));
+			scheduled2.countDown();
+			return null;
+		}).when((org.zkoss.zk.ui.sys.DesktopCtrl) desktop2).scheduleServerPush(any(), any());
+
+		WebSocketServerPush spush2 = new WebSocketServerPush();
+		@SuppressWarnings("unchecked")
+		java.util.concurrent.atomic.AtomicReference<org.zkoss.zk.ui.Desktop> dtRef2 =
+				(java.util.concurrent.atomic.AtomicReference<org.zkoss.zk.ui.Desktop>) desktopField.get(spush2);
+		dtRef2.set(desktop2);
+
+		AtomicReference<Throwable> worker2Error = new AtomicReference<>();
+		Thread worker2 = new Thread(() -> {
+			try {
+				spush2.activate(5_000L);
+			} catch (Throwable t) {
+				worker2Error.set(t);
+			}
+		}, "ws-test-interrupt-post-grant");
+		worker2.setDaemon(true);
+		worker2.start();
+
+		try {
+			assertTrue(scheduled2.await(3, TimeUnit.SECONDS));
+			Object info2 = waitingField.get(spush2);
+			assertNotNull(info2);
+			// Ensure worker2 is inside info.wait() before running the piggyback grant.
+			synchronized (info2) {
+				// Monitor acquired => worker2 is waiting in info.wait().
+			}
+
+			// Interrupt worker2 while piggyback is inside new ExecutionCarryOver(currentDesktop) under synchronized(info),
+			// guaranteeing the grant completes while worker2 is interrupted before it can accept the handoff.
+			org.zkoss.zk.ui.Execution mockExec2 = mock(org.zkoss.zk.ui.Execution.class,
+					org.mockito.Mockito.withSettings().extraInterfaces(org.zkoss.zk.ui.sys.ExecutionCtrl.class));
+			when(mockExec2.getDesktop()).thenAnswer(inv -> {
+				worker2.interrupt();
+				return desktop2;
+			});
+
+			CountDownLatch callback2Done = new CountDownLatch(1);
+			Thread piggyback2 = new Thread(() -> {
+				org.zkoss.zk.ui.sys.ExecutionsCtrl.setCurrent(mockExec2);
+				try {
+					listener2Ref.get().onEvent(event2Ref.get());
+				} catch (Exception ignored) {
+				} finally {
+					org.zkoss.zk.ui.sys.ExecutionsCtrl.setCurrent(null);
+					callback2Done.countDown();
+				}
+			}, "ws-test-post-grant-piggyback");
+			piggyback2.setDaemon(true);
+			piggyback2.start();
+
+			worker2.join(3000);
+			assertFalse(worker2.isAlive(), "Interrupted worker must exit activate()");
+			assertTrue(worker2Error.get() instanceof InterruptedException, "Expected InterruptedException, got: " + worker2Error.get());
+			assertTrue(callback2Done.await(2, TimeUnit.SECONDS),
+					"Desktop piggyback execution must be woken when worker is interrupted before accepting grant");
+			assertNull(carryOverField.get(spush2), "Abandoned grant must clear _carryOver");
+			assertFalse(spush2.isActive(), "Worker must not own activation after throwing InterruptedException");
+			verify((org.zkoss.zk.ui.sys.ExecutionCtrl) mockExec2, never()).onActivate();
+		} finally {
+			spush2.stop();
+			worker2.join(1000);
+		}
+	}
+
+	@Test
+	void failedEchoClearsEchoPendingAndReconnectFlushesQueuedSchedules() throws Exception {
+		String dtid = "dt-echo-failure-recovery";
+		Map<String, Object> sessionAttrs = new HashMap<>();
+
+		org.zkoss.zk.ui.Session zkSession = mock(org.zkoss.zk.ui.Session.class);
+		org.mockito.Mockito.doAnswer(inv -> {
+			sessionAttrs.put(inv.getArgument(0), inv.getArgument(1));
+			return null;
+		}).when(zkSession).setAttribute(any(), any());
+		when(zkSession.getAttribute(any())).thenAnswer(inv -> sessionAttrs.get(inv.getArgument(0)));
+		when(zkSession.removeAttribute(any())).thenAnswer(inv -> sessionAttrs.remove(inv.getArgument(0)));
+
+		HttpSession httpSession = mock(HttpSession.class);
+		when(httpSession.getAttribute(any())).thenAnswer(inv -> sessionAttrs.get(inv.getArgument(0)));
+
+		org.zkoss.zk.ui.Desktop desktop = mock(org.zkoss.zk.ui.Desktop.class);
+		when(desktop.getId()).thenReturn(dtid);
+		when(desktop.getSession()).thenReturn(zkSession);
+		when(desktop.isServerPushEnabled()).thenReturn(true);
+
+		WebSocketServerPush spush = new WebSocketServerPush();
+		Field echoPendingField = WebSocketServerPush.class.getDeclaredField("echoPending");
+		echoPendingField.setAccessible(true);
+		java.util.concurrent.atomic.AtomicBoolean echoPending =
+				(java.util.concurrent.atomic.AtomicBoolean) echoPendingField.get(spush);
+
+		try {
+			org.zkoss.zk.ui.Execution mockExec = mock(org.zkoss.zk.ui.Execution.class);
+			try (org.mockito.MockedStatic<org.zkoss.zk.ui.Executions> executions =
+					org.mockito.Mockito.mockStatic(org.zkoss.zk.ui.Executions.class)) {
+				executions.when(org.zkoss.zk.ui.Executions::getCurrent).thenReturn(mockExec);
+				spush.start(desktop);
+			}
+
+			Map<String, Object> userProps = new HashMap<>();
+			userProps.put(HttpSession.class.getName(), httpSession);
+			userProps.put("ws-origin-valid", Boolean.TRUE);
+			EndpointConfig config = mock(EndpointConfig.class);
+			when(config.getUserProperties()).thenReturn(userProps);
+
+			// 1. Open endpoint whose sendText("echo") fails with IOException.
+			RemoteEndpoint.Basic failingBasic = mock(RemoteEndpoint.Basic.class);
+			org.mockito.Mockito.doThrow(new java.io.IOException("Broken pipe")).when(failingBasic).sendText("echo");
+			Session failingSession = mock(Session.class);
+			when(failingSession.getBasicRemote()).thenReturn(failingBasic);
+
+			ServerPushEndPoint failingEndpoint = new ServerPushEndPoint();
+			failingEndpoint.onOpen(failingSession, config, dtid);
+
+			// Schedule task while echo send fails: echoPending must NOT be retained.
+			spush.schedule(evt -> {}, new org.zkoss.zk.ui.event.Event("onTest"), null);
+			assertFalse(echoPending.get(), "echoPending must be cleared when echo send fails");
+
+			// 2. When browser reconnects without any further schedule() call, queued task must trigger echo automatically.
+			RemoteEndpoint.Basic healthyBasic = mock(RemoteEndpoint.Basic.class);
+			Session healthySession = mock(Session.class);
+			when(healthySession.getBasicRemote()).thenReturn(healthyBasic);
+
+			ServerPushEndPoint healthyEndpoint = new ServerPushEndPoint();
+			healthyEndpoint.onOpen(healthySession, config, dtid);
+
+			verify(healthyBasic).sendText("echo");
+			assertTrue(echoPending.get(), "echoPending must be retained after successful echo on reconnect");
+		} finally {
+			spush.stop();
+		}
+	}
+
+	@Test
+	void cookieFlushUsesRemainingExpiryForDelayedPositiveMaxAgeAndZeroForDeletions() throws Exception {
+		Class<?> pendingCookieClass = Class.forName("org.idempiere.ui.zk.websocket.WebSocketServerPush$PendingBrowserCookie");
+		java.lang.reflect.Constructor<?> ctor = pendingCookieClass.getDeclaredConstructor(
+				String.class, String.class, String.class, Integer.class, java.util.Date.class, boolean.class, boolean.class);
+		ctor.setAccessible(true);
+
+		long now = System.currentTimeMillis();
+		// Cookie originally had Max-Age=30, but flush is delayed 45s -> already expired 15s ago.
+		Object expiredMaxAgeCookie = ctor.newInstance("SHORT_TOK", "stale", "/webui", 30, new java.util.Date(now - 15_000L), true, true);
+		// Cookie originally had Max-Age=60, delayed 40s -> ~20s remaining (must not reset to 60).
+		Object partiallyElapsedCookie = ctor.newInstance("PARTIAL_TOK", "val", "/webui", 60, new java.util.Date(now + 20_000L), true, true);
+		// Explicit Max-Age=0 deletion must stay 0 regardless of expiryDate.
+		Object explicitDeletionCookie = ctor.newInstance("DEL_TOK", "", "/webui", 0, new java.util.Date(now + 60_000L), true, true);
+
+		org.zkoss.zk.ui.Session zkSession = mock(org.zkoss.zk.ui.Session.class);
+		when(zkSession.getNativeSession()).thenReturn(new Object());
+		when(zkSession.removeAttribute("websocket.event.cookie.store")).thenReturn(
+				List.of(expiredMaxAgeCookie, partiallyElapsedCookie, explicitDeletionCookie));
+
+		org.zkoss.zk.ui.Desktop desktop = mock(org.zkoss.zk.ui.Desktop.class);
+		when(desktop.getSession()).thenReturn(zkSession);
+
+		HttpServletRequest browserReq = mock(HttpServletRequest.class);
+		when(browserReq.isSecure()).thenReturn(true);
+		HttpServletResponse browserResp = mock(HttpServletResponse.class);
+		org.zkoss.zk.ui.Execution browserExec = mock(org.zkoss.zk.ui.Execution.class);
+		when(browserExec.getNativeRequest()).thenReturn(browserReq);
+		when(browserExec.getNativeResponse()).thenReturn(browserResp);
+
+		java.lang.reflect.Method flushMethod = WebSocketServerPush.class.getDeclaredMethod(
+				"flushPendingBrowserCookies", org.zkoss.zk.ui.Desktop.class, org.zkoss.zk.ui.Execution.class);
+		flushMethod.setAccessible(true);
+		flushMethod.invoke(null, desktop, browserExec);
+
+		ArgumentCaptor<Cookie> cookieCaptor = ArgumentCaptor.forClass(Cookie.class);
+		verify(browserResp, org.mockito.Mockito.times(3)).addCookie(cookieCaptor.capture());
+		List<Cookie> added = cookieCaptor.getAllValues();
+
+		assertEquals("SHORT_TOK", added.get(0).getName());
+		assertEquals(0, added.get(0).getMaxAge(), "Expired positive Max-Age cookie must flush with Max-Age=0");
+
+		assertEquals("PARTIAL_TOK", added.get(1).getName());
+		assertTrue(added.get(1).getMaxAge() >= 15 && added.get(1).getMaxAge() <= 21,
+				"Delayed positive Max-Age cookie must flush remaining lifetime (~20s), got: " + added.get(1).getMaxAge());
+
+		assertEquals("DEL_TOK", added.get(2).getName());
+		assertEquals(0, added.get(2).getMaxAge(), "Explicit deletion must remain Max-Age=0");
+	}
+
+	@Test
+	void startServerPushPassesConfiguredMaxTextMessageSizeToClient() throws Exception {
+		String dtid = "dt-max-msg-size";
+		org.zkoss.zk.ui.Desktop desktop = mock(org.zkoss.zk.ui.Desktop.class);
+		when(desktop.getId()).thenReturn(dtid);
+		when(desktop.getSession()).thenReturn(null);
+
+		Field maxSizeField = ServerPushEndPoint.class.getDeclaredField("MAX_TEXT_MESSAGE_SIZE");
+		maxSizeField.setAccessible(true);
+		int expectedMaxSize = maxSizeField.getInt(null);
+
+		org.zkoss.zk.ui.Execution mockExec = mock(org.zkoss.zk.ui.Execution.class);
+		WebSocketServerPush spush = new WebSocketServerPush();
+		try {
+			try (org.mockito.MockedStatic<org.zkoss.zk.ui.Executions> executions =
+					org.mockito.Mockito.mockStatic(org.zkoss.zk.ui.Executions.class)) {
+				executions.when(org.zkoss.zk.ui.Executions::getCurrent).thenReturn(mockExec);
+				spush.start(desktop);
+			}
+
+			ArgumentCaptor<org.zkoss.zk.au.AuResponse> responseCaptor =
+					ArgumentCaptor.forClass(org.zkoss.zk.au.AuResponse.class);
+			verify(mockExec).addAuResponse(
+					org.mockito.ArgumentMatchers.eq("org.idempiere.websocket.serverpush.start"),
+					responseCaptor.capture());
+			Object[] rawData = responseCaptor.getValue().getRawData();
+			assertNotNull(rawData);
+			String script = String.valueOf(rawData[0]);
+			assertTrue(script.contains("org.idempiere.websocket.startServerPush(\"" + dtid + "\", " + expectedMaxSize + ");"),
+					"Start script must pass endpoint MAX_TEXT_MESSAGE_SIZE to browser, got: " + script);
+		} finally {
+			spush.stop();
+		}
+	}
+
 	private static void setField(Object target, String name, Object value) throws Exception {
 		Field field = ServerPushEndPoint.class.getDeclaredField(name);
 		field.setAccessible(true);

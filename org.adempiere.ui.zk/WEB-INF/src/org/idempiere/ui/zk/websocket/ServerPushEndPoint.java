@@ -116,6 +116,10 @@ public class ServerPushEndPoint {
 			Integer.getInteger("org.idempiere.ui.zk.websocket.maxPendingRequests", 50));
 	private static final int MAX_TEXT_MESSAGE_SIZE = Math.max(64 * 1024,
 			Integer.getInteger("org.idempiere.ui.zk.websocket.maxTextMessageSize", 4 * 1024 * 1024));
+
+	static int getMaxTextMessageSize() {
+		return MAX_TEXT_MESSAGE_SIZE;
+	}
 	private static final long MAX_IDLE_TIMEOUT_MS = Math.max(30_000L,
 			Long.getLong("org.idempiere.ui.zk.websocket.maxIdleTimeout", 90_000L));
 	private static final long RESPONSE_TIMEOUT_MS = Math.max(10_000L,
@@ -950,7 +954,7 @@ public class ServerPushEndPoint {
 						expiryDate = new Date(0L);
 					} else {
 						maxAgeSeconds = (int) Math.min(Integer.MAX_VALUE, parsedMaxAge);
-						expiryDate = new Date(System.currentTimeMillis() + parsedMaxAge * 1000L);
+						expiryDate = new Date(System.currentTimeMillis() + (long) maxAgeSeconds * 1000L);
 					}
 				} catch (NumberFormatException e) {
 					// Ignore invalid max-age attribute
@@ -1048,10 +1052,20 @@ public class ServerPushEndPoint {
 	 * Message client to send echo event to server
 	 */
 	public void echo() {
+		sendEcho();
+	}
+
+	/**
+	 * Send an echo frame to the client and report whether the send succeeded.
+	 *
+	 * @return {@code true} if the echo frame was sent
+	 */
+	boolean sendEcho() {
 		Session current = this.session;
 		if (!closeRequested && current != null) {
-			sendText(current, "echo");
+			return sendText(current, "echo");
 		}
+		return false;
 	}
 
     private final AtomicBoolean messageIndicator = new AtomicBoolean(false);
