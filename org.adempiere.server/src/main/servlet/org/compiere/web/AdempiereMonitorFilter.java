@@ -100,7 +100,7 @@ public class AdempiereMonitorFilter implements Filter
 				try {
 
 					MSSOPrincipalConfig config = MSSOPrincipalConfig.getDefaultSSOPrincipalConfig(0);
-					m_SSOPrincipal = config != null ? SSOUtils.getSSOPrincipalService(config) : null;
+					m_SSOPrincipal = config != null ? SSOUtils.getSSOPrincipalServiceForConfig(config) : null;
 
 					if (m_SSOPrincipal != null && config != null) {
 						String configUU = config.getSSO_PrincipalConfig_UU();
@@ -110,29 +110,31 @@ public class AdempiereMonitorFilter implements Filter
 							SSOUtils.clearSSOSessionToken(session);
 							// Use authentication code get get token
 							String currentUri = req.getRequestURL().toString();
-							m_SSOPrincipal.getAuthenticationToken(req, resp, SSOUtils.SSO_MODE_MONITOR);
+							m_SSOPrincipal.getAuthenticationToken(
+									SSOUtils.wrapRequestForTokenBinding(req, configUU), resp, SSOUtils.SSO_MODE_MONITOR);
 							if (!resp.isCommitted()) {
-								if (session.getAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN) != null)
-									session.setAttribute(ISSOPrincipalService.SSO_AUTHENTICATED_PROVIDER, configUU);
 								resp.sendRedirect(currentUri);
 							}
 							return;
-						} else if (!SSOUtils.isTokenValidForProvider(req.getSession(false), configUU)
-								|| !m_SSOPrincipal.isAuthenticated(req, resp)) {
-							HttpSession session = req.getSession(false);
-							if (session != null && session.getAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN) != null) {
-								m_SSOPrincipal.removePrincipalFromSession(req);
-								SSOUtils.clearSSOSessionToken(session);
+						} else {
+							Object token = SSOUtils.getValidatedSessionToken(req.getSession(false), configUU);
+							if (token == null || !m_SSOPrincipal.isAuthenticated(req, resp)) {
+								HttpSession session = req.getSession(false);
+								if (session != null && (token != null || SSOUtils.getSSOSessionToken(session) != null
+										|| session.getAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN) != null)) {
+									m_SSOPrincipal.removePrincipalFromSession(req);
+									SSOUtils.clearSSOSessionToken(session);
+								}
+								// Redirect to SSO sing in page for authentication
+								m_SSOPrincipal.redirectForAuthentication(req, resp, SSOUtils.SSO_MODE_MONITOR);
+								return;
 							}
-							// Redirect to SSO sing in page for authentication
-							m_SSOPrincipal.redirectForAuthentication(req, resp, SSOUtils.SSO_MODE_MONITOR);
-							return;
-						}
-						// validate the user
-						if (checkSSOAuthorization(m_SSOPrincipal, req.getSession().getAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN)))
-						{
-							chain.doFilter(request, response);
-							return;
+							// validate the user
+							if (checkSSOAuthorization(m_SSOPrincipal, token))
+							{
+								chain.doFilter(request, response);
+								return;
+							}
 						}
 					}
 					SSOUtils.clearSSOSessionToken(req.getSession(false));

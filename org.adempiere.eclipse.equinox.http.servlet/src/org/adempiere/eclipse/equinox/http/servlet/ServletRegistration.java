@@ -80,13 +80,11 @@ public class ServletRegistration extends Registration {
 			Thread.currentThread().setContextClassLoader(registeredContextClassLoader);
 			boolean isSSOEnable  = MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO_OSGI_CONSOLE, false);
 			MSSOPrincipalConfig config = isSSOEnable ? MSSOPrincipalConfig.getDefaultSSOPrincipalConfig(0) : null;
-			ISSOPrincipalService ssoPrincipal = config != null ? SSOUtils.getSSOPrincipalService(config) : null;
+			ISSOPrincipalService ssoPrincipal = config != null ? SSOUtils.getSSOPrincipalServiceForConfig(config) : null;
 			if (isSSOEnable && ssoPrincipal != null)
 			{
 				HttpSession session = req.getSession(false);
-				Object token = (session != null && SSOUtils.isTokenValidForProvider(session, config.getSSO_PrincipalConfig_UU()))
-						? session.getAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN)
-						: null;
+				Object token = SSOUtils.getValidatedSessionToken(session, config.getSSO_PrincipalConfig_UU());
 				if (checkSSOAuthorization(ssoPrincipal, token))
 				{
 					servlet.service(req, resp);

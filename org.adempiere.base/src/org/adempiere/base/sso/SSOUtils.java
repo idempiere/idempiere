@@ -13,10 +13,14 @@
 
 package org.adempiere.base.sso;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpSession;
 
 import org.adempiere.base.Service;
@@ -45,6 +49,10 @@ public class SSOUtils
 
 	public static final String									EVENT_ON_AFTER_SSOLOGIN		= "onAfterSSOLogin";
 
+	private static final String									SSO_AUTHENTICATED_TOKEN		= "sso.authenticated.token";
+
+	private static final Object[]								SESSION_LOCKS				= new Object[64];
+
 	// List of url patterns ignored for validating token
 	private static ArrayList<String>							ignoreResourceURL			= null;
 
@@ -55,6 +63,26 @@ public class SSOUtils
 		ignoreResourceURL.add("images");
 		ignoreResourceURL.add("css");
 		ignoreResourceURL.add("res");
+		for (int i = 0; i < SESSION_LOCKS.length; i++)
+			SESSION_LOCKS[i] = new Object();
+	}
+
+	/**
+	 * Immutable binding of an authenticated SSO session token to the {@code SSO_PrincipalConfig_UU}
+	 * of the provider that produced it.
+	 * @param token authenticated principal token
+	 * @param providerUU {@code SSO_PrincipalConfig_UU} of the authenticating provider
+	 */
+	public record SSOSessionToken(Object token, String providerUU) implements Serializable
+	{
+		private static final long serialVersionUID = 1L;
+	}
+
+	private static Object getSessionLock(HttpSession session)
+	{
+		String id = session.getId();
+		int stripe = id != null ? Math.floorMod(id.hashCode(), SESSION_LOCKS.length) : 0;
+		return SESSION_LOCKS[stripe];
 	}
 
 	/**
@@ -67,7 +95,7 @@ public class SSOUtils
 		if (config == null)
 			return null;
 
-		return getSSOPrincipalService(config);
+		return getSSOPrincipalServiceForConfig(config);
 	}
 
 	/**
@@ -75,7 +103,7 @@ public class SSOUtils
 	 * @param config SSO Principal Configuration
 	 * @return SSO Principal Service or null
 	 */
-	public static ISSOPrincipalService getSSOPrincipalService(MSSOPrincipalConfig config)
+	public static ISSOPrincipalService getSSOPrincipalServiceForConfig(I_SSO_PrincipalConfig config)
 	{
 		if (config == null)
 			return null;
@@ -224,7 +252,111 @@ public class SSOUtils
 	 */
 	public static ISSOPrincipalService getSSOPrincipalService(String uuID, String tenant)
 	{
-		return getSSOPrincipalService(getSSOPrincipalConfig(uuID, tenant));
+		return getSSOPrincipalServiceForConfig(getSSOPrincipalConfig(uuID, tenant));
+	}
+
+	private static HttpSession unwrapSession(HttpSession session)
+	{
+		while (session instanceof TokenBindingHttpSession wrapped)
+			session = wrapped.delegate;
+		return session;
+	}
+
+	/**
+	 * Store an SSO session token atomically bound to the authenticating provider UUID.
+	 * Also updates {@link ISSOPrincipalService#SSO_PRINCIPAL_SESSION_TOKEN} and
+	 * {@link ISSOPrincipalService#SSO_AUTHENTICATED_PROVIDER} for backward compatibility.
+	 * @param session HTTP session
+	 * @param token authenticated principal token
+	 * @param providerUU {@code SSO_PrincipalConfig_UU} of the authenticating provider
+	 */
+	public static void setSSOSessionToken(HttpSession session, Object token, String providerUU)
+	{
+		session = unwrapSession(session);
+		if (session == null)
+			return;
+		if (token == null || Util.isEmpty(providerUU, true))
+		{
+			clearSSOSessionToken(session);
+			return;
+		}
+		String normalizedProviderUU = providerUU.trim();
+		SSOSessionToken boundToken = new SSOSessionToken(token, normalizedProviderUU);
+		synchronized (getSessionLock(session))
+		{
+			session.setAttribute(SSO_AUTHENTICATED_TOKEN, boundToken);
+			session.setAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN, token);
+			session.setAttribute(ISSOPrincipalService.SSO_AUTHENTICATED_PROVIDER, normalizedProviderUU);
+		}
+	}
+
+	/**
+	 * Wrap an {@link HttpServletRequest} for {@link ISSOPrincipalService#getAuthenticationToken}
+	 * so that legacy implementations writing directly to
+	 * {@link ISSOPrincipalService#SSO_PRINCIPAL_SESSION_TOKEN} atomically bind the token to
+	 * {@code providerUU} at the write site without reading back from the shared session.
+	 * @param request HTTP request
+	 * @param providerUU {@code SSO_PrincipalConfig_UU} of the authenticating provider
+	 * @return wrapped request, or {@code request} unchanged if {@code request} is null or {@code providerUU} is empty
+	 */
+	public static HttpServletRequest wrapRequestForTokenBinding(HttpServletRequest request, String providerUU)
+	{
+		if (request == null || Util.isEmpty(providerUU, true))
+			return request;
+		String normalizedProviderUU = providerUU.trim();
+		return new HttpServletRequestWrapper(request)
+		{
+			@Override
+			public HttpSession getSession()
+			{
+				HttpSession session = super.getSession();
+				return session != null ? new TokenBindingHttpSession(unwrapSession(session), normalizedProviderUU) : null;
+			}
+
+			@Override
+			public HttpSession getSession(boolean create)
+			{
+				HttpSession session = super.getSession(create);
+				return session != null ? new TokenBindingHttpSession(unwrapSession(session), normalizedProviderUU) : null;
+			}
+		};
+	}
+
+	/**
+	 * Get the atomically bound SSO session token and authenticating provider UUID in a single session read.
+	 * @param session HTTP session
+	 * @return {@link SSOSessionToken} or null if absent or invalid
+	 */
+	public static SSOSessionToken getSSOSessionToken(HttpSession session)
+	{
+		session = unwrapSession(session);
+		if (session == null)
+			return null;
+		Object attr = session.getAttribute(SSO_AUTHENTICATED_TOKEN);
+		if (attr instanceof SSOSessionToken boundToken
+				&& boundToken.token() != null
+				&& !Util.isEmpty(boundToken.providerUU(), true))
+		{
+			return boundToken;
+		}
+		return null;
+	}
+
+	/**
+	 * Read the session's bound SSO token in a single session lookup and verify it was authenticated
+	 * by the expected SSO configuration UUID.
+	 * @param session HTTP session
+	 * @param expectedProviderUU expected {@code SSO_PrincipalConfig_UU}
+	 * @return the validated principal token, or null if absent or bound to a different provider
+	 */
+	public static Object getValidatedSessionToken(HttpSession session, String expectedProviderUU)
+	{
+		if (session == null || Util.isEmpty(expectedProviderUU, true))
+			return null;
+		SSOSessionToken boundToken = getSSOSessionToken(session);
+		if (boundToken != null && expectedProviderUU.trim().equals(boundToken.providerUU()))
+			return boundToken.token();
+		return null;
 	}
 
 	/**
@@ -235,13 +367,7 @@ public class SSOUtils
 	 */
 	public static boolean isTokenValidForProvider(HttpSession session, String expectedProviderUU)
 	{
-		if (session == null || Util.isEmpty(expectedProviderUU, true))
-			return false;
-		Object token = session.getAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN);
-		Object authProvider = session.getAttribute(ISSOPrincipalService.SSO_AUTHENTICATED_PROVIDER);
-		return token != null
-				&& authProvider instanceof String authenticatedProviderUU
-				&& expectedProviderUU.trim().equals(authenticatedProviderUU);
+		return getValidatedSessionToken(session, expectedProviderUU) != null;
 	}
 
 	/**
@@ -250,10 +376,162 @@ public class SSOUtils
 	 */
 	public static void clearSSOSessionToken(HttpSession session)
 	{
+		session = unwrapSession(session);
 		if (session != null)
 		{
-			session.removeAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN);
-			session.removeAttribute(ISSOPrincipalService.SSO_AUTHENTICATED_PROVIDER);
+			synchronized (getSessionLock(session))
+			{
+				session.removeAttribute(SSO_AUTHENTICATED_TOKEN);
+				session.removeAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN);
+				session.removeAttribute(ISSOPrincipalService.SSO_AUTHENTICATED_PROVIDER);
+			}
+		}
+	}
+
+	private static final class TokenBindingHttpSession implements HttpSession
+	{
+		private final HttpSession delegate;
+		private final String providerUU;
+
+		private TokenBindingHttpSession(HttpSession delegate, String providerUU)
+		{
+			this.delegate = delegate;
+			this.providerUU = providerUU;
+		}
+
+		@Override
+		public long getCreationTime()
+		{
+			return delegate.getCreationTime();
+		}
+
+		@Override
+		public String getId()
+		{
+			return delegate.getId();
+		}
+
+		@Override
+		public long getLastAccessedTime()
+		{
+			return delegate.getLastAccessedTime();
+		}
+
+		@Override
+		public ServletContext getServletContext()
+		{
+			return delegate.getServletContext();
+		}
+
+		@Override
+		public void setMaxInactiveInterval(int interval)
+		{
+			delegate.setMaxInactiveInterval(interval);
+		}
+
+		@Override
+		public int getMaxInactiveInterval()
+		{
+			return delegate.getMaxInactiveInterval();
+		}
+
+		@SuppressWarnings("deprecation")
+		@Override
+		public javax.servlet.http.HttpSessionContext getSessionContext()
+		{
+			return delegate.getSessionContext();
+		}
+
+		@Override
+		public Object getAttribute(String name)
+		{
+			return delegate.getAttribute(name);
+		}
+
+		@SuppressWarnings("deprecation")
+		@Override
+		public Object getValue(String name)
+		{
+			return delegate.getValue(name);
+		}
+
+		@Override
+		public Enumeration<String> getAttributeNames()
+		{
+			return delegate.getAttributeNames();
+		}
+
+		@SuppressWarnings("deprecation")
+		@Override
+		public String[] getValueNames()
+		{
+			return delegate.getValueNames();
+		}
+
+		@Override
+		public void setAttribute(String name, Object value)
+		{
+			if (ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN.equals(name))
+				setSSOSessionToken(delegate, value, providerUU);
+			else
+				delegate.setAttribute(name, value);
+		}
+
+		@SuppressWarnings("deprecation")
+		@Override
+		public void putValue(String name, Object value)
+		{
+			if (ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN.equals(name))
+				setSSOSessionToken(delegate, value, providerUU);
+			else
+				delegate.putValue(name, value);
+		}
+
+		@Override
+		public void removeAttribute(String name)
+		{
+			if (ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN.equals(name))
+				clearSSOSessionToken(delegate);
+			else
+				delegate.removeAttribute(name);
+		}
+
+		@SuppressWarnings("deprecation")
+		@Override
+		public void removeValue(String name)
+		{
+			if (ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN.equals(name))
+				clearSSOSessionToken(delegate);
+			else
+				delegate.removeValue(name);
+		}
+
+		@Override
+		public void invalidate()
+		{
+			delegate.invalidate();
+		}
+
+		@Override
+		public boolean isNew()
+		{
+			return delegate.isNew();
+		}
+
+		@Override
+		public boolean equals(Object obj)
+		{
+			if (this == obj)
+				return true;
+			if (obj instanceof TokenBindingHttpSession other)
+				return delegate.equals(other.delegate);
+			return delegate.equals(obj);
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return delegate.hashCode();
 		}
 	}
 }

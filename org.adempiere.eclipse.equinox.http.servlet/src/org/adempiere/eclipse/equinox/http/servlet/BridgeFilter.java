@@ -81,7 +81,7 @@ public class BridgeFilter extends BridgeServlet implements Filter {
 			try
 			{
 				MSSOPrincipalConfig config = MSSOPrincipalConfig.getDefaultSSOPrincipalConfig(0);
-				m_SSOPrincipal = config != null ? SSOUtils.getSSOPrincipalService(config) : null;
+				m_SSOPrincipal = config != null ? SSOUtils.getSSOPrincipalServiceForConfig(config) : null;
 
 				if (m_SSOPrincipal != null && config != null) {
 					String configUU = config.getSSO_PrincipalConfig_UU();
@@ -91,17 +91,17 @@ public class BridgeFilter extends BridgeServlet implements Filter {
 						SSOUtils.clearSSOSessionToken(session);
 						// Use authentication code to get token
 						String currentUri = req.getRequestURL().toString();
-						m_SSOPrincipal.getAuthenticationToken(req, resp, SSOUtils.SSO_MODE_OSGI);
+						m_SSOPrincipal.getAuthenticationToken(
+								SSOUtils.wrapRequestForTokenBinding(req, configUU), resp, SSOUtils.SSO_MODE_OSGI);
 						if (!resp.isCommitted()) {
-							if (session.getAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN) != null)
-								session.setAttribute(ISSOPrincipalService.SSO_AUTHENTICATED_PROVIDER, configUU);
 							resp.sendRedirect(currentUri);
 						}
 						return;
 					} else if (!SSOUtils.isTokenValidForProvider(req.getSession(false), configUU)
 							|| !m_SSOPrincipal.isAuthenticated(req, resp)) {
 						HttpSession session = req.getSession(false);
-						if (session != null && session.getAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN) != null) {
+						if (session != null && (SSOUtils.getSSOSessionToken(session) != null
+								|| session.getAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN) != null)) {
 							m_SSOPrincipal.removePrincipalFromSession(req);
 							SSOUtils.clearSSOSessionToken(session);
 						}

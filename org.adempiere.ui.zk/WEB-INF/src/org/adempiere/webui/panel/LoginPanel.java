@@ -55,6 +55,7 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.BrowserToken;
 import org.adempiere.webui.util.UserPreference;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.util.ZkSSOUtils;
 import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.LoginWindow;
 import org.compiere.Adempiere;
@@ -950,8 +951,7 @@ public class LoginPanel extends Window implements EventListener<Event>
 					  .append(URLEncoder.encode(tenant, StandardCharsets.UTF_8));
 			
 			Session session = Executions.getCurrent().getSession();
-			session.removeAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN);
-			session.removeAttribute(ISSOPrincipalService.SSO_AUTHENTICATED_PROVIDER);
+			ZkSSOUtils.clearSSOSessionToken(session);
 			session.setAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER,
 					config.getSSO_PrincipalConfig_UU());
 			

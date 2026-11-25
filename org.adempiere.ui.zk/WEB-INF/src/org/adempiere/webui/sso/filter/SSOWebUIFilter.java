@@ -69,6 +69,8 @@ public class SSOWebUIFilter implements Filter
 	 */
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException
 	{
+		boolean isSSOEnable = MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false);
+
 		// process tenant login prefix parameter (if available)
 		HttpServletRequest httpRequest = null;
 		if (request instanceof HttpServletRequest hsr)
@@ -85,22 +87,29 @@ public class SSOWebUIFilter implements Filter
 				HttpSession session = hsr.getSession();
 				String previousTenant = (String) session.getAttribute(TENANT_PREFIX_PARAMETER);
 				String newTenant = (tenantParam != null && !tenantParam.trim().isEmpty()) ? tenantParam.trim() : null;
-				if (!Objects.equals(previousTenant, newTenant))
+				boolean isPendingCallback = isSSOEnable
+						&& tenantParam == null
+						&& previousTenant != null
+						&& response instanceof HttpServletResponse httpResp
+						&& isPendingTenantSSOCallback(hsr, httpResp, session, previousTenant);
+				if (!isPendingCallback)
 				{
-					SSOUtils.clearSSOSessionToken(session);
-					session.removeAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
-					session.removeAttribute(ISSOPrincipalService.SSO_QUERY_STRING);
+					if (!Objects.equals(previousTenant, newTenant))
+					{
+						SSOUtils.clearSSOSessionToken(session);
+						session.removeAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
+						session.removeAttribute(ISSOPrincipalService.SSO_QUERY_STRING);
+					}
+					if (newTenant == null)
+						session.removeAttribute(TENANT_PREFIX_PARAMETER);
+					else
+						session.setAttribute(TENANT_PREFIX_PARAMETER, newTenant);
 				}
-				if (newTenant == null)
-					session.removeAttribute(TENANT_PREFIX_PARAMETER);
-				else
-					session.setAttribute(TENANT_PREFIX_PARAMETER, newTenant);
 			}
 			httpRequest = hsr;
 
 		}
 
-		boolean isSSOEnable = MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false);
 		if (isSSOEnable && httpRequest != null && response instanceof HttpServletResponse httpResponse)
 		{
 			// handle ping request
@@ -181,8 +190,7 @@ public class SSOWebUIFilter implements Filter
 			{
 				removeProviderCookie(httpRequest, httpResponse, provider);
 				Object previousProvider = session.getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
-				Object authenticatedProvider = session.getAttribute(ISSOPrincipalService.SSO_AUTHENTICATED_PROVIDER);
-				if (!provider.equals(previousProvider) || !provider.equals(authenticatedProvider))
+				if (!provider.equals(previousProvider) || !SSOUtils.isTokenValidForProvider(session, provider))
 				{
 					SSOUtils.clearSSOSessionToken(session);
 				}
@@ -214,7 +222,7 @@ public class SSOWebUIFilter implements Filter
 						provider = principalConfig.getSSO_PrincipalConfig_UU();
 						session.setAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER, provider);
 					}
-					m_SSOPrincipal = SSOUtils.getSSOPrincipalService(principalConfig);
+					m_SSOPrincipal = SSOUtils.getSSOPrincipalServiceForConfig(principalConfig);
 				}
 			
 				if (m_SSOPrincipal != null && principalConfig != null)
@@ -227,23 +235,24 @@ public class SSOWebUIFilter implements Filter
 
 						// Use authentication code to get token
 						String currentUri = httpRequest.getRequestURL().toString();
-						m_SSOPrincipal.getAuthenticationToken(httpRequest, httpResponse, SSOUtils.SSO_MODE_WEBUI);
+						m_SSOPrincipal.getAuthenticationToken(
+								SSOUtils.wrapRequestForTokenBinding(httpRequest, configUU), httpResponse, SSOUtils.SSO_MODE_WEBUI);
 
 						if (!httpResponse.isCommitted())
 						{
-							if (session.getAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN) != null)
-								session.setAttribute(ISSOPrincipalService.SSO_AUTHENTICATED_PROVIDER, configUU);
-
 							// Redirect to default request URL after authentication and handle query
 							// string.
 							Object queryString = session.getAttribute(ISSOPrincipalService.SSO_QUERY_STRING);
 							if (queryString != null && queryString instanceof String && !Util.isEmpty((String) queryString))
 								currentUri += "?" + (String) queryString;
 							session.removeAttribute(ISSOPrincipalService.SSO_QUERY_STRING);
-							if (request.getParameter(TENANT_PREFIX_PARAMETER) != null && (queryString == null || !queryString.toString().contains(TENANT_PREFIX_PARAMETER+"=")))
+							String redirectTenant = request.getParameter(TENANT_PREFIX_PARAMETER);
+							if (Util.isEmpty(redirectTenant, true))
+								redirectTenant = tenant;
+							if (!Util.isEmpty(redirectTenant, true) && (queryString == null || !queryString.toString().contains(TENANT_PREFIX_PARAMETER + "=")))
 							{
 								currentUri += (currentUri.contains("?") ? "&" : "?") + TENANT_PREFIX_PARAMETER + "="
-										+ URLEncoder.encode(request.getParameter(TENANT_PREFIX_PARAMETER), StandardCharsets.UTF_8);
+										+ URLEncoder.encode(redirectTenant.trim(), StandardCharsets.UTF_8);
 							}
 							httpResponse.sendRedirect(currentUri);
 						}
@@ -252,7 +261,8 @@ public class SSOWebUIFilter implements Filter
 					else if (!SSOUtils.isTokenValidForProvider(session, configUU)
 							|| !m_SSOPrincipal.isAuthenticated(httpRequest, httpResponse))
 					{
-						if (session.getAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN) != null)
+						if (SSOUtils.getSSOSessionToken(session) != null
+								|| session.getAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN) != null)
 						{
 							m_SSOPrincipal.removePrincipalFromSession(httpRequest);
 							SSOUtils.clearSSOSessionToken(session);
@@ -285,6 +295,28 @@ public class SSOWebUIFilter implements Filter
 		chain.doFilter(request, response);
 		return;
 	} // doFilter
+
+	/**
+	 * Check whether an incoming request without an explicit tenant or provider parameter
+	 * is an SSO callback carrying an authentication code for the pending tenant provider in session.
+	 * @param request HTTP request
+	 * @param response HTTP response
+	 * @param session HTTP session
+	 * @param sessionTenant pending tenant login prefix stored in session
+	 * @return true if the request is a callback for the pending tenant SSO provider
+	 */
+	private boolean isPendingTenantSSOCallback(HttpServletRequest request, HttpServletResponse response,
+			HttpSession session, String sessionTenant)
+	{
+		if (!Util.isEmpty(request.getParameter(ISSOPrincipalService.SSO_SELECTED_PROVIDER), true))
+			return false;
+		String sessionProvider = (String) session.getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
+		if (Util.isEmpty(sessionProvider, true))
+			return false;
+		MSSOPrincipalConfig pendingConfig = SSOUtils.getSSOPrincipalConfig(sessionProvider, sessionTenant);
+		ISSOPrincipalService pendingService = SSOUtils.getSSOPrincipalServiceForConfig(pendingConfig);
+		return pendingService != null && pendingService.hasAuthenticationCode(request, response);
+	}
 
 	private void removeProviderCookie(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
 			String provider) {

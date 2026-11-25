@@ -292,9 +292,8 @@ public class OIDCPrincipalService implements ISSOPrincipalService {
 	 * @param userInfo
 	 */
 	private void setAuthenticationResult(HttpSession session, UserInfo userInfo) {
-		session.setAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN, userInfo);
-		if (principalConfig != null && !Util.isEmpty(principalConfig.getSSO_PrincipalConfig_UU(), true))
-			session.setAttribute(ISSOPrincipalService.SSO_AUTHENTICATED_PROVIDER, principalConfig.getSSO_PrincipalConfig_UU());
+		String configUU = principalConfig != null ? principalConfig.getSSO_PrincipalConfig_UU() : null;
+		SSOUtils.setSSOSessionToken(session, userInfo, configUU);
 	}
 
 	@Override

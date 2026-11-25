@@ -38,6 +38,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.lang.reflect.Proxy;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -48,6 +49,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
@@ -86,9 +94,14 @@ class SSOTokenSecurityTest extends AbstractTestCase {
 
 	private HttpSession createMapBackedSession(Map<String, Object> attrs) {
 		HttpSession session = mock(HttpSession.class);
+		when(session.getId()).thenReturn("test-session-id");
 		when(session.getAttribute(anyString())).thenAnswer(inv -> attrs.get(inv.getArgument(0, String.class)));
 		doAnswer(inv -> {
-			attrs.put(inv.getArgument(0, String.class), inv.getArgument(1));
+			Object value = inv.getArgument(1);
+			if (value == null)
+				attrs.remove(inv.getArgument(0, String.class));
+			else
+				attrs.put(inv.getArgument(0, String.class), value);
 			return null;
 		}).when(session).setAttribute(anyString(), any());
 		doAnswer(inv -> {
@@ -165,24 +178,134 @@ class SSOTokenSecurityTest extends AbstractTestCase {
 		assertFalse(SSOUtils.isTokenValidForProvider(null, GARDEN_WORLD_PROVIDER_UU));
 		assertFalse(SSOUtils.isTokenValidForProvider(session, GARDEN_WORLD_PROVIDER_UU));
 		assertFalse(SSOUtils.isTokenValidForProvider(session, "  "));
+		assertNull(SSOUtils.getValidatedSessionToken(session, GARDEN_WORLD_PROVIDER_UU));
 
-		// Token without SSO_AUTHENTICATED_PROVIDER must fail closed
+		// Unbound raw attributes without atomic SSOSessionToken binding must fail closed
 		session.setAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN, "user-info");
 		assertFalse(SSOUtils.isTokenValidForProvider(session, GARDEN_WORLD_PROVIDER_UU));
+		session.setAttribute(ISSOPrincipalService.SSO_AUTHENTICATED_PROVIDER, GARDEN_WORLD_PROVIDER_UU);
+		assertFalse(SSOUtils.isTokenValidForProvider(session, GARDEN_WORLD_PROVIDER_UU));
+		assertNull(SSOUtils.getValidatedSessionToken(session, GARDEN_WORLD_PROVIDER_UU));
 
-		// Token with mismatched provider must fail closed
-		session.setAttribute(ISSOPrincipalService.SSO_AUTHENTICATED_PROVIDER, TENANT_A_PROVIDER_UU);
+		// Wrapped request atomically binds legacy setAttribute(SSO_PRINCIPAL_SESSION_TOKEN, ...) writes at the write site
+		HttpServletRequest rawReq = createIndexRequest(session, TENANT_A_PREFIX, TENANT_A_PROVIDER_UU, "code");
+		HttpServletRequest wrappedReq = SSOUtils.wrapRequestForTokenBinding(rawReq, TENANT_A_PROVIDER_UU);
+		wrappedReq.getSession().setAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN, "legacy-user-info");
+		assertEquals("legacy-user-info", SSOUtils.getValidatedSessionToken(session, TENANT_A_PROVIDER_UU));
 		assertFalse(SSOUtils.isTokenValidForProvider(session, GARDEN_WORLD_PROVIDER_UU));
 
-		// Token with matching provider succeeds
-		session.setAttribute(ISSOPrincipalService.SSO_AUTHENTICATED_PROVIDER, GARDEN_WORLD_PROVIDER_UU);
-		assertTrue(SSOUtils.isTokenValidForProvider(session, GARDEN_WORLD_PROVIDER_UU));
+		// Removing SSO_PRINCIPAL_SESSION_TOKEN through wrapped session clears the atomic binding too
+		wrappedReq.getSession().removeAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN);
+		assertNull(SSOUtils.getSSOSessionToken(session));
 
-		// clearSSOSessionToken removes both token and provider binding
+		// Atomic setSSOSessionToken through a wrapped session unwraps and uses the service's provider UUID
+		SSOUtils.setSSOSessionToken(wrappedReq.getSession(), "gw-user-info", " " + GARDEN_WORLD_PROVIDER_UU + " ");
+		assertTrue(SSOUtils.isTokenValidForProvider(session, GARDEN_WORLD_PROVIDER_UU));
+		assertEquals("gw-user-info", SSOUtils.getValidatedSessionToken(session, GARDEN_WORLD_PROVIDER_UU));
+		assertNull(SSOUtils.getValidatedSessionToken(session, TENANT_A_PROVIDER_UU));
+		assertEquals("gw-user-info", attrs.get(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN));
+		assertEquals(GARDEN_WORLD_PROVIDER_UU, attrs.get(ISSOPrincipalService.SSO_AUTHENTICATED_PROVIDER));
+
+		// clearSSOSessionToken removes bound token, raw token, and provider attribute
 		SSOUtils.clearSSOSessionToken(session);
+		assertNull(SSOUtils.getSSOSessionToken(session));
 		assertNull(attrs.get(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN));
 		assertNull(attrs.get(ISSOPrincipalService.SSO_AUTHENTICATED_PROVIDER));
 		assertFalse(SSOUtils.isTokenValidForProvider(session, GARDEN_WORLD_PROVIDER_UU));
+	}
+
+	@Test
+	void testConcurrentSetAndReadNeverCrossPairsTokenAndProvider() throws Exception {
+		Map<String, Object> attrs = new ConcurrentHashMap<>();
+		HttpSession session = (HttpSession) Proxy.newProxyInstance(
+				HttpSession.class.getClassLoader(),
+				new Class<?>[] { HttpSession.class },
+				(proxy, method, args) -> switch (method.getName()) {
+					case "getId" -> "concurrent-session-id";
+					case "getAttribute" -> attrs.get(args[0]);
+					case "setAttribute" -> {
+						if (args[1] == null)
+							attrs.remove(args[0]);
+						else
+							attrs.put((String) args[0], args[1]);
+						yield null;
+					}
+					case "removeAttribute" -> {
+						attrs.remove(args[0]);
+						yield null;
+					}
+					default -> null;
+				});
+
+		HttpServletRequest baseReq = (HttpServletRequest) Proxy.newProxyInstance(
+				HttpServletRequest.class.getClassLoader(),
+				new Class<?>[] { HttpServletRequest.class },
+				(proxy, method, args) -> "getSession".equals(method.getName()) ? session : null);
+		HttpServletRequest wrappedReqA = SSOUtils.wrapRequestForTokenBinding(baseReq, TENANT_A_PROVIDER_UU);
+
+		int iterations = 2000;
+		AtomicBoolean done = new AtomicBoolean(false);
+		AtomicReference<Throwable> failure = new AtomicReference<>();
+		CountDownLatch startLatch = new CountDownLatch(1);
+		ExecutorService pool = Executors.newFixedThreadPool(3);
+		try {
+			pool.submit(() -> {
+				try {
+					startLatch.await();
+					for (int i = 0; i < iterations; i++) {
+						// Legacy write via wrapRequestForTokenBinding racing with atomic OIDC writes
+						wrappedReqA.getSession().setAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN, "token-A-" + i);
+					}
+				} catch (Throwable t) {
+					failure.compareAndSet(null, t);
+				}
+			});
+			pool.submit(() -> {
+				try {
+					startLatch.await();
+					for (int i = 0; i < iterations; i++) {
+						SSOUtils.setSSOSessionToken(session, "token-GW-" + i, GARDEN_WORLD_PROVIDER_UU);
+						if ((i & 7) == 0)
+							SSOUtils.clearSSOSessionToken(session);
+					}
+				} catch (Throwable t) {
+					failure.compareAndSet(null, t);
+				} finally {
+					done.set(true);
+				}
+			});
+			pool.submit(() -> {
+				try {
+					startLatch.await();
+					while (!done.get()) {
+						Object gwToken = SSOUtils.getValidatedSessionToken(session, GARDEN_WORLD_PROVIDER_UU);
+						if (gwToken != null && !gwToken.toString().startsWith("token-GW-")) {
+							throw new AssertionError("Cross-paired token for GW: " + gwToken);
+						}
+						Object aToken = SSOUtils.getValidatedSessionToken(session, TENANT_A_PROVIDER_UU);
+						if (aToken != null && !aToken.toString().startsWith("token-A-")) {
+							throw new AssertionError("Cross-paired token for TenantA: " + aToken);
+						}
+						SSOUtils.SSOSessionToken bound = SSOUtils.getSSOSessionToken(session);
+						if (bound != null) {
+							String expectedPrefix = GARDEN_WORLD_PROVIDER_UU.equals(bound.providerUU()) ? "token-GW-" : "token-A-";
+							if (!bound.token().toString().startsWith(expectedPrefix)) {
+								throw new AssertionError("Mismatched binding: " + bound);
+							}
+						}
+					}
+				} catch (Throwable t) {
+					failure.compareAndSet(null, t);
+				}
+			});
+
+			startLatch.countDown();
+			pool.shutdown();
+			assertTrue(pool.awaitTermination(30, TimeUnit.SECONDS));
+			assertNull(failure.get(), () -> "Unexpected concurrency failure: " + failure.get());
+		} finally {
+			pool.shutdownNow();
+		}
 	}
 
 	@Test
@@ -241,8 +364,8 @@ class SSOTokenSecurityTest extends AbstractTestCase {
 			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalConfig(null, TENANT_A_PREFIX)).thenReturn(cfgA);
 			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalConfig(TENANT_A_PROVIDER_UU, TENANT_A_PREFIX)).thenReturn(cfgA);
 			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalConfig(GARDEN_WORLD_PROVIDER_UU, GARDEN_WORLD_PREFIX)).thenReturn(cfgGW);
-			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalService(cfgA)).thenReturn(svcA);
-			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalService(cfgGW)).thenReturn(svcGW);
+			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalServiceForConfig(cfgA)).thenReturn(svcA);
+			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalServiceForConfig(cfgGW)).thenReturn(svcGW);
 
 			// Step 1: Attacker completes OIDC callback for TenantA (and does not follow the 302)
 			HttpServletRequest cbReq = createIndexRequest(session, TENANT_A_PREFIX, null, "auth-code-a");
@@ -277,9 +400,8 @@ class SSOTokenSecurityTest extends AbstractTestCase {
 		Map<String, Object> attrs = new HashMap<>();
 		attrs.put(SSOWebUIFilter.TENANT_PREFIX_PARAMETER, TENANT_A_PREFIX);
 		attrs.put(ISSOPrincipalService.SSO_SELECTED_PROVIDER, TENANT_A_PROVIDER_UU);
-		attrs.put(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN, "token-for-" + TENANT_A_PROVIDER_UU);
-		attrs.put(ISSOPrincipalService.SSO_AUTHENTICATED_PROVIDER, TENANT_A_PROVIDER_UU);
 		HttpSession session = createMapBackedSession(attrs);
+		SSOUtils.setSSOSessionToken(session, "token-for-" + TENANT_A_PROVIDER_UU, TENANT_A_PROVIDER_UU);
 		SSOWebUIFilter filter = new SSOWebUIFilter();
 
 		try (MockedStatic<MSysConfig> sysConfigMock = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS);
@@ -287,7 +409,7 @@ class SSOTokenSecurityTest extends AbstractTestCase {
 
 			sysConfigMock.when(() -> MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false)).thenReturn(true);
 			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalConfig(SYSTEM_PROVIDER_UU, null)).thenReturn(cfgSys);
-			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalService(cfgSys)).thenReturn(svcSys);
+			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalServiceForConfig(cfgSys)).thenReturn(svcSys);
 
 			HttpServletRequest req = createIndexRequest(session, null, SYSTEM_PROVIDER_UU, null);
 			HttpServletResponse resp = mock(HttpServletResponse.class);
@@ -310,9 +432,8 @@ class SSOTokenSecurityTest extends AbstractTestCase {
 		Map<String, Object> attrs = new HashMap<>();
 		attrs.put(SSOWebUIFilter.TENANT_PREFIX_PARAMETER, TENANT_A_PREFIX);
 		attrs.put(ISSOPrincipalService.SSO_SELECTED_PROVIDER, TENANT_A_PROVIDER_UU);
-		attrs.put(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN, "token-for-" + TENANT_A_PROVIDER_UU);
-		attrs.put(ISSOPrincipalService.SSO_AUTHENTICATED_PROVIDER, TENANT_A_PROVIDER_UU);
 		HttpSession session = createMapBackedSession(attrs);
+		SSOUtils.setSSOSessionToken(session, "token-for-" + TENANT_A_PROVIDER_UU, TENANT_A_PROVIDER_UU);
 		SSOWebUIFilter filter = new SSOWebUIFilter();
 
 		try (MockedStatic<MSysConfig> sysConfigMock = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS);
@@ -321,7 +442,7 @@ class SSOTokenSecurityTest extends AbstractTestCase {
 			sysConfigMock.when(() -> MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false)).thenReturn(true);
 			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalConfig(null, GARDEN_WORLD_PREFIX)).thenReturn(cfgGW);
 			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalConfig("", GARDEN_WORLD_PREFIX)).thenReturn(cfgGW);
-			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalService(cfgGW)).thenReturn(svcGW);
+			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalServiceForConfig(cfgGW)).thenReturn(svcGW);
 
 			// Passing whitespace for sso.selected.provider triggers auto-resolution of GW's single provider
 			HttpServletRequest req = createIndexRequest(session, GARDEN_WORLD_PREFIX, " ", null);
@@ -345,9 +466,8 @@ class SSOTokenSecurityTest extends AbstractTestCase {
 		Map<String, Object> attrs = new HashMap<>();
 		attrs.put(SSOWebUIFilter.TENANT_PREFIX_PARAMETER, GARDEN_WORLD_PREFIX);
 		attrs.put(ISSOPrincipalService.SSO_SELECTED_PROVIDER, GARDEN_WORLD_PROVIDER_UU);
-		attrs.put(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN, "token-for-" + GARDEN_WORLD_PROVIDER_UU);
-		attrs.put(ISSOPrincipalService.SSO_AUTHENTICATED_PROVIDER, GARDEN_WORLD_PROVIDER_UU);
 		HttpSession session = createMapBackedSession(attrs);
+		SSOUtils.setSSOSessionToken(session, "token-for-" + GARDEN_WORLD_PROVIDER_UU, GARDEN_WORLD_PROVIDER_UU);
 		SSOWebUIFilter filter = new SSOWebUIFilter();
 
 		try (MockedStatic<MSysConfig> sysConfigMock = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS);
@@ -355,7 +475,7 @@ class SSOTokenSecurityTest extends AbstractTestCase {
 
 			sysConfigMock.when(() -> MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false)).thenReturn(true);
 			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalConfig(GARDEN_WORLD_PROVIDER2_UU, GARDEN_WORLD_PREFIX)).thenReturn(cfgGW2);
-			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalService(cfgGW2)).thenReturn(svcGW2);
+			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalServiceForConfig(cfgGW2)).thenReturn(svcGW2);
 
 			HttpServletRequest req = createIndexRequest(session, GARDEN_WORLD_PREFIX, GARDEN_WORLD_PROVIDER2_UU, null);
 			HttpServletResponse resp = mock(HttpServletResponse.class);
@@ -378,9 +498,8 @@ class SSOTokenSecurityTest extends AbstractTestCase {
 		Map<String, Object> attrs = new HashMap<>();
 		attrs.put(SSOWebUIFilter.TENANT_PREFIX_PARAMETER, GARDEN_WORLD_PREFIX);
 		attrs.put(ISSOPrincipalService.SSO_SELECTED_PROVIDER, GARDEN_WORLD_PROVIDER_UU);
-		attrs.put(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN, "token-for-" + TENANT_A_PROVIDER_UU);
-		attrs.put(ISSOPrincipalService.SSO_AUTHENTICATED_PROVIDER, TENANT_A_PROVIDER_UU);
 		HttpSession session = createMapBackedSession(attrs);
+		SSOUtils.setSSOSessionToken(session, "token-for-" + TENANT_A_PROVIDER_UU, TENANT_A_PROVIDER_UU);
 		SSOWebUIFilter filter = new SSOWebUIFilter();
 
 		try (MockedStatic<MSysConfig> sysConfigMock = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS);
@@ -388,7 +507,7 @@ class SSOTokenSecurityTest extends AbstractTestCase {
 
 			sysConfigMock.when(() -> MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false)).thenReturn(true);
 			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalConfig(GARDEN_WORLD_PROVIDER_UU, GARDEN_WORLD_PREFIX)).thenReturn(cfgGW);
-			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalService(cfgGW)).thenReturn(svcGW);
+			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalServiceForConfig(cfgGW)).thenReturn(svcGW);
 
 			// Request arrives without sso.selected.provider query param while SSO_SELECTED_PROVIDER != SSO_AUTHENTICATED_PROVIDER
 			HttpServletRequest req = createIndexRequest(session, GARDEN_WORLD_PREFIX, null, null);
@@ -418,7 +537,7 @@ class SSOTokenSecurityTest extends AbstractTestCase {
 			sysConfigMock.when(() -> MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false)).thenReturn(true);
 			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalConfig(null, GARDEN_WORLD_PREFIX)).thenReturn(cfgGW);
 			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalConfig(GARDEN_WORLD_PROVIDER_UU, GARDEN_WORLD_PREFIX)).thenReturn(cfgGW);
-			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalService(cfgGW)).thenReturn(svcGW);
+			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalServiceForConfig(cfgGW)).thenReturn(svcGW);
 
 			// Callback for GardenWorld
 			HttpServletRequest cbReq = createIndexRequest(session, GARDEN_WORLD_PREFIX, null, "auth-code-gw");
@@ -473,7 +592,7 @@ class SSOTokenSecurityTest extends AbstractTestCase {
 
 			sysConfigMock.when(() -> MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false)).thenReturn(true);
 			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalConfig(GARDEN_WORLD_PROVIDER_UU, GARDEN_WORLD_PREFIX)).thenReturn(cfgGW);
-			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalService(cfgGW)).thenReturn(svcGW);
+			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalServiceForConfig(cfgGW)).thenReturn(svcGW);
 
 			filter.doFilter(cbReq, cbResp, cbChain);
 
@@ -482,6 +601,76 @@ class SSOTokenSecurityTest extends AbstractTestCase {
 			assertEquals("token-for-" + GARDEN_WORLD_PROVIDER_UU, attrs.get(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN));
 			assertEquals(GARDEN_WORLD_PROVIDER_UU, attrs.get(ISSOPrincipalService.SSO_AUTHENTICATED_PROVIDER));
 			verify(cbResp).sendRedirect("http://127.0.0.1:8080/webui/?tenant=gardenworld");
+		}
+	}
+
+	@Test
+	void testIndexZulCallbackWithoutTenantParamPreservesTenantAndCompletesSSO() throws Throwable {
+		MSSOPrincipalConfig cfgGW = mockConfig(GARDEN_WORLD_PROVIDER_UU, DictionaryIDs.AD_Client.GARDEN_WORLD.id);
+		ISSOPrincipalService svcGW = createLegacyBehaviorPrincipalService(GARDEN_WORLD_PROVIDER_UU);
+		MSSOPrincipalConfig cfgA = mockConfig(TENANT_A_PROVIDER_UU, 1000000);
+		ISSOPrincipalService svcA = createLegacyBehaviorPrincipalService(TENANT_A_PROVIDER_UU);
+
+		Map<String, Object> attrs = new HashMap<>();
+		attrs.put(SSOWebUIFilter.TENANT_PREFIX_PARAMETER, GARDEN_WORLD_PREFIX);
+		attrs.put(ISSOPrincipalService.SSO_SELECTED_PROVIDER, GARDEN_WORLD_PROVIDER_UU);
+		attrs.put(ISSOPrincipalService.SSO_QUERY_STRING, SSOWebUIFilter.TENANT_PREFIX_PARAMETER + "=" + GARDEN_WORLD_PREFIX);
+		HttpSession session = createMapBackedSession(attrs);
+		SSOWebUIFilter filter = new SSOWebUIFilter();
+
+		try (MockedStatic<MSysConfig> sysConfigMock = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<SSOUtils> ssoUtilsMock = Mockito.mockStatic(SSOUtils.class, Mockito.CALLS_REAL_METHODS)) {
+
+			sysConfigMock.when(() -> MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false)).thenReturn(true);
+			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalConfig(GARDEN_WORLD_PROVIDER_UU, GARDEN_WORLD_PREFIX)).thenReturn(cfgGW);
+			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalServiceForConfig(cfgGW)).thenReturn(svcGW);
+			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalConfig(null, TENANT_A_PREFIX)).thenReturn(cfgA);
+			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalConfig(TENANT_A_PROVIDER_UU, TENANT_A_PREFIX)).thenReturn(cfgA);
+			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalServiceForConfig(cfgA)).thenReturn(svcA);
+
+			// 1. Callback to /webui/index.zul without tenant parameter preserves pending tenant and saved query
+			HttpServletRequest cbReq = createIndexRequest(session, null, null, "auth-code-gw");
+			HttpServletResponse cbResp = mock(HttpServletResponse.class);
+			FilterChain cbChain = mock(FilterChain.class);
+			filter.doFilter(cbReq, cbResp, cbChain);
+
+			verify(cbChain, never()).doFilter(any(), any());
+			assertEquals(GARDEN_WORLD_PREFIX, attrs.get(SSOWebUIFilter.TENANT_PREFIX_PARAMETER));
+			assertEquals("token-for-" + GARDEN_WORLD_PROVIDER_UU, SSOUtils.getValidatedSessionToken(session, GARDEN_WORLD_PROVIDER_UU));
+			verify(cbResp).sendRedirect("http://127.0.0.1:8080/webui/index.zul?tenant=gardenworld");
+
+			// 2. Callback to /webui/index.zul without tenant parameter and without SSO_QUERY_STRING still preserves tenant on redirect
+			SSOUtils.clearSSOSessionToken(session);
+			HttpServletRequest cbReqNoQuery = createIndexRequest(session, null, null, "auth-code-gw-2");
+			HttpServletResponse cbRespNoQuery = mock(HttpServletResponse.class);
+			FilterChain cbChainNoQuery = mock(FilterChain.class);
+			filter.doFilter(cbReqNoQuery, cbRespNoQuery, cbChainNoQuery);
+
+			verify(cbChainNoQuery, never()).doFilter(any(), any());
+			assertEquals(GARDEN_WORLD_PREFIX, attrs.get(SSOWebUIFilter.TENANT_PREFIX_PARAMETER));
+			assertEquals("token-for-" + GARDEN_WORLD_PROVIDER_UU, SSOUtils.getValidatedSessionToken(session, GARDEN_WORLD_PROVIDER_UU));
+			verify(cbRespNoQuery).sendRedirect("http://127.0.0.1:8080/webui/index.zul?tenant=gardenworld");
+
+			// 3. Explicit tenant switch on /webui/index.zul?tenant=tenanta clears prior GardenWorld session state
+			HttpServletRequest switchReq = createIndexRequest(session, TENANT_A_PREFIX, null, null);
+			HttpServletResponse switchResp = mock(HttpServletResponse.class);
+			FilterChain switchChain = mock(FilterChain.class);
+			filter.doFilter(switchReq, switchResp, switchChain);
+
+			verify(switchChain, never()).doFilter(any(), any());
+			assertEquals(TENANT_A_PREFIX, attrs.get(SSOWebUIFilter.TENANT_PREFIX_PARAMETER));
+			assertNull(SSOUtils.getSSOSessionToken(session));
+			verify(switchResp).sendRedirect("https://idp.example/" + TENANT_A_PROVIDER_UU + "/authorize");
+
+			// 4. Plain /webui/index.zul navigation without code clears pending tenant state
+			HttpServletRequest plainReq = createIndexRequest(session, null, null, null);
+			HttpServletResponse plainResp = mock(HttpServletResponse.class);
+			FilterChain plainChain = mock(FilterChain.class);
+			filter.doFilter(plainReq, plainResp, plainChain);
+
+			assertNull(attrs.get(SSOWebUIFilter.TENANT_PREFIX_PARAMETER));
+			assertNull(attrs.get(ISSOPrincipalService.SSO_SELECTED_PROVIDER));
+			assertNull(SSOUtils.getSSOSessionToken(session));
 		}
 	}
 
@@ -508,7 +697,7 @@ class SSOTokenSecurityTest extends AbstractTestCase {
 
 			sysConfigMock.when(() -> MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false)).thenReturn(true);
 			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalConfig(null, GARDEN_WORLD_PREFIX)).thenReturn(cfgGW);
-			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalService(cfgGW)).thenReturn(svcGW);
+			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalServiceForConfig(cfgGW)).thenReturn(svcGW);
 
 			filter.doFilter(req, resp, chain);
 
