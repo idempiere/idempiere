@@ -59,6 +59,6 @@ VMOPTS="-Dorg.osgi.framework.bootdelegation=sun.security.ssl
 
 IDEMPIERE_JAVA_OPTIONS=${JAVA_OPTS:-$IDEMPIERE_JAVA_OPTIONS}
 
-echo "Starting iDempiere: $JAVA ${DEBUG} $IDEMPIERE_JAVA_OPTIONS $VMOPTS -jar $BASE/plugins/org.eclipse.equinox.launcher_1.*.jar -application org.adempiere.server.application"
+echo "Starting iDempiere: $JAVA ${DEBUG} $VMOPTS $IDEMPIERE_JAVA_OPTIONS -jar $BASE/plugins/org.eclipse.equinox.launcher_1.*.jar -application org.adempiere.server.application"
 
-$JAVA ${DEBUG} $IDEMPIERE_JAVA_OPTIONS $VMOPTS -jar $BASE/plugins/org.eclipse.equinox.launcher_1.*.jar -application org.adempiere.server.application
+$JAVA ${DEBUG} $VMOPTS $IDEMPIERE_JAVA_OPTIONS -jar $BASE/plugins/org.eclipse.equinox.launcher_1.*.jar -application org.adempiere.server.application
