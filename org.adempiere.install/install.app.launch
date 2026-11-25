@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.pde.ui.RuntimeWorkbench">
+    <booleanAttribute key="add_console" value="false"/>
     <booleanAttribute key="append.args" value="true"/>
     <stringAttribute key="application" value="org.adempiere.install.application"/>
     <booleanAttribute key="askclear" value="true"/>
@@ -92,11 +93,11 @@
         <setEntry value="org.hamcrest.core@default:default"/>
         <setEntry value="org.junit@default:default"/>
         <setEntry value="org.krysalis.barcode4j@default:default"/>
+        <setEntry value="org.objectweb.asm*9.9.1@default:default"/>
         <setEntry value="org.objectweb.asm.commons@default:default"/>
-        <setEntry value="org.objectweb.asm.tree.analysis@default:default"/>
-        <setEntry value="org.objectweb.asm.tree@default:default"/>
-        <setEntry value="org.objectweb.asm.util@default:default"/>
-        <setEntry value="org.objectweb.asm@default:default"/>
+        <setEntry value="org.objectweb.asm.tree*9.9.1@default:default"/>
+        <setEntry value="org.objectweb.asm.tree.analysis*9.9.1@default:default"/>
+        <setEntry value="org.objectweb.asm.util*9.9.1@default:default"/>
         <setEntry value="org.osgi.annotation.bundle@default:default"/>
         <setEntry value="org.osgi.annotation.versioning@default:default"/>
         <setEntry value="org.osgi.service.cm@default:default"/>
@@ -122,7 +123,7 @@
         <setEntry value="org.osgi.util.xml@default:default"/>
         <setEntry value="org.passay@default:default"/>
         <setEntry value="org.postgresql.jdbc@default:default"/>
-        <setEntry value="slf4j.api@default:default"/>
+        <setEntry value="slf4j.api*2.0.17@default:default"/>
         <setEntry value="slf4j.jdk14@3:true"/>
         <setEntry value="wrapped.com.google.http-client.google-http-client-gson@default:default"/>
         <setEntry value="wrapped.com.google.zxing.javase@default:default"/>

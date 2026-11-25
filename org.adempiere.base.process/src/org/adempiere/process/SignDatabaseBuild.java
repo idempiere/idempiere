@@ -38,7 +38,7 @@ public class SignDatabaseBuild
 	public static void main(String[] args)
 	{
 		Adempiere.startupEnvironment(false);
-		CLogMgt.setLevel(Level.FINE);
+		CLogMgt.setLevel(Level.WARNING);
 		s_log.info("Sign Database Build");
 		s_log.info("-------------------");
 		
