@@ -117,7 +117,7 @@ INSERT INTO t_alter_column values('c_projectissue','M_Locator_ID',null,'NULL',nu
 ;
 
 -- May 28, 2024, 12:56:24 PM IST
-UPDATE AD_Column SET IsMandatory='N', MandatoryLogic='@C_Charge_ID@!0',Updated=TO_TIMESTAMP('2024-05-28 12:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=9852
+UPDATE AD_Column SET IsMandatory='N', MandatoryLogic='@C_Charge_ID@=0',Updated=TO_TIMESTAMP('2024-05-28 12:56:24','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=9852
 ;
 
 -- May 28, 2024, 12:56:26 PM IST
@@ -142,7 +142,7 @@ UPDATE AD_Process_Para SET AD_Reference_ID=30,Updated=TO_TIMESTAMP('2024-06-05 1
 ;
 
 -- Jun 10, 2024, 10:44:09 AM IST
-UPDATE AD_Val_Rule SET Code='C_InvoiceLine.C_InvoiceLine_ID In ((SELECT cil.C_InvoiceLine_ID from C_InvoiceLine cil Inner Join C_Invoice ci On ci.C_Invoice_ID=cil.C_Invoice_ID Where ci.DocStatus In ( ''CL'', ''CO'') And ci.IsSOTrx=''N'' And cil.C_Charge_ID Is Not Null And cil.A_CreateAsset!=''Y'') EXCEPT (SELECT DISTINCT C_INVOICELINE_ID from C_PROJECTISSUE Where C_INVOICELINE_ID Is Not Null))',Updated=TO_TIMESTAMP('2024-06-10 10:44:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Val_Rule_ID=200190
+UPDATE AD_Val_Rule SET Code='C_InvoiceLine.C_InvoiceLine_ID In ((SELECT cil.C_InvoiceLine_ID from C_InvoiceLine cil Inner Join C_Invoice ci On ci.C_Invoice_ID=cil.C_Invoice_ID Where ci.DocStatus In ( ''CL'', ''CO'') And ci.IsSOTrx=''N'' And cil.C_Charge_ID Is Not Null And cil.A_CreateAsset!=''Y'') EXCEPT (SELECT DISTINCT C_INVOICELINE_ID from C_PROJECTISSUE Where C_INVOICELINE_ID Is Not Null And DocStatus Not In (''VO'', ''RE'')))',Updated=TO_TIMESTAMP('2024-06-10 10:44:09','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Val_Rule_ID=200190
 ;
 
 -- Jul 16, 2024, 6:49:53 PM IST

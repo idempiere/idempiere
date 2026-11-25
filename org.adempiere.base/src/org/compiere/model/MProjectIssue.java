@@ -173,12 +173,12 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 			MInvoiceLine invLine = new MInvoiceLine(getCtx(), getC_InvoiceLine_ID(), get_TrxName());
 			if (invLine.getC_Charge_ID() <= 0)
 			{
-				log.saveError("Error", Msg.getMsg(getCtx(), "InvoiceLineNeedsCharge", new Object[] { invLine }));
+				log.saveError("Error", Msg.getMsg(getCtx(), "InvoiceLineNeedsCharge", new Object[] { invLine.getLine() }));
 				return false;
 			}
 			if (invLine.getC_Project_ID() > 0 && invLine.getC_Project_ID() != getC_Project_ID())
 			{
-				log.saveError("Error", Msg.getMsg(getCtx(), "ProjectInvoiceLineMismatch", new Object[] { invLine }));
+				log.saveError("Error", Msg.getMsg(getCtx(), "InvoiceLineAnotherProject", new Object[] { invLine.getLine() }));
 				return false;
 			}
 			setC_Charge_ID(invLine.getC_Charge_ID());
@@ -657,6 +657,8 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 			MInvoiceLine invLine = new MInvoiceLine(getCtx(), getC_InvoiceLine_ID(), get_TrxName());
 			MInvoice inv = new MInvoice(getCtx(), invLine.getC_Invoice_ID(), get_TrxName());
 			cost = MDocType.DOCBASETYPE_APCreditMemo.equals((inv.getDocBaseType())) ? invLine.getLineNetAmt().negate() : invLine.getLineNetAmt();
+			if (isReversal())
+				cost = cost.negate();
 		}
 		else if (getC_Charge_ID() > 0)
 		{
@@ -725,7 +727,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		deleteProjectLine();
 		if (getC_InvoiceLine_ID() > 0)
 		{
-			MInvoiceLine invLine = (MInvoiceLine) MTable.get(getCtx(), MInvoiceLine.Table_ID).getPO(getC_InvoiceLine_ID(), get_TrxName());
+			MInvoiceLine invLine = new MInvoiceLine(getCtx(), getC_InvoiceLine_ID(), get_TrxName());
 			invLine.setC_Project_ID(0);
 			invLine.saveEx(invLine.get_TrxName());
 		}
