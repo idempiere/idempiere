@@ -275,19 +275,88 @@ public class ServerPushEndPointTest {
 		assertEquals("203.0.113.42", validProps.get("ws-client-ip"));
 		verify(httpSession, never()).removeAttribute("ws-client-ip");
 
-		// Valid reverse-proxy X-Forwarded-Host handshake
+		// Valid direct HTTPS default-port handshake (wss:// scheme)
+		ServerEndpointConfig secDirectHttps = mock(ServerEndpointConfig.class);
+		Map<String, Object> directHttpsProps = new HashMap<>();
+		when(secDirectHttps.getUserProperties()).thenReturn(directHttpsProps);
+		HandshakeRequest directHttpsReq = mock(HandshakeRequest.class);
+		when(directHttpsReq.getHttpSession()).thenReturn(httpSession);
+		when(directHttpsReq.getRequestURI()).thenReturn(URI.create("wss://erp.example.com/webui/serverpush/dt1"));
+		when(directHttpsReq.getHeaders()).thenReturn(Map.of(
+				"Origin", List.of("https://erp.example.com"),
+				"Host", List.of("erp.example.com")));
+		configurator.modifyHandshake(secDirectHttps, directHttpsReq, mock(HandshakeResponse.class));
+		assertEquals(Boolean.TRUE, directHttpsProps.get("ws-origin-valid"));
+
+		// Valid trusted HTTPS reverse-proxy handshake (requestURI already resolved by Jetty ForwardedRequestCustomizer)
 		ServerEndpointConfig secProxy = mock(ServerEndpointConfig.class);
 		Map<String, Object> proxyProps = new HashMap<>();
 		when(secProxy.getUserProperties()).thenReturn(proxyProps);
 		HandshakeRequest proxyReq = mock(HandshakeRequest.class);
 		when(proxyReq.getHttpSession()).thenReturn(httpSession);
-		when(proxyReq.getRequestURI()).thenReturn(URI.create("http://127.0.0.1:8080/webui/serverpush/dt1"));
+		when(proxyReq.getRequestURI()).thenReturn(URI.create("https://erp.example.com/webui/serverpush/dt1"));
 		when(proxyReq.getHeaders()).thenReturn(Map.of(
 				"origin", List.of("https://erp.example.com"),
 				"host", List.of("127.0.0.1:8080"),
-				"x-forwarded-host", List.of("erp.example.com")));
+				"x-forwarded-host", List.of("erp.example.com"),
+				"x-forwarded-proto", List.of("https")));
 		configurator.modifyHandshake(secProxy, proxyReq, mock(HandshakeResponse.class));
 		assertEquals(Boolean.TRUE, proxyProps.get("ws-origin-valid"));
+
+		// Spoofed X-Forwarded-Host without trusted proxy URI rewrite must be rejected
+		ServerEndpointConfig secSpoofedProxy = mock(ServerEndpointConfig.class);
+		Map<String, Object> spoofedProxyProps = new HashMap<>();
+		when(secSpoofedProxy.getUserProperties()).thenReturn(spoofedProxyProps);
+		HandshakeRequest spoofedProxyReq = mock(HandshakeRequest.class);
+		when(spoofedProxyReq.getHttpSession()).thenReturn(httpSession);
+		when(spoofedProxyReq.getRequestURI()).thenReturn(URI.create("https://erp.example.com/webui/serverpush/dt1"));
+		when(spoofedProxyReq.getHeaders()).thenReturn(Map.of(
+				"origin", List.of("https://evil.example.net"),
+				"host", List.of("erp.example.com"),
+				"x-forwarded-host", List.of("evil.example.net")));
+		configurator.modifyHandshake(secSpoofedProxy, spoofedProxyReq, mock(HandshakeResponse.class));
+		assertEquals(Boolean.FALSE, spoofedProxyProps.get("ws-origin-valid"));
+
+		// Reverse-proxy handshake with cross-port Origin must be rejected even when X-Forwarded-Host omits port
+		ServerEndpointConfig secProxyCrossPort = mock(ServerEndpointConfig.class);
+		Map<String, Object> proxyCrossPortProps = new HashMap<>();
+		when(secProxyCrossPort.getUserProperties()).thenReturn(proxyCrossPortProps);
+		HandshakeRequest proxyCrossPortReq = mock(HandshakeRequest.class);
+		when(proxyCrossPortReq.getHttpSession()).thenReturn(httpSession);
+		when(proxyCrossPortReq.getRequestURI()).thenReturn(URI.create("https://erp.example.com/webui/serverpush/dt1"));
+		when(proxyCrossPortReq.getHeaders()).thenReturn(Map.of(
+				"origin", List.of("https://erp.example.com:8443"),
+				"host", List.of("127.0.0.1:8080"),
+				"x-forwarded-host", List.of("erp.example.com"),
+				"x-forwarded-proto", List.of("https")));
+		configurator.modifyHandshake(secProxyCrossPort, proxyCrossPortReq, mock(HandshakeResponse.class));
+		assertEquals(Boolean.FALSE, proxyCrossPortProps.get("ws-origin-valid"));
+
+		// HTTP Origin against HTTPS default-port endpoint on the same host must be rejected
+		ServerEndpointConfig secSchemeMismatchDefaultPort = mock(ServerEndpointConfig.class);
+		Map<String, Object> schemeMismatchDefaultProps = new HashMap<>();
+		when(secSchemeMismatchDefaultPort.getUserProperties()).thenReturn(schemeMismatchDefaultProps);
+		HandshakeRequest schemeMismatchDefaultReq = mock(HandshakeRequest.class);
+		when(schemeMismatchDefaultReq.getHttpSession()).thenReturn(httpSession);
+		when(schemeMismatchDefaultReq.getRequestURI()).thenReturn(URI.create("https://erp.example.com/webui/serverpush/dt1"));
+		when(schemeMismatchDefaultReq.getHeaders()).thenReturn(Map.of(
+				"Origin", List.of("http://erp.example.com"),
+				"Host", List.of("erp.example.com")));
+		configurator.modifyHandshake(secSchemeMismatchDefaultPort, schemeMismatchDefaultReq, mock(HandshakeResponse.class));
+		assertEquals(Boolean.FALSE, schemeMismatchDefaultProps.get("ws-origin-valid"));
+
+		// HTTP Origin against HTTPS explicit-port endpoint on the same host and port must be rejected
+		ServerEndpointConfig secSchemeMismatchExplicitPort = mock(ServerEndpointConfig.class);
+		Map<String, Object> schemeMismatchExplicitProps = new HashMap<>();
+		when(secSchemeMismatchExplicitPort.getUserProperties()).thenReturn(schemeMismatchExplicitProps);
+		HandshakeRequest schemeMismatchExplicitReq = mock(HandshakeRequest.class);
+		when(schemeMismatchExplicitReq.getHttpSession()).thenReturn(httpSession);
+		when(schemeMismatchExplicitReq.getRequestURI()).thenReturn(URI.create("https://erp.example.com:8443/webui/serverpush/dt1"));
+		when(schemeMismatchExplicitReq.getHeaders()).thenReturn(Map.of(
+				"Origin", List.of("http://erp.example.com:8443"),
+				"Host", List.of("erp.example.com:8443")));
+		configurator.modifyHandshake(secSchemeMismatchExplicitPort, schemeMismatchExplicitReq, mock(HandshakeResponse.class));
+		assertEquals(Boolean.FALSE, schemeMismatchExplicitProps.get("ws-origin-valid"));
 
 		// Cross-site Origin handshake must be marked invalid
 		ServerEndpointConfig secEvil = mock(ServerEndpointConfig.class);

@@ -81,11 +81,16 @@ public class EndpointConfigurator extends ServerEndpointConfig.Configurator {
 	}
 
 	/**
-	 * Validate the WebSocket handshake {@code Origin} header against the target host
-	 * to prevent Cross-Site WebSocket Hijacking (CSWSH).
+	 * Validate the WebSocket handshake {@code Origin} header against the full public
+	 * request origin (scheme, host, and effective port) to prevent Cross-Site WebSocket
+	 * Hijacking (CSWSH).
+	 * <p>
+	 * The target origin is resolved from {@link HandshakeRequest#getRequestURI()}, which
+	 * Jetty's {@code ForwardedRequestCustomizer} already normalizes for trusted reverse
+	 * proxies. Unverified {@code X-Forwarded-*} headers are not trusted directly here.
 	 *
 	 * @param request WebSocket handshake request
-	 * @return {@code true} if the origin is absent or matches the request host
+	 * @return {@code true} if the origin is absent or matches the public request origin
 	 */
 	static boolean isValidOrigin(HandshakeRequest request) {
 		if (request == null)
@@ -103,53 +108,79 @@ public class EndpointConfigurator extends ServerEndpointConfig.Configurator {
 		} catch (IllegalArgumentException e) {
 			return false;
 		}
-		String originScheme = originUri.getScheme();
+		String originScheme = normalizeHttpScheme(originUri.getScheme());
 		String originHost = originUri.getHost();
-		if (originHost == null || originHost.isBlank()
-				|| (!"http".equalsIgnoreCase(originScheme) && !"https".equalsIgnoreCase(originScheme))) {
+		int rawOriginPort = originUri.getPort();
+		if (originScheme == null || originHost == null || originHost.isBlank()
+				|| !isValidPort(rawOriginPort)
+				|| originUri.getUserInfo() != null
+				|| (originUri.getRawPath() != null && !originUri.getRawPath().isEmpty())
+				|| originUri.getRawQuery() != null
+				|| originUri.getRawFragment() != null) {
 			return false;
 		}
-		int originPort = effectivePort(originScheme, originUri.getPort());
-
-		String forwardedHost = getFirstHeaderIgnoreCase(headers, "X-Forwarded-Host");
-		if (forwardedHost != null) {
-			int comma = forwardedHost.indexOf(',');
-			if (comma >= 0)
-				forwardedHost = forwardedHost.substring(0, comma).trim();
-			if (matchesAuthority(originHost, originPort, originScheme, forwardedHost, true))
-				return true;
-		}
-
-		String hostHeader = getFirstHeaderIgnoreCase(headers, "Host");
-		if (hostHeader != null && matchesAuthority(originHost, originPort, originScheme, hostHeader, false))
-			return true;
+		int originPort = effectivePort(originScheme, rawOriginPort);
 
 		URI requestUri = request.getRequestURI();
-		if (requestUri != null && requestUri.getHost() != null && !requestUri.getHost().isBlank()) {
-			if (originHost.equalsIgnoreCase(requestUri.getHost())
-					&& effectivePort(requestUri.getScheme(), requestUri.getPort()) == originPort) {
-				return true;
-			}
+		String targetScheme = normalizeRequestScheme(requestUri != null ? requestUri.getScheme() : null);
+		if (targetScheme == null)
+			return false;
+
+		String targetHost = requestUri.getHost();
+		int rawTargetPort = requestUri.getPort();
+		if (targetHost == null || targetHost.isBlank()) {
+			String hostHeader = getFirstHeaderIgnoreCase(headers, "Host");
+			URI hostUri = parseAuthority(targetScheme, hostHeader);
+			if (hostUri == null)
+				return false;
+			targetHost = hostUri.getHost();
+			rawTargetPort = hostUri.getPort();
 		}
-		return false;
+		if (!isValidPort(rawTargetPort))
+			return false;
+
+		return originScheme.equals(targetScheme)
+				&& originHost.equalsIgnoreCase(targetHost)
+				&& originPort == effectivePort(targetScheme, rawTargetPort);
 	}
 
-	private static boolean matchesAuthority(String originHost, int originPort, String originScheme,
-			String authority, boolean allowMissingPort) {
-		if (authority == null || authority.isBlank())
-			return false;
+	private static String normalizeHttpScheme(String scheme) {
+		if ("http".equalsIgnoreCase(scheme))
+			return "http";
+		if ("https".equalsIgnoreCase(scheme))
+			return "https";
+		return null;
+	}
+
+	private static String normalizeRequestScheme(String scheme) {
+		if ("http".equalsIgnoreCase(scheme) || "ws".equalsIgnoreCase(scheme))
+			return "http";
+		if ("https".equalsIgnoreCase(scheme) || "wss".equalsIgnoreCase(scheme))
+			return "https";
+		return null;
+	}
+
+	private static URI parseAuthority(String scheme, String authority) {
+		if (scheme == null || authority == null || authority.isBlank())
+			return null;
 		try {
-			URI expected = URI.create(originScheme + "://" + authority);
-			if (expected.getHost() == null || !originHost.equalsIgnoreCase(expected.getHost()))
-				return false;
-			int expectedPort = expected.getPort();
-			if (expectedPort == -1) {
-				return allowMissingPort || effectivePort(originScheme, -1) == originPort;
+			URI uri = URI.create(scheme + "://" + authority);
+			if (uri.getHost() == null || uri.getHost().isBlank()
+					|| !isValidPort(uri.getPort())
+					|| uri.getUserInfo() != null
+					|| (uri.getRawPath() != null && !uri.getRawPath().isEmpty())
+					|| uri.getRawQuery() != null
+					|| uri.getRawFragment() != null) {
+				return null;
 			}
-			return expectedPort == originPort;
+			return uri;
 		} catch (IllegalArgumentException e) {
-			return false;
+			return null;
 		}
+	}
+
+	private static boolean isValidPort(int port) {
+		return port == -1 || (port > 0 && port <= 65535);
 	}
 
 	private static int effectivePort(String scheme, int port) {
