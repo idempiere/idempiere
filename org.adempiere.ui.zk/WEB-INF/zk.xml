@@ -140,4 +140,8 @@
     	<name>org.zkoss.zul.Filedownload.contentTypeAsIs</name>
     	<value>true</value>
     </library-property>
+    <library-property>
+        <name>org.zkoss.zk.moment.timezone.path</name>
+        <value>/data/2026f.json</value>
+    </library-property>
 </zk>
