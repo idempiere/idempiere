@@ -25,6 +25,7 @@
 package org.idempiere.ui.zk.websocket;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -39,6 +40,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
@@ -64,6 +67,7 @@ import javax.websocket.server.HandshakeRequest;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
+import org.apache.hc.client5.http.ConnectTimeoutException;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.cookie.BasicCookieStore;
@@ -114,6 +118,8 @@ public class ServerPushEndPoint {
 			Integer.getInteger("org.idempiere.ui.zk.websocket.maxTextMessageSize", 4 * 1024 * 1024));
 	private static final long MAX_IDLE_TIMEOUT_MS = Math.max(30_000L,
 			Long.getLong("org.idempiere.ui.zk.websocket.maxIdleTimeout", 90_000L));
+	private static final long RESPONSE_TIMEOUT_MS = Math.max(10_000L,
+			Long.getLong("org.idempiere.ui.zk.websocket.responseTimeout", 600_000L));
 
 	/** Allowlist of handshake headers safe to forward to the internal /zkau servlet. */
 	private static final Set<String> ALLOWED_FORWARD_HEADERS = Set.of(
@@ -126,11 +132,15 @@ public class ServerPushEndPoint {
 			"x-forwarded-host"
 	);
 
-	private static final RequestConfig AU_REQUEST_CONFIG = RequestConfig.custom()
-			.setConnectTimeout(Timeout.ofSeconds(10))
-			.setConnectionRequestTimeout(Timeout.ofSeconds(30))
-			.setResponseTimeout(Timeout.ofSeconds(0))
-			.build();
+	private static final RequestConfig AU_REQUEST_CONFIG = createRequestConfig(RESPONSE_TIMEOUT_MS);
+
+	private static RequestConfig createRequestConfig(long responseTimeoutMs) {
+		return RequestConfig.custom()
+				.setConnectTimeout(Timeout.ofSeconds(10))
+				.setConnectionRequestTimeout(Timeout.ofSeconds(30))
+				.setResponseTimeout(Timeout.ofMilliseconds(responseTimeoutMs))
+				.build();
+	}
 
 	private static final Object SHARED_RESOURCE_LOCK = new Object();
 	private static volatile ExecutorService executorService;
@@ -150,11 +160,109 @@ public class ServerPushEndPoint {
 	private volatile String lastSessionId;
 	private final AtomicInteger pendingRequests = new AtomicInteger(0);
 	private volatile boolean closeRequested = false;
+	private RequestConfig auRequestConfig = AU_REQUEST_CONFIG;
+	private Executor auExecutor;
 
 	/**
 	 * default constructor
 	 */
 	public ServerPushEndPoint() {
+	}
+
+	/**
+	 * Queue that prefers scaling worker threads up to {@code maximumPoolSize} when all active
+	 * workers are busy, falling back to bounded queueing once the maximum pool size is reached.
+	 */
+	private static final class ScalingTaskQueue extends LinkedBlockingQueue<Runnable> {
+		private static final long serialVersionUID = 1L;
+		private volatile ScalingThreadPoolExecutor executor;
+
+		ScalingTaskQueue(int capacity) {
+			super(capacity);
+		}
+
+		void setExecutor(ScalingThreadPoolExecutor executor) {
+			this.executor = executor;
+		}
+
+		@Override
+		public boolean offer(Runnable o) {
+			ScalingThreadPoolExecutor exec = this.executor;
+			if (exec == null) {
+				return super.offer(o);
+			}
+			int currentPoolSize = exec.getPoolSize();
+			if (currentPoolSize < exec.getMaximumPoolSize() && exec.getSubmittedCount() > currentPoolSize) {
+				return false;
+			}
+			return super.offer(o);
+		}
+
+		boolean forceOffer(Runnable o) {
+			return super.offer(o);
+		}
+	}
+
+	private static final class ScalingThreadPoolExecutor extends ThreadPoolExecutor {
+		private final AtomicInteger submittedCount = new AtomicInteger(0);
+
+		ScalingThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime,
+				TimeUnit unit, ScalingTaskQueue workQueue, ThreadFactory threadFactory) {
+			super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory,
+					(r, e) -> {
+						if (!e.isShutdown() && workQueue.forceOffer(r)) {
+							if (e.isShutdown() && workQueue.remove(r)) {
+								throw new RejectedExecutionException("WebSocket AU executor is shut down");
+							}
+							if (e.getPoolSize() == 0) {
+								e.prestartCoreThread();
+							}
+							return;
+						}
+						throw new RejectedExecutionException("WebSocket AU worker queue full");
+					});
+			workQueue.setExecutor(this);
+		}
+
+		int getSubmittedCount() {
+			return submittedCount.get();
+		}
+
+		@Override
+		public void execute(Runnable command) {
+			Objects.requireNonNull(command);
+			submittedCount.incrementAndGet();
+			try {
+				super.execute(command);
+			} catch (RuntimeException | Error e) {
+				submittedCount.decrementAndGet();
+				throw e;
+			}
+		}
+
+		@Override
+		protected void afterExecute(Runnable r, Throwable t) {
+			submittedCount.decrementAndGet();
+			super.afterExecute(r, t);
+		}
+	}
+
+	private static ThreadPoolExecutor createExecutorService(int coreThreads, int maxThreads) {
+		ThreadFactory factory = r -> {
+			Thread t = new Thread(r, "ws-au-worker-" + WORKER_THREAD_COUNTER.incrementAndGet());
+			t.setDaemon(true);
+			return t;
+		};
+		ScalingTaskQueue queue = new ScalingTaskQueue(1000);
+		ScalingThreadPoolExecutor pool = new ScalingThreadPoolExecutor(
+				coreThreads,
+				maxThreads,
+				60L,
+				TimeUnit.SECONDS,
+				queue,
+				factory);
+		pool.allowCoreThreadTimeOut(true);
+		return pool;
 	}
 
 	private static ExecutorService getExecutorService() {
@@ -165,25 +273,26 @@ public class ServerPushEndPoint {
 				if (current == null || current.isShutdown()) {
 					int coreThreads = Math.min(MAX_THREADS,
 							Math.max(8, Runtime.getRuntime().availableProcessors() * 2));
-					ThreadFactory factory = r -> {
-						Thread t = new Thread(r, "ws-au-worker-" + WORKER_THREAD_COUNTER.incrementAndGet());
-						t.setDaemon(true);
-						return t;
-					};
-					ThreadPoolExecutor pool = new ThreadPoolExecutor(
-							coreThreads,
-							MAX_THREADS,
-							60L,
-							TimeUnit.SECONDS,
-							new LinkedBlockingQueue<>(1000),
-							factory);
-					pool.allowCoreThreadTimeOut(true);
+					ThreadPoolExecutor pool = createExecutorService(coreThreads, MAX_THREADS);
 					executorService = pool;
 					current = pool;
 				}
 			}
 		}
 		return current;
+	}
+
+	private Executor getAuExecutor() {
+		Executor override = this.auExecutor;
+		return override != null ? override : getExecutorService();
+	}
+
+	private void releasePendingSlot(AtomicBoolean slotReleased) {
+		if (slotReleased.compareAndSet(false, true)) {
+			if (pendingRequests.decrementAndGet() == 0 && closeRequested) {
+				closeNow();
+			}
+		}
 	}
 
 	private static CloseableHttpClient getHttpClient() {
@@ -203,6 +312,7 @@ public class ServerPushEndPoint {
 
 					current = HttpClients.custom()
 							.setConnectionManager(connectionManager)
+							.disableAutomaticRetries()
 							.disableCookieManagement()
 							.disableRedirectHandling()
 							.disableContentCompression()
@@ -420,7 +530,15 @@ public class ServerPushEndPoint {
 		}
 
 		this.session = sess;
-		WebSocketServerPush.registerEndPoint(dtid, this);
+		if (!WebSocketServerPush.registerEndPointIfValid(dtid, handshakeHttpSession, this)) {
+			this.session = null;
+			log.warning("Rejecting WebSocket server push connection for stopped desktop");
+			try {
+				sess.close(new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY, "Unauthorized WebSocket connection"));
+			} catch (IOException | IllegalStateException e) {
+				log.log(Level.FINE, "Error closing rejected WebSocket session", e);
+			}
+		}
 	}
 
 	private static String resolveSessionCookieName(ServletContext servletContext) {
@@ -595,6 +713,7 @@ public class ServerPushEndPoint {
 				}
 				String sessionId;
 		        try {
+					httpSession.getLastAccessedTime(); // throws IllegalStateException when the session is invalidated
 					sessionId = httpSession.getId();
 				} catch (IllegalStateException e) {
 					log.log(Level.WARNING, "HTTP Session already invalidated", e);
@@ -622,6 +741,7 @@ public class ServerPushEndPoint {
 		        	return;
 		        }
 
+		        final AtomicBoolean slotReleased = new AtomicBoolean(false);
 		        synchronized (chainLock) {
 			        try {
 				        // Create POST request with the AU content in the body instead of the URL.
@@ -639,7 +759,7 @@ public class ServerPushEndPoint {
 				        		httpPost.addHeader(key, value);
 				        	}
 				        });
-				        httpPost.setConfig(AU_REQUEST_CONFIG);
+				        httpPost.setConfig(auRequestConfig);
 		
 				        // Execute request asynchronously in order
 				        executionChain = executionChain.thenRunAsync(() -> {
@@ -706,27 +826,68 @@ public class ServerPushEndPoint {
 				        				sendText(session, errorResponse(500, "Error: No response from /zkau", sid));
 				        			}
 				        		}
+				        	} catch (SocketTimeoutException e) {
+				        		if (e instanceof ConnectTimeoutException) {
+				        			log.log(Level.WARNING, "Timed out connecting to /zkau for desktop " + this.dtid + " (sid=" + sid + ")", e);
+				        			sendText(session, errorResponse(504, "Error: Timed out connecting to /zkau", sid));
+				        		} else {
+				        			log.log(Level.WARNING, "Timed out waiting for /zkau response for desktop " + this.dtid
+				        					+ " (sid=" + sid + "); server-side execution outcome is unknown", e);
+				        			sendText(session, errorResponse(504,
+				        					"Error: Timed out waiting for /zkau response (execution outcome unknown)", sid));
+				        		}
 				        	} catch (Throwable e) {
 				        		log.log(Level.WARNING, "Error processing /zkau request", e);
 				        		sendText(session, errorResponse(500, "Error processing /zkau request", sid));
 				        	} finally {
-				        		if (pendingRequests.decrementAndGet() == 0 && closeRequested) {
-				        			closeNow();
+				        		releasePendingSlot(slotReleased);
+				        	}
+				        }, getAuExecutor()).handle((ignored, ex) -> {
+				        	if (ex != null && slotReleased.compareAndSet(false, true)) {
+				        		try {
+				        			Throwable cause = (ex instanceof CompletionException && ex.getCause() != null)
+				        					? ex.getCause() : ex;
+				        			if (cause instanceof RejectedExecutionException) {
+				        				log.log(Level.WARNING, "WebSocket AU worker pool saturated", cause);
+				        				if (session == this.session && !closeRequested) {
+				        					sendText(session, errorResponse(503, "Error: Server busy", sid));
+				        				}
+				        			} else {
+				        				log.log(Level.WARNING, "Error processing /zkau request", cause);
+				        				if (session == this.session && !closeRequested) {
+				        					sendText(session, errorResponse(500, "Error processing /zkau request", sid));
+				        				}
+				        			}
+				        		} catch (Throwable t) {
+				        			log.log(Level.WARNING, "Error handling WebSocket AU failure", t);
+				        		} finally {
+				        			if (pendingRequests.decrementAndGet() == 0 && closeRequested) {
+				        				closeNow();
+				        			}
 				        		}
 				        	}
-				        }, getExecutorService());
+				        	return null;
+				        });
 			        } catch (RejectedExecutionException e) {
-			        	if (pendingRequests.decrementAndGet() == 0 && closeRequested) {
-			        		closeNow();
+			        	if (slotReleased.compareAndSet(false, true)) {
+			        		if (pendingRequests.decrementAndGet() == 0 && closeRequested) {
+			        			closeNow();
+			        		}
+			        		log.log(Level.WARNING, "WebSocket AU worker pool saturated", e);
+			        		if (session == this.session && !closeRequested) {
+			        			sendText(session, errorResponse(503, "Error: Server busy", sid));
+			        		}
 			        	}
-			        	log.log(Level.WARNING, "WebSocket AU worker pool saturated", e);
-			        	sendText(session, errorResponse(503, "Error: Server busy", sid));
 			        } catch (Throwable e) {
-			        	if (pendingRequests.decrementAndGet() == 0 && closeRequested) {
-			        		closeNow();
+			        	if (slotReleased.compareAndSet(false, true)) {
+			        		if (pendingRequests.decrementAndGet() == 0 && closeRequested) {
+			        			closeNow();
+			        		}
+			        		log.log(Level.WARNING, "Error processing /zkau request", e);
+			        		if (session == this.session && !closeRequested) {
+			        			sendText(session, errorResponse(500, "Error processing /zkau request", sid));
+			        		}
 			        	}
-			        	log.log(Level.WARNING, "Error processing /zkau request", e);
-			        	sendText(session, errorResponse(500, "Error processing /zkau request", sid));
 			        }
 		        }
 			}

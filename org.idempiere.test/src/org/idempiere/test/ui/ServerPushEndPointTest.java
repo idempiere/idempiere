@@ -38,7 +38,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.servlet.ServletContext;
@@ -626,7 +632,8 @@ public class ServerPushEndPointTest {
 		when(wsSession.isOpen()).thenReturn(true);
 
 		HttpSession invalidatedSession = mock(HttpSession.class);
-		when(invalidatedSession.getId()).thenThrow(new IllegalStateException("Session invalidated"));
+		when(invalidatedSession.getId()).thenReturn("DEAD-SESSION-ID");
+		when(invalidatedSession.getLastAccessedTime()).thenThrow(new IllegalStateException("Session invalidated"));
 
 		setField(endpoint, "session", wsSession);
 		setField(endpoint, "dtid", dtid);
@@ -841,6 +848,446 @@ public class ServerPushEndPointTest {
 				assertTrue(String.valueOf(jsonResponse.get("responseText")).contains("index.zul"),
 						"Expected redirect to index.zul in responseText, got: " + jsonResponse.get("responseText"));
 			} finally {
+				WebSocketServerPush.unregisterEndPoint(dtid);
+			}
+		}
+	}
+
+	@Test
+	void defaultAuRequestConfigUsesFiniteResponseTimeout() throws Exception {
+		Field configField = ServerPushEndPoint.class.getDeclaredField("AU_REQUEST_CONFIG");
+		configField.setAccessible(true);
+		Object config = configField.get(null);
+		assertNotNull(config);
+
+		Object timeout = config.getClass().getMethod("getResponseTimeout").invoke(config);
+		assertNotNull(timeout, "AU_REQUEST_CONFIG must define a finite response timeout");
+		long timeoutMs = (Long) timeout.getClass().getMethod("toMilliseconds").invoke(timeout);
+		assertTrue(timeoutMs >= 10_000L, "Response timeout must be finite and positive, got: " + timeoutMs);
+	}
+
+	@Test
+	void stalledAuRequestTimesOutWith504AndDoesNotRetry() throws Exception {
+		String dtid = "dt-stalled-au";
+		CountDownLatch requestReceived = new CountDownLatch(1);
+		CountDownLatch releaseServer = new CountDownLatch(1);
+		CountDownLatch responseSent = new CountDownLatch(1);
+		AtomicInteger requestCount = new AtomicInteger(0);
+		AtomicReference<String> sentPayload = new AtomicReference<>();
+
+		try (ServerSocket serverSocket = new ServerSocket(0, 5, InetAddress.getLoopbackAddress())) {
+			int port = serverSocket.getLocalPort();
+			Thread serverThread = new Thread(() -> {
+				while (!serverSocket.isClosed() && releaseServer.getCount() > 0) {
+					try (Socket client = serverSocket.accept()) {
+						requestCount.incrementAndGet();
+						BufferedReader reader = new BufferedReader(
+								new InputStreamReader(client.getInputStream(), StandardCharsets.UTF_8));
+						reader.readLine();
+						int contentLength = 0;
+						String line;
+						while ((line = reader.readLine()) != null && !line.isEmpty()) {
+							int idx = line.indexOf(':');
+							if (idx > 0 && "content-length".equalsIgnoreCase(line.substring(0, idx).trim())) {
+								contentLength = Integer.parseInt(line.substring(idx + 1).trim());
+							}
+						}
+						if (contentLength > 0) {
+							char[] bodyBuf = new char[contentLength];
+							int read = 0;
+							while (read < contentLength) {
+								int n = reader.read(bodyBuf, read, contentLength - read);
+								if (n < 0) break;
+								read += n;
+							}
+						}
+						requestReceived.countDown();
+						// Stall without writing a response until the test finishes.
+						releaseServer.await(5, TimeUnit.SECONDS);
+					} catch (Exception ignored) {
+					}
+				}
+			}, "ws-test-stalled-server");
+			serverThread.setDaemon(true);
+			serverThread.start();
+
+			ServerPushEndPoint endpoint = new ServerPushEndPoint();
+			java.lang.reflect.Method createConfig = ServerPushEndPoint.class.getDeclaredMethod("createRequestConfig", long.class);
+			createConfig.setAccessible(true);
+			setField(endpoint, "auRequestConfig", createConfig.invoke(null, 300L));
+
+			RemoteEndpoint.Basic basic = mock(RemoteEndpoint.Basic.class);
+			org.mockito.Mockito.doAnswer(inv -> {
+				sentPayload.set(inv.getArgument(0));
+				responseSent.countDown();
+				return null;
+			}).when(basic).sendText(any());
+
+			Session wsSession = mock(Session.class);
+			when(wsSession.getBasicRemote()).thenReturn(basic);
+
+			HttpSession httpSession = mock(HttpSession.class);
+			when(httpSession.getId()).thenReturn("SESS-STALL");
+
+			setField(endpoint, "session", wsSession);
+			setField(endpoint, "dtid", dtid);
+			setField(endpoint, "httpSession", httpSession);
+			setField(endpoint, "internalBaseUri", URI.create("http://127.0.0.1:" + port));
+			setField(endpoint, "contextPath", "/webui");
+			WebSocketServerPush.registerEndPoint(dtid, endpoint);
+
+			try {
+				JSONObject auReq = new JSONObject();
+				auReq.put("sid", "88");
+				auReq.put("dt", dtid);
+				auReq.put("uri", "/webui/zkau");
+				auReq.put("content", "dtid=" + dtid + "&cmd_0=onClick");
+				endpoint.onMessage(wsSession, "zkau;" + auReq.toString());
+
+				assertTrue(requestReceived.await(3, TimeUnit.SECONDS), "Stalled server must receive AU POST");
+				assertTrue(responseSent.await(3, TimeUnit.SECONDS), "Stalled AU must time out instead of hanging indefinitely");
+
+				JSONObject jsonResponse = (JSONObject) new JSONParser().parse(sentPayload.get());
+				assertEquals(504, jsonResponse.get("status"), "Timed-out AU should return 504 (non-auto-retried) status");
+				assertEquals("88", jsonResponse.get("sid"));
+				assertTrue(String.valueOf(jsonResponse.get("statusText")).contains("unknown"),
+						"Timeout status text should indicate unknown execution outcome: " + jsonResponse.get("statusText"));
+				assertEquals(1, requestCount.get(), "Timed-out POST must not be automatically retried");
+
+				Field pendingField = ServerPushEndPoint.class.getDeclaredField("pendingRequests");
+				pendingField.setAccessible(true);
+				AtomicInteger pending = (AtomicInteger) pendingField.get(endpoint);
+				long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(2);
+				while (pending.get() != 0 && System.nanoTime() < deadline) {
+					Thread.sleep(10);
+				}
+				assertEquals(0, pending.get(), "Pending request counter must be released after timeout");
+			} finally {
+				releaseServer.countDown();
+				serverSocket.close();
+				serverThread.join(2000);
+				WebSocketServerPush.unregisterEndPoint(dtid);
+			}
+		}
+	}
+
+	@Test
+	void executorScalesBeyondCoreThreadsWhenCoreWorkersAreBlocked() throws Exception {
+		java.lang.reflect.Method createExec = ServerPushEndPoint.class.getDeclaredMethod("createExecutorService", int.class, int.class);
+		createExec.setAccessible(true);
+		ThreadPoolExecutor pool = (ThreadPoolExecutor) createExec.invoke(null, 2, 6);
+
+		CountDownLatch coreWorkersStarted = new CountDownLatch(2);
+		CountDownLatch releaseCoreWorkers = new CountDownLatch(1);
+		CountDownLatch thirdTaskCompleted = new CountDownLatch(1);
+
+		try {
+			for (int i = 0; i < 2; i++) {
+				pool.execute(() -> {
+					coreWorkersStarted.countDown();
+					try {
+						releaseCoreWorkers.await(5, TimeUnit.SECONDS);
+					} catch (InterruptedException e) {
+						Thread.currentThread().interrupt();
+					}
+				});
+			}
+			assertTrue(coreWorkersStarted.await(3, TimeUnit.SECONDS), "Core workers should start immediately");
+
+			pool.execute(thirdTaskCompleted::countDown);
+
+			assertTrue(thirdTaskCompleted.await(2, TimeUnit.SECONDS),
+					"Executor must spawn a worker above coreThreads instead of queueing behind blocked core workers");
+			assertTrue(pool.getPoolSize() >= 3, "Pool should have scaled above coreThreads (2), got: " + pool.getPoolSize());
+		} finally {
+			releaseCoreWorkers.countDown();
+			pool.shutdownNow();
+		}
+	}
+
+	@Test
+	void ownedDesktopCanReconnectAfterIdleDisconnectWithoutHttpPiggyback() throws Exception {
+		String dtid = "dt-idle-reconnect";
+		Map<String, Object> sessionAttrs = new HashMap<>();
+
+		org.zkoss.zk.ui.Session zkSession = mock(org.zkoss.zk.ui.Session.class);
+		org.mockito.Mockito.doAnswer(inv -> {
+			sessionAttrs.put(inv.getArgument(0), inv.getArgument(1));
+			return null;
+		}).when(zkSession).setAttribute(any(), any());
+		when(zkSession.getAttribute(any())).thenAnswer(inv -> sessionAttrs.get(inv.getArgument(0)));
+		when(zkSession.removeAttribute(any())).thenAnswer(inv -> sessionAttrs.remove(inv.getArgument(0)));
+
+		HttpSession httpSession = mock(HttpSession.class);
+		when(httpSession.getAttribute(any())).thenAnswer(inv -> sessionAttrs.get(inv.getArgument(0)));
+
+		org.zkoss.zk.ui.Desktop desktop = mock(org.zkoss.zk.ui.Desktop.class);
+		when(desktop.getId()).thenReturn(dtid);
+		when(desktop.getSession()).thenReturn(zkSession);
+
+		WebSocketServerPush spush = new WebSocketServerPush();
+		try {
+			org.zkoss.zk.ui.Execution mockExec = mock(org.zkoss.zk.ui.Execution.class);
+			try (org.mockito.MockedStatic<org.zkoss.zk.ui.Executions> executions =
+					org.mockito.Mockito.mockStatic(org.zkoss.zk.ui.Executions.class)) {
+				executions.when(org.zkoss.zk.ui.Executions::getCurrent).thenReturn(mockExec);
+				spush.start(desktop);
+			}
+			assertEquals(Boolean.TRUE, sessionAttrs.get("ws-desktop-owner." + dtid),
+					"start() must record desktop ownership on the session");
+			assertTrue(WebSocketServerPush.isValidDesktopId(dtid, httpSession));
+
+			Map<String, Object> userProps = new HashMap<>();
+			userProps.put(HttpSession.class.getName(), httpSession);
+			userProps.put("ws-origin-valid", Boolean.TRUE);
+			EndpointConfig config = mock(EndpointConfig.class);
+			when(config.getUserProperties()).thenReturn(userProps);
+
+			// 1. Initial WebSocket connection opens and registers.
+			Session wsSession1 = mock(Session.class);
+			ServerPushEndPoint endpoint1 = new ServerPushEndPoint();
+			endpoint1.onOpen(wsSession1, config, dtid);
+			verify(wsSession1, never()).close(any(CloseReason.class));
+			assertSame(endpoint1, WebSocketServerPush.getEndPoint(dtid));
+
+			// 2. Idle socket disconnects and invokes onClose.
+			endpoint1.onClose(wsSession1);
+			assertNull(WebSocketServerPush.getEndPoint(dtid), "Disconnected socket must be removed from live endpoint map");
+			assertEquals(Boolean.TRUE, sessionAttrs.get("ws-desktop-owner." + dtid),
+					"Session ownership must be preserved across socket disconnects");
+			assertTrue(WebSocketServerPush.isValidDesktopId(dtid, httpSession),
+					"Active owned desktop must remain valid for reconnect after socket close");
+
+			// 3. Browser reconnects directly without any intervening HTTP piggyback.
+			Session wsSession2 = mock(Session.class);
+			when(wsSession2.isOpen()).thenReturn(true);
+			ServerPushEndPoint endpoint2 = new ServerPushEndPoint();
+			endpoint2.onOpen(wsSession2, config, dtid);
+			verify(wsSession2, never()).close(any(CloseReason.class));
+			assertSame(endpoint2, WebSocketServerPush.getEndPoint(dtid),
+					"Reconnected endpoint must be accepted and registered");
+
+			// 4. Stopping server push revokes desktop registration and session ownership.
+			spush.stop();
+			assertNull(sessionAttrs.get("ws-desktop-owner." + dtid),
+					"stop() must revoke desktop ownership from the session");
+			assertFalse(WebSocketServerPush.isValidDesktopId(dtid));
+			assertFalse(WebSocketServerPush.isValidDesktopId(dtid, httpSession));
+			assertNull(WebSocketServerPush.getEndPoint(dtid));
+
+			// 5. Reconnect after stop() must be rejected with VIOLATED_POLICY (1008).
+			Session wsSession3 = mock(Session.class);
+			new ServerPushEndPoint().onOpen(wsSession3, config, dtid);
+			ArgumentCaptor<CloseReason> closeReason = ArgumentCaptor.forClass(CloseReason.class);
+			verify(wsSession3).close(closeReason.capture());
+			assertEquals(CloseReason.CloseCodes.VIOLATED_POLICY, closeReason.getValue().getCloseCode());
+		} finally {
+			spush.stop();
+		}
+	}
+
+	@Test
+	void onOpenRejectsRegistrationWhenStopRacesBetweenValidationAndRegister() throws Exception {
+		String dtid = "dt-open-stop-race";
+		Map<String, Object> sessionAttrs = new HashMap<>();
+
+		org.zkoss.zk.ui.Session zkSession = mock(org.zkoss.zk.ui.Session.class);
+		org.mockito.Mockito.doAnswer(inv -> {
+			sessionAttrs.put(inv.getArgument(0), inv.getArgument(1));
+			return null;
+		}).when(zkSession).setAttribute(any(), any());
+		when(zkSession.getAttribute(any())).thenAnswer(inv -> sessionAttrs.get(inv.getArgument(0)));
+		when(zkSession.removeAttribute(any())).thenAnswer(inv -> sessionAttrs.remove(inv.getArgument(0)));
+
+		HttpSession httpSession = mock(HttpSession.class);
+		when(httpSession.getAttribute(any())).thenAnswer(inv -> sessionAttrs.get(inv.getArgument(0)));
+
+		org.zkoss.zk.ui.Desktop desktop = mock(org.zkoss.zk.ui.Desktop.class);
+		when(desktop.getId()).thenReturn(dtid);
+		when(desktop.getSession()).thenReturn(zkSession);
+
+		WebSocketServerPush spush = new WebSocketServerPush();
+		try {
+			org.zkoss.zk.ui.Execution mockExec = mock(org.zkoss.zk.ui.Execution.class);
+			try (org.mockito.MockedStatic<org.zkoss.zk.ui.Executions> executions =
+					org.mockito.Mockito.mockStatic(org.zkoss.zk.ui.Executions.class)) {
+				executions.when(org.zkoss.zk.ui.Executions::getCurrent).thenReturn(mockExec);
+				spush.start(desktop);
+			}
+
+			Map<String, Object> userProps = new HashMap<>();
+			userProps.put(HttpSession.class.getName(), httpSession);
+			userProps.put("ws-origin-valid", Boolean.TRUE);
+			EndpointConfig config = mock(EndpointConfig.class);
+			when(config.getUserProperties()).thenReturn(userProps);
+
+			Session wsSession = mock(Session.class);
+			// Trigger stop() right after onOpen's initial isValidDesktopId check and before registration.
+			org.mockito.Mockito.doAnswer(inv -> {
+				spush.stop();
+				return null;
+			}).when(wsSession).setMaxTextMessageBufferSize(org.mockito.ArgumentMatchers.anyInt());
+
+			ServerPushEndPoint endpoint = new ServerPushEndPoint();
+			endpoint.onOpen(wsSession, config, dtid);
+
+			ArgumentCaptor<CloseReason> closeReason = ArgumentCaptor.forClass(CloseReason.class);
+			verify(wsSession).close(closeReason.capture());
+			assertEquals(CloseReason.CloseCodes.VIOLATED_POLICY, closeReason.getValue().getCloseCode());
+			assertNull(WebSocketServerPush.getEndPoint(dtid), "Stopped desktop must not retain a registered endpoint");
+			assertFalse(WebSocketServerPush.isValidDesktopId(dtid), "Stopped desktop must remain unregistered");
+
+			Field sessionField = ServerPushEndPoint.class.getDeclaredField("session");
+			sessionField.setAccessible(true);
+			assertNull(sessionField.get(endpoint), "Rejected endpoint must clear its session reference");
+		} finally {
+			spush.stop();
+		}
+	}
+
+	@Test
+	void executorRejectionSends503ReleasesPendingSlotAndRecoversExecutionChain() throws Exception {
+		String dtid = "dt-exec-reject";
+		List<String> sentPayloads = java.util.Collections.synchronizedList(new java.util.ArrayList<>());
+		CountDownLatch firstResponse = new CountDownLatch(1);
+		CountDownLatch allFourResponses = new CountDownLatch(4);
+		CountDownLatch req2EnteredServer = new CountDownLatch(1);
+		CountDownLatch releaseReq2 = new CountDownLatch(1);
+		AtomicInteger submitAttempt = new AtomicInteger(0);
+		ExecutorService backingPool = Executors.newFixedThreadPool(2);
+
+		try (ServerSocket serverSocket = new ServerSocket(0, 5, InetAddress.getLoopbackAddress())) {
+			int port = serverSocket.getLocalPort();
+			Thread serverThread = new Thread(() -> {
+				for (int i = 0; i < 2; i++) {
+					final int reqIdx = i;
+					try (Socket client = serverSocket.accept()) {
+						BufferedReader reader = new BufferedReader(
+								new InputStreamReader(client.getInputStream(), StandardCharsets.UTF_8));
+						reader.readLine();
+						int contentLength = 0;
+						String sidHeader = "0";
+						String line;
+						while ((line = reader.readLine()) != null && !line.isEmpty()) {
+							int idx = line.indexOf(':');
+							if (idx > 0) {
+								String name = line.substring(0, idx).trim();
+								String val = line.substring(idx + 1).trim();
+								if ("content-length".equalsIgnoreCase(name)) {
+									contentLength = Integer.parseInt(val);
+								} else if ("zk-sid".equalsIgnoreCase(name)) {
+									sidHeader = val;
+								}
+							}
+						}
+						if (contentLength > 0) {
+							char[] bodyBuf = new char[contentLength];
+							int read = 0;
+							while (read < contentLength) {
+								int n = reader.read(bodyBuf, read, contentLength - read);
+								if (n < 0) break;
+								read += n;
+							}
+						}
+						if (reqIdx == 0) {
+							req2EnteredServer.countDown();
+							releaseReq2.await(5, TimeUnit.SECONDS);
+						}
+						String body = "{\"rs\":[],\"rid\":" + sidHeader + "}";
+						String httpResp = "HTTP/1.1 200 OK\r\n"
+								+ "Content-Type: application/json;charset=UTF-8\r\n"
+								+ "ZK-SID: " + sidHeader + "\r\n"
+								+ "Content-Length: " + body.getBytes(StandardCharsets.UTF_8).length + "\r\n"
+								+ "Connection: close\r\n\r\n"
+								+ body;
+						OutputStream out = client.getOutputStream();
+						out.write(httpResp.getBytes(StandardCharsets.UTF_8));
+						out.flush();
+					} catch (Exception ignored) {
+					}
+				}
+			}, "ws-test-reject-recovery-server");
+			serverThread.setDaemon(true);
+			serverThread.start();
+
+			// Reject attempt 1 (completed tail -> uniRunNow) and attempt 3 (in-flight tail -> UniRun.tryFire),
+			// allow attempts 2 and 4 to run on the backing pool.
+			Executor flakyExecutor = command -> {
+				int attempt = submitAttempt.incrementAndGet();
+				if (attempt == 1 || attempt == 3) {
+					throw new RejectedExecutionException("Simulated pool saturation on attempt " + attempt);
+				}
+				backingPool.execute(command);
+			};
+
+			ServerPushEndPoint endpoint = new ServerPushEndPoint();
+			setField(endpoint, "auExecutor", flakyExecutor);
+
+			RemoteEndpoint.Basic basic = mock(RemoteEndpoint.Basic.class);
+			org.mockito.Mockito.doAnswer(inv -> {
+				sentPayloads.add(inv.getArgument(0));
+				firstResponse.countDown();
+				allFourResponses.countDown();
+				return null;
+			}).when(basic).sendText(any());
+
+			Session wsSession = mock(Session.class);
+			when(wsSession.getBasicRemote()).thenReturn(basic);
+
+			HttpSession httpSession = mock(HttpSession.class);
+			when(httpSession.getId()).thenReturn("SESS-REJECT");
+
+			setField(endpoint, "session", wsSession);
+			setField(endpoint, "dtid", dtid);
+			setField(endpoint, "httpSession", httpSession);
+			setField(endpoint, "internalBaseUri", URI.create("http://127.0.0.1:" + port));
+			setField(endpoint, "contextPath", "/webui");
+			WebSocketServerPush.registerEndPoint(dtid, endpoint);
+
+			try {
+				// Request 1: rejected immediately on completed tail (uniRunNow path).
+				endpoint.onMessage(wsSession, "zkau;{\"sid\":\"1\",\"dt\":\"" + dtid + "\",\"uri\":\"/webui/zkau\",\"content\":\"cmd_0=a\"}");
+				assertTrue(firstResponse.await(3, TimeUnit.SECONDS), "Rejected request must still send 503 response");
+
+				// Request 2: must run after tail recovery; pause it in server so Requests 3 & 4 queue behind an in-flight tail.
+				endpoint.onMessage(wsSession, "zkau;{\"sid\":\"2\",\"dt\":\"" + dtid + "\",\"uri\":\"/webui/zkau\",\"content\":\"cmd_0=b\"}");
+				assertTrue(req2EnteredServer.await(3, TimeUnit.SECONDS), "Request 2 must execute after Request 1 rejection");
+
+				// Request 3 (will be rejected via UniRun.tryFire when Request 2 completes) & Request 4 (must recover and succeed).
+				endpoint.onMessage(wsSession, "zkau;{\"sid\":\"3\",\"dt\":\"" + dtid + "\",\"uri\":\"/webui/zkau\",\"content\":\"cmd_0=c\"}");
+				endpoint.onMessage(wsSession, "zkau;{\"sid\":\"4\",\"dt\":\"" + dtid + "\",\"uri\":\"/webui/zkau\",\"content\":\"cmd_0=d\"}");
+				releaseReq2.countDown();
+
+				assertTrue(allFourResponses.await(5, TimeUnit.SECONDS), "All 4 requests must receive responses in order");
+				serverThread.join(2000);
+
+				assertEquals(4, sentPayloads.size());
+				JSONParser parser = new JSONParser();
+				JSONObject r1 = (JSONObject) parser.parse(sentPayloads.get(0));
+				JSONObject r2 = (JSONObject) parser.parse(sentPayloads.get(1));
+				JSONObject r3 = (JSONObject) parser.parse(sentPayloads.get(2));
+				JSONObject r4 = (JSONObject) parser.parse(sentPayloads.get(3));
+
+				assertEquals(503, r1.get("status"));
+				assertEquals("1", r1.get("sid"));
+				assertEquals(200, r2.get("status"));
+				assertEquals("2", r2.get("sid"));
+				assertEquals(503, r3.get("status"));
+				assertEquals("3", r3.get("sid"));
+				assertEquals(200, r4.get("status"));
+				assertEquals("4", r4.get("sid"));
+
+				Field pendingField = ServerPushEndPoint.class.getDeclaredField("pendingRequests");
+				pendingField.setAccessible(true);
+				AtomicInteger pending = (AtomicInteger) pendingField.get(endpoint);
+				long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(2);
+				while (pending.get() != 0 && System.nanoTime() < deadline) {
+					Thread.sleep(10);
+				}
+				assertEquals(0, pending.get(), "pendingRequests must return to exactly 0 after rejections and recovery");
+			} finally {
+				releaseReq2.countDown();
+				backingPool.shutdownNow();
 				WebSocketServerPush.unregisterEndPoint(dtid);
 			}
 		}

@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -88,6 +89,7 @@ public class WebSocketServerPush implements ServerPush {
     private final Object _mutex = new Object();
     private final Object _activateLock = new Object();
     
+    private final static Set<String> activeDesktops = ConcurrentHashMap.newKeySet();
     private final static Map<String, ServerPushEndPoint> endPointMap = new ConcurrentHashMap<>();
     private final static Map<String, Boolean> unregisterMap = new ConcurrentHashMap<>();
     private final static ServerPushEndPoint STUB = new ServerPushEndPoint();
@@ -332,9 +334,19 @@ public class WebSocketServerPush implements ServerPush {
     	if (dt != null) {
         	ServerPushEndPoint endPoint = getEndPoint(dt.getId());
         	if (endPoint == null) {
-        		if (dt.isServerPushEnabled() && unregisterMap.remove(dt.getId(), Boolean.TRUE)) {
-        			registerEndPoint(dt.getId(), STUB);
-        			startServerPushAtClient(dt);
+        		if (dt.isServerPushEnabled()) {
+        			String dtid = dt.getId();
+        			boolean[] shouldStart = new boolean[1];
+        			endPointMap.compute(dtid, (k, existing) -> {
+        				if (existing == null && activeDesktops.contains(dtid) && unregisterMap.remove(dtid, Boolean.TRUE)) {
+        					shouldStart[0] = true;
+        					return STUB;
+        				}
+        				return existing;
+        			});
+        			if (shouldStart[0]) {
+        				startServerPushAtClient(dt);
+        			}
         		}
         	}
     	}    	
@@ -411,8 +423,12 @@ public class WebSocketServerPush implements ServerPush {
 
         if (log.isDebugEnabled())
         	log.debug("Starting server push for " + desktop);
-        unregisterMap.remove(desktop.getId());
-        registerEndPoint(desktop.getId(), STUB);
+        String dtid = desktop.getId();
+        endPointMap.compute(dtid, (k, existing) -> {
+        	activeDesktops.add(dtid);
+        	unregisterMap.remove(dtid);
+        	return STUB;
+        });
 
         // Store connection details in session attributes for later use in EndpointConfigurator
         var session = desktop.getSession();
@@ -577,8 +593,14 @@ public class WebSocketServerPush implements ServerPush {
 
         // Remove from static registries so closed/abandoned desktops never leak entries.
         String dtid = desktop.getId();
-        ServerPushEndPoint endpoint = endPointMap.remove(dtid);
-        unregisterMap.remove(dtid);
+        ServerPushEndPoint[] removedEndpoint = new ServerPushEndPoint[1];
+        endPointMap.compute(dtid, (k, existing) -> {
+        	activeDesktops.remove(dtid);
+        	unregisterMap.remove(dtid);
+        	removedEndpoint[0] = existing;
+        	return null;
+        });
+        ServerPushEndPoint endpoint = removedEndpoint[0];
         if (endpoint != null && endpoint != STUB) {
         	endpoint.close();
         }
@@ -596,7 +618,7 @@ public class WebSocketServerPush implements ServerPush {
         }
 
 		var session = desktop.getSession();
-		if (session instanceof SessionCtrl sessionCtrl && !sessionCtrl.isInvalidated()) {
+		if (session != null && (!(session instanceof SessionCtrl sessionCtrl) || !sessionCtrl.isInvalidated())) {
 			try {
 				session.removeAttribute(getLocalBaseUrlAttribute(dtid));
 				session.removeAttribute(getDesktopOwnerAttribute(dtid));
@@ -640,7 +662,35 @@ public class WebSocketServerPush implements ServerPush {
 	public static void registerEndPoint(String dtid, ServerPushEndPoint endpoint) {
 		if (dtid != null && endpoint != null) {
 			endPointMap.put(dtid, endpoint);
+			if (endpoint != STUB) {
+				unregisterMap.remove(dtid);
+			}
 		}
+	}
+
+	/**
+	 * Atomically register a newly opened endpoint only if {@code dtid} is still an active
+	 * server-push desktop owned by {@code httpSession}. Prevents a concurrent {@link #stop()}
+	 * from racing with {@code onOpen} and leaking a stale endpoint entry.
+	 *
+	 * @param dtid Desktop id
+	 * @param httpSession HTTP session from the WebSocket handshake
+	 * @param endpoint Connected web socket end point
+	 * @return true if the endpoint was registered, false if the desktop is no longer valid
+	 */
+	static boolean registerEndPointIfValid(String dtid, HttpSession httpSession, ServerPushEndPoint endpoint) {
+		if (dtid == null || httpSession == null || endpoint == null || !isValidDesktopId(dtid, httpSession))
+			return false;
+		boolean[] registered = new boolean[1];
+		endPointMap.compute(dtid, (k, existing) -> {
+			if (!activeDesktops.contains(dtid) && existing == null) {
+				return null;
+			}
+			unregisterMap.remove(dtid);
+			registered[0] = true;
+			return endpoint;
+		});
+		return registered[0];
 	}
 	
 	/**
@@ -651,11 +701,15 @@ public class WebSocketServerPush implements ServerPush {
 	public static boolean unregisterEndPoint(String dtid) {
 		if (dtid == null)
 			return false;
-		ServerPushEndPoint endpoint = endPointMap.remove(dtid);
-		if (endpoint != null && endpoint != STUB) {
-			unregisterMap.put(dtid, Boolean.TRUE);
-		}
-		return endpoint != null;
+		boolean[] removed = new boolean[1];
+		endPointMap.computeIfPresent(dtid, (k, existing) -> {
+			removed[0] = true;
+			if (existing != STUB && activeDesktops.contains(dtid)) {
+				unregisterMap.put(dtid, Boolean.TRUE);
+			}
+			return null;
+		});
+		return removed[0];
 	}
 
 	/**
@@ -669,11 +723,18 @@ public class WebSocketServerPush implements ServerPush {
 	public static boolean unregisterEndPoint(String dtid, ServerPushEndPoint endpoint) {
 		if (dtid == null || endpoint == null)
 			return false;
-		boolean removed = endPointMap.remove(dtid, endpoint);
-		if (removed && endpoint != STUB) {
-			unregisterMap.put(dtid, Boolean.TRUE);
-		}
-		return removed;
+		boolean[] removed = new boolean[1];
+		endPointMap.computeIfPresent(dtid, (k, existing) -> {
+			if (existing != endpoint) {
+				return existing;
+			}
+			removed[0] = true;
+			if (endpoint != STUB && activeDesktops.contains(dtid)) {
+				unregisterMap.put(dtid, Boolean.TRUE);
+			}
+			return null;
+		});
+		return removed[0];
 	}
 	
 	/**
@@ -696,7 +757,7 @@ public class WebSocketServerPush implements ServerPush {
 	 * @return true if serverpush started for dtid, false otherwise
 	 */
 	public static boolean isValidDesktopId(String dtid) {
-		return dtid != null && endPointMap.containsKey(dtid);
+		return dtid != null && (activeDesktops.contains(dtid) || endPointMap.containsKey(dtid));
 	}
 
 	/**
@@ -707,7 +768,7 @@ public class WebSocketServerPush implements ServerPush {
 	 * @return true if serverpush is active for {@code dtid} and owned by {@code httpSession}
 	 */
 	public static boolean isValidDesktopId(String dtid, HttpSession httpSession) {
-		if (dtid == null || httpSession == null || !endPointMap.containsKey(dtid))
+		if (httpSession == null || !isValidDesktopId(dtid))
 			return false;
 		try {
 			return Boolean.TRUE.equals(httpSession.getAttribute(getDesktopOwnerAttribute(dtid)));
