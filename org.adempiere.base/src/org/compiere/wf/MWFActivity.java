@@ -274,6 +274,8 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	private String				m_newValue = null;
 	/** Process						*/
 	private MWFProcess 			m_process = null;
+	/** The activity runs in a transaction of its own, which run() commits after the work */
+	private boolean				m_localTrx = false;
 	/** List of email recipients	*/
 	private ArrayList<String> 	m_emails = new ArrayList<String>();
 
@@ -930,6 +932,7 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			this.set_TrxName(Trx.createTrxName("WFA"));
 			localTrx = true;
 		}
+		m_localTrx = localTrx;
 
 		trx = Trx.get(get_TrxName(), true);
 		if (localTrx)
@@ -1104,7 +1107,13 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 			cal.add(Calendar.MINUTE, m_node.getWaitTime());
 			setEndWaitTime(new Timestamp(cal.getTimeInMillis()));
 			if (m_node.getWaitTime() == -1)
+			{
+				// in a transaction of its own there is nothing else to wait for: run() commits it right after this node;
+				// a commit listener would complete the activity in that commit, before run() sets it to suspended
+				if (m_localTrx)
+					return true;
 				prepareCommitEvent();
+			}
 			return false;		//	not done
 		}
 
@@ -1292,7 +1301,27 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 				pi.setAD_User_ID(getAD_User_ID());
 				pi.setAD_Client_ID(getAD_Client_ID());
 				pi.setAD_PInstance_ID(pInstance.getAD_PInstance_ID());
-				boolean success = process.processItWithoutTrxClose(pi, trx);
+				// savepoint for this node only, a failed process must not leave its changes in the transaction;
+				// a workflow process rolls back by itself
+				Savepoint nodeSavepoint = process.isWorkflow() ? null : trx.setSavepoint(null);
+				// the savepoint is gone when the process commits or rolls back the transaction
+				TrxEndListener trxEndListener = new TrxEndListener();
+				trx.addTrxEventListener(trxEndListener);
+				boolean success;
+				try {
+					success = process.processItWithoutTrxClose(pi, trx);
+				} finally {
+					trx.removeTrxEventListener(trxEndListener);
+				}
+				if (!success && nodeSavepoint != null)
+				{
+					// the process committed: undo its work after the last commit, as SvrProcess does in its own transaction;
+					// a failed rollback throws, so that run() does not commit the work of the failed process
+					if (trxEndListener.ended)
+						trx.rollback(true);
+					else
+						trx.rollback(nodeSavepoint);
+				}
 				setTextMsgBefore(pi.getSummary());
 				return success;
 			}
@@ -2132,8 +2161,8 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 	}	//	getSummary
 
 	/**
-	 * Set up transaction event listener to set workflow state to StateEngine.STATE_Completed in the transaction
-	 * after commit event. 
+	 * Set up transaction event listener to set workflow state to StateEngine.STATE_Completed after the commit
+	 * of the transaction. The workflow then continues in transactions of its own.
 	 */
 	private void prepareCommitEvent()
 	{
@@ -2158,12 +2187,19 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		
 		@Override
 		public void afterRollback(Trx trx, boolean success) {
+			trx.removeTrxEventListener(this);
 		}
 		
 		@Override
 		public void afterCommit(Trx trx, boolean success) {
 			if (success) {
 				trx.removeTrxEventListener(this);
+				// an activity rolled back to a savepoint (which does not call afterRollback) is not committed
+				String wfState = DB.getSQLValueStringEx(null, "SELECT WFState FROM AD_WF_Activity WHERE AD_WF_Activity_ID=?", activity.getAD_WF_Activity_ID());
+				if (!StateEngine.STATE_Running.equals(wfState) && !StateEngine.STATE_Suspended.equals(wfState))
+					return;
+				// the transaction is committed: continue the workflow in transactions of its own
+				activity.set_TrxName(null);
 				activity.setWFState (StateEngine.STATE_Completed);
 			}
 		}
@@ -2172,6 +2208,27 @@ public class MWFActivity extends X_AD_WF_Activity implements Runnable
 		public void afterClose(Trx trx) {
 			trx.removeTrxEventListener(this);
 		}		
+	}
+
+	/** Transaction event listener to know whether the transaction ended while a process node was running */
+	private static class TrxEndListener implements TrxEventListener {
+
+		private boolean ended = false;
+
+		@Override
+		public void afterRollback(Trx trx, boolean success) {
+			ended = true;
+		}
+
+		@Override
+		public void afterCommit(Trx trx, boolean success) {
+			ended = true;
+		}
+
+		@Override
+		public void afterClose(Trx trx) {
+			ended = true;
+		}
 	}
 
 	/**

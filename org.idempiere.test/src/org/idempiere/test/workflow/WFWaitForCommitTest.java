@@ -1,0 +1,437 @@
+/***********************************************************************
+ * This file is part of iDempiere ERP Open Source                      *
+ * http://www.idempiere.org                                            *
+ *                                                                     *
+ * Copyright (C) Contributors                                          *
+ *                                                                     *
+ * This program is free software; you can redistribute it and/or       *
+ * modify it under the terms of the GNU General Public License         *
+ * as published by the Free Software Foundation; either version 2      *
+ * of the License, or (at your option) any later version.              *
+ *                                                                     *
+ * This program is distributed in the hope that it will be useful,     *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of      *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the        *
+ * GNU General Public License for more details.                        *
+ *                                                                     *
+ * You should have received a copy of the GNU General Public License   *
+ * along with this program; if not, write to the Free Software         *
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,          *
+ * MA 02110-1301, USA.                                                 *
+ **********************************************************************/
+package org.idempiere.test.workflow;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.math.BigDecimal;
+import java.sql.Savepoint;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.adempiere.base.Core;
+import org.adempiere.exceptions.AdempiereException;
+import org.compiere.model.MBPartner;
+import org.compiere.model.MInOut;
+import org.compiere.model.MInOutLine;
+import org.compiere.model.MProcess;
+import org.compiere.model.MProduct;
+import org.compiere.model.PO;
+import org.compiere.model.Query;
+import org.compiere.process.DocAction;
+import org.compiere.process.ProcessInfo;
+import org.compiere.process.SvrProcess;
+import org.compiere.util.CacheMgt;
+import org.compiere.util.DB;
+import org.compiere.util.Env;
+import org.compiere.util.Trx;
+import org.compiere.wf.MWFActivity;
+import org.compiere.wf.MWFNode;
+import org.compiere.wf.MWFNodeNext;
+import org.compiere.wf.MWorkflow;
+import org.idempiere.test.AbstractTestCase;
+import org.idempiere.test.DictionaryIDs;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
+
+/**
+ * Wait (Sleep) node with Wait Time -1: the workflow waits until the transaction of the document commits
+ * (IDEMPIERE-4186).<br/>
+ * The workflow Process_Shipment gets Complete -> Wait (-1) -> probe. The probe records whether its receipt is
+ * visible from another connection, and for the first receipt it creates and completes a second receipt through
+ * its workflow, so the second receipt waits behind its own Wait (-1).<br/>
+ * The nodes are committed (the Wait needs a commit) and removed after each test, hence {@link Isolated}.
+ */
+@Isolated
+public class WFWaitForCommitTest extends AbstractTestCase {
+
+	private static final String DESCRIPTION = "WFWaitForCommitTest";
+	private static final String DESCRIPTION_NESTED = DESCRIPTION + " nested ";
+	private static final String DESCRIPTION_FAIL = DESCRIPTION + " fail";
+	private static final String DESCRIPTION_COMMIT_FAIL = DESCRIPTION + " commit fail";
+	private static final String DESCRIPTION_CONSECUTIVE = DESCRIPTION + " consecutive";
+	private static final String DESCRIPTION_SPLIT = DESCRIPTION + " split";
+
+	/** M_InOut_ID -> receipt committed when the probe behind its Wait (-1) ran */
+	private static final Map<Integer, Boolean> committedAtProbe = new ConcurrentHashMap<>();
+
+	private MProcess probeProcess;
+	private MWFNode nodeWait;
+	private MWFNodeNext fromCompleteToWait;
+	private MWFNode nodeProbe;
+	private MWFNodeNext fromWaitToProbe;
+	/** nodes and transitions added by a test, deleted in reverse order */
+	private final List<PO> addedRecords = new ArrayList<>();
+
+	public WFWaitForCommitTest() {
+	}
+
+	@BeforeEach
+	public void setUpWorkflow() {
+		Properties ctx = Env.getCtx();
+		String trxName = getTrxName();
+		committedAtProbe.clear();
+
+		Core.getMappedProcessFactory().addMapping(WaitProbe.class.getName(), () -> new WaitProbe());
+		probeProcess = new MProcess(ctx, 0, trxName);
+		probeProcess.set_ValueNoCheck("AD_Client_ID", 0);
+		probeProcess.setAD_Org_ID(0);
+		probeProcess.setValue(DESCRIPTION);
+		probeProcess.setName(DESCRIPTION);
+		probeProcess.setClassname(WaitProbe.class.getName());
+		probeProcess.saveCrossTenantSafeEx();
+
+		MWorkflow wf = new MWorkflow(ctx, DictionaryIDs.AD_Workflow.PROCESS_SHIPMENT.id, trxName);
+		nodeWait = new MWFNode(wf, "WaitForCommit", "WaitForCommit");
+		nodeWait.setClientOrg(Env.getAD_Client_ID(ctx), 0);
+		nodeWait.setAction(MWFNode.ACTION_WaitSleep);
+		nodeWait.setWaitTime(-1);
+		nodeWait.saveEx();
+		MWFNode nodeComplete = getDocCompleteNode(ctx, trxName);
+		fromCompleteToWait = new MWFNodeNext(nodeComplete, nodeWait.getAD_WF_Node_ID());
+		fromCompleteToWait.setClientOrg(Env.getAD_Client_ID(ctx), 0);
+		fromCompleteToWait.saveEx();
+		nodeProbe = new MWFNode(wf, "WaitProbe", "WaitProbe");
+		nodeProbe.setClientOrg(Env.getAD_Client_ID(ctx), 0);
+		nodeProbe.setAction(MWFNode.ACTION_AppsProcess);
+		nodeProbe.setAD_Process_ID(probeProcess.getAD_Process_ID());
+		nodeProbe.saveEx();
+		fromWaitToProbe = new MWFNodeNext(nodeWait, nodeProbe.getAD_WF_Node_ID());
+		fromWaitToProbe.saveEx();
+
+		// the workflow engine reads the nodes outside the test transaction
+		commit();
+		CacheMgt.get().reset();
+	}
+
+	@AfterEach
+	public void tearDownWorkflow() {
+		rollback();
+		Properties ctx = Env.getCtx();
+		String trxName = getTrxName();
+
+		String receipts = "SELECT M_InOut_ID FROM M_InOut WHERE AD_Client_ID=? AND Description LIKE ?";
+		Object[] params = new Object[] {getAD_Client_ID(), DESCRIPTION + "%"};
+		DB.executeUpdateEx("DELETE FROM AD_WF_EventAudit WHERE AD_Table_ID=? AND Record_ID IN (" + receipts + ")",
+				new Object[] {MInOut.Table_ID, params[0], params[1]}, trxName);
+		DB.executeUpdateEx("DELETE FROM AD_WF_Activity WHERE AD_Table_ID=? AND Record_ID IN (" + receipts + ")",
+				new Object[] {MInOut.Table_ID, params[0], params[1]}, trxName);
+		DB.executeUpdateEx("DELETE FROM AD_WF_Process WHERE AD_Table_ID=? AND Record_ID IN (" + receipts + ")",
+				new Object[] {MInOut.Table_ID, params[0], params[1]}, trxName);
+		DB.executeUpdateEx("DELETE FROM M_InOutLine WHERE M_InOut_ID IN (" + receipts + ")", params, trxName);
+		DB.executeUpdateEx("DELETE FROM M_InOut WHERE M_InOut_ID IN (" + receipts + ")", params, trxName);
+
+		// fromWaitToProbe can point to an added node
+		if (fromWaitToProbe != null)
+			fromWaitToProbe.deleteEx(true);
+		for (int i = addedRecords.size() - 1; i >= 0; i--)
+			addedRecords.get(i).deleteEx(true);
+		addedRecords.clear();
+		if (nodeProbe != null)
+			nodeProbe.deleteEx(true);
+		if (fromCompleteToWait != null)
+			fromCompleteToWait.deleteEx(true);
+		if (nodeWait != null)
+			nodeWait.deleteEx(true);
+		if (probeProcess != null) {
+			DB.executeUpdateEx("DELETE FROM AD_PInstance_Log WHERE AD_PInstance_ID IN (SELECT AD_PInstance_ID FROM AD_PInstance WHERE AD_Process_ID=?)",
+					new Object[] {probeProcess.getAD_Process_ID()}, trxName);
+			DB.executeUpdateEx("DELETE FROM AD_PInstance WHERE AD_Process_ID=?", new Object[] {probeProcess.getAD_Process_ID()}, trxName);
+			int oldRole = Env.getAD_Role_ID(ctx);
+			try {
+				PO.setCrossTenantSafe();
+				Env.setContext(ctx, Env.AD_ROLE_ID, 0); // to allow deleting the process
+				probeProcess.deleteEx(true);
+			} finally {
+				Env.setContext(ctx, Env.AD_ROLE_ID, oldRole);
+				PO.clearCrossTenantSafe();
+			}
+		}
+		commit();
+		Core.getMappedProcessFactory().removeMapping(WaitProbe.class.getName());
+		CacheMgt.get().reset();
+	}
+
+	/**
+	 * A node behind the Wait (-1) creates and completes a second document, whose workflow waits too.
+	 * The node behind the second Wait must run after the second document is committed.
+	 */
+	@Test
+	public void testWaitOfDocumentCompletedBehindAWait() {
+		MInOut first = createReceipt(Env.getCtx(), DESCRIPTION, getLoginDate(), getTrxName());
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(first, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		first.load(getTrxName());
+		assertEquals(DocAction.STATUS_Completed, first.getDocStatus());
+		assertTrue(committedAtProbe.isEmpty(), "the Wait (-1) released before the commit");
+
+		commit();
+
+		assertEquals(Boolean.TRUE, committedAtProbe.get(first.getM_InOut_ID()), "the probe of the first receipt did not run after its commit");
+		MInOut second = new Query(Env.getCtx(), MInOut.Table_Name, "Description=?", getTrxName())
+				.setParameters(DESCRIPTION_NESTED + first.getM_InOut_ID())
+				.first();
+		assertNotNull(second, "the second receipt was not created by the node behind the Wait");
+		assertEquals(DocAction.STATUS_Completed, second.getDocStatus());
+		assertEquals(Boolean.TRUE, committedAtProbe.get(second.getM_InOut_ID()),
+				"the node behind the Wait (-1) of the second receipt ran before the second receipt was committed");
+	}
+
+	/**
+	 * A document completed and rolled back must not continue its workflow on the next commit of the same transaction.
+	 */
+	@Test
+	public void testWaitOfRolledBackDocument() {
+		MInOut rolledBack = createReceipt(Env.getCtx(), DESCRIPTION, getLoginDate(), getTrxName());
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(rolledBack, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		rollback();
+
+		// the next work of the same transaction
+		createReceipt(Env.getCtx(), DESCRIPTION, getLoginDate(), getTrxName());
+		assertDoesNotThrow(() -> commit(), "the commit after the rollback continued the workflow of the rolled back receipt");
+		assertFalse(committedAtProbe.containsKey(rolledBack.getM_InOut_ID()),
+				"the workflow of the rolled back receipt continued on the next commit");
+		assertEquals(0, countActivities(rolledBack.getM_InOut_ID()), "the next commit recreated a workflow activity of the rolled back receipt");
+	}
+
+	/**
+	 * A document completed and rolled back to a savepoint must not continue its workflow on the next commit.
+	 * Trx.rollback(Savepoint) does not call afterRollback.
+	 */
+	@Test
+	public void testWaitOfDocumentRolledBackToSavepoint() throws Exception {
+		Trx trx = Trx.get(getTrxName(), false);
+		Savepoint savepoint = trx.setSavepoint(null);
+		MInOut rolledBack = createReceipt(Env.getCtx(), DESCRIPTION, getLoginDate(), getTrxName());
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(rolledBack, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		trx.rollback(savepoint);
+		trx.setLastWFSavepoint(null);
+
+		// the next work of the same transaction
+		createReceipt(Env.getCtx(), DESCRIPTION, getLoginDate(), getTrxName());
+		assertDoesNotThrow(() -> commit(), "the commit after the rollback to savepoint continued the workflow of the rolled back receipt");
+		assertFalse(committedAtProbe.containsKey(rolledBack.getM_InOut_ID()),
+				"the workflow of the receipt rolled back to a savepoint continued on the next commit");
+		assertEquals(0, countActivities(rolledBack.getM_InOut_ID()), "the next commit recreated a workflow activity of the receipt rolled back to a savepoint");
+	}
+
+	/**
+	 * A node behind the Wait (-1) fails: the document stays committed and the failing activity is suspended.
+	 */
+	@Test
+	public void testFailingNodeBehindTheWait() {
+		MInOut receipt = createReceipt(Env.getCtx(), DESCRIPTION_FAIL, getLoginDate(), getTrxName());
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+
+		commit();
+
+		assertEquals(Boolean.TRUE, committedAtProbe.get(receipt.getM_InOut_ID()), "the probe of the receipt did not run after its commit");
+		String docStatus = DB.getSQLValueStringEx(null, "SELECT DocStatus FROM M_InOut WHERE M_InOut_ID=?", receipt.getM_InOut_ID());
+		assertEquals(DocAction.STATUS_Completed, docStatus, "the completed receipt was not committed");
+		String wfState = DB.getSQLValueStringEx(null, "SELECT a.WFState FROM AD_WF_Activity a"
+				+ " WHERE a.AD_Table_ID=? AND a.Record_ID=? AND a.AD_WF_Node_ID=?",
+				MInOut.Table_ID, receipt.getM_InOut_ID(), nodeProbe.getAD_WF_Node_ID());
+		assertEquals(MWFActivity.WFSTATE_Suspended, wfState, "the failing node behind the Wait (-1) is not suspended");
+	}
+
+	/**
+	 * A node behind the Wait (-1) completes a second document, commits, then fails.<br/>
+	 * The commit releases the Wait (-1) of the second document. The failed node rolls back its work after
+	 * that commit, which must not undo the workflow of the second document.
+	 */
+	@Test
+	public void testNodeThatCommitsAndFailsKeepsWorkReleasedByItsCommit() {
+		MInOut receipt = createReceipt(Env.getCtx(), DESCRIPTION_COMMIT_FAIL, getLoginDate(), getTrxName());
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+
+		commit();
+
+		assertEquals(Boolean.TRUE, committedAtProbe.get(receipt.getM_InOut_ID()), "the probe of the receipt did not run after its commit");
+		int secondId = DB.getSQLValueEx(null, "SELECT M_InOut_ID FROM M_InOut WHERE Description=?", DESCRIPTION_NESTED + receipt.getM_InOut_ID());
+		assertTrue(secondId > 0, "the second receipt committed by the failed node was rolled back");
+		assertEquals(Boolean.TRUE, committedAtProbe.get(secondId), "the Wait (-1) of the second receipt was not released by the commit");
+		String secondWfState = DB.getSQLValueStringEx(null, "SELECT WFState FROM AD_WF_Activity WHERE AD_Table_ID=? AND Record_ID=? AND AD_WF_Node_ID=?",
+				MInOut.Table_ID, secondId, nodeProbe.getAD_WF_Node_ID());
+		assertEquals(MWFActivity.WFSTATE_Completed, secondWfState,
+				"the rollback of the failed node undid the workflow of the second receipt released by its commit");
+
+		String wfState = DB.getSQLValueStringEx(null, "SELECT WFState FROM AD_WF_Activity WHERE AD_Table_ID=? AND Record_ID=? AND AD_WF_Node_ID=?",
+				MInOut.Table_ID, receipt.getM_InOut_ID(), nodeProbe.getAD_WF_Node_ID());
+		assertEquals(MWFActivity.WFSTATE_Suspended, wfState, "the failed node behind the Wait (-1) is not suspended");
+	}
+
+	/** The (DocComplete) node of workflow Process_Shipment */
+	private static MWFNode getDocCompleteNode(Properties ctx, String trxName) {
+		MWFNode node = new Query(ctx, MWFNode.Table_Name, "AD_Workflow_ID=? AND Value=?", trxName)
+				.setParameters(DictionaryIDs.AD_Workflow.PROCESS_SHIPMENT.id, "(DocComplete)")
+				.firstOnly();
+		assertNotNull(node, "Process_Shipment has no (DocComplete) node");
+		return node;
+	}
+
+	/**
+	 * Wait (-1) -> Wait (-1) -> probe: the second Wait runs in a transaction of its own, which its commit releases.
+	 * Both Waits and the probe must end Completed.
+	 */
+	@Test
+	public void testConsecutiveWaitNodes() {
+		Properties ctx = Env.getCtx();
+		MWorkflow wf = new MWorkflow(ctx, DictionaryIDs.AD_Workflow.PROCESS_SHIPMENT.id, getTrxName());
+		MWFNode secondWait = new MWFNode(wf, "WaitForCommit2", "WaitForCommit2");
+		secondWait.setClientOrg(Env.getAD_Client_ID(ctx), 0);
+		secondWait.setAction(MWFNode.ACTION_WaitSleep);
+		secondWait.setWaitTime(-1);
+		secondWait.saveEx();
+		addedRecords.add(secondWait);
+		fromWaitToProbe.setAD_WF_Next_ID(secondWait.getAD_WF_Node_ID());
+		fromWaitToProbe.saveEx();
+		MWFNodeNext fromSecondWaitToProbe = new MWFNodeNext(secondWait, nodeProbe.getAD_WF_Node_ID());
+		fromSecondWaitToProbe.saveEx();
+		addedRecords.add(fromSecondWaitToProbe);
+		commit();
+		CacheMgt.get().reset();
+
+		MInOut receipt = createReceipt(ctx, DESCRIPTION_CONSECUTIVE, getLoginDate(), getTrxName());
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		commit();
+
+		assertEquals(Boolean.TRUE, committedAtProbe.get(receipt.getM_InOut_ID()), "the probe behind the second Wait (-1) did not run");
+		assertEquals(MWFActivity.WFSTATE_Completed, getWFState(receipt, nodeWait), "the first Wait (-1) is not completed");
+		assertEquals(MWFActivity.WFSTATE_Completed, getWFState(receipt, secondWait), "the second Wait (-1) is not completed");
+		assertEquals(MWFActivity.WFSTATE_Completed, getWFState(receipt, nodeProbe), "the probe behind the second Wait (-1) is not completed");
+	}
+
+	/**
+	 * Wait (-1) with an AND split to two probes: both branches must run and end Completed.
+	 */
+	@Test
+	public void testAndSplitBehindWait() {
+		Properties ctx = Env.getCtx();
+		nodeWait.setSplitElement(MWFNode.SPLITELEMENT_AND);
+		nodeWait.saveEx();
+		MWorkflow wf = new MWorkflow(ctx, DictionaryIDs.AD_Workflow.PROCESS_SHIPMENT.id, getTrxName());
+		MWFNode secondProbe = new MWFNode(wf, "WaitProbe2", "WaitProbe2");
+		secondProbe.setClientOrg(Env.getAD_Client_ID(ctx), 0);
+		secondProbe.setAction(MWFNode.ACTION_AppsProcess);
+		secondProbe.setAD_Process_ID(probeProcess.getAD_Process_ID());
+		secondProbe.saveEx();
+		addedRecords.add(secondProbe);
+		MWFNodeNext fromWaitToSecondProbe = new MWFNodeNext(nodeWait, secondProbe.getAD_WF_Node_ID());
+		fromWaitToSecondProbe.saveEx();
+		addedRecords.add(fromWaitToSecondProbe);
+		commit();
+		CacheMgt.get().reset();
+
+		MInOut receipt = createReceipt(ctx, DESCRIPTION_SPLIT, getLoginDate(), getTrxName());
+		ProcessInfo info = MWorkflow.runDocumentActionWorkflow(receipt, DocAction.ACTION_Complete);
+		assertFalse(info.isError(), info.getSummary());
+		commit();
+
+		assertEquals(MWFActivity.WFSTATE_Completed, getWFState(receipt, nodeWait), "the Wait (-1) is not completed");
+		assertEquals(MWFActivity.WFSTATE_Completed, getWFState(receipt, nodeProbe), "the first branch behind the Wait (-1) is not completed");
+		assertEquals(MWFActivity.WFSTATE_Completed, getWFState(receipt, secondProbe), "the second branch behind the Wait (-1) is not completed");
+	}
+
+	/** State of the activity of the node for the receipt, read from another connection */
+	private static String getWFState(MInOut receipt, MWFNode node) {
+		return DB.getSQLValueStringEx(null, "SELECT WFState FROM AD_WF_Activity WHERE AD_Table_ID=? AND Record_ID=? AND AD_WF_Node_ID=?",
+				MInOut.Table_ID, receipt.getM_InOut_ID(), node.getAD_WF_Node_ID());
+	}
+
+	/** Workflow activities of the receipt, read from another connection */
+	private static int countActivities(int receiptId) {
+		return DB.getSQLValueEx(null, "SELECT COUNT(*) FROM AD_WF_Activity WHERE AD_Table_ID=? AND Record_ID=?", MInOut.Table_ID, receiptId);
+	}
+
+	private static MInOut createReceipt(Properties ctx, String description, Timestamp dateOrdered, String trxName) {
+		MInOut receipt = new MInOut(ctx, 0, trxName);
+		receipt.setBPartner(MBPartner.get(ctx, DictionaryIDs.C_BPartner.PATIO.id));
+		receipt.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.HQ.id);
+		receipt.setC_DocType_ID(DictionaryIDs.C_DocType.MM_RECEIPT.id);
+		receipt.setIsSOTrx(false);
+		receipt.setMovementType(MInOut.MOVEMENTTYPE_VendorReceipts);
+		receipt.setDocStatus(DocAction.STATUS_Drafted);
+		receipt.setDocAction(DocAction.ACTION_Complete);
+		receipt.setDescription(description);
+		receipt.setDateOrdered(dateOrdered);
+		receipt.saveEx();
+
+		MInOutLine line = new MInOutLine(receipt);
+		line.setLine(10);
+		line.setProduct(MProduct.get(ctx, DictionaryIDs.M_Product.PLANTING.id));
+		line.setQty(BigDecimal.ONE);
+		line.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+		line.saveEx();
+		return receipt;
+	}
+
+	/**
+	 * Records whether the receipt is committed (read from another connection); for the first receipt, creates and
+	 * completes the second one.
+	 */
+	private static final class WaitProbe extends SvrProcess {
+
+		@Override
+		protected void prepare() {
+		}
+
+		@Override
+		protected String doIt() throws Exception {
+			int receiptId = getRecord_ID();
+			// null: read from another connection, which sees only committed data
+			int committed = DB.getSQLValueEx(null, "SELECT COUNT(*) FROM M_InOut WHERE M_InOut_ID=?", receiptId);
+			committedAtProbe.put(receiptId, committed > 0);
+
+			MInOut receipt = new MInOut(getCtx(), receiptId, get_TrxName());
+			if (DESCRIPTION_FAIL.equals(receipt.getDescription()))
+				throw new AdempiereException("node behind the Wait (-1) fails");
+			boolean commitAndFail = DESCRIPTION_COMMIT_FAIL.equals(receipt.getDescription());
+			if (DESCRIPTION.equals(receipt.getDescription()) || commitAndFail) {
+				MInOut second = createReceipt(getCtx(), DESCRIPTION_NESTED + receiptId, receipt.getDateOrdered(), get_TrxName());
+				ProcessInfo info = MWorkflow.runDocumentActionWorkflow(second, DocAction.ACTION_Complete);
+				if (info.isError())
+					throw new AdempiereException(info.getSummary());
+			}
+			if (commitAndFail) {
+				// the commit releases the Wait (-1) of the second receipt
+				commitEx();
+				return "@Error@node behind the Wait (-1) fails after its commit";
+			}
+			return "@OK@";
+		}
+	}
+}
