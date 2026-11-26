@@ -243,18 +243,18 @@ public class HelpController
 			sb.append (")</em></p>");
     	}else{
     		sb.append("<p><strong>");
-    		sb.append(AEnv.sanitize(hdr));
+    		sb.append(hdr);
     		sb.append("</strong></p>");
     		
     		if (desc != null && desc.trim().length() > 0){
     			sb.append("<p><i>");
-    			sb.append(AEnv.sanitize(desc));
+    			sb.append(desc);
     			sb.append("</i></p>");
     		}
     		
     		if (help != null && help.trim().length() > 0){
     			sb.append("<p>");
-    			sb.append(AEnv.sanitize(help));
+    			sb.append(help);
     			sb.append("</p>");   		}
     		
     		if (Env.IsShowTechnicalInfOnHelp(Env.getCtx()))
@@ -305,7 +305,7 @@ public class HelpController
 		pnlContextHelp.setContext((Popup)null);
     	if (ctxHelpMsg != null)
     	{
-	    	sb.append(AEnv.sanitize(stripHtml(ctxHelpMsg.get_Translation(I_AD_CtxHelpMsg.COLUMNNAME_MsgText), false)) + "<br>\n");
+	    	sb.append(stripHtml(ctxHelpMsg.get_Translation(I_AD_CtxHelpMsg.COLUMNNAME_MsgText), false) + "<br>\n");
 
 	    	if (!MRole.getDefault().isTableAccessExcluded(MCtxHelpSuggestion.Table_ID)) {
 	    		ContextHelpMenupopup popup = new ContextHelpMenupopup(ctxHelpMsg);
@@ -326,15 +326,15 @@ public class HelpController
 
 					nameMsg = tab.get_Translation("Name", false);
 					if (tab != null && nameMsg != null && nameMsg.length() != 0)
-						translatedContent.append("<p><strong>" + AEnv.sanitize(nameMsg) + "</strong></p>\n");
+						translatedContent.append("<p><strong>" + nameMsg + "</strong></p>\n");
 
 					descMsg = tab.get_Translation("Description", false);
 					if (descMsg != null && descMsg.length() != 0)
-						translatedContent.append("<p><em>" + AEnv.sanitize(descMsg) + "</em></p>\n");
+						translatedContent.append("<p><em>" + descMsg + "</em></p>\n");
 
 					helpMsg = tab.get_Translation("Help", false);
 					if (helpMsg != null && helpMsg.length() != 0)
-						translatedContent.append("<p>" + AEnv.sanitize(helpMsg) + "</p>\n");
+						translatedContent.append("<p>" + helpMsg + "</p>\n");
 					
 					if (translatedContent.length() > 0)
 					{
@@ -345,15 +345,15 @@ public class HelpController
 
 				if (tab != null && tab.getName() != null
 						&& tab.getName().length() != 0) 
-					baseContent.append("<p><strong>" + AEnv.sanitize(tab.getName()) + "</strong></p>\n");
+					baseContent.append("<p><strong>" + tab.getName() + "</strong></p>\n");
 
 				if (tab.getDescription() != null
 						&& tab.getDescription().length() != 0)
-					baseContent.append("<p><em>" + AEnv.sanitize(tab.getDescription()) + "</em></p>\n");
+					baseContent.append("<p><em>" + tab.getDescription() + "</em></p>\n");
 
 				if (tab.getHelp() != null
 						&& tab.getHelp().length() != 0)
-					baseContent.append("<p>" + AEnv.sanitize(tab.getHelp()) + "</p>\n");				
+					baseContent.append("<p>" + tab.getHelp() + "</p>\n");				
 				
 				if (baseContent.length() > 0)
 				{
@@ -372,15 +372,15 @@ public class HelpController
 					nameMsg = process.get_Translation("Name", false);
 					if (process != null && nameMsg != null
 							&& nameMsg.length() != 0)
-						translatedContent.append("<p><strong>" + AEnv.sanitize(nameMsg) + "</strong></p>\n");
+						translatedContent.append("<p><strong>" + nameMsg + "</strong></p>\n");
 
 					descMsg = process.get_Translation("Description", false);
 					if (descMsg != null && descMsg.length() != 0)
-						translatedContent.append("<p><em>" + AEnv.sanitize(descMsg) + "</em></p>\n");
+						translatedContent.append("<p><em>" + descMsg + "</em></p>\n");
 
 					helpMsg = process.get_Translation("Help", false);
 					if (helpMsg != null && helpMsg.length() != 0)
-						translatedContent.append("<p>" + AEnv.sanitize(helpMsg) + "</p>\n");
+						translatedContent.append("<p>" + helpMsg + "</p>\n");
 					
 					if (translatedContent.length() > 0)
 					{
@@ -391,15 +391,15 @@ public class HelpController
 
 				if (process != null && process.getName() != null
 						&& process.getName().length() != 0)
-					baseContent.append("<p><strong>" + AEnv.sanitize(process.getName()) + "</strong></p>\n");
+					baseContent.append("<p><strong>" + process.getName() + "</strong></p>\n");
 
 				if (process.getDescription() != null
 						&& process.getDescription().length() != 0)
-					baseContent.append("<p><em>" + AEnv.sanitize(process.getDescription()) + "</em></p>\n");
+					baseContent.append("<p><em>" + process.getDescription() + "</em></p>\n");
 
 				if (process.getHelp() != null
 						&& process.getHelp().length() != 0)
-					baseContent.append("<p>" + AEnv.sanitize(process.getHelp()) + "</p>\n");
+					baseContent.append("<p>" + process.getHelp() + "</p>\n");
 				
 				if (baseContent.length() > 0)
 				{
@@ -420,15 +420,15 @@ public class HelpController
 					nameMsg = userDef != null && userDef.getName() != null ? userDef.getName() : form.get_Translation("Name",false);
 					if (form != null && nameMsg != null
 							&& nameMsg.length() != 0)
-						translatedContent.append("<p><strong>" + AEnv.sanitize(nameMsg) + "</strong></p>\n");
+						translatedContent.append("<p><strong>" + nameMsg + "</strong></p>\n");
 
 					descMsg = userDef != null && userDef.getDescription() != null ? userDef.getDescription() : form.get_Translation("Description",false);
 					if (descMsg != null && descMsg.length() != 0)
-						translatedContent.append("<p><em>" + AEnv.sanitize(descMsg) + "</em></p>\n");
+						translatedContent.append("<p><em>" + descMsg + "</em></p>\n");
 
 					helpMsg = userDef != null && userDef.getHelp() != null ? userDef.getHelp() : form.get_Translation("Help",false);
 					if (helpMsg != null && helpMsg.length() != 0)
-						translatedContent.append("<p>" + AEnv.sanitize(helpMsg) + "</p>\n");
+						translatedContent.append("<p>" + helpMsg + "</p>\n");
 
 					if (translatedContent.length() > 0)
 					{
@@ -439,15 +439,15 @@ public class HelpController
         		if (form != null) {
         			nameMsg = userDef != null && userDef.getName() != null ? userDef.getName() : form.getName();
         			if (!Util.isEmpty(nameMsg))
-        				baseContent.append("<p><strong>").append(AEnv.sanitize(nameMsg)).append("</strong></p>\n");
+        				baseContent.append("<p><strong>").append(nameMsg).append("</strong></p>\n");
 
         			descMsg = userDef != null && userDef.getDescription() != null ? userDef.getDescription() : form.getDescription();
         			if (!Util.isEmpty(descMsg))
-        				baseContent.append("<p><em>").append(AEnv.sanitize(descMsg)).append("</em></p>\n");
+        				baseContent.append("<p><em>").append(descMsg).append("</em></p>\n");
 
         			helpMsg = userDef != null && userDef.getHelp() != null ? userDef.getHelp() : form.getHelp();
         			if (!Util.isEmpty(helpMsg))
-        				baseContent.append("<p>").append(AEnv.sanitize(helpMsg)).append("</p>\n");
+        				baseContent.append("<p>").append(helpMsg).append("</p>\n");
         		}
 
 				if (baseContent.length() > 0)
@@ -472,21 +472,21 @@ public class HelpController
 	    			} 
 					if (nameMsg != null
 							&& nameMsg.length() != 0) 
-						translatedContent.append("<p><strong>" + AEnv.sanitize(nameMsg) + "</strong></p>\n");
+						translatedContent.append("<p><strong>" + nameMsg + "</strong></p>\n");
 
 					descMsg = info.get_Translation("Description",false);
 	    			if(userDef != null && !Util.isEmpty(userDef.getDescription())) {
 	    				descMsg = userDef.getDescription();
 	    			} 
 					if (descMsg != null && descMsg.length() != 0)
-						translatedContent.append("<p><em>" + AEnv.sanitize(descMsg) + "</em></p>\n");
+						translatedContent.append("<p><em>" + descMsg + "</em></p>\n");
 
 					helpMsg = info.get_Translation("Help",false);
 	    			if(userDef != null && !Util.isEmpty(userDef.getHelp())) {
 	    				helpMsg = userDef.getHelp();
 	    			} 
 					if (helpMsg != null && helpMsg.length() != 0)
-						translatedContent.append("<p>" + AEnv.sanitize(helpMsg) + "</p>\n");
+						translatedContent.append("<p>" + helpMsg + "</p>\n");
 					
 					if (translatedContent.length() > 0)
 					{
@@ -500,7 +500,7 @@ public class HelpController
     			} 
         		if ( name != null
 						&& name.length() != 0)
-					baseContent.append("<p><strong>" + AEnv.sanitize(name) + "</strong></p>\n");
+					baseContent.append("<p><strong>" + name + "</strong></p>\n");
 
     			String description = info.getDescription();
     			if(userDef != null && !Util.isEmpty(userDef.getDescription())) {
@@ -508,7 +508,7 @@ public class HelpController
     			} 
 				if (description != null
 						&& description.length() != 0)
-					baseContent.append("<p><em>" + AEnv.sanitize(description) + "</em></p>\n");
+					baseContent.append("<p><em>" + description + "</em></p>\n");
 
     			String help = info.getHelp();
     			if(userDef != null && !Util.isEmpty(userDef.getHelp())) {
@@ -516,7 +516,7 @@ public class HelpController
     			} 
 				if (help != null
 						&& help.length() != 0)
-					baseContent.append("<p>" + AEnv.sanitize(help) + "</p>\n");
+					baseContent.append("<p>" + help + "</p>\n");
 				
 				if (baseContent.length() > 0)
 				{
@@ -534,15 +534,15 @@ public class HelpController
 					nameMsg = workflow.get_Translation("Name", false);
 					if (workflow != null && nameMsg != null
 							&& nameMsg.length() != 0) 
-						translatedContent.append("<p><strong>" + AEnv.sanitize(nameMsg) + "</strong></p>\n");
+						translatedContent.append("<p><strong>" + nameMsg + "</strong></p>\n");
 
 					descMsg = workflow.get_Translation("Description",false);
 					if (descMsg != null && descMsg.length() != 0)
-						translatedContent.append("<p><em>" + AEnv.sanitize(descMsg) + "</em></p>\n");
+						translatedContent.append("<p><em>" + descMsg + "</em></p>\n");
 
 					helpMsg = workflow.get_Translation("Help", false);
 					if (helpMsg != null && helpMsg.length() != 0)
-						translatedContent.append("<p>" + AEnv.sanitize(helpMsg) + "</p>\n");
+						translatedContent.append("<p>" + helpMsg + "</p>\n");
 					
 					if (translatedContent.length() > 0)
 					{
@@ -552,15 +552,15 @@ public class HelpController
         		
         		if (workflow != null && workflow.getName() != null
 						&& workflow.getName().length() != 0)
-					baseContent.append("<p><strong>" + AEnv.sanitize(workflow.getName()) + "</strong></p>\n");
+					baseContent.append("<p><strong>" + workflow.getName() + "</strong></p>\n");
 
 				if (workflow.getDescription() != null
 						&& workflow.getDescription().length() != 0)
-					baseContent.append("<p><em>" + AEnv.sanitize(workflow.getDescription()) + "</em></p>\n");
+					baseContent.append("<p><em>" + workflow.getDescription() + "</em></p>\n");
 
 				if (workflow.getHelp() != null
 						&& workflow.getHelp().length() != 0)
-					baseContent.append("<p>" + AEnv.sanitize(workflow.getHelp()) + "</p>\n");
+					baseContent.append("<p>" + workflow.getHelp() + "</p>\n");
 				
 				if (baseContent.length() > 0)
 				{
@@ -580,15 +580,15 @@ public class HelpController
 					nameMsg = task.get_Translation("Name",false);
 					if (task != null && nameMsg != null
 							&& nameMsg.length() != 0) 
-						translatedContent.append("<p><strong>" + AEnv.sanitize(nameMsg) + "</strong></p>\n");
+						translatedContent.append("<p><strong>" + nameMsg + "</strong></p>\n");
 	
 					descMsg = task.get_Translation("Description",false);
 					if (descMsg != null && descMsg.length() != 0)
-						translatedContent.append("<p><em>" + AEnv.sanitize(descMsg) + "</em></p>\n");
+						translatedContent.append("<p><em>" + descMsg + "</em></p>\n");
 	
 					helpMsg = task.get_Translation("Help",false);
 					if (helpMsg != null && helpMsg.length() != 0)
-						translatedContent.append("<p>" + AEnv.sanitize(helpMsg) + "</p>\n");
+						translatedContent.append("<p>" + helpMsg + "</p>\n");
 					
 					if (translatedContent.length() > 0)
 					{
@@ -598,15 +598,15 @@ public class HelpController
 	
 				if (task != null && task.getName() != null
 						&& task.getName().length() != 0)
-					baseContent.append("<p><strong>" + AEnv.sanitize(task.getName()) + "</strong></p>\n");
+					baseContent.append("<p><strong>" + task.getName() + "</strong></p>\n");
 	
 				if (task.getDescription() != null
 						&& task.getDescription().length() != 0)
-					baseContent.append("<p><em>" + AEnv.sanitize(task.getDescription()) + "</em></p>\n");
+					baseContent.append("<p><em>" + task.getDescription() + "</em></p>\n");
 	
 				if (task.getHelp() != null
 						&& task.getHelp().length() != 0)
-					baseContent.append("<p>" + AEnv.sanitize(task.getHelp()) + "</p>\n");
+					baseContent.append("<p>" + task.getHelp() + "</p>\n");
 				
 				if (baseContent.length() > 0)
 				{
@@ -625,15 +625,15 @@ public class HelpController
 					nameMsg = node.get_Translation("Name", false);
 					if (node != null && nameMsg != null
 							&& nameMsg.length() != 0) 
-						translatedContent.append("<p><strong>" + AEnv.sanitize(nameMsg) + "</strong></p>\n");
+						translatedContent.append("<p><strong>" + nameMsg + "</strong></p>\n");
 	
 					descMsg = node.get_Translation("Description",false);
 					if (descMsg != null && descMsg.length() != 0)
-						translatedContent.append("<p><em>" + AEnv.sanitize(descMsg) + "</em></p>\n");
+						translatedContent.append("<p><em>" + descMsg + "</em></p>\n");
 	
 					helpMsg = node.get_Translation("Help", false);
 					if (helpMsg != null && helpMsg.length() != 0)
-						translatedContent.append("<p>" + AEnv.sanitize(helpMsg) + "</p>\n");
+						translatedContent.append("<p>" + helpMsg + "</p>\n");
 					
 					if (translatedContent.length() > 0)
 					{
@@ -643,15 +643,15 @@ public class HelpController
 	    		
 	    		if (node != null && node.getName() != null
 						&& node.getName().length() != 0)
-					baseContent.append("<p><strong>" + AEnv.sanitize(node.getName()) + "</strong></p>\n");
+					baseContent.append("<p><strong>" + node.getName() + "</strong></p>\n");
 	
 				if (node.getDescription() != null
 						&& node.getDescription().length() != 0)
-					baseContent.append("<p><em>" + AEnv.sanitize(node.getDescription()) + "</em></p>\n");
+					baseContent.append("<p><em>" + node.getDescription() + "</em></p>\n");
 	
 				if (node.getHelp() != null
 						&& node.getHelp().length() != 0)
-					baseContent.append("<p>" + AEnv.sanitize(node.getHelp()) + "</p>\n");
+					baseContent.append("<p>" + node.getHelp() + "</p>\n");
 				
 				if (baseContent.length() > 0)
 				{
@@ -784,8 +784,6 @@ public class HelpController
 		// If the content is null, then return ''
 		if (content == null)
 			return "function(){return '';}";
-		// content is rendered as HTML by the field tooltip
-		content = AEnv.sanitize(content);
 		//
 		StringBuilder out = new StringBuilder("function(){return '");
 		char[] chars = content.toCharArray();
@@ -796,9 +794,6 @@ public class HelpController
 			{
 				case '\r':
 					out.append ("");
-					break;
-				case '\\':
-					out.append ("\\\\");
 					break;
 				case '\'':
 					out.append ("\\'");
