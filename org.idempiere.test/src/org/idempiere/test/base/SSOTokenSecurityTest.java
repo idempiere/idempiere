@@ -32,32 +32,35 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Proxy;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.sql.Types;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.servlet.FilterChain;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -69,6 +72,7 @@ import org.compiere.model.MClient;
 import org.compiere.model.MSSOPrincipalConfig;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
+import org.compiere.model.MUserRoles;
 import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -190,7 +194,13 @@ class SSOTokenSecurityTest extends AbstractTestCase {
 		// Wrapped request atomically binds legacy setAttribute(SSO_PRINCIPAL_SESSION_TOKEN, ...) writes at the write site
 		HttpServletRequest rawReq = createIndexRequest(session, TENANT_A_PREFIX, TENANT_A_PROVIDER_UU, "code");
 		HttpServletRequest wrappedReq = SSOUtils.wrapRequestForTokenBinding(rawReq, TENANT_A_PROVIDER_UU);
-		wrappedReq.getSession().setAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN, "legacy-user-info");
+		HttpSession wrappedSession1 = wrappedReq.getSession();
+		HttpSession wrappedSession2 = wrappedReq.getSession();
+		assertEquals(wrappedSession1, wrappedSession2);
+		assertEquals(wrappedSession1.hashCode(), wrappedSession2.hashCode());
+		assertFalse(wrappedSession1.equals(session), "Wrapper equality must remain symmetric with raw session");
+		assertFalse(session.equals(wrappedSession1), "Raw session does not equal wrapper");
+		wrappedSession1.setAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN, "legacy-user-info");
 		assertEquals("legacy-user-info", SSOUtils.getValidatedSessionToken(session, TENANT_A_PROVIDER_UU));
 		assertFalse(SSOUtils.isTokenValidForProvider(session, GARDEN_WORLD_PROVIDER_UU));
 
@@ -244,26 +254,45 @@ class SSOTokenSecurityTest extends AbstractTestCase {
 		HttpServletRequest wrappedReqA = SSOUtils.wrapRequestForTokenBinding(baseReq, TENANT_A_PROVIDER_UU);
 
 		int iterations = 2000;
-		AtomicBoolean done = new AtomicBoolean(false);
 		AtomicReference<Throwable> failure = new AtomicReference<>();
-		CountDownLatch startLatch = new CountDownLatch(1);
+		CountDownLatch writerAPublished = new CountDownLatch(1);
+		CountDownLatch readerObservedA = new CountDownLatch(1);
+		CountDownLatch writerGWPublished = new CountDownLatch(1);
+		CountDownLatch readerObservedGW = new CountDownLatch(1);
+		CountDownLatch readerEnteredStress = new CountDownLatch(1);
+		CountDownLatch writersDone = new CountDownLatch(2);
+		AtomicInteger checks = new AtomicInteger(0);
+		AtomicInteger nonNullObservations = new AtomicInteger(0);
 		ExecutorService pool = Executors.newFixedThreadPool(3);
 		try {
 			pool.submit(() -> {
 				try {
-					startLatch.await();
-					for (int i = 0; i < iterations; i++) {
+					wrappedReqA.getSession().setAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN, "token-A-0");
+					writerAPublished.countDown();
+					assertTrue(readerObservedA.await(10, TimeUnit.SECONDS), "Timed out waiting for reader to observe TenantA token");
+					assertTrue(readerObservedGW.await(10, TimeUnit.SECONDS), "Timed out waiting for reader to observe GW token");
+					for (int i = 1; i < iterations; i++) {
+						if (i == iterations / 2)
+							assertTrue(readerEnteredStress.await(10, TimeUnit.SECONDS), "Timed out waiting for reader stress check");
 						// Legacy write via wrapRequestForTokenBinding racing with atomic OIDC writes
 						wrappedReqA.getSession().setAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN, "token-A-" + i);
 					}
 				} catch (Throwable t) {
 					failure.compareAndSet(null, t);
+				} finally {
+					writerAPublished.countDown();
+					writersDone.countDown();
 				}
 			});
 			pool.submit(() -> {
 				try {
-					startLatch.await();
-					for (int i = 0; i < iterations; i++) {
+					assertTrue(readerObservedA.await(10, TimeUnit.SECONDS), "Timed out waiting for TenantA observation");
+					SSOUtils.setSSOSessionToken(session, "token-GW-0", GARDEN_WORLD_PROVIDER_UU);
+					writerGWPublished.countDown();
+					assertTrue(readerObservedGW.await(10, TimeUnit.SECONDS), "Timed out waiting for reader to observe GW token");
+					for (int i = 1; i < iterations; i++) {
+						if (i == iterations / 2)
+							assertTrue(readerEnteredStress.await(10, TimeUnit.SECONDS), "Timed out waiting for reader stress check");
 						SSOUtils.setSSOSessionToken(session, "token-GW-" + i, GARDEN_WORLD_PROVIDER_UU);
 						if ((i & 7) == 0)
 							SSOUtils.clearSSOSessionToken(session);
@@ -271,13 +300,27 @@ class SSOTokenSecurityTest extends AbstractTestCase {
 				} catch (Throwable t) {
 					failure.compareAndSet(null, t);
 				} finally {
-					done.set(true);
+					writerGWPublished.countDown();
+					writersDone.countDown();
 				}
 			});
 			pool.submit(() -> {
 				try {
-					startLatch.await();
-					while (!done.get()) {
+					assertTrue(writerAPublished.await(10, TimeUnit.SECONDS), "Timed out waiting for TenantA publication");
+					assertEquals("token-A-0", SSOUtils.getValidatedSessionToken(session, TENANT_A_PROVIDER_UU));
+					assertNull(SSOUtils.getValidatedSessionToken(session, GARDEN_WORLD_PROVIDER_UU));
+					checks.incrementAndGet();
+					nonNullObservations.incrementAndGet();
+					readerObservedA.countDown();
+
+					assertTrue(writerGWPublished.await(10, TimeUnit.SECONDS), "Timed out waiting for GW publication");
+					assertEquals("token-GW-0", SSOUtils.getValidatedSessionToken(session, GARDEN_WORLD_PROVIDER_UU));
+					assertNull(SSOUtils.getValidatedSessionToken(session, TENANT_A_PROVIDER_UU));
+					checks.incrementAndGet();
+					nonNullObservations.incrementAndGet();
+					readerObservedGW.countDown();
+
+					do {
 						Object gwToken = SSOUtils.getValidatedSessionToken(session, GARDEN_WORLD_PROVIDER_UU);
 						if (gwToken != null && !gwToken.toString().startsWith("token-GW-")) {
 							throw new AssertionError("Cross-paired token for GW: " + gwToken);
@@ -288,21 +331,29 @@ class SSOTokenSecurityTest extends AbstractTestCase {
 						}
 						SSOUtils.SSOSessionToken bound = SSOUtils.getSSOSessionToken(session);
 						if (bound != null) {
+							nonNullObservations.incrementAndGet();
 							String expectedPrefix = GARDEN_WORLD_PROVIDER_UU.equals(bound.providerUU()) ? "token-GW-" : "token-A-";
 							if (!bound.token().toString().startsWith(expectedPrefix)) {
 								throw new AssertionError("Mismatched binding: " + bound);
 							}
 						}
-					}
+						checks.incrementAndGet();
+						readerEnteredStress.countDown();
+					} while (writersDone.getCount() > 0);
 				} catch (Throwable t) {
 					failure.compareAndSet(null, t);
+				} finally {
+					readerObservedA.countDown();
+					readerObservedGW.countDown();
+					readerEnteredStress.countDown();
 				}
 			});
 
-			startLatch.countDown();
 			pool.shutdown();
 			assertTrue(pool.awaitTermination(30, TimeUnit.SECONDS));
 			assertNull(failure.get(), () -> "Unexpected concurrency failure: " + failure.get());
+			assertTrue(checks.get() >= 3, "Reader must observe initial publications and concurrent stress checks");
+			assertTrue(nonNullObservations.get() >= 2, "Reader must observe published tokens");
 		} finally {
 			pool.shutdownNow();
 		}
@@ -614,7 +665,7 @@ class SSOTokenSecurityTest extends AbstractTestCase {
 		Map<String, Object> attrs = new HashMap<>();
 		attrs.put(SSOWebUIFilter.TENANT_PREFIX_PARAMETER, GARDEN_WORLD_PREFIX);
 		attrs.put(ISSOPrincipalService.SSO_SELECTED_PROVIDER, GARDEN_WORLD_PROVIDER_UU);
-		attrs.put(ISSOPrincipalService.SSO_QUERY_STRING, SSOWebUIFilter.TENANT_PREFIX_PARAMETER + "=" + GARDEN_WORLD_PREFIX);
+		attrs.put(ISSOPrincipalService.SSO_QUERY_STRING, SSOWebUIFilter.TENANT_PREFIX_PARAMETER + "=" + GARDEN_WORLD_PREFIX + "&view=orders");
 		HttpSession session = createMapBackedSession(attrs);
 		SSOWebUIFilter filter = new SSOWebUIFilter();
 
@@ -622,6 +673,7 @@ class SSOTokenSecurityTest extends AbstractTestCase {
 			 MockedStatic<SSOUtils> ssoUtilsMock = Mockito.mockStatic(SSOUtils.class, Mockito.CALLS_REAL_METHODS)) {
 
 			sysConfigMock.when(() -> MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false)).thenReturn(true);
+			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalConfig(null, null)).thenReturn(null);
 			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalConfig(GARDEN_WORLD_PROVIDER_UU, GARDEN_WORLD_PREFIX)).thenReturn(cfgGW);
 			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalServiceForConfig(cfgGW)).thenReturn(svcGW);
 			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalConfig(null, TENANT_A_PREFIX)).thenReturn(cfgA);
@@ -637,9 +689,10 @@ class SSOTokenSecurityTest extends AbstractTestCase {
 			verify(cbChain, never()).doFilter(any(), any());
 			assertEquals(GARDEN_WORLD_PREFIX, attrs.get(SSOWebUIFilter.TENANT_PREFIX_PARAMETER));
 			assertEquals("token-for-" + GARDEN_WORLD_PROVIDER_UU, SSOUtils.getValidatedSessionToken(session, GARDEN_WORLD_PROVIDER_UU));
-			verify(cbResp).sendRedirect("http://127.0.0.1:8080/webui/index.zul?tenant=gardenworld");
+			assertNull(attrs.get(ISSOPrincipalService.SSO_QUERY_STRING), "Callback must consume SSO_QUERY_STRING");
+			verify(cbResp).sendRedirect("http://127.0.0.1:8080/webui/index.zul?tenant=gardenworld&view=orders");
 
-			// 2. Callback to /webui/index.zul without tenant parameter and without SSO_QUERY_STRING still preserves tenant on redirect
+			// 2. Callback to /webui/index.zul without tenant parameter and without SSO_QUERY_STRING synthesizes tenant query parameter
 			SSOUtils.clearSSOSessionToken(session);
 			HttpServletRequest cbReqNoQuery = createIndexRequest(session, null, null, "auth-code-gw-2");
 			HttpServletResponse cbRespNoQuery = mock(HttpServletResponse.class);
@@ -668,9 +721,173 @@ class SSOTokenSecurityTest extends AbstractTestCase {
 			FilterChain plainChain = mock(FilterChain.class);
 			filter.doFilter(plainReq, plainResp, plainChain);
 
+			verify(plainChain, times(1)).doFilter(plainReq, plainResp);
+			verify(plainResp, never()).sendRedirect(anyString());
 			assertNull(attrs.get(SSOWebUIFilter.TENANT_PREFIX_PARAMETER));
 			assertNull(attrs.get(ISSOPrincipalService.SSO_SELECTED_PROVIDER));
 			assertNull(SSOUtils.getSSOSessionToken(session));
+		}
+	}
+
+	@Test
+	void testPendingCallbackDetectionExceptionHandledBySSOErrorHandler() throws Throwable {
+		MSSOPrincipalConfig cfgGW = mockConfig(GARDEN_WORLD_PROVIDER_UU, DictionaryIDs.AD_Client.GARDEN_WORLD.id);
+		ISSOPrincipalService failingSvc = createLegacyBehaviorPrincipalService(GARDEN_WORLD_PROVIDER_UU);
+		doThrow(new RuntimeException("callback check failed")).when(failingSvc).hasAuthenticationCode(any(), any());
+
+		Map<String, Object> attrs = new HashMap<>();
+		attrs.put(SSOWebUIFilter.TENANT_PREFIX_PARAMETER, GARDEN_WORLD_PREFIX);
+		attrs.put(ISSOPrincipalService.SSO_SELECTED_PROVIDER, GARDEN_WORLD_PROVIDER_UU);
+		HttpSession session = createMapBackedSession(attrs);
+		SSOUtils.setSSOSessionToken(session, "prior-token", GARDEN_WORLD_PROVIDER_UU);
+		SSOWebUIFilter filter = new SSOWebUIFilter();
+
+		StringWriter body = new StringWriter();
+		HttpServletRequest req = createIndexRequest(session, null, null, "auth-code-gw");
+		HttpServletResponse resp = mock(HttpServletResponse.class);
+		when(resp.getWriter()).thenReturn(new PrintWriter(body));
+		FilterChain chain = mock(FilterChain.class);
+
+		try (MockedStatic<MSysConfig> sysConfigMock = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<SSOUtils> ssoUtilsMock = Mockito.mockStatic(SSOUtils.class, Mockito.CALLS_REAL_METHODS)) {
+
+			sysConfigMock.when(() -> MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false)).thenReturn(true);
+			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalConfig(GARDEN_WORLD_PROVIDER_UU, GARDEN_WORLD_PREFIX)).thenReturn(cfgGW);
+			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalServiceForConfig(cfgGW)).thenReturn(failingSvc);
+
+			filter.doFilter(req, resp, chain);
+
+			verify(chain, never()).doFilter(any(), any());
+			verify(resp).setStatus(500);
+			assertTrue(body.toString().contains("callback check failed"));
+			assertNull(SSOUtils.getSSOSessionToken(session));
+			assertNull(attrs.get(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN));
+		}
+	}
+
+	@Test
+	void testStaleProviderCookieRecoversSingleTenantProviderEvenWhenShowLoginPageEnabled() throws Throwable {
+		MClient gardenWorld = MClient.get(Env.getCtx(), DictionaryIDs.AD_Client.GARDEN_WORLD.id);
+		MSSOPrincipalConfig cfgGW = mockConfig(GARDEN_WORLD_PROVIDER_UU, DictionaryIDs.AD_Client.GARDEN_WORLD.id);
+		ISSOPrincipalService svcGW = createLegacyBehaviorPrincipalService(GARDEN_WORLD_PROVIDER_UU);
+
+		SSOWebUIFilter filter = new SSOWebUIFilter();
+
+		try (MockedStatic<MSysConfig> sysConfigMock = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MClient> clientMock = Mockito.mockStatic(MClient.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MSSOPrincipalConfig> ssoCfgMock = Mockito.mockStatic(MSSOPrincipalConfig.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<SSOUtils> ssoUtilsMock = Mockito.mockStatic(SSOUtils.class, Mockito.CALLS_REAL_METHODS)) {
+
+			sysConfigMock.when(() -> MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false)).thenReturn(true);
+			sysConfigMock.when(() -> MSysConfig.getBooleanValue(MSysConfig.SSO_SHOW_LOGINPAGE, false)).thenReturn(true);
+			clientMock.when(() -> MClient.getByLoginPrefix(GARDEN_WORLD_PREFIX)).thenReturn(gardenWorld);
+			ssoCfgMock.when(() -> MSSOPrincipalConfig.getSSOPrincipalConfig("stale-cookie-uu")).thenReturn(null);
+			ssoCfgMock.when(() -> MSSOPrincipalConfig.getSSOPrincipalConfig(GARDEN_WORLD_PROVIDER_UU)).thenReturn(cfgGW);
+			ssoCfgMock.when(() -> MSSOPrincipalConfig.getSSOPrincipalConfigByClient(DictionaryIDs.AD_Client.GARDEN_WORLD.id))
+					.thenReturn(Collections.singletonList(cfgGW));
+			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalServiceForConfig(cfgGW)).thenReturn(svcGW);
+
+			// 1. Stale provider cookie falls back to tenant's single provider even when SSO_SHOW_LOGINPAGE=true
+			Map<String, Object> cookieAttrs = new HashMap<>();
+			HttpSession cookieSession = createMapBackedSession(cookieAttrs);
+			HttpServletRequest cookieReq = createIndexRequest(cookieSession, GARDEN_WORLD_PREFIX, null, null);
+			when(cookieReq.getCookies()).thenReturn(new Cookie[] { new Cookie(ISSOPrincipalService.SSO_SELECTED_PROVIDER, "stale-cookie-uu") });
+			HttpServletResponse cookieResp = mock(HttpServletResponse.class);
+			FilterChain cookieChain = mock(FilterChain.class);
+			filter.doFilter(cookieReq, cookieResp, cookieChain);
+
+			verify(cookieChain, never()).doFilter(any(), any());
+			verify(cookieResp).sendRedirect("https://idp.example/" + GARDEN_WORLD_PROVIDER_UU + "/authorize");
+			assertEquals(GARDEN_WORLD_PROVIDER_UU, cookieAttrs.get(ISSOPrincipalService.SSO_SELECTED_PROVIDER));
+
+			// 2. Without a cookie, SSO_SHOW_LOGINPAGE=true continues to show the login page
+			Map<String, Object> noCookieAttrs = new HashMap<>();
+			HttpSession noCookieSession = createMapBackedSession(noCookieAttrs);
+			HttpServletRequest noCookieReq = createIndexRequest(noCookieSession, GARDEN_WORLD_PREFIX, null, null);
+			HttpServletResponse noCookieResp = mock(HttpServletResponse.class);
+			FilterChain noCookieChain = mock(FilterChain.class);
+			filter.doFilter(noCookieReq, noCookieResp, noCookieChain);
+
+			verify(noCookieChain, times(1)).doFilter(noCookieReq, noCookieResp);
+			verify(noCookieResp, never()).sendRedirect(anyString());
+			assertNull(noCookieAttrs.get(ISSOPrincipalService.SSO_SELECTED_PROVIDER));
+		}
+	}
+
+	@Test
+	void testSavedQueryTenantParameterParsingAppendsWhenAbsentAndPreservesEncoded() throws Throwable {
+		MSSOPrincipalConfig cfgGW = mockConfig(GARDEN_WORLD_PROVIDER_UU, DictionaryIDs.AD_Client.GARDEN_WORLD.id);
+		ISSOPrincipalService svcGW = createLegacyBehaviorPrincipalService(GARDEN_WORLD_PROVIDER_UU);
+		SSOWebUIFilter filter = new SSOWebUIFilter();
+
+		try (MockedStatic<MSysConfig> sysConfigMock = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<SSOUtils> ssoUtilsMock = Mockito.mockStatic(SSOUtils.class, Mockito.CALLS_REAL_METHODS)) {
+
+			sysConfigMock.when(() -> MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false)).thenReturn(true);
+			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalConfig(GARDEN_WORLD_PROVIDER_UU, GARDEN_WORLD_PREFIX)).thenReturn(cfgGW);
+			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalServiceForConfig(cfgGW)).thenReturn(svcGW);
+
+			// Saved query containing "tenant=" only inside a parameter value must still append tenant=gardenworld
+			Map<String, Object> attrs1 = new HashMap<>();
+			attrs1.put(SSOWebUIFilter.TENANT_PREFIX_PARAMETER, GARDEN_WORLD_PREFIX);
+			attrs1.put(ISSOPrincipalService.SSO_SELECTED_PROVIDER, GARDEN_WORLD_PROVIDER_UU);
+			attrs1.put(ISSOPrincipalService.SSO_QUERY_STRING, "view=tenant=details");
+			HttpSession session1 = createMapBackedSession(attrs1);
+
+			HttpServletRequest req1 = createIndexRequest(session1, null, null, "auth-code-1");
+			HttpServletResponse resp1 = mock(HttpServletResponse.class);
+			filter.doFilter(req1, resp1, mock(FilterChain.class));
+			verify(resp1).sendRedirect("http://127.0.0.1:8080/webui/index.zul?view=tenant=details&tenant=gardenworld");
+
+			// Existing encoded tenant parameter name with non-empty value is preserved as-is
+			Map<String, Object> attrs2 = new HashMap<>();
+			attrs2.put(SSOWebUIFilter.TENANT_PREFIX_PARAMETER, GARDEN_WORLD_PREFIX);
+			attrs2.put(ISSOPrincipalService.SSO_SELECTED_PROVIDER, GARDEN_WORLD_PROVIDER_UU);
+			attrs2.put(ISSOPrincipalService.SSO_QUERY_STRING, "%74enant=gardenworld&view=orders");
+			HttpSession session2 = createMapBackedSession(attrs2);
+
+			HttpServletRequest req2 = createIndexRequest(session2, null, null, "auth-code-2");
+			HttpServletResponse resp2 = mock(HttpServletResponse.class);
+			filter.doFilter(req2, resp2, mock(FilterChain.class));
+			verify(resp2).sendRedirect("http://127.0.0.1:8080/webui/index.zul?%74enant=gardenworld&view=orders");
+		}
+	}
+
+	@Test
+	void testProviderCleanupExceptionStillClearsCoreBindingAndWritesErrorResponse() throws Throwable {
+		MSSOPrincipalConfig cfgGW = mockConfig(GARDEN_WORLD_PROVIDER_UU, DictionaryIDs.AD_Client.GARDEN_WORLD.id);
+		ISSOPrincipalService svcGW = createLegacyBehaviorPrincipalService(GARDEN_WORLD_PROVIDER_UU);
+		doReturn(false).when(svcGW).isAuthenticated(any(), any());
+		doThrow(new RuntimeException("provider cleanup failed")).when(svcGW).removePrincipalFromSession(any());
+
+		Map<String, Object> attrs = new HashMap<>();
+		attrs.put(SSOWebUIFilter.TENANT_PREFIX_PARAMETER, GARDEN_WORLD_PREFIX);
+		attrs.put(ISSOPrincipalService.SSO_SELECTED_PROVIDER, GARDEN_WORLD_PROVIDER_UU);
+		HttpSession session = createMapBackedSession(attrs);
+		SSOUtils.setSSOSessionToken(session, "expired-token", GARDEN_WORLD_PROVIDER_UU);
+		SSOWebUIFilter filter = new SSOWebUIFilter();
+
+		StringWriter body = new StringWriter();
+		HttpServletRequest req = createIndexRequest(session, GARDEN_WORLD_PREFIX, null, null);
+		HttpServletResponse resp = mock(HttpServletResponse.class);
+		when(resp.getWriter()).thenReturn(new PrintWriter(body));
+		FilterChain chain = mock(FilterChain.class);
+
+		try (MockedStatic<MSysConfig> sysConfigMock = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<SSOUtils> ssoUtilsMock = Mockito.mockStatic(SSOUtils.class, Mockito.CALLS_REAL_METHODS)) {
+
+			sysConfigMock.when(() -> MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false)).thenReturn(true);
+			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalConfig(GARDEN_WORLD_PROVIDER_UU, GARDEN_WORLD_PREFIX)).thenReturn(cfgGW);
+			ssoUtilsMock.when(() -> SSOUtils.getSSOPrincipalServiceForConfig(cfgGW)).thenReturn(svcGW);
+
+			filter.doFilter(req, resp, chain);
+
+			verify(chain, never()).doFilter(any(), any());
+			verify(resp).setStatus(500);
+			assertTrue(body.toString().contains("provider cleanup failed"));
+			assertNull(SSOUtils.getSSOSessionToken(session));
+			assertNull(attrs.get(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN));
+			assertNull(attrs.get(ISSOPrincipalService.SSO_AUTHENTICATED_PROVIDER));
 		}
 	}
 
@@ -707,63 +924,105 @@ class SSOTokenSecurityTest extends AbstractTestCase {
 		}
 	}
 
+	private record DedicatedSSOUser(MUser user, int clientId, int roleContextId, List<MUserRoles> userRoles) {}
+
+	private DedicatedSSOUser createDedicatedSSOUser(int clientId, int roleContextId, String namePrefix, int[][] clientAndRolePairs) {
+		String uniqueName = namePrefix + "_" + UUID.randomUUID().toString().replace("-", "").substring(0, 12);
+		Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, clientId);
+		Env.setContext(Env.getCtx(), Env.AD_ORG_ID, DictionaryIDs.AD_Org.GLOBAL.id);
+		Env.setContext(Env.getCtx(), Env.AD_ROLE_ID, roleContextId);
+
+		MUser user = new MUser(Env.getCtx(), 0, null);
+		user.setAD_Org_ID(DictionaryIDs.AD_Org.GLOBAL.id);
+		user.setName(uniqueName);
+		user.setPassword("SsoTest#9aB1!z");
+		user.setAuthenticationType(MUser.AUTHENTICATIONTYPE_ApplicationAndSSO);
+		user.setIsActive(true);
+		user.saveEx();
+
+		List<MUserRoles> roles = new ArrayList<>();
+		for (int[] pair : clientAndRolePairs) {
+			int urClientId = pair[0];
+			int urRoleId = pair[1];
+			Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, urClientId);
+			Env.setContext(Env.getCtx(), Env.AD_ORG_ID, DictionaryIDs.AD_Org.GLOBAL.id);
+			Env.setContext(Env.getCtx(), Env.AD_ROLE_ID, urRoleId);
+
+			MUserRoles ur = new MUserRoles(Env.getCtx(), user.getAD_User_ID(), urRoleId, null);
+			ur.setAD_Org_ID(DictionaryIDs.AD_Org.GLOBAL.id);
+			ur.setIsActive(true);
+			ur.saveEx();
+			roles.add(ur);
+		}
+		return new DedicatedSSOUser(user, clientId, roleContextId, roles);
+	}
+
+	private void deleteDedicatedSSOUser(DedicatedSSOUser dedicated) {
+		if (dedicated == null || dedicated.user() == null || dedicated.user().getAD_User_ID() <= 0)
+			return;
+		int userId = dedicated.user().getAD_User_ID();
+		for (MUserRoles ur : dedicated.userRoles()) {
+			if (ur != null) {
+				Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, ur.getAD_Client_ID());
+				Env.setContext(Env.getCtx(), Env.AD_ORG_ID, DictionaryIDs.AD_Org.GLOBAL.id);
+				Env.setContext(Env.getCtx(), Env.AD_ROLE_ID, ur.getAD_Role_ID());
+				ur.deleteEx(true);
+			}
+		}
+		DB.executeUpdateEx("DELETE FROM AD_Password_History WHERE AD_User_ID=?", new Object[] { userId }, null);
+		Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, dedicated.clientId());
+		Env.setContext(Env.getCtx(), Env.AD_ORG_ID, DictionaryIDs.AD_Org.GLOBAL.id);
+		Env.setContext(Env.getCtx(), Env.AD_ROLE_ID, dedicated.roleContextId());
+		MUser freshUser = new MUser(Env.getCtx(), userId, null);
+		if (freshUser.getAD_User_ID() > 0)
+			freshUser.deleteEx(true);
+		CacheMgt.get().reset(MUser.Table_Name, userId);
+	}
+
+	private void mockLoginAccountPolicySysConfig(MockedStatic<MSysConfig> sysConfigMock) {
+		sysConfigMock.when(() -> MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false)).thenReturn(true);
+		sysConfigMock.when(() -> MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false)).thenReturn(false);
+		sysConfigMock.when(() -> MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_ACCOUNT_LOCK_MINUTES, 0)).thenReturn(0);
+		sysConfigMock.when(() -> MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_INACTIVE_PERIOD_DAY, 0)).thenReturn(0);
+		sysConfigMock.when(() -> MSysConfig.getIntValue(MSysConfig.USER_LOCKING_MAX_PASSWORD_AGE_DAY, 0)).thenReturn(0);
+	}
+
 	@Test
 	void testTenantSSORejectsSystemUserSuperUser() {
 		MClient gardenWorld = MClient.get(Env.getCtx(), DictionaryIDs.AD_Client.GARDEN_WORLD.id);
 		Properties ctxSnapshot = new Properties();
 		ctxSnapshot.putAll(Env.getCtx());
+		DedicatedSSOUser systemUser = null;
 
 		try (MockedStatic<MSysConfig> sysConfigMock = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS);
 			 MockedStatic<MClient> clientMock = Mockito.mockStatic(MClient.class, Mockito.CALLS_REAL_METHODS)) {
 
-			sysConfigMock.when(() -> MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false)).thenReturn(true);
-			sysConfigMock.when(() -> MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false)).thenReturn(false);
+			mockLoginAccountPolicySysConfig(sysConfigMock);
 			clientMock.when(() -> MClient.getByLoginPrefix(GARDEN_WORLD_PREFIX)).thenReturn(gardenWorld);
 
-			Login login = new Login(Env.getCtx());
-			KeyNamePair[] clients = login.getClients("SuperUser", null, null, new Object(), GARDEN_WORLD_PREFIX);
-			assertNull(clients, "Tenant-scoped SSO must not authenticate AD_Client_ID=0 SuperUser");
-		} finally {
+			systemUser = createDedicatedSSOUser(
+					DictionaryIDs.AD_Client.SYSTEM.id,
+					DictionaryIDs.AD_Role.SYSTEM_ADMINISTRATOR.id,
+					"SSOTestSysReject",
+					new int[][] {
+						{ DictionaryIDs.AD_Client.SYSTEM.id, DictionaryIDs.AD_Role.SYSTEM_ADMINISTRATOR.id },
+						{ DictionaryIDs.AD_Client.GARDEN_WORLD.id, DictionaryIDs.AD_Role.GARDEN_WORLD_ADMIN.id }
+					});
+
 			Env.getCtx().clear();
 			Env.getCtx().putAll(ctxSnapshot);
-		}
-	}
 
-	private record UserLoginSnapshot(int userId, Timestamp dateLastLogin, int failedLoginCount,
-			Timestamp datePasswordChanged, Timestamp updated, int updatedBy) {}
-
-	private UserLoginSnapshot snapshotUserLogin(int userId) {
-		MUser user = MUser.getCopy(Env.getCtx(), userId, null);
-		return new UserLoginSnapshot(userId, user.getDateLastLogin(), user.getFailedLoginCount(),
-				user.getDatePasswordChanged(), user.getUpdated(), user.getUpdatedBy());
-	}
-
-	private void restoreUserLogin(UserLoginSnapshot snap) {
-		if (snap == null)
-			return;
-		String sql = "UPDATE AD_User SET DateLastLogin=?, FailedLoginCount=?, DatePasswordChanged=?, Updated=?, UpdatedBy=? WHERE AD_User_ID=?";
-		PreparedStatement pstmt = null;
-		try {
-			pstmt = DB.prepareStatement(sql, null);
-			if (snap.dateLastLogin() != null)
-				pstmt.setTimestamp(1, snap.dateLastLogin());
-			else
-				pstmt.setNull(1, Types.TIMESTAMP);
-			pstmt.setInt(2, snap.failedLoginCount());
-			if (snap.datePasswordChanged() != null)
-				pstmt.setTimestamp(3, snap.datePasswordChanged());
-			else
-				pstmt.setNull(3, Types.TIMESTAMP);
-			pstmt.setTimestamp(4, snap.updated());
-			pstmt.setInt(5, snap.updatedBy());
-			pstmt.setInt(6, snap.userId());
-			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
+			Login login = new Login(Env.getCtx());
+			KeyNamePair[] clients = login.getClients(systemUser.user().getName(), null, null, new Object(), GARDEN_WORLD_PREFIX);
+			assertNull(clients, "Tenant-scoped SSO must not authenticate AD_Client_ID=0 user");
 		} finally {
-			DB.close(pstmt);
+			try {
+				deleteDedicatedSSOUser(systemUser);
+			} finally {
+				Env.getCtx().clear();
+				Env.getCtx().putAll(ctxSnapshot);
+			}
 		}
-		CacheMgt.get().reset(MUser.Table_Name, snap.userId());
 	}
 
 	@Test
@@ -771,33 +1030,57 @@ class SSOTokenSecurityTest extends AbstractTestCase {
 		MClient gardenWorld = MClient.get(Env.getCtx(), DictionaryIDs.AD_Client.GARDEN_WORLD.id);
 		Properties ctxSnapshot = new Properties();
 		ctxSnapshot.putAll(Env.getCtx());
-		UserLoginSnapshot gardenAdminSnapshot = snapshotUserLogin(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
-		UserLoginSnapshot superUserSnapshot = snapshotUserLogin(DictionaryIDs.AD_User.SUPER_USER.id);
+		DedicatedSSOUser tenantUser = null;
+		DedicatedSSOUser systemUser = null;
 
 		try (MockedStatic<MSysConfig> sysConfigMock = Mockito.mockStatic(MSysConfig.class, Mockito.CALLS_REAL_METHODS);
 			 MockedStatic<MClient> clientMock = Mockito.mockStatic(MClient.class, Mockito.CALLS_REAL_METHODS)) {
 
-			sysConfigMock.when(() -> MSysConfig.getBooleanValue(MSysConfig.ENABLE_SSO, false)).thenReturn(true);
-			sysConfigMock.when(() -> MSysConfig.getBooleanValue(MSysConfig.USE_EMAIL_FOR_LOGIN, false)).thenReturn(false);
+			mockLoginAccountPolicySysConfig(sysConfigMock);
 			clientMock.when(() -> MClient.getByLoginPrefix(GARDEN_WORLD_PREFIX)).thenReturn(gardenWorld);
 
+			tenantUser = createDedicatedSSOUser(
+					DictionaryIDs.AD_Client.GARDEN_WORLD.id,
+					DictionaryIDs.AD_Role.GARDEN_WORLD_ADMIN.id,
+					"SSOTestGW",
+					new int[][] {
+						{ DictionaryIDs.AD_Client.GARDEN_WORLD.id, DictionaryIDs.AD_Role.GARDEN_WORLD_ADMIN.id }
+					});
+			systemUser = createDedicatedSSOUser(
+					DictionaryIDs.AD_Client.SYSTEM.id,
+					DictionaryIDs.AD_Role.SYSTEM_ADMINISTRATOR.id,
+					"SSOTestSys",
+					new int[][] {
+						{ DictionaryIDs.AD_Client.SYSTEM.id, DictionaryIDs.AD_Role.SYSTEM_ADMINISTRATOR.id },
+						{ DictionaryIDs.AD_Client.GARDEN_WORLD.id, DictionaryIDs.AD_Role.GARDEN_WORLD_ADMIN.id }
+					});
+
+			Env.getCtx().clear();
+			Env.getCtx().putAll(ctxSnapshot);
+
 			Login tenantLogin = new Login(Env.getCtx());
-			KeyNamePair[] tenantClients = tenantLogin.getClients("GardenAdmin", null, null, new Object(), GARDEN_WORLD_PREFIX);
+			KeyNamePair[] tenantClients = tenantLogin.getClients(tenantUser.user().getName(), null, null, new Object(), GARDEN_WORLD_PREFIX);
 			assertNotNull(tenantClients);
 			assertEquals(1, tenantClients.length);
 			assertEquals(DictionaryIDs.AD_Client.GARDEN_WORLD.id, tenantClients[0].getKey());
 
 			Login systemLogin = new Login(Env.getCtx());
-			KeyNamePair[] systemClients = systemLogin.getClients("SuperUser", null, null, new Object(), null);
+			KeyNamePair[] systemClients = systemLogin.getClients(systemUser.user().getName(), null, null, new Object(), null);
 			assertNotNull(systemClients);
 			List<Integer> clientIds = Arrays.stream(systemClients).map(KeyNamePair::getKey).toList();
 			assertTrue(clientIds.contains(DictionaryIDs.AD_Client.SYSTEM.id));
 			assertTrue(clientIds.contains(DictionaryIDs.AD_Client.GARDEN_WORLD.id));
 		} finally {
-			restoreUserLogin(gardenAdminSnapshot);
-			restoreUserLogin(superUserSnapshot);
-			Env.getCtx().clear();
-			Env.getCtx().putAll(ctxSnapshot);
+			try {
+				deleteDedicatedSSOUser(tenantUser);
+			} finally {
+				try {
+					deleteDedicatedSSOUser(systemUser);
+				} finally {
+					Env.getCtx().clear();
+					Env.getCtx().putAll(ctxSnapshot);
+				}
+			}
 		}
 	}
 

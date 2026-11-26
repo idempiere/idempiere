@@ -525,7 +525,7 @@ public class SSOUtils
 				return true;
 			if (obj instanceof TokenBindingHttpSession other)
 				return delegate.equals(other.delegate);
-			return delegate.equals(obj);
+			return false;
 		}
 
 		@Override
