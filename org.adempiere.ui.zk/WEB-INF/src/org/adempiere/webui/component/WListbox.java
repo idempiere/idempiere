@@ -144,7 +144,7 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 
 	    // Remove this listbox from the previous renderer
 	    ListitemRenderer<Object> previousRenderer = getItemRenderer();
-	    if (previousRenderer instanceof WListItemRenderer && previousRenderer != rowRenderer)
+	    if (rowRenderer != null && previousRenderer instanceof WListItemRenderer && previousRenderer != rowRenderer)
 	        ((WListItemRenderer) previousRenderer).removeTableValueChangeListener(this);
 
 	    if (rowRenderer != null)
