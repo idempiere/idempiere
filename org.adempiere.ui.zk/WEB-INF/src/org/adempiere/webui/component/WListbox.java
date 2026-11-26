@@ -46,6 +46,7 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Util;
 import org.idempiere.db.util.SQLFragment;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listhead;
 import org.zkoss.zul.Listheader;
@@ -147,8 +148,11 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 
 	    // Remove this listbox from the previous renderer
 	    ListitemRenderer<Object> previousRenderer = getItemRenderer();
-	    if (rowRenderer != null && previousRenderer instanceof WListItemRenderer && previousRenderer != rowRenderer)
-	        ((WListItemRenderer) previousRenderer).removeTableValueChangeListener(this);
+	    if (rowRenderer != null && previousRenderer instanceof WListItemRenderer && previousRenderer != rowRenderer) {
+	    	WListItemRenderer previous = (WListItemRenderer) previousRenderer;
+	    	previous.removeTableValueChangeListener(this);
+	    	removeEventListener(Events.ON_SELECT, previous);
+	    }
 
 	    if (rowRenderer != null)
 	        rowRenderer.addTableValueChangeListener(this);
