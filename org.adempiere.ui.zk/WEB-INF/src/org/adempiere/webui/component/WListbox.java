@@ -129,11 +129,15 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	 */
 	public void setData(ListModelTable model, List<? extends String> columnNames, WListItemRenderer rowRenderer) {
 
-		if (rowRenderer != null && (columnNames == null || columnNames.isEmpty()))
-		    throw new IllegalArgumentException("columnNames is required when a renderer is provided");
+	    if (rowRenderer != null) {
+	        if (columnNames == null || columnNames.isEmpty())
+	            throw new IllegalArgumentException("columnNames is required when a renderer is provided");
 
-		if (rowRenderer != null)
-			rowRenderer.addTableValueChangeListener(this);
+	        if (rowRenderer.getNoColumns() != columnNames.size())
+	            throw new IllegalArgumentException("The renderer must be initialized with the same number of columns as columnNames");
+
+	        rowRenderer.addTableValueChangeListener(this);
+	    }
 
 		this.setModel(model);
 

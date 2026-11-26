@@ -864,7 +864,7 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 	 */
 	public void addTableValueChangeListener(TableValueChangeListener listener)
 	{
-	    if (listener == null)
+	    if (listener == null || m_listeners.contains(listener))
 	    {
 	    	return;
 	    }
