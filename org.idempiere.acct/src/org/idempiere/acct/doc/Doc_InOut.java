@@ -311,7 +311,7 @@ public class Doc_InOut extends Doc
 					hasReversedLineFacts = true;
 					for (MFactAcct origFact : origFacts)
 					{
-						FactLine revLine = createReversedChargeFactLine(fact, as, line, origFact);
+						FactLine revLine = createReversalFactLine(fact, as, line, origFact);
 						if (revLine == null)
 						{
 							String errMsg = origFact.getAmtAcctCr().signum() != 0 ? "FactLine DR not created" : "FactLine CR not created";
@@ -620,7 +620,7 @@ public class Doc_InOut extends Doc
 					hasReversedLineFacts = true;
 					for (MFactAcct origFact : origFacts)
 					{
-						FactLine revLine = createReversedChargeFactLine(fact, as, line, origFact);
+						FactLine revLine = createReversalFactLine(fact, as, line, origFact);
 						if (revLine == null)
 						{
 							String errMsg = origFact.getAmtAcctCr().signum() != 0 ? "FactLine DR not created" : "FactLine CR not created";

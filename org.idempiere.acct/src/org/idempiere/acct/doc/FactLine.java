@@ -1390,7 +1390,7 @@ public final class FactLine extends X_Fact_Acct
 		{
 			if (otherLine.getReversedFactAcct_ID() > 0)
 				sql.append(" AND Fact_Acct_ID<>? ");
-			else if (otherLine.getAmtAcctDr().signum() == 0 && otherLine.getAmtAcctCr().signum() != 0)
+			if (otherLine.getAmtAcctDr().signum() == 0 && otherLine.getAmtAcctCr().signum() != 0)
 				sql.append(" AND AmtAcctDr = 0 AND AmtAcctCr != 0 ");
 			else if (otherLine.getAmtAcctDr().signum() != 0 && otherLine.getAmtAcctCr().signum() == 0)
 				sql.append(" AND AmtAcctCr = 0 AND AmtAcctDr != 0 ");

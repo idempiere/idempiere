@@ -431,6 +431,20 @@ public class Doc_Production extends Doc
 			return null;
 		}
 		boolean isPostedReversal = isReversal;
+		if (isPostedReversal)
+		{
+			for (DocLine revLine : p_lines)
+			{
+				int matchedOrigLineId = revLine.getReversalLine_ID() > 0 ? revLine.getReversalLine_ID()
+						: (m_reversalLineMap != null ? m_reversalLineMap.getOrDefault(revLine.get_ID(), 0) : 0);
+				if (matchedOrigLineId <= 0)
+				{
+					p_Error = "Original Production line not matched for reversal: " + revLine;
+					log.log(Level.WARNING, p_Error);
+					return null;
+				}
+			}
+		}
 		boolean hasReversedLineFacts = false;
 		Map<Integer, List<MFactAcct>> reversedLineFactsMap = isPostedReversal ? new HashMap<>() : null;
 		int stdPrecision = as.getStdPrecision();
@@ -682,7 +696,7 @@ public class Doc_Production extends Doc
 					? getReversedProductionLineFacts(as, prod.getReversal_ID(), line.get_ID(), reversedLineFactsMap)
 					: Collections.emptyList();
 
-			if (line.isProductionBOM() && origLineFacts.isEmpty())
+			if (!isPostedReversal && line.isProductionBOM())
 			{
 				if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel))
 				{
@@ -719,8 +733,7 @@ public class Doc_Production extends Doc
 			// end MZ
 
 			//  Inventory       DR      CR
-			if (!(line.isProductionBOM() && MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel))
-					&& origLineFacts.isEmpty())
+			if (!isPostedReversal && !(line.isProductionBOM() && MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel)))
 			{
 				BigDecimal factLineAmt = costs;
 				if (line.isProductionBOM() && !(MAcctSchema.COSTINGMETHOD_StandardCosting.equals(costingMethod)))
@@ -744,7 +757,7 @@ public class Doc_Production extends Doc
 				hasReversedLineFacts = true;
 				for (MFactAcct origFact : origLineFacts)
 				{
-					fl = createReversedChargeFactLine(fact, as, line, origFact);
+					fl = createReversalFactLine(fact, as, line, origFact);
 					if (fl == null)
 					{
 						p_Error = "No Costs for Line " + line.getLine() + " - " + line;

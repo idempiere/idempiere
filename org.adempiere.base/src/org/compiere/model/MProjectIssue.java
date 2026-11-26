@@ -21,7 +21,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -178,6 +177,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		saveEx();
 		
 		boolean ok = doComplete() == null;
+		// Persist CostAmt set during doComplete() -> updateBalanceAmt() for stocked items
 		if (ok)
 			saveEx();
 		return ok;
@@ -679,7 +679,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 
 		BigDecimal origQty = origIssue.getMovementQty();
 		int origQtySign = origQty != null ? origQty.signum() : 0;
-		List<MFactAcct> activeFacts = removeDistributionReversalPairs(origFacts, origQty);
+		List<MFactAcct> activeFacts = MFactAcct.removeDistributionReversalPairs(origFacts, origQty);
 
 		MProject project = getParent();
 		String projAcctCol = project != null && MProject.PROJECTCATEGORY_AssetProject.equals(project.getProjectCategory())
@@ -830,64 +830,4 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 			return offsetNet;
 		return null;
 	} // resolveLegacyReversalCost
-
-	/**
-	 * Remove exact cancelling GL-distribution reversal pairs (created when {@code GL_Distribution.IsCreateReversal='Y'})
-	 * so downstream project/offset/quantity aggregations see only net active fact lines.
-	 */
-	private List<MFactAcct> removeDistributionReversalPairs(List<MFactAcct> origFacts, BigDecimal origQty)
-	{
-		if (origFacts.size() <= 2 || origQty == null || origQty.signum() == 0)
-			return origFacts;
-
-		int origQtySign = origQty.signum();
-		BigDecimal posQtySum = BigDecimal.ZERO;
-		for (MFactAcct fa : origFacts)
-		{
-			if (fa.getC_Charge_ID() == 0 && fa.getQty() != null && fa.getQty().signum() == origQtySign)
-				posQtySum = posQtySum.add(fa.getQty());
-		}
-		if (posQtySum.abs().compareTo(origQty.abs()) <= 0)
-			return origFacts;
-
-		boolean[] removed = new boolean[origFacts.size()];
-		for (int i = 0; i < origFacts.size() && posQtySum.abs().compareTo(origQty.abs()) > 0; i++)
-		{
-			if (removed[i])
-				continue;
-			MFactAcct a = origFacts.get(i);
-			BigDecimal aNet = a.getAmtAcctDr().subtract(a.getAmtAcctCr());
-			BigDecimal aQty = a.getQty() != null ? a.getQty() : BigDecimal.ZERO;
-			for (int j = i + 1; j < origFacts.size(); j++)
-			{
-				if (removed[j])
-					continue;
-				MFactAcct b = origFacts.get(j);
-				if (a.getAccount_ID() == b.getAccount_ID()
-						&& a.getC_Charge_ID() == b.getC_Charge_ID()
-						&& aNet.add(b.getAmtAcctDr().subtract(b.getAmtAcctCr())).signum() == 0
-						&& aQty.add(b.getQty() != null ? b.getQty() : BigDecimal.ZERO).signum() == 0)
-				{
-					removed[i] = true;
-					removed[j] = true;
-					if (a.getC_Charge_ID() == 0)
-					{
-						if (aQty.signum() == origQtySign)
-							posQtySum = posQtySum.subtract(aQty);
-						else if (b.getQty() != null && b.getQty().signum() == origQtySign)
-							posQtySum = posQtySum.subtract(b.getQty());
-					}
-					break;
-				}
-			}
-		}
-
-		List<MFactAcct> active = new ArrayList<>(origFacts.size());
-		for (int i = 0; i < origFacts.size(); i++)
-		{
-			if (!removed[i])
-				active.add(origFacts.get(i));
-		}
-		return active;
-	}
 }	//	MProjectIssue

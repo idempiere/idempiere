@@ -2636,22 +2636,31 @@ public abstract class Doc implements IDoc
 
 	/**
 	 * Create a reversal FactLine for a previously posted Fact_Acct record.
+	 * Uses a transient minimal {@link MAccount} to avoid creating new {@code C_ValidCombination}
+	 * records and uses the accounting schema currency during line creation so reversal-date
+	 * currency conversion is not invoked before {@link FactLine#updateReverseLine} copies the
+	 * original source/accounted amounts and dimensions.
 	 * @param fact target Fact
 	 * @param as accounting schema
 	 * @param line reversal DocLine
 	 * @param origFact original posted MFactAcct record
 	 * @return created FactLine, or null if creation failed
 	 */
-	protected FactLine createReversedChargeFactLine(Fact fact, MAcctSchema as, DocLine line, MFactAcct origFact)
+	protected FactLine createReversalFactLine(Fact fact, MAcctSchema as, DocLine line, MFactAcct origFact)
 	{
-		FactLine chargeLine = fact.createLine(line, origFact.getMAccount(), origFact.getC_Currency_ID(), null, Env.ONE);
-		if (chargeLine == null)
+		MAccount acct = new MAccount(getCtx(), 0, getTrxName());
+		acct.setAD_Org_ID(origFact.getAD_Org_ID());
+		acct.setC_AcctSchema_ID(origFact.getC_AcctSchema_ID());
+		acct.setAccount_ID(origFact.getAccount_ID());
+		acct.setC_SubAcct_ID(origFact.getC_SubAcct_ID());
+		FactLine revLine = fact.createLine(line, acct, as.getC_Currency_ID(), null, Env.ONE);
+		if (revLine == null)
 			return null;
-		chargeLine.updateReverseLine(origFact, Env.ONE, true);
-		chargeLine.setC_SubAcct_ID(origFact.getC_SubAcct_ID());
-		chargeLine.setC_BPartner_ID(origFact.getC_BPartner_ID());
-		chargeLine.setSkipDistribution(true);
-		return chargeLine;
+		revLine.updateReverseLine(origFact, Env.ONE, true);
+		revLine.setC_SubAcct_ID(origFact.getC_SubAcct_ID());
+		revLine.setC_BPartner_ID(origFact.getC_BPartner_ID());
+		revLine.setSkipDistribution(true);
+		return revLine;
 	}
 
 	/**
@@ -2689,7 +2698,7 @@ public abstract class Doc implements IDoc
 			if (origFact.getAmtAcctDr().signum() == 0 && origFact.getAmtAcctCr().signum() == 0
 					&& origFact.getAmtSourceDr().signum() == 0 && origFact.getAmtSourceCr().signum() == 0)
 				continue;
-			FactLine revLine = createReversedChargeFactLine(fact, as, null, origFact);
+			FactLine revLine = createReversalFactLine(fact, as, null, origFact);
 			if (revLine == null)
 			{
 				String errMsg = origFact.getAmtAcctCr().signum() != 0 ? "FactLine DR not created" : "FactLine CR not created";
@@ -2710,58 +2719,7 @@ public abstract class Doc implements IDoc
 	 */
 	protected List<MFactAcct> removeDistributionReversalPairs(List<MFactAcct> origFacts, BigDecimal expectedQty)
 	{
-		if (origFacts == null || origFacts.size() <= 2 || expectedQty == null || expectedQty.signum() == 0)
-			return origFacts;
-
-		int expectedQtySign = expectedQty.signum();
-		BigDecimal sameSignQtySum = BigDecimal.ZERO;
-		for (MFactAcct fa : origFacts)
-		{
-			if (fa.getC_Charge_ID() == 0 && fa.getQty() != null && fa.getQty().signum() == expectedQtySign)
-				sameSignQtySum = sameSignQtySum.add(fa.getQty());
-		}
-		if (sameSignQtySum.abs().compareTo(expectedQty.abs()) <= 0)
-			return origFacts;
-
-		boolean[] removed = new boolean[origFacts.size()];
-		for (int i = 0; i < origFacts.size() && sameSignQtySum.abs().compareTo(expectedQty.abs()) > 0; i++)
-		{
-			if (removed[i])
-				continue;
-			MFactAcct a = origFacts.get(i);
-			BigDecimal aNet = a.getAmtAcctDr().subtract(a.getAmtAcctCr());
-			BigDecimal aQty = a.getQty() != null ? a.getQty() : BigDecimal.ZERO;
-			for (int j = i + 1; j < origFacts.size(); j++)
-			{
-				if (removed[j])
-					continue;
-				MFactAcct b = origFacts.get(j);
-				if (a.getAccount_ID() == b.getAccount_ID()
-						&& a.getC_Charge_ID() == b.getC_Charge_ID()
-						&& aNet.add(b.getAmtAcctDr().subtract(b.getAmtAcctCr())).signum() == 0
-						&& aQty.add(b.getQty() != null ? b.getQty() : BigDecimal.ZERO).signum() == 0)
-				{
-					removed[i] = true;
-					removed[j] = true;
-					if (a.getC_Charge_ID() == 0)
-					{
-						if (aQty.signum() == expectedQtySign)
-							sameSignQtySum = sameSignQtySum.subtract(aQty);
-						else if (b.getQty() != null && b.getQty().signum() == expectedQtySign)
-							sameSignQtySum = sameSignQtySum.subtract(b.getQty());
-					}
-					break;
-				}
-			}
-		}
-
-		List<MFactAcct> active = new ArrayList<>(origFacts.size());
-		for (int i = 0; i < origFacts.size(); i++)
-		{
-			if (!removed[i])
-				active.add(origFacts.get(i));
-		}
-		return active;
+		return MFactAcct.removeDistributionReversalPairs(origFacts, expectedQty);
 	}
 
 	/**

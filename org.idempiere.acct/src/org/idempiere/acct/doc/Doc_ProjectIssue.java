@@ -155,7 +155,7 @@ public class Doc_ProjectIssue extends Doc
 
 			for (MFactAcct origFact : origFacts)
 			{
-				FactLine revLine = createReversedChargeFactLine(fact, as, m_line, origFact);
+				FactLine revLine = createReversalFactLine(fact, as, m_line, origFact);
 				if (revLine == null)
 				{
 					String errMsg = origFact.getAmtAcctCr().signum() != 0 ? "FactLine DR not created" : "FactLine CR not created";
