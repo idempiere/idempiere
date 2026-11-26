@@ -31,8 +31,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -56,6 +61,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.impl.ExecutionCarryOver;
+import org.zkoss.zk.ui.sys.ExecutionsCtrl;
 import org.zkoss.zk.ui.sys.Scheduler;
 import org.zkoss.zk.ui.sys.ServerPush;
 import org.zkoss.zk.ui.sys.SessionCtrl;
@@ -93,8 +99,18 @@ public class WebSocketServerPush implements ServerPush {
     private final static Map<String, ServerPushEndPoint> endPointMap = new ConcurrentHashMap<>();
     private final static Map<String, Boolean> unregisterMap = new ConcurrentHashMap<>();
     private final static ServerPushEndPoint STUB = new ServerPushEndPoint();
+    private static final long ECHO_RETRY_DELAY_MS = 300L;
+    private static final int MAX_ECHO_RETRIES = 2;
+    private static final Object ECHO_SCHEDULER_LOCK = new Object();
+    private static volatile ScheduledExecutorService echoRetryExecutor;
+    private static volatile boolean echoSchedulerShutdown = false;
+    private static final AtomicInteger ECHO_RETRY_THREAD_COUNTER = new AtomicInteger(0);
+
     private final List<Schedule<Event>> schedules = new ArrayList<>();
-    private final AtomicBoolean echoPending = new AtomicBoolean(false);
+    private final AtomicReference<ServerPushEndPoint> echoPendingEndPoint = new AtomicReference<>();
+    private final AtomicBoolean echoRetryScheduled = new AtomicBoolean(false);
+    private final AtomicReference<ScheduledFuture<?>> pendingEchoRetryFuture = new AtomicReference<>();
+    private volatile ServerPushEndPoint.TimedOutAu unresolvedTimedOutAu;
     private final AtomicBoolean cookieHandlerRegistered = new AtomicBoolean(false);
 
     private AbstractComponent dummyTarget;
@@ -275,6 +291,10 @@ public class WebSocketServerPush implements ServerPush {
 				releaseAbandonedGrant(info);
 				throw interrupted;
 			}
+			if (info.cancelled || desktop.get() == null) {
+				releaseAbandonedGrant(info);
+				throw new DesktopUnavailableException("Server push stopped while activating desktop");
+			}
 
 			ExecutionCarryOver carryOver = info.carryOver;
 			if (carryOver == null) {
@@ -287,8 +307,29 @@ public class WebSocketServerPush implements ServerPush {
 			try {
 				carryOver.carryOver();
 			} catch (RuntimeException | Error e) {
-				releaseAbandonedGrant(info);
+				try {
+					carryOver.cleanup();
+				} catch (RuntimeException | Error cleanupEx) {
+					e.addSuppressed(cleanupEx);
+					if (Executions.getCurrent() != null) {
+						ExecutionsCtrl.setCurrent(null);
+					}
+				} finally {
+					releaseAbandonedGrant(info);
+				}
 				throw e;
+			}
+			if (info.cancelled || desktop.get() == null) {
+				try {
+					carryOver.cleanup();
+				} catch (RuntimeException | Error cleanupEx) {
+					if (Executions.getCurrent() != null) {
+						ExecutionsCtrl.setCurrent(null);
+					}
+				} finally {
+					releaseAbandonedGrant(info);
+				}
+				throw new DesktopUnavailableException("Server push stopped while activating desktop");
 			}
 	    	_active = info;
 	    	return true;
@@ -312,40 +353,160 @@ public class WebSocketServerPush implements ServerPush {
     	}
     }
 
-    private boolean echo(ServerPushEndPoint[] lastAttempted) {
-    	Desktop dt = desktop.get();
-    	if (dt == null)
-    		return false;
-
-    	String dtid = dt.getId();
-    	ServerPushEndPoint endPoint = getEndPoint(dtid);
-    	if (lastAttempted != null) {
-    		lastAttempted[0] = endPoint;
+    /**
+     * Reopen shared echo retry scheduler creation when the bundle starts.
+     */
+    public static void startup() {
+    	synchronized (ECHO_SCHEDULER_LOCK) {
+    		echoSchedulerShutdown = false;
     	}
-    	if (endPoint != null && endPoint.sendEcho()) {
-    		return true;
-    	}
+    }
 
-    	if (dt.isServerPushEnabled()) {
-    		for (int attempt = 0; attempt < 2; attempt++) {
-    			try {
-    				Thread.sleep(300);
-    			} catch (InterruptedException e) {
-    				Thread.currentThread().interrupt();
-    				return false;
+    /**
+     * Shut down the shared echo retry scheduler when the bundle stops.
+     */
+    public static void shutdown() {
+    	synchronized (ECHO_SCHEDULER_LOCK) {
+    		echoSchedulerShutdown = true;
+    		if (echoRetryExecutor != null) {
+    			echoRetryExecutor.shutdownNow();
+    			echoRetryExecutor = null;
+    		}
+    	}
+    }
+
+    private static ScheduledExecutorService getEchoRetryExecutor() {
+    	if (echoSchedulerShutdown) {
+    		return null;
+    	}
+    	ScheduledExecutorService current = echoRetryExecutor;
+    	if (current == null || current.isShutdown()) {
+    		synchronized (ECHO_SCHEDULER_LOCK) {
+    			if (echoSchedulerShutdown) {
+    				return null;
     			}
-    			if (desktop.get() == null)
-    				return false;
-    			endPoint = getEndPoint(dtid);
-    			if (lastAttempted != null) {
-    				lastAttempted[0] = endPoint;
-    			}
-    			if (endPoint != null && endPoint.sendEcho()) {
-    				return true;
+    			current = echoRetryExecutor;
+    			if (current == null || current.isShutdown()) {
+    				ScheduledThreadPoolExecutor pool = new ScheduledThreadPoolExecutor(2, r -> {
+    					Thread t = new Thread(r, "ws-echo-retry-" + ECHO_RETRY_THREAD_COUNTER.incrementAndGet());
+    					t.setDaemon(true);
+    					return t;
+    				});
+    				pool.setKeepAliveTime(60L, TimeUnit.SECONDS);
+    				pool.allowCoreThreadTimeOut(true);
+    				pool.setRemoveOnCancelPolicy(true);
+    				echoRetryExecutor = pool;
+    				current = pool;
     			}
     		}
     	}
-    	return false;
+    	return current;
+    }
+
+    private boolean trySendEcho(ServerPushEndPoint endpoint) {
+    	if (endpoint == null || desktop.get() == null) {
+    		return false;
+    	}
+    	while (true) {
+    		ServerPushEndPoint pending = echoPendingEndPoint.get();
+    		if (pending == endpoint) {
+    			return true;
+    		}
+    		if (echoPendingEndPoint.compareAndSet(pending, endpoint)) {
+    			if (endpoint.sendEcho()) {
+    				return true;
+    			}
+    			echoPendingEndPoint.compareAndSet(endpoint, null);
+    			return false;
+    		}
+    	}
+    }
+
+    private void clearPendingEcho(ServerPushEndPoint endpoint) {
+    	if (endpoint != null) {
+    		echoPendingEndPoint.compareAndSet(endpoint, null);
+    	}
+    }
+
+    private void cancelPendingEchoRetry() {
+    	ScheduledFuture<?> future = pendingEchoRetryFuture.getAndSet(null);
+    	if (future != null) {
+    		future.cancel(false);
+    	}
+    	echoRetryScheduled.set(false);
+    }
+
+    private void triggerEcho() {
+    	Desktop dt = desktop.get();
+    	if (dt == null) {
+    		return;
+    	}
+
+    	String dtid = dt.getId();
+    	ServerPushEndPoint endPoint = getEndPoint(dtid);
+    	if (endPoint != null && trySendEcho(endPoint)) {
+    		return;
+    	}
+
+    	ServerPushEndPoint reconnected = getEndPoint(dtid);
+    	if (reconnected != null && reconnected != endPoint && hasPendingSchedules() && trySendEcho(reconnected)) {
+    		return;
+    	}
+
+    	if (dt.isServerPushEnabled() && hasPendingSchedules()) {
+    		scheduleEchoRetry();
+    	}
+    }
+
+    private void scheduleEchoRetry() {
+    	if (echoRetryScheduled.compareAndSet(false, true)) {
+    		scheduleEchoRetryAttempt(0);
+    	}
+    }
+
+    private void scheduleEchoRetryAttempt(int attempt) {
+    	Desktop dt = desktop.get();
+    	if (dt == null || !dt.isServerPushEnabled() || !hasPendingSchedules()) {
+    		pendingEchoRetryFuture.set(null);
+    		echoRetryScheduled.set(false);
+    		return;
+    	}
+    	ScheduledExecutorService scheduler = getEchoRetryExecutor();
+    	if (scheduler == null) {
+    		pendingEchoRetryFuture.set(null);
+    		echoRetryScheduled.set(false);
+    		return;
+    	}
+    	try {
+    		ScheduledFuture<?> future = scheduler.schedule(
+    				() -> runEchoRetryAttempt(attempt), ECHO_RETRY_DELAY_MS, TimeUnit.MILLISECONDS);
+    		pendingEchoRetryFuture.set(future);
+    		if (desktop.get() == null) {
+    			cancelPendingEchoRetry();
+    		}
+    	} catch (RejectedExecutionException e) {
+    		pendingEchoRetryFuture.set(null);
+    		echoRetryScheduled.set(false);
+    	}
+    }
+
+    private void runEchoRetryAttempt(int attempt) {
+    	pendingEchoRetryFuture.set(null);
+    	Desktop dt = desktop.get();
+    	if (dt == null || !dt.isServerPushEnabled() || !hasPendingSchedules()) {
+    		echoRetryScheduled.set(false);
+    		return;
+    	}
+    	ServerPushEndPoint endPoint = getEndPoint(dt.getId());
+    	if (endPoint != null && trySendEcho(endPoint)) {
+    		echoRetryScheduled.set(false);
+    		return;
+    	}
+    	if (attempt + 1 < MAX_ECHO_RETRIES) {
+    		scheduleEchoRetryAttempt(attempt + 1);
+    	} else {
+    		echoRetryScheduled.set(false);
+    	}
     }
 
     private boolean hasPendingSchedules() {
@@ -355,12 +516,14 @@ public class WebSocketServerPush implements ServerPush {
     }
 
     private void flushPendingEchoOnReconnect(ServerPushEndPoint endpoint) {
-    	if (endpoint == null || desktop.get() == null)
+    	Desktop dt = desktop.get();
+    	if (endpoint == null || dt == null || !hasPendingSchedules()) {
     		return;
-    	if (hasPendingSchedules() && echoPending.compareAndSet(false, true)) {
-    		if (!endpoint.sendEcho()) {
-    			echoPending.set(false);
-    		}
+    	}
+    	if (trySendEcho(endpoint)) {
+    		cancelPendingEchoRetry();
+    	} else if (dt.isServerPushEnabled() && hasPendingSchedules()) {
+    		scheduleEchoRetry();
     	}
     }
 
@@ -401,7 +564,8 @@ public class WebSocketServerPush implements ServerPush {
 	@Override
     public void onPiggyback() {
     	// Clear before draining so concurrent schedule() calls after drain starts will still trigger an echo.
-    	echoPending.set(false);
+    	echoPendingEndPoint.set(null);
+    	cancelPendingEchoRetry();
 
     	//Process pending schedule event
     	Schedule<Event>[] pendings = null;
@@ -471,22 +635,7 @@ public class WebSocketServerPush implements ServerPush {
     		synchronized (schedules) {
 				schedules.add(new Schedule(wrapper, event));
 			}
-    		if (echoPending.compareAndSet(false, true)) {
-    			ServerPushEndPoint[] lastAttempted = new ServerPushEndPoint[1];
-    			if (!echo(lastAttempted)) {
-    				echoPending.set(false);
-    				Desktop dt = desktop.get();
-    				if (dt != null) {
-    					ServerPushEndPoint reconnected = getEndPoint(dt.getId());
-    					if (reconnected != null && reconnected != lastAttempted[0]
-    							&& hasPendingSchedules() && echoPending.compareAndSet(false, true)) {
-    						if (!reconnected.sendEcho()) {
-    							echoPending.set(false);
-    						}
-    					}
-    				}
-    			}
-    		}
+    		triggerEcho();
     	} else {
     		// in event listener thread, process this asynchronously in onPiggyback
     		synchronized (schedules) {
@@ -557,6 +706,10 @@ public class WebSocketServerPush implements ServerPush {
     }
 
 	static void flushPendingBrowserCookies(Desktop desktop, Execution exec) {
+		flushPendingBrowserCookies(desktop, exec, System.currentTimeMillis());
+	}
+
+	static void flushPendingBrowserCookies(Desktop desktop, Execution exec, long nowMillis) {
 		var requestObject = exec.getNativeRequest();
 		if (requestObject instanceof HttpServletRequest req
 				&& "true".equals(req.getHeader(WS_LOOPBACK_HEADER))) {
@@ -591,7 +744,7 @@ public class WebSocketServerPush implements ServerPush {
 						if (cookie.maxAgeSeconds != null && cookie.maxAgeSeconds <= 0) {
 							browserCookie.setMaxAge(0);
 						} else if (cookie.expiryDate != null) {
-							long remainingMs = cookie.expiryDate.getTime() - System.currentTimeMillis();
+							long remainingMs = cookie.expiryDate.getTime() - nowMillis;
 							long remainingSeconds = remainingMs <= 0L ? 0L
 									: (remainingMs / 1000L) + (remainingMs % 1000L != 0L ? 1L : 0L);
 							browserCookie.setMaxAge((int) Math.min(Integer.MAX_VALUE, remainingSeconds));
@@ -612,7 +765,7 @@ public class WebSocketServerPush implements ServerPush {
 					browserCookie.setHttpOnly(true);
 					if (cookie.getExpiryDate() != null) {
 						long maxAgeSeconds = Math.max(0L,
-								(cookie.getExpiryDate().getTime() - System.currentTimeMillis()) / 1000L);
+								(cookie.getExpiryDate().getTime() - nowMillis) / 1000L);
 						browserCookie.setMaxAge((int) Math.min(Integer.MAX_VALUE, maxAgeSeconds));
 					}
 					servletResponse.addCookie(browserCookie);
@@ -688,7 +841,9 @@ public class WebSocketServerPush implements ServerPush {
         if (log.isDebugEnabled())
         	log.debug("Stopping server push for " + desktop);
 
-        echoPending.set(false);
+        echoPendingEndPoint.set(null);
+        cancelPendingEchoRetry();
+        unresolvedTimedOutAu = null;
         synchronized (schedules) {
         	schedules.clear();
         }
@@ -739,7 +894,7 @@ public class WebSocketServerPush implements ServerPush {
 		/** # of activate() was called. */
 		private int nActive;
 		private boolean timedOut;
-		private boolean cancelled;
+		private volatile boolean cancelled;
 		private ExecutionCarryOver carryOver;
 		private ThreadInfo(Thread thread) {
 			this.thread = thread;
@@ -771,6 +926,34 @@ public class WebSocketServerPush implements ServerPush {
 		}
 	}
 
+	static ServerPushEndPoint.TimedOutAu getUnresolvedTimedOutAu(String dtid) {
+		if (dtid == null) {
+			return null;
+		}
+		WebSocketServerPush active = activeDesktops.get(dtid);
+		return active != null ? active.unresolvedTimedOutAu : null;
+	}
+
+	static void setUnresolvedTimedOutAu(String dtid, ServerPushEndPoint.TimedOutAu timedOutAu) {
+		if (dtid == null) {
+			return;
+		}
+		WebSocketServerPush active = activeDesktops.get(dtid);
+		if (active != null) {
+			active.unresolvedTimedOutAu = timedOutAu;
+		}
+	}
+
+	static void clearUnresolvedTimedOutAu(String dtid, ServerPushEndPoint.TimedOutAu expected) {
+		if (dtid == null) {
+			return;
+		}
+		WebSocketServerPush active = activeDesktops.get(dtid);
+		if (active != null && active.unresolvedTimedOutAu == expected) {
+			active.unresolvedTimedOutAu = null;
+		}
+	}
+
 	/**
 	 * Atomically register a newly opened endpoint only if {@code dtid} is still an active
 	 * server-push desktop owned by {@code httpSession}. Prevents a concurrent {@link #stop()}
@@ -786,6 +969,7 @@ public class WebSocketServerPush implements ServerPush {
 			return false;
 		boolean[] registered = new boolean[1];
 		WebSocketServerPush[] owner = new WebSocketServerPush[1];
+		ServerPushEndPoint[] superseded = new ServerPushEndPoint[1];
 		endPointMap.compute(dtid, (k, existing) -> {
 			WebSocketServerPush active = activeDesktops.get(dtid);
 			if (active == null && existing == null) {
@@ -794,8 +978,17 @@ public class WebSocketServerPush implements ServerPush {
 			unregisterMap.remove(dtid);
 			registered[0] = true;
 			owner[0] = active;
+			if (existing != null && existing != STUB && existing != endpoint) {
+				superseded[0] = existing;
+			}
 			return endpoint;
 		});
+		if (superseded[0] != null) {
+			if (owner[0] != null) {
+				owner[0].clearPendingEcho(superseded[0]);
+			}
+			superseded[0].close();
+		}
 		if (registered[0] && owner[0] != null) {
 			owner[0].flushPendingEchoOnReconnect(endpoint);
 		}
@@ -811,13 +1004,20 @@ public class WebSocketServerPush implements ServerPush {
 		if (dtid == null)
 			return false;
 		boolean[] removed = new boolean[1];
+		WebSocketServerPush[] owner = new WebSocketServerPush[1];
+		ServerPushEndPoint[] removedEndpoint = new ServerPushEndPoint[1];
 		endPointMap.computeIfPresent(dtid, (k, existing) -> {
 			removed[0] = true;
-			if (existing != STUB && activeDesktops.containsKey(dtid)) {
+			removedEndpoint[0] = existing;
+			owner[0] = activeDesktops.get(dtid);
+			if (existing != STUB && owner[0] != null) {
 				unregisterMap.put(dtid, Boolean.TRUE);
 			}
 			return null;
 		});
+		if (removed[0] && owner[0] != null && removedEndpoint[0] != null && removedEndpoint[0] != STUB) {
+			owner[0].clearPendingEcho(removedEndpoint[0]);
+		}
 		return removed[0];
 	}
 
@@ -833,16 +1033,21 @@ public class WebSocketServerPush implements ServerPush {
 		if (dtid == null || endpoint == null)
 			return false;
 		boolean[] removed = new boolean[1];
+		WebSocketServerPush[] owner = new WebSocketServerPush[1];
 		endPointMap.computeIfPresent(dtid, (k, existing) -> {
 			if (existing != endpoint) {
 				return existing;
 			}
 			removed[0] = true;
-			if (endpoint != STUB && activeDesktops.containsKey(dtid)) {
+			owner[0] = activeDesktops.get(dtid);
+			if (endpoint != STUB && owner[0] != null) {
 				unregisterMap.put(dtid, Boolean.TRUE);
 			}
 			return null;
 		});
+		if (removed[0] && owner[0] != null) {
+			owner[0].clearPendingEcho(endpoint);
+		}
 		return removed[0];
 	}
 	

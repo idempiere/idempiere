@@ -177,9 +177,10 @@ public class ServerPushEndPointTest {
 		for (String validUri : validUris) {
 			URI resolved = (URI) resolveAuUri.invoke(endpoint, validUri);
 			assertNotNull(resolved, "Expected valid AU URI to be accepted: " + validUri);
-			assertEquals("https", resolved.getScheme());
-			assertEquals("127.0.0.1", resolved.getHost());
-			assertEquals(8443, resolved.getPort());
+			URI expected = URI.create("https://127.0.0.1:8443" + validUri);
+			assertEquals(expected, resolved, "Resolved URI must preserve connector, raw path, matrix params, and query");
+			assertEquals(expected.getRawPath(), resolved.getRawPath());
+			assertEquals(expected.getRawQuery(), resolved.getRawQuery());
 		}
 	}
 
@@ -206,10 +207,12 @@ public class ServerPushEndPointTest {
 		ServerPushEndPoint stub = new ServerPushEndPoint();
 		WebSocketServerPush.registerEndPoint(dtid, stub);
 		try {
-			// 1. Missing HttpSession
+			// 1. Missing HttpSession (origin flag is valid so only the missing-session guard rejects)
 			Session sessNoHttp = mock(Session.class);
+			Map<String, Object> propsNoHttp = new HashMap<>();
+			propsNoHttp.put("ws-origin-valid", Boolean.TRUE);
 			EndpointConfig cfgNoHttp = mock(EndpointConfig.class);
-			when(cfgNoHttp.getUserProperties()).thenReturn(new HashMap<>());
+			when(cfgNoHttp.getUserProperties()).thenReturn(propsNoHttp);
 			new ServerPushEndPoint().onOpen(sessNoHttp, cfgNoHttp, dtid);
 			ArgumentCaptor<CloseReason> reason1 = ArgumentCaptor.forClass(CloseReason.class);
 			verify(sessNoHttp).close(reason1.capture());
@@ -293,6 +296,33 @@ public class ServerPushEndPointTest {
 				"Host", List.of("erp.example.com")));
 		configurator.modifyHandshake(secDirectHttps, directHttpsReq, mock(HandshakeResponse.class));
 		assertEquals(Boolean.TRUE, directHttpsProps.get("ws-origin-valid"));
+
+		// Valid Host-header fallback when requestURI omits host (matching default HTTPS port 443)
+		URI hostFallbackUri = URI.create("wss:/webui/serverpush/dt1");
+		ServerEndpointConfig secHostFallbackValid = mock(ServerEndpointConfig.class);
+		Map<String, Object> hostFallbackValidProps = new HashMap<>();
+		when(secHostFallbackValid.getUserProperties()).thenReturn(hostFallbackValidProps);
+		HandshakeRequest hostFallbackValidReq = mock(HandshakeRequest.class);
+		when(hostFallbackValidReq.getHttpSession()).thenReturn(httpSession);
+		when(hostFallbackValidReq.getRequestURI()).thenReturn(hostFallbackUri);
+		when(hostFallbackValidReq.getHeaders()).thenReturn(Map.of(
+				"Origin", List.of("https://erp.example.com"),
+				"Host", List.of("erp.example.com:443")));
+		configurator.modifyHandshake(secHostFallbackValid, hostFallbackValidReq, mock(HandshakeResponse.class));
+		assertEquals(Boolean.TRUE, hostFallbackValidProps.get("ws-origin-valid"));
+
+		// Host-header fallback rejects cross-port Origin when only the Origin port changes
+		ServerEndpointConfig secHostFallbackWrongPort = mock(ServerEndpointConfig.class);
+		Map<String, Object> hostFallbackWrongPortProps = new HashMap<>();
+		when(secHostFallbackWrongPort.getUserProperties()).thenReturn(hostFallbackWrongPortProps);
+		HandshakeRequest hostFallbackWrongPortReq = mock(HandshakeRequest.class);
+		when(hostFallbackWrongPortReq.getHttpSession()).thenReturn(httpSession);
+		when(hostFallbackWrongPortReq.getRequestURI()).thenReturn(hostFallbackUri);
+		when(hostFallbackWrongPortReq.getHeaders()).thenReturn(Map.of(
+				"Origin", List.of("https://erp.example.com:8443"),
+				"Host", List.of("erp.example.com:443")));
+		configurator.modifyHandshake(secHostFallbackWrongPort, hostFallbackWrongPortReq, mock(HandshakeResponse.class));
+		assertEquals(Boolean.FALSE, hostFallbackWrongPortProps.get("ws-origin-valid"));
 
 		// Valid trusted HTTPS reverse-proxy handshake (requestURI already resolved by Jetty ForwardedRequestCustomizer)
 		ServerEndpointConfig secProxy = mock(ServerEndpointConfig.class);
@@ -438,7 +468,7 @@ public class ServerPushEndPointTest {
 		AtomicReference<String> capturedRequestLine = new AtomicReference<>();
 
 		// Test server listens strictly on 127.0.0.1 loopback and handles two sequential requests.
-		try (ServerSocket serverSocket = new ServerSocket(0, 5, InetAddress.getLoopbackAddress())) {
+		try (ServerSocket serverSocket = new ServerSocket(0, 5, ipv4Loopback())) {
 			int port = serverSocket.getLocalPort();
 			Thread serverThread = new Thread(() -> {
 				for (int reqNum = 0; reqNum < 2; reqNum++) {
@@ -755,7 +785,7 @@ public class ServerPushEndPointTest {
 		AtomicReference<Boolean> closedBeforeResponse = new AtomicReference<>(Boolean.FALSE);
 		AtomicReference<ServerPushEndPoint> endpointRef = new AtomicReference<>();
 
-		try (ServerSocket serverSocket = new ServerSocket(0, 5, InetAddress.getLoopbackAddress())) {
+		try (ServerSocket serverSocket = new ServerSocket(0, 5, ipv4Loopback())) {
 			int port = serverSocket.getLocalPort();
 			Thread serverThread = new Thread(() -> {
 				try (Socket client = serverSocket.accept()) {
@@ -875,36 +905,50 @@ public class ServerPushEndPointTest {
 		AtomicInteger requestCount = new AtomicInteger(0);
 		AtomicReference<String> sentPayload = new AtomicReference<>();
 
-		try (ServerSocket serverSocket = new ServerSocket(0, 5, InetAddress.getLoopbackAddress())) {
+		List<Socket> acceptedSockets = java.util.Collections.synchronizedList(new java.util.ArrayList<>());
+
+		try (ServerSocket serverSocket = new ServerSocket(0, 5, ipv4Loopback())) {
 			int port = serverSocket.getLocalPort();
 			Thread serverThread = new Thread(() -> {
 				while (!serverSocket.isClosed() && releaseServer.getCount() > 0) {
-					try (Socket client = serverSocket.accept()) {
-						requestCount.incrementAndGet();
-						BufferedReader reader = new BufferedReader(
-								new InputStreamReader(client.getInputStream(), StandardCharsets.UTF_8));
-						reader.readLine();
-						int contentLength = 0;
-						String line;
-						while ((line = reader.readLine()) != null && !line.isEmpty()) {
-							int idx = line.indexOf(':');
-							if (idx > 0 && "content-length".equalsIgnoreCase(line.substring(0, idx).trim())) {
-								contentLength = Integer.parseInt(line.substring(idx + 1).trim());
+					try {
+						Socket client = serverSocket.accept();
+						acceptedSockets.add(client);
+						Thread handler = new Thread(() -> {
+							try (Socket s = client) {
+								BufferedReader reader = new BufferedReader(
+										new InputStreamReader(s.getInputStream(), StandardCharsets.UTF_8));
+								String reqLine = reader.readLine();
+								if (reqLine != null) {
+									requestCount.incrementAndGet();
+									int contentLength = 0;
+									String line;
+									while ((line = reader.readLine()) != null && !line.isEmpty()) {
+										int idx = line.indexOf(':');
+										if (idx > 0 && "content-length".equalsIgnoreCase(line.substring(0, idx).trim())) {
+											contentLength = Integer.parseInt(line.substring(idx + 1).trim());
+										}
+									}
+									if (contentLength > 0) {
+										char[] bodyBuf = new char[contentLength];
+										int read = 0;
+										while (read < contentLength) {
+											int n = reader.read(bodyBuf, read, contentLength - read);
+											if (n < 0) break;
+											read += n;
+										}
+									}
+									requestReceived.countDown();
+								}
+								// Hold connection open without responding while the accept loop stays free to count retries.
+								releaseServer.await(5, TimeUnit.SECONDS);
+							} catch (Exception ignored) {
 							}
-						}
-						if (contentLength > 0) {
-							char[] bodyBuf = new char[contentLength];
-							int read = 0;
-							while (read < contentLength) {
-								int n = reader.read(bodyBuf, read, contentLength - read);
-								if (n < 0) break;
-								read += n;
-							}
-						}
-						requestReceived.countDown();
-						// Stall without writing a response until the test finishes.
-						releaseServer.await(5, TimeUnit.SECONDS);
+						}, "ws-test-stalled-conn");
+						handler.setDaemon(true);
+						handler.start();
 					} catch (Exception ignored) {
+						break;
 					}
 				}
 			}, "ws-test-stalled-server");
@@ -947,13 +991,6 @@ public class ServerPushEndPointTest {
 				assertTrue(requestReceived.await(3, TimeUnit.SECONDS), "Stalled server must receive AU POST");
 				assertTrue(responseSent.await(3, TimeUnit.SECONDS), "Stalled AU must time out instead of hanging indefinitely");
 
-				JSONObject jsonResponse = (JSONObject) new JSONParser().parse(sentPayload.get());
-				assertEquals(504, jsonResponse.get("status"), "Timed-out AU should return 504 (non-auto-retried) status");
-				assertEquals("88", jsonResponse.get("sid"));
-				assertTrue(String.valueOf(jsonResponse.get("statusText")).contains("unknown"),
-						"Timeout status text should indicate unknown execution outcome: " + jsonResponse.get("statusText"));
-				assertEquals(1, requestCount.get(), "Timed-out POST must not be automatically retried");
-
 				Field pendingField = ServerPushEndPoint.class.getDeclaredField("pendingRequests");
 				pendingField.setAccessible(true);
 				AtomicInteger pending = (AtomicInteger) pendingField.get(endpoint);
@@ -962,9 +999,26 @@ public class ServerPushEndPointTest {
 					Thread.sleep(10);
 				}
 				assertEquals(0, pending.get(), "Pending request counter must be released after timeout");
+
+				JSONObject jsonResponse = (JSONObject) new JSONParser().parse(sentPayload.get());
+				assertEquals(504, jsonResponse.get("status"), "Timed-out AU should return 504 (non-auto-retried) status");
+				assertEquals("88", jsonResponse.get("sid"));
+				assertEquals(Boolean.TRUE, jsonResponse.get("outcomeUnknown"),
+						"Post-dispatch read timeout must flag outcomeUnknown=true");
+				assertTrue(String.valueOf(jsonResponse.get("statusText")).contains("unknown"),
+						"Timeout status text should indicate unknown execution outcome: " + jsonResponse.get("statusText"));
+				assertEquals(1, requestCount.get(), "Timed-out POST must not be automatically retried");
 			} finally {
 				releaseServer.countDown();
 				serverSocket.close();
+				synchronized (acceptedSockets) {
+					for (Socket s : acceptedSockets) {
+						try {
+							s.close();
+						} catch (Exception ignored) {
+						}
+					}
+				}
 				serverThread.join(2000);
 				WebSocketServerPush.unregisterEndPoint(dtid);
 			}
@@ -1099,14 +1153,27 @@ public class ServerPushEndPointTest {
 		when(zkSession.getAttribute(any())).thenAnswer(inv -> sessionAttrs.get(inv.getArgument(0)));
 		when(zkSession.removeAttribute(any())).thenAnswer(inv -> sessionAttrs.remove(inv.getArgument(0)));
 
+		String ownerAttr = "ws-desktop-owner." + dtid;
+		AtomicInteger ownerReads = new AtomicInteger(0);
+		WebSocketServerPush spush = new WebSocketServerPush();
+
 		HttpSession httpSession = mock(HttpSession.class);
-		when(httpSession.getAttribute(any())).thenAnswer(inv -> sessionAttrs.get(inv.getArgument(0)));
+		when(httpSession.getAttribute(any())).thenAnswer(inv -> {
+			String attr = inv.getArgument(0);
+			Object value = sessionAttrs.get(attr);
+			if (ownerAttr.equals(attr) && ownerReads.incrementAndGet() == 2) {
+				// Second ownership read occurs inside registerEndPointIfValid right before endPointMap.compute.
+				// Capture Boolean.TRUE, stop the desktop, then return the stale Boolean.TRUE so only the
+				// atomic in-compute guard can reject registration.
+				spush.stop();
+			}
+			return value;
+		});
 
 		org.zkoss.zk.ui.Desktop desktop = mock(org.zkoss.zk.ui.Desktop.class);
 		when(desktop.getId()).thenReturn(dtid);
 		when(desktop.getSession()).thenReturn(zkSession);
 
-		WebSocketServerPush spush = new WebSocketServerPush();
 		try {
 			org.zkoss.zk.ui.Execution mockExec = mock(org.zkoss.zk.ui.Execution.class);
 			try (org.mockito.MockedStatic<org.zkoss.zk.ui.Executions> executions =
@@ -1122,15 +1189,11 @@ public class ServerPushEndPointTest {
 			when(config.getUserProperties()).thenReturn(userProps);
 
 			Session wsSession = mock(Session.class);
-			// Trigger stop() right after onOpen's initial isValidDesktopId check and before registration.
-			org.mockito.Mockito.doAnswer(inv -> {
-				spush.stop();
-				return null;
-			}).when(wsSession).setMaxTextMessageBufferSize(org.mockito.ArgumentMatchers.anyInt());
 
 			ServerPushEndPoint endpoint = new ServerPushEndPoint();
 			endpoint.onOpen(wsSession, config, dtid);
 
+			assertEquals(2, ownerReads.get(), "Race hook must run on registerEndPointIfValid's ownership check");
 			ArgumentCaptor<CloseReason> closeReason = ArgumentCaptor.forClass(CloseReason.class);
 			verify(wsSession).close(closeReason.capture());
 			assertEquals(CloseReason.CloseCodes.VIOLATED_POLICY, closeReason.getValue().getCloseCode());
@@ -1156,7 +1219,7 @@ public class ServerPushEndPointTest {
 		AtomicInteger submitAttempt = new AtomicInteger(0);
 		ExecutorService backingPool = Executors.newFixedThreadPool(2);
 
-		try (ServerSocket serverSocket = new ServerSocket(0, 5, InetAddress.getLoopbackAddress())) {
+		try (ServerSocket serverSocket = new ServerSocket(0, 5, ipv4Loopback())) {
 			int port = serverSocket.getLocalPort();
 			Thread serverThread = new Thread(() -> {
 				for (int i = 0; i < 2; i++) {
@@ -1594,10 +1657,11 @@ public class ServerPushEndPointTest {
 		when(desktop.isServerPushEnabled()).thenReturn(true);
 
 		WebSocketServerPush spush = new WebSocketServerPush();
-		Field echoPendingField = WebSocketServerPush.class.getDeclaredField("echoPending");
+		Field echoPendingField = WebSocketServerPush.class.getDeclaredField("echoPendingEndPoint");
 		echoPendingField.setAccessible(true);
-		java.util.concurrent.atomic.AtomicBoolean echoPending =
-				(java.util.concurrent.atomic.AtomicBoolean) echoPendingField.get(spush);
+		@SuppressWarnings("unchecked")
+		AtomicReference<ServerPushEndPoint> echoPendingEndPoint =
+				(AtomicReference<ServerPushEndPoint>) echoPendingField.get(spush);
 
 		try {
 			org.zkoss.zk.ui.Execution mockExec = mock(org.zkoss.zk.ui.Execution.class);
@@ -1622,9 +1686,9 @@ public class ServerPushEndPointTest {
 			ServerPushEndPoint failingEndpoint = new ServerPushEndPoint();
 			failingEndpoint.onOpen(failingSession, config, dtid);
 
-			// Schedule task while echo send fails: echoPending must NOT be retained.
+			// Schedule task while echo send fails: echoPendingEndPoint must NOT be retained.
 			spush.schedule(evt -> {}, new org.zkoss.zk.ui.event.Event("onTest"), null);
-			assertFalse(echoPending.get(), "echoPending must be cleared when echo send fails");
+			assertNull(echoPendingEndPoint.get(), "echoPendingEndPoint must be cleared when echo send fails");
 
 			// 2. When browser reconnects without any further schedule() call, queued task must trigger echo automatically.
 			RemoteEndpoint.Basic healthyBasic = mock(RemoteEndpoint.Basic.class);
@@ -1635,9 +1699,693 @@ public class ServerPushEndPointTest {
 			healthyEndpoint.onOpen(healthySession, config, dtid);
 
 			verify(healthyBasic).sendText("echo");
-			assertTrue(echoPending.get(), "echoPending must be retained after successful echo on reconnect");
+			assertSame(healthyEndpoint, echoPendingEndPoint.get(),
+					"echoPendingEndPoint must track the endpoint after successful echo on reconnect");
 		} finally {
 			spush.stop();
+		}
+	}
+
+	@Test
+	void shutdownBlocksResourceRecreationAndSettlesQueuedRequestsUntilStartup() throws Exception {
+		String dtid = "dt-shutdown-block";
+		CountDownLatch queuedTaskReady = new CountDownLatch(1);
+		CountDownLatch releaseQueuedTask = new CountDownLatch(1);
+		CountDownLatch queuedSettled = new CountDownLatch(1);
+		CountDownLatch postShutdownSettled = new CountDownLatch(1);
+		AtomicReference<String> queuedPayload = new AtomicReference<>();
+		AtomicReference<String> postShutdownPayload = new AtomicReference<>();
+		ExecutorService testPool = Executors.newSingleThreadExecutor();
+
+		try {
+			ServerPushEndPoint endpoint = new ServerPushEndPoint();
+			// Executor holds a queued task until after shutdown() completes, simulating an already-queued worker.
+			Executor gatedExecutor = command -> testPool.execute(() -> {
+				queuedTaskReady.countDown();
+				try {
+					releaseQueuedTask.await(5, TimeUnit.SECONDS);
+				} catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
+				}
+				command.run();
+			});
+			setField(endpoint, "auExecutor", gatedExecutor);
+
+			RemoteEndpoint.Basic basic = mock(RemoteEndpoint.Basic.class);
+			org.mockito.Mockito.doAnswer(inv -> {
+				String payload = inv.getArgument(0);
+				if (queuedPayload.compareAndSet(null, payload)) {
+					queuedSettled.countDown();
+				} else {
+					postShutdownPayload.set(payload);
+					postShutdownSettled.countDown();
+				}
+				return null;
+			}).when(basic).sendText(any());
+
+			Session wsSession = mock(Session.class);
+			when(wsSession.getBasicRemote()).thenReturn(basic);
+
+			HttpSession httpSession = mock(HttpSession.class);
+			when(httpSession.getId()).thenReturn("SESS-SHUTDOWN");
+
+			setField(endpoint, "session", wsSession);
+			setField(endpoint, "dtid", dtid);
+			setField(endpoint, "httpSession", httpSession);
+			setField(endpoint, "internalBaseUri", URI.create("http://127.0.0.1:8080"));
+			setField(endpoint, "contextPath", "/webui");
+
+			// Enqueue request 1 before shutdown so it is already queued when shutdown() runs.
+			endpoint.onMessage(wsSession, "zkau;{\"sid\":\"1\",\"dt\":\"" + dtid + "\",\"uri\":\"/webui/zkau\",\"content\":\"cmd_0=a\"}");
+			assertTrue(queuedTaskReady.await(3, TimeUnit.SECONDS), "Queued task should be waiting before shutdown");
+
+			// Bundle stop triggers shutdown(), closing and clearing shared resources and blocking recreation.
+			ServerPushEndPoint.shutdown();
+			releaseQueuedTask.countDown();
+
+			assertTrue(queuedSettled.await(3, TimeUnit.SECONDS), "Queued request must settle explicitly after shutdown");
+			JSONObject r1 = (JSONObject) new JSONParser().parse(queuedPayload.get());
+			assertEquals(503, r1.get("status"));
+			assertEquals("1", r1.get("sid"));
+
+			Field httpClientField = ServerPushEndPoint.class.getDeclaredField("sharedHttpClient");
+			httpClientField.setAccessible(true);
+			Field executorField = ServerPushEndPoint.class.getDeclaredField("executorService");
+			executorField.setAccessible(true);
+			assertNull(httpClientField.get(null), "Queued request after shutdown must NOT recreate sharedHttpClient");
+			assertNull(executorField.get(null), "shutdown() must keep shared executorService cleared");
+
+			// New request using default executor while shut down must also be rejected without creating pool.
+			setField(endpoint, "auExecutor", null);
+			endpoint.onMessage(wsSession, "zkau;{\"sid\":\"2\",\"dt\":\"" + dtid + "\",\"uri\":\"/webui/zkau\",\"content\":\"cmd_0=b\"}");
+			assertTrue(postShutdownSettled.await(3, TimeUnit.SECONDS), "Post-shutdown request must settle with 503");
+			JSONObject r2 = (JSONObject) new JSONParser().parse(postShutdownPayload.get());
+			assertEquals(503, r2.get("status"));
+			assertEquals("2", r2.get("sid"));
+			assertNull(executorField.get(null), "Post-shutdown request must NOT recreate executorService");
+			assertNull(httpClientField.get(null), "Post-shutdown request must NOT recreate sharedHttpClient");
+
+			Field pendingField = ServerPushEndPoint.class.getDeclaredField("pendingRequests");
+			pendingField.setAccessible(true);
+			AtomicInteger pending = (AtomicInteger) pendingField.get(endpoint);
+			long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(2);
+			while (pending.get() != 0 && System.nanoTime() < deadline) {
+				Thread.sleep(10);
+			}
+			assertEquals(0, pending.get(), "pendingRequests must return to 0 after shutdown settlement");
+
+			// Bundle start reopens resource creation.
+			ServerPushEndPoint.startup();
+			java.lang.reflect.Method getExec = ServerPushEndPoint.class.getDeclaredMethod("getExecutorService");
+			getExec.setAccessible(true);
+			assertNotNull(getExec.invoke(null), "startup() must reopen executor creation");
+		} finally {
+			releaseQueuedTask.countDown();
+			testPool.shutdownNow();
+			ServerPushEndPoint.startup();
+		}
+	}
+
+	@Test
+	void timedOutAuBlocksDifferentActionReusingSidButAllowsOriginalRetryAndNextSid() throws Exception {
+		String dtid = "dt-sid-reuse-guard";
+		CountDownLatch firstReqReceived = new CountDownLatch(1);
+		CountDownLatch releaseStalledReq = new CountDownLatch(1);
+		List<String> sentPayloads = java.util.Collections.synchronizedList(new java.util.ArrayList<>());
+		AtomicReference<CountDownLatch> nextResponseLatch = new AtomicReference<>(new CountDownLatch(1));
+		AtomicInteger serverRequestCount = new AtomicInteger(0);
+
+		try (ServerSocket serverSocket = new ServerSocket(0, 5, ipv4Loopback())) {
+			int port = serverSocket.getLocalPort();
+			Thread serverThread = new Thread(() -> {
+				while (!serverSocket.isClosed()) {
+					try (Socket client = serverSocket.accept()) {
+						int reqNum = serverRequestCount.incrementAndGet();
+						BufferedReader reader = new BufferedReader(
+								new InputStreamReader(client.getInputStream(), StandardCharsets.UTF_8));
+						reader.readLine();
+						int contentLength = 0;
+						String sidHeader = "0";
+						String line;
+						while ((line = reader.readLine()) != null && !line.isEmpty()) {
+							int idx = line.indexOf(':');
+							if (idx > 0) {
+								String name = line.substring(0, idx).trim();
+								String val = line.substring(idx + 1).trim();
+								if ("content-length".equalsIgnoreCase(name)) {
+									contentLength = Integer.parseInt(val);
+								} else if ("zk-sid".equalsIgnoreCase(name)) {
+									sidHeader = val;
+								}
+							}
+						}
+						if (contentLength > 0) {
+							char[] bodyBuf = new char[contentLength];
+							int read = 0;
+							while (read < contentLength) {
+								int n = reader.read(bodyBuf, read, contentLength - read);
+								if (n < 0) break;
+								read += n;
+							}
+						}
+						if (reqNum == 1) {
+							firstReqReceived.countDown();
+							releaseStalledReq.await(5, TimeUnit.SECONDS);
+							continue;
+						}
+						String body = "{\"rs\":[],\"rid\":" + sidHeader + "}";
+						String httpResp = "HTTP/1.1 200 OK\r\n"
+								+ "Content-Type: application/json;charset=UTF-8\r\n"
+								+ "ZK-SID: " + sidHeader + "\r\n"
+								+ "Content-Length: " + body.getBytes(StandardCharsets.UTF_8).length + "\r\n"
+								+ "Connection: close\r\n\r\n"
+								+ body;
+						OutputStream out = client.getOutputStream();
+						out.write(httpResp.getBytes(StandardCharsets.UTF_8));
+						out.flush();
+					} catch (Exception ignored) {
+						break;
+					}
+				}
+			}, "ws-test-sid-reuse-server");
+			serverThread.setDaemon(true);
+			serverThread.start();
+
+			ServerPushEndPoint endpoint = new ServerPushEndPoint();
+			java.lang.reflect.Method createConfig = ServerPushEndPoint.class.getDeclaredMethod("createRequestConfig", long.class);
+			createConfig.setAccessible(true);
+			setField(endpoint, "auRequestConfig", createConfig.invoke(null, 250L));
+
+			RemoteEndpoint.Basic basic = mock(RemoteEndpoint.Basic.class);
+			org.mockito.Mockito.doAnswer(inv -> {
+				sentPayloads.add(inv.getArgument(0));
+				nextResponseLatch.get().countDown();
+				return null;
+			}).when(basic).sendText(any());
+
+			Session wsSession = mock(Session.class);
+			when(wsSession.getBasicRemote()).thenReturn(basic);
+
+			HttpSession httpSession = mock(HttpSession.class);
+			when(httpSession.getId()).thenReturn("SESS-SID-REUSE");
+
+			setField(endpoint, "session", wsSession);
+			setField(endpoint, "dtid", dtid);
+			setField(endpoint, "httpSession", httpSession);
+			setField(endpoint, "internalBaseUri", URI.create("http://127.0.0.1:" + port));
+			setField(endpoint, "contextPath", "/webui");
+			WebSocketServerPush.registerEndPoint(dtid, endpoint);
+
+			try {
+				// 1. Action A (sid=88) times out with unknown outcome.
+				String actionA = "zkau;{\"sid\":\"88\",\"dt\":\"" + dtid + "\",\"uri\":\"/webui/zkau\",\"content\":\"dtid=" + dtid + "&cmd_0=actionA\"}";
+				endpoint.onMessage(wsSession, actionA);
+				assertTrue(firstReqReceived.await(3, TimeUnit.SECONDS));
+				assertTrue(nextResponseLatch.get().await(3, TimeUnit.SECONDS));
+				JSONObject respTimeout = (JSONObject) new JSONParser().parse(sentPayloads.get(0));
+				assertEquals(504, respTimeout.get("status"));
+				assertEquals(Boolean.TRUE, respTimeout.get("outcomeUnknown"));
+				assertEquals(1, serverRequestCount.get());
+
+				// 2. Different action B reusing sid=88 MUST be rejected locally with reloadRequired=true (never dispatched).
+				nextResponseLatch.set(new CountDownLatch(1));
+				String actionB = "zkau;{\"sid\":\"88\",\"dt\":\"" + dtid + "\",\"uri\":\"/webui/zkau\",\"content\":\"dtid=" + dtid + "&cmd_0=actionB\"}";
+				endpoint.onMessage(wsSession, actionB);
+				assertTrue(nextResponseLatch.get().await(3, TimeUnit.SECONDS));
+				JSONObject respRejectB = (JSONObject) new JSONParser().parse(sentPayloads.get(1));
+				assertEquals(410, respRejectB.get("status"), "Reusing timed-out SID for a new action must be rejected with 410");
+				assertEquals(Boolean.TRUE, respRejectB.get("reloadRequired"));
+				assertEquals("88", respRejectB.get("sid"));
+				assertEquals(1, serverRequestCount.get(), "New action B reusing timed-out SID must NOT be dispatched to /zkau");
+
+				// 3. Retrying original action A under its original identity (sid=88) IS allowed and resolves the timeout.
+				releaseStalledReq.countDown();
+				nextResponseLatch.set(new CountDownLatch(1));
+				endpoint.onMessage(wsSession, actionA);
+				assertTrue(nextResponseLatch.get().await(3, TimeUnit.SECONDS));
+				JSONObject respRetryA = (JSONObject) new JSONParser().parse(sentPayloads.get(2));
+				assertEquals(200, respRetryA.get("status"));
+				assertEquals("88", respRetryA.get("sid"));
+				assertEquals(2, serverRequestCount.get());
+
+				// 4. Subsequent action B with advanced sid=89 executes normally.
+				nextResponseLatch.set(new CountDownLatch(1));
+				String actionBNextSid = "zkau;{\"sid\":\"89\",\"dt\":\"" + dtid + "\",\"uri\":\"/webui/zkau\",\"content\":\"dtid=" + dtid + "&cmd_0=actionB\"}";
+				endpoint.onMessage(wsSession, actionBNextSid);
+				assertTrue(nextResponseLatch.get().await(3, TimeUnit.SECONDS));
+				JSONObject respNextB = (JSONObject) new JSONParser().parse(sentPayloads.get(3));
+				assertEquals(200, respNextB.get("status"));
+				assertEquals("89", respNextB.get("sid"));
+				assertEquals(3, serverRequestCount.get());
+			} finally {
+				releaseStalledReq.countDown();
+				serverSocket.close();
+				serverThread.join(2000);
+				WebSocketServerPush.unregisterEndPoint(dtid);
+			}
+		}
+	}
+
+	@Test
+	void activateRejectsGrantCancelledByStopAndCleansUpFailedCarryOver() throws Exception {
+		Field desktopField = WebSocketServerPush.class.getDeclaredField("desktop");
+		desktopField.setAccessible(true);
+		Field carryOverField = WebSocketServerPush.class.getDeclaredField("_carryOver");
+		carryOverField.setAccessible(true);
+		Field waitingField = WebSocketServerPush.class.getDeclaredField("_waiting");
+		waitingField.setAccessible(true);
+
+		// Part 1: stop() cancels an already-granted activation before worker accepts carryOver.
+		org.zkoss.zk.ui.Desktop desktop1 = mock(org.zkoss.zk.ui.Desktop.class,
+				org.mockito.Mockito.withSettings().extraInterfaces(org.zkoss.zk.ui.sys.DesktopCtrl.class));
+		when(desktop1.getId()).thenReturn("dt-stop-post-grant");
+		when(desktop1.isAlive()).thenReturn(true);
+		when(desktop1.getSession()).thenReturn(null);
+
+		AtomicReference<org.zkoss.zk.ui.event.EventListener<org.zkoss.zk.ui.event.Event>> listener1Ref = new AtomicReference<>();
+		AtomicReference<org.zkoss.zk.ui.event.Event> event1Ref = new AtomicReference<>();
+		CountDownLatch scheduled1 = new CountDownLatch(1);
+		org.mockito.Mockito.doAnswer(inv -> {
+			listener1Ref.set(inv.getArgument(0));
+			event1Ref.set(inv.getArgument(1));
+			scheduled1.countDown();
+			return null;
+		}).when((org.zkoss.zk.ui.sys.DesktopCtrl) desktop1).scheduleServerPush(any(), any());
+
+		WebSocketServerPush spush1 = new WebSocketServerPush();
+		@SuppressWarnings("unchecked")
+		AtomicReference<org.zkoss.zk.ui.Desktop> dtRef1 =
+				(AtomicReference<org.zkoss.zk.ui.Desktop>) desktopField.get(spush1);
+		dtRef1.set(desktop1);
+
+		AtomicReference<Throwable> worker1Error = new AtomicReference<>();
+		Thread worker1 = new Thread(() -> {
+			try {
+				spush1.activate(5_000L);
+			} catch (Throwable t) {
+				worker1Error.set(t);
+			}
+		}, "ws-test-stop-post-grant");
+		worker1.setDaemon(true);
+		worker1.start();
+
+		try {
+			assertTrue(scheduled1.await(3, TimeUnit.SECONDS));
+			Object info1 = waitingField.get(spush1);
+			assertNotNull(info1);
+			// Ensure worker1 is inside info.wait() before piggyback runs.
+			synchronized (info1) {
+				// Monitor acquired => worker1 is inside info.wait().
+			}
+
+			CountDownLatch grantNotified = new CountDownLatch(1);
+			CountDownLatch stopCompleted = new CountDownLatch(1);
+			org.zkoss.zk.ui.Execution mockExec1 = mock(org.zkoss.zk.ui.Execution.class,
+					org.mockito.Mockito.withSettings().extraInterfaces(org.zkoss.zk.ui.sys.ExecutionCtrl.class));
+			Field cancelledField = info1.getClass().getDeclaredField("cancelled");
+			cancelledField.setAccessible(true);
+
+			CountDownLatch callback1Done = new CountDownLatch(1);
+			Thread piggyback1 = new Thread(() -> {
+				org.zkoss.zk.ui.sys.ExecutionsCtrl.setCurrent(mockExec1);
+				try {
+					listener1Ref.get().onEvent(event1Ref.get());
+				} catch (Exception ignored) {
+				} finally {
+					org.zkoss.zk.ui.sys.ExecutionsCtrl.setCurrent(null);
+					callback1Done.countDown();
+				}
+			}, "ws-test-stop-post-grant-piggyback");
+			piggyback1.setDaemon(true);
+
+			// Trigger stop() while piggyback holds synchronized(info1) inside new ExecutionCarryOver(currentDesktop),
+			// reproducing the post-grant stop() cancellation before worker1 accepts the handoff.
+			when(mockExec1.getDesktop()).thenAnswer(inv -> {
+				if (grantNotified.getCount() > 0) {
+					grantNotified.countDown();
+					Thread stopper = new Thread(() -> {
+						spush1.stop();
+						stopCompleted.countDown();
+					}, "ws-test-post-grant-stopper");
+					stopper.setDaemon(true);
+					stopper.start();
+					// Wait briefly until stopper has cleared desktop and is waiting on synchronized(info1),
+					// guaranteeing stopper sets info1.cancelled = true before worker1 re-enters synchronized(info1).
+					long waitUntil = System.nanoTime() + TimeUnit.SECONDS.toNanos(1);
+					while (dtRef1.get() != null && System.nanoTime() < waitUntil) {
+						Thread.yield();
+					}
+					// Also set cancelled directly on info1 in case stopper wakes after worker1 re-acquires info1,
+					// deterministically reproducing the post-grant stop() cancellation state.
+					cancelledField.setBoolean(info1, true);
+				}
+				return desktop1;
+			});
+
+			piggyback1.start();
+
+			worker1.join(3000);
+			assertTrue(stopCompleted.await(3, TimeUnit.SECONDS));
+			assertFalse(worker1.isAlive(), "Worker must exit activate() when stop() cancels post-grant");
+			assertTrue(worker1Error.get() instanceof org.zkoss.zk.ui.DesktopUnavailableException,
+					"Expected DesktopUnavailableException, got: " + worker1Error.get());
+			assertTrue(callback1Done.await(2, TimeUnit.SECONDS),
+					"Piggyback callback must not remain blocked after post-grant stop() cancellation");
+			assertNull(carryOverField.get(spush1), "Cancelled post-grant activation must clear _carryOver");
+			assertFalse(spush1.isActive(), "Worker must not be active after post-grant stop()");
+			verify((org.zkoss.zk.ui.sys.ExecutionCtrl) mockExec1, never()).onActivate();
+		} finally {
+			spush1.stop();
+			worker1.join(1000);
+		}
+
+		// Part 2: onActivate() throws during carryOver.carryOver() -> must call cleanup(), clear current execution, release grant.
+		org.zkoss.zk.ui.Desktop desktop2 = mock(org.zkoss.zk.ui.Desktop.class,
+				org.mockito.Mockito.withSettings().extraInterfaces(org.zkoss.zk.ui.sys.DesktopCtrl.class));
+		when(desktop2.getId()).thenReturn("dt-carryover-failure");
+		when(desktop2.isAlive()).thenReturn(true);
+		when(desktop2.getSession()).thenReturn(null);
+
+		org.zkoss.zk.ui.Execution mockExec2 = mock(org.zkoss.zk.ui.Execution.class,
+				org.mockito.Mockito.withSettings().extraInterfaces(org.zkoss.zk.ui.sys.ExecutionCtrl.class));
+		when(mockExec2.getDesktop()).thenReturn(desktop2);
+		org.mockito.Mockito.doThrow(new IllegalStateException("Simulated onActivate failure"))
+				.when((org.zkoss.zk.ui.sys.ExecutionCtrl) mockExec2).onActivate();
+
+		CountDownLatch callback2Done = new CountDownLatch(1);
+		org.mockito.Mockito.doAnswer(inv -> {
+			org.zkoss.zk.ui.event.EventListener<org.zkoss.zk.ui.event.Event> listener = inv.getArgument(0);
+			org.zkoss.zk.ui.event.Event evt = inv.getArgument(1);
+			Thread piggyback = new Thread(() -> {
+				org.zkoss.zk.ui.sys.ExecutionsCtrl.setCurrent(mockExec2);
+				try {
+					listener.onEvent(evt);
+				} catch (Exception ignored) {
+				} finally {
+					org.zkoss.zk.ui.sys.ExecutionsCtrl.setCurrent(null);
+					callback2Done.countDown();
+				}
+			}, "ws-test-carryover-fail-piggyback");
+			piggyback.setDaemon(true);
+			piggyback.start();
+			return null;
+		}).when((org.zkoss.zk.ui.sys.DesktopCtrl) desktop2).scheduleServerPush(any(), any());
+
+		WebSocketServerPush spush2 = new WebSocketServerPush();
+		@SuppressWarnings("unchecked")
+		AtomicReference<org.zkoss.zk.ui.Desktop> dtRef2 =
+				(AtomicReference<org.zkoss.zk.ui.Desktop>) desktopField.get(spush2);
+		dtRef2.set(desktop2);
+
+		AtomicReference<Throwable> worker2Error = new AtomicReference<>();
+		AtomicReference<org.zkoss.zk.ui.Execution> execAfterFailure = new AtomicReference<>();
+		Thread worker2 = new Thread(() -> {
+			try {
+				spush2.activate(5_000L);
+			} catch (Throwable t) {
+				worker2Error.set(t);
+			} finally {
+				execAfterFailure.set(org.zkoss.zk.ui.Executions.getCurrent());
+			}
+		}, "ws-test-carryover-fail-worker");
+		worker2.setDaemon(true);
+		worker2.start();
+
+		try {
+			worker2.join(3000);
+			assertFalse(worker2.isAlive());
+			assertTrue(worker2Error.get() instanceof IllegalStateException,
+					"Expected original onActivate failure, got: " + worker2Error.get());
+			assertNull(execAfterFailure.get(),
+					"Worker thread must NOT retain stale current execution after carryOver failure");
+			verify((org.zkoss.zk.ui.sys.ExecutionCtrl) mockExec2).onDeactivate();
+			assertTrue(callback2Done.await(2, TimeUnit.SECONDS),
+					"Piggyback callback must be woken when carryOver fails");
+			assertNull(carryOverField.get(spush2), "Failed carryOver must release _carryOver");
+			assertFalse(spush2.isActive(), "Failed carryOver must not mark server push active");
+		} finally {
+			spush2.stop();
+			worker2.join(1000);
+		}
+	}
+
+	@Test
+	void activateDoesNotBlockOnEchoRetriesWhenEndpointIsUnavailable() throws Exception {
+		String dtid = "dt-activate-nonblocking-echo";
+		org.zkoss.zk.ui.Desktop desktop = mock(org.zkoss.zk.ui.Desktop.class,
+				org.mockito.Mockito.withSettings().extraInterfaces(org.zkoss.zk.ui.sys.DesktopCtrl.class));
+		when(desktop.getId()).thenReturn(dtid);
+		when(desktop.isAlive()).thenReturn(true);
+		when(desktop.isServerPushEnabled()).thenReturn(true);
+		when(desktop.getSession()).thenReturn(null);
+
+		WebSocketServerPush spush = new WebSocketServerPush();
+		// Delegate synchronously just like real ZK DesktopImpl.scheduleServerPush -> ServerPush.schedule.
+		org.mockito.Mockito.doAnswer(inv -> {
+			spush.schedule(inv.getArgument(0), inv.getArgument(1), null);
+			return null;
+		}).when((org.zkoss.zk.ui.sys.DesktopCtrl) desktop).scheduleServerPush(any(), any());
+
+		Field desktopField = WebSocketServerPush.class.getDeclaredField("desktop");
+		desktopField.setAccessible(true);
+		@SuppressWarnings("unchecked")
+		AtomicReference<org.zkoss.zk.ui.Desktop> dtRef =
+				(AtomicReference<org.zkoss.zk.ui.Desktop>) desktopField.get(spush);
+		dtRef.set(desktop);
+
+		try {
+			long startNanos = System.nanoTime();
+			boolean activated = spush.activate(120L);
+			long elapsedMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNanos);
+
+			assertFalse(activated, "activate(120) should time out when no endpoint answers");
+			assertTrue(elapsedMs < 450L,
+					"activate(120) must not spend ~600ms sleeping in echo retries, took: " + elapsedMs + "ms");
+
+			// Async echo retry must deliver "echo" once an endpoint becomes available without another schedule() call.
+			CountDownLatch asyncRetryEchoSent = new CountDownLatch(1);
+			RemoteEndpoint.Basic retryBasic = mock(RemoteEndpoint.Basic.class);
+			org.mockito.Mockito.doAnswer(inv -> {
+				asyncRetryEchoSent.countDown();
+				return null;
+			}).when(retryBasic).sendText("echo");
+			Session retrySession = mock(Session.class);
+			when(retrySession.getBasicRemote()).thenReturn(retryBasic);
+			ServerPushEndPoint retryEndpoint = new ServerPushEndPoint();
+			setField(retryEndpoint, "session", retrySession);
+			setField(retryEndpoint, "dtid", dtid);
+			WebSocketServerPush.registerEndPoint(dtid, retryEndpoint);
+
+			assertTrue(asyncRetryEchoSent.await(2, TimeUnit.SECONDS),
+					"Background echo retry must wake up once endpoint registers without another schedule() call");
+		} finally {
+			spush.stop();
+			WebSocketServerPush.unregisterEndPoint(dtid);
+		}
+	}
+
+	@Test
+	void stalePendingEchoDoesNotBlockReconnectEchoAndSupersedingClosesOldEndpoint() throws Exception {
+		String dtid = "dt-endpoint-tied-echo";
+		Map<String, Object> sessionAttrs = new HashMap<>();
+
+		org.zkoss.zk.ui.Session zkSession = mock(org.zkoss.zk.ui.Session.class);
+		org.mockito.Mockito.doAnswer(inv -> {
+			sessionAttrs.put(inv.getArgument(0), inv.getArgument(1));
+			return null;
+		}).when(zkSession).setAttribute(any(), any());
+		when(zkSession.getAttribute(any())).thenAnswer(inv -> sessionAttrs.get(inv.getArgument(0)));
+		when(zkSession.removeAttribute(any())).thenAnswer(inv -> sessionAttrs.remove(inv.getArgument(0)));
+
+		HttpSession httpSession = mock(HttpSession.class);
+		when(httpSession.getAttribute(any())).thenAnswer(inv -> sessionAttrs.get(inv.getArgument(0)));
+
+		org.zkoss.zk.ui.Desktop desktop = mock(org.zkoss.zk.ui.Desktop.class);
+		when(desktop.getId()).thenReturn(dtid);
+		when(desktop.getSession()).thenReturn(zkSession);
+		when(desktop.isServerPushEnabled()).thenReturn(true);
+
+		WebSocketServerPush spush = new WebSocketServerPush();
+		try {
+			org.zkoss.zk.ui.Execution mockExec = mock(org.zkoss.zk.ui.Execution.class);
+			try (org.mockito.MockedStatic<org.zkoss.zk.ui.Executions> executions =
+					org.mockito.Mockito.mockStatic(org.zkoss.zk.ui.Executions.class)) {
+				executions.when(org.zkoss.zk.ui.Executions::getCurrent).thenReturn(mockExec);
+				spush.start(desktop);
+			}
+
+			Map<String, Object> userProps = new HashMap<>();
+			userProps.put(HttpSession.class.getName(), httpSession);
+			userProps.put("ws-origin-valid", Boolean.TRUE);
+			EndpointConfig config = mock(EndpointConfig.class);
+			when(config.getUserProperties()).thenReturn(userProps);
+
+			// 1. Open ep1 and schedule two tasks -> single-echo coalescing sends exactly one "echo".
+			RemoteEndpoint.Basic basic1 = mock(RemoteEndpoint.Basic.class);
+			Session session1 = mock(Session.class);
+			when(session1.getBasicRemote()).thenReturn(basic1);
+			when(session1.isOpen()).thenReturn(true);
+
+			ServerPushEndPoint ep1 = new ServerPushEndPoint();
+			ep1.onOpen(session1, config, dtid);
+
+			spush.schedule(evt -> {}, new org.zkoss.zk.ui.event.Event("onFirst"), null);
+			spush.schedule(evt -> {}, new org.zkoss.zk.ui.event.Event("onSecond"), null);
+			verify(basic1, org.mockito.Mockito.times(1)).sendText("echo");
+
+			// 2. Replacement ep2 registers before ep1.onClose runs (lost echo / silent drop).
+			RemoteEndpoint.Basic basic2 = mock(RemoteEndpoint.Basic.class);
+			Session session2 = mock(Session.class);
+			when(session2.getBasicRemote()).thenReturn(basic2);
+			when(session2.isOpen()).thenReturn(true);
+
+			ServerPushEndPoint ep2 = new ServerPushEndPoint();
+			ep2.onOpen(session2, config, dtid);
+
+			// Superseded ep1 must be closed, and ep2 must send a new echo despite ep1's stale pending echo.
+			verify(session1).close(any(CloseReason.class));
+			verify(basic2, org.mockito.Mockito.times(1)).sendText("echo");
+
+			// 3. Single-echo coalescing still applies on ep2 while ep2 owes a response.
+			spush.schedule(evt -> {}, new org.zkoss.zk.ui.event.Event("onThird"), null);
+			verify(basic2, org.mockito.Mockito.times(1)).sendText("echo");
+
+			// 4. Stale onClose on ep1 must not unregister ep2.
+			ep1.onClose(session1);
+			assertSame(ep2, WebSocketServerPush.getEndPoint(dtid));
+		} finally {
+			spush.stop();
+		}
+	}
+
+	@Test
+	void supersededEndpointDeliversInFlightAuResponseBeforeClosing() throws Exception {
+		String dtid = "dt-supersede-inflight";
+		Map<String, Object> sessionAttrs = new HashMap<>();
+		CountDownLatch auReachedServer = new CountDownLatch(1);
+		CountDownLatch releaseServer = new CountDownLatch(1);
+		CountDownLatch responseDelivered = new CountDownLatch(1);
+		CountDownLatch oldSessionClosed = new CountDownLatch(1);
+		AtomicReference<Boolean> closedBeforeResponse = new AtomicReference<>(Boolean.FALSE);
+
+		try (ServerSocket serverSocket = new ServerSocket(0, 5, ipv4Loopback())) {
+			int port = serverSocket.getLocalPort();
+			Thread serverThread = new Thread(() -> {
+				try (Socket client = serverSocket.accept()) {
+					BufferedReader reader = new BufferedReader(
+							new InputStreamReader(client.getInputStream(), StandardCharsets.UTF_8));
+					reader.readLine();
+					int contentLength = 0;
+					String line;
+					while ((line = reader.readLine()) != null && !line.isEmpty()) {
+						int idx = line.indexOf(':');
+						if (idx > 0 && "content-length".equalsIgnoreCase(line.substring(0, idx).trim())) {
+							contentLength = Integer.parseInt(line.substring(idx + 1).trim());
+						}
+					}
+					if (contentLength > 0) {
+						char[] bodyBuf = new char[contentLength];
+						int read = 0;
+						while (read < contentLength) {
+							int n = reader.read(bodyBuf, read, contentLength - read);
+							if (n < 0) break;
+							read += n;
+						}
+					}
+					auReachedServer.countDown();
+					releaseServer.await(5, TimeUnit.SECONDS);
+
+					String body = "{\"rs\":[],\"rid\":1}";
+					String httpResp = "HTTP/1.1 200 OK\r\n"
+							+ "Content-Type: application/json;charset=UTF-8\r\n"
+							+ "ZK-SID: 55\r\n"
+							+ "Content-Length: " + body.getBytes(StandardCharsets.UTF_8).length + "\r\n"
+							+ "Connection: close\r\n\r\n"
+							+ body;
+					OutputStream out = client.getOutputStream();
+					out.write(httpResp.getBytes(StandardCharsets.UTF_8));
+					out.flush();
+				} catch (Exception ignored) {
+				}
+			}, "ws-test-supersede-server");
+			serverThread.setDaemon(true);
+			serverThread.start();
+
+			org.zkoss.zk.ui.Session zkSession = mock(org.zkoss.zk.ui.Session.class);
+			org.mockito.Mockito.doAnswer(inv -> {
+				sessionAttrs.put(inv.getArgument(0), inv.getArgument(1));
+				return null;
+			}).when(zkSession).setAttribute(any(), any());
+			when(zkSession.getAttribute(any())).thenAnswer(inv -> sessionAttrs.get(inv.getArgument(0)));
+			when(zkSession.removeAttribute(any())).thenAnswer(inv -> sessionAttrs.remove(inv.getArgument(0)));
+
+			HttpSession httpSession = mock(HttpSession.class);
+			when(httpSession.getId()).thenReturn("SESS-SUPERSEDE");
+			when(httpSession.getAttribute(any())).thenAnswer(inv -> sessionAttrs.get(inv.getArgument(0)));
+
+			org.zkoss.zk.ui.Desktop desktop = mock(org.zkoss.zk.ui.Desktop.class);
+			when(desktop.getId()).thenReturn(dtid);
+			when(desktop.getSession()).thenReturn(zkSession);
+
+			WebSocketServerPush spush = new WebSocketServerPush();
+			try {
+				org.zkoss.zk.ui.Execution mockExec = mock(org.zkoss.zk.ui.Execution.class);
+				try (org.mockito.MockedStatic<org.zkoss.zk.ui.Executions> executions =
+						org.mockito.Mockito.mockStatic(org.zkoss.zk.ui.Executions.class)) {
+					executions.when(org.zkoss.zk.ui.Executions::getCurrent).thenReturn(mockExec);
+					spush.start(desktop);
+				}
+
+				Map<String, Object> userProps = new HashMap<>();
+				userProps.put(HttpSession.class.getName(), httpSession);
+				userProps.put("ws-origin-valid", Boolean.TRUE);
+				userProps.put("ws-local-base-url", URI.create("http://127.0.0.1:" + port));
+				EndpointConfig config = mock(EndpointConfig.class);
+				when(config.getUserProperties()).thenReturn(userProps);
+
+				RemoteEndpoint.Basic basic1 = mock(RemoteEndpoint.Basic.class);
+				org.mockito.Mockito.doAnswer(inv -> {
+					if (oldSessionClosed.getCount() == 0) {
+						closedBeforeResponse.set(Boolean.TRUE);
+					}
+					responseDelivered.countDown();
+					return null;
+				}).when(basic1).sendText(any());
+				Session session1 = mock(Session.class);
+				when(session1.getBasicRemote()).thenReturn(basic1);
+				when(session1.isOpen()).thenReturn(true);
+				org.mockito.Mockito.doAnswer(inv -> {
+					oldSessionClosed.countDown();
+					return null;
+				}).when(session1).close(any(CloseReason.class));
+
+				ServerPushEndPoint ep1 = new ServerPushEndPoint();
+				ep1.onOpen(session1, config, dtid);
+				setField(ep1, "contextPath", "/webui");
+
+				ep1.onMessage(session1, "zkau;{\"sid\":\"55\",\"dt\":\"" + dtid + "\",\"uri\":\"/webui/zkau\",\"content\":\"cmd_0=a\"}");
+				assertTrue(auReachedServer.await(3, TimeUnit.SECONDS));
+
+				// Supersede ep1 while AU is in flight.
+				Session session2 = mock(Session.class);
+				when(session2.isOpen()).thenReturn(true);
+				ServerPushEndPoint ep2 = new ServerPushEndPoint();
+				ep2.onOpen(session2, config, dtid);
+
+				assertEquals(1L, oldSessionClosed.getCount(),
+						"Superseded endpoint must wait for in-flight AU response before closing");
+				assertSame(ep2, WebSocketServerPush.getEndPoint(dtid));
+
+				releaseServer.countDown();
+				assertTrue(responseDelivered.await(3, TimeUnit.SECONDS), "In-flight AU response must finish on superseded endpoint");
+				assertTrue(oldSessionClosed.await(3, TimeUnit.SECONDS), "Superseded endpoint must close once AU finishes");
+				assertFalse(closedBeforeResponse.get(), "Superseded endpoint must not close before delivering response");
+				assertSame(ep2, WebSocketServerPush.getEndPoint(dtid), "Closing superseded ep1 must keep ep2 registered");
+			} finally {
+				releaseServer.countDown();
+				spush.stop();
+				serverThread.join(2000);
+			}
 		}
 	}
 
@@ -1648,13 +2396,13 @@ public class ServerPushEndPointTest {
 				String.class, String.class, String.class, Integer.class, java.util.Date.class, boolean.class, boolean.class);
 		ctor.setAccessible(true);
 
-		long now = System.currentTimeMillis();
+		final long fixedNowMillis = 1_700_000_000_000L;
 		// Cookie originally had Max-Age=30, but flush is delayed 45s -> already expired 15s ago.
-		Object expiredMaxAgeCookie = ctor.newInstance("SHORT_TOK", "stale", "/webui", 30, new java.util.Date(now - 15_000L), true, true);
-		// Cookie originally had Max-Age=60, delayed 40s -> ~20s remaining (must not reset to 60).
-		Object partiallyElapsedCookie = ctor.newInstance("PARTIAL_TOK", "val", "/webui", 60, new java.util.Date(now + 20_000L), true, true);
+		Object expiredMaxAgeCookie = ctor.newInstance("SHORT_TOK", "stale", "/webui", 30, new java.util.Date(fixedNowMillis - 15_000L), true, true);
+		// Cookie originally had Max-Age=60, delayed 40s -> exactly 20s remaining (must not reset to 60).
+		Object partiallyElapsedCookie = ctor.newInstance("PARTIAL_TOK", "val", "/webui", 60, new java.util.Date(fixedNowMillis + 20_000L), true, true);
 		// Explicit Max-Age=0 deletion must stay 0 regardless of expiryDate.
-		Object explicitDeletionCookie = ctor.newInstance("DEL_TOK", "", "/webui", 0, new java.util.Date(now + 60_000L), true, true);
+		Object explicitDeletionCookie = ctor.newInstance("DEL_TOK", "", "/webui", 0, new java.util.Date(fixedNowMillis + 60_000L), true, true);
 
 		org.zkoss.zk.ui.Session zkSession = mock(org.zkoss.zk.ui.Session.class);
 		when(zkSession.getNativeSession()).thenReturn(new Object());
@@ -1672,9 +2420,9 @@ public class ServerPushEndPointTest {
 		when(browserExec.getNativeResponse()).thenReturn(browserResp);
 
 		java.lang.reflect.Method flushMethod = WebSocketServerPush.class.getDeclaredMethod(
-				"flushPendingBrowserCookies", org.zkoss.zk.ui.Desktop.class, org.zkoss.zk.ui.Execution.class);
+				"flushPendingBrowserCookies", org.zkoss.zk.ui.Desktop.class, org.zkoss.zk.ui.Execution.class, long.class);
 		flushMethod.setAccessible(true);
-		flushMethod.invoke(null, desktop, browserExec);
+		flushMethod.invoke(null, desktop, browserExec, fixedNowMillis);
 
 		ArgumentCaptor<Cookie> cookieCaptor = ArgumentCaptor.forClass(Cookie.class);
 		verify(browserResp, org.mockito.Mockito.times(3)).addCookie(cookieCaptor.capture());
@@ -1684,8 +2432,8 @@ public class ServerPushEndPointTest {
 		assertEquals(0, added.get(0).getMaxAge(), "Expired positive Max-Age cookie must flush with Max-Age=0");
 
 		assertEquals("PARTIAL_TOK", added.get(1).getName());
-		assertTrue(added.get(1).getMaxAge() >= 15 && added.get(1).getMaxAge() <= 21,
-				"Delayed positive Max-Age cookie must flush remaining lifetime (~20s), got: " + added.get(1).getMaxAge());
+		assertEquals(20, added.get(1).getMaxAge(),
+				"Delayed positive Max-Age cookie must flush exact remaining lifetime (20s)");
 
 		assertEquals("DEL_TOK", added.get(2).getName());
 		assertEquals(0, added.get(2).getMaxAge(), "Explicit deletion must remain Max-Age=0");
@@ -1724,6 +2472,10 @@ public class ServerPushEndPointTest {
 		} finally {
 			spush.stop();
 		}
+	}
+
+	private static InetAddress ipv4Loopback() throws Exception {
+		return InetAddress.getByAddress(new byte[] { 127, 0, 0, 1 });
 	}
 
 	private static void setField(Object target, String name, Object value) throws Exception {

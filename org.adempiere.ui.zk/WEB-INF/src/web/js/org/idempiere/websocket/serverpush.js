@@ -116,6 +116,24 @@
       this._replayCookieWatcher = watcher;
       zWatch.listen({onResponse: watcher});
     },
+    _requireDesktopReload: function(msg) {
+      let dt = zk.Desktop.$(this.dtid);
+      if (dt) {
+        dt.obsolete = true;
+      }
+      zAu.disabledRequest = true;
+      if (zk.processing) {
+        zk.endProcessing();
+      }
+      if (!zk.unloading) {
+        let reloadMsg = msg || "The previous request timed out with an unknown server outcome. Please reload the page.";
+        if (zAu.cmd0 && zAu.cmd0.obsolete) {
+          zAu.cmd0.obsolete(this.dtid, reloadMsg);
+        } else if (window.location) {
+          window.location.reload();
+        }
+      }
+    },
     _recoverInflightRequest: function() {
       let reqInf = this._inflightReqInf;
       this._inflightReqInf = null;
@@ -253,10 +271,33 @@
               zAu.ajaxReqInf = reqInf;
             }
 
+            if (responseJson.reloadRequired) {
+              zAu.ajaxReq = zAu.ajaxReqInf = undefined;
+              zk.endProcessing(hasSid ? responseJson.sid : undefined);
+              me._requireDesktopReload(responseJson.statusText);
+              return;
+            }
+
+            let unknownSid = responseJson.outcomeUnknown && hasSid ? String(responseJson.sid) : null;
+            let dtBefore = zk.Desktop.$(me.dtid);
+            if (unknownSid && dtBefore) {
+              dtBefore._wsUnresolvedSid = unknownSid;
+            }
+
             //using undocumented, ZK internal api
             //need verification after every ZK upgrade
             zAu._onResponseReady(responseJson);
             let dt = zk.Desktop.$(me.dtid);
+            if (unknownSid) {
+              let retryScheduled = !!(zAu.pendingReqInf && String(zAu.pendingReqInf.sid) === unknownSid);
+              if (!retryScheduled && String(zAu.seqId) === unknownSid) {
+                me._requireDesktopReload(responseJson.statusText);
+                return;
+              }
+              if (retryScheduled) {
+                return;
+              }
+            }
             if (dt) {
               // if server indicates cookies were updated, queue onPiggyback HTTP event immediately to sync browser cookies
               if (responseJson.syncCookies || responseJson.headers.get("Set-Cookie")) {
@@ -386,6 +427,28 @@
     //modify from zk/src/archive/web/js/zk/au.ts
     //need verification after every ZK upgrade
     zAu.sendNow = function(dt) {
+      if (dt && dt._wsUnresolvedSid !== undefined && dt._wsUnresolvedSid !== null) {
+        if (String(zAu.seqId) === dt._wsUnresolvedSid) {
+          if (dt._serverpush && dt._serverpush._requireDesktopReload) {
+            dt._serverpush._requireDesktopReload();
+          } else {
+            dt.obsolete = true;
+            zAu.disabledRequest = true;
+            if (zk.processing)
+              zk.endProcessing();
+            if (!zk.unloading) {
+              let reloadMsg = "The previous request timed out with an unknown server outcome. Please reload the page.";
+              if (zAu.cmd0 && zAu.cmd0.obsolete) {
+                zAu.cmd0.obsolete(dt.id, reloadMsg);
+              } else if (window.location) {
+                window.location.reload();
+              }
+            }
+          }
+          return false;
+        }
+        dt._wsUnresolvedSid = null;
+      }
       if (dt && dt._serverpush && dt._serverpush.socket && dt._serverpush.socket.readyState === WebSocket.OPEN) {
         if (zAu.disabledRequest) {
           if (zk.processing)

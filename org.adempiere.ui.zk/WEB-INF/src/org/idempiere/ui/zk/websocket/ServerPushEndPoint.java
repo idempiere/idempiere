@@ -149,7 +149,26 @@ public class ServerPushEndPoint {
 	private static final Object SHARED_RESOURCE_LOCK = new Object();
 	private static volatile ExecutorService executorService;
 	private static volatile CloseableHttpClient sharedHttpClient;
+	private static volatile boolean resourcesShutdown = false;
 	private static final AtomicInteger WORKER_THREAD_COUNTER = new AtomicInteger(0);
+
+	static final class TimedOutAu {
+		final String sid;
+		final URI targetUri;
+		final String content;
+
+		TimedOutAu(String sid, URI targetUri, String content) {
+			this.sid = sid;
+			this.targetUri = targetUri;
+			this.content = content;
+		}
+
+		boolean matches(String sid, URI targetUri, String content) {
+			return Objects.equals(this.sid, sid)
+					&& Objects.equals(this.targetUri, targetUri)
+					&& Objects.equals(this.content, content);
+		}
+	}
 
 	private volatile Session session;
 	private final Object sendLock = new Object();
@@ -164,6 +183,7 @@ public class ServerPushEndPoint {
 	private volatile String lastSessionId;
 	private final AtomicInteger pendingRequests = new AtomicInteger(0);
 	private volatile boolean closeRequested = false;
+	private volatile TimedOutAu unresolvedTimedOutAu;
 	private RequestConfig auRequestConfig = AU_REQUEST_CONFIG;
 	private Executor auExecutor;
 
@@ -270,9 +290,15 @@ public class ServerPushEndPoint {
 	}
 
 	private static ExecutorService getExecutorService() {
+		if (resourcesShutdown) {
+			throw new RejectedExecutionException("WebSocket AU executor is shut down");
+		}
 		ExecutorService current = executorService;
 		if (current == null || current.isShutdown()) {
 			synchronized (SHARED_RESOURCE_LOCK) {
+				if (resourcesShutdown) {
+					throw new RejectedExecutionException("WebSocket AU executor is shut down");
+				}
 				current = executorService;
 				if (current == null || current.isShutdown()) {
 					int coreThreads = Math.min(MAX_THREADS,
@@ -300,9 +326,15 @@ public class ServerPushEndPoint {
 	}
 
 	private static CloseableHttpClient getHttpClient() {
+		if (resourcesShutdown) {
+			return null;
+		}
 		CloseableHttpClient current = sharedHttpClient;
 		if (current == null) {
 			synchronized (SHARED_RESOURCE_LOCK) {
+				if (resourcesShutdown) {
+					return null;
+				}
 				current = sharedHttpClient;
 				if (current == null) {
 					PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(
@@ -331,10 +363,20 @@ public class ServerPushEndPoint {
 	}
 
 	/**
+	 * Reopen shared worker thread and HTTP connection pool creation when the bundle starts.
+	 */
+	public static void startup() {
+		synchronized (SHARED_RESOURCE_LOCK) {
+			resourcesShutdown = false;
+		}
+	}
+
+	/**
 	 * Shut down shared worker threads and HTTP connection pool when the bundle stops.
 	 */
 	public static void shutdown() {
 		synchronized (SHARED_RESOURCE_LOCK) {
+			resourcesShutdown = true;
 			if (executorService != null) {
 				executorService.shutdown();
 				executorService = null;
@@ -729,6 +771,10 @@ public class ServerPushEndPoint {
 		        	return;
 		        }
 
+		        if (rejectIfSidConflictsWithTimedOutAu(session, sid, targetUri, content)) {
+		        	return;
+		        }
+
 		        if (pendingRequests.incrementAndGet() > MAX_PENDING_REQUESTS) {
 		        	if (pendingRequests.decrementAndGet() == 0 && closeRequested) {
 		        		closeNow();
@@ -771,6 +817,14 @@ public class ServerPushEndPoint {
 				        		if (session != this.session || closeRequested) {
 				        			return;
 				        		}
+				        		if (rejectIfSidConflictsWithTimedOutAu(session, sid, targetUri, content)) {
+				        			return;
+				        		}
+				        		CloseableHttpClient httpClient = getHttpClient();
+				        		if (httpClient == null) {
+				        			sendText(session, errorResponse(503, "Error: Server shutting down", sid));
+				        			return;
+				        		}
 				        		if (cookieStore != null) {
 				        			if (sessionId != null && !sessionId.equals(lastSessionId)) {
 				        				BasicClientCookie cookie = new BasicClientCookie(sessionCookieName, sessionId);
@@ -785,13 +839,19 @@ public class ServerPushEndPoint {
 				        				httpPost.setHeader("Cookie", cookieHeader);
 				        			}
 				        		}
-				        		try (CloseableHttpResponse response = getHttpClient().execute(httpPost)) {
+				        		try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
 				        			HttpEntity entity = response.getEntity();
 				        			String servletResponse = entity != null
 				        					? EntityUtils.toString(entity, StandardCharsets.UTF_8)
 				        					: "";
 
 				        			if (servletResponse != null && !servletResponse.isEmpty()) {
+				        				if (response.getCode() == 200) {
+				        					TimedOutAu timedOut = getUnresolvedTimedOutAu();
+				        					if (timedOut != null && Objects.equals(timedOut.sid, sid)) {
+				        						clearUnresolvedTimedOutAu(timedOut);
+				        					}
+				        				}
 				        				if (response.getCode() >= 400) {
 				        					log.log(Level.WARNING, "Bad Request to /zkau (status=" + response.getCode() + ")");
 				        				}
@@ -837,12 +897,18 @@ public class ServerPushEndPoint {
 				        		} else {
 				        			log.log(Level.WARNING, "Timed out waiting for /zkau response for desktop " + this.dtid
 				        					+ " (sid=" + sid + "); server-side execution outcome is unknown", e);
-				        			sendText(session, errorResponse(504,
+				        			recordUnresolvedTimedOutAu(new TimedOutAu(sid, targetUri, content));
+				        			sendText(session, unknownOutcomeTimeoutResponse(
 				        					"Error: Timed out waiting for /zkau response (execution outcome unknown)", sid));
 				        		}
 				        	} catch (Throwable e) {
-				        		log.log(Level.WARNING, "Error processing /zkau request", e);
-				        		sendText(session, errorResponse(500, "Error processing /zkau request", sid));
+				        		if (resourcesShutdown) {
+				        			log.log(Level.FINE, "Aborted /zkau request during shutdown", e);
+				        			sendText(session, errorResponse(503, "Error: Server shutting down", sid));
+				        		} else {
+				        			log.log(Level.WARNING, "Error processing /zkau request", e);
+				        			sendText(session, errorResponse(500, "Error processing /zkau request", sid));
+				        		}
 				        	} finally {
 				        		releasePendingSlot(slotReleased);
 				        	}
@@ -852,9 +918,10 @@ public class ServerPushEndPoint {
 				        			Throwable cause = (ex instanceof CompletionException && ex.getCause() != null)
 				        					? ex.getCause() : ex;
 				        			if (cause instanceof RejectedExecutionException) {
-				        				log.log(Level.WARNING, "WebSocket AU worker pool saturated", cause);
+				        				log.log(Level.WARNING, resourcesShutdown ? "WebSocket AU executor shut down" : "WebSocket AU worker pool saturated", cause);
 				        				if (session == this.session && !closeRequested) {
-				        					sendText(session, errorResponse(503, "Error: Server busy", sid));
+				        					sendText(session, errorResponse(503,
+				        							resourcesShutdown ? "Error: Server shutting down" : "Error: Server busy", sid));
 				        				}
 				        			} else {
 				        				log.log(Level.WARNING, "Error processing /zkau request", cause);
@@ -877,9 +944,10 @@ public class ServerPushEndPoint {
 			        		if (pendingRequests.decrementAndGet() == 0 && closeRequested) {
 			        			closeNow();
 			        		}
-			        		log.log(Level.WARNING, "WebSocket AU worker pool saturated", e);
+			        		log.log(Level.WARNING, resourcesShutdown ? "WebSocket AU executor shut down" : "WebSocket AU worker pool saturated", e);
 			        		if (session == this.session && !closeRequested) {
-			        			sendText(session, errorResponse(503, "Error: Server busy", sid));
+			        			sendText(session, errorResponse(503,
+			        					resourcesShutdown ? "Error: Server shutting down" : "Error: Server busy", sid));
 			        		}
 			        	}
 			        } catch (Throwable e) {
@@ -1009,6 +1077,47 @@ public class ServerPushEndPoint {
 		}
 	}
 
+	private TimedOutAu getUnresolvedTimedOutAu() {
+		TimedOutAu local = this.unresolvedTimedOutAu;
+		if (local != null) {
+			return local;
+		}
+		return WebSocketServerPush.getUnresolvedTimedOutAu(this.dtid);
+	}
+
+	private void recordUnresolvedTimedOutAu(TimedOutAu timedOutAu) {
+		this.unresolvedTimedOutAu = timedOutAu;
+		WebSocketServerPush.setUnresolvedTimedOutAu(this.dtid, timedOutAu);
+	}
+
+	private void clearUnresolvedTimedOutAu(TimedOutAu expected) {
+		if (this.unresolvedTimedOutAu == expected) {
+			this.unresolvedTimedOutAu = null;
+		}
+		WebSocketServerPush.clearUnresolvedTimedOutAu(this.dtid, expected);
+	}
+
+	private boolean rejectIfSidConflictsWithTimedOutAu(Session targetSession, String sid, URI targetUri, String content) {
+		TimedOutAu timedOut = getUnresolvedTimedOutAu();
+		if (timedOut == null) {
+			return false;
+		}
+		if (!Objects.equals(timedOut.sid, sid)) {
+			// Client advanced SID (the timed-out AU was resolved, e.g., via HTTP AJAX retry).
+			clearUnresolvedTimedOutAu(timedOut);
+			return false;
+		}
+		if (timedOut.matches(sid, targetUri, content)) {
+			// Retrying the original timed-out AU under its original identity is permitted.
+			return false;
+		}
+		log.warning("Rejecting AU request reusing timed-out SID " + sid
+				+ " for desktop " + this.dtid + "; desktop reload required");
+		sendText(targetSession, reloadRequiredResponse(
+				"Error: Previous AU request timed out with unknown outcome; desktop reload required", sid));
+		return true;
+	}
+
 	private String errorResponse(int status, String text, String sid) {
 		JSONObject jsonResponse = new JSONObject();
 		jsonResponse.put("status", status);
@@ -1017,6 +1126,35 @@ public class ServerPushEndPoint {
 			jsonResponse.put("sid", sid);
 			Map<String, String> headers = new HashMap<>();
 			headers.put("ZK-SID", sid);
+			jsonResponse.put("headers", headers);
+		}
+		return jsonResponse.toString();
+	}
+
+	private String unknownOutcomeTimeoutResponse(String text, String sid) {
+		JSONObject jsonResponse = new JSONObject();
+		jsonResponse.put("status", 504);
+		jsonResponse.put("statusText", text);
+		jsonResponse.put("outcomeUnknown", Boolean.TRUE);
+		if (sid != null) {
+			jsonResponse.put("sid", sid);
+			Map<String, String> headers = new HashMap<>();
+			headers.put("ZK-SID", sid);
+			jsonResponse.put("headers", headers);
+		}
+		return jsonResponse.toString();
+	}
+
+	private String reloadRequiredResponse(String text, String sid) {
+		JSONObject jsonResponse = new JSONObject();
+		jsonResponse.put("status", 410);
+		jsonResponse.put("statusText", text);
+		jsonResponse.put("reloadRequired", Boolean.TRUE);
+		if (sid != null) {
+			jsonResponse.put("sid", sid);
+			Map<String, String> headers = new HashMap<>();
+			headers.put("ZK-SID", sid);
+			headers.put("ZK-Error", "410");
 			jsonResponse.put("headers", headers);
 		}
 		return jsonResponse.toString();
