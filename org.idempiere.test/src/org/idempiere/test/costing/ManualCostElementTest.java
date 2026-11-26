@@ -58,6 +58,7 @@ import org.compiere.model.MFactAcct;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutConfirm;
 import org.compiere.model.MInOutLine;
+import org.compiere.model.MInOutLineMA;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MPriceList;
@@ -85,6 +86,7 @@ import org.compiere.process.ServerProcessCtl;
 import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Language;
 import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
 import org.eevolution.model.MPPProductBOM;
@@ -94,7 +96,9 @@ import org.idempiere.acct.doc.DocLine;
 import org.idempiere.acct.doc.DocManager;
 import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
+import org.idempiere.test.LoginDetails;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.parallel.Isolated;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -105,6 +109,14 @@ import org.mockito.Mockito;
 @Isolated
 public class ManualCostElementTest extends AbstractTestCase
 {
+	private static final Timestamp FIXTURE_DATE = TimeUtil.getDay(2025, 6, 15);
+
+	@Override
+	protected LoginDetails newLoginDetails(TestInfo testInfo)
+	{
+		return new LoginDetails(GARDEN_WORLD_CLIENT, GARDEN_WORLD_HQ_ORG, GARDEN_WORLD_ADMIN_USER,
+				GARDEN_WORLD_ADMIN_ROLE, GARDEN_WORLD_HQ_WAREHOUSE, FIXTURE_DATE, Language.getLanguage("en_US"));
+	}
 	@Test
 	public void testCostElementChargeValidation()
 	{
@@ -242,8 +254,8 @@ public class ManualCostElementTest extends AbstractTestCase
 			// MCostDetail must remain material-only (-200.00)
 			MCostDetail cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", shipLine.get_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for shipment line");
-			assertEquals(new BigDecimal("200.00"), cd.getAmt().abs().setScale(2, RoundingMode.HALF_UP),
-					"Shipment MCostDetail must record material cost only");
+			assertEquals(new BigDecimal("-200.00"), cd.getAmt().setScale(2, RoundingMode.HALF_UP),
+					"Shipment MCostDetail must record negative material cost only");
 
 			// Mutate cost elements BEFORE reversing (change Charge on one, deactivate the other)
 			burdenCe.setC_Charge_ID(DictionaryIDs.C_Charge.COMMISSIONS.id);
@@ -543,9 +555,9 @@ public class ManualCostElementTest extends AbstractTestCase
 			lotB.setLot("Lot-B");
 			lotB.saveEx();
 
-			// Receive 2 of Lot-A @ 50 and 2 of Lot-B @ 80
-			createPOAndMR(product, lotA, new BigDecimal("2"), new BigDecimal("50.00"));
-			createPOAndMR(product, lotB, new BigDecimal("2"), new BigDecimal("80.00"));
+			// Receive 2 of Lot-A @ 50 on an earlier date and 2 of Lot-B @ 80 later so FIFO consumes Lot-A first
+			createPOAndMR(product, lotA, new BigDecimal("2"), new BigDecimal("50.00"), TimeUtil.addDays(getLoginDate(), -2));
+			createPOAndMR(product, lotB, new BigDecimal("2"), new BigDecimal("80.00"), TimeUtil.addDays(getLoginDate(), -1));
 
 			// Manual burden: 10% fallback at ASI=0, overridden to 20% for Lot-A (must NOT double-count 20%+10%)
 			MCostElement burdenCe = createManualCostElement("Lot Burden",
@@ -556,6 +568,21 @@ public class ManualCostElementTest extends AbstractTestCase
 			// Ship 3 units without ASI (auto-allocates MInOutLineMA: 2 from Lot-A + 1 from Lot-B)
 			// Material = 2*50 + 1*80 = 180.00; Manual = 20% of 100 (= 20.00) + 10% of 80 (= 8.00) = 28.00
 			MInOut shipment = createSOAndShipment(product, null, new BigDecimal("3"), new BigDecimal("120.00"));
+			MInOutLineMA[] shipMas = MInOutLineMA.get(Env.getCtx(), shipment.getLines()[0].get_ID(), getTrxName());
+			assertEquals(2, shipMas.length, "Expected 2 MInOutLineMA allocations (Lot-A and Lot-B)");
+			BigDecimal lotAQty = BigDecimal.ZERO;
+			BigDecimal lotBQty = BigDecimal.ZERO;
+			for (MInOutLineMA ma : shipMas)
+			{
+				if (ma.getM_AttributeSetInstance_ID() == lotA.get_ID())
+					lotAQty = lotAQty.add(ma.getMovementQty());
+				else if (ma.getM_AttributeSetInstance_ID() == lotB.get_ID())
+					lotBQty = lotBQty.add(ma.getMovementQty());
+			}
+			assertEquals(new BigDecimal("2.00"), lotAQty.setScale(2, RoundingMode.HALF_UP),
+					"Expected 2 units allocated from earlier Lot-A");
+			assertEquals(new BigDecimal("1.00"), lotBQty.setScale(2, RoundingMode.HALF_UP),
+					"Expected 1 unit allocated from later Lot-B");
 			List<MFactAcct> facts = getFacts(MInOut.Table_ID, shipment.get_ID(), as.get_ID());
 			assertEquals(3, facts.size(), "Expected 3 Fact_Acct lines (COGS, Asset, aggregated Burden Charge)");
 
@@ -639,8 +666,8 @@ public class ManualCostElementTest extends AbstractTestCase
 			// MCostDetail must remain material-only (+200.00)
 			MCostDetail cd = MCostDetail.get(Env.getCtx(), "M_InOutLine_ID=?", returnLine.get_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "MCostDetail not found for customer return line");
-			assertEquals(new BigDecimal("200.00"), cd.getAmt().abs().setScale(2, RoundingMode.HALF_UP),
-					"Customer Return MCostDetail must record material cost only");
+			assertEquals(new BigDecimal("200.00"), cd.getAmt().setScale(2, RoundingMode.HALF_UP),
+					"Customer Return MCostDetail must record positive material cost only");
 
 			// Mutate cost elements BEFORE reversing Customer Return
 			burdenCe.setC_Charge_ID(DictionaryIDs.C_Charge.COMMISSIONS.id);
@@ -803,6 +830,10 @@ public class ManualCostElementTest extends AbstractTestCase
 			List<MFactAcct> facts = getFacts(MProduction.Table_ID, production.get_ID(), as.get_ID());
 			assertEquals(4, facts.size(), "Production should have 4 Fact_Acct lines (FG Asset, Comp Asset, 2 manual cost Charges)");
 
+			ProductCost fgPc = new ProductCost(Env.getCtx(), finished.get_ID(), 0, getTrxName());
+			int fgAssetAcctId = fgPc.getAccount(ProductCost.ACCTTYPE_P_Asset, as).getAccount_ID();
+			ProductCost compPc = new ProductCost(Env.getCtx(), component.get_ID(), 0, getTrxName());
+			int compAssetAcctId = compPc.getAccount(ProductCost.ACCTTYPE_P_Asset, as).getAccount_ID();
 			int freightAcctId = MCharge.getAccount(DictionaryIDs.C_Charge.FREIGHT.id, as, getTrxName()).getAccount_ID();
 			BigDecimal fgDr = BigDecimal.ZERO;
 			BigDecimal compCr = BigDecimal.ZERO;
@@ -816,10 +847,12 @@ public class ManualCostElementTest extends AbstractTestCase
 				}
 				else if (fa.getM_Product_ID() == finished.get_ID())
 				{
+					assertEquals(fgAssetAcctId, fa.getAccount_ID(), "Finished goods Fact_Acct must post to Product Asset account");
 					fgDr = fgDr.add(fa.getAmtAcctDr());
 				}
 				else if (fa.getM_Product_ID() == component.get_ID())
 				{
+					assertEquals(compAssetAcctId, fa.getAccount_ID(), "Component Fact_Acct must post to Product Asset account");
 					compCr = compCr.add(fa.getAmtAcctCr());
 				}
 			}
@@ -841,8 +874,8 @@ public class ManualCostElementTest extends AbstractTestCase
 				{
 					MCostDetail cd = MCostDetail.getProduction(as, component.get_ID(), 0, pl.get_ID(), getTrxName());
 					assertNotNull(cd, "Component MCostDetail not found");
-					assertEquals(new BigDecimal("200.00"), cd.getAmt().abs().setScale(2, RoundingMode.HALF_UP),
-							"Component MCostDetail must remain material-only");
+					assertEquals(new BigDecimal("-200.00"), cd.getAmt().setScale(2, RoundingMode.HALF_UP),
+							"Component MCostDetail must remain negative material-only");
 				}
 			}
 
@@ -880,10 +913,12 @@ public class ManualCostElementTest extends AbstractTestCase
 				}
 				else if (fa.getM_Product_ID() == finished.get_ID())
 				{
+					assertEquals(fgAssetAcctId, fa.getAccount_ID(), "Reversed finished goods Fact_Acct must post to Product Asset account");
 					fgCr = fgCr.add(fa.getAmtAcctCr());
 				}
 				else if (fa.getM_Product_ID() == component.get_ID())
 				{
+					assertEquals(compAssetAcctId, fa.getAccount_ID(), "Reversed component Fact_Acct must post to Product Asset account");
 					compDr = compDr.add(fa.getAmtAcctDr());
 				}
 			}
@@ -943,7 +978,7 @@ public class ManualCostElementTest extends AbstractTestCase
 
 			MProjectIssue issue = new MProjectIssue(Env.getCtx(), 0, getTrxName());
 			issue.setLine(10);
-			issue.setMovementDate(TimeUtil.getDay(System.currentTimeMillis()));
+			issue.setMovementDate(getLoginDate());
 			issue.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
 			issue.setMovementQty(new BigDecimal("2"));
 			issue.setC_Project_ID(proj.get_ID());
@@ -971,20 +1006,19 @@ public class ManualCostElementTest extends AbstractTestCase
 			assertEquals(4, facts.size(), "ProjectIssue should create 4 Fact_Acct lines (WIP, Asset, 2 manual cost Charges)");
 
 			ProductCost pc = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
+			int wipAcctId = getProjectWipAccountId(proj, as);
 			int assetAcctId = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as).getAccount_ID();
 			int freightAcctId = MCharge.getAccount(DictionaryIDs.C_Charge.FREIGHT.id, as, getTrxName()).getAccount_ID();
 
+			assertFactTotals(facts, wipAcctId, new BigDecimal("230.00"), BigDecimal.ZERO);
 			assertFactTotals(facts, assetAcctId, BigDecimal.ZERO, new BigDecimal("200.00"));
 			assertFactTotals(facts, freightAcctId, BigDecimal.ZERO, new BigDecimal("30.00"));
-			BigDecimal totalDr = facts.stream().map(MFactAcct::getAmtAcctDr).reduce(BigDecimal.ZERO, BigDecimal::add);
-			assertEquals(new BigDecimal("230.00"), totalDr.setScale(2, RoundingMode.HALF_UP),
-					"Project WIP DR should be material + manual cost");
 
-			// MCostDetail must remain material-only (200.00)
+			// MCostDetail must remain material-only (-200.00)
 			MCostDetail cd = MCostDetail.get(Env.getCtx(), "C_ProjectIssue_ID=?", issue.get_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(cd, "ProjectIssue MCostDetail not found");
-			assertEquals(new BigDecimal("200.00"), cd.getAmt().abs().setScale(2, RoundingMode.HALF_UP),
-					"ProjectIssue MCostDetail must record material cost only");
+			assertEquals(new BigDecimal("-200.00"), cd.getAmt().setScale(2, RoundingMode.HALF_UP),
+					"ProjectIssue MCostDetail must record negative material cost only");
 
 			// Mutate cost elements BEFORE reversing Project Issue
 			burdenCe.setC_Charge_ID(DictionaryIDs.C_Charge.COMMISSIONS.id);
@@ -1013,11 +1047,9 @@ public class ManualCostElementTest extends AbstractTestCase
 
 			List<MFactAcct> revFacts = getFacts(MProjectIssue.Table_ID, reversal.get_ID(), as.get_ID());
 			assertEquals(4, revFacts.size(), "ProjectIssue reversal should have 4 Fact_Acct lines matching original");
+			assertFactTotals(revFacts, wipAcctId, BigDecimal.ZERO, new BigDecimal("230.00"));
 			assertFactTotals(revFacts, assetAcctId, new BigDecimal("200.00"), BigDecimal.ZERO);
 			assertFactTotals(revFacts, freightAcctId, new BigDecimal("30.00"), BigDecimal.ZERO);
-			BigDecimal totalCr = revFacts.stream().map(MFactAcct::getAmtAcctCr).reduce(BigDecimal.ZERO, BigDecimal::add);
-			assertEquals(new BigDecimal("230.00"), totalCr.setScale(2, RoundingMode.HALF_UP),
-					"Reversed Project WIP CR must match original DR 230.00");
 
 			List<BigDecimal> revChargeDebits = new ArrayList<>();
 			for (MFactAcct fa : revFacts)
@@ -1070,7 +1102,7 @@ public class ManualCostElementTest extends AbstractTestCase
 			// 1. Complete first issue with deferred posting (200 material + 20 burden + 10 overhead = 230)
 			MProjectIssue issue = new MProjectIssue(Env.getCtx(), 0, getTrxName());
 			issue.setLine(10);
-			issue.setMovementDate(TimeUtil.getDay(System.currentTimeMillis()));
+			issue.setMovementDate(getLoginDate());
 			issue.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
 			issue.setMovementQty(new BigDecimal("2"));
 			issue.setC_Project_ID(proj.get_ID());
@@ -1106,9 +1138,8 @@ public class ManualCostElementTest extends AbstractTestCase
 
 			// Posted WIP DR is 220.00 (without deactivated overhead), while completion added 230.00
 			List<MFactAcct> facts = getFacts(MProjectIssue.Table_ID, issue.get_ID(), as.get_ID());
-			BigDecimal totalDr = facts.stream().map(MFactAcct::getAmtAcctDr).reduce(BigDecimal.ZERO, BigDecimal::add);
-			assertEquals(new BigDecimal("220.00"), totalDr.setScale(2, RoundingMode.HALF_UP),
-					"Posted WIP DR reflects manual costs active at posting time (220.00)");
+			int wipAcctId = getProjectWipAccountId(proj, as);
+			assertFactTotals(facts, wipAcctId, new BigDecimal("220.00"), BigDecimal.ZERO);
 
 			// Reverse must subtract the 230.00 recorded at completion, returning ProjectBalanceAmt to 0.00
 			info = MWorkflow.runDocumentActionWorkflow(issue, DocAction.ACTION_Reverse_Correct);
@@ -1125,7 +1156,7 @@ public class ManualCostElementTest extends AbstractTestCase
 			// 2. Verify backward compatibility when pre-migration CostAmt is NULL (falls back to Fact_Acct)
 			MProjectIssue legacyIssue = new MProjectIssue(Env.getCtx(), 0, getTrxName());
 			legacyIssue.setLine(20);
-			legacyIssue.setMovementDate(TimeUtil.getDay(System.currentTimeMillis()));
+			legacyIssue.setMovementDate(getLoginDate());
 			legacyIssue.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
 			legacyIssue.setMovementQty(new BigDecimal("1"));
 			legacyIssue.setC_Project_ID(proj.get_ID());
@@ -1182,7 +1213,7 @@ public class ManualCostElementTest extends AbstractTestCase
 
 			MProjectIssue issue = new MProjectIssue(Env.getCtx(), 0, getTrxName());
 			issue.setLine(10);
-			issue.setMovementDate(TimeUtil.getDay(System.currentTimeMillis()));
+			issue.setMovementDate(getLoginDate());
 			issue.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
 			issue.setMovementQty(BigDecimal.ONE);
 			issue.setC_Project_ID(proj.get_ID());
@@ -1201,9 +1232,13 @@ public class ManualCostElementTest extends AbstractTestCase
 
 			List<MFactAcct> origFacts = getFacts(MProjectIssue.Table_ID, issue.get_ID(), as.get_ID());
 			assertEquals(3, origFacts.size(), "Original ProjectIssue should have 3 Fact_Acct lines (WIP, Asset, Charge)");
-			int origWipAcctId = origFacts.get(0).getAccount_ID();
-			int origAssetAcctId = origFacts.get(1).getAccount_ID();
-			int freightAcctId = origFacts.get(2).getAccount_ID();
+			ProductCost pc = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
+			int origWipAcctId = getProjectWipAccountId(proj, as);
+			int origAssetAcctId = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as).getAccount_ID();
+			int freightAcctId = MCharge.getAccount(DictionaryIDs.C_Charge.FREIGHT.id, as, getTrxName()).getAccount_ID();
+			assertFactTotals(origFacts, origWipAcctId, new BigDecimal("105.00"), BigDecimal.ZERO);
+			assertFactTotals(origFacts, origAssetAcctId, BigDecimal.ZERO, new BigDecimal("100.00"));
+			assertFactTotals(origFacts, freightAcctId, BigDecimal.ZERO, new BigDecimal("5.00"));
 
 			MCostDetail origCd = MCostDetail.get(Env.getCtx(), "C_ProjectIssue_ID=?", issue.get_ID(), 0, as.get_ID(), getTrxName());
 			assertNotNull(origCd, "Original ProjectIssue MCostDetail not found");
@@ -1314,7 +1349,7 @@ public class ManualCostElementTest extends AbstractTestCase
 
 			MProjectIssue issue = new MProjectIssue(Env.getCtx(), 0, getTrxName());
 			issue.setLine(10);
-			issue.setMovementDate(TimeUtil.getDay(System.currentTimeMillis()));
+			issue.setMovementDate(getLoginDate());
 			issue.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
 			issue.setMovementQty(new BigDecimal("2"));
 			issue.setC_Project_ID(proj.get_ID());
@@ -1340,9 +1375,11 @@ public class ManualCostElementTest extends AbstractTestCase
 
 			List<MFactAcct> facts = getFacts(MProjectIssue.Table_ID, issue.get_ID(), as.get_ID());
 			assertEquals(2, facts.size(), "Standard Costing ProjectIssue should create 2 Fact_Acct lines (WIP, Asset) without manual cost Charge lines");
-			BigDecimal totalDr = facts.stream().map(MFactAcct::getAmtAcctDr).reduce(BigDecimal.ZERO, BigDecimal::add);
-			assertEquals(new BigDecimal("160.00"), totalDr.setScale(2, RoundingMode.HALF_UP),
-					"Project WIP DR should equal Standard Costing valuation (160.00)");
+			ProductCost pc = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
+			int wipAcctId = getProjectWipAccountId(proj, as);
+			int assetAcctId = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as).getAccount_ID();
+			assertFactTotals(facts, wipAcctId, new BigDecimal("160.00"), BigDecimal.ZERO);
+			assertFactTotals(facts, assetAcctId, BigDecimal.ZERO, new BigDecimal("160.00"));
 
 			// Reverse-Correct and verify ProjectBalanceAmt returns cleanly to 0.00
 			info = MWorkflow.runDocumentActionWorkflow(issue, DocAction.ACTION_Reverse_Correct);
@@ -1425,7 +1462,7 @@ public class ManualCostElementTest extends AbstractTestCase
 			targetPlv.setValidFrom(getLoginDate());
 			targetPlv.setM_DiscountSchema_ID(ds.get_ID());
 			targetPlv.setM_Pricelist_Version_Base_ID(
-					MPriceList.get(DictionaryIDs.M_PriceList.PURCHASE.id).getPriceListVersion(null).get_ID());
+					MPriceList.get(DictionaryIDs.M_PriceList.PURCHASE.id).getPriceListVersion(getLoginDate()).get_ID());
 			targetPlv.saveEx();
 
 			int processId = new Query(Env.getCtx(), MProcess.Table_Name, "Classname=?", getTrxName())
@@ -1530,7 +1567,7 @@ public class ManualCostElementTest extends AbstractTestCase
 			targetPlv.setValidFrom(getLoginDate());
 			targetPlv.setM_DiscountSchema_ID(ds.get_ID());
 			targetPlv.setM_Pricelist_Version_Base_ID(
-					MPriceList.get(DictionaryIDs.M_PriceList.PURCHASE.id).getPriceListVersion(null).get_ID());
+					MPriceList.get(DictionaryIDs.M_PriceList.PURCHASE.id).getPriceListVersion(getLoginDate()).get_ID());
 			targetPlv.saveEx();
 
 			int processId = new Query(Env.getCtx(), MProcess.Table_Name, "Classname=?", getTrxName())
@@ -1577,7 +1614,7 @@ public class ManualCostElementTest extends AbstractTestCase
 			product.setM_AttributeSet_ID(attributeSetId);
 		product.saveEx();
 
-		MPriceListVersion purchasePlv = MPriceList.get(DictionaryIDs.M_PriceList.PURCHASE.id).getPriceListVersion(null);
+		MPriceListVersion purchasePlv = MPriceList.get(DictionaryIDs.M_PriceList.PURCHASE.id).getPriceListVersion(getLoginDate());
 		MProductPrice pp = new MProductPrice(Env.getCtx(), 0, getTrxName());
 		pp.setM_PriceList_Version_ID(purchasePlv.get_ID());
 		pp.setM_Product_ID(product.get_ID());
@@ -1585,7 +1622,7 @@ public class ManualCostElementTest extends AbstractTestCase
 		pp.setPriceList(new BigDecimal("100.00"));
 		pp.saveEx();
 
-		MPriceListVersion salesPlv = MPriceList.get(DictionaryIDs.M_PriceList.STANDARD.id).getPriceListVersion(null);
+		MPriceListVersion salesPlv = MPriceList.get(DictionaryIDs.M_PriceList.STANDARD.id).getPriceListVersion(getLoginDate());
 		MProductPrice sp = new MProductPrice(Env.getCtx(), 0, getTrxName());
 		sp.setM_PriceList_Version_ID(salesPlv.get_ID());
 		sp.setM_Product_ID(product.get_ID());
@@ -1619,7 +1656,13 @@ public class ManualCostElementTest extends AbstractTestCase
 
 	private MInOutLine createPOAndMR(MProduct product, MAttributeSetInstance asi, BigDecimal qty, BigDecimal price)
 	{
-		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		return createPOAndMR(product, asi, qty, price, getLoginDate());
+	}
+
+	private MInOutLine createPOAndMR(MProduct product, MAttributeSetInstance asi, BigDecimal qty, BigDecimal price,
+			Timestamp movementDate)
+	{
+		Timestamp date = movementDate != null ? TimeUtil.getDay(movementDate) : getLoginDate();
 
 		MOrder po = new MOrder(Env.getCtx(), 0, getTrxName());
 		po.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id));
@@ -1628,15 +1671,15 @@ public class ManualCostElementTest extends AbstractTestCase
 		po.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
 		po.setDocStatus(DocAction.STATUS_Drafted);
 		po.setDocAction(DocAction.ACTION_Complete);
-		po.setDateOrdered(today);
-		po.setDatePromised(today);
+		po.setDateOrdered(date);
+		po.setDatePromised(date);
 		po.saveEx();
 
 		MOrderLine poLine = new MOrderLine(po);
 		poLine.setLine(10);
 		poLine.setProduct(product);
 		poLine.setQty(qty);
-		poLine.setDatePromised(today);
+		poLine.setDatePromised(date);
 		poLine.setPrice(price);
 		if (asi != null)
 			poLine.setM_AttributeSetInstance_ID(asi.get_ID());
@@ -1647,7 +1690,7 @@ public class ManualCostElementTest extends AbstractTestCase
 		po.load(getTrxName());
 		assertEquals(DocAction.STATUS_Completed, po.getDocStatus());
 
-		MInOut receipt = new MInOut(po, DictionaryIDs.C_DocType.MM_RECEIPT.id, po.getDateOrdered());
+		MInOut receipt = new MInOut(po, DictionaryIDs.C_DocType.MM_RECEIPT.id, date);
 		receipt.setDocStatus(DocAction.STATUS_Drafted);
 		receipt.setDocAction(DocAction.ACTION_Complete);
 		receipt.saveEx();
@@ -1675,7 +1718,7 @@ public class ManualCostElementTest extends AbstractTestCase
 
 	private MInOut createSOAndShipment(MProduct product, MAttributeSetInstance asi, BigDecimal qty, BigDecimal price)
 	{
-		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
+		Timestamp date = getLoginDate();
 
 		MOrder so = new MOrder(Env.getCtx(), 0, getTrxName());
 		so.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
@@ -1684,15 +1727,15 @@ public class ManualCostElementTest extends AbstractTestCase
 		so.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
 		so.setDocStatus(DocAction.STATUS_Drafted);
 		so.setDocAction(DocAction.ACTION_Complete);
-		so.setDateOrdered(today);
-		so.setDatePromised(today);
+		so.setDateOrdered(date);
+		so.setDatePromised(date);
 		so.saveEx();
 
 		MOrderLine soLine = new MOrderLine(so);
 		soLine.setLine(10);
 		soLine.setProduct(product);
 		soLine.setQty(qty);
-		soLine.setDatePromised(today);
+		soLine.setDatePromised(date);
 		soLine.setPrice(price);
 		if (asi != null)
 			soLine.setM_AttributeSetInstance_ID(asi.get_ID());
@@ -1807,6 +1850,17 @@ public class ManualCostElementTest extends AbstractTestCase
 			assertNull(error, "Customer Return posting failed: " + error);
 		}
 		return customerReturn;
+	}
+
+	private int getProjectWipAccountId(MProject project, MAcctSchema as)
+	{
+		int vcId = DB.getSQLValueEx(getTrxName(),
+				"SELECT PJ_WIP_Acct FROM C_Project_Acct WHERE C_Project_ID=? AND C_AcctSchema_ID=?",
+				project.get_ID(), as.get_ID());
+		assertTrue(vcId > 0, "PJ_WIP_Acct not found for project " + project.get_ID());
+		MAccount acct = MAccount.get(Env.getCtx(), vcId);
+		assertNotNull(acct, "MAccount not found for PJ_WIP_Acct=" + vcId);
+		return acct.getAccount_ID();
 	}
 
 	private List<MFactAcct> getFacts(int tableId, int recordId, int acctSchemaId)
