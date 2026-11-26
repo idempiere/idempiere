@@ -243,12 +243,12 @@ public class HelpController
 			sb.append (")</em></p>");
     	}else{
     		sb.append("<p><strong>");
-    		sb.append(Util.maskHTML(hdr));
+    		sb.append(escapeHtmlText(hdr));
     		sb.append("</strong></p>");
     		
     		if (desc != null && desc.trim().length() > 0){
     			sb.append("<p><i>");
-    			sb.append(desc);
+    			sb.append(escapeHtmlText(desc));
     			sb.append("</i></p>");
     		}
     		
@@ -775,6 +775,45 @@ public class HelpController
     	return retValue;
     }
 
+	/**
+	 * Escape plain text for insertion into HTML content.<br/>
+	 * Only &amp;, &lt;, &gt;, double quote and apostrophe are escaped, other characters are kept as is.
+	 * @param content plain text
+	 * @return escaped content or null if <code>content</code> is null
+	 */
+	public static String escapeHtmlText(String content)
+	{
+		if (content == null)
+			return null;
+		StringBuilder out = new StringBuilder(content.length());
+		for (int i = 0; i < content.length(); i++)
+		{
+			char c = content.charAt(i);
+			switch (c)
+			{
+				case '&':
+					out.append("&amp;");
+					break;
+				case '<':
+					out.append("&lt;");
+					break;
+				case '>':
+					out.append("&gt;");
+					break;
+				case '"':
+					out.append("&quot;");
+					break;
+				case '\'':
+					out.append("&#39;");
+					break;
+				default:
+					out.append(c);
+					break;
+			}
+		}
+		return out.toString();
+	}
+
     /**
 	 * @param content content
 	 * @return masked content or empty string if <code>content</code> is null
@@ -794,6 +833,9 @@ public class HelpController
 			{
 				case '\r':
 					out.append ("");
+					break;
+				case '\\':
+					out.append ("\\\\");
 					break;
 				case '\'':
 					out.append ("\\'");

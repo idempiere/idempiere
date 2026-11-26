@@ -169,7 +169,7 @@ public class WFieldSuggestion extends Window implements EventListener<Event> {
 		suggestion.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
 		suggestion.set_ValueOfColumn("AD_UserClient_ID",Env.getAD_Client_ID(Env.getCtx()));
 		if (descriptionTextbox.getText() != null)
-			suggestion.setDescription(AEnv.sanitize(descriptionTextbox.getText()));
+			suggestion.setDescription(descriptionTextbox.getText());
 		if (helpTextbox.getText() != null)
 			suggestion.setHelp(AEnv.sanitize(helpTextbox.getText()));
 		if (nameTextbox.getText() != null)
