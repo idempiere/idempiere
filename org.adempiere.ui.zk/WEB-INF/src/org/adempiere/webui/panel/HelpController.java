@@ -243,7 +243,7 @@ public class HelpController
 			sb.append (")</em></p>");
     	}else{
     		sb.append("<p><strong>");
-    		sb.append(hdr);
+    		sb.append(Util.maskHTML(hdr));
     		sb.append("</strong></p>");
     		
     		if (desc != null && desc.trim().length() > 0){

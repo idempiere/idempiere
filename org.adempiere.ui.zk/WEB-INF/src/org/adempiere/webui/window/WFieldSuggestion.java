@@ -173,7 +173,7 @@ public class WFieldSuggestion extends Window implements EventListener<Event> {
 		if (helpTextbox.getText() != null)
 			suggestion.setHelp(AEnv.sanitize(helpTextbox.getText()));
 		if (nameTextbox.getText() != null)
-			suggestion.setName(AEnv.sanitize(nameTextbox.getText()));
+			suggestion.setName(nameTextbox.getText());
 		suggestion.setIsApproved(false);
 		suggestion.setIsUpdateBaseLanguage(false);
 		suggestion.setProcessed(false);
