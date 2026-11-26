@@ -809,8 +809,10 @@ public class AdempiereWebUI extends Window implements EventListener<Event>, IWeb
     	while(attributes.hasMoreElements()) {
     		String attribute = attributes.nextElement();
     		
-    		//need to keep zk and sso session attributes
-    		if (attribute.contains("zkoss.") || attribute.startsWith("sso.") || attribute.equals(SSOWebUIFilter.TENANT_PREFIX_PARAMETER))
+    		//need to keep zk, sso and websocket session attributes
+    		if (attribute.contains("zkoss.") || attribute.startsWith("sso.")
+    				|| attribute.startsWith("ws-") || attribute.equals("websocket.event.cookie.store")
+    				|| attribute.equals(SSOWebUIFilter.TENANT_PREFIX_PARAMETER))
     			continue;
     		
     		httpSession.removeAttribute(attribute);

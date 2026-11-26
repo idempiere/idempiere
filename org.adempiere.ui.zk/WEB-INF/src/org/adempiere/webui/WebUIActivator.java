@@ -14,6 +14,8 @@
 package org.adempiere.webui;
 
 import org.adempiere.webui.adwindow.validator.WindowValidatorManager;
+import org.idempiere.ui.zk.websocket.ServerPushEndPoint;
+import org.idempiere.ui.zk.websocket.WebSocketServerPush;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -32,6 +34,8 @@ public class WebUIActivator implements BundleActivator {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		bundleContext = context;
+		ServerPushEndPoint.startup();
+		WebSocketServerPush.startup();
 		WindowValidatorManager validatorMgr = new WindowValidatorManager();
 		validatorMgr.start(context);
 	}
@@ -43,6 +47,8 @@ public class WebUIActivator implements BundleActivator {
 	public void stop(BundleContext context) throws Exception {
 		bundleContext = null;
 		WindowValidatorManager.getInstance().stop(context);
+		WebSocketServerPush.shutdown();
+		ServerPushEndPoint.shutdown();
 	}
 
 	/**

@@ -27,19 +27,29 @@ package org.idempiere.ui.zk.websocket;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.hc.client5.http.cookie.BasicCookieStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.json.JSONValue;
 import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.AbstractComponent;
 import org.zkoss.zk.ui.Desktop;
@@ -51,6 +61,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.impl.ExecutionCarryOver;
+import org.zkoss.zk.ui.sys.ExecutionsCtrl;
 import org.zkoss.zk.ui.sys.Scheduler;
 import org.zkoss.zk.ui.sys.ServerPush;
 import org.zkoss.zk.ui.sys.SessionCtrl;
@@ -78,14 +89,29 @@ public class WebSocketServerPush implements ServerPush {
     
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     
-    private ThreadInfo _active;
-    private ExecutionCarryOver _carryOver;
+    private volatile ThreadInfo _active;
+    private volatile ThreadInfo _waiting;
+    private volatile ExecutionCarryOver _carryOver;
     private final Object _mutex = new Object();
+    private final ReentrantLock _activateLock = new ReentrantLock();
     
+    private final static Map<String, WebSocketServerPush> activeDesktops = new ConcurrentHashMap<>();
     private final static Map<String, ServerPushEndPoint> endPointMap = new ConcurrentHashMap<>();
     private final static Map<String, Boolean> unregisterMap = new ConcurrentHashMap<>();
     private final static ServerPushEndPoint STUB = new ServerPushEndPoint();
-    private List<Schedule<Event>> schedules = new ArrayList<>();
+    private static final long ECHO_RETRY_DELAY_MS = 300L;
+    private static final int MAX_ECHO_RETRIES = 2;
+    private static final Object ECHO_SCHEDULER_LOCK = new Object();
+    private static volatile ScheduledExecutorService echoRetryExecutor;
+    private static volatile boolean echoSchedulerShutdown = false;
+    private static final AtomicInteger ECHO_RETRY_THREAD_COUNTER = new AtomicInteger(0);
+
+    private final List<Schedule<Event>> schedules = new ArrayList<>();
+    private final AtomicReference<ServerPushEndPoint> echoPendingEndPoint = new AtomicReference<>();
+    private final AtomicBoolean echoRetryScheduled = new AtomicBoolean(false);
+    private final AtomicReference<ScheduledFuture<?>> pendingEchoRetryFuture = new AtomicReference<>();
+    private volatile ServerPushEndPoint.TimedOutAu unresolvedTimedOutAu;
+    private final AtomicBoolean cookieHandlerRegistered = new AtomicBoolean(false);
 
     private AbstractComponent dummyTarget;
     
@@ -93,7 +119,32 @@ public class WebSocketServerPush implements ServerPush {
 
     protected static final String WS_LOCAL_BASE_URL = "ws-local-base-url";
 
+    protected static final String WS_DESKTOP_OWNER = "ws-desktop-owner";
+
+    protected static final String WS_LOOPBACK_HEADER = "X-iDempiere-WS-AU";
+
     private static final String SSL_CIPHER_SUITE_ATTRIBUTE = "javax.servlet.request.cipher_suite";
+
+    static final class PendingBrowserCookie {
+		final String name;
+		final String value;
+		final String path;
+		final Integer maxAgeSeconds;
+		final Date expiryDate;
+		final boolean secure;
+		final boolean httpOnly;
+
+		PendingBrowserCookie(String name, String value, String path, Integer maxAgeSeconds,
+				Date expiryDate, boolean secure, boolean httpOnly) {
+			this.name = name;
+			this.value = value;
+			this.path = path;
+			this.maxAgeSeconds = maxAgeSeconds;
+			this.expiryDate = expiryDate;
+			this.secure = secure;
+			this.httpOnly = httpOnly;
+		}
+	}
 
     private static class OnScheduleEvent extends Event {
 		private static final long serialVersionUID = 1L;
@@ -125,13 +176,17 @@ public class WebSocketServerPush implements ServerPush {
 			}
     	});
     	dummyTarget.addEventListener(ON_ECHO, e -> {
+    		String dtidJson = JSONValue.toJSONString(e.getData().toString());
     		StringBuilder script = new StringBuilder();
-    		String dtid = e.getData().toString();
-    		script.append("setTimeout(function() {let dt = zk.Desktop.$('").append(dtid).append("');\n");
-    		script.append("if (dt._serverpush && dt._serverpush.socket) {");
-    		script.append("  let evt = new Object(); evt.data = 'echo';\n");
-    		script.append("  dt._serverpush.socket.onmessage(evt);\n");
-    		script.append("}}, 300);");
+    		script.append("setTimeout(function() {");
+    		script.append("if (org.idempiere.websocket && org.idempiere.websocket.echoServerPush) {");
+    		script.append("  org.idempiere.websocket.echoServerPush(").append(dtidJson).append(");");
+    		script.append("} else {");
+    		script.append("  let dt = zk.Desktop.$(").append(dtidJson).append(");");
+    		script.append("  if (dt && dt._serverpush && dt._serverpush.socket) {");
+    		script.append("    dt._serverpush.socket.onmessage({data: 'echo'});");
+    		script.append("  }");
+    		script.append("}}, 0);");
     		Clients.response(new AuScript(null, script.toString()));
     	});
     }
@@ -139,86 +194,359 @@ public class WebSocketServerPush implements ServerPush {
     @Override
     public boolean activate(long timeout) throws InterruptedException, DesktopUnavailableException {
     	final Thread curr = Thread.currentThread();
-    	if (_active != null && _active.thread.equals(curr)) { //re-activate
-			++_active.nActive;
+    	ThreadInfo active = _active;
+    	if (active != null && active.thread.equals(curr)) { //re-activate
+			++active.nActive;
 			return true;
 		}
-    	
-		final ThreadInfo info = new ThreadInfo(curr);
 
-		EventListener<Event> task = new EventListener<Event>() {
-			@Override
-			public void onEvent(Event event) throws Exception {
-				if (event.getName().equals(ON_ACTIVATE_DESKTOP))
-				{
-					synchronized (_mutex) {
-						_carryOver = new ExecutionCarryOver(desktop.get());
-						
-						synchronized (info) {
-							info.nActive = 1; //granted
-							info.notifyAll();
-						}
-						
-						try {
-							_mutex.wait(); //wait until the server push is done
-						} catch (InterruptedException ex) {
-							throw UiException.Aide.wrap(ex);
+    	long waitMs = timeout <= 0 ? 10L * 60L * 1000L : timeout;
+    	long deadlineNanos = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(waitMs);
+
+    	long lockWaitNanos = deadlineNanos - System.nanoTime();
+    	if (lockWaitNanos <= 0L || !_activateLock.tryLock(lockWaitNanos, TimeUnit.NANOSECONDS)) {
+    		return false;
+    	}
+    	try {
+	    	Desktop dt = desktop.get();
+	    	if (dt == null || !dt.isAlive()) {
+	    		throw new DesktopUnavailableException("Desktop is not available");
+	    	}
+
+	    	if (deadlineNanos - System.nanoTime() <= 0L) {
+	    		return false;
+	    	}
+
+			final ThreadInfo info = new ThreadInfo(curr);
+
+			EventListener<Event> task = new EventListener<Event>() {
+				@Override
+				public void onEvent(Event event) throws Exception {
+					if (event.getName().equals(ON_ACTIVATE_DESKTOP)) {
+						synchronized (_mutex) {
+							ExecutionCarryOver granted;
+							synchronized (info) {
+								Desktop currentDesktop = desktop.get();
+								if (info.timedOut || info.cancelled || currentDesktop == null || !currentDesktop.isAlive()) {
+									return;
+								}
+								granted = new ExecutionCarryOver(currentDesktop);
+								info.carryOver = granted;
+								_carryOver = granted;
+								info.nActive = 1; //granted
+								info.notifyAll();
+							}
+
+							while (_carryOver == granted && desktop.get() != null) {
+								try {
+									_mutex.wait(); //wait until the server push is done
+								} catch (InterruptedException ex) {
+									Thread.currentThread().interrupt();
+									throw UiException.Aide.wrap(ex);
+								}
+							}
 						}
 					}
 				}
+			};
+
+			_waiting = info;
+			InterruptedException interrupted = null;
+			try {
+				synchronized (info) {
+					if (desktop.get() == null) {
+						throw new DesktopUnavailableException("Server push stopped while activating desktop");
+					}
+					Executions.schedule(dt, task, new Event(ON_ACTIVATE_DESKTOP));
+					while (info.nActive == 0 && !info.cancelled) {
+						long remainingNanos = deadlineNanos - System.nanoTime();
+						if (remainingNanos <= 0L) {
+							info.timedOut = true;
+							return false;
+						}
+						long remainingMs = remainingNanos / 1_000_000L;
+						int remainingNs = (int) (remainingNanos % 1_000_000L);
+						try {
+							info.wait(remainingMs, remainingNs);
+						} catch (InterruptedException e) {
+							info.cancelled = true;
+							if (info.nActive == 0) {
+								throw e;
+							}
+							interrupted = e;
+							break;
+						}
+					}
+					if (interrupted == null && info.nActive == 0) {
+						throw new DesktopUnavailableException("Server push stopped while activating desktop");
+					}
+				}
+			} finally {
+				if (_waiting == info) {
+					_waiting = null;
+				}
 			}
-		};
-		
-		synchronized (info) {
-			Executions.schedule(desktop.get(), task, new Event(ON_ACTIVATE_DESKTOP));
-			if (info.nActive == 0)
-				info.wait(timeout <= 0 ? 10*60*1000: timeout);
-		}
-    	
-    	_carryOver.carryOver();
-    	_active = info;
-    	
-    	return true;
+
+			if (interrupted != null) {
+				releaseAbandonedGrant(info);
+				throw interrupted;
+			}
+			if (info.cancelled || desktop.get() == null) {
+				releaseAbandonedGrant(info);
+				throw new DesktopUnavailableException("Server push stopped while activating desktop");
+			}
+
+			ExecutionCarryOver carryOver = info.carryOver;
+			if (carryOver == null) {
+				return false;
+			}
+			if (Thread.interrupted()) {
+				releaseAbandonedGrant(info);
+				throw new InterruptedException("Interrupted before accepting desktop activation");
+			}
+			try {
+				carryOver.carryOver();
+			} catch (RuntimeException | Error e) {
+				try {
+					carryOver.cleanup();
+				} catch (RuntimeException | Error cleanupEx) {
+					e.addSuppressed(cleanupEx);
+					if (Executions.getCurrent() != null) {
+						ExecutionsCtrl.setCurrent(null);
+					}
+				} finally {
+					releaseAbandonedGrant(info);
+				}
+				throw e;
+			}
+			if (info.cancelled || desktop.get() == null) {
+				try {
+					carryOver.cleanup();
+				} catch (RuntimeException | Error cleanupEx) {
+					if (Executions.getCurrent() != null) {
+						ExecutionsCtrl.setCurrent(null);
+					}
+				} finally {
+					releaseAbandonedGrant(info);
+				}
+				throw new DesktopUnavailableException("Server push stopped while activating desktop");
+			}
+	    	_active = info;
+	    	return true;
+    	} finally {
+    		_activateLock.unlock();
+    	}
     }
 
-    private boolean echo() {
+    private void releaseAbandonedGrant(ThreadInfo info) {
+    	synchronized (_mutex) {
+    		synchronized (info) {
+    			info.cancelled = true;
+    			ExecutionCarryOver granted = info.carryOver;
+    			if (granted != null && _carryOver == granted && _active != info) {
+    				_carryOver = null;
+    				info.carryOver = null;
+    				info.nActive = 0;
+    				_mutex.notifyAll();
+    			}
+    		}
+    	}
+    }
+
+    /**
+     * Reopen shared echo retry scheduler creation when the bundle starts.
+     */
+    public static void startup() {
+    	synchronized (ECHO_SCHEDULER_LOCK) {
+    		echoSchedulerShutdown = false;
+    	}
+    }
+
+    /**
+     * Shut down the shared echo retry scheduler when the bundle stops.
+     */
+    public static void shutdown() {
+    	synchronized (ECHO_SCHEDULER_LOCK) {
+    		echoSchedulerShutdown = true;
+    		if (echoRetryExecutor != null) {
+    			echoRetryExecutor.shutdownNow();
+    			echoRetryExecutor = null;
+    		}
+    	}
+    }
+
+    private static ScheduledExecutorService getEchoRetryExecutor() {
+    	if (echoSchedulerShutdown) {
+    		return null;
+    	}
+    	ScheduledExecutorService current = echoRetryExecutor;
+    	if (current == null || current.isShutdown()) {
+    		synchronized (ECHO_SCHEDULER_LOCK) {
+    			if (echoSchedulerShutdown) {
+    				return null;
+    			}
+    			current = echoRetryExecutor;
+    			if (current == null || current.isShutdown()) {
+    				ScheduledThreadPoolExecutor pool = new ScheduledThreadPoolExecutor(2, r -> {
+    					Thread t = new Thread(r, "ws-echo-retry-" + ECHO_RETRY_THREAD_COUNTER.incrementAndGet());
+    					t.setDaemon(true);
+    					return t;
+    				});
+    				pool.setKeepAliveTime(60L, TimeUnit.SECONDS);
+    				pool.allowCoreThreadTimeOut(true);
+    				pool.setRemoveOnCancelPolicy(true);
+    				echoRetryExecutor = pool;
+    				current = pool;
+    			}
+    		}
+    	}
+    	return current;
+    }
+
+    private boolean trySendEcho(ServerPushEndPoint endpoint) {
+    	if (endpoint == null || desktop.get() == null) {
+    		return false;
+    	}
+    	while (true) {
+    		ServerPushEndPoint pending = echoPendingEndPoint.get();
+    		if (pending == endpoint) {
+    			return true;
+    		}
+    		if (echoPendingEndPoint.compareAndSet(pending, endpoint)) {
+    			if (endpoint.sendEcho()) {
+    				return true;
+    			}
+    			echoPendingEndPoint.compareAndSet(endpoint, null);
+    			return false;
+    		}
+    	}
+    }
+
+    private void clearPendingEcho(ServerPushEndPoint endpoint) {
+    	if (endpoint != null) {
+    		echoPendingEndPoint.compareAndSet(endpoint, null);
+    	}
+    }
+
+    private void cancelPendingEchoRetry() {
+    	ScheduledFuture<?> future = pendingEchoRetryFuture.getAndSet(null);
+    	if (future != null) {
+    		future.cancel(false);
+    	}
+    	echoRetryScheduled.set(false);
+    }
+
+    private void triggerEcho() {
     	Desktop dt = desktop.get();
-        if (dt != null) {
-        	ServerPushEndPoint endPoint = getEndPoint(dt.getId());
-        	if (endPoint == null) {
-        		if (dt.isServerPushEnabled()) {
-        			try {
-						Thread.sleep(300);
-					} catch (InterruptedException e) {
-					}
-        			endPoint = getEndPoint(dt.getId());
-        		}
-        	}
-        	if (endPoint != null) {
-        		endPoint.echo();
-        		return true;
-        	}
-        } 
-        return false;
+    	if (dt == null) {
+    		return;
+    	}
+
+    	String dtid = dt.getId();
+    	ServerPushEndPoint endPoint = getEndPoint(dtid);
+    	if (endPoint != null && trySendEcho(endPoint)) {
+    		return;
+    	}
+
+    	ServerPushEndPoint reconnected = getEndPoint(dtid);
+    	if (reconnected != null && reconnected != endPoint && hasPendingSchedules() && trySendEcho(reconnected)) {
+    		return;
+    	}
+
+    	if (dt.isServerPushEnabled() && hasPendingSchedules()) {
+    		scheduleEchoRetry();
+    	}
+    }
+
+    private void scheduleEchoRetry() {
+    	if (echoRetryScheduled.compareAndSet(false, true)) {
+    		scheduleEchoRetryAttempt(0);
+    	}
+    }
+
+    private void scheduleEchoRetryAttempt(int attempt) {
+    	Desktop dt = desktop.get();
+    	if (dt == null || !dt.isServerPushEnabled() || !hasPendingSchedules()) {
+    		pendingEchoRetryFuture.set(null);
+    		echoRetryScheduled.set(false);
+    		return;
+    	}
+    	ScheduledExecutorService scheduler = getEchoRetryExecutor();
+    	if (scheduler == null) {
+    		pendingEchoRetryFuture.set(null);
+    		echoRetryScheduled.set(false);
+    		return;
+    	}
+    	try {
+    		ScheduledFuture<?> future = scheduler.schedule(
+    				() -> runEchoRetryAttempt(attempt), ECHO_RETRY_DELAY_MS, TimeUnit.MILLISECONDS);
+    		pendingEchoRetryFuture.set(future);
+    		if (desktop.get() == null) {
+    			cancelPendingEchoRetry();
+    		}
+    	} catch (RejectedExecutionException e) {
+    		pendingEchoRetryFuture.set(null);
+    		echoRetryScheduled.set(false);
+    	}
+    }
+
+    private void runEchoRetryAttempt(int attempt) {
+    	pendingEchoRetryFuture.set(null);
+    	Desktop dt = desktop.get();
+    	if (dt == null || !dt.isServerPushEnabled() || !hasPendingSchedules()) {
+    		echoRetryScheduled.set(false);
+    		return;
+    	}
+    	ServerPushEndPoint endPoint = getEndPoint(dt.getId());
+    	if (endPoint != null && trySendEcho(endPoint)) {
+    		echoRetryScheduled.set(false);
+    		return;
+    	}
+    	if (attempt + 1 < MAX_ECHO_RETRIES) {
+    		scheduleEchoRetryAttempt(attempt + 1);
+    	} else {
+    		echoRetryScheduled.set(false);
+    	}
+    }
+
+    private boolean hasPendingSchedules() {
+    	synchronized (schedules) {
+    		return !schedules.isEmpty();
+    	}
+    }
+
+    private void flushPendingEchoOnReconnect(ServerPushEndPoint endpoint) {
+    	Desktop dt = desktop.get();
+    	if (endpoint == null || dt == null || !hasPendingSchedules()) {
+    		return;
+    	}
+    	if (trySendEcho(endpoint)) {
+    		cancelPendingEchoRetry();
+    	} else if (dt.isServerPushEnabled() && hasPendingSchedules()) {
+    		scheduleEchoRetry();
+    	}
     }
 
     @Override
     public boolean deactivate(boolean stop) {
     	boolean stopped = false;
-		if (_active != null && Thread.currentThread().equals(_active.thread)) {
-			if (--_active.nActive <= 0) {
-				if (stop)
-				{
+    	ThreadInfo active = _active;
+		if (active != null && Thread.currentThread().equals(active.thread)) {
+			if (--active.nActive <= 0) {
+				if (stop) {
 					stop();
 					stopped = true;
 				}
 
-				_carryOver.cleanup();
-				_carryOver = null;
-				_active.nActive = 0; //just in case
-				_active = null;
-								
 				synchronized (_mutex) {
+					ExecutionCarryOver carryOver = _carryOver;
+					if (carryOver != null) {
+						carryOver.cleanup();
+						_carryOver = null;
+					}
+					active.carryOver = null;
+					active.nActive = 0; //just in case
+					_active = null;
 					_mutex.notifyAll();
 				}
 			}
@@ -228,12 +556,16 @@ public class WebSocketServerPush implements ServerPush {
 
     @Override
     public boolean isActive() {
-    	return _active != null && _active.nActive > 0;
+    	ThreadInfo active = _active;
+    	return active != null && active.nActive > 0;
     }
 
     @SuppressWarnings("unchecked")
 	@Override
     public void onPiggyback() {
+    	// Clear before draining so concurrent schedule() calls after drain starts will still trigger an echo.
+    	echoPendingEndPoint.set(null);
+    	cancelPendingEchoRetry();
 
     	//Process pending schedule event
     	Schedule<Event>[] pendings = null;
@@ -252,9 +584,19 @@ public class WebSocketServerPush implements ServerPush {
     	if (dt != null) {
         	ServerPushEndPoint endPoint = getEndPoint(dt.getId());
         	if (endPoint == null) {
-        		if (dt.isServerPushEnabled() && unregisterMap.remove(dt.getId(), Boolean.TRUE)) {
-        			registerEndPoint(dt.getId(), STUB);
-        			startServerPushAtClient(dt);
+        		if (dt.isServerPushEnabled()) {
+        			String dtid = dt.getId();
+        			boolean[] shouldStart = new boolean[1];
+        			endPointMap.compute(dtid, (k, existing) -> {
+        				if (existing == null && activeDesktops.containsKey(dtid) && unregisterMap.remove(dtid, Boolean.TRUE)) {
+        					shouldStart[0] = true;
+        					return STUB;
+        				}
+        				return existing;
+        			});
+        			if (shouldStart[0]) {
+        				startServerPushAtClient(dt);
+        			}
         		}
         	}
     	}    	
@@ -285,13 +627,15 @@ public class WebSocketServerPush implements ServerPush {
 	@Override
 	public <T extends Event> void schedule(EventListener<T> task, T event,
 			Scheduler<T> scheduler) {
+    	if (desktop.get() == null)
+    		return;
     	EventListenerWrapper<T> wrapper = new EventListenerWrapper<T>(task);
     	if (Executions.getCurrent() == null) {
     		//schedule and execute in onPiggyBack
     		synchronized (schedules) {
 				schedules.add(new Schedule(wrapper, event));
 			}
-	        echo();
+    		triggerEcho();
     	} else {
     		// in event listener thread, process this asynchronously in onPiggyback
     		synchronized (schedules) {
@@ -325,14 +669,22 @@ public class WebSocketServerPush implements ServerPush {
 
         if (log.isDebugEnabled())
         	log.debug("Starting server push for " + desktop);
-        registerEndPoint(desktop.getId(), STUB);
+        String dtid = desktop.getId();
+        endPointMap.compute(dtid, (k, existing) -> {
+        	activeDesktops.put(dtid, this);
+        	unregisterMap.remove(dtid);
+        	return STUB;
+        });
 
         // Store connection details in session attributes for later use in EndpointConfigurator
+        var session = desktop.getSession();
+        if (session != null) {
+        	session.setAttribute(getDesktopOwnerAttribute(desktop.getId()), Boolean.TRUE);
+        }
         var execution = Executions.getCurrent();
         if (execution != null) {
         	var request = execution.getNativeRequest();
         	if (request instanceof HttpServletRequest httpRequest) {
-				var session = desktop.getSession();
 				if (session != null) {
 					var clientIp = httpRequest.getRemoteAddr();
 					if (clientIp != null)
@@ -347,29 +699,80 @@ public class WebSocketServerPush implements ServerPush {
         }
         startServerPushAtClient(desktop);
 
-		ExecutionInit cookieHandler = (Execution exec, Execution parent) -> {
-			var responseObject = exec.getNativeResponse();
-			if (responseObject instanceof HttpServletResponse servletResponse) {
-				var session = desktop.getSession();
-				var cookieStore = session != null ? session.removeAttribute(WEBSOCKET_EVENT_COOKIE_STORE) : null;
-				if (cookieStore instanceof BasicCookieStore basicCookieStore) {
-					//add cookies from ServerPushEndPoint response to browser
-					basicCookieStore.getCookies().forEach(cookie -> {
-						Cookie browserCookie = new Cookie(cookie.getName(), cookie.getValue());
-						browserCookie.setSecure(true);
-						browserCookie.setHttpOnly(true);
-						if (cookie.getExpiryDate() != null) {
-							long maxAgeSeconds = Math.max(0L,
-									(cookie.getExpiryDate().getTime() - System.currentTimeMillis()) / 1000L);
-							browserCookie.setMaxAge((int) Math.min(Integer.MAX_VALUE, maxAgeSeconds));
+        if (cookieHandlerRegistered.compareAndSet(false, true)) {
+			ExecutionInit cookieHandler = (Execution exec, Execution parent) -> flushPendingBrowserCookies(desktop, exec);
+			desktop.addListener(cookieHandler);
+        }
+    }
+
+	static void flushPendingBrowserCookies(Desktop desktop, Execution exec) {
+		flushPendingBrowserCookies(desktop, exec, System.currentTimeMillis());
+	}
+
+	static void flushPendingBrowserCookies(Desktop desktop, Execution exec, long nowMillis) {
+		var requestObject = exec.getNativeRequest();
+		if (requestObject instanceof HttpServletRequest req
+				&& "true".equals(req.getHeader(WS_LOOPBACK_HEADER))) {
+			// Do not drain pending browser cookies on internal WebSocket loopback /zkau requests.
+			return;
+		}
+		var responseObject = exec.getNativeResponse();
+		if (responseObject instanceof HttpServletResponse servletResponse) {
+			var currentSession = desktop.getSession();
+			if (currentSession == null)
+				return;
+			Object pendingCookies;
+			Object nativeSession = currentSession.getNativeSession();
+			if (nativeSession != null) {
+				synchronized (nativeSession) {
+					pendingCookies = currentSession.removeAttribute(WEBSOCKET_EVENT_COOKIE_STORE);
+				}
+			} else {
+				pendingCookies = currentSession.removeAttribute(WEBSOCKET_EVENT_COOKIE_STORE);
+			}
+
+			boolean requestSecure = requestObject instanceof HttpServletRequest req && req.isSecure();
+			if (pendingCookies instanceof List<?> list) {
+				for (Object item : list) {
+					if (item instanceof PendingBrowserCookie cookie) {
+						Cookie browserCookie = new Cookie(cookie.name, cookie.value);
+						if (cookie.path != null && !cookie.path.isBlank()) {
+							browserCookie.setPath(cookie.path);
+						}
+						browserCookie.setSecure(cookie.secure || requestSecure);
+						browserCookie.setHttpOnly(cookie.httpOnly);
+						if (cookie.maxAgeSeconds != null && cookie.maxAgeSeconds <= 0) {
+							browserCookie.setMaxAge(0);
+						} else if (cookie.expiryDate != null) {
+							long remainingMs = cookie.expiryDate.getTime() - nowMillis;
+							long remainingSeconds = remainingMs <= 0L ? 0L
+									: (remainingMs / 1000L) + (remainingMs % 1000L != 0L ? 1L : 0L);
+							browserCookie.setMaxAge((int) Math.min(Integer.MAX_VALUE, remainingSeconds));
+						} else if (cookie.maxAgeSeconds != null) {
+							browserCookie.setMaxAge(cookie.maxAgeSeconds);
 						}
 						servletResponse.addCookie(browserCookie);
-					});
+					}
 				}
+			} else if (pendingCookies instanceof BasicCookieStore basicCookieStore) {
+				// Backward compatibility if a BasicCookieStore was stored directly.
+				basicCookieStore.getCookies().forEach(cookie -> {
+					Cookie browserCookie = new Cookie(cookie.getName(), cookie.getValue());
+					if (cookie.getPath() != null && !cookie.getPath().isBlank()) {
+						browserCookie.setPath(cookie.getPath());
+					}
+					browserCookie.setSecure(cookie.isSecure() || requestSecure);
+					browserCookie.setHttpOnly(true);
+					if (cookie.getExpiryDate() != null) {
+						long maxAgeSeconds = Math.max(0L,
+								(cookie.getExpiryDate().getTime() - nowMillis) / 1000L);
+						browserCookie.setMaxAge((int) Math.min(Integer.MAX_VALUE, maxAgeSeconds));
+					}
+					servletResponse.addCookie(browserCookie);
+				});
 			}
-		};			
-		desktop.addListener(cookieHandler);
-    }
+		}
+	}
 
 	/**
 	 * Build the base URL of the local servlet connector that accepted the request.
@@ -405,12 +808,25 @@ public class WebSocketServerPush implements ServerPush {
 	}
 
 	/**
+	 * Build the session attribute name recording ownership of a desktop by its HTTP session.
+	 *
+	 * @param desktopId ZK desktop identifier
+	 * @return session attribute name
+	 */
+	protected static String getDesktopOwnerAttribute(String desktopId) {
+		return WS_DESKTOP_OWNER + "." + desktopId;
+	}
+
+	/**
 	 * Notify the browser to open the WebSocket server-push connection.
 	 *
 	 * @param desktop ZK desktop to connect
 	 */
 	private void startServerPushAtClient(Desktop desktop) {
-		Clients.response("org.idempiere.websocket.serverpush.start", new AuScript(null, "org.idempiere.websocket.startServerPush('" + desktop.getId() + "');"));
+		Clients.response("org.idempiere.websocket.serverpush.start",
+				new AuScript(null, "org.idempiere.websocket.startServerPush("
+						+ JSONValue.toJSONString(desktop.getId()) + ", "
+						+ ServerPushEndPoint.getMaxTextMessageSize() + ");"));
 	}
 
 	/** {@inheritDoc} */
@@ -424,16 +840,62 @@ public class WebSocketServerPush implements ServerPush {
 
         if (log.isDebugEnabled())
         	log.debug("Stopping server push for " + desktop);
+
+        echoPendingEndPoint.set(null);
+        cancelPendingEchoRetry();
+        unresolvedTimedOutAu = null;
+        synchronized (schedules) {
+        	schedules.clear();
+        }
+
+        // Remove from static registries so closed/abandoned desktops never leak entries.
+        String dtid = desktop.getId();
+        ServerPushEndPoint[] removedEndpoint = new ServerPushEndPoint[1];
+        endPointMap.compute(dtid, (k, existing) -> {
+        	activeDesktops.remove(dtid);
+        	unregisterMap.remove(dtid);
+        	removedEndpoint[0] = existing;
+        	return null;
+        });
+        ServerPushEndPoint endpoint = removedEndpoint[0];
+        if (endpoint != null && endpoint != STUB) {
+        	endpoint.close();
+        }
+
+        // Unblock any threads waiting in activate() or holding _mutex.
+        ThreadInfo waiting = _waiting;
+        if (waiting != null) {
+        	synchronized (waiting) {
+        		waiting.cancelled = true;
+        		waiting.notifyAll();
+        	}
+        }
+        synchronized (_mutex) {
+        	_mutex.notifyAll();
+        }
+
 		var session = desktop.getSession();
-		if (session instanceof SessionCtrl sessionCtrl && !sessionCtrl.isInvalidated())
-			session.removeAttribute(getLocalBaseUrlAttribute(desktop.getId()));
-        Clients.response("org.idempiere.websocket.serverpush.stop", new AuScript(null, "org.idempiere.websocket.stopServerPush('" + desktop.getId() + "');"));
+		if (session != null && (!(session instanceof SessionCtrl sessionCtrl) || !sessionCtrl.isInvalidated())) {
+			try {
+				session.removeAttribute(getLocalBaseUrlAttribute(dtid));
+				session.removeAttribute(getDesktopOwnerAttribute(dtid));
+			} catch (IllegalStateException e) {
+				// Session invalidated concurrently
+			}
+		}
+        if (Executions.getCurrent() != null) {
+        	Clients.response("org.idempiere.websocket.serverpush.stop",
+        			new AuScript(null, "org.idempiere.websocket.stopServerPush(" + JSONValue.toJSONString(dtid) + ");"));
+        }
     }
 
 	private static class ThreadInfo {
 		private final Thread thread;
 		/** # of activate() was called. */
 		private int nActive;
+		private boolean timedOut;
+		private volatile boolean cancelled;
+		private ExecutionCarryOver carryOver;
 		private ThreadInfo(Thread thread) {
 			this.thread = thread;
 		}
@@ -444,9 +906,9 @@ public class WebSocketServerPush implements ServerPush {
 
 	@Override
 	public void resume() {
-		if (this.desktop.get() != null) {
-			Desktop desktop = this.desktop.getAndSet(null);
-			start(desktop);
+		Desktop current = this.desktop.getAndSet(null);
+		if (current != null) {
+			start(current);
 		}
 	}
 	
@@ -456,7 +918,81 @@ public class WebSocketServerPush implements ServerPush {
 	 * @param endpoint Connected web socket end point
 	 */
 	public static void registerEndPoint(String dtid, ServerPushEndPoint endpoint) {
-		endPointMap.put(dtid, endpoint);
+		if (dtid != null && endpoint != null) {
+			endPointMap.put(dtid, endpoint);
+			if (endpoint != STUB) {
+				unregisterMap.remove(dtid);
+			}
+		}
+	}
+
+	static ServerPushEndPoint.TimedOutAu getUnresolvedTimedOutAu(String dtid) {
+		if (dtid == null) {
+			return null;
+		}
+		WebSocketServerPush active = activeDesktops.get(dtid);
+		return active != null ? active.unresolvedTimedOutAu : null;
+	}
+
+	static void setUnresolvedTimedOutAu(String dtid, ServerPushEndPoint.TimedOutAu timedOutAu) {
+		if (dtid == null) {
+			return;
+		}
+		WebSocketServerPush active = activeDesktops.get(dtid);
+		if (active != null) {
+			active.unresolvedTimedOutAu = timedOutAu;
+		}
+	}
+
+	static void clearUnresolvedTimedOutAu(String dtid, ServerPushEndPoint.TimedOutAu expected) {
+		if (dtid == null) {
+			return;
+		}
+		WebSocketServerPush active = activeDesktops.get(dtid);
+		if (active != null && active.unresolvedTimedOutAu == expected) {
+			active.unresolvedTimedOutAu = null;
+		}
+	}
+
+	/**
+	 * Atomically register a newly opened endpoint only if {@code dtid} is still an active
+	 * server-push desktop owned by {@code httpSession}. Prevents a concurrent {@link #stop()}
+	 * from racing with {@code onOpen} and leaking a stale endpoint entry.
+	 *
+	 * @param dtid Desktop id
+	 * @param httpSession HTTP session from the WebSocket handshake
+	 * @param endpoint Connected web socket end point
+	 * @return true if the endpoint was registered, false if the desktop is no longer valid
+	 */
+	static boolean registerEndPointIfValid(String dtid, HttpSession httpSession, ServerPushEndPoint endpoint) {
+		if (dtid == null || httpSession == null || endpoint == null || !isValidDesktopId(dtid, httpSession))
+			return false;
+		boolean[] registered = new boolean[1];
+		WebSocketServerPush[] owner = new WebSocketServerPush[1];
+		ServerPushEndPoint[] superseded = new ServerPushEndPoint[1];
+		endPointMap.compute(dtid, (k, existing) -> {
+			WebSocketServerPush active = activeDesktops.get(dtid);
+			if (active == null && existing == null) {
+				return null;
+			}
+			unregisterMap.remove(dtid);
+			registered[0] = true;
+			owner[0] = active;
+			if (existing != null && existing != STUB && existing != endpoint) {
+				superseded[0] = existing;
+			}
+			return endpoint;
+		});
+		if (superseded[0] != null) {
+			if (owner[0] != null) {
+				owner[0].clearPendingEcho(superseded[0]);
+			}
+			superseded[0].close();
+		}
+		if (registered[0] && owner[0] != null) {
+			owner[0].flushPendingEchoOnReconnect(endpoint);
+		}
+		return registered[0];
 	}
 	
 	/**
@@ -465,11 +1001,54 @@ public class WebSocketServerPush implements ServerPush {
 	 * @return true if there's end point register previously for desktop, false otherwise
 	 */
 	public static boolean unregisterEndPoint(String dtid) {
-		ServerPushEndPoint endpoint = endPointMap.remove(dtid);
-		if (endpoint != null) {
-			unregisterMap.put(dtid, Boolean.TRUE);
+		if (dtid == null)
+			return false;
+		boolean[] removed = new boolean[1];
+		WebSocketServerPush[] owner = new WebSocketServerPush[1];
+		ServerPushEndPoint[] removedEndpoint = new ServerPushEndPoint[1];
+		endPointMap.computeIfPresent(dtid, (k, existing) -> {
+			removed[0] = true;
+			removedEndpoint[0] = existing;
+			owner[0] = activeDesktops.get(dtid);
+			if (existing != STUB && owner[0] != null) {
+				unregisterMap.put(dtid, Boolean.TRUE);
+			}
+			return null;
+		});
+		if (removed[0] && owner[0] != null && removedEndpoint[0] != null && removedEndpoint[0] != STUB) {
+			owner[0].clearPendingEcho(removedEndpoint[0]);
 		}
-		return endpoint != null;
+		return removed[0];
+	}
+
+	/**
+	 * Remove web socket end point for desktop only if it matches the given endpoint instance.
+	 * Prevents a stale socket's {@code onClose} from removing a newer reconnected endpoint.
+	 *
+	 * @param dtid Desktop id
+	 * @param endpoint Endpoint instance closing
+	 * @return true if the matching endpoint was removed, false otherwise
+	 */
+	public static boolean unregisterEndPoint(String dtid, ServerPushEndPoint endpoint) {
+		if (dtid == null || endpoint == null)
+			return false;
+		boolean[] removed = new boolean[1];
+		WebSocketServerPush[] owner = new WebSocketServerPush[1];
+		endPointMap.computeIfPresent(dtid, (k, existing) -> {
+			if (existing != endpoint) {
+				return existing;
+			}
+			removed[0] = true;
+			owner[0] = activeDesktops.get(dtid);
+			if (endpoint != STUB && owner[0] != null) {
+				unregisterMap.put(dtid, Boolean.TRUE);
+			}
+			return null;
+		});
+		if (removed[0] && owner[0] != null) {
+			owner[0].clearPendingEcho(endpoint);
+		}
+		return removed[0];
 	}
 	
 	/**
@@ -478,6 +1057,8 @@ public class WebSocketServerPush implements ServerPush {
 	 * @return Web socket end point
 	 */
 	public static ServerPushEndPoint getEndPoint(String dtid) {
+		if (dtid == null)
+			return null;
 		ServerPushEndPoint endpoint = endPointMap.get(dtid);
 		if (endpoint == STUB)
 			return null;
@@ -490,6 +1071,23 @@ public class WebSocketServerPush implements ServerPush {
 	 * @return true if serverpush started for dtid, false otherwise
 	 */
 	public static boolean isValidDesktopId(String dtid) {
-		return endPointMap.containsKey(dtid);
+		return dtid != null && (activeDesktops.containsKey(dtid) || endPointMap.containsKey(dtid));
+	}
+
+	/**
+	 * Validate that {@code dtid} is an active server-push desktop owned by {@code httpSession}.
+	 *
+	 * @param dtid desktop id
+	 * @param httpSession HTTP session from the WebSocket handshake
+	 * @return true if serverpush is active for {@code dtid} and owned by {@code httpSession}
+	 */
+	public static boolean isValidDesktopId(String dtid, HttpSession httpSession) {
+		if (httpSession == null || !isValidDesktopId(dtid))
+			return false;
+		try {
+			return Boolean.TRUE.equals(httpSession.getAttribute(getDesktopOwnerAttribute(dtid)));
+		} catch (IllegalStateException e) {
+			return false;
+		}
 	}
 }
