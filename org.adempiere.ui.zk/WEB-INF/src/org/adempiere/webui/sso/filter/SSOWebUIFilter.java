@@ -377,6 +377,7 @@ public class SSOWebUIFilter implements Filter
 			return savedQuery;
 
 		StringBuilder filtered = new StringBuilder();
+		boolean hasValidTenant = false;
 		if (!Util.isEmpty(savedQuery))
 		{
 			for (String pair : savedQuery.split("&"))
@@ -396,6 +397,7 @@ public class SSOWebUIFilter implements Filter
 				}
 				if (TENANT_PREFIX_PARAMETER.equals(decodedName))
 				{
+					boolean validTenant = false;
 					if (idx >= 0)
 					{
 						String rawValue = pair.substring(idx + 1);
@@ -408,11 +410,14 @@ public class SSOWebUIFilter implements Filter
 						{
 							// Fall back to raw value check
 						}
-						if (!Util.isEmpty(decodedValue, true))
-							return savedQuery;
+						validTenant = !Util.isEmpty(decodedValue, true);
 					}
-					// Skip empty tenant parameter so appended tenant parameter is not shadowed
-					continue;
+					if (!validTenant)
+					{
+						// Skip empty tenant parameter so a valid or appended tenant parameter is not shadowed
+						continue;
+					}
+					hasValidTenant = true;
 				}
 				if (filtered.length() > 0)
 					filtered.append('&');
@@ -420,11 +425,14 @@ public class SSOWebUIFilter implements Filter
 			}
 		}
 
-		if (filtered.length() > 0)
-			filtered.append('&');
-		filtered.append(TENANT_PREFIX_PARAMETER)
-				.append('=')
-				.append(URLEncoder.encode(redirectTenant.trim(), StandardCharsets.UTF_8));
+		if (!hasValidTenant)
+		{
+			if (filtered.length() > 0)
+				filtered.append('&');
+			filtered.append(TENANT_PREFIX_PARAMETER)
+					.append('=')
+					.append(URLEncoder.encode(redirectTenant.trim(), StandardCharsets.UTF_8));
+		}
 		return filtered.toString();
 	}
 

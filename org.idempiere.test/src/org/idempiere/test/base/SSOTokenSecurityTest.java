@@ -850,6 +850,30 @@ class SSOTokenSecurityTest extends AbstractTestCase {
 			HttpServletResponse resp2 = mock(HttpServletResponse.class);
 			filter.doFilter(req2, resp2, mock(FilterChain.class));
 			verify(resp2).sendRedirect("http://127.0.0.1:8080/webui/index.zul?%74enant=gardenworld&view=orders");
+
+			// Duplicate empty tenant parameter preceding valid tenant parameter must be removed
+			Map<String, Object> attrs3 = new HashMap<>();
+			attrs3.put(SSOWebUIFilter.TENANT_PREFIX_PARAMETER, GARDEN_WORLD_PREFIX);
+			attrs3.put(ISSOPrincipalService.SSO_SELECTED_PROVIDER, GARDEN_WORLD_PROVIDER_UU);
+			attrs3.put(ISSOPrincipalService.SSO_QUERY_STRING, "tenant=&tenant=gardenworld&view=orders");
+			HttpSession session3 = createMapBackedSession(attrs3);
+
+			HttpServletRequest req3 = createIndexRequest(session3, null, null, "auth-code-3");
+			HttpServletResponse resp3 = mock(HttpServletResponse.class);
+			filter.doFilter(req3, resp3, mock(FilterChain.class));
+			verify(resp3).sendRedirect("http://127.0.0.1:8080/webui/index.zul?tenant=gardenworld&view=orders");
+
+			// Empty tenant entries around a valid encoded tenant entry are stripped while preserving encoded entry and unrelated params
+			Map<String, Object> attrs4 = new HashMap<>();
+			attrs4.put(SSOWebUIFilter.TENANT_PREFIX_PARAMETER, GARDEN_WORLD_PREFIX);
+			attrs4.put(ISSOPrincipalService.SSO_SELECTED_PROVIDER, GARDEN_WORLD_PROVIDER_UU);
+			attrs4.put(ISSOPrincipalService.SSO_QUERY_STRING, "tenant=&%74enant=gardenworld&tenant=%20&view=orders");
+			HttpSession session4 = createMapBackedSession(attrs4);
+
+			HttpServletRequest req4 = createIndexRequest(session4, null, null, "auth-code-4");
+			HttpServletResponse resp4 = mock(HttpServletResponse.class);
+			filter.doFilter(req4, resp4, mock(FilterChain.class));
+			verify(resp4).sendRedirect("http://127.0.0.1:8080/webui/index.zul?%74enant=gardenworld&view=orders");
 		}
 	}
 
@@ -932,29 +956,41 @@ class SSOTokenSecurityTest extends AbstractTestCase {
 		Env.setContext(Env.getCtx(), Env.AD_ORG_ID, DictionaryIDs.AD_Org.GLOBAL.id);
 		Env.setContext(Env.getCtx(), Env.AD_ROLE_ID, roleContextId);
 
-		MUser user = new MUser(Env.getCtx(), 0, null);
-		user.setAD_Org_ID(DictionaryIDs.AD_Org.GLOBAL.id);
-		user.setName(uniqueName);
-		user.setPassword("SsoTest#9aB1!z");
-		user.setAuthenticationType(MUser.AUTHENTICATIONTYPE_ApplicationAndSSO);
-		user.setIsActive(true);
-		user.saveEx();
-
+		MUser user = null;
 		List<MUserRoles> roles = new ArrayList<>();
-		for (int[] pair : clientAndRolePairs) {
-			int urClientId = pair[0];
-			int urRoleId = pair[1];
-			Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, urClientId);
-			Env.setContext(Env.getCtx(), Env.AD_ORG_ID, DictionaryIDs.AD_Org.GLOBAL.id);
-			Env.setContext(Env.getCtx(), Env.AD_ROLE_ID, urRoleId);
+		try {
+			user = new MUser(Env.getCtx(), 0, null);
+			user.setAD_Org_ID(DictionaryIDs.AD_Org.GLOBAL.id);
+			user.setName(uniqueName);
+			user.setPassword("SsoTest#9aB1!z");
+			user.setAuthenticationType(MUser.AUTHENTICATIONTYPE_ApplicationAndSSO);
+			user.setIsActive(true);
+			user.saveEx();
 
-			MUserRoles ur = new MUserRoles(Env.getCtx(), user.getAD_User_ID(), urRoleId, null);
-			ur.setAD_Org_ID(DictionaryIDs.AD_Org.GLOBAL.id);
-			ur.setIsActive(true);
-			ur.saveEx();
-			roles.add(ur);
+			for (int[] pair : clientAndRolePairs) {
+				int urClientId = pair[0];
+				int urRoleId = pair[1];
+				Env.setContext(Env.getCtx(), Env.AD_CLIENT_ID, urClientId);
+				Env.setContext(Env.getCtx(), Env.AD_ORG_ID, DictionaryIDs.AD_Org.GLOBAL.id);
+				Env.setContext(Env.getCtx(), Env.AD_ROLE_ID, urRoleId);
+
+				MUserRoles ur = new MUserRoles(Env.getCtx(), user.getAD_User_ID(), urRoleId, null);
+				ur.setAD_Org_ID(DictionaryIDs.AD_Org.GLOBAL.id);
+				ur.setIsActive(true);
+				ur.saveEx();
+				roles.add(ur);
+			}
+			return new DedicatedSSOUser(user, clientId, roleContextId, roles);
+		} catch (Throwable t) {
+			if (user != null && user.getAD_User_ID() > 0) {
+				try {
+					deleteDedicatedSSOUser(new DedicatedSSOUser(user, clientId, roleContextId, roles));
+				} catch (Throwable cleanupEx) {
+					t.addSuppressed(cleanupEx);
+				}
+			}
+			throw t;
 		}
-		return new DedicatedSSOUser(user, clientId, roleContextId, roles);
 	}
 
 	private void deleteDedicatedSSOUser(DedicatedSSOUser dedicated) {
