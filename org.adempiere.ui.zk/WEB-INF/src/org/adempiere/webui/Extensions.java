@@ -30,11 +30,13 @@ import org.adempiere.base.IServiceReferenceHolder;
 import org.adempiere.base.Service;
 import org.adempiere.base.ServiceQuery;
 import org.adempiere.webui.adwindow.AbstractADWindowContent;
+import org.adempiere.webui.adwindow.ADWindowToolbar;
 import org.adempiere.webui.adwindow.IADTabpanel;
 import org.adempiere.webui.apps.IProcessParameterListener;
 import org.adempiere.webui.apps.graph.IChartRendererService;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.factory.IADTabPanelFactory;
+import org.adempiere.webui.factory.IADWindowToolbarFactory;
 import org.adempiere.webui.factory.ICalendarWindowFactory;
 import org.adempiere.webui.factory.IDashboardGadgetFactory;
 import org.adempiere.webui.factory.IFindWindowFactory;
@@ -423,6 +425,27 @@ public class Extensions {
 		}
 		return null;
 	} // getADTabPanel
+
+	/**
+	 * Get custom {@link ADWindowToolbar} instance through {@link IADWindowToolbarFactory} extension
+	 * @param windowContent owning window content
+	 * @param windowNo      window number
+	 * @return {@link ADWindowToolbar} instance, or null if no factory provides one
+	 */
+	public static ADWindowToolbar getADWindowToolbar(AbstractADWindowContent windowContent, int windowNo)
+	{
+		List<IADWindowToolbarFactory> factoryList = Service.locator().list(IADWindowToolbarFactory.class).getServices();
+		if (factoryList == null)
+			return null;
+
+		for (IADWindowToolbarFactory factory : factoryList)
+		{
+			ADWindowToolbar toolbar = factory.create(windowContent, windowNo);
+			if (toolbar != null)
+				return toolbar;
+		}
+		return null;
+	} // getADWindowToolbar
 	
 	/**
 	 * Get the report viewer format selector from the highest ranking {@link IReportFormatSelectorFactory}

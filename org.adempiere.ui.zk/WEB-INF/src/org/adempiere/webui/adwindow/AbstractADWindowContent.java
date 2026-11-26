@@ -317,8 +317,8 @@ public abstract class AbstractADWindowContent extends AbstractUIPart implements 
 	 */
     private void initComponents()
     {
-        /** Initialise toolbar */
-        toolbar = new ADWindowToolbar(this, getWindowNo());
+        /** Initialise toolbar through IADWindowToolbarFactory */
+        toolbar = Extensions.getADWindowToolbar(this, getWindowNo());
         toolbar.setId("windowToolbar");
         toolbar.addListener(this);
 
