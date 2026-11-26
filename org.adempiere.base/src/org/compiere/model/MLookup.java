@@ -1326,8 +1326,18 @@ public final class MLookup extends Lookup implements Serializable
 		private void logLookup(Level level, String problem) {
 			if (log.isLoggable(level)) {
 				StringBuilder msg = new StringBuilder().append(m_info.KeyColumn).append(": Loader - ").append(problem);
-				if (m_info.Column_ID > 0) {
-					// Column_ID is not always an AD_Column_ID (e.g. process parameter lookups use AD_Process_Para_ID)
+				if (m_info.Column_ID > 0 && m_info.IsProcessParameter) {
+					// Column_ID is an AD_Process_Para_ID
+					MProcessPara processPara = MProcessPara.get(m_info.ctx, m_info.Column_ID);
+					if (processPara != null) {
+						msg.append(", Parameter=").append(processPara.getColumnName());
+						MProcess process = MProcess.get(m_info.ctx, processPara.getAD_Process_ID());
+						if (process != null)
+							msg.append(", Process=").append(process.getValue());
+					} else {
+						msg.append(", AD_Process_Para_ID=").append(m_info.Column_ID);
+					}
+				} else if (m_info.Column_ID > 0) {
 					MColumn mColumn = MColumn.get(m_info.ctx, m_info.Column_ID);
 					if (mColumn != null) {
 						String column = mColumn.getColumnName();
