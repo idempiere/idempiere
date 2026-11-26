@@ -35,7 +35,6 @@ import org.compiere.model.MProject;
 import org.compiere.model.MProjectIssue;
 import org.compiere.model.MTimeExpenseLine;
 import org.compiere.model.ProductCost;
-import org.compiere.model.Query;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
@@ -140,22 +139,13 @@ public class Doc_ProjectIssue extends Doc
 		String ProjectCategory = project.getProjectCategory();
 		MProduct product = MProduct.get(getCtx(), m_issue.getM_Product_ID());
 
-		//  Line pointers
-		FactLine dr = null;
-		FactLine cr = null;
-
-		boolean isPostedReversal = m_issue.isReversal()
-				&& hasPostedFacts(as, MProjectIssue.Table_ID, m_issue.getReversal_ID());
+		boolean isReversal = m_issue.isReversal();
+		List<MFactAcct> origFacts = null;
 		BigDecimal cost = null;
 
-		if (isPostedReversal)
+		if (isReversal)
 		{
-			List<MFactAcct> origFacts = new Query(getCtx(), MFactAcct.Table_Name,
-					"C_AcctSchema_ID=? AND AD_Table_ID=? AND Record_ID=? AND Line_ID=? AND PostingType=?", getTrxName())
-					.setParameters(as.getC_AcctSchema_ID(), MProjectIssue.Table_ID, m_issue.getReversal_ID(),
-							m_issue.getReversal_ID(), Fact.POST_Actual)
-					.setOrderBy(MFactAcct.COLUMNNAME_Fact_Acct_ID)
-					.list();
+			origFacts = getPostedLineFacts(as, MProjectIssue.Table_ID, m_issue.getReversal_ID(), m_issue.getReversal_ID());
 			if (origFacts.size() < 2)
 			{
 				p_Error = Msg.getMsg(getCtx(), "Original Project Issue not posted yet");
@@ -163,39 +153,27 @@ public class Doc_ProjectIssue extends Doc
 				return null;
 			}
 
-			//  Project         DR (reversed from original Project Issue)
-			dr = createReversedChargeFactLine(fact, as, m_line, origFacts.get(0));
-			if (dr == null)
+			for (MFactAcct origFact : origFacts)
 			{
-				p_Error = Msg.getMsg(getCtx(), "FactLine DR not created") + ": " + m_line;
-				log.log(Level.WARNING, p_Error);
-				return null;
-			}
-
-			//  Inventory               CR (reversed from original Project Issue)
-			cr = createReversedChargeFactLine(fact, as, m_line, origFacts.get(1));
-			if (cr == null)
-			{
-				p_Error = Msg.getMsg(getCtx(), "FactLine CR not created") + ": " + m_line;
-				log.log(Level.WARNING, p_Error);
-				return null;
-			}
-			cost = cr.getAcctBalance().negate();
-
-			//  Reverse any remaining lines (e.g. manual-cost Charge lines) from the original Project Issue
-			for (int i = 2; i < origFacts.size(); i++)
-			{
-				FactLine chargeCr = createReversedChargeFactLine(fact, as, m_line, origFacts.get(i));
-				if (chargeCr == null)
+				FactLine revLine = createReversedChargeFactLine(fact, as, m_line, origFact);
+				if (revLine == null)
 				{
-					p_Error = Msg.getMsg(getCtx(), "FactLine CR not created") + ": " + m_line;
+					String errMsg = origFact.getAmtAcctCr().signum() != 0 ? "FactLine DR not created" : "FactLine CR not created";
+					p_Error = Msg.getMsg(getCtx(), errMsg) + ": " + m_line;
 					log.log(Level.WARNING, p_Error);
 					return null;
 				}
 			}
+
+			if (!reversePostedHeaderFacts(fact, as, MProjectIssue.Table_ID, m_issue.getReversal_ID()))
+				return null;
 		}
 		else
 		{
+			//  Line pointers
+			FactLine dr = null;
+			FactLine cr = null;
+
 			//  Issue Cost
 			ManualCost[] manualCosts = new ManualCost[0];
 			if (m_issue.getM_InOutLine_ID() != 0)
@@ -244,7 +222,14 @@ public class Doc_ProjectIssue extends Doc
 			//
 			for (ManualCost manualCost : postedManualCosts)
 			{
-				MAccount chargeAcct = MCharge.getAccount(manualCost.getCostElement().getC_Charge_ID(), as, getTrxName());
+				int C_Charge_ID = manualCost.getCostElement().getC_Charge_ID();
+				MAccount chargeAcct = MCharge.getAccount(C_Charge_ID, as, getTrxName());
+				if (chargeAcct == null)
+				{
+					p_Error = formatMissingChargeAccountError(as, C_Charge_ID, m_line, "FactLine CR not created");
+					log.log(Level.WARNING, p_Error);
+					return null;
+				}
 				cr = fact.createLine(m_line, chargeAcct,
 						as.getC_Currency_ID(), null, manualCost.getAmount());
 				if (cr == null)
@@ -253,7 +238,7 @@ public class Doc_ProjectIssue extends Doc
 					log.log(Level.WARNING, p_Error);
 					return null;
 				}
-				cr.setC_Charge_ID(manualCost.getCostElement().getC_Charge_ID());
+				cr.setC_Charge_ID(C_Charge_ID);
 				cr.setM_Locator_ID(m_line.getM_Locator_ID());
 				cr.setLocationFromLocator(m_line.getM_Locator_ID(), true);	// from Loc
 			}
@@ -262,7 +247,7 @@ public class Doc_ProjectIssue extends Doc
 		if (product != null && product.get_ID() > 0 && !product.isService() && product.isStocked()) {
 			BigDecimal costDetailQty = m_line.getQty();
 			BigDecimal costDetailAmt = cost;
-			if (m_line.getQty().signum() != m_line.getProductCost().getQty().signum())
+			if (!isReversal && m_line.getQty().signum() != m_line.getProductCost().getQty().signum())
 				costDetailAmt = costDetailAmt.negate();
 			int Ref_CostDetail_ID = 0;
 			if (m_line.getReversalLine_ID() > 0 && m_line.get_ID() > m_line.getReversalLine_ID())
@@ -272,9 +257,17 @@ public class Doc_ProjectIssue extends Doc
 				if (cd != null)
 				{
 					Ref_CostDetail_ID = cd.getM_CostDetail_ID();
-					if (isPostedReversal)
+					if (isReversal)
 						costDetailAmt = cd.getAmt().negate();
 				}
+				else if (isReversal)
+				{
+					costDetailAmt = resolveReversalInventoryCost(as, product, ProjectCategory, origFacts);
+				}
+			}
+			else if (isReversal)
+			{
+				costDetailAmt = resolveReversalInventoryCost(as, product, ProjectCategory, origFacts);
 			}
 			if (!MCostDetail.createProjectIssue(as, m_line.getAD_Org_ID(),
 				m_line.getM_Product_ID(), m_line.getM_AttributeSetInstance_ID(),
@@ -291,4 +284,18 @@ public class Doc_ProjectIssue extends Doc
 		facts.add(fact);
 		return facts;
 	}   //  createFact
+
+	private BigDecimal resolveReversalInventoryCost(MAcctSchema as, MProduct product, String projectCategory,
+			List<MFactAcct> origFacts)
+	{
+		int invAcctType = product.isService() ? ProductCost.ACCTTYPE_P_Expense : ProductCost.ACCTTYPE_P_Asset;
+		MAccount invAcct = m_line.getAccount(invAcctType, as);
+		int invAcctId = invAcct != null ? invAcct.getAccount_ID() : 0;
+		int projAcctType = MProject.PROJECTCATEGORY_AssetProject.equals(projectCategory)
+				? ACCTTYPE_ProjectAsset : ACCTTYPE_ProjectWIP;
+		MAccount projAcct = getAccount(projAcctType, as);
+		int projAcctId = projAcct != null ? projAcct.getAccount_ID() : 0;
+		BigDecimal expectedOrigQty = m_line.getQty() != null ? m_line.getQty().negate() : null;
+		return resolveReversalInventoryCost(origFacts, invAcctId, projAcctId, expectedOrigQty);
+	}
 }	//	DocProjectIssue

@@ -101,6 +101,8 @@ public final class FactLine extends X_Fact_Acct
 	private int			m_reversedFactAcct_ID = 0;
 	/** Skip GL Distribution (for facts replayed from persisted ledger rows) */
 	private boolean		m_skipDistribution = false;
+	/** Sales region copied from original persisted fact (preserve unset 0 instead of deriving) */
+	private boolean		m_salesRegionCopied = false;
 
 	/**
 	 * Get the original Fact_Acct_ID matched by {@link #updateReverseLine}
@@ -417,6 +419,7 @@ public final class FactLine extends X_Fact_Acct
 		//	reset
 		setAD_Org_ID(0);
 		setC_SalesRegion_ID(0);
+		m_salesRegionCopied = false;
 		//	Client
 		if (getAD_Client_ID() == 0)
 			setAD_Client_ID (m_doc.getAD_Client_ID());
@@ -1068,7 +1071,7 @@ public final class FactLine extends X_Fact_Acct
 	@Override
 	public int getC_SalesRegion_ID ()
 	{
-		if (super.getC_SalesRegion_ID() != 0)
+		if (super.getC_SalesRegion_ID() != 0 || m_salesRegionCopied)
 			return super.getC_SalesRegion_ID();
 		// Get from DocLine
 		if (m_docLine != null)
@@ -1477,6 +1480,7 @@ public final class FactLine extends X_Fact_Acct
 		setC_Activity_ID(fact.getC_Activity_ID());
 		setC_Campaign_ID(fact.getC_Campaign_ID());
 		setC_SalesRegion_ID(fact.getC_SalesRegion_ID());
+		m_salesRegionCopied = true;
 		setC_LocFrom_ID(fact.getC_LocFrom_ID());
 		setC_LocTo_ID(fact.getC_LocTo_ID());
 		setM_Product_ID(fact.getM_Product_ID());

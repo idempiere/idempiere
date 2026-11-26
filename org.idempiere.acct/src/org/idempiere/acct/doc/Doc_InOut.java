@@ -31,6 +31,7 @@ import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MCharge;
 import org.compiere.model.MConversionRate;
+import org.compiere.model.MCost;
 import org.compiere.model.MCost.ManualCost;
 import org.compiere.model.MCostDetail;
 import org.compiere.model.MCurrency;
@@ -202,13 +203,16 @@ public class Doc_InOut extends Doc
 		//  *** Sales - Shipment
 		if (getDocumentType().equals(DOCTYPE_MatShipment) && isSOTrx())
 		{
+			boolean hasReversedLineFacts = false;
 			for (int i = 0; i < p_lines.length; i++)
 			{
 				Map<String, BigDecimal> batchLotCostMap = null;
 				List<ManualCost> manualCosts = new ArrayList<>();
+				List<ManualCost> postedManualCosts = Collections.emptyList();
 				DocLine_InOut line = (DocLine_InOut) p_lines[i];				
 				MProduct product = line.getProduct();
 				BigDecimal costs = null;
+				boolean hasKnownBaseCost = false;
 				if (!isReversal(line))
 				{
 					if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as)) ) 
@@ -222,6 +226,7 @@ public class Doc_InOut extends Doc
 								batchLotCostMap = new HashMap<>();
 								Map<Integer, ManualCost> maManualCostMap = new LinkedHashMap<>();
 								costs  = BigDecimal.ZERO;
+								hasKnownBaseCost = true;
 								for (int j = 0; j < mas.length; j++)
 								{
 									MInOutLineMA ma = mas[j];
@@ -230,6 +235,9 @@ public class Doc_InOut extends Doc
 									pc.setQty(QtyMA);
 									pc.setM_M_AttributeSetInstance_ID(ma.getM_AttributeSetInstance_ID());
 									BigDecimal maCosts = line.getProductCosts(as, line.getAD_Org_ID(), true, "M_InOutLine_ID=?");
+									if ((maCosts == null || maCosts.signum() == 0)
+											&& !hasKnownZeroBaseCost(as, line, product, ma.getM_AttributeSetInstance_ID(), QtyMA))
+										hasKnownBaseCost = false;
 									batchLotCostMap.put(ma.getM_InOutLineMA_UU(), maCosts);
 									costs = costs.add(maCosts);
 									accumulateManualCosts(maManualCostMap, line.getManualCosts(as, line.getAD_Org_ID(), maCosts));
@@ -252,22 +260,32 @@ public class Doc_InOut extends Doc
 					}
 			
 					// end MZ
+					postedManualCosts = roundManualCosts(manualCosts, as.getStdPrecision());
 					if (costs == null || costs.signum() == 0)	//	zero costs OK
 					{
+						if (batchLotCostMap == null)
+							hasKnownBaseCost = hasKnownZeroBaseCost(as, line, product, line.getM_AttributeSetInstance_ID(), line.getProductCost().getQty());
 						if (product.isStocked())
 						{
-							//ok if we have purchased zero cost item from vendor before
-							int count = DB.getSQLValue(null, "SELECT Count(*) FROM M_CostDetail WHERE M_Product_ID=? AND Processed='Y' AND Amt=0.00 AND Qty > 0 AND (C_OrderLine_ID > 0 OR C_InvoiceLine_ID > 0)", 
-									product.getM_Product_ID());
-							if (count > 0)
+							if (!postedManualCosts.isEmpty() && hasKnownBaseCost)
 							{
 								costs = BigDecimal.ZERO;
 							}
 							else
 							{
-								p_Error = Msg.getMsg(getCtx(), "No Costs for") + " " + line.getProduct().getName();
-								log.log(Level.WARNING, p_Error);
-								return null;
+								//ok if we have purchased zero cost item from vendor before
+								int count = DB.getSQLValue(null, "SELECT Count(*) FROM M_CostDetail WHERE M_Product_ID=? AND Processed='Y' AND Amt=0.00 AND Qty > 0 AND (C_OrderLine_ID > 0 OR C_InvoiceLine_ID > 0)", 
+										product.getM_Product_ID());
+								if (count > 0)
+								{
+									costs = BigDecimal.ZERO;
+								}
+								else
+								{
+									p_Error = Msg.getMsg(getCtx(), "No Costs for") + " " + line.getProduct().getName();
+									log.log(Level.WARNING, p_Error);
+									return null;
+								}
 							}
 						}
 						else	//	ignore service
@@ -290,6 +308,7 @@ public class Doc_InOut extends Doc
 						p_Error = Msg.getMsg(getCtx(),"Original Shipment/Receipt not posted yet");
 						return null;
 					}
+					hasReversedLineFacts = true;
 					for (MFactAcct origFact : origFacts)
 					{
 						FactLine revLine = createReversedChargeFactLine(fact, as, line, origFact);
@@ -307,7 +326,6 @@ public class Doc_InOut extends Doc
 				{
 					int stdPrecision = as.getStdPrecision();
 					BigDecimal cogs = costs;
-					List<ManualCost> postedManualCosts = roundManualCosts(manualCosts, stdPrecision);
 					if (!postedManualCosts.isEmpty())
 					{
 						cogs = costs.setScale(stdPrecision, RoundingMode.HALF_UP);
@@ -346,7 +364,14 @@ public class Doc_InOut extends Doc
 
 					for (ManualCost manualCost : postedManualCosts)
 					{
-						MAccount chargeAcct = MCharge.getAccount(manualCost.getCostElement().getC_Charge_ID(), as, getTrxName());
+						int C_Charge_ID = manualCost.getCostElement().getC_Charge_ID();
+						MAccount chargeAcct = MCharge.getAccount(C_Charge_ID, as, getTrxName());
+						if (chargeAcct == null)
+						{
+							p_Error = formatMissingChargeAccountError(as, C_Charge_ID, line, "FactLine CR not created");
+							log.log(Level.WARNING, p_Error);
+							return null;
+						}
 						FactLine chargeCr = fact.createLine(line, chargeAcct,
 								as.getC_Currency_ID(), null, manualCost.getAmount());
 						if (chargeCr == null)
@@ -355,7 +380,7 @@ public class Doc_InOut extends Doc
 							log.log(Level.WARNING, p_Error);
 							return null;
 						}
-						chargeCr.setC_Charge_ID(manualCost.getCostElement().getC_Charge_ID());
+						chargeCr.setC_Charge_ID(C_Charge_ID);
 						chargeCr.setM_Locator_ID(line.getM_Locator_ID());
 						chargeCr.setLocationFromLocator(line.getM_Locator_ID(), true);    // from Loc
 						chargeCr.setLocationFromBPartner(getC_BPartner_Location_ID(), false);  // to Loc
@@ -478,6 +503,9 @@ public class Doc_InOut extends Doc
 				}
 			}	//	for all lines
 
+			if (hasReversedLineFacts && !reversePostedHeaderFacts(fact, as, MInOut.Table_ID, m_Reversal_ID))
+				return null;
+
 			/** Commitment release										****/
 			if (as.isAccrual() && as.isCreateSOCommitment())
 			{
@@ -495,6 +523,7 @@ public class Doc_InOut extends Doc
         //	  *** Sales - Return
 		else if ( getDocumentType().equals(DOCTYPE_MatReceipt) && isSOTrx() )
 		{
+			boolean hasReversedLineFacts = false;
 			for (int i = 0; i < p_lines.length; i++)
 			{
 				DocLine_InOut line = (DocLine_InOut) p_lines[i];
@@ -502,6 +531,8 @@ public class Doc_InOut extends Doc
 				BigDecimal costs = null;
 				Map<String, BigDecimal> batchLotCostMap = null;
 				List<ManualCost> manualCosts = new ArrayList<>();
+				List<ManualCost> postedManualCosts = Collections.emptyList();
+				boolean hasKnownBaseCost = false;
 				if (!isReversal(line)) 
 				{
 					if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as)) ) 
@@ -515,6 +546,7 @@ public class Doc_InOut extends Doc
 							{
 								batchLotCostMap = new HashMap<>();
 								Map<Integer, ManualCost> maManualCostMap = new LinkedHashMap<>();
+								hasKnownBaseCost = true;
 								for (int j = 0; j < mas.length; j++)
 								{
 									MInOutLineMA ma = mas[j];
@@ -523,6 +555,9 @@ public class Doc_InOut extends Doc
 									pc.setQty(QtyMA);
 									pc.setM_M_AttributeSetInstance_ID(ma.getM_AttributeSetInstance_ID());
 									BigDecimal maCosts = line.getProductCosts(as, line.getAD_Org_ID(), true, "M_InOutLine_ID=?");
+									if ((maCosts == null || maCosts.signum() == 0)
+											&& !hasKnownZeroBaseCost(as, line, product, ma.getM_AttributeSetInstance_ID(), QtyMA))
+										hasKnownBaseCost = false;
 									batchLotCostMap.put(ma.getM_InOutLineMA_UU(), maCosts);
 									costs = costs.add(maCosts);
 									accumulateManualCosts(maManualCostMap, line.getManualCosts(as, line.getAD_Org_ID(), maCosts));
@@ -544,13 +579,23 @@ public class Doc_InOut extends Doc
 						Collections.addAll(manualCosts, line.getManualCosts(as, line.getAD_Org_ID(), costs));
 						// end MZ
 					}
+					postedManualCosts = roundManualCosts(manualCosts, as.getStdPrecision());
 					if (costs == null || costs.signum() == 0)	//	zero costs OK
 					{
+						if (batchLotCostMap == null)
+							hasKnownBaseCost = hasKnownZeroBaseCost(as, line, product, line.getM_AttributeSetInstance_ID(), line.getProductCost().getQty());
 						if (product.isStocked())
 						{
-							p_Error = Msg.getMsg(getCtx(),"No Costs for") + " " + line.getProduct().getName();  
-							log.log(Level.WARNING, p_Error);
-							return null;
+							if (!postedManualCosts.isEmpty() && hasKnownBaseCost)
+							{
+								costs = BigDecimal.ZERO;
+							}
+							else
+							{
+								p_Error = Msg.getMsg(getCtx(),"No Costs for") + " " + line.getProduct().getName();  
+								log.log(Level.WARNING, p_Error);
+								return null;
+							}
 						}
 						else	//	ignore service
 							continue;
@@ -562,7 +607,6 @@ public class Doc_InOut extends Doc
 				}
 				int stdPrecision = as.getStdPrecision();
 				BigDecimal cogs = costs;
-				List<ManualCost> postedManualCosts = Collections.emptyList();
 				if (isReversal(line))
 				{
 					List<MFactAcct> origFacts = getPostedLineFacts(as, MInOut.Table_ID, m_Reversal_ID, line.getReversalLine_ID());
@@ -573,6 +617,7 @@ public class Doc_InOut extends Doc
 						p_Error = Msg.getMsg(getCtx(),"Original Shipment/Receipt not posted yet");
 						return null;
 					}
+					hasReversedLineFacts = true;
 					for (MFactAcct origFact : origFacts)
 					{
 						FactLine revLine = createReversedChargeFactLine(fact, as, line, origFact);
@@ -588,7 +633,6 @@ public class Doc_InOut extends Doc
 				}
 				else
 				{
-					postedManualCosts = roundManualCosts(manualCosts, stdPrecision);
 					if (!postedManualCosts.isEmpty())
 					{
 						cogs = costs.setScale(stdPrecision, RoundingMode.HALF_UP);
@@ -743,7 +787,14 @@ public class Doc_InOut extends Doc
 
 					for (ManualCost manualCost : postedManualCosts)
 					{
-						MAccount chargeAcct = MCharge.getAccount(manualCost.getCostElement().getC_Charge_ID(), as, getTrxName());
+						int C_Charge_ID = manualCost.getCostElement().getC_Charge_ID();
+						MAccount chargeAcct = MCharge.getAccount(C_Charge_ID, as, getTrxName());
+						if (chargeAcct == null)
+						{
+							p_Error = formatMissingChargeAccountError(as, C_Charge_ID, line, "FactLine DR not created");
+							log.log(Level.WARNING, p_Error);
+							return null;
+						}
 						FactLine chargeDr = fact.createLine(line, chargeAcct,
 								as.getC_Currency_ID(), manualCost.getAmount(), null);
 						if (chargeDr == null)
@@ -752,13 +803,16 @@ public class Doc_InOut extends Doc
 							log.log(Level.WARNING, p_Error);
 							return null;
 						}
-						chargeDr.setC_Charge_ID(manualCost.getCostElement().getC_Charge_ID());
+						chargeDr.setC_Charge_ID(C_Charge_ID);
 						chargeDr.setM_Locator_ID(line.getM_Locator_ID());
 						chargeDr.setLocationFromLocator(line.getM_Locator_ID(), true);    // from Loc
 						chargeDr.setLocationFromBPartner(getC_BPartner_Location_ID(), false);  // to Loc
 					}
 				}
 			}	//	for all lines
+
+			if (hasReversedLineFacts && !reversePostedHeaderFacts(fact, as, MInOut.Table_ID, m_Reversal_ID))
+				return null;
 		}	//	Sales Return
 
 		//  *** Purchasing - Receipt
@@ -1226,9 +1280,26 @@ public class Doc_InOut extends Doc
 	}
 
 	/**
+	 * Check whether a zero base cost for a shipment or customer return line is a known zero
+	 * valuation (either an existing cost detail for the line or non-zero material valuation
+	 * cancelled by unmapped non-material adjustments) rather than missing valuation data.
+	 */
+	private boolean hasKnownZeroBaseCost(MAcctSchema as, DocLine_InOut line, MProduct product, int asiId, BigDecimal qty)
+	{
+		String costingMethod = product.getCostingMethod(as);
+		if (!MAcctSchema.COSTINGMETHOD_StandardCosting.equals(costingMethod))
+		{
+			MCostDetail cd = MCostDetail.get(getCtx(), "M_InOutLine_ID=?",
+					line.get_ID(), asiId, as.getC_AcctSchema_ID(), getTrxName());
+			if (cd != null)
+				return true;
+		}
+		return MCost.hasMaterialCost(product, asiId, as, line.getAD_Org_ID(), costingMethod, qty, line.getDateAcct(), getTrxName());
+	}
+
+	/**
 	 * Resolve fallback inventory cost for a reversed shipment or customer return line
 	 * from its posted facts when no original cost detail record is found.
-	 * Never selects manual-cost charge facts ({@code C_Charge_ID > 0}).
 	 * @param as accounting schema
 	 * @param line reversal document line
 	 * @param origFacts posted actual Fact_Acct records of the original line
@@ -1238,35 +1309,10 @@ public class Doc_InOut extends Doc
 	{
 		MAccount assetAcct = line.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
 		int assetAcctId = assetAcct != null ? assetAcct.getAccount_ID() : 0;
-		int expectedOrigQtySign = line.getQty() != null ? -line.getQty().signum() : 0;
-
-		BigDecimal sum = sumMatchingInventoryFacts(origFacts, assetAcctId, expectedOrigQtySign, true);
-		if (sum != null)
-			return sum;
-		sum = sumMatchingInventoryFacts(origFacts, assetAcctId, 0, true);
-		if (sum != null)
-			return sum;
-		sum = sumMatchingInventoryFacts(origFacts, 0, expectedOrigQtySign, false);
-		if (sum != null)
-			return sum;
-		return BigDecimal.ZERO;
-	}
-
-	private BigDecimal sumMatchingInventoryFacts(List<MFactAcct> origFacts, int accountId, int expectedOrigQtySign, boolean matchAccount)
-	{
-		BigDecimal total = null;
-		for (MFactAcct origFact : origFacts)
-		{
-			if (origFact.getC_Charge_ID() > 0)
-				continue;
-			if (matchAccount && (accountId <= 0 || origFact.getAccount_ID() != accountId))
-				continue;
-			if (expectedOrigQtySign != 0 && (origFact.getQty() == null || origFact.getQty().signum() != expectedOrigQtySign))
-				continue;
-			BigDecimal revBalance = origFact.getAmtAcctCr().subtract(origFact.getAmtAcctDr());
-			total = total == null ? revBalance : total.add(revBalance);
-		}
-		return total;
+		MAccount cogsAcct = line.getAccount(ProductCost.ACCTTYPE_P_Cogs, as);
+		int cogsAcctId = cogsAcct != null ? cogsAcct.getAccount_ID() : 0;
+		BigDecimal expectedOrigQty = line.getQty() != null ? line.getQty().negate() : null;
+		return resolveReversalInventoryCost(origFacts, assetAcctId, cogsAcctId, expectedOrigQty);
 	}
 
 	/**

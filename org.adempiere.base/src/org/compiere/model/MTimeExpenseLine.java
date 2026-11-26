@@ -19,10 +19,12 @@ package org.compiere.model;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.adempiere.exceptions.DBException;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -319,12 +321,12 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 	 * Get Labor Cost from Expense Report
 	 * 
 	 * @param  as Account Schema
-	 * @return    Unit Labor Cost
+	 * @return    Labor Cost (ConvertedAmt * Qty), or null if expense line is not found
 	 */
 	public BigDecimal getLaborCost(MAcctSchema as)
 	{
 		// Todor Lulov 30.01.2008
-		BigDecimal retValue = Env.ZERO;
+		BigDecimal retValue = null;
 		BigDecimal qty = Env.ZERO;
 
 		String sql = "SELECT ConvertedAmt, Qty FROM S_TimeExpenseLine " +
@@ -333,22 +335,26 @@ public class MTimeExpenseLine extends X_S_TimeExpenseLine
 		ResultSet rs = null;
 		try
 		{
-			pstmt = DB.prepareStatement (sql, as.get_TrxName());
+			String trxName = get_TrxName() != null ? get_TrxName() : (as != null ? as.get_TrxName() : null);
+			pstmt = DB.prepareStatement (sql, trxName);
 			pstmt.setInt(1, getS_TimeExpenseLine_ID());
 			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
-				retValue = rs.getBigDecimal(1);
+				BigDecimal convertedAmt = rs.getBigDecimal(1);
 				qty = rs.getBigDecimal(2);
-				retValue = retValue.multiply(qty);
+				if (convertedAmt != null && qty != null)
+					retValue = convertedAmt.multiply(qty);
+				else
+					retValue = Env.ZERO;
 				if (log.isLoggable(Level.FINE)) log.fine("ExpLineCost = " + retValue);
 			}
 			else
 				log.warning("Not found for S_TimeExpenseLine_ID=" + getS_TimeExpenseLine_ID());
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
-			log.log(Level.SEVERE, sql, e);
+			throw new DBException(e, sql);
 		}
 		finally
 		{

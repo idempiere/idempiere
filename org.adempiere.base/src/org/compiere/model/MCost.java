@@ -62,7 +62,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = 5829104736192847503L;
+	private static final long serialVersionUID = 8741926305148293617L;
 
 	/**
 	 * @param product
@@ -201,26 +201,83 @@ public class MCost extends X_M_Cost implements ICostInfo
 			String costingMethod, BigDecimal qty, int C_OrderLine_ID,
 			boolean zeroCostsOK, BigDecimal historyCostPrice, String trxName)
 	{
-		String costElementType = null;
-		BigDecimal percent = null;
+		CostQueryResult queryResult = queryCurrentCosts(product, M_ASI_ID, as, Org_ID, M_CostType_ID,
+				costingMethod, historyCostPrice, true, trxName);
+		BigDecimal materialCostEach = queryResult.materialCostEach();
+		BigDecimal otherCostEach = queryResult.otherCostEach();
+		BigDecimal percentage = queryResult.percentage();
+
+		//	Seed Initial Costs
+		if (materialCostEach.signum() == 0)		//	no costs
+		{
+			if (zeroCostsOK)
+				return Env.ZERO;
+		}
+
+		//	Material Costs
+		BigDecimal materialCost = calculateMaterialCost(product, M_ASI_ID, as, Org_ID,
+				costingMethod, materialCostEach, qty, trxName);
+		//	Standard costs - just Material Costs
+		if (MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod))
+		{
+			if (s_log.isLoggable(Level.FINER)) s_log.finer("MaterialCosts = " + materialCost);
+			return materialCost;
+		}
+
+		//	Other Costs
+		BigDecimal otherCost = otherCostEach.multiply(qty);
+
+		//	Costs
+		BigDecimal costs = otherCost.add(materialCost);
+		if (costs.signum() == 0)
+			return null;
+
+		if (s_log.isLoggable(Level.FINER)) s_log.finer("Sum Costs = " + costs);
+		int precision = as.getCostingPrecision();
+		if (percentage.signum() == 0)	//	no percentages
+		{
+			if (costs.scale() > precision)
+				costs = costs.setScale(precision, RoundingMode.HALF_UP);
+			return costs;
+		}
 		//
+		BigDecimal percentCost = costs.multiply(percentage);
+		percentCost = percentCost.divide(Env.ONEHUNDRED, precision, RoundingMode.HALF_UP);
+		costs = costs.add(percentCost);
+		if (costs.scale() > precision)
+			costs = costs.setScale(precision, RoundingMode.HALF_UP);
+		if (s_log.isLoggable(Level.FINER)) s_log.finer("Sum Costs = " + costs + " (Add=" + percentCost + ")");
+		return costs;
+	}	//	getCurrentCost
+
+	private record CostQueryResult(BigDecimal materialCostEach, BigDecimal otherCostEach, BigDecimal percentage) {}
+
+	private static CostQueryResult queryCurrentCosts(MProduct product, int M_ASI_ID,
+			MAcctSchema as, int Org_ID, int M_CostType_ID,
+			String costingMethod, BigDecimal historyCostPrice,
+			boolean includeUnmappedManualCosts, String trxName)
+	{
 		BigDecimal materialCostEach = Env.ZERO;
 		BigDecimal otherCostEach = Env.ZERO;
 		BigDecimal percentage = Env.ZERO;
 		int count = 0;
-		//
+
 		String sql = "SELECT"
 			+ " COALESCE(SUM(c.CurrentCostPrice),0),"		// 1
 			+ " ce.CostElementType, ce.CostingMethod,"		// 2,3
 			+ " c.Percent, c.M_CostElement_ID ,"			// 4,5
 			+ " COALESCE(SUM(c.CurrentCostPriceLL),0) "		// 6
 			+ " FROM M_Cost c"
-			+ " LEFT OUTER JOIN M_CostElement ce ON (c.M_CostElement_ID=ce.M_CostElement_ID) "
+			+ (includeUnmappedManualCosts
+				? " LEFT OUTER JOIN M_CostElement ce ON (c.M_CostElement_ID=ce.M_CostElement_ID) "
+				: " INNER JOIN M_CostElement ce ON (c.M_CostElement_ID=ce.M_CostElement_ID) ")
 			+ "WHERE c.AD_Client_ID=? AND c.AD_Org_ID=?"		//	#1/2
 			+ " AND c.M_Product_ID=?"							//	#3
 			+ " AND (c.M_AttributeSetInstance_ID=? OR c.M_AttributeSetInstance_ID=0)"	//	#4
 			+ " AND c.M_CostType_ID=? AND c.C_AcctSchema_ID=?"	//	#5/6
-			+ " AND ((ce.CostingMethod IS NULL AND ce.C_Charge_ID IS NULL) OR ce.CostingMethod=?) "	//	#7
+			+ (includeUnmappedManualCosts
+				? " AND ((ce.CostingMethod IS NULL AND ce.C_Charge_ID IS NULL) OR ce.CostingMethod=?) "	//	#7
+				: " AND ce.CostingMethod=? ")																//	#7
 			+ "GROUP BY ce.CostElementType, ce.CostingMethod, c.Percent, c.M_CostElement_ID";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -239,15 +296,15 @@ public class MCost extends X_M_Cost implements ICostInfo
 			{
 				BigDecimal currentCostPrice = rs.getBigDecimal(1);
 				BigDecimal currentCostPriceLL = rs.getBigDecimal(6);
-				costElementType = rs.getString(2);
+				String costElementType = rs.getString(2);
 				String cm = rs.getString(3);
-				percent = rs.getBigDecimal(4);
+				BigDecimal percent = rs.getBigDecimal(4);
 				if (s_log.isLoggable(Level.FINEST)) s_log.finest("CurrentCostPrice=" + currentCostPrice
 					+ ", CurrentCostPriceLL=" + currentCostPriceLL
 					+ ", CostElementType=" + costElementType
 					+ ", CostingMethod=" + cm
-					+ ", Percent=" + percent);				
-				
+					+ ", Percent=" + percent);
+
 				if (currentCostPrice != null && currentCostPrice.signum() != 0)
 				{
 					if (cm != null)
@@ -282,54 +339,71 @@ public class MCost extends X_M_Cost implements ICostInfo
 				+ ", OtherCosts=" + otherCostEach
 				+ ", Percentage=" + percentage);
 
-		//	Seed Initial Costs
-		if (materialCostEach.signum() == 0)		//	no costs
-		{
-			if (zeroCostsOK)
-				return Env.ZERO;
-		}
+		return new CostQueryResult(materialCostEach, otherCostEach, percentage);
+	}
 
-		//	Material Costs
-		BigDecimal materialCost = materialCostEach.multiply(qty);
-		//	Standard costs - just Material Costs
-		if (MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod))
-		{
-			if (s_log.isLoggable(Level.FINER)) s_log.finer("MaterialCosts = " + materialCost);
-			return materialCost;
-		}
+	private static BigDecimal calculateMaterialCost(MProduct product, int M_ASI_ID,
+			MAcctSchema as, int Org_ID, String costingMethod, BigDecimal materialCostEach,
+			BigDecimal qty, String trxName)
+	{
 		if (MCostElement.COSTINGMETHOD_Fifo.equals(costingMethod)
 			|| MCostElement.COSTINGMETHOD_Lifo.equals(costingMethod))
 		{
 			MCostElement ce = MCostElement.getMaterialCostElement(as, costingMethod);
-			materialCost = MCostQueue.getCosts(product, M_ASI_ID,
-				as, Org_ID, ce, qty, trxName);
+			return MCostQueue.getCosts(product, M_ASI_ID, as, Org_ID, ce, qty, trxName);
 		}
+		return materialCostEach.multiply(qty);
+	}
 
-		//	Other Costs
-		BigDecimal otherCost = otherCostEach.multiply(qty);
+	/**
+	 * Check whether non-zero material valuation exists for a product under its costing method.
+	 * Used to distinguish a known zero base cost (e.g. non-zero material cost offset to zero by
+	 * unmapped non-material adjustments) from missing valuation data.
+	 * @param product product
+	 * @param M_AttributeSetInstance_ID asi for batchlot costing level
+	 * @param as accounting schema
+	 * @param AD_Org_ID org for organization costing level
+	 * @param costingMethod AcctSchema.COSTINGMETHOD_* (if null, uses product.getCostingMethod(as))
+	 * @param qty transaction quantity
+	 * @param dateAcct optional account date for cost history lookup
+	 * @param trxName trx
+	 * @return true if non-zero material cost exists for the product
+	 */
+	public static boolean hasMaterialCost(MProduct product, int M_AttributeSetInstance_ID,
+			MAcctSchema as, int AD_Org_ID, String costingMethod, BigDecimal qty, Timestamp dateAcct, String trxName)
+	{
+		if (product == null || as == null || qty == null || qty.signum() == 0)
+			return false;
 
-		//	Costs
-		BigDecimal costs = otherCost.add(materialCost);
-		if (costs.signum() == 0)
-			return null;
+		if (Util.isEmpty(costingMethod))
+			costingMethod = product.getCostingMethod(as);
+		if (Util.isEmpty(costingMethod))
+			return false;
 
-		if (s_log.isLoggable(Level.FINER)) s_log.finer("Sum Costs = " + costs);
-		int precision = as.getCostingPrecision();
-		if (percentage.signum() == 0)	//	no percentages
+		String costingLevel = product.getCostingLevel(as);
+		MCost.CostingKey costKey = MCost.CostingKey.resolve(AD_Org_ID, M_AttributeSetInstance_ID, costingLevel);
+		AD_Org_ID = costKey.AD_Org_ID();
+		M_AttributeSetInstance_ID = costKey.M_AttributeSetInstance_ID();
+
+		BigDecimal historyCostPrice = null;
+		if (dateAcct != null)
 		{
-			if (costs.scale() > precision)
-				costs = costs.setScale(precision, RoundingMode.HALF_UP);
-			return costs;
+			MCostHistory history = MCostHistory.get(product.getCtx(), product.getAD_Client_ID(), AD_Org_ID,
+					product.getM_Product_ID(), as.getM_CostType_ID(), as.getC_AcctSchema_ID(),
+					costingMethod, 0, M_AttributeSetInstance_ID, dateAcct, trxName);
+			if (history != null)
+				historyCostPrice = history.getNewCostPrice();
 		}
-		//
-		BigDecimal percentCost = costs.multiply(percentage);
-		percentCost = percentCost.divide(Env.ONEHUNDRED, precision, RoundingMode.HALF_UP);
-		costs = costs.add(percentCost);
-		if (costs.scale() > precision)
-			costs = costs.setScale(precision, RoundingMode.HALF_UP);
-		if (s_log.isLoggable(Level.FINER)) s_log.finer("Sum Costs = " + costs + " (Add=" + percentCost + ")");
-		return costs;
-	}	//	getCurrentCost
+
+		CostQueryResult queryResult = queryCurrentCosts(product, M_AttributeSetInstance_ID, as, AD_Org_ID,
+				as.getM_CostType_ID(), costingMethod, historyCostPrice, false, trxName);
+		if (queryResult.materialCostEach().signum() == 0)
+			return false;
+
+		BigDecimal materialCost = calculateMaterialCost(product, M_AttributeSetInstance_ID, as, AD_Org_ID,
+				costingMethod, queryResult.materialCostEach(), qty, trxName);
+		return materialCost != null && materialCost.signum() != 0;
+	}	//	hasMaterialCost
 
 	/**
 	 * Get manual (non-material, charge-mapped) costs for a product.

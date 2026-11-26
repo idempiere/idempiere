@@ -43,6 +43,7 @@ import org.compiere.model.I_M_MatchInv;
 import org.compiere.model.I_M_MatchPO;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
+import org.compiere.model.MCharge;
 import org.compiere.model.MConversionRate;
 import org.compiere.model.MCost.ManualCost;
 import org.compiere.model.MDocType;
@@ -58,6 +59,7 @@ import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.ModelValidator;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
+import org.compiere.model.X_C_Charge_Acct;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CLogger;
@@ -2650,5 +2652,240 @@ public abstract class Doc implements IDoc
 		chargeLine.setC_BPartner_ID(origFact.getC_BPartner_ID());
 		chargeLine.setSkipDistribution(true);
 		return chargeLine;
+	}
+
+	/**
+	 * Query posted actual document-level Fact_Acct rows ({@code Line_ID IS NULL}),
+	 * such as organization-balancing DueTo/DueFrom entries, for an original document.
+	 * @param as accounting schema
+	 * @param AD_Table_ID document table ID
+	 * @param Record_ID original document record ID
+	 * @return matching Fact_Acct records ordered by Fact_Acct_ID
+	 */
+	protected List<MFactAcct> getPostedHeaderFacts(MAcctSchema as, int AD_Table_ID, int Record_ID)
+	{
+		return new Query(getCtx(), MFactAcct.Table_Name,
+				"C_AcctSchema_ID=? AND AD_Table_ID=? AND Record_ID=? AND Line_ID IS NULL AND PostingType=?",
+				getTrxName())
+				.setParameters(as.getC_AcctSchema_ID(), AD_Table_ID, Record_ID, Fact.POST_Actual)
+				.setOrderBy(MFactAcct.COLUMNNAME_Fact_Acct_ID)
+				.list();
+	}
+
+	/**
+	 * Reverse posted actual document-level ({@code Line_ID IS NULL}) balancing facts
+	 * (e.g. organization-balancing DueTo/DueFrom entries) once per document and accounting schema.
+	 * @param fact target Fact
+	 * @param as accounting schema
+	 * @param AD_Table_ID document table ID
+	 * @param Record_ID original document record ID
+	 * @return true if all balancing facts were reversed successfully
+	 */
+	protected boolean reversePostedHeaderFacts(Fact fact, MAcctSchema as, int AD_Table_ID, int Record_ID)
+	{
+		List<MFactAcct> origHeaderFacts = getPostedHeaderFacts(as, AD_Table_ID, Record_ID);
+		for (MFactAcct origFact : origHeaderFacts)
+		{
+			if (origFact.getAmtAcctDr().signum() == 0 && origFact.getAmtAcctCr().signum() == 0
+					&& origFact.getAmtSourceDr().signum() == 0 && origFact.getAmtSourceCr().signum() == 0)
+				continue;
+			FactLine revLine = createReversedChargeFactLine(fact, as, null, origFact);
+			if (revLine == null)
+			{
+				String errMsg = origFact.getAmtAcctCr().signum() != 0 ? "FactLine DR not created" : "FactLine CR not created";
+				p_Error = Msg.getMsg(getCtx(), errMsg);
+				log.log(Level.WARNING, p_Error);
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Remove exact cancelling GL-distribution reversal pairs (created when {@code GL_Distribution.IsCreateReversal='Y'})
+	 * so fallback reversal cost resolution sees only net active fact lines.
+	 * @param origFacts posted actual Fact_Acct records of the original line
+	 * @param expectedQty expected signed original quantity on the target side
+	 * @return filtered list with cancelling reversal pairs removed
+	 */
+	protected List<MFactAcct> removeDistributionReversalPairs(List<MFactAcct> origFacts, BigDecimal expectedQty)
+	{
+		if (origFacts == null || origFacts.size() <= 2 || expectedQty == null || expectedQty.signum() == 0)
+			return origFacts;
+
+		int expectedQtySign = expectedQty.signum();
+		BigDecimal sameSignQtySum = BigDecimal.ZERO;
+		for (MFactAcct fa : origFacts)
+		{
+			if (fa.getC_Charge_ID() == 0 && fa.getQty() != null && fa.getQty().signum() == expectedQtySign)
+				sameSignQtySum = sameSignQtySum.add(fa.getQty());
+		}
+		if (sameSignQtySum.abs().compareTo(expectedQty.abs()) <= 0)
+			return origFacts;
+
+		boolean[] removed = new boolean[origFacts.size()];
+		for (int i = 0; i < origFacts.size() && sameSignQtySum.abs().compareTo(expectedQty.abs()) > 0; i++)
+		{
+			if (removed[i])
+				continue;
+			MFactAcct a = origFacts.get(i);
+			BigDecimal aNet = a.getAmtAcctDr().subtract(a.getAmtAcctCr());
+			BigDecimal aQty = a.getQty() != null ? a.getQty() : BigDecimal.ZERO;
+			for (int j = i + 1; j < origFacts.size(); j++)
+			{
+				if (removed[j])
+					continue;
+				MFactAcct b = origFacts.get(j);
+				if (a.getAccount_ID() == b.getAccount_ID()
+						&& a.getC_Charge_ID() == b.getC_Charge_ID()
+						&& aNet.add(b.getAmtAcctDr().subtract(b.getAmtAcctCr())).signum() == 0
+						&& aQty.add(b.getQty() != null ? b.getQty() : BigDecimal.ZERO).signum() == 0)
+				{
+					removed[i] = true;
+					removed[j] = true;
+					if (a.getC_Charge_ID() == 0)
+					{
+						if (aQty.signum() == expectedQtySign)
+							sameSignQtySum = sameSignQtySum.subtract(aQty);
+						else if (b.getQty() != null && b.getQty().signum() == expectedQtySign)
+							sameSignQtySum = sameSignQtySum.subtract(b.getQty());
+					}
+					break;
+				}
+			}
+		}
+
+		List<MFactAcct> active = new ArrayList<>(origFacts.size());
+		for (int i = 0; i < origFacts.size(); i++)
+		{
+			if (!removed[i])
+				active.add(origFacts.get(i));
+		}
+		return active;
+	}
+
+	/**
+	 * Resolve fallback inventory cost for a reversed document line from its posted facts
+	 * when no original {@code M_CostDetail} record is found.
+	 * <p>
+	 * Exact cancelling GL-distribution reversal pairs ({@code IsCreateReversal='Y'}) are stripped first.
+	 * Inventory facts are then matched in two passes that never select manual-cost charge facts
+	 * ({@code C_Charge_ID > 0}) or opposite-sign offsetting facts (e.g. COGS, Project WIP, or rate variance):
+	 * <ol>
+	 *   <li>Non-charge facts on {@code assetAcctId} whose {@code Qty} sign matches {@code expectedOrigQty}
+	 *       (including zero-qty remainder facts on {@code assetAcctId} when {@code assetAcctId != offsetAcctId}),
+	 *       returned only when they cover the full {@code expectedOrigQty} and no zero-qty same-side
+	 *       non-charge remainder exists on another non-offset account.</li>
+	 *   <li>Otherwise (e.g. {@code P_Asset_Acct} changed or was partially/fully split by GL distribution),
+	 *       all non-charge facts whose {@code Qty} sign matches {@code expectedOrigQty}, plus any zero-qty
+	 *       same-side non-charge remainder facts on non-offset accounts.</li>
+	 * </ol>
+	 * @param origFacts posted actual Fact_Acct records of the original line
+	 * @param assetAcctId product asset (or expense) Account_ID
+	 * @param offsetAcctId offsetting Account_ID on the same Line_ID (e.g. COGS, Project WIP, or rate variance), or 0 if none
+	 * @param expectedOrigQty expected signed quantity of the original inventory fact
+	 * @return reversed inventory cost amount (CR - DR of original inventory facts), or {@link BigDecimal#ZERO}
+	 */
+	protected BigDecimal resolveReversalInventoryCost(List<MFactAcct> origFacts, int assetAcctId, int offsetAcctId,
+			BigDecimal expectedOrigQty)
+	{
+		if (origFacts == null || origFacts.isEmpty())
+			return BigDecimal.ZERO;
+
+		List<MFactAcct> activeFacts = removeDistributionReversalPairs(origFacts, expectedOrigQty);
+		int expectedOrigQtySign = expectedOrigQty != null ? expectedOrigQty.signum() : 0;
+
+		// Pass 1: match product asset account with inventory qty sign (never opposite-sign offset facts)
+		if (assetAcctId > 0)
+		{
+			boolean allowZeroQty = assetAcctId != offsetAcctId;
+			BigDecimal total = null;
+			BigDecimal matchedQty = BigDecimal.ZERO;
+			for (MFactAcct fa : activeFacts)
+			{
+				if (fa.getC_Charge_ID() > 0 || fa.getAccount_ID() != assetAcctId)
+					continue;
+				int qtySign = fa.getQty() != null ? fa.getQty().signum() : 0;
+				if (expectedOrigQtySign != 0 && qtySign != expectedOrigQtySign && !(allowZeroQty && qtySign == 0))
+					continue;
+				BigDecimal revBalance = fa.getAmtAcctCr().subtract(fa.getAmtAcctDr());
+				total = total == null ? revBalance : total.add(revBalance);
+				if (fa.getQty() != null)
+					matchedQty = matchedQty.add(fa.getQty());
+			}
+			boolean complete = total != null && (expectedOrigQtySign == 0 || matchedQty.compareTo(expectedOrigQty) == 0);
+			if (complete && total.signum() != 0)
+			{
+				for (MFactAcct fa : activeFacts)
+				{
+					if (fa.getC_Charge_ID() > 0 || fa.getAccount_ID() == assetAcctId)
+						continue;
+					int qtySign = fa.getQty() != null ? fa.getQty().signum() : 0;
+					if (qtySign == 0 && (offsetAcctId <= 0 || fa.getAccount_ID() != offsetAcctId)
+							&& fa.getAmtAcctCr().subtract(fa.getAmtAcctDr()).signum() == total.signum())
+					{
+						complete = false;
+						break;
+					}
+				}
+			}
+			if (complete)
+				return total;
+		}
+
+		// Pass 2: aggregate all non-charge facts matching inventory qty sign (plus zero-qty same-side remainders)
+		BigDecimal total = null;
+		for (MFactAcct fa : activeFacts)
+		{
+			if (fa.getC_Charge_ID() > 0)
+				continue;
+			if (expectedOrigQtySign != 0)
+			{
+				int qtySign = fa.getQty() != null ? fa.getQty().signum() : 0;
+				if (qtySign != expectedOrigQtySign)
+					continue;
+			}
+			BigDecimal revBalance = fa.getAmtAcctCr().subtract(fa.getAmtAcctDr());
+			total = total == null ? revBalance : total.add(revBalance);
+		}
+		if (expectedOrigQtySign != 0)
+		{
+			int expectedAmtSign = total != null && total.signum() != 0 ? total.signum() : -expectedOrigQtySign;
+			for (MFactAcct fa : activeFacts)
+			{
+				if (fa.getC_Charge_ID() > 0)
+					continue;
+				int qtySign = fa.getQty() != null ? fa.getQty().signum() : 0;
+				if (qtySign != 0)
+					continue;
+				if (offsetAcctId > 0 && fa.getAccount_ID() == offsetAcctId)
+					continue;
+				BigDecimal revBalance = fa.getAmtAcctCr().subtract(fa.getAmtAcctDr());
+				if (revBalance.signum() == expectedAmtSign)
+					total = total == null ? revBalance : total.add(revBalance);
+			}
+		}
+		return total != null ? total : BigDecimal.ZERO;
+	}
+
+	/**
+	 * Format a translated posting error naming the charge and accounting schema when
+	 * {@link MCharge#getAccount} returns null for a manual cost charge.
+	 * @param as accounting schema
+	 * @param C_Charge_ID charge ID
+	 * @param line document line context
+	 * @param baseMsgKey base AD_Message key (e.g. {@code FactLine CR not created})
+	 * @return translated error message
+	 */
+	protected String formatMissingChargeAccountError(MAcctSchema as, int C_Charge_ID, DocLine line, String baseMsgKey)
+	{
+		MCharge charge = Util.isEmpty(getTrxName()) ? MCharge.get(getCtx(), C_Charge_ID) : new MCharge(getCtx(), C_Charge_ID, getTrxName());
+		String chargeName = charge != null && charge.get_ID() > 0 ? charge.getName() : String.valueOf(C_Charge_ID);
+		return Msg.getMsg(getCtx(), baseMsgKey) + " ("
+				+ Msg.getElement(getCtx(), X_C_Charge_Acct.COLUMNNAME_Ch_Expense_Acct) + " "
+				+ Msg.getMsg(getCtx(), "NotFound") + " - "
+				+ Msg.getElement(getCtx(), MCharge.COLUMNNAME_C_Charge_ID) + "=" + chargeName + ", "
+				+ Msg.getElement(getCtx(), MAcctSchema.COLUMNNAME_C_AcctSchema_ID) + "=" + as.getName()
+				+ "): " + line;
 	}
 }   //  Doc
