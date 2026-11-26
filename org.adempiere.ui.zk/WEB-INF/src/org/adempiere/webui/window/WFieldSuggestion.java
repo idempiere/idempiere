@@ -3,6 +3,7 @@
  */
 package org.adempiere.webui.window;
 
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Column;
 import org.adempiere.webui.component.Columns;
 import org.adempiere.webui.component.ConfirmPanel;
@@ -167,9 +168,12 @@ public class WFieldSuggestion extends Window implements EventListener<Event> {
 		suggestion.setAD_Org_ID(0);
 		suggestion.setAD_User_ID(Env.getAD_User_ID(Env.getCtx()));
 		suggestion.set_ValueOfColumn("AD_UserClient_ID",Env.getAD_Client_ID(Env.getCtx()));
-		suggestion.setDescription(descriptionTextbox.getText());
-		suggestion.setHelp(helpTextbox.getText());
-		suggestion.setName(nameTextbox.getText());
+		if (descriptionTextbox.getText() != null)
+			suggestion.setDescription(AEnv.sanitize(descriptionTextbox.getText()));
+		if (helpTextbox.getText() != null)
+			suggestion.setHelp(AEnv.sanitize(helpTextbox.getText()));
+		if (nameTextbox.getText() != null)
+			suggestion.setName(AEnv.sanitize(nameTextbox.getText()));
 		suggestion.setIsApproved(false);
 		suggestion.setIsUpdateBaseLanguage(false);
 		suggestion.setProcessed(false);
