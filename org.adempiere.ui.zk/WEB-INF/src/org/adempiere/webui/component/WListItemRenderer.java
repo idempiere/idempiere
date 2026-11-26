@@ -887,6 +887,22 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 	}
 
 	/**
+	 * Check whether the renderer is already registered with another Listbox.
+	 *
+	 * @param listener The listener to check
+	 * @return true if another listener is registered
+	 */
+	public boolean isUsedByAnotherListbox(TableValueChangeListener listener)
+	{
+	    for (TableValueChangeListener registeredListener : m_listeners)
+	    {
+	        if (registeredListener != listener)
+	            return true;
+	    }
+	    return false;
+	}
+
+	/**
 	 * Fire the given table value change <code>event</code>.
 	 *
 	 * @param event	The event to pass to the listeners

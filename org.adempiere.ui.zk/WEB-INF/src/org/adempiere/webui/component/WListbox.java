@@ -140,6 +140,9 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	        if (rowRenderer.getNoColumns() != columnNames.size())
 	            throw new IllegalArgumentException(
 	                    "The renderer must be initialized with the same number of columns as columnNames");
+
+	        if (rowRenderer.isUsedByAnotherListbox(this))
+	            throw new IllegalArgumentException("A renderer cannot be shared between multiple Listboxes");
 	    }
 
 	    // Remove this listbox from the previous renderer
