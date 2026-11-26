@@ -37,6 +37,7 @@ import org.compiere.model.MTimeExpenseLine;
 import org.compiere.model.ProductCost;
 import org.compiere.model.Query;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 /**
  *	Posting for {@link MProjectIssue} document. DOCTYPE_ProjectIssue.<br/>
@@ -157,7 +158,7 @@ public class Doc_ProjectIssue extends Doc
 					.list();
 			if (origFacts.size() < 2)
 			{
-				p_Error = "Original Project Issue not posted yet";
+				p_Error = Msg.getMsg(getCtx(), "Original Project Issue not posted yet");
 				log.log(Level.WARNING, p_Error);
 				return null;
 			}
@@ -166,7 +167,7 @@ public class Doc_ProjectIssue extends Doc
 			dr = createReversedChargeFactLine(fact, as, m_line, origFacts.get(0));
 			if (dr == null)
 			{
-				p_Error = "FactLine DR not created: " + m_line;
+				p_Error = Msg.getMsg(getCtx(), "FactLine DR not created") + ": " + m_line;
 				log.log(Level.WARNING, p_Error);
 				return null;
 			}
@@ -175,7 +176,7 @@ public class Doc_ProjectIssue extends Doc
 			cr = createReversedChargeFactLine(fact, as, m_line, origFacts.get(1));
 			if (cr == null)
 			{
-				p_Error = "FactLine CR not created: " + m_line;
+				p_Error = Msg.getMsg(getCtx(), "FactLine CR not created") + ": " + m_line;
 				log.log(Level.WARNING, p_Error);
 				return null;
 			}
@@ -187,7 +188,7 @@ public class Doc_ProjectIssue extends Doc
 				FactLine chargeCr = createReversedChargeFactLine(fact, as, m_line, origFacts.get(i));
 				if (chargeCr == null)
 				{
-					p_Error = "FactLine CR not created: " + m_line;
+					p_Error = Msg.getMsg(getCtx(), "FactLine CR not created") + ": " + m_line;
 					log.log(Level.WARNING, p_Error);
 					return null;
 				}
@@ -248,7 +249,7 @@ public class Doc_ProjectIssue extends Doc
 						as.getC_Currency_ID(), null, manualCost.getAmount());
 				if (cr == null)
 				{
-					p_Error = "FactLine CR not created: " + m_line;
+					p_Error = Msg.getMsg(getCtx(), "FactLine CR not created") + ": " + m_line;
 					log.log(Level.WARNING, p_Error);
 					return null;
 				}

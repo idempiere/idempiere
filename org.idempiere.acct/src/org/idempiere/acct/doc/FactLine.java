@@ -99,6 +99,8 @@ public final class FactLine extends X_Fact_Acct
 	private DocLine 	m_docLine = null;
 	/** Reversed Fact_Acct_ID	*/
 	private int			m_reversedFactAcct_ID = 0;
+	/** Skip GL Distribution (for facts replayed from persisted ledger rows) */
+	private boolean		m_skipDistribution = false;
 
 	/**
 	 * Get the original Fact_Acct_ID matched by {@link #updateReverseLine}
@@ -107,6 +109,24 @@ public final class FactLine extends X_Fact_Acct
 	public int getReversedFactAcct_ID()
 	{
 		return m_reversedFactAcct_ID;
+	}
+
+	/**
+	 * @return true if GL Distribution should be skipped for this fact line
+	 */
+	boolean isSkipDistribution()
+	{
+		return m_skipDistribution;
+	}
+
+	/**
+	 * Mark whether GL Distribution should be skipped for this fact line
+	 * (e.g. when replaying already-posted Fact_Acct rows during reversal).
+	 * @param skipDistribution true to skip GL distribution
+	 */
+	void setSkipDistribution(boolean skipDistribution)
+	{
+		m_skipDistribution = skipDistribution;
 	}
 	
 	/**

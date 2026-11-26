@@ -48,6 +48,7 @@ import org.compiere.model.X_M_Production;
 import org.compiere.model.X_M_ProductionLine;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 
 /**
  *  Post {@link MProduction} Documents.
@@ -316,9 +317,15 @@ public class Doc_Production extends Doc
 		X_M_Production prod = (X_M_Production)getPO();
 		HashMap<String, BigDecimal> costMap =  new HashMap<String, BigDecimal>();
 		Map<Integer, List<ManualCost>> manualCostMap = new HashMap<>();
-		boolean isPostedReversal = prod.getReversal_ID() > 0 && prod.getM_Production_ID() > prod.getReversal_ID()
-				&& hasPostedFacts(as, MProduction.Table_ID, prod.getReversal_ID());
-		Map<Integer, List<MFactAcct>> reversedChargeFactsMap = isPostedReversal ? new HashMap<>() : null;
+		boolean isReversal = prod.getReversal_ID() > 0 && prod.getM_Production_ID() > prod.getReversal_ID();
+		if (isReversal && !hasPostedFacts(as, MProduction.Table_ID, prod.getReversal_ID()))
+		{
+			p_Error = Msg.getMsg(getCtx(), "Original Production not posted yet");
+			log.log(Level.WARNING, p_Error);
+			return null;
+		}
+		boolean isPostedReversal = isReversal;
+		Map<Integer, List<MFactAcct>> reversedLineFactsMap = isPostedReversal ? new HashMap<>() : null;
 		int stdPrecision = as.getStdPrecision();
 
 		for (int i = 0; i < p_lines.length; i++)
@@ -378,8 +385,6 @@ public class Doc_Production extends Doc
 					{
 						costs = line.getProductCosts(as, line.getAD_Org_ID(), false);
 					}
-					costs = costs.setScale(stdPrecision, RoundingMode.HALF_UP);
-					costMap.put(line.get_ID()+ "_"+ line.getM_AttributeSetInstance_ID(), costs);
 					if (!isPostedReversal && !line.isProductionBOM() && !manualCostMap.containsKey(line.get_ID()))
 					{
 						manualCostMap.put(line.get_ID(), roundManualCosts(
@@ -387,6 +392,8 @@ public class Doc_Production extends Doc
 										as, line.getAD_Org_ID(), costs, line.getQty(), getTrxName()),
 								stdPrecision));
 					}
+					costs = costs.setScale(stdPrecision, RoundingMode.HALF_UP);
+					costMap.put(line.get_ID()+ "_"+ line.getM_AttributeSetInstance_ID(), costs);
 				}
 			
 			} 
@@ -405,8 +412,6 @@ public class Doc_Production extends Doc
 				{
 					costs = line.getProductCosts(as, line.getAD_Org_ID(), false);
 				}
-				costs = costs.setScale(stdPrecision, RoundingMode.HALF_UP);
-				costMap.put(line.get_ID()+ "_"+ line.getM_AttributeSetInstance_ID(), costs);
 				if (!isPostedReversal && !line.isProductionBOM() && !manualCostMap.containsKey(line.get_ID()))
 				{
 					manualCostMap.put(line.get_ID(), roundManualCosts(
@@ -414,6 +419,8 @@ public class Doc_Production extends Doc
 									as, line.getAD_Org_ID(), costs, line.getQty(), getTrxName()),
 							stdPrecision));
 				}
+				costs = costs.setScale(stdPrecision, RoundingMode.HALF_UP);
+				costMap.put(line.get_ID()+ "_"+ line.getM_AttributeSetInstance_ID(), costs);
 
 			}
 			
@@ -437,6 +444,9 @@ public class Doc_Production extends Doc
 						MProduct product0 = new MProduct(getCtx(), bomProLine.getM_Product_ID(), getTrxName());
 						String CostingLevel0 = product0.getCostingLevel(as);
 						List<ManualCost> line0ManualCosts = !isPostedReversal ? manualCostMap.get(line0.get_ID()) : null;
+						List<MFactAcct> line0OrigFacts = isPostedReversal
+								? getReversedProductionLineFacts(as, prod.getReversal_ID(), line0.get_ID(), reversedLineFactsMap)
+								: Collections.emptyList();
 						if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel0) )
 						{
 							if (bomProLine.getM_AttributeSetInstance_ID() == 0 ) 
@@ -472,7 +482,8 @@ public class Doc_Production extends Doc
 										costMap.put(line0.get_ID()+ "_"+ ma.getM_AttributeSetInstance_ID(),maCost);
 										costs0 = costs0.add(maCost);
 									}						
-									bomCost = bomCost.add(costs0);
+									if (line0OrigFacts.isEmpty())
+										bomCost = bomCost.add(costs0);
 									if (maManualCostMap != null)
 									{
 										line0ManualCosts = roundManualCosts(maManualCostMap.values(), stdPrecision);
@@ -497,9 +508,6 @@ public class Doc_Production extends Doc
 								{
 									costs0 = line0.getProductCosts(as, line0.getAD_Org_ID(), false);
 								}
-								costs0 = costs0.setScale(stdPrecision, RoundingMode.HALF_UP);
-								costMap.put(line0.get_ID()+ "_"+ line0.getM_AttributeSetInstance_ID(),costs0);
-								bomCost = bomCost.add(costs0);
 								if (!isPostedReversal && line0ManualCosts == null)
 								{
 									line0ManualCosts = roundManualCosts(
@@ -508,6 +516,10 @@ public class Doc_Production extends Doc
 											stdPrecision);
 									manualCostMap.put(line0.get_ID(), line0ManualCosts);
 								}
+								costs0 = costs0.setScale(stdPrecision, RoundingMode.HALF_UP);
+								costMap.put(line0.get_ID()+ "_"+ line0.getM_AttributeSetInstance_ID(),costs0);
+								if (line0OrigFacts.isEmpty())
+									bomCost = bomCost.add(costs0);
 							}
 							
 						}  
@@ -525,9 +537,6 @@ public class Doc_Production extends Doc
 							{
 								costs0 = line0.getProductCosts(as, line0.getAD_Org_ID(), false);
 							}
-							costs0 = costs0.setScale(stdPrecision, RoundingMode.HALF_UP);
-							costMap.put(line0.get_ID()+ "_"+ line0.getM_AttributeSetInstance_ID(),costs0);
-							bomCost = bomCost.add(costs0);
 							if (!isPostedReversal && line0ManualCosts == null)
 							{
 								line0ManualCosts = roundManualCosts(
@@ -536,12 +545,14 @@ public class Doc_Production extends Doc
 										stdPrecision);
 								manualCostMap.put(line0.get_ID(), line0ManualCosts);
 							}
+							costs0 = costs0.setScale(stdPrecision, RoundingMode.HALF_UP);
+							costMap.put(line0.get_ID()+ "_"+ line0.getM_AttributeSetInstance_ID(),costs0);
+							if (line0OrigFacts.isEmpty())
+								bomCost = bomCost.add(costs0);
 						}
-						if (isPostedReversal)
+						if (!line0OrigFacts.isEmpty())
 						{
-							List<MFactAcct> line0ChargeFacts = getReversedProductionChargeFacts(
-									as, prod.getReversal_ID(), line0.get_ID(), reversedChargeFactsMap);
-							for (MFactAcct origFact : line0ChargeFacts)
+							for (MFactAcct origFact : line0OrigFacts)
 								bomCost = bomCost.add(origFact.getAmtAcctCr().subtract(origFact.getAmtAcctDr()));
 						}
 						else if (line0ManualCosts != null)
@@ -593,8 +604,13 @@ public class Doc_Production extends Doc
 			}
 			// end MZ
 
+			List<MFactAcct> origCompFacts = isPostedReversal && !line.isProductionBOM()
+					? getReversedProductionLineFacts(as, prod.getReversal_ID(), line.get_ID(), reversedLineFactsMap)
+					: Collections.emptyList();
+
 			//  Inventory       DR      CR
-			if (!(line.isProductionBOM() && MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel)))
+			if (!(line.isProductionBOM() && MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel))
+					&& origCompFacts.isEmpty())
 			{
 				BigDecimal factLineAmt = costs;
 				if (line.isProductionBOM() && !(MAcctSchema.COSTINGMETHOD_StandardCosting.equals(costingMethod)))
@@ -615,11 +631,9 @@ public class Doc_Production extends Doc
 
 			if (!line.isProductionBOM())
 			{
-				if (isPostedReversal)
+				if (!origCompFacts.isEmpty())
 				{
-					List<MFactAcct> origChargeFacts = getReversedProductionChargeFacts(
-							as, prod.getReversal_ID(), line.get_ID(), reversedChargeFactsMap);
-					for (MFactAcct origFact : origChargeFacts)
+					for (MFactAcct origFact : origCompFacts)
 					{
 						fl = createReversedChargeFactLine(fact, as, line, origFact);
 						if (fl == null)
@@ -629,7 +643,7 @@ public class Doc_Production extends Doc
 						}
 					}
 				}
-				else
+				else if (!isPostedReversal)
 				{
 					List<ManualCost> lineManualCosts = manualCostMap.get(line.get_ID());
 					if (lineManualCosts != null)
@@ -776,17 +790,17 @@ public class Doc_Production extends Doc
 		return facts;
 	}   //  createFact
 
-	private List<MFactAcct> getReversedProductionChargeFacts(MAcctSchema as, int origProductionId, int revLineId,
+	private List<MFactAcct> getReversedProductionLineFacts(MAcctSchema as, int origProductionId, int revLineId,
 			Map<Integer, List<MFactAcct>> cache)
 	{
 		if (cache.containsKey(revLineId))
 			return cache.get(revLineId);
 		Integer origLineId = m_reversalLineMap != null ? m_reversalLineMap.get(revLineId) : null;
-		List<MFactAcct> chargeFacts = origLineId != null
-				? getPostedChargeFacts(as, MProduction.Table_ID, origProductionId, origLineId)
+		List<MFactAcct> lineFacts = origLineId != null
+				? getPostedLineFacts(as, MProduction.Table_ID, origProductionId, origLineId)
 				: Collections.emptyList();
-		cache.put(revLineId, chargeFacts);
-		return chargeFacts;
+		cache.put(revLineId, lineFacts);
+		return lineFacts;
 	}
 
 }   //  Doc_Production

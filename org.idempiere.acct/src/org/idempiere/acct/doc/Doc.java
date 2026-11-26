@@ -2586,7 +2586,7 @@ public abstract class Doc implements IDoc
 	}
 
 	/**
-	 * Query posted actual Fact_Acct rows with C_Charge_ID &gt; 0 for an original document line.
+	 * Query posted actual Fact_Acct rows for an original document line.
 	 * @param as accounting schema
 	 * @param AD_Table_ID document table ID
 	 * @param Record_ID original document record ID
@@ -2594,11 +2594,11 @@ public abstract class Doc implements IDoc
 	 * @param excludeFactAcctIds optional Fact_Acct_IDs already reversed (e.g. primary DR/CR lines)
 	 * @return matching Fact_Acct records ordered by Fact_Acct_ID
 	 */
-	protected List<MFactAcct> getPostedChargeFacts(MAcctSchema as, int AD_Table_ID, int Record_ID, int Line_ID,
+	protected List<MFactAcct> getPostedLineFacts(MAcctSchema as, int AD_Table_ID, int Record_ID, int Line_ID,
 			int... excludeFactAcctIds)
 	{
 		StringBuilder where = new StringBuilder(
-				"C_AcctSchema_ID=? AND AD_Table_ID=? AND Record_ID=? AND Line_ID=? AND PostingType=? AND C_Charge_ID > 0");
+				"C_AcctSchema_ID=? AND AD_Table_ID=? AND Record_ID=? AND Line_ID=? AND PostingType=?");
 		List<Object> params = new ArrayList<>();
 		params.add(as.getC_AcctSchema_ID());
 		params.add(AD_Table_ID);
@@ -2633,11 +2633,11 @@ public abstract class Doc implements IDoc
 	}
 
 	/**
-	 * Create a reversal FactLine for a previously posted manual-cost Charge Fact_Acct record.
+	 * Create a reversal FactLine for a previously posted Fact_Acct record.
 	 * @param fact target Fact
 	 * @param as accounting schema
 	 * @param line reversal DocLine
-	 * @param origFact original posted Charge MFactAcct record
+	 * @param origFact original posted MFactAcct record
 	 * @return created FactLine, or null if creation failed
 	 */
 	protected FactLine createReversedChargeFactLine(Fact fact, MAcctSchema as, DocLine line, MFactAcct origFact)
@@ -2648,6 +2648,7 @@ public abstract class Doc implements IDoc
 		chargeLine.updateReverseLine(origFact, Env.ONE, true);
 		chargeLine.setC_SubAcct_ID(origFact.getC_SubAcct_ID());
 		chargeLine.setC_BPartner_ID(origFact.getC_BPartner_ID());
+		chargeLine.setSkipDistribution(true);
 		return chargeLine;
 	}
 }   //  Doc

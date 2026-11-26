@@ -280,87 +280,70 @@ public class Doc_InOut extends Doc
 					costs = BigDecimal.ZERO;
 				}
 				
-				int stdPrecision = as.getStdPrecision();
-				BigDecimal cogs = costs;
-				List<ManualCost> postedManualCosts = !isReversal(line)
-						? roundManualCosts(manualCosts, stdPrecision) : Collections.emptyList();
-				if (!postedManualCosts.isEmpty())
-				{
-					cogs = costs.setScale(stdPrecision, RoundingMode.HALF_UP);
-					for (ManualCost manualCost : postedManualCosts)
-						cogs = cogs.add(manualCost.getAmount());
-				}
-				//  CoGS            DR
-				dr = fact.createLine(line,
-					line.getAccount(ProductCost.ACCTTYPE_P_Cogs, as),
-					as.getC_Currency_ID(), cogs, null);
-				if (dr == null)
-				{
-					p_Error = Msg.getMsg(getCtx(),"FactLine DR not created:" + " ") + line;
-					log.log(Level.WARNING, p_Error);
-					return null;
-				}
-				dr.setM_Locator_ID(line.getM_Locator_ID());
-				dr.setLocationFromLocator(line.getM_Locator_ID(), true);    //  from Loc
-				dr.setLocationFromBPartner(getC_BPartner_Location_ID(), false);  //  to Loc
-				dr.setAD_Org_ID(line.getOrder_Org_ID());		//	Revenue X-Org
-				dr.setQty(line.getQty().negate());
-				
 				if (isReversal(line))
 				{
-					//	Set AmtAcctDr from Original Shipment/Receipt
-					if (!dr.updateReverseLine (MInOut.Table_ID,
-							m_Reversal_ID, line.getReversalLine_ID(),Env.ONE))
+					List<MFactAcct> origFacts = getPostedLineFacts(as, MInOut.Table_ID, m_Reversal_ID, line.getReversalLine_ID());
+					if (origFacts.isEmpty())
 					{
-						if (! product.isStocked())	{ //	ignore service
-							fact.remove(dr);
+						if (! product.isStocked())	//	ignore service
 							continue;
-						}
 						p_Error = Msg.getMsg(getCtx(),"Original Shipment/Receipt not posted yet");
 						return null;
 					}
-				}
-
-				//  Inventory               CR
-				cr = fact.createLine(line,
-					line.getAccount(ProductCost.ACCTTYPE_P_Asset, as),
-					as.getC_Currency_ID(), null, costs);
-				if (cr == null)
-				{
-					p_Error = Msg.getMsg(getCtx(),"FactLine CR not created:") + " " + line;
-					log.log(Level.WARNING, p_Error);
-					return null;
-				}
-				cr.setM_Locator_ID(line.getM_Locator_ID());
-				cr.setLocationFromLocator(line.getM_Locator_ID(), true);    // from Loc
-				cr.setLocationFromBPartner(getC_BPartner_Location_ID(), false);  // to Loc
-				
-				if (isReversal(line))
-				{
-					//	Set AmtAcctCr from Original Shipment/Receipt
-					if (!cr.updateReverseLine (MInOut.Table_ID,
-							m_Reversal_ID, line.getReversalLine_ID(),Env.ONE, dr))
+					for (MFactAcct origFact : origFacts)
 					{
-						p_Error = Msg.getMsg(getCtx(),"Original Shipment/Receipt not posted yet");
-						return null;
-					}
-					costs = cr.getAcctBalance(); //get original cost
-					//	Reverse any manual-cost Charge lines from the original shipment line
-					List<MFactAcct> chargeFacts = getPostedChargeFacts(as, MInOut.Table_ID, m_Reversal_ID,
-							line.getReversalLine_ID(), dr.getReversedFactAcct_ID(), cr.getReversedFactAcct_ID());
-					for (MFactAcct origFact : chargeFacts)
-					{
-						FactLine chargeCr = createReversedChargeFactLine(fact, as, line, origFact);
-						if (chargeCr == null)
+						FactLine revLine = createReversedChargeFactLine(fact, as, line, origFact);
+						if (revLine == null)
 						{
-							p_Error = Msg.getMsg(getCtx(),"FactLine CR not created:") + " " + line;
+							String errMsg = origFact.getAmtAcctCr().signum() != 0 ? "FactLine DR not created" : "FactLine CR not created";
+							p_Error = Msg.getMsg(getCtx(), errMsg) + ": " + line;
 							log.log(Level.WARNING, p_Error);
 							return null;
 						}
 					}
+					costs = resolveReversalInventoryCost(as, line, origFacts);
 				}
 				else
 				{
+					int stdPrecision = as.getStdPrecision();
+					BigDecimal cogs = costs;
+					List<ManualCost> postedManualCosts = roundManualCosts(manualCosts, stdPrecision);
+					if (!postedManualCosts.isEmpty())
+					{
+						cogs = costs.setScale(stdPrecision, RoundingMode.HALF_UP);
+						for (ManualCost manualCost : postedManualCosts)
+							cogs = cogs.add(manualCost.getAmount());
+					}
+					//  CoGS            DR
+					dr = fact.createLine(line,
+						line.getAccount(ProductCost.ACCTTYPE_P_Cogs, as),
+						as.getC_Currency_ID(), cogs, null);
+					if (dr == null)
+					{
+						p_Error = Msg.getMsg(getCtx(),"FactLine DR not created:" + " ") + line;
+						log.log(Level.WARNING, p_Error);
+						return null;
+					}
+					dr.setM_Locator_ID(line.getM_Locator_ID());
+					dr.setLocationFromLocator(line.getM_Locator_ID(), true);    //  from Loc
+					dr.setLocationFromBPartner(getC_BPartner_Location_ID(), false);  //  to Loc
+					dr.setAD_Org_ID(line.getOrder_Org_ID());		//	Revenue X-Org
+					dr.setQty(line.getQty().negate());
+
+					//  Inventory               CR
+					cr = fact.createLine(line,
+						line.getAccount(ProductCost.ACCTTYPE_P_Asset, as),
+						as.getC_Currency_ID(), null, costs);
+					if (cr == null)
+					{
+						p_Error = Msg.getMsg(getCtx(),"FactLine CR not created:") + " " + line;
+						log.log(Level.WARNING, p_Error);
+						return null;
+					}
+					cr.setM_Locator_ID(line.getM_Locator_ID());
+					cr.setLocationFromLocator(line.getM_Locator_ID(), true);    // from Loc
+					cr.setLocationFromBPartner(getC_BPartner_Location_ID(), false);  // to Loc
+
 					for (ManualCost manualCost : postedManualCosts)
 					{
 						MAccount chargeAcct = MCharge.getAccount(manualCost.getCostElement().getC_Charge_ID(), as, getTrxName());
@@ -368,7 +351,7 @@ public class Doc_InOut extends Doc
 								as.getC_Currency_ID(), null, manualCost.getAmount());
 						if (chargeCr == null)
 						{
-							p_Error = Msg.getMsg(getCtx(),"FactLine CR not created:") + " " + line;
+							p_Error = Msg.getMsg(getCtx(), "FactLine CR not created") + ": " + line;
 							log.log(Level.WARNING, p_Error);
 							return null;
 						}
@@ -439,12 +422,16 @@ public class Doc_InOut extends Doc
 							if (line.getProductCost().getQty().signum() != line.getQty().signum() && !isReversal(line))
 								amt = amt.negate();
 							int Ref_CostDetail_ID = 0;
-							if (line.getReversalLine_ID() > 0 && line.get_ID() > line.getReversalLine_ID())
+							if (isReversal(line))
 							{
 								MCostDetail cd = MCostDetail.getShipment(as, line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 										line.getReversalLine_ID(), 0, getTrxName());
 								if (cd != null)
-									Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+								{
+									if (line.get_ID() > line.getReversalLine_ID())
+										Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+									amt = cd.getAmt().negate();
+								}
 							}
 							if (!MCostDetail.createShipment(as, line.getAD_Org_ID(),
 								line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
@@ -467,12 +454,16 @@ public class Doc_InOut extends Doc
 						if (line.getProductCost().getQty().signum() != line.getQty().signum() && !isReversal(line))
 							amt = amt.negate();
 						int Ref_CostDetail_ID = 0;
-						if (line.getReversalLine_ID() > 0 && line.get_ID() > line.getReversalLine_ID())
+						if (isReversal(line))
 						{
 							MCostDetail cd = MCostDetail.getShipment(as, line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 									line.getReversalLine_ID(), 0, getTrxName());
 							if (cd != null)
-								Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+							{
+								if (line.get_ID() > line.getReversalLine_ID())
+									Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+								amt = cd.getAmt().negate();
+							}
 						}
 						if (!MCostDetail.createShipment(as, line.getAD_Org_ID(),
 							line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
@@ -571,41 +562,52 @@ public class Doc_InOut extends Doc
 				}
 				int stdPrecision = as.getStdPrecision();
 				BigDecimal cogs = costs;
-				List<ManualCost> postedManualCosts = !isReversal(line)
-						? roundManualCosts(manualCosts, stdPrecision) : Collections.emptyList();
-				if (!postedManualCosts.isEmpty())
-				{
-					cogs = costs.setScale(stdPrecision, RoundingMode.HALF_UP);
-					for (ManualCost manualCost : postedManualCosts)
-						cogs = cogs.add(manualCost.getAmount());
-				}
-				//  Inventory               DR
-				dr = fact.createLine(line,
-					line.getAccount(ProductCost.ACCTTYPE_P_Asset, as),
-					as.getC_Currency_ID(), costs, null);
-				if (dr == null)
-				{
-					p_Error = Msg.getMsg(getCtx(),"FactLine DR not created:" + " ") + line;
-					log.log(Level.WARNING, p_Error);
-					return null;
-				}
-				dr.setM_Locator_ID(line.getM_Locator_ID());
-				dr.setLocationFromLocator(line.getM_Locator_ID(), true);    // from Loc
-				dr.setLocationFromBPartner(getC_BPartner_Location_ID(), false);  // to Loc
+				List<ManualCost> postedManualCosts = Collections.emptyList();
 				if (isReversal(line))
 				{
-					//	Set AmtAcctDr from Original Shipment/Receipt
-					if (!dr.updateReverseLine (MInOut.Table_ID,
-							m_Reversal_ID, line.getReversalLine_ID(),Env.ONE))
+					List<MFactAcct> origFacts = getPostedLineFacts(as, MInOut.Table_ID, m_Reversal_ID, line.getReversalLine_ID());
+					if (origFacts.isEmpty())
 					{
-						if (! product.isStocked())	{ //	ignore service
-							fact.remove(dr);
+						if (! product.isStocked())	//	ignore service
 							continue;
-						}
 						p_Error = Msg.getMsg(getCtx(),"Original Shipment/Receipt not posted yet");
 						return null;
 					}
-					costs = dr.getAcctBalance(); //get original cost
+					for (MFactAcct origFact : origFacts)
+					{
+						FactLine revLine = createReversedChargeFactLine(fact, as, line, origFact);
+						if (revLine == null)
+						{
+							String errMsg = origFact.getAmtAcctCr().signum() != 0 ? "FactLine DR not created" : "FactLine CR not created";
+							p_Error = Msg.getMsg(getCtx(), errMsg) + ": " + line;
+							log.log(Level.WARNING, p_Error);
+							return null;
+						}
+					}
+					costs = resolveReversalInventoryCost(as, line, origFacts);
+				}
+				else
+				{
+					postedManualCosts = roundManualCosts(manualCosts, stdPrecision);
+					if (!postedManualCosts.isEmpty())
+					{
+						cogs = costs.setScale(stdPrecision, RoundingMode.HALF_UP);
+						for (ManualCost manualCost : postedManualCosts)
+							cogs = cogs.add(manualCost.getAmount());
+					}
+					//  Inventory               DR
+					dr = fact.createLine(line,
+						line.getAccount(ProductCost.ACCTTYPE_P_Asset, as),
+						as.getC_Currency_ID(), costs, null);
+					if (dr == null)
+					{
+						p_Error = Msg.getMsg(getCtx(),"FactLine DR not created:" + " ") + line;
+						log.log(Level.WARNING, p_Error);
+						return null;
+					}
+					dr.setM_Locator_ID(line.getM_Locator_ID());
+					dr.setLocationFromLocator(line.getM_Locator_ID(), true);    // from Loc
+					dr.setLocationFromBPartner(getC_BPartner_Location_ID(), false);  // to Loc
 				}
 				//
 				if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as)) ) 
@@ -667,12 +669,16 @@ public class Doc_InOut extends Doc
 							if (line.getProductCost().getQty().signum() != line.getQty().signum() && !isReversal(line))
 								amt = amt.negate();
 							int Ref_CostDetail_ID = 0;
-							if (line.getReversalLine_ID() > 0 && line.get_ID() > line.getReversalLine_ID())
+							if (isReversal(line))
 							{
 								MCostDetail cd = MCostDetail.getShipment(as, line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 										line.getReversalLine_ID(), 0, getTrxName());
 								if (cd != null)
-									Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+								{
+									if (line.get_ID() > line.getReversalLine_ID())
+										Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+									amt = cd.getAmt().negate();
+								}
 							}
 							if (!MCostDetail.createShipment(as, line.getAD_Org_ID(),
 								line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
@@ -694,12 +700,16 @@ public class Doc_InOut extends Doc
 						if (line.getProductCost().getQty().signum() != line.getQty().signum() && !isReversal(line))
 							amt = amt.negate();
 						int Ref_CostDetail_ID = 0;
-						if (line.getReversalLine_ID() > 0 && line.get_ID() > line.getReversalLine_ID())
+						if (isReversal(line))
 						{
 							MCostDetail cd = MCostDetail.getShipment(as, line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 									line.getReversalLine_ID(), 0, getTrxName());
 							if (cd != null)
-								Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+							{
+								if (line.get_ID() > line.getReversalLine_ID())
+									Ref_CostDetail_ID = cd.getM_CostDetail_ID();
+								amt = cd.getAmt().negate();
+							}
 						}
 						if (!MCostDetail.createShipment(as, line.getAD_Org_ID(),
 							line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
@@ -713,46 +723,24 @@ public class Doc_InOut extends Doc
 					}
 				}
 
-				//  CoGS            CR
-				cr = fact.createLine(line,
-					line.getAccount(ProductCost.ACCTTYPE_P_Cogs, as),
-					as.getC_Currency_ID(), null, cogs);
-				if (cr == null)
+				if (!isReversal(line))
 				{
-					p_Error = Msg.getMsg(getCtx(),"FactLine CR not created:") + " " + line;
-					log.log(Level.WARNING, p_Error);
-					return null;
-				}
-				cr.setM_Locator_ID(line.getM_Locator_ID());
-				cr.setLocationFromLocator(line.getM_Locator_ID(), true);    //  from Loc
-				cr.setLocationFromBPartner(getC_BPartner_Location_ID(), false);  //  to Loc
-				cr.setAD_Org_ID(line.getOrder_Org_ID());		//	Revenue X-Org
-				cr.setQty(line.getQty().negate());
-				if (isReversal(line))
-				{
-					//	Set AmtAcctCr from Original Shipment/Receipt
-					if (!cr.updateReverseLine (MInOut.Table_ID,
-							m_Reversal_ID, line.getReversalLine_ID(),Env.ONE, dr))
+					//  CoGS            CR
+					cr = fact.createLine(line,
+						line.getAccount(ProductCost.ACCTTYPE_P_Cogs, as),
+						as.getC_Currency_ID(), null, cogs);
+					if (cr == null)
 					{
-						p_Error = Msg.getMsg(getCtx(),"Original Shipment/Receipt not posted yet");
+						p_Error = Msg.getMsg(getCtx(),"FactLine CR not created:") + " " + line;
+						log.log(Level.WARNING, p_Error);
 						return null;
 					}
-					//	Reverse any manual-cost Charge lines from the original return line
-					List<MFactAcct> chargeFacts = getPostedChargeFacts(as, MInOut.Table_ID, m_Reversal_ID,
-							line.getReversalLine_ID(), dr.getReversedFactAcct_ID(), cr.getReversedFactAcct_ID());
-					for (MFactAcct origFact : chargeFacts)
-					{
-						FactLine chargeDr = createReversedChargeFactLine(fact, as, line, origFact);
-						if (chargeDr == null)
-						{
-							p_Error = Msg.getMsg(getCtx(),"FactLine DR not created:" + " ") + line;
-							log.log(Level.WARNING, p_Error);
-							return null;
-						}
-					}
-				}
-				else
-				{
+					cr.setM_Locator_ID(line.getM_Locator_ID());
+					cr.setLocationFromLocator(line.getM_Locator_ID(), true);    //  from Loc
+					cr.setLocationFromBPartner(getC_BPartner_Location_ID(), false);  //  to Loc
+					cr.setAD_Org_ID(line.getOrder_Org_ID());		//	Revenue X-Org
+					cr.setQty(line.getQty().negate());
+
 					for (ManualCost manualCost : postedManualCosts)
 					{
 						MAccount chargeAcct = MCharge.getAccount(manualCost.getCostElement().getC_Charge_ID(), as, getTrxName());
@@ -760,7 +748,7 @@ public class Doc_InOut extends Doc
 								as.getC_Currency_ID(), manualCost.getAmount(), null);
 						if (chargeDr == null)
 						{
-							p_Error = Msg.getMsg(getCtx(),"FactLine DR not created:" + " ") + line;
+							p_Error = Msg.getMsg(getCtx(), "FactLine DR not created") + ": " + line;
 							log.log(Level.WARNING, p_Error);
 							return null;
 						}
@@ -1235,6 +1223,50 @@ public class Doc_InOut extends Doc
 				.append("AND ").append(MCostDetail.COLUMNNAME_M_Product_ID).append("=? ");
 		BigDecimal amt = DB.getSQLValueBDEx(getTrxName(), select.toString(), as.getC_AcctSchema_ID(), ma.getM_AttributeSetInstance_ID(), reversalLine_ID, M_Product_ID);
 		return amt;
+	}
+
+	/**
+	 * Resolve fallback inventory cost for a reversed shipment or customer return line
+	 * from its posted facts when no original cost detail record is found.
+	 * Never selects manual-cost charge facts ({@code C_Charge_ID > 0}).
+	 * @param as accounting schema
+	 * @param line reversal document line
+	 * @param origFacts posted actual Fact_Acct records of the original line
+	 * @return reversed inventory cost amount
+	 */
+	private BigDecimal resolveReversalInventoryCost(MAcctSchema as, DocLine_InOut line, List<MFactAcct> origFacts)
+	{
+		MAccount assetAcct = line.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
+		int assetAcctId = assetAcct != null ? assetAcct.getAccount_ID() : 0;
+		int expectedOrigQtySign = line.getQty() != null ? -line.getQty().signum() : 0;
+
+		BigDecimal sum = sumMatchingInventoryFacts(origFacts, assetAcctId, expectedOrigQtySign, true);
+		if (sum != null)
+			return sum;
+		sum = sumMatchingInventoryFacts(origFacts, assetAcctId, 0, true);
+		if (sum != null)
+			return sum;
+		sum = sumMatchingInventoryFacts(origFacts, 0, expectedOrigQtySign, false);
+		if (sum != null)
+			return sum;
+		return BigDecimal.ZERO;
+	}
+
+	private BigDecimal sumMatchingInventoryFacts(List<MFactAcct> origFacts, int accountId, int expectedOrigQtySign, boolean matchAccount)
+	{
+		BigDecimal total = null;
+		for (MFactAcct origFact : origFacts)
+		{
+			if (origFact.getC_Charge_ID() > 0)
+				continue;
+			if (matchAccount && (accountId <= 0 || origFact.getAccount_ID() != accountId))
+				continue;
+			if (expectedOrigQtySign != 0 && (origFact.getQty() == null || origFact.getQty().signum() != expectedOrigQtySign))
+				continue;
+			BigDecimal revBalance = origFact.getAmtAcctCr().subtract(origFact.getAmtAcctDr());
+			total = total == null ? revBalance : total.add(revBalance);
+		}
+		return total;
 	}
 
 	/**

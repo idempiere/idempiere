@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -571,21 +572,12 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 			}
 			else
 			{
-				MFactAcct origWipFact = new Query(getCtx(), MFactAcct.Table_Name,
-						"C_AcctSchema_ID=? AND AD_Table_ID=? AND Record_ID=? AND PostingType=?", get_TrxName())
-						.setParameters(as.getC_AcctSchema_ID(), MProjectIssue.Table_ID, getReversal_ID(), MFactAcct.POSTINGTYPE_Actual)
-						.setOrderBy(MFactAcct.COLUMNNAME_Fact_Acct_ID)
-						.first();
-				if (origWipFact != null)
-				{
-					// First Fact_Acct line of Doc_ProjectIssue is the Project WIP/Asset line (DR on normal issue).
-					cost = origWipFact.getAmtAcctCr().subtract(origWipFact.getAmtAcctDr());
-				}
+				cost = resolveLegacyReversalCost(as, origIssue, product);
 			}
 		}
 		if (cost != null)
 		{
-			// already resolved from original Project Issue or posted Fact_Acct
+			// already resolved from original Project Issue, Cost Detail, or posted Fact_Acct
 		}
 		else if (getM_InOutLine_ID() > 0)
 		{
@@ -639,4 +631,139 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		}
 		return cost;
 	} // updateBalanceAmt
+
+	/**
+	 * Resolve the reversal balance contribution for a legacy (pre-migration) Project Issue
+	 * whose {@code CostAmt} is null.
+	 *
+	 * @param as accounting schema
+	 * @param origIssue original project issue being reversed
+	 * @param product product of the issue
+	 * @return signed reversal balance contribution (negative for a normal issue), or null if unavailable
+	 */
+	private BigDecimal resolveLegacyReversalCost(MAcctSchema as, MProjectIssue origIssue, MProduct product)
+	{
+		if (origIssue.getM_InOutLine_ID() > 0)
+		{
+			MInOutLine inOutLine = new MInOutLine(getCtx(), origIssue.getM_InOutLine_ID(), get_TrxName());
+			BigDecimal origCost = inOutLine.getPOCost(as, origIssue.getMovementQty());
+			if (origCost != null)
+				return origCost.negate();
+		}
+		else if (origIssue.getS_TimeExpenseLine_ID() > 0)
+		{
+			MTimeExpenseLine expenseLine = new MTimeExpenseLine(getCtx(), origIssue.getS_TimeExpenseLine_ID(), get_TrxName());
+			BigDecimal origCost = expenseLine.getLaborCost(as);
+			if (origCost != null)
+				return origCost.negate();
+		}
+
+		List<MFactAcct> origFacts = new Query(getCtx(), MFactAcct.Table_Name,
+				"C_AcctSchema_ID=? AND AD_Table_ID=? AND Record_ID=? AND Line_ID=? AND PostingType=?", get_TrxName())
+				.setParameters(as.getC_AcctSchema_ID(), MProjectIssue.Table_ID, origIssue.getC_ProjectIssue_ID(),
+						origIssue.getC_ProjectIssue_ID(), MFactAcct.POSTINGTYPE_Actual)
+				.setOrderBy(MFactAcct.COLUMNNAME_Fact_Acct_ID)
+				.list();
+
+		MProject project = getParent();
+		String projAcctCol = project != null && MProject.PROJECTCATEGORY_AssetProject.equals(project.getProjectCategory())
+				? I_C_Project_Acct.COLUMNNAME_PJ_Asset_Acct
+				: I_C_Project_Acct.COLUMNNAME_PJ_WIP_Acct;
+		int projectAcctId = DB.getSQLValueEx(get_TrxName(),
+				"SELECT vc.Account_ID FROM C_Project_Acct pa "
+				+ "INNER JOIN C_ValidCombination vc ON (pa." + projAcctCol + "=vc.C_ValidCombination_ID) "
+				+ "WHERE pa.C_Project_ID=? AND pa.C_AcctSchema_ID=?",
+				origIssue.getC_Project_ID(), as.getC_AcctSchema_ID());
+
+		int origQtySign = origIssue.getMovementQty() != null ? origIssue.getMovementQty().signum() : 0;
+
+		// Prefer original MCostDetail where applicable (stocked non-service products):
+		// MCostDetail.Amt already carries the signed outgoing material cost (negative on a normal issue),
+		// preserving sub-cent precision and remaining unaffected by GL Distribution or account changes.
+		MCostDetail origCd = MCostDetail.getProjectIssue(as, origIssue.getM_Product_ID(),
+				origIssue.getM_AttributeSetInstance_ID(), origIssue.getC_ProjectIssue_ID(), 0, get_TrxName());
+		if (origCd != null)
+		{
+			BigDecimal chargeNet = BigDecimal.ZERO;
+			boolean hasChargeFacts = false;
+			for (MFactAcct fa : origFacts)
+			{
+				if (fa.getC_Charge_ID() > 0 && fa.getAccount_ID() != projectAcctId)
+				{
+					hasChargeFacts = true;
+					chargeNet = chargeNet.add(fa.getAmtAcctDr().subtract(fa.getAmtAcctCr()));
+				}
+			}
+			if (hasChargeFacts && chargeNet.signum() != 0 && (origQtySign == 0 || chargeNet.signum() == -origQtySign))
+				return origCd.getAmt().setScale(as.getStdPrecision(), RoundingMode.HALF_UP).add(chargeNet);
+			return origCd.getAmt();
+		}
+
+		if (origFacts.isEmpty())
+			return null;
+
+		// Fall back to identifying and aggregating project-side accounting facts (e.g., non-stocked / service products).
+		ProductCost pc = new ProductCost(getCtx(), origIssue.getM_Product_ID(), origIssue.getM_AttributeSetInstance_ID(), get_TrxName());
+		MAccount prodAccount = pc.getAccount(product.isService()
+				? ProductCost.ACCTTYPE_P_Expense : ProductCost.ACCTTYPE_P_Asset, as);
+		int productAcctId = prodAccount != null ? prodAccount.getAccount_ID() : 0;
+
+		boolean projectMatched = false;
+		BigDecimal projectNet = BigDecimal.ZERO;
+		if (projectAcctId > 0 && projectAcctId != productAcctId)
+		{
+			for (MFactAcct fa : origFacts)
+			{
+				if (fa.getAccount_ID() == projectAcctId && fa.getC_Charge_ID() == 0)
+				{
+					projectMatched = true;
+					projectNet = projectNet.add(fa.getAmtAcctCr().subtract(fa.getAmtAcctDr()));
+				}
+			}
+			if (projectMatched && projectNet.signum() != 0)
+				return projectNet;
+		}
+
+		// If GL distribution overwrote the project account or C_Project_Acct changed after posting,
+		// aggregate the offsetting product/charge-side facts (whose net DR-CR equals the project-side CR-DR).
+		boolean offsetMatched = false;
+		BigDecimal offsetNet = BigDecimal.ZERO;
+		if (productAcctId > 0 && productAcctId != projectAcctId)
+		{
+			for (MFactAcct fa : origFacts)
+			{
+				if (fa.getAccount_ID() == productAcctId || fa.getC_Charge_ID() > 0)
+				{
+					offsetMatched = true;
+					offsetNet = offsetNet.add(fa.getAmtAcctDr().subtract(fa.getAmtAcctCr()));
+				}
+			}
+			if (offsetMatched && offsetNet.signum() != 0)
+				return offsetNet;
+		}
+
+		// Final fallback (e.g., same account for project and product, or both accounts changed):
+		// aggregate non-charge facts whose Qty sign matches the original issue's MovementQty.
+		if (origQtySign != 0)
+		{
+			boolean qtyMatched = false;
+			BigDecimal qtyNet = BigDecimal.ZERO;
+			for (MFactAcct fa : origFacts)
+			{
+				if (fa.getC_Charge_ID() == 0 && fa.getQty() != null && fa.getQty().signum() == origQtySign)
+				{
+					qtyMatched = true;
+					qtyNet = qtyNet.add(fa.getAmtAcctCr().subtract(fa.getAmtAcctDr()));
+				}
+			}
+			if (qtyMatched)
+				return qtyNet;
+		}
+
+		if (projectMatched)
+			return projectNet;
+		if (offsetMatched)
+			return offsetNet;
+		return null;
+	} // resolveLegacyReversalCost
 }	//	MProjectIssue

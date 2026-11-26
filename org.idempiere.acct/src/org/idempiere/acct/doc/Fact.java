@@ -697,6 +697,8 @@ public final class Fact
 		for (int i = 0; i < m_lines.size(); i++)
 		{
 			FactLine dLine = (FactLine)m_lines.get(i);
+			if (dLine.isSkipDistribution())
+				continue;
 			MDistribution[] distributions = MDistribution.get (dLine.getCtx(), dLine.getC_AcctSchema_ID(),
 					m_postingType, m_doc.getC_DocType_ID(), dLine.getDateAcct(),
 					dLine.getAD_Org_ID(), dLine.getAccount_ID(),

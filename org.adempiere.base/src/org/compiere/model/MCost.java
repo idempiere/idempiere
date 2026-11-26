@@ -337,7 +337,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 	 * @param M_AttributeSetInstance_ID asi for batchlot costing level
 	 * @param as accounting schema
 	 * @param AD_Org_ID org for organization costing level
-	 * @param currentMaterialCost Total material cost (unit material cost * qty)
+	 * @param currentMaterialCost Base product cost (material plus any unmapped non-material costs) for the quantity
 	 * @param qty transaction quantity
 	 * @param trxName trx
 	 * @return array of non-zero ManualCost records
@@ -355,7 +355,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 	 * @param as accounting schema
 	 * @param AD_Org_ID org for organization costing level
 	 * @param costingMethod AcctSchema.COSTINGMETHOD_* (if null, uses product.getCostingMethod(as))
-	 * @param currentMaterialCost Total material cost (unit material cost * qty)
+	 * @param currentMaterialCost Base product cost (material plus any unmapped non-material costs) for the quantity
 	 * @param qty transaction quantity
 	 * @param trxName trx
 	 * @return array of non-zero ManualCost records

@@ -875,7 +875,7 @@ public class DocLine
 	 * Get manual (non-material, charge-mapped) costs for this line
 	 * @param as accounting schema
 	 * @param AD_Org_ID trx org
-	 * @param productCost Total material cost (unit material cost * qty)
+	 * @param productCost Base product cost (material plus any unmapped non-material costs) for the quantity
 	 * @return ManualCost[]
 	 */
 	public ManualCost[] getManualCosts(MAcctSchema as, int AD_Org_ID, BigDecimal productCost)
