@@ -49,6 +49,7 @@ import org.idempiere.db.util.SQLFragment;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listhead;
 import org.zkoss.zul.Listheader;
+import org.zkoss.zul.ListitemRenderer;
 
 /**
  * {@link IMiniTable} implementation for Zk.
@@ -127,30 +128,43 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 	 * @param columnNames  Header names of the table columns
 	 * @param rowRenderer  Custom renderer used to render the table rows
 	 */
-	public void setData(ListModelTable model, List<? extends String> columnNames, WListItemRenderer rowRenderer) {
-
-	    if (rowRenderer != null) {
+	public void setData(ListModelTable model, List<? extends String> columnNames,
+	        WListItemRenderer rowRenderer)
+	{
+	    if (rowRenderer != null)
+	    {
 	        if (columnNames == null || columnNames.isEmpty())
-	            throw new IllegalArgumentException("columnNames is required when a renderer is provided");
+	            throw new IllegalArgumentException(
+	                    "columnNames is required when a renderer is provided");
 
 	        if (rowRenderer.getNoColumns() != columnNames.size())
-	            throw new IllegalArgumentException("The renderer must be initialized with the same number of columns as columnNames");
-
-	        rowRenderer.addTableValueChangeListener(this);
+	            throw new IllegalArgumentException(
+	                    "The renderer must be initialized with the same number of columns as columnNames");
 	    }
 
-		this.setModel(model);
+	    // Remove this listbox from the previous renderer
+	    ListitemRenderer<Object> previousRenderer = getItemRenderer();
+	    if (previousRenderer instanceof WListItemRenderer && previousRenderer != rowRenderer)
+	        ((WListItemRenderer) previousRenderer).removeTableValueChangeListener(this);
 
-		if (rowRenderer != null) {
-			getModel().setNoColumns(columnNames.size());
-			this.setItemRenderer(rowRenderer);
+	    if (rowRenderer != null)
+	        rowRenderer.addTableValueChangeListener(this);
 
-			ListHead head = getListHead();
-			if (head != null) {
-				head.getChildren().clear();
-				rowRenderer.renderListHead(head);
-			}
-		}
+	    this.setModel(model);
+
+	    if (rowRenderer != null)
+	    {
+	        getModel().setNoColumns(columnNames.size());
+	        this.setItemRenderer(rowRenderer);
+
+	        // Recreate listhead if needed
+	        ListHead head = getListHead();
+	        if (head != null)
+	        {
+	            head.getChildren().clear();
+	            rowRenderer.renderListHead(head);
+	        }
+	    }
 
 	    repaint();
 	}
