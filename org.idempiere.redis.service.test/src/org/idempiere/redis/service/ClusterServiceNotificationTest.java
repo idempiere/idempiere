@@ -24,7 +24,7 @@
 package org.idempiere.redis.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Field;
@@ -32,6 +32,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -40,8 +41,9 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.compiere.util.CacheNewRecordCallable;
 import org.idempiere.distributed.IClusterMember;
+import org.idempiere.redis.service.cluster.AllowlistKryo5Codec;
 import org.idempiere.redis.service.cluster.ClusterMember;
-import org.idempiere.redis.service.cluster.RpcRequest;
+import org.idempiere.redis.service.cluster.RpcFrame;
 import org.junit.jupiter.api.Test;
 import org.redisson.api.RTopic;
 
@@ -87,6 +89,7 @@ public class ClusterServiceNotificationTest {
 		AtomicReference<ClusterMember> localMember = (AtomicReference<ClusterMember>) field(service, "localMember");
 		localMember.set(new ClusterMember(SELF, null, 0));
 		set(service, "requestTopic", recordingTopic());
+		set(service, "rpcCodec", new AllowlistKryo5Codec(null, Set.of()));
 		return service;
 	}
 
@@ -99,12 +102,11 @@ public class ClusterServiceNotificationTest {
 				service.execute(new NewRecord("CacheNotificationTest", 4711), List.of(other));
 
 		assertEquals(1, published.size(), "one request on the request topic");
-		RpcRequest request = (RpcRequest) published.get(0);
-		assertNull(request.getResponseTopic(), "no reply topic");
+		RpcFrame request = RpcFrame.decode((byte[]) published.get(0), null, "");
+		assertFalse(request.isReplyExpected(), "no reply expected");
 		assertEquals(List.of(OTHER), List.of(request.getTargetUuids()));
 		assertTrue(futures.get(other).isDone(), "future completed without waiting");
-		assertEquals(0, ((AtomicInteger) field(service, "activeResponseSubscriptions")).get(),
-				"no response subscription opened");
+		assertTrue(((Map<?, ?>) field(service, "pending")).isEmpty(), "nothing waits for a reply");
 	}
 
 	@Test
@@ -135,6 +137,91 @@ public class ClusterServiceNotificationTest {
 
 		assertEquals(0, published.size());
 		assertEquals(1, ((AtomicInteger) field(service, "failedNotificationCount")).get(), "still kept");
+	}
+
+	/** Another notification class, for a notification that the codec cannot encode. */
+	private static class OtherRecord extends CacheNewRecordCallable {
+		private static final long serialVersionUID = 1L;
+
+		OtherRecord(String tableName, int recordId) {
+			super(tableName, recordId);
+		}
+	}
+
+	private static AllowlistKryo5Codec allowing(Class<?> type) {
+		return new AllowlistKryo5Codec(ClusterServiceNotificationTest.class.getClassLoader(), Set.of(type.getName()));
+	}
+
+	@Test
+	public void testNotificationThatCannotBeEncodedIsNotQueued() throws Exception {
+		ClusterServiceImpl service = service();
+		set(service, "rpcCodec", allowing(NewRecord.class));
+		IClusterMember other = new ClusterMember(OTHER, null, 0);
+
+		service.execute(new OtherRecord("CacheNotificationTest", 1), List.of(other));
+
+		assertEquals(0, published.size());
+		assertEquals(0, ((AtomicInteger) field(service, "failedNotificationCount")).get(), "not queued");
+		assertTrue(((AtomicBoolean) field(service, "fullResetOwed")).get(), "a cluster-wide reset is owed instead");
+	}
+
+	@Test
+	public void testQueuedNotificationThatCannotBeEncodedDoesNotBlockTheRest() throws Exception {
+		ClusterServiceImpl service = service();
+		IClusterMember other = new ClusterMember(OTHER, null, 0);
+
+		failPublish.set(true);
+		service.execute(new OtherRecord("CacheNotificationTest", 1), List.of(other));
+		service.execute(new NewRecord("CacheNotificationTest", 2), List.of(other));
+		assertEquals(2, ((AtomicInteger) field(service, "failedNotificationCount")).get());
+
+		// The first one can no longer be encoded (for example the allow-list changed).
+		set(service, "rpcCodec", allowing(NewRecord.class));
+		failPublish.set(false);
+		invoke(service, "retryFailedNotifications");
+
+		assertEquals(1, published.size(), "the second notification is sent");
+		assertEquals(0, ((AtomicInteger) field(service, "failedNotificationCount")).get(), "queue drained");
+	}
+
+	@Test
+	public void testOwedLocalResetRunsWhilePublishingStillFails() throws Exception {
+		ClusterServiceImpl service = service();
+		IClusterMember other = new ClusterMember(OTHER, null, 0);
+		failPublish.set(true);
+		service.execute(new NewRecord("CacheNotificationTest", 1), List.of(other));
+		AtomicBoolean localResetOwed = (AtomicBoolean) field(service, "localResetOwed");
+		localResetOwed.set(true);
+
+		invoke(service, "retryFailedNotifications");
+
+		assertFalse(localResetOwed.get(), "the owed local reset ran although the publish failed again");
+		assertEquals(1, ((AtomicInteger) field(service, "failedNotificationCount")).get(), "notification still kept");
+	}
+
+	@Test
+	public void testFailedLocalResetIsRetriedWhilePublishingStillFails() throws Exception {
+		ClusterServiceImpl service = service();
+		IClusterMember other = new ClusterMember(OTHER, null, 0);
+		failPublish.set(true);
+		service.execute(new NewRecord("CacheNotificationTest", 1), List.of(other));
+		AtomicBoolean localResetOwed = (AtomicBoolean) field(service, "localResetOwed");
+		localResetOwed.set(true);
+		AtomicInteger attempts = new AtomicInteger();
+		service.localCacheReset = () -> {
+			if (attempts.incrementAndGet() == 1) {
+				throw new IllegalStateException("reset failed (test)");
+			}
+			return 0;
+		};
+
+		invoke(service, "retryFailedNotifications");
+		assertTrue(localResetOwed.get(), "still owed after the failed attempt");
+
+		invoke(service, "retryFailedNotifications");
+		assertFalse(localResetOwed.get(), "the next run retried it although the publish failed again");
+		assertEquals(2, attempts.get());
+		assertEquals(1, ((AtomicInteger) field(service, "failedNotificationCount")).get(), "notification still kept");
 	}
 
 	private static Object field(Object target, String name) throws Exception {

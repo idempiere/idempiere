@@ -25,14 +25,19 @@ package org.idempiere.redis.service.cluster;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.IOException;
 
 import java.util.Set;
 import java.util.logging.Level;
 
 import org.junit.jupiter.api.Test;
+import org.redisson.codec.Kryo5Codec;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.KryoException;
 
 import io.netty.buffer.ByteBuf;
 
@@ -63,13 +68,98 @@ public class AllowlistKryo5CodecTest {
 	}
 
 	@Test
-	public void testLevelIsRegisteredAfterTheAllowList() {
+	public void testFixedIds() {
 		Kryo kryo = codec.createKryo(AllowlistKryo5CodecTest.class.getClassLoader());
 
-		int levelId = kryo.getRegistration(Level.class).getId();
-		assertTrue(levelId > kryo.getRegistration(java.util.ArrayList.class).getId(),
-				"Level after the allow-list, so the allow-list IDs match nodes without it");
-		assertTrue(levelId > kryo.getRegistration(RpcResponse.class).getId());
+		assertEquals(AllowlistKryo5Codec.LEVEL_ID, kryo.getRegistration(Level.class).getId());
+		assertEquals(AllowlistKryo5Codec.VALUE_TYPES_FIRST_ID + 2, kryo.getRegistration(java.util.ArrayList.class).getId(),
+				"an allow-list entry that is already a value type keeps the value-type ID");
+	}
+
+	/** Hides one class, the way a node without a plugin cannot load it. */
+	private static ClassLoader hiding(String hidden) {
+		return new ClassLoader(AllowlistKryo5CodecTest.class.getClassLoader()) {
+			@Override
+			protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+				if (name.equals(hidden)) {
+					throw new ClassNotFoundException(name);
+				}
+				return super.loadClass(name, resolve);
+			}
+		};
+	}
+
+	@Test
+	public void testMissingClassOnOneNodeDoesNotShiftTheOthers() throws Exception {
+		// Same allow-list on both nodes; NotListed sorts before WithLevel and is missing on node B.
+		Set<String> list = Set.of(NotListed.class.getName(), WithLevel.class.getName());
+		AllowlistKryo5Codec nodeA = new AllowlistKryo5Codec(AllowlistKryo5CodecTest.class.getClassLoader(), list);
+		AllowlistKryo5Codec nodeB = new AllowlistKryo5Codec(hiding(NotListed.class.getName()), list);
+		assertEquals(AllowlistKryo5Codec.ALLOWLIST_FIRST_ID + 1,
+				nodeB.createKryo(hiding(NotListed.class.getName())).getRegistration(WithLevel.class).getId(),
+				"a gap, not a shifted ID");
+
+		WithLevel value = new WithLevel();
+		value.level = Level.FINE;
+		value.name = "from-a";
+		ByteBuf buf = nodeA.getValueEncoder().encode(value);
+		try {
+			WithLevel copy = (WithLevel) nodeB.getValueDecoder().decode(buf, null);
+			assertEquals("from-a", copy.name);
+			assertSame(Level.FINE, copy.level);
+		} finally {
+			buf.release();
+		}
+	}
+
+	/** An allow-listed class that carries an exception. */
+	public static class WithError {
+		Throwable error;
+	}
+
+	@Test
+	public void testExceptionsAreNotEncoded() {
+		AllowlistKryo5Codec open = new AllowlistKryo5Codec(null, Set.of());
+		assertThrows(Exception.class, () -> open.getValueEncoder().encode(new IllegalStateException("x")));
+		assertThrows(Exception.class, () -> codec.getValueEncoder().encode(new IOException("x")));
+	}
+
+	@Test
+	public void testExceptionsAreNotDecodedEvenWithoutAllowList() throws Exception {
+		// Redisson's Kryo5Codec writes any Throwable with Java serialization; reading such bytes would
+		// run ObjectInputStream. Both codecs here must refuse them.
+		ByteBuf buf = new Kryo5Codec().getValueEncoder().encode(new IOException("from a plain codec"));
+		byte[] bytes = io.netty.buffer.ByteBufUtil.getBytes(buf);
+		buf.release();
+
+		for (AllowlistKryo5Codec c : new AllowlistKryo5Codec[] { new AllowlistKryo5Codec(null, Set.of()), codec }) {
+			ByteBuf in = io.netty.buffer.Unpooled.wrappedBuffer(bytes);
+			try {
+				assertThrows(Exception.class, () -> c.getValueDecoder().decode(in, null));
+			} finally {
+				in.release();
+			}
+		}
+	}
+
+	@Test
+	public void testExceptionFieldInsideAllowListedClassIsRefused() {
+		AllowlistKryo5Codec listed = new AllowlistKryo5Codec(AllowlistKryo5CodecTest.class.getClassLoader(),
+				Set.of(WithError.class.getName(), IOException.class.getName()));
+		Kryo kryo = listed.createKryo(AllowlistKryo5CodecTest.class.getClassLoader());
+		WithError value = new WithError();
+		value.error = new IOException("x");
+
+		com.esotericsoftware.kryo.io.Output out = new com.esotericsoftware.kryo.io.Output(256, -1);
+		assertThrows(KryoException.class, () -> kryo.writeClassAndObject(out, value),
+				"even an allow-listed exception class is not serialized");
+	}
+
+	@Test
+	public void testClassOutsideTheAllowListIsRefused() {
+		Kryo kryo = codec.createKryo(AllowlistKryo5CodecTest.class.getClassLoader());
+		com.esotericsoftware.kryo.io.Output out = new com.esotericsoftware.kryo.io.Output(256, -1);
+		assertThrows(IllegalArgumentException.class, () -> kryo.writeClassAndObject(out, new NotListed()));
 	}
 
 	/** An allow-listed class with a Level field, the way SystemInfo carries logLevel. */
