@@ -1071,6 +1071,15 @@ public class SummaryTaxTest extends AbstractTestCase
 			assertTrue(invoice.processIt(DocAction.ACTION_Prepare), "AP Invoice prepare should succeed: " + invoice.getProcessMsg());
 			invoice.saveEx();
 
+			// Exactly three tax rows (GST, PST, manual standard) and no summary-tax row
+			assertEquals(3, new Query(Env.getCtx(), MInvoiceTax.Table_Name, "C_Invoice_ID=?", trxName)
+					.setParameters(invoice.getC_Invoice_ID()).count(), "AP invoice should have three tax rows");
+			assertNull(MInvoiceTax.get(invoice.getC_Invoice_ID(), summaryTax.getC_Tax_ID(), trxName),
+					"Summary tax should not have an invoice tax row");
+			invoice.load(trxName);
+			assertEquals(0, new BigDecimal("220.00").compareTo(invoice.getGrandTotal()),
+					"Initial AP grand total should be 220.00");
+
 			// Verify child taxes for summary line: GST 5.00, PST 7.00
 			MInvoiceTax gstLine = MInvoiceTax.get(invoice.getC_Invoice_ID(), gstTax.getC_Tax_ID(), trxName);
 			MInvoiceTax pstLine = MInvoiceTax.get(invoice.getC_Invoice_ID(), pstTax.getC_Tax_ID(), trxName);
@@ -1104,6 +1113,15 @@ public class SummaryTaxTest extends AbstractTestCase
 			stdTaxLine = MInvoiceTax.get(invoice.getC_Invoice_ID(), standardTax.getC_Tax_ID(), trxName);
 			assertEquals(0, new BigDecimal("8.00").compareTo(stdTaxLine.getTaxAmt()),
 					"Manually entered tax amount should remain preserved after re-prepare");
+
+			// Same row set and a recalculated grand total after re-prepare
+			assertEquals(3, new Query(Env.getCtx(), MInvoiceTax.Table_Name, "C_Invoice_ID=?", trxName)
+					.setParameters(invoice.getC_Invoice_ID()).count(), "AP invoice should still have three tax rows");
+			assertNull(MInvoiceTax.get(invoice.getC_Invoice_ID(), summaryTax.getC_Tax_ID(), trxName),
+					"Summary tax should still have no invoice tax row");
+			invoice.load(trxName);
+			assertEquals(0, new BigDecimal("332.00").compareTo(invoice.getGrandTotal()),
+					"Updated AP grand total should be 332.00");
 		}
 		finally
 		{
