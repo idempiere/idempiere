@@ -853,25 +853,6 @@ public class DocLine
 	}   //  getProductCosts
 
 	/**
-	 * Get Total Product Costs including manual (non-material, charge-mapped) costs
-	 * @param as accounting schema
-	 * @param AD_Org_ID trx org
-	 * @param zeroCostsOK zero/no costs are OK
-	 * @return total costs
-	 */
-	public BigDecimal getTotalProductCosts (MAcctSchema as, int AD_Org_ID, boolean zeroCostsOK)
-	{
-		BigDecimal costs = getProductCosts(as, AD_Org_ID, zeroCostsOK);
-		ManualCost[] manualCosts = getManualCosts(as, AD_Org_ID, costs);
-		for (ManualCost manualCost : manualCosts)
-		{
-			if (manualCost.getAmount() != null)
-				costs = costs.add(manualCost.getAmount());
-		}
-		return costs;
-	}   //  getTotalProductCosts
-
-	/**
 	 * Get manual (non-material, charge-mapped) costs for this line
 	 * @param as accounting schema
 	 * @param AD_Org_ID trx org

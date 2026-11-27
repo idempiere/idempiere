@@ -121,44 +121,6 @@ public class MManualCostDetail extends X_M_ManualCostDetail
 	}
 
 	/**
-	 * Create and save a {@link MManualCostDetail} record.
-	 *
-	 * @param ctx context
-	 * @param AD_Org_ID organization ID
-	 * @param C_AcctSchema_ID accounting schema ID
-	 * @param AD_Table_ID source document table ID
-	 * @param Record_ID source document record ID
-	 * @param Line_ID source document line ID (0 if none)
-	 * @param M_CostElement_ID manual cost element ID
-	 * @param C_Charge_ID charge ID mapped on the cost element
-	 * @param M_Product_ID product ID (0 if none)
-	 * @param M_AttributeSetInstance_ID attribute set instance ID (0 if none)
-	 * @param C_ValidCombination_ID charge account valid combination ID
-	 * @param DateAcct accounting date
-	 * @param Amt signed amount (Charge CR minus Charge DR)
-	 * @param Qty document line quantity (optional)
-	 * @param Description optional description
-	 * @param trxName transaction name
-	 * @return saved {@link MManualCostDetail} record
-	 */
-	public static MManualCostDetail create(Properties ctx, int AD_Org_ID, int C_AcctSchema_ID,
-			int AD_Table_ID, int Record_ID, int Line_ID,
-			int M_CostElement_ID, int C_Charge_ID,
-			int M_Product_ID, int M_AttributeSetInstance_ID,
-			int C_ValidCombination_ID, Timestamp DateAcct,
-			BigDecimal Amt, BigDecimal Qty, String Description, String trxName)
-	{
-		MManualCostDetail detail = build(ctx, AD_Org_ID, C_AcctSchema_ID,
-				AD_Table_ID, Record_ID, Line_ID,
-				M_CostElement_ID, C_Charge_ID,
-				M_Product_ID, M_AttributeSetInstance_ID,
-				C_ValidCombination_ID, DateAcct,
-				Amt, Qty, Description, trxName);
-		detail.saveEx(trxName);
-		return detail;
-	}
-
-	/**
 	 * Retrieve all {@link MManualCostDetail} records for a document and accounting schema.
 	 *
 	 * @param ctx context
@@ -192,19 +154,16 @@ public class MManualCostDetail extends X_M_ManualCostDetail
 	public static List<MManualCostDetail> getByLine(Properties ctx, int C_AcctSchema_ID,
 			int AD_Table_ID, int Record_ID, int Line_ID, String trxName)
 	{
+		String where = Line_ID > 0
+				? "C_AcctSchema_ID=? AND AD_Table_ID=? AND Record_ID=? AND Line_ID=?"
+				: "C_AcctSchema_ID=? AND AD_Table_ID=? AND Record_ID=? AND Line_ID IS NULL";
+		Query query = new Query(ctx, Table_Name, where, trxName)
+				.setOrderBy(COLUMNNAME_M_ManualCostDetail_ID);
 		if (Line_ID > 0)
-		{
-			return new Query(ctx, Table_Name,
-					"C_AcctSchema_ID=? AND AD_Table_ID=? AND Record_ID=? AND Line_ID=?", trxName)
-					.setParameters(C_AcctSchema_ID, AD_Table_ID, Record_ID, Line_ID)
-					.setOrderBy(COLUMNNAME_M_ManualCostDetail_ID)
-					.list();
-		}
-		return new Query(ctx, Table_Name,
-				"C_AcctSchema_ID=? AND AD_Table_ID=? AND Record_ID=? AND Line_ID IS NULL", trxName)
-				.setParameters(C_AcctSchema_ID, AD_Table_ID, Record_ID)
-				.setOrderBy(COLUMNNAME_M_ManualCostDetail_ID)
-				.list();
+			query.setParameters(C_AcctSchema_ID, AD_Table_ID, Record_ID, Line_ID);
+		else
+			query.setParameters(C_AcctSchema_ID, AD_Table_ID, Record_ID);
+		return query.list();
 	}
 
 	/**

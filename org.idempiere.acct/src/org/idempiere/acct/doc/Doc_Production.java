@@ -25,20 +25,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
-import org.compiere.model.MCharge;
 import org.compiere.model.MCost;
 import org.compiere.model.MCost.ManualCost;
 import org.compiere.model.MCostDetail;
-import org.compiere.model.MCostElement;
 import org.compiere.model.MManualCostDetail;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProduction;
@@ -128,7 +124,22 @@ public class Doc_Production extends Doc
 	{
 		ArrayList<DocLine> list = new ArrayList<DocLine>();
 		mQtyProduced = new HashMap<>(); 
-		String sqlPL = getProductionLinesSQL(prod.isUseProductionPlan());
+		String sqlPL;
+		if (prod.isUseProductionPlan()){
+			//	Production Plan
+			//	-- ProductionLine	- the real level
+			sqlPL = "SELECT pro_line.* FROM "
+					+ " M_ProductionLine pro_line INNER JOIN M_ProductionPlan plan ON pro_line.M_ProductionPlan_id = plan.M_ProductionPlan_id "
+					+ " INNER JOIN M_Production pro ON pro.M_Production_id = plan.M_Production_id "
+					+ " WHERE pro.M_Production_ID=? "
+					+ " ORDER BY plan.M_ProductionPlan_id, pro_line.Line, pro_line.M_ProductionLine_ID";
+		}else{
+			//	Production
+			//	-- ProductionLine	- the real level
+			sqlPL = "SELECT * FROM M_ProductionLine pl "
+					+ "WHERE pl.M_Production_ID=? "
+					+ "ORDER BY pl.Line, pl.M_ProductionLine_ID";
+		}
 		
 		PreparedStatement pstmtPL = null;
 		ResultSet rsPL = null;
@@ -180,21 +191,6 @@ public class Doc_Production extends Doc
 		return dl;
 	}	//	loadLines
 
-	private String getProductionLinesSQL(boolean isUseProductionPlan)
-	{
-		if (isUseProductionPlan)
-		{
-			return "SELECT pro_line.* FROM "
-					+ " M_ProductionLine pro_line INNER JOIN M_ProductionPlan plan ON pro_line.M_ProductionPlan_id = plan.M_ProductionPlan_id "
-					+ " INNER JOIN M_Production pro ON pro.M_Production_id = plan.M_Production_id "
-					+ " WHERE pro.M_Production_ID=? "
-					+ " ORDER BY plan.M_ProductionPlan_id, pro_line.Line, pro_line.M_ProductionLine_ID";
-		}
-		return "SELECT * FROM M_ProductionLine pl "
-				+ "WHERE pl.M_Production_ID=? "
-				+ "ORDER BY pl.Line, pl.M_ProductionLine_ID";
-	}
-
 	/**
 	 *  Get Balance
 	 *  @return Zero (always balanced)
@@ -229,7 +225,7 @@ public class Doc_Production extends Doc
 		HashMap<String, BigDecimal> costMap =  new HashMap<String, BigDecimal>();
 		Map<Integer, List<ManualCost>> manualCostMap = new HashMap<>();
 		boolean isReversal = prod.getReversal_ID() > 0 && prod.getM_Production_ID() > prod.getReversal_ID();
-		if (isReversal && hasEligibleComponentManualCosts(as))
+		if (isReversal && MCost.hasChargeManualCostElements(getAD_Client_ID(), getTrxName()))
 		{
 			MProduction origProd = new MProduction(getCtx(), prod.getReversal_ID(), getTrxName());
 			if (!origProd.isPosted())
@@ -277,70 +273,44 @@ public class Doc_Production extends Doc
 			String CostingLevel = product.getCostingLevel(as);
 			String costingMethod = product.getCostingMethod(as);
 
-			if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel) ) 
+			if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel)
+					&& line.getM_AttributeSetInstance_ID() == 0 && mas != null && mas.length > 0)
 			{
-				if (line.getM_AttributeSetInstance_ID() == 0 && (mas!=null && mas.length> 0 )) 
+				Map<Integer, ManualCost> maManualCostMap = !isReversal && !line.isProductionBOM() && !manualCostMap.containsKey(line.get_ID())
+						? new LinkedHashMap<>() : null;
+				for (Map.Entry<Integer, BigDecimal> maEntry : aggregateProductionLineMAs(mas).entrySet())
 				{
-					Map<Integer, ManualCost> maManualCostMap = !isReversal && !line.isProductionBOM() && !manualCostMap.containsKey(line.get_ID())
-							? new LinkedHashMap<>() : null;
-					for (Map.Entry<Integer, BigDecimal> maEntry : aggregateProductionLineMAs(mas).entrySet())
+					int maAsiId = maEntry.getKey();
+					BigDecimal maQty = maEntry.getValue();
+					BigDecimal maCost = useManualReversal
+							? getOriginalProductionMaCost(as, line, maAsiId) : null;
+					if (maCost == null)
 					{
-						int maAsiId = maEntry.getKey();
-						BigDecimal maQty = maEntry.getValue();
-						BigDecimal maCost = useManualReversal
-								? getOriginalProductionMaCost(as, line, maAsiId) : null;
-						if (maCost == null)
-						{
-							MCostDetail cd = MCostDetail.getProduction(as, line.getM_Product_ID(), maAsiId,
-									line.get_ID(), getTrxName());
-							if (cd != null)
-								maCost = cd.getAmt();
-							else
-							{
-								ProductCost pc = line.getProductCost();
-								pc.setQty(maQty);
-								pc.setM_M_AttributeSetInstance_ID(maAsiId);
-								maCost = line.getProductCosts(as, line.getAD_Org_ID(), false);
-							}
-						}
-						if (maManualCostMap != null)
-						{
-							accumulateManualCosts(maManualCostMap, MCost.getManualCosts(product, maAsiId,
-									as, line.getAD_Org_ID(), maCost, maQty, getTrxName()));
-						}
-						maCost = maCost.setScale(stdPrecision, RoundingMode.HALF_UP);
-						costs = costs.add(maCost);
-						costMap.put(line.get_ID()+ "_"+ maAsiId, maCost);
-					}
-					if (maManualCostMap != null)
-						manualCostMap.put(line.get_ID(), roundManualCosts(maManualCostMap.values(), stdPrecision));
-				} 
-				else
-				{
-					costs = useManualReversal
-							? getOriginalProductionLineCost(as, line, line.getM_AttributeSetInstance_ID()) : null;
-					if (costs == null)
-					{
-						MCostDetail cd = MCostDetail.getProduction(as, line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
+						MCostDetail cd = MCostDetail.getProduction(as, line.getM_Product_ID(), maAsiId,
 								line.get_ID(), getTrxName());
 						if (cd != null)
-							costs = cd.getAmt();
+							maCost = cd.getAmt();
 						else
-							costs = line.getProductCosts(as, line.getAD_Org_ID(), false);
+						{
+							ProductCost pc = line.getProductCost();
+							pc.setQty(maQty);
+							pc.setM_M_AttributeSetInstance_ID(maAsiId);
+							maCost = line.getProductCosts(as, line.getAD_Org_ID(), false);
+						}
 					}
-					if (!isReversal && !line.isProductionBOM() && !manualCostMap.containsKey(line.get_ID()))
+					if (maManualCostMap != null)
 					{
-						manualCostMap.put(line.get_ID(), roundManualCosts(
-								MCost.getManualCosts(product, line.getM_AttributeSetInstance_ID(),
-										as, line.getAD_Org_ID(), costs, line.getQty(), getTrxName()),
-								stdPrecision));
+						accumulateManualCosts(maManualCostMap, MCost.getManualCosts(product, maAsiId,
+								as, line.getAD_Org_ID(), maCost, maQty, getTrxName()));
 					}
-					costs = costs.setScale(stdPrecision, RoundingMode.HALF_UP);
-					costMap.put(line.get_ID()+ "_"+ line.getM_AttributeSetInstance_ID(), costs);
+					maCost = maCost.setScale(stdPrecision, RoundingMode.HALF_UP);
+					costs = costs.add(maCost);
+					costMap.put(line.get_ID()+ "_"+ maAsiId, maCost);
 				}
-			
-			} 
-			else 
+				if (maManualCostMap != null)
+					manualCostMap.put(line.get_ID(), roundManualCosts(maManualCostMap.values(), stdPrecision));
+			}
+			else
 			{
 				costs = useManualReversal
 						? getOriginalProductionLineCost(as, line, line.getM_AttributeSetInstance_ID()) : null;
@@ -485,29 +455,9 @@ public class Doc_Production extends Doc
 				{
 					for (MManualCostDetail origDetail : getOriginalLineManualDetails(as, prod.getReversal_ID(), line, origManualDetailMap))
 					{
-						int C_Charge_ID = origDetail.getC_Charge_ID();
-						BigDecimal chargeFactAmt = origDetail.getAmt();
-						String msgKey = chargeFactAmt.signum() < 0 ? "FactLine CR not created" : "FactLine DR not created";
-						MAccount chargeAcct = getManualCostChargeAccount(as, origDetail);
-						if (chargeAcct == null)
-						{
-							p_Error = formatMissingChargeAccountError(as, C_Charge_ID, line, msgKey);
-							log.log(Level.WARNING, p_Error);
+						if (!postProductionChargeLine(fact, as, line, origDetail.getM_CostElement_ID(),
+								origDetail.getC_Charge_ID(), getManualCostChargeAccount(as, origDetail), origDetail.getAmt()))
 							return null;
-						}
-						fl = fact.createLine(line, chargeAcct,
-								as.getC_Currency_ID(), chargeFactAmt);
-						if (fl == null)
-						{
-							p_Error = Msg.getMsg(getCtx(), msgKey) + ": " + line;
-							log.log(Level.WARNING, p_Error);
-							return null;
-						}
-						fl.setC_Charge_ID(C_Charge_ID);
-						fl.setM_Locator_ID(line.getM_Locator_ID());
-						fl.setQty(line.getQty());
-						saveManualCostDetail(as, line, origDetail.getM_CostElement_ID(), C_Charge_ID,
-								chargeAcct, chargeFactAmt.negate());
 					}
 				}
 				else if (!isReversal)
@@ -517,28 +467,9 @@ public class Doc_Production extends Doc
 					{
 						for (ManualCost manualCost : lineManualCosts)
 						{
-							int C_Charge_ID = manualCost.getCostElement().getC_Charge_ID();
-							String msgKey = manualCost.getAmount().signum() < 0 ? "FactLine CR not created" : "FactLine DR not created";
-							MAccount chargeAcct = MCharge.getAccount(C_Charge_ID, as, getTrxName());
-							if (chargeAcct == null)
-							{
-								p_Error = formatMissingChargeAccountError(as, C_Charge_ID, line, msgKey);
-								log.log(Level.WARNING, p_Error);
+							if (!postProductionChargeLine(fact, as, line, manualCost.getCostElement().getM_CostElement_ID(),
+									manualCost.getCostElement().getC_Charge_ID(), null, manualCost.getAmount()))
 								return null;
-							}
-							fl = fact.createLine(line, chargeAcct,
-									as.getC_Currency_ID(), manualCost.getAmount());
-							if (fl == null)
-							{
-								p_Error = Msg.getMsg(getCtx(), msgKey) + ": " + line;
-								log.log(Level.WARNING, p_Error);
-								return null;
-							}
-							fl.setC_Charge_ID(C_Charge_ID);
-							fl.setM_Locator_ID(line.getM_Locator_ID());
-							fl.setQty(line.getQty());
-							saveManualCostDetail(as, line, manualCost.getCostElement().getM_CostElement_ID(), C_Charge_ID,
-									chargeAcct, manualCost.getAmount().negate());
 						}
 					}
 				}
@@ -551,104 +482,46 @@ public class Doc_Production extends Doc
 			if (line.isProductionBOM())
 				description += "(*)";
 			int origLineId = line.getReversalLine_ID();
-			if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel)) 
+			if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel) && !line.isProductionBOM()
+					&& line.getM_AttributeSetInstance_ID() == 0 && mas != null && mas.length > 0)
 			{
-				if (line.isProductionBOM())
+				for (Map.Entry<Integer, BigDecimal> maEntry : aggregateProductionLineMAs(mas).entrySet())
 				{
-					int Ref_CostDetail_ID = getRefCostDetailId(as, line, line.getM_AttributeSetInstance_ID(), origLineId);
-					if (!MCostDetail.createProduction(as, line.getAD_Org_ID(),
-							line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
-							line.get_ID(), 0,
-							bomCost.negate(), line.getQty(),
-							description, line.getDateAcct(), Ref_CostDetail_ID, getTrxName()))
-					{
-						p_Error = "Failed to create cost detail record";
+					int maAsiId = maEntry.getKey();
+					BigDecimal maCost = costMap.get(line.get_ID() + "_" + maAsiId);
+					if (!createProductionCostDetail(as, line, maAsiId, maCost, maEntry.getValue(),
+							description, getRefCostDetailId(as, line, maAsiId, origLineId)))
 						return null;
+				}
+			}
+			else if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel) && !line.isProductionBOM()
+					&& useManualReversal && origLineId > 0)
+			{
+				List<MCostDetail> origLotCds = getOriginalProductionCostDetails(as, line.getM_Product_ID(), origLineId);
+				if (origLotCds.size() > 1
+						|| (origLotCds.size() == 1 && origLotCds.get(0).getM_AttributeSetInstance_ID() != line.getM_AttributeSetInstance_ID()))
+				{
+					for (MCostDetail origCd : origLotCds)
+					{
+						int refId = line.get_ID() > origLineId ? origCd.getM_CostDetail_ID() : 0;
+						if (!createProductionCostDetail(as, line, origCd.getM_AttributeSetInstance_ID(),
+								origCd.getAmt().negate(), origCd.getQty().negate(), description, refId))
+							return null;
 					}
 				}
-				else if (line.getM_AttributeSetInstance_ID() == 0 && (mas!=null && mas.length> 0 ))
-				{
-					for (Map.Entry<Integer, BigDecimal> maEntry : aggregateProductionLineMAs(mas).entrySet())
-					{
-						int maAsiId = maEntry.getKey();
-						BigDecimal maQty = maEntry.getValue();
-						BigDecimal maCost = costMap.get(line.get_ID()+ "_"+ maAsiId);
-						int Ref_CostDetail_ID = getRefCostDetailId(as, line, maAsiId, origLineId);
-						if (!MCostDetail.createProduction(as, line.getAD_Org_ID(),
-								line.getM_Product_ID(), maAsiId,
-								line.get_ID(), 0,
-								maCost, maQty,
-								description, line.getDateAcct(), Ref_CostDetail_ID, getTrxName()))
-						{
-							p_Error = "Failed to create cost detail record";
-							return null;
-						}
-					}
-				} 
-				else
-				{
-					List<MCostDetail> origLotCds = useManualReversal && origLineId > 0
-							? getOriginalProductionCostDetails(as, line.getM_Product_ID(), origLineId)
-							: Collections.emptyList();
-					if (origLotCds.size() > 1
-							|| (origLotCds.size() == 1 && origLotCds.get(0).getM_AttributeSetInstance_ID() != line.getM_AttributeSetInstance_ID()))
-					{
-						for (MCostDetail origCd : origLotCds)
-						{
-							int refId = line.get_ID() > origLineId ? origCd.getM_CostDetail_ID() : 0;
-							if (!MCostDetail.createProduction(as, line.getAD_Org_ID(),
-									line.getM_Product_ID(), origCd.getM_AttributeSetInstance_ID(),
-									line.get_ID(), 0,
-									origCd.getAmt().negate(), origCd.getQty().negate(),
-									description, line.getDateAcct(), refId, getTrxName()))
-							{
-								p_Error = "Failed to create cost detail record";
-								return null;
-							}
-						}
-					}
-					else
-					{
-						int Ref_CostDetail_ID = getRefCostDetailId(as, line, line.getM_AttributeSetInstance_ID(), origLineId);
-						if (!MCostDetail.createProduction(as, line.getAD_Org_ID(),
-								line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
-								line.get_ID(), 0,
-								costs, line.getQty(),
-								description, line.getDateAcct(), Ref_CostDetail_ID, getTrxName()))
-						{
-							p_Error = "Failed to create cost detail record";
-							return null;
-						}
-					}
-				}
-			} 
+				else if (!createProductionCostDetail(as, line, line.getM_AttributeSetInstance_ID(),
+						costs, line.getQty(), description, getRefCostDetailId(as, line, line.getM_AttributeSetInstance_ID(), origLineId)))
+					return null;
+			}
 			else
-			{		
-				int Ref_CostDetail_ID = getRefCostDetailId(as, line, line.getM_AttributeSetInstance_ID(), origLineId);
-				if (line.isProductionBOM() && !(MAcctSchema.COSTINGMETHOD_StandardCosting.equals(costingMethod)))
-				{
-					if (!MCostDetail.createProduction(as, line.getAD_Org_ID(),
-							line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
-							line.get_ID(), 0,
-							bomCost.negate(), line.getQty(),
-							description, line.getDateAcct(), Ref_CostDetail_ID, getTrxName()))
-					{
-						p_Error = "Failed to create cost detail record";
-						return null;
-					}
-				}
-				else
-				{
-					if (!MCostDetail.createProduction(as, line.getAD_Org_ID(),
-							line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
-							line.get_ID(), 0,
-							costs, line.getQty(),
-							description, line.getDateAcct(), Ref_CostDetail_ID, getTrxName()))
-					{
-						p_Error = "Failed to create cost detail record";
-						return null;
-					}
-				}
+			{
+				BigDecimal cdAmt = line.isProductionBOM()
+						&& (MAcctSchema.COSTINGLEVEL_BatchLot.equals(CostingLevel) || !MAcctSchema.COSTINGMETHOD_StandardCosting.equals(costingMethod))
+						? bomCost.negate() : costs;
+				int refId = getRefCostDetailId(as, line, line.getM_AttributeSetInstance_ID(), origLineId);
+				if (!createProductionCostDetail(as, line, line.getM_AttributeSetInstance_ID(),
+						cdAmt, line.getQty(), description, refId))
+					return null;
 			}
 		}
 		//
@@ -656,6 +529,35 @@ public class Doc_Production extends Doc
 		facts.add(fact);
 		return facts;
 	}   //  createFact
+
+	private boolean postProductionChargeLine(Fact fact, MAcctSchema as, DocLine line,
+			int M_CostElement_ID, int C_Charge_ID, MAccount chargeAcct, BigDecimal signedAmt)
+	{
+		BigDecimal drAmt = signedAmt.signum() < 0 ? null : signedAmt;
+		BigDecimal crAmt = signedAmt.signum() < 0 ? signedAmt.abs() : null;
+		FactLine fl = createManualCostChargeLine(fact, as, line, M_CostElement_ID, C_Charge_ID, chargeAcct,
+				drAmt, crAmt, signedAmt.negate());
+		if (fl == null)
+			return false;
+		fl.setM_Locator_ID(line.getM_Locator_ID());
+		fl.setQty(line.getQty());
+		return true;
+	}
+
+	private boolean createProductionCostDetail(MAcctSchema as, DocLine line, int asiId,
+			BigDecimal amt, BigDecimal qty, String description, int refCostDetailId)
+	{
+		if (!MCostDetail.createProduction(as, line.getAD_Org_ID(),
+				line.getM_Product_ID(), asiId,
+				line.get_ID(), 0,
+				amt, qty,
+				description, line.getDateAcct(), refCostDetailId, getTrxName()))
+		{
+			p_Error = "Failed to create cost detail record";
+			return false;
+		}
+		return true;
+	}
 
 	private List<MManualCostDetail> getOriginalLineManualDetails(MAcctSchema as, int origProductionId,
 			DocLine line, Map<Integer, List<MManualCostDetail>> cache)
@@ -676,16 +578,17 @@ public class Doc_Production extends Doc
 		int origLineId = line.getReversalLine_ID();
 		if (origLineId <= 0)
 			return null;
-		MCostDetail origCd = MCostDetail.getProduction(as, line.getM_Product_ID(), asiId, origLineId, 0, getTrxName());
-		if (origCd != null && origCd.getQty().negate().compareTo(line.getQty()) == 0)
-			return origCd.getAmt().negate();
-		BigDecimal sumAmt = DB.getSQLValueBDEx(getTrxName(),
-				"SELECT SUM(Amt) FROM M_CostDetail "
-				+ "WHERE C_AcctSchema_ID=? AND M_Product_ID=? AND M_ProductionLine_ID=? AND COALESCE(M_CostElement_ID,0)=0",
-				as.getC_AcctSchema_ID(), line.getM_Product_ID(), origLineId);
-		if (sumAmt != null)
-			return sumAmt.negate();
-		return origCd != null ? origCd.getAmt().negate() : null;
+		List<MCostDetail> origCds = getOriginalProductionCostDetails(as, line.getM_Product_ID(), origLineId);
+		if (origCds.isEmpty())
+			return null;
+		BigDecimal sumAmt = BigDecimal.ZERO;
+		for (MCostDetail cd : origCds)
+		{
+			if (cd.getM_AttributeSetInstance_ID() == asiId && cd.getQty().negate().compareTo(line.getQty()) == 0)
+				return cd.getAmt().negate();
+			sumAmt = sumAmt.add(cd.getAmt());
+		}
+		return sumAmt.negate();
 	}
 
 	private BigDecimal getOriginalProductionMaCost(MAcctSchema as, DocLine line, int maAsiId)
@@ -706,57 +609,6 @@ public class Doc_Production extends Doc
 				return cd.getM_CostDetail_ID();
 		}
 		return 0;
-	}
-
-	private boolean hasEligibleComponentManualCosts(MAcctSchema as)
-	{
-		if (!MCost.hasChargeManualCostElements(getAD_Client_ID(), getTrxName()))
-			return false;
-		final String sql = "SELECT 1 FROM M_Cost c "
-				+ "JOIN M_CostElement ce ON (c.M_CostElement_ID=ce.M_CostElement_ID) "
-				+ "WHERE c.AD_Client_ID=? AND c.AD_Org_ID=? AND c.M_Product_ID=? "
-				+ "AND (c.M_AttributeSetInstance_ID=? OR c.M_AttributeSetInstance_ID=0) "
-				+ "AND c.M_CostType_ID=? AND c.C_AcctSchema_ID=? "
-				+ "AND c.IsActive='Y' AND ce.IsActive='Y' "
-				+ "AND ce.CostingMethod IS NULL AND ce.CostElementType <> 'M' AND ce.C_Charge_ID > 0 "
-				+ "AND (COALESCE(c.CurrentCostPrice,0) <> 0 OR COALESCE(c.Percent,0) <> 0)";
-		for (DocLine line : p_lines)
-		{
-			if (line.isProductionBOM())
-				continue;
-			MProduct product = MProduct.get(getCtx(), line.getM_Product_ID());
-			if (product == null || product.get_ID() <= 0)
-				continue;
-			if (MCostElement.COSTINGMETHOD_StandardCosting.equals(product.getCostingMethod(as)))
-				continue;
-			String costingLevel = product.getCostingLevel(as);
-			Set<Integer> asiIds = new LinkedHashSet<>();
-			if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel) && line.getM_AttributeSetInstance_ID() == 0)
-			{
-				for (MProductionLineMA ma : MProductionLineMA.get(getCtx(), line.get_ID(), getTrxName()))
-					asiIds.add(ma.getM_AttributeSetInstance_ID());
-				if (line.getReversalLine_ID() > 0)
-				{
-					for (MProductionLineMA ma : MProductionLineMA.get(getCtx(), line.getReversalLine_ID(), getTrxName()))
-						asiIds.add(ma.getM_AttributeSetInstance_ID());
-				}
-				if (asiIds.isEmpty())
-					asiIds.add(0);
-			}
-			else
-			{
-				asiIds.add(line.getM_AttributeSetInstance_ID());
-			}
-			for (int asiId : asiIds)
-			{
-				MCost.CostingKey costKey = MCost.CostingKey.resolve(line.getAD_Org_ID(), asiId, costingLevel);
-				if (DB.getSQLValueEx(getTrxName(), sql, getAD_Client_ID(), costKey.AD_Org_ID(),
-						product.getM_Product_ID(), costKey.M_AttributeSetInstance_ID(),
-						as.getM_CostType_ID(), as.getC_AcctSchema_ID()) > 0)
-					return true;
-			}
-		}
-		return false;
 	}
 
 	private Map<Integer, BigDecimal> aggregateProductionLineMAs(MProductionLineMA[] mas)

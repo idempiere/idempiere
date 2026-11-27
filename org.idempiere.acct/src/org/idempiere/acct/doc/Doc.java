@@ -2668,6 +2668,48 @@ public abstract class Doc implements IDoc
 	}
 
 	/**
+	 * Create a manual-cost charge {@link FactLine} and stage its {@link MManualCostDetail}.
+	 * Resolves the charge account via {@link MCharge#getAccount} when {@code chargeAcct} is null,
+	 * validates creation, sets {@code C_Charge_ID}, and stages the detail record.
+	 * On failure sets {@code p_Error} and logs a warning.
+	 * @param fact target fact
+	 * @param as accounting schema
+	 * @param line document line
+	 * @param M_CostElement_ID manual cost element ID
+	 * @param C_Charge_ID charge ID
+	 * @param chargeAcct charge account (or null to resolve via {@link MCharge#getAccount})
+	 * @param drAmt debit amount (mutually exclusive with crAmt)
+	 * @param crAmt credit amount (mutually exclusive with drAmt)
+	 * @param detailAmt signed amount for {@link MManualCostDetail} (Charge CR minus Charge DR)
+	 * @return created {@link FactLine}, or null on error (with {@code p_Error} populated)
+	 */
+	protected FactLine createManualCostChargeLine(Fact fact, MAcctSchema as, DocLine line,
+			int M_CostElement_ID, int C_Charge_ID, MAccount chargeAcct,
+			BigDecimal drAmt, BigDecimal crAmt, BigDecimal detailAmt)
+	{
+		boolean isCredit = (crAmt != null && crAmt.signum() > 0) || (drAmt != null && drAmt.signum() < 0);
+		String msgKey = isCredit ? "FactLine CR not created" : "FactLine DR not created";
+		if (chargeAcct == null)
+			chargeAcct = MCharge.getAccount(C_Charge_ID, as, getTrxName());
+		if (chargeAcct == null)
+		{
+			p_Error = formatMissingChargeAccountError(as, C_Charge_ID, line, msgKey);
+			log.log(Level.WARNING, p_Error);
+			return null;
+		}
+		FactLine fl = fact.createLine(line, chargeAcct, as.getC_Currency_ID(), drAmt, crAmt);
+		if (fl == null)
+		{
+			p_Error = Msg.getMsg(getCtx(), msgKey) + ": " + line;
+			log.log(Level.WARNING, p_Error);
+			return null;
+		}
+		fl.setC_Charge_ID(C_Charge_ID);
+		saveManualCostDetail(as, line, M_CostElement_ID, C_Charge_ID, chargeAcct, detailAmt);
+		return fl;
+	}
+
+	/**
 	 * Format a translated posting error naming the charge and accounting schema when
 	 * {@link MCharge#getAccount} returns null for a manual cost charge.
 	 * @param as accounting schema
