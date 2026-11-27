@@ -622,28 +622,39 @@ public class PackInHandler extends DefaultHandler {
 			for (int i = 0; i < keys.length; i++) {
 				if (i > 0)
 					s.append("\n");
-				String key = keys[i].trim();
-				Element property = e.properties.get(key);
-				String valueElem = property != null && property.contents != null ? property.contents.toString() : null;
-				String referencedTable = property != null ? property.attributes.getValue("reference-key") : null;
-				if (Util.isEmpty(referencedTable)) {
-					referencedTable = key;
-					if (referencedTable.endsWith("_ID") || referencedTable.endsWith("_UU"))
-						referencedTable = referencedTable.substring(0, referencedTable.length() - 3);
-				}
-				String reference = property != null ? property.attributes.getValue("reference") : null;
-				if (Util.isEmpty(reference))
-					reference = !Util.isEmpty(valueElem) && valueElem.length() == 36 ? "uuid" : "id";
-				s.append("Missing ").append(referencedTable).append(" record with ")
-					.append(referencedTable).append("uuid".equals(reference) ? "_UU=" : "_ID=")
-					.append(valueElem != null ? valueElem : "");
-				if (identity != null)
-					s.append(", referenced in ").append(identity);
+				appendUnresolvedMsg(e, s, keys[i].trim(), identity);
 			}
 		} else {
-			s.append(e.qName).append(" unresolved ").append(e.unresolved);
+			appendUnresolvedMsg(e, s, unresolved, identity);
 		}
 		return s.toString();
+	}
+
+	/**
+	 * Append a readable description of an unresolved reference to the given StringBuilder
+	 * @param e
+	 * @param s
+	 * @param unresolved
+	 * @param identity
+	 */
+	private void appendUnresolvedMsg(Element e, StringBuilder s, String unresolved, String identity) {
+		String key = unresolved;
+		Element property = e.properties.get(key);
+		String valueElem = property != null && property.contents != null ? property.contents.toString() : null;
+		String referencedTable = property != null ? property.attributes.getValue("reference-key") : null;
+		if (Util.isEmpty(referencedTable)) {
+			referencedTable = key;
+			if (referencedTable.endsWith("_ID") || referencedTable.endsWith("_UU"))
+				referencedTable = referencedTable.substring(0, referencedTable.length() - 3);
+		}
+		String reference = property != null ? property.attributes.getValue("reference") : null;
+		if (Util.isEmpty(reference))
+			reference = !Util.isEmpty(valueElem) && valueElem.length() == 36 ? "uuid" : "id";
+		s.append("Missing ").append(referencedTable).append(" record with ")
+			.append(referencedTable).append("uuid".equals(reference) ? "_UU=" : "_ID=")
+			.append(valueElem != null ? valueElem : "");
+		if (identity != null)
+			s.append(", referenced in ").append(identity);
 	}
 
 	private String getPropertyValue(Element e, String key) {
