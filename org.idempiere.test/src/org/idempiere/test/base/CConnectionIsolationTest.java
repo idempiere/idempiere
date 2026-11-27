@@ -368,11 +368,11 @@ class CConnectionIsolationTest extends AbstractTestCase {
 
 	@Test
 	void testNonDefaultRequestIsStillVerifiedWithTrustedPool() throws Exception {
-		CConnection cc = connectionUsing(providerReturning(pooledConnection(READ_COMMITTED, true)));
-		cc.getConnection(true, READ_COMMITTED); // the pool is now trusted for READ_COMMITTED
-
 		Connection conn = pooledConnection(READ_COMMITTED, true);
-		cc = connectionUsing(providerReturning(conn));
+		CConnection cc = connectionUsing(providerReturning(conn));
+		cc.getConnection(true, READ_COMMITTED); // the pool is now trusted for READ_COMMITTED, by this descriptor
+
+		// same descriptor: a request for another level is still verified and applied
 		Connection result = cc.getConnection(true, Connection.TRANSACTION_SERIALIZABLE);
 
 		assertSame(conn, result);
@@ -383,14 +383,20 @@ class CConnectionIsolationTest extends AbstractTestCase {
 	void testFailedPoolCheckIsRepeatedAtTheNextCheckout() throws Exception {
 		Connection broken = mock(Connection.class);
 		when(broken.getTransactionIsolation()).thenThrow(new SQLException("connection is broken"));
-		assertNull(connectionUsing(providerReturning(broken)).getConnection(true, READ_COMMITTED));
-
-		// the failure must not be remembered as "pool not trusted": the next checkout checks again
 		Connection good = pooledConnection(READ_COMMITTED, true);
-		CConnection cc = connectionUsing(providerReturning(good));
+		AdempiereDatabase db = mock(AdempiereDatabase.class);
+		// one descriptor and one provider: the first checkout gets the broken connection, the next ones the good one
+		when(db.getCachedConnection(any(CConnection.class), anyBoolean(), anyInt())).thenReturn(broken, good);
+		CConnection cc = connectionUsing(db);
+
+		assertNull(cc.getConnection(true, READ_COMMITTED));
+		verify(broken, times(1)).close();
+
+		// the failure must not be remembered as "pool not trusted": the next checkout checks again, once
 		assertSame(good, cc.getConnection(true, READ_COMMITTED));
 		assertSame(good, cc.getConnection(true, READ_COMMITTED));
 		verify(good, times(1)).getTransactionIsolation();
+		verify(good, never()).setTransactionIsolation(anyInt());
 	}
 
 	/** the PostgreSQL pool is created with READ_COMMITTED as default level, unless the administrator configured another one */

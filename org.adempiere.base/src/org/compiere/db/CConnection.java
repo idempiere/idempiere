@@ -41,7 +41,7 @@ public class CConnection implements Serializable, Cloneable
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = -1823868178123935209L;
+	private static final long serialVersionUID = 6997357735091753952L;
 
 	/** Connection      */
 	private volatile static CConnection	s_cc = null;
@@ -1211,7 +1211,10 @@ public class CConnection implements Serializable, Cloneable
 	 * READ_COMMITTED connections (see {@link #isPoolIsolationTrusted(Connection)}), because with some databases
 	 * (PostgreSQL) every call of {@link Connection#getTransactionIsolation()} is a round trip to the database.<br/>
 	 * Public so that it can be tested without a database provider; it does not close the connection on failure,
-	 * {@link #getConnection(boolean, int)} does.
+	 * {@link #getConnection(boolean, int)} does.<br/>
+	 * Contract: the isolation level of a pooled connection must be changed with {@link Connection#setTransactionIsolation(int)},
+	 * so that the pool resets it when the connection is returned. Changing it with SQL (SET SESSION CHARACTERISTICS ...) or on the
+	 * unwrapped driver connection is not tracked by the pool and is not supported when the pool is trusted.
 	 * @param conn connection taken from the pool
 	 * @param autoCommit requested auto commit mode
 	 * @param transactionIsolation requested transaction isolation level
