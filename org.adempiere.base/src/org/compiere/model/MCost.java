@@ -235,7 +235,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 		//	Costs
 		BigDecimal costs = otherCost.add(materialCost);
 		if (costs.signum() == 0)
-			return null;
+			return zeroCostsOK ? Env.ZERO : null;
 
 		if (s_log.isLoggable(Level.FINER)) s_log.finer("Sum Costs = " + costs);
 		int precision = as.getCostingPrecision();

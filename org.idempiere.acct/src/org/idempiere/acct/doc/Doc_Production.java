@@ -763,29 +763,15 @@ public class Doc_Production extends Doc
 		if (origLineId <= 0)
 			return null;
 		MCostDetail origCd = MCostDetail.getProduction(as, line.getM_Product_ID(), asiId, origLineId, 0, getTrxName());
-		if (origCd != null)
-		{
-			if (asiId > 0 && origCd.getQty().negate().compareTo(line.getQty()) != 0)
-			{
-				BigDecimal sumAmt = DB.getSQLValueBDEx(getTrxName(),
-						"SELECT SUM(Amt) FROM M_CostDetail "
-						+ "WHERE C_AcctSchema_ID=? AND M_Product_ID=? AND M_ProductionLine_ID=? AND COALESCE(M_CostElement_ID,0)=0",
-						as.getC_AcctSchema_ID(), line.getM_Product_ID(), origLineId);
-				if (sumAmt != null)
-					return sumAmt.negate();
-			}
+		if (origCd != null && origCd.getQty().negate().compareTo(line.getQty()) == 0)
 			return origCd.getAmt().negate();
-		}
-		if (asiId > 0)
-		{
-			BigDecimal sumAmt = DB.getSQLValueBDEx(getTrxName(),
-					"SELECT SUM(Amt) FROM M_CostDetail "
-					+ "WHERE C_AcctSchema_ID=? AND M_Product_ID=? AND M_ProductionLine_ID=? AND COALESCE(M_CostElement_ID,0)=0",
-					as.getC_AcctSchema_ID(), line.getM_Product_ID(), origLineId);
-			if (sumAmt != null)
-				return sumAmt.negate();
-		}
-		return null;
+		BigDecimal sumAmt = DB.getSQLValueBDEx(getTrxName(),
+				"SELECT SUM(Amt) FROM M_CostDetail "
+				+ "WHERE C_AcctSchema_ID=? AND M_Product_ID=? AND M_ProductionLine_ID=? AND COALESCE(M_CostElement_ID,0)=0",
+				as.getC_AcctSchema_ID(), line.getM_Product_ID(), origLineId);
+		if (sumAmt != null)
+			return sumAmt.negate();
+		return origCd != null ? origCd.getAmt().negate() : null;
 	}
 
 	private BigDecimal getOriginalProductionMaCost(MAcctSchema as, DocLine line, int maAsiId)

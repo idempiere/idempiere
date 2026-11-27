@@ -294,6 +294,12 @@ public class Doc_ProjectIssue extends Doc
 				acctType = ACCTTYPE_ProjectAsset;
 			dr = fact.createLine(m_line,
 				getAccount(acctType, as), as.getC_Currency_ID(), drAmt, null);
+			if (dr == null)
+			{
+				p_Error = Msg.getMsg(getCtx(), "FactLine DR not created") + ": " + m_line;
+				log.log(Level.WARNING, p_Error);
+				return null;
+			}
 			dr.setQty(m_line.getQty().negate());
 
 			//  Inventory               CR
@@ -303,6 +309,12 @@ public class Doc_ProjectIssue extends Doc
 			cr = fact.createLine(m_line,
 				m_line.getAccount(acctType, as),
 				as.getC_Currency_ID(), null, cost);
+			if (cr == null)
+			{
+				p_Error = Msg.getMsg(getCtx(), "FactLine CR not created") + ": " + m_line;
+				log.log(Level.WARNING, p_Error);
+				return null;
+			}
 			cr.setM_Locator_ID(m_line.getM_Locator_ID());
 			cr.setLocationFromLocator(m_line.getM_Locator_ID(), true);	// from Loc
 			//

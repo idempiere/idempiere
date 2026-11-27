@@ -173,50 +173,6 @@ ALTER TABLE M_ManualCostDetail ADD CONSTRAINT CAcctSchema_MManualCostDetail FORE
 ;
 
 -- Nov 27, 2026, 11:36:39 AM MYT
-INSERT INTO t_alter_column values('m_manualcostdetail','Created','TIMESTAMP',null,null)
-;
-
--- Nov 27, 2026, 11:36:39 AM MYT
-INSERT INTO t_alter_column values('m_manualcostdetail','Updated','TIMESTAMP',null,null)
-;
-
--- Nov 27, 2026, 11:36:39 AM MYT
-INSERT INTO t_alter_column values('m_manualcostdetail','IsActive','CHAR(1)',null,'Y')
-;
-
--- Nov 27, 2026, 11:36:39 AM MYT
-UPDATE M_ManualCostDetail SET IsActive='Y' WHERE IsActive IS NULL
-;
-
--- Nov 27, 2026, 11:36:39 AM MYT
-INSERT INTO t_alter_column values('m_manualcostdetail','M_ManualCostDetail_ID','NUMERIC(10)',null,null)
-;
-
--- Nov 27, 2026, 11:36:39 AM MYT
-INSERT INTO t_alter_column values('m_manualcostdetail','M_ManualCostDetail_UU','UUID',null,'NULL')
-;
-
--- Nov 27, 2026, 11:36:39 AM MYT
-INSERT INTO t_alter_column values('m_manualcostdetail','Description','VARCHAR(255)',null,'NULL')
-;
-
--- Nov 27, 2026, 11:36:39 AM MYT
-INSERT INTO t_alter_column values('m_manualcostdetail','AD_Client_ID','NUMERIC(10)',null,null)
-;
-
--- Nov 27, 2026, 11:36:39 AM MYT
-INSERT INTO t_alter_column values('m_manualcostdetail','AD_Org_ID','NUMERIC(10)',null,null)
-;
-
--- Nov 27, 2026, 11:36:39 AM MYT
-INSERT INTO t_alter_column values('m_manualcostdetail','CreatedBy','NUMERIC(10)',null,null)
-;
-
--- Nov 27, 2026, 11:36:39 AM MYT
-INSERT INTO t_alter_column values('m_manualcostdetail','UpdatedBy','NUMERIC(10)',null,null)
-;
-
--- Nov 27, 2026, 11:36:39 AM MYT
 UPDATE AD_Column SET FKConstraintName='ADTable_MManualCostDetail', FKConstraintType='N',Updated=TO_TIMESTAMP('2026-11-27 11:36:39','YYYY-MM-DD HH24:MI:SS'),UpdatedBy=100 WHERE AD_Column_ID=217689
 ;
 
@@ -266,10 +222,6 @@ ALTER TABLE M_ManualCostDetail ADD COLUMN M_Product_ID NUMERIC(10) DEFAULT NULL
 
 -- Nov 27, 2026, 11:36:39 AM MYT
 ALTER TABLE M_ManualCostDetail ADD CONSTRAINT MProduct_MManualCostDetail FOREIGN KEY (M_Product_ID) REFERENCES m_product(m_product_id) DEFERRABLE INITIALLY DEFERRED
-;
-
--- Nov 27, 2026, 11:36:39 AM MYT
-INSERT INTO t_alter_column values('m_manualcostdetail','C_AcctSchema_ID','NUMERIC(10)',null,null)
 ;
 
 -- Nov 27, 2026, 11:36:39 AM MYT
@@ -328,40 +280,8 @@ ALTER TABLE M_ProductionLine ADD CONSTRAINT ReversalLine_MProductionLine FOREIGN
 INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,TableIndexDrop,IsKey) VALUES (0,0,201328,'01a21b16-d718-7089-974b-17d1f6ae6277',TO_TIMESTAMP('2026-11-27 11:40:10','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','M_ManualCostDetail_Record',TO_TIMESTAMP('2026-11-27 11:40:10','YYYY-MM-DD HH24:MI:SS'),100,200452,'N','N','N','N','N')
 ;
 
--- Nov 27, 2026, 11:40:12 AM MYT
-INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201837,'01a21b16-d9a7-7803-b61f-255e657323f0',TO_TIMESTAMP('2026-11-27 11:40:11','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2026-11-27 11:40:11','YYYY-MM-DD HH24:MI:SS'),100,217689,201327,10)
-;
-
--- Nov 27, 2026, 11:40:12 AM MYT
-INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201838,'01a21b16-dc01-7187-873f-623ae146fae1',TO_TIMESTAMP('2026-11-27 11:40:12','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2026-11-27 11:40:12','YYYY-MM-DD HH24:MI:SS'),100,217690,201327,20)
-;
-
--- Nov 27, 2026, 11:40:13 AM MYT
-INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201839,'01a21b16-de58-7392-bf15-cb0dd6e7fbcd',TO_TIMESTAMP('2026-11-27 11:40:12','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2026-11-27 11:40:12','YYYY-MM-DD HH24:MI:SS'),100,217688,201327,30)
-;
-
--- Nov 27, 2026, 11:40:14 AM MYT
-INSERT INTO AD_IndexColumn (AD_Client_ID,AD_Org_ID,AD_IndexColumn_ID,AD_IndexColumn_UU,Created,CreatedBy,EntityType,IsActive,Updated,UpdatedBy,AD_Column_ID,AD_TableIndex_ID,SeqNo) VALUES (0,0,201840,'01a21b16-e164-7f18-921e-94753c17e70a',TO_TIMESTAMP('2026-11-27 11:40:13','YYYY-MM-DD HH24:MI:SS'),100,'D','Y',TO_TIMESTAMP('2026-11-27 11:40:13','YYYY-MM-DD HH24:MI:SS'),100,217691,201327,40)
-;
-
 -- Nov 27, 2026, 11:40:46 AM MYT
 INSERT INTO AD_TableIndex (AD_Client_ID,AD_Org_ID,AD_TableIndex_ID,AD_TableIndex_UU,Created,CreatedBy,EntityType,IsActive,Name,Updated,UpdatedBy,AD_Table_ID,IsCreateConstraint,IsUnique,Processing,TableIndexDrop,IsKey) VALUES (0,0,201329,'01a21b17-5e9f-72a4-b44d-31457a7fa838',TO_TIMESTAMP('2026-11-27 11:40:45','YYYY-MM-DD HH24:MI:SS'),100,'D','Y','M_ManualCostDetail_DateAcct',TO_TIMESTAMP('2026-11-27 11:40:45','YYYY-MM-DD HH24:MI:SS'),100,200452,'N','N','N','N','N')
-;
-
--- Nov 27, 2026, 11:41:10 AM MYT
-DELETE FROM AD_IndexColumn WHERE AD_IndexColumn_UU='01a21b16-d9a7-7803-b61f-255e657323f0'
-;
-
--- Nov 27, 2026, 11:41:19 AM MYT
-DELETE FROM AD_IndexColumn WHERE AD_IndexColumn_UU='01a21b16-dc01-7187-873f-623ae146fae1'
-;
-
--- Nov 27, 2026, 11:41:27 AM MYT
-DELETE FROM AD_IndexColumn WHERE AD_IndexColumn_UU='01a21b16-de58-7392-bf15-cb0dd6e7fbcd'
-;
-
--- Nov 27, 2026, 11:41:35 AM MYT
-DELETE FROM AD_IndexColumn WHERE AD_IndexColumn_UU='01a21b16-e164-7f18-921e-94753c17e70a'
 ;
 
 -- Nov 27, 2026, 11:41:50 AM MYT
