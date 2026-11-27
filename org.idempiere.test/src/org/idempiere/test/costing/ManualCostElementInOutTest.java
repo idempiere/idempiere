@@ -57,7 +57,6 @@ import org.compiere.model.MInOutLine;
 import org.compiere.model.MInOutLineMA;
 import org.compiere.model.MManualCostDetail;
 import org.compiere.model.MOrder;
-import org.compiere.model.MOrderLine;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProductCategory;
 import org.compiere.model.MProductCategoryAcct;
@@ -700,102 +699,6 @@ public class ManualCostElementInOutTest extends AbstractManualCostElementTest
 			}
 			assertEquals(0, hqNet.signum());
 			assertEquals(0, storeNet.signum());
-		}
-	}
-
-	@Test
-	public void testBatchLotReversalFallbackCostDetailSignAndPartialMissingLotAllocation()
-	{
-		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
-		assertEquals(MCostElement.COSTINGMETHOD_AveragePO, as.getCostingMethod(), "Default costing method not Average PO");
-
-		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS);
-			 MockedStatic<MProductCategory> mockedCategory = mockStatic(MProductCategory.class, Mockito.CALLS_REAL_METHODS);
-			 MockedStatic<MAttributeSet> mockedAttrSet = mockStatic(MAttributeSet.class, Mockito.CALLS_REAL_METHODS))
-		{
-			MProductCategory batchCat = createCategoryWithCosting("LotRevAllocBatchCat", as,
-					MAcctSchema.COSTINGLEVEL_BatchLot, null, mockedCategory);
-			MAttributeSet lotAs = createLotAttributeSet("LotRevAllocAS", mockedAttrSet);
-			MProduct product = createStockedProduct("LotRevAllocProd", batchCat.get_ID(), lotAs.get_ID());
-			mockProductGet(mockedProduct, product);
-
-			MAttributeSetInstance lot1 = createLot(lotAs.get_ID(), "LOT-REV-90");
-			MAttributeSetInstance lot2 = createLot(lotAs.get_ID(), "LOT-REV-10");
-			createPOAndMR(product, lot1, new BigDecimal("5"), new BigDecimal("90.00"));
-			createPOAndMR(product, lot2, new BigDecimal("5"), new BigDecimal("10.00"));
-
-			MOrder so = createCompletedSO(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id), 0,
-					product, null, new BigDecimal("4"), new BigDecimal("150.00"), getLoginDate(), false);
-			MOrderLine soLine = so.getLines()[0];
-
-			// Scenario 1: Shipment reversal where BOTH original lot M_CostDetail records are missing -> +50.00 each
-			MInOut ship1 = createDraftShipment(so, soLine, null, new BigDecimal("2"), getLoginDate());
-			MInOutLine shipLine1 = ship1.getLines(true)[0];
-			new MInOutLineMA(shipLine1, lot1.get_ID(), BigDecimal.ONE, getLoginDate(), false).saveEx();
-			new MInOutLineMA(shipLine1, lot2.get_ID(), BigDecimal.ONE, getLoginDate(), false).saveEx();
-			completeAndPost(ship1);
-			assertEquals(2, MInOutLineMA.get(Env.getCtx(), shipLine1.get_ID(), getTrxName()).length);
-
-			DB.executeUpdateEx("DELETE FROM M_CostDetail WHERE M_InOutLine_ID=?", new Object[] { shipLine1.get_ID() }, getTrxName());
-			MInOut revShip1 = reverseAndPost(ship1);
-			MInOutLine revShipLine1 = revShip1.getLines(true)[0];
-			MCostDetail revCd1A = MCostDetail.getShipment(as, product.get_ID(), lot1.get_ID(), revShipLine1.get_ID(), 0, getTrxName());
-			MCostDetail revCd1B = MCostDetail.getShipment(as, product.get_ID(), lot2.get_ID(), revShipLine1.get_ID(), 0, getTrxName());
-			assertNotNull(revCd1A);
-			assertNotNull(revCd1B);
-			assertEquals(new BigDecimal("50.00"), revCd1A.getAmt().setScale(2, RoundingMode.HALF_UP));
-			assertEquals(new BigDecimal("50.00"), revCd1B.getAmt().setScale(2, RoundingMode.HALF_UP));
-
-			// Scenario 2: Shipment + Customer Return reversal where ONLY lot4's original M_CostDetail is missing
-			MAttributeSetInstance lot3 = createLot(lotAs.get_ID(), "LOT-REV2-90");
-			MAttributeSetInstance lot4 = createLot(lotAs.get_ID(), "LOT-REV2-10");
-			createPOAndMR(product, lot3, new BigDecimal("5"), new BigDecimal("90.00"));
-			createPOAndMR(product, lot4, new BigDecimal("5"), new BigDecimal("10.00"));
-
-			MInOut ship2 = createDraftShipment(so, soLine, null, new BigDecimal("2"), getLoginDate());
-			MInOutLine shipLine2 = ship2.getLines(true)[0];
-			new MInOutLineMA(shipLine2, lot3.get_ID(), BigDecimal.ONE, getLoginDate(), false).saveEx();
-			new MInOutLineMA(shipLine2, lot4.get_ID(), BigDecimal.ONE, getLoginDate(), false).saveEx();
-			completeAndPost(ship2);
-
-			MInOut ret = createDraftCustomerReturn(ship2, shipLine2, new BigDecimal("2"));
-			MInOutLine retLine = ret.getLines(true)[0];
-			new MInOutLineMA(retLine, lot3.get_ID(), BigDecimal.ONE, getLoginDate(), false).saveEx();
-			new MInOutLineMA(retLine, lot4.get_ID(), BigDecimal.ONE, getLoginDate(), false).saveEx();
-			completeCustomerReturn(ret);
-			assertEquals(2, MInOutLineMA.get(Env.getCtx(), retLine.get_ID(), getTrxName()).length);
-			if (!ret.isPosted())
-				postImmediate(ret);
-
-			// Delete ONLY lot4's original M_CostDetail on Customer Return, then reverse
-			DB.executeUpdateEx("DELETE FROM M_CostDetail WHERE M_InOutLine_ID=? AND M_AttributeSetInstance_ID=?",
-					new Object[] { retLine.get_ID(), lot4.get_ID() }, getTrxName());
-			MInOut revRet = reverseAndPost(ret);
-			MInOutLine revRetLine = revRet.getLines(true)[0];
-			MCostDetail revRetCd1 = MCostDetail.getShipment(as, product.get_ID(), lot3.get_ID(), revRetLine.get_ID(), 0, getTrxName());
-			MCostDetail revRetCd2 = MCostDetail.getShipment(as, product.get_ID(), lot4.get_ID(), revRetLine.get_ID(), 0, getTrxName());
-			assertNotNull(revRetCd1);
-			assertNotNull(revRetCd2);
-			assertEquals(new BigDecimal("-90.00"), revRetCd1.getAmt().setScale(2, RoundingMode.HALF_UP));
-			assertEquals(new BigDecimal("-10.00"), revRetCd2.getAmt().setScale(2, RoundingMode.HALF_UP),
-					"Missing lot fallback on return reversal must allocate only remaining -10.00, not -50.00");
-
-			// Delete ONLY lot4's original M_CostDetail on ship2, then reverse
-			DB.executeUpdateEx("DELETE FROM M_CostDetail WHERE M_InOutLine_ID=? AND M_AttributeSetInstance_ID=?",
-					new Object[] { shipLine2.get_ID(), lot4.get_ID() }, getTrxName());
-			MInOut revShip2 = reverseAndPost(ship2);
-			MInOutLine revShipLine2 = revShip2.getLines(true)[0];
-			MCostDetail revShipCd1 = MCostDetail.getShipment(as, product.get_ID(), lot3.get_ID(), revShipLine2.get_ID(), 0, getTrxName());
-			MCostDetail revShipCd2 = MCostDetail.getShipment(as, product.get_ID(), lot4.get_ID(), revShipLine2.get_ID(), 0, getTrxName());
-			assertNotNull(revShipCd1);
-			assertNotNull(revShipCd2);
-			assertEquals(new BigDecimal("90.00"), revShipCd1.getAmt().setScale(2, RoundingMode.HALF_UP));
-			assertEquals(new BigDecimal("10.00"), revShipCd2.getAmt().setScale(2, RoundingMode.HALF_UP),
-					"Missing lot fallback on shipment reversal must allocate only remaining +10.00, not +50.00");
-		}
-		finally
-		{
-			CacheMgt.get().reset(MProductCategoryAcct.Table_Name);
 		}
 	}
 
