@@ -223,6 +223,7 @@ public class MProcessPara extends X_AD_Process_Para implements ImmutablePOSuppor
 				log.log(Level.SEVERE, "(" + getColumnName() + ") - No LookupInfo");
 				return;
 			}
+			lookupInfo.IsProcessParameter = true;
 			//	Prevent loading of CreatedBy/UpdatedBy
 			if (displayType == DisplayType.Table
 				&& (getColumnName().equals("CreatedBy") || getColumnName().equals("UpdatedBy")) )

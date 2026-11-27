@@ -878,6 +878,8 @@ public class GridFieldVO implements Serializable, Cloneable
 				IsParent, ValidationCode);
 			if (lookupInfo == null)
 				displayType = DisplayType.ID;
+			else if (isProcess && AD_Process_ID_Of_Panel > 0)
+				lookupInfo.IsProcessParameter = true;	//	AD_Column_ID is AD_Process_Para_ID
 		}
 		catch (Exception e)     //  Cannot create Lookup
 		{

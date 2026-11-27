@@ -179,7 +179,7 @@ public class MLookupInfo implements Serializable, Cloneable
 		ZoomQuery = zoomQuery;
 	}   //  MLookupInfo
 	
-	static final long serialVersionUID = -1869207615748248653L;
+	static final long serialVersionUID = 8745411955018860841L;
 
 	/** SQL Query       */
 	public String       Query = null;
@@ -216,6 +216,8 @@ public class MLookupInfo implements Serializable, Cloneable
 
 	/**	AD_Column_Info or AD_Process_Para	*/
 	public int          Column_ID;
+	/** True if Column_ID is an AD_Process_Para_ID (process parameter lookup) */
+	public boolean      IsProcessParameter = false;
 	/** AD_Reference_ID						*/
 	public int          DisplayType;
 	/** Real AD_Reference_ID				*/

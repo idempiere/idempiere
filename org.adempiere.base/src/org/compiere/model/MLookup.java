@@ -1326,12 +1326,27 @@ public final class MLookup extends Lookup implements Serializable
 		private void logLookup(Level level, String problem) {
 			if (log.isLoggable(level)) {
 				StringBuilder msg = new StringBuilder().append(m_info.KeyColumn).append(": Loader - ").append(problem);
-				if (m_info.Column_ID > 0) {
+				if (m_info.Column_ID > 0 && m_info.IsProcessParameter) {
+					// Column_ID is an AD_Process_Para_ID
+					MProcessPara processPara = MProcessPara.get(m_info.ctx, m_info.Column_ID);
+					if (processPara != null) {
+						msg.append(", Parameter=").append(processPara.getColumnName());
+						MProcess process = MProcess.get(m_info.ctx, processPara.getAD_Process_ID());
+						if (process != null)
+							msg.append(", Process=").append(process.getValue());
+					} else {
+						msg.append(", AD_Process_Para_ID=").append(m_info.Column_ID);
+					}
+				} else if (m_info.Column_ID > 0) {
 					MColumn mColumn = MColumn.get(m_info.ctx, m_info.Column_ID);
-					String column = mColumn.getColumnName();
-					msg.append(", Column=").append(column);
-					String tableName = MTable.getTableName(m_info.ctx, mColumn.getAD_Table_ID());
-					msg.append(", Table=").append(tableName);
+					if (mColumn != null) {
+						String column = mColumn.getColumnName();
+						msg.append(", Column=").append(column);
+						String tableName = MTable.getTableName(m_info.ctx, mColumn.getAD_Table_ID());
+						msg.append(", Table=").append(tableName);
+					} else {
+						msg.append(", Column_ID=").append(m_info.Column_ID);
+					}
 				}
 				log.log(level, msg.toString());
 			}
