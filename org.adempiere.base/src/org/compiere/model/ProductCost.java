@@ -24,6 +24,7 @@ import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.compiere.model.MCost.ManualCost;
 import org.compiere.util.CCache;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
@@ -350,6 +351,18 @@ public class ProductCost
 		}
 		return cost;
 	}   //  getProductCosts
+
+	/**
+	 * Get manual (non-material, charge-mapped) costs for this product
+	 * @param as accounting schema
+	 * @param AD_Org_ID trx org
+	 * @param productCost Base product cost (material plus any unmapped non-material costs) for the quantity
+	 * @return ManualCost[]
+	 */
+	public ManualCost[] getManualCosts(MAcctSchema as, int AD_Org_ID, BigDecimal productCost)
+	{
+		return MCost.getManualCosts(m_product, m_M_AttributeSetInstance_ID, as, AD_Org_ID, productCost, m_qty, m_trxName);
+	}
 
 	/**
 	 * 	String Representation

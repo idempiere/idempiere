@@ -143,6 +143,7 @@ public class FactAcctReset extends SvrProcess
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, sql, e);
+			throw e;
 		}
 		finally
 		{
@@ -284,25 +285,38 @@ public class FactAcctReset extends SvrProcess
 		if (log.isLoggable(Level.FINE))log.log(Level.FINE, sql1);
 
 		int reset = DB.executeUpdate(sql1, get_TrxName()); 
-		//	Fact
-		String sql2 = "DELETE FROM Fact_Acct "
-			+ "WHERE AD_Client_ID=" + p_AD_Client_ID
-			+ " AND AD_Table_ID=" + AD_Table_ID;
-		if ( !autoPeriod )
-			sql2 += " AND EXISTS (SELECT 1 FROM C_PeriodControl pc "
+		String factFilter = !autoPeriod
+			? " AND EXISTS (SELECT 1 FROM C_PeriodControl pc "
 				+ "WHERE pc.PeriodStatus = 'O'" + docBaseType
-				+ " AND Fact_Acct.C_Period_ID=pc.C_Period_ID)";
-		else
-			sql2 += " AND EXISTS (SELECT 1 FROM C_PeriodControl pc "
+				+ " AND Fact_Acct.C_Period_ID=pc.C_Period_ID)"
+			: " AND EXISTS (SELECT 1 FROM C_PeriodControl pc "
 				+ "WHERE Fact_Acct.C_Period_ID=pc.C_Period_ID)";
 		if (p_DateAcct_From != null)
-			sql2 += " AND TRUNC(Fact_Acct.DateAcct) >= " + DB.TO_DATE(p_DateAcct_From);
+			factFilter += " AND TRUNC(Fact_Acct.DateAcct) >= " + DB.TO_DATE(p_DateAcct_From);
 		if (p_DateAcct_To != null)
-			sql2 += " AND TRUNC(Fact_Acct.DateAcct) <= " + DB.TO_DATE(p_DateAcct_To);
+			factFilter += " AND TRUNC(Fact_Acct.DateAcct) <= " + DB.TO_DATE(p_DateAcct_To);
+
+		//	Manual Cost Detail (delete matching records before Fact_Acct)
+		String sqlManual = "DELETE FROM M_ManualCostDetail "
+			+ "WHERE AD_Client_ID=?"
+			+ " AND AD_Table_ID=?"
+			+ " AND EXISTS (SELECT 1 FROM Fact_Acct "
+			+ "WHERE Fact_Acct.AD_Client_ID=M_ManualCostDetail.AD_Client_ID"
+			+ " AND Fact_Acct.AD_Table_ID=M_ManualCostDetail.AD_Table_ID"
+			+ " AND Fact_Acct.Record_ID=M_ManualCostDetail.Record_ID"
+			+ " AND Fact_Acct.C_AcctSchema_ID=M_ManualCostDetail.C_AcctSchema_ID"
+			+ factFilter + ")";
+		if (log.isLoggable(Level.FINE)) log.log(Level.FINE, sqlManual);
+		DB.executeUpdateEx(sqlManual, new Object[] { p_AD_Client_ID, AD_Table_ID }, get_TrxName());
+		//	Fact
+		String sql2 = "DELETE FROM Fact_Acct "
+			+ "WHERE AD_Client_ID=?"
+			+ " AND AD_Table_ID=?"
+			+ factFilter;
 
 		if (log.isLoggable(Level.FINE))log.log(Level.FINE, sql2);
 		
-		int deleted = DB.executeUpdate(sql2, get_TrxName());
+		int deleted = DB.executeUpdateEx(sql2, new Object[] { p_AD_Client_ID, AD_Table_ID }, get_TrxName());
 		//
 		m_countReset += reset;
 

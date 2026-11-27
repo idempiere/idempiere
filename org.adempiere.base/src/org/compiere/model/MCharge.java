@@ -40,7 +40,7 @@ public class MCharge extends X_C_Charge implements ImmutablePOSupport
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = 1978008783808254164L;
+	private static final long serialVersionUID = 8192736451029384756L;
 
 	/**
 	 *  Get Charge Account
@@ -50,11 +50,23 @@ public class MCharge extends X_C_Charge implements ImmutablePOSupport
 	 */
 	public static MAccount getAccount (int C_Charge_ID, MAcctSchema as)
 	{
+		return getAccount(C_Charge_ID, as, null);
+	}   //  getAccount
+
+	/**
+	 *  Get Charge Account
+	 *  @param C_Charge_ID charge
+	 *  @param as account schema
+	 *  @param trxName transaction name
+	 *  @return Charge Account or null
+	 */
+	public static MAccount getAccount (int C_Charge_ID, MAcctSchema as, String trxName)
+	{
 		if (C_Charge_ID == 0 || as == null)
 			return null;
 
 		String sql = "SELECT Ch_Expense_Acct FROM C_Charge_Acct WHERE C_Charge_ID=? AND C_AcctSchema_ID=?";
-		int Account_ID = DB.getSQLValueEx(null, sql, C_Charge_ID, as.get_ID());
+		int Account_ID = DB.getSQLValueEx(trxName, sql, C_Charge_ID, as.get_ID());
 		//	No account
 		if (Account_ID <= 0)
 		{
@@ -63,7 +75,7 @@ public class MCharge extends X_C_Charge implements ImmutablePOSupport
 		}
 
 		//	Return Account
-		MAccount acct = MAccount.get (as.getCtx(), Account_ID);
+		MAccount acct = Util.isEmpty(trxName) ? MAccount.get (as.getCtx(), Account_ID) : new MAccount(as.getCtx(), Account_ID, trxName);
 		return acct;
 	}   //  getAccount
 

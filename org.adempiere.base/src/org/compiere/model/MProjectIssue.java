@@ -18,6 +18,7 @@ package org.compiere.model;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
@@ -174,7 +175,11 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 	{
 		saveEx();
 		
-		return doComplete() == null;
+		boolean ok = doComplete() == null;
+		// Persist CostAmt set during doComplete() -> updateBalanceAmt() for stocked items
+		if (ok)
+			saveEx();
+		return ok;
 	}	//	process
 
 	/**
@@ -557,7 +562,15 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		BigDecimal cost = null;
 		MAcctSchema as = MAcctSchema.getClientAcctSchema(getCtx(), getAD_Client_ID(), get_TrxName())[0];
 		MProduct product = new MProduct(getCtx(), getM_Product_ID(), get_TrxName());
-		if (getM_InOutLine_ID() > 0)
+		if (isReversal())
+		{
+			MProjectIssue origIssue = new MProjectIssue(getCtx(), getReversal_ID(), get_TrxName());
+			Object origCostAmt = origIssue.get_Value(COLUMNNAME_CostAmt);
+			cost = origCostAmt != null
+					? ((BigDecimal) origCostAmt).negate()
+					: resolveLegacyReversalCost(as, product, origIssue);
+		}
+		else if (getM_InOutLine_ID() > 0)
 		{
 			MInOutLine inOutLine = new MInOutLine(getCtx(), getM_InOutLine_ID(), get_TrxName());
 			cost = inOutLine.getPOCost(as, getMovementQty());
@@ -565,15 +578,33 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		else if (getS_TimeExpenseLine_ID() > 0)
 		{
 			MTimeExpenseLine expenseLine = new MTimeExpenseLine(getCtx(), getS_TimeExpenseLine_ID(), get_TrxName());
-			cost = expenseLine.getLaborCost(as);
+			if (expenseLine.get_ID() > 0)
+				cost = expenseLine.getLaborCost(as);
 		}
-		else
+		if (cost == null && !isReversal())
 		{
- 			cost = MCost.getCost(	product, getM_AttributeSetInstance_ID(), as, getAD_Org_ID(), as.getCostingMethod(), getMovementQty(), 0, true, getMovementDate(), null,
+			String costingMethod = product.getCostingMethod(as);
+			cost = MCost.getCost(	product, getM_AttributeSetInstance_ID(), as, getAD_Org_ID(), costingMethod, getMovementQty(), 0, true, getMovementDate(), null,
 									false, get_TrxName());
+			if (cost != null)
+			{
+				MCost.ManualCost[] manualCosts = MCost.getManualCosts(product, getM_AttributeSetInstance_ID(), as, getAD_Org_ID(), costingMethod, cost, getMovementQty(), get_TrxName());
+				if (manualCosts.length > 0)
+				{
+					int stdPrecision = as.getStdPrecision();
+					BigDecimal totalCost = cost.setScale(stdPrecision, RoundingMode.HALF_UP);
+					for (MCost.ManualCost manualCost : manualCosts)
+					{
+						if (manualCost.getAmount() != null)
+							totalCost = totalCost.add(manualCost.getAmount().setScale(stdPrecision, RoundingMode.HALF_UP));
+					}
+					cost = totalCost;
+				}
+			}
 		}
 		if (cost != null)
 		{
+			setCostAmt(cost);
 			MProject proj = new MProject(getCtx(), getC_Project_ID(), get_TrxName());
 			proj.setProjectBalanceAmt(proj.getProjectBalanceAmt().add(cost));
 			proj.saveEx(get_TrxName());
@@ -588,4 +619,50 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 		}
 		return cost;
 	} // updateBalanceAmt
+
+	/**
+	 * Resolve the reversal balance contribution for a legacy (pre-migration) Project Issue
+	 * whose {@code CostAmt} is null.
+	 *
+	 * @param as accounting schema
+	 * @param product issued product
+	 * @param origIssue original project issue being reversed
+	 * @return signed reversal balance contribution (negative for a normal issue), or null if unavailable
+	 */
+	private BigDecimal resolveLegacyReversalCost(MAcctSchema as, MProduct product, MProjectIssue origIssue)
+	{
+		if (origIssue.getM_InOutLine_ID() > 0)
+		{
+			MInOutLine inOutLine = new MInOutLine(getCtx(), origIssue.getM_InOutLine_ID(), get_TrxName());
+			BigDecimal origCost = inOutLine.getPOCost(as, origIssue.getMovementQty());
+			if (origCost != null)
+				return origCost.negate();
+		}
+		else if (origIssue.getS_TimeExpenseLine_ID() > 0)
+		{
+			MTimeExpenseLine expenseLine = new MTimeExpenseLine(getCtx(), origIssue.getS_TimeExpenseLine_ID(), get_TrxName());
+			if (expenseLine.get_ID() > 0)
+			{
+				BigDecimal origCost = expenseLine.getLaborCost(as);
+				if (origCost != null)
+					return origCost.negate();
+			}
+		}
+
+		// Prefer original MCostDetail only when product uses the schema costing method that
+		// pre-upgrade updateBalanceAmt() used (MCostDetail.Amt already carries signed outgoing cost).
+		if (as.getCostingMethod().equals(product.getCostingMethod(as)))
+		{
+			MCostDetail origCd = MCostDetail.getProjectIssue(as, origIssue.getM_Product_ID(),
+					origIssue.getM_AttributeSetInstance_ID(), origIssue.getC_ProjectIssue_ID(), 0, get_TrxName());
+			if (origCd != null)
+				return origCd.getAmt();
+		}
+
+		// Pre-upgrade unposted legacy issues used the accounting schema costing method and original issue inputs
+		BigDecimal origCost = MCost.getCost(product, origIssue.getM_AttributeSetInstance_ID(), as,
+				origIssue.getAD_Org_ID(), as.getCostingMethod(), origIssue.getMovementQty(), 0, true,
+				origIssue.getMovementDate(), null, false, get_TrxName());
+		return origCost != null ? origCost.negate() : null;
+	} // resolveLegacyReversalCost
 }	//	MProjectIssue

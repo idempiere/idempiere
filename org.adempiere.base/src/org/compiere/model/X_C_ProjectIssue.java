@@ -26,7 +26,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for C_ProjectIssue
  *  @author iDempiere (generated)
- *  @version Release 13 - $Id$ */
+ *  @version Release 14 - $Id$ */
 @org.adempiere.base.Model(table="C_ProjectIssue")
 public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persistent
 {
@@ -34,7 +34,7 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20260309L;
+	private static final long serialVersionUID = 20261125L;
 
     /** Standard Constructor */
     public X_C_ProjectIssue (Properties ctx, int C_ProjectIssue_ID, String trxName)
@@ -245,6 +245,25 @@ public class X_C_ProjectIssue extends PO implements I_C_ProjectIssue, I_Persiste
     {
         return new KeyNamePair(get_ID(), String.valueOf(getC_Project_ID()));
     }
+
+	/** Set Cost Value.
+		@param CostAmt Value with Cost
+	*/
+	public void setCostAmt (BigDecimal CostAmt)
+	{
+		set_ValueNoCheck (COLUMNNAME_CostAmt, CostAmt);
+	}
+
+	/** Get Cost Value.
+		@return Value with Cost
+	  */
+	public BigDecimal getCostAmt()
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_CostAmt);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
 
 	/** Set Description.
 		@param Description Optional short description of the record

@@ -18,6 +18,7 @@ package org.idempiere.acct.doc;
 
 import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,9 +26,11 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -40,9 +43,12 @@ import org.compiere.model.I_M_MatchInv;
 import org.compiere.model.I_M_MatchPO;
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
+import org.compiere.model.MCharge;
 import org.compiere.model.MConversionRate;
+import org.compiere.model.MCost.ManualCost;
 import org.compiere.model.MDocType;
 import org.compiere.model.MInOut;
+import org.compiere.model.MManualCostDetail;
 import org.compiere.model.MInvoice;
 import org.compiere.model.MMatchInv;
 import org.compiere.model.MMatchPO;
@@ -52,6 +58,7 @@ import org.compiere.model.MRefList;
 import org.compiere.model.ModelValidationEngine;
 import org.compiere.model.ModelValidator;
 import org.compiere.model.PO;
+import org.compiere.model.X_C_Charge_Acct;
 import org.compiere.process.DocumentEngine;
 import org.compiere.util.AdempiereUserError;
 import org.compiere.util.CLogger;
@@ -369,6 +376,8 @@ public abstract class Doc implements IDoc
 
 	/** Facts                       */
 	private ArrayList<Fact>    	m_fact = null;
+	/** Staged Manual Cost Details (persisted in postCommit only when STATUS_Posted) */
+	private ArrayList<MManualCostDetail> m_manualCostDetails = null;
 
 	/** No Currency in Document Indicator (-1)	*/
 	protected static final int  NO_CURRENCY = -2;
@@ -527,9 +536,20 @@ public abstract class Doc implements IDoc
 			return  Msg.translate(getCtx(), "CannotLockReSubmitOrRePostWithForce");
 		}
 
-		p_Error = loadDocumentDetails();
+		try
+		{
+			p_Error = loadDocumentDetails();
+		}
+		catch (RuntimeException e)
+		{
+			unlock();
+			throw e;
+		}
 		if (p_Error != null)
+		{
+			unlock();
 			return p_Error;
+		}
 		if (isDeferPosting())
 		{
 			unlock();
@@ -549,7 +569,20 @@ public abstract class Doc implements IDoc
 				return "PeriodClosed";
 			}
 			//	delete it
-			deleteAcct();
+			try
+			{
+				deleteAcct();
+			}
+			catch (RuntimeException e)
+			{
+				if (m_manageLocalTrx)
+				{
+					trx.rollback();
+					trx.close();
+				}
+				unlock();
+				throw e;
+			}
 		}
 		else if (isPosted())
 		{
@@ -563,6 +596,7 @@ public abstract class Doc implements IDoc
 
 		//  Create Fact per AcctSchema
 		m_fact = new ArrayList<Fact>();
+		m_manualCostDetails = new ArrayList<MManualCostDetail>();
 
 		getPO().setDoc(this);
 		try
@@ -674,6 +708,7 @@ public abstract class Doc implements IDoc
 				fact.dispose();
 		}
 		p_lines = null;
+		m_manualCostDetails = null;
 
 		if (p_Status.equals(STATUS_Posted))
 			return null;
@@ -709,12 +744,13 @@ public abstract class Doc implements IDoc
 		if (no != 0)
 			if (log.isLoggable(Level.INFO)) log.info("updated=" + no);
 		
+		MManualCostDetail.delete(get_Table_ID(), p_po.get_ID(), m_as.getC_AcctSchema_ID(), getTrxName());
 		// delete the posting records
 		sql = new StringBuilder ("DELETE FROM Fact_Acct ")
 			.append("WHERE AD_Table_ID=?")
 			.append(" AND Record_ID=?")
 			.append(" AND C_AcctSchema_ID=?");
-		no = DB.executeUpdate(sql.toString(), new Object[] {get_Table_ID(), p_po.get_ID(), m_as.getC_AcctSchema_ID()}, false, getTrxName());
+		no = DB.executeUpdateEx(sql.toString(), new Object[] {get_Table_ID(), p_po.get_ID(), m_as.getC_AcctSchema_ID()}, getTrxName());
 		if (no != 0)
 			if (log.isLoggable(Level.INFO)) log.info("deleted=" + no);
 		return no;
@@ -831,6 +867,22 @@ public abstract class Doc implements IDoc
 						}
 						unlock();
 						return STATUS_Error;
+					}
+				}
+				if (m_manualCostDetails != null)
+				{
+					for (MManualCostDetail detail : m_manualCostDetails)
+					{
+						if (detail != null && !detail.save(getTrxName()))
+						{
+							log.log(Level.SEVERE, "(manual cost detail not saved) ... rolling back");
+							if (m_manageLocalTrx) {
+								trx.rollback();
+								trx.close();
+							}
+							unlock();
+							return STATUS_Error;
+						}
 					}
 				}
 			}
@@ -2506,5 +2558,175 @@ public abstract class Doc implements IDoc
 	 */
 	public boolean isInBackDatePostingProcess() {
 		return isInBackDatePostingProcess;
+	}
+
+	/**
+	 * Accumulate manual (non-material, charge-mapped) costs into a map keyed by M_CostElement_ID.
+	 * @param map target accumulation map
+	 * @param manualCosts manual costs to accumulate
+	 */
+	protected void accumulateManualCosts(Map<Integer, ManualCost> map, ManualCost[] manualCosts)
+	{
+		if (manualCosts == null)
+			return;
+		for (ManualCost mc : manualCosts)
+		{
+			if (mc == null || mc.getAmount() == null || mc.getAmount().signum() == 0)
+				continue;
+			int ceId = mc.getCostElement().getM_CostElement_ID();
+			ManualCost existing = map.get(ceId);
+			if (existing == null)
+				map.put(ceId, mc);
+			else
+				map.put(ceId, new ManualCost(existing.getCostElement(), existing.getAmount().add(mc.getAmount())));
+		}
+	}
+
+	/**
+	 * Round manual cost amounts to standard accounting precision and retain non-zero entries.
+	 * @param manualCosts manual cost array
+	 * @param stdPrecision standard accounting currency precision
+	 * @return list of rounded non-zero manual costs
+	 */
+	protected List<ManualCost> roundManualCosts(ManualCost[] manualCosts, int stdPrecision)
+	{
+		if (manualCosts == null || manualCosts.length == 0)
+			return new ArrayList<>();
+		return roundManualCosts(Arrays.asList(manualCosts), stdPrecision);
+	}
+
+	/**
+	 * Round manual cost amounts to standard accounting precision and retain non-zero entries.
+	 * @param manualCosts manual cost entries
+	 * @param stdPrecision standard accounting currency precision
+	 * @return list of rounded non-zero manual costs
+	 */
+	protected List<ManualCost> roundManualCosts(Iterable<ManualCost> manualCosts, int stdPrecision)
+	{
+		List<ManualCost> result = new ArrayList<>();
+		if (manualCosts == null)
+			return result;
+		for (ManualCost mc : manualCosts)
+		{
+			if (mc != null && mc.getAmount() != null)
+			{
+				BigDecimal amt = mc.getAmount().setScale(stdPrecision, RoundingMode.HALF_UP);
+				if (amt.signum() != 0)
+					result.add(new ManualCost(mc.getCostElement(), amt));
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Stage a {@link MManualCostDetail} record for a posted manual cost charge entry so it is
+	 * persisted atomically alongside {@link Fact} lines in {@link #postCommit(String)} only when
+	 * posting succeeds.
+	 * @param as accounting schema
+	 * @param line document line
+	 * @param M_CostElement_ID manual cost element ID
+	 * @param C_Charge_ID charge ID
+	 * @param chargeAcct posted charge account combination
+	 * @param amt signed amount (Charge CR minus Charge DR)
+	 * @return staged (or saved when called outside {@link #post}) {@link MManualCostDetail}
+	 */
+	protected MManualCostDetail saveManualCostDetail(MAcctSchema as, DocLine line,
+			int M_CostElement_ID, int C_Charge_ID, MAccount chargeAcct, BigDecimal amt)
+	{
+		MManualCostDetail detail = MManualCostDetail.build(getCtx(), line.getAD_Org_ID(), as.getC_AcctSchema_ID(),
+				get_Table_ID(), get_ID(), line.get_ID(),
+				M_CostElement_ID, C_Charge_ID,
+				line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
+				chargeAcct.getC_ValidCombination_ID(), line.getDateAcct(),
+				amt, line.getQty(), line.getDescription(), getTrxName());
+		if (m_manualCostDetails != null)
+			m_manualCostDetails.add(detail);
+		else
+			detail.saveEx(getTrxName());
+		return detail;
+	}
+
+	/**
+	 * Resolve the historical charge {@link MAccount} recorded on a {@link MManualCostDetail}
+	 * within the current posting transaction, falling back to the current charge account if missing.
+	 * @param as accounting schema
+	 * @param detail original manual cost detail
+	 * @return charge account or null
+	 */
+	protected MAccount getManualCostChargeAccount(MAcctSchema as, MManualCostDetail detail)
+	{
+		int vcId = detail.getC_ValidCombination_ID();
+		if (vcId > 0)
+		{
+			MAccount acct = Util.isEmpty(getTrxName())
+					? MAccount.get(getCtx(), vcId)
+					: new MAccount(getCtx(), vcId, getTrxName());
+			if (acct != null && acct.get_ID() > 0)
+				return acct;
+		}
+		return MCharge.getAccount(detail.getC_Charge_ID(), as, getTrxName());
+	}
+
+	/**
+	 * Create a manual-cost charge {@link FactLine} and stage its {@link MManualCostDetail}.
+	 * Resolves the charge account via {@link MCharge#getAccount} when {@code chargeAcct} is null,
+	 * validates creation, sets {@code C_Charge_ID}, and stages the detail record.
+	 * On failure sets {@code p_Error} and logs a warning.
+	 * @param fact target fact
+	 * @param as accounting schema
+	 * @param line document line
+	 * @param M_CostElement_ID manual cost element ID
+	 * @param C_Charge_ID charge ID
+	 * @param chargeAcct charge account (or null to resolve via {@link MCharge#getAccount})
+	 * @param drAmt debit amount (mutually exclusive with crAmt)
+	 * @param crAmt credit amount (mutually exclusive with drAmt)
+	 * @param detailAmt signed amount for {@link MManualCostDetail} (Charge CR minus Charge DR)
+	 * @return created {@link FactLine}, or null on error (with {@code p_Error} populated)
+	 */
+	protected FactLine createManualCostChargeLine(Fact fact, MAcctSchema as, DocLine line,
+			int M_CostElement_ID, int C_Charge_ID, MAccount chargeAcct,
+			BigDecimal drAmt, BigDecimal crAmt, BigDecimal detailAmt)
+	{
+		boolean isCredit = (crAmt != null && crAmt.signum() > 0) || (drAmt != null && drAmt.signum() < 0);
+		String msgKey = isCredit ? "FactLine CR not created" : "FactLine DR not created";
+		if (chargeAcct == null)
+			chargeAcct = MCharge.getAccount(C_Charge_ID, as, getTrxName());
+		if (chargeAcct == null)
+		{
+			p_Error = formatMissingChargeAccountError(as, C_Charge_ID, line, msgKey);
+			log.log(Level.WARNING, p_Error);
+			return null;
+		}
+		FactLine fl = fact.createLine(line, chargeAcct, as.getC_Currency_ID(), drAmt, crAmt);
+		if (fl == null)
+		{
+			p_Error = Msg.getMsg(getCtx(), msgKey) + ": " + line;
+			log.log(Level.WARNING, p_Error);
+			return null;
+		}
+		fl.setC_Charge_ID(C_Charge_ID);
+		saveManualCostDetail(as, line, M_CostElement_ID, C_Charge_ID, chargeAcct, detailAmt);
+		return fl;
+	}
+
+	/**
+	 * Format a translated posting error naming the charge and accounting schema when
+	 * {@link MCharge#getAccount} returns null for a manual cost charge.
+	 * @param as accounting schema
+	 * @param C_Charge_ID charge ID
+	 * @param line document line context
+	 * @param baseMsgKey base AD_Message key (e.g. {@code FactLine CR not created})
+	 * @return translated error message
+	 */
+	protected String formatMissingChargeAccountError(MAcctSchema as, int C_Charge_ID, DocLine line, String baseMsgKey)
+	{
+		MCharge charge = Util.isEmpty(getTrxName()) ? MCharge.get(getCtx(), C_Charge_ID) : new MCharge(getCtx(), C_Charge_ID, getTrxName());
+		String chargeName = charge != null && charge.get_ID() > 0 ? charge.getName() : String.valueOf(C_Charge_ID);
+		return Msg.getMsg(getCtx(), baseMsgKey) + " ("
+				+ Msg.getElement(getCtx(), X_C_Charge_Acct.COLUMNNAME_Ch_Expense_Acct) + " "
+				+ Msg.getMsg(getCtx(), "NotFound") + " - "
+				+ Msg.getElement(getCtx(), MCharge.COLUMNNAME_C_Charge_ID) + "=" + chargeName + ", "
+				+ Msg.getElement(getCtx(), MAcctSchema.COLUMNNAME_C_AcctSchema_ID) + "=" + as.getName()
+				+ "): " + line;
 	}
 }   //  Doc

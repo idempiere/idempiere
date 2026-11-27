@@ -25,8 +25,10 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.AverageCostingNegativeQtyException;
@@ -60,7 +62,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = -1554882384162646674L;
+	private static final long serialVersionUID = 8741926305148293617L;
 
 	/**
 	 * @param product
@@ -218,7 +220,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 			+ " AND c.M_Product_ID=?"							//	#3
 			+ " AND (c.M_AttributeSetInstance_ID=? OR c.M_AttributeSetInstance_ID=0)"	//	#4
 			+ " AND c.M_CostType_ID=? AND c.C_AcctSchema_ID=?"	//	#5/6
-			+ " AND (ce.CostingMethod IS NULL OR ce.CostingMethod=?) "	//	#7
+			+ " AND ((ce.CostingMethod IS NULL AND ce.C_Charge_ID IS NULL) OR ce.CostingMethod=?) "	//	#7
 			+ "GROUP BY ce.CostElementType, ce.CostingMethod, c.Percent, c.M_CostElement_ID";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -328,6 +330,133 @@ public class MCost extends X_M_Cost implements ICostInfo
 		if (s_log.isLoggable(Level.FINER)) s_log.finer("Sum Costs = " + costs + " (Add=" + percentCost + ")");
 		return costs;
 	}	//	getCurrentCost
+
+	/**
+	 * Get manual (non-material, charge-mapped) costs for a product.
+	 * @param product product
+	 * @param M_AttributeSetInstance_ID asi for batchlot costing level
+	 * @param as accounting schema
+	 * @param AD_Org_ID org for organization costing level
+	 * @param currentMaterialCost Base product cost (material plus any unmapped non-material costs) for the quantity
+	 * @param qty transaction quantity
+	 * @param trxName trx
+	 * @return array of non-zero ManualCost records
+	 */
+	public static ManualCost[] getManualCosts(MProduct product, int M_AttributeSetInstance_ID,
+			MAcctSchema as, int AD_Org_ID, BigDecimal currentMaterialCost, BigDecimal qty, String trxName)
+	{
+		return getManualCosts(product, M_AttributeSetInstance_ID, as, AD_Org_ID, null, currentMaterialCost, qty, trxName);
+	}
+
+	/**
+	 * Get manual (non-material, charge-mapped) costs for a product.
+	 * @param product product
+	 * @param M_AttributeSetInstance_ID asi for batchlot costing level
+	 * @param as accounting schema
+	 * @param AD_Org_ID org for organization costing level
+	 * @param costingMethod AcctSchema.COSTINGMETHOD_* (if null, uses product.getCostingMethod(as))
+	 * @param currentMaterialCost Base product cost (material plus any unmapped non-material costs) for the quantity
+	 * @param qty transaction quantity
+	 * @param trxName trx
+	 * @return array of non-zero ManualCost records
+	 */
+	public static ManualCost[] getManualCosts(MProduct product, int M_AttributeSetInstance_ID,
+			MAcctSchema as, int AD_Org_ID, String costingMethod, BigDecimal currentMaterialCost, BigDecimal qty, String trxName)
+	{
+		if (product == null || as == null || qty == null || qty.signum() == 0)
+			return new ManualCost[0];
+
+		if (Util.isEmpty(costingMethod))
+			costingMethod = product.getCostingMethod(as);
+		if (MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod))
+			return new ManualCost[0];
+
+		String costingLevel = product.getCostingLevel(as);
+		MCost.CostingKey costKey = MCost.CostingKey.resolve(AD_Org_ID, M_AttributeSetInstance_ID, costingLevel);
+		AD_Org_ID = costKey.AD_Org_ID();
+		M_AttributeSetInstance_ID = costKey.M_AttributeSetInstance_ID();
+
+		if (currentMaterialCost == null)
+			currentMaterialCost = BigDecimal.ZERO;
+
+		int precision = as.getCostingPrecision();
+		List<ManualCost> manualCosts = new ArrayList<>();
+		Set<Integer> seenCostElements = new HashSet<>();
+		String sql = "SELECT"
+				+ " COALESCE(c.CurrentCostPrice,0),"			// 1
+				+ " COALESCE(c.Percent,0), c.M_CostElement_ID,"	// 2, 3
+				+ " c.M_AttributeSetInstance_ID"				// 4
+				+ " FROM M_Cost c"
+				+ " JOIN M_CostElement ce ON (c.M_CostElement_ID=ce.M_CostElement_ID)"
+				+ " WHERE c.AD_Client_ID=? AND c.AD_Org_ID=?"	// #1, #2
+				+ " AND c.M_Product_ID=?"						// #3
+				+ " AND (c.M_AttributeSetInstance_ID=? OR c.M_AttributeSetInstance_ID=0)"	// #4
+				+ " AND c.M_CostType_ID=? AND c.C_AcctSchema_ID=?"	// #5, #6
+				+ " AND c.IsActive='Y' AND ce.IsActive='Y'"
+				+ " AND ce.CostingMethod IS NULL AND ce.CostElementType <> 'M' AND ce.C_Charge_ID > 0"
+				+ " ORDER BY c.M_CostElement_ID, c.M_AttributeSetInstance_ID DESC";
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			pstmt = DB.prepareStatement(sql, trxName);
+			pstmt.setInt(1, product.getAD_Client_ID());
+			pstmt.setInt(2, AD_Org_ID);
+			pstmt.setInt(3, product.getM_Product_ID());
+			pstmt.setInt(4, M_AttributeSetInstance_ID);
+			pstmt.setInt(5, as.getM_CostType_ID());
+			pstmt.setInt(6, as.getC_AcctSchema_ID());
+			rs = pstmt.executeQuery();
+			while (rs.next())
+			{
+				int M_CostElement_ID = rs.getInt(3);
+				// Prefer exact ASI row over ASI=0 fallback per cost element
+				if (!seenCostElements.add(M_CostElement_ID))
+					continue;
+
+				BigDecimal manual = BigDecimal.ZERO;
+				BigDecimal costPrice = rs.getBigDecimal(1);
+				BigDecimal percent = rs.getBigDecimal(2);
+				if (s_log.isLoggable(Level.FINEST))
+					s_log.finest("CurrentCostPrice=" + costPrice
+						+ ", M_CostElement_ID=" + M_CostElement_ID
+						+ ", Percent=" + percent);
+
+				if (costPrice != null && costPrice.signum() != 0)
+				{
+					manual = manual.add(costPrice.multiply(qty));
+				}
+				if (percent != null && percent.signum() != 0)
+				{
+					BigDecimal percentCost = currentMaterialCost.add(manual).multiply(percent);
+					percentCost = percentCost.divide(Env.ONEHUNDRED, precision, RoundingMode.HALF_UP);
+					manual = manual.add(percentCost);
+				}
+				if (manual.scale() > precision)
+					manual = manual.setScale(precision, RoundingMode.HALF_UP);
+				if (manual.signum() != 0)
+				{
+					MCostElement ce = Util.isEmpty(trxName)
+							? MCostElement.get(product.getCtx(), M_CostElement_ID)
+							: new MCostElement(product.getCtx(), M_CostElement_ID, trxName);
+					if (ce != null && ce.getC_Charge_ID() > 0)
+						manualCosts.add(new ManualCost(ce, manual));
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			throw new DBException(e, sql);
+		}
+		finally
+		{
+			DB.close(rs, pstmt);
+			rs = null;
+			pstmt = null;
+		}
+
+		return manualCosts.toArray(new ManualCost[0]);
+	}	//	getManualCosts
 
 	/**
 	 * 	Get Seed Costs
@@ -2006,6 +2135,56 @@ public class MCost extends X_M_Cost implements ICostInfo
 		public boolean isSkipCostingProcessing(String costingLevel)
 		{
 			return MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel) && M_AttributeSetInstance_ID == 0;
+		}
+	}
+
+	/**
+	 * Check whether the tenant has any active manual (non-material) cost element
+	 * configured with a {@code C_Charge_ID}.
+	 * @param AD_Client_ID tenant ID
+	 * @param trxName transaction name
+	 * @return true if at least one active charge-mapped manual cost element exists
+	 */
+	public static boolean hasChargeManualCostElements(int AD_Client_ID, String trxName)
+	{
+		final String sql = "SELECT COUNT(*) FROM M_CostElement "
+				+ "WHERE AD_Client_ID=? AND IsActive='Y' AND CostingMethod IS NULL "
+				+ "AND CostElementType<>'M' AND C_Charge_ID > 0";
+		return DB.getSQLValueEx(trxName, sql, AD_Client_ID) > 0;
+	}
+
+	/**
+	 * Manual (non-material) cost entry associated with a {@link MCostElement}.
+	 */
+	public static class ManualCost
+	{
+		private final MCostElement costElement;
+		private final BigDecimal amount;
+
+		/**
+		 * @param ce cost element
+		 * @param amt calculated manual cost amount
+		 */
+		public ManualCost(MCostElement ce, BigDecimal amt)
+		{
+			costElement = ce;
+			amount = amt;
+		}
+
+		/**
+		 * @return cost element
+		 */
+		public MCostElement getCostElement()
+		{
+			return costElement;
+		}
+
+		/**
+		 * @return manual cost amount
+		 */
+		public BigDecimal getAmount()
+		{
+			return amount;
 		}
 	}
 }	//	MCost

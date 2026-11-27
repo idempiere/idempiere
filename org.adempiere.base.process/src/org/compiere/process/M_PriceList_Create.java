@@ -31,6 +31,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MClientInfo;
+import org.compiere.model.MCost.ManualCost;
 import org.compiere.model.MDiscountSchema;
 import org.compiere.model.MDiscountSchemaLine;
 import org.compiere.model.MPriceList;
@@ -409,6 +410,11 @@ public class M_PriceList_Create extends SvrProcess {
 			ProductCost m_productCost = new ProductCost(getCtx(), M_Product_ID, 0, get_TrxName());
 			m_productCost.setQty(BigDecimal.ONE);
 			BigDecimal costs = m_productCost.getProductCosts(as, m_plv.getAD_Org_ID(), null, 0, false);	
+			ManualCost[] manualCosts = m_productCost.getManualCosts(as, m_plv.getAD_Org_ID(), costs);
+			for (ManualCost manualCost : manualCosts) {
+				if (manualCost.getAmount() != null)
+					costs = costs == null ? manualCost.getAmount() : costs.add(manualCost.getAmount());
+			}
 			if (costs == null || costs.signum() == 0) { //	zero costs OK
 				MProduct product = new MProduct(getCtx(), M_Product_ID, get_TrxName());
 				if (product.isStocked())
