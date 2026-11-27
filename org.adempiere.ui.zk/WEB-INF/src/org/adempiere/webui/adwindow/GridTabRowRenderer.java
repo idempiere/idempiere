@@ -635,8 +635,8 @@ public class GridTabRowRenderer implements RowRenderer<Object[]>, RowRendererExt
 								    			
     			if (editor.getComponent() instanceof AbstractComponent) {
     				String entityTypeInf = Env.IsShowTechnicalInfOnHelp(Env.getCtx())?"this.fieldEntityType());":"'');";
-    				editor.getComponent().setWidgetOverride("fieldHeader", HelpController.escapeJavascriptContent(gridPanelFields[i].getHeader()));
-        			editor.getComponent().setWidgetOverride("fieldDescription", HelpController.escapeJavascriptContent(gridPanelFields[i].getDescription()));
+    				editor.getComponent().setWidgetOverride("fieldHeader", HelpController.escapeJavascriptContent(HelpController.escapeHtmlText(gridPanelFields[i].getHeader())));
+        			editor.getComponent().setWidgetOverride("fieldDescription", HelpController.escapeJavascriptContent(HelpController.escapeHtmlText(gridPanelFields[i].getDescription())));
         			editor.getComponent().setWidgetOverride("fieldHelp", HelpController.escapeJavascriptContent(gridPanelFields[i].getHelp()));
         			editor.getComponent().setWidgetOverride("fieldEntityType", HelpController.escapeJavascriptContent(gridPanelFields[i].getEntityType()));
         			editor.getComponent().setWidgetListener("onFocus", "zWatch.fire('onFieldTooltip', this, null, this.fieldHeader(), this.fieldDescription(), this.fieldHelp(),"+entityTypeInf);

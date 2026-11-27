@@ -6,6 +6,7 @@ package org.adempiere.webui.window;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.session.SessionManager;
@@ -228,12 +229,13 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 	private void onSave0(Trx trx) {
 		if (ctxHelpMsg != null && ctxHelpMsg.getAD_Client_ID() == Env.getAD_Client_ID(Env.getCtx())) {
 			if (Env.isBaseLanguage(Env.getCtx(), I_AD_CtxHelpMsg.Table_Name)) {
-				ctxHelpMsg.setMsgText(helpTextbox.getValue());
+				if (helpTextbox.getValue() != null)
+					ctxHelpMsg.setMsgText(AEnv.sanitize(helpTextbox.getValue()));
 				ctxHelpMsg.saveEx(trx.getTrxName());
 			}
 			StringBuilder update = new StringBuilder("UPDATE AD_CtxHelpMsg_Trl SET MsgText=? ");
 			update.append("WHERE AD_CtxHelpMsg_ID=? AND AD_Client_ID=? AND AD_Language=? AND IsActive='Y' ");
-			Object[] params = new Object[]{helpTextbox.getValue(), ctxHelpMsg.get_ID(), ctxHelpMsg.getAD_Client_ID(), Env.getAD_Language(Env.getCtx())};
+			Object[] params = new Object[]{AEnv.sanitize(helpTextbox.getValue()), ctxHelpMsg.get_ID(), ctxHelpMsg.getAD_Client_ID(), Env.getAD_Language(Env.getCtx())};
 			DB.executeUpdateEx(update.toString(), params, trx.getTrxName());			
 		} else {
 			/* this whole block code is forcefully writing records on System tenant */
@@ -266,7 +268,8 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 				MCtxHelpMsg msg = new MCtxHelpMsg(Env.getCtx(), 0, trx.getTrxName());
 				msg.setAD_CtxHelp_ID(ctxHelp.getAD_CtxHelp_ID());
 				msg.setClientOrg(0, 0);
-				msg.setMsgText(baseContent);
+				if (baseContent != null)
+					msg.setMsgText(AEnv.sanitize(baseContent));
 				msg.saveCrossTenantSafeEx();
 				suggestion.setAD_CtxHelpMsg_ID(msg.getAD_CtxHelpMsg_ID());
 				if (!Util.isEmpty(translatedContent) && !Env.isBaseLanguage(Env.getCtx(), I_AD_CtxHelpMsg.Table_Name)) {
@@ -276,7 +279,7 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 						List<Object> params = new ArrayList<Object>();
 						StringBuilder update = new StringBuilder("UPDATE AD_CtxHelpMsg_Trl SET MsgText=? ");
 						update.append("WHERE AD_CtxHelpMsg_ID=? AND AD_Language=? AND AD_Client_ID=?");
-						params.add(translatedContent);						
+						params.add(AEnv.sanitize(translatedContent));
 						params.add(id);
 						params.add(Env.getAD_Language(Env.getCtx()));
 						params.add(0);
@@ -290,7 +293,7 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 						params.add(0);
 						params.add(msg.getAD_CtxHelpMsg_ID());
 						params.add(Env.getAD_Language(Env.getCtx()));
-						params.add(translatedContent);
+						params.add(AEnv.sanitize(translatedContent));
 						params.add(Env.getAD_User_ID(Env.getCtx()));
 						params.add(Env.getAD_User_ID(Env.getCtx()));
 						DB.executeUpdateEx(insert.toString(), params.toArray(), trx.getTrxName());
@@ -302,7 +305,8 @@ public class WCtxHelpSuggestion extends Window implements EventListener<Event> {
 			suggestion.set_ValueOfColumn("AD_UserClient_ID", Env.getAD_Client_ID(Env.getCtx()));
 			suggestion.setIsApproved(false);
 			suggestion.setProcessed(false);
-			suggestion.setMsgText(helpTextbox.getValue());
+			if (helpTextbox.getValue() != null)
+				suggestion.setMsgText(AEnv.sanitize(helpTextbox.getValue()));
 			suggestion.setIsSaveAsTenantCustomization(false);
 			
 			suggestion.saveCrossTenantSafeEx();
