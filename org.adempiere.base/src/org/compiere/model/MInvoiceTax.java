@@ -77,9 +77,7 @@ public class MInvoiceTax extends X_C_InvoiceTax
 			return null;
 		}
 		
-		retValue = new Query(line.getCtx(), Table_Name, "C_Invoice_ID=? AND C_Tax_ID=?", trxName)
-						.setParameters(line.getC_Invoice_ID(), C_Tax_ID)
-						.firstOnly();
+		retValue = MInvoiceTax.get(line.getC_Invoice_ID(), C_Tax_ID, trxName);
 		if (retValue != null)
 		{
 			retValue.set_TrxName(trxName);
@@ -105,7 +103,22 @@ public class MInvoiceTax extends X_C_InvoiceTax
 		if (s_log.isLoggable(Level.FINE)) s_log.fine("(new) " + retValue);
 		return retValue;
 	}	//	get
-	
+
+	/**
+	 * Retrieve an invoice tax record for the given invoice and tax within a transaction.
+	 *
+	 * @param C_Invoice_ID invoice identifier
+	 * @param C_Tax_ID     tax identifier
+	 * @param trxName      transaction name, or {@code null} for auto-commit
+	 * @return matching {@link MInvoiceTax} instance, or {@code null} if none exists
+	 */
+	public static MInvoiceTax get(int C_Invoice_ID, int C_Tax_ID, String trxName)
+	{
+		return new Query(Env.getCtx(), Table_Name, "C_Invoice_ID=? AND C_Tax_ID=?", trxName)
+					.setParameters(C_Invoice_ID, C_Tax_ID)
+					.firstOnly();
+	}
+
 	/**
 	 * 	Get Child Tax Lines for Invoice Line
 	 *	@param line invoice line
@@ -304,7 +317,7 @@ public class MInvoiceTax extends X_C_InvoiceTax
 		MTax tax = getTax();
 		int parentTaxId = tax.getParent_Tax_ID();
 		//
-		String sql = "SELECT il.LineNetAmt, COALESCE(il.TaxAmt,0), i.IsSOTrx "
+		String sql = "SELECT il.LineNetAmt, COALESCE(il.TaxAmt,0), i.IsSOTrx, il.C_Tax_ID "
 			+ "FROM C_InvoiceLine il"
 			+ " INNER JOIN C_Invoice i ON (il.C_Invoice_ID=i.C_Invoice_ID) "
 			+ "WHERE il.C_Invoice_ID=? ";
@@ -332,10 +345,13 @@ public class MInvoiceTax extends X_C_InvoiceTax
 				if (amt == null)
 					amt = Env.ZERO;
 				boolean isSOTrx = "Y".equals(rs.getString(3));
+
+				int lineTax_ID = rs.getInt(4);
 				//
 				// phib [ 1702807 ]: manual tax should never be amended
 				// on line level taxes
-				if (!documentLevel && amt.signum() != 0 && !isSOTrx)	//	manually entered
+				MTax lineTax = MTax.get(getCtx(), lineTax_ID);
+				if (!documentLevel && amt.signum() != 0 && !isSOTrx && lineTax != null && !lineTax.isSummary())	//	manually entered
 					;
 				else if (documentLevel || baseAmt.signum() == 0)
 					amt = Env.ZERO;
