@@ -78,21 +78,29 @@ public class StandardTaxProvider implements ITaxProvider {
 				for (int j = 0; j < cTaxes.length; j++)
 				{
 					MTax cTax = cTaxes[j];
+					MOrderTax newOTax = new Query(order.getCtx(), MOrderTax.Table_Name,
+							"C_Order_ID=? AND C_Tax_ID=?", order.get_TrxName())
+							.setParameters(order.getC_Order_ID(), cTax.getC_Tax_ID())
+							.firstOnly();
+					//
 					BigDecimal taxAmt = cTax.calculateTax(oTax.getTaxBaseAmt(), false, order.getPrecision());
 					//
-					MOrderTax newOTax = new MOrderTax(order.getCtx(), 0, order.get_TrxName());
-					newOTax.setClientOrg(order);
-					newOTax.setC_Order_ID(order.getC_Order_ID());
-					newOTax.setC_Tax_ID(cTax.getC_Tax_ID());
-					newOTax.setPrecision(order.getPrecision());
-					newOTax.setIsTaxIncluded(order.isTaxIncluded());
-					newOTax.setTaxBaseAmt(oTax.getTaxBaseAmt());
-					newOTax.setTaxAmt(taxAmt);
-					if (!newOTax.save(order.get_TrxName()))
-						return false;
-					//
-					if (!order.isTaxIncluded())
-						grandTotal = grandTotal.add(taxAmt);
+					if (newOTax == null)
+					{
+						newOTax = new MOrderTax(order.getCtx(), 0, order.get_TrxName());
+						newOTax.setClientOrg(order);
+						newOTax.setC_Order_ID(order.getC_Order_ID());
+						newOTax.setC_Tax_ID(cTax.getC_Tax_ID());
+						newOTax.setPrecision(order.getPrecision());
+						newOTax.setIsTaxIncluded(order.isTaxIncluded());
+						newOTax.setTaxBaseAmt(oTax.getTaxBaseAmt());
+						newOTax.setTaxAmt(taxAmt);
+						if (!newOTax.save(order.get_TrxName()))
+							return false;
+						//
+						if (!order.isTaxIncluded())
+							grandTotal = grandTotal.add(taxAmt);
+					}
 				}
 				if (!oTax.delete(true, order.get_TrxName()))
 					return false;
@@ -339,21 +347,29 @@ public class StandardTaxProvider implements ITaxProvider {
 				for (int j = 0; j < cTaxes.length; j++)
 				{
 					MTax cTax = cTaxes[j];
+					MRMATax newOTax = new Query(rma.getCtx(), MRMATax.Table_Name,
+							"M_RMA_ID=? AND C_Tax_ID=?", rma.get_TrxName())
+							.setParameters(rma.getM_RMA_ID(), cTax.getC_Tax_ID())
+							.firstOnly();
+					//
 					BigDecimal taxAmt = cTax.calculateTax(oTax.getTaxBaseAmt(), false, rma.getPrecision());
 					//
-					MRMATax newOTax = new MRMATax(rma.getCtx(), 0, rma.get_TrxName());
-					newOTax.setClientOrg(rma);
-					newOTax.setM_RMA_ID(rma.getM_RMA_ID());
-					newOTax.setC_Tax_ID(cTax.getC_Tax_ID());
-					newOTax.setPrecision(rma.getPrecision());
-					newOTax.setIsTaxIncluded(rma.isTaxIncluded());
-					newOTax.setTaxBaseAmt(oTax.getTaxBaseAmt());
-					newOTax.setTaxAmt(taxAmt);
-					if (!newOTax.save(rma.get_TrxName()))
-						return false;
-					//
-					if (!rma.isTaxIncluded())
-						grandTotal = grandTotal.add(taxAmt);
+					if (newOTax == null)
+					{
+						newOTax = new MRMATax(rma.getCtx(), 0, rma.get_TrxName());
+						newOTax.setClientOrg(rma);
+						newOTax.setM_RMA_ID(rma.getM_RMA_ID());
+						newOTax.setC_Tax_ID(cTax.getC_Tax_ID());
+						newOTax.setPrecision(rma.getPrecision());
+						newOTax.setIsTaxIncluded(rma.isTaxIncluded());
+						newOTax.setTaxBaseAmt(oTax.getTaxBaseAmt());
+						newOTax.setTaxAmt(taxAmt);
+						if (!newOTax.save(rma.get_TrxName()))
+							return false;
+						//
+						if (!rma.isTaxIncluded())
+							grandTotal = grandTotal.add(taxAmt);
+					}
 				}
 				if (!oTax.delete(true, rma.get_TrxName()))
 					return false;

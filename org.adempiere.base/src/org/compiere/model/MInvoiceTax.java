@@ -104,6 +104,14 @@ public class MInvoiceTax extends X_C_InvoiceTax
 		return retValue;
 	}	//	get
 
+	/**
+	 * Retrieve an invoice tax record for the given invoice and tax within a transaction.
+	 *
+	 * @param C_Invoice_ID invoice identifier
+	 * @param C_Tax_ID     tax identifier
+	 * @param trxName      transaction name, or {@code null} for auto-commit
+	 * @return matching {@link MInvoiceTax} instance, or {@code null} if none exists
+	 */
 	public static MInvoiceTax get(int C_Invoice_ID, int C_Tax_ID, String trxName)
 	{
 		return new Query(Env.getCtx(), Table_Name, "C_Invoice_ID=? AND C_Tax_ID=?", trxName)
@@ -343,7 +351,7 @@ public class MInvoiceTax extends X_C_InvoiceTax
 				// phib [ 1702807 ]: manual tax should never be amended
 				// on line level taxes
 				MTax lineTax = MTax.get(getCtx(), lineTax_ID);
-				if (!documentLevel && amt.signum() != 0 && !isSOTrx && !lineTax.isSummary())	//	manually entered
+				if (!documentLevel && amt.signum() != 0 && !isSOTrx && lineTax != null && !lineTax.isSummary())	//	manually entered
 					;
 				else if (documentLevel || baseAmt.signum() == 0)
 					amt = Env.ZERO;
