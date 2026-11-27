@@ -864,7 +864,7 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 	 */
 	public void addTableValueChangeListener(TableValueChangeListener listener)
 	{
-	    if (listener == null)
+	    if (listener == null || m_listeners.contains(listener))
 	    {
 	    	return;
 	    }
@@ -884,6 +884,22 @@ public class WListItemRenderer implements ListitemRenderer<Object>, EventListene
 		}
 
 	    m_listeners.remove(listener);
+	}
+
+	/**
+	 * Check whether the renderer is already registered with another Listbox.
+	 *
+	 * @param listener The listener to check
+	 * @return true if another listener is registered
+	 */
+	public boolean isUsedByAnotherListbox(TableValueChangeListener listener)
+	{
+	    for (TableValueChangeListener registeredListener : m_listeners)
+	    {
+	        if (registeredListener != listener)
+	            return true;
+	    }
+	    return false;
 	}
 
 	/**

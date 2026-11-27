@@ -46,9 +46,11 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Util;
 import org.idempiere.db.util.SQLFragment;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listhead;
 import org.zkoss.zul.Listheader;
+import org.zkoss.zul.ListitemRenderer;
 
 /**
  * {@link IMiniTable} implementation for Zk.
@@ -105,35 +107,70 @@ public class WListbox extends Listbox implements IMiniTable, TableValueChangeLis
 
 	/**
 	 * Set the data model and column header names for the Listbox.
+	 * Uses the default WListItemRenderer.
 	 *
 	 * @param model        The data model to assign to the table
 	 * @param columnNames  Header names of the table columns
 	 */
-	public void setData(ListModelTable model, List< ? extends String> columnNames)
+	public void setData(ListModelTable model, List<? extends String> columnNames)
 	{
-		WListItemRenderer rowRenderer = null;
-		if (columnNames != null && columnNames.size() > 0)
-		{
-	    	//	 instantiate our custom row renderer
-		    rowRenderer = new WListItemRenderer(columnNames);
+	    WListItemRenderer rowRenderer = null;
 
-	    	// add listener for listening to component changes
-	    	rowRenderer.addTableValueChangeListener(this);
-		}
-	    // assign the model and renderer
-	    this.setModel(model);
+	    if (columnNames != null && columnNames.size() > 0)
+	        rowRenderer = new WListItemRenderer(columnNames);
+
+	    setData(model, columnNames, rowRenderer);
+	}
+
+	/**
+	 * Set the data model, column header names and a custom row renderer for the Listbox.
+	 *
+	 * @param model        The data model to assign to the table
+	 * @param columnNames  Header names of the table columns
+	 * @param rowRenderer  Custom renderer used to render the table rows
+	 */
+	public void setData(ListModelTable model, List<? extends String> columnNames,
+	        WListItemRenderer rowRenderer)
+	{
 	    if (rowRenderer != null)
 	    {
-	    	getModel().setNoColumns(columnNames.size());
-	    	this.setItemRenderer(rowRenderer);
+	        if (columnNames == null || columnNames.isEmpty())
+	            throw new IllegalArgumentException(
+	                    "columnNames is required when a renderer is provided");
 
-	    	//recreate listhead if needed
-		    ListHead head = getListHead();
-		    if (head != null)
-		    {
-		    	head.getChildren().clear();
-		    	rowRenderer.renderListHead(head);
-	    	}
+	        if (rowRenderer.getNoColumns() != columnNames.size())
+	            throw new IllegalArgumentException(
+	                    "The renderer must be initialized with the same number of columns as columnNames");
+
+	        if (rowRenderer.isUsedByAnotherListbox(this))
+	            throw new IllegalArgumentException("A renderer cannot be shared between multiple Listboxes");
+	    }
+
+	    // Remove this listbox from the previous renderer
+	    ListitemRenderer<Object> previousRenderer = getItemRenderer();
+	    if (rowRenderer != null && previousRenderer instanceof WListItemRenderer && previousRenderer != rowRenderer) {
+	    	WListItemRenderer previous = (WListItemRenderer) previousRenderer;
+	    	previous.removeTableValueChangeListener(this);
+	    	removeEventListener(Events.ON_SELECT, previous);
+	    }
+
+	    if (rowRenderer != null)
+	        rowRenderer.addTableValueChangeListener(this);
+
+	    this.setModel(model);
+
+	    if (rowRenderer != null)
+	    {
+	        getModel().setNoColumns(columnNames.size());
+	        this.setItemRenderer(rowRenderer);
+
+	        // Recreate listhead if needed
+	        ListHead head = getListHead();
+	        if (head != null)
+	        {
+	            head.getChildren().clear();
+	            rowRenderer.renderListHead(head);
+	        }
 	    }
 
 	    repaint();
