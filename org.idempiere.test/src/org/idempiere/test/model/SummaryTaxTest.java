@@ -13,6 +13,7 @@
 package org.idempiere.test.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -35,8 +36,12 @@ import org.compiere.model.MPriceList;
 import org.compiere.model.MPriceListVersion;
 import org.compiere.model.MRMA;
 import org.compiere.model.MRMALine;
+import org.compiere.model.MRMATax;
 import org.compiere.model.MTax;
 import org.compiere.model.MTaxCategory;
+import org.compiere.model.Query;
+import org.compiere.process.ProcessInfo;
+import org.compiere.wf.MWorkflow;
 import org.compiere.process.DocAction;
 import org.compiere.util.CacheMgt;
 import org.compiere.util.Env;
@@ -63,6 +68,8 @@ import org.junit.jupiter.api.Test;
 public class SummaryTaxTest extends AbstractTestCase
 {
 
+	private static final Timestamp FIXTURE_DATE = TimeUtil.getDay(System.currentTimeMillis());
+
 	/**
 	 * Verifies that updating a customer invoice line after prepare recalculates child tax lines
 	 * in place without recreating the summary tax or duplicating child tax records.
@@ -76,7 +83,6 @@ public class SummaryTaxTest extends AbstractTestCase
 	public void testSummaryTaxUpdateAfterPrepare()
 	{
 		String trxName = getTrxName();
-		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
 		String uniqueSuffix = "_" + System.currentTimeMillis();
 
 		// Commit master tax/charge setup in a separate trx so MTax.get(ctx, id) can load them from
@@ -99,7 +105,7 @@ public class SummaryTaxTest extends AbstractTestCase
 			summaryTax = new MTax(Env.getCtx(), 0, setupTrxName);
 			summaryTax.setName("GST/PST 12%" + uniqueSuffix);
 			summaryTax.setC_TaxCategory_ID(taxCategory.getC_TaxCategory_ID());
-			summaryTax.setValidFrom(today);
+			summaryTax.setValidFrom(FIXTURE_DATE);
 			summaryTax.setIsSummary(true);
 			summaryTax.setRate(BigDecimal.ZERO);
 			summaryTax.setSOPOType(MTax.SOPOTYPE_Both);
@@ -109,7 +115,7 @@ public class SummaryTaxTest extends AbstractTestCase
 			gstTax.setName("GST 5%" + uniqueSuffix);
 			gstTax.setC_TaxCategory_ID(taxCategory.getC_TaxCategory_ID());
 			gstTax.setParent_Tax_ID(summaryTax.getC_Tax_ID());
-			gstTax.setValidFrom(today);
+			gstTax.setValidFrom(FIXTURE_DATE);
 			gstTax.setIsSummary(false);
 			gstTax.setRate(new BigDecimal("5"));
 			gstTax.setSOPOType(MTax.SOPOTYPE_Both);
@@ -119,7 +125,7 @@ public class SummaryTaxTest extends AbstractTestCase
 			pstTax.setName("PST 7%" + uniqueSuffix);
 			pstTax.setC_TaxCategory_ID(taxCategory.getC_TaxCategory_ID());
 			pstTax.setParent_Tax_ID(summaryTax.getC_Tax_ID());
-			pstTax.setValidFrom(today);
+			pstTax.setValidFrom(FIXTURE_DATE);
 			pstTax.setIsSummary(false);
 			pstTax.setRate(new BigDecimal("7"));
 			pstTax.setSOPOType(MTax.SOPOTYPE_Both);
@@ -150,6 +156,8 @@ public class SummaryTaxTest extends AbstractTestCase
 			invoice.setBPartner(bpartner);
 			invoice.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_ARInvoice);
 			invoice.setIsSOTrx(true);
+			invoice.setDateInvoiced(FIXTURE_DATE);
+			invoice.setDateAcct(FIXTURE_DATE);
 			invoice.saveEx();
 
 			// Create invoice line with Consulting Service Fee = 100.00 and Summary Tax "GST/PST
@@ -240,7 +248,6 @@ public class SummaryTaxTest extends AbstractTestCase
 	public void testTaxIncludedPriceListWithSummaryTax()
 	{
 		String trxName = getTrxName();
-		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
 		String uniqueSuffix = "_" + System.currentTimeMillis();
 
 		String setupTrxName = Trx.createTrxName("TaxSetup5117_2");
@@ -266,7 +273,7 @@ public class SummaryTaxTest extends AbstractTestCase
 
 			plv = new MPriceListVersion(retailTaxIncludedPL);
 			plv.setName("Standard Version");
-			plv.setValidFrom(today);
+			plv.setValidFrom(FIXTURE_DATE);
 			plv.setM_DiscountSchema_ID(DictionaryIDs.M_DiscountSchema.SALES_2001.id);
 			plv.saveEx();
 
@@ -277,7 +284,7 @@ public class SummaryTaxTest extends AbstractTestCase
 			summaryTax = new MTax(Env.getCtx(), 0, setupTrxName);
 			summaryTax.setName("GST/PST 10%" + uniqueSuffix);
 			summaryTax.setC_TaxCategory_ID(taxCategory.getC_TaxCategory_ID());
-			summaryTax.setValidFrom(today);
+			summaryTax.setValidFrom(FIXTURE_DATE);
 			summaryTax.setIsSummary(true);
 			summaryTax.setRate(new BigDecimal("10"));
 			summaryTax.setSOPOType(MTax.SOPOTYPE_Both);
@@ -287,7 +294,7 @@ public class SummaryTaxTest extends AbstractTestCase
 			gstChildTax.setName("GST 4%" + uniqueSuffix);
 			gstChildTax.setC_TaxCategory_ID(taxCategory.getC_TaxCategory_ID());
 			gstChildTax.setParent_Tax_ID(summaryTax.getC_Tax_ID());
-			gstChildTax.setValidFrom(today);
+			gstChildTax.setValidFrom(FIXTURE_DATE);
 			gstChildTax.setIsSummary(false);
 			gstChildTax.setRate(new BigDecimal("4"));
 			gstChildTax.setSOPOType(MTax.SOPOTYPE_Both);
@@ -297,7 +304,7 @@ public class SummaryTaxTest extends AbstractTestCase
 			pstChildTax.setName("PST 6%" + uniqueSuffix);
 			pstChildTax.setC_TaxCategory_ID(taxCategory.getC_TaxCategory_ID());
 			pstChildTax.setParent_Tax_ID(summaryTax.getC_Tax_ID());
-			pstChildTax.setValidFrom(today);
+			pstChildTax.setValidFrom(FIXTURE_DATE);
 			pstChildTax.setIsSummary(false);
 			pstChildTax.setRate(new BigDecimal("6"));
 			pstChildTax.setSOPOType(MTax.SOPOTYPE_Both);
@@ -327,6 +334,9 @@ public class SummaryTaxTest extends AbstractTestCase
 			MInvoice invoice = new MInvoice(Env.getCtx(), 0, trxName);
 			invoice.setBPartner(bpartner);
 			invoice.setM_PriceList_ID(retailTaxIncludedPL.getM_PriceList_ID());
+			invoice.setIsTaxIncluded(true);
+			invoice.setDateInvoiced(FIXTURE_DATE);
+			invoice.setDateAcct(FIXTURE_DATE);
 			invoice.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_ARInvoice);
 			invoice.setIsSOTrx(true);
 			invoice.saveEx();
@@ -352,12 +362,12 @@ public class SummaryTaxTest extends AbstractTestCase
 			MInvoiceTax pstLine = MInvoiceTax.get(invoice.getC_Invoice_ID(), pstChildTax.getC_Tax_ID(), trxName);
 			assertNotNull(gstLine, "GST 4% tax line should exist");
 			assertNotNull(pstLine, "PST 6% tax line should exist");
-			assertEquals(0, new BigDecimal("4.40").compareTo(gstLine.getTaxAmt()), "GST 4% tax amount should be 4.40");
-			assertEquals(0, new BigDecimal("6.60").compareTo(pstLine.getTaxAmt()), "PST 6% tax amount should be 6.60");
+			assertEquals(0, new BigDecimal("3.98").compareTo(gstLine.getTaxAmt()), "GST 4% tax amount should be 3.98");
+			assertEquals(0, new BigDecimal("5.97").compareTo(pstLine.getTaxAmt()), "PST 6% tax amount should be 5.97");
 
 			invoice.load(trxName);
-			BigDecimal grandTotalAfterPrepare = invoice.getGrandTotal();
-			assertTrue(grandTotalAfterPrepare.signum() > 0, "Grand Total should be positive");
+			assertEquals(0, new BigDecimal("110.00").compareTo(invoice.getGrandTotal()),
+							"Grand Total on tax-included invoice after prepare should be 110.00");
 
 			// Update line price (110.00 -> 220.00) and verify taxes scale proportionally without
 			// duplication
@@ -371,12 +381,12 @@ public class SummaryTaxTest extends AbstractTestCase
 
 			gstLine = MInvoiceTax.get(invoice.getC_Invoice_ID(), gstChildTax.getC_Tax_ID(), trxName);
 			pstLine = MInvoiceTax.get(invoice.getC_Invoice_ID(), pstChildTax.getC_Tax_ID(), trxName);
-			assertEquals(0, new BigDecimal("8.80").compareTo(gstLine.getTaxAmt()), "Updated GST 4% tax amount should be 8.80");
-			assertEquals(0, new BigDecimal("13.20").compareTo(pstLine.getTaxAmt()), "Updated PST 6% tax amount should be 13.20");
+			assertEquals(0, new BigDecimal("7.96").compareTo(gstLine.getTaxAmt()), "Updated GST 4% tax amount should be 7.96");
+			assertEquals(0, new BigDecimal("11.95").compareTo(pstLine.getTaxAmt()), "Updated PST 6% tax amount should be 11.95");
 
 			invoice.load(trxName);
-			assertEquals(0, grandTotalAfterPrepare.multiply(new BigDecimal("2")).compareTo(invoice.getGrandTotal()),
-							"Doubling line price should exactly double Grand Total (no double-tax bug)");
+			assertEquals(0, new BigDecimal("220.00").compareTo(invoice.getGrandTotal()),
+							"Grand Total on tax-included invoice after line update should be 220.00");
 		}
 		finally
 		{
@@ -412,7 +422,6 @@ public class SummaryTaxTest extends AbstractTestCase
 	@Test
 	public void testSummaryTaxCombinedWithDirectChildTaxLine()
 	{
-		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
 		String trxName = getTrxName();
 		String uniqueSuffix = "_" + System.currentTimeMillis();
 
@@ -434,7 +443,7 @@ public class SummaryTaxTest extends AbstractTestCase
 			sgstCgstSummaryTax = new MTax(Env.getCtx(), 0, setupTrxName);
 			sgstCgstSummaryTax.setName("SGST + CGST 18%" + uniqueSuffix);
 			sgstCgstSummaryTax.setC_TaxCategory_ID(taxCategory.getC_TaxCategory_ID());
-			sgstCgstSummaryTax.setValidFrom(today);
+			sgstCgstSummaryTax.setValidFrom(FIXTURE_DATE);
 			sgstCgstSummaryTax.setIsSummary(true);
 			sgstCgstSummaryTax.setRate(BigDecimal.ZERO);
 			sgstCgstSummaryTax.setSOPOType(MTax.SOPOTYPE_Both);
@@ -444,7 +453,7 @@ public class SummaryTaxTest extends AbstractTestCase
 			sgstTax.setName("SGST 9%" + uniqueSuffix);
 			sgstTax.setC_TaxCategory_ID(taxCategory.getC_TaxCategory_ID());
 			sgstTax.setParent_Tax_ID(sgstCgstSummaryTax.getC_Tax_ID());
-			sgstTax.setValidFrom(today);
+			sgstTax.setValidFrom(FIXTURE_DATE);
 			sgstTax.setIsSummary(false);
 			sgstTax.setRate(new BigDecimal("9"));
 			sgstTax.setSOPOType(MTax.SOPOTYPE_Both);
@@ -454,7 +463,7 @@ public class SummaryTaxTest extends AbstractTestCase
 			cgstTax.setName("CGST 9%" + uniqueSuffix);
 			cgstTax.setC_TaxCategory_ID(taxCategory.getC_TaxCategory_ID());
 			cgstTax.setParent_Tax_ID(sgstCgstSummaryTax.getC_Tax_ID());
-			cgstTax.setValidFrom(today);
+			cgstTax.setValidFrom(FIXTURE_DATE);
 			cgstTax.setIsSummary(false);
 			cgstTax.setRate(new BigDecimal("9"));
 			cgstTax.setSOPOType(MTax.SOPOTYPE_Both);
@@ -485,6 +494,8 @@ public class SummaryTaxTest extends AbstractTestCase
 			invoice.setBPartner(bpartner);
 			invoice.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_ARInvoice);
 			invoice.setIsSOTrx(true);
+			invoice.setDateInvoiced(FIXTURE_DATE);
+			invoice.setDateAcct(FIXTURE_DATE);
 			invoice.saveEx();
 
 			// Line 1: Amount 100.00 with Summary Tax ("SGST + CGST 18%" -> 9.00 SGST + 9.00 CGST)
@@ -571,7 +582,6 @@ public class SummaryTaxTest extends AbstractTestCase
 	public void testOrderSummaryTaxUpdateAfterPrepare()
 	{
 		String trxName = getTrxName();
-		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
 		String uniqueSuffix = "_" + System.currentTimeMillis();
 
 		String setupTrxName = Trx.createTrxName("TaxSetup5117_Order");
@@ -592,7 +602,7 @@ public class SummaryTaxTest extends AbstractTestCase
 			summaryTax = new MTax(Env.getCtx(), 0, setupTrxName);
 			summaryTax.setName("Order GST/PST 12%" + uniqueSuffix);
 			summaryTax.setC_TaxCategory_ID(taxCategory.getC_TaxCategory_ID());
-			summaryTax.setValidFrom(today);
+			summaryTax.setValidFrom(FIXTURE_DATE);
 			summaryTax.setIsSummary(true);
 			summaryTax.setRate(BigDecimal.ZERO);
 			summaryTax.setSOPOType(MTax.SOPOTYPE_Both);
@@ -602,7 +612,7 @@ public class SummaryTaxTest extends AbstractTestCase
 			gstTax.setName("Order GST 5%" + uniqueSuffix);
 			gstTax.setC_TaxCategory_ID(taxCategory.getC_TaxCategory_ID());
 			gstTax.setParent_Tax_ID(summaryTax.getC_Tax_ID());
-			gstTax.setValidFrom(today);
+			gstTax.setValidFrom(FIXTURE_DATE);
 			gstTax.setIsSummary(false);
 			gstTax.setRate(new BigDecimal("5"));
 			gstTax.setSOPOType(MTax.SOPOTYPE_Both);
@@ -612,7 +622,7 @@ public class SummaryTaxTest extends AbstractTestCase
 			pstTax.setName("Order PST 7%" + uniqueSuffix);
 			pstTax.setC_TaxCategory_ID(taxCategory.getC_TaxCategory_ID());
 			pstTax.setParent_Tax_ID(summaryTax.getC_Tax_ID());
-			pstTax.setValidFrom(today);
+			pstTax.setValidFrom(FIXTURE_DATE);
 			pstTax.setIsSummary(false);
 			pstTax.setRate(new BigDecimal("7"));
 			pstTax.setSOPOType(MTax.SOPOTYPE_Both);
@@ -643,6 +653,8 @@ public class SummaryTaxTest extends AbstractTestCase
 			order.setBPartner(bpartner);
 			order.setC_DocTypeTarget_ID(MDocType.DOCSUBTYPESO_StandardOrder);
 			order.setIsSOTrx(true);
+			order.setDateOrdered(FIXTURE_DATE);
+			order.setDatePromised(FIXTURE_DATE);
 			order.saveEx();
 
 			MOrderLine line = new MOrderLine(order);
@@ -657,16 +669,16 @@ public class SummaryTaxTest extends AbstractTestCase
 
 			MOrderTax[] taxesAfterPrepare = order.getTaxes(true);
 			assertEquals(2, taxesAfterPrepare.length, "Summary tax should split into 2 child order tax lines");
-			assertNull(new org.compiere.model.Query(Env.getCtx(), MOrderTax.Table_Name,
+			assertNull(new Query(Env.getCtx(), MOrderTax.Table_Name,
 							"C_Order_ID=? AND C_Tax_ID=?", trxName)
 											.setParameters(order.getC_Order_ID(), summaryTax.getC_Tax_ID())
 											.firstOnly(), "Summary tax record should be deleted after prepare");
 
-			MOrderTax gstLine = new org.compiere.model.Query(Env.getCtx(), MOrderTax.Table_Name,
+			MOrderTax gstLine = new Query(Env.getCtx(), MOrderTax.Table_Name,
 							"C_Order_ID=? AND C_Tax_ID=?", trxName)
 											.setParameters(order.getC_Order_ID(), gstTax.getC_Tax_ID())
 											.firstOnly();
-			MOrderTax pstLine = new org.compiere.model.Query(Env.getCtx(), MOrderTax.Table_Name,
+			MOrderTax pstLine = new Query(Env.getCtx(), MOrderTax.Table_Name,
 							"C_Order_ID=? AND C_Tax_ID=?", trxName)
 											.setParameters(order.getC_Order_ID(), pstTax.getC_Tax_ID())
 											.firstOnly();
@@ -687,16 +699,16 @@ public class SummaryTaxTest extends AbstractTestCase
 			order.saveEx();
 
 			assertEquals(2, order.getTaxes(true).length, "Should still have only 2 child order tax lines after update");
-			assertNull(new org.compiere.model.Query(Env.getCtx(), MOrderTax.Table_Name,
+			assertNull(new Query(Env.getCtx(), MOrderTax.Table_Name,
 							"C_Order_ID=? AND C_Tax_ID=?", trxName)
 											.setParameters(order.getC_Order_ID(), summaryTax.getC_Tax_ID())
 											.firstOnly(), "Summary tax record must not reappear");
 
-			gstLine = new org.compiere.model.Query(Env.getCtx(), MOrderTax.Table_Name,
+			gstLine = new Query(Env.getCtx(), MOrderTax.Table_Name,
 							"C_Order_ID=? AND C_Tax_ID=?", trxName)
 											.setParameters(order.getC_Order_ID(), gstTax.getC_Tax_ID())
 											.firstOnly();
-			pstLine = new org.compiere.model.Query(Env.getCtx(), MOrderTax.Table_Name,
+			pstLine = new Query(Env.getCtx(), MOrderTax.Table_Name,
 							"C_Order_ID=? AND C_Tax_ID=?", trxName)
 											.setParameters(order.getC_Order_ID(), pstTax.getC_Tax_ID())
 											.firstOnly();
@@ -729,7 +741,7 @@ public class SummaryTaxTest extends AbstractTestCase
 	 * ({@code StandardTaxProvider.calculateRMATaxTotal}).
 	 * <p>
 	 * Creates a completed order and customer shipment, prepares an RMA using {@code GST/PST 12%},
-	 * and verifies child {@link org.compiere.model.MRMATax} rows ({@code GST 5%}, {@code PST 7%})
+	 * and verifies child {@link MRMATax} rows ({@code GST 5%}, {@code PST 7%})
 	 * and
 	 * {@code Amt} update without duplicate tax lines on re-prepare.
 	 */
@@ -737,7 +749,6 @@ public class SummaryTaxTest extends AbstractTestCase
 	public void testRMASummaryTaxUpdateAfterPrepare()
 	{
 		String trxName = getTrxName();
-		Timestamp today = TimeUtil.getDay(System.currentTimeMillis());
 		String uniqueSuffix = "_" + System.currentTimeMillis();
 
 		String setupTrxName = Trx.createTrxName("TaxSetup5117_RMA");
@@ -757,7 +768,7 @@ public class SummaryTaxTest extends AbstractTestCase
 			summaryTax = new MTax(Env.getCtx(), 0, setupTrxName);
 			summaryTax.setName("RMA GST/PST 12%" + uniqueSuffix);
 			summaryTax.setC_TaxCategory_ID(taxCategory.getC_TaxCategory_ID());
-			summaryTax.setValidFrom(today);
+			summaryTax.setValidFrom(FIXTURE_DATE);
 			summaryTax.setIsSummary(true);
 			summaryTax.setRate(BigDecimal.ZERO);
 			summaryTax.setSOPOType(MTax.SOPOTYPE_Both);
@@ -767,7 +778,7 @@ public class SummaryTaxTest extends AbstractTestCase
 			gstTax.setName("RMA GST 5%" + uniqueSuffix);
 			gstTax.setC_TaxCategory_ID(taxCategory.getC_TaxCategory_ID());
 			gstTax.setParent_Tax_ID(summaryTax.getC_Tax_ID());
-			gstTax.setValidFrom(today);
+			gstTax.setValidFrom(FIXTURE_DATE);
 			gstTax.setIsSummary(false);
 			gstTax.setRate(new BigDecimal("5"));
 			gstTax.setSOPOType(MTax.SOPOTYPE_Both);
@@ -777,7 +788,7 @@ public class SummaryTaxTest extends AbstractTestCase
 			pstTax.setName("RMA PST 7%" + uniqueSuffix);
 			pstTax.setC_TaxCategory_ID(taxCategory.getC_TaxCategory_ID());
 			pstTax.setParent_Tax_ID(summaryTax.getC_Tax_ID());
-			pstTax.setValidFrom(today);
+			pstTax.setValidFrom(FIXTURE_DATE);
 			pstTax.setIsSummary(false);
 			pstTax.setRate(new BigDecimal("7"));
 			pstTax.setSOPOType(MTax.SOPOTYPE_Both);
@@ -803,6 +814,9 @@ public class SummaryTaxTest extends AbstractTestCase
 			MOrder order = new MOrder(Env.getCtx(), 0, trxName);
 			order.setBPartner(bpartner);
 			order.setC_DocTypeTarget_ID(MDocType.DOCSUBTYPESO_StandardOrder);
+			order.setC_DocType_ID(order.getC_DocTypeTarget_ID());
+			order.setDateOrdered(FIXTURE_DATE);
+			order.setDatePromised(FIXTURE_DATE);
 			order.setIsSOTrx(true);
 			order.saveEx();
 
@@ -813,9 +827,9 @@ public class SummaryTaxTest extends AbstractTestCase
 			orderLine.setC_Tax_ID(summaryTax.getC_Tax_ID());
 			orderLine.saveEx();
 
-			assertTrue(order.processIt(DocAction.ACTION_Complete),
-							"Order complete should succeed: " + order.getProcessMsg());
-			order.saveEx();
+			ProcessInfo infoOrder = MWorkflow.runDocumentActionWorkflow(order, DocAction.ACTION_Complete);
+			order.load(trxName);
+			assertFalse(infoOrder.isError(), "Order complete should succeed: " + infoOrder.getSummary());
 
 			// 2. Create and complete Customer Shipment linked to the Order
 			MInOut shipment = new MInOut(Env.getCtx(), 0, trxName);
@@ -825,6 +839,7 @@ public class SummaryTaxTest extends AbstractTestCase
 			shipment.setC_Order_ID(order.getC_Order_ID());
 			shipment.setC_DocType_ID(DictionaryIDs.C_DocType.MM_SHIPMENT.id);
 			shipment.setMovementType(MInOut.MOVEMENTTYPE_CustomerShipment);
+			shipment.setMovementDate(FIXTURE_DATE);
 			shipment.setIsSOTrx(true);
 			shipment.saveEx();
 
@@ -836,9 +851,9 @@ public class SummaryTaxTest extends AbstractTestCase
 			shipmentLine.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
 			shipmentLine.saveEx();
 
-			assertTrue(shipment.processIt(DocAction.ACTION_Complete),
-							"Shipment complete should succeed: " + shipment.getProcessMsg());
-			shipment.saveEx();
+			ProcessInfo infoShipment = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
+			shipment.load(trxName);
+			assertFalse(infoShipment.isError(), "Shipment complete should succeed: " + infoShipment.getSummary());
 
 			// 3. Create RMA and RMA Line referencing the completed Shipment Line
 			MRMA rma = new MRMA(Env.getCtx(), 0, trxName);
@@ -862,18 +877,18 @@ public class SummaryTaxTest extends AbstractTestCase
 			assertTrue(rma.processIt(DocAction.ACTION_Prepare), "RMA prepare should succeed: " + rma.getProcessMsg());
 			rma.saveEx();
 
-			org.compiere.model.MRMATax[] taxesAfterPrepare = rma.getTaxes(true);
+			MRMATax[] taxesAfterPrepare = rma.getTaxes(true);
 			assertEquals(2, taxesAfterPrepare.length, "Summary tax should split into 2 child RMA tax lines");
-			assertNull(new org.compiere.model.Query(Env.getCtx(), org.compiere.model.MRMATax.Table_Name,
+			assertNull(new Query(Env.getCtx(), MRMATax.Table_Name,
 							"M_RMA_ID=? AND C_Tax_ID=?", trxName)
 											.setParameters(rma.getM_RMA_ID(), summaryTax.getC_Tax_ID())
 											.firstOnly(), "Summary tax record should be deleted after prepare");
 
-			org.compiere.model.MRMATax gstLine = new org.compiere.model.Query(Env.getCtx(), org.compiere.model.MRMATax.Table_Name,
+			MRMATax gstLine = new Query(Env.getCtx(), MRMATax.Table_Name,
 							"M_RMA_ID=? AND C_Tax_ID=?", trxName)
 											.setParameters(rma.getM_RMA_ID(), gstTax.getC_Tax_ID())
 											.firstOnly();
-			org.compiere.model.MRMATax pstLine = new org.compiere.model.Query(Env.getCtx(), org.compiere.model.MRMATax.Table_Name,
+			MRMATax pstLine = new Query(Env.getCtx(), MRMATax.Table_Name,
 							"M_RMA_ID=? AND C_Tax_ID=?", trxName)
 											.setParameters(rma.getM_RMA_ID(), pstTax.getC_Tax_ID())
 											.firstOnly();
@@ -895,16 +910,16 @@ public class SummaryTaxTest extends AbstractTestCase
 			rma.saveEx();
 
 			assertEquals(2, rma.getTaxes(true).length, "Should still have only 2 child RMA tax lines after update");
-			assertNull(new org.compiere.model.Query(Env.getCtx(), org.compiere.model.MRMATax.Table_Name,
+			assertNull(new Query(Env.getCtx(), MRMATax.Table_Name,
 							"M_RMA_ID=? AND C_Tax_ID=?", trxName)
 											.setParameters(rma.getM_RMA_ID(), summaryTax.getC_Tax_ID())
 											.firstOnly(), "Summary tax record must not reappear");
 
-			gstLine = new org.compiere.model.Query(Env.getCtx(), org.compiere.model.MRMATax.Table_Name,
+			gstLine = new Query(Env.getCtx(), MRMATax.Table_Name,
 							"M_RMA_ID=? AND C_Tax_ID=?", trxName)
 											.setParameters(rma.getM_RMA_ID(), gstTax.getC_Tax_ID())
 											.firstOnly();
-			pstLine = new org.compiere.model.Query(Env.getCtx(), org.compiere.model.MRMATax.Table_Name,
+			pstLine = new Query(Env.getCtx(), MRMATax.Table_Name,
 							"M_RMA_ID=? AND C_Tax_ID=?", trxName)
 											.setParameters(rma.getM_RMA_ID(), pstTax.getC_Tax_ID())
 											.firstOnly();
@@ -918,6 +933,187 @@ public class SummaryTaxTest extends AbstractTestCase
 		finally
 		{
 			rollback();
+			if (pstTax != null)
+				pstTax.deleteEx(true, null);
+			if (gstTax != null)
+				gstTax.deleteEx(true, null);
+			if (summaryTax != null)
+				summaryTax.deleteEx(true, null);
+			if (taxCategory != null)
+				taxCategory.deleteEx(true, null);
+			CacheMgt.get().reset();
+		}
+	}
+
+	/**
+	 * Verifies purchase invoice (IsSOTrx=false) tax calculation behavior:
+	 * 1. Updating a summary-tax line recalculates child taxes (verifying !lineTax.isSummary()
+	 *    prevents freezing summary tax amounts on AP invoices).
+	 * 2. An ordinary purchase tax preserves a manually entered TaxAmt (verifying phib [ 1702807 ]).
+	 */
+	@Test
+	public void testPurchaseInvoiceSummaryTaxAndManualTax()
+	{
+		String trxName = getTrxName();
+		String uniqueSuffix = "_" + System.currentTimeMillis();
+
+		String setupTrxName = Trx.createTrxName("TaxSetup5117_6");
+		Trx setupTrx = Trx.get(setupTrxName, true);
+
+		MTaxCategory taxCategory = null;
+		MTax summaryTax = null;
+		MTax gstTax = null;
+		MTax pstTax = null;
+		MTax standardTax = null;
+		MCharge summaryCharge = null;
+		MCharge standardCharge = null;
+
+		try
+		{
+			taxCategory = new MTaxCategory(Env.getCtx(), 0, setupTrxName);
+			taxCategory.setName("AP Tax Category" + uniqueSuffix);
+			taxCategory.saveEx();
+
+			summaryTax = new MTax(Env.getCtx(), 0, setupTrxName);
+			summaryTax.setName("AP GST/PST 12%" + uniqueSuffix);
+			summaryTax.setC_TaxCategory_ID(taxCategory.getC_TaxCategory_ID());
+			summaryTax.setValidFrom(FIXTURE_DATE);
+			summaryTax.setIsSummary(true);
+			summaryTax.setIsDocumentLevel(false);
+			summaryTax.setRate(BigDecimal.ZERO);
+			summaryTax.setSOPOType(MTax.SOPOTYPE_Both);
+			summaryTax.saveEx();
+
+			gstTax = new MTax(Env.getCtx(), 0, setupTrxName);
+			gstTax.setName("AP GST 5%" + uniqueSuffix);
+			gstTax.setC_TaxCategory_ID(taxCategory.getC_TaxCategory_ID());
+			gstTax.setParent_Tax_ID(summaryTax.getC_Tax_ID());
+			gstTax.setValidFrom(FIXTURE_DATE);
+			gstTax.setIsSummary(false);
+			gstTax.setIsDocumentLevel(false);
+			gstTax.setRate(new BigDecimal("5"));
+			gstTax.setSOPOType(MTax.SOPOTYPE_Both);
+			gstTax.saveEx();
+
+			pstTax = new MTax(Env.getCtx(), 0, setupTrxName);
+			pstTax.setName("AP PST 7%" + uniqueSuffix);
+			pstTax.setC_TaxCategory_ID(taxCategory.getC_TaxCategory_ID());
+			pstTax.setParent_Tax_ID(summaryTax.getC_Tax_ID());
+			pstTax.setValidFrom(FIXTURE_DATE);
+			pstTax.setIsSummary(false);
+			pstTax.setIsDocumentLevel(false);
+			pstTax.setRate(new BigDecimal("7"));
+			pstTax.setSOPOType(MTax.SOPOTYPE_Both);
+			pstTax.saveEx();
+
+			standardTax = new MTax(Env.getCtx(), 0, setupTrxName);
+			standardTax.setName("AP Standard 5%" + uniqueSuffix);
+			standardTax.setC_TaxCategory_ID(taxCategory.getC_TaxCategory_ID());
+			standardTax.setValidFrom(FIXTURE_DATE);
+			standardTax.setIsSummary(false);
+			standardTax.setIsDocumentLevel(false);
+			standardTax.setRate(new BigDecimal("5"));
+			standardTax.setSOPOType(MTax.SOPOTYPE_Both);
+			standardTax.saveEx();
+
+			summaryCharge = new MCharge(Env.getCtx(), 0, setupTrxName);
+			summaryCharge.setName("AP Summary Charge" + uniqueSuffix);
+			summaryCharge.setC_TaxCategory_ID(taxCategory.getC_TaxCategory_ID());
+			summaryCharge.setChargeAmt(new BigDecimal("100.00"));
+			summaryCharge.saveEx();
+
+			standardCharge = new MCharge(Env.getCtx(), 0, setupTrxName);
+			standardCharge.setName("AP Standard Charge" + uniqueSuffix);
+			standardCharge.setC_TaxCategory_ID(taxCategory.getC_TaxCategory_ID());
+			standardCharge.setChargeAmt(new BigDecimal("100.00"));
+			standardCharge.saveEx();
+
+			setupTrx.commit(true);
+		}
+		catch (Exception e)
+		{
+			setupTrx.rollback();
+			throw new RuntimeException(e);
+		}
+		finally
+		{
+			setupTrx.close();
+		}
+
+		try
+		{
+			MBPartner vendor = MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.PATIO.id);
+			MInvoice invoice = new MInvoice(Env.getCtx(), 0, trxName);
+			invoice.setBPartner(vendor);
+			invoice.setC_DocTypeTarget_ID(MDocType.DOCBASETYPE_APInvoice);
+			invoice.setIsSOTrx(false);
+			invoice.setDateInvoiced(FIXTURE_DATE);
+			invoice.setDateAcct(FIXTURE_DATE);
+			invoice.saveEx();
+
+			// 1. Line 1: Summary Tax (100.00 -> GST 5% + PST 7%)
+			MInvoiceLine line1 = new MInvoiceLine(invoice);
+			line1.setC_Charge_ID(summaryCharge.getC_Charge_ID());
+			line1.setQty(BigDecimal.ONE);
+			line1.setPrice(new BigDecimal("100.00"));
+			line1.setC_Tax_ID(summaryTax.getC_Tax_ID());
+			line1.saveEx();
+
+			// 2. Line 2: Standard Tax with manually entered TaxAmt = 8.00 (instead of standard 5.00)
+			MInvoiceLine line2 = new MInvoiceLine(invoice);
+			line2.setC_Charge_ID(standardCharge.getC_Charge_ID());
+			line2.setQty(BigDecimal.ONE);
+			line2.setPrice(new BigDecimal("100.00"));
+			line2.setC_Tax_ID(standardTax.getC_Tax_ID());
+			line2.setTaxAmt(new BigDecimal("8.00"));
+			line2.saveEx();
+
+			assertTrue(invoice.processIt(DocAction.ACTION_Prepare), "AP Invoice prepare should succeed: " + invoice.getProcessMsg());
+			invoice.saveEx();
+
+			// Verify child taxes for summary line: GST 5.00, PST 7.00
+			MInvoiceTax gstLine = MInvoiceTax.get(invoice.getC_Invoice_ID(), gstTax.getC_Tax_ID(), trxName);
+			MInvoiceTax pstLine = MInvoiceTax.get(invoice.getC_Invoice_ID(), pstTax.getC_Tax_ID(), trxName);
+			assertNotNull(gstLine, "AP GST tax line should exist");
+			assertNotNull(pstLine, "AP PST tax line should exist");
+			assertEquals(0, new BigDecimal("5.00").compareTo(gstLine.getTaxAmt()), "AP GST 5% should be 5.00");
+			assertEquals(0, new BigDecimal("7.00").compareTo(pstLine.getTaxAmt()), "AP PST 7% should be 7.00");
+
+			// Verify manual tax on line 2 is preserved (8.00 instead of calculated 5.00)
+			MInvoiceTax stdTaxLine = MInvoiceTax.get(invoice.getC_Invoice_ID(), standardTax.getC_Tax_ID(), trxName);
+			assertNotNull(stdTaxLine, "AP Standard tax line should exist");
+			assertEquals(0, new BigDecimal("8.00").compareTo(stdTaxLine.getTaxAmt()),
+					"Manually entered tax amount on AP line should be preserved");
+
+			// Update summary line price from 100.00 to 200.00 and re-prepare
+			line1.setPrice(new BigDecimal("200.00"));
+			line1.saveEx();
+
+			assertTrue(invoice.processIt(DocAction.ACTION_Prepare), "AP Invoice re-prepare should succeed");
+			invoice.saveEx();
+
+			// Child taxes for summary line should recalculate to 10.00 and 14.00 (not frozen)
+			gstLine = MInvoiceTax.get(invoice.getC_Invoice_ID(), gstTax.getC_Tax_ID(), trxName);
+			pstLine = MInvoiceTax.get(invoice.getC_Invoice_ID(), pstTax.getC_Tax_ID(), trxName);
+			assertEquals(0, new BigDecimal("10.00").compareTo(gstLine.getTaxAmt()),
+					"Updated AP GST should recalculate to 10.00");
+			assertEquals(0, new BigDecimal("14.00").compareTo(pstLine.getTaxAmt()),
+					"Updated AP PST should recalculate to 14.00");
+
+			// Ordinary manual tax line should still preserve 8.00
+			stdTaxLine = MInvoiceTax.get(invoice.getC_Invoice_ID(), standardTax.getC_Tax_ID(), trxName);
+			assertEquals(0, new BigDecimal("8.00").compareTo(stdTaxLine.getTaxAmt()),
+					"Manually entered tax amount should remain preserved after re-prepare");
+		}
+		finally
+		{
+			rollback();
+			if (standardCharge != null)
+				standardCharge.deleteEx(true, null);
+			if (summaryCharge != null)
+				summaryCharge.deleteEx(true, null);
+			if (standardTax != null)
+				standardTax.deleteEx(true, null);
 			if (pstTax != null)
 				pstTax.deleteEx(true, null);
 			if (gstTax != null)
