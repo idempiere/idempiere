@@ -41,6 +41,7 @@ VMOPTS="-Dorg.osgi.framework.bootdelegation=sun.security.ssl
 -Dmail.mime.encodeparameters=true
 -Dmail.mime.decodeparameters=true
 -DIDEMPIERE_EXTENSION_REPOSITORY=$IDEMPIERE_EXTENSION_REPOSITORY
+-Djava.util.logging.config.file=$BASE/jul-startup.properties
 --add-exports java.desktop/sun.awt=ALL-UNNAMED
 --add-exports java.sql.rowset/com.sun.rowset=ALL-UNNAMED
 --add-exports java.naming/com.sun.jndi.ldap=ALL-UNNAMED
@@ -58,6 +59,6 @@ VMOPTS="-Dorg.osgi.framework.bootdelegation=sun.security.ssl
 
 IDEMPIERE_JAVA_OPTIONS=${JAVA_OPTS:-$IDEMPIERE_JAVA_OPTIONS}
 
-echo "Starting iDempiere: $JAVA ${DEBUG} $IDEMPIERE_JAVA_OPTIONS $VMOPTS -jar $BASE/plugins/org.eclipse.equinox.launcher_1.*.jar -application org.adempiere.server.application"
+echo "Starting iDempiere: $JAVA ${DEBUG} $VMOPTS $IDEMPIERE_JAVA_OPTIONS -jar $BASE/plugins/org.eclipse.equinox.launcher_1.*.jar -application org.adempiere.server.application"
 
-$JAVA ${DEBUG} $IDEMPIERE_JAVA_OPTIONS $VMOPTS -jar $BASE/plugins/org.eclipse.equinox.launcher_1.*.jar -application org.adempiere.server.application
+$JAVA ${DEBUG} $VMOPTS $IDEMPIERE_JAVA_OPTIONS -jar $BASE/plugins/org.eclipse.equinox.launcher_1.*.jar -application org.adempiere.server.application

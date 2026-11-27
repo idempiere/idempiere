@@ -42,7 +42,7 @@ public class SignDatabaseBuildApplication implements IApplication {
 	@Override
 	public Object start(IApplicationContext context) throws Exception {
 		Adempiere.startupEnvironment(false);
-		CLogMgt.setLevel(Level.FINE);
+		CLogMgt.setLevel(Level.WARNING);
 		s_log.info("Sign Database Build");
 		s_log.info("-------------------");
 		
