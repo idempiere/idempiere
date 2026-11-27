@@ -29,12 +29,14 @@ import java.awt.GraphicsEnvironment;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.List;
 
 import org.compiere.print.MPrintTableFormat;
 import org.compiere.util.Env;
 import org.idempiere.test.AbstractTestCase;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
@@ -49,6 +51,19 @@ public class MPrintTableFormatFontTest extends AbstractTestCase {
 	private static final String FONTS_BUNDLE = "com.github.librepdf.openpdf-fonts-extra";
 	private static final String[] FACES = { "LiberationSans-Regular.ttf", "LiberationSans-Bold.ttf",
 			"LiberationSans-Italic.ttf", "LiberationSans-BoldItalic.ttf" };
+	/** Font families installed on the host, read before the test registers its faces */
+	private static final List<String> INSTALLED_FAMILIES = Arrays
+			.asList(GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames());
+
+	/** @return true if Liberation Sans is installed: Java then finds its faces through the family, not as registered faces */
+	static boolean isLiberationSansInstalled() {
+		return INSTALLED_FAMILIES.contains("Liberation Sans");
+	}
+
+	/** @return true if Liberation Mono is installed with all its faces: a family without italic cannot be set up */
+	static boolean isLiberationMonoInstalled() {
+		return INSTALLED_FAMILIES.contains("Liberation Mono");
+	}
 
 	/** Registers the Liberation Sans faces the way a plug-in registers its print fonts. */
 	@BeforeAll
@@ -72,6 +87,7 @@ public class MPrintTableFormatFontTest extends AbstractTestCase {
 	}
 
 	@Test
+	@DisabledIf("isLiberationSansInstalled")
 	public void testStyleFromFaceUsesFamily() {
 		Font italic = new Font("Liberation Sans Italic", Font.PLAIN, 10);
 		assertEquals("Liberation Sans Italic", italic.getFontName(), "Liberation Sans not registered");
@@ -98,11 +114,8 @@ public class MPrintTableFormatFontTest extends AbstractTestCase {
 
 	/** When the family has no face with the requested style, the face is kept instead of the plain family face. */
 	@Test
+	@DisabledIf("isLiberationMonoInstalled")
 	public void testFamilyWithoutStyleKeepsFace() throws Exception {
-		// an installed Liberation Mono has all faces, the case cannot be set up
-		if (Arrays.asList(GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames())
-				.contains("Liberation Mono"))
-			return;
 		// only the bold face of the family, no italic
 		registerFace("LiberationMono-Bold.ttf");
 		Font bold = new Font("Liberation Mono Bold", Font.PLAIN, 10);
@@ -112,6 +125,7 @@ public class MPrintTableFormatFontTest extends AbstractTestCase {
 	}
 
 	@Test
+	@DisabledIf("isLiberationSansInstalled")
 	public void testTableFormatFonts() {
 		MPrintTableFormat tf = new MPrintTableFormat(Env.getCtx(), 0, getTrxName());
 		tf.setStandard_Font(new Font("Liberation Sans Italic", Font.PLAIN, 9));
