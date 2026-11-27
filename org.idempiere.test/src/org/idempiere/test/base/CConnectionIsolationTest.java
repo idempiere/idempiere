@@ -28,12 +28,10 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -43,10 +41,8 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Properties;
 
 import javax.sql.DataSource;
 
@@ -68,8 +64,6 @@ import org.junit.jupiter.api.parallel.Isolated;
  * <ul>
  * <li>CConnection tests: the provider is a mock, they define what CConnection does with the connection it gets.</li>
  * <li>Provider test: the pool is a mock, it fails if the provider verifies the connection itself again.</li>
- * <li>Pool default tests: the one time check that the pool of a provider delivers READ_COMMITTED connections, so that
- * the level is not asked from the database on every checkout.</li>
  * <li>Checkout tests: real pool, they check the level and auto commit mode the caller receives and that a
  * non default level does not leak into the next checkout.</li>
  * </ul>
@@ -105,54 +99,6 @@ class CConnectionIsolationTest extends AbstractTestCase {
 		AdempiereDatabase db = mock(AdempiereDatabase.class);
 		when(db.getCachedConnection(any(CConnection.class), anyBoolean(), anyInt())).thenReturn(conn);
 		return db;
-	}
-
-	// ---- CConnection.applyConnectionSettings: no provider needed ----
-
-	@Test
-	void testApplyConnectionSettingsNothingToApply() throws Exception {
-		Connection conn = pooledConnection(READ_COMMITTED, true);
-
-		new CConnection(null).applyConnectionSettings(conn, true, READ_COMMITTED);
-
-		verify(conn, never()).setTransactionIsolation(anyInt());
-		verify(conn, never()).setAutoCommit(anyBoolean());
-		verify(conn, never()).close();
-	}
-
-	@Test
-	void testApplyConnectionSettingsAppliesIsolationAndAutoCommit() throws Exception {
-		Connection conn = pooledConnection(Connection.TRANSACTION_SERIALIZABLE, true);
-
-		new CConnection(null).applyConnectionSettings(conn, false, READ_COMMITTED);
-
-		verify(conn, times(1)).setTransactionIsolation(READ_COMMITTED);
-		verify(conn, times(1)).setAutoCommit(false);
-	}
-
-	@Test
-	void testApplyConnectionSettingsAsksTrustedPoolOnlyOnce() throws Exception {
-		Connection conn = pooledConnection(READ_COMMITTED, true);
-		CConnection cc = new CConnection(null);
-
-		for (int i = 0; i < 4; i++)
-			cc.applyConnectionSettings(conn, true, READ_COMMITTED);
-
-		verify(conn, times(1)).getTransactionIsolation();
-	}
-
-	@Test
-	void testApplyConnectionSettingsPropagatesFailureAndLeavesTheConnectionOpen() throws Exception {
-		Connection conn = pooledConnection(Connection.TRANSACTION_SERIALIZABLE, true);
-		SQLException failure = new SQLException("cannot change isolation level");
-		doThrow(failure).when(conn).setTransactionIsolation(READ_COMMITTED);
-
-		SQLException thrown = assertThrows(SQLException.class,
-				() -> new CConnection(null).applyConnectionSettings(conn, true, READ_COMMITTED));
-
-		assertSame(failure, thrown);
-		// closing is the job of getConnection, not of this method
-		verify(conn, never()).close();
 	}
 
 	// ---- CConnection.getConnection with a mocked provider ----
@@ -300,121 +246,6 @@ class CConnectionIsolationTest extends AbstractTestCase {
 
 		assertNull(result);
 		assertSame(failure, cc.getDatabaseException());
-	}
-
-	// ---- pool delivers READ_COMMITTED: the level is not asked from the database on every checkout ----
-
-	@Test
-	void testPoolDeliveringReadCommittedIsCheckedOnlyOnce() throws Exception {
-		Connection conn = pooledConnection(READ_COMMITTED, true);
-		CConnection cc = connectionUsing(providerReturning(conn));
-
-		for (int i = 0; i < 5; i++)
-			assertSame(conn, cc.getConnection(true, READ_COMMITTED), "checkout " + i);
-
-		// one question to the database for 5 checkouts (the one time check of the pool), nothing applied
-		verify(conn, times(1)).getTransactionIsolation();
-		verify(conn, never()).setTransactionIsolation(anyInt());
-	}
-
-	@Test
-	void testPoolCheckBelongsToTheProviderThatOwnsThePool() throws Exception {
-		// pool A delivers READ_COMMITTED and is trusted
-		Connection fromPoolA = pooledConnection(READ_COMMITTED, true);
-		CConnection cc = connectionUsing(providerReturning(fromPoolA));
-		cc.getConnection(true, READ_COMMITTED);
-		cc.getConnection(true, READ_COMMITTED);
-		verify(fromPoolA, times(1)).getTransactionIsolation();
-
-		// the provider is replaced by one whose pool delivers another level: the trust of pool A must not be reused
-		Connection fromPoolB = pooledConnection(Connection.TRANSACTION_SERIALIZABLE, true);
-		AdempiereDatabase providerB = providerReturning(fromPoolB);
-		when(providerB.getName()).thenReturn(cc.getType());
-		Field field = CConnection.class.getDeclaredField("m_db");
-		field.setAccessible(true);
-		field.set(cc, providerB);
-
-		assertSame(fromPoolB, cc.getConnection(true, READ_COMMITTED));
-		verify(fromPoolB, times(1)).setTransactionIsolation(READ_COMMITTED);
-		// and it is checked every time, because pool B does not deliver READ_COMMITTED
-		cc.getConnection(true, READ_COMMITTED);
-		verify(fromPoolB, times(2)).setTransactionIsolation(READ_COMMITTED);
-	}
-
-	@Test
-	void testEachConnectionDescriptorChecksItsOwnPool() throws Exception {
-		Connection first = pooledConnection(READ_COMMITTED, true);
-		Connection second = pooledConnection(READ_COMMITTED, true);
-
-		connectionUsing(providerReturning(first)).getConnection(true, READ_COMMITTED);
-		connectionUsing(providerReturning(second)).getConnection(true, READ_COMMITTED);
-
-		verify(first, times(1)).getTransactionIsolation();
-		verify(second, times(1)).getTransactionIsolation();
-	}
-
-	@Test
-	void testPoolNotDeliveringReadCommittedKeepsTheCheckOnEveryCheckout() throws Exception {
-		// a pool configured with another level: still READ_COMMITTED for the caller, checked and applied every time
-		Connection conn = pooledConnection(Connection.TRANSACTION_REPEATABLE_READ, true);
-		CConnection cc = connectionUsing(providerReturning(conn));
-
-		for (int i = 0; i < 3; i++)
-			assertSame(conn, cc.getConnection(true, READ_COMMITTED), "checkout " + i);
-
-		verify(conn, times(3)).setTransactionIsolation(READ_COMMITTED);
-		verify(conn, atLeast(3)).getTransactionIsolation();
-	}
-
-	@Test
-	void testNonDefaultRequestIsStillVerifiedWithTrustedPool() throws Exception {
-		Connection conn = pooledConnection(READ_COMMITTED, true);
-		CConnection cc = connectionUsing(providerReturning(conn));
-		cc.getConnection(true, READ_COMMITTED); // the pool is now trusted for READ_COMMITTED, by this descriptor
-
-		// same descriptor: a request for another level is still verified and applied
-		Connection result = cc.getConnection(true, Connection.TRANSACTION_SERIALIZABLE);
-
-		assertSame(conn, result);
-		verify(conn, times(1)).setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-	}
-
-	@Test
-	void testFailedPoolCheckIsRepeatedAtTheNextCheckout() throws Exception {
-		Connection broken = mock(Connection.class);
-		when(broken.getTransactionIsolation()).thenThrow(new SQLException("connection is broken"));
-		Connection good = pooledConnection(READ_COMMITTED, true);
-		AdempiereDatabase db = mock(AdempiereDatabase.class);
-		// one descriptor and one provider: the first checkout gets the broken connection, the next ones the good one
-		when(db.getCachedConnection(any(CConnection.class), anyBoolean(), anyInt())).thenReturn(broken, good);
-		CConnection cc = connectionUsing(db);
-
-		assertNull(cc.getConnection(true, READ_COMMITTED));
-		verify(broken, times(1)).close();
-
-		// the failure must not be remembered as "pool not trusted": the next checkout checks again, once
-		assertSame(good, cc.getConnection(true, READ_COMMITTED));
-		assertSame(good, cc.getConnection(true, READ_COMMITTED));
-		verify(good, times(1)).getTransactionIsolation();
-		verify(good, never()).setTransactionIsolation(anyInt());
-	}
-
-	/** the PostgreSQL pool is created with READ_COMMITTED as default level, unless the administrator configured another one */
-	@Test
-	void testPostgreSQLPoolDefaultsToReadCommitted() throws Exception {
-		if (!DB.isPostgreSQL())
-			return;
-		AdempiereDatabase provider = DB.getDatabase();
-		Method poolProperties = provider.getClass().getDeclaredMethod("getPoolProperties");
-		poolProperties.setAccessible(true);
-		Properties configured = (Properties) poolProperties.invoke(provider);
-		if (configured.containsKey("transactionIsolation"))
-			return; // configured in hikaricp.properties of this installation
-		Field poolField = provider.getClass().getDeclaredField("m_ds");
-		poolField.setAccessible(true);
-		Object pool = poolField.get(provider);
-		assertNotNull(pool, "pool is created");
-		assertEquals("TRANSACTION_READ_COMMITTED", pool.getClass().getMethod("getTransactionIsolation").invoke(pool));
 	}
 
 	// ---- database provider with a mocked pool ----

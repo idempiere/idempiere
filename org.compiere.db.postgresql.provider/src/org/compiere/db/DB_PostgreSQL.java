@@ -792,11 +792,6 @@ public class DB_PostgreSQL implements AdempiereDatabase
 
     		HikariConfig hikariConfig = new HikariConfig(poolProperties);
     		hikariConfig.setDriverClassName(DRIVER);
-    		if (hikariConfig.getTransactionIsolation() == null)
-    		{
-    			// the pool sets the level once per physical connection and resets it when a changed connection is returned
-    			hikariConfig.setTransactionIsolation("TRANSACTION_READ_COMMITTED");
-    		}
     		m_ds = new HikariDataSource(hikariConfig);
 
             m_connectionURL = m_ds.getJdbcUrl();

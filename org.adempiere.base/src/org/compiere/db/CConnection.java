@@ -41,7 +41,7 @@ public class CConnection implements Serializable, Cloneable
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = 6997357735091753952L;
+	private static final long serialVersionUID = -1823868178123935209L;
 
 	/** Connection      */
 	private volatile static CConnection	s_cc = null;
@@ -1146,7 +1146,10 @@ public class CConnection implements Serializable, Cloneable
 			//	Verify Connection
 			if (conn != null)
 			{
-				applyConnectionSettings(conn, autoCommit, transactionIsolation);
+				if (conn.getTransactionIsolation() != transactionIsolation)
+					conn.setTransactionIsolation (transactionIsolation);
+				if (conn.getAutoCommit() != autoCommit)
+					conn.setAutoCommit (autoCommit);
 				m_okDB = true;
 			}
 		}
@@ -1203,77 +1206,6 @@ public class CConnection implements Serializable, Cloneable
 		}
 		return conn;
 	}	//  getConnection
-
-	/**
-	 * Verify the transaction isolation level and the auto commit mode of a connection taken from the pool and
-	 * apply the requested ones if they differ. This is the only place where this is done for every database provider.<br/>
-	 * The level is not asked from the database for a READ_COMMITTED request when the pool is known to deliver
-	 * READ_COMMITTED connections (see {@link #isPoolIsolationTrusted(Connection)}), because with some databases
-	 * (PostgreSQL) every call of {@link Connection#getTransactionIsolation()} is a round trip to the database.<br/>
-	 * Public so that it can be tested without a database provider; it does not close the connection on failure,
-	 * {@link #getConnection(boolean, int)} does.<br/>
-	 * Contract: the isolation level of a pooled connection must be changed with {@link Connection#setTransactionIsolation(int)},
-	 * so that the pool resets it when the connection is returned. Changing it with SQL (SET SESSION CHARACTERISTICS ...) or on the
-	 * unwrapped driver connection is not tracked by the pool and is not supported when the pool is trusted.
-	 * @param conn connection taken from the pool
-	 * @param autoCommit requested auto commit mode
-	 * @param transactionIsolation requested transaction isolation level
-	 * @throws SQLException if the level or the auto commit mode cannot be verified or applied
-	 */
-	public void applyConnectionSettings(Connection conn, boolean autoCommit, int transactionIsolation) throws SQLException
-	{
-		if (transactionIsolation == Connection.TRANSACTION_READ_COMMITTED && isPoolIsolationTrusted(conn))
-		{
-			// the pool delivers READ_COMMITTED connections, no round trip to the database needed
-		}
-		else if (conn.getTransactionIsolation() != transactionIsolation)
-			conn.setTransactionIsolation (transactionIsolation);
-		if (conn.getAutoCommit() != autoCommit)
-			conn.setAutoCommit (autoCommit);
-	}	//	applyConnectionSettings
-
-	/**
-	 * Result of the one time check that the pool of a database provider delivers READ_COMMITTED connections.
-	 * It belongs to the provider that owns the pool: if the provider is replaced the check is done again.
-	 */
-	private static final class PoolIsolationCheck
-	{
-		private final AdempiereDatabase db;
-		private final boolean readCommitted;
-
-		private PoolIsolationCheck(AdempiereDatabase db, boolean readCommitted)
-		{
-			this.db = db;
-			this.readCommitted = readCommitted;
-		}
-	}
-
-	/** One time pool check, null = not checked yet */
-	private transient volatile PoolIsolationCheck m_poolIsolationCheck = null;
-
-	/**
-	 * Check once (first checkout from the pool of the current database provider) that the pool delivers READ_COMMITTED connections.<br/>
-	 * The pool sets the level when it creates a connection and resets it when a changed connection is returned,
-	 * so asking the database on every checkout is not needed. If the pool does not deliver READ_COMMITTED
-	 * (for example a pool configured with another level), a warning is logged and the level is verified on every checkout.
-	 * @param conn connection just taken from the pool
-	 * @return true if the pool delivers READ_COMMITTED connections
-	 * @throws SQLException
-	 */
-	private boolean isPoolIsolationTrusted(Connection conn) throws SQLException
-	{
-		AdempiereDatabase db = m_db;
-		PoolIsolationCheck check = m_poolIsolationCheck;
-		if (check == null || check.db != db)
-		{
-			boolean readCommitted = conn.getTransactionIsolation() == Connection.TRANSACTION_READ_COMMITTED;
-			m_poolIsolationCheck = new PoolIsolationCheck(db, readCommitted);
-			if (!readCommitted)
-				log.warning("The connection pool does not deliver READ_COMMITTED connections, the transaction isolation level is verified on every checkout");
-			return readCommitted;
-		}
-		return check.readCommitted;
-	}
 
 	/**
 	 *  Get Database Exception of last connection attempt
