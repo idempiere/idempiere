@@ -56,6 +56,7 @@ import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
 import org.compiere.model.MInOutLineMA;
 import org.compiere.model.MManualCostDetail;
+import org.compiere.model.MMatchPO;
 import org.compiere.model.MOrder;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProductCategory;
@@ -717,6 +718,64 @@ public class ManualCostElementInOutTest extends AbstractManualCostElementTest
 			MInOut shipment = createSOAndShipment(freeProd, null, BigDecimal.ONE, BigDecimal.ZERO);
 			shipment.load(getTrxName());
 			assertTrue(shipment.isPosted(), "Shipment of item with uncommitted zero-cost purchase detail must post");
+		}
+	}
+
+	@Test
+	public void testCustomerReturnAllowsVerifiedZeroCostPurchaseWithFixedManualCost()
+	{
+		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
+		assertEquals(MCostElement.COSTINGMETHOD_AveragePO, as.getCostingMethod(), "Default costing method not Average PO");
+
+		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS))
+		{
+			MProduct freeProd = createStockedProduct("ZeroCostReturnProd", DictionaryIDs.M_Product_Category.STANDARD.id, 0);
+			mockProductGet(mockedProduct, freeProd);
+			// Ensure MOrderLine.beforeSave() does not replace 0.00 PO price with the default 100.00 purchase price list
+			DB.executeUpdateEx("UPDATE M_ProductPrice SET PriceStd=0, PriceList=0 WHERE M_Product_ID=?",
+					new Object[] { freeProd.get_ID() }, getTrxName());
+			MInOutLine receiptLine = createPOAndMR(freeProd, null, new BigDecimal("5"), BigDecimal.ZERO);
+			for (MMatchPO matchPO : MMatchPO.get(Env.getCtx(), receiptLine.getM_InOutLine_ID(), getTrxName()))
+			{
+				if (!matchPO.isPosted())
+					postImmediate(matchPO);
+			}
+			MCostDetail.processProduct(as, freeProd, getLoginDate(), getTrxName());
+			MCostDetail receiptCd = MCostDetail.get(Env.getCtx(), "C_OrderLine_ID=?", receiptLine.getC_OrderLine_ID(), 0, as.get_ID(), getTrxName());
+			assertNotNull(receiptCd);
+			assertTrue(receiptCd.isProcessed(), "Purchase receipt M_CostDetail must be processed");
+			assertEquals(0, receiptCd.getAmt().signum(), "Purchase receipt M_CostDetail must be zero");
+
+			MCostElement overheadCe = createManualCostElement("ZeroCostReturn Overhead 5",
+					MCostElement.COSTELEMENTTYPE_Overhead, DictionaryIDs.C_Charge.FREIGHT.id);
+			createManualCostRecord(freeProd, as, overheadCe, 0, new BigDecimal("5.00"), 0);
+
+			MInOut shipment = createSOAndShipment(freeProd, null, BigDecimal.ONE, BigDecimal.ZERO);
+			MInOut customerReturn = createCustomerReturn(shipment, shipment.getLines()[0], BigDecimal.ONE);
+			customerReturn.load(getTrxName());
+			assertTrue(customerReturn.isPosted(), "Customer return of verified zero-cost purchase with fixed manual cost must post");
+
+			ProductCost pc = new ProductCost(Env.getCtx(), freeProd.get_ID(), 0, getTrxName());
+			int cogsAcctId = pc.getAccount(ProductCost.ACCTTYPE_P_Cogs, as).getAccount_ID();
+			int freightAcctId = MCharge.getAccount(DictionaryIDs.C_Charge.FREIGHT.id, as, getTrxName()).getAccount_ID();
+			List<MFactAcct> retFacts = getFacts(MInOut.Table_ID, customerReturn.get_ID(), as.get_ID());
+			assertFactTotals(retFacts, cogsAcctId, BigDecimal.ZERO, new BigDecimal("5.00"));
+			assertFactTotals(retFacts, freightAcctId, new BigDecimal("5.00"), BigDecimal.ZERO);
+
+			// Customer return of stocked product with NO valuation evidence must still be rejected even with fixed manual cost
+			MProduct noValProd = createStockedProduct("ReturnMissingValProd", DictionaryIDs.M_Product_Category.STANDARD.id, 0);
+			mockProductGet(mockedProduct, noValProd);
+			createManualCostRecord(noValProd, as, overheadCe, 0, new BigDecimal("5.00"), 0);
+			MOrder soNoVal = createCompletedSO(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id), 0,
+					noValProd, null, BigDecimal.ONE, new BigDecimal("50.00"), getLoginDate(), true);
+			MInOut shipNoVal = createDraftShipment(soNoVal, soNoVal.getLines()[0], null, BigDecimal.ONE, soNoVal.getDateOrdered());
+			runDeferred(() -> complete(shipNoVal));
+			MInOut retNoVal = createDraftCustomerReturn(shipNoVal, shipNoVal.getLines()[0], BigDecimal.ONE);
+			runDeferred(() -> completeCustomerReturn(retNoVal));
+			String err = tryPostImmediate(retNoVal);
+			assertNotNull(err, "Return with missing valuation must still be rejected");
+			assertTrue(err.contains(Msg.getMsg(Env.getCtx(), "No Costs for")) && err.contains(noValProd.getName()),
+					"Expected 'No Costs for' error, got: " + err);
 		}
 	}
 

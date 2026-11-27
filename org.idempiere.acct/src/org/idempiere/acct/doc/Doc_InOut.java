@@ -257,9 +257,7 @@ public class Doc_InOut extends Doc
 						if (product.isStocked())
 						{
 							//ok if we have purchased zero cost item from vendor before
-							int count = DB.getSQLValue(getTrxName(), "SELECT Count(*) FROM M_CostDetail WHERE M_Product_ID=? AND Processed='Y' AND Amt=0.00 AND Qty > 0 AND (C_OrderLine_ID > 0 OR C_InvoiceLine_ID > 0)", 
-									product.getM_Product_ID());
-							if (count > 0)
+							if (hasVerifiedZeroPurchaseCost(product.getM_Product_ID()))
 							{
 								costs = BigDecimal.ZERO;
 							}
@@ -544,9 +542,16 @@ public class Doc_InOut extends Doc
 					{
 						if (product.isStocked())
 						{
-							p_Error = Msg.getMsg(getCtx(),"No Costs for") + " " + line.getProduct().getName();  
-							log.log(Level.WARNING, p_Error);
-							return null;
+							if (hasVerifiedZeroPurchaseCost(product.getM_Product_ID()))
+							{
+								costs = BigDecimal.ZERO;
+							}
+							else
+							{
+								p_Error = Msg.getMsg(getCtx(),"No Costs for") + " " + line.getProduct().getName();  
+								log.log(Level.WARNING, p_Error);
+								return null;
+							}
 						}
 						else	//	ignore service
 							continue;
@@ -1193,6 +1198,18 @@ public class Doc_InOut extends Doc
 		facts.add(fact);
 		return facts;
 	}   //  createFact
+
+	/**
+	 * @param productId M_Product_ID
+	 * @return true if a processed purchase cost detail with zero amount exists
+	 */
+	private boolean hasVerifiedZeroPurchaseCost(int productId)
+	{
+		int count = DB.getSQLValue(getTrxName(),
+				"SELECT Count(*) FROM M_CostDetail WHERE M_Product_ID=? AND Processed='Y' AND Amt=0.00 AND Qty > 0 AND (C_OrderLine_ID > 0 OR C_InvoiceLine_ID > 0)",
+				productId);
+		return count > 0;
+	}
 
 	/**
 	 * Post forward charge-mapped manual cost lines for a Sales Shipment ({@code isCredit=true})

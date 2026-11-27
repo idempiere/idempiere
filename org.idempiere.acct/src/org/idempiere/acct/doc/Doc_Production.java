@@ -132,7 +132,7 @@ public class Doc_Production extends Doc
 							+ " M_ProductionLine pro_line INNER JOIN M_ProductionPlan plan ON pro_line.M_ProductionPlan_id = plan.M_ProductionPlan_id "
 							+ " INNER JOIN M_Production pro ON pro.M_Production_id = plan.M_Production_id "
 							+ " WHERE pro.M_Production_ID=? "
-							+ " ORDER BY plan.M_ProductionPlan_id, pro_line.Line, pro_line.M_ProductionLine_ID";
+							+ " ORDER BY plan.Line, plan.M_ProductionPlan_id, pro_line.Line, pro_line.M_ProductionLine_ID";
 		}else{
 			//	Production
 			//	-- ProductionLine	- the real level
@@ -225,10 +225,10 @@ public class Doc_Production extends Doc
 		HashMap<String, BigDecimal> costMap =  new HashMap<String, BigDecimal>();
 		Map<Integer, List<ManualCost>> manualCostMap = new HashMap<>();
 		boolean isReversal = prod.getReversal_ID() > 0 && prod.getM_Production_ID() > prod.getReversal_ID();
-		if (isReversal && MCost.hasChargeManualCostElements(getAD_Client_ID(), getTrxName()))
+		if (isReversal)
 		{
 			MProduction origProd = new MProduction(getCtx(), prod.getReversal_ID(), getTrxName());
-			if (!origProd.isPosted())
+			if (!origProd.isPosted() || origProd.isProcessing())
 			{
 				p_Error = Msg.getMsg(getCtx(), "Original Production not posted yet");
 				log.log(Level.WARNING, p_Error);
@@ -259,6 +259,19 @@ public class Doc_Production extends Doc
 		{
 			lineOrder.addAll(compLineIndicesByParent.get(parentKey));
 			lineOrder.addAll(fgLineIndicesByParent.get(parentKey));
+		}
+		for (Map.Entry<Integer, List<Integer>> entry : fgLineIndicesByParent.entrySet())
+		{
+			if (!entry.getValue().isEmpty())
+			{
+				BigDecimal groupQty = mQtyProduced.get(entry.getKey());
+				if (groupQty == null || groupQty.signum() == 0)
+				{
+					p_Error = "Zero net quantity produced for production BOM group";
+					log.log(Level.WARNING, p_Error);
+					return null;
+				}
+			}
 		}
 
 		for (int i : lineOrder)

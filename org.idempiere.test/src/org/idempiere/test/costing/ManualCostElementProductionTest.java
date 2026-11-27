@@ -731,7 +731,7 @@ public class ManualCostElementProductionTest extends AbstractManualCostElementTe
 	}
 
 	@Test
-	public void testNonManualProductionReversalDoesNotBlockUnpostedOriginalAndLinksReversalLines()
+	public void testNonManualProductionReversalWaitsForOriginalAndLinksReversalLines()
 	{
 		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
 		assertEquals(MCostElement.COSTINGMETHOD_AveragePO, as.getCostingMethod(), "Default costing method not Average PO");
@@ -769,7 +769,14 @@ public class ManualCostElementProductionTest extends AbstractManualCostElementTe
 				assertEquals(revLine.getM_ProductionLine_ID(), matchedOrig.getReversalLine_ID());
 			}
 
-			// Without charge-mapped manual cost elements, posting reversal before original must NOT be blocked
+			String revFirstError = tryPostImmediate(reversal);
+			assertNotNull(revFirstError, "Production reversal must wait for original production posting");
+			assertTrue(revFirstError.contains(Msg.getMsg(Env.getCtx(), "Original Production not posted yet")),
+					"Unexpected error: " + revFirstError);
+			reversal.load(getTrxName());
+			assertFalse(reversal.isPosted());
+
+			postImmediate(production);
 			postImmediate(reversal);
 			assertFalse(MManualCostDetail.hasForRecord(as.get_ID(), MProduction.Table_ID, reversal.get_ID(), getTrxName()));
 		}
@@ -1010,15 +1017,15 @@ public class ManualCostElementProductionTest extends AbstractManualCostElementTe
 
 			MProduction prod = createPlanProduction("MultiPlan SubAssembly Production");
 
+			// Insert Plan 20 BEFORE Plan 10 so Plan 20 has lower M_ProductionPlan_ID (tests ordering by plan.Line)
+			MProductionPlan plan2 = createProductionPlan(prod, 20, fg, BigDecimal.ONE);
+			MProductionLine plan2Fg = addProductionLine(null, plan2, 10, fg, 0, true, BigDecimal.ONE);
+			MProductionLine plan2Comp = addProductionLine(null, plan2, 20, subAsm, 0, false, BigDecimal.ONE.negate());
+
 			// Plan 10 produces subAsm (no prior cost) from rawMat (FG line listed before component line)
 			MProductionPlan plan1 = createProductionPlan(prod, 10, subAsm, BigDecimal.ONE);
 			MProductionLine plan1Fg = addProductionLine(null, plan1, 10, subAsm, 0, true, BigDecimal.ONE);
 			addProductionLine(null, plan1, 20, rawMat, 0, false, BigDecimal.ONE.negate());
-
-			// Plan 20 consumes subAsm produced in Plan 10 to produce fg
-			MProductionPlan plan2 = createProductionPlan(prod, 20, fg, BigDecimal.ONE);
-			MProductionLine plan2Fg = addProductionLine(null, plan2, 10, fg, 0, true, BigDecimal.ONE);
-			MProductionLine plan2Comp = addProductionLine(null, plan2, 20, subAsm, 0, false, BigDecimal.ONE.negate());
 
 			completeAndPost(prod);
 
@@ -1044,6 +1051,43 @@ public class ManualCostElementProductionTest extends AbstractManualCostElementTe
 			}
 			assertEquals(new BigDecimal("110.00"), fgDr.setScale(2, RoundingMode.HALF_UP));
 			assertEquals(totalDr.setScale(2, RoundingMode.HALF_UP), totalCr.setScale(2, RoundingMode.HALF_UP));
+		}
+	}
+
+	@Test
+	public void testNetZeroFinishedGoodsGroupRejectedWithoutPartialCostDetails()
+	{
+		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
+
+		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS))
+		{
+			MProduct comp = createStockedProduct("NetZeroFgComp", DictionaryIDs.M_Product_Category.STANDARD.id, 0);
+			mockProductGet(mockedProduct, comp);
+			MProduct fg = createBomProduct("NetZeroFgEnd", DictionaryIDs.M_Product_Category.STANDARD.id, 0, mockedProduct);
+
+			createPOAndMR(comp, null, new BigDecimal("5"), new BigDecimal("100.00"));
+			createPOAndMR(fg, null, new BigDecimal("5"), new BigDecimal("50.00"));
+			MCostElement freightCe = createManualCostElement("NetZeroFg Freight 10",
+					MCostElement.COSTELEMENTTYPE_Overhead, DictionaryIDs.C_Charge.FREIGHT.id);
+			createManualCostRecord(comp, as, freightCe, 0, new BigDecimal("10.00"), 0);
+			createSimpleBOM(fg, comp, BigDecimal.ONE);
+
+			MProduction prod = createProduction(fg, BigDecimal.ONE, 0, false);
+			MProductionLine fgPos = addProductionLine(prod, null, 10, fg, 0, true, BigDecimal.ONE);
+			MProductionLine fgNeg = addProductionLine(prod, null, 20, fg, 0, false, BigDecimal.ONE.negate());
+			MProductionLine compLine = addProductionLine(prod, null, 30, comp, 0, false, BigDecimal.ONE.negate());
+			runDeferred(() -> complete(prod));
+
+			String err = tryPostImmediate(prod);
+			assertNotNull(err, "Production with net-zero finished goods output group must fail posting");
+			assertTrue(err.contains("Zero net quantity produced"), "Unexpected error: " + err);
+			prod.load(getTrxName());
+			assertFalse(prod.isPosted());
+			assertEquals(0, getFacts(MProduction.Table_ID, prod.get_ID(), as.get_ID()).size());
+			assertFalse(MManualCostDetail.hasForRecord(as.get_ID(), MProduction.Table_ID, prod.get_ID(), getTrxName()));
+			assertEquals(null, MCostDetail.getProduction(as, comp.get_ID(), 0, compLine.get_ID(), 0, getTrxName()));
+			assertEquals(null, MCostDetail.getProduction(as, fg.get_ID(), 0, fgPos.get_ID(), 0, getTrxName()));
+			assertEquals(null, MCostDetail.getProduction(as, fg.get_ID(), 0, fgNeg.get_ID(), 0, getTrxName()));
 		}
 	}
 

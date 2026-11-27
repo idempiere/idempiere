@@ -26,7 +26,6 @@ import java.util.logging.Level;
 
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
-import org.compiere.model.MCost;
 import org.compiere.model.MCost.ManualCost;
 import org.compiere.model.MCostDetail;
 import org.compiere.model.MFactAcct;
@@ -143,21 +142,20 @@ public class Doc_ProjectIssue extends Doc
 		MProduct product = MProduct.get(getCtx(), m_issue.getM_Product_ID());
 
 		boolean isReversal = m_issue.isReversal();
-		List<MManualCostDetail> origManualDetails = isReversal
-				? MManualCostDetail.getByLine(getCtx(), as.getC_AcctSchema_ID(),
-						MProjectIssue.Table_ID, m_issue.getReversal_ID(), m_issue.getReversal_ID(), getTrxName())
-				: Collections.emptyList();
-		if (isReversal && origManualDetails.isEmpty()
-				&& MCost.hasChargeManualCostElements(getAD_Client_ID(), getTrxName()))
+		if (isReversal)
 		{
 			MProjectIssue origIssue = new MProjectIssue(getCtx(), m_issue.getReversal_ID(), getTrxName());
-			if (!origIssue.isPosted())
+			if (!origIssue.isPosted() || origIssue.isProcessing())
 			{
 				p_Error = Msg.getMsg(getCtx(), "Original Project Issue not posted yet");
 				log.log(Level.WARNING, p_Error);
 				return null;
 			}
 		}
+		List<MManualCostDetail> origManualDetails = isReversal
+				? MManualCostDetail.getByLine(getCtx(), as.getC_AcctSchema_ID(),
+						MProjectIssue.Table_ID, m_issue.getReversal_ID(), m_issue.getReversal_ID(), getTrxName())
+				: Collections.emptyList();
 
 		//  Issue Cost (signed: positive for issue, negative for reversal)
 		BigDecimal cost = null;
@@ -166,7 +164,7 @@ public class Doc_ProjectIssue extends Doc
 		int stdPrecision = as.getStdPrecision();
 		BigDecimal drAmt;
 
-		if (hasManualReversal)
+		if (isReversal)
 		{
 			BigDecimal manualTotal = BigDecimal.ZERO;
 			for (MManualCostDetail origDetail : origManualDetails)
@@ -176,7 +174,9 @@ public class Doc_ProjectIssue extends Doc
 			cost = origPrincipal != null
 					? origPrincipal.negate()
 					: m_line.getProductCosts(as, getAD_Org_ID(), false);
-			drAmt = cost.setScale(stdPrecision, RoundingMode.HALF_UP).subtract(manualTotal);
+			drAmt = hasManualReversal
+					? cost.setScale(stdPrecision, RoundingMode.HALF_UP).subtract(manualTotal)
+					: cost;
 		}
 		else
 		{
@@ -194,8 +194,7 @@ public class Doc_ProjectIssue extends Doc
 			if (cost == null)	//	standard Product Costs
 			{
 				cost = m_line.getProductCosts(as, getAD_Org_ID(), false);
-				if (!isReversal)
-					postedManualCosts = DocManualCostHelper.roundManualCosts(m_line.getManualCosts(as, getAD_Org_ID(), cost), stdPrecision);
+				postedManualCosts = DocManualCostHelper.roundManualCosts(m_line.getManualCosts(as, getAD_Org_ID(), cost), stdPrecision);
 			}
 			drAmt = cost;
 			if (!postedManualCosts.isEmpty())
@@ -266,7 +265,7 @@ public class Doc_ProjectIssue extends Doc
 				if (cd != null)
 				{
 					Ref_CostDetail_ID = cd.getM_CostDetail_ID();
-					if (hasManualReversal)
+					if (isReversal)
 						costDetailAmt = cd.getAmt().negate();
 				}
 			}

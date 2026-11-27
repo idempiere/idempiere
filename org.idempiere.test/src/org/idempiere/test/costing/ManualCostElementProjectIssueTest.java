@@ -52,9 +52,11 @@ import org.compiere.model.MProductCategoryAcct;
 import org.compiere.model.MProject;
 import org.compiere.model.MProjectIssue;
 import org.compiere.model.ProductCost;
+import org.compiere.model.X_C_Charge_Acct;
 import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
@@ -615,6 +617,9 @@ public class ManualCostElementProjectIssueTest extends AbstractManualCostElement
 
 			String err = tryPostImmediate(issue);
 			assertNotNull(err, "Posting with missing second charge account must fail");
+			assertTrue(err.contains(brokenCharge.getName())
+					&& err.contains(Msg.getElement(Env.getCtx(), X_C_Charge_Acct.COLUMNNAME_Ch_Expense_Acct)),
+					"Expected missing charge account error for brokenCharge, got: " + err);
 			assertFalse(MManualCostDetail.hasForRecord(as.get_ID(), MProjectIssue.Table_ID, issue.get_ID(), getTrxName()),
 					"Failed posting must not persist partial M_ManualCostDetail from the first charge");
 		}
@@ -666,6 +671,61 @@ public class ManualCostElementProjectIssueTest extends AbstractManualCostElement
 			assertProjectIssueReversalFactTotals(revFacts, freightAcctId, BigDecimal.ZERO, new BigDecimal("10.00"), as);
 
 			// ProjectBalanceAmt still reverses exact completion CostAmt (-120.00) -> 0.00
+			proj.load(getTrxName());
+			assertEquals(new BigDecimal("0.00"), proj.getProjectBalanceAmt().setScale(2, RoundingMode.HALF_UP));
+		}
+	}
+
+	@Test
+	public void testLegacyUnmappedManualCostIssueReversalAfterChargeMapping()
+	{
+		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
+		assertEquals(MCostElement.COSTINGMETHOD_AveragePO, as.getCostingMethod(), "Default costing method not Average PO");
+
+		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS))
+		{
+			MProduct product = createStockedProduct("LegacyUnmappedProjProd", DictionaryIDs.M_Product_Category.STANDARD.id, 0);
+			mockProductGet(mockedProduct, product);
+			createPOAndMR(product, null, new BigDecimal("5"), new BigDecimal("100.00"));
+
+			// Pre-upgrade unmapped overhead (C_Charge_ID = 0) included in material/principal posting (100 + 20 = 120)
+			MCostElement unmappedOverhead = createManualCostElement("LegacyUnmappedProj Overhead 20",
+					MCostElement.COSTELEMENTTYPE_Overhead, 0);
+			createManualCostRecord(product, as, unmappedOverhead, 0, new BigDecimal("20.00"), 0);
+
+			MProject proj = createWorkOrderProject("LegacyUnmappedProj Project");
+			MProjectIssue issue = createProjectIssue(proj, product, 10, BigDecimal.ONE, getLoginDate());
+			completeAndPost(issue);
+
+			assertFalse(MManualCostDetail.hasForRecord(as.get_ID(), MProjectIssue.Table_ID, issue.get_ID(), getTrxName()));
+			int wipAcctId = getProjectWipAccountId(proj, as);
+			ProductCost pc = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
+			int assetAcctId = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as).getAccount_ID();
+			int freightAcctId = MCharge.getAccount(DictionaryIDs.C_Charge.FREIGHT.id, as, getTrxName()).getAccount_ID();
+
+			List<MFactAcct> origFacts = getFacts(MProjectIssue.Table_ID, issue.get_ID(), as.get_ID());
+			assertFactTotals(origFacts, wipAcctId, new BigDecimal("120.00"), BigDecimal.ZERO);
+			assertFactTotals(origFacts, assetAcctId, BigDecimal.ZERO, new BigDecimal("120.00"));
+			MCostDetail origCd = MCostDetail.getProjectIssue(as, product.get_ID(), 0, issue.get_ID(), 0, getTrxName());
+			assertNotNull(origCd);
+			assertEquals(new BigDecimal("-120.00"), origCd.getAmt().setScale(2, RoundingMode.HALF_UP));
+
+			// Later map the overhead element to Freight charge, then reverse original issue
+			unmappedOverhead.setC_Charge_ID(DictionaryIDs.C_Charge.FREIGHT.id);
+			unmappedOverhead.saveEx();
+			MProjectIssue reversal = reverseAndPost(issue);
+
+			List<MFactAcct> revFacts = getFacts(MProjectIssue.Table_ID, reversal.get_ID(), as.get_ID());
+			assertEquals(2, revFacts.size(), "Reversal of unmapped issue must not synthesize a charge line");
+			assertProjectIssueReversalFactTotals(revFacts, wipAcctId, new BigDecimal("120.00"), BigDecimal.ZERO, as);
+			assertProjectIssueReversalFactTotals(revFacts, assetAcctId, BigDecimal.ZERO, new BigDecimal("120.00"), as);
+			assertFactTotals(revFacts, freightAcctId, BigDecimal.ZERO, BigDecimal.ZERO);
+
+			MCostDetail revCd = MCostDetail.getProjectIssue(as, product.get_ID(), 0, reversal.get_ID(), 0, getTrxName());
+			assertNotNull(revCd);
+			assertEquals(origCd.get_ID(), revCd.getRef_CostDetail_ID());
+			assertEquals(new BigDecimal("120.00"), revCd.getAmt().setScale(2, RoundingMode.HALF_UP));
+
 			proj.load(getTrxName());
 			assertEquals(new BigDecimal("0.00"), proj.getProjectBalanceAmt().setScale(2, RoundingMode.HALF_UP));
 		}
