@@ -1150,6 +1150,189 @@ public class ManualCostElementProductionTest extends AbstractManualCostElementTe
 		}
 	}
 
+	@Test
+	public void testPreMigrationBatchLotAllocatedComponentReversalMatchesOriginalLine()
+	{
+		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
+		assertEquals(MCostElement.COSTINGMETHOD_AveragePO, as.getCostingMethod(), "Default costing method not Average PO");
+
+		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MProductCategory> mockedCategory = mockStatic(MProductCategory.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MAttributeSet> mockedAttrSet = mockStatic(MAttributeSet.class, Mockito.CALLS_REAL_METHODS))
+		{
+			MProductCategory batchCat = createCategoryWithCosting("LegacyMaRevBatchCat", as,
+					MAcctSchema.COSTINGLEVEL_BatchLot, null, mockedCategory);
+			MAttributeSet lotAs = createLotAttributeSet("LegacyMaRevLotAS", mockedAttrSet);
+			MProduct comp = createStockedProduct("LegacyMaRevComp", batchCat.get_ID(), lotAs.get_ID());
+			mockProductGet(mockedProduct, comp);
+			MProduct fg = createBomProduct("LegacyMaRevFG", DictionaryIDs.M_Product_Category.STANDARD.id, 0, mockedProduct);
+
+			MAttributeSetInstance lot1 = createLot(lotAs.get_ID(), "LEGACY-LOT-1");
+			MAttributeSetInstance lot2 = createLot(lotAs.get_ID(), "LEGACY-LOT-2");
+			createPOAndMR(comp, lot1, new BigDecimal("5"), new BigDecimal("100.00"));
+
+			MCostElement burdenCe = createManualCostElement("LegacyMaRev Burden 10pct",
+					MCostElement.COSTELEMENTTYPE_BurdenMOverhead, DictionaryIDs.C_Charge.FREIGHT.id);
+			createManualCostRecord(comp, as, burdenCe, lot1.get_ID(), BigDecimal.ZERO, 10);
+
+			MPPProductBOM bom = createSimpleBOM(fg, comp, new BigDecimal("2"));
+			MProduction prod = createProduction(fg, BigDecimal.ONE, bom.getPP_Product_BOM_ID(), true);
+			runDeferred(() -> {
+				complete(prod);
+				reverseCorrect(prod);
+			});
+			prod.load(getTrxName());
+			MProduction reversal = new MProduction(Env.getCtx(), prod.getReversal_ID(), getTrxName());
+			assertTrue(reversal.get_ID() > 0);
+
+			MProductionLine origCompLine = findLineByProduct(prod, comp.get_ID());
+			MProductionLine revCompLine = findLineByProduct(reversal, comp.get_ID());
+			assertNotNull(origCompLine);
+			assertNotNull(revCompLine);
+			assertEquals(0, origCompLine.getM_AttributeSetInstance_ID());
+			assertEquals(lot1.get_ID(), revCompLine.getM_AttributeSetInstance_ID());
+
+			// Simulate pre-migration rows where ReversalLine_ID is NULL
+			DB.executeUpdateEx("UPDATE M_ProductionLine SET ReversalLine_ID=NULL WHERE M_Production_ID IN (?,?)",
+					new Object[] { prod.get_ID(), reversal.get_ID() }, getTrxName());
+
+			postImmediate(prod);
+
+			// Unrelated lot on reversal line must NOT match original MA allocation
+			DB.executeUpdateEx("UPDATE M_ProductionLine SET M_AttributeSetInstance_ID=? WHERE M_ProductionLine_ID=?",
+					new Object[] { lot2.get_ID(), revCompLine.get_ID() }, getTrxName());
+			String unrelatedErr = tryPostImmediate(reversal);
+			assertNotNull(unrelatedErr, "Reversal with unrelated lot ASI must not match original allocation");
+			assertTrue(unrelatedErr.contains("Original production line not found"), "Unexpected error: " + unrelatedErr);
+
+			// Restore completion-assigned lot1 ASI -> legacy matcher succeeds
+			DB.executeUpdateEx("UPDATE M_ProductionLine SET M_AttributeSetInstance_ID=? WHERE M_ProductionLine_ID=?",
+					new Object[] { lot1.get_ID(), revCompLine.get_ID() }, getTrxName());
+			postImmediate(reversal);
+
+			int freightAcctId = MCharge.getAccount(DictionaryIDs.C_Charge.FREIGHT.id, as, getTrxName()).getAccount_ID();
+			assertFactTotals(getFacts(MProduction.Table_ID, reversal.get_ID(), as.get_ID()),
+					freightAcctId, new BigDecimal("20.00"), BigDecimal.ZERO);
+			MCostDetail origCompCd = MCostDetail.getProduction(as, comp.get_ID(), lot1.get_ID(), origCompLine.get_ID(), 0, getTrxName());
+			MCostDetail revCompCd = MCostDetail.getProduction(as, comp.get_ID(), lot1.get_ID(), revCompLine.get_ID(), 0, getTrxName());
+			assertNotNull(origCompCd);
+			assertNotNull(revCompCd);
+			assertEquals(origCompCd.get_ID(), revCompCd.getRef_CostDetail_ID());
+			assertEquals(new BigDecimal("200.00"), revCompCd.getAmt().setScale(2, RoundingMode.HALF_UP));
+		}
+		finally
+		{
+			CacheMgt.get().reset(MProductCategoryAcct.Table_Name);
+		}
+	}
+
+	@Test
+	public void testPreMigrationTiedPlanLinesNotCrossLinked()
+	{
+		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
+
+		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS))
+		{
+			MProduct comp = createStockedProduct("TiedPlanComp", DictionaryIDs.M_Product_Category.STANDARD.id, 0);
+			mockProductGet(mockedProduct, comp);
+			MProduct fg = createBomProduct("TiedPlanFg", DictionaryIDs.M_Product_Category.STANDARD.id, 0, mockedProduct);
+			createPOAndMR(comp, null, new BigDecimal("10"), new BigDecimal("100.00"));
+			createSimpleBOM(fg, comp, BigDecimal.ONE);
+
+			// 1. Non-manual production: tied plan Line=10 left unlinked, untied plan Line=20 still linked
+			MProduction nonManualProd = createPlanProduction("TiedPlan NonManual");
+			MProductionPlan nmPlan1a = createProductionPlan(nonManualProd, 10, fg, BigDecimal.ONE);
+			addProductionLine(null, nmPlan1a, 10, fg, 0, true, BigDecimal.ONE);
+			addProductionLine(null, nmPlan1a, 20, comp, 0, false, BigDecimal.ONE.negate());
+
+			MProductionPlan nmPlan1b = createProductionPlan(nonManualProd, 10, fg, BigDecimal.ONE);
+			addProductionLine(null, nmPlan1b, 10, fg, 0, true, BigDecimal.ONE);
+			addProductionLine(null, nmPlan1b, 20, comp, 0, false, BigDecimal.ONE.negate());
+
+			MProductionPlan nmPlan2 = createProductionPlan(nonManualProd, 20, fg, BigDecimal.ONE);
+			MProductionLine nmPlan2Fg = addProductionLine(null, nmPlan2, 10, fg, 0, true, BigDecimal.ONE);
+			addProductionLine(null, nmPlan2, 20, comp, 0, false, BigDecimal.ONE.negate());
+
+			runDeferred(() -> {
+				complete(nonManualProd);
+				reverseCorrect(nonManualProd);
+			});
+			nonManualProd.load(getTrxName());
+			MProduction nonManualRev = new MProduction(Env.getCtx(), nonManualProd.getReversal_ID(), getTrxName());
+			DB.executeUpdateEx(
+					"UPDATE M_ProductionLine SET ReversalLine_ID=NULL WHERE M_ProductionPlan_ID IN "
+					+ "(SELECT M_ProductionPlan_ID FROM M_ProductionPlan WHERE M_Production_ID IN (?,?))",
+					new Object[] { nonManualProd.get_ID(), nonManualRev.get_ID() }, getTrxName());
+
+			postImmediate(nonManualProd);
+			postImmediate(nonManualRev);
+
+			MCostDetail origPlan2FgCd = MCostDetail.getProduction(as, fg.get_ID(), 0, nmPlan2Fg.get_ID(), 0, getTrxName());
+			assertNotNull(origPlan2FgCd);
+			int linkedCount = 0;
+			int unlinkedCount = 0;
+			List<MProductionPlan> revPlans = new Query(Env.getCtx(), MProductionPlan.Table_Name, "M_Production_ID=?", getTrxName())
+					.setParameters(nonManualRev.get_ID())
+					.list();
+			assertEquals(3, revPlans.size());
+			for (MProductionPlan revPlan : revPlans)
+			{
+				for (MProductionLine revLine : revPlan.getLines())
+				{
+					if (revLine.isEndProduct())
+					{
+						MCostDetail revCd = MCostDetail.getProduction(as, fg.get_ID(), 0, revLine.get_ID(), 0, getTrxName());
+						assertNotNull(revCd);
+						if (revPlan.getLine() == 20)
+						{
+							assertEquals(origPlan2FgCd.get_ID(), revCd.getRef_CostDetail_ID(),
+									"Untied plan Line=20 must still infer legacy link");
+							linkedCount++;
+						}
+						else
+						{
+							assertEquals(0, revCd.getRef_CostDetail_ID(),
+									"Tied plan Line=10 must NOT infer legacy cross-link");
+							unlinkedCount++;
+						}
+					}
+				}
+			}
+			assertEquals(1, linkedCount);
+			assertEquals(2, unlinkedCount);
+
+			// 2. Manual-cost production: tied plan Line=10 stays unlinked and is safely rejected rather than cross-linked
+			MCostElement freightCe = createManualCostElement("TiedPlan Freight 10",
+					MCostElement.COSTELEMENTTYPE_Overhead, DictionaryIDs.C_Charge.FREIGHT.id);
+			createManualCostRecord(comp, as, freightCe, 0, new BigDecimal("10.00"), 0);
+
+			MProduction manualProd = createPlanProduction("TiedPlan Manual");
+			MProductionPlan mPlan1a = createProductionPlan(manualProd, 10, fg, BigDecimal.ONE);
+			addProductionLine(null, mPlan1a, 10, fg, 0, true, BigDecimal.ONE);
+			addProductionLine(null, mPlan1a, 20, comp, 0, false, BigDecimal.ONE.negate());
+
+			MProductionPlan mPlan1b = createProductionPlan(manualProd, 10, fg, BigDecimal.ONE);
+			addProductionLine(null, mPlan1b, 10, fg, 0, true, BigDecimal.ONE);
+			addProductionLine(null, mPlan1b, 20, comp, 0, false, BigDecimal.ONE.negate());
+
+			runDeferred(() -> {
+				complete(manualProd);
+				reverseCorrect(manualProd);
+			});
+			manualProd.load(getTrxName());
+			MProduction manualRev = new MProduction(Env.getCtx(), manualProd.getReversal_ID(), getTrxName());
+			DB.executeUpdateEx(
+					"UPDATE M_ProductionLine SET ReversalLine_ID=NULL WHERE M_ProductionPlan_ID IN "
+					+ "(SELECT M_ProductionPlan_ID FROM M_ProductionPlan WHERE M_Production_ID IN (?,?))",
+					new Object[] { manualProd.get_ID(), manualRev.get_ID() }, getTrxName());
+
+			postImmediate(manualProd);
+			String tiedErr = tryPostImmediate(manualRev);
+			assertNotNull(tiedErr, "Manual-cost reversal with tied pre-migration plan Line values must reject rather than cross-link");
+			assertTrue(tiedErr.contains("Original production line not found"), "Unexpected error: " + tiedErr);
+		}
+	}
+
 	private MProductionLine findLineByProduct(MProduction prod, int productId)
 	{
 		for (MProductionLine pl : prod.getLines())

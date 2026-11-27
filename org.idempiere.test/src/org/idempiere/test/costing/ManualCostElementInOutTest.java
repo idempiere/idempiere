@@ -1145,4 +1145,266 @@ public class ManualCostElementInOutTest extends AbstractManualCostElementTest
 			CacheMgt.get().reset(MProductCategoryAcct.Table_Name);
 		}
 	}
+
+	@Test
+	public void testBatchLotMultiMaSameAsiAssetChangeAndClearedChargeDistributionReversal()
+	{
+		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
+		assertEquals(MCostElement.COSTINGMETHOD_AveragePO, as.getCostingMethod(), "Default costing method not Average PO");
+
+		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MProductCategory> mockedCategory = mockStatic(MProductCategory.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MAttributeSet> mockedAttrSet = mockStatic(MAttributeSet.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MDistribution> mockedDist = mockStatic(MDistribution.class, Mockito.CALLS_REAL_METHODS))
+		{
+			int freightAcctId = MCharge.getAccount(DictionaryIDs.C_Charge.FREIGHT.id, as, getTrxName()).getAccount_ID();
+			int commissionsAcctId = MCharge.getAccount(DictionaryIDs.C_Charge.COMMISSIONS.id, as, getTrxName()).getAccount_ID();
+
+			MDistribution chargeDist = new MDistribution(Env.getCtx(), 0, getTrxName());
+			chargeDist.setName("Test Clear Charge SameAsi GL Dist");
+			chargeDist.setC_AcctSchema_ID(as.get_ID());
+			chargeDist.setIsCreateReversal(false);
+			chargeDist.setAnyAcct(false);
+			chargeDist.setAccount_ID(freightAcctId);
+			chargeDist.setAnyCharge(false);
+			chargeDist.setC_Charge_ID(DictionaryIDs.C_Charge.FREIGHT.id);
+			chargeDist.saveEx();
+
+			for (int[] lineAndPct : new int[][] { { 10, 60 }, { 20, 40 } })
+			{
+				MDistributionLine dl = new MDistributionLine(Env.getCtx(), 0, getTrxName());
+				dl.setGL_Distribution_ID(chargeDist.get_ID());
+				dl.setLine(lineAndPct[0]);
+				dl.setPercent(BigDecimal.valueOf(lineAndPct[1]));
+				dl.setOverwriteAcct(true);
+				dl.setAccount_ID(commissionsAcctId);
+				dl.setOverwriteCharge(true);
+				dl.setC_Charge_ID(0);
+				dl.saveEx();
+			}
+			chargeDist.load(getTrxName());
+			chargeDist.getLines(true);
+			assertTrue(chargeDist.isValid());
+			mockedDist.when(MDistribution::getAll).thenReturn(new MDistribution[] { chargeDist });
+			CacheMgt.get().reset(MDistribution.Table_Name);
+
+			MProductCategory batchCat = createCategoryWithCosting("MultiMaDistCat", as,
+					MAcctSchema.COSTINGLEVEL_BatchLot, MCostElement.COSTINGMETHOD_AveragePO, mockedCategory);
+			MAttributeSet lotAs = createLotAttributeSet("MultiMaDistAS", mockedAttrSet);
+			MProduct product = createStockedProduct("MultiMaDistProd", batchCat.get_ID(), lotAs.get_ID());
+			mockProductGet(mockedProduct, product);
+
+			MAttributeSetInstance lotA = createLot(lotAs.get_ID(), "LOT-SPLIT-DIST");
+			Timestamp day1 = TimeUtil.addDays(getLoginDate(), -2);
+			Timestamp day2 = TimeUtil.addDays(getLoginDate(), -1);
+			createPOAndMR(product, lotA, BigDecimal.ONE, new BigDecimal("100.00"), day1);
+			createPOAndMR(product, lotA, new BigDecimal("2"), new BigDecimal("100.00"), day2);
+
+			MCostElement burdenCe = createManualCostElement("MultiMaDist Burden 10pct",
+					MCostElement.COSTELEMENTTYPE_BurdenMOverhead, DictionaryIDs.C_Charge.FREIGHT.id);
+			createManualCostRecord(product, as, burdenCe, 0, BigDecimal.ZERO, 10);
+
+			MInOut shipment = createSOAndShipment(product, null, new BigDecimal("3"), new BigDecimal("250.00"));
+			MInOutLine shipLine = shipment.getLines()[0];
+			assertEquals(2, MInOutLineMA.get(Env.getCtx(), shipLine.get_ID(), getTrxName()).length);
+
+			List<MCostDetail> origCds = new Query(Env.getCtx(), MCostDetail.Table_Name,
+					"C_AcctSchema_ID=? AND M_Product_ID=? AND M_InOutLine_ID=? AND COALESCE(M_CostElement_ID,0)=0",
+					getTrxName())
+					.setParameters(as.get_ID(), product.get_ID(), shipLine.get_ID())
+					.list();
+			assertEquals(1, origCds.size());
+			assertEquals(0, new BigDecimal("-2").compareTo(origCds.get(0).getQty()));
+
+			ProductCost pc = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
+			int cogsAcctId = pc.getAccount(ProductCost.ACCTTYPE_P_Cogs, as).getAccount_ID();
+			MAccount freightAcct = MCharge.getAccount(DictionaryIDs.C_Charge.FREIGHT.id, as, getTrxName());
+			assertNotNull(freightAcct);
+
+			// Change P_Asset_Acct after posting original shipment
+			DB.executeUpdateEx("UPDATE M_Product_Acct SET P_Asset_Acct=? WHERE M_Product_ID=? AND C_AcctSchema_ID=?",
+					new Object[] { freightAcct.get_ID(), product.get_ID(), as.get_ID() }, getTrxName());
+			CacheMgt.get().reset();
+
+			MInOut reversal = reverseAndPost(shipment);
+			List<MFactAcct> revFacts = getFacts(MInOut.Table_ID, reversal.get_ID(), as.get_ID());
+			assertFactTotals(revFacts, cogsAcctId, BigDecimal.ZERO, new BigDecimal("330.00"));
+			assertFactTotals(revFacts, freightAcctId, new BigDecimal("300.00"), BigDecimal.ZERO);
+			assertFactTotals(revFacts, commissionsAcctId, new BigDecimal("30.00"), BigDecimal.ZERO);
+		}
+		finally
+		{
+			CacheMgt.get().reset(MDistribution.Table_Name);
+			CacheMgt.get().reset(MProductCategoryAcct.Table_Name);
+		}
+	}
+
+	@Test
+	public void testCustomerReturnBatchLotMultiMaSameAsiAssetChangeReversal()
+	{
+		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
+		assertEquals(MCostElement.COSTINGMETHOD_AveragePO, as.getCostingMethod(), "Default costing method not Average PO");
+
+		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MProductCategory> mockedCategory = mockStatic(MProductCategory.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MAttributeSet> mockedAttrSet = mockStatic(MAttributeSet.class, Mockito.CALLS_REAL_METHODS))
+		{
+			MProductCategory batchCat = createCategoryWithCosting("RetMultiMaCat", as,
+					MAcctSchema.COSTINGLEVEL_BatchLot, MCostElement.COSTINGMETHOD_AveragePO, mockedCategory);
+			MAttributeSet lotAs = createLotAttributeSet("RetMultiMaAS", mockedAttrSet);
+			MProduct product = createStockedProduct("RetMultiMaProd", batchCat.get_ID(), lotAs.get_ID());
+			mockProductGet(mockedProduct, product);
+
+			MAttributeSetInstance lotA = createLot(lotAs.get_ID(), "LOT-RET-SPLIT");
+			Timestamp day1 = TimeUtil.addDays(getLoginDate(), -2);
+			Timestamp day2 = TimeUtil.addDays(getLoginDate(), -1);
+			createPOAndMR(product, lotA, BigDecimal.ONE, new BigDecimal("100.00"), day1);
+			createPOAndMR(product, lotA, new BigDecimal("2"), new BigDecimal("100.00"), day2);
+
+			MCostElement burdenCe = createManualCostElement("RetMultiMa Burden 10pct",
+					MCostElement.COSTELEMENTTYPE_BurdenMOverhead, DictionaryIDs.C_Charge.FREIGHT.id);
+			createManualCostRecord(product, as, burdenCe, 0, BigDecimal.ZERO, 10);
+
+			MInOut shipment = createSOAndShipment(product, null, new BigDecimal("3"), new BigDecimal("250.00"));
+			MInOut customerReturn = createCustomerReturn(shipment, shipment.getLines()[0], new BigDecimal("3"));
+			MInOutLine retLine = customerReturn.getLines()[0];
+			assertEquals(2, MInOutLineMA.get(Env.getCtx(), retLine.get_ID(), getTrxName()).length);
+
+			List<MCostDetail> origCds = new Query(Env.getCtx(), MCostDetail.Table_Name,
+					"C_AcctSchema_ID=? AND M_Product_ID=? AND M_InOutLine_ID=? AND COALESCE(M_CostElement_ID,0)=0",
+					getTrxName())
+					.setParameters(as.get_ID(), product.get_ID(), retLine.get_ID())
+					.list();
+			assertEquals(1, origCds.size());
+			assertEquals(0, new BigDecimal("2").compareTo(origCds.get(0).getQty()));
+
+			ProductCost pc = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
+			int cogsAcctId = pc.getAccount(ProductCost.ACCTTYPE_P_Cogs, as).getAccount_ID();
+			MAccount freightAcct = MCharge.getAccount(DictionaryIDs.C_Charge.FREIGHT.id, as, getTrxName());
+			assertNotNull(freightAcct);
+			int freightAcctId = freightAcct.getAccount_ID();
+
+			// Change P_Asset_Acct after posting original customer return
+			DB.executeUpdateEx("UPDATE M_Product_Acct SET P_Asset_Acct=? WHERE M_Product_ID=? AND C_AcctSchema_ID=?",
+					new Object[] { freightAcct.get_ID(), product.get_ID(), as.get_ID() }, getTrxName());
+			CacheMgt.get().reset();
+
+			MInOut reversal = reverseAndPost(customerReturn);
+			List<MFactAcct> revFacts = getFacts(MInOut.Table_ID, reversal.get_ID(), as.get_ID());
+			assertFactTotals(revFacts, cogsAcctId, new BigDecimal("330.00"), BigDecimal.ZERO);
+			BigDecimal invCr = BigDecimal.ZERO;
+			BigDecimal chgCr = BigDecimal.ZERO;
+			for (MFactAcct fa : revFacts)
+			{
+				if (fa.getAccount_ID() == freightAcctId && fa.getC_Charge_ID() == 0)
+					invCr = invCr.add(fa.getAmtAcctCr());
+				else if (fa.getAccount_ID() == freightAcctId && fa.getC_Charge_ID() == DictionaryIDs.C_Charge.FREIGHT.id)
+					chgCr = chgCr.add(fa.getAmtAcctCr());
+			}
+			assertEquals(new BigDecimal("300.00"), invCr.setScale(2, RoundingMode.HALF_UP));
+			assertEquals(new BigDecimal("30.00"), chgCr.setScale(2, RoundingMode.HALF_UP));
+		}
+		finally
+		{
+			CacheMgt.get().reset(MProductCategoryAcct.Table_Name);
+		}
+	}
+
+	@Test
+	public void testBatchLotMultiMaSameAsiNegativeInventoryCostReversal()
+	{
+		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), getAD_Client_ID());
+		MAcctSchema[] spiedAss = new MAcctSchema[ass.length];
+		for (int i = 0; i < ass.length; i++)
+		{
+			MAcctSchema spyAs = Mockito.spy(new MAcctSchema(Env.getCtx(), ass[i]));
+			Mockito.doReturn(false).when(spyAs).isAllowNegativePosting();
+			spiedAss[i] = spyAs;
+		}
+		MAcctSchema as = spiedAss[0];
+		assertFalse(as.isAllowNegativePosting());
+
+		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null);
+		MClientInfo spyCi = Mockito.spy(new MClientInfo(Env.getCtx(), ci));
+		Mockito.doReturn(as).when(spyCi).getMAcctSchema1();
+		Mockito.doReturn(as.getC_Currency_ID()).when(spyCi).getC_Currency_ID();
+
+		int clientId = getAD_Client_ID();
+		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MProductCategory> mockedCategory = mockStatic(MProductCategory.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MAttributeSet> mockedAttrSet = mockStatic(MAttributeSet.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MClientInfo> clientInfoMock = mockStatic(MClientInfo.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MAcctSchema> acctSchemaMock = mockStatic(MAcctSchema.class, Mockito.CALLS_REAL_METHODS))
+		{
+			clientInfoMock.when(() -> MClientInfo.get(any(Properties.class), eq(clientId), any())).thenReturn(spyCi);
+			clientInfoMock.when(() -> MClientInfo.get(any(Properties.class), eq(clientId))).thenReturn(spyCi);
+			clientInfoMock.when(() -> MClientInfo.get(eq(clientId))).thenReturn(spyCi);
+			clientInfoMock.when(() -> MClientInfo.getCopy(any(Properties.class), eq(clientId), any())).thenReturn(spyCi);
+
+			acctSchemaMock.when(() -> MAcctSchema.getClientAcctSchema(any(Properties.class), eq(clientId), any())).thenReturn(spiedAss);
+			acctSchemaMock.when(() -> MAcctSchema.getClientAcctSchema(any(Properties.class), eq(clientId))).thenReturn(spiedAss);
+			for (MAcctSchema spyAs : spiedAss)
+			{
+				int acctSchemaId = spyAs.getC_AcctSchema_ID();
+				acctSchemaMock.when(() -> MAcctSchema.get(any(Properties.class), eq(acctSchemaId), any())).thenReturn(spyAs);
+				acctSchemaMock.when(() -> MAcctSchema.get(any(Properties.class), eq(acctSchemaId))).thenReturn(spyAs);
+				acctSchemaMock.when(() -> MAcctSchema.get(eq(acctSchemaId))).thenReturn(spyAs);
+				acctSchemaMock.when(() -> MAcctSchema.getCopy(any(Properties.class), eq(acctSchemaId), any())).thenReturn(spyAs);
+			}
+
+			MProductCategory batchCat = createCategoryWithCosting("MultiMaNegCostCat", as,
+					MAcctSchema.COSTINGLEVEL_BatchLot, MCostElement.COSTINGMETHOD_AveragePO, mockedCategory);
+			MAttributeSet lotAs = createLotAttributeSet("MultiMaNegCostAS", mockedAttrSet);
+			MProduct product = createStockedProduct("MultiMaNegCostProd", batchCat.get_ID(), lotAs.get_ID());
+			mockProductGet(mockedProduct, product);
+
+			MAttributeSetInstance lotA = createLot(lotAs.get_ID(), "LOT-SPLIT-NEG");
+			Timestamp day1 = TimeUtil.addDays(getLoginDate(), -2);
+			Timestamp day2 = TimeUtil.addDays(getLoginDate(), -1);
+			createPOAndMR(product, lotA, BigDecimal.ONE, new BigDecimal("50.00"), day1);
+			createPOAndMR(product, lotA, BigDecimal.ONE, new BigDecimal("50.00"), day2);
+
+			// Unmapped negative cost adjustment -> unit inventory cost = 50.00 - 100.00 = -50.00 (-100.00 for qty 2)
+			MCostElement unmappedAdjCe = createManualCostElement("MultiMaNeg Unmapped Adj",
+					MCostElement.COSTELEMENTTYPE_Overhead, 0);
+			createManualCostRecord(product, as, unmappedAdjCe, lotA.get_ID(), new BigDecimal("-100.00"), 0);
+
+			// Charge-mapped fixed manual cost -> +10.00 per MA bucket (+20.00 total), net COGS = -80.00
+			MCostElement overheadCe = createManualCostElement("MultiMaNeg Freight 10",
+					MCostElement.COSTELEMENTTYPE_Overhead, DictionaryIDs.C_Charge.FREIGHT.id);
+			createManualCostRecord(product, as, overheadCe, lotA.get_ID(), new BigDecimal("10.00"), 0);
+
+			MInOut shipment = createSOAndShipment(product, null, new BigDecimal("2"), new BigDecimal("150.00"));
+			MInOutLine shipLine = shipment.getLines()[0];
+			assertEquals(2, MInOutLineMA.get(Env.getCtx(), shipLine.get_ID(), getTrxName()).length);
+
+			List<MCostDetail> origCds = new Query(Env.getCtx(), MCostDetail.Table_Name,
+					"C_AcctSchema_ID=? AND M_Product_ID=? AND M_InOutLine_ID=? AND COALESCE(M_CostElement_ID,0)=0",
+					getTrxName())
+					.setParameters(as.get_ID(), product.get_ID(), shipLine.get_ID())
+					.list();
+			assertEquals(1, origCds.size());
+			assertEquals(0, new BigDecimal("-1").compareTo(origCds.get(0).getQty()));
+
+			ProductCost pc = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
+			int cogsAcctId = pc.getAccount(ProductCost.ACCTTYPE_P_Cogs, as).getAccount_ID();
+			int assetAcctId = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as).getAccount_ID();
+			int freightAcctId = MCharge.getAccount(DictionaryIDs.C_Charge.FREIGHT.id, as, getTrxName()).getAccount_ID();
+
+			List<MFactAcct> shipFacts = getFacts(MInOut.Table_ID, shipment.get_ID(), as.get_ID());
+			assertFactTotals(shipFacts, assetAcctId, new BigDecimal("100.00"), BigDecimal.ZERO);
+			assertFactTotals(shipFacts, cogsAcctId, BigDecimal.ZERO, new BigDecimal("80.00"));
+			assertFactTotals(shipFacts, freightAcctId, BigDecimal.ZERO, new BigDecimal("20.00"));
+
+			MInOut reversal = reverseAndPost(shipment);
+			List<MFactAcct> revFacts = getFacts(MInOut.Table_ID, reversal.get_ID(), as.get_ID());
+			assertFactTotals(revFacts, assetAcctId, BigDecimal.ZERO, new BigDecimal("100.00"));
+			assertFactTotals(revFacts, cogsAcctId, new BigDecimal("80.00"), BigDecimal.ZERO);
+			assertFactTotals(revFacts, freightAcctId, new BigDecimal("20.00"), BigDecimal.ZERO);
+		}
+		finally
+		{
+			CacheMgt.get().reset(MProductCategoryAcct.Table_Name);
+		}
+	}
 }

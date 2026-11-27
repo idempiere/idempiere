@@ -25,8 +25,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
@@ -123,76 +125,39 @@ public class Doc_Production extends Doc
 	private DocLine[] loadLines(X_M_Production prod)
 	{
 		ArrayList<DocLine> list = new ArrayList<DocLine>();
-		mQtyProduced = new HashMap<>(); 
-		String sqlPL = null;
-		if (prod.isUseProductionPlan()){
-			//	Production Plan
-			//	-- ProductionLine	- the real level
-			sqlPL = "SELECT pro_line.* FROM "
-							+ " M_ProductionLine pro_line INNER JOIN M_ProductionPlan plan ON pro_line.M_ProductionPlan_id = plan.M_ProductionPlan_id "
-							+ " INNER JOIN M_Production pro ON pro.M_Production_id = plan.M_Production_id "
-							+ " WHERE pro.M_Production_ID=? "
-							+ " ORDER BY plan.Line, plan.M_ProductionPlan_id, pro_line.Line, pro_line.M_ProductionLine_ID";
-		}else{
-			//	Production
-			//	-- ProductionLine	- the real level
-			sqlPL = "SELECT * FROM M_ProductionLine pl "
-					+ "WHERE pl.M_Production_ID=? "
-					+ "ORDER BY pl.Line, pl.M_ProductionLine_ID";
-		}
-		
-		PreparedStatement pstmtPL = null;
-		ResultSet rsPL = null;
-		try
-		{			
-			pstmtPL = DB.prepareStatement(sqlPL, getTrxName());
-			pstmtPL.setInt(1,get_ID());
-			rsPL = pstmtPL.executeQuery();
-			while (rsPL.next())
+		mQtyProduced = new HashMap<>();
+		Map<Integer, MProductionPlan> planCache = prod.isUseProductionPlan() ? new HashMap<>() : null;
+		for (X_M_ProductionLine line : loadProductionLines(get_ID(), prod.isUseProductionPlan(), true))
+		{
+			DocLine docLine = new DocLine(line, this);
+			docLine.setQty(line.getMovementQty(), false);
+			docLine.setReversalLine_ID(line.getReversalLine_ID());
+			//	Identify finished BOM Product
+			if (planCache != null)
 			{
-				X_M_ProductionLine line = new X_M_ProductionLine(getCtx(), rsPL, getTrxName());
-				if (line.getMovementQty().signum() == 0)
-				{
-					if (log.isLoggable(Level.INFO)) log.info("LineQty=0 - " + line);
-					continue;
-				}
-				DocLine docLine = new DocLine (line, this);
-				docLine.setQty (line.getMovementQty(), false);
-				docLine.setReversalLine_ID(line.getReversalLine_ID());
-				//	Identify finished BOM Product
-				if (prod.isUseProductionPlan()) {
-					MProductionPlan plan = new MProductionPlan(getCtx(), line.getM_ProductionPlan_ID(), getTrxName());
-					docLine.setProductionBOM(line.getM_Product_ID() == plan.getM_Product_ID());
-				} else {
-					docLine.setProductionBOM(line.getM_Product_ID() == prod.getM_Product_ID());
-				}
-				
-				if (docLine.isProductionBOM()){
-					manipulateQtyProduced (mQtyProduced, line, prod.isUseProductionPlan(), line.getMovementQty());
-				}
-				//
-				if (log.isLoggable(Level.FINE)) log.fine(docLine.toString());
-				list.add (docLine);
+				MProductionPlan plan = planCache.computeIfAbsent(line.getM_ProductionPlan_ID(),
+						id -> new MProductionPlan(getCtx(), id, getTrxName()));
+				docLine.setProductionBOM(line.getM_Product_ID() == plan.getM_Product_ID());
 			}
+			else
+			{
+				docLine.setProductionBOM(line.getM_Product_ID() == prod.getM_Product_ID());
+			}
+
+			if (docLine.isProductionBOM())
+				manipulateQtyProduced(mQtyProduced, line, prod.isUseProductionPlan(), line.getMovementQty());
+			//
+			if (log.isLoggable(Level.FINE)) log.fine(docLine.toString());
+			list.add(docLine);
 		}
-		catch (SQLException ee)
-		{
-			throw new DBException(ee, sqlPL);
-		}
-		finally
-		{
-			DB.close(rsPL, pstmtPL);
-			rsPL = null;
-			pstmtPL = null;
-		}
-		resolveLegacyReversalLines(prod, list);
-			
+		resolveLegacyReversalLines(prod, list, planCache);
+
 		DocLine[] dl = new DocLine[list.size()];
 		list.toArray(dl);
 		return dl;
 	}	//	loadLines
 
-	private List<X_M_ProductionLine> loadProductionLines(int productionId, boolean isUseProductionPlan)
+	private List<X_M_ProductionLine> loadProductionLines(int productionId, boolean isUseProductionPlan, boolean logZeroQty)
 	{
 		List<X_M_ProductionLine> lines = new ArrayList<>();
 		String sqlPL = isUseProductionPlan
@@ -212,8 +177,12 @@ public class Doc_Production extends Doc
 			while (rsPL.next())
 			{
 				X_M_ProductionLine line = new X_M_ProductionLine(getCtx(), rsPL, getTrxName());
-				if (line.getMovementQty().signum() != 0)
-					lines.add(line);
+				if (line.getMovementQty().signum() == 0)
+				{
+					if (logZeroQty && log.isLoggable(Level.INFO)) log.info("LineQty=0 - " + line);
+					continue;
+				}
+				lines.add(line);
 			}
 		}
 		catch (SQLException ee)
@@ -223,6 +192,8 @@ public class Doc_Production extends Doc
 		finally
 		{
 			DB.close(rsPL, pstmtPL);
+			rsPL = null;
+			pstmtPL = null;
 		}
 		return lines;
 	}
@@ -230,8 +201,11 @@ public class Doc_Production extends Doc
 	/**
 	 * Match pre-migration production reversal lines whose {@code ReversalLine_ID} is null
 	 * against the original production lines when their structure aligns 1-to-1.
+	 * Skips tied {@code M_ProductionPlan.Line} groups and permits completion-resolved
+	 * component ASI differences only when uniquely matched and backed by original MA allocations.
 	 */
-	private void resolveLegacyReversalLines(X_M_Production prod, List<DocLine> revDocLines)
+	private void resolveLegacyReversalLines(X_M_Production prod, List<DocLine> revDocLines,
+			Map<Integer, MProductionPlan> planCache)
 	{
 		if (prod.getReversal_ID() <= 0 || prod.getM_Production_ID() <= prod.getReversal_ID())
 			return;
@@ -250,48 +224,133 @@ public class Doc_Production extends Doc
 		MProduction origProd = new MProduction(getCtx(), prod.getReversal_ID(), getTrxName());
 		if (origProd.get_ID() <= 0 || origProd.isUseProductionPlan() != prod.isUseProductionPlan())
 			return;
-		List<X_M_ProductionLine> origLines = loadProductionLines(origProd.getM_Production_ID(), origProd.isUseProductionPlan());
+		List<X_M_ProductionLine> origLines = loadProductionLines(origProd.getM_Production_ID(), origProd.isUseProductionPlan(), false);
 		if (origLines.size() != revDocLines.size())
 			return;
 
-		Map<Integer, MProductionPlan> planCache = prod.isUseProductionPlan() ? new HashMap<>() : null;
-		int prevOrigPlanId = 0;
-		int prevRevPlanId = 0;
-		for (int i = 0; i < revDocLines.size(); i++)
+		Map<DocLine, Integer> inferredLinks = new LinkedHashMap<>();
+		if (prod.isUseProductionPlan())
 		{
-			DocLine revDocLine = revDocLines.get(i);
-			X_M_ProductionLine revLine = (X_M_ProductionLine) revDocLine.getPO();
-			X_M_ProductionLine origLine = origLines.get(i);
-			if (revDocLine.getReversalLine_ID() > 0 && revDocLine.getReversalLine_ID() != origLine.getM_ProductionLine_ID())
+			if (planCache == null)
+				planCache = new HashMap<>();
+			Map<Integer, Set<Integer>> origPlanIdsByLine = new LinkedHashMap<>();
+			Map<Integer, List<X_M_ProductionLine>> origByPlanLine = new LinkedHashMap<>();
+			for (X_M_ProductionLine origLine : origLines)
+			{
+				MProductionPlan origPlan = planCache.computeIfAbsent(origLine.getM_ProductionPlan_ID(),
+						id -> new MProductionPlan(getCtx(), id, getTrxName()));
+				origPlanIdsByLine.computeIfAbsent(origPlan.getLine(), k -> new LinkedHashSet<>()).add(origPlan.getM_ProductionPlan_ID());
+				origByPlanLine.computeIfAbsent(origPlan.getLine(), k -> new ArrayList<>()).add(origLine);
+			}
+
+			Map<Integer, Set<Integer>> revPlanIdsByLine = new LinkedHashMap<>();
+			Map<Integer, List<DocLine>> revByPlanLine = new LinkedHashMap<>();
+			for (DocLine revDocLine : revDocLines)
+			{
+				X_M_ProductionLine revLine = (X_M_ProductionLine) revDocLine.getPO();
+				MProductionPlan revPlan = planCache.computeIfAbsent(revLine.getM_ProductionPlan_ID(),
+						id -> new MProductionPlan(getCtx(), id, getTrxName()));
+				revPlanIdsByLine.computeIfAbsent(revPlan.getLine(), k -> new LinkedHashSet<>()).add(revPlan.getM_ProductionPlan_ID());
+				revByPlanLine.computeIfAbsent(revPlan.getLine(), k -> new ArrayList<>()).add(revDocLine);
+			}
+
+			if (!origPlanIdsByLine.keySet().equals(revPlanIdsByLine.keySet()))
 				return;
+
+			for (Map.Entry<Integer, Set<Integer>> entry : origPlanIdsByLine.entrySet())
+			{
+				int planLineNo = entry.getKey();
+				Set<Integer> origPlanIds = entry.getValue();
+				Set<Integer> revPlanIds = revPlanIdsByLine.get(planLineNo);
+				List<X_M_ProductionLine> origGroup = origByPlanLine.get(planLineNo);
+				List<DocLine> revGroup = revByPlanLine.get(planLineNo);
+				if (origPlanIds.size() != revPlanIds.size() || origGroup.size() != revGroup.size())
+					return;
+				// Tied plan.Line values cannot be matched safely across pre-migration unordered copies
+				if (origPlanIds.size() > 1)
+					continue;
+				MProductionPlan origPlan = planCache.get(origPlanIds.iterator().next());
+				MProductionPlan revPlan = planCache.get(revPlanIds.iterator().next());
+				if (origPlan.getM_Product_ID() != revPlan.getM_Product_ID())
+					return;
+				if (!matchLegacyLineGroup(origGroup, revGroup, inferredLinks))
+					return;
+			}
+		}
+		else
+		{
+			if (!matchLegacyLineGroup(origLines, revDocLines, inferredLinks))
+				return;
+		}
+
+		for (Map.Entry<DocLine, Integer> entry : inferredLinks.entrySet())
+		{
+			entry.getKey().setReversalLine_ID(entry.getValue());
+		}
+	}
+
+	private boolean matchLegacyLineGroup(List<X_M_ProductionLine> origGroup, List<DocLine> revGroup,
+			Map<DocLine, Integer> inferredLinks)
+	{
+		if (origGroup.size() != revGroup.size())
+			return false;
+
+		Map<String, Integer> origKeyCounts = new HashMap<>();
+		for (X_M_ProductionLine origLine : origGroup)
+		{
+			String key = origLine.getLine() + "_" + origLine.getM_Product_ID();
+			origKeyCounts.merge(key, 1, Integer::sum);
+		}
+
+		for (int i = 0; i < revGroup.size(); i++)
+		{
+			DocLine revDocLine = revGroup.get(i);
+			X_M_ProductionLine revLine = (X_M_ProductionLine) revDocLine.getPO();
+			X_M_ProductionLine origLine = origGroup.get(i);
+			if (revDocLine.getReversalLine_ID() > 0 && revDocLine.getReversalLine_ID() != origLine.getM_ProductionLine_ID())
+				return false;
 			if (origLine.getLine() != revLine.getLine()
 					|| origLine.getM_Product_ID() != revLine.getM_Product_ID()
 					|| origLine.isEndProduct() != revLine.isEndProduct()
 					|| origLine.getM_Locator_ID() != revLine.getM_Locator_ID()
-					|| origLine.getM_AttributeSetInstance_ID() != revLine.getM_AttributeSetInstance_ID()
 					|| origLine.getMovementQty().add(revLine.getMovementQty()).signum() != 0)
-				return;
-			if (planCache != null)
+				return false;
+
+			if (origLine.getM_AttributeSetInstance_ID() != revLine.getM_AttributeSetInstance_ID())
 			{
-				int origPlanId = origLine.getM_ProductionPlan_ID();
-				int revPlanId = revLine.getM_ProductionPlan_ID();
-				if (i > 0 && (origPlanId == prevOrigPlanId) != (revPlanId == prevRevPlanId))
-					return;
-				MProductionPlan origPlan = planCache.computeIfAbsent(origPlanId, id -> new MProductionPlan(getCtx(), id, getTrxName()));
-				MProductionPlan revPlan = planCache.computeIfAbsent(revPlanId, id -> new MProductionPlan(getCtx(), id, getTrxName()));
-				if (origPlan.getLine() != revPlan.getLine() || origPlan.getM_Product_ID() != revPlan.getM_Product_ID())
-					return;
-				prevOrigPlanId = origPlanId;
-				prevRevPlanId = revPlanId;
+				String key = origLine.getLine() + "_" + origLine.getM_Product_ID();
+				if (origKeyCounts.getOrDefault(key, 0) != 1
+						|| origLine.isEndProduct()
+						|| origLine.getMovementQty().signum() >= 0
+						|| origLine.getM_AttributeSetInstance_ID() != 0
+						|| revLine.getM_AttributeSetInstance_ID() <= 0)
+					return false;
+
+				MProductionLineMA[] origMas = MProductionLineMA.get(getCtx(), origLine.get_ID(), getTrxName());
+				boolean hasMatchingMa = false;
+				if (origMas != null)
+				{
+					for (MProductionLineMA ma : origMas)
+					{
+						if (ma.getM_AttributeSetInstance_ID() == revLine.getM_AttributeSetInstance_ID())
+						{
+							hasMatchingMa = true;
+							break;
+						}
+					}
+				}
+				if (!hasMatchingMa)
+					return false;
 			}
 		}
 
-		for (int i = 0; i < revDocLines.size(); i++)
+		for (int i = 0; i < revGroup.size(); i++)
 		{
-			DocLine revDocLine = revDocLines.get(i);
+			DocLine revDocLine = revGroup.get(i);
 			if (revDocLine.getReversalLine_ID() <= 0)
-				revDocLine.setReversalLine_ID(origLines.get(i).getM_ProductionLine_ID());
+				inferredLinks.put(revDocLine, origGroup.get(i).getM_ProductionLine_ID());
 		}
+		return true;
 	}
 
 	/**

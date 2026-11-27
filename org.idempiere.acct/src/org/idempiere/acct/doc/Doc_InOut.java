@@ -1303,7 +1303,7 @@ public class Doc_InOut extends Doc
 	 * @param as accounting schema
 	 * @param line reversal document line
 	 * @param isReturn true for Customer Return reversal, false for Customer Shipment reversal
-	 * @return original inventory cost magnitude (positive for standard shipment/return)
+	 * @return signed original inventory cost (positive for standard shipment/return)
 	 */
 	private BigDecimal getOriginalShipmentBaseCost(MAcctSchema as, DocLine_InOut line, boolean isReturn)
 	{
@@ -1326,18 +1326,44 @@ public class Doc_InOut extends Doc
 			// Only trust M_CostDetail sum directly when details cover the full line quantity
 			if (sumQty.abs().compareTo(line.getQty().abs()) == 0)
 				return isReturn ? origCdSum : origCdSum.negate();
+
+			// Expand across MInOutLineMA when multiple MA rows shared the same ASI and overwrote M_CostDetail
+			MInOutLineMA[] origMas = MInOutLineMA.get(getCtx(), line.getReversalLine_ID(), getTrxName());
+			if (origMas != null && origMas.length > 0)
+			{
+				Map<Integer, BigDecimal> cdAmtByAsi = new HashMap<>();
+				Map<Integer, BigDecimal> cdQtyByAsi = new HashMap<>();
+				for (MCostDetail cd : origCds)
+				{
+					cdAmtByAsi.merge(cd.getM_AttributeSetInstance_ID(), cd.getAmt(), BigDecimal::add);
+					cdQtyByAsi.merge(cd.getM_AttributeSetInstance_ID(), cd.getQty(), BigDecimal::add);
+				}
+				BigDecimal expandedAmt = BigDecimal.ZERO;
+				BigDecimal totalMaAbsQty = BigDecimal.ZERO;
+				boolean allMatched = true;
+				for (MInOutLineMA origMa : origMas)
+				{
+					int asiId = origMa.getM_AttributeSetInstance_ID();
+					BigDecimal cdQty = cdQtyByAsi.get(asiId);
+					BigDecimal cdAmt = cdAmtByAsi.get(asiId);
+					if (cdQty == null || cdAmt == null || cdQty.signum() == 0)
+					{
+						allMatched = false;
+						break;
+					}
+					BigDecimal maAbsQty = origMa.getMovementQty().abs();
+					totalMaAbsQty = totalMaAbsQty.add(maAbsQty);
+					BigDecimal cdAbsQty = cdQty.abs();
+					if (maAbsQty.compareTo(cdAbsQty) == 0)
+						expandedAmt = expandedAmt.add(cdAmt);
+					else
+						expandedAmt = expandedAmt.add(cdAmt.multiply(maAbsQty).divide(cdAbsQty, as.getCostingPrecision(), RoundingMode.HALF_UP));
+				}
+				if (allMatched && totalMaAbsQty.compareTo(line.getQty().abs()) == 0)
+					return isReturn ? expandedAmt : expandedAmt.negate();
+			}
 		}
 
-		boolean useCreditCol = as.isAllowNegativePosting() ? !isReturn : line.getQty().signum() >= 0;
-		String acctCol = useCreditCol ? "AmtAcctCr" : "AmtAcctDr";
-		BigDecimal factAmt = DB.getSQLValueBDEx(getTrxName(),
-				"SELECT SUM(" + acctCol + ") FROM Fact_Acct "
-				+ "WHERE C_AcctSchema_ID=? AND AD_Table_ID=? AND Record_ID=? AND Line_ID=? "
-				+ "AND PostingType=? AND COALESCE(C_Charge_ID,0)=0",
-				as.getC_AcctSchema_ID(), MInOut.Table_ID, m_Reversal_ID, line.getReversalLine_ID(),
-				Fact.POST_Actual);
-		if (factAmt != null)
-			return useCreditCol == isReturn ? factAmt.negate() : factAmt;
 		if (origCdSum != null)
 			return isReturn ? origCdSum : origCdSum.negate();
 		return BigDecimal.ZERO;
