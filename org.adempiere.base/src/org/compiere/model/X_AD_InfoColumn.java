@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for AD_InfoColumn
  *  @author iDempiere (generated)
- *  @version Release 13 - $Id$ */
+ *  @version Release 14 - $Id$ */
 @org.adempiere.base.Model(table="AD_InfoColumn")
 public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 {
@@ -31,7 +31,7 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20260309L;
+	private static final long serialVersionUID = 20261016L;
 
     /** Standard Constructor */
     public X_AD_InfoColumn (Properties ctx, int AD_InfoColumn_ID, String trxName)
@@ -62,6 +62,8 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 // N
 			setIsReadOnly (true);
 // Y
+			setIsShowNegateButton (false);
+// N
 			setName (null);
 			setSelectClause (null);
 			setSeqNo (0);
@@ -98,6 +100,8 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 // N
 			setIsReadOnly (true);
 // Y
+			setIsShowNegateButton (false);
+// N
 			setName (null);
 			setSelectClause (null);
 			setSeqNo (0);
@@ -134,6 +138,8 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 // N
 			setIsReadOnly (true);
 // Y
+			setIsShowNegateButton (false);
+// N
 			setName (null);
 			setSelectClause (null);
 			setSeqNo (0);
@@ -170,6 +176,8 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 // N
 			setIsReadOnly (true);
 // Y
+			setIsShowNegateButton (false);
+// N
 			setName (null);
 			setSelectClause (null);
 			setSeqNo (0);
@@ -768,6 +776,29 @@ public class X_AD_InfoColumn extends PO implements I_AD_InfoColumn, I_Persistent
 	public boolean isReadOnly()
 	{
 		Object oo = get_Value(COLUMNNAME_IsReadOnly);
+		if (oo != null)
+		{
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Show Negate Button.
+		@param IsShowNegateButton Show Negate Button for Chosen Multiple editors
+	*/
+	public void setIsShowNegateButton (boolean IsShowNegateButton)
+	{
+		set_Value (COLUMNNAME_IsShowNegateButton, Boolean.valueOf(IsShowNegateButton));
+	}
+
+	/** Get Show Negate Button.
+		@return Show Negate Button for Chosen Multiple editors
+	  */
+	public boolean isShowNegateButton()
+	{
+		Object oo = get_Value(COLUMNNAME_IsShowNegateButton);
 		if (oo != null)
 		{
 			 if (oo instanceof Boolean)
