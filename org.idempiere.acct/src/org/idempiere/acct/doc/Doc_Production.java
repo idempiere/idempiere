@@ -185,11 +185,114 @@ public class Doc_Production extends Doc
 			rsPL = null;
 			pstmtPL = null;
 		}
+		resolveLegacyReversalLines(prod, list);
 			
 		DocLine[] dl = new DocLine[list.size()];
 		list.toArray(dl);
 		return dl;
 	}	//	loadLines
+
+	private List<X_M_ProductionLine> loadProductionLines(int productionId, boolean isUseProductionPlan)
+	{
+		List<X_M_ProductionLine> lines = new ArrayList<>();
+		String sqlPL = isUseProductionPlan
+				? "SELECT pro_line.* FROM M_ProductionLine pro_line "
+					+ "INNER JOIN M_ProductionPlan plan ON pro_line.M_ProductionPlan_id = plan.M_ProductionPlan_id "
+					+ "INNER JOIN M_Production pro ON pro.M_Production_id = plan.M_Production_id "
+					+ "WHERE pro.M_Production_ID=? "
+					+ "ORDER BY plan.Line, plan.M_ProductionPlan_id, pro_line.Line, pro_line.M_ProductionLine_ID"
+				: "SELECT * FROM M_ProductionLine pl WHERE pl.M_Production_ID=? ORDER BY pl.Line, pl.M_ProductionLine_ID";
+		PreparedStatement pstmtPL = null;
+		ResultSet rsPL = null;
+		try
+		{
+			pstmtPL = DB.prepareStatement(sqlPL, getTrxName());
+			pstmtPL.setInt(1, productionId);
+			rsPL = pstmtPL.executeQuery();
+			while (rsPL.next())
+			{
+				X_M_ProductionLine line = new X_M_ProductionLine(getCtx(), rsPL, getTrxName());
+				if (line.getMovementQty().signum() != 0)
+					lines.add(line);
+			}
+		}
+		catch (SQLException ee)
+		{
+			throw new DBException(ee, sqlPL);
+		}
+		finally
+		{
+			DB.close(rsPL, pstmtPL);
+		}
+		return lines;
+	}
+
+	/**
+	 * Match pre-migration production reversal lines whose {@code ReversalLine_ID} is null
+	 * against the original production lines when their structure aligns 1-to-1.
+	 */
+	private void resolveLegacyReversalLines(X_M_Production prod, List<DocLine> revDocLines)
+	{
+		if (prod.getReversal_ID() <= 0 || prod.getM_Production_ID() <= prod.getReversal_ID())
+			return;
+		boolean hasUnlinked = false;
+		for (DocLine docLine : revDocLines)
+		{
+			if (docLine.getReversalLine_ID() <= 0)
+			{
+				hasUnlinked = true;
+				break;
+			}
+		}
+		if (!hasUnlinked)
+			return;
+
+		MProduction origProd = new MProduction(getCtx(), prod.getReversal_ID(), getTrxName());
+		if (origProd.get_ID() <= 0 || origProd.isUseProductionPlan() != prod.isUseProductionPlan())
+			return;
+		List<X_M_ProductionLine> origLines = loadProductionLines(origProd.getM_Production_ID(), origProd.isUseProductionPlan());
+		if (origLines.size() != revDocLines.size())
+			return;
+
+		Map<Integer, MProductionPlan> planCache = prod.isUseProductionPlan() ? new HashMap<>() : null;
+		int prevOrigPlanId = 0;
+		int prevRevPlanId = 0;
+		for (int i = 0; i < revDocLines.size(); i++)
+		{
+			DocLine revDocLine = revDocLines.get(i);
+			X_M_ProductionLine revLine = (X_M_ProductionLine) revDocLine.getPO();
+			X_M_ProductionLine origLine = origLines.get(i);
+			if (revDocLine.getReversalLine_ID() > 0 && revDocLine.getReversalLine_ID() != origLine.getM_ProductionLine_ID())
+				return;
+			if (origLine.getLine() != revLine.getLine()
+					|| origLine.getM_Product_ID() != revLine.getM_Product_ID()
+					|| origLine.isEndProduct() != revLine.isEndProduct()
+					|| origLine.getM_Locator_ID() != revLine.getM_Locator_ID()
+					|| origLine.getM_AttributeSetInstance_ID() != revLine.getM_AttributeSetInstance_ID()
+					|| origLine.getMovementQty().add(revLine.getMovementQty()).signum() != 0)
+				return;
+			if (planCache != null)
+			{
+				int origPlanId = origLine.getM_ProductionPlan_ID();
+				int revPlanId = revLine.getM_ProductionPlan_ID();
+				if (i > 0 && (origPlanId == prevOrigPlanId) != (revPlanId == prevRevPlanId))
+					return;
+				MProductionPlan origPlan = planCache.computeIfAbsent(origPlanId, id -> new MProductionPlan(getCtx(), id, getTrxName()));
+				MProductionPlan revPlan = planCache.computeIfAbsent(revPlanId, id -> new MProductionPlan(getCtx(), id, getTrxName()));
+				if (origPlan.getLine() != revPlan.getLine() || origPlan.getM_Product_ID() != revPlan.getM_Product_ID())
+					return;
+				prevOrigPlanId = origPlanId;
+				prevRevPlanId = revPlanId;
+			}
+		}
+
+		for (int i = 0; i < revDocLines.size(); i++)
+		{
+			DocLine revDocLine = revDocLines.get(i);
+			if (revDocLine.getReversalLine_ID() <= 0)
+				revDocLine.setReversalLine_ID(origLines.get(i).getM_ProductionLine_ID());
+		}
+	}
 
 	/**
 	 *  Get Balance
@@ -237,6 +340,18 @@ public class Doc_Production extends Doc
 		}
 		boolean useManualReversal = isReversal
 				&& MManualCostDetail.hasForRecord(as.getC_AcctSchema_ID(), MProduction.Table_ID, prod.getReversal_ID(), getTrxName());
+		if (useManualReversal)
+		{
+			for (DocLine line : p_lines)
+			{
+				if (line.getReversalLine_ID() <= 0)
+				{
+					p_Error = "Original production line not found for manual cost reversal: " + line.getLine();
+					log.log(Level.WARNING, p_Error);
+					return null;
+				}
+			}
+		}
 		Map<Integer, List<MManualCostDetail>> origManualDetailMap = useManualReversal ? new HashMap<>() : null;
 		int stdPrecision = as.getStdPrecision();
 		Map<Integer, List<Integer>> compLineIndicesByParent = new LinkedHashMap<>();

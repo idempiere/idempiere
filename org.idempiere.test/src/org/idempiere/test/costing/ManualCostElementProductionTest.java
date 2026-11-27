@@ -1091,6 +1091,65 @@ public class ManualCostElementProductionTest extends AbstractManualCostElementTe
 		}
 	}
 
+	@Test
+	public void testPreMigrationProductionReversalWithNullReversalLineIdMatchesOriginalManualDetails()
+	{
+		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
+
+		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS))
+		{
+			MProduct comp = createStockedProduct("LegacyProdRevComp", DictionaryIDs.M_Product_Category.STANDARD.id, 0);
+			mockProductGet(mockedProduct, comp);
+			MProduct fg = createBomProduct("LegacyProdRevFg", DictionaryIDs.M_Product_Category.STANDARD.id, 0, mockedProduct);
+
+			createPOAndMR(comp, null, new BigDecimal("5"), new BigDecimal("100.00"));
+			MCostElement freightCe = createManualCostElement("LegacyProdRev Freight 10",
+					MCostElement.COSTELEMENTTYPE_Overhead, DictionaryIDs.C_Charge.FREIGHT.id);
+			createManualCostRecord(comp, as, freightCe, 0, new BigDecimal("10.00"), 0);
+			createSimpleBOM(fg, comp, BigDecimal.ONE);
+
+			MProduction prod = createProduction(fg, BigDecimal.ONE, 0, true);
+			runDeferred(() -> {
+				complete(prod);
+				reverseCorrect(prod);
+			});
+			prod.load(getTrxName());
+			MProduction reversal = new MProduction(Env.getCtx(), prod.getReversal_ID(), getTrxName());
+			assertTrue(reversal.get_ID() > 0);
+
+			// Simulate pre-migration rows where M_ProductionLine.ReversalLine_ID is NULL
+			DB.executeUpdateEx("UPDATE M_ProductionLine SET ReversalLine_ID=NULL WHERE M_Production_ID IN (?,?)",
+					new Object[] { prod.get_ID(), reversal.get_ID() }, getTrxName());
+
+			postImmediate(prod);
+			postImmediate(reversal);
+
+			List<MManualCostDetail> origDetails = MManualCostDetail.getByRecord(Env.getCtx(), as.get_ID(),
+					MProduction.Table_ID, prod.get_ID(), getTrxName());
+			List<MManualCostDetail> revDetails = MManualCostDetail.getByRecord(Env.getCtx(), as.get_ID(),
+					MProduction.Table_ID, reversal.get_ID(), getTrxName());
+			assertEquals(1, origDetails.size());
+			assertEquals(1, revDetails.size());
+			assertEquals(new BigDecimal("10.00"), origDetails.get(0).getAmt().setScale(2, RoundingMode.HALF_UP));
+			assertEquals(new BigDecimal("-10.00"), revDetails.get(0).getAmt().setScale(2, RoundingMode.HALF_UP));
+
+			int fgAssetId = new ProductCost(Env.getCtx(), fg.get_ID(), 0, getTrxName())
+					.getAccount(ProductCost.ACCTTYPE_P_Asset, as).getAccount_ID();
+			int compAssetId = new ProductCost(Env.getCtx(), comp.get_ID(), 0, getTrxName())
+					.getAccount(ProductCost.ACCTTYPE_P_Asset, as).getAccount_ID();
+			int freightAcctId = MCharge.getAccount(DictionaryIDs.C_Charge.FREIGHT.id, as, getTrxName()).getAccount_ID();
+
+			MProductionLine revFgLine = findLineByProduct(reversal, fg.get_ID());
+			MProductionLine revCompLine = findLineByProduct(reversal, comp.get_ID());
+			assertNotNull(revFgLine);
+			assertNotNull(revCompLine);
+			List<MFactAcct> revFacts = getFacts(MProduction.Table_ID, reversal.get_ID(), as.get_ID());
+			assertEquals(new BigDecimal("110.00"), sumLineAccount(revFacts, revFgLine.get_ID(), fgAssetId, false).setScale(2, RoundingMode.HALF_UP));
+			assertEquals(new BigDecimal("100.00"), sumLineAccount(revFacts, revCompLine.get_ID(), compAssetId, true).setScale(2, RoundingMode.HALF_UP));
+			assertFactTotals(revFacts, freightAcctId, new BigDecimal("10.00"), BigDecimal.ZERO);
+		}
+	}
+
 	private MProductionLine findLineByProduct(MProduction prod, int productId)
 	{
 		for (MProductionLine pl : prod.getLines())

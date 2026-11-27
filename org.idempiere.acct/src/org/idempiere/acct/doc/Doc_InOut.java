@@ -257,7 +257,7 @@ public class Doc_InOut extends Doc
 						if (product.isStocked())
 						{
 							//ok if we have purchased zero cost item from vendor before
-							if (hasVerifiedZeroPurchaseCost(product.getM_Product_ID()))
+							if (hasVerifiedZeroPurchaseCost(as, product, line))
 							{
 								costs = BigDecimal.ZERO;
 							}
@@ -542,7 +542,7 @@ public class Doc_InOut extends Doc
 					{
 						if (product.isStocked())
 						{
-							if (hasVerifiedZeroPurchaseCost(product.getM_Product_ID()))
+							if (hasVerifiedZeroPurchaseCost(as, product, line))
 							{
 								costs = BigDecimal.ZERO;
 							}
@@ -1200,15 +1200,54 @@ public class Doc_InOut extends Doc
 	}   //  createFact
 
 	/**
-	 * @param productId M_Product_ID
-	 * @return true if a processed purchase cost detail with zero amount exists
+	 * @param as accounting schema
+	 * @param product product
+	 * @param line document line
+	 * @return true if processed zero-amount purchase cost details exist for the line's costing scope
 	 */
-	private boolean hasVerifiedZeroPurchaseCost(int productId)
+	private boolean hasVerifiedZeroPurchaseCost(MAcctSchema as, MProduct product, DocLine_InOut line)
 	{
-		int count = DB.getSQLValue(getTrxName(),
-				"SELECT Count(*) FROM M_CostDetail WHERE M_Product_ID=? AND Processed='Y' AND Amt=0.00 AND Qty > 0 AND (C_OrderLine_ID > 0 OR C_InvoiceLine_ID > 0)",
-				productId);
-		return count > 0;
+		String costingLevel = product.getCostingLevel(as);
+		if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel))
+		{
+			if (line.getM_AttributeSetInstance_ID() == 0)
+			{
+				MInOutLineMA[] mas = MInOutLineMA.get(getCtx(), line.get_ID(), getTrxName());
+				if (mas != null && mas.length > 0)
+				{
+					for (MInOutLineMA ma : mas)
+					{
+						if (!hasVerifiedZeroPurchaseCost(as.getC_AcctSchema_ID(), product.getM_Product_ID(), -1, ma.getM_AttributeSetInstance_ID()))
+							return false;
+					}
+					return true;
+				}
+			}
+			return hasVerifiedZeroPurchaseCost(as.getC_AcctSchema_ID(), product.getM_Product_ID(), -1, line.getM_AttributeSetInstance_ID());
+		}
+		int orgId = MAcctSchema.COSTINGLEVEL_Organization.equals(costingLevel) ? line.getAD_Org_ID() : -1;
+		return hasVerifiedZeroPurchaseCost(as.getC_AcctSchema_ID(), product.getM_Product_ID(), orgId, -1);
+	}
+
+	private boolean hasVerifiedZeroPurchaseCost(int acctSchemaId, int productId, int orgId, int asiId)
+	{
+		StringBuilder sql = new StringBuilder(
+				"SELECT Count(*) FROM M_CostDetail WHERE C_AcctSchema_ID=? AND M_Product_ID=? "
+				+ "AND Processed='Y' AND Amt=0.00 AND Qty > 0 AND (C_OrderLine_ID > 0 OR C_InvoiceLine_ID > 0)");
+		List<Object> params = new ArrayList<>();
+		params.add(acctSchemaId);
+		params.add(productId);
+		if (orgId >= 0)
+		{
+			sql.append(" AND AD_Org_ID=?");
+			params.add(orgId);
+		}
+		if (asiId >= 0)
+		{
+			sql.append(" AND M_AttributeSetInstance_ID=?");
+			params.add(asiId);
+		}
+		return DB.getSQLValueEx(getTrxName(), sql.toString(), params) > 0;
 	}
 
 	/**
@@ -1289,18 +1328,16 @@ public class Doc_InOut extends Doc
 				return isReturn ? origCdSum : origCdSum.negate();
 		}
 
-		MAccount assetAcct = line.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
-		if (assetAcct != null)
-		{
-			BigDecimal factBal = DB.getSQLValueBDEx(getTrxName(),
-					"SELECT SUM(AmtAcctCr - AmtAcctDr) FROM Fact_Acct "
-					+ "WHERE C_AcctSchema_ID=? AND AD_Table_ID=? AND Record_ID=? AND Line_ID=? AND Account_ID=? "
-					+ "AND PostingType=? AND COALESCE(C_Charge_ID,0)=0",
-					as.getC_AcctSchema_ID(), MInOut.Table_ID, m_Reversal_ID, line.getReversalLine_ID(),
-					assetAcct.getAccount_ID(), Fact.POST_Actual);
-			if (factBal != null)
-				return isReturn ? factBal.negate() : factBal;
-		}
+		boolean useCreditCol = as.isAllowNegativePosting() ? !isReturn : line.getQty().signum() >= 0;
+		String acctCol = useCreditCol ? "AmtAcctCr" : "AmtAcctDr";
+		BigDecimal factAmt = DB.getSQLValueBDEx(getTrxName(),
+				"SELECT SUM(" + acctCol + ") FROM Fact_Acct "
+				+ "WHERE C_AcctSchema_ID=? AND AD_Table_ID=? AND Record_ID=? AND Line_ID=? "
+				+ "AND PostingType=? AND COALESCE(C_Charge_ID,0)=0",
+				as.getC_AcctSchema_ID(), MInOut.Table_ID, m_Reversal_ID, line.getReversalLine_ID(),
+				Fact.POST_Actual);
+		if (factAmt != null)
+			return useCreditCol == isReturn ? factAmt.negate() : factAmt;
 		if (origCdSum != null)
 			return isReturn ? origCdSum : origCdSum.negate();
 		return BigDecimal.ZERO;

@@ -962,4 +962,187 @@ public class ManualCostElementInOutTest extends AbstractManualCostElementTest
 			CacheMgt.get().reset(MProductCategoryAcct.Table_Name);
 		}
 	}
+
+	@Test
+	public void testZeroCostCheckScopedByBatchLotAndOrganization()
+	{
+		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
+		assertEquals(MCostElement.COSTINGMETHOD_AveragePO, as.getCostingMethod(), "Default costing method not Average PO");
+
+		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MProductCategory> mockedCategory = mockStatic(MProductCategory.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MAttributeSet> mockedAttrSet = mockStatic(MAttributeSet.class, Mockito.CALLS_REAL_METHODS))
+		{
+			// 1. Batch/Lot costing: verified zero purchase for lotZero must NOT satisfy unvalued lotUnvalued
+			MProductCategory batchCat = createCategoryWithCosting("ZeroCostBatchCat", as,
+					MAcctSchema.COSTINGLEVEL_BatchLot, MCostElement.COSTINGMETHOD_AveragePO, mockedCategory);
+			MAttributeSet lotAs = createLotAttributeSet("ZeroCostBatchAS", mockedAttrSet);
+			MProduct lotProd = createStockedProduct("ZeroCostBatchProd", batchCat.get_ID(), lotAs.get_ID());
+			mockProductGet(mockedProduct, lotProd);
+			DB.executeUpdateEx("UPDATE M_ProductPrice SET PriceStd=0, PriceList=0 WHERE M_Product_ID=?",
+					new Object[] { lotProd.get_ID() }, getTrxName());
+
+			MAttributeSetInstance lotZero = createLot(lotAs.get_ID(), "LOT-ZERO");
+			MAttributeSetInstance lotUnvalued = createLot(lotAs.get_ID(), "LOT-UNVALUED");
+			MInOutLine zeroReceiptLine = createPOAndMR(lotProd, lotZero, new BigDecimal("5"), BigDecimal.ZERO);
+			for (MMatchPO matchPO : MMatchPO.get(Env.getCtx(), zeroReceiptLine.getM_InOutLine_ID(), getTrxName()))
+			{
+				if (!matchPO.isPosted())
+					postImmediate(matchPO);
+			}
+			MCostDetail.processProduct(as, lotProd, getLoginDate(), getTrxName());
+
+			MCostElement overheadCe = createManualCostElement("ZeroCostScope Overhead 5",
+					MCostElement.COSTELEMENTTYPE_Overhead, DictionaryIDs.C_Charge.FREIGHT.id);
+			createManualCostRecord(lotProd, as, overheadCe, 0, new BigDecimal("5.00"), 0);
+
+			MInOut zeroLotShip = createSOAndShipment(lotProd, lotZero, BigDecimal.ONE, BigDecimal.ZERO);
+			assertTrue(zeroLotShip.isPosted(), "Shipment of verified zero-cost lot must post");
+			MInOut zeroLotReturn = createCustomerReturn(zeroLotShip, zeroLotShip.getLines()[0], BigDecimal.ONE);
+			assertTrue(zeroLotReturn.isPosted(), "Return of verified zero-cost lot must post");
+
+			MOrder unvalSo = createCompletedSO(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id), 0,
+					lotProd, lotUnvalued, BigDecimal.ONE, new BigDecimal("10.00"), getLoginDate(), true);
+			MInOut unvalShip = createDraftShipment(unvalSo, unvalSo.getLines()[0], lotUnvalued, BigDecimal.ONE, unvalSo.getDateOrdered());
+			runDeferred(() -> complete(unvalShip));
+			String lotErr = tryPostImmediate(unvalShip);
+			assertNotNull(lotErr, "Unvalued lot must NOT inherit verified zero-cost evidence from another lot");
+			assertTrue(lotErr.contains(Msg.getMsg(Env.getCtx(), "No Costs for")) && lotErr.contains(lotProd.getName()),
+					"Expected 'No Costs for' error, got: " + lotErr);
+
+			// 2. Organization costing: verified zero purchase in HQ must NOT satisfy shipment in Store Central
+			MProductCategory orgCat = createCategoryWithCosting("ZeroCostOrgCat", as,
+					MAcctSchema.COSTINGLEVEL_Organization, MCostElement.COSTINGMETHOD_AveragePO, mockedCategory);
+			MProduct orgProd = createStockedProduct("ZeroCostOrgProd", orgCat.get_ID(), 0);
+			mockProductGet(mockedProduct, orgProd);
+			DB.executeUpdateEx("UPDATE M_ProductPrice SET PriceStd=0, PriceList=0 WHERE M_Product_ID=?",
+					new Object[] { orgProd.get_ID() }, getTrxName());
+
+			MInOutLine hqReceiptLine = createPOAndMR(orgProd, null, new BigDecimal("5"), BigDecimal.ZERO);
+			for (MMatchPO matchPO : MMatchPO.get(Env.getCtx(), hqReceiptLine.getM_InOutLine_ID(), getTrxName()))
+			{
+				if (!matchPO.isPosted())
+					postImmediate(matchPO);
+			}
+			MCostDetail.processProduct(as, orgProd, getLoginDate(), getTrxName());
+
+			MCost storeCost = MCost.get(orgProd, 0, as, DictionaryIDs.AD_Org.STORE_CENTRAL.id, overheadCe.get_ID(), getTrxName());
+			storeCost.setCurrentCostPrice(new BigDecimal("5.00"));
+			storeCost.saveEx();
+
+			MOrder storeSo = new MOrder(Env.getCtx(), 0, getTrxName());
+			storeSo.setAD_Org_ID(DictionaryIDs.AD_Org.STORE_CENTRAL.id);
+			storeSo.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
+			storeSo.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.STANDARD_ORDER.id);
+			storeSo.setDeliveryRule(MOrder.DELIVERYRULE_Force);
+			storeSo.setIsSOTrx(true);
+			storeSo.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.STORE_CENTRAL.id);
+			storeSo.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+			storeSo.setDateOrdered(getLoginDate());
+			storeSo.setDateAcct(getLoginDate());
+			storeSo.setDatePromised(getLoginDate());
+			storeSo.saveEx();
+
+			var storeSoLine = new org.compiere.model.MOrderLine(storeSo);
+			storeSoLine.setLine(10);
+			storeSoLine.setProduct(orgProd);
+			storeSoLine.setQty(BigDecimal.ONE);
+			storeSoLine.setDatePromised(getLoginDate());
+			storeSoLine.setPrice(BigDecimal.TEN);
+			storeSoLine.saveEx();
+			complete(storeSo);
+
+			MInOut storeShip = new MInOut(storeSo, DictionaryIDs.C_DocType.MM_SHIPMENT.id, getLoginDate());
+			storeShip.setAD_Org_ID(DictionaryIDs.AD_Org.STORE_CENTRAL.id);
+			storeShip.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.STORE_CENTRAL.id);
+			storeShip.saveEx();
+			MInOutLine storeShipLine = new MInOutLine(storeShip);
+			storeShipLine.setOrderLine(storeSoLine, DictionaryIDs.M_Locator.STORE.id, BigDecimal.ONE);
+			storeShipLine.setM_Locator_ID(DictionaryIDs.M_Locator.STORE.id);
+			storeShipLine.setQty(BigDecimal.ONE);
+			storeShipLine.saveEx();
+			runDeferred(() -> complete(storeShip));
+
+			String orgErr = tryPostImmediate(storeShip);
+			assertNotNull(orgErr, "Store Central shipment must NOT inherit verified zero-cost evidence from HQ");
+			assertTrue(orgErr.contains(Msg.getMsg(Env.getCtx(), "No Costs for")) && orgErr.contains(orgProd.getName()),
+					"Expected 'No Costs for' error, got: " + orgErr);
+		}
+		finally
+		{
+			CacheMgt.get().reset(MProductCategoryAcct.Table_Name);
+		}
+	}
+
+	@Test
+	public void testBatchLotMultiMaSameAsiAssetChangeReversalRecoversFullCost()
+	{
+		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
+		assertEquals(MCostElement.COSTINGMETHOD_AveragePO, as.getCostingMethod(), "Default costing method not Average PO");
+
+		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MProductCategory> mockedCategory = mockStatic(MProductCategory.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MAttributeSet> mockedAttrSet = mockStatic(MAttributeSet.class, Mockito.CALLS_REAL_METHODS))
+		{
+			MProductCategory batchCat = createCategoryWithCosting("MultiMaAssetSwapCat", as,
+					MAcctSchema.COSTINGLEVEL_BatchLot, MCostElement.COSTINGMETHOD_AveragePO, mockedCategory);
+			MAttributeSet lotAs = createLotAttributeSet("MultiMaAssetSwapAS", mockedAttrSet);
+			MProduct product = createStockedProduct("MultiMaAssetSwapProd", batchCat.get_ID(), lotAs.get_ID());
+			mockProductGet(mockedProduct, product);
+
+			MAttributeSetInstance lotA = createLot(lotAs.get_ID(), "LOT-SPLIT-MA");
+			Timestamp day1 = TimeUtil.addDays(getLoginDate(), -2);
+			Timestamp day2 = TimeUtil.addDays(getLoginDate(), -1);
+			createPOAndMR(product, lotA, BigDecimal.ONE, new BigDecimal("100.00"), day1);
+			createPOAndMR(product, lotA, BigDecimal.ONE, new BigDecimal("100.00"), day2);
+
+			MCostElement burdenCe = createManualCostElement("MultiMa Burden 10pct",
+					MCostElement.COSTELEMENTTYPE_BurdenMOverhead, DictionaryIDs.C_Charge.FREIGHT.id);
+			createManualCostRecord(product, as, burdenCe, 0, BigDecimal.ZERO, 10);
+
+			MInOut shipment = createSOAndShipment(product, null, new BigDecimal("2"), new BigDecimal("250.00"));
+			MInOutLine shipLine = shipment.getLines()[0];
+			MInOutLineMA[] shipMas = MInOutLineMA.get(Env.getCtx(), shipLine.get_ID(), getTrxName());
+			assertEquals(2, shipMas.length, "Expected 2 MInOutLineMA rows for two DateMaterialPolicy buckets");
+
+			// MCostDetail.createShipment keys by (M_InOutLine_ID, M_AttributeSetInstance_ID), leaving partial Qty (-1 of -2)
+			List<MCostDetail> origCds = new Query(Env.getCtx(), MCostDetail.Table_Name,
+					"C_AcctSchema_ID=? AND M_Product_ID=? AND M_InOutLine_ID=? AND COALESCE(M_CostElement_ID,0)=0",
+					getTrxName())
+					.setParameters(as.get_ID(), product.get_ID(), shipLine.get_ID())
+					.list();
+			assertEquals(1, origCds.size());
+			assertEquals(0, new BigDecimal("-1").compareTo(origCds.get(0).getQty()));
+
+			ProductCost pc = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
+			int cogsAcctId = pc.getAccount(ProductCost.ACCTTYPE_P_Cogs, as).getAccount_ID();
+			MAccount freightAcct = MCharge.getAccount(DictionaryIDs.C_Charge.FREIGHT.id, as, getTrxName());
+			assertNotNull(freightAcct);
+			int freightAcctId = freightAcct.getAccount_ID();
+
+			// Change P_Asset_Acct after posting original shipment
+			DB.executeUpdateEx("UPDATE M_Product_Acct SET P_Asset_Acct=? WHERE M_Product_ID=? AND C_AcctSchema_ID=?",
+					new Object[] { freightAcct.get_ID(), product.get_ID(), as.get_ID() }, getTrxName());
+			CacheMgt.get().reset();
+
+			MInOut reversal = reverseAndPost(shipment);
+			List<MFactAcct> revFacts = getFacts(MInOut.Table_ID, reversal.get_ID(), as.get_ID());
+			assertFactTotals(revFacts, cogsAcctId, BigDecimal.ZERO, new BigDecimal("220.00"));
+			BigDecimal invDr = BigDecimal.ZERO;
+			BigDecimal chgDr = BigDecimal.ZERO;
+			for (MFactAcct fa : revFacts)
+			{
+				if (fa.getAccount_ID() == freightAcctId && fa.getC_Charge_ID() == 0)
+					invDr = invDr.add(fa.getAmtAcctDr());
+				else if (fa.getAccount_ID() == freightAcctId && fa.getC_Charge_ID() == DictionaryIDs.C_Charge.FREIGHT.id)
+					chgDr = chgDr.add(fa.getAmtAcctDr());
+			}
+			assertEquals(new BigDecimal("200.00"), invDr.setScale(2, RoundingMode.HALF_UP));
+			assertEquals(new BigDecimal("20.00"), chgDr.setScale(2, RoundingMode.HALF_UP));
+		}
+		finally
+		{
+			CacheMgt.get().reset(MProductCategoryAcct.Table_Name);
+		}
+	}
 }
