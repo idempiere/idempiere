@@ -268,6 +268,7 @@ public abstract class AbstractManualCostElementTest extends AbstractTestCase
 			String error = DocumentEngine.postImmediate(Env.getCtx(), shipment.getAD_Client_ID(),
 					shipment.get_Table_ID(), shipment.get_ID(), false, getTrxName());
 			assertNull(error, "Shipment posting failed: " + error);
+			shipment.load(getTrxName());
 		}
 		return shipment;
 	}
@@ -348,6 +349,7 @@ public abstract class AbstractManualCostElementTest extends AbstractTestCase
 			String error = DocumentEngine.postImmediate(Env.getCtx(), customerReturn.getAD_Client_ID(),
 					customerReturn.get_Table_ID(), customerReturn.get_ID(), false, getTrxName());
 			assertNull(error, "Customer Return posting failed: " + error);
+			customerReturn.load(getTrxName());
 		}
 		return customerReturn;
 	}

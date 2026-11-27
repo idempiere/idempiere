@@ -32,10 +32,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.when;
 
+import java.lang.reflect.Proxy;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.ResultSet;
@@ -883,6 +882,27 @@ public class ManualCostElementProductionTest extends AbstractManualCostElementTe
 					"Reversal production component M_CostDetail must match reversed inventory (+100.00), not drifted current cost (120.00)");
 			assertEquals(origCd.getM_CostDetail_ID(), revCd.getRef_CostDetail_ID(),
 					"Reversal production component M_CostDetail must preserve Ref_CostDetail_ID");
+
+			ProductCost compPc = new ProductCost(Env.getCtx(), comp.get_ID(), 0, getTrxName());
+			int compAssetAcctId = compPc.getAccount(ProductCost.ACCTTYPE_P_Asset, as).getAccount_ID();
+			List<MFactAcct> origFacts = getFacts(MProduction.Table_ID, production.get_ID(), as.get_ID());
+			List<MFactAcct> revFacts = getFacts(MProduction.Table_ID, reversal.get_ID(), as.get_ID());
+			BigDecimal origCompAssetCr = BigDecimal.ZERO;
+			for (MFactAcct fa : origFacts)
+			{
+				if (fa.getLine_ID() == origCompLine.get_ID() && fa.getAccount_ID() == compAssetAcctId && fa.getC_Charge_ID() == 0)
+					origCompAssetCr = origCompAssetCr.add(fa.getAmtAcctCr());
+			}
+			BigDecimal revCompAssetDr = BigDecimal.ZERO;
+			for (MFactAcct fa : revFacts)
+			{
+				if (fa.getLine_ID() == revCompLine.get_ID() && fa.getAccount_ID() == compAssetAcctId && fa.getC_Charge_ID() == 0)
+					revCompAssetDr = revCompAssetDr.add(fa.getAmtAcctDr());
+			}
+			assertEquals(new BigDecimal("100.00"), origCompAssetCr.setScale(2, RoundingMode.HALF_UP),
+					"Original production component asset credit must be 100.00");
+			assertEquals(new BigDecimal("100.00"), revCompAssetDr.setScale(2, RoundingMode.HALF_UP),
+					"Reversal production component asset debit must be 100.00, matching revCd and offsetting original");
 		}
 	}
 
@@ -971,20 +991,55 @@ public class ManualCostElementProductionTest extends AbstractManualCostElementTe
 			MProduction rev = new MProduction(Env.getCtx(), prod.getReversal_ID(), getTrxName());
 			assertFalse(rev.isPosted());
 
-			// Inject SQLException during Doc_Production.loadLines current-line query: must abort posting AND unlock Processing='N'
-			CPreparedStatement failingPstmt = mock(CPreparedStatement.class);
-			ResultSet failingRs = mock(ResultSet.class);
-			when(failingPstmt.executeQuery()).thenReturn(failingRs);
-			when(failingRs.next()).thenThrow(new SQLException("simulated partial plan load failure"));
-
+			// Inject SQLException during Doc_Production.loadLines after reading plan 1's two rows (before plan 2):
+			// must abort posting AND unlock Processing='N'
 			try (MockedStatic<DB> mockedDb = mockStatic(DB.class, Mockito.CALLS_REAL_METHODS))
 			{
 				mockedDb.when(() -> DB.prepareStatement(
 						Mockito.<String>argThat(sql -> sql != null && sql.contains("M_ProductionLine pro_line")), Mockito.<String>any()))
-						.thenReturn(failingPstmt);
+						.thenAnswer(inv -> {
+							CPreparedStatement realPstmt = (CPreparedStatement) inv.callRealMethod();
+							return (CPreparedStatement) Proxy.newProxyInstance(
+									CPreparedStatement.class.getClassLoader(),
+									new Class<?>[] { CPreparedStatement.class },
+									(proxy, method, args) -> {
+										if ("executeQuery".equals(method.getName()) && (args == null || args.length == 0))
+										{
+											ResultSet realRs = realPstmt.executeQuery();
+											int[] nextCalls = { 0 };
+											return (ResultSet) Proxy.newProxyInstance(
+													ResultSet.class.getClassLoader(),
+													new Class<?>[] { ResultSet.class },
+													(rsProxy, rsMethod, rsArgs) -> {
+														if ("next".equals(rsMethod.getName()) && (rsArgs == null || rsArgs.length == 0))
+														{
+															nextCalls[0]++;
+															if (nextCalls[0] > 2)
+																throw new SQLException("simulated partial plan load failure after plan 1");
+														}
+														try
+														{
+															return rsMethod.invoke(realRs, rsArgs);
+														}
+														catch (java.lang.reflect.InvocationTargetException ite)
+														{
+															throw ite.getCause();
+														}
+													});
+										}
+										try
+										{
+											return method.invoke(realPstmt, args);
+										}
+										catch (java.lang.reflect.InvocationTargetException ite)
+										{
+											throw ite.getCause();
+										}
+									});
+						});
 				assertThrows(DBException.class, () -> DocumentEngine.postImmediate(Env.getCtx(), rev.getAD_Client_ID(),
 						rev.get_Table_ID(), rev.get_ID(), false, getTrxName()),
-						"Current-line load failure must abort posting instead of replaying partial lines");
+						"Current-line load failure after partial read must abort posting instead of replaying partial lines");
 			}
 
 			rev.load(getTrxName());
@@ -1463,6 +1518,110 @@ public class ManualCostElementProductionTest extends AbstractManualCostElementTe
 					reversal.get_Table_ID(), reversal.get_ID(), false, getTrxName());
 			assertNull(revErr, "Non-manual production reversal must not block on unposted original: " + revErr);
 			assertFalse(MManualCostDetail.hasForRecord(as.get_ID(), MProduction.Table_ID, reversal.get_ID(), getTrxName()));
+		}
+	}
+
+	@Test
+	public void testMultiFgRoundingDoesNotFlipLastReceiptSign()
+	{
+		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
+		assertEquals(MCostElement.COSTINGMETHOD_AveragePO, as.getCostingMethod(), "Default costing method not Average PO");
+
+		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS))
+		{
+			MProduct comp = createStockedProduct("SixFgSignComp", DictionaryIDs.M_Product_Category.STANDARD.id, 0);
+			MProduct fg = createStockedProduct("SixFgSignFG", DictionaryIDs.M_Product_Category.STANDARD.id, 0);
+			fg.setIsBOM(true);
+			fg.saveEx();
+			mockProductGet(mockedProduct, comp);
+			mockProductGet(mockedProduct, fg);
+
+			// Material cost 0.06 + fixed manual charge 0.03 = 0.09 split across 6 equal FG lines of qty 1
+			createPOAndMR(comp, null, new BigDecimal("5"), new BigDecimal("0.06"));
+			MCostElement overheadCe = createManualCostElement("SixFg Overhead 0.03",
+					MCostElement.COSTELEMENTTYPE_Overhead, DictionaryIDs.C_Charge.FREIGHT.id);
+			createManualCostRecord(comp, as, overheadCe, 0, new BigDecimal("0.03"), 0);
+
+			MPPProductBOM bom = new MPPProductBOM(Env.getCtx(), 0, getTrxName());
+			bom.setM_Product_ID(fg.get_ID());
+			bom.setBOMType(MPPProductBOM.BOMTYPE_CurrentActive);
+			bom.setBOMUse(MPPProductBOM.BOMUSE_Master);
+			bom.setName(fg.getName());
+			bom.saveEx();
+			MPPProductBOMLine bomLine = new MPPProductBOMLine(bom);
+			bomLine.setM_Product_ID(comp.get_ID());
+			bomLine.setQtyBOM(BigDecimal.ONE);
+			bomLine.saveEx();
+			fg.load(getTrxName());
+			fg.setIsVerified(true);
+			fg.saveEx();
+
+			MProduction prod = new MProduction(Env.getCtx(), 0, getTrxName());
+			prod.setName("Six FG Rounding Production");
+			prod.setM_Product_ID(fg.get_ID());
+			prod.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+			prod.setIsUseProductionPlan(false);
+			prod.setMovementDate(getLoginDate());
+			prod.setIsCreated("Y");
+			prod.setProductionQty(new BigDecimal("6"));
+			prod.saveEx();
+
+			List<MProductionLine> fgLines = new ArrayList<>();
+			for (int k = 1; k <= 6; k++)
+			{
+				MProductionLine fgLine = new MProductionLine(prod);
+				fgLine.setLine(k * 10);
+				fgLine.setM_Product_ID(fg.get_ID());
+				fgLine.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+				fgLine.setIsEndProduct(true);
+				fgLine.setMovementQty(BigDecimal.ONE);
+				fgLine.setPlannedQty(BigDecimal.ONE);
+				fgLine.saveEx();
+				fgLines.add(fgLine);
+			}
+			MProductionLine compLine = new MProductionLine(prod);
+			compLine.setLine(70);
+			compLine.setM_Product_ID(comp.get_ID());
+			compLine.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+			compLine.setIsEndProduct(false);
+			compLine.setQtyUsed(BigDecimal.ONE);
+			compLine.setMovementQty(BigDecimal.ONE.negate());
+			compLine.setPlannedQty(BigDecimal.ONE);
+			compLine.saveEx();
+
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(prod, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			prod.load(getTrxName());
+			if (!prod.isPosted())
+			{
+				String err = DocumentEngine.postImmediate(Env.getCtx(), prod.getAD_Client_ID(),
+						prod.get_Table_ID(), prod.get_ID(), false, getTrxName());
+				assertNull(err, "Six-FG production posting failed: " + err);
+			}
+
+			List<MFactAcct> facts = getFacts(MProduction.Table_ID, prod.get_ID(), as.get_ID());
+			BigDecimal totalFgDr = BigDecimal.ZERO;
+			for (MProductionLine fgLine : fgLines)
+			{
+				MCostDetail cd = MCostDetail.getProduction(as, fg.get_ID(), 0, fgLine.get_ID(), 0, getTrxName());
+				assertNotNull(cd, "FG MCostDetail missing for line " + fgLine.getLine());
+				assertTrue(cd.getAmt().signum() > 0, "FG MCostDetail must stay positive, got " + cd.getAmt());
+				BigDecimal lineDr = BigDecimal.ZERO;
+				BigDecimal lineCr = BigDecimal.ZERO;
+				for (MFactAcct fa : facts)
+				{
+					if (fa.getLine_ID() == fgLine.get_ID())
+					{
+						lineDr = lineDr.add(fa.getAmtAcctDr());
+						lineCr = lineCr.add(fa.getAmtAcctCr());
+					}
+				}
+				assertTrue(lineDr.signum() > 0 && lineCr.signum() == 0,
+						"FG receipt line " + fgLine.getLine() + " must debit inventory (never credit): DR=" + lineDr + ", CR=" + lineCr);
+				totalFgDr = totalFgDr.add(lineDr);
+			}
+			assertEquals(new BigDecimal("0.09"), totalFgDr.setScale(2, RoundingMode.HALF_UP),
+					"Total FG inventory debit across all 6 lines must equal 0.09");
 		}
 	}
 }

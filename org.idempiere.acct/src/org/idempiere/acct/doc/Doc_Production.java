@@ -36,12 +36,14 @@ import org.compiere.model.MCharge;
 import org.compiere.model.MCost;
 import org.compiere.model.MCost.ManualCost;
 import org.compiere.model.MCostDetail;
+import org.compiere.model.MCostElement;
 import org.compiere.model.MManualCostDetail;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProduction;
 import org.compiere.model.MProductionLineMA;
 import org.compiere.model.MProductionPlan;
 import org.compiere.model.ProductCost;
+import org.compiere.model.Query;
 import org.compiere.model.X_M_Production;
 import org.compiere.model.X_M_ProductionLine;
 import org.compiere.util.DB;
@@ -225,7 +227,7 @@ public class Doc_Production extends Doc
 		HashMap<String, BigDecimal> costMap =  new HashMap<String, BigDecimal>();
 		Map<Integer, List<ManualCost>> manualCostMap = new HashMap<>();
 		boolean isReversal = prod.getReversal_ID() > 0 && prod.getM_Production_ID() > prod.getReversal_ID();
-		if (isReversal && MCost.hasChargeManualCostElements(getAD_Client_ID(), getTrxName()))
+		if (isReversal && hasEligibleComponentManualCosts(as))
 		{
 			MProduction origProd = new MProduction(getCtx(), prod.getReversal_ID(), getTrxName());
 			if (!origProd.isPosted())
@@ -239,15 +241,15 @@ public class Doc_Production extends Doc
 				&& MManualCostDetail.hasForRecord(as.getC_AcctSchema_ID(), MProduction.Table_ID, prod.getReversal_ID(), getTrxName());
 		Map<Integer, List<MManualCostDetail>> origManualDetailMap = useManualReversal ? new HashMap<>() : null;
 		int stdPrecision = as.getStdPrecision();
-		Map<Integer, Integer> lastFgLineIndexMap = new HashMap<>();
-		Map<Integer, BigDecimal> allocatedFgBomCostMap = new HashMap<>();
+		Map<Integer, List<Integer>> fgLineIndicesByParent = new HashMap<>();
+		Map<Integer, Map<Integer, BigDecimal>> groupFgBomAllocationMap = new HashMap<>();
 		for (int i = 0; i < p_lines.length; i++)
 		{
 			if (p_lines[i].isProductionBOM())
 			{
 				X_M_ProductionLine fgLine = (X_M_ProductionLine) p_lines[i].getPO();
 				int parentKey = prod.isUseProductionPlan() ? fgLine.getM_ProductionPlan_ID() : fgLine.getM_Production_ID();
-				lastFgLineIndexMap.put(parentKey, i);
+				fgLineIndicesByParent.computeIfAbsent(parentKey, k -> new ArrayList<>()).add(i);
 			}
 		}
 
@@ -269,33 +271,34 @@ public class Doc_Production extends Doc
 				{
 					Map<Integer, ManualCost> maManualCostMap = !isReversal && !line.isProductionBOM() && !manualCostMap.containsKey(line.get_ID())
 							? new LinkedHashMap<>() : null;
-					for (int j = 0; j < mas.length; j++)
+					for (Map.Entry<Integer, BigDecimal> maEntry : aggregateProductionLineMAs(mas).entrySet())
 					{
-						MProductionLineMA ma = mas[j];
+						int maAsiId = maEntry.getKey();
+						BigDecimal maQty = maEntry.getValue();
 						BigDecimal maCost = useManualReversal
-								? getOriginalProductionMaCost(as, line, ma.getM_AttributeSetInstance_ID()) : null;
+								? getOriginalProductionMaCost(as, line, maAsiId) : null;
 						if (maCost == null)
 						{
-							MCostDetail cd = MCostDetail.getProduction(as, line.getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
+							MCostDetail cd = MCostDetail.getProduction(as, line.getM_Product_ID(), maAsiId,
 									line.get_ID(), getTrxName());
 							if (cd != null)
 								maCost = cd.getAmt();
 							else
 							{
 								ProductCost pc = line.getProductCost();
-								pc.setQty(ma.getMovementQty());
-								pc.setM_M_AttributeSetInstance_ID(ma.getM_AttributeSetInstance_ID());
+								pc.setQty(maQty);
+								pc.setM_M_AttributeSetInstance_ID(maAsiId);
 								maCost = line.getProductCosts(as, line.getAD_Org_ID(), false);
 							}
 						}
 						if (maManualCostMap != null)
 						{
-							accumulateManualCosts(maManualCostMap, MCost.getManualCosts(product, ma.getM_AttributeSetInstance_ID(),
-									as, line.getAD_Org_ID(), maCost, ma.getMovementQty(), getTrxName()));
+							accumulateManualCosts(maManualCostMap, MCost.getManualCosts(product, maAsiId,
+									as, line.getAD_Org_ID(), maCost, maQty, getTrxName()));
 						}
 						costs = costs.add(maCost);
 						costs = costs.setScale(stdPrecision, RoundingMode.HALF_UP);
-						costMap.put(line.get_ID()+ "_"+ ma.getM_AttributeSetInstance_ID(), maCost.setScale(stdPrecision, RoundingMode.HALF_UP));
+						costMap.put(line.get_ID()+ "_"+ maAsiId, maCost.setScale(stdPrecision, RoundingMode.HALF_UP));
 					}
 					if (maManualCostMap != null)
 						manualCostMap.put(line.get_ID(), roundManualCosts(maManualCostMap.values(), stdPrecision));
@@ -381,33 +384,34 @@ public class Doc_Production extends Doc
 								 // get cost of children for batch costing level (auto generate)									
 									BigDecimal costs0 = BigDecimal.ZERO ;
 									Map<Integer, ManualCost> maManualCostMap = !isReversal && line0ManualCosts == null ? new LinkedHashMap<>() : null;
-									for (int j = 0; j < bomLineMA.length; j++)
+									for (Map.Entry<Integer, BigDecimal> maEntry : aggregateProductionLineMAs(bomLineMA).entrySet())
 									{
-										MProductionLineMA ma = bomLineMA[j];
+										int maAsiId = maEntry.getKey();
+										BigDecimal maQty = maEntry.getValue();
 										BigDecimal maCost = useManualReversal
-												? getOriginalProductionMaCost(as, line0, ma.getM_AttributeSetInstance_ID()) : null;
+												? getOriginalProductionMaCost(as, line0, maAsiId) : null;
 										if (maCost == null)
 										{
 											// get cost of children
-											MCostDetail cd0 = MCostDetail.getProduction(as, line0.getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
+											MCostDetail cd0 = MCostDetail.getProduction(as, line0.getM_Product_ID(), maAsiId,
 													line0.get_ID(), getTrxName());
 											if (cd0 != null)
 												maCost = cd0.getAmt();
 											else
 											{
 												ProductCost pc = line0.getProductCost();
-												pc.setQty(ma.getMovementQty());
-												pc.setM_M_AttributeSetInstance_ID(ma.getM_AttributeSetInstance_ID());
+												pc.setQty(maQty);
+												pc.setM_M_AttributeSetInstance_ID(maAsiId);
 												maCost = line0.getProductCosts(as, line0.getAD_Org_ID(), false);
 											}
 										}
 										if (maManualCostMap != null)
 										{
-											accumulateManualCosts(maManualCostMap, MCost.getManualCosts(product0, ma.getM_AttributeSetInstance_ID(),
-													as, line0.getAD_Org_ID(), maCost, ma.getMovementQty(), getTrxName()));
+											accumulateManualCosts(maManualCostMap, MCost.getManualCosts(product0, maAsiId,
+													as, line0.getAD_Org_ID(), maCost, maQty, getTrxName()));
 										}
 										maCost = maCost.setScale(stdPrecision, RoundingMode.HALF_UP);
-										costMap.put(line0.get_ID()+ "_"+ ma.getM_AttributeSetInstance_ID(),maCost);
+										costMap.put(line0.get_ID()+ "_"+ maAsiId, maCost);
 										costs0 = costs0.add(maCost);
 									}						
 									bomCost = bomCost.add(costs0);
@@ -489,21 +493,19 @@ public class Doc_Production extends Doc
 				}
 				
 				qtyProduced = manipulateQtyProduced (mQtyProduced, endProLine, prod.isUseProductionPlan(), null);
-				if (line.getQty().compareTo(qtyProduced) != 0) 
+				List<Integer> groupFgIndices = fgLineIndicesByParent.get(parentEndPro);
+				if (groupFgIndices != null && groupFgIndices.size() > 1)
 				{
 					BigDecimal totalGroupBomCost = bomCost.setScale(stdPrecision, RoundingMode.HALF_UP);
-					Integer lastFgIdx = lastFgLineIndexMap.get(parentEndPro);
-					if (lastFgIdx != null && i == lastFgIdx.intValue())
-					{
-						BigDecimal allocatedSoFar = allocatedFgBomCostMap.getOrDefault(parentEndPro, BigDecimal.ZERO);
-						bomCost = totalGroupBomCost.subtract(allocatedSoFar);
-					}
-					else
-					{
-						BigDecimal factor = line.getQty().divide(qtyProduced, 12, RoundingMode.HALF_UP);
-						bomCost = totalGroupBomCost.multiply(factor).setScale(stdPrecision, RoundingMode.HALF_UP);
-						allocatedFgBomCostMap.merge(parentEndPro, bomCost, BigDecimal::add);
-					}
+					BigDecimal groupQtyProduced = qtyProduced;
+					Map<Integer, BigDecimal> allocation = groupFgBomAllocationMap.computeIfAbsent(parentEndPro,
+							k -> allocateGroupBomCost(totalGroupBomCost, groupQtyProduced, groupFgIndices, stdPrecision));
+					bomCost = allocation.getOrDefault(i, BigDecimal.ZERO);
+				}
+				else if (line.getQty().compareTo(qtyProduced) != 0 && qtyProduced.signum() != 0)
+				{
+					BigDecimal factor = line.getQty().divide(qtyProduced, 12, RoundingMode.HALF_UP);
+					bomCost = bomCost.setScale(stdPrecision, RoundingMode.HALF_UP).multiply(factor).setScale(stdPrecision, RoundingMode.HALF_UP);
 				}
 			}
 
@@ -652,15 +654,16 @@ public class Doc_Production extends Doc
 				}
 				else if (line.getM_AttributeSetInstance_ID() == 0 && (mas!=null && mas.length> 0 ))
 				{
-					for (int j = 0; j < mas.length; j++)
+					for (Map.Entry<Integer, BigDecimal> maEntry : aggregateProductionLineMAs(mas).entrySet())
 					{
-						MProductionLineMA ma = mas[j];
-						BigDecimal maCost = costMap.get(line.get_ID()+ "_"+ ma.getM_AttributeSetInstance_ID());
-						int Ref_CostDetail_ID = getRefCostDetailId(as, line, ma.getM_AttributeSetInstance_ID(), origLineId);
+						int maAsiId = maEntry.getKey();
+						BigDecimal maQty = maEntry.getValue();
+						BigDecimal maCost = costMap.get(line.get_ID()+ "_"+ maAsiId);
+						int Ref_CostDetail_ID = getRefCostDetailId(as, line, maAsiId, origLineId);
 						if (!MCostDetail.createProduction(as, line.getAD_Org_ID(),
-								line.getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
+								line.getM_Product_ID(), maAsiId,
 								line.get_ID(), 0,
-								maCost, ma.getMovementQty(),
+								maCost, maQty,
 								description, line.getDateAcct(), Ref_CostDetail_ID, getTrxName()))
 						{
 							p_Error = "Failed to create cost detail record";
@@ -670,16 +673,39 @@ public class Doc_Production extends Doc
 				} 
 				else
 				{
-					int Ref_CostDetail_ID = getRefCostDetailId(as, line, line.getM_AttributeSetInstance_ID(), origLineId);
-					if (!MCostDetail.createProduction(as, line.getAD_Org_ID(),
-							line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
-							line.get_ID(), 0,
-							costs, line.getQty(),
-							description, line.getDateAcct(), Ref_CostDetail_ID, getTrxName()))
+					List<MCostDetail> origLotCds = useManualReversal && origLineId > 0
+							? getOriginalProductionCostDetails(as, line.getM_Product_ID(), origLineId)
+							: Collections.emptyList();
+					if (origLotCds.size() > 1
+							|| (origLotCds.size() == 1 && origLotCds.get(0).getM_AttributeSetInstance_ID() != line.getM_AttributeSetInstance_ID()))
 					{
-						p_Error = "Failed to create cost detail record";
-						return null;
-					} 
+						for (MCostDetail origCd : origLotCds)
+						{
+							int refId = line.get_ID() > origLineId ? origCd.getM_CostDetail_ID() : 0;
+							if (!MCostDetail.createProduction(as, line.getAD_Org_ID(),
+									line.getM_Product_ID(), origCd.getM_AttributeSetInstance_ID(),
+									line.get_ID(), 0,
+									origCd.getAmt().negate(), origCd.getQty().negate(),
+									description, line.getDateAcct(), refId, getTrxName()))
+							{
+								p_Error = "Failed to create cost detail record";
+								return null;
+							}
+						}
+					}
+					else
+					{
+						int Ref_CostDetail_ID = getRefCostDetailId(as, line, line.getM_AttributeSetInstance_ID(), origLineId);
+						if (!MCostDetail.createProduction(as, line.getAD_Org_ID(),
+								line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
+								line.get_ID(), 0,
+								costs, line.getQty(),
+								description, line.getDateAcct(), Ref_CostDetail_ID, getTrxName()))
+						{
+							p_Error = "Failed to create cost detail record";
+							return null;
+						}
+					}
 				}
 			} 
 			else
@@ -780,6 +806,105 @@ public class Doc_Production extends Doc
 				return cd.getM_CostDetail_ID();
 		}
 		return 0;
+	}
+
+	private boolean hasEligibleComponentManualCosts(MAcctSchema as)
+	{
+		if (!MCost.hasChargeManualCostElements(getAD_Client_ID(), getTrxName()))
+			return false;
+		final String sql = "SELECT 1 FROM M_Cost c "
+				+ "JOIN M_CostElement ce ON (c.M_CostElement_ID=ce.M_CostElement_ID) "
+				+ "WHERE c.AD_Client_ID=? AND c.AD_Org_ID=? AND c.M_Product_ID=? "
+				+ "AND c.M_CostType_ID=? AND c.C_AcctSchema_ID=? "
+				+ "AND c.IsActive='Y' AND ce.IsActive='Y' "
+				+ "AND ce.CostingMethod IS NULL AND ce.CostElementType <> 'M' AND ce.C_Charge_ID > 0 "
+				+ "AND (COALESCE(c.CurrentCostPrice,0) <> 0 OR COALESCE(c.Percent,0) <> 0)";
+		for (DocLine line : p_lines)
+		{
+			if (line.isProductionBOM())
+				continue;
+			MProduct product = MProduct.get(getCtx(), line.getM_Product_ID());
+			if (product == null || product.get_ID() <= 0)
+				continue;
+			if (MCostElement.COSTINGMETHOD_StandardCosting.equals(product.getCostingMethod(as)))
+				continue;
+			int resolvedOrgId = MCost.CostingKey.resolve(line.getAD_Org_ID(), 0, product.getCostingLevel(as)).AD_Org_ID();
+			if (DB.getSQLValueEx(getTrxName(), sql, getAD_Client_ID(), resolvedOrgId,
+					product.getM_Product_ID(), as.getM_CostType_ID(), as.getC_AcctSchema_ID()) > 0)
+				return true;
+		}
+		return false;
+	}
+
+	private Map<Integer, BigDecimal> aggregateProductionLineMAs(MProductionLineMA[] mas)
+	{
+		Map<Integer, BigDecimal> asiQtyMap = new LinkedHashMap<>();
+		for (MProductionLineMA ma : mas)
+			asiQtyMap.merge(ma.getM_AttributeSetInstance_ID(), ma.getMovementQty(), BigDecimal::add);
+		return asiQtyMap;
+	}
+
+	private List<MCostDetail> getOriginalProductionCostDetails(MAcctSchema as, int productId, int origLineId)
+	{
+		return new Query(getCtx(), MCostDetail.Table_Name,
+				"C_AcctSchema_ID=? AND M_Product_ID=? AND M_ProductionLine_ID=? AND COALESCE(M_CostElement_ID,0)=0",
+				getTrxName())
+				.setParameters(as.getC_AcctSchema_ID(), productId, origLineId)
+				.setOrderBy(MCostDetail.COLUMNNAME_M_CostDetail_ID)
+				.list();
+	}
+
+	/**
+	 * Allocate a production group's rounded BOM cost across multiple finished-goods lines using
+	 * largest-remainder apportionment so the shares sum exactly to {@code totalGroupBomCost} and
+	 * no same-sign output line flips sign due to cumulative rounding.
+	 */
+	private Map<Integer, BigDecimal> allocateGroupBomCost(BigDecimal totalGroupBomCost,
+			BigDecimal qtyProduced, List<Integer> groupFgIndices, int stdPrecision)
+	{
+		Map<Integer, BigDecimal> result = new HashMap<>();
+		if (qtyProduced == null || qtyProduced.signum() == 0)
+		{
+			for (Integer idx : groupFgIndices)
+				result.put(idx, BigDecimal.ZERO);
+			return result;
+		}
+		Map<Integer, BigDecimal> exactMap = new HashMap<>();
+		BigDecimal sumBase = BigDecimal.ZERO;
+		for (Integer idx : groupFgIndices)
+		{
+			BigDecimal exact = totalGroupBomCost.multiply(p_lines[idx].getQty())
+					.divide(qtyProduced, stdPrecision + 12, RoundingMode.HALF_UP);
+			BigDecimal base = exact.setScale(stdPrecision, RoundingMode.DOWN);
+			exactMap.put(idx, exact);
+			result.put(idx, base);
+			sumBase = sumBase.add(base);
+		}
+		BigDecimal diff = totalGroupBomCost.subtract(sumBase);
+		if (diff.signum() != 0)
+		{
+			BigDecimal unit = BigDecimal.ONE.movePointLeft(stdPrecision);
+			BigDecimal step = diff.signum() > 0 ? unit : unit.negate();
+			int steps = diff.movePointRight(stdPrecision).abs().intValueExact();
+			List<Integer> ordered = new ArrayList<>(groupFgIndices);
+			boolean positiveDiff = diff.signum() > 0;
+			ordered.sort((a, b) -> {
+				BigDecimal remA = positiveDiff
+						? exactMap.get(a).subtract(result.get(a))
+						: result.get(a).subtract(exactMap.get(a));
+				BigDecimal remB = positiveDiff
+						? exactMap.get(b).subtract(result.get(b))
+						: result.get(b).subtract(exactMap.get(b));
+				int cmp = remB.compareTo(remA);
+				return cmp != 0 ? cmp : Integer.compare(a, b);
+			});
+			for (int k = 0; k < steps; k++)
+			{
+				Integer idx = ordered.get(k % ordered.size());
+				result.put(idx, result.get(idx).add(step));
+			}
+		}
+		return result;
 	}
 
 }   //  Doc_Production

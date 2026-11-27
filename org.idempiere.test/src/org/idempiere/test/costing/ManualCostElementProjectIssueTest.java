@@ -175,9 +175,9 @@ public class ManualCostElementProjectIssueTest extends AbstractManualCostElement
 
 			List<MFactAcct> revFacts = getFacts(MProjectIssue.Table_ID, reversal.get_ID(), as.get_ID());
 			assertEquals(4, revFacts.size(), "ProjectIssue reversal should have 4 Fact_Acct lines matching original");
-			assertFactTotals(revFacts, wipAcctId, BigDecimal.ZERO, new BigDecimal("230.00"));
-			assertFactTotals(revFacts, assetAcctId, new BigDecimal("200.00"), BigDecimal.ZERO);
-			assertFactTotals(revFacts, freightAcctId, new BigDecimal("30.00"), BigDecimal.ZERO);
+			assertProjectIssueReversalFactTotals(revFacts, wipAcctId, new BigDecimal("230.00"), BigDecimal.ZERO, as);
+			assertProjectIssueReversalFactTotals(revFacts, assetAcctId, BigDecimal.ZERO, new BigDecimal("200.00"), as);
+			assertProjectIssueReversalFactTotals(revFacts, freightAcctId, BigDecimal.ZERO, new BigDecimal("30.00"), as);
 
 			List<BigDecimal> revChargeDebits = new ArrayList<>();
 			for (MFactAcct fa : revFacts)
@@ -185,7 +185,7 @@ public class ManualCostElementProjectIssueTest extends AbstractManualCostElement
 				if (fa.getAccount_ID() == freightAcctId)
 				{
 					assertEquals(DictionaryIDs.C_Charge.FREIGHT.id, fa.getC_Charge_ID(), "Reversed ProjectIssue Charge line must retain C_Charge_ID");
-					revChargeDebits.add(fa.getAmtAcctDr().setScale(2, RoundingMode.HALF_UP));
+					revChargeDebits.add(fa.getAmtAcctDr().subtract(fa.getAmtAcctCr()).setScale(2, RoundingMode.HALF_UP));
 				}
 			}
 			assertEquals(2, revChargeDebits.size(), "Expected 2 separate Charge debit lines on ProjectIssue reversal");
@@ -401,8 +401,19 @@ public class ManualCostElementProjectIssueTest extends AbstractManualCostElement
 			// Sub-cent unit cost (100.0040) exceeds currency StdPrecision (2)
 			createPOAndMR(product, null, new BigDecimal("3"), new BigDecimal("100.004"));
 
+			// Use a test-owned Charge so updating C_Charge_Acct does not lock GardenWorld's shared FREIGHT row
+			MCharge testCharge = new MCharge(Env.getCtx(), 0, getTrxName());
+			testCharge.setName("SubCent Proj Test Charge");
+			testCharge.setChargeAmt(BigDecimal.ZERO);
+			testCharge.saveEx();
+			MAccount freightAcct = MCharge.getAccount(DictionaryIDs.C_Charge.FREIGHT.id, as, getTrxName());
+			assertNotNull(freightAcct);
+			DB.executeUpdateEx("UPDATE C_Charge_Acct SET Ch_Expense_Acct=? WHERE C_Charge_ID=? AND C_AcctSchema_ID=?",
+					new Object[] {freightAcct.get_ID(), testCharge.get_ID(), as.get_ID()}, getTrxName());
+			CacheMgt.get().reset();
+
 			MCostElement overheadCe = createManualCostElement("SubCent Proj Overhead 5",
-					MCostElement.COSTELEMENTTYPE_Overhead, DictionaryIDs.C_Charge.FREIGHT.id);
+					MCostElement.COSTELEMENTTYPE_Overhead, testCharge.get_ID());
 			createManualCostRecord(product, as, overheadCe, 0, new BigDecimal("5.00"), 0);
 
 			MProject proj = new MProject(Env.getCtx(), 0, getTrxName());
@@ -437,7 +448,7 @@ public class ManualCostElementProjectIssueTest extends AbstractManualCostElement
 			ProductCost pc = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
 			int origWipAcctId = getProjectWipAccountId(proj, as);
 			int origAssetAcctId = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as).getAccount_ID();
-			int freightAcctId = MCharge.getAccount(DictionaryIDs.C_Charge.FREIGHT.id, as, getTrxName()).getAccount_ID();
+			int freightAcctId = MCharge.getAccount(testCharge.get_ID(), as, getTrxName()).getAccount_ID();
 			assertFactTotals(origFacts, origWipAcctId, new BigDecimal("105.00"), BigDecimal.ZERO);
 			assertFactTotals(origFacts, origAssetAcctId, BigDecimal.ZERO, new BigDecimal("100.00"));
 			assertFactTotals(origFacts, freightAcctId, BigDecimal.ZERO, new BigDecimal("5.00"));
@@ -447,11 +458,11 @@ public class ManualCostElementProjectIssueTest extends AbstractManualCostElement
 			assertEquals(new BigDecimal("-100.0040"), origCd.getAmt().setScale(4, RoundingMode.HALF_UP),
 					"Original ProjectIssue MCostDetail should preserve sub-cent costing precision");
 
-			// Change Charge Ch_Expense_Acct BEFORE reversing to verify historical C_ValidCombination_ID preservation
+			// Change test-owned Charge Ch_Expense_Acct BEFORE reversing to verify historical C_ValidCombination_ID preservation
 			MAccount altAcct = MCharge.getAccount(DictionaryIDs.C_Charge.COMMISSIONS.id, as, getTrxName());
 			assertNotNull(altAcct);
 			DB.executeUpdateEx("UPDATE C_Charge_Acct SET Ch_Expense_Acct=? WHERE C_Charge_ID=? AND C_AcctSchema_ID=?",
-					new Object[] {altAcct.get_ID(), DictionaryIDs.C_Charge.FREIGHT.id, as.get_ID()}, getTrxName());
+					new Object[] {altAcct.get_ID(), testCharge.get_ID(), as.get_ID()}, getTrxName());
 			CacheMgt.get().reset();
 
 			info = MWorkflow.runDocumentActionWorkflow(issue, DocAction.ACTION_Reverse_Correct);
@@ -469,9 +480,9 @@ public class ManualCostElementProjectIssueTest extends AbstractManualCostElement
 
 			List<MFactAcct> revFacts = getFacts(MProjectIssue.Table_ID, reversal.get_ID(), as.get_ID());
 			assertEquals(3, revFacts.size(), "Reversal should have 3 Fact_Acct lines matching original");
-			assertFactTotals(revFacts, origWipAcctId, BigDecimal.ZERO, new BigDecimal("105.00"));
-			assertFactTotals(revFacts, origAssetAcctId, new BigDecimal("100.00"), BigDecimal.ZERO);
-			assertFactTotals(revFacts, freightAcctId, new BigDecimal("5.00"), BigDecimal.ZERO);
+			assertProjectIssueReversalFactTotals(revFacts, origWipAcctId, new BigDecimal("105.00"), BigDecimal.ZERO, as);
+			assertProjectIssueReversalFactTotals(revFacts, origAssetAcctId, BigDecimal.ZERO, new BigDecimal("100.00"), as);
+			assertProjectIssueReversalFactTotals(revFacts, freightAcctId, BigDecimal.ZERO, new BigDecimal("5.00"), as);
 			assertFactTotals(revFacts, altAcct.getAccount_ID(), BigDecimal.ZERO, BigDecimal.ZERO);
 
 			List<MManualCostDetail> origMcds = MManualCostDetail.getByRecord(Env.getCtx(), as.get_ID(),
@@ -627,7 +638,8 @@ public class ManualCostElementProjectIssueTest extends AbstractManualCostElement
 			mockProductGet(mockedProduct, product);
 			createPOAndMR(product, null, new BigDecimal("5"), new BigDecimal("100.00"));
 
-			// Create a Time & Expense line priced at 100.00; expense-linked ProjectIssue must NOT post product manual charges
+			// Create a Time & Expense line priced at 125.00 (distinct from 100.00 product cost);
+			// expense-linked ProjectIssue must NOT post product manual charges
 			MTimeExpense te = new MTimeExpense(Env.getCtx(), 0, getTrxName());
 			te.setC_BPartner_ID(DictionaryIDs.C_BPartner.GARDEN_USER.id);
 			te.setDateReport(getLoginDate());
@@ -640,12 +652,13 @@ public class ManualCostElementProjectIssueTest extends AbstractManualCostElement
 			MTimeExpenseLine teLine = new MTimeExpenseLine(Env.getCtx(), 0, getTrxName());
 			teLine.setS_TimeExpense_ID(te.get_ID());
 			teLine.setLine(10);
+			teLine.setDateExpense(getLoginDate());
 			teLine.setIsTimeReport(false);
 			teLine.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
 			teLine.setM_Product_ID(product.get_ID());
 			teLine.setQty(BigDecimal.ONE);
-			teLine.setExpenseAmt(new BigDecimal("100.00"));
-			teLine.setConvertedAmt(new BigDecimal("100.00"));
+			teLine.setExpenseAmt(new BigDecimal("125.00"));
+			teLine.setConvertedAmt(new BigDecimal("125.00"));
 			teLine.saveEx();
 
 			MCostElement burdenCe = createManualCostElement("ProjRevWait Burden 10pct",
@@ -705,17 +718,18 @@ public class ManualCostElementProjectIssueTest extends AbstractManualCostElement
 
 			List<MFactAcct> origFacts = getFacts(MProjectIssue.Table_ID, issue.get_ID(), as.get_ID());
 			List<MFactAcct> revFacts = getFacts(MProjectIssue.Table_ID, reversal.get_ID(), as.get_ID());
-			assertEquals(2, origFacts.size(), "PO-linked original ProjectIssue should post 2 facts without Charge");
+			assertEquals(2, origFacts.size(), "Expense-linked original ProjectIssue should post 2 facts without Charge");
 			assertEquals(2, revFacts.size(), "Reversal ProjectIssue must reverse exact 2 original facts without Charge");
 			int wipAcctId = getProjectWipAccountId(proj, as);
-			BigDecimal wipNet = BigDecimal.ZERO;
-			for (MFactAcct fa : origFacts)
-				if (fa.getAccount_ID() == wipAcctId)
-					wipNet = wipNet.add(fa.getAmtAcctDr().subtract(fa.getAmtAcctCr()));
-			for (MFactAcct fa : revFacts)
-				if (fa.getAccount_ID() == wipAcctId)
-					wipNet = wipNet.add(fa.getAmtAcctDr().subtract(fa.getAmtAcctCr()));
-			assertEquals(0, wipNet.signum(), "Original and reversed WIP facts must net to zero");
+			ProductCost pc = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
+			int assetAcctId = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as).getAccount_ID();
+			int freightAcctId = MCharge.getAccount(DictionaryIDs.C_Charge.FREIGHT.id, as, getTrxName()).getAccount_ID();
+			assertFactTotals(origFacts, wipAcctId, new BigDecimal("125.00"), BigDecimal.ZERO);
+			assertFactTotals(origFacts, assetAcctId, BigDecimal.ZERO, new BigDecimal("125.00"));
+			assertFactTotals(origFacts, freightAcctId, BigDecimal.ZERO, BigDecimal.ZERO);
+			assertProjectIssueReversalFactTotals(revFacts, wipAcctId, new BigDecimal("125.00"), BigDecimal.ZERO, as);
+			assertProjectIssueReversalFactTotals(revFacts, assetAcctId, BigDecimal.ZERO, new BigDecimal("125.00"), as);
+			assertFactTotals(revFacts, freightAcctId, BigDecimal.ZERO, BigDecimal.ZERO);
 		}
 	}
 
@@ -905,6 +919,167 @@ public class ManualCostElementProjectIssueTest extends AbstractManualCostElement
 		{
 			CacheMgt.get().reset(MProductCategoryAcct.Table_Name);
 		}
+	}
+
+	@Test
+	public void testFailedProjectIssuePostingDoesNotLeakManualCostDetail()
+	{
+		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
+		assertEquals(MCostElement.COSTINGMETHOD_AveragePO, as.getCostingMethod(), "Default costing method not Average PO");
+
+		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS))
+		{
+			MProduct product = createStockedProduct("AtomicFailProjProd", DictionaryIDs.M_Product_Category.STANDARD.id, 0);
+			mockProductGet(mockedProduct, product);
+			createPOAndMR(product, null, new BigDecimal("5"), new BigDecimal("100.00"));
+
+			MCharge validCharge = new MCharge(Env.getCtx(), 0, getTrxName());
+			validCharge.setName("AtomicFail Valid Charge");
+			validCharge.setChargeAmt(BigDecimal.ZERO);
+			validCharge.saveEx();
+
+			MCharge brokenCharge = new MCharge(Env.getCtx(), 0, getTrxName());
+			brokenCharge.setName("AtomicFail Broken Charge");
+			brokenCharge.setChargeAmt(BigDecimal.ZERO);
+			brokenCharge.saveEx();
+			DB.executeUpdateEx("DELETE FROM C_Charge_Acct WHERE C_Charge_ID=? AND C_AcctSchema_ID=?",
+					new Object[] { brokenCharge.get_ID(), as.get_ID() }, getTrxName());
+			CacheMgt.get().reset();
+
+			MCostElement ce1 = createManualCostElement("AtomicFail CE1",
+					MCostElement.COSTELEMENTTYPE_BurdenMOverhead, validCharge.get_ID());
+			MCostElement ce2 = createManualCostElement("AtomicFail CE2",
+					MCostElement.COSTELEMENTTYPE_Overhead, brokenCharge.get_ID());
+			createManualCostRecord(product, as, ce1, 0, new BigDecimal("5.00"), 0);
+			createManualCostRecord(product, as, ce2, 0, new BigDecimal("3.00"), 0);
+
+			MProject proj = new MProject(Env.getCtx(), 0, getTrxName());
+			proj.setName("AtomicFail Project");
+			proj.setC_ProjectType_ID(DictionaryIDs.C_ProjectType.WORK_ORDER.id);
+			proj.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
+			proj.setPlannedAmt(Env.ONE);
+			proj.setCommittedQty(Env.ONE);
+			proj.saveEx();
+
+			MProjectIssue issue = new MProjectIssue(Env.getCtx(), 0, getTrxName());
+			issue.setLine(10);
+			issue.setMovementDate(getLoginDate());
+			issue.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+			issue.setMovementQty(BigDecimal.ONE);
+			issue.setC_Project_ID(proj.get_ID());
+			issue.setM_Product_ID(product.get_ID());
+			issue.saveEx();
+
+			try (MockedStatic<MClient> mockedClient = mockStatic(MClient.class, Mockito.CALLS_REAL_METHODS))
+			{
+				mockedClient.when(MClient::isClientAccountingImmediate).thenReturn(false);
+				ProcessInfo info = MWorkflow.runDocumentActionWorkflow(issue, DocAction.ACTION_Complete);
+				assertFalse(info.isError(), info.getSummary());
+			}
+			issue.load(getTrxName());
+			assertFalse(issue.isPosted());
+
+			String err = DocumentEngine.postImmediate(Env.getCtx(), issue.getAD_Client_ID(),
+					issue.get_Table_ID(), issue.get_ID(), false, getTrxName());
+			assertNotNull(err, "Posting with missing second charge account must fail");
+			assertFalse(MManualCostDetail.hasForRecord(as.get_ID(), MProjectIssue.Table_ID, issue.get_ID(), getTrxName()),
+					"Failed posting must not persist partial M_ManualCostDetail from the first charge");
+		}
+	}
+
+	@Test
+	public void testServiceProjectIssueReversalUsesOriginalPostedPrincipalNotCompletionCostAmt()
+	{
+		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
+		assertEquals(MCostElement.COSTINGMETHOD_AveragePO, as.getCostingMethod(), "Default costing method not Average PO");
+
+		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS))
+		{
+			MProduct serviceProd = new MProduct(Env.getCtx(), 0, getTrxName());
+			serviceProd.setValue("SvcProjRevPrincipal");
+			serviceProd.setName("SvcProjRevPrincipal");
+			serviceProd.setProductType(MProduct.PRODUCTTYPE_Service);
+			serviceProd.setIsStocked(false);
+			serviceProd.setC_UOM_ID(DictionaryIDs.C_UOM.EACH.id);
+			serviceProd.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.STANDARD.id);
+			serviceProd.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
+			serviceProd.saveEx();
+			mockProductGet(mockedProduct, serviceProd);
+
+			MCostElement avgPoCe = MCostElement.getMaterialCostElement(as, MCostElement.COSTINGMETHOD_AveragePO);
+			MCost baseCost = MCost.get(serviceProd, 0, as, 0, avgPoCe.get_ID(), getTrxName());
+			baseCost.setCurrentCostPrice(new BigDecimal("100.00"));
+			baseCost.saveEx();
+
+			MCostElement overheadCe = createManualCostElement("SvcProj Overhead",
+					MCostElement.COSTELEMENTTYPE_Overhead, DictionaryIDs.C_Charge.FREIGHT.id);
+			MCost manualCostRec = createManualCostRecord(serviceProd, as, overheadCe, 0, new BigDecimal("20.00"), 0);
+
+			MProject proj = new MProject(Env.getCtx(), 0, getTrxName());
+			proj.setName("SvcProjRevPrincipal Project");
+			proj.setC_ProjectType_ID(DictionaryIDs.C_ProjectType.WORK_ORDER.id);
+			proj.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
+			proj.setPlannedAmt(Env.ONE);
+			proj.setCommittedQty(Env.ONE);
+			proj.saveEx();
+
+			MProjectIssue issue = new MProjectIssue(Env.getCtx(), 0, getTrxName());
+			issue.setLine(10);
+			issue.setMovementDate(getLoginDate());
+			issue.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+			issue.setMovementQty(BigDecimal.ONE);
+			issue.setC_Project_ID(proj.get_ID());
+			issue.setM_Product_ID(serviceProd.get_ID());
+			issue.saveEx();
+
+			// Complete deferred: CostAmt saved as 120.00 (100 base + 20 manual)
+			try (MockedStatic<MClient> mockedClient = mockStatic(MClient.class, Mockito.CALLS_REAL_METHODS))
+			{
+				mockedClient.when(MClient::isClientAccountingImmediate).thenReturn(false);
+				ProcessInfo info = MWorkflow.runDocumentActionWorkflow(issue, DocAction.ACTION_Complete);
+				assertFalse(info.isError(), info.getSummary());
+			}
+			issue.load(getTrxName());
+			assertEquals(new BigDecimal("120.00"), issue.getCostAmt().setScale(2, RoundingMode.HALF_UP));
+
+			// Lower manual cost to 10.00 BEFORE first posting -> original posts WIP DR 110, Expense CR 100, Charge CR 10
+			manualCostRec.setCurrentCostPrice(new BigDecimal("10.00"));
+			manualCostRec.saveEx();
+			assertNull(DocumentEngine.postImmediate(Env.getCtx(), issue.getAD_Client_ID(),
+					issue.get_Table_ID(), issue.get_ID(), false, getTrxName()));
+
+			// Reverse and post reversal -> must reverse posted facts (WIP CR 110, Expense DR 100, Charge DR 10), not 120/110
+			ProcessInfo revInfo = MWorkflow.runDocumentActionWorkflow(issue, DocAction.ACTION_Reverse_Correct);
+			assertFalse(revInfo.isError(), revInfo.getSummary());
+			issue.load(getTrxName());
+			MProjectIssue reversal = new MProjectIssue(Env.getCtx(), issue.getReversal_ID(), getTrxName());
+			if (!reversal.isPosted())
+				assertNull(DocumentEngine.postImmediate(Env.getCtx(), reversal.getAD_Client_ID(),
+						reversal.get_Table_ID(), reversal.get_ID(), false, getTrxName()));
+
+			int wipAcctId = getProjectWipAccountId(proj, as);
+			ProductCost pc = new ProductCost(Env.getCtx(), serviceProd.get_ID(), 0, getTrxName());
+			int expAcctId = pc.getAccount(ProductCost.ACCTTYPE_P_Expense, as).getAccount_ID();
+			int freightAcctId = MCharge.getAccount(DictionaryIDs.C_Charge.FREIGHT.id, as, getTrxName()).getAccount_ID();
+
+			List<MFactAcct> revFacts = getFacts(MProjectIssue.Table_ID, reversal.get_ID(), as.get_ID());
+			assertProjectIssueReversalFactTotals(revFacts, wipAcctId, new BigDecimal("110.00"), BigDecimal.ZERO, as);
+			assertProjectIssueReversalFactTotals(revFacts, expAcctId, BigDecimal.ZERO, new BigDecimal("100.00"), as);
+			assertProjectIssueReversalFactTotals(revFacts, freightAcctId, BigDecimal.ZERO, new BigDecimal("10.00"), as);
+
+			// ProjectBalanceAmt still reverses exact completion CostAmt (-120.00) -> 0.00
+			proj.load(getTrxName());
+			assertEquals(new BigDecimal("0.00"), proj.getProjectBalanceAmt().setScale(2, RoundingMode.HALF_UP));
+		}
+	}
+
+	private void assertProjectIssueReversalFactTotals(List<MFactAcct> revFacts, int accountId,
+			BigDecimal origDr, BigDecimal origCr, MAcctSchema as)
+	{
+		if (as.isAllowNegativePosting())
+			assertFactTotals(revFacts, accountId, origDr.negate(), origCr.negate());
+		else
+			assertFactTotals(revFacts, accountId, origCr, origDr);
 	}
 
 }

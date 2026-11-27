@@ -22,9 +22,11 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 
 import org.compiere.model.MAccount;
@@ -47,6 +49,7 @@ import org.compiere.model.MRMA;
 import org.compiere.model.MRMALine;
 import org.compiere.model.MTax;
 import org.compiere.model.ProductCost;
+import org.compiere.model.Query;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -212,7 +215,7 @@ public class Doc_InOut extends Doc
 				MProduct product = line.getProduct();
 				BigDecimal costs = null;
 				boolean hasKnownBaseCost = false;
-				boolean hasUnvaluedChargeLot = false;
+				Set<Integer> unvaluedChargeCostElementIds = null;
 				if (!isReversal(line))
 				{
 					if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as)) ) 
@@ -248,7 +251,7 @@ public class Doc_InOut extends Doc
 										if (zeroCostPurchaseOk == null)
 											zeroCostPurchaseOk = hasZeroCostPurchaseDetail(product.getM_Product_ID());
 										if (!zeroCostPurchaseOk)
-											hasUnvaluedChargeLot = true;
+											unvaluedChargeCostElementIds = collectAffectedManualCostElementIds(unvaluedChargeCostElementIds, lotManualCosts);
 									}
 									accumulateManualCosts(maManualCostMap, lotManualCosts);
 								}
@@ -271,7 +274,7 @@ public class Doc_InOut extends Doc
 			
 					// end MZ
 					postedManualCosts = roundManualCosts(manualCosts, as.getStdPrecision());
-					if (hasUnvaluedChargeLot && !postedManualCosts.isEmpty() && product.isStocked())
+					if (hasAffectedPostedManualCost(postedManualCosts, unvaluedChargeCostElementIds) && product.isStocked())
 					{
 						p_Error = Msg.getMsg(getCtx(), "No Costs for") + " " + line.getProduct().getName();
 						log.log(Level.WARNING, p_Error);
@@ -572,7 +575,7 @@ public class Doc_InOut extends Doc
 				List<ManualCost> manualCosts = new ArrayList<>();
 				List<ManualCost> postedManualCosts = Collections.emptyList();
 				boolean hasKnownBaseCost = false;
-				boolean hasUnvaluedChargeLot = false;
+				Set<Integer> unvaluedChargeCostElementIds = null;
 				if (!isReversal(line)) 
 				{
 					if (MAcctSchema.COSTINGLEVEL_BatchLot.equals(product.getCostingLevel(as)) ) 
@@ -603,7 +606,7 @@ public class Doc_InOut extends Doc
 									costs = costs.add(maCosts);
 									ManualCost[] lotManualCosts = line.getManualCosts(as, line.getAD_Org_ID(), maCosts);
 									if (!lotHasValuation && lotManualCosts.length > 0)
-										hasUnvaluedChargeLot = true;
+										unvaluedChargeCostElementIds = collectAffectedManualCostElementIds(unvaluedChargeCostElementIds, lotManualCosts);
 									accumulateManualCosts(maManualCostMap, lotManualCosts);
 								}
 								manualCosts.addAll(maManualCostMap.values());
@@ -624,7 +627,7 @@ public class Doc_InOut extends Doc
 						// end MZ
 					}
 					postedManualCosts = roundManualCosts(manualCosts, as.getStdPrecision());
-					if (hasUnvaluedChargeLot && !postedManualCosts.isEmpty() && product.isStocked())
+					if (hasAffectedPostedManualCost(postedManualCosts, unvaluedChargeCostElementIds) && product.isStocked())
 					{
 						p_Error = Msg.getMsg(getCtx(), "No Costs for") + " " + line.getProduct().getName();
 						log.log(Level.WARNING, p_Error);
@@ -1347,15 +1350,42 @@ public class Doc_InOut extends Doc
 	 * @param reversalLine_ID
 	 * @return MCostDetail.Amt
 	 */
-	private BigDecimal findReversalCostDetailAmt(MAcctSchema as, int M_Product_ID, MInOutLineMA ma, int reversalLine_ID) {
+	private BigDecimal findReversalCostDetailAmt(MAcctSchema as, int M_Product_ID, int asiId, int reversalLine_ID) {
 		StringBuilder select = new StringBuilder("SELECT ").append(MCostDetail.COLUMNNAME_Amt)
 				.append(" FROM ").append(MCostDetail.Table_Name).append(" WHERE ")
 				.append(MCostDetail.COLUMNNAME_C_AcctSchema_ID).append("=? ")
 				.append("AND ").append(MCostDetail.COLUMNNAME_M_AttributeSetInstance_ID).append("=? ")
 				.append("AND ").append(MCostDetail.COLUMNNAME_M_InOutLine_ID).append("=? ")
-				.append("AND ").append(MCostDetail.COLUMNNAME_M_Product_ID).append("=? ");
-		BigDecimal amt = DB.getSQLValueBDEx(getTrxName(), select.toString(), as.getC_AcctSchema_ID(), ma.getM_AttributeSetInstance_ID(), reversalLine_ID, M_Product_ID);
+				.append("AND ").append(MCostDetail.COLUMNNAME_M_Product_ID).append("=? ")
+				.append("AND COALESCE(").append(MCostDetail.COLUMNNAME_M_CostElement_ID).append(",0)=0 ");
+		BigDecimal amt = DB.getSQLValueBDEx(getTrxName(), select.toString(), as.getC_AcctSchema_ID(), asiId, reversalLine_ID, M_Product_ID);
 		return amt;
+	}
+
+	private Set<Integer> collectAffectedManualCostElementIds(Set<Integer> target, ManualCost[] lotManualCosts)
+	{
+		for (ManualCost mc : lotManualCosts)
+		{
+			if (mc != null && mc.getAmount() != null && mc.getAmount().signum() != 0)
+			{
+				if (target == null)
+					target = new HashSet<>();
+				target.add(mc.getCostElement().getM_CostElement_ID());
+			}
+		}
+		return target;
+	}
+
+	private boolean hasAffectedPostedManualCost(List<ManualCost> postedManualCosts, Set<Integer> unvaluedChargeCostElementIds)
+	{
+		if (unvaluedChargeCostElementIds == null || unvaluedChargeCostElementIds.isEmpty() || postedManualCosts.isEmpty())
+			return false;
+		for (ManualCost mc : postedManualCosts)
+		{
+			if (unvaluedChargeCostElementIds.contains(mc.getCostElement().getM_CostElement_ID()))
+				return true;
+		}
+		return false;
 	}
 
 	/**
@@ -1383,27 +1413,49 @@ public class Doc_InOut extends Doc
 		if (mas == null || mas.length == 0)
 			return true;
 
-		BigDecimal[] lotQtys = new BigDecimal[mas.length];
-		BigDecimal[] lotAmts = new BigDecimal[mas.length];
-		int[] refCostDetailIds = new int[mas.length];
+		// Aggregate M_InOutLineMA rows by M_AttributeSetInstance_ID so multiple policy-date allocations
+		// for the same lot combine into a single M_CostDetail (MCostDetail keys on line + ASI).
+		Map<Integer, BigDecimal> asiQtyMap = new LinkedHashMap<>();
+		Map<Integer, BigDecimal> asiCostMap = new HashMap<>();
+		Set<Integer> asiMissingCost = new HashSet<>();
+		for (MInOutLineMA ma : mas)
+		{
+			int asiId = ma.getM_AttributeSetInstance_ID();
+			BigDecimal qty = ma.getMovementQty();
+			if (qty.signum() != line.getQty().signum())
+				qty = qty.negate();
+			asiQtyMap.merge(asiId, qty, BigDecimal::add);
+
+			BigDecimal maAmt = batchLotCostMap != null ? batchLotCostMap.get(ma.getM_InOutLineMA_UU()) : null;
+			if (maAmt != null)
+				asiCostMap.merge(asiId, maAmt, BigDecimal::add);
+			else
+				asiMissingCost.add(asiId);
+		}
+
+		int count = asiQtyMap.size();
+		int[] asiIds = new int[count];
+		BigDecimal[] lotQtys = new BigDecimal[count];
+		BigDecimal[] lotAmts = new BigDecimal[count];
+		int[] refCostDetailIds = new int[count];
 		BigDecimal allocatedAmt = BigDecimal.ZERO;
 		BigDecimal missingQty = BigDecimal.ZERO;
 		int lastMissingIdx = -1;
 		boolean reversal = isReversal(line);
 		boolean negateOrigLotSign = !reversal && line.getProductCost().getQty().signum() != line.getQty().signum();
 
-		for (int j = 0; j < mas.length; j++)
+		int idx = 0;
+		for (Map.Entry<Integer, BigDecimal> entry : asiQtyMap.entrySet())
 		{
-			MInOutLineMA ma = mas[j];
-			BigDecimal qty = ma.getMovementQty();
-			if (qty.signum() != line.getQty().signum())
-				qty = qty.negate();
-			lotQtys[j] = qty;
+			int asiId = entry.getKey();
+			BigDecimal qty = entry.getValue();
+			asiIds[idx] = asiId;
+			lotQtys[idx] = qty;
 
-			BigDecimal amt = batchLotCostMap != null ? batchLotCostMap.get(ma.getM_InOutLineMA_UU()) : null;
+			BigDecimal amt = !asiMissingCost.contains(asiId) ? asiCostMap.get(asiId) : null;
 			if (amt == null && reversal)
 			{
-				amt = findReversalCostDetailAmt(as, line.getM_Product_ID(), ma, line.getReversalLine_ID());
+				amt = findReversalCostDetailAmt(as, line.getM_Product_ID(), asiId, line.getReversalLine_ID());
 				if (amt != null)
 					amt = amt.negate();
 			}
@@ -1415,22 +1467,23 @@ public class Doc_InOut extends Doc
 
 			if (amt != null)
 			{
-				lotAmts[j] = amt;
+				lotAmts[idx] = amt;
 				allocatedAmt = allocatedAmt.add(amt);
 			}
 			else
 			{
 				missingQty = missingQty.add(qty);
-				lastMissingIdx = j;
+				lastMissingIdx = idx;
 			}
 
 			if (line.getReversalLine_ID() > 0 && line.get_ID() > line.getReversalLine_ID())
 			{
-				MCostDetail cd = MCostDetail.getShipment(as, line.getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
+				MCostDetail cd = MCostDetail.getShipment(as, line.getM_Product_ID(), asiId,
 						line.getReversalLine_ID(), 0, getTrxName());
 				if (cd != null)
-					refCostDetailIds[j] = cd.getM_CostDetail_ID();
+					refCostDetailIds[idx] = cd.getM_CostDetail_ID();
 			}
+			idx++;
 		}
 
 		if (lastMissingIdx >= 0)
@@ -1444,7 +1497,7 @@ public class Doc_InOut extends Doc
 			BigDecimal remainingAmt = targetTotalAmt.subtract(allocatedAmt);
 			BigDecimal unallocated = remainingAmt;
 			int precision = as.getCostingPrecision();
-			for (int j = 0; j < mas.length; j++)
+			for (int j = 0; j < count; j++)
 			{
 				if (lotAmts[j] != null)
 					continue;
@@ -1461,10 +1514,10 @@ public class Doc_InOut extends Doc
 			}
 		}
 
-		for (int j = 0; j < mas.length; j++)
+		for (int j = 0; j < count; j++)
 		{
 			if (!MCostDetail.createShipment(as, line.getAD_Org_ID(),
-					line.getM_Product_ID(), mas[j].getM_AttributeSetInstance_ID(),
+					line.getM_Product_ID(), asiIds[j],
 					line.get_ID(), 0,
 					lotAmts[j], lotQtys[j],
 					line.getDescription(), true, line.getDateAcct(), refCostDetailIds[j], getTrxName()))
@@ -1504,24 +1557,41 @@ public class Doc_InOut extends Doc
 	 */
 	private BigDecimal getOriginalShipmentBaseCost(MAcctSchema as, DocLine_InOut line, boolean isReturn)
 	{
-		BigDecimal origCdSum = DB.getSQLValueBDEx(getTrxName(),
-				"SELECT SUM(Amt) FROM M_CostDetail "
-				+ "WHERE C_AcctSchema_ID=? AND M_Product_ID=? AND M_InOutLine_ID=? AND COALESCE(M_CostElement_ID,0)=0",
-				as.getC_AcctSchema_ID(), line.getM_Product_ID(), line.getReversalLine_ID());
-		if (origCdSum != null)
-			return isReturn ? origCdSum : origCdSum.negate();
+		List<MCostDetail> origCds = new Query(getCtx(), MCostDetail.Table_Name,
+				"C_AcctSchema_ID=? AND M_Product_ID=? AND M_InOutLine_ID=? AND COALESCE(M_CostElement_ID,0)=0",
+				getTrxName())
+				.setParameters(as.getC_AcctSchema_ID(), line.getM_Product_ID(), line.getReversalLine_ID())
+				.list();
+		BigDecimal origCdSum = null;
+		if (!origCds.isEmpty())
+		{
+			BigDecimal sumAmt = BigDecimal.ZERO;
+			BigDecimal sumQty = BigDecimal.ZERO;
+			for (MCostDetail cd : origCds)
+			{
+				sumAmt = sumAmt.add(cd.getAmt());
+				sumQty = sumQty.add(cd.getQty());
+			}
+			origCdSum = sumAmt;
+			// Only trust M_CostDetail sum directly when details cover the full line quantity
+			if (sumQty.abs().compareTo(line.getQty().abs()) == 0)
+				return isReturn ? origCdSum : origCdSum.negate();
+		}
 
 		MAccount assetAcct = line.getAccount(ProductCost.ACCTTYPE_P_Asset, as);
 		if (assetAcct != null)
 		{
 			BigDecimal factBal = DB.getSQLValueBDEx(getTrxName(),
 					"SELECT SUM(AmtAcctCr - AmtAcctDr) FROM Fact_Acct "
-					+ "WHERE C_AcctSchema_ID=? AND AD_Table_ID=? AND Record_ID=? AND Line_ID=? AND Account_ID=? AND PostingType=?",
+					+ "WHERE C_AcctSchema_ID=? AND AD_Table_ID=? AND Record_ID=? AND Line_ID=? AND Account_ID=? "
+					+ "AND PostingType=? AND COALESCE(C_Charge_ID,0)=0",
 					as.getC_AcctSchema_ID(), MInOut.Table_ID, m_Reversal_ID, line.getReversalLine_ID(),
 					assetAcct.getAccount_ID(), Fact.POST_Actual);
 			if (factBal != null)
 				return isReturn ? factBal.negate() : factBal;
 		}
+		if (origCdSum != null)
+			return isReturn ? origCdSum : origCdSum.negate();
 		return BigDecimal.ZERO;
 	}
 

@@ -572,7 +572,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 			}
 			else
 			{
-				cost = resolveLegacyReversalCost(as, origIssue);
+				cost = resolveLegacyReversalCost(as, product, origIssue);
 			}
 		}
 		if (cost == null && getM_InOutLine_ID() > 0)
@@ -649,7 +649,7 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 	 * @param origIssue original project issue being reversed
 	 * @return signed reversal balance contribution (negative for a normal issue), or null if unavailable
 	 */
-	private BigDecimal resolveLegacyReversalCost(MAcctSchema as, MProjectIssue origIssue)
+	private BigDecimal resolveLegacyReversalCost(MAcctSchema as, MProduct product, MProjectIssue origIssue)
 	{
 		if (origIssue.getM_InOutLine_ID() > 0)
 		{
@@ -666,12 +666,15 @@ public class MProjectIssue extends X_C_ProjectIssue implements DocAction, DocOpt
 				return origCost.negate();
 		}
 
-		// Prefer original MCostDetail where applicable (stocked non-service products):
-		// MCostDetail.Amt already carries the signed outgoing cost (negative on a normal issue).
-		MCostDetail origCd = MCostDetail.getProjectIssue(as, origIssue.getM_Product_ID(),
-				origIssue.getM_AttributeSetInstance_ID(), origIssue.getC_ProjectIssue_ID(), 0, get_TrxName());
-		if (origCd != null)
-			return origCd.getAmt();
+		// Prefer original MCostDetail only when product uses the schema costing method that
+		// pre-upgrade updateBalanceAmt() used (MCostDetail.Amt already carries signed outgoing cost).
+		if (as.getCostingMethod().equals(product.getCostingMethod(as)))
+		{
+			MCostDetail origCd = MCostDetail.getProjectIssue(as, origIssue.getM_Product_ID(),
+					origIssue.getM_AttributeSetInstance_ID(), origIssue.getC_ProjectIssue_ID(), 0, get_TrxName());
+			if (origCd != null)
+				return origCd.getAmt();
+		}
 
 		return null;
 	} // resolveLegacyReversalCost

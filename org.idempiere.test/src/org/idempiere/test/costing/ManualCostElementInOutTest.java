@@ -607,8 +607,9 @@ public class ManualCostElementInOutTest extends AbstractManualCostElementTest
 
 	/**
 	 * When Product Asset account is changed after posting to the same account as a manual-cost Charge,
-	 * reversing the Shipment or Customer Return must still reverse each original fact on its original account
-	 * and reverse the original inventory cost detail (100), never misidentifying the Charge fact (5) as inventory.
+	 * reversing the Shipment or Customer Return must keep inventory (100, without C_Charge_ID) and the
+	 * manual charge (5, with C_Charge_ID) separate and reverse the original inventory cost detail (100),
+	 * never misidentifying the Charge fact (5) as inventory.
 	 */
 	@Test
 	public void testShipmentAndReturnReversalWhenProductAssetChangedToChargeAccount()
@@ -1621,6 +1622,7 @@ public class ManualCostElementInOutTest extends AbstractManualCostElementTest
 
 			// Shipment in the same uncommitted transaction must see the zero-cost purchase M_CostDetail via getTrxName()
 			MInOut shipment = createSOAndShipment(freeProd, null, BigDecimal.ONE, BigDecimal.ZERO);
+			shipment.load(getTrxName());
 			assertTrue(shipment.isPosted(), "Shipment of item with uncommitted zero-cost purchase detail must post");
 		}
 	}

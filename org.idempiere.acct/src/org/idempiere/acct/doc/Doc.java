@@ -376,6 +376,8 @@ public abstract class Doc implements IDoc
 
 	/** Facts                       */
 	private ArrayList<Fact>    	m_fact = null;
+	/** Staged Manual Cost Details (persisted in postCommit only when STATUS_Posted) */
+	private ArrayList<MManualCostDetail> m_manualCostDetails = null;
 
 	/** No Currency in Document Indicator (-1)	*/
 	protected static final int  NO_CURRENCY = -2;
@@ -567,7 +569,20 @@ public abstract class Doc implements IDoc
 				return "PeriodClosed";
 			}
 			//	delete it
-			deleteAcct();
+			try
+			{
+				deleteAcct();
+			}
+			catch (RuntimeException e)
+			{
+				if (m_manageLocalTrx)
+				{
+					trx.rollback();
+					trx.close();
+				}
+				unlock();
+				throw e;
+			}
 		}
 		else if (isPosted())
 		{
@@ -581,6 +596,7 @@ public abstract class Doc implements IDoc
 
 		//  Create Fact per AcctSchema
 		m_fact = new ArrayList<Fact>();
+		m_manualCostDetails = new ArrayList<MManualCostDetail>();
 
 		getPO().setDoc(this);
 		try
@@ -692,6 +708,7 @@ public abstract class Doc implements IDoc
 				fact.dispose();
 		}
 		p_lines = null;
+		m_manualCostDetails = null;
 
 		if (p_Status.equals(STATUS_Posted))
 			return null;
@@ -733,7 +750,7 @@ public abstract class Doc implements IDoc
 			.append("WHERE AD_Table_ID=?")
 			.append(" AND Record_ID=?")
 			.append(" AND C_AcctSchema_ID=?");
-		no = DB.executeUpdate(sql.toString(), new Object[] {get_Table_ID(), p_po.get_ID(), m_as.getC_AcctSchema_ID()}, false, getTrxName());
+		no = DB.executeUpdateEx(sql.toString(), new Object[] {get_Table_ID(), p_po.get_ID(), m_as.getC_AcctSchema_ID()}, getTrxName());
 		if (no != 0)
 			if (log.isLoggable(Level.INFO)) log.info("deleted=" + no);
 		return no;
@@ -850,6 +867,22 @@ public abstract class Doc implements IDoc
 						}
 						unlock();
 						return STATUS_Error;
+					}
+				}
+				if (m_manualCostDetails != null)
+				{
+					for (MManualCostDetail detail : m_manualCostDetails)
+					{
+						if (detail != null && !detail.save(getTrxName()))
+						{
+							log.log(Level.SEVERE, "(manual cost detail not saved) ... rolling back");
+							if (m_manageLocalTrx) {
+								trx.rollback();
+								trx.close();
+							}
+							unlock();
+							return STATUS_Error;
+						}
 					}
 				}
 			}
@@ -2586,24 +2619,31 @@ public abstract class Doc implements IDoc
 	}
 
 	/**
-	 * Persist a {@link MManualCostDetail} record for a posted manual cost charge entry.
+	 * Stage a {@link MManualCostDetail} record for a posted manual cost charge entry so it is
+	 * persisted atomically alongside {@link Fact} lines in {@link #postCommit(String)} only when
+	 * posting succeeds.
 	 * @param as accounting schema
 	 * @param line document line
 	 * @param M_CostElement_ID manual cost element ID
 	 * @param C_Charge_ID charge ID
 	 * @param chargeAcct posted charge account combination
 	 * @param amt signed amount (Charge CR minus Charge DR)
-	 * @return saved {@link MManualCostDetail}
+	 * @return staged (or saved when called outside {@link #post}) {@link MManualCostDetail}
 	 */
 	protected MManualCostDetail saveManualCostDetail(MAcctSchema as, DocLine line,
 			int M_CostElement_ID, int C_Charge_ID, MAccount chargeAcct, BigDecimal amt)
 	{
-		return MManualCostDetail.create(getCtx(), line.getAD_Org_ID(), as.getC_AcctSchema_ID(),
+		MManualCostDetail detail = MManualCostDetail.build(getCtx(), line.getAD_Org_ID(), as.getC_AcctSchema_ID(),
 				get_Table_ID(), get_ID(), line.get_ID(),
 				M_CostElement_ID, C_Charge_ID,
 				line.getM_Product_ID(), line.getM_AttributeSetInstance_ID(),
 				chargeAcct.getC_ValidCombination_ID(), line.getDateAcct(),
 				amt, line.getQty(), line.getDescription(), getTrxName());
+		if (m_manualCostDetails != null)
+			m_manualCostDetails.add(detail);
+		else
+			detail.saveEx(getTrxName());
+		return detail;
 	}
 
 	/**

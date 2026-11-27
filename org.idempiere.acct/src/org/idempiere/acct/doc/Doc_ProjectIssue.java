@@ -37,6 +37,7 @@ import org.compiere.model.MProject;
 import org.compiere.model.MProjectIssue;
 import org.compiere.model.MTimeExpenseLine;
 import org.compiere.model.ProductCost;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 
@@ -177,44 +178,48 @@ public class Doc_ProjectIssue extends Doc
 				if (origCd != null)
 					cost = origCd.getAmt().negate();
 			}
-			if (cost == null)
+			int invAcctType = product.isService() ? ProductCost.ACCTTYPE_P_Expense : ProductCost.ACCTTYPE_P_Asset;
+			MAccount invAcct = m_line.getAccount(invAcctType, as);
+			if (cost == null && invAcct != null)
 			{
-				MProjectIssue origIssue = new MProjectIssue(getCtx(), m_issue.getReversal_ID(), getTrxName());
-				if (origIssue.get_Value(MProjectIssue.COLUMNNAME_CostAmt) != null)
-					cost = origIssue.getCostAmt().subtract(manualTotal);
-				else
-					cost = m_line.getProductCosts(as, getAD_Org_ID(), false).negate();
+				// Recover the original principal fact amount for this schema when no inventory M_CostDetail exists
+				cost = DB.getSQLValueBDEx(getTrxName(),
+						"SELECT SUM(AmtAcctCr - AmtAcctDr) FROM Fact_Acct "
+						+ "WHERE C_AcctSchema_ID=? AND AD_Table_ID=? AND Record_ID=? "
+						+ "AND Account_ID=? AND PostingType=? AND COALESCE(C_Charge_ID,0)=0",
+						as.getC_AcctSchema_ID(), MProjectIssue.Table_ID, m_issue.getReversal_ID(),
+						invAcct.getAccount_ID(), Fact.POST_Actual);
 			}
+			if (cost == null)
+				cost = m_line.getProductCosts(as, getAD_Org_ID(), false).negate();
 
 			int stdPrecision = as.getStdPrecision();
 			BigDecimal crAmt = cost.setScale(stdPrecision, RoundingMode.HALF_UP).add(manualTotal);
 
-			//  Project                 CR
+			//  Project (negated on original DR side so FactLine honors Allow Negative Posting)
 			int projAcctType = MProject.PROJECTCATEGORY_AssetProject.equals(ProjectCategory)
 					? ACCTTYPE_ProjectAsset : ACCTTYPE_ProjectWIP;
-			cr = fact.createLine(m_line,
-				getAccount(projAcctType, as), as.getC_Currency_ID(), null, crAmt);
-			if (cr == null)
+			dr = fact.createLine(m_line,
+				getAccount(projAcctType, as), as.getC_Currency_ID(), crAmt.negate(), null);
+			if (dr == null)
 			{
 				p_Error = Msg.getMsg(getCtx(), "FactLine CR not created") + ": " + m_line;
 				log.log(Level.WARNING, p_Error);
 				return null;
 			}
-			cr.setQty(m_line.getQty().negate());
+			dr.setQty(m_line.getQty().negate());
 
-			//  Inventory       DR
-			int invAcctType = product.isService() ? ProductCost.ACCTTYPE_P_Expense : ProductCost.ACCTTYPE_P_Asset;
-			dr = fact.createLine(m_line,
-				m_line.getAccount(invAcctType, as),
-				as.getC_Currency_ID(), cost, null);
-			if (dr == null)
+			//  Inventory/Expense (negated on original CR side)
+			cr = fact.createLine(m_line, invAcct,
+				as.getC_Currency_ID(), null, cost.negate());
+			if (cr == null)
 			{
 				p_Error = Msg.getMsg(getCtx(), "FactLine DR not created") + ": " + m_line;
 				log.log(Level.WARNING, p_Error);
 				return null;
 			}
-			dr.setM_Locator_ID(m_line.getM_Locator_ID());
-			dr.setLocationFromLocator(m_line.getM_Locator_ID(), true);	// from Loc
+			cr.setM_Locator_ID(m_line.getM_Locator_ID());
+			cr.setLocationFromLocator(m_line.getM_Locator_ID(), true);	// from Loc
 
 			for (MManualCostDetail origDetail : origManualDetails)
 			{
@@ -226,17 +231,17 @@ public class Doc_ProjectIssue extends Doc
 					log.log(Level.WARNING, p_Error);
 					return null;
 				}
-				FactLine chargeDr = fact.createLine(m_line, chargeAcct,
-						as.getC_Currency_ID(), origDetail.getAmt(), null);
-				if (chargeDr == null)
+				FactLine chargeCr = fact.createLine(m_line, chargeAcct,
+						as.getC_Currency_ID(), null, origDetail.getAmt().negate());
+				if (chargeCr == null)
 				{
 					p_Error = Msg.getMsg(getCtx(), "FactLine DR not created") + ": " + m_line;
 					log.log(Level.WARNING, p_Error);
 					return null;
 				}
-				chargeDr.setC_Charge_ID(C_Charge_ID);
-				chargeDr.setM_Locator_ID(m_line.getM_Locator_ID());
-				chargeDr.setLocationFromLocator(m_line.getM_Locator_ID(), true);	// from Loc
+				chargeCr.setC_Charge_ID(C_Charge_ID);
+				chargeCr.setM_Locator_ID(m_line.getM_Locator_ID());
+				chargeCr.setLocationFromLocator(m_line.getM_Locator_ID(), true);	// from Loc
 				saveManualCostDetail(as, m_line, origDetail.getM_CostElement_ID(), C_Charge_ID,
 						chargeAcct, origDetail.getAmt().negate());
 			}
@@ -254,6 +259,17 @@ public class Doc_ProjectIssue extends Doc
 			{
 				MTimeExpenseLine timeExpenseLine = new MTimeExpenseLine(getCtx(), m_issue.getS_TimeExpenseLine_ID(), getTrxName());
 				cost = timeExpenseLine.getLaborCost(as);
+			}
+			else if (isReversal)
+			{
+				MProjectIssue origIssue = new MProjectIssue(getCtx(), m_issue.getReversal_ID(), getTrxName());
+				if (origIssue.getS_TimeExpenseLine_ID() != 0)
+				{
+					MTimeExpenseLine timeExpenseLine = new MTimeExpenseLine(getCtx(), origIssue.getS_TimeExpenseLine_ID(), getTrxName());
+					BigDecimal origLaborCost = timeExpenseLine.getLaborCost(as);
+					if (origLaborCost != null)
+						cost = origLaborCost.negate();
+				}
 			}
 			if (cost == null)	//	standard Product Costs
 			{

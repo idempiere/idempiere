@@ -70,6 +70,57 @@ public class MManualCostDetail extends X_M_ManualCostDetail
 	}
 
 	/**
+	 * Build an unsaved {@link MManualCostDetail} instance populated with the given values.
+	 *
+	 * @param ctx context
+	 * @param AD_Org_ID organization ID
+	 * @param C_AcctSchema_ID accounting schema ID
+	 * @param AD_Table_ID source document table ID
+	 * @param Record_ID source document record ID
+	 * @param Line_ID source document line ID (0 if none)
+	 * @param M_CostElement_ID manual cost element ID
+	 * @param C_Charge_ID charge ID mapped on the cost element
+	 * @param M_Product_ID product ID (0 if none)
+	 * @param M_AttributeSetInstance_ID attribute set instance ID (0 if none)
+	 * @param C_ValidCombination_ID charge account valid combination ID
+	 * @param DateAcct accounting date
+	 * @param Amt signed amount (Charge CR minus Charge DR)
+	 * @param Qty document line quantity (optional)
+	 * @param Description optional description
+	 * @param trxName transaction name
+	 * @return populated (unsaved) {@link MManualCostDetail} record
+	 */
+	public static MManualCostDetail build(Properties ctx, int AD_Org_ID, int C_AcctSchema_ID,
+			int AD_Table_ID, int Record_ID, int Line_ID,
+			int M_CostElement_ID, int C_Charge_ID,
+			int M_Product_ID, int M_AttributeSetInstance_ID,
+			int C_ValidCombination_ID, Timestamp DateAcct,
+			BigDecimal Amt, BigDecimal Qty, String Description, String trxName)
+	{
+		MManualCostDetail detail = new MManualCostDetail(ctx, 0, trxName);
+		detail.setAD_Org_ID(AD_Org_ID);
+		detail.setC_AcctSchema_ID(C_AcctSchema_ID);
+		detail.setAD_Table_ID(AD_Table_ID);
+		detail.setRecord_ID(Record_ID);
+		if (Line_ID > 0)
+			detail.setLine_ID(Line_ID);
+		detail.setM_CostElement_ID(M_CostElement_ID);
+		detail.setC_Charge_ID(C_Charge_ID);
+		if (M_Product_ID > 0)
+			detail.setM_Product_ID(M_Product_ID);
+		if (M_AttributeSetInstance_ID > 0)
+			detail.setM_AttributeSetInstance_ID(M_AttributeSetInstance_ID);
+		detail.setC_ValidCombination_ID(C_ValidCombination_ID);
+		detail.setDateAcct(DateAcct);
+		detail.setAmt(Amt);
+		if (Qty != null)
+			detail.setQty(Qty);
+		if (Description != null)
+			detail.setDescription(Description);
+		return detail;
+	}
+
+	/**
 	 * Create and save a {@link MManualCostDetail} record.
 	 *
 	 * @param ctx context
@@ -97,26 +148,12 @@ public class MManualCostDetail extends X_M_ManualCostDetail
 			int C_ValidCombination_ID, Timestamp DateAcct,
 			BigDecimal Amt, BigDecimal Qty, String Description, String trxName)
 	{
-		MManualCostDetail detail = new MManualCostDetail(ctx, 0, trxName);
-		detail.setAD_Org_ID(AD_Org_ID);
-		detail.setC_AcctSchema_ID(C_AcctSchema_ID);
-		detail.setAD_Table_ID(AD_Table_ID);
-		detail.setRecord_ID(Record_ID);
-		if (Line_ID > 0)
-			detail.setLine_ID(Line_ID);
-		detail.setM_CostElement_ID(M_CostElement_ID);
-		detail.setC_Charge_ID(C_Charge_ID);
-		if (M_Product_ID > 0)
-			detail.setM_Product_ID(M_Product_ID);
-		if (M_AttributeSetInstance_ID > 0)
-			detail.setM_AttributeSetInstance_ID(M_AttributeSetInstance_ID);
-		detail.setC_ValidCombination_ID(C_ValidCombination_ID);
-		detail.setDateAcct(DateAcct);
-		detail.setAmt(Amt);
-		if (Qty != null)
-			detail.setQty(Qty);
-		if (Description != null)
-			detail.setDescription(Description);
+		MManualCostDetail detail = build(ctx, AD_Org_ID, C_AcctSchema_ID,
+				AD_Table_ID, Record_ID, Line_ID,
+				M_CostElement_ID, C_Charge_ID,
+				M_Product_ID, M_AttributeSetInstance_ID,
+				C_ValidCombination_ID, DateAcct,
+				Amt, Qty, Description, trxName);
 		detail.saveEx(trxName);
 		return detail;
 	}

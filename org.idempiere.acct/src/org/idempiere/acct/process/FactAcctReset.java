@@ -143,6 +143,7 @@ public class FactAcctReset extends SvrProcess
 		catch (Exception e)
 		{
 			log.log(Level.SEVERE, sql, e);
+			throw e;
 		}
 		finally
 		{
@@ -286,8 +287,8 @@ public class FactAcctReset extends SvrProcess
 		int reset = DB.executeUpdate(sql1, get_TrxName()); 
 		//	Manual Cost Detail (delete matching records before Fact_Acct)
 		String sqlManual = "DELETE FROM M_ManualCostDetail "
-			+ "WHERE AD_Client_ID=" + p_AD_Client_ID
-			+ " AND AD_Table_ID=" + AD_Table_ID
+			+ "WHERE AD_Client_ID=?"
+			+ " AND AD_Table_ID=?"
 			+ " AND EXISTS (SELECT 1 FROM Fact_Acct "
 			+ "WHERE Fact_Acct.AD_Client_ID=M_ManualCostDetail.AD_Client_ID"
 			+ " AND Fact_Acct.AD_Table_ID=M_ManualCostDetail.AD_Table_ID"
@@ -306,11 +307,11 @@ public class FactAcctReset extends SvrProcess
 			sqlManual += " AND TRUNC(Fact_Acct.DateAcct) <= " + DB.TO_DATE(p_DateAcct_To);
 		sqlManual += ")";
 		if (log.isLoggable(Level.FINE)) log.log(Level.FINE, sqlManual);
-		DB.executeUpdate(sqlManual, get_TrxName());
+		DB.executeUpdateEx(sqlManual, new Object[] { p_AD_Client_ID, AD_Table_ID }, get_TrxName());
 		//	Fact
 		String sql2 = "DELETE FROM Fact_Acct "
-			+ "WHERE AD_Client_ID=" + p_AD_Client_ID
-			+ " AND AD_Table_ID=" + AD_Table_ID;
+			+ "WHERE AD_Client_ID=?"
+			+ " AND AD_Table_ID=?";
 		if ( !autoPeriod )
 			sql2 += " AND EXISTS (SELECT 1 FROM C_PeriodControl pc "
 				+ "WHERE pc.PeriodStatus = 'O'" + docBaseType
@@ -325,7 +326,7 @@ public class FactAcctReset extends SvrProcess
 
 		if (log.isLoggable(Level.FINE))log.log(Level.FINE, sql2);
 		
-		int deleted = DB.executeUpdate(sql2, get_TrxName());
+		int deleted = DB.executeUpdateEx(sql2, new Object[] { p_AD_Client_ID, AD_Table_ID }, get_TrxName());
 		//
 		m_countReset += reset;
 

@@ -414,6 +414,8 @@ public class ManualCostElementCoreTest extends AbstractManualCostElementTest
 		MTimeExpenseLine deletedLine = new MTimeExpenseLine(Env.getCtx(), 0, getTrxName());
 		deletedLine.setS_TimeExpense_ID(te.get_ID());
 		deletedLine.setLine(5);
+		deletedLine.setDateExpense(getLoginDate());
+		deletedLine.setC_Currency_ID(te.getC_Currency_ID());
 		deletedLine.setQty(BigDecimal.ONE);
 		deletedLine.setExpenseAmt(BigDecimal.TEN);
 		deletedLine.setConvertedAmt(BigDecimal.TEN);
@@ -429,6 +431,8 @@ public class ManualCostElementCoreTest extends AbstractManualCostElementTest
 		MTimeExpenseLine zeroLine = new MTimeExpenseLine(Env.getCtx(), 0, getTrxName());
 		zeroLine.setS_TimeExpense_ID(te.get_ID());
 		zeroLine.setLine(10);
+		zeroLine.setDateExpense(getLoginDate());
+		zeroLine.setC_Currency_ID(te.getC_Currency_ID());
 		zeroLine.setQty(BigDecimal.ONE);
 		zeroLine.setExpenseAmt(BigDecimal.ZERO);
 		zeroLine.setConvertedAmt(BigDecimal.ZERO);
@@ -692,8 +696,16 @@ public class ManualCostElementCoreTest extends AbstractManualCostElementTest
 					new ProcessInfoParameter("DeletePosting", "Y", null, null, null),
 					new ProcessInfoParameter("DateAcct", getLoginDate(), getLoginDate(), null, null),
 			});
+			assertFalse(getFacts(MInOut.Table_ID, shipment.get_ID(), as.get_ID()).isEmpty(),
+					"Shipment Fact_Acct rows must exist before FactAcctReset");
+			assertFalse(getFacts(MInOut.Table_ID, reversal.get_ID(), as.get_ID()).isEmpty(),
+					"Reversal Fact_Acct rows must exist before FactAcctReset");
 			ServerProcessCtl.process(pi, getTrx(), false);
 			assertFalse(pi.isError(), "FactAcctReset failed: " + pi.getSummary());
+			assertTrue(getFacts(MInOut.Table_ID, shipment.get_ID(), as.get_ID()).isEmpty(),
+					"FactAcctReset must delete shipment Fact_Acct rows");
+			assertTrue(getFacts(MInOut.Table_ID, reversal.get_ID(), as.get_ID()).isEmpty(),
+					"FactAcctReset must delete reversal Fact_Acct rows");
 			assertFalse(MManualCostDetail.hasForRecord(as.get_ID(), MInOut.Table_ID, shipment.get_ID(), getTrxName()),
 					"FactAcctReset must delete shipment M_ManualCostDetail");
 			assertFalse(MManualCostDetail.hasForRecord(as.get_ID(), MInOut.Table_ID, reversal.get_ID(), getTrxName()),
