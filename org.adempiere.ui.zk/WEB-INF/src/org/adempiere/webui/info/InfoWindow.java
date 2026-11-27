@@ -2634,6 +2634,8 @@ public class InfoWindow extends InfoPanel implements ValueChangeListener, EventL
             	paraCtxValues.put(editor.getColumnName(), evt.getNewValue().toString());
             }
             dynamicDisplay(editor);
+            if (!isLookup() && getPage() != null)
+            	updateContext(true);
             
             if (queryAfterChangeEditors != null && queryAfterChangeEditors.contains(editor)) {            	
             	Events.postEvent(ON_QUERY_AFTER_CHANGE, this, null);

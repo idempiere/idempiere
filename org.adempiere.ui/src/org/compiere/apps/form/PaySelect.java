@@ -50,6 +50,7 @@ import org.compiere.util.ValueNamePair;
 /**
  * Create Manual Payments From (AP) Invoices or (AR) Credit Memos.
  */
+@Deprecated (since="14", forRemoval=true)
 public class PaySelect
 {
 	/**	Window No			*/
