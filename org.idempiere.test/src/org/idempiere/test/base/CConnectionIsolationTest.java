@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
@@ -104,6 +105,54 @@ class CConnectionIsolationTest extends AbstractTestCase {
 		AdempiereDatabase db = mock(AdempiereDatabase.class);
 		when(db.getCachedConnection(any(CConnection.class), anyBoolean(), anyInt())).thenReturn(conn);
 		return db;
+	}
+
+	// ---- CConnection.applyConnectionSettings: no provider needed ----
+
+	@Test
+	void testApplyConnectionSettingsNothingToApply() throws Exception {
+		Connection conn = pooledConnection(READ_COMMITTED, true);
+
+		new CConnection(null).applyConnectionSettings(conn, true, READ_COMMITTED);
+
+		verify(conn, never()).setTransactionIsolation(anyInt());
+		verify(conn, never()).setAutoCommit(anyBoolean());
+		verify(conn, never()).close();
+	}
+
+	@Test
+	void testApplyConnectionSettingsAppliesIsolationAndAutoCommit() throws Exception {
+		Connection conn = pooledConnection(Connection.TRANSACTION_SERIALIZABLE, true);
+
+		new CConnection(null).applyConnectionSettings(conn, false, READ_COMMITTED);
+
+		verify(conn, times(1)).setTransactionIsolation(READ_COMMITTED);
+		verify(conn, times(1)).setAutoCommit(false);
+	}
+
+	@Test
+	void testApplyConnectionSettingsAsksTrustedPoolOnlyOnce() throws Exception {
+		Connection conn = pooledConnection(READ_COMMITTED, true);
+		CConnection cc = new CConnection(null);
+
+		for (int i = 0; i < 4; i++)
+			cc.applyConnectionSettings(conn, true, READ_COMMITTED);
+
+		verify(conn, times(1)).getTransactionIsolation();
+	}
+
+	@Test
+	void testApplyConnectionSettingsPropagatesFailureAndLeavesTheConnectionOpen() throws Exception {
+		Connection conn = pooledConnection(Connection.TRANSACTION_SERIALIZABLE, true);
+		SQLException failure = new SQLException("cannot change isolation level");
+		doThrow(failure).when(conn).setTransactionIsolation(READ_COMMITTED);
+
+		SQLException thrown = assertThrows(SQLException.class,
+				() -> new CConnection(null).applyConnectionSettings(conn, true, READ_COMMITTED));
+
+		assertSame(failure, thrown);
+		// closing is the job of getConnection, not of this method
+		verify(conn, never()).close();
 	}
 
 	// ---- CConnection.getConnection with a mocked provider ----

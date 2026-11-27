@@ -1146,14 +1146,7 @@ public class CConnection implements Serializable, Cloneable
 			//	Verify Connection
 			if (conn != null)
 			{
-				if (transactionIsolation == Connection.TRANSACTION_READ_COMMITTED && isPoolIsolationTrusted(conn))
-				{
-					// the pool delivers READ_COMMITTED connections, no round trip to the database needed
-				}
-				else if (conn.getTransactionIsolation() != transactionIsolation)
-					conn.setTransactionIsolation (transactionIsolation);
-				if (conn.getAutoCommit() != autoCommit)
-					conn.setAutoCommit (autoCommit);
+				applyConnectionSettings(conn, autoCommit, transactionIsolation);
 				m_okDB = true;
 			}
 		}
@@ -1210,6 +1203,31 @@ public class CConnection implements Serializable, Cloneable
 		}
 		return conn;
 	}	//  getConnection
+
+	/**
+	 * Verify the transaction isolation level and the auto commit mode of a connection taken from the pool and
+	 * apply the requested ones if they differ. This is the only place where this is done for every database provider.<br/>
+	 * The level is not asked from the database for a READ_COMMITTED request when the pool is known to deliver
+	 * READ_COMMITTED connections (see {@link #isPoolIsolationTrusted(Connection)}), because with some databases
+	 * (PostgreSQL) every call of {@link Connection#getTransactionIsolation()} is a round trip to the database.<br/>
+	 * Public so that it can be tested without a database provider; it does not close the connection on failure,
+	 * {@link #getConnection(boolean, int)} does.
+	 * @param conn connection taken from the pool
+	 * @param autoCommit requested auto commit mode
+	 * @param transactionIsolation requested transaction isolation level
+	 * @throws SQLException if the level or the auto commit mode cannot be verified or applied
+	 */
+	public void applyConnectionSettings(Connection conn, boolean autoCommit, int transactionIsolation) throws SQLException
+	{
+		if (transactionIsolation == Connection.TRANSACTION_READ_COMMITTED && isPoolIsolationTrusted(conn))
+		{
+			// the pool delivers READ_COMMITTED connections, no round trip to the database needed
+		}
+		else if (conn.getTransactionIsolation() != transactionIsolation)
+			conn.setTransactionIsolation (transactionIsolation);
+		if (conn.getAutoCommit() != autoCommit)
+			conn.setAutoCommit (autoCommit);
+	}	//	applyConnectionSettings
 
 	/**
 	 * Result of the one time check that the pool of a database provider delivers READ_COMMITTED connections.
