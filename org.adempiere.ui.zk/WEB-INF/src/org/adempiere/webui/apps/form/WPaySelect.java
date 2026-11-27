@@ -88,6 +88,8 @@ import org.zkoss.zul.Space;
  *  When Processed, PaySelection is created and optionally process and printed.
  */
 @org.idempiere.ui.zk.annotation.Form(name = "org.compiere.apps.form.VPaySelect")
+@Deprecated (since="14", forRemoval=true)
+@SuppressWarnings("removal")
 public class WPaySelect extends PaySelect
 	implements IFormController, EventListener<Event>, WTableModelListener, ValueChangeListener
 {

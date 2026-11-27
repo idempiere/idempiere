@@ -73,6 +73,7 @@ import org.idempiere.test.AbstractTestCase;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("removal")
 public class PaySelectFormTest extends AbstractTestCase {
 
 	public PaySelectFormTest() {
