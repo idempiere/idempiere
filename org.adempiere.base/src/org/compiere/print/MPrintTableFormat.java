@@ -54,7 +54,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 	/**
 	 * generated serial id
 	 */
-	private static final long serialVersionUID = -1608017405401341288L;
+	private static final long serialVersionUID = -1140073305887924693L;
 
     /**
      * UUID based Constructor
@@ -208,6 +208,34 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 	}	//	getStandard_Font
 	
 	/**
+	 * 	Derive a font with another style from a base font.
+	 * 	<p>
+	 * 	When the base font is a single face of a family, for example "Helvetica Neue Medium", Java returns that
+	 * 	same face for any style and only simulates bold or italic on screen; a PDF then prints the plain face.
+	 * 	In that case the face of the family with the requested style is used, as fontconfig does on Linux.
+	 * 	@param base base font
+	 * 	@param style Font.PLAIN, Font.BOLD, Font.ITALIC or Font.BOLD|Font.ITALIC
+	 * 	@param size point size
+	 * 	@return derived font
+	 */
+	public static Font deriveFont(Font base, int style, int size)
+	{
+		Font font = new Font (base.getName(), style, size);
+		String family = base.getFamily();
+		if (style != Font.PLAIN && font.getFontName().equals(base.getFontName())
+			&& family != null && !family.equals(base.getName()))
+		{
+			//	use the family only when it is found and has a face with the requested style
+			Font familyFont = new Font (family, style, size);
+			Font familyPlain = new Font (family, Font.PLAIN, size);
+			if (family.equalsIgnoreCase(familyFont.getFamily())
+				&& !familyFont.getFontName().equals(familyPlain.getFontName()))
+				font = familyFont;
+		}
+		return font;
+	}	//	deriveFont
+
+	/**
 	 * 	Get Table Header Font
 	 * 	@return set table header font or fall back to the default of bold standard font
 	 */
@@ -219,7 +247,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 		if (i != 0)
 			header_Font = MPrintFont.get(i).getFont();
 		if (header_Font == null)
-			header_Font = new Font (standard_Font.getName(), Font.BOLD, standard_Font.getSize());
+			header_Font = deriveFont(standard_Font, Font.BOLD, standard_Font.getSize());
 		return header_Font;
 	}	//	getHeader_Font
 
@@ -323,7 +351,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 		if (i != 0)
 			funct_Font = MPrintFont.get(i).getFont();
 		if (funct_Font == null)
-			funct_Font = new Font (standard_Font.getName(), Font.BOLD|Font.ITALIC, standard_Font.getSize());
+			funct_Font = deriveFont(standard_Font, Font.BOLD|Font.ITALIC, standard_Font.getSize());
 		return funct_Font;
 	}	//	getFunct_Font
 
@@ -366,7 +394,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 	public Font getParameter_Font()
 	{
 		if (parameter_Font == null)
-			parameter_Font = new Font (standard_Font.getName(), Font.ITALIC, standard_Font.getSize());
+			parameter_Font = deriveFont(standard_Font, Font.ITALIC, standard_Font.getSize());
 		return parameter_Font;
 	}	//	getParameter_Font
 
@@ -388,7 +416,7 @@ public class MPrintTableFormat extends X_AD_PrintTableFormat implements Immutabl
 	public Font getPageHeader_Font()
 	{
 		if (pageHeader_Font == null)
-			pageHeader_Font = new Font (standard_Font.getName(), Font.BOLD, standard_Font.getSize());
+			pageHeader_Font = deriveFont(standard_Font, Font.BOLD, standard_Font.getSize());
 		return pageHeader_Font;
 	}	//	getPageHeader_Font
 

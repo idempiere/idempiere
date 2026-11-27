@@ -520,7 +520,7 @@ public class TableElement extends PrintElement
             {
                 Font font = getFont(HEADER_ROW, dataCol);
                 if (!font.isBold())
-                    font = new Font(font.getName(), Font.BOLD, font.getSize());
+                    font = MPrintTableFormat.deriveFont(font, Font.BOLD, font.getSize());
                 //	No Width Limitations
                 if (m_columnMaxWidth[dataCol] == 0 || m_columnMaxWidth[dataCol] == -1 || !m_multiLineHeader)
                 {
