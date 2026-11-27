@@ -1818,4 +1818,82 @@ public class ManualCostElementInOutTest extends AbstractManualCostElementTest
 			assertFactTotals(revFactsAfter, freightAcctId, new BigDecimal("30.00"), BigDecimal.ZERO);
 		}
 	}
+
+	@Test
+	public void testBatchLotShipmentMixedSignLotsNegateAllKnownLotAmounts()
+	{
+		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
+
+		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MProductCategory> mockedCategory = mockStatic(MProductCategory.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MAttributeSet> mockedAttrSet = mockStatic(MAttributeSet.class, Mockito.CALLS_REAL_METHODS))
+		{
+			MProductCategory batchCat = new MProductCategory(Env.getCtx(), 0, getTrxName());
+			batchCat.setName("MixedSignLotCat");
+			batchCat.saveEx();
+			mockedCategory.when(() -> MProductCategory.get(any(Properties.class), eq(batchCat.get_ID()))).thenReturn(batchCat);
+			mockedCategory.when(() -> MProductCategory.get(eq(batchCat.get_ID()))).thenReturn(batchCat);
+
+			MProductCategoryAcct batchAcct = MProductCategoryAcct.get(batchCat.get_ID(), as.get_ID(), getTrxName());
+			batchAcct = new MProductCategoryAcct(Env.getCtx(), batchAcct, getTrxName());
+			batchAcct.setCostingLevel(MAcctSchema.COSTINGLEVEL_BatchLot);
+			batchAcct.saveEx();
+			CacheMgt.get().reset(MProductCategoryAcct.Table_Name);
+			MProductCategoryAcct.get(batchCat.get_ID(), as.get_ID(), getTrxName());
+
+			MAttributeSet lotAs = new MAttributeSet(Env.getCtx(), 0, getTrxName());
+			lotAs.setName("MixedSignLotAS");
+			lotAs.setIsLot(true);
+			lotAs.setMandatoryType(MAttributeSet.MANDATORYTYPE_NotMandatory);
+			lotAs.saveEx();
+			MAttributeSet lotAsSpy = Mockito.spy(lotAs);
+			Mockito.doReturn(true).when(lotAsSpy).excludeTableEntry(MOrderLine.Table_ID, true);
+			Mockito.doReturn(true).when(lotAsSpy).excludeTableEntry(MInOutLine.Table_ID, true);
+			mockedAttrSet.when(() -> MAttributeSet.getCopy(any(Properties.class), eq(lotAs.get_ID()), any())).thenReturn(lotAsSpy);
+			mockedAttrSet.when(() -> MAttributeSet.get(any(Properties.class), eq(lotAs.get_ID()))).thenReturn(lotAsSpy);
+			mockedAttrSet.when(() -> MAttributeSet.get(eq(lotAs.get_ID()))).thenReturn(lotAsSpy);
+
+			MProduct product = createStockedProduct("MixedSignLotProd", batchCat.get_ID(), lotAs.get_ID());
+			mockProductGet(mockedProduct, product);
+
+			MAttributeSetInstance lotPos = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+			lotPos.setM_AttributeSet_ID(lotAs.get_ID());
+			lotPos.setLot("MIX-POS");
+			lotPos.setDescription();
+			lotPos.saveEx();
+
+			MAttributeSetInstance lotNeg = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+			lotNeg.setM_AttributeSet_ID(lotAs.get_ID());
+			lotNeg.setLot("MIX-NEG");
+			lotNeg.setDescription();
+			lotNeg.saveEx();
+
+			// Lot 1: +100.00; Lot 2: +50.00 material + (-100.00 unmapped adjustment) = -50.00 -> aggregate costs = +50.00
+			createPOAndMR(product, lotPos, BigDecimal.ONE, new BigDecimal("100.00"));
+			createPOAndMR(product, lotNeg, BigDecimal.ONE, new BigDecimal("50.00"));
+
+			MCostElement unmappedAdjCe = new MCostElement(Env.getCtx(), 0, getTrxName());
+			unmappedAdjCe.setName("MixedSign Unmapped Neg Adj");
+			unmappedAdjCe.setCostElementType(MCostElement.COSTELEMENTTYPE_Overhead);
+			unmappedAdjCe.saveEx();
+			createManualCostRecord(product, as, unmappedAdjCe, lotNeg.get_ID(), new BigDecimal("-100.00"), 0);
+
+			MInOut shipment = createSOAndShipment(product, null, new BigDecimal("2"), new BigDecimal("180.00"));
+			MInOutLine shipLine = shipment.getLines()[0];
+
+			MCostDetail cdPos = MCostDetail.getShipment(as, product.get_ID(), lotPos.get_ID(), shipLine.get_ID(), 0, getTrxName());
+			MCostDetail cdNeg = MCostDetail.getShipment(as, product.get_ID(), lotNeg.get_ID(), shipLine.get_ID(), 0, getTrxName());
+			assertNotNull(cdPos, "Positive-cost lot M_CostDetail missing");
+			assertNotNull(cdNeg, "Negative-cost lot M_CostDetail missing");
+			assertEquals(new BigDecimal("-100.00"), cdPos.getAmt().setScale(2, RoundingMode.HALF_UP),
+					"Positive lot cost (+100) must negate to -100 on shipment M_CostDetail");
+			assertEquals(new BigDecimal("50.00"), cdNeg.getAmt().setScale(2, RoundingMode.HALF_UP),
+					"Negative lot cost (-50) must negate to +50 on shipment M_CostDetail so total equals -50, not -150");
+			assertEquals(new BigDecimal("-50.00"), cdPos.getAmt().add(cdNeg.getAmt()).setScale(2, RoundingMode.HALF_UP));
+		}
+		finally
+		{
+			CacheMgt.get().reset(MProductCategoryAcct.Table_Name);
+		}
+	}
 }

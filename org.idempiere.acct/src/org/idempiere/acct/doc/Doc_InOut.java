@@ -1460,10 +1460,7 @@ public class Doc_InOut extends Doc
 					amt = amt.negate();
 			}
 			if (amt != null && negateOrigLotSign && costs != null)
-			{
-				if (amt.signum() != (costs.signum() * -1))
-					amt = amt.negate();
-			}
+				amt = amt.negate();
 
 			if (amt != null)
 			{

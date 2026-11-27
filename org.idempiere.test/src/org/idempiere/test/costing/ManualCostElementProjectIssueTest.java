@@ -1073,6 +1073,245 @@ public class ManualCostElementProjectIssueTest extends AbstractManualCostElement
 		}
 	}
 
+	@Test
+	public void testExpenseProjectIssueReversalUsesOriginalPostedAmountAfterExpenseLineEdit()
+	{
+		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
+
+		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS))
+		{
+			MProduct product = createStockedProduct("ExpEditProjProd", DictionaryIDs.M_Product_Category.STANDARD.id, 0);
+			mockProductGet(mockedProduct, product);
+			createPOAndMR(product, null, new BigDecimal("5"), new BigDecimal("80.00"));
+
+			MTimeExpense te = new MTimeExpense(Env.getCtx(), 0, getTrxName());
+			te.setC_BPartner_ID(DictionaryIDs.C_BPartner.GARDEN_USER.id);
+			te.setDateReport(getLoginDate());
+			te.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.HQ.id);
+			te.setM_PriceList_ID(DictionaryIDs.M_PriceList.STANDARD.id);
+			te.setDocStatus(DocAction.STATUS_Drafted);
+			te.setDocAction(DocAction.ACTION_Complete);
+			te.saveEx();
+
+			MTimeExpenseLine teLine = new MTimeExpenseLine(Env.getCtx(), 0, getTrxName());
+			teLine.setS_TimeExpense_ID(te.get_ID());
+			teLine.setLine(10);
+			teLine.setDateExpense(getLoginDate());
+			teLine.setIsTimeReport(false);
+			teLine.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
+			teLine.setM_Product_ID(product.get_ID());
+			teLine.setQty(BigDecimal.ONE);
+			teLine.setExpenseAmt(new BigDecimal("100.00"));
+			teLine.setConvertedAmt(new BigDecimal("100.00"));
+			teLine.saveEx();
+
+			MProject proj = new MProject(Env.getCtx(), 0, getTrxName());
+			proj.setName("ExpEditProj Project");
+			proj.setC_ProjectType_ID(DictionaryIDs.C_ProjectType.WORK_ORDER.id);
+			proj.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
+			proj.setPlannedAmt(Env.ONE);
+			proj.setCommittedQty(Env.ONE);
+			proj.saveEx();
+
+			MProjectIssue issue = new MProjectIssue(Env.getCtx(), 0, getTrxName());
+			issue.setLine(10);
+			issue.setMovementDate(getLoginDate());
+			issue.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+			issue.setMovementQty(BigDecimal.ONE);
+			issue.setC_Project_ID(proj.get_ID());
+			issue.setM_Product_ID(product.get_ID());
+			issue.setS_TimeExpenseLine_ID(teLine.get_ID());
+			issue.saveEx();
+
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(issue, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			issue.load(getTrxName());
+			if (!issue.isPosted())
+				assertNull(DocumentEngine.postImmediate(Env.getCtx(), issue.getAD_Client_ID(),
+						issue.get_Table_ID(), issue.get_ID(), false, getTrxName()));
+
+			// Edit the expense line after the original Project Issue posted (100.00 -> 125.00)
+			teLine.setExpenseAmt(new BigDecimal("125.00"));
+			teLine.setConvertedAmt(new BigDecimal("125.00"));
+			teLine.saveEx();
+
+			info = MWorkflow.runDocumentActionWorkflow(issue, DocAction.ACTION_Reverse_Correct);
+			assertFalse(info.isError(), info.getSummary());
+			issue.load(getTrxName());
+			MProjectIssue reversal = new MProjectIssue(Env.getCtx(), issue.getReversal_ID(), getTrxName());
+			if (!reversal.isPosted())
+				assertNull(DocumentEngine.postImmediate(Env.getCtx(), reversal.getAD_Client_ID(),
+						reversal.get_Table_ID(), reversal.get_ID(), false, getTrxName()));
+
+			int wipAcctId = getProjectWipAccountId(proj, as);
+			ProductCost pc = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
+			int assetAcctId = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as).getAccount_ID();
+
+			List<MFactAcct> revFacts = getFacts(MProjectIssue.Table_ID, reversal.get_ID(), as.get_ID());
+			assertEquals(2, revFacts.size());
+			assertProjectIssueReversalFactTotals(revFacts, wipAcctId, new BigDecimal("100.00"), BigDecimal.ZERO, as);
+			assertProjectIssueReversalFactTotals(revFacts, assetAcctId, BigDecimal.ZERO, new BigDecimal("100.00"), as);
+
+			MCostDetail origCd = MCostDetail.getProjectIssue(as, product.get_ID(), 0, issue.get_ID(), 0, getTrxName());
+			MCostDetail revCd = MCostDetail.getProjectIssue(as, product.get_ID(), 0, reversal.get_ID(), 0, getTrxName());
+			assertNotNull(origCd);
+			assertNotNull(revCd);
+			assertEquals(new BigDecimal("-100.00"), origCd.getAmt().setScale(2, RoundingMode.HALF_UP));
+			assertEquals(new BigDecimal("100.00"), revCd.getAmt().setScale(2, RoundingMode.HALF_UP));
+		}
+	}
+
+	@Test
+	public void testExpenseProjectIssueReversalSameAccountAndZeroOriginalAfterExpenseLineEdit()
+	{
+		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
+
+		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS))
+		{
+			MProduct serviceProd = new MProduct(Env.getCtx(), 0, getTrxName());
+			serviceProd.setValue("ExpSameAcctSvc");
+			serviceProd.setName("ExpSameAcctSvc");
+			serviceProd.setProductType(MProduct.PRODUCTTYPE_Service);
+			serviceProd.setIsStocked(false);
+			serviceProd.setIsPurchased(true);
+			serviceProd.setIsSold(true);
+			serviceProd.setC_UOM_ID(DictionaryIDs.C_UOM.EACH.id);
+			serviceProd.setM_Product_Category_ID(DictionaryIDs.M_Product_Category.STANDARD.id);
+			serviceProd.setC_TaxCategory_ID(DictionaryIDs.C_TaxCategory.STANDARD.id);
+			serviceProd.saveEx();
+			mockProductGet(mockedProduct, serviceProd);
+
+			MProject proj = new MProject(Env.getCtx(), 0, getTrxName());
+			proj.setName("ExpSameAcct Project");
+			proj.setC_ProjectType_ID(DictionaryIDs.C_ProjectType.WORK_ORDER.id);
+			proj.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
+			proj.setPlannedAmt(Env.ONE);
+			proj.setCommittedQty(Env.ONE);
+			proj.saveEx();
+
+			// Configure service product P_Expense_Acct to share the exact same GL Account_ID as PJ_WIP_Acct
+			int wipVcId = DB.getSQLValueEx(getTrxName(),
+					"SELECT PJ_WIP_Acct FROM C_Project_Acct WHERE C_Project_ID=? AND C_AcctSchema_ID=?",
+					proj.get_ID(), as.get_ID());
+			assertTrue(wipVcId > 0);
+			DB.executeUpdateEx(
+					"UPDATE M_Product_Acct SET P_Expense_Acct=? WHERE M_Product_ID=? AND C_AcctSchema_ID=?",
+					new Object[] { wipVcId, serviceProd.get_ID(), as.get_ID() }, getTrxName());
+
+			MTimeExpense te = new MTimeExpense(Env.getCtx(), 0, getTrxName());
+			te.setC_BPartner_ID(DictionaryIDs.C_BPartner.GARDEN_USER.id);
+			te.setDateReport(getLoginDate());
+			te.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.HQ.id);
+			te.setM_PriceList_ID(DictionaryIDs.M_PriceList.STANDARD.id);
+			te.setDocStatus(DocAction.STATUS_Drafted);
+			te.setDocAction(DocAction.ACTION_Complete);
+			te.saveEx();
+
+			// Case 1: Same Account_ID on Project WIP and Product Expense must reverse 100.00 (not 0.00)
+			MTimeExpenseLine teLine1 = new MTimeExpenseLine(Env.getCtx(), 0, getTrxName());
+			teLine1.setS_TimeExpense_ID(te.get_ID());
+			teLine1.setLine(10);
+			teLine1.setDateExpense(getLoginDate());
+			teLine1.setIsTimeReport(false);
+			teLine1.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
+			teLine1.setM_Product_ID(serviceProd.get_ID());
+			teLine1.setQty(BigDecimal.ONE);
+			teLine1.setExpenseAmt(new BigDecimal("100.00"));
+			teLine1.setConvertedAmt(new BigDecimal("100.00"));
+			teLine1.saveEx();
+
+			MProjectIssue issue1 = new MProjectIssue(Env.getCtx(), 0, getTrxName());
+			issue1.setLine(10);
+			issue1.setMovementDate(getLoginDate());
+			issue1.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+			issue1.setMovementQty(BigDecimal.ONE);
+			issue1.setC_Project_ID(proj.get_ID());
+			issue1.setM_Product_ID(serviceProd.get_ID());
+			issue1.setS_TimeExpenseLine_ID(teLine1.get_ID());
+			issue1.saveEx();
+
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(issue1, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			issue1.load(getTrxName());
+			if (!issue1.isPosted())
+				assertNull(DocumentEngine.postImmediate(Env.getCtx(), issue1.getAD_Client_ID(),
+						issue1.get_Table_ID(), issue1.get_ID(), false, getTrxName()));
+
+			teLine1.setExpenseAmt(new BigDecimal("125.00"));
+			teLine1.setConvertedAmt(new BigDecimal("125.00"));
+			teLine1.saveEx();
+
+			info = MWorkflow.runDocumentActionWorkflow(issue1, DocAction.ACTION_Reverse_Correct);
+			assertFalse(info.isError(), info.getSummary());
+			issue1.load(getTrxName());
+			MProjectIssue rev1 = new MProjectIssue(Env.getCtx(), issue1.getReversal_ID(), getTrxName());
+			if (!rev1.isPosted())
+				assertNull(DocumentEngine.postImmediate(Env.getCtx(), rev1.getAD_Client_ID(),
+						rev1.get_Table_ID(), rev1.get_ID(), false, getTrxName()));
+
+			List<MFactAcct> rev1Facts = getFacts(MProjectIssue.Table_ID, rev1.get_ID(), as.get_ID());
+			assertEquals(2, rev1Facts.size());
+			BigDecimal expectedSignedAmt = as.isAllowNegativePosting() ? new BigDecimal("-100.00") : new BigDecimal("100.00");
+			assertEquals(expectedSignedAmt, rev1Facts.get(0).getAmtAcctDr().add(rev1Facts.get(0).getAmtAcctCr()).setScale(2, RoundingMode.HALF_UP),
+					"Same-account reversal must preserve 100.00 original amount, not cancel to 0.00");
+			assertEquals(expectedSignedAmt, rev1Facts.get(1).getAmtAcctDr().add(rev1Facts.get(1).getAmtAcctCr()).setScale(2, RoundingMode.HALF_UP),
+					"Same-account reversal must preserve 100.00 original amount on both legs");
+
+			// Case 2: 0.00-posted original with no Fact_Acct rows must not fall back to edited expense line (125.00)
+			MTimeExpenseLine teLine2 = new MTimeExpenseLine(Env.getCtx(), 0, getTrxName());
+			teLine2.setS_TimeExpense_ID(te.get_ID());
+			teLine2.setLine(20);
+			teLine2.setDateExpense(getLoginDate());
+			teLine2.setIsTimeReport(false);
+			teLine2.setC_Currency_ID(DictionaryIDs.C_Currency.USD.id);
+			teLine2.setM_Product_ID(serviceProd.get_ID());
+			teLine2.setQty(BigDecimal.ONE);
+			teLine2.setExpenseAmt(BigDecimal.ZERO);
+			teLine2.setConvertedAmt(BigDecimal.ZERO);
+			teLine2.saveEx();
+
+			MProjectIssue issue2 = new MProjectIssue(Env.getCtx(), 0, getTrxName());
+			issue2.setLine(20);
+			issue2.setMovementDate(getLoginDate());
+			issue2.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+			issue2.setMovementQty(BigDecimal.ONE);
+			issue2.setC_Project_ID(proj.get_ID());
+			issue2.setM_Product_ID(serviceProd.get_ID());
+			issue2.setS_TimeExpenseLine_ID(teLine2.get_ID());
+			issue2.saveEx();
+
+			info = MWorkflow.runDocumentActionWorkflow(issue2, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			issue2.load(getTrxName());
+			if (!issue2.isPosted())
+				assertNull(DocumentEngine.postImmediate(Env.getCtx(), issue2.getAD_Client_ID(),
+						issue2.get_Table_ID(), issue2.get_ID(), false, getTrxName()));
+
+			// Simulate a 0.00-posted original that produced no Fact_Acct rows before the expense line was edited
+			DB.executeUpdateEx("DELETE FROM Fact_Acct WHERE AD_Table_ID=? AND Record_ID=?",
+					new Object[] { MProjectIssue.Table_ID, issue2.get_ID() }, getTrxName());
+
+			teLine2.setExpenseAmt(new BigDecimal("125.00"));
+			teLine2.setConvertedAmt(new BigDecimal("125.00"));
+			teLine2.saveEx();
+
+			info = MWorkflow.runDocumentActionWorkflow(issue2, DocAction.ACTION_Reverse_Correct);
+			assertFalse(info.isError(), info.getSummary());
+			issue2.load(getTrxName());
+			MProjectIssue rev2 = new MProjectIssue(Env.getCtx(), issue2.getReversal_ID(), getTrxName());
+			if (!rev2.isPosted())
+				assertNull(DocumentEngine.postImmediate(Env.getCtx(), rev2.getAD_Client_ID(),
+						rev2.get_Table_ID(), rev2.get_ID(), false, getTrxName()));
+
+			List<MFactAcct> rev2Facts = getFacts(MProjectIssue.Table_ID, rev2.get_ID(), as.get_ID());
+			BigDecimal rev2Total = BigDecimal.ZERO;
+			for (MFactAcct fa : rev2Facts)
+				rev2Total = rev2Total.add(fa.getAmtAcctDr().abs()).add(fa.getAmtAcctCr().abs());
+			assertEquals(new BigDecimal("0.00"), rev2Total.setScale(2, RoundingMode.HALF_UP),
+					"0.00-posted original with empty Fact_Acct must reverse at 0.00, not edited 125.00");
+		}
+	}
+
 	private void assertProjectIssueReversalFactTotals(List<MFactAcct> revFacts, int accountId,
 			BigDecimal origDr, BigDecimal origCr, MAcctSchema as)
 	{

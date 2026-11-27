@@ -30,6 +30,7 @@ import org.compiere.model.MCharge;
 import org.compiere.model.MCost;
 import org.compiere.model.MCost.ManualCost;
 import org.compiere.model.MCostDetail;
+import org.compiere.model.MFactAcct;
 import org.compiere.model.MInOutLine;
 import org.compiere.model.MManualCostDetail;
 import org.compiere.model.MProduct;
@@ -37,6 +38,7 @@ import org.compiere.model.MProject;
 import org.compiere.model.MProjectIssue;
 import org.compiere.model.MTimeExpenseLine;
 import org.compiere.model.ProductCost;
+import org.compiere.model.Query;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -171,25 +173,9 @@ public class Doc_ProjectIssue extends Doc
 			for (MManualCostDetail origDetail : origManualDetails)
 				manualTotal = manualTotal.add(origDetail.getAmt());
 
-			if (product != null && product.get_ID() > 0 && !product.isService() && product.isStocked())
-			{
-				MCostDetail origCd = MCostDetail.getProjectIssue(as, m_line.getM_Product_ID(),
-						m_line.getM_AttributeSetInstance_ID(), m_issue.getReversal_ID(), 0, getTrxName());
-				if (origCd != null)
-					cost = origCd.getAmt().negate();
-			}
 			int invAcctType = product.isService() ? ProductCost.ACCTTYPE_P_Expense : ProductCost.ACCTTYPE_P_Asset;
 			MAccount invAcct = m_line.getAccount(invAcctType, as);
-			if (cost == null && invAcct != null)
-			{
-				// Recover the original principal fact amount for this schema when no inventory M_CostDetail exists
-				cost = DB.getSQLValueBDEx(getTrxName(),
-						"SELECT SUM(AmtAcctCr - AmtAcctDr) FROM Fact_Acct "
-						+ "WHERE C_AcctSchema_ID=? AND AD_Table_ID=? AND Record_ID=? "
-						+ "AND Account_ID=? AND PostingType=? AND COALESCE(C_Charge_ID,0)=0",
-						as.getC_AcctSchema_ID(), MProjectIssue.Table_ID, m_issue.getReversal_ID(),
-						invAcct.getAccount_ID(), Fact.POST_Actual);
-			}
+			cost = getOriginalPostedPrincipalCost(as, product, ProjectCategory, manualTotal);
 			if (cost == null)
 				cost = m_line.getProductCosts(as, getAD_Org_ID(), false).negate();
 
@@ -265,10 +251,19 @@ public class Doc_ProjectIssue extends Doc
 				MProjectIssue origIssue = new MProjectIssue(getCtx(), m_issue.getReversal_ID(), getTrxName());
 				if (origIssue.getS_TimeExpenseLine_ID() != 0)
 				{
-					MTimeExpenseLine timeExpenseLine = new MTimeExpenseLine(getCtx(), origIssue.getS_TimeExpenseLine_ID(), getTrxName());
-					BigDecimal origLaborCost = timeExpenseLine.getLaborCost(as);
-					if (origLaborCost != null)
-						cost = origLaborCost.negate();
+					if (origIssue.isPosted())
+					{
+						BigDecimal origPostedCost = getOriginalPostedPrincipalCost(as, product, ProjectCategory, BigDecimal.ZERO);
+						if (origPostedCost != null)
+							cost = origPostedCost.negate();
+					}
+					if (cost == null)
+					{
+						MTimeExpenseLine timeExpenseLine = new MTimeExpenseLine(getCtx(), origIssue.getS_TimeExpenseLine_ID(), getTrxName());
+						BigDecimal origLaborCost = timeExpenseLine.getLaborCost(as);
+						if (origLaborCost != null)
+							cost = origLaborCost.negate();
+					}
 				}
 			}
 			if (cost == null)	//	standard Product Costs
@@ -376,4 +371,92 @@ public class Doc_ProjectIssue extends Doc
 		facts.add(fact);
 		return facts;
 	}   //  createFact
+
+	/**
+	 * Recover the original principal posted amount (positive for a normal positive-cost issue)
+	 * from the original {@link MProjectIssue}'s {@code M_CostDetail} or {@code Fact_Acct}.
+	 * @param as accounting schema
+	 * @param product issued product
+	 * @param projectCategory project category
+	 * @param manualTotal sum of original manual cost detail amounts (zero when none)
+	 * @return original principal cost, {@link BigDecimal#ZERO} when the original posted with no
+	 *         {@code Fact_Acct} rows for this schema, or {@code null} if unavailable
+	 */
+	private BigDecimal getOriginalPostedPrincipalCost(MAcctSchema as, MProduct product,
+			String projectCategory, BigDecimal manualTotal)
+	{
+		if (product != null && product.get_ID() > 0 && !product.isService() && product.isStocked())
+		{
+			MCostDetail origCd = MCostDetail.getProjectIssue(as, m_line.getM_Product_ID(),
+					m_line.getM_AttributeSetInstance_ID(), m_issue.getReversal_ID(), 0, getTrxName());
+			if (origCd != null)
+				return origCd.getAmt().negate();
+		}
+
+		int invAcctType = (product != null && product.isService())
+				? ProductCost.ACCTTYPE_P_Expense : ProductCost.ACCTTYPE_P_Asset;
+		MAccount invAcct = m_line.getAccount(invAcctType, as);
+		int projAcctType = MProject.PROJECTCATEGORY_AssetProject.equals(projectCategory)
+				? ACCTTYPE_ProjectAsset : ACCTTYPE_ProjectWIP;
+		MAccount projAcct = getAccount(projAcctType, as);
+
+		BigDecimal origPostedCost = null;
+		if (invAcct != null && projAcct != null && invAcct.getAccount_ID() == projAcct.getAccount_ID())
+		{
+			// When project and inventory/expense share the same GL Account_ID, summing both legs
+			// cancels to zero; read the second principal Fact_Acct row (the inventory/expense credit leg).
+			List<MFactAcct> principalFacts = new Query(getCtx(), MFactAcct.Table_Name,
+					"C_AcctSchema_ID=? AND AD_Table_ID=? AND Record_ID=? "
+					+ "AND Account_ID=? AND PostingType=? AND COALESCE(C_Charge_ID,0)=0",
+					getTrxName())
+					.setParameters(as.getC_AcctSchema_ID(), MProjectIssue.Table_ID, m_issue.getReversal_ID(),
+							invAcct.getAccount_ID(), Fact.POST_Actual)
+					.setOrderBy(MFactAcct.COLUMNNAME_Fact_Acct_ID)
+					.list();
+			if (principalFacts.size() >= 2)
+			{
+				MFactAcct invFact = principalFacts.get(1);
+				origPostedCost = invFact.getAmtAcctCr().subtract(invFact.getAmtAcctDr());
+			}
+			else if (principalFacts.size() == 1)
+			{
+				MFactAcct factRow = principalFacts.get(0);
+				origPostedCost = factRow.getAmtAcctCr().subtract(factRow.getAmtAcctDr());
+			}
+		}
+		else
+		{
+			if (invAcct != null)
+			{
+				origPostedCost = DB.getSQLValueBDEx(getTrxName(),
+						"SELECT SUM(AmtAcctCr - AmtAcctDr) FROM Fact_Acct "
+						+ "WHERE C_AcctSchema_ID=? AND AD_Table_ID=? AND Record_ID=? "
+						+ "AND Account_ID=? AND PostingType=? AND COALESCE(C_Charge_ID,0)=0",
+						as.getC_AcctSchema_ID(), MProjectIssue.Table_ID, m_issue.getReversal_ID(),
+						invAcct.getAccount_ID(), Fact.POST_Actual);
+			}
+			if (origPostedCost == null && projAcct != null)
+			{
+				BigDecimal projPostedAmt = DB.getSQLValueBDEx(getTrxName(),
+						"SELECT SUM(AmtAcctDr - AmtAcctCr) FROM Fact_Acct "
+						+ "WHERE C_AcctSchema_ID=? AND AD_Table_ID=? AND Record_ID=? "
+						+ "AND Account_ID=? AND PostingType=? AND COALESCE(C_Charge_ID,0)=0",
+						as.getC_AcctSchema_ID(), MProjectIssue.Table_ID, m_issue.getReversal_ID(),
+						projAcct.getAccount_ID(), Fact.POST_Actual);
+				if (projPostedAmt != null)
+					origPostedCost = manualTotal != null ? projPostedAmt.subtract(manualTotal) : projPostedAmt;
+			}
+		}
+
+		if (origPostedCost == null)
+		{
+			int factCount = DB.getSQLValueEx(getTrxName(),
+					"SELECT COUNT(*) FROM Fact_Acct "
+					+ "WHERE C_AcctSchema_ID=? AND AD_Table_ID=? AND Record_ID=? AND PostingType=?",
+					as.getC_AcctSchema_ID(), MProjectIssue.Table_ID, m_issue.getReversal_ID(), Fact.POST_Actual);
+			if (factCount == 0)
+				return BigDecimal.ZERO;
+		}
+		return origPostedCost;
+	}
 }	//	DocProjectIssue

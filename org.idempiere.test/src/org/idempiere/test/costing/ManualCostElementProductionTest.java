@@ -53,6 +53,7 @@ import org.compiere.model.MClient;
 import org.compiere.model.MCost;
 import org.compiere.model.MCostDetail;
 import org.compiere.model.MCostElement;
+import org.compiere.model.MCostQueue;
 import org.compiere.model.MFactAcct;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutLine;
@@ -66,6 +67,7 @@ import org.compiere.model.MProduction;
 import org.compiere.model.MProductionLine;
 import org.compiere.model.MProductionLineMA;
 import org.compiere.model.MProductionPlan;
+import org.compiere.model.MStorageOnHand;
 import org.compiere.model.ProductCost;
 import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
@@ -844,12 +846,15 @@ public class ManualCostElementProductionTest extends AbstractManualCostElementTe
 				assertNull(error, "Original production posting failed: " + error);
 			}
 
-			// Change component material cost from 100.00 to 120.00 before reversing production
-			MCostElement avgPoCe = MCostElement.getMaterialCostElement(Env.getCtx(), MCostElement.COSTINGMETHOD_AveragePO);
-			MCost compMatCost = MCost.get(comp, 0, as, 0, avgPoCe.get_ID(), getTrxName());
-			assertNotNull(compMatCost);
-			compMatCost.setCurrentCostPrice(new BigDecimal("120.00"));
-			compMatCost.saveEx();
+			// Post a real second receipt (1 unit @ 140.00) on the same date so Average PO and M_CostHistory move from 100.00 to 120.00
+			createPOAndMR(comp, null, BigDecimal.ONE, new BigDecimal("140.00"));
+			ProductCost datedCheckPc = new ProductCost(Env.getCtx(), comp.get_ID(), 0, getTrxName());
+			datedCheckPc.setQty(BigDecimal.ONE);
+			BigDecimal datedCost = datedCheckPc.getProductCosts(as, getAD_Org_ID(),
+					MCostElement.COSTINGMETHOD_AveragePO, 0, false, getLoginDate(), null, false);
+			assertNotNull(datedCost, "Dated valuation must be available after second receipt");
+			assertEquals(new BigDecimal("120.00"), datedCost.setScale(2, RoundingMode.HALF_UP),
+					"Ordinary dated valuation on reversal date must reflect drifted Average PO cost (120.00)");
 
 			info = MWorkflow.runDocumentActionWorkflow(production, DocAction.ACTION_Reverse_Correct);
 			assertFalse(info.isError(), info.getSummary());
@@ -1622,6 +1627,589 @@ public class ManualCostElementProductionTest extends AbstractManualCostElementTe
 			}
 			assertEquals(new BigDecimal("0.09"), totalFgDr.setScale(2, RoundingMode.HALF_UP),
 					"Total FG inventory debit across all 6 lines must equal 0.09");
+		}
+	}
+
+	@Test
+	public void testFifoMultiComponentAndMultiFgProductionRollupAndPercentCharge()
+	{
+		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
+
+		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MProductCategory> mockedCategory = mockStatic(MProductCategory.class, Mockito.CALLS_REAL_METHODS))
+		{
+			MProductCategory fifoCat = new MProductCategory(Env.getCtx(), 0, getTrxName());
+			fifoCat.setName("ProdFifoCat");
+			fifoCat.saveEx();
+			mockedCategory.when(() -> MProductCategory.get(any(Properties.class), eq(fifoCat.get_ID()))).thenReturn(fifoCat);
+			mockedCategory.when(() -> MProductCategory.get(eq(fifoCat.get_ID()))).thenReturn(fifoCat);
+
+			MProductCategoryAcct fifoAcct = MProductCategoryAcct.get(fifoCat.get_ID(), as.get_ID(), getTrxName());
+			fifoAcct = new MProductCategoryAcct(Env.getCtx(), fifoAcct, getTrxName());
+			fifoAcct.setCostingMethod(MCostElement.COSTINGMETHOD_Fifo);
+			fifoAcct.saveEx();
+			CacheMgt.get().reset(MProductCategoryAcct.Table_Name);
+			MProductCategoryAcct.get(fifoCat.get_ID(), as.get_ID(), getTrxName());
+
+			MProduct comp = createStockedProduct("ProdFifoComp", fifoCat.get_ID(), 0);
+			MProduct fg = createStockedProduct("ProdFifoFG", DictionaryIDs.M_Product_Category.STANDARD.id, 0);
+			fg.setIsBOM(true);
+			fg.saveEx();
+			mockProductGet(mockedProduct, comp);
+			mockProductGet(mockedProduct, fg);
+
+			// Two distinct FIFO layers: asi1 (lower ID) qty 1 @ 1000.00, then asi2 (higher ID) qty 1 @ 1200.00
+			MAttributeSetInstance asi1 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+			asi1.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id);
+			asi1.setLot("PROD-FIFO-L1");
+			asi1.setDescription();
+			asi1.saveEx();
+
+			MAttributeSetInstance asi2 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+			asi2.setM_AttributeSet_ID(DictionaryIDs.M_AttributeSet.FERTILIZER_LOT.id);
+			asi2.setLot("PROD-FIFO-L2");
+			asi2.setDescription();
+			asi2.saveEx();
+			assertTrue(asi1.get_ID() < asi2.get_ID(), "Expected first ASI to have lower ID for FIFO ordering");
+
+			assertTrue(MStorageOnHand.add(Env.getCtx(), DictionaryIDs.M_Locator.HQ.id, comp.get_ID(), 0,
+					new BigDecimal("2"), getLoginDate(), getTrxName()), "Failed to add FIFO component stock");
+
+			MCost.CostingKey key = MCost.CostingKey.resolve(getAD_Org_ID(), 0, comp.getCostingLevel(as));
+			MCostElement fifoCe = MCostElement.getMaterialCostElement(as, MCostElement.COSTINGMETHOD_Fifo);
+			MCost fifoCost = MCost.get(comp, key.M_AttributeSetInstance_ID(), as, key.AD_Org_ID(), fifoCe.get_ID(), getTrxName());
+			fifoCost.setCurrentCostPrice(new BigDecimal("1000.00"));
+			fifoCost.setCurrentQty(new BigDecimal("2"));
+			fifoCost.saveEx();
+
+			MCostElement avgPoCe = MCostElement.getMaterialCostElement(as, MCostElement.COSTINGMETHOD_AveragePO);
+			MCost avgPoCost = MCost.get(comp, key.M_AttributeSetInstance_ID(), as, key.AD_Org_ID(), avgPoCe.get_ID(), getTrxName());
+			avgPoCost.setCurrentCostPrice(new BigDecimal("1100.00"));
+			avgPoCost.setCurrentQty(new BigDecimal("2"));
+			avgPoCost.saveEx();
+
+			MCostElement avgInvCe = MCostElement.getMaterialCostElement(as, MCostElement.COSTINGMETHOD_AverageInvoice);
+			if (avgInvCe != null)
+			{
+				MCost avgInvCost = MCost.get(comp, key.M_AttributeSetInstance_ID(), as, key.AD_Org_ID(), avgInvCe.get_ID(), getTrxName());
+				avgInvCost.setCurrentCostPrice(new BigDecimal("1100.00"));
+				avgInvCost.setCurrentQty(new BigDecimal("2"));
+				avgInvCost.saveEx();
+			}
+
+			MCostQueue q1 = MCostQueue.get(comp, asi1.get_ID(), as, key.AD_Org_ID(), fifoCe.get_ID(), getTrxName());
+			q1.setCurrentQty(BigDecimal.ONE);
+			q1.setCurrentCostPrice(new BigDecimal("1000.00"));
+			q1.saveEx();
+
+			MCostQueue q2 = MCostQueue.get(comp, asi2.get_ID(), as, key.AD_Org_ID(), fifoCe.get_ID(), getTrxName());
+			q2.setCurrentQty(BigDecimal.ONE);
+			q2.setCurrentCostPrice(new BigDecimal("1200.00"));
+			q2.saveEx();
+
+			for (MAcctSchema clientAs : MAcctSchema.getClientAcctSchema(Env.getCtx(), getAD_Client_ID(), getTrxName()))
+			{
+				if (clientAs.get_ID() == as.get_ID())
+					continue;
+				MCost.CostingKey secKey = MCost.CostingKey.resolve(getAD_Org_ID(), 0, comp.getCostingLevel(clientAs));
+				MCostElement secCe = MCostElement.getMaterialCostElement(clientAs, clientAs.getCostingMethod());
+				if (secCe != null)
+				{
+					MCost secCost = MCost.get(comp, secKey.M_AttributeSetInstance_ID(), clientAs, secKey.AD_Org_ID(),
+							secCe.get_ID(), getTrxName());
+					secCost.setCurrentCostPrice(new BigDecimal("1000.00"));
+					secCost.setCurrentQty(new BigDecimal("2"));
+					secCost.saveEx();
+				}
+			}
+
+			MCostElement burdenCe = createManualCostElement("ProdFifo Burden 10pct",
+					MCostElement.COSTELEMENTTYPE_BurdenMOverhead, DictionaryIDs.C_Charge.FREIGHT.id);
+			createManualCostRecord(comp, as, burdenCe, 0, BigDecimal.ZERO, 10);
+
+			MPPProductBOM bom = new MPPProductBOM(Env.getCtx(), 0, getTrxName());
+			bom.setM_Product_ID(fg.get_ID());
+			bom.setBOMType(MPPProductBOM.BOMTYPE_CurrentActive);
+			bom.setBOMUse(MPPProductBOM.BOMUSE_Master);
+			bom.setName(fg.getName());
+			bom.saveEx();
+			MPPProductBOMLine bomLine = new MPPProductBOMLine(bom);
+			bomLine.setM_Product_ID(comp.get_ID());
+			bomLine.setQtyBOM(BigDecimal.ONE);
+			bomLine.saveEx();
+			fg.load(getTrxName());
+			fg.setIsVerified(true);
+			fg.saveEx();
+
+			MProduction prod = new MProduction(Env.getCtx(), 0, getTrxName());
+			prod.setName("FIFO Multi-Comp Multi-FG Production");
+			prod.setM_Product_ID(fg.get_ID());
+			prod.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+			prod.setIsUseProductionPlan(false);
+			prod.setMovementDate(getLoginDate());
+			prod.setIsCreated("Y");
+			prod.setProductionQty(new BigDecimal("100000"));
+			prod.saveEx();
+
+			// Put two 1-unit FIFO component issues between two FG output lines (1 and 99,999 units)
+			MProductionLine fgLine1 = new MProductionLine(prod);
+			fgLine1.setLine(10);
+			fgLine1.setM_Product_ID(fg.get_ID());
+			fgLine1.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+			fgLine1.setIsEndProduct(true);
+			fgLine1.setMovementQty(BigDecimal.ONE);
+			fgLine1.setPlannedQty(BigDecimal.ONE);
+			fgLine1.saveEx();
+
+			MProductionLine compLine1 = new MProductionLine(prod);
+			compLine1.setLine(20);
+			compLine1.setM_Product_ID(comp.get_ID());
+			compLine1.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+			compLine1.setIsEndProduct(false);
+			compLine1.setQtyUsed(BigDecimal.ONE);
+			compLine1.setMovementQty(BigDecimal.ONE.negate());
+			compLine1.setPlannedQty(BigDecimal.ONE);
+			compLine1.saveEx();
+
+			MProductionLine compLine2 = new MProductionLine(prod);
+			compLine2.setLine(30);
+			compLine2.setM_Product_ID(comp.get_ID());
+			compLine2.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+			compLine2.setIsEndProduct(false);
+			compLine2.setQtyUsed(BigDecimal.ONE);
+			compLine2.setMovementQty(BigDecimal.ONE.negate());
+			compLine2.setPlannedQty(BigDecimal.ONE);
+			compLine2.saveEx();
+
+			MProductionLine fgLine2 = new MProductionLine(prod);
+			fgLine2.setLine(40);
+			fgLine2.setM_Product_ID(fg.get_ID());
+			fgLine2.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+			fgLine2.setIsEndProduct(true);
+			fgLine2.setMovementQty(new BigDecimal("99999"));
+			fgLine2.setPlannedQty(new BigDecimal("99999"));
+			fgLine2.saveEx();
+
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(prod, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			prod.load(getTrxName());
+			if (!prod.isPosted())
+			{
+				String err = DocumentEngine.postImmediate(Env.getCtx(), prod.getAD_Client_ID(),
+						prod.get_Table_ID(), prod.get_ID(), false, getTrxName());
+				assertNull(err, "FIFO multi-component production posting failed: " + err);
+			}
+
+			int freightAcctId = MCharge.getAccount(DictionaryIDs.C_Charge.FREIGHT.id, as, getTrxName()).getAccount_ID();
+			List<MFactAcct> facts = getFacts(MProduction.Table_ID, prod.get_ID(), as.get_ID());
+
+			BigDecimal comp1InvCr = BigDecimal.ZERO;
+			BigDecimal comp1ChargeCr = BigDecimal.ZERO;
+			BigDecimal comp2InvCr = BigDecimal.ZERO;
+			BigDecimal comp2ChargeCr = BigDecimal.ZERO;
+			BigDecimal fg1Dr = BigDecimal.ZERO;
+			BigDecimal fg2Dr = BigDecimal.ZERO;
+			BigDecimal totalDr = BigDecimal.ZERO;
+			BigDecimal totalCr = BigDecimal.ZERO;
+			for (MFactAcct fa : facts)
+			{
+				totalDr = totalDr.add(fa.getAmtAcctDr());
+				totalCr = totalCr.add(fa.getAmtAcctCr());
+				if (fa.getLine_ID() == compLine1.get_ID())
+				{
+					if (fa.getC_Charge_ID() == DictionaryIDs.C_Charge.FREIGHT.id)
+						comp1ChargeCr = comp1ChargeCr.add(fa.getAmtAcctCr());
+					else
+						comp1InvCr = comp1InvCr.add(fa.getAmtAcctCr());
+				}
+				else if (fa.getLine_ID() == compLine2.get_ID())
+				{
+					if (fa.getC_Charge_ID() == DictionaryIDs.C_Charge.FREIGHT.id)
+						comp2ChargeCr = comp2ChargeCr.add(fa.getAmtAcctCr());
+					else
+						comp2InvCr = comp2InvCr.add(fa.getAmtAcctCr());
+				}
+				else if (fa.getLine_ID() == fgLine1.get_ID())
+					fg1Dr = fg1Dr.add(fa.getAmtAcctDr());
+				else if (fa.getLine_ID() == fgLine2.get_ID())
+					fg2Dr = fg2Dr.add(fa.getAmtAcctDr());
+			}
+
+			assertEquals(new BigDecimal("1000.00"), comp1InvCr.setScale(2, RoundingMode.HALF_UP));
+			assertEquals(new BigDecimal("100.00"), comp1ChargeCr.setScale(2, RoundingMode.HALF_UP));
+			assertEquals(new BigDecimal("1200.00"), comp2InvCr.setScale(2, RoundingMode.HALF_UP));
+			assertEquals(new BigDecimal("120.00"), comp2ChargeCr.setScale(2, RoundingMode.HALF_UP),
+					"Second FIFO issue percentage charge must use 1200.00 layer valuation (120.00), not stale 100.00");
+			assertFactTotals(facts, freightAcctId, BigDecimal.ZERO, new BigDecimal("220.00"));
+			assertEquals(new BigDecimal("2420.00"), fg1Dr.add(fg2Dr).setScale(2, RoundingMode.HALF_UP),
+					"Allocated FG debits must sum to exact finalized component material + charge total (2420.00)");
+			assertEquals(totalDr.setScale(2, RoundingMode.HALF_UP), totalCr.setScale(2, RoundingMode.HALF_UP),
+					"Production posting must balance with no suspense");
+		}
+		finally
+		{
+			CacheMgt.get().reset(MProductCategoryAcct.Table_Name);
+		}
+	}
+
+	@Test
+	public void testBatchLotMultiFgUsesLineQtyAndUnrelatedLotChargeDoesNotBlockReversal()
+	{
+		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
+
+		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MProductCategory> mockedCategory = mockStatic(MProductCategory.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MAttributeSet> mockedAttrSet = mockStatic(MAttributeSet.class, Mockito.CALLS_REAL_METHODS))
+		{
+			MProductCategory batchCat = new MProductCategory(Env.getCtx(), 0, getTrxName());
+			batchCat.setName("ProdBatchQtyCat");
+			batchCat.saveEx();
+			mockedCategory.when(() -> MProductCategory.get(any(Properties.class), eq(batchCat.get_ID()))).thenReturn(batchCat);
+			mockedCategory.when(() -> MProductCategory.get(eq(batchCat.get_ID()))).thenReturn(batchCat);
+
+			MProductCategoryAcct batchAcct = MProductCategoryAcct.get(batchCat.get_ID(), as.get_ID(), getTrxName());
+			batchAcct = new MProductCategoryAcct(Env.getCtx(), batchAcct, getTrxName());
+			batchAcct.setCostingLevel(MAcctSchema.COSTINGLEVEL_BatchLot);
+			batchAcct.saveEx();
+			CacheMgt.get().reset(MProductCategoryAcct.Table_Name);
+			MProductCategoryAcct.get(batchCat.get_ID(), as.get_ID(), getTrxName());
+
+			MAttributeSet lotAs = new MAttributeSet(Env.getCtx(), 0, getTrxName());
+			lotAs.setName("ProdBatchQtyLotAS");
+			lotAs.setIsLot(true);
+			lotAs.setMandatoryType(MAttributeSet.MANDATORYTYPE_NotMandatory);
+			lotAs.saveEx();
+			MAttributeSet lotAsSpy = Mockito.spy(lotAs);
+			Mockito.doReturn(true).when(lotAsSpy).excludeTableEntry(MOrderLine.Table_ID, true);
+			Mockito.doReturn(true).when(lotAsSpy).excludeTableEntry(MInOutLine.Table_ID, true);
+			mockedAttrSet.when(() -> MAttributeSet.getCopy(any(Properties.class), eq(lotAs.get_ID()), any())).thenReturn(lotAsSpy);
+			mockedAttrSet.when(() -> MAttributeSet.get(any(Properties.class), eq(lotAs.get_ID()))).thenReturn(lotAsSpy);
+			mockedAttrSet.when(() -> MAttributeSet.get(eq(lotAs.get_ID()))).thenReturn(lotAsSpy);
+
+			MProduct comp = createStockedProduct("ProdBatchQtyComp", batchCat.get_ID(), lotAs.get_ID());
+			MProduct fg = createStockedProduct("ProdBatchQtyFG", batchCat.get_ID(), lotAs.get_ID());
+			fg.setIsBOM(true);
+			fg.saveEx();
+			mockProductGet(mockedProduct, comp);
+			mockProductGet(mockedProduct, fg);
+
+			MAttributeSetInstance compLotA = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+			compLotA.setM_AttributeSet_ID(lotAs.get_ID());
+			compLotA.setLot("COMP-LOT-A");
+			compLotA.setDescription();
+			compLotA.saveEx();
+
+			MAttributeSetInstance compLotB = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+			compLotB.setM_AttributeSet_ID(lotAs.get_ID());
+			compLotB.setLot("COMP-LOT-B");
+			compLotB.setDescription();
+			compLotB.saveEx();
+
+			MAttributeSetInstance fgLot1 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+			fgLot1.setM_AttributeSet_ID(lotAs.get_ID());
+			fgLot1.setLot("FG-LOT-1");
+			fgLot1.setDescription();
+			fgLot1.saveEx();
+
+			MAttributeSetInstance fgLot2 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+			fgLot2.setM_AttributeSet_ID(lotAs.get_ID());
+			fgLot2.setLot("FG-LOT-2");
+			fgLot2.setDescription();
+			fgLot2.saveEx();
+
+			createPOAndMR(comp, compLotA, new BigDecimal("5"), new BigDecimal("50.00"));
+			createPOAndMR(comp, compLotB, new BigDecimal("5"), new BigDecimal("50.00"));
+
+			// Attach manual charge ONLY to unrelated compLotB (compLotA has NO charge record)
+			MCostElement overheadCe = createManualCostElement("ProdBatchQty Unrelated Overhead",
+					MCostElement.COSTELEMENTTYPE_Overhead, DictionaryIDs.C_Charge.FREIGHT.id);
+			createManualCostRecord(comp, as, overheadCe, compLotB.get_ID(), new BigDecimal("10.00"), 0);
+
+			MPPProductBOM bom = new MPPProductBOM(Env.getCtx(), 0, getTrxName());
+			bom.setM_Product_ID(fg.get_ID());
+			bom.setBOMType(MPPProductBOM.BOMTYPE_CurrentActive);
+			bom.setBOMUse(MPPProductBOM.BOMUSE_Master);
+			bom.setName(fg.getName());
+			bom.saveEx();
+			MPPProductBOMLine bomLine = new MPPProductBOMLine(bom);
+			bomLine.setM_Product_ID(comp.get_ID());
+			bomLine.setQtyBOM(BigDecimal.ONE);
+			bomLine.saveEx();
+			fg.load(getTrxName());
+			fg.setIsVerified(true);
+			fg.saveEx();
+
+			// 1. Multi-FG Batch/Lot production: 2 FG lines of qty 1 each consuming 2 units of compLotA (@ 50 = 100)
+			MProduction prod = new MProduction(Env.getCtx(), 0, getTrxName());
+			prod.setName("BatchLot Multi-FG Qty Production");
+			prod.setM_Product_ID(fg.get_ID());
+			prod.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+			prod.setIsUseProductionPlan(false);
+			prod.setMovementDate(getLoginDate());
+			prod.setIsCreated("Y");
+			prod.setProductionQty(new BigDecimal("2"));
+			prod.saveEx();
+
+			MProductionLine fgLine1 = new MProductionLine(prod);
+			fgLine1.setLine(10);
+			fgLine1.setM_Product_ID(fg.get_ID());
+			fgLine1.setM_AttributeSetInstance_ID(fgLot1.get_ID());
+			fgLine1.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+			fgLine1.setIsEndProduct(true);
+			fgLine1.setMovementQty(BigDecimal.ONE);
+			fgLine1.setPlannedQty(BigDecimal.ONE);
+			fgLine1.saveEx();
+
+			MProductionLine fgLine2 = new MProductionLine(prod);
+			fgLine2.setLine(20);
+			fgLine2.setM_Product_ID(fg.get_ID());
+			fgLine2.setM_AttributeSetInstance_ID(fgLot2.get_ID());
+			fgLine2.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+			fgLine2.setIsEndProduct(true);
+			fgLine2.setMovementQty(BigDecimal.ONE);
+			fgLine2.setPlannedQty(BigDecimal.ONE);
+			fgLine2.saveEx();
+
+			MProductionLine compLine = new MProductionLine(prod);
+			compLine.setLine(30);
+			compLine.setM_Product_ID(comp.get_ID());
+			compLine.setM_AttributeSetInstance_ID(compLotA.get_ID());
+			compLine.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+			compLine.setIsEndProduct(false);
+			compLine.setQtyUsed(new BigDecimal("2"));
+			compLine.setMovementQty(new BigDecimal("-2"));
+			compLine.setPlannedQty(new BigDecimal("2"));
+			compLine.saveEx();
+
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(prod, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			prod.load(getTrxName());
+			if (!prod.isPosted())
+			{
+				String err = DocumentEngine.postImmediate(Env.getCtx(), prod.getAD_Client_ID(),
+						prod.get_Table_ID(), prod.get_ID(), false, getTrxName());
+				assertNull(err, "BatchLot multi-FG production posting failed: " + err);
+			}
+
+			MCostDetail fgCd1 = MCostDetail.getProduction(as, fg.get_ID(), fgLot1.get_ID(), fgLine1.get_ID(), 0, getTrxName());
+			MCostDetail fgCd2 = MCostDetail.getProduction(as, fg.get_ID(), fgLot2.get_ID(), fgLine2.get_ID(), 0, getTrxName());
+			assertNotNull(fgCd1);
+			assertNotNull(fgCd2);
+			assertEquals(0, BigDecimal.ONE.compareTo(fgCd1.getQty()), "FG line 1 M_CostDetail must use line qty (1), not group qtyProduced (2)");
+			assertEquals(0, BigDecimal.ONE.compareTo(fgCd2.getQty()), "FG line 2 M_CostDetail must use line qty (1), not group qtyProduced (2)");
+			assertEquals(new BigDecimal("50.00"), fgCd1.getAmt().setScale(2, RoundingMode.HALF_UP));
+			assertEquals(new BigDecimal("50.00"), fgCd2.getAmt().setScale(2, RoundingMode.HALF_UP));
+
+			List<MFactAcct> facts = getFacts(MProduction.Table_ID, prod.get_ID(), as.get_ID());
+			for (MFactAcct fa : facts)
+			{
+				if (fa.getLine_ID() == fgLine1.get_ID() || fa.getLine_ID() == fgLine2.get_ID())
+					assertEquals(0, BigDecimal.ONE.compareTo(fa.getQty()), "BatchLot FG Fact_Acct must use line qty (1), not group qtyProduced (2)");
+			}
+
+			// 2. Unrelated compLotB charge must NOT block reversal of a compLotA production when original is unposted
+			MProduction prod2 = new MProduction(Env.getCtx(), 0, getTrxName());
+			prod2.setName("BatchLot Unrelated Charge Production");
+			prod2.setM_Product_ID(fg.get_ID());
+			prod2.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+			prod2.setIsUseProductionPlan(false);
+			prod2.setMovementDate(getLoginDate());
+			prod2.setIsCreated("Y");
+			prod2.setProductionQty(BigDecimal.ONE);
+			prod2.saveEx();
+
+			MProductionLine fgLine = new MProductionLine(prod2);
+			fgLine.setLine(10);
+			fgLine.setM_Product_ID(fg.get_ID());
+			fgLine.setM_AttributeSetInstance_ID(fgLot1.get_ID());
+			fgLine.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+			fgLine.setIsEndProduct(true);
+			fgLine.setMovementQty(BigDecimal.ONE);
+			fgLine.setPlannedQty(BigDecimal.ONE);
+			fgLine.saveEx();
+
+			MProductionLine compLineA = new MProductionLine(prod2);
+			compLineA.setLine(20);
+			compLineA.setM_Product_ID(comp.get_ID());
+			compLineA.setM_AttributeSetInstance_ID(compLotA.get_ID());
+			compLineA.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+			compLineA.setIsEndProduct(false);
+			compLineA.setQtyUsed(BigDecimal.ONE);
+			compLineA.setMovementQty(BigDecimal.ONE.negate());
+			compLineA.setPlannedQty(BigDecimal.ONE);
+			compLineA.saveEx();
+
+			try (MockedStatic<MClient> mockedClient = mockStatic(MClient.class, Mockito.CALLS_REAL_METHODS))
+			{
+				mockedClient.when(MClient::isClientAccountingImmediate).thenReturn(false);
+				info = MWorkflow.runDocumentActionWorkflow(prod2, DocAction.ACTION_Complete);
+				assertFalse(info.isError(), info.getSummary());
+				info = MWorkflow.runDocumentActionWorkflow(prod2, DocAction.ACTION_Reverse_Correct);
+				assertFalse(info.isError(), info.getSummary());
+			}
+			prod2.load(getTrxName());
+			MProduction rev2 = new MProduction(Env.getCtx(), prod2.getReversal_ID(), getTrxName());
+			assertFalse(prod2.isPosted());
+			String revErr = DocumentEngine.postImmediate(Env.getCtx(), rev2.getAD_Client_ID(),
+					rev2.get_Table_ID(), rev2.get_ID(), false, getTrxName());
+			assertNull(revErr, "Unrelated lot charge on compLotB must not block reversal of compLotA production: " + revErr);
+		}
+		finally
+		{
+			CacheMgt.get().reset(MProductCategoryAcct.Table_Name);
+		}
+	}
+
+	@Test
+	public void testMultiPlanSubAssemblyProductionRollup()
+	{
+		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
+
+		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS))
+		{
+			MProduct rawMat = createStockedProduct("MultiPlanRawMat", DictionaryIDs.M_Product_Category.STANDARD.id, 0);
+			MProduct subAsm = createStockedProduct("MultiPlanSubAsm", DictionaryIDs.M_Product_Category.STANDARD.id, 0);
+			subAsm.setIsBOM(true);
+			subAsm.saveEx();
+			MProduct fg = createStockedProduct("MultiPlanFG", DictionaryIDs.M_Product_Category.STANDARD.id, 0);
+			fg.setIsBOM(true);
+			fg.saveEx();
+			mockProductGet(mockedProduct, rawMat);
+			mockProductGet(mockedProduct, subAsm);
+			mockProductGet(mockedProduct, fg);
+
+			// Raw material received at 100.00 + 10.00 manual freight charge -> sub-assembly must roll up to 110.00
+			createPOAndMR(rawMat, null, BigDecimal.ONE, new BigDecimal("100.00"));
+			MCostElement freightCe = createManualCostElement("MultiPlan Freight 10",
+					MCostElement.COSTELEMENTTYPE_BurdenMOverhead, DictionaryIDs.C_Charge.FREIGHT.id);
+			createManualCostRecord(rawMat, as, freightCe, 0, new BigDecimal("10.00"), 0);
+
+			MPPProductBOM subBom = new MPPProductBOM(Env.getCtx(), 0, getTrxName());
+			subBom.setM_Product_ID(subAsm.get_ID());
+			subBom.setBOMType(MPPProductBOM.BOMTYPE_CurrentActive);
+			subBom.setBOMUse(MPPProductBOM.BOMUSE_Master);
+			subBom.setName(subAsm.getName());
+			subBom.saveEx();
+			MPPProductBOMLine subBomLine = new MPPProductBOMLine(subBom);
+			subBomLine.setM_Product_ID(rawMat.get_ID());
+			subBomLine.setQtyBOM(BigDecimal.ONE);
+			subBomLine.saveEx();
+			subAsm.load(getTrxName());
+			subAsm.setIsVerified(true);
+			subAsm.saveEx();
+
+			MPPProductBOM fgBom = new MPPProductBOM(Env.getCtx(), 0, getTrxName());
+			fgBom.setM_Product_ID(fg.get_ID());
+			fgBom.setBOMType(MPPProductBOM.BOMTYPE_CurrentActive);
+			fgBom.setBOMUse(MPPProductBOM.BOMUSE_Master);
+			fgBom.setName(fg.getName());
+			fgBom.saveEx();
+			MPPProductBOMLine fgBomLine = new MPPProductBOMLine(fgBom);
+			fgBomLine.setM_Product_ID(subAsm.get_ID());
+			fgBomLine.setQtyBOM(BigDecimal.ONE);
+			fgBomLine.saveEx();
+			fg.load(getTrxName());
+			fg.setIsVerified(true);
+			fg.saveEx();
+
+			MProduction prod = new MProduction(Env.getCtx(), 0, getTrxName());
+			prod.setName("MultiPlan SubAssembly Production");
+			prod.setIsUseProductionPlan(true);
+			prod.setMovementDate(getLoginDate());
+			prod.setIsCreated("Y");
+			prod.saveEx();
+
+			// Plan 10 produces subAsm (no prior cost) from rawMat (FG line listed before component line)
+			MProductionPlan plan1 = new MProductionPlan(Env.getCtx(), 0, getTrxName());
+			plan1.setM_Production_ID(prod.get_ID());
+			plan1.setLine(10);
+			plan1.setM_Product_ID(subAsm.get_ID());
+			plan1.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+			plan1.setProductionQty(BigDecimal.ONE);
+			plan1.saveEx();
+
+			MProductionLine plan1Fg = new MProductionLine(plan1);
+			plan1Fg.setLine(10);
+			plan1Fg.setM_Product_ID(subAsm.get_ID());
+			plan1Fg.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+			plan1Fg.setIsEndProduct(true);
+			plan1Fg.setMovementQty(BigDecimal.ONE);
+			plan1Fg.setPlannedQty(BigDecimal.ONE);
+			plan1Fg.saveEx();
+
+			MProductionLine plan1Comp = new MProductionLine(plan1);
+			plan1Comp.setLine(20);
+			plan1Comp.setM_Product_ID(rawMat.get_ID());
+			plan1Comp.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+			plan1Comp.setIsEndProduct(false);
+			plan1Comp.setQtyUsed(BigDecimal.ONE);
+			plan1Comp.setMovementQty(BigDecimal.ONE.negate());
+			plan1Comp.setPlannedQty(BigDecimal.ONE);
+			plan1Comp.saveEx();
+
+			// Plan 20 consumes subAsm produced in Plan 10 to produce fg
+			MProductionPlan plan2 = new MProductionPlan(Env.getCtx(), 0, getTrxName());
+			plan2.setM_Production_ID(prod.get_ID());
+			plan2.setLine(20);
+			plan2.setM_Product_ID(fg.get_ID());
+			plan2.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+			plan2.setProductionQty(BigDecimal.ONE);
+			plan2.saveEx();
+
+			MProductionLine plan2Fg = new MProductionLine(plan2);
+			plan2Fg.setLine(10);
+			plan2Fg.setM_Product_ID(fg.get_ID());
+			plan2Fg.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+			plan2Fg.setIsEndProduct(true);
+			plan2Fg.setMovementQty(BigDecimal.ONE);
+			plan2Fg.setPlannedQty(BigDecimal.ONE);
+			plan2Fg.saveEx();
+
+			MProductionLine plan2Comp = new MProductionLine(plan2);
+			plan2Comp.setLine(20);
+			plan2Comp.setM_Product_ID(subAsm.get_ID());
+			plan2Comp.setM_Locator_ID(DictionaryIDs.M_Locator.HQ.id);
+			plan2Comp.setIsEndProduct(false);
+			plan2Comp.setQtyUsed(BigDecimal.ONE);
+			plan2Comp.setMovementQty(BigDecimal.ONE.negate());
+			plan2Comp.setPlannedQty(BigDecimal.ONE);
+			plan2Comp.saveEx();
+
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(prod, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			prod.load(getTrxName());
+			if (!prod.isPosted())
+			{
+				String err = DocumentEngine.postImmediate(Env.getCtx(), prod.getAD_Client_ID(),
+						prod.get_Table_ID(), prod.get_ID(), false, getTrxName());
+				assertNull(err, "Multi-plan sub-assembly production posting failed: " + err);
+			}
+
+			MCostDetail subInCd = MCostDetail.getProduction(as, subAsm.get_ID(), 0, plan1Fg.get_ID(), 0, getTrxName());
+			MCostDetail subOutCd = MCostDetail.getProduction(as, subAsm.get_ID(), 0, plan2Comp.get_ID(), 0, getTrxName());
+			MCostDetail fgInCd = MCostDetail.getProduction(as, fg.get_ID(), 0, plan2Fg.get_ID(), 0, getTrxName());
+			assertNotNull(subInCd, "Plan 10 sub-assembly FG M_CostDetail missing");
+			assertNotNull(subOutCd, "Plan 20 sub-assembly component M_CostDetail missing");
+			assertNotNull(fgInCd, "Plan 20 FG M_CostDetail missing");
+			assertEquals(new BigDecimal("110.00"), subInCd.getAmt().setScale(2, RoundingMode.HALF_UP));
+			assertEquals(new BigDecimal("-110.00"), subOutCd.getAmt().setScale(2, RoundingMode.HALF_UP),
+					"Plan 20 must consume sub-assembly at Plan 10 rolled-up cost (110.00)");
+			assertEquals(new BigDecimal("110.00"), fgInCd.getAmt().setScale(2, RoundingMode.HALF_UP),
+					"Plan 20 FG must roll up sub-assembly cost (110.00)");
+
+			List<MFactAcct> facts = getFacts(MProduction.Table_ID, prod.get_ID(), as.get_ID());
+			BigDecimal totalDr = BigDecimal.ZERO;
+			BigDecimal totalCr = BigDecimal.ZERO;
+			BigDecimal fgDr = BigDecimal.ZERO;
+			for (MFactAcct fa : facts)
+			{
+				totalDr = totalDr.add(fa.getAmtAcctDr());
+				totalCr = totalCr.add(fa.getAmtAcctCr());
+				if (fa.getLine_ID() == plan2Fg.get_ID())
+					fgDr = fgDr.add(fa.getAmtAcctDr());
+			}
+			assertEquals(new BigDecimal("110.00"), fgDr.setScale(2, RoundingMode.HALF_UP));
+			assertEquals(totalDr.setScale(2, RoundingMode.HALF_UP), totalCr.setScale(2, RoundingMode.HALF_UP));
 		}
 	}
 }
