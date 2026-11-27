@@ -186,7 +186,9 @@ public class MProduction extends X_M_Production implements DocAction {
 			processed = processed + lines.length;
 		} else {
 			Query planQuery = new Query(Env.getCtx(), I_M_ProductionPlan.Table_Name, "M_ProductionPlan.M_Production_ID=?", get_TrxName());
-			List<MProductionPlan> plans = planQuery.setParameters(getM_Production_ID()).list();
+			List<MProductionPlan> plans = planQuery.setParameters(getM_Production_ID())
+					.setOrderBy(MProductionPlan.COLUMNNAME_Line + "," + MProductionPlan.COLUMNNAME_M_ProductionPlan_ID)
+					.list();
 			for(MProductionPlan plan : plans) {
 				MProductionLine[] lines = plan.getLines();
 				
@@ -942,7 +944,9 @@ public class MProduction extends X_M_Production implements DocAction {
 		if (isUseProductionPlan()) {
 			to.saveEx();
 			Query planQuery = new Query(Env.getCtx(), I_M_ProductionPlan.Table_Name, "M_ProductionPlan.M_Production_ID=?", get_TrxName());
-			List<MProductionPlan> fplans = planQuery.setParameters(getM_Production_ID()).list();
+			List<MProductionPlan> fplans = planQuery.setParameters(getM_Production_ID())
+					.setOrderBy(MProductionPlan.COLUMNNAME_Line + "," + MProductionPlan.COLUMNNAME_M_ProductionPlan_ID)
+					.list();
 			for(MProductionPlan fplan : fplans) {
 				MProductionPlan tplan = new MProductionPlan(getCtx(), 0, get_TrxName());
 				PO.copyValues (fplan, tplan, getAD_Client_ID(), getAD_Org_ID());
@@ -959,7 +963,10 @@ public class MProduction extends X_M_Production implements DocAction {
 					tline.setMovementQty(fline.getMovementQty().negate());
 					tline.setPlannedQty(fline.getPlannedQty().negate());
 					tline.setQtyUsed(fline.getQtyUsed().negate());
+					tline.setReversalLine_ID(fline.getM_ProductionLine_ID());
 					tline.saveEx();
+					fline.setReversalLine_ID(tline.getM_ProductionLine_ID());
+					fline.saveEx();
 				}
 			}
 		} else {
@@ -973,7 +980,10 @@ public class MProduction extends X_M_Production implements DocAction {
 				tline.setMovementQty(fline.getMovementQty().negate());
 				tline.setPlannedQty(fline.getPlannedQty().negate());
 				tline.setQtyUsed(fline.getQtyUsed().negate());
+				tline.setReversalLine_ID(fline.getM_ProductionLine_ID());
 				tline.saveEx();
+				fline.setReversalLine_ID(tline.getM_ProductionLine_ID());
+				fline.saveEx();
 			}
 		}
 

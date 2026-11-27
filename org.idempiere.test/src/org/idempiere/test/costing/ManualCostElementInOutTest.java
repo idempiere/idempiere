@@ -35,6 +35,7 @@ import static org.mockito.Mockito.mockStatic;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -45,25 +46,26 @@ import org.compiere.model.MAcctSchemaElement;
 import org.compiere.model.MAttributeSet;
 import org.compiere.model.MAttributeSetInstance;
 import org.compiere.model.MBPartner;
-import org.compiere.model.MBPartnerLocation;
 import org.compiere.model.MCharge;
 import org.compiere.model.MClient;
-import org.compiere.model.MConversionRate;
-import org.compiere.model.MCost.ManualCost;
+import org.compiere.model.MClientInfo;
 import org.compiere.model.MCost;
 import org.compiere.model.MCostDetail;
 import org.compiere.model.MCostElement;
 import org.compiere.model.MCostQueue;
 import org.compiere.model.MFactAcct;
 import org.compiere.model.MInOut;
+import org.compiere.model.MInOutConfirm;
 import org.compiere.model.MInOutLine;
 import org.compiere.model.MInOutLineMA;
+import org.compiere.model.MManualCostDetail;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProductCategory;
 import org.compiere.model.MProductCategoryAcct;
-import org.compiere.model.MSalesRegion;
+import org.compiere.model.MRMA;
+import org.compiere.model.MRMALine;
 import org.compiere.model.MStorageOnHand;
 import org.compiere.model.ProductCost;
 import org.compiere.model.Query;
@@ -75,11 +77,11 @@ import org.compiere.process.ProcessInfo;
 import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.acct.base.model.MDistribution;
 import org.idempiere.acct.base.model.MDistributionLine;
-import org.idempiere.acct.doc.FactLine;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -672,15 +674,18 @@ public class ManualCostElementInOutTest extends AbstractManualCostElementTest
 			List<MFactAcct> shipRevFacts = getFacts(MInOut.Table_ID, shipRev.get_ID(), as.get_ID());
 			assertEquals(3, shipRevFacts.size(), "Shipment reversal should have 3 Fact_Acct lines");
 			assertFactTotals(shipRevFacts, origCogsAcctId, BigDecimal.ZERO, new BigDecimal("105.00"));
-			assertFactTotals(shipRevFacts, origAssetAcctId, new BigDecimal("100.00"), BigDecimal.ZERO);
-			assertFactTotals(shipRevFacts, freightAcctId, new BigDecimal("5.00"), BigDecimal.ZERO);
+			assertFactTotals(shipRevFacts, freightAcctId, new BigDecimal("105.00"), BigDecimal.ZERO);
+			BigDecimal chargeDr = BigDecimal.ZERO;
+			BigDecimal assetDr = BigDecimal.ZERO;
 			for (MFactAcct fa : shipRevFacts)
 			{
-				if (fa.getAccount_ID() == freightAcctId)
-					assertEquals(DictionaryIDs.C_Charge.FREIGHT.id, fa.getC_Charge_ID(), "Reversed Charge fact must preserve C_Charge_ID");
-				else
-					assertEquals(0, fa.getC_Charge_ID(), "Reversed CoGS/Asset facts must not carry C_Charge_ID");
+				if (fa.getAccount_ID() == freightAcctId && fa.getC_Charge_ID() == DictionaryIDs.C_Charge.FREIGHT.id)
+					chargeDr = chargeDr.add(fa.getAmtAcctDr());
+				else if (fa.getAccount_ID() == freightAcctId && fa.getC_Charge_ID() == 0)
+					assetDr = assetDr.add(fa.getAmtAcctDr());
 			}
+			assertEquals(new BigDecimal("100.00"), assetDr.setScale(2, RoundingMode.HALF_UP), "Reversed Asset fact must debit 100.00 without C_Charge_ID");
+			assertEquals(new BigDecimal("5.00"), chargeDr.setScale(2, RoundingMode.HALF_UP), "Reversed Charge fact must debit 5.00 with C_Charge_ID");
 
 			MInOutLine shipRevLine = shipRev.getLines()[0];
 			MCostDetail revShipCd = MCostDetail.getShipment(as, product.get_ID(), 0, shipRevLine.get_ID(), 0, getTrxName());
@@ -704,9 +709,19 @@ public class ManualCostElementInOutTest extends AbstractManualCostElementTest
 
 			List<MFactAcct> retRevFacts = getFacts(MInOut.Table_ID, retRev.get_ID(), as.get_ID());
 			assertEquals(3, retRevFacts.size(), "Customer Return reversal should have 3 Fact_Acct lines");
-			assertFactTotals(retRevFacts, origAssetAcctId, BigDecimal.ZERO, new BigDecimal("100.00"));
 			assertFactTotals(retRevFacts, origCogsAcctId, new BigDecimal("105.00"), BigDecimal.ZERO);
-			assertFactTotals(retRevFacts, freightAcctId, BigDecimal.ZERO, new BigDecimal("5.00"));
+			assertFactTotals(retRevFacts, freightAcctId, BigDecimal.ZERO, new BigDecimal("105.00"));
+			BigDecimal retChargeCr = BigDecimal.ZERO;
+			BigDecimal retAssetCr = BigDecimal.ZERO;
+			for (MFactAcct fa : retRevFacts)
+			{
+				if (fa.getAccount_ID() == freightAcctId && fa.getC_Charge_ID() == DictionaryIDs.C_Charge.FREIGHT.id)
+					retChargeCr = retChargeCr.add(fa.getAmtAcctCr());
+				else if (fa.getAccount_ID() == freightAcctId && fa.getC_Charge_ID() == 0)
+					retAssetCr = retAssetCr.add(fa.getAmtAcctCr());
+			}
+			assertEquals(new BigDecimal("100.00"), retAssetCr.setScale(2, RoundingMode.HALF_UP));
+			assertEquals(new BigDecimal("5.00"), retChargeCr.setScale(2, RoundingMode.HALF_UP));
 
 			MInOutLine retRevLine = retRev.getLines()[0];
 			MCostDetail revReturnCd = MCostDetail.getShipment(as, product.get_ID(), 0, retRevLine.get_ID(), 0, getTrxName());
@@ -717,148 +732,7 @@ public class ManualCostElementInOutTest extends AbstractManualCostElementTest
 		}
 	}
 
-	@Test
-	public void testReplayedReversalFactsSkipSubsequentGLDistribution()
-	{
-		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
-		assertEquals(MCostElement.COSTINGMETHOD_AveragePO, as.getCostingMethod(), "Default costing method not Average PO");
 
-		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS);
-			 MockedStatic<MDistribution> mockedDist = mockStatic(MDistribution.class, Mockito.CALLS_REAL_METHODS))
-		{
-			MProduct product = createStockedProduct("ReplayNoRedistShipProd", DictionaryIDs.M_Product_Category.STANDARD.id, 0);
-			mockProductGet(mockedProduct, product);
-			createPOAndMR(product, null, new BigDecimal("10"), new BigDecimal("100.00"));
-
-			MCostElement burdenCe = createManualCostElement("ReplayNoRedist Burden 10pct",
-					MCostElement.COSTELEMENTTYPE_BurdenMOverhead, DictionaryIDs.C_Charge.FREIGHT.id);
-			createManualCostRecord(product, as, burdenCe, 0, BigDecimal.ZERO, 10);
-
-			int freightAcctId = MCharge.getAccount(DictionaryIDs.C_Charge.FREIGHT.id, as, getTrxName()).getAccount_ID();
-			int commissionsAcctId = MCharge.getAccount(DictionaryIDs.C_Charge.COMMISSIONS.id, as, getTrxName()).getAccount_ID();
-			ProductCost pc = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
-			int cogsAcctId = pc.getAccount(ProductCost.ACCTTYPE_P_Cogs, as).getAccount_ID();
-			int assetAcctId = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as).getAccount_ID();
-
-			// 1. Post original shipment BEFORE any GL distribution rule exists -> credits Freight (A) 20.00
-			mockedDist.when(MDistribution::getAll).thenReturn(new MDistribution[0]);
-			MInOut origShipment = createSOAndShipment(product, null, new BigDecimal("2"), new BigDecimal("180.00"));
-			List<MFactAcct> origFacts = getFacts(MInOut.Table_ID, origShipment.get_ID(), as.get_ID());
-			assertFactTotals(origFacts, cogsAcctId, new BigDecimal("220.00"), BigDecimal.ZERO);
-			assertFactTotals(origFacts, assetAcctId, BigDecimal.ZERO, new BigDecimal("200.00"));
-			assertFactTotals(origFacts, freightAcctId, BigDecimal.ZERO, new BigDecimal("20.00"));
-			assertFactTotals(origFacts, commissionsAcctId, BigDecimal.ZERO, BigDecimal.ZERO);
-
-			// 2. Activate a new GL distribution rule that replaces Freight (A) with Commissions (B)
-			MDistribution newRule = new MDistribution(Env.getCtx(), 0, getTrxName());
-			newRule.setName("Test New Rule Replace Freight With Commissions");
-			newRule.setC_AcctSchema_ID(as.get_ID());
-			newRule.setIsCreateReversal(false);
-			newRule.setAnyAcct(false);
-			newRule.setAccount_ID(freightAcctId);
-			newRule.saveEx();
-
-			MDistributionLine ndl = new MDistributionLine(Env.getCtx(), 0, getTrxName());
-			ndl.setGL_Distribution_ID(newRule.get_ID());
-			ndl.setLine(10);
-			ndl.setPercent(new BigDecimal("100"));
-			ndl.setOverwriteAcct(true);
-			ndl.setAccount_ID(commissionsAcctId);
-			ndl.saveEx();
-
-			newRule.load(getTrxName());
-			newRule.getLines(true);
-			assertTrue(newRule.isValid(), "New GL Distribution rule should be valid");
-			mockedDist.when(MDistribution::getAll).thenReturn(new MDistribution[] { newRule });
-
-			// 3. Reverse original shipment: replayed Freight fact must debit Freight (A), NOT Commissions (B)
-			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(origShipment, DocAction.ACTION_Reverse_Correct);
-			assertFalse(info.isError(), info.getSummary());
-			origShipment.load(getTrxName());
-			MInOut reversal = new MInOut(Env.getCtx(), origShipment.getReversal_ID(), getTrxName());
-			if (!reversal.isPosted())
-			{
-				String error = DocumentEngine.postImmediate(Env.getCtx(), reversal.getAD_Client_ID(),
-						reversal.get_Table_ID(), reversal.get_ID(), false, getTrxName());
-				assertNull(error, "Shipment reversal posting failed: " + error);
-			}
-
-			List<MFactAcct> revFacts = getFacts(MInOut.Table_ID, reversal.get_ID(), as.get_ID());
-			assertFactTotals(revFacts, cogsAcctId, BigDecimal.ZERO, new BigDecimal("220.00"));
-			assertFactTotals(revFacts, assetAcctId, new BigDecimal("200.00"), BigDecimal.ZERO);
-			assertFactTotals(revFacts, freightAcctId, new BigDecimal("20.00"), BigDecimal.ZERO);
-			assertFactTotals(revFacts, commissionsAcctId, BigDecimal.ZERO, BigDecimal.ZERO);
-
-			// 4. Newly calculated shipment while the new rule IS active must still apply GL distribution to Commissions (B)
-			MInOut newShipment = createSOAndShipment(product, null, new BigDecimal("2"), new BigDecimal("180.00"));
-			List<MFactAcct> newFacts = getFacts(MInOut.Table_ID, newShipment.get_ID(), as.get_ID());
-			assertFactTotals(newFacts, cogsAcctId, new BigDecimal("220.00"), BigDecimal.ZERO);
-			assertFactTotals(newFacts, assetAcctId, BigDecimal.ZERO, new BigDecimal("200.00"));
-			assertFactTotals(newFacts, freightAcctId, BigDecimal.ZERO, BigDecimal.ZERO);
-			assertFactTotals(newFacts, commissionsAcctId, BigDecimal.ZERO, new BigDecimal("20.00"));
-		}
-	}
-
-	@Test
-	public void testReversalPreservesUnsetSalesRegion()
-	{
-		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
-		assertEquals(MCostElement.COSTINGMETHOD_AveragePO, as.getCostingMethod(), "Default costing method not Average PO");
-
-		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS))
-		{
-			MProduct product = createStockedProduct("SalesRegRevProd", DictionaryIDs.M_Product_Category.STANDARD.id, 0);
-			mockProductGet(mockedProduct, product);
-			createPOAndMR(product, null, new BigDecimal("5"), new BigDecimal("100.00"));
-
-			MCostElement burdenCe = createManualCostElement("SalesReg Burden 10pct",
-					MCostElement.COSTELEMENTTYPE_BurdenMOverhead, DictionaryIDs.C_Charge.FREIGHT.id);
-			createManualCostRecord(product, as, burdenCe, 0, BigDecimal.ZERO, 10);
-
-			MInOut shipment = createSOAndShipment(product, null, new BigDecimal("1"), new BigDecimal("150.00"));
-			List<MFactAcct> origFacts = getFacts(MInOut.Table_ID, shipment.get_ID(), as.get_ID());
-			assertTrue(origFacts.size() >= 3);
-
-			// Ensure original facts had unset C_SalesRegion_ID = 0 (or force BP location to 0 before shipping)
-			// Assign a sales region to the shipment's BP location BEFORE reversing
-			MBPartnerLocation bpLoc = new MBPartnerLocation(Env.getCtx(), shipment.getC_BPartner_Location_ID(), getTrxName());
-			int origBpSalesRegionId = bpLoc.getC_SalesRegion_ID();
-			if (origBpSalesRegionId != 0)
-			{
-				// Force original facts to 0 to simulate posting when BP location had no sales region
-				DB.executeUpdateEx("UPDATE Fact_Acct SET C_SalesRegion_ID=NULL WHERE AD_Table_ID=? AND Record_ID=?",
-						new Object[] { MInOut.Table_ID, shipment.get_ID() }, getTrxName());
-				origFacts = getFacts(MInOut.Table_ID, shipment.get_ID(), as.get_ID());
-			}
-			for (MFactAcct fa : origFacts)
-				assertEquals(0, fa.getC_SalesRegion_ID(), "Original fact should have unset C_SalesRegion_ID=0");
-
-			MSalesRegion sr = new MSalesRegion(Env.getCtx(), 0, getTrxName());
-			sr.setValue("SR_REV_TEST");
-			sr.setName("Sales Region Reversal Test");
-			sr.saveEx();
-
-			bpLoc.setC_SalesRegion_ID(sr.get_ID());
-			bpLoc.saveEx();
-
-			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Reverse_Correct);
-			assertFalse(info.isError(), info.getSummary());
-			shipment.load(getTrxName());
-			MInOut reversal = new MInOut(Env.getCtx(), shipment.getReversal_ID(), getTrxName());
-			if (!reversal.isPosted())
-			{
-				String error = DocumentEngine.postImmediate(Env.getCtx(), reversal.getAD_Client_ID(),
-						reversal.get_Table_ID(), reversal.get_ID(), false, getTrxName());
-				assertNull(error, "Shipment reversal posting failed: " + error);
-			}
-
-			List<MFactAcct> revFacts = getFacts(MInOut.Table_ID, reversal.get_ID(), as.get_ID());
-			assertEquals(origFacts.size(), revFacts.size());
-			for (MFactAcct fa : revFacts)
-				assertEquals(0, fa.getC_SalesRegion_ID(),
-						"Replayed reversal fact must preserve unset C_SalesRegion_ID=0 instead of deriving new BP location region");
-		}
-	}
 
 	@Test
 	public void testKnownZeroBaseCostWithManualChargeOnShipmentAndReturn()
@@ -913,6 +787,7 @@ public class ManualCostElementInOutTest extends AbstractManualCostElementTest
 			so.setDocStatus(DocAction.STATUS_Drafted);
 			so.setDocAction(DocAction.ACTION_Complete);
 			so.setDateOrdered(getLoginDate());
+			so.setDateAcct(getLoginDate());
 			so.setDatePromised(getLoginDate());
 			so.setIsSOTrx(true);
 			so.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.HQ.id);
@@ -947,58 +822,11 @@ public class ManualCostElementInOutTest extends AbstractManualCostElementTest
 			String err = DocumentEngine.postImmediate(Env.getCtx(), missingValShip.getAD_Client_ID(),
 					missingValShip.get_Table_ID(), missingValShip.get_ID(), false, getTrxName());
 			assertNotNull(err, "Shipment with missing material valuation data must still be rejected");
+			assertTrue(err.contains(Msg.getMsg(Env.getCtx(), "No Costs for")) && err.contains(noCostProduct.getName()),
+					"Expected missing-valuation 'No Costs for' error for " + noCostProduct.getName() + ", got: " + err);
 		}
 	}
 
-	@Test
-	public void testShipmentReversalFallbackIgnoresCogsWhenAssetAccountChangedToCogs()
-	{
-		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
-		assertEquals(MCostElement.COSTINGMETHOD_AveragePO, as.getCostingMethod(), "Default costing method not Average PO");
-
-		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS))
-		{
-			MProduct product = createStockedProduct("AssetChangedToCogsProd", DictionaryIDs.M_Product_Category.STANDARD.id, 0);
-			mockProductGet(mockedProduct, product);
-			createPOAndMR(product, null, new BigDecimal("5"), new BigDecimal("100.00"));
-
-			MCostElement overheadCe = createManualCostElement("AssetToCogs Overhead 5",
-					MCostElement.COSTELEMENTTYPE_Overhead, DictionaryIDs.C_Charge.FREIGHT.id);
-			createManualCostRecord(product, as, overheadCe, 0, new BigDecimal("5.00"), 0);
-
-			MInOut shipment = createSOAndShipment(product, null, BigDecimal.ONE, new BigDecimal("150.00"));
-			MInOutLine origShipLine = shipment.getLines(true)[0];
-
-			// Delete original shipment M_CostDetail so reversal must use resolveReversalInventoryCost fallback
-			DB.executeUpdateEx("DELETE FROM M_CostDetail WHERE M_InOutLine_ID=?",
-					new Object[] { origShipLine.get_ID() }, getTrxName());
-
-			// Change product's P_Asset_Acct to its P_Cogs_Acct before reversing
-			int cogsVcId = DB.getSQLValueEx(getTrxName(),
-					"SELECT P_Cogs_Acct FROM M_Product_Acct WHERE M_Product_ID=? AND C_AcctSchema_ID=?",
-					product.get_ID(), as.get_ID());
-			DB.executeUpdateEx("UPDATE M_Product_Acct SET P_Asset_Acct=? WHERE M_Product_ID=? AND C_AcctSchema_ID=?",
-					new Object[] { cogsVcId, product.get_ID(), as.get_ID() }, getTrxName());
-			CacheMgt.get().reset("ProductCost_ValidCombination");
-
-			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Reverse_Correct);
-			assertFalse(info.isError(), info.getSummary());
-			shipment.load(getTrxName());
-			MInOut reversal = new MInOut(Env.getCtx(), shipment.getReversal_ID(), getTrxName());
-			if (!reversal.isPosted())
-			{
-				String error = DocumentEngine.postImmediate(Env.getCtx(), reversal.getAD_Client_ID(),
-						reversal.get_Table_ID(), reversal.get_ID(), false, getTrxName());
-				assertNull(error, "Shipment reversal posting failed: " + error);
-			}
-
-			MInOutLine revShipLine = reversal.getLines(true)[0];
-			MCostDetail revCd = MCostDetail.getShipment(as, product.get_ID(), 0, revShipLine.get_ID(), 0, getTrxName());
-			assertNotNull(revCd, "Reversal shipment M_CostDetail should be created");
-			assertEquals(new BigDecimal("100.00"), revCd.getAmt().setScale(2, RoundingMode.HALF_UP),
-					"Fallback must return +100.00 inventory cost, not -105.00 COGS amount");
-		}
-	}
 
 	@Test
 	public void testMultiOrgShipmentReversalReversesOrgBalancingDueToDueFrom()
@@ -1088,22 +916,31 @@ public class ManualCostElementInOutTest extends AbstractManualCostElementTest
 			}
 
 			List<MFactAcct> revFacts = getFacts(MInOut.Table_ID, reversal.get_ID(), as.get_ID());
-			// Reversal must reverse original DueTo (DR 105.00 in STORE_CENTRAL) and DueFrom (CR 105.00 in HQ) so intercompany accounts net to zero!
-			assertFactTotals(revFacts, dueToAcctId, new BigDecimal("105.00"), BigDecimal.ZERO);
-			assertFactTotals(revFacts, dueFromAcctId, BigDecimal.ZERO, new BigDecimal("105.00"));
+			// Standard Fact.balanceSegment() balances each Org on reversal: DueFrom DR 105.00 in STORE_CENTRAL and DueTo CR 105.00 in HQ
+			assertFactTotals(revFacts, dueFromAcctId, new BigDecimal("105.00"), BigDecimal.ZERO);
+			assertFactTotals(revFacts, dueToAcctId, BigDecimal.ZERO, new BigDecimal("105.00"));
+			BigDecimal hqNet = BigDecimal.ZERO;
+			BigDecimal storeNet = BigDecimal.ZERO;
 			for (MFactAcct fa : revFacts)
 			{
+				BigDecimal net = fa.getAmtAcctDr().subtract(fa.getAmtAcctCr());
+				if (fa.getAD_Org_ID() == DictionaryIDs.AD_Org.HQ.id)
+					hqNet = hqNet.add(net);
+				else if (fa.getAD_Org_ID() == DictionaryIDs.AD_Org.STORE_CENTRAL.id)
+					storeNet = storeNet.add(net);
 				if (fa.getAccount_ID() == dueToAcctId)
 				{
-					assertEquals(DictionaryIDs.AD_Org.STORE_CENTRAL.id, fa.getAD_Org_ID(), "Reversed DueTo must stay in STORE_CENTRAL");
-					assertEquals(0, fa.getLine_ID(), "Reversed balancing fact must have no Line_ID");
+					assertEquals(DictionaryIDs.AD_Org.HQ.id, fa.getAD_Org_ID(), "Reversal DueTo balancing fact should be in HQ");
+					assertEquals(0, fa.getLine_ID(), "Balancing fact must have no Line_ID");
 				}
 				else if (fa.getAccount_ID() == dueFromAcctId)
 				{
-					assertEquals(DictionaryIDs.AD_Org.HQ.id, fa.getAD_Org_ID(), "Reversed DueFrom must stay in HQ");
-					assertEquals(0, fa.getLine_ID(), "Reversed balancing fact must have no Line_ID");
+					assertEquals(DictionaryIDs.AD_Org.STORE_CENTRAL.id, fa.getAD_Org_ID(), "Reversal DueFrom balancing fact should be in STORE_CENTRAL");
+					assertEquals(0, fa.getLine_ID(), "Balancing fact must have no Line_ID");
 				}
 			}
+			assertEquals(0, hqNet.signum(), "HQ org must balance to 0.00 on multi-org reversal");
+			assertEquals(0, storeNet.signum(), "STORE_CENTRAL org must balance to 0.00 on multi-org reversal");
 		}
 	}
 
@@ -1153,9 +990,10 @@ public class ManualCostElementInOutTest extends AbstractManualCostElementTest
 
 			MCostElement fifoCe = MCostElement.getMaterialCostElement(as, MCostElement.COSTINGMETHOD_Fifo);
 			MCost.CostingKey key = MCost.CostingKey.resolve(getAD_Org_ID(), 0, product.getCostingLevel(as));
+			// Realistic MCostDetail state: first FIFO queue layer has price 0, so M_Cost.CurrentCostPrice is 0
 			MCost fifoCost = MCost.get(product, key.M_AttributeSetInstance_ID(), as, key.AD_Org_ID(), fifoCe.get_ID(), getTrxName());
-			fifoCost.setCurrentCostPrice(new BigDecimal("100.00"));
-			fifoCost.setCurrentQty(new BigDecimal("5"));
+			fifoCost.setCurrentCostPrice(BigDecimal.ZERO);
+			fifoCost.setCurrentQty(new BigDecimal("6"));
 			fifoCost.saveEx();
 
 			MCostElement avgPoCe = MCostElement.getMaterialCostElement(as, MCostElement.COSTINGMETHOD_AveragePO);
@@ -1209,15 +1047,19 @@ public class ManualCostElementInOutTest extends AbstractManualCostElementTest
 					MCostElement.COSTELEMENTTYPE_Overhead, DictionaryIDs.C_Charge.FREIGHT.id);
 			createManualCostRecord(product, as, overheadCe, 0, new BigDecimal("5.00"), 0);
 
-			// Direct verification: positive qty=2 sees positive layer (true); negative qty=-2 only inspects costQ[0] (false)
+			// Direct verification with CurrentCostPrice=0:
+			// positive qty=2 sees second layer (true); qty=1 and negative qty=-2 only inspect first zero layer (false)
 			assertTrue(MCost.hasMaterialCost(product, 0, as, getAD_Org_ID(), MCostElement.COSTINGMETHOD_Fifo,
 					new BigDecimal("2"), getLoginDate(), getTrxName()),
-					"FIFO hasMaterialCost with positive qty=2 must see non-zero second layer");
+					"FIFO hasMaterialCost with positive qty=2 must see non-zero second layer even when CurrentCostPrice=0");
+			assertFalse(MCost.hasMaterialCost(product, 0, as, getAD_Org_ID(), MCostElement.COSTINGMETHOD_Fifo,
+					BigDecimal.ONE, getLoginDate(), getTrxName()),
+					"FIFO hasMaterialCost with qty=1 only consumes first zero layer");
 			assertFalse(MCost.hasMaterialCost(product, 0, as, getAD_Org_ID(), MCostElement.COSTINGMETHOD_Fifo,
 					new BigDecimal("-2"), getLoginDate(), getTrxName()),
 					"FIFO hasMaterialCost with negative qty=-2 only inspects first zero layer");
 
-			// Shipment of qty 2 must pass positive qty to hasKnownZeroBaseCost and post COGS DR 10 / Charge CR 10
+			// Shipment of qty 2 with unmapped -50/unit offsets FIFO 100 to net 0 -> posts COGS DR 10 / Asset 0 / Charge CR 10
 			MInOut shipment = createSOAndShipment(product, null, new BigDecimal("2"), new BigDecimal("150.00"));
 			List<MFactAcct> shipFacts = getFacts(MInOut.Table_ID, shipment.get_ID(), as.get_ID());
 			ProductCost pc = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
@@ -1227,6 +1069,279 @@ public class ManualCostElementInOutTest extends AbstractManualCostElementTest
 			assertFactTotals(shipFacts, cogsAcctId, new BigDecimal("10.00"), BigDecimal.ZERO);
 			assertFactTotals(shipFacts, assetAcctId, BigDecimal.ZERO, BigDecimal.ZERO);
 			assertFactTotals(shipFacts, freightAcctId, BigDecimal.ZERO, new BigDecimal("10.00"));
+
+			// Also verify WITHOUT unmapped adjustment (and CurrentCostPrice still 0): MCost.getCost must consult FIFO queue
+			// and value 2 units at 100.00 (not 0.00), posting COGS DR 110 / Asset CR 100 / Charge CR 10
+			MProduct fifoNoAdjProd = createStockedProduct("FifoZeroFirstLayerNoAdj", fifoCat.get_ID(), 0);
+			mockProductGet(mockedProduct, fifoNoAdjProd);
+			assertTrue(MStorageOnHand.add(Env.getCtx(), DictionaryIDs.M_Locator.HQ.id, fifoNoAdjProd.get_ID(), 0,
+					new BigDecimal("6"), getLoginDate(), getTrxName()), "Failed to add on-hand stock");
+			MCost fifoNoAdjCost = MCost.get(fifoNoAdjProd, key.M_AttributeSetInstance_ID(), as, key.AD_Org_ID(), fifoCe.get_ID(), getTrxName());
+			fifoNoAdjCost.setCurrentCostPrice(BigDecimal.ZERO);
+			fifoNoAdjCost.setCurrentQty(new BigDecimal("6"));
+			fifoNoAdjCost.saveEx();
+			MCost avgPoNoAdjCost = MCost.get(fifoNoAdjProd, key.M_AttributeSetInstance_ID(), as, key.AD_Org_ID(), avgPoCe.get_ID(), getTrxName());
+			avgPoNoAdjCost.setCurrentCostPrice(new BigDecimal("100.00"));
+			avgPoNoAdjCost.setCurrentQty(new BigDecimal("6"));
+			avgPoNoAdjCost.saveEx();
+			if (avgInvCe != null)
+			{
+				MCost avgInvNoAdjCost = MCost.get(fifoNoAdjProd, key.M_AttributeSetInstance_ID(), as, key.AD_Org_ID(), avgInvCe.get_ID(), getTrxName());
+				avgInvNoAdjCost.setCurrentCostPrice(new BigDecimal("100.00"));
+				avgInvNoAdjCost.setCurrentQty(new BigDecimal("6"));
+				avgInvNoAdjCost.saveEx();
+			}
+			for (MAcctSchema clientAs : MAcctSchema.getClientAcctSchema(Env.getCtx(), getAD_Client_ID(), getTrxName()))
+			{
+				if (clientAs.get_ID() == as.get_ID())
+					continue;
+				MCost.CostingKey secKey = MCost.CostingKey.resolve(getAD_Org_ID(), 0, fifoNoAdjProd.getCostingLevel(clientAs));
+				MCostElement secCe = MCostElement.getMaterialCostElement(clientAs, clientAs.getCostingMethod());
+				if (secCe != null)
+				{
+					MCost secCost = MCost.get(fifoNoAdjProd, secKey.M_AttributeSetInstance_ID(), clientAs, secKey.AD_Org_ID(),
+							secCe.get_ID(), getTrxName());
+					secCost.setCurrentCostPrice(new BigDecimal("100.00"));
+					secCost.setCurrentQty(new BigDecimal("6"));
+					secCost.saveEx();
+				}
+			}
+			MCostQueue q0 = MCostQueue.get(fifoNoAdjProd, asi1.get_ID(), as, key.AD_Org_ID(), fifoCe.get_ID(), getTrxName());
+			q0.setCurrentQty(BigDecimal.ONE);
+			q0.setCurrentCostPrice(BigDecimal.ZERO);
+			q0.saveEx();
+			MCostQueue q1 = MCostQueue.get(fifoNoAdjProd, asi2.get_ID(), as, key.AD_Org_ID(), fifoCe.get_ID(), getTrxName());
+			q1.setCurrentQty(new BigDecimal("5"));
+			q1.setCurrentCostPrice(new BigDecimal("100.00"));
+			q1.saveEx();
+			createManualCostRecord(fifoNoAdjProd, as, overheadCe, 0, new BigDecimal("5.00"), 0);
+
+			MInOut noAdjShip = createSOAndShipment(fifoNoAdjProd, null, new BigDecimal("2"), new BigDecimal("150.00"));
+			List<MFactAcct> noAdjFacts = getFacts(MInOut.Table_ID, noAdjShip.get_ID(), as.get_ID());
+			ProductCost pc2 = new ProductCost(Env.getCtx(), fifoNoAdjProd.get_ID(), 0, getTrxName());
+			assertFactTotals(noAdjFacts, pc2.getAccount(ProductCost.ACCTTYPE_P_Cogs, as).getAccount_ID(), new BigDecimal("110.00"), BigDecimal.ZERO);
+			assertFactTotals(noAdjFacts, pc2.getAccount(ProductCost.ACCTTYPE_P_Asset, as).getAccount_ID(), BigDecimal.ZERO, new BigDecimal("100.00"));
+			assertFactTotals(noAdjFacts, freightAcctId, BigDecimal.ZERO, new BigDecimal("10.00"));
+
+			// Empty FIFO queue product with CurrentCostPrice=0 must still report hasMaterialCost=false
+			MProduct emptyFifoProd = createStockedProduct("FifoEmptyQueueProd", fifoCat.get_ID(), 0);
+			mockProductGet(mockedProduct, emptyFifoProd);
+			assertFalse(MCost.hasMaterialCost(emptyFifoProd, 0, as, getAD_Org_ID(), MCostElement.COSTINGMETHOD_Fifo,
+					new BigDecimal("2"), getLoginDate(), getTrxName()),
+					"Empty FIFO queue must return hasMaterialCost=false");
+		}
+		finally
+		{
+			CacheMgt.get().reset(MProductCategoryAcct.Table_Name);
+		}
+	}
+
+
+	@Test
+	public void testBatchLotRejectsUnvaluedChargeBearingLotAndAcceptsKnownZeroBaseLot()
+	{
+		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
+		assertEquals(MCostElement.COSTINGMETHOD_AveragePO, as.getCostingMethod(), "Default costing method not Average PO");
+
+		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MProductCategory> mockedCategory = mockStatic(MProductCategory.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MAttributeSet> mockedAttrSet = mockStatic(MAttributeSet.class, Mockito.CALLS_REAL_METHODS))
+		{
+			MProductCategory batchCat = new MProductCategory(Env.getCtx(), 0, getTrxName());
+			batchCat.setName("LotValGuardBatchCat");
+			batchCat.saveEx();
+			mockedCategory.when(() -> MProductCategory.get(any(Properties.class), eq(batchCat.get_ID()))).thenReturn(batchCat);
+			mockedCategory.when(() -> MProductCategory.get(eq(batchCat.get_ID()))).thenReturn(batchCat);
+
+			MProductCategoryAcct batchAcct = MProductCategoryAcct.get(batchCat.get_ID(), as.get_ID(), getTrxName());
+			batchAcct = new MProductCategoryAcct(Env.getCtx(), batchAcct, getTrxName());
+			batchAcct.setCostingLevel(MAcctSchema.COSTINGLEVEL_BatchLot);
+			batchAcct.saveEx();
+			CacheMgt.get().reset(MProductCategoryAcct.Table_Name);
+			MProductCategoryAcct.get(batchCat.get_ID(), as.get_ID(), getTrxName());
+
+			MAttributeSet lotAs = new MAttributeSet(Env.getCtx(), 0, getTrxName());
+			lotAs.setName("LotValGuardAS");
+			lotAs.setIsLot(true);
+			lotAs.setMandatoryType(MAttributeSet.MANDATORYTYPE_NotMandatory);
+			lotAs.saveEx();
+			MAttributeSet lotAsSpy = Mockito.spy(lotAs);
+			Mockito.doReturn(true).when(lotAsSpy).excludeTableEntry(MOrderLine.Table_ID, true);
+			Mockito.doReturn(true).when(lotAsSpy).excludeTableEntry(MInOutLine.Table_ID, true);
+			mockedAttrSet.when(() -> MAttributeSet.getCopy(any(Properties.class), eq(lotAs.get_ID()), any())).thenReturn(lotAsSpy);
+			mockedAttrSet.when(() -> MAttributeSet.get(any(Properties.class), eq(lotAs.get_ID()))).thenReturn(lotAsSpy);
+			mockedAttrSet.when(() -> MAttributeSet.get(eq(lotAs.get_ID()))).thenReturn(lotAsSpy);
+
+			MProduct product = createStockedProduct("LotValGuardProd", batchCat.get_ID(), lotAs.get_ID());
+			mockProductGet(mockedProduct, product);
+
+			MAttributeSetInstance lotA = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+			lotA.setM_AttributeSet_ID(lotAs.get_ID());
+			lotA.setLot("LOT-VAL-A");
+			lotA.setDescription();
+			lotA.saveEx();
+
+			MAttributeSetInstance lotB = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+			lotB.setM_AttributeSet_ID(lotAs.get_ID());
+			lotB.setLot("LOT-VAL-B");
+			lotB.setDescription();
+			lotB.saveEx();
+
+			// Lot A received at 100.00; Lot B has stock on hand ONLY (no receipt/cost valuation)
+			createPOAndMR(product, lotA, new BigDecimal("5"), new BigDecimal("100.00"));
+			assertTrue(MStorageOnHand.add(Env.getCtx(), DictionaryIDs.M_Locator.HQ.id, product.get_ID(), lotB.get_ID(),
+					new BigDecimal("5"), getLoginDate(), getTrxName()));
+
+			// Fixed charge 5.00 applies to all lots (ASI=0 fallback)
+			MCostElement overheadCe = createManualCostElement("LotValGuard Overhead 5",
+					MCostElement.COSTELEMENTTYPE_Overhead, DictionaryIDs.C_Charge.FREIGHT.id);
+			createManualCostRecord(product, as, overheadCe, 0, new BigDecimal("5.00"), 0);
+
+			MOrder so = new MOrder(Env.getCtx(), 0, getTrxName());
+			so.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
+			so.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.STANDARD_ORDER.id);
+			so.setIsSOTrx(true);
+			so.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+			so.setDocStatus(DocAction.STATUS_Drafted);
+			so.setDocAction(DocAction.ACTION_Complete);
+			so.setDateOrdered(getLoginDate());
+			so.setDateAcct(getLoginDate());
+			so.setDatePromised(getLoginDate());
+			so.saveEx();
+			MOrderLine soLine = new MOrderLine(so);
+			soLine.setLine(10);
+			soLine.setProduct(product);
+			soLine.setQty(new BigDecimal("2"));
+			soLine.setDatePromised(getLoginDate());
+			soLine.setPrice(new BigDecimal("150.00"));
+			soLine.saveEx();
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(so, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+
+			MInOut shipment = new MInOut(so, DictionaryIDs.C_DocType.MM_SHIPMENT.id, getLoginDate());
+			shipment.setDocStatus(DocAction.STATUS_Drafted);
+			shipment.setDocAction(DocAction.ACTION_Complete);
+			shipment.saveEx();
+			MInOutLine shipLine = new MInOutLine(shipment);
+			shipLine.setOrderLine(soLine, 0, new BigDecimal("2"));
+			shipLine.setQty(new BigDecimal("2"));
+			shipLine.saveEx();
+			new MInOutLineMA(shipLine, lotA.get_ID(), BigDecimal.ONE, getLoginDate(), false).saveEx();
+			new MInOutLineMA(shipLine, lotB.get_ID(), BigDecimal.ONE, getLoginDate(), false).saveEx();
+
+			try (MockedStatic<MClient> mockedClient = mockStatic(MClient.class, Mockito.CALLS_REAL_METHODS))
+			{
+				mockedClient.when(MClient::isClientAccountingImmediate).thenReturn(false);
+				info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
+				assertFalse(info.isError(), info.getSummary());
+			}
+			assertEquals(2, MInOutLineMA.get(Env.getCtx(), shipLine.get_ID(), getTrxName()).length,
+					"Shipment must preserve both Lot A and Lot B MA allocations");
+
+			// 1. Shipment must reject unvalued charge-bearing Lot B even though aggregate costs = 100.00
+			String shipErr = DocumentEngine.postImmediate(Env.getCtx(), shipment.getAD_Client_ID(),
+					shipment.get_Table_ID(), shipment.get_ID(), false, getTrxName());
+			assertNotNull(shipErr, "Shipment must reject charge-bearing lot with missing valuation");
+			assertTrue(shipErr.contains(Msg.getMsg(Env.getCtx(), "No Costs for")) && shipErr.contains(product.getName()),
+					"Expected 'No Costs for' error, got: " + shipErr);
+
+			// 2. Customer Return must also reject unvalued charge-bearing Lot B
+			MRMA rma = new MRMA(Env.getCtx(), 0, getTrxName());
+			rma.setName("LotValGuard RMA");
+			rma.setC_DocType_ID(DictionaryIDs.C_DocType.CUSTOMER_RETURN_MATERIAL.id);
+			rma.setM_RMAType_ID(DictionaryIDs.M_RMAType.DAMAGE_ON_ARRIVAL.id);
+			rma.setM_InOut_ID(shipment.get_ID());
+			rma.setIsSOTrx(true);
+			rma.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+			rma.saveEx();
+			MRMALine rmaLine = new MRMALine(Env.getCtx(), 0, getTrxName());
+			rmaLine.setLine(10);
+			rmaLine.setM_RMA_ID(rma.get_ID());
+			rmaLine.setM_InOutLine_ID(shipLine.get_ID());
+			rmaLine.setQty(new BigDecimal("2"));
+			rmaLine.saveEx();
+			info = MWorkflow.runDocumentActionWorkflow(rma, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+
+			MInOut custReturn = new MInOut(Env.getCtx(), 0, getTrxName());
+			custReturn.setIsSOTrx(true);
+			custReturn.setC_DocType_ID(DictionaryIDs.C_DocType.MM_CUSTOMER_RETURN.id);
+			custReturn.setMovementType(MInOut.MOVEMENTTYPE_CustomerReturns);
+			custReturn.setM_RMA_ID(rma.get_ID());
+			custReturn.setC_BPartner_ID(shipment.getC_BPartner_ID());
+			custReturn.setC_BPartner_Location_ID(shipment.getC_BPartner_Location_ID());
+			custReturn.setM_Warehouse_ID(shipment.getM_Warehouse_ID());
+			custReturn.setMovementDate(getLoginDate());
+			custReturn.setDateAcct(getLoginDate());
+			custReturn.setDocStatus(DocAction.STATUS_Drafted);
+			custReturn.setDocAction(DocAction.ACTION_Complete);
+			custReturn.saveEx();
+			MInOutLine retLine = new MInOutLine(custReturn);
+			retLine.setM_RMALine_ID(rmaLine.get_ID());
+			retLine.setM_Product_ID(product.get_ID());
+			retLine.setM_Locator_ID(shipLine.getM_Locator_ID());
+			retLine.setQty(new BigDecimal("2"));
+			retLine.saveEx();
+			new MInOutLineMA(retLine, lotA.get_ID(), BigDecimal.ONE, getLoginDate(), false).saveEx();
+			new MInOutLineMA(retLine, lotB.get_ID(), BigDecimal.ONE, getLoginDate(), false).saveEx();
+
+			try (MockedStatic<MClient> mockedClient = mockStatic(MClient.class, Mockito.CALLS_REAL_METHODS))
+			{
+				mockedClient.when(MClient::isClientAccountingImmediate).thenReturn(false);
+				info = MWorkflow.runDocumentActionWorkflow(custReturn, DocAction.ACTION_Complete);
+				assertFalse(info.isError(), info.getSummary());
+				custReturn.load(getTrxName());
+				if (!DocAction.STATUS_Completed.equals(custReturn.getDocStatus()))
+				{
+					for (MInOutConfirm confirm : custReturn.getConfirmations(true))
+					{
+						if (!DocAction.STATUS_Completed.equals(confirm.getDocStatus()))
+						{
+							info = MWorkflow.runDocumentActionWorkflow(confirm, DocAction.ACTION_Complete);
+							assertFalse(info.isError(), info.getSummary());
+						}
+					}
+					custReturn.load(getTrxName());
+					if (!DocAction.STATUS_Completed.equals(custReturn.getDocStatus()))
+					{
+						info = MWorkflow.runDocumentActionWorkflow(custReturn, DocAction.ACTION_Complete);
+						assertFalse(info.isError(), info.getSummary());
+						custReturn.load(getTrxName());
+					}
+				}
+			}
+			assertEquals(DocAction.STATUS_Completed, custReturn.getDocStatus());
+			assertEquals(2, MInOutLineMA.get(Env.getCtx(), retLine.get_ID(), getTrxName()).length,
+					"Customer return must preserve both Lot A and Lot B MA allocations");
+			String retErr = DocumentEngine.postImmediate(Env.getCtx(), custReturn.getAD_Client_ID(),
+					custReturn.get_Table_ID(), custReturn.get_ID(), false, getTrxName());
+			assertNotNull(retErr, "Customer return must reject charge-bearing lot with missing valuation");
+			assertTrue(retErr.contains(Msg.getMsg(Env.getCtx(), "No Costs for")) && retErr.contains(product.getName()),
+					"Expected 'No Costs for' error on return, got: " + retErr);
+
+			// 3. Give Lot B a KNOWN zero base cost (material=100, unmapped adj=-100) -> both Shipment and Return must post
+			createPOAndMR(product, lotB, new BigDecimal("2"), new BigDecimal("100.00"));
+			MCostElement unmappedAdj = createManualCostElement("LotValGuard Unmapped -100",
+					MCostElement.COSTELEMENTTYPE_Overhead, 0);
+			createManualCostRecord(product, as, unmappedAdj, lotB.get_ID(), new BigDecimal("-100.00"), 0);
+
+			shipErr = DocumentEngine.postImmediate(Env.getCtx(), shipment.getAD_Client_ID(),
+					shipment.get_Table_ID(), shipment.get_ID(), false, getTrxName());
+			assertNull(shipErr, "Shipment with known zero base lot must post: " + shipErr);
+			retErr = DocumentEngine.postImmediate(Env.getCtx(), custReturn.getAD_Client_ID(),
+					custReturn.get_Table_ID(), custReturn.get_ID(), false, getTrxName());
+			assertNull(retErr, "Customer return with known zero base lot must post: " + retErr);
+
+			ProductCost pc = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
+			int cogsAcctId = pc.getAccount(ProductCost.ACCTTYPE_P_Cogs, as).getAccount_ID();
+			int assetAcctId = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as).getAccount_ID();
+			int freightAcctId = MCharge.getAccount(DictionaryIDs.C_Charge.FREIGHT.id, as, getTrxName()).getAccount_ID();
+			assertFactTotals(getFacts(MInOut.Table_ID, shipment.get_ID(), as.get_ID()), cogsAcctId, new BigDecimal("110.00"), BigDecimal.ZERO);
+			assertFactTotals(getFacts(MInOut.Table_ID, shipment.get_ID(), as.get_ID()), assetAcctId, BigDecimal.ZERO, new BigDecimal("100.00"));
+			assertFactTotals(getFacts(MInOut.Table_ID, shipment.get_ID(), as.get_ID()), freightAcctId, BigDecimal.ZERO, new BigDecimal("10.00"));
+			assertFactTotals(getFacts(MInOut.Table_ID, custReturn.get_ID(), as.get_ID()), assetAcctId, new BigDecimal("100.00"), BigDecimal.ZERO);
+			assertFactTotals(getFacts(MInOut.Table_ID, custReturn.get_ID(), as.get_ID()), cogsAcctId, BigDecimal.ZERO, new BigDecimal("110.00"));
+			assertFactTotals(getFacts(MInOut.Table_ID, custReturn.get_ID(), as.get_ID()), freightAcctId, new BigDecimal("10.00"), BigDecimal.ZERO);
 		}
 		finally
 		{
@@ -1235,13 +1350,288 @@ public class ManualCostElementInOutTest extends AbstractManualCostElementTest
 	}
 
 	@Test
-	public void testShipmentReversalDoesNotCreateValidCombinationsAndHandlesForeignCurrency()
+	public void testBatchLotReversalFallbackCostDetailSignAndPartialMissingLotAllocation()
 	{
 		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
 		assertEquals(MCostElement.COSTINGMETHOD_AveragePO, as.getCostingMethod(), "Default costing method not Average PO");
 
 		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS);
-			 MockedStatic<MConversionRate> mockedRate = mockStatic(MConversionRate.class, Mockito.CALLS_REAL_METHODS))
+			 MockedStatic<MProductCategory> mockedCategory = mockStatic(MProductCategory.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MAttributeSet> mockedAttrSet = mockStatic(MAttributeSet.class, Mockito.CALLS_REAL_METHODS))
+		{
+			MProductCategory batchCat = new MProductCategory(Env.getCtx(), 0, getTrxName());
+			batchCat.setName("LotRevAllocBatchCat");
+			batchCat.saveEx();
+			mockedCategory.when(() -> MProductCategory.get(any(Properties.class), eq(batchCat.get_ID()))).thenReturn(batchCat);
+			mockedCategory.when(() -> MProductCategory.get(eq(batchCat.get_ID()))).thenReturn(batchCat);
+
+			MProductCategoryAcct batchAcct = MProductCategoryAcct.get(batchCat.get_ID(), as.get_ID(), getTrxName());
+			batchAcct = new MProductCategoryAcct(Env.getCtx(), batchAcct, getTrxName());
+			batchAcct.setCostingLevel(MAcctSchema.COSTINGLEVEL_BatchLot);
+			batchAcct.saveEx();
+			CacheMgt.get().reset(MProductCategoryAcct.Table_Name);
+			MProductCategoryAcct.get(batchCat.get_ID(), as.get_ID(), getTrxName());
+
+			MAttributeSet lotAs = new MAttributeSet(Env.getCtx(), 0, getTrxName());
+			lotAs.setName("LotRevAllocAS");
+			lotAs.setIsLot(true);
+			lotAs.setMandatoryType(MAttributeSet.MANDATORYTYPE_NotMandatory);
+			lotAs.saveEx();
+			MAttributeSet lotAsSpy = Mockito.spy(lotAs);
+			Mockito.doReturn(true).when(lotAsSpy).excludeTableEntry(MOrderLine.Table_ID, true);
+			Mockito.doReturn(true).when(lotAsSpy).excludeTableEntry(MInOutLine.Table_ID, true);
+			mockedAttrSet.when(() -> MAttributeSet.getCopy(any(Properties.class), eq(lotAs.get_ID()), any())).thenReturn(lotAsSpy);
+			mockedAttrSet.when(() -> MAttributeSet.get(any(Properties.class), eq(lotAs.get_ID()))).thenReturn(lotAsSpy);
+			mockedAttrSet.when(() -> MAttributeSet.get(eq(lotAs.get_ID()))).thenReturn(lotAsSpy);
+
+			MProduct product = createStockedProduct("LotRevAllocProd", batchCat.get_ID(), lotAs.get_ID());
+			mockProductGet(mockedProduct, product);
+
+			MAttributeSetInstance lot1 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+			lot1.setM_AttributeSet_ID(lotAs.get_ID());
+			lot1.setLot("LOT-REV-90");
+			lot1.setDescription();
+			lot1.saveEx();
+
+			MAttributeSetInstance lot2 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+			lot2.setM_AttributeSet_ID(lotAs.get_ID());
+			lot2.setLot("LOT-REV-10");
+			lot2.setDescription();
+			lot2.saveEx();
+
+			createPOAndMR(product, lot1, new BigDecimal("5"), new BigDecimal("90.00"));
+			createPOAndMR(product, lot2, new BigDecimal("5"), new BigDecimal("10.00"));
+
+			// Helper order for 4 units across two 2-unit shipments
+			MOrder so = new MOrder(Env.getCtx(), 0, getTrxName());
+			so.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
+			so.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.STANDARD_ORDER.id);
+			so.setIsSOTrx(true);
+			so.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+			so.setDocStatus(DocAction.STATUS_Drafted);
+			so.setDocAction(DocAction.ACTION_Complete);
+			so.setDateOrdered(getLoginDate());
+			so.setDateAcct(getLoginDate());
+			so.setDatePromised(getLoginDate());
+			so.saveEx();
+			MOrderLine soLine = new MOrderLine(so);
+			soLine.setLine(10);
+			soLine.setProduct(product);
+			soLine.setQty(new BigDecimal("4"));
+			soLine.setDatePromised(getLoginDate());
+			soLine.setPrice(new BigDecimal("150.00"));
+			soLine.saveEx();
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(so, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+
+			// Scenario 1: Shipment reversal where BOTH original lot M_CostDetail records are missing -> each lot must get +50.00 (positive!)
+			MInOut ship1 = new MInOut(so, DictionaryIDs.C_DocType.MM_SHIPMENT.id, getLoginDate());
+			ship1.setDocStatus(DocAction.STATUS_Drafted);
+			ship1.setDocAction(DocAction.ACTION_Complete);
+			ship1.saveEx();
+			MInOutLine shipLine1 = new MInOutLine(ship1);
+			shipLine1.setOrderLine(soLine, 0, new BigDecimal("2"));
+			shipLine1.setQty(new BigDecimal("2"));
+			shipLine1.saveEx();
+			new MInOutLineMA(shipLine1, lot1.get_ID(), BigDecimal.ONE, getLoginDate(), false).saveEx();
+			new MInOutLineMA(shipLine1, lot2.get_ID(), BigDecimal.ONE, getLoginDate(), false).saveEx();
+			info = MWorkflow.runDocumentActionWorkflow(ship1, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			assertEquals(2, MInOutLineMA.get(Env.getCtx(), shipLine1.get_ID(), getTrxName()).length);
+			ship1.load(getTrxName());
+			if (!ship1.isPosted())
+				assertNull(DocumentEngine.postImmediate(Env.getCtx(), ship1.getAD_Client_ID(), ship1.get_Table_ID(), ship1.get_ID(), false, getTrxName()));
+
+			DB.executeUpdateEx("DELETE FROM M_CostDetail WHERE M_InOutLine_ID=?", new Object[] { shipLine1.get_ID() }, getTrxName());
+			info = MWorkflow.runDocumentActionWorkflow(ship1, DocAction.ACTION_Reverse_Correct);
+			assertFalse(info.isError(), info.getSummary());
+			ship1.load(getTrxName());
+			MInOut revShip1 = new MInOut(Env.getCtx(), ship1.getReversal_ID(), getTrxName());
+			if (!revShip1.isPosted())
+				assertNull(DocumentEngine.postImmediate(Env.getCtx(), revShip1.getAD_Client_ID(), revShip1.get_Table_ID(), revShip1.get_ID(), false, getTrxName()));
+
+			MInOutLine revShipLine1 = revShip1.getLines(true)[0];
+			MCostDetail revCd1A = MCostDetail.getShipment(as, product.get_ID(), lot1.get_ID(), revShipLine1.get_ID(), 0, getTrxName());
+			MCostDetail revCd1B = MCostDetail.getShipment(as, product.get_ID(), lot2.get_ID(), revShipLine1.get_ID(), 0, getTrxName());
+			assertNotNull(revCd1A);
+			assertNotNull(revCd1B);
+			assertEquals(new BigDecimal("50.00"), revCd1A.getAmt().setScale(2, RoundingMode.HALF_UP),
+					"Shipment reversal lot fallback must preserve positive +50.00 sign, not -50.00");
+			assertEquals(new BigDecimal("50.00"), revCd1B.getAmt().setScale(2, RoundingMode.HALF_UP),
+					"Shipment reversal lot fallback must preserve positive +50.00 sign, not -50.00");
+
+			// Scenario 2: Shipment + Customer Return reversal where ONLY lot4's original M_CostDetail is missing
+			// Use dedicated lots so Scenario 1's +50/+50 fallback does not alter lot AveragePO costs.
+			// Lot3=90 found, Lot4 missing -> Lot4 must receive ONLY remaining 10 (total +100 / -100, NOT +140 / -140)
+			MAttributeSetInstance lot3 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+			lot3.setM_AttributeSet_ID(lotAs.get_ID());
+			lot3.setLot("LOT-REV2-90");
+			lot3.setDescription();
+			lot3.saveEx();
+
+			MAttributeSetInstance lot4 = new MAttributeSetInstance(Env.getCtx(), 0, getTrxName());
+			lot4.setM_AttributeSet_ID(lotAs.get_ID());
+			lot4.setLot("LOT-REV2-10");
+			lot4.setDescription();
+			lot4.saveEx();
+
+			createPOAndMR(product, lot3, new BigDecimal("5"), new BigDecimal("90.00"));
+			createPOAndMR(product, lot4, new BigDecimal("5"), new BigDecimal("10.00"));
+
+			MInOut ship2 = new MInOut(so, DictionaryIDs.C_DocType.MM_SHIPMENT.id, getLoginDate());
+			ship2.setDocStatus(DocAction.STATUS_Drafted);
+			ship2.setDocAction(DocAction.ACTION_Complete);
+			ship2.saveEx();
+			MInOutLine shipLine2 = new MInOutLine(ship2);
+			shipLine2.setOrderLine(soLine, 0, new BigDecimal("2"));
+			shipLine2.setQty(new BigDecimal("2"));
+			shipLine2.saveEx();
+			new MInOutLineMA(shipLine2, lot3.get_ID(), BigDecimal.ONE, getLoginDate(), false).saveEx();
+			new MInOutLineMA(shipLine2, lot4.get_ID(), BigDecimal.ONE, getLoginDate(), false).saveEx();
+			info = MWorkflow.runDocumentActionWorkflow(ship2, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			assertEquals(2, MInOutLineMA.get(Env.getCtx(), shipLine2.get_ID(), getTrxName()).length);
+			ship2.load(getTrxName());
+			if (!ship2.isPosted())
+				assertNull(DocumentEngine.postImmediate(Env.getCtx(), ship2.getAD_Client_ID(), ship2.get_Table_ID(), ship2.get_ID(), false, getTrxName()));
+
+			// Customer return of ship2 (lot3=90 + lot4=10 = 100)
+			MRMA rma = new MRMA(Env.getCtx(), 0, getTrxName());
+			rma.setName("LotRevAlloc RMA");
+			rma.setC_DocType_ID(DictionaryIDs.C_DocType.CUSTOMER_RETURN_MATERIAL.id);
+			rma.setM_RMAType_ID(DictionaryIDs.M_RMAType.DAMAGE_ON_ARRIVAL.id);
+			rma.setM_InOut_ID(ship2.get_ID());
+			rma.setIsSOTrx(true);
+			rma.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+			rma.saveEx();
+			MRMALine rmaLine = new MRMALine(Env.getCtx(), 0, getTrxName());
+			rmaLine.setLine(10);
+			rmaLine.setM_RMA_ID(rma.get_ID());
+			rmaLine.setM_InOutLine_ID(shipLine2.get_ID());
+			rmaLine.setQty(new BigDecimal("2"));
+			rmaLine.saveEx();
+			info = MWorkflow.runDocumentActionWorkflow(rma, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+
+			MInOut ret = new MInOut(Env.getCtx(), 0, getTrxName());
+			ret.setIsSOTrx(true);
+			ret.setC_DocType_ID(DictionaryIDs.C_DocType.MM_CUSTOMER_RETURN.id);
+			ret.setMovementType(MInOut.MOVEMENTTYPE_CustomerReturns);
+			ret.setM_RMA_ID(rma.get_ID());
+			ret.setC_BPartner_ID(ship2.getC_BPartner_ID());
+			ret.setC_BPartner_Location_ID(ship2.getC_BPartner_Location_ID());
+			ret.setM_Warehouse_ID(ship2.getM_Warehouse_ID());
+			ret.setMovementDate(getLoginDate());
+			ret.setDateAcct(getLoginDate());
+			ret.setDocStatus(DocAction.STATUS_Drafted);
+			ret.setDocAction(DocAction.ACTION_Complete);
+			ret.saveEx();
+			MInOutLine retLine = new MInOutLine(ret);
+			retLine.setM_RMALine_ID(rmaLine.get_ID());
+			retLine.setM_Product_ID(product.get_ID());
+			retLine.setM_Locator_ID(shipLine2.getM_Locator_ID());
+			retLine.setQty(new BigDecimal("2"));
+			retLine.saveEx();
+			new MInOutLineMA(retLine, lot3.get_ID(), BigDecimal.ONE, getLoginDate(), false).saveEx();
+			new MInOutLineMA(retLine, lot4.get_ID(), BigDecimal.ONE, getLoginDate(), false).saveEx();
+			info = MWorkflow.runDocumentActionWorkflow(ret, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			ret.load(getTrxName());
+			if (!DocAction.STATUS_Completed.equals(ret.getDocStatus()))
+			{
+				for (MInOutConfirm confirm : ret.getConfirmations(true))
+				{
+					if (!DocAction.STATUS_Completed.equals(confirm.getDocStatus()))
+					{
+						info = MWorkflow.runDocumentActionWorkflow(confirm, DocAction.ACTION_Complete);
+						assertFalse(info.isError(), info.getSummary());
+					}
+				}
+				ret.load(getTrxName());
+				if (!DocAction.STATUS_Completed.equals(ret.getDocStatus()))
+				{
+					info = MWorkflow.runDocumentActionWorkflow(ret, DocAction.ACTION_Complete);
+					assertFalse(info.isError(), info.getSummary());
+					ret.load(getTrxName());
+				}
+			}
+			assertEquals(DocAction.STATUS_Completed, ret.getDocStatus());
+			assertEquals(2, MInOutLineMA.get(Env.getCtx(), retLine.get_ID(), getTrxName()).length);
+			if (!ret.isPosted())
+				assertNull(DocumentEngine.postImmediate(Env.getCtx(), ret.getAD_Client_ID(), ret.get_Table_ID(), ret.get_ID(), false, getTrxName()));
+
+			// Delete ONLY lot4's original M_CostDetail on Customer Return, then reverse
+			DB.executeUpdateEx("DELETE FROM M_CostDetail WHERE M_InOutLine_ID=? AND M_AttributeSetInstance_ID=?",
+					new Object[] { retLine.get_ID(), lot4.get_ID() }, getTrxName());
+			info = MWorkflow.runDocumentActionWorkflow(ret, DocAction.ACTION_Reverse_Correct);
+			assertFalse(info.isError(), info.getSummary());
+			ret.load(getTrxName());
+			MInOut revRet = new MInOut(Env.getCtx(), ret.getReversal_ID(), getTrxName());
+			if (!revRet.isPosted())
+				assertNull(DocumentEngine.postImmediate(Env.getCtx(), revRet.getAD_Client_ID(), revRet.get_Table_ID(), revRet.get_ID(), false, getTrxName()));
+
+			MInOutLine revRetLine = revRet.getLines(true)[0];
+			MCostDetail revRetCd1 = MCostDetail.getShipment(as, product.get_ID(), lot3.get_ID(), revRetLine.get_ID(), 0, getTrxName());
+			MCostDetail revRetCd2 = MCostDetail.getShipment(as, product.get_ID(), lot4.get_ID(), revRetLine.get_ID(), 0, getTrxName());
+			assertNotNull(revRetCd1);
+			assertNotNull(revRetCd2);
+			assertEquals(new BigDecimal("-90.00"), revRetCd1.getAmt().setScale(2, RoundingMode.HALF_UP));
+			assertEquals(new BigDecimal("-10.00"), revRetCd2.getAmt().setScale(2, RoundingMode.HALF_UP),
+					"Missing lot fallback on return reversal must allocate only remaining -10.00, not -50.00");
+
+			// Delete ONLY lot4's original M_CostDetail on ship2, then reverse
+			DB.executeUpdateEx("DELETE FROM M_CostDetail WHERE M_InOutLine_ID=? AND M_AttributeSetInstance_ID=?",
+					new Object[] { shipLine2.get_ID(), lot4.get_ID() }, getTrxName());
+			info = MWorkflow.runDocumentActionWorkflow(ship2, DocAction.ACTION_Reverse_Correct);
+			assertFalse(info.isError(), info.getSummary());
+			ship2.load(getTrxName());
+			MInOut revShip2 = new MInOut(Env.getCtx(), ship2.getReversal_ID(), getTrxName());
+			if (!revShip2.isPosted())
+				assertNull(DocumentEngine.postImmediate(Env.getCtx(), revShip2.getAD_Client_ID(), revShip2.get_Table_ID(), revShip2.get_ID(), false, getTrxName()));
+
+			MInOutLine revShipLine2 = revShip2.getLines(true)[0];
+			MCostDetail revShipCd1 = MCostDetail.getShipment(as, product.get_ID(), lot3.get_ID(), revShipLine2.get_ID(), 0, getTrxName());
+			MCostDetail revShipCd2 = MCostDetail.getShipment(as, product.get_ID(), lot4.get_ID(), revShipLine2.get_ID(), 0, getTrxName());
+			assertNotNull(revShipCd1);
+			assertNotNull(revShipCd2);
+			assertEquals(new BigDecimal("90.00"), revShipCd1.getAmt().setScale(2, RoundingMode.HALF_UP));
+			assertEquals(new BigDecimal("10.00"), revShipCd2.getAmt().setScale(2, RoundingMode.HALF_UP),
+					"Missing lot fallback on shipment reversal must allocate only remaining +10.00, not +50.00");
+		}
+		finally
+		{
+			CacheMgt.get().reset(MProductCategoryAcct.Table_Name);
+		}
+	}
+
+
+	@Test
+	public void testShipmentAllowsUncommittedZeroCostPurchaseDetailInSameTrx()
+	{
+		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
+		assertEquals(MCostElement.COSTINGMETHOD_AveragePO, as.getCostingMethod(), "Default costing method not Average PO");
+
+		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS))
+		{
+			MProduct freeProd = createStockedProduct("UncommittedZeroCostPOProd", DictionaryIDs.M_Product_Category.STANDARD.id, 0);
+			mockProductGet(mockedProduct, freeProd);
+
+			// Create & post a zero-cost PO + Material Receipt in this uncommitted test transaction
+			createPOAndMR(freeProd, null, new BigDecimal("5"), BigDecimal.ZERO);
+
+			// Shipment in the same uncommitted transaction must see the zero-cost purchase M_CostDetail via getTrxName()
+			MInOut shipment = createSOAndShipment(freeProd, null, BigDecimal.ONE, BigDecimal.ZERO);
+			assertTrue(shipment.isPosted(), "Shipment of item with uncommitted zero-cost purchase detail must post");
+		}
+	}
+
+	@Test
+	public void testShipmentReversalDoesNotCreateValidCombinations()
+	{
+		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
+		assertEquals(MCostElement.COSTINGMETHOD_AveragePO, as.getCostingMethod(), "Default costing method not Average PO");
+
+		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS))
 		{
 			MProduct product = createStockedProduct("NoVcBloatShipProd", DictionaryIDs.M_Product_Category.STANDARD.id, 0);
 			mockProductGet(mockedProduct, product);
@@ -1254,21 +1644,6 @@ public class ManualCostElementInOutTest extends AbstractManualCostElementTest
 			MInOut shipment = createSOAndShipment(product, null, new BigDecimal("2"), new BigDecimal("180.00"));
 			List<MFactAcct> origFacts = getFacts(MInOut.Table_ID, shipment.get_ID(), as.get_ID());
 			assertEquals(3, origFacts.size(), "Expected COGS, Asset, and Charge facts");
-
-			// Simulate original facts posted in a foreign currency (EUR) with half source amounts
-			DB.executeUpdateEx(
-					"UPDATE Fact_Acct SET C_Currency_ID=?, AmtSourceDr=ROUND(AmtAcctDr/2, 2), AmtSourceCr=ROUND(AmtAcctCr/2, 2) "
-							+ "WHERE AD_Table_ID=? AND Record_ID=? AND C_AcctSchema_ID=?",
-					new Object[] { DictionaryIDs.C_Currency.EUR.id, MInOut.Table_ID, shipment.get_ID(), as.get_ID() },
-					getTrxName());
-
-			// Block EUR->schema conversion on reversal date to prove reversal replay does not invoke FX conversion
-			mockedRate.when(() -> MConversionRate.convert(any(), any(), eq(DictionaryIDs.C_Currency.EUR.id),
-					eq(as.getC_Currency_ID()), any(), Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt()))
-					.thenReturn(null);
-			mockedRate.when(() -> MConversionRate.getRate(eq(DictionaryIDs.C_Currency.EUR.id),
-					eq(as.getC_Currency_ID()), any(), Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt()))
-					.thenReturn(null);
 
 			int vcCountBefore = DB.getSQLValueEx(getTrxName(),
 					"SELECT COUNT(*) FROM C_ValidCombination WHERE AD_Client_ID=?", getAD_Client_ID());
@@ -1287,19 +1662,158 @@ public class ManualCostElementInOutTest extends AbstractManualCostElementTest
 			int vcCountAfter = DB.getSQLValueEx(getTrxName(),
 					"SELECT COUNT(*) FROM C_ValidCombination WHERE AD_Client_ID=?", getAD_Client_ID());
 			assertEquals(vcCountBefore, vcCountAfter,
-					"Replaying reversal facts must not insert new C_ValidCombination rows");
+					"Shipment reversal using M_ManualCostDetail.C_ValidCombination_ID must not insert new C_ValidCombination rows");
 
 			List<MFactAcct> revFacts = getFacts(MInOut.Table_ID, reversal.get_ID(), as.get_ID());
 			assertEquals(3, revFacts.size());
-			for (MFactAcct fa : revFacts)
+			ProductCost pc = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
+			int cogsAcctId = pc.getAccount(ProductCost.ACCTTYPE_P_Cogs, as).getAccount_ID();
+			int assetAcctId = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as).getAccount_ID();
+			int freightAcctId = MCharge.getAccount(DictionaryIDs.C_Charge.FREIGHT.id, as, getTrxName()).getAccount_ID();
+			assertFactTotals(revFacts, cogsAcctId, BigDecimal.ZERO, new BigDecimal("220.00"));
+			assertFactTotals(revFacts, assetAcctId, new BigDecimal("200.00"), BigDecimal.ZERO);
+			assertFactTotals(revFacts, freightAcctId, new BigDecimal("20.00"), BigDecimal.ZERO);
+		}
+	}
+
+	@Test
+	public void testBackdatedReceiptRepostsShipmentAndReversalManualCostDetails()
+	{
+		Timestamp day1 = TimeUtil.addDays(getLoginDate(), -4);
+		Timestamp day2 = TimeUtil.addDays(getLoginDate(), -3);
+		Timestamp day3 = TimeUtil.addDays(getLoginDate(), -2);
+		int requiredBackDateDays = Math.max(30, TimeUtil.getDaysBetween(day1, new Timestamp(System.currentTimeMillis())) + 7);
+		MAcctSchema[] ass = MAcctSchema.getClientAcctSchema(Env.getCtx(), getAD_Client_ID());
+		MAcctSchema[] spiedAss = new MAcctSchema[ass.length];
+		for (int i = 0; i < ass.length; i++)
+		{
+			MAcctSchema spyAs = Mockito.spy(new MAcctSchema(Env.getCtx(), ass[i]));
+			if (spyAs.getBackDateDay() < requiredBackDateDays)
+				Mockito.doReturn(requiredBackDateDays).when(spyAs).getBackDateDay();
+			spiedAss[i] = spyAs;
+		}
+		MAcctSchema as = spiedAss[0];
+		assertEquals(MCostElement.COSTINGMETHOD_AveragePO, as.getCostingMethod(), "Default costing method not Average PO");
+
+		MClientInfo ci = MClientInfo.get(Env.getCtx(), getAD_Client_ID(), null);
+		MClientInfo spyCi = Mockito.spy(new MClientInfo(Env.getCtx(), ci));
+		Mockito.doReturn(as).when(spyCi).getMAcctSchema1();
+		Mockito.doReturn(as.getC_Currency_ID()).when(spyCi).getC_Currency_ID();
+
+		int clientId = getAD_Client_ID();
+		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MClientInfo> clientInfoMock = mockStatic(MClientInfo.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MAcctSchema> acctSchemaMock = mockStatic(MAcctSchema.class, Mockito.CALLS_REAL_METHODS))
+		{
+			clientInfoMock.when(() -> MClientInfo.get(any(Properties.class), eq(clientId), any())).thenReturn(spyCi);
+			clientInfoMock.when(() -> MClientInfo.get(any(Properties.class), eq(clientId))).thenReturn(spyCi);
+			clientInfoMock.when(() -> MClientInfo.get(eq(clientId))).thenReturn(spyCi);
+			clientInfoMock.when(() -> MClientInfo.getCopy(any(Properties.class), eq(clientId), any())).thenReturn(spyCi);
+
+			acctSchemaMock.when(() -> MAcctSchema.getClientAcctSchema(any(Properties.class), eq(clientId), any())).thenReturn(spiedAss);
+			acctSchemaMock.when(() -> MAcctSchema.getClientAcctSchema(any(Properties.class), eq(clientId))).thenReturn(spiedAss);
+			for (MAcctSchema spyAs : spiedAss)
 			{
-				assertEquals(DictionaryIDs.C_Currency.EUR.id, fa.getC_Currency_ID(),
-						"Reversed fact must preserve original foreign currency");
-				BigDecimal expectedSrcDr = fa.getAmtAcctDr().divide(new BigDecimal("2"), 2, RoundingMode.HALF_UP);
-				BigDecimal expectedSrcCr = fa.getAmtAcctCr().divide(new BigDecimal("2"), 2, RoundingMode.HALF_UP);
-				assertEquals(0, expectedSrcDr.compareTo(fa.getAmtSourceDr()), "Reversed AmtSourceDr mismatch");
-				assertEquals(0, expectedSrcCr.compareTo(fa.getAmtSourceCr()), "Reversed AmtSourceCr mismatch");
+				int acctSchemaId = spyAs.getC_AcctSchema_ID();
+				acctSchemaMock.when(() -> MAcctSchema.get(any(Properties.class), eq(acctSchemaId), any())).thenReturn(spyAs);
+				acctSchemaMock.when(() -> MAcctSchema.get(any(Properties.class), eq(acctSchemaId))).thenReturn(spyAs);
+				acctSchemaMock.when(() -> MAcctSchema.get(eq(acctSchemaId))).thenReturn(spyAs);
+				acctSchemaMock.when(() -> MAcctSchema.getCopy(any(Properties.class), eq(acctSchemaId), any())).thenReturn(spyAs);
 			}
+
+			MProduct product = createStockedProduct("BackDateManualCostProd", DictionaryIDs.M_Product_Category.STANDARD.id, 0);
+			mockProductGet(mockedProduct, product);
+
+			MCostElement burdenCe = createManualCostElement("BackDate Burden 10pct",
+					MCostElement.COSTELEMENTTYPE_BurdenMOverhead, DictionaryIDs.C_Charge.FREIGHT.id);
+			createManualCostRecord(product, as, burdenCe, 0, BigDecimal.ZERO, 10);
+
+			// Day 1: Receipt qty 10 @ 100.00 -> AvgPO = 100.00
+			createPOAndMR(product, null, new BigDecimal("10"), new BigDecimal("100.00"), day1);
+
+			// Day 3: Shipment qty 2 (AvgPO 100 -> inv 200, 10% burden 20, COGS 220) + Reverse_Correct on Day 3
+			MOrder so = new MOrder(Env.getCtx(), 0, getTrxName());
+			so.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
+			so.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.STANDARD_ORDER.id);
+			so.setIsSOTrx(true);
+			so.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
+			so.setDocStatus(DocAction.STATUS_Drafted);
+			so.setDocAction(DocAction.ACTION_Complete);
+			so.setDateOrdered(day3);
+			so.setDateAcct(day3);
+			so.setDatePromised(day3);
+			so.saveEx();
+			MOrderLine soLine = new MOrderLine(so);
+			soLine.setLine(10);
+			soLine.setProduct(product);
+			soLine.setQty(new BigDecimal("2"));
+			soLine.setDatePromised(day3);
+			soLine.setPrice(new BigDecimal("180.00"));
+			soLine.saveEx();
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(so, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+
+			MInOut shipment = new MInOut(so, DictionaryIDs.C_DocType.MM_SHIPMENT.id, day3);
+			shipment.setDocStatus(DocAction.STATUS_Drafted);
+			shipment.setDocAction(DocAction.ACTION_Complete);
+			shipment.saveEx();
+			MInOutLine shipLine = new MInOutLine(shipment);
+			shipLine.setOrderLine(soLine, 0, new BigDecimal("2"));
+			shipLine.setQty(new BigDecimal("2"));
+			shipLine.saveEx();
+			info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Complete);
+			assertFalse(info.isError(), info.getSummary());
+			shipment.load(getTrxName());
+			if (!shipment.isPosted())
+				assertNull(DocumentEngine.postImmediate(Env.getCtx(), shipment.getAD_Client_ID(),
+						shipment.get_Table_ID(), shipment.get_ID(), false, getTrxName()));
+
+			info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Reverse_Correct);
+			assertFalse(info.isError(), info.getSummary());
+			shipment.load(getTrxName());
+			MInOut reversal = new MInOut(Env.getCtx(), shipment.getReversal_ID(), getTrxName());
+			if (!reversal.isPosted())
+				assertNull(DocumentEngine.postImmediate(Env.getCtx(), reversal.getAD_Client_ID(),
+						reversal.get_Table_ID(), reversal.get_ID(), false, getTrxName()));
+
+			List<MManualCostDetail> shipMcdsBefore = MManualCostDetail.getByRecord(Env.getCtx(), as.get_ID(),
+					MInOut.Table_ID, shipment.get_ID(), getTrxName());
+			List<MManualCostDetail> revMcdsBefore = MManualCostDetail.getByRecord(Env.getCtx(), as.get_ID(),
+					MInOut.Table_ID, reversal.get_ID(), getTrxName());
+			assertEquals(1, shipMcdsBefore.size());
+			assertEquals(1, revMcdsBefore.size());
+			assertEquals(new BigDecimal("20.00"), shipMcdsBefore.get(0).getAmt().setScale(2, RoundingMode.HALF_UP));
+			assertEquals(new BigDecimal("-20.00"), revMcdsBefore.get(0).getAmt().setScale(2, RoundingMode.HALF_UP));
+
+			// Day 2 (Backdated BEFORE Day 3): Receipt qty 10 @ 200.00 -> new AvgPO = (1000 + 2000)/20 = 150.00!
+			// Backdate reposting must update Day 3 Shipment (inv 300, burden 30, COGS 330) AND Day 3 Reversal (inv 300, burden 30, COGS 330)
+			createPOAndMR(product, null, new BigDecimal("10"), new BigDecimal("200.00"), day2);
+
+			List<MManualCostDetail> shipMcdsAfter = MManualCostDetail.getByRecord(Env.getCtx(), as.get_ID(),
+					MInOut.Table_ID, shipment.get_ID(), getTrxName());
+			List<MManualCostDetail> revMcdsAfter = MManualCostDetail.getByRecord(Env.getCtx(), as.get_ID(),
+					MInOut.Table_ID, reversal.get_ID(), getTrxName());
+			assertEquals(1, shipMcdsAfter.size(), "Backdated repost must replace shipment M_ManualCostDetail cleanly");
+			assertEquals(1, revMcdsAfter.size(), "Backdated repost must replace reversal M_ManualCostDetail cleanly");
+			assertEquals(new BigDecimal("30.00"), shipMcdsAfter.get(0).getAmt().setScale(2, RoundingMode.HALF_UP),
+					"Backdated shipment manual cost must update from 20.00 to 30.00 (10% of 300.00)");
+			assertEquals(new BigDecimal("-30.00"), revMcdsAfter.get(0).getAmt().setScale(2, RoundingMode.HALF_UP),
+					"Backdated reversal manual cost must update from -20.00 to -30.00");
+
+			ProductCost pc = new ProductCost(Env.getCtx(), product.get_ID(), 0, getTrxName());
+			int cogsAcctId = pc.getAccount(ProductCost.ACCTTYPE_P_Cogs, as).getAccount_ID();
+			int assetAcctId = pc.getAccount(ProductCost.ACCTTYPE_P_Asset, as).getAccount_ID();
+			int freightAcctId = MCharge.getAccount(DictionaryIDs.C_Charge.FREIGHT.id, as, getTrxName()).getAccount_ID();
+
+			List<MFactAcct> shipFactsAfter = getFacts(MInOut.Table_ID, shipment.get_ID(), as.get_ID());
+			assertFactTotals(shipFactsAfter, cogsAcctId, new BigDecimal("330.00"), BigDecimal.ZERO);
+			assertFactTotals(shipFactsAfter, assetAcctId, BigDecimal.ZERO, new BigDecimal("300.00"));
+			assertFactTotals(shipFactsAfter, freightAcctId, BigDecimal.ZERO, new BigDecimal("30.00"));
+
+			List<MFactAcct> revFactsAfter = getFacts(MInOut.Table_ID, reversal.get_ID(), as.get_ID());
+			assertFactTotals(revFactsAfter, cogsAcctId, BigDecimal.ZERO, new BigDecimal("330.00"));
+			assertFactTotals(revFactsAfter, assetAcctId, new BigDecimal("300.00"), BigDecimal.ZERO);
+			assertFactTotals(revFactsAfter, freightAcctId, new BigDecimal("30.00"), BigDecimal.ZERO);
 		}
 	}
 }

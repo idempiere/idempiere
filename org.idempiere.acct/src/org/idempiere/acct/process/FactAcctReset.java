@@ -284,6 +284,29 @@ public class FactAcctReset extends SvrProcess
 		if (log.isLoggable(Level.FINE))log.log(Level.FINE, sql1);
 
 		int reset = DB.executeUpdate(sql1, get_TrxName()); 
+		//	Manual Cost Detail (delete matching records before Fact_Acct)
+		String sqlManual = "DELETE FROM M_ManualCostDetail "
+			+ "WHERE AD_Client_ID=" + p_AD_Client_ID
+			+ " AND AD_Table_ID=" + AD_Table_ID
+			+ " AND EXISTS (SELECT 1 FROM Fact_Acct "
+			+ "WHERE Fact_Acct.AD_Client_ID=M_ManualCostDetail.AD_Client_ID"
+			+ " AND Fact_Acct.AD_Table_ID=M_ManualCostDetail.AD_Table_ID"
+			+ " AND Fact_Acct.Record_ID=M_ManualCostDetail.Record_ID"
+			+ " AND Fact_Acct.C_AcctSchema_ID=M_ManualCostDetail.C_AcctSchema_ID";
+		if ( !autoPeriod )
+			sqlManual += " AND EXISTS (SELECT 1 FROM C_PeriodControl pc "
+				+ "WHERE pc.PeriodStatus = 'O'" + docBaseType
+				+ " AND Fact_Acct.C_Period_ID=pc.C_Period_ID)";
+		else
+			sqlManual += " AND EXISTS (SELECT 1 FROM C_PeriodControl pc "
+				+ "WHERE Fact_Acct.C_Period_ID=pc.C_Period_ID)";
+		if (p_DateAcct_From != null)
+			sqlManual += " AND TRUNC(Fact_Acct.DateAcct) >= " + DB.TO_DATE(p_DateAcct_From);
+		if (p_DateAcct_To != null)
+			sqlManual += " AND TRUNC(Fact_Acct.DateAcct) <= " + DB.TO_DATE(p_DateAcct_To);
+		sqlManual += ")";
+		if (log.isLoggable(Level.FINE)) log.log(Level.FINE, sqlManual);
+		DB.executeUpdate(sqlManual, get_TrxName());
 		//	Fact
 		String sql2 = "DELETE FROM Fact_Acct "
 			+ "WHERE AD_Client_ID=" + p_AD_Client_ID

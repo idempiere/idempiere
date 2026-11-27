@@ -16,11 +16,8 @@
  *****************************************************************************/
 package org.compiere.model;
 
-import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -43,7 +40,7 @@ public class MFactAcct extends X_Fact_Acct
 	/**
 	 * generated serial id 
 	 */
-	private static final long serialVersionUID = 6918273645019283746L;
+	private static final long serialVersionUID = 5251847162314796574L;
 
 	/**
 	 * Delete Accounting
@@ -90,6 +87,7 @@ public class MFactAcct extends X_Fact_Acct
 		if (no != 0)
 			if (s_log.isLoggable(Level.INFO)) s_log.fine("update - AD_Table_ID=" + AD_Table_ID + ", Record_ID=" + Record_ID + " - #" + no);
 				
+		MManualCostDetail.delete(AD_Table_ID, Record_ID, trxName);
 		final String sql = "DELETE FROM Fact_Acct WHERE AD_Table_ID=? AND Record_ID=?";
 		no = DB.executeUpdateEx(sql, new Object[]{AD_Table_ID, Record_ID}, trxName);
 		if (s_log.isLoggable(Level.FINE)) s_log.fine("delete - AD_Table_ID=" + AD_Table_ID + ", Record_ID=" + Record_ID + " - #" + no);
@@ -178,69 +176,6 @@ public class MFactAcct extends X_Fact_Acct
 	public static final Query createRecordIdQuery(int AD_Table_ID, int Record_ID, int C_AcctSchema_ID, String trxName) {
 		Query query = new Query(Env.getCtx(), Table_Name, recordIdWhereClause, trxName);
 		return query.setParameters(AD_Table_ID, Record_ID, C_AcctSchema_ID);
-	}
-
-	/**
-	 * Remove exact cancelling GL-distribution reversal pairs (created when {@code GL_Distribution.IsCreateReversal='Y'})
-	 * so downstream reversal cost aggregations see only net active fact lines.
-	 * @param origFacts posted actual Fact_Acct records of the original line
-	 * @param expectedQty expected signed original quantity on the target side
-	 * @return filtered list with cancelling reversal pairs removed
-	 */
-	public static List<MFactAcct> removeDistributionReversalPairs(List<MFactAcct> origFacts, BigDecimal expectedQty)
-	{
-		if (origFacts == null || origFacts.size() <= 2 || expectedQty == null || expectedQty.signum() == 0)
-			return origFacts;
-
-		int expectedQtySign = expectedQty.signum();
-		BigDecimal sameSignQtySum = BigDecimal.ZERO;
-		for (MFactAcct fa : origFacts)
-		{
-			if (fa.getC_Charge_ID() == 0 && fa.getQty() != null && fa.getQty().signum() == expectedQtySign)
-				sameSignQtySum = sameSignQtySum.add(fa.getQty());
-		}
-		if (sameSignQtySum.abs().compareTo(expectedQty.abs()) <= 0)
-			return origFacts;
-
-		boolean[] removed = new boolean[origFacts.size()];
-		for (int i = 0; i < origFacts.size() && sameSignQtySum.abs().compareTo(expectedQty.abs()) > 0; i++)
-		{
-			if (removed[i])
-				continue;
-			MFactAcct a = origFacts.get(i);
-			BigDecimal aNet = a.getAmtAcctDr().subtract(a.getAmtAcctCr());
-			BigDecimal aQty = a.getQty() != null ? a.getQty() : BigDecimal.ZERO;
-			for (int j = i + 1; j < origFacts.size(); j++)
-			{
-				if (removed[j])
-					continue;
-				MFactAcct b = origFacts.get(j);
-				if (a.getAccount_ID() == b.getAccount_ID()
-						&& a.getC_Charge_ID() == b.getC_Charge_ID()
-						&& aNet.add(b.getAmtAcctDr().subtract(b.getAmtAcctCr())).signum() == 0
-						&& aQty.add(b.getQty() != null ? b.getQty() : BigDecimal.ZERO).signum() == 0)
-				{
-					removed[i] = true;
-					removed[j] = true;
-					if (a.getC_Charge_ID() == 0)
-					{
-						if (aQty.signum() == expectedQtySign)
-							sameSignQtySum = sameSignQtySum.subtract(aQty);
-						else if (b.getQty() != null && b.getQty().signum() == expectedQtySign)
-							sameSignQtySum = sameSignQtySum.subtract(b.getQty());
-					}
-					break;
-				}
-			}
-		}
-
-		List<MFactAcct> active = new ArrayList<>(origFacts.size());
-		for (int i = 0; i < origFacts.size(); i++)
-		{
-			if (!removed[i])
-				active.add(origFacts.get(i));
-		}
-		return active;
 	}
 	
 }	//	MFactAcct

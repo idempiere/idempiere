@@ -208,7 +208,8 @@ public class MCost extends X_M_Cost implements ICostInfo
 		BigDecimal percentage = queryResult.percentage();
 
 		//	Seed Initial Costs
-		if (materialCostEach.signum() == 0)		//	no costs
+		boolean isQueueMethod = isQueueCostingMethod(costingMethod);
+		if (!isQueueMethod && materialCostEach.signum() == 0)		//	no costs
 		{
 			if (zeroCostsOK)
 				return Env.ZERO;
@@ -217,6 +218,10 @@ public class MCost extends X_M_Cost implements ICostInfo
 		//	Material Costs
 		BigDecimal materialCost = calculateMaterialCost(product, M_ASI_ID, as, Org_ID,
 				costingMethod, materialCostEach, qty, trxName);
+		if (materialCost == null)
+			return zeroCostsOK ? Env.ZERO : null;
+		if (isQueueMethod && materialCostEach.signum() == 0 && materialCost.signum() == 0 && zeroCostsOK)
+			return Env.ZERO;
 		//	Standard costs - just Material Costs
 		if (MCostElement.COSTINGMETHOD_StandardCosting.equals(costingMethod))
 		{
@@ -342,12 +347,17 @@ public class MCost extends X_M_Cost implements ICostInfo
 		return new CostQueryResult(materialCostEach, otherCostEach, percentage);
 	}
 
+	private static boolean isQueueCostingMethod(String costingMethod)
+	{
+		return MCostElement.COSTINGMETHOD_Fifo.equals(costingMethod)
+			|| MCostElement.COSTINGMETHOD_Lifo.equals(costingMethod);
+	}
+
 	private static BigDecimal calculateMaterialCost(MProduct product, int M_ASI_ID,
 			MAcctSchema as, int Org_ID, String costingMethod, BigDecimal materialCostEach,
 			BigDecimal qty, String trxName)
 	{
-		if (MCostElement.COSTINGMETHOD_Fifo.equals(costingMethod)
-			|| MCostElement.COSTINGMETHOD_Lifo.equals(costingMethod))
+		if (isQueueCostingMethod(costingMethod))
 		{
 			MCostElement ce = MCostElement.getMaterialCostElement(as, costingMethod);
 			return MCostQueue.getCosts(product, M_ASI_ID, as, Org_ID, ce, qty, trxName);
@@ -397,7 +407,7 @@ public class MCost extends X_M_Cost implements ICostInfo
 
 		CostQueryResult queryResult = queryCurrentCosts(product, M_AttributeSetInstance_ID, as, AD_Org_ID,
 				as.getM_CostType_ID(), costingMethod, historyCostPrice, false, trxName);
-		if (queryResult.materialCostEach().signum() == 0)
+		if (!isQueueCostingMethod(costingMethod) && queryResult.materialCostEach().signum() == 0)
 			return false;
 
 		BigDecimal materialCost = calculateMaterialCost(product, M_AttributeSetInstance_ID, as, AD_Org_ID,
@@ -2210,6 +2220,21 @@ public class MCost extends X_M_Cost implements ICostInfo
 		{
 			return MAcctSchema.COSTINGLEVEL_BatchLot.equals(costingLevel) && M_AttributeSetInstance_ID == 0;
 		}
+	}
+
+	/**
+	 * Check whether the tenant has any active manual (non-material) cost element
+	 * configured with a {@code C_Charge_ID}.
+	 * @param AD_Client_ID tenant ID
+	 * @param trxName transaction name
+	 * @return true if at least one active charge-mapped manual cost element exists
+	 */
+	public static boolean hasChargeManualCostElements(int AD_Client_ID, String trxName)
+	{
+		final String sql = "SELECT COUNT(*) FROM M_CostElement "
+				+ "WHERE AD_Client_ID=? AND IsActive='Y' AND CostingMethod IS NULL "
+				+ "AND CostElementType<>'M' AND C_Charge_ID > 0";
+		return DB.getSQLValueEx(trxName, sql, AD_Client_ID) > 0;
 	}
 
 	/**

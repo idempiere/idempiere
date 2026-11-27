@@ -20,16 +20,18 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 
 import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MCharge;
+import org.compiere.model.MCost;
 import org.compiere.model.MCost.ManualCost;
 import org.compiere.model.MCostDetail;
-import org.compiere.model.MFactAcct;
 import org.compiere.model.MInOutLine;
+import org.compiere.model.MManualCostDetail;
 import org.compiere.model.MProduct;
 import org.compiere.model.MProject;
 import org.compiere.model.MProjectIssue;
@@ -140,40 +142,107 @@ public class Doc_ProjectIssue extends Doc
 		MProduct product = MProduct.get(getCtx(), m_issue.getM_Product_ID());
 
 		boolean isReversal = m_issue.isReversal();
-		List<MFactAcct> origFacts = null;
-		BigDecimal cost = null;
-
-		if (isReversal)
+		List<MManualCostDetail> origManualDetails = isReversal
+				? MManualCostDetail.getByLine(getCtx(), as.getC_AcctSchema_ID(),
+						MProjectIssue.Table_ID, m_issue.getReversal_ID(), m_issue.getReversal_ID(), getTrxName())
+				: Collections.emptyList();
+		if (isReversal && origManualDetails.isEmpty()
+				&& MCost.hasChargeManualCostElements(getAD_Client_ID(), getTrxName()))
 		{
-			origFacts = getPostedLineFacts(as, MProjectIssue.Table_ID, m_issue.getReversal_ID(), m_issue.getReversal_ID());
-			if (origFacts.size() < 2)
+			MProjectIssue origIssue = new MProjectIssue(getCtx(), m_issue.getReversal_ID(), getTrxName());
+			if (!origIssue.isPosted())
 			{
 				p_Error = Msg.getMsg(getCtx(), "Original Project Issue not posted yet");
 				log.log(Level.WARNING, p_Error);
 				return null;
 			}
+		}
 
-			for (MFactAcct origFact : origFacts)
+		//  Line pointers
+		FactLine dr = null;
+		FactLine cr = null;
+		BigDecimal cost = null;
+		boolean hasManualReversal = isReversal && !origManualDetails.isEmpty();
+
+		if (hasManualReversal)
+		{
+			BigDecimal manualTotal = BigDecimal.ZERO;
+			for (MManualCostDetail origDetail : origManualDetails)
+				manualTotal = manualTotal.add(origDetail.getAmt());
+
+			if (product != null && product.get_ID() > 0 && !product.isService() && product.isStocked())
 			{
-				FactLine revLine = createReversalFactLine(fact, as, m_line, origFact);
-				if (revLine == null)
+				MCostDetail origCd = MCostDetail.getProjectIssue(as, m_line.getM_Product_ID(),
+						m_line.getM_AttributeSetInstance_ID(), m_issue.getReversal_ID(), 0, getTrxName());
+				if (origCd != null)
+					cost = origCd.getAmt().negate();
+			}
+			if (cost == null)
+			{
+				MProjectIssue origIssue = new MProjectIssue(getCtx(), m_issue.getReversal_ID(), getTrxName());
+				if (origIssue.get_Value(MProjectIssue.COLUMNNAME_CostAmt) != null)
+					cost = origIssue.getCostAmt().subtract(manualTotal);
+				else
+					cost = m_line.getProductCosts(as, getAD_Org_ID(), false).negate();
+			}
+
+			int stdPrecision = as.getStdPrecision();
+			BigDecimal crAmt = cost.setScale(stdPrecision, RoundingMode.HALF_UP).add(manualTotal);
+
+			//  Project                 CR
+			int projAcctType = MProject.PROJECTCATEGORY_AssetProject.equals(ProjectCategory)
+					? ACCTTYPE_ProjectAsset : ACCTTYPE_ProjectWIP;
+			cr = fact.createLine(m_line,
+				getAccount(projAcctType, as), as.getC_Currency_ID(), null, crAmt);
+			if (cr == null)
+			{
+				p_Error = Msg.getMsg(getCtx(), "FactLine CR not created") + ": " + m_line;
+				log.log(Level.WARNING, p_Error);
+				return null;
+			}
+			cr.setQty(m_line.getQty().negate());
+
+			//  Inventory       DR
+			int invAcctType = product.isService() ? ProductCost.ACCTTYPE_P_Expense : ProductCost.ACCTTYPE_P_Asset;
+			dr = fact.createLine(m_line,
+				m_line.getAccount(invAcctType, as),
+				as.getC_Currency_ID(), cost, null);
+			if (dr == null)
+			{
+				p_Error = Msg.getMsg(getCtx(), "FactLine DR not created") + ": " + m_line;
+				log.log(Level.WARNING, p_Error);
+				return null;
+			}
+			dr.setM_Locator_ID(m_line.getM_Locator_ID());
+			dr.setLocationFromLocator(m_line.getM_Locator_ID(), true);	// from Loc
+
+			for (MManualCostDetail origDetail : origManualDetails)
+			{
+				int C_Charge_ID = origDetail.getC_Charge_ID();
+				MAccount chargeAcct = getManualCostChargeAccount(as, origDetail);
+				if (chargeAcct == null)
 				{
-					String errMsg = origFact.getAmtAcctCr().signum() != 0 ? "FactLine DR not created" : "FactLine CR not created";
-					p_Error = Msg.getMsg(getCtx(), errMsg) + ": " + m_line;
+					p_Error = formatMissingChargeAccountError(as, C_Charge_ID, m_line, "FactLine DR not created");
 					log.log(Level.WARNING, p_Error);
 					return null;
 				}
+				FactLine chargeDr = fact.createLine(m_line, chargeAcct,
+						as.getC_Currency_ID(), origDetail.getAmt(), null);
+				if (chargeDr == null)
+				{
+					p_Error = Msg.getMsg(getCtx(), "FactLine DR not created") + ": " + m_line;
+					log.log(Level.WARNING, p_Error);
+					return null;
+				}
+				chargeDr.setC_Charge_ID(C_Charge_ID);
+				chargeDr.setM_Locator_ID(m_line.getM_Locator_ID());
+				chargeDr.setLocationFromLocator(m_line.getM_Locator_ID(), true);	// from Loc
+				saveManualCostDetail(as, m_line, origDetail.getM_CostElement_ID(), C_Charge_ID,
+						chargeAcct, origDetail.getAmt().negate());
 			}
-
-			if (!reversePostedHeaderFacts(fact, as, MProjectIssue.Table_ID, m_issue.getReversal_ID()))
-				return null;
 		}
 		else
 		{
-			//  Line pointers
-			FactLine dr = null;
-			FactLine cr = null;
-
 			//  Issue Cost
 			ManualCost[] manualCosts = new ManualCost[0];
 			if (m_issue.getM_InOutLine_ID() != 0)
@@ -189,7 +258,8 @@ public class Doc_ProjectIssue extends Doc
 			if (cost == null)	//	standard Product Costs
 			{
 				cost = m_line.getProductCosts(as, getAD_Org_ID(), false);
-				manualCosts = m_line.getManualCosts(as, getAD_Org_ID(), cost);
+				if (!isReversal)
+					manualCosts = m_line.getManualCosts(as, getAD_Org_ID(), cost);
 			}
 
 			int stdPrecision = as.getStdPrecision();
@@ -241,13 +311,15 @@ public class Doc_ProjectIssue extends Doc
 				cr.setC_Charge_ID(C_Charge_ID);
 				cr.setM_Locator_ID(m_line.getM_Locator_ID());
 				cr.setLocationFromLocator(m_line.getM_Locator_ID(), true);	// from Loc
+				saveManualCostDetail(as, m_line, manualCost.getCostElement().getM_CostElement_ID(), C_Charge_ID,
+						chargeAcct, manualCost.getAmount());
 			}
 		}
 		//
 		if (product != null && product.get_ID() > 0 && !product.isService() && product.isStocked()) {
 			BigDecimal costDetailQty = m_line.getQty();
 			BigDecimal costDetailAmt = cost;
-			if (!isReversal && m_line.getQty().signum() != m_line.getProductCost().getQty().signum())
+			if (!hasManualReversal && m_line.getQty().signum() != m_line.getProductCost().getQty().signum())
 				costDetailAmt = costDetailAmt.negate();
 			int Ref_CostDetail_ID = 0;
 			if (m_line.getReversalLine_ID() > 0 && m_line.get_ID() > m_line.getReversalLine_ID())
@@ -257,17 +329,9 @@ public class Doc_ProjectIssue extends Doc
 				if (cd != null)
 				{
 					Ref_CostDetail_ID = cd.getM_CostDetail_ID();
-					if (isReversal)
+					if (hasManualReversal)
 						costDetailAmt = cd.getAmt().negate();
 				}
-				else if (isReversal)
-				{
-					costDetailAmt = resolveReversalInventoryCost(as, product, ProjectCategory, origFacts);
-				}
-			}
-			else if (isReversal)
-			{
-				costDetailAmt = resolveReversalInventoryCost(as, product, ProjectCategory, origFacts);
 			}
 			if (!MCostDetail.createProjectIssue(as, m_line.getAD_Org_ID(),
 				m_line.getM_Product_ID(), m_line.getM_AttributeSetInstance_ID(),
@@ -284,18 +348,4 @@ public class Doc_ProjectIssue extends Doc
 		facts.add(fact);
 		return facts;
 	}   //  createFact
-
-	private BigDecimal resolveReversalInventoryCost(MAcctSchema as, MProduct product, String projectCategory,
-			List<MFactAcct> origFacts)
-	{
-		int invAcctType = product.isService() ? ProductCost.ACCTTYPE_P_Expense : ProductCost.ACCTTYPE_P_Asset;
-		MAccount invAcct = m_line.getAccount(invAcctType, as);
-		int invAcctId = invAcct != null ? invAcct.getAccount_ID() : 0;
-		int projAcctType = MProject.PROJECTCATEGORY_AssetProject.equals(projectCategory)
-				? ACCTTYPE_ProjectAsset : ACCTTYPE_ProjectWIP;
-		MAccount projAcct = getAccount(projAcctType, as);
-		int projAcctId = projAcct != null ? projAcct.getAccount_ID() : 0;
-		BigDecimal expectedOrigQty = m_line.getQty() != null ? m_line.getQty().negate() : null;
-		return resolveReversalInventoryCost(origFacts, invAcctId, projAcctId, expectedOrigQty);
-	}
 }	//	DocProjectIssue

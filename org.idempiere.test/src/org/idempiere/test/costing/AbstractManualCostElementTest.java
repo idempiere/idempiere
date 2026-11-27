@@ -42,7 +42,6 @@ import org.compiere.model.MAccount;
 import org.compiere.model.MAcctSchema;
 import org.compiere.model.MAttributeSetInstance;
 import org.compiere.model.MBPartner;
-import org.compiere.model.MCost.ManualCost;
 import org.compiere.model.MCost;
 import org.compiere.model.MCostElement;
 import org.compiere.model.MFactAcct;
@@ -163,6 +162,7 @@ public abstract class AbstractManualCostElementTest extends AbstractTestCase
 		po.setDocStatus(DocAction.STATUS_Drafted);
 		po.setDocAction(DocAction.ACTION_Complete);
 		po.setDateOrdered(date);
+		po.setDateAcct(date);
 		po.setDatePromised(date);
 		po.saveEx();
 
@@ -209,16 +209,25 @@ public abstract class AbstractManualCostElementTest extends AbstractTestCase
 
 	protected MInOut createSOAndShipment(MProduct product, MAttributeSetInstance asi, BigDecimal qty, BigDecimal price)
 	{
+		return createSOAndShipment(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id), 0, product, asi, qty, price);
+	}
+
+	protected MInOut createSOAndShipment(MBPartner bpartner, int bpartnerLocationId, MProduct product,
+			MAttributeSetInstance asi, BigDecimal qty, BigDecimal price)
+	{
 		Timestamp date = getLoginDate();
 
 		MOrder so = new MOrder(Env.getCtx(), 0, getTrxName());
-		so.setBPartner(MBPartner.get(Env.getCtx(), DictionaryIDs.C_BPartner.JOE_BLOCK.id));
+		so.setBPartner(bpartner);
+		if (bpartnerLocationId > 0)
+			so.setC_BPartner_Location_ID(bpartnerLocationId);
 		so.setC_DocTypeTarget_ID(DictionaryIDs.C_DocType.STANDARD_ORDER.id);
 		so.setIsSOTrx(true);
 		so.setSalesRep_ID(DictionaryIDs.AD_User.GARDEN_ADMIN.id);
 		so.setDocStatus(DocAction.STATUS_Drafted);
 		so.setDocAction(DocAction.ACTION_Complete);
 		so.setDateOrdered(date);
+		so.setDateAcct(date);
 		so.setDatePromised(date);
 		so.saveEx();
 

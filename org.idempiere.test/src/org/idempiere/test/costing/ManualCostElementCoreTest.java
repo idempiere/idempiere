@@ -28,13 +28,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.SQLException;
 import java.util.List;
 
 import org.adempiere.exceptions.DBException;
@@ -49,14 +53,12 @@ import org.compiere.model.MCostElement;
 import org.compiere.model.MDiscountSchema;
 import org.compiere.model.MDiscountSchemaLine;
 import org.compiere.model.MFactAcct;
-import org.compiere.model.MGLCategory;
 import org.compiere.model.MInOut;
 import org.compiere.model.MInOutConfirm;
 import org.compiere.model.MInOutLine;
-import org.compiere.model.MInventory;
+import org.compiere.model.MManualCostDetail;
 import org.compiere.model.MOrder;
 import org.compiere.model.MOrderLine;
-import org.compiere.model.MPeriod;
 import org.compiere.model.MPriceList;
 import org.compiere.model.MPriceListVersion;
 import org.compiere.model.MProcess;
@@ -72,14 +74,15 @@ import org.compiere.process.DocAction;
 import org.compiere.process.DocumentEngine;
 import org.compiere.process.M_PriceList_Create;
 import org.compiere.process.ProcessInfo;
+import org.compiere.process.ProcessInfoParameter;
 import org.compiere.process.ServerProcessCtl;
+import org.compiere.util.CPreparedStatement;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.wf.MWorkflow;
 import org.idempiere.acct.doc.Doc;
 import org.idempiere.acct.doc.DocLine;
 import org.idempiere.acct.doc.DocManager;
-import org.idempiere.acct.doc.FactLine;
 import org.idempiere.test.DictionaryIDs;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -394,16 +397,11 @@ public class ManualCostElementCoreTest extends AbstractManualCostElementTest
 	}
 
 	@Test
-	public void testLaborCostLookupDistinguishesGenuineZeroFromUnavailable()
+	public void testLaborCostLookupDistinguishesGenuineZeroFromUnavailable() throws SQLException
 	{
 		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
 
 		// 1. Missing expense line ID returns null (unavailable), not Env.ZERO
-		MTimeExpenseLine missing = new MTimeExpenseLine(Env.getCtx(), 0, getTrxName());
-		missing.setS_TimeExpenseLine_ID(999999999);
-		assertNull(missing.getLaborCost(as), "Missing S_TimeExpenseLine row must return null, not zero");
-
-		// 2. Genuine zero ConvertedAmt returns BigDecimal.ZERO (non-null)
 		MTimeExpense te = new MTimeExpense(Env.getCtx(), 0, getTrxName());
 		te.setC_BPartner_ID(DictionaryIDs.C_BPartner.GARDEN_USER.id);
 		te.setDateReport(getLoginDate());
@@ -413,6 +411,21 @@ public class ManualCostElementCoreTest extends AbstractManualCostElementTest
 		te.setDocAction(DocAction.ACTION_Complete);
 		te.saveEx();
 
+		MTimeExpenseLine deletedLine = new MTimeExpenseLine(Env.getCtx(), 0, getTrxName());
+		deletedLine.setS_TimeExpense_ID(te.get_ID());
+		deletedLine.setLine(5);
+		deletedLine.setQty(BigDecimal.ONE);
+		deletedLine.setExpenseAmt(BigDecimal.TEN);
+		deletedLine.setConvertedAmt(BigDecimal.TEN);
+		deletedLine.saveEx();
+		int absentId = deletedLine.get_ID();
+		deletedLine.deleteEx(true);
+
+		MTimeExpenseLine missing = new MTimeExpenseLine(Env.getCtx(), 0, getTrxName());
+		missing.setS_TimeExpenseLine_ID(absentId);
+		assertNull(missing.getLaborCost(as), "Missing S_TimeExpenseLine row must return null, not zero");
+
+		// 2. Genuine zero ConvertedAmt returns BigDecimal.ZERO (non-null)
 		MTimeExpenseLine zeroLine = new MTimeExpenseLine(Env.getCtx(), 0, getTrxName());
 		zeroLine.setS_TimeExpense_ID(te.get_ID());
 		zeroLine.setLine(10);
@@ -425,13 +438,16 @@ public class ManualCostElementCoreTest extends AbstractManualCostElementTest
 		assertNotNull(zeroLabor, "Genuine zero-cost expense line must return non-null zero");
 		assertEquals(0, zeroLabor.signum(), "Genuine zero-cost expense line must return 0");
 
-		// 3. SQL error propagates DBException instead of swallowing and returning zero
+		// 3. JDBC SQLException enters catch(SQLException) and propagates wrapped in DBException
+		SQLException sqlEx = new SQLException("simulated labor lookup failure");
+		CPreparedStatement mockPstmt = mock(CPreparedStatement.class);
+		when(mockPstmt.executeQuery()).thenThrow(sqlEx);
 		try (MockedStatic<DB> mockedDb = mockStatic(DB.class, Mockito.CALLS_REAL_METHODS))
 		{
-			mockedDb.when(() -> DB.prepareStatement(any(String.class), any()))
-					.thenThrow(new DBException(new java.sql.SQLException("simulated labor lookup failure")));
-			assertThrows(DBException.class, () -> zeroLine.getLaborCost(as),
+			mockedDb.when(() -> DB.prepareStatement(any(String.class), any())).thenReturn(mockPstmt);
+			DBException thrown = assertThrows(DBException.class, () -> zeroLine.getLaborCost(as),
 					"Database failure in getLaborCost must propagate instead of returning zero");
+			assertSame(sqlEx, thrown.getCause(), "DBException must wrap the underlying SQLException");
 		}
 	}
 
@@ -468,6 +484,7 @@ public class ManualCostElementCoreTest extends AbstractManualCostElementTest
 			so.setDocStatus(DocAction.STATUS_Drafted);
 			so.setDocAction(DocAction.ACTION_Complete);
 			so.setDateOrdered(getLoginDate());
+			so.setDateAcct(getLoginDate());
 			so.setDatePromised(getLoginDate());
 			so.setIsSOTrx(true);
 			so.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.HQ.id);
@@ -583,99 +600,127 @@ public class ManualCostElementCoreTest extends AbstractManualCostElementTest
 		}
 	}
 
+
+
+
+
 	@Test
-	public void testFactLineUpdateReverseLineOtherLineWithMultiRowSameAccount()
+	public void testManualCostDetailLifecycleAndCleanup()
 	{
 		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
-		MAccount acct = MCharge.getAccount(DictionaryIDs.C_Charge.FREIGHT.id, as, getTrxName());
-		assertNotNull(acct, "Freight charge account not found");
+		assertEquals(MCostElement.COSTINGMETHOD_AveragePO, as.getCostingMethod(), "Default costing method not Average PO");
 
-		int periodId = MPeriod.getC_Period_ID(Env.getCtx(), getLoginDate(), getAD_Org_ID());
-		int glCatId = MGLCategory.getDefault(Env.getCtx(), MGLCategory.CATEGORYTYPE_Manual).get_ID();
+		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS))
+		{
+			MProduct product = createStockedProduct("ManualCostDetailLifeProd", DictionaryIDs.M_Product_Category.STANDARD.id, 0);
+			mockProductGet(mockedProduct, product);
+			createPOAndMR(product, null, new BigDecimal("5"), new BigDecimal("100.00"));
 
-		MInventory origInv = new MInventory(Env.getCtx(), 0, getTrxName());
-		origInv.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.HQ.id);
-		origInv.setC_DocType_ID(DictionaryIDs.C_DocType.MATERIAL_PHYSICAL_INVENTORY.id);
-		origInv.setMovementDate(getLoginDate());
-		origInv.saveEx();
+			MCostElement burdenCe = createManualCostElement("Lifecycle Burden 10pct",
+					MCostElement.COSTELEMENTTYPE_BurdenMOverhead, DictionaryIDs.C_Charge.FREIGHT.id);
+			createManualCostRecord(product, as, burdenCe, 0, BigDecimal.ZERO, 10);
 
-		MInventory revInv = new MInventory(Env.getCtx(), 0, getTrxName());
-		revInv.setM_Warehouse_ID(DictionaryIDs.M_Warehouse.HQ.id);
-		revInv.setC_DocType_ID(DictionaryIDs.C_DocType.MATERIAL_PHYSICAL_INVENTORY.id);
-		revInv.setMovementDate(getLoginDate());
-		revInv.saveEx();
+			MAccount expectedChargeVc = MCharge.getAccount(DictionaryIDs.C_Charge.FREIGHT.id, as, getTrxName());
+			assertNotNull(expectedChargeVc);
 
-		int origRecordId = origInv.get_ID();
-		int origLineId = 9999992;
+			// 1. Forward shipment persists M_ManualCostDetail with Amt = +20.00
+			MInOut shipment = createSOAndShipment(product, null, new BigDecimal("2"), new BigDecimal("180.00"));
+			MInOutLine shipLine = shipment.getLines(true)[0];
+			List<MManualCostDetail> origDetails = MManualCostDetail.getByLine(Env.getCtx(), as.get_ID(),
+					MInOut.Table_ID, shipment.get_ID(), shipLine.get_ID(), getTrxName());
+			assertEquals(1, origDetails.size(), "Forward shipment should persist 1 M_ManualCostDetail");
+			MManualCostDetail origMcd = origDetails.get(0);
+			assertEquals(burdenCe.get_ID(), origMcd.getM_CostElement_ID());
+			assertEquals(DictionaryIDs.C_Charge.FREIGHT.id, origMcd.getC_Charge_ID());
+			assertEquals(expectedChargeVc.getC_ValidCombination_ID(), origMcd.getC_ValidCombination_ID());
+			assertEquals(product.get_ID(), origMcd.getM_Product_ID());
+			assertEquals(new BigDecimal("20.00"), origMcd.getAmt().setScale(2, RoundingMode.HALF_UP));
 
-		// Simulate an original line with 2 DR splits and 1 CR on the same Account_ID (e.g. GL Distribution split)
-		MFactAcct dr1 = createSyntheticFact(as, acct.getAccount_ID(), periodId, glCatId,
-				MInventory.Table_ID, origRecordId, origLineId, new BigDecimal("60.00"), BigDecimal.ZERO);
-		createSyntheticFact(as, acct.getAccount_ID(), periodId, glCatId,
-				MInventory.Table_ID, origRecordId, origLineId, new BigDecimal("40.00"), BigDecimal.ZERO);
-		MFactAcct cr1 = createSyntheticFact(as, acct.getAccount_ID(), periodId, glCatId,
-				MInventory.Table_ID, origRecordId, origLineId, BigDecimal.ZERO, new BigDecimal("100.00"));
+			// 2. Reversal persists negated M_ManualCostDetail with Amt = -20.00 (net = 0)
+			ProcessInfo info = MWorkflow.runDocumentActionWorkflow(shipment, DocAction.ACTION_Reverse_Correct);
+			assertFalse(info.isError(), info.getSummary());
+			shipment.load(getTrxName());
+			MInOut reversal = new MInOut(Env.getCtx(), shipment.getReversal_ID(), getTrxName());
+			if (!reversal.isPosted())
+			{
+				String error = DocumentEngine.postImmediate(Env.getCtx(), reversal.getAD_Client_ID(),
+						reversal.get_Table_ID(), reversal.get_ID(), false, getTrxName());
+				assertNull(error, "Reversal posting failed: " + error);
+			}
+			MInOutLine revLine = reversal.getLines(true)[0];
+			List<MManualCostDetail> revDetails = MManualCostDetail.getByLine(Env.getCtx(), as.get_ID(),
+					MInOut.Table_ID, reversal.get_ID(), revLine.get_ID(), getTrxName());
+			assertEquals(1, revDetails.size(), "Reversal shipment should persist 1 negated M_ManualCostDetail");
+			assertEquals(new BigDecimal("-20.00"), revDetails.get(0).getAmt().setScale(2, RoundingMode.HALF_UP));
+			assertEquals(0, origMcd.getAmt().add(revDetails.get(0).getAmt()).signum(),
+					"Forward and reversed M_ManualCostDetail must net to zero");
 
-		FactLine revFirst = new FactLine(Env.getCtx(), MInventory.Table_ID, revInv.get_ID(), 9999994, getTrxName());
-		revFirst.setAccount(as, acct);
-		revFirst.setC_Currency_ID(as.getC_Currency_ID());
-		assertTrue(revFirst.updateReverseLine(MInventory.Table_ID, origRecordId, origLineId, Env.ONE));
-		assertEquals(dr1.get_ID(), revFirst.getReversedFactAcct_ID(), "First lookup must match first DR fact");
-		assertEquals(0, BigDecimal.ZERO.compareTo(revFirst.getAmtAcctDr()));
-		assertEquals(0, new BigDecimal("60.00").compareTo(revFirst.getAmtAcctCr()));
+			// 3. Repost (Doc.deleteAcct) cleanly replaces M_ManualCostDetail without duplicates
+			String repostErr = DocumentEngine.postImmediate(Env.getCtx(), shipment.getAD_Client_ID(),
+					shipment.get_Table_ID(), shipment.get_ID(), true, getTrxName());
+			assertNull(repostErr, "Repost of shipment failed: " + repostErr);
+			List<MManualCostDetail> afterRepost = MManualCostDetail.getByRecord(Env.getCtx(), as.get_ID(),
+					MInOut.Table_ID, shipment.get_ID(), getTrxName());
+			assertEquals(1, afterRepost.size(), "Repost must delete old M_ManualCostDetail before creating new row");
+			assertTrue(afterRepost.get(0).get_ID() != origMcd.get_ID(), "Repost should create a fresh M_ManualCostDetail row");
 
-		// Second lookup passing otherLine=revFirst must still apply the opposite-sign filter and match cr1, not dr2
-		FactLine revSecond = new FactLine(Env.getCtx(), MInventory.Table_ID, revInv.get_ID(), 9999994, getTrxName());
-		revSecond.setAccount(as, acct);
-		revSecond.setC_Currency_ID(as.getC_Currency_ID());
-		assertTrue(revSecond.updateReverseLine(MInventory.Table_ID, origRecordId, origLineId, Env.ONE, revFirst));
-		assertEquals(cr1.get_ID(), revSecond.getReversedFactAcct_ID(),
-				"Second lookup with otherLine must skip same-sign dr2 and match opposite-sign cr1");
-		assertEquals(0, new BigDecimal("100.00").compareTo(revSecond.getAmtAcctDr()));
-		assertEquals(0, BigDecimal.ZERO.compareTo(revSecond.getAmtAcctCr()));
+			// 4. MFactAcct.deleteEx also deletes M_ManualCostDetail
+			MFactAcct.deleteEx(MInOut.Table_ID, reversal.get_ID(), getTrxName());
+			assertFalse(MManualCostDetail.hasForRecord(as.get_ID(), MInOut.Table_ID, reversal.get_ID(), getTrxName()),
+					"MFactAcct.deleteEx must delete M_ManualCostDetail rows");
 
-		// Two zero-amount facts on the same account must still match distinct Fact_Acct_IDs via Fact_Acct_ID<>?
-		int zeroLineId = 9999995;
-		MFactAcct zero1 = createSyntheticFact(as, acct.getAccount_ID(), periodId, glCatId,
-				MInventory.Table_ID, origRecordId, zeroLineId, BigDecimal.ZERO, BigDecimal.ZERO);
-		MFactAcct zero2 = createSyntheticFact(as, acct.getAccount_ID(), periodId, glCatId,
-				MInventory.Table_ID, origRecordId, zeroLineId, BigDecimal.ZERO, BigDecimal.ZERO);
+			// Repost reversal so both documents are posted again before FactAcctReset
+			reversal.setPosted(false);
+			reversal.saveEx();
+			String repostRevErr = DocumentEngine.postImmediate(Env.getCtx(), reversal.getAD_Client_ID(),
+					reversal.get_Table_ID(), reversal.get_ID(), false, getTrxName());
+			assertNull(repostRevErr, "Repost of reversal failed: " + repostRevErr);
+			assertTrue(MManualCostDetail.hasForRecord(as.get_ID(), MInOut.Table_ID, reversal.get_ID(), getTrxName()));
 
-		FactLine revZero1 = new FactLine(Env.getCtx(), MInventory.Table_ID, revInv.get_ID(), 9999996, getTrxName());
-		revZero1.setAccount(as, acct);
-		revZero1.setC_Currency_ID(as.getC_Currency_ID());
-		assertTrue(revZero1.updateReverseLine(MInventory.Table_ID, origRecordId, zeroLineId, Env.ONE));
-		assertEquals(zero1.get_ID(), revZero1.getReversedFactAcct_ID());
-
-		FactLine revZero2 = new FactLine(Env.getCtx(), MInventory.Table_ID, revInv.get_ID(), 9999996, getTrxName());
-		revZero2.setAccount(as, acct);
-		revZero2.setC_Currency_ID(as.getC_Currency_ID());
-		assertTrue(revZero2.updateReverseLine(MInventory.Table_ID, origRecordId, zeroLineId, Env.ONE, revZero1));
-		assertEquals(zero2.get_ID(), revZero2.getReversedFactAcct_ID(),
-				"Zero-amount lookup with otherLine must exclude already-matched Fact_Acct_ID");
+			// 5. FactAcctReset deletes matching M_ManualCostDetail alongside Fact_Acct
+			MProcess resetProcess = new Query(Env.getCtx(), MProcess.Table_Name, "Value=?", getTrxName())
+					.setParameters("Fact_Acct_Reset")
+					.first();
+			assertNotNull(resetProcess, "Fact_Acct_Reset process not found");
+			ProcessInfo pi = new ProcessInfo(resetProcess.getName(), resetProcess.get_ID());
+			pi.setAD_Client_ID(getAD_Client_ID());
+			pi.setAD_User_ID(getAD_User_ID());
+			pi.setTransactionName(getTrxName());
+			pi.setParameter(new ProcessInfoParameter[] {
+					new ProcessInfoParameter("AD_Client_ID", BigDecimal.valueOf(getAD_Client_ID()), null, null, null),
+					new ProcessInfoParameter("AD_Table_ID", BigDecimal.valueOf(MInOut.Table_ID), null, null, null),
+					new ProcessInfoParameter("DeletePosting", "Y", null, null, null),
+					new ProcessInfoParameter("DateAcct", getLoginDate(), getLoginDate(), null, null),
+			});
+			ServerProcessCtl.process(pi, getTrx(), false);
+			assertFalse(pi.isError(), "FactAcctReset failed: " + pi.getSummary());
+			assertFalse(MManualCostDetail.hasForRecord(as.get_ID(), MInOut.Table_ID, shipment.get_ID(), getTrxName()),
+					"FactAcctReset must delete shipment M_ManualCostDetail");
+			assertFalse(MManualCostDetail.hasForRecord(as.get_ID(), MInOut.Table_ID, reversal.get_ID(), getTrxName()),
+					"FactAcctReset must delete reversal M_ManualCostDetail");
+		}
 	}
 
-	private MFactAcct createSyntheticFact(MAcctSchema as, int accountId, int periodId, int glCatId,
-			int tableId, int recordId, int lineId, BigDecimal dr, BigDecimal cr)
+	@Test
+	public void testHasChargeManualCostElementsGating()
 	{
-		MFactAcct fa = new MFactAcct(Env.getCtx(), 0, getTrxName());
-		fa.setAD_Org_ID(getAD_Org_ID());
-		fa.setC_AcctSchema_ID(as.get_ID());
-		fa.setAccount_ID(accountId);
-		fa.setDateTrx(getLoginDate());
-		fa.setDateAcct(getLoginDate());
-		fa.setC_Period_ID(periodId);
-		fa.setAD_Table_ID(tableId);
-		fa.setRecord_ID(recordId);
-		fa.setLine_ID(lineId);
-		fa.setGL_Category_ID(glCatId);
-		fa.setPostingType(MFactAcct.POSTINGTYPE_Actual);
-		fa.setC_Currency_ID(as.getC_Currency_ID());
-		fa.setAmtSourceDr(dr);
-		fa.setAmtSourceCr(cr);
-		fa.setAmtAcctDr(dr);
-		fa.setAmtAcctCr(cr);
-		fa.saveEx();
-		return fa;
+		assertFalse(MCost.hasChargeManualCostElements(getAD_Client_ID(), getTrxName()),
+				"GardenWorld default seed should not have active charge-mapped manual cost elements");
+
+		MCostElement legacyCe = createManualCostElement("Gate Legacy No Charge",
+				MCostElement.COSTELEMENTTYPE_Overhead, 0);
+		assertNotNull(legacyCe);
+		assertFalse(MCost.hasChargeManualCostElements(getAD_Client_ID(), getTrxName()),
+				"Manual cost element without C_Charge_ID must not activate gating");
+
+		MCostElement chargeCe = createManualCostElement("Gate Charged Burden",
+				MCostElement.COSTELEMENTTYPE_BurdenMOverhead, DictionaryIDs.C_Charge.FREIGHT.id);
+		assertTrue(MCost.hasChargeManualCostElements(getAD_Client_ID(), getTrxName()),
+				"Active charge-mapped manual cost element must activate gating");
+
+		chargeCe.setIsActive(false);
+		chargeCe.saveEx();
+		assertFalse(MCost.hasChargeManualCostElements(getAD_Client_ID(), getTrxName()),
+				"Deactivated charge-mapped manual cost element must not activate gating");
 	}
 }

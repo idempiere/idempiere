@@ -62,9 +62,9 @@ import org.compiere.util.Util;
 public final class FactLine extends X_Fact_Acct
 {
 	/**
-	 * generated serial id
+	 * 
 	 */
-	private static final long serialVersionUID = -7294815630129485712L;
+	private static final long serialVersionUID = -3630377500351331099L;
 
 	/**
 	 *	Constructor
@@ -97,39 +97,6 @@ public final class FactLine extends X_Fact_Acct
 	private Doc			m_doc = null;
 	/** Document Line 			*/
 	private DocLine 	m_docLine = null;
-	/** Reversed Fact_Acct_ID	*/
-	private int			m_reversedFactAcct_ID = 0;
-	/** Skip GL Distribution (for facts replayed from persisted ledger rows) */
-	private boolean		m_skipDistribution = false;
-	/** Sales region copied from original persisted fact (preserve unset 0 instead of deriving) */
-	private boolean		m_salesRegionCopied = false;
-
-	/**
-	 * Get the original Fact_Acct_ID matched by {@link #updateReverseLine}
-	 * @return original Fact_Acct_ID or 0
-	 */
-	public int getReversedFactAcct_ID()
-	{
-		return m_reversedFactAcct_ID;
-	}
-
-	/**
-	 * @return true if GL Distribution should be skipped for this fact line
-	 */
-	boolean isSkipDistribution()
-	{
-		return m_skipDistribution;
-	}
-
-	/**
-	 * Mark whether GL Distribution should be skipped for this fact line
-	 * (e.g. when replaying already-posted Fact_Acct rows during reversal).
-	 * @param skipDistribution true to skip GL distribution
-	 */
-	void setSkipDistribution(boolean skipDistribution)
-	{
-		m_skipDistribution = skipDistribution;
-	}
 	
 	/**
 	 * 	Create Reversal (negate DR/CR) of the line
@@ -419,7 +386,6 @@ public final class FactLine extends X_Fact_Acct
 		//	reset
 		setAD_Org_ID(0);
 		setC_SalesRegion_ID(0);
-		m_salesRegionCopied = false;
 		//	Client
 		if (getAD_Client_ID() == 0)
 			setAD_Client_ID (m_doc.getAD_Client_ID());
@@ -1071,7 +1037,7 @@ public final class FactLine extends X_Fact_Acct
 	@Override
 	public int getC_SalesRegion_ID ()
 	{
-		if (super.getC_SalesRegion_ID() != 0 || m_salesRegionCopied)
+		if (super.getC_SalesRegion_ID() != 0)
 			return super.getC_SalesRegion_ID();
 		// Get from DocLine
 		if (m_docLine != null)
@@ -1388,8 +1354,6 @@ public final class FactLine extends X_Fact_Acct
 		// end MZ
 		if (otherLine != null) 
 		{
-			if (otherLine.getReversedFactAcct_ID() > 0)
-				sql.append(" AND Fact_Acct_ID<>? ");
 			if (otherLine.getAmtAcctDr().signum() == 0 && otherLine.getAmtAcctCr().signum() != 0)
 				sql.append(" AND AmtAcctDr = 0 AND AmtAcctCr != 0 ");
 			else if (otherLine.getAmtAcctDr().signum() != 0 && otherLine.getAmtAcctCr().signum() == 0)
@@ -1417,22 +1381,68 @@ public final class FactLine extends X_Fact_Acct
 			if (MMovement.Table_ID == AD_Table_ID)
 				pstmt.setInt(pindex++, getM_Locator_ID());
 			// end MZ
-			if (otherLine != null && otherLine.getReversedFactAcct_ID() > 0)
-				pstmt.setInt(pindex++, otherLine.getReversedFactAcct_ID());
 			rs = pstmt.executeQuery();
 			if (rs.next())
 			{
 				MFactAcct fact = new MFactAcct(getCtx(), rs, get_TrxName());
-				updateReverseLine(fact, multiplier, updateTaxAndAmounts);
+				BigDecimal dr = fact.getAmtAcctDr();
+				BigDecimal cr = fact.getAmtAcctCr();
+				if (updateTaxAndAmounts) {
+					//  Accounted Amounts - reverse
+					setAmtAcct(getC_Currency_ID(), cr.multiply(multiplier), dr.multiply(multiplier));
+					//  Fixing source amounts
+					BigDecimal drSourceAmt = fact.getAmtSourceDr();
+					BigDecimal crSourceAmt = fact.getAmtSourceCr();
+					setAmtSource(fact.getC_Currency_ID(), crSourceAmt.multiply(multiplier), drSourceAmt.multiply(multiplier));
+				}
+				//
 				success = true;
 				if (log.isLoggable(Level.FINE)) log.fine(new StringBuilder("(Table=").append(AD_Table_ID)
 					.append(",Record_ID=").append(Record_ID)
 					.append(",Line=").append(Record_ID)
 					.append(", Account=").append(m_acct)
-					.append(",dr=").append(fact.getAmtAcctDr()).append(",cr=").append(fact.getAmtAcctCr())
+					.append(",dr=").append(dr).append(",cr=").append(cr)
 					.append(") - DR=").append(getAmtSourceDr()).append("|").append(getAmtAcctDr())
 					.append(", CR=").append(getAmtSourceCr()).append("|").append(getAmtAcctCr())
 					.toString());
+				//	Dimensions
+				setAD_OrgTrx_ID(fact.getAD_OrgTrx_ID());
+				setC_Project_ID (fact.getC_Project_ID());
+				setC_ProjectPhase_ID(fact.getC_ProjectPhase_ID());
+				setC_ProjectTask_ID(fact.getC_ProjectTask_ID());
+				setC_Activity_ID(fact.getC_Activity_ID());
+				setC_Campaign_ID(fact.getC_Campaign_ID());
+				setC_SalesRegion_ID(fact.getC_SalesRegion_ID());
+				setC_LocFrom_ID(fact.getC_LocFrom_ID());
+				setC_LocTo_ID(fact.getC_LocTo_ID());
+				setM_Product_ID(fact.getM_Product_ID());
+				setM_Locator_ID(fact.getM_Locator_ID());
+				setA_Asset_ID(fact.getA_Asset_ID());
+				setM_Warehouse_ID(fact.getM_Warehouse_ID());
+				if (updateTaxAndAmounts)
+					setC_Tax_ID(fact.getC_Tax_ID());
+				setC_Charge_ID(fact.getC_Charge_ID());
+				setC_CostCenter_ID(fact.getC_CostCenter_ID());
+				setC_Department_ID(fact.getC_Department_ID());	
+				setC_Employee_ID(fact.getC_Employee_ID());		
+				setUser1_ID(fact.getUser1_ID());
+				setUser2_ID(fact.getUser2_ID());
+				setC_UOM_ID(fact.getC_UOM_ID());
+				setM_AttributeSetInstance_ID(fact.getM_AttributeSetInstance_ID());	
+				setCustomFieldText1(fact.getCustomFieldText1());
+				setCustomFieldText2(fact.getCustomFieldText2());
+				setCustomFieldText3(fact.getCustomFieldText3());
+				setCustomFieldText4(fact.getCustomFieldText4());
+				//	Org for cross charge
+				setAD_Org_ID (fact.getAD_Org_ID());
+				if (fact.getQty() != null) {
+					if (getC_UOM_ID() != 0)
+					{
+						int precision = MUOM.getPrecision(getCtx(), getC_UOM_ID());
+						setQty(fact.getQty().multiply(multiplier).negate().setScale(precision, RoundingMode.HALF_UP));
+					} else
+						setQty(fact.getQty().multiply(multiplier).negate().stripTrailingZeros());
+				}
 			}
 			else
 				log.warning(new StringBuilder("Not Found (try later) ")
@@ -1451,68 +1461,6 @@ public final class FactLine extends X_Fact_Acct
 			rs = null; pstmt = null;
 		}
 		return success;
-	}   //  updateReverseLine
-
-	/**
-	 * Update Line with reversed amounts and dimensions from an original {@link MFactAcct} record.
-	 * @param fact original fact accounting record
-	 * @param multiplier targetQty/documentQty
-	 * @param updateTaxAndAmounts define if it must update tax and amounts, useful if they are already set in the origin
-	 */
-	public void updateReverseLine (MFactAcct fact, BigDecimal multiplier, boolean updateTaxAndAmounts)
-	{
-		m_reversedFactAcct_ID = fact.getFact_Acct_ID();
-		BigDecimal dr = fact.getAmtAcctDr();
-		BigDecimal cr = fact.getAmtAcctCr();
-		if (updateTaxAndAmounts) {
-			//  Accounted Amounts - reverse
-			setAmtAcct(getC_Currency_ID(), cr.multiply(multiplier), dr.multiply(multiplier));
-			//  Fixing source amounts
-			BigDecimal drSourceAmt = fact.getAmtSourceDr();
-			BigDecimal crSourceAmt = fact.getAmtSourceCr();
-			setAmtSource(fact.getC_Currency_ID(), crSourceAmt.multiply(multiplier), drSourceAmt.multiply(multiplier));
-		}
-		//	Dimensions
-		setAD_OrgTrx_ID(fact.getAD_OrgTrx_ID());
-		setC_Project_ID (fact.getC_Project_ID());
-		setC_ProjectPhase_ID(fact.getC_ProjectPhase_ID());
-		setC_ProjectTask_ID(fact.getC_ProjectTask_ID());
-		setC_Activity_ID(fact.getC_Activity_ID());
-		setC_Campaign_ID(fact.getC_Campaign_ID());
-		setC_SalesRegion_ID(fact.getC_SalesRegion_ID());
-		m_salesRegionCopied = true;
-		setC_LocFrom_ID(fact.getC_LocFrom_ID());
-		setC_LocTo_ID(fact.getC_LocTo_ID());
-		setM_Product_ID(fact.getM_Product_ID());
-		setM_Locator_ID(fact.getM_Locator_ID());
-		setA_Asset_ID(fact.getA_Asset_ID());
-		setM_Warehouse_ID(fact.getM_Warehouse_ID());
-		if (updateTaxAndAmounts)
-			setC_Tax_ID(fact.getC_Tax_ID());
-		setC_Charge_ID(fact.getC_Charge_ID());
-		setC_CostCenter_ID(fact.getC_CostCenter_ID());
-		setC_Department_ID(fact.getC_Department_ID());
-		setC_Employee_ID(fact.getC_Employee_ID());
-		setUser1_ID(fact.getUser1_ID());
-		setUser2_ID(fact.getUser2_ID());
-		setUserElement1_ID(fact.getUserElement1_ID());
-		setUserElement2_ID(fact.getUserElement2_ID());
-		setC_UOM_ID(fact.getC_UOM_ID());
-		setM_AttributeSetInstance_ID(fact.getM_AttributeSetInstance_ID());
-		setCustomFieldText1(fact.getCustomFieldText1());
-		setCustomFieldText2(fact.getCustomFieldText2());
-		setCustomFieldText3(fact.getCustomFieldText3());
-		setCustomFieldText4(fact.getCustomFieldText4());
-		//	Org for cross charge
-		setAD_Org_ID (fact.getAD_Org_ID());
-		if (fact.getQty() != null) {
-			if (getC_UOM_ID() != 0)
-			{
-				int precision = MUOM.getPrecision(getCtx(), getC_UOM_ID());
-				setQty(fact.getQty().multiply(multiplier).negate().setScale(precision, RoundingMode.HALF_UP));
-			} else
-				setQty(fact.getQty().multiply(multiplier).negate().stripTrailingZeros());
-		}
 	}   //  updateReverseLine
 
 	/**
