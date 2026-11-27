@@ -300,7 +300,7 @@ public class Doc_Production extends Doc
 						}
 						if (maManualCostMap != null)
 						{
-							accumulateManualCosts(maManualCostMap, MCost.getManualCosts(product, ma.getM_AttributeSetInstance_ID(),
+							DocManualCostHelper.accumulateManualCosts(maManualCostMap, MCost.getManualCosts(product, ma.getM_AttributeSetInstance_ID(),
 									as, line.getAD_Org_ID(), maCost, ma.getMovementQty(), getTrxName()));
 						}
 						maCost = maCost.setScale(stdPrecision, RoundingMode.HALF_UP);
@@ -308,7 +308,7 @@ public class Doc_Production extends Doc
 						costMap.put(line.get_ID()+ "_"+ ma.getM_AttributeSetInstance_ID(), maCost);
 					}
 					if (maManualCostMap != null)
-						manualCostMap.put(line.get_ID(), roundManualCosts(maManualCostMap.values(), stdPrecision));
+						manualCostMap.put(line.get_ID(), DocManualCostHelper.roundManualCosts(maManualCostMap.values(), stdPrecision));
 				} 
 				else
 				{
@@ -330,7 +330,7 @@ public class Doc_Production extends Doc
 					}
 					if (!isReversal && !line.isProductionBOM() && !manualCostMap.containsKey(line.get_ID()))
 					{
-						manualCostMap.put(line.get_ID(), roundManualCosts(
+						manualCostMap.put(line.get_ID(), DocManualCostHelper.roundManualCosts(
 								MCost.getManualCosts(product, line.getM_AttributeSetInstance_ID(),
 										as, line.getAD_Org_ID(), costs, line.getQty(), getTrxName()),
 								stdPrecision));
@@ -363,7 +363,7 @@ public class Doc_Production extends Doc
 				}
 				if (!isReversal && !line.isProductionBOM() && !manualCostMap.containsKey(line.get_ID()))
 				{
-					manualCostMap.put(line.get_ID(), roundManualCosts(
+					manualCostMap.put(line.get_ID(), DocManualCostHelper.roundManualCosts(
 							MCost.getManualCosts(product, line.getM_AttributeSetInstance_ID(),
 									as, line.getAD_Org_ID(), costs, line.getQty(), getTrxName()),
 							stdPrecision));
@@ -490,7 +490,7 @@ public class Doc_Production extends Doc
 					for (MManualCostDetail origDetail : getOriginalLineManualDetails(as, prod.getReversal_ID(), line, origManualDetailMap))
 					{
 						if (!postProductionChargeLine(fact, as, line, origDetail.getM_CostElement_ID(),
-								origDetail.getC_Charge_ID(), getManualCostChargeAccount(as, origDetail), origDetail.getAmt()))
+								origDetail.getC_Charge_ID(), DocManualCostHelper.getManualCostChargeAccount(this, as, origDetail), origDetail.getAmt()))
 							return null;
 					}
 				}
@@ -659,7 +659,7 @@ public class Doc_Production extends Doc
 	{
 		BigDecimal drAmt = signedAmt.signum() < 0 ? null : signedAmt;
 		BigDecimal crAmt = signedAmt.signum() < 0 ? signedAmt.abs() : null;
-		FactLine fl = createManualCostChargeLine(fact, as, line, M_CostElement_ID, C_Charge_ID, chargeAcct,
+		FactLine fl = DocManualCostHelper.createManualCostChargeLine(this, fact, as, line, M_CostElement_ID, C_Charge_ID, chargeAcct,
 				drAmt, crAmt, signedAmt.negate());
 		if (fl == null)
 			return false;

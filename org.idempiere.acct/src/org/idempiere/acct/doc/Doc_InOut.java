@@ -232,7 +232,7 @@ public class Doc_InOut extends Doc
 									BigDecimal maCosts = line.getProductCosts(as, line.getAD_Org_ID(), true, "M_InOutLine_ID=?");
 									batchLotCostMap.put(ma.getM_InOutLineMA_UU(), maCosts);
 									costs = costs.add(maCosts);
-									accumulateManualCosts(maManualCostMap, line.getManualCosts(as, line.getAD_Org_ID(), maCosts));
+									DocManualCostHelper.accumulateManualCosts(maManualCostMap, line.getManualCosts(as, line.getAD_Org_ID(), maCosts));
 								}						
 								manualCosts.addAll(maManualCostMap.values());
 							}
@@ -273,7 +273,7 @@ public class Doc_InOut extends Doc
 						else	//	ignore service
 							continue;
 					}
-					manualCosts = roundManualCosts(manualCosts, as.getStdPrecision());
+					manualCosts = DocManualCostHelper.roundManualCosts(manualCosts, as.getStdPrecision());
 				}
 				else
 				{
@@ -521,7 +521,7 @@ public class Doc_InOut extends Doc
 									BigDecimal maCosts = line.getProductCosts(as, line.getAD_Org_ID(), true, "M_InOutLine_ID=?");
 									batchLotCostMap.put(ma.getM_InOutLineMA_UU(), maCosts);
 									costs = costs.add(maCosts);
-									accumulateManualCosts(maManualCostMap, line.getManualCosts(as, line.getAD_Org_ID(), maCosts));
+									DocManualCostHelper.accumulateManualCosts(maManualCostMap, line.getManualCosts(as, line.getAD_Org_ID(), maCosts));
 								}
 								manualCosts.addAll(maManualCostMap.values());
 							}
@@ -551,7 +551,7 @@ public class Doc_InOut extends Doc
 						else	//	ignore service
 							continue;
 					}
-					manualCosts = roundManualCosts(manualCosts, as.getStdPrecision());
+					manualCosts = DocManualCostHelper.roundManualCosts(manualCosts, as.getStdPrecision());
 				} 
 				else
 				{
@@ -1204,7 +1204,7 @@ public class Doc_InOut extends Doc
 		for (ManualCost manualCost : manualCosts)
 		{
 			BigDecimal amt = manualCost.getAmount();
-			FactLine chargeFl = createManualCostChargeLine(fact, as, line,
+			FactLine chargeFl = DocManualCostHelper.createManualCostChargeLine(this, fact, as, line,
 					manualCost.getCostElement().getM_CostElement_ID(),
 					manualCost.getCostElement().getC_Charge_ID(), null,
 					isCredit ? null : amt, isCredit ? amt : null,
@@ -1228,9 +1228,9 @@ public class Doc_InOut extends Doc
 		{
 			BigDecimal origAmt = origDetail.getAmt();
 			BigDecimal revAmt = origAmt.negate();
-			FactLine chargeFl = createManualCostChargeLine(fact, as, line,
+			FactLine chargeFl = DocManualCostHelper.createManualCostChargeLine(this, fact, as, line,
 					origDetail.getM_CostElement_ID(), origDetail.getC_Charge_ID(),
-					getManualCostChargeAccount(as, origDetail),
+					DocManualCostHelper.getManualCostChargeAccount(this, as, origDetail),
 					isReturn ? null : origAmt, isReturn ? revAmt : null, revAmt);
 			if (chargeFl == null)
 				return false;

@@ -195,7 +195,7 @@ public class Doc_ProjectIssue extends Doc
 			{
 				cost = m_line.getProductCosts(as, getAD_Org_ID(), false);
 				if (!isReversal)
-					postedManualCosts = roundManualCosts(m_line.getManualCosts(as, getAD_Org_ID(), cost), stdPrecision);
+					postedManualCosts = DocManualCostHelper.roundManualCosts(m_line.getManualCosts(as, getAD_Org_ID(), cost), stdPrecision);
 			}
 			drAmt = cost;
 			if (!postedManualCosts.isEmpty())
@@ -239,7 +239,7 @@ public class Doc_ProjectIssue extends Doc
 			{
 				BigDecimal amt = origDetail.getAmt().negate();
 				if (!postProjectIssueChargeLine(fact, as, origDetail.getM_CostElement_ID(), origDetail.getC_Charge_ID(),
-						getManualCostChargeAccount(as, origDetail), amt))
+						DocManualCostHelper.getManualCostChargeAccount(this, as, origDetail), amt))
 					return null;
 			}
 		}
@@ -289,7 +289,7 @@ public class Doc_ProjectIssue extends Doc
 	private boolean postProjectIssueChargeLine(Fact fact, MAcctSchema as,
 			int M_CostElement_ID, int C_Charge_ID, MAccount chargeAcct, BigDecimal crAmt)
 	{
-		FactLine chargeCr = createManualCostChargeLine(fact, as, m_line,
+		FactLine chargeCr = DocManualCostHelper.createManualCostChargeLine(this, fact, as, m_line,
 				M_CostElement_ID, C_Charge_ID, chargeAcct, null, crAmt, crAmt);
 		if (chargeCr == null)
 			return false;
