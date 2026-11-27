@@ -1211,11 +1211,27 @@ public class CConnection implements Serializable, Cloneable
 		return conn;
 	}	//  getConnection
 
-	/** Result of the one time check that the pool delivers READ_COMMITTED connections, null = not checked yet */
-	private static volatile Boolean s_poolIsolationTrusted = null;
+	/**
+	 * Result of the one time check that the pool of a database provider delivers READ_COMMITTED connections.
+	 * It belongs to the provider that owns the pool: if the provider is replaced the check is done again.
+	 */
+	private static final class PoolIsolationCheck
+	{
+		private final AdempiereDatabase db;
+		private final boolean readCommitted;
+
+		private PoolIsolationCheck(AdempiereDatabase db, boolean readCommitted)
+		{
+			this.db = db;
+			this.readCommitted = readCommitted;
+		}
+	}
+
+	/** One time pool check, null = not checked yet */
+	private transient volatile PoolIsolationCheck m_poolIsolationCheck = null;
 
 	/**
-	 * Check once (first checkout) that the connection pool delivers READ_COMMITTED connections.<br/>
+	 * Check once (first checkout from the pool of the current database provider) that the pool delivers READ_COMMITTED connections.<br/>
 	 * The pool sets the level when it creates a connection and resets it when a changed connection is returned,
 	 * so asking the database on every checkout is not needed. If the pool does not deliver READ_COMMITTED
 	 * (for example a pool configured with another level), a warning is logged and the level is verified on every checkout.
@@ -1225,15 +1241,17 @@ public class CConnection implements Serializable, Cloneable
 	 */
 	private boolean isPoolIsolationTrusted(Connection conn) throws SQLException
 	{
-		Boolean trusted = s_poolIsolationTrusted;
-		if (trusted == null)
+		AdempiereDatabase db = m_db;
+		PoolIsolationCheck check = m_poolIsolationCheck;
+		if (check == null || check.db != db)
 		{
-			trusted = conn.getTransactionIsolation() == Connection.TRANSACTION_READ_COMMITTED;
-			s_poolIsolationTrusted = trusted;
-			if (!trusted)
+			boolean readCommitted = conn.getTransactionIsolation() == Connection.TRANSACTION_READ_COMMITTED;
+			m_poolIsolationCheck = new PoolIsolationCheck(db, readCommitted);
+			if (!readCommitted)
 				log.warning("The connection pool does not deliver READ_COMMITTED connections, the transaction isolation level is verified on every checkout");
+			return readCommitted;
 		}
-		return trusted;
+		return check.readCommitted;
 	}
 
 	/**

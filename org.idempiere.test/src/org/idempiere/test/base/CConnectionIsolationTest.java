@@ -53,8 +53,6 @@ import org.compiere.db.AdempiereDatabase;
 import org.compiere.db.CConnection;
 import org.compiere.util.DB;
 import org.idempiere.test.AbstractTestCase;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -69,8 +67,8 @@ import org.junit.jupiter.api.parallel.Isolated;
  * <ul>
  * <li>CConnection tests: the provider is a mock, they define what CConnection does with the connection it gets.</li>
  * <li>Provider test: the pool is a mock, it fails if the provider verifies the connection itself again.</li>
- * <li>Pool default tests: the one time check that the pool delivers READ_COMMITTED connections, so that the level
- * is not asked from the database on every checkout.</li>
+ * <li>Pool default tests: the one time check that the pool of a provider delivers READ_COMMITTED connections, so that
+ * the level is not asked from the database on every checkout.</li>
  * <li>Checkout tests: real pool, they check the level and auto commit mode the caller receives and that a
  * non default level does not leak into the next checkout.</li>
  * </ul>
@@ -80,29 +78,6 @@ import org.junit.jupiter.api.parallel.Isolated;
 class CConnectionIsolationTest extends AbstractTestCase {
 
 	private static final int READ_COMMITTED = Connection.TRANSACTION_READ_COMMITTED;
-
-	/** the one time pool check of CConnection is JVM wide: tests start from "not checked yet" and restore it afterwards */
-	private Field poolCheckField;
-	private Object poolCheckBefore;
-
-	@BeforeEach
-	void resetPoolCheck() throws Exception {
-		try {
-			poolCheckField = CConnection.class.getDeclaredField("s_poolIsolationTrusted");
-		} catch (NoSuchFieldException e) {
-			poolCheckField = null; // CConnection without the pool check
-			return;
-		}
-		poolCheckField.setAccessible(true);
-		poolCheckBefore = poolCheckField.get(null);
-		poolCheckField.set(null, null);
-	}
-
-	@AfterEach
-	void restorePoolCheck() throws Exception {
-		if (poolCheckField != null)
-			poolCheckField.set(null, poolCheckBefore);
-	}
 
 	/**
 	 * @param db provider returned by the CConnection under test
@@ -294,7 +269,31 @@ class CConnectionIsolationTest extends AbstractTestCase {
 	}
 
 	@Test
-	void testPoolCheckIsSharedBetweenConnections() throws Exception {
+	void testPoolCheckBelongsToTheProviderThatOwnsThePool() throws Exception {
+		// pool A delivers READ_COMMITTED and is trusted
+		Connection fromPoolA = pooledConnection(READ_COMMITTED, true);
+		CConnection cc = connectionUsing(providerReturning(fromPoolA));
+		cc.getConnection(true, READ_COMMITTED);
+		cc.getConnection(true, READ_COMMITTED);
+		verify(fromPoolA, times(1)).getTransactionIsolation();
+
+		// the provider is replaced by one whose pool delivers another level: the trust of pool A must not be reused
+		Connection fromPoolB = pooledConnection(Connection.TRANSACTION_SERIALIZABLE, true);
+		AdempiereDatabase providerB = providerReturning(fromPoolB);
+		when(providerB.getName()).thenReturn(cc.getType());
+		Field field = CConnection.class.getDeclaredField("m_db");
+		field.setAccessible(true);
+		field.set(cc, providerB);
+
+		assertSame(fromPoolB, cc.getConnection(true, READ_COMMITTED));
+		verify(fromPoolB, times(1)).setTransactionIsolation(READ_COMMITTED);
+		// and it is checked every time, because pool B does not deliver READ_COMMITTED
+		cc.getConnection(true, READ_COMMITTED);
+		verify(fromPoolB, times(2)).setTransactionIsolation(READ_COMMITTED);
+	}
+
+	@Test
+	void testEachConnectionDescriptorChecksItsOwnPool() throws Exception {
 		Connection first = pooledConnection(READ_COMMITTED, true);
 		Connection second = pooledConnection(READ_COMMITTED, true);
 
@@ -302,7 +301,7 @@ class CConnectionIsolationTest extends AbstractTestCase {
 		connectionUsing(providerReturning(second)).getConnection(true, READ_COMMITTED);
 
 		verify(first, times(1)).getTransactionIsolation();
-		verify(second, never()).getTransactionIsolation();
+		verify(second, times(1)).getTransactionIsolation();
 	}
 
 	@Test
