@@ -36,6 +36,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,11 +63,13 @@ import org.compiere.model.MProductionPlan;
 import org.compiere.model.MStorageOnHand;
 import org.compiere.model.ProductCost;
 import org.compiere.model.Query;
+import org.compiere.process.DocumentEngine;
 import org.compiere.util.CPreparedStatement;
 import org.compiere.util.CacheMgt;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.compiere.util.TimeUtil;
 import org.eevolution.model.MPPProductBOM;
 import org.idempiere.acct.base.model.MDistribution;
 import org.idempiere.acct.base.model.MDistributionLine;
@@ -1343,6 +1346,24 @@ public class ManualCostElementProductionTest extends AbstractManualCostElementTe
 		return null;
 	}
 
+	private MProductionLine findPlanLineByProduct(MProduction prod, int productId)
+	{
+		List<MProductionPlan> plans = new Query(Env.getCtx(), MProductionPlan.Table_Name,
+				"M_Production_ID=?", getTrxName())
+				.setParameters(prod.get_ID())
+				.setOrderBy(MProductionPlan.COLUMNNAME_Line + "," + MProductionPlan.COLUMNNAME_M_ProductionPlan_ID)
+				.list();
+		for (MProductionPlan plan : plans)
+		{
+			for (MProductionLine pl : plan.getLines())
+			{
+				if (pl.getM_Product_ID() == productId)
+					return pl;
+			}
+		}
+		return null;
+	}
+
 	private BigDecimal sumLineAccount(List<MFactAcct> facts, int lineId, int accountId, boolean debit)
 	{
 		BigDecimal sum = BigDecimal.ZERO;
@@ -1361,5 +1382,234 @@ public class ManualCostElementProductionTest extends AbstractManualCostElementTe
 		cost.setCurrentCostPrice(price);
 		cost.setCurrentQty(qty);
 		cost.saveEx();
+	}
+
+	@Test
+	public void testPreMigrationDistinguishableTiedPlanLinesMatchedOneToOne()
+	{
+		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
+
+		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS))
+		{
+			MProduct compA = createStockedProduct("TiedDistCompA", DictionaryIDs.M_Product_Category.STANDARD.id, 0);
+			MProduct compB = createStockedProduct("TiedDistCompB", DictionaryIDs.M_Product_Category.STANDARD.id, 0);
+			mockProductGet(mockedProduct, compA);
+			mockProductGet(mockedProduct, compB);
+			MProduct fgA = createBomProduct("TiedDistFgA", DictionaryIDs.M_Product_Category.STANDARD.id, 0, mockedProduct);
+			MProduct fgB = createBomProduct("TiedDistFgB", DictionaryIDs.M_Product_Category.STANDARD.id, 0, mockedProduct);
+
+			createPOAndMR(compA, null, new BigDecimal("2"), new BigDecimal("100.00"));
+			createPOAndMR(compB, null, new BigDecimal("2"), new BigDecimal("200.00"));
+			createSimpleBOM(fgA, compA, BigDecimal.ONE);
+			createSimpleBOM(fgB, compB, BigDecimal.ONE);
+
+			MCostElement ceA = createManualCostElement("TiedDist Overhead A",
+					MCostElement.COSTELEMENTTYPE_Overhead, DictionaryIDs.C_Charge.FREIGHT.id);
+			MCostElement ceB = createManualCostElement("TiedDist Overhead B",
+					MCostElement.COSTELEMENTTYPE_Overhead, DictionaryIDs.C_Charge.COMMISSIONS.id);
+			createManualCostRecord(compA, as, ceA, 0, new BigDecimal("10.00"), 0);
+			createManualCostRecord(compB, as, ceB, 0, new BigDecimal("25.00"), 0);
+
+			// Create origPlanA (lower ID, temp Line=20) before origPlanB (higher ID, temp Line=10) so reverseIt copies B before A
+			MProduction origProd = createPlanProduction("OrigTiedDistProd");
+			MProductionPlan origPlanA = createProductionPlan(origProd, 20, fgA, BigDecimal.ONE);
+			addProductionLine(null, origPlanA, 10, fgA, 0, true, BigDecimal.ONE);
+			addProductionLine(null, origPlanA, 20, compA, 0, false, BigDecimal.ONE.negate());
+
+			MProductionPlan origPlanB = createProductionPlan(origProd, 10, fgB, BigDecimal.ONE);
+			addProductionLine(null, origPlanB, 10, fgB, 0, true, BigDecimal.ONE);
+			addProductionLine(null, origPlanB, 20, compB, 0, false, BigDecimal.ONE.negate());
+
+			runDeferred(() -> {
+				complete(origProd);
+				reverseCorrect(origProd);
+			});
+			origProd.load(getTrxName());
+			MProduction revProd = new MProduction(Env.getCtx(), origProd.getReversal_ID(), getTrxName());
+			assertTrue(revProd.get_ID() > 0);
+
+			// Simulate pre-upgrade tied Line=10 plans with null ReversalLine_ID and inverted plan ID order
+			DB.executeUpdateEx("UPDATE M_ProductionPlan SET Line=10 WHERE M_Production_ID IN (?,?)",
+					new Object[] { origProd.get_ID(), revProd.get_ID() }, getTrxName());
+			DB.executeUpdateEx(
+					"UPDATE M_ProductionLine SET ReversalLine_ID=NULL WHERE M_ProductionPlan_ID IN "
+					+ "(SELECT M_ProductionPlan_ID FROM M_ProductionPlan WHERE M_Production_ID IN (?,?))",
+					new Object[] { origProd.get_ID(), revProd.get_ID() }, getTrxName());
+
+			postImmediate(origProd);
+			postImmediate(revProd);
+
+			int freightAcctId = MCharge.getAccount(DictionaryIDs.C_Charge.FREIGHT.id, as, getTrxName()).getAccount_ID();
+			int commissionsAcctId = MCharge.getAccount(DictionaryIDs.C_Charge.COMMISSIONS.id, as, getTrxName()).getAccount_ID();
+			int assetAcctId = new ProductCost(Env.getCtx(), fgA.get_ID(), 0, getTrxName())
+					.getAccount(ProductCost.ACCTTYPE_P_Asset, as).getAccount_ID();
+
+			MProductionLine revFgALine = findPlanLineByProduct(revProd, fgA.get_ID());
+			MProductionLine revFgBLine = findPlanLineByProduct(revProd, fgB.get_ID());
+			assertNotNull(revFgALine);
+			assertNotNull(revFgBLine);
+
+			List<MFactAcct> revFacts = getFacts(MProduction.Table_ID, revProd.get_ID(), as.get_ID());
+			assertFactTotals(revFacts, freightAcctId, new BigDecimal("10.00"), BigDecimal.ZERO);
+			assertFactTotals(revFacts, commissionsAcctId, new BigDecimal("25.00"), BigDecimal.ZERO);
+			assertFactTotals(revFacts, assetAcctId, new BigDecimal("300.00"), new BigDecimal("335.00"));
+			assertEquals(new BigDecimal("110.00"), sumLineAccount(revFacts, revFgALine.get_ID(), assetAcctId, false).setScale(2, RoundingMode.HALF_UP));
+			assertEquals(new BigDecimal("225.00"), sumLineAccount(revFacts, revFgBLine.get_ID(), assetAcctId, false).setScale(2, RoundingMode.HALF_UP));
+		}
+	}
+
+	@Test
+	public void testBatchLotComponentMultiMaSameAsiProductionAndReversal()
+	{
+		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
+
+		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MProductCategory> mockedCategory = mockStatic(MProductCategory.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MAttributeSet> mockedAttrSet = mockStatic(MAttributeSet.class, Mockito.CALLS_REAL_METHODS))
+		{
+			MProductCategory batchCat = createCategoryWithCosting("ProdMaSameAsiCat", as,
+					MAcctSchema.COSTINGLEVEL_BatchLot, MCostElement.COSTINGMETHOD_AveragePO, mockedCategory);
+			MAttributeSet lotAs = createLotAttributeSet("ProdMaSameAsiAS", mockedAttrSet);
+			MProduct comp = createStockedProduct("ProdMaSameAsiComp", batchCat.get_ID(), lotAs.get_ID());
+			mockProductGet(mockedProduct, comp);
+			MProduct fg = createBomProduct("ProdMaSameAsiFG", DictionaryIDs.M_Product_Category.STANDARD.id, 0, mockedProduct);
+
+			MAttributeSetInstance lotA = createLot(lotAs.get_ID(), "LOT-PROD-SAME-ASI");
+			Timestamp day1 = TimeUtil.addDays(getLoginDate(), -2);
+			Timestamp day2 = TimeUtil.addDays(getLoginDate(), -1);
+			createPOAndMR(comp, lotA, BigDecimal.ONE, new BigDecimal("100.00"), day1);
+			createPOAndMR(comp, lotA, new BigDecimal("2"), new BigDecimal("100.00"), day2);
+
+			MCostElement burdenCe = createManualCostElement("ProdMultiMa Burden 10pct",
+					MCostElement.COSTELEMENTTYPE_BurdenMOverhead, DictionaryIDs.C_Charge.FREIGHT.id);
+			createManualCostRecord(comp, as, burdenCe, 0, BigDecimal.ZERO, 10);
+			MPPProductBOM bom = createSimpleBOM(fg, comp, new BigDecimal("3"));
+
+			MProduction prod = createProduction(fg, BigDecimal.ONE, bom.getPP_Product_BOM_ID(), true);
+			completeAndPost(prod);
+
+			MProductionLine compLine = findLineByProduct(prod, comp.get_ID());
+			assertNotNull(compLine);
+			assertEquals(2, MProductionLineMA.get(Env.getCtx(), compLine.get_ID(), getTrxName()).length);
+
+			List<MCostDetail> origCds = new Query(Env.getCtx(), MCostDetail.Table_Name,
+					"C_AcctSchema_ID=? AND M_Product_ID=? AND M_ProductionLine_ID=? AND COALESCE(M_CostElement_ID,0)=0",
+					getTrxName())
+					.setParameters(as.get_ID(), comp.get_ID(), compLine.get_ID())
+					.list();
+			assertEquals(1, origCds.size());
+			assertEquals(0, new BigDecimal("-3").compareTo(origCds.get(0).getQty()));
+			assertEquals(0, new BigDecimal("-300.00").compareTo(origCds.get(0).getAmt()));
+
+			int assetAcctId = new ProductCost(Env.getCtx(), comp.get_ID(), 0, getTrxName())
+					.getAccount(ProductCost.ACCTTYPE_P_Asset, as).getAccount_ID();
+			int freightAcctId = MCharge.getAccount(DictionaryIDs.C_Charge.FREIGHT.id, as, getTrxName()).getAccount_ID();
+
+			// Re-post forward production -> must stay 330.00 / 300.00 / 30.00 (no double-counting)
+			String repostErr = DocumentEngine.postImmediate(Env.getCtx(), getAD_Client_ID(),
+					MProduction.Table_ID, prod.get_ID(), true, getTrxName());
+			assertEquals(null, repostErr, "Re-post failed: " + repostErr);
+			List<MFactAcct> prodFacts = getFacts(MProduction.Table_ID, prod.get_ID(), as.get_ID());
+			assertFactTotals(prodFacts, assetAcctId, new BigDecimal("330.00"), new BigDecimal("300.00"));
+			assertFactTotals(prodFacts, freightAcctId, BigDecimal.ZERO, new BigDecimal("30.00"));
+
+			// Reverse production (MA-copied path)
+			MProduction revProd = reverseAndPost(prod);
+			List<MFactAcct> revFacts = getFacts(MProduction.Table_ID, revProd.get_ID(), as.get_ID());
+			assertFactTotals(revFacts, assetAcctId, new BigDecimal("300.00"), new BigDecimal("330.00"));
+			assertFactTotals(revFacts, freightAcctId, new BigDecimal("30.00"), BigDecimal.ZERO);
+
+			MProductionLine revCompLine = findLineByProduct(revProd, comp.get_ID());
+			assertNotNull(revCompLine);
+			List<MCostDetail> revCds = new Query(Env.getCtx(), MCostDetail.Table_Name,
+					"C_AcctSchema_ID=? AND M_Product_ID=? AND M_ProductionLine_ID=? AND COALESCE(M_CostElement_ID,0)=0",
+					getTrxName())
+					.setParameters(as.get_ID(), comp.get_ID(), revCompLine.get_ID())
+					.list();
+			assertEquals(1, revCds.size());
+			assertEquals(0, new BigDecimal("3").compareTo(revCds.get(0).getQty()));
+			assertEquals(0, new BigDecimal("300.00").compareTo(revCds.get(0).getAmt()));
+
+			// Also verify single-ASI-assigned reversal line path reverses full 300.00 + 30.00 = 330.00
+			DB.executeUpdateEx("DELETE FROM M_ProductionLineMA WHERE M_ProductionLine_ID=?",
+					new Object[] { revCompLine.get_ID() }, getTrxName());
+			DB.executeUpdateEx("UPDATE M_ProductionLine SET M_AttributeSetInstance_ID=? WHERE M_ProductionLine_ID=?",
+					new Object[] { lotA.get_ID(), revCompLine.get_ID() }, getTrxName());
+			String singleAsiRepostErr = DocumentEngine.postImmediate(Env.getCtx(), getAD_Client_ID(),
+					MProduction.Table_ID, revProd.get_ID(), true, getTrxName());
+			assertEquals(null, singleAsiRepostErr, "Single-ASI reversal re-post failed: " + singleAsiRepostErr);
+			revFacts = getFacts(MProduction.Table_ID, revProd.get_ID(), as.get_ID());
+			assertFactTotals(revFacts, assetAcctId, new BigDecimal("300.00"), new BigDecimal("330.00"));
+			assertFactTotals(revFacts, freightAcctId, new BigDecimal("30.00"), BigDecimal.ZERO);
+		}
+		finally
+		{
+			CacheMgt.get().reset(MProductCategoryAcct.Table_Name);
+		}
+	}
+
+	@Test
+	public void testBatchLotPartialHistoricalCostDetailProductionReversalFailsClosed()
+	{
+		MAcctSchema as = MClient.get(Env.getCtx()).getAcctSchema();
+
+		try (MockedStatic<MProduct> mockedProduct = mockStatic(MProduct.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MProductCategory> mockedCategory = mockStatic(MProductCategory.class, Mockito.CALLS_REAL_METHODS);
+			 MockedStatic<MAttributeSet> mockedAttrSet = mockStatic(MAttributeSet.class, Mockito.CALLS_REAL_METHODS))
+		{
+			MProductCategory batchCat = createCategoryWithCosting("PartProdCat", as,
+					MAcctSchema.COSTINGLEVEL_BatchLot, MCostElement.COSTINGMETHOD_AveragePO, mockedCategory);
+			MAttributeSet lotAs = createLotAttributeSet("PartProdLotAS", mockedAttrSet);
+			MProduct comp = createStockedProduct("PartProdComp", batchCat.get_ID(), lotAs.get_ID());
+			mockProductGet(mockedProduct, comp);
+			MProduct fg = createBomProduct("PartProdFG", DictionaryIDs.M_Product_Category.STANDARD.id, 0, mockedProduct);
+
+			MAttributeSetInstance lotA = createLot(lotAs.get_ID(), "LOT-PROD-PARTIAL");
+			Timestamp day1 = TimeUtil.addDays(getLoginDate(), -2);
+			Timestamp day2 = TimeUtil.addDays(getLoginDate(), -1);
+			createPOAndMR(comp, lotA, BigDecimal.ONE, new BigDecimal("100.00"), day1);
+			createPOAndMR(comp, lotA, new BigDecimal("2"), new BigDecimal("100.00"), day2);
+
+			MCostElement burdenCe = createManualCostElement("PartProd Burden 10pct",
+					MCostElement.COSTELEMENTTYPE_BurdenMOverhead, DictionaryIDs.C_Charge.FREIGHT.id);
+			createManualCostRecord(comp, as, burdenCe, 0, BigDecimal.ZERO, 10);
+			MPPProductBOM bom = createSimpleBOM(fg, comp, new BigDecimal("3"));
+
+			MProduction prod = createProduction(fg, BigDecimal.ONE, bom.getPP_Product_BOM_ID(), true);
+			completeAndPost(prod);
+
+			MProductionLine compLine = findLineByProduct(prod, comp.get_ID());
+			assertNotNull(compLine);
+			MCostDetail origCd = new Query(Env.getCtx(), MCostDetail.Table_Name,
+					"C_AcctSchema_ID=? AND M_Product_ID=? AND M_ProductionLine_ID=? AND COALESCE(M_CostElement_ID,0)=0",
+					getTrxName())
+					.setParameters(as.get_ID(), comp.get_ID(), compLine.get_ID())
+					.firstOnly();
+			assertNotNull(origCd);
+			// Seed partial historical detail (-2 instead of -3)
+			DB.executeUpdateEx("UPDATE M_CostDetail SET Qty=?, Amt=? WHERE M_CostDetail_ID=?",
+					new Object[] { new BigDecimal("-2"), new BigDecimal("-200.00"), origCd.getM_CostDetail_ID() }, getTrxName());
+
+			runDeferred(() -> reverseCorrect(prod));
+			MProduction revProd = new MProduction(Env.getCtx(), prod.getReversal_ID(), getTrxName());
+			String revPostErr = tryPostImmediate(revProd);
+			assertNotNull(revPostErr, "MA-copied reversal with partial historical M_CostDetail must fail closed");
+			assertTrue(revPostErr.contains("Original production cost detail is missing or incomplete"), "Unexpected error: " + revPostErr);
+
+			// Also verify single-ASI-assigned reversal line fails closed
+			MProductionLine revCompLine = findLineByProduct(revProd, comp.get_ID());
+			assertNotNull(revCompLine);
+			DB.executeUpdateEx("DELETE FROM M_ProductionLineMA WHERE M_ProductionLine_ID=?",
+					new Object[] { revCompLine.get_ID() }, getTrxName());
+			DB.executeUpdateEx("UPDATE M_ProductionLine SET M_AttributeSetInstance_ID=? WHERE M_ProductionLine_ID=?",
+					new Object[] { lotA.get_ID(), revCompLine.get_ID() }, getTrxName());
+			String singleAsiErr = tryPostImmediate(revProd);
+			assertNotNull(singleAsiErr, "Single-ASI reversal with partial historical M_CostDetail must fail closed");
+			assertTrue(singleAsiErr.contains("Original production cost detail is missing or incomplete"), "Unexpected error: " + singleAsiErr);
+		}
+		finally
+		{
+			CacheMgt.get().reset(MProductCategoryAcct.Table_Name);
+		}
 	}
 }

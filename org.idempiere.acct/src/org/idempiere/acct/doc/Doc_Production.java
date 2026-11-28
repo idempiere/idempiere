@@ -25,10 +25,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 
 import org.adempiere.exceptions.DBException;
@@ -201,8 +199,9 @@ public class Doc_Production extends Doc
 	/**
 	 * Match pre-migration production reversal lines whose {@code ReversalLine_ID} is null
 	 * against the original production lines when their structure aligns 1-to-1.
-	 * Skips tied {@code M_ProductionPlan.Line} groups and permits completion-resolved
-	 * component ASI differences only when uniquely matched and backed by original MA allocations.
+	 * Within tied {@code M_ProductionPlan.Line} or {@code M_ProductionLine.Line} groups,
+	 * pairs are linked 1-to-1 only when finished product and line structure uniquely identify
+	 * the match; indistinguishable plans/lines remain unlinked.
 	 */
 	private void resolveLegacyReversalLines(X_M_Production prod, List<DocLine> revDocLines,
 			Map<Integer, MProductionPlan> planCache)
@@ -233,48 +232,102 @@ public class Doc_Production extends Doc
 		{
 			if (planCache == null)
 				planCache = new HashMap<>();
-			Map<Integer, Set<Integer>> origPlanIdsByLine = new LinkedHashMap<>();
-			Map<Integer, List<X_M_ProductionLine>> origByPlanLine = new LinkedHashMap<>();
+			Map<Integer, List<Integer>> origPlanIdsByLine = new LinkedHashMap<>();
+			Map<Integer, List<X_M_ProductionLine>> origLinesByPlanId = new LinkedHashMap<>();
 			for (X_M_ProductionLine origLine : origLines)
 			{
-				MProductionPlan origPlan = planCache.computeIfAbsent(origLine.getM_ProductionPlan_ID(),
+				int origPlanId = origLine.getM_ProductionPlan_ID();
+				MProductionPlan origPlan = planCache.computeIfAbsent(origPlanId,
 						id -> new MProductionPlan(getCtx(), id, getTrxName()));
-				origPlanIdsByLine.computeIfAbsent(origPlan.getLine(), k -> new LinkedHashSet<>()).add(origPlan.getM_ProductionPlan_ID());
-				origByPlanLine.computeIfAbsent(origPlan.getLine(), k -> new ArrayList<>()).add(origLine);
+				if (!origLinesByPlanId.containsKey(origPlanId))
+				{
+					origLinesByPlanId.put(origPlanId, new ArrayList<>());
+					origPlanIdsByLine.computeIfAbsent(origPlan.getLine(), k -> new ArrayList<>()).add(origPlanId);
+				}
+				origLinesByPlanId.get(origPlanId).add(origLine);
 			}
 
-			Map<Integer, Set<Integer>> revPlanIdsByLine = new LinkedHashMap<>();
-			Map<Integer, List<DocLine>> revByPlanLine = new LinkedHashMap<>();
+			Map<Integer, List<Integer>> revPlanIdsByLine = new LinkedHashMap<>();
+			Map<Integer, List<DocLine>> revLinesByPlanId = new LinkedHashMap<>();
 			for (DocLine revDocLine : revDocLines)
 			{
 				X_M_ProductionLine revLine = (X_M_ProductionLine) revDocLine.getPO();
-				MProductionPlan revPlan = planCache.computeIfAbsent(revLine.getM_ProductionPlan_ID(),
+				int revPlanId = revLine.getM_ProductionPlan_ID();
+				MProductionPlan revPlan = planCache.computeIfAbsent(revPlanId,
 						id -> new MProductionPlan(getCtx(), id, getTrxName()));
-				revPlanIdsByLine.computeIfAbsent(revPlan.getLine(), k -> new LinkedHashSet<>()).add(revPlan.getM_ProductionPlan_ID());
-				revByPlanLine.computeIfAbsent(revPlan.getLine(), k -> new ArrayList<>()).add(revDocLine);
+				if (!revLinesByPlanId.containsKey(revPlanId))
+				{
+					revLinesByPlanId.put(revPlanId, new ArrayList<>());
+					revPlanIdsByLine.computeIfAbsent(revPlan.getLine(), k -> new ArrayList<>()).add(revPlanId);
+				}
+				revLinesByPlanId.get(revPlanId).add(revDocLine);
 			}
 
-			if (!origPlanIdsByLine.keySet().equals(revPlanIdsByLine.keySet()))
+			if (origLinesByPlanId.size() != revLinesByPlanId.size()
+					|| !origPlanIdsByLine.keySet().equals(revPlanIdsByLine.keySet()))
 				return;
 
-			for (Map.Entry<Integer, Set<Integer>> entry : origPlanIdsByLine.entrySet())
+			for (Map.Entry<Integer, List<Integer>> entry : origPlanIdsByLine.entrySet())
 			{
 				int planLineNo = entry.getKey();
-				Set<Integer> origPlanIds = entry.getValue();
-				Set<Integer> revPlanIds = revPlanIdsByLine.get(planLineNo);
-				List<X_M_ProductionLine> origGroup = origByPlanLine.get(planLineNo);
-				List<DocLine> revGroup = revByPlanLine.get(planLineNo);
-				if (origPlanIds.size() != revPlanIds.size() || origGroup.size() != revGroup.size())
+				List<Integer> origPlanIds = entry.getValue();
+				List<Integer> revPlanIds = revPlanIdsByLine.get(planLineNo);
+				if (revPlanIds == null || origPlanIds.size() != revPlanIds.size())
 					return;
-				// Tied plan.Line values cannot be matched safely across pre-migration unordered copies
-				if (origPlanIds.size() > 1)
+
+				int planCount = origPlanIds.size();
+				if (planCount == 1)
+				{
+					int origPlanId = origPlanIds.get(0);
+					int revPlanId = revPlanIds.get(0);
+					MProductionPlan origPlan = planCache.get(origPlanId);
+					MProductionPlan revPlan = planCache.get(revPlanId);
+					if (origPlan.getM_Product_ID() != revPlan.getM_Product_ID())
+						return;
+					if (!matchLegacyLineGroup(origLinesByPlanId.get(origPlanId), revLinesByPlanId.get(revPlanId), inferredLinks))
+						return;
 					continue;
-				MProductionPlan origPlan = planCache.get(origPlanIds.iterator().next());
-				MProductionPlan revPlan = planCache.get(revPlanIds.iterator().next());
-				if (origPlan.getM_Product_ID() != revPlan.getM_Product_ID())
-					return;
-				if (!matchLegacyLineGroup(origGroup, revGroup, inferredLinks))
-					return;
+				}
+
+				// Tied plan.Line group: match one-to-one only when finished product and line structure uniquely identify each plan
+				@SuppressWarnings("unchecked")
+				Map<DocLine, Integer>[][] candidatePlanLinks = new Map[planCount][planCount];
+				int[] origMatchCount = new int[planCount];
+				int[] revMatchCount = new int[planCount];
+				for (int o = 0; o < planCount; o++)
+				{
+					int origPlanId = origPlanIds.get(o);
+					MProductionPlan origPlan = planCache.get(origPlanId);
+					List<X_M_ProductionLine> origGroup = origLinesByPlanId.get(origPlanId);
+					for (int r = 0; r < planCount; r++)
+					{
+						int revPlanId = revPlanIds.get(r);
+						MProductionPlan revPlan = planCache.get(revPlanId);
+						if (origPlan.getM_Product_ID() != revPlan.getM_Product_ID())
+							continue;
+						Map<DocLine, Integer> candidate = new LinkedHashMap<>();
+						if (matchLegacyLineGroup(origGroup, revLinesByPlanId.get(revPlanId), candidate))
+						{
+							candidatePlanLinks[o][r] = candidate;
+							origMatchCount[o]++;
+							revMatchCount[r]++;
+						}
+					}
+				}
+
+				for (int o = 0; o < planCount; o++)
+				{
+					if (origMatchCount[o] != 1)
+						continue;
+					for (int r = 0; r < planCount; r++)
+					{
+						if (candidatePlanLinks[o][r] != null && revMatchCount[r] == 1)
+						{
+							inferredLinks.putAll(candidatePlanLinks[o][r]);
+							break;
+						}
+					}
+				}
 			}
 		}
 		else
@@ -285,72 +338,144 @@ public class Doc_Production extends Doc
 
 		for (Map.Entry<DocLine, Integer> entry : inferredLinks.entrySet())
 		{
-			entry.getKey().setReversalLine_ID(entry.getValue());
+			if (entry.getKey().getReversalLine_ID() <= 0)
+				entry.getKey().setReversalLine_ID(entry.getValue());
 		}
 	}
 
 	private boolean matchLegacyLineGroup(List<X_M_ProductionLine> origGroup, List<DocLine> revGroup,
 			Map<DocLine, Integer> inferredLinks)
 	{
-		if (origGroup.size() != revGroup.size())
+		if (origGroup == null || revGroup == null || origGroup.size() != revGroup.size())
 			return false;
 
-		Map<String, Integer> origKeyCounts = new HashMap<>();
+		Map<Integer, List<X_M_ProductionLine>> origByLineNo = new LinkedHashMap<>();
 		for (X_M_ProductionLine origLine : origGroup)
 		{
-			String key = origLine.getLine() + "_" + origLine.getM_Product_ID();
-			origKeyCounts.merge(key, 1, Integer::sum);
+			origByLineNo.computeIfAbsent(origLine.getLine(), k -> new ArrayList<>()).add(origLine);
 		}
-
-		for (int i = 0; i < revGroup.size(); i++)
+		Map<Integer, List<DocLine>> revByLineNo = new LinkedHashMap<>();
+		for (DocLine revDocLine : revGroup)
 		{
-			DocLine revDocLine = revGroup.get(i);
 			X_M_ProductionLine revLine = (X_M_ProductionLine) revDocLine.getPO();
-			X_M_ProductionLine origLine = origGroup.get(i);
-			if (revDocLine.getReversalLine_ID() > 0 && revDocLine.getReversalLine_ID() != origLine.getM_ProductionLine_ID())
-				return false;
-			if (origLine.getLine() != revLine.getLine()
-					|| origLine.getM_Product_ID() != revLine.getM_Product_ID()
-					|| origLine.isEndProduct() != revLine.isEndProduct()
-					|| origLine.getM_Locator_ID() != revLine.getM_Locator_ID()
-					|| origLine.getMovementQty().add(revLine.getMovementQty()).signum() != 0)
+			revByLineNo.computeIfAbsent(revLine.getLine(), k -> new ArrayList<>()).add(revDocLine);
+		}
+		if (!origByLineNo.keySet().equals(revByLineNo.keySet()))
+			return false;
+
+		Map<DocLine, Integer> groupLinks = new LinkedHashMap<>();
+		for (Map.Entry<Integer, List<X_M_ProductionLine>> entry : origByLineNo.entrySet())
+		{
+			int lineNo = entry.getKey();
+			List<X_M_ProductionLine> origSub = entry.getValue();
+			List<DocLine> revSub = revByLineNo.get(lineNo);
+			if (revSub == null || origSub.size() != revSub.size())
 				return false;
 
-			if (origLine.getM_AttributeSetInstance_ID() != revLine.getM_AttributeSetInstance_ID())
+			int subSize = origSub.size();
+			if (subSize == 1)
 			{
-				String key = origLine.getLine() + "_" + origLine.getM_Product_ID();
-				if (origKeyCounts.getOrDefault(key, 0) != 1
-						|| origLine.isEndProduct()
-						|| origLine.getMovementQty().signum() >= 0
-						|| origLine.getM_AttributeSetInstance_ID() != 0
-						|| revLine.getM_AttributeSetInstance_ID() <= 0)
+				if (!canMatchLegacyLine(origSub.get(0), revSub.get(0)))
 					return false;
+				groupLinks.put(revSub.get(0), origSub.get(0).getM_ProductionLine_ID());
+				continue;
+			}
 
-				MProductionLineMA[] origMas = MProductionLineMA.get(getCtx(), origLine.get_ID(), getTrxName());
-				boolean hasMatchingMa = false;
-				if (origMas != null)
+			boolean[][] compat = new boolean[subSize][subSize];
+			int[] origMatchCount = new int[subSize];
+			int[] revMatchCount = new int[subSize];
+			for (int o = 0; o < subSize; o++)
+			{
+				for (int r = 0; r < subSize; r++)
 				{
-					for (MProductionLineMA ma : origMas)
+					if (canMatchLegacyLine(origSub.get(o), revSub.get(r)))
 					{
-						if (ma.getM_AttributeSetInstance_ID() == revLine.getM_AttributeSetInstance_ID())
-						{
-							hasMatchingMa = true;
-							break;
-						}
+						compat[o][r] = true;
+						origMatchCount[o]++;
+						revMatchCount[r]++;
 					}
 				}
-				if (!hasMatchingMa)
+				if (origMatchCount[o] == 0)
 					return false;
+			}
+			for (int r = 0; r < subSize; r++)
+			{
+				if (revMatchCount[r] == 0)
+					return false;
+			}
+
+			for (int o = 0; o < subSize; o++)
+			{
+				if (origMatchCount[o] != 1)
+					continue;
+				for (int r = 0; r < subSize; r++)
+				{
+					if (compat[o][r] && revMatchCount[r] == 1)
+					{
+						groupLinks.put(revSub.get(r), origSub.get(o).getM_ProductionLine_ID());
+						break;
+					}
+				}
 			}
 		}
 
-		for (int i = 0; i < revGroup.size(); i++)
-		{
-			DocLine revDocLine = revGroup.get(i);
-			if (revDocLine.getReversalLine_ID() <= 0)
-				inferredLinks.put(revDocLine, origGroup.get(i).getM_ProductionLine_ID());
-		}
+		inferredLinks.putAll(groupLinks);
 		return true;
+	}
+
+	private boolean canMatchLegacyLine(X_M_ProductionLine origLine, DocLine revDocLine)
+	{
+		if (revDocLine.getReversalLine_ID() > 0 && revDocLine.getReversalLine_ID() != origLine.getM_ProductionLine_ID())
+			return false;
+		X_M_ProductionLine revLine = (X_M_ProductionLine) revDocLine.getPO();
+		if (origLine.getLine() != revLine.getLine()
+				|| origLine.getM_Product_ID() != revLine.getM_Product_ID()
+				|| origLine.isEndProduct() != revLine.isEndProduct()
+				|| origLine.getM_Locator_ID() != revLine.getM_Locator_ID()
+				|| origLine.getMovementQty().negate().compareTo(revLine.getMovementQty()) != 0)
+		{
+			return false;
+		}
+
+		int origAsiId = origLine.getM_AttributeSetInstance_ID();
+		int revAsiId = revLine.getM_AttributeSetInstance_ID();
+		if (origAsiId == revAsiId)
+		{
+			if (origAsiId != 0)
+				return true;
+			Map<Integer, BigDecimal> origMa = getMaQtyByAsi(origLine.getM_ProductionLine_ID(), true);
+			Map<Integer, BigDecimal> revMa = getMaQtyByAsi(revLine.getM_ProductionLine_ID(), false);
+			if (!origMa.isEmpty() && !revMa.isEmpty())
+				return origMa.keySet().equals(revMa.keySet());
+			return true;
+		}
+		if (!origLine.isEndProduct() && origLine.getMovementQty().signum() < 0 && origAsiId == 0 && revAsiId > 0)
+		{
+			MProductionLineMA[] origMas = MProductionLineMA.get(getCtx(), origLine.getM_ProductionLine_ID(), getTrxName());
+			if (origMas != null)
+			{
+				for (MProductionLineMA ma : origMas)
+				{
+					if (ma.getM_AttributeSetInstance_ID() == revAsiId)
+						return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private Map<Integer, BigDecimal> getMaQtyByAsi(int productionLineId, boolean negateQty)
+	{
+		MProductionLineMA[] mas = MProductionLineMA.get(getCtx(), productionLineId, getTrxName());
+		if (mas == null || mas.length == 0)
+			return Collections.emptyMap();
+		Map<Integer, BigDecimal> byAsi = new HashMap<>();
+		for (MProductionLineMA ma : mas)
+		{
+			BigDecimal qty = negateQty ? ma.getMovementQty().negate() : ma.getMovementQty();
+			byAsi.merge(ma.getM_AttributeSetInstance_ID(), qty, BigDecimal::add);
+		}
+		return byAsi;
 	}
 
 	/**
@@ -464,35 +589,72 @@ public class Doc_Production extends Doc
 			{
 				if (line.getM_AttributeSetInstance_ID() == 0 && (mas!=null && mas.length> 0 )) 
 				{
+					Map<Integer, List<MProductionLineMA>> masByAsi = new LinkedHashMap<>();
+					for (MProductionLineMA ma : mas)
+					{
+						masByAsi.computeIfAbsent(ma.getM_AttributeSetInstance_ID(), k -> new ArrayList<>()).add(ma);
+					}
 					Map<Integer, ManualCost> maManualCostMap = !isReversal && !line.isProductionBOM() && !manualCostMap.containsKey(line.get_ID())
 							? new LinkedHashMap<>() : null;
-					for (int j = 0; j < mas.length; j++)
+					for (Map.Entry<Integer, List<MProductionLineMA>> asiEntry : masByAsi.entrySet())
 					{
-						MProductionLineMA ma = mas[j];													
-						BigDecimal maCost = useManualReversal
-								? getOriginalProductionMaCost(as, line, ma.getM_AttributeSetInstance_ID()) : null;
-						if (maCost == null)
+						int asiId = asiEntry.getKey();
+						List<MProductionLineMA> asiMas = asiEntry.getValue();
+						BigDecimal asiQty = BigDecimal.ZERO;
+						for (MProductionLineMA ma : asiMas)
 						{
-							MCostDetail cd = MCostDetail.getProduction(as, line.getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
-									line.get_ID(), getTrxName());	
-							if (cd != null)
-								maCost = cd.getAmt();	
-							else 
+							asiQty = asiQty.add(ma.getMovementQty());
+						}
+
+						BigDecimal asiCost = null;
+						BigDecimal asiUnroundedCost = null;
+						if (useManualReversal)
+						{
+							BigDecimal origAsiCost = getOriginalProductionMaCost(as, line, asiId, asiQty);
+							if (origAsiCost == null && !line.isProductionBOM() && product.isStocked() && asiQty.signum() != 0)
 							{
-								ProductCost pc = line.getProductCost();
-								pc.setQty(ma.getMovementQty());
-								pc.setM_M_AttributeSetInstance_ID(ma.getM_AttributeSetInstance_ID());
-								maCost = line.getProductCosts(as, line.getAD_Org_ID(), false);
+								p_Error = "Original production cost detail is missing or incomplete for manual cost reversal: " + line.getLine();
+								log.log(Level.WARNING, p_Error);
+								return null;
+							}
+							if (origAsiCost != null)
+							{
+								asiUnroundedCost = origAsiCost;
+								asiCost = origAsiCost.setScale(stdPrecision, RoundingMode.HALF_UP);
+							}
+						}
+						if (asiCost == null)
+						{
+							MCostDetail cd = MCostDetail.getProduction(as, line.getM_Product_ID(), asiId,
+									line.get_ID(), getTrxName());
+							if (cd != null && cd.getQty().compareTo(asiQty) == 0)
+							{
+								asiUnroundedCost = cd.getAmt();
+								asiCost = cd.getAmt().setScale(stdPrecision, RoundingMode.HALF_UP);
+							}
+							else
+							{
+								asiUnroundedCost = BigDecimal.ZERO;
+								asiCost = BigDecimal.ZERO;
+								for (MProductionLineMA ma : asiMas)
+								{
+									ProductCost pc = line.getProductCost();
+									pc.setQty(ma.getMovementQty());
+									pc.setM_M_AttributeSetInstance_ID(asiId);
+									BigDecimal maCost = line.getProductCosts(as, line.getAD_Org_ID(), false);
+									asiUnroundedCost = asiUnroundedCost.add(maCost);
+									maCost = maCost.setScale(stdPrecision, RoundingMode.HALF_UP);
+									asiCost = asiCost.add(maCost);
+								}
 							}
 						}
 						if (maManualCostMap != null)
 						{
-							DocManualCostHelper.accumulateManualCosts(maManualCostMap, MCost.getManualCosts(product, ma.getM_AttributeSetInstance_ID(),
-									as, line.getAD_Org_ID(), maCost, ma.getMovementQty(), getTrxName()));
+							DocManualCostHelper.accumulateManualCosts(maManualCostMap, MCost.getManualCosts(product, asiId,
+									as, line.getAD_Org_ID(), asiUnroundedCost, asiQty, getTrxName()));
 						}
-						maCost = maCost.setScale(stdPrecision, RoundingMode.HALF_UP);
-						costs = costs.add(maCost);
-						costMap.put(line.get_ID()+ "_"+ ma.getM_AttributeSetInstance_ID(), maCost);
+						costs = costs.add(asiCost);
+						costMap.put(line.get_ID() + "_" + asiId, asiCost);
 					}
 					if (maManualCostMap != null)
 						manualCostMap.put(line.get_ID(), DocManualCostHelper.roundManualCosts(maManualCostMap.values(), stdPrecision));
@@ -503,11 +665,18 @@ public class Doc_Production extends Doc
 							line.get_ID(), getTrxName());
 					BigDecimal origCost = useManualReversal
 							? getOriginalProductionLineCost(as, line, line.getM_AttributeSetInstance_ID()) : null;
+					if (useManualReversal && origCost == null && !line.isProductionBOM()
+							&& product.isStocked() && line.getQty().signum() != 0)
+					{
+						p_Error = "Original production cost detail is missing or incomplete for manual cost reversal: " + line.getLine();
+						log.log(Level.WARNING, p_Error);
+						return null;
+					}
 					if (origCost != null)
 					{
 						costs = origCost;
 					}
-					else if (cd != null) 
+					else if (cd != null && cd.getQty().compareTo(line.getQty()) == 0) 
 					{
 						costs = cd.getAmt();
 					} 
@@ -536,11 +705,18 @@ public class Doc_Production extends Doc
 						line.get_ID(), getTrxName());
 				BigDecimal origCost = useManualReversal
 						? getOriginalProductionLineCost(as, line, line.getM_AttributeSetInstance_ID()) : null;
+				if (useManualReversal && origCost == null && !line.isProductionBOM()
+						&& product.isStocked() && line.getQty().signum() != 0)
+				{
+					p_Error = "Original production cost detail is missing or incomplete for manual cost reversal: " + line.getLine();
+					log.log(Level.WARNING, p_Error);
+					return null;
+				}
 				if (origCost != null)
 				{
 					costs = origCost;
 				}
-				else if (cd != null) 
+				else if (cd != null && cd.getQty().compareTo(line.getQty()) == 0) 
 				{
 					costs = cd.getAmt();
 				} 
@@ -726,34 +902,46 @@ public class Doc_Production extends Doc
 				}
 				else if (line.getM_AttributeSetInstance_ID() == 0 && (mas!=null && mas.length> 0 ))
 				{
-					 for (int j = 0; j < mas.length; j++)
-					 {
-						MProductionLineMA ma = mas[j];
-						BigDecimal maCost = costMap.get(line.get_ID()+ "_"+ ma.getM_AttributeSetInstance_ID());		
+					Map<Integer, BigDecimal> maQtyByAsi = new LinkedHashMap<>();
+					for (MProductionLineMA ma : mas)
+					{
+						maQtyByAsi.merge(ma.getM_AttributeSetInstance_ID(), ma.getMovementQty(), BigDecimal::add);
+					}
+					for (Map.Entry<Integer, BigDecimal> asiEntry : maQtyByAsi.entrySet())
+					{
+						int asiId = asiEntry.getKey();
+						BigDecimal asiQty = asiEntry.getValue();
+						BigDecimal maCost = costMap.get(line.get_ID() + "_" + asiId);		
 						int Ref_CostDetail_ID = 0;
 						if (line.getReversalLine_ID() > 0 && line.get_ID() > line.getReversalLine_ID())
 						{
-							MCostDetail cd = MCostDetail.getProduction(as, line.getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
+							MCostDetail cd = MCostDetail.getProduction(as, line.getM_Product_ID(), asiId,
 									line.getReversalLine_ID(), 0, getTrxName());
 							if (cd != null)
 								Ref_CostDetail_ID = cd.getM_CostDetail_ID();
 						}
 						if (!MCostDetail.createProduction(as, line.getAD_Org_ID(),
-								line.getM_Product_ID(), ma.getM_AttributeSetInstance_ID(),
+								line.getM_Product_ID(), asiId,
 								line.get_ID(), 0,
-								maCost, ma.getMovementQty(),
+								maCost, asiQty,
 								description, line.getDateAcct(), Ref_CostDetail_ID, getTrxName()))
 						{
 							p_Error = "Failed to create cost detail record";
 							return null;
 						}
-					 }
+					}
 				 } 
 				 else
 				 {
 					 List<MCostDetail> origLotCds = (!line.isProductionBOM() && useManualReversal && line.getReversalLine_ID() > 0)
 							 ? getOriginalProductionCostDetails(as, line.getM_Product_ID(), line.getReversalLine_ID())
 							 : Collections.emptyList();
+					 if (!origLotCds.isEmpty() && !hasFullOriginalQtyCoverage(origLotCds, line.getQty()))
+					 {
+						 p_Error = "Original production cost detail is missing or incomplete for manual cost reversal: " + line.getLine();
+						 log.log(Level.WARNING, p_Error);
+						 return null;
+					 }
 					 if (origLotCds.size() > 1
 							 || (origLotCds.size() == 1 && origLotCds.get(0).getM_AttributeSetInstance_ID() != line.getM_AttributeSetInstance_ID()))
 					 {
@@ -878,22 +1066,36 @@ public class Doc_Production extends Doc
 		if (origCds.isEmpty())
 			return null;
 		BigDecimal sumAmt = BigDecimal.ZERO;
+		BigDecimal sumQty = BigDecimal.ZERO;
 		for (MCostDetail cd : origCds)
 		{
-			if (cd.getM_AttributeSetInstance_ID() == asiId && cd.getQty().negate().compareTo(line.getQty()) == 0)
-				return cd.getAmt().negate();
 			sumAmt = sumAmt.add(cd.getAmt());
+			sumQty = sumQty.add(cd.getQty());
 		}
+		if (sumQty.negate().compareTo(line.getQty()) != 0)
+			return null;
 		return sumAmt.negate();
 	}
 
-	private BigDecimal getOriginalProductionMaCost(MAcctSchema as, DocLine line, int maAsiId)
+	private BigDecimal getOriginalProductionMaCost(MAcctSchema as, DocLine line, int maAsiId, BigDecimal expectedRevQty)
 	{
 		int origLineId = line.getReversalLine_ID();
 		if (origLineId <= 0)
 			return null;
 		MCostDetail origCd = MCostDetail.getProduction(as, line.getM_Product_ID(), maAsiId, origLineId, 0, getTrxName());
-		return origCd != null ? origCd.getAmt().negate() : null;
+		if (origCd == null || origCd.getQty().negate().compareTo(expectedRevQty) != 0)
+			return null;
+		return origCd.getAmt().negate();
+	}
+
+	private boolean hasFullOriginalQtyCoverage(List<MCostDetail> origCds, BigDecimal reversalQty)
+	{
+		BigDecimal sumQty = BigDecimal.ZERO;
+		for (MCostDetail cd : origCds)
+		{
+			sumQty = sumQty.add(cd.getQty());
+		}
+		return sumQty.negate().compareTo(reversalQty) == 0;
 	}
 
 	private List<MCostDetail> getOriginalProductionCostDetails(MAcctSchema as, int productId, int origLineId)
