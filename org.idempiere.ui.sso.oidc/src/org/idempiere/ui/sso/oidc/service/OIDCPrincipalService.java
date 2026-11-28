@@ -292,12 +292,14 @@ public class OIDCPrincipalService implements ISSOPrincipalService {
 	 * @param userInfo
 	 */
 	private void setAuthenticationResult(HttpSession session, UserInfo userInfo) {
-		session.setAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN, userInfo);
+		String configUU = principalConfig != null ? principalConfig.getSSO_PrincipalConfig_UU() : null;
+		SSOUtils.setSSOSessionToken(session, userInfo, configUU);
 	}
 
 	@Override
 	public boolean isAuthenticated(HttpServletRequest request, HttpServletResponse response) {
-		return request.getSession().getAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN) != null;
+		String configUU = principalConfig != null ? principalConfig.getSSO_PrincipalConfig_UU() : null;
+		return SSOUtils.isTokenValidForProvider(request.getSession(false), configUU);
 	}
 
 	@Override
@@ -331,9 +333,12 @@ public class OIDCPrincipalService implements ISSOPrincipalService {
 
 	@Override
 	public void removePrincipalFromSession(HttpServletRequest httpRequest) {
-		httpRequest.getSession().removeAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
-		httpRequest.getSession().removeAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN);
-		httpRequest.getSession().removeAttribute(OIDC_STATE);
+		HttpSession session = httpRequest.getSession(false);
+		if (session != null) {
+			session.removeAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
+			SSOUtils.clearSSOSessionToken(session);
+			session.removeAttribute(OIDC_STATE);
+		}
 	}
 		
 	@Override

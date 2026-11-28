@@ -12,8 +12,8 @@
  *****************************************************************************/
 package org.adempiere.webui.window;
 
-import org.adempiere.base.sso.ISSOPrincipalService;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.util.ZkSSOUtils;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -46,6 +46,6 @@ public class ErrorWindow extends Window implements EventListener<Event>
 	@Override
 	public void onEvent(Event event) throws Exception
 	{
-		Executions.getCurrent().getSession().removeAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN);
+		ZkSSOUtils.clearSSOSessionToken(Executions.getCurrent().getSession());
 	}
 }

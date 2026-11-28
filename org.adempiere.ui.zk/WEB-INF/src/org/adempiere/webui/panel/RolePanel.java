@@ -42,6 +42,7 @@ import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.editor.WDateEditor;
 import org.adempiere.webui.session.SessionManager;
+import org.adempiere.webui.sso.filter.SSOWebUIFilter;
 import org.adempiere.webui.theme.ITheme;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.UserPreference;
@@ -155,8 +156,8 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     	m_userpreference = SessionManager.getSessionApplication().getUserPreference();
         if( m_clientKNPairs.length == 1  &&  !m_showRolePanel ){
         	Env.setContext(m_ctx, Env.AD_CLIENT_ID, (String) m_clientKNPairs[0].getID());
-        	MUser user = MUser.get (m_ctx, Login.getAppUser(m_userName));
-        	m_userpreference.loadPreference(user.get_ID());        	
+			MUser user = resolveLoginUser();
+			m_userpreference.loadPreference(user != null ? user.get_ID() : -1);
         } else {
         	m_userpreference.loadPreference(-1);
         }
@@ -549,7 +550,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 			}
 			int clientId = Integer.valueOf((String)lstItemClient.getValue());
             KeyNamePair clientKNPair = new KeyNamePair(clientId, lstItemClient.getLabel());
-            KeyNamePair roleKNPairs[] = login.getRoles(m_userName, clientKNPair, LoginPanel.ROLE_TYPES_WEBUI);
+            KeyNamePair roleKNPairs[] = login.getRoles(m_userName, clientKNPair, LoginPanel.ROLE_TYPES_WEBUI, isTenantSSOLogin());
             if (roleKNPairs != null && roleKNPairs.length > 0)
             {
                 for (int i = 0; i < roleKNPairs.length; i++)
@@ -843,6 +844,40 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
 	}
 
 	/**
+	 * Check whether current login session is a tenant-scoped SSO login
+	 * @return true if tenant-scoped SSO login
+	 */
+	private boolean isTenantSSOLogin() {
+		if (!"Y".equals(Env.getContext(m_ctx, Env.IS_SSO_LOGIN)))
+			return false;
+		if (Executions.getCurrent() == null || Executions.getCurrent().getDesktop() == null
+				|| Executions.getCurrent().getDesktop().getSession() == null)
+			return false;
+		String tenant = (String) Executions.getCurrent().getDesktop().getSession()
+				.getAttribute(SSOWebUIFilter.TENANT_PREFIX_PARAMETER);
+		return !Util.isEmpty(tenant, true);
+	}
+
+	/**
+	 * Resolve the logged-in user for the selected client, avoiding cross-tenant
+	 * fallback to AD_Client_ID=0 during tenant-scoped SSO login.
+	 * @return matched {@link MUser} or null
+	 */
+	private MUser resolveLoginUser() {
+		if (isTenantSSOLogin())
+		{
+			if (Env.getAD_User_ID(m_ctx) > 0)
+			{
+				MUser ctxUser = MUser.get(m_ctx, Env.getAD_User_ID(m_ctx));
+				if (ctxUser != null && ctxUser.getAD_Client_ID() == Env.getAD_Client_ID(m_ctx))
+					return ctxUser;
+			}
+			return null;
+		}
+		return MUser.get(m_ctx, Login.getAppUser(m_userName));
+	}
+
+	/**
 	 * Set user id to environment context
 	 */
     private void setUserID() {
@@ -851,7 +886,7 @@ public class RolePanel extends Window implements EventListener<Event>, Deferrabl
     	} else {
         	Env.setContext(m_ctx, Env.AD_CLIENT_ID, (String) null);
     	}
-    	MUser user = MUser.get (m_ctx, Login.getAppUser(m_userName));
+		MUser user = resolveLoginUser();
     	if (user != null) {
     		Env.setContext(m_ctx, Env.AD_USER_ID, user.getAD_User_ID() );
     		Env.setContext(m_ctx, Env.AD_USER_NAME, user.getName() );

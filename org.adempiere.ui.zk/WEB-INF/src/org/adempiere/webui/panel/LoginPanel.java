@@ -55,6 +55,7 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.BrowserToken;
 import org.adempiere.webui.util.UserPreference;
 import org.adempiere.webui.util.ZKUpdateUtil;
+import org.adempiere.webui.util.ZkSSOUtils;
 import org.adempiere.webui.window.Dialog;
 import org.adempiere.webui.window.LoginWindow;
 import org.compiere.Adempiere;
@@ -949,11 +950,13 @@ public class LoginPanel extends Window implements EventListener<Event>
 					  .append(SSOWebUIFilter.TENANT_PREFIX_PARAMETER).append("=")
 					  .append(URLEncoder.encode(tenant, StandardCharsets.UTF_8));
 			
-			Executions.getCurrent().getSession().setAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER, 
+			Session session = Executions.getCurrent().getSession();
+			ZkSSOUtils.clearSSOSessionToken(session);
+			session.setAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER,
 					config.getSSO_PrincipalConfig_UU());
 			
 			if (referrerUrl != null)
-				Executions.getCurrent().getSession().setAttribute(ISSOPrincipalService.SSO_QUERY_STRING, referrerUrl);
+				session.setAttribute(ISSOPrincipalService.SSO_QUERY_STRING, referrerUrl);
 			Executions.sendRedirect(ssoURL.toString());
 		});
 

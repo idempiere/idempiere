@@ -32,6 +32,7 @@ import javax.servlet.http.HttpSession;
 import org.adempiere.base.sso.ISSOPrincipalService;
 import org.adempiere.base.sso.SSOUtils;
 
+import org.compiere.model.MSSOPrincipalConfig;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.util.CLogger;
@@ -98,32 +99,50 @@ public class AdempiereMonitorFilter implements Filter
 			if (isSSOEnable) {
 				try {
 
-					m_SSOPrincipal = SSOUtils.getSSOPrincipalService();
+					MSSOPrincipalConfig config = MSSOPrincipalConfig.getDefaultSSOPrincipalConfig(0);
+					m_SSOPrincipal = config != null ? SSOUtils.getSSOPrincipalServiceForConfig(config) : null;
 
-					if (m_SSOPrincipal != null) {
+					if (m_SSOPrincipal != null && config != null) {
+						String configUU = config.getSSO_PrincipalConfig_UU();
 						if (m_SSOPrincipal.hasAuthenticationCode(req, resp)) {
+							// Clear any prior SSO token before exchanging the callback code
+							HttpSession session = req.getSession();
+							SSOUtils.clearSSOSessionToken(session);
 							// Use authentication code get get token
 							String currentUri = req.getRequestURL().toString();
-							m_SSOPrincipal.getAuthenticationToken(req, resp, SSOUtils.SSO_MODE_MONITOR);
-							if (!resp.isCommitted())
+							m_SSOPrincipal.getAuthenticationToken(
+									SSOUtils.wrapRequestForTokenBinding(req, configUU), resp, SSOUtils.SSO_MODE_MONITOR);
+							if (!resp.isCommitted()) {
 								resp.sendRedirect(currentUri);
-						} else if (!m_SSOPrincipal.isAuthenticated(req, resp)) {
-							// Redirect to SSO sing in page for authentication
-							m_SSOPrincipal.redirectForAuthentication(req, resp, SSOUtils.SSO_MODE_MONITOR);
+							}
 							return;
-						}
-						// validate the user
-						if (checkSSOAuthorization(m_SSOPrincipal, req.getSession().getAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN)))
-						{
-							chain.doFilter(request, response);
-							return;
+						} else {
+							Object token = SSOUtils.getValidatedSessionToken(req.getSession(false), configUU);
+							if (token == null || !m_SSOPrincipal.isAuthenticated(req, resp)) {
+								HttpSession session = req.getSession(false);
+								if (session != null && (token != null || SSOUtils.getSSOSessionToken(session) != null
+										|| session.getAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN) != null)) {
+									m_SSOPrincipal.removePrincipalFromSession(req);
+									SSOUtils.clearSSOSessionToken(session);
+								}
+								// Redirect to SSO sing in page for authentication
+								m_SSOPrincipal.redirectForAuthentication(req, resp, SSOUtils.SSO_MODE_MONITOR);
+								return;
+							}
+							// validate the user
+							if (checkSSOAuthorization(m_SSOPrincipal, token))
+							{
+								chain.doFilter(request, response);
+								return;
+							}
 						}
 					}
-					req.getSession().removeAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN);
+					SSOUtils.clearSSOSessionToken(req.getSession(false));
 				} catch (Throwable exc) {
 					log.log(Level.SEVERE, "Exception while authenticating: ", exc);
 					if (m_SSOPrincipal != null)
 						m_SSOPrincipal.removePrincipalFromSession(req);
+					SSOUtils.clearSSOSessionToken(req.getSession(false));
 					if (isRedirectToLoginOnError) {
 						resp.sendRedirect("idempiereMonitor");
 					} else {

@@ -126,30 +126,37 @@ public class LoginWindow extends Window implements EventListener<Event>
      */
 	private void initComponents()
 	{
-		Object token = getDesktop().getSession().getAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN);
-		if (token == null)
+		Session session = getDesktop().getSession();
+		boolean isAdminLogin = Boolean.TRUE.equals(session.getAttribute(ISSOPrincipalService.SSO_ADMIN_LOGIN));
+		SSOUtils.SSOSessionToken sessionToken = isAdminLogin ? null : ZkSSOUtils.getSSOSessionToken(session);
+		if (sessionToken == null)
 		{
 			createLoginPanel();
 		}
 		else
 		{
-			ssoLogin(token);
+			ssoLogin(sessionToken);
 		}
 	}
 
 	/**
 	 * Show role panel after SSO authentication.
 	 * 
-	 * @param Session token for retrieving user and language.
+	 * @param sessionToken Bound session token and authenticating provider UUID.
 	 */
-	private void ssoLogin(Object token)
+	private void ssoLogin(SSOUtils.SSOSessionToken sessionToken)
 	{
 		String errorMessage = null;
+		Session session = getDesktop().getSession();
 		try
 		{
-			String provider = (String) getDesktop().getSession().getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
-			String tenant = (String) getDesktop().getSession().getAttribute(SSOWebUIFilter.TENANT_PREFIX_PARAMETER);
-			ISSOPrincipalService ssoPrincipal = SSOUtils.getSSOPrincipalService(provider, tenant);
+			Object token = sessionToken.token();
+			String authenticatedProvider = sessionToken.providerUU();
+			String provider = (String) session.getAttribute(ISSOPrincipalService.SSO_SELECTED_PROVIDER);
+			String tenant = (String) session.getAttribute(SSOWebUIFilter.TENANT_PREFIX_PARAMETER);
+			if (token == null || Util.isEmpty(authenticatedProvider, true) || !authenticatedProvider.equals(provider))
+				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "SSOServiceNotFound"));
+			ISSOPrincipalService ssoPrincipal = SSOUtils.getSSOPrincipalService(authenticatedProvider, tenant);
 			if (ssoPrincipal == null)
 				throw new AdempiereException(Msg.getMsg(Env.getCtx(), "SSOServiceNotFound"));
 			
@@ -196,6 +203,7 @@ public class LoginWindow extends Window implements EventListener<Event>
 
 		if (!Util.isEmpty(errorMessage))
 		{
+			ZkSSOUtils.clearSSOSessionToken(session);
 			ZkSSOUtils.setErrorMessageText(errorMessage);
 			Executions.sendRedirect(SSOUtils.ERROR_VALIDATION_URL);
 		}
@@ -531,7 +539,22 @@ public class LoginWindow extends Window implements EventListener<Event>
 		else
 			loginName = user.getLDAPUser() != null ? user.getLDAPUser() : user.getName();
 		boolean isSSOLogin = "Y".equals(Env.getContext(Env.getCtx(), Env.IS_SSO_LOGIN));
-    	loginOk(loginName, true, login.getClients(), isSSOLogin);
+		String tenant = isSSOLogin
+				? (String) getDesktop().getSession().getAttribute(SSOWebUIFilter.TENANT_PREFIX_PARAMETER)
+				: null;
+		KeyNamePair[] clients = login.getClients(tenant, isSSOLogin);
+		if (isSSOLogin && (clients == null || clients.length == 0))
+		{
+			Session session = getDesktop().getSession();
+			ZkSSOUtils.clearSSOSessionToken(session);
+			String errorMessage = !Util.isEmpty(login.getLoginErrMsg(), true)
+					? login.getLoginErrMsg()
+					: Msg.getMsg(Env.getCtx(), "FailedLogin");
+			ZkSSOUtils.setErrorMessageText(errorMessage);
+			Executions.sendRedirect(SSOUtils.ERROR_VALIDATION_URL);
+			return;
+		}
+		loginOk(loginName, true, clients, isSSOLogin);
     	getDesktop().getSession().setAttribute(AdempiereWebUI.CHECK_AD_USER_ID_ATTR, Env.getAD_User_ID(ctx));
     	pnlRole.setChangeRole(true);
     	pnlRole.changeRole(ctx);

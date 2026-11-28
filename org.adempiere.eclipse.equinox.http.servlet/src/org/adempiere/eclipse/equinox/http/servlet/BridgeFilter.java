@@ -25,9 +25,11 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.adempiere.base.sso.ISSOPrincipalService;
 import org.adempiere.base.sso.SSOUtils;
+import org.compiere.model.MSSOPrincipalConfig;
 import org.compiere.model.MSysConfig;
 import org.compiere.util.CLogger;
 
@@ -78,16 +80,31 @@ public class BridgeFilter extends BridgeServlet implements Filter {
 			ISSOPrincipalService m_SSOPrincipal = null;
 			try
 			{
-				m_SSOPrincipal = SSOUtils.getSSOPrincipalService();
+				MSSOPrincipalConfig config = MSSOPrincipalConfig.getDefaultSSOPrincipalConfig(0);
+				m_SSOPrincipal = config != null ? SSOUtils.getSSOPrincipalServiceForConfig(config) : null;
 
-				if (m_SSOPrincipal != null) {
+				if (m_SSOPrincipal != null && config != null) {
+					String configUU = config.getSSO_PrincipalConfig_UU();
 					if (m_SSOPrincipal.hasAuthenticationCode(req, resp)) {
+						// Clear any prior SSO token before exchanging the callback code
+						HttpSession session = req.getSession();
+						SSOUtils.clearSSOSessionToken(session);
 						// Use authentication code to get token
 						String currentUri = req.getRequestURL().toString();
-						m_SSOPrincipal.getAuthenticationToken(req, resp, SSOUtils.SSO_MODE_OSGI);
-						if (!resp.isCommitted())
+						m_SSOPrincipal.getAuthenticationToken(
+								SSOUtils.wrapRequestForTokenBinding(req, configUU), resp, SSOUtils.SSO_MODE_OSGI);
+						if (!resp.isCommitted()) {
 							resp.sendRedirect(currentUri);
-					} else if (!m_SSOPrincipal.isAuthenticated(req, resp)) {
+						}
+						return;
+					} else if (!SSOUtils.isTokenValidForProvider(req.getSession(false), configUU)
+							|| !m_SSOPrincipal.isAuthenticated(req, resp)) {
+						HttpSession session = req.getSession(false);
+						if (session != null && (SSOUtils.getSSOSessionToken(session) != null
+								|| session.getAttribute(ISSOPrincipalService.SSO_PRINCIPAL_SESSION_TOKEN) != null)) {
+							m_SSOPrincipal.removePrincipalFromSession(req);
+							SSOUtils.clearSSOSessionToken(session);
+						}
 						// Redirect to SSO sing in page for authentication
 						m_SSOPrincipal.redirectForAuthentication(req, resp, SSOUtils.SSO_MODE_OSGI);
 						return;
@@ -97,6 +114,7 @@ public class BridgeFilter extends BridgeServlet implements Filter {
 				log.log(Level.SEVERE, "Exception while authenticating: ", exc);
 				if (m_SSOPrincipal != null)
 					m_SSOPrincipal.removePrincipalFromSession(req);
+				SSOUtils.clearSSOSessionToken(req.getSession(false));
 				if (isRedirectToLoginOnError) {
 					resp.sendRedirect("osgi/system/console/bundles");
 				} else {
